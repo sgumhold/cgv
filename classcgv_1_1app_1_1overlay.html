@@ -82,6 +82,7 @@ $(document).ready(function(){initNavTree('classcgv_1_1app_1_1overlay.html',''); 
 
 <div class="header">
   <div class="summary">
+<a href="#nested-classes">Classes</a> &#124;
 <a href="#pub-types">Public Types</a> &#124;
 <a href="#pub-methods">Public Member Functions</a> &#124;
 <a href="#pub-attribs">Public Attributes</a> &#124;
@@ -117,6 +118,11 @@ Inheritance diagram for cgv::app::overlay:</div>
   </map>
 </div></div>
 <table class="memberdecls">
+<tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="nested-classes"></a>
+Classes</h2></td></tr>
+<tr class="memitem:"><td class="memItemLeft" align="right" valign="top">struct &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structcgv_1_1app_1_1overlay_1_1gui__options__t.html">gui_options_t</a></td></tr>
+<tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
+</table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="pub-types"></a>
 Public Types</h2></td></tr>
 <tr class="memitem:ab9d7823f22e5ae2d9ace6c186ea295fa"><td class="memItemLeft" align="right" valign="top"><a id="ab9d7823f22e5ae2d9ace6c186ea295fa"></a>enum &#160;</td><td class="memItemRight" valign="bottom"><b>AlignmentOption</b> { <br />
@@ -144,7 +150,7 @@ Public Types</h2></td></tr>
 Public Member Functions</h2></td></tr>
 <tr class="memitem:ae315760769f60738317ef59ae1b3af19"><td class="memItemLeft" align="right" valign="top"><a id="ae315760769f60738317ef59ae1b3af19"></a>
 &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcgv_1_1app_1_1overlay.html#ae315760769f60738317ef59ae1b3af19">overlay</a> ()</td></tr>
-<tr class="memdesc:ae315760769f60738317ef59ae1b3af19"><td class="mdescLeft">&#160;</td><td class="mdescRight">creates an overlay in the bottom left corner with zero size <br /></td></tr>
+<tr class="memdesc:ae315760769f60738317ef59ae1b3af19"><td class="mdescLeft">&#160;</td><td class="mdescRight">create an overlay in the bottom left corner with zero size <br /></td></tr>
 <tr class="separator:ae315760769f60738317ef59ae1b3af19"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a504b1642c401febdf920c84dc7bf6400"><td class="memItemLeft" align="right" valign="top"><a id="a504b1642c401febdf920c84dc7bf6400"></a>
 virtual bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcgv_1_1app_1_1overlay.html#a504b1642c401febdf920c84dc7bf6400">self_reflect</a> (<a class="el" href="classcgv_1_1reflect_1_1reflection__handler.html">cgv::reflect::reflection_handler</a> &amp;_rh)</td></tr>
@@ -171,69 +177,59 @@ virtual void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" hr
 <tr class="memdesc:a624662321697148bd78950b54e782c91"><td class="mdescLeft">&#160;</td><td class="mdescRight">default implementation of that calls handle_member_change and afterwards upates the member in the gui and post a redraw <br /></td></tr>
 <tr class="separator:a624662321697148bd78950b54e782c91"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a6500203c06ee7f7fb9094fefafdb2371"><td class="memItemLeft" align="right" valign="top"><a id="a6500203c06ee7f7fb9094fefafdb2371"></a>
-bool&#160;</td><td class="memItemRight" valign="bottom"><b>blocks_events</b> () const</td></tr>
+bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcgv_1_1app_1_1overlay.html#a6500203c06ee7f7fb9094fefafdb2371">blocks_events</a> () const</td></tr>
+<tr class="memdesc:a6500203c06ee7f7fb9094fefafdb2371"><td class="mdescLeft">&#160;</td><td class="mdescRight">return whether this overlay blocks events, i.e. does not pass them to the next event handler <br /></td></tr>
 <tr class="separator:a6500203c06ee7f7fb9094fefafdb2371"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a6e31ae938a4bb751c15307109002eae9"><td class="memItemLeft" align="right" valign="top"><a id="a6e31ae938a4bb751c15307109002eae9"></a>
 <a class="el" href="namespacecgv.html#a4fc9abee97018a017bb3a14b531a8f06">ivec2</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcgv_1_1app_1_1overlay.html#a6e31ae938a4bb751c15307109002eae9">get_viewport_size</a> () const</td></tr>
-<tr class="memdesc:a6e31ae938a4bb751c15307109002eae9"><td class="mdescLeft">&#160;</td><td class="mdescRight">returns the current viewport size <br /></td></tr>
+<tr class="memdesc:a6e31ae938a4bb751c15307109002eae9"><td class="mdescLeft">&#160;</td><td class="mdescRight">return the current viewport size <br /></td></tr>
 <tr class="separator:a6e31ae938a4bb751c15307109002eae9"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ab02e9b6c66e700ae41b3e075269705f2"><td class="memItemLeft" align="right" valign="top"><a id="ab02e9b6c66e700ae41b3e075269705f2"></a>
 <a class="el" href="namespacecgv.html#a4fc9abee97018a017bb3a14b531a8f06">ivec2</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcgv_1_1app_1_1overlay.html#ab02e9b6c66e700ae41b3e075269705f2">get_local_mouse_pos</a> (<a class="el" href="namespacecgv.html#a4fc9abee97018a017bb3a14b531a8f06">ivec2</a> mouse_pos) const</td></tr>
-<tr class="memdesc:ab02e9b6c66e700ae41b3e075269705f2"><td class="mdescLeft">&#160;</td><td class="mdescRight">returns the mouse position local to the container of this overlay <br /></td></tr>
+<tr class="memdesc:ab02e9b6c66e700ae41b3e075269705f2"><td class="mdescLeft">&#160;</td><td class="mdescRight">return the mouse position local to the container of this overlay <br /></td></tr>
 <tr class="separator:ab02e9b6c66e700ae41b3e075269705f2"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a6b3c6e4744c213b1e41c3c516ce43ad8"><td class="memItemLeft" align="right" valign="top"><a id="a6b3c6e4744c213b1e41c3c516ce43ad8"></a>
-void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcgv_1_1app_1_1overlay.html#a6b3c6e4744c213b1e41c3c516ce43ad8">set_overlay_alignment</a> (AlignmentOption horizontal, AlignmentOption vertical, <a class="el" href="namespacecgv.html#a8044b02f248048405a9d97418f545a1a">vec2</a> percentual_offset=<a class="el" href="namespacecgv.html#a8044b02f248048405a9d97418f545a1a">vec2</a>(-1.0f))</td></tr>
-<tr class="memdesc:a6b3c6e4744c213b1e41c3c516ce43ad8"><td class="mdescLeft">&#160;</td><td class="mdescRight">sets the alignment options <br /></td></tr>
-<tr class="separator:a6b3c6e4744c213b1e41c3c516ce43ad8"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a848ab8d450d4ac1ae11d744c82a58b2f"><td class="memItemLeft" align="right" valign="top"><a id="a848ab8d450d4ac1ae11d744c82a58b2f"></a>
-void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcgv_1_1app_1_1overlay.html#a848ab8d450d4ac1ae11d744c82a58b2f">set_overlay_stretch</a> (StretchOption stretch, <a class="el" href="namespacecgv.html#a8044b02f248048405a9d97418f545a1a">vec2</a> percentual_size=<a class="el" href="namespacecgv.html#a8044b02f248048405a9d97418f545a1a">vec2</a>(-1.0f))</td></tr>
-<tr class="memdesc:a848ab8d450d4ac1ae11d744c82a58b2f"><td class="mdescLeft">&#160;</td><td class="mdescRight">sets the stretch option <br /></td></tr>
-<tr class="separator:a848ab8d450d4ac1ae11d744c82a58b2f"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:ad708458fc07abd6caf4b8829024eecd6"><td class="memItemLeft" align="right" valign="top"><a id="ad708458fc07abd6caf4b8829024eecd6"></a>
-<a class="el" href="namespacecgv.html#a4fc9abee97018a017bb3a14b531a8f06">ivec2</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcgv_1_1app_1_1overlay.html#ad708458fc07abd6caf4b8829024eecd6">get_overlay_margin</a> () const</td></tr>
-<tr class="memdesc:ad708458fc07abd6caf4b8829024eecd6"><td class="mdescLeft">&#160;</td><td class="mdescRight">returns the margin as set in the layout parameters <br /></td></tr>
-<tr class="separator:ad708458fc07abd6caf4b8829024eecd6"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a72fa40f8c6ae33f848ace24aa640aa0a"><td class="memItemLeft" align="right" valign="top"><a id="a72fa40f8c6ae33f848ace24aa640aa0a"></a>
-void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcgv_1_1app_1_1overlay.html#a72fa40f8c6ae33f848ace24aa640aa0a">set_overlay_margin</a> (const <a class="el" href="namespacecgv.html#a4fc9abee97018a017bb3a14b531a8f06">ivec2</a> &amp;m)</td></tr>
-<tr class="memdesc:a72fa40f8c6ae33f848ace24aa640aa0a"><td class="mdescLeft">&#160;</td><td class="mdescRight">sets the overlay margin <br /></td></tr>
-<tr class="separator:a72fa40f8c6ae33f848ace24aa640aa0a"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a9fdea40dbcdc68ff733b1198ddaa680d"><td class="memItemLeft" align="right" valign="top"><a id="a9fdea40dbcdc68ff733b1198ddaa680d"></a>
-cgv::g2d::irect&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcgv_1_1app_1_1overlay.html#a9fdea40dbcdc68ff733b1198ddaa680d">get_overlay_rectangle</a> () const</td></tr>
-<tr class="memdesc:a9fdea40dbcdc68ff733b1198ddaa680d"><td class="mdescLeft">&#160;</td><td class="mdescRight">returns the current rectangle area of the overlay taking layout into account <br /></td></tr>
-<tr class="separator:a9fdea40dbcdc68ff733b1198ddaa680d"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a7fe606ae1b7bea06620ffc90ac9b1f6c"><td class="memItemLeft" align="right" valign="top"><a id="a7fe606ae1b7bea06620ffc90ac9b1f6c"></a>
-<a class="el" href="namespacecgv.html#a4fc9abee97018a017bb3a14b531a8f06">ivec2</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcgv_1_1app_1_1overlay.html#a7fe606ae1b7bea06620ffc90ac9b1f6c">get_overlay_position</a> () const</td></tr>
-<tr class="memdesc:a7fe606ae1b7bea06620ffc90ac9b1f6c"><td class="mdescLeft">&#160;</td><td class="mdescRight">returns the position of the overlay with origin at the bottom left <br /></td></tr>
-<tr class="separator:a7fe606ae1b7bea06620ffc90ac9b1f6c"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:ac126aa3a70ec7c192a84a3f9f6ff2e3b"><td class="memItemLeft" align="right" valign="top"><a id="ac126aa3a70ec7c192a84a3f9f6ff2e3b"></a>
-<a class="el" href="namespacecgv.html#a4fc9abee97018a017bb3a14b531a8f06">ivec2</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcgv_1_1app_1_1overlay.html#ac126aa3a70ec7c192a84a3f9f6ff2e3b">get_overlay_size</a> () const</td></tr>
-<tr class="memdesc:ac126aa3a70ec7c192a84a3f9f6ff2e3b"><td class="mdescLeft">&#160;</td><td class="mdescRight">returns the current size of the overlay taking strech layout into account <br /></td></tr>
-<tr class="separator:ac126aa3a70ec7c192a84a3f9f6ff2e3b"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a93efb0342469553208c772b62b331dd2"><td class="memItemLeft" align="right" valign="top"><a id="a93efb0342469553208c772b62b331dd2"></a>
-void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcgv_1_1app_1_1overlay.html#a93efb0342469553208c772b62b331dd2">set_overlay_size</a> (const <a class="el" href="namespacecgv.html#a4fc9abee97018a017bb3a14b531a8f06">ivec2</a> &amp;s)</td></tr>
-<tr class="memdesc:a93efb0342469553208c772b62b331dd2"><td class="mdescLeft">&#160;</td><td class="mdescRight">sets the default size of the overlay before stretch gets applied <br /></td></tr>
-<tr class="separator:a93efb0342469553208c772b62b331dd2"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a7fcc818eb4db9dbf55e815e42896712f"><td class="memItemLeft" align="right" valign="top"><a id="a7fcc818eb4db9dbf55e815e42896712f"></a>
-bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcgv_1_1app_1_1overlay.html#a7fcc818eb4db9dbf55e815e42896712f">is_visible</a> () const</td></tr>
-<tr class="memdesc:a7fcc818eb4db9dbf55e815e42896712f"><td class="mdescLeft">&#160;</td><td class="mdescRight">return the visibility state of the overlay <br /></td></tr>
-<tr class="separator:a7fcc818eb4db9dbf55e815e42896712f"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:aeefcae1fc2e6ad857a3bc5759427a99a"><td class="memItemLeft" align="right" valign="top"><a id="aeefcae1fc2e6ad857a3bc5759427a99a"></a>
-void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcgv_1_1app_1_1overlay.html#aeefcae1fc2e6ad857a3bc5759427a99a">set_visibility</a> (bool flag)</td></tr>
-<tr class="memdesc:aeefcae1fc2e6ad857a3bc5759427a99a"><td class="mdescLeft">&#160;</td><td class="mdescRight">sets the visibility of the overlay to flag <br /></td></tr>
-<tr class="separator:aeefcae1fc2e6ad857a3bc5759427a99a"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a100e056c4a856eb9fb8968816e42d7a6"><td class="memItemLeft" align="right" valign="top"><a id="a100e056c4a856eb9fb8968816e42d7a6"></a>
+cgv::g2d::irect&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcgv_1_1app_1_1overlay.html#a100e056c4a856eb9fb8968816e42d7a6">get_rectangle</a> () const</td></tr>
+<tr class="memdesc:a100e056c4a856eb9fb8968816e42d7a6"><td class="mdescLeft">&#160;</td><td class="mdescRight">return the current rectangle area (in screen coordinates) of the overlay taking layout into account <br /></td></tr>
+<tr class="separator:a100e056c4a856eb9fb8968816e42d7a6"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a8258a02c61ea943ca13b4787b6643b97"><td class="memItemLeft" align="right" valign="top"><a id="a8258a02c61ea943ca13b4787b6643b97"></a>
+cgv::g2d::irect&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcgv_1_1app_1_1overlay.html#a8258a02c61ea943ca13b4787b6643b97">get_local_rectangle</a> () const</td></tr>
+<tr class="memdesc:a8258a02c61ea943ca13b4787b6643b97"><td class="mdescLeft">&#160;</td><td class="mdescRight">return the current rectangle area of the overlay in local space, i.e. with position set to zero <br /></td></tr>
+<tr class="separator:a8258a02c61ea943ca13b4787b6643b97"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a4fe5700ed52d27af37b357ffdd9b195d"><td class="memItemLeft" align="right" valign="top"><a id="a4fe5700ed52d27af37b357ffdd9b195d"></a>
+void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcgv_1_1app_1_1overlay.html#a4fe5700ed52d27af37b357ffdd9b195d">set_alignment</a> (AlignmentOption horizontal, AlignmentOption vertical, <a class="el" href="namespacecgv.html#a8044b02f248048405a9d97418f545a1a">vec2</a> percentual_offset=<a class="el" href="namespacecgv.html#a8044b02f248048405a9d97418f545a1a">vec2</a>(-1.0f))</td></tr>
+<tr class="memdesc:a4fe5700ed52d27af37b357ffdd9b195d"><td class="mdescLeft">&#160;</td><td class="mdescRight">set the alignment options <br /></td></tr>
+<tr class="separator:a4fe5700ed52d27af37b357ffdd9b195d"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a2ad5fc0313f7d6468d7c550bbfeee880"><td class="memItemLeft" align="right" valign="top"><a id="a2ad5fc0313f7d6468d7c550bbfeee880"></a>
+void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcgv_1_1app_1_1overlay.html#a2ad5fc0313f7d6468d7c550bbfeee880">set_stretch</a> (StretchOption stretch, <a class="el" href="namespacecgv.html#a8044b02f248048405a9d97418f545a1a">vec2</a> percentual_size=<a class="el" href="namespacecgv.html#a8044b02f248048405a9d97418f545a1a">vec2</a>(-1.0f))</td></tr>
+<tr class="memdesc:a2ad5fc0313f7d6468d7c550bbfeee880"><td class="mdescLeft">&#160;</td><td class="mdescRight">set the stretch option <br /></td></tr>
+<tr class="separator:a2ad5fc0313f7d6468d7c550bbfeee880"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a55645d712553591ff9ebd52435a3fc17"><td class="memItemLeft" align="right" valign="top"><a id="a55645d712553591ff9ebd52435a3fc17"></a>
+<a class="el" href="namespacecgv.html#a4fc9abee97018a017bb3a14b531a8f06">ivec2</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcgv_1_1app_1_1overlay.html#a55645d712553591ff9ebd52435a3fc17">get_margin</a> () const</td></tr>
+<tr class="memdesc:a55645d712553591ff9ebd52435a3fc17"><td class="mdescLeft">&#160;</td><td class="mdescRight">returns the margin as set in the layout parameters <br /></td></tr>
+<tr class="separator:a55645d712553591ff9ebd52435a3fc17"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a6a5ba27751d6cb4276d28d89f785f814"><td class="memItemLeft" align="right" valign="top"><a id="a6a5ba27751d6cb4276d28d89f785f814"></a>
+void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcgv_1_1app_1_1overlay.html#a6a5ba27751d6cb4276d28d89f785f814">set_margin</a> (const <a class="el" href="namespacecgv.html#a4fc9abee97018a017bb3a14b531a8f06">ivec2</a> &amp;margin)</td></tr>
+<tr class="memdesc:a6a5ba27751d6cb4276d28d89f785f814"><td class="mdescLeft">&#160;</td><td class="mdescRight">set the overlay margin <br /></td></tr>
+<tr class="separator:a6a5ba27751d6cb4276d28d89f785f814"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:aeea6dcbd8abd64644a3cb53fc964d721"><td class="memItemLeft" align="right" valign="top"><a id="aeea6dcbd8abd64644a3cb53fc964d721"></a>
+void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcgv_1_1app_1_1overlay.html#aeea6dcbd8abd64644a3cb53fc964d721">set_size</a> (const <a class="el" href="namespacecgv.html#a4fc9abee97018a017bb3a14b531a8f06">ivec2</a> &amp;size)</td></tr>
+<tr class="memdesc:aeea6dcbd8abd64644a3cb53fc964d721"><td class="mdescLeft">&#160;</td><td class="mdescRight">set the default size of the overlay before stretch gets applied <br /></td></tr>
+<tr class="separator:aeea6dcbd8abd64644a3cb53fc964d721"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a287172ddf09c1f6ea890fb3790d72048"><td class="memItemLeft" align="right" valign="top"><a id="a287172ddf09c1f6ea890fb3790d72048"></a>
+void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcgv_1_1app_1_1overlay.html#a287172ddf09c1f6ea890fb3790d72048">set_visibility</a> (bool visible)</td></tr>
+<tr class="memdesc:a287172ddf09c1f6ea890fb3790d72048"><td class="mdescLeft">&#160;</td><td class="mdescRight">set the visibility of the overlay <br /></td></tr>
+<tr class="separator:a287172ddf09c1f6ea890fb3790d72048"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a65832f0526e1ded543d96d001a17c94a"><td class="memItemLeft" align="right" valign="top"><a id="a65832f0526e1ded543d96d001a17c94a"></a>
 void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcgv_1_1app_1_1overlay.html#a65832f0526e1ded543d96d001a17c94a">toggle_visibility</a> ()</td></tr>
-<tr class="memdesc:a65832f0526e1ded543d96d001a17c94a"><td class="mdescLeft">&#160;</td><td class="mdescRight">convenience method to toggle the visibility of the overlay <br /></td></tr>
+<tr class="memdesc:a65832f0526e1ded543d96d001a17c94a"><td class="mdescLeft">&#160;</td><td class="mdescRight">toggle the visibility of the overlay <br /></td></tr>
 <tr class="separator:a65832f0526e1ded543d96d001a17c94a"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a76ddcc88818e35a934dac5b88cf69e42"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcgv_1_1app_1_1overlay.html#a76ddcc88818e35a934dac5b88cf69e42">set_draw_in_finish_frame</a> (bool flag)</td></tr>
-<tr class="memdesc:a76ddcc88818e35a934dac5b88cf69e42"><td class="mdescLeft">&#160;</td><td class="mdescRight">Set the draw_in_finish_frame flag.  <a href="classcgv_1_1app_1_1overlay.html#a76ddcc88818e35a934dac5b88cf69e42">More...</a><br /></td></tr>
-<tr class="separator:a76ddcc88818e35a934dac5b88cf69e42"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a4c13e3b1cd78c998a8c7d8155c346fc6"><td class="memItemLeft" align="right" valign="top">bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcgv_1_1app_1_1overlay.html#a4c13e3b1cd78c998a8c7d8155c346fc6">ensure_viewport</a> (<a class="el" href="classcgv_1_1render_1_1context.html">cgv::render::context</a> &amp;ctx)</td></tr>
-<tr class="memdesc:a4c13e3b1cd78c998a8c7d8155c346fc6"><td class="mdescLeft">&#160;</td><td class="mdescRight">Checks whether the viewport size has changed since the last call to this method.  <a href="classcgv_1_1app_1_1overlay.html#a4c13e3b1cd78c998a8c7d8155c346fc6">More...</a><br /></td></tr>
+<tr class="memdesc:a4c13e3b1cd78c998a8c7d8155c346fc6"><td class="mdescLeft">&#160;</td><td class="mdescRight">Check whether the viewport size has changed since the last call to this method.  <a href="classcgv_1_1app_1_1overlay.html#a4c13e3b1cd78c998a8c7d8155c346fc6">More...</a><br /></td></tr>
 <tr class="separator:a4c13e3b1cd78c998a8c7d8155c346fc6"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a5306343245359eb4e97386f4822ff62e"><td class="memItemLeft" align="right" valign="top"><a id="a5306343245359eb4e97386f4822ff62e"></a>
-bool&#160;</td><td class="memItemRight" valign="bottom"><b>ensure_overlay_layout</b> (<a class="el" href="classcgv_1_1render_1_1context.html">cgv::render::context</a> &amp;ctx)</td></tr>
-<tr class="separator:a5306343245359eb4e97386f4822ff62e"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a694388636554b3ae0d84559cef99ca3e"><td class="memItemLeft" align="right" valign="top"><a id="a694388636554b3ae0d84559cef99ca3e"></a>
+bool&#160;</td><td class="memItemRight" valign="bottom"><b>ensure_layout</b> (<a class="el" href="classcgv_1_1render_1_1context.html">cgv::render::context</a> &amp;ctx)</td></tr>
+<tr class="separator:a694388636554b3ae0d84559cef99ca3e"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:acdc428df9fe33a5a6375449e88c48004"><td class="memItemLeft" align="right" valign="top">virtual bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcgv_1_1app_1_1overlay.html#acdc428df9fe33a5a6375449e88c48004">is_hit</a> (const <a class="el" href="namespacecgv.html#a4fc9abee97018a017bb3a14b531a8f06">ivec2</a> &amp;mouse_pos) const</td></tr>
 <tr class="memdesc:acdc428df9fe33a5a6375449e88c48004"><td class="mdescLeft">&#160;</td><td class="mdescRight">Tests if the mouse pointer is hovering over this overlay and returns true if this is the case.  <a href="classcgv_1_1app_1_1overlay.html#acdc428df9fe33a5a6375449e88c48004">More...</a><br /></td></tr>
 <tr class="separator:acdc428df9fe33a5a6375449e88c48004"><td class="memSeparator" colspan="2">&#160;</td></tr>
@@ -703,31 +699,10 @@ bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="clas
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="pub-attribs"></a>
 Public Attributes</h2></td></tr>
-<tr class="memitem:ab8ff64e6ffa7e7073757a26e924758c5"><td class="memItemLeft" ><a id="ab8ff64e6ffa7e7073757a26e924758c5"></a>
-struct {</td></tr>
-<tr class="memitem:a32f88cff03b00c77bbc74269e38f7d4e"><td class="memItemLeft" >
-&#160;&#160;&#160;std::string&#160;&#160;&#160;<b>heading</b> = &quot;&quot;</td></tr>
-<tr class="separator:a32f88cff03b00c77bbc74269e38f7d4e"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a5d8e6a6d3c9e7dfdd9f4104c9a1fd3fe"><td class="memItemLeft" >
-&#160;&#160;&#160;bool&#160;&#160;&#160;<b>create_default_tree_node</b> = true</td></tr>
-<tr class="separator:a5d8e6a6d3c9e7dfdd9f4104c9a1fd3fe"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a53f7e5ff817190af4f32482de3da2cf2"><td class="memItemLeft" >
-&#160;&#160;&#160;bool&#160;&#160;&#160;<b>show_heading</b> = false</td></tr>
-<tr class="separator:a53f7e5ff817190af4f32482de3da2cf2"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a55c4628acfcc4549c36c68b4fcaf432a"><td class="memItemLeft" >
-&#160;&#160;&#160;bool&#160;&#160;&#160;<b>show_layout_options</b> = true</td></tr>
-<tr class="separator:a55c4628acfcc4549c36c68b4fcaf432a"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a81c197d317f2f171d02b3e53beb7bcd3"><td class="memItemLeft" >
-&#160;&#160;&#160;bool&#160;&#160;&#160;<b>allow_alignment</b> = true</td></tr>
-<tr class="separator:a81c197d317f2f171d02b3e53beb7bcd3"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:aac235cc0c61545601aa6f9e69465f96c"><td class="memItemLeft" >
-&#160;&#160;&#160;bool&#160;&#160;&#160;<b>allow_stretch</b> = true</td></tr>
-<tr class="separator:aac235cc0c61545601aa6f9e69465f96c"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a9614e9f1ea0f9a18b407b0990dc1f6d1"><td class="memItemLeft" >
-&#160;&#160;&#160;bool&#160;&#160;&#160;<b>allow_margin</b> = true</td></tr>
-<tr class="separator:a9614e9f1ea0f9a18b407b0990dc1f6d1"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:ab8ff64e6ffa7e7073757a26e924758c5"><td class="memItemLeft" valign="top">}&#160;</td><td class="memItemRight" valign="bottom"><b>gui_options</b></td></tr>
-<tr class="separator:ab8ff64e6ffa7e7073757a26e924758c5"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a8a67de4ed4f9acebe0b075de2c59fbbb"><td class="memItemLeft" align="right" valign="top"><a id="a8a67de4ed4f9acebe0b075de2c59fbbb"></a>
+<a class="el" href="structcgv_1_1app_1_1overlay_1_1gui__options__t.html">gui_options_t</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcgv_1_1app_1_1overlay.html#a8a67de4ed4f9acebe0b075de2c59fbbb">gui_options</a></td></tr>
+<tr class="memdesc:a8a67de4ed4f9acebe0b075de2c59fbbb"><td class="mdescLeft">&#160;</td><td class="mdescRight">options for the GUI creation of this overlay (must be set before GUI creation) <br /></td></tr>
+<tr class="separator:a8a67de4ed4f9acebe0b075de2c59fbbb"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="pro-methods"></a>
 Protected Member Functions</h2></td></tr>
@@ -739,10 +714,10 @@ virtual void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" hr
 virtual void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcgv_1_1app_1_1overlay.html#ae74c2116c0fdd815885811ede2b18b11">on_layout_change</a> ()</td></tr>
 <tr class="memdesc:ae74c2116c0fdd815885811ede2b18b11"><td class="mdescLeft">&#160;</td><td class="mdescRight">called when the overlay layout parameters are changed through the default gui <br /></td></tr>
 <tr class="separator:ae74c2116c0fdd815885811ede2b18b11"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a3810bf84084799784de9f4a545ccd303"><td class="memItemLeft" align="right" valign="top"><a id="a3810bf84084799784de9f4a545ccd303"></a>
-void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcgv_1_1app_1_1overlay.html#a3810bf84084799784de9f4a545ccd303">update_overlay_layout</a> ()</td></tr>
-<tr class="memdesc:a3810bf84084799784de9f4a545ccd303"><td class="mdescLeft">&#160;</td><td class="mdescRight">updates the layout of the overlay container <br /></td></tr>
-<tr class="separator:a3810bf84084799784de9f4a545ccd303"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a3dab76814dba0d3d46bbc70bc28724e8"><td class="memItemLeft" align="right" valign="top"><a id="a3dab76814dba0d3d46bbc70bc28724e8"></a>
+void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcgv_1_1app_1_1overlay.html#a3dab76814dba0d3d46bbc70bc28724e8">update_layout</a> ()</td></tr>
+<tr class="memdesc:a3dab76814dba0d3d46bbc70bc28724e8"><td class="mdescLeft">&#160;</td><td class="mdescRight">update the layout of the overlay container <br /></td></tr>
+<tr class="separator:a3dab76814dba0d3d46bbc70bc28724e8"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:af8938207c2973fc91a25e6dd9add2be7"><td class="memItemLeft" align="right" valign="top"><a id="af8938207c2973fc91a25e6dd9add2be7"></a>
 virtual void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcgv_1_1app_1_1overlay.html#af8938207c2973fc91a25e6dd9add2be7">create_gui_impl</a> ()</td></tr>
 <tr class="memdesc:af8938207c2973fc91a25e6dd9add2be7"><td class="mdescLeft">&#160;</td><td class="mdescRight">virtual method to implement the derived class gui creation <br /></td></tr>
@@ -785,36 +760,13 @@ virtual void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" hr
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="pro-attribs"></a>
 Protected Attributes</h2></td></tr>
-<tr class="memitem:a2f7a51fcd32c8fd7279966e3b5321a6c"><td class="memItemLeft" align="right" valign="top"><a id="a2f7a51fcd32c8fd7279966e3b5321a6c"></a>
-AlignmentOption&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcgv_1_1app_1_1overlay.html#a2f7a51fcd32c8fd7279966e3b5321a6c">horizontal_alignment</a> = AlignmentOption::AO_START</td></tr>
-<tr class="memdesc:a2f7a51fcd32c8fd7279966e3b5321a6c"><td class="mdescLeft">&#160;</td><td class="mdescRight">layout parameters <br /></td></tr>
-<tr class="separator:a2f7a51fcd32c8fd7279966e3b5321a6c"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a6d392563cfb7bd97760c0836266de617"><td class="memItemLeft" align="right" valign="top"><a id="a6d392563cfb7bd97760c0836266de617"></a>
-AlignmentOption&#160;</td><td class="memItemRight" valign="bottom"><b>vertical_alignment</b> = AlignmentOption::AO_START</td></tr>
-<tr class="separator:a6d392563cfb7bd97760c0836266de617"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:abe5b15519d6d03ffb89b2fe3994b6d77"><td class="memItemLeft" align="right" valign="top"><a id="abe5b15519d6d03ffb89b2fe3994b6d77"></a>
-StretchOption&#160;</td><td class="memItemRight" valign="bottom"><b>stretch</b> = SO_NONE</td></tr>
-<tr class="separator:abe5b15519d6d03ffb89b2fe3994b6d77"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:ae2bc057270f97b686b83faf3c58aa68a"><td class="memItemLeft" align="right" valign="top"><a id="ae2bc057270f97b686b83faf3c58aa68a"></a>
-<a class="el" href="namespacecgv.html#a4fc9abee97018a017bb3a14b531a8f06">ivec2</a>&#160;</td><td class="memItemRight" valign="bottom"><b>margin</b> = <a class="el" href="namespacecgv.html#a8044b02f248048405a9d97418f545a1a">vec2</a>(0.0f)</td></tr>
-<tr class="separator:ae2bc057270f97b686b83faf3c58aa68a"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:af38ea687859ba75c2eb59a767c67607f"><td class="memItemLeft" align="right" valign="top"><a id="af38ea687859ba75c2eb59a767c67607f"></a>
-<a class="el" href="namespacecgv.html#a8044b02f248048405a9d97418f545a1a">vec2</a>&#160;</td><td class="memItemRight" valign="bottom"><b>percentual_offset</b> = <a class="el" href="namespacecgv.html#a8044b02f248048405a9d97418f545a1a">vec2</a>(0.0f)</td></tr>
-<tr class="separator:af38ea687859ba75c2eb59a767c67607f"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:adc861e61f33a65c76523f9ecd6deffb4"><td class="memItemLeft" align="right" valign="top"><a id="adc861e61f33a65c76523f9ecd6deffb4"></a>
-<a class="el" href="namespacecgv.html#a8044b02f248048405a9d97418f545a1a">vec2</a>&#160;</td><td class="memItemRight" valign="bottom"><b>percentual_size</b> = <a class="el" href="namespacecgv.html#a8044b02f248048405a9d97418f545a1a">vec2</a>(1.0f)</td></tr>
-<tr class="separator:adc861e61f33a65c76523f9ecd6deffb4"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a179ec4d146de8860f18291a529b87153"><td class="memItemLeft" align="right" valign="top"><a id="a179ec4d146de8860f18291a529b87153"></a>
-bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcgv_1_1app_1_1overlay.html#a179ec4d146de8860f18291a529b87153">show</a></td></tr>
-<tr class="memdesc:a179ec4d146de8860f18291a529b87153"><td class="mdescLeft">&#160;</td><td class="mdescRight">whether the overlay is visible <br /></td></tr>
-<tr class="separator:a179ec4d146de8860f18291a529b87153"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:adaf63a5af089bbca20910f8d187fe43c"><td class="memItemLeft" align="right" valign="top"><a id="adaf63a5af089bbca20910f8d187fe43c"></a>
-bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcgv_1_1app_1_1overlay.html#adaf63a5af089bbca20910f8d187fe43c">block_events</a></td></tr>
-<tr class="memdesc:adaf63a5af089bbca20910f8d187fe43c"><td class="mdescLeft">&#160;</td><td class="mdescRight">whether the overlay blocks events or lets them pass through to other handlers <br /></td></tr>
+bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcgv_1_1app_1_1overlay.html#adaf63a5af089bbca20910f8d187fe43c">block_events</a> = false</td></tr>
+<tr class="memdesc:adaf63a5af089bbca20910f8d187fe43c"><td class="mdescLeft">&#160;</td><td class="mdescRight">whether the overlay blocks events or lets them pass through to other handlers (by default only derived classes may set this property) <br /></td></tr>
 <tr class="separator:adaf63a5af089bbca20910f8d187fe43c"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a1ebbd529b0d4357957f0e8913a956ef1"><td class="memItemLeft" align="right" valign="top"><a id="a1ebbd529b0d4357957f0e8913a956ef1"></a>
-bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcgv_1_1app_1_1overlay.html#a1ebbd529b0d4357957f0e8913a956ef1">draw_in_finish_frame</a></td></tr>
-<tr class="memdesc:a1ebbd529b0d4357957f0e8913a956ef1"><td class="mdescLeft">&#160;</td><td class="mdescRight">whether the overlay is <br /></td></tr>
+bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcgv_1_1app_1_1overlay.html#a1ebbd529b0d4357957f0e8913a956ef1">draw_in_finish_frame</a> = false</td></tr>
+<tr class="memdesc:a1ebbd529b0d4357957f0e8913a956ef1"><td class="mdescLeft">&#160;</td><td class="mdescRight">if true the overlay contents are drawn in the finish_frame method instead of the draw method (by default only derived classes may set this property) <br /></td></tr>
 <tr class="separator:a1ebbd529b0d4357957f0e8913a956ef1"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="inherit_header pro_attribs_classcgv_1_1base_1_1node"><td colspan="2" onclick="javascript:toggleInherit('pro_attribs_classcgv_1_1base_1_1node')"><img src="closed.png" alt="-"/>&#160;Protected Attributes inherited from <a class="el" href="classcgv_1_1base_1_1node.html">cgv::base::node</a></td></tr>
 <tr class="memitem:a28286049d6db60c75aedf4c6358dfc12 inherit pro_attribs_classcgv_1_1base_1_1node"><td class="memItemLeft" align="right" valign="top"><a id="a28286049d6db60c75aedf4c6358dfc12"></a>
@@ -904,9 +856,9 @@ template&lt;class T &gt; </td></tr>
 
 <p>Implements <a class="el" href="classcgv_1_1gui_1_1provider.html#a1d2f0b6c734c04d3c90a1c51ffbc0de9">cgv::gui::provider</a>.</p>
 
-<p class="definition">Definition at line <a class="el" href="overlay_8cxx_source.html#l00214">214</a> of file <a class="el" href="overlay_8cxx_source.html">overlay.cxx</a>.</p>
+<p class="definition">Definition at line <a class="el" href="overlay_8cxx_source.html#l00161">161</a> of file <a class="el" href="overlay_8cxx_source.html">overlay.cxx</a>.</p>
 
-<p class="reference">References <a class="el" href="overlay_8cxx_source.html#l00142">begin_overlay_gui()</a>, <a class="el" href="overlay_8h_source.html#l00075">create_gui_impl()</a>, <a class="el" href="overlay_8cxx_source.html#l00164">create_layout_gui()</a>, and <a class="el" href="overlay_8cxx_source.html#l00158">end_overlay_gui()</a>.</p>
+<p class="reference">References <a class="el" href="overlay_8cxx_source.html#l00108">begin_overlay_gui()</a>, <a class="el" href="overlay_8h_source.html#l00086">cgv::app::overlay::gui_options_t::create_default_tree_node</a>, <a class="el" href="overlay_8h_source.html#l00080">create_gui_impl()</a>, <a class="el" href="overlay_8cxx_source.html#l00127">create_layout_gui()</a>, <a class="el" href="overlay_8cxx_source.html#l00121">end_overlay_gui()</a>, and <a class="el" href="overlay_8h_source.html#l00099">gui_options</a>.</p>
 
 </div>
 </div>
@@ -926,12 +878,12 @@ template&lt;class T &gt; </td></tr>
       </table>
 </div><div class="memdoc">
 
-<p>Checks whether the viewport size has changed since the last call to this method. </p>
+<p>Check whether the viewport size has changed since the last call to this method. </p>
 <p>Call this in the init_frame method of your overlay. Returns true if the size changed. </p>
 
-<p class="definition">Definition at line <a class="el" href="overlay_8cxx_source.html#l00125">125</a> of file <a class="el" href="overlay_8cxx_source.html">overlay.cxx</a>.</p>
+<p class="definition">Definition at line <a class="el" href="overlay_8cxx_source.html#l00080">80</a> of file <a class="el" href="overlay_8cxx_source.html">overlay.cxx</a>.</p>
 
-<p class="reference">References <a class="el" href="classcgv_1_1render_1_1context.html#a6dde896fc37726e3ec39e7d450f1e168">cgv::render::context::get_height()</a>, <a class="el" href="classcgv_1_1render_1_1context.html#a473170ee5d7651a063695574f4b9f91f">cgv::render::context::get_width()</a>, and <a class="el" href="overlay_8cxx_source.html#l00062">update_overlay_layout()</a>.</p>
+<p class="reference">References <a class="el" href="classcgv_1_1render_1_1context.html#a6dde896fc37726e3ec39e7d450f1e168">cgv::render::context::get_height()</a>, <a class="el" href="classcgv_1_1render_1_1context.html#a473170ee5d7651a063695574f4b9f91f">cgv::render::context::get_width()</a>, and <a class="el" href="overlay_8cxx_source.html#l00175">update_layout()</a>.</p>
 
 </div>
 </div>
@@ -960,40 +912,11 @@ template&lt;class T &gt; </td></tr>
 </div><div class="memdoc">
 
 <p>Tests if the mouse pointer is hovering over this overlay and returns true if this is the case. </p>
-<p>Specifically it checks if the mouse position is inside the rectangle defined by container. Override this method to implement your own check, i.e. for different overlay shapes. </p>
+<p>Specifically it checks if the mouse position is inside the rectangle defined by container. Override this method to implement your own test, i.e. for different overlay shapes. </p>
 
-<p class="definition">Definition at line <a class="el" href="overlay_8cxx_source.html#l00136">136</a> of file <a class="el" href="overlay_8cxx_source.html">overlay.cxx</a>.</p>
+<p class="definition">Definition at line <a class="el" href="overlay_8cxx_source.html#l00102">102</a> of file <a class="el" href="overlay_8cxx_source.html">overlay.cxx</a>.</p>
 
-</div>
-</div>
-<a id="a76ddcc88818e35a934dac5b88cf69e42"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a76ddcc88818e35a934dac5b88cf69e42">&#9670;&nbsp;</a></span>set_draw_in_finish_frame()</h2>
-
-<div class="memitem">
-<div class="memproto">
-<table class="mlabels">
-  <tr>
-  <td class="mlabels-left">
-      <table class="memname">
-        <tr>
-          <td class="memname">void cgv::app::overlay::set_draw_in_finish_frame </td>
-          <td>(</td>
-          <td class="paramtype">bool&#160;</td>
-          <td class="paramname"><em>flag</em></td><td>)</td>
-          <td></td>
-        </tr>
-      </table>
-  </td>
-  <td class="mlabels-right">
-<span class="mlabels"><span class="mlabel">inline</span></span>  </td>
-  </tr>
-</table>
-</div><div class="memdoc">
-
-<p>Set the draw_in_finish_frame flag. </p>
-<p>If true, the the contents of this overlay are drawn in finish frame. Per default, the contents are drawn in draw. </p>
-
-<p class="definition">Definition at line <a class="el" href="overlay_8h_source.html#l00166">166</a> of file <a class="el" href="overlay_8h_source.html">overlay.h</a>.</p>
+<p class="reference">Referenced by <a class="el" href="color__map__editor_8cxx_source.html#l00079">cgv::app::color_map_editor::handle_event()</a>.</p>
 
 </div>
 </div>

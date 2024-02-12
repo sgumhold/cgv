@@ -1,16 +1,5 @@
 var NAVTREEINDEX50 =
 {
-"structcgv_1_1utils_1_1typed__token.html#a5b3bc4ab42521efdd1a90df96f378ddb":[11,0,0,15,2,2],
-"structcgv_1_1utils_1_1typed__token.html#adf329d858e0587a650f9279df1ddbb96":[11,0,0,15,2,3],
-"structconfig__file__view.html":[11,0,7],
-"structconfig__file__view.html#a1044d3445dde838f17535dca149b59a6":[11,0,7,3],
-"structconfig__file__view.html#a695e515d1f3c036d54e81f1376678271":[11,0,7,1],
-"structconfig__file__view.html#a82dd38a43b14d696286d48e7e9d4bafa":[11,0,7,2],
-"structconfig__file__view.html#a87519cf004a11583aa4500210efd2e41":[11,0,7,4],
-"structconfig__file__view.html#a9995a3288270f3aa0e06517966ef5644":[11,0,7,0],
-"structenum__aware__type__name.html":[11,0,11],
-"structenum__aware__type__name_3_01T_00_01true_01_4.html":[11,0,12],
-"structenum__aware__type__name_3_01T_00_01true_01_4.html#a82177fb392fc1a74e5bb93aa8ffef04a":[11,0,12,0],
 "structfx_1_1gltf_1_1Accessor.html":[11,0,1,0,3],
 "structfx_1_1gltf_1_1Accessor.html#a06242384c61050268f50c29609d1f45c":[11,0,1,0,3,6],
 "structfx_1_1gltf_1_1Accessor.html#a06e4bb2f94de5aaba19c222c54cad596":[11,0,1,0,3,5],
@@ -249,5 +238,16 @@ var NAVTREEINDEX50 =
 "structfx_1_1gltf_1_1Scene.html":[11,0,1,0,15],
 "structfx_1_1gltf_1_1Scene.html#a7bf8aeb71a1668f1907e4f66fb06f02a":[11,0,1,0,15,1],
 "structfx_1_1gltf_1_1Scene.html#a89a84782d357c6ccccd3ad1f7794c41c":[11,0,1,0,15,0],
-"structfx_1_1gltf_1_1Scene.html#aad06bd0b58e3d5717d4a66dfaac32cb3":[11,0,1,0,15,2]
+"structfx_1_1gltf_1_1Scene.html#aad06bd0b58e3d5717d4a66dfaac32cb3":[11,0,1,0,15,2],
+"structfx_1_1gltf_1_1Skin.html":[11,0,1,0,16],
+"structfx_1_1gltf_1_1Skin.html#a2f51208400635e7c6a91795a19ff25c2":[11,0,1,0,16,2],
+"structfx_1_1gltf_1_1Skin.html#a545e73474df59c31caa382eec8d06082":[11,0,1,0,16,3],
+"structfx_1_1gltf_1_1Skin.html#a719c2fd01bb735e37fe41d570971d5c6":[11,0,1,0,16,1],
+"structfx_1_1gltf_1_1Skin.html#aef02bbab162f1f54373a5b33f03e2312":[11,0,1,0,16,4],
+"structfx_1_1gltf_1_1Skin.html#af85cdbc3e449982ce26fd5aaf7193923":[11,0,1,0,16,0],
+"structfx_1_1gltf_1_1Texture.html":[11,0,1,0,17],
+"structfx_1_1gltf_1_1Texture.html#a07768fee775077df71f033ad789f092e":[11,0,1,0,17,3],
+"structfx_1_1gltf_1_1Texture.html#a32043b316d333a25dbb2b4bc18944fab":[11,0,1,0,17,2],
+"structfx_1_1gltf_1_1Texture.html#a8400c6821756d6e88e9548afc9b94f9e":[11,0,1,0,17,1],
+"structfx_1_1gltf_1_1Texture.html#aee59ec24d700320b62ca986566dbd68b":[11,0,1,0,17,0]
 };

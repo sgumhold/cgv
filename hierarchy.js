@@ -36,6 +36,7 @@ var hierarchy =
     [ "cgv::app::color_map_writer", "classcgv_1_1app_1_1color__map__writer.html", null ],
     [ "cgv::app::color_selector::layout_attributes", "structcgv_1_1app_1_1color__selector_1_1layout__attributes.html", null ],
     [ "cgv::app::gizmo", "classcgv_1_1app_1_1gizmo.html", null ],
+    [ "cgv::app::overlay::gui_options_t", "structcgv_1_1app_1_1overlay_1_1gui__options__t.html", null ],
     [ "cgv::app::performance_monitor::layout_attributes", "structcgv_1_1app_1_1performance__monitor_1_1layout__attributes.html", null ],
     [ "cgv::audio::OALContext", "classcgv_1_1audio_1_1OALContext.html", null ],
     [ "cgv::audio::OALListener", "classcgv_1_1audio_1_1OALListener.html", null ],
