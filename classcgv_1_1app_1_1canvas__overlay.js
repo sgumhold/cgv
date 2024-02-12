@@ -15,7 +15,6 @@ var classcgv_1_1app_1_1canvas__overlay =
     [ "handle_member_change", "classcgv_1_1app_1_1canvas__overlay.html#ab070bcac249ae8e87ad369a4d60e61b3", null ],
     [ "handle_theme_change", "classcgv_1_1app_1_1canvas__overlay.html#acd28543b053adaf7f3e2e96e8af64c34", null ],
     [ "init", "classcgv_1_1app_1_1canvas__overlay.html#abd1719a9c1db8345049378c5055d3de7", null ],
-    [ "init_overlay_style", "classcgv_1_1app_1_1canvas__overlay.html#aa64d00ca22a47f9eb35c084b19dc96e9", null ],
     [ "init_styles", "classcgv_1_1app_1_1canvas__overlay.html#a820c6ffffcda5bb7823e75692d0f0dba", null ],
     [ "is_damaged", "classcgv_1_1app_1_1canvas__overlay.html#afe10a2f717f9bb52bac55dc8186a137e", null ],
     [ "on_set", "classcgv_1_1app_1_1canvas__overlay.html#ab554f69f6f58e9bbf572e0b935282568", null ],
@@ -24,6 +23,5 @@ var classcgv_1_1app_1_1canvas__overlay =
     [ "register_shader", "classcgv_1_1app_1_1canvas__overlay.html#ab56e46040627064cc33c49f0cf4df16f", null ],
     [ "blend_overlay", "classcgv_1_1app_1_1canvas__overlay.html#ac5ce7df1d87225edcbdc6d51560f0b56", null ],
     [ "content_canvas", "classcgv_1_1app_1_1canvas__overlay.html#a2446b9c0f3c7741a1a7f1aad4bd7c174", null ],
-    [ "fbc", "classcgv_1_1app_1_1canvas__overlay.html#a872a9be0f9f04d62d35bc43a9a8e4969", null ],
     [ "overlay_canvas", "classcgv_1_1app_1_1canvas__overlay.html#a9d8bca886cff42f9dfc2610a966c9327", null ]
 ];
