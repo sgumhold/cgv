@@ -11,7 +11,7 @@
 namespace cgv {
 namespace app {
 
-class CGV_API canvas_overlay : public overlay {//};, public cgv::gui::theme_observer {
+class CGV_API canvas_overlay : public overlay {
 private:
 	bool has_damage_ = true;
 	bool recreate_layout_requested_ = true;
