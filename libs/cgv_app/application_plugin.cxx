@@ -28,8 +28,8 @@ bool application_plugin_base::handle(cgv::gui::event& e)
 		if(ma == cgv::gui::MA_PRESS || ma == cgv::gui::MA_MOVE || ma == cgv::gui::MA_WHEEL) {
 			ivec2 mpos(me.get_x(), me.get_y());
 
-			// Test all visible overlays in reverse registration order if they are hit by the current
-			// mouse pointer position. Store the first hit overlay as the active blocking overlay.
+			// Test for all visible overlays in reverse registration order if they are hit by the current
+			// mouse pointer position and store the first hit overlay as the active blocking overlay.
 			blocking_overlay_ptr = nullptr;
 			for(auto it = overlays.rbegin(); it != overlays.rend(); ++it) {
 				overlay_ptr op = (*it);
