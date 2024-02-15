@@ -248,51 +248,54 @@ $(document).ready(function(){initNavTree('generic__render__data_8h_source.html',
 <div class="line"><a name="l00163"></a><span class="lineno">  163</span>&#160;}</div>
 <div class="line"><a name="l00164"></a><span class="lineno">  164</span>&#160;}</div>
 <div class="line"><a name="l00165"></a><span class="lineno">  165</span>&#160; </div>
-<div class="line"><a name="l00229"></a><span class="lineno">  229</span>&#160;<span class="preprocessor">#define DEFINE_GENERIC_RENDER_DATA_CLASS(name, attrib_count, ...)\</span></div>
-<div class="line"><a name="l00230"></a><span class="lineno">  230</span>&#160;<span class="preprocessor">class name : public cgv::render::generic_render_data {\</span></div>
-<div class="line"><a name="l00231"></a><span class="lineno">  231</span>&#160;<span class="preprocessor">protected:\</span></div>
-<div class="line"><a name="l00232"></a><span class="lineno">  232</span>&#160;<span class="preprocessor">    bool transfer(cgv::render::context&amp; ctx, cgv::render::shader_program&amp; prog) {\</span></div>
-<div class="line"><a name="l00233"></a><span class="lineno">  233</span>&#160;<span class="preprocessor">        state_out_of_date = false;\</span></div>
-<div class="line"><a name="l00234"></a><span class="lineno">  234</span>&#160;<span class="preprocessor">        if(render_count() &gt; 0) {\</span></div>
-<div class="line"><a name="l00235"></a><span class="lineno">  235</span>&#160;<span class="preprocessor">            bool success = true;\</span></div>
-<div class="line"><a name="l00236"></a><span class="lineno">  236</span>&#160;<span class="preprocessor">            GRD_APPLY_FUNC_N(attrib_count, GRD_SET_ATTRIB_ARRAY, GRD_SEP_NULL, __VA_ARGS__)\</span></div>
-<div class="line"><a name="l00237"></a><span class="lineno">  237</span>&#160;<span class="preprocessor">            if(idx.size() &gt; 0) set_indices(ctx); \</span></div>
-<div class="line"><a name="l00238"></a><span class="lineno">  238</span>&#160;<span class="preprocessor">            else remove_indices(ctx); \</span></div>
-<div class="line"><a name="l00239"></a><span class="lineno">  239</span>&#160;<span class="preprocessor">            return success; \</span></div>
-<div class="line"><a name="l00240"></a><span class="lineno">  240</span>&#160;<span class="preprocessor">        } else {\</span></div>
-<div class="line"><a name="l00241"></a><span class="lineno">  241</span>&#160;<span class="preprocessor">            clear_attribute_arrays(ctx);\</span></div>
-<div class="line"><a name="l00242"></a><span class="lineno">  242</span>&#160;<span class="preprocessor">            return false;\</span></div>
-<div class="line"><a name="l00243"></a><span class="lineno">  243</span>&#160;<span class="preprocessor">        }\</span></div>
-<div class="line"><a name="l00244"></a><span class="lineno">  244</span>&#160;<span class="preprocessor">    }\</span></div>
-<div class="line"><a name="l00245"></a><span class="lineno">  245</span>&#160;<span class="preprocessor">public:\</span></div>
-<div class="line"><a name="l00246"></a><span class="lineno">  246</span>&#160;<span class="preprocessor">    GRD_APPLY_FUNC_N(attrib_count, GRD_DECL_VEC_MEMBER, GRD_SEP_NULL, __VA_ARGS__)\</span></div>
-<div class="line"><a name="l00247"></a><span class="lineno">  247</span>&#160;<span class="preprocessor">    GRD_APPLY_FUNC_N(attrib_count, GRD_DECL_VEC_MEMBER_CONST_REF, GRD_SEP_NULL, __VA_ARGS__)\</span></div>
-<div class="line"><a name="l00248"></a><span class="lineno">  248</span>&#160;<span class="preprocessor">    size_t render_count() const {\</span></div>
-<div class="line"><a name="l00249"></a><span class="lineno">  249</span>&#160;<span class="preprocessor">        if(idx.empty()) return GRD_GET_FIRST_PAIR(GRD_CALL_SIZE_FUNC, __VA_ARGS__)\</span></div>
-<div class="line"><a name="l00250"></a><span class="lineno">  250</span>&#160;<span class="preprocessor">        else return idx.size();\</span></div>
-<div class="line"><a name="l00251"></a><span class="lineno">  251</span>&#160;<span class="preprocessor">    }\</span></div>
-<div class="line"><a name="l00252"></a><span class="lineno">  252</span>&#160;<span class="preprocessor">    void clear() {\</span></div>
-<div class="line"><a name="l00253"></a><span class="lineno">  253</span>&#160;<span class="preprocessor">        idx.clear();\</span></div>
-<div class="line"><a name="l00254"></a><span class="lineno">  254</span>&#160;<span class="preprocessor">        GRD_APPLY_FUNC_N(attrib_count, GRD_CALL_CLEAR_FUNC, GRD_SEP_NULL, __VA_ARGS__)\</span></div>
-<div class="line"><a name="l00255"></a><span class="lineno">  255</span>&#160;<span class="preprocessor">        state_out_of_date = true;\</span></div>
-<div class="line"><a name="l00256"></a><span class="lineno">  256</span>&#160;<span class="preprocessor">    }\</span></div>
-<div class="line"><a name="l00257"></a><span class="lineno">  257</span>&#160;<span class="preprocessor">    void add(GRD_APPLY_FUNC_N(attrib_count, GRD_DEF_CONST_REF_PARAM, GRD_SEP_COMMA, __VA_ARGS__)) {\</span></div>
-<div class="line"><a name="l00258"></a><span class="lineno">  258</span>&#160;<span class="preprocessor">        GRD_APPLY_FUNC_N(attrib_count, GRD_CALL_PUSH_BACK_FUNC, GRD_SEP_NULL, __VA_ARGS__)\</span></div>
-<div class="line"><a name="l00259"></a><span class="lineno">  259</span>&#160;<span class="preprocessor">    }\</span></div>
-<div class="line"><a name="l00260"></a><span class="lineno">  260</span>&#160;<span class="preprocessor">};</span></div>
-<div class="line"><a name="l00261"></a><span class="lineno">  261</span>&#160; </div>
-<div class="line"><a name="l00262"></a><span class="lineno">  262</span>&#160;<span class="comment">/* Define some presets */</span></div>
-<div class="line"><a name="l00263"></a><span class="lineno">  263</span>&#160;<span class="keyword">namespace </span><a class="code" href="namespacecgv.html">cgv</a> {</div>
-<div class="line"><a name="l00264"></a><span class="lineno">  264</span>&#160;<span class="keyword">namespace </span>render {</div>
-<div class="line"><a name="l00265"></a><span class="lineno">  265</span>&#160; </div>
-<div class="line"><a name="l00268"></a><span class="lineno"><a class="line" href="namespacecgv_1_1render.html#ac1c6026d5e38a153edd00586bc413984">  268</a></span>&#160;<a class="code" href="namespacecgv_1_1render.html#ac1c6026d5e38a153edd00586bc413984">DEFINE_GENERIC_RENDER_DATA_CLASS</a>(generic_render_data_vec3, 1, <a class="code" href="classcgv_1_1math_1_1fvec.html">vec3</a>, position);</div>
-<div class="line"><a name="l00269"></a><span class="lineno">  269</span>&#160; </div>
-<div class="line"><a name="l00273"></a><span class="lineno"><a class="line" href="namespacecgv_1_1render.html#ac6e3efd4c7be58e391c1eb7e6086859e">  273</a></span>&#160;<a class="code" href="namespacecgv_1_1render.html#ac1c6026d5e38a153edd00586bc413984">DEFINE_GENERIC_RENDER_DATA_CLASS</a>(generic_render_data_vec3_rgb, 2, <a class="code" href="classcgv_1_1math_1_1fvec.html">vec3</a>, position, <a class="code" href="classcgv_1_1media_1_1color.html">rgb</a>, color);</div>
-<div class="line"><a name="l00274"></a><span class="lineno">  274</span>&#160; </div>
-<div class="line"><a name="l00278"></a><span class="lineno"><a class="line" href="namespacecgv_1_1render.html#a4c0b89ba163673b126f8da598b9b9143">  278</a></span>&#160;<a class="code" href="namespacecgv_1_1render.html#ac1c6026d5e38a153edd00586bc413984">DEFINE_GENERIC_RENDER_DATA_CLASS</a>(generic_render_data_vec3_rgba, 2, <a class="code" href="classcgv_1_1math_1_1fvec.html">vec3</a>, position, <a class="code" href="classcgv_1_1media_1_1color.html">rgba</a>, color);</div>
-<div class="line"><a name="l00279"></a><span class="lineno">  279</span>&#160; </div>
-<div class="line"><a name="l00280"></a><span class="lineno">  280</span>&#160;} <span class="comment">// namespace cgv</span></div>
-<div class="line"><a name="l00281"></a><span class="lineno">  281</span>&#160;} <span class="comment">// namespace g2d</span></div>
+<div class="line"><a name="l00233"></a><span class="lineno">  233</span>&#160;<span class="preprocessor">#define DEFINE_GENERIC_RENDER_DATA_CLASS(name, attrib_count, ...)\</span></div>
+<div class="line"><a name="l00234"></a><span class="lineno">  234</span>&#160;<span class="preprocessor">class name : public cgv::render::generic_render_data {\</span></div>
+<div class="line"><a name="l00235"></a><span class="lineno">  235</span>&#160;<span class="preprocessor">protected:\</span></div>
+<div class="line"><a name="l00236"></a><span class="lineno">  236</span>&#160;<span class="preprocessor">    bool transfer(cgv::render::context&amp; ctx, cgv::render::shader_program&amp; prog) {\</span></div>
+<div class="line"><a name="l00237"></a><span class="lineno">  237</span>&#160;<span class="preprocessor">        state_out_of_date = false;\</span></div>
+<div class="line"><a name="l00238"></a><span class="lineno">  238</span>&#160;<span class="preprocessor">        if(render_count() &gt; 0) {\</span></div>
+<div class="line"><a name="l00239"></a><span class="lineno">  239</span>&#160;<span class="preprocessor">            bool success = true;\</span></div>
+<div class="line"><a name="l00240"></a><span class="lineno">  240</span>&#160;<span class="preprocessor">            GRD_APPLY_FUNC_N(attrib_count, GRD_SET_ATTRIB_ARRAY, GRD_SEP_NULL, __VA_ARGS__)\</span></div>
+<div class="line"><a name="l00241"></a><span class="lineno">  241</span>&#160;<span class="preprocessor">            if(idx.size() &gt; 0) set_indices(ctx); \</span></div>
+<div class="line"><a name="l00242"></a><span class="lineno">  242</span>&#160;<span class="preprocessor">            else remove_indices(ctx); \</span></div>
+<div class="line"><a name="l00243"></a><span class="lineno">  243</span>&#160;<span class="preprocessor">            return success; \</span></div>
+<div class="line"><a name="l00244"></a><span class="lineno">  244</span>&#160;<span class="preprocessor">        } else {\</span></div>
+<div class="line"><a name="l00245"></a><span class="lineno">  245</span>&#160;<span class="preprocessor">            clear_attribute_arrays(ctx);\</span></div>
+<div class="line"><a name="l00246"></a><span class="lineno">  246</span>&#160;<span class="preprocessor">            return false;\</span></div>
+<div class="line"><a name="l00247"></a><span class="lineno">  247</span>&#160;<span class="preprocessor">        }\</span></div>
+<div class="line"><a name="l00248"></a><span class="lineno">  248</span>&#160;<span class="preprocessor">    }\</span></div>
+<div class="line"><a name="l00249"></a><span class="lineno">  249</span>&#160;<span class="preprocessor">public:\</span></div>
+<div class="line"><a name="l00250"></a><span class="lineno">  250</span>&#160;<span class="preprocessor">    GRD_APPLY_FUNC_N(attrib_count, GRD_DECL_VEC_MEMBER, GRD_SEP_NULL, __VA_ARGS__)\</span></div>
+<div class="line"><a name="l00251"></a><span class="lineno">  251</span>&#160;<span class="preprocessor">    GRD_APPLY_FUNC_N(attrib_count, GRD_DECL_VEC_MEMBER_CONST_REF, GRD_SEP_NULL, __VA_ARGS__)\</span></div>
+<div class="line"><a name="l00252"></a><span class="lineno">  252</span>&#160;<span class="preprocessor">    size_t render_count() const {\</span></div>
+<div class="line"><a name="l00253"></a><span class="lineno">  253</span>&#160;<span class="preprocessor">        if(idx.empty()) return GRD_GET_FIRST_PAIR(GRD_CALL_SIZE_FUNC, __VA_ARGS__)\</span></div>
+<div class="line"><a name="l00254"></a><span class="lineno">  254</span>&#160;<span class="preprocessor">        else return idx.size();\</span></div>
+<div class="line"><a name="l00255"></a><span class="lineno">  255</span>&#160;<span class="preprocessor">    }\</span></div>
+<div class="line"><a name="l00256"></a><span class="lineno">  256</span>&#160;<span class="preprocessor">    bool empty() const {\</span></div>
+<div class="line"><a name="l00257"></a><span class="lineno">  257</span>&#160;<span class="preprocessor">        return render_count() == 0;\</span></div>
+<div class="line"><a name="l00258"></a><span class="lineno">  258</span>&#160;<span class="preprocessor">    }\</span></div>
+<div class="line"><a name="l00259"></a><span class="lineno">  259</span>&#160;<span class="preprocessor">    void clear() {\</span></div>
+<div class="line"><a name="l00260"></a><span class="lineno">  260</span>&#160;<span class="preprocessor">        idx.clear();\</span></div>
+<div class="line"><a name="l00261"></a><span class="lineno">  261</span>&#160;<span class="preprocessor">        GRD_APPLY_FUNC_N(attrib_count, GRD_CALL_CLEAR_FUNC, GRD_SEP_NULL, __VA_ARGS__)\</span></div>
+<div class="line"><a name="l00262"></a><span class="lineno">  262</span>&#160;<span class="preprocessor">        state_out_of_date = true;\</span></div>
+<div class="line"><a name="l00263"></a><span class="lineno">  263</span>&#160;<span class="preprocessor">    }\</span></div>
+<div class="line"><a name="l00264"></a><span class="lineno">  264</span>&#160;<span class="preprocessor">    void add(GRD_APPLY_FUNC_N(attrib_count, GRD_DEF_CONST_REF_PARAM, GRD_SEP_COMMA, __VA_ARGS__)) {\</span></div>
+<div class="line"><a name="l00265"></a><span class="lineno">  265</span>&#160;<span class="preprocessor">        GRD_APPLY_FUNC_N(attrib_count, GRD_CALL_PUSH_BACK_FUNC, GRD_SEP_NULL, __VA_ARGS__)\</span></div>
+<div class="line"><a name="l00266"></a><span class="lineno">  266</span>&#160;<span class="preprocessor">    }\</span></div>
+<div class="line"><a name="l00267"></a><span class="lineno">  267</span>&#160;<span class="preprocessor">};</span></div>
+<div class="line"><a name="l00268"></a><span class="lineno">  268</span>&#160; </div>
+<div class="line"><a name="l00269"></a><span class="lineno">  269</span>&#160;<span class="comment">/* Define some presets */</span></div>
+<div class="line"><a name="l00270"></a><span class="lineno">  270</span>&#160;<span class="keyword">namespace </span><a class="code" href="namespacecgv.html">cgv</a> {</div>
+<div class="line"><a name="l00271"></a><span class="lineno">  271</span>&#160;<span class="keyword">namespace </span>render {</div>
+<div class="line"><a name="l00272"></a><span class="lineno">  272</span>&#160; </div>
+<div class="line"><a name="l00275"></a><span class="lineno"><a class="line" href="namespacecgv_1_1render.html#ac1c6026d5e38a153edd00586bc413984">  275</a></span>&#160;<a class="code" href="namespacecgv_1_1render.html#ac1c6026d5e38a153edd00586bc413984">DEFINE_GENERIC_RENDER_DATA_CLASS</a>(generic_render_data_vec3, 1, <a class="code" href="classcgv_1_1math_1_1fvec.html">vec3</a>, position);</div>
+<div class="line"><a name="l00276"></a><span class="lineno">  276</span>&#160; </div>
+<div class="line"><a name="l00280"></a><span class="lineno"><a class="line" href="namespacecgv_1_1render.html#ac6e3efd4c7be58e391c1eb7e6086859e">  280</a></span>&#160;<a class="code" href="namespacecgv_1_1render.html#ac1c6026d5e38a153edd00586bc413984">DEFINE_GENERIC_RENDER_DATA_CLASS</a>(generic_render_data_vec3_rgb, 2, <a class="code" href="classcgv_1_1math_1_1fvec.html">vec3</a>, position, <a class="code" href="classcgv_1_1media_1_1color.html">rgb</a>, color);</div>
+<div class="line"><a name="l00281"></a><span class="lineno">  281</span>&#160; </div>
+<div class="line"><a name="l00285"></a><span class="lineno"><a class="line" href="namespacecgv_1_1render.html#a4c0b89ba163673b126f8da598b9b9143">  285</a></span>&#160;<a class="code" href="namespacecgv_1_1render.html#ac1c6026d5e38a153edd00586bc413984">DEFINE_GENERIC_RENDER_DATA_CLASS</a>(generic_render_data_vec3_rgba, 2, <a class="code" href="classcgv_1_1math_1_1fvec.html">vec3</a>, position, <a class="code" href="classcgv_1_1media_1_1color.html">rgba</a>, color);</div>
+<div class="line"><a name="l00286"></a><span class="lineno">  286</span>&#160; </div>
+<div class="line"><a name="l00287"></a><span class="lineno">  287</span>&#160;} <span class="comment">// namespace cgv</span></div>
+<div class="line"><a name="l00288"></a><span class="lineno">  288</span>&#160;} <span class="comment">// namespace g2d</span></div>
 <div class="ttc" id="aclasscgv_1_1math_1_1fvec_html"><div class="ttname"><a href="classcgv_1_1math_1_1fvec.html">cgv::math::fvec&lt; float, 3 &gt;</a></div></div>
 <div class="ttc" id="aclasscgv_1_1media_1_1color_html"><div class="ttname"><a href="classcgv_1_1media_1_1color.html">cgv::media::color&lt; float, cgv::media::RGB &gt;</a></div></div>
 <div class="ttc" id="aclasscgv_1_1render_1_1attribute__array__manager_html"><div class="ttname"><a href="classcgv_1_1render_1_1attribute__array__manager.html">cgv::render::attribute_array_manager</a></div><div class="ttdoc">attribute array manager used to upload arrays to gpu</div><div class="ttdef"><b>Definition:</b> <a href="attribute__array__manager_8h_source.html#l00014">attribute_array_manager.h:14</a></div></div>
