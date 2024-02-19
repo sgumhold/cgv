@@ -20,7 +20,7 @@ protected:
 
 	void begin_content(cgv::render::context& ctx, bool clear_frame_buffer = true);
 	
-	virtual void init_styles() {}
+	virtual void init_styles() override {}
 
 	void init_container_style(const cgv::gui::theme_info& theme);
 
