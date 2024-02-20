@@ -1225,6 +1225,11 @@ void stereo_view_interactor::on_stereo_change()
 /// set the current projection matrix
 void stereo_view_interactor::gl_set_projection_matrix(cgv::render::context& ctx, GlsuEye e, double aspect)
 {
+	if (swap_eyes)
+		e = GlsuEye(int(-e));
+	bool flip_vert = ((e == GLSU_LEFT) ? flip_x[0] : ((e == GLSU_RIGHT) ? flip_x[1] : false));
+	bool flip_hori = ((e == GLSU_LEFT) ? flip_y[0] : ((e == GLSU_RIGHT) ? flip_y[1] : false));
+
 	if (adapt_aspect_ratio_to_stereo_mode) {
 		if (stereo_mode == GLSU_SPLIT_HORIZONTALLY)
 			aspect *= 0.5;
@@ -1240,11 +1245,22 @@ void stereo_view_interactor::gl_set_projection_matrix(cgv::render::context& ctx,
 		else
 			P = cgv::math::stereo_perspective_screen4<double>(e, eye_distance, y_extent_at_focus * aspect, y_extent_at_focus, get_parallax_zero_depth(), z_near_derived, z_far_derived);
 	}
+	if (flip_vert || flip_hori) {
+		dmat4 F;
+		F.identity();
+		if (flip_vert)
+			F(0, 0) = -1;
+		if (flip_hori)
+			F(1, 1) = -1;
+		P = F*P;
+	}
 	ctx.set_projection_matrix(P);
 }
 
 void stereo_view_interactor::gl_set_modelview_matrix(cgv::render::context& ctx, GlsuEye e, double aspect, const cgv::render::view& view)
 {
+	if (swap_eyes)
+		e = GlsuEye(int(-e));
 	if (adapt_aspect_ratio_to_stereo_mode) {
 		if (stereo_mode == GLSU_SPLIT_HORIZONTALLY)
 			aspect *= 0.5;
@@ -1510,6 +1526,11 @@ void stereo_view_interactor::create_gui()
 		add_member_control(this, "Mono Mode", mono_mode, "dropdown", "enums='left=-1,center,right'");
 		add_member_control(this, "Stereo Mode", stereo_mode, "dropdown", "enums='vsplit,hsplit,anaglyph,quad_buffer'");
 		add_member_control(this, "Adapt Aspect Ratio", adapt_aspect_ratio_to_stereo_mode, "check");
+		add_member_control(this, "Swap Eyes", swap_eyes, "toggle");
+		add_member_control(this, "XflipLeft", flip_x[0], "toggle", "w=96", " ");
+		add_member_control(this, "XflipRight", flip_x[1], "toggle", "w=96");
+		add_member_control(this, "YflipLeft", flip_y[0], "toggle", "w=96", " ");
+		add_member_control(this, "YflipRight", flip_y[1], "toggle", "w=96");
 		add_member_control(this, "Anaglyph Config", anaglyph_config, "dropdown", "enums='" AC_ENUMS "'");
 		add_member_control(this, "Eye Distance", eye_distance, "value_slider", "min=0.001;max=0.5;ticks=true;step=0.00001;log=true");
 		add_member_control(this, "Parallax Zero Scale", parallax_zero_scale, "value_slider", "min=0.03;max=1;ticks=true;step=0.001;log=true");
@@ -1697,6 +1718,11 @@ bool stereo_view_interactor::self_reflect(cgv::reflect::reflection_handler& srh)
 		srh.reflect_member("up_dir_y", view_up_dir(1)) &&
 		srh.reflect_member("up_dir_z", view_up_dir(2)) &&
 		srh.reflect_member("up_dir", view_up_dir) &&
+		srh.reflect_member("swap_eyes", swap_eyes) &&
+		srh.reflect_member("flip_x_left", flip_x[0]) &&
+		srh.reflect_member("flip_x_right", flip_x[1]) &&
+		srh.reflect_member("flip_y_left", flip_y[0]) &&
+		srh.reflect_member("flip_y_right", flip_y[1]) &&
 		srh.reflect_member("y_view_angle", y_view_angle) &&
 		srh.reflect_member("extent", y_extent_at_focus) &&
 		srh.reflect_member("z_near", z_near) &&

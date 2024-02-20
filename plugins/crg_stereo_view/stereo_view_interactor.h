@@ -47,6 +47,9 @@ protected:
 	bool two_d_enabled;
 	bool fix_view_up_dir;
 	bool adapt_aspect_ratio_to_stereo_mode;
+	bool flip_x[2] = { false, false };
+	bool flip_y[2] = { false, false };
+	bool swap_eyes = false;
 public:
 	void set_default_values();
 	GlsuStereoMode get_stereo_mode() const { return stereo_mode; }
