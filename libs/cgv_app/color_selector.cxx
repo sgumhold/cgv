@@ -13,12 +13,11 @@ color_selector::color_selector() {
 	block_events = true;
 	blend_overlay = true;
 
-	layout.padding = 13; // 10px plus 3px border
+	layout.padding = padding();
 
-	set_overlay_alignment(AO_END, AO_END);
-	set_overlay_stretch(SO_NONE);
-	set_overlay_margin(ivec2(-3));
-	set_overlay_size(ivec2(layout.size));
+	set_alignment(AO_END, AO_END);
+	set_stretch(SO_NONE);
+	set_size(ivec2(layout.size));
 	
 	selector_handles.set_drag_callback(std::bind(&color_selector::handle_selector_drag, this));
 	selector_handles.set_use_individual_constraints(true);
@@ -40,9 +39,6 @@ bool color_selector::handle_event(cgv::gui::event& e) {
 	// return true if the event gets handled and stopped here or false if you want to pass it to the next plugin
 	unsigned et = e.get_kind();
 	unsigned char modifiers = e.get_modifiers();
-
-	if (!show)
-		return false;
 
 	if (et == cgv::gui::EID_MOUSE) {
 		cgv::gui::mouse_event& me = (cgv::gui::mouse_event&)e;
@@ -88,7 +84,7 @@ bool color_selector::handle_event(cgv::gui::event& e) {
 			}
 		}
 
-		if(selector_handles.handle(e, get_viewport_size(), get_overlay_rectangle()))
+		if(selector_handles.handle(e, get_viewport_size(), get_rectangle()))
 			return true;
 	}
 	return false;
@@ -103,7 +99,7 @@ void color_selector::handle_member_change(const cgv::utils::pointer_test & m) {
 		set_rgba_color(rgba_color);
 
 	if(m.is(layout.size))
-		set_overlay_size(ivec2(layout.size));
+		set_size(ivec2(layout.size));
 }
 
 bool color_selector::init(cgv::render::context& ctx) {
@@ -162,8 +158,7 @@ bool color_selector::init(cgv::render::context& ctx) {
 void color_selector::init_frame(cgv::render::context& ctx) {
 
 	if(ensure_layout(ctx)) {
-		ivec2 container_size = get_overlay_size();
-		update_layout(container_size);
+		update_layout(get_rectangle().size);
 
 		for(size_t i = 0; i < 3; ++i)
 			selector_handles[i].update_pos();
@@ -184,17 +179,13 @@ void color_selector::draw_content(cgv::render::context& ctx) {
 	
 	begin_content(ctx);
 	
-	// draw container
-	content_canvas.enable_shader(ctx, "rectangle");
-	content_canvas.set_style(ctx, container_style);
-	content_canvas.draw_shape(ctx, ivec2(0), get_overlay_size());
-
 	// draw inner border
+	content_canvas.enable_shader(ctx, "rectangle");
 	content_canvas.set_style(ctx, border_style);
 
-	auto& ti = cgv::gui::theme_info::instance();
-	rgba border_color = rgba(ti.border(), 1.0f);
-	rgba text_background_color = rgba(ti.text_background(), 1.0f);
+	auto& theme = cgv::gui::theme_info::instance();
+	rgba border_color = rgba(theme.border(), 1.0f);
+	rgba text_background_color = rgba(theme.text_background(), 1.0f);
 	content_canvas.draw_shape(ctx, layout.border_rect, border_color);
 	content_canvas.draw_shape(ctx, layout.preview_rect, rgb_color);
 
@@ -323,19 +314,12 @@ void color_selector::update_layout(const ivec2& parent_size) {
 }
 
 void color_selector::init_styles() {
-	// get theme colors
-	auto& ti = cgv::gui::theme_info::instance();
-	
-	// configure style for the container rectangle
-	container_style.fill_color = ti.group();
-	container_style.border_color = ti.background();
-	container_style.border_width = 3.0f;
-	container_style.feather_width = 0.0f;
+	auto& theme = cgv::gui::theme_info::instance();
 	
 	// configure style for the border rectangles
-	border_style = container_style;
 	border_style.border_width = 0.0f;
 	border_style.use_fill_color = false;
+	border_style.feather_width = 0.0f;
 
 	opacity_bg_style.feather_width = 0.0f;
 	opacity_bg_style.fill_color = rgba(rgb(0.75f), 1.0f);
@@ -368,7 +352,7 @@ void color_selector::init_styles() {
 	hue_handle_style.position_is_center = false;
 	
 	// configure text style
-	text_style = cgv::g2d::text2d_style::preset_default(ti.text());
+	text_style = cgv::g2d::text2d_style::preset_default(theme.text());
 	text_style.font_size = 14.0f;
 }
 

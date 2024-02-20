@@ -3,7 +3,7 @@ projectName="cgv_g2d";
 projectType="library";
 projectGUID="6B14C8CE-A251-4B42-8ADB-D28D843BDE51";
 addSharedDefines=["CGV_G2D_EXPORTS"];
-addProjectDirs=[CGV_DIR."/libs"];
+addProjectDirs=[CGV_DIR."/libs", CGV_DIR."/plugins"];
 addProjectDeps=[
 	"cgv_utils","cgv_type","cgv_reflect", "cgv_data","cgv_base",
 	"cgv_media", "cgv_os", "cgv_gui", "cgv_render", "cgv_gl", "cg_msdf"];

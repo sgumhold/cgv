@@ -13,7 +13,6 @@ navigator::navigator() {
 	
 	set_name("Navigator");
 	gui_options.allow_stretch = false;
-	block_events = false;
 
 	view_ptr = nullptr;
 	navigator_eye_pos = vec3(0.0f, 0.0f, 2.5f);
@@ -22,10 +21,10 @@ navigator::navigator() {
 
 	layout_size = 150;
 
-	set_overlay_alignment(AO_END, AO_END);
-	set_overlay_stretch(SO_NONE);
-	set_overlay_margin(ivec2(0));
-	set_overlay_size(ivec2(layout_size));
+	set_alignment(AO_END, AO_END);
+	set_stretch(SO_NONE);
+	set_margin(ivec2(0));
+	overlay::set_size(ivec2(layout_size));
 	
 	show_box = true;
 	show_wireframe = true;
@@ -43,7 +42,7 @@ navigator::navigator() {
 	box_data.style.surface_opacity = 0.35f;
 
 	box_wire_data.style.default_color = rgb(0.75f);
-
+	
 	sphere_data.style.illumination_mode = cgv::render::IM_OFF;
 	sphere_data.style.radius = 0.04f;
 	sphere_data.style.surface_color = rgb(0.5f);
@@ -87,9 +86,6 @@ bool navigator::handle_event(cgv::gui::event& e) {
 	unsigned et = e.get_kind();
 	unsigned char modifiers = e.get_modifiers();
 
-	if(!show)
-		return false;
-
 	if(et == cgv::gui::EID_MOUSE) {
 		cgv::gui::mouse_event& me = (cgv::gui::mouse_event&) e;
 		cgv::gui::MouseAction ma = me.get_action();
@@ -106,7 +102,7 @@ bool navigator::handle_event(cgv::gui::event& e) {
 				ivec2 mpos(static_cast<int>(me.get_x()), static_cast<int>(me.get_y()));
 
 				mpos = get_local_mouse_pos(mpos);
-				vec2 window_coord = vec2(mpos) * vec2(2.0f) / get_overlay_size() - vec2(1.0f);
+				vec2 window_coord = vec2(mpos) * vec2(2.0f) / get_rectangle().size - vec2(1.0f);
 
 				vec3 origin = vec3(window_coord, navigator_eye_pos.z());
 				vec3 direction = vec3(0.0f, 0.0f, -1.0f);
@@ -195,7 +191,7 @@ void navigator::on_set(void* member_ptr) {
 
 	if(member_ptr == &layout_size) {
 		layout_size = cgv::math::clamp(layout_size, 10, 2000);
-		set_overlay_size(ivec2(layout_size));
+		overlay::set_size(ivec2(layout_size));
 	}
 
 	update_member(member_ptr);
@@ -212,7 +208,7 @@ bool navigator::init(cgv::render::context& ctx) {
 
 	fbc.add_attachment("depth", "[D]");
 	fbc.add_attachment("color", "flt32[R,G,B,A]", cgv::render::TF_LINEAR);
-	fbc.set_size(2 * get_overlay_size());
+	fbc.set_size(2 * get_rectangle().size);
 	
 	bool success = true;
 
@@ -232,7 +228,7 @@ bool navigator::init(cgv::render::context& ctx) {
 	if(success) {
 		box_data.add_position(vec3(0.0f));
 		box_wire_data.add_position(vec3(0.0f));
-
+		
 		sphere_data.add_position(vec3(0.0f));
 
 		const float length = 0.5f;
@@ -262,10 +258,8 @@ void navigator::init_frame(cgv::render::context& ctx) {
 	if(!view_ptr)
 		view_ptr = find_view_as_node();
 
-	if(ensure_overlay_layout(ctx)) {
-		ivec2 container_size = get_overlay_size();
-		
-		fbc.set_size(2*container_size);
+	if(ensure_layout(ctx)) {
+		fbc.set_size(2 * get_rectangle().size);
 		fbc.ensure(ctx);
 
 		blit_canvas.set_resolution(ctx, get_viewport_size());
@@ -273,9 +267,6 @@ void navigator::init_frame(cgv::render::context& ctx) {
 }
 
 void navigator::finish_draw(cgv::render::context& ctx) {
-
-	if(!show)
-		return;
 
 	fbc.enable(ctx);
 
@@ -340,7 +331,7 @@ void navigator::finish_draw(cgv::render::context& ctx) {
 	auto& blit_prog = blit_canvas.enable_shader(ctx, "rectangle");
 
 	fbc.enable_attachment(ctx, "color", 0);
-	blit_canvas.draw_shape(ctx, get_overlay_position(), get_overlay_size());
+	blit_canvas.draw_shape(ctx, get_rectangle());
 	fbc.disable_attachment(ctx, "color");
 
 	blit_canvas.disable_current_shader(ctx);
@@ -382,7 +373,7 @@ mat4 navigator::get_view_matrix(cgv::render::context& ctx) {
 
 mat4 navigator::get_projection_matrix() {
 
-	vec2 size = static_cast<vec2>(get_overlay_size());
+	vec2 size = static_cast<vec2>(get_rectangle().size);
 	float aspect = size.x() / size.y();
 	
 	if(use_perspective)

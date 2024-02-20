@@ -243,7 +243,6 @@ extern "C" bool fltk_theme() {
 	  Widget::default_style->box_ = BORDER_BOX;
 	  Widget::default_style->buttonbox_ = FLAT_BOX;
 	  
-
 	  TabGroup::flat_tabs(true);
 
 	  if((style = Style::find("Window"))) {

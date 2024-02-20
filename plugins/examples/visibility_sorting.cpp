@@ -4,6 +4,7 @@
 #include <cgv/gui/provider.h>
 #include <cgv/render/drawable.h>
 #include <cgv_gl/sphere_render_data.h>
+#include <cgv_gl/gl/gl_time_query.h>
 #include <cgv_gpgpu/visibility_sort.h>
 
 class visibility_sorting : public cgv::base::node, public cgv::render::drawable, public cgv::gui::provider {
@@ -17,6 +18,7 @@ protected:
 
 	cgv::gpgpu::visibility_sort visibility_sorter;
 	bool do_sort;
+	cgv::render::gl::gl_time_query time_query;
 
 public:
 	visibility_sorting() : cgv::base::node("Visibility Sorting Test")
@@ -43,6 +45,8 @@ public:
 		spheres.destruct(ctx);
 
 		visibility_sorter.destruct(ctx);
+
+		time_query.destruct(ctx);
 	}
 	bool init(cgv::render::context& ctx)
 	{
@@ -55,6 +59,8 @@ public:
 		create_data();
 
 		view_ptr = find_view_as_node();
+
+		time_query.init(ctx);
 
 		return true;
 	}
@@ -81,10 +87,10 @@ public:
 		
 		if(visibility_sorter.is_initialized()) {
 			if(position_buffer_ptr && index_buffer_ptr && do_sort) {
-				visibility_sorter.begin_time_query();
+				time_query.begin();
 				visibility_sorter.execute(ctx, *position_buffer_ptr, *index_buffer_ptr, view_ptr->get_eye(), view_ptr->get_view_dir());
-				float time = visibility_sorter.end_time_query();
-				std::cout << "Sorting done in " << time << " ms -> " << static_cast<float>(n) / (1000.0f * time) << " M/s" << std::endl;
+				double time = time_query.end();
+				std::cout << "Sorting done in " << (time / 1'000'000.0f) << " ms -> " << static_cast<float>(n) / (time / 1000.0f) << " M/s" << std::endl;
 			}
 		} else {
 			std::cout << "Warning: GPU visibility sort is not initialized." << std::endl;

@@ -58,8 +58,8 @@ namespace stream_vis {
 	}
 	bool view3d_overlay::handle_mouse_event(const cgv::gui::mouse_event& me)
 	{
-		cgv::ivec2 os = get_overlay_size();
-		cgv::ivec2 cr = get_overlay_position() + os / 2;
+		cgv::ivec2 os = get_rectangle().size;
+		cgv::ivec2 cr = get_rectangle().position + os / 2;
 		int x_gl = me.get_x();
 		int y_gl = get_context()->get_height() - 1 - me.get_y();
 		cgv::dvec3 x, y, z;
@@ -195,7 +195,7 @@ namespace stream_vis {
 			length(current_view.get_view_up_dir() - last_view.get_view_up_dir()) > 0.00001f ||
 			std::abs(current_view.get_y_extent_at_focus() - last_view.get_y_extent_at_focus()) > 0.00001f ||
 			std::abs(current_view.get_y_view_angle() - last_view.get_y_view_angle()) > 0.00001f ||
-			ensure_overlay_layout(ctx)) {
+			ensure_layout(ctx)) {
 
 			update_views();
 			last_view = current_view;
@@ -203,8 +203,8 @@ namespace stream_vis {
 	}
 	void view3d_overlay::compute_matrices_and_viewport(cgv::mat4& projection_matrix, cgv::mat4& modelview_matrix, cgv::ivec4& viewport)
 	{
-		(cgv::ivec2&)viewport = get_overlay_position();
-		((cgv::ivec2*)&viewport)[1] = get_overlay_size();
+		(cgv::ivec2&)viewport = get_rectangle().position;
+		((cgv::ivec2*)&viewport)[1] = get_rectangle().size;
 		float aspect = (float)viewport[2] / viewport[3];
 		projection_matrix = cgv::math::perspective4<float>((float)current_view.get_y_view_angle(), aspect, (float)current_view.get_z_near(), (float)current_view.get_z_far());
 		modelview_matrix = cgv::math::look_at4<float>(current_view.get_eye(), current_view.get_focus(), current_view.get_view_up_dir());
