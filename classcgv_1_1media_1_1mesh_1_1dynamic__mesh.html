@@ -91,7 +91,7 @@ $(document).ready(function(){initNavTree('classcgv_1_1media_1_1mesh_1_1dynamic__
 </div><!--header-->
 <div class="contents">
 
-<p>the <a class="el" href="classcgv_1_1media_1_1mesh_1_1simple__mesh.html" title="the simple_mesh class is templated over the coordinate type that defaults to float">simple_mesh</a> class is templated over the coordinate type that defaults to float  
+<p>The <a class="el" href="classcgv_1_1media_1_1mesh_1_1dynamic__mesh.html" title="The dynamic_mesh provides interpolation between several blend shapes of a mesh.">dynamic_mesh</a> provides interpolation between several blend shapes of a mesh.  
  <a href="classcgv_1_1media_1_1mesh_1_1dynamic__mesh.html#details">More...</a></p>
 
 <p><code>#include &lt;<a class="el" href="dynamic__mesh_8h_source.html">dynamic_mesh.h</a>&gt;</code></p>
@@ -111,14 +111,16 @@ Inheritance diagram for cgv::media::mesh::dynamic_mesh&lt; T &gt;:</div>
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="nested-classes"></a>
 Classes</h2></td></tr>
 <tr class="memitem:"><td class="memItemLeft" align="right" valign="top">struct &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structcgv_1_1media_1_1mesh_1_1dynamic__mesh_1_1blend__shape.html">blend_shape</a></td></tr>
+<tr class="memdesc:"><td class="mdescLeft">&#160;</td><td class="mdescRight">Captures where and how the blandshape data is stored.  <a href="structcgv_1_1media_1_1mesh_1_1dynamic__mesh_1_1blend__shape.html#details">More...</a><br /></td></tr>
 <tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="pub-types"></a>
 Public Types</h2></td></tr>
-<tr class="memitem:aaec7b9803f8ce6fba0eabe0be5bbd32c"><td class="memItemLeft" align="right" valign="top"><a id="aaec7b9803f8ce6fba0eabe0be5bbd32c"></a>enum class &#160;</td><td class="memItemRight" valign="bottom"><b>blend_shape_mode</b> { <b>direct</b>
-, <b>indexed</b>
-, <b>range_indexed</b>
+<tr class="memitem:aaec7b9803f8ce6fba0eabe0be5bbd32c"><td class="memItemLeft" align="right" valign="top">enum class &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcgv_1_1media_1_1mesh_1_1dynamic__mesh.html#aaec7b9803f8ce6fba0eabe0be5bbd32c">blend_shape_mode</a> { <a class="el" href="classcgv_1_1media_1_1mesh_1_1dynamic__mesh.html#aaec7b9803f8ce6fba0eabe0be5bbd32ca7caa701b2bd5a182b80c72b9bdf88e2d">direct</a>
+, <a class="el" href="classcgv_1_1media_1_1mesh_1_1dynamic__mesh.html#aaec7b9803f8ce6fba0eabe0be5bbd32ca7efb96e1de8fcda98dee6e2a29a521f0">indexed</a>
+, <a class="el" href="classcgv_1_1media_1_1mesh_1_1dynamic__mesh.html#aaec7b9803f8ce6fba0eabe0be5bbd32ca7a13fbf2bbd66f5f942759a1cde46c2d">range_indexed</a>
  }</td></tr>
+<tr class="memdesc:aaec7b9803f8ce6fba0eabe0be5bbd32c"><td class="mdescLeft">&#160;</td><td class="mdescRight">specifies how the blend shapes are stored  <a href="classcgv_1_1media_1_1mesh_1_1dynamic__mesh.html#aaec7b9803f8ce6fba0eabe0be5bbd32c">More...</a><br /></td></tr>
 <tr class="separator:aaec7b9803f8ce6fba0eabe0be5bbd32c"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a2abbc09864496370b542027483a1463a"><td class="memItemLeft" align="right" valign="top">enum class &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcgv_1_1media_1_1mesh_1_1dynamic__mesh.html#a2abbc09864496370b542027483a1463a">vertex_weight_mode</a> { <a class="el" href="classcgv_1_1media_1_1mesh_1_1dynamic__mesh.html#a2abbc09864496370b542027483a1463aa0eccef1fe0100f85b12e6eabe08eaff6">dense</a>
 , <a class="el" href="classcgv_1_1media_1_1mesh_1_1dynamic__mesh.html#a2abbc09864496370b542027483a1463aa5dabba66ddc7b1e6f193ff73d3c55e94">sparse</a>
@@ -238,24 +240,26 @@ void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="clas
 <tr class="memdesc:a114c1031847b61f0b9f5ef349694dab5"><td class="mdescLeft">&#160;</td><td class="mdescRight">copy intermediate positions to positions <br /></td></tr>
 <tr class="separator:a114c1031847b61f0b9f5ef349694dab5"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr><td colspan="2"><div class="groupHeader">blend shapes</div></td></tr>
-<tr class="memitem:a300680eb540c45485c6be94dc053d29c"><td class="memItemLeft" align="right" valign="top"><a id="a300680eb540c45485c6be94dc053d29c"></a>
-uint32_t&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcgv_1_1media_1_1mesh_1_1dynamic__mesh.html#a300680eb540c45485c6be94dc053d29c">add_blend_shape</a> (blend_shape_mode mode, <a class="el" href="classcgv_1_1media_1_1mesh_1_1simple__mesh__base.html#a0eb0181dc49db651e738bd0e66d1f0e6">idx_type</a> nr_data, <a class="el" href="classcgv_1_1media_1_1mesh_1_1simple__mesh__base.html#a0eb0181dc49db651e738bd0e66d1f0e6">idx_type</a> nr_indices=0)</td></tr>
-<tr class="memdesc:a300680eb540c45485c6be94dc053d29c"><td class="mdescLeft">&#160;</td><td class="mdescRight">add a new blend shape <br /></td></tr>
+<tr class="memitem:a300680eb540c45485c6be94dc053d29c"><td class="memItemLeft" align="right" valign="top">uint32_t&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcgv_1_1media_1_1mesh_1_1dynamic__mesh.html#a300680eb540c45485c6be94dc053d29c">add_blend_shape</a> (<a class="el" href="classcgv_1_1media_1_1mesh_1_1dynamic__mesh.html#aaec7b9803f8ce6fba0eabe0be5bbd32c">blend_shape_mode</a> mode, <a class="el" href="classcgv_1_1media_1_1mesh_1_1simple__mesh__base.html#a0eb0181dc49db651e738bd0e66d1f0e6">idx_type</a> nr_data, <a class="el" href="classcgv_1_1media_1_1mesh_1_1simple__mesh__base.html#a0eb0181dc49db651e738bd0e66d1f0e6">idx_type</a> nr_indices=0)</td></tr>
+<tr class="memdesc:a300680eb540c45485c6be94dc053d29c"><td class="mdescLeft">&#160;</td><td class="mdescRight">Add a new blend shape.  <a href="classcgv_1_1media_1_1mesh_1_1dynamic__mesh.html#a300680eb540c45485c6be94dc053d29c">More...</a><br /></td></tr>
 <tr class="separator:a300680eb540c45485c6be94dc053d29c"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a9fb312df3dd5eb1bbef426cd2af45542"><td class="memItemLeft" align="right" valign="top"><a id="a9fb312df3dd5eb1bbef426cd2af45542"></a>
-void&#160;</td><td class="memItemRight" valign="bottom"><b>add_blend_shape_data</b> (const <a class="el" href="namespacecgv.html#a986c65184af5066fa26d468fd606c4fb">vec3</a> &amp;d)</td></tr>
+void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcgv_1_1media_1_1mesh_1_1dynamic__mesh.html#a9fb312df3dd5eb1bbef426cd2af45542">add_blend_shape_data</a> (const <a class="el" href="namespacecgv.html#a986c65184af5066fa26d468fd606c4fb">vec3</a> &amp;d)</td></tr>
+<tr class="memdesc:a9fb312df3dd5eb1bbef426cd2af45542"><td class="mdescLeft">&#160;</td><td class="mdescRight">Add another data point to the data buffer. <br /></td></tr>
 <tr class="separator:a9fb312df3dd5eb1bbef426cd2af45542"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a7c20a95f379c47d361b02a0758aa528b"><td class="memItemLeft" align="right" valign="top"><a id="a7c20a95f379c47d361b02a0758aa528b"></a>
-void&#160;</td><td class="memItemRight" valign="bottom"><b>add_blend_shape_index</b> (<a class="el" href="classcgv_1_1media_1_1mesh_1_1simple__mesh__base.html#a0eb0181dc49db651e738bd0e66d1f0e6">idx_type</a> i)</td></tr>
+void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcgv_1_1media_1_1mesh_1_1dynamic__mesh.html#a7c20a95f379c47d361b02a0758aa528b">add_blend_shape_index</a> (<a class="el" href="classcgv_1_1media_1_1mesh_1_1simple__mesh__base.html#a0eb0181dc49db651e738bd0e66d1f0e6">idx_type</a> i)</td></tr>
+<tr class="memdesc:a7c20a95f379c47d361b02a0758aa528b"><td class="mdescLeft">&#160;</td><td class="mdescRight">Add another index to the index buffer. <br /></td></tr>
 <tr class="separator:a7c20a95f379c47d361b02a0758aa528b"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:aa053703260161f7573ab0f2de6e0471f"><td class="memItemLeft" align="right" valign="top"><a id="aa053703260161f7573ab0f2de6e0471f"></a>
-bool&#160;</td><td class="memItemRight" valign="bottom"><b>has_blend_shape_vector</b> (<a class="el" href="classcgv_1_1media_1_1mesh_1_1simple__mesh__base.html#a0eb0181dc49db651e738bd0e66d1f0e6">idx_type</a> bi, <a class="el" href="classcgv_1_1media_1_1mesh_1_1simple__mesh__base.html#a0eb0181dc49db651e738bd0e66d1f0e6">idx_type</a> vi) const</td></tr>
+<tr class="memitem:aa053703260161f7573ab0f2de6e0471f"><td class="memItemLeft" align="right" valign="top">bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcgv_1_1media_1_1mesh_1_1dynamic__mesh.html#aa053703260161f7573ab0f2de6e0471f">has_blend_shape_vector</a> (<a class="el" href="classcgv_1_1media_1_1mesh_1_1simple__mesh__base.html#a0eb0181dc49db651e738bd0e66d1f0e6">idx_type</a> bi, <a class="el" href="classcgv_1_1media_1_1mesh_1_1simple__mesh__base.html#a0eb0181dc49db651e738bd0e66d1f0e6">idx_type</a> vi) const</td></tr>
+<tr class="memdesc:aa053703260161f7573ab0f2de6e0471f"><td class="mdescLeft">&#160;</td><td class="mdescRight">Query if a blend shape has a vertex with a given ID.  <a href="classcgv_1_1media_1_1mesh_1_1dynamic__mesh.html#aa053703260161f7573ab0f2de6e0471f">More...</a><br /></td></tr>
 <tr class="separator:aa053703260161f7573ab0f2de6e0471f"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a3be4d32342bb6a403c7f9dec6f10f8da"><td class="memItemLeft" align="right" valign="top"><a id="a3be4d32342bb6a403c7f9dec6f10f8da"></a>
-<a class="el" href="namespacecgv.html#a986c65184af5066fa26d468fd606c4fb">vec3</a>&#160;</td><td class="memItemRight" valign="bottom"><b>get_blend_shape_vector</b> (<a class="el" href="classcgv_1_1media_1_1mesh_1_1simple__mesh__base.html#a0eb0181dc49db651e738bd0e66d1f0e6">idx_type</a> bi, <a class="el" href="classcgv_1_1media_1_1mesh_1_1simple__mesh__base.html#a0eb0181dc49db651e738bd0e66d1f0e6">idx_type</a> vi) const</td></tr>
+<tr class="memitem:a3be4d32342bb6a403c7f9dec6f10f8da"><td class="memItemLeft" align="right" valign="top"><a class="el" href="namespacecgv.html#a986c65184af5066fa26d468fd606c4fb">vec3</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcgv_1_1media_1_1mesh_1_1dynamic__mesh.html#a3be4d32342bb6a403c7f9dec6f10f8da">get_blend_shape_vector</a> (<a class="el" href="classcgv_1_1media_1_1mesh_1_1simple__mesh__base.html#a0eb0181dc49db651e738bd0e66d1f0e6">idx_type</a> bi, <a class="el" href="classcgv_1_1media_1_1mesh_1_1simple__mesh__base.html#a0eb0181dc49db651e738bd0e66d1f0e6">idx_type</a> vi) const</td></tr>
+<tr class="memdesc:a3be4d32342bb6a403c7f9dec6f10f8da"><td class="mdescLeft">&#160;</td><td class="mdescRight">Returns one vertex of one blend shape.  <a href="classcgv_1_1media_1_1mesh_1_1dynamic__mesh.html#a3be4d32342bb6a403c7f9dec6f10f8da">More...</a><br /></td></tr>
 <tr class="separator:a3be4d32342bb6a403c7f9dec6f10f8da"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:af019f1f7808bdecb5faaa01a6af10fba"><td class="memItemLeft" align="right" valign="top"><a id="af019f1f7808bdecb5faaa01a6af10fba"></a>
-size_t&#160;</td><td class="memItemRight" valign="bottom"><b>get_nr_blend_shapes</b> () const</td></tr>
+size_t&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcgv_1_1media_1_1mesh_1_1dynamic__mesh.html#af019f1f7808bdecb5faaa01a6af10fba">get_nr_blend_shapes</a> () const</td></tr>
+<tr class="memdesc:af019f1f7808bdecb5faaa01a6af10fba"><td class="mdescLeft">&#160;</td><td class="mdescRight">Return how many blend shapes this mesh has. <br /></td></tr>
 <tr class="separator:af019f1f7808bdecb5faaa01a6af10fba"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:aa6c4b9c6b745873649865e0f8c5e08bc"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcgv_1_1media_1_1mesh_1_1dynamic__mesh.html#aa6c4b9c6b745873649865e0f8c5e08bc">apply_blend_shapes</a> (const std::vector&lt; T &gt; &amp;weights, <a class="el" href="classcgv_1_1media_1_1mesh_1_1simple__mesh__base.html#a0eb0181dc49db651e738bd0e66d1f0e6">idx_type</a> blend_shape_offset=0, bool only_add=false, bool use_parallel_implementation=false)</td></tr>
 <tr class="memdesc:aa6c4b9c6b745873649865e0f8c5e08bc"><td class="mdescLeft">&#160;</td><td class="mdescRight">this function applies weights.size() number of blend shapes starting at offset blend_shape_offset and stores result in mesh position attribute  <a href="classcgv_1_1media_1_1mesh_1_1dynamic__mesh.html#aa6c4b9c6b745873649865e0f8c5e08bc">More...</a><br /></td></tr>
@@ -674,22 +678,28 @@ void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="clas
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="pro-attribs"></a>
 Protected Attributes</h2></td></tr>
 <tr class="memitem:a85ec7004c916f70d6c133411bec46e1e"><td class="memItemLeft" align="right" valign="top"><a id="a85ec7004c916f70d6c133411bec46e1e"></a>
-std::vector&lt; <a class="el" href="namespacecgv.html#a986c65184af5066fa26d468fd606c4fb">vec3</a> &gt;&#160;</td><td class="memItemRight" valign="bottom"><b>reference_positions</b></td></tr>
+std::vector&lt; <a class="el" href="namespacecgv.html#a986c65184af5066fa26d468fd606c4fb">vec3</a> &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcgv_1_1media_1_1mesh_1_1dynamic__mesh.html#a85ec7004c916f70d6c133411bec46e1e">reference_positions</a></td></tr>
+<tr class="memdesc:a85ec7004c916f70d6c133411bec46e1e"><td class="mdescLeft">&#160;</td><td class="mdescRight">Storage for vertex positions in the bind-pose. <br /></td></tr>
 <tr class="separator:a85ec7004c916f70d6c133411bec46e1e"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:afc8509706669c0a893d3054561ebc1d6"><td class="memItemLeft" align="right" valign="top"><a id="afc8509706669c0a893d3054561ebc1d6"></a>
-std::vector&lt; <a class="el" href="namespacecgv.html#a986c65184af5066fa26d468fd606c4fb">vec3</a> &gt;&#160;</td><td class="memItemRight" valign="bottom"><b>intermediate_positions</b></td></tr>
+std::vector&lt; <a class="el" href="namespacecgv.html#a986c65184af5066fa26d468fd606c4fb">vec3</a> &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcgv_1_1media_1_1mesh_1_1dynamic__mesh.html#afc8509706669c0a893d3054561ebc1d6">intermediate_positions</a></td></tr>
+<tr class="memdesc:afc8509706669c0a893d3054561ebc1d6"><td class="mdescLeft">&#160;</td><td class="mdescRight">Storage for vertex positions after Linear Blend Skinning. <br /></td></tr>
 <tr class="separator:afc8509706669c0a893d3054561ebc1d6"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a8c759a1dc077d9aaa5d370b9f8ab35af"><td class="memItemLeft" align="right" valign="top"><a id="a8c759a1dc077d9aaa5d370b9f8ab35af"></a>
-std::vector&lt; <a class="el" href="namespacecgv.html#a986c65184af5066fa26d468fd606c4fb">vec3</a> &gt;&#160;</td><td class="memItemRight" valign="bottom"><b>blend_shape_data</b></td></tr>
+std::vector&lt; <a class="el" href="namespacecgv.html#a986c65184af5066fa26d468fd606c4fb">vec3</a> &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcgv_1_1media_1_1mesh_1_1dynamic__mesh.html#a8c759a1dc077d9aaa5d370b9f8ab35af">blend_shape_data</a></td></tr>
+<tr class="memdesc:a8c759a1dc077d9aaa5d370b9f8ab35af"><td class="mdescLeft">&#160;</td><td class="mdescRight">Storage for the blend shape vertices. <br /></td></tr>
 <tr class="separator:a8c759a1dc077d9aaa5d370b9f8ab35af"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a511209b78f2b58bf98623a0a94cd42a9"><td class="memItemLeft" align="right" valign="top"><a id="a511209b78f2b58bf98623a0a94cd42a9"></a>
-std::vector&lt; uint32_t &gt;&#160;</td><td class="memItemRight" valign="bottom"><b>blend_shape_indices</b></td></tr>
+std::vector&lt; uint32_t &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcgv_1_1media_1_1mesh_1_1dynamic__mesh.html#a511209b78f2b58bf98623a0a94cd42a9">blend_shape_indices</a></td></tr>
+<tr class="memdesc:a511209b78f2b58bf98623a0a94cd42a9"><td class="mdescLeft">&#160;</td><td class="mdescRight">Storage for the indices (if the blend shapes are defined by indices) <br /></td></tr>
 <tr class="separator:a511209b78f2b58bf98623a0a94cd42a9"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a0237c27d5f2743ccf738258e61253061"><td class="memItemLeft" align="right" valign="top"><a id="a0237c27d5f2743ccf738258e61253061"></a>
-std::vector&lt; <a class="el" href="structcgv_1_1media_1_1mesh_1_1dynamic__mesh_1_1blend__shape.html">blend_shape</a> &gt;&#160;</td><td class="memItemRight" valign="bottom"><b>blend_shapes</b></td></tr>
+std::vector&lt; <a class="el" href="structcgv_1_1media_1_1mesh_1_1dynamic__mesh_1_1blend__shape.html">blend_shape</a> &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcgv_1_1media_1_1mesh_1_1dynamic__mesh.html#a0237c27d5f2743ccf738258e61253061">blend_shapes</a></td></tr>
+<tr class="memdesc:a0237c27d5f2743ccf738258e61253061"><td class="mdescLeft">&#160;</td><td class="mdescRight">Storage for all the blendshape definitions. <br /></td></tr>
 <tr class="separator:a0237c27d5f2743ccf738258e61253061"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:aab4e4b45879f1ae825052427809c07d8"><td class="memItemLeft" align="right" valign="top"><a id="aab4e4b45879f1ae825052427809c07d8"></a>
-<a class="el" href="classcgv_1_1media_1_1mesh_1_1dynamic__mesh.html#a2abbc09864496370b542027483a1463a">vertex_weight_mode</a>&#160;</td><td class="memItemRight" valign="bottom"><b>weight_mode</b></td></tr>
+<a class="el" href="classcgv_1_1media_1_1mesh_1_1dynamic__mesh.html#a2abbc09864496370b542027483a1463a">vertex_weight_mode</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcgv_1_1media_1_1mesh_1_1dynamic__mesh.html#aab4e4b45879f1ae825052427809c07d8">weight_mode</a></td></tr>
+<tr class="memdesc:aab4e4b45879f1ae825052427809c07d8"><td class="mdescLeft">&#160;</td><td class="mdescRight">How the vertex weights are stored for this instance. <br /></td></tr>
 <tr class="separator:aab4e4b45879f1ae825052427809c07d8"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a8976f249ddb980e538c33fb384a16106"><td class="memItemLeft" align="right" valign="top"><a id="a8976f249ddb980e538c33fb384a16106"></a>
 int32_t&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcgv_1_1media_1_1mesh_1_1dynamic__mesh.html#a8976f249ddb980e538c33fb384a16106">max_nr_weights_per_vertex</a> = -1</td></tr>
@@ -759,11 +769,11 @@ std::vector&lt; <a class="el" href="classcgv_1_1media_1_1mesh_1_1simple__mesh__b
 <tr class="separator:abc63cb3151accf69d73a658c38042b79 inherit pro_attribs_classcgv_1_1media_1_1colored__model"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader">skinning</h2></td></tr>
-<tr class="memitem:ae9bf97101148ccab3e143c3a090ff252"><td class="memItemLeft" align="right" valign="top"><a id="ae9bf97101148ccab3e143c3a090ff252"></a>enum class &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcgv_1_1media_1_1mesh_1_1dynamic__mesh.html#ae9bf97101148ccab3e143c3a090ff252">lbs_source_mode</a> { <b>reference</b>
-, <b>position</b>
-, <b>intermediate</b>
+<tr class="memitem:ae9bf97101148ccab3e143c3a090ff252"><td class="memItemLeft" align="right" valign="top">enum class &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcgv_1_1media_1_1mesh_1_1dynamic__mesh.html#ae9bf97101148ccab3e143c3a090ff252">lbs_source_mode</a> { <a class="el" href="classcgv_1_1media_1_1mesh_1_1dynamic__mesh.html#ae9bf97101148ccab3e143c3a090ff252ab8af13ea9c8fe890c9979a1fa8dbde22">reference</a>
+, <a class="el" href="classcgv_1_1media_1_1mesh_1_1dynamic__mesh.html#ae9bf97101148ccab3e143c3a090ff252a4757fe07fd492a8be0ea6a760d683d6e">position</a>
+, <a class="el" href="classcgv_1_1media_1_1mesh_1_1dynamic__mesh.html#ae9bf97101148ccab3e143c3a090ff252a438fa616dea43dbb0a42b0ce2d393e7a">intermediate</a>
  }</td></tr>
-<tr class="memdesc:ae9bf97101148ccab3e143c3a090ff252"><td class="mdescLeft">&#160;</td><td class="mdescRight">different sources to compute lbs <br /></td></tr>
+<tr class="memdesc:ae9bf97101148ccab3e143c3a090ff252"><td class="mdescLeft">&#160;</td><td class="mdescRight">Which source to use for the Linear Blend Skinning.  <a href="classcgv_1_1media_1_1mesh_1_1dynamic__mesh.html#ae9bf97101148ccab3e143c3a090ff252">More...</a><br /></td></tr>
 <tr class="separator:ae9bf97101148ccab3e143c3a090ff252"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a8c906f4a10f07b069d44df2bad3c97b9"><td class="memItemLeft" align="right" valign="top"><a id="a8c906f4a10f07b069d44df2bad3c97b9"></a>
 void&#160;</td><td class="memItemRight" valign="bottom"><b>set_vertex_weight_mode</b> (<a class="el" href="classcgv_1_1media_1_1mesh_1_1dynamic__mesh.html#a2abbc09864496370b542027483a1463a">vertex_weight_mode</a> mode)</td></tr>
@@ -829,10 +839,88 @@ Additional Inherited Members</h2></td></tr>
 <div class="textblock"><h3>template&lt;typename T = float&gt;<br />
 class cgv::media::mesh::dynamic_mesh&lt; T &gt;</h3>
 
-<p>the <a class="el" href="classcgv_1_1media_1_1mesh_1_1simple__mesh.html" title="the simple_mesh class is templated over the coordinate type that defaults to float">simple_mesh</a> class is templated over the coordinate type that defaults to float </p>
+<p>The <a class="el" href="classcgv_1_1media_1_1mesh_1_1dynamic__mesh.html" title="The dynamic_mesh provides interpolation between several blend shapes of a mesh.">dynamic_mesh</a> provides interpolation between several blend shapes of a mesh. </p>
+<dl class="tparams"><dt>Template Parameters</dt><dd>
+  <table class="tparams">
+    <tr><td class="paramname">T</td><td>The coordinate base-type </td></tr>
+  </table>
+  </dd>
+</dl>
 
-<p class="definition">Definition at line <a class="el" href="dynamic__mesh_8h_source.html#l00013">13</a> of file <a class="el" href="dynamic__mesh_8h_source.html">dynamic_mesh.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="dynamic__mesh_8h_source.html#l00014">14</a> of file <a class="el" href="dynamic__mesh_8h_source.html">dynamic_mesh.h</a>.</p>
 </div><h2 class="groupheader">Member Enumeration Documentation</h2>
+<a id="aaec7b9803f8ce6fba0eabe0be5bbd32c"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#aaec7b9803f8ce6fba0eabe0be5bbd32c">&#9670;&nbsp;</a></span>blend_shape_mode</h2>
+
+<div class="memitem">
+<div class="memproto">
+<div class="memtemplate">
+template&lt;typename T  = float&gt; </div>
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">enum <a class="el" href="classcgv_1_1media_1_1mesh_1_1dynamic__mesh.html#aaec7b9803f8ce6fba0eabe0be5bbd32c">cgv::media::mesh::dynamic_mesh::blend_shape_mode</a></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">strong</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p>specifies how the blend shapes are stored </p>
+<table class="fieldtable">
+<tr><th colspan="2">Enumerator</th></tr><tr><td class="fieldname"><a id="aaec7b9803f8ce6fba0eabe0be5bbd32ca7caa701b2bd5a182b80c72b9bdf88e2d"></a>direct&#160;</td><td class="fielddoc"><p>All blend shapes have a uniform dimension and stored successively. </p>
+</td></tr>
+<tr><td class="fieldname"><a id="aaec7b9803f8ce6fba0eabe0be5bbd32ca7efb96e1de8fcda98dee6e2a29a521f0"></a>indexed&#160;</td><td class="fielddoc"><p>Blend shapes index into a shared data buffer. </p>
+</td></tr>
+<tr><td class="fieldname"><a id="aaec7b9803f8ce6fba0eabe0be5bbd32ca7a13fbf2bbd66f5f942759a1cde46c2d"></a>range_indexed&#160;</td><td class="fielddoc"><p>If the indices are numerically sorted then this mode allows to refer to respective ranges via a begin and end pair. </p>
+</td></tr>
+</table>
+
+<p class="definition">Definition at line <a class="el" href="dynamic__mesh_8h_source.html#l00032">32</a> of file <a class="el" href="dynamic__mesh_8h_source.html">dynamic_mesh.h</a>.</p>
+
+</div>
+</div>
+<a id="ae9bf97101148ccab3e143c3a090ff252"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#ae9bf97101148ccab3e143c3a090ff252">&#9670;&nbsp;</a></span>lbs_source_mode</h2>
+
+<div class="memitem">
+<div class="memproto">
+<div class="memtemplate">
+template&lt;typename T  = float&gt; </div>
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">enum <a class="el" href="classcgv_1_1media_1_1mesh_1_1dynamic__mesh.html#ae9bf97101148ccab3e143c3a090ff252">cgv::media::mesh::dynamic_mesh::lbs_source_mode</a></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">strong</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p>Which source to use for the Linear Blend Skinning. </p>
+<table class="fieldtable">
+<tr><th colspan="2">Enumerator</th></tr><tr><td class="fieldname"><a id="ae9bf97101148ccab3e143c3a090ff252ab8af13ea9c8fe890c9979a1fa8dbde22"></a>reference&#160;</td><td class="fielddoc"><p>The reference positions. </p>
+</td></tr>
+<tr><td class="fieldname"><a id="ae9bf97101148ccab3e143c3a090ff252a4757fe07fd492a8be0ea6a760d683d6e"></a>position&#160;</td><td class="fielddoc"><p>The current position attribute of the mesh. </p>
+</td></tr>
+<tr><td class="fieldname"><a id="ae9bf97101148ccab3e143c3a090ff252a438fa616dea43dbb0a42b0ce2d393e7a"></a>intermediate&#160;</td><td class="fielddoc"><p>The intermediate position attribute of the mesh. </p>
+</td></tr>
+</table>
+
+<p class="definition">Definition at line <a class="el" href="dynamic__mesh_8h_source.html#l00172">172</a> of file <a class="el" href="dynamic__mesh_8h_source.html">dynamic_mesh.h</a>.</p>
+
+</div>
+</div>
 <a id="a2abbc09864496370b542027483a1463a"></a>
 <h2 class="memtitle"><span class="permalink"><a href="#a2abbc09864496370b542027483a1463a">&#9670;&nbsp;</a></span>vertex_weight_mode</h2>
 
@@ -857,7 +945,7 @@ template&lt;typename T  = float&gt; </div>
 
 <p>specifies how vertex weights are stored </p>
 <table class="fieldtable">
-<tr><th colspan="2">Enumerator</th></tr><tr><td class="fieldname"><a id="a2abbc09864496370b542027483a1463aa0eccef1fe0100f85b12e6eabe08eaff6"></a>dense&#160;</td><td class="fielddoc"><p>number joint times number vertices weights are stored - no indices necessary </p>
+<tr><th colspan="2">Enumerator</th></tr><tr><td class="fieldname"><a id="a2abbc09864496370b542027483a1463aa0eccef1fe0100f85b12e6eabe08eaff6"></a>dense&#160;</td><td class="fielddoc"><p>number joints times number vertices weights are stored - no indices necessary </p>
 </td></tr>
 <tr><td class="fieldname"><a id="a2abbc09864496370b542027483a1463aa5dabba66ddc7b1e6f193ff73d3c55e94"></a>sparse&#160;</td><td class="fielddoc"><p>per vertex varying number of indexed weights - vertex_weight_index_begins tells for each vertex the index of the first weight in vertex_weight_data, which is also the index of the first vertex index in vertex_weight_indices </p>
 </td></tr>
@@ -865,11 +953,60 @@ template&lt;typename T  = float&gt; </div>
 </td></tr>
 </table>
 
-<p class="definition">Definition at line <a class="el" href="dynamic__mesh_8h_source.html#l00045">45</a> of file <a class="el" href="dynamic__mesh_8h_source.html">dynamic_mesh.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="dynamic__mesh_8h_source.html#l00065">65</a> of file <a class="el" href="dynamic__mesh_8h_source.html">dynamic_mesh.h</a>.</p>
 
 </div>
 </div>
 <h2 class="groupheader">Member Function Documentation</h2>
+<a id="a300680eb540c45485c6be94dc053d29c"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a300680eb540c45485c6be94dc053d29c">&#9670;&nbsp;</a></span>add_blend_shape()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<div class="memtemplate">
+template&lt;typename T &gt; </div>
+      <table class="memname">
+        <tr>
+          <td class="memname">uint32_t <a class="el" href="classcgv_1_1media_1_1mesh_1_1dynamic__mesh.html">cgv::media::mesh::dynamic_mesh</a>&lt; T &gt;::add_blend_shape </td>
+          <td>(</td>
+          <td class="paramtype"><a class="el" href="classcgv_1_1media_1_1mesh_1_1dynamic__mesh.html#aaec7b9803f8ce6fba0eabe0be5bbd32c">blend_shape_mode</a>&#160;</td>
+          <td class="paramname"><em>mode</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype"><a class="el" href="classcgv_1_1media_1_1mesh_1_1simple__mesh__base.html#a0eb0181dc49db651e738bd0e66d1f0e6">idx_type</a>&#160;</td>
+          <td class="paramname"><em>nr_data</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype"><a class="el" href="classcgv_1_1media_1_1mesh_1_1simple__mesh__base.html#a0eb0181dc49db651e738bd0e66d1f0e6">idx_type</a>&#160;</td>
+          <td class="paramname"><em>nr_indices</em> = <code>0</code>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>Add a new blend shape. </p>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramdir">[in]</td><td class="paramname">mode</td><td>How the blend shape data is stored and referenced </td></tr>
+    <tr><td class="paramdir">[in]</td><td class="paramname">nr_data</td><td>How many data_points this blend shape will have </td></tr>
+    <tr><td class="paramdir">[in]</td><td class="paramname">nr_indices</td><td>How many indices this blend shape will use </td></tr>
+  </table>
+  </dd>
+</dl>
+<dl class="section return"><dt>Returns</dt><dd>the index of the newly created blend shape </dd></dl>
+
+<p class="definition">Definition at line <a class="el" href="dynamic__mesh_8cxx_source.html#l00011">11</a> of file <a class="el" href="dynamic__mesh_8cxx_source.html">dynamic_mesh.cxx</a>.</p>
+
+</div>
+</div>
 <a id="aa6c4b9c6b745873649865e0f8c5e08bc"></a>
 <h2 class="memtitle"><span class="permalink"><a href="#aa6c4b9c6b745873649865e0f8c5e08bc">&#9670;&nbsp;</a></span>apply_blend_shapes()</h2>
 
@@ -911,9 +1048,100 @@ template&lt;typename T &gt; </div>
 </div><div class="memdoc">
 
 <p>this function applies weights.size() number of blend shapes starting at offset blend_shape_offset and stores result in mesh position attribute </p>
-<p>If only_add is false, the position is initialized to the reference_position attribute - otherwise the blend shapes are just added to the current mesh position attribute. </p>
+<p>If only_add is false, the position is initialized to the reference_position attribute - otherwise the blend shapes are just added to the current mesh position attribute.</p>
+<p>Performs a weighted accumulation of blend shapes. </p><dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramdir">[in]</td><td class="paramname">weights</td><td>the respective weights for each blendshape </td></tr>
+    <tr><td class="paramdir">[in]</td><td class="paramname">blend_shape_offset</td><td>relative to the first blend shape, where to begin applying the weighted accumulation </td></tr>
+    <tr><td class="paramdir">[in]</td><td class="paramname">only_add</td><td>If false then <a class="el" href="classcgv_1_1media_1_1mesh_1_1simple__mesh.html">simple_mesh::positions</a> will be initialized to the reference_position attribute. Otherwise the blend shapes are just added to the current mesh position attribute. </td></tr>
+  </table>
+  </dd>
+</dl>
 
-<p class="definition">Definition at line <a class="el" href="dynamic__mesh_8cxx_source.html#l00190">190</a> of file <a class="el" href="dynamic__mesh_8cxx_source.html">dynamic_mesh.cxx</a>.</p>
+<p class="definition">Definition at line <a class="el" href="dynamic__mesh_8cxx_source.html#l00192">192</a> of file <a class="el" href="dynamic__mesh_8cxx_source.html">dynamic_mesh.cxx</a>.</p>
+
+</div>
+</div>
+<a id="a3be4d32342bb6a403c7f9dec6f10f8da"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a3be4d32342bb6a403c7f9dec6f10f8da">&#9670;&nbsp;</a></span>get_blend_shape_vector()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<div class="memtemplate">
+template&lt;typename T &gt; </div>
+      <table class="memname">
+        <tr>
+          <td class="memname"><a class="el" href="classcgv_1_1media_1_1mesh_1_1dynamic__mesh.html">dynamic_mesh</a>&lt; T &gt;::<a class="el" href="namespacecgv.html#a986c65184af5066fa26d468fd606c4fb">vec3</a> <a class="el" href="classcgv_1_1media_1_1mesh_1_1dynamic__mesh.html">cgv::media::mesh::dynamic_mesh</a>&lt; T &gt;::get_blend_shape_vector </td>
+          <td>(</td>
+          <td class="paramtype"><a class="el" href="classcgv_1_1media_1_1mesh_1_1simple__mesh__base.html#a0eb0181dc49db651e738bd0e66d1f0e6">idx_type</a>&#160;</td>
+          <td class="paramname"><em>bi</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype"><a class="el" href="classcgv_1_1media_1_1mesh_1_1simple__mesh__base.html#a0eb0181dc49db651e738bd0e66d1f0e6">idx_type</a>&#160;</td>
+          <td class="paramname"><em>vi</em>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td> const</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>Returns one vertex of one blend shape. </p>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramdir">[in]</td><td class="paramname">bi</td><td>Index of the desired blend shape </td></tr>
+    <tr><td class="paramdir">[in]</td><td class="paramname">vi</td><td>Index of the desired vertex </td></tr>
+  </table>
+  </dd>
+</dl>
+
+<p class="definition">Definition at line <a class="el" href="dynamic__mesh_8cxx_source.html#l00051">51</a> of file <a class="el" href="dynamic__mesh_8cxx_source.html">dynamic_mesh.cxx</a>.</p>
+
+</div>
+</div>
+<a id="aa053703260161f7573ab0f2de6e0471f"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#aa053703260161f7573ab0f2de6e0471f">&#9670;&nbsp;</a></span>has_blend_shape_vector()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<div class="memtemplate">
+template&lt;typename T &gt; </div>
+      <table class="memname">
+        <tr>
+          <td class="memname">bool <a class="el" href="classcgv_1_1media_1_1mesh_1_1dynamic__mesh.html">cgv::media::mesh::dynamic_mesh</a>&lt; T &gt;::has_blend_shape_vector </td>
+          <td>(</td>
+          <td class="paramtype"><a class="el" href="classcgv_1_1media_1_1mesh_1_1simple__mesh__base.html#a0eb0181dc49db651e738bd0e66d1f0e6">idx_type</a>&#160;</td>
+          <td class="paramname"><em>bi</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype"><a class="el" href="classcgv_1_1media_1_1mesh_1_1simple__mesh__base.html#a0eb0181dc49db651e738bd0e66d1f0e6">idx_type</a>&#160;</td>
+          <td class="paramname"><em>vi</em>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td> const</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>Query if a blend shape has a vertex with a given ID. </p>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramdir">[in]</td><td class="paramname">bi</td><td>Index of the desired blend shape </td></tr>
+    <tr><td class="paramdir">[in]</td><td class="paramname">vi</td><td>Index of the desired vertex </td></tr>
+  </table>
+  </dd>
+</dl>
+<p>If the blend shape data is stored in <a class="el" href="classcgv_1_1media_1_1mesh_1_1dynamic__mesh.html#aaec7b9803f8ce6fba0eabe0be5bbd32ca7caa701b2bd5a182b80c72b9bdf88e2d" title="All blend shapes have a uniform dimension and stored successively.">blend_shape_mode::direct</a> mode, this function will always return true as there is no indirection.</p>
+
+<p class="definition">Definition at line <a class="el" href="dynamic__mesh_8cxx_source.html#l00029">29</a> of file <a class="el" href="dynamic__mesh_8cxx_source.html">dynamic_mesh.cxx</a>.</p>
 
 </div>
 </div>
@@ -948,7 +1176,7 @@ template&lt;typename T &gt; </div>
 <p>perform linear blend skinning on reference positions or the current mesh position attribute </p>
 <p>the joint matrices define per joint the transformation from reference positions or intermediate positions. </p>
 
-<p class="definition">Definition at line <a class="el" href="dynamic__mesh_8cxx_source.html#l00269">269</a> of file <a class="el" href="dynamic__mesh_8cxx_source.html">dynamic_mesh.cxx</a>.</p>
+<p class="definition">Definition at line <a class="el" href="dynamic__mesh_8cxx_source.html#l00271">271</a> of file <a class="el" href="dynamic__mesh_8cxx_source.html">dynamic_mesh.cxx</a>.</p>
 
 </div>
 </div>
