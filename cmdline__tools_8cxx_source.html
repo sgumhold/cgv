@@ -88,46 +88,110 @@ $(document).ready(function(){initNavTree('cmdline__tools_8cxx_source.html',''); 
 <div class="fragment"><div class="line"><a name="l00001"></a><span class="lineno">    1</span>&#160;<span class="preprocessor">#include &quot;cmdline_tools.h&quot;</span></div>
 <div class="line"><a name="l00002"></a><span class="lineno">    2</span>&#160;<span class="preprocessor">#include &lt;cgv/utils/file.h&gt;</span></div>
 <div class="line"><a name="l00003"></a><span class="lineno">    3</span>&#160;<span class="preprocessor">#include &lt;<a class="code" href="scan_8h.html">cgv/utils/scan.h</a>&gt;</span></div>
-<div class="line"><a name="l00004"></a><span class="lineno">    4</span>&#160;<span class="preprocessor">#include &lt;stdio.h&gt;</span></div>
-<div class="line"><a name="l00005"></a><span class="lineno">    5</span>&#160; </div>
-<div class="line"><a name="l00006"></a><span class="lineno">    6</span>&#160;<span class="keyword">namespace </span><a class="code" href="namespacecgv.html">cgv</a> {</div>
-<div class="line"><a name="l00007"></a><span class="lineno">    7</span>&#160;    <span class="keyword">namespace </span>os {</div>
-<div class="line"><a name="l00008"></a><span class="lineno">    8</span>&#160; </div>
-<div class="line"><a name="l00009"></a><span class="lineno">    9</span>&#160;        <span class="keywordtype">bool</span> expand_archive(<span class="keyword">const</span> std::string&amp; file_path, <span class="keyword">const</span> std::string&amp; destination_path)</div>
-<div class="line"><a name="l00010"></a><span class="lineno">   10</span>&#160;        {</div>
-<div class="line"><a name="l00011"></a><span class="lineno">   11</span>&#160;            std::string command;</div>
-<div class="line"><a name="l00012"></a><span class="lineno">   12</span>&#160;<span class="preprocessor">#ifdef WIN32</span></div>
-<div class="line"><a name="l00013"></a><span class="lineno">   13</span>&#160;            command = <span class="stringliteral">&quot;PowerShell -Command \&quot;Expand-Archive -Path &#39;&quot;</span>;</div>
-<div class="line"><a name="l00014"></a><span class="lineno">   14</span>&#160;            command += file_path + <span class="stringliteral">&quot;&#39; -DestinationPath &#39;&quot;</span> + destination_path + <span class="stringliteral">&quot;&#39;\&quot;&quot;</span>;</div>
-<div class="line"><a name="l00015"></a><span class="lineno">   15</span>&#160;            <a class="code" href="namespacecgv_1_1utils.html#a145360669d325a1f530539c8aff35990">cgv::utils::replace</a>(command, <span class="charliteral">&#39;/&#39;</span>, <span class="charliteral">&#39;\\&#39;</span>);</div>
-<div class="line"><a name="l00016"></a><span class="lineno">   16</span>&#160;<span class="preprocessor">#else</span></div>
-<div class="line"><a name="l00017"></a><span class="lineno">   17</span>&#160;            command = <span class="stringliteral">&quot;unzip &#39;&quot;</span>;</div>
-<div class="line"><a name="l00018"></a><span class="lineno">   18</span>&#160;            command += file_path + <span class="stringliteral">&quot;&#39; -d &#39;&quot;</span> + destination_path + <span class="stringliteral">&quot;&#39;&quot;</span>;</div>
-<div class="line"><a name="l00019"></a><span class="lineno">   19</span>&#160;            command = cgv::utils::file::clean_path(command);</div>
-<div class="line"><a name="l00020"></a><span class="lineno">   20</span>&#160;<span class="preprocessor">#endif</span></div>
-<div class="line"><a name="l00021"></a><span class="lineno">   21</span>&#160;            <span class="keywordtype">int</span> result = system(command.c_str());</div>
-<div class="line"><a name="l00022"></a><span class="lineno">   22</span>&#160;            <span class="keywordflow">return</span> result != -1;</div>
-<div class="line"><a name="l00023"></a><span class="lineno">   23</span>&#160;        }</div>
-<div class="line"><a name="l00024"></a><span class="lineno">   24</span>&#160; </div>
-<div class="line"><a name="l00025"></a><span class="lineno">   25</span>&#160;        <span class="keywordtype">bool</span> compress_archive(<span class="keyword">const</span> std::string&amp; file_filter_path, <span class="keyword">const</span> std::string&amp; archive_path)</div>
-<div class="line"><a name="l00026"></a><span class="lineno">   26</span>&#160;        {</div>
-<div class="line"><a name="l00027"></a><span class="lineno">   27</span>&#160;            std::string command;</div>
-<div class="line"><a name="l00028"></a><span class="lineno">   28</span>&#160;<span class="preprocessor">#ifdef WIN32</span></div>
-<div class="line"><a name="l00029"></a><span class="lineno">   29</span>&#160;            command = <span class="stringliteral">&quot;PowerShell -Command \&quot;Compress-Archive -Path &#39;&quot;</span>;</div>
-<div class="line"><a name="l00030"></a><span class="lineno">   30</span>&#160;            command += file_filter_path + <span class="stringliteral">&quot;&#39; -DestinationPath &#39;&quot;</span> + archive_path + <span class="stringliteral">&quot;&#39;\&quot;&quot;</span>;</div>
-<div class="line"><a name="l00031"></a><span class="lineno">   31</span>&#160;<span class="preprocessor">#else</span></div>
-<div class="line"><a name="l00032"></a><span class="lineno">   32</span>&#160;            command = <span class="stringliteral">&quot;zip &#39;&quot;</span>;</div>
-<div class="line"><a name="l00033"></a><span class="lineno">   33</span>&#160;            command += archive_path + <span class="stringliteral">&quot;&#39; &#39;&quot;</span> + file_filter_path + <span class="stringliteral">&quot;&#39;&quot;</span>;</div>
-<div class="line"><a name="l00034"></a><span class="lineno">   34</span>&#160;<span class="preprocessor">#endif</span></div>
-<div class="line"><a name="l00035"></a><span class="lineno">   35</span>&#160;            <span class="keywordtype">int</span> result = system(command.c_str());</div>
-<div class="line"><a name="l00036"></a><span class="lineno">   36</span>&#160;            <span class="keywordflow">return</span> result != -1;</div>
-<div class="line"><a name="l00037"></a><span class="lineno">   37</span>&#160;        }</div>
-<div class="line"><a name="l00038"></a><span class="lineno">   38</span>&#160; </div>
-<div class="line"><a name="l00039"></a><span class="lineno">   39</span>&#160;    }</div>
-<div class="line"><a name="l00040"></a><span class="lineno">   40</span>&#160;}</div>
+<div class="line"><a name="l00004"></a><span class="lineno">    4</span>&#160;<span class="preprocessor">#include &lt;cgv/utils/progression.h&gt;</span></div>
+<div class="line"><a name="l00005"></a><span class="lineno">    5</span>&#160;<span class="preprocessor">#include &lt;stdio.h&gt;</span></div>
+<div class="line"><a name="l00006"></a><span class="lineno">    6</span>&#160; </div>
+<div class="line"><a name="l00007"></a><span class="lineno">    7</span>&#160;<span class="preprocessor">#if WIN32</span></div>
+<div class="line"><a name="l00008"></a><span class="lineno">    8</span>&#160;<span class="preprocessor">#define popen(...) _popen(__VA_ARGS__);</span></div>
+<div class="line"><a name="l00009"></a><span class="lineno">    9</span>&#160;<span class="preprocessor">#define pclose(...) _pclose(__VA_ARGS__);</span></div>
+<div class="line"><a name="l00010"></a><span class="lineno">   10</span>&#160;<span class="preprocessor">#endif</span></div>
+<div class="line"><a name="l00011"></a><span class="lineno">   11</span>&#160; </div>
+<div class="line"><a name="l00012"></a><span class="lineno">   12</span>&#160;<span class="keyword">namespace </span><a class="code" href="namespacecgv.html">cgv</a> {</div>
+<div class="line"><a name="l00013"></a><span class="lineno">   13</span>&#160;    <span class="keyword">namespace </span>os {</div>
+<div class="line"><a name="l00014"></a><span class="lineno">   14</span>&#160; </div>
+<div class="line"><a name="l00015"></a><span class="lineno">   15</span>&#160;        <span class="keywordtype">bool</span> expand_archive(<span class="keyword">const</span> std::string&amp; file_path, <span class="keyword">const</span> std::string&amp; destination_path)</div>
+<div class="line"><a name="l00016"></a><span class="lineno">   16</span>&#160;        {</div>
+<div class="line"><a name="l00017"></a><span class="lineno">   17</span>&#160;            std::string command;</div>
+<div class="line"><a name="l00018"></a><span class="lineno">   18</span>&#160;<span class="preprocessor">#ifdef WIN32</span></div>
+<div class="line"><a name="l00019"></a><span class="lineno">   19</span>&#160;            command = <span class="stringliteral">&quot;PowerShell -Command \&quot;Expand-Archive -Path &#39;&quot;</span>;</div>
+<div class="line"><a name="l00020"></a><span class="lineno">   20</span>&#160;            command += file_path + <span class="stringliteral">&quot;&#39; -DestinationPath &#39;&quot;</span> + destination_path + <span class="stringliteral">&quot;&#39;\&quot;&quot;</span>;</div>
+<div class="line"><a name="l00021"></a><span class="lineno">   21</span>&#160;            <a class="code" href="namespacecgv_1_1utils.html#a145360669d325a1f530539c8aff35990">cgv::utils::replace</a>(command, <span class="charliteral">&#39;/&#39;</span>, <span class="charliteral">&#39;\\&#39;</span>);</div>
+<div class="line"><a name="l00022"></a><span class="lineno">   22</span>&#160;<span class="preprocessor">#else</span></div>
+<div class="line"><a name="l00023"></a><span class="lineno">   23</span>&#160;            command = <span class="stringliteral">&quot;unzip &#39;&quot;</span>;</div>
+<div class="line"><a name="l00024"></a><span class="lineno">   24</span>&#160;            command += file_path + <span class="stringliteral">&quot;&#39; -d &#39;&quot;</span> + destination_path + <span class="stringliteral">&quot;&#39;&quot;</span>;</div>
+<div class="line"><a name="l00025"></a><span class="lineno">   25</span>&#160;            command = cgv::utils::file::clean_path(command);</div>
+<div class="line"><a name="l00026"></a><span class="lineno">   26</span>&#160;<span class="preprocessor">#endif</span></div>
+<div class="line"><a name="l00027"></a><span class="lineno">   27</span>&#160;            <span class="keywordtype">int</span> result = system(command.c_str());</div>
+<div class="line"><a name="l00028"></a><span class="lineno">   28</span>&#160;            <span class="keywordflow">return</span> result != -1;</div>
+<div class="line"><a name="l00029"></a><span class="lineno">   29</span>&#160;        }</div>
+<div class="line"><a name="l00030"></a><span class="lineno">   30</span>&#160; </div>
+<div class="line"><a name="l00031"></a><span class="lineno">   31</span>&#160;        <span class="keywordtype">bool</span> compress_archive(<span class="keyword">const</span> std::string&amp; file_filter_path, <span class="keyword">const</span> std::string&amp; archive_path)</div>
+<div class="line"><a name="l00032"></a><span class="lineno">   32</span>&#160;        {</div>
+<div class="line"><a name="l00033"></a><span class="lineno">   33</span>&#160;            std::string command;</div>
+<div class="line"><a name="l00034"></a><span class="lineno">   34</span>&#160;<span class="preprocessor">#ifdef WIN32</span></div>
+<div class="line"><a name="l00035"></a><span class="lineno">   35</span>&#160;            command = <span class="stringliteral">&quot;PowerShell -Command \&quot;Compress-Archive -Path &#39;&quot;</span>;</div>
+<div class="line"><a name="l00036"></a><span class="lineno">   36</span>&#160;            command += file_filter_path + <span class="stringliteral">&quot;&#39; -DestinationPath &#39;&quot;</span> + archive_path + <span class="stringliteral">&quot;&#39;\&quot;&quot;</span>;</div>
+<div class="line"><a name="l00037"></a><span class="lineno">   37</span>&#160;<span class="preprocessor">#else</span></div>
+<div class="line"><a name="l00038"></a><span class="lineno">   38</span>&#160;            command = <span class="stringliteral">&quot;zip &#39;&quot;</span>;</div>
+<div class="line"><a name="l00039"></a><span class="lineno">   39</span>&#160;            command += archive_path + <span class="stringliteral">&quot;&#39; &#39;&quot;</span> + file_filter_path + <span class="stringliteral">&quot;&#39;&quot;</span>;</div>
+<div class="line"><a name="l00040"></a><span class="lineno">   40</span>&#160;<span class="preprocessor">#endif</span></div>
+<div class="line"><a name="l00041"></a><span class="lineno">   41</span>&#160;            <span class="keywordtype">int</span> result = system(command.c_str());</div>
+<div class="line"><a name="l00042"></a><span class="lineno">   42</span>&#160;            <span class="keywordflow">return</span> result != -1;</div>
+<div class="line"><a name="l00043"></a><span class="lineno">   43</span>&#160;        }</div>
+<div class="line"><a name="l00044"></a><span class="lineno">   44</span>&#160; </div>
+<div class="line"><a name="l00045"></a><span class="lineno">   45</span>&#160; </div>
+<div class="line"><a name="l00046"></a><span class="lineno">   46</span>&#160;        std::string query_system_output(std::string cmd, <span class="keywordtype">bool</span> cerr)</div>
+<div class="line"><a name="l00047"></a><span class="lineno">   47</span>&#160;        {</div>
+<div class="line"><a name="l00048"></a><span class="lineno">   48</span>&#160;            std::string data;</div>
+<div class="line"><a name="l00049"></a><span class="lineno">   49</span>&#160;            FILE* stream;</div>
+<div class="line"><a name="l00050"></a><span class="lineno">   50</span>&#160;            <span class="keyword">const</span> <span class="keywordtype">int</span> max_buffer = 256;</div>
+<div class="line"><a name="l00051"></a><span class="lineno">   51</span>&#160;            <span class="keywordtype">char</span> buffer[max_buffer];</div>
+<div class="line"><a name="l00052"></a><span class="lineno">   52</span>&#160;            <span class="keywordflow">if</span> (cerr)</div>
+<div class="line"><a name="l00053"></a><span class="lineno">   53</span>&#160;                cmd.append(<span class="stringliteral">&quot; 2&gt;&amp;1&quot;</span>);</div>
+<div class="line"><a name="l00054"></a><span class="lineno">   54</span>&#160; </div>
+<div class="line"><a name="l00055"></a><span class="lineno">   55</span>&#160;            stream = popen(cmd.c_str(), <span class="stringliteral">&quot;r&quot;</span>);</div>
+<div class="line"><a name="l00056"></a><span class="lineno">   56</span>&#160; </div>
+<div class="line"><a name="l00057"></a><span class="lineno">   57</span>&#160;            <span class="keywordflow">if</span> (stream) {</div>
+<div class="line"><a name="l00058"></a><span class="lineno">   58</span>&#160;                <span class="keywordflow">while</span> (!feof(stream))</div>
+<div class="line"><a name="l00059"></a><span class="lineno">   59</span>&#160;                    <span class="keywordflow">if</span> (fgets(buffer, max_buffer, stream) != NULL) data.append(buffer);</div>
+<div class="line"><a name="l00060"></a><span class="lineno">   60</span>&#160;                pclose(stream);</div>
+<div class="line"><a name="l00061"></a><span class="lineno">   61</span>&#160;            }</div>
+<div class="line"><a name="l00062"></a><span class="lineno">   62</span>&#160;            <span class="keywordflow">return</span> data;</div>
+<div class="line"><a name="l00063"></a><span class="lineno">   63</span>&#160;        }</div>
+<div class="line"><a name="l00064"></a><span class="lineno">   64</span>&#160;        <span class="keywordtype">size_t</span> read_system_output(std::string cmd, uint8_t* buffer, <span class="keywordtype">size_t</span> buffer_size, <span class="keyword">const</span> <span class="keywordtype">char</span>* progression_text, <span class="keywordtype">bool</span> use_cerr, <span class="keywordtype">void</span> (*on_progress_update)(<span class="keywordtype">int</span>, <span class="keywordtype">void</span>*), <span class="keywordtype">void</span>* user_data, <span class="keywordtype">size_t</span> block_size, <span class="keywordtype">bool</span> cycle_till_eof)</div>
+<div class="line"><a name="l00065"></a><span class="lineno">   65</span>&#160;        {</div>
+<div class="line"><a name="l00066"></a><span class="lineno">   66</span>&#160;            <a class="code" href="structcgv_1_1utils_1_1progression.html">cgv::utils::progression</a>* prog_ptr = 0;</div>
+<div class="line"><a name="l00067"></a><span class="lineno">   67</span>&#160;            <span class="keywordflow">if</span> (progression_text != 0)</div>
+<div class="line"><a name="l00068"></a><span class="lineno">   68</span>&#160;                prog_ptr = <span class="keyword">new</span> <a class="code" href="structcgv_1_1utils_1_1progression.html">cgv::utils::progression</a>(progression_text, buffer_size / block_size, 20);</div>
+<div class="line"><a name="l00069"></a><span class="lineno">   69</span>&#160;            FILE* fp;</div>
+<div class="line"><a name="l00070"></a><span class="lineno">   70</span>&#160;            <span class="keywordflow">if</span> (use_cerr)</div>
+<div class="line"><a name="l00071"></a><span class="lineno">   71</span>&#160;                cmd.append(<span class="stringliteral">&quot; 2&gt;&amp;1&quot;</span>);</div>
+<div class="line"><a name="l00072"></a><span class="lineno">   72</span>&#160;<span class="preprocessor">#ifdef WIN32</span></div>
+<div class="line"><a name="l00073"></a><span class="lineno">   73</span>&#160;            <span class="keyword">const</span> <span class="keywordtype">char</span>* mode = <span class="stringliteral">&quot;rb&quot;</span>;</div>
+<div class="line"><a name="l00074"></a><span class="lineno">   74</span>&#160;<span class="preprocessor">#else</span></div>
+<div class="line"><a name="l00075"></a><span class="lineno">   75</span>&#160;            <span class="keyword">const</span> <span class="keywordtype">char</span>* mode = <span class="stringliteral">&quot;r&quot;</span>;</div>
+<div class="line"><a name="l00076"></a><span class="lineno">   76</span>&#160;<span class="preprocessor">#endif</span></div>
+<div class="line"><a name="l00077"></a><span class="lineno">   77</span>&#160;            fp = popen(cmd.c_str(), mode);</div>
+<div class="line"><a name="l00078"></a><span class="lineno">   78</span>&#160;            <span class="keywordtype">size_t</span> nr_bytes_read = 0;</div>
+<div class="line"><a name="l00079"></a><span class="lineno">   79</span>&#160;            <span class="keywordtype">int</span> block_cnt = 0;</div>
+<div class="line"><a name="l00080"></a><span class="lineno">   80</span>&#160;            <span class="keywordflow">if</span> (fp) {</div>
+<div class="line"><a name="l00081"></a><span class="lineno">   81</span>&#160;                <span class="keywordflow">while</span> ((nr_bytes_read &lt; buffer_size || cycle_till_eof) &amp;&amp; !feof(fp)) {</div>
+<div class="line"><a name="l00082"></a><span class="lineno">   82</span>&#160;                    <span class="keywordtype">size_t</span> nr_bytes = block_size;</div>
+<div class="line"><a name="l00083"></a><span class="lineno">   83</span>&#160;                    <span class="keywordflow">if</span> (!cycle_till_eof)</div>
+<div class="line"><a name="l00084"></a><span class="lineno">   84</span>&#160;                        nr_bytes = std::min(nr_bytes, buffer_size - nr_bytes_read);</div>
+<div class="line"><a name="l00085"></a><span class="lineno">   85</span>&#160;                    <span class="keywordtype">size_t</span> offset = nr_bytes_read % buffer_size;</div>
+<div class="line"><a name="l00086"></a><span class="lineno">   86</span>&#160;                    <span class="keywordtype">size_t</span> nr_read = fread(buffer + offset, 1, nr_bytes, fp);</div>
+<div class="line"><a name="l00087"></a><span class="lineno">   87</span>&#160;                    <span class="keywordflow">if</span> (prog_ptr)</div>
+<div class="line"><a name="l00088"></a><span class="lineno">   88</span>&#160;                        prog_ptr-&gt;<a class="code" href="structcgv_1_1utils_1_1progression.html#a9c3b6e79466af211e29ad1e5c6bd68ae">step</a>();</div>
+<div class="line"><a name="l00089"></a><span class="lineno">   89</span>&#160;                    <span class="keywordflow">if</span> (on_progress_update)</div>
+<div class="line"><a name="l00090"></a><span class="lineno">   90</span>&#160;                        on_progress_update(++block_cnt, user_data);</div>
+<div class="line"><a name="l00091"></a><span class="lineno">   91</span>&#160;                    nr_bytes_read += nr_read;</div>
+<div class="line"><a name="l00092"></a><span class="lineno">   92</span>&#160;                    <span class="keywordflow">if</span> (nr_read &lt; nr_bytes)</div>
+<div class="line"><a name="l00093"></a><span class="lineno">   93</span>&#160;                        <span class="keywordflow">break</span>;</div>
+<div class="line"><a name="l00094"></a><span class="lineno">   94</span>&#160;                }</div>
+<div class="line"><a name="l00095"></a><span class="lineno">   95</span>&#160;                pclose(fp);</div>
+<div class="line"><a name="l00096"></a><span class="lineno">   96</span>&#160;            }</div>
+<div class="line"><a name="l00097"></a><span class="lineno">   97</span>&#160;            <span class="keywordflow">return</span> nr_bytes_read;</div>
+<div class="line"><a name="l00098"></a><span class="lineno">   98</span>&#160;        }</div>
+<div class="line"><a name="l00099"></a><span class="lineno">   99</span>&#160; </div>
+<div class="line"><a name="l00100"></a><span class="lineno">  100</span>&#160; </div>
+<div class="line"><a name="l00101"></a><span class="lineno">  101</span>&#160;    }</div>
+<div class="line"><a name="l00102"></a><span class="lineno">  102</span>&#160;}</div>
 <div class="ttc" id="anamespacecgv_1_1utils_html_a145360669d325a1f530539c8aff35990"><div class="ttname"><a href="namespacecgv_1_1utils.html#a145360669d325a1f530539c8aff35990">cgv::utils::replace</a></div><div class="ttdeci">unsigned int replace(std::string &amp;s, char c1, char c2)</div><div class="ttdoc">replace char c1 with c2 in the given string _s and return number of replacements</div><div class="ttdef"><b>Definition:</b> <a href="scan_8cxx_source.html#l00156">scan.cxx:156</a></div></div>
 <div class="ttc" id="anamespacecgv_html"><div class="ttname"><a href="namespacecgv.html">cgv</a></div><div class="ttdoc">the cgv namespace</div><div class="ttdef"><b>Definition:</b> <a href="print_8h_source.html#l00011">print.h:11</a></div></div>
 <div class="ttc" id="ascan_8h_html"><div class="ttname"><a href="scan_8h.html">scan.h</a></div><div class="ttdoc">Helper functions to process strings.</div></div>
+<div class="ttc" id="astructcgv_1_1utils_1_1progression_html"><div class="ttname"><a href="structcgv_1_1utils_1_1progression.html">cgv::utils::progression</a></div><div class="ttdoc">progression provides a simple possibility to show progression of process in console.</div><div class="ttdef"><b>Definition:</b> <a href="progression_8h_source.html#l00013">progression.h:14</a></div></div>
+<div class="ttc" id="astructcgv_1_1utils_1_1progression_html_a9c3b6e79466af211e29ad1e5c6bd68ae"><div class="ttname"><a href="structcgv_1_1utils_1_1progression.html#a9c3b6e79466af211e29ad1e5c6bd68ae">cgv::utils::progression::step</a></div><div class="ttdeci">void step()</div><div class="ttdoc">next iteration</div><div class="ttdef"><b>Definition:</b> <a href="progression_8cxx_source.html#l00036">progression.cxx:36</a></div></div>
 </div><!-- fragment --></div><!-- contents -->
 </div><!-- doc-content -->
 <!-- start footer part -->
