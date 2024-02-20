@@ -273,8 +273,8 @@ namespace stream_vis {
 					v_overlay = v3d_overlay;
 				}
 				if (v_overlay) {
-					v_overlay->set_overlay_stretch(cgv::app::overlay::SO_PERCENTUAL, vi.stretch);
-					v_overlay->set_overlay_alignment(cgv::app::overlay::AO_PERCENTUAL, cgv::app::overlay::AO_PERCENTUAL, vi.offset);
+					v_overlay->set_stretch(cgv::app::overlay::SO_PERCENTUAL, vi.stretch);
+					v_overlay->set_alignment(cgv::app::overlay::AO_PERCENTUAL, cgv::app::overlay::AO_PERCENTUAL, vi.offset);
 					v_overlay->toggle_key = vi.toggle;
 					view_overlays.push_back(v_overlay);
 				}

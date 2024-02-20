@@ -29,13 +29,11 @@ color_map_editor::color_map_editor() {
 	use_linear_filtering = true;
 	range = vec2(0.0f, 1.0f);
 
-	layout.padding = 13; // 10px plus 3px border
+	layout.padding = padding();
 	layout.total_height = supports_opacity ? 200 : 60;
 
-	set_overlay_alignment(AO_START, AO_START);
-	set_overlay_stretch(SO_HORIZONTAL);
-	set_overlay_margin(ivec2(-3));
-	set_overlay_size(ivec2(600u, layout.total_height));
+	set_stretch(SO_HORIZONTAL);
+	set_size(ivec2(600u, layout.total_height));
 	
 	mouse_is_on_overlay = false;
 	cursor_pos = ivec2(-100);
@@ -82,9 +80,6 @@ bool color_map_editor::handle_event(cgv::gui::event& e) {
 	// return true if the event gets handled and stopped here or false if you want to pass it to the next plugin
 	unsigned et = e.get_kind();
 	unsigned char modifiers = e.get_modifiers();
-
-	if (!show)
-		return false;
 
 	if (et == cgv::gui::EID_KEY) {
 		cgv::gui::key_event& ke = (cgv::gui::key_event&)e;
@@ -138,7 +133,7 @@ bool color_map_editor::handle_event(cgv::gui::event& e) {
 			if (ma == cgv::gui::MA_PRESS) {
 				ivec2 mpos = get_local_mouse_pos(ivec2(me.get_x(), me.get_y()));
 				
-				request_clear_selection = get_overlay_rectangle().contains(mpos);
+				request_clear_selection = is_hit(mpos);
 
 				switch (modifiers) {
 				case cgv::gui::EM_CTRL:
@@ -157,9 +152,9 @@ bool color_map_editor::handle_event(cgv::gui::event& e) {
 			}
 		}
 
-		if(cmc.color_points.handle(e, get_viewport_size(), get_overlay_rectangle()))
+		if(cmc.color_points.handle(e, get_viewport_size(), get_rectangle()))
 			return true;
-		if(cmc.opacity_points.handle(e, get_viewport_size(), get_overlay_rectangle()))
+		if(cmc.opacity_points.handle(e, get_viewport_size(), get_rectangle()))
 			return true;
 
 		if(request_clear_selection) {
@@ -174,9 +169,9 @@ bool color_map_editor::handle_event(cgv::gui::event& e) {
 void color_map_editor::handle_member_change(const cgv::utils::pointer_test& m) {
 
 	if(m.is(layout.total_height)) {
-		ivec2 size = get_overlay_size();
+		ivec2 size = get_rectangle().size;
 		size.y() = layout.total_height;
-		set_overlay_size(size);
+		set_size(size);
 	}
 
 	if(m.is(opacity_scale_exponent)) {
@@ -291,7 +286,7 @@ bool color_map_editor::init(cgv::render::context& ctx) {
 void color_map_editor::init_frame(cgv::render::context& ctx) {
 
 	if(ensure_layout(ctx)) {
-		ivec2 container_size = get_overlay_size();
+		ivec2 container_size = get_rectangle().size;
 		layout.update(container_size, supports_opacity);
 
 		auto& bg_prog = content_canvas.enable_shader(ctx, "background");
@@ -312,14 +307,9 @@ void color_map_editor::draw_content(cgv::render::context& ctx) {
 	
 	begin_content(ctx);
 	
-	ivec2 container_size = get_overlay_size();
-
-	// draw container
-	content_canvas.enable_shader(ctx, "rectangle");
-	content_canvas.set_style(ctx, container_style);
-	content_canvas.draw_shape(ctx, ivec2(0), container_size);
-
 	// draw inner border
+	ivec2 container_size = get_rectangle().size;
+	content_canvas.enable_shader(ctx, "rectangle");
 	content_canvas.set_style(ctx, border_style);
 	content_canvas.draw_shape(ctx, ivec2(layout.padding - 1) + ivec2(0, 10), container_size - 2 * layout.padding + 2 - ivec2(0, 10));
 	
@@ -422,7 +412,7 @@ void color_map_editor::draw_content(cgv::render::context& ctx) {
 
 void color_map_editor::handle_theme_change(const cgv::gui::theme_info& theme) {
 
-	canvas_overlay::handle_theme_change(theme);
+	themed_canvas_overlay::handle_theme_change(theme);
 	update_geometry();
 	post_recreate_gui();
 }
@@ -577,22 +567,15 @@ void color_map_editor::set_selected_color(rgb color) {
 }
 
 void color_map_editor::init_styles() {
-	// get theme colors
-	auto& ti = cgv::gui::theme_info::instance();
-	handle_color = rgba(ti.text(), 1.0f);
-	highlight_color = rgba(ti.highlight(), 1.0f);
-	highlight_color_hex = ti.highlight_hex();
+	auto& theme = cgv::gui::theme_info::instance();
+	handle_color = rgba(theme.text(), 1.0f);
+	highlight_color = rgba(theme.highlight(), 1.0f);
+	highlight_color_hex = theme.highlight_hex();
 
-	// configure style for the container rectangle
-	container_style.fill_color = ti.group();
-	container_style.border_color = ti.background();
-	container_style.border_width = 3.0f;
-	container_style.feather_width = 0.0f;
-	
 	// configure style for the border rectangles
-	border_style = container_style;
-	border_style.fill_color = ti.border();
+	border_style.fill_color = theme.border();
 	border_style.border_width = 0.0f;
+	border_style.feather_width = 0.0f;
 	
 	// configure style for the color scale rectangle
 	color_map_style = border_style;
@@ -614,7 +597,7 @@ void color_map_editor::init_styles() {
 	color_handle_style.use_blending = true;
 	color_handle_style.use_fill_color = false;
 	color_handle_style.position_is_center = true;
-	color_handle_style.border_color = ti.border();
+	color_handle_style.border_color = theme.border();
 	color_handle_style.border_width = 1.5f;
 	color_handle_style.border_radius = 2.0f;
 	color_handle_style.stem_width = color_point::default_width;
@@ -623,7 +606,7 @@ void color_map_editor::init_styles() {
 	label_box_style.position_is_center = true;
 	label_box_style.use_blending = true;
 	label_box_style.fill_color = handle_color;
-	label_box_style.border_color = ti.border();
+	label_box_style.border_color = theme.border();
 	label_box_style.border_width = 1.5f;
 	label_box_style.border_radius = 4.0f;
 
@@ -631,7 +614,7 @@ void color_map_editor::init_styles() {
 	opacity_handle_style.use_blending = true;
 	opacity_handle_style.use_fill_color = false;
 	opacity_handle_style.position_is_center = true;
-	opacity_handle_style.border_color = ti.border();
+	opacity_handle_style.border_color = theme.border();
 	opacity_handle_style.border_width = 1.5f;
 
 	// configure style for the lines and polygon
@@ -648,7 +631,7 @@ void color_map_editor::init_styles() {
 	cursor_label_style = cgv::g2d::text2d_style::preset_clear(rgb(0.0f));
 	cursor_label_style.font_size = 16.0f;
 
-	value_label_style = cgv::g2d::text2d_style::preset_clear(ti.group());
+	value_label_style = cgv::g2d::text2d_style::preset_clear(theme.group());
 	value_label_style.font_size = 12.0f;
 }
 

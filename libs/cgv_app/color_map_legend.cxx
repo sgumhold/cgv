@@ -10,16 +10,15 @@ namespace app {
 color_map_legend::color_map_legend() {
 
 	set_name("Color Map Legend");
-	block_events = false;
 	blend_overlay = true;
 
-	layout.padding = 13; // 10px plus 3px border
+	// TODO: Remove padding from layout and use get_content_rect() as a starting point instead.
+	layout.padding = padding();
 	layout.total_size = ivec2(300, 60);
 
-	set_overlay_alignment(AO_START, AO_END);
-	set_overlay_stretch(SO_NONE);
-	set_overlay_margin(ivec2(-3));
-	set_overlay_size(layout.total_size);
+	set_alignment(AO_START, AO_END);
+	set_stretch(SO_NONE);
+	set_size(layout.total_size);
 
 	tick_renderer = cgv::g2d::generic_2d_renderer(cgv::g2d::shaders::rectangle);
 
@@ -50,15 +49,12 @@ void color_map_legend::clear(cgv::render::context& ctx) {
 void color_map_legend::handle_member_change(const cgv::utils::pointer_test & m) {
 
 	if(m.member_of(layout.total_size)) {
-		vec2 size = get_overlay_size();
-
 		// TODO: minimum width and height depend on other layout parameters
 		layout.total_size.y() = std::max(layout.total_size.y(), 2 * layout.padding + 4 + layout.label_space);
-
-		set_overlay_size(layout.total_size);
+		set_size(layout.total_size);
 	}
 
-	if(m.one_of(show_background, invert_color))
+	if(m.one_of(background_visible, invert_color))
 		init_styles();
 
 	if(m.is(num_ticks))
@@ -103,9 +99,8 @@ bool color_map_legend::init(cgv::render::context& ctx) {
 void color_map_legend::init_frame(cgv::render::context& ctx) {
 
 	if(ensure_layout(ctx)) {
-		ivec2 container_size = get_overlay_size();
 		create_labels();
-		layout.update(container_size);
+		layout.update(get_rectangle().size);
 		create_ticks();
 
 		float width_factor = static_cast<float>(layout.color_map_rect.w());
@@ -118,15 +113,8 @@ void color_map_legend::draw_content(cgv::render::context& ctx) {
 
 	begin_content(ctx);
 
-	content_canvas.enable_shader(ctx, "rectangle");
-
-	// draw container background
-	if(show_background) {
-		content_canvas.set_style(ctx, container_style);
-		content_canvas.draw_shape(ctx, ivec2(0), get_overlay_size());
-	}
-
 	// draw inner border
+	content_canvas.enable_shader(ctx, "rectangle");
 	content_canvas.set_style(ctx, border_style);
 	content_canvas.draw_shape(ctx, layout.color_map_rect.position - 1, layout.color_map_rect.size + 2);
 
@@ -188,7 +176,7 @@ void color_map_legend::create_gui_impl() {
 	add_member_control(this, "Width", layout.total_size[0], "value_slider", "min=40;max=500;step=1;ticks=true");
 	add_member_control(this, "Height", layout.total_size[1], "value_slider", "min=40;max=500;step=1;ticks=true");
 
-	add_member_control(this, "Background", show_background, "check", "w=100", " ");
+	add_member_control(this, "Background", background_visible, "check", "w=100", " ");
 	add_member_control(this, "Invert Color", invert_color, "check", "w=88");
 
 	add_member_control(this, "Orientation", layout.orientation, "dropdown", "enums='Horizontal,Vertical'");
@@ -299,25 +287,15 @@ void color_map_legend::set_show_opacity(bool enabled) {
 }
 
 void color_map_legend::init_styles() {
-	// get theme colors
-	auto& ti = cgv::gui::theme_info::instance();
-	rgb tick_color = ti.text();
+	auto& theme = cgv::gui::theme_info::instance();
+	rgb tick_color = theme.text();
 
-	if(invert_color) {
-		tick_color.R() = pow(1.0f - pow(tick_color.R(), 2.2f), 1.0f/2.2f);
-		tick_color.G() = pow(1.0f - pow(tick_color.G(), 2.2f), 1.0f/2.2f);
-		tick_color.B() = pow(1.0f - pow(tick_color.B(), 2.2f), 1.0f/2.2f);
-	}
-
-	// configure style for the container rectangle
-	container_style.fill_color = ti.group();
-	container_style.border_color = ti.background();
-	container_style.border_width = 3.0f;
-	container_style.feather_width = 0.0f;
+	if(invert_color)
+		tick_color = pow(rgb(1.0f) - pow(tick_color, 2.2f), 1.0f / 2.2f);
 
 	// configure style for the border rectangle
-	border_style = container_style;
-	border_style.fill_color = rgba(tick_color, 1.0);
+	border_style.feather_width = 0.0f;
+	border_style.fill_color = tick_color;
 	border_style.border_width = 0.0f;
 
 	// configure style for the background rectangle
@@ -339,7 +317,7 @@ void color_map_legend::init_styles() {
 	
 	// configure style for tick marks
 	tick_style.position_is_center = true;
-	tick_style.fill_color = rgba(tick_color, 1.0f);
+	tick_style.fill_color = tick_color;
 	tick_style.feather_width = 0.0f;
 }
 

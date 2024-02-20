@@ -30,6 +30,8 @@ class CGV_API theme_info {
 protected:
 	int theme_idx;
 
+	int spacing_ = 1;
+
 	rgb background_col;
 	rgb group_col;
 	rgb control_col;
@@ -71,6 +73,9 @@ public:
 	void set_index(int idx);
 	int get_index() const;
 	bool is_dark() const;
+
+	int spacing() const { return spacing_; }
+	void spacing(int i) { spacing_ = i; }
 
 	DEF_COLOR_MEMBER_METHODS(background)
 	DEF_COLOR_MEMBER_METHODS(group)

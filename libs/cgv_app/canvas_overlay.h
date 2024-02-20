@@ -11,22 +11,22 @@
 namespace cgv {
 namespace app {
 
-class CGV_API canvas_overlay : public overlay, public cgv::gui::theme_observer {
+class CGV_API canvas_overlay : public overlay {
 private:
-	bool has_damage = true;
-	bool recreate_layout = true;
-	GLboolean blending_was_enabled = false;
+	bool has_damage_ = true;
+	bool recreate_layout_requested_ = true;
+	bool blending_was_enabled_ = false;
+
+	cgv::g2d::shape2d_style blit_style_;
+
+	cgv::render::managed_frame_buffer frame_buffer_;
 
 protected:
-	cgv::render::managed_frame_buffer fbc;
-
-	cgv::g2d::canvas content_canvas, overlay_canvas;
+	cgv::g2d::canvas overlay_canvas, content_canvas;
 
 	/// whether to enable blending during the draw process
-	bool blend_overlay;
+	bool blend_overlay = false;
 	
-	void init_overlay_style(cgv::render::context& ctx);
-
 	bool ensure_layout(cgv::render::context& ctx);
 
 	void post_recreate_layout();
@@ -43,32 +43,32 @@ protected:
 
 	void disable_blending();
 
-	void draw_impl(cgv::render::context& ctx);
+	virtual void draw_impl(cgv::render::context& ctx);
 
 	virtual void init_styles() {}
+
+	void register_shader(const std::string& name, const std::string& filename);
 
 public:
 	/// creates an overlay in the bottom left corner with zero size using a canvas for 2d drawing
 	canvas_overlay();
 
-	void clear(cgv::render::context& ctx) override;
+	bool init(cgv::render::context& ctx) override;
 
-	/// implement to handle member changes
-	virtual void handle_member_change(const cgv::utils::pointer_test& m) override {}
+	void clear(cgv::render::context& ctx) override;
 
 	/// default implementation of that calls handle_member_change and afterwards upates the member in the gui and post damage to the canvas overlay
 	virtual void on_set(void* member_ptr) override;
+	/// implement to handle member changes
+	virtual void handle_member_change(const cgv::utils::pointer_test& m) override {}
 
-	bool init(cgv::render::context& ctx) override;
 	void draw(cgv::render::context& ctx) override;
 	void finish_frame(cgv::render::context&) override;
 	virtual void draw_content(cgv::render::context& ctx) = 0;
 
-	void register_shader(const std::string& name, const std::string& filename);
-
-	virtual void handle_theme_change(const cgv::gui::theme_info& theme) override;
-
 	void post_damage(bool redraw = true);
+
+	//virtual void handle_theme_change(const cgv::gui::theme_info& theme) override;
 };
 
 typedef cgv::data::ref_ptr<canvas_overlay> canvas_overlay_ptr;

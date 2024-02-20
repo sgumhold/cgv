@@ -38,12 +38,12 @@ double color_scale_gamma_mapping(double v, double gamma, bool is_bipolar, double
 	if (is_bipolar) {
 		double amplitude = std::max(window_zero_position, 1.0 - window_zero_position);
 		if (v < window_zero_position)
-			return window_zero_position - pow((window_zero_position - v) / amplitude, gamma) * amplitude;
+			return window_zero_position - std::pow((window_zero_position - v) / amplitude, gamma) * amplitude;
 		else
-			return pow((v - window_zero_position) / amplitude, gamma) * amplitude + window_zero_position;
+			return std::pow((v - window_zero_position) / amplitude, gamma) * amplitude + window_zero_position;
 	}
 	else
-		return pow(v, gamma);
+		return std::pow(v, gamma);
 }
 
 

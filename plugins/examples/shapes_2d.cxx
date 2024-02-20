@@ -30,45 +30,29 @@ class shapes_2d :
 	public cgv::gui::provider,
 	public cgv::gui::event_handler
 {
-private:
-	/** Define a helper struct for a circle-shaped draggable control point.
-	*/
-	struct point : public cgv::g2d::draggable {
-		point(const cgv::ivec2& pos) {
-			position = pos;
-			size = cgv::vec2(16.0f);
-			position_is_center = true;
-			constraint_reference = CR_FULL_SIZE;
-		}
-
-		bool is_inside(const cgv::vec2& mp) const {
-			float dist = length(mp - center());
-			return dist <= 0.5f*size.x();
-		}
-	};
-
 protected:
 	cgv::g2d::irect viewport_rect;
 
 	cgv::g2d::canvas canvas;
 	cgv::g2d::shape2d_style bg_style, rect_style, quad_style, draggable_style;
 	cgv::g2d::circle2d_style circle_style;
+	cgv::g2d::ring2d_style ring_style;
 	cgv::g2d::line2d_style line_style, control_line_style;
 	cgv::g2d::arrow2d_style arrow_style;
 	cgv::g2d::grid2d_style grid_style;
 	cgv::g2d::text2d_style text_style;
-
+	
 	bool show_background;
 	cgv::render::texture background_tex;
 	cgv::render::texture image_tex;
 	
-	std::vector<point> points;
-	cgv::g2d::draggable_collection<point*> line_handles;
-	cgv::g2d::draggable_collection<point*> arrow_handles;
-	cgv::g2d::draggable_collection<point*> quadratic_curve_handles;
-	cgv::g2d::draggable_collection<point*> cubic_curve_handles;
-	cgv::g2d::draggable_collection<point*> text_handles;
-	cgv::g2d::draggable_collection<point*> quad_handles;
+	std::vector<cgv::g2d::circle_draggable> points;
+	cgv::g2d::draggable_collection<cgv::g2d::circle_draggable*> line_handles;
+	cgv::g2d::draggable_collection<cgv::g2d::circle_draggable*> arrow_handles;
+	cgv::g2d::draggable_collection<cgv::g2d::circle_draggable*> quadratic_curve_handles;
+	cgv::g2d::draggable_collection<cgv::g2d::circle_draggable*> cubic_curve_handles;
+	cgv::g2d::draggable_collection<cgv::g2d::circle_draggable*> text_handles;
+	cgv::g2d::draggable_collection<cgv::g2d::circle_draggable*> quad_handles;
 
 	cgv::render::generic_renderer line_renderer, quadratic_spline_renderer, cubic_spline_renderer, point_renderer;
 	
@@ -130,6 +114,7 @@ public:
 
 		canvas.register_shader("rectangle", cgv::g2d::shaders::rectangle);
 		canvas.register_shader("circle", cgv::g2d::shaders::circle);
+		canvas.register_shader("ring", cgv::g2d::shaders::ring);
 		canvas.register_shader("ellipse", cgv::g2d::shaders::ellipse);
 		canvas.register_shader("quad", cgv::g2d::shaders::quad);
 		canvas.register_shader("arrow", cgv::g2d::shaders::arrow);
@@ -289,29 +274,36 @@ public:
 		if(msdf_font.is_initialized())
 			texts.set_msdf_font(&msdf_font);
 
+		const auto& setup_point = [](const cgv::vec2 & position) {
+			cgv::g2d::circle_draggable p(position, cgv::vec2(16.0f));
+			p.position_is_center = true;
+			p.constraint_reference = cgv::g2d::draggable::ConstraintReference::CR_FULL_SIZE;
+			return p;
+		};
+		
 		// add 2 control points for the arrow
-		points.push_back(point(cgv::ivec2(600, 600)));
-		points.push_back(point(cgv::ivec2(700, 600)));
+		points.push_back(setup_point({ 600, 600 }));
+		points.push_back(setup_point({ 700, 600 }));
 		// add 2 control points for the line
-		points.push_back(point(cgv::vec2(100, 500)));
-		points.push_back(point(cgv::vec2(500, 600)));
+		points.push_back(setup_point({ 100, 500 }));
+		points.push_back(setup_point({ 500, 600 }));
 
 		// add 3 control points for the quadratic curve
-		points.push_back(point(cgv::vec2(300, 200)));
-		points.push_back(point(cgv::vec2(350, 300)));
-		points.push_back(point(cgv::vec2(400, 150)));
+		points.push_back(setup_point({ 300, 200 }));
+		points.push_back(setup_point({ 350, 300 }));
+		points.push_back(setup_point({ 400, 150 }));
 
 		// add 4 control points for the cubic curve
-		points.push_back(point(cgv::vec2(600, 300)));
-		points.push_back(point(cgv::vec2(650, 400)));
-		points.push_back(point(cgv::vec2(700, 250)));
-		points.push_back(point(cgv::vec2(800, 300)));
+		points.push_back(setup_point({ 600, 300 }));
+		points.push_back(setup_point({ 650, 400 }));
+		points.push_back(setup_point({ 700, 250 }));
+		points.push_back(setup_point({ 800, 300 }));
 		// add 2 control points for the texts
-		points.push_back(point(cgv::ivec2(750, 150)));
-		points.push_back(point(cgv::ivec2(500, 500)));
+		points.push_back(setup_point({ 750, 150 }));
+		points.push_back(setup_point({ 500, 500 }));
 		// add 2 control points for the quad
-		points.push_back(point(cgv::ivec2(350, 350)));
-		points.push_back(point(cgv::ivec2(550, 450)));
+		points.push_back(setup_point({ 350, 350 }));
+		points.push_back(setup_point({ 550, 450 }));
 		
 		// put pointers to the control points into their respective draggables collection
 		int idx = 0;
@@ -399,10 +391,16 @@ public:
 		canvas.draw_shape(ctx, cgv::ivec2(100, 300), cgv::ivec2(200, 100), cgv::rgba(0, 1, 1, 1));
 		canvas.disable_current_shader(ctx);
 
+		auto& ring_prog = canvas.enable_shader(ctx, "ring");
+		ring_style.apply(ctx, ring_prog);
+		// size defines the diamater in the x coordinate and the completeness in [0,1] in the y-coordinate
+		canvas.draw_shape(ctx, cgv::vec2(700.0f, 450.0f), cgv::vec2(100.0f, 0.6f), cgv::rgba(0, 0, 0, 1));
+		canvas.disable_current_shader(ctx);
+
 		auto& quad_prog = canvas.enable_shader(ctx, "quad");
 		quad_style.apply(ctx, quad_prog);
 		// takes 4 positions (must be convex)
-		canvas.draw_shape4(ctx, cgv::ivec2(400, 300), cgv::ivec2(480, 300), points[13].int_position(), points[14].int_position(), cgv::rgba(1, 1, 0, 1));
+		canvas.draw_shape4(ctx, cgv::ivec2(400, 300), cgv::ivec2(480, 300), static_cast<cgv::ivec2>(points[13].position), static_cast<cgv::ivec2>(points[14].position), cgv::rgba(1, 1, 0, 1));
 		canvas.disable_current_shader(ctx);
 
 		auto& arrow_prog = canvas.enable_shader(ctx, "arrow");
@@ -461,12 +459,11 @@ public:
 		line_renderer.render(ctx, PT_LINES, control_lines);
 	}
 	void draw_draggables(cgv::render::context& ctx) {
-		// TODO: move creation of render data to own function and call only when necessary
 		draggable_points.clear();
-		cgv::ivec2 render_size;
+		cgv::vec2 render_size;
 
 		for(unsigned i = 0; i < points.size(); ++i) {
-			const point& p = points[i];
+			const auto& p = points[i];
 			draggable_points.add(p.position);
 			render_size = p.size;
 		}
@@ -477,7 +474,7 @@ public:
 		point_prog.enable(ctx);
 		canvas.set_view(ctx, point_prog);
 		draggable_style.apply(ctx, point_prog);
-		point_prog.set_attribute(ctx, "size", cgv::vec2(render_size));
+		point_prog.set_attribute(ctx, "size", render_size);
 		point_prog.disable(ctx);
 		point_renderer.render(ctx, PT_POINTS, draggable_points);
 	}
@@ -488,9 +485,6 @@ public:
 			lines.add(line_handles[i]->position, brightness * color);
 		}
 		lines.set_out_of_date();
-	}
-	void create_quadratic_curve_render_data() {
-		
 	}
 	void create_curve_render_data() {
 		control_lines.clear();
@@ -600,6 +594,7 @@ public:
 		// set default style of all shapes
 		set_default_shape_style(rect_style);
 		set_default_shape_style(circle_style);
+		set_default_shape_style(ring_style);
 		set_default_shape_style(quad_style);
 		set_default_shape_style(text_style);
 		set_default_shape_style(line_style);
@@ -633,11 +628,11 @@ public:
 		cgv::mat3 R = cgv::math::rotate2h(model_params.angle);
 		return T * S * R;
 	}
-	point* get_hit_point(const cgv::ivec2& pos) {
-		point* hit = nullptr;
+	cgv::g2d::circle_draggable* get_hit_point(const cgv::ivec2& pos) {
+		cgv::g2d::circle_draggable* hit = nullptr;
 		for(unsigned i = 0; i < points.size(); ++i) {
-			point& p = points[i];
-			if(p.is_inside(pos))
+			auto& p = points[i];
+			if(p.contains(pos))
 				hit = &p;
 		}
 		return hit;
@@ -648,49 +643,56 @@ public:
 		add_decorator("Example Settings", "heading", "level=3");
 		add_member_control(this, "Show Background", show_background, "check");
 
-		if(begin_tree_node("Grid Style", grid_style, false)) {
+		if(begin_tree_node("Grid Style", grid_style)) {
 			align("\a");
 			add_gui("grid_style", grid_style);
 			align("\b");
 			end_tree_node(grid_style);
 		}
 
-		if(begin_tree_node("Rectangle Style", rect_style, false)) {
+		if(begin_tree_node("Rectangle Style", rect_style)) {
 			align("\a");
 			add_gui("rect_style", rect_style);
 			align("\b");
 			end_tree_node(rect_style);
 		}
 
-		if(begin_tree_node("Circle Style", circle_style, false)) {
+		if(begin_tree_node("Circle Style", circle_style)) {
 			align("\a");
 			add_gui("circle_style", circle_style);
 			align("\b");
 			end_tree_node(circle_style);
 		}
 
-		if(begin_tree_node("Quad Style", quad_style, false)) {
+		if(begin_tree_node("Ring Style", ring_style)) {
+			align("\a");
+			add_gui("ring_style", ring_style);
+			align("\b");
+			end_tree_node(ring_style);
+		}
+
+		if(begin_tree_node("Quad Style", quad_style)) {
 			align("\a");
 			add_gui("quad_style", quad_style);
 			align("\b");
 			end_tree_node(quad_style);
 		}
 
-		if(begin_tree_node("Line Style", line_style, false)) {
+		if(begin_tree_node("Line Style", line_style)) {
 			align("\a");
 			add_gui("line_style", line_style);
 			align("\b");
 			end_tree_node(line_style);
 		}
 
-		if(begin_tree_node("Arrow Style", arrow_style, false)) {
+		if(begin_tree_node("Arrow Style", arrow_style)) {
 			align("\a");
 			add_gui("arrow_style", arrow_style);
 			align("\b");
 			end_tree_node(arrow_style);
 		}
 
-		if(begin_tree_node("Text Style", text_style, false)) {
+		if(begin_tree_node("Text Style", text_style)) {
 			align("\a");
 			add_gui("text_style", text_style);
 			add_member_control(this, "Horizontal Alignment", text_align_h, "dropdown", "enums='Center=0,Left=1,Right=2'");
@@ -716,5 +718,5 @@ public:
 
 #include <cgv/base/register.h>
 
-/// register a factory to create new rounded cone texturing tests
+/// register a factory to create new shapes_2d demos
 cgv::base::factory_registration<shapes_2d> shapes_2d_fac("New/Demo/2D Shapes");

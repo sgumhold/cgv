@@ -10,7 +10,7 @@ namespace stream_vis {
 	}
 	void view2d_overlay::update_views()
 	{
-		cgv::ivec2 os = get_overlay_size();
+		cgv::ivec2 os = get_rectangle().size;
 		for (const auto& p : plots) {
 			cgv::vec2 pixel_scales;
 			for (int ai = 0; ai < 2; ++ai)
@@ -45,7 +45,7 @@ namespace stream_vis {
 	}
 	void view2d_overlay::set_modelview_projection(cgv::render::context& ctx)
 	{
-		cgv::ivec2 os = get_overlay_size();
+		cgv::ivec2 os = get_rectangle().size;
 		float aspect = (float)os[0]/ os[1];
 		float extent_x = 0.5f * view_width / zoom_factor;
 		float extent_y = extent_x / aspect;
@@ -91,7 +91,7 @@ namespace stream_vis {
 			if (me.get_button_state() == cgv::gui::MB_RIGHT_BUTTON) {
 				int dx = me.get_x() - pan_start_x;
 				int dy = me.get_y() - pan_start_y;
-				cgv::ivec2 os = get_overlay_size();
+				cgv::ivec2 os = get_rectangle().size;
 				float aspect = (float)os[0]/os[1];
 				pan_pos(0) = pan_start_pos(0) - (float)dx/os[0] * view_width / zoom_factor;
 				pan_pos(1) = pan_start_pos(1) + (float)dy/os[1] * view_width / zoom_factor / aspect;
