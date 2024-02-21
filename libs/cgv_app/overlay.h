@@ -52,7 +52,7 @@ protected:
 	AlignmentOption vertical_alignment;
 	StretchOption stretch;
 	ivec2 margin;
-	ivec2 size;
+	//ivec2 size;
 	vec2 percentual_offset = vec2(0.0f);
 	vec2 percentual_size = vec2(1.0f);
 
@@ -143,7 +143,8 @@ public:
 
 	/// sets the default size of the overlay before stretch gets applied
 	void set_overlay_size(const ivec2& s) {
-		size = s;
+		//size = s;
+		container.size = s;
 		update_overlay_layout();
 	}
 
