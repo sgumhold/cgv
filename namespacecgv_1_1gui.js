@@ -99,7 +99,6 @@ var namespacecgv_1_1gui =
     [ "layout_inline_ptr", "namespacecgv_1_1gui.html#a1568b5c96eec466f2990ee7c7e6254bf", null ],
     [ "layout_ptr", "namespacecgv_1_1gui.html#a6f7b5d233f9b765527c277616a6bf9a3", null ],
     [ "layout_table_ptr", "namespacecgv_1_1gui.html#a9265f54c5bc1f0abe8e00dd1718fe861", null ],
-    [ "rgb", "namespacecgv_1_1gui.html#a121dd848cd8a6123b1676b1ed5c88552", null ],
     [ "text_editor_ptr", "namespacecgv_1_1gui.html#a6ebd0c185e95d755a9a7ad4143d288a3", null ],
     [ "trigger_server_ptr", "namespacecgv_1_1gui.html#a206d67d701d8b857a630c19e91e234c8", null ],
     [ "view_ptr", "namespacecgv_1_1gui.html#aceb07fba6859effc2353f70788dd7f9b", null ],

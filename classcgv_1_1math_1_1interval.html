@@ -82,14 +82,14 @@ $(document).ready(function(){initNavTree('classcgv_1_1math_1_1interval.html','')
 
 <div class="header">
   <div class="summary">
-<a href="#pro-attribs">Protected Attributes</a> &#124;
+<a href="#pub-attribs">Public Attributes</a> &#124;
 <a href="classcgv_1_1math_1_1interval-members.html">List of all members</a>  </div>
   <div class="headertitle">
 <div class="title">cgv::math::interval&lt; T &gt; Class Template Reference</div>  </div>
 </div><!--header-->
 <div class="contents">
 
-<p>the interval template represents a close interval of two numbers, i.e.  
+<p>The interval template represents a closed interval of two numbers, i.e.  
  <a href="classcgv_1_1math_1_1interval.html#details">More...</a></p>
 
 <p><code>#include &lt;<a class="el" href="interval_8h_source.html">interval.h</a>&gt;</code></p>
@@ -102,20 +102,20 @@ Public Member Functions</h2></td></tr>
 <tr class="memdesc:a513efd992415d1142928f087ccabb656"><td class="mdescLeft">&#160;</td><td class="mdescRight">construct empty interval <br /></td></tr>
 <tr class="separator:a513efd992415d1142928f087ccabb656"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ab44e0dcfc3a7b148479e86db694cdf24"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcgv_1_1math_1_1interval.html#ab44e0dcfc3a7b148479e86db694cdf24">interval</a> (bool)</td></tr>
-<tr class="memdesc:ab44e0dcfc3a7b148479e86db694cdf24"><td class="mdescLeft">&#160;</td><td class="mdescRight">construct interval over all valid values of the value type, where the parameter is only a dummy to distinguish this constructor from the standard constructor.  <a href="classcgv_1_1math_1_1interval.html#ab44e0dcfc3a7b148479e86db694cdf24">More...</a><br /></td></tr>
+<tr class="memdesc:ab44e0dcfc3a7b148479e86db694cdf24"><td class="mdescLeft">&#160;</td><td class="mdescRight">Construct interval over all valid values of the value type, where the parameter is only a dummy to distinguish this constructor from the standard constructor.  <a href="classcgv_1_1math_1_1interval.html#ab44e0dcfc3a7b148479e86db694cdf24">More...</a><br /></td></tr>
 <tr class="separator:ab44e0dcfc3a7b148479e86db694cdf24"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a97f5a54b3656beaa31f75851ecc53686"><td class="memItemLeft" align="right" valign="top"><a id="a97f5a54b3656beaa31f75851ecc53686"></a>
 &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcgv_1_1math_1_1interval.html#a97f5a54b3656beaa31f75851ecc53686">interval</a> (const <a class="el" href="classcgv_1_1math_1_1interval.html">interval</a>&lt; T &gt; &amp;I)</td></tr>
 <tr class="memdesc:a97f5a54b3656beaa31f75851ecc53686"><td class="mdescLeft">&#160;</td><td class="mdescRight">copy constructor <br /></td></tr>
 <tr class="separator:a97f5a54b3656beaa31f75851ecc53686"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a237b00ce38dbb87f0b86f99888991f46"><td class="memItemLeft" align="right" valign="top"><a id="a237b00ce38dbb87f0b86f99888991f46"></a>
-&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcgv_1_1math_1_1interval.html#a237b00ce38dbb87f0b86f99888991f46">interval</a> (const T &amp;_lb, const T &amp;_ub)</td></tr>
-<tr class="memdesc:a237b00ce38dbb87f0b86f99888991f46"><td class="mdescLeft">&#160;</td><td class="mdescRight">contruct interval from bounds, sort bounds if necessary. To construct empty interval call the standard constructor <br /></td></tr>
-<tr class="separator:a237b00ce38dbb87f0b86f99888991f46"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:ae5647a4ddde40702f550e072c7e74519"><td class="memItemLeft" align="right" valign="top"><a id="ae5647a4ddde40702f550e072c7e74519"></a>
-bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcgv_1_1math_1_1interval.html#ae5647a4ddde40702f550e072c7e74519">is_empty</a> () const</td></tr>
-<tr class="memdesc:ae5647a4ddde40702f550e072c7e74519"><td class="mdescLeft">&#160;</td><td class="mdescRight">check if interval is empty <br /></td></tr>
-<tr class="separator:ae5647a4ddde40702f550e072c7e74519"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a7e47e9e586b17f9a7f05bc94a9af1691"><td class="memItemLeft" align="right" valign="top"><a id="a7e47e9e586b17f9a7f05bc94a9af1691"></a>
+&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcgv_1_1math_1_1interval.html#a7e47e9e586b17f9a7f05bc94a9af1691">interval</a> (const T &amp;lb, const T &amp;ub)</td></tr>
+<tr class="memdesc:a7e47e9e586b17f9a7f05bc94a9af1691"><td class="mdescLeft">&#160;</td><td class="mdescRight">Contruct interval from bounds, sort bounds if necessary. To construct empty interval call the standard constructor. <br /></td></tr>
+<tr class="separator:a7e47e9e586b17f9a7f05bc94a9af1691"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a8e2cf82e30c7a5fab0fd0000007661f7"><td class="memItemLeft" align="right" valign="top"><a id="a8e2cf82e30c7a5fab0fd0000007661f7"></a>
+bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcgv_1_1math_1_1interval.html#a8e2cf82e30c7a5fab0fd0000007661f7">empty</a> () const</td></tr>
+<tr class="memdesc:a8e2cf82e30c7a5fab0fd0000007661f7"><td class="mdescLeft">&#160;</td><td class="mdescRight">check if interval is empty <br /></td></tr>
+<tr class="separator:a8e2cf82e30c7a5fab0fd0000007661f7"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a31083c435035b1cc6ee29e0298428351"><td class="memItemLeft" align="right" valign="top"><a id="a31083c435035b1cc6ee29e0298428351"></a>
 void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcgv_1_1math_1_1interval.html#a31083c435035b1cc6ee29e0298428351">clear</a> ()</td></tr>
 <tr class="memdesc:a31083c435035b1cc6ee29e0298428351"><td class="mdescLeft">&#160;</td><td class="mdescRight">set to empty interval <br /></td></tr>
@@ -124,30 +124,14 @@ void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="clas
 bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcgv_1_1math_1_1interval.html#a9f461286db72dc04fb750c6e26223c99">contains</a> (const T &amp;v) const</td></tr>
 <tr class="memdesc:a9f461286db72dc04fb750c6e26223c99"><td class="mdescLeft">&#160;</td><td class="mdescRight">check if given value is contained in interval <br /></td></tr>
 <tr class="separator:a9f461286db72dc04fb750c6e26223c99"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:af26667364828ab726d984d3818d7c59e"><td class="memItemLeft" align="right" valign="top"><a id="af26667364828ab726d984d3818d7c59e"></a>
-void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcgv_1_1math_1_1interval.html#af26667364828ab726d984d3818d7c59e">set_lower_bound</a> (const T &amp;_lb)</td></tr>
-<tr class="memdesc:af26667364828ab726d984d3818d7c59e"><td class="mdescLeft">&#160;</td><td class="mdescRight">set the lower bound <br /></td></tr>
-<tr class="separator:af26667364828ab726d984d3818d7c59e"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:ae218b60faeb7293262c8f911d7844d7b"><td class="memItemLeft" align="right" valign="top"><a id="ae218b60faeb7293262c8f911d7844d7b"></a>
-void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcgv_1_1math_1_1interval.html#ae218b60faeb7293262c8f911d7844d7b">set_upper_bound</a> (const T &amp;_ub)</td></tr>
-<tr class="memdesc:ae218b60faeb7293262c8f911d7844d7b"><td class="mdescLeft">&#160;</td><td class="mdescRight">set the upper bound <br /></td></tr>
-<tr class="separator:ae218b60faeb7293262c8f911d7844d7b"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a1b8918635ade688a4f80efa8351caa49"><td class="memItemLeft" align="right" valign="top"><a id="a1b8918635ade688a4f80efa8351caa49"></a>
-const T &amp;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcgv_1_1math_1_1interval.html#a1b8918635ade688a4f80efa8351caa49">get_lower_bound</a> () const</td></tr>
-<tr class="memdesc:a1b8918635ade688a4f80efa8351caa49"><td class="mdescLeft">&#160;</td><td class="mdescRight">return the lower bound <br /></td></tr>
-<tr class="separator:a1b8918635ade688a4f80efa8351caa49"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:afe47855f81e4e263cd8e69ce075ea90f"><td class="memItemLeft" align="right" valign="top"><a id="afe47855f81e4e263cd8e69ce075ea90f"></a>
-const T &amp;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcgv_1_1math_1_1interval.html#afe47855f81e4e263cd8e69ce075ea90f">get_upper_bound</a> () const</td></tr>
-<tr class="memdesc:afe47855f81e4e263cd8e69ce075ea90f"><td class="mdescLeft">&#160;</td><td class="mdescRight">return the upper bound <br /></td></tr>
-<tr class="separator:afe47855f81e4e263cd8e69ce075ea90f"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a057173b903a08e7b7a3409b929389630"><td class="memItemLeft" align="right" valign="top"><a id="a057173b903a08e7b7a3409b929389630"></a>
-T&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcgv_1_1math_1_1interval.html#a057173b903a08e7b7a3409b929389630">get_center</a> () const</td></tr>
-<tr class="memdesc:a057173b903a08e7b7a3409b929389630"><td class="mdescLeft">&#160;</td><td class="mdescRight">return the center value, which is only valid if the interval is not empty <br /></td></tr>
-<tr class="separator:a057173b903a08e7b7a3409b929389630"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a65f8996d80a18f5b9923ee351a59c279"><td class="memItemLeft" align="right" valign="top"><a id="a65f8996d80a18f5b9923ee351a59c279"></a>
-T&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcgv_1_1math_1_1interval.html#a65f8996d80a18f5b9923ee351a59c279">get_size</a> () const</td></tr>
-<tr class="memdesc:a65f8996d80a18f5b9923ee351a59c279"><td class="mdescLeft">&#160;</td><td class="mdescRight">return the size of the interval <br /></td></tr>
-<tr class="separator:a65f8996d80a18f5b9923ee351a59c279"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a220431ae4326f8263441677c1479fc9f"><td class="memItemLeft" align="right" valign="top"><a id="a220431ae4326f8263441677c1479fc9f"></a>
+T&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcgv_1_1math_1_1interval.html#a220431ae4326f8263441677c1479fc9f">center</a> () const</td></tr>
+<tr class="memdesc:a220431ae4326f8263441677c1479fc9f"><td class="mdescLeft">&#160;</td><td class="mdescRight">return the center value, which is only valid if the interval is not empty <br /></td></tr>
+<tr class="separator:a220431ae4326f8263441677c1479fc9f"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a27c6d5393566c352bdcd5fb58cc1f369"><td class="memItemLeft" align="right" valign="top"><a id="a27c6d5393566c352bdcd5fb58cc1f369"></a>
+T&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcgv_1_1math_1_1interval.html#a27c6d5393566c352bdcd5fb58cc1f369">size</a> () const</td></tr>
+<tr class="memdesc:a27c6d5393566c352bdcd5fb58cc1f369"><td class="mdescLeft">&#160;</td><td class="mdescRight">return the size of the interval <br /></td></tr>
+<tr class="separator:a27c6d5393566c352bdcd5fb58cc1f369"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:aab1d41908a2f6d856bc63289b4388160"><td class="memItemLeft" align="right" valign="top"><a id="aab1d41908a2f6d856bc63289b4388160"></a>
 <a class="el" href="classcgv_1_1math_1_1interval.html">interval</a>&lt; T &gt; &amp;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcgv_1_1math_1_1interval.html#aab1d41908a2f6d856bc63289b4388160">intersect</a> (const <a class="el" href="classcgv_1_1math_1_1interval.html">interval</a>&lt; T &gt; &amp;I)</td></tr>
 <tr class="memdesc:aab1d41908a2f6d856bc63289b4388160"><td class="mdescLeft">&#160;</td><td class="mdescRight">set interval to intersection with given interval and return reference to this interval <br /></td></tr>
@@ -160,21 +144,25 @@ T&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcg
 <a class="el" href="classcgv_1_1math_1_1interval.html">interval</a>&lt; T &gt; &amp;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcgv_1_1math_1_1interval.html#ab564b36795d50d41150c93bbfe915c5c">extend</a> (const T &amp;v)</td></tr>
 <tr class="memdesc:ab564b36795d50d41150c93bbfe915c5c"><td class="mdescLeft">&#160;</td><td class="mdescRight">extend interval such that it includes the given value <br /></td></tr>
 <tr class="separator:ab564b36795d50d41150c93bbfe915c5c"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ad9a734d3628adbba60af63a94937c4b5"><td class="memItemLeft" align="right" valign="top"><a id="ad9a734d3628adbba60af63a94937c4b5"></a>
+<a class="el" href="classcgv_1_1math_1_1interval.html">interval</a>&lt; T &gt; &amp;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcgv_1_1math_1_1interval.html#ad9a734d3628adbba60af63a94937c4b5">extend</a> (const T vs[], size_t n)</td></tr>
+<tr class="memdesc:ad9a734d3628adbba60af63a94937c4b5"><td class="mdescLeft">&#160;</td><td class="mdescRight">extend interval such that it includes the n given values <br /></td></tr>
+<tr class="separator:ad9a734d3628adbba60af63a94937c4b5"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a7167c7623e1f11be52148871b7a46b6c"><td class="memItemLeft" align="right" valign="top"><a id="a7167c7623e1f11be52148871b7a46b6c"></a>
+<a class="el" href="classcgv_1_1math_1_1interval.html">interval</a>&lt; T &gt; &amp;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcgv_1_1math_1_1interval.html#a7167c7623e1f11be52148871b7a46b6c">extend</a> (const std::vector&lt; T &gt; &amp;vs)</td></tr>
+<tr class="memdesc:a7167c7623e1f11be52148871b7a46b6c"><td class="mdescLeft">&#160;</td><td class="mdescRight">extend interval such that it includes the given values <br /></td></tr>
+<tr class="separator:a7167c7623e1f11be52148871b7a46b6c"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ac5b6b8ba5d8064d5b8d62a2cef41074d"><td class="memItemLeft" align="right" valign="top"><a id="ac5b6b8ba5d8064d5b8d62a2cef41074d"></a>
 <a class="el" href="classcgv_1_1math_1_1interval.html">interval</a>&lt; T &gt; &amp;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcgv_1_1math_1_1interval.html#ac5b6b8ba5d8064d5b8d62a2cef41074d">extension</a> (const T &amp;v)</td></tr>
-<tr class="memdesc:ac5b6b8ba5d8064d5b8d62a2cef41074d"><td class="mdescLeft">&#160;</td><td class="mdescRight">return extension of interval that it includes the given value <br /></td></tr>
+<tr class="memdesc:ac5b6b8ba5d8064d5b8d62a2cef41074d"><td class="mdescLeft">&#160;</td><td class="mdescRight">return extension of interval so that it includes the given value <br /></td></tr>
 <tr class="separator:ac5b6b8ba5d8064d5b8d62a2cef41074d"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a9889409a2c7499eaf81b3ba909c9f841"><td class="memItemLeft" align="right" valign="top"><a id="a9889409a2c7499eaf81b3ba909c9f841"></a>
 <a class="el" href="classcgv_1_1math_1_1interval.html">interval</a>&lt; T &gt; &amp;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcgv_1_1math_1_1interval.html#a9889409a2c7499eaf81b3ba909c9f841">extend</a> (const <a class="el" href="classcgv_1_1math_1_1interval.html">interval</a>&lt; T &gt; &amp;I)</td></tr>
 <tr class="memdesc:a9889409a2c7499eaf81b3ba909c9f841"><td class="mdescLeft">&#160;</td><td class="mdescRight">extend interval such that it includes the given interval <br /></td></tr>
 <tr class="separator:a9889409a2c7499eaf81b3ba909c9f841"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:aae8c0b468d4471820b2231de6141d5ae"><td class="memItemLeft" align="right" valign="top"><a id="aae8c0b468d4471820b2231de6141d5ae"></a>
-<a class="el" href="classcgv_1_1math_1_1interval.html">interval</a>&lt; T &gt; &amp;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcgv_1_1math_1_1interval.html#aae8c0b468d4471820b2231de6141d5ae">extend</a> (const T &amp;v0, const T &amp;v1, const T &amp;v2, const T &amp;v3)</td></tr>
-<tr class="memdesc:aae8c0b468d4471820b2231de6141d5ae"><td class="mdescLeft">&#160;</td><td class="mdescRight">extend by four values <br /></td></tr>
-<tr class="separator:aae8c0b468d4471820b2231de6141d5ae"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a2f3f7d2bebd1f3ab430c9a63f28d64b9"><td class="memItemLeft" align="right" valign="top"><a id="a2f3f7d2bebd1f3ab430c9a63f28d64b9"></a>
 <a class="el" href="classcgv_1_1math_1_1interval.html">interval</a>&lt; T &gt; &amp;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcgv_1_1math_1_1interval.html#a2f3f7d2bebd1f3ab430c9a63f28d64b9">extension</a> (const <a class="el" href="classcgv_1_1math_1_1interval.html">interval</a>&lt; T &gt; &amp;J)</td></tr>
-<tr class="memdesc:a2f3f7d2bebd1f3ab430c9a63f28d64b9"><td class="mdescLeft">&#160;</td><td class="mdescRight">return extension of interval that it includes the given interval <br /></td></tr>
+<tr class="memdesc:a2f3f7d2bebd1f3ab430c9a63f28d64b9"><td class="mdescLeft">&#160;</td><td class="mdescRight">return extension of interval so that it includes the given interval <br /></td></tr>
 <tr class="separator:a2f3f7d2bebd1f3ab430c9a63f28d64b9"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr><td colspan="2"><div class="groupHeader">scalar operators</div></td></tr>
 <tr class="memitem:aaa195a36d86f5249da1ccf8250656d39"><td class="memItemLeft" align="right" valign="top"><a id="aaa195a36d86f5249da1ccf8250656d39"></a>
@@ -183,7 +171,7 @@ T&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcg
 <tr class="separator:aaa195a36d86f5249da1ccf8250656d39"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:adefc46690c85c5c75e835e665be78beb"><td class="memItemLeft" align="right" valign="top"><a id="adefc46690c85c5c75e835e665be78beb"></a>
 <a class="el" href="classcgv_1_1math_1_1interval.html">interval</a>&lt; T &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcgv_1_1math_1_1interval.html#adefc46690c85c5c75e835e665be78beb">operator*</a> (const T &amp;s) const</td></tr>
-<tr class="memdesc:adefc46690c85c5c75e835e665be78beb"><td class="mdescLeft">&#160;</td><td class="mdescRight">return scaled the interval <br /></td></tr>
+<tr class="memdesc:adefc46690c85c5c75e835e665be78beb"><td class="mdescLeft">&#160;</td><td class="mdescRight">return scaled interval <br /></td></tr>
 <tr class="separator:adefc46690c85c5c75e835e665be78beb"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:aa69f46d93bd0184fb82b344338604a68"><td class="memItemLeft" align="right" valign="top"><a id="aa69f46d93bd0184fb82b344338604a68"></a>
 <a class="el" href="classcgv_1_1math_1_1interval.html">interval</a>&lt; T &gt; &amp;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcgv_1_1math_1_1interval.html#aa69f46d93bd0184fb82b344338604a68">operator/=</a> (const T &amp;s)</td></tr>
@@ -191,7 +179,7 @@ T&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcg
 <tr class="separator:aa69f46d93bd0184fb82b344338604a68"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a876b17f206117df228353632ffd91b41"><td class="memItemLeft" align="right" valign="top"><a id="a876b17f206117df228353632ffd91b41"></a>
 <a class="el" href="classcgv_1_1math_1_1interval.html">interval</a>&lt; T &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcgv_1_1math_1_1interval.html#a876b17f206117df228353632ffd91b41">operator/</a> (const T &amp;s) const</td></tr>
-<tr class="memdesc:a876b17f206117df228353632ffd91b41"><td class="mdescLeft">&#160;</td><td class="mdescRight">return divided the interval <br /></td></tr>
+<tr class="memdesc:a876b17f206117df228353632ffd91b41"><td class="mdescLeft">&#160;</td><td class="mdescRight">return divided interval <br /></td></tr>
 <tr class="separator:a876b17f206117df228353632ffd91b41"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a479cfaf07203c2847ca32341229d7bba"><td class="memItemLeft" align="right" valign="top"><a id="a479cfaf07203c2847ca32341229d7bba"></a>
 <a class="el" href="classcgv_1_1math_1_1interval.html">interval</a>&lt; T &gt; &amp;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcgv_1_1math_1_1interval.html#a479cfaf07203c2847ca32341229d7bba">operator+=</a> (const T &amp;s)</td></tr>
@@ -219,7 +207,7 @@ T&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcg
 <tr class="memdesc:a73cdb375187da0adb5d5df33a6cf75c8"><td class="mdescLeft">&#160;</td><td class="mdescRight">return the interval of all values of products of values from the two intervals <br /></td></tr>
 <tr class="separator:a73cdb375187da0adb5d5df33a6cf75c8"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ad0193dd3ef3000d8d5290a57ed3e98c1"><td class="memItemLeft" align="right" valign="top"><a class="el" href="classcgv_1_1math_1_1interval.html">interval</a>&lt; T &gt; &amp;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcgv_1_1math_1_1interval.html#ad0193dd3ef3000d8d5290a57ed3e98c1">operator/=</a> (const <a class="el" href="classcgv_1_1math_1_1interval.html">interval</a>&lt; T &gt; &amp;I)</td></tr>
-<tr class="memdesc:ad0193dd3ef3000d8d5290a57ed3e98c1"><td class="mdescLeft">&#160;</td><td class="mdescRight">compute the interval of all values of all quotients of values from the two intervals.  <a href="classcgv_1_1math_1_1interval.html#ad0193dd3ef3000d8d5290a57ed3e98c1">More...</a><br /></td></tr>
+<tr class="memdesc:ad0193dd3ef3000d8d5290a57ed3e98c1"><td class="mdescLeft">&#160;</td><td class="mdescRight">Compute the interval of all values of all quotients of values from the two intervals.  <a href="classcgv_1_1math_1_1interval.html#ad0193dd3ef3000d8d5290a57ed3e98c1">More...</a><br /></td></tr>
 <tr class="separator:ad0193dd3ef3000d8d5290a57ed3e98c1"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a894cb1e97db647de8f36de63737ee9fd"><td class="memItemLeft" align="right" valign="top"><a id="a894cb1e97db647de8f36de63737ee9fd"></a>
 <a class="el" href="classcgv_1_1math_1_1interval.html">interval</a>&lt; T &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcgv_1_1math_1_1interval.html#a894cb1e97db647de8f36de63737ee9fd">operator/</a> (const <a class="el" href="classcgv_1_1math_1_1interval.html">interval</a>&lt; T &gt; &amp;J) const</td></tr>
@@ -263,23 +251,23 @@ bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="clas
 <tr class="memdesc:a9197e158cd53de21cf57ca1270b87be4"><td class="mdescLeft">&#160;</td><td class="mdescRight">only returns true if both intervals are not empty and the operator holds for all values in both intervals <br /></td></tr>
 <tr class="separator:a9197e158cd53de21cf57ca1270b87be4"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table><table class="memberdecls">
-<tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="pro-attribs"></a>
-Protected Attributes</h2></td></tr>
-<tr class="memitem:a001fad6886d3d7545ccfb71ee26fca3d"><td class="memItemLeft" align="right" valign="top"><a id="a001fad6886d3d7545ccfb71ee26fca3d"></a>
-T&#160;</td><td class="memItemRight" valign="bottom"><b>lb</b></td></tr>
-<tr class="separator:a001fad6886d3d7545ccfb71ee26fca3d"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:ab3458c49dea8088b6b308224355c317e"><td class="memItemLeft" align="right" valign="top"><a id="ab3458c49dea8088b6b308224355c317e"></a>
-T&#160;</td><td class="memItemRight" valign="bottom"><b>ub</b></td></tr>
-<tr class="separator:ab3458c49dea8088b6b308224355c317e"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="pub-attribs"></a>
+Public Attributes</h2></td></tr>
+<tr class="memitem:ae4d7aaee5cab1b335222898cf9780b72"><td class="memItemLeft" align="right" valign="top"><a id="ae4d7aaee5cab1b335222898cf9780b72"></a>
+T&#160;</td><td class="memItemRight" valign="bottom"><b>lower_bound</b></td></tr>
+<tr class="separator:ae4d7aaee5cab1b335222898cf9780b72"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ab4aa9bf686bee5de182fecd68871fe22"><td class="memItemLeft" align="right" valign="top"><a id="ab4aa9bf686bee5de182fecd68871fe22"></a>
+T&#160;</td><td class="memItemRight" valign="bottom"><b>upper_bound</b></td></tr>
+<tr class="separator:ab4aa9bf686bee5de182fecd68871fe22"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
 <a name="details" id="details"></a><h2 class="groupheader">Detailed Description</h2>
 <div class="textblock"><h3>template&lt;typename T&gt;<br />
 class cgv::math::interval&lt; T &gt;</h3>
 
-<p>the interval template represents a close interval of two numbers, i.e. </p>
-<p>[a,b]. All arithmetic operators are overloaded for the interval template. This allows to compute bounds for an arbitrary expression. For example if the variable x is from the interval [-1,1] then the expression x*x is from the interval [0,1], what can be computed via \codebegin interval&lt;int&gt; x(-1,1); interval&lt;int&gt; e = x*x; std::cout &lt;&lt; e &lt;&lt; std::endl; \codeend Furthermore, the interval template supports further interval based operations like intersection and extension of an interval. </p>
+<p>The interval template represents a closed interval of two numbers, i.e. </p>
+<p>[a,b]. All arithmetic operators are overloaded for the interval template. This allows to compute bounds for an arbitrary expression. For example if the variable x is from the interval [-1,1] then the expression x*x is from the interval [0,1], which can be computed via \codebegin interval&lt;int&gt; x(-1,1); interval&lt;int&gt; e = x*x; std::cout &lt;&lt; e &lt;&lt; std::endl; \codeend Furthermore, the interval template supports further interval based operations like intersection and extension of an interval. </p>
 
-<p class="definition">Definition at line <a class="el" href="interval_8h_source.html#l00025">25</a> of file <a class="el" href="interval_8h_source.html">interval.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="interval_8h_source.html#l00026">26</a> of file <a class="el" href="interval_8h_source.html">interval.h</a>.</p>
 </div><h2 class="groupheader">Constructor &amp; Destructor Documentation</h2>
 <a id="ab44e0dcfc3a7b148479e86db694cdf24"></a>
 <h2 class="memtitle"><span class="permalink"><a href="#ab44e0dcfc3a7b148479e86db694cdf24">&#9670;&nbsp;</a></span>interval()</h2>
@@ -307,10 +295,10 @@ template&lt;typename T &gt; </div>
 </table>
 </div><div class="memdoc">
 
-<p>construct interval over all valid values of the value type, where the parameter is only a dummy to distinguish this constructor from the standard constructor. </p>
+<p>Construct interval over all valid values of the value type, where the parameter is only a dummy to distinguish this constructor from the standard constructor. </p>
 <p>This constructor relies on <a class="el" href="structcgv_1_1type_1_1traits_1_1min.html" title="the min traits defines for each type in the static const member value, what the minimum value is.">cgv::type::traits::min</a> and <a class="el" href="structcgv_1_1type_1_1traits_1_1max.html" title="the max traits defines for each type in the static const member value, what the maximum value is.">cgv::type::traits::max</a>. Thus if you want to build intervals over non standard types, you need to ensure that these two traits are instantiated for your type when using this constructor. </p>
 
-<p class="definition">Definition at line <a class="el" href="interval_8h_source.html#l00039">39</a> of file <a class="el" href="interval_8h_source.html">interval.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="interval_8h_source.html#l00043">43</a> of file <a class="el" href="interval_8h_source.html">interval.h</a>.</p>
 
 </div>
 </div>
@@ -341,12 +329,12 @@ template&lt;typename T &gt; </div>
 </table>
 </div><div class="memdoc">
 
-<p>compute the interval of all values of all quotients of values from the two intervals. </p>
-<p>Notice that if zero is contained in the second interval, the result is the complete interval of all valid values and the same precondition holds as for the constructor with the bool dummy parameter <a class="el" href="classcgv_1_1math_1_1interval.html#ab44e0dcfc3a7b148479e86db694cdf24" title="construct interval over all valid values of the value type, where the parameter is only a dummy to di...">interval(bool)</a>. </p>
+<p>Compute the interval of all values of all quotients of values from the two intervals. </p>
+<p>Notice that if zero is contained in the second interval, the result is the complete interval of all valid values and the same precondition holds as for the constructor with the bool dummy parameter <a class="el" href="classcgv_1_1math_1_1interval.html#ab44e0dcfc3a7b148479e86db694cdf24" title="Construct interval over all valid values of the value type, where the parameter is only a dummy to di...">interval(bool)</a>. </p>
 
-<p class="definition">Definition at line <a class="el" href="interval_8h_source.html#l00136">136</a> of file <a class="el" href="interval_8h_source.html">interval.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="interval_8h_source.html#l00139">139</a> of file <a class="el" href="interval_8h_source.html">interval.h</a>.</p>
 
-<p class="reference">References <a class="el" href="interval_8h_source.html#l00049">cgv::math::interval&lt; T &gt;::contains()</a>, <a class="el" href="interval_8h_source.html#l00071">cgv::math::interval&lt; T &gt;::extend()</a>, <a class="el" href="interval_8h_source.html#l00055">cgv::math::interval&lt; T &gt;::get_lower_bound()</a>, <a class="el" href="interval_8h_source.html#l00057">cgv::math::interval&lt; T &gt;::get_upper_bound()</a>, and <a class="el" href="interval_8h_source.html#l00045">cgv::math::interval&lt; T &gt;::is_empty()</a>.</p>
+<p class="reference">References <a class="el" href="interval_8h_source.html#l00053">cgv::math::interval&lt; T &gt;::contains()</a>, <a class="el" href="interval_8h_source.html#l00049">cgv::math::interval&lt; T &gt;::empty()</a>, and <a class="el" href="interval_8h_source.html#l00067">cgv::math::interval&lt; T &gt;::extend()</a>.</p>
 
 </div>
 </div>
