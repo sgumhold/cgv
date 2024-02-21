@@ -12,8 +12,8 @@ struct interval : public cgv::math::interval<T>
 {
 	bool self_reflect(cgv::reflect::reflection_handler& rh) {
 		return 
-			rh.reflect_member("lb", this->lb) &&
-			rh.reflect_member("ub", this->ub);
+			rh.reflect_member("lower_bound", this->lower_bound) &&
+			rh.reflect_member("upper_bound", this->upper_bound);
 	}
 };
 		}
