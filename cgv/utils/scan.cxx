@@ -2,6 +2,9 @@
 
 #include <stdlib.h>
 #include <algorithm>
+#if __cplusplus >= 201703L
+#include <charconv>
+#endif
 
 namespace cgv {
 	namespace utils {
@@ -354,6 +357,10 @@ bool is_integer(const char* begin, const char* end, int& value)
 {
 	if (begin == end)
 		return false;
+
+#if __cplusplus >= 201703L
+	return std::from_chars(begin, end, value).ec == std::errc();
+#else
 	// skip trailing spaces
 	while (begin < end && *begin == ' ')
 		++begin;
@@ -397,6 +404,7 @@ bool is_integer(const char* begin, const char* end, int& value)
 		return true;
 	}
 	return false;
+#endif
 }
 
 bool is_integer(const std::string& s, int& value)
@@ -408,6 +416,9 @@ bool is_double(const char* begin, const char* end, double& value)
 {
 	if (begin == end)
 		return false;
+#if __cplusplus >= 201703L
+	return std::from_chars(begin, end, value).ec == std::errc();
+#else
 	bool found_digit = false;
 	int nr_dots = 0;
 	int nr_exp = 0;
@@ -455,6 +466,7 @@ bool is_double(const char* begin, const char* end, double& value)
 		return false;
 	value = atof(std::string(begin,end-begin).c_str());
 	return true; 
+#endif
 }
 
 bool is_double(const std::string& s, double& value)
@@ -742,7 +754,7 @@ unsigned int levenshtein_distance(const std::string& s1, const std::string& s2)
 	// this row is A[0][i]: edit distance from an empty s to t;
 	// that distance is the number of characters to append to  s to make t.
 	for (size_t i = 0; i <= s2.length(); ++i) {
-		v0[i] = i;
+		v0[i] = int(i);
 	}
 
 	for (size_t i = 0; i < s1.length(); ++i) {
@@ -750,7 +762,7 @@ unsigned int levenshtein_distance(const std::string& s1, const std::string& s2)
 
 		// first element of v1 is A[i + 1][0]
 		//   edit distance is delete (i + 1) chars from s to match empty t
-		v1[0] = i + 1;
+		v1[0] = int(i + 1);
 
 		// use formula to fill in the rest of the row
 		for (size_t j = 0; j < s2.length(); ++j) {
