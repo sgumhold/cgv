@@ -383,6 +383,7 @@ void vr_scene::init_frame(cgv::render::context& ctx)
 				// configure vr rendering
 				// vr_view_ptr->draw_action_zone(false);
 				vr_view_ptr->draw_vr_kits(true);
+				vr_view_ptr->draw_vr_controllers(false);
 				// vr_view_ptr->enable_blit_vr_views(true);
 				// vr_view_ptr->set_blit_vr_view_width(200);
 			}
