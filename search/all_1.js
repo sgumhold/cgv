@@ -76,7 +76,7 @@ var searchData=
   ['after_5fread_77',['after_read',['../structcgv_1_1gui_1_1text__editor__callback__handler.html#a00b508f73412e64e5396b3224c8194ed',1,'cgv::gui::text_editor_callback_handler']]],
   ['after_5fsave_78',['after_save',['../structcgv_1_1gui_1_1text__editor__callback__handler.html#a420a4244bacbce16976c99afc01ec8e5',1,'cgv::gui::text_editor_callback_handler']]],
   ['ai_79',['ai',['../structcgv_1_1plot_1_1plot__base_1_1tick__batch__info.html#afc48450c9abf52cf24f57b2d32157257',1,'cgv::plot::plot_base::tick_batch_info']]],
-  ['align_80',['align',['../classcgv_1_1data_1_1packing__info.html#a3d2868685e5680021a30e9a5131082af',1,'cgv::data::packing_info::align()'],['../classcgv_1_1gui_1_1gui__group.html#afa36d2983fea2d20bbe890393aba02d1',1,'cgv::gui::gui_group::align()'],['../classcgv_1_1gui_1_1provider.html#a28af4e659bdd1825f3829263e15ce5ae',1,'cgv::gui::provider::align()']]],
+  ['align_80',['align',['../classcgv_1_1data_1_1packing__info.html#a03848abed43d738494f352c00515c7af',1,'cgv::data::packing_info::align()'],['../classcgv_1_1gui_1_1gui__group.html#afa36d2983fea2d20bbe890393aba02d1',1,'cgv::gui::gui_group::align()'],['../classcgv_1_1gui_1_1provider.html#a28af4e659bdd1825f3829263e15ce5ae',1,'cgv::gui::provider::align()']]],
   ['allow_5falignment_81',['allow_alignment',['../structcgv_1_1app_1_1overlay_1_1gui__options__t.html#ac63cea7acd69cbed2cd834e09e3c0ea5',1,'cgv::app::overlay::gui_options_t']]],
   ['allow_5fall_5ffiles_82',['allow_all_files',['../classcgv_1_1gui_1_1file__helper.html#ae03972a85b2a25d2376d189aca5dc410',1,'cgv::gui::file_helper']]],
   ['allow_5fmargin_83',['allow_margin',['../structcgv_1_1app_1_1overlay_1_1gui__options__t.html#acb3152cc8227834e7204fcbab95c3c6a',1,'cgv::app::overlay::gui_options_t']]],

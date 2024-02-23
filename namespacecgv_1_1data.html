@@ -240,27 +240,27 @@ Functions</h2></td></tr>
 bool&#160;</td><td class="memItemRight" valign="bottom"><b>extract_special_type</b> (const std::string &amp;tok, <a class="el" href="namespacecgv_1_1type_1_1info.html#accf71420e941489dc6fb6737cd11b752">TypeId</a> &amp;component_type, <a class="el" href="namespacecgv_1_1data.html#a7b03b31810d6f81c766bde1f7638cd61">ComponentIntegerInterpretation</a> &amp;cii)</td></tr>
 <tr class="separator:a8fb715e8a744f281920098db1fb3ae3c"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a35a6f7270f64a7cd8197c0733bbf4d7d"><td class="memItemLeft" align="right" valign="top">std::ostream &amp;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespacecgv_1_1data.html#a35a6f7270f64a7cd8197c0733bbf4d7d">operator&lt;&lt;</a> (std::ostream &amp;os, const <a class="el" href="classcgv_1_1data_1_1component__format.html">component_format</a> &amp;cf)</td></tr>
-<tr class="memdesc:a35a6f7270f64a7cd8197c0733bbf4d7d"><td class="mdescLeft">&#160;</td><td class="mdescRight">define stream out operator  <a href="namespacecgv_1_1data.html#a35a6f7270f64a7cd8197c0733bbf4d7d">More...</a><br /></td></tr>
+<tr class="memdesc:a35a6f7270f64a7cd8197c0733bbf4d7d"><td class="mdescLeft">&#160;</td><td class="mdescRight">stream out operator writes the component format in the syntax of description strings as defined in the docu of set_component_format().  <a href="namespacecgv_1_1data.html#a35a6f7270f64a7cd8197c0733bbf4d7d">More...</a><br /></td></tr>
 <tr class="separator:a35a6f7270f64a7cd8197c0733bbf4d7d"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ac3e8fa9c9e306979feb1f4dfd3b20830"><td class="memItemLeft" align="right" valign="top"><a id="ac3e8fa9c9e306979feb1f4dfd3b20830"></a>
 bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespacecgv_1_1data.html#ac3e8fa9c9e306979feb1f4dfd3b20830">fmt1_compares_better</a> (const <a class="el" href="classcgv_1_1data_1_1component__format.html">component_format</a> &amp;fmt, const <a class="el" href="classcgv_1_1data_1_1component__format.html">component_format</a> &amp;fmt1, const <a class="el" href="classcgv_1_1data_1_1component__format.html">component_format</a> &amp;fmt2)</td></tr>
 <tr class="memdesc:ac3e8fa9c9e306979feb1f4dfd3b20830"><td class="mdescLeft">&#160;</td><td class="mdescRight">default function to check whether fmt1 is a better match to fmt than fmt2 <br /></td></tr>
 <tr class="separator:ac3e8fa9c9e306979feb1f4dfd3b20830"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a72746e597b531caf780c41d81d4151e7"><td class="memItemLeft" align="right" valign="top"><a id="a72746e597b531caf780c41d81d4151e7"></a>
-unsigned int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespacecgv_1_1data.html#a72746e597b531caf780c41d81d4151e7">find_best_match</a> (const <a class="el" href="classcgv_1_1data_1_1component__format.html">component_format</a> &amp;fmt, const char **format_descriptions, const <a class="el" href="classcgv_1_1data_1_1component__format.html">component_format</a> *fmt0=0, bool(*fmt1_better_match)( const <a class="el" href="classcgv_1_1data_1_1component__format.html">component_format</a> &amp;fmt, const <a class="el" href="classcgv_1_1data_1_1component__format.html">component_format</a> &amp;fmt1, const <a class="el" href="classcgv_1_1data_1_1component__format.html">component_format</a> &amp;fmt2)=<a class="el" href="namespacecgv_1_1data.html#ac3e8fa9c9e306979feb1f4dfd3b20830">fmt1_compares_better</a>)</td></tr>
+unsigned&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespacecgv_1_1data.html#a72746e597b531caf780c41d81d4151e7">find_best_match</a> (const <a class="el" href="classcgv_1_1data_1_1component__format.html">component_format</a> &amp;fmt, const char **format_descriptions, const <a class="el" href="classcgv_1_1data_1_1component__format.html">component_format</a> *fmt0=0, bool(*fmt1_better_match)( const <a class="el" href="classcgv_1_1data_1_1component__format.html">component_format</a> &amp;fmt, const <a class="el" href="classcgv_1_1data_1_1component__format.html">component_format</a> &amp;fmt1, const <a class="el" href="classcgv_1_1data_1_1component__format.html">component_format</a> &amp;fmt2)=<a class="el" href="namespacecgv_1_1data.html#ac3e8fa9c9e306979feb1f4dfd3b20830">fmt1_compares_better</a>)</td></tr>
 <tr class="memdesc:a72746e597b531caf780c41d81d4151e7"><td class="mdescLeft">&#160;</td><td class="mdescRight">find the best matching format in a list of formats described by strings and return index of best match <br /></td></tr>
 <tr class="separator:a72746e597b531caf780c41d81d4151e7"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:adbbf5162b8aa15daa93023b37169b165"><td class="memItemLeft" align="right" valign="top">std::ostream &amp;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespacecgv_1_1data.html#adbbf5162b8aa15daa93023b37169b165">operator&lt;&lt;</a> (std::ostream &amp;os, const <a class="el" href="classcgv_1_1data_1_1data__format.html">data_format</a> &amp;df)</td></tr>
-<tr class="memdesc:adbbf5162b8aa15daa93023b37169b165"><td class="mdescLeft">&#160;</td><td class="mdescRight">define stream out operator  <a href="namespacecgv_1_1data.html#adbbf5162b8aa15daa93023b37169b165">More...</a><br /></td></tr>
+<tr class="memdesc:adbbf5162b8aa15daa93023b37169b165"><td class="mdescLeft">&#160;</td><td class="mdescRight">stream out operator writes the data format in the syntax of description strings as defined in the docu of set_data_format().  <a href="namespacecgv_1_1data.html#adbbf5162b8aa15daa93023b37169b165">More...</a><br /></td></tr>
 <tr class="separator:adbbf5162b8aa15daa93023b37169b165"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a574f704b983c82551ecc876d344098a9"><td class="memTemplParams" colspan="2"><a id="a574f704b983c82551ecc876d344098a9"></a>
 template&lt;typename T , typename S &gt; </td></tr>
 <tr class="memitem:a574f704b983c82551ecc876d344098a9"><td class="memTemplItemLeft" align="right" valign="top">void&#160;</td><td class="memTemplItemRight" valign="bottom"><b>sub_sample_2_2</b> (const <a class="el" href="classcgv_1_1data_1_1const__data__view.html">const_data_view</a> &amp;src, <a class="el" href="classcgv_1_1data_1_1data__view.html">data_view</a> &amp;dest)</td></tr>
 <tr class="separator:a574f704b983c82551ecc876d344098a9"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a6713e5f2a8666264e5ccb8a72df4a6e4"><td class="memTemplParams" colspan="2"><a id="a6713e5f2a8666264e5ccb8a72df4a6e4"></a>
+<tr class="memitem:a4cbe7e970bafe342a65174afaf996e5a"><td class="memTemplParams" colspan="2"><a id="a4cbe7e970bafe342a65174afaf996e5a"></a>
 template&lt;typename T &gt; </td></tr>
-<tr class="memitem:a6713e5f2a8666264e5ccb8a72df4a6e4"><td class="memTemplItemLeft" align="right" valign="top">void&#160;</td><td class="memTemplItemRight" valign="bottom"><b>copy_sub_view</b> (const <a class="el" href="classcgv_1_1data_1_1const__data__view.html">const_data_view</a> &amp;src, int x, int y, int w, int h, <a class="el" href="classcgv_1_1data_1_1data__view.html">data_view</a> &amp;dst, int X, int Y)</td></tr>
-<tr class="separator:a6713e5f2a8666264e5ccb8a72df4a6e4"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a4cbe7e970bafe342a65174afaf996e5a"><td class="memTemplItemLeft" align="right" valign="top">void&#160;</td><td class="memTemplItemRight" valign="bottom"><b>copy_sub_view</b> (const <a class="el" href="classcgv_1_1data_1_1const__data__view.html">const_data_view</a> &amp;src, ptrdiff_t x, ptrdiff_t y, ptrdiff_t w, ptrdiff_t h, <a class="el" href="classcgv_1_1data_1_1data__view.html">data_view</a> &amp;dst, ptrdiff_t X, ptrdiff_t Y)</td></tr>
+<tr class="separator:a4cbe7e970bafe342a65174afaf996e5a"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:aa2dc4703b731c5c368f5ea2beaf07f3a"><td class="memItemLeft" align="right" valign="top"><a id="aa2dc4703b731c5c368f5ea2beaf07f3a"></a>
 <a class="el" href="structcgv_1_1reflect_1_1enum__reflection__traits.html">enum_reflection_traits</a>&lt; <a class="el" href="namespacecgv_1_1data.html#a63cf0db0b8ed4093e9e129385cfa44a5">IOReflectionError</a> &gt;&#160;</td><td class="memItemRight" valign="bottom"><b>get_reflection_traits</b> (const <a class="el" href="namespacecgv_1_1data.html#a63cf0db0b8ed4093e9e129385cfa44a5">IOReflectionError</a> &amp;)</td></tr>
 <tr class="separator:aa2dc4703b731c5c368f5ea2beaf07f3a"><td class="memSeparator" colspan="2">&#160;</td></tr>
@@ -372,10 +372,10 @@ class CGV_API&#160;</td><td class="memItemRight" valign="bottom"><b>const_data_v
       </table>
 </div><div class="memdoc">
 
-<p>define stream out operator </p>
 <p>stream out operator writes the component format in the syntax of description strings as defined in the docu of set_component_format(). </p>
+<p>define stream out operator </p>
 
-<p class="definition">Definition at line <a class="el" href="component__format_8cxx_source.html#l00442">442</a> of file <a class="el" href="component__format_8cxx_source.html">component_format.cxx</a>.</p>
+<p class="definition">Definition at line <a class="el" href="component__format_8cxx_source.html#l00427">427</a> of file <a class="el" href="component__format_8cxx_source.html">component_format.cxx</a>.</p>
 
 </div>
 </div>
@@ -405,10 +405,10 @@ class CGV_API&#160;</td><td class="memItemRight" valign="bottom"><b>const_data_v
       </table>
 </div><div class="memdoc">
 
-<p>define stream out operator </p>
 <p>stream out operator writes the data format in the syntax of description strings as defined in the docu of set_data_format(). </p>
+<p>define stream out operator </p>
 
-<p class="definition">Definition at line <a class="el" href="data__format_8cxx_source.html#l00372">372</a> of file <a class="el" href="data__format_8cxx_source.html">data_format.cxx</a>.</p>
+<p class="definition">Definition at line <a class="el" href="data__format_8cxx_source.html#l00300">300</a> of file <a class="el" href="data__format_8cxx_source.html">data_format.cxx</a>.</p>
 
 </div>
 </div>

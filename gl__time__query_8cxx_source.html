@@ -149,7 +149,7 @@ $(document).ready(function(){initNavTree('gl__time__query_8cxx_source.html','');
 <div class="line"><a name="l00062"></a><span class="lineno">   62</span>&#160;    GLuint64 elapsed_time = 0;</div>
 <div class="line"><a name="l00063"></a><span class="lineno">   63</span>&#160;    glGetQueryObjectui64v(query, GL_QUERY_RESULT, &amp;elapsed_time);</div>
 <div class="line"><a name="l00064"></a><span class="lineno">   64</span>&#160; </div>
-<div class="line"><a name="l00065"></a><span class="lineno">   65</span>&#160;    <span class="keywordflow">return</span> elapsed_time;</div>
+<div class="line"><a name="l00065"></a><span class="lineno">   65</span>&#160;    <span class="keywordflow">return</span> double(elapsed_time);</div>
 <div class="line"><a name="l00066"></a><span class="lineno">   66</span>&#160;}</div>
 <div class="line"><a name="l00067"></a><span class="lineno">   67</span>&#160; </div>
 <div class="line"><a name="l00068"></a><span class="lineno">   68</span>&#160;        } <span class="comment">// namespace cgv</span></div>
