@@ -39,13 +39,13 @@ void sub_sample_2_2(const const_data_view& src, data_view& dest)
 	}
 }
 template <typename T>
-void copy_sub_view(const const_data_view& src, ptrdiff_t x, ptrdiff_t y, ptrdiff_t w, ptrdiff_t h,
-				   data_view& dst, ptrdiff_t X, ptrdiff_t Y)
+void copy_sub_view(const const_data_view& src, std::ptrdiff_t x, std::ptrdiff_t y, std::ptrdiff_t w, std::ptrdiff_t h,
+				   data_view& dst, std::ptrdiff_t X, std::ptrdiff_t Y)
 { 
-	ptrdiff_t max_w = src.get_format()->get_width() - x;
-	ptrdiff_t max_h = src.get_format()->get_height() - y;
-	ptrdiff_t max_W = dst.get_format()->get_width() - X;
-	ptrdiff_t max_H = dst.get_format()->get_height() - Y;
+	std::ptrdiff_t max_w = src.get_format()->get_width() - x;
+	std::ptrdiff_t max_h = src.get_format()->get_height() - y;
+	std::ptrdiff_t max_W = dst.get_format()->get_width() - X;
+	std::ptrdiff_t max_H = dst.get_format()->get_height() - Y;
 	if (w == -1)
 		w = max_w;
 	if (h == -1)
@@ -79,7 +79,7 @@ image_view::image_view()
 {
 }
 
-void image_view::create(const std::string& fmt_dcr, ptrdiff_t w, ptrdiff_t h)
+void image_view::create(const std::string& fmt_dcr, std::ptrdiff_t w, std::ptrdiff_t h)
 {
 	dv.~data_view();
 	df.set_data_format(fmt_dcr);
@@ -136,7 +136,7 @@ void image_view::clear(double v)
 		break;
 	}
 }
-void image_view::copy_rectangle(const image_view& src, ptrdiff_t X, ptrdiff_t Y, ptrdiff_t x, ptrdiff_t y, ptrdiff_t w, ptrdiff_t h)
+void image_view::copy_rectangle(const image_view& src, std::ptrdiff_t X, std::ptrdiff_t Y, std::ptrdiff_t x, std::ptrdiff_t y, std::ptrdiff_t w, std::ptrdiff_t h)
 {
 	switch (df.get_component_type()) {
 	case TI_INT8   : copy_sub_view<int8_type>(src.dv, x, y, w, h, dv, X, Y); break;
