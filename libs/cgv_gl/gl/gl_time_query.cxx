@@ -62,7 +62,7 @@ double gl_time_query::end()
 	GLuint64 elapsed_time = 0;
 	glGetQueryObjectui64v(query, GL_QUERY_RESULT, &elapsed_time);
 
-	return elapsed_time;
+	return double(elapsed_time);
 }
 
 		} // namespace cgv

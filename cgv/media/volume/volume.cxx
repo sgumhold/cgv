@@ -27,7 +27,7 @@ namespace cgv {
 			{
 				return
 					df.get_nr_dimensions() > 2 ?
-					dimension_type(df.get_width(), df.get_height(), df.get_depth()) :
+					dimension_type(int(df.get_width()), int(df.get_height()), int(df.get_depth())) :
 					dimension_type(0, 0, 0);
 			}
 
@@ -99,10 +99,10 @@ namespace cgv {
 				default: result_component_format = data::CF_RG; break;
 				}
 
-				unsigned w = existing_format_ptr->get_width();
-				unsigned h = existing_format_ptr->get_height();
-				unsigned d = existing_format_ptr->get_depth();
-				unsigned t = 1;
+				size_t w = existing_format_ptr->get_width();
+				size_t h = existing_format_ptr->get_height();
+				size_t d = existing_format_ptr->get_depth();
+				size_t t = 1;
 				if(component_number_of_dimensions == 4)
 					t = existing_format_ptr->get_nr_time_steps();
 
@@ -177,10 +177,10 @@ namespace cgv {
 					return false;
 				}
 
-				unsigned w = existing_format_ptr->get_width();
-				unsigned h = existing_format_ptr->get_height();
-				unsigned d = existing_format_ptr->get_depth();
-				unsigned t = 1;
+				size_t w = existing_format_ptr->get_width();
+				size_t h = existing_format_ptr->get_height();
+				size_t d = existing_format_ptr->get_depth();
+				size_t t = 1;
 				if(component_number_of_dimensions == 4)
 					t = existing_format_ptr->get_nr_time_steps();
 

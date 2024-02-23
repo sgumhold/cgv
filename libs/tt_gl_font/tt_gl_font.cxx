@@ -475,8 +475,8 @@ namespace cgv {
 				tex_out_of_date = true;
 			}
 			else {
-				bitmap_width = tex_ptr->get_width();
-				bitmap_height = tex_ptr->get_height();
+				bitmap_width = unsigned(tex_ptr->get_width());
+				bitmap_height = unsigned(tex_ptr->get_height());
 			}
 		}
 	}

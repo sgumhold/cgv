@@ -110,7 +110,7 @@ namespace cgv {
 				V.get_format().set_depth(dims(2));
 				if (on_progress_update)
 					on_progress_update(-1, user_data);
-				dims(2) = V.get_format().get_depth();
+				dims(2) = int(V.get_format().get_depth());
 				V.resize(dims);
 				V.ref_extent() = extent;
 				std::string cmd = "ffmpeg -i ";
@@ -259,11 +259,11 @@ namespace cgv {
 					}
 				}
 				if (dims(0) == -1) {
-					dims(0) = df.get_width();
+					dims(0) = int(df.get_width());
 					svol.ref_extent()(0) *= -dims(0);
 				}
 				if (dims(1) == -1) {
-					dims(1) = df.get_height();
+					dims(1) = int(df.get_height());
 					svol.ref_extent()(1) *= -dims(1);
 				}
 				svol.resize(dims);
@@ -323,7 +323,7 @@ namespace cgv {
 				std::string path = cgv::utils::file::get_path(file_name);
 				if (path.size() > 0)
 					file_name_pattern = path + "/" + file_name_pattern;
-				if (!svol.open_write(file_name, file_name_pattern, V.get_format().get_depth())) {
+				if (!svol.open_write(file_name, file_name_pattern, unsigned(V.get_format().get_depth()))) {
 					std::cerr << "could not open " << file_name << " for write." << std::endl;
 					return false;
 				}

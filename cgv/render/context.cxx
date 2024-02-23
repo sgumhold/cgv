@@ -897,10 +897,10 @@ bool context::write_frame_buffer_to_image(const std::string& file_name, data::Co
 			df.set_width(dv.get_format()->get_width());
 			df.set_height(dv.get_format()->get_height());
 			data::data_view dv1(&df);
-			unsigned int n = df.get_width()*df.get_height();
+			size_t n = df.get_width()*df.get_height();
 			const float* src = dv.get_ptr<float>();
 			unsigned char* dst = dv1.get_ptr<unsigned char>();
-			for (unsigned int i=0; i<n; ++i, ++dst, ++src)
+			for (size_t i=0; i<n; ++i, ++dst, ++src)
 				*dst = (unsigned char)((*src - depth_offset)*depth_scale*255);
 			image_writer w(file_name);
 			if (w.write_image(dv1)) {
@@ -911,10 +911,10 @@ bool context::write_frame_buffer_to_image(const std::string& file_name, data::Co
 	else if (read_frame_buffer(dv, x, y, buffer_type, type::info::TI_UINT8, cf, w, h)) {
 		if (cf == CF_S) {
 			const_cast<data::data_format*>(dv.get_format())->set_component_names("L");
-			unsigned int n = dv.get_format()->get_width()*dv.get_format()->get_height();
+			size_t n = dv.get_format()->get_width()*dv.get_format()->get_height();
 			unsigned char* dst = dv.get_ptr<unsigned char>();
 			unsigned char s = (int)depth_scale;
-			for (unsigned int i=0; i<n; ++i, ++dst)
+			for (size_t i=0; i<n; ++i, ++dst)
 				*dst *= s;
 		}
 		image_writer w(file_name);

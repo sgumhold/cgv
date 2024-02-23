@@ -175,12 +175,12 @@ bool bmp_reader::read_line(const data_format& df, const data_view& dv)
 {
 //	static unsigned char temp[4];
 	unsigned char* data_ptr = dv.get_ptr<unsigned char>();
-	unsigned int n = df.get_width();
+	size_t n = df.get_width();
 	if (palette.empty()) {
 		if (fread(data_ptr, 3, n, fp) != n) {
 			last_error = "bmp read error"; return false;
 		}
-		for (unsigned short x = 0; x < n; ++x, data_ptr +=3)
+		for (size_t x = 0; x < n; ++x, data_ptr +=3)
 			std::swap(data_ptr[0], data_ptr[2]);
 		n *= 3;
 	}
@@ -191,7 +191,7 @@ bool bmp_reader::read_line(const data_format& df, const data_view& dv)
 		if (dv.get_format()->get_nr_components() == 3) {
 			data_ptr += n;
 			unsigned char* dest_ptr = data_ptr + 2*n;
-			for (unsigned short x = 0; x < n; ++x) {
+			for (size_t x = 0; x < n; ++x) {
 				--data_ptr;
 				dest_ptr -= 3;
 				const unsigned char* p = &palette[3*(*data_ptr)];
