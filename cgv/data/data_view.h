@@ -123,19 +123,19 @@ public:
 	/// return a pointer that points to the n-th next location if index i is increase by n
 	template <typename S>
 	typename cgv::type::func::transfer_const<P,S*>::type 
-		step_i(S* ptr, ptrdiff_t n=1) const { return static_cast<typename cgv::type::func::transfer_const<P,S*>::type>(static_cast<P>(ptr)+n*step_sizes[0]); }
+		step_i(S* ptr, std::ptrdiff_t n=1) const { return static_cast<typename cgv::type::func::transfer_const<P,S*>::type>(static_cast<P>(ptr)+n*step_sizes[0]); }
 	/// return a pointer that points to the n-th next location if index j is increase by n
 	template <typename S>
 	typename cgv::type::func::transfer_const<P,S*>::type 
-		step_j(S* ptr, ptrdiff_t n=1) const { return static_cast<typename cgv::type::func::transfer_const<P,S*>::type>(static_cast<P>(ptr)+n*step_sizes[1]); }
+		step_j(S* ptr, std::ptrdiff_t n=1) const { return static_cast<typename cgv::type::func::transfer_const<P,S*>::type>(static_cast<P>(ptr)+n*step_sizes[1]); }
 	/// return a pointer that points to the n-th next location if index k is increase by n
 	template <typename S>
 	typename cgv::type::func::transfer_const<P,S*>::type 
-		step_k(S* ptr, ptrdiff_t n=1) const { return static_cast<typename cgv::type::func::transfer_const<P,S*>::type>(static_cast<P>(ptr)+n*step_sizes[2]); }
+		step_k(S* ptr, std::ptrdiff_t n=1) const { return static_cast<typename cgv::type::func::transfer_const<P,S*>::type>(static_cast<P>(ptr)+n*step_sizes[2]); }
 	/// return a pointer that points to the n-th next location if index l is increase by n
 	template <typename S>
 	typename cgv::type::func::transfer_const<P,S*>::type 
-		step_l(S* ptr, ptrdiff_t n=1) const { return static_cast<typename cgv::type::func::transfer_const<P,S*>::type>(static_cast<P>(ptr)+n*step_sizes[3]); }
+		step_l(S* ptr, std::ptrdiff_t n=1) const { return static_cast<typename cgv::type::func::transfer_const<P,S*>::type>(static_cast<P>(ptr)+n*step_sizes[3]); }
 };
 
 class CGV_API const_data_view;
