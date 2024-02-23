@@ -25,7 +25,7 @@ namespace cgv {
 			{
 				return
 					df.get_nr_dimensions() > 1 ?
-					dimension_type(df.get_width(), df.get_height(), nr_slices) :
+					dimension_type(int(df.get_width()), int(df.get_height()), nr_slices) :
 					dimension_type(0, 0, 0);
 			}
 

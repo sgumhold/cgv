@@ -243,7 +243,7 @@ bool avi_video_writer::open(
 	strhdr.dwScale                = 1;
 	strhdr.dwRate                 = (DWORD)fps;		    // 15 fps
 	strhdr.dwSuggestedBufferSize  = DWORD(image_format.get_nr_bytes());
-	SetRect(&strhdr.rcFrame, 0, 0, image_format.get_width(), image_format.get_height());
+	SetRect(&strhdr.rcFrame, 0, 0, int(image_format.get_width()), int(image_format.get_height()));
 
 	// create the stream;
 	hr = AVIFileCreateStream(pfile,	&ps, &strhdr);
@@ -281,8 +281,8 @@ bool avi_video_writer::open(
 
 	BITMAPINFOHEADER bhi;
 	bhi.biSize = sizeof(BITMAPINFOHEADER);
-	bhi.biWidth = image_format.get_width();
-	bhi.biHeight = image_format.get_height();
+	bhi.biWidth = LONG(image_format.get_width());
+	bhi.biHeight = LONG(image_format.get_height());
 	bhi.biPlanes = 1;
 	bhi.biBitCount = image_format.get_entry_size()*8;
 	bhi.biCompression = BI_RGB;

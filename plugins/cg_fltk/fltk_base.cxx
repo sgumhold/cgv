@@ -74,10 +74,10 @@ public:
 			return false;
 		}
 		setpixeltype(pt);
-		int h = df.get_height();
-		setsize(df.get_width(), h);
-		for (int i=0; i<h; ++i) 
-			setpixels(dv.get_ptr<unsigned char>()+dv.get_step_size(0)*i, i);
+		size_t h = df.get_height();
+		setsize(int(df.get_width()), int(h));
+		for (size_t i=0; i<h; ++i) 
+			setpixels(dv.get_ptr<unsigned char>()+dv.get_step_size(0)*i, int(i));
 		return true;
 	}
 };

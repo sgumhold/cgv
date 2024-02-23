@@ -132,8 +132,8 @@ bool avi_video_reader::open(const std::string& file_name,
 
 	info.biSize = sizeof(BITMAPINFOHEADER);
 	info.biBitCount = 24;
-	info.biWidth = df.get_width();
-	info.biHeight = df.get_height();
+	info.biWidth = LONG(df.get_width());
+	info.biHeight = LONG(df.get_height());
 	info.biPlanes = 1;
 	info.biCompression = BI_RGB;
 	info.biSizeImage = 0;

@@ -120,17 +120,11 @@ Some examples of valid component format description strings:
 	/** construct component format from component type, comma or colon 
 		 separated list of component names, component alignment and bit 
 		 depths for packed formats*/
-	component_format(TypeId _component_type = TI_UNDEF, 
-		const std::string& _component_name_list = "", 
-		unsigned int align = 1, 
-		unsigned int d0 = 0, unsigned int d1 = 0, 
-		unsigned int d2 = 0, unsigned int d3 = 0);
+	component_format(TypeId _component_type = TI_UNDEF, const std::string& _component_name_list = "", 
+		unsigned align = 1, unsigned d0 = 0, unsigned d1 = 0, unsigned d2 = 0, unsigned d3 = 0);
 	/// construct component format from component type, standard component format, component alignment and bit depths for packed formats
-	component_format(TypeId _component_type, 
-		ComponentFormat cf, 
-		unsigned int align = 1, 
-		unsigned int d0 = 0, unsigned int d1 = 0, 
-		unsigned int d2 = 0, unsigned int d3 = 0);
+	component_format(TypeId _component_type, ComponentFormat cf, 
+		unsigned align = 1, unsigned d0 = 0, unsigned d1 = 0, unsigned d2 = 0, unsigned d3 = 0);
 	/// set the integer interpretation
 	void set_integer_interpretation(ComponentIntegerInterpretation cii);
 	/// return current integer interpretation
