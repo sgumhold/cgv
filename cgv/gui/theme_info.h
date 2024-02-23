@@ -8,9 +8,6 @@
 namespace cgv {
 namespace gui {
 
-/// declare rgb color type
-typedef cgv::media::color<float, cgv::media::RGB> rgb;
-
 #define DEF_COLOR_MEMBER_METHODS(FIELD) \
 void FIELD(unsigned char r, unsigned char g, unsigned char b) { \
 	FIELD##_col = rgb( \

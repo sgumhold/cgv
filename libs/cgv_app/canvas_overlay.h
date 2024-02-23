@@ -67,8 +67,6 @@ public:
 	virtual void draw_content(cgv::render::context& ctx) = 0;
 
 	void post_damage(bool redraw = true);
-
-	//virtual void handle_theme_change(const cgv::gui::theme_info& theme) override;
 };
 
 typedef cgv::data::ref_ptr<canvas_overlay> canvas_overlay_ptr;
