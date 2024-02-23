@@ -258,6 +258,8 @@ public:
 	bool vr_kits_drawn() const { return vis_type != VVT_NONE; }
 	/// set whether to draw vr kits
 	void draw_vr_kits(bool do_draw);
+	/// set whether to draw controllers
+	void draw_vr_controllers(bool do_draw);
 	/// check whether action zone is drawn 
 	bool action_zone_drawn() const { return show_action_zone; }
 	/// whether to draw action zone
