@@ -2,8 +2,8 @@ var classcgv_1_1data_1_1image__view =
 [
     [ "image_view", "classcgv_1_1data_1_1image__view.html#a55d1d22dc0b7da2355ec49b6da20e272", null ],
     [ "clear", "classcgv_1_1data_1_1image__view.html#a4683eaaa903f57da2f81138cd5b489c1", null ],
-    [ "copy_rectangle", "classcgv_1_1data_1_1image__view.html#a9db52a62090af3c449a390040384c5fe", null ],
-    [ "create", "classcgv_1_1data_1_1image__view.html#aa0cc11bc61bc38e2b83fea81af6d24a6", null ],
+    [ "copy_rectangle", "classcgv_1_1data_1_1image__view.html#a9587ab15d4311e2b77bc42c00aa074d9", null ],
+    [ "create", "classcgv_1_1data_1_1image__view.html#a3cf1f382b99c3777d01e00ccf0d8c7e7", null ],
     [ "get", "classcgv_1_1data_1_1image__view.html#adb4c1895e69ea8a87e28e108e00231ef", null ],
     [ "get_height", "classcgv_1_1data_1_1image__view.html#a640ed33574114ba9a549e83382d2e9a7", null ],
     [ "get_void", "classcgv_1_1data_1_1image__view.html#a11a10967b8293a7a2dbd03541ed5a792", null ],

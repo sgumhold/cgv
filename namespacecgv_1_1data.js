@@ -72,7 +72,7 @@ var namespacecgv_1_1data =
       [ "NC_SHORT", "namespacecgv_1_1data.html#a23911e7b468889249037adbd0ca557dca02e9f248a24dd3db696c86b7937f6436", null ],
       [ "NC_LONG", "namespacecgv_1_1data.html#a23911e7b468889249037adbd0ca557dca2ded1a40693c89228092a92acbf9d9fb", null ]
     ] ],
-    [ "copy_sub_view", "namespacecgv_1_1data.html#a4cbe7e970bafe342a65174afaf996e5a", null ],
+    [ "copy_sub_view", "namespacecgv_1_1data.html#adc9642347239706d958e1a574430fc0b", null ],
     [ "extract_special_type", "namespacecgv_1_1data.html#a8fb715e8a744f281920098db1fb3ae3c", null ],
     [ "find_best_match", "namespacecgv_1_1data.html#a72746e597b531caf780c41d81d4151e7", null ],
     [ "fmt1_compares_better", "namespacecgv_1_1data.html#ac3e8fa9c9e306979feb1f4dfd3b20830", null ],
