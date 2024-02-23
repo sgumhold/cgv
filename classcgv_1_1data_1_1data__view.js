@@ -1,6 +1,6 @@
 var classcgv_1_1data_1_1data__view =
 [
-    [ "data_view", "classcgv_1_1data_1_1data__view.html#a66dbd50e31d0a94bd2b34aa358513db7", null ],
+    [ "data_view", "classcgv_1_1data_1_1data__view.html#a89577e3f3b5a0b77ec360902cf7b2c9a", null ],
     [ "data_view", "classcgv_1_1data_1_1data__view.html#a642da6d85e2c6458cd496f5a94ff9cf8", null ],
     [ "~data_view", "classcgv_1_1data_1_1data__view.html#a23f74d03314029bc782981676e83eb17", null ],
     [ "data_view", "classcgv_1_1data_1_1data__view.html#a3643286f907cf51f7b85192b9241ece4", null ],

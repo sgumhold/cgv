@@ -135,17 +135,17 @@ void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="clas
 unsigned int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcgv_1_1data_1_1data__view__base.html#acbe08c9cd78826a380fa5eb2f49a98c2">get_dim</a> () const</td></tr>
 <tr class="memdesc:acbe08c9cd78826a380fa5eb2f49a98c2"><td class="mdescLeft">&#160;</td><td class="mdescRight">return the dimension of the data view, which is less or equal to the dimension of the data format <br /></td></tr>
 <tr class="separator:acbe08c9cd78826a380fa5eb2f49a98c2"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:acb396cb529bc26798383de57ed8f077a"><td class="memItemLeft" align="right" valign="top"><a id="acb396cb529bc26798383de57ed8f077a"></a>
-unsigned int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcgv_1_1data_1_1data__view__base.html#acb396cb529bc26798383de57ed8f077a">get_step_size</a> (unsigned int dim) const</td></tr>
-<tr class="memdesc:acb396cb529bc26798383de57ed8f077a"><td class="mdescLeft">&#160;</td><td class="mdescRight">return the step size in bytes in the i-th dimension <br /></td></tr>
-<tr class="separator:acb396cb529bc26798383de57ed8f077a"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a3e0e8901895fc857d5e381742540c46f"><td class="memItemLeft" align="right" valign="top"><a id="a3e0e8901895fc857d5e381742540c46f"></a>
+size_t&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcgv_1_1data_1_1data__view__base.html#a3e0e8901895fc857d5e381742540c46f">get_step_size</a> (unsigned int dim) const</td></tr>
+<tr class="memdesc:a3e0e8901895fc857d5e381742540c46f"><td class="mdescLeft">&#160;</td><td class="mdescRight">return the step size in bytes in the i-th dimension <br /></td></tr>
+<tr class="separator:a3e0e8901895fc857d5e381742540c46f"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="pro-methods"></a>
 Protected Member Functions</h2></td></tr>
-<tr class="memitem:af8c3c09a931fe9a50645928f9eb661cd"><td class="memItemLeft" align="right" valign="top"><a id="af8c3c09a931fe9a50645928f9eb661cd"></a>
-&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcgv_1_1data_1_1data__view__base.html#af8c3c09a931fe9a50645928f9eb661cd">data_view_base</a> (const <a class="el" href="classcgv_1_1data_1_1data__format.html">data_format</a> *_format, unsigned int _dim, const unsigned int *_step_sizes)</td></tr>
-<tr class="memdesc:af8c3c09a931fe9a50645928f9eb661cd"><td class="mdescLeft">&#160;</td><td class="mdescRight">constructor used to construct sub views onto the data view <br /></td></tr>
-<tr class="separator:af8c3c09a931fe9a50645928f9eb661cd"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a7516e6d9e978f73213db17eb69fa95b9"><td class="memItemLeft" align="right" valign="top"><a id="a7516e6d9e978f73213db17eb69fa95b9"></a>
+&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcgv_1_1data_1_1data__view__base.html#a7516e6d9e978f73213db17eb69fa95b9">data_view_base</a> (const <a class="el" href="classcgv_1_1data_1_1data__format.html">data_format</a> *_format, unsigned int _dim, const size_t *_step_sizes)</td></tr>
+<tr class="memdesc:a7516e6d9e978f73213db17eb69fa95b9"><td class="mdescLeft">&#160;</td><td class="mdescRight">constructor used to construct sub views onto the data view <br /></td></tr>
+<tr class="separator:a7516e6d9e978f73213db17eb69fa95b9"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="pro-attribs"></a>
 Protected Attributes</h2></td></tr>
@@ -159,9 +159,9 @@ bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="clas
 <tr class="memitem:a3af7cfaccde815e1558a994ff2059dfc"><td class="memItemLeft" align="right" valign="top"><a id="a3af7cfaccde815e1558a994ff2059dfc"></a>
 unsigned int&#160;</td><td class="memItemRight" valign="bottom"><b>dim</b></td></tr>
 <tr class="separator:a3af7cfaccde815e1558a994ff2059dfc"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a17612302c34931e49f60cd2688c8f9c7"><td class="memItemLeft" align="right" valign="top"><a id="a17612302c34931e49f60cd2688c8f9c7"></a>
-unsigned int&#160;</td><td class="memItemRight" valign="bottom"><b>step_sizes</b> [4]</td></tr>
-<tr class="separator:a17612302c34931e49f60cd2688c8f9c7"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ad0fb991f3f1af8fc5d76a58da67847f8"><td class="memItemLeft" align="right" valign="top"><a id="ad0fb991f3f1af8fc5d76a58da67847f8"></a>
+size_t&#160;</td><td class="memItemRight" valign="bottom"><b>step_sizes</b> [4]</td></tr>
+<tr class="separator:ad0fb991f3f1af8fc5d76a58da67847f8"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
 <a name="details" id="details"></a><h2 class="groupheader">Detailed Description</h2>
 <div class="textblock"><p>base class of both implementations of the data view managing the component format, the dimension of the view and the step sizes </p>

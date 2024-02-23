@@ -18,6 +18,7 @@ var classvr__view__interactor =
     [ "draw_action_zone", "classvr__view__interactor.html#aa1660d9fb86240e1670931efa0f188d2", null ],
     [ "draw_action_zone", "classvr__view__interactor.html#a01418d8fe074bcebf2222348e5c9fb94", null ],
     [ "draw_separate_view", "classvr__view__interactor.html#a3106eba216d33e80105707d8bc4e8678", null ],
+    [ "draw_vr_controllers", "classvr__view__interactor.html#a6e7b0e09a9f84d7a875bb2d5c0021d9b", null ],
     [ "draw_vr_kits", "classvr__view__interactor.html#a2d62470d2b668f2b0d063719f184e7f1", null ],
     [ "draw_vr_kits", "classvr__view__interactor.html#ae649c7b5bdfb105b63f42c3537c33866", null ],
     [ "enable_blit_vr_views", "classvr__view__interactor.html#a9aa99ca871b0e271c9a0f18edc8cdcea", null ],
