@@ -1,5 +1,7 @@
 #pragma once
 
+#include <stddef.h>
+
 #include <cgv/data/lib_begin.h>
 
 namespace cgv {
