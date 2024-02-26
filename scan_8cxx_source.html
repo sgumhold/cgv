@@ -440,475 +440,483 @@ $(document).ready(function(){initNavTree('scan_8cxx_source.html',''); initResiza
 <div class="line"><a name="l00353"></a><span class="lineno">  353</span>&#160;    <span class="keywordflow">return</span> -1;</div>
 <div class="line"><a name="l00354"></a><span class="lineno">  354</span>&#160;}</div>
 <div class="line"><a name="l00355"></a><span class="lineno">  355</span>&#160; </div>
-<div class="line"><a name="l00356"></a><span class="lineno"><a class="line" href="namespacecgv_1_1utils.html#a2f21c3f652cfb7b2358bb19c515daa19">  356</a></span>&#160;<span class="keywordtype">bool</span> <a class="code" href="namespacecgv_1_1utils.html#a2f21c3f652cfb7b2358bb19c515daa19">is_integer</a>(<span class="keyword">const</span> <span class="keywordtype">char</span>* begin, <span class="keyword">const</span> <span class="keywordtype">char</span>* end, <span class="keywordtype">int</span>&amp; value)</div>
-<div class="line"><a name="l00357"></a><span class="lineno">  357</span>&#160;{</div>
-<div class="line"><a name="l00358"></a><span class="lineno">  358</span>&#160;    <span class="keywordflow">if</span> (begin == end)</div>
-<div class="line"><a name="l00359"></a><span class="lineno">  359</span>&#160;        <span class="keywordflow">return</span> <span class="keyword">false</span>;</div>
-<div class="line"><a name="l00360"></a><span class="lineno">  360</span>&#160; </div>
-<div class="line"><a name="l00361"></a><span class="lineno">  361</span>&#160;<span class="preprocessor">#if __cplusplus &gt;= 201703L</span></div>
-<div class="line"><a name="l00362"></a><span class="lineno">  362</span>&#160;    <span class="keywordflow">return</span> std::from_chars(begin, end, value).ec == std::errc();</div>
-<div class="line"><a name="l00363"></a><span class="lineno">  363</span>&#160;<span class="preprocessor">#else</span></div>
-<div class="line"><a name="l00364"></a><span class="lineno">  364</span>&#160;    <span class="comment">// skip trailing spaces</span></div>
-<div class="line"><a name="l00365"></a><span class="lineno">  365</span>&#160;    <span class="keywordflow">while</span> (begin &lt; end &amp;&amp; *begin == <span class="charliteral">&#39; &#39;</span>)</div>
-<div class="line"><a name="l00366"></a><span class="lineno">  366</span>&#160;        ++begin;</div>
-<div class="line"><a name="l00367"></a><span class="lineno">  367</span>&#160;    <span class="comment">// check for hexadecimal case</span></div>
-<div class="line"><a name="l00368"></a><span class="lineno">  368</span>&#160;    <span class="keywordflow">if</span> (end-begin&gt;2 &amp;&amp; begin[0] == <span class="charliteral">&#39;0&#39;</span> &amp;&amp; <a class="code" href="namespacecgv_1_1utils.html#a768fdf54202b2fc80c51ea8f312b2b82">to_upper</a>(begin[1]) == <span class="charliteral">&#39;X&#39;</span>) {</div>
-<div class="line"><a name="l00369"></a><span class="lineno">  369</span>&#160;        <span class="keywordtype">int</span> new_value = 0, b = 1;</div>
-<div class="line"><a name="l00370"></a><span class="lineno">  370</span>&#160;        <span class="keyword">const</span> <span class="keywordtype">char</span>* p;</div>
-<div class="line"><a name="l00371"></a><span class="lineno">  371</span>&#160;        <span class="keywordflow">for</span> (p = end; p&gt;begin+2; b *= 16) {</div>
-<div class="line"><a name="l00372"></a><span class="lineno">  372</span>&#160;            --p;</div>
-<div class="line"><a name="l00373"></a><span class="lineno">  373</span>&#160;            <span class="keywordflow">if</span> (<a class="code" href="namespacecgv_1_1utils.html#a04502bf86fbb71464368f9710a2a084c">is_digit</a>(*p))</div>
-<div class="line"><a name="l00374"></a><span class="lineno">  374</span>&#160;                new_value += (int)(*p - <span class="charliteral">&#39;0&#39;</span>)*b;</div>
-<div class="line"><a name="l00375"></a><span class="lineno">  375</span>&#160;            <span class="keywordflow">else</span> {</div>
-<div class="line"><a name="l00376"></a><span class="lineno">  376</span>&#160;                <span class="keywordtype">char</span> c = <a class="code" href="namespacecgv_1_1utils.html#a768fdf54202b2fc80c51ea8f312b2b82">to_upper</a>(*p);</div>
-<div class="line"><a name="l00377"></a><span class="lineno">  377</span>&#160;                <span class="keywordflow">if</span> (c &gt;= <span class="charliteral">&#39;A&#39;</span> &amp;&amp; c &lt;= <span class="charliteral">&#39;F&#39;</span>)</div>
-<div class="line"><a name="l00378"></a><span class="lineno">  378</span>&#160;                    new_value += (int)(c - <span class="charliteral">&#39;A&#39;</span> + 10)*b;</div>
-<div class="line"><a name="l00379"></a><span class="lineno">  379</span>&#160;                <span class="keywordflow">else</span></div>
-<div class="line"><a name="l00380"></a><span class="lineno">  380</span>&#160;                    <span class="keywordflow">return</span> <span class="keyword">false</span>;</div>
-<div class="line"><a name="l00381"></a><span class="lineno">  381</span>&#160;            }</div>
-<div class="line"><a name="l00382"></a><span class="lineno">  382</span>&#160;        }</div>
-<div class="line"><a name="l00383"></a><span class="lineno">  383</span>&#160;        value = new_value;</div>
-<div class="line"><a name="l00384"></a><span class="lineno">  384</span>&#160;        <span class="keywordflow">return</span> <span class="keyword">true</span>;</div>
-<div class="line"><a name="l00385"></a><span class="lineno">  385</span>&#160;    }</div>
-<div class="line"><a name="l00386"></a><span class="lineno">  386</span>&#160;    <span class="keywordtype">int</span> new_value = 0, b = 1;</div>
-<div class="line"><a name="l00387"></a><span class="lineno">  387</span>&#160;    <span class="keyword">const</span> <span class="keywordtype">char</span>* p;</div>
-<div class="line"><a name="l00388"></a><span class="lineno">  388</span>&#160;    <span class="keywordflow">for</span> (p = end; p&gt;begin; b *= 10) {</div>
-<div class="line"><a name="l00389"></a><span class="lineno">  389</span>&#160;        --p;</div>
-<div class="line"><a name="l00390"></a><span class="lineno">  390</span>&#160;        <span class="keywordflow">if</span> (<a class="code" href="namespacecgv_1_1utils.html#a04502bf86fbb71464368f9710a2a084c">is_digit</a>(*p))</div>
-<div class="line"><a name="l00391"></a><span class="lineno">  391</span>&#160;            new_value += (<span class="keywordtype">int</span>)(*p - <span class="charliteral">&#39;0&#39;</span>)*b;</div>
-<div class="line"><a name="l00392"></a><span class="lineno">  392</span>&#160;        <span class="keywordflow">else</span> {</div>
-<div class="line"><a name="l00393"></a><span class="lineno">  393</span>&#160;            <span class="keywordflow">if</span> (*p == <span class="charliteral">&#39;-&#39;</span>) {</div>
-<div class="line"><a name="l00394"></a><span class="lineno">  394</span>&#160;                new_value = -new_value;</div>
-<div class="line"><a name="l00395"></a><span class="lineno">  395</span>&#160;                <span class="keywordflow">break</span>;</div>
-<div class="line"><a name="l00396"></a><span class="lineno">  396</span>&#160;            }</div>
-<div class="line"><a name="l00397"></a><span class="lineno">  397</span>&#160;            <span class="keywordflow">if</span> (*p != <span class="charliteral">&#39;+&#39;</span>)</div>
-<div class="line"><a name="l00398"></a><span class="lineno">  398</span>&#160;                <span class="keywordflow">return</span> <span class="keyword">false</span>;</div>
-<div class="line"><a name="l00399"></a><span class="lineno">  399</span>&#160;            <span class="keywordflow">break</span>;</div>
-<div class="line"><a name="l00400"></a><span class="lineno">  400</span>&#160;        }</div>
-<div class="line"><a name="l00401"></a><span class="lineno">  401</span>&#160;    }</div>
-<div class="line"><a name="l00402"></a><span class="lineno">  402</span>&#160;    <span class="keywordflow">if</span> (p == begin) {</div>
-<div class="line"><a name="l00403"></a><span class="lineno">  403</span>&#160;        value = new_value;</div>
-<div class="line"><a name="l00404"></a><span class="lineno">  404</span>&#160;        <span class="keywordflow">return</span> <span class="keyword">true</span>;</div>
-<div class="line"><a name="l00405"></a><span class="lineno">  405</span>&#160;    }</div>
-<div class="line"><a name="l00406"></a><span class="lineno">  406</span>&#160;    <span class="keywordflow">return</span> <span class="keyword">false</span>;</div>
-<div class="line"><a name="l00407"></a><span class="lineno">  407</span>&#160;<span class="preprocessor">#endif</span></div>
-<div class="line"><a name="l00408"></a><span class="lineno">  408</span>&#160;}</div>
-<div class="line"><a name="l00409"></a><span class="lineno">  409</span>&#160; </div>
-<div class="line"><a name="l00410"></a><span class="lineno"><a class="line" href="namespacecgv_1_1utils.html#a32d1430d21e4e38817ff96276ee5dcb9">  410</a></span>&#160;<span class="keywordtype">bool</span> <a class="code" href="namespacecgv_1_1utils.html#a2f21c3f652cfb7b2358bb19c515daa19">is_integer</a>(<span class="keyword">const</span> std::string&amp; s, <span class="keywordtype">int</span>&amp; value)</div>
-<div class="line"><a name="l00411"></a><span class="lineno">  411</span>&#160;{</div>
-<div class="line"><a name="l00412"></a><span class="lineno">  412</span>&#160;    <span class="keywordflow">return</span> <a class="code" href="namespacecgv_1_1utils.html#a2f21c3f652cfb7b2358bb19c515daa19">is_integer</a>(&amp;s[0], &amp;s[0]+s.size(), value);</div>
-<div class="line"><a name="l00413"></a><span class="lineno">  413</span>&#160;}</div>
-<div class="line"><a name="l00414"></a><span class="lineno">  414</span>&#160; </div>
-<div class="line"><a name="l00415"></a><span class="lineno"><a class="line" href="namespacecgv_1_1utils.html#ab946aefefb94207956db27970b35227d">  415</a></span>&#160;<span class="keywordtype">bool</span> <a class="code" href="namespacecgv_1_1utils.html#ab946aefefb94207956db27970b35227d">is_double</a>(<span class="keyword">const</span> <span class="keywordtype">char</span>* begin, <span class="keyword">const</span> <span class="keywordtype">char</span>* end, <span class="keywordtype">double</span>&amp; value)</div>
-<div class="line"><a name="l00416"></a><span class="lineno">  416</span>&#160;{</div>
-<div class="line"><a name="l00417"></a><span class="lineno">  417</span>&#160;    <span class="keywordflow">if</span> (begin == end)</div>
-<div class="line"><a name="l00418"></a><span class="lineno">  418</span>&#160;        <span class="keywordflow">return</span> <span class="keyword">false</span>;</div>
-<div class="line"><a name="l00419"></a><span class="lineno">  419</span>&#160;<span class="preprocessor">#if __cplusplus &gt;= 201703L</span></div>
-<div class="line"><a name="l00420"></a><span class="lineno">  420</span>&#160;    <span class="keywordflow">return</span> std::from_chars(begin, end, value).ec == std::errc();</div>
-<div class="line"><a name="l00421"></a><span class="lineno">  421</span>&#160;<span class="preprocessor">#else</span></div>
-<div class="line"><a name="l00422"></a><span class="lineno">  422</span>&#160;    <span class="keywordtype">bool</span> found_digit = <span class="keyword">false</span>;</div>
-<div class="line"><a name="l00423"></a><span class="lineno">  423</span>&#160;    <span class="keywordtype">int</span> nr_dots = 0;</div>
-<div class="line"><a name="l00424"></a><span class="lineno">  424</span>&#160;    <span class="keywordtype">int</span> nr_exp = 0;</div>
-<div class="line"><a name="l00425"></a><span class="lineno">  425</span>&#160;    <span class="keywordtype">bool</span> sign_may_follow = <span class="keyword">true</span>;</div>
-<div class="line"><a name="l00426"></a><span class="lineno">  426</span>&#160;    <span class="keyword">const</span> <span class="keywordtype">char</span>* p = begin;</div>
-<div class="line"><a name="l00427"></a><span class="lineno">  427</span>&#160;    <span class="keywordflow">while</span> (p &lt; end &amp;&amp; *p == <span class="charliteral">&#39; &#39;</span>)</div>
-<div class="line"><a name="l00428"></a><span class="lineno">  428</span>&#160;        ++p;</div>
-<div class="line"><a name="l00429"></a><span class="lineno">  429</span>&#160;    <span class="keywordflow">for</span> (; p&lt;end; ++p) {</div>
-<div class="line"><a name="l00430"></a><span class="lineno">  430</span>&#160;        <span class="keywordflow">switch</span> (*p) {</div>
-<div class="line"><a name="l00431"></a><span class="lineno">  431</span>&#160;        <span class="keywordflow">case</span> <span class="charliteral">&#39;0&#39;</span> :</div>
-<div class="line"><a name="l00432"></a><span class="lineno">  432</span>&#160;        <span class="keywordflow">case</span> <span class="charliteral">&#39;1&#39;</span> :</div>
-<div class="line"><a name="l00433"></a><span class="lineno">  433</span>&#160;        <span class="keywordflow">case</span> <span class="charliteral">&#39;2&#39;</span> :</div>
-<div class="line"><a name="l00434"></a><span class="lineno">  434</span>&#160;        <span class="keywordflow">case</span> <span class="charliteral">&#39;3&#39;</span> :</div>
-<div class="line"><a name="l00435"></a><span class="lineno">  435</span>&#160;        <span class="keywordflow">case</span> <span class="charliteral">&#39;4&#39;</span> :</div>
-<div class="line"><a name="l00436"></a><span class="lineno">  436</span>&#160;        <span class="keywordflow">case</span> <span class="charliteral">&#39;5&#39;</span> :</div>
-<div class="line"><a name="l00437"></a><span class="lineno">  437</span>&#160;        <span class="keywordflow">case</span> <span class="charliteral">&#39;6&#39;</span> :</div>
-<div class="line"><a name="l00438"></a><span class="lineno">  438</span>&#160;        <span class="keywordflow">case</span> <span class="charliteral">&#39;7&#39;</span> :</div>
-<div class="line"><a name="l00439"></a><span class="lineno">  439</span>&#160;        <span class="keywordflow">case</span> <span class="charliteral">&#39;8&#39;</span> :</div>
-<div class="line"><a name="l00440"></a><span class="lineno">  440</span>&#160;        <span class="keywordflow">case</span> <span class="charliteral">&#39;9&#39;</span> :</div>
-<div class="line"><a name="l00441"></a><span class="lineno">  441</span>&#160;            found_digit = <span class="keyword">true</span>;</div>
-<div class="line"><a name="l00442"></a><span class="lineno">  442</span>&#160;            sign_may_follow = <span class="keyword">false</span>;</div>
-<div class="line"><a name="l00443"></a><span class="lineno">  443</span>&#160;            <span class="keywordflow">break</span>;</div>
-<div class="line"><a name="l00444"></a><span class="lineno">  444</span>&#160;        <span class="keywordflow">case</span> <span class="charliteral">&#39;+&#39;</span> :</div>
-<div class="line"><a name="l00445"></a><span class="lineno">  445</span>&#160;        <span class="keywordflow">case</span> <span class="charliteral">&#39;-&#39;</span> :</div>
-<div class="line"><a name="l00446"></a><span class="lineno">  446</span>&#160;            <span class="keywordflow">if</span> (!sign_may_follow)</div>
-<div class="line"><a name="l00447"></a><span class="lineno">  447</span>&#160;                <span class="keywordflow">return</span> <span class="keyword">false</span>;</div>
-<div class="line"><a name="l00448"></a><span class="lineno">  448</span>&#160;            sign_may_follow = <span class="keyword">false</span>;</div>
-<div class="line"><a name="l00449"></a><span class="lineno">  449</span>&#160;            <span class="keywordflow">break</span>;</div>
-<div class="line"><a name="l00450"></a><span class="lineno">  450</span>&#160;        <span class="keywordflow">case</span> <span class="charliteral">&#39;.&#39;</span> :</div>
-<div class="line"><a name="l00451"></a><span class="lineno">  451</span>&#160;            <span class="keywordflow">if</span> (++nr_dots &gt; 1)</div>
-<div class="line"><a name="l00452"></a><span class="lineno">  452</span>&#160;                <span class="keywordflow">return</span> <span class="keyword">false</span>;</div>
-<div class="line"><a name="l00453"></a><span class="lineno">  453</span>&#160;            sign_may_follow = <span class="keyword">false</span>;</div>
-<div class="line"><a name="l00454"></a><span class="lineno">  454</span>&#160;            <span class="keywordflow">break</span>;</div>
-<div class="line"><a name="l00455"></a><span class="lineno">  455</span>&#160;        <span class="keywordflow">case</span> <span class="charliteral">&#39;e&#39;</span> :</div>
-<div class="line"><a name="l00456"></a><span class="lineno">  456</span>&#160;        <span class="keywordflow">case</span> <span class="charliteral">&#39;E&#39;</span> :</div>
-<div class="line"><a name="l00457"></a><span class="lineno">  457</span>&#160;            <span class="keywordflow">if</span> (++nr_exp &gt; 1)</div>
-<div class="line"><a name="l00458"></a><span class="lineno">  458</span>&#160;                <span class="keywordflow">return</span> <span class="keyword">false</span>;</div>
-<div class="line"><a name="l00459"></a><span class="lineno">  459</span>&#160;            sign_may_follow = <span class="keyword">true</span>;</div>
-<div class="line"><a name="l00460"></a><span class="lineno">  460</span>&#160;            <span class="keywordflow">break</span>;</div>
-<div class="line"><a name="l00461"></a><span class="lineno">  461</span>&#160;        <span class="keywordflow">default</span>:</div>
-<div class="line"><a name="l00462"></a><span class="lineno">  462</span>&#160;            <span class="keywordflow">return</span> <span class="keyword">false</span>;</div>
-<div class="line"><a name="l00463"></a><span class="lineno">  463</span>&#160;        }</div>
-<div class="line"><a name="l00464"></a><span class="lineno">  464</span>&#160;    }</div>
-<div class="line"><a name="l00465"></a><span class="lineno">  465</span>&#160;    <span class="keywordflow">if</span> (!found_digit)</div>
-<div class="line"><a name="l00466"></a><span class="lineno">  466</span>&#160;        <span class="keywordflow">return</span> <span class="keyword">false</span>;</div>
-<div class="line"><a name="l00467"></a><span class="lineno">  467</span>&#160;    value = atof(std::string(begin,end-begin).c_str());</div>
-<div class="line"><a name="l00468"></a><span class="lineno">  468</span>&#160;    <span class="keywordflow">return</span> <span class="keyword">true</span>; </div>
-<div class="line"><a name="l00469"></a><span class="lineno">  469</span>&#160;<span class="preprocessor">#endif</span></div>
-<div class="line"><a name="l00470"></a><span class="lineno">  470</span>&#160;}</div>
-<div class="line"><a name="l00471"></a><span class="lineno">  471</span>&#160; </div>
-<div class="line"><a name="l00472"></a><span class="lineno"><a class="line" href="namespacecgv_1_1utils.html#afdf46295d4f6cb65c46835330fb31850">  472</a></span>&#160;<span class="keywordtype">bool</span> <a class="code" href="namespacecgv_1_1utils.html#ab946aefefb94207956db27970b35227d">is_double</a>(<span class="keyword">const</span> std::string&amp; s, <span class="keywordtype">double</span>&amp; value)</div>
-<div class="line"><a name="l00473"></a><span class="lineno">  473</span>&#160;{</div>
-<div class="line"><a name="l00474"></a><span class="lineno">  474</span>&#160;    <span class="keywordflow">return</span> <a class="code" href="namespacecgv_1_1utils.html#ab946aefefb94207956db27970b35227d">is_double</a>(&amp;s[0], &amp;s[0]+s.size(), value);</div>
-<div class="line"><a name="l00475"></a><span class="lineno">  475</span>&#160;}</div>
-<div class="line"><a name="l00476"></a><span class="lineno">  476</span>&#160; </div>
-<div class="line"><a name="l00477"></a><span class="lineno">  477</span>&#160; </div>
-<div class="line"><a name="l00478"></a><span class="lineno"><a class="line" href="namespacecgv_1_1utils.html#a5e16eed75c4f654d7295f4505ad7e697">  478</a></span>&#160;<span class="keywordtype">bool</span> <a class="code" href="namespacecgv_1_1utils.html#a5e16eed75c4f654d7295f4505ad7e697">is_year</a>(<span class="keyword">const</span> <span class="keywordtype">char</span>* begin, <span class="keyword">const</span> <span class="keywordtype">char</span>* end, <span class="keywordtype">unsigned</span> <span class="keywordtype">short</span>&amp; year, <span class="keywordtype">bool</span> short_allowed)</div>
-<div class="line"><a name="l00479"></a><span class="lineno">  479</span>&#160;{</div>
-<div class="line"><a name="l00480"></a><span class="lineno">  480</span>&#160;    <span class="keywordtype">int</span> i;</div>
-<div class="line"><a name="l00481"></a><span class="lineno">  481</span>&#160;    <span class="keywordtype">unsigned</span> <span class="keywordtype">int</span> size = (<span class="keywordtype">unsigned</span> int) (end-begin);</div>
-<div class="line"><a name="l00482"></a><span class="lineno">  482</span>&#160;    <span class="keywordflow">if</span> ((size == 2 &amp;&amp; short_allowed) || </div>
-<div class="line"><a name="l00483"></a><span class="lineno">  483</span>&#160;         ((size == 4) &amp;&amp; <a class="code" href="namespacecgv_1_1utils.html#a2f21c3f652cfb7b2358bb19c515daa19">is_integer</a>(begin, end, i))) {</div>
-<div class="line"><a name="l00484"></a><span class="lineno">  484</span>&#160;        year = i;</div>
-<div class="line"><a name="l00485"></a><span class="lineno">  485</span>&#160;        <span class="keywordflow">return</span> <span class="keyword">true</span>;</div>
-<div class="line"><a name="l00486"></a><span class="lineno">  486</span>&#160;    }</div>
-<div class="line"><a name="l00487"></a><span class="lineno">  487</span>&#160;    <span class="keywordflow">return</span> <span class="keyword">false</span>;</div>
-<div class="line"><a name="l00488"></a><span class="lineno">  488</span>&#160;}</div>
-<div class="line"><a name="l00489"></a><span class="lineno">  489</span>&#160; </div>
-<div class="line"><a name="l00490"></a><span class="lineno"><a class="line" href="namespacecgv_1_1utils.html#a2923901da5517a748563914debe34838">  490</a></span>&#160;<span class="keywordtype">bool</span> <a class="code" href="namespacecgv_1_1utils.html#a5e16eed75c4f654d7295f4505ad7e697">is_year</a>(<span class="keyword">const</span> std::string&amp; s, <span class="keywordtype">unsigned</span> <span class="keywordtype">short</span>&amp; year, <span class="keywordtype">bool</span> short_allowed)</div>
-<div class="line"><a name="l00491"></a><span class="lineno">  491</span>&#160;{</div>
-<div class="line"><a name="l00492"></a><span class="lineno">  492</span>&#160;    <span class="keywordflow">return</span> <a class="code" href="namespacecgv_1_1utils.html#a5e16eed75c4f654d7295f4505ad7e697">is_year</a>(&amp;s[0], &amp;s[0]+s.size(), year, short_allowed);</div>
-<div class="line"><a name="l00493"></a><span class="lineno">  493</span>&#160;}</div>
-<div class="line"><a name="l00494"></a><span class="lineno">  494</span>&#160; </div>
-<div class="line"><a name="l00495"></a><span class="lineno"><a class="line" href="namespacecgv_1_1utils.html#a8a31d2792f8f93b046c38aa6f387fd5f">  495</a></span>&#160;<span class="keywordtype">bool</span> <a class="code" href="namespacecgv_1_1utils.html#a8a31d2792f8f93b046c38aa6f387fd5f">find_name</a>(<span class="keyword">const</span> std::string&amp; s, <span class="keyword">const</span> <span class="keywordtype">char</span>* names[], <span class="keywordtype">int</span>&amp; idx)</div>
-<div class="line"><a name="l00496"></a><span class="lineno">  496</span>&#160;{</div>
-<div class="line"><a name="l00497"></a><span class="lineno">  497</span>&#160;    <span class="keywordtype">unsigned</span> <span class="keywordtype">int</span> i=0;</div>
-<div class="line"><a name="l00498"></a><span class="lineno">  498</span>&#160;    <span class="keywordflow">while</span> (names[i]) {</div>
-<div class="line"><a name="l00499"></a><span class="lineno">  499</span>&#160;        <span class="keywordflow">if</span> (s == names[i]) {</div>
-<div class="line"><a name="l00500"></a><span class="lineno">  500</span>&#160;            idx = i;</div>
-<div class="line"><a name="l00501"></a><span class="lineno">  501</span>&#160;            <span class="keywordflow">return</span> <span class="keyword">true</span>;</div>
-<div class="line"><a name="l00502"></a><span class="lineno">  502</span>&#160;        }</div>
-<div class="line"><a name="l00503"></a><span class="lineno">  503</span>&#160;        ++i;</div>
-<div class="line"><a name="l00504"></a><span class="lineno">  504</span>&#160;    }</div>
-<div class="line"><a name="l00505"></a><span class="lineno">  505</span>&#160;    <span class="keywordflow">return</span> <span class="keyword">false</span>;</div>
-<div class="line"><a name="l00506"></a><span class="lineno">  506</span>&#160;}</div>
-<div class="line"><a name="l00507"></a><span class="lineno">  507</span>&#160; </div>
-<div class="line"><a name="l00508"></a><span class="lineno"><a class="line" href="namespacecgv_1_1utils.html#a31684ce83daae9741bd88efd2ab82a1a">  508</a></span>&#160;<span class="keywordtype">bool</span> <a class="code" href="namespacecgv_1_1utils.html#a31684ce83daae9741bd88efd2ab82a1a">is_month</a>(<span class="keyword">const</span> <span class="keywordtype">char</span>* begin, <span class="keyword">const</span> <span class="keywordtype">char</span>* end, <span class="keywordtype">unsigned</span> <span class="keywordtype">char</span>&amp; month)</div>
-<div class="line"><a name="l00509"></a><span class="lineno">  509</span>&#160;{</div>
-<div class="line"><a name="l00510"></a><span class="lineno">  510</span>&#160;    <span class="keyword">static</span> <span class="keyword">const</span> <span class="keywordtype">char</span>* months_short[] = {</div>
-<div class="line"><a name="l00511"></a><span class="lineno">  511</span>&#160;        <span class="stringliteral">&quot;jan&quot;</span>, <span class="stringliteral">&quot;feb&quot;</span>, <span class="stringliteral">&quot;mar&quot;</span>, <span class="stringliteral">&quot;apr&quot;</span>, <span class="stringliteral">&quot;may&quot;</span>, <span class="stringliteral">&quot;jun&quot;</span>, <span class="stringliteral">&quot;jul&quot;</span>, <span class="stringliteral">&quot;aug&quot;</span>, <span class="stringliteral">&quot;sep&quot;</span>, <span class="stringliteral">&quot;oct&quot;</span>, <span class="stringliteral">&quot;nov&quot;</span>, <span class="stringliteral">&quot;dec&quot;</span>, 0</div>
-<div class="line"><a name="l00512"></a><span class="lineno">  512</span>&#160;    };</div>
-<div class="line"><a name="l00513"></a><span class="lineno">  513</span>&#160;    <span class="keyword">static</span> <span class="keyword">const</span> <span class="keywordtype">char</span>* months_english[] = {</div>
-<div class="line"><a name="l00514"></a><span class="lineno">  514</span>&#160;        <span class="stringliteral">&quot;january&quot;</span>, <span class="stringliteral">&quot;february&quot;</span>, <span class="stringliteral">&quot;march&quot;</span>, <span class="stringliteral">&quot;april&quot;</span>, <span class="stringliteral">&quot;may&quot;</span>, <span class="stringliteral">&quot;june&quot;</span>, <span class="stringliteral">&quot;july&quot;</span>, <span class="stringliteral">&quot;august&quot;</span>, <span class="stringliteral">&quot;september&quot;</span>, <span class="stringliteral">&quot;october&quot;</span>, <span class="stringliteral">&quot;november&quot;</span>, <span class="stringliteral">&quot;december&quot;</span>, 0</div>
-<div class="line"><a name="l00515"></a><span class="lineno">  515</span>&#160;    };</div>
-<div class="line"><a name="l00516"></a><span class="lineno">  516</span>&#160;    <span class="keyword">static</span> <span class="keyword">const</span> <span class="keywordtype">char</span>* months_german[] = {</div>
-<div class="line"><a name="l00517"></a><span class="lineno">  517</span>&#160;        <span class="stringliteral">&quot;januar&quot;</span>, <span class="stringliteral">&quot;februar&quot;</span>, <span class="stringliteral">&quot;maerz&quot;</span>, <span class="stringliteral">&quot;april&quot;</span>, <span class="stringliteral">&quot;mai&quot;</span>, <span class="stringliteral">&quot;juni&quot;</span>, <span class="stringliteral">&quot;juli&quot;</span>, <span class="stringliteral">&quot;august&quot;</span>, <span class="stringliteral">&quot;september&quot;</span>, <span class="stringliteral">&quot;oktober&quot;</span>, <span class="stringliteral">&quot;november&quot;</span>, <span class="stringliteral">&quot;dezember&quot;</span>, 0</div>
-<div class="line"><a name="l00518"></a><span class="lineno">  518</span>&#160;    };</div>
-<div class="line"><a name="l00519"></a><span class="lineno">  519</span>&#160;    <span class="keywordtype">int</span> i;</div>
-<div class="line"><a name="l00520"></a><span class="lineno">  520</span>&#160;    <span class="keywordflow">if</span> (<a class="code" href="namespacecgv_1_1utils.html#a2f21c3f652cfb7b2358bb19c515daa19">is_integer</a>(begin,end,i)) {</div>
-<div class="line"><a name="l00521"></a><span class="lineno">  521</span>&#160;        <span class="keywordflow">if</span> (i &gt; 0 &amp;&amp; i &lt;= 12) {</div>
-<div class="line"><a name="l00522"></a><span class="lineno">  522</span>&#160;            month = i+1;</div>
-<div class="line"><a name="l00523"></a><span class="lineno">  523</span>&#160;            <span class="keywordflow">return</span> <span class="keyword">true</span>;</div>
-<div class="line"><a name="l00524"></a><span class="lineno">  524</span>&#160;        }</div>
-<div class="line"><a name="l00525"></a><span class="lineno">  525</span>&#160;    }</div>
-<div class="line"><a name="l00526"></a><span class="lineno">  526</span>&#160;    std::string s = <a class="code" href="namespacecgv_1_1utils.html#a6b682be2fdbb130c91a3bd8bd7936ff8">to_lower</a>(<a class="code" href="namespacecgv_1_1utils.html#a97032f8b8a5544a118c84ff2346b5bfe">replace_special</a>(std::string(begin,end-begin)));</div>
-<div class="line"><a name="l00527"></a><span class="lineno">  527</span>&#160;    <span class="keywordflow">if</span> (<a class="code" href="namespacecgv_1_1utils.html#a8a31d2792f8f93b046c38aa6f387fd5f">find_name</a>(s, months_short, i) || <a class="code" href="namespacecgv_1_1utils.html#a8a31d2792f8f93b046c38aa6f387fd5f">find_name</a>(s, months_english, i) || <a class="code" href="namespacecgv_1_1utils.html#a8a31d2792f8f93b046c38aa6f387fd5f">find_name</a>(s, months_german, i) ) {</div>
-<div class="line"><a name="l00528"></a><span class="lineno">  528</span>&#160;        month = i+1;</div>
-<div class="line"><a name="l00529"></a><span class="lineno">  529</span>&#160;        <span class="keywordflow">return</span> <span class="keyword">true</span>;</div>
-<div class="line"><a name="l00530"></a><span class="lineno">  530</span>&#160;    }</div>
-<div class="line"><a name="l00531"></a><span class="lineno">  531</span>&#160;    <span class="keywordflow">return</span> <span class="keyword">false</span>;</div>
-<div class="line"><a name="l00532"></a><span class="lineno">  532</span>&#160;}</div>
-<div class="line"><a name="l00533"></a><span class="lineno">  533</span>&#160; </div>
-<div class="line"><a name="l00534"></a><span class="lineno"><a class="line" href="namespacecgv_1_1utils.html#a0ab04ba818471e0a1556c9814f92fd91">  534</a></span>&#160;<span class="keywordtype">bool</span> <a class="code" href="namespacecgv_1_1utils.html#a31684ce83daae9741bd88efd2ab82a1a">is_month</a>(<span class="keyword">const</span> std::string&amp; s, <span class="keywordtype">unsigned</span> <span class="keywordtype">char</span>&amp; month)</div>
-<div class="line"><a name="l00535"></a><span class="lineno">  535</span>&#160;{</div>
-<div class="line"><a name="l00536"></a><span class="lineno">  536</span>&#160;    <span class="keywordflow">return</span> <a class="code" href="namespacecgv_1_1utils.html#a31684ce83daae9741bd88efd2ab82a1a">is_month</a>(&amp;s[0], &amp;s[0]+s.size(), month);</div>
-<div class="line"><a name="l00537"></a><span class="lineno">  537</span>&#160;}</div>
-<div class="line"><a name="l00538"></a><span class="lineno">  538</span>&#160; </div>
-<div class="line"><a name="l00539"></a><span class="lineno"><a class="line" href="namespacecgv_1_1utils.html#ab954d9a064432cbc49ebdc30e35ed3cd">  539</a></span>&#160;<span class="keywordtype">bool</span> <a class="code" href="namespacecgv_1_1utils.html#ab954d9a064432cbc49ebdc30e35ed3cd">is_time</a>(<span class="keyword">const</span> std::string&amp; s, <a class="code" href="structcgv_1_1utils_1_1time.html">cgv::utils::time</a>&amp; t, <span class="keyword">const</span> <span class="keywordtype">char</span> **new_end)</div>
-<div class="line"><a name="l00540"></a><span class="lineno">  540</span>&#160;{</div>
-<div class="line"><a name="l00541"></a><span class="lineno">  541</span>&#160;    <span class="keywordflow">if</span> (s.size() == 0)</div>
-<div class="line"><a name="l00542"></a><span class="lineno">  542</span>&#160;        <span class="keywordflow">return</span> <span class="keyword">false</span>;</div>
-<div class="line"><a name="l00543"></a><span class="lineno">  543</span>&#160;    <span class="keywordtype">size_t</span> end = s.size();</div>
-<div class="line"><a name="l00544"></a><span class="lineno">  544</span>&#160;    <span class="keywordflow">while</span> (end &gt; 0 &amp;&amp; <a class="code" href="namespacecgv_1_1utils.html#a643f3fe18654ef2a7be7b78d5f82dada">is_url_special</a>(s[end-1]))</div>
-<div class="line"><a name="l00545"></a><span class="lineno">  545</span>&#160;        --end;</div>
-<div class="line"><a name="l00546"></a><span class="lineno">  546</span>&#160;    <span class="keywordtype">size_t</span> pos = s.find_first_of(<span class="charliteral">&#39;:&#39;</span>);</div>
-<div class="line"><a name="l00547"></a><span class="lineno">  547</span>&#160;    <span class="keywordflow">if</span> (pos == std::string::npos)</div>
-<div class="line"><a name="l00548"></a><span class="lineno">  548</span>&#160;        <span class="keywordflow">return</span> <span class="keyword">false</span>;</div>
-<div class="line"><a name="l00549"></a><span class="lineno">  549</span>&#160;    <span class="keywordtype">int</span> i;</div>
-<div class="line"><a name="l00550"></a><span class="lineno">  550</span>&#160;    <span class="keywordflow">if</span> (!(<a class="code" href="namespacecgv_1_1utils.html#a2f21c3f652cfb7b2358bb19c515daa19">is_integer</a>(&amp;s[0], &amp;s[pos], i) &amp;&amp; i &gt;= 0 &amp;&amp; i &lt; 24))</div>
-<div class="line"><a name="l00551"></a><span class="lineno">  551</span>&#160;        <span class="keywordflow">return</span> <span class="keyword">false</span>;</div>
-<div class="line"><a name="l00552"></a><span class="lineno">  552</span>&#160;    t.h = (<span class="keywordtype">unsigned</span> char) i;</div>
-<div class="line"><a name="l00553"></a><span class="lineno">  553</span>&#160;    <span class="keywordflow">if</span> (pos &gt;= end)</div>
-<div class="line"><a name="l00554"></a><span class="lineno">  554</span>&#160;        <span class="keywordflow">return</span> <span class="keyword">false</span>;</div>
-<div class="line"><a name="l00555"></a><span class="lineno">  555</span>&#160;    ++pos;</div>
-<div class="line"><a name="l00556"></a><span class="lineno">  556</span>&#160;    <span class="keywordtype">size_t</span> pos2 = s.find_first_of(<span class="charliteral">&#39;:&#39;</span>, pos);</div>
-<div class="line"><a name="l00557"></a><span class="lineno">  557</span>&#160;    <span class="keywordtype">size_t</span> pos3 = pos2+1;</div>
-<div class="line"><a name="l00558"></a><span class="lineno">  558</span>&#160;    <span class="keywordflow">if</span> (pos2 == std::string::npos)</div>
-<div class="line"><a name="l00559"></a><span class="lineno">  559</span>&#160;        pos3 = pos2 = end;</div>
-<div class="line"><a name="l00560"></a><span class="lineno">  560</span>&#160;    <span class="keywordflow">if</span> (!(<a class="code" href="namespacecgv_1_1utils.html#a2f21c3f652cfb7b2358bb19c515daa19">is_integer</a>(&amp;s[pos], &amp;s[pos2], i) &amp;&amp; i &gt;= 0 &amp;&amp; i &lt; 60))</div>
-<div class="line"><a name="l00561"></a><span class="lineno">  561</span>&#160;        <span class="keywordflow">return</span> <span class="keyword">false</span>;</div>
-<div class="line"><a name="l00562"></a><span class="lineno">  562</span>&#160;    t.minutes = (<span class="keywordtype">unsigned</span> char) i;</div>
-<div class="line"><a name="l00563"></a><span class="lineno">  563</span>&#160;    <span class="keywordflow">if</span> (pos2 &gt;= end) {</div>
-<div class="line"><a name="l00564"></a><span class="lineno">  564</span>&#160;        <span class="keywordflow">if</span> (new_end)</div>
-<div class="line"><a name="l00565"></a><span class="lineno">  565</span>&#160;            *new_end = &amp;s[0]+pos3;</div>
-<div class="line"><a name="l00566"></a><span class="lineno">  566</span>&#160;        <span class="keywordflow">return</span> <span class="keyword">true</span>;</div>
-<div class="line"><a name="l00567"></a><span class="lineno">  567</span>&#160;    }</div>
-<div class="line"><a name="l00568"></a><span class="lineno">  568</span>&#160;    pos = ++pos2;</div>
-<div class="line"><a name="l00569"></a><span class="lineno">  569</span>&#160;    <span class="keywordflow">while</span> (pos2 &lt; end &amp;&amp; <a class="code" href="namespacecgv_1_1utils.html#a04502bf86fbb71464368f9710a2a084c">is_digit</a>(s[pos2]))</div>
-<div class="line"><a name="l00570"></a><span class="lineno">  570</span>&#160;        ++pos2;</div>
-<div class="line"><a name="l00571"></a><span class="lineno">  571</span>&#160;    <span class="keywordflow">if</span> (!(<a class="code" href="namespacecgv_1_1utils.html#a2f21c3f652cfb7b2358bb19c515daa19">is_integer</a>(&amp;s[pos], &amp;s[pos2], i) &amp;&amp; i &gt;= 0 &amp;&amp; i &lt; 60))</div>
-<div class="line"><a name="l00572"></a><span class="lineno">  572</span>&#160;        <span class="keywordflow">return</span> <span class="keyword">false</span>;</div>
-<div class="line"><a name="l00573"></a><span class="lineno">  573</span>&#160;    t.sec = i;</div>
-<div class="line"><a name="l00574"></a><span class="lineno">  574</span>&#160;    <span class="keywordflow">if</span> (new_end)</div>
-<div class="line"><a name="l00575"></a><span class="lineno">  575</span>&#160;        *new_end = &amp;s[0]+pos2;</div>
-<div class="line"><a name="l00576"></a><span class="lineno">  576</span>&#160;    <span class="keywordflow">return</span> <span class="keyword">true</span>;</div>
-<div class="line"><a name="l00577"></a><span class="lineno">  577</span>&#160;}</div>
-<div class="line"><a name="l00578"></a><span class="lineno">  578</span>&#160; </div>
-<div class="line"><a name="l00579"></a><span class="lineno"><a class="line" href="namespacecgv_1_1utils.html#a721b017eeba9c853fb2a8d1b91251ab6">  579</a></span>&#160;<span class="keywordtype">bool</span> <a class="code" href="namespacecgv_1_1utils.html#a721b017eeba9c853fb2a8d1b91251ab6">is_date</a>(<span class="keyword">const</span> std::string&amp; s, <a class="code" href="structcgv_1_1utils_1_1date.html">cgv::utils::date</a>&amp; d, <span class="keyword">const</span> <span class="keywordtype">char</span> **new_end)</div>
-<div class="line"><a name="l00580"></a><span class="lineno">  580</span>&#160;{</div>
-<div class="line"><a name="l00581"></a><span class="lineno">  581</span>&#160;    <span class="keywordflow">if</span> (s.size() == 0)</div>
-<div class="line"><a name="l00582"></a><span class="lineno">  582</span>&#160;        <span class="keywordflow">return</span> <span class="keyword">false</span>;</div>
-<div class="line"><a name="l00583"></a><span class="lineno">  583</span>&#160;    <span class="keywordtype">size_t</span> end = s.size();</div>
-<div class="line"><a name="l00584"></a><span class="lineno">  584</span>&#160;    <span class="keywordflow">while</span> (end &gt; 0 &amp;&amp; <a class="code" href="namespacecgv_1_1utils.html#a643f3fe18654ef2a7be7b78d5f82dada">is_url_special</a>(s[end-1]))</div>
-<div class="line"><a name="l00585"></a><span class="lineno">  585</span>&#160;        --end;</div>
-<div class="line"><a name="l00586"></a><span class="lineno">  586</span>&#160;    <span class="keywordtype">size_t</span> pos = s.find_first_of(<span class="charliteral">&#39;.&#39;</span>);</div>
-<div class="line"><a name="l00587"></a><span class="lineno">  587</span>&#160;    <span class="keywordflow">if</span> (pos == std::string::npos)</div>
-<div class="line"><a name="l00588"></a><span class="lineno">  588</span>&#160;        <span class="keywordflow">return</span> <span class="keyword">false</span>;</div>
-<div class="line"><a name="l00589"></a><span class="lineno">  589</span>&#160;    <span class="keywordtype">int</span> i;</div>
-<div class="line"><a name="l00590"></a><span class="lineno">  590</span>&#160;    <span class="keywordflow">if</span> (!(<a class="code" href="namespacecgv_1_1utils.html#a2f21c3f652cfb7b2358bb19c515daa19">is_integer</a>(&amp;s[0], &amp;s[pos], i) &amp;&amp; i &gt; 0 &amp;&amp; i &lt; 32))</div>
-<div class="line"><a name="l00591"></a><span class="lineno">  591</span>&#160;        <span class="keywordflow">return</span> <span class="keyword">false</span>;</div>
-<div class="line"><a name="l00592"></a><span class="lineno">  592</span>&#160;    d.day = (<span class="keywordtype">unsigned</span> char)i;</div>
-<div class="line"><a name="l00593"></a><span class="lineno">  593</span>&#160;    <span class="keywordflow">if</span> (pos &gt;= end) {</div>
-<div class="line"><a name="l00594"></a><span class="lineno">  594</span>&#160;        <span class="keywordflow">if</span> (new_end)</div>
-<div class="line"><a name="l00595"></a><span class="lineno">  595</span>&#160;            *new_end = &amp;s[0]+pos+1;</div>
-<div class="line"><a name="l00596"></a><span class="lineno">  596</span>&#160;        <span class="keywordflow">return</span> <span class="keyword">true</span>;</div>
-<div class="line"><a name="l00597"></a><span class="lineno">  597</span>&#160;    }</div>
-<div class="line"><a name="l00598"></a><span class="lineno">  598</span>&#160;    ++pos;</div>
-<div class="line"><a name="l00599"></a><span class="lineno">  599</span>&#160;    <span class="keywordtype">size_t</span> pos2 = s.find_first_of(<span class="charliteral">&#39;.&#39;</span>, pos);</div>
-<div class="line"><a name="l00600"></a><span class="lineno">  600</span>&#160;    <span class="keywordflow">if</span> (pos2 == std::string::npos)</div>
-<div class="line"><a name="l00601"></a><span class="lineno">  601</span>&#160;        <span class="keywordflow">return</span> <span class="keyword">false</span>;</div>
-<div class="line"><a name="l00602"></a><span class="lineno">  602</span>&#160;    <span class="keywordflow">if</span> (!<a class="code" href="namespacecgv_1_1utils.html#a31684ce83daae9741bd88efd2ab82a1a">is_month</a>(&amp;s[pos], &amp;s[pos2], d.month))</div>
-<div class="line"><a name="l00603"></a><span class="lineno">  603</span>&#160;        <span class="keywordflow">return</span> <span class="keyword">false</span>;</div>
-<div class="line"><a name="l00604"></a><span class="lineno">  604</span>&#160;    <span class="keywordflow">if</span> (pos2 &gt;= end) {</div>
-<div class="line"><a name="l00605"></a><span class="lineno">  605</span>&#160;        <span class="keywordflow">if</span> (new_end)</div>
-<div class="line"><a name="l00606"></a><span class="lineno">  606</span>&#160;            *new_end = &amp;s[0]+pos2+1;</div>
-<div class="line"><a name="l00607"></a><span class="lineno">  607</span>&#160;        <span class="keywordflow">return</span> <span class="keyword">true</span>;</div>
-<div class="line"><a name="l00608"></a><span class="lineno">  608</span>&#160;    }</div>
-<div class="line"><a name="l00609"></a><span class="lineno">  609</span>&#160;    pos = ++pos2;</div>
-<div class="line"><a name="l00610"></a><span class="lineno">  610</span>&#160;    <span class="keywordflow">while</span> (pos2 &lt; end &amp;&amp; <a class="code" href="namespacecgv_1_1utils.html#a04502bf86fbb71464368f9710a2a084c">is_digit</a>(s[pos2]))</div>
-<div class="line"><a name="l00611"></a><span class="lineno">  611</span>&#160;        ++pos2;</div>
-<div class="line"><a name="l00612"></a><span class="lineno">  612</span>&#160;    <span class="keywordflow">if</span> (!<a class="code" href="namespacecgv_1_1utils.html#a5e16eed75c4f654d7295f4505ad7e697">is_year</a>(&amp;s[pos],&amp;s[pos2],d.year))</div>
-<div class="line"><a name="l00613"></a><span class="lineno">  613</span>&#160;        <span class="keywordflow">return</span> <span class="keyword">false</span>;</div>
-<div class="line"><a name="l00614"></a><span class="lineno">  614</span>&#160;    <span class="keywordflow">if</span> (new_end)</div>
-<div class="line"><a name="l00615"></a><span class="lineno">  615</span>&#160;        *new_end = &amp;s[0]+pos2;</div>
-<div class="line"><a name="l00616"></a><span class="lineno">  616</span>&#160;    <span class="keywordflow">return</span> <span class="keyword">true</span>;</div>
-<div class="line"><a name="l00617"></a><span class="lineno">  617</span>&#160;}</div>
-<div class="line"><a name="l00618"></a><span class="lineno">  618</span>&#160; </div>
-<div class="line"><a name="l00619"></a><span class="lineno"><a class="line" href="namespacecgv_1_1utils.html#a754c29b3c9f4543fd55732682b89618d">  619</a></span>&#160;<span class="keywordtype">bool</span> <a class="code" href="namespacecgv_1_1utils.html#ab954d9a064432cbc49ebdc30e35ed3cd">is_time</a>(<span class="keyword">const</span> <span class="keywordtype">char</span>* begin, <span class="keyword">const</span> <span class="keywordtype">char</span>* end, <a class="code" href="structcgv_1_1utils_1_1time.html">cgv::utils::time</a>&amp; t, <span class="keyword">const</span> <span class="keywordtype">char</span> **new_end)</div>
-<div class="line"><a name="l00620"></a><span class="lineno">  620</span>&#160;{</div>
-<div class="line"><a name="l00621"></a><span class="lineno">  621</span>&#160;    std::string s(begin,end-begin);</div>
-<div class="line"><a name="l00622"></a><span class="lineno">  622</span>&#160;    <span class="keywordflow">if</span> (<a class="code" href="namespacecgv_1_1utils.html#ab954d9a064432cbc49ebdc30e35ed3cd">is_time</a>(s, t, new_end)) {</div>
-<div class="line"><a name="l00623"></a><span class="lineno">  623</span>&#160;        <span class="keywordflow">if</span> (new_end)</div>
-<div class="line"><a name="l00624"></a><span class="lineno">  624</span>&#160;            *new_end = end + (*new_end - (&amp;s[0]+s.length()));</div>
-<div class="line"><a name="l00625"></a><span class="lineno">  625</span>&#160;        <span class="keywordflow">return</span> <span class="keyword">true</span>;</div>
-<div class="line"><a name="l00626"></a><span class="lineno">  626</span>&#160;    }</div>
-<div class="line"><a name="l00627"></a><span class="lineno">  627</span>&#160;    <span class="keywordflow">return</span> <span class="keyword">false</span>;</div>
-<div class="line"><a name="l00628"></a><span class="lineno">  628</span>&#160;}</div>
-<div class="line"><a name="l00629"></a><span class="lineno">  629</span>&#160; </div>
-<div class="line"><a name="l00630"></a><span class="lineno"><a class="line" href="namespacecgv_1_1utils.html#ac50207e5cb3cced92c622704d724ed83">  630</a></span>&#160;<span class="keywordtype">bool</span> <a class="code" href="namespacecgv_1_1utils.html#a721b017eeba9c853fb2a8d1b91251ab6">is_date</a>(<span class="keyword">const</span> <span class="keywordtype">char</span>* begin, <span class="keyword">const</span> <span class="keywordtype">char</span>* end, <a class="code" href="structcgv_1_1utils_1_1date.html">cgv::utils::date</a>&amp; d, <span class="keyword">const</span> <span class="keywordtype">char</span> **new_end)</div>
-<div class="line"><a name="l00631"></a><span class="lineno">  631</span>&#160;{</div>
-<div class="line"><a name="l00632"></a><span class="lineno">  632</span>&#160;    std::string s(begin,end-begin);</div>
-<div class="line"><a name="l00633"></a><span class="lineno">  633</span>&#160;    <span class="keywordflow">if</span> (<a class="code" href="namespacecgv_1_1utils.html#a721b017eeba9c853fb2a8d1b91251ab6">is_date</a>(s, d, new_end)) {</div>
-<div class="line"><a name="l00634"></a><span class="lineno">  634</span>&#160;        <span class="keywordflow">if</span> (new_end)</div>
-<div class="line"><a name="l00635"></a><span class="lineno">  635</span>&#160;            *new_end = end + (*new_end - (&amp;s[0]+s.length()));</div>
-<div class="line"><a name="l00636"></a><span class="lineno">  636</span>&#160;        <span class="keywordflow">return</span> <span class="keyword">true</span>;</div>
-<div class="line"><a name="l00637"></a><span class="lineno">  637</span>&#160;    }</div>
-<div class="line"><a name="l00638"></a><span class="lineno">  638</span>&#160;    <span class="keywordflow">return</span> <span class="keyword">false</span>;</div>
-<div class="line"><a name="l00639"></a><span class="lineno">  639</span>&#160;}</div>
-<div class="line"><a name="l00640"></a><span class="lineno">  640</span>&#160; </div>
-<div class="line"><a name="l00641"></a><span class="lineno"><a class="line" href="namespacecgv_1_1utils.html#a1e73543d632d26465fb41b3901f2a338">  641</a></span>&#160;<span class="keywordtype">bool</span> <a class="code" href="namespacecgv_1_1utils.html#a1e73543d632d26465fb41b3901f2a338">is_url</a>(<span class="keyword">const</span> std::string&amp; s, <span class="keyword">const</span> <span class="keywordtype">char</span>** end)</div>
-<div class="line"><a name="l00642"></a><span class="lineno">  642</span>&#160;{</div>
-<div class="line"><a name="l00643"></a><span class="lineno">  643</span>&#160;    <span class="keywordflow">if</span> (s.substr(0,8) == <span class="stringliteral">&quot;https://&quot;</span> || </div>
-<div class="line"><a name="l00644"></a><span class="lineno">  644</span>&#160;         s.substr(0,7) == <span class="stringliteral">&quot;http://&quot;</span> ||</div>
-<div class="line"><a name="l00645"></a><span class="lineno">  645</span>&#160;         s.substr(0,6) == <span class="stringliteral">&quot;ftp://&quot;</span> ||</div>
-<div class="line"><a name="l00646"></a><span class="lineno">  646</span>&#160;         s.substr(0,6) == <span class="stringliteral">&quot;smb://&quot;</span> ||</div>
-<div class="line"><a name="l00647"></a><span class="lineno">  647</span>&#160;         s.substr(0,6) == <span class="stringliteral">&quot;svn://&quot;</span> ||</div>
-<div class="line"><a name="l00648"></a><span class="lineno">  648</span>&#160;         s.substr(0,7) == <span class="stringliteral">&quot;file://&quot;</span>) {</div>
-<div class="line"><a name="l00649"></a><span class="lineno">  649</span>&#160;             <span class="keywordflow">if</span> (end) {</div>
-<div class="line"><a name="l00650"></a><span class="lineno">  650</span>&#160;                 *end = &amp;s[s.length()-1];</div>
-<div class="line"><a name="l00651"></a><span class="lineno">  651</span>&#160;                 <span class="keywordflow">while</span> (<a class="code" href="namespacecgv_1_1utils.html#a643f3fe18654ef2a7be7b78d5f82dada">is_url_special</a>(**end))</div>
-<div class="line"><a name="l00652"></a><span class="lineno">  652</span>&#160;                     --*end;</div>
-<div class="line"><a name="l00653"></a><span class="lineno">  653</span>&#160;                 ++*end;</div>
-<div class="line"><a name="l00654"></a><span class="lineno">  654</span>&#160;             }</div>
-<div class="line"><a name="l00655"></a><span class="lineno">  655</span>&#160;             <span class="keywordflow">return</span> <span class="keyword">true</span>;</div>
-<div class="line"><a name="l00656"></a><span class="lineno">  656</span>&#160;    }</div>
-<div class="line"><a name="l00657"></a><span class="lineno">  657</span>&#160;    <span class="keywordflow">return</span> <span class="keyword">false</span>;</div>
-<div class="line"><a name="l00658"></a><span class="lineno">  658</span>&#160;}</div>
-<div class="line"><a name="l00659"></a><span class="lineno">  659</span>&#160; </div>
-<div class="line"><a name="l00660"></a><span class="lineno"><a class="line" href="namespacecgv_1_1utils.html#aa7c5d6190a704c19ebca6e99a9fc2734">  660</a></span>&#160;<span class="keywordtype">bool</span> <a class="code" href="namespacecgv_1_1utils.html#a1e73543d632d26465fb41b3901f2a338">is_url</a>(<span class="keyword">const</span> <span class="keywordtype">char</span>* begin, <span class="keyword">const</span> <span class="keywordtype">char</span>* end, <span class="keyword">const</span> <span class="keywordtype">char</span>** new_end)</div>
-<div class="line"><a name="l00661"></a><span class="lineno">  661</span>&#160;{</div>
-<div class="line"><a name="l00662"></a><span class="lineno">  662</span>&#160;    std::string s(begin,end-begin);</div>
-<div class="line"><a name="l00663"></a><span class="lineno">  663</span>&#160;    <span class="keywordflow">if</span> (<a class="code" href="namespacecgv_1_1utils.html#a1e73543d632d26465fb41b3901f2a338">is_url</a>(s, new_end)) {</div>
-<div class="line"><a name="l00664"></a><span class="lineno">  664</span>&#160;        <span class="keywordflow">if</span> (new_end)</div>
-<div class="line"><a name="l00665"></a><span class="lineno">  665</span>&#160;            *new_end = end + (*new_end - (&amp;s[0]+s.length()));</div>
-<div class="line"><a name="l00666"></a><span class="lineno">  666</span>&#160;        <span class="keywordflow">return</span> <span class="keyword">true</span>;</div>
-<div class="line"><a name="l00667"></a><span class="lineno">  667</span>&#160;    }</div>
-<div class="line"><a name="l00668"></a><span class="lineno">  668</span>&#160;    <span class="keywordflow">return</span> <span class="keyword">false</span>;</div>
-<div class="line"><a name="l00669"></a><span class="lineno">  669</span>&#160;}</div>
-<div class="line"><a name="l00670"></a><span class="lineno">  670</span>&#160; </div>
-<div class="line"><a name="l00671"></a><span class="lineno"><a class="line" href="namespacecgv_1_1utils.html#aef60ecad72389715873e5b998f037aa8">  671</a></span>&#160;<span class="keyword">const</span> <span class="keywordtype">char</span>* <a class="code" href="namespacecgv_1_1utils.html#aef60ecad72389715873e5b998f037aa8">skip_spaces</a>(<span class="keyword">const</span> <span class="keywordtype">char</span>* begin, <span class="keyword">const</span> <span class="keywordtype">char</span>* end)</div>
-<div class="line"><a name="l00672"></a><span class="lineno">  672</span>&#160;{</div>
-<div class="line"><a name="l00673"></a><span class="lineno">  673</span>&#160;    <span class="keywordflow">while</span> (begin &lt; end &amp;&amp; <a class="code" href="namespacecgv_1_1utils.html#a81d51336fe7248cc852738af2b6adf85">is_space</a>(*begin))</div>
-<div class="line"><a name="l00674"></a><span class="lineno">  674</span>&#160;        ++begin;</div>
-<div class="line"><a name="l00675"></a><span class="lineno">  675</span>&#160;    <span class="keywordflow">return</span> begin;</div>
-<div class="line"><a name="l00676"></a><span class="lineno">  676</span>&#160;}</div>
-<div class="line"><a name="l00677"></a><span class="lineno">  677</span>&#160; </div>
-<div class="line"><a name="l00678"></a><span class="lineno"><a class="line" href="namespacecgv_1_1utils.html#ad395e58106935ab83b2d1e08438c5455">  678</a></span>&#160;<span class="keyword">const</span> <span class="keywordtype">char</span>* <a class="code" href="namespacecgv_1_1utils.html#ad395e58106935ab83b2d1e08438c5455">cutoff_spaces</a>(<span class="keyword">const</span> <span class="keywordtype">char</span>* begin, <span class="keyword">const</span> <span class="keywordtype">char</span>* end)</div>
-<div class="line"><a name="l00679"></a><span class="lineno">  679</span>&#160;{</div>
-<div class="line"><a name="l00680"></a><span class="lineno">  680</span>&#160;    <span class="keywordflow">while</span> (begin &lt; end &amp;&amp; <a class="code" href="namespacecgv_1_1utils.html#a81d51336fe7248cc852738af2b6adf85">is_space</a>(*(end-1)))</div>
-<div class="line"><a name="l00681"></a><span class="lineno">  681</span>&#160;        --end;</div>
-<div class="line"><a name="l00682"></a><span class="lineno">  682</span>&#160;    <span class="keywordflow">return</span> end;</div>
-<div class="line"><a name="l00683"></a><span class="lineno">  683</span>&#160;}</div>
-<div class="line"><a name="l00684"></a><span class="lineno">  684</span>&#160; </div>
-<div class="line"><a name="l00685"></a><span class="lineno"><a class="line" href="namespacecgv_1_1utils.html#a6111552f6d6592cb0a9bec7939f4e236">  685</a></span>&#160;std::string&amp; <a class="code" href="namespacecgv_1_1utils.html#a6111552f6d6592cb0a9bec7939f4e236">ltrim</a>(std::string&amp; str, <span class="keyword">const</span> std::string&amp; chars)</div>
-<div class="line"><a name="l00686"></a><span class="lineno">  686</span>&#160;{</div>
-<div class="line"><a name="l00687"></a><span class="lineno">  687</span>&#160;    str.erase(0, str.find_first_not_of(chars));</div>
-<div class="line"><a name="l00688"></a><span class="lineno">  688</span>&#160;    <span class="keywordflow">return</span> str;</div>
-<div class="line"><a name="l00689"></a><span class="lineno">  689</span>&#160;}</div>
-<div class="line"><a name="l00690"></a><span class="lineno">  690</span>&#160; </div>
-<div class="line"><a name="l00691"></a><span class="lineno"><a class="line" href="namespacecgv_1_1utils.html#a275e5d68df06a511c2f9b41c1f9f4c28">  691</a></span>&#160;std::string&amp; <a class="code" href="namespacecgv_1_1utils.html#a275e5d68df06a511c2f9b41c1f9f4c28">rtrim</a>(std::string&amp; str, <span class="keyword">const</span> std::string&amp; chars)</div>
-<div class="line"><a name="l00692"></a><span class="lineno">  692</span>&#160;{</div>
-<div class="line"><a name="l00693"></a><span class="lineno">  693</span>&#160;    str.erase(str.find_last_not_of(chars) + 1);</div>
-<div class="line"><a name="l00694"></a><span class="lineno">  694</span>&#160;    <span class="keywordflow">return</span> str;</div>
-<div class="line"><a name="l00695"></a><span class="lineno">  695</span>&#160;}</div>
-<div class="line"><a name="l00696"></a><span class="lineno">  696</span>&#160; </div>
-<div class="line"><a name="l00697"></a><span class="lineno"><a class="line" href="namespacecgv_1_1utils.html#a3eec00ae2b52df54329967f6ae7526d4">  697</a></span>&#160;std::string&amp; <a class="code" href="namespacecgv_1_1utils.html#a3eec00ae2b52df54329967f6ae7526d4">trim</a>(std::string&amp; str, <span class="keyword">const</span> std::string&amp; chars)</div>
-<div class="line"><a name="l00698"></a><span class="lineno">  698</span>&#160;{</div>
-<div class="line"><a name="l00699"></a><span class="lineno">  699</span>&#160;    <span class="keywordflow">return</span> <a class="code" href="namespacecgv_1_1utils.html#a6111552f6d6592cb0a9bec7939f4e236">ltrim</a>(<a class="code" href="namespacecgv_1_1utils.html#a275e5d68df06a511c2f9b41c1f9f4c28">rtrim</a>(str, chars), chars);</div>
-<div class="line"><a name="l00700"></a><span class="lineno">  700</span>&#160;}</div>
-<div class="line"><a name="l00701"></a><span class="lineno">  701</span>&#160; </div>
-<div class="line"><a name="l00702"></a><span class="lineno"><a class="line" href="namespacecgv_1_1utils.html#a612b9004a640fd424d7ed20ba2104e74">  702</a></span>&#160;std::string <a class="code" href="namespacecgv_1_1utils.html#a6111552f6d6592cb0a9bec7939f4e236">ltrim</a>(<span class="keyword">const</span> std::string&amp; str, <span class="keyword">const</span> std::string&amp; chars)</div>
-<div class="line"><a name="l00703"></a><span class="lineno">  703</span>&#160;{</div>
-<div class="line"><a name="l00704"></a><span class="lineno">  704</span>&#160;    std::string s = str;</div>
-<div class="line"><a name="l00705"></a><span class="lineno">  705</span>&#160;    s.erase(0, str.find_first_not_of(chars));</div>
-<div class="line"><a name="l00706"></a><span class="lineno">  706</span>&#160;    <span class="keywordflow">return</span> s;</div>
-<div class="line"><a name="l00707"></a><span class="lineno">  707</span>&#160;}</div>
-<div class="line"><a name="l00708"></a><span class="lineno">  708</span>&#160; </div>
-<div class="line"><a name="l00709"></a><span class="lineno"><a class="line" href="namespacecgv_1_1utils.html#aa9ae735d0f4b701a6d3635053097a23c">  709</a></span>&#160;std::string <a class="code" href="namespacecgv_1_1utils.html#a275e5d68df06a511c2f9b41c1f9f4c28">rtrim</a>(<span class="keyword">const</span> std::string&amp; str, <span class="keyword">const</span> std::string&amp; chars)</div>
-<div class="line"><a name="l00710"></a><span class="lineno">  710</span>&#160;{</div>
-<div class="line"><a name="l00711"></a><span class="lineno">  711</span>&#160;    std::string s = str;</div>
-<div class="line"><a name="l00712"></a><span class="lineno">  712</span>&#160;    s.erase(str.find_last_not_of(chars) + 1);</div>
-<div class="line"><a name="l00713"></a><span class="lineno">  713</span>&#160;    <span class="keywordflow">return</span> s;</div>
-<div class="line"><a name="l00714"></a><span class="lineno">  714</span>&#160;}</div>
-<div class="line"><a name="l00715"></a><span class="lineno">  715</span>&#160; </div>
-<div class="line"><a name="l00716"></a><span class="lineno"><a class="line" href="namespacecgv_1_1utils.html#adcdb4408e94a15f0337146b18058c79e">  716</a></span>&#160;std::string <a class="code" href="namespacecgv_1_1utils.html#a3eec00ae2b52df54329967f6ae7526d4">trim</a>(<span class="keyword">const</span> std::string&amp; str, <span class="keyword">const</span> std::string&amp; chars)</div>
-<div class="line"><a name="l00717"></a><span class="lineno">  717</span>&#160;{</div>
-<div class="line"><a name="l00718"></a><span class="lineno">  718</span>&#160;    <span class="keywordflow">return</span> <a class="code" href="namespacecgv_1_1utils.html#a6111552f6d6592cb0a9bec7939f4e236">ltrim</a>(<a class="code" href="namespacecgv_1_1utils.html#a275e5d68df06a511c2f9b41c1f9f4c28">rtrim</a>(str, chars), chars);</div>
-<div class="line"><a name="l00719"></a><span class="lineno">  719</span>&#160;}</div>
-<div class="line"><a name="l00720"></a><span class="lineno">  720</span>&#160; </div>
-<div class="line"><a name="l00721"></a><span class="lineno"><a class="line" href="namespacecgv_1_1utils.html#a8c7e4e48bd1834e5558fc9d5461457d9">  721</a></span>&#160;std::string <a class="code" href="namespacecgv_1_1utils.html#a8c7e4e48bd1834e5558fc9d5461457d9">join</a>(<span class="keyword">const</span> std::vector&lt;std::string&gt;::const_iterator first, <span class="keyword">const</span> std::vector&lt;std::string&gt;::const_iterator last, <span class="keyword">const</span> std::string&amp; sep, <span class="keywordtype">bool</span> trailing_sep)</div>
-<div class="line"><a name="l00722"></a><span class="lineno">  722</span>&#160;{</div>
-<div class="line"><a name="l00723"></a><span class="lineno">  723</span>&#160;    <span class="keywordflow">if</span>(last &lt; first)</div>
-<div class="line"><a name="l00724"></a><span class="lineno">  724</span>&#160;        <span class="keywordflow">return</span> <span class="stringliteral">&quot;&quot;</span>;</div>
-<div class="line"><a name="l00725"></a><span class="lineno">  725</span>&#160; </div>
-<div class="line"><a name="l00726"></a><span class="lineno">  726</span>&#160;    std::string res = <span class="stringliteral">&quot;&quot;</span>;</div>
-<div class="line"><a name="l00727"></a><span class="lineno">  727</span>&#160; </div>
-<div class="line"><a name="l00728"></a><span class="lineno">  728</span>&#160;    <span class="keywordflow">for</span>(<span class="keyword">auto</span> curr = first; curr != last; ++curr) {</div>
-<div class="line"><a name="l00729"></a><span class="lineno">  729</span>&#160;        res += *curr;</div>
-<div class="line"><a name="l00730"></a><span class="lineno">  730</span>&#160;        <span class="keywordflow">if</span>(last - curr &gt; 1 || trailing_sep)</div>
-<div class="line"><a name="l00731"></a><span class="lineno">  731</span>&#160;            res += sep;</div>
-<div class="line"><a name="l00732"></a><span class="lineno">  732</span>&#160;    }</div>
-<div class="line"><a name="l00733"></a><span class="lineno">  733</span>&#160;    <span class="keywordflow">return</span> res;</div>
-<div class="line"><a name="l00734"></a><span class="lineno">  734</span>&#160;}</div>
+<div class="line"><a name="l00356"></a><span class="lineno">  356</span>&#160;<span class="preprocessor">#if __cplusplus &gt;= 201703L</span></div>
+<div class="line"><a name="l00357"></a><span class="lineno">  357</span>&#160;    <span class="comment">// We will be using std::from chars below for parsing, this provides the whitespace check we need there for correct logic</span></div>
+<div class="line"><a name="l00358"></a><span class="lineno">  358</span>&#160;    <span class="keyword">inline</span> <span class="keyword">const</span> <span class="keywordtype">bool</span> char_is_whitespace_or_zero (<span class="keyword">const</span> <span class="keywordtype">char</span> ch) {</div>
+<div class="line"><a name="l00359"></a><span class="lineno">  359</span>&#160;        <span class="keywordflow">return</span> ch == 0 || ch == <span class="charliteral">&#39;\r&#39;</span> || ch == <span class="charliteral">&#39;\n&#39;</span> || ch == <span class="charliteral">&#39; &#39;</span> || ch == <span class="charliteral">&#39;\t&#39;</span>;</div>
+<div class="line"><a name="l00360"></a><span class="lineno">  360</span>&#160;    }</div>
+<div class="line"><a name="l00361"></a><span class="lineno">  361</span>&#160;<span class="preprocessor">#endif</span></div>
+<div class="line"><a name="l00362"></a><span class="lineno">  362</span>&#160; </div>
+<div class="line"><a name="l00363"></a><span class="lineno"><a class="line" href="namespacecgv_1_1utils.html#a2f21c3f652cfb7b2358bb19c515daa19">  363</a></span>&#160;<span class="keywordtype">bool</span> <a class="code" href="namespacecgv_1_1utils.html#a2f21c3f652cfb7b2358bb19c515daa19">is_integer</a>(<span class="keyword">const</span> <span class="keywordtype">char</span>* begin, <span class="keyword">const</span> <span class="keywordtype">char</span>* end, <span class="keywordtype">int</span>&amp; value)</div>
+<div class="line"><a name="l00364"></a><span class="lineno">  364</span>&#160;{</div>
+<div class="line"><a name="l00365"></a><span class="lineno">  365</span>&#160;    <span class="keywordflow">if</span> (begin == end)</div>
+<div class="line"><a name="l00366"></a><span class="lineno">  366</span>&#160;        <span class="keywordflow">return</span> <span class="keyword">false</span>;</div>
+<div class="line"><a name="l00367"></a><span class="lineno">  367</span>&#160; </div>
+<div class="line"><a name="l00368"></a><span class="lineno">  368</span>&#160;<span class="preprocessor">#if __cplusplus &gt;= 201703L</span></div>
+<div class="line"><a name="l00369"></a><span class="lineno">  369</span>&#160;    <span class="keyword">const</span> <span class="keyword">auto</span> fc = std::from_chars(begin, end, value);</div>
+<div class="line"><a name="l00370"></a><span class="lineno">  370</span>&#160;    <span class="keywordflow">return</span> fc.ec == std::errc() &amp;&amp; char_is_whitespace_or_zero(*fc.ptr);</div>
+<div class="line"><a name="l00371"></a><span class="lineno">  371</span>&#160;<span class="preprocessor">#else</span></div>
+<div class="line"><a name="l00372"></a><span class="lineno">  372</span>&#160;    <span class="comment">// skip trailing spaces</span></div>
+<div class="line"><a name="l00373"></a><span class="lineno">  373</span>&#160;    <span class="keywordflow">while</span> (begin &lt; end &amp;&amp; *begin == <span class="charliteral">&#39; &#39;</span>)</div>
+<div class="line"><a name="l00374"></a><span class="lineno">  374</span>&#160;        ++begin;</div>
+<div class="line"><a name="l00375"></a><span class="lineno">  375</span>&#160;    <span class="comment">// check for hexadecimal case</span></div>
+<div class="line"><a name="l00376"></a><span class="lineno">  376</span>&#160;    <span class="keywordflow">if</span> (end-begin&gt;2 &amp;&amp; begin[0] == <span class="charliteral">&#39;0&#39;</span> &amp;&amp; <a class="code" href="namespacecgv_1_1utils.html#a768fdf54202b2fc80c51ea8f312b2b82">to_upper</a>(begin[1]) == <span class="charliteral">&#39;X&#39;</span>) {</div>
+<div class="line"><a name="l00377"></a><span class="lineno">  377</span>&#160;        <span class="keywordtype">int</span> new_value = 0, b = 1;</div>
+<div class="line"><a name="l00378"></a><span class="lineno">  378</span>&#160;        <span class="keyword">const</span> <span class="keywordtype">char</span>* p;</div>
+<div class="line"><a name="l00379"></a><span class="lineno">  379</span>&#160;        <span class="keywordflow">for</span> (p = end; p&gt;begin+2; b *= 16) {</div>
+<div class="line"><a name="l00380"></a><span class="lineno">  380</span>&#160;            --p;</div>
+<div class="line"><a name="l00381"></a><span class="lineno">  381</span>&#160;            <span class="keywordflow">if</span> (<a class="code" href="namespacecgv_1_1utils.html#a04502bf86fbb71464368f9710a2a084c">is_digit</a>(*p))</div>
+<div class="line"><a name="l00382"></a><span class="lineno">  382</span>&#160;                new_value += (int)(*p - <span class="charliteral">&#39;0&#39;</span>)*b;</div>
+<div class="line"><a name="l00383"></a><span class="lineno">  383</span>&#160;            <span class="keywordflow">else</span> {</div>
+<div class="line"><a name="l00384"></a><span class="lineno">  384</span>&#160;                <span class="keywordtype">char</span> c = <a class="code" href="namespacecgv_1_1utils.html#a768fdf54202b2fc80c51ea8f312b2b82">to_upper</a>(*p);</div>
+<div class="line"><a name="l00385"></a><span class="lineno">  385</span>&#160;                <span class="keywordflow">if</span> (c &gt;= <span class="charliteral">&#39;A&#39;</span> &amp;&amp; c &lt;= <span class="charliteral">&#39;F&#39;</span>)</div>
+<div class="line"><a name="l00386"></a><span class="lineno">  386</span>&#160;                    new_value += (int)(c - <span class="charliteral">&#39;A&#39;</span> + 10)*b;</div>
+<div class="line"><a name="l00387"></a><span class="lineno">  387</span>&#160;                <span class="keywordflow">else</span></div>
+<div class="line"><a name="l00388"></a><span class="lineno">  388</span>&#160;                    <span class="keywordflow">return</span> <span class="keyword">false</span>;</div>
+<div class="line"><a name="l00389"></a><span class="lineno">  389</span>&#160;            }</div>
+<div class="line"><a name="l00390"></a><span class="lineno">  390</span>&#160;        }</div>
+<div class="line"><a name="l00391"></a><span class="lineno">  391</span>&#160;        value = new_value;</div>
+<div class="line"><a name="l00392"></a><span class="lineno">  392</span>&#160;        <span class="keywordflow">return</span> <span class="keyword">true</span>;</div>
+<div class="line"><a name="l00393"></a><span class="lineno">  393</span>&#160;    }</div>
+<div class="line"><a name="l00394"></a><span class="lineno">  394</span>&#160;    <span class="keywordtype">int</span> new_value = 0, b = 1;</div>
+<div class="line"><a name="l00395"></a><span class="lineno">  395</span>&#160;    <span class="keyword">const</span> <span class="keywordtype">char</span>* p;</div>
+<div class="line"><a name="l00396"></a><span class="lineno">  396</span>&#160;    <span class="keywordflow">for</span> (p = end; p&gt;begin; b *= 10) {</div>
+<div class="line"><a name="l00397"></a><span class="lineno">  397</span>&#160;        --p;</div>
+<div class="line"><a name="l00398"></a><span class="lineno">  398</span>&#160;        <span class="keywordflow">if</span> (<a class="code" href="namespacecgv_1_1utils.html#a04502bf86fbb71464368f9710a2a084c">is_digit</a>(*p))</div>
+<div class="line"><a name="l00399"></a><span class="lineno">  399</span>&#160;            new_value += (<span class="keywordtype">int</span>)(*p - <span class="charliteral">&#39;0&#39;</span>)*b;</div>
+<div class="line"><a name="l00400"></a><span class="lineno">  400</span>&#160;        <span class="keywordflow">else</span> {</div>
+<div class="line"><a name="l00401"></a><span class="lineno">  401</span>&#160;            <span class="keywordflow">if</span> (*p == <span class="charliteral">&#39;-&#39;</span>) {</div>
+<div class="line"><a name="l00402"></a><span class="lineno">  402</span>&#160;                new_value = -new_value;</div>
+<div class="line"><a name="l00403"></a><span class="lineno">  403</span>&#160;                <span class="keywordflow">break</span>;</div>
+<div class="line"><a name="l00404"></a><span class="lineno">  404</span>&#160;            }</div>
+<div class="line"><a name="l00405"></a><span class="lineno">  405</span>&#160;            <span class="keywordflow">if</span> (*p != <span class="charliteral">&#39;+&#39;</span>)</div>
+<div class="line"><a name="l00406"></a><span class="lineno">  406</span>&#160;                <span class="keywordflow">return</span> <span class="keyword">false</span>;</div>
+<div class="line"><a name="l00407"></a><span class="lineno">  407</span>&#160;            <span class="keywordflow">break</span>;</div>
+<div class="line"><a name="l00408"></a><span class="lineno">  408</span>&#160;        }</div>
+<div class="line"><a name="l00409"></a><span class="lineno">  409</span>&#160;    }</div>
+<div class="line"><a name="l00410"></a><span class="lineno">  410</span>&#160;    <span class="keywordflow">if</span> (p == begin) {</div>
+<div class="line"><a name="l00411"></a><span class="lineno">  411</span>&#160;        value = new_value;</div>
+<div class="line"><a name="l00412"></a><span class="lineno">  412</span>&#160;        <span class="keywordflow">return</span> <span class="keyword">true</span>;</div>
+<div class="line"><a name="l00413"></a><span class="lineno">  413</span>&#160;    }</div>
+<div class="line"><a name="l00414"></a><span class="lineno">  414</span>&#160;    <span class="keywordflow">return</span> <span class="keyword">false</span>;</div>
+<div class="line"><a name="l00415"></a><span class="lineno">  415</span>&#160;<span class="preprocessor">#endif</span></div>
+<div class="line"><a name="l00416"></a><span class="lineno">  416</span>&#160;}</div>
+<div class="line"><a name="l00417"></a><span class="lineno">  417</span>&#160; </div>
+<div class="line"><a name="l00418"></a><span class="lineno"><a class="line" href="namespacecgv_1_1utils.html#a32d1430d21e4e38817ff96276ee5dcb9">  418</a></span>&#160;<span class="keywordtype">bool</span> <a class="code" href="namespacecgv_1_1utils.html#a2f21c3f652cfb7b2358bb19c515daa19">is_integer</a>(<span class="keyword">const</span> std::string&amp; s, <span class="keywordtype">int</span>&amp; value)</div>
+<div class="line"><a name="l00419"></a><span class="lineno">  419</span>&#160;{</div>
+<div class="line"><a name="l00420"></a><span class="lineno">  420</span>&#160;    <span class="keywordflow">return</span> <a class="code" href="namespacecgv_1_1utils.html#a2f21c3f652cfb7b2358bb19c515daa19">is_integer</a>(&amp;s[0], &amp;s[0]+s.size(), value);</div>
+<div class="line"><a name="l00421"></a><span class="lineno">  421</span>&#160;}</div>
+<div class="line"><a name="l00422"></a><span class="lineno">  422</span>&#160; </div>
+<div class="line"><a name="l00423"></a><span class="lineno"><a class="line" href="namespacecgv_1_1utils.html#ab946aefefb94207956db27970b35227d">  423</a></span>&#160;<span class="keywordtype">bool</span> <a class="code" href="namespacecgv_1_1utils.html#ab946aefefb94207956db27970b35227d">is_double</a>(<span class="keyword">const</span> <span class="keywordtype">char</span>* begin, <span class="keyword">const</span> <span class="keywordtype">char</span>* end, <span class="keywordtype">double</span>&amp; value)</div>
+<div class="line"><a name="l00424"></a><span class="lineno">  424</span>&#160;{</div>
+<div class="line"><a name="l00425"></a><span class="lineno">  425</span>&#160;    <span class="keywordflow">if</span> (begin == end)</div>
+<div class="line"><a name="l00426"></a><span class="lineno">  426</span>&#160;        <span class="keywordflow">return</span> <span class="keyword">false</span>;</div>
+<div class="line"><a name="l00427"></a><span class="lineno">  427</span>&#160;<span class="preprocessor">#if __cplusplus &gt;= 201703L</span></div>
+<div class="line"><a name="l00428"></a><span class="lineno">  428</span>&#160;    <span class="keywordflow">return</span> std::from_chars(begin, end, value).ec == std::errc();</div>
+<div class="line"><a name="l00429"></a><span class="lineno">  429</span>&#160;<span class="preprocessor">#else</span></div>
+<div class="line"><a name="l00430"></a><span class="lineno">  430</span>&#160;    <span class="keywordtype">bool</span> found_digit = <span class="keyword">false</span>;</div>
+<div class="line"><a name="l00431"></a><span class="lineno">  431</span>&#160;    <span class="keywordtype">int</span> nr_dots = 0;</div>
+<div class="line"><a name="l00432"></a><span class="lineno">  432</span>&#160;    <span class="keywordtype">int</span> nr_exp = 0;</div>
+<div class="line"><a name="l00433"></a><span class="lineno">  433</span>&#160;    <span class="keywordtype">bool</span> sign_may_follow = <span class="keyword">true</span>;</div>
+<div class="line"><a name="l00434"></a><span class="lineno">  434</span>&#160;    <span class="keyword">const</span> <span class="keywordtype">char</span>* p = begin;</div>
+<div class="line"><a name="l00435"></a><span class="lineno">  435</span>&#160;    <span class="keywordflow">while</span> (p &lt; end &amp;&amp; *p == <span class="charliteral">&#39; &#39;</span>)</div>
+<div class="line"><a name="l00436"></a><span class="lineno">  436</span>&#160;        ++p;</div>
+<div class="line"><a name="l00437"></a><span class="lineno">  437</span>&#160;    <span class="keywordflow">for</span> (; p&lt;end; ++p) {</div>
+<div class="line"><a name="l00438"></a><span class="lineno">  438</span>&#160;        <span class="keywordflow">switch</span> (*p) {</div>
+<div class="line"><a name="l00439"></a><span class="lineno">  439</span>&#160;        <span class="keywordflow">case</span> <span class="charliteral">&#39;0&#39;</span> :</div>
+<div class="line"><a name="l00440"></a><span class="lineno">  440</span>&#160;        <span class="keywordflow">case</span> <span class="charliteral">&#39;1&#39;</span> :</div>
+<div class="line"><a name="l00441"></a><span class="lineno">  441</span>&#160;        <span class="keywordflow">case</span> <span class="charliteral">&#39;2&#39;</span> :</div>
+<div class="line"><a name="l00442"></a><span class="lineno">  442</span>&#160;        <span class="keywordflow">case</span> <span class="charliteral">&#39;3&#39;</span> :</div>
+<div class="line"><a name="l00443"></a><span class="lineno">  443</span>&#160;        <span class="keywordflow">case</span> <span class="charliteral">&#39;4&#39;</span> :</div>
+<div class="line"><a name="l00444"></a><span class="lineno">  444</span>&#160;        <span class="keywordflow">case</span> <span class="charliteral">&#39;5&#39;</span> :</div>
+<div class="line"><a name="l00445"></a><span class="lineno">  445</span>&#160;        <span class="keywordflow">case</span> <span class="charliteral">&#39;6&#39;</span> :</div>
+<div class="line"><a name="l00446"></a><span class="lineno">  446</span>&#160;        <span class="keywordflow">case</span> <span class="charliteral">&#39;7&#39;</span> :</div>
+<div class="line"><a name="l00447"></a><span class="lineno">  447</span>&#160;        <span class="keywordflow">case</span> <span class="charliteral">&#39;8&#39;</span> :</div>
+<div class="line"><a name="l00448"></a><span class="lineno">  448</span>&#160;        <span class="keywordflow">case</span> <span class="charliteral">&#39;9&#39;</span> :</div>
+<div class="line"><a name="l00449"></a><span class="lineno">  449</span>&#160;            found_digit = <span class="keyword">true</span>;</div>
+<div class="line"><a name="l00450"></a><span class="lineno">  450</span>&#160;            sign_may_follow = <span class="keyword">false</span>;</div>
+<div class="line"><a name="l00451"></a><span class="lineno">  451</span>&#160;            <span class="keywordflow">break</span>;</div>
+<div class="line"><a name="l00452"></a><span class="lineno">  452</span>&#160;        <span class="keywordflow">case</span> <span class="charliteral">&#39;+&#39;</span> :</div>
+<div class="line"><a name="l00453"></a><span class="lineno">  453</span>&#160;        <span class="keywordflow">case</span> <span class="charliteral">&#39;-&#39;</span> :</div>
+<div class="line"><a name="l00454"></a><span class="lineno">  454</span>&#160;            <span class="keywordflow">if</span> (!sign_may_follow)</div>
+<div class="line"><a name="l00455"></a><span class="lineno">  455</span>&#160;                <span class="keywordflow">return</span> <span class="keyword">false</span>;</div>
+<div class="line"><a name="l00456"></a><span class="lineno">  456</span>&#160;            sign_may_follow = <span class="keyword">false</span>;</div>
+<div class="line"><a name="l00457"></a><span class="lineno">  457</span>&#160;            <span class="keywordflow">break</span>;</div>
+<div class="line"><a name="l00458"></a><span class="lineno">  458</span>&#160;        <span class="keywordflow">case</span> <span class="charliteral">&#39;.&#39;</span> :</div>
+<div class="line"><a name="l00459"></a><span class="lineno">  459</span>&#160;            <span class="keywordflow">if</span> (++nr_dots &gt; 1)</div>
+<div class="line"><a name="l00460"></a><span class="lineno">  460</span>&#160;                <span class="keywordflow">return</span> <span class="keyword">false</span>;</div>
+<div class="line"><a name="l00461"></a><span class="lineno">  461</span>&#160;            sign_may_follow = <span class="keyword">false</span>;</div>
+<div class="line"><a name="l00462"></a><span class="lineno">  462</span>&#160;            <span class="keywordflow">break</span>;</div>
+<div class="line"><a name="l00463"></a><span class="lineno">  463</span>&#160;        <span class="keywordflow">case</span> <span class="charliteral">&#39;e&#39;</span> :</div>
+<div class="line"><a name="l00464"></a><span class="lineno">  464</span>&#160;        <span class="keywordflow">case</span> <span class="charliteral">&#39;E&#39;</span> :</div>
+<div class="line"><a name="l00465"></a><span class="lineno">  465</span>&#160;            <span class="keywordflow">if</span> (++nr_exp &gt; 1)</div>
+<div class="line"><a name="l00466"></a><span class="lineno">  466</span>&#160;                <span class="keywordflow">return</span> <span class="keyword">false</span>;</div>
+<div class="line"><a name="l00467"></a><span class="lineno">  467</span>&#160;            sign_may_follow = <span class="keyword">true</span>;</div>
+<div class="line"><a name="l00468"></a><span class="lineno">  468</span>&#160;            <span class="keywordflow">break</span>;</div>
+<div class="line"><a name="l00469"></a><span class="lineno">  469</span>&#160;        <span class="keywordflow">default</span>:</div>
+<div class="line"><a name="l00470"></a><span class="lineno">  470</span>&#160;            <span class="keywordflow">return</span> <span class="keyword">false</span>;</div>
+<div class="line"><a name="l00471"></a><span class="lineno">  471</span>&#160;        }</div>
+<div class="line"><a name="l00472"></a><span class="lineno">  472</span>&#160;    }</div>
+<div class="line"><a name="l00473"></a><span class="lineno">  473</span>&#160;    <span class="keywordflow">if</span> (!found_digit)</div>
+<div class="line"><a name="l00474"></a><span class="lineno">  474</span>&#160;        <span class="keywordflow">return</span> <span class="keyword">false</span>;</div>
+<div class="line"><a name="l00475"></a><span class="lineno">  475</span>&#160;    value = atof(std::string(begin,end-begin).c_str());</div>
+<div class="line"><a name="l00476"></a><span class="lineno">  476</span>&#160;    <span class="keywordflow">return</span> <span class="keyword">true</span>; </div>
+<div class="line"><a name="l00477"></a><span class="lineno">  477</span>&#160;<span class="preprocessor">#endif</span></div>
+<div class="line"><a name="l00478"></a><span class="lineno">  478</span>&#160;}</div>
+<div class="line"><a name="l00479"></a><span class="lineno">  479</span>&#160; </div>
+<div class="line"><a name="l00480"></a><span class="lineno"><a class="line" href="namespacecgv_1_1utils.html#afdf46295d4f6cb65c46835330fb31850">  480</a></span>&#160;<span class="keywordtype">bool</span> <a class="code" href="namespacecgv_1_1utils.html#ab946aefefb94207956db27970b35227d">is_double</a>(<span class="keyword">const</span> std::string&amp; s, <span class="keywordtype">double</span>&amp; value)</div>
+<div class="line"><a name="l00481"></a><span class="lineno">  481</span>&#160;{</div>
+<div class="line"><a name="l00482"></a><span class="lineno">  482</span>&#160;    <span class="keywordflow">return</span> <a class="code" href="namespacecgv_1_1utils.html#ab946aefefb94207956db27970b35227d">is_double</a>(&amp;s[0], &amp;s[0]+s.size(), value);</div>
+<div class="line"><a name="l00483"></a><span class="lineno">  483</span>&#160;}</div>
+<div class="line"><a name="l00484"></a><span class="lineno">  484</span>&#160; </div>
+<div class="line"><a name="l00485"></a><span class="lineno">  485</span>&#160; </div>
+<div class="line"><a name="l00486"></a><span class="lineno"><a class="line" href="namespacecgv_1_1utils.html#a5e16eed75c4f654d7295f4505ad7e697">  486</a></span>&#160;<span class="keywordtype">bool</span> <a class="code" href="namespacecgv_1_1utils.html#a5e16eed75c4f654d7295f4505ad7e697">is_year</a>(<span class="keyword">const</span> <span class="keywordtype">char</span>* begin, <span class="keyword">const</span> <span class="keywordtype">char</span>* end, <span class="keywordtype">unsigned</span> <span class="keywordtype">short</span>&amp; year, <span class="keywordtype">bool</span> short_allowed)</div>
+<div class="line"><a name="l00487"></a><span class="lineno">  487</span>&#160;{</div>
+<div class="line"><a name="l00488"></a><span class="lineno">  488</span>&#160;    <span class="keywordtype">int</span> i;</div>
+<div class="line"><a name="l00489"></a><span class="lineno">  489</span>&#160;    <span class="keywordtype">unsigned</span> <span class="keywordtype">int</span> size = (<span class="keywordtype">unsigned</span> int) (end-begin);</div>
+<div class="line"><a name="l00490"></a><span class="lineno">  490</span>&#160;    <span class="keywordflow">if</span> ((size == 2 &amp;&amp; short_allowed) || </div>
+<div class="line"><a name="l00491"></a><span class="lineno">  491</span>&#160;         ((size == 4) &amp;&amp; <a class="code" href="namespacecgv_1_1utils.html#a2f21c3f652cfb7b2358bb19c515daa19">is_integer</a>(begin, end, i))) {</div>
+<div class="line"><a name="l00492"></a><span class="lineno">  492</span>&#160;        year = i;</div>
+<div class="line"><a name="l00493"></a><span class="lineno">  493</span>&#160;        <span class="keywordflow">return</span> <span class="keyword">true</span>;</div>
+<div class="line"><a name="l00494"></a><span class="lineno">  494</span>&#160;    }</div>
+<div class="line"><a name="l00495"></a><span class="lineno">  495</span>&#160;    <span class="keywordflow">return</span> <span class="keyword">false</span>;</div>
+<div class="line"><a name="l00496"></a><span class="lineno">  496</span>&#160;}</div>
+<div class="line"><a name="l00497"></a><span class="lineno">  497</span>&#160; </div>
+<div class="line"><a name="l00498"></a><span class="lineno"><a class="line" href="namespacecgv_1_1utils.html#a2923901da5517a748563914debe34838">  498</a></span>&#160;<span class="keywordtype">bool</span> <a class="code" href="namespacecgv_1_1utils.html#a5e16eed75c4f654d7295f4505ad7e697">is_year</a>(<span class="keyword">const</span> std::string&amp; s, <span class="keywordtype">unsigned</span> <span class="keywordtype">short</span>&amp; year, <span class="keywordtype">bool</span> short_allowed)</div>
+<div class="line"><a name="l00499"></a><span class="lineno">  499</span>&#160;{</div>
+<div class="line"><a name="l00500"></a><span class="lineno">  500</span>&#160;    <span class="keywordflow">return</span> <a class="code" href="namespacecgv_1_1utils.html#a5e16eed75c4f654d7295f4505ad7e697">is_year</a>(&amp;s[0], &amp;s[0]+s.size(), year, short_allowed);</div>
+<div class="line"><a name="l00501"></a><span class="lineno">  501</span>&#160;}</div>
+<div class="line"><a name="l00502"></a><span class="lineno">  502</span>&#160; </div>
+<div class="line"><a name="l00503"></a><span class="lineno"><a class="line" href="namespacecgv_1_1utils.html#a8a31d2792f8f93b046c38aa6f387fd5f">  503</a></span>&#160;<span class="keywordtype">bool</span> <a class="code" href="namespacecgv_1_1utils.html#a8a31d2792f8f93b046c38aa6f387fd5f">find_name</a>(<span class="keyword">const</span> std::string&amp; s, <span class="keyword">const</span> <span class="keywordtype">char</span>* names[], <span class="keywordtype">int</span>&amp; idx)</div>
+<div class="line"><a name="l00504"></a><span class="lineno">  504</span>&#160;{</div>
+<div class="line"><a name="l00505"></a><span class="lineno">  505</span>&#160;    <span class="keywordtype">unsigned</span> <span class="keywordtype">int</span> i=0;</div>
+<div class="line"><a name="l00506"></a><span class="lineno">  506</span>&#160;    <span class="keywordflow">while</span> (names[i]) {</div>
+<div class="line"><a name="l00507"></a><span class="lineno">  507</span>&#160;        <span class="keywordflow">if</span> (s == names[i]) {</div>
+<div class="line"><a name="l00508"></a><span class="lineno">  508</span>&#160;            idx = i;</div>
+<div class="line"><a name="l00509"></a><span class="lineno">  509</span>&#160;            <span class="keywordflow">return</span> <span class="keyword">true</span>;</div>
+<div class="line"><a name="l00510"></a><span class="lineno">  510</span>&#160;        }</div>
+<div class="line"><a name="l00511"></a><span class="lineno">  511</span>&#160;        ++i;</div>
+<div class="line"><a name="l00512"></a><span class="lineno">  512</span>&#160;    }</div>
+<div class="line"><a name="l00513"></a><span class="lineno">  513</span>&#160;    <span class="keywordflow">return</span> <span class="keyword">false</span>;</div>
+<div class="line"><a name="l00514"></a><span class="lineno">  514</span>&#160;}</div>
+<div class="line"><a name="l00515"></a><span class="lineno">  515</span>&#160; </div>
+<div class="line"><a name="l00516"></a><span class="lineno"><a class="line" href="namespacecgv_1_1utils.html#a31684ce83daae9741bd88efd2ab82a1a">  516</a></span>&#160;<span class="keywordtype">bool</span> <a class="code" href="namespacecgv_1_1utils.html#a31684ce83daae9741bd88efd2ab82a1a">is_month</a>(<span class="keyword">const</span> <span class="keywordtype">char</span>* begin, <span class="keyword">const</span> <span class="keywordtype">char</span>* end, <span class="keywordtype">unsigned</span> <span class="keywordtype">char</span>&amp; month)</div>
+<div class="line"><a name="l00517"></a><span class="lineno">  517</span>&#160;{</div>
+<div class="line"><a name="l00518"></a><span class="lineno">  518</span>&#160;    <span class="keyword">static</span> <span class="keyword">const</span> <span class="keywordtype">char</span>* months_short[] = {</div>
+<div class="line"><a name="l00519"></a><span class="lineno">  519</span>&#160;        <span class="stringliteral">&quot;jan&quot;</span>, <span class="stringliteral">&quot;feb&quot;</span>, <span class="stringliteral">&quot;mar&quot;</span>, <span class="stringliteral">&quot;apr&quot;</span>, <span class="stringliteral">&quot;may&quot;</span>, <span class="stringliteral">&quot;jun&quot;</span>, <span class="stringliteral">&quot;jul&quot;</span>, <span class="stringliteral">&quot;aug&quot;</span>, <span class="stringliteral">&quot;sep&quot;</span>, <span class="stringliteral">&quot;oct&quot;</span>, <span class="stringliteral">&quot;nov&quot;</span>, <span class="stringliteral">&quot;dec&quot;</span>, 0</div>
+<div class="line"><a name="l00520"></a><span class="lineno">  520</span>&#160;    };</div>
+<div class="line"><a name="l00521"></a><span class="lineno">  521</span>&#160;    <span class="keyword">static</span> <span class="keyword">const</span> <span class="keywordtype">char</span>* months_english[] = {</div>
+<div class="line"><a name="l00522"></a><span class="lineno">  522</span>&#160;        <span class="stringliteral">&quot;january&quot;</span>, <span class="stringliteral">&quot;february&quot;</span>, <span class="stringliteral">&quot;march&quot;</span>, <span class="stringliteral">&quot;april&quot;</span>, <span class="stringliteral">&quot;may&quot;</span>, <span class="stringliteral">&quot;june&quot;</span>, <span class="stringliteral">&quot;july&quot;</span>, <span class="stringliteral">&quot;august&quot;</span>, <span class="stringliteral">&quot;september&quot;</span>, <span class="stringliteral">&quot;october&quot;</span>, <span class="stringliteral">&quot;november&quot;</span>, <span class="stringliteral">&quot;december&quot;</span>, 0</div>
+<div class="line"><a name="l00523"></a><span class="lineno">  523</span>&#160;    };</div>
+<div class="line"><a name="l00524"></a><span class="lineno">  524</span>&#160;    <span class="keyword">static</span> <span class="keyword">const</span> <span class="keywordtype">char</span>* months_german[] = {</div>
+<div class="line"><a name="l00525"></a><span class="lineno">  525</span>&#160;        <span class="stringliteral">&quot;januar&quot;</span>, <span class="stringliteral">&quot;februar&quot;</span>, <span class="stringliteral">&quot;maerz&quot;</span>, <span class="stringliteral">&quot;april&quot;</span>, <span class="stringliteral">&quot;mai&quot;</span>, <span class="stringliteral">&quot;juni&quot;</span>, <span class="stringliteral">&quot;juli&quot;</span>, <span class="stringliteral">&quot;august&quot;</span>, <span class="stringliteral">&quot;september&quot;</span>, <span class="stringliteral">&quot;oktober&quot;</span>, <span class="stringliteral">&quot;november&quot;</span>, <span class="stringliteral">&quot;dezember&quot;</span>, 0</div>
+<div class="line"><a name="l00526"></a><span class="lineno">  526</span>&#160;    };</div>
+<div class="line"><a name="l00527"></a><span class="lineno">  527</span>&#160;    <span class="keywordtype">int</span> i;</div>
+<div class="line"><a name="l00528"></a><span class="lineno">  528</span>&#160;    <span class="keywordflow">if</span> (<a class="code" href="namespacecgv_1_1utils.html#a2f21c3f652cfb7b2358bb19c515daa19">is_integer</a>(begin,end,i)) {</div>
+<div class="line"><a name="l00529"></a><span class="lineno">  529</span>&#160;        <span class="keywordflow">if</span> (i &gt; 0 &amp;&amp; i &lt;= 12) {</div>
+<div class="line"><a name="l00530"></a><span class="lineno">  530</span>&#160;            month = i+1;</div>
+<div class="line"><a name="l00531"></a><span class="lineno">  531</span>&#160;            <span class="keywordflow">return</span> <span class="keyword">true</span>;</div>
+<div class="line"><a name="l00532"></a><span class="lineno">  532</span>&#160;        }</div>
+<div class="line"><a name="l00533"></a><span class="lineno">  533</span>&#160;    }</div>
+<div class="line"><a name="l00534"></a><span class="lineno">  534</span>&#160;    std::string s = <a class="code" href="namespacecgv_1_1utils.html#a6b682be2fdbb130c91a3bd8bd7936ff8">to_lower</a>(<a class="code" href="namespacecgv_1_1utils.html#a97032f8b8a5544a118c84ff2346b5bfe">replace_special</a>(std::string(begin,end-begin)));</div>
+<div class="line"><a name="l00535"></a><span class="lineno">  535</span>&#160;    <span class="keywordflow">if</span> (<a class="code" href="namespacecgv_1_1utils.html#a8a31d2792f8f93b046c38aa6f387fd5f">find_name</a>(s, months_short, i) || <a class="code" href="namespacecgv_1_1utils.html#a8a31d2792f8f93b046c38aa6f387fd5f">find_name</a>(s, months_english, i) || <a class="code" href="namespacecgv_1_1utils.html#a8a31d2792f8f93b046c38aa6f387fd5f">find_name</a>(s, months_german, i) ) {</div>
+<div class="line"><a name="l00536"></a><span class="lineno">  536</span>&#160;        month = i+1;</div>
+<div class="line"><a name="l00537"></a><span class="lineno">  537</span>&#160;        <span class="keywordflow">return</span> <span class="keyword">true</span>;</div>
+<div class="line"><a name="l00538"></a><span class="lineno">  538</span>&#160;    }</div>
+<div class="line"><a name="l00539"></a><span class="lineno">  539</span>&#160;    <span class="keywordflow">return</span> <span class="keyword">false</span>;</div>
+<div class="line"><a name="l00540"></a><span class="lineno">  540</span>&#160;}</div>
+<div class="line"><a name="l00541"></a><span class="lineno">  541</span>&#160; </div>
+<div class="line"><a name="l00542"></a><span class="lineno"><a class="line" href="namespacecgv_1_1utils.html#a0ab04ba818471e0a1556c9814f92fd91">  542</a></span>&#160;<span class="keywordtype">bool</span> <a class="code" href="namespacecgv_1_1utils.html#a31684ce83daae9741bd88efd2ab82a1a">is_month</a>(<span class="keyword">const</span> std::string&amp; s, <span class="keywordtype">unsigned</span> <span class="keywordtype">char</span>&amp; month)</div>
+<div class="line"><a name="l00543"></a><span class="lineno">  543</span>&#160;{</div>
+<div class="line"><a name="l00544"></a><span class="lineno">  544</span>&#160;    <span class="keywordflow">return</span> <a class="code" href="namespacecgv_1_1utils.html#a31684ce83daae9741bd88efd2ab82a1a">is_month</a>(&amp;s[0], &amp;s[0]+s.size(), month);</div>
+<div class="line"><a name="l00545"></a><span class="lineno">  545</span>&#160;}</div>
+<div class="line"><a name="l00546"></a><span class="lineno">  546</span>&#160; </div>
+<div class="line"><a name="l00547"></a><span class="lineno"><a class="line" href="namespacecgv_1_1utils.html#ab954d9a064432cbc49ebdc30e35ed3cd">  547</a></span>&#160;<span class="keywordtype">bool</span> <a class="code" href="namespacecgv_1_1utils.html#ab954d9a064432cbc49ebdc30e35ed3cd">is_time</a>(<span class="keyword">const</span> std::string&amp; s, <a class="code" href="structcgv_1_1utils_1_1time.html">cgv::utils::time</a>&amp; t, <span class="keyword">const</span> <span class="keywordtype">char</span> **new_end)</div>
+<div class="line"><a name="l00548"></a><span class="lineno">  548</span>&#160;{</div>
+<div class="line"><a name="l00549"></a><span class="lineno">  549</span>&#160;    <span class="keywordflow">if</span> (s.size() == 0)</div>
+<div class="line"><a name="l00550"></a><span class="lineno">  550</span>&#160;        <span class="keywordflow">return</span> <span class="keyword">false</span>;</div>
+<div class="line"><a name="l00551"></a><span class="lineno">  551</span>&#160;    <span class="keywordtype">size_t</span> end = s.size();</div>
+<div class="line"><a name="l00552"></a><span class="lineno">  552</span>&#160;    <span class="keywordflow">while</span> (end &gt; 0 &amp;&amp; <a class="code" href="namespacecgv_1_1utils.html#a643f3fe18654ef2a7be7b78d5f82dada">is_url_special</a>(s[end-1]))</div>
+<div class="line"><a name="l00553"></a><span class="lineno">  553</span>&#160;        --end;</div>
+<div class="line"><a name="l00554"></a><span class="lineno">  554</span>&#160;    <span class="keywordtype">size_t</span> pos = s.find_first_of(<span class="charliteral">&#39;:&#39;</span>);</div>
+<div class="line"><a name="l00555"></a><span class="lineno">  555</span>&#160;    <span class="keywordflow">if</span> (pos == std::string::npos)</div>
+<div class="line"><a name="l00556"></a><span class="lineno">  556</span>&#160;        <span class="keywordflow">return</span> <span class="keyword">false</span>;</div>
+<div class="line"><a name="l00557"></a><span class="lineno">  557</span>&#160;    <span class="keywordtype">int</span> i;</div>
+<div class="line"><a name="l00558"></a><span class="lineno">  558</span>&#160;    <span class="keywordflow">if</span> (!(<a class="code" href="namespacecgv_1_1utils.html#a2f21c3f652cfb7b2358bb19c515daa19">is_integer</a>(&amp;s[0], &amp;s[pos], i) &amp;&amp; i &gt;= 0 &amp;&amp; i &lt; 24))</div>
+<div class="line"><a name="l00559"></a><span class="lineno">  559</span>&#160;        <span class="keywordflow">return</span> <span class="keyword">false</span>;</div>
+<div class="line"><a name="l00560"></a><span class="lineno">  560</span>&#160;    t.h = (<span class="keywordtype">unsigned</span> char) i;</div>
+<div class="line"><a name="l00561"></a><span class="lineno">  561</span>&#160;    <span class="keywordflow">if</span> (pos &gt;= end)</div>
+<div class="line"><a name="l00562"></a><span class="lineno">  562</span>&#160;        <span class="keywordflow">return</span> <span class="keyword">false</span>;</div>
+<div class="line"><a name="l00563"></a><span class="lineno">  563</span>&#160;    ++pos;</div>
+<div class="line"><a name="l00564"></a><span class="lineno">  564</span>&#160;    <span class="keywordtype">size_t</span> pos2 = s.find_first_of(<span class="charliteral">&#39;:&#39;</span>, pos);</div>
+<div class="line"><a name="l00565"></a><span class="lineno">  565</span>&#160;    <span class="keywordtype">size_t</span> pos3 = pos2+1;</div>
+<div class="line"><a name="l00566"></a><span class="lineno">  566</span>&#160;    <span class="keywordflow">if</span> (pos2 == std::string::npos)</div>
+<div class="line"><a name="l00567"></a><span class="lineno">  567</span>&#160;        pos3 = pos2 = end;</div>
+<div class="line"><a name="l00568"></a><span class="lineno">  568</span>&#160;    <span class="keywordflow">if</span> (!(<a class="code" href="namespacecgv_1_1utils.html#a2f21c3f652cfb7b2358bb19c515daa19">is_integer</a>(&amp;s[pos], &amp;s[pos2], i) &amp;&amp; i &gt;= 0 &amp;&amp; i &lt; 60))</div>
+<div class="line"><a name="l00569"></a><span class="lineno">  569</span>&#160;        <span class="keywordflow">return</span> <span class="keyword">false</span>;</div>
+<div class="line"><a name="l00570"></a><span class="lineno">  570</span>&#160;    t.minutes = (<span class="keywordtype">unsigned</span> char) i;</div>
+<div class="line"><a name="l00571"></a><span class="lineno">  571</span>&#160;    <span class="keywordflow">if</span> (pos2 &gt;= end) {</div>
+<div class="line"><a name="l00572"></a><span class="lineno">  572</span>&#160;        <span class="keywordflow">if</span> (new_end)</div>
+<div class="line"><a name="l00573"></a><span class="lineno">  573</span>&#160;            *new_end = &amp;s[0]+pos3;</div>
+<div class="line"><a name="l00574"></a><span class="lineno">  574</span>&#160;        <span class="keywordflow">return</span> <span class="keyword">true</span>;</div>
+<div class="line"><a name="l00575"></a><span class="lineno">  575</span>&#160;    }</div>
+<div class="line"><a name="l00576"></a><span class="lineno">  576</span>&#160;    pos = ++pos2;</div>
+<div class="line"><a name="l00577"></a><span class="lineno">  577</span>&#160;    <span class="keywordflow">while</span> (pos2 &lt; end &amp;&amp; <a class="code" href="namespacecgv_1_1utils.html#a04502bf86fbb71464368f9710a2a084c">is_digit</a>(s[pos2]))</div>
+<div class="line"><a name="l00578"></a><span class="lineno">  578</span>&#160;        ++pos2;</div>
+<div class="line"><a name="l00579"></a><span class="lineno">  579</span>&#160;    <span class="keywordflow">if</span> (!(<a class="code" href="namespacecgv_1_1utils.html#a2f21c3f652cfb7b2358bb19c515daa19">is_integer</a>(&amp;s[pos], &amp;s[pos2], i) &amp;&amp; i &gt;= 0 &amp;&amp; i &lt; 60))</div>
+<div class="line"><a name="l00580"></a><span class="lineno">  580</span>&#160;        <span class="keywordflow">return</span> <span class="keyword">false</span>;</div>
+<div class="line"><a name="l00581"></a><span class="lineno">  581</span>&#160;    t.sec = i;</div>
+<div class="line"><a name="l00582"></a><span class="lineno">  582</span>&#160;    <span class="keywordflow">if</span> (new_end)</div>
+<div class="line"><a name="l00583"></a><span class="lineno">  583</span>&#160;        *new_end = &amp;s[0]+pos2;</div>
+<div class="line"><a name="l00584"></a><span class="lineno">  584</span>&#160;    <span class="keywordflow">return</span> <span class="keyword">true</span>;</div>
+<div class="line"><a name="l00585"></a><span class="lineno">  585</span>&#160;}</div>
+<div class="line"><a name="l00586"></a><span class="lineno">  586</span>&#160; </div>
+<div class="line"><a name="l00587"></a><span class="lineno"><a class="line" href="namespacecgv_1_1utils.html#a721b017eeba9c853fb2a8d1b91251ab6">  587</a></span>&#160;<span class="keywordtype">bool</span> <a class="code" href="namespacecgv_1_1utils.html#a721b017eeba9c853fb2a8d1b91251ab6">is_date</a>(<span class="keyword">const</span> std::string&amp; s, <a class="code" href="structcgv_1_1utils_1_1date.html">cgv::utils::date</a>&amp; d, <span class="keyword">const</span> <span class="keywordtype">char</span> **new_end)</div>
+<div class="line"><a name="l00588"></a><span class="lineno">  588</span>&#160;{</div>
+<div class="line"><a name="l00589"></a><span class="lineno">  589</span>&#160;    <span class="keywordflow">if</span> (s.size() == 0)</div>
+<div class="line"><a name="l00590"></a><span class="lineno">  590</span>&#160;        <span class="keywordflow">return</span> <span class="keyword">false</span>;</div>
+<div class="line"><a name="l00591"></a><span class="lineno">  591</span>&#160;    <span class="keywordtype">size_t</span> end = s.size();</div>
+<div class="line"><a name="l00592"></a><span class="lineno">  592</span>&#160;    <span class="keywordflow">while</span> (end &gt; 0 &amp;&amp; <a class="code" href="namespacecgv_1_1utils.html#a643f3fe18654ef2a7be7b78d5f82dada">is_url_special</a>(s[end-1]))</div>
+<div class="line"><a name="l00593"></a><span class="lineno">  593</span>&#160;        --end;</div>
+<div class="line"><a name="l00594"></a><span class="lineno">  594</span>&#160;    <span class="keywordtype">size_t</span> pos = s.find_first_of(<span class="charliteral">&#39;.&#39;</span>);</div>
+<div class="line"><a name="l00595"></a><span class="lineno">  595</span>&#160;    <span class="keywordflow">if</span> (pos == std::string::npos)</div>
+<div class="line"><a name="l00596"></a><span class="lineno">  596</span>&#160;        <span class="keywordflow">return</span> <span class="keyword">false</span>;</div>
+<div class="line"><a name="l00597"></a><span class="lineno">  597</span>&#160;    <span class="keywordtype">int</span> i;</div>
+<div class="line"><a name="l00598"></a><span class="lineno">  598</span>&#160;    <span class="keywordflow">if</span> (!(<a class="code" href="namespacecgv_1_1utils.html#a2f21c3f652cfb7b2358bb19c515daa19">is_integer</a>(&amp;s[0], &amp;s[pos], i) &amp;&amp; i &gt; 0 &amp;&amp; i &lt; 32))</div>
+<div class="line"><a name="l00599"></a><span class="lineno">  599</span>&#160;        <span class="keywordflow">return</span> <span class="keyword">false</span>;</div>
+<div class="line"><a name="l00600"></a><span class="lineno">  600</span>&#160;    d.day = (<span class="keywordtype">unsigned</span> char)i;</div>
+<div class="line"><a name="l00601"></a><span class="lineno">  601</span>&#160;    <span class="keywordflow">if</span> (pos &gt;= end) {</div>
+<div class="line"><a name="l00602"></a><span class="lineno">  602</span>&#160;        <span class="keywordflow">if</span> (new_end)</div>
+<div class="line"><a name="l00603"></a><span class="lineno">  603</span>&#160;            *new_end = &amp;s[0]+pos+1;</div>
+<div class="line"><a name="l00604"></a><span class="lineno">  604</span>&#160;        <span class="keywordflow">return</span> <span class="keyword">true</span>;</div>
+<div class="line"><a name="l00605"></a><span class="lineno">  605</span>&#160;    }</div>
+<div class="line"><a name="l00606"></a><span class="lineno">  606</span>&#160;    ++pos;</div>
+<div class="line"><a name="l00607"></a><span class="lineno">  607</span>&#160;    <span class="keywordtype">size_t</span> pos2 = s.find_first_of(<span class="charliteral">&#39;.&#39;</span>, pos);</div>
+<div class="line"><a name="l00608"></a><span class="lineno">  608</span>&#160;    <span class="keywordflow">if</span> (pos2 == std::string::npos)</div>
+<div class="line"><a name="l00609"></a><span class="lineno">  609</span>&#160;        <span class="keywordflow">return</span> <span class="keyword">false</span>;</div>
+<div class="line"><a name="l00610"></a><span class="lineno">  610</span>&#160;    <span class="keywordflow">if</span> (!<a class="code" href="namespacecgv_1_1utils.html#a31684ce83daae9741bd88efd2ab82a1a">is_month</a>(&amp;s[pos], &amp;s[pos2], d.month))</div>
+<div class="line"><a name="l00611"></a><span class="lineno">  611</span>&#160;        <span class="keywordflow">return</span> <span class="keyword">false</span>;</div>
+<div class="line"><a name="l00612"></a><span class="lineno">  612</span>&#160;    <span class="keywordflow">if</span> (pos2 &gt;= end) {</div>
+<div class="line"><a name="l00613"></a><span class="lineno">  613</span>&#160;        <span class="keywordflow">if</span> (new_end)</div>
+<div class="line"><a name="l00614"></a><span class="lineno">  614</span>&#160;            *new_end = &amp;s[0]+pos2+1;</div>
+<div class="line"><a name="l00615"></a><span class="lineno">  615</span>&#160;        <span class="keywordflow">return</span> <span class="keyword">true</span>;</div>
+<div class="line"><a name="l00616"></a><span class="lineno">  616</span>&#160;    }</div>
+<div class="line"><a name="l00617"></a><span class="lineno">  617</span>&#160;    pos = ++pos2;</div>
+<div class="line"><a name="l00618"></a><span class="lineno">  618</span>&#160;    <span class="keywordflow">while</span> (pos2 &lt; end &amp;&amp; <a class="code" href="namespacecgv_1_1utils.html#a04502bf86fbb71464368f9710a2a084c">is_digit</a>(s[pos2]))</div>
+<div class="line"><a name="l00619"></a><span class="lineno">  619</span>&#160;        ++pos2;</div>
+<div class="line"><a name="l00620"></a><span class="lineno">  620</span>&#160;    <span class="keywordflow">if</span> (!<a class="code" href="namespacecgv_1_1utils.html#a5e16eed75c4f654d7295f4505ad7e697">is_year</a>(&amp;s[pos],&amp;s[pos2],d.year))</div>
+<div class="line"><a name="l00621"></a><span class="lineno">  621</span>&#160;        <span class="keywordflow">return</span> <span class="keyword">false</span>;</div>
+<div class="line"><a name="l00622"></a><span class="lineno">  622</span>&#160;    <span class="keywordflow">if</span> (new_end)</div>
+<div class="line"><a name="l00623"></a><span class="lineno">  623</span>&#160;        *new_end = &amp;s[0]+pos2;</div>
+<div class="line"><a name="l00624"></a><span class="lineno">  624</span>&#160;    <span class="keywordflow">return</span> <span class="keyword">true</span>;</div>
+<div class="line"><a name="l00625"></a><span class="lineno">  625</span>&#160;}</div>
+<div class="line"><a name="l00626"></a><span class="lineno">  626</span>&#160; </div>
+<div class="line"><a name="l00627"></a><span class="lineno"><a class="line" href="namespacecgv_1_1utils.html#a754c29b3c9f4543fd55732682b89618d">  627</a></span>&#160;<span class="keywordtype">bool</span> <a class="code" href="namespacecgv_1_1utils.html#ab954d9a064432cbc49ebdc30e35ed3cd">is_time</a>(<span class="keyword">const</span> <span class="keywordtype">char</span>* begin, <span class="keyword">const</span> <span class="keywordtype">char</span>* end, <a class="code" href="structcgv_1_1utils_1_1time.html">cgv::utils::time</a>&amp; t, <span class="keyword">const</span> <span class="keywordtype">char</span> **new_end)</div>
+<div class="line"><a name="l00628"></a><span class="lineno">  628</span>&#160;{</div>
+<div class="line"><a name="l00629"></a><span class="lineno">  629</span>&#160;    std::string s(begin,end-begin);</div>
+<div class="line"><a name="l00630"></a><span class="lineno">  630</span>&#160;    <span class="keywordflow">if</span> (<a class="code" href="namespacecgv_1_1utils.html#ab954d9a064432cbc49ebdc30e35ed3cd">is_time</a>(s, t, new_end)) {</div>
+<div class="line"><a name="l00631"></a><span class="lineno">  631</span>&#160;        <span class="keywordflow">if</span> (new_end)</div>
+<div class="line"><a name="l00632"></a><span class="lineno">  632</span>&#160;            *new_end = end + (*new_end - (&amp;s[0]+s.length()));</div>
+<div class="line"><a name="l00633"></a><span class="lineno">  633</span>&#160;        <span class="keywordflow">return</span> <span class="keyword">true</span>;</div>
+<div class="line"><a name="l00634"></a><span class="lineno">  634</span>&#160;    }</div>
+<div class="line"><a name="l00635"></a><span class="lineno">  635</span>&#160;    <span class="keywordflow">return</span> <span class="keyword">false</span>;</div>
+<div class="line"><a name="l00636"></a><span class="lineno">  636</span>&#160;}</div>
+<div class="line"><a name="l00637"></a><span class="lineno">  637</span>&#160; </div>
+<div class="line"><a name="l00638"></a><span class="lineno"><a class="line" href="namespacecgv_1_1utils.html#ac50207e5cb3cced92c622704d724ed83">  638</a></span>&#160;<span class="keywordtype">bool</span> <a class="code" href="namespacecgv_1_1utils.html#a721b017eeba9c853fb2a8d1b91251ab6">is_date</a>(<span class="keyword">const</span> <span class="keywordtype">char</span>* begin, <span class="keyword">const</span> <span class="keywordtype">char</span>* end, <a class="code" href="structcgv_1_1utils_1_1date.html">cgv::utils::date</a>&amp; d, <span class="keyword">const</span> <span class="keywordtype">char</span> **new_end)</div>
+<div class="line"><a name="l00639"></a><span class="lineno">  639</span>&#160;{</div>
+<div class="line"><a name="l00640"></a><span class="lineno">  640</span>&#160;    std::string s(begin,end-begin);</div>
+<div class="line"><a name="l00641"></a><span class="lineno">  641</span>&#160;    <span class="keywordflow">if</span> (<a class="code" href="namespacecgv_1_1utils.html#a721b017eeba9c853fb2a8d1b91251ab6">is_date</a>(s, d, new_end)) {</div>
+<div class="line"><a name="l00642"></a><span class="lineno">  642</span>&#160;        <span class="keywordflow">if</span> (new_end)</div>
+<div class="line"><a name="l00643"></a><span class="lineno">  643</span>&#160;            *new_end = end + (*new_end - (&amp;s[0]+s.length()));</div>
+<div class="line"><a name="l00644"></a><span class="lineno">  644</span>&#160;        <span class="keywordflow">return</span> <span class="keyword">true</span>;</div>
+<div class="line"><a name="l00645"></a><span class="lineno">  645</span>&#160;    }</div>
+<div class="line"><a name="l00646"></a><span class="lineno">  646</span>&#160;    <span class="keywordflow">return</span> <span class="keyword">false</span>;</div>
+<div class="line"><a name="l00647"></a><span class="lineno">  647</span>&#160;}</div>
+<div class="line"><a name="l00648"></a><span class="lineno">  648</span>&#160; </div>
+<div class="line"><a name="l00649"></a><span class="lineno"><a class="line" href="namespacecgv_1_1utils.html#a1e73543d632d26465fb41b3901f2a338">  649</a></span>&#160;<span class="keywordtype">bool</span> <a class="code" href="namespacecgv_1_1utils.html#a1e73543d632d26465fb41b3901f2a338">is_url</a>(<span class="keyword">const</span> std::string&amp; s, <span class="keyword">const</span> <span class="keywordtype">char</span>** end)</div>
+<div class="line"><a name="l00650"></a><span class="lineno">  650</span>&#160;{</div>
+<div class="line"><a name="l00651"></a><span class="lineno">  651</span>&#160;    <span class="keywordflow">if</span> (s.substr(0,8) == <span class="stringliteral">&quot;https://&quot;</span> || </div>
+<div class="line"><a name="l00652"></a><span class="lineno">  652</span>&#160;         s.substr(0,7) == <span class="stringliteral">&quot;http://&quot;</span> ||</div>
+<div class="line"><a name="l00653"></a><span class="lineno">  653</span>&#160;         s.substr(0,6) == <span class="stringliteral">&quot;ftp://&quot;</span> ||</div>
+<div class="line"><a name="l00654"></a><span class="lineno">  654</span>&#160;         s.substr(0,6) == <span class="stringliteral">&quot;smb://&quot;</span> ||</div>
+<div class="line"><a name="l00655"></a><span class="lineno">  655</span>&#160;         s.substr(0,6) == <span class="stringliteral">&quot;svn://&quot;</span> ||</div>
+<div class="line"><a name="l00656"></a><span class="lineno">  656</span>&#160;         s.substr(0,7) == <span class="stringliteral">&quot;file://&quot;</span>) {</div>
+<div class="line"><a name="l00657"></a><span class="lineno">  657</span>&#160;             <span class="keywordflow">if</span> (end) {</div>
+<div class="line"><a name="l00658"></a><span class="lineno">  658</span>&#160;                 *end = &amp;s[s.length()-1];</div>
+<div class="line"><a name="l00659"></a><span class="lineno">  659</span>&#160;                 <span class="keywordflow">while</span> (<a class="code" href="namespacecgv_1_1utils.html#a643f3fe18654ef2a7be7b78d5f82dada">is_url_special</a>(**end))</div>
+<div class="line"><a name="l00660"></a><span class="lineno">  660</span>&#160;                     --*end;</div>
+<div class="line"><a name="l00661"></a><span class="lineno">  661</span>&#160;                 ++*end;</div>
+<div class="line"><a name="l00662"></a><span class="lineno">  662</span>&#160;             }</div>
+<div class="line"><a name="l00663"></a><span class="lineno">  663</span>&#160;             <span class="keywordflow">return</span> <span class="keyword">true</span>;</div>
+<div class="line"><a name="l00664"></a><span class="lineno">  664</span>&#160;    }</div>
+<div class="line"><a name="l00665"></a><span class="lineno">  665</span>&#160;    <span class="keywordflow">return</span> <span class="keyword">false</span>;</div>
+<div class="line"><a name="l00666"></a><span class="lineno">  666</span>&#160;}</div>
+<div class="line"><a name="l00667"></a><span class="lineno">  667</span>&#160; </div>
+<div class="line"><a name="l00668"></a><span class="lineno"><a class="line" href="namespacecgv_1_1utils.html#aa7c5d6190a704c19ebca6e99a9fc2734">  668</a></span>&#160;<span class="keywordtype">bool</span> <a class="code" href="namespacecgv_1_1utils.html#a1e73543d632d26465fb41b3901f2a338">is_url</a>(<span class="keyword">const</span> <span class="keywordtype">char</span>* begin, <span class="keyword">const</span> <span class="keywordtype">char</span>* end, <span class="keyword">const</span> <span class="keywordtype">char</span>** new_end)</div>
+<div class="line"><a name="l00669"></a><span class="lineno">  669</span>&#160;{</div>
+<div class="line"><a name="l00670"></a><span class="lineno">  670</span>&#160;    std::string s(begin,end-begin);</div>
+<div class="line"><a name="l00671"></a><span class="lineno">  671</span>&#160;    <span class="keywordflow">if</span> (<a class="code" href="namespacecgv_1_1utils.html#a1e73543d632d26465fb41b3901f2a338">is_url</a>(s, new_end)) {</div>
+<div class="line"><a name="l00672"></a><span class="lineno">  672</span>&#160;        <span class="keywordflow">if</span> (new_end)</div>
+<div class="line"><a name="l00673"></a><span class="lineno">  673</span>&#160;            *new_end = end + (*new_end - (&amp;s[0]+s.length()));</div>
+<div class="line"><a name="l00674"></a><span class="lineno">  674</span>&#160;        <span class="keywordflow">return</span> <span class="keyword">true</span>;</div>
+<div class="line"><a name="l00675"></a><span class="lineno">  675</span>&#160;    }</div>
+<div class="line"><a name="l00676"></a><span class="lineno">  676</span>&#160;    <span class="keywordflow">return</span> <span class="keyword">false</span>;</div>
+<div class="line"><a name="l00677"></a><span class="lineno">  677</span>&#160;}</div>
+<div class="line"><a name="l00678"></a><span class="lineno">  678</span>&#160; </div>
+<div class="line"><a name="l00679"></a><span class="lineno"><a class="line" href="namespacecgv_1_1utils.html#aef60ecad72389715873e5b998f037aa8">  679</a></span>&#160;<span class="keyword">const</span> <span class="keywordtype">char</span>* <a class="code" href="namespacecgv_1_1utils.html#aef60ecad72389715873e5b998f037aa8">skip_spaces</a>(<span class="keyword">const</span> <span class="keywordtype">char</span>* begin, <span class="keyword">const</span> <span class="keywordtype">char</span>* end)</div>
+<div class="line"><a name="l00680"></a><span class="lineno">  680</span>&#160;{</div>
+<div class="line"><a name="l00681"></a><span class="lineno">  681</span>&#160;    <span class="keywordflow">while</span> (begin &lt; end &amp;&amp; <a class="code" href="namespacecgv_1_1utils.html#a81d51336fe7248cc852738af2b6adf85">is_space</a>(*begin))</div>
+<div class="line"><a name="l00682"></a><span class="lineno">  682</span>&#160;        ++begin;</div>
+<div class="line"><a name="l00683"></a><span class="lineno">  683</span>&#160;    <span class="keywordflow">return</span> begin;</div>
+<div class="line"><a name="l00684"></a><span class="lineno">  684</span>&#160;}</div>
+<div class="line"><a name="l00685"></a><span class="lineno">  685</span>&#160; </div>
+<div class="line"><a name="l00686"></a><span class="lineno"><a class="line" href="namespacecgv_1_1utils.html#ad395e58106935ab83b2d1e08438c5455">  686</a></span>&#160;<span class="keyword">const</span> <span class="keywordtype">char</span>* <a class="code" href="namespacecgv_1_1utils.html#ad395e58106935ab83b2d1e08438c5455">cutoff_spaces</a>(<span class="keyword">const</span> <span class="keywordtype">char</span>* begin, <span class="keyword">const</span> <span class="keywordtype">char</span>* end)</div>
+<div class="line"><a name="l00687"></a><span class="lineno">  687</span>&#160;{</div>
+<div class="line"><a name="l00688"></a><span class="lineno">  688</span>&#160;    <span class="keywordflow">while</span> (begin &lt; end &amp;&amp; <a class="code" href="namespacecgv_1_1utils.html#a81d51336fe7248cc852738af2b6adf85">is_space</a>(*(end-1)))</div>
+<div class="line"><a name="l00689"></a><span class="lineno">  689</span>&#160;        --end;</div>
+<div class="line"><a name="l00690"></a><span class="lineno">  690</span>&#160;    <span class="keywordflow">return</span> end;</div>
+<div class="line"><a name="l00691"></a><span class="lineno">  691</span>&#160;}</div>
+<div class="line"><a name="l00692"></a><span class="lineno">  692</span>&#160; </div>
+<div class="line"><a name="l00693"></a><span class="lineno"><a class="line" href="namespacecgv_1_1utils.html#a6111552f6d6592cb0a9bec7939f4e236">  693</a></span>&#160;std::string&amp; <a class="code" href="namespacecgv_1_1utils.html#a6111552f6d6592cb0a9bec7939f4e236">ltrim</a>(std::string&amp; str, <span class="keyword">const</span> std::string&amp; chars)</div>
+<div class="line"><a name="l00694"></a><span class="lineno">  694</span>&#160;{</div>
+<div class="line"><a name="l00695"></a><span class="lineno">  695</span>&#160;    str.erase(0, str.find_first_not_of(chars));</div>
+<div class="line"><a name="l00696"></a><span class="lineno">  696</span>&#160;    <span class="keywordflow">return</span> str;</div>
+<div class="line"><a name="l00697"></a><span class="lineno">  697</span>&#160;}</div>
+<div class="line"><a name="l00698"></a><span class="lineno">  698</span>&#160; </div>
+<div class="line"><a name="l00699"></a><span class="lineno"><a class="line" href="namespacecgv_1_1utils.html#a275e5d68df06a511c2f9b41c1f9f4c28">  699</a></span>&#160;std::string&amp; <a class="code" href="namespacecgv_1_1utils.html#a275e5d68df06a511c2f9b41c1f9f4c28">rtrim</a>(std::string&amp; str, <span class="keyword">const</span> std::string&amp; chars)</div>
+<div class="line"><a name="l00700"></a><span class="lineno">  700</span>&#160;{</div>
+<div class="line"><a name="l00701"></a><span class="lineno">  701</span>&#160;    str.erase(str.find_last_not_of(chars) + 1);</div>
+<div class="line"><a name="l00702"></a><span class="lineno">  702</span>&#160;    <span class="keywordflow">return</span> str;</div>
+<div class="line"><a name="l00703"></a><span class="lineno">  703</span>&#160;}</div>
+<div class="line"><a name="l00704"></a><span class="lineno">  704</span>&#160; </div>
+<div class="line"><a name="l00705"></a><span class="lineno"><a class="line" href="namespacecgv_1_1utils.html#a3eec00ae2b52df54329967f6ae7526d4">  705</a></span>&#160;std::string&amp; <a class="code" href="namespacecgv_1_1utils.html#a3eec00ae2b52df54329967f6ae7526d4">trim</a>(std::string&amp; str, <span class="keyword">const</span> std::string&amp; chars)</div>
+<div class="line"><a name="l00706"></a><span class="lineno">  706</span>&#160;{</div>
+<div class="line"><a name="l00707"></a><span class="lineno">  707</span>&#160;    <span class="keywordflow">return</span> <a class="code" href="namespacecgv_1_1utils.html#a6111552f6d6592cb0a9bec7939f4e236">ltrim</a>(<a class="code" href="namespacecgv_1_1utils.html#a275e5d68df06a511c2f9b41c1f9f4c28">rtrim</a>(str, chars), chars);</div>
+<div class="line"><a name="l00708"></a><span class="lineno">  708</span>&#160;}</div>
+<div class="line"><a name="l00709"></a><span class="lineno">  709</span>&#160; </div>
+<div class="line"><a name="l00710"></a><span class="lineno"><a class="line" href="namespacecgv_1_1utils.html#a612b9004a640fd424d7ed20ba2104e74">  710</a></span>&#160;std::string <a class="code" href="namespacecgv_1_1utils.html#a6111552f6d6592cb0a9bec7939f4e236">ltrim</a>(<span class="keyword">const</span> std::string&amp; str, <span class="keyword">const</span> std::string&amp; chars)</div>
+<div class="line"><a name="l00711"></a><span class="lineno">  711</span>&#160;{</div>
+<div class="line"><a name="l00712"></a><span class="lineno">  712</span>&#160;    std::string s = str;</div>
+<div class="line"><a name="l00713"></a><span class="lineno">  713</span>&#160;    s.erase(0, str.find_first_not_of(chars));</div>
+<div class="line"><a name="l00714"></a><span class="lineno">  714</span>&#160;    <span class="keywordflow">return</span> s;</div>
+<div class="line"><a name="l00715"></a><span class="lineno">  715</span>&#160;}</div>
+<div class="line"><a name="l00716"></a><span class="lineno">  716</span>&#160; </div>
+<div class="line"><a name="l00717"></a><span class="lineno"><a class="line" href="namespacecgv_1_1utils.html#aa9ae735d0f4b701a6d3635053097a23c">  717</a></span>&#160;std::string <a class="code" href="namespacecgv_1_1utils.html#a275e5d68df06a511c2f9b41c1f9f4c28">rtrim</a>(<span class="keyword">const</span> std::string&amp; str, <span class="keyword">const</span> std::string&amp; chars)</div>
+<div class="line"><a name="l00718"></a><span class="lineno">  718</span>&#160;{</div>
+<div class="line"><a name="l00719"></a><span class="lineno">  719</span>&#160;    std::string s = str;</div>
+<div class="line"><a name="l00720"></a><span class="lineno">  720</span>&#160;    s.erase(str.find_last_not_of(chars) + 1);</div>
+<div class="line"><a name="l00721"></a><span class="lineno">  721</span>&#160;    <span class="keywordflow">return</span> s;</div>
+<div class="line"><a name="l00722"></a><span class="lineno">  722</span>&#160;}</div>
+<div class="line"><a name="l00723"></a><span class="lineno">  723</span>&#160; </div>
+<div class="line"><a name="l00724"></a><span class="lineno"><a class="line" href="namespacecgv_1_1utils.html#adcdb4408e94a15f0337146b18058c79e">  724</a></span>&#160;std::string <a class="code" href="namespacecgv_1_1utils.html#a3eec00ae2b52df54329967f6ae7526d4">trim</a>(<span class="keyword">const</span> std::string&amp; str, <span class="keyword">const</span> std::string&amp; chars)</div>
+<div class="line"><a name="l00725"></a><span class="lineno">  725</span>&#160;{</div>
+<div class="line"><a name="l00726"></a><span class="lineno">  726</span>&#160;    <span class="keywordflow">return</span> <a class="code" href="namespacecgv_1_1utils.html#a6111552f6d6592cb0a9bec7939f4e236">ltrim</a>(<a class="code" href="namespacecgv_1_1utils.html#a275e5d68df06a511c2f9b41c1f9f4c28">rtrim</a>(str, chars), chars);</div>
+<div class="line"><a name="l00727"></a><span class="lineno">  727</span>&#160;}</div>
+<div class="line"><a name="l00728"></a><span class="lineno">  728</span>&#160; </div>
+<div class="line"><a name="l00729"></a><span class="lineno"><a class="line" href="namespacecgv_1_1utils.html#a8c7e4e48bd1834e5558fc9d5461457d9">  729</a></span>&#160;std::string <a class="code" href="namespacecgv_1_1utils.html#a8c7e4e48bd1834e5558fc9d5461457d9">join</a>(<span class="keyword">const</span> std::vector&lt;std::string&gt;::const_iterator first, <span class="keyword">const</span> std::vector&lt;std::string&gt;::const_iterator last, <span class="keyword">const</span> std::string&amp; sep, <span class="keywordtype">bool</span> trailing_sep)</div>
+<div class="line"><a name="l00730"></a><span class="lineno">  730</span>&#160;{</div>
+<div class="line"><a name="l00731"></a><span class="lineno">  731</span>&#160;    <span class="keywordflow">if</span>(last &lt; first)</div>
+<div class="line"><a name="l00732"></a><span class="lineno">  732</span>&#160;        <span class="keywordflow">return</span> <span class="stringliteral">&quot;&quot;</span>;</div>
+<div class="line"><a name="l00733"></a><span class="lineno">  733</span>&#160; </div>
+<div class="line"><a name="l00734"></a><span class="lineno">  734</span>&#160;    std::string res = <span class="stringliteral">&quot;&quot;</span>;</div>
 <div class="line"><a name="l00735"></a><span class="lineno">  735</span>&#160; </div>
-<div class="line"><a name="l00736"></a><span class="lineno"><a class="line" href="namespacecgv_1_1utils.html#a07474e4aecaf06a8ecca7aba033d5475">  736</a></span>&#160;std::string <a class="code" href="namespacecgv_1_1utils.html#a8c7e4e48bd1834e5558fc9d5461457d9">join</a>(<span class="keyword">const</span> std::vector&lt;std::string&gt;&amp; strs, <span class="keyword">const</span> std::string&amp; sep, <span class="keywordtype">bool</span> trailing_sep)</div>
-<div class="line"><a name="l00737"></a><span class="lineno">  737</span>&#160;{</div>
-<div class="line"><a name="l00738"></a><span class="lineno">  738</span>&#160;    <span class="keywordflow">return</span> <a class="code" href="namespacecgv_1_1utils.html#a8c7e4e48bd1834e5558fc9d5461457d9">join</a>(strs.begin(), strs.end(), sep, trailing_sep);</div>
-<div class="line"><a name="l00739"></a><span class="lineno">  739</span>&#160;}</div>
-<div class="line"><a name="l00740"></a><span class="lineno">  740</span>&#160; </div>
-<div class="line"><a name="l00741"></a><span class="lineno"><a class="line" href="namespacecgv_1_1utils.html#ac8138265d1f9a13183438d4fecd57644">  741</a></span>&#160;std::string <a class="code" href="namespacecgv_1_1utils.html#a8c7e4e48bd1834e5558fc9d5461457d9">join</a>(<span class="keyword">const</span> std::vector&lt;cgv::utils::token&gt;::const_iterator first, <span class="keyword">const</span> std::vector&lt;cgv::utils::token&gt;::const_iterator last, <span class="keyword">const</span> std::string&amp; sep, <span class="keywordtype">bool</span> trailing_sep)</div>
-<div class="line"><a name="l00742"></a><span class="lineno">  742</span>&#160;{</div>
-<div class="line"><a name="l00743"></a><span class="lineno">  743</span>&#160;    std::vector&lt;std::string&gt; strs = <a class="code" href="namespacecgv_1_1utils.html#a88ce17c15144cc13b482f9f3ed1219b7">to_strings</a>(first, last);</div>
-<div class="line"><a name="l00744"></a><span class="lineno">  744</span>&#160;    <span class="keywordflow">return</span> <a class="code" href="namespacecgv_1_1utils.html#a8c7e4e48bd1834e5558fc9d5461457d9">join</a>(strs.begin(), strs.end(), sep, trailing_sep);</div>
-<div class="line"><a name="l00745"></a><span class="lineno">  745</span>&#160;}</div>
-<div class="line"><a name="l00746"></a><span class="lineno">  746</span>&#160; </div>
-<div class="line"><a name="l00747"></a><span class="lineno"><a class="line" href="namespacecgv_1_1utils.html#af5d2ef4e3e59ecb0d7545a7c8bc65364">  747</a></span>&#160;<span class="keywordtype">unsigned</span> <span class="keywordtype">int</span> <a class="code" href="namespacecgv_1_1utils.html#af5d2ef4e3e59ecb0d7545a7c8bc65364">levenshtein_distance</a>(<span class="keyword">const</span> std::string&amp; s1, <span class="keyword">const</span> std::string&amp; s2)</div>
-<div class="line"><a name="l00748"></a><span class="lineno">  748</span>&#160;{</div>
-<div class="line"><a name="l00749"></a><span class="lineno">  749</span>&#160;    <span class="comment">// create two work vectors of integer distances</span></div>
-<div class="line"><a name="l00750"></a><span class="lineno">  750</span>&#160;    std::vector&lt;int&gt; v0(s2.length() + 1);</div>
-<div class="line"><a name="l00751"></a><span class="lineno">  751</span>&#160;    std::vector&lt;int&gt; v1(s2.length() + 1);</div>
-<div class="line"><a name="l00752"></a><span class="lineno">  752</span>&#160; </div>
-<div class="line"><a name="l00753"></a><span class="lineno">  753</span>&#160;    <span class="comment">// initialize v0 (the previous row of distances)</span></div>
-<div class="line"><a name="l00754"></a><span class="lineno">  754</span>&#160;    <span class="comment">// this row is A[0][i]: edit distance from an empty s to t;</span></div>
-<div class="line"><a name="l00755"></a><span class="lineno">  755</span>&#160;    <span class="comment">// that distance is the number of characters to append to  s to make t.</span></div>
-<div class="line"><a name="l00756"></a><span class="lineno">  756</span>&#160;    <span class="keywordflow">for</span> (<span class="keywordtype">size_t</span> i = 0; i &lt;= s2.length(); ++i) {</div>
-<div class="line"><a name="l00757"></a><span class="lineno">  757</span>&#160;        v0[i] = int(i);</div>
-<div class="line"><a name="l00758"></a><span class="lineno">  758</span>&#160;    }</div>
-<div class="line"><a name="l00759"></a><span class="lineno">  759</span>&#160; </div>
-<div class="line"><a name="l00760"></a><span class="lineno">  760</span>&#160;    <span class="keywordflow">for</span> (<span class="keywordtype">size_t</span> i = 0; i &lt; s1.length(); ++i) {</div>
-<div class="line"><a name="l00761"></a><span class="lineno">  761</span>&#160;        <span class="comment">// calculate v1 (current row distances) from the previous row v0</span></div>
-<div class="line"><a name="l00762"></a><span class="lineno">  762</span>&#160; </div>
-<div class="line"><a name="l00763"></a><span class="lineno">  763</span>&#160;        <span class="comment">// first element of v1 is A[i + 1][0]</span></div>
-<div class="line"><a name="l00764"></a><span class="lineno">  764</span>&#160;        <span class="comment">//   edit distance is delete (i + 1) chars from s to match empty t</span></div>
-<div class="line"><a name="l00765"></a><span class="lineno">  765</span>&#160;        v1[0] = int(i + 1);</div>
-<div class="line"><a name="l00766"></a><span class="lineno">  766</span>&#160; </div>
-<div class="line"><a name="l00767"></a><span class="lineno">  767</span>&#160;        <span class="comment">// use formula to fill in the rest of the row</span></div>
-<div class="line"><a name="l00768"></a><span class="lineno">  768</span>&#160;        <span class="keywordflow">for</span> (<span class="keywordtype">size_t</span> j = 0; j &lt; s2.length(); ++j) {</div>
-<div class="line"><a name="l00769"></a><span class="lineno">  769</span>&#160;            <span class="comment">// calculating costs for A[i + 1][j + 1]</span></div>
-<div class="line"><a name="l00770"></a><span class="lineno">  770</span>&#160;            <span class="keywordtype">int</span> deletion_cost = v0[j + 1] + 1;</div>
-<div class="line"><a name="l00771"></a><span class="lineno">  771</span>&#160;            <span class="keywordtype">int</span> insertion_cost = v1[j] + 1;</div>
-<div class="line"><a name="l00772"></a><span class="lineno">  772</span>&#160;            <span class="keywordtype">int</span> substitution_cost = 0;</div>
-<div class="line"><a name="l00773"></a><span class="lineno">  773</span>&#160;            <span class="keywordflow">if</span> (s1[i] == s2[j])</div>
-<div class="line"><a name="l00774"></a><span class="lineno">  774</span>&#160;                substitution_cost = v0[j];</div>
-<div class="line"><a name="l00775"></a><span class="lineno">  775</span>&#160;            <span class="keywordflow">else</span></div>
-<div class="line"><a name="l00776"></a><span class="lineno">  776</span>&#160;                substitution_cost = v0[j] + 1;</div>
-<div class="line"><a name="l00777"></a><span class="lineno">  777</span>&#160; </div>
-<div class="line"><a name="l00778"></a><span class="lineno">  778</span>&#160;            v1[j + 1] = std::min(std::min(deletion_cost, insertion_cost), substitution_cost);</div>
-<div class="line"><a name="l00779"></a><span class="lineno">  779</span>&#160;        }</div>
-<div class="line"><a name="l00780"></a><span class="lineno">  780</span>&#160; </div>
-<div class="line"><a name="l00781"></a><span class="lineno">  781</span>&#160;        <span class="comment">// copy v1 (current row) to v0 (previous row) for next iteration</span></div>
-<div class="line"><a name="l00782"></a><span class="lineno">  782</span>&#160;        <span class="comment">// since data in v1 is always invalidated, a swap without copy could be more efficient</span></div>
-<div class="line"><a name="l00783"></a><span class="lineno">  783</span>&#160;        std::swap(v0, v1);</div>
-<div class="line"><a name="l00784"></a><span class="lineno">  784</span>&#160;    }</div>
-<div class="line"><a name="l00785"></a><span class="lineno">  785</span>&#160;    <span class="comment">// after the last swap, the results of v1 are now in v0</span></div>
-<div class="line"><a name="l00786"></a><span class="lineno">  786</span>&#160;    <span class="keywordflow">return</span> v0[s2.length()];</div>
-<div class="line"><a name="l00787"></a><span class="lineno">  787</span>&#160;}</div>
+<div class="line"><a name="l00736"></a><span class="lineno">  736</span>&#160;    <span class="keywordflow">for</span>(<span class="keyword">auto</span> curr = first; curr != last; ++curr) {</div>
+<div class="line"><a name="l00737"></a><span class="lineno">  737</span>&#160;        res += *curr;</div>
+<div class="line"><a name="l00738"></a><span class="lineno">  738</span>&#160;        <span class="keywordflow">if</span>(last - curr &gt; 1 || trailing_sep)</div>
+<div class="line"><a name="l00739"></a><span class="lineno">  739</span>&#160;            res += sep;</div>
+<div class="line"><a name="l00740"></a><span class="lineno">  740</span>&#160;    }</div>
+<div class="line"><a name="l00741"></a><span class="lineno">  741</span>&#160;    <span class="keywordflow">return</span> res;</div>
+<div class="line"><a name="l00742"></a><span class="lineno">  742</span>&#160;}</div>
+<div class="line"><a name="l00743"></a><span class="lineno">  743</span>&#160; </div>
+<div class="line"><a name="l00744"></a><span class="lineno"><a class="line" href="namespacecgv_1_1utils.html#a07474e4aecaf06a8ecca7aba033d5475">  744</a></span>&#160;std::string <a class="code" href="namespacecgv_1_1utils.html#a8c7e4e48bd1834e5558fc9d5461457d9">join</a>(<span class="keyword">const</span> std::vector&lt;std::string&gt;&amp; strs, <span class="keyword">const</span> std::string&amp; sep, <span class="keywordtype">bool</span> trailing_sep)</div>
+<div class="line"><a name="l00745"></a><span class="lineno">  745</span>&#160;{</div>
+<div class="line"><a name="l00746"></a><span class="lineno">  746</span>&#160;    <span class="keywordflow">return</span> <a class="code" href="namespacecgv_1_1utils.html#a8c7e4e48bd1834e5558fc9d5461457d9">join</a>(strs.begin(), strs.end(), sep, trailing_sep);</div>
+<div class="line"><a name="l00747"></a><span class="lineno">  747</span>&#160;}</div>
+<div class="line"><a name="l00748"></a><span class="lineno">  748</span>&#160; </div>
+<div class="line"><a name="l00749"></a><span class="lineno"><a class="line" href="namespacecgv_1_1utils.html#ac8138265d1f9a13183438d4fecd57644">  749</a></span>&#160;std::string <a class="code" href="namespacecgv_1_1utils.html#a8c7e4e48bd1834e5558fc9d5461457d9">join</a>(<span class="keyword">const</span> std::vector&lt;cgv::utils::token&gt;::const_iterator first, <span class="keyword">const</span> std::vector&lt;cgv::utils::token&gt;::const_iterator last, <span class="keyword">const</span> std::string&amp; sep, <span class="keywordtype">bool</span> trailing_sep)</div>
+<div class="line"><a name="l00750"></a><span class="lineno">  750</span>&#160;{</div>
+<div class="line"><a name="l00751"></a><span class="lineno">  751</span>&#160;    std::vector&lt;std::string&gt; strs = <a class="code" href="namespacecgv_1_1utils.html#a88ce17c15144cc13b482f9f3ed1219b7">to_strings</a>(first, last);</div>
+<div class="line"><a name="l00752"></a><span class="lineno">  752</span>&#160;    <span class="keywordflow">return</span> <a class="code" href="namespacecgv_1_1utils.html#a8c7e4e48bd1834e5558fc9d5461457d9">join</a>(strs.begin(), strs.end(), sep, trailing_sep);</div>
+<div class="line"><a name="l00753"></a><span class="lineno">  753</span>&#160;}</div>
+<div class="line"><a name="l00754"></a><span class="lineno">  754</span>&#160; </div>
+<div class="line"><a name="l00755"></a><span class="lineno"><a class="line" href="namespacecgv_1_1utils.html#af5d2ef4e3e59ecb0d7545a7c8bc65364">  755</a></span>&#160;<span class="keywordtype">unsigned</span> <span class="keywordtype">int</span> <a class="code" href="namespacecgv_1_1utils.html#af5d2ef4e3e59ecb0d7545a7c8bc65364">levenshtein_distance</a>(<span class="keyword">const</span> std::string&amp; s1, <span class="keyword">const</span> std::string&amp; s2)</div>
+<div class="line"><a name="l00756"></a><span class="lineno">  756</span>&#160;{</div>
+<div class="line"><a name="l00757"></a><span class="lineno">  757</span>&#160;    <span class="comment">// create two work vectors of integer distances</span></div>
+<div class="line"><a name="l00758"></a><span class="lineno">  758</span>&#160;    std::vector&lt;int&gt; v0(s2.length() + 1);</div>
+<div class="line"><a name="l00759"></a><span class="lineno">  759</span>&#160;    std::vector&lt;int&gt; v1(s2.length() + 1);</div>
+<div class="line"><a name="l00760"></a><span class="lineno">  760</span>&#160; </div>
+<div class="line"><a name="l00761"></a><span class="lineno">  761</span>&#160;    <span class="comment">// initialize v0 (the previous row of distances)</span></div>
+<div class="line"><a name="l00762"></a><span class="lineno">  762</span>&#160;    <span class="comment">// this row is A[0][i]: edit distance from an empty s to t;</span></div>
+<div class="line"><a name="l00763"></a><span class="lineno">  763</span>&#160;    <span class="comment">// that distance is the number of characters to append to  s to make t.</span></div>
+<div class="line"><a name="l00764"></a><span class="lineno">  764</span>&#160;    <span class="keywordflow">for</span> (<span class="keywordtype">size_t</span> i = 0; i &lt;= s2.length(); ++i) {</div>
+<div class="line"><a name="l00765"></a><span class="lineno">  765</span>&#160;        v0[i] = int(i);</div>
+<div class="line"><a name="l00766"></a><span class="lineno">  766</span>&#160;    }</div>
+<div class="line"><a name="l00767"></a><span class="lineno">  767</span>&#160; </div>
+<div class="line"><a name="l00768"></a><span class="lineno">  768</span>&#160;    <span class="keywordflow">for</span> (<span class="keywordtype">size_t</span> i = 0; i &lt; s1.length(); ++i) {</div>
+<div class="line"><a name="l00769"></a><span class="lineno">  769</span>&#160;        <span class="comment">// calculate v1 (current row distances) from the previous row v0</span></div>
+<div class="line"><a name="l00770"></a><span class="lineno">  770</span>&#160; </div>
+<div class="line"><a name="l00771"></a><span class="lineno">  771</span>&#160;        <span class="comment">// first element of v1 is A[i + 1][0]</span></div>
+<div class="line"><a name="l00772"></a><span class="lineno">  772</span>&#160;        <span class="comment">//   edit distance is delete (i + 1) chars from s to match empty t</span></div>
+<div class="line"><a name="l00773"></a><span class="lineno">  773</span>&#160;        v1[0] = int(i + 1);</div>
+<div class="line"><a name="l00774"></a><span class="lineno">  774</span>&#160; </div>
+<div class="line"><a name="l00775"></a><span class="lineno">  775</span>&#160;        <span class="comment">// use formula to fill in the rest of the row</span></div>
+<div class="line"><a name="l00776"></a><span class="lineno">  776</span>&#160;        <span class="keywordflow">for</span> (<span class="keywordtype">size_t</span> j = 0; j &lt; s2.length(); ++j) {</div>
+<div class="line"><a name="l00777"></a><span class="lineno">  777</span>&#160;            <span class="comment">// calculating costs for A[i + 1][j + 1]</span></div>
+<div class="line"><a name="l00778"></a><span class="lineno">  778</span>&#160;            <span class="keywordtype">int</span> deletion_cost = v0[j + 1] + 1;</div>
+<div class="line"><a name="l00779"></a><span class="lineno">  779</span>&#160;            <span class="keywordtype">int</span> insertion_cost = v1[j] + 1;</div>
+<div class="line"><a name="l00780"></a><span class="lineno">  780</span>&#160;            <span class="keywordtype">int</span> substitution_cost = 0;</div>
+<div class="line"><a name="l00781"></a><span class="lineno">  781</span>&#160;            <span class="keywordflow">if</span> (s1[i] == s2[j])</div>
+<div class="line"><a name="l00782"></a><span class="lineno">  782</span>&#160;                substitution_cost = v0[j];</div>
+<div class="line"><a name="l00783"></a><span class="lineno">  783</span>&#160;            <span class="keywordflow">else</span></div>
+<div class="line"><a name="l00784"></a><span class="lineno">  784</span>&#160;                substitution_cost = v0[j] + 1;</div>
+<div class="line"><a name="l00785"></a><span class="lineno">  785</span>&#160; </div>
+<div class="line"><a name="l00786"></a><span class="lineno">  786</span>&#160;            v1[j + 1] = std::min(std::min(deletion_cost, insertion_cost), substitution_cost);</div>
+<div class="line"><a name="l00787"></a><span class="lineno">  787</span>&#160;        }</div>
 <div class="line"><a name="l00788"></a><span class="lineno">  788</span>&#160; </div>
-<div class="line"><a name="l00789"></a><span class="lineno">  789</span>&#160;    }</div>
-<div class="line"><a name="l00790"></a><span class="lineno">  790</span>&#160;}</div>
+<div class="line"><a name="l00789"></a><span class="lineno">  789</span>&#160;        <span class="comment">// copy v1 (current row) to v0 (previous row) for next iteration</span></div>
+<div class="line"><a name="l00790"></a><span class="lineno">  790</span>&#160;        <span class="comment">// since data in v1 is always invalidated, a swap without copy could be more efficient</span></div>
+<div class="line"><a name="l00791"></a><span class="lineno">  791</span>&#160;        std::swap(v0, v1);</div>
+<div class="line"><a name="l00792"></a><span class="lineno">  792</span>&#160;    }</div>
+<div class="line"><a name="l00793"></a><span class="lineno">  793</span>&#160;    <span class="comment">// after the last swap, the results of v1 are now in v0</span></div>
+<div class="line"><a name="l00794"></a><span class="lineno">  794</span>&#160;    <span class="keywordflow">return</span> v0[s2.length()];</div>
+<div class="line"><a name="l00795"></a><span class="lineno">  795</span>&#160;}</div>
+<div class="line"><a name="l00796"></a><span class="lineno">  796</span>&#160; </div>
+<div class="line"><a name="l00797"></a><span class="lineno">  797</span>&#160;    }</div>
+<div class="line"><a name="l00798"></a><span class="lineno">  798</span>&#160;}</div>
 <div class="ttc" id="anamespacecgv_1_1utils_html_a04502bf86fbb71464368f9710a2a084c"><div class="ttname"><a href="namespacecgv_1_1utils.html#a04502bf86fbb71464368f9710a2a084c">cgv::utils::is_digit</a></div><div class="ttdeci">bool is_digit(char c)</div><div class="ttdoc">check if char is a digit</div><div class="ttdef"><b>Definition:</b> <a href="scan_8cxx_source.html#l00020">scan.cxx:20</a></div></div>
 <div class="ttc" id="anamespacecgv_1_1utils_html_a145360669d325a1f530539c8aff35990"><div class="ttname"><a href="namespacecgv_1_1utils.html#a145360669d325a1f530539c8aff35990">cgv::utils::replace</a></div><div class="ttdeci">unsigned int replace(std::string &amp;s, char c1, char c2)</div><div class="ttdoc">replace char c1 with c2 in the given string _s and return number of replacements</div><div class="ttdef"><b>Definition:</b> <a href="scan_8cxx_source.html#l00159">scan.cxx:159</a></div></div>
 <div class="ttc" id="anamespacecgv_1_1utils_html_a155b5e0a440b5d442d41187cc8d41695"><div class="ttname"><a href="namespacecgv_1_1utils.html#a155b5e0a440b5d442d41187cc8d41695">cgv::utils::to_hex</a></div><div class="ttdeci">std::string to_hex(uint8_t v, bool use_upper_case)</div><div class="ttdoc">convert to hex</div><div class="ttdef"><b>Definition:</b> <a href="scan_8cxx_source.html#l00052">scan.cxx:52</a></div></div>
 <div class="ttc" id="anamespacecgv_1_1utils_html_a18e2419852e04a69d36223b9da5af74f"><div class="ttname"><a href="namespacecgv_1_1utils.html#a18e2419852e04a69d36223b9da5af74f">cgv::utils::get_element</a></div><div class="ttdeci">std::string get_element(const std::string &amp;s, int element_index, char sep)</div><div class="ttdoc">interpret s as a list separated by sep and return the element with the given element index.</div><div class="ttdef"><b>Definition:</b> <a href="scan_8cxx_source.html#l00301">scan.cxx:301</a></div></div>
-<div class="ttc" id="anamespacecgv_1_1utils_html_a1e73543d632d26465fb41b3901f2a338"><div class="ttname"><a href="namespacecgv_1_1utils.html#a1e73543d632d26465fb41b3901f2a338">cgv::utils::is_url</a></div><div class="ttdeci">bool is_url(const std::string &amp;s, const char **end)</div><div class="ttdoc">check and extract end of valid url from string s</div><div class="ttdef"><b>Definition:</b> <a href="scan_8cxx_source.html#l00641">scan.cxx:641</a></div></div>
-<div class="ttc" id="anamespacecgv_1_1utils_html_a275e5d68df06a511c2f9b41c1f9f4c28"><div class="ttname"><a href="namespacecgv_1_1utils.html#a275e5d68df06a511c2f9b41c1f9f4c28">cgv::utils::rtrim</a></div><div class="ttdeci">std::string &amp; rtrim(std::string &amp;str, const std::string &amp;chars)</div><div class="ttdoc">trim white space or other characters from end of string</div><div class="ttdef"><b>Definition:</b> <a href="scan_8cxx_source.html#l00691">scan.cxx:691</a></div></div>
+<div class="ttc" id="anamespacecgv_1_1utils_html_a1e73543d632d26465fb41b3901f2a338"><div class="ttname"><a href="namespacecgv_1_1utils.html#a1e73543d632d26465fb41b3901f2a338">cgv::utils::is_url</a></div><div class="ttdeci">bool is_url(const std::string &amp;s, const char **end)</div><div class="ttdoc">check and extract end of valid url from string s</div><div class="ttdef"><b>Definition:</b> <a href="scan_8cxx_source.html#l00649">scan.cxx:649</a></div></div>
+<div class="ttc" id="anamespacecgv_1_1utils_html_a275e5d68df06a511c2f9b41c1f9f4c28"><div class="ttname"><a href="namespacecgv_1_1utils.html#a275e5d68df06a511c2f9b41c1f9f4c28">cgv::utils::rtrim</a></div><div class="ttdeci">std::string &amp; rtrim(std::string &amp;str, const std::string &amp;chars)</div><div class="ttdoc">trim white space or other characters from end of string</div><div class="ttdef"><b>Definition:</b> <a href="scan_8cxx_source.html#l00699">scan.cxx:699</a></div></div>
 <div class="ttc" id="anamespacecgv_1_1utils_html_a2c4c8257827554cb1b6e31932661493f"><div class="ttname"><a href="namespacecgv_1_1utils.html#a2c4c8257827554cb1b6e31932661493f">cgv::utils::interpret_special</a></div><div class="ttdeci">std::string interpret_special(const std::string &amp;s)</div><div class="ttdoc">interprets the C++ special characters \a, \b, \f, \n, \r, \t, \v, \\', \&quot;, \\, \?,...</div><div class="ttdef"><b>Definition:</b> <a href="scan_8cxx_source.html#l00227">scan.cxx:227</a></div></div>
-<div class="ttc" id="anamespacecgv_1_1utils_html_a2f21c3f652cfb7b2358bb19c515daa19"><div class="ttname"><a href="namespacecgv_1_1utils.html#a2f21c3f652cfb7b2358bb19c515daa19">cgv::utils::is_integer</a></div><div class="ttdeci">bool is_integer(const char *begin, const char *end, int &amp;value)</div><div class="ttdoc">check if the text range (begin,end( defines an integer value. If yes, store the value in the passed r...</div><div class="ttdef"><b>Definition:</b> <a href="scan_8cxx_source.html#l00356">scan.cxx:356</a></div></div>
+<div class="ttc" id="anamespacecgv_1_1utils_html_a2f21c3f652cfb7b2358bb19c515daa19"><div class="ttname"><a href="namespacecgv_1_1utils.html#a2f21c3f652cfb7b2358bb19c515daa19">cgv::utils::is_integer</a></div><div class="ttdeci">bool is_integer(const char *begin, const char *end, int &amp;value)</div><div class="ttdoc">check if the text range (begin,end( defines an integer value. If yes, store the value in the passed r...</div><div class="ttdef"><b>Definition:</b> <a href="scan_8cxx_source.html#l00363">scan.cxx:363</a></div></div>
 <div class="ttc" id="anamespacecgv_1_1utils_html_a30fa77c0e7120e34b287dee015c9be51"><div class="ttname"><a href="namespacecgv_1_1utils.html#a30fa77c0e7120e34b287dee015c9be51">cgv::utils::escape_special</a></div><div class="ttdeci">std::string escape_special(const std::string &amp;s)</div><div class="ttdoc">escapes the C++ special characters \a, \b, \f, \n, \r, \t, \v, \\', \&quot;, \\, \?</div><div class="ttdef"><b>Definition:</b> <a href="scan_8cxx_source.html#l00205">scan.cxx:205</a></div></div>
-<div class="ttc" id="anamespacecgv_1_1utils_html_a31684ce83daae9741bd88efd2ab82a1a"><div class="ttname"><a href="namespacecgv_1_1utils.html#a31684ce83daae9741bd88efd2ab82a1a">cgv::utils::is_month</a></div><div class="ttdeci">bool is_month(const char *begin, const char *end, unsigned char &amp;month)</div><div class="ttdoc">check and extract month from string token [begin, end]</div><div class="ttdef"><b>Definition:</b> <a href="scan_8cxx_source.html#l00508">scan.cxx:508</a></div></div>
-<div class="ttc" id="anamespacecgv_1_1utils_html_a3eec00ae2b52df54329967f6ae7526d4"><div class="ttname"><a href="namespacecgv_1_1utils.html#a3eec00ae2b52df54329967f6ae7526d4">cgv::utils::trim</a></div><div class="ttdeci">std::string &amp; trim(std::string &amp;str, const std::string &amp;chars)</div><div class="ttdoc">trim white space or other characters from start and end of string</div><div class="ttdef"><b>Definition:</b> <a href="scan_8cxx_source.html#l00697">scan.cxx:697</a></div></div>
-<div class="ttc" id="anamespacecgv_1_1utils_html_a5e16eed75c4f654d7295f4505ad7e697"><div class="ttname"><a href="namespacecgv_1_1utils.html#a5e16eed75c4f654d7295f4505ad7e697">cgv::utils::is_year</a></div><div class="ttdeci">bool is_year(const char *begin, const char *end, unsigned short &amp;year, bool short_allowed)</div><div class="ttdoc">check and extract year from string token [begin, end]</div><div class="ttdef"><b>Definition:</b> <a href="scan_8cxx_source.html#l00478">scan.cxx:478</a></div></div>
-<div class="ttc" id="anamespacecgv_1_1utils_html_a6111552f6d6592cb0a9bec7939f4e236"><div class="ttname"><a href="namespacecgv_1_1utils.html#a6111552f6d6592cb0a9bec7939f4e236">cgv::utils::ltrim</a></div><div class="ttdeci">std::string &amp; ltrim(std::string &amp;str, const std::string &amp;chars)</div><div class="ttdoc">trim white space or other characters from start of string</div><div class="ttdef"><b>Definition:</b> <a href="scan_8cxx_source.html#l00685">scan.cxx:685</a></div></div>
+<div class="ttc" id="anamespacecgv_1_1utils_html_a31684ce83daae9741bd88efd2ab82a1a"><div class="ttname"><a href="namespacecgv_1_1utils.html#a31684ce83daae9741bd88efd2ab82a1a">cgv::utils::is_month</a></div><div class="ttdeci">bool is_month(const char *begin, const char *end, unsigned char &amp;month)</div><div class="ttdoc">check and extract month from string token [begin, end]</div><div class="ttdef"><b>Definition:</b> <a href="scan_8cxx_source.html#l00516">scan.cxx:516</a></div></div>
+<div class="ttc" id="anamespacecgv_1_1utils_html_a3eec00ae2b52df54329967f6ae7526d4"><div class="ttname"><a href="namespacecgv_1_1utils.html#a3eec00ae2b52df54329967f6ae7526d4">cgv::utils::trim</a></div><div class="ttdeci">std::string &amp; trim(std::string &amp;str, const std::string &amp;chars)</div><div class="ttdoc">trim white space or other characters from start and end of string</div><div class="ttdef"><b>Definition:</b> <a href="scan_8cxx_source.html#l00705">scan.cxx:705</a></div></div>
+<div class="ttc" id="anamespacecgv_1_1utils_html_a5e16eed75c4f654d7295f4505ad7e697"><div class="ttname"><a href="namespacecgv_1_1utils.html#a5e16eed75c4f654d7295f4505ad7e697">cgv::utils::is_year</a></div><div class="ttdeci">bool is_year(const char *begin, const char *end, unsigned short &amp;year, bool short_allowed)</div><div class="ttdoc">check and extract year from string token [begin, end]</div><div class="ttdef"><b>Definition:</b> <a href="scan_8cxx_source.html#l00486">scan.cxx:486</a></div></div>
+<div class="ttc" id="anamespacecgv_1_1utils_html_a6111552f6d6592cb0a9bec7939f4e236"><div class="ttname"><a href="namespacecgv_1_1utils.html#a6111552f6d6592cb0a9bec7939f4e236">cgv::utils::ltrim</a></div><div class="ttdeci">std::string &amp; ltrim(std::string &amp;str, const std::string &amp;chars)</div><div class="ttdoc">trim white space or other characters from start of string</div><div class="ttdef"><b>Definition:</b> <a href="scan_8cxx_source.html#l00693">scan.cxx:693</a></div></div>
 <div class="ttc" id="anamespacecgv_1_1utils_html_a643f3fe18654ef2a7be7b78d5f82dada"><div class="ttname"><a href="namespacecgv_1_1utils.html#a643f3fe18654ef2a7be7b78d5f82dada">cgv::utils::is_url_special</a></div><div class="ttdeci">bool is_url_special(char c)</div><div class="ttdoc">check if char is a special character from an url</div><div class="ttdef"><b>Definition:</b> <a href="scan_8cxx_source.html#l00016">scan.cxx:16</a></div></div>
 <div class="ttc" id="anamespacecgv_1_1utils_html_a6b682be2fdbb130c91a3bd8bd7936ff8"><div class="ttname"><a href="namespacecgv_1_1utils.html#a6b682be2fdbb130c91a3bd8bd7936ff8">cgv::utils::to_lower</a></div><div class="ttdeci">char to_lower(char c)</div><div class="ttdoc">convert char to lower case</div><div class="ttdef"><b>Definition:</b> <a href="scan_8cxx_source.html#l00039">scan.cxx:39</a></div></div>
-<div class="ttc" id="anamespacecgv_1_1utils_html_a721b017eeba9c853fb2a8d1b91251ab6"><div class="ttname"><a href="namespacecgv_1_1utils.html#a721b017eeba9c853fb2a8d1b91251ab6">cgv::utils::is_date</a></div><div class="ttdeci">bool is_date(const std::string &amp;s, cgv::utils::date &amp;d, const char **new_end)</div><div class="ttdoc">check and extract date from string s</div><div class="ttdef"><b>Definition:</b> <a href="scan_8cxx_source.html#l00579">scan.cxx:579</a></div></div>
+<div class="ttc" id="anamespacecgv_1_1utils_html_a721b017eeba9c853fb2a8d1b91251ab6"><div class="ttname"><a href="namespacecgv_1_1utils.html#a721b017eeba9c853fb2a8d1b91251ab6">cgv::utils::is_date</a></div><div class="ttdeci">bool is_date(const std::string &amp;s, cgv::utils::date &amp;d, const char **new_end)</div><div class="ttdoc">check and extract date from string s</div><div class="ttdef"><b>Definition:</b> <a href="scan_8cxx_source.html#l00587">scan.cxx:587</a></div></div>
 <div class="ttc" id="anamespacecgv_1_1utils_html_a768fdf54202b2fc80c51ea8f312b2b82"><div class="ttname"><a href="namespacecgv_1_1utils.html#a768fdf54202b2fc80c51ea8f312b2b82">cgv::utils::to_upper</a></div><div class="ttdeci">char to_upper(char c)</div><div class="ttdoc">convert char to upper case</div><div class="ttdef"><b>Definition:</b> <a href="scan_8cxx_source.html#l00106">scan.cxx:106</a></div></div>
 <div class="ttc" id="anamespacecgv_1_1utils_html_a812fedad9007ec86f4e2e4003d88ab1e"><div class="ttname"><a href="namespacecgv_1_1utils.html#a812fedad9007ec86f4e2e4003d88ab1e">cgv::utils::remove_copy</a></div><div class="ttdeci">std::string remove_copy(const std::string &amp;s, char c)</div><div class="ttdoc">return a copy of the given string s with all occurences of char removed</div><div class="ttdef"><b>Definition:</b> <a href="scan_8cxx_source.html#l00134">scan.cxx:134</a></div></div>
 <div class="ttc" id="anamespacecgv_1_1utils_html_a81d51336fe7248cc852738af2b6adf85"><div class="ttname"><a href="namespacecgv_1_1utils.html#a81d51336fe7248cc852738af2b6adf85">cgv::utils::is_space</a></div><div class="ttdeci">bool is_space(char c)</div><div class="ttdoc">check if char is a whitespace</div><div class="ttdef"><b>Definition:</b> <a href="scan_8cxx_source.html#l00012">scan.cxx:12</a></div></div>
 <div class="ttc" id="anamespacecgv_1_1utils_html_a88ce17c15144cc13b482f9f3ed1219b7"><div class="ttname"><a href="namespacecgv_1_1utils.html#a88ce17c15144cc13b482f9f3ed1219b7">cgv::utils::to_strings</a></div><div class="ttdeci">std::vector&lt; std::string &gt; to_strings(const std::vector&lt; token &gt;::const_iterator first, const std::vector&lt; token &gt;::const_iterator last)</div><div class="ttdoc">convert to strings</div><div class="ttdef"><b>Definition:</b> <a href="token_8h_source.html#l00062">token.h:62</a></div></div>
-<div class="ttc" id="anamespacecgv_1_1utils_html_a8a31d2792f8f93b046c38aa6f387fd5f"><div class="ttname"><a href="namespacecgv_1_1utils.html#a8a31d2792f8f93b046c38aa6f387fd5f">cgv::utils::find_name</a></div><div class="ttdeci">bool find_name(const std::string &amp;s, const char *names[], int &amp;idx)</div><div class="ttdoc">check if string s is contained in the given array of names and in case of success store name index in...</div><div class="ttdef"><b>Definition:</b> <a href="scan_8cxx_source.html#l00495">scan.cxx:495</a></div></div>
-<div class="ttc" id="anamespacecgv_1_1utils_html_a8c7e4e48bd1834e5558fc9d5461457d9"><div class="ttname"><a href="namespacecgv_1_1utils.html#a8c7e4e48bd1834e5558fc9d5461457d9">cgv::utils::join</a></div><div class="ttdeci">std::string join(const std::vector&lt; std::string &gt;::const_iterator first, const std::vector&lt; std::string &gt;::const_iterator last, const std::string &amp;sep, bool trailing_sep)</div><div class="ttdoc">joins a given range of strings, separating them by the given separator; if trailing_sep is true,...</div><div class="ttdef"><b>Definition:</b> <a href="scan_8cxx_source.html#l00721">scan.cxx:721</a></div></div>
+<div class="ttc" id="anamespacecgv_1_1utils_html_a8a31d2792f8f93b046c38aa6f387fd5f"><div class="ttname"><a href="namespacecgv_1_1utils.html#a8a31d2792f8f93b046c38aa6f387fd5f">cgv::utils::find_name</a></div><div class="ttdeci">bool find_name(const std::string &amp;s, const char *names[], int &amp;idx)</div><div class="ttdoc">check if string s is contained in the given array of names and in case of success store name index in...</div><div class="ttdef"><b>Definition:</b> <a href="scan_8cxx_source.html#l00503">scan.cxx:503</a></div></div>
+<div class="ttc" id="anamespacecgv_1_1utils_html_a8c7e4e48bd1834e5558fc9d5461457d9"><div class="ttname"><a href="namespacecgv_1_1utils.html#a8c7e4e48bd1834e5558fc9d5461457d9">cgv::utils::join</a></div><div class="ttdeci">std::string join(const std::vector&lt; std::string &gt;::const_iterator first, const std::vector&lt; std::string &gt;::const_iterator last, const std::string &amp;sep, bool trailing_sep)</div><div class="ttdoc">joins a given range of strings, separating them by the given separator; if trailing_sep is true,...</div><div class="ttdef"><b>Definition:</b> <a href="scan_8cxx_source.html#l00729">scan.cxx:729</a></div></div>
 <div class="ttc" id="anamespacecgv_1_1utils_html_a97032f8b8a5544a118c84ff2346b5bfe"><div class="ttname"><a href="namespacecgv_1_1utils.html#a97032f8b8a5544a118c84ff2346b5bfe">cgv::utils::replace_special</a></div><div class="ttdeci">std::string replace_special(const std::string &amp;_s)</div><div class="ttdoc">replaces the german special characters ä,ö,ü,ß,Ä,Ö,Ü</div><div class="ttdef"><b>Definition:</b> <a href="scan_8cxx_source.html#l00141">scan.cxx:141</a></div></div>
 <div class="ttc" id="anamespacecgv_1_1utils_html_aaa01fd4bc8e1420979b731f995b679cb"><div class="ttname"><a href="namespacecgv_1_1utils.html#aaa01fd4bc8e1420979b731f995b679cb">cgv::utils::is_letter</a></div><div class="ttdeci">bool is_letter(char c)</div><div class="ttdoc">check if char is a letter</div><div class="ttdef"><b>Definition:</b> <a href="scan_8cxx_source.html#l00024">scan.cxx:24</a></div></div>
-<div class="ttc" id="anamespacecgv_1_1utils_html_ab946aefefb94207956db27970b35227d"><div class="ttname"><a href="namespacecgv_1_1utils.html#ab946aefefb94207956db27970b35227d">cgv::utils::is_double</a></div><div class="ttdeci">bool is_double(const char *begin, const char *end, double &amp;value)</div><div class="ttdoc">check if the text range (begin,end( defines a double value. If yes, store the value in the passed ref...</div><div class="ttdef"><b>Definition:</b> <a href="scan_8cxx_source.html#l00415">scan.cxx:415</a></div></div>
-<div class="ttc" id="anamespacecgv_1_1utils_html_ab954d9a064432cbc49ebdc30e35ed3cd"><div class="ttname"><a href="namespacecgv_1_1utils.html#ab954d9a064432cbc49ebdc30e35ed3cd">cgv::utils::is_time</a></div><div class="ttdeci">bool is_time(const std::string &amp;s, cgv::utils::time &amp;t, const char **new_end)</div><div class="ttdoc">check and extract time from string s</div><div class="ttdef"><b>Definition:</b> <a href="scan_8cxx_source.html#l00539">scan.cxx:539</a></div></div>
+<div class="ttc" id="anamespacecgv_1_1utils_html_ab946aefefb94207956db27970b35227d"><div class="ttname"><a href="namespacecgv_1_1utils.html#ab946aefefb94207956db27970b35227d">cgv::utils::is_double</a></div><div class="ttdeci">bool is_double(const char *begin, const char *end, double &amp;value)</div><div class="ttdoc">check if the text range (begin,end( defines a double value. If yes, store the value in the passed ref...</div><div class="ttdef"><b>Definition:</b> <a href="scan_8cxx_source.html#l00423">scan.cxx:423</a></div></div>
+<div class="ttc" id="anamespacecgv_1_1utils_html_ab954d9a064432cbc49ebdc30e35ed3cd"><div class="ttname"><a href="namespacecgv_1_1utils.html#ab954d9a064432cbc49ebdc30e35ed3cd">cgv::utils::is_time</a></div><div class="ttdeci">bool is_time(const std::string &amp;s, cgv::utils::time &amp;t, const char **new_end)</div><div class="ttdoc">check and extract time from string s</div><div class="ttdef"><b>Definition:</b> <a href="scan_8cxx_source.html#l00547">scan.cxx:547</a></div></div>
 <div class="ttc" id="anamespacecgv_1_1utils_html_ac97837caa291e98373073e2d01767ac0"><div class="ttname"><a href="namespacecgv_1_1utils.html#ac97837caa291e98373073e2d01767ac0">cgv::utils::is_element</a></div><div class="ttdeci">bool is_element(char c, const std::string &amp;s)</div><div class="ttdoc">check if char c arises in string s</div><div class="ttdef"><b>Definition:</b> <a href="scan_8cxx_source.html#l00291">scan.cxx:291</a></div></div>
-<div class="ttc" id="anamespacecgv_1_1utils_html_ad395e58106935ab83b2d1e08438c5455"><div class="ttname"><a href="namespacecgv_1_1utils.html#ad395e58106935ab83b2d1e08438c5455">cgv::utils::cutoff_spaces</a></div><div class="ttdeci">const char * cutoff_spaces(const char *begin, const char *end)</div><div class="ttdoc">return new end pointer by cutting off spaces at the end</div><div class="ttdef"><b>Definition:</b> <a href="scan_8cxx_source.html#l00678">scan.cxx:678</a></div></div>
+<div class="ttc" id="anamespacecgv_1_1utils_html_ad395e58106935ab83b2d1e08438c5455"><div class="ttname"><a href="namespacecgv_1_1utils.html#ad395e58106935ab83b2d1e08438c5455">cgv::utils::cutoff_spaces</a></div><div class="ttdeci">const char * cutoff_spaces(const char *begin, const char *end)</div><div class="ttdoc">return new end pointer by cutting off spaces at the end</div><div class="ttdef"><b>Definition:</b> <a href="scan_8cxx_source.html#l00686">scan.cxx:686</a></div></div>
 <div class="ttc" id="anamespacecgv_1_1utils_html_add0a6017402a8aec581af77f4f81b452"><div class="ttname"><a href="namespacecgv_1_1utils.html#add0a6017402a8aec581af77f4f81b452">cgv::utils::from_hex</a></div><div class="ttdeci">uint8_t from_hex(char c)</div><div class="ttdoc">convert from hex character</div><div class="ttdef"><b>Definition:</b> <a href="scan_8cxx_source.html#l00060">scan.cxx:60</a></div></div>
 <div class="ttc" id="anamespacecgv_1_1utils_html_ae95941e64781ca8614cc0bed57216449"><div class="ttname"><a href="namespacecgv_1_1utils.html#ae95941e64781ca8614cc0bed57216449">cgv::utils::remove</a></div><div class="ttdeci">std::string &amp; remove(std::string &amp;s, char c)</div><div class="ttdoc">remove char c from the given string s and return a reference to the same string object</div><div class="ttdef"><b>Definition:</b> <a href="scan_8cxx_source.html#l00127">scan.cxx:127</a></div></div>
 <div class="ttc" id="anamespacecgv_1_1utils_html_aeef200941450ccc1c5fb7be3334ead16"><div class="ttname"><a href="namespacecgv_1_1utils.html#aeef200941450ccc1c5fb7be3334ead16">cgv::utils::get_element_index</a></div><div class="ttdeci">int get_element_index(const std::string &amp;e, const std::string &amp;s, char sep)</div><div class="ttdoc">check if the string e is contained as element in the string s, which is a list separated by sep and r...</div><div class="ttdef"><b>Definition:</b> <a href="scan_8cxx_source.html#l00323">scan.cxx:323</a></div></div>
-<div class="ttc" id="anamespacecgv_1_1utils_html_aef60ecad72389715873e5b998f037aa8"><div class="ttname"><a href="namespacecgv_1_1utils.html#aef60ecad72389715873e5b998f037aa8">cgv::utils::skip_spaces</a></div><div class="ttdeci">const char * skip_spaces(const char *begin, const char *end)</div><div class="ttdoc">return new start pointer by skipping spaces at begin</div><div class="ttdef"><b>Definition:</b> <a href="scan_8cxx_source.html#l00671">scan.cxx:671</a></div></div>
+<div class="ttc" id="anamespacecgv_1_1utils_html_aef60ecad72389715873e5b998f037aa8"><div class="ttname"><a href="namespacecgv_1_1utils.html#aef60ecad72389715873e5b998f037aa8">cgv::utils::skip_spaces</a></div><div class="ttdeci">const char * skip_spaces(const char *begin, const char *end)</div><div class="ttdoc">return new start pointer by skipping spaces at begin</div><div class="ttdef"><b>Definition:</b> <a href="scan_8cxx_source.html#l00679">scan.cxx:679</a></div></div>
 <div class="ttc" id="anamespacecgv_1_1utils_html_af218cd40bc285058a5168f28bfaf277a"><div class="ttname"><a href="namespacecgv_1_1utils.html#af218cd40bc285058a5168f28bfaf277a">cgv::utils::parse_hex_bytes</a></div><div class="ttdeci">std::vector&lt; uint8_t &gt; parse_hex_bytes(const std::string &amp;byte_str)</div><div class="ttdoc">parse bytes hex coded bytes</div><div class="ttdef"><b>Definition:</b> <a href="scan_8cxx_source.html#l00091">scan.cxx:91</a></div></div>
-<div class="ttc" id="anamespacecgv_1_1utils_html_af5d2ef4e3e59ecb0d7545a7c8bc65364"><div class="ttname"><a href="namespacecgv_1_1utils.html#af5d2ef4e3e59ecb0d7545a7c8bc65364">cgv::utils::levenshtein_distance</a></div><div class="ttdeci">unsigned int levenshtein_distance(const std::string &amp;s1, const std::string &amp;s2)</div><div class="ttdoc">compute the levenshtein distance between two strings s1 and s2</div><div class="ttdef"><b>Definition:</b> <a href="scan_8cxx_source.html#l00747">scan.cxx:747</a></div></div>
+<div class="ttc" id="anamespacecgv_1_1utils_html_af5d2ef4e3e59ecb0d7545a7c8bc65364"><div class="ttname"><a href="namespacecgv_1_1utils.html#af5d2ef4e3e59ecb0d7545a7c8bc65364">cgv::utils::levenshtein_distance</a></div><div class="ttdeci">unsigned int levenshtein_distance(const std::string &amp;s1, const std::string &amp;s2)</div><div class="ttdoc">compute the levenshtein distance between two strings s1 and s2</div><div class="ttdef"><b>Definition:</b> <a href="scan_8cxx_source.html#l00755">scan.cxx:755</a></div></div>
 <div class="ttc" id="anamespacecgv_html"><div class="ttname"><a href="namespacecgv.html">cgv</a></div><div class="ttdoc">the cgv namespace</div><div class="ttdef"><b>Definition:</b> <a href="print_8h_source.html#l00011">print.h:11</a></div></div>
 <div class="ttc" id="ascan_8h_html"><div class="ttname"><a href="scan_8h.html">scan.h</a></div><div class="ttdoc">Helper functions to process strings.</div></div>
 <div class="ttc" id="astructcgv_1_1utils_1_1date_html"><div class="ttname"><a href="structcgv_1_1utils_1_1date.html">cgv::utils::date</a></div><div class="ttdef"><b>Definition:</b> <a href="date__time_8h_source.html#l00018">date_time.h:19</a></div></div>
