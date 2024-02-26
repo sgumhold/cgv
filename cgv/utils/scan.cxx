@@ -353,13 +353,21 @@ int get_element_index(const std::string& e, const std::string& s, char sep)
 	return -1;
 }
 
+#if __cplusplus >= 201703L
+	// We will be using std::from chars below for parsing, this provides the whitespace check we need there for correct logic
+	inline const bool char_is_whitespace_or_zero (const char ch) {
+		return ch == 0 || ch == '\r' || ch == '\n' || ch == ' ' || ch == '\t';
+	}
+#endif
+
 bool is_integer(const char* begin, const char* end, int& value)
 {
 	if (begin == end)
 		return false;
 
 #if __cplusplus >= 201703L
-	return std::from_chars(begin, end, value).ec == std::errc();
+	const auto fc = std::from_chars(begin, end, value);
+	return fc.ec == std::errc() && char_is_whitespace_or_zero(*fc.ptr);
 #else
 	// skip trailing spaces
 	while (begin < end && *begin == ' ')
