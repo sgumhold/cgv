@@ -87,25 +87,26 @@ $(document).ready(function(){initNavTree('cmdline__tools_8h_source.html',''); in
 <div class="contents">
 <div class="fragment"><div class="line"><a name="l00001"></a><span class="lineno">    1</span>&#160;<span class="preprocessor">#pragma once</span></div>
 <div class="line"><a name="l00002"></a><span class="lineno">    2</span>&#160; </div>
-<div class="line"><a name="l00003"></a><span class="lineno">    3</span>&#160;<span class="preprocessor">#include &lt;string&gt;</span></div>
-<div class="line"><a name="l00004"></a><span class="lineno">    4</span>&#160; </div>
-<div class="line"><a name="l00005"></a><span class="lineno">    5</span>&#160;<span class="preprocessor">#include &quot;lib_begin.h&quot;</span></div>
-<div class="line"><a name="l00006"></a><span class="lineno">    6</span>&#160; </div>
-<div class="line"><a name="l00007"></a><span class="lineno">    7</span>&#160;<span class="keyword">namespace </span><a class="code" href="namespacecgv.html">cgv</a> {</div>
-<div class="line"><a name="l00008"></a><span class="lineno">    8</span>&#160;    <span class="keyword">namespace </span>os {</div>
-<div class="line"><a name="l00009"></a><span class="lineno">    9</span>&#160; </div>
-<div class="line"><a name="l00011"></a><span class="lineno">   11</span>&#160;<span class="keyword">extern</span> CGV_API <span class="keywordtype">bool</span> expand_archive(<span class="keyword">const</span> std::string&amp; file_path, <span class="keyword">const</span> std::string&amp; destination_path);</div>
-<div class="line"><a name="l00012"></a><span class="lineno">   12</span>&#160; </div>
-<div class="line"><a name="l00014"></a><span class="lineno">   14</span>&#160;<span class="keyword">extern</span> CGV_API <span class="keywordtype">bool</span> compress_archive(<span class="keyword">const</span> std::string&amp; file_filter_path, <span class="keyword">const</span> std::string&amp; archive_path);</div>
-<div class="line"><a name="l00015"></a><span class="lineno">   15</span>&#160; </div>
-<div class="line"><a name="l00017"></a><span class="lineno">   17</span>&#160;<span class="keyword">extern</span> CGV_API std::string query_system_output(std::string cmd, <span class="keywordtype">bool</span> cerr);</div>
-<div class="line"><a name="l00018"></a><span class="lineno">   18</span>&#160; </div>
-<div class="line"><a name="l00032"></a><span class="lineno">   32</span>&#160;<span class="keyword">extern</span> CGV_API <span class="keywordtype">size_t</span> read_system_output(std::string cmd, uint8_t* buffer, <span class="keywordtype">size_t</span> buffer_size, <span class="keyword">const</span> <span class="keywordtype">char</span>* progression_text = 0, <span class="keywordtype">bool</span> use_cerr = <span class="keyword">false</span>, <span class="keywordtype">void</span> (*on_progress_update)(<span class="keywordtype">int</span>, <span class="keywordtype">void</span>*) = 0, <span class="keywordtype">void</span>* user_data = 0, <span class="keywordtype">size_t</span> block_size = 4096, <span class="keywordtype">bool</span> cycle_till_eof = <span class="keyword">false</span>);</div>
-<div class="line"><a name="l00033"></a><span class="lineno">   33</span>&#160; </div>
-<div class="line"><a name="l00034"></a><span class="lineno">   34</span>&#160;    }</div>
-<div class="line"><a name="l00035"></a><span class="lineno">   35</span>&#160;}</div>
-<div class="line"><a name="l00036"></a><span class="lineno">   36</span>&#160; </div>
-<div class="line"><a name="l00037"></a><span class="lineno">   37</span>&#160;<span class="preprocessor">#include &lt;cgv/config/lib_end.h&gt;</span></div>
+<div class="line"><a name="l00003"></a><span class="lineno">    3</span>&#160;<span class="preprocessor">#include &lt;cstdint&gt;</span></div>
+<div class="line"><a name="l00004"></a><span class="lineno">    4</span>&#160;<span class="preprocessor">#include &lt;string&gt;</span></div>
+<div class="line"><a name="l00005"></a><span class="lineno">    5</span>&#160; </div>
+<div class="line"><a name="l00006"></a><span class="lineno">    6</span>&#160;<span class="preprocessor">#include &quot;lib_begin.h&quot;</span></div>
+<div class="line"><a name="l00007"></a><span class="lineno">    7</span>&#160; </div>
+<div class="line"><a name="l00008"></a><span class="lineno">    8</span>&#160;<span class="keyword">namespace </span><a class="code" href="namespacecgv.html">cgv</a> {</div>
+<div class="line"><a name="l00009"></a><span class="lineno">    9</span>&#160;    <span class="keyword">namespace </span>os {</div>
+<div class="line"><a name="l00010"></a><span class="lineno">   10</span>&#160; </div>
+<div class="line"><a name="l00012"></a><span class="lineno">   12</span>&#160;<span class="keyword">extern</span> CGV_API <span class="keywordtype">bool</span> expand_archive(<span class="keyword">const</span> std::string&amp; file_path, <span class="keyword">const</span> std::string&amp; destination_path);</div>
+<div class="line"><a name="l00013"></a><span class="lineno">   13</span>&#160; </div>
+<div class="line"><a name="l00015"></a><span class="lineno">   15</span>&#160;<span class="keyword">extern</span> CGV_API <span class="keywordtype">bool</span> compress_archive(<span class="keyword">const</span> std::string&amp; file_filter_path, <span class="keyword">const</span> std::string&amp; archive_path);</div>
+<div class="line"><a name="l00016"></a><span class="lineno">   16</span>&#160; </div>
+<div class="line"><a name="l00018"></a><span class="lineno">   18</span>&#160;<span class="keyword">extern</span> CGV_API std::string query_system_output(std::string cmd, <span class="keywordtype">bool</span> cerr);</div>
+<div class="line"><a name="l00019"></a><span class="lineno">   19</span>&#160; </div>
+<div class="line"><a name="l00033"></a><span class="lineno">   33</span>&#160;<span class="keyword">extern</span> CGV_API <span class="keywordtype">size_t</span> read_system_output(std::string cmd, uint8_t* buffer, <span class="keywordtype">size_t</span> buffer_size, <span class="keyword">const</span> <span class="keywordtype">char</span>* progression_text = 0, <span class="keywordtype">bool</span> use_cerr = <span class="keyword">false</span>, <span class="keywordtype">void</span> (*on_progress_update)(<span class="keywordtype">int</span>, <span class="keywordtype">void</span>*) = 0, <span class="keywordtype">void</span>* user_data = 0, <span class="keywordtype">size_t</span> block_size = 4096, <span class="keywordtype">bool</span> cycle_till_eof = <span class="keyword">false</span>);</div>
+<div class="line"><a name="l00034"></a><span class="lineno">   34</span>&#160; </div>
+<div class="line"><a name="l00035"></a><span class="lineno">   35</span>&#160;    }</div>
+<div class="line"><a name="l00036"></a><span class="lineno">   36</span>&#160;}</div>
+<div class="line"><a name="l00037"></a><span class="lineno">   37</span>&#160; </div>
+<div class="line"><a name="l00038"></a><span class="lineno">   38</span>&#160;<span class="preprocessor">#include &lt;cgv/config/lib_end.h&gt;</span></div>
 <div class="ttc" id="anamespacecgv_html"><div class="ttname"><a href="namespacecgv.html">cgv</a></div><div class="ttdoc">the cgv namespace</div><div class="ttdef"><b>Definition:</b> <a href="print_8h_source.html#l00011">print.h:11</a></div></div>
 </div><!-- fragment --></div><!-- contents -->
 </div><!-- doc-content -->
