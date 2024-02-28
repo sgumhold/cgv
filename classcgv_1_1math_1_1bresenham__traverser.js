@@ -6,6 +6,5 @@ var classcgv_1_1math_1_1bresenham__traverser =
     [ "operator++", "classcgv_1_1math_1_1bresenham__traverser.html#a9a618d331e16395ea122c36e48520eb2", null ],
     [ "origin", "classcgv_1_1math_1_1bresenham__traverser.html#a4d81bb03a0e68d871ebcd60a4668a6b4", null ],
     [ "position", "classcgv_1_1math_1_1bresenham__traverser.html#a12c5ccb58c9d721f84b8f116502e39f5", null ],
-    [ "run", "classcgv_1_1math_1_1bresenham__traverser.html#a7ec6a4f46e75a407d54522df7f09555c", null ],
     [ "step", "classcgv_1_1math_1_1bresenham__traverser.html#a00c2a9b50a4628f922da74e896d4c517", null ]
 ];
