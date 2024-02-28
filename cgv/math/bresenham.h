@@ -77,11 +77,6 @@ public:
 		error = dx + dy;
 	}
 
-	bool run() const {
-
-		return !done_;
-	}
-
 	bool done() const {
 
 		return done_;
