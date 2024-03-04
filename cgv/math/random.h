@@ -3,6 +3,7 @@
 #include <algorithm>
 #include "functions.h"
 #include <cgv/math/vec.h>
+#include <cgv/math/fvec.h>
 #include <cgv/math/mat.h>
 #include <cgv/math/eig.h>
 #include <cgv/math/diag_mat.h>
@@ -142,7 +143,7 @@ public:
 		rv =(float) v;
 	}
 
-	///generates a pseudo random single-precision floating point number uniformly distributed between 0 and 1
+	///generates a pseudo random single-precision floating point number uniformly distributed between min and max
 	void uniform(const float min,const float max, float& rv)
 	{
 		float f;
@@ -180,6 +181,22 @@ public:
 			uniform(min,max,rv(i));	
 	}
 
+	///generates a pseudo random single precision fixed-size vector with uniformly distribute components between 0 and 1
+	template<typename T, cgv::type::uint32_type N>
+	void uniform(cgv::math::fvec<T, N>& rv)
+	{
+		for(unsigned i = 0; i < N; i++)
+			uniform(rv(i));
+	}
+
+	///generates a pseudo random single precision fixed-size vector with uniformly distribute components between min and max
+	template<typename T, cgv::type::uint32_type N>
+	void uniform(const float min, const float max, cgv::math::fvec<T, N>& rv)
+	{
+		for(unsigned i = 0; i < N; i++)
+			uniform(min, max, rv(i));
+	}
+
 	///generates a pseudo random single precision full matrix with uniformly distribute components between 0 and 1
 	void uniform(mat<float>& rv)
 	{
@@ -206,7 +223,6 @@ public:
 			j=(i+j)%rv.size();
 			rv.swap(i,j);
 		}
-		std::random_shuffle(&(rv(0)),&(rv(rv.nrows())));	
 	}
 
 	///generates a pseudo random single precision upper triangular matrix with uniformly distribute components between 0 and 1
