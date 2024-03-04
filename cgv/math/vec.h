@@ -168,7 +168,7 @@ public:
 		data_is_external = false;
 	}
 
-	///creates a 3d vector (c0,c1,c2)^T
+	///creates a 2d vector (c0,c1)^T
 	vec(const T& c0, const T& c1)
 	{
 		_size = 2;
