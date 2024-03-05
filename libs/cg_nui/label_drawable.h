@@ -1,3 +1,5 @@
+#pragma once
+
 #include <cgv/render/drawable.h>
 #include <cgv_gl/rectangle_renderer.h>
 #include <cg_nui/label_manager.h>
