@@ -15,7 +15,7 @@ void main()
 {
 	frag_color = texture(color_tex, texcoord_fs);
 	if(apply_gamma)
-		frag_color.rgb = pow(frag_color.rgb, gamma3);
+		frag_color.rgb = pow(frag_color.rgb, 1.0/gamma3);
 	if(alpha_is_transparency)
 		frag_color.a = 1.0 - frag_color.a;
 	
