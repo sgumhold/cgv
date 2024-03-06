@@ -154,7 +154,7 @@ void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="stru
 <tr class="separator:a514d7cf6032b47f02ed652c227b1d676"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ad6f4fa2bd6bc48f9ba1c245a91001e2a"><td class="memItemLeft" align="right" valign="top"><a id="ad6f4fa2bd6bc48f9ba1c245a91001e2a"></a>
 void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structcgv_1_1math_1_1random.html#ad6f4fa2bd6bc48f9ba1c245a91001e2a">uniform</a> (const float min, const float max, float &amp;rv)</td></tr>
-<tr class="memdesc:ad6f4fa2bd6bc48f9ba1c245a91001e2a"><td class="mdescLeft">&#160;</td><td class="mdescRight">generates a pseudo random single-precision floating point number uniformly distributed between 0 and 1 <br /></td></tr>
+<tr class="memdesc:ad6f4fa2bd6bc48f9ba1c245a91001e2a"><td class="mdescLeft">&#160;</td><td class="mdescRight">generates a pseudo random single-precision floating point number uniformly distributed between min and max <br /></td></tr>
 <tr class="separator:ad6f4fa2bd6bc48f9ba1c245a91001e2a"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a09d7d62cb3b732ada5a24d149f73cb95"><td class="memItemLeft" align="right" valign="top"><a id="a09d7d62cb3b732ada5a24d149f73cb95"></a>
 void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structcgv_1_1math_1_1random.html#a09d7d62cb3b732ada5a24d149f73cb95">uniform</a> (<a class="el" href="classcgv_1_1math_1_1vec.html">vec</a>&lt; float &gt; &amp;rv)</td></tr>
@@ -172,6 +172,16 @@ void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="stru
 void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structcgv_1_1math_1_1random.html#ae3ddad84fbe648802cfe6a692d6da90c">uniform</a> (const double min, const double max, <a class="el" href="classcgv_1_1math_1_1vec.html">vec</a>&lt; double &gt; &amp;rv)</td></tr>
 <tr class="memdesc:ae3ddad84fbe648802cfe6a692d6da90c"><td class="mdescLeft">&#160;</td><td class="mdescRight">generates a pseudo random double precision vector with uniformly distribute components between min and max <br /></td></tr>
 <tr class="separator:ae3ddad84fbe648802cfe6a692d6da90c"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ab17523261c8264b579f2889f92141822"><td class="memTemplParams" colspan="2"><a id="ab17523261c8264b579f2889f92141822"></a>
+template&lt;typename T , cgv::type::uint32_type N&gt; </td></tr>
+<tr class="memitem:ab17523261c8264b579f2889f92141822"><td class="memTemplItemLeft" align="right" valign="top">void&#160;</td><td class="memTemplItemRight" valign="bottom"><a class="el" href="structcgv_1_1math_1_1random.html#ab17523261c8264b579f2889f92141822">uniform</a> (<a class="el" href="classcgv_1_1math_1_1fvec.html">cgv::math::fvec</a>&lt; T, N &gt; &amp;rv)</td></tr>
+<tr class="memdesc:ab17523261c8264b579f2889f92141822"><td class="mdescLeft">&#160;</td><td class="mdescRight">generates a pseudo random single precision fixed-size vector with uniformly distribute components between 0 and 1 <br /></td></tr>
+<tr class="separator:ab17523261c8264b579f2889f92141822"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ac3eeb118bd755cbce0245058a1a923b2"><td class="memTemplParams" colspan="2"><a id="ac3eeb118bd755cbce0245058a1a923b2"></a>
+template&lt;typename T , cgv::type::uint32_type N&gt; </td></tr>
+<tr class="memitem:ac3eeb118bd755cbce0245058a1a923b2"><td class="memTemplItemLeft" align="right" valign="top">void&#160;</td><td class="memTemplItemRight" valign="bottom"><a class="el" href="structcgv_1_1math_1_1random.html#ac3eeb118bd755cbce0245058a1a923b2">uniform</a> (const float min, const float max, <a class="el" href="classcgv_1_1math_1_1fvec.html">cgv::math::fvec</a>&lt; T, N &gt; &amp;rv)</td></tr>
+<tr class="memdesc:ac3eeb118bd755cbce0245058a1a923b2"><td class="mdescLeft">&#160;</td><td class="mdescRight">generates a pseudo random single precision fixed-size vector with uniformly distribute components between min and max <br /></td></tr>
+<tr class="separator:ac3eeb118bd755cbce0245058a1a923b2"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a0c6a7aef9ae9a35e91384555f8d15c7b"><td class="memItemLeft" align="right" valign="top"><a id="a0c6a7aef9ae9a35e91384555f8d15c7b"></a>
 void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structcgv_1_1math_1_1random.html#a0c6a7aef9ae9a35e91384555f8d15c7b">uniform</a> (<a class="el" href="classcgv_1_1math_1_1mat.html">mat</a>&lt; float &gt; &amp;rv)</td></tr>
 <tr class="memdesc:a0c6a7aef9ae9a35e91384555f8d15c7b"><td class="mdescLeft">&#160;</td><td class="mdescRight">generates a pseudo random single precision full matrix with uniformly distribute components between 0 and 1 <br /></td></tr>
@@ -307,7 +317,7 @@ void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="stru
 <a name="details" id="details"></a><h2 class="groupheader">Detailed Description</h2>
 <div class="textblock"><p>High quality random number generator, which is a little bit slower than typical random number generators but with a period about 3.138 x 10^57. </p>
 
-<p class="definition">Definition at line <a class="el" href="random_8h_source.html#l00025">25</a> of file <a class="el" href="random_8h_source.html">random.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="random_8h_source.html#l00026">26</a> of file <a class="el" href="random_8h_source.html">random.h</a>.</p>
 </div><hr/>The documentation for this struct was generated from the following file:<ul>
 <li>cgv/math/<a class="el" href="random_8h_source.html">random.h</a></li>
 </ul>
