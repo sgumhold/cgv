@@ -35,8 +35,6 @@ protected:
 	/// keep track of the number of static frames rendered (no camera movement),
 	/// to request new frames if the accumulation is not finished
 	unsigned static_frame_count = 0;
-	/// whether to automatically call post_redraw()
-	bool auto_redraw = true;
 	/// if temporal accumulation is active
 	bool accumulate = false;
 	/// influence of the new frame on the history color

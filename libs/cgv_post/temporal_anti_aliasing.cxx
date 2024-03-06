@@ -108,7 +108,7 @@ void temporal_anti_aliasing::end(cgv::render::context& ctx) {
 	assert_init();
 
 	if(!(enable || enable_fxaa) || !view_ptr)
-		return; // return false;
+		return;
 
 	fbc_draw.disable(ctx);
 
@@ -136,7 +136,6 @@ void temporal_anti_aliasing::end(cgv::render::context& ctx) {
 	fbc_resolve.enable(ctx);
 	glDepthFunc(GL_ALWAYS);
 
-	bool redraw = false;
 	bool first = !accumulate;
 	if(accumulate) {
 		bool is_static = true;
@@ -176,18 +175,13 @@ void temporal_anti_aliasing::end(cgv::render::context& ctx) {
 
 		if(static_frame_count < jitter_sample_count) {
 			++static_frame_count;
-			if(auto_redraw)
-				ctx.post_redraw();
-			redraw = true;
+			ctx.post_redraw();
 		}
 	} else {
 		accumulate = enable;
 		accumulate_count = 0;
-		if(accumulate) {
-			if(auto_redraw)
-				ctx.post_redraw();
-			redraw = true;
-		}
+		if(accumulate)
+			ctx.post_redraw();
 	}
 
 	fbc_resolve.disable(ctx);
@@ -214,7 +208,7 @@ void temporal_anti_aliasing::end(cgv::render::context& ctx) {
 	glDepthFunc(GL_LESS);
 
 	previous_view = current_view;
-	return; // return redraw;
+	return;
 }
 
 void temporal_anti_aliasing::create_gui_impl(cgv::base::base* b, cgv::gui::provider* p) {
