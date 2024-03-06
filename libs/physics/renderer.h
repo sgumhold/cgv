@@ -13,6 +13,7 @@
 
 #include "lib_begin.h"
 
+namespace cgv {
 namespace physics {
 
 class CGV_API renderer {
@@ -30,7 +31,7 @@ private:
 	cgv::render::sphere_renderer sphere_renderer;
 	cgv::render::sphere_render_data<> spheres;
 
-	std::vector<std::pair<cgv::render::mesh_render_info*, cgv::mat4>> mesh_infos;
+	std::vector<std::pair<cgv::render::mesh_render_info*, cgv::mat4>> mesh_render_data;
 
 public:
 	renderer();
@@ -45,5 +46,6 @@ public:
 };
 
 } // namespace physics
+} // namespace cgv
 
 #include <cgv/config/lib_end.h>

@@ -2,29 +2,15 @@
 
 using namespace JPH;
 
-/*
-* TODOs:
-*
-* Consider:
-* // Optional step: Before starting the physics simulation you can optimize the broad phase. This improves collision detection performance (it's pointless here because we only have 2 bodies).
-* // You should definitely not call this every frame or when e.g. streaming in a new level section as it is an expensive operation.
-* // Instead insert all new objects in batches instead of 1 at a time to keep the broad phase efficient.
-* physics_system->OptimizeBroadPhase();
-*
-* Shall we detect when all bodies are sleeping and skip the simulation update until they awaken again?
-* // Now we're ready to simulate the body, keep simulating until it goes to sleep
-* body_interface.IsActive(body_id);
-*
-*/
-
+namespace cgv {
 namespace physics {
 
 simulation_world::~simulation_world() {
 	for(const auto& body : rigid_bodies) {
 		// Remove the body from the physics system. Note that the body itself keeps all of its state and can be re-added at any time.
-		body_interface->RemoveBody(body.get_body_id());
+		physics_system->GetBodyInterface().RemoveBody(body.get_body_id());
 		// Destroy the body. After this the body ID is no longer valid.
-		body_interface->DestroyBody(body.get_body_id());
+		physics_system->GetBodyInterface().DestroyBody(body.get_body_id());
 	}
 
 	rigid_bodies.clear();
@@ -79,15 +65,13 @@ bool simulation_world::init(physics_system_creation_settings creation_settings) 
 		object_vs_object_layer_filter
 	);
 
-	// The main way to interact with the bodies in the physics system is through the body interface. There is a locking and a non-locking
-	// variant of this. We're going to use the locking version (even though we're not planning to access bodies from multiple threads)
-	body_interface = &physics_system->GetBodyInterface();
+	physics_system->OptimizeBroadPhase();
 
 	return true;
 }
 
 bool simulation_world::create_and_add_rigid_body(const BodyCreationSettings& collision_shape_settings, const std::shared_ptr<const abstract_shape_representation> shape_representation, bool activate) {
-	BodyID id = body_interface->CreateAndAddBody(collision_shape_settings, activate ? EActivation::Activate : EActivation::DontActivate);
+	BodyID id = get_body_interface().CreateAndAddBody(collision_shape_settings, activate ? EActivation::Activate : EActivation::DontActivate);
 
 	// If we run out of available bodies the returned ID is invalid.
 	if(id.IsInvalid())
@@ -95,17 +79,6 @@ bool simulation_world::create_and_add_rigid_body(const BodyCreationSettings& col
 
 	rigid_bodies.push_back({ id, shape_representation });
 	return true;
-}
-
-const Body* simulation_world::get_body_by_id(BodyID id) const {
-	// GetBodyLockInterface returns the locking interface suitable for multi-threaded access.
-	// If no multi-threading is used we can also use the non-locking interface through GetBodyLockInterfaceNoLock();
-	BodyLockRead lock(physics_system->GetBodyLockInterface(), id);
-	// Check if body id is still valid.
-	if(lock.Succeeded())
-		return &lock.GetBody();
-
-	return nullptr;
 }
 
 void simulation_world::update(float delta_time) {
@@ -120,21 +93,21 @@ void simulation_world::erase_rigid_bodies() {
 void simulation_world::erase_rigid_bodies_by_layer(ObjectLayer layer) {
 	erase_rigid_bodies_if(
 		[&layer](const auto& body, const auto& representation) {
-			return body->GetObjectLayer() == layer;
+			return body.GetObjectLayer() == layer;
 		});
 }
 
 void simulation_world::erase_rigid_bodies_by_motion_type(EMotionType motion_type) {
 	erase_rigid_bodies_if(
 		[&motion_type](const auto& body, const auto& representation) {
-			return body->GetMotionType() == motion_type;
+			return body.GetMotionType() == motion_type;
 		});
 }
 
 void simulation_world::erase_rigid_bodies_by_activation_state(bool active) {
 	erase_rigid_bodies_if(
 		[&active](const auto& body, const auto& representation) {
-			return body->IsActive() == active;
+			return body.IsActive() == active;
 		});
 }
 
@@ -143,11 +116,12 @@ void simulation_world::remove_and_delete_rigid_bodies(std::vector<rigid_body>::i
 	std::transform(first, last, std::back_inserter(body_ids), [](const rigid_body& rb) { return rb.get_body_id(); });
 
 	if(!body_ids.empty()) {
-		body_interface->RemoveBodies(body_ids.data(), static_cast<int>(body_ids.size()));
-		body_interface->DestroyBodies(body_ids.data(), static_cast<int>(body_ids.size()));
+		get_body_interface().RemoveBodies(body_ids.data(), static_cast<int>(body_ids.size()));
+		get_body_interface().DestroyBodies(body_ids.data(), static_cast<int>(body_ids.size()));
 
 		rigid_bodies.erase(first, last);
 	}
 }
 
 } // namespace physics
+} // namespace cgv

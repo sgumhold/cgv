@@ -6,6 +6,7 @@
 #include <Jolt/Jolt.h>
 #include <Jolt/Physics/Body/BodyID.h>
 
+namespace cgv {
 namespace physics {
 
 // TODO: comment: consisting of the BodyID supplied and used by Jolt physics and the visual shape used to represent the object.
@@ -15,8 +16,9 @@ private:
 	std::shared_ptr<const abstract_shape_representation> shape_representation;
 
 public:
-	rigid_body(JPH::BodyID body_id, const std::shared_ptr<const abstract_shape_representation> shape) : body_id(body_id), shape_representation(shape)  {}
+	rigid_body(JPH::BodyID body_id, const std::shared_ptr<const abstract_shape_representation> shape) : body_id(body_id), shape_representation(shape) {}
 
+	// TODO: rename to jolt_id or just id
 	JPH::BodyID get_body_id() const {
 		return body_id;
 	}
@@ -27,3 +29,4 @@ public:
 };
 
 } // namespace physics
+} // namespace cgv

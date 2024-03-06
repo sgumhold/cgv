@@ -21,6 +21,7 @@
 
 #include "lib_begin.h"
 
+namespace cgv {
 namespace physics {
 
 // Layer that objects can be in, determines which other objects it can collide with
@@ -149,9 +150,7 @@ private:
 	// The actual physics system that manages all subsystems.
 	//JPH::PhysicsSystem* physics_system = nullptr;
 	JPH::PhysicsSystem* physics_system = nullptr;
-	// The body interface is the main way to interact with the bodies in the physics system.
-	JPH::BodyInterface* body_interface = nullptr;
-
+	
 	// A list of all registered rigid bodies
 	std::vector<rigid_body> rigid_bodies;
 
@@ -183,25 +182,40 @@ public:
 		physics_system->SetContactListener(listener);
 	}
 
-	JPH::PhysicsSystem* get_system() {
+	/// Return a pointer to the physics system.
+	/// Only valid if init() was called beforehand.
+	JPH::PhysicsSystem* get_physics_system() const {
 		return physics_system;
 	}
 
-	JPH::BodyInterface* get_body_interface() {
-		return body_interface;
+	/// Return the locking body interface of the physics system that enables accessing bodies from multiple threads.
+	/// The body interface is the main way to interact with the bodies in the physics system.
+	/// Shorthand for calling get_physics_system()->GetBodyInterface().
+	/// Will crash if simulation_world::init() was not called beforehand!
+	JPH::BodyInterface& get_body_interface_no_lock() const {
+		return physics_system->GetBodyInterface();
+	}
+
+	/// Return the non-locking body interface of the physics system that only allows accessing bodies from a single thread.
+	/// The body interface is the main way to interact with the bodies in the physics system.
+	/// Shorthand for calling get_physics_system()->GetBodyInterfaceNoLock().
+	/// Will crash if simulation_world::init() was not called beforehand!
+	JPH::BodyInterface& get_body_interface() const {
+		return physics_system->GetBodyInterfaceNoLock();
 	}
 
 	/// @brief Create a new rigid_body and add it to the physics system.
+	/// 
+	/// As an optional step before starting the physics simulation you can optimize the broad phase by calling: physics_system->OptimizeBroadPhase();
+	/// This improves collision detection performance. Usually this is only done after startup and when many bodies are present in the system.
+	/// You should definitely not call this every frame. To keep the broad phase efficient it is helpful to insert all new objects in batches instead
+	/// of 1 at a time to keep the broad phase efficient.
+	/// 
 	/// @param collision_shape_settings The settings used by JoltPhysics to create the collision shape.
 	/// @param shape_representation The visual representation of the rigid_body. Can be different from the collision shape.
 	/// @param activate If true, the body is awake upon creation and will be updated in the simulation, otherwise the body will sleep until a first contact is registered.
 	/// @return True if the body was successfully created, false if we ran out of available memory for physics bodies.
 	bool create_and_add_rigid_body(const JPH::BodyCreationSettings& collision_shape_settings, const std::shared_ptr<const abstract_shape_representation> shape_representation, bool activate = true);
-
-	/// Return a JPH::Body belonging to the given id. Internally this uses the JPH::BodyInterface
-	/// of the JPH::PhysicsSystem to retrieve the body instance. A JPH::BodyID is only valid inside
-	/// the specific JPH::BodyInterface used to create the body.
-	const JPH::Body* get_body_by_id(JPH::BodyID id) const;
 
 	/// Return a const reference to the list of registered rigid_bodies.
 	const std::vector<rigid_body>& ref_rigid_bodies() const { return rigid_bodies; }
@@ -225,31 +239,88 @@ public:
 	/// If you need to be more specific with your selection consider using erase_rigid_bodies_if.
 	void erase_rigid_bodies_by_activation_state(bool active);
 
-	/// Provides a generic filter interface to erase rigid bodies where the given predicate evaluates to true.
-	/// The predicate receives a const pointer to the JPH::Body instance and a shared_ptr to a const
+	/// Provides a filter interface to erase rigid bodies where the given predicate evaluates to true.
+	/// The predicate receives a const reference to the JPH::Body and a shared_ptr to a const
 	/// abstract_shape_representation to allow filtering by a large set of properties. It can be supplied as a
 	/// lambda closure in the form:
-	///		[](const JPH::Body*, const std::shared_ptr<const abstract_shape_representation>) -> bool {}
+	///		[](const JPH::Body&, const std::shared_ptr<const abstract_shape_representation>) -> bool {}
 	/// 
-	/// The following example removes sleeping bodies but keeps the ones marked as static (representation not used here):
-	///		[](const JPH::Body* body, const auto representation) {
+	/// The following example removes sleeping bodies but keeps the ones marked as static (shape representation is not used here):
+	///		[](const JPH::Body& body, const auto representation) {
 	///			return !body->IsActive() && body->GetObjectLayer() == physics::Layers::MOVING;
 	///		});
 	template<class Pred>
 	void erase_rigid_bodies_if(Pred predicate) {
-		// Reorder the list of rigid bodies so all bodies fullfilling the predicate are sorted to the first part while all remaining bodies are sorted to the end.
-		// The returned iterator points to the first body that does not fullfill the predicate.
+		// Reorder the list of rigid bodies so all bodies fulfilling the predicate are sorted to the front while all remaining bodies are sorted to the end.
+		// The returned iterator points to the first body that does not fulfill the predicate.
 		auto it = std::partition(rigid_bodies.begin(), rigid_bodies.end(),
 								 [this, &predicate](const rigid_body& rb) {
-									 auto body = get_body_by_id(rb.get_body_id());
-									 return !predicate(body, rb.get_shape_representation());
+									 // Make sure the body is locked before accessing it. GetBodyLockInterface() returns the
+									 // locking interface suitable for multi-threaded access. If no multi-threading is used
+									 // we can also use the non-locking interface through GetBodyLockInterfaceNoLock();
+									 // BodyLockRead is used to only allow read access.
+									 JPH::BodyLockRead lock(physics_system->GetBodyLockInterface(), rb.get_body_id());
+									 // Check if body id is still valid.
+									 if(lock.Succeeded())
+										 return !predicate(lock.GetBody(), rb.get_shape_representation());
+									 // If the body is no longer valid it is sorted to the back.
+									 return false;
 								 });
 
 		// Remove all bodies starting at the returned iterator.
 		remove_and_delete_rigid_bodies(it, rigid_bodies.end());
 	}
+
+	/// Provides a convenience interface to execute a function for each rigid body.
+	/// The function receives a reference to the JPH::Body and a shared_ptr to a const
+	/// abstract_shape_representation to allow direct modification of the body. The interface
+	/// is especially useful to, e.g., first check if the body meets certain criteria and then
+	/// calling modifying methods on the instance.
+	/// It can be supplied as a lambda closure in the form:
+	///		[](JPH::Body&, const std::shared_ptr<const abstract_shape_representation>) {}
+	template<class Func>
+	void for_each_rigid_body(Func function) {
+		std::for_each(rigid_bodies.begin(), rigid_bodies.end(),
+								 [this, &function](const rigid_body& rb) {
+									 // Make sure the body is locked before accessing it. GetBodyLockInterface() returns the
+									 // locking interface suitable for multi-threaded access. If no multi-threading is used
+									 // we can also use the non-locking interface through GetBodyLockInterfaceNoLock();
+									 // BodyLockWrite is used to allow modifications to the body.
+									 JPH::BodyLockWrite lock(physics_system->GetBodyLockInterface(), rb.get_body_id());
+									 // Check if body id is still valid and call the functor.
+									 if(lock.Succeeded())
+										 function(lock.GetBody(), rb.get_shape_representation());
+								 });
+	}
+
+	/// Provides a convenience interface to return a list of JPH::BodyIDs for all rigid bodies
+	/// that fulfil the given predicate. The predicate receives a const reference to the JPH::Body 
+	/// and a shared_ptr to a const abstract_shape_representation.
+	/// It can be supplied as a lambda closure in the form:
+	///		[](const JPH::Body&, const std::shared_ptr<const abstract_shape_representation>) {}
+	template<class Pred>
+	std::vector<JPH::BodyID> transform_rigid_bodies_to_id_if(Pred predicate) {
+		std::vector<JPH::BodyID> ids;
+		ids.reserve(rigid_bodies.size() / 2);
+
+		std::for_each(rigid_bodies.begin(), rigid_bodies.end(),
+					  [this, &predicate, &ids](const rigid_body& rb) {
+						  // Make sure the body is locked before accessing it. GetBodyLockInterface() returns the
+						  // locking interface suitable for multi-threaded access. If no multi-threading is used
+						  // we can also use the non-locking interface through GetBodyLockInterfaceNoLock();
+						  JPH::BodyLockRead lock(physics_system->GetBodyLockInterface(), rb.get_body_id());
+						  // Check if body id is still valid and call the functor.
+						  if(lock.Succeeded()) {
+							  if(predicate(lock.GetBody(), rb.get_shape_representation()))
+								 ids.push_back(rb.get_body_id());
+						  }
+					  });
+
+		return ids;
+	}
 };
 
 } // namespace physics
+} // namespace cgv
 
 #include <cgv/config/lib_end.h>
