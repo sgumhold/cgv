@@ -7,6 +7,7 @@
 // The Jolt headers don't include Jolt.h. Always include Jolt.h before including any other Jolt header.
 #include <Jolt/Jolt.h>
 
+namespace cgv {
 namespace physics {
 
 enum class ShapeRepresentationType {
@@ -80,3 +81,4 @@ public:
 };
 
 } // namespace physics
+} // namespace cgv

@@ -6,7 +6,9 @@
 // The Jolt headers don't include Jolt.h. Always include Jolt.h before including any other Jolt header.
 #include <Jolt/Jolt.h>
 
+namespace cgv {
 namespace physics {
+namespace convert {
 
 /// Convert cgv::vec3 to JPH::Vec3
 static JPH::Vec3 to_Jolt_Vec3(const cgv::vec3& v) {
@@ -33,8 +35,10 @@ static JPH::Array<JPH::Vec3> to_Jolt_Vec3_Array(const std::vector<cgv::vec3>& v)
 	// JPH::Array is basically just std::vector with a custom allocator, so conversion is straightforward.
 	JPH::Array<JPH::Vec3> a;
 	a.reserve(v.size());
-	std::transform(v.begin(), v.end(), std::back_inserter(a), physics::to_Jolt_Vec3);
+	std::transform(v.begin(), v.end(), std::back_inserter(a), to_Jolt_Vec3);
 	return a;
 }
 
+} // namespace convert
 } // namespace physics
+} // namespace cgv
