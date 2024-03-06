@@ -20,7 +20,7 @@
 
 using namespace cgv::render;
 
-physics_viewer::physics_viewer() : application_plugin("physics_viewer") {
+physics_viewer::physics_viewer() : application_plugin("Physics Viewer") {
 
 	// Seed the random generator with a constant value so that every run produces the same results
 	rng.set_seed(42ull);
@@ -220,7 +220,7 @@ void physics_viewer::create_gui() {
 
 	add_decorator("Body Control", "heading", "level=4");
 	connect_copy(add_button("Activate Moving Layer")->click, cgv::signal::rebind(this, &physics_viewer::activate_bodies));
-	
+	connect_copy(add_button("Apply Impulse")->click, cgv::signal::rebind(this, &physics_viewer::apply_impulse));
 }
 
 void physics_viewer::timer_event(double t, double dt) {
@@ -603,6 +603,9 @@ void physics_viewer::spawn_shape(bool random) {
 		break;
 	case ShapeType::kSphere:
 		generate_random_sphere();
+		break;
+	case ShapeType::kConvexMesh:
+		generate_random_convex_mesh_instance();
 		break;
 	case ShapeType::kMesh:
 		generate_random_mesh_instance();
