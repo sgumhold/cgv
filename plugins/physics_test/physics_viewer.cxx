@@ -196,6 +196,7 @@ void physics_viewer::after_finish(cgv::render::context& ctx) {
 		background_color_bottom = cgv::rgb(0.33f, 0.40f, 0.52f);
 
 		view_ptr->set_eye_keep_view_angle(cgv::dvec3(0.0f, 6.0f, 12.0f));
+		post_redraw();
 	}
 }
 
