@@ -279,7 +279,7 @@ public:
 	/// It can be supplied as a lambda closure in the form:
 	///		[](JPH::Body&, const std::shared_ptr<const abstract_shape_representation>) {}
 	template<class Func>
-	void for_each_rigid_body(Func function) {
+	void for_each_rigid_body(Func function) const {
 		std::for_each(rigid_bodies.begin(), rigid_bodies.end(),
 								 [this, &function](const rigid_body& rb) {
 									 // Make sure the body is locked before accessing it. GetBodyLockInterface() returns the
@@ -299,7 +299,7 @@ public:
 	/// It can be supplied as a lambda closure in the form:
 	///		[](const JPH::Body&, const std::shared_ptr<const abstract_shape_representation>) {}
 	template<class Pred>
-	std::vector<JPH::BodyID> transform_rigid_bodies_to_id_if(Pred predicate) {
+	std::vector<JPH::BodyID> transform_rigid_bodies_to_id_if(Pred predicate) const {
 		std::vector<JPH::BodyID> ids;
 		ids.reserve(rigid_bodies.size() / 2);
 
