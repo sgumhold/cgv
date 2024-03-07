@@ -55,46 +55,37 @@ void renderer::update() {
 	spheres.clear();
 	mesh_render_data.clear();
 
-	const auto get_capsule_ends = [](std::shared_ptr<const capsule_representation> representation, const JPH::Body* physics_body) {
-		cgv::vec3 position = convert::to_vec3(physics_body->GetCenterOfMassPosition());
-		cgv::quat rotation = convert::to_quat(physics_body->GetRotation());
+	const auto get_capsule_ends = [](const JPH::Body& physics_body, std::shared_ptr<const capsule_representation> representation) {
+		cgv::vec3 position = convert::to_vec3(physics_body.GetCenterOfMassPosition());
+		cgv::quat rotation = convert::to_quat(physics_body.GetRotation());
 
 		cgv::vec3 axis_offset(0.0f, 0.5f * representation->height, 0.0f);
 		rotation.rotate(axis_offset);
 
 		return std::pair<cgv::vec3, cgv::vec3>(position - axis_offset, position + axis_offset);
-		};
+	};
 
-	for(const auto& body : physics_world->ref_rigid_bodies()) {
-		const auto representation = body.get_shape_representation();
-
-		
-		JPH::BodyLockRead lock(physics_world->get_physics_system()->GetBodyLockInterface(), body.get_body_id());
-		// Check if body id is still valid.
-		if(lock.Succeeded()) {
-
-			//const JPH::Body* physics_body = physics_world->get_body_by_id(body.get_body_id());
-			const JPH::Body* physics_body = &lock.GetBody();
-
+	physics_world->for_each_rigid_body(
+		[this, &get_capsule_ends](const JPH::Body& physics_body, std::shared_ptr<const abstract_shape_representation> representation) {
 			switch(representation->type()) {
 			case ShapeRepresentationType::kBox:
 			{
 				auto box = std::dynamic_pointer_cast<const box_representation>(representation);
-				boxes.add(convert::to_vec3(physics_body->GetCenterOfMassPosition()), box->extent, convert::to_quat(physics_body->GetRotation()));
+				boxes.add(convert::to_vec3(physics_body.GetCenterOfMassPosition()), box->extent, convert::to_quat(physics_body.GetRotation()));
 				boxes.add_color(box->color);
 				break;
 			}
 			case ShapeRepresentationType::kCapsule:
 			{
 				auto capsule = std::dynamic_pointer_cast<const capsule_representation>(representation);
-				auto ends = get_capsule_ends(capsule, physics_body);
+				auto ends = get_capsule_ends(physics_body, capsule);
 				capsules.add(ends.first, ends.second, capsule->color, capsule->base_radius);
 				break;
 			}
 			case ShapeRepresentationType::kTaperedCapsule:
 			{
 				auto capsule = std::dynamic_pointer_cast<const tapered_capsule_representation>(representation);
-				auto ends = get_capsule_ends(capsule, physics_body);
+				auto ends = get_capsule_ends(physics_body, capsule);
 				capsules.add(ends.first, ends.second, capsule->color);
 				capsules.add(capsule->base_radius, capsule->top_radius);
 				break;
@@ -102,29 +93,27 @@ void renderer::update() {
 			case ShapeRepresentationType::kCylinder:
 			{
 				auto cylinder = std::dynamic_pointer_cast<const cylinder_representation>(representation);
-				auto ends = get_capsule_ends(cylinder, physics_body);
+				auto ends = get_capsule_ends(physics_body, cylinder);
 				cylinders.add(ends.first, ends.second, cylinder->color, cylinder->base_radius);
 				break;
 			}
 			case ShapeRepresentationType::kSphere:
 			{
 				auto sphere = std::dynamic_pointer_cast<const sphere_representation>(representation);
-				spheres.add(convert::to_vec3(physics_body->GetCenterOfMassPosition()), sphere->color, sphere->radius);
+				spheres.add(convert::to_vec3(physics_body.GetCenterOfMassPosition()), sphere->color, sphere->radius);
 				break;
 			}
 			case ShapeRepresentationType::kMesh:
 			{
 				auto mesh = std::dynamic_pointer_cast<const mesh_representation>(representation);
-				cgv::mat4 transformation = cgv::math::pose4(convert::to_quat(physics_body->GetRotation()), convert::to_vec3(physics_body->GetCenterOfMassPosition())) * cgv::math::scale4(mesh->scale);
+				cgv::mat4 transformation = cgv::math::pose4(convert::to_quat(physics_body.GetRotation()), convert::to_vec3(physics_body.GetCenterOfMassPosition())) * cgv::math::scale4(mesh->scale);
 				mesh_render_data.push_back({ mesh->mesh_info, transformation });
 				break;
 			}
 			default:
 				break;
 			}
-
-		}
-	}
+		});
 }
 
 void renderer::draw(cgv::render::context& ctx) {
@@ -133,7 +122,7 @@ void renderer::draw(cgv::render::context& ctx) {
 	cylinders.render(ctx, cylinder_renderer);
 	spheres.render(ctx, sphere_renderer);
 
-	for(const auto [mesh_info, transformation] : mesh_render_data) {
+	for(const auto& [mesh_info, transformation] : mesh_render_data) {
 		ctx.push_modelview_matrix();
 		ctx.mul_modelview_matrix(transformation);
 		mesh_info->draw_all(ctx);
