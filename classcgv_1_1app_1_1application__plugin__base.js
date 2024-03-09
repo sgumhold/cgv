@@ -8,6 +8,7 @@ var classcgv_1_1app_1_1application__plugin__base =
     [ "initialize_view_ptr", "classcgv_1_1app_1_1application__plugin__base.html#a278afbd16dd80b341b4d144d843e956f", null ],
     [ "on_set", "classcgv_1_1app_1_1application__plugin__base.html#aed86d82cc892937bf0357e67c983eb42", null ],
     [ "register_overlay", "classcgv_1_1app_1_1application__plugin__base.html#af1f8cfc69b09d2d9106d6ae82658d62b", null ],
+    [ "unregister_overlay", "classcgv_1_1app_1_1application__plugin__base.html#adf9333309a645f41d688a6abe1f471aa", null ],
     [ "blocking_overlay_ptr", "classcgv_1_1app_1_1application__plugin__base.html#abb98362e9f3561ddb3b8d72d26bc153a", null ],
     [ "last_blocking_overlay_ptr", "classcgv_1_1app_1_1application__plugin__base.html#a5c75cea2a1b35d2e540aea31bb7ba7b8", null ],
     [ "overlays", "classcgv_1_1app_1_1application__plugin__base.html#a87d94e00268c0abac8f96e94cfda30e4", null ],

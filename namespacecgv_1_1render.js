@@ -111,6 +111,7 @@ var namespacecgv_1_1render =
     [ "surface_render_style", "structcgv_1_1render_1_1surface__render__style.html", "structcgv_1_1render_1_1surface__render__style" ],
     [ "surface_renderer", "classcgv_1_1render_1_1surface__renderer.html", "classcgv_1_1render_1_1surface__renderer" ],
     [ "surface_render_style_reflect", "structcgv_1_1render_1_1surface__render__style__reflect.html", "structcgv_1_1render_1_1surface__render__style__reflect" ],
+    [ "surfel_render_data", "classcgv_1_1render_1_1surfel__render__data.html", "classcgv_1_1render_1_1surfel__render__data" ],
     [ "surfel_render_style", "structcgv_1_1render_1_1surfel__render__style.html", "structcgv_1_1render_1_1surfel__render__style" ],
     [ "surfel_renderer", "classcgv_1_1render_1_1surfel__renderer.html", "classcgv_1_1render_1_1surfel__renderer" ],
     [ "surfel_render_style_reflect", "structcgv_1_1render_1_1surfel__render__style__reflect.html", "structcgv_1_1render_1_1surfel__render__style__reflect" ],
