@@ -1130,7 +1130,8 @@ var hierarchy =
       [ "cgv::render::line_render_data< ColorType >", "classcgv_1_1render_1_1line__render__data.html", null ],
       [ "cgv::render::point_render_data< ColorType >", "classcgv_1_1render_1_1point__render__data.html", null ],
       [ "cgv::render::rectangle_render_data< ColorType >", "classcgv_1_1render_1_1rectangle__render__data.html", null ],
-      [ "cgv::render::sphere_render_data< ColorType >", "classcgv_1_1render_1_1sphere__render__data.html", null ]
+      [ "cgv::render::sphere_render_data< ColorType >", "classcgv_1_1render_1_1sphere__render__data.html", null ],
+      [ "cgv::render::surfel_render_data< ColorType >", "classcgv_1_1render_1_1surfel__render__data.html", null ]
     ] ],
     [ "cgv::media::rgb_color_interface< color< T, HLS, am > >", "structcgv_1_1media_1_1rgb__color__interface.html", [
       [ "cgv::media::hls_color_interface< color< T, HLS, am > >", "structcgv_1_1media_1_1hls__color__interface_3_01color_3_01T_00_01HLS_00_01am_01_4_01_4.html", null ]

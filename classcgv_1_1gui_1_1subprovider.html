@@ -98,10 +98,12 @@ $(document).ready(function(){initNavTree('classcgv_1_1gui_1_1subprovider.html','
 <table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="pub-methods"></a>
 Public Member Functions</h2></td></tr>
-<tr class="memitem:ac9cd289137cd0934568b98f4565fcfcf"><td class="memItemLeft" align="right" valign="top"><a id="ac9cd289137cd0934568b98f4565fcfcf"></a>
-void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcgv_1_1gui_1_1subprovider.html#ac9cd289137cd0934568b98f4565fcfcf">create_gui</a> (<a class="el" href="classcgv_1_1gui_1_1provider.html">provider</a> *p)</td></tr>
-<tr class="memdesc:ac9cd289137cd0934568b98f4565fcfcf"><td class="mdescLeft">&#160;</td><td class="mdescRight">call this in your viewer <a class="el" href="classcgv_1_1gui_1_1subprovider.html#ac9cd289137cd0934568b98f4565fcfcf" title="call this in your viewer create_gui() method to create the gui of this subprovider as specified in cr...">create_gui()</a> method to create the gui of this subprovider as specified in <a class="el" href="classcgv_1_1gui_1_1subprovider.html#a138055ef135ce4e21c6374ca7b59038e" title="implement this to add gui controls using the supplied base and provider">create_gui_impl()</a> <br /></td></tr>
+<tr class="memitem:ac9cd289137cd0934568b98f4565fcfcf"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcgv_1_1gui_1_1subprovider.html#ac9cd289137cd0934568b98f4565fcfcf">create_gui</a> (<a class="el" href="classcgv_1_1gui_1_1provider.html">provider</a> *p)</td></tr>
+<tr class="memdesc:ac9cd289137cd0934568b98f4565fcfcf"><td class="mdescLeft">&#160;</td><td class="mdescRight">Create the gui of the subprovider using the implementation given in <a class="el" href="classcgv_1_1gui_1_1subprovider.html#a138055ef135ce4e21c6374ca7b59038e" title="implement this to add gui controls using the supplied base and provider">create_gui_impl()</a>.  <a href="classcgv_1_1gui_1_1subprovider.html#ac9cd289137cd0934568b98f4565fcfcf">More...</a><br /></td></tr>
 <tr class="separator:ac9cd289137cd0934568b98f4565fcfcf"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a69b8e34746911360dc3321afe60f1129"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcgv_1_1gui_1_1subprovider.html#a69b8e34746911360dc3321afe60f1129">subprovider::create_gui_tree_node</a> (<a class="el" href="classcgv_1_1gui_1_1provider.html">provider</a> *p, const std::string &amp;title, bool initial_visibility, const std::string &amp;options=&quot;&quot;)</td></tr>
+<tr class="memdesc:a69b8e34746911360dc3321afe60f1129"><td class="mdescLeft">&#160;</td><td class="mdescRight">Create the gui of the subprovider using the implementation given in <a class="el" href="classcgv_1_1gui_1_1subprovider.html#a138055ef135ce4e21c6374ca7b59038e" title="implement this to add gui controls using the supplied base and provider">create_gui_impl()</a> and additionally create a tree node around the actual gui.  <a href="classcgv_1_1gui_1_1subprovider.html#a69b8e34746911360dc3321afe60f1129">More...</a><br /></td></tr>
+<tr class="separator:a69b8e34746911360dc3321afe60f1129"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="pro-methods"></a>
 Protected Member Functions</h2></td></tr>
@@ -130,7 +132,76 @@ Protected Attributes</h2></td></tr>
 <div class="textblock"><p>derive from this class to use a provider from another viewer </p>
 
 <p class="definition">Definition at line <a class="el" href="subprovider_8h_source.html#l00011">11</a> of file <a class="el" href="subprovider_8h_source.html">subprovider.h</a>.</p>
-</div><hr/>The documentation for this class was generated from the following files:<ul>
+</div><h2 class="groupheader">Member Function Documentation</h2>
+<a id="ac9cd289137cd0934568b98f4565fcfcf"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#ac9cd289137cd0934568b98f4565fcfcf">&#9670;&nbsp;</a></span>create_gui()</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">void cgv::gui::subprovider::create_gui </td>
+          <td>(</td>
+          <td class="paramtype"><a class="el" href="classcgv_1_1gui_1_1provider.html">provider</a> *&#160;</td>
+          <td class="paramname"><em>p</em></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>Create the gui of the subprovider using the implementation given in <a class="el" href="classcgv_1_1gui_1_1subprovider.html#a138055ef135ce4e21c6374ca7b59038e" title="implement this to add gui controls using the supplied base and provider">create_gui_impl()</a>. </p>
+<p>Call this in your <a class="el" href="classcgv_1_1gui_1_1provider.html#a1d2f0b6c734c04d3c90a1c51ffbc0de9" title="you must overload this for gui creation">provider::create_gui()</a> method. </p>
+
+<p class="definition">Definition at line <a class="el" href="subprovider_8cxx_source.html#l00012">12</a> of file <a class="el" href="subprovider_8cxx_source.html">subprovider.cxx</a>.</p>
+
+<p class="reference">References <a class="el" href="classcgv_1_1gui_1_1subprovider.html#a138055ef135ce4e21c6374ca7b59038e">create_gui_impl()</a>, and <a class="el" href="subprovider_8h_source.html#l00019">provider_ptr</a>.</p>
+
+</div>
+</div>
+<a id="a69b8e34746911360dc3321afe60f1129"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a69b8e34746911360dc3321afe60f1129">&#9670;&nbsp;</a></span>subprovider::create_gui_tree_node()</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">void cgv::gui::subprovider::subprovider::create_gui_tree_node </td>
+          <td>(</td>
+          <td class="paramtype"><a class="el" href="classcgv_1_1gui_1_1provider.html">provider</a> *&#160;</td>
+          <td class="paramname"><em>p</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">const std::string &amp;&#160;</td>
+          <td class="paramname"><em>title</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">bool&#160;</td>
+          <td class="paramname"><em>initial_visibility</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">const std::string &amp;&#160;</td>
+          <td class="paramname"><em>options</em> = <code>&quot;&quot;</code>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>Create the gui of the subprovider using the implementation given in <a class="el" href="classcgv_1_1gui_1_1subprovider.html#a138055ef135ce4e21c6374ca7b59038e" title="implement this to add gui controls using the supplied base and provider">create_gui_impl()</a> and additionally create a tree node around the actual gui. </p>
+<p>Call this in your <a class="el" href="classcgv_1_1gui_1_1provider.html#a1d2f0b6c734c04d3c90a1c51ffbc0de9" title="you must overload this for gui creation">provider::create_gui()</a> method. </p>
+
+</div>
+</div>
+<hr/>The documentation for this class was generated from the following files:<ul>
 <li>cgv/gui/<a class="el" href="subprovider_8h_source.html">subprovider.h</a></li>
 <li>cgv/gui/<a class="el" href="subprovider_8cxx_source.html">subprovider.cxx</a></li>
 </ul>
