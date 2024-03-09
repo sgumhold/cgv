@@ -40,7 +40,7 @@ public:
 	/// Create the gui of the subprovider using the implementation given in create_gui_impl() and
 	/// additionally create a tree node around the actual gui.
 	/// Call this in your provider::create_gui() method.
-	void subprovider::create_gui_tree_node(provider* p, const std::string& title, bool initial_visibility, const std::string& options = "");
+	void create_gui_tree_node(provider* p, const std::string& title, bool initial_visibility, const std::string& options = "");
 };
 
 	}
