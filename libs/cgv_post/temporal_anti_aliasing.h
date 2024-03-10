@@ -105,7 +105,7 @@ public:
 
 	void set_fxaa_mix_factor(float value) { set_and_update_member(fxaa_mix_factor, std::min(std::max(value, 0.0f), 1.0f)); }
 
-	void set_jitter_scale(float value) { set_and_update_member(fxaa_mix_factor, std::min(std::max(value, 0.0f), 2.0f)); }
+	void set_jitter_scale(float value) { set_and_update_member(jitter_scale, std::min(std::max(value, 0.0f), 2.0f)); }
 
 	void set_jitter_sample_count(size_t count) { set_and_update_member(jitter_sample_count, std::min(std::max(count, size_t(1)), size_t(128))); }
 
