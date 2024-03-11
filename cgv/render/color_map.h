@@ -92,6 +92,16 @@ public:
 		opacity_points = flipped_opacity_points;
 	}
 
+	void apply_gamma(float gamma) {
+
+		cgv::math::control_point_container<rgb> corrected_color_points;
+
+		for(const color_control_point_type& color_point : color_points)
+			corrected_color_points.push_back(color_point.first, cgv::media::pow(color_point.second, gamma));
+
+		color_points = corrected_color_points;
+	}
+
 	void add_color_point(float t, rgb color) {
 		t = cgv::math::clamp(t, 0.0f, 1.0f);
 		color_points.push_back(t, color);
