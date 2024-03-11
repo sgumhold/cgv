@@ -6,6 +6,7 @@ var classcgv_1_1render_1_1color__map =
     [ "~color_map", "classcgv_1_1render_1_1color__map.html#ae38f0f785bcb57cdfcff5b936ea6e605", null ],
     [ "add_color_point", "classcgv_1_1render_1_1color__map.html#a007f95e6a1a4d2e3a45d414ea5022e08", null ],
     [ "add_opacity_point", "classcgv_1_1render_1_1color__map.html#a086f6b3c14ed1fafe7412336164a7f13", null ],
+    [ "apply_gamma", "classcgv_1_1render_1_1color__map.html#a1e124cc3683151d44254446c133af857", null ],
     [ "clear", "classcgv_1_1render_1_1color__map.html#a58d35fe2597d85a980766e9dc1cb67f0", null ],
     [ "clear_color_points", "classcgv_1_1render_1_1color__map.html#a157990b02ea5866288cbd00fb6c81008", null ],
     [ "clear_opacity_points", "classcgv_1_1render_1_1color__map.html#ab776cd7cca66155b0c8dc858ce58f94b", null ],
