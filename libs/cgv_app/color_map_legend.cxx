@@ -218,7 +218,7 @@ void color_map_legend::set_color_map(cgv::render::context& ctx, const cgv::rende
 
 	cgv::data::data_view dv = cgv::data::data_view(new cgv::data::data_format(resolution, 2u, TI_UINT8, cgv::data::CF_RGBA), data_8.data());
 
-	unsigned width = tex.get_width();
+	unsigned width = (unsigned)tex.get_width();
 
 	bool replaced = false;
 	if(tex.is_created() && width == resolution && tex.get_nr_components() == 4) {

@@ -187,7 +187,7 @@ protected:
 
 		cgv::data::data_view dv = cgv::data::data_view(new cgv::data::data_format(resolution, TI_UINT8, cgv::data::CF_RGB), data_8.data());
 
-		unsigned width = tex.get_width();
+		unsigned width = (unsigned)tex.get_width();
 
 		bool replaced = false;
 		if(tex.is_created() && width == resolution && tex.get_nr_components() == 3) {
@@ -218,7 +218,7 @@ protected:
 
 		cgv::data::data_view dv = cgv::data::data_view(new cgv::data::data_format(resolution, TI_UINT8, cgv::data::CF_RGBA), data_8.data());
 
-		unsigned width = tex.get_width();
+		unsigned width = (unsigned)tex.get_width();
 
 		bool replaced = false;
 		if(tex.is_created() && width == resolution && tex.get_nr_components() == 4) {
