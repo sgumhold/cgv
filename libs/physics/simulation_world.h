@@ -294,7 +294,7 @@ public:
 	}
 
 	/// Provides a convenience interface to return a list of JPH::BodyIDs for all rigid bodies
-	/// that fulfil the given predicate. The predicate receives a const reference to the JPH::Body 
+	/// that fulfill the given predicate. The predicate receives a const reference to the JPH::Body 
 	/// and a shared_ptr to a const abstract_shape_representation.
 	/// It can be supplied as a lambda closure in the form:
 	///		[](const JPH::Body&, const std::shared_ptr<const abstract_shape_representation>) {}
