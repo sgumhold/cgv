@@ -1,0 +1,7 @@
+@=
+projectType="library";
+projectName="cgv_algorithm";
+projectGUID="CE7E8963-A60E-4722-8297-7912D0DDDCC1";
+addSharedDefines=["CGV_ALGORITHM_EXPORTS"];
+addIncDirs=[CGV_DIR."/libs", CGV_BUILD_DIR."/".projectName];
+cppLanguageStandard="stdcpp17";
