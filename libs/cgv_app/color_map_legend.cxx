@@ -261,7 +261,7 @@ void color_map_legend::set_title(const std::string& t) {
 }
 
 void color_map_legend::set_range(vec2 r) {
-	flip_texture = r.y() > r.x();
+	flip_texture = r.x() > r.y();
 	if(flip_texture)
 		std::swap(r.x(), r.y());
 
