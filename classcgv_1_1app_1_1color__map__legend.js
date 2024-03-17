@@ -34,6 +34,7 @@ var classcgv_1_1app_1_1color__map__legend =
     [ "background_style", "classcgv_1_1app_1_1color__map__legend.html#ade15cf135bc2b3f2df989b4b4e449b43", null ],
     [ "border_style", "classcgv_1_1app_1_1color__map__legend.html#a1b2dfad85ec390dce489e8467e350852", null ],
     [ "color_map_style", "classcgv_1_1app_1_1color__map__legend.html#a6f7c1562b641b4c044a0aac96e8b5423", null ],
+    [ "flip_texture", "classcgv_1_1app_1_1color__map__legend.html#ae8248c5511079c24aff8d06033b38fa5", null ],
     [ "invert_color", "classcgv_1_1app_1_1color__map__legend.html#a55168e0a09e33d0a215c96bb50a80d28", null ],
     [ "label_auto_precision", "classcgv_1_1app_1_1color__map__legend.html#a1f9e464f62904b73acc3c1157de48d35", null ],
     [ "label_integer_mode", "classcgv_1_1app_1_1color__map__legend.html#a0d26c9bb11f29304176e62b5a88660c2", null ],
