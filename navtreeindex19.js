@@ -1,5 +1,6 @@
 var NAVTREEINDEX19 =
 {
+"classcgv_1_1render_1_1clod__point__buffer__manager.html#ad5a797703b40bbffe77fde933a8c60ff":[11,0,0,12,62,1],
 "classcgv_1_1render_1_1clod__point__buffer__manager.html#afc03a673c8f5262c2c33a498d2c68b95":[11,0,0,12,62,5],
 "classcgv_1_1render_1_1clod__point__renderer.html":[11,0,0,12,64],
 "classcgv_1_1render_1_1clod__point__renderer.html#a038f7a4b4626d1b1056118629a2b28ff":[11,0,0,12,64,12],
@@ -248,6 +249,5 @@ var NAVTREEINDEX19 =
 "classcgv_1_1render_1_1context.html#a743529bd478a9283bdf811fa559b5ad7":[11,0,0,12,18,49],
 "classcgv_1_1render_1_1context.html#a75bab7759900b0b9e909db40d0938d6c":[11,0,0,12,18,28],
 "classcgv_1_1render_1_1context.html#a7617395822c6eb05ecaba2a0cf8f38c7":[11,0,0,12,18,115],
-"classcgv_1_1render_1_1context.html#a77c4c4d8db1cc97b1c52baf92d7f3021":[11,0,0,12,18,298],
-"classcgv_1_1render_1_1context.html#a7828fb45580cced3b1caa0e9fefe5c9e":[11,0,0,12,18,76]
+"classcgv_1_1render_1_1context.html#a77c4c4d8db1cc97b1c52baf92d7f3021":[11,0,0,12,18,298]
 };
