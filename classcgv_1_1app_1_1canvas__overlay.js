@@ -4,11 +4,9 @@ var classcgv_1_1app_1_1canvas__overlay =
     [ "begin_content", "classcgv_1_1app_1_1canvas__overlay.html#afba3197f82b3c032604c24e1a39259ea", null ],
     [ "clear", "classcgv_1_1app_1_1canvas__overlay.html#a5e2434f8ff34547c6ddfc43384f964fb", null ],
     [ "clear_damage", "classcgv_1_1app_1_1canvas__overlay.html#a8aaafd3870515d0fcae920ddec38830e", null ],
-    [ "disable_blending", "classcgv_1_1app_1_1canvas__overlay.html#ab23a72d63a779e4a04eeb12661639b09", null ],
     [ "draw", "classcgv_1_1app_1_1canvas__overlay.html#a8936d1c1bf2f9b9f5058649b61bf70c0", null ],
     [ "draw_content", "classcgv_1_1app_1_1canvas__overlay.html#a3b066dfa1b0c36031ef9d1d219bca2ba", null ],
     [ "draw_impl", "classcgv_1_1app_1_1canvas__overlay.html#ab393635cee11a4982bbd5585aedc9eeb", null ],
-    [ "enable_blending", "classcgv_1_1app_1_1canvas__overlay.html#a92e3a387a6a9453a4a7de722825c7a74", null ],
     [ "end_content", "classcgv_1_1app_1_1canvas__overlay.html#a19cf5aa6ae999f7fea61758ecf32e76c", null ],
     [ "ensure_layout", "classcgv_1_1app_1_1canvas__overlay.html#a4ad23ecc836ac2ff7caaceb0998cbce5", null ],
     [ "finish_frame", "classcgv_1_1app_1_1canvas__overlay.html#aca45128c35f68cb9586d4ff775782c79", null ],
@@ -20,7 +18,6 @@ var classcgv_1_1app_1_1canvas__overlay =
     [ "post_damage", "classcgv_1_1app_1_1canvas__overlay.html#a5ec810bf41a71031580845697b4be9c2", null ],
     [ "post_recreate_layout", "classcgv_1_1app_1_1canvas__overlay.html#a261f2891347b8012544f9b9d4b2c5487", null ],
     [ "register_shader", "classcgv_1_1app_1_1canvas__overlay.html#ab56e46040627064cc33c49f0cf4df16f", null ],
-    [ "blend_overlay", "classcgv_1_1app_1_1canvas__overlay.html#ac5ce7df1d87225edcbdc6d51560f0b56", null ],
     [ "content_canvas", "classcgv_1_1app_1_1canvas__overlay.html#a2446b9c0f3c7741a1a7f1aad4bd7c174", null ],
     [ "overlay_canvas", "classcgv_1_1app_1_1canvas__overlay.html#a9d8bca886cff42f9dfc2610a966c9327", null ]
 ];

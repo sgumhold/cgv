@@ -18,7 +18,6 @@ var classcgv_1_1app_1_1performance__monitor =
     [ "init_styles", "classcgv_1_1app_1_1performance__monitor.html#a21b3ebacc8848dbdc08138beb3a4dc05", null ],
     [ "on_visibility_change", "classcgv_1_1app_1_1performance__monitor.html#a3a0ef000060c0134a336491b53730ded", null ],
     [ "set_invert_color", "classcgv_1_1app_1_1performance__monitor.html#a18352d635b62e9e5783f87946541f0e3", null ],
-    [ "set_show_background", "classcgv_1_1app_1_1performance__monitor.html#a2652bde2ce56a8efa278fe201001b2c5", null ],
     [ "update_plot", "classcgv_1_1app_1_1performance__monitor.html#af953789ef8fc8920538faa228cefcb43", null ],
     [ "update_stats_texts", "classcgv_1_1app_1_1performance__monitor.html#a40b957ed98215bdf67546e65635ba845", null ],
     [ "avg_fps", "classcgv_1_1app_1_1performance__monitor.html#a26aebc872677c2b7e348395c1aaac069", null ],
