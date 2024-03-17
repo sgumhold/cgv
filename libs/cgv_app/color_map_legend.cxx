@@ -73,6 +73,10 @@ void color_map_legend::handle_member_change(const cgv::utils::pointer_test& m) {
 		post_recreate_layout();
 	}
 
+	if(m.is(range)) {
+
+	}
+
 	if(m.is(show_opacity))
 		color_map_style.use_texture_alpha = show_opacity;
 }
@@ -137,6 +141,14 @@ void color_map_legend::draw_content(cgv::render::context& ctx) {
 		content_canvas.mul_modelview_matrix(ctx, cgv::math::rotate2h(angle));
 
 		// draw color scale texture
+		if(flip_texture) {
+			color_map_style.texcoord_offset.x() = 1.0f;
+			color_map_style.texcoord_scaling.x() = -1.0f;
+		} else {
+			color_map_style.texcoord_offset.x() = 0.0f;
+			color_map_style.texcoord_scaling.x() = 1.0f;
+		}
+
 		content_canvas.enable_shader(ctx, "rectangle");
 		content_canvas.set_style(ctx, color_map_style);
 		tex.enable(ctx, 0);
@@ -249,6 +261,10 @@ void color_map_legend::set_title(const std::string& t) {
 }
 
 void color_map_legend::set_range(vec2 r) {
+	flip_texture = r.y() > r.x();
+	if(flip_texture)
+		std::swap(r.x(), r.y());
+
 	range = r;
 	on_set(&range);
 }
