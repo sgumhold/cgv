@@ -72,6 +72,7 @@ protected:
 	} layout;
 
 	bool invert_color = false;
+	bool flip_texture = false;
 
 	cgv::render::texture tex;
 
