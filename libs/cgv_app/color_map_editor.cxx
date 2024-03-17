@@ -20,7 +20,6 @@ color_map_editor::color_map_editor() {
 
 	set_name("Color Scale Editor");
 	block_events = true;
-	blend_overlay = true;
 
 	resolution = (cgv::type::DummyEnum)256;
 	opacity_scale_exponent = 1.0f;
@@ -32,7 +31,6 @@ color_map_editor::color_map_editor() {
 	layout.padding = padding();
 	layout.total_height = supports_opacity ? 200 : 60;
 
-	set_stretch(SO_HORIZONTAL);
 	set_size(ivec2(600u, layout.total_height));
 	
 	mouse_is_on_overlay = false;

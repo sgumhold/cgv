@@ -11,12 +11,9 @@ color_selector::color_selector() {
 
 	set_name("Color Selector");
 	block_events = true;
-	blend_overlay = true;
 
 	layout.padding = padding();
 
-	set_alignment(AO_END, AO_END);
-	set_stretch(SO_NONE);
 	set_size(ivec2(layout.size));
 	
 	selector_handles.set_drag_callback(std::bind(&color_selector::handle_selector_drag, this));
@@ -90,7 +87,7 @@ bool color_selector::handle_event(cgv::gui::event& e) {
 	return false;
 }
 
-void color_selector::handle_member_change(const cgv::utils::pointer_test & m) {
+void color_selector::handle_member_change(const cgv::utils::pointer_test& m) {
 
 	if(m.is(rgb_color))
 		set_rgb_color(rgb_color);
