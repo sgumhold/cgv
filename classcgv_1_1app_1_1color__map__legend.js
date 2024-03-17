@@ -21,6 +21,7 @@ var classcgv_1_1app_1_1color__map__legend =
     [ "init_styles", "classcgv_1_1app_1_1color__map__legend.html#ad4980f36aa85905b4fd132a7af2d1e94", null ],
     [ "set_color_map", "classcgv_1_1app_1_1color__map__legend.html#a769fd233aaabbe78ec7379d0d9872bbf", null ],
     [ "set_height", "classcgv_1_1app_1_1color__map__legend.html#ab9829d583f8adce903701bd2a42cb978", null ],
+    [ "set_invert_color", "classcgv_1_1app_1_1color__map__legend.html#a27b207a4c9525b0cbd14c35d79c88cef", null ],
     [ "set_label_auto_precision", "classcgv_1_1app_1_1color__map__legend.html#a430395492c0355b97bb955e17d1fa303", null ],
     [ "set_label_integer_mode", "classcgv_1_1app_1_1color__map__legend.html#ac379b6b39e4956af7411e59cfc88457d", null ],
     [ "set_label_precision", "classcgv_1_1app_1_1color__map__legend.html#a85031357d5a4095b92a5556ec1a52fb2", null ],
