@@ -125,6 +125,8 @@ public:
 	vec2 get_range() const { return range; }
 	void set_range(vec2 r);
 
+	void set_invert_color(bool flag);
+
 	unsigned get_num_ticks() { return num_ticks; }
 	void set_num_ticks(unsigned n);
 

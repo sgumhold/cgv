@@ -103,7 +103,6 @@ public:
 	void draw_content(cgv::render::context& ctx) override;
 	void after_finish(cgv::render::context& ctx) override;
 
-	void set_show_background(bool flag);
 	void set_invert_color(bool flag);
 
 	void enable_monitoring(bool enabled);

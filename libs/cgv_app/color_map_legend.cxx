@@ -10,14 +10,11 @@ namespace app {
 color_map_legend::color_map_legend() {
 
 	set_name("Color Map Legend");
-	blend_overlay = true;
 
 	// TODO: Remove padding from layout and use get_content_rect() as a starting point instead.
 	layout.padding = padding();
 	layout.total_size = ivec2(300, 60);
 
-	set_alignment(AO_START, AO_END);
-	set_stretch(SO_NONE);
 	set_size(layout.total_size);
 
 	tick_renderer = cgv::g2d::generic_2d_renderer(cgv::g2d::shaders::rectangle);
@@ -46,7 +43,7 @@ void color_map_legend::clear(cgv::render::context& ctx) {
 	labels.destruct(ctx);
 }
 
-void color_map_legend::handle_member_change(const cgv::utils::pointer_test & m) {
+void color_map_legend::handle_member_change(const cgv::utils::pointer_test& m) {
 
 	if(m.member_of(layout.total_size)) {
 		// TODO: minimum width and height depend on other layout parameters
@@ -54,7 +51,7 @@ void color_map_legend::handle_member_change(const cgv::utils::pointer_test & m) 
 		set_size(layout.total_size);
 	}
 
-	if(m.one_of(background_visible, invert_color))
+	if(m.one_of(background_visible_, invert_color))
 		init_styles();
 
 	if(m.is(num_ticks))
@@ -176,7 +173,7 @@ void color_map_legend::create_gui_impl() {
 	add_member_control(this, "Width", layout.total_size[0], "value_slider", "min=40;max=500;step=1;ticks=true");
 	add_member_control(this, "Height", layout.total_size[1], "value_slider", "min=40;max=500;step=1;ticks=true");
 
-	add_member_control(this, "Background", background_visible, "check", "w=100", " ");
+	add_member_control(this, "Background", background_visible_, "check", "w=100", " ");
 	add_member_control(this, "Invert Color", invert_color, "check", "w=88");
 
 	add_member_control(this, "Orientation", layout.orientation, "dropdown", "enums='Horizontal,Vertical'");
@@ -256,6 +253,12 @@ void color_map_legend::set_range(vec2 r) {
 	on_set(&range);
 }
 
+void color_map_legend::set_invert_color(bool flag) {
+
+	invert_color = flag;
+	on_set(&invert_color);
+}
+
 void color_map_legend::set_num_ticks(unsigned n) {
 	num_ticks = n;
 	on_set(&num_ticks);
@@ -311,8 +314,7 @@ void color_map_legend::init_styles() {
 	color_map_style.use_blending = true;
 
 	// configure text style
-	text_style = cgv::g2d::text2d_style::preset_stylized(tick_color);
-	text_style.feather_origin = 0.25f;
+	text_style = cgv::g2d::text2d_style::preset_default(tick_color);
 	text_style.font_size = 12.0f;
 	
 	// configure style for tick marks
