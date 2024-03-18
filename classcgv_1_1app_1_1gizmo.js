@@ -45,7 +45,7 @@ var classcgv_1_1app_1_1gizmo =
     [ "position", "classcgv_1_1app_1_1gizmo.html#a0fff4988727481e7ff5f3b018b91192b", null ],
     [ "rectangle", "classcgv_1_1app_1_1gizmo.html#a775f6159d1872acbbeaf7ea2c0e86c50", null ],
     [ "rectangles", "classcgv_1_1app_1_1gizmo.html#ab034a7466bcbea58537487f6b9e0a7dc", null ],
-    [ "renderers", "classcgv_1_1app_1_1gizmo.html#a4d74c07525b96db901fb6725a26c7350", null ],
+    [ "renderers", "classcgv_1_1app_1_1gizmo.html#aa4e4eb24c4048eaab9aad5923a91c9b9", null ],
     [ "scale", "classcgv_1_1app_1_1gizmo.html#a1081ae9e5e12ec79f29368009e26d016", null ],
     [ "scale_coefficient", "classcgv_1_1app_1_1gizmo.html#ab3808cf73721ded8da68a500a604bcd6", null ],
     [ "sphere", "classcgv_1_1app_1_1gizmo.html#a94a3c7f5bca5f40b8dbfc917d9ea1b55", null ],

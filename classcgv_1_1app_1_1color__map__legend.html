@@ -875,28 +875,32 @@ bool&#160;</td><td class="memItemRight" valign="bottom"><b>flip_texture</b> = fa
 std::string&#160;</td><td class="memItemRight" valign="bottom"><b>title</b></td></tr>
 <tr class="separator:a4712443163a475176e792c2228b002a0"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a2f3052019a924dd2290ae402c8a4a28c"><td class="memItemLeft" align="right" valign="top"><a id="a2f3052019a924dd2290ae402c8a4a28c"></a>
-<a class="el" href="namespacecgv.html#a8044b02f248048405a9d97418f545a1a">vec2</a>&#160;</td><td class="memItemRight" valign="bottom"><b>range</b></td></tr>
+<a class="el" href="namespacecgv.html#a8044b02f248048405a9d97418f545a1a">vec2</a>&#160;</td><td class="memItemRight" valign="bottom"><b>range</b> = { 0.0f, 1.0f }</td></tr>
 <tr class="separator:a2f3052019a924dd2290ae402c8a4a28c"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a8db07f437d53190f3f7fe6cd7d535cf2"><td class="memItemLeft" align="right" valign="top"><a id="a8db07f437d53190f3f7fe6cd7d535cf2"></a>
-unsigned&#160;</td><td class="memItemRight" valign="bottom"><b>num_ticks</b></td></tr>
+unsigned&#160;</td><td class="memItemRight" valign="bottom"><b>num_ticks</b> = 3</td></tr>
 <tr class="separator:a8db07f437d53190f3f7fe6cd7d535cf2"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:ab16f546fba4c7ae6ab67a5c80cf27254"><td class="memItemLeft" align="right" valign="top"><a id="ab16f546fba4c7ae6ab67a5c80cf27254"></a>
-unsigned&#160;</td><td class="memItemRight" valign="bottom"><b>label_precision</b></td></tr>
-<tr class="separator:ab16f546fba4c7ae6ab67a5c80cf27254"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a1f9e464f62904b73acc3c1157de48d35"><td class="memItemLeft" align="right" valign="top"><a id="a1f9e464f62904b73acc3c1157de48d35"></a>
-bool&#160;</td><td class="memItemRight" valign="bottom"><b>label_auto_precision</b></td></tr>
-<tr class="separator:a1f9e464f62904b73acc3c1157de48d35"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a84f03169901326c31427e7bbdd1eb196"><td class="memItemLeft" align="right" valign="top"><a id="a84f03169901326c31427e7bbdd1eb196"></a>
-bool&#160;</td><td class="memItemRight" valign="bottom"><b>label_prune_trailing_zeros</b></td></tr>
-<tr class="separator:a84f03169901326c31427e7bbdd1eb196"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a0d26c9bb11f29304176e62b5a88660c2"><td class="memItemLeft" align="right" valign="top"><a id="a0d26c9bb11f29304176e62b5a88660c2"></a>
-bool&#160;</td><td class="memItemRight" valign="bottom"><b>label_integer_mode</b></td></tr>
-<tr class="separator:a0d26c9bb11f29304176e62b5a88660c2"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a9bbd3bcb35e589184d40b114dc8c6bbb"><td class="memItemLeft" align="right" valign="top"><a id="a9bbd3bcb35e589184d40b114dc8c6bbb"></a>
-AlignmentOption&#160;</td><td class="memItemRight" valign="bottom"><b>title_align</b></td></tr>
+AlignmentOption&#160;</td><td class="memItemRight" valign="bottom"><b>title_align</b> = AO_START</td></tr>
 <tr class="separator:a9bbd3bcb35e589184d40b114dc8c6bbb"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a7e6cb5cb7d298ecf89e032300600fc41"><td class="memItemLeft" ><a id="a7e6cb5cb7d298ecf89e032300600fc41"></a>
+struct {</td></tr>
+<tr class="memitem:ab05e208bb7bbd614940a42376950e249"><td class="memItemLeft" >
+&#160;&#160;&#160;unsigned&#160;&#160;&#160;<b>precision</b> = 0</td></tr>
+<tr class="separator:ab05e208bb7bbd614940a42376950e249"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ad9f49edc610f3f78c9cee6daa27b44ab"><td class="memItemLeft" >
+&#160;&#160;&#160;bool&#160;&#160;&#160;<b>auto_precision</b> = true</td></tr>
+<tr class="separator:ad9f49edc610f3f78c9cee6daa27b44ab"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:aefb79035dbe5228c1890a1e714bc3cee"><td class="memItemLeft" >
+&#160;&#160;&#160;bool&#160;&#160;&#160;<b>trailing_zeros</b> = false</td></tr>
+<tr class="separator:aefb79035dbe5228c1890a1e714bc3cee"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a92fa5ace58372e87f06a159aa303a268"><td class="memItemLeft" >
+&#160;&#160;&#160;bool&#160;&#160;&#160;<b>integers</b> = false</td></tr>
+<tr class="separator:a92fa5ace58372e87f06a159aa303a268"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a7e6cb5cb7d298ecf89e032300600fc41"><td class="memItemLeft" valign="top">}&#160;</td><td class="memItemRight" valign="bottom"><b>label_format</b></td></tr>
+<tr class="separator:a7e6cb5cb7d298ecf89e032300600fc41"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a986c314281abc6ec6bc27550896939ae"><td class="memItemLeft" align="right" valign="top"><a id="a986c314281abc6ec6bc27550896939ae"></a>
-bool&#160;</td><td class="memItemRight" valign="bottom"><b>show_opacity</b></td></tr>
+bool&#160;</td><td class="memItemRight" valign="bottom"><b>show_opacity</b> = true</td></tr>
 <tr class="separator:a986c314281abc6ec6bc27550896939ae"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a1b2dfad85ec390dce489e8467e350852"><td class="memItemLeft" align="right" valign="top"><a id="a1b2dfad85ec390dce489e8467e350852"></a>
 cgv::g2d::shape2d_style&#160;</td><td class="memItemRight" valign="bottom"><b>border_style</b></td></tr>

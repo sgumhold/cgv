@@ -26,7 +26,7 @@ var searchData=
   ['model_5fpath_7885',['model_path',['../classcgv_1_1render_1_1gl_1_1mesh__drawable.html#aef7141b88a9661b9682261f36c4077ed',1,'cgv::render::gl::mesh_drawable']]],
   ['modelview_5fmatrix_5fstack_7886',['modelview_matrix_stack',['../classcgv_1_1render_1_1context.html#a77c4c4d8db1cc97b1c52baf92d7f3021',1,'cgv::render::context']]],
   ['modifiers_7887',['modifiers',['../classcgv_1_1gui_1_1event.html#aa0c88b35dd8859e3d913f342b6db87a6',1,'cgv::gui::event']]],
-  ['monitor_7888',['monitor',['../classcgv_1_1app_1_1performance__monitor.html#a57a1991c12f61f8896ccbf51499ade28',1,'cgv::app::performance_monitor']]],
+  ['monitor_7888',['monitor',['../classcgv_1_1app_1_1performance__monitor.html#a5f208001ef64ce57a17c81050570d367',1,'cgv::app::performance_monitor']]],
   ['multi_5faxis_5fmodes_7889',['multi_axis_modes',['../classcgv_1_1plot_1_1plot2d.html#a8852b4161456d79afb08461c8419c672',1,'cgv::plot::plot2d']]],
   ['multi_5faxis_5fticks_7890',['multi_axis_ticks',['../classcgv_1_1plot_1_1axis__config.html#afa91333092727bf85e99a0430390effa',1,'cgv::plot::axis_config']]],
   ['multi_5fdepth_5fbuffer_5fid_7891',['multi_depth_buffer_id',['../classvr_1_1gl__vr__display.html#aa905bbf9f3790d68d7cf4b216f7177ca',1,'vr::gl_vr_display']]],
