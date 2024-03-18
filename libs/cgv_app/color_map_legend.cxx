@@ -330,8 +330,8 @@ void color_map_legend::create_labels() {
 		precision = 0;
 		const float delta = std::abs(range[1] - range[0]);
 
-		float limit = 1.0f;
-		unsigned max_precision = 7;
+		float limit = 2.0f;
+		unsigned max_precision = 8;
 		for(unsigned i = 1; i <= max_precision; ++i) {
 			if(delta > limit || i == max_precision) {
 				precision = i;
