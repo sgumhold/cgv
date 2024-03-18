@@ -329,15 +329,19 @@ void color_map_legend::create_labels() {
 	if(label_format.auto_precision) {
 		precision = 0;
 		const float delta = std::abs(range[1] - range[0]);
+		const unsigned max_precision = 7;
 
-		float limit = 2.0f;
-		unsigned max_precision = 8;
-		for(unsigned i = 1; i <= max_precision; ++i) {
-			if(delta > limit || i == max_precision) {
-				precision = i;
-				break;
+		if(delta > 5.0f) {
+			precision = 1;
+		} else {
+			float limit = 1.0f;
+			for(unsigned i = 2; i <= max_precision; ++i) {
+				if(delta > limit || i == max_precision) {
+					precision = i;
+					break;
+				}
+				limit /= 2.0f;
 			}
-			limit /= 2.0f;
 		}
 	}
 
