@@ -330,7 +330,7 @@ void color_map_legend::init_styles() {
 	color_map_style.use_blending = true;
 
 	// configure text style
-	text_style = cgv::g2d::text2d_style::preset_default(tick_color);
+	text_style.fill_color = tick_color;
 	text_style.font_size = 12.0f;
 	
 	// configure style for tick marks
