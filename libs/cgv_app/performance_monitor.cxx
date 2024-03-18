@@ -203,7 +203,7 @@ void performance_monitor::init_styles() {
 	bar_style.feather_width = 0.0f;
 
 	// configure text style
-	text_style = cgv::g2d::text2d_style::preset_default(border_color);
+	text_style.fill_color = border_color;
 	text_style.font_size = 12.0f;
 
 	label_style = text_style;

@@ -626,10 +626,10 @@ void color_map_editor::init_styles() {
 	polygon_style.use_texture_alpha = true;
 
 	// label style
-	cursor_label_style = cgv::g2d::text2d_style::preset_clear(rgb(0.0f));
+	cursor_label_style.fill_color = rgb(0.0f);
 	cursor_label_style.font_size = 16.0f;
 
-	value_label_style = cgv::g2d::text2d_style::preset_clear(theme.group());
+	value_label_style.fill_color = theme.group();
 	value_label_style.font_size = 12.0f;
 }
 

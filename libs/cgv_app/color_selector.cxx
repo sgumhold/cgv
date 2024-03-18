@@ -349,7 +349,7 @@ void color_selector::init_styles() {
 	hue_handle_style.position_is_center = false;
 	
 	// configure text style
-	text_style = cgv::g2d::text2d_style::preset_default(theme.text());
+	text_style.fill_color = theme.text();
 	text_style.font_size = 14.0f;
 }
 
