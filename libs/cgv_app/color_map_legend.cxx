@@ -18,16 +18,6 @@ color_map_legend::color_map_legend() {
 	set_size(layout.total_size);
 
 	tick_renderer = cgv::g2d::generic_2d_renderer(cgv::g2d::shaders::rectangle);
-
-	title = "";
-	range = vec2(0.0f, 1.0f);
-	num_ticks = 3;
-	label_precision = 0;
-	label_auto_precision = true;
-	label_prune_trailing_zeros = false;
-	label_integer_mode = false;
-	title_align = AO_START;
-	show_opacity = true;
 }
 
 void color_map_legend::clear(cgv::render::context& ctx) {
@@ -62,20 +52,8 @@ void color_map_legend::handle_member_change(const cgv::utils::pointer_test& m) {
 		post_recreate_layout();
 	}
 
-	if(m.one_of(layout.orientation,
-				layout.label_alignment,
-				range,
-				num_ticks,
-				label_precision,
-				label_auto_precision,
-				label_prune_trailing_zeros,
-				label_integer_mode)) {
+	if(m.one_of(layout.orientation, layout.label_alignment, range, num_ticks) || m.member_of(label_format))
 		post_recreate_layout();
-	}
-
-	if(m.is(range)) {
-
-	}
 
 	if(m.is(show_opacity))
 		color_map_style.use_texture_alpha = show_opacity;
@@ -187,16 +165,16 @@ void color_map_legend::create_gui_impl() {
 
 	add_member_control(this, "Background", background_visible_, "check", "w=100", " ");
 	add_member_control(this, "Invert Color", invert_color, "check", "w=88");
+	add_member_control(this, "Show Opacity", show_opacity, "check");
 
 	add_member_control(this, "Orientation", layout.orientation, "dropdown", "enums='Horizontal,Vertical'");
 	add_member_control(this, "Label Alignment", layout.label_alignment, "dropdown", "enums='-,Before,Inside,After'");
 
 	add_member_control(this, "Ticks", num_ticks, "value", "min=2;max=10;step=1");
-	add_member_control(this, "Number Precision", label_precision, "value", "w=28;min=0;max=10;step=1", " ");
-	add_member_control(this, "Auto", label_auto_precision, "check", "w=52", "");
-	add_member_control(this, "Prune 0s", label_prune_trailing_zeros, "check", "w=74", "");
-	add_member_control(this, "Int", label_integer_mode, "check", "w=40");
-	add_member_control(this, "Show Opacity", show_opacity, "check");
+	add_member_control(this, "Number Precision", label_format.precision, "value", "w=28;min=0;max=10;step=1", " ");
+	add_member_control(this, "Auto", label_format.auto_precision, "check", "w=52", "");
+	add_member_control(this, "Show 0s", label_format.trailing_zeros, "check", "w=74", "");
+	add_member_control(this, "Int", label_format.integers, "check", "w=40");
 }
 
 void color_map_legend::set_color_map(cgv::render::context& ctx, const cgv::render::color_map& cm) {
@@ -281,23 +259,23 @@ void color_map_legend::set_num_ticks(unsigned n) {
 }
 
 void color_map_legend::set_label_precision(unsigned p) {
-	label_precision = p;
-	on_set(&label_precision);
+	label_format.precision = p;
+	on_set(&label_format.precision);
 }
 
 void color_map_legend::set_label_auto_precision(bool f) {
-	label_auto_precision = f;
-	on_set(&label_auto_precision);
+	label_format.auto_precision = f;
+	on_set(&label_format.auto_precision);
 }
 
 void color_map_legend::set_label_prune_trailing_zeros(bool f) {
-	label_prune_trailing_zeros = f;
-	on_set(&label_prune_trailing_zeros);
+	label_format.trailing_zeros = !f;
+	on_set(&label_format.trailing_zeros);
 }
 
 void color_map_legend::set_label_integer_mode(bool enabled) {
-	label_integer_mode = enabled;
-	on_set(&label_integer_mode);
+	label_format.integers = enabled;
+	on_set(&label_format.integers);
 }
 
 void color_map_legend::set_show_opacity(bool enabled) {
@@ -346,22 +324,20 @@ void color_map_legend::create_labels() {
 	if(layout.label_alignment == AO_FREE)
 		return;
 
-	unsigned precision = label_precision;
-	if(label_auto_precision) {
-		float m = std::max(abs(range.x()), abs(range.y()));
-		if(m >= 10000.0f) {
-			precision = 0;
-		} else {
-			if(m >= 1000.0f)
-				precision = 4;
-			else if(m >= 100.0f)
-				precision = 3;
-			else if(m >= 10.0f)
-				precision = 2;
-			else if(m >= 1.0f)
-				precision = 1;
-			else
-				precision = 0;
+	unsigned precision = label_format.precision;
+	
+	if(label_format.auto_precision) {
+		precision = 0;
+		const float delta = std::abs(range[1] - range[0]);
+
+		float limit = 1.0f;
+		unsigned max_precision = 7;
+		for(unsigned i = 1; i <= max_precision; ++i) {
+			if(delta > limit || i == max_precision) {
+				precision = i;
+				break;
+			}
+			limit /= 2.0f;
 		}
 	}
 
@@ -374,18 +350,12 @@ void color_map_legend::create_labels() {
 
 		std::string str;
 
-		if(label_integer_mode)
+		if(label_format.integers)
 			str = std::to_string(static_cast<int>(round(val)));
 		else {
-			str = cgv::utils::to_string(
-				val, -1, precision, true/*fixed*///std::abs(val) >= 10 // prevent scientfic notation for two-digit and up numbers
-			);
-			if (label_prune_trailing_zeros) {
-				if (str.length() > 1) {
-					cgv::utils::rtrim(str, "0");
-					cgv::utils::rtrim(str, ".");
-				}
-			}
+			str = cgv::utils::to_string(val, -1, precision, true);
+			if(!label_format.trailing_zeros && str.length() > 1)
+				cgv::utils::rtrim(cgv::utils::rtrim(str, "0"), ".");
 		}
 
 		labels.add_text(str, ivec2(0), cgv::render::TextAlignment::TA_NONE);
@@ -492,6 +462,7 @@ void color_map_legend::create_ticks() {
 		label_pos[axis] += offset;
 
 		cgv::render::TextAlignment alignment = text_alignment;
+		
 		if(inside) {
 			if(i == 0) {
 				label_pos[axis] += 3;

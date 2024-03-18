@@ -77,14 +77,19 @@ protected:
 	cgv::render::texture tex;
 
 	std::string title;
-	vec2 range;
-	unsigned num_ticks;
-	unsigned label_precision;
-	bool label_auto_precision;
-	bool label_prune_trailing_zeros;
-	bool label_integer_mode;
-	AlignmentOption title_align;
-	bool show_opacity;
+	vec2 range = { 0.0f, 1.0f };
+	unsigned num_ticks = 3;
+
+	AlignmentOption title_align = AO_START;
+	
+	struct {
+		unsigned precision = 0;
+		bool auto_precision = true;
+		bool trailing_zeros = false;
+		bool integers = false;
+	} label_format;
+
+	bool show_opacity = true;
 
 	// general appearance
 	cgv::g2d::shape2d_style border_style, color_map_style, tick_style;
