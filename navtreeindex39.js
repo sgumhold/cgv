@@ -1,5 +1,6 @@
 var NAVTREEINDEX39 =
 {
+"namespacevr.html#ad59169a6f9cb1f775d895b5beef25f62":[10,0,5,48],
 "namespacevr.html#ad99996e738d108251465649bee84c178":[10,0,5,71],
 "namespacevr.html#ae021dc7d23b499cdaea8136834e21ec6":[10,0,5,55],
 "namespacevr.html#ae5690db873471f4275d4f2a842dbb7b8":[10,0,5,27],
@@ -248,6 +249,5 @@ var NAVTREEINDEX39 =
 "plugins_2vr__test_2config_8def_source.html":[12,0,4,1,0],
 "plugins_2vr__test_2intersection_8h.html#a28fef49758c013c7ae3c367ec9c1607c":[10,0,1,8,113],
 "plugins_2vr__test_2intersection_8h.html#a79ed6516c576a241462fe981d1d09853":[10,0,1,8,121],
-"plugins_2vr__test_2intersection_8h_source.html":[12,0,4,1,1],
-"point__operations_8h.html#a0cbde1707c4f8fd2327f11968be1e8c0":[10,0,1,7,551]
+"plugins_2vr__test_2intersection_8h_source.html":[12,0,4,1,1]
 };
