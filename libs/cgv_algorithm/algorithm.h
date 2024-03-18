@@ -14,7 +14,7 @@ namespace algorithm {
 int CGV_API export_dummy();
 
 template <class InputIt, class UnaryOperation>
-std::string transform_join(InputIt first, InputIt last, UnaryOperation operation, const std::string& separator = ",", bool trailing_separator = false) {
+std::string transform_join(const InputIt first, const InputIt last, UnaryOperation operation, const std::string& separator = ",", bool trailing_separator = false) {
     std::string res = "";
     if(last > first) {
         for(auto curr = first; curr != last; ++curr) {
