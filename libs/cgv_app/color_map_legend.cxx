@@ -53,13 +53,7 @@ void color_map_legend::handle_member_change(const cgv::utils::pointer_test& m) {
 	}
 
 	if(m.one_of(layout.orientation, layout.label_alignment, value_range, num_ticks) || m.member_of(label_format))
-		post_recreate_layout();
-
-	if(m.is(display_range))
-		post_damage();
-
-	if(m.is(show_opacity))
-		color_map_style.use_texture_alpha = show_opacity;
+		post_recreate_layout();	
 }
 
 bool color_map_legend::init(cgv::render::context& ctx) {
@@ -122,6 +116,8 @@ void color_map_legend::draw_content(cgv::render::context& ctx) {
 		content_canvas.mul_modelview_matrix(ctx, cgv::math::rotate2h(angle));
 
 		// draw color scale texture
+		color_map_style.use_texture_alpha = show_opacity;
+
 		color_map_style.texcoord_offset.x() = display_range[0];
 		color_map_style.texcoord_scaling.x() = display_range[1] - display_range[0];
 		
