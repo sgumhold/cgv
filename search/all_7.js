@@ -376,7 +376,7 @@ var searchData=
   ['get_5frow_5fptr_1529',['get_row_ptr',['../classcgv_1_1media_1_1volume_1_1volume.html#aae25aed7baaebe7125fd272976ef6bc5',1,'cgv::media::volume::volume::get_row_ptr(unsigned j, unsigned k)'],['../classcgv_1_1media_1_1volume_1_1volume.html#a175b2af0fc38b9659aa91ced91abe930',1,'cgv::media::volume::volume::get_row_ptr(unsigned j, unsigned k) const']]],
   ['get_5frow_5fsize_1530',['get_row_size',['../classcgv_1_1media_1_1volume_1_1volume.html#aa7f23125b19664fc23618230c4b867d4',1,'cgv::media::volume::volume']]],
   ['get_5fsamples_5fper_5frow_1531',['get_samples_per_row',['../classcgv_1_1plot_1_1plot3d.html#ad2d3b37e8a0b865564c173443773b1f7',1,'cgv::plot::plot3d']]],
-  ['get_5fscene_5fextent_1532',['get_scene_extent',['../classcgv_1_1render_1_1clipped__view.html#a27b5c8d9b14a0c280b80bf86b03162b7',1,'cgv::render::clipped_view']]],
+  ['get_5fscene_5fextent_1532',['get_scene_extent',['../classcgv_1_1render_1_1clipped__view.html#a5810765950b343a452a4fee0b2d57d15',1,'cgv::render::clipped_view']]],
   ['get_5fselected_5fchild_1533',['get_selected_child',['../classcgv_1_1gui_1_1gui__group.html#ae06cc22d3b6dc0c763d4899e880e246c',1,'cgv::gui::gui_group']]],
   ['get_5fselected_5fchild_5findex_1534',['get_selected_child_index',['../classcgv_1_1gui_1_1gui__group.html#acd6af11dc2be1edee202e9876163aaa5',1,'cgv::gui::gui_group']]],
   ['get_5fshader_5fconfig_1535',['get_shader_config',['../namespacecgv_1_1render.html#a5929e262d43bd2e095c4776547eebe5b',1,'cgv::render']]],
