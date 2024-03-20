@@ -50,7 +50,7 @@ bool visibility_sort::init(cgv::render::context& ctx, size_t count) {
 
 	is_initialized_ = false;
 
-	if(!load_shader_programs(ctx))
+	if(!load_shader_programs(ctx) || count == 0)
 		return false;
 
 	n = unsigned(count);
