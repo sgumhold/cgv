@@ -1,6 +1,5 @@
 var NAVTREEINDEX48 =
 {
-"structcgv_1_1render_1_1rectangle__render__style.html#ac226ae81566eff2f20a0761b96a82b96":[11,0,0,12,92,8],
 "structcgv_1_1render_1_1rectangle__render__style.html#add98db7f26fff39e0f49d39e1fad3130":[11,0,0,12,92,1],
 "structcgv_1_1render_1_1rectangle__render__style.html#afa2befea14b945bd268fb6766e206c05":[11,0,0,12,92,11],
 "structcgv_1_1render_1_1rectangle__render__style__reflect.html":[11,0,0,12,94],
@@ -249,5 +248,6 @@ var NAVTREEINDEX48 =
 "structcgv_1_1type_1_1func_1_1clean__traits.html#a067db3f0c941e2e5d521a372fb909190":[11,0,0,14,2,3,2],
 "structcgv_1_1type_1_1func_1_1clean__traits.html#aabe7f5a44977f44fea1ed57636392a48":[11,0,0,14,2,3,3],
 "structcgv_1_1type_1_1func_1_1clean__traits.html#ad446ab2cfadc5f5d6a64541f9f0cc026":[11,0,0,14,2,3,0],
-"structcgv_1_1type_1_1func_1_1clean__traits.html#ae5a87a1b3007bce08933de5096e6fcef":[11,0,0,14,2,3,1]
+"structcgv_1_1type_1_1func_1_1clean__traits.html#ae5a87a1b3007bce08933de5096e6fcef":[11,0,0,14,2,3,1],
+"structcgv_1_1type_1_1func_1_1drop__const.html":[11,0,0,14,2,4]
 };

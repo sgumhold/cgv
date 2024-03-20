@@ -1,11 +1,10 @@
 var classcgv_1_1render_1_1clipped__view =
 [
-    [ "dbox3", "classcgv_1_1render_1_1clipped__view.html#aaffcc4ed7c0ca2921ebe833e6a0cbffb", null ],
     [ "clipped_view", "classcgv_1_1render_1_1clipped__view.html#ad8a4f0d3ec134865bc7eda5c5d2fe324", null ],
     [ "compute_clipping_planes", "classcgv_1_1render_1_1clipped__view.html#a4be3c0b8ec31aac361dca7beb61471b3", null ],
     [ "compute_clipping_planes", "classcgv_1_1render_1_1clipped__view.html#a2bc15e8ec29d631db3e0d07d7b265660", null ],
     [ "compute_clipping_planes", "classcgv_1_1render_1_1clipped__view.html#acc62f6f7d8db6de34cf1a7041478f921", null ],
-    [ "get_scene_extent", "classcgv_1_1render_1_1clipped__view.html#a27b5c8d9b14a0c280b80bf86b03162b7", null ],
+    [ "get_scene_extent", "classcgv_1_1render_1_1clipped__view.html#a5810765950b343a452a4fee0b2d57d15", null ],
     [ "get_z_D", "classcgv_1_1render_1_1clipped__view.html#ab795efa5bd6776d687c214f6887b7101", null ],
     [ "get_z_far", "classcgv_1_1render_1_1clipped__view.html#a5bb3f106995950ef8d1273d5a83cad2d", null ],
     [ "get_z_near", "classcgv_1_1render_1_1clipped__view.html#ad2835433ab7d52df4e57412ea4a3656c", null ],

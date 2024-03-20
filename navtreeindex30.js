@@ -1,6 +1,5 @@
 var NAVTREEINDEX30 =
 {
-"dual__contouring_8h_source.html":[12,0,1,6,3,3],
 "dynamic__mesh_8cxx_source.html":[12,0,1,6,3,4],
 "dynamic__mesh_8h_source.html":[12,0,1,6,3,5],
 "dynamic__priority__queue_8h_source.html":[12,0,1,2,11],
@@ -249,5 +248,6 @@ var NAVTREEINDEX30 =
 "functions_vars_i.html":[11,3,2,9],
 "functions_vars_j.html":[11,3,2,10],
 "functions_vars_k.html":[11,3,2,11],
-"functions_vars_l.html":[11,3,2,12]
+"functions_vars_l.html":[11,3,2,12],
+"functions_vars_m.html":[11,3,2,13]
 };

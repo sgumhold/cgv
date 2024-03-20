@@ -1,6 +1,5 @@
 var NAVTREEINDEX27 =
 {
-"classvr_1_1gl__vr__display.html#a0b29f59ef8ae2fe8f06da6181d67c90d":[11,0,4,0,3],
 "classvr_1_1gl__vr__display.html#a116cc440c0988942eb93631fb5ddd5d1":[11,0,4,0,14],
 "classvr_1_1gl__vr__display.html#a1bfe89765155044646b4d2211b55cdb5":[11,0,4,0,0],
 "classvr_1_1gl__vr__display.html#a1fa8ae5f3830fec161035502b6835f87":[11,0,4,0,9],
@@ -249,5 +248,6 @@ var NAVTREEINDEX27 =
 "classvr__emulator.html#affd3f356bc58605baebc6196ffc0950d":[11,0,21,60],
 "classvr__test.html":[11,0,22],
 "classvr__test.html#a04db7c0277230536e102782649573ef9":[11,0,22,43],
-"classvr__test.html#a05d1cc29e4fa33f6e7fb3b0c1e6024ed":[11,0,22,1]
+"classvr__test.html#a05d1cc29e4fa33f6e7fb3b0c1e6024ed":[11,0,22,1],
+"classvr__test.html#a078b3bb24687a57ed4cd72dbf9261708":[11,0,22,13]
 };
