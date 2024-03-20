@@ -1,5 +1,8 @@
 var NAVTREEINDEX30 =
 {
+"dual__contouring_8h_source.html":[12,0,1,6,3,3],
+"dynamic__mesh_8cxx_source.html":[12,0,1,6,3,4],
+"dynamic__mesh_8h_source.html":[12,0,1,6,3,5],
 "dynamic__priority__queue_8h_source.html":[12,0,1,2,11],
 "eig_8h.html#a09b497541160068eeffdc86d1f43ef49":[10,0,1,7,161],
 "eig_8h.html#a2b67c87c4d85ae8008b5066d5ed359e4":[10,0,1,7,423],
@@ -233,8 +236,8 @@ var NAVTREEINDEX30 =
 "functions_type.html":[11,3,3],
 "functions_u.html":[11,3,0,21],
 "functions_v.html":[11,3,0,22],
-"functions_vars.html":[11,3,2,0],
 "functions_vars.html":[11,3,2],
+"functions_vars.html":[11,3,2,0],
 "functions_vars_a.html":[11,3,2,1],
 "functions_vars_b.html":[11,3,2,2],
 "functions_vars_c.html":[11,3,2,3],
@@ -246,8 +249,5 @@ var NAVTREEINDEX30 =
 "functions_vars_i.html":[11,3,2,9],
 "functions_vars_j.html":[11,3,2,10],
 "functions_vars_k.html":[11,3,2,11],
-"functions_vars_l.html":[11,3,2,12],
-"functions_vars_m.html":[11,3,2,13],
-"functions_vars_n.html":[11,3,2,14],
-"functions_vars_o.html":[11,3,2,15]
+"functions_vars_l.html":[11,3,2,12]
 };

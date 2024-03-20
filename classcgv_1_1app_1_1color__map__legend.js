@@ -12,6 +12,7 @@ var classcgv_1_1app_1_1color__map__legend =
     [ "create_ticks", "classcgv_1_1app_1_1color__map__legend.html#a317d892df6238a317846eedac59abff7", null ],
     [ "DEFINE_GENERIC_RENDER_DATA_CLASS", "classcgv_1_1app_1_1color__map__legend.html#ad4e824de04484fc2560146dc026935fa", null ],
     [ "draw_content", "classcgv_1_1app_1_1color__map__legend.html#a53a0512fe0afb631f3f13b8934b0d6e0", null ],
+    [ "get_display_range", "classcgv_1_1app_1_1color__map__legend.html#a217df41024a688c9967ff39f6ce50c37", null ],
     [ "get_num_ticks", "classcgv_1_1app_1_1color__map__legend.html#a6a7853a7fda008dbd08f1522152458b3", null ],
     [ "get_range", "classcgv_1_1app_1_1color__map__legend.html#aa12bbd45fa2ff75f8262a9d2ffa77edc", null ],
     [ "get_type_name", "classcgv_1_1app_1_1color__map__legend.html#aedba5e9b75972a9c66c3c76ac0bb9c13", null ],
@@ -20,6 +21,7 @@ var classcgv_1_1app_1_1color__map__legend =
     [ "init_frame", "classcgv_1_1app_1_1color__map__legend.html#a98c1936c4c0e7360d3a4fab27d5f3ffe", null ],
     [ "init_styles", "classcgv_1_1app_1_1color__map__legend.html#ad4980f36aa85905b4fd132a7af2d1e94", null ],
     [ "set_color_map", "classcgv_1_1app_1_1color__map__legend.html#a769fd233aaabbe78ec7379d0d9872bbf", null ],
+    [ "set_display_range", "classcgv_1_1app_1_1color__map__legend.html#aa5f9bc9657ead716bf3d803a603e2912", null ],
     [ "set_height", "classcgv_1_1app_1_1color__map__legend.html#ab9829d583f8adce903701bd2a42cb978", null ],
     [ "set_invert_color", "classcgv_1_1app_1_1color__map__legend.html#a27b207a4c9525b0cbd14c35d79c88cef", null ],
     [ "set_label_auto_precision", "classcgv_1_1app_1_1color__map__legend.html#a430395492c0355b97bb955e17d1fa303", null ],
@@ -35,6 +37,7 @@ var classcgv_1_1app_1_1color__map__legend =
     [ "background_style", "classcgv_1_1app_1_1color__map__legend.html#ade15cf135bc2b3f2df989b4b4e449b43", null ],
     [ "border_style", "classcgv_1_1app_1_1color__map__legend.html#a1b2dfad85ec390dce489e8467e350852", null ],
     [ "color_map_style", "classcgv_1_1app_1_1color__map__legend.html#a6f7c1562b641b4c044a0aac96e8b5423", null ],
+    [ "display_range", "classcgv_1_1app_1_1color__map__legend.html#aa82a0802cece7ba23e34464ddef24d4e", null ],
     [ "flip_texture", "classcgv_1_1app_1_1color__map__legend.html#ae8248c5511079c24aff8d06033b38fa5", null ],
     [ "integers", "classcgv_1_1app_1_1color__map__legend.html#ab145a2b31498c8b53c65d57dc2db8641", null ],
     [ "invert_color", "classcgv_1_1app_1_1color__map__legend.html#a55168e0a09e33d0a215c96bb50a80d28", null ],
@@ -43,7 +46,6 @@ var classcgv_1_1app_1_1color__map__legend =
     [ "layout", "classcgv_1_1app_1_1color__map__legend.html#a3e047f0807ff5eb495cda2ee3defa2dd", null ],
     [ "num_ticks", "classcgv_1_1app_1_1color__map__legend.html#a8db07f437d53190f3f7fe6cd7d535cf2", null ],
     [ "precision", "classcgv_1_1app_1_1color__map__legend.html#a1cafad57c8ea8451989a2bae87571bb5", null ],
-    [ "range", "classcgv_1_1app_1_1color__map__legend.html#a2f3052019a924dd2290ae402c8a4a28c", null ],
     [ "show_opacity", "classcgv_1_1app_1_1color__map__legend.html#a986c314281abc6ec6bc27550896939ae", null ],
     [ "tex", "classcgv_1_1app_1_1color__map__legend.html#ac8dc7a1a027b855a28be13ba82580b06", null ],
     [ "text_style", "classcgv_1_1app_1_1color__map__legend.html#a8f37a5dd2e60757fa9bd3adb75ff8852", null ],
@@ -52,5 +54,6 @@ var classcgv_1_1app_1_1color__map__legend =
     [ "ticks", "classcgv_1_1app_1_1color__map__legend.html#a4d12f70056ea80d31f48b3fd121a2eca", null ],
     [ "title", "classcgv_1_1app_1_1color__map__legend.html#a4712443163a475176e792c2228b002a0", null ],
     [ "title_align", "classcgv_1_1app_1_1color__map__legend.html#a9bbd3bcb35e589184d40b114dc8c6bbb", null ],
-    [ "trailing_zeros", "classcgv_1_1app_1_1color__map__legend.html#a42ed343fdec77d71c9374c6edf01029d", null ]
+    [ "trailing_zeros", "classcgv_1_1app_1_1color__map__legend.html#a42ed343fdec77d71c9374c6edf01029d", null ],
+    [ "value_range", "classcgv_1_1app_1_1color__map__legend.html#a154efb74cbdaba32887277d174961097", null ]
 ];
