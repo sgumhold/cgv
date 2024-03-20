@@ -77,7 +77,8 @@ protected:
 	cgv::render::texture tex;
 
 	std::string title;
-	vec2 range = { 0.0f, 1.0f };
+	vec2 value_range = { 0.0f, 1.0f };
+	vec2 display_range = { 0.0f, 1.0f };
 	unsigned num_ticks = 3;
 
 	AlignmentOption title_align = AO_START;
@@ -128,8 +129,11 @@ public:
 
 	void set_title(const std::string& t);
 
-	vec2 get_range() const { return range; }
+	vec2 get_range() const { return value_range; }
 	void set_range(vec2 r);
+
+	vec2 get_display_range() const { return display_range; }
+	void set_display_range(vec2 r);
 
 	void set_invert_color(bool flag);
 

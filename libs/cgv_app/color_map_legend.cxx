@@ -52,8 +52,11 @@ void color_map_legend::handle_member_change(const cgv::utils::pointer_test& m) {
 		post_recreate_layout();
 	}
 
-	if(m.one_of(layout.orientation, layout.label_alignment, range, num_ticks) || m.member_of(label_format))
+	if(m.one_of(layout.orientation, layout.label_alignment, value_range, num_ticks) || m.member_of(label_format))
 		post_recreate_layout();
+
+	if(m.is(display_range))
+		post_damage();
 
 	if(m.is(show_opacity))
 		color_map_style.use_texture_alpha = show_opacity;
@@ -119,13 +122,11 @@ void color_map_legend::draw_content(cgv::render::context& ctx) {
 		content_canvas.mul_modelview_matrix(ctx, cgv::math::rotate2h(angle));
 
 		// draw color scale texture
-		if(flip_texture) {
-			color_map_style.texcoord_offset.x() = 1.0f;
-			color_map_style.texcoord_scaling.x() = -1.0f;
-		} else {
-			color_map_style.texcoord_offset.x() = 0.0f;
-			color_map_style.texcoord_scaling.x() = 1.0f;
-		}
+		color_map_style.texcoord_offset.x() = display_range[0];
+		color_map_style.texcoord_scaling.x() = display_range[1] - display_range[0];
+		
+		if(flip_texture)
+			color_map_style.texcoord_scaling.x() *= -1.0f;
 
 		content_canvas.enable_shader(ctx, "rectangle");
 		content_canvas.set_style(ctx, color_map_style);
@@ -175,6 +176,8 @@ void color_map_legend::create_gui_impl() {
 	add_member_control(this, "Auto", label_format.auto_precision, "check", "w=52", "");
 	add_member_control(this, "Show 0s", label_format.trailing_zeros, "check", "w=74", "");
 	add_member_control(this, "Int", label_format.integers, "check", "w=40");
+
+	add_gui("", color_map_style);
 }
 
 void color_map_legend::set_color_map(cgv::render::context& ctx, const cgv::render::color_map& cm) {
@@ -243,12 +246,16 @@ void color_map_legend::set_range(vec2 r) {
 	if(flip_texture)
 		std::swap(r.x(), r.y());
 
-	range = r;
-	on_set(&range);
+	value_range = r;
+	on_set(&value_range);
+}
+
+void color_map_legend::set_display_range(vec2 r) {
+	display_range = r;
+	on_set(&display_range);
 }
 
 void color_map_legend::set_invert_color(bool flag) {
-
 	invert_color = flag;
 	on_set(&invert_color);
 }
@@ -328,7 +335,7 @@ void color_map_legend::create_labels() {
 	
 	if(label_format.auto_precision) {
 		precision = 0;
-		const float delta = std::abs(range[1] - range[0]);
+		const float delta = std::abs(value_range[1] - value_range[0]);
 		const unsigned max_precision = 7;
 
 		if(delta > 5.0f) {
@@ -350,7 +357,7 @@ void color_map_legend::create_labels() {
 	for(size_t i = 0; i < num_ticks; ++i) {
 		float fi = static_cast<float>(i);
 		float t = fi / static_cast<float>(num_ticks - 1);
-		float val = cgv::math::lerp(range.x(), range.y(), t);
+		float val = cgv::math::lerp(value_range.x(), value_range.y(), t);
 
 		std::string str;
 
