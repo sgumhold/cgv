@@ -250,7 +250,7 @@ bool gradient_viewer::init(cgv::render::context& ctx)
 		abort();
 
 	// add an opacity channel to the transfer function
-	unsigned w = image_data.get_format()->get_width();
+	unsigned w = (unsigned)image_data.get_format()->get_width();
 	unsigned char* src_ptr = image_data.get_ptr<unsigned char>();
 
 	std::vector<unsigned char> tf_data(4*w, 0u);
