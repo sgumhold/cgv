@@ -3,14 +3,14 @@ projectType="application_plugin";
 projectName="examples";
 projectGUID="4f8c8790-fab4-11dd-87af-0800200c9a66";
 addProjectDirs=[CGV_DIR."/libs", CGV_DIR."/plugins", CGV_DIR."/3rd"];
-addIncDirs=[CGV_DIR."/libs", CGV_DIR."/libs/delaunay"];
+addIncDirs=[CGV_DIR."/libs", CGV_DIR."/libs/delaunay", CGV_DIR."/3rd/maptiles/3rd/glm"];
 addProjectDeps=[
 		"cgv_utils", "cgv_type", "cgv_reflect", "cgv_data", "cgv_signal", "cgv_base", "cgv_media", 
 		"cgv_gui", "cgv_render","cgv_os", "fltk", "delaunay","cgv_gl", "cgv_proc", "plot", "glew", 
 		"cgv_viewer",
 		"cg_fltk", "cg_ext", "crg_stereo_view", "crg_antialias", "crg_depth_of_field", "holo_disp",
 		"crg_light", "crg_bg", "cg_meta", "cmi_io","cmv_avi", "crg_grid", "co_web", "cg_gamepad",
-		"cmf_tt_gl_font", "cgv_g2d", "cgv_gpgpu", "cgv_app", "cgv_post"
+		"cmf_tt_gl_font", "cgv_g2d", "cgv_gpgpu", "cgv_app", "cgv_post", "maptiles"
 	];
 if (cgv_options::BUILD_WITH_AUDIO) {
 	addProjectDeps=addProjectDeps.["cgv_oal", "cg_audio"];
