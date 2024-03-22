@@ -8,6 +8,7 @@
 #include "fltk_tree_group.h"
 #include "fltk_dockable_group.h"
 #include "fltk_layout_group.h"
+#include "fltk_scroll_group.h"
 #include "fltk_driver_registry.h"
 #include "fltk_text_editor.h"
 
@@ -591,6 +592,8 @@ gui_group_ptr fltk_driver::add_group(gui_group_ptr parent, const std::string& la
 		gg = gui_group_ptr(new fltk_layout_group(x, y, w, h, label));
 	else if (group_type == "tree_group")
 		gg = gui_group_ptr(new fltk_tree_group(x, y, w, h, label));
+	else if(group_type == "scroll_group")
+		gg = gui_group_ptr(new fltk_scroll_group(x, y, w, h, label));
 	// add further group types here
 
 	if (!gg.empty()) {
