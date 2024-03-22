@@ -1,6 +1,6 @@
 #include "OSMDataProcessor.h"
 
-#include <tinyxml2.h>
+#include <tinyxml2/tinyxml2.h>
 #include <mapbox/earcut.hpp>
 
 #include <algorithm>

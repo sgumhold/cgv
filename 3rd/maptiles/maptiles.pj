@@ -2,29 +2,19 @@
 projectType="library";
 projectName="maptiles";
 projectGUID="33995ABC-37FF-9B1A-2C03-A6936CB7BD69";
+addProjectDirs=[CGV_DIR."/3rd"];
 excludeSourceDirs=[
 	INPUT_DIR."/3rd/cpp-httplib/example", INPUT_DIR."/3rd/cpp-httplib/test",
 	INPUT_DIR."/3rd/earcut/test", INPUT_DIR."/3rd/glm/doc",
 	INPUT_DIR."/3rd/glm/test", INPUT_DIR."/3rd/glm/util",
-	INPUT_DIR."/3rd/tinyxml2/docs", INPUT_DIR."/3rd/tinyxml2/resources",
-	INPUT_DIR."/3rd/tinyxml2/contrib"
+	INPUT_DIR."/3rd/tinyxml2"
 ];
-excludeSourceFiles=[
-	INPUT_DIR."/3rd/tinyxml2/xmltest.cpp", INPUT_DIR."/3rd/tinyxml2/TinyXML2_small.png",
-	INPUT_DIR."/3rd/tinyxml2/meson_options.txt", INPUT_DIR."/3rd/cpp-httplib/meson_options.txt",
-	INPUT_DIR."/3rd/WGS84toCartesian/thirdparty/proj-4.3/src/hypot.c",
-	INPUT_DIR."/3rd/WGS84toCartesian/thirdparty/proj-4.3/src/strtod.c",
-	INPUT_DIR."/3rd/WGS84toCartesian/thirdparty/proj-4.3/src/geod.c",
-	INPUT_DIR."/3rd/WGS84toCartesian/thirdparty/proj-4.3/src/proj.c",
-	INPUT_DIR."/3rd/WGS84toCartesian/thirdparty/proj-4.3/src/nad2bin.c",
-	INPUT_DIR."/3rd/WGS84toCartesian/thirdparty/proj-4.3/src/nad2nad.c"
-];
+excludeSourceFiles=[INPUT_DIR."/3rd/cpp-httplib/meson_options.txt"];
 addIncDirs=[
-	INPUT_DIR, INPUT_DIR."/include", INPUT_DIR."/render/include",
-	INPUT_DIR."/3rd/cpp-httplib", INPUT_DIR."/3rd/earcut/include",
+	INPUT_DIR, INPUT_DIR."/3rd/cpp-httplib", INPUT_DIR."/3rd/earcut/include",
 	INPUT_DIR."/3rd/glm", INPUT_DIR."/3rd/stb_image",
-	INPUT_DIR."/3rd/tinyxml2", INPUT_DIR."/3rd/WGS84toCartesian",
-	INPUT_DIR."/3rd/WGS84toCartesian/thirdparty/proj-4.3/src"
+	INPUT_DIR."/3rd/WGS84toCartesian"
 ];
+addProjectDeps=["xml", "zlib"];
 addSharedDefines=["MAPTILES_BUILDING"];
 addStaticDefines=["MAPTILES_STATIC"];
