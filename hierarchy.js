@@ -271,6 +271,7 @@ var hierarchy =
               ] ]
             ] ],
             [ "cgv::gui::button", "classcgv_1_1gui_1_1button.html", null ],
+            [ "cgv::gui::help_menu_entry", "classcgv_1_1gui_1_1help__menu__entry.html", null ],
             [ "cgv::render::callback_drawable", "structcgv_1_1render_1_1callback__drawable.html", null ],
             [ "vr_emulator", "classvr__emulator.html", null ],
             [ "vr_test", "classvr__test.html", null ]
@@ -400,6 +401,7 @@ var hierarchy =
       [ "cgv::gui::volume_render_style_gui_creator", "structcgv_1_1gui_1_1volume__render__style__gui__creator.html", null ]
     ] ],
     [ "cgv::gui::gui_creator_registration< T >", "classcgv_1_1gui_1_1gui__creator__registration.html", null ],
+    [ "cgv::gui::help_menu_entry_registration< T >", "structcgv_1_1gui_1_1help__menu__entry__registration.html", null ],
     [ "cgv::gui::help_message", "classcgv_1_1gui_1_1help__message.html", null ],
     [ "cgv::gui::layout_dir_spacing", "structcgv_1_1gui_1_1layout__dir__spacing.html", null ],
     [ "cgv::gui::layout_spacings", "structcgv_1_1gui_1_1layout__spacings.html", null ],

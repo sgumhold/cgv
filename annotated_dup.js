@@ -176,6 +176,8 @@ var annotated_dup =
         [ "gui_creator_registration", "classcgv_1_1gui_1_1gui__creator__registration.html", "classcgv_1_1gui_1_1gui__creator__registration" ],
         [ "gui_driver", "classcgv_1_1gui_1_1gui__driver.html", "classcgv_1_1gui_1_1gui__driver" ],
         [ "gui_group", "classcgv_1_1gui_1_1gui__group.html", "classcgv_1_1gui_1_1gui__group" ],
+        [ "help_menu_entry", "classcgv_1_1gui_1_1help__menu__entry.html", "classcgv_1_1gui_1_1help__menu__entry" ],
+        [ "help_menu_entry_registration", "structcgv_1_1gui_1_1help__menu__entry__registration.html", "structcgv_1_1gui_1_1help__menu__entry__registration" ],
         [ "help_message", "classcgv_1_1gui_1_1help__message.html", "classcgv_1_1gui_1_1help__message" ],
         [ "key_control", "classcgv_1_1gui_1_1key__control.html", "classcgv_1_1gui_1_1key__control" ],
         [ "key_control< bool >", "classcgv_1_1gui_1_1key__control_3_01bool_01_4.html", "classcgv_1_1gui_1_1key__control_3_01bool_01_4" ],
