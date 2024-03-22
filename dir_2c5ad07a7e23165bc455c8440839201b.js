@@ -31,6 +31,8 @@ var dir_2c5ad07a7e23165bc455c8440839201b =
     [ "gui_driver.h", "gui__driver_8h_source.html", null ],
     [ "gui_group.cxx", "gui__group_8cxx_source.html", null ],
     [ "gui_group.h", "gui__group_8h_source.html", null ],
+    [ "help_menu_entry.cxx", "help__menu__entry_8cxx_source.html", null ],
+    [ "help_menu_entry.h", "help__menu__entry_8h_source.html", null ],
     [ "help_message.h", "help__message_8h_source.html", null ],
     [ "key_control.cxx", "key__control_8cxx_source.html", null ],
     [ "key_control.h", "key__control_8h_source.html", null ],
