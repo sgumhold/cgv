@@ -25,6 +25,8 @@ set(EARCUT_BUILD_BENCH OFF CACHE BOOL "" FORCE)
 mark_as_advanced(FORCE EARCUT_BUILD_BENCH)
 set(EARCUT_BUILD_VIZ OFF CACHE BOOL "" FORCE)
 mark_as_advanced(FORCE EARCUT_BUILD_VIZ)
+set(EARCUT_WARNING_IS_ERROR OFF CACHE BOOL "" FORCE)
+mark_as_advanced(FORCE EARCUT_WARNING_IS_ERROR)
 add_subdirectory(earcut)
 # - glm
 add_subdirectory(glm)
