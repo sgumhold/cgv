@@ -1,3 +1,9 @@
+
+#ifndef _WIN32
+	#include <unistd.h>
+	#define Sleep sleep
+#endif
+
 #include "OSMDataLoader.h"
 
 OSMDataLoader::OSMDataLoader(double latMin, double lonMin, double latMax, double lonMax)

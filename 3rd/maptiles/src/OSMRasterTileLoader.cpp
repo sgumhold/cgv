@@ -1,5 +1,10 @@
-#include "OSMRasterTileLoader.h"
 
+#ifndef _WIN32
+	#include <unistd.h>
+	#define Sleep sleep
+#endif
+
+#include "OSMRasterTileLoader.h"
 #include "utils.h"
 
 OSMRasterTileLoader::OSMRasterTileLoader(int zoom, double lat, double lon)
