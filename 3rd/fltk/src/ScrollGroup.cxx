@@ -257,33 +257,33 @@ void ScrollGroup::layout() {
     }
 
     // Turn on/off the scrollbars if it fits:
-    if ((type() & VERTICAL) &&
-	((type() & ALWAYS_ON) || t < rectangle.y() || b > rectangle.b())) {
-      // turn on the vertical scrollbar
-      if (!scrollbar.visible()) {
-	scrollbar.set_visible();
-	scrollbar.redraw();
-      }
-    } else {
-      // turn off the vertical scrollbar
-      if (scrollbar.visible()) {
-	scrollbar.clear_visible();
-      }
-    }
+	if((type() & VERTICAL) &&
+	   ((type() & ALWAYS_ON) || t < rectangle.y() || b > rectangle.b())) {
+		// turn on the vertical scrollbar
+		if(!scrollbar.visible()) {
+			scrollbar.set_visible();
+			scrollbar.redraw();
+		}
+	} else {
+		// turn off the vertical scrollbar
+		if(scrollbar.visible()) {
+			scrollbar.clear_visible();
+		}
+	}
 
-    if ((type() & HORIZONTAL) &&
-	((type() & ALWAYS_ON) || l < rectangle.x() || r > rectangle.r())) {
-      // turn on the horizontal scrollbar
-      if (!hscrollbar.visible()) {
-	hscrollbar.set_visible();
-	hscrollbar.redraw();
-      }
-    } else {
-      // turn off the horizontal scrollbar
-      if (hscrollbar.visible()) {
-	hscrollbar.clear_visible();
-      }
-    }
+	if((type() & HORIZONTAL) &&
+	   ((type() & ALWAYS_ON) || l < rectangle.x() || r > rectangle.r())) {
+		// turn on the horizontal scrollbar
+		if(!hscrollbar.visible()) {
+			hscrollbar.set_visible();
+			hscrollbar.redraw();
+		}
+	} else {
+		// turn off the horizontal scrollbar
+		if(hscrollbar.visible()) {
+			hscrollbar.clear_visible();
+		}
+	}
 
     // fix the width of the scrollbars to current preferences:
     const int sw = scrollbar_width();
