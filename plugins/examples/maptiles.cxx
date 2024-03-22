@@ -22,7 +22,7 @@
 #include <cgv_app/application_plugin.h>
 
 // Maptiles library
-#include <3rd/maptiles/include/TileManagerData.h>
+#include <3rd/maptiles/TileManagerData.h>
 
 
 
@@ -73,7 +73,7 @@ public:
 
 	virtual bool handle_event (cgv::gui::event &e) override
 	{
-		return true;
+		return false;
 	}
 
 	virtual void draw(cgv::render::context &ctx) override

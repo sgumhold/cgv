@@ -1,4 +1,4 @@
-cmake_minimum_required(VERSION 3.2)
+cmake_minimum_required(VERSION 3.23)
 project(earcut_hpp LANGUAGES CXX C)
 
 option(EARCUT_BUILD_TESTS "Build the earcut test program" ON)
@@ -54,32 +54,32 @@ target_compile_options(libtess2 PRIVATE
     $<$<NOT:$<CXX_COMPILER_ID:MSVC>>:-w>
 )
 
-add_library(common INTERFACE)
-target_link_libraries(common INTERFACE libtess2 comparison)
+add_library(ec_common INTERFACE)
+target_link_libraries(ec_common INTERFACE libtess2 comparison)
 
 # optional: -march=native (builds with the optimizations available on the build machine (only for local use!))
-target_compile_options(common INTERFACE
+target_compile_options(ec_common INTERFACE
     $<$<NOT:$<CXX_COMPILER_ID:MSVC>>:-pipe -Wall -Wextra -Wconversion -Wpedantic>
 )
 
 if ("${CMAKE_CXX_COMPILER_ID}" MATCHES "Clang$" OR CMAKE_COMPILER_IS_GNUCXX)
     if ("${CMAKE_CXX_FLAGS}" MATCHES "--coverage")
         # We disable debug code for the coverage so it won't see assertion and other things only enabled for debugging
-        target_compile_definitions(common INTERFACE NDEBUG)
+        target_compile_definitions(ec_common INTERFACE NDEBUG)
     else()
         # Here we enable the undefined behavior sanitizer for the tests, benchmarks and the viz
         include(CheckCXXCompilerFlag)
         check_cxx_compiler_flag("-fsanitize=undefined" HAVE_FLAG_SANITIZE_UNDEFINED)
         if(HAVE_FLAG_SANITIZE_UNDEFINED)
-            target_compile_options(common INTERFACE $<$<CONFIG:Debug>:-fsanitize=undefined>)
+            target_compile_options(ec_common INTERFACE $<$<CONFIG:Debug>:-fsanitize=undefined>)
             # TODO: Replace with target link option once we support CMake 3.13 
-            target_link_libraries(common INTERFACE $<$<CONFIG:Debug>:-fsanitize=undefined>)
+            target_link_libraries(ec_common INTERFACE $<$<CONFIG:Debug>:-fsanitize=undefined>)
         endif()
     endif()
 endif()
 
 if (EARCUT_WARNING_IS_ERROR)
-    target_compile_options(common INTERFACE
+    target_compile_options(ec_common INTERFACE
         $<$<CXX_COMPILER_ID:MSVC>:/WX>
         $<$<NOT:$<CXX_COMPILER_ID:MSVC>>:-Werror>
     )
@@ -88,12 +88,12 @@ endif()
 if (EARCUT_BUILD_TESTS)
     enable_testing()
     add_executable(tests test/tap.cpp test/tap.hpp test/test.cpp $<TARGET_OBJECTS:fixtures>)
-    target_link_libraries(tests PRIVATE earcut_hpp common)
+    target_link_libraries(tests PRIVATE earcut_hpp ec_common)
     add_test(NAME earcut_tests COMMAND tests)
 endif()
 if (EARCUT_BUILD_BENCH)
     add_executable(bench test/bench.cpp $<TARGET_OBJECTS:fixtures>)
-    target_link_libraries(bench PRIVATE earcut_hpp common)
+    target_link_libraries(bench PRIVATE earcut_hpp ec_common)
 endif()
 if (EARCUT_BUILD_VIZ)
     add_executable(viz test/viz.cpp $<TARGET_OBJECTS:fixtures>)
@@ -127,7 +127,7 @@ if (EARCUT_BUILD_VIZ)
     target_compile_definitions(viz PRIVATE GL_SILENCE_DEPRECATION)
     
     # TODO: Using old variables for OpenGL package since they were added in CMake 3.8
-    target_link_libraries(viz PRIVATE earcut_hpp common glfw ${OPENGL_LIBRARIES})
+    target_link_libraries(viz PRIVATE earcut_hpp ec_common glfw ${OPENGL_LIBRARIES})
     target_include_directories(viz PRIVATE ${OPENGL_INCLUDE_DIR})
 endif()
 

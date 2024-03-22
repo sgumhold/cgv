@@ -81,6 +81,10 @@ set_target_properties(zlib_static PROPERTIES
 	C_STANDARD "90"
 )
 
+# maptiles lib will need some preparation
+add_library(ZLIB::ZLIB ALIAS zlib)
+add_subdirectory(maptiles)
+
 if(CGV_BUILD_WITH_AUDIO)
 	add_subdirectory(openal-soft)
 	add_subdirectory(sndfile)

@@ -28,7 +28,7 @@ cgv_add_target(examples
 	DEPENDENCIES
 		cgv_viewer delaunay plot cg_gamepad holo_disp cgv_proc cgv_gl cgv_os cgv_signal cgv_g2d cgv_gpgpu cgv_app cgv_post
 		cg_ext cg_fltk cg_icons cg_meta cmi_io cgv_proc cmf_tt_gl_font crg_antialias crg_depth_of_field
-		crg_grid crg_light crg_holo_view ${AUDIO_DEPENDENCIES} ${WINDOWS_DEPENDENCIES}
+		crg_grid crg_light crg_holo_view maptiles ${AUDIO_DEPENDENCIES} ${WINDOWS_DEPENDENCIES}
 
 	# we are not using symbols from other plugins directly anywhere in the examples code, but if we did, we could specify them
 	# here so the linker would know to look for these symbols in the import libs / shared objects of the listed plugins
