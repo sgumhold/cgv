@@ -33,9 +33,5 @@ add_subdirectory(glm)
 install(TARGETS glm EXPORT cgv_3rd DESTINATION ${CGV_BIN_DEST})
 # - stb_image
 #<nothing to be done, since this doesn't provide a CMakeLists.txt, will be directly inserted into the maptiles build instead>
-# - tinyxml2
-#set(tinyxml2_BUILD_TESTING OFF CACHE BOOL "" FORCE)
-#mark_as_advanced(FORCE tinyxml2_BUILD_TESTING)
-#add_subdirectory(tinyxml2)
 # - WGS84toCartesian
 #<nothing to be done, since this doesn't provide a CMakeLists.txt, will be directly inserted into the maptiles build instead>
