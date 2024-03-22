@@ -18,10 +18,11 @@ protected:
 	int x_padding, y_padding;
 	int x_offset, y_offset;
 	int x_spacing, y_spacing;
-	int tab_size;
+	//int tab_size;
 	int current_x;
 	int current_y;
-	int current_line_height;
+	//int current_line_height;
+	//int width_shrink;
 
 	int default_width;
 	int default_height;
@@ -29,7 +30,7 @@ protected:
 //	fltk::Group* inner_group;
 //	fltk_dragger* dragger;
 
-	void parse_variable_change(const std::string& align, unsigned int& i, int& var, int default_value);
+	//void parse_variable_change(const std::string& align, unsigned int& i, int& var, int default_value);
 
 public:
 	/// construct from width, height and name
@@ -49,7 +50,7 @@ public:
 	/// initialize the members used for alignment
 	void init_aligment();
 	/// process alignment information
-	void align(const std::string& align);
+	//void align(const std::string& align);
 	/// put default sizes into dimension fields and set inner_group to be active
 	void prepare_new_element(cgv::gui::gui_group_ptr ggp, int& x, int& y, int& w, int& h);
 	/// align last element and add element to group
@@ -64,7 +65,8 @@ public:
 	void register_object(cgv::base::base_ptr object, const std::string& options);
 	/// unregister an object
 	void unregister_object(cgv::base::base_ptr object, const std::string& options);
-
+	///
+	void layout();
 
 	/**@name selection of children */
 	//@{
