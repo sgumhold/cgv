@@ -64,7 +64,7 @@ public:
 /// @param [in] name the name string of the query attribute.
 /// @param [out] value of the query attribute.
 /// @return the tinyxml2::XMLError state indicating success or failure of the query.
-tinyxml2::XMLError QueryStringAttribute(const tinyxml2::XMLElement& elem, const std::string& name, std::string& value) {
+static tinyxml2::XMLError QueryStringAttribute(const tinyxml2::XMLElement& elem, const std::string& name, std::string& value) {
 
 	const char* c = "";
 	tinyxml2::XMLError result = elem.QueryStringAttribute(name.c_str(), &c);
@@ -84,7 +84,7 @@ tinyxml2::XMLError QueryStringAttribute(const tinyxml2::XMLElement& elem, const 
 /// @param [in] name the name string of the query attribute.
 /// @param [out] value of the query attribute.
 /// @return the tinyxml2::XMLError state indicating success or failure of the query.
-tinyxml2::XMLError QueryBoolAttribute(const tinyxml2::XMLElement& elem, const std::string& name, bool& value) {
+static tinyxml2::XMLError QueryBoolAttribute(const tinyxml2::XMLElement& elem, const std::string& name, bool& value) {
 
 	std::string str = "";
 	tinyxml2::XMLError result = QueryStringAttribute(elem, name, str);
@@ -124,7 +124,7 @@ tinyxml2::XMLError QueryBoolAttribute(const tinyxml2::XMLElement& elem, const st
 /// @param [out] value of the query attribute.
 /// @return the tinyxml2::XMLError state indicating success or failure of the query.
 template <typename T, cgv::type::uint32_type N>
-tinyxml2::XMLError QueryVecAttribute(const tinyxml2::XMLElement& elem, const std::string& name, cgv::math::fvec<T, N>& value) {
+static tinyxml2::XMLError QueryVecAttribute(const tinyxml2::XMLElement& elem, const std::string& name, cgv::math::fvec<T, N>& value) {
 
 	std::string str = "";
 	tinyxml2::XMLError result = QueryStringAttribute(elem, name, str);
@@ -147,7 +147,7 @@ tinyxml2::XMLError QueryVecAttribute(const tinyxml2::XMLElement& elem, const std
 /// @param [in] name the name string of the query attribute.
 /// @param [out] value of the query attribute.
 /// @return the tinyxml2::XMLError state indicating success or failure of the query.
-tinyxml2::XMLError QueryRGBAttribute(const tinyxml2::XMLElement& elem, const std::string& name, cgv::media::color<float, cgv::media::RGB>& value) {
+static tinyxml2::XMLError QueryRGBAttribute(const tinyxml2::XMLElement& elem, const std::string& name, cgv::media::color<float, cgv::media::RGB>& value) {
 	
 	cgv::math::fvec<float, 3u> vec(0.0f);
 	tinyxml2::XMLError result = QueryVecAttribute(elem, name, vec);
