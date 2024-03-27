@@ -1239,10 +1239,10 @@ var namespacecgv =
       [ "PushAttribute", "print_8h.html#a95c822ca62ffcc666f46f6384a4719c2", null ],
       [ "PushAttribute", "print_8h.html#ac130c316277ac3b606fefe46414a8783", null ],
       [ "PushAttribute", "print_8h.html#a3251eef610d71b7e5ad732c2fa6b2453", null ],
-      [ "QueryBoolAttribute", "query_8h.html#abe49fea642853f0018184b902f923a30", null ],
-      [ "QueryRGBAttribute", "query_8h.html#a00aa3faed1d421e48e280c419558c862", null ],
-      [ "QueryStringAttribute", "query_8h.html#a2c6fc6ff000dafe74a4c7b2e18af29be", null ],
-      [ "QueryVecAttribute", "query_8h.html#a1da3000acda4972ce0c11796161c5561", null ]
+      [ "QueryBoolAttribute", "query_8h.html#af6b1752f02848744616106a7e9f75175", null ],
+      [ "QueryRGBAttribute", "query_8h.html#a2a82fccc637c8240dffd83340840443c", null ],
+      [ "QueryStringAttribute", "query_8h.html#a4f676226c413dafaa4a0dadb03f3416b", null ],
+      [ "QueryVecAttribute", "query_8h.html#a60047074f62e7b8bad412f62a2045e54", null ]
     ] ],
     [ "box2", "namespacecgv.html#a8d19e8e90d519a1eda5aeab08ef9aa94", null ],
     [ "box3", "namespacecgv.html#a1cf52fa077640959da4eb3b2728b4e47", null ],
