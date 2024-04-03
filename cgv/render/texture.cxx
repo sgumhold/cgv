@@ -741,7 +741,6 @@ bool texture::replace_from_image(cgv::data::data_format& df, cgv::data::data_vie
 		if (!ir.read_palette(i, palettes.back()))
 			return false;
 	}
-	destruct(ctx);
 	replace(ctx, x, y, z_or_cube_side, dv, level, &palettes);
 	return true;
 }
