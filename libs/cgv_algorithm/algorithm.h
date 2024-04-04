@@ -13,8 +13,118 @@ namespace algorithm {
 // Dummy method to force generation of lib file.
 int CGV_API export_dummy();
 
-template <class InputIt, class UnaryOperation>
-std::string transform_join(const InputIt first, const InputIt last, UnaryOperation operation, const std::string& separator = ",", bool trailing_separator = false) {
+/// Unary operator that returns pair.first.
+template <class T1 = void, class T2 = void>
+struct pair_first {
+	constexpr T1 operator()(const std::pair<T1, T2>& pair) const {
+		return pair.first;
+	}
+};
+
+/// Unary operator that returns pair.first.
+template <>
+struct pair_first<void, void> {
+	template <class T1, class T2>
+	constexpr auto operator()(const std::pair<T1, T2>& pair) const
+		-> decltype(static_cast<const T1&>(pair.first)) {
+		return static_cast<const T1&>(pair.first);
+	}
+};
+
+/// Unary operator that returns pair.second.
+template <class T1 = void, class T2 = void>
+struct pair_second {
+	constexpr T2 operator()(const std::pair<T1, T2>& pair) const {
+		return pair.second;
+	}
+};
+
+/// Unary operator that returns pair.second.
+template <>
+struct pair_second<void, void> {
+	template <class T1, class T2>
+	constexpr auto operator()(const std::pair<T1, T2>& pair) const
+		-> decltype(static_cast<const T2&>(pair.second)) {
+		return static_cast<const T2&>(pair.second);
+	}
+};
+
+/// @brief Find the minimum value in the range [first, last) or return fallback if the range is empty.
+/// 
+/// @tparam ForwardIt A forward iterator.
+/// @tparam T The range elements type.
+/// @param first The start of the range.
+/// @param last The end of the range.
+/// @param fallback The value returned for an empty range.
+/// @return The minimum or fallback value.
+template<typename ForwardIt, typename T>
+T min_value(ForwardIt first, ForwardIt last, T fallback) {
+	auto it = std::min_element(first, last);
+	return it != last ? static_cast<T>(*it) : fallback;
+}
+
+/// @brief Find the minimum value among the transformed elements in the range [first, last) or return fallback if the range is empty.
+/// 
+/// @tparam ForwardIt A forward iterator.
+/// @tparam UnaryOp A unary operation.
+/// @tparam T The range elements type.
+/// @param first The start of the range.
+/// @param last The end of the range.
+/// @param operation The unary operation used to transform input elements to type T before comparison.
+/// @param fallback The value returned for an empty range.
+/// @return The minimum or fallback value.
+template<typename ForwardIt, typename UnaryOp, typename T>
+T min_value(ForwardIt first, ForwardIt last, UnaryOp operation, T fallback) {
+	auto it = std::min_element(first, last, [&operation](const auto& left, const auto& right) {
+		return operation(left) < operation(right);
+	});
+	return it != last ? static_cast<T>(operation(*it)) : fallback;
+}
+
+/// @brief Find the maximum value in the range [first, last) or return fallback if the range is empty.
+/// 
+/// @tparam ForwardIt A forward iterator.
+/// @tparam T The range elements type.
+/// @param first The start of the range.
+/// @param last The end of the range.
+/// @param fallback The value returned for an empty range.
+/// @return The maximum or fallback value.
+template<typename ForwardIt, typename T>
+T max_value(ForwardIt first, ForwardIt last, T fallback) {
+	auto it = std::max_element(first, last);
+	return it != last ? static_cast<T>(*it) : fallback;
+}
+
+/// @brief Find the maximum value among the transformed elements in the range [first, last) or return fallback if the range is empty.
+/// 
+/// @tparam ForwardIt A forward iterator.
+/// @tparam UnaryOp A unary operation.
+/// @tparam T The range elements type.
+/// @param first The start of the range.
+/// @param last The end of the range.
+/// @param operation The unary operation used to transform input elements to type T before comparison.
+/// @param fallback The value returned for an empty range.
+/// @return The maximum or fallback value.
+template<typename ForwardIt, typename UnaryOp, typename T>
+T max_value(ForwardIt first, ForwardIt last, UnaryOp operation, T fallback) {
+	auto it = std::max_element(first, last, [&operation](const auto& left, const auto& right) {
+		return operation(left) < operation(right);
+	});
+	return it != last ? static_cast<T>(operation(*it)) : fallback;
+}
+
+/// @brief Transform elements in the range [first, last) and concatenate them in a std::string delimited by a separator.
+/// 
+/// @tparam InputIt An iterator.
+/// @tparam UnaryOp A unary operation.
+/// @param first The start of the input range.
+/// @param last The end of the input range.
+/// @param operation The unary operation used to transform the input elements. Result must be or be convertible to std::string.
+/// @param separator The separator string used to delimit the concatenated elements.
+/// @param trailing_separator If true, separator is added to the end of the returned string.
+/// @return The concatenated string.
+template <class InputIt, class UnaryOp>
+std::string transform_join(const InputIt first, const InputIt last, UnaryOp operation, const std::string& separator = ",", bool trailing_separator = false) {
     std::string res = "";
     if(last > first) {
         for(auto curr = first; curr != last; ++curr) {
