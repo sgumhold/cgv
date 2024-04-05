@@ -260,7 +260,7 @@ namespace cgv {
 				p->add_member_control(b, "Border Width in Pixel", prs_ptr->border_width_in_pixel, "value_slider", "min=-10;max=10;ticks=true");
 				p->add_member_control(b, "Percentual Border Width", prs_ptr->percentual_border_width, "value_slider", "min=-0.5;max=0.5;ticks=true");
 				p->add_member_control(b, "Border Mode", (cgv::type::DummyEnum&)prs_ptr->border_mode, "dropdown",
-					"enums='Separate=0,Width,Height,Minimum (Width, Height)'");
+					"enums='Separate=0,Width,Height,Minimum Width/Height'");
 				p->add_member_control(b, "Pixel Blend", prs_ptr->pixel_blend, "value_slider", "min=0.0;max=2;ticks=true");
 				p->add_member_control(b, "Texture Mode", (cgv::type::DummyEnum&)prs_ptr->texture_mode, "dropdown",
 					"enums='Replace,Replace Alpha,Multiply Color,Multiply Secondary Color,Multiply Border Color,"
