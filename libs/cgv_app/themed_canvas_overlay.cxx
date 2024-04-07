@@ -17,7 +17,7 @@ bool themed_canvas_overlay::init(cgv::render::context& ctx) {
 void themed_canvas_overlay::begin_content(cgv::render::context& ctx, bool clear_frame_buffer) {
 	canvas_overlay::begin_content(ctx, clear_frame_buffer);
 	
-	if(background_visible) {
+	if(background_visible_) {
 		content_canvas.enable_shader(ctx, "rectangle");
 		content_canvas.set_style(ctx, container_style_);
 		content_canvas.draw_shape(ctx, get_local_rectangle());
@@ -43,6 +43,11 @@ cgv::g2d::irect themed_canvas_overlay::get_content_rectangle() const {
 	auto rectangle = get_local_rectangle();
 	rectangle.scale(-padding_);
 	return rectangle;
+}
+
+void themed_canvas_overlay::set_background_visible(bool flag) {
+	background_visible_ = flag;
+	on_set(&background_visible_);
 }
 
 }

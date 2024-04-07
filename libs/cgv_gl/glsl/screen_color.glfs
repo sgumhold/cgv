@@ -12,6 +12,6 @@ void main()
 {
 	frag_color = color;
 	if(apply_gamma)
-		frag_color.rgb = pow(frag_color.rgb, gamma3);
+		frag_color.rgb = pow(frag_color.rgb, 1.0/gamma3);
 	gl_FragDepth = depth;
 }

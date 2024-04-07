@@ -8,9 +8,6 @@ uniform bool measure_point_size_in_pixel;
 uniform float reference_point_size;
 
 uniform bool orient_splats;
-uniform float outline_width_from_pixel;
-uniform float percentual_outline_width;
-uniform float percentual_halo;
 uniform float pixel_extent_per_depth;
 
 uniform float blend_width_in_pixel = 1.0;

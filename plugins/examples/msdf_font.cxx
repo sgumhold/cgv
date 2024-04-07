@@ -54,8 +54,7 @@ public:
 	msdf_font() : cgv::base::node("MSDF Font Example") {
 		viewport_rect.position = cgv::ivec2(0);
 		viewport_rect.size = cgv::ivec2(-1);
-		
-		text_style = cgv::g2d::text2d_style::preset_default();
+
 		text_style.font_size = 1.0f;
 
 		text_align = cgv::render::TA_BOTTOM_LEFT;

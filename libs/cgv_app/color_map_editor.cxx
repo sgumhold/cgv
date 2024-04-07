@@ -20,7 +20,6 @@ color_map_editor::color_map_editor() {
 
 	set_name("Color Scale Editor");
 	block_events = true;
-	blend_overlay = true;
 
 	resolution = (cgv::type::DummyEnum)256;
 	opacity_scale_exponent = 1.0f;
@@ -32,7 +31,6 @@ color_map_editor::color_map_editor() {
 	layout.padding = padding();
 	layout.total_height = supports_opacity ? 200 : 60;
 
-	set_stretch(SO_HORIZONTAL);
 	set_size(ivec2(600u, layout.total_height));
 	
 	mouse_is_on_overlay = false;
@@ -628,10 +626,10 @@ void color_map_editor::init_styles() {
 	polygon_style.use_texture_alpha = true;
 
 	// label style
-	cursor_label_style = cgv::g2d::text2d_style::preset_clear(rgb(0.0f));
+	cursor_label_style.fill_color = rgb(0.0f);
 	cursor_label_style.font_size = 16.0f;
 
-	value_label_style = cgv::g2d::text2d_style::preset_clear(theme.group());
+	value_label_style.fill_color = theme.group();
 	value_label_style.font_size = 12.0f;
 }
 

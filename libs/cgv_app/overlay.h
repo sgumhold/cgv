@@ -49,7 +49,7 @@ private:
 	AlignmentOption horizontal_alignment_ = AlignmentOption::AO_START;
 	AlignmentOption vertical_alignment_ = AlignmentOption::AO_START;
 	StretchOption stretch_ = SO_NONE;
-	ivec2 margin_ = ivec2(0.0f);
+	ivec2 margin_ = ivec2(0);
 	vec2 percentual_offset_ = vec2(0.0f);
 	vec2 percentual_size_ = vec2(1.0f);
 
