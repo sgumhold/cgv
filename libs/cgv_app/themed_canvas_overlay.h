@@ -16,7 +16,7 @@ private:
 
 protected:
 	/// whether the background is visible (true by default)
-	bool background_visible = true;
+	bool background_visible_ = true;
 
 	void begin_content(cgv::render::context& ctx, bool clear_frame_buffer = true);
 	
@@ -36,6 +36,9 @@ public:
 	bool init(cgv::render::context& ctx) override;
 
 	virtual void handle_theme_change(const cgv::gui::theme_info& theme) override;
+
+	bool get_background_visible() const { return background_visible_; }
+	void set_background_visible(bool flag);
 };
 
 typedef cgv::data::ref_ptr<canvas_overlay> canvas_overlay_ptr;

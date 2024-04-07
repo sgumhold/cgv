@@ -15,7 +15,6 @@ class CGV_API canvas_overlay : public overlay {
 private:
 	bool has_damage_ = true;
 	bool recreate_layout_requested_ = true;
-	bool blending_was_enabled_ = false;
 
 	cgv::g2d::shape2d_style blit_style_;
 
@@ -24,9 +23,6 @@ private:
 protected:
 	cgv::g2d::canvas overlay_canvas, content_canvas;
 
-	/// whether to enable blending during the draw process
-	bool blend_overlay = false;
-	
 	bool ensure_layout(cgv::render::context& ctx);
 
 	void post_recreate_layout();
@@ -38,10 +34,6 @@ protected:
 	void begin_content(cgv::render::context& ctx, bool clear_frame_buffer = true);
 	
 	void end_content(cgv::render::context& ctx, bool keep_damage = false);
-
-	void enable_blending();
-
-	void disable_blending();
 
 	virtual void draw_impl(cgv::render::context& ctx);
 

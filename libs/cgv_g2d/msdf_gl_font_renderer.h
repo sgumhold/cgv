@@ -17,18 +17,7 @@ class CGV_API msdf_gl_font_renderer {
 protected:
 	cgv::render::vertex_buffer geometry_buffer;
 
-
-
-
 	cgv::render::shader_program prog;
-
-	bool use_subpixel_rendering;
-	GLboolean blending_was_enabled;
-
-	GLint blend_src_color;
-	GLint blend_src_alpha;
-	GLint blend_dst_color;
-	GLint blend_dst_alpha;
 
 	bool build_shader_program(const cgv::render::context& ctx);
 

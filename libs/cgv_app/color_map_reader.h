@@ -3,6 +3,7 @@
 #include <string>
 
 #include <cgv/base/import.h>
+#include <cgv/media/image/image_reader.h>
 #include <cgv/render/color_map.h>
 #include <cgv/utils/file.h>
 
@@ -158,6 +159,74 @@ public:
 			return read_from_xml(doc, entries, config);
 
 		return false;
+	}
+
+	static bool read_from_image_file(const std::string& file_name, result& entries) {
+
+		entries.clear();
+
+		if(!cgv::utils::file::exists(file_name))
+			return false;
+
+		cgv::data::data_format format;
+		cgv::data::data_view data;
+		cgv::media::image::image_reader image_reader(format);
+
+		const std::string name = cgv::utils::file::drop_extension(cgv::utils::file::get_file_name(file_name));
+
+		if(image_reader.read_image(file_name, data)) {
+			auto type_id = format.get_component_type();
+
+			float max_value = 1.0f;
+			if(cgv::type::info::is_integral(type_id)) {
+				switch(cgv::type::info::get_type_size(type_id)) {
+				case 1: max_value = static_cast<float>(0x000000FF); break;
+				case 2: max_value = static_cast<float>(0x0000FFFF); break;
+				case 3: max_value = static_cast<float>(0x00FFFFFF); break;
+				case 4: max_value = static_cast<float>(0xFFFFFFFF); break;
+				default: break;
+				}
+			}
+
+			cgv::render::color_map cm;
+			float step = 1.0f / static_cast<float>(format.get_width() - 1);
+			float t = 0.0f;
+
+			if(format.get_width() > 0 && format.get_height() > 0) {
+				switch(format.get_nr_components()) {
+				case 1u:
+					for(size_t x = 0; x < format.get_width(); ++x) {
+						cm.add_color_point(t, cgv::rgb(data.get<float>(0, 0, x) / max_value));
+						t += step;
+					}
+					break;
+				case 3u:
+				case 4u:
+					for(size_t x = 0; x < format.get_width(); ++x) {
+						float r = data.get<float>(0, 0, x) / max_value;
+						float g = data.get<float>(1, 0, x) / max_value;
+						float b = data.get<float>(2, 0, x) / max_value;
+						cm.add_color_point(t, cgv::rgb(r, g, b));
+						t += step;
+					}
+
+					if(format.get_nr_components() == 4u) {
+						t = 0.0f;
+						for(size_t x = 0; x < format.get_width(); ++x) {
+							cm.add_opacity_point(t, data.get<float>(3, 0, x) / max_value);
+							t += step;
+						}
+					}
+					break;
+				default:
+					break;
+				}
+			}
+
+			entries.push_back({ name, cm });
+		}
+
+		return !entries.empty();
 	}
 };
 

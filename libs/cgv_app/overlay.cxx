@@ -70,11 +70,7 @@ void overlay::set_visibility(bool visible) {
 }
 
 void overlay::toggle_visibility() {
-	if(is_visible())
-		hide();
-	else
-		show();
-	on_visibility_change();
+	set_visibility(!is_visible());
 }
 
 bool overlay::ensure_viewport(cgv::render::context& ctx) {

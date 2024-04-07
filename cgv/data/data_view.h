@@ -88,19 +88,19 @@ public:
 	}
 	/// constant access to the ci-th component of i-th data entry
 	template <typename S> S get(unsigned ci, size_t i) const {
-		return format->get<S>(ci, get_ptr<cgv::type::func::drop_pointer<P>::type>(i));
+		return format->get<S>(ci, get_ptr<typename cgv::type::func::drop_pointer<P>::type>(i));
 	}
 	/// constant access to the ci-th component of (i,j)-th data entry
 	template <typename S> S get(unsigned ci, size_t i, size_t j) const {
-		return format->get<S>(ci, get_ptr<cgv::type::func::drop_pointer<P>::type>(i, j));
+		return format->get<S>(ci, get_ptr<typename cgv::type::func::drop_pointer<P>::type>(i, j));
 	}
 	/// constant access to the ci-th component of (i,j,k)-th data entry
 	template <typename S> S get(unsigned ci, size_t i, size_t j, size_t k) const {
-		return format->get<S>(ci, get_ptr<cgv::type::func::drop_pointer<P>::type>(i,j,k));
+		return format->get<S>(ci, get_ptr<typename cgv::type::func::drop_pointer<P>::type>(i, j, k));
 	}
 	/// constant access to the ci-th component of (i,j,k,l)-th data entry
 	template <typename S> S get(unsigned ci, size_t i, size_t j, size_t k, size_t l) const {
-		return format->get<S>(ci, get_ptr<cgv::type::func::drop_pointer<P>::type>(i, j, k, l));
+		return format->get<S>(ci, get_ptr<typename cgv::type::func::drop_pointer<P>::type>(i, j, k, l));
 	}
 	/// access to i-th data entry
 	D operator () (size_t i) const;
