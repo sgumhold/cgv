@@ -43,15 +43,9 @@ void canvas_overlay::on_set(void* member_ptr) {
 	post_damage();
 }
 
-void canvas_overlay::draw(cgv::render::context& ctx) {
-
-	if(is_visible() && !draw_in_finish_frame)
-		draw_impl(ctx);
-}
-
 void canvas_overlay::finish_frame(cgv::render::context& ctx) {
 
-	if(is_visible() && draw_in_finish_frame)
+	if(is_visible())
 		draw_impl(ctx);
 }
 
