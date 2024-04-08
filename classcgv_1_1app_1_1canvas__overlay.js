@@ -1,15 +1,14 @@
 var classcgv_1_1app_1_1canvas__overlay =
 [
     [ "canvas_overlay", "classcgv_1_1app_1_1canvas__overlay.html#a11b93558a3107da59a78be81727d7059", null ],
+    [ "after_finish", "classcgv_1_1app_1_1canvas__overlay.html#ab23bc89a838a15e24c68a59836424cdd", null ],
     [ "begin_content", "classcgv_1_1app_1_1canvas__overlay.html#afba3197f82b3c032604c24e1a39259ea", null ],
     [ "clear", "classcgv_1_1app_1_1canvas__overlay.html#a5e2434f8ff34547c6ddfc43384f964fb", null ],
     [ "clear_damage", "classcgv_1_1app_1_1canvas__overlay.html#a8aaafd3870515d0fcae920ddec38830e", null ],
-    [ "draw", "classcgv_1_1app_1_1canvas__overlay.html#a8936d1c1bf2f9b9f5058649b61bf70c0", null ],
     [ "draw_content", "classcgv_1_1app_1_1canvas__overlay.html#a3b066dfa1b0c36031ef9d1d219bca2ba", null ],
     [ "draw_impl", "classcgv_1_1app_1_1canvas__overlay.html#ab393635cee11a4982bbd5585aedc9eeb", null ],
     [ "end_content", "classcgv_1_1app_1_1canvas__overlay.html#a19cf5aa6ae999f7fea61758ecf32e76c", null ],
     [ "ensure_layout", "classcgv_1_1app_1_1canvas__overlay.html#a4ad23ecc836ac2ff7caaceb0998cbce5", null ],
-    [ "finish_frame", "classcgv_1_1app_1_1canvas__overlay.html#aca45128c35f68cb9586d4ff775782c79", null ],
     [ "handle_member_change", "classcgv_1_1app_1_1canvas__overlay.html#ab070bcac249ae8e87ad369a4d60e61b3", null ],
     [ "init", "classcgv_1_1app_1_1canvas__overlay.html#abd1719a9c1db8345049378c5055d3de7", null ],
     [ "init_styles", "classcgv_1_1app_1_1canvas__overlay.html#a820c6ffffcda5bb7823e75692d0f0dba", null ],
