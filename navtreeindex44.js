@@ -1,5 +1,6 @@
 var NAVTREEINDEX44 =
 {
+"structcgv_1_1math_1_1union__find.html#afcabc5b6b8237c2e6542c4dc5e6d7d79":[11,0,0,6,41,5],
 "structcgv_1_1math_1_1vertex.html":[11,0,0,6,2],
 "structcgv_1_1math_1_1vertex.html#a894ea6d415dc81c46c38eb5d4a593d81":[11,0,0,6,2,1],
 "structcgv_1_1math_1_1vertex.html#ad56669fafdfa3201fa9ccdbebad57e31":[11,0,0,6,2,0],
@@ -248,6 +249,5 @@ var NAVTREEINDEX44 =
 "structcgv_1_1media_1_1volume_1_1ooc__sliced__volume.html":[11,0,0,7,5,0],
 "structcgv_1_1media_1_1volume_1_1ooc__sliced__volume.html#a0573ccc5ea90172350e592b8315fef7a":[11,0,0,7,5,0,8],
 "structcgv_1_1media_1_1volume_1_1ooc__sliced__volume.html#a0a037992ac82c749c10447717acb2c4d":[11,0,0,7,5,0,10],
-"structcgv_1_1media_1_1volume_1_1ooc__sliced__volume.html#a160fec27721c6b33c45926abe84b0aa0":[11,0,0,7,5,0,6],
-"structcgv_1_1media_1_1volume_1_1ooc__sliced__volume.html#a21419f104091f07bcc73a4a1175ddf04":[11,0,0,7,5,0,11]
+"structcgv_1_1media_1_1volume_1_1ooc__sliced__volume.html#a160fec27721c6b33c45926abe84b0aa0":[11,0,0,7,5,0,6]
 };
