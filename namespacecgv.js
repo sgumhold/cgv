@@ -518,6 +518,7 @@ var namespacecgv =
       [ "scale_44", "transformations_8h.html#aaa0bceb8808fb01a77d3470ed3fc5d88", null ],
       [ "select_median_value", "vec_8h.html#a10dff5b4a5e3e3f3727272dc9b129be5", null ],
       [ "select_value", "vec_8h.html#a0d9115b6999049fb851dc6da02c0ca31", null ],
+      [ "sgn", "functions_8h.html#a82f61037beb499ea9f3861fa6d5d5a7b", null ],
       [ "shear_33", "transformations_8h.html#a8dce7e66246f1276129c1e05e87ede77", null ],
       [ "shear_44", "transformations_8h.html#a01f2a62ee6584cf62da2425dc7ee3d29", null ],
       [ "shearxy_33", "transformations_8h.html#aee8880baf768a767a53dbf0261b356a8", null ],

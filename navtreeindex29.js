@@ -48,13 +48,13 @@ var NAVTREEINDEX29 =
 "color__model_8hh.html#ae8ba23f18eea36b93ea371d8f7bcf446a9af8576566119258e6b327943309fd22":[10,0,1,8,55,2],
 "color__model_8hh.html#ae8ba23f18eea36b93ea371d8f7bcf446acb26d6d2e84046050af011d4cd271b33":[10,0,1,8,55,1],
 "color__model_8hh_source.html":[12,0,1,6,9],
-"color__operations_8h.html#a0375eeca527cba239ec0423b598006b6":[10,0,1,7,568],
+"color__operations_8h.html#a0375eeca527cba239ec0423b598006b6":[10,0,1,7,569],
 "color__operations_8h.html#a085830b6c866c419839854e4a62d2343":[10,0,1,7,415],
-"color__operations_8h.html#a298492e84c1a1e16cf57c3130a5e250e":[10,0,1,7,566],
+"color__operations_8h.html#a298492e84c1a1e16cf57c3130a5e250e":[10,0,1,7,567],
 "color__operations_8h.html#a2b594665950a0417ea397d6d419fe826":[10,0,1,7,127],
 "color__operations_8h.html#a3795d992bc753f74302f173f646c2cfe":[10,0,1,7,420],
 "color__operations_8h.html#a45143d86686539bb5f191d81b484cfd1":[10,0,1,7,422],
-"color__operations_8h.html#a4ebf9f24bcb148bc9e5afc87dac508e7":[10,0,1,7,565],
+"color__operations_8h.html#a4ebf9f24bcb148bc9e5afc87dac508e7":[10,0,1,7,566],
 "color__operations_8h.html#a50360c4703043e55901204f4192f1ee5":[10,0,1,7,413],
 "color__operations_8h.html#a6fc93bfa34f99cecb59ea892cda45dd3":[10,0,1,7,417],
 "color__operations_8h.html#a7e172a39927744317e022cc90154e926":[10,0,1,7,416],
@@ -67,7 +67,7 @@ var NAVTREEINDEX29 =
 "color__operations_8h.html#ae3ec5f0e69dae976abefdbdb0da0f0aa":[10,0,1,7,419],
 "color__operations_8h.html#aea5d4ea1f60d5b94d9a267e301fb26a7":[10,0,1,7,418],
 "color__operations_8h.html#af19ec5187f76c7c8b13d3e96338abe32":[10,0,1,7,421],
-"color__operations_8h.html#af64611229a681e139e0d110c7074f819":[10,0,1,7,567],
+"color__operations_8h.html#af64611229a681e139e0d110c7074f819":[10,0,1,7,568],
 "color__operations_8h_source.html":[12,0,1,5,8],
 "color__selector_8cxx_source.html":[12,0,3,2,12],
 "color__selector_8h.html#ad121e638e6220e205a0fe91ceb61421a":[10,0,1,0,17],
@@ -249,5 +249,5 @@ var NAVTREEINDEX29 =
 "display_8h.html#a4cde23006240dac5bdb6fef3bc4f320dab65ea7aa4392cff7c6ffe61649a09a9f":[10,0,1,9,20,0],
 "display_8h.html#a4cde23006240dac5bdb6fef3bc4f320daceaedb71d709fe0a32af2ce14d073332":[10,0,1,9,20,3],
 "display_8h_source.html":[12,0,1,7,7],
-"distance__transform_8h.html#a1a12451076df1957fe4247589887704d":[10,0,1,7,515]
+"distance__transform_8h.html#a1a12451076df1957fe4247589887704d":[10,0,1,7,516]
 };
