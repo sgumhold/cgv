@@ -46,6 +46,5 @@ var classcgv_1_1app_1_1overlay =
     [ "toggle_visibility", "classcgv_1_1app_1_1overlay.html#a65832f0526e1ded543d96d001a17c94a", null ],
     [ "update_layout", "classcgv_1_1app_1_1overlay.html#a3dab76814dba0d3d46bbc70bc28724e8", null ],
     [ "block_events", "classcgv_1_1app_1_1overlay.html#adaf63a5af089bbca20910f8d187fe43c", null ],
-    [ "draw_in_finish_frame", "classcgv_1_1app_1_1overlay.html#a1ebbd529b0d4357957f0e8913a956ef1", null ],
     [ "gui_options", "classcgv_1_1app_1_1overlay.html#a8a67de4ed4f9acebe0b075de2c59fbbb", null ]
 ];

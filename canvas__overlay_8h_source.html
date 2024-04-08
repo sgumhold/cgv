@@ -137,20 +137,18 @@ $(document).ready(function(){initNavTree('canvas__overlay_8h_source.html',''); i
 <div class="line"><a name="l00051"></a><span class="lineno">   51</span>&#160; </div>
 <div class="line"><a name="l00053"></a><span class="lineno">   53</span>&#160;    <span class="keyword">virtual</span> <span class="keywordtype">void</span> on_set(<span class="keywordtype">void</span>* member_ptr) <span class="keyword">override</span>;</div>
 <div class="line"><a name="l00055"></a><span class="lineno"><a class="line" href="classcgv_1_1app_1_1canvas__overlay.html#ab070bcac249ae8e87ad369a4d60e61b3">   55</a></span>&#160;    <span class="keyword">virtual</span> <span class="keywordtype">void</span> <a class="code" href="classcgv_1_1app_1_1canvas__overlay.html#ab070bcac249ae8e87ad369a4d60e61b3">handle_member_change</a>(<span class="keyword">const</span> <a class="code" href="classcgv_1_1utils_1_1pointer__test.html">cgv::utils::pointer_test</a>&amp; m)<span class="keyword"> override </span>{}</div>
-<div class="line"><a name="l00056"></a><span class="lineno">   56</span>&#160; </div>
-<div class="line"><a name="l00057"></a><span class="lineno">   57</span>&#160;    <span class="keywordtype">void</span> draw(<a class="code" href="classcgv_1_1render_1_1context.html">cgv::render::context</a>&amp; ctx) <span class="keyword">override</span>;</div>
-<div class="line"><a name="l00058"></a><span class="lineno">   58</span>&#160;    <span class="keywordtype">void</span> finish_frame(<a class="code" href="classcgv_1_1render_1_1context.html">cgv::render::context</a>&amp;) <span class="keyword">override</span>;</div>
-<div class="line"><a name="l00059"></a><span class="lineno">   59</span>&#160;    <span class="keyword">virtual</span> <span class="keywordtype">void</span> draw_content(<a class="code" href="classcgv_1_1render_1_1context.html">cgv::render::context</a>&amp; ctx) = 0;</div>
-<div class="line"><a name="l00060"></a><span class="lineno">   60</span>&#160; </div>
-<div class="line"><a name="l00061"></a><span class="lineno">   61</span>&#160;    <span class="keywordtype">void</span> post_damage(<span class="keywordtype">bool</span> redraw = <span class="keyword">true</span>);</div>
-<div class="line"><a name="l00062"></a><span class="lineno">   62</span>&#160;};</div>
-<div class="line"><a name="l00063"></a><span class="lineno">   63</span>&#160; </div>
-<div class="line"><a name="l00064"></a><span class="lineno">   64</span>&#160;<span class="keyword">typedef</span> <a class="code" href="classcgv_1_1data_1_1ref__ptr.html">cgv::data::ref_ptr&lt;canvas_overlay&gt;</a> canvas_overlay_ptr;</div>
-<div class="line"><a name="l00065"></a><span class="lineno">   65</span>&#160; </div>
+<div class="line"><a name="l00057"></a><span class="lineno">   57</span>&#160;    <span class="keywordtype">void</span> after_finish(<a class="code" href="classcgv_1_1render_1_1context.html">cgv::render::context</a>&amp;) <span class="keyword">override</span>;</div>
+<div class="line"><a name="l00058"></a><span class="lineno">   58</span>&#160;    <span class="keyword">virtual</span> <span class="keywordtype">void</span> draw_content(<a class="code" href="classcgv_1_1render_1_1context.html">cgv::render::context</a>&amp; ctx) = 0;</div>
+<div class="line"><a name="l00059"></a><span class="lineno">   59</span>&#160; </div>
+<div class="line"><a name="l00060"></a><span class="lineno">   60</span>&#160;    <span class="keywordtype">void</span> post_damage(<span class="keywordtype">bool</span> redraw = <span class="keyword">true</span>);</div>
+<div class="line"><a name="l00061"></a><span class="lineno">   61</span>&#160;};</div>
+<div class="line"><a name="l00062"></a><span class="lineno">   62</span>&#160; </div>
+<div class="line"><a name="l00063"></a><span class="lineno">   63</span>&#160;<span class="keyword">typedef</span> <a class="code" href="classcgv_1_1data_1_1ref__ptr.html">cgv::data::ref_ptr&lt;canvas_overlay&gt;</a> canvas_overlay_ptr;</div>
+<div class="line"><a name="l00064"></a><span class="lineno">   64</span>&#160; </div>
+<div class="line"><a name="l00065"></a><span class="lineno">   65</span>&#160;}</div>
 <div class="line"><a name="l00066"></a><span class="lineno">   66</span>&#160;}</div>
-<div class="line"><a name="l00067"></a><span class="lineno">   67</span>&#160;}</div>
-<div class="line"><a name="l00068"></a><span class="lineno">   68</span>&#160; </div>
-<div class="line"><a name="l00069"></a><span class="lineno">   69</span>&#160;<span class="preprocessor">#include &lt;cgv/config/lib_end.h&gt;</span></div>
+<div class="line"><a name="l00067"></a><span class="lineno">   67</span>&#160; </div>
+<div class="line"><a name="l00068"></a><span class="lineno">   68</span>&#160;<span class="preprocessor">#include &lt;cgv/config/lib_end.h&gt;</span></div>
 <div class="ttc" id="aclasscgv_1_1app_1_1canvas__overlay_html"><div class="ttname"><a href="classcgv_1_1app_1_1canvas__overlay.html">cgv::app::canvas_overlay</a></div><div class="ttdef"><b>Definition:</b> <a href="canvas__overlay_8h_source.html#l00014">canvas_overlay.h:14</a></div></div>
 <div class="ttc" id="aclasscgv_1_1app_1_1canvas__overlay_html_ab070bcac249ae8e87ad369a4d60e61b3"><div class="ttname"><a href="classcgv_1_1app_1_1canvas__overlay.html#ab070bcac249ae8e87ad369a4d60e61b3">cgv::app::canvas_overlay::handle_member_change</a></div><div class="ttdeci">virtual void handle_member_change(const cgv::utils::pointer_test &amp;m) override</div><div class="ttdoc">implement to handle member changes</div><div class="ttdef"><b>Definition:</b> <a href="canvas__overlay_8h_source.html#l00055">canvas_overlay.h:55</a></div></div>
 <div class="ttc" id="aclasscgv_1_1app_1_1overlay_html"><div class="ttname"><a href="classcgv_1_1app_1_1overlay.html">cgv::app::overlay</a></div><div class="ttdef"><b>Definition:</b> <a href="overlay_8h_source.html#l00017">overlay.h:22</a></div></div>
