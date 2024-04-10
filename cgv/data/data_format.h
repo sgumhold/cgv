@@ -20,10 +20,10 @@ class CGV_API data_format : public component_format
 protected:
 	struct dimension_info
 	{
-		unsigned int resolution;
+		size_t resolution;
 		unsigned int alignment;
 		unsigned int layout_dimension;
-		dimension_info(unsigned int n = 0, unsigned int a = 1, unsigned int ld = 0) 
+		dimension_info(size_t n = 0, unsigned int a = 1, unsigned int ld = 0) 
 			: resolution(n), alignment(a), layout_dimension(ld) {}
 	};
 	/// store for each dimension resolution and alignment in a dimension_info struct
@@ -71,110 +71,76 @@ Some examples of valid data format description strings:
 */
 	bool set_data_format(const std::string& description);
 	/// construct a 1d data format from width and the information needed to construct a component info
-	data_format(unsigned int _width, 
-					TypeId _component_type, 
-				   const std::string& _component_name_list, 
-					unsigned int align = 1, 
-					unsigned int d0 = 0, unsigned int d1 = 0, 
-					unsigned int d2 = 0, unsigned int d3 = 0);
+	data_format(size_t _width, TypeId _component_type, const std::string& _component_name_list, 
+				unsigned align = 1, unsigned d0 = 0, unsigned d1 = 0, unsigned d2 = 0, unsigned d3 = 0);
 	/// construct a 1d data format from width and the information needed to construct a component info
-	data_format(unsigned int _width, 
-					TypeId _component_type, 
-				   ComponentFormat _cf, 
-					unsigned int align = 1, 
-					unsigned int d0 = 0, unsigned int d1 = 0, 
-					unsigned int d2 = 0, unsigned int d3 = 0);
+	data_format(size_t _width, TypeId _component_type, ComponentFormat _cf, 
+		        unsigned align = 1, unsigned d0 = 0, unsigned d1 = 0, unsigned d2 = 0, unsigned d3 = 0);
 	/// construct a 2d data format from width and height
-	data_format(unsigned int _width, unsigned int _height, 
-					TypeId _component_type, 
-				   const std::string& _component_name_list, 
-					unsigned int align = 1, 
-					unsigned int d0 = 0, unsigned int d1 = 0, 
-					unsigned int d2 = 0, unsigned int d3 = 0);
+	data_format(size_t _width, size_t _height, TypeId _component_type, const std::string& _component_name_list,
+				unsigned align = 1, unsigned d0 = 0, unsigned d1 = 0, unsigned d2 = 0, unsigned d3 = 0);
 	/// construct a 2d data format from width and height
-	data_format(unsigned int _width, unsigned int _height, 
-					TypeId _component_type, 
-				   ComponentFormat _cf, 
-					unsigned int align = 1, 
-					unsigned int d0 = 0, unsigned int d1 = 0, 
-					unsigned int d2 = 0, unsigned int d3 = 0);
+	data_format(size_t _width, size_t _height, TypeId _component_type, ComponentFormat _cf, 
+				unsigned align = 1, unsigned d0 = 0, unsigned d1 = 0, unsigned d2 = 0, unsigned d3 = 0);
 	/// construct a 3d data format from width, height and depth
-	data_format(unsigned int _width, unsigned int _height, unsigned int _depth,
-					TypeId _component_type, 
-				   const std::string& _component_name_list, 
-					unsigned int align = 1, 
-					unsigned int d0 = 0, unsigned int d1 = 0, 
-					unsigned int d2 = 0, unsigned int d3 = 0);
+	data_format(size_t _width, size_t _height, size_t _depth, TypeId _component_type, const std::string& _component_name_list,
+				unsigned align = 1, unsigned d0 = 0, unsigned d1 = 0, unsigned d2 = 0, unsigned d3 = 0);
 	/// construct a 3d data format from width, height and depth
-	data_format(unsigned int _width, unsigned int _height, unsigned int _depth,
-					TypeId _component_type, 
-				   ComponentFormat _cf, 
-					unsigned int align = 1, 
-					unsigned int d0 = 0, unsigned int d1 = 0, 
-					unsigned int d2 = 0, unsigned int d3 = 0);
+	data_format(size_t _width, size_t _height, size_t _depth, TypeId _component_type, ComponentFormat _cf, 
+				unsigned align = 1, unsigned d0 = 0, unsigned d1 = 0, unsigned d2 = 0, unsigned d3 = 0);
 	/// construct a 4d data format from width, height, depth and count
-	data_format(unsigned int _width, unsigned int _height, 
-					unsigned int _depth, unsigned int _count,
-					TypeId _component_type, 
-				   const std::string& _component_name_list, 
-					unsigned int align = 1, 
-					unsigned int d0 = 0, unsigned int d1 = 0, 
-					unsigned int d2 = 0, unsigned int d3 = 0);
+	data_format(size_t _width, size_t _height, size_t _depth, size_t _count, TypeId _component_type, const std::string& _component_name_list,
+				unsigned align = 1, unsigned d0 = 0, unsigned d1 = 0, unsigned d2 = 0, unsigned d3 = 0);
 	/// construct a 4d data format from width, height, depth and count
-	data_format(unsigned int _width, unsigned int _height, 
-					unsigned int _depth, unsigned int _count,
-					TypeId _component_type, 
-				   ComponentFormat _cf, 
-					unsigned int align = 1, 
-					unsigned int d0 = 0, unsigned int d1 = 0, 
-					unsigned int d2 = 0, unsigned int d3 = 0);
+	data_format(size_t _width, size_t _height, size_t _depth, size_t _count, TypeId _component_type, ComponentFormat _cf, 
+				unsigned align = 1, unsigned d0 = 0, unsigned d1 = 0, unsigned d2 = 0, unsigned d3 = 0);
 	/// define stream out operator
 	friend FRIEND_MEMBER_API std::ostream& operator << (std::ostream& os, const data_format& df);
 	/// set the dimensions to the given values
-	void set_dimensions(unsigned _d0, unsigned _d1 = -1, unsigned _d2 = -1, unsigned _d3 = -1);
+	void set_dimensions(size_t _d0, size_t _d1 = -1, size_t _d2 = -1, size_t _d3 = -1);
 	/// return the number of dimensions of the data set
-	unsigned int get_nr_dimensions() const;
+	unsigned get_nr_dimensions() const;
 	/// set the number of dimensions of the data set
-	void set_nr_dimensions(unsigned int _d);
+	void set_nr_dimensions(unsigned _d);
 	/// return the resolution in the i-th dimension, or 0 if not defined
-	unsigned int get_resolution(unsigned int i) const;
+	size_t get_resolution(unsigned i) const;
 	/// return the resolution in the first dimension, or 1 if not defined
-	unsigned int get_width() const;
+	size_t get_width() const;
 	/// return the resolution in the second dimension, or 1 if not defined
-	unsigned int get_height() const;
+	size_t get_height() const;
 	/// return the resolution in the third dimension, or 1 if not defined
-	unsigned int get_depth() const;
+	size_t get_depth() const;
 	/// return the resolution in the highest dimension, or 1 if not defined
-	unsigned int get_nr_time_steps() const;
+	size_t get_nr_time_steps() const;
 	/// return the total number of data entries 
 	size_t get_nr_entries() const;
 	/// return the total number of bytes necessary to store the data
 	size_t get_nr_bytes() const;
 	/// set the resolution in the i-th dimension, add dimensions if necessary
-	void set_resolution(unsigned int i, unsigned int resolution);
+	void set_resolution(unsigned i, size_t resolution);
 	/// set the resolution in the first dimension, add dimensions if necessary
-	void set_width(unsigned int _width);
+	void set_width(size_t _width);
 	/// set the resolution in the second dimension, add dimensions if necessary
-	void set_height(unsigned int _height);
+	void set_height(size_t _height);
 	/// set the resolution in the third dimension, add dimensions if necessary
-	void set_depth(unsigned int _depth);
+	void set_depth(size_t _depth);
 	/// set the resolution in the last dimension, add dimensions if necessary
-	void set_nr_time_steps(unsigned int _nr_time_steps);
+	void set_nr_time_steps(size_t _nr_time_steps);
 	/// return the alignment of entries
-	unsigned int get_entry_alignment() const;
+	unsigned get_entry_alignment() const;
 	/** return the alignment of a given dimension, where the alignment of the 
 	    last dimension is always 1 and cannot be changed. This method also returns 1
 		 if i is out of the range of valid dimensions. */
-	unsigned int get_alignment(unsigned int i) const;
+	unsigned get_alignment(unsigned i) const;
 	/// set the alignment of entries
-	void set_entry_alignment(unsigned int _a);
+	void set_entry_alignment(unsigned _a);
 	/** set the alignment of a given dimension, add dimensions if necessary. The
 	    alignment of the last dimension is always 1 and cannot be set.*/
-	void set_alignment(unsigned int i, unsigned int _a);
+	void set_alignment(unsigned i, unsigned _a);
 	/// return the layout dimension of a given dimension
-	unsigned int get_layout_dimension(unsigned int dim) const;
+	unsigned get_layout_dimension(unsigned dim) const;
 	/// set the layout dimension of a given dimension, add dimensions if necessary
-	void get_layout_dimension(unsigned int dim, unsigned int layout_dim);
+	void set_layout_dimension(unsigned dim, unsigned layout_dim);
 	/// return the component_format info by simple conversion of the this pointer
 	const component_format& get_component_format() const;
 	/// set component_format by simply assigning to a converted this pointer
@@ -184,7 +150,6 @@ Some examples of valid data format description strings:
 	/// comparison between component formats
 	bool operator != (const data_format& df) const;
 };
-
 /** stream out operator writes the data format in the syntax of description strings
     as defined in the docu of set_data_format(). */
 extern CGV_API std::ostream& operator << (std::ostream& os, const data_format& df);

@@ -10,12 +10,12 @@ namespace cgv {
 			iM.identity();
 		}
 		/// read access to model transform
-		const transforming::mat4& transforming::get_model_transform() const
+		const mat4& transforming::get_model_transform() const
 		{
 			return M;
 		}
 		/// read access to inverse model transform
-		const transforming::mat4& transforming::get_inverse_model_transform() const
+		const mat4& transforming::get_inverse_model_transform() const
 		{
 			return iM;
 		}
@@ -32,33 +32,33 @@ namespace cgv {
 			iM = _iM;
 		}
 		/// transform a point
-		transforming::vec3 transforming::transform_point(const vec3& p)
+		vec3 transforming::transform_point(const vec3& p)
 		{
 			return M * vec4(p, 1.0f);
 		}
 		/// inverse transform a point
-		transforming::vec3 transforming::inverse_transform_point(const vec3& p)
+		vec3 transforming::inverse_transform_point(const vec3& p)
 		{
 			return iM * vec4(p, 1.0f);
 		}
 		/// transform a vector
-		transforming::vec3 transforming::transform_vector(const vec3& v)
+		vec3 transforming::transform_vector(const vec3& v)
 		{
 			return M * vec4(v, 0.0f);
 		}
 		/// inverse transform a vector
-		transforming::vec3 transforming::inverse_transform_vector(const vec3& v)
+		vec3 transforming::inverse_transform_vector(const vec3& v)
 		{
 			return iM * vec4(v, 0.0f);
 		}
 
 		/// transform a normal
-		transforming::vec3 transforming::transform_normal(const vec3& n)
+		vec3 transforming::transform_normal(const vec3& n)
 		{
 			return vec4(n, 0.0f) * iM;
 		}
 		/// inverse transform a normal
-		transforming::vec3 transforming::inverse_transform_normal(const vec3& n)
+		vec3 transforming::inverse_transform_normal(const vec3& n)
 		{
 			return vec4(n, 0.0f) * M;
 		}

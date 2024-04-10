@@ -7,19 +7,13 @@ using namespace cgv::utils;
 
 namespace cgv {
 	namespace data {
-
-/// construct an undefined data format
 data_format::data_format()
 {
 }
-
-/// construct from description string
 data_format::data_format(const std::string& description)
 {
 	set_data_format(description);
 }
-
-/// set the data format from a description string
 bool data_format::set_data_format(const std::string& description)
 {
 	if (description.empty()) {
@@ -46,8 +40,8 @@ bool data_format::set_data_format(const std::string& description)
 		last_error = "format description not terminated by <)>";
 		return false;
 	}
-	unsigned int i=0;
-	unsigned int di = 0;
+	unsigned i=0;
+	unsigned di = 0;
 	int last_a = 1;
 	if (to_string(toks[i]) == "|") {
 		if (!is_integer(to_string(toks[1]), last_a)) {
@@ -103,92 +97,68 @@ bool data_format::set_data_format(const std::string& description)
 	} while (true);
 	return true;
 }
-
-/// construct a 1d data format from width and the information needed to construct a component info
-data_format::data_format(unsigned int _width, 
-		TypeId _ct, const std::string& _cnl, 
-		unsigned int a, unsigned int d0, unsigned int d1, 
-		unsigned int d2, unsigned int d3) : component_format(_ct,_cnl,a,d0,d1,d2,d3)
+data_format::data_format(size_t _width, TypeId _ct, const std::string& _cnl, 
+		                 unsigned a, unsigned d0, unsigned d1, unsigned d2, unsigned d3) 
+	: component_format(_ct,_cnl,a,d0,d1,d2,d3)
 {
 	dimensions.push_back(dimension_info(_width));
 }
-
-/// construct a 1d data format from width and the information needed to construct a component info
-data_format::data_format(unsigned int _width, 
-		TypeId _ct, ComponentFormat _cf, 
-		unsigned int a, unsigned int d0, unsigned int d1, 
-		unsigned int d2, unsigned int d3) : component_format(_ct,_cf,a,d0,d1,d2,d3)
+data_format::data_format(size_t _width, TypeId _ct, ComponentFormat _cf, 
+						 unsigned a, unsigned d0, unsigned d1, unsigned d2, unsigned d3) 
+	: component_format(_ct,_cf,a,d0,d1,d2,d3)
 {
 	dimensions.push_back(dimension_info(_width));
 }
-
-/// construct a 2d data format from width and height
-data_format::data_format(unsigned int _width, unsigned int _height, 
-		TypeId _ct, const std::string& _cnl, 
-		unsigned int a, unsigned int d0, unsigned int d1, 
-		unsigned int d2, unsigned int d3) : component_format(_ct,_cnl,a,d0,d1,d2,d3)
+data_format::data_format(size_t _width, size_t _height, TypeId _ct, const std::string& _cnl, 
+	                     unsigned a, unsigned d0, unsigned d1, unsigned d2, unsigned d3) 
+	: component_format(_ct,_cnl,a,d0,d1,d2,d3)
 {
 	dimensions.push_back(dimension_info(_width));
 	dimensions.push_back(dimension_info(_height,1,1));
 }
-/// construct a 2d data format from width and height
-data_format::data_format(unsigned int _width, unsigned int _height, 
-		TypeId _ct, ComponentFormat _cf, 
-		unsigned int a, unsigned int d0, unsigned int d1, 
-		unsigned int d2, unsigned int d3) : component_format(_ct,_cf,a,d0,d1,d2,d3)
+data_format::data_format(size_t _width, size_t _height, TypeId _ct, ComponentFormat _cf, 
+	                     unsigned a, unsigned d0, unsigned d1, unsigned d2, unsigned d3) 
+	: component_format(_ct,_cf,a,d0,d1,d2,d3)
 {
 	dimensions.push_back(dimension_info(_width));
 	dimensions.push_back(dimension_info(_height,1,1));
 }
 
-/// construct a 3d data format from width, height and depth
-data_format::data_format(unsigned int _width, unsigned int _height, unsigned int _depth,
-		TypeId _ct, const std::string& _cnl, 
-		unsigned int a, unsigned int d0, unsigned int d1, 
-		unsigned int d2, unsigned int d3) : component_format(_ct,_cnl,a,d0,d1,d2,d3)
+data_format::data_format(size_t _width, size_t _height, size_t _depth, TypeId _ct, const std::string& _cnl,
+	                     unsigned a, unsigned d0, unsigned d1, unsigned d2, unsigned d3) 
+	: component_format(_ct,_cnl,a,d0,d1,d2,d3)
 {
 	dimensions.push_back(dimension_info(_width));
 	dimensions.push_back(dimension_info(_height,1,1));
 	dimensions.push_back(dimension_info(_depth,1,2));
 }
-/// construct a 3d data format from width, height and depth
-data_format::data_format(unsigned int _width, unsigned int _height, unsigned int _depth,
-		TypeId _ct, ComponentFormat _cf, 
-		unsigned int a, unsigned int d0, unsigned int d1, 
-		unsigned int d2, unsigned int d3) : component_format(_ct,_cf,a,d0,d1,d2,d3)
+data_format::data_format(size_t _width, size_t _height, size_t _depth, TypeId _ct, ComponentFormat _cf, 
+		                 unsigned a, unsigned d0, unsigned d1, unsigned d2, unsigned d3) 
+	: component_format(_ct,_cf,a,d0,d1,d2,d3)
 {
 	dimensions.push_back(dimension_info(_width));
 	dimensions.push_back(dimension_info(_height,1,1));
 	dimensions.push_back(dimension_info(_depth,1,2));
 }
-
-/// construct a 4d data format from width, height, depth and count
-data_format::data_format(unsigned int _width, unsigned int _height, 
-				unsigned int _depth, unsigned int _count,
-		TypeId _ct, const std::string& _cnl, 
-		unsigned int a, unsigned int d0, unsigned int d1, 
-		unsigned int d2, unsigned int d3) : component_format(_ct,_cnl,a,d0,d1,d2,d3)
+data_format::data_format(size_t _width, size_t _height, size_t _depth, size_t _count, TypeId _ct, const std::string& _cnl, 
+                         unsigned a, unsigned d0, unsigned d1, unsigned d2, unsigned d3)
+	: component_format(_ct, _cnl, a, d0, d1, d2, d3)
 {
 	dimensions.push_back(dimension_info(_width));
 	dimensions.push_back(dimension_info(_height,1,1));
 	dimensions.push_back(dimension_info(_depth,1,2));
 	dimensions.push_back(dimension_info(_count,1,3));
 }
-/// construct a 4d data format from width, height, depth and count
-data_format::data_format(unsigned int _width, unsigned int _height, 
-				unsigned int _depth, unsigned int _count,
-		TypeId _ct, ComponentFormat _cf, 
-		unsigned int a, unsigned int d0, unsigned int d1, 
-		unsigned int d2, unsigned int d3) : component_format(_ct,_cf,a,d0,d1,d2,d3)
+data_format::data_format(size_t _width, size_t _height, size_t _depth, size_t _count, TypeId _ct, ComponentFormat _cf, 
+		                 unsigned a, unsigned d0, unsigned d1, unsigned d2, unsigned d3) 
+	: component_format(_ct,_cf,a,d0,d1,d2,d3)
 {
 	dimensions.push_back(dimension_info(_width));
 	dimensions.push_back(dimension_info(_height,1,1));
 	dimensions.push_back(dimension_info(_depth,1,2));
 	dimensions.push_back(dimension_info(_count,1,3));
 }
-
-/// set the dimensions to the given values
-void data_format::set_dimensions(unsigned _d0, unsigned _d1, unsigned _d2, unsigned _d3)
+void data_format::set_dimensions(size_t _d0, size_t _d1, size_t _d2, size_t _d3)
 {
 	set_width(_d0);
 	if (_d1 != -1)
@@ -198,51 +168,38 @@ void data_format::set_dimensions(unsigned _d0, unsigned _d1, unsigned _d2, unsig
 	if (_d3 != -1)
 		set_nr_time_steps(_d3);
 }
-
-/// return the dimension of the data set
-unsigned int data_format::get_nr_dimensions() const
+unsigned data_format::get_nr_dimensions() const
 {
-	return (unsigned int) dimensions.size();
+	return (unsigned) dimensions.size();
 }
-/// set the dimension of the data set
-void data_format::set_nr_dimensions(unsigned int _d)
+void data_format::set_nr_dimensions(unsigned _d)
 {
 	dimensions.resize(_d);
 }
-/// return the number of data entries in the given dimension
-unsigned int data_format::get_resolution(unsigned int i) const
+size_t data_format::get_resolution(unsigned i) const
 {
 	if (i >= get_nr_dimensions())
 		return 0;
 	return dimensions[i].resolution;
 }
-
-/// set the number of data entries in the given dimension
-void data_format::set_resolution(unsigned int i, unsigned int resolution)
+void data_format::set_resolution(unsigned i, size_t resolution)
 {
 	if (i >= get_nr_dimensions())
 		dimensions.resize(i+1);
 	dimensions[i].resolution = resolution;
 }
-
-/// return the layout dimension of a given dimension
-unsigned int data_format::get_layout_dimension(unsigned int i) const
+unsigned data_format::get_layout_dimension(unsigned i) const
 {
 	if (i >= get_nr_dimensions())
 		return i;
 	return dimensions[i].layout_dimension;
 }
-
-/// set the layout dimension of a given dimension
-void data_format::get_layout_dimension(unsigned int i, unsigned int layout_dim)
+void data_format::set_layout_dimension(unsigned i, unsigned layout_dim)
 {
 	if (i >= get_nr_dimensions())
 		dimensions.resize(i+1);
 	dimensions[i].layout_dimension = layout_dim;
 }
-
-
-/// return the total number of data entries 
 size_t data_format::get_nr_entries() const
 {
 	size_t size = 1;
@@ -250,84 +207,65 @@ size_t data_format::get_nr_entries() const
 		size *= get_resolution(i);
 	return size;
 }
-
-/// return the total number of bytes necessary to store the data
 size_t data_format::get_nr_bytes() const
 {
 	return get_nr_entries()*get_entry_size();
 }
-
-
-/// return the number of entries in the first dimension
-unsigned int data_format::get_width() const
+size_t data_format::get_width() const
 {
 	return get_resolution(0);
 }
-/// return the number of entries in the second dimension
-unsigned int data_format::get_height() const
+size_t data_format::get_height() const
 {
 	return get_resolution(1);
 }
-/// return the number of entries in the third dimension
-unsigned int data_format::get_depth() const
+size_t data_format::get_depth() const
 {
 	return get_resolution(2);
 }
-/// return the number of entries in the last dimension
-unsigned int data_format::get_nr_time_steps() const
+size_t data_format::get_nr_time_steps() const
 {
 	if (get_nr_dimensions() == 0)
 		return 1;
 	return get_resolution(get_nr_dimensions()-1);
 }
-
-/// return the alignment of entries
-unsigned int data_format::get_entry_alignment() const
+unsigned data_format::get_entry_alignment() const
 {
 	if (get_nr_dimensions() == 0)
 		return 1;
 	return dimensions[0].alignment;
 }
-
-/// return the alignment of a given dimension
-unsigned int data_format::get_alignment(unsigned int i) const
+unsigned data_format::get_alignment(unsigned i) const
 {
 	if (i+1 >= get_nr_dimensions())
 		return 1;
 	return dimensions[i+1].alignment;
 }
-/// set the number of entries in the first dimension
-void data_format::set_width(unsigned int _width) 
+void data_format::set_width (size_t _width) 
 {
 	set_resolution(0, _width);
 }
-/// set the number of entries in the second dimension
-void data_format::set_height(unsigned int _height) 
+void data_format::set_height(size_t _height) 
 {
 	set_resolution(1, _height);
 }
-/// set the number of entries in the third dimension
-void data_format::set_depth(unsigned int _depth) 
+void data_format::set_depth (size_t _depth) 
 {
 	set_resolution(2, _depth);
 }
-/// set the number of entries in the last dimension
-void data_format::set_nr_time_steps(unsigned int _nr_time_steps) 
+void data_format::set_nr_time_steps(size_t _nr_time_steps) 
 {
 	if (get_nr_dimensions() == 0)
 		return;
 	set_resolution(get_nr_dimensions()-1, _nr_time_steps);
 }
-/// set the alignment of entries
-void data_format::set_entry_alignment(unsigned int _a)
+void data_format::set_entry_alignment(unsigned _a)
 {
 	if (get_nr_dimensions() == 0)
 		dimensions.resize(1);
 	dimensions[0].alignment = _a;
 }
-
-/// set the alignment of a given dimension
-void data_format::set_alignment(unsigned int i, unsigned int _a)
+void data_format::set_alignment(unsigned i, unsigned _a)
 {
 	if (i >= get_nr_dimensions())
 		dimensions.resize(i+1);
@@ -335,20 +273,14 @@ void data_format::set_alignment(unsigned int i, unsigned int _a)
 		return;
 	dimensions[i+1].alignment = _a;
 }
-
-/// return the component_format info by simple conversion of the this pointer
 const component_format& data_format::get_component_format() const
 {
 	return *static_cast<const component_format*>(this);
 }
-
-/// set component_format by simply assigning to a converted this pointer
 void data_format::set_component_format(const component_format& cf)
 {
 	*static_cast<component_format*>(this) = cf;
 }
-
-/// comparison between component formats
 bool data_format::operator == (const data_format& df) const
 {
 	if (get_nr_dimensions() != df.get_nr_dimensions())
@@ -361,14 +293,10 @@ bool data_format::operator == (const data_format& df) const
 	}
 	return get_component_format() == df.get_component_format();
 }
-
-/// comparison between component formats
 bool data_format::operator != (const data_format& df) const
 {
 	return !(*this == df);
 }
-
-/// define stream out operator
 std::ostream& operator << (std::ostream& os, const data_format& df)
 {
 	os << df.get_component_format();
@@ -386,10 +314,5 @@ std::ostream& operator << (std::ostream& os, const data_format& df)
 	}
 	return os << ')';
 }
-
-
-
-
-
 	}
 }

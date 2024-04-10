@@ -21,7 +21,7 @@ void configure_color_scale(
 	cgv::render::context& ctx, cgv::render::shader_program& prog,
 	cgv::media::ColorScale cs[2], float window_zero_position[2])
 {
-	const std::vector<cgv::render::render_types::rgb>* scs_ptrs[2] = { 0, 0 };
+	const std::vector<rgb>* scs_ptrs[2] = { 0, 0 };
 	int nr_color_scale_samples[2] = { 0, 0 };
 	int color_scale_index[2];
 	int color_scale_is_bipolar[2];
@@ -36,7 +36,7 @@ void configure_color_scale(
 		}
 	}
 	prog.set_uniform_array(ctx, "nr_color_scale_samples", nr_color_scale_samples, 2);
-	std::vector<cgv::render::render_types::rgb> colors(32 + nr_color_scale_samples[1]);
+	std::vector<rgb> colors(32 + nr_color_scale_samples[1]);
 	if (scs_ptrs[0])
 		std::copy(scs_ptrs[0]->begin(), scs_ptrs[0]->end(), colors.begin());
 	if (scs_ptrs[1])

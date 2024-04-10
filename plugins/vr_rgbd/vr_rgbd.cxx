@@ -48,10 +48,10 @@
 // different interaction states for the controllers
 enum InteractionState { IS_NONE, IS_OVER, IS_GRAB };
 
-struct vertex : public cgv::render::render_types
+struct vertex
 {
-	vec3 point;
-	rgba8 color;
+	cgv::vec3 point;
+	cgv::rgba8 color;
 };
 
 /// the plugin class vr_rgbd inherits like other plugins from node, drawable and provider

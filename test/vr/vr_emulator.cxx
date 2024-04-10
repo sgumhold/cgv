@@ -24,11 +24,11 @@ const float Hand_height = 755.0f;
 const float Reach_Upwards = 2060.0f;
 const float Pupillary_distance = 63.0f;
 
-vr_emulated_kit::mat3x4 vr_emulated_kit::construct_pos_matrix(const quat& orientation, const vec3& position)
+vr_emulated_kit::mat34 vr_emulated_kit::construct_pos_matrix(const quat& orientation, const vec3& position)
 {
 	mat3 R;
 	orientation.put_matrix(R);
-	mat3x4 P;
+	mat34 P;
 	P.set_col(0, R.col(0));
 	P.set_col(1, R.col(1));
 	P.set_col(2, R.col(2));

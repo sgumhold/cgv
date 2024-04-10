@@ -9,7 +9,7 @@ namespace pointcloud {
 
 
 	// interface definition
-class point_cloud_provider : public cgv::render::render_types
+class point_cloud_provider
 {
   public:
 	virtual cgv::signal::signal<>& new_point_cloud_ready() = 0;

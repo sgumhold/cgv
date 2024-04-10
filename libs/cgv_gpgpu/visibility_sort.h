@@ -78,7 +78,7 @@ public:
 	/** Specifies whether to initialize all values in ascending order based on
 		their array index in the initial key generation on each sort run. This
 		may only be useful when sorting a single index buffer for visibility sorting etc.
-		When sorting paris of indices or predetermined indices, set this to false.*/
+		When sorting pairs of indices or predetermined indices, set this to false.*/
 	void initialize_values_on_sort(bool flag) { value_init_override = flag; }
 
 	/** GLSL code to define the data type and structure of one element of the input data buffer.

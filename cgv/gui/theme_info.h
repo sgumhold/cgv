@@ -8,9 +8,6 @@
 namespace cgv {
 namespace gui {
 
-/// declare rgb color type
-typedef cgv::media::color<float, cgv::media::RGB> rgb;
-
 #define DEF_COLOR_MEMBER_METHODS(FIELD) \
 void FIELD(unsigned char r, unsigned char g, unsigned char b) { \
 	FIELD##_col = rgb( \
@@ -29,6 +26,8 @@ std::string FIELD##_hex() const { \
 class CGV_API theme_info {
 protected:
 	int theme_idx;
+
+	int spacing_ = 1;
 
 	rgb background_col;
 	rgb group_col;
@@ -71,6 +70,9 @@ public:
 	void set_index(int idx);
 	int get_index() const;
 	bool is_dark() const;
+
+	int spacing() const { return spacing_; }
+	void spacing(int i) { spacing_ = i; }
 
 	DEF_COLOR_MEMBER_METHODS(background)
 	DEF_COLOR_MEMBER_METHODS(group)

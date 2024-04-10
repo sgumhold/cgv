@@ -94,7 +94,7 @@ namespace cgv {
 					}
 				}
 				if (gi.check_proximity) {
-					auto* g = object_ptr->get_interface<grabable>();
+					auto* g = object_ptr->get_interface<grabbable>();
 					if (g) {
 						vec3 closest_point;
 						vec3 closest_normal(0.0f);

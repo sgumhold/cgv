@@ -19,7 +19,7 @@ gradient_viewer::gradient_viewer ()
 // configure texture format, filtering and wrapping (no context necessary)
 	: tf_tex("[R,G,B,A]"), volume_tex("flt32[R]"), gradient_tex("flt32[R,G,B,A]"), depth_tex("[D]")
 {
-	volume_bounding_box = box3(vec3(0.0f), vec3(1.0f));
+	volume_bounding_box = cgv::box3(cgv::vec3(0.0f), cgv::vec3(1.0f));
 
 	tf_tex.set_min_filter(cgv::render::TextureFilter::TF_LINEAR);
 	tf_tex.set_mag_filter(cgv::render::TextureFilter::TF_LINEAR);
@@ -50,7 +50,7 @@ gradient_viewer::gradient_viewer ()
 	shape = S_ELLIPSOID;
 	gradient_mode = GM_SOBEL_OPTIMIZED;
 
-	vres = uvec3(128, 64, 29); // odd shaped resolution to show the shader is not limited to nice power-of-two resolutions
+	vres = cgv::uvec3(128, 64, 29); // odd shaped resolution to show the shader is not limited to nice power-of-two resolutions
 
 	do_calculate_gradients = false;
 
@@ -109,18 +109,18 @@ void gradient_viewer::create_test_volume(cgv::render::context& ctx)
 	// configure extents
 	int min_ext_axis = cgv::math::min_index(vres);
 	float min_ext = (float)vres[min_ext_axis];
-	vec3 vbox_ext = vec3(vres) / vec3(min_ext);
-	vec3 vbox_min = -0.5f * vbox_ext;
-	vec3 half_vres = 0.5f * vec3(vres);
+	cgv::vec3 vbox_ext = cgv::vec3(vres) / cgv::vec3(min_ext);
+	cgv::vec3 vbox_min = -0.5f * vbox_ext;
+	cgv::vec3 half_vres = 0.5f * cgv::vec3(vres);
 
 	// compute volume data
 	std::vector<float> vol_data(vres[0] * vres[1] * vres[2]);
-	uvec3 voxel;
+	cgv::uvec3 voxel;
 	unsigned i;
 	for (i = 0, voxel[2] = 0; voxel[2] < vres[2]; ++voxel[2])
 		for (voxel[1] = 0; voxel[1] < vres[1]; ++voxel[1])
 			for (voxel[0] = 0; voxel[0] < vres[0]; ++voxel[0], ++i) {
-				vec3 p = (vec3(voxel) - half_vres) / half_vres;
+				cgv::vec3 p = (cgv::vec3(voxel) - half_vres) / half_vres;
 				if (shape == S_ELLIPSOID) {
 					float dist = length(p);
 					if (dist >= 0.5f && dist <= 1.0f && p[1] < 0.4f)
@@ -150,7 +150,7 @@ void gradient_viewer::calculate_gradient_texture(cgv::render::context& ctx)
 	//********** compute gradient texture with compute shader *************
 	unsigned group_size = 4;
 
-	uvec3 num_groups = ceil(vec3(vres) / (float)group_size);
+	cgv::uvec3 num_groups = ceil(cgv::vec3(vres) / (float)group_size);
 
 	if (!gradient_tex.is_created())
 		gradient_tex.create(ctx, cgv::render::TT_3D, vres[0], vres[1], vres[2]);
@@ -177,7 +177,7 @@ void gradient_viewer::calculate_gradient_texture(cgv::render::context& ctx)
 	glBindImageTexture(1, 0, 0, GL_TRUE, 0, GL_WRITE_ONLY, GL_RGBA32F);
 
 	// read texture into memory
-	std::vector<vec4> gradient_data(vres[0] * vres[1] * vres[2], vec4(0.0f));
+	std::vector<cgv::vec4> gradient_data(vres[0] * vres[1] * vres[2], cgv::vec4(0.0f));
 	gradient_tex.enable(ctx, 0);
 	glGetTexImage(GL_TEXTURE_3D, 0, GL_RGBA, GL_FLOAT, (void*)gradient_data.data());
 	gradient_tex.disable(ctx);
@@ -192,28 +192,28 @@ void gradient_viewer::calculate_gradient_texture(cgv::render::context& ctx)
 	// configure extents
 	int min_ext_axis = cgv::math::min_index(vres);
 	float min_ext = (float)vres[min_ext_axis];
-	vec3 vbox_ext = vec3(vres) / vec3(min_ext);
-	vec3 vbox_min = -0.5f * vbox_ext;
-	vec3 half_vres = 0.5f * vec3(vres);
-	vec3 inv_vres = vec3(1.0f) / vec3(vres);
+	cgv::vec3 vbox_ext = cgv::vec3(vres) / cgv::vec3(min_ext);
+	cgv::vec3 vbox_min = -0.5f * vbox_ext;
+	cgv::vec3 half_vres = 0.5f * cgv::vec3(vres);
+	cgv::vec3 inv_vres = cgv::vec3(1.0f) / cgv::vec3(vres);
 
 	// Loop over all voxels and place arrows to visualize the gradients
-	uvec3 voxel;
+	cgv::uvec3 voxel;
 	unsigned i;
 	for (i = 0, voxel[2] = 0; voxel[2] < vres[2]; ++voxel[2])
 		for (voxel[1] = 0; voxel[1] < vres[1]; ++voxel[1])
 			for (voxel[0] = 0; voxel[0] < vres[0]; ++voxel[0], ++i) {
 
-				vec3 p = 0.5f * vbox_ext * (vec3(voxel) - half_vres) / half_vres;
+				cgv::vec3 p = 0.5f * vbox_ext * (cgv::vec3(voxel) - half_vres) / half_vres;
 
-				vec3 grad3 = reinterpret_cast<const vec3&>(gradient_data[i]);
+				cgv::vec3 grad3 = reinterpret_cast<const cgv::vec3&>(gradient_data[i]);
 
 				if (grad3.sqr_length() > 0.0f) {
 					positions.push_back(p);
-					vec3 grad = normalize(grad3);
+					cgv::vec3 grad = normalize(grad3);
 					directions.push_back(grad);
 					grad = 0.5f * grad + 0.5f;
-					colors.push_back(rgb(grad[0], grad[1], grad[2]));
+					colors.push_back(cgv::rgb(grad[0], grad[1], grad[2]));
 				}
 			}
 
@@ -250,7 +250,7 @@ bool gradient_viewer::init(cgv::render::context& ctx)
 		abort();
 
 	// add an opacity channel to the transfer function
-	unsigned w = image_data.get_format()->get_width();
+	unsigned w = (unsigned)image_data.get_format()->get_width();
 	unsigned char* src_ptr = image_data.get_ptr<unsigned char>();
 
 	std::vector<unsigned char> tf_data(4*w, 0u);
@@ -304,8 +304,8 @@ void gradient_viewer::after_finish(cgv::render::context& ctx)
 	// copy the contents of the depth buffer from the opaque geometry into the extra depth texture
 	depth_tex.replace_from_buffer(ctx, 0, 0, 0, 0, ctx.get_width(), ctx.get_height());
 
-	vec3 eye_pos = view_ptr->get_eye();
-	vec3 view_dir = view_ptr->get_view_dir();
+	cgv::vec3 eye_pos = view_ptr->get_eye();
+	cgv::vec3 view_dir = view_ptr->get_view_dir();
 	if (show_volume) {
 		auto& vr = cgv::render::ref_volume_renderer(ctx);
 		vr.set_render_style(vstyle);

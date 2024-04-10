@@ -1,0 +1,87 @@
+#version 150
+
+#define M_PI 3.14159265359
+
+//***** begin interface of shape2d.glsl ***********************************
+vec2 get_adjusted_size(vec2 size);
+vec4 get_active_color(vec4 color);
+vec4 transform_world_to_window_space(vec2 p);
+//***** end interface of shape2d.glsl ***********************************
+
+//***** begin interface of fragment2d.glfs ***********************************
+uniform vec2 tex_scaling = vec2(1.0);
+uniform vec2 tex_offset = vec2(0.0);
+
+void finish_sdf_fragment2d(in float signed_distance, in vec4 color);
+void finish_sdf_fragment2d(in float signed_distance, in vec4 color, in vec2 texcoords);
+void finish_fragment2d(in vec4 color);
+void finish_fragment2d(in vec4 color, in vec2 texcoords);
+//***** end interface of fragment2d.glfs ***********************************
+
+uniform float thickness = 0.0f;
+
+flat in vec2 size;
+in vec2 pix_coord;
+in vec2 tex_coord;
+flat in vec4 color_fs;
+
+// return a rotation matrix given angle in radians
+mat2 rot_mat(float a) {
+	float as = sin(a);
+	float ac = cos(a);
+	return mat2(ac, as, -as, ac);
+}
+
+// rotate a 2d point by the given angle in radians
+vec2 rotate(in vec2 p, in float a) {
+	const float quarter_turn = 1.57079632679; // additional rotation of 90 degrees, so an angle of 0 degrees points the glyph into the direction of the segment
+	//a += quarter_turn;
+	return rot_mat(a) * p;
+}
+
+// subtract signed distance d0 from d1
+float op_subtract(float d0, float d1) {
+	return max(-d0, d1);
+}
+
+// https://iquilezles.org/www/articles/distfunctions2d/distfunctions2d.htm
+float sd_circle(vec2 p, float r) {
+    return length(p) - r;
+}
+
+float sd_ring(vec2 p, vec2 n, float r, float th) {
+
+    p.x = abs(p.x);
+    p = mat2(n.x, n.y, -n.y, n.x)*p;
+
+    return max(
+		abs(length(p) - r) - th * 0.5,
+		length(vec2(p.x, max(0.0, abs(r - p.y) - th * 0.5))) * sign(p.x)
+	);
+}
+
+void main() {
+	
+	float aperture = size.y;
+	vec2 p = rotate(pix_coord, M_PI * (aperture + 1.0));
+	
+	float final_size = get_adjusted_size(size).x;
+
+	float dist = 1e20;
+	
+	if(aperture > 0.99999)
+		dist = op_subtract(
+			sd_circle(pix_coord, final_size * (1.0 - thickness)),
+			sd_circle(pix_coord, final_size)
+		);
+	else {
+		float angle = M_PI * aperture;
+		dist = sd_ring(p, vec2(cos(angle), sin(angle)), mix(final_size, 0.5*final_size, thickness), final_size * thickness);
+	}
+
+	vec4 color = get_active_color(color_fs);
+
+	vec2 uv = tex_coord;
+
+	finish_sdf_fragment2d(dist, color, uv);
+}

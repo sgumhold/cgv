@@ -3,7 +3,7 @@
 #include <cgv/render/drawable.h>
 #include <cgv/gui/event.h>
 #include <libs/vr/vr_kit.h>
-#include "grabable.h"
+#include "grabbable.h"
 #include "pointable.h"
 #include "transformed.h"
 #include "dispatcher.h"

@@ -247,10 +247,29 @@ bool is_power_of_two(unsigned int i)
 	while (true);
 	return false;
 }
+bool is_power_of_two(size_t i)
+{
+	do {
+		if (i == 1)
+			return true;
+		if ((i & 1) != 0)
+			return false;
+		i /= 2;
+	} 
+	while (true);
+	return false;
+}
 
 unsigned int power_of_two_ub(unsigned int i)
 {
 	unsigned int res = 2;
+	while (res < i)
+		res *= 2;
+	return res;
+}
+size_t power_of_two_ub(size_t i)
+{
+	size_t res = 2;
 	while (res < i)
 		res *= 2;
 	return res;
@@ -288,8 +307,8 @@ bool texture::create_from_image(cgv::data::data_format& df, cgv::data::data_view
 	}
 	if (cube_side < 1)
 		destruct(ctx);
-	unsigned w = df.get_width(), h = df.get_height();
-	unsigned W = w, H = h;
+	size_t w = df.get_width(), h = df.get_height();
+	size_t W = w, H = h;
 	data_format df1(df);
 	if (ensure_power_of_two && (!is_power_of_two(w) || !is_power_of_two(h))) {
 		W = power_of_two_ub(df.get_width());
@@ -307,7 +326,7 @@ bool texture::create_from_image(cgv::data::data_format& df, cgv::data::data_view
 		dest_ptr_end -= W * entry_size;
 		memcpy(dest_ptr_end, src_ptr, w*entry_size);
 		if (clear_color_ptr) {
-			for (unsigned x = w; x < W; ++x)
+			for (size_t x = w; x < W; ++x)
 				memcpy(dest_ptr_end + x * entry_size, clear_color_ptr, entry_size);
 		}
 		else
@@ -315,9 +334,9 @@ bool texture::create_from_image(cgv::data::data_format& df, cgv::data::data_view
 		src_ptr += w * entry_size;
 	}
 	if (H > h) {
-		unsigned N = (H - h)*W;
+		size_t N = (H - h)*W;
 		if (clear_color_ptr) {
-			for (unsigned i = 0; i < N; ++i)
+			for (size_t i = 0; i < N; ++i)
 				memcpy(dest_ptr + i * entry_size, clear_color_ptr, entry_size);
 		}
 		else
@@ -337,10 +356,9 @@ bool texture::create_from_image(const context& ctx,
 	if (!create_from_image(df,dv,ctx,file_name,clear_color_ptr,level,cube_side))
 		return false;
 	if (image_width_ptr)
-		*image_width_ptr = df.get_width();
-	unsigned int h = df.get_height();
+		*image_width_ptr = int(df.get_width());
 	if (image_height_ptr)
-		*image_height_ptr = df.get_height();
+		*image_height_ptr = int(df.get_height());
 	return true;
 }
 
@@ -434,7 +452,7 @@ bool texture::write_to_file(context& ctx, const std::string& file_name, unsigned
 		return false;
 	}
 	frame_buffer fb;
-	if (!fb.create(ctx,get_width(), get_height())) {
+	if (!fb.create(ctx,int(get_width()), int(get_height()))) {
 		last_error = "could not create frame buffer object for write_to_file";
 		return false;
 	}
@@ -455,7 +473,7 @@ bool texture::write_to_file(context& ctx, const std::string& file_name, unsigned
 	if (is_depth) {
 		render_buffer rb("[R,G,B]");
 		df = data_format("uint32[D]");
-		rb.create(ctx, get_width(), get_height());
+		rb.create(ctx, int(get_width()), int(get_height()));
 		if (!fb.attach(ctx, rb)) {
 			last_error = "could not attach color buffer for write_to_file";
 			return false;
@@ -475,7 +493,7 @@ bool texture::write_to_file(context& ctx, const std::string& file_name, unsigned
 
 	if (is_depth) {
 		cgv::utils::statistics stats;
-		unsigned i, n = get_width()*get_height();
+		size_t i, n = get_width()*get_height();
 		for (i = 0; i < n; ++i)
 			stats.update(dv.get_ptr<cgv::type::uint32_type>()[i]);
 		cgv::type::uint32_type min_val = cgv::type::uint32_type(stats.get_min());
@@ -723,9 +741,6 @@ bool texture::replace_from_image(cgv::data::data_format& df, cgv::data::data_vie
 		if (!ir.read_palette(i, palettes.back()))
 			return false;
 	}
-	destruct(ctx);
-	unsigned int w = df.get_width();
-	unsigned int h = df.get_height();
 	replace(ctx, x, y, z_or_cube_side, dv, level, &palettes);
 	return true;
 }

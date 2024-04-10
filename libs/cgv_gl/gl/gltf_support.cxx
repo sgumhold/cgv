@@ -95,7 +95,7 @@ void add_attribute(cgv::render::attribute_array& aa,
 }
 
 void extract_additional_information(const fx::gltf::Document& doc,
-	cgv::render::render_types::box3& box,
+	box3& box,
 	size_t& vertex_count)
 {
 	vertex_count = 0;
@@ -114,14 +114,14 @@ void extract_additional_information(const fx::gltf::Document& doc,
 					for (size_t i = 0; i < accessor.count; ++i) {
 						switch (accessor.type) {
 						case fx::gltf::Accessor::Type::Vec2:
-							box.add_point(cgv::render::render_types::vec3(reinterpret_cast<const cgv::render::render_types::vec2*>(data_ptr)[i], 0.0f));
+							box.add_point(vec3(reinterpret_cast<const vec2*>(data_ptr)[i], 0.0f));
 							break;
 						case fx::gltf::Accessor::Type::Vec3:
-							box.add_point(reinterpret_cast<const cgv::render::render_types::vec3*>(data_ptr)[i]);
+							box.add_point(reinterpret_cast<const vec3*>(data_ptr)[i]);
 							break;
 						case fx::gltf::Accessor::Type::Vec4:
-							box.add_point(*reinterpret_cast<const cgv::render::render_types::vec3*>(
-								reinterpret_cast<const cgv::render::render_types::vec4*>(data_ptr) + i));
+							box.add_point(*reinterpret_cast<const vec3*>(
+								reinterpret_cast<const vec4*>(data_ptr) + i));
 							break;
 						}
 					}
@@ -203,7 +203,7 @@ bool build_render_info(const std::string& file_name, const fx::gltf::Document& d
 				found_KHR_mat = true;
 				if (mat.count("diffuseFactor")) {
 					auto& df = mat["diffuseFactor"];
-					tm->set_diffuse_reflectance(cgv::render::render_types::rgb(
+					tm->set_diffuse_reflectance(rgb(
 						df[0].get<float>(), df[1].get<float>(), df[2].get<float>()));
 					tm->set_transparency(1.0f - df[3].get<float>());
 				}
@@ -215,7 +215,7 @@ bool build_render_info(const std::string& file_name, const fx::gltf::Document& d
 					tm->set_roughness(1 - mat["glossinessFactor"].get<float>());
 				if (mat.count("specularFactor")) {
 					auto& sf = mat["specularFactor"];
-					tm->set_diffuse_reflectance(cgv::render::render_types::rgb(
+					tm->set_diffuse_reflectance(rgb(
 						sf[0].get<float>(), sf[1].get<float>(), sf[2].get<float>()));
 				}
 				if (mat.count("specularGlossinessTexture")) {
@@ -225,7 +225,7 @@ bool build_render_info(const std::string& file_name, const fx::gltf::Document& d
 			}
 		}
 		if (!found_KHR_mat) {
-			tm->set_diffuse_reflectance(cgv::render::render_types::rgb(
+			tm->set_diffuse_reflectance(rgb(
 				m.pbrMetallicRoughness.baseColorFactor[0],
 				m.pbrMetallicRoughness.baseColorFactor[1],
 				m.pbrMetallicRoughness.baseColorFactor[2]));
@@ -243,7 +243,7 @@ bool build_render_info(const std::string& file_name, const fx::gltf::Document& d
 			}
 			if (m.alphaMode == fx::gltf::Material::AlphaMode::Mask)
 				tm->set_alpha_test(cgv::render::textured_material::AT_GREATER, m.alphaCutoff);
-			tm->set_emission(cgv::render::render_types::rgba(
+			tm->set_emission(rgba(
 				m.emissiveFactor[0],
 				m.emissiveFactor[1],
 				m.emissiveFactor[2]));
@@ -346,7 +346,7 @@ void extract_mesh(const std::string& file_name, const fx::gltf::Document& doc,
 	for (const auto& m : doc.materials) {
 		auto& mm = mesh.ref_material(mesh.new_material());
 		mm.set_name(m.name);
-		mm.set_diffuse_reflectance(cgv::render::render_types::rgba(
+		mm.set_diffuse_reflectance(rgba(
 			m.pbrMetallicRoughness.baseColorFactor[0],
 			m.pbrMetallicRoughness.baseColorFactor[1],
 			m.pbrMetallicRoughness.baseColorFactor[2],
@@ -364,7 +364,7 @@ void extract_mesh(const std::string& file_name, const fx::gltf::Document& doc,
 			mm.set_roughness_index(ii);
 			mm.set_metalness_index(ii);
 		}
-		mm.set_emission(cgv::render::render_types::rgba(
+		mm.set_emission(rgba(
 			m.emissiveFactor[0],
 			m.emissiveFactor[1],
 			m.emissiveFactor[2]));

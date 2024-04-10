@@ -581,7 +581,7 @@ void vr_test::init_frame(cgv::render::context& ctx)
 			if (camera_ptr && camera_ptr->get_state() == vr::CS_STARTED) {
 				uint32_t width = frame_width, height = frame_height, split = frame_split;
 				if (shared_texture) {
-					box2 tex_range;
+					cgv::box2 tex_range;
 					if (camera_ptr->get_gl_texture_id(camera_tex_id, width, height, undistorted, &tex_range.ref_min_pnt()(0))) {
 						camera_aspect = (float)width / height;
 						split = camera_ptr->get_frame_split();
@@ -652,7 +652,7 @@ void vr_test::init_frame(cgv::render::context& ctx)
 void vr_test::draw(cgv::render::context& ctx)
 {
 	if (MI.is_constructed()) {
-		dmat4 R;
+		cgv::dmat4 R;
 		mesh_orientation.put_homogeneous_matrix(R);
 		ctx.push_modelview_matrix();
 		ctx.mul_modelview_matrix(
@@ -908,7 +908,7 @@ void vr_test::create_gui() {
 	add_decorator("vr_test", "heading", "level=2");
 	add_member_control(this, "mesh_scale", mesh_scale, "value_slider", "min=0.1;max=10;log=true;ticks=true");
 	add_gui("mesh_location", mesh_location, "vector", "options='min=-3;max=3;ticks=true");
-	add_gui("mesh_orientation", static_cast<dvec4&>(mesh_orientation), "direction", "options='min=-1;max=1;ticks=true");
+	add_gui("mesh_orientation", static_cast<cgv::dvec4&>(mesh_orientation), "direction", "options='min=-1;max=1;ticks=true");
 	add_member_control(this, "ray_length", ray_length, "value_slider", "min=0.1;max=10;log=true;ticks=true");
 	add_member_control(this, "show_seethrough", show_seethrough, "check");
 	if(last_kit_handle) {
@@ -988,7 +988,7 @@ void vr_test::create_gui() {
 		align("\a");
 		add_member_control(this, "scale", mesh_scale, "value_slider", "min=0.0001;step=0.0000001;max=100;log=true;ticks=true");
 		add_gui("location", mesh_location, "", "main_label='';long_label=true;gui_type='value_slider';options='min=-2;max=2;step=0.001;ticks=true'");
-		add_gui("orientation", static_cast<dvec4&>(mesh_orientation), "direction", "main_label='';long_label=true;gui_type='value_slider';options='min=-1;max=1;step=0.001;ticks=true'");
+		add_gui("orientation", static_cast<cgv::dvec4&>(mesh_orientation), "direction", "main_label='';long_label=true;gui_type='value_slider';options='min=-1;max=1;step=0.001;ticks=true'");
 		align("\b");
 		end_tree_node(mesh_scale);
 	}

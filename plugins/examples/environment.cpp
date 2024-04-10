@@ -37,7 +37,7 @@ protected:
 	texture color_map;
 	frame_buffer depth_map_fb;
 
-	vec2 sun_position;
+	cgv::vec2 sun_position;
 
 	sphere_render_data<> spheres;
 	sphere_render_style sphere_style;
@@ -50,7 +50,7 @@ protected:
 	float lod = 0.0f;
 
 	float roughness = 1.0f;
-	rgb F0 = rgb(1.0f);
+	cgv::rgb F0 = cgv::rgb(1.0f);
 
 	mesh_render_info box_mesh_info, obj_mesh_info;
 
@@ -67,12 +67,12 @@ protected:
 	unsigned prefiltered_specular_resolution = 128u;
 
 	struct matrix_stack {
-		std::stack<mat4> s;
+		std::stack<cgv::mat4> s;
 
 		matrix_stack() { init(); }
 
 		void init() {
-			mat4 M;
+			cgv::mat4 M;
 			M.identity();
 			s.push(M);
 		}
@@ -85,24 +85,24 @@ protected:
 				init();
 		}
 
-		void set(const mat4& M) { s.top() = M; }
+		void set(const cgv::mat4& M) { s.top() = M; }
 
-		const mat4& get() { return s.top(); }
+		const cgv::mat4& get() { return s.top(); }
 
-		void mul(const mat4& M) { set(get() * M); }
+		void mul(const cgv::mat4& M) { set(get() * M); }
 	};
 
 	struct render_context {
 		context* ctx = nullptr;
-		mat4 view_matrix;
-		mat4 light_matrix;
+		cgv::mat4 view_matrix;
+		cgv::mat4 light_matrix;
 
 		void store_view() {
 			// if not previously altered the modelview matrix is just the view matrix
 			view_matrix = ctx->get_modelview_matrix();
 		}
 
-		mat3 get_normal_matrix(const mat4& M) {
+		cgv::mat3 get_normal_matrix(const cgv::mat4& M) {
 			cgv::math::fmat<float, 3, 3> NM;
 			NM(0, 0) = M(0, 0);
 			NM(0, 1) = M(0, 1);
@@ -120,12 +120,12 @@ protected:
 	};
 
 	struct scene_object {
-		vec3 position = vec3(0.0f);
-		vec3 rotation = vec3(0.0f);
-		vec3 scale = vec3(1.0f);
-		vec2 uv_scale = vec2(1.0f);
+		cgv::vec3 position = cgv::vec3(0.0f);
+		cgv::vec3 rotation = cgv::vec3(0.0f);
+		cgv::vec3 scale = cgv::vec3(1.0f);
+		cgv::vec2 uv_scale = cgv::vec2(1.0f);
 
-		mat4 transformation_matrix;
+		cgv::mat4 transformation_matrix;
 
 		mesh_render_info mri;
 
@@ -209,9 +209,9 @@ public:
 		shaders.add("pbr_surface_textured", "pbr_surface.glpr", defines);
 		shaders.add("surface_depth", "surface_depth.glpr");
 
-		sun_position = vec2(0.0f, 0.6f);
+		sun_position = cgv::vec2(0.0f, 0.6f);
 
-		sphere_style.surface_color = rgb(0.5f);
+		sphere_style.surface_color = cgv::rgb(0.5f);
 		sphere_style.radius = 0.02f;
 
 		cgv::signal::connect(cgv::gui::get_animation_trigger().shoot, this, &environment_demo::timer_event);
@@ -252,9 +252,9 @@ public:
 		success &= shaders.load_all(ctx);
 		
 		if(spheres.init(ctx)) {
-			spheres.add(vec3(0.0f, -50.0f, 0.0f), 50.0f);
-			spheres.add(vec3(0.0f, 0.5f, 0.0f), 0.5f);
-			spheres.add(vec3(0.1f, 1.2f, 0.0f), 0.2f);
+			spheres.add(cgv::vec3(0.0f, -50.0f, 0.0f), 50.0f);
+			spheres.add(cgv::vec3(0.0f, 0.5f, 0.0f), 0.5f);
+			spheres.add(cgv::vec3(0.1f, 1.2f, 0.0f), 0.2f);
 			spheres.set_out_of_date();
 		} else {
 			success = false;
@@ -267,16 +267,16 @@ public:
 			if(box_mesh.read(std::string(getenv("CGV_DIR")) + "/plugins/examples/res/box.obj")) {
 				box_mesh.compute_face_tangents();
 				floor.mri.construct(ctx, box_mesh);
-				floor.position = vec3(0.0f, -1.0f, 0.0f);
-				floor.scale = vec3(10.0f, 0.2f, 10.0f);
+				floor.position = cgv::vec3(0.0f, -1.0f, 0.0f);
+				floor.scale = cgv::vec3(10.0f, 0.2f, 10.0f);
 				floor.compute_transformation();
-				floor.uv_scale = vec2(4.0f);
+				floor.uv_scale = cgv::vec2(4.0f);
 			}
 
 			if(obj_mesh.read(std::string(getenv("CGV_DIR")) + "/plugins/examples/res/blob.obj")) {
 				obj_mesh.compute_face_tangents();
 				obj.mri.construct(ctx, obj_mesh);
-				obj.uv_scale = vec2(2.0f);
+				obj.uv_scale = cgv::vec2(2.0f);
 			}
 		}
 
@@ -336,7 +336,7 @@ public:
 			if((view_ptr = find_view_as_node())) {}
 		}
 	}
-	mat3 get_normal_matrix(const mat4& M) {
+	cgv::mat3 get_normal_matrix(const cgv::mat4& M) {
 		cgv::math::fmat<float, 3, 3> NM;
 		NM(0, 0) = M(0, 0);
 		NM(0, 1) = M(0, 1);
@@ -372,20 +372,20 @@ public:
 		//spheres.render(ctx, ref_sphere_renderer(ctx), sphere_style);
 		//return;
 
-		vec3 eye_pos = vec3(view_ptr->get_eye());
+		cgv::vec3 eye_pos = cgv::vec3(view_ptr->get_eye());
 
-		vec3 light_direction = compute_sphere_normal(sun_position, 0.0f, float(2.0 * M_PI), 0.0f, float(M_PI));
+		cgv::vec3 light_direction = compute_sphere_normal(sun_position, 0.0f, float(2.0 * M_PI), 0.0f, float(M_PI));
 
-		mat4 light_projection = cgv::math::ortho4(-5.0f, 5.0f, -5.0f, 5.0f, near_plane, far_plane);
-		mat4 light_view = cgv::math::look_at4(5.0f * light_direction, vec3(0.0f, 0.0f, 0.0f), vec3(0.0f, 1.0f, 0.0f));
+		cgv::mat4 light_projection = cgv::math::ortho4(-5.0f, 5.0f, -5.0f, 5.0f, near_plane, far_plane);
+		cgv::mat4 light_view = cgv::math::look_at4(5.0f * light_direction, cgv::vec3(0.0f, 0.0f, 0.0f), cgv::vec3(0.0f, 1.0f, 0.0f));
 
-		mat4 bias_matrix;
-		bias_matrix.set_col(0, vec4(0.5f, 0.0f, 0.0f, 0.0f));
-		bias_matrix.set_col(1, vec4(0.0f, 0.5f, 0.0f, 0.0f));
-		bias_matrix.set_col(2, vec4(0.0f, 0.0f, 0.5f, 0.0f));
-		bias_matrix.set_col(3, vec4(0.5f, 0.5f, 0.5f, 1.0f));
+		cgv::mat4 bias_matrix;
+		bias_matrix.set_col(0, cgv::vec4(0.5f, 0.0f, 0.0f, 0.0f));
+		bias_matrix.set_col(1, cgv::vec4(0.0f, 0.5f, 0.0f, 0.0f));
+		bias_matrix.set_col(2, cgv::vec4(0.0f, 0.0f, 0.5f, 0.0f));
+		bias_matrix.set_col(3, cgv::vec4(0.5f, 0.5f, 0.5f, 1.0f));
 			
-		mat4 light_matrix = light_projection * light_view;
+		cgv::mat4 light_matrix = light_projection * light_view;
 
 		rctx.store_view();
 		rctx.light_matrix = light_matrix;
@@ -395,7 +395,7 @@ public:
 		auto& depth_prog = shaders.get("surface_depth");
 		
 		ctx.push_window_transformation_array();
-		ctx.set_viewport(ivec4(0, 0, shadow_map_resolution, shadow_map_resolution));
+		ctx.set_viewport(cgv::ivec4(0, 0, shadow_map_resolution, shadow_map_resolution));
 
 		depth_map_fb.enable(ctx);
 		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
@@ -522,7 +522,7 @@ public:
 		
 		// safe default viewport and configure the viewport to the capture dimensions of the environment map
 		ctx.push_window_transformation_array();
-		ctx.set_viewport(ivec4(0, 0, environment_resolution, environment_resolution));
+		ctx.set_viewport(cgv::ivec4(0, 0, environment_resolution, environment_resolution));
 
 		auto& sky_cubemap_gen = shaders.get("sky_cubemap_gen");
 		sky_cubemap_gen.set_uniform(ctx, "sun_pos", sun_position);
@@ -539,7 +539,7 @@ public:
 		sky_cubemap_gen.disable(ctx);
 
 		// configure the viewport to the capture dimensions of the irradiance map
-		ctx.set_viewport(ivec4(0, 0, irradiance_resolution, irradiance_resolution));
+		ctx.set_viewport(cgv::ivec4(0, 0, irradiance_resolution, irradiance_resolution));
 
 		environment_map.enable(ctx, 0);
 
@@ -558,7 +558,7 @@ public:
 		for(unsigned int mip = 0; mip < maxMipLevels; ++mip) {
 			unsigned int mip_resolution = (unsigned)(float(prefiltered_specular_resolution) * std::pow(0.5f, float(mip)));
 			// configure the viewport to the capture dimensions of the prefiltered specular map mipmap level
-			ctx.set_viewport(ivec4(0, 0, mip_resolution, mip_resolution));
+			ctx.set_viewport(cgv::ivec4(0, 0, mip_resolution, mip_resolution));
 
 			float roughness = (float)mip / (float)(maxMipLevels - 1);
 			prefiltered_specular_map_gen.set_uniform(ctx, "roughness", roughness);
@@ -602,7 +602,7 @@ public:
 
 		// safe main viewport and set viewport to lut resolution
 		ctx.push_window_transformation_array();
-		ctx.set_viewport(ivec4(0, 0, lut_resolution, lut_resolution));
+		ctx.set_viewport(cgv::ivec4(0, 0, lut_resolution, lut_resolution));
 
 		glDisable(GL_DEPTH_TEST);
 
@@ -625,8 +625,8 @@ public:
 		// restore previous viewport
 		ctx.pop_window_transformation_array();
 	}
-	vec3 compute_sphere_normal(vec2 coord, float phiStart, float phiLength, float thetaStart, float thetaLength) {
-		vec3 normal;
+	cgv::vec3 compute_sphere_normal(cgv::vec2 coord, float phiStart, float phiLength, float thetaStart, float thetaLength) {
+		cgv::vec3 normal;
 		normal.x() = -sin(thetaStart + coord.y() * thetaLength) * sin(phiStart + coord.x() * phiLength);
 		normal.y() = -cos(thetaStart + coord.y() * thetaLength);
 		normal.z() = -sin(thetaStart + coord.y() * thetaLength) * cos(phiStart + coord.x() * phiLength);
@@ -653,10 +653,10 @@ public:
 
 		spheres.clear();
 		for(unsigned i = 0; i < 3; ++i) {
-			spheres.add(vec3(0.0f, 0.0f, 0.1f*i));
-			spheres.add(vec3(1.0f, 0.0f, 0.1f*i));
-			spheres.add(vec3(0.0f, 1.0f, 0.1f*i));
-			spheres.add(vec3(1.0f, 1.0f, 0.1f*i));
+			spheres.add(cgv::vec3(0.0f, 0.0f, 0.1f*i));
+			spheres.add(cgv::vec3(1.0f, 0.0f, 0.1f*i));
+			spheres.add(cgv::vec3(0.0f, 1.0f, 0.1f*i));
+			spheres.add(cgv::vec3(1.0f, 1.0f, 0.1f*i));
 		}
 		spheres.fill(white);*/
 
@@ -665,7 +665,7 @@ public:
 				for(int k = 0; k < samples_u*samples_v / 2; k++) {
 
 					int x, y;
-					vec4 v;
+					cgv::vec4 v;
 
 					x = k % (samples_u / 2);
 					y = (samples_v - 1) - k / (samples_u / 2);
@@ -677,8 +677,8 @@ public:
 					v[3] = v[1];
 
 					/*if(i == 0 && j == 0) {
-						spheres.add(vec3(v[0], v[1], 0.0f), red);
-						spheres.add(vec3(v[2], v[3], 0.0f), red);
+						spheres.add(cgv::vec3(v[0], v[1], 0.0f), red);
+						spheres.add(cgv::vec3(v[2], v[3], 0.0f), red);
 					}*/
 
 					// jitter position
@@ -689,12 +689,12 @@ public:
 
 
 					/*if(i == 0 && j == 0) {
-						spheres.add(vec3(v[0], v[1], 0.1f), green);
-						spheres.add(vec3(v[2], v[3], 0.1f), green);
+						spheres.add(cgv::vec3(v[0], v[1], 0.1f), green);
+						spheres.add(cgv::vec3(v[2], v[3], 0.1f), green);
 					}*/
 
 					// warp to disk (does not perform as well as square samples)
-					vec4 d;
+					cgv::vec4 d;
 					//d[0] = sqrt(v[1]) * cos(2.0f * M_PI * v[0]);
 					//d[1] = sqrt(v[1]) * sin(2.0f * M_PI * v[0]);
 					//d[2] = sqrt(v[3]) * cos(2.0f * M_PI * v[2]);
@@ -706,8 +706,8 @@ public:
 
 					/*if(i == 1 && j == 0) {
 						rgb col = k < 2 ? red : green;
-						spheres.add(vec3(d[0], d[1], 0.2f), col);
-						spheres.add(vec3(d[2], d[3], 0.2f), col);
+						spheres.add(cgv::vec3(d[0], d[1], 0.2f), col);
+						spheres.add(cgv::vec3(d[2], d[3], 0.2f), col);
 					}*/
 
 					// save samples as signed bytes to reduce memory requirements

@@ -2,6 +2,7 @@
 
 #include "surface_renderer.h"
 #include <cgv/reflect/reflect_enum.h>
+#include <cgv/render/textured_rectangle.h>
 
 #include "gl/lib_begin.h"
 

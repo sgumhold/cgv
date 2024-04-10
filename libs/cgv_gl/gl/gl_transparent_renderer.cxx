@@ -95,11 +95,11 @@ void gl_transparent_renderer::blend_texture_over_viewport(context& ctx, texture&
 		glDisable(GL_DEPTH_TEST);
 		glDepthMask(GL_FALSE);
 
-		context::mat4 inv_PV = inv(ctx.get_projection_matrix()*ctx.get_modelview_matrix());
-		context::vec4 p_lb = inv_PV * context::vec4(-1,-1, 0, 1);
-		context::vec4 p_rb = inv_PV * context::vec4( 1,-1, 0, 1);
-		context::vec4 p_rt = inv_PV * context::vec4( 1, 1, 0, 1);
-		context::vec4 p_lt = inv_PV * context::vec4(-1, 1, 0, 1);
+		mat4 inv_PV = inv(ctx.get_projection_matrix()*ctx.get_modelview_matrix());
+		vec4 p_lb = inv_PV * vec4(-1,-1, 0, 1);
+		vec4 p_rb = inv_PV * vec4( 1,-1, 0, 1);
+		vec4 p_rt = inv_PV * vec4( 1, 1, 0, 1);
+		vec4 p_lt = inv_PV * vec4(-1, 1, 0, 1);
 
 		glBegin(GL_QUADS);
 			glTexCoord2f(0,0);

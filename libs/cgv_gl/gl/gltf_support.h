@@ -16,7 +16,7 @@ extern CGV_API bool build_render_info(const std::string& file_name, const fx::gl
 	cgv::render::context& ctx, cgv::render::render_info& R);
 /// extract bounding box and vertex count from gltf document
 extern CGV_API void extract_additional_information(const fx::gltf::Document& doc,
-	cgv::render::render_types::box3& box,
+	box3& box,
 	size_t& vertex_count);
 //! extract simple mesh form gltf document
 /*! extraction can be restricted to a mesh and within the mesh to a primitive by specifying the 

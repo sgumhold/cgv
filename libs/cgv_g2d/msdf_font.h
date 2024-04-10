@@ -8,7 +8,7 @@
 namespace cgv {
 namespace g2d {
 
-class CGV_API msdf_font : public cgv::render::render_types {
+class CGV_API msdf_font {
 public:
 	enum FontFace {
 		FF_LIGHT = 0,
@@ -63,7 +63,7 @@ public:
 
 	float compute_length(const std::string& str, size_t end = std::string::npos) const;
 
-	std::vector<cgv::render::vec4> create_vertex_data(const std::string& str) const;
+	std::vector<vec4> create_vertex_data(const std::string& str) const;
 
 	bool enable(cgv::render::context& ctx);
 

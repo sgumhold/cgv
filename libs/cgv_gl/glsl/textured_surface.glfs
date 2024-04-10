@@ -1,9 +1,12 @@
-#version 150
+#version 330
 
 in vec3 normal_eye;
 in vec3 position_eye;
 in vec4 color_fs;
 in vec2 texcoord_fs;
+
+layout(location = 1) out vec4 frag_position;
+layout(location = 2) out vec3 frag_normal;
 
 //***** begin interface of fragment.glfs ***********************************
 uniform float gamma = 2.2;
@@ -43,6 +46,7 @@ void main()
 	int side;
 	if (!keep_this_side(position_eye, normal, side))
 		discard;
-
+	frag_position = vec4(position_eye, 1.0);
+	frag_normal = normal;
 	finish_fragment(compute_reflected_appearance_texture(position_eye, normal, texcoord_fs, color_fs, side));
 }

@@ -17,6 +17,12 @@
 
 class CGV_API camera_animator : public cgv::app::application_plugin {
 protected:
+	using vec2 = cgv::vec2;
+	using vec3 = cgv::vec3;
+	using vec4 = cgv::vec4;
+	using ivec2 = cgv::ivec2;
+	using rgb = cgv::rgb;
+
 	cgv::gui::help_message help;
 
 	/// store a pointer to the view
@@ -25,8 +31,8 @@ protected:
 	keyframe_editor_overlay_ptr timeline_ptr;
 	keyframe* selected_keyframe = nullptr;
 
-	cgv::render::rgb eye_color;
-	cgv::render::rgb focus_color;
+	rgb eye_color;
+	rgb focus_color;
 
 	cgv::render::point_renderer local_point_renderer;
 	cgv::render::line_renderer local_line_renderer;
@@ -34,7 +40,7 @@ protected:
 	cgv::render::point_render_data<> eye_rd, keyframes_rd;
 	cgv::render::line_render_data<> view_rd, paths_rd;
 
-	cgv::render::mat4 view_transformation;
+	cgv::mat4 view_transformation;
 
 	std::shared_ptr<animation_data> animation;
 

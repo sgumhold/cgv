@@ -23,6 +23,8 @@ extern CGV_API GLuint map_to_gl(PrimitiveType pt);
 
 extern CGV_API GLuint map_to_gl(MaterialSide ms);
 
+extern CGV_API GLuint map_to_gl(BlendFunction blend_function);
+
 /// set material in opengl state to given material
 extern CGV_API void set_material(const cgv::media::illum::phong_material& mat, MaterialSide ms, float alpha);
 
@@ -252,37 +254,23 @@ public:
 	void pop_window_transformation_array();
 	/// query the maximum number of supported window transformations, which is at least 1 
 	unsigned get_max_window_transformation_array_size() const;
+	//@}
 
 
 
 
-	void push_previous_depth_test_state() {
-		GLboolean state;
-		glGetBooleanv(GL_DEPTH_TEST, &state);
-		depth_test_stack.push(static_cast<bool>(state));
-	}
 
-	virtual void enable_depth_test() {
-		push_previous_depth_test_state();
-		glEnable(GL_DEPTH_TEST);
-	}
 
-	virtual void disable_depth_test() {
-		push_previous_depth_test_state();
-		glDisable(GL_DEPTH_TEST);
-	}
+	void enable_depth_test() override;
+	void disable_depth_test() override;
 
-	virtual void restore_depth_test_state() {
-		bool state = depth_test_stack.top();
+	void set_cull_state(CullingMode culling_mode) override;
 
-		if(state)
-			glEnable(GL_DEPTH_TEST);
-		else
-			glDisable(GL_DEPTH_TEST);
-
-		context::restore_depth_test_state();
-	}
-
+	void set_blend_state(BlendState blend_state) override;
+	void set_blend_func(BlendFunction src_factor, BlendFunction dst_factor) override;
+	void set_blend_func_separate(BlendFunction src_color_factor, BlendFunction dst_color_factor, BlendFunction src_alpha_factor, BlendFunction dst_alpha_factor) override;
+	void enable_blending() override;
+	void disable_blending() override;
 
 protected:
 	void update_window_transformation_array();

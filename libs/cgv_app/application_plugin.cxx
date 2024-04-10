@@ -26,10 +26,10 @@ bool application_plugin_base::handle(cgv::gui::event& e)
 
 		// Only mouse MA_PRESS, MA_MOVE or MA_WHEEL events can trigger an overlay to capture an event.
 		if(ma == cgv::gui::MA_PRESS || ma == cgv::gui::MA_MOVE || ma == cgv::gui::MA_WHEEL) {
-			cgv::render::render_types::ivec2 mpos(me.get_x(), me.get_y());
+			ivec2 mpos(me.get_x(), me.get_y());
 
-			// Test all visible overlays in reverse registration order if they are hit by the current
-			// mouse pointer position. Store the first hit overlay as the active blocking overlay.
+			// Test for all visible overlays in reverse registration order if they are hit by the current
+			// mouse pointer position and store the first hit overlay as the active blocking overlay.
 			blocking_overlay_ptr = nullptr;
 			for(auto it = overlays.rbegin(); it != overlays.rend(); ++it) {
 				overlay_ptr op = (*it);

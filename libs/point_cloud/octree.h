@@ -1,5 +1,8 @@
 #pragma once
-#include <cgv/render/render_types.h>
+
+#include <cgv/math/fvec.h>
+#include <cgv/media/axis_aligned_box.h>
+#include <cgv/media/color.h>
 
 #include <cstdint>
 #include <vector>
@@ -43,16 +46,16 @@ namespace pointcloud {
 	/// Attribs are the types of the points attributes
 	/// there has to be at least one vec3, rgb8 and uint8_t in Attribs refered to by POSITION,COLOR and LOD
 	template <size_t POSITION, size_t LOD,typename... Attribs>
-	struct GenericLODPoint : public cgv::render::render_types {
+	struct GenericLODPoint {
 		std::tuple<Attribs...> data;
 
-		inline vec3& position() {
+		inline cgv::vec3& position() {
 			return std::get<POSITION>(data);
 		}
 		inline uint8_t& level() {
 			return std::get<LOD>(data);
 		}
-		inline const vec3& position() const {
+		inline const cgv::vec3& position() const {
 			return std::get<POSITION>(data);
 		}
 		inline const uint8_t& level() const {
@@ -61,7 +64,7 @@ namespace pointcloud {
 	};
 
 	// LOD point with color as additional attribute, assume color info is the second(std::get<1>) info in the tuple
-	struct SimpleLODPoint : public GenericLODPoint<0, 2, cgv::render::render_types::vec3, cgv::render::render_types::rgb8, uint8_t> {
+	struct SimpleLODPoint : public GenericLODPoint<0, 2, cgv::vec3, cgv::rgb8, uint8_t> {
 		inline rgb8& color() {
 			return std::get<1>(data);
 		}
@@ -70,7 +73,7 @@ namespace pointcloud {
 		}
 	};
 
-	using LODPoint = GenericLODPoint<0, 2, cgv::render::render_types::vec3,cgv::render::render_types::rgb8,uint8_t>;
+	using LODPoint = GenericLODPoint<0, 2, cgv::vec3,cgv::rgb8,uint8_t>;
 
 	//lookup table used to converting cell indices to linear indices
 	struct NodeLUT {
@@ -82,7 +85,7 @@ namespace pointcloud {
 	/// octree node which can hold multiple points of type point_t
 	/// adapted from Node struct in PotreeConverter/Converter/include/structures.h
 	template <typename point_t>
-	struct IndexNode : public cgv::render::render_types{
+	struct IndexNode {
 
 		std::array<std::shared_ptr<IndexNode>, 8> children;
 
@@ -90,8 +93,8 @@ namespace pointcloud {
 		std::shared_ptr<std::vector<point_t>> points;
 
 		//std::vector<rgb8> accumulated_colors;
-		vec3 min;
-		vec3 max;
+		cgv::vec3 min;
+		cgv::vec3 max;
 		std::string name;
 
 		int64_t index_start = 0;
@@ -105,7 +108,7 @@ namespace pointcloud {
 
 		IndexNode() {}
 
-		IndexNode(const std::string& name, const vec3& min, const vec3& max);
+		IndexNode(const std::string& name, const cgv::vec3& min, const cgv::vec3& max);
 
 		void traverse_pre(std::function<void(IndexNode*)> callback);
 
@@ -158,9 +161,9 @@ namespace pointcloud {
 	};
 	// Define an ensemble of chunks including many chunk info and min and max extents
 	template <typename point_t>
-	struct Chunks : public cgv::render::render_types{
+	struct Chunks {
 		std::vector<ChunkNode<point_t>> nodes;
-		vec3 min, max;
+		cgv::vec3 min, max;
 	};
 
 	// sampler for bottom up sampling
@@ -175,7 +178,7 @@ namespace pointcloud {
 /// generates octree based lods for point clouds, 
 /// @param type point_t should provide two position() and level() methods like GenericLODPoint, these are used to read the point position and write the LOD
 template <typename point_t>
-class octree_lod_generator : public cgv::render::render_types {
+class octree_lod_generator {
 	public:
 
 		// truncated indexer struct for in-core computation
@@ -247,9 +250,9 @@ class octree_lod_generator : public cgv::render::render_types {
 			return grid_size;
 		}
 
-		inline std::vector<std::atomic_int32_t> lod_counting(const point_t* vertices, const int64_t num_points, int64_t grid_size, const vec3& min, const vec3& max, const float& size);
+		inline std::vector<std::atomic_int32_t> lod_counting(const point_t* vertices, const int64_t num_points, int64_t grid_size, const cgv::vec3& min, const cgv::vec3& max, const float& size);
 			
-		inline std::vector<std::atomic_int32_t> lod_counting(const vec3* positions, const int64_t num_points, int64_t grid_size, const vec3& min, const vec3& max, const float& cube_size);
+		inline std::vector<std::atomic_int32_t> lod_counting(const cgv::vec3* positions, const int64_t num_points, int64_t grid_size, const cgv::vec3& min, const cgv::vec3& max, const float& cube_size);
 
 		inline void lod_counting_core(std::function<void(int64_t first_point, int64_t num_points)>& processor, const int64_t num_points);
 
@@ -257,14 +260,14 @@ class octree_lod_generator : public cgv::render::render_types {
 		inline NodeLUT lod_createLUT(std::vector<std::atomic_int32_t>& grid, int64_t grid_size,std::vector<ChunkNode<point_t>>& nodes);
 			
 		//create chunk nodes
-		inline void distribute_points(vec3 min, vec3 max, float cube_size, int64_t grid_size, NodeLUT& lut, const point_t* vertices, const int64_t num_points, const std::vector<ChunkNode<point_t>>& nodes);
+		inline void distribute_points(cgv::vec3 min, cgv::vec3 max, float cube_size, int64_t grid_size, NodeLUT& lut, const point_t* vertices, const int64_t num_points, const std::vector<ChunkNode<point_t>>& nodes);
 		//inout chunks
 		inline void indexing(Chunks<point_t>& chunks, Indexer& indexer, Sampler<point_t>& sampler);
 			
 		void build_hierarchy(Indexer* indexer, IndexNode<point_t>* node, std::shared_ptr<std::vector<point_t>> points, int64_t numPoints, int64_t depth = 0, int max_points_per_index_node = 10000);
 			
-		inline int64_t grid_index(const vec3& position, const vec3& min, const float& cube_size, const int& grid_size) const;
-		inline cgv::render::render_types::ivec3 grid_index_vec(const vec3& position, const vec3& min, const float& cube_size, const int& grid_size) const;
+		inline int64_t grid_index(const cgv::vec3& position, const cgv::vec3& min, const float& cube_size, const int& grid_size) const;
+		inline cgv::ivec3 grid_index_vec(const cgv::vec3& position, const cgv::vec3& min, const float& cube_size, const int& grid_size) const;
 
 
 	public:
@@ -273,7 +276,7 @@ class octree_lod_generator : public cgv::render::render_types {
 			return allow_duplicate_elimination;
 		}
 
-		inline static box3 child_bounding_box_of(const vec3& min, const vec3& max, const int index);
+		inline static box3 child_bounding_box_of(const cgv::vec3& min, const cgv::vec3& max, const int index);
 
 		/// generate points with lod information out of the given vertices
 		inline std::vector<point_t> generate_lods(const std::vector<point_t>& points);
@@ -282,7 +285,7 @@ class octree_lod_generator : public cgv::render::render_types {
 		inline std::shared_ptr<IndexNode<point_t>> build_octree(const std::vector<point_t>& points);
 		
 		//splits points into chunks
-		inline Chunks<point_t> chunking(const point_t* vertices, const size_t num_points, const vec3& min, const vec3& max, const float& size);
+		inline Chunks<point_t> chunking(const point_t* vertices, const size_t num_points, const cgv::vec3& min, const cgv::vec3& max, const float& size);
 
 		octree_lod_generator(bool init_pool = true){
 			//create a thread pool
@@ -335,7 +338,7 @@ struct SamplerRandom : public Sampler<point_t> {
 	// subsample a octree from bottom up, calls onNodeCompleted on every node except the root
 	inline void sample(std::shared_ptr<IndexNode<point_t>> node, double baseSpacing, std::function<void(IndexNode<point_t>*)> onNodeCompleted) {
 		//using IndexNode = octree_lod_generator::IndexNode;
-		using vec3 = cgv::render::render_types::vec3;
+		using vec3 = cgv::vec3;
 
 		//lambda for bottom up traversal
 		std::function<void(IndexNode<point_t>*, std::function<void(IndexNode<point_t>*)>)> traversePost = [&traversePost](IndexNode<point_t>* node, std::function<void(IndexNode<point_t>*)> callback) {
@@ -562,7 +565,7 @@ struct SamplerRandom : public Sampler<point_t> {
 	}
 		
 	template <typename point_t>
-	Chunks<point_t> octree_lod_generator<point_t>::chunking(const point_t* vertices, const size_t num_points, const vec3& min, const vec3& max, const float& cube_size)
+	Chunks<point_t> octree_lod_generator<point_t>::chunking(const point_t* vertices, const size_t num_points, const cgv::vec3& min, const cgv::vec3& max, const float& cube_size)
 	{
 		// stores chunks created by the chunking phase
 		Chunks<point_t> chunks;
@@ -672,7 +675,7 @@ struct SamplerRandom : public Sampler<point_t> {
 
 
 	template <typename point_t>
-	std::vector<std::atomic_int32_t> octree_lod_generator<point_t>::lod_counting(const point_t* vertices, const int64_t num_points, int64_t grid_size, const vec3& min, const vec3& max, const float& cube_size)
+	std::vector<std::atomic_int32_t> octree_lod_generator<point_t>::lod_counting(const point_t* vertices, const int64_t num_points, int64_t grid_size, const cgv::vec3& min, const cgv::vec3& max, const float& cube_size)
 	{
 		std::vector<std::atomic_int32_t> grid(grid_size * grid_size * grid_size);
 
@@ -691,7 +694,7 @@ struct SamplerRandom : public Sampler<point_t> {
 	}
 
 	template <typename point_t>
-	std::vector<std::atomic_int32_t> octree_lod_generator<point_t>::lod_counting(const vec3* positions, const int64_t num_points, int64_t grid_size, const vec3& min, const vec3& max, const float& cube_size)
+	std::vector<std::atomic_int32_t> octree_lod_generator<point_t>::lod_counting(const cgv::vec3* positions, const int64_t num_points, int64_t grid_size, const cgv::vec3& min, const cgv::vec3& max, const float& cube_size)
 	{
 		std::vector<std::atomic_int32_t> grid(grid_size * grid_size * grid_size);
 
@@ -710,7 +713,7 @@ struct SamplerRandom : public Sampler<point_t> {
 
 
 	template <typename point_t>
-	void octree_lod_generator<point_t>::distribute_points(vec3 min, vec3 max, float cube_size, int64_t grid_size, NodeLUT& lut, const point_t* vertices, const int64_t num_points, const std::vector<ChunkNode<point_t>>& nodes)
+	void octree_lod_generator<point_t>::distribute_points(cgv::vec3 min, cgv::vec3 max, float cube_size, int64_t grid_size, NodeLUT& lut, const point_t* vertices, const int64_t num_points, const std::vector<ChunkNode<point_t>>& nodes)
 	{
 		//auto start = std::chrono::steady_clock::now();
 		auto& grid = lut.grid;
@@ -753,7 +756,7 @@ struct SamplerRandom : public Sampler<point_t> {
 			std::vector<std::vector<point_t>> buckets(num_buckets);
 
 			for (const point_t* i = start; i < end; ++i) {
-				vec3 p = i->position();
+				cgv::vec3 p = i->position();
 				int idx = grid_index(p, min, cube_size, grid_size);
 				buckets[grid[idx]].push_back(*i);
 			}
@@ -769,7 +772,7 @@ struct SamplerRandom : public Sampler<point_t> {
 
 		/* //single thread variant
 		for (int i = 0; i < num_points; ++i) {
-			vec3 p = vertices[i].position;
+			cgv::vec3 p = vertices[i].position;
 			int idx = grid_index(p, min, cube_size, grid_size);
 
 			auto& node = nodes[grid[idx]];
@@ -911,8 +914,8 @@ struct SamplerRandom : public Sampler<point_t> {
 	}
 
 	template <typename point_t>
-	cgv::render::render_types::ivec3 octree_lod_generator<point_t>::grid_index_vec(const vec3& position, const vec3& min, const float& cube_size, const int& grid_size) const {
-		dvec3 pos = position;
+	cgv::ivec3 octree_lod_generator<point_t>::grid_index_vec(const cgv::vec3& position, const cgv::vec3& min, const float& cube_size, const int& grid_size) const {
+		cgv::dvec3 pos = position;
 		double dgrid_size = grid_size;
 		//normalized grid position
 		double ux = (pos[0] - (double)min.x()) / cube_size;
@@ -932,11 +935,11 @@ struct SamplerRandom : public Sampler<point_t> {
 		int iy = int(std::min(dgrid_size * uy, dgrid_size - 1.0));
 		int iz = int(std::min(dgrid_size * uz, dgrid_size - 1.0));
 
-		return ivec3(ix, iy, iz);
+		return cgv::ivec3(ix, iy, iz);
 	}
 
 	template <typename point_t>
-	int64_t octree_lod_generator<point_t>::grid_index(const vec3& position, const vec3& min, const float& cube_size, const int& grid_size) const
+	int64_t octree_lod_generator<point_t>::grid_index(const cgv::vec3& position, const cgv::vec3& min, const float& cube_size, const int& grid_size) const
 	{
 		auto v = grid_index_vec(position, min, cube_size, grid_size);
 		int64_t index = v.x() + v.y() * grid_size + v.z() * (int64_t)(grid_size * grid_size);
@@ -989,7 +992,7 @@ struct SamplerRandom : public Sampler<point_t> {
 			static constexpr float Infinity = std::numeric_limits<float>::infinity();
 			ChunkNode<point_t>* chunk = task->chunk;
 
-			vec3 min(Infinity), max(-Infinity);
+			cgv::vec3 min(Infinity), max(-Infinity);
 
 			for (auto& v : chunk->pc_data->vertices) {
 				min.x() = std::min(min.x(), v.position().x());
@@ -1084,7 +1087,7 @@ struct SamplerRandom : public Sampler<point_t> {
 
 		auto gridIndexOf = [&points, min, size, counterGridSize](int64_t pointIndex) {
 			//float* xyz = reinterpret_cast<float*>(points.get() + pointIndex);
-			vec3 xyz = points->at(pointIndex).position();
+			cgv::vec3 xyz = points->at(pointIndex).position();
 			double x = xyz[0];
 			double y = xyz[1];
 			double z = xyz[2];
@@ -1206,7 +1209,7 @@ struct SamplerRandom : public Sampler<point_t> {
 				for (int64_t i = 0; i < numPoints; i++) {
 
 					int64_t sourceOffset = i;
-					vec3 pos = buffer->data()[sourceOffset].position();
+					cgv::vec3 pos = buffer->data()[sourceOffset].position();
 
 					int X = std::floor(pos.x()), Y = std::floor(pos.y()), Z = std::floor(pos.z());
 					std::stringstream ss;
@@ -1238,7 +1241,7 @@ struct SamplerRandom : public Sampler<point_t> {
 
 						int64_t sourceOffset = i;
 
-						vec3 pos = buffer->data()[sourceOffset].position();
+						cgv::vec3 pos = buffer->data()[sourceOffset].position();
 
 						int32_t X = std::floor(pos.x()), Y = std::floor(pos.y()), Z = std::floor(pos.z());
 
@@ -1302,11 +1305,11 @@ struct SamplerRandom : public Sampler<point_t> {
 
 		//find min, max
 		static constexpr float Infinity = std::numeric_limits<float>::infinity();
-		vec3 min = { Infinity , Infinity , Infinity };
-		vec3 max = { -Infinity , -Infinity , -Infinity };
+		cgv::vec3 min = { Infinity , Infinity , Infinity };
+		cgv::vec3 max = { -Infinity , -Infinity , -Infinity };
 
 		for (int i = 0; i < source_data_size; ++i) {
-			vec3& p = source_data[i].position();
+			cgv::vec3& p = source_data[i].position();
 			min.x() = std::min(min.x(), p.x());
 			min.y() = std::min(min.y(), p.y());
 			min.z() = std::min(min.z(), p.z());
@@ -1316,7 +1319,7 @@ struct SamplerRandom : public Sampler<point_t> {
 			max.z() = std::max(max.z(), p.z());
 		}
 
-		vec3 ext = max - min;
+		cgv::vec3 ext = max - min;
 		float cube_size = *std::max_element(ext.begin(), ext.end());
 		
 		//prevent some crashes caused by division by zero
@@ -1334,7 +1337,7 @@ struct SamplerRandom : public Sampler<point_t> {
 		}
 		else if (source_data_size != 0) {
 			//run lod generation
-			max = min + vec3(cube_size, cube_size, cube_size);
+			max = min + cgv::vec3(cube_size, cube_size, cube_size);
 
 			Chunks<point_t> nodes = chunking(source_data, source_data_size, min, max, cube_size);
 
@@ -1358,11 +1361,11 @@ struct SamplerRandom : public Sampler<point_t> {
 
 		//find min, max
 		static constexpr float Infinity = std::numeric_limits<float>::infinity();
-		vec3 min = { Infinity , Infinity , Infinity };
-		vec3 max = { -Infinity , -Infinity , -Infinity };
+		cgv::vec3 min = { Infinity , Infinity , Infinity };
+		cgv::vec3 max = { -Infinity , -Infinity , -Infinity };
 
 		for (int i = 0; i < source_data_size; ++i) {
-			const vec3& p = source_data[i].position();
+			const cgv::vec3& p = source_data[i].position();
 			min.x() = std::min(min.x(), p.x());
 			min.y() = std::min(min.y(), p.y());
 			min.z() = std::min(min.z(), p.z());
@@ -1372,10 +1375,10 @@ struct SamplerRandom : public Sampler<point_t> {
 			max.z() = std::max(max.z(), p.z());
 		}
 
-		vec3 ext = max - min;
+		cgv::vec3 ext = max - min;
 		float cube_size = *std::max_element(ext.begin(), ext.end());
 
-		max = min + vec3(cube_size, cube_size, cube_size);
+		max = min + cgv::vec3(cube_size, cube_size, cube_size);
 
 		Chunks<point_t> nodes = chunking(source_data, source_data_size, min, max, cube_size);
 
@@ -1388,7 +1391,7 @@ struct SamplerRandom : public Sampler<point_t> {
 
 
 	template <typename point_t>
-	IndexNode<point_t>::IndexNode(const std::string& name, const vec3& min, const vec3& max)
+	IndexNode<point_t>::IndexNode(const std::string& name, const cgv::vec3& min, const cgv::vec3& max)
 	{
 		this->name = name;
 		this->min = min;
@@ -1436,11 +1439,11 @@ struct SamplerRandom : public Sampler<point_t> {
 	}
 
 	template <typename point_t>
-	cgv::render::render_types::box3 octree_lod_generator<point_t>::child_bounding_box_of(const vec3& min, const vec3& max, const int index)
+	cgv::box3 octree_lod_generator<point_t>::child_bounding_box_of(const cgv::vec3& min, const cgv::vec3& max, const int index)
 	{
-		vec3 min_pnt, max_pnt;
+		cgv::vec3 min_pnt, max_pnt;
 		auto size = max - min;
-		vec3 center = min + (size * 0.5f);
+		cgv::vec3 center = min + (size * 0.5f);
 
 		if ((index & 0b100) == 0) {
 			min_pnt.x() = min.x();

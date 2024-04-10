@@ -27,10 +27,14 @@ enum TrackerAttachment
 	TA_RIGHT_HAND
 };
 
-class CGV_API vr_emulated_kit : public vr::vr_kit, public cgv::render::render_types
+class CGV_API vr_emulated_kit : public vr::vr_kit
 {
 public:
-	typedef cgv::math::fmat<float, 3, 4> mat3x4;
+	using vec3 = cgv::vec3;
+	using vec4 = cgv::vec4;
+	using mat3 = cgv::mat3;
+	using mat4 = cgv::mat4;
+	using mat34 = cgv::mat34;
 protected:
 	friend class vr_emulator;
 	vr::vr_kit_state state;
@@ -51,7 +55,7 @@ protected:
 	TrackerAttachment tracker_attachments[4];
 
 	/// helper functions to construct matrices
-	mat3x4 construct_pos_matrix(const quat& orientation, const vec3& position);
+	mat34 construct_pos_matrix(const quat& orientation, const vec3& position);
 	mat4 construct_homogeneous_matrix(const quat& orientation, const vec3& position);
 	void set_pose_matrix(const mat4& H, float* pose) const;
 	void compute_state_poses();
@@ -86,7 +90,12 @@ class CGV_API vr_emulator :
 	public vr::vr_driver, public cgv::gui::provider, public cgv::gui::event_handler
 {
 public:
-	typedef cgv::math::quaternion<float> quat;
+	using quat = cgv::quat;
+	using vec3 = cgv::vec3;
+	using vec4 = cgv::vec4;
+	using mat3 = cgv::mat3;
+	using mat34 = cgv::mat34;
+
 	std::vector<vr_emulated_kit*> kits;
 	static bool gamepad_connected;
 	unsigned screen_width, screen_height;

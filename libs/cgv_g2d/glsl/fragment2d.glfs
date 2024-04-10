@@ -101,10 +101,10 @@ void finish_sdf_fragment2d(in float signed_distance, in vec4 color) {
 	frag_color.a *= feather_alpha;
 
 	if(apply_gamma)
-		frag_color.rgb = clamp(pow(frag_color.rgb, vec3(2.2)), 0.0, 0.9999999);
+		frag_color.rgb = pow(frag_color.rgb, vec3(1.0/2.2));
 
 	if(!use_blending)
-		frag_color.a = 1.0;	
+		frag_color.a = 1.0;
 }
 
 // output a fragment originating from a sdf with the color as set in shape2d or the color from the texture if use_texture is enabled
@@ -125,7 +125,7 @@ void finish_fragment2d(in vec4 color) {
 	frag_color = color;
 	
 	if(apply_gamma)
-		frag_color.rgb = clamp(pow(frag_color.rgb, vec3(2.2)), 0.0, 0.9999999);
+		frag_color.rgb = pow(frag_color.rgb, vec3(1.0/2.2));
 
 	if(!use_blending)
 		frag_color.a = 1.0;

@@ -1,0 +1,9 @@
+@=
+projectType="library";
+projectName="physics";
+projectGUID="58759CD2-BFBF-4864-BC2A-40C9C58FE68E";
+addIncDirs=[CGV_DIR."/3rd/JoltPhysics", CGV_DIR."/libs"];
+addProjectDirs=[CGV_DIR."/3rd/JoltPhysics"];
+addProjectDeps=["cgv_render", "cgv_base", "cgv_type", "cgv_utils", "cgv_data", "cgv_gl", "jolt_physics"];
+addSharedDefines=["PHYSICS_EXPORTS"];
+cppLanguageStandard="stdcpp17";

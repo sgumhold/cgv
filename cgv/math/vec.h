@@ -19,7 +19,7 @@
 #endif
 
 namespace cgv {
-	namespace math { 
+namespace math {
 
 
 /// A column vector class.
@@ -168,7 +168,7 @@ public:
 		data_is_external = false;
 	}
 
-	///creates a 3d vector (c0,c1,c2)^T
+	///creates a 2d vector (c0,c1)^T
 	vec(const T& c0, const T& c1)
 	{
 		_size = 2;
@@ -1236,7 +1236,16 @@ const vec<T> slerp(const vec<T>& v0, const vec<T>& v1, T t)
 	return cos(theta)*v0 + sin(theta)*v2;
 }
 
+} // namespace math
 
+/// @name Predefined Types
+/// @{
 
-	}
-}
+/// declare type of single precision floating point vector with varying dimension
+typedef cgv::math::vec<float> vecn;
+/// declare type of double precision floating point vector with varying dimension
+typedef cgv::math::vec<double> dvecn;
+
+/// @}
+
+}// namespace cgv

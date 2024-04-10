@@ -5,13 +5,12 @@
 #include <cgv/math/piecewise_linear_interpolator.h>
 #include <cgv/math/piecewise_nearest_interpolator.h>
 #include <cgv/render/context.h>
-#include <cgv/render/render_types.h>
 #include <cgv/render/texture.h>
 
 namespace cgv {
 namespace render {
 
-class color_map : public render_types {
+class color_map {
 protected:
 	typedef cgv::math::control_point_container<rgb>::control_point color_control_point_type;
 	typedef cgv::math::control_point_container<float>::control_point opacity_control_point_type;
@@ -91,6 +90,16 @@ public:
 
 		color_points = flipped_color_points;
 		opacity_points = flipped_opacity_points;
+	}
+
+	void apply_gamma(float gamma) {
+
+		cgv::math::control_point_container<rgb> corrected_color_points;
+
+		for(const color_control_point_type& color_point : color_points)
+			corrected_color_points.push_back(color_point.first, cgv::media::pow(color_point.second, gamma));
+
+		color_points = corrected_color_points;
 	}
 
 	void add_color_point(float t, rgb color) {
@@ -178,7 +187,7 @@ protected:
 
 		cgv::data::data_view dv = cgv::data::data_view(new cgv::data::data_format(resolution, TI_UINT8, cgv::data::CF_RGB), data_8.data());
 
-		unsigned width = tex.get_width();
+		unsigned width = (unsigned)tex.get_width();
 
 		bool replaced = false;
 		if(tex.is_created() && width == resolution && tex.get_nr_components() == 3) {
@@ -209,7 +218,7 @@ protected:
 
 		cgv::data::data_view dv = cgv::data::data_view(new cgv::data::data_format(resolution, TI_UINT8, cgv::data::CF_RGBA), data_8.data());
 
-		unsigned width = tex.get_width();
+		unsigned width = (unsigned)tex.get_width();
 
 		bool replaced = false;
 		if(tex.is_created() && width == resolution && tex.get_nr_components() == 4) {

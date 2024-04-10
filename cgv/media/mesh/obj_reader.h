@@ -79,6 +79,8 @@ protected:
 public:
 	///
 	obj_reader_base();
+	/// parse the content of an obj file already read to memory, where path_name is used to find material files
+	virtual bool parse_obj(const std::string& content, const std::string path_name = "");
 	/// read an obj file
 	virtual bool read_obj(const std::string& file_name);
 	/// read a material file
