@@ -247,7 +247,7 @@ bool is_power_of_two(unsigned int i)
 	while (true);
 	return false;
 }
-bool is_power_of_two(size_t i)
+bool is_power_of_two(unsigned long long i)
 {
 	do {
 		if (i == 1)
@@ -267,7 +267,7 @@ unsigned int power_of_two_ub(unsigned int i)
 		res *= 2;
 	return res;
 }
-size_t power_of_two_ub(size_t i)
+size_t power_of_two_ub(unsigned long long i)
 {
 	size_t res = 2;
 	while (res < i)
