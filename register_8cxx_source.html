@@ -1400,127 +1400,129 @@ $(document).ready(function(){initNavTree('register_8cxx_source.html',''); initRe
 <div class="line"><a name="l01339"></a><span class="lineno"> 1339</span>&#160;    n += <span class="stringliteral">&quot;14&quot;</span>;</div>
 <div class="line"><a name="l01340"></a><span class="lineno"> 1340</span>&#160;<span class="preprocessor">#elif defined(_MSC_VER) &amp;&amp; _MSC_VER &lt; 1920</span></div>
 <div class="line"><a name="l01341"></a><span class="lineno"> 1341</span>&#160;    n += <span class="stringliteral">&quot;141&quot;</span>;</div>
-<div class="line"><a name="l01342"></a><span class="lineno"> 1342</span>&#160;<span class="preprocessor">#elif defined(_MSC_VER)</span></div>
+<div class="line"><a name="l01342"></a><span class="lineno"> 1342</span>&#160;<span class="preprocessor">#elif defined(_MSC_VER) &amp;&amp; _MSC_VER &lt; 1930</span></div>
 <div class="line"><a name="l01343"></a><span class="lineno"> 1343</span>&#160;    n += <span class="stringliteral">&quot;142&quot;</span>;</div>
-<div class="line"><a name="l01344"></a><span class="lineno"> 1344</span>&#160;<span class="preprocessor">#endif</span></div>
-<div class="line"><a name="l01345"></a><span class="lineno"> 1345</span>&#160;    n += <span class="stringliteral">&quot;.dll&quot;</span>;</div>
-<div class="line"><a name="l01346"></a><span class="lineno"> 1346</span>&#160;<span class="preprocessor">#else</span></div>
-<div class="line"><a name="l01347"></a><span class="lineno"> 1347</span>&#160;    n = std::string(<span class="stringliteral">&quot;lib&quot;</span>) + n + <span class="stringliteral">&quot;.so&quot;</span>;</div>
-<div class="line"><a name="l01348"></a><span class="lineno"> 1348</span>&#160;<span class="preprocessor">#endif</span></div>
-<div class="line"><a name="l01349"></a><span class="lineno"> 1349</span>&#160;    <span class="keywordflow">return</span> n;</div>
-<div class="line"><a name="l01350"></a><span class="lineno"> 1350</span>&#160;}</div>
-<div class="line"><a name="l01351"></a><span class="lineno"> 1351</span>&#160; </div>
-<div class="line"><a name="l01352"></a><span class="lineno"> 1352</span>&#160;} <span class="comment">// namespace base</span></div>
-<div class="line"><a name="l01353"></a><span class="lineno"> 1353</span>&#160;} <span class="comment">// namespace cgv</span></div>
-<div class="line"><a name="l01354"></a><span class="lineno"> 1354</span>&#160; </div>
-<div class="line"><a name="l01355"></a><span class="lineno"> 1355</span>&#160;<span class="preprocessor">#ifdef _WIN32</span></div>
-<div class="line"><a name="l01356"></a><span class="lineno"> 1356</span>&#160;<span class="preprocessor">#include &lt;windows.h&gt;</span></div>
-<div class="line"><a name="l01357"></a><span class="lineno"> 1357</span>&#160;<span class="preprocessor">#include &lt;winbase.h&gt;</span></div>
-<div class="line"><a name="l01358"></a><span class="lineno"> 1358</span>&#160;<span class="preprocessor">#else</span></div>
-<div class="line"><a name="l01359"></a><span class="lineno"> 1359</span>&#160;<span class="preprocessor">#include &lt;unistd.h&gt;</span></div>
-<div class="line"><a name="l01360"></a><span class="lineno"> 1360</span>&#160;<span class="preprocessor">#include &lt;dlfcn.h&gt;</span></div>
-<div class="line"><a name="l01361"></a><span class="lineno"> 1361</span>&#160;<span class="preprocessor">#endif</span></div>
-<div class="line"><a name="l01362"></a><span class="lineno"> 1362</span>&#160; </div>
-<div class="line"><a name="l01363"></a><span class="lineno"> 1363</span>&#160;<span class="keyword">namespace </span><a class="code" href="namespacecgv.html">cgv</a> {</div>
-<div class="line"><a name="l01364"></a><span class="lineno"> 1364</span>&#160;<span class="keyword">namespace </span>base {</div>
-<div class="line"><a name="l01365"></a><span class="lineno"> 1365</span>&#160; </div>
-<div class="line"><a name="l01366"></a><span class="lineno"> 1366</span>&#160;<span class="keywordtype">void</span>* load_plugin_platform(<span class="keyword">const</span> std::string&amp; name)</div>
-<div class="line"><a name="l01367"></a><span class="lineno"> 1367</span>&#160;{</div>
-<div class="line"><a name="l01368"></a><span class="lineno"> 1368</span>&#160;<span class="preprocessor">#ifdef _WIN32</span></div>
-<div class="line"><a name="l01369"></a><span class="lineno"> 1369</span>&#160;    SetLastError(0);</div>
-<div class="line"><a name="l01370"></a><span class="lineno"> 1370</span>&#160;<span class="preprocessor">#ifdef _UNICODE</span></div>
-<div class="line"><a name="l01371"></a><span class="lineno"> 1371</span>&#160;    <span class="keywordflow">return</span> LoadLibrary(<a class="code" href="namespacecgv_1_1utils.html#ab89ee8cc10713a3df171d4a469d0e320">cgv::utils::str2wstr</a>(name).c_str());</div>
-<div class="line"><a name="l01372"></a><span class="lineno"> 1372</span>&#160;<span class="preprocessor">#else</span></div>
-<div class="line"><a name="l01373"></a><span class="lineno"> 1373</span>&#160;    <span class="keywordflow">return</span> LoadLibrary(name.c_str());</div>
-<div class="line"><a name="l01374"></a><span class="lineno"> 1374</span>&#160;<span class="preprocessor">#endif</span></div>
-<div class="line"><a name="l01375"></a><span class="lineno"> 1375</span>&#160;<span class="preprocessor">#else</span></div>
-<div class="line"><a name="l01376"></a><span class="lineno"> 1376</span>&#160;    <span class="keywordflow">return</span> dlopen(name.c_str(), RTLD_NOW);</div>
-<div class="line"><a name="l01377"></a><span class="lineno"> 1377</span>&#160;<span class="preprocessor">#endif</span></div>
-<div class="line"><a name="l01378"></a><span class="lineno"> 1378</span>&#160;}</div>
-<div class="line"><a name="l01379"></a><span class="lineno"> 1379</span>&#160; </div>
-<div class="line"><a name="l01380"></a><span class="lineno"> 1380</span>&#160;<span class="keywordtype">void</span> record_error_platform(<span class="keyword">const</span> std::string&amp; dll_name, std::vector&lt;std::string&gt;&amp; errors)</div>
-<div class="line"><a name="l01381"></a><span class="lineno"> 1381</span>&#160;{</div>
-<div class="line"><a name="l01382"></a><span class="lineno"> 1382</span>&#160;<span class="preprocessor">#ifdef _WIN32</span></div>
-<div class="line"><a name="l01383"></a><span class="lineno"> 1383</span>&#160;    DWORD dw = GetLastError();</div>
-<div class="line"><a name="l01384"></a><span class="lineno"> 1384</span>&#160;    LPVOID lpMsgBuf;</div>
-<div class="line"><a name="l01385"></a><span class="lineno"> 1385</span>&#160;    FormatMessage(FORMAT_MESSAGE_ALLOCATE_BUFFER | FORMAT_MESSAGE_FROM_SYSTEM | FORMAT_MESSAGE_IGNORE_INSERTS, <span class="keyword">nullptr</span>,</div>
-<div class="line"><a name="l01386"></a><span class="lineno"> 1386</span>&#160;                  dw, MAKELANGID(LANG_NEUTRAL, SUBLANG_DEFAULT), (LPTSTR)&amp;lpMsgBuf, 0, <span class="keyword">nullptr</span>);</div>
-<div class="line"><a name="l01387"></a><span class="lineno"> 1387</span>&#160;    <span class="keyword">auto</span> error = dll_name + <span class="stringliteral">&quot;: &quot;</span> + std::string(<span class="keyword">static_cast&lt;</span><span class="keyword">const </span><span class="keywordtype">char</span>*<span class="keyword">&gt;</span>(lpMsgBuf));</div>
-<div class="line"><a name="l01388"></a><span class="lineno"> 1388</span>&#160;    LocalFree(lpMsgBuf);</div>
-<div class="line"><a name="l01389"></a><span class="lineno"> 1389</span>&#160;    errors.push_back(error);</div>
-<div class="line"><a name="l01390"></a><span class="lineno"> 1390</span>&#160;<span class="preprocessor">#else</span></div>
-<div class="line"><a name="l01391"></a><span class="lineno"> 1391</span>&#160;    <span class="keyword">auto</span> errPtr = dlerror();</div>
-<div class="line"><a name="l01392"></a><span class="lineno"> 1392</span>&#160;    <span class="keyword">auto</span> error = std::string(errPtr) + <span class="stringliteral">&quot;\n&quot;</span>;</div>
-<div class="line"><a name="l01393"></a><span class="lineno"> 1393</span>&#160;    errors.emplace_back(error);</div>
-<div class="line"><a name="l01394"></a><span class="lineno"> 1394</span>&#160;<span class="preprocessor">#endif</span></div>
-<div class="line"><a name="l01395"></a><span class="lineno"> 1395</span>&#160;}</div>
-<div class="line"><a name="l01396"></a><span class="lineno"> 1396</span>&#160; </div>
-<div class="line"><a name="l01397"></a><span class="lineno"><a class="line" href="namespacecgv_1_1base.html#acf58539e451af7248fa0d2e64bbb48f5"> 1397</a></span>&#160;<span class="keywordtype">void</span>* <a class="code" href="namespacecgv_1_1base.html#acf58539e451af7248fa0d2e64bbb48f5">load_plugin</a>(<span class="keyword">const</span> std::string&amp; file_name)</div>
-<div class="line"><a name="l01398"></a><span class="lineno"> 1398</span>&#160;{</div>
-<div class="line"><a name="l01399"></a><span class="lineno"> 1399</span>&#160;    std::vector&lt;token&gt; names;</div>
-<div class="line"><a name="l01400"></a><span class="lineno"> 1400</span>&#160;    <a class="code" href="namespacecgv_1_1utils.html#a748e89bffdda8da3a478b073bf28877a">bite_all</a>(<a class="code" href="classcgv_1_1utils_1_1tokenizer.html">tokenizer</a>(file_name).set_ws(<span class="stringliteral">&quot;,|;&quot;</span>), names);</div>
-<div class="line"><a name="l01401"></a><span class="lineno"> 1401</span>&#160; </div>
-<div class="line"><a name="l01402"></a><span class="lineno"> 1402</span>&#160;    <span class="keywordtype">bool</span> enabled = <a class="code" href="namespacecgv_1_1base.html#a89d35f03b0d843ceb855119ab9beb635">is_registration_enabled</a>();</div>
-<div class="line"><a name="l01403"></a><span class="lineno"> 1403</span>&#160;    <span class="keywordflow">if</span> (enabled)</div>
-<div class="line"><a name="l01404"></a><span class="lineno"> 1404</span>&#160;        <a class="code" href="namespacecgv_1_1base.html#a5b14a0db38dca07762d43ca30f801ac8">disable_registration</a>();</div>
-<div class="line"><a name="l01405"></a><span class="lineno"> 1405</span>&#160; </div>
-<div class="line"><a name="l01406"></a><span class="lineno"> 1406</span>&#160;    <span class="keywordtype">void</span>* result = <span class="keyword">nullptr</span>;</div>
-<div class="line"><a name="l01407"></a><span class="lineno"> 1407</span>&#160;    std::vector&lt;std::string&gt; errors = {};</div>
-<div class="line"><a name="l01408"></a><span class="lineno"> 1408</span>&#160;    <span class="keywordflow">for</span> (<span class="keyword">auto</span>&amp; plugin_name : names) {</div>
-<div class="line"><a name="l01409"></a><span class="lineno"> 1409</span>&#160;        std::string fn[2];</div>
-<div class="line"><a name="l01410"></a><span class="lineno"> 1410</span>&#160;        fn[0] = <a class="code" href="namespacecgv_1_1utils.html#a4f918e840e035c5c0ff32d6caaa8a78a">to_string</a>(plugin_name);</div>
-<div class="line"><a name="l01411"></a><span class="lineno"> 1411</span>&#160;        fn[1] = extend_plugin_name(fn[0]);</div>
-<div class="line"><a name="l01412"></a><span class="lineno"> 1412</span>&#160;<span class="preprocessor">#ifdef WIN32</span></div>
-<div class="line"><a name="l01413"></a><span class="lineno"> 1413</span>&#160;        <span class="keywordflow">if</span> (<a class="code" href="namespacecgv_1_1utils.html#a6b682be2fdbb130c91a3bd8bd7936ff8">cgv::utils::to_lower</a>(cgv::utils::file::get_extension(fn[0]) != <span class="stringliteral">&quot;dll&quot;</span>))</div>
-<div class="line"><a name="l01414"></a><span class="lineno"> 1414</span>&#160;            fn[0] += <span class="stringliteral">&quot;.dll&quot;</span>;</div>
-<div class="line"><a name="l01415"></a><span class="lineno"> 1415</span>&#160;<span class="preprocessor">#elif __APPLE__</span></div>
-<div class="line"><a name="l01416"></a><span class="lineno"> 1416</span>&#160;        <span class="keywordflow">if</span> (<a class="code" href="namespacecgv_1_1utils.html#a6b682be2fdbb130c91a3bd8bd7936ff8">cgv::utils::to_lower</a>(cgv::utils::file::get_extension(fn[0]) != <span class="stringliteral">&quot;dylib&quot;</span>))</div>
-<div class="line"><a name="l01417"></a><span class="lineno"> 1417</span>&#160;            fn[0] = std::string(<span class="stringliteral">&quot;lib&quot;</span>) + fn[0] + <span class="stringliteral">&quot;.dylib&quot;</span>;</div>
-<div class="line"><a name="l01418"></a><span class="lineno"> 1418</span>&#160;<span class="preprocessor">#else</span></div>
-<div class="line"><a name="l01419"></a><span class="lineno"> 1419</span>&#160;        <span class="keywordflow">if</span> (<a class="code" href="namespacecgv_1_1utils.html#a6b682be2fdbb130c91a3bd8bd7936ff8">cgv::utils::to_lower</a>(cgv::utils::file::get_extension(fn[0]) != <span class="stringliteral">&quot;so&quot;</span>))</div>
-<div class="line"><a name="l01420"></a><span class="lineno"> 1420</span>&#160;            fn[0] = std::string(<span class="stringliteral">&quot;lib&quot;</span>) + fn[0] + <span class="stringliteral">&quot;.so&quot;</span>;</div>
-<div class="line"><a name="l01421"></a><span class="lineno"> 1421</span>&#160;<span class="preprocessor">#endif</span></div>
-<div class="line"><a name="l01422"></a><span class="lineno"> 1422</span>&#160;<span class="preprocessor">#ifndef NDEBUG</span></div>
-<div class="line"><a name="l01423"></a><span class="lineno"> 1423</span>&#160;        std::swap(fn[0], fn[1]);</div>
-<div class="line"><a name="l01424"></a><span class="lineno"> 1424</span>&#160;<span class="preprocessor">#endif</span></div>
-<div class="line"><a name="l01425"></a><span class="lineno"> 1425</span>&#160; </div>
-<div class="line"><a name="l01426"></a><span class="lineno"> 1426</span>&#160;        result = <span class="keyword">nullptr</span>;</div>
-<div class="line"><a name="l01427"></a><span class="lineno"> 1427</span>&#160;        <span class="keywordflow">for</span> (<span class="keyword">auto</span>&amp; dll_name : fn) {</div>
-<div class="line"><a name="l01428"></a><span class="lineno"> 1428</span>&#160;            <a class="code" href="namespacecgv_1_1base.html#a59a17104b8a82638de4aab8ccfb72db2">ref_plugin_name</a>() = dll_name;</div>
-<div class="line"><a name="l01429"></a><span class="lineno"> 1429</span>&#160;            result = load_plugin_platform(dll_name);</div>
-<div class="line"><a name="l01430"></a><span class="lineno"> 1430</span>&#160;            <span class="keywordflow">if</span> (result) {</div>
-<div class="line"><a name="l01431"></a><span class="lineno"> 1431</span>&#160;                <span class="keywordflow">break</span>;</div>
-<div class="line"><a name="l01432"></a><span class="lineno"> 1432</span>&#160;            }</div>
-<div class="line"><a name="l01433"></a><span class="lineno"> 1433</span>&#160; </div>
-<div class="line"><a name="l01434"></a><span class="lineno"> 1434</span>&#160;            record_error_platform(dll_name, errors);</div>
-<div class="line"><a name="l01435"></a><span class="lineno"> 1435</span>&#160;        }</div>
-<div class="line"><a name="l01436"></a><span class="lineno"> 1436</span>&#160;    }</div>
-<div class="line"><a name="l01437"></a><span class="lineno"> 1437</span>&#160; </div>
-<div class="line"><a name="l01438"></a><span class="lineno"> 1438</span>&#160;    <span class="keywordflow">if</span> (enabled)</div>
-<div class="line"><a name="l01439"></a><span class="lineno"> 1439</span>&#160;        <a class="code" href="namespacecgv_1_1base.html#aa839bf46a9e8abb32cfea4964ec91507">enable_registration</a>();</div>
-<div class="line"><a name="l01440"></a><span class="lineno"> 1440</span>&#160;    <a class="code" href="namespacecgv_1_1base.html#a59a17104b8a82638de4aab8ccfb72db2">ref_plugin_name</a>().clear();</div>
-<div class="line"><a name="l01441"></a><span class="lineno"> 1441</span>&#160; </div>
-<div class="line"><a name="l01442"></a><span class="lineno"> 1442</span>&#160;    <span class="keywordflow">if</span> (result == <span class="keyword">nullptr</span> &amp;&amp; !errors.empty()) {</div>
-<div class="line"><a name="l01443"></a><span class="lineno"> 1443</span>&#160;        std::cerr &lt;&lt; <span class="stringliteral">&quot;failed to load plugin &quot;</span> &lt;&lt; file_name &lt;&lt; std::endl;</div>
-<div class="line"><a name="l01444"></a><span class="lineno"> 1444</span>&#160;        <span class="keywordflow">for</span> (<span class="keyword">const</span> <span class="keyword">auto</span>&amp; err : errors) {</div>
-<div class="line"><a name="l01445"></a><span class="lineno"> 1445</span>&#160;            std::cerr &lt;&lt; <span class="stringliteral">&quot;  &quot;</span> &lt;&lt; err;</div>
-<div class="line"><a name="l01446"></a><span class="lineno"> 1446</span>&#160;        }</div>
-<div class="line"><a name="l01447"></a><span class="lineno"> 1447</span>&#160;    }</div>
-<div class="line"><a name="l01448"></a><span class="lineno"> 1448</span>&#160; </div>
-<div class="line"><a name="l01449"></a><span class="lineno"> 1449</span>&#160;    <span class="keywordflow">return</span> result;</div>
-<div class="line"><a name="l01450"></a><span class="lineno"> 1450</span>&#160;}</div>
-<div class="line"><a name="l01451"></a><span class="lineno"> 1451</span>&#160; </div>
-<div class="line"><a name="l01452"></a><span class="lineno"><a class="line" href="namespacecgv_1_1base.html#af6e8d418aa5f0c3f548c99cd63d35170"> 1452</a></span>&#160;<span class="keywordtype">bool</span> <a class="code" href="namespacecgv_1_1base.html#af6e8d418aa5f0c3f548c99cd63d35170">unload_plugin</a>(<span class="keywordtype">void</span>* handle)</div>
-<div class="line"><a name="l01453"></a><span class="lineno"> 1453</span>&#160;{</div>
-<div class="line"><a name="l01454"></a><span class="lineno"> 1454</span>&#160;<span class="preprocessor">#ifdef _WIN32</span></div>
-<div class="line"><a name="l01455"></a><span class="lineno"> 1455</span>&#160;    <span class="keywordflow">return</span> FreeLibrary((HMODULE)handle) != 0;</div>
-<div class="line"><a name="l01456"></a><span class="lineno"> 1456</span>&#160;<span class="preprocessor">#else</span></div>
-<div class="line"><a name="l01457"></a><span class="lineno"> 1457</span>&#160;    <span class="keywordflow">return</span> dlclose(handle) != 0;</div>
-<div class="line"><a name="l01458"></a><span class="lineno"> 1458</span>&#160;<span class="preprocessor">#endif</span></div>
-<div class="line"><a name="l01459"></a><span class="lineno"> 1459</span>&#160;}</div>
-<div class="line"><a name="l01460"></a><span class="lineno"> 1460</span>&#160; </div>
-<div class="line"><a name="l01461"></a><span class="lineno"> 1461</span>&#160;} <span class="comment">// namespace base</span></div>
-<div class="line"><a name="l01462"></a><span class="lineno"> 1462</span>&#160;} <span class="comment">// namespace cgv</span></div>
+<div class="line"><a name="l01344"></a><span class="lineno"> 1344</span>&#160;<span class="preprocessor">#elif defined(_MSC_VER)</span></div>
+<div class="line"><a name="l01345"></a><span class="lineno"> 1345</span>&#160;    n += <span class="stringliteral">&quot;143&quot;</span>;</div>
+<div class="line"><a name="l01346"></a><span class="lineno"> 1346</span>&#160;<span class="preprocessor">#endif</span></div>
+<div class="line"><a name="l01347"></a><span class="lineno"> 1347</span>&#160;    n += <span class="stringliteral">&quot;.dll&quot;</span>;</div>
+<div class="line"><a name="l01348"></a><span class="lineno"> 1348</span>&#160;<span class="preprocessor">#else</span></div>
+<div class="line"><a name="l01349"></a><span class="lineno"> 1349</span>&#160;    n = std::string(<span class="stringliteral">&quot;lib&quot;</span>) + n + <span class="stringliteral">&quot;.so&quot;</span>;</div>
+<div class="line"><a name="l01350"></a><span class="lineno"> 1350</span>&#160;<span class="preprocessor">#endif</span></div>
+<div class="line"><a name="l01351"></a><span class="lineno"> 1351</span>&#160;    <span class="keywordflow">return</span> n;</div>
+<div class="line"><a name="l01352"></a><span class="lineno"> 1352</span>&#160;}</div>
+<div class="line"><a name="l01353"></a><span class="lineno"> 1353</span>&#160; </div>
+<div class="line"><a name="l01354"></a><span class="lineno"> 1354</span>&#160;} <span class="comment">// namespace base</span></div>
+<div class="line"><a name="l01355"></a><span class="lineno"> 1355</span>&#160;} <span class="comment">// namespace cgv</span></div>
+<div class="line"><a name="l01356"></a><span class="lineno"> 1356</span>&#160; </div>
+<div class="line"><a name="l01357"></a><span class="lineno"> 1357</span>&#160;<span class="preprocessor">#ifdef _WIN32</span></div>
+<div class="line"><a name="l01358"></a><span class="lineno"> 1358</span>&#160;<span class="preprocessor">#include &lt;windows.h&gt;</span></div>
+<div class="line"><a name="l01359"></a><span class="lineno"> 1359</span>&#160;<span class="preprocessor">#include &lt;winbase.h&gt;</span></div>
+<div class="line"><a name="l01360"></a><span class="lineno"> 1360</span>&#160;<span class="preprocessor">#else</span></div>
+<div class="line"><a name="l01361"></a><span class="lineno"> 1361</span>&#160;<span class="preprocessor">#include &lt;unistd.h&gt;</span></div>
+<div class="line"><a name="l01362"></a><span class="lineno"> 1362</span>&#160;<span class="preprocessor">#include &lt;dlfcn.h&gt;</span></div>
+<div class="line"><a name="l01363"></a><span class="lineno"> 1363</span>&#160;<span class="preprocessor">#endif</span></div>
+<div class="line"><a name="l01364"></a><span class="lineno"> 1364</span>&#160; </div>
+<div class="line"><a name="l01365"></a><span class="lineno"> 1365</span>&#160;<span class="keyword">namespace </span><a class="code" href="namespacecgv.html">cgv</a> {</div>
+<div class="line"><a name="l01366"></a><span class="lineno"> 1366</span>&#160;<span class="keyword">namespace </span>base {</div>
+<div class="line"><a name="l01367"></a><span class="lineno"> 1367</span>&#160; </div>
+<div class="line"><a name="l01368"></a><span class="lineno"> 1368</span>&#160;<span class="keywordtype">void</span>* load_plugin_platform(<span class="keyword">const</span> std::string&amp; name)</div>
+<div class="line"><a name="l01369"></a><span class="lineno"> 1369</span>&#160;{</div>
+<div class="line"><a name="l01370"></a><span class="lineno"> 1370</span>&#160;<span class="preprocessor">#ifdef _WIN32</span></div>
+<div class="line"><a name="l01371"></a><span class="lineno"> 1371</span>&#160;    SetLastError(0);</div>
+<div class="line"><a name="l01372"></a><span class="lineno"> 1372</span>&#160;<span class="preprocessor">#ifdef _UNICODE</span></div>
+<div class="line"><a name="l01373"></a><span class="lineno"> 1373</span>&#160;    <span class="keywordflow">return</span> LoadLibrary(<a class="code" href="namespacecgv_1_1utils.html#ab89ee8cc10713a3df171d4a469d0e320">cgv::utils::str2wstr</a>(name).c_str());</div>
+<div class="line"><a name="l01374"></a><span class="lineno"> 1374</span>&#160;<span class="preprocessor">#else</span></div>
+<div class="line"><a name="l01375"></a><span class="lineno"> 1375</span>&#160;    <span class="keywordflow">return</span> LoadLibrary(name.c_str());</div>
+<div class="line"><a name="l01376"></a><span class="lineno"> 1376</span>&#160;<span class="preprocessor">#endif</span></div>
+<div class="line"><a name="l01377"></a><span class="lineno"> 1377</span>&#160;<span class="preprocessor">#else</span></div>
+<div class="line"><a name="l01378"></a><span class="lineno"> 1378</span>&#160;    <span class="keywordflow">return</span> dlopen(name.c_str(), RTLD_NOW);</div>
+<div class="line"><a name="l01379"></a><span class="lineno"> 1379</span>&#160;<span class="preprocessor">#endif</span></div>
+<div class="line"><a name="l01380"></a><span class="lineno"> 1380</span>&#160;}</div>
+<div class="line"><a name="l01381"></a><span class="lineno"> 1381</span>&#160; </div>
+<div class="line"><a name="l01382"></a><span class="lineno"> 1382</span>&#160;<span class="keywordtype">void</span> record_error_platform(<span class="keyword">const</span> std::string&amp; dll_name, std::vector&lt;std::string&gt;&amp; errors)</div>
+<div class="line"><a name="l01383"></a><span class="lineno"> 1383</span>&#160;{</div>
+<div class="line"><a name="l01384"></a><span class="lineno"> 1384</span>&#160;<span class="preprocessor">#ifdef _WIN32</span></div>
+<div class="line"><a name="l01385"></a><span class="lineno"> 1385</span>&#160;    DWORD dw = GetLastError();</div>
+<div class="line"><a name="l01386"></a><span class="lineno"> 1386</span>&#160;    LPVOID lpMsgBuf;</div>
+<div class="line"><a name="l01387"></a><span class="lineno"> 1387</span>&#160;    FormatMessage(FORMAT_MESSAGE_ALLOCATE_BUFFER | FORMAT_MESSAGE_FROM_SYSTEM | FORMAT_MESSAGE_IGNORE_INSERTS, <span class="keyword">nullptr</span>,</div>
+<div class="line"><a name="l01388"></a><span class="lineno"> 1388</span>&#160;                  dw, MAKELANGID(LANG_NEUTRAL, SUBLANG_DEFAULT), (LPTSTR)&amp;lpMsgBuf, 0, <span class="keyword">nullptr</span>);</div>
+<div class="line"><a name="l01389"></a><span class="lineno"> 1389</span>&#160;    <span class="keyword">auto</span> error = dll_name + <span class="stringliteral">&quot;: &quot;</span> + std::string(<span class="keyword">static_cast&lt;</span><span class="keyword">const </span><span class="keywordtype">char</span>*<span class="keyword">&gt;</span>(lpMsgBuf));</div>
+<div class="line"><a name="l01390"></a><span class="lineno"> 1390</span>&#160;    LocalFree(lpMsgBuf);</div>
+<div class="line"><a name="l01391"></a><span class="lineno"> 1391</span>&#160;    errors.push_back(error);</div>
+<div class="line"><a name="l01392"></a><span class="lineno"> 1392</span>&#160;<span class="preprocessor">#else</span></div>
+<div class="line"><a name="l01393"></a><span class="lineno"> 1393</span>&#160;    <span class="keyword">auto</span> errPtr = dlerror();</div>
+<div class="line"><a name="l01394"></a><span class="lineno"> 1394</span>&#160;    <span class="keyword">auto</span> error = std::string(errPtr) + <span class="stringliteral">&quot;\n&quot;</span>;</div>
+<div class="line"><a name="l01395"></a><span class="lineno"> 1395</span>&#160;    errors.emplace_back(error);</div>
+<div class="line"><a name="l01396"></a><span class="lineno"> 1396</span>&#160;<span class="preprocessor">#endif</span></div>
+<div class="line"><a name="l01397"></a><span class="lineno"> 1397</span>&#160;}</div>
+<div class="line"><a name="l01398"></a><span class="lineno"> 1398</span>&#160; </div>
+<div class="line"><a name="l01399"></a><span class="lineno"><a class="line" href="namespacecgv_1_1base.html#acf58539e451af7248fa0d2e64bbb48f5"> 1399</a></span>&#160;<span class="keywordtype">void</span>* <a class="code" href="namespacecgv_1_1base.html#acf58539e451af7248fa0d2e64bbb48f5">load_plugin</a>(<span class="keyword">const</span> std::string&amp; file_name)</div>
+<div class="line"><a name="l01400"></a><span class="lineno"> 1400</span>&#160;{</div>
+<div class="line"><a name="l01401"></a><span class="lineno"> 1401</span>&#160;    std::vector&lt;token&gt; names;</div>
+<div class="line"><a name="l01402"></a><span class="lineno"> 1402</span>&#160;    <a class="code" href="namespacecgv_1_1utils.html#a748e89bffdda8da3a478b073bf28877a">bite_all</a>(<a class="code" href="classcgv_1_1utils_1_1tokenizer.html">tokenizer</a>(file_name).set_ws(<span class="stringliteral">&quot;,|;&quot;</span>), names);</div>
+<div class="line"><a name="l01403"></a><span class="lineno"> 1403</span>&#160; </div>
+<div class="line"><a name="l01404"></a><span class="lineno"> 1404</span>&#160;    <span class="keywordtype">bool</span> enabled = <a class="code" href="namespacecgv_1_1base.html#a89d35f03b0d843ceb855119ab9beb635">is_registration_enabled</a>();</div>
+<div class="line"><a name="l01405"></a><span class="lineno"> 1405</span>&#160;    <span class="keywordflow">if</span> (enabled)</div>
+<div class="line"><a name="l01406"></a><span class="lineno"> 1406</span>&#160;        <a class="code" href="namespacecgv_1_1base.html#a5b14a0db38dca07762d43ca30f801ac8">disable_registration</a>();</div>
+<div class="line"><a name="l01407"></a><span class="lineno"> 1407</span>&#160; </div>
+<div class="line"><a name="l01408"></a><span class="lineno"> 1408</span>&#160;    <span class="keywordtype">void</span>* result = <span class="keyword">nullptr</span>;</div>
+<div class="line"><a name="l01409"></a><span class="lineno"> 1409</span>&#160;    std::vector&lt;std::string&gt; errors = {};</div>
+<div class="line"><a name="l01410"></a><span class="lineno"> 1410</span>&#160;    <span class="keywordflow">for</span> (<span class="keyword">auto</span>&amp; plugin_name : names) {</div>
+<div class="line"><a name="l01411"></a><span class="lineno"> 1411</span>&#160;        std::string fn[2];</div>
+<div class="line"><a name="l01412"></a><span class="lineno"> 1412</span>&#160;        fn[0] = <a class="code" href="namespacecgv_1_1utils.html#a4f918e840e035c5c0ff32d6caaa8a78a">to_string</a>(plugin_name);</div>
+<div class="line"><a name="l01413"></a><span class="lineno"> 1413</span>&#160;        fn[1] = extend_plugin_name(fn[0]);</div>
+<div class="line"><a name="l01414"></a><span class="lineno"> 1414</span>&#160;<span class="preprocessor">#ifdef WIN32</span></div>
+<div class="line"><a name="l01415"></a><span class="lineno"> 1415</span>&#160;        <span class="keywordflow">if</span> (<a class="code" href="namespacecgv_1_1utils.html#a6b682be2fdbb130c91a3bd8bd7936ff8">cgv::utils::to_lower</a>(cgv::utils::file::get_extension(fn[0]) != <span class="stringliteral">&quot;dll&quot;</span>))</div>
+<div class="line"><a name="l01416"></a><span class="lineno"> 1416</span>&#160;            fn[0] += <span class="stringliteral">&quot;.dll&quot;</span>;</div>
+<div class="line"><a name="l01417"></a><span class="lineno"> 1417</span>&#160;<span class="preprocessor">#elif __APPLE__</span></div>
+<div class="line"><a name="l01418"></a><span class="lineno"> 1418</span>&#160;        <span class="keywordflow">if</span> (<a class="code" href="namespacecgv_1_1utils.html#a6b682be2fdbb130c91a3bd8bd7936ff8">cgv::utils::to_lower</a>(cgv::utils::file::get_extension(fn[0]) != <span class="stringliteral">&quot;dylib&quot;</span>))</div>
+<div class="line"><a name="l01419"></a><span class="lineno"> 1419</span>&#160;            fn[0] = std::string(<span class="stringliteral">&quot;lib&quot;</span>) + fn[0] + <span class="stringliteral">&quot;.dylib&quot;</span>;</div>
+<div class="line"><a name="l01420"></a><span class="lineno"> 1420</span>&#160;<span class="preprocessor">#else</span></div>
+<div class="line"><a name="l01421"></a><span class="lineno"> 1421</span>&#160;        <span class="keywordflow">if</span> (<a class="code" href="namespacecgv_1_1utils.html#a6b682be2fdbb130c91a3bd8bd7936ff8">cgv::utils::to_lower</a>(cgv::utils::file::get_extension(fn[0]) != <span class="stringliteral">&quot;so&quot;</span>))</div>
+<div class="line"><a name="l01422"></a><span class="lineno"> 1422</span>&#160;            fn[0] = std::string(<span class="stringliteral">&quot;lib&quot;</span>) + fn[0] + <span class="stringliteral">&quot;.so&quot;</span>;</div>
+<div class="line"><a name="l01423"></a><span class="lineno"> 1423</span>&#160;<span class="preprocessor">#endif</span></div>
+<div class="line"><a name="l01424"></a><span class="lineno"> 1424</span>&#160;<span class="preprocessor">#ifndef NDEBUG</span></div>
+<div class="line"><a name="l01425"></a><span class="lineno"> 1425</span>&#160;        std::swap(fn[0], fn[1]);</div>
+<div class="line"><a name="l01426"></a><span class="lineno"> 1426</span>&#160;<span class="preprocessor">#endif</span></div>
+<div class="line"><a name="l01427"></a><span class="lineno"> 1427</span>&#160; </div>
+<div class="line"><a name="l01428"></a><span class="lineno"> 1428</span>&#160;        result = <span class="keyword">nullptr</span>;</div>
+<div class="line"><a name="l01429"></a><span class="lineno"> 1429</span>&#160;        <span class="keywordflow">for</span> (<span class="keyword">auto</span>&amp; dll_name : fn) {</div>
+<div class="line"><a name="l01430"></a><span class="lineno"> 1430</span>&#160;            <a class="code" href="namespacecgv_1_1base.html#a59a17104b8a82638de4aab8ccfb72db2">ref_plugin_name</a>() = dll_name;</div>
+<div class="line"><a name="l01431"></a><span class="lineno"> 1431</span>&#160;            result = load_plugin_platform(dll_name);</div>
+<div class="line"><a name="l01432"></a><span class="lineno"> 1432</span>&#160;            <span class="keywordflow">if</span> (result) {</div>
+<div class="line"><a name="l01433"></a><span class="lineno"> 1433</span>&#160;                <span class="keywordflow">break</span>;</div>
+<div class="line"><a name="l01434"></a><span class="lineno"> 1434</span>&#160;            }</div>
+<div class="line"><a name="l01435"></a><span class="lineno"> 1435</span>&#160; </div>
+<div class="line"><a name="l01436"></a><span class="lineno"> 1436</span>&#160;            record_error_platform(dll_name, errors);</div>
+<div class="line"><a name="l01437"></a><span class="lineno"> 1437</span>&#160;        }</div>
+<div class="line"><a name="l01438"></a><span class="lineno"> 1438</span>&#160;    }</div>
+<div class="line"><a name="l01439"></a><span class="lineno"> 1439</span>&#160; </div>
+<div class="line"><a name="l01440"></a><span class="lineno"> 1440</span>&#160;    <span class="keywordflow">if</span> (enabled)</div>
+<div class="line"><a name="l01441"></a><span class="lineno"> 1441</span>&#160;        <a class="code" href="namespacecgv_1_1base.html#aa839bf46a9e8abb32cfea4964ec91507">enable_registration</a>();</div>
+<div class="line"><a name="l01442"></a><span class="lineno"> 1442</span>&#160;    <a class="code" href="namespacecgv_1_1base.html#a59a17104b8a82638de4aab8ccfb72db2">ref_plugin_name</a>().clear();</div>
+<div class="line"><a name="l01443"></a><span class="lineno"> 1443</span>&#160; </div>
+<div class="line"><a name="l01444"></a><span class="lineno"> 1444</span>&#160;    <span class="keywordflow">if</span> (result == <span class="keyword">nullptr</span> &amp;&amp; !errors.empty()) {</div>
+<div class="line"><a name="l01445"></a><span class="lineno"> 1445</span>&#160;        std::cerr &lt;&lt; <span class="stringliteral">&quot;failed to load plugin &quot;</span> &lt;&lt; file_name &lt;&lt; std::endl;</div>
+<div class="line"><a name="l01446"></a><span class="lineno"> 1446</span>&#160;        <span class="keywordflow">for</span> (<span class="keyword">const</span> <span class="keyword">auto</span>&amp; err : errors) {</div>
+<div class="line"><a name="l01447"></a><span class="lineno"> 1447</span>&#160;            std::cerr &lt;&lt; <span class="stringliteral">&quot;  &quot;</span> &lt;&lt; err;</div>
+<div class="line"><a name="l01448"></a><span class="lineno"> 1448</span>&#160;        }</div>
+<div class="line"><a name="l01449"></a><span class="lineno"> 1449</span>&#160;    }</div>
+<div class="line"><a name="l01450"></a><span class="lineno"> 1450</span>&#160; </div>
+<div class="line"><a name="l01451"></a><span class="lineno"> 1451</span>&#160;    <span class="keywordflow">return</span> result;</div>
+<div class="line"><a name="l01452"></a><span class="lineno"> 1452</span>&#160;}</div>
+<div class="line"><a name="l01453"></a><span class="lineno"> 1453</span>&#160; </div>
+<div class="line"><a name="l01454"></a><span class="lineno"><a class="line" href="namespacecgv_1_1base.html#af6e8d418aa5f0c3f548c99cd63d35170"> 1454</a></span>&#160;<span class="keywordtype">bool</span> <a class="code" href="namespacecgv_1_1base.html#af6e8d418aa5f0c3f548c99cd63d35170">unload_plugin</a>(<span class="keywordtype">void</span>* handle)</div>
+<div class="line"><a name="l01455"></a><span class="lineno"> 1455</span>&#160;{</div>
+<div class="line"><a name="l01456"></a><span class="lineno"> 1456</span>&#160;<span class="preprocessor">#ifdef _WIN32</span></div>
+<div class="line"><a name="l01457"></a><span class="lineno"> 1457</span>&#160;    <span class="keywordflow">return</span> FreeLibrary((HMODULE)handle) != 0;</div>
+<div class="line"><a name="l01458"></a><span class="lineno"> 1458</span>&#160;<span class="preprocessor">#else</span></div>
+<div class="line"><a name="l01459"></a><span class="lineno"> 1459</span>&#160;    <span class="keywordflow">return</span> dlclose(handle) != 0;</div>
+<div class="line"><a name="l01460"></a><span class="lineno"> 1460</span>&#160;<span class="preprocessor">#endif</span></div>
+<div class="line"><a name="l01461"></a><span class="lineno"> 1461</span>&#160;}</div>
+<div class="line"><a name="l01462"></a><span class="lineno"> 1462</span>&#160; </div>
+<div class="line"><a name="l01463"></a><span class="lineno"> 1463</span>&#160;} <span class="comment">// namespace base</span></div>
+<div class="line"><a name="l01464"></a><span class="lineno"> 1464</span>&#160;} <span class="comment">// namespace cgv</span></div>
 <div class="ttc" id="aadvanced__scan_8h_html"><div class="ttname"><a href="advanced__scan_8h.html">advanced_scan.h</a></div><div class="ttdoc">More advanced text processing for splitting text into lines or tokens.</div></div>
 <div class="ttc" id="aclasscgv_1_1base_1_1base_html_aa2b866151a23c63b3e8029849e71a796"><div class="ttname"><a href="classcgv_1_1base_1_1base.html#aa2b866151a23c63b3e8029849e71a796">cgv::base::base::get_interface</a></div><div class="ttdeci">T * get_interface()</div><div class="ttdoc">use dynamic type cast to check for the given interface</div><div class="ttdef"><b>Definition:</b> <a href="base_8h_source.html#l00128">base.h:128</a></div></div>
 <div class="ttc" id="aclasscgv_1_1base_1_1named_html"><div class="ttname"><a href="classcgv_1_1base_1_1named.html">cgv::base::named</a></div><div class="ttdoc">base class for all gui types</div><div class="ttdef"><b>Definition:</b> <a href="named_8h_source.html#l00019">named.h:20</a></div></div>
@@ -1569,7 +1571,7 @@ $(document).ready(function(){initNavTree('register_8cxx_source.html',''); initRe
 <div class="ttc" id="anamespacecgv_1_1base_html_aba72200bc48e79f8a676410773a8345c"><div class="ttname"><a href="namespacecgv_1_1base.html#aba72200bc48e79f8a676410773a8345c">cgv::base::ref_resource_file_map</a></div><div class="ttdeci">std::map&lt; std::string, resource_file_info &gt; &amp; ref_resource_file_map()</div><div class="ttdoc">return a reference to a mapping of resource file names to resource file infos</div><div class="ttdef"><b>Definition:</b> <a href="register_8cxx_source.html#l00143">register.cxx:143</a></div></div>
 <div class="ttc" id="anamespacecgv_1_1base_html_abfcd30049d34b52e335da99b47c3979d"><div class="ttname"><a href="namespacecgv_1_1base.html#abfcd30049d34b52e335da99b47c3979d">cgv::base::named_ptr</a></div><div class="ttdeci">data::ref_ptr&lt; named, true &gt; named_ptr</div><div class="ttdoc">ref counted pointer to a node</div><div class="ttdef"><b>Definition:</b> <a href="named_8h_source.html#l00013">named.h:13</a></div></div>
 <div class="ttc" id="anamespacecgv_1_1base_html_ac6fa99b284a53727252312a9814a263a"><div class="ttname"><a href="namespacecgv_1_1base.html#ac6fa99b284a53727252312a9814a263a">cgv::base::process_gui_file</a></div><div class="ttdeci">bool process_gui_file(const std::string &amp;file_name)</div><div class="ttdoc">interpret a gui file</div><div class="ttdef"><b>Definition:</b> <a href="register_8cxx_source.html#l00789">register.cxx:789</a></div></div>
-<div class="ttc" id="anamespacecgv_1_1base_html_acf58539e451af7248fa0d2e64bbb48f5"><div class="ttname"><a href="namespacecgv_1_1base.html#acf58539e451af7248fa0d2e64bbb48f5">cgv::base::load_plugin</a></div><div class="ttdeci">void * load_plugin(const std::string &amp;file_name)</div><div class="ttdoc">load a plugin or dll and return a handle to the plugin, or 0 if loading was not successful.</div><div class="ttdef"><b>Definition:</b> <a href="register_8cxx_source.html#l01397">register.cxx:1397</a></div></div>
+<div class="ttc" id="anamespacecgv_1_1base_html_acf58539e451af7248fa0d2e64bbb48f5"><div class="ttname"><a href="namespacecgv_1_1base.html#acf58539e451af7248fa0d2e64bbb48f5">cgv::base::load_plugin</a></div><div class="ttdeci">void * load_plugin(const std::string &amp;file_name)</div><div class="ttdoc">load a plugin or dll and return a handle to the plugin, or 0 if loading was not successful.</div><div class="ttdef"><b>Definition:</b> <a href="register_8cxx_source.html#l01399">register.cxx:1399</a></div></div>
 <div class="ttc" id="anamespacecgv_1_1base_html_ad2a2af3c072c02cfb161f8255dd6a94c"><div class="ttname"><a href="namespacecgv_1_1base.html#ad2a2af3c072c02cfb161f8255dd6a94c">cgv::base::register_resource_string</a></div><div class="ttdeci">void register_resource_string(const std::string &amp;string_name, const char *string_data)</div><div class="ttdoc">register a resource string</div><div class="ttdef"><b>Definition:</b> <a href="register_8cxx_source.html#l00936">register.cxx:936</a></div></div>
 <div class="ttc" id="anamespacecgv_1_1base_html_ad3783da9c295a7c532f2ea35d2a06abb"><div class="ttname"><a href="namespacecgv_1_1base.html#ad3783da9c295a7c532f2ea35d2a06abb">cgv::base::register_object</a></div><div class="ttdeci">void register_object(base_ptr object, const std::string &amp;options)</div><div class="ttdoc">register an object and send event to all current registration ref_listeners()</div><div class="ttdef"><b>Definition:</b> <a href="register_8cxx_source.html#l00581">register.cxx:581</a></div></div>
 <div class="ttc" id="anamespacecgv_1_1base_html_ad93720e2cf9340ea50de0b91267680d4"><div class="ttname"><a href="namespacecgv_1_1base.html#ad93720e2cf9340ea50de0b91267680d4">cgv::base::ref_prog_name</a></div><div class="ttdeci">std::string &amp; ref_prog_name()</div><div class="ttdoc">return a refence to the name of the started executable</div><div class="ttdef"><b>Definition:</b> <a href="register_8cxx_source.html#l00125">register.cxx:125</a></div></div>
@@ -1578,7 +1580,7 @@ $(document).ready(function(){initNavTree('register_8cxx_source.html',''); initRe
 <div class="ttc" id="anamespacecgv_1_1base_html_aee7e83d1235ad1cef1b948d2e23c7b0e"><div class="ttname"><a href="namespacecgv_1_1base.html#aee7e83d1235ad1cef1b948d2e23c7b0e">cgv::base::is_permanent_registration_enabled</a></div><div class="ttdeci">bool is_permanent_registration_enabled()</div><div class="ttdoc">check whether permanent registration is enabled</div><div class="ttdef"><b>Definition:</b> <a href="register_8cxx_source.html#l00543">register.cxx:543</a></div></div>
 <div class="ttc" id="anamespacecgv_1_1base_html_aeed67b035bb486ec604fdc4f8362c747"><div class="ttname"><a href="namespacecgv_1_1base.html#aeed67b035bb486ec604fdc4f8362c747">cgv::base::disable_registration_event_cleanup</a></div><div class="ttdeci">void disable_registration_event_cleanup()</div><div class="ttdoc">disable cleanup of registration events (see enable_registration_event_cleanup).</div><div class="ttdef"><b>Definition:</b> <a href="register_8cxx_source.html#l00565">register.cxx:565</a></div></div>
 <div class="ttc" id="anamespacecgv_1_1base_html_af2406c2621b5dfd2f92d3384e9b14189"><div class="ttname"><a href="namespacecgv_1_1base.html#af2406c2621b5dfd2f92d3384e9b14189">cgv::base::process_config_file</a></div><div class="ttdeci">bool process_config_file(const std::string &amp;_file_name)</div><div class="ttdoc">interpret a config file</div><div class="ttdef"><b>Definition:</b> <a href="register_8cxx_source.html#l00783">register.cxx:783</a></div></div>
-<div class="ttc" id="anamespacecgv_1_1base_html_af6e8d418aa5f0c3f548c99cd63d35170"><div class="ttname"><a href="namespacecgv_1_1base.html#af6e8d418aa5f0c3f548c99cd63d35170">cgv::base::unload_plugin</a></div><div class="ttdeci">bool unload_plugin(void *handle)</div><div class="ttdoc">unload the plugin with the given handle</div><div class="ttdef"><b>Definition:</b> <a href="register_8cxx_source.html#l01452">register.cxx:1452</a></div></div>
+<div class="ttc" id="anamespacecgv_1_1base_html_af6e8d418aa5f0c3f548c99cd63d35170"><div class="ttname"><a href="namespacecgv_1_1base.html#af6e8d418aa5f0c3f548c99cd63d35170">cgv::base::unload_plugin</a></div><div class="ttdeci">bool unload_plugin(void *handle)</div><div class="ttdoc">unload the plugin with the given handle</div><div class="ttdef"><b>Definition:</b> <a href="register_8cxx_source.html#l01454">register.cxx:1454</a></div></div>
 <div class="ttc" id="anamespacecgv_1_1utils_html"><div class="ttname"><a href="namespacecgv_1_1utils.html">cgv::utils</a></div><div class="ttdoc">namespace that holds tools that dont fit any other namespace</div><div class="ttdef"><b>Definition:</b> <a href="advanced__scan_8cxx_source.html#l00004">advanced_scan.cxx:4</a></div></div>
 <div class="ttc" id="anamespacecgv_1_1utils_html_a485f1ad0eee5a254282231fd7c2f10d9"><div class="ttname"><a href="namespacecgv_1_1utils.html#a485f1ad0eee5a254282231fd7c2f10d9">cgv::utils::split_to_lines</a></div><div class="ttdeci">void split_to_lines(const char *global_begin, const char *global_end, std::vector&lt; line &gt; &amp;lines, bool truncate_trailing_spaces)</div><div class="ttdoc">this function splits a text range at the newline characters into single lines.</div><div class="ttdef"><b>Definition:</b> <a href="advanced__scan_8cxx_source.html#l00065">advanced_scan.cxx:65</a></div></div>
 <div class="ttc" id="anamespacecgv_1_1utils_html_a4f918e840e035c5c0ff32d6caaa8a78a"><div class="ttname"><a href="namespacecgv_1_1utils.html#a4f918e840e035c5c0ff32d6caaa8a78a">cgv::utils::to_string</a></div><div class="ttdeci">std::string to_string(const T &amp;v, unsigned int w=-1, unsigned int p=-1, bool fixed=false)</div><div class="ttdoc">convert a numeric type T into string of width w and precision p</div><div class="ttdef"><b>Definition:</b> <a href="convert__string_8h_source.html#l00018">convert_string.h:18</a></div></div>
