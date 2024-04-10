@@ -30,9 +30,11 @@ bool dynamic_mesh<T>::has_blend_shape_vector(idx_type bi, idx_type vi) const
 {
 	const auto& bs = blend_shapes[bi];
 	switch (bs.mode) {
-	case blend_shape_mode::direct: 
+	case blend_shape_mode::direct:
+		/// If the blend shape data is stored in blend_shape_mode::direct mode, this function will always return true as
+		/// there is no indirection.
 		return true;
-	case blend_shape_mode::indexed: 
+	case blend_shape_mode::indexed:
 		for (idx_type i = bs.blend_shape_index_range[0]; i < bs.blend_shape_index_range[1]; ++i)
 			if (blend_shape_indices[i] == vi)
 				return true;
@@ -52,7 +54,7 @@ typename dynamic_mesh<T>::vec3 dynamic_mesh<T>::get_blend_shape_vector(idx_type 
 	switch (bs.mode) {
 	case blend_shape_mode::direct: 
 		return blend_shape_data[bi*this->get_nr_positions()+vi];
-	case blend_shape_mode::indexed: 
+	case blend_shape_mode::indexed:
 		for (idx_type i = bs.blend_shape_index_range[0]; i < bs.blend_shape_index_range[1]; ++i)
 			if (blend_shape_indices[i] == vi)
 				return blend_shape_data[i];

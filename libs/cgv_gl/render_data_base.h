@@ -1,7 +1,6 @@
 #pragma once
 
 #include <cgv/data/optional.h>
-#include <cgv/render/render_types.h>
 
 #include "renderer.h"
 

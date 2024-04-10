@@ -30,6 +30,18 @@ class vr_test :
 	public cgv::gui::event_handler,
 	public cgv::gui::provider {
 protected:
+	using vec2 = cgv::vec2;
+	using vec3 = cgv::vec3;
+	using dvec2 = cgv::dvec2;
+	using dvec3 = cgv::dvec3;
+	using mat3 = cgv::mat3;
+	using mat4 = cgv::mat4;
+	using rgb = cgv::rgb;
+	using rgba = cgv::rgba;
+	using quat = cgv::quat;
+	using dquat = cgv::dquat;
+	using box3 = cgv::box3;
+
 	// different interaction states for the controllers
 	enum InteractionState {
 		IS_NONE,

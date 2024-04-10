@@ -79,7 +79,7 @@ unsigned plot2d::add_sub_plot(const std::string& name)
 	}
 
 	// create new point container
-	samples.push_back(std::vector<plot2d::vec2>());
+	samples.push_back(std::vector<vec2>());
 	strips.push_back(std::vector<unsigned>());
 	attribute_source_arrays.push_back(attribute_source_array());
 	attribute_source_arrays.back().attribute_sources.push_back(attribute_source(i, 0, 0, 2 * sizeof(float)));
@@ -103,7 +103,7 @@ plot2d_config& plot2d::ref_sub_plot2d_config(unsigned i)
 	return static_cast<plot2d_config&>(ref_sub_plot_config(i));
 }
 
-std::vector<plot2d::vec2>& plot2d::ref_sub_plot_samples(unsigned i)
+std::vector<vec2>& plot2d::ref_sub_plot_samples(unsigned i)
 {
 	return samples[i];
 }

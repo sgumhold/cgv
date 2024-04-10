@@ -11,7 +11,7 @@ namespace cgv {
 		{
 			MVPW = ctx.get_modelview_projection_window_matrix();
 		}
-		const transformed::dmat4& transformed::get_modelview_projection_window_matrix() const
+		const dmat4& transformed::get_modelview_projection_window_matrix() const
 		{
 			return MVPW;
 		}

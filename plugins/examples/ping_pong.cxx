@@ -33,7 +33,7 @@ protected:
 	float speed;
 	float threshold;
 	int rule[18];
-	std::vector<rgba> HPP_colors;
+	std::vector<cgv::rgba> HPP_colors;
 
 	texture T[3];
 	frame_buffer fbo;
@@ -62,26 +62,26 @@ public:
 		std::fill(rule, rule + 18, 0);
 		rule[3] = rule[9+2] = rule[9+3] = 1;
 		HPP_colors.resize(16);
-		HPP_colors[ 0] = rgba(0, 0, 0, 1);
-		HPP_colors[15] = rgba(1, 1, 1, 1);
+		HPP_colors[ 0] = cgv::rgba(0, 0, 0, 1);
+		HPP_colors[15] = cgv::rgba(1, 1, 1, 1);
 
-		HPP_colors[ 1] = rgba(0.5f, 0.2f, 0.2f, 1);
-		HPP_colors[ 2] = rgba(0.75f, 0.4f, 0.4f, 1);
-		HPP_colors[ 4] = rgba(0.75f, 0, 0, 1);
-		HPP_colors[ 8] = rgba(1, 0.2f, 0.2f, 1);
+		HPP_colors[ 1] = cgv::rgba(0.5f, 0.2f, 0.2f, 1);
+		HPP_colors[ 2] = cgv::rgba(0.75f, 0.4f, 0.4f, 1);
+		HPP_colors[ 4] = cgv::rgba(0.75f, 0, 0, 1);
+		HPP_colors[ 8] = cgv::rgba(1, 0.2f, 0.2f, 1);
 
-		HPP_colors[ 3] = rgba(0.75f, 0.75f, 0.25f, 1);
-		HPP_colors[12] = rgba(1, 1, 0, 1);
+		HPP_colors[ 3] = cgv::rgba(0.75f, 0.75f, 0.25f, 1);
+		HPP_colors[12] = cgv::rgba(1, 1, 0, 1);
 
-		HPP_colors[ 9] = rgba(0.2f, 0.5f, 0.2f, 1);
-		HPP_colors[ 6] = rgba(0.4f, 0.75f, 0.4f, 1);
-		HPP_colors[ 5] = rgba(0, 0.75f, 0, 1);
-		HPP_colors[10] = rgba(0.2f, 1, 0.2f, 1);
+		HPP_colors[ 9] = cgv::rgba(0.2f, 0.5f, 0.2f, 1);
+		HPP_colors[ 6] = cgv::rgba(0.4f, 0.75f, 0.4f, 1);
+		HPP_colors[ 5] = cgv::rgba(0, 0.75f, 0, 1);
+		HPP_colors[10] = cgv::rgba(0.2f, 1, 0.2f, 1);
 
-		HPP_colors[14] = rgba(0.5f, 0.2f, 0.5f, 1);
-		HPP_colors[13] = rgba(0.75f, 0.4f, 0.75f, 1);
-		HPP_colors[11] = rgba(0, 0, 0.75f, 1);
-		HPP_colors[ 7] = rgba(0.2f, 0.2f, 1, 1);
+		HPP_colors[14] = cgv::rgba(0.5f, 0.2f, 0.5f, 1);
+		HPP_colors[13] = cgv::rgba(0.75f, 0.4f, 0.75f, 1);
+		HPP_colors[11] = cgv::rgba(0, 0, 0.75f, 1);
+		HPP_colors[ 7] = cgv::rgba(0.2f, 0.2f, 1, 1);
 
 		connect(get_animation_trigger().shoot, this, &ping_pong::timer_event);
 	}
@@ -223,8 +223,8 @@ public:
 	}
 	void draw_quad(context& ctx)
 	{
-		const vec2 P[4] = { vec2(-1,1), vec2(-1,-1), vec2(1,1), vec2(1,-1) };
-		const vec2 T[4] = { vec2(0,1), vec2(0.0f,0.0f), vec2(1,1), vec2(1.0f,0.0f) };
+		const cgv::vec2 P[4] = { cgv::vec2(-1,1), cgv::vec2(-1,-1), cgv::vec2(1,1), cgv::vec2(1,-1) };
+		const cgv::vec2 T[4] = { cgv::vec2(0,1), cgv::vec2(0.0f,0.0f), cgv::vec2(1,1), cgv::vec2(1.0f,0.0f) };
 		attribute_array_binding::set_global_attribute_array(ctx, 0, P, 4);
 		attribute_array_binding::enable_global_array(ctx, 0);
 		attribute_array_binding::set_global_attribute_array(ctx, 1, T, 4);

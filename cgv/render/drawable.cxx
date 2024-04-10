@@ -46,29 +46,22 @@ void drawable::post_redraw()
 		ctx->post_redraw();
 }
 
-/// posts a redraw event containing user data to the current context if one is available
-/*void drawable::post_redraw(void* user_data)
-{
-	if (ctx)
-		ctx->post_redraw(user_data);
-}*/
-
-cgv::render::view* drawable::find_view_as_node(size_t view_idx) const
+view* drawable::find_view_as_node(size_t view_idx) const
 {
 	cgv::base::node* node_ptr = const_cast<cgv::base::node*>(dynamic_cast<const cgv::base::node*>(this));
-	std::vector<cgv::render::view*> views;
-	cgv::base::find_interface<cgv::render::view>(cgv::base::base_ptr(node_ptr), views);
+	std::vector<view*> views;
+	cgv::base::find_interface<view>(cgv::base::base_ptr(node_ptr), views);
 	if (views.empty() || view_idx > views.size())
 		return 0;
 	return views[view_idx];
 }
 
-bool drawable::get_world_location(int x, int y, const cgv::render::view& V, cgv::math::fvec<double, 3>& world_location, double* window_z_ptr) const
+bool drawable::get_world_location(int x, int y, const view& V, dvec3& world_location, double* window_z_ptr) const
 {
 	if (!get_context())
 		return false;
 	// analyze the mouse location
-	cgv::render::context& ctx = *get_context();
+	context& ctx = *get_context();
 	const dmat4* DPV_ptr, *DPV_other_ptr;
 	int x_other, y_other, vp_col_idx, vp_row_idx, vp_width, vp_height;
 	int eye_panel = V.get_modelview_projection_window_matrices(x, y, ctx.get_width(), ctx.get_height(), &DPV_ptr, &DPV_other_ptr, &x_other, &y_other, &vp_col_idx, &vp_row_idx, &vp_width, &vp_height);
@@ -183,6 +176,5 @@ bool multi_pass_drawable::multi_pass_terminate(const context& ctx)
 	return true;
 }
 
-
-	}
-}
+	} // namespace render
+} // namespace cgv

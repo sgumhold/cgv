@@ -38,10 +38,10 @@ public:
 	float texture_scale,  texture_aspect;
 	
 	// texture parameters
-	rgba border_color;
+	cgv::rgba border_color;
 
 	// appearance parameters
-	rgba frame_color;
+	cgv::rgba frame_color;
 	float frame_width;
 	cgv::render::textured_material mat;
 

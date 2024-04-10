@@ -61,6 +61,14 @@ namespace vr {
 		/// enum definition to make vr_kit selection possible
 		std::string kit_enum_definition;
 	protected:
+		using vec2 = cgv::vec2;
+		using vec3 = cgv::vec3;
+		using vec4 = cgv::vec4;
+		using quat = cgv::quat;
+		using mat34 = cgv::mat34;
+		using rgb = cgv::rgb;
+		using rgba = cgv::rgba;
+
 		/**@name management of window and secondary context*/
 		//@{
 		/// helper member that allows to configure width of the window before creation

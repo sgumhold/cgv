@@ -2,7 +2,6 @@
 
 #include <vector>
 #include <cgv/media/axis_aligned_box.h>
-#include <cgv/render/render_types.h>
 #include <cgv/media/color.h>
 #include <cgv/gui/provider.h>
 
@@ -42,7 +41,7 @@ struct CGV_API tick_config
 };
 
 /// configuration information stored per domain axis
-class CGV_API axis_config : public cgv::render::render_types
+class CGV_API axis_config
 {
 private:
 	/// minimum tick space value

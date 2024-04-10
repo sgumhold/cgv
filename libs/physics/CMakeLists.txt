@@ -1,0 +1,14 @@
+file(GLOB_RECURSE SOURCES RELATIVE "${CMAKE_CURRENT_SOURCE_DIR}" "*.cxx")
+file(GLOB_RECURSE HEADERS RELATIVE "${CMAKE_CURRENT_SOURCE_DIR}" "*.h")
+
+cgv_add_target(physics
+	TYPE plugin NO_EXECUTABLE
+	SOURCES ${SOURCES}
+	HEADERS ${HEADERS}
+	DEPENDENCIES
+		cgv_render cgv_gui cgv_base cgv_type cgv_reflect cgv_utils cgv_signal cgv_data cgv_gl jolt_physics
+	OVERRIDE_SHARED_EXPORT_DEFINE PHYSICS_EXPORTS
+	OVERRIDE_FORCE_STATIC_DEFINE  CGV_GUI_FORCE_STATIC
+)
+
+install(TARGETS physics EXPORT cgv_plugins DESTINATION ${CGV_BIN_DEST})

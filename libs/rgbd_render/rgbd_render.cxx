@@ -59,7 +59,7 @@ bool create_or_update_texture_from_frame(cgv::render::context& ctx,
 }
 void construct_rgbd_render_data(
 	const rgbd::frame_type& depth_frame,
-	std::vector<cgv::render::render_types::usvec3>& sP,
+	std::vector<cgv::usvec3>& sP,
 	uint16_t sub_sample, uint16_t sub_line_sample)
 {
 	sP.clear();
@@ -70,14 +70,14 @@ void construct_rgbd_render_data(
 			uint16_t depth = reinterpret_cast<const uint16_t&>(depth_frame.frame_data[(y * depth_frame.width + x) * depth_frame.get_nr_bytes_per_pixel()]);
 			if (depth == 0)
 				continue;
-			sP.push_back(cgv::render::render_types::usvec3(x, y, depth));
+			sP.push_back(cgv::usvec3(x, y, depth));
 		}
 }
 void construct_rgbd_render_data_with_color(
 	const rgbd::frame_type& depth_frame,
 	const rgbd::frame_type& warped_color_frame,
-	std::vector<cgv::render::render_types::usvec3>& sP,
-	std::vector<cgv::render::render_types::rgb8>& sC,
+	std::vector<cgv::usvec3>& sP,
+	std::vector<cgv::rgb8>& sC,
 	uint16_t sub_sample, uint16_t sub_line_sample)
 {
 	sP.clear();
@@ -90,8 +90,8 @@ void construct_rgbd_render_data_with_color(
 			uint16_t depth = reinterpret_cast<const uint16_t&>(depth_frame.frame_data[(y * depth_frame.width + x) * depth_frame.get_nr_bytes_per_pixel()]);
 			if (depth == 0)
 				continue;
-			sP.push_back(cgv::render::render_types::usvec3(x, y, depth));
-			sC.push_back(cgv::render::render_types::rgb8(pix_ptr[2], pix_ptr[1], pix_ptr[0]));
+			sP.push_back(cgv::usvec3(x, y, depth));
+			sC.push_back(cgv::rgb8(pix_ptr[2], pix_ptr[1], pix_ptr[0]));
 		}
 }
 
@@ -113,7 +113,7 @@ void set_camera_calibration_uniforms(cgv::render::context& ctx, cgv::render::sha
 	prog.set_uniform(ctx, name + ".w", int(calib.w));
 	prog.set_uniform(ctx, name + ".h", int(calib.h));
 	prog.set_uniform(ctx, name + ".max_radius_for_projection", float(calib.max_radius_for_projection));
-	prog.set_uniform(ctx, name + ".dc", cgv::render::render_types::vec2(calib.dc));
+	prog.set_uniform(ctx, name + ".dc", cgv::vec2(calib.dc));
 	prog.set_uniform(ctx, name + ".k[0]", float(calib.k[0]));
 	prog.set_uniform(ctx, name + ".k[1]", float(calib.k[1]));
 	prog.set_uniform(ctx, name + ".k[2]", float(calib.k[2]));
@@ -123,16 +123,16 @@ void set_camera_calibration_uniforms(cgv::render::context& ctx, cgv::render::sha
 	prog.set_uniform(ctx, name + ".p[0]", float(calib.p[0]));
 	prog.set_uniform(ctx, name + ".p[1]", float(calib.p[1]));
 	prog.set_uniform(ctx, name + ".skew", float(calib.skew));
-	prog.set_uniform(ctx, name + ".c", cgv::render::render_types::vec2(calib.c));
-	prog.set_uniform(ctx, name + ".s", cgv::render::render_types::vec2(calib.s));
+	prog.set_uniform(ctx, name + ".c", cgv::vec2(calib.c));
+	prog.set_uniform(ctx, name + ".s", cgv::vec2(calib.s));
 }
 void set_rgbd_calibration_uniforms(cgv::render::context& ctx, cgv::render::shader_program& prog, const rgbd::rgbd_calibration& calib)
 {
 	prog.set_uniform(ctx, "depth_scale", float(calib.depth_scale));
 	set_camera_calibration_uniforms(ctx, prog, "depth_calib", calib.depth);
 	set_camera_calibration_uniforms(ctx, prog, "color_calib", calib.color);
-	prog.set_uniform(ctx, "color_rotation", cgv::render::render_types::mat3(cgv::math::pose_orientation(calib.color.pose)));
-	prog.set_uniform(ctx, "color_translation", cgv::render::render_types::vec3(cgv::math::pose_position(calib.color.pose)));
+	prog.set_uniform(ctx, "color_rotation", cgv::mat3(cgv::math::pose_orientation(calib.color.pose)));
+	prog.set_uniform(ctx, "color_translation", cgv::vec3(cgv::math::pose_position(calib.color.pose)));
 }
 
 }

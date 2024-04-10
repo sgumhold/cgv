@@ -54,8 +54,8 @@ class ear_cutting :
 	public cgv::render::drawable     /// derive from drawable for drawing the cube
 {
 protected:
-	vec2 last_pos;
-	vec2 p_edge;
+	cgv::vec2 last_pos;
+	cgv::vec2 p_edge;
 	unsigned nr_steps;
 	bool wireframe;
 	float lambda;
@@ -86,38 +86,36 @@ protected:
 	/// attribute array binding for triangle rendering
 	attribute_array_binding tgl_aab;
 public:
-	std::vector<vec2>         polygon;
-	std::vector<rgb>          colors;
+	std::vector<cgv::vec2>         polygon;
+	std::vector<cgv::rgb>          colors;
 	PolygonOrientation        orientation;
-	std::vector<ivec3>        triangles;
+	std::vector<cgv::ivec3>        triangles;
 	std::vector<polygon_node> nodes;
 	cgv::render::view*        view_ptr;
 
 	// polygon rasterization
-	typedef cgv::media::color<cgv::type::uint8_type> brgb_type;
-	typedef cgv::math::fvec<int, 2> vec2i;
 	bool tex_outofdate;
 	cgv::render::texture tex;
 	bool show_rasterization;
-	std::vector<brgb_type> img;
-	brgb_type background_color, background_color2;
+	std::vector<cgv::rgb8> img;
+	cgv::rgb8 background_color, background_color2;
 	size_t img_width, img_height;
-	box2 img_extent;
+	cgv::box2 img_extent;
 	bool synch_img_dimensions;
-	bool validate_pixel_location(const vec2i& p) const { return p(0) >= 0 && p(0) < int(img_width) && p(1) >= 0 && p(1) < int(img_height); }
-	size_t linear_index(const vec2i& p) const { return img_width*p(1) + p(0); }
-	static vec2i round(const vec2& p) { return vec2i(int(floor(p(0)+0.5f)), int(floor(p(1)+0.5f))); }
-	void set_pixel(const vec2i& p, const brgb_type& c) { if (validate_pixel_location(p)) img[linear_index(p)] = c; }
-	const brgb_type& get_pixel(const vec2i& p) const { return img[linear_index(p)]; }
-	vec2 pixel_from_world(const vec2& p) const { return vec2(float(img_width), float(img_height))*(p - img_extent.get_min_pnt()) / img_extent.get_extent(); }
-	vec2 world_from_pixel(const vec2& p) const { return p*img_extent.get_extent() / vec2(float(img_width), float(img_height)) + img_extent.get_min_pnt(); }
-	void clear_image(const brgb_type& c) { std::fill(img.begin(), img.end(), c); }
-	void clear_image(const brgb_type& c1, const brgb_type& c2) {
+	bool validate_pixel_location(const cgv::vec2& p) const { return p(0) >= 0 && p(0) < int(img_width) && p(1) >= 0 && p(1) < int(img_height); }
+	size_t linear_index(const cgv::ivec2& p) const { return img_width*p(1) + p(0); }
+	static cgv::ivec2 round(const cgv::vec2& p) { return cgv::ivec2(int(floor(p(0)+0.5f)), int(floor(p(1)+0.5f))); }
+	void set_pixel(const cgv::ivec2& p, const cgv::rgb8& c) { if (validate_pixel_location(p)) img[linear_index(p)] = c; }
+	const cgv::rgb8& get_pixel(const cgv::ivec2& p) const { return img[linear_index(p)]; }
+	cgv::vec2 pixel_from_world(const cgv::vec2& p) const { return cgv::vec2(float(img_width), float(img_height))*(p - img_extent.get_min_pnt()) / img_extent.get_extent(); }
+	cgv::vec2 world_from_pixel(const cgv::vec2& p) const { return p*img_extent.get_extent() / cgv::vec2(float(img_width), float(img_height)) + img_extent.get_min_pnt(); }
+	void clear_image(const cgv::rgb8& c) { std::fill(img.begin(), img.end(), c); }
+	void clear_image(const cgv::rgb8& c1, const cgv::rgb8& c2) {
 		for (unsigned y = 0; y < img_height; ++y)
 			for (unsigned x = 0; x < img_width; ++x)
-				set_pixel(vec2i(x, y), ((x & 1) == (y & 1)) ? c1 : c2);
+				set_pixel(cgv::ivec2(x, y), ((x & 1) == (y & 1)) ? c1 : c2);
 	}
-	void rasterize_polygon(const std::vector<vec2>& polygon, const brgb_type& c) {
+	void rasterize_polygon(const std::vector<cgv::vec2>& polygon, const cgv::rgb8& c) {
 		for (const auto& p : polygon)
 			set_pixel(pixel_from_world(p), c);
 	}
@@ -127,17 +125,17 @@ public:
 		if (is.fail())
 			return false;
 		float x, y;
-		box2 B;
+		cgv::box2 B;
 		B.invalidate();
 		while (!is.eof()) {
 			is >> x >> y;
 			if (is.fail())
 				break;
-			polygon.push_back(vec2(x, y));
+			polygon.push_back(cgv::vec2(x, y));
 			B.add_point(polygon.back());
 		}
 		float scale = 2.0f / B.get_extent()[B.get_max_extent_coord_index()];
-		vec2 ctr = B.get_center();
+		cgv::vec2 ctr = B.get_center();
 		for (auto& p : polygon) 
 			p = scale*(p - ctr);
 	
@@ -148,26 +146,26 @@ public:
 		polygon.resize(n);
 		for (unsigned i = 0; i < n; ++i) {
 			float angle = float(2 * M_PI*i / n);
-			polygon[i] = vec2(cos(angle), sin(angle));
+			polygon[i] = cgv::vec2(cos(angle), sin(angle));
 		}
 	}
 	PolygonOrientation determine_orientation() const
 	{
 		float cp_sum = 0;
 		for (unsigned i = 0; i < polygon.size(); ++i) {
-			const vec2& p0 = polygon[i];
-			const vec2& p1 = polygon[(i+1)%polygon.size()];
+			const cgv::vec2& p0 = polygon[i];
+			const cgv::vec2& p1 = polygon[(i+1)%polygon.size()];
 			cp_sum += p0(0)*p1(1) - p0(1)*p1(0);
 		}
 		return cp_sum < 0 ? PO_CW : PO_CCW;
 	}
 	PolygonCornerStatus classify_node(unsigned ni) const
 	{		
-		const vec2& p = polygon[nodes[ni].idx];
-		const vec2& pp = polygon[nodes[(ni + nodes.size() - 1) % nodes.size()].idx];
-		const vec2& pn = polygon[nodes[(ni + 1) % nodes.size()].idx];
-		vec2 dn = pn - p;
-		vec2 dp = p - pp;
+		const cgv::vec2& p = polygon[nodes[ni].idx];
+		const cgv::vec2& pp = polygon[nodes[(ni + nodes.size() - 1) % nodes.size()].idx];
+		const cgv::vec2& pn = polygon[nodes[(ni + 1) % nodes.size()].idx];
+		cgv::vec2 dn = pn - p;
+		cgv::vec2 dp = p - pp;
 		float s = dp(0)*dn(1) - dp(1)*dn(0);
 		if (orientation == PO_CCW)
 			return ((s <= 0) ? PCS_CONCAVE : PCS_CONVEX);
@@ -179,10 +177,10 @@ public:
 		for (unsigned ni = 0; ni<nodes.size(); ++ni)
 			nodes[ni].status = classify_node(ni);
 	}
-	static float cpn(const vec2& p0, const vec2& p1, const vec2& p2)
+	static float cpn(const cgv::vec2& p0, const cgv::vec2& p1, const cgv::vec2& p2)
 	{
-		vec2 d01 = p1 - p0;
-		vec2 d02 = p2 - p0;
+		cgv::vec2 d01 = p1 - p0;
+		cgv::vec2 d02 = p2 - p0;
 		return d01(0)*d02(1) - d01(1)*d02(0);
 	}
 	static bool compare_sign(float a, float b) 
@@ -193,7 +191,7 @@ public:
 			return b >= 0;
 		return true;
 	}
-	static bool is_inside(const vec2& p, const vec2& p0, const vec2& p1, const vec2& p2) 
+	static bool is_inside(const cgv::vec2& p, const cgv::vec2& p0, const cgv::vec2& p1, const cgv::vec2& p2) 
 	{
 		float n012 = cpn(p0, p1, p2);
 		float n0   = cpn(p, p1, p2);
@@ -204,16 +202,16 @@ public:
 	}
 	bool is_ear(unsigned ni) const
 	{
-		const vec2& p = polygon[nodes[ni].idx];
-		const vec2& pp = polygon[nodes[(ni + nodes.size() - 1) % nodes.size()].idx];
-		const vec2& pn = polygon[nodes[(ni + 1) % nodes.size()].idx];
+		const cgv::vec2& p = polygon[nodes[ni].idx];
+		const cgv::vec2& pp = polygon[nodes[(ni + nodes.size() - 1) % nodes.size()].idx];
+		const cgv::vec2& pn = polygon[nodes[(ni + 1) % nodes.size()].idx];
 		for (unsigned nj = 0; nj < nodes.size(); ++nj) {
 			if (nj == (ni + 1) % nodes.size())
 				continue;
 			if (ni == (nj + 1) % nodes.size())
 				continue;
 			if (nodes[nj].status == PCS_CONCAVE) {
-				const vec2& pc = polygon[nodes[nj].idx];
+				const cgv::vec2& pc = polygon[nodes[nj].idx];
 				if (is_inside(pc, pp, p, pn))
 					return false;
 			}
@@ -239,12 +237,12 @@ public:
 	void set_colors()
 	{
 		colors.resize(polygon.size());
-		std::fill(colors.begin(), colors.end(), rgb(0.5f, 0.5f, 0.5f));
+		std::fill(colors.begin(), colors.end(), cgv::rgb(0.5f, 0.5f, 0.5f));
 		for (unsigned ni = 0; ni < nodes.size(); ++ni)
 			switch (nodes[ni].status) {
-			case PCS_CONVEX: colors[nodes[ni].idx] = rgb(0, 0, 1); break;
-			case PCS_CONCAVE: colors[nodes[ni].idx] = rgb(1, 0, 0); break;
-			case PCS_EAR: colors[nodes[ni].idx] = rgb(0, 1, 0); break;
+			case PCS_CONVEX: colors[nodes[ni].idx] = cgv::rgb(0, 0, 1); break;
+			case PCS_CONCAVE: colors[nodes[ni].idx] = cgv::rgb(1, 0, 0); break;
+			case PCS_EAR: colors[nodes[ni].idx] = cgv::rgb(0, 1, 0); break;
 			}
 	}
 	void perform_ear_cutting()
@@ -263,7 +261,7 @@ public:
 				break;
 
 			//
-			triangles.push_back(ivec3(nodes[(ni + nodes.size() - 1) % nodes.size()].idx, nodes[ni].idx, nodes[(ni + 1) % nodes.size()].idx));
+			triangles.push_back(cgv::ivec3(nodes[(ni + nodes.size() - 1) % nodes.size()].idx, nodes[ni].idx, nodes[(ni + 1) % nodes.size()].idx));
 			nodes.erase(nodes.begin() + ni);
 		}
 		if (nodes.size() == 2)
@@ -280,11 +278,11 @@ public:
 		show_rasterization = false;
 		tex.set_mag_filter(cgv::render::TF_NEAREST);
 		img_width = img_height = 64;
-		img_extent.ref_min_pnt() = vec2(-2, -2);
-		img_extent.ref_max_pnt() = vec2( 2,  2);
+		img_extent.ref_min_pnt() = cgv::vec2(-2, -2);
+		img_extent.ref_max_pnt() = cgv::vec2( 2,  2);
 		synch_img_dimensions = true;
-		background_color = brgb_type(255, 255, 128);
-		background_color2 = brgb_type(255, 128, 255);
+		background_color = cgv::rgb8(255, 255, 128);
+		background_color2 = cgv::rgb8(255, 128, 255);
 		reallocate_image();
 
 		//if (!read_polygon("S:/develop/projects/git/cgv/plugins/examples/poly.txt"))
@@ -352,50 +350,50 @@ public:
 	{
 		if (!pnt_vbo.is_created() || pnt_vbo_changed) {
 			// collect geometry data in cpu vectors
-			std::vector<vec2> P = polygon;
-			std::vector<rgb>  C = colors;
+			std::vector<cgv::vec2> P = polygon;
+			std::vector<cgv::rgb>  C = colors;
 			if (selected_index != -1)
-				C[selected_index] = rgb(1.0f, 0.0f, 1.0f);
+				C[selected_index] = cgv::rgb(1.0f, 0.0f, 1.0f);
 			else if (edge_index != -1) {
 				P.push_back(p_edge);
-				C.push_back(rgb(1.0f, 0.0f, 1.0f));
+				C.push_back(cgv::rgb(1.0f, 0.0f, 1.0f));
 			}
 			pnt_vbo_count = P.size();
 			// ensure that point buffer has necessary size
-			size_t necessary_size = P.size() * sizeof(vec2) + C.size() * sizeof(rgb);
+			size_t necessary_size = P.size() * sizeof(cgv::vec2) + C.size() * sizeof(cgv::rgb);
 			if (pnt_vbo.get_size_in_bytes() < necessary_size)
 				pnt_vbo.destruct(ctx);
 			if (!pnt_vbo.is_created())
 				pnt_vbo.create(ctx, necessary_size);
 			// copy data into point buffer
 			pnt_vbo.replace(ctx, 0, &P.front(), P.size());
-			pnt_vbo.replace(ctx, P.size() * sizeof(vec2), &C.front(), C.size());
+			pnt_vbo.replace(ctx, P.size() * sizeof(cgv::vec2), &C.front(), C.size());
 			pnt_vbo_changed = false;
 			// update attribute managers
 			auto& pr = ref_point_renderer(ctx);
 			pr.enable_attribute_array_manager(ctx, pnt_aam);
-			pr.set_position_array<vec2>(ctx, pnt_vbo, 0, pnt_vbo_count);
-			pr.set_color_array<rgb>(ctx, pnt_vbo, pnt_vbo_count*sizeof(vec2), pnt_vbo_count);
+			pr.set_position_array<cgv::vec2>(ctx, pnt_vbo, 0, pnt_vbo_count);
+			pr.set_color_array<cgv::rgb>(ctx, pnt_vbo, pnt_vbo_count*sizeof(cgv::vec2), pnt_vbo_count);
 			pr.disable_attribute_array_manager(ctx, pnt_aam);
 
 			auto& lr = ref_line_renderer(ctx);
 			lr.enable_attribute_array_manager(ctx, line_aam);
-			lr.set_position_array<vec2>(ctx, pnt_vbo, 0, pnt_vbo_count);
+			lr.set_position_array<cgv::vec2>(ctx, pnt_vbo, 0, pnt_vbo_count);
 			lr.disable_attribute_array_manager(ctx, line_aam);
 
 		}
 		if ((!tgl_vbo.is_created() || tgl_vbo_changed) && !triangles.empty()) {
 			// collect geometry data in cpu vectors
-			std::vector<vec2> P;
-			std::vector<rgb> C;
-			rgb c0(0.0f, 0.0f, 1.0f);
-			rgb c1(1.0f, 1.0f, 0.0f);
+			std::vector<cgv::vec2> P;
+			std::vector<cgv::rgb> C;
+			cgv::rgb c0(0.0f, 0.0f, 1.0f);
+			cgv::rgb c1(1.0f, 1.0f, 0.0f);
 			float scale = 1.0f / (polygon.size() - 2);
 			for (unsigned ti = 0; ti < triangles.size(); ++ti) {
 				const auto& t = triangles[ti];
-				vec2 ctr = 0.3333333333333f * (polygon[t[0]] + polygon[t[1]] + polygon[t[2]]);
+				cgv::vec2 ctr = 0.3333333333333f * (polygon[t[0]] + polygon[t[1]] + polygon[t[2]]);
 				float lambda_c = scale * ti;
-				rgb c = (1 - lambda_c) * c0 + lambda_c * c1;
+				cgv::rgb c = (1 - lambda_c) * c0 + lambda_c * c1;
 				for (unsigned i = 0; i < 3; ++i) {
 					P.push_back((1 - lambda) * polygon[t[i]] + lambda * ctr);
 					C.push_back(c);
@@ -403,21 +401,21 @@ public:
 			}
 			tgl_vbo_count = P.size();
 			// ensure that point buffer has necessary size
-			size_t necessary_size = P.size() * sizeof(vec2) + C.size() * sizeof(rgb);
+			size_t necessary_size = P.size() * sizeof(cgv::vec2) + C.size() * sizeof(cgv::rgb);
 			if (tgl_vbo.get_size_in_bytes() < necessary_size)
 				tgl_vbo.destruct(ctx);
 			if (!tgl_vbo.is_created())
 				tgl_vbo.create(ctx, necessary_size);
 			// copy data into point buffer
 			tgl_vbo.replace(ctx, 0, &P.front(), P.size());
-			tgl_vbo.replace(ctx, P.size() * sizeof(vec2), &C.front(), C.size());
+			tgl_vbo.replace(ctx, P.size() * sizeof(cgv::vec2), &C.front(), C.size());
 			tgl_vbo_changed = false;
 			// update attribute array binding
 			auto& prog = ctx.ref_default_shader_program();
-			vec2 tmp;
-			rgb clr;
+			cgv::vec2 tmp;
+			cgv::rgb clr;
 			tgl_aab.set_attribute_array(ctx, prog.get_position_index(), get_element_type(tmp), tgl_vbo, 0, tgl_vbo_count);
-			tgl_aab.set_attribute_array(ctx, prog.get_color_index(), get_element_type(clr), tgl_vbo, tgl_vbo_count * sizeof(vec2), tgl_vbo_count);
+			tgl_aab.set_attribute_array(ctx, prog.get_color_index(), get_element_type(clr), tgl_vbo, tgl_vbo_count * sizeof(cgv::vec2), tgl_vbo_count);
 		}
 		if (tex_outofdate) {
 			if (tex.is_created())
@@ -432,14 +430,14 @@ public:
 	}
 	void draw(context& ctx)
 	{
-		static box2 rectangle(vec2(-2, -2), vec2(2, 2));
-		static vec4 texcoord(0, 0, 1, 1);
+		static cgv::box2 rectangle(cgv::vec2(-2, -2), cgv::vec2(2, 2));
+		static cgv::vec4 texcoord(0, 0, 1, 1);
 		auto& rr = ref_rectangle_renderer(ctx);
 		rr.set_render_style(rrs);
 		rr.set_rectangle(ctx, rectangle);
 		rr.set_depth_offset(ctx, 0.000001f);
-		rr.set_color(ctx, rgb(1, 1, 1));
-		ctx.set_color(rgb(1, 1, 1));
+		rr.set_color(ctx, cgv::rgb(1, 1, 1));
+		ctx.set_color(cgv::rgb(1, 1, 1));
 		if (show_rasterization) {
 			rr.set_texcoord(ctx, texcoord);
 			tex.enable(ctx);
@@ -456,7 +454,7 @@ public:
 			prog.enable(ctx);
 			if (wireframe) {
 				tgl_aab.disable_array(ctx, prog.get_color_index());
-				ctx.set_color(rgb(0, 0, 0));
+				ctx.set_color(cgv::rgb(0, 0, 0));
 				std::vector<GLuint> I;
 				for (GLuint vi = 0; vi < tgl_vbo_count; vi += 3) {
 					if (!I.empty())
@@ -484,8 +482,8 @@ public:
 		lr.enable_attribute_array_manager(ctx, line_aam);
 		// draw polygon
 		if (polygon.size() > 0) {
-			lr.set_color(ctx, rgb(0.8f, 0.5f, 0));
-			ctx.set_color(rgb(0.8f, 0.5f, 0));
+			lr.set_color(ctx, cgv::rgb(0.8f, 0.5f, 0));
+			ctx.set_color(cgv::rgb(0.8f, 0.5f, 0));
 			lr.set_line_width(ctx, 5.0f);
 			// collect indices of to render polygon as triangle strip
 			std::vector<GLuint> I;
@@ -499,8 +497,8 @@ public:
 		// draw unprocessed polygon
 		if (!nodes.empty()) {
 			// configure color and line width
-			lr.set_color(ctx, rgb(0.8f, 0, 0.7f));
-			ctx.set_color(rgb(0.8f, 0, 0.7f));
+			lr.set_color(ctx, cgv::rgb(0.8f, 0, 0.7f));
+			ctx.set_color(cgv::rgb(0.8f, 0, 0.7f));
 			lr.set_line_width(ctx, 2.0f);
 			lr.set_depth_offset(ctx, -0.000002f);
 			// collect indices of to render line loop as triangle strip
@@ -554,9 +552,9 @@ public:
 			case MA_MOVE :
 				if (view_ptr) {
 					float epsilon = (float)(prs.point_size * view_ptr->get_y_extent_at_focus() / get_context()->get_height());
-					dvec3 p_d;
+					cgv::dvec3 p_d;
 					if (get_world_location(me.get_x(), y_gl, *view_ptr, p_d)) {
-						vec2 p((float)p_d.x(),(float)p_d.y());
+						cgv::vec2 p((float)p_d.x(),(float)p_d.y());
 						int min_index = -1;
 						float min_dist = 0;
 						for (unsigned i = 0; i < polygon.size(); ++i) {
@@ -580,15 +578,15 @@ public:
 						// if no point found, check for edges
 						if (selected_index == -1) {
 							int min_index = -1;
-							vec2 last_p_edge = p_edge;
+							cgv::vec2 last_p_edge = p_edge;
 							float min_dist = 0;
 							for (unsigned i = 0; i < polygon.size(); ++i) {
-								const vec2& p0 = polygon[i];
-								const vec2& p1 = polygon[(i + 1) % polygon.size()];
-								vec2 d = p1 - p0;
+								const cgv::vec2& p0 = polygon[i];
+								const cgv::vec2& p1 = polygon[(i + 1) % polygon.size()];
+								cgv::vec2 d = p1 - p0;
 								float lambda = dot(p - p0, d) / dot(d, d);
 								if (lambda > 0 && lambda < 1) {
-									vec2 pp = p0 + lambda*d;
+									cgv::vec2 pp = p0 + lambda*d;
 									float dist = (pp - p).length();
 									if (dist < epsilon) {
 										if (min_index == -1 || dist < min_dist) {
@@ -625,10 +623,10 @@ public:
 			case MA_DRAG :
 				if (me.get_button_state() == MB_LEFT_BUTTON) {
 					if (selected_index != -1) {
-						dvec3 p_d;
+						cgv::dvec3 p_d;
 						if (get_world_location(me.get_x(), y_gl, *view_ptr, p_d)) {
-							vec2 new_pos((float)p_d.x(), (float)p_d.y());
-							vec2 diff = new_pos - last_pos;
+							cgv::vec2 new_pos((float)p_d.x(), (float)p_d.y());
+							cgv::vec2 diff = new_pos - last_pos;
 							polygon[selected_index] += diff;
 							on_set(polygon[selected_index]);
 							last_pos = new_pos;
@@ -640,26 +638,26 @@ public:
 			case MA_PRESS:
 				if (me.get_button() == MB_LEFT_BUTTON) {
 					if (selected_index != -1) {
-						dvec3 p_d;
+						cgv::dvec3 p_d;
 						if (get_world_location(me.get_x(), y_gl, *view_ptr, p_d)) {
-							last_pos = dvec2(p_d.x(), p_d.y());
+							last_pos = cgv::dvec2(p_d.x(), p_d.y());
 						}
 					}
 					else if (edge_index != -1) {
-						dvec3 p_d;
+						cgv::dvec3 p_d;
 						if (get_world_location(me.get_x(), y_gl, *view_ptr, p_d)) {
-							p_edge = last_pos = dvec2(p_d.x(), p_d.y());
+							p_edge = last_pos = cgv::dvec2(p_d.x(), p_d.y());
 						}
 						else 
 							last_pos = p_edge;
 
 						if (edge_index == polygon.size() - 1) {
 							polygon.push_back(p_edge);
-							colors.push_back(rgb(0.5f, 0.5f, 0.5f));
+							colors.push_back(cgv::rgb(0.5f, 0.5f, 0.5f));
 						}
 						else {
 							polygon.insert(polygon.begin() + edge_index + 1, p_edge);
-							colors.insert(colors.begin() + edge_index + 1, rgb(0.5f, 0.5f, 0.5f));
+							colors.insert(colors.begin() + edge_index + 1, cgv::rgb(0.5f, 0.5f, 0.5f));
 						}
 						selected_index = edge_index + 1;
 						edge_index = -1;
@@ -725,12 +723,12 @@ public:
 				}
 			}
 			reallocate_image();
-			rasterize_polygon(polygon, rgb8(255, 0, 0));
+			rasterize_polygon(polygon, cgv::rgb8(255, 0, 0));
 			tex_outofdate = true;
 		}
 		if (member_ptr == &background_color || member_ptr == &background_color2) {
 			clear_image(background_color, background_color2);
-			rasterize_polygon(polygon, rgb8(255, 0, 0));
+			rasterize_polygon(polygon, cgv::rgb8(255, 0, 0));
 			tex_outofdate = true;
 		}
 		if (member_ptr == &nr_steps) {
@@ -753,7 +751,7 @@ public:
 			find_ears();
 			set_colors();
 			clear_image(background_color, background_color2);
-			rasterize_polygon(polygon, rgb8(255, 0, 0));
+			rasterize_polygon(polygon, cgv::rgb8(255, 0, 0));
 			pnt_vbo_changed = tgl_vbo_changed = tex_outofdate = true;
 		}
 		update_member(member_ptr);

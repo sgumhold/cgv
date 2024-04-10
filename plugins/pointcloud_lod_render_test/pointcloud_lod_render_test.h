@@ -9,7 +9,6 @@
 #include <cgv/render/drawable.h>
 #include <cgv/render/shader_program.h>
 #include <cgv/render/texture.h>
-#include <cgv/render/render_types.h>
 #include <cgv_gl/point_renderer.h>
 #include <cgv_gl/cone_renderer.h>
 #include <cgv_gl/surfel_renderer.h>
@@ -46,8 +45,8 @@ enum class point_label {
 	UNDEFINED = -1
 };
 
-struct point_labeling_intend : public cgv::render::render_types {
-	vec3 position;
+struct point_labeling_intend {
+	cgv::vec3 position;
 	float radius;
 	int label;
 };
@@ -60,6 +59,18 @@ class pointcloud_lod_render_test :
 	public cgv::gui::provider
 {
 public:
+	using vec3 = cgv::vec3;
+	using vec4 = cgv::vec4;
+	using mat3 = cgv::mat3;
+	using mat4 = cgv::mat4;
+	using dmat4 = cgv::dmat4;
+	using quat = cgv::quat;
+	using rgb = cgv::rgb;
+	using rgb8 = cgv::rgb8;
+	using rgba = cgv::rgba;
+	using box3 = cgv::box3;
+
+
 	//use internal point format
 	using LODPoint = cgv::render::clod_point_renderer::Point;
 

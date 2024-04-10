@@ -118,6 +118,30 @@ namespace cgv { // @<
 		private:
 			/// a private attribute array manager that holds position data that is constant for all volumes
 			cgv::render::attribute_array_manager position_aam;
+
+
+
+
+
+
+
+
+			GLboolean use_depth_test;
+			
+			GLboolean use_cull_face;
+			GLint cull_face;
+
+			GLboolean use_blending;
+			GLint blend_src, blend_dst;
+
+
+
+
+
+
+
+
+
 		protected:
 			/// the 3D texture used for rendering
 			texture* volume_texture;

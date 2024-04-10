@@ -9,7 +9,7 @@ namespace cgv {
 	namespace render {
 		namespace gl {
 
-class CGV_API gl_performance_monitor : public performance_monitor, public render_types
+class CGV_API gl_performance_monitor : public performance_monitor
 {
 protected:
 	void draw_computed_bars(cgv::render::context& ctx, cgv::render::shader_program& prog);

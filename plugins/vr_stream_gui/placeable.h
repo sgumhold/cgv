@@ -1,12 +1,11 @@
 #pragma once
 
 #include <cgv/math/ftransform.h>
-#include <cgv/render/render_types.h>
 
 namespace cgv {
 namespace render {
 
-	class placeable : public render_types 
+	class placeable
 	{
 	  protected:
 		vec3 position;

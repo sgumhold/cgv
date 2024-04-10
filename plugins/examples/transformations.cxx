@@ -21,14 +21,14 @@ class transformations :
 	public cgv::gui::provider
 {
 protected:
-	std::vector<vec3> points;
-	std::vector<vec3> colors;
+	std::vector<cgv::vec3> points;
+	std::vector<cgv::vec3> colors;
 
-	mat4 transformation;
+	cgv::mat4 transformation;
 	bool render_original;
 	bool render_transformed;
 	RenderMode render_mode;
-	vec3 translation;
+	cgv::vec3 translation;
 	float angle_x, scale_x, p_x;
 
 	cgv::render::view* view_ptr;
@@ -47,14 +47,14 @@ public:
 		render_original = true;
 		render_transformed = true;
 		render_mode = RM_POINTS;
-		translation = vec3(0.0f);
+		translation = cgv::vec3(0.0f);
 
 		// generate random geometry
 		std::default_random_engine g;
 		std::uniform_real_distribution<float> d(0.0f, 1.0f);
 		unsigned i;
 		for (i = 0; i < 10000; ++i) {
-			vec3 p(d(g), d(g), d(g));
+			cgv::vec3 p(d(g), d(g), d(g));
 			points.push_back(2.0f*(p - 0.5f));
 			colors.push_back(p);
 		}
@@ -74,7 +74,7 @@ public:
 	void on_set(void* member_ptr)
 	{
 		if (member_ptr == &angle_x) {
-			transformation = cgv::math::rotate4<float>(angle_x, vec3(1.0f, 0.0f, 0.0f));
+			transformation = cgv::math::rotate4<float>(angle_x, cgv::vec3(1.0f, 0.0f, 0.0f));
 			update_all_members();
 		}
 		else if (member_ptr == &scale_x) {

@@ -35,8 +35,6 @@ protected:
 	/// keep track of the number of static frames rendered (no camera movement),
 	/// to request new frames if the accumulation is not finished
 	unsigned static_frame_count = 0;
-	/// whether to automatically call post_redraw()
-	bool auto_redraw = true;
 	/// if temporal accumulation is active
 	bool accumulate = false;
 	/// influence of the new frame on the history color
@@ -107,7 +105,7 @@ public:
 
 	void set_fxaa_mix_factor(float value) { set_and_update_member(fxaa_mix_factor, std::min(std::max(value, 0.0f), 1.0f)); }
 
-	void set_jitter_scale(float value) { set_and_update_member(fxaa_mix_factor, std::min(std::max(value, 0.0f), 2.0f)); }
+	void set_jitter_scale(float value) { set_and_update_member(jitter_scale, std::min(std::max(value, 0.0f), 2.0f)); }
 
 	void set_jitter_sample_count(size_t count) { set_and_update_member(jitter_sample_count, std::min(std::max(count, size_t(1)), size_t(128))); }
 

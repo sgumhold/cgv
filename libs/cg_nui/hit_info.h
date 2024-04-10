@@ -1,11 +1,11 @@
 #pragma once
 
 #include "focusable.h"
-#include <cgv/render/render_types.h>
+#include <cgv/math/fvec.h>
 
 namespace cgv {
 	namespace nui {
-		struct hit_info : public cgv::render::render_types
+		struct hit_info
 		{
 			vec3  hit_point;
 			vec3  hit_normal;

@@ -21,7 +21,7 @@ public:
 	cone_texturing() : cgv::base::node("Rounded Cone Texturing Test") {		
 		cone_style.rounded_caps = true;
 		cone_style.radius = 0.1f;
-		cone_style.surface_color = rgb(1.0f, 0.5f, 0.2f);
+		cone_style.surface_color = cgv::rgb(1.0f, 0.5f, 0.2f);
 		cone_style.enable_texturing = true;
 		cone_style.texture_blend_mode = cgv::render::cone_render_style::TBM_TINT;
 	}
@@ -45,7 +45,7 @@ public:
 		for(unsigned i = 0; i < 3; ++i) {
 			float x = 0.5f * static_cast<float>(i + 1);
 			float y = 0.3f * static_cast<float>(i);
-			rd.add(vec3(-x, y, 0.0f), vec3(x, y, 0.0f));
+			rd.add(cgv::vec3(-x, y, 0.0f), cgv::vec3(x, y, 0.0f));
 		}
 		rd.set_out_of_date();
 
@@ -109,12 +109,12 @@ protected:
 
 public:
 	cone_tree() : cgv::base::node("rounded cone tree test") {
-		leave_style.surface_color = rgb(0.2f, 0.48f, 0.2f);
+		leave_style.surface_color = cgv::rgb(0.2f, 0.48f, 0.2f);
 		leave_style.radius = 0.2f;
 
 		stem_style.rounded_caps = true;
 		stem_style.radius_scale = 4.0f;
-		stem_style.surface_color = rgb(1.0f, 0.5f, 0.2f);
+		stem_style.surface_color = cgv::rgb(1.0f, 0.5f, 0.2f);
 		stem_style.enable_texturing = true;
 		stem_style.texture_blend_mode = cgv::render::cone_render_style::TBM_MIX;
 		stem_style.texture_tiling.y() = 2.0f;
@@ -185,8 +185,8 @@ public:
 
 		cgv::render::view* view_ptr = find_view_as_node();
 		if(view_ptr) {
-			view_ptr->set_eye_keep_view_angle(dvec3(0.0f, 20.0f, 40.0f));
-			view_ptr->set_focus(vec3(0.0f, 20.0f, 0.0f));
+			view_ptr->set_eye_keep_view_angle(cgv::dvec3(0.0f, 20.0f, 40.0f));
+			view_ptr->set_focus(cgv::vec3(0.0f, 20.0f, 0.0f));
 		}
 
 		return true;
@@ -242,11 +242,11 @@ public:
 		}
 		return sentence;
 	}
-	vec3 get_ortho_vec(const vec3& v) {
-		return abs(v.x()) > abs(v.z()) ? vec3(-v.y(), v.x(), 0.0f) : vec3(0.0f, -v.z(), v.y());
+	cgv::vec3 get_ortho_vec(const cgv::vec3& v) {
+		return abs(v.x()) > abs(v.z()) ? cgv::vec3(-v.y(), v.x(), 0.0f) : cgv::vec3(0.0f, -v.z(), v.y());
 	}
-	void get_local_frame(const vec3& d, vec3& u, vec3& v) {
-		vec3 dn = normalize(d);
+	void get_local_frame(const cgv::vec3& d, cgv::vec3& u, cgv::vec3& v) {
+		cgv::vec3 dn = normalize(d);
 		u = normalize(cross(dn, get_ortho_vec(dn)));
 		v = cross(u, dn);
 	}
@@ -257,20 +257,20 @@ public:
 		stems.clear();
 		leaves.clear();
 
-		std::stack<vec3> pos_stack;
-		std::stack<vec3> dir_stack;
+		std::stack<cgv::vec3> pos_stack;
+		std::stack<cgv::vec3> dir_stack;
 		std::stack<float> rad_stack;
 
 		//mat3 R_left = cgv::math::rotate3(25.0f, vec3(0.0f, 0.0f, 1.0f));
 		//mat3 R_right = cgv::math::rotate3(-25.0f, vec3(0.0f, 0.0f, 1.0f));
 
-		vec3 pos(0.0f);
-		vec3 dir(0.0f, 1.0f, 0.0f);
+		cgv::vec3 pos(0.0f);
+		cgv::vec3 dir(0.0f, 1.0f, 0.0f);
 
 		float l = growth_factor;// / static_cast<float>(n);
 		float rad = 0.2f;// / (0.25f*static_cast<float>(n));
 
-		vec3 start_pos = pos;
+		cgv::vec3 start_pos = pos;
 		float start_rad = rad;
 
 		for(unsigned i = 0; i < sentence.length(); ++i) {
@@ -285,7 +285,7 @@ public:
 				break;
 			case '-':
 			{
-				vec3 u, v;
+				cgv::vec3 u, v;
 				get_local_frame(dir, u, v);
 				dir -= angle_factor * distr(rng) * u;
 				dir -= angle_factor * distr(rng) * v;
@@ -300,7 +300,7 @@ public:
 			} break;
 			case '+':
 			{
-				vec3 u, v;
+				cgv::vec3 u, v;
 				get_local_frame(dir, u, v);
 				dir += angle_factor * distr(rng) * u;
 				dir += angle_factor * distr(rng) * v;

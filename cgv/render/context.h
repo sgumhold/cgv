@@ -13,7 +13,6 @@
 #include <cgv/media/illum/textured_surface_material.h>
 #include <cgv/media/illum/light_source.hh>
 #include <cgv/signal/callback_stream.h>
-#include <cgv/render/render_types.h>
 #include <cgv/math/vec.h>
 #include <cgv/math/inv.h>
 #include <stack>
@@ -126,18 +125,49 @@ enum RenderPassFlags {
 };
 
 /// different sides of a material
-enum MaterialSide { MS_NONE, MS_FRONT, MS_BACK, MS_FRONT_AND_BACK };
+enum MaterialSide {
+	MS_NONE,
+	MS_FRONT,
+	MS_BACK,
+	MS_FRONT_AND_BACK
+};
 
 /// different illumination modes
 enum IlluminationMode {
-	IM_OFF, IM_ONE_SIDED, IM_TWO_SIDED
+	IM_OFF,
+	IM_ONE_SIDED,
+	IM_TWO_SIDED
 };
 
 /// different culling modes
 enum CullingMode {
-	CM_OFF, CM_BACKFACE, CM_FRONTFACE
+	CM_OFF,
+	CM_BACKFACE,
+	CM_FRONTFACE
 };
 
+/// different blend functions
+enum BlendFunction {
+	BF_ZERO,
+	BF_ONE,
+	BF_SRC_COLOR,
+	BF_ONE_MINUS_SRC_COLOR,
+	BF_DST_COLOR,
+	BF_ONE_MINUS_DST_COLOR,
+	BF_SRC_ALPHA,
+	BF_ONE_MINUS_SRC_ALPHA,
+	BF_DST_ALPHA,
+	BF_ONE_MINUS_DST_ALPHA,
+	BF_CONSTANT_COLOR,
+	BF_ONE_MINUS_CONSTANT_COLOR,
+	BF_CONSTANT_ALPHA,
+	BF_ONE_MINUS_CONSTANT_ALPHA,
+	BF_SRC_ALPHA_SATURATE,
+	BF_SRC1_COLOR,
+	BF_ONE_MINUS_SRC1_COLOR,
+	BF_SRC1_ALPHA,
+	BF_ONE_MINUS_SRC1_ALPHA
+};
 
 /// different texture wrap modes
 enum TextureWrap { 
@@ -578,13 +608,13 @@ extern CGV_API render_config_ptr get_render_config();
 struct window_transformation
 {
 	/// viewport parameters [x0,y0,width,height]
-	render_types::ivec4 viewport;
+	ivec4 viewport;
 	/// range of depth values [min_depth, max_depth]
-	render_types::dvec2 depth_range;
+	dvec2 depth_range;
 };
 
 /** base class for all drawables, which is independent of the used rendering API. */
-class CGV_API context : public render_types, public context_config
+class CGV_API context : public context_config
 {
 protected:
 	// store the GPU vendor id
@@ -599,14 +629,6 @@ public:
 	friend class CGV_API shader_program;
 	friend class CGV_API attribute_array_binding;
 	friend class CGV_API vertex_buffer;
-	/// dimension independent type of vectors
-	typedef cgv::math::vec<float> vec_type;
-	/// dimension independent type of matrices
-	typedef cgv::math::mat<float> mat_type;
-	/// dimension independent type of vectors
-	typedef cgv::math::vec<double> dvec_type;
-	/// dimension independent type of matrices
-	typedef cgv::math::mat<double> dmat_type;
 protected:
 	friend class shader_program_base;
 
@@ -649,7 +671,17 @@ protected:
 
 
 
-	std::stack<bool> depth_test_stack;
+	std::stack<bool> depth_test_state_stack;
+	std::stack<CullingMode> cull_state_stack;
+
+	struct BlendState {
+		bool enabled;
+		BlendFunction src_color;
+		BlendFunction src_alpha;
+		BlendFunction dst_color;
+		BlendFunction dst_alpha;
+	};
+	std::stack<BlendState> blend_state_stack;
 
 
 
@@ -1083,13 +1115,13 @@ public:
 	virtual void get_cursor(int& x, int& y) const;
 	/** transform point p in current world coordinates into opengl coordinates with (0,0) in lower left corner
 		 and put x and y coordinates into the passed variables */
-	virtual void put_cursor_coords(const vec_type& p, int& x, int& y) const;
+	virtual void put_cursor_coords(const vecn& p, int& x, int& y) const;
 	/** flush output_stream and set the current text position from a 3D or 4D
 		 location in current world coordinates. These are transformed to opengl
 		 coordinates opengl coordinates with (0,0) in lower left corner using the put_cursor_coords 
 		 method. If the optional parameters are given, update the cursor location such that the given 
 		 text alignment is achieved. x_offset and y_offset are in pixel and y points upward. */
-	virtual void set_cursor(const vec_type& pos, 
+	virtual void set_cursor(const vecn& pos, 
 		const std::string& text = "", TextAlignment ta = TA_BOTTOM_LEFT,
 		int x_offset=0, int y_offset=0);
 	//@}
@@ -1163,16 +1195,16 @@ public:
 
 	/**@name transformations*/
 	//@{
-	DEPRECATED("deprecated: use get_modelview_matrix() instead.") dmat_type get_V() const { return dmat_type(4,4,&get_modelview_matrix()(0,0)); }
-	DEPRECATED("deprecated: use set_modelview_matrix() instead.") void set_V(const dmat_type& V) const { const_cast<context*>(this)->set_modelview_matrix(dmat4(4,4,&V(0,0))); }
+	DEPRECATED("deprecated: use get_modelview_matrix() instead.") dmatn get_V() const { return dmatn(4,4,&get_modelview_matrix()(0,0)); }
+	DEPRECATED("deprecated: use set_modelview_matrix() instead.") void set_V(const dmatn& V) const { const_cast<context*>(this)->set_modelview_matrix(dmat4(4,4,&V(0,0))); }
 	DEPRECATED("deprecated: use push_modelview_matrix() instead.") void push_V() { push_modelview_matrix(); }
 	DEPRECATED("deprecated: use pop_modelview_matrix() instead.") void pop_V() { pop_modelview_matrix(); }
-	DEPRECATED("deprecated: use get_projection_matrix() instead.") dmat_type get_P() const { return dmat_type(4, 4, &get_projection_matrix()(0, 0)); }
-	DEPRECATED("deprecated: use set_projection_matrix() instead.") void set_P(const dmat_type& P) const { const_cast<context*>(this)->set_projection_matrix(dmat4(4,4,&P(0, 0))); }
+	DEPRECATED("deprecated: use get_projection_matrix() instead.") dmatn get_P() const { return dmatn(4, 4, &get_projection_matrix()(0, 0)); }
+	DEPRECATED("deprecated: use set_projection_matrix() instead.") void set_P(const dmatn& P) const { const_cast<context*>(this)->set_projection_matrix(dmat4(4,4,&P(0, 0))); }
 	DEPRECATED("deprecated: use push_projection_matrix() instead.") void push_P() { push_projection_matrix(); }
 	DEPRECATED("deprecated: use pop_projection_matrix() instead.") void pop_P() { pop_projection_matrix(); }
-	DEPRECATED("deprecated: use get_device_matrix() instead.") 	dmat_type get_D() const { return dmat_type(4, 4, &get_window_matrix()(0, 0)); }
-	DEPRECATED("deprecated: use get_modelview_projection_device_matrix() instead.")	mat_type get_DPV() const { return dmat_type(4, 4, &get_modelview_projection_window_matrix()(0, 0)); }
+	DEPRECATED("deprecated: use get_device_matrix() instead.") 	dmatn get_D() const { return dmatn(4, 4, &get_window_matrix()(0, 0)); }
+	DEPRECATED("deprecated: use get_modelview_projection_device_matrix() instead.")	dmatn get_DPV() const { return dmatn(4, 4, &get_modelview_projection_window_matrix()(0, 0)); }
 	/** use this to push new modelview and new projection matrices onto the transformation stacks such that
 	    x and y coordinates correspond to opengl coordinates with (0,0) in lower left corner.
 		To transform mouse pointer coordinates to opengl coordinates use get_context()->get_height()-1-mouse_y. */
@@ -1220,18 +1252,28 @@ public:
 
 
 
-	
-	
-	virtual void enable_depth_test() {}
-	virtual void disable_depth_test() {}
+	virtual void push_depth_test_state();
+	virtual void pop_depth_test_state();
+	virtual bool get_depth_test_state();
+	virtual void enable_depth_test();
+	virtual void disable_depth_test();
 
-	virtual void restore_depth_test_state() {
-		if(depth_test_stack.empty())
-			error("context::pop_depth_test_state() ... attempt to pop depth test state from empty stack.");
-		else
-			depth_test_stack.pop();
-	}
+	virtual void push_cull_state();
+	virtual void pop_cull_state();
+	virtual CullingMode get_cull_state();
+	virtual void set_cull_state(CullingMode culling_mode);
 
+	virtual void push_blend_state();
+	virtual void pop_blend_state();
+	virtual BlendState get_blend_state();
+	virtual void set_blend_state(BlendState blend_state);
+	virtual void set_blend_func(BlendFunction src_factor, BlendFunction dst_factor);
+	virtual void set_blend_func_separate(BlendFunction src_color_factor, BlendFunction dst_color_factor, BlendFunction src_alpha_factor, BlendFunction dst_alpha_factor);
+	virtual void set_blend_func_front_to_back();
+	virtual void set_blend_func_back_to_front();
+	virtual void enable_blending();
+	virtual void disable_blending();
+	
 
 protected:
 	bool ensure_window_transformation_index(int& array_index);

@@ -199,18 +199,17 @@ namespace cgv {
 			noise_offset = offset;
 		}
 
-		bool volume_renderer::enable(context& ctx)
-		{
+		bool volume_renderer::enable(context& ctx) {
 			const volume_render_style& vrs = get_style<volume_render_style>();
-			if (!renderer::enable(ctx))
+			if(!renderer::enable(ctx))
 				return false;
 			int vp[4];
 			glGetIntegerv(GL_VIEWPORT, vp);
-			ref_prog().set_uniform(ctx, "viewport_dims", vec2(float(vp[2]-vp[0]), float(vp[3]-vp[1])));
+			ref_prog().set_uniform(ctx, "viewport_dims", vec2(float(vp[2] - vp[0]), float(vp[3] - vp[1])));
 			ref_prog().set_uniform(ctx, "noise_offset", noise_offset);
 
 			ref_prog().set_uniform(ctx, "scale_adjustment_factor", vrs.scale_adjustment_factor);
-			
+
 			ref_prog().set_uniform(ctx, "light_local_to_eye", vrs.light_local_to_eye);
 			ref_prog().set_uniform(ctx, "light_direction", normalize(vrs.light_direction));
 			float specular_exponent = cgv::math::lerp(128.0f, 1.0f, cgv::math::clamp(vrs.roughness, 0.0f, 1.0f));
@@ -232,13 +231,39 @@ namespace cgv {
 			ref_prog().set_uniform(ctx, "clip_box_min", vrs.clip_box.get_min_pnt());
 			ref_prog().set_uniform(ctx, "clip_box_max", vrs.clip_box.get_max_pnt());
 
-			//glDisable(GL_DEPTH_TEST);
-			ctx.disable_depth_test();
+			//ctx.disable_depth_test();
+
+
+
+			/*for(size_t i = 0; i < 10000; ++i) {
+				use_depth_test = glIsEnabled(GL_DEPTH_TEST);
+			
+				use_cull_face = glIsEnabled(GL_CULL_FACE);
+				glGetIntegerv(GL_CULL_FACE_MODE, reinterpret_cast<GLint*>(&cull_face));
+			
+				use_blending = glIsEnabled(GL_BLEND);
+				glGetIntegerv(GL_BLEND_DST, reinterpret_cast<GLint*>(&blend_dst));
+				glGetIntegerv(GL_BLEND_SRC, reinterpret_cast<GLint*>(&blend_src));
+			}
+
+			glDisable(GL_DEPTH_TEST);
 			glEnable(GL_BLEND);
 			glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 			glCullFace(GL_FRONT);
-			glEnable(GL_CULL_FACE);
+			glEnable(GL_CULL_FACE);*/
 
+			ctx.push_depth_test_state();
+			ctx.disable_depth_test();
+
+			ctx.push_cull_state();
+			ctx.set_cull_state(CM_FRONTFACE);
+
+			ctx.push_blend_state();
+			ctx.enable_blending();
+			ctx.set_blend_func_back_to_front();
+
+
+			
 			if(volume_texture) volume_texture->enable(ctx, 0);
 			if(transfer_function_texture) transfer_function_texture->enable(ctx, 1);
 			noise_texture.enable(ctx, 2);
@@ -255,11 +280,39 @@ namespace cgv {
 			if(gradient_texture) gradient_texture->disable(ctx);
 			if(depth_texture) depth_texture->disable(ctx);
 
-			glCullFace(GL_BACK);
-			glDisable(GL_CULL_FACE);
-			glDisable(GL_BLEND);
+			//glCullFace(GL_BACK);
+			//glDisable(GL_CULL_FACE);
+			//glDisable(GL_BLEND);
 			//glEnable(GL_DEPTH_TEST);
-			ctx.restore_depth_test_state();
+
+			
+			
+			/*for(size_t i = 0; i < 10000; ++i) {
+				if(use_depth_test)
+					glEnable(GL_DEPTH_TEST);
+				else
+					glDisable(GL_DEPTH_TEST);
+
+				if(use_cull_face)
+					glEnable(GL_CULL_FACE);
+				else
+					glDisable(GL_CULL_FACE);
+				glCullFace(cull_face);
+
+				if(use_blending)
+					glEnable(GL_BLEND);
+				else
+					glDisable(GL_BLEND);
+				glBlendFunc(blend_src, blend_dst);
+			}*/
+
+			ctx.pop_blend_state();
+			ctx.pop_cull_state();
+			ctx.pop_depth_test_state();
+
+
+
+			//ctx.restore_depth_test_state();
 
 			return renderer::disable(ctx);
 		}

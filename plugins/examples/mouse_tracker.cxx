@@ -142,7 +142,7 @@ void mouse_tracker::finish_frame(context& ctx)
 	if (ff.empty())
 		return;
 //	ctx.ref_default_shader_program().enable(ctx);
-		ctx.set_color(rgb(1.0f, 0.0f, 1.0f));
+		ctx.set_color(cgv::rgb(1.0f, 0.0f, 1.0f));
 		ctx.push_pixel_coords();
 			ctx.enable_font_face(ff, font_size);
 			std::stringstream ss;

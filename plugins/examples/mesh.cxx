@@ -88,7 +88,7 @@ public:
 	bool show_surface;
 	CullingMode cull_mode;
 	ColorMapping color_mapping;
-	rgb  surface_color;
+	cgv::rgb surface_color;
 	IlluminationMode illumination_mode;
 
 	bool show_vertices;
@@ -117,7 +117,7 @@ public:
 		show_surface = true;
 		cull_mode = CM_BACKFACE;
 		color_mapping = cgv::render::CM_COLOR;
-		surface_color = rgb(0.7f, 0.2f, 1.0f);
+		surface_color = cgv::rgb(0.7f, 0.2f, 1.0f);
 		illumination_mode = IM_ONE_SIDED;
 
 		show_wireframe = true;
@@ -128,10 +128,10 @@ public:
 		else
 			M.construct_conway_polyhedron("adtD");
 		sphere_style.radius = float(0.05*sqrt(M.compute_box().get_extent().sqr_length() / M.get_nr_positions()));
-		sphere_style.surface_color = rgb(0.8f, 0.3f, 0.3f);
+		sphere_style.surface_color = cgv::rgb(0.8f, 0.3f, 0.3f);
 		
 		cone_style.radius = 0.5f*sphere_style.radius;
-		cone_style.surface_color = rgb(0.6f, 0.5f, 0.4f);
+		cone_style.surface_color = cgv::rgb(0.6f, 0.5f, 0.4f);
 
 		sphere_aam_out_of_date = true;
 		
@@ -161,9 +161,9 @@ public:
 				float x = (float)j / m;
 				float u = float(4.0f*M_PI)*x;
 				// add new position to the mesh (function returns position index, which is i*m+j in our case)
-				int vi = M.new_position(vec3(a*cos(u)*sin(v), a*sin(u)*sin(v), a*(cos(v) + log(tan(0.5f*v))) + b * u));
+				int vi = M.new_position(cgv::vec3(a*cos(u)*sin(v), a*sin(u)*sin(v), a*(cos(v) + log(tan(0.5f*v))) + b * u));
 				// set color
-				M.set_color(vi, rgb(x, y, 0.5f));
+				M.set_color(vi, cgv::rgb(x, y, 0.5f));
 				// add quad connecting current vertex with previous ones
 				if (i > 0) {
 					int vi = ((i-1) * m + j);
@@ -316,7 +316,7 @@ public:
 			// focus view on new mesh
 			clipped_view* view_ptr = dynamic_cast<clipped_view*>(find_view_as_node());
 			if (view_ptr) {
-				box3 box = M.compute_box();
+				cgv::box3 box = M.compute_box();
 				view_ptr->set_scene_extent(box);
 				view_ptr->set_focus(box.get_center());
 				view_ptr->set_y_extent_at_focus(box.get_extent().length());
@@ -367,7 +367,7 @@ public:
 			if (sphere_aam_out_of_date) {
 				sr.set_position_array(ctx, M.get_positions());
 				if (M.has_colors())
-					sr.set_color_array(ctx, *reinterpret_cast<const std::vector<rgb>*>(M.get_color_data_vector_ptr()));
+					sr.set_color_array(ctx, *reinterpret_cast<const std::vector<cgv::rgb>*>(M.get_color_data_vector_ptr()));
 				sphere_aam_out_of_date = false;
 			}
 			sr.render(ctx, 0, M.get_nr_positions());

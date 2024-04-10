@@ -25,22 +25,22 @@ class renderer_tests :
 public:
 	enum RenderMode { RM_POINTS, RM_SURFELS, RM_BOXES, RM_BOX_WIRES, RM_NORMALS, RM_ARROWS, RM_SPHERES, RM_CONES };
 	struct vertex {
-		vec3 point;
-		vec3 normal;
-		vec4 color;
+		cgv::vec3 point;
+		cgv::vec3 normal;
+		cgv::vec4 color;
 	};
 protected:
-	std::vector<vec3> points;
-	std::vector<vec3> transformed_points;
+	std::vector<cgv::vec3> points;
+	std::vector<cgv::vec3> transformed_points;
 	std::vector<unsigned> group_indices;
-	std::vector<vec3> normals;
-	std::vector<vec3> directions;
-	std::vector<vec4> colors;
-	std::vector<box3> boxes;
+	std::vector<cgv::vec3> normals;
+	std::vector<cgv::vec3> directions;
+	std::vector<cgv::vec4> colors;
+	std::vector<cgv::box3> boxes;
 	bool use_box_array;
 
-	mat4 T;
-	vec3 t;
+	cgv::mat4 T;
+	cgv::vec3 t;
 	float lambda;
 
 	bool transform_points_only;
@@ -50,10 +50,10 @@ protected:
 	bool interleaved_mode;
 	std::vector<vertex> vertices;
 
-	std::vector<vec4> group_colors;
-	std::vector<vec3> group_translations;
-	std::vector<vec4> group_rotations;
-	std::vector<vec3> sizes;
+	std::vector<cgv::vec4> group_colors;
+	std::vector<cgv::vec3> group_translations;
+	std::vector<cgv::vec4> group_rotations;
+	std::vector<cgv::vec3> sizes;
 	std::vector<unsigned> indices;
 	RenderMode mode;
 	cgv::render::view* view_ptr;
@@ -87,7 +87,7 @@ public:
 		blend = false;
 		use_box_array = false;
 		T.identity();
-		t = vec3(-0.5f,0.0f,-0.5f);
+		t = cgv::vec3(-0.5f,0.0f,-0.5f);
 		lambda = 1.0f;
 
 		disable_depth = false;
@@ -103,7 +103,7 @@ public:
 		unsigned i;
 		
 		for (i = 0; i < 10000; ++i) {
-			points.push_back(vec3(d(g), d(g), d(g)));
+			points.push_back(cgv::vec3(d(g), d(g), d(g)));
 			unsigned group_index = 0;
 			if (points.back()[0] > 0.5f)
 				group_index += 1;
@@ -112,23 +112,23 @@ public:
 			if (points.back()[2] > 0.5f)
 				group_index += 4;
 			group_indices.push_back(group_index);
-			normals.push_back(points.back() - vec3(0.5f, 0.5f, 0.5f));
+			normals.push_back(points.back() - cgv::vec3(0.5f, 0.5f, 0.5f));
 			normals.back().normalize();
-			colors.push_back(vec4(0.7f*d(g), 0.6f*d(g), 0.3f*d(g), 0.8f*d(g) + 0.2f));
+			colors.push_back(cgv::vec4(0.7f*d(g), 0.6f*d(g), 0.3f*d(g), 0.8f*d(g) + 0.2f));
 			vertices.push_back(vertex());
 			vertices.back().point = points.back();
 			vertices.back().normal = normals.back();
 			vertices.back().color = colors.back();
-			sizes.push_back(vec3(0.03f*d(g) + 0.001f, 0.03f*d(g) + 0.001f, 0.03f*d(g) + 0.001f));
+			sizes.push_back(cgv::vec3(0.03f*d(g) + 0.001f, 0.03f*d(g) + 0.001f, 0.03f*d(g) + 0.001f));
 			directions.push_back(100*sizes.back()[0] * normals.back());
-			boxes.push_back(box3(points.back() - 0.5f * sizes.back(), points.back() + 0.5f * sizes.back()));
+			boxes.push_back(cgv::box3(points.back() - 0.5f * sizes.back(), points.back() + 0.5f * sizes.back()));
 		}
 
 		compute_transformed_points();
 		for (i = 0; i < 8; ++i) {
-			group_colors.push_back(vec4((i & 1) != 0 ? 1.0f : 0.0f, (i & 2) != 0 ? 1.0f : 0.0f, (i & 4) != 0 ? 1.0f : 0.0f, 1.0f));
-			group_translations.push_back(vec3(0, 0, 0));
-			group_rotations.push_back(vec4(0, 0, 0, 1));
+			group_colors.push_back(cgv::vec4((i & 1) != 0 ? 1.0f : 0.0f, (i & 2) != 0 ? 1.0f : 0.0f, (i & 4) != 0 ? 1.0f : 0.0f, 1.0f));
+			group_translations.push_back(cgv::vec3(0, 0, 0));
+			group_rotations.push_back(cgv::vec4(0, 0, 0, 1));
 		}
 		mode = RM_SPHERES;
 		point_style.measure_point_size_in_pixel = false;
@@ -150,10 +150,10 @@ public:
 	{
 		transformed_points.resize(points.size());
 		for(size_t i = 0; i < points.size(); ++i) {
-			vec4 hp = vec4(points[i] + t, 1.0f);
+			cgv::vec4 hp = cgv::vec4(points[i] + t, 1.0f);
 			if(transform_points_only)
 				hp = T * hp;
-			vec3 p = (1.0f / hp[3])*vec3(hp[0], hp[1], hp[2]);
+			cgv::vec3 p = (1.0f / hp[3])*cgv::vec3(hp[0], hp[1], hp[2]);
 			transformed_points[i] = (1.0f - lambda)*(points[i] + t) + lambda * p;
 		}
 	}
@@ -238,14 +238,14 @@ public:
 			for (unsigned i = 0; i < indices.size(); ++i)
 				indices[i] = i;
 			struct sort_pred {
-				const std::vector<vec3>& points;
-				const vec3& view_dir;
+				const std::vector<cgv::vec3>& points;
+				const cgv::vec3& view_dir;
 				bool operator () (GLint i, GLint j) const {
 					return dot(points[i], view_dir) > dot(points[j], view_dir);
 				}
-				sort_pred(const std::vector<vec3>& _points, const vec3& _view_dir) : points(_points), view_dir(_view_dir) {}
+				sort_pred(const std::vector<cgv::vec3>& _points, const cgv::vec3& _view_dir) : points(_points), view_dir(_view_dir) {}
 			};
-			vec3 view_dir = view_ptr->get_view_dir();
+			cgv::vec3 view_dir = view_ptr->get_view_dir();
 			std::sort(indices.begin(), indices.end(), sort_pred(points, view_dir));
 			R.set_indices(ctx, indices);
 		}
@@ -257,13 +257,13 @@ public:
 	{
 		if(!transform_points_only) {
 			ctx.push_modelview_matrix();
-			mat4 M = ctx.get_modelview_matrix();
-			mat4 MT = M * T;
+			cgv::mat4 M = ctx.get_modelview_matrix();
+			cgv::mat4 MT = M * T;
 			M = cgv::math::lerp(M, MT, lambda);
 			ctx.set_modelview_matrix(M);
 		}
 
-		vec3 eye_pos(0.0f);
+		cgv::vec3 eye_pos(0.0f);
 		if(view_ptr)
 			eye_pos = view_ptr->get_eye();
 
@@ -373,7 +373,7 @@ public:
 
 			set_group_geometry(ctx, s_renderer);
 			set_geometry(ctx, s_renderer);
-			s_renderer.set_radius_array(ctx, &sizes[0][0], sizes.size(), sizeof(vec3));
+			s_renderer.set_radius_array(ctx, &sizes[0][0], sizes.size(), sizeof(cgv::vec3));
 			render_points(ctx, s_renderer);
 			s_renderer.disable_attribute_array_manager(ctx, s_manager);
 		}	break;
@@ -449,7 +449,7 @@ public:
 			if (begin_tree_node("Group Colors", group_colors, false)) {
 				align("\a");
 				for (unsigned i = 0; i < group_colors.size(); ++i) {
-					add_member_control(this, std::string("C") + cgv::utils::to_string(i), reinterpret_cast<rgba&>(group_colors[i]));
+					add_member_control(this, std::string("C") + cgv::utils::to_string(i), reinterpret_cast<cgv::rgba&>(group_colors[i]));
 				}
 				align("\b");
 				end_tree_node(group_colors);

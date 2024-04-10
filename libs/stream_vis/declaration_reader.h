@@ -9,7 +9,7 @@
 #include "lib_begin.h"
 
 namespace stream_vis {
-	class CGV_API declaration_reader : public cgv::render::render_types
+	class CGV_API declaration_reader
 	{
 	protected:
 		const std::string& declarations;
@@ -32,9 +32,9 @@ namespace stream_vis {
 		virtual bool parse_int(const std::string& name, int& i) = 0;
 		virtual bool parse_float(const std::string& name, float& f) = 0;
 		virtual bool parse_double(const std::string& name, double& f) = 0;
-		virtual bool parse_color(const std::string& name, rgb& color) = 0;
-		virtual bool parse_color(const std::string& name, rgba& color) = 0;
-		virtual bool parse_quat (const std::string& name, quat& quat) = 0;
+		virtual bool parse_color(const std::string& name, cgv::rgb& color) = 0;
+		virtual bool parse_color(const std::string& name, cgv::rgba& color) = 0;
+		virtual bool parse_quat (const std::string& name, cgv::quat& quat) = 0;
 		virtual bool parse_vecn(const std::string& name, float* v, uint32_t dim) = 0;
 		virtual bool parse_dvecn(const std::string& name, double* v, uint32_t dim) = 0;
 		virtual bool parse_ivecn(const std::string& name, int32_t* v, uint32_t dim) = 0;
@@ -45,15 +45,15 @@ namespace stream_vis {
 		void parse_mapped_rgba(const std::string& name_color, const std::string& name_opacity, cgv::plot::mapped_rgba& color);
 		void parse_mapped_size(const std::string& name, cgv::plot::mapped_size& size);
 
-		bool parse_vec2(const std::string& name, cgv::render::render_types::vec2& v) { return parse_vecn(name, &v[0], 2); }
-		bool parse_vec3(const std::string& name, cgv::render::render_types::vec3& v) { return parse_vecn(name, &v[0], 3); }
-		bool parse_vec4(const std::string& name, cgv::render::render_types::vec4& v) { return parse_vecn(name, &v[0], 4); }
-		bool parse_dvec2(const std::string& name, cgv::render::render_types::dvec2& v) { return parse_dvecn(name, &v[0], 2); }
-		bool parse_dvec3(const std::string& name, cgv::render::render_types::dvec3& v) { return parse_dvecn(name, &v[0], 3); }
-		bool parse_dvec4(const std::string& name, cgv::render::render_types::dvec4& v) { return parse_dvecn(name, &v[0], 4); }
-		bool parse_ivec2(const std::string& name, cgv::render::render_types::ivec2& v) { return parse_ivecn(name, &v[0], 2); }
-		bool parse_ivec3(const std::string& name, cgv::render::render_types::ivec3& v) { return parse_ivecn(name, &v[0], 3); }
-		bool parse_ivec4(const std::string& name, cgv::render::render_types::ivec4& v) { return parse_ivecn(name, &v[0], 4); }
+		bool parse_vec2(const std::string& name, cgv::vec2& v) { return parse_vecn(name, &v[0], 2); }
+		bool parse_vec3(const std::string& name, cgv::vec3& v) { return parse_vecn(name, &v[0], 3); }
+		bool parse_vec4(const std::string& name, cgv::vec4& v) { return parse_vecn(name, &v[0], 4); }
+		bool parse_dvec2(const std::string& name, cgv::dvec2& v) { return parse_dvecn(name, &v[0], 2); }
+		bool parse_dvec3(const std::string& name, cgv::dvec3& v) { return parse_dvecn(name, &v[0], 3); }
+		bool parse_dvec4(const std::string& name, cgv::dvec4& v) { return parse_dvecn(name, &v[0], 4); }
+		bool parse_ivec2(const std::string& name, cgv::ivec2& v) { return parse_ivecn(name, &v[0], 2); }
+		bool parse_ivec3(const std::string& name, cgv::ivec3& v) { return parse_ivecn(name, &v[0], 3); }
+		bool parse_ivec4(const std::string& name, cgv::ivec4& v) { return parse_ivecn(name, &v[0], 4); }
 		void finalize_time_series(uint16_t ts_idx, int default_ringbuffer_size = 1024);
 		bool construct_time_series(const std::string& name, const std::string& type, const std::vector<std::string>& ts_names);
 		bool construct_attribute_definitions(std::vector<std::string>& defs, std::vector<attribute_definition>& ads);
