@@ -1,11 +1,9 @@
 var NAVTREEINDEX49 =
 {
-"structcgv_1_1type_1_1func_1_1make__argument_3_01T_01_6_01_4.html":[11,0,0,14,2,12],
-"structcgv_1_1type_1_1func_1_1make__argument_3_01T_01_6_01_4.html#a5106710cd156c1fecb53d4c9bb0e15a2":[11,0,0,14,2,12,0],
 "structcgv_1_1type_1_1func_1_1make__const.html":[11,0,0,14,2,13],
 "structcgv_1_1type_1_1func_1_1make__ref.html":[11,0,0,14,2,14],
-"structcgv_1_1type_1_1func_1_1make__ref.html#ab4efbfcdaa090779cc85536d5ca0fa5f":[11,0,0,14,2,14,0],
 "structcgv_1_1type_1_1func_1_1make__ref.html#ab4efbfcdaa090779cc85536d5ca0fa5f":[11,0,0,14,2,14,1],
+"structcgv_1_1type_1_1func_1_1make__ref.html#ab4efbfcdaa090779cc85536d5ca0fa5f":[11,0,0,14,2,14,0],
 "structcgv_1_1type_1_1func_1_1promote.html":[11,0,0,14,2,15],
 "structcgv_1_1type_1_1func_1_1promote.html#a2c3177c793c50e21c85f3da8f50bf0e3":[11,0,0,14,2,15,0],
 "structcgv_1_1type_1_1func_1_1promote.html#acebcf7be153e2fdee154c3be01dd5688":[11,0,0,14,2,15,1],
@@ -249,5 +247,7 @@ var NAVTREEINDEX49 =
 "structcgv_1_1utils_1_1token.html#a91d47c8b276e40caa47e2fe678135417":[11,0,0,15,13,0],
 "structcgv_1_1utils_1_1token.html#a968930d4dd13f4cc65896457b559b938":[11,0,0,15,13,3],
 "structcgv_1_1utils_1_1token.html#a9a2121933f46f315734a1994eafeff2b":[11,0,0,15,13,6],
-"structcgv_1_1utils_1_1token.html#aa8e06c57774bb6d34436ff2e0ea22442":[11,0,0,15,13,12]
+"structcgv_1_1utils_1_1token.html#aa8e06c57774bb6d34436ff2e0ea22442":[11,0,0,15,13,12],
+"structcgv_1_1utils_1_1token.html#aaf408b748b074e1f2a1b82c1b8812238":[11,0,0,15,13,15],
+"structcgv_1_1utils_1_1token.html#ab31c4e3c695ed4ad2ce0b69d09c2cf45":[11,0,0,15,13,11]
 };

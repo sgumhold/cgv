@@ -916,7 +916,7 @@ static std::string&#160;</td><td class="memItemRight" valign="bottom"><a class="
 </dl>
 <dl class="section return"><dt>Returns</dt><dd>True if the texture was successfully bound as an image, false otherwise. </dd></dl>
 
-<p class="definition">Definition at line <a class="el" href="texture_8cxx_source.html#l00779">779</a> of file <a class="el" href="texture_8cxx_source.html">texture.cxx</a>.</p>
+<p class="definition">Definition at line <a class="el" href="texture_8cxx_source.html#l00762">762</a> of file <a class="el" href="texture_8cxx_source.html">texture.cxx</a>.</p>
 
 <p class="reference">References <a class="el" href="texture_8cxx_source.html#l00201">ensure_state()</a>, and <a class="el" href="context_8h_source.html#l00278">cgv::render::render_component::last_error</a>.</p>
 
@@ -975,9 +975,9 @@ static std::string&#160;</td><td class="memItemRight" valign="bottom"><a class="
 <p>create texture from data view. </p>
 <p>Use dimension and resolution of data view but the component format of the texture. If level is not specified or set to -1 mipmaps are generated. If cube_side is specified, and data view is 2D, create one of the six sides of a cubemap. If num_array_layers is not zero a texture array is created. Set num_array_layers to -1 to automatically choose the layer number based on the data view dimensions and size, e.g. a 2D/3D data view creates a 1D/2D array with layer count equal to height/depth. Set num_array_layers to &gt; 0 to manually specify the layer count. This can be used to create a one layer 1D/2D texture array from a 1D/2D data view. Cubemap arrays are currently not suported. </p>
 
-<p class="definition">Definition at line <a class="el" href="texture_8cxx_source.html#l00586">586</a> of file <a class="el" href="texture_8cxx_source.html">texture.cxx</a>.</p>
+<p class="definition">Definition at line <a class="el" href="texture_8cxx_source.html#l00569">569</a> of file <a class="el" href="texture_8cxx_source.html">texture.cxx</a>.</p>
 
-<p class="reference">References <a class="el" href="texture_8cxx_source.html#l00750">destruct()</a>, <a class="el" href="texture_8cxx_source.html#l00193">find_best_format()</a>, <a class="el" href="data__view_8cxx_source.html#l00073">cgv::data::data_view_base::get_format()</a>, <a class="el" href="component__format_8cxx_source.html#l00322">cgv::data::component_format::get_nr_components()</a>, <a class="el" href="data__format_8cxx_source.html#l00171">cgv::data::data_format::get_nr_dimensions()</a>, <a class="el" href="data__format_8cxx_source.html#l00179">cgv::data::data_format::get_resolution()</a>, <a class="el" href="context_8cxx_source.html#l01884">cgv::render::render_component::is_created()</a>, <a class="el" href="texture_8cxx_source.html#l00641">replace()</a>, <a class="el" href="data__format_8cxx_source.html#l00175">cgv::data::data_format::set_nr_dimensions()</a>, and <a class="el" href="data__format_8cxx_source.html#l00185">cgv::data::data_format::set_resolution()</a>.</p>
+<p class="reference">References <a class="el" href="texture_8cxx_source.html#l00733">destruct()</a>, <a class="el" href="texture_8cxx_source.html#l00193">find_best_format()</a>, <a class="el" href="data__view_8cxx_source.html#l00073">cgv::data::data_view_base::get_format()</a>, <a class="el" href="component__format_8cxx_source.html#l00322">cgv::data::component_format::get_nr_components()</a>, <a class="el" href="data__format_8cxx_source.html#l00171">cgv::data::data_format::get_nr_dimensions()</a>, <a class="el" href="data__format_8cxx_source.html#l00179">cgv::data::data_format::get_resolution()</a>, <a class="el" href="context_8cxx_source.html#l01884">cgv::render::render_component::is_created()</a>, <a class="el" href="texture_8cxx_source.html#l00624">replace()</a>, <a class="el" href="data__format_8cxx_source.html#l00175">cgv::data::data_format::set_nr_dimensions()</a>, and <a class="el" href="data__format_8cxx_source.html#l00185">cgv::data::data_format::set_resolution()</a>.</p>
 
 </div>
 </div>
@@ -1031,9 +1031,9 @@ static std::string&#160;</td><td class="memItemRight" valign="bottom"><a class="
 
 <p class="definition">Definition at line <a class="el" href="texture_8cxx_source.html#l00211">211</a> of file <a class="el" href="texture_8cxx_source.html">texture.cxx</a>.</p>
 
-<p class="reference">References <a class="el" href="texture_8cxx_source.html#l00750">destruct()</a>, <a class="el" href="texture_8cxx_source.html#l00193">find_best_format()</a>, <a class="el" href="context_8cxx_source.html#l01884">cgv::render::render_component::is_created()</a>, <a class="el" href="data__format_8cxx_source.html#l00252">cgv::data::data_format::set_depth()</a>, <a class="el" href="data__format_8cxx_source.html#l00248">cgv::data::data_format::set_height()</a>, and <a class="el" href="data__format_8cxx_source.html#l00244">cgv::data::data_format::set_width()</a>.</p>
+<p class="reference">References <a class="el" href="texture_8cxx_source.html#l00733">destruct()</a>, <a class="el" href="texture_8cxx_source.html#l00193">find_best_format()</a>, <a class="el" href="context_8cxx_source.html#l01884">cgv::render::render_component::is_created()</a>, <a class="el" href="data__format_8cxx_source.html#l00252">cgv::data::data_format::set_depth()</a>, <a class="el" href="data__format_8cxx_source.html#l00248">cgv::data::data_format::set_height()</a>, and <a class="el" href="data__format_8cxx_source.html#l00244">cgv::data::data_format::set_width()</a>.</p>
 
-<p class="reference">Referenced by <a class="el" href="gltf__support_8cxx_source.html#l00134">cgv::render::build_render_info()</a>, <a class="el" href="gl__transparent__renderer_8cxx_source.html#l00033">cgv::render::gl::gl_transparent_renderer::create_and_attach_texture()</a>, <a class="el" href="texture_8cxx_source.html#l00278">create_from_image()</a>, <a class="el" href="color__map__editor_8cxx_source.html#l00244">cgv::app::color_map_editor::init()</a>, <a class="el" href="vr__test_8cxx_source.html#l00528">vr_test::init_frame()</a>, <a class="el" href="a__buffer_8cxx_source.html#l00104">cgv::render::a_buffer::init_frame()</a>, <a class="el" href="gl__depth__peeler_8cxx_source.html#l00100">cgv::render::gl::gl_depth_peeler::init_frame()</a>, and <a class="el" href="volume__renderer_8cxx_source.html#l00077">cgv::render::volume_renderer::init_noise_texture()</a>.</p>
+<p class="reference">Referenced by <a class="el" href="gltf__support_8cxx_source.html#l00134">cgv::render::build_render_info()</a>, <a class="el" href="gl__transparent__renderer_8cxx_source.html#l00033">cgv::render::gl::gl_transparent_renderer::create_and_attach_texture()</a>, <a class="el" href="texture_8cxx_source.html#l00261">create_from_image()</a>, <a class="el" href="color__map__editor_8cxx_source.html#l00244">cgv::app::color_map_editor::init()</a>, <a class="el" href="vr__test_8cxx_source.html#l00528">vr_test::init_frame()</a>, <a class="el" href="a__buffer_8cxx_source.html#l00104">cgv::render::a_buffer::init_frame()</a>, <a class="el" href="gl__depth__peeler_8cxx_source.html#l00100">cgv::render::gl::gl_depth_peeler::init_frame()</a>, and <a class="el" href="volume__renderer_8cxx_source.html#l00077">cgv::render::volume_renderer::init_noise_texture()</a>.</p>
 
 </div>
 </div>
@@ -1090,9 +1090,9 @@ static std::string&#160;</td><td class="memItemRight" valign="bottom"><a class="
 <p>create texture from the currently set read buffer, where x, y, width and height define the to be used rectangle of the read buffer. </p>
 <p>The dimension and resolution of the texture format are updated automatically. If level is not specified or set to -1 mipmaps are generated. </p>
 
-<p class="definition">Definition at line <a class="el" href="texture_8cxx_source.html#l00558">558</a> of file <a class="el" href="texture_8cxx_source.html">texture.cxx</a>.</p>
+<p class="definition">Definition at line <a class="el" href="texture_8cxx_source.html#l00541">541</a> of file <a class="el" href="texture_8cxx_source.html">texture.cxx</a>.</p>
 
-<p class="reference">References <a class="el" href="texture_8cxx_source.html#l00750">destruct()</a>, <a class="el" href="texture_8cxx_source.html#l00193">find_best_format()</a>, <a class="el" href="context_8cxx_source.html#l01884">cgv::render::render_component::is_created()</a>, <a class="el" href="texture_8cxx_source.html#l00687">replace_from_buffer()</a>, <a class="el" href="data__format_8cxx_source.html#l00248">cgv::data::data_format::set_height()</a>, <a class="el" href="data__format_8cxx_source.html#l00175">cgv::data::data_format::set_nr_dimensions()</a>, and <a class="el" href="data__format_8cxx_source.html#l00244">cgv::data::data_format::set_width()</a>.</p>
+<p class="reference">References <a class="el" href="texture_8cxx_source.html#l00733">destruct()</a>, <a class="el" href="texture_8cxx_source.html#l00193">find_best_format()</a>, <a class="el" href="context_8cxx_source.html#l01884">cgv::render::render_component::is_created()</a>, <a class="el" href="texture_8cxx_source.html#l00670">replace_from_buffer()</a>, <a class="el" href="data__format_8cxx_source.html#l00248">cgv::data::data_format::set_height()</a>, <a class="el" href="data__format_8cxx_source.html#l00175">cgv::data::data_format::set_nr_dimensions()</a>, and <a class="el" href="data__format_8cxx_source.html#l00244">cgv::data::data_format::set_width()</a>.</p>
 
 </div>
 </div>
@@ -1155,9 +1155,9 @@ static std::string&#160;</td><td class="memItemRight" valign="bottom"><a class="
 <p>same as previous method but use the passed data format and data view to store the content of the image. </p>
 <p>No pointers to width and height can be passed as this information is available in the data_format after the call. </p>
 
-<p class="definition">Definition at line <a class="el" href="texture_8cxx_source.html#l00278">278</a> of file <a class="el" href="texture_8cxx_source.html">texture.cxx</a>.</p>
+<p class="definition">Definition at line <a class="el" href="texture_8cxx_source.html#l00261">261</a> of file <a class="el" href="texture_8cxx_source.html">texture.cxx</a>.</p>
 
-<p class="reference">References <a class="el" href="texture_8cxx_source.html#l00211">create()</a>, <a class="el" href="texture_8cxx_source.html#l00750">destruct()</a>, <a class="el" href="component__format_8cxx_source.html#l00316">cgv::data::component_format::empty()</a>, <a class="el" href="component__format_8cxx_source.html#l00391">cgv::data::component_format::get_entry_size()</a>, <a class="el" href="data__format_8cxx_source.html#l00218">cgv::data::data_format::get_height()</a>, <a class="el" href="image__reader_8cxx_source.html#l00112">cgv::media::image::image_reader::get_last_error()</a>, <a class="el" href="data__view_8h_source.html#l00061">cgv::data::data_view_impl&lt; D, P &gt;::get_ptr()</a>, <a class="el" href="data__format_8cxx_source.html#l00214">cgv::data::data_format::get_width()</a>, <a class="el" href="context_8h_source.html#l00278">cgv::render::render_component::last_error</a>, <a class="el" href="image__reader_8cxx_source.html#l00120">cgv::media::image::image_reader::read_image()</a>, <a class="el" href="image__reader_8cxx_source.html#l00211">cgv::media::image::image_reader::read_palette()</a>, <a class="el" href="data__format_8cxx_source.html#l00248">cgv::data::data_format::set_height()</a>, and <a class="el" href="data__format_8cxx_source.html#l00244">cgv::data::data_format::set_width()</a>.</p>
+<p class="reference">References <a class="el" href="texture_8cxx_source.html#l00211">create()</a>, <a class="el" href="texture_8cxx_source.html#l00733">destruct()</a>, <a class="el" href="component__format_8cxx_source.html#l00316">cgv::data::component_format::empty()</a>, <a class="el" href="component__format_8cxx_source.html#l00391">cgv::data::component_format::get_entry_size()</a>, <a class="el" href="data__format_8cxx_source.html#l00218">cgv::data::data_format::get_height()</a>, <a class="el" href="image__reader_8cxx_source.html#l00112">cgv::media::image::image_reader::get_last_error()</a>, <a class="el" href="data__view_8h_source.html#l00061">cgv::data::data_view_impl&lt; D, P &gt;::get_ptr()</a>, <a class="el" href="data__format_8cxx_source.html#l00214">cgv::data::data_format::get_width()</a>, <a class="el" href="context_8h_source.html#l00278">cgv::render::render_component::last_error</a>, <a class="el" href="image__reader_8cxx_source.html#l00120">cgv::media::image::image_reader::read_image()</a>, <a class="el" href="image__reader_8cxx_source.html#l00211">cgv::media::image::image_reader::read_palette()</a>, <a class="el" href="data__format_8cxx_source.html#l00248">cgv::data::data_format::set_height()</a>, and <a class="el" href="data__format_8cxx_source.html#l00244">cgv::data::data_format::set_width()</a>.</p>
 
 </div>
 </div>
@@ -1221,11 +1221,11 @@ static std::string&#160;</td><td class="memItemRight" valign="bottom"><a class="
 <p>create the texture from an image file</p>
 <p>If the file_name is not given ask the user interactively for a file name. The image dimensions are written to the optionally passed pointers image_width_ptr and image_height_ptr. In order to support mipmapping, the width and height of the texture must be powers of two. If the clear_color_ptr is given, the texture is automatically extended in size to powers of two. clear_color_ptr points to four bytes that specify a RGBA color used to fill texels that are inserted to ensure dimensions of powers of two. For creation of a side of a cubemap specify the cube_side parameter. </p>
 
-<p class="definition">Definition at line <a class="el" href="texture_8cxx_source.html#l00350">350</a> of file <a class="el" href="texture_8cxx_source.html">texture.cxx</a>.</p>
+<p class="definition">Definition at line <a class="el" href="texture_8cxx_source.html#l00333">333</a> of file <a class="el" href="texture_8cxx_source.html">texture.cxx</a>.</p>
 
 <p class="reference">References <a class="el" href="data__format_8cxx_source.html#l00218">cgv::data::data_format::get_height()</a>, and <a class="el" href="data__format_8cxx_source.html#l00214">cgv::data::data_format::get_width()</a>.</p>
 
-<p class="reference">Referenced by <a class="el" href="texture_8cxx_source.html#l00430">create_from_images()</a>, and <a class="el" href="textured__material_8cxx_source.html#l00042">cgv::render::textured_material::ensure_textures()</a>.</p>
+<p class="reference">Referenced by <a class="el" href="texture_8cxx_source.html#l00413">create_from_images()</a>, and <a class="el" href="textured__material_8cxx_source.html#l00042">cgv::render::textured_material::ensure_textures()</a>.</p>
 
 </div>
 </div>
@@ -1268,9 +1268,9 @@ static std::string&#160;</td><td class="memItemRight" valign="bottom"><a class="
 </ul>
 <p>Different levels of the mipmap pyramid can be created in separate calls. If the level parameter is not specified or -1, the images are load to level 0 and a mipmap pyramid is built automatically. This method has no support for rescaling to power of two dimensions. If a mipmap is used, the image files should already have power of two dimensions. </p>
 
-<p class="definition">Definition at line <a class="el" href="texture_8cxx_source.html#l00430">430</a> of file <a class="el" href="texture_8cxx_source.html">texture.cxx</a>.</p>
+<p class="definition">Definition at line <a class="el" href="texture_8cxx_source.html#l00413">413</a> of file <a class="el" href="texture_8cxx_source.html">texture.cxx</a>.</p>
 
-<p class="reference">References <a class="el" href="texture_8cxx_source.html#l00350">create_from_image()</a>, <a class="el" href="texture_8cxx_source.html#l00365">deduce_file_names()</a>, and <a class="el" href="texture_8cxx_source.html#l00750">destruct()</a>.</p>
+<p class="reference">References <a class="el" href="texture_8cxx_source.html#l00333">create_from_image()</a>, <a class="el" href="texture_8cxx_source.html#l00348">deduce_file_names()</a>, and <a class="el" href="texture_8cxx_source.html#l00733">destruct()</a>.</p>
 
 </div>
 </div>
@@ -1311,11 +1311,11 @@ static std::string&#160;</td><td class="memItemRight" valign="bottom"><a class="
 <p>Helper function that determins the individual file names for a cubemap. </p>
 <p>Returns whether the file_names specification was correct. See comment to create_from_images for the syntax of the file_names parameter. </p>
 
-<p class="definition">Definition at line <a class="el" href="texture_8cxx_source.html#l00365">365</a> of file <a class="el" href="texture_8cxx_source.html">texture.cxx</a>.</p>
+<p class="definition">Definition at line <a class="el" href="texture_8cxx_source.html#l00348">348</a> of file <a class="el" href="texture_8cxx_source.html">texture.cxx</a>.</p>
 
 <p class="reference">References <a class="el" href="tokenizer_8cxx_source.html#l00059">cgv::utils::tokenizer::set_sep()</a>, <a class="el" href="tokenizer_8cxx_source.html#l00038">cgv::utils::tokenizer::set_ws()</a>, and <a class="el" href="context_8cxx_source.html#l00928">cgv::render::to_string()</a>.</p>
 
-<p class="reference">Referenced by <a class="el" href="texture_8cxx_source.html#l00430">create_from_images()</a>.</p>
+<p class="reference">Referenced by <a class="el" href="texture_8cxx_source.html#l00413">create_from_images()</a>.</p>
 
 </div>
 </div>
@@ -1338,7 +1338,7 @@ static std::string&#160;</td><td class="memItemRight" valign="bottom"><a class="
 <p>disable texture and restore state from before last enable call </p>
 <p>disable texture and restore state before last enable call </p>
 
-<p class="definition">Definition at line <a class="el" href="texture_8cxx_source.html#l00774">774</a> of file <a class="el" href="texture_8cxx_source.html">texture.cxx</a>.</p>
+<p class="definition">Definition at line <a class="el" href="texture_8cxx_source.html#l00757">757</a> of file <a class="el" href="texture_8cxx_source.html">texture.cxx</a>.</p>
 
 <p class="reference">References <a class="el" href="data__format_8cxx_source.html#l00171">cgv::data::data_format::get_nr_dimensions()</a>.</p>
 
@@ -1393,11 +1393,11 @@ static std::string&#160;</td><td class="memItemRight" valign="bottom"><a class="
 <p>replace a block within a 1d texture with the given data. </p>
 <p>If level is not specified, level 0 is set and if a mipmap has been created before, coarser levels are updated also. </p>
 
-<p class="definition">Definition at line <a class="el" href="texture_8cxx_source.html#l00641">641</a> of file <a class="el" href="texture_8cxx_source.html">texture.cxx</a>.</p>
+<p class="definition">Definition at line <a class="el" href="texture_8cxx_source.html#l00624">624</a> of file <a class="el" href="texture_8cxx_source.html">texture.cxx</a>.</p>
 
 <p class="reference">References <a class="el" href="data__view_8cxx_source.html#l00073">cgv::data::data_view_base::get_format()</a>, <a class="el" href="data__format_8cxx_source.html#l00171">cgv::data::data_format::get_nr_dimensions()</a>, <a class="el" href="context_8cxx_source.html#l01884">cgv::render::render_component::is_created()</a>, and <a class="el" href="context_8h_source.html#l00278">cgv::render::render_component::last_error</a>.</p>
 
-<p class="reference">Referenced by <a class="el" href="texture_8cxx_source.html#l00586">create()</a>, <a class="el" href="vr__test_8cxx_source.html#l00528">vr_test::init_frame()</a>, and <a class="el" href="texture_8cxx_source.html#l00726">replace_from_image()</a>.</p>
+<p class="reference">Referenced by <a class="el" href="texture_8cxx_source.html#l00569">create()</a>, <a class="el" href="vr__test_8cxx_source.html#l00528">vr_test::init_frame()</a>, and <a class="el" href="texture_8cxx_source.html#l00709">replace_from_image()</a>.</p>
 
 </div>
 </div>
@@ -1454,7 +1454,7 @@ static std::string&#160;</td><td class="memItemRight" valign="bottom"><a class="
 <p>replace a block within a 2d texture with the given data. </p>
 <p>If level is not specified, level 0 is set and if a mipmap has been created before, coarser levels are updated also. </p>
 
-<p class="definition">Definition at line <a class="el" href="texture_8cxx_source.html#l00657">657</a> of file <a class="el" href="texture_8cxx_source.html">texture.cxx</a>.</p>
+<p class="definition">Definition at line <a class="el" href="texture_8cxx_source.html#l00640">640</a> of file <a class="el" href="texture_8cxx_source.html">texture.cxx</a>.</p>
 
 <p class="reference">References <a class="el" href="data__view_8cxx_source.html#l00073">cgv::data::data_view_base::get_format()</a>, <a class="el" href="data__format_8cxx_source.html#l00171">cgv::data::data_format::get_nr_dimensions()</a>, <a class="el" href="context_8cxx_source.html#l01884">cgv::render::render_component::is_created()</a>, and <a class="el" href="context_8h_source.html#l00278">cgv::render::render_component::last_error</a>.</p>
 
@@ -1519,7 +1519,7 @@ static std::string&#160;</td><td class="memItemRight" valign="bottom"><a class="
 <p>replace a block within a 3d texture or a side of a cube map with the given data. </p>
 <p>If level is not specified, level 0 is set and if a mipmap has been created before, coarser levels are updated also. </p>
 
-<p class="definition">Definition at line <a class="el" href="texture_8cxx_source.html#l00674">674</a> of file <a class="el" href="texture_8cxx_source.html">texture.cxx</a>.</p>
+<p class="definition">Definition at line <a class="el" href="texture_8cxx_source.html#l00657">657</a> of file <a class="el" href="texture_8cxx_source.html">texture.cxx</a>.</p>
 
 <p class="reference">References <a class="el" href="context_8cxx_source.html#l01884">cgv::render::render_component::is_created()</a>, and <a class="el" href="context_8h_source.html#l00278">cgv::render::render_component::last_error</a>.</p>
 
@@ -1596,7 +1596,7 @@ static std::string&#160;</td><td class="memItemRight" valign="bottom"><a class="
 <p>replace a block within a 3d texture or a side from a cube map from the current read buffer. </p>
 <p>replace a block within a 2d texture from the current read buffer. </p>
 
-<p class="definition">Definition at line <a class="el" href="texture_8cxx_source.html#l00702">702</a> of file <a class="el" href="texture_8cxx_source.html">texture.cxx</a>.</p>
+<p class="definition">Definition at line <a class="el" href="texture_8cxx_source.html#l00685">685</a> of file <a class="el" href="texture_8cxx_source.html">texture.cxx</a>.</p>
 
 <p class="reference">References <a class="el" href="context_8cxx_source.html#l01884">cgv::render::render_component::is_created()</a>, and <a class="el" href="context_8h_source.html#l00278">cgv::render::render_component::last_error</a>.</p>
 
