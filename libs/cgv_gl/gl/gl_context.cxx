@@ -421,9 +421,10 @@ void gl_context::init_render_pass()
 	if (get_render_pass_flags()&RPF_SET_STATE_FLAGS) {
 		// set some default settings
 		//glEnable(GL_DEPTH_TEST);
+		//glCullFace(GL_BACK);
+		//glEnable(GL_CULL_FACE);
 		enable_depth_test();
-		glCullFace(GL_BACK);
-		glEnable(GL_CULL_FACE);
+		set_cull_state(CM_BACKFACE);
 		if (!core_profile)
 			glEnable(GL_NORMALIZE);
 	}
@@ -846,11 +847,14 @@ void gl_context::draw_light_source(const light_source& l, float i, float light_s
 			else
 				mul_modelview_matrix(cgv::math::scale4<double>(t, t, 0.5f));
 			mul_modelview_matrix(cgv::math::translate4<double>(0, 0, -1));
-			GLboolean cull = glIsEnabled(GL_CULL_FACE);
-			glDisable(GL_CULL_FACE);
+			//GLboolean cull = glIsEnabled(GL_CULL_FACE);
+			//glDisable(GL_CULL_FACE);
+			push_cull_state();
+			set_cull_state(CM_OFF);
 			tesselate_unit_cone();
-			if (cull)
-				glEnable(GL_CULL_FACE);
+			//if (cull)
+			//	glEnable(GL_CULL_FACE);
+			pop_cull_state();
 		}
 	}
 	pop_modelview_matrix();
