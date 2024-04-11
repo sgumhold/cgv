@@ -21,7 +21,7 @@ public:
 	
 	bool handle_key_event(cgv::gui::key_event& e);
 
-	bool handle_mouse_event(cgv::gui::mouse_event& e, cgv::render::ivec2 mouse_position) override {
+	bool handle_mouse_event(cgv::gui::mouse_event& e, cgv::ivec2 mouse_position) override {
 		return input_widget.handle_mouse_event(e, mouse_position);
 	}
 

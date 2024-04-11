@@ -50,7 +50,7 @@ public:
 
 	bool handle_key_event(cgv::gui::key_event& e) override;
 
-	bool handle_mouse_event(cgv::gui::mouse_event& e, cgv::render::ivec2 mouse_position) override;
+	bool handle_mouse_event(cgv::gui::mouse_event& e, cgv::ivec2 mouse_position) override;
 
 	void draw(cgv::render::context& ctx, cgv::g2d::canvas& cnvs, const styles& style) override;
 };

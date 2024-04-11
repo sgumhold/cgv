@@ -9,7 +9,7 @@ namespace cg {
 namespace g2d {
 
 void slider::update_value() {
-	dvec2 in_range(rectangle.x(), rectangle.x1() - handle.w());
+	cgv::dvec2 in_range(rectangle.x(), rectangle.x1() - handle.w());
 	double next_value = cgv::math::map(static_cast<double>(handle.x()), in_range[0], in_range[1], get_range()[0], get_range()[1]);
 	next_value = cgv::math::clamp(next_value, get_range()[0], get_range()[1]);
 
@@ -17,15 +17,15 @@ void slider::update_value() {
 }
 
 void slider::update_handle() {
-	dvec2 out_range(rectangle.x(), rectangle.x1() - handle.w());
+	cgv::dvec2 out_range(rectangle.x(), rectangle.x1() - handle.w());
 	double position = static_cast<float>(cgv::math::map(get_value(), get_range()[0], get_range()[1], out_range[0], out_range[1]));
 	handle_view_position = static_cast<int>(cgv::math::clamp(position, out_range[0], out_range[1]));
 }
 
 slider::slider(const std::string& label, cgv::g2d::irect rectangle) : valuator(label, rectangle) {
 	handle = {
-		static_cast<vec2>(rectangle.position),
-		vec2(12.0f, static_cast<float>(rectangle.h()))
+		static_cast<cgv::vec2>(rectangle.position),
+		cgv::vec2(12.0f, static_cast<float>(rectangle.h()))
 	};
 	draggables.add(&handle);
 	draggables.set_constraint(rectangle);
@@ -34,7 +34,7 @@ slider::slider(const std::string& label, cgv::g2d::irect rectangle) : valuator(l
 	handle_view_position = rectangle.x();
 }
 
-bool slider::handle_mouse_event(cgv::gui::mouse_event& e, ivec2 mouse_position) {
+bool slider::handle_mouse_event(cgv::gui::mouse_event& e, cgv::ivec2 mouse_position) {
 	//if(!rectangle.contains(mouse_position))
 	//	return false;
 
@@ -82,7 +82,7 @@ void slider::draw(context& ctx, cgv::g2d::canvas& cnvs, const styles& style) {
 	cnvs.disable_current_shader(ctx);
 
 	auto& font = cgv::g2d::ref_msdf_font_regular(ctx);
-	cgv::g2d::ref_msdf_gl_canvas_font_renderer(ctx).render(ctx, cnvs, font, label, style.text, ivec2(rectangle.x() - 5, rectangle.center().y()), TA_RIGHT);
+	cgv::g2d::ref_msdf_gl_canvas_font_renderer(ctx).render(ctx, cnvs, font, label, style.text, cgv::ivec2(rectangle.x() - 5, rectangle.center().y()), TA_RIGHT);
 }
 
 }

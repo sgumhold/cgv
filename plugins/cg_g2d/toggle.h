@@ -18,7 +18,7 @@ public:
 
 	bool set_value(bool v);
 
-	bool handle_mouse_event(cgv::gui::mouse_event& e, cgv::render::ivec2 mouse_position) override;
+	bool handle_mouse_event(cgv::gui::mouse_event& e, cgv::ivec2 mouse_position) override;
 
 	void draw(cgv::render::context& ctx, cgv::g2d::canvas& cnvs, const styles& style) override;
 };

@@ -10,7 +10,7 @@ namespace g2d {
 class CGV_API valuator: public widget {
 private:
 	double value = 0.0;
-	cgv::render::dvec2 range = cgv::render::dvec2(0.0, 1.0);
+	cgv::dvec2 range = cgv::dvec2(0.0, 1.0);
 	double step = 1.0;
 
 public:
@@ -20,9 +20,9 @@ public:
 
 	bool set_value(double v);
 	
-	cgv::render::dvec2 get_range() const { return range; }
+	cgv::dvec2 get_range() const { return range; }
 
-	void set_range(cgv::render::dvec2 range);
+	void set_range(cgv::dvec2 range);
 
 	double get_step() const { return step; }
 
