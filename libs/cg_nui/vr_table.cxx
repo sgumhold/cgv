@@ -8,13 +8,13 @@
 namespace cgv {
 	namespace nui {
 
-	vr_table::mat4 vr_table::get_transform() const
+	mat4 vr_table::get_transform() const
 	{
 		return cgv::math::rotate4<float>(float(180/M_PI*angle), 0, 1, 0) *
 			cgv::math::translate4<float>(0, height, 0) * 
 			cgv::math::scale4<float>(0.71f*scale, 0.71f * scale, 0.71f * scale);
 	}
-	vr_table::mat3 vr_table::get_normal_transform() const
+	mat3 vr_table::get_normal_transform() const
 	{
 		mat4 M = cgv::math::scale4<float>(1 / (0.71f * scale), 1 / (0.71f * scale), 1 / (0.71f * scale))*
 			     cgv::math::rotate4<float>(-float(180/M_PI*angle), 0, 1, 0);
@@ -108,7 +108,7 @@ namespace cgv {
 		}
 		return false;
 	}
-	vr_table::rgb vr_table::get_table_color() const
+	rgb vr_table::get_table_color() const
 	{
 		rgb color = table_color;
 		static float rgb_off[15] = { 0,0,0, 0.1f,0.0f,0.1f, 0.0f,0.1f,0.1f, 0.2f,0.0f,0.2f, 0.0f,0.2f,0.2f };

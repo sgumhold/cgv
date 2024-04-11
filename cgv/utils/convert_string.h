@@ -15,9 +15,11 @@ namespace cgv {
 
 /// convert a numeric type \c T into string of width \c w and precision \c p
 template <typename T>
-std::string to_string(const T& v, unsigned int w = -1, unsigned int p = -1)
+std::string to_string(const T& v, unsigned int w = -1, unsigned int p = -1, bool fixed=false)
 {
 	std::stringstream ss;
+	if (fixed)
+		ss << std::fixed;
 	if (w != (unsigned int)-1)
 		ss << std::setw(w);
 	if (p != (unsigned int)-1)
@@ -36,7 +38,7 @@ std::string to_string(const T& v, unsigned int w, char fill_char)
 }
 
 /// specialization of conversion from string to strings
-template <> CGV_API std::string to_string(const std::string& v, unsigned int w, unsigned int p);
+template <> CGV_API std::string to_string(const std::string& v, unsigned int w, unsigned int p, bool);
 
 /// extract value from string
 template <typename T>

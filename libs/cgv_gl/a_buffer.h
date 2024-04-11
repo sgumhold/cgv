@@ -11,7 +11,7 @@ namespace cgv {
 
 /** This class provides a_buffer functionality.
 	Compare cgv/test/a_buffer_test for an example of using this class.*/
-class CGV_API a_buffer : public render_types
+class CGV_API a_buffer
 {
 	unsigned last_fragments_per_pixel;
 	unsigned last_nodes_per_pixel;

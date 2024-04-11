@@ -5,8 +5,7 @@
 #include <initializer_list>
 
 namespace cgv {
-	/// namespace with classes and algorithms for mathematics
-	namespace math {
+namespace math {
 
 //!matrix of fixed size dimensions
 /*!Template arguments are
@@ -343,6 +342,31 @@ const fmat<T, N, M> lerp(const fmat<T, N, M>& m1, const fmat<T, N, M>& m2, fmat<
 	return m;
 }
 
-// close namespaces
-	}
-}
+} // namespace math
+
+/// @name Predefined Types
+/// @{
+
+/// declare type of 2x2 matrices
+typedef cgv::math::fmat<float, 2, 2> mat2;
+/// declare type of 2x3 matrices used to store camera matrix
+typedef cgv::math::fmat<float, 2, 3> mat23;
+/// declare type of 3x3 matrices
+typedef cgv::math::fmat<float, 3, 3> mat3;
+/// declare type of 4x4 matrices
+typedef cgv::math::fmat<float, 4, 4> mat4;
+/// declare type of 3x4 matrices which are often used to store a pose
+typedef cgv::math::fmat<float, 3, 4> mat34;
+
+/// declare type of 2x2 matrices
+typedef cgv::math::fmat<double, 2, 2> dmat2;
+/// declare type of 3x3 matrices
+typedef cgv::math::fmat<double, 3, 3> dmat3;
+/// declare type of 4x4 matrices
+typedef cgv::math::fmat<double, 4, 4> dmat4;
+/// declare type of 3x4 matrices which are often used to store a pose
+typedef cgv::math::fmat<double, 3, 4> dmat34;
+
+/// @}
+
+}// namespace cgv

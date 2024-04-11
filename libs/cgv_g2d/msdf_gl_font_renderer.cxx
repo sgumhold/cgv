@@ -83,21 +83,6 @@ bool msdf_gl_font_renderer::enable(cgv::render::context& ctx, const ivec2& viewp
 		prog.set_uniform(ctx, "pixel_range", font.get_pixel_range());
 
 		style.apply(ctx, prog);
-
-		use_subpixel_rendering = style.enable_subpixel_rendering;
-		if(use_subpixel_rendering) {
-			glGetBooleanv(GL_BLEND, &blending_was_enabled);
-			glGetIntegerv(GL_BLEND_SRC_RGB, &blend_src_color);
-			glGetIntegerv(GL_BLEND_SRC_ALPHA, &blend_src_alpha);
-			glGetIntegerv(GL_BLEND_DST_RGB, &blend_dst_color);
-			glGetIntegerv(GL_BLEND_DST_ALPHA, &blend_dst_alpha);
-
-			if(!blending_was_enabled)
-				glEnable(GL_BLEND);
-
-			glBlendFuncSeparate(GL_CONSTANT_COLOR, GL_ONE_MINUS_SRC_COLOR, GL_ONE, GL_ONE_MINUS_SRC_ALPHA);
-			glBlendColor(style.fill_color.R(), style.fill_color.G(), style.fill_color.B(), 1.0f);
-		}
 	}
 
 	return res;
@@ -112,21 +97,6 @@ bool msdf_gl_font_renderer::enable(cgv::render::context& ctx, const ivec2& viewp
 		prog.set_uniform(ctx, "pixel_range", tg.get_msdf_font().get_pixel_range());
 
 		style.apply(ctx, prog);
-
-		use_subpixel_rendering = style.enable_subpixel_rendering;
-		if(use_subpixel_rendering) {
-			glGetBooleanv(GL_BLEND, &blending_was_enabled);
-			glGetIntegerv(GL_BLEND_SRC_RGB, &blend_src_color);
-			glGetIntegerv(GL_BLEND_SRC_ALPHA, &blend_src_alpha);
-			glGetIntegerv(GL_BLEND_DST_RGB, &blend_dst_color);
-			glGetIntegerv(GL_BLEND_DST_ALPHA, &blend_dst_alpha);
-
-			if(!blending_was_enabled)
-				glEnable(GL_BLEND);
-
-			glBlendFuncSeparate(GL_CONSTANT_COLOR, GL_ONE_MINUS_SRC_COLOR, GL_ONE, GL_ONE_MINUS_SRC_ALPHA);
-			glBlendColor(style.fill_color.R(), style.fill_color.G(), style.fill_color.B(), 1.0f);
-		}
 	}
 	return res;
 }
@@ -134,40 +104,20 @@ bool msdf_gl_font_renderer::enable(cgv::render::context& ctx, const ivec2& viewp
 bool msdf_gl_font_renderer::disable(cgv::render::context& ctx, msdf_font& font) {
 	bool res = prog.disable(ctx);
 	res &= font.disable(ctx);
-
-	if(res) {
-		if(use_subpixel_rendering) {
-			if(!blending_was_enabled)
-				glDisable(GL_BLEND);
-
-			glBlendFuncSeparate(blend_src_color, blend_dst_color, blend_src_alpha, blend_dst_alpha);
-		}
-	}
-
 	return res;
 }
 
 bool msdf_gl_font_renderer::disable(cgv::render::context& ctx, msdf_text_geometry& tg) {
 	bool res = prog.disable(ctx);
 	tg.disable(ctx);
-
-	if(res) {
-		if(use_subpixel_rendering) {
-			if(!blending_was_enabled)
-				glDisable(GL_BLEND);
-
-			glBlendFuncSeparate(blend_src_color, blend_dst_color, blend_src_alpha, blend_dst_alpha);
-		}
-	}
-
 	return res;
 }
 
-void msdf_gl_font_renderer::draw(cgv::render::context& ctx, msdf_font& font, const std::string& text, cgv::render::vec2 position, cgv::render::TextAlignment alignment, rgba color, float scale) {
+void msdf_gl_font_renderer::draw(cgv::render::context& ctx, msdf_font& font, const std::string& text, vec2 position, cgv::render::TextAlignment alignment, rgba color, float scale) {
 	if(text.empty())
 		return;
 
-	std::vector<cgv::render::vec4> vertices = font.create_vertex_data(text);
+	std::vector<vec4> vertices = font.create_vertex_data(text);
 	cgv::g2d::msdf_text_geometry::text_info text_info(text, position, vec2(font.compute_length(text), scale), alignment, 0.0f, color);
 
 	if(geometry_buffer.create_or_resize(ctx, vertices)) {
@@ -195,7 +145,7 @@ bool msdf_gl_font_renderer::render(cgv::render::context& ctx, const ivec2& viewp
 	return disable(ctx, tg);
 }
 
-bool msdf_gl_font_renderer::render(cgv::render::context& ctx, const ivec2& viewport_resolution, msdf_font& font, const std::string& text, const text2d_style& style, cgv::render::vec2 position, cgv::render::TextAlignment alignment, float scale) {
+bool msdf_gl_font_renderer::render(cgv::render::context& ctx, const ivec2& viewport_resolution, msdf_font& font, const std::string& text, const text2d_style& style, vec2 position, cgv::render::TextAlignment alignment, float scale) {
 	if(!enable(ctx, viewport_resolution, font, style))
 	   return false;
 	draw(ctx, font, text, position, alignment, scale);

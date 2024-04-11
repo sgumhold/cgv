@@ -10,9 +10,9 @@ namespace stream_vis {
 	}
 	void view2d_overlay::update_views()
 	{
-		ivec2 os = get_overlay_size();
+		cgv::ivec2 os = get_rectangle().size;
 		for (const auto& p : plots) {
-			vec2 pixel_scales;
+			cgv::vec2 pixel_scales;
 			for (int ai = 0; ai < 2; ++ai)
 				pixel_scales[ai] = p.second->get_domain_config_ptr()->axis_configs[ai].extent * zoom_factor * os[ai];
 			if (handler)
@@ -45,7 +45,7 @@ namespace stream_vis {
 	}
 	void view2d_overlay::set_modelview_projection(cgv::render::context& ctx)
 	{
-		ivec2 os = get_overlay_size();
+		cgv::ivec2 os = get_rectangle().size;
 		float aspect = (float)os[0]/ os[1];
 		float extent_x = 0.5f * view_width / zoom_factor;
 		float extent_y = extent_x / aspect;
@@ -69,16 +69,16 @@ namespace stream_vis {
 			{
 				int x_gl = me.get_x();
 				int y_gl = get_context()->get_height() - 1 - me.get_y();
-				vec3 p = get_context()->get_model_point(dvec3(me.get_x(), y_gl, 0.0f), MPW);
+				cgv::vec3 p = get_context()->get_model_point(cgv::dvec3(me.get_x(), y_gl, 0.0f), MPW);
 				//std::cout << "x=" << x_gl << ", y=" << y_gl << " -> " << p << std::endl;
 				int pi = -1;
 				for (int pj = 0; pj < plots.size(); ++pj) {
 					const auto& pp = plots[pj];
-					vec2 e = vec2::from_vec(pp.second->get_extent());
-					vec2 c = (vec2&)pp.second->get_center();
-					box2 b(c - 0.5f * e, c + 0.5f * e);
+					cgv::vec2 e = cgv::vec2::from_vec(pp.second->get_extent());
+					cgv::vec2 c = (cgv::vec2&)pp.second->get_center();
+					cgv::box2 b(c - 0.5f * e, c + 0.5f * e);
 					//std::cout << pi << " | " << pp.second->get_domain().get_min_pnt() << " -> " << pp.second->get_domain().get_max_pnt() << std::endl;
-					if (b.inside((const vec2&)(p)))
+					if (b.inside((const cgv::vec2&)(p)))
 						pi = pj;
 				}
 				if (current_pi != pi) {
@@ -91,7 +91,7 @@ namespace stream_vis {
 			if (me.get_button_state() == cgv::gui::MB_RIGHT_BUTTON) {
 				int dx = me.get_x() - pan_start_x;
 				int dy = me.get_y() - pan_start_y;
-				ivec2 os = get_overlay_size();
+				cgv::ivec2 os = get_rectangle().size;
 				float aspect = (float)os[0]/os[1];
 				pan_pos(0) = pan_start_pos(0) - (float)dx/os[0] * view_width / zoom_factor;
 				pan_pos(1) = pan_start_pos(1) + (float)dy/os[1] * view_width / zoom_factor / aspect;

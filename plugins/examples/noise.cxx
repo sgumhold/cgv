@@ -64,7 +64,7 @@ public:
 			"Image Files (bmp,png,jpg,tif):*.bmp;*.png;*.jpg;*.tif|All Files:*.*");
 		if (file_name.empty())
 			return;
-		std::vector<rgba8> data(w*h);
+		std::vector<cgv::rgba8> data(w*h);
 		create_texture_data(data);
 		cgv::data::data_format df(w, h, cgv::type::info::TI_UINT8, cgv::data::CF_RGBA);
 		cgv::data::data_view dv(&df, &data.front());
@@ -73,9 +73,9 @@ public:
 	}
 	void copy()
 	{
-		std::vector<rgba8> data(w*h);
+		std::vector<cgv::rgba8> data(w*h);
 		create_texture_data(data);
-		std::vector<rgb8> rgb_data(w*h);
+		std::vector<cgv::rgb8> rgb_data(w*h);
 		for (size_t i = 0; i < data.size(); ++i)
 			rgb_data[i] = data[i];
 		cgv::os::copy_rgb_image_to_clipboard(w, h, &rgb_data.front()[0]);
@@ -98,8 +98,8 @@ public:
 	}
 	void draw_quad(context& ctx)
 	{
-		const vec2 P[4] = { vec2(-1,1), vec2(-1,-1), vec2(1,1), vec2(1,-1) };
-		const vec2 T[4] = { vec2(0,1), vec2(0.0f,0.0f), vec2(1,1), vec2(1.0f,0.0f) };
+		const cgv::vec2 P[4] = { cgv::vec2(-1,1), cgv::vec2(-1,-1), cgv::vec2(1,1), cgv::vec2(1,-1) };
+		const cgv::vec2 T[4] = { cgv::vec2(0,1), cgv::vec2(0.0f,0.0f), cgv::vec2(1,1), cgv::vec2(1.0f,0.0f) };
 		attribute_array_binding::set_global_attribute_array(ctx, 0, P, 4);
 		attribute_array_binding::enable_global_array(ctx, 0);
 		attribute_array_binding::set_global_attribute_array(ctx, 3, T, 4);
@@ -108,7 +108,7 @@ public:
 		attribute_array_binding::disable_global_array(ctx, 3);
 		attribute_array_binding::disable_global_array(ctx, 0);
 	}
-	void create_texture_data(std::vector<rgba8>& data)
+	void create_texture_data(std::vector<cgv::rgba8>& data)
 	{
 		std::default_random_engine g;
 		std::uniform_int_distribution<cgv::type::uint32_type> d(0,255);
@@ -127,7 +127,7 @@ public:
 		if (!recreate_texture)
 			return;
 		
-		std::vector<rgba8> data(w*h);
+		std::vector<cgv::rgba8> data(w*h);
 		create_texture_data(data);
 		cgv::data::data_format df(w, h, cgv::type::info::TI_UINT8, cgv::data::CF_RGBA);
 		cgv::data::data_view dv(&df, &data.front());
@@ -140,7 +140,7 @@ public:
 		ctx.push_modelview_matrix();
 		ctx.mul_modelview_matrix(cgv::math::scale4<double>(double(w) / h, -1.0, 1.0));
 		ctx.ref_default_shader_program(true).enable(ctx);
-		ctx.set_color(rgb(1, 1, 1));
+		ctx.set_color(cgv::rgb(1, 1, 1));
 			T.enable(ctx);
 				draw_quad(ctx);
 			T.disable(ctx);

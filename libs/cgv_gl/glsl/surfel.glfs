@@ -1,4 +1,4 @@
-#version 150
+#version 330
 
 uniform vec4 halo_color;
 uniform float halo_color_strength = 0.5;
@@ -14,6 +14,9 @@ in float percentual_core_size;
 in float percentual_point_size;
 
 flat in int  side;
+
+layout(location = 1) out vec4 frag_position;
+layout(location = 2) out vec3 frag_normal;
 
 //***** begin interface of fragment.glfs ***********************************
 uniform float gamma = 2.2;
@@ -39,6 +42,8 @@ void main()
 	if (percentual_radial_position > percentual_splat_size)
 		discard;
 
+	frag_position = vec4(position, 1.0);
+	frag_normal = normal;
 	finish_fragment(compute_blended_color_with_halo(
 		percentual_radial_position, compute_reflected_appearance_texture(position, normal, uv, color_fs, side), percentual_core_size,
 		vec4(mix(color_fs.rgb, halo_color.rgb, halo_color_strength), halo_color.a), percentual_point_size, percentual_blend_width

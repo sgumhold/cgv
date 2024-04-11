@@ -2,10 +2,10 @@
 
 #include "time_series.h"
 
-#include <cgv/render/render_types.h>
 #include <cgv/os/mutex.h>
 #include <cgv/type/info/type_id.h>
 #include <cgv/math/geo_transform.h>
+#include <cgv/media/color.h>
 
 #include "lib_begin.h"
 
@@ -41,7 +41,7 @@ namespace stream_vis {
 		NMM_ATTRIBUTE_MAX
 	};
 	/// interface for all time series used in the streaming visualization library
-	class CGV_API streaming_time_series : public cgv::render::render_types
+	class CGV_API streaming_time_series
 	{
 	protected:
 		/// mutex used to support parallel appending of new values
@@ -63,7 +63,7 @@ namespace stream_vis {
 		/// for 2D or 3D vector valued time series the transformation
 		TransformType transform;
 		/// origin used for transformation (geodetic reference point)
-		dvec3 transform_origin;
+		cgv::dvec3 transform_origin;
 		/// whether NAN-values are used; defaults to false
 		bool uses_nan;
 		/// float encoding of nan value; defaults to std::numeric_limits<float>::quiet_NaN()
@@ -73,7 +73,7 @@ namespace stream_vis {
 		/// store index of first visible sample
 		size_t first_visible_sample_index;
 		/// default color
-		rgb default_color;
+		cgv::rgb default_color;
 		/// default opacity
 		float default_opacity;
 		/// default size
@@ -264,8 +264,8 @@ namespace stream_vis {
 			}
 			switch (transform) {
 			case TT_GEODETIC2ENU_WGS84: {
-				dvec3 pos_geod = dvec3(pos[0], pos[1], N == 2 ? 0.0 : pos[2]);
-				dvec3 pos_ENU = cgv::math::ENU_from_geodetic(pos_geod, transform_origin);
+				cgv::dvec3 pos_geod = cgv::dvec3(pos[0], pos[1], N == 2 ? 0.0 : pos[2]);
+				cgv::dvec3 pos_ENU = cgv::math::ENU_from_geodetic(pos_geod, transform_origin);
 				pos = cgv::math::fvec<double, N>(N, &pos_ENU[0]);
 			}
 				break;

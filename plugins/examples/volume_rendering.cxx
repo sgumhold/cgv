@@ -13,15 +13,10 @@
 #include <cgv_gl/gl/gl.h>
 #include <cgv_gl/gl/gl_tools.h>
 
-namespace cgv {
-	namespace reflect {
-	}
-}
-
-volume_viewer::volume_viewer() : application_plugin("Volume Viewer")
+volume_viewer::volume_viewer() : application_plugin("Volume Viewer"), depth_tex("[D]")
 {
 	// setup volume bounding box as unit cube centered around origin
-	volume_bounding_box = box3(vec3(-0.5f), vec3(0.5f));
+	volume_bounding_box = cgv::box3(cgv::vec3(-0.5f), cgv::vec3(0.5f));
 
 	// configure texture format, filtering and wrapping (no context necessary)
 	volume_tex = cgv::render::texture("flt32[R]");
@@ -32,21 +27,27 @@ volume_viewer::volume_viewer() : application_plugin("Volume Viewer")
 	volume_tex.set_wrap_r(cgv::render::TW_CLAMP_TO_BORDER);
 	volume_tex.set_border_color(0.0f, 0.0f, 0.0f, 0.0f);
 
-	vstyle.enable_depth_test = false;
+	// an extra depth texture is used to enable mixing of opaque geometry and the volume
+	depth_tex.set_min_filter(cgv::render::TF_NEAREST);
+	depth_tex.set_mag_filter(cgv::render::TF_NEAREST);
+
+	vstyle.enable_depth_test = true;
 
 	show_box = true;
 	
 #ifdef _DEBUG
-	vres = uvec3(32);
+	vres = cgv::uvec3(32);
 #else
-	vres = uvec3(128);
+	vres = cgv::uvec3(128);
 #endif
-	vspacing = vec3(1.0f);
+	vspacing = cgv::vec3(1.0f);
 
 	view_ptr = nullptr;
 
 	// instantiate a color map editor as an overlay for this viewer
 	transfer_function_editor_ptr = register_overlay<cgv::app::color_map_editor>("Editor");
+	// make the editor cover the whole width of the window
+	transfer_function_editor_ptr->set_stretch(cgv::app::overlay::StretchOption::SO_HORIZONTAL);
 	transfer_function_editor_ptr->gui_options.show_heading = false;
 	// enable support for editing opacity values
 	transfer_function_editor_ptr->set_opacity_support(true);
@@ -55,6 +56,8 @@ volume_viewer::volume_viewer() : application_plugin("Volume Viewer")
 	
 	// instantiate a color map legend to show the used transfer function
 	transfer_function_legend_ptr = register_overlay<cgv::app::color_map_legend>("Legend");
+	// place the legend in the top left corner
+	transfer_function_legend_ptr->set_alignment(cgv::app::overlay::AlignmentOption::AO_START, cgv::app::overlay::AlignmentOption::AO_END);
 	transfer_function_legend_ptr->set_title("Density");
 }
 
@@ -118,8 +121,8 @@ bool volume_viewer::handle_event(cgv::gui::event& e)
 
 void volume_viewer::on_set(void* member_ptr) 
 {
-	vec3& a = volume_bounding_box.ref_min_pnt();
-	vec3& b = volume_bounding_box.ref_max_pnt();
+	cgv::vec3& a = volume_bounding_box.ref_min_pnt();
+	cgv::vec3& b = volume_bounding_box.ref_max_pnt();
 
 	if (member_ptr == &a[0] ||
 		member_ptr == &a[1] ||
@@ -174,16 +177,31 @@ void volume_viewer::init_frame(cgv::render::context& ctx) {
 				transfer_function_legend_ptr->set_color_map(ctx, transfer_function);
 		}
 	}
+	if (depth_tex.is_created() && (ctx.get_width() != depth_tex.get_width() || ctx.get_height() != depth_tex.get_height()))
+		depth_tex.destruct(ctx);
+
+	if (!depth_tex.is_created())
+		depth_tex.create(ctx, cgv::render::TT_2D, ctx.get_width(), ctx.get_height());
 }
 
-void volume_viewer::draw(cgv::render::context& ctx) 
+void volume_viewer::draw(cgv::render::context& ctx)
 {
 	// default render style for the bounding box
 	static const cgv::render::box_wire_render_style box_rs;
 
 	// render the wireframe bounding box if enabled
-	if(show_box)
+	if (show_box)
 		box_rd.render(ctx, cgv::render::ref_box_wire_renderer(ctx), box_rs);
+
+}
+
+void volume_viewer::after_finish(cgv::render::context & ctx)
+{
+	if (!view_ptr)
+		return;
+
+	// copy the contents of the depth buffer from the opaque geometry into the extra depth texture
+	depth_tex.replace_from_buffer(ctx, 0, 0, 0, 0, ctx.get_width(), ctx.get_height());
 
 	// render the volume
 	auto& vr = cgv::render::ref_volume_renderer(ctx);
@@ -192,8 +210,8 @@ void volume_viewer::draw(cgv::render::context& ctx)
 	vr.set_transfer_function_texture(&transfer_function.ref_texture()); // get the texture from the transfer function color map to transform scalar volume values into RGBA colors
 	// set the volume bounding box and enable transform to automatically place and size the volume to the defined bounds
 	vr.set_bounding_box(volume_bounding_box);
+	vr.set_depth_texture(&depth_tex);
 	vr.transform_to_bounding_box(true);
-
 	vr.render(ctx, 0, 0);
 }
 
@@ -212,8 +230,8 @@ void volume_viewer::create_gui()
 
 	if(begin_tree_node("Bounding Box", volume_bounding_box, false)) {
 		align("/a");
-		vec3& a = volume_bounding_box.ref_min_pnt();
-		vec3& b = volume_bounding_box.ref_max_pnt();
+		cgv::vec3& a = volume_bounding_box.ref_min_pnt();
+		cgv::vec3& b = volume_bounding_box.ref_max_pnt();
 
 		add_member_control(this, "Min X", a.x(), "value_slider", "min=-1;max=1;step=0.05;");
 		add_member_control(this, "Y", a.y(), "value_slider", "min=-1;max=1;step=0.05;");
@@ -256,8 +274,8 @@ void volume_viewer::update_bounding_box() {
 	box_rd.clear();
 	box_rd.add(volume_bounding_box.get_center(), volume_bounding_box.get_extent());
 
-	vec3& a = volume_bounding_box.ref_min_pnt();
-	vec3& b = volume_bounding_box.ref_max_pnt();
+	cgv::vec3& a = volume_bounding_box.ref_min_pnt();
+	cgv::vec3& b = volume_bounding_box.ref_max_pnt();
 
 	update_member(&a.x());
 	update_member(&a.y());
@@ -279,15 +297,15 @@ void volume_viewer::load_transfer_function_preset() {
 	switch(idx) {
 	case 0:
 		// plain white with linear opacity ramp
-		transfer_function.add_color_point(0.0f, rgb(1.0f));
+		transfer_function.add_color_point(0.0f, cgv::rgb(1.0f));
 		transfer_function.add_opacity_point(0.0f, 0.0f);
 		transfer_function.add_opacity_point(1.0f, 1.0f);
 		break;
 	case 1:
 		// blue -> red -> yellow, optimized for example volume
-		transfer_function.add_color_point(0.0f, rgb(0.0f, 0.0f, 1.0f));
-		transfer_function.add_color_point(0.5f, rgb(1.0f, 0.0f, 0.0f));
-		transfer_function.add_color_point(1.0f, rgb(1.0f, 1.0f, 0.0f));
+		transfer_function.add_color_point(0.0f, cgv::rgb(0.0f, 0.0f, 1.0f));
+		transfer_function.add_color_point(0.5f, cgv::rgb(1.0f, 0.0f, 0.0f));
+		transfer_function.add_color_point(1.0f, cgv::rgb(1.0f, 1.0f, 0.0f));
 
 		transfer_function.add_opacity_point(0.05f, 0.0f);
 		transfer_function.add_opacity_point(0.1f, 0.1f);
@@ -303,21 +321,21 @@ void volume_viewer::load_transfer_function_preset() {
 		break;
 	case 2:
 		// optimized for aneurysm.vox
-		transfer_function.add_color_point(0.0f, rgb(1.0f, 1.0f, 1.0f));
-		transfer_function.add_color_point(0.25f, rgb(0.95f, 1.0f, 0.8f));
-		transfer_function.add_color_point(1.0f, rgb(1.0f, 0.4f, 0.333f));
+		transfer_function.add_color_point(0.0f, cgv::rgb(1.0f, 1.0f, 1.0f));
+		transfer_function.add_color_point(0.25f, cgv::rgb(0.95f, 1.0f, 0.8f));
+		transfer_function.add_color_point(1.0f, cgv::rgb(1.0f, 0.4f, 0.333f));
 
 		transfer_function.add_opacity_point(0.1f, 0.0f);
 		transfer_function.add_opacity_point(1.0f, 1.0f);
 		break;
 	case 3:
 		// optimized for head256.vox
-		transfer_function.add_color_point(0.332f, rgb(0.5f, 0.8f, 0.85f));
-		transfer_function.add_color_point(0.349f, rgb(0.85f, 0.5f, 0.85f));
-		transfer_function.add_color_point(0.370f, rgb(0.9f, 0.85f, 0.8f));
-		transfer_function.add_color_point(0.452f, rgb(0.9f, 0.85f, 0.8f));
-		transfer_function.add_color_point(0.715f, rgb(0.9f, 0.85f, 0.8f));
-		transfer_function.add_color_point(1.0f, rgb(1.0f, 0.0f, 0.0f));
+		transfer_function.add_color_point(0.332f, cgv::rgb(0.5f, 0.8f, 0.85f));
+		transfer_function.add_color_point(0.349f, cgv::rgb(0.85f, 0.5f, 0.85f));
+		transfer_function.add_color_point(0.370f, cgv::rgb(0.9f, 0.85f, 0.8f));
+		transfer_function.add_color_point(0.452f, cgv::rgb(0.9f, 0.85f, 0.8f));
+		transfer_function.add_color_point(0.715f, cgv::rgb(0.9f, 0.85f, 0.8f));
+		transfer_function.add_color_point(1.0f, cgv::rgb(1.0f, 0.0f, 0.0f));
 
 		transfer_function.add_opacity_point(0.208f, 0.0f);
 		transfer_function.add_opacity_point(0.22f, 0.17f);
@@ -360,8 +378,8 @@ void volume_viewer::create_volume(cgv::render::context& ctx) {
 	std::mt19937 rng(42);
 	std::uniform_real_distribution<float> distr(0.0f, 1.0f);
 
-	const vec3& a = volume_bounding_box.ref_min_pnt();
-	const vec3& b = volume_bounding_box.ref_max_pnt();
+	const cgv::vec3& a = volume_bounding_box.ref_min_pnt();
+	const cgv::vec3& b = volume_bounding_box.ref_max_pnt();
 
 	// generate a single large sphere in the center of the volume
 	splat_sphere(vol_data, voxel_size, 0.5f*(a + b), 0.5f, 0.75f);
@@ -401,11 +419,11 @@ void volume_viewer::create_volume(cgv::render::context& ctx) {
 void volume_viewer::splat_spheres(std::vector<float>& vol_data, float voxel_size, std::mt19937& rng, size_t n, float radius, float contribution) {
 	std::uniform_real_distribution<float> distr(0.0f, 1.0f);
 
-	const vec3& a = volume_bounding_box.ref_min_pnt();
-	const vec3& b = volume_bounding_box.ref_max_pnt();
+	const cgv::vec3& a = volume_bounding_box.ref_min_pnt();
+	const cgv::vec3& b = volume_bounding_box.ref_max_pnt();
 
 	for(size_t i = 0; i < n; ++i) {
-		vec3 pos;
+		cgv::vec3 pos;
 		pos.x() = cgv::math::lerp(a.x(), b.x(), distr(rng));
 		pos.y() = cgv::math::lerp(a.y(), b.y(), distr(rng));
 		pos.z() = cgv::math::lerp(a.z(), b.z(), distr(rng));
@@ -414,28 +432,28 @@ void volume_viewer::splat_spheres(std::vector<float>& vol_data, float voxel_size
 }
 
 // splats a single sphere of given radius into the volume by adding the contribution value to the voxel cells
-void volume_viewer::splat_sphere(std::vector<float>& vol_data, float voxel_size, const vec3& pos, float radius, float contribution) {
+void volume_viewer::splat_sphere(std::vector<float>& vol_data, float voxel_size, const cgv::vec3& pos, float radius, float contribution) {
 
 	// compute the spheres bounding box
-	box3 box(pos - radius, pos + radius);
+	cgv::box3 box(pos - radius, pos + radius);
 	box.ref_max_pnt() -= 0.005f * voxel_size;
 
 	// get voxel indices of bounding box minimum and maximum
-	ivec3 sidx((box.get_min_pnt() - volume_bounding_box.ref_min_pnt()) / voxel_size);
-	ivec3 eidx((box.get_max_pnt() - volume_bounding_box.ref_min_pnt()) / voxel_size);
+	cgv::ivec3 sidx((box.get_min_pnt() - volume_bounding_box.ref_min_pnt()) / voxel_size);
+	cgv::ivec3 eidx((box.get_max_pnt() - volume_bounding_box.ref_min_pnt()) / voxel_size);
 
-	const ivec3 res = static_cast<ivec3>(vres);
+	const cgv::ivec3 res = static_cast<cgv::ivec3>(vres);
 
 	// make sure to stay inside the volume
-	sidx = cgv::math::clamp(sidx, ivec3(0), res - 1);
-	eidx = cgv::math::clamp(eidx, ivec3(0), res - 1);
+	sidx = cgv::math::clamp(sidx, cgv::ivec3(0), res - 1);
+	eidx = cgv::math::clamp(eidx, cgv::ivec3(0), res - 1);
 
 	// for each covered voxel...
 	for(int z = sidx.z(); z <= eidx.z(); ++z) {
 		for(int y = sidx.y(); y <= eidx.y(); ++y) {
 			for(int x = sidx.x(); x <= eidx.x(); ++x) {
 				// ...get its center location in world space
-				vec3 voxel_pos(
+				cgv::vec3 voxel_pos(
 					static_cast<float>(x),
 					static_cast<float>(y),
 					static_cast<float>(z)
@@ -484,8 +502,8 @@ void volume_viewer::load_volume_from_file(const std::string& file_name) {
 		return;
 	}
 
-	ivec3 resolution(-1);
-	vec3 spacing(1.0f);
+	cgv::ivec3 resolution(-1);
+	cgv::vec3 spacing(1.0f);
 
 	std::vector<cgv::utils::line> lines;
 	cgv::utils::split_to_lines(header_content, lines);
@@ -595,18 +613,18 @@ void volume_viewer::load_volume_from_file(const std::string& file_name) {
 void volume_viewer::fit_to_resolution() {
 
 	unsigned max_resolution = max_value(vres);
-	vec3 scaling = static_cast<vec3>(vres) / static_cast<float>(max_resolution);
+	cgv::vec3 scaling = static_cast<cgv::vec3>(vres) / static_cast<float>(max_resolution);
 
-	volume_bounding_box.ref_min_pnt() = vec3(-0.5f*scaling);
-	volume_bounding_box.ref_max_pnt() = vec3(+0.5f*scaling);
+	volume_bounding_box.ref_min_pnt() = cgv::vec3(-0.5f*scaling);
+	volume_bounding_box.ref_max_pnt() = cgv::vec3(+0.5f*scaling);
 
 	update_bounding_box();
 }
 
 void volume_viewer::fit_to_spacing() {
 
-	volume_bounding_box.ref_min_pnt() = vec3(-0.5f*vspacing);
-	volume_bounding_box.ref_max_pnt() = vec3(+0.5f*vspacing);
+	volume_bounding_box.ref_min_pnt() = cgv::vec3(-0.5f*vspacing);
+	volume_bounding_box.ref_max_pnt() = cgv::vec3(+0.5f*vspacing);
 	
 	update_bounding_box();
 }
@@ -614,11 +632,11 @@ void volume_viewer::fit_to_spacing() {
 void volume_viewer::fit_to_resolution_and_spacing() {
 
 	unsigned max_resolution = max_value(vres);
-	vec3 scaling = static_cast<vec3>(vres) / static_cast<float>(max_resolution);
+	cgv::vec3 scaling = static_cast<cgv::vec3>(vres) / static_cast<float>(max_resolution);
 	scaling *= vspacing;
 
-	volume_bounding_box.ref_min_pnt() = vec3(-0.5f*scaling);
-	volume_bounding_box.ref_max_pnt() = vec3(+0.5f*scaling);
+	volume_bounding_box.ref_min_pnt() = cgv::vec3(-0.5f*scaling);
+	volume_bounding_box.ref_max_pnt() = cgv::vec3(+0.5f*scaling);
 
 	update_bounding_box();
 }
@@ -640,4 +658,4 @@ void volume_viewer::create_histogram() {
 
 #include <cgv/base/register.h>
 
-cgv::base::factory_registration<volume_viewer> volume_viewer_fac("New/Render/Volume Rendering");
+cgv::base::factory_registration<volume_viewer> volume_viewer_fac("Volume Rendering", "shortcut='Ctrl-Alt-V';menu_text='New/Render/Volume Rendering'", true);

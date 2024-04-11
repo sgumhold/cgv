@@ -16,7 +16,7 @@ rgbd_point_renderer::rgbd_point_renderer() : distortion_tex("flt32[R,G]")
 {
 	distortion_tex.set_mag_filter(cgv::render::TF_NEAREST);
 }
-void rgbd_point_renderer::configure_invalid_color_handling(bool discard, const rgba& color)
+void rgbd_point_renderer::configure_invalid_color_handling(bool discard, const cgv::rgba& color)
 {
 	discard_invalid_color_points = discard;
 	invalid_color = color;

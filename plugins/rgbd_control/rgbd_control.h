@@ -32,6 +32,10 @@ class rgbd_control :
 	public cgv::pointcloud::point_cloud_provider
 {
 public:
+	using vec2 = cgv::vec2;
+	using vec3 = cgv::vec3;
+	using ivec3 = cgv::ivec3;
+
 	enum VisMode { VM_COLOR, VM_DEPTH, VM_INFRARED, VM_WARPED };
 	enum DeviceMode { DM_DETACHED, DM_PROTOCOL, DM_DEVICE };
 	///
@@ -108,9 +112,9 @@ public:
 	std::vector<rgba8> C, C2;
 
 	/// mesh
-	std::vector<cgv::render::render_types::ivec3> M_TRIANGLES;
-	std::vector<cgv::render::render_types::vec3> M_POINTS;
-	std::vector<cgv::render::render_types::vec2> M_UV;
+	std::vector<cgv::ivec3> M_TRIANGLES;
+	std::vector<cgv::vec3> M_POINTS;
+	std::vector<cgv::vec2> M_UV;
 
 	/// processing parameters
 	bool remap_color;

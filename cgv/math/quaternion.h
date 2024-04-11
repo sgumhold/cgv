@@ -358,6 +358,16 @@ quaternion<T> operator * (const T& s, const quaternion<T>& v)
 	quaternion<T> r = v; r *= s; return r;
 }
 
+} // namespace math
 
-	}
-}
+/// @name Prdefined Types
+/// @{
+
+/// declare type of quaternion
+typedef cgv::math::quaternion<float> quat;
+/// declare type of double quaternion
+typedef cgv::math::quaternion<double> dquat;
+
+/// @}
+
+}// namespace cgv

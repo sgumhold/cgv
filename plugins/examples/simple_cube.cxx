@@ -44,7 +44,7 @@ public:
 	/// initialize rotation angle
 	simple_cube() : toggle(false), angle(0), speed(90), rec_depth(4), animate(true), resolution(25), shp(CUBE)
 	{
-		material.set_diffuse_reflectance(rgb(0.7f, 0.2f, 0.4f));
+		material.set_diffuse_reflectance(cgv::rgb(0.7f, 0.2f, 0.4f));
 		connect(get_animation_trigger().shoot, this, &simple_cube::timer_event);
 	}
 	/// 
@@ -159,7 +159,7 @@ public:
 		ctx.set_material(material);
 		ctx.push_modelview_matrix();
 		ctx.mul_modelview_matrix(cgv::math::rotate4<double>(angle, 0, 1, 0)*cgv::math::scale4<double>(0.5, 0.5, 0.5));
-		ctx.set_color(rgb(0, 1, 0.2f));
+		ctx.set_color(cgv::rgb(0, 1, 0.2f));
 		draw_cube_tree(ctx, 0, 4);
 		ctx.pop_modelview_matrix();
 		ctx.ref_surface_shader_program().disable(ctx);

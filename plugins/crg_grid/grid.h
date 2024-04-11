@@ -18,7 +18,7 @@ protected:
 	cgv::render::view* view_ptr;
 	int minX,maxX,minZ,maxZ;
 	void render_grid_lines(float alpha);
-	vec3 z_axis;
+	cgv::vec3 z_axis;
 	bool show_grid;
 	bool show_lines;
 	bool adaptive_grid;

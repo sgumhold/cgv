@@ -41,9 +41,9 @@ namespace rgbd {
 		bool geometry_less_rendering = true;
 		bool lookup_color = true;
 		bool discard_invalid_color_points = false;
-		rgba invalid_color = rgba(1, 0, 1, 1);
+		cgv::rgba invalid_color = cgv::rgba(1, 0, 1, 1);
 		// cpu and gpu storage of undistortion map
-		std::vector<vec2> distortion_map;
+		std::vector<cgv::vec2> distortion_map;
 		cgv::render::texture distortion_tex;
 		// internal renderer functions
 		void update_defines(cgv::render::shader_define_map& defines);
@@ -51,7 +51,7 @@ namespace rgbd {
 	public:
 		rgbd_point_renderer();
 		// configuration functions
-		void configure_invalid_color_handling(bool discard, const rgba& color);
+		void configure_invalid_color_handling(bool discard, const cgv::rgba& color);
 		void set_geometry_less_rendering(bool active, GeometryLessMode mode = GLM_VERTEX);
 		bool do_geometry_less_rendering() const;
 		void set_color_lookup(bool active);

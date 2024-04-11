@@ -43,6 +43,11 @@ mat3 get_inverse_normal_matrix();
 #define ISOSURFACE_MODE 0
 #define ISOSURFACE_COLOR_MODE 0
 
+// 0 - Disabled
+// 1 - Opaque
+// 2 - Transparent
+#define SLICE_MODE 0
+
 // automatic defines
 #define TRANSFER_FUNCTION_SAMPLER_DIMENSIONS 1
 
@@ -77,12 +82,12 @@ layout (binding = 3) uniform sampler3D gradient_tex;
 layout (binding = 4) uniform sampler2D depth_tex;
 #endif
 
-uniform vec2 viewport_dims;
-uniform vec2 noise_offset;
+uniform vec2  viewport_dims;
+uniform vec2  noise_offset;
 uniform float scale_adjustment_factor;
 
-uniform bool light_local_to_eye;
-uniform vec3 light_direction;
+uniform bool  light_local_to_eye;
+uniform vec3  light_direction;
 uniform float ambient_strength;
 uniform float diffuse_strength;
 uniform float specular_strength;
@@ -92,10 +97,14 @@ uniform float specular_color_mix;
 uniform float gradient_lambda;
 
 uniform float isovalue;
-uniform vec3 isosurface_color;
+uniform vec3  isosurface_color;
 
-uniform vec3 clip_box_min;
-uniform vec3 clip_box_max;
+uniform int   slice_axis;
+uniform float slice_coordinate;
+uniform float slice_opacity;
+
+uniform vec3  clip_box_min;
+uniform vec3  clip_box_max;
 
 // in/out parameters
 in vec3 position_object;
@@ -382,6 +391,9 @@ void main() {
 	// initial color with full transparency for front-to-back blending
 	vec4 color = vec4(0.0, 0.0, 0.0, 1.0);
 	// step count (needed later for averaging the density if using average compositing mode)
+#if SLICE_MODE > 0
+	bool initial_side_slice = mix(clip_box_min, clip_box_max, ray.origin)[slice_axis] > slice_coordinate;
+#endif
 	int istep = 0;
 	for(istep; istep < NUM_STEPS; ++istep) {
 		float t = istep * step_size;
@@ -411,7 +423,6 @@ void main() {
 
 		// apply the transfer function
 		vec4 color_in = apply_transfer_function(density);
-
 	#if ISOSURFACE_MODE > 0
 		#if ISOSURFACE_MODE == 1
 			bool is_isosurface = density >= isovalue;
@@ -446,7 +457,6 @@ void main() {
 	#if ENABLE_GRADIENT_MODULATION == 1
 		opacity_modulation = pow(gradient_length, gradient_lambda);
 	#endif
-
 	#if ISOSURFACE_MODE > 0
 		if(is_isosurface) {
 			#if ISOSURFACE_COLOR_MODE == 0
@@ -463,22 +473,35 @@ void main() {
 			break;
 		}
 	#endif
-
+	#if SLICE_MODE > 0
+		bool at_slice = ((uvw[slice_axis] > slice_coordinate) != initial_side_slice);
+		if (at_slice) {
+	#if SLICE_MODE == 1
+			color_in.a = 1.0;
+	#else
+			color_in.a = slice_opacity;
+	#endif
+			initial_side_slice = !initial_side_slice;
+		}
+		else {
+	#endif
 	#if ENABLE_LIGHTING == 1
-		color_in.rgb = apply_lighting(color_in.rgb, illumination);
+			color_in.rgb = apply_lighting(color_in.rgb, illumination);
 	#endif
 
-		// apply opacity modulation as determined by gradient length if enabled
-		color_in.a *= opacity_modulation;
+			// apply opacity modulation as determined by gradient length if enabled
+			color_in.a *= opacity_modulation;
 
-		color_in.a = -exp(-step_size * scale_adjustment_factor * color_in.a) + 1.0;
-	
+			color_in.a = -exp(-step_size * scale_adjustment_factor * color_in.a) + 1.0;
+	#if SLICE_MODE > 0
+		}
+	#endif
 		// premultiply alpha
 		color_in.rgb *= color_in.a;
 
 		// blend front-to-back
-		color.rgb = color.a*color_in.rgb + color.rgb;
-		color.a = (1.0 - color_in.a)*color.a;
+		color.rgb += color.a*color_in.rgb;
+		color.a *= (1.0 - color_in.a);
 
 		// early termination when transparency threshold is reached
 	#if ENABLE_ISOSURFACE == 0
@@ -487,7 +510,11 @@ void main() {
 			break;
 		}
 	#endif
-
+	#if SLICE_MODE == 1
+		if (at_slice) {
+			break;
+		}
+	#endif
 #endif
 	}
 

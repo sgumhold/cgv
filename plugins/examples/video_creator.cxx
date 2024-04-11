@@ -126,8 +126,10 @@ public:
 	{
 		if (!recording || ctx.get_render_pass() != RP_MAIN)
 			return;
-		glReadPixels(0,0,df.get_width(), df.get_height(),
-						 GL_RGB,GL_UNSIGNED_BYTE,dv.get_ptr<unsigned char>());
+		glReadPixels(
+			0, 0, (GLsizei)df.get_width(), (GLsizei)df.get_height(),
+			GL_RGB,GL_UNSIGNED_BYTE, dv.get_ptr<unsigned char>()
+		);
 		if (writer.write_frame(dv)) {
 			if (++frame_index % 100 == 0)
 				std::cout << "wrote " << frame_index << " frames" << std::endl;

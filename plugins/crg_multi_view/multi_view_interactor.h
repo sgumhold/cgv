@@ -14,14 +14,14 @@
 #include "lib_begin.h"
 
 /** for each tracker of a user, we store additional information*/
-struct head_tracking_info : public cgv::render::render_types
+struct head_tracking_info
 {
 	/// pointer to vr_kit to which the tracker is attached
 	void* kit_handle;
 	/// controller index of tracker
 	int controller_index;
 	/// position of left (index 0) and right (index 1) eye in local coordinate system of tracker
-	vec3 local_eye_position[2];
+	cgv::vec3 local_eye_position[2];
 };
 
 enum MultiViewMode
@@ -36,6 +36,11 @@ enum MultiViewMode
 class CGV_API multi_view_interactor : public vr_view_interactor 
 {
 protected:
+	using vec2 = cgv::vec2;
+	using vec3 = cgv::vec3;
+	using mat4 = cgv::mat4;
+	using quat = cgv::quat;
+
 	void* last_kit_handle;
 	///
 	MultiViewMode multi_view_mode;

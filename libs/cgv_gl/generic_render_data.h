@@ -1,7 +1,6 @@
 #pragma once
 
 #include <cgv/render/context.h>
-#include <cgv/render/render_types.h>
 #include <cgv/render/shader_program.h>
 #include <cgv/render/attribute_array_binding.h>
 
@@ -79,7 +78,7 @@ namespace render {
 /// forward declaration to give generic renderer access to protected members
 class generic_renderer;
 
-class generic_render_data : public render_types {
+class generic_render_data {
 	friend class generic_renderer;
 	friend class cgv::g2d::generic_2d_renderer;
 private:
@@ -215,6 +214,10 @@ public:
 			else return idx.size();
 		};
 
+		bool empty() const {
+			return render_count() == 0;
+		}
+
 		void clear() {
 			position.clear();
 			color.clear();
@@ -249,6 +252,9 @@ public:\
 	size_t render_count() const {\
 		if(idx.empty()) return GRD_GET_FIRST_PAIR(GRD_CALL_SIZE_FUNC, __VA_ARGS__)\
 		else return idx.size();\
+	}\
+	bool empty() const {\
+		return render_count() == 0;\
 	}\
 	void clear() {\
 		idx.clear();\

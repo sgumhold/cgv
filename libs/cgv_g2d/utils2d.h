@@ -1,7 +1,5 @@
 #pragma once
 
-#include <cgv/render/render_types.h>
-
 #include "trect.h"
 
 namespace cgv {
@@ -29,10 +27,10 @@ enum class Origin {
 /// @param viewport_size The viewport size in pixel.
 /// @param origin The viewport origin setting.
 /// @return The transformed mouse position.
-inline cgv::render::ivec2 get_transformed_mouse_pos(const cgv::render::ivec2& mouse_pos, const cgv::render::ivec2& viewport_size, Origin origin = Origin::kBottomLeft) {
+inline ivec2 get_transformed_mouse_pos(const ivec2& mouse_pos, const ivec2& viewport_size, Origin origin = Origin::kBottomLeft) {
 
 	if(origin == Origin::kBottomLeft)
-		return cgv::render::ivec2(mouse_pos.x(), viewport_size.y() - mouse_pos.y() - 1);
+		return ivec2(mouse_pos.x(), viewport_size.y() - mouse_pos.y() - 1);
 	else
 		return mouse_pos;
 }
@@ -45,7 +43,7 @@ inline cgv::render::ivec2 get_transformed_mouse_pos(const cgv::render::ivec2& mo
 /// @param container The reference container rect.
 /// @param origin The viewport origin setting.
 /// @return The transformed mouse position.
-inline cgv::render::ivec2 get_local_mouse_pos(const cgv::render::ivec2& mouse_pos, const cgv::render::ivec2& viewport_size, const cgv::g2d::irect& container, Origin origin = Origin::kBottomLeft) {
+inline ivec2 get_local_mouse_pos(const ivec2& mouse_pos, const ivec2& viewport_size, const cgv::g2d::irect& container, Origin origin = Origin::kBottomLeft) {
 
 	return get_transformed_mouse_pos(mouse_pos, viewport_size, origin) - container.position;
 }

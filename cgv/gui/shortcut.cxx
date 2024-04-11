@@ -118,7 +118,7 @@ bool shortcut::stream_in(std::istream& is)
 			break;
 		bool do_not_extend_token = false;
 		if (token.empty()) {
-			switch (c) {
+			switch ((unsigned char)c) {
 			case '#' :
 			case '1' :
 			case '2' :

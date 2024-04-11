@@ -22,6 +22,18 @@ class vr_lab_test :
 	public cgv::gui::provider,
 	public vr::vr_tool
 {
+	using vec3 = cgv::vec3;
+	using vec4 = cgv::vec4;
+	using mat34 = cgv::mat34;
+	using mat4 = cgv::mat4;
+	using quat = cgv::quat;
+	using rgb = cgv::rgb;
+	using rgba = cgv::rgba;
+
+	vr::vr_camera* cam_ptr = 0;
+	vr::CameraState cam_state = vr::CS_UNINITIALIZED;
+	bool cam_on = false;
+
 	cgv::render::sphere_render_style srs;
 	cgv::render::cone_render_style rcrs;
 	/// label index to show statistics
@@ -119,6 +131,20 @@ public:
 	{
 		if (member_ptr == &stats_bgclr && li_stats != -1)
 			get_scene_ptr()->update_label_background_color(li_stats, stats_bgclr);
+		if (cam_ptr && member_ptr == &cam_on) {
+			if (cam_on) {
+				if (cam_ptr->get_state() != vr::CS_STARTED)
+					cam_ptr->start();
+			}
+			else {
+				if (cam_ptr->get_state() == vr::CS_STARTED)
+					cam_ptr->stop();
+			}
+			cam_state = cam_ptr->get_state();
+			update_member(&cam_state);
+		}
+		if (cam_ptr->start())
+			std::cout << "cam started" << std::endl;
 
 		update_member(member_ptr);
 		post_redraw();
@@ -127,12 +153,25 @@ public:
 	{
 		cgv::render::ref_sphere_renderer(ctx, 1);
 		cgv::render::ref_cone_renderer(ctx, 1);
-
 		plot.set_view_ptr(find_view_as_node());
 		return plot.init(ctx);
 	}
 	void init_frame(cgv::render::context& ctx)
 	{
+		auto* kit_ptr = get_kit_ptr();
+		if (kit_ptr) {
+			const auto& di = kit_ptr->get_device_info();
+			if (di.hmd.number_cameras == 2)
+				cam_ptr = kit_ptr->get_camera();
+		}
+		if (cam_ptr) {
+			cam_state = cam_ptr->get_state();
+			update_member(&cam_state);
+			//if (cam_state == vr::CS_STARTED) {
+			//	cam_ptr->get_gl_texture_id()
+			//}
+		}
+
 		plot.init_frame(ctx);
 
 		vr::vr_scene* scene_ptr = get_scene_ptr();
@@ -317,6 +356,7 @@ public:
 	{
 		add_decorator("vr_lab_test", "heading");
 		add_member_control(this, "stats_bgclr", stats_bgclr);
+		add_member_control(this, "Show Plot", show_plot);
 
 		if (begin_tree_node("objects", objects)) {
 			align("\a");

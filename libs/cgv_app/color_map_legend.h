@@ -3,7 +3,7 @@
 #include <cgv/render/color_map.h>
 #include <cgv/render/texture.h>
 #include <cgv/utils/convert_string.h>
-#include <cgv_app/canvas_overlay.h>
+#include <cgv_app/themed_canvas_overlay.h>
 #include <cgv_g2d/generic_2d_renderer.h>
 #include <cgv_g2d/msdf_gl_canvas_font_renderer.h>
 
@@ -12,7 +12,7 @@
 namespace cgv {
 namespace app {
 
-class CGV_API color_map_legend : public canvas_overlay {
+class CGV_API color_map_legend : public themed_canvas_overlay {
 protected:
 	enum OrientationOption {
 		OO_HORIZONTAL,
@@ -20,7 +20,7 @@ protected:
 	};
 
 	struct layout_attributes {
-		int padding;
+		int padding = 0;
 		int label_space = 12;
 		int x_label_size = 0;
 		int title_space = 0;
@@ -71,22 +71,29 @@ protected:
 		}
 	} layout;
 
-	bool show_background = true;
 	bool invert_color = false;
+	bool flip_texture = false;
 
 	cgv::render::texture tex;
 
 	std::string title;
-	vec2 range;
-	unsigned num_ticks;
-	unsigned label_precision;
-	bool label_auto_precision;
-	bool label_integer_mode;
-	AlignmentOption title_align;
-	bool show_opacity;
+	vec2 value_range = { 0.0f, 1.0f };
+	vec2 display_range = { 0.0f, 1.0f };
+	unsigned num_ticks = 3;
+
+	AlignmentOption title_align = AO_START;
+	
+	struct {
+		unsigned precision = 0;
+		bool auto_precision = true;
+		bool trailing_zeros = false;
+		bool integers = false;
+	} label_format;
+
+	bool show_opacity = true;
 
 	// general appearance
-	cgv::g2d::shape2d_style container_style, border_style, color_map_style, tick_style;
+	cgv::g2d::shape2d_style border_style, color_map_style, tick_style;
 	cgv::g2d::grid2d_style background_style;
 
 	// text appearance
@@ -115,21 +122,27 @@ public:
 	void init_frame(cgv::render::context& ctx) override;
 	void draw_content(cgv::render::context& ctx) override;
 
-	void set_color_map(cgv::render::context& ctx, cgv::render::color_map& cm);
+	void set_color_map(cgv::render::context& ctx, const cgv::render::color_map& cm);
 
 	void set_width(size_t w);
 	void set_height(size_t h);
 
 	void set_title(const std::string& t);
 
-	vec2 get_range() const { return range; }
+	vec2 get_range() const { return value_range; }
 	void set_range(vec2 r);
+
+	vec2 get_display_range() const { return display_range; }
+	void set_display_range(vec2 r);
+
+	void set_invert_color(bool flag);
 
 	unsigned get_num_ticks() { return num_ticks; }
 	void set_num_ticks(unsigned n);
 
 	void set_label_precision(unsigned p);
 	void set_label_auto_precision(bool enabled);
+	void set_label_prune_trailing_zeros(bool enabled);
 	void set_label_integer_mode(bool enabled);
 	void set_show_opacity(bool enabled);
 };

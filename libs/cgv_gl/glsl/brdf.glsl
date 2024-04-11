@@ -146,8 +146,8 @@ vec3 evaluate_material(Material material, vec3 normal, vec3 omega_in, vec3 omega
 	// compute diffuse brdf component
 	switch (material.brdf_type % 4) {
 	case 0: res = fd * material.diffuse_reflectance; break;
-	case 1: res = oren_nayar_brdf(normal, omega_in, omega_out, material.roughness)*material.diffuse_reflectance; break;
-	case 2: res = fd * strauss_diffuse_coeff(material.roughness, material.metalness, material.transparency)* material.diffuse_reflectance; break;
+	case 1: res = oren_nayar_brdf(normal, omega_in, omega_out, material.roughness) * material.diffuse_reflectance; break;
+	case 2: res = fd * strauss_diffuse_coeff(material.roughness, material.metalness, material.transparency) * material.diffuse_reflectance; break;
 	}
 	// compute specular reflectance
 	vec3 spec = material.specular_reflectance;

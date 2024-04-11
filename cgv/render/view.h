@@ -75,9 +75,9 @@ public:
 	/// write access to extent at focus
 	double& ref_y_extent_at_focus();
 
-	/// query opening angle of view in y-direction
+	/// query opening angle (degrees) of view in y-direction
 	double get_y_view_angle() const;
-	/// set  opening angle of view in y-direction keeping y extent at focus resulting in a dolly zoom
+	/// set opening angle (degrees) of view in y-direction keeping y extent at focus resulting in a dolly zoom
 	virtual void set_y_view_angle(double angle);
 	/// query y extent of viewing window at focus point
 	double get_y_extent_at_focus() const;

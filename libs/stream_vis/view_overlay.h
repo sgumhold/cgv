@@ -13,10 +13,10 @@ namespace stream_vis {
 		float log_minimum;
 	};
 
-	struct view_update_handler : public cgv::render::render_types
+	struct view_update_handler
 	{
-		virtual void handle_view2d_update(int pi, const vec2& pixel_scales) = 0;
-		virtual void handle_view3d_update(int pi, const mat4& T, const ivec4& viewport) = 0;
+		virtual void handle_view2d_update(int pi, const cgv::vec2& pixel_scales) = 0;
+		virtual void handle_view3d_update(int pi, const cgv::mat4& T, const cgv::ivec4& viewport) = 0;
 		virtual void handle_plot_visibility_update(unsigned pi, bool is_visible) = 0;
 		virtual void handle_plot_axis_update(unsigned pi, int ai, bool is_log) = 0;
 		virtual void handle_subplot_visibility_update(unsigned pi, int si, bool is_visible) = 0;

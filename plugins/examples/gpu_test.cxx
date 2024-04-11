@@ -129,7 +129,7 @@ public:
 			glClear(GL_COLOR_BUFFER_BIT|GL_DEPTH_BUFFER_BIT);
 			// draw text
 			//ctx.ref_default_shader_program().enable(ctx);
-				ctx.set_color(rgb(0.0f));
+				ctx.set_color(cgv::rgb(0.0f));
 				ctx.push_pixel_coords();
 					ctx.set_cursor(200,400);
 					ctx.enable_font_face(font_face, 40);
@@ -139,7 +139,7 @@ public:
 
 			// draw rotating cube
 			ctx.ref_surface_shader_program().enable(ctx);
-				ctx.set_color(rgb(1.0f,0.0f,0.0f));
+				ctx.set_color(cgv::rgb(1.0f,0.0f,0.0f));
 				ctx.push_modelview_matrix();
 					ctx.mul_modelview_matrix(cgv::math::rotate4<double>(angle, 1, 0, 0));
 					ctx.tesselate_unit_cube();
@@ -155,7 +155,7 @@ public:
 		img_tex.enable(ctx, 1);
 			// enable shader program
 			prog.enable(ctx);
-				ctx.set_color(rgb(1.0f));
+				ctx.set_color(cgv::rgb(1.0f));
 				// set uniform variables including texture units
 				prog.set_uniform(ctx,"show_tex", show_tex);
 				prog.set_uniform(ctx,"show_img_tex", show_img_tex);

@@ -2,8 +2,10 @@
 
 #include <vr/vr_kit.h>
 #include <vr/vr_state.h>
+#include <cgv/math/fvec.h>
+#include <cgv/math/fmat.h>
+#include <cgv/math/quaternion.h>
 #include <cgv/signal/signal.h>
-#include <cgv/render/render_types.h>
 
 #include "lib_begin.h"
 
@@ -12,10 +14,16 @@
 
 ///
 namespace vr {
-	class CGV_API vr_wall_kit : public vr_kit, public cgv::render::render_types
+	class CGV_API vr_wall_kit : public vr_kit
 	{
 	public:
-		typedef cgv::math::fmat<float, 3, 4> mat34;
+		using vec2 = cgv::vec2;
+		using vec3 = cgv::vec3;
+		using vec4 = cgv::vec4;
+		using mat3 = cgv::mat3;
+		using mat34 = cgv::mat34;
+		using quat = cgv::quat;
+
 	protected:
 		/// vr kit to which to be attached
 		vr_kit* parent_kit;

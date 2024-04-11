@@ -243,7 +243,6 @@ extern "C" bool fltk_theme() {
 	  Widget::default_style->box_ = BORDER_BOX;
 	  Widget::default_style->buttonbox_ = FLAT_BOX;
 	  
-
 	  TabGroup::flat_tabs(true);
 
 	  if((style = Style::find("Window"))) {
@@ -394,7 +393,7 @@ extern "C" bool fltk_theme() {
 
     // get font info for regular widgets from LOGFONT structure
     name = ncm.lfMessageFont.lfFaceName;
-    utf8fromwc(buffer, BUFLEN, name, wcslen(name));
+    utf8fromwc(buffer, BUFLEN, name, unsigned(wcslen(name)));
     font = fltk::font(buffer,
 		     (ncm.lfMessageFont.lfWeight >= 600 ? BOLD : 0) +
 		     (ncm.lfMessageFont.lfItalic ? ITALIC : 0));
@@ -407,7 +406,7 @@ extern "C" bool fltk_theme() {
 
     // get font info for menu items from LOGFONT structure
     name = ncm.lfMenuFont.lfFaceName;
-    utf8fromwc(buffer, BUFLEN, name, wcslen(name));
+    utf8fromwc(buffer, BUFLEN, name, unsigned(wcslen(name)));
     font = fltk::font(buffer,
 		     (ncm.lfMenuFont.lfWeight >= 600 ? BOLD : 0) +
 		     (ncm.lfMenuFont.lfItalic ? ITALIC : 0));
@@ -419,7 +418,7 @@ extern "C" bool fltk_theme() {
 
     if ((style = Style::find("Tooltip"))) {
       name = ncm.lfStatusFont.lfFaceName;
-      utf8fromwc(buffer, BUFLEN, name, wcslen(name));
+      utf8fromwc(buffer, BUFLEN, name, unsigned(wcslen(name)));
       // get font info for tooltips from LOGFONT structure
       font = fltk::font(buffer,
 		       (ncm.lfStatusFont.lfWeight >= 600 ? BOLD : 0) +

@@ -2,7 +2,6 @@
 
 #include "time_series.h"
 #include <plot/plot_base.h>
-#include <cgv/render/render_types.h>
 #include <cgv/render/texture.h>
 #include <cgv/render/render_buffer.h>
 #include <cgv/render/frame_buffer.h>
@@ -45,7 +44,7 @@ namespace stream_vis {
 	};
 
 	/// per plot information
-	struct plot_info : public cgv::render::render_types
+	struct plot_info
 	{
 		/// store index of view which defaults to 0, which is main view
 		int view_index = 0;
@@ -56,7 +55,7 @@ namespace stream_vis {
 		/// plot name
 		std::string name;
 		/// fixed domain definition via view_min and view_max
-		box3 fixed_domain;
+		cgv::box3 fixed_domain;
 		/// for each domain component the mode of adjustment
 		DomainAdjustment domain_adjustment[2][8];
 		/// for each domain component the index of the time series used for adjustment

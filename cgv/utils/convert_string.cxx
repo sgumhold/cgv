@@ -4,7 +4,7 @@ namespace cgv {
 	namespace utils {
 
 template <>
-std::string to_string(const std::string& v, unsigned int w, unsigned int p)
+std::string to_string(const std::string& v, unsigned int w, unsigned int p, bool)
 {
 	return v;
 }
