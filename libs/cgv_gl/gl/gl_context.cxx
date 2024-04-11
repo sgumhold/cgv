@@ -36,10 +36,10 @@ namespace cgv {
 	namespace render {
 		namespace gl {
 			
-GLuint map_to_gl(PrimitiveType pt)
+GLenum map_to_gl(PrimitiveType primitive_type)
 {
-	static GLuint pt_to_gl[] = {
-		GLuint (-1),
+	static const GLenum gl_primitive_type[] = {
+		GLenum(-1),
 		GL_POINTS,
 		GL_LINES,
 		GL_LINES_ADJACENCY,
@@ -56,31 +56,33 @@ GLuint map_to_gl(PrimitiveType pt)
 		GL_POLYGON,
 		GL_PATCHES
 	};
-	return pt_to_gl[pt];
+	return gl_primitive_type[primitive_type];
 }
 
-GLuint map_to_gl(MaterialSide ms)
+GLenum map_to_gl(MaterialSide material_side)
 {
-	static GLuint ms_to_gl[] = {
-		0,
+	static const GLenum gl_material_side[] = {
+		GLenum(0),
 		GL_FRONT,
 		GL_BACK,
 		GL_FRONT_AND_BACK
 	};
-	return ms_to_gl[ms];
+	return gl_material_side[material_side];
 }
 
-GLuint map_to_gl(AccessType at) {
-	static GLuint at_to_gl[] = {
+GLenum map_to_gl(AccessType access_type)
+{
+	static const GLenum gl_access_type[] = {
 		GL_READ_ONLY,
 		GL_WRITE_ONLY,
 		GL_READ_WRITE
 	};
-	return at_to_gl[at];
+	return gl_access_type[access_type];
 }
 
-GLuint map_to_gl(BlendFunction blend_function) {
-	static GLuint gl_blend_func[] = {
+GLenum map_to_gl(BlendFunction blend_function)
+{
+	static const GLenum gl_blend_func[] = {
 		GL_ZERO,
 		GL_ONE,
 		GL_SRC_COLOR,
@@ -102,6 +104,117 @@ GLuint map_to_gl(BlendFunction blend_function) {
 		GL_ONE_MINUS_SRC1_ALPHA
 	};
 	return gl_blend_func[blend_function];
+}
+
+GLenum map_to_gl(CompareFunction compare_func)
+{
+	static const GLenum gl_compare_func[] = {
+		GL_LEQUAL,
+		GL_GEQUAL,
+		GL_LESS,
+		GL_GREATER,
+		GL_EQUAL,
+		GL_NOTEQUAL,
+		GL_ALWAYS,
+		GL_NEVER
+	};
+	return gl_compare_func[compare_func];
+}
+
+static const GLenum gl_depth_format_ids[] =
+{
+	GL_DEPTH_COMPONENT,
+	GL_DEPTH_COMPONENT16,
+	GL_DEPTH_COMPONENT24,
+	GL_DEPTH_COMPONENT32
+};
+
+static const GLenum gl_color_buffer_format_ids[] =
+{
+	GL_RGB,
+	GL_RGBA
+};
+
+static const char* depth_formats[] =
+{
+	"[D]",
+	"uint16[D]",
+	"uint32[D:24]",
+	"uint32[D]",
+	0
+};
+
+static const char* color_buffer_formats[] =
+{
+	"[R,G,B]",
+	"[R,G,B,A]",
+	0
+};
+
+GLenum get_tex_dim(TextureType texture_type)
+{
+	static const GLenum gl_texture_type[] = {
+		GLenum(0),
+		GL_TEXTURE_1D,
+		GL_TEXTURE_2D,
+		GL_TEXTURE_3D,
+		GL_TEXTURE_1D_ARRAY,
+		GL_TEXTURE_2D_ARRAY,
+		GL_TEXTURE_CUBE_MAP,
+		GL_TEXTURE_2D_MULTISAMPLE,
+		GL_TEXTURE_2D_MULTISAMPLE_ARRAY
+	};
+	return gl_texture_type[texture_type];
+}
+
+GLenum get_tex_bind(TextureType texture_type)
+{
+	static const GLenum gl_tex_binding[] = {
+		GLenum(0),
+		GL_TEXTURE_BINDING_1D,
+		GL_TEXTURE_BINDING_2D,
+		GL_TEXTURE_BINDING_3D,
+		GL_TEXTURE_BINDING_1D_ARRAY,
+		GL_TEXTURE_BINDING_2D_ARRAY,
+		GL_TEXTURE_BINDING_CUBE_MAP,
+		GL_TEXTURE_BUFFER,
+		GL_TEXTURE_BINDING_2D_MULTISAMPLE,
+		GL_TEXTURE_BINDING_2D_MULTISAMPLE_ARRAY
+	};
+	return gl_tex_binding[texture_type];
+}
+
+GLenum map_to_gl(TextureWrap texture_wrap)
+{
+	static const GLenum gl_texture_wrap[] = {
+		GL_REPEAT,
+		GL_CLAMP,
+		GL_CLAMP_TO_EDGE,
+		GL_CLAMP_TO_BORDER,
+		GL_MIRROR_CLAMP_EXT,
+		GL_MIRROR_CLAMP_TO_EDGE_EXT,
+		GL_MIRROR_CLAMP_TO_BORDER_EXT,
+		GL_MIRRORED_REPEAT
+	};
+	return gl_texture_wrap[texture_wrap];
+}
+
+GLenum map_to_gl(TextureFilter filter_type)
+{
+	static const GLenum gl_texture_filter[] = {
+		GL_NEAREST,
+		GL_LINEAR,
+		GL_NEAREST_MIPMAP_NEAREST,
+		GL_LINEAR_MIPMAP_NEAREST,
+		GL_NEAREST_MIPMAP_LINEAR,
+		GL_LINEAR_MIPMAP_LINEAR,
+		GL_LINEAR_MIPMAP_LINEAR
+	};
+	return gl_texture_filter[filter_type];
+}
+
+GLboolean map_to_gl(bool flag) {
+	return flag ? GL_TRUE : GL_FALSE;
 }
 
 GLuint get_gl_id(const void* handle)
@@ -168,13 +281,13 @@ gl_context::gl_context()
 	show_help = false;
 	show_stats = false;
 
-
-
-
-
-	
+	// setup initial render state and store it on the corresponding stacks
 	glDisable(GL_DEPTH_TEST);
-	depth_test_state_stack.push(false);
+	glDepthFunc(GL_LESS);
+	DepthTestState depth_test_state;
+	depth_test_state.enabled = false;
+	depth_test_state.test_func = CF_LESS;
+	depth_test_state_stack.push(depth_test_state);
 
 	glDisable(GL_CULL_FACE);
 	glCullFace(GL_BACK);
@@ -189,6 +302,16 @@ gl_context::gl_context()
 	blend_state.dst_color = BF_ZERO;
 	blend_state.dst_alpha = BF_ZERO;
 	blend_state_stack.push(blend_state);
+
+	glDepthMask(GL_TRUE);
+	glColorMask(GL_TRUE, GL_TRUE, GL_TRUE, GL_TRUE);
+	BufferMask buffer_mask;
+	buffer_mask.depth_flag = true;
+	buffer_mask.red_flag = true;
+	buffer_mask.green_flag = true;
+	buffer_mask.blue_flag = true;
+	buffer_mask.alpha_flag = true;
+	buffer_mask_stack.push(buffer_mask);
 }
 
 /// return the used rendering API
@@ -1324,6 +1447,114 @@ void gl_context::draw_strip_or_fan(
 	release_attributes(normals, tex_coords, normal_indices, tex_coord_indices);
 }
 
+void gl_context::set_depth_test_state(DepthTestState state) {
+	if(state.enabled)
+		glEnable(GL_DEPTH_TEST);
+	else
+		glDisable(GL_DEPTH_TEST);
+	glDepthFunc(map_to_gl(state.test_func));
+	context::set_depth_test_state(state);
+}
+
+void gl_context::set_depth_func(CompareFunction func) {
+	glDepthFunc(map_to_gl(func));
+	context::set_depth_func(func);
+}
+
+void gl_context::enable_depth_test() {
+	glEnable(GL_DEPTH_TEST);
+	context::enable_depth_test();
+}
+
+void gl_context::disable_depth_test() {
+	glDisable(GL_DEPTH_TEST);
+	context::disable_depth_test();
+}
+
+void gl_context::set_cull_state(CullingMode culling_mode) {
+	switch(culling_mode) {
+	case CM_OFF:
+		glDisable(GL_CULL_FACE);
+		break;
+	case CM_BACKFACE:
+		glEnable(GL_CULL_FACE);
+		glCullFace(GL_BACK);
+		break;
+	case CM_FRONTFACE:
+		glEnable(GL_CULL_FACE);
+		glCullFace(GL_FRONT);
+		break;
+	default:
+		break;
+	}
+	context::set_cull_state(culling_mode);
+}
+
+void gl_context::set_blend_state(BlendState state) {
+	if(state.enabled)
+		glEnable(GL_BLEND);
+	else
+		glDisable(GL_BLEND);
+	glBlendFuncSeparate(
+		map_to_gl(state.src_color),
+		map_to_gl(state.src_alpha),
+		map_to_gl(state.dst_color),
+		map_to_gl(state.dst_alpha)
+	);
+	context::set_blend_state(state);
+}
+
+void gl_context::set_blend_func(BlendFunction src_factor, BlendFunction dst_factor) {
+	glBlendFunc(map_to_gl(src_factor), map_to_gl(dst_factor));
+	context::set_blend_func(src_factor, dst_factor);
+}
+
+void gl_context::set_blend_func_separate(BlendFunction src_color_factor, BlendFunction dst_color_factor, BlendFunction src_alpha_factor, BlendFunction dst_alpha_factor) {
+	glBlendFuncSeparate(
+		map_to_gl(src_color_factor),
+		map_to_gl(dst_color_factor),
+		map_to_gl(src_alpha_factor),
+		map_to_gl(dst_alpha_factor)
+	);
+	context::set_blend_func_separate(src_color_factor, dst_color_factor, src_alpha_factor, dst_alpha_factor);
+}
+
+void gl_context::enable_blending() {
+	glEnable(GL_BLEND);
+	context::enable_blending();
+}
+
+void gl_context::disable_blending() {
+	glDisable(GL_BLEND);
+	context::disable_blending();
+}
+
+void gl_context::set_buffer_mask(BufferMask mask) {
+	glDepthMask(map_to_gl(mask.depth_flag));
+	glColorMask(
+		map_to_gl(mask.red_flag),
+		map_to_gl(mask.green_flag),
+		map_to_gl(mask.blue_flag),
+		map_to_gl(mask.alpha_flag)
+	);
+	context::set_buffer_mask(mask);
+}
+
+void gl_context::set_depth_mask(bool flag) {
+	glDepthMask(map_to_gl(flag));
+	context::set_depth_mask(flag);
+}
+
+void gl_context::set_color_mask(bvec4 flags) {
+	glColorMask(
+		map_to_gl(flags[0]),
+		map_to_gl(flags[1]),
+		map_to_gl(flags[2]),
+		map_to_gl(flags[3])
+	);
+	context::set_color_mask(flags);
+}
+
 /// return homogeneous 4x4 viewing matrix, which transforms from world to eye space
 dmat4 gl_context::get_modelview_matrix() const
 {
@@ -1459,125 +1690,6 @@ void gl_context::set_projection_matrix(const dmat4& P)
 	context::set_projection_matrix(P);
 }
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-void gl_context::enable_depth_test() {
-	glEnable(GL_DEPTH_TEST);
-	context::enable_depth_test();
-}
-
-void gl_context::disable_depth_test() {
-	glDisable(GL_DEPTH_TEST);
-	context::disable_depth_test();
-}
-
-void gl_context::set_cull_state(CullingMode culling_mode) {
-	switch(culling_mode) {
-	case CM_OFF:
-		glDisable(GL_CULL_FACE);
-		break;
-	case CM_BACKFACE:
-		glEnable(GL_CULL_FACE);
-		glCullFace(GL_BACK);
-		break;
-	case CM_FRONTFACE:
-		glEnable(GL_CULL_FACE);
-		glCullFace(GL_FRONT);
-		break;
-	default:
-		break;
-	}
-	context::set_cull_state(culling_mode);
-}
-
-void gl_context::set_blend_state(BlendState blend_state) {
-	if(blend_state.enabled)
-		glEnable(GL_BLEND);
-	else
-		glDisable(GL_BLEND);
-	glBlendFuncSeparate(
-		map_to_gl(blend_state.src_color),
-		map_to_gl(blend_state.src_alpha),
-		map_to_gl(blend_state.dst_color),
-		map_to_gl(blend_state.dst_alpha)
-	);
-	context::set_blend_state(blend_state);
-}
-
-void gl_context::set_blend_func(BlendFunction src_factor, BlendFunction dst_factor) {
-	glBlendFunc(map_to_gl(src_factor), map_to_gl(dst_factor));
-	context::set_blend_func(src_factor, dst_factor);
-}
-
-void gl_context::set_blend_func_separate(BlendFunction src_color_factor, BlendFunction dst_color_factor, BlendFunction src_alpha_factor, BlendFunction dst_alpha_factor) {
-	glBlendFuncSeparate(
-		map_to_gl(src_color_factor),
-		map_to_gl(dst_color_factor),
-		map_to_gl(src_alpha_factor),
-		map_to_gl(dst_alpha_factor)
-	);
-	context::set_blend_func_separate(src_color_factor, dst_color_factor, src_alpha_factor, dst_alpha_factor);
-}
-
-void gl_context::enable_blending() {
-	glEnable(GL_BLEND);
-	context::enable_blending();
-}
-
-void gl_context::disable_blending() {
-	glDisable(GL_BLEND);
-	context::disable_blending();
-}
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 /// read the device z-coordinate from the z-buffer for the given device x- and y-coordinates
 double gl_context::get_window_z(int x_window, int y_window) const
 {
@@ -1605,82 +1717,6 @@ double gl_context::get_window_z(int x_window, int y_window) const
 	}
 	*/
 	return z_window;
-}
-static const GLenum gl_depth_format_ids[] = 
-{
-	GL_DEPTH_COMPONENT,
-	GL_DEPTH_COMPONENT16,
-	GL_DEPTH_COMPONENT24,
-	GL_DEPTH_COMPONENT32
-};
-
-static const GLenum gl_color_buffer_format_ids[] = 
-{
-	GL_RGB,
-	GL_RGBA
-};
-
-static const char* depth_formats[] = 
-{
-	"[D]",
-	"uint16[D]",
-	"uint32[D:24]",
-	"uint32[D]",
-	0
-};
-
-static const char* color_buffer_formats[] = 
-{
-	"[R,G,B]",
-	"[R,G,B,A]",
-	0
-};
-
-GLuint get_tex_dim(TextureType tt) {
-	static GLuint tex_dim[] = { 0, GL_TEXTURE_1D, GL_TEXTURE_2D, GL_TEXTURE_3D, GL_TEXTURE_1D_ARRAY, GL_TEXTURE_2D_ARRAY, GL_TEXTURE_CUBE_MAP, GL_TEXTURE_2D_MULTISAMPLE, GL_TEXTURE_2D_MULTISAMPLE_ARRAY };
-	return tex_dim[tt];
-}
-
-GLuint get_tex_bind(TextureType tt) {
-	static GLuint tex_bind[] = { 0, GL_TEXTURE_BINDING_1D, GL_TEXTURE_BINDING_2D, GL_TEXTURE_BINDING_3D, GL_TEXTURE_BINDING_1D_ARRAY, GL_TEXTURE_BINDING_2D_ARRAY, GL_TEXTURE_BINDING_CUBE_MAP, GL_TEXTURE_BUFFER, GL_TEXTURE_BINDING_2D_MULTISAMPLE, GL_TEXTURE_BINDING_2D_MULTISAMPLE_ARRAY };
-	return tex_bind[tt];
-}
-
-
-unsigned int map_to_gl(TextureWrap wrap)
-{
-	static const GLenum gl_texture_wrap[] = { 
-		GL_REPEAT, 
-		GL_CLAMP, GL_CLAMP_TO_EDGE, GL_CLAMP_TO_BORDER, 
-		GL_MIRROR_CLAMP_EXT, GL_MIRROR_CLAMP_TO_EDGE_EXT, GL_MIRROR_CLAMP_TO_BORDER_EXT, GL_MIRRORED_REPEAT
-	};
-	return gl_texture_wrap[wrap];
-}
-
-unsigned int map_to_gl(TextureFilter filter_type)
-{
-	static const GLenum gl_texture_filter[] = {
-		GL_NEAREST, GL_LINEAR,
-		GL_NEAREST_MIPMAP_NEAREST, GL_LINEAR_MIPMAP_NEAREST,
-		GL_NEAREST_MIPMAP_LINEAR, GL_LINEAR_MIPMAP_LINEAR,
-		GL_LINEAR_MIPMAP_LINEAR
-	};
-	return gl_texture_filter[filter_type];
-}
-
-unsigned int map_to_gl(CompareFunction cf)
-{
-	static const GLenum gl_cfs[] = {
-		GL_LEQUAL,
-		GL_GEQUAL,
-		GL_LESS,
-		GL_GREATER,
-		GL_EQUAL,
-		GL_NOTEQUAL,
-		GL_ALWAYS,
-		GL_NEVER
-	};
-	return gl_cfs[cf];
 }
 
 cgv::data::component_format gl_context::texture_find_best_format(
@@ -1855,13 +1891,13 @@ bool gl_context::texture_create(texture_base& tb, cgv::data::data_format& df) co
 		glTexImage2D(GL_TEXTURE_2D, 0, gl_format, GLsizei(df.get_width()), GLsizei(df.get_height()), 0, transfer_format, GL_UNSIGNED_BYTE, 0);
 		break;
 	case TT_MULTISAMPLE_2D:
-		glTexImage2DMultisample(GL_TEXTURE_2D_MULTISAMPLE, tb.nr_multi_samples, gl_format, GLsizei(df.get_width()), GLsizei(df.get_height()), tb.fixed_sample_locations ? GL_TRUE : GL_FALSE);
+		glTexImage2DMultisample(GL_TEXTURE_2D_MULTISAMPLE, tb.nr_multi_samples, gl_format, GLsizei(df.get_width()), GLsizei(df.get_height()), map_to_gl(tb.fixed_sample_locations));
 		break;
 	case TT_2D_ARRAY :
 		glTexImage3D(GL_TEXTURE_2D_ARRAY, 0, gl_format, GLsizei(df.get_width()), GLsizei(df.get_height()), GLsizei(df.get_depth()), 0, transfer_format, GL_UNSIGNED_BYTE, 0);
 		break;
 	case TT_MULTISAMPLE_2D_ARRAY:
-		glTexStorage3DMultisample(GL_TEXTURE_2D_MULTISAMPLE_ARRAY, tb.nr_multi_samples, gl_format, GLsizei(df.get_width()), GLsizei(df.get_height()), GLsizei(df.get_depth()), tb.fixed_sample_locations ? GL_TRUE : GL_FALSE);
+		glTexStorage3DMultisample(GL_TEXTURE_2D_MULTISAMPLE_ARRAY, tb.nr_multi_samples, gl_format, GLsizei(df.get_width()), GLsizei(df.get_height()), GLsizei(df.get_depth()), map_to_gl(tb.fixed_sample_locations));
 		break;
 	case TT_3D :
 		glTexImage3D(GL_TEXTURE_3D, 0,
@@ -2159,7 +2195,7 @@ bool gl_context::texture_create_mipmaps(texture_base& tb, cgv::data::data_format
 		}
 		break;
 	case TT_MULTISAMPLE_2D:
-		//glTexImage2DMultisample(GL_TEXTURE_2D_MULTISAMPLE, tb.nr_multi_samples, gl_format, df.get_width(), df.get_height(), tb.fixed_sample_locations ? GL_TRUE : GL_FALSE);
+		//glTexImage2DMultisample(GL_TEXTURE_2D_MULTISAMPLE, tb.nr_multi_samples, gl_format, df.get_width(), df.get_height(), map_to_gl(tb.fixed_sample_locations));
 		error("create mipmaps not implemented for 2D multisample textures", &tb);
 		result = false;
 		break;
@@ -2169,7 +2205,7 @@ bool gl_context::texture_create_mipmaps(texture_base& tb, cgv::data::data_format
 		result = false;
 		break;
 	case TT_MULTISAMPLE_2D_ARRAY:
-		//glTexStorage3DMultisample(GL_TEXTURE_2D_MULTISAMPLE_ARRAY, tb.nr_multi_samples, gl_format, df.get_width(), df.get_height(), df.get_depth(), tb.fixed_sample_locations ? GL_TRUE : GL_FALSE);
+		//glTexStorage3DMultisample(GL_TEXTURE_2D_MULTISAMPLE_ARRAY, tb.nr_multi_samples, gl_format, df.get_width(), df.get_height(), df.get_depth(), map_to_gl(tb.fixed_sample_locations));
 		error("create mipmaps not implemented for 2D multisample array textures", &tb);
 		result = false;
 		break;
@@ -2348,7 +2384,7 @@ bool gl_context::texture_bind_as_image(texture_base& tb, int tex_unit, int level
 	}
 
 	GLuint gl_format = (const GLuint&)tb.internal_format;
-	glBindImageTexture(tex_unit, tex_id, level, bind_array ? GL_TRUE : GL_FALSE, layer, map_to_gl(access), gl_format);
+	glBindImageTexture(tex_unit, tex_id, level, map_to_gl(bind_array), layer, map_to_gl(access), gl_format);
 	
 	bool result = !check_gl_error("gl_context::texture_bind_as_image", &tb);
 	return result;

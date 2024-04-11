@@ -170,7 +170,7 @@ enum BlendFunction {
 };
 
 /// different texture wrap modes
-enum TextureWrap { 
+enum TextureWrap {
 	TW_REPEAT = 0, 
 	TW_CLAMP = 1, 
 	TW_CLAMP_TO_EDGE = 2, 
@@ -213,11 +213,11 @@ enum TextureType {
 
 /// the six different sides of a cube
 enum TextureCubeSides {
-	 TCS_PLUS_X,
+	TCS_PLUS_X,
 	TCS_MINUS_X,
-	 TCS_PLUS_Y,
+	TCS_PLUS_Y,
 	TCS_MINUS_Y,
-	 TCS_PLUS_Z,
+	TCS_PLUS_Z,
 	TCS_MINUS_Z
 };
 
@@ -249,7 +249,7 @@ enum TextureSampling
 	TS_VERTEX = 1  ///< \c tex_coord ranges from [0,0,0] to [1,1,1]
 };
 
-/// different sampling strategies for rendering to textures that steer the computation of the \c tex_coord input to the fragment shader
+/// different comparison functions used for depth testing or texture comparisons
 enum CompareFunction
 {
 	CF_LEQUAL,
@@ -629,6 +629,43 @@ public:
 	friend class CGV_API shader_program;
 	friend class CGV_API attribute_array_binding;
 	friend class CGV_API vertex_buffer;
+
+	/// Represents a depth test state used to configure depth testing.
+	struct DepthTestState {
+		/// whether the depth test is enabled
+		bool enabled = false;
+		/// the function used to compare depth values
+		CompareFunction test_func = CF_LESS;
+	};
+
+	/// Represents a blend state used to configure fragment blending.
+	struct BlendState {
+		/// whether blending is enabled
+		bool enabled = false;
+		/// the source color (rgb) factor
+		BlendFunction src_color = BF_ZERO;
+		/// the source alpha factor
+		BlendFunction src_alpha = BF_ZERO;
+		/// the destination color (rgb) factor
+		BlendFunction dst_color = BF_ZERO;
+		/// the destination alpha factor
+		BlendFunction dst_alpha = BF_ZERO;
+		// TODO: Add blend equation?
+	};
+
+	/// Represents a buffer mask used to mask depth and color buffer outputs.
+	struct BufferMask {
+		/// whether to write to the depth buffer if the depth test is enabled
+		bool depth_flag = true;
+		/// whether to write to the red channel of the color buffer
+		bool red_flag = true;
+		/// whether to write to the green channel of the color buffer
+		bool green_flag = true;
+		/// whether to write to the blue channel of the color buffer
+		bool blue_flag = true;
+		/// whether to write to the alpha channel of the color buffer
+		bool alpha_flag = true;
+	};
 protected:
 	friend class shader_program_base;
 
@@ -656,38 +693,22 @@ protected:
 	bool sRGB_framebuffer;
 	/// per color channel gamma value passed to shader programs that have gamma uniform
 	vec3 gamma3;
+	/// stack of depth test states
+	std::stack<DepthTestState> depth_test_state_stack;
+	/// stack of culling mode states
+	std::stack<CullingMode> cull_state_stack;
+	/// stack of blend states
+	std::stack<BlendState> blend_state_stack;
+	/// stack of buffer masks
+	std::stack<BufferMask> buffer_mask_stack;
 	/// keep two matrix stacks for model view and projection matrices
 	std::stack<dmat4> modelview_matrix_stack, projection_matrix_stack;
 	/// keep stack of window transformations
-	std::stack<std::vector<window_transformation> > window_transformation_stack;
+	std::stack<std::vector<window_transformation>> window_transformation_stack;
 	/// stack of currently enabled frame buffers
 	std::stack<frame_buffer_base*> frame_buffer_stack;
 	/// stack of currently enabled shader programs
 	std::stack<shader_program_base*> shader_program_stack;
-
-
-
-
-
-
-
-	std::stack<bool> depth_test_state_stack;
-	std::stack<CullingMode> cull_state_stack;
-
-	struct BlendState {
-		bool enabled;
-		BlendFunction src_color;
-		BlendFunction src_alpha;
-		BlendFunction dst_color;
-		BlendFunction dst_alpha;
-	};
-	std::stack<BlendState> blend_state_stack;
-
-
-
-
-
-
 public:
 	/// check for current program, prepare it for rendering and return pointer to it
 	shader_program_base* get_current_program() const;
@@ -1193,6 +1214,71 @@ public:
 	virtual void draw_light_source(const cgv::media::illum::light_source& l, float intensity_scale, float light_scale); 
 	//@}
 
+	/**@name render state*/
+	//@{
+	/// push a copy of the current depth test state onto the stack
+	virtual void push_depth_test_state();
+	/// pop the top of the current depth test state from the stack
+	virtual void pop_depth_test_state();
+	/// return the current depth test state
+	virtual DepthTestState get_depth_test_state();
+	/// set the depth test state
+	virtual void set_depth_test_state(DepthTestState state);
+	/// set the depth test function
+	virtual void set_depth_func(CompareFunction func);
+	/// enable the depth test
+	virtual void enable_depth_test();
+	/// disable the depth test
+	virtual void disable_depth_test();
+
+	/// push a copy of the current culling state onto the stack
+	virtual void push_cull_state();
+	/// pop the top of the current culling state from the stack
+	virtual void pop_cull_state();
+	/// return the current culling state
+	virtual CullingMode get_cull_state();
+	/// set the culling state
+	virtual void set_cull_state(CullingMode culling_mode);
+
+	/// push a copy of the current blend state onto the stack
+	virtual void push_blend_state();
+	/// pop the top of the current culling state from the stack
+	virtual void pop_blend_state();
+	/// return the current blend state
+	virtual BlendState get_blend_state();
+	/// set the complete blend state
+	virtual void set_blend_state(BlendState state);
+	/// set the blend function
+	virtual void set_blend_func(BlendFunction src_factor, BlendFunction dst_factor);
+	/// set the blend function separately for color and alpha
+	virtual void set_blend_func_separate(BlendFunction src_color_factor, BlendFunction dst_color_factor, BlendFunction src_alpha_factor, BlendFunction dst_alpha_factor);
+	/// set the default blend function for front to back blending
+	virtual void set_blend_func_front_to_back();
+	/// set the default blend function for back to front blending
+	virtual void set_blend_func_back_to_front();
+	/// enable blending
+	virtual void enable_blending();
+	/// disable blending
+	virtual void disable_blending();
+
+	/// push a copy of the current buffer mask onto the stack
+	virtual void push_buffer_mask();
+	/// pop the top of the current buffer mask from the stack
+	virtual void pop_buffer_mask();
+	/// return the current buffer mask
+	virtual BufferMask get_buffer_mask();
+	/// set the buffer mask for depth and color buffers
+	virtual void set_buffer_mask(BufferMask mask);
+	/// get the depth buffer mask
+	virtual bool get_depth_mask();
+	/// set the depth buffer mask
+	virtual void set_depth_mask(bool flag);
+	/// get the color buffer mask
+	virtual bvec4 get_color_mask();
+	/// set the color buffer mask
+	virtual void set_color_mask(bvec4 flags);
+	//@}
+
 	/**@name transformations*/
 	//@{
 	DEPRECATED("deprecated: use get_modelview_matrix() instead.") dmatn get_V() const { return dmatn(4,4,&get_modelview_matrix()(0,0)); }
@@ -1249,31 +1335,7 @@ public:
 	virtual void recover_from_external_viewport_change(const ivec4& cgv_viewport_storage) = 0;
 	/// query the maximum number of supported window transformations, which is at least 1 
 	virtual unsigned get_max_window_transformation_array_size() const = 0;
-
-
-
-	virtual void push_depth_test_state();
-	virtual void pop_depth_test_state();
-	virtual bool get_depth_test_state();
-	virtual void enable_depth_test();
-	virtual void disable_depth_test();
-
-	virtual void push_cull_state();
-	virtual void pop_cull_state();
-	virtual CullingMode get_cull_state();
-	virtual void set_cull_state(CullingMode culling_mode);
-
-	virtual void push_blend_state();
-	virtual void pop_blend_state();
-	virtual BlendState get_blend_state();
-	virtual void set_blend_state(BlendState blend_state);
-	virtual void set_blend_func(BlendFunction src_factor, BlendFunction dst_factor);
-	virtual void set_blend_func_separate(BlendFunction src_color_factor, BlendFunction dst_color_factor, BlendFunction src_alpha_factor, BlendFunction dst_alpha_factor);
-	virtual void set_blend_func_front_to_back();
-	virtual void set_blend_func_back_to_front();
-	virtual void enable_blending();
-	virtual void disable_blending();
-	
+	//@}
 
 protected:
 	bool ensure_window_transformation_index(int& array_index);
