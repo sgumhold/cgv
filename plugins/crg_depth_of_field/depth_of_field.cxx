@@ -50,7 +50,7 @@ void depth_of_field::generate_samples()
 
 void depth_of_field::update_view(cgv::render::context& ctx, int i)
 {
-	dmat4 m;
+	cgv::dmat4 m;
 	m.identity();
 	double dx,dy;
 	put_sample(i,dx,dy);
@@ -63,7 +63,7 @@ void depth_of_field::update_view(cgv::render::context& ctx, int i)
 
 void depth_of_field::restore_view(cgv::render::context& ctx, int i)
 {
-	dmat4 m;
+	cgv::dmat4 m;
 	m.identity();
 	double dx,dy;
 	put_sample(i,dx,dy);
@@ -83,7 +83,7 @@ std::string depth_of_field::get_type_name() const
 /// overload to show the content of this object
 void depth_of_field::stream_stats(std::ostream& os)
 {
-	oprintf(os,"DoF: z-focus=%.2fº, nr samples=%.1f\n", z_focus, nr_samples);
+	oprintf(os,"DoF: z-focus=%.2f, nr samples=%.1f\n", z_focus, nr_samples);
 }
 
 bool depth_of_field::init(context& ctx)

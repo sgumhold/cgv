@@ -59,7 +59,7 @@ class SpatialAudio : public cgv::base::node,
 
 		sphere_renderer = cgv::render::ref_sphere_renderer(ctx, 1);
 		sphere_style.radius = 1.f;
-		sphere_style.surface_color = rgb{1.f, 1.f, 1.f};
+		sphere_style.surface_color = cgv::rgb{1.f, 1.f, 1.f};
 
 		sphere_renderer.set_render_style(sphere_style);
 		return true;

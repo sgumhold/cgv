@@ -3,7 +3,6 @@
 #include <unordered_map>
 
 #include <cgv/render/frame_buffer.h>
-#include <cgv/render/render_types.h>
 
 #include "lib_begin.h"
 
@@ -11,7 +10,7 @@ namespace cgv {
 namespace render {
 
 /// provides a class that manages a frame buffer along with its attachments
-class CGV_API managed_frame_buffer : public render_types
+class CGV_API managed_frame_buffer
 {
 private:
 	ivec2 get_actual_size(context& ctx);

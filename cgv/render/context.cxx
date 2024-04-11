@@ -432,7 +432,7 @@ size_t context::get_nr_light_sources() const
 }
 
 /// helper function to place lights 
-context::vec3 context::get_light_eye_position(const cgv::media::illum::light_source& light, bool place_now) const
+vec3 context::get_light_eye_position(const cgv::media::illum::light_source& light, bool place_now) const
 {
 	vec3 Le = light.get_position();
 	if (place_now && !light.is_local_to_eye()) {
@@ -446,7 +446,7 @@ context::vec3 context::get_light_eye_position(const cgv::media::illum::light_sou
 }
 
 /// helper function to place lights 
-context::vec3 context::get_light_eye_spot_direction(const cgv::media::illum::light_source& light, bool place_now) const
+vec3 context::get_light_eye_spot_direction(const cgv::media::illum::light_source& light, bool place_now) const
 {
 	vec3 sd = light.get_spot_direction();
 	if (place_now && !light.is_local_to_eye()) {
@@ -897,10 +897,10 @@ bool context::write_frame_buffer_to_image(const std::string& file_name, data::Co
 			df.set_width(dv.get_format()->get_width());
 			df.set_height(dv.get_format()->get_height());
 			data::data_view dv1(&df);
-			unsigned int n = df.get_width()*df.get_height();
+			size_t n = df.get_width()*df.get_height();
 			const float* src = dv.get_ptr<float>();
 			unsigned char* dst = dv1.get_ptr<unsigned char>();
-			for (unsigned int i=0; i<n; ++i, ++dst, ++src)
+			for (size_t i=0; i<n; ++i, ++dst, ++src)
 				*dst = (unsigned char)((*src - depth_offset)*depth_scale*255);
 			image_writer w(file_name);
 			if (w.write_image(dv1)) {
@@ -911,10 +911,10 @@ bool context::write_frame_buffer_to_image(const std::string& file_name, data::Co
 	else if (read_frame_buffer(dv, x, y, buffer_type, type::info::TI_UINT8, cf, w, h)) {
 		if (cf == CF_S) {
 			const_cast<data::data_format*>(dv.get_format())->set_component_names("L");
-			unsigned int n = dv.get_format()->get_width()*dv.get_format()->get_height();
+			size_t n = dv.get_format()->get_width()*dv.get_format()->get_height();
 			unsigned char* dst = dv.get_ptr<unsigned char>();
 			unsigned char s = (int)depth_scale;
-			for (unsigned int i=0; i<n; ++i, ++dst)
+			for (size_t i=0; i<n; ++i, ++dst)
 				*dst *= s;
 		}
 		image_writer w(file_name);
@@ -994,13 +994,13 @@ float blue[4]      = { 0, 0, 1, 1 };
 void compute_face_normals(const float* vertices, float* normals, const int* vertex_indices, int* normal_indices, int nr_faces, int face_degree)
 {
 	for (int i = 0; i < nr_faces; ++i) {
-		context::vec3& normal = reinterpret_cast<context::vec3&>(normals[3 * i]);
+		vec3& normal = reinterpret_cast<vec3&>(normals[3 * i]);
 		normal.zeros();
-		context::vec3 reference_pnt = *reinterpret_cast<const context::vec3*>(vertices + 3 * vertex_indices[face_degree*i + face_degree - 1]);
-		context::vec3 last_difference;
+		vec3 reference_pnt = *reinterpret_cast<const vec3*>(vertices + 3 * vertex_indices[face_degree*i + face_degree - 1]);
+		vec3 last_difference;
 		last_difference.zeros();
 		for (int j = 0; j < face_degree; ++j) {
-			context::vec3 new_difference = *reinterpret_cast<const context::vec3*>(vertices + 3 * vertex_indices[face_degree*i + j]) - reference_pnt;
+			vec3 new_difference = *reinterpret_cast<const vec3*>(vertices + 3 * vertex_indices[face_degree*i + j]) - reference_pnt;
 			normal += cross(last_difference, new_difference);
 			last_difference = new_difference;
 		}
@@ -1568,7 +1568,7 @@ const cgv::media::illum::surface_material* context::get_current_material() const
 }
 
 /// return current color
-const context::rgba& context::get_color() const
+const rgba& context::get_color() const
 {
 	return current_color;
 }
@@ -1756,7 +1756,7 @@ const std::vector<window_transformation>& context::get_window_transformation_arr
 }
 
 /// return a homogeneous 4x4 matrix to transform clip to window coordinates, optionally specify for the case of multiple viewports/depth ranges
-context::dmat4 context::get_window_matrix(unsigned array_index) const
+dmat4 context::get_window_matrix(unsigned array_index) const
 {
 	if (array_index >= window_transformation_stack.top().size()) {
 		std::string message("context::get_window_matrix() ... attempt to query window matrix with array index ");
@@ -1778,17 +1778,17 @@ context::dmat4 context::get_window_matrix(unsigned array_index) const
 	return M;
 }
 /// return a homogeneous 4x4 matrix to transfrom from model to window coordinates, i.e. the product of modelview, projection and device matrix in reversed order (window_matrix*projection_matrix*modelview_matrix)
-context::dmat4 context::get_modelview_projection_window_matrix(unsigned array_index) const
+dmat4 context::get_modelview_projection_window_matrix(unsigned array_index) const
 {
 	return get_window_matrix(array_index)*get_projection_matrix()*get_modelview_matrix();
 }
 
 //! compute model space 3D point from the given window space point and the given modelview_projection_window matrix
-context::vec3 context::get_model_point(const dvec3& p_window, const dmat4& modelview_projection_window_matrix) 
+vec3 context::get_model_point(const dvec3& p_window, const dmat4& modelview_projection_window_matrix) 
 {
-	dmat_type A(4, 4, &modelview_projection_window_matrix(0, 0));
-	dvec_type x;
-	dvec_type b(p_window(0), p_window(1), p_window(2), 1.0);
+	dmatn A(4, 4, &modelview_projection_window_matrix(0, 0));
+	dvecn x;
+	dvecn b(p_window(0), p_window(1), p_window(2), 1.0);
 	svd_solve(A, b, x);
 	return vec3(float(x(0) / x(3)), float(x(1) / x(3)), float(x(2) / x(3)));
 }
@@ -1806,7 +1806,7 @@ void context::set_cursor(int x, int y)
 }
 
 /// transform point p into cursor coordinates and put x and y coordinates into the passed variables
-void context::put_cursor_coords(const vec_type& p, int& x, int& y) const
+void context::put_cursor_coords(const vecn& p, int& x, int& y) const
 {
 	dvec4 p4(0, 0, 0, 1);
 	for (unsigned int c = 0; c < p.size(); ++c)
@@ -1819,7 +1819,7 @@ void context::put_cursor_coords(const vec_type& p, int& x, int& y) const
 }
 
 /// sets the current text ouput position
-void context::set_cursor(const vec_type& pos, 
+void context::set_cursor(const vecn& pos, 
 		const std::string& text, TextAlignment ta,
 		int x_offset, int y_offset)
 {
@@ -1852,7 +1852,7 @@ void context::get_cursor(int& x, int& y) const
 }
 
 /// return homogeneous 4x4 matrix, which transforms from world to device space
-context::dmat4 context::get_modelview_projection_device_matrix() const
+dmat4 context::get_modelview_projection_device_matrix() const
 {
 	return get_window_matrix()*get_projection_matrix()*get_modelview_matrix();
 }

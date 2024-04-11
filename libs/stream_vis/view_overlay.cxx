@@ -21,10 +21,10 @@ namespace stream_vis {
 
 	view_overlay::view_overlay()
 	{
-		set_overlay_alignment(AO_START, AO_START);
-		set_overlay_stretch(SO_BOTH);
-		set_overlay_margin(ivec2(-3));
-		set_overlay_size(ivec2(600u, 600u));
+		set_alignment(AO_START, AO_START);
+		set_stretch(SO_BOTH);
+		set_margin(cgv::ivec2(-3));
+		set_size(cgv::ivec2(600u, 600u));
 	}
 	void view_overlay::add_plot(int pi, cgv::plot::plot_base* plot_ptr)
 	{
@@ -32,16 +32,17 @@ namespace stream_vis {
 	}
 	void view_overlay::init_frame(cgv::render::context& ctx)
 	{
-		if (ensure_overlay_layout(ctx))
+		if (ensure_layout(ctx))
 			update_views();
 	}
 	void view_overlay::draw(cgv::render::context& ctx)
 	{
-		if (!show)
+		// TODO: Due to recent changes this check should not be necessary anymore. Test this and remove the guard if applicable.
+		if (!is_visible())
 			return;
-		ivec4 vp;
-		(ivec2&)vp = get_overlay_position();
-		((ivec2*)&vp)[1] = get_overlay_size();
+		cgv::ivec4 vp;
+		(cgv::ivec2&)vp = get_rectangle().position;
+		((cgv::ivec2*)&vp)[1] = get_rectangle().size;
 		float aspect = (float)vp[2]/ vp[3];
 		ctx.push_window_transformation_array();
 		ctx.push_projection_matrix();

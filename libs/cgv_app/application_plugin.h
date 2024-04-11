@@ -63,6 +63,19 @@ public:
 		return ptr;
 	}
 
+	/// @brief Unregisters an overlay instance that is a child of this group.
+	/// 
+	/// @param ptr the overlay pointer.
+	/// @param name the name of the overlay instance.
+	/// @return the number of removed children.
+	unsigned unregister_overlay(overlay_ptr ptr) {
+		unsigned count = cgv::base::group::remove_child(ptr);
+		auto it = std::find(overlays.begin(), overlays.end(), ptr);
+		if(it != overlays.end())
+			overlays.erase(it);
+		return count;
+	}
+
 	/// @brief Final implementation of event_handler::handle() to support event handling of registered overlays.
 	/// 
 	/// Implement handle_event to handle any events that are passed to the instance of this class.

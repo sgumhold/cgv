@@ -44,7 +44,7 @@ namespace cgv {
 				{
 					// swap order of rows
 					size_t row_size = get_entry_size() * get_width();
-					unsigned h = get_height();
+					unsigned h = (unsigned)get_height();
 					for (unsigned y = 0; y < (h - 1) / 2; ++y) {
 						std::swap_ranges(dv.get_ptr<char>() + y*row_size, dv.get_ptr<char>() + (y + 1)*row_size, dv.get_ptr<char>() + (h - y - 1)*row_size);
 					}
@@ -67,8 +67,8 @@ namespace cgv {
 				/// constructs a copy of given image
 				void copy(const image& I)
 				{
-					int w = I.get_width();
-					int h = I.get_height();
+					int w = (int)I.get_width();
+					int h = (int)I.get_height();
 
 					// copy format and set dimensions
 					*static_cast<cgv::data::data_format*>(this) = I;
@@ -89,8 +89,8 @@ namespace cgv {
 				/// construct a resized smaller version of given image using area averaging
 				void downscale(unsigned int size_x, unsigned int size_y, const image& I)
 				{
-					int w = I.get_width();
-					int h = I.get_height();
+					int w = (int)I.get_width();
+					int h = (int)I.get_height();
 					float wf = float(w);
 					float hf = float(h);
 					float x_scale = float(size_x) / wf;
@@ -154,13 +154,13 @@ namespace cgv {
 				/// downsample image in x and y direction by given downsampling factors fx and fy
 				void downsample(unsigned fx, unsigned fy, const image& I)
 				{
-					downscale(I.get_width() / fx, I.get_height() / fy, I);
+					downscale((unsigned)I.get_width() / fx, (unsigned)I.get_height() / fy, I);
 				}
 				/// construct a resized larger version of given image using bilinear interpolation
 				void upscale(unsigned int size_x, unsigned int size_y, const image& I)
 				{
-					int w = I.get_width();
-					int h = I.get_height();
+					int w = (int)I.get_width();
+					int h = (int)I.get_height();
 					
 					// copy format and set upscaled dimensions
 					*static_cast<cgv::data::data_format*>(this) = I;
@@ -227,8 +227,8 @@ namespace cgv {
 				/// construct a resized version of given image using the down- and upscale methods
 				void resize(unsigned size_x, unsigned size_y, const image& I)
 				{
-					unsigned w = I.get_width();
-					unsigned h = I.get_height();
+					unsigned w = (int)I.get_width();
+					unsigned h = (int)I.get_height();
 					
 					// cannot produce an image with resolution of zero in either dimension
 					assert(size_x != 0);

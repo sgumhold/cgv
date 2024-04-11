@@ -8,7 +8,7 @@
 namespace cgv {
 	namespace nui {
 		/// internal interface only used for spatial dispatcher to provide information from base class (e.g. vr_scene) for unprojecting pixels
-		class CGV_API transformed : public cgv::render::render_types
+		class CGV_API transformed
 		{
 		protected:
 			dmat4 MVPW;

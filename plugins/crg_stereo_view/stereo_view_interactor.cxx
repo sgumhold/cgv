@@ -269,7 +269,7 @@ void stereo_view_interactor::stream_stats(std::ostream& os)
 {
 	os << "stereo_view_interactor:\n\a";
 
-	oprintf(os, "y_view_angle=%.1f°, y_extent=%.1f, inp_z_range:[%.2f,%.2f]",
+	oprintf(os, "y_view_angle=%.1fÂ°, y_extent=%.1f, inp_z_range:[%.2f,%.2f]",
 		y_view_angle, y_extent_at_focus, z_near, z_far);
 	if (scene_extent.is_valid()) {
 		oprintf(os, " adapted to scene: [%.2f,%.2f]\n", z_near_derived, z_far_derived);
@@ -340,9 +340,9 @@ void stereo_view_interactor::disable_viewport_splitting()
 	do_viewport_splitting = false;
 }
 
-stereo_view_interactor::ivec4 stereo_view_interactor::split_viewport(const ivec4 vp, int col_idx, int row_idx) const
+cgv::ivec4 stereo_view_interactor::split_viewport(const cgv::ivec4 vp, int col_idx, int row_idx) const
 {
-	ivec4 new_vp;
+	cgv::ivec4 new_vp;
 	new_vp[2] = vp[2] / nr_viewport_columns;
 	new_vp[0] = vp[0] + col_idx * new_vp[2];
 	new_vp[3] = vp[3] / nr_viewport_rows;
@@ -361,8 +361,8 @@ void stereo_view_interactor::activate_split_viewport(cgv::render::context& ctx, 
 {
 	if (!do_viewport_splitting)
 		return;
-	const ivec4& current_vp = ctx.get_window_transformation_array().front().viewport;
-	ivec4 new_vp = split_viewport(current_vp, col_index, row_index);
+	const cgv::ivec4& current_vp = ctx.get_window_transformation_array().front().viewport;
+	cgv::ivec4 new_vp = split_viewport(current_vp, col_index, row_index);
 	ctx.push_window_transformation_array();
 	ctx.set_viewport(new_vp);
 	double aspect = (double)new_vp[2] / new_vp[3];
@@ -384,7 +384,7 @@ void stereo_view_interactor::deactivate_split_viewport(cgv::render::context& ctx
 	if (!do_viewport_splitting)
 		return;
 	ctx.pop_window_transformation_array();
-	const ivec4& current_vp = ctx.get_window_transformation_array().front().viewport;
+	const cgv::ivec4& current_vp = ctx.get_window_transformation_array().front().viewport;
 	double aspect = (double)current_vp[2] / current_vp[3];
 	gl_set_projection_matrix(ctx, current_e, aspect);
 	gl_set_modelview_matrix(ctx, current_e, aspect, *this);
@@ -1063,9 +1063,9 @@ void stereo_view_interactor::draw_mouse_pointer_as_arrow(cgv::render::context& c
 {
 	static cgv::media::illum::surface_material smp_mat_visible;
 	static cgv::media::illum::surface_material smp_mat_hidden;
-	smp_mat_visible.set_diffuse_reflectance(rgb(1, 1, 1));
-	smp_mat_hidden.set_diffuse_reflectance(rgb(0.3f, 0.3f, 0.3f));
-	smp_mat_hidden.set_emission(rgb(0.3f, 0.3f, 0.3f));
+	smp_mat_visible.set_diffuse_reflectance(cgv::rgb(1, 1, 1));
+	smp_mat_hidden.set_diffuse_reflectance(cgv::rgb(0.3f, 0.3f, 0.3f));
+	smp_mat_hidden.set_emission(cgv::rgb(0.3f, 0.3f, 0.3f));
 
 	double z0_D = get_z_D(-get_parallax_zero_depth(), z_near_derived, z_far_derived);
 
@@ -1225,6 +1225,11 @@ void stereo_view_interactor::on_stereo_change()
 /// set the current projection matrix
 void stereo_view_interactor::gl_set_projection_matrix(cgv::render::context& ctx, GlsuEye e, double aspect)
 {
+	if (swap_eyes)
+		e = GlsuEye(int(-e));
+	bool flip_vert = ((e == GLSU_LEFT) ? flip_x[0] : ((e == GLSU_RIGHT) ? flip_x[1] : false));
+	bool flip_hori = ((e == GLSU_LEFT) ? flip_y[0] : ((e == GLSU_RIGHT) ? flip_y[1] : false));
+
 	if (adapt_aspect_ratio_to_stereo_mode) {
 		if (stereo_mode == GLSU_SPLIT_HORIZONTALLY)
 			aspect *= 0.5;
@@ -1240,11 +1245,22 @@ void stereo_view_interactor::gl_set_projection_matrix(cgv::render::context& ctx,
 		else
 			P = cgv::math::stereo_perspective_screen4<double>(e, eye_distance, y_extent_at_focus * aspect, y_extent_at_focus, get_parallax_zero_depth(), z_near_derived, z_far_derived);
 	}
+	if (flip_vert || flip_hori) {
+		dmat4 F;
+		F.identity();
+		if (flip_vert)
+			F(0, 0) = -1;
+		if (flip_hori)
+			F(1, 1) = -1;
+		P = F*P;
+	}
 	ctx.set_projection_matrix(P);
 }
 
 void stereo_view_interactor::gl_set_modelview_matrix(cgv::render::context& ctx, GlsuEye e, double aspect, const cgv::render::view& view)
 {
+	if (swap_eyes)
+		e = GlsuEye(int(-e));
 	if (adapt_aspect_ratio_to_stereo_mode) {
 		if (stereo_mode == GLSU_SPLIT_HORIZONTALLY)
 			aspect *= 0.5;
@@ -1510,6 +1526,11 @@ void stereo_view_interactor::create_gui()
 		add_member_control(this, "Mono Mode", mono_mode, "dropdown", "enums='left=-1,center,right'");
 		add_member_control(this, "Stereo Mode", stereo_mode, "dropdown", "enums='vsplit,hsplit,anaglyph,quad_buffer'");
 		add_member_control(this, "Adapt Aspect Ratio", adapt_aspect_ratio_to_stereo_mode, "check");
+		add_member_control(this, "Swap Eyes", swap_eyes, "toggle");
+		add_member_control(this, "XflipLeft", flip_x[0], "toggle", "w=96", " ");
+		add_member_control(this, "XflipRight", flip_x[1], "toggle", "w=96");
+		add_member_control(this, "YflipLeft", flip_y[0], "toggle", "w=96", " ");
+		add_member_control(this, "YflipRight", flip_y[1], "toggle", "w=96");
 		add_member_control(this, "Anaglyph Config", anaglyph_config, "dropdown", "enums='" AC_ENUMS "'");
 		add_member_control(this, "Eye Distance", eye_distance, "value_slider", "min=0.001;max=0.5;ticks=true;step=0.00001;log=true");
 		add_member_control(this, "Parallax Zero Scale", parallax_zero_scale, "value_slider", "min=0.03;max=1;ticks=true;step=0.001;log=true");
@@ -1697,6 +1718,11 @@ bool stereo_view_interactor::self_reflect(cgv::reflect::reflection_handler& srh)
 		srh.reflect_member("up_dir_y", view_up_dir(1)) &&
 		srh.reflect_member("up_dir_z", view_up_dir(2)) &&
 		srh.reflect_member("up_dir", view_up_dir) &&
+		srh.reflect_member("swap_eyes", swap_eyes) &&
+		srh.reflect_member("flip_x_left", flip_x[0]) &&
+		srh.reflect_member("flip_x_right", flip_x[1]) &&
+		srh.reflect_member("flip_y_left", flip_y[0]) &&
+		srh.reflect_member("flip_y_right", flip_y[1]) &&
 		srh.reflect_member("y_view_angle", y_view_angle) &&
 		srh.reflect_member("extent", y_extent_at_focus) &&
 		srh.reflect_member("z_near", z_near) &&

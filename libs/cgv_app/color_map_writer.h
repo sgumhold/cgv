@@ -4,7 +4,6 @@
 
 #include <cgv/media/image/image_writer.h>
 #include <cgv/render/color_map.h>
-#include <cgv/render/render_types.h>
 #include <cgv/utils/file.h>
 
 #include <tinyxml2/tinyxml2.h>
@@ -12,7 +11,7 @@
 namespace cgv {
 namespace app {
 
-class color_map_writer : cgv::render::render_types {
+class color_map_writer {
 private:
 	static void write_color_map(tinyxml2::XMLPrinter& printer, const std::string& name, const cgv::render::color_map& color_map) {
 
@@ -105,7 +104,7 @@ public:
 			data_8[4 * i + 3] = has_opacity ? static_cast<uint8_t>(255.0f * col.alpha()) : 255;
 		}
 
-		cgv::data::data_view dv = cgv::data::data_view(new cgv::data::data_format(resolution, 1, TI_UINT8, cgv::data::CF_RGBA), data_8.data());
+		cgv::data::data_view dv = cgv::data::data_view(new cgv::data::data_format((unsigned)resolution, 1, TI_UINT8, cgv::data::CF_RGBA), data_8.data());
 
 		cgv::media::image::image_writer writer(file_name);
 

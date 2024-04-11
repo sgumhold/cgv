@@ -26,6 +26,10 @@ public:
 	};
 
 protected:
+	using vec2 = cgv::vec2;
+	using ivec2 = cgv::ivec2;
+	using rgb = cgv::rgb;
+
 	struct {
 		const int padding = 13; // 10px plus 3px border
 		const int timeline_height = 30;
@@ -93,7 +97,7 @@ protected:
 	float new_duration = 1.0f;
 
 	cgv::g2d::generic_2d_renderer line_renderer;
-	DEFINE_GENERIC_RENDER_DATA_CLASS(line_geometry, 1, vec2, position);
+	DEFINE_GENERIC_RENDER_DATA_CLASS(line_geometry, 1, cgv::vec2, position);
 	line_geometry lines;
 
 	cgv::g2d::draggable_collection<cgv::g2d::draggable> scrollbar;

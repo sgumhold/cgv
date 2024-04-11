@@ -79,13 +79,13 @@ bool keyframe_editor_overlay::handle_event(cgv::gui::event& e) {
 		if(me.get_button() == cgv::gui::MB_LEFT_BUTTON && ma == cgv::gui::MA_PRESS) {
 			ivec2 local_mouse_position = get_local_mouse_pos(ivec2(me.get_x(), me.get_y()));
 
-			if(layout.marker_constraint.is_inside(local_mouse_position))
+			if(layout.marker_constraint.contains(local_mouse_position))
 				set_frame(position_to_frame(local_mouse_position.x() + layout.timeline_offset));
 			
 			if(!scrollbar.empty()) {
 				auto& handle = scrollbar[0];
 
-				if(layout.scrollbar_constraint.is_inside(local_mouse_position) && !handle.is_inside(local_mouse_position)) {
+				if(layout.scrollbar_constraint.contains(local_mouse_position) && !handle.contains(local_mouse_position)) {
 					handle.position = local_mouse_position.x() - 0.5f * handle.w();
 					handle.apply_constraint(layout.scrollbar_constraint);
 

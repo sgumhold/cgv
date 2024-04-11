@@ -18,6 +18,8 @@
 class CGV_API gl_point_cloud_drawable : public cgv::render::drawable, public point_cloud_types
 {
 protected:
+	using rgba = cgv::rgba;
+
 	point_cloud pc;
 
 	cgv::render::surfel_render_style surfel_style;

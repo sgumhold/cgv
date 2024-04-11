@@ -34,7 +34,7 @@ class image_view :
 	public provider
 {
 protected:
-	vec2 range;
+	cgv::vec2 range;
 	size_t slice_size = 0;
 	cgv::data::data_format df;
 	cgv::data::data_view dv;

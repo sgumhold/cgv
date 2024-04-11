@@ -4,7 +4,7 @@
 #include <cgv/render/drawable.h>
 #include <cg_nui/focusable.h>
 #include <cg_nui/pointable.h>
-#include <cg_nui/grabable.h>
+#include <cg_nui/grabbable.h>
 #include <cgv/gui/provider.h>
 #include <cgv_gl/box_renderer.h>
 #include <cgv_gl/sphere_renderer.h>
@@ -13,10 +13,14 @@ class simple_object :
 	public cgv::base::node,
 	public cgv::render::drawable,
 	public cgv::nui::focusable,
-	public cgv::nui::grabable,
+	public cgv::nui::grabbable,
 	public cgv::nui::pointable,
 	public cgv::gui::provider
 {
+	using vec3 = cgv::vec3;
+	using quat = cgv::quat;
+	using rgb = cgv::rgb;
+
 	cgv::render::box_render_style brs;
 	cgv::render::sphere_render_style srs;
 	vec3 debug_point;

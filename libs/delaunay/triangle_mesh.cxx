@@ -105,7 +105,7 @@ typename triangle_mesh<G,C>::point_location_info
 	if (this->C.empty()) {
 		std::cerr << "cannot locate the given point because no triangle has been specified" << std::endl;
 		pli.is_outside = true;
-		pli.ci = -1;
+		pli.ci = /*-1*/0x7fffffff; // <-- using "-1" instead of this bitpattern would be more portable, but causes unavoidable overflow warnings in some compilers (including GCC and Clang)
 		return pli;
 	}
 	unsigned int ci = start_ci;

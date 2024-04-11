@@ -25,7 +25,7 @@ namespace cgv {
 
 		
 		//stores and manages point buffers modified by the reduce step
-		class CGV_API clod_point_buffer_manager : public cgv::render::render_types
+		class CGV_API clod_point_buffer_manager
 		{
 			/// buffer contains all points that should be drawn on screen
 			GLuint points;
@@ -91,7 +91,7 @@ namespace cgv {
 
 
 		//*  */
-		class CGV_API clod_point_renderer : public render_types {
+		class CGV_API clod_point_renderer {
 		public:
 			// internal point format, made to fit inside 16 bytes
 			struct Point {

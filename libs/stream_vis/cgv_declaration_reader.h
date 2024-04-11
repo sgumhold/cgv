@@ -16,9 +16,9 @@ namespace stream_vis {
 		bool parse_int(const std::string& name, int& i);
 		bool parse_float(const std::string& name, float& f);
 		bool parse_double(const std::string& name, double& d);
-		bool parse_color(const std::string& name, rgb& color);
-		bool parse_color(const std::string& name, rgba& color);
-		bool parse_quat(const std::string& name, quat& quat);
+		bool parse_color(const std::string& name, cgv::rgb& color);
+		bool parse_color(const std::string& name, cgv::rgba& color);
+		bool parse_quat(const std::string& name, cgv::quat& quat);
 		bool parse_vecn(const std::string& name, float* v, uint32_t dim);
 		bool parse_dvecn(const std::string& name, double* v, uint32_t dim);
 		bool parse_ivecn(const std::string& name, int32_t* v, uint32_t dim);

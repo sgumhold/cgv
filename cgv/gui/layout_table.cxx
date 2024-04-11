@@ -151,7 +151,7 @@ namespace cgv {
 
 			true_w = w;
 			true_h = h;
-
+			
 			is_wrong_size = false;
 
 			// calculate the space needed for the border and inner spacings
@@ -195,7 +195,6 @@ namespace cgv {
 				distribute_space(rows, nr_rows, true_h - border_height);
 				
 				for (int r=0; r<nr_rows; r++) {
-
 					for (int c=0; c<nr_cols; c++) {
 						base_ptr cur_child = get_child(c+r*nr_cols);
 
@@ -270,7 +269,6 @@ namespace cgv {
 				}
 				pos_y+=rows[r].real_size + spacings.vertical.element;
 			}
-
 
 			if (is_wrong_size) {
 				do_not_layout = true;

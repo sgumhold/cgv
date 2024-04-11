@@ -1,14 +1,13 @@
 #pragma once
 
 #include <cgv/render/context.h>
-#include <cgv/render/render_types.h>
 #include <cgv/render/shader_library.h>
 #include <cgv_gl/gl/gl_context.h>
 
 namespace cgv {
 namespace g2d {
 
-struct shape2d_style : cgv::render::render_types {
+struct shape2d_style {
 	// placement options
 	bool position_is_center = false;
 	// appearance options
@@ -27,6 +26,8 @@ struct shape2d_style : cgv::render::render_types {
 	bool use_texture_alpha = true;
 	bool use_blending = false;
 	bool use_smooth_feather = false;
+
+	virtual ~shape2d_style() {}
 
 	virtual void apply(cgv::render::context & ctx, cgv::render::shader_program& prog) const {
 		prog.set_uniform(ctx, "position_is_center", position_is_center);
@@ -52,10 +53,20 @@ struct shape2d_style : cgv::render::render_types {
 struct circle2d_style : public shape2d_style {
 	bool use_polar_texcoords = false;
 
-	virtual void apply(cgv::render::context & ctx, cgv::render::shader_program& prog) const {
+	void apply(cgv::render::context & ctx, cgv::render::shader_program& prog) const override {
 		shape2d_style::apply(ctx, prog);
 
 		prog.set_uniform(ctx, "use_polar_texcoords", use_polar_texcoords);
+	}
+};
+
+struct ring2d_style : public shape2d_style {
+	float thickness = 0.5f;
+
+	void apply(cgv::render::context& ctx, cgv::render::shader_program& prog) const override {
+		shape2d_style::apply(ctx, prog);
+
+		prog.set_uniform(ctx, "thickness", thickness);
 	}
 };
 
@@ -64,7 +75,7 @@ struct line2d_style : public shape2d_style {
 	float dash_length = 0.0f;
 	float dash_ratio = 0.5f;
 
-	virtual void apply(cgv::render::context & ctx, cgv::render::shader_program& prog) const {
+	void apply(cgv::render::context & ctx, cgv::render::shader_program& prog) const override {
 		shape2d_style::apply(ctx, prog);
 
 		prog.set_uniform(ctx, "width", width);
@@ -80,7 +91,7 @@ struct arrow2d_style : public shape2d_style {
 	float relative_head_length = 0.5f;
 	bool head_length_is_relative = true;
 
-	virtual void apply(cgv::render::context & ctx, cgv::render::shader_program& prog) const {
+	void apply(cgv::render::context & ctx, cgv::render::shader_program& prog) const override {
 		shape2d_style::apply(ctx, prog);
 
 		prog.set_uniform(ctx, "stem_width", stem_width);
@@ -104,7 +115,7 @@ struct grid2d_style : public shape2d_style {
 		feather_origin = 0.0f;
 	}
 
-	virtual void apply(cgv::render::context & ctx, cgv::render::shader_program& prog) const {
+	void apply(cgv::render::context & ctx, cgv::render::shader_program& prog) const override {
 		shape2d_style::apply(ctx, prog);
 
 		prog.set_uniform(ctx, "pattern", static_cast<int>(pattern));
@@ -114,36 +125,16 @@ struct grid2d_style : public shape2d_style {
 
 struct text2d_style : public shape2d_style {
 	float font_size = 32.0f;
-	bool enable_subpixel_rendering = false;
 
 	text2d_style() : shape2d_style() {
 		feather_origin = 0.0f;
+		use_blending = true;
 	}
 
-	virtual void apply(cgv::render::context & ctx, cgv::render::shader_program& prog) const {
+	void apply(cgv::render::context & ctx, cgv::render::shader_program& prog) const override {
 		shape2d_style::apply(ctx, prog);
 
-		prog.set_uniform(ctx, "enable_subpixel_rendering", enable_subpixel_rendering);
 		prog.set_uniform(ctx, "font_size", font_size);
-	}
-
-	static text2d_style preset_default(const rgb& fill_color = rgb(0.0f)) {
-		text2d_style s;
-		s.fill_color = rgba(fill_color, 1.0f);
-		s.use_blending = true;
-		return s;
-	}
-
-	static text2d_style preset_clear(const rgb& fill_color = rgb(0.0f)) {
-		text2d_style s = preset_default(fill_color);
-		s.enable_subpixel_rendering = true;
-		return s;
-	}
-
-	static text2d_style preset_stylized(const rgb& fill_color = rgb(0.0f)) {
-		text2d_style s = preset_default(fill_color);
-		s.feather_origin = 0.5f;
-		return s;
 	}
 };
 

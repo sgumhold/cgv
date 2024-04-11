@@ -1,0 +1,26 @@
+@=
+projectType="application_plugin";
+projectName="physics_test";
+projectGUID="E5FAF1E1-FDDB-4715-8A47-76CCEA40A459";
+addProjectDirs=[CGV_DIR."/libs", CGV_DIR."/plugins", CGV_DIR."/3rd"];
+addIncDirs=[
+	INPUT_DIR,
+	CGV_DIR."/libs",
+	CGV_BUILD_DIR."/".projectName
+];
+addProjectDeps=[
+	"cgv_utils", "cgv_type", "cgv_reflect", "cgv_data", "cgv_signal", "cgv_base", "cmi_io", "cgv_media", "cgv_gui", "cgv_render", "cgv_os",
+	"cgv_reflect_types", "cgv_gl", "glew", "cg_fltk", "crg_stereo_view", "crg_light", "crg_grid", "cg_icons", "cgv_viewer", "cgv_app", "cgv_post",
+	"physics"
+];
+
+workingDirectory=INPUT_DIR;
+
+addSharedDefines=["PHYSICS_TEST_EXPORTS"];
+
+cppLanguageStandard="stdcpp17";
+
+addCommandLineArguments=[
+	'config:"'.INPUT_DIR.'/config.def"',
+	after("SHADER_PATHS", "cg_fltk")
+];

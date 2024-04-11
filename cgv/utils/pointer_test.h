@@ -2,8 +2,6 @@
 
 #include <vector>
 
-//#include <cgv/render/render_types.h>
-
 namespace cgv {
 namespace utils {
 

@@ -88,6 +88,16 @@ void vr_view_interactor::draw_vr_kits(bool do_draw)
 		on_set(&vis_type);
 	}
 }
+
+/// set whether to draw controllers
+void vr_view_interactor::draw_vr_controllers(bool do_draw)
+{
+	if ((controller_vis_type != VVT_NONE) != do_draw) {
+		controller_vis_type = do_draw ? VVT_MESH : VVT_NONE;
+		on_set(&controller_vis_type);
+	}	
+}
+
 /// whether to draw action zone
 void vr_view_interactor::draw_action_zone(bool do_draw)
 {
@@ -1038,8 +1048,8 @@ bool vr_view_interactor::self_reflect(cgv::reflect::reflection_handler& srh)
 #include <cgv/base/register.h>
 
 /// register a newly created cube with the name "cube1" as constructor argument
-extern cgv::base::object_registration_1<vr_view_interactor,const char*> 
- obj1("vr interactor", "registration of vr interactor");
+cgv::base::object_registration_1<vr_view_interactor,const char*> 
+ vr_interactor_reg("vr interactor", "registration of vr interactor");
 
 // make sure shaders are embedded for single executable builds
 #ifdef REGISTER_SHADER_FILES

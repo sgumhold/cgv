@@ -1,5 +1,7 @@
 #pragma once
 
+#include <stddef.h>
+
 #include <cgv/data/lib_begin.h>
 
 namespace cgv {
@@ -23,26 +25,26 @@ class CGV_API packing_info
 {
 protected:
 	bool is_packed   : 1;
-	unsigned int bd0 : 6;
-	unsigned int bd1 : 6;
-	unsigned int bd2 : 6;
-	unsigned int bd3 : 6;
-	unsigned int ca  : 6;
+	unsigned bd0 : 6;
+	unsigned bd1 : 6;
+	unsigned bd2 : 6;
+	unsigned bd3 : 6;
+	unsigned ca  : 6;
 	///
-	bool prepare_bit_operation(unsigned int ci, void* ptr, unsigned int &off, unsigned int &bd, unsigned int* &iptr) const;
-	bool prepare_bit_operation(unsigned int ci, const void* ptr, unsigned int &off, unsigned int &bd, const unsigned int* &iptr) const;
-	unsigned int get_bit_offset(unsigned int ci) const;
+	bool prepare_bit_operation(unsigned ci, void* ptr, unsigned &off, unsigned &bd, unsigned* &iptr) const;
+	bool prepare_bit_operation(unsigned ci, const void* ptr, unsigned &off, unsigned &bd, const unsigned* &iptr) const;
+	unsigned int get_bit_offset(unsigned ci) const;
 public:
 	/** construct packing information from alignment and bit depths. If no bit depths are given, the components are not
 		packed and the alignment is in bytes. If one or more depths are specified, the alignment is in bits. If exactly
 		one depth is given, all component bit depths are set to this bit depth */
-	packing_info(unsigned int align = 1, unsigned int d0 = 0, unsigned int d1 = 0, unsigned int d2 = 0, unsigned int d3 = 0);
+	packing_info(unsigned align = 1, unsigned d0 = 0, unsigned d1 = 0, unsigned d2 = 0, unsigned d3 = 0);
 	/// clear packing info information
 	void clear();
 	/// return the bit depth of the ci-th component
-	unsigned int get_bit_depth(unsigned int ci) const;
+	unsigned get_bit_depth(unsigned ci) const;
 	/// set the bit depth of the ci-th component
-	void set_bit_depth(unsigned int ci, unsigned int depth);
+	void set_bit_depth(unsigned ci, unsigned depth);
 	/// return whether packing is enabled
 	bool is_packing() const;
 	/// set the packing flag
@@ -50,17 +52,17 @@ public:
 	/// return the component alignment in bits in the packed case and in bytes in the unpacked case
 	unsigned int get_component_alignment() const;
 	/// set the component alignment in bits in the packed case and in bytes in the unpacked case
-	void set_component_alignment(unsigned int a);
+	void set_component_alignment(unsigned a);
 	/// return the next integer larger or equal to v which is dividable by a
-	static unsigned int align(unsigned int v, unsigned int a);
+	static size_t align(size_t v, unsigned a);
 	/// return the ci-th component of the data entry pointed to by the given pointer of a signed packed component
-	int get_signed(unsigned int ci, const void* ptr) const;
+	int get_signed(unsigned ci, const void* ptr) const;
 	/// return the ci-th component of the data entry pointed to by the given pointer of an unsigned packed component
-	unsigned int get_unsigned(unsigned int ci, const void* ptr) const;
+	unsigned int get_unsigned(unsigned ci, const void* ptr) const;
 	/// set the ci-th component of the data entry pointed to by the given pointer of a signed packed component
-	bool set_signed(unsigned int ci, void* ptr, int v) const;
+	bool set_signed(unsigned ci, void* ptr, int v) const;
 	/// set the ci-th component of the data entry pointed to by the given pointer of an unsigned packed component
-	bool set_unsigned(unsigned int ci, void* ptr, unsigned int v) const;
+	bool set_unsigned(unsigned ci, void* ptr, unsigned v) const;
 	/// equal comparison
 	bool operator == (const packing_info& pi) const;
 	/// unequal comparison 

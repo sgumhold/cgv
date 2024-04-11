@@ -19,7 +19,7 @@ double gen_rand()
 double gen_rand_high_res()
 {
 	const double rand_scale = (2.0/RAND_MAX)/RAND_MAX;
-	return rand_scale*((double)rand()*(RAND_MAX+1)+rand())-1.0;
+	return rand_scale*(rand()*((double)RAND_MAX+1)+rand())-1.0;
 }
 
 template <typename C, class P>

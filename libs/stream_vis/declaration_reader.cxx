@@ -447,7 +447,7 @@ namespace stream_vis {
 		plot_info pi;
 		pi.dim = dim;
 		pi.name = name;
-		pi.fixed_domain = box3(vec3(0.0f), vec3(1.0f));
+		pi.fixed_domain = cgv::box3(cgv::vec3(0.0f), cgv::vec3(1.0f));
 		int nr_attributes = 0;
 		parse_int("nr_attributes", nr_attributes);
 		for (int i = 0; i < 2; ++i) {
@@ -464,16 +464,16 @@ namespace stream_vis {
 		if (dim == 2) {
 			auto* plot2d_ptr = new cgv::plot::plot2d(name, unsigned(nr_attributes));
 			pi.plot_ptr = plot2d_ptr;
-			vec2 ext = vec2(1.0f, 1.0f);
+			cgv::vec2 ext = cgv::vec2(1.0f, 1.0f);
 			parse_vec2("extent", ext);
-			vec2 ext_sca(0.0f);
+			cgv::vec2 ext_sca(0.0f);
 			if (parse_vec2("scaling", ext_sca))
 				pi.plot_ptr->set_extent_scaling(ext_sca[0], ext_sca[1]);
 			parse_bool("disable_depth_mask", plot2d_ptr->disable_depth_mask);
 			parse_float("dx", plot2d_ptr->sub_plot_delta[0]);
 			parse_float("dy", plot2d_ptr->sub_plot_delta[1]);
 			parse_float("dz", plot2d_ptr->sub_plot_delta[2]);
-			vec2 title_pos = vec2::from_vec(plot2d_ptr->get_domain_config_ptr()->title_pos);
+			cgv::vec2 title_pos = cgv::vec2::from_vec(plot2d_ptr->get_domain_config_ptr()->title_pos);
 			if (parse_vec2("title_pos", title_pos))
 				plot2d_ptr->get_domain_config_ptr()->title_pos = title_pos.to_vec();
 			parse_bool("multi_x_axis_mode", plot2d_ptr->multi_axis_modes[0]);
@@ -490,26 +490,26 @@ namespace stream_vis {
 		}
 		else {
 			pi.plot_ptr = new cgv::plot::plot3d(unsigned(nr_attributes));
-			vec3 ext;
+			cgv::vec3 ext;
 			if (parse_vec3("extent", ext))
 				pi.plot_ptr->set_extent(ext.to_vec());
-			vec3 ext_sca(0.0f);
+			cgv::vec3 ext_sca(0.0f);
 			if (parse_vec3("scaling", ext_sca))
 				pi.plot_ptr->set_extent_scaling(ext_sca[0], ext_sca[1], ext_sca[2]);
 			parse_int("out_of_range_mode_z", pi.plot_ptr->out_of_range_mode[2]);
 			parse_int("out_of_range_mode_a0", pi.plot_ptr->out_of_range_mode[3]);
 		}
-		vec3 center;
+		cgv::vec3 center;
 		get_value("title", pi.plot_ptr->get_domain_config_ptr()->title);
 		parse_int("title_font_face", (int&)pi.plot_ptr->get_domain_config_ptr()->title_ffa);
 		parse_float("title_font_size", pi.plot_ptr->get_domain_config_ptr()->title_font_size);
 		parse_color("title_color", pi.plot_ptr->get_domain_config_ptr()->title_color);
 		if (parse_vec3("center", center))
 			pi.plot_ptr->place_center(center);
-		vec2 leg_ctr;
+		cgv::vec2 leg_ctr;
 		if (parse_vec2("legend_center", leg_ctr))
-			pi.plot_ptr->legend_location = vec3(leg_ctr,0.0f);
-		vec2 extent;
+			pi.plot_ptr->legend_location = cgv::vec3(leg_ctr,0.0f);
+		cgv::vec2 extent;
 		if (parse_vec2("legend_extent", extent))
 			pi.plot_ptr->legend_extent = extent;
 
@@ -522,7 +522,7 @@ namespace stream_vis {
 		parse_int("out_of_range_mode_x", pi.plot_ptr->out_of_range_mode[0]);
 		parse_int("out_of_range_mode_y", pi.plot_ptr->out_of_range_mode[1]);
 		parse_color("domain_color", dom_cfg.color);
-		quat ori;
+		cgv::quat ori;
 		if (parse_quat("orientation", ori))
 			pi.plot_ptr->set_orientation(ori);
 		parse_float("label_font_size", dom_cfg.label_font_size);

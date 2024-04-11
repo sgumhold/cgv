@@ -1,9 +1,8 @@
 #include <cgv/base/node.h>
 #include <cgv/gui/provider.h>
 #include <cgv/gui/theme_info.h>
-#include <cgv/render/render_types.h>
 
-class gui_controls : public cgv::base::node, public cgv::render::render_types, public cgv::gui::provider {
+class gui_controls : public cgv::base::node, public cgv::gui::provider {
 protected:
 	struct {
 		float slider_value = 0.0f;
@@ -29,8 +28,8 @@ protected:
 	std::string dir_name;
 	std::string save_dir_name;
 
-	rgb rgb_color = rgb(0.0f);
-	rgba rgba_color = rgba(0.0f);
+	cgv::rgb rgb_color = cgv::rgb(0.0f);
+	cgv::rgba rgba_color = cgv::rgba(0.0f);
 
 	std::string str;
 

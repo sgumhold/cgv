@@ -7,6 +7,7 @@
 #pragma warning (disable:4311)
 #endif
 #include <fltk/Divider.h>
+#include <fltk/TextDisplay.h>
 #ifdef WIN32
 #pragma warning (default:4311)
 #endif
@@ -78,6 +79,66 @@ struct fltk_heading_decorator : public cgv::base::named, public fltk_base
 	}
 };
 
+struct fltk_text_decorator : public cgv::base::named, public fltk_base {
+	/// store instance of fltk base functionality class
+	CW<Widget>* w;
+
+	fltk_text_decorator(const std::string& name, int x, int y, int _w, int _h)
+		: cgv::base::named(name) {
+		w = new CW<Widget>(x, y, _w, _h, get_name().c_str());
+		w->flags(ALIGN_INSIDE_LEFT | ALIGN_WRAP);
+		w->user_data(static_cast<cgv::base::base*>(this));
+		w->labelsize(12);
+		w->box(NO_BOX);
+
+		resize(_w);
+	}
+	~fltk_text_decorator() {
+		delete w;
+	}
+	std::string get_type_name() const {
+		return "fltk_text_decorator";
+	}
+	std::string get_property_declarations() {
+		return fltk_base::get_property_declarations();
+	}
+	/// abstract interface for the setter
+	bool set_void(const std::string& property, const std::string& value_type, const void* value_ptr) {
+		
+		if(property == "w") {
+			resize(variant<int32_type>::get(value_type, value_ptr));
+			return true;
+		} else if(property == "h") {
+			// Ignore setting height since the text decorator will compute its own height.
+			// TODO: Maybe Allow setting a maximum height and cut off any teyt that overflows the box.
+			return true;
+		}
+
+		return fltk_base::set_void(w, this, property, value_type, value_ptr);
+	}
+	bool get_void(const std::string& property, const std::string& value_type, void* value_ptr) {
+		
+		return fltk_base::get_void(w, this, property, value_type, value_ptr);
+	}
+	void* get_user_data() const {
+		return w;
+	}
+	void resize(int width) {
+		int aw = width;
+		int ah = 0;
+		setfont(w->labelfont(), w->labelsize());
+		measure(get_name().c_str(), aw, ah, ALIGN_INSIDE_LEFT | ALIGN_WRAP);
+		// TODO: The returned height does not always cover all lines of wrapped text. Find the bug!
+		// Till then we just add some extra height.
+		ah += w->labelsize();
+		w->resize(width, ah);
+		w->layout();
+		
+		//set<int>("dw", aw);
+		set<int>("dh", ah);
+	}
+};
+
 struct fltk_separator_decorator : public cgv::base::named, public fltk_base
 {
 	/// store instance of fltk base functionality class
@@ -126,6 +187,8 @@ struct decorator_factory : public abst_decorator_factory
 	{
 		if (gui_type == "heading")
 			return base_ptr(new fltk_heading_decorator(label,x,y,w,h));
+		if (gui_type == "text")
+			return base_ptr(new fltk_text_decorator(label, x, y, w, h));
 		if (gui_type == "separator")
 			return base_ptr(new fltk_separator_decorator(label,x,y,w,h));
 		return base_ptr();

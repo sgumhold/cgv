@@ -30,7 +30,7 @@ enum VisualVariable
 	VV_SIZE
 };
 
-struct domain_config : public cgv::render::render_types
+struct domain_config
 {
 	/// whether to show the coordinate axes including tickmarks and labels
 	bool show_domain;
@@ -78,7 +78,7 @@ enum ChartType
 	CT_BAR_CHART
 };
 
-struct mapped_rgb : public cgv::render::render_types
+struct mapped_rgb
 {
 	rgb color;
 	int color_idx;
@@ -99,7 +99,7 @@ struct mapped_size
 	mapped_size(float s = 1.0f) : size(s), size_idx(-1) {}
 };
 
-struct mapped_rgba : public cgv::render::render_types
+struct mapped_rgba
 {
 	rgba color;
 	int color_idx;
@@ -126,7 +126,7 @@ enum SubPlotInfluence
 };
 
 /** plot independent configuration parameters of one sub plot in a 2d or 3d plot */
-struct CGV_API plot_base_config : public cgv::render::render_types
+struct CGV_API plot_base_config
 {
 	/// name of sub plot
 	std::string name;

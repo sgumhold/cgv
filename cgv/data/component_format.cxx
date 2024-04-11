@@ -63,9 +63,8 @@ void component_format::set_components(const std::string& _components)
 }
 
 /// construct packed component format from component type, component sequence, and common component bit depth
-component_format::component_format(TypeId _type_id, 
-		const std::string& _components, unsigned int align, 
-		unsigned int d0, unsigned int d1, unsigned int d2, unsigned int d3)
+component_format::component_format(TypeId _type_id, const std::string& _components, 
+	unsigned align, unsigned d0, unsigned d1, unsigned d2, unsigned d3)
 	: packing_info(align, d0,d1,d2,d3), component_type(_type_id), component_string(_components) 
 {
 	component_interpretation = CII_DEFAULT;
@@ -73,9 +72,8 @@ component_format::component_format(TypeId _type_id,
 }
 
 /// construct component format from component type, standard component format, component alignment and bit depths for packed formats
-component_format::component_format(TypeId _type_id, 
-		ComponentFormat cf, unsigned int align, 
-		unsigned int d0, unsigned int d1, unsigned int d2, unsigned int d3)
+component_format::component_format(TypeId _type_id, ComponentFormat cf, 
+	unsigned align, unsigned d0, unsigned d1, unsigned d2, unsigned d3)
 	: packing_info(align, d0,d1,d2,d3), component_type(_type_id), 
 	  component_string(component_formats[cf])
 {
@@ -390,34 +388,24 @@ void component_format::set_component_type(TypeId _type_id)
 {
 	component_type = _type_id;
 }
-
-
-/// return the size of one entry of component_positions in bytes
-unsigned int component_format::get_entry_size() const
+unsigned component_format::get_entry_size() const
 {
 	if (is_packing()) {
-		unsigned int nr_bits = 0;
-		for (unsigned int ci = 0; ci < get_nr_components(); ++ci)
-			nr_bits += align(get_bit_depth(ci), get_component_alignment());
-		return align(nr_bits, 8)/8;
+		unsigned nr_bits = 0;
+		for (unsigned ci = 0; ci < get_nr_components(); ++ci)
+			nr_bits += unsigned(align(get_bit_depth(ci), get_component_alignment()));
+		return unsigned(align(nr_bits, 8)/8);
 	}
-	return get_nr_components()*align(get_type_size(get_component_type()),get_component_alignment());
+	return unsigned(get_nr_components()*align(get_type_size(get_component_type()),get_component_alignment()));
 }
-
-/// return the packing info by simple conversion of the this pointer
 const packing_info& component_format::get_packing_info() const
 {
 	return *this;
 }
-
-/// set packing info by simply assigning to a converted this pointer
 void component_format::set_packing_info(const packing_info& pi)
 {
 	*static_cast<packing_info*>(this) = pi;
 }
-
-
-/// comparison between component formats
 bool component_format::operator == (const component_format& cf) const
 {
 	if (get_nr_components() != cf.get_nr_components())
@@ -432,13 +420,10 @@ bool component_format::operator == (const component_format& cf) const
 	}
 	return true;
 }
-/// comparison between component formats
 bool component_format::operator != (const component_format& cf) const
 {
 	return !(*this == cf);
 }
-
-/// define stream out operator
 std::ostream& operator << (std::ostream& os, const component_format& cf)
 {
 	switch (cf.get_integer_interpretation()) {
@@ -470,7 +455,6 @@ std::ostream& operator << (std::ostream& os, const component_format& cf)
 	os << ']';
 	return os;
 }
-
 bool fmt1_compares_better(const component_format& fmt,
 					           const component_format& fmt1,
 					           const component_format& fmt2)
@@ -549,7 +533,7 @@ bool fmt1_compares_better(const component_format& fmt,
 	return true;
 }
 
-unsigned int find_best_match(
+unsigned find_best_match(
 				const component_format& fmt,
 				const char** format_descriptions,
 				const component_format* fmt0,

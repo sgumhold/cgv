@@ -1,6 +1,7 @@
 #pragma once
 
 #include <iostream>
+#include <limits>
 #include <cgv/defines/assert.h>
 #include <cgv/type/func/promote.h>
 #include <cgv/type/func/promote_const.h>
@@ -10,7 +11,7 @@
 #include <math.h>
 
 namespace cgv {
-	namespace media {
+namespace media {
 
 template <typename T>
 struct color_one
@@ -693,6 +694,33 @@ public:
 		res += c;
 		return res;
 	}
+	/// subtract color
+	template <typename T2, ColorModel cm2, AlphaModel am2>
+	color<T, cm, am>& operator -= (const color<T2, cm2, am2>& c2) {
+		color<T, cm, am> tmp(c2);
+		for(unsigned i = 0; i < nr_components; ++i)
+			this->at(i) -= tmp[i];
+		return *this;
+	}
+	/// subtract color
+	template <typename T2, ColorModel cm2, AlphaModel am2>
+	color<T, cm, am> operator - (const color<T2, cm2, am2>& c2) {
+		color<T, cm, am> res(*this);
+		res -= c2;
+		return res;
+	}
+	/// subtract constant
+	color<T, cm, am>& operator -= (const T& c) {
+		for(unsigned i = 0; i < nr_components; ++i)
+			this->at(i) -= c;
+		return *this;
+	}
+	/// subtract constant
+	color<T, cm, am> operator - (const T& c) {
+		color<T, cm, am> res(*this);
+		res -= c;
+		return res;
+	}
 	/// clamp to the given range, which defaults to [0,1] of the component type
 	void clamp(const T& mn = 0, const T& mx = color_one<T>::value(), bool skip_alpha = false) {
 		unsigned nr = skip_alpha ? nr_color_components : nr_components;
@@ -780,5 +808,53 @@ std::istream& operator >> (std::istream& is, color<unsigned char,cm,am>& c) {
 	return is;
 }
 
-	}
+/*********************************************************************
+**
+** functions
+**
+*********************************************************************/
+
+/// linear interpolate two colors, returns (1-t)*c1 + t*c2
+template <typename T, ColorModel cm, AlphaModel am>
+const color<T,cm,am> lerp(const color<T,cm,am>& c1, const color<T,cm,am>& c2, T t) {
+	return ((T)1 - t) * c1 + t * c2;
 }
+/// special pow function for colors with RGB color model using integral types, alpha model is ignored
+/// components are converted to type T2 in range [0,1] before applying the pow function
+/// to ensure correct handling of integral component types like uint8_t
+template <typename T1, typename T2, AlphaModel am,
+	typename std::enable_if<std::is_integral<T1>::value, bool>::type = true,
+	typename std::enable_if<std::is_floating_point<T2>::value, bool>::type = true>
+const color<T1,RGB,am> pow(const color<T1,RGB,am>& c, T2 e) {
+	constexpr T2 m = static_cast<T2>(std::numeric_limits<T1>::max());
+	color<T1,RGB,am> x = c;
+	for(unsigned int i=0; i<color<T1,RGB,am>::nr_color_components; ++i)
+		x[i] = static_cast<T1>(std::pow(static_cast<T2>(c[i]) / m, e) * m);
+	return x;
+}
+/// pow function for colors with RGB color model, alpha model is ignored
+template<typename T, AlphaModel am, typename std::enable_if<std::is_floating_point<T>::value, bool>::type = true>
+const color<T,RGB,am> pow(const color<T,RGB,am>& c, T e) {
+	color<T,RGB,am> x = c;
+	for(unsigned int i=0; i<color<T,RGB,am>::nr_color_components; ++i)
+		x[i] = std::pow(x[i], e);
+	return x;
+}
+
+} // namespace media
+
+/// @name Predefined Types
+/// @{
+
+/// declare rgb color type with 32 bit components
+typedef cgv::media::color<float, cgv::media::RGB> rgb;
+/// declare rgba color type with 32 bit components
+typedef cgv::media::color<float, cgv::media::RGB, cgv::media::OPACITY> rgba;
+/// declare rgb color type with 8 bit components
+typedef cgv::media::color<cgv::type::uint8_type, cgv::media::RGB> rgb8;
+/// declare rgba color type with 8 bit components
+typedef cgv::media::color<cgv::type::uint8_type, cgv::media::RGB, cgv::media::OPACITY> rgba8;
+
+/// @}
+
+} // namespace cgv

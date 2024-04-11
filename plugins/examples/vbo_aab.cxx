@@ -102,14 +102,14 @@ public:
 	bool show_surface;
 	CullingMode cull_mode;
 	ColorMapping color_mapping;
-	rgb  surface_color;
+	cgv::rgb  surface_color;
 	IlluminationMode illumination_mode;
 	surface_material material;
 
 	bool show_wireframe;
 	float line_width;
 	bool map_color_to_wireframe;
-	rgb  line_color;
+	cgv::rgb  line_color;
 
 	bool show_vertices;
 	cgv::render::sphere_render_style sphere_style;
@@ -124,12 +124,12 @@ public:
 		show_surface = true;
 		cull_mode = CM_BACKFACE;
 		color_mapping = cgv::render::CM_COLOR;
-		surface_color = rgb(0.7f, 0.2f, 1.0f);
+		surface_color = cgv::rgb(0.7f, 0.2f, 1.0f);
 		illumination_mode = IM_ONE_SIDED;
 
 		show_wireframe = true;
 		line_width = 2.0f;
-		line_color = rgb(0.6f,0.5f,0.4f);
+		line_color = cgv::rgb(0.6f,0.5f,0.4f);
 		map_color_to_wireframe = false;
 
 		show_vertices = true;
@@ -143,13 +143,13 @@ public:
 	}
 	struct vertex_type
 	{
-		vec3 position;
-		vec3 normal;
-		rgb  color;
+		cgv::vec3 position;
+		cgv::vec3 normal;
+		cgv::rgb  color;
 	};
-	box3 generate_dini_surface_geometry(cgv::render::context& ctx)
+	cgv::box3 generate_dini_surface_geometry(cgv::render::context& ctx)
 	{
-		box3 box;
+		cgv::box3 box;
 		box.invalidate();
 
 		std::vector<vertex_type> V((n + 1)*m);
@@ -169,7 +169,7 @@ public:
 
 				int vi = i * m + j;
 				vertex_type& vertex = V[vi];
-				vertex.position = vec3(a*cos(u)*sin(v), a*sin(u)*sin(v), a*(cos(v) + log(tan(0.5f*v))) + b * u);
+				vertex.position = cgv::vec3(a*cos(u)*sin(v), a*sin(u)*sin(v), a*(cos(v) + log(tan(0.5f*v))) + b * u);
 
 				float t1 = cos(v);
 				float t2 = a * (-pow(t1, 0.2e1f) + 0.1e1f);
@@ -182,7 +182,7 @@ public:
 				float t8 = a / 0.2e1f;
 				float t9 = 0.1e1f / t5;
 				float t10 = 0.1e1f / t6;
-				vertex.normal = vec3(
+				vertex.normal = cgv::vec3(
 					a * (t8 * t3 * t7 - (b * t4 * t1 + t2 * t3) * t6 * t5) * t9 * t10,
 					(t8 * t4 * t7 - (-b * t3 * t1 + t2 * t4) * t6 * t5) * a * t9 * t10,
 					-t7 * t1 * a * a);
@@ -195,7 +195,7 @@ public:
 				*/
 				
 				// set color
-				vertex.color = rgb(x, y, 0.5f);
+				vertex.color = cgv::rgb(x, y, 0.5f);
 
 				// update bounding box
 				box.add_point(vertex.position);
@@ -251,7 +251,7 @@ public:
 			sr.set_position_array(ctx, get_element_type(V.front().position), 
 				vbo_attribs, 0, V.size(), sizeof(vertex_type));
 			sr.set_color_array(ctx, get_element_type(V.front().color),
-				vbo_attribs, 2*sizeof(vec3), V.size(), sizeof(vertex_type));
+				vbo_attribs, 2*sizeof(cgv::vec3), V.size(), sizeof(vertex_type));
 		sr.disable_attribute_array_manager(ctx, aam_sphere);
 
 		// configure attribute array binding for surface rendering
@@ -366,7 +366,7 @@ public:
 	void init_frame(context& ctx)
 	{
 		if (generate_new_geometry) {
-			box3 box = generate_dini_surface_geometry(ctx);
+			cgv::box3 box = generate_dini_surface_geometry(ctx);
 			generate_new_geometry = false;
 
 			sphere_style.radius = float(0.05*sqrt(box.get_extent().sqr_length() / nr_positions));

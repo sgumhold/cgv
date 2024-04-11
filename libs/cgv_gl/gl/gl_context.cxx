@@ -883,8 +883,8 @@ bool gl_context::read_frame_buffer(data::data_view& dv,
 {
 	const cgv::data::data_format* df = dv.get_format();
 	if (df) {
-		w = df->get_width();
-		h = df->get_height();
+		w = int(df->get_width());
+		h = int(df->get_height());
 		type = df->get_component_type();
 		cf = df->get_standard_component_format();
 		if (w < 1 || h < 1) {
@@ -1270,7 +1270,7 @@ void gl_context::draw_strip_or_fan(
 }
 
 /// return homogeneous 4x4 viewing matrix, which transforms from world to eye space
-gl_context::dmat4 gl_context::get_modelview_matrix() const
+dmat4 gl_context::get_modelview_matrix() const
 {
 	if (support_compatibility_mode && !core_profile) {
 		GLdouble V[16];
@@ -1283,7 +1283,7 @@ gl_context::dmat4 gl_context::get_modelview_matrix() const
 }
 
 /// return homogeneous 4x4 projection matrix, which transforms from eye to clip space
-gl_context::dmat4 gl_context::get_projection_matrix() const
+dmat4 gl_context::get_projection_matrix() const
 {
 	if (support_compatibility_mode && !core_profile) {
 		GLdouble P[16];
@@ -1672,41 +1672,41 @@ bool gl_context::texture_create(texture_base& tb, cgv::data::data_format& df) co
 	switch (tb.tt) {
 	case TT_1D :
 		glTexImage1D(GL_TEXTURE_1D, 0, 
-			gl_format, df.get_width(), 0, transfer_format, GL_UNSIGNED_BYTE, 0);
+			gl_format, GLsizei(df.get_width()), 0, transfer_format, GL_UNSIGNED_BYTE, 0);
 		break;
 	case TT_1D_ARRAY :
 		glTexImage2D(GL_TEXTURE_1D_ARRAY, 0,
-			gl_format, df.get_width(), df.get_height(), 0, transfer_format, GL_UNSIGNED_BYTE, 0);
+			gl_format, GLsizei(df.get_width()), GLsizei(df.get_height()), 0, transfer_format, GL_UNSIGNED_BYTE, 0);
 		break;
 	case TT_2D :
-		glTexImage2D(GL_TEXTURE_2D, 0, gl_format, df.get_width(), df.get_height(), 0, transfer_format, GL_UNSIGNED_BYTE, 0);
+		glTexImage2D(GL_TEXTURE_2D, 0, gl_format, GLsizei(df.get_width()), GLsizei(df.get_height()), 0, transfer_format, GL_UNSIGNED_BYTE, 0);
 		break;
 	case TT_MULTISAMPLE_2D:
-		glTexImage2DMultisample(GL_TEXTURE_2D_MULTISAMPLE, tb.nr_multi_samples, gl_format, df.get_width(), df.get_height(), tb.fixed_sample_locations ? GL_TRUE : GL_FALSE);
+		glTexImage2DMultisample(GL_TEXTURE_2D_MULTISAMPLE, tb.nr_multi_samples, gl_format, GLsizei(df.get_width()), GLsizei(df.get_height()), tb.fixed_sample_locations ? GL_TRUE : GL_FALSE);
 		break;
 	case TT_2D_ARRAY :
-		glTexImage3D(GL_TEXTURE_2D_ARRAY, 0, gl_format, df.get_width(), df.get_height(), df.get_depth(), 0, transfer_format, GL_UNSIGNED_BYTE, 0);
+		glTexImage3D(GL_TEXTURE_2D_ARRAY, 0, gl_format, GLsizei(df.get_width()), GLsizei(df.get_height()), GLsizei(df.get_depth()), 0, transfer_format, GL_UNSIGNED_BYTE, 0);
 		break;
 	case TT_MULTISAMPLE_2D_ARRAY:
-		glTexStorage3DMultisample(GL_TEXTURE_2D_MULTISAMPLE_ARRAY, tb.nr_multi_samples, gl_format, df.get_width(), df.get_height(), df.get_depth(), tb.fixed_sample_locations ? GL_TRUE : GL_FALSE);
+		glTexStorage3DMultisample(GL_TEXTURE_2D_MULTISAMPLE_ARRAY, tb.nr_multi_samples, gl_format, GLsizei(df.get_width()), GLsizei(df.get_height()), GLsizei(df.get_depth()), tb.fixed_sample_locations ? GL_TRUE : GL_FALSE);
 		break;
 	case TT_3D :
 		glTexImage3D(GL_TEXTURE_3D, 0,
-			gl_format, df.get_width(), df.get_height(), df.get_depth(), 0, transfer_format, GL_UNSIGNED_BYTE, 0);
+			gl_format, GLsizei(df.get_width()), GLsizei(df.get_height()), GLsizei(df.get_depth()), 0, transfer_format, GL_UNSIGNED_BYTE, 0);
 		break;
 	case TT_CUBEMAP :
 		glTexImage2D( GL_TEXTURE_CUBE_MAP_POSITIVE_X, 0,
-			gl_format, df.get_width(), df.get_height(), 0, transfer_format, GL_UNSIGNED_BYTE, 0);
+			gl_format, GLsizei(df.get_width()), GLsizei(df.get_height()), 0, transfer_format, GL_UNSIGNED_BYTE, 0);
 		glTexImage2D( GL_TEXTURE_CUBE_MAP_NEGATIVE_X, 0,
-			gl_format, df.get_width(), df.get_height(), 0, transfer_format, GL_UNSIGNED_BYTE, 0);
+			gl_format, GLsizei(df.get_width()), GLsizei(df.get_height()), 0, transfer_format, GL_UNSIGNED_BYTE, 0);
 		glTexImage2D( GL_TEXTURE_CUBE_MAP_POSITIVE_Y, 0,
-			gl_format, df.get_width(), df.get_height(), 0, transfer_format, GL_UNSIGNED_BYTE, 0);
+			gl_format, GLsizei(df.get_width()), GLsizei(df.get_height()), 0, transfer_format, GL_UNSIGNED_BYTE, 0);
 		glTexImage2D( GL_TEXTURE_CUBE_MAP_NEGATIVE_Y, 0,
-			gl_format, df.get_width(), df.get_height(), 0, transfer_format, GL_UNSIGNED_BYTE, 0);
+			gl_format, GLsizei(df.get_width()), GLsizei(df.get_height()), 0, transfer_format, GL_UNSIGNED_BYTE, 0);
 		glTexImage2D( GL_TEXTURE_CUBE_MAP_POSITIVE_Z, 0,
-			gl_format, df.get_width(), df.get_height(), 0, transfer_format, GL_UNSIGNED_BYTE, 0);
+			gl_format, GLsizei(df.get_width()), GLsizei(df.get_height()), 0, transfer_format, GL_UNSIGNED_BYTE, 0);
 		glTexImage2D( GL_TEXTURE_CUBE_MAP_NEGATIVE_Z, 0,
-			gl_format, df.get_width(), df.get_height(), 0, transfer_format, GL_UNSIGNED_BYTE, 0);
+			gl_format, GLsizei(df.get_width()), GLsizei(df.get_height()), 0, transfer_format, GL_UNSIGNED_BYTE, 0);
 	default:
 		break;
 	}
@@ -1804,7 +1804,7 @@ bool gl_context::texture_create_from_buffer(
 	if (gen_mipmap)
 		level = 0;
 
-	glCopyTexImage2D(GL_TEXTURE_2D, level, gl_format, x, y, df.get_width(), df.get_height(), 0);
+	glCopyTexImage2D(GL_TEXTURE_2D, level, gl_format, x, y, GLsizei(df.get_width()), GLsizei(df.get_height()), 0);
 	bool result = false;
 	std::string error_string("gl_context::texture_create_from_buffer: ");
 	switch (glGetError()) {
@@ -1947,7 +1947,7 @@ bool gl_context::texture_create_mipmaps(texture_base& tb, cgv::data::data_format
 	}
 
 	// extract texture size and compute number of mip-levels
-	uvec3 size(df.get_width(), df.get_height(), df.get_depth());
+	uvec3 size(unsigned(df.get_width()), unsigned(df.get_height()), unsigned(df.get_depth()));
 
 	unsigned max_size = cgv::math::max_value(size);
 	unsigned num_levels = 1 + static_cast<unsigned>(log2(static_cast<float>(max_size)));
@@ -2300,7 +2300,7 @@ bool gl_context::frame_buffer_destruct(frame_buffer_base& fbb) const
 	return true;
 }
 
-void complete_rect_from_vp(gl_context::ivec4& D, GLint vp[4])
+void complete_rect_from_vp(ivec4& D, GLint vp[4])
 {
 	if (D(0) == -1)
 		D(0) = vp[0];

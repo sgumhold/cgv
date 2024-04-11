@@ -99,20 +99,20 @@ fltk_viewer_window::fltk_viewer_window(int w, int h, const std::string& _title)
 
 	menu_height = 24;
 	menu_right = true;
-	tabs_bottom = true;
 
 	begin();
-		main_group = new DockableGroup(0,0,w,h,"");
-		main_group->spacing(3);
+		main_group = new DockableGroup(0, 0, w, h, "");
+		main_group->spacing(1);
 		main_group->begin();
 			menu = new fltk::MenuBar(0, 0, w, menu_height);
-			view      = fltk_gl_view_ptr(new fltk_gl_view(0,0,w,h,"GL View"));
+			view = fltk_gl_view_ptr(new fltk_gl_view(0, 0, w, h, "GL View"));
 			if(menu_right)
-				tab_group = fltk_tab_group_ptr(new fltk_tab_group((int)(2.85*w/4),0,(int)(1.15*w/4),h,""));
+				tab_group = fltk_tab_group_ptr(new fltk_tab_group((int)(2.85*w/4), 0, (int)(1.15*w/4), h, ""));
 			else
-				tab_group = fltk_tab_group_ptr(new fltk_tab_group(0,21,(int)(1.15*w/4),h- menu_height,""));
+				tab_group = fltk_tab_group_ptr(new fltk_tab_group(0, 21, (int)(1.15*w/4), h-menu_height, ""));
+
 			connect(tab_group->on_selection_change, this, &fltk_viewer_window::on_tab_group_selection_change);
-//			connect(view->on_remove_child, this, &fltk_viewer_window::on_remove_child);
+			//connect(view->on_remove_child, this, &fltk_viewer_window::on_remove_child);
 		main_group->end();
 		main_group->resizable(view->get_interface<fltk::Widget>());
 		ensure_dock_state();
@@ -199,30 +199,42 @@ void fltk_viewer_window::theme_change_cb() {
 	fltk::reload_theme();
 
 	{ // TODO: maybe move this to some other place
-		auto& ti = cgv::gui::theme_info::instance();
+		auto& theme = cgv::gui::theme_info::instance();
+
+		// to change menu position:
+		//menu_right = false;
+		//ensure_dock_state();
+
+		if(fltk::theme_idx_ < 0)
+			main_group->spacing(3);
+		else
+			main_group->spacing(1);
+
+		theme.spacing(main_group->spacing());
+
 		uchar r, g, b;
 		fltk::split_color(fltk::get_theme_color(fltk::THEME_BACKGROUND_COLOR), r, g, b);
-		ti.background(r, g, b);
+		theme.background(r, g, b);
 		fltk::split_color(fltk::get_theme_color(fltk::THEME_GROUP_COLOR), r, g, b);
-		ti.group(r, g, b);
+		theme.group(r, g, b);
 		fltk::split_color(fltk::get_theme_color(fltk::THEME_CONTROL_COLOR), r, g, b);
-		ti.control(r, g, b);
+		theme.control(r, g, b);
 		fltk::split_color(fltk::get_theme_color(fltk::THEME_BORDER_COLOR), r, g, b);
-		ti.border(r, g, b);
+		theme.border(r, g, b);
 		fltk::split_color(fltk::get_theme_color(fltk::THEME_TEXT_COLOR), r, g, b);
-		ti.text(r, g, b);
+		theme.text(r, g, b);
 		fltk::split_color(fltk::get_theme_color(fltk::THEME_TEXT_BACKGROUND_COLOR), r, g, b);
-		ti.text_background(r, g, b);
+		theme.text_background(r, g, b);
 		fltk::split_color(fltk::get_theme_color(fltk::THEME_SELECTION_COLOR), r, g, b);
-		ti.selection(r, g, b);
+		theme.selection(r, g, b);
 		fltk::split_color(fltk::get_theme_color(fltk::THEME_HIGHLIGHT_COLOR), r, g, b);
-		ti.highlight(r, g, b);
+		theme.highlight(r, g, b);
 		fltk::split_color(fltk::get_theme_color(fltk::THEME_WARNING_COLOR), r, g, b);
-		ti.warning(r, g, b);
+		theme.warning(r, g, b);
 		fltk::split_color(fltk::get_theme_color(fltk::THEME_SHADOW_COLOR), r, g, b);
-		ti.shadow(r, g, b);
+		theme.shadow(r, g, b);
 		// set theme index only after all colors have been updated
-		ti.set_index(idx);
+		theme.set_index(idx);
 	}
 
 	if(tab_group) {

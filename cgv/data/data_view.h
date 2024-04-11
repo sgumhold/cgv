@@ -19,10 +19,9 @@ protected:
 	/// whether to own the data format
 	bool owns_format;
 	unsigned int dim;
-	unsigned int step_sizes[4];
+	size_t step_sizes[4];
 	/// constructor used to construct sub views onto the data view
-	data_view_base(const data_format* _format, unsigned int _dim, 
-					   const unsigned int* _step_sizes);
+	data_view_base(const data_format* _format, unsigned int _dim, const size_t* _step_sizes);
 public:
 	/** construct the base of a data view from the given format, 
 		 such that the step sizes and dimension are set to view
@@ -39,7 +38,7 @@ public:
 	/// return the dimension of the data view, which is less or equal to the dimension of the data format
 	unsigned int get_dim() const;
 	/// return the step size in bytes in the i-th dimension
-	unsigned int get_step_size(unsigned int dim) const;
+	size_t get_step_size(unsigned int dim) const;
 };
 
 /** template class implementing the part of the view that depends on whether
@@ -51,8 +50,7 @@ protected:
 	/// data pointer of type unsigned char or const unsigned char
 	P data_ptr;
 	/// constructor used to construct sub views onto the data view
-	data_view_impl(const data_format* _format, P _data_ptr, 
-						unsigned int _dim, const unsigned int* _step_sizes);
+	data_view_impl(const data_format* _format, P _data_ptr, unsigned _dim, const size_t* _step_sizes);
 public:
 	/// construct a data view from the given format, viewing the complete data set
 	data_view_impl(const data_format* _format = 0, typename cgv::type::func::transfer_const<P,void*>::type _data_ptr = 0);
@@ -65,53 +63,53 @@ public:
 	}
 	/// return a pointer to type S for i-th data entry
 	template <typename S>
-	typename cgv::type::func::transfer_const<P, S*>::type get_ptr(int i) const {
+	typename cgv::type::func::transfer_const<P, S*>::type get_ptr(size_t i) const {
 		return (typename cgv::type::func::transfer_const<P, S*>::type)(data_ptr + i*step_sizes[0]);
 	}
 	/// return a pointer to type S for (i,j)-th data entry
 	template <typename S>
-	typename cgv::type::func::transfer_const<P, S*>::type get_ptr(int i, int j) const {
+	typename cgv::type::func::transfer_const<P, S*>::type get_ptr(size_t i, size_t j) const {
 		return (typename cgv::type::func::transfer_const<P, S*>::type)(data_ptr + i*step_sizes[0] + j*step_sizes[1]);
 	}
 	/// return a pointer to type S for (i,j,k)-th data entry
 	template <typename S>
-	typename cgv::type::func::transfer_const<P, S*>::type get_ptr(int i, int j, int k) const {
+	typename cgv::type::func::transfer_const<P, S*>::type get_ptr(size_t i, size_t j, size_t k) const {
 		return (typename cgv::type::func::transfer_const<P, S*>::type)(data_ptr + i*step_sizes[0] + j*step_sizes[1] + k*step_sizes[2]);
 	}
 	/// return a pointer to type S for (i,j,k,l)-th data entry
 	template <typename S>
-	typename cgv::type::func::transfer_const<P, S*>::type get_ptr(int i, int j, int k, int l) const {
+	typename cgv::type::func::transfer_const<P, S*>::type get_ptr(size_t i, size_t j, size_t k, size_t l) const {
 		return (typename cgv::type::func::transfer_const<P, S*>::type)(data_ptr + i*step_sizes[0] + j*step_sizes[1] + k*step_sizes[2] + l*step_sizes[3]);
 	}
 	/// constant access to the ci-th component
 	template <typename S>
-	S get(int ci) const { 
+	S get(unsigned ci) const {
 		return format->get<S>(ci, data_ptr);
 	}
 	/// constant access to the ci-th component of i-th data entry
-	template <typename S> S get(int ci, int i) const { 
-		return format->get<S>(ci, get_ptr<cgv::type::func::drop_pointer<P>::type>(i));
+	template <typename S> S get(unsigned ci, size_t i) const {
+		return format->get<S>(ci, get_ptr<typename cgv::type::func::drop_pointer<P>::type>(i));
 	}
 	/// constant access to the ci-th component of (i,j)-th data entry
-	template <typename S> S get(int ci, int i, int j) const { 
-		return format->get<S>(ci, get_ptr<cgv::type::func::drop_pointer<P>::type>(i, j));
+	template <typename S> S get(unsigned ci, size_t i, size_t j) const {
+		return format->get<S>(ci, get_ptr<typename cgv::type::func::drop_pointer<P>::type>(i, j));
 	}
 	/// constant access to the ci-th component of (i,j,k)-th data entry
-	template <typename S> S get(int ci, int i, int j, int k) const { 
-		return format->get<S>(ci, get_ptr<cgv::type::func::drop_pointer<P>::type>(i,j,k));
+	template <typename S> S get(unsigned ci, size_t i, size_t j, size_t k) const {
+		return format->get<S>(ci, get_ptr<typename cgv::type::func::drop_pointer<P>::type>(i, j, k));
 	}
 	/// constant access to the ci-th component of (i,j,k,l)-th data entry
-	template <typename S> S get(int ci, int i, int j, int k, int l) const { 
-		return format->get<S>(ci, get_ptr<cgv::type::func::drop_pointer<P>::type>(i, j, k, l));
+	template <typename S> S get(unsigned ci, size_t i, size_t j, size_t k, size_t l) const {
+		return format->get<S>(ci, get_ptr<typename cgv::type::func::drop_pointer<P>::type>(i, j, k, l));
 	}
 	/// access to i-th data entry
-	D operator () (unsigned int i) const;
+	D operator () (size_t i) const;
 	/// access to entry at (i,j)
-	D operator () (unsigned int i, unsigned int j) const;
+	D operator () (size_t i, size_t j) const;
 	/// access to entry at (i,j,k)
-	D operator () (unsigned int i, unsigned int j, unsigned int k) const;
+	D operator () (size_t i, size_t j, size_t k) const;
 	/// access to entry at (i,j,k,l)
-	D operator () (unsigned int i, unsigned int j, unsigned int k, unsigned int l) const;
+	D operator () (size_t i, size_t j, size_t k, size_t l) const;
 
 	/** permute the order of the indices, where the permutation argument "kji" implies that after 
 	    the permutation the operator (i,j,k) returns the same as the operator (k,j,i) before the
@@ -125,19 +123,19 @@ public:
 	/// return a pointer that points to the n-th next location if index i is increase by n
 	template <typename S>
 	typename cgv::type::func::transfer_const<P,S*>::type 
-		step_i(S* ptr, int n=1) const { return static_cast<typename cgv::type::func::transfer_const<P,S*>::type>(static_cast<P>(ptr)+n*step_sizes[0]); }
+		step_i(S* ptr, std::ptrdiff_t n=1) const { return static_cast<typename cgv::type::func::transfer_const<P,S*>::type>(static_cast<P>(ptr)+n*step_sizes[0]); }
 	/// return a pointer that points to the n-th next location if index j is increase by n
 	template <typename S>
 	typename cgv::type::func::transfer_const<P,S*>::type 
-		step_j(S* ptr, int n=1) const { return static_cast<typename cgv::type::func::transfer_const<P,S*>::type>(static_cast<P>(ptr)+n*step_sizes[1]); }
+		step_j(S* ptr, std::ptrdiff_t n=1) const { return static_cast<typename cgv::type::func::transfer_const<P,S*>::type>(static_cast<P>(ptr)+n*step_sizes[1]); }
 	/// return a pointer that points to the n-th next location if index k is increase by n
 	template <typename S>
 	typename cgv::type::func::transfer_const<P,S*>::type 
-		step_k(S* ptr, int n=1) const { return static_cast<typename cgv::type::func::transfer_const<P,S*>::type>(static_cast<P>(ptr)+n*step_sizes[2]); }
+		step_k(S* ptr, std::ptrdiff_t n=1) const { return static_cast<typename cgv::type::func::transfer_const<P,S*>::type>(static_cast<P>(ptr)+n*step_sizes[2]); }
 	/// return a pointer that points to the n-th next location if index l is increase by n
 	template <typename S>
 	typename cgv::type::func::transfer_const<P,S*>::type 
-		step_l(S* ptr, int n=1) const { return static_cast<typename cgv::type::func::transfer_const<P,S*>::type>(static_cast<P>(ptr)+step_sizes[3]); }
+		step_l(S* ptr, std::ptrdiff_t n=1) const { return static_cast<typename cgv::type::func::transfer_const<P,S*>::type>(static_cast<P>(ptr)+n*step_sizes[3]); }
 };
 
 class CGV_API const_data_view;
@@ -161,7 +159,7 @@ protected:
 	bool owns_ptr;
 	/// use base class for construction and don't manage data pointer 
 	data_view(const data_format* _format, unsigned char* _data_ptr, 
-				 unsigned int _dim, const unsigned int* _step_sizes);
+				 unsigned int _dim, const size_t* _step_sizes);
 public:
 	/// construct an empty data view without format and with empty data pointer*/
 	data_view();
@@ -186,7 +184,6 @@ public:
 	data_view(const data_view& other) : data_view(other.format) {
 		const cgv::type::uint8_type* src_ptr = other.get_ptr<cgv::type::uint8_type>();
 		cgv::type::uint8_type* dst_ptr = get_ptr<cgv::type::uint8_type>();
-
 		memcpy(dst_ptr, src_ptr, other.format->get_nr_bytes());
 	}
 	/** the assignment operator takes over the data format and data pointers
@@ -227,7 +224,7 @@ protected:
 	friend class data_view_impl<const_data_view, const unsigned char*>;
 	/// use base class for construction
 	const_data_view(const data_format* _format, const unsigned char* _data_ptr, 
-						 unsigned int _dim, const unsigned int* _step_sizes);
+						 unsigned _dim, const size_t* _step_sizes);
 public:
 	/// construct an empty data view without format and with empty data pointer*/
 	const_data_view();

@@ -9,13 +9,13 @@ namespace stream_vis {
 	class CGV_API view2d_overlay : public view_overlay
 	{
 	protected:
-		dmat4 MPW = dmat4(0.0);
+		cgv::dmat4 MPW = cgv::dmat4(0.0);
 		int pan_start_x = 0, pan_start_y = 0;
-		vec2 pan_start_pos = vec2(0.0f);
+		cgv::vec2 pan_start_pos = cgv::vec2(0.0f);
 		float zoom_factor = 1.0f;
 		float view_width = 2.0f;
-		vec2 pan_pos = vec2(0.0f);
-		vec2 initial_pan_pos = vec2(0.0f);
+		cgv::vec2 pan_pos = cgv::vec2(0.0f);
+		cgv::vec2 initial_pan_pos = cgv::vec2(0.0f);
 		float initial_zoom_factor = 1.0f;
 		float zoom_sensitivity = 0.1f;
 		void update_views();
