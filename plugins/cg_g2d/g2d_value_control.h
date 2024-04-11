@@ -23,7 +23,7 @@ template <typename T, class W>
 static void configure(T& value, std::shared_ptr<W> w) {
 	if(cgv::type::info::type_id<T>::get_id() < cgv::type::info::TI_FLT16) {
 		w->set_step(1.0);
-		w->set_range(cgv::render::dvec2(
+		w->set_range(cgv::dvec2(
 			static_cast<double>(std::numeric_limits<T>::min()),
 			static_cast<double>(std::numeric_limits<T>::max())
 		));

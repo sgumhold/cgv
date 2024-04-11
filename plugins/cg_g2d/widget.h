@@ -3,7 +3,6 @@
 #include <cgv/gui/event.h>
 #include <cgv/gui/key_event.h>
 #include <cgv/gui/mouse_event.h>
-#include <cgv/render/render_types.h>
 #include <cgv_g2d/canvas.h>
 #include <cgv_g2d/trect.h>
 
@@ -33,13 +32,13 @@ public:
 
 	void set_label(const std::string& label) { this->label = label; }
 
-	cgv::render::ivec2 get_position() const { return rectangle.position; }
+	cgv::ivec2 get_position() const { return rectangle.position; }
 
-	void set_position(cgv::render::ivec2 position) { rectangle.position = position; }
+	void set_position(cgv::ivec2 position) { rectangle.position = position; }
 
-	cgv::render::ivec2 get_size() const { return rectangle.size; }
+	cgv::ivec2 get_size() const { return rectangle.size; }
 
-	void set_size(cgv::render::ivec2 size) { rectangle.size = size; }
+	void set_size(cgv::ivec2 size) { rectangle.size = size; }
 
 	cgv::render::TextAlignment get_label_alignment() const { return label_alignment; }
 
@@ -58,7 +57,7 @@ public:
 	}
 
 	virtual bool handle_key_event(cgv::gui::key_event& e) { return false; }
-	virtual bool handle_mouse_event(cgv::gui::mouse_event& e, cgv::render::ivec2 mouse_position) { return false; }
+	virtual bool handle_mouse_event(cgv::gui::mouse_event& e, cgv::ivec2 mouse_position) { return false; }
 
 	virtual void draw(cgv::render::context& ctx, cgv::g2d::canvas& cnvs, const styles& style) {}
 };

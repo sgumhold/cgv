@@ -9,7 +9,7 @@ namespace cg {
 namespace g2d {
 
 toggle::toggle(const std::string& label, cgv::g2d::irect rectangle) : widget(label, rectangle) {
-	set_size(ivec2(40, 20));
+	set_size(cgv::ivec2(40, 20));
 }
 
 bool toggle::set_value(bool v) {
@@ -21,7 +21,7 @@ bool toggle::set_value(bool v) {
 	return true;
 }
 
-bool toggle::handle_mouse_event(cgv::gui::mouse_event& e, ivec2 mouse_position) {
+bool toggle::handle_mouse_event(cgv::gui::mouse_event& e, cgv::ivec2 mouse_position) {
 	cgv::gui::MouseAction action = e.get_action();
 
 	if(e.get_button() == cgv::gui::MB_LEFT_BUTTON && action == cgv::gui::MA_PRESS) {
@@ -63,7 +63,7 @@ void toggle::draw(context& ctx, cgv::g2d::canvas& cnvs, const styles& style) {
 	cnvs.disable_current_shader(ctx);
 
 	auto& font = cgv::g2d::ref_msdf_font_regular(ctx);
-	cgv::g2d::ref_msdf_gl_canvas_font_renderer(ctx).render(ctx, cnvs, font, label, style.text, ivec2(rectangle.x() - 5, rectangle.center().y()), TA_RIGHT);
+	cgv::g2d::ref_msdf_gl_canvas_font_renderer(ctx).render(ctx, cnvs, font, label, style.text, cgv::ivec2(rectangle.x() - 5, rectangle.center().y()), TA_RIGHT);
 }
 
 }

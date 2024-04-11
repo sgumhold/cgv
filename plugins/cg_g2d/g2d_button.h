@@ -25,7 +25,7 @@ public:
 	/// return "g2d_button"
 	std::string get_type_name() const { return "g2d_button"; }
 	/// handle mouse events
-	bool handle_mouse_event(cgv::gui::mouse_event& e, cgv::render::ivec2 mouse_position) override;
+	bool handle_mouse_event(cgv::gui::mouse_event& e, cgv::ivec2 mouse_position) override;
 	/// draw the button with its label
 	void draw(cgv::render::context& ctx, cgv::g2d::canvas& cnvs, const styles& style) override;
 };

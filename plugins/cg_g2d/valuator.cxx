@@ -12,7 +12,7 @@ bool valuator::set_value(double v) {
 	return true;
 }
 
-void valuator::set_range(cgv::render::dvec2 range) {
+void valuator::set_range(cgv::dvec2 range) {
 	this->range = range;
 
 	// TODO: udpate value to be in range

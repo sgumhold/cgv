@@ -100,7 +100,7 @@ bool input::handle_key_event(cgv::gui::key_event& e) {
 	return false;
 }
 
-bool input::handle_mouse_event(cgv::gui::mouse_event& e, ivec2 mouse_position) {
+bool input::handle_mouse_event(cgv::gui::mouse_event& e, cgv::ivec2 mouse_position) {
 	cgv::gui::MouseAction action = e.get_action();
 
 	if(e.get_button() == cgv::gui::MB_LEFT_BUTTON) {
@@ -157,16 +157,16 @@ void input::draw(context& ctx, cgv::g2d::canvas& cnvs, const styles& style) {
 	cnvs.draw_shape(ctx, rectangle, style.control_color);
 	cnvs.disable_current_shader(ctx);
 
-	ivec2 position(rectangle.x(), rectangle.center().y());
+	cgv::ivec2 position(rectangle.x(), rectangle.center().y());
 
-	cgv::g2d::ref_msdf_gl_canvas_font_renderer(ctx).render(ctx, cnvs, font, label, style.text, position - ivec2(5, 0), TA_RIGHT);
+	cgv::g2d::ref_msdf_gl_canvas_font_renderer(ctx).render(ctx, cnvs, font, label, style.text, position - cgv::ivec2(5, 0), TA_RIGHT);
 
 	cgv::g2d::rect cursor_rectangle;
-	cursor_rectangle.size = vec2(1.0f, rectangle.h() - 4.0f);
+	cursor_rectangle.size = cgv::vec2(1.0f, rectangle.h() - 4.0f);
 
 	int text_offset = 0;
 	if(focused) {
-		vec2 text_size = style.text.font_size * vec2(font.compute_length(text, cursor_position), 1.0f);
+		cgv::vec2 text_size = style.text.font_size * cgv::vec2(font.compute_length(text, cursor_position), 1.0f);
 
 		cursor_rectangle.position = rectangle.position;
 		cursor_rectangle.x() += text_size.x() + 5.0f;
@@ -183,7 +183,7 @@ void input::draw(context& ctx, cgv::g2d::canvas& cnvs, const styles& style) {
 
 	glEnable(GL_SCISSOR_TEST);
 	glScissor(rectangle.x(), rectangle.y(), rectangle.w(), rectangle.h());
-	cgv::g2d::ref_msdf_gl_canvas_font_renderer(ctx).render(ctx, cnvs, font, text, style.text, position + ivec2(5 + text_offset, 0), TA_LEFT);
+	cgv::g2d::ref_msdf_gl_canvas_font_renderer(ctx).render(ctx, cnvs, font, text, style.text, position + cgv::ivec2(5 + text_offset, 0), TA_LEFT);
 	glDisable(GL_SCISSOR_TEST);
 	
 	if(focused) {

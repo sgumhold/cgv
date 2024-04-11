@@ -6,7 +6,7 @@
 namespace cg {
 namespace g2d {
 
-bool g2d_button::handle_mouse_event(cgv::gui::mouse_event& e, cgv::render::ivec2 mouse_position) {
+bool g2d_button::handle_mouse_event(cgv::gui::mouse_event& e, cgv::ivec2 mouse_position) {
 	cgv::gui::MouseAction action = e.get_action();
 
 	if(e.get_button() == cgv::gui::MB_LEFT_BUTTON) {
@@ -55,7 +55,7 @@ void g2d_button::draw(cgv::render::context& ctx, cgv::g2d::canvas& cnvs, const s
 	cnvs.draw_shape(ctx, top_rectangle, active ? style.background_color : style.control_color);
 	cnvs.disable_current_shader(ctx);
 
-	cgv::render::ivec2 label_position = rectangle.center();
+	cgv::ivec2 label_position = rectangle.center();
 
 	
 

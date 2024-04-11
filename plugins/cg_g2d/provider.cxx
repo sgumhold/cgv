@@ -38,7 +38,7 @@ void provider::clear() {
 	control_widgets.clear();
 }
 
-bool provider::handle(cgv::gui::event& e, const ivec2& viewport_size, const cgv::g2d::irect& container) {
+bool provider::handle(cgv::gui::event& e, const cgv::ivec2& viewport_size, const cgv::g2d::irect& container) {
 
 	unsigned et = e.get_kind();
 
@@ -51,7 +51,7 @@ bool provider::handle(cgv::gui::event& e, const ivec2& viewport_size, const cgv:
 		}
 	} else if(et == cgv::gui::EID_MOUSE) {
 		cgv::gui::mouse_event& me = dynamic_cast<cgv::gui::mouse_event&>(e);
-		ivec2 mouse_position = get_local_mouse_pos(ivec2(me.get_x(), me.get_y()), viewport_size, container);
+		cgv::ivec2 mouse_position = get_local_mouse_pos(cgv::ivec2(me.get_x(), me.get_y()), viewport_size, container);
 
 		for(auto& button : buttons) {
 			if(button->handle_mouse_event(me, mouse_position))
@@ -78,17 +78,17 @@ void provider::draw(context& ctx, cgv::g2d::canvas& cnvs) {
 
 void provider::init_styles() {
 
-	auto& ti = cgv::gui::theme_info::instance();
+	auto& theme = cgv::gui::theme_info::instance();
 
-	style.background_color = ti.background();
-	style.group_color = ti.group();
-	style.control_color = ti.control();
-	style.shadow_color = ti.shadow();
-	style.text_color = ti.text();
-	style.selection_color = ti.selection();
-	style.highlight_color = ti.highlight();
+	style.background_color = theme.background();
+	style.group_color = theme.group();
+	style.control_color = theme.control();
+	style.shadow_color = theme.shadow();
+	style.text_color = theme.text();
+	style.selection_color = theme.selection();
+	style.highlight_color = theme.highlight();
 
-	style.text = cgv::g2d::text2d_style::preset_default(ti.text());
+	style.text.fill_color = theme.text();
 	style.text.font_size = 12.0f;
 
 	style.flat_box.use_fill_color = false;
