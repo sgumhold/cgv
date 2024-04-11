@@ -1497,8 +1497,8 @@ void gl_context::set_blend_state(BlendState state) {
 		glDisable(GL_BLEND);
 	glBlendFuncSeparate(
 		map_to_gl(state.src_color),
-		map_to_gl(state.src_alpha),
 		map_to_gl(state.dst_color),
+		map_to_gl(state.src_alpha),
 		map_to_gl(state.dst_alpha)
 	);
 	context::set_blend_state(state);
