@@ -112,6 +112,15 @@ Inheritance diagram for cgv::render::context:</div>
 <table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="nested-classes"></a>
 Classes</h2></td></tr>
+<tr class="memitem:"><td class="memItemLeft" align="right" valign="top">struct &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structcgv_1_1render_1_1context_1_1BlendState.html">BlendState</a></td></tr>
+<tr class="memdesc:"><td class="mdescLeft">&#160;</td><td class="mdescRight">Represents a blend state used to configure fragment blending.  <a href="structcgv_1_1render_1_1context_1_1BlendState.html#details">More...</a><br /></td></tr>
+<tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:"><td class="memItemLeft" align="right" valign="top">struct &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structcgv_1_1render_1_1context_1_1BufferMask.html">BufferMask</a></td></tr>
+<tr class="memdesc:"><td class="mdescLeft">&#160;</td><td class="mdescRight">Represents a buffer mask used to mask depth and color buffer outputs.  <a href="structcgv_1_1render_1_1context_1_1BufferMask.html#details">More...</a><br /></td></tr>
+<tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:"><td class="memItemLeft" align="right" valign="top">struct &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structcgv_1_1render_1_1context_1_1DepthTestState.html">DepthTestState</a></td></tr>
+<tr class="memdesc:"><td class="mdescLeft">&#160;</td><td class="mdescRight">Represents a depth test state used to configure depth testing.  <a href="structcgv_1_1render_1_1context_1_1DepthTestState.html#details">More...</a><br /></td></tr>
+<tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:"><td class="memItemLeft" align="right" valign="top">struct &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structcgv_1_1render_1_1context_1_1light__source__status.html">light_source_status</a></td></tr>
 <tr class="memdesc:"><td class="mdescLeft">&#160;</td><td class="mdescRight">status information of light sources  <a href="structcgv_1_1render_1_1context_1_1light__source__status.html#details">More...</a><br /></td></tr>
 <tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
@@ -280,57 +289,114 @@ virtual void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" hr
 <tr class="memitem:a642c497988f59727f1bf683277800ee1"><td class="memItemLeft" align="right" valign="top">bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcgv_1_1render_1_1context.html#a642c497988f59727f1bf683277800ee1">write_frame_buffer_to_image</a> (const std::string &amp;file_name, <a class="el" href="namespacecgv_1_1data.html#a04ff4cdaed048a306aed8dd5a8c5c979">data::ComponentFormat</a> cf=<a class="el" href="namespacecgv_1_1data.html#a04ff4cdaed048a306aed8dd5a8c5c979a5e0a20ab9e288dea753eade67973a28d">data::CF_RGB</a>, <a class="el" href="namespacecgv_1_1render.html#a6a9c2282e6df914ff013f5a587bbd49c">FrameBufferType</a> buffer_type=FB_BACK, unsigned int x=0, unsigned int y=0, int w=-1, int h=-1, float depth_offset=0.9f, float depth_scale=10.0f)</td></tr>
 <tr class="memdesc:a642c497988f59727f1bf683277800ee1"><td class="mdescLeft">&#160;</td><td class="mdescRight">write the content of the frame buffer to an image file.  <a href="classcgv_1_1render_1_1context.html#a642c497988f59727f1bf683277800ee1">More...</a><br /></td></tr>
 <tr class="separator:a642c497988f59727f1bf683277800ee1"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:af913f44c501a6975a3e3e7f17d26c184"><td class="memItemLeft" align="right" valign="top"><a id="af913f44c501a6975a3e3e7f17d26c184"></a>
+void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcgv_1_1render_1_1context.html#af913f44c501a6975a3e3e7f17d26c184">push_bg_color</a> ()</td></tr>
+<tr class="memdesc:af913f44c501a6975a3e3e7f17d26c184"><td class="mdescLeft">&#160;</td><td class="mdescRight">push a copy of the current background color onto the stack <br /></td></tr>
+<tr class="separator:af913f44c501a6975a3e3e7f17d26c184"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a0c7701e7ae400562aae4f1bddf48dfb5"><td class="memItemLeft" align="right" valign="top"><a id="a0c7701e7ae400562aae4f1bddf48dfb5"></a>
+void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcgv_1_1render_1_1context.html#a0c7701e7ae400562aae4f1bddf48dfb5">pop_bg_color</a> ()</td></tr>
+<tr class="memdesc:a0c7701e7ae400562aae4f1bddf48dfb5"><td class="mdescLeft">&#160;</td><td class="mdescRight">pop the top of the current background color from the stack <br /></td></tr>
+<tr class="separator:a0c7701e7ae400562aae4f1bddf48dfb5"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a69c4f6d067a7eafaba37f9940ca1673e"><td class="memItemLeft" align="right" valign="top"><a id="a69c4f6d067a7eafaba37f9940ca1673e"></a>
+virtual void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcgv_1_1render_1_1context.html#a69c4f6d067a7eafaba37f9940ca1673e">set_bg_color</a> (<a class="el" href="namespacecgv.html#a0add29f049bd6be760ed993da79a5872">vec4</a> <a class="el" href="namespacecgv.html#a0cf3c7d9673d8f1d9d33685e3ce5c889">rgba</a>)</td></tr>
+<tr class="memdesc:a69c4f6d067a7eafaba37f9940ca1673e"><td class="mdescLeft">&#160;</td><td class="mdescRight">set a user defined background color <br /></td></tr>
+<tr class="separator:a69c4f6d067a7eafaba37f9940ca1673e"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ad00c328cf6c34336ac8b479100c18378"><td class="memItemLeft" align="right" valign="top"><a id="ad00c328cf6c34336ac8b479100c18378"></a>
-virtual void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcgv_1_1render_1_1context.html#ad00c328cf6c34336ac8b479100c18378">set_bg_color</a> (float r, float g, float b, float a)</td></tr>
+void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcgv_1_1render_1_1context.html#ad00c328cf6c34336ac8b479100c18378">set_bg_color</a> (float r, float g, float b, float a)</td></tr>
 <tr class="memdesc:ad00c328cf6c34336ac8b479100c18378"><td class="mdescLeft">&#160;</td><td class="mdescRight">set a user defined background color <br /></td></tr>
 <tr class="separator:ad00c328cf6c34336ac8b479100c18378"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a9612860d610394c792bd7d6b8f2334ff"><td class="memItemLeft" align="right" valign="top"><a id="a9612860d610394c792bd7d6b8f2334ff"></a>
+<a class="el" href="namespacecgv.html#a0add29f049bd6be760ed993da79a5872">vec4</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcgv_1_1render_1_1context.html#a9612860d610394c792bd7d6b8f2334ff">get_bg_color</a> () const</td></tr>
+<tr class="memdesc:a9612860d610394c792bd7d6b8f2334ff"><td class="mdescLeft">&#160;</td><td class="mdescRight">return the current color value for clearing the background <br /></td></tr>
+<tr class="separator:a9612860d610394c792bd7d6b8f2334ff"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a3b4d3d1b055ec366434c03679d612968"><td class="memItemLeft" align="right" valign="top"><a id="a3b4d3d1b055ec366434c03679d612968"></a>
+void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcgv_1_1render_1_1context.html#a3b4d3d1b055ec366434c03679d612968">put_bg_color</a> (float *<a class="el" href="namespacecgv.html#a0cf3c7d9673d8f1d9d33685e3ce5c889">rgba</a>) const</td></tr>
+<tr class="memdesc:a3b4d3d1b055ec366434c03679d612968"><td class="mdescLeft">&#160;</td><td class="mdescRight">copy the current background rgba color into the given float array <br /></td></tr>
+<tr class="separator:a3b4d3d1b055ec366434c03679d612968"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a33fb372c16738b65d9c4c3ce2b5032fe"><td class="memItemLeft" align="right" valign="top"><a id="a33fb372c16738b65d9c4c3ce2b5032fe"></a>
-virtual void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcgv_1_1render_1_1context.html#a33fb372c16738b65d9c4c3ce2b5032fe">set_bg_alpha</a> (float a)</td></tr>
+void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcgv_1_1render_1_1context.html#a33fb372c16738b65d9c4c3ce2b5032fe">set_bg_alpha</a> (float a)</td></tr>
 <tr class="memdesc:a33fb372c16738b65d9c4c3ce2b5032fe"><td class="mdescLeft">&#160;</td><td class="mdescRight">set a user defined background alpha value <br /></td></tr>
 <tr class="separator:a33fb372c16738b65d9c4c3ce2b5032fe"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:adb90ef348ef87481350c51e49d3683e3"><td class="memItemLeft" align="right" valign="top">virtual void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcgv_1_1render_1_1context.html#adb90ef348ef87481350c51e49d3683e3">set_bg_depth</a> (float d)</td></tr>
-<tr class="memdesc:adb90ef348ef87481350c51e49d3683e3"><td class="mdescLeft">&#160;</td><td class="mdescRight">set a user defined background depth value  <a href="classcgv_1_1render_1_1context.html#adb90ef348ef87481350c51e49d3683e3">More...</a><br /></td></tr>
-<tr class="separator:adb90ef348ef87481350c51e49d3683e3"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:ac0cc4cccaace3e205f38617ebb869af0"><td class="memItemLeft" align="right" valign="top">virtual void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcgv_1_1render_1_1context.html#ac0cc4cccaace3e205f38617ebb869af0">set_bg_stencil</a> (int s)</td></tr>
-<tr class="memdesc:ac0cc4cccaace3e205f38617ebb869af0"><td class="mdescLeft">&#160;</td><td class="mdescRight">set a user defined background stencil value  <a href="classcgv_1_1render_1_1context.html#ac0cc4cccaace3e205f38617ebb869af0">More...</a><br /></td></tr>
-<tr class="separator:ac0cc4cccaace3e205f38617ebb869af0"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a195a7dac53b9ea527720f77ac3cbb56f"><td class="memItemLeft" align="right" valign="top">virtual void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcgv_1_1render_1_1context.html#a195a7dac53b9ea527720f77ac3cbb56f">set_bg_accum_color</a> (float r, float g, float b, float a)</td></tr>
-<tr class="memdesc:a195a7dac53b9ea527720f77ac3cbb56f"><td class="mdescLeft">&#160;</td><td class="mdescRight">set a user defined background color for the accumulation buffer  <a href="classcgv_1_1render_1_1context.html#a195a7dac53b9ea527720f77ac3cbb56f">More...</a><br /></td></tr>
-<tr class="separator:a195a7dac53b9ea527720f77ac3cbb56f"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a4ed6e1a7bcdf8407623ab14485670742"><td class="memItemLeft" align="right" valign="top">virtual void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcgv_1_1render_1_1context.html#a4ed6e1a7bcdf8407623ab14485670742">set_bg_accum_alpha</a> (float a)</td></tr>
-<tr class="memdesc:a4ed6e1a7bcdf8407623ab14485670742"><td class="mdescLeft">&#160;</td><td class="mdescRight">set a user defined background alpha value for the accumulation buffer  <a href="classcgv_1_1render_1_1context.html#a4ed6e1a7bcdf8407623ab14485670742">More...</a><br /></td></tr>
-<tr class="separator:a4ed6e1a7bcdf8407623ab14485670742"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a2dc550caa7c21a034043deede6b3f71f"><td class="memItemLeft" align="right" valign="top">virtual void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcgv_1_1render_1_1context.html#a2dc550caa7c21a034043deede6b3f71f">set_bg_clr_idx</a> (unsigned int idx)</td></tr>
-<tr class="memdesc:a2dc550caa7c21a034043deede6b3f71f"><td class="mdescLeft">&#160;</td><td class="mdescRight">set an indexed background color  <a href="classcgv_1_1render_1_1context.html#a2dc550caa7c21a034043deede6b3f71f">More...</a><br /></td></tr>
+<tr class="memitem:a628344d4a2b3f3484f0732398509ceb0"><td class="memItemLeft" align="right" valign="top"><a id="a628344d4a2b3f3484f0732398509ceb0"></a>
+float&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcgv_1_1render_1_1context.html#a628344d4a2b3f3484f0732398509ceb0">get_bg_alpha</a> () const</td></tr>
+<tr class="memdesc:a628344d4a2b3f3484f0732398509ceb0"><td class="mdescLeft">&#160;</td><td class="mdescRight">return the current alpha value for clearing the background <br /></td></tr>
+<tr class="separator:a628344d4a2b3f3484f0732398509ceb0"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a2dc550caa7c21a034043deede6b3f71f"><td class="memItemLeft" align="right" valign="top"><a id="a2dc550caa7c21a034043deede6b3f71f"></a>
+void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcgv_1_1render_1_1context.html#a2dc550caa7c21a034043deede6b3f71f">set_bg_clr_idx</a> (unsigned int idx)</td></tr>
+<tr class="memdesc:a2dc550caa7c21a034043deede6b3f71f"><td class="mdescLeft">&#160;</td><td class="mdescRight">set an indexed background color <br /></td></tr>
 <tr class="separator:a2dc550caa7c21a034043deede6b3f71f"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a6572598c63481c4a2741795fb3f9d1c6"><td class="memItemLeft" align="right" valign="top"><a id="a6572598c63481c4a2741795fb3f9d1c6"></a>
 unsigned int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcgv_1_1render_1_1context.html#a6572598c63481c4a2741795fb3f9d1c6">get_bg_clr_idx</a> () const</td></tr>
 <tr class="memdesc:a6572598c63481c4a2741795fb3f9d1c6"><td class="mdescLeft">&#160;</td><td class="mdescRight">return the current index of the background color <br /></td></tr>
 <tr class="separator:a6572598c63481c4a2741795fb3f9d1c6"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a3b4d3d1b055ec366434c03679d612968"><td class="memItemLeft" align="right" valign="top"><a id="a3b4d3d1b055ec366434c03679d612968"></a>
-void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcgv_1_1render_1_1context.html#a3b4d3d1b055ec366434c03679d612968">put_bg_color</a> (float *<a class="el" href="namespacecgv.html#a0cf3c7d9673d8f1d9d33685e3ce5c889">rgba</a>) const</td></tr>
-<tr class="memdesc:a3b4d3d1b055ec366434c03679d612968"><td class="mdescLeft">&#160;</td><td class="mdescRight">copy the current back ground rgba color into the given float array <br /></td></tr>
-<tr class="separator:a3b4d3d1b055ec366434c03679d612968"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a628344d4a2b3f3484f0732398509ceb0"><td class="memItemLeft" align="right" valign="top"><a id="a628344d4a2b3f3484f0732398509ceb0"></a>
-float&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcgv_1_1render_1_1context.html#a628344d4a2b3f3484f0732398509ceb0">get_bg_alpha</a> () const</td></tr>
-<tr class="memdesc:a628344d4a2b3f3484f0732398509ceb0"><td class="mdescLeft">&#160;</td><td class="mdescRight">return the current alpha value for clearing the background <br /></td></tr>
-<tr class="separator:a628344d4a2b3f3484f0732398509ceb0"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:acc13a514866104a12f075532101da5a8"><td class="memItemLeft" align="right" valign="top"><a id="acc13a514866104a12f075532101da5a8"></a>
-void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcgv_1_1render_1_1context.html#acc13a514866104a12f075532101da5a8">put_bg_accum_color</a> (float *<a class="el" href="namespacecgv.html#a0cf3c7d9673d8f1d9d33685e3ce5c889">rgba</a>) const</td></tr>
-<tr class="memdesc:acc13a514866104a12f075532101da5a8"><td class="mdescLeft">&#160;</td><td class="mdescRight">copy the current back ground rgba color of the accumulation buffer into the given float array <br /></td></tr>
-<tr class="separator:acc13a514866104a12f075532101da5a8"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a33adf813e7c435d545ae4c156cffa2e3"><td class="memItemLeft" align="right" valign="top"><a id="a33adf813e7c435d545ae4c156cffa2e3"></a>
-float&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcgv_1_1render_1_1context.html#a33adf813e7c435d545ae4c156cffa2e3">get_bg_accum_alpha</a> () const</td></tr>
-<tr class="memdesc:a33adf813e7c435d545ae4c156cffa2e3"><td class="mdescLeft">&#160;</td><td class="mdescRight">return the current alpha value for clearing the accumulation buffer <br /></td></tr>
-<tr class="separator:a33adf813e7c435d545ae4c156cffa2e3"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:aa5b0e8b5da09c2cf85d357d6090596ba"><td class="memItemLeft" align="right" valign="top"><a id="aa5b0e8b5da09c2cf85d357d6090596ba"></a>
+void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcgv_1_1render_1_1context.html#aa5b0e8b5da09c2cf85d357d6090596ba">push_bg_depth</a> ()</td></tr>
+<tr class="memdesc:aa5b0e8b5da09c2cf85d357d6090596ba"><td class="mdescLeft">&#160;</td><td class="mdescRight">push a copy of the current background depth value onto the stack <br /></td></tr>
+<tr class="separator:aa5b0e8b5da09c2cf85d357d6090596ba"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a4094bb55f850d8d4bf4742f8e6fa55e0"><td class="memItemLeft" align="right" valign="top"><a id="a4094bb55f850d8d4bf4742f8e6fa55e0"></a>
+void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcgv_1_1render_1_1context.html#a4094bb55f850d8d4bf4742f8e6fa55e0">pop_bg_depth</a> ()</td></tr>
+<tr class="memdesc:a4094bb55f850d8d4bf4742f8e6fa55e0"><td class="mdescLeft">&#160;</td><td class="mdescRight">pop the top of the current background depth value from the stack <br /></td></tr>
+<tr class="separator:a4094bb55f850d8d4bf4742f8e6fa55e0"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:adb90ef348ef87481350c51e49d3683e3"><td class="memItemLeft" align="right" valign="top"><a id="adb90ef348ef87481350c51e49d3683e3"></a>
+virtual void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcgv_1_1render_1_1context.html#adb90ef348ef87481350c51e49d3683e3">set_bg_depth</a> (float d)</td></tr>
+<tr class="memdesc:adb90ef348ef87481350c51e49d3683e3"><td class="mdescLeft">&#160;</td><td class="mdescRight">set a user defined background depth value <br /></td></tr>
+<tr class="separator:adb90ef348ef87481350c51e49d3683e3"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ac62d2d231f5d2276ec122132ec399fd7"><td class="memItemLeft" align="right" valign="top"><a id="ac62d2d231f5d2276ec122132ec399fd7"></a>
 float&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcgv_1_1render_1_1context.html#ac62d2d231f5d2276ec122132ec399fd7">get_bg_depth</a> () const</td></tr>
 <tr class="memdesc:ac62d2d231f5d2276ec122132ec399fd7"><td class="mdescLeft">&#160;</td><td class="mdescRight">return the current depth value for clearing the background <br /></td></tr>
 <tr class="separator:ac62d2d231f5d2276ec122132ec399fd7"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a7a3dde4cdb4df9f0fbd495ac38df19dc"><td class="memItemLeft" align="right" valign="top"><a id="a7a3dde4cdb4df9f0fbd495ac38df19dc"></a>
+void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcgv_1_1render_1_1context.html#a7a3dde4cdb4df9f0fbd495ac38df19dc">push_bg_stencil</a> ()</td></tr>
+<tr class="memdesc:a7a3dde4cdb4df9f0fbd495ac38df19dc"><td class="mdescLeft">&#160;</td><td class="mdescRight">push a copy of the current background stencil value onto the stack <br /></td></tr>
+<tr class="separator:a7a3dde4cdb4df9f0fbd495ac38df19dc"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a7528b8c315cb8ed84724d97d5b8a0c0a"><td class="memItemLeft" align="right" valign="top"><a id="a7528b8c315cb8ed84724d97d5b8a0c0a"></a>
+void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcgv_1_1render_1_1context.html#a7528b8c315cb8ed84724d97d5b8a0c0a">pop_bg_stencil</a> ()</td></tr>
+<tr class="memdesc:a7528b8c315cb8ed84724d97d5b8a0c0a"><td class="mdescLeft">&#160;</td><td class="mdescRight">pop the top of the current background stencil value from the stack <br /></td></tr>
+<tr class="separator:a7528b8c315cb8ed84724d97d5b8a0c0a"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ac0cc4cccaace3e205f38617ebb869af0"><td class="memItemLeft" align="right" valign="top"><a id="ac0cc4cccaace3e205f38617ebb869af0"></a>
+virtual void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcgv_1_1render_1_1context.html#ac0cc4cccaace3e205f38617ebb869af0">set_bg_stencil</a> (int s)</td></tr>
+<tr class="memdesc:ac0cc4cccaace3e205f38617ebb869af0"><td class="mdescLeft">&#160;</td><td class="mdescRight">set a user defined background stencil value <br /></td></tr>
+<tr class="separator:ac0cc4cccaace3e205f38617ebb869af0"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a41fcc1d3e8f858b9e77fc6d050e4b9ac"><td class="memItemLeft" align="right" valign="top"><a id="a41fcc1d3e8f858b9e77fc6d050e4b9ac"></a>
 int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcgv_1_1render_1_1context.html#a41fcc1d3e8f858b9e77fc6d050e4b9ac">get_bg_stencil</a> () const</td></tr>
 <tr class="memdesc:a41fcc1d3e8f858b9e77fc6d050e4b9ac"><td class="mdescLeft">&#160;</td><td class="mdescRight">return the current stencil value for clearing the background <br /></td></tr>
 <tr class="separator:a41fcc1d3e8f858b9e77fc6d050e4b9ac"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ab4e83a63572ab216f193c6ad6aefdb2b"><td class="memItemLeft" align="right" valign="top"><a id="ab4e83a63572ab216f193c6ad6aefdb2b"></a>
+void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcgv_1_1render_1_1context.html#ab4e83a63572ab216f193c6ad6aefdb2b">push_bg_accum_color</a> ()</td></tr>
+<tr class="memdesc:ab4e83a63572ab216f193c6ad6aefdb2b"><td class="mdescLeft">&#160;</td><td class="mdescRight">push a copy of the current background accumulation color onto the stack <br /></td></tr>
+<tr class="separator:ab4e83a63572ab216f193c6ad6aefdb2b"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ac07bacf07aa4e6dfbe8338be7be574d9"><td class="memItemLeft" align="right" valign="top"><a id="ac07bacf07aa4e6dfbe8338be7be574d9"></a>
+void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcgv_1_1render_1_1context.html#ac07bacf07aa4e6dfbe8338be7be574d9">pop_bg_accum_color</a> ()</td></tr>
+<tr class="memdesc:ac07bacf07aa4e6dfbe8338be7be574d9"><td class="mdescLeft">&#160;</td><td class="mdescRight">pop the top of the current background accumulation color from the stack <br /></td></tr>
+<tr class="separator:ac07bacf07aa4e6dfbe8338be7be574d9"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ac4a55e12c991477701fd265c119db381"><td class="memItemLeft" align="right" valign="top"><a id="ac4a55e12c991477701fd265c119db381"></a>
+virtual void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcgv_1_1render_1_1context.html#ac4a55e12c991477701fd265c119db381">set_bg_accum_color</a> (<a class="el" href="namespacecgv.html#a0add29f049bd6be760ed993da79a5872">vec4</a> <a class="el" href="namespacecgv.html#a0cf3c7d9673d8f1d9d33685e3ce5c889">rgba</a>)</td></tr>
+<tr class="memdesc:ac4a55e12c991477701fd265c119db381"><td class="mdescLeft">&#160;</td><td class="mdescRight">set a user defined background color for the accumulation buffer <br /></td></tr>
+<tr class="separator:ac4a55e12c991477701fd265c119db381"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a195a7dac53b9ea527720f77ac3cbb56f"><td class="memItemLeft" align="right" valign="top"><a id="a195a7dac53b9ea527720f77ac3cbb56f"></a>
+void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcgv_1_1render_1_1context.html#a195a7dac53b9ea527720f77ac3cbb56f">set_bg_accum_color</a> (float r, float g, float b, float a)</td></tr>
+<tr class="memdesc:a195a7dac53b9ea527720f77ac3cbb56f"><td class="mdescLeft">&#160;</td><td class="mdescRight">set a user defined background color for the accumulation buffer <br /></td></tr>
+<tr class="separator:a195a7dac53b9ea527720f77ac3cbb56f"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ad29926eaffdeeff759e18fec44a0008f"><td class="memItemLeft" align="right" valign="top"><a id="ad29926eaffdeeff759e18fec44a0008f"></a>
+<a class="el" href="namespacecgv.html#a0add29f049bd6be760ed993da79a5872">vec4</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcgv_1_1render_1_1context.html#ad29926eaffdeeff759e18fec44a0008f">get_bg_accum_color</a> () const</td></tr>
+<tr class="memdesc:ad29926eaffdeeff759e18fec44a0008f"><td class="mdescLeft">&#160;</td><td class="mdescRight">return the current color value for clearing the accumulation buffer <br /></td></tr>
+<tr class="separator:ad29926eaffdeeff759e18fec44a0008f"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:acc13a514866104a12f075532101da5a8"><td class="memItemLeft" align="right" valign="top"><a id="acc13a514866104a12f075532101da5a8"></a>
+void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcgv_1_1render_1_1context.html#acc13a514866104a12f075532101da5a8">put_bg_accum_color</a> (float *<a class="el" href="namespacecgv.html#a0cf3c7d9673d8f1d9d33685e3ce5c889">rgba</a>) const</td></tr>
+<tr class="memdesc:acc13a514866104a12f075532101da5a8"><td class="mdescLeft">&#160;</td><td class="mdescRight">copy the current accumulation background rgba color into the given float array <br /></td></tr>
+<tr class="separator:acc13a514866104a12f075532101da5a8"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a4ed6e1a7bcdf8407623ab14485670742"><td class="memItemLeft" align="right" valign="top"><a id="a4ed6e1a7bcdf8407623ab14485670742"></a>
+void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcgv_1_1render_1_1context.html#a4ed6e1a7bcdf8407623ab14485670742">set_bg_accum_alpha</a> (float a)</td></tr>
+<tr class="memdesc:a4ed6e1a7bcdf8407623ab14485670742"><td class="mdescLeft">&#160;</td><td class="mdescRight">set a user defined background alpha value for the accumulation buffer <br /></td></tr>
+<tr class="separator:a4ed6e1a7bcdf8407623ab14485670742"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a33adf813e7c435d545ae4c156cffa2e3"><td class="memItemLeft" align="right" valign="top"><a id="a33adf813e7c435d545ae4c156cffa2e3"></a>
+float&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcgv_1_1render_1_1context.html#a33adf813e7c435d545ae4c156cffa2e3">get_bg_accum_alpha</a> () const</td></tr>
+<tr class="memdesc:a33adf813e7c435d545ae4c156cffa2e3"><td class="mdescLeft">&#160;</td><td class="mdescRight">return the current alpha value for clearing the accumulation buffer <br /></td></tr>
+<tr class="separator:a33adf813e7c435d545ae4c156cffa2e3"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a5840e8d32da5192aec98353b45817052"><td class="memItemLeft" align="right" valign="top"><a id="a5840e8d32da5192aec98353b45817052"></a>
+virtual void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcgv_1_1render_1_1context.html#a5840e8d32da5192aec98353b45817052">clear_background</a> (bool color_flag, bool depth_flag, bool stencil_flag=false, bool accum_flag=false)=0</td></tr>
+<tr class="memdesc:a5840e8d32da5192aec98353b45817052"><td class="mdescLeft">&#160;</td><td class="mdescRight">clear the buffer contents of the flagged buffers to the set background colors <br /></td></tr>
+<tr class="separator:a5840e8d32da5192aec98353b45817052"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:af7a79e3599913c7b62a95db290cdcdc6"><td class="memItemLeft" align="right" valign="top"><a id="af7a79e3599913c7b62a95db290cdcdc6"></a>
 virtual void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcgv_1_1render_1_1context.html#af7a79e3599913c7b62a95db290cdcdc6">post_redraw</a> ()=0</td></tr>
 <tr class="memdesc:af7a79e3599913c7b62a95db290cdcdc6"><td class="mdescLeft">&#160;</td><td class="mdescRight">the context will be redrawn when the system is idle again <br /></td></tr>
@@ -628,6 +694,123 @@ virtual void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" hr
 <tr class="memitem:a1122ce9221bb982f6842138ae5978b66"><td class="memItemLeft" align="right" valign="top">virtual void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcgv_1_1render_1_1context.html#a1122ce9221bb982f6842138ae5978b66">draw_light_source</a> (const <a class="el" href="classcgv_1_1media_1_1illum_1_1light__source.html">cgv::media::illum::light_source</a> &amp;l, float intensity_scale, float light_scale)</td></tr>
 <tr class="memdesc:a1122ce9221bb982f6842138ae5978b66"><td class="mdescLeft">&#160;</td><td class="mdescRight">draw a light source with an emissive material  <a href="classcgv_1_1render_1_1context.html#a1122ce9221bb982f6842138ae5978b66">More...</a><br /></td></tr>
 <tr class="separator:a1122ce9221bb982f6842138ae5978b66"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr><td colspan="2"><div class="groupHeader">render state</div></td></tr>
+<tr class="memitem:a398c951758a7f6d0a326644e55799c26"><td class="memItemLeft" align="right" valign="top"><a id="a398c951758a7f6d0a326644e55799c26"></a>
+void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcgv_1_1render_1_1context.html#a398c951758a7f6d0a326644e55799c26">push_depth_test_state</a> ()</td></tr>
+<tr class="memdesc:a398c951758a7f6d0a326644e55799c26"><td class="mdescLeft">&#160;</td><td class="mdescRight">push a copy of the current depth test state onto the stack saved attributes: depth test enablement, depth test function <br /></td></tr>
+<tr class="separator:a398c951758a7f6d0a326644e55799c26"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a59b545a5cd48b4782c60b35dc53456cd"><td class="memItemLeft" align="right" valign="top"><a id="a59b545a5cd48b4782c60b35dc53456cd"></a>
+void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcgv_1_1render_1_1context.html#a59b545a5cd48b4782c60b35dc53456cd">pop_depth_test_state</a> ()</td></tr>
+<tr class="memdesc:a59b545a5cd48b4782c60b35dc53456cd"><td class="mdescLeft">&#160;</td><td class="mdescRight">pop the top of the current depth test state from the stack <br /></td></tr>
+<tr class="separator:a59b545a5cd48b4782c60b35dc53456cd"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a8338e4579cd71f926deacd919fbe0b4e"><td class="memItemLeft" align="right" valign="top"><a id="a8338e4579cd71f926deacd919fbe0b4e"></a>
+<a class="el" href="structcgv_1_1render_1_1context_1_1DepthTestState.html">DepthTestState</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcgv_1_1render_1_1context.html#a8338e4579cd71f926deacd919fbe0b4e">get_depth_test_state</a> () const</td></tr>
+<tr class="memdesc:a8338e4579cd71f926deacd919fbe0b4e"><td class="mdescLeft">&#160;</td><td class="mdescRight">return the current depth test state <br /></td></tr>
+<tr class="separator:a8338e4579cd71f926deacd919fbe0b4e"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a6a63370673ad95a7afb0e8be1becb11c"><td class="memItemLeft" align="right" valign="top"><a id="a6a63370673ad95a7afb0e8be1becb11c"></a>
+virtual void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcgv_1_1render_1_1context.html#a6a63370673ad95a7afb0e8be1becb11c">set_depth_test_state</a> (<a class="el" href="structcgv_1_1render_1_1context_1_1DepthTestState.html">DepthTestState</a> state)</td></tr>
+<tr class="memdesc:a6a63370673ad95a7afb0e8be1becb11c"><td class="mdescLeft">&#160;</td><td class="mdescRight">set the depth test state <br /></td></tr>
+<tr class="separator:a6a63370673ad95a7afb0e8be1becb11c"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a9e55fadd00dd10b272b1312ae9db51c1"><td class="memItemLeft" align="right" valign="top"><a id="a9e55fadd00dd10b272b1312ae9db51c1"></a>
+virtual void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcgv_1_1render_1_1context.html#a9e55fadd00dd10b272b1312ae9db51c1">set_depth_func</a> (<a class="el" href="namespacecgv_1_1render.html#af1b1b5ee6ada2ce3649637247799b929">CompareFunction</a> func)</td></tr>
+<tr class="memdesc:a9e55fadd00dd10b272b1312ae9db51c1"><td class="mdescLeft">&#160;</td><td class="mdescRight">set the depth test function <br /></td></tr>
+<tr class="separator:a9e55fadd00dd10b272b1312ae9db51c1"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a9041ef723534f0d0c3e4af5ff8dead3e"><td class="memItemLeft" align="right" valign="top"><a id="a9041ef723534f0d0c3e4af5ff8dead3e"></a>
+virtual void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcgv_1_1render_1_1context.html#a9041ef723534f0d0c3e4af5ff8dead3e">enable_depth_test</a> ()</td></tr>
+<tr class="memdesc:a9041ef723534f0d0c3e4af5ff8dead3e"><td class="mdescLeft">&#160;</td><td class="mdescRight">enable the depth test <br /></td></tr>
+<tr class="separator:a9041ef723534f0d0c3e4af5ff8dead3e"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a3fbd7fca8d0f7dc3abad7fb0a3d00ce3"><td class="memItemLeft" align="right" valign="top"><a id="a3fbd7fca8d0f7dc3abad7fb0a3d00ce3"></a>
+virtual void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcgv_1_1render_1_1context.html#a3fbd7fca8d0f7dc3abad7fb0a3d00ce3">disable_depth_test</a> ()</td></tr>
+<tr class="memdesc:a3fbd7fca8d0f7dc3abad7fb0a3d00ce3"><td class="mdescLeft">&#160;</td><td class="mdescRight">disable the depth test <br /></td></tr>
+<tr class="separator:a3fbd7fca8d0f7dc3abad7fb0a3d00ce3"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a707cf7d485213e6fd6d9601cd26c508a"><td class="memItemLeft" align="right" valign="top"><a id="a707cf7d485213e6fd6d9601cd26c508a"></a>
+void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcgv_1_1render_1_1context.html#a707cf7d485213e6fd6d9601cd26c508a">push_cull_state</a> ()</td></tr>
+<tr class="memdesc:a707cf7d485213e6fd6d9601cd26c508a"><td class="mdescLeft">&#160;</td><td class="mdescRight">push a copy of the current culling state onto the stack saved attributes: cull face enablement, cull face <br /></td></tr>
+<tr class="separator:a707cf7d485213e6fd6d9601cd26c508a"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ae208e961ad7e451e0c4489520f5a7c6e"><td class="memItemLeft" align="right" valign="top"><a id="ae208e961ad7e451e0c4489520f5a7c6e"></a>
+void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcgv_1_1render_1_1context.html#ae208e961ad7e451e0c4489520f5a7c6e">pop_cull_state</a> ()</td></tr>
+<tr class="memdesc:ae208e961ad7e451e0c4489520f5a7c6e"><td class="mdescLeft">&#160;</td><td class="mdescRight">pop the top of the current culling state from the stack <br /></td></tr>
+<tr class="separator:ae208e961ad7e451e0c4489520f5a7c6e"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:af49d92b640d8a5ffab7d2aafb77e6744"><td class="memItemLeft" align="right" valign="top"><a id="af49d92b640d8a5ffab7d2aafb77e6744"></a>
+<a class="el" href="namespacecgv_1_1render.html#a0b2ec1d0f6ff0852f53654cb8e6fab57">CullingMode</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcgv_1_1render_1_1context.html#af49d92b640d8a5ffab7d2aafb77e6744">get_cull_state</a> () const</td></tr>
+<tr class="memdesc:af49d92b640d8a5ffab7d2aafb77e6744"><td class="mdescLeft">&#160;</td><td class="mdescRight">return the current culling state <br /></td></tr>
+<tr class="separator:af49d92b640d8a5ffab7d2aafb77e6744"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a998a4b60424ffe762008bf6395b1a542"><td class="memItemLeft" align="right" valign="top"><a id="a998a4b60424ffe762008bf6395b1a542"></a>
+virtual void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcgv_1_1render_1_1context.html#a998a4b60424ffe762008bf6395b1a542">set_cull_state</a> (<a class="el" href="namespacecgv_1_1render.html#a0b2ec1d0f6ff0852f53654cb8e6fab57">CullingMode</a> culling_mode)</td></tr>
+<tr class="memdesc:a998a4b60424ffe762008bf6395b1a542"><td class="mdescLeft">&#160;</td><td class="mdescRight">set the culling state <br /></td></tr>
+<tr class="separator:a998a4b60424ffe762008bf6395b1a542"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a3d328f77af1f0fc39a0981b3d206296a"><td class="memItemLeft" align="right" valign="top"><a id="a3d328f77af1f0fc39a0981b3d206296a"></a>
+void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcgv_1_1render_1_1context.html#a3d328f77af1f0fc39a0981b3d206296a">push_blend_state</a> ()</td></tr>
+<tr class="memdesc:a3d328f77af1f0fc39a0981b3d206296a"><td class="mdescLeft">&#160;</td><td class="mdescRight">push a copy of the current blend state onto the stack saved attributes: blend enablement, color and alpha source and destinatin functions <br /></td></tr>
+<tr class="separator:a3d328f77af1f0fc39a0981b3d206296a"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a4583d99fc8c330adda1b89d11a9700b1"><td class="memItemLeft" align="right" valign="top"><a id="a4583d99fc8c330adda1b89d11a9700b1"></a>
+void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcgv_1_1render_1_1context.html#a4583d99fc8c330adda1b89d11a9700b1">pop_blend_state</a> ()</td></tr>
+<tr class="memdesc:a4583d99fc8c330adda1b89d11a9700b1"><td class="mdescLeft">&#160;</td><td class="mdescRight">pop the top of the current culling state from the stack <br /></td></tr>
+<tr class="separator:a4583d99fc8c330adda1b89d11a9700b1"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a982a22497eb4aeed73484bafd2f307b3"><td class="memItemLeft" align="right" valign="top"><a id="a982a22497eb4aeed73484bafd2f307b3"></a>
+<a class="el" href="structcgv_1_1render_1_1context_1_1BlendState.html">BlendState</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcgv_1_1render_1_1context.html#a982a22497eb4aeed73484bafd2f307b3">get_blend_state</a> () const</td></tr>
+<tr class="memdesc:a982a22497eb4aeed73484bafd2f307b3"><td class="mdescLeft">&#160;</td><td class="mdescRight">return the current blend state <br /></td></tr>
+<tr class="separator:a982a22497eb4aeed73484bafd2f307b3"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ad43d4c50f4db203fb15f24b1afc84c79"><td class="memItemLeft" align="right" valign="top"><a id="ad43d4c50f4db203fb15f24b1afc84c79"></a>
+virtual void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcgv_1_1render_1_1context.html#ad43d4c50f4db203fb15f24b1afc84c79">set_blend_state</a> (<a class="el" href="structcgv_1_1render_1_1context_1_1BlendState.html">BlendState</a> state)</td></tr>
+<tr class="memdesc:ad43d4c50f4db203fb15f24b1afc84c79"><td class="mdescLeft">&#160;</td><td class="mdescRight">set the complete blend state <br /></td></tr>
+<tr class="separator:ad43d4c50f4db203fb15f24b1afc84c79"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a015186cbc9c25e2ad4b959796ab67476"><td class="memItemLeft" align="right" valign="top"><a id="a015186cbc9c25e2ad4b959796ab67476"></a>
+virtual void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcgv_1_1render_1_1context.html#a015186cbc9c25e2ad4b959796ab67476">set_blend_func</a> (<a class="el" href="namespacecgv_1_1render.html#a28946409283e37612a47299ba18160eb">BlendFunction</a> src_factor, <a class="el" href="namespacecgv_1_1render.html#a28946409283e37612a47299ba18160eb">BlendFunction</a> dst_factor)</td></tr>
+<tr class="memdesc:a015186cbc9c25e2ad4b959796ab67476"><td class="mdescLeft">&#160;</td><td class="mdescRight">set the blend function <br /></td></tr>
+<tr class="separator:a015186cbc9c25e2ad4b959796ab67476"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a34543903b209c2439315ac7e25f91a97"><td class="memItemLeft" align="right" valign="top"><a id="a34543903b209c2439315ac7e25f91a97"></a>
+virtual void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcgv_1_1render_1_1context.html#a34543903b209c2439315ac7e25f91a97">set_blend_func_separate</a> (<a class="el" href="namespacecgv_1_1render.html#a28946409283e37612a47299ba18160eb">BlendFunction</a> src_color_factor, <a class="el" href="namespacecgv_1_1render.html#a28946409283e37612a47299ba18160eb">BlendFunction</a> dst_color_factor, <a class="el" href="namespacecgv_1_1render.html#a28946409283e37612a47299ba18160eb">BlendFunction</a> src_alpha_factor, <a class="el" href="namespacecgv_1_1render.html#a28946409283e37612a47299ba18160eb">BlendFunction</a> dst_alpha_factor)</td></tr>
+<tr class="memdesc:a34543903b209c2439315ac7e25f91a97"><td class="mdescLeft">&#160;</td><td class="mdescRight">set the blend function separately for color and alpha <br /></td></tr>
+<tr class="separator:a34543903b209c2439315ac7e25f91a97"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a55ec2e4c4ccc3bafba91ae1875bb8cfc"><td class="memItemLeft" align="right" valign="top"><a id="a55ec2e4c4ccc3bafba91ae1875bb8cfc"></a>
+void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcgv_1_1render_1_1context.html#a55ec2e4c4ccc3bafba91ae1875bb8cfc">set_blend_func_front_to_back</a> ()</td></tr>
+<tr class="memdesc:a55ec2e4c4ccc3bafba91ae1875bb8cfc"><td class="mdescLeft">&#160;</td><td class="mdescRight">set the default blend function for front to back blending <br /></td></tr>
+<tr class="separator:a55ec2e4c4ccc3bafba91ae1875bb8cfc"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a0a5de5ff32c3f70c495ad248b6d00520"><td class="memItemLeft" align="right" valign="top"><a id="a0a5de5ff32c3f70c495ad248b6d00520"></a>
+void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcgv_1_1render_1_1context.html#a0a5de5ff32c3f70c495ad248b6d00520">set_blend_func_back_to_front</a> ()</td></tr>
+<tr class="memdesc:a0a5de5ff32c3f70c495ad248b6d00520"><td class="mdescLeft">&#160;</td><td class="mdescRight">set the default blend function for back to front blending <br /></td></tr>
+<tr class="separator:a0a5de5ff32c3f70c495ad248b6d00520"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:adf2e2648d32ab5609c7dbaf8822c4299"><td class="memItemLeft" align="right" valign="top"><a id="adf2e2648d32ab5609c7dbaf8822c4299"></a>
+virtual void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcgv_1_1render_1_1context.html#adf2e2648d32ab5609c7dbaf8822c4299">enable_blending</a> ()</td></tr>
+<tr class="memdesc:adf2e2648d32ab5609c7dbaf8822c4299"><td class="mdescLeft">&#160;</td><td class="mdescRight">enable blending <br /></td></tr>
+<tr class="separator:adf2e2648d32ab5609c7dbaf8822c4299"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a6f2829559e82d238784a1932e2eee6fe"><td class="memItemLeft" align="right" valign="top"><a id="a6f2829559e82d238784a1932e2eee6fe"></a>
+virtual void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcgv_1_1render_1_1context.html#a6f2829559e82d238784a1932e2eee6fe">disable_blending</a> ()</td></tr>
+<tr class="memdesc:a6f2829559e82d238784a1932e2eee6fe"><td class="mdescLeft">&#160;</td><td class="mdescRight">disable blending <br /></td></tr>
+<tr class="separator:a6f2829559e82d238784a1932e2eee6fe"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:afa54e4fb55b2dad004f6b84de68ae89d"><td class="memItemLeft" align="right" valign="top"><a id="afa54e4fb55b2dad004f6b84de68ae89d"></a>
+void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcgv_1_1render_1_1context.html#afa54e4fb55b2dad004f6b84de68ae89d">push_buffer_mask</a> ()</td></tr>
+<tr class="memdesc:afa54e4fb55b2dad004f6b84de68ae89d"><td class="mdescLeft">&#160;</td><td class="mdescRight">push a copy of the current buffer mask onto the stack saved attributes: depth mask, color mask <br /></td></tr>
+<tr class="separator:afa54e4fb55b2dad004f6b84de68ae89d"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a1974dba0f210acf14a04bc8946514c3f"><td class="memItemLeft" align="right" valign="top"><a id="a1974dba0f210acf14a04bc8946514c3f"></a>
+void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcgv_1_1render_1_1context.html#a1974dba0f210acf14a04bc8946514c3f">pop_buffer_mask</a> ()</td></tr>
+<tr class="memdesc:a1974dba0f210acf14a04bc8946514c3f"><td class="mdescLeft">&#160;</td><td class="mdescRight">pop the top of the current buffer mask from the stack <br /></td></tr>
+<tr class="separator:a1974dba0f210acf14a04bc8946514c3f"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a6fea88d57e29a13e84798454ab564cfb"><td class="memItemLeft" align="right" valign="top"><a id="a6fea88d57e29a13e84798454ab564cfb"></a>
+<a class="el" href="structcgv_1_1render_1_1context_1_1BufferMask.html">BufferMask</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcgv_1_1render_1_1context.html#a6fea88d57e29a13e84798454ab564cfb">get_buffer_mask</a> () const</td></tr>
+<tr class="memdesc:a6fea88d57e29a13e84798454ab564cfb"><td class="mdescLeft">&#160;</td><td class="mdescRight">return the current buffer mask <br /></td></tr>
+<tr class="separator:a6fea88d57e29a13e84798454ab564cfb"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a2f4511e228f20e5ae1973bc2e09094fb"><td class="memItemLeft" align="right" valign="top"><a id="a2f4511e228f20e5ae1973bc2e09094fb"></a>
+virtual void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcgv_1_1render_1_1context.html#a2f4511e228f20e5ae1973bc2e09094fb">set_buffer_mask</a> (<a class="el" href="structcgv_1_1render_1_1context_1_1BufferMask.html">BufferMask</a> mask)</td></tr>
+<tr class="memdesc:a2f4511e228f20e5ae1973bc2e09094fb"><td class="mdescLeft">&#160;</td><td class="mdescRight">set the buffer mask for depth and color buffers <br /></td></tr>
+<tr class="separator:a2f4511e228f20e5ae1973bc2e09094fb"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:aa683d98293b063905a5d09b9308feb80"><td class="memItemLeft" align="right" valign="top"><a id="aa683d98293b063905a5d09b9308feb80"></a>
+bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcgv_1_1render_1_1context.html#aa683d98293b063905a5d09b9308feb80">get_depth_mask</a> () const</td></tr>
+<tr class="memdesc:aa683d98293b063905a5d09b9308feb80"><td class="mdescLeft">&#160;</td><td class="mdescRight">get the depth buffer mask <br /></td></tr>
+<tr class="separator:aa683d98293b063905a5d09b9308feb80"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:afe92a899f33565f1f6583bc4edb3b172"><td class="memItemLeft" align="right" valign="top"><a id="afe92a899f33565f1f6583bc4edb3b172"></a>
+virtual void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcgv_1_1render_1_1context.html#afe92a899f33565f1f6583bc4edb3b172">set_depth_mask</a> (bool flag)</td></tr>
+<tr class="memdesc:afe92a899f33565f1f6583bc4edb3b172"><td class="mdescLeft">&#160;</td><td class="mdescRight">set the depth buffer mask <br /></td></tr>
+<tr class="separator:afe92a899f33565f1f6583bc4edb3b172"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ab0f9c0c36b69dd45cda7769756578ada"><td class="memItemLeft" align="right" valign="top"><a id="ab0f9c0c36b69dd45cda7769756578ada"></a>
+<a class="el" href="namespacecgv.html#a97fbb57851d694e9b27f5e351638b417">bvec4</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcgv_1_1render_1_1context.html#ab0f9c0c36b69dd45cda7769756578ada">get_color_mask</a> () const</td></tr>
+<tr class="memdesc:ab0f9c0c36b69dd45cda7769756578ada"><td class="mdescLeft">&#160;</td><td class="mdescRight">get the color buffer mask <br /></td></tr>
+<tr class="separator:ab0f9c0c36b69dd45cda7769756578ada"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a805615be1536775042380ce7c0742dee"><td class="memItemLeft" align="right" valign="top"><a id="a805615be1536775042380ce7c0742dee"></a>
+virtual void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcgv_1_1render_1_1context.html#a805615be1536775042380ce7c0742dee">set_color_mask</a> (<a class="el" href="namespacecgv.html#a97fbb57851d694e9b27f5e351638b417">bvec4</a> flags)</td></tr>
+<tr class="memdesc:a805615be1536775042380ce7c0742dee"><td class="mdescLeft">&#160;</td><td class="mdescRight">set the color buffer mask <br /></td></tr>
+<tr class="separator:a805615be1536775042380ce7c0742dee"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="inherit_header pub_methods_structcgv_1_1render_1_1context__config"><td colspan="2" onclick="javascript:toggleInherit('pub_methods_structcgv_1_1render_1_1context__config')"><img src="closed.png" alt="-"/>&#160;Public Member Functions inherited from <a class="el" href="structcgv_1_1render_1_1context__config.html">cgv::render::context_config</a></td></tr>
 <tr class="memitem:a6a70c2df599f0aa5ce809dac0e648125 inherit pub_methods_structcgv_1_1render_1_1context__config"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structcgv_1_1render_1_1context__config.html#a6a70c2df599f0aa5ce809dac0e648125">context_config</a> ()</td></tr>
 <tr class="memdesc:a6a70c2df599f0aa5ce809dac0e648125 inherit pub_methods_structcgv_1_1render_1_1context__config"><td class="mdescLeft">&#160;</td><td class="mdescRight">construct config with default parameters  <a href="structcgv_1_1render_1_1context__config.html#a6a70c2df599f0aa5ce809dac0e648125">More...</a><br /></td></tr>
@@ -891,6 +1074,38 @@ bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="clas
 <a class="el" href="namespacecgv.html#a986c65184af5066fa26d468fd606c4fb">vec3</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcgv_1_1render_1_1context.html#a0eefe0f67d74ebdcf1abea3f4af8bfda">gamma3</a></td></tr>
 <tr class="memdesc:a0eefe0f67d74ebdcf1abea3f4af8bfda"><td class="mdescLeft">&#160;</td><td class="mdescRight">per color channel gamma value passed to shader programs that have gamma uniform <br /></td></tr>
 <tr class="separator:a0eefe0f67d74ebdcf1abea3f4af8bfda"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:afdbdcbdc5e0a897f4cd3ce96de78b478"><td class="memItemLeft" align="right" valign="top"><a id="afdbdcbdc5e0a897f4cd3ce96de78b478"></a>
+std::stack&lt; <a class="el" href="namespacecgv.html#a0add29f049bd6be760ed993da79a5872">vec4</a> &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcgv_1_1render_1_1context.html#afdbdcbdc5e0a897f4cd3ce96de78b478">bg_color_stack</a></td></tr>
+<tr class="memdesc:afdbdcbdc5e0a897f4cd3ce96de78b478"><td class="mdescLeft">&#160;</td><td class="mdescRight">stack of background colors <br /></td></tr>
+<tr class="separator:afdbdcbdc5e0a897f4cd3ce96de78b478"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a8ff9053e65ecd372bd28bd36fbe98576"><td class="memItemLeft" align="right" valign="top"><a id="a8ff9053e65ecd372bd28bd36fbe98576"></a>
+std::stack&lt; float &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcgv_1_1render_1_1context.html#a8ff9053e65ecd372bd28bd36fbe98576">bg_depth_stack</a></td></tr>
+<tr class="memdesc:a8ff9053e65ecd372bd28bd36fbe98576"><td class="mdescLeft">&#160;</td><td class="mdescRight">stack of background depth values <br /></td></tr>
+<tr class="separator:a8ff9053e65ecd372bd28bd36fbe98576"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:abaf852fc661ed03dda0e6f17d231d72d"><td class="memItemLeft" align="right" valign="top"><a id="abaf852fc661ed03dda0e6f17d231d72d"></a>
+std::stack&lt; int &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcgv_1_1render_1_1context.html#abaf852fc661ed03dda0e6f17d231d72d">bg_stencil_stack</a></td></tr>
+<tr class="memdesc:abaf852fc661ed03dda0e6f17d231d72d"><td class="mdescLeft">&#160;</td><td class="mdescRight">stack of background stencil values <br /></td></tr>
+<tr class="separator:abaf852fc661ed03dda0e6f17d231d72d"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:abed1985633ca7f51f5cc072a75a5b77a"><td class="memItemLeft" align="right" valign="top"><a id="abed1985633ca7f51f5cc072a75a5b77a"></a>
+std::stack&lt; <a class="el" href="namespacecgv.html#a0add29f049bd6be760ed993da79a5872">vec4</a> &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcgv_1_1render_1_1context.html#abed1985633ca7f51f5cc072a75a5b77a">bg_accum_color_stack</a></td></tr>
+<tr class="memdesc:abed1985633ca7f51f5cc072a75a5b77a"><td class="mdescLeft">&#160;</td><td class="mdescRight">stack of background accumulation colors <br /></td></tr>
+<tr class="separator:abed1985633ca7f51f5cc072a75a5b77a"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:aa443dd180a5a16227379a8d9344385aa"><td class="memItemLeft" align="right" valign="top"><a id="aa443dd180a5a16227379a8d9344385aa"></a>
+std::stack&lt; <a class="el" href="structcgv_1_1render_1_1context_1_1DepthTestState.html">DepthTestState</a> &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcgv_1_1render_1_1context.html#aa443dd180a5a16227379a8d9344385aa">depth_test_state_stack</a></td></tr>
+<tr class="memdesc:aa443dd180a5a16227379a8d9344385aa"><td class="mdescLeft">&#160;</td><td class="mdescRight">stack of depth test states <br /></td></tr>
+<tr class="separator:aa443dd180a5a16227379a8d9344385aa"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:aa52a76a982feeab2e086dd3ab08b0638"><td class="memItemLeft" align="right" valign="top"><a id="aa52a76a982feeab2e086dd3ab08b0638"></a>
+std::stack&lt; <a class="el" href="namespacecgv_1_1render.html#a0b2ec1d0f6ff0852f53654cb8e6fab57">CullingMode</a> &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcgv_1_1render_1_1context.html#aa52a76a982feeab2e086dd3ab08b0638">cull_state_stack</a></td></tr>
+<tr class="memdesc:aa52a76a982feeab2e086dd3ab08b0638"><td class="mdescLeft">&#160;</td><td class="mdescRight">stack of culling mode states <br /></td></tr>
+<tr class="separator:aa52a76a982feeab2e086dd3ab08b0638"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:afe37494c03f687158ea2b517e8f74a66"><td class="memItemLeft" align="right" valign="top"><a id="afe37494c03f687158ea2b517e8f74a66"></a>
+std::stack&lt; <a class="el" href="structcgv_1_1render_1_1context_1_1BlendState.html">BlendState</a> &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcgv_1_1render_1_1context.html#afe37494c03f687158ea2b517e8f74a66">blend_state_stack</a></td></tr>
+<tr class="memdesc:afe37494c03f687158ea2b517e8f74a66"><td class="mdescLeft">&#160;</td><td class="mdescRight">stack of blend states <br /></td></tr>
+<tr class="separator:afe37494c03f687158ea2b517e8f74a66"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a2da2bb71d65572463d7269d6e0d9095d"><td class="memItemLeft" align="right" valign="top"><a id="a2da2bb71d65572463d7269d6e0d9095d"></a>
+std::stack&lt; <a class="el" href="structcgv_1_1render_1_1context_1_1BufferMask.html">BufferMask</a> &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcgv_1_1render_1_1context.html#a2da2bb71d65572463d7269d6e0d9095d">buffer_mask_stack</a></td></tr>
+<tr class="memdesc:a2da2bb71d65572463d7269d6e0d9095d"><td class="mdescLeft">&#160;</td><td class="mdescRight">stack of buffer masks <br /></td></tr>
+<tr class="separator:a2da2bb71d65572463d7269d6e0d9095d"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a77c4c4d8db1cc97b1c52baf92d7f3021"><td class="memItemLeft" align="right" valign="top"><a id="a77c4c4d8db1cc97b1c52baf92d7f3021"></a>
 std::stack&lt; <a class="el" href="namespacecgv.html#a6c3091f6c4a7b32a0dec501e8c056734">dmat4</a> &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcgv_1_1render_1_1context.html#a77c4c4d8db1cc97b1c52baf92d7f3021">modelview_matrix_stack</a></td></tr>
 <tr class="memdesc:a77c4c4d8db1cc97b1c52baf92d7f3021"><td class="mdescLeft">&#160;</td><td class="mdescRight">keep two matrix stacks for model view and projection matrices <br /></td></tr>
@@ -954,37 +1169,6 @@ std::stack&lt; <a class="el" href="structcgv_1_1render_1_1context_1_1render__inf
 <a class="el" href="namespacecgv_1_1render.html#ae903f198d1beae98f419246e35f99e13">RenderPassFlags</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcgv_1_1render_1_1context.html#a19528413e5724662c9fe9e4a2bf7e71b">default_render_flags</a></td></tr>
 <tr class="memdesc:a19528413e5724662c9fe9e4a2bf7e71b"><td class="mdescLeft">&#160;</td><td class="mdescRight">default render flags with which the main render pass is initialized <br /></td></tr>
 <tr class="separator:a19528413e5724662c9fe9e4a2bf7e71b"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a47d1cf071d77d6a79b5013362798f506"><td class="memItemLeft" align="right" valign="top"><a id="a47d1cf071d77d6a79b5013362798f506"></a>
-float&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcgv_1_1render_1_1context.html#a47d1cf071d77d6a79b5013362798f506">bg_r</a></td></tr>
-<tr class="memdesc:a47d1cf071d77d6a79b5013362798f506"><td class="mdescLeft">&#160;</td><td class="mdescRight">current background color, depth, stencil and accum color <br /></td></tr>
-<tr class="separator:a47d1cf071d77d6a79b5013362798f506"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:ab3c27ea4716baa206c966ed93dc569cd"><td class="memItemLeft" align="right" valign="top"><a id="ab3c27ea4716baa206c966ed93dc569cd"></a>
-float&#160;</td><td class="memItemRight" valign="bottom"><b>bg_g</b></td></tr>
-<tr class="separator:ab3c27ea4716baa206c966ed93dc569cd"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a432ec41341ceff985138744dd4cbb07f"><td class="memItemLeft" align="right" valign="top"><a id="a432ec41341ceff985138744dd4cbb07f"></a>
-float&#160;</td><td class="memItemRight" valign="bottom"><b>bg_b</b></td></tr>
-<tr class="separator:a432ec41341ceff985138744dd4cbb07f"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a54d68938a4e25f19592d58af41124977"><td class="memItemLeft" align="right" valign="top"><a id="a54d68938a4e25f19592d58af41124977"></a>
-float&#160;</td><td class="memItemRight" valign="bottom"><b>bg_a</b></td></tr>
-<tr class="separator:a54d68938a4e25f19592d58af41124977"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:ab756f219c54c1b24fbe43a6e7320c56d"><td class="memItemLeft" align="right" valign="top"><a id="ab756f219c54c1b24fbe43a6e7320c56d"></a>
-float&#160;</td><td class="memItemRight" valign="bottom"><b>bg_d</b></td></tr>
-<tr class="separator:ab756f219c54c1b24fbe43a6e7320c56d"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a7037ddba91f5fc462bf263636d9f50f1"><td class="memItemLeft" align="right" valign="top"><a id="a7037ddba91f5fc462bf263636d9f50f1"></a>
-int&#160;</td><td class="memItemRight" valign="bottom"><b>bg_s</b></td></tr>
-<tr class="separator:a7037ddba91f5fc462bf263636d9f50f1"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:ad934ce97606ecf0a1b5c6e9e3152e110"><td class="memItemLeft" align="right" valign="top"><a id="ad934ce97606ecf0a1b5c6e9e3152e110"></a>
-float&#160;</td><td class="memItemRight" valign="bottom"><b>bg_accum_r</b></td></tr>
-<tr class="separator:ad934ce97606ecf0a1b5c6e9e3152e110"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:ad9452ad2286519b6ad1e392a061698d3"><td class="memItemLeft" align="right" valign="top"><a id="ad9452ad2286519b6ad1e392a061698d3"></a>
-float&#160;</td><td class="memItemRight" valign="bottom"><b>bg_accum_g</b></td></tr>
-<tr class="separator:ad9452ad2286519b6ad1e392a061698d3"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a86b8b3e437c1c299ebb9ee8ed771afb3"><td class="memItemLeft" align="right" valign="top"><a id="a86b8b3e437c1c299ebb9ee8ed771afb3"></a>
-float&#160;</td><td class="memItemRight" valign="bottom"><b>bg_accum_b</b></td></tr>
-<tr class="separator:a86b8b3e437c1c299ebb9ee8ed771afb3"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a44407299316c363e23cabd11924ec1fc"><td class="memItemLeft" align="right" valign="top"><a id="a44407299316c363e23cabd11924ec1fc"></a>
-float&#160;</td><td class="memItemRight" valign="bottom"><b>bg_accum_a</b></td></tr>
-<tr class="separator:a44407299316c363e23cabd11924ec1fc"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:aa83ccb660cfc3ebec19ede2ef6f233a3"><td class="memItemLeft" align="right" valign="top"><a id="aa83ccb660cfc3ebec19ede2ef6f233a3"></a>
 bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcgv_1_1render_1_1context.html#aa83ccb660cfc3ebec19ede2ef6f233a3">phong_shading</a></td></tr>
 <tr class="memdesc:aa83ccb660cfc3ebec19ede2ef6f233a3"><td class="mdescLeft">&#160;</td><td class="mdescRight">whether to use phong shading <br /></td></tr>
@@ -1320,7 +1504,7 @@ bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="stru
 <a name="details" id="details"></a><h2 class="groupheader">Detailed Description</h2>
 <div class="textblock"><p>base class for all drawables, which is independent of the used rendering API. </p>
 
-<p class="definition">Definition at line <a class="el" href="context_8h_source.html#l00586">586</a> of file <a class="el" href="context_8h_source.html">context.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="context_8h_source.html#l00617">617</a> of file <a class="el" href="context_8h_source.html">context.h</a>.</p>
 </div><h2 class="groupheader">Member Function Documentation</h2>
 <a id="a1122ce9221bb982f6842138ae5978b66"></a>
 <h2 class="memtitle"><span class="permalink"><a href="#a1122ce9221bb982f6842138ae5978b66">&#9670;&nbsp;</a></span>draw_light_source()</h2>
@@ -1373,7 +1557,7 @@ bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="stru
 
 <p>Reimplemented in <a class="el" href="classcgv_1_1render_1_1gl_1_1gl__context.html#a0eab426e06a80c2acaca53af493655ac">cgv::render::gl::gl_context</a>.</p>
 
-<p class="definition">Definition at line <a class="el" href="context_8cxx_source.html#l01870">1870</a> of file <a class="el" href="context_8cxx_source.html">context.cxx</a>.</p>
+<p class="definition">Definition at line <a class="el" href="context_8cxx_source.html#l02032">2032</a> of file <a class="el" href="context_8cxx_source.html">context.cxx</a>.</p>
 
 </div>
 </div>
@@ -1414,7 +1598,7 @@ bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="stru
 <p>return current cursor location in opengl coordinates with (0,0) in lower left corner </p>
 <p>store the current cursor location in the passed references to x and y coordinate </p>
 
-<p class="definition">Definition at line <a class="el" href="context_8cxx_source.html#l01848">1848</a> of file <a class="el" href="context_8cxx_source.html">context.cxx</a>.</p>
+<p class="definition">Definition at line <a class="el" href="context_8cxx_source.html#l02010">2010</a> of file <a class="el" href="context_8cxx_source.html">context.cxx</a>.</p>
 
 </div>
 </div>
@@ -1447,7 +1631,7 @@ bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="stru
 <p>helper function to place spot lights </p>
 <p>helper function to place lights </p>
 
-<p class="definition">Definition at line <a class="el" href="context_8cxx_source.html#l00449">449</a> of file <a class="el" href="context_8cxx_source.html">context.cxx</a>.</p>
+<p class="definition">Definition at line <a class="el" href="context_8cxx_source.html#l00489">489</a> of file <a class="el" href="context_8cxx_source.html">context.cxx</a>.</p>
 
 <p class="reference">References <a class="el" href="fvec_8h_source.html#l00245">cgv::math::fvec&lt; T, N &gt;::length()</a>.</p>
 
@@ -1490,7 +1674,7 @@ bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="stru
 <p>compute model space 3D point from the given window space point and the given modelview_projection_window matrix </p>
 <p>the function inversely transforms the window space point with the given modelview_projection_window matrix </p>
 
-<p class="definition">Definition at line <a class="el" href="context_8cxx_source.html#l01787">1787</a> of file <a class="el" href="context_8cxx_source.html">context.cxx</a>.</p>
+<p class="definition">Definition at line <a class="el" href="context_8cxx_source.html#l01949">1949</a> of file <a class="el" href="context_8cxx_source.html">context.cxx</a>.</p>
 
 </div>
 </div>
@@ -1521,7 +1705,7 @@ bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="stru
 <p>compute model space 3D point from the given window space point </p>
 <p>the function inversely transforms the window space 3D point with the current modelview_projection_window matrix </p>
 
-<p class="definition">Definition at line <a class="el" href="context_8h_source.html#l01256">1256</a> of file <a class="el" href="context_8h_source.html">context.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="context_8h_source.html#l01444">1444</a> of file <a class="el" href="context_8h_source.html">context.h</a>.</p>
 
 </div>
 </div>
@@ -1562,7 +1746,7 @@ bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="stru
 <p>compute model space 3D point from the given opengl pixel location (window location) </p>
 <p>the function queries the window z coordinate from the depth buffer and inversely transforms the window space 3D point with the current modelview_projection_window matrix </p>
 
-<p class="definition">Definition at line <a class="el" href="context_8h_source.html#l01232">1232</a> of file <a class="el" href="context_8h_source.html">context.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="context_8h_source.html#l01420">1420</a> of file <a class="el" href="context_8h_source.html">context.h</a>.</p>
 
 <p class="reference">Referenced by <a class="el" href="drawable_8cxx_source.html#l00059">cgv::render::drawable::get_world_location()</a>.</p>
 
@@ -1611,7 +1795,7 @@ bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="stru
 <p>compute model space 3D point from the given opengl pixel location (window location) and modelview_projection_window matrix </p>
 <p>the function queries the window z coordinate from the depth buffer and inversely transforms the window space 3D point with the given modelview_projection_window matrix </p>
 
-<p class="definition">Definition at line <a class="el" href="context_8h_source.html#l01244">1244</a> of file <a class="el" href="context_8h_source.html">context.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="context_8h_source.html#l01432">1432</a> of file <a class="el" href="context_8h_source.html">context.h</a>.</p>
 
 </div>
 </div>
@@ -1658,7 +1842,7 @@ bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="stru
 <p>compute model space 3D point from the given opengl pixel location (window location) </p>
 <p>the function inversely transforms the window space 3D point with the current modelview_projection_window matrix </p>
 
-<p class="definition">Definition at line <a class="el" href="context_8h_source.html#l01238">1238</a> of file <a class="el" href="context_8h_source.html">context.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="context_8h_source.html#l01426">1426</a> of file <a class="el" href="context_8h_source.html">context.h</a>.</p>
 
 </div>
 </div>
@@ -1711,7 +1895,7 @@ bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="stru
 <p>compute model space 3D point from the given opengl pixel location (window location) with the given modelview_projection_window matrix </p>
 <p>the function inversely transforms the window space 3D point with the given modelview_projection_window matrix </p>
 
-<p class="definition">Definition at line <a class="el" href="context_8h_source.html#l01250">1250</a> of file <a class="el" href="context_8h_source.html">context.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="context_8h_source.html#l01438">1438</a> of file <a class="el" href="context_8h_source.html">context.h</a>.</p>
 
 </div>
 </div>
@@ -1733,7 +1917,7 @@ bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="stru
 <p>return matrix to transfrom from model to device coordinates, i.e. the product of modelview, projection and device matrix in reversed order (device_matrix*projection_matrix*modelview_matrix) </p>
 <p>return homogeneous 4x4 matrix, which transforms from world to device space </p>
 
-<p class="definition">Definition at line <a class="el" href="context_8cxx_source.html#l01855">1855</a> of file <a class="el" href="context_8cxx_source.html">context.cxx</a>.</p>
+<p class="definition">Definition at line <a class="el" href="context_8cxx_source.html#l02017">2017</a> of file <a class="el" href="context_8cxx_source.html">context.cxx</a>.</p>
 
 </div>
 </div>
@@ -1755,7 +1939,7 @@ bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="stru
 <p>return current render pass recursion depth </p>
 <p>return the current render pass </p>
 
-<p class="definition">Definition at line <a class="el" href="context_8cxx_source.html#l00705">705</a> of file <a class="el" href="context_8cxx_source.html">context.cxx</a>.</p>
+<p class="definition">Definition at line <a class="el" href="context_8cxx_source.html#l00745">745</a> of file <a class="el" href="context_8cxx_source.html">context.cxx</a>.</p>
 
 <p class="reference">Referenced by <a class="el" href="drawable_8cxx_source.html#l00141">cgv::render::multi_pass_drawable::initiate_render_pass_recursion()</a>, <a class="el" href="drawable_8cxx_source.html#l00161">cgv::render::multi_pass_drawable::multi_pass_ignore_finish()</a>, and <a class="el" href="drawable_8cxx_source.html#l00171">cgv::render::multi_pass_drawable::multi_pass_terminate()</a>.</p>
 
@@ -1781,9 +1965,9 @@ bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="stru
 <p>return a homogeneous 4x4 matrix to transform clip to window coordinates, optionally specify for the case of multiple viewports/depth ranges</p>
 <p>In window coordinates x- and y-coordinates correspond to opengl pixel coordinates with (0,0) in lower left corner and z corresponds to depth value stored in the depth buffer. This is the same convention as in gl_FragCoord and gl_FragDepth of GLSL. Optionally one can specify a window transformation index with the parameter <code>array_index</code> for the case when an array of window transformations is used. </p>
 
-<p class="definition">Definition at line <a class="el" href="context_8cxx_source.html#l01759">1759</a> of file <a class="el" href="context_8cxx_source.html">context.cxx</a>.</p>
+<p class="definition">Definition at line <a class="el" href="context_8cxx_source.html#l01921">1921</a> of file <a class="el" href="context_8cxx_source.html">context.cxx</a>.</p>
 
-<p class="reference">References <a class="el" href="context_8h_source.html#l00582">cgv::render::window_transformation::depth_range</a>, <a class="el" href="convert__string_8cxx_source.html#l00007">cgv::utils::to_string()</a>, and <a class="el" href="context_8h_source.html#l00580">cgv::render::window_transformation::viewport</a>.</p>
+<p class="reference">References <a class="el" href="context_8h_source.html#l00613">cgv::render::window_transformation::depth_range</a>, <a class="el" href="convert__string_8cxx_source.html#l00007">cgv::utils::to_string()</a>, and <a class="el" href="context_8h_source.html#l00611">cgv::render::window_transformation::viewport</a>.</p>
 
 </div>
 </div>
@@ -1814,7 +1998,7 @@ bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="stru
 <p>returns an output stream whose output is printed at the current cursor location</p>
 <p>The coordinate system of the cursor location corresponds to opengl coordinates with (0,0) in lower left corner. The cursor position is updated during text drawing also by special characters like tab or new line and can be read back with the get_cursor method. Use the flush method of the output_stream to ensure that text has been drawn to the context. </p>
 
-<p class="definition">Definition at line <a class="el" href="context_8cxx_source.html#l00861">861</a> of file <a class="el" href="context_8cxx_source.html">context.cxx</a>.</p>
+<p class="definition">Definition at line <a class="el" href="context_8cxx_source.html#l00901">901</a> of file <a class="el" href="context_8cxx_source.html">context.cxx</a>.</p>
 
 <p class="reference">Referenced by <a class="el" href="vr__test_8cxx_source.html#l00528">vr_test::init_frame()</a>.</p>
 
@@ -1849,7 +2033,7 @@ bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="stru
 
 <p>Reimplemented in <a class="el" href="classcgv_1_1render_1_1gl_1_1gl__context.html#a5093beaaad44310a37ef432abaff22b6">cgv::render::gl::gl_context</a>.</p>
 
-<p class="definition">Definition at line <a class="el" href="context_8cxx_source.html#l01710">1710</a> of file <a class="el" href="context_8cxx_source.html">context.cxx</a>.</p>
+<p class="definition">Definition at line <a class="el" href="context_8cxx_source.html#l01875">1875</a> of file <a class="el" href="context_8cxx_source.html">context.cxx</a>.</p>
 
 <p class="reference">Referenced by <a class="el" href="frame__buffer_8cxx_source.html#l00177">cgv::render::frame_buffer::pop_viewport()</a>, and <a class="el" href="gl__texture__tools_8cxx_source.html#l00905">cgv::render::gl::render_to_texture3D()</a>.</p>
 
@@ -1873,9 +2057,9 @@ bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="stru
 <p>push the current viewing matrix onto a matrix stack for viewing matrices. </p>
 <p>A software implementation is used for the matrix stack as some hardware stacks - i.e. in opengl - have strong limitations on their maximum size. The push_V method does not change the current viewing matrix similarly to the glPushMatrix function. Use pop_V() to restore the pushed viewing matrix into the current viewing matrix. Don't intermix these methods with the correspondong opengl or directx functions. </p>
 
-<p class="definition">Definition at line <a class="el" href="context_8cxx_source.html#l01629">1629</a> of file <a class="el" href="context_8cxx_source.html">context.cxx</a>.</p>
+<p class="definition">Definition at line <a class="el" href="context_8cxx_source.html#l01802">1802</a> of file <a class="el" href="context_8cxx_source.html">context.cxx</a>.</p>
 
-<p class="reference">Referenced by <a class="el" href="gl__texture__tools_8cxx_source.html#l00740">cgv::render::gl::cover_screen()</a>, <a class="el" href="plot2d_8cxx_source.html#l00530">cgv::plot::plot2d::draw()</a>, <a class="el" href="plot3d_8cxx_source.html#l00504">cgv::plot::plot3d::draw()</a>, <a class="el" href="vr__test_8cxx_source.html#l00652">vr_test::draw()</a>, <a class="el" href="image__drawable_8cxx_source.html#l00241">cgv::render::gl::image_drawable::draw()</a>, <a class="el" href="volume__renderer_8cxx_source.html#l00265">cgv::render::volume_renderer::draw()</a>, <a class="el" href="navigator_8cxx_source.html#l00269">cgv::app::navigator::finish_draw()</a>, and <a class="el" href="vr__test_8cxx_source.html#l00871">vr_test::finish_draw()</a>.</p>
+<p class="reference">Referenced by <a class="el" href="gl__texture__tools_8cxx_source.html#l00740">cgv::render::gl::cover_screen()</a>, <a class="el" href="plot2d_8cxx_source.html#l00530">cgv::plot::plot2d::draw()</a>, <a class="el" href="plot3d_8cxx_source.html#l00504">cgv::plot::plot3d::draw()</a>, <a class="el" href="vr__test_8cxx_source.html#l00652">vr_test::draw()</a>, <a class="el" href="image__drawable_8cxx_source.html#l00241">cgv::render::gl::image_drawable::draw()</a>, <a class="el" href="volume__renderer_8cxx_source.html#l00266">cgv::render::volume_renderer::draw()</a>, <a class="el" href="navigator_8cxx_source.html#l00271">cgv::app::navigator::finish_draw()</a>, and <a class="el" href="vr__test_8cxx_source.html#l00871">vr_test::finish_draw()</a>.</p>
 
 </div>
 </div>
@@ -1954,7 +2138,7 @@ bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="stru
 <p>transform point p in current world coordinates into opengl coordinates with (0,0) in lower left corner and put x and y coordinates into the passed variables </p>
 <p>transform point p into cursor coordinates and put x and y coordinates into the passed variables </p>
 
-<p class="definition">Definition at line <a class="el" href="context_8cxx_source.html#l01809">1809</a> of file <a class="el" href="context_8cxx_source.html">context.cxx</a>.</p>
+<p class="definition">Definition at line <a class="el" href="context_8cxx_source.html#l01971">1971</a> of file <a class="el" href="context_8cxx_source.html">context.cxx</a>.</p>
 
 <p class="reference">References <a class="el" href="vec_8h_source.html#l00097">cgv::math::vec&lt; T &gt;::size()</a>.</p>
 
@@ -2042,183 +2226,6 @@ bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="stru
 
 </div>
 </div>
-<a id="a4ed6e1a7bcdf8407623ab14485670742"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a4ed6e1a7bcdf8407623ab14485670742">&#9670;&nbsp;</a></span>set_bg_accum_alpha()</h2>
-
-<div class="memitem">
-<div class="memproto">
-<table class="mlabels">
-  <tr>
-  <td class="mlabels-left">
-      <table class="memname">
-        <tr>
-          <td class="memname">void cgv::render::context::set_bg_accum_alpha </td>
-          <td>(</td>
-          <td class="paramtype">float&#160;</td>
-          <td class="paramname"><em>a</em></td><td>)</td>
-          <td></td>
-        </tr>
-      </table>
-  </td>
-  <td class="mlabels-right">
-<span class="mlabels"><span class="mlabel">virtual</span></span>  </td>
-  </tr>
-</table>
-</div><div class="memdoc">
-
-<p>set a user defined background alpha value for the accumulation buffer </p>
-<p>set a user defined background alpha value </p>
-
-<p class="definition">Definition at line <a class="el" href="context_8cxx_source.html#l00286">286</a> of file <a class="el" href="context_8cxx_source.html">context.cxx</a>.</p>
-
-</div>
-</div>
-<a id="a195a7dac53b9ea527720f77ac3cbb56f"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a195a7dac53b9ea527720f77ac3cbb56f">&#9670;&nbsp;</a></span>set_bg_accum_color()</h2>
-
-<div class="memitem">
-<div class="memproto">
-<table class="mlabels">
-  <tr>
-  <td class="mlabels-left">
-      <table class="memname">
-        <tr>
-          <td class="memname">void cgv::render::context::set_bg_accum_color </td>
-          <td>(</td>
-          <td class="paramtype">float&#160;</td>
-          <td class="paramname"><em>r</em>, </td>
-        </tr>
-        <tr>
-          <td class="paramkey"></td>
-          <td></td>
-          <td class="paramtype">float&#160;</td>
-          <td class="paramname"><em>g</em>, </td>
-        </tr>
-        <tr>
-          <td class="paramkey"></td>
-          <td></td>
-          <td class="paramtype">float&#160;</td>
-          <td class="paramname"><em>b</em>, </td>
-        </tr>
-        <tr>
-          <td class="paramkey"></td>
-          <td></td>
-          <td class="paramtype">float&#160;</td>
-          <td class="paramname"><em>a</em>&#160;</td>
-        </tr>
-        <tr>
-          <td></td>
-          <td>)</td>
-          <td></td><td></td>
-        </tr>
-      </table>
-  </td>
-  <td class="mlabels-right">
-<span class="mlabels"><span class="mlabel">virtual</span></span>  </td>
-  </tr>
-</table>
-</div><div class="memdoc">
-
-<p>set a user defined background color for the accumulation buffer </p>
-<p>set a user defined background color </p>
-
-<p class="definition">Definition at line <a class="el" href="context_8cxx_source.html#l00275">275</a> of file <a class="el" href="context_8cxx_source.html">context.cxx</a>.</p>
-
-</div>
-</div>
-<a id="a2dc550caa7c21a034043deede6b3f71f"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a2dc550caa7c21a034043deede6b3f71f">&#9670;&nbsp;</a></span>set_bg_clr_idx()</h2>
-
-<div class="memitem">
-<div class="memproto">
-<table class="mlabels">
-  <tr>
-  <td class="mlabels-left">
-      <table class="memname">
-        <tr>
-          <td class="memname">void cgv::render::context::set_bg_clr_idx </td>
-          <td>(</td>
-          <td class="paramtype">unsigned int&#160;</td>
-          <td class="paramname"><em>idx</em></td><td>)</td>
-          <td></td>
-        </tr>
-      </table>
-  </td>
-  <td class="mlabels-right">
-<span class="mlabels"><span class="mlabel">virtual</span></span>  </td>
-  </tr>
-</table>
-</div><div class="memdoc">
-
-<p>set an indexed background color </p>
-<p>set a user defined background color </p>
-
-<p class="definition">Definition at line <a class="el" href="context_8cxx_source.html#l00351">351</a> of file <a class="el" href="context_8cxx_source.html">context.cxx</a>.</p>
-
-</div>
-</div>
-<a id="adb90ef348ef87481350c51e49d3683e3"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#adb90ef348ef87481350c51e49d3683e3">&#9670;&nbsp;</a></span>set_bg_depth()</h2>
-
-<div class="memitem">
-<div class="memproto">
-<table class="mlabels">
-  <tr>
-  <td class="mlabels-left">
-      <table class="memname">
-        <tr>
-          <td class="memname">void cgv::render::context::set_bg_depth </td>
-          <td>(</td>
-          <td class="paramtype">float&#160;</td>
-          <td class="paramname"><em>d</em></td><td>)</td>
-          <td></td>
-        </tr>
-      </table>
-  </td>
-  <td class="mlabels-right">
-<span class="mlabels"><span class="mlabel">virtual</span></span>  </td>
-  </tr>
-</table>
-</div><div class="memdoc">
-
-<p>set a user defined background depth value </p>
-<p>set a user defined background depth </p>
-
-<p class="definition">Definition at line <a class="el" href="context_8cxx_source.html#l00294">294</a> of file <a class="el" href="context_8cxx_source.html">context.cxx</a>.</p>
-
-</div>
-</div>
-<a id="ac0cc4cccaace3e205f38617ebb869af0"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#ac0cc4cccaace3e205f38617ebb869af0">&#9670;&nbsp;</a></span>set_bg_stencil()</h2>
-
-<div class="memitem">
-<div class="memproto">
-<table class="mlabels">
-  <tr>
-  <td class="mlabels-left">
-      <table class="memname">
-        <tr>
-          <td class="memname">void cgv::render::context::set_bg_stencil </td>
-          <td>(</td>
-          <td class="paramtype">int&#160;</td>
-          <td class="paramname"><em>s</em></td><td>)</td>
-          <td></td>
-        </tr>
-      </table>
-  </td>
-  <td class="mlabels-right">
-<span class="mlabels"><span class="mlabel">virtual</span></span>  </td>
-  </tr>
-</table>
-</div><div class="memdoc">
-
-<p>set a user defined background stencil value </p>
-<p>set a user defined background color </p>
-
-<p class="definition">Definition at line <a class="el" href="context_8cxx_source.html#l00302">302</a> of file <a class="el" href="context_8cxx_source.html">context.cxx</a>.</p>
-
-</div>
-</div>
 <a id="a35a88abbc06745c85c9f3b388b0c7496"></a>
 <h2 class="memtitle"><span class="permalink"><a href="#a35a88abbc06745c85c9f3b388b0c7496">&#9670;&nbsp;</a></span>set_cursor() <span class="overload">[1/2]</span></h2>
 
@@ -2275,7 +2282,7 @@ bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="stru
 <p>sets the current text ouput position</p>
 <p>These are transformed to opengl coordinates opengl coordinates with (0,0) in lower left corner using the put_cursor_coords method. If the optional parameters are given, update the cursor location such that the given text alignment is achieved. x_offset and y_offset are in pixel and y points upward. </p>
 
-<p class="definition">Definition at line <a class="el" href="context_8cxx_source.html#l01822">1822</a> of file <a class="el" href="context_8cxx_source.html">context.cxx</a>.</p>
+<p class="definition">Definition at line <a class="el" href="context_8cxx_source.html#l01984">1984</a> of file <a class="el" href="context_8cxx_source.html">context.cxx</a>.</p>
 
 </div>
 </div>
@@ -2316,7 +2323,7 @@ bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="stru
 <p>flush the output_stream and set a new cursor position given in opengl coordinates with (0,0) in lower left corner </p>
 <p>set a new cursor position, which is only valid between calls of push_pixel_coords and pop_pixel_coords </p>
 
-<p class="definition">Definition at line <a class="el" href="context_8cxx_source.html#l01797">1797</a> of file <a class="el" href="context_8cxx_source.html">context.cxx</a>.</p>
+<p class="definition">Definition at line <a class="el" href="context_8cxx_source.html#l01959">1959</a> of file <a class="el" href="context_8cxx_source.html">context.cxx</a>.</p>
 
 <p class="reference">Referenced by <a class="el" href="vr__test_8cxx_source.html#l00528">vr_test::init_frame()</a>.</p>
 
@@ -2361,7 +2368,7 @@ bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="stru
 
 <p>Reimplemented in <a class="el" href="classcgv_1_1render_1_1gl_1_1gl__context.html#a9856fe9513aab8bad0c3693b39b0a77c">cgv::render::gl::gl_context</a>.</p>
 
-<p class="definition">Definition at line <a class="el" href="context_8cxx_source.html#l01746">1746</a> of file <a class="el" href="context_8cxx_source.html">context.cxx</a>.</p>
+<p class="definition">Definition at line <a class="el" href="context_8cxx_source.html#l01908">1908</a> of file <a class="el" href="context_8cxx_source.html">context.cxx</a>.</p>
 
 <p class="reference">Referenced by <a class="el" href="frame__buffer_8cxx_source.html#l00169">cgv::render::frame_buffer::push_viewport()</a>.</p>
 
@@ -2406,7 +2413,7 @@ bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="stru
 
 <p>Reimplemented in <a class="el" href="classcgv_1_1render_1_1gl_1_1gl__context.html#a4d201de5bf23990fb7fca8aba9bed317">cgv::render::gl::gl_context</a>.</p>
 
-<p class="definition">Definition at line <a class="el" href="context_8cxx_source.html#l01739">1739</a> of file <a class="el" href="context_8cxx_source.html">context.cxx</a>.</p>
+<p class="definition">Definition at line <a class="el" href="context_8cxx_source.html#l01901">1901</a> of file <a class="el" href="context_8cxx_source.html">context.cxx</a>.</p>
 
 <p class="reference">Referenced by <a class="el" href="frame__buffer_8cxx_source.html#l00169">cgv::render::frame_buffer::push_viewport()</a>, and <a class="el" href="gl__texture__tools_8cxx_source.html#l00905">cgv::render::gl::render_to_texture3D()</a>.</p>
 
@@ -2483,7 +2490,7 @@ bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="stru
 
 <p>Reimplemented in <a class="el" href="classcgv_1_1render_1_1gl_1_1gl__context.html#aad0d3361ed9867f841a21b188b3aa958">cgv::render::gl::gl_context</a>.</p>
 
-<p class="definition">Definition at line <a class="el" href="context_8cxx_source.html#l01860">1860</a> of file <a class="el" href="context_8cxx_source.html">context.cxx</a>.</p>
+<p class="definition">Definition at line <a class="el" href="context_8cxx_source.html#l02022">2022</a> of file <a class="el" href="context_8cxx_source.html">context.cxx</a>.</p>
 
 </div>
 </div>
@@ -2530,7 +2537,7 @@ bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="stru
 <p>tesselate an axis aligned box </p>
 <p>tessellate an axis aligned box in single precision </p>
 
-<p class="definition">Definition at line <a class="el" href="context_8cxx_source.html#l01067">1067</a> of file <a class="el" href="context_8cxx_source.html">context.cxx</a>.</p>
+<p class="definition">Definition at line <a class="el" href="context_8cxx_source.html#l01107">1107</a> of file <a class="el" href="context_8cxx_source.html">context.cxx</a>.</p>
 
 <p class="reference">References <a class="el" href="axis__aligned__box_8h_source.html#l00062">cgv::media::axis_aligned_box&lt; T, N &gt;::get_max_pnt()</a>, and <a class="el" href="axis__aligned__box_8h_source.html#l00060">cgv::media::axis_aligned_box&lt; T, N &gt;::get_min_pnt()</a>.</p>
 
@@ -2571,7 +2578,7 @@ bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="stru
 <p>tesselate a cone of radius 1 </p>
 <p>tessellate a cone of radius 1 </p>
 
-<p class="definition">Definition at line <a class="el" href="context_8cxx_source.html#l01168">1168</a> of file <a class="el" href="context_8cxx_source.html">context.cxx</a>.</p>
+<p class="definition">Definition at line <a class="el" href="context_8cxx_source.html#l01208">1208</a> of file <a class="el" href="context_8cxx_source.html">context.cxx</a>.</p>
 
 </div>
 </div>
@@ -2604,7 +2611,7 @@ bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="stru
 <p>tesselate a unit cube with extent from [-1,-1,-1] to [1,1,1] with face normals that can be flipped </p>
 <p>tessellate a unit cube with extent from [-1,-1,-1] to [1,1,1] with face normals that can be flipped </p>
 
-<p class="definition">Definition at line <a class="el" href="context_8cxx_source.html#l01014">1014</a> of file <a class="el" href="context_8cxx_source.html">context.cxx</a>.</p>
+<p class="definition">Definition at line <a class="el" href="context_8cxx_source.html#l01054">1054</a> of file <a class="el" href="context_8cxx_source.html">context.cxx</a>.</p>
 
 </div>
 </div>
@@ -2643,7 +2650,7 @@ bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="stru
 <p>tesselate a cylinder of radius 1 </p>
 <p>tessellate a cylinder of radius 1 </p>
 
-<p class="definition">Definition at line <a class="el" href="context_8cxx_source.html#l01212">1212</a> of file <a class="el" href="context_8cxx_source.html">context.cxx</a>.</p>
+<p class="definition">Definition at line <a class="el" href="context_8cxx_source.html#l01252">1252</a> of file <a class="el" href="context_8cxx_source.html">context.cxx</a>.</p>
 
 </div>
 </div>
@@ -2682,7 +2689,7 @@ bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="stru
 <p>tesselate a circular disk of radius 1 </p>
 <p>tessellate a circular disk of radius 1 </p>
 
-<p class="definition">Definition at line <a class="el" href="context_8cxx_source.html#l01136">1136</a> of file <a class="el" href="context_8cxx_source.html">context.cxx</a>.</p>
+<p class="definition">Definition at line <a class="el" href="context_8cxx_source.html#l01176">1176</a> of file <a class="el" href="context_8cxx_source.html">context.cxx</a>.</p>
 
 </div>
 </div>
@@ -2715,9 +2722,9 @@ bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="stru
 <p>tesselate a dodecahedron </p>
 <p>tessellate a dodecahedron </p>
 
-<p class="definition">Definition at line <a class="el" href="context_8cxx_source.html#l01525">1525</a> of file <a class="el" href="context_8cxx_source.html">context.cxx</a>.</p>
+<p class="definition">Definition at line <a class="el" href="context_8cxx_source.html#l01565">1565</a> of file <a class="el" href="context_8cxx_source.html">context.cxx</a>.</p>
 
-<p class="reference">References <a class="el" href="context_8cxx_source.html#l01448">cgv::render::tesselate_unit_dodecahedron_or_icosahedron()</a>.</p>
+<p class="reference">References <a class="el" href="context_8cxx_source.html#l01488">cgv::render::tesselate_unit_dodecahedron_or_icosahedron()</a>.</p>
 
 </div>
 </div>
@@ -2750,9 +2757,9 @@ bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="stru
 <p>tesselate an icosahedron </p>
 <p>tessellate an icosahedron </p>
 
-<p class="definition">Definition at line <a class="el" href="context_8cxx_source.html#l01530">1530</a> of file <a class="el" href="context_8cxx_source.html">context.cxx</a>.</p>
+<p class="definition">Definition at line <a class="el" href="context_8cxx_source.html#l01570">1570</a> of file <a class="el" href="context_8cxx_source.html">context.cxx</a>.</p>
 
-<p class="reference">References <a class="el" href="context_8cxx_source.html#l01448">cgv::render::tesselate_unit_dodecahedron_or_icosahedron()</a>.</p>
+<p class="reference">References <a class="el" href="context_8cxx_source.html#l01488">cgv::render::tesselate_unit_dodecahedron_or_icosahedron()</a>.</p>
 
 </div>
 </div>
@@ -2785,7 +2792,7 @@ bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="stru
 <p>tesselate a octahedron </p>
 <p>tessellate a octahedron </p>
 
-<p class="definition">Definition at line <a class="el" href="context_8cxx_source.html#l01410">1410</a> of file <a class="el" href="context_8cxx_source.html">context.cxx</a>.</p>
+<p class="definition">Definition at line <a class="el" href="context_8cxx_source.html#l01450">1450</a> of file <a class="el" href="context_8cxx_source.html">context.cxx</a>.</p>
 
 </div>
 </div>
@@ -2818,7 +2825,7 @@ bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="stru
 <p>tesselate a prism </p>
 <p>tessellate a prism </p>
 
-<p class="definition">Definition at line <a class="el" href="context_8cxx_source.html#l01101">1101</a> of file <a class="el" href="context_8cxx_source.html">context.cxx</a>.</p>
+<p class="definition">Definition at line <a class="el" href="context_8cxx_source.html#l01141">1141</a> of file <a class="el" href="context_8cxx_source.html">context.cxx</a>.</p>
 
 </div>
 </div>
@@ -2857,7 +2864,7 @@ bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="stru
 <p>tesselate a sphere of radius 1 </p>
 <p>tessellate a sphere of radius 1 </p>
 
-<p class="definition">Definition at line <a class="el" href="context_8cxx_source.html#l01304">1304</a> of file <a class="el" href="context_8cxx_source.html">context.cxx</a>.</p>
+<p class="definition">Definition at line <a class="el" href="context_8cxx_source.html#l01344">1344</a> of file <a class="el" href="context_8cxx_source.html">context.cxx</a>.</p>
 
 </div>
 </div>
@@ -2890,7 +2897,7 @@ bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="stru
 <p>tesselate a unit square in the xy-plane with texture coordinates </p>
 <p>tessellate a unit square </p>
 
-<p class="definition">Definition at line <a class="el" href="context_8cxx_source.html#l01383">1383</a> of file <a class="el" href="context_8cxx_source.html">context.cxx</a>.</p>
+<p class="definition">Definition at line <a class="el" href="context_8cxx_source.html#l01423">1423</a> of file <a class="el" href="context_8cxx_source.html">context.cxx</a>.</p>
 
 <p class="reference">Referenced by <a class="el" href="image__drawable_8cxx_source.html#l00241">cgv::render::gl::image_drawable::draw()</a>, and <a class="el" href="vr__test_8cxx_source.html#l00871">vr_test::finish_draw()</a>.</p>
 
@@ -2925,7 +2932,7 @@ bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="stru
 <p>tesselate a tetrahedron </p>
 <p>tessellate a tetrahedron </p>
 
-<p class="definition">Definition at line <a class="el" href="context_8cxx_source.html#l01355">1355</a> of file <a class="el" href="context_8cxx_source.html">context.cxx</a>.</p>
+<p class="definition">Definition at line <a class="el" href="context_8cxx_source.html#l01395">1395</a> of file <a class="el" href="context_8cxx_source.html">context.cxx</a>.</p>
 
 </div>
 </div>
@@ -2970,7 +2977,7 @@ bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="stru
 <p>tesselate a torus with major radius of one and given minor radius </p>
 <p>tessellate a torus with major radius of one and given minor radius </p>
 
-<p class="definition">Definition at line <a class="el" href="context_8cxx_source.html#l01254">1254</a> of file <a class="el" href="context_8cxx_source.html">context.cxx</a>.</p>
+<p class="definition">Definition at line <a class="el" href="context_8cxx_source.html#l01294">1294</a> of file <a class="el" href="context_8cxx_source.html">context.cxx</a>.</p>
 
 </div>
 </div>
@@ -3046,7 +3053,7 @@ bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="stru
 <p>write the content of a buffer to an image file</p>
 <p>In case of writing a depth buffer a the depth offset is subtracted from the value and scaled by the depth scale before conversion to an unsigned int of bit depth 8 is performed. </p>
 
-<p class="definition">Definition at line <a class="el" href="context_8cxx_source.html#l00889">889</a> of file <a class="el" href="context_8cxx_source.html">context.cxx</a>.</p>
+<p class="definition">Definition at line <a class="el" href="context_8cxx_source.html#l00929">929</a> of file <a class="el" href="context_8cxx_source.html">context.cxx</a>.</p>
 
 <p class="reference">References <a class="el" href="component__format_8h_source.html#l00033">cgv::data::CF_D</a>, <a class="el" href="component__format_8h_source.html#l00034">cgv::data::CF_S</a>, <a class="el" href="data__view_8cxx_source.html#l00073">cgv::data::data_view_base::get_format()</a>, <a class="el" href="data__format_8cxx_source.html#l00218">cgv::data::data_format::get_height()</a>, <a class="el" href="data__view_8h_source.html#l00061">cgv::data::data_view_impl&lt; D, P &gt;::get_ptr()</a>, <a class="el" href="data__format_8cxx_source.html#l00214">cgv::data::data_format::get_width()</a>, <a class="el" href="data__format_8cxx_source.html#l00248">cgv::data::data_format::set_height()</a>, <a class="el" href="data__format_8cxx_source.html#l00244">cgv::data::data_format::set_width()</a>, <a class="el" href="type__id_8h_source.html#l00028">cgv::type::info::TI_FLT32</a>, <a class="el" href="type__id_8h_source.html#l00023">cgv::type::info::TI_UINT8</a>, and <a class="el" href="image__writer_8cxx_source.html#l00131">cgv::media::image::image_writer::write_image()</a>.</p>
 

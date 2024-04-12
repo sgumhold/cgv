@@ -523,6 +523,34 @@ Enumerations</h2></td></tr>
  }</td></tr>
 <tr class="memdesc:a0b2ec1d0f6ff0852f53654cb8e6fab57"><td class="mdescLeft">&#160;</td><td class="mdescRight">different culling modes <br /></td></tr>
 <tr class="separator:a0b2ec1d0f6ff0852f53654cb8e6fab57"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a28946409283e37612a47299ba18160eb"><td class="memItemLeft" align="right" valign="top"><a id="a28946409283e37612a47299ba18160eb"></a>enum &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespacecgv_1_1render.html#a28946409283e37612a47299ba18160eb">BlendFunction</a> { <br />
+&#160;&#160;<b>BF_ZERO</b>
+, <b>BF_ONE</b>
+, <b>BF_SRC_COLOR</b>
+, <b>BF_ONE_MINUS_SRC_COLOR</b>
+, <br />
+&#160;&#160;<b>BF_DST_COLOR</b>
+, <b>BF_ONE_MINUS_DST_COLOR</b>
+, <b>BF_SRC_ALPHA</b>
+, <b>BF_ONE_MINUS_SRC_ALPHA</b>
+, <br />
+&#160;&#160;<b>BF_DST_ALPHA</b>
+, <b>BF_ONE_MINUS_DST_ALPHA</b>
+, <b>BF_CONSTANT_COLOR</b>
+, <b>BF_ONE_MINUS_CONSTANT_COLOR</b>
+, <br />
+&#160;&#160;<b>BF_CONSTANT_ALPHA</b>
+, <b>BF_ONE_MINUS_CONSTANT_ALPHA</b>
+, <b>BF_SRC_ALPHA_SATURATE</b>
+, <b>BF_SRC1_COLOR</b>
+, <br />
+&#160;&#160;<b>BF_ONE_MINUS_SRC1_COLOR</b>
+, <b>BF_SRC1_ALPHA</b>
+, <b>BF_ONE_MINUS_SRC1_ALPHA</b>
+<br />
+ }</td></tr>
+<tr class="memdesc:a28946409283e37612a47299ba18160eb"><td class="mdescLeft">&#160;</td><td class="mdescRight">different blend functions <br /></td></tr>
+<tr class="separator:a28946409283e37612a47299ba18160eb"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a4b3eb5abd80954194b0b60848fad0f2a"><td class="memItemLeft" align="right" valign="top"><a id="a4b3eb5abd80954194b0b60848fad0f2a"></a>enum &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespacecgv_1_1render.html#a4b3eb5abd80954194b0b60848fad0f2a">TextureWrap</a> { <br />
 &#160;&#160;<b>TW_REPEAT</b> = 0
 , <b>TW_CLAMP</b> = 1
@@ -625,7 +653,7 @@ Enumerations</h2></td></tr>
 , <b>CF_NEVER</b>
 <br />
  }</td></tr>
-<tr class="memdesc:af1b1b5ee6ada2ce3649637247799b929"><td class="mdescLeft">&#160;</td><td class="mdescRight">different sampling strategies for rendering to textures that steer the computation of the <code>tex_coord</code> input to the fragment shader <br /></td></tr>
+<tr class="memdesc:af1b1b5ee6ada2ce3649637247799b929"><td class="mdescLeft">&#160;</td><td class="mdescRight">different comparison functions used for depth testing or texture comparisons <br /></td></tr>
 <tr class="separator:af1b1b5ee6ada2ce3649637247799b929"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a32ea24c43b283680338ab99e53de6530"><td class="memItemLeft" align="right" valign="top"><a id="a32ea24c43b283680338ab99e53de6530"></a>enum &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespacecgv_1_1render.html#a32ea24c43b283680338ab99e53de6530">AccessType</a> { <b>AT_READ_ONLY</b>
 , <b>AT_WRITE_ONLY</b>
@@ -1179,7 +1207,7 @@ class CGV_API&#160;</td><td class="memItemRight" valign="bottom"><b>volume_rende
 </td></tr>
 </table>
 
-<p class="definition">Definition at line <a class="el" href="context_8h_source.html#l00429">429</a> of file <a class="el" href="context_8h_source.html">context.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="context_8h_source.html#l00460">460</a> of file <a class="el" href="context_8h_source.html">context.h</a>.</p>
 
 </div>
 </div>
@@ -1329,7 +1357,7 @@ class CGV_API&#160;</td><td class="memItemRight" valign="bottom"><b>volume_rende
 </td></tr>
 </table>
 
-<p class="definition">Definition at line <a class="el" href="context_8h_source.html#l00242">242</a> of file <a class="el" href="context_8h_source.html">context.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="context_8h_source.html#l00273">273</a> of file <a class="el" href="context_8h_source.html">context.h</a>.</p>
 
 </div>
 </div>
@@ -1353,7 +1381,7 @@ class CGV_API&#160;</td><td class="memItemRight" valign="bottom"><b>volume_rende
 </td></tr>
 </table>
 
-<p class="definition">Definition at line <a class="el" href="context_8h_source.html#l00215">215</a> of file <a class="el" href="context_8h_source.html">context.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="context_8h_source.html#l00246">246</a> of file <a class="el" href="context_8h_source.html">context.h</a>.</p>
 
 </div>
 </div>
@@ -1389,7 +1417,7 @@ class CGV_API&#160;</td><td class="memItemRight" valign="bottom"><b>volume_rende
 </td></tr>
 </table>
 
-<p class="definition">Definition at line <a class="el" href="context_8h_source.html#l00383">383</a> of file <a class="el" href="context_8h_source.html">context.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="context_8h_source.html#l00414">414</a> of file <a class="el" href="context_8h_source.html">context.h</a>.</p>
 
 </div>
 </div>
@@ -1427,7 +1455,7 @@ class CGV_API&#160;</td><td class="memItemRight" valign="bottom"><b>volume_rende
 </td></tr>
 </table>
 
-<p class="definition">Definition at line <a class="el" href="context_8h_source.html#l00395">395</a> of file <a class="el" href="context_8h_source.html">context.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="context_8h_source.html#l00426">426</a> of file <a class="el" href="context_8h_source.html">context.h</a>.</p>
 
 </div>
 </div>
@@ -1592,11 +1620,11 @@ class CGV_API&#160;</td><td class="memItemRight" valign="bottom"><b>volume_rende
 <p>This is primarily used to create a context without a window for console applications that render into a frame buffer object only. After usage you need to delete the context by hand.</p>
 <p>This is primarily used to create a context without a window for console applications that render into a frame buffer object only. The newly created context will be current right after creation. After usage you need to delete the context by hand. </p>
 
-<p class="definition">Definition at line <a class="el" href="context_8cxx_source.html#l02281">2281</a> of file <a class="el" href="context_8cxx_source.html">context.cxx</a>.</p>
+<p class="definition">Definition at line <a class="el" href="context_8cxx_source.html#l02443">2443</a> of file <a class="el" href="context_8cxx_source.html">context.cxx</a>.</p>
 
-<p class="reference">References <a class="el" href="context_8cxx_source.html#l02281">create_context()</a>, and <a class="el" href="classcgv_1_1render_1_1context.html#ad351a2dc1c1e0343b17738053a981816">cgv::render::context::make_current()</a>.</p>
+<p class="reference">References <a class="el" href="context_8cxx_source.html#l02443">create_context()</a>, and <a class="el" href="classcgv_1_1render_1_1context.html#ad351a2dc1c1e0343b17738053a981816">cgv::render::context::make_current()</a>.</p>
 
-<p class="reference">Referenced by <a class="el" href="context_8cxx_source.html#l02281">create_context()</a>.</p>
+<p class="reference">Referenced by <a class="el" href="context_8cxx_source.html#l02443">create_context()</a>.</p>
 
 </div>
 </div>
@@ -1678,11 +1706,11 @@ class CGV_API&#160;</td><td class="memItemRight" valign="bottom"><b>volume_rende
 <p>transparent surface rendering using depth peeling</p>
 <p>in picking pass a small rectangle around the mouse is rendered</p>
 
-<p class="definition">Definition at line <a class="el" href="context_8cxx_source.html#l00688">688</a> of file <a class="el" href="context_8cxx_source.html">context.cxx</a>.</p>
+<p class="definition">Definition at line <a class="el" href="context_8cxx_source.html#l00728">728</a> of file <a class="el" href="context_8cxx_source.html">context.cxx</a>.</p>
 
-<p class="reference">References <a class="el" href="context_8cxx_source.html#l00688">get_render_pass_name()</a>.</p>
+<p class="reference">References <a class="el" href="context_8cxx_source.html#l00728">get_render_pass_name()</a>.</p>
 
-<p class="reference">Referenced by <a class="el" href="context_8cxx_source.html#l00688">get_render_pass_name()</a>, and <a class="el" href="context_8cxx_source.html#l00751">cgv::render::context::render_pass()</a>.</p>
+<p class="reference">Referenced by <a class="el" href="context_8cxx_source.html#l00728">get_render_pass_name()</a>, and <a class="el" href="context_8cxx_source.html#l00791">cgv::render::context::render_pass()</a>.</p>
 
 </div>
 </div>
@@ -1961,7 +1989,7 @@ class CGV_API&#160;</td><td class="memItemRight" valign="bottom"><b>volume_rende
 
 <p class="reference">References <a class="el" href="renderer_8cxx_source.html#l00023">cgv::render::renderer::manage_singleton()</a>.</p>
 
-<p class="reference">Referenced by <a class="el" href="plot__base_8cxx_source.html#l01239">cgv::plot::plot_base::clear()</a>, and <a class="el" href="plot__base_8cxx_source.html#l01204">cgv::plot::plot_base::init()</a>.</p>
+<p class="reference">Referenced by <a class="el" href="plot__base_8cxx_source.html#l01239">cgv::plot::plot_base::clear()</a>, <a class="el" href="navigator_8cxx_source.html#l00271">cgv::app::navigator::finish_draw()</a>, and <a class="el" href="plot__base_8cxx_source.html#l01204">cgv::plot::plot_base::init()</a>.</p>
 
 </div>
 </div>
@@ -2162,7 +2190,7 @@ class CGV_API&#160;</td><td class="memItemRight" valign="bottom"><b>volume_rende
 <div class="line">    1,1,1,0,</div>
 <div class="line">}</div>
 </div><!-- fragment -->
-<p class="definition">Definition at line <a class="el" href="context_8cxx_source.html#l00017">17</a> of file <a class="el" href="context_8cxx_source.html">context.cxx</a>.</p>
+<p class="definition">Definition at line <a class="el" href="context_8cxx_source.html#l00021">21</a> of file <a class="el" href="context_8cxx_source.html">context.cxx</a>.</p>
 
 </div>
 </div>

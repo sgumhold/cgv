@@ -138,6 +138,27 @@ var namespacecgv_1_1render =
       [ "AHLM_RELATIVE_TO_LENGTH", "namespacecgv_1_1render.html#aa9c3365c98b31f0efbc535d46c455f98a83920505d784b23a4633fd4501654221", null ],
       [ "AHLM_MINIMUM_OF_RADIUS_AND_LENGTH", "namespacecgv_1_1render.html#aa9c3365c98b31f0efbc535d46c455f98ab9d07c04f04e8b5e43117339359700a4", null ]
     ] ],
+    [ "BlendFunction", "namespacecgv_1_1render.html#a28946409283e37612a47299ba18160eb", [
+      [ "BF_ZERO", "namespacecgv_1_1render.html#a28946409283e37612a47299ba18160eba26befb540ea3488cc11ae7f84ebf340e", null ],
+      [ "BF_ONE", "namespacecgv_1_1render.html#a28946409283e37612a47299ba18160eba3fd9bc66ec5811277eada56a684f91f7", null ],
+      [ "BF_SRC_COLOR", "namespacecgv_1_1render.html#a28946409283e37612a47299ba18160eba1ed21ed98d7c454ba9ef37d6550fdcd7", null ],
+      [ "BF_ONE_MINUS_SRC_COLOR", "namespacecgv_1_1render.html#a28946409283e37612a47299ba18160ebaba1de84e95725e6194004d5887528bbc", null ],
+      [ "BF_DST_COLOR", "namespacecgv_1_1render.html#a28946409283e37612a47299ba18160eba2f52c00b04fed0e80f0eca2333915dc8", null ],
+      [ "BF_ONE_MINUS_DST_COLOR", "namespacecgv_1_1render.html#a28946409283e37612a47299ba18160eba1942ad542e2071800b00fc11e9d60e6a", null ],
+      [ "BF_SRC_ALPHA", "namespacecgv_1_1render.html#a28946409283e37612a47299ba18160ebae753b4dee7ce29c35ee9fae43f73a12d", null ],
+      [ "BF_ONE_MINUS_SRC_ALPHA", "namespacecgv_1_1render.html#a28946409283e37612a47299ba18160eba007e436377582c2ff7d6094d7bd8e8f7", null ],
+      [ "BF_DST_ALPHA", "namespacecgv_1_1render.html#a28946409283e37612a47299ba18160eba5896cf010e3fa9ed16c478a7b6ba5b04", null ],
+      [ "BF_ONE_MINUS_DST_ALPHA", "namespacecgv_1_1render.html#a28946409283e37612a47299ba18160eba8dd4f320d0454bb556c6a4f0965ac103", null ],
+      [ "BF_CONSTANT_COLOR", "namespacecgv_1_1render.html#a28946409283e37612a47299ba18160ebad12fd42c878593fe42cdf8703c300c98", null ],
+      [ "BF_ONE_MINUS_CONSTANT_COLOR", "namespacecgv_1_1render.html#a28946409283e37612a47299ba18160eba1d06c5f49efef7b0bbadabd4cf4fdf40", null ],
+      [ "BF_CONSTANT_ALPHA", "namespacecgv_1_1render.html#a28946409283e37612a47299ba18160eba302581392bc882fd057ec61f22a90db5", null ],
+      [ "BF_ONE_MINUS_CONSTANT_ALPHA", "namespacecgv_1_1render.html#a28946409283e37612a47299ba18160eba997fa26884ebe8d133c2002831d689dd", null ],
+      [ "BF_SRC_ALPHA_SATURATE", "namespacecgv_1_1render.html#a28946409283e37612a47299ba18160ebac38aa31fc9e658ff43bf458baa3f3e4c", null ],
+      [ "BF_SRC1_COLOR", "namespacecgv_1_1render.html#a28946409283e37612a47299ba18160ebaadc90cd45a170e772314bb6b77dbf508", null ],
+      [ "BF_ONE_MINUS_SRC1_COLOR", "namespacecgv_1_1render.html#a28946409283e37612a47299ba18160eba792da5066a3618dbebb9896af14f0edb", null ],
+      [ "BF_SRC1_ALPHA", "namespacecgv_1_1render.html#a28946409283e37612a47299ba18160eba982827f15562493fbb3e367c278edd86", null ],
+      [ "BF_ONE_MINUS_SRC1_ALPHA", "namespacecgv_1_1render.html#a28946409283e37612a47299ba18160eba5e0cd140ca63c8413b0a53d944d753db", null ]
+    ] ],
     [ "BufferTypeBits", "namespacecgv_1_1render.html#adba4fbd4582055f229fe59a0545833ab", [
       [ "BTB_COLOR_BIT", "namespacecgv_1_1render.html#adba4fbd4582055f229fe59a0545833aba03264569ff72f15010d2538a508e5951", null ],
       [ "BTB_DEPTH_BIT", "namespacecgv_1_1render.html#adba4fbd4582055f229fe59a0545833abab93a33913d4a4383e4ee9477de95d2ca", null ],

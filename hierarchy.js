@@ -687,6 +687,9 @@ var hierarchy =
     [ "cgv::render::color_map", "classcgv_1_1render_1_1color__map.html", [
       [ "cgv::render::gl_color_map", "classcgv_1_1render_1_1gl__color__map.html", null ]
     ] ],
+    [ "cgv::render::context::BlendState", "structcgv_1_1render_1_1context_1_1BlendState.html", null ],
+    [ "cgv::render::context::BufferMask", "structcgv_1_1render_1_1context_1_1BufferMask.html", null ],
+    [ "cgv::render::context::DepthTestState", "structcgv_1_1render_1_1context_1_1DepthTestState.html", null ],
     [ "cgv::render::context::light_source_status", "structcgv_1_1render_1_1context_1_1light__source__status.html", null ],
     [ "cgv::render::context::render_info", "structcgv_1_1render_1_1context_1_1render__info.html", null ],
     [ "cgv::render::context_config", "structcgv_1_1render_1_1context__config.html", [
@@ -1110,7 +1113,6 @@ var hierarchy =
     ] ],
     [ "cgv::data::optional< cgv::math::fvec >", "classcgv_1_1data_1_1optional.html", null ],
     [ "cgv::data::optional< fvec< float, 2 > >", "classcgv_1_1data_1_1optional.html", null ],
-    [ "cgv::data::optional< fvec< float, 4 > >", "classcgv_1_1data_1_1optional.html", null ],
     [ "cgv::data::optional< quaternion< float > >", "classcgv_1_1data_1_1optional.html", null ],
     [ "cgv::data::optional< rgb >", "classcgv_1_1data_1_1optional.html", null ],
     [ "cgv::data::ref_ptr_impl< T, type::cond::is_base_of< ref_counted, T >::value >", "classcgv_1_1data_1_1ref__ptr__impl.html", [
