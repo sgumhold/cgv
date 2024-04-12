@@ -78,13 +78,6 @@ namespace cgv {
 			float default_depth_offset;
 			/// if true the renderer enables blending in the enable method and recovers previous blending mode on disable (default: false)
 			bool blend_rectangles;
-		//protected:
-		//	friend class rectangle_renderer;
-		//	/// used by renderer to store active blending mode on enable for recovery on disable (default: undef)
-		//	mutable GLboolean is_blend;
-		//	/// used by renderer to store active blending functions on enable for recovery on disable (default: undef)
-		//	mutable GLint blend_src, blend_dst;
-		//public:
 			/// default constructor initializes members as specified in member comments
 			rectangle_render_style();
 		};
