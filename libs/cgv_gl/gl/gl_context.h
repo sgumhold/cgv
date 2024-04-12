@@ -241,6 +241,7 @@ public:
 
 	/**@name render state*/
 	//@{
+
 	/// set the depth test state
 	void set_depth_test_state(DepthTestState state) override;
 	/// set the depth test function
@@ -270,6 +271,7 @@ public:
 	void set_depth_mask(bool flag) override;
 	/// set the color buffer mask
 	void set_color_mask(bvec4 flags) override;
+
 	//@}
 
 	/**@name transformations*/

@@ -1216,7 +1216,9 @@ public:
 
 	/**@name render state*/
 	//@{
+
 	/// push a copy of the current depth test state onto the stack
+	/// saved attributes: depth test enablement, depth test function
 	virtual void push_depth_test_state();
 	/// pop the top of the current depth test state from the stack
 	virtual void pop_depth_test_state();
@@ -1232,6 +1234,7 @@ public:
 	virtual void disable_depth_test();
 
 	/// push a copy of the current culling state onto the stack
+	/// saved attributes: cull face enablement, cull face
 	virtual void push_cull_state();
 	/// pop the top of the current culling state from the stack
 	virtual void pop_cull_state();
@@ -1241,6 +1244,7 @@ public:
 	virtual void set_cull_state(CullingMode culling_mode);
 
 	/// push a copy of the current blend state onto the stack
+	/// saved attributes: blend enablement, color and alpha source and destinatin functions
 	virtual void push_blend_state();
 	/// pop the top of the current culling state from the stack
 	virtual void pop_blend_state();
@@ -1262,6 +1266,7 @@ public:
 	virtual void disable_blending();
 
 	/// push a copy of the current buffer mask onto the stack
+	/// saved attributes: depth mask, color mask
 	virtual void push_buffer_mask();
 	/// pop the top of the current buffer mask from the stack
 	virtual void pop_buffer_mask();
@@ -1277,6 +1282,7 @@ public:
 	virtual bvec4 get_color_mask();
 	/// set the color buffer mask
 	virtual void set_color_mask(bvec4 flags);
+
 	//@}
 
 	/**@name transformations*/
