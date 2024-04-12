@@ -1711,16 +1711,16 @@ void context::set_blend_state(BlendState state) {
 void context::set_blend_func(BlendFunction src_factor, BlendFunction dst_factor) {
 	BlendState& state = blend_state_stack.top();
 	state.src_color = src_factor;
-	state.src_alpha = src_factor;
 	state.dst_color = dst_factor;
+	state.src_alpha = src_factor;
 	state.dst_alpha = dst_factor;
 }
 
 void context::set_blend_func_separate(BlendFunction src_color_factor, BlendFunction dst_color_factor, BlendFunction src_alpha_factor, BlendFunction dst_alpha_factor) {
 	BlendState& state = blend_state_stack.top();
 	state.src_color = src_color_factor;
-	state.src_alpha = src_alpha_factor;
 	state.dst_color = dst_color_factor;
+	state.src_alpha = src_alpha_factor;
 	state.dst_alpha = dst_alpha_factor;
 }
 
