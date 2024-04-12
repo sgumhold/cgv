@@ -117,6 +117,26 @@ Public Member Functions</h2></td></tr>
 <tr class="memitem:afc5b6f683753cb95c183fda3a063a29f"><td class="memItemLeft" align="right" valign="top"><a id="afc5b6f683753cb95c183fda3a063a29f"></a>
 void&#160;</td><td class="memItemRight" valign="bottom"><b>resize_gl</b> ()</td></tr>
 <tr class="separator:afc5b6f683753cb95c183fda3a063a29f"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a2755dbfd9a8b3f896e9bdf8bda566b88"><td class="memItemLeft" align="right" valign="top"><a id="a2755dbfd9a8b3f896e9bdf8bda566b88"></a>
+void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcgv_1_1render_1_1gl_1_1gl__context.html#a2755dbfd9a8b3f896e9bdf8bda566b88">set_bg_color</a> (<a class="el" href="namespacecgv.html#a0add29f049bd6be760ed993da79a5872">vec4</a> <a class="el" href="namespacecgv.html#a0cf3c7d9673d8f1d9d33685e3ce5c889">rgba</a>) override</td></tr>
+<tr class="memdesc:a2755dbfd9a8b3f896e9bdf8bda566b88"><td class="mdescLeft">&#160;</td><td class="mdescRight">set a user defined background color <br /></td></tr>
+<tr class="separator:a2755dbfd9a8b3f896e9bdf8bda566b88"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a78c45beb47ee251120a0ed7d0a2b9ff7"><td class="memItemLeft" align="right" valign="top"><a id="a78c45beb47ee251120a0ed7d0a2b9ff7"></a>
+void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcgv_1_1render_1_1gl_1_1gl__context.html#a78c45beb47ee251120a0ed7d0a2b9ff7">set_bg_depth</a> (float d) override</td></tr>
+<tr class="memdesc:a78c45beb47ee251120a0ed7d0a2b9ff7"><td class="mdescLeft">&#160;</td><td class="mdescRight">set a user defined background depth value <br /></td></tr>
+<tr class="separator:a78c45beb47ee251120a0ed7d0a2b9ff7"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a5a8aabdc64bf2597ef207375c49e9f53"><td class="memItemLeft" align="right" valign="top"><a id="a5a8aabdc64bf2597ef207375c49e9f53"></a>
+void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcgv_1_1render_1_1gl_1_1gl__context.html#a5a8aabdc64bf2597ef207375c49e9f53">set_bg_stencil</a> (int s) override</td></tr>
+<tr class="memdesc:a5a8aabdc64bf2597ef207375c49e9f53"><td class="mdescLeft">&#160;</td><td class="mdescRight">set a user defined background stencil value <br /></td></tr>
+<tr class="separator:a5a8aabdc64bf2597ef207375c49e9f53"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ab3aae20ddcb45b096a00a2b622bd6550"><td class="memItemLeft" align="right" valign="top"><a id="ab3aae20ddcb45b096a00a2b622bd6550"></a>
+void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcgv_1_1render_1_1gl_1_1gl__context.html#ab3aae20ddcb45b096a00a2b622bd6550">set_bg_accum_color</a> (<a class="el" href="namespacecgv.html#a0add29f049bd6be760ed993da79a5872">vec4</a> <a class="el" href="namespacecgv.html#a0cf3c7d9673d8f1d9d33685e3ce5c889">rgba</a>) override</td></tr>
+<tr class="memdesc:ab3aae20ddcb45b096a00a2b622bd6550"><td class="mdescLeft">&#160;</td><td class="mdescRight">set a user defined background color for the accumulation buffer <br /></td></tr>
+<tr class="separator:ab3aae20ddcb45b096a00a2b622bd6550"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a7a1d5d5802abaee13e9b44b96657946e"><td class="memItemLeft" align="right" valign="top"><a id="a7a1d5d5802abaee13e9b44b96657946e"></a>
+void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcgv_1_1render_1_1gl_1_1gl__context.html#a7a1d5d5802abaee13e9b44b96657946e">clear_background</a> (bool color_flag, bool depth_flag, bool stencil_flag=false, bool accum_flag=false) override</td></tr>
+<tr class="memdesc:a7a1d5d5802abaee13e9b44b96657946e"><td class="mdescLeft">&#160;</td><td class="mdescRight">clear the buffer contents of the flagged buffers to the set background colors <br /></td></tr>
+<tr class="separator:a7a1d5d5802abaee13e9b44b96657946e"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a8160e076e7cc40ecd1bb4488b9557418"><td class="memItemLeft" align="right" valign="top"><a id="a8160e076e7cc40ecd1bb4488b9557418"></a>
 float&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcgv_1_1render_1_1gl_1_1gl__context.html#a8160e076e7cc40ecd1bb4488b9557418">get_current_font_size</a> () const</td></tr>
 <tr class="memdesc:a8160e076e7cc40ecd1bb4488b9557418"><td class="mdescLeft">&#160;</td><td class="mdescRight">overwrite function to return info font size in case no font is currently selected <br /></td></tr>
@@ -237,6 +257,59 @@ void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="clas
 void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcgv_1_1render_1_1gl_1_1gl__context.html#a45bff3021b1c3e1567c83cb2bf1257a3">draw_strip_or_fan</a> (const float *vertices, const float *normals, const float *tex_coords, const int *vertex_indices, const int *normal_indices, const int *tex_coord_indices, int nr_faces, int face_degree, bool is_fan, bool flip_normals) const</td></tr>
 <tr class="memdesc:a45bff3021b1c3e1567c83cb2bf1257a3"><td class="mdescLeft">&#160;</td><td class="mdescRight">tesselate with one face strip <br /></td></tr>
 <tr class="separator:a45bff3021b1c3e1567c83cb2bf1257a3"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr><td colspan="2"><div class="groupHeader">render state</div></td></tr>
+<tr class="memitem:aea1f1b8c1beec23583618997150c7e80"><td class="memItemLeft" align="right" valign="top"><a id="aea1f1b8c1beec23583618997150c7e80"></a>
+void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcgv_1_1render_1_1gl_1_1gl__context.html#aea1f1b8c1beec23583618997150c7e80">set_depth_test_state</a> (<a class="el" href="structcgv_1_1render_1_1context_1_1DepthTestState.html">DepthTestState</a> state) override</td></tr>
+<tr class="memdesc:aea1f1b8c1beec23583618997150c7e80"><td class="mdescLeft">&#160;</td><td class="mdescRight">set the depth test state <br /></td></tr>
+<tr class="separator:aea1f1b8c1beec23583618997150c7e80"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a0509088ddc07b5e57ec8f576a0c880ab"><td class="memItemLeft" align="right" valign="top"><a id="a0509088ddc07b5e57ec8f576a0c880ab"></a>
+void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcgv_1_1render_1_1gl_1_1gl__context.html#a0509088ddc07b5e57ec8f576a0c880ab">set_depth_func</a> (<a class="el" href="namespacecgv_1_1render.html#af1b1b5ee6ada2ce3649637247799b929">CompareFunction</a> func) override</td></tr>
+<tr class="memdesc:a0509088ddc07b5e57ec8f576a0c880ab"><td class="mdescLeft">&#160;</td><td class="mdescRight">set the depth test function <br /></td></tr>
+<tr class="separator:a0509088ddc07b5e57ec8f576a0c880ab"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a391d109e92d31ac9124ec999da24ac91"><td class="memItemLeft" align="right" valign="top"><a id="a391d109e92d31ac9124ec999da24ac91"></a>
+void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcgv_1_1render_1_1gl_1_1gl__context.html#a391d109e92d31ac9124ec999da24ac91">enable_depth_test</a> () override</td></tr>
+<tr class="memdesc:a391d109e92d31ac9124ec999da24ac91"><td class="mdescLeft">&#160;</td><td class="mdescRight">enable the depth test <br /></td></tr>
+<tr class="separator:a391d109e92d31ac9124ec999da24ac91"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ad5e0697781e7f97f2a0080963ffa851a"><td class="memItemLeft" align="right" valign="top"><a id="ad5e0697781e7f97f2a0080963ffa851a"></a>
+void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcgv_1_1render_1_1gl_1_1gl__context.html#ad5e0697781e7f97f2a0080963ffa851a">disable_depth_test</a> () override</td></tr>
+<tr class="memdesc:ad5e0697781e7f97f2a0080963ffa851a"><td class="mdescLeft">&#160;</td><td class="mdescRight">disable the depth test <br /></td></tr>
+<tr class="separator:ad5e0697781e7f97f2a0080963ffa851a"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:aa7ebba017657c5dba99185e364d3870f"><td class="memItemLeft" align="right" valign="top"><a id="aa7ebba017657c5dba99185e364d3870f"></a>
+void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcgv_1_1render_1_1gl_1_1gl__context.html#aa7ebba017657c5dba99185e364d3870f">set_cull_state</a> (<a class="el" href="namespacecgv_1_1render.html#a0b2ec1d0f6ff0852f53654cb8e6fab57">CullingMode</a> culling_mode) override</td></tr>
+<tr class="memdesc:aa7ebba017657c5dba99185e364d3870f"><td class="mdescLeft">&#160;</td><td class="mdescRight">set the culling state <br /></td></tr>
+<tr class="separator:aa7ebba017657c5dba99185e364d3870f"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a872ec7e78c49f28f31238ad85f4f2f37"><td class="memItemLeft" align="right" valign="top"><a id="a872ec7e78c49f28f31238ad85f4f2f37"></a>
+void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcgv_1_1render_1_1gl_1_1gl__context.html#a872ec7e78c49f28f31238ad85f4f2f37">set_blend_state</a> (<a class="el" href="structcgv_1_1render_1_1context_1_1BlendState.html">BlendState</a> state) override</td></tr>
+<tr class="memdesc:a872ec7e78c49f28f31238ad85f4f2f37"><td class="mdescLeft">&#160;</td><td class="mdescRight">set the complete blend state <br /></td></tr>
+<tr class="separator:a872ec7e78c49f28f31238ad85f4f2f37"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ac751ac81de246f85caaac61f3dc11cd6"><td class="memItemLeft" align="right" valign="top"><a id="ac751ac81de246f85caaac61f3dc11cd6"></a>
+void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcgv_1_1render_1_1gl_1_1gl__context.html#ac751ac81de246f85caaac61f3dc11cd6">set_blend_func</a> (<a class="el" href="namespacecgv_1_1render.html#a28946409283e37612a47299ba18160eb">BlendFunction</a> src_factor, <a class="el" href="namespacecgv_1_1render.html#a28946409283e37612a47299ba18160eb">BlendFunction</a> dst_factor) override</td></tr>
+<tr class="memdesc:ac751ac81de246f85caaac61f3dc11cd6"><td class="mdescLeft">&#160;</td><td class="mdescRight">set the blend function <br /></td></tr>
+<tr class="separator:ac751ac81de246f85caaac61f3dc11cd6"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:adecef68766dabbd89ab72a617b1d27b2"><td class="memItemLeft" align="right" valign="top"><a id="adecef68766dabbd89ab72a617b1d27b2"></a>
+void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcgv_1_1render_1_1gl_1_1gl__context.html#adecef68766dabbd89ab72a617b1d27b2">set_blend_func_separate</a> (<a class="el" href="namespacecgv_1_1render.html#a28946409283e37612a47299ba18160eb">BlendFunction</a> src_color_factor, <a class="el" href="namespacecgv_1_1render.html#a28946409283e37612a47299ba18160eb">BlendFunction</a> dst_color_factor, <a class="el" href="namespacecgv_1_1render.html#a28946409283e37612a47299ba18160eb">BlendFunction</a> src_alpha_factor, <a class="el" href="namespacecgv_1_1render.html#a28946409283e37612a47299ba18160eb">BlendFunction</a> dst_alpha_factor) override</td></tr>
+<tr class="memdesc:adecef68766dabbd89ab72a617b1d27b2"><td class="mdescLeft">&#160;</td><td class="mdescRight">set the blend function separately for color and alpha <br /></td></tr>
+<tr class="separator:adecef68766dabbd89ab72a617b1d27b2"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a4fdc232e538ddbfca7f5f7041276f9d8"><td class="memItemLeft" align="right" valign="top"><a id="a4fdc232e538ddbfca7f5f7041276f9d8"></a>
+void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcgv_1_1render_1_1gl_1_1gl__context.html#a4fdc232e538ddbfca7f5f7041276f9d8">enable_blending</a> () override</td></tr>
+<tr class="memdesc:a4fdc232e538ddbfca7f5f7041276f9d8"><td class="mdescLeft">&#160;</td><td class="mdescRight">enable blending <br /></td></tr>
+<tr class="separator:a4fdc232e538ddbfca7f5f7041276f9d8"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ab7fb7151efc796351b1a81a386d62466"><td class="memItemLeft" align="right" valign="top"><a id="ab7fb7151efc796351b1a81a386d62466"></a>
+void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcgv_1_1render_1_1gl_1_1gl__context.html#ab7fb7151efc796351b1a81a386d62466">disable_blending</a> () override</td></tr>
+<tr class="memdesc:ab7fb7151efc796351b1a81a386d62466"><td class="mdescLeft">&#160;</td><td class="mdescRight">disable blending <br /></td></tr>
+<tr class="separator:ab7fb7151efc796351b1a81a386d62466"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a1921ad777d63d8cf46a00709fb075699"><td class="memItemLeft" align="right" valign="top"><a id="a1921ad777d63d8cf46a00709fb075699"></a>
+void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcgv_1_1render_1_1gl_1_1gl__context.html#a1921ad777d63d8cf46a00709fb075699">set_buffer_mask</a> (<a class="el" href="structcgv_1_1render_1_1context_1_1BufferMask.html">BufferMask</a> mask) override</td></tr>
+<tr class="memdesc:a1921ad777d63d8cf46a00709fb075699"><td class="mdescLeft">&#160;</td><td class="mdescRight">set the buffer mask for depth and color buffers <br /></td></tr>
+<tr class="separator:a1921ad777d63d8cf46a00709fb075699"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a10497c1a1ddd2d6314aae9ddf0fd6d2d"><td class="memItemLeft" align="right" valign="top"><a id="a10497c1a1ddd2d6314aae9ddf0fd6d2d"></a>
+void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcgv_1_1render_1_1gl_1_1gl__context.html#a10497c1a1ddd2d6314aae9ddf0fd6d2d">set_depth_mask</a> (bool flag) override</td></tr>
+<tr class="memdesc:a10497c1a1ddd2d6314aae9ddf0fd6d2d"><td class="mdescLeft">&#160;</td><td class="mdescRight">set the depth buffer mask <br /></td></tr>
+<tr class="separator:a10497c1a1ddd2d6314aae9ddf0fd6d2d"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a44bfabfb1d995ea2fe0322685a240e05"><td class="memItemLeft" align="right" valign="top"><a id="a44bfabfb1d995ea2fe0322685a240e05"></a>
+void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcgv_1_1render_1_1gl_1_1gl__context.html#a44bfabfb1d995ea2fe0322685a240e05">set_color_mask</a> (<a class="el" href="namespacecgv.html#a97fbb57851d694e9b27f5e351638b417">bvec4</a> flags) override</td></tr>
+<tr class="memdesc:a44bfabfb1d995ea2fe0322685a240e05"><td class="mdescLeft">&#160;</td><td class="mdescRight">set the color buffer mask <br /></td></tr>
+<tr class="separator:a44bfabfb1d995ea2fe0322685a240e05"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="inherit_header pub_methods_classcgv_1_1render_1_1context"><td colspan="2" onclick="javascript:toggleInherit('pub_methods_classcgv_1_1render_1_1context')"><img src="closed.png" alt="-"/>&#160;Public Member Functions inherited from <a class="el" href="classcgv_1_1render_1_1context.html">cgv::render::context</a></td></tr>
 <tr class="memitem:a1b5ab6d2d426475347b612994a014bb9 inherit pub_methods_classcgv_1_1render_1_1context"><td class="memItemLeft" align="right" valign="top"><a id="a1b5ab6d2d426475347b612994a014bb9"></a>
 <a class="el" href="classcgv_1_1render_1_1shader__program__base.html">shader_program_base</a> *&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcgv_1_1render_1_1context.html#a1b5ab6d2d426475347b612994a014bb9">get_current_program</a> () const</td></tr>
@@ -376,57 +449,94 @@ virtual void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" hr
 <tr class="memitem:a642c497988f59727f1bf683277800ee1 inherit pub_methods_classcgv_1_1render_1_1context"><td class="memItemLeft" align="right" valign="top">bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcgv_1_1render_1_1context.html#a642c497988f59727f1bf683277800ee1">write_frame_buffer_to_image</a> (const std::string &amp;file_name, <a class="el" href="namespacecgv_1_1data.html#a04ff4cdaed048a306aed8dd5a8c5c979">data::ComponentFormat</a> cf=<a class="el" href="namespacecgv_1_1data.html#a04ff4cdaed048a306aed8dd5a8c5c979a5e0a20ab9e288dea753eade67973a28d">data::CF_RGB</a>, <a class="el" href="namespacecgv_1_1render.html#a6a9c2282e6df914ff013f5a587bbd49c">FrameBufferType</a> buffer_type=FB_BACK, unsigned int x=0, unsigned int y=0, int w=-1, int h=-1, float depth_offset=0.9f, float depth_scale=10.0f)</td></tr>
 <tr class="memdesc:a642c497988f59727f1bf683277800ee1 inherit pub_methods_classcgv_1_1render_1_1context"><td class="mdescLeft">&#160;</td><td class="mdescRight">write the content of the frame buffer to an image file.  <a href="classcgv_1_1render_1_1context.html#a642c497988f59727f1bf683277800ee1">More...</a><br /></td></tr>
 <tr class="separator:a642c497988f59727f1bf683277800ee1 inherit pub_methods_classcgv_1_1render_1_1context"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:af913f44c501a6975a3e3e7f17d26c184 inherit pub_methods_classcgv_1_1render_1_1context"><td class="memItemLeft" align="right" valign="top"><a id="af913f44c501a6975a3e3e7f17d26c184"></a>
+void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcgv_1_1render_1_1context.html#af913f44c501a6975a3e3e7f17d26c184">push_bg_color</a> ()</td></tr>
+<tr class="memdesc:af913f44c501a6975a3e3e7f17d26c184 inherit pub_methods_classcgv_1_1render_1_1context"><td class="mdescLeft">&#160;</td><td class="mdescRight">push a copy of the current background color onto the stack <br /></td></tr>
+<tr class="separator:af913f44c501a6975a3e3e7f17d26c184 inherit pub_methods_classcgv_1_1render_1_1context"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a0c7701e7ae400562aae4f1bddf48dfb5 inherit pub_methods_classcgv_1_1render_1_1context"><td class="memItemLeft" align="right" valign="top"><a id="a0c7701e7ae400562aae4f1bddf48dfb5"></a>
+void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcgv_1_1render_1_1context.html#a0c7701e7ae400562aae4f1bddf48dfb5">pop_bg_color</a> ()</td></tr>
+<tr class="memdesc:a0c7701e7ae400562aae4f1bddf48dfb5 inherit pub_methods_classcgv_1_1render_1_1context"><td class="mdescLeft">&#160;</td><td class="mdescRight">pop the top of the current background color from the stack <br /></td></tr>
+<tr class="separator:a0c7701e7ae400562aae4f1bddf48dfb5 inherit pub_methods_classcgv_1_1render_1_1context"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ad00c328cf6c34336ac8b479100c18378 inherit pub_methods_classcgv_1_1render_1_1context"><td class="memItemLeft" align="right" valign="top"><a id="ad00c328cf6c34336ac8b479100c18378"></a>
-virtual void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcgv_1_1render_1_1context.html#ad00c328cf6c34336ac8b479100c18378">set_bg_color</a> (float r, float g, float b, float a)</td></tr>
+void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcgv_1_1render_1_1context.html#ad00c328cf6c34336ac8b479100c18378">set_bg_color</a> (float r, float g, float b, float a)</td></tr>
 <tr class="memdesc:ad00c328cf6c34336ac8b479100c18378 inherit pub_methods_classcgv_1_1render_1_1context"><td class="mdescLeft">&#160;</td><td class="mdescRight">set a user defined background color <br /></td></tr>
 <tr class="separator:ad00c328cf6c34336ac8b479100c18378 inherit pub_methods_classcgv_1_1render_1_1context"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a9612860d610394c792bd7d6b8f2334ff inherit pub_methods_classcgv_1_1render_1_1context"><td class="memItemLeft" align="right" valign="top"><a id="a9612860d610394c792bd7d6b8f2334ff"></a>
+<a class="el" href="namespacecgv.html#a0add29f049bd6be760ed993da79a5872">vec4</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcgv_1_1render_1_1context.html#a9612860d610394c792bd7d6b8f2334ff">get_bg_color</a> () const</td></tr>
+<tr class="memdesc:a9612860d610394c792bd7d6b8f2334ff inherit pub_methods_classcgv_1_1render_1_1context"><td class="mdescLeft">&#160;</td><td class="mdescRight">return the current color value for clearing the background <br /></td></tr>
+<tr class="separator:a9612860d610394c792bd7d6b8f2334ff inherit pub_methods_classcgv_1_1render_1_1context"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a3b4d3d1b055ec366434c03679d612968 inherit pub_methods_classcgv_1_1render_1_1context"><td class="memItemLeft" align="right" valign="top"><a id="a3b4d3d1b055ec366434c03679d612968"></a>
+void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcgv_1_1render_1_1context.html#a3b4d3d1b055ec366434c03679d612968">put_bg_color</a> (float *<a class="el" href="namespacecgv.html#a0cf3c7d9673d8f1d9d33685e3ce5c889">rgba</a>) const</td></tr>
+<tr class="memdesc:a3b4d3d1b055ec366434c03679d612968 inherit pub_methods_classcgv_1_1render_1_1context"><td class="mdescLeft">&#160;</td><td class="mdescRight">copy the current background rgba color into the given float array <br /></td></tr>
+<tr class="separator:a3b4d3d1b055ec366434c03679d612968 inherit pub_methods_classcgv_1_1render_1_1context"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a33fb372c16738b65d9c4c3ce2b5032fe inherit pub_methods_classcgv_1_1render_1_1context"><td class="memItemLeft" align="right" valign="top"><a id="a33fb372c16738b65d9c4c3ce2b5032fe"></a>
-virtual void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcgv_1_1render_1_1context.html#a33fb372c16738b65d9c4c3ce2b5032fe">set_bg_alpha</a> (float a)</td></tr>
+void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcgv_1_1render_1_1context.html#a33fb372c16738b65d9c4c3ce2b5032fe">set_bg_alpha</a> (float a)</td></tr>
 <tr class="memdesc:a33fb372c16738b65d9c4c3ce2b5032fe inherit pub_methods_classcgv_1_1render_1_1context"><td class="mdescLeft">&#160;</td><td class="mdescRight">set a user defined background alpha value <br /></td></tr>
 <tr class="separator:a33fb372c16738b65d9c4c3ce2b5032fe inherit pub_methods_classcgv_1_1render_1_1context"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:adb90ef348ef87481350c51e49d3683e3 inherit pub_methods_classcgv_1_1render_1_1context"><td class="memItemLeft" align="right" valign="top">virtual void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcgv_1_1render_1_1context.html#adb90ef348ef87481350c51e49d3683e3">set_bg_depth</a> (float d)</td></tr>
-<tr class="memdesc:adb90ef348ef87481350c51e49d3683e3 inherit pub_methods_classcgv_1_1render_1_1context"><td class="mdescLeft">&#160;</td><td class="mdescRight">set a user defined background depth value  <a href="classcgv_1_1render_1_1context.html#adb90ef348ef87481350c51e49d3683e3">More...</a><br /></td></tr>
-<tr class="separator:adb90ef348ef87481350c51e49d3683e3 inherit pub_methods_classcgv_1_1render_1_1context"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:ac0cc4cccaace3e205f38617ebb869af0 inherit pub_methods_classcgv_1_1render_1_1context"><td class="memItemLeft" align="right" valign="top">virtual void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcgv_1_1render_1_1context.html#ac0cc4cccaace3e205f38617ebb869af0">set_bg_stencil</a> (int s)</td></tr>
-<tr class="memdesc:ac0cc4cccaace3e205f38617ebb869af0 inherit pub_methods_classcgv_1_1render_1_1context"><td class="mdescLeft">&#160;</td><td class="mdescRight">set a user defined background stencil value  <a href="classcgv_1_1render_1_1context.html#ac0cc4cccaace3e205f38617ebb869af0">More...</a><br /></td></tr>
-<tr class="separator:ac0cc4cccaace3e205f38617ebb869af0 inherit pub_methods_classcgv_1_1render_1_1context"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a195a7dac53b9ea527720f77ac3cbb56f inherit pub_methods_classcgv_1_1render_1_1context"><td class="memItemLeft" align="right" valign="top">virtual void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcgv_1_1render_1_1context.html#a195a7dac53b9ea527720f77ac3cbb56f">set_bg_accum_color</a> (float r, float g, float b, float a)</td></tr>
-<tr class="memdesc:a195a7dac53b9ea527720f77ac3cbb56f inherit pub_methods_classcgv_1_1render_1_1context"><td class="mdescLeft">&#160;</td><td class="mdescRight">set a user defined background color for the accumulation buffer  <a href="classcgv_1_1render_1_1context.html#a195a7dac53b9ea527720f77ac3cbb56f">More...</a><br /></td></tr>
-<tr class="separator:a195a7dac53b9ea527720f77ac3cbb56f inherit pub_methods_classcgv_1_1render_1_1context"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a4ed6e1a7bcdf8407623ab14485670742 inherit pub_methods_classcgv_1_1render_1_1context"><td class="memItemLeft" align="right" valign="top">virtual void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcgv_1_1render_1_1context.html#a4ed6e1a7bcdf8407623ab14485670742">set_bg_accum_alpha</a> (float a)</td></tr>
-<tr class="memdesc:a4ed6e1a7bcdf8407623ab14485670742 inherit pub_methods_classcgv_1_1render_1_1context"><td class="mdescLeft">&#160;</td><td class="mdescRight">set a user defined background alpha value for the accumulation buffer  <a href="classcgv_1_1render_1_1context.html#a4ed6e1a7bcdf8407623ab14485670742">More...</a><br /></td></tr>
-<tr class="separator:a4ed6e1a7bcdf8407623ab14485670742 inherit pub_methods_classcgv_1_1render_1_1context"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a2dc550caa7c21a034043deede6b3f71f inherit pub_methods_classcgv_1_1render_1_1context"><td class="memItemLeft" align="right" valign="top">virtual void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcgv_1_1render_1_1context.html#a2dc550caa7c21a034043deede6b3f71f">set_bg_clr_idx</a> (unsigned int idx)</td></tr>
-<tr class="memdesc:a2dc550caa7c21a034043deede6b3f71f inherit pub_methods_classcgv_1_1render_1_1context"><td class="mdescLeft">&#160;</td><td class="mdescRight">set an indexed background color  <a href="classcgv_1_1render_1_1context.html#a2dc550caa7c21a034043deede6b3f71f">More...</a><br /></td></tr>
+<tr class="memitem:a628344d4a2b3f3484f0732398509ceb0 inherit pub_methods_classcgv_1_1render_1_1context"><td class="memItemLeft" align="right" valign="top"><a id="a628344d4a2b3f3484f0732398509ceb0"></a>
+float&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcgv_1_1render_1_1context.html#a628344d4a2b3f3484f0732398509ceb0">get_bg_alpha</a> () const</td></tr>
+<tr class="memdesc:a628344d4a2b3f3484f0732398509ceb0 inherit pub_methods_classcgv_1_1render_1_1context"><td class="mdescLeft">&#160;</td><td class="mdescRight">return the current alpha value for clearing the background <br /></td></tr>
+<tr class="separator:a628344d4a2b3f3484f0732398509ceb0 inherit pub_methods_classcgv_1_1render_1_1context"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a2dc550caa7c21a034043deede6b3f71f inherit pub_methods_classcgv_1_1render_1_1context"><td class="memItemLeft" align="right" valign="top"><a id="a2dc550caa7c21a034043deede6b3f71f"></a>
+void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcgv_1_1render_1_1context.html#a2dc550caa7c21a034043deede6b3f71f">set_bg_clr_idx</a> (unsigned int idx)</td></tr>
+<tr class="memdesc:a2dc550caa7c21a034043deede6b3f71f inherit pub_methods_classcgv_1_1render_1_1context"><td class="mdescLeft">&#160;</td><td class="mdescRight">set an indexed background color <br /></td></tr>
 <tr class="separator:a2dc550caa7c21a034043deede6b3f71f inherit pub_methods_classcgv_1_1render_1_1context"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a6572598c63481c4a2741795fb3f9d1c6 inherit pub_methods_classcgv_1_1render_1_1context"><td class="memItemLeft" align="right" valign="top"><a id="a6572598c63481c4a2741795fb3f9d1c6"></a>
 unsigned int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcgv_1_1render_1_1context.html#a6572598c63481c4a2741795fb3f9d1c6">get_bg_clr_idx</a> () const</td></tr>
 <tr class="memdesc:a6572598c63481c4a2741795fb3f9d1c6 inherit pub_methods_classcgv_1_1render_1_1context"><td class="mdescLeft">&#160;</td><td class="mdescRight">return the current index of the background color <br /></td></tr>
 <tr class="separator:a6572598c63481c4a2741795fb3f9d1c6 inherit pub_methods_classcgv_1_1render_1_1context"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a3b4d3d1b055ec366434c03679d612968 inherit pub_methods_classcgv_1_1render_1_1context"><td class="memItemLeft" align="right" valign="top"><a id="a3b4d3d1b055ec366434c03679d612968"></a>
-void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcgv_1_1render_1_1context.html#a3b4d3d1b055ec366434c03679d612968">put_bg_color</a> (float *<a class="el" href="namespacecgv.html#a0cf3c7d9673d8f1d9d33685e3ce5c889">rgba</a>) const</td></tr>
-<tr class="memdesc:a3b4d3d1b055ec366434c03679d612968 inherit pub_methods_classcgv_1_1render_1_1context"><td class="mdescLeft">&#160;</td><td class="mdescRight">copy the current back ground rgba color into the given float array <br /></td></tr>
-<tr class="separator:a3b4d3d1b055ec366434c03679d612968 inherit pub_methods_classcgv_1_1render_1_1context"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a628344d4a2b3f3484f0732398509ceb0 inherit pub_methods_classcgv_1_1render_1_1context"><td class="memItemLeft" align="right" valign="top"><a id="a628344d4a2b3f3484f0732398509ceb0"></a>
-float&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcgv_1_1render_1_1context.html#a628344d4a2b3f3484f0732398509ceb0">get_bg_alpha</a> () const</td></tr>
-<tr class="memdesc:a628344d4a2b3f3484f0732398509ceb0 inherit pub_methods_classcgv_1_1render_1_1context"><td class="mdescLeft">&#160;</td><td class="mdescRight">return the current alpha value for clearing the background <br /></td></tr>
-<tr class="separator:a628344d4a2b3f3484f0732398509ceb0 inherit pub_methods_classcgv_1_1render_1_1context"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:acc13a514866104a12f075532101da5a8 inherit pub_methods_classcgv_1_1render_1_1context"><td class="memItemLeft" align="right" valign="top"><a id="acc13a514866104a12f075532101da5a8"></a>
-void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcgv_1_1render_1_1context.html#acc13a514866104a12f075532101da5a8">put_bg_accum_color</a> (float *<a class="el" href="namespacecgv.html#a0cf3c7d9673d8f1d9d33685e3ce5c889">rgba</a>) const</td></tr>
-<tr class="memdesc:acc13a514866104a12f075532101da5a8 inherit pub_methods_classcgv_1_1render_1_1context"><td class="mdescLeft">&#160;</td><td class="mdescRight">copy the current back ground rgba color of the accumulation buffer into the given float array <br /></td></tr>
-<tr class="separator:acc13a514866104a12f075532101da5a8 inherit pub_methods_classcgv_1_1render_1_1context"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a33adf813e7c435d545ae4c156cffa2e3 inherit pub_methods_classcgv_1_1render_1_1context"><td class="memItemLeft" align="right" valign="top"><a id="a33adf813e7c435d545ae4c156cffa2e3"></a>
-float&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcgv_1_1render_1_1context.html#a33adf813e7c435d545ae4c156cffa2e3">get_bg_accum_alpha</a> () const</td></tr>
-<tr class="memdesc:a33adf813e7c435d545ae4c156cffa2e3 inherit pub_methods_classcgv_1_1render_1_1context"><td class="mdescLeft">&#160;</td><td class="mdescRight">return the current alpha value for clearing the accumulation buffer <br /></td></tr>
-<tr class="separator:a33adf813e7c435d545ae4c156cffa2e3 inherit pub_methods_classcgv_1_1render_1_1context"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:aa5b0e8b5da09c2cf85d357d6090596ba inherit pub_methods_classcgv_1_1render_1_1context"><td class="memItemLeft" align="right" valign="top"><a id="aa5b0e8b5da09c2cf85d357d6090596ba"></a>
+void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcgv_1_1render_1_1context.html#aa5b0e8b5da09c2cf85d357d6090596ba">push_bg_depth</a> ()</td></tr>
+<tr class="memdesc:aa5b0e8b5da09c2cf85d357d6090596ba inherit pub_methods_classcgv_1_1render_1_1context"><td class="mdescLeft">&#160;</td><td class="mdescRight">push a copy of the current background depth value onto the stack <br /></td></tr>
+<tr class="separator:aa5b0e8b5da09c2cf85d357d6090596ba inherit pub_methods_classcgv_1_1render_1_1context"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a4094bb55f850d8d4bf4742f8e6fa55e0 inherit pub_methods_classcgv_1_1render_1_1context"><td class="memItemLeft" align="right" valign="top"><a id="a4094bb55f850d8d4bf4742f8e6fa55e0"></a>
+void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcgv_1_1render_1_1context.html#a4094bb55f850d8d4bf4742f8e6fa55e0">pop_bg_depth</a> ()</td></tr>
+<tr class="memdesc:a4094bb55f850d8d4bf4742f8e6fa55e0 inherit pub_methods_classcgv_1_1render_1_1context"><td class="mdescLeft">&#160;</td><td class="mdescRight">pop the top of the current background depth value from the stack <br /></td></tr>
+<tr class="separator:a4094bb55f850d8d4bf4742f8e6fa55e0 inherit pub_methods_classcgv_1_1render_1_1context"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ac62d2d231f5d2276ec122132ec399fd7 inherit pub_methods_classcgv_1_1render_1_1context"><td class="memItemLeft" align="right" valign="top"><a id="ac62d2d231f5d2276ec122132ec399fd7"></a>
 float&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcgv_1_1render_1_1context.html#ac62d2d231f5d2276ec122132ec399fd7">get_bg_depth</a> () const</td></tr>
 <tr class="memdesc:ac62d2d231f5d2276ec122132ec399fd7 inherit pub_methods_classcgv_1_1render_1_1context"><td class="mdescLeft">&#160;</td><td class="mdescRight">return the current depth value for clearing the background <br /></td></tr>
 <tr class="separator:ac62d2d231f5d2276ec122132ec399fd7 inherit pub_methods_classcgv_1_1render_1_1context"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a7a3dde4cdb4df9f0fbd495ac38df19dc inherit pub_methods_classcgv_1_1render_1_1context"><td class="memItemLeft" align="right" valign="top"><a id="a7a3dde4cdb4df9f0fbd495ac38df19dc"></a>
+void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcgv_1_1render_1_1context.html#a7a3dde4cdb4df9f0fbd495ac38df19dc">push_bg_stencil</a> ()</td></tr>
+<tr class="memdesc:a7a3dde4cdb4df9f0fbd495ac38df19dc inherit pub_methods_classcgv_1_1render_1_1context"><td class="mdescLeft">&#160;</td><td class="mdescRight">push a copy of the current background stencil value onto the stack <br /></td></tr>
+<tr class="separator:a7a3dde4cdb4df9f0fbd495ac38df19dc inherit pub_methods_classcgv_1_1render_1_1context"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a7528b8c315cb8ed84724d97d5b8a0c0a inherit pub_methods_classcgv_1_1render_1_1context"><td class="memItemLeft" align="right" valign="top"><a id="a7528b8c315cb8ed84724d97d5b8a0c0a"></a>
+void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcgv_1_1render_1_1context.html#a7528b8c315cb8ed84724d97d5b8a0c0a">pop_bg_stencil</a> ()</td></tr>
+<tr class="memdesc:a7528b8c315cb8ed84724d97d5b8a0c0a inherit pub_methods_classcgv_1_1render_1_1context"><td class="mdescLeft">&#160;</td><td class="mdescRight">pop the top of the current background stencil value from the stack <br /></td></tr>
+<tr class="separator:a7528b8c315cb8ed84724d97d5b8a0c0a inherit pub_methods_classcgv_1_1render_1_1context"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a41fcc1d3e8f858b9e77fc6d050e4b9ac inherit pub_methods_classcgv_1_1render_1_1context"><td class="memItemLeft" align="right" valign="top"><a id="a41fcc1d3e8f858b9e77fc6d050e4b9ac"></a>
 int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcgv_1_1render_1_1context.html#a41fcc1d3e8f858b9e77fc6d050e4b9ac">get_bg_stencil</a> () const</td></tr>
 <tr class="memdesc:a41fcc1d3e8f858b9e77fc6d050e4b9ac inherit pub_methods_classcgv_1_1render_1_1context"><td class="mdescLeft">&#160;</td><td class="mdescRight">return the current stencil value for clearing the background <br /></td></tr>
 <tr class="separator:a41fcc1d3e8f858b9e77fc6d050e4b9ac inherit pub_methods_classcgv_1_1render_1_1context"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ab4e83a63572ab216f193c6ad6aefdb2b inherit pub_methods_classcgv_1_1render_1_1context"><td class="memItemLeft" align="right" valign="top"><a id="ab4e83a63572ab216f193c6ad6aefdb2b"></a>
+void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcgv_1_1render_1_1context.html#ab4e83a63572ab216f193c6ad6aefdb2b">push_bg_accum_color</a> ()</td></tr>
+<tr class="memdesc:ab4e83a63572ab216f193c6ad6aefdb2b inherit pub_methods_classcgv_1_1render_1_1context"><td class="mdescLeft">&#160;</td><td class="mdescRight">push a copy of the current background accumulation color onto the stack <br /></td></tr>
+<tr class="separator:ab4e83a63572ab216f193c6ad6aefdb2b inherit pub_methods_classcgv_1_1render_1_1context"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ac07bacf07aa4e6dfbe8338be7be574d9 inherit pub_methods_classcgv_1_1render_1_1context"><td class="memItemLeft" align="right" valign="top"><a id="ac07bacf07aa4e6dfbe8338be7be574d9"></a>
+void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcgv_1_1render_1_1context.html#ac07bacf07aa4e6dfbe8338be7be574d9">pop_bg_accum_color</a> ()</td></tr>
+<tr class="memdesc:ac07bacf07aa4e6dfbe8338be7be574d9 inherit pub_methods_classcgv_1_1render_1_1context"><td class="mdescLeft">&#160;</td><td class="mdescRight">pop the top of the current background accumulation color from the stack <br /></td></tr>
+<tr class="separator:ac07bacf07aa4e6dfbe8338be7be574d9 inherit pub_methods_classcgv_1_1render_1_1context"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a195a7dac53b9ea527720f77ac3cbb56f inherit pub_methods_classcgv_1_1render_1_1context"><td class="memItemLeft" align="right" valign="top"><a id="a195a7dac53b9ea527720f77ac3cbb56f"></a>
+void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcgv_1_1render_1_1context.html#a195a7dac53b9ea527720f77ac3cbb56f">set_bg_accum_color</a> (float r, float g, float b, float a)</td></tr>
+<tr class="memdesc:a195a7dac53b9ea527720f77ac3cbb56f inherit pub_methods_classcgv_1_1render_1_1context"><td class="mdescLeft">&#160;</td><td class="mdescRight">set a user defined background color for the accumulation buffer <br /></td></tr>
+<tr class="separator:a195a7dac53b9ea527720f77ac3cbb56f inherit pub_methods_classcgv_1_1render_1_1context"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ad29926eaffdeeff759e18fec44a0008f inherit pub_methods_classcgv_1_1render_1_1context"><td class="memItemLeft" align="right" valign="top"><a id="ad29926eaffdeeff759e18fec44a0008f"></a>
+<a class="el" href="namespacecgv.html#a0add29f049bd6be760ed993da79a5872">vec4</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcgv_1_1render_1_1context.html#ad29926eaffdeeff759e18fec44a0008f">get_bg_accum_color</a> () const</td></tr>
+<tr class="memdesc:ad29926eaffdeeff759e18fec44a0008f inherit pub_methods_classcgv_1_1render_1_1context"><td class="mdescLeft">&#160;</td><td class="mdescRight">return the current color value for clearing the accumulation buffer <br /></td></tr>
+<tr class="separator:ad29926eaffdeeff759e18fec44a0008f inherit pub_methods_classcgv_1_1render_1_1context"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:acc13a514866104a12f075532101da5a8 inherit pub_methods_classcgv_1_1render_1_1context"><td class="memItemLeft" align="right" valign="top"><a id="acc13a514866104a12f075532101da5a8"></a>
+void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcgv_1_1render_1_1context.html#acc13a514866104a12f075532101da5a8">put_bg_accum_color</a> (float *<a class="el" href="namespacecgv.html#a0cf3c7d9673d8f1d9d33685e3ce5c889">rgba</a>) const</td></tr>
+<tr class="memdesc:acc13a514866104a12f075532101da5a8 inherit pub_methods_classcgv_1_1render_1_1context"><td class="mdescLeft">&#160;</td><td class="mdescRight">copy the current accumulation background rgba color into the given float array <br /></td></tr>
+<tr class="separator:acc13a514866104a12f075532101da5a8 inherit pub_methods_classcgv_1_1render_1_1context"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a4ed6e1a7bcdf8407623ab14485670742 inherit pub_methods_classcgv_1_1render_1_1context"><td class="memItemLeft" align="right" valign="top"><a id="a4ed6e1a7bcdf8407623ab14485670742"></a>
+void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcgv_1_1render_1_1context.html#a4ed6e1a7bcdf8407623ab14485670742">set_bg_accum_alpha</a> (float a)</td></tr>
+<tr class="memdesc:a4ed6e1a7bcdf8407623ab14485670742 inherit pub_methods_classcgv_1_1render_1_1context"><td class="mdescLeft">&#160;</td><td class="mdescRight">set a user defined background alpha value for the accumulation buffer <br /></td></tr>
+<tr class="separator:a4ed6e1a7bcdf8407623ab14485670742 inherit pub_methods_classcgv_1_1render_1_1context"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a33adf813e7c435d545ae4c156cffa2e3 inherit pub_methods_classcgv_1_1render_1_1context"><td class="memItemLeft" align="right" valign="top"><a id="a33adf813e7c435d545ae4c156cffa2e3"></a>
+float&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcgv_1_1render_1_1context.html#a33adf813e7c435d545ae4c156cffa2e3">get_bg_accum_alpha</a> () const</td></tr>
+<tr class="memdesc:a33adf813e7c435d545ae4c156cffa2e3 inherit pub_methods_classcgv_1_1render_1_1context"><td class="mdescLeft">&#160;</td><td class="mdescRight">return the current alpha value for clearing the accumulation buffer <br /></td></tr>
+<tr class="separator:a33adf813e7c435d545ae4c156cffa2e3 inherit pub_methods_classcgv_1_1render_1_1context"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:af7a79e3599913c7b62a95db290cdcdc6 inherit pub_methods_classcgv_1_1render_1_1context"><td class="memItemLeft" align="right" valign="top"><a id="af7a79e3599913c7b62a95db290cdcdc6"></a>
 virtual void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcgv_1_1render_1_1context.html#af7a79e3599913c7b62a95db290cdcdc6">post_redraw</a> ()=0</td></tr>
 <tr class="memdesc:af7a79e3599913c7b62a95db290cdcdc6 inherit pub_methods_classcgv_1_1render_1_1context"><td class="mdescLeft">&#160;</td><td class="mdescRight">the context will be redrawn when the system is idle again <br /></td></tr>
@@ -645,6 +755,70 @@ void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="clas
 <tr class="memitem:a960477f770dca47ea08585cb21ea532b inherit pub_methods_classcgv_1_1render_1_1context"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcgv_1_1render_1_1context.html#a960477f770dca47ea08585cb21ea532b">tesselate_unit_torus</a> (float minor_radius=0.2f, int resolution=25, bool flip_normals=false, bool edges=false)</td></tr>
 <tr class="memdesc:a960477f770dca47ea08585cb21ea532b inherit pub_methods_classcgv_1_1render_1_1context"><td class="mdescLeft">&#160;</td><td class="mdescRight">tesselate a torus with major radius of one and given minor radius  <a href="classcgv_1_1render_1_1context.html#a960477f770dca47ea08585cb21ea532b">More...</a><br /></td></tr>
 <tr class="separator:a960477f770dca47ea08585cb21ea532b inherit pub_methods_classcgv_1_1render_1_1context"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a398c951758a7f6d0a326644e55799c26 inherit pub_methods_classcgv_1_1render_1_1context"><td class="memItemLeft" align="right" valign="top"><a id="a398c951758a7f6d0a326644e55799c26"></a>
+void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcgv_1_1render_1_1context.html#a398c951758a7f6d0a326644e55799c26">push_depth_test_state</a> ()</td></tr>
+<tr class="memdesc:a398c951758a7f6d0a326644e55799c26 inherit pub_methods_classcgv_1_1render_1_1context"><td class="mdescLeft">&#160;</td><td class="mdescRight">push a copy of the current depth test state onto the stack saved attributes: depth test enablement, depth test function <br /></td></tr>
+<tr class="separator:a398c951758a7f6d0a326644e55799c26 inherit pub_methods_classcgv_1_1render_1_1context"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a59b545a5cd48b4782c60b35dc53456cd inherit pub_methods_classcgv_1_1render_1_1context"><td class="memItemLeft" align="right" valign="top"><a id="a59b545a5cd48b4782c60b35dc53456cd"></a>
+void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcgv_1_1render_1_1context.html#a59b545a5cd48b4782c60b35dc53456cd">pop_depth_test_state</a> ()</td></tr>
+<tr class="memdesc:a59b545a5cd48b4782c60b35dc53456cd inherit pub_methods_classcgv_1_1render_1_1context"><td class="mdescLeft">&#160;</td><td class="mdescRight">pop the top of the current depth test state from the stack <br /></td></tr>
+<tr class="separator:a59b545a5cd48b4782c60b35dc53456cd inherit pub_methods_classcgv_1_1render_1_1context"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a8338e4579cd71f926deacd919fbe0b4e inherit pub_methods_classcgv_1_1render_1_1context"><td class="memItemLeft" align="right" valign="top"><a id="a8338e4579cd71f926deacd919fbe0b4e"></a>
+<a class="el" href="structcgv_1_1render_1_1context_1_1DepthTestState.html">DepthTestState</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcgv_1_1render_1_1context.html#a8338e4579cd71f926deacd919fbe0b4e">get_depth_test_state</a> () const</td></tr>
+<tr class="memdesc:a8338e4579cd71f926deacd919fbe0b4e inherit pub_methods_classcgv_1_1render_1_1context"><td class="mdescLeft">&#160;</td><td class="mdescRight">return the current depth test state <br /></td></tr>
+<tr class="separator:a8338e4579cd71f926deacd919fbe0b4e inherit pub_methods_classcgv_1_1render_1_1context"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a707cf7d485213e6fd6d9601cd26c508a inherit pub_methods_classcgv_1_1render_1_1context"><td class="memItemLeft" align="right" valign="top"><a id="a707cf7d485213e6fd6d9601cd26c508a"></a>
+void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcgv_1_1render_1_1context.html#a707cf7d485213e6fd6d9601cd26c508a">push_cull_state</a> ()</td></tr>
+<tr class="memdesc:a707cf7d485213e6fd6d9601cd26c508a inherit pub_methods_classcgv_1_1render_1_1context"><td class="mdescLeft">&#160;</td><td class="mdescRight">push a copy of the current culling state onto the stack saved attributes: cull face enablement, cull face <br /></td></tr>
+<tr class="separator:a707cf7d485213e6fd6d9601cd26c508a inherit pub_methods_classcgv_1_1render_1_1context"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ae208e961ad7e451e0c4489520f5a7c6e inherit pub_methods_classcgv_1_1render_1_1context"><td class="memItemLeft" align="right" valign="top"><a id="ae208e961ad7e451e0c4489520f5a7c6e"></a>
+void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcgv_1_1render_1_1context.html#ae208e961ad7e451e0c4489520f5a7c6e">pop_cull_state</a> ()</td></tr>
+<tr class="memdesc:ae208e961ad7e451e0c4489520f5a7c6e inherit pub_methods_classcgv_1_1render_1_1context"><td class="mdescLeft">&#160;</td><td class="mdescRight">pop the top of the current culling state from the stack <br /></td></tr>
+<tr class="separator:ae208e961ad7e451e0c4489520f5a7c6e inherit pub_methods_classcgv_1_1render_1_1context"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:af49d92b640d8a5ffab7d2aafb77e6744 inherit pub_methods_classcgv_1_1render_1_1context"><td class="memItemLeft" align="right" valign="top"><a id="af49d92b640d8a5ffab7d2aafb77e6744"></a>
+<a class="el" href="namespacecgv_1_1render.html#a0b2ec1d0f6ff0852f53654cb8e6fab57">CullingMode</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcgv_1_1render_1_1context.html#af49d92b640d8a5ffab7d2aafb77e6744">get_cull_state</a> () const</td></tr>
+<tr class="memdesc:af49d92b640d8a5ffab7d2aafb77e6744 inherit pub_methods_classcgv_1_1render_1_1context"><td class="mdescLeft">&#160;</td><td class="mdescRight">return the current culling state <br /></td></tr>
+<tr class="separator:af49d92b640d8a5ffab7d2aafb77e6744 inherit pub_methods_classcgv_1_1render_1_1context"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a3d328f77af1f0fc39a0981b3d206296a inherit pub_methods_classcgv_1_1render_1_1context"><td class="memItemLeft" align="right" valign="top"><a id="a3d328f77af1f0fc39a0981b3d206296a"></a>
+void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcgv_1_1render_1_1context.html#a3d328f77af1f0fc39a0981b3d206296a">push_blend_state</a> ()</td></tr>
+<tr class="memdesc:a3d328f77af1f0fc39a0981b3d206296a inherit pub_methods_classcgv_1_1render_1_1context"><td class="mdescLeft">&#160;</td><td class="mdescRight">push a copy of the current blend state onto the stack saved attributes: blend enablement, color and alpha source and destinatin functions <br /></td></tr>
+<tr class="separator:a3d328f77af1f0fc39a0981b3d206296a inherit pub_methods_classcgv_1_1render_1_1context"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a4583d99fc8c330adda1b89d11a9700b1 inherit pub_methods_classcgv_1_1render_1_1context"><td class="memItemLeft" align="right" valign="top"><a id="a4583d99fc8c330adda1b89d11a9700b1"></a>
+void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcgv_1_1render_1_1context.html#a4583d99fc8c330adda1b89d11a9700b1">pop_blend_state</a> ()</td></tr>
+<tr class="memdesc:a4583d99fc8c330adda1b89d11a9700b1 inherit pub_methods_classcgv_1_1render_1_1context"><td class="mdescLeft">&#160;</td><td class="mdescRight">pop the top of the current culling state from the stack <br /></td></tr>
+<tr class="separator:a4583d99fc8c330adda1b89d11a9700b1 inherit pub_methods_classcgv_1_1render_1_1context"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a982a22497eb4aeed73484bafd2f307b3 inherit pub_methods_classcgv_1_1render_1_1context"><td class="memItemLeft" align="right" valign="top"><a id="a982a22497eb4aeed73484bafd2f307b3"></a>
+<a class="el" href="structcgv_1_1render_1_1context_1_1BlendState.html">BlendState</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcgv_1_1render_1_1context.html#a982a22497eb4aeed73484bafd2f307b3">get_blend_state</a> () const</td></tr>
+<tr class="memdesc:a982a22497eb4aeed73484bafd2f307b3 inherit pub_methods_classcgv_1_1render_1_1context"><td class="mdescLeft">&#160;</td><td class="mdescRight">return the current blend state <br /></td></tr>
+<tr class="separator:a982a22497eb4aeed73484bafd2f307b3 inherit pub_methods_classcgv_1_1render_1_1context"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a55ec2e4c4ccc3bafba91ae1875bb8cfc inherit pub_methods_classcgv_1_1render_1_1context"><td class="memItemLeft" align="right" valign="top"><a id="a55ec2e4c4ccc3bafba91ae1875bb8cfc"></a>
+void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcgv_1_1render_1_1context.html#a55ec2e4c4ccc3bafba91ae1875bb8cfc">set_blend_func_front_to_back</a> ()</td></tr>
+<tr class="memdesc:a55ec2e4c4ccc3bafba91ae1875bb8cfc inherit pub_methods_classcgv_1_1render_1_1context"><td class="mdescLeft">&#160;</td><td class="mdescRight">set the default blend function for front to back blending <br /></td></tr>
+<tr class="separator:a55ec2e4c4ccc3bafba91ae1875bb8cfc inherit pub_methods_classcgv_1_1render_1_1context"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a0a5de5ff32c3f70c495ad248b6d00520 inherit pub_methods_classcgv_1_1render_1_1context"><td class="memItemLeft" align="right" valign="top"><a id="a0a5de5ff32c3f70c495ad248b6d00520"></a>
+void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcgv_1_1render_1_1context.html#a0a5de5ff32c3f70c495ad248b6d00520">set_blend_func_back_to_front</a> ()</td></tr>
+<tr class="memdesc:a0a5de5ff32c3f70c495ad248b6d00520 inherit pub_methods_classcgv_1_1render_1_1context"><td class="mdescLeft">&#160;</td><td class="mdescRight">set the default blend function for back to front blending <br /></td></tr>
+<tr class="separator:a0a5de5ff32c3f70c495ad248b6d00520 inherit pub_methods_classcgv_1_1render_1_1context"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:afa54e4fb55b2dad004f6b84de68ae89d inherit pub_methods_classcgv_1_1render_1_1context"><td class="memItemLeft" align="right" valign="top"><a id="afa54e4fb55b2dad004f6b84de68ae89d"></a>
+void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcgv_1_1render_1_1context.html#afa54e4fb55b2dad004f6b84de68ae89d">push_buffer_mask</a> ()</td></tr>
+<tr class="memdesc:afa54e4fb55b2dad004f6b84de68ae89d inherit pub_methods_classcgv_1_1render_1_1context"><td class="mdescLeft">&#160;</td><td class="mdescRight">push a copy of the current buffer mask onto the stack saved attributes: depth mask, color mask <br /></td></tr>
+<tr class="separator:afa54e4fb55b2dad004f6b84de68ae89d inherit pub_methods_classcgv_1_1render_1_1context"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a1974dba0f210acf14a04bc8946514c3f inherit pub_methods_classcgv_1_1render_1_1context"><td class="memItemLeft" align="right" valign="top"><a id="a1974dba0f210acf14a04bc8946514c3f"></a>
+void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcgv_1_1render_1_1context.html#a1974dba0f210acf14a04bc8946514c3f">pop_buffer_mask</a> ()</td></tr>
+<tr class="memdesc:a1974dba0f210acf14a04bc8946514c3f inherit pub_methods_classcgv_1_1render_1_1context"><td class="mdescLeft">&#160;</td><td class="mdescRight">pop the top of the current buffer mask from the stack <br /></td></tr>
+<tr class="separator:a1974dba0f210acf14a04bc8946514c3f inherit pub_methods_classcgv_1_1render_1_1context"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a6fea88d57e29a13e84798454ab564cfb inherit pub_methods_classcgv_1_1render_1_1context"><td class="memItemLeft" align="right" valign="top"><a id="a6fea88d57e29a13e84798454ab564cfb"></a>
+<a class="el" href="structcgv_1_1render_1_1context_1_1BufferMask.html">BufferMask</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcgv_1_1render_1_1context.html#a6fea88d57e29a13e84798454ab564cfb">get_buffer_mask</a> () const</td></tr>
+<tr class="memdesc:a6fea88d57e29a13e84798454ab564cfb inherit pub_methods_classcgv_1_1render_1_1context"><td class="mdescLeft">&#160;</td><td class="mdescRight">return the current buffer mask <br /></td></tr>
+<tr class="separator:a6fea88d57e29a13e84798454ab564cfb inherit pub_methods_classcgv_1_1render_1_1context"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:aa683d98293b063905a5d09b9308feb80 inherit pub_methods_classcgv_1_1render_1_1context"><td class="memItemLeft" align="right" valign="top"><a id="aa683d98293b063905a5d09b9308feb80"></a>
+bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcgv_1_1render_1_1context.html#aa683d98293b063905a5d09b9308feb80">get_depth_mask</a> () const</td></tr>
+<tr class="memdesc:aa683d98293b063905a5d09b9308feb80 inherit pub_methods_classcgv_1_1render_1_1context"><td class="mdescLeft">&#160;</td><td class="mdescRight">get the depth buffer mask <br /></td></tr>
+<tr class="separator:aa683d98293b063905a5d09b9308feb80 inherit pub_methods_classcgv_1_1render_1_1context"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ab0f9c0c36b69dd45cda7769756578ada inherit pub_methods_classcgv_1_1render_1_1context"><td class="memItemLeft" align="right" valign="top"><a id="ab0f9c0c36b69dd45cda7769756578ada"></a>
+<a class="el" href="namespacecgv.html#a97fbb57851d694e9b27f5e351638b417">bvec4</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcgv_1_1render_1_1context.html#ab0f9c0c36b69dd45cda7769756578ada">get_color_mask</a> () const</td></tr>
+<tr class="memdesc:ab0f9c0c36b69dd45cda7769756578ada inherit pub_methods_classcgv_1_1render_1_1context"><td class="mdescLeft">&#160;</td><td class="mdescRight">get the color buffer mask <br /></td></tr>
+<tr class="separator:ab0f9c0c36b69dd45cda7769756578ada inherit pub_methods_classcgv_1_1render_1_1context"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:aab9fd7891d173ee9f78e83a5f7ba63d2 inherit pub_methods_classcgv_1_1render_1_1context"><td class="memItemLeft" align="right" valign="top"><a id="aab9fd7891d173ee9f78e83a5f7ba63d2"></a>
 <a class="el" href="namespacecgv.html#a8495c3890adf798ce6e710a454b3c05c">dmatn</a>&#160;</td><td class="memItemRight" valign="bottom"><b>get_V</b> () const</td></tr>
 <tr class="separator:aab9fd7891d173ee9f78e83a5f7ba63d2 inherit pub_methods_classcgv_1_1render_1_1context"><td class="memSeparator" colspan="2">&#160;</td></tr>
@@ -1073,6 +1247,38 @@ bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="clas
 <a class="el" href="namespacecgv.html#a986c65184af5066fa26d468fd606c4fb">vec3</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcgv_1_1render_1_1context.html#a0eefe0f67d74ebdcf1abea3f4af8bfda">gamma3</a></td></tr>
 <tr class="memdesc:a0eefe0f67d74ebdcf1abea3f4af8bfda inherit pro_attribs_classcgv_1_1render_1_1context"><td class="mdescLeft">&#160;</td><td class="mdescRight">per color channel gamma value passed to shader programs that have gamma uniform <br /></td></tr>
 <tr class="separator:a0eefe0f67d74ebdcf1abea3f4af8bfda inherit pro_attribs_classcgv_1_1render_1_1context"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:afdbdcbdc5e0a897f4cd3ce96de78b478 inherit pro_attribs_classcgv_1_1render_1_1context"><td class="memItemLeft" align="right" valign="top"><a id="afdbdcbdc5e0a897f4cd3ce96de78b478"></a>
+std::stack&lt; <a class="el" href="namespacecgv.html#a0add29f049bd6be760ed993da79a5872">vec4</a> &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcgv_1_1render_1_1context.html#afdbdcbdc5e0a897f4cd3ce96de78b478">bg_color_stack</a></td></tr>
+<tr class="memdesc:afdbdcbdc5e0a897f4cd3ce96de78b478 inherit pro_attribs_classcgv_1_1render_1_1context"><td class="mdescLeft">&#160;</td><td class="mdescRight">stack of background colors <br /></td></tr>
+<tr class="separator:afdbdcbdc5e0a897f4cd3ce96de78b478 inherit pro_attribs_classcgv_1_1render_1_1context"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a8ff9053e65ecd372bd28bd36fbe98576 inherit pro_attribs_classcgv_1_1render_1_1context"><td class="memItemLeft" align="right" valign="top"><a id="a8ff9053e65ecd372bd28bd36fbe98576"></a>
+std::stack&lt; float &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcgv_1_1render_1_1context.html#a8ff9053e65ecd372bd28bd36fbe98576">bg_depth_stack</a></td></tr>
+<tr class="memdesc:a8ff9053e65ecd372bd28bd36fbe98576 inherit pro_attribs_classcgv_1_1render_1_1context"><td class="mdescLeft">&#160;</td><td class="mdescRight">stack of background depth values <br /></td></tr>
+<tr class="separator:a8ff9053e65ecd372bd28bd36fbe98576 inherit pro_attribs_classcgv_1_1render_1_1context"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:abaf852fc661ed03dda0e6f17d231d72d inherit pro_attribs_classcgv_1_1render_1_1context"><td class="memItemLeft" align="right" valign="top"><a id="abaf852fc661ed03dda0e6f17d231d72d"></a>
+std::stack&lt; int &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcgv_1_1render_1_1context.html#abaf852fc661ed03dda0e6f17d231d72d">bg_stencil_stack</a></td></tr>
+<tr class="memdesc:abaf852fc661ed03dda0e6f17d231d72d inherit pro_attribs_classcgv_1_1render_1_1context"><td class="mdescLeft">&#160;</td><td class="mdescRight">stack of background stencil values <br /></td></tr>
+<tr class="separator:abaf852fc661ed03dda0e6f17d231d72d inherit pro_attribs_classcgv_1_1render_1_1context"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:abed1985633ca7f51f5cc072a75a5b77a inherit pro_attribs_classcgv_1_1render_1_1context"><td class="memItemLeft" align="right" valign="top"><a id="abed1985633ca7f51f5cc072a75a5b77a"></a>
+std::stack&lt; <a class="el" href="namespacecgv.html#a0add29f049bd6be760ed993da79a5872">vec4</a> &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcgv_1_1render_1_1context.html#abed1985633ca7f51f5cc072a75a5b77a">bg_accum_color_stack</a></td></tr>
+<tr class="memdesc:abed1985633ca7f51f5cc072a75a5b77a inherit pro_attribs_classcgv_1_1render_1_1context"><td class="mdescLeft">&#160;</td><td class="mdescRight">stack of background accumulation colors <br /></td></tr>
+<tr class="separator:abed1985633ca7f51f5cc072a75a5b77a inherit pro_attribs_classcgv_1_1render_1_1context"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:aa443dd180a5a16227379a8d9344385aa inherit pro_attribs_classcgv_1_1render_1_1context"><td class="memItemLeft" align="right" valign="top"><a id="aa443dd180a5a16227379a8d9344385aa"></a>
+std::stack&lt; <a class="el" href="structcgv_1_1render_1_1context_1_1DepthTestState.html">DepthTestState</a> &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcgv_1_1render_1_1context.html#aa443dd180a5a16227379a8d9344385aa">depth_test_state_stack</a></td></tr>
+<tr class="memdesc:aa443dd180a5a16227379a8d9344385aa inherit pro_attribs_classcgv_1_1render_1_1context"><td class="mdescLeft">&#160;</td><td class="mdescRight">stack of depth test states <br /></td></tr>
+<tr class="separator:aa443dd180a5a16227379a8d9344385aa inherit pro_attribs_classcgv_1_1render_1_1context"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:aa52a76a982feeab2e086dd3ab08b0638 inherit pro_attribs_classcgv_1_1render_1_1context"><td class="memItemLeft" align="right" valign="top"><a id="aa52a76a982feeab2e086dd3ab08b0638"></a>
+std::stack&lt; <a class="el" href="namespacecgv_1_1render.html#a0b2ec1d0f6ff0852f53654cb8e6fab57">CullingMode</a> &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcgv_1_1render_1_1context.html#aa52a76a982feeab2e086dd3ab08b0638">cull_state_stack</a></td></tr>
+<tr class="memdesc:aa52a76a982feeab2e086dd3ab08b0638 inherit pro_attribs_classcgv_1_1render_1_1context"><td class="mdescLeft">&#160;</td><td class="mdescRight">stack of culling mode states <br /></td></tr>
+<tr class="separator:aa52a76a982feeab2e086dd3ab08b0638 inherit pro_attribs_classcgv_1_1render_1_1context"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:afe37494c03f687158ea2b517e8f74a66 inherit pro_attribs_classcgv_1_1render_1_1context"><td class="memItemLeft" align="right" valign="top"><a id="afe37494c03f687158ea2b517e8f74a66"></a>
+std::stack&lt; <a class="el" href="structcgv_1_1render_1_1context_1_1BlendState.html">BlendState</a> &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcgv_1_1render_1_1context.html#afe37494c03f687158ea2b517e8f74a66">blend_state_stack</a></td></tr>
+<tr class="memdesc:afe37494c03f687158ea2b517e8f74a66 inherit pro_attribs_classcgv_1_1render_1_1context"><td class="mdescLeft">&#160;</td><td class="mdescRight">stack of blend states <br /></td></tr>
+<tr class="separator:afe37494c03f687158ea2b517e8f74a66 inherit pro_attribs_classcgv_1_1render_1_1context"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a2da2bb71d65572463d7269d6e0d9095d inherit pro_attribs_classcgv_1_1render_1_1context"><td class="memItemLeft" align="right" valign="top"><a id="a2da2bb71d65572463d7269d6e0d9095d"></a>
+std::stack&lt; <a class="el" href="structcgv_1_1render_1_1context_1_1BufferMask.html">BufferMask</a> &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcgv_1_1render_1_1context.html#a2da2bb71d65572463d7269d6e0d9095d">buffer_mask_stack</a></td></tr>
+<tr class="memdesc:a2da2bb71d65572463d7269d6e0d9095d inherit pro_attribs_classcgv_1_1render_1_1context"><td class="mdescLeft">&#160;</td><td class="mdescRight">stack of buffer masks <br /></td></tr>
+<tr class="separator:a2da2bb71d65572463d7269d6e0d9095d inherit pro_attribs_classcgv_1_1render_1_1context"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a77c4c4d8db1cc97b1c52baf92d7f3021 inherit pro_attribs_classcgv_1_1render_1_1context"><td class="memItemLeft" align="right" valign="top"><a id="a77c4c4d8db1cc97b1c52baf92d7f3021"></a>
 std::stack&lt; <a class="el" href="namespacecgv.html#a6c3091f6c4a7b32a0dec501e8c056734">dmat4</a> &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcgv_1_1render_1_1context.html#a77c4c4d8db1cc97b1c52baf92d7f3021">modelview_matrix_stack</a></td></tr>
 <tr class="memdesc:a77c4c4d8db1cc97b1c52baf92d7f3021 inherit pro_attribs_classcgv_1_1render_1_1context"><td class="mdescLeft">&#160;</td><td class="mdescRight">keep two matrix stacks for model view and projection matrices <br /></td></tr>
@@ -1136,37 +1342,6 @@ std::stack&lt; <a class="el" href="structcgv_1_1render_1_1context_1_1render__inf
 <a class="el" href="namespacecgv_1_1render.html#ae903f198d1beae98f419246e35f99e13">RenderPassFlags</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcgv_1_1render_1_1context.html#a19528413e5724662c9fe9e4a2bf7e71b">default_render_flags</a></td></tr>
 <tr class="memdesc:a19528413e5724662c9fe9e4a2bf7e71b inherit pro_attribs_classcgv_1_1render_1_1context"><td class="mdescLeft">&#160;</td><td class="mdescRight">default render flags with which the main render pass is initialized <br /></td></tr>
 <tr class="separator:a19528413e5724662c9fe9e4a2bf7e71b inherit pro_attribs_classcgv_1_1render_1_1context"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a47d1cf071d77d6a79b5013362798f506 inherit pro_attribs_classcgv_1_1render_1_1context"><td class="memItemLeft" align="right" valign="top"><a id="a47d1cf071d77d6a79b5013362798f506"></a>
-float&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcgv_1_1render_1_1context.html#a47d1cf071d77d6a79b5013362798f506">bg_r</a></td></tr>
-<tr class="memdesc:a47d1cf071d77d6a79b5013362798f506 inherit pro_attribs_classcgv_1_1render_1_1context"><td class="mdescLeft">&#160;</td><td class="mdescRight">current background color, depth, stencil and accum color <br /></td></tr>
-<tr class="separator:a47d1cf071d77d6a79b5013362798f506 inherit pro_attribs_classcgv_1_1render_1_1context"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:ab3c27ea4716baa206c966ed93dc569cd inherit pro_attribs_classcgv_1_1render_1_1context"><td class="memItemLeft" align="right" valign="top"><a id="ab3c27ea4716baa206c966ed93dc569cd"></a>
-float&#160;</td><td class="memItemRight" valign="bottom"><b>bg_g</b></td></tr>
-<tr class="separator:ab3c27ea4716baa206c966ed93dc569cd inherit pro_attribs_classcgv_1_1render_1_1context"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a432ec41341ceff985138744dd4cbb07f inherit pro_attribs_classcgv_1_1render_1_1context"><td class="memItemLeft" align="right" valign="top"><a id="a432ec41341ceff985138744dd4cbb07f"></a>
-float&#160;</td><td class="memItemRight" valign="bottom"><b>bg_b</b></td></tr>
-<tr class="separator:a432ec41341ceff985138744dd4cbb07f inherit pro_attribs_classcgv_1_1render_1_1context"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a54d68938a4e25f19592d58af41124977 inherit pro_attribs_classcgv_1_1render_1_1context"><td class="memItemLeft" align="right" valign="top"><a id="a54d68938a4e25f19592d58af41124977"></a>
-float&#160;</td><td class="memItemRight" valign="bottom"><b>bg_a</b></td></tr>
-<tr class="separator:a54d68938a4e25f19592d58af41124977 inherit pro_attribs_classcgv_1_1render_1_1context"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:ab756f219c54c1b24fbe43a6e7320c56d inherit pro_attribs_classcgv_1_1render_1_1context"><td class="memItemLeft" align="right" valign="top"><a id="ab756f219c54c1b24fbe43a6e7320c56d"></a>
-float&#160;</td><td class="memItemRight" valign="bottom"><b>bg_d</b></td></tr>
-<tr class="separator:ab756f219c54c1b24fbe43a6e7320c56d inherit pro_attribs_classcgv_1_1render_1_1context"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a7037ddba91f5fc462bf263636d9f50f1 inherit pro_attribs_classcgv_1_1render_1_1context"><td class="memItemLeft" align="right" valign="top"><a id="a7037ddba91f5fc462bf263636d9f50f1"></a>
-int&#160;</td><td class="memItemRight" valign="bottom"><b>bg_s</b></td></tr>
-<tr class="separator:a7037ddba91f5fc462bf263636d9f50f1 inherit pro_attribs_classcgv_1_1render_1_1context"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:ad934ce97606ecf0a1b5c6e9e3152e110 inherit pro_attribs_classcgv_1_1render_1_1context"><td class="memItemLeft" align="right" valign="top"><a id="ad934ce97606ecf0a1b5c6e9e3152e110"></a>
-float&#160;</td><td class="memItemRight" valign="bottom"><b>bg_accum_r</b></td></tr>
-<tr class="separator:ad934ce97606ecf0a1b5c6e9e3152e110 inherit pro_attribs_classcgv_1_1render_1_1context"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:ad9452ad2286519b6ad1e392a061698d3 inherit pro_attribs_classcgv_1_1render_1_1context"><td class="memItemLeft" align="right" valign="top"><a id="ad9452ad2286519b6ad1e392a061698d3"></a>
-float&#160;</td><td class="memItemRight" valign="bottom"><b>bg_accum_g</b></td></tr>
-<tr class="separator:ad9452ad2286519b6ad1e392a061698d3 inherit pro_attribs_classcgv_1_1render_1_1context"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a86b8b3e437c1c299ebb9ee8ed771afb3 inherit pro_attribs_classcgv_1_1render_1_1context"><td class="memItemLeft" align="right" valign="top"><a id="a86b8b3e437c1c299ebb9ee8ed771afb3"></a>
-float&#160;</td><td class="memItemRight" valign="bottom"><b>bg_accum_b</b></td></tr>
-<tr class="separator:a86b8b3e437c1c299ebb9ee8ed771afb3 inherit pro_attribs_classcgv_1_1render_1_1context"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a44407299316c363e23cabd11924ec1fc inherit pro_attribs_classcgv_1_1render_1_1context"><td class="memItemLeft" align="right" valign="top"><a id="a44407299316c363e23cabd11924ec1fc"></a>
-float&#160;</td><td class="memItemRight" valign="bottom"><b>bg_accum_a</b></td></tr>
-<tr class="separator:a44407299316c363e23cabd11924ec1fc inherit pro_attribs_classcgv_1_1render_1_1context"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:aa83ccb660cfc3ebec19ede2ef6f233a3 inherit pro_attribs_classcgv_1_1render_1_1context"><td class="memItemLeft" align="right" valign="top"><a id="aa83ccb660cfc3ebec19ede2ef6f233a3"></a>
 bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcgv_1_1render_1_1context.html#aa83ccb660cfc3ebec19ede2ef6f233a3">phong_shading</a></td></tr>
 <tr class="memdesc:aa83ccb660cfc3ebec19ede2ef6f233a3 inherit pro_attribs_classcgv_1_1render_1_1context"><td class="mdescLeft">&#160;</td><td class="mdescRight">whether to use phong shading <br /></td></tr>
@@ -1345,7 +1520,7 @@ static const unsigned&#160;</td><td class="memItemRight" valign="bottom"><a clas
 <a name="details" id="details"></a><h2 class="groupheader">Detailed Description</h2>
 <div class="textblock"><p>implementation of the context API for the OpenGL API excluding methods for font selection, redraw and initiation of render passes. </p>
 
-<p class="definition">Definition at line <a class="el" href="gl__context_8h_source.html#l00032">32</a> of file <a class="el" href="gl__context_8h_source.html">gl_context.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="gl__context_8h_source.html#l00034">34</a> of file <a class="el" href="gl__context_8h_source.html">gl_context.h</a>.</p>
 </div><h2 class="groupheader">Constructor &amp; Destructor Documentation</h2>
 <a id="a404532ca5cc6edd6aa950b3efd5eeddd"></a>
 <h2 class="memtitle"><span class="permalink"><a href="#a404532ca5cc6edd6aa950b3efd5eeddd">&#9670;&nbsp;</a></span>gl_context()</h2>
@@ -1365,7 +1540,7 @@ static const unsigned&#160;</td><td class="memItemRight" valign="bottom"><a clas
 <p>construct context and attach signals </p>
 <p>construct <a class="el" href="classcgv_1_1render_1_1gl_1_1gl__context.html" title="implementation of the context API for the OpenGL API excluding methods for font selection,...">gl_context</a> and attach signals </p>
 
-<p class="definition">Definition at line <a class="el" href="gl__context_8cxx_source.html#l00137">137</a> of file <a class="el" href="gl__context_8cxx_source.html">gl_context.cxx</a>.</p>
+<p class="definition">Definition at line <a class="el" href="gl__context_8cxx_source.html#l00275">275</a> of file <a class="el" href="gl__context_8cxx_source.html">gl_context.cxx</a>.</p>
 
 </div>
 </div>
@@ -1388,7 +1563,7 @@ static const unsigned&#160;</td><td class="memItemRight" valign="bottom"><a clas
 <p>ensure that glew is initialized, define lighting mode, viewing pyramid and the rendering mode and return whether gl configuration was successful </p>
 <p>define lighting mode, viewing pyramid and the rendering mode </p>
 
-<p class="definition">Definition at line <a class="el" href="gl__context_8cxx_source.html#l00206">206</a> of file <a class="el" href="gl__context_8cxx_source.html">gl_context.cxx</a>.</p>
+<p class="definition">Definition at line <a class="el" href="gl__context_8cxx_source.html#l00355">355</a> of file <a class="el" href="gl__context_8cxx_source.html">gl_context.cxx</a>.</p>
 
 <p class="reference">References <a class="el" href="gl_8cxx_source.html#l00019">cgv::render::gl::ensure_glew_initialized()</a>, <a class="el" href="group_8cxx_source.html#l00028">cgv::base::group::get_child()</a>, <a class="el" href="group_8cxx_source.html#l00024">cgv::base::group::get_nr_children()</a>, <a class="el" href="scan_8cxx_source.html#l00106">cgv::utils::to_upper()</a>, and <a class="el" href="traverser_8cxx_source.html#l00373">cgv::base::traverser::traverse()</a>.</p>
 
@@ -1445,7 +1620,7 @@ static const unsigned&#160;</td><td class="memItemRight" valign="bottom"><a clas
 
 <p>Reimplemented from <a class="el" href="classcgv_1_1render_1_1context.html#a1122ce9221bb982f6842138ae5978b66">cgv::render::context</a>.</p>
 
-<p class="definition">Definition at line <a class="el" href="gl__context_8cxx_source.html#l00770">770</a> of file <a class="el" href="gl__context_8cxx_source.html">gl_context.cxx</a>.</p>
+<p class="definition">Definition at line <a class="el" href="gl__context_8cxx_source.html#l00946">946</a> of file <a class="el" href="gl__context_8cxx_source.html">gl_context.cxx</a>.</p>
 
 </div>
 </div>
@@ -1512,7 +1687,7 @@ static const unsigned&#160;</td><td class="memItemRight" valign="bottom"><a clas
 
 <p>Implements <a class="el" href="classcgv_1_1render_1_1context.html#adb2581c0b04da895beebf73bf17c5115">cgv::render::context</a>.</p>
 
-<p class="definition">Definition at line <a class="el" href="gl__context_8cxx_source.html#l00538">538</a> of file <a class="el" href="gl__context_8cxx_source.html">gl_context.cxx</a>.</p>
+<p class="definition">Definition at line <a class="el" href="gl__context_8cxx_source.html#l00714">714</a> of file <a class="el" href="gl__context_8cxx_source.html">gl_context.cxx</a>.</p>
 
 </div>
 </div>
@@ -1545,7 +1720,7 @@ static const unsigned&#160;</td><td class="memItemRight" valign="bottom"><a clas
 
 <p>Implements <a class="el" href="classcgv_1_1render_1_1context.html#a6a26ce9b9278534c75ca4a90b9456961">cgv::render::context</a>.</p>
 
-<p class="definition">Definition at line <a class="el" href="gl__context_8cxx_source.html#l00645">645</a> of file <a class="el" href="gl__context_8cxx_source.html">gl_context.cxx</a>.</p>
+<p class="definition">Definition at line <a class="el" href="gl__context_8cxx_source.html#l00821">821</a> of file <a class="el" href="gl__context_8cxx_source.html">gl_context.cxx</a>.</p>
 
 </div>
 </div>
@@ -1620,7 +1795,7 @@ static const unsigned&#160;</td><td class="memItemRight" valign="bottom"><a clas
 
 <p>Reimplemented from <a class="el" href="classcgv_1_1render_1_1context.html#a3aa654fdda36fb32c355f30d5010e849">cgv::render::context</a>.</p>
 
-<p class="definition">Definition at line <a class="el" href="gl__context_8cxx_source.html#l00720">720</a> of file <a class="el" href="gl__context_8cxx_source.html">gl_context.cxx</a>.</p>
+<p class="definition">Definition at line <a class="el" href="gl__context_8cxx_source.html#l00896">896</a> of file <a class="el" href="gl__context_8cxx_source.html">gl_context.cxx</a>.</p>
 
 </div>
 </div>
