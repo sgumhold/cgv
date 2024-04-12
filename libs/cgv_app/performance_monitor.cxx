@@ -124,6 +124,8 @@ void performance_monitor::draw_content(cgv::render::context& ctx) {
 
 void performance_monitor::after_finish(cgv::render::context& ctx) {
 
+	themed_canvas_overlay::after_finish(ctx);
+
 	bool enabled = monitor.enabled;
 	if(monitor.enabled_only_when_visible && !is_visible())
 		enabled = false;
