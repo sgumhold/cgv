@@ -281,37 +281,16 @@ gl_context::gl_context()
 	show_help = false;
 	show_stats = false;
 
-	// setup initial render state and store it on the corresponding stacks
-	glDisable(GL_DEPTH_TEST);
-	glDepthFunc(GL_LESS);
-	DepthTestState depth_test_state;
-	depth_test_state.enabled = false;
-	depth_test_state.test_func = CF_LESS;
-	depth_test_state_stack.push(depth_test_state);
+	// set initial GL state from stack contents
+	set_bg_color(get_bg_color());
+	set_bg_depth(get_bg_depth());
+	set_bg_stencil(get_bg_stencil());
+	set_bg_accum_color(get_bg_accum_color());
 
-	glDisable(GL_CULL_FACE);
-	glCullFace(GL_BACK);
-	cull_state_stack.push(CM_OFF);
-
-	glDisable(GL_BLEND);
-	glBlendFunc(GL_ONE, GL_ZERO);
-	BlendState blend_state;
-	blend_state.enabled = false;
-	blend_state.src_color = BF_ONE;
-	blend_state.src_alpha = BF_ONE;
-	blend_state.dst_color = BF_ZERO;
-	blend_state.dst_alpha = BF_ZERO;
-	blend_state_stack.push(blend_state);
-
-	glDepthMask(GL_TRUE);
-	glColorMask(GL_TRUE, GL_TRUE, GL_TRUE, GL_TRUE);
-	BufferMask buffer_mask;
-	buffer_mask.depth_flag = true;
-	buffer_mask.red_flag = true;
-	buffer_mask.green_flag = true;
-	buffer_mask.blue_flag = true;
-	buffer_mask.alpha_flag = true;
-	buffer_mask_stack.push(buffer_mask);
+	set_depth_test_state(get_depth_test_state());
+	set_cull_state(get_cull_state());
+	set_blend_state(get_blend_state());
+	set_buffer_mask(get_buffer_mask());
 }
 
 /// return the used rendering API
@@ -477,6 +456,41 @@ void gl_context::resize_gl()
 	}
 }
 
+void gl_context::set_bg_color(vec4 rgba) {
+	glClearColor(rgba[0], rgba[1], rgba[2], rgba[3]);
+	context::set_bg_color(rgba);
+}
+
+void gl_context::set_bg_depth(float d) {
+	glClearDepth(d);
+	context::set_bg_depth(d);
+}
+
+void gl_context::set_bg_stencil(int s) {
+	glClearStencil(s);
+	context::set_bg_stencil(s);
+}
+
+void gl_context::set_bg_accum_color(vec4 rgba) {
+	if(!core_profile)
+		glClearAccum(rgba[0], rgba[1], rgba[2], rgba[3]);
+	context::set_bg_accum_color(rgba);
+}
+
+void gl_context::clear_background(bool color_flag, bool depth_flag, bool stencil_flag, bool accum_flag) {
+	GLenum bits = 0;
+	if(color_flag)
+		bits |= GL_COLOR_BUFFER_BIT;
+	if(depth_flag)
+		bits |= GL_DEPTH_BUFFER_BIT;
+	if(stencil_flag)
+		bits |= GL_STENCIL_BUFFER_BIT;
+	if(accum_flag && !core_profile)
+		bits |= GL_ACCUM_BUFFER_BIT;
+	if(bits)
+		glClear(bits);
+}
+
 /// overwrite function to return info font size in case no font is currently selected
 float gl_context::get_current_font_size() const
 {
@@ -565,29 +579,23 @@ void gl_context::init_render_pass()
 	if (check_gl_error("gl_context::init_render_pass after init_frame"))
 		return;
 	// this defines the background color to which the frame buffer is set by glClear
-	if (get_render_pass_flags()&RPF_SET_CLEAR_COLOR)
-		glClearColor(bg_r,bg_g,bg_b,bg_a);
+	if(get_render_pass_flags() & RPF_SET_CLEAR_COLOR)
+		set_bg_color(get_bg_color());
+	// this defines the background depth buffer value set by glClear
+	if(get_render_pass_flags() & RPF_SET_CLEAR_DEPTH)
+		set_bg_depth(get_bg_depth());
+	// this defines the background depth buffer value set by glClear
+	if(get_render_pass_flags() & RPF_SET_CLEAR_STENCIL)
+		set_bg_stencil(get_bg_stencil());
 	// this defines the background color to which the accum buffer is set by glClear
-	if (get_render_pass_flags()&RPF_SET_CLEAR_ACCUM)
-		glClearAccum(bg_accum_r,bg_accum_g,bg_accum_b,bg_accum_a);
-	// this defines the background depth buffer value set by glClear
-	if (get_render_pass_flags()&RPF_SET_CLEAR_DEPTH)
-		glClearDepth(bg_d);
-	// this defines the background depth buffer value set by glClear
-	if (get_render_pass_flags()&RPF_SET_CLEAR_STENCIL)
-		glClearStencil(bg_s);
-	// clear necessary buffers
-	GLenum bits = 0;
-	if (get_render_pass_flags()&RPF_CLEAR_COLOR)
-		bits |= GL_COLOR_BUFFER_BIT;
-	if (get_render_pass_flags()&RPF_CLEAR_DEPTH)
-		bits |= GL_DEPTH_BUFFER_BIT;
-	if (get_render_pass_flags()&RPF_CLEAR_STENCIL)
-		bits |= GL_STENCIL_BUFFER_BIT;
-	if (get_render_pass_flags()&RPF_CLEAR_ACCUM)
-		bits |= GL_ACCUM_BUFFER_BIT;
-	if (bits)
-		glClear(bits);
+	if(get_render_pass_flags() & RPF_SET_CLEAR_ACCUM && !core_profile)
+		set_bg_accum_color(get_bg_accum_color());
+	clear_background(
+		get_render_pass_flags() & RPF_CLEAR_COLOR,
+		get_render_pass_flags() & RPF_CLEAR_DEPTH,
+		get_render_pass_flags() & RPF_CLEAR_STENCIL,
+		get_render_pass_flags() & RPF_CLEAR_ACCUM
+	);
 }
 
 ///
@@ -628,7 +636,9 @@ void gl_context::draw_textual_info()
 
 		set_cursor(20, get_height()-1-20);
 
-		if (bg_r + bg_g + bg_b < 1.5f)
+		vec4 bg = get_bg_color();
+		//if (bg_r + bg_g + bg_b < 1.5f)
+		if (bg[0] + bg[1] + bg[2] < 1.5f)
 			set_color(rgba(1, 1, 1, 1));
 		else
 			set_color(rgba(0, 0, 0, 1));
@@ -641,7 +651,8 @@ void gl_context::draw_textual_info()
 			traverser(sma, "nc").traverse(grp, &fch);
 			output_stream() << std::endl;
 		}
-		if (bg_r + bg_g + bg_b < 1.5f)
+		//if (bg_r + bg_g + bg_b < 1.5f)
+		if(bg[0] + bg[1] + bg[2] < 1.5f)
 			set_color(rgba(1, 1, 0, 1));
 		else
 			set_color(rgba(0.4f, 0.3f, 0, 1));
@@ -1481,12 +1492,16 @@ void gl_context::set_blend_state(BlendState state) {
 		glEnable(GL_BLEND);
 	else
 		glDisable(GL_BLEND);
-	glBlendFuncSeparate(
-		map_to_gl(state.src_color),
-		map_to_gl(state.dst_color),
-		map_to_gl(state.src_alpha),
-		map_to_gl(state.dst_alpha)
-	);
+	if(GLEW_EXT_blend_func_separate) {
+		glBlendFuncSeparate(
+			map_to_gl(state.src_color),
+			map_to_gl(state.dst_color),
+			map_to_gl(state.src_alpha),
+			map_to_gl(state.dst_alpha)
+		);
+	} else {
+		glBlendFunc(map_to_gl(state.src_color), map_to_gl(state.dst_color));
+	}
 	context::set_blend_state(state);
 }
 
