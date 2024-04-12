@@ -199,18 +199,17 @@ namespace cgv {
 			noise_offset = offset;
 		}
 
-		bool volume_renderer::enable(context& ctx)
-		{
+		bool volume_renderer::enable(context& ctx) {
 			const volume_render_style& vrs = get_style<volume_render_style>();
-			if (!renderer::enable(ctx))
+			if(!renderer::enable(ctx))
 				return false;
 			int vp[4];
 			glGetIntegerv(GL_VIEWPORT, vp);
-			ref_prog().set_uniform(ctx, "viewport_dims", vec2(float(vp[2]-vp[0]), float(vp[3]-vp[1])));
+			ref_prog().set_uniform(ctx, "viewport_dims", vec2(float(vp[2] - vp[0]), float(vp[3] - vp[1])));
 			ref_prog().set_uniform(ctx, "noise_offset", noise_offset);
 
 			ref_prog().set_uniform(ctx, "scale_adjustment_factor", vrs.scale_adjustment_factor);
-			
+
 			ref_prog().set_uniform(ctx, "light_local_to_eye", vrs.light_local_to_eye);
 			ref_prog().set_uniform(ctx, "light_direction", normalize(vrs.light_direction));
 			float specular_exponent = cgv::math::lerp(128.0f, 1.0f, cgv::math::clamp(vrs.roughness, 0.0f, 1.0f));
@@ -230,6 +229,7 @@ namespace cgv {
 			ref_prog().set_uniform(ctx, "slice_opacity", vrs.slice_opacity);
 
 			ref_prog().set_uniform(ctx, "clip_box_min", vrs.clip_box.get_min_pnt());
+
 			ref_prog().set_uniform(ctx, "clip_box_max", vrs.clip_box.get_max_pnt());
 
 			glDisable(GL_DEPTH_TEST);
@@ -237,7 +237,7 @@ namespace cgv {
 			glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 			glCullFace(GL_FRONT);
 			glEnable(GL_CULL_FACE);
-
+			
 			if(volume_texture) volume_texture->enable(ctx, 0);
 			if(transfer_function_texture) transfer_function_texture->enable(ctx, 1);
 			noise_texture.enable(ctx, 2);

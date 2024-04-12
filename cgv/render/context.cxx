@@ -1626,6 +1626,163 @@ void context::set_textured_material(const textured_material& material)
 	prog.set_textured_material_uniform(*this, "material", material);
 }
 
+void context::push_depth_test_state() {
+	depth_test_state_stack.push(get_depth_test_state());
+}
+
+void context::pop_depth_test_state() {
+	if(depth_test_state_stack.size() == 1) {
+		error("context::pop_depth_test() ... attempt to completely empty stack avoided.");
+		return;
+	}
+
+	depth_test_state_stack.pop();
+
+	set_depth_test_state(get_depth_test_state());
+}
+
+context::DepthTestState context::get_depth_test_state() {
+	return depth_test_state_stack.top();
+}
+
+void context::set_depth_test_state(DepthTestState state) {
+	depth_test_state_stack.top() = state;
+}
+
+void context::set_depth_func(CompareFunction func) {
+	depth_test_state_stack.top().test_func = func;
+}
+
+
+void context::enable_depth_test() {
+	depth_test_state_stack.top().enabled = true;
+}
+
+void context::disable_depth_test() {
+	depth_test_state_stack.top().enabled = false;
+}
+
+void context::push_cull_state() {
+	cull_state_stack.push(get_cull_state());
+}
+
+void context::pop_cull_state() {
+	if(cull_state_stack.size() == 1) {
+		error("context::pop_cull_state() ... attempt to completely empty stack avoided.");
+		return;
+	}
+
+	cull_state_stack.pop();
+
+	set_cull_state(get_cull_state());
+}
+
+CullingMode context::get_cull_state() {
+	return cull_state_stack.top();
+}
+
+void context::set_cull_state(CullingMode culling_mode) {
+	cull_state_stack.push(culling_mode);
+}
+
+void context::push_blend_state() {
+	blend_state_stack.push(get_blend_state());
+}
+
+void context::pop_blend_state() {
+	if(blend_state_stack.size() == 1) {
+		error("context::pop_blend_state() ... attempt to completely empty stack avoided.");
+		return;
+	}
+
+	blend_state_stack.pop();
+
+	set_blend_state(get_blend_state());
+}
+
+context::BlendState context::get_blend_state() {
+	return blend_state_stack.top();
+}
+
+void context::set_blend_state(BlendState state) {
+	blend_state_stack.top() = state;
+}
+
+void context::set_blend_func(BlendFunction src_factor, BlendFunction dst_factor) {
+	BlendState& state = blend_state_stack.top();
+	state.src_color = src_factor;
+	state.src_alpha = src_factor;
+	state.dst_color = dst_factor;
+	state.dst_alpha = dst_factor;
+}
+
+void context::set_blend_func_separate(BlendFunction src_color_factor, BlendFunction dst_color_factor, BlendFunction src_alpha_factor, BlendFunction dst_alpha_factor) {
+	BlendState& state = blend_state_stack.top();
+	state.src_color = src_color_factor;
+	state.src_alpha = src_alpha_factor;
+	state.dst_color = dst_color_factor;
+	state.dst_alpha = dst_alpha_factor;
+}
+
+void context::set_blend_func_front_to_back() {
+	set_blend_func(BF_ONE, BF_ONE_MINUS_SRC_ALPHA);
+}
+void context::set_blend_func_back_to_front() {
+	set_blend_func(BF_SRC_ALPHA, BF_ONE_MINUS_SRC_ALPHA);
+}
+
+void context::enable_blending() {
+	blend_state_stack.top().enabled = true;
+}
+
+void context::disable_blending() {
+	blend_state_stack.top().enabled = false;
+}
+
+void context::push_buffer_mask() {
+	buffer_mask_stack.push(get_buffer_mask());
+}
+
+void context::pop_buffer_mask() {
+	if(buffer_mask_stack.size() == 1) {
+		error("context::pop_buffer_mask() ... attempt to completely empty stack avoided.");
+		return;
+	}
+
+	buffer_mask_stack.pop();
+
+	set_buffer_mask(get_buffer_mask());
+}
+
+context::BufferMask context::get_buffer_mask() {
+	return buffer_mask_stack.top();
+}
+
+void context::set_buffer_mask(BufferMask mask) {
+	buffer_mask_stack.top() = mask;
+}
+
+bool context::get_depth_mask() {
+	return buffer_mask_stack.top().depth_flag;
+}
+
+void context::set_depth_mask(bool flag) {
+	buffer_mask_stack.top().depth_flag = flag;
+}
+
+bvec4 context::get_color_mask() {
+	auto& mask = buffer_mask_stack.top();
+	return bvec4(mask.red_flag, mask.green_flag, mask.blue_flag, mask.alpha_flag);
+}
+
+void context::set_color_mask(bvec4 flags) {
+	auto& mask = buffer_mask_stack.top();
+	mask.red_flag = flags[0];
+	mask.green_flag = flags[1];
+	mask.blue_flag = flags[2];
+	mask.alpha_flag = flags[3];
+}
+
 void context::push_modelview_matrix()
 {
 	modelview_matrix_stack.push(get_modelview_matrix());

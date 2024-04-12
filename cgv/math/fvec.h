@@ -649,6 +649,13 @@ fvec<T, 3> ortho(const fvec<T, 3>& v) {
 /// @name Predefined Types
 /// @{
 
+/// declare type of 2d boolean vectors
+typedef cgv::math::fvec<bool, 2> bvec2;
+/// declare type of 3d boolean vectors
+typedef cgv::math::fvec<bool, 3> bvec3;
+/// declare type of 4d boolean vectors
+typedef cgv::math::fvec<bool, 4> bvec4;
+
 /// declare type of 2d single precision floating point vectors
 typedef cgv::math::fvec<float, 2> vec2;
 /// declare type of 3d single precision floating point vectors
