@@ -513,7 +513,6 @@ void gl_context::init_render_pass()
 	else
 		glDisable(GL_FRAMEBUFFER_SRGB);
 
-//	glPushAttrib(GL_ALL_ATTRIB_BITS);
 	static cgv::render::RenderPassFlags last_render_pass_flags = get_default_render_pass_flags();
 	cgv::render::RenderPassFlags current_render_pass_flags = get_render_pass_flags();
 	if (current_render_pass_flags & RPF_SET_LIGHTS) {
@@ -543,18 +542,14 @@ void gl_context::init_render_pass()
 	}
 	if (get_render_pass_flags()&RPF_SET_STATE_FLAGS) {
 		// set some default settings
-		//glEnable(GL_DEPTH_TEST);
-		//glCullFace(GL_BACK);
-		//glEnable(GL_CULL_FACE);
 		enable_depth_test();
 		set_cull_state(CM_BACKFACE);
 		if (!core_profile)
 			glEnable(GL_NORMALIZE);
 	}
-	if ((get_render_pass_flags()&RPF_SET_PROJECTION) != 0) {
+	if ((get_render_pass_flags()&RPF_SET_PROJECTION) != 0)
 		set_projection_matrix(cgv::math::perspective4<double>(45.0, (double)get_width()/get_height(),0.001,1000.0));
-	}
-	//glMatrixMode(GL_MODELVIEW);
+
 	if ((get_render_pass_flags()&RPF_SET_MODELVIEW) != 0)
 		set_modelview_matrix(cgv::math::look_at4<double>(vec3(0,0,10), vec3(0,0,0), vec3(0,1,0)));
 	
@@ -598,7 +593,6 @@ void gl_context::init_render_pass()
 ///
 void gl_context::finish_render_pass()
 {
-//	glPopAttrib();
 }
 
 struct format_callback_handler : public traverse_callback_handler
@@ -626,8 +620,6 @@ void gl_context::draw_textual_info()
 {
 	if (show_help || show_stats) {
 		rgba tmp = current_color;
-		//GLboolean depth_test = glIsEnabled(GL_DEPTH_TEST);
-		//glDisable(GL_DEPTH_TEST);
 		push_depth_test_state();
 		disable_depth_test();
 
@@ -661,8 +653,6 @@ void gl_context::draw_textual_info()
 			output_stream().flush();
 		}
 		pop_pixel_coords();
-		//if (depth_test)
-		//	glEnable(GL_DEPTH_TEST);
 		pop_depth_test_state();
 	}
 }
@@ -970,13 +960,9 @@ void gl_context::draw_light_source(const light_source& l, float i, float light_s
 			else
 				mul_modelview_matrix(cgv::math::scale4<double>(t, t, 0.5f));
 			mul_modelview_matrix(cgv::math::translate4<double>(0, 0, -1));
-			//GLboolean cull = glIsEnabled(GL_CULL_FACE);
-			//glDisable(GL_CULL_FACE);
 			push_cull_state();
 			set_cull_state(CM_OFF);
 			tesselate_unit_cone();
-			//if (cull)
-			//	glEnable(GL_CULL_FACE);
 			pop_cull_state();
 		}
 	}
