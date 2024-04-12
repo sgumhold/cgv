@@ -145,6 +145,18 @@ public:
 	/// ensure that glew is initialized, define lighting mode, viewing pyramid and the rendering mode and return whether gl configuration was successful
 	bool configure_gl();
 	void resize_gl();
+
+	/// set a user defined background color
+	void set_bg_color(vec4 rgba) override;
+	/// set a user defined background depth value
+	void set_bg_depth(float d) override;
+	/// set a user defined background stencil value
+	void set_bg_stencil(int s) override;
+	/// set a user defined background color for the accumulation buffer
+	void set_bg_accum_color(vec4 rgba) override;
+	/// clear the buffer contents of the flagged buffers to the set background colors
+	void clear_background(bool color_flag, bool depth_flag, bool stencil_flag = false, bool accum_flag = false) override;
+
 	/// overwrite function to return info font size in case no font is currently selected
 	float get_current_font_size() const;
 	/// overwrite function to return info font face in case no font is currently selected
