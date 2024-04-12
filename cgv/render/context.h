@@ -644,10 +644,10 @@ public:
 		bool enabled = false;
 		/// the source color (rgb) factor
 		BlendFunction src_color = BF_ZERO;
-		/// the source alpha factor
-		BlendFunction src_alpha = BF_ZERO;
 		/// the destination color (rgb) factor
 		BlendFunction dst_color = BF_ZERO;
+		/// the source alpha factor
+		BlendFunction src_alpha = BF_ZERO;
 		/// the destination alpha factor
 		BlendFunction dst_alpha = BF_ZERO;
 		// TODO: Add blend equation?
