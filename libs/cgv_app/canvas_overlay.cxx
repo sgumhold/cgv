@@ -94,8 +94,10 @@ void canvas_overlay::begin_content(context& ctx, bool clear_frame_buffer) {
 
 	frame_buffer_.enable(ctx);
 	if(clear_frame_buffer) {
-		glClearColor(0.0f, 0.0f, 0.0f, 1.0f);
-		glClear(GL_COLOR_BUFFER_BIT);
+		ctx.push_bg_color();
+		ctx.set_bg_color({ 0.0f, 0.0f, 0.0f, 1.0f });
+		ctx.clear_background(true, false);
+		ctx.pop_bg_color();
 	}
 }
 
