@@ -232,11 +232,13 @@ namespace cgv {
 
 			ref_prog().set_uniform(ctx, "clip_box_max", vrs.clip_box.get_max_pnt());
 
-			glDisable(GL_DEPTH_TEST);
-			glEnable(GL_BLEND);
-			glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
-			glCullFace(GL_FRONT);
-			glEnable(GL_CULL_FACE);
+			ctx.push_depth_test_state();
+			ctx.disable_depth_test();
+			ctx.push_blend_state();
+			ctx.enable_blending();
+			ctx.set_blend_func_back_to_front();
+			ctx.push_cull_state();
+			ctx.set_cull_state(CM_FRONTFACE);
 			
 			if(volume_texture) volume_texture->enable(ctx, 0);
 			if(transfer_function_texture) transfer_function_texture->enable(ctx, 1);
@@ -254,11 +256,10 @@ namespace cgv {
 			if(gradient_texture) gradient_texture->disable(ctx);
 			if(depth_texture) depth_texture->disable(ctx);
 
-			glCullFace(GL_BACK);
-			glDisable(GL_CULL_FACE);
-			glDisable(GL_BLEND);
-			glEnable(GL_DEPTH_TEST);
-
+			ctx.pop_cull_state();
+			ctx.pop_blend_state();
+			ctx.pop_depth_test_state();
+			
 			return renderer::disable(ctx);
 		}
 		///
