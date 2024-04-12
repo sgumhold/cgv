@@ -100,10 +100,11 @@ bool fltk_gl_view::self_reflect(cgv::reflect::reflection_handler& srh)
 		srh.reflect_member("font_size", info_font_size) &&
 		srh.reflect_member("tab_size", tab_size) &&
 		srh.reflect_member("performance_monitoring", enabled) &&
-		srh.reflect_member("bg_r", bg_r) &&
-		srh.reflect_member("bg_g", bg_g) &&
-		srh.reflect_member("bg_b", bg_b) &&
-		srh.reflect_member("bg_a", bg_a) &&
+		// TODO: test
+		srh.reflect_member("bg_r", bg_color_stack.top()[0]) &&
+		srh.reflect_member("bg_g", bg_color_stack.top()[1]) &&
+		srh.reflect_member("bg_b", bg_color_stack.top()[2]) &&
+		srh.reflect_member("bg_a", bg_color_stack.top()[3]) &&
 		srh.reflect_member("bg_index", current_background) &&
 		srh.reflect_member("gamma", gamma) &&
 		srh.reflect_member("gamma3", gamma3) &&
@@ -132,9 +133,9 @@ void fltk_gl_view::on_set(void* member_ptr)
 				synch_with_mode();
 		}
 	}
-	if (member_ptr == &current_background) {
+	if(member_ptr == &current_background) {
 		set_bg_clr_idx(current_background);
-		update_member(&bg_r);
+		update_member(&bg_color_stack.top()[0]);
 	}
 	if (member_ptr == &gamma) {
 		set_gamma(gamma);
@@ -143,10 +144,10 @@ void fltk_gl_view::on_set(void* member_ptr)
 		update_member(&gamma3[2]);
 	}
 	update_member(member_ptr);
-	if (member_ptr == &bg_g || member_ptr == &bg_b)
-		update_member(&bg_r);
-	if (member_ptr == &bg_accum_g || member_ptr == &bg_accum_b)
-		update_member(&bg_accum_r);
+	//if(member_ptr == &bg_color_stack.top()[1] || member_ptr == &bg_color_stack.top()[2])
+	//	update_member(&bg_color_stack.top()[0]);
+	//if (member_ptr == &bg_accum_color_stack.top()[1] || member_ptr == &bg_accum_color_stack.top()[2])
+	//	update_member(&bg_accum_color_stack.top()[0]);
 	post_redraw();
 }
 
@@ -640,6 +641,7 @@ bool fltk_gl_view::handle(event& e)
 			case KEY_F12 :
 				if (ke.get_modifiers() == 0) {
 					set_bg_clr_idx(current_background+1);
+					post_redraw();
 					return true;
 				}
 				break;
@@ -971,16 +973,16 @@ void fltk_gl_view::create_gui()
 		provider::align("\b");
 		end_tree_node(version);
 	}
-	if (begin_tree_node("Clear", bg_r, false)) {
+	if(begin_tree_node("Clear", bg_color_stack.top()[0], false)) {
 		provider::align("\a");
-		add_member_control(this, "Color", (cgv::media::color<float>&) bg_r);
-		add_member_control(this, "Alpha", bg_a, "value_slider", "min=0;max=1;ticks=true;step=0.001");
-		add_member_control(this, "Accum Color", (cgv::media::color<float>&) bg_accum_r);
-		add_member_control(this, "Accum Alpha", bg_accum_a, "value_slider", "min=0;max=1;ticks=true;step=0.001");
-		add_member_control(this, "Stencil", bg_s, "value_slider", "min=0;max=1;ticks=true;step=0.001");
-		add_member_control(this, "Depth", bg_d, "value_slider", "min=0;max=1;ticks=true;step=0.001");
+		add_member_control(this, "Color", reinterpret_cast<cgv::media::color<float>&>(bg_color_stack.top()[0]));
+		add_member_control(this, "Alpha", bg_color_stack.top()[3], "value_slider", "min=0;max=1;ticks=true;step=0.001");
+		add_member_control(this, "Accum Color", reinterpret_cast<cgv::media::color<float>&>(bg_accum_color_stack.top()[0]));
+		add_member_control(this, "Accum Alpha", bg_accum_color_stack.top()[3], "value_slider", "min=0;max=1;ticks=true;step=0.001");
+		add_member_control(this, "Stencil", bg_stencil_stack.top(), "value_slider", "min=0;max=255;ticks=true;step=1");
+		add_member_control(this, "Depth", bg_depth_stack.top(), "value_slider", "min=0;max=1;ticks=true;step=0.001");
 		provider::align("\b");
-		end_tree_node(bg_r);
+		end_tree_node(bg_color_stack.top()[0]);
 	}
 	if (begin_tree_node("Compatibility", support_compatibility_mode, false)) {
 		provider::align("\a");
