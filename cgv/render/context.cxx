@@ -1747,7 +1747,7 @@ void context::set_blend_func_separate(BlendFunction src_color_factor, BlendFunct
 }
 
 void context::set_blend_func_front_to_back() {
-	set_blend_func(BF_ONE, BF_ONE_MINUS_SRC_ALPHA);
+	set_blend_func(BF_ONE_MINUS_DST_ALPHA, BF_ONE);
 }
 void context::set_blend_func_back_to_front() {
 	set_blend_func(BF_SRC_ALPHA, BF_ONE_MINUS_SRC_ALPHA);
