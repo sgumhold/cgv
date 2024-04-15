@@ -325,7 +325,7 @@ function(cgv_do_deferred_ops TARGET_NAME CONFIGURING_CGV)
 			else()
 				set(VSCODE_LAUNCH_JSON_CONFIG_LIST "${VSCODE_TARGET_LAUNCH_JSON_CONFIGS},\n${VSCODE_LAUNCH_JSON_CONFIG_LIST}" PARENT_SCOPE)
 			endif()
-		elseif(DO_CREATE_LAUNCH_CONFIG)
+		# elseif(DO_CREATE_LAUNCH_CONFIG)  <-- merged with above branch (see comment above)
 			# try to set relevant options for all other generators in the hopes of ending up with a valid launch/debug
 			# configuration
 			cgv_get_static_or_exe_name(NAME_STATIC NAME_EXE ${TARGET_NAME} TRUE)
