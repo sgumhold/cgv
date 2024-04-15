@@ -132,13 +132,28 @@ public:
 	/// return the current rectangle area of the overlay in local space, i.e. with position set to zero
 	cgv::g2d::irect get_local_rectangle() const { return cgv::g2d::irect(ivec2(0), container_.size); }
 
+	/// get the horizontal alignment
+	AlignmentOption get_horizontal_alignment() const { return horizontal_alignment_; }
+
+	/// get the vertical alignment
+	AlignmentOption get_vertical_alignment() const { return vertical_alignment_; }
+
+	/// get the percentual alignment offset (only valid if get_horizontal_alignment() or get_vertical_alignment() returns AlignmentOption::AO_PERCENTUAL)
+	vec2 get_percentual_offset() const { return percentual_offset_; }
+
 	/// set the alignment options
 	void set_alignment(AlignmentOption horizontal, AlignmentOption vertical, vec2 percentual_offset = vec2(-1.0f));
+
+	/// get the stretch
+	StretchOption get_stretch() const { return stretch_; }
+
+	/// get the percentual stretch (only valid if get_stretch() returns StretchOption::SO_PERCENTUAL)
+	vec2 get_percentual_size() const { return percentual_size_; }
 
 	/// set the stretch option
 	void set_stretch(StretchOption stretch, vec2 percentual_size = vec2(-1.0f));
 
-	/// returns the margin as set in the layout parameters
+	/// return the margin as set in the layout parameters
 	ivec2 get_margin() const { return margin_; }
 
 	/// set the overlay margin
@@ -161,7 +176,7 @@ public:
 
 	bool ensure_layout(cgv::render::context& ctx);
 
-	/** Tests if the mouse pointer is hovering over this overlay and returns
+	/** Test if the mouse pointer is hovering over this overlay and returns
 		true if this is the case. Specifically it checks if the mouse position
 		is inside the rectangle defined by container. Override this method to
 		implement your own test, i.e. for different overlay shapes.
