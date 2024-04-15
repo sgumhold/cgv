@@ -23,6 +23,8 @@ extern CGV_API GLuint map_to_gl(PrimitiveType pt);
 
 extern CGV_API GLuint map_to_gl(MaterialSide ms);
 
+extern CGV_API GLuint map_to_gl(BlendFunction blend_function);
+
 /// set material in opengl state to given material
 extern CGV_API void set_material(const cgv::media::illum::phong_material& mat, MaterialSide ms, float alpha);
 
@@ -143,6 +145,18 @@ public:
 	/// ensure that glew is initialized, define lighting mode, viewing pyramid and the rendering mode and return whether gl configuration was successful
 	bool configure_gl();
 	void resize_gl();
+
+	/// set a user defined background color
+	void set_bg_color(vec4 rgba) override;
+	/// set a user defined background depth value
+	void set_bg_depth(float d) override;
+	/// set a user defined background stencil value
+	void set_bg_stencil(int s) override;
+	/// set a user defined background color for the accumulation buffer
+	void set_bg_accum_color(vec4 rgba) override;
+	/// clear the buffer contents of the flagged buffers to the set background colors
+	void clear_background(bool color_flag, bool depth_flag, bool stencil_flag = false, bool accum_flag = false) override;
+
 	/// overwrite function to return info font size in case no font is currently selected
 	float get_current_font_size() const;
 	/// overwrite function to return info font face in case no font is currently selected
@@ -237,6 +251,41 @@ public:
 		int nr_faces, int face_degree, bool is_fan, bool flip_normals) const;
 	//@}
 
+	/**@name render state*/
+	//@{
+
+	/// set the depth test state
+	void set_depth_test_state(DepthTestState state) override;
+	/// set the depth test function
+	void set_depth_func(CompareFunction func) override;
+	/// enable the depth test
+	void enable_depth_test() override;
+	/// disable the depth test
+	void disable_depth_test() override;
+
+	/// set the culling state
+	void set_cull_state(CullingMode culling_mode) override;
+
+	/// set the complete blend state
+	void set_blend_state(BlendState state) override;
+	/// set the blend function
+	void set_blend_func(BlendFunction src_factor, BlendFunction dst_factor) override;
+	/// set the blend function separately for color and alpha
+	void set_blend_func_separate(BlendFunction src_color_factor, BlendFunction dst_color_factor, BlendFunction src_alpha_factor, BlendFunction dst_alpha_factor) override;
+	/// enable blending
+	void enable_blending() override;
+	/// disable blending
+	void disable_blending() override;
+
+	/// set the buffer mask for depth and color buffers
+	void set_buffer_mask(BufferMask mask) override;
+	/// set the depth buffer mask
+	void set_depth_mask(bool flag) override;
+	/// set the color buffer mask
+	void set_color_mask(bvec4 flags) override;
+
+	//@}
+
 	/**@name transformations*/
 	//@{
 	/// return homogeneous 4x4 viewing matrix, which transforms from world to eye space
@@ -252,6 +301,8 @@ public:
 	void pop_window_transformation_array();
 	/// query the maximum number of supported window transformations, which is at least 1 
 	unsigned get_max_window_transformation_array_size() const;
+	//@}
+
 protected:
 	void update_window_transformation_array();
 public:

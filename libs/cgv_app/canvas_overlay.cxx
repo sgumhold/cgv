@@ -1,5 +1,7 @@
 #include "canvas_overlay.h"
 
+using namespace cgv::render;
+
 namespace cgv {
 namespace app {
 
@@ -10,7 +12,7 @@ canvas_overlay::canvas_overlay() : overlay() {
 	blit_style_.feather_width = 0.0f;
 }
 
-bool canvas_overlay::init(cgv::render::context& ctx) {
+bool canvas_overlay::init(context& ctx) {
 	
 	bool success = true;
 
@@ -29,7 +31,7 @@ bool canvas_overlay::init(cgv::render::context& ctx) {
 	return success;
 }
 
-void canvas_overlay::clear(cgv::render::context& ctx) {
+void canvas_overlay::clear(context& ctx) {
 
 	content_canvas.destruct(ctx);
 	overlay_canvas.destruct(ctx);
@@ -43,7 +45,7 @@ void canvas_overlay::on_set(void* member_ptr) {
 	post_damage();
 }
 
-void canvas_overlay::after_finish(cgv::render::context& ctx) {
+void canvas_overlay::after_finish(context& ctx) {
 
 	if(is_visible())
 		draw_impl(ctx);
@@ -60,7 +62,7 @@ void canvas_overlay::post_damage(bool redraw) {
 		post_redraw();
 }
 
-bool canvas_overlay::ensure_layout(cgv::render::context& ctx) {
+bool canvas_overlay::ensure_layout(context& ctx) {
 
 	if(overlay::ensure_layout(ctx) || recreate_layout_requested_) {
 		recreate_layout_requested_ = false;
@@ -88,39 +90,43 @@ bool canvas_overlay::is_damaged() const {
 	return has_damage_;
 }
 
-void canvas_overlay::begin_content(cgv::render::context& ctx, bool clear_frame_buffer) {
+void canvas_overlay::begin_content(context& ctx, bool clear_frame_buffer) {
 
 	frame_buffer_.enable(ctx);
 	if(clear_frame_buffer) {
-		glClearColor(0.0f, 0.0f, 0.0f, 1.0f);
-		glClear(GL_COLOR_BUFFER_BIT);
+		ctx.push_bg_color();
+		ctx.set_bg_color({ 0.0f, 0.0f, 0.0f, 1.0f });
+		ctx.clear_background(true, false);
+		ctx.pop_bg_color();
 	}
 }
 
-void canvas_overlay::end_content(cgv::render::context& ctx, bool keep_damage) {
+void canvas_overlay::end_content(context& ctx, bool keep_damage) {
 
 	frame_buffer_.disable(ctx);
 	has_damage_ = keep_damage;
 }
 
-void canvas_overlay::draw_impl(cgv::render::context& ctx) {
+void canvas_overlay::draw_impl(context& ctx) {
 
-	GLboolean depth_test_was_enabled = false;
-	glGetBooleanv(GL_DEPTH_TEST, &depth_test_was_enabled);
-	if(depth_test_was_enabled)
-		glDisable(GL_DEPTH_TEST);
+	ctx.push_depth_test_state();
+	ctx.disable_depth_test();
 
-	GLboolean blending_was_enabled = false;
-	glGetBooleanv(GL_BLEND, reinterpret_cast<GLboolean*>(&blending_was_enabled));
-	if(!blending_was_enabled)
-		glEnable(GL_BLEND);
-	glBlendFuncSeparate(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA, GL_ZERO, GL_ONE_MINUS_SRC_ALPHA);
+	ctx.push_blend_state();
+	const context::BlendState blend_state = {
+		true,
+		BF_SRC_ALPHA,
+		BF_ONE_MINUS_SRC_ALPHA,
+		BF_ZERO,
+		BF_ONE_MINUS_SRC_ALPHA
+	};
+	ctx.set_blend_state(blend_state);
 
 	if(has_damage_)
 		draw_content(ctx);
 
 	// draw frame buffer texture to screen
-	glBlendFunc(GL_ONE, GL_SRC_ALPHA);
+	ctx.set_blend_func(BF_ONE, BF_SRC_ALPHA);
 
 	overlay_canvas.enable_shader(ctx, "rectangle");
 	overlay_canvas.set_style(ctx, blit_style_);
@@ -129,11 +135,8 @@ void canvas_overlay::draw_impl(cgv::render::context& ctx) {
 	frame_buffer_.disable_attachment(ctx, "color");
 	overlay_canvas.disable_current_shader(ctx);
 
-	if(depth_test_was_enabled)
-		glEnable(GL_DEPTH_TEST);
-
-	if(!blending_was_enabled)
-		glDisable(GL_BLEND);
+	ctx.pop_blend_state();
+	ctx.pop_depth_test_state();
 }
 
 }
