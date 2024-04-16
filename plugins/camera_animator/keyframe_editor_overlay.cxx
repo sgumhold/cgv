@@ -11,15 +11,12 @@ keyframe_editor_overlay::keyframe_editor_overlay() {
 
 	set_name("Keyframe Editor");
 	block_events = true;
-	draw_in_finish_frame = true;
-	blend_overlay = true;
 	gui_options.allow_stretch = false;
 	gui_options.allow_margin = false;
 	
-	set_overlay_alignment(AO_START, AO_START);
-	set_overlay_stretch(SO_HORIZONTAL);
-	set_overlay_margin(ivec2(-3));
-	set_overlay_size(ivec2(100, layout.total_height()));
+	set_stretch(SO_HORIZONTAL);
+	set_margin(ivec2(-3));
+	set_size(ivec2(100, layout.total_height()));
 
 	scrollbar.set_drag_callback(std::bind(&keyframe_editor_overlay::handle_scrollbar_drag, this));
 	marker.set_drag_callback(std::bind(&keyframe_editor_overlay::handle_marker_drag, this));
@@ -50,7 +47,7 @@ bool keyframe_editor_overlay::handle_event(cgv::gui::event& e) {
 	// return true if the event gets handled and stopped here or false if you want to pass it to the next plugin
 	unsigned et = e.get_kind();
 
-	cgv::g2d::irect container = get_overlay_rectangle();
+	cgv::g2d::irect container = get_rectangle();
 	container.x() -= layout.timeline_offset;
 
 	if(keyframes.handle(e, get_viewport_size(), container))
@@ -111,7 +108,7 @@ bool keyframe_editor_overlay::handle_event(cgv::gui::event& e) {
 			}
 		}
 
-		if(scrollbar.handle(e, get_viewport_size(), get_overlay_rectangle()))
+		if(scrollbar.handle(e, get_viewport_size(), get_rectangle()))
 			return true;
 		
 		if(marker.handle(e, get_viewport_size(), container))
@@ -169,7 +166,7 @@ bool keyframe_editor_overlay::init(context& ctx) {
 void keyframe_editor_overlay::init_frame(context& ctx) {
 
 	if(ensure_layout(ctx)) {
-		layout.update(get_overlay_size(), data ? data->frame_count() : 0);
+		layout.update(get_rectangle().size, data ? data->frame_count() : 0);
 
 		if(scrollbar.empty()) {
 			cgv::g2d::draggable handle;
@@ -678,7 +675,7 @@ void keyframe_editor_overlay::init_styles() {
 	scrollbar_style.border_radius = 4.0f;
 	scrollbar_style.use_blending = true;
 
-	label_style = cgv::g2d::text2d_style::preset_clear(theme.text());
+	label_style.fill_color = theme.text();
 	label_style.font_size = 12.0f;
 }
 
