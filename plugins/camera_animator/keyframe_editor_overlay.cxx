@@ -15,8 +15,7 @@ keyframe_editor_overlay::keyframe_editor_overlay() {
 	gui_options.allow_margin = false;
 	
 	set_stretch(SO_HORIZONTAL);
-	set_margin(ivec2(-3));
-	set_size(ivec2(100, layout.total_height()));
+	set_size(ivec2(100, layout.total_height(padding())));
 
 	scrollbar.set_drag_callback(std::bind(&keyframe_editor_overlay::handle_scrollbar_drag, this));
 	marker.set_drag_callback(std::bind(&keyframe_editor_overlay::handle_marker_drag, this));
@@ -36,7 +35,7 @@ void keyframe_editor_overlay::clear(context& ctx) {
 
 	cgv::g2d::ref_msdf_gl_canvas_font_renderer(ctx, -1);
 
-	canvas_overlay::clear(ctx);
+	themed_canvas_overlay::clear(ctx);
 
 	line_renderer.destruct(ctx);
 	labels.destruct(ctx);
@@ -156,7 +155,7 @@ bool keyframe_editor_overlay::init(context& ctx) {
 	register_shader("circle", cgv::g2d::shaders::circle);
 	register_shader("arrow", cgv::g2d::shaders::arrow);
 	
-	bool success = canvas_overlay::init(ctx);
+	bool success = themed_canvas_overlay::init(ctx);
 	success &= line_renderer.init(ctx);
 	success &= labels.init(ctx);
 	
@@ -166,7 +165,7 @@ bool keyframe_editor_overlay::init(context& ctx) {
 void keyframe_editor_overlay::init_frame(context& ctx) {
 
 	if(ensure_layout(ctx)) {
-		layout.update(get_rectangle().size, data ? data->frame_count() : 0);
+		layout.update(get_rectangle().size, padding(), data ? data->frame_count() : 0);
 
 		if(scrollbar.empty()) {
 			cgv::g2d::draggable handle;
@@ -196,8 +195,8 @@ void keyframe_editor_overlay::init_frame(context& ctx) {
 		for(size_t i = 0; i <= layout.timeline_frames; ++i) {
 			if(i % 5 == 0) {
 				vec2 position = vec2(
-					static_cast<float>(layout.padding + layout.frame_width * i + layout.frame_width / 2),
-					static_cast<float>(layout.total_height() - 10 - layout.marker_height + 7)
+					static_cast<float>(padding() + layout.frame_width * i + layout.frame_width / 2),
+					static_cast<float>(layout.total_height(padding()) - 10 - layout.marker_height + 7)
 				);
 				labels.add_text(std::to_string(i), position, TA_BOTTOM);
 			}
@@ -216,7 +215,7 @@ void keyframe_editor_overlay::init_frame(context& ctx) {
 
 		lines.clear();
 		for(size_t i = 0; i < layout.timeline_frames; ++i) {
-			float x = static_cast<float>(layout.padding + layout.frame_width * static_cast<int>(i + 1));
+			float x = static_cast<float>(padding() + layout.frame_width * static_cast<int>(i + 1));
 			lines.add(vec2(x, static_cast<float>(layout.timeline.y())));
 		}
 	}
@@ -230,9 +229,7 @@ void keyframe_editor_overlay::draw_content(context& ctx) {
 
 	// draw container
 	auto& rect_prog = content_canvas.enable_shader(ctx, "rectangle");
-	container_style.apply(ctx, rect_prog);
-	content_canvas.draw_shape(ctx, layout.container);
-
+	
 	if(data) {
 		// draw scrollbar
 		draw_scrollbar(ctx, content_canvas);
@@ -320,12 +317,12 @@ void keyframe_editor_overlay::erase_selected_keyframe() {
 
 size_t keyframe_editor_overlay::position_to_frame(int position) {
 
-	return (position - layout.padding) / layout.frame_width;
+	return (position - padding()) / layout.frame_width;
 }
 
 int keyframe_editor_overlay::frame_to_position(size_t frame) {
 
-	return static_cast<int>(frame) * layout.frame_width + layout.padding;
+	return static_cast<int>(frame) * layout.frame_width + padding();
 }
 
 int keyframe_editor_overlay::frame_to_scrollbar_position(size_t frame) {
@@ -441,7 +438,7 @@ void keyframe_editor_overlay::handle_marker_drag() {
 
 	const auto dragged = marker.get_dragged();
 	if(dragged)
-		set_frame(position_to_frame(static_cast<int>(round(dragged->x()) + layout.padding / 2)));
+		set_frame(position_to_frame(static_cast<int>(round(dragged->x()) + padding() / 2)));
 
 	post_damage();
 }
@@ -605,7 +602,7 @@ void keyframe_editor_overlay::draw_time_marker_and_labels(cgv::render::context& 
 	content_canvas.draw_shape(ctx, ivec2(marker_x, r.y() + 1), ivec2(3, r.h() + 4), layout.selection_color);
 
 	// draw time marker handle
-	vec2 pos0 = static_cast<vec2>(ivec2(marker_x, layout.total_height() - 10));
+	vec2 pos0 = static_cast<vec2>(ivec2(marker_x, layout.total_height(padding()) - 10));
 	vec2 pos1 = vec2(pos0.x(), pos0.y() - layout.marker_height);
 	pos0.x() += 1.5f;
 	pos1.x() += 1.5f;
@@ -637,15 +634,10 @@ void keyframe_editor_overlay::init_styles() {
 	layout.background_color = theme.background();
 	layout.control_color = theme.control();
 
-	// configure style for the container rectangle
-	container_style.fill_color = theme.group();
-	container_style.border_color = theme.background();
-	container_style.border_width = 3.0f;
-	container_style.feather_width = 0.0f;
-
 	// configure style for the border rectangles
-	border_style = container_style;
 	border_style.fill_color = theme.border();
+	border_style.border_color = theme.background();
+	border_style.feather_width = 0.0f;
 	border_style.border_width = 1.0f;
 
 	rectangle_style.use_fill_color = false;
