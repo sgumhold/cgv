@@ -376,7 +376,7 @@ $(document).ready(function(){initNavTree('gl__context_8cxx_source.html',''); ini
 <div class="line"><a name="l00293"></a><span class="lineno">  293</span>&#160;    set_buffer_mask(get_buffer_mask());</div>
 <div class="line"><a name="l00294"></a><span class="lineno">  294</span>&#160;}</div>
 <div class="line"><a name="l00295"></a><span class="lineno">  295</span>&#160; </div>
-<div class="line"><a name="l00297"></a><span class="lineno"><a class="line" href="classcgv_1_1render_1_1gl_1_1gl__context.html#a79ba1a00d9b6359239a7d55fc679d312">  297</a></span>&#160;<a class="code" href="namespacecgv_1_1render.html#a04797cd64ece747a5fda1f3bd7f45ee7">RenderAPI</a> gl_context::get_render_api()<span class="keyword"> const</span></div>
+<div class="line"><a name="l00297"></a><span class="lineno"><a class="line" href="classcgv_1_1render_1_1gl_1_1gl__context.html#a10bde271360a8cdba5e2cf242e61a657">  297</a></span>&#160;<a class="code" href="namespacecgv_1_1render.html#a04797cd64ece747a5fda1f3bd7f45ee7">RenderAPI</a> gl_context::get_render_api()<span class="keyword"> const</span></div>
 <div class="line"><a name="l00298"></a><span class="lineno">  298</span>&#160;<span class="keyword"></span>{</div>
 <div class="line"><a name="l00299"></a><span class="lineno">  299</span>&#160;    <span class="keywordflow">return</span> RA_OPENGL;</div>
 <div class="line"><a name="l00300"></a><span class="lineno">  300</span>&#160;}</div>
@@ -572,13 +572,13 @@ $(document).ready(function(){initNavTree('gl__context_8cxx_source.html',''); ini
 <div class="line"><a name="l00491"></a><span class="lineno">  491</span>&#160;        glClear(bits);</div>
 <div class="line"><a name="l00492"></a><span class="lineno">  492</span>&#160;}</div>
 <div class="line"><a name="l00493"></a><span class="lineno">  493</span>&#160; </div>
-<div class="line"><a name="l00495"></a><span class="lineno"><a class="line" href="classcgv_1_1render_1_1gl_1_1gl__context.html#a8160e076e7cc40ecd1bb4488b9557418">  495</a></span>&#160;<span class="keywordtype">float</span> gl_context::get_current_font_size()<span class="keyword"> const</span></div>
+<div class="line"><a name="l00495"></a><span class="lineno"><a class="line" href="classcgv_1_1render_1_1gl_1_1gl__context.html#aa504ce6faf597e5ac1ecc995da85e85a">  495</a></span>&#160;<span class="keywordtype">float</span> gl_context::get_current_font_size()<span class="keyword"> const</span></div>
 <div class="line"><a name="l00496"></a><span class="lineno">  496</span>&#160;<span class="keyword"></span>{</div>
 <div class="line"><a name="l00497"></a><span class="lineno">  497</span>&#160;    <span class="keywordflow">if</span> (current_font_size == 0)</div>
 <div class="line"><a name="l00498"></a><span class="lineno">  498</span>&#160;        <span class="keywordflow">return</span> info_font_size;</div>
 <div class="line"><a name="l00499"></a><span class="lineno">  499</span>&#160;    <span class="keywordflow">return</span> current_font_size;</div>
 <div class="line"><a name="l00500"></a><span class="lineno">  500</span>&#160;}</div>
-<div class="line"><a name="l00502"></a><span class="lineno"><a class="line" href="classcgv_1_1render_1_1gl_1_1gl__context.html#a89e8bf251bc316461e3c2f2afb93a10c">  502</a></span>&#160;<a class="code" href="classcgv_1_1data_1_1ref__ptr.html">media::font::font_face_ptr</a> gl_context::get_current_font_face()<span class="keyword"> const</span></div>
+<div class="line"><a name="l00502"></a><span class="lineno"><a class="line" href="classcgv_1_1render_1_1gl_1_1gl__context.html#a02ac2f7712a49b9bc75f80c0b1631ded">  502</a></span>&#160;<a class="code" href="classcgv_1_1data_1_1ref__ptr.html">media::font::font_face_ptr</a> gl_context::get_current_font_face()<span class="keyword"> const</span></div>
 <div class="line"><a name="l00503"></a><span class="lineno">  503</span>&#160;<span class="keyword"></span>{</div>
 <div class="line"><a name="l00504"></a><span class="lineno">  504</span>&#160;    <span class="keywordflow">if</span> (current_font_face.empty())</div>
 <div class="line"><a name="l00505"></a><span class="lineno">  505</span>&#160;        <span class="keywordflow">return</span> info_font_face;</div>
@@ -761,7 +761,7 @@ $(document).ready(function(){initNavTree('gl__context_8cxx_source.html',''); ini
 <div class="line"><a name="l00685"></a><span class="lineno">  685</span>&#160;        wr.write_image(dv);</div>
 <div class="line"><a name="l00686"></a><span class="lineno">  686</span>&#160;}</div>
 <div class="line"><a name="l00687"></a><span class="lineno">  687</span>&#160; </div>
-<div class="line"><a name="l00689"></a><span class="lineno"><a class="line" href="classcgv_1_1render_1_1gl_1_1gl__context.html#a5de2432ba0114510d8cf171d3de29c6d">  689</a></span>&#160;<span class="keywordtype">void</span> gl_context::enumerate_program_uniforms(<a class="code" href="classcgv_1_1render_1_1shader__program.html">shader_program</a>&amp; prog, std::vector&lt;std::string&gt;&amp; names, std::vector&lt;int&gt;* locations_ptr, std::vector&lt;int&gt;* sizes_ptr, std::vector&lt;int&gt;* types_ptr, <span class="keywordtype">bool</span> show)<span class="keyword"> const</span></div>
+<div class="line"><a name="l00689"></a><span class="lineno"><a class="line" href="classcgv_1_1render_1_1gl_1_1gl__context.html#a663ee8f5c52e3476d3a02a4b39d479bb">  689</a></span>&#160;<span class="keywordtype">void</span> gl_context::enumerate_program_uniforms(<a class="code" href="classcgv_1_1render_1_1shader__program.html">shader_program</a>&amp; prog, std::vector&lt;std::string&gt;&amp; names, std::vector&lt;int&gt;* locations_ptr, std::vector&lt;int&gt;* sizes_ptr, std::vector&lt;int&gt;* types_ptr, <span class="keywordtype">bool</span> show)<span class="keyword"> const</span></div>
 <div class="line"><a name="l00690"></a><span class="lineno">  690</span>&#160;<span class="keyword"></span>{</div>
 <div class="line"><a name="l00691"></a><span class="lineno">  691</span>&#160;    GLint count;</div>
 <div class="line"><a name="l00692"></a><span class="lineno">  692</span>&#160;    glGetProgramiv(get_gl_id(prog.handle), GL_ACTIVE_UNIFORMS, &amp;count);</div>
@@ -785,7 +785,7 @@ $(document).ready(function(){initNavTree('gl__context_8cxx_source.html',''); ini
 <div class="line"><a name="l00710"></a><span class="lineno">  710</span>&#160;    }</div>
 <div class="line"><a name="l00711"></a><span class="lineno">  711</span>&#160;}</div>
 <div class="line"><a name="l00712"></a><span class="lineno">  712</span>&#160; </div>
-<div class="line"><a name="l00714"></a><span class="lineno"><a class="line" href="classcgv_1_1render_1_1gl_1_1gl__context.html#a98e957bfc2a868fd2a587478b9b5062b">  714</a></span>&#160;<span class="keywordtype">void</span> gl_context::enumerate_program_attributes(<a class="code" href="classcgv_1_1render_1_1shader__program.html">shader_program</a>&amp; prog, std::vector&lt;std::string&gt;&amp; names, std::vector&lt;int&gt;* locations_ptr, std::vector&lt;int&gt;* sizes_ptr, std::vector&lt;int&gt;* types_ptr, <span class="keywordtype">bool</span> show)<span class="keyword"> const</span></div>
+<div class="line"><a name="l00714"></a><span class="lineno"><a class="line" href="classcgv_1_1render_1_1gl_1_1gl__context.html#a356bb74f247c1c5d681a22d0f19834e3">  714</a></span>&#160;<span class="keywordtype">void</span> gl_context::enumerate_program_attributes(<a class="code" href="classcgv_1_1render_1_1shader__program.html">shader_program</a>&amp; prog, std::vector&lt;std::string&gt;&amp; names, std::vector&lt;int&gt;* locations_ptr, std::vector&lt;int&gt;* sizes_ptr, std::vector&lt;int&gt;* types_ptr, <span class="keywordtype">bool</span> show)<span class="keyword"> const</span></div>
 <div class="line"><a name="l00715"></a><span class="lineno">  715</span>&#160;<span class="keyword"></span>{</div>
 <div class="line"><a name="l00716"></a><span class="lineno">  716</span>&#160;    GLint count;</div>
 <div class="line"><a name="l00717"></a><span class="lineno">  717</span>&#160;    glGetProgramiv(get_gl_id(prog.handle), GL_ACTIVE_ATTRIBUTES, &amp;count);</div>
@@ -809,7 +809,7 @@ $(document).ready(function(){initNavTree('gl__context_8cxx_source.html',''); ini
 <div class="line"><a name="l00735"></a><span class="lineno">  735</span>&#160;    }</div>
 <div class="line"><a name="l00736"></a><span class="lineno">  736</span>&#160;}</div>
 <div class="line"><a name="l00737"></a><span class="lineno">  737</span>&#160; </div>
-<div class="line"><a name="l00739"></a><span class="lineno"><a class="line" href="classcgv_1_1render_1_1gl_1_1gl__context.html#a896eecf5c410859ac72639b1b659d4f7">  739</a></span>&#160;<span class="keywordtype">void</span> gl_context::set_color(<span class="keyword">const</span> <a class="code" href="classcgv_1_1media_1_1color.html">rgba</a>&amp; clr)</div>
+<div class="line"><a name="l00739"></a><span class="lineno"><a class="line" href="classcgv_1_1render_1_1gl_1_1gl__context.html#a18adf5f343b5ef8302244a51144fab5c">  739</a></span>&#160;<span class="keywordtype">void</span> gl_context::set_color(<span class="keyword">const</span> <a class="code" href="classcgv_1_1media_1_1color.html">rgba</a>&amp; clr)</div>
 <div class="line"><a name="l00740"></a><span class="lineno">  740</span>&#160;{</div>
 <div class="line"><a name="l00741"></a><span class="lineno">  741</span>&#160;    current_color = clr;</div>
 <div class="line"><a name="l00742"></a><span class="lineno">  742</span>&#160;    <span class="keywordflow">if</span> (support_compatibility_mode &amp;&amp; !core_profile) {</div>
@@ -826,7 +826,7 @@ $(document).ready(function(){initNavTree('gl__context_8cxx_source.html',''); ini
 <div class="line"><a name="l00753"></a><span class="lineno">  753</span>&#160;    prog.<a class="code" href="classcgv_1_1render_1_1shader__program.html#a97138c2b43d9cdc43fe2a71aabf9ed32">set_attribute</a>(*<span class="keyword">this</span>, clr_loc, clr);</div>
 <div class="line"><a name="l00754"></a><span class="lineno">  754</span>&#160;}</div>
 <div class="line"><a name="l00755"></a><span class="lineno">  755</span>&#160; </div>
-<div class="line"><a name="l00757"></a><span class="lineno"><a class="line" href="classcgv_1_1render_1_1gl_1_1gl__context.html#a2e93aa4be62a14dc25b4ecda9180800f">  757</a></span>&#160;<span class="keywordtype">void</span> gl_context::set_material(<span class="keyword">const</span> <a class="code" href="classcgv_1_1media_1_1illum_1_1surface__material.html">cgv::media::illum::surface_material</a>&amp; material)</div>
+<div class="line"><a name="l00757"></a><span class="lineno"><a class="line" href="classcgv_1_1render_1_1gl_1_1gl__context.html#a4f09f00f78bda8cb72540979d7956985">  757</a></span>&#160;<span class="keywordtype">void</span> gl_context::set_material(<span class="keyword">const</span> <a class="code" href="classcgv_1_1media_1_1illum_1_1surface__material.html">cgv::media::illum::surface_material</a>&amp; material)</div>
 <div class="line"><a name="l00758"></a><span class="lineno">  758</span>&#160;{</div>
 <div class="line"><a name="l00759"></a><span class="lineno">  759</span>&#160;    <span class="keywordflow">if</span> (support_compatibility_mode &amp;&amp; !core_profile) {</div>
 <div class="line"><a name="l00760"></a><span class="lineno">  760</span>&#160;        <span class="keywordtype">unsigned</span> side = map_to_gl(MS_FRONT_AND_BACK);</div>
@@ -840,13 +840,13 @@ $(document).ready(function(){initNavTree('gl__context_8cxx_source.html',''); ini
 <div class="line"><a name="l00768"></a><span class="lineno">  768</span>&#160;    context::set_material(material);</div>
 <div class="line"><a name="l00769"></a><span class="lineno">  769</span>&#160;}</div>
 <div class="line"><a name="l00770"></a><span class="lineno">  770</span>&#160; </div>
-<div class="line"><a name="l00772"></a><span class="lineno"><a class="line" href="classcgv_1_1render_1_1gl_1_1gl__context.html#a9794e15410174ad73d74a7264ac1c43d">  772</a></span>&#160;<span class="keywordtype">void</span> gl_context::enable_material(<a class="code" href="classcgv_1_1render_1_1textured__material.html">textured_material</a>&amp; <a class="code" href="classcgv_1_1math_1_1mat.html">mat</a>)</div>
+<div class="line"><a name="l00772"></a><span class="lineno"><a class="line" href="classcgv_1_1render_1_1gl_1_1gl__context.html#a7335d6e28b5e847190ba3078d804f846">  772</a></span>&#160;<span class="keywordtype">void</span> gl_context::enable_material(<a class="code" href="classcgv_1_1render_1_1textured__material.html">textured_material</a>&amp; <a class="code" href="classcgv_1_1math_1_1mat.html">mat</a>)</div>
 <div class="line"><a name="l00773"></a><span class="lineno">  773</span>&#160;{</div>
 <div class="line"><a name="l00774"></a><span class="lineno">  774</span>&#160;    set_textured_material(<a class="code" href="classcgv_1_1math_1_1mat.html">mat</a>);</div>
 <div class="line"><a name="l00775"></a><span class="lineno">  775</span>&#160;    <a class="code" href="classcgv_1_1math_1_1mat.html">mat</a>.enable_textures(*<span class="keyword">this</span>); </div>
 <div class="line"><a name="l00776"></a><span class="lineno">  776</span>&#160;}</div>
 <div class="line"><a name="l00777"></a><span class="lineno">  777</span>&#160; </div>
-<div class="line"><a name="l00779"></a><span class="lineno"><a class="line" href="classcgv_1_1render_1_1gl_1_1gl__context.html#a2761b5cde9262865a4cc6396bedf1c4b">  779</a></span>&#160;<span class="keywordtype">void</span> gl_context::disable_material(<a class="code" href="classcgv_1_1render_1_1textured__material.html">textured_material</a>&amp; <a class="code" href="classcgv_1_1math_1_1mat.html">mat</a>)</div>
+<div class="line"><a name="l00779"></a><span class="lineno"><a class="line" href="classcgv_1_1render_1_1gl_1_1gl__context.html#ad04489776a9d52fae2d985b5f39384dc">  779</a></span>&#160;<span class="keywordtype">void</span> gl_context::disable_material(<a class="code" href="classcgv_1_1render_1_1textured__material.html">textured_material</a>&amp; <a class="code" href="classcgv_1_1math_1_1mat.html">mat</a>)</div>
 <div class="line"><a name="l00780"></a><span class="lineno">  780</span>&#160;{</div>
 <div class="line"><a name="l00781"></a><span class="lineno">  781</span>&#160;    <a class="code" href="classcgv_1_1math_1_1mat.html">mat</a>.disable_textures(*<span class="keyword">this</span>);</div>
 <div class="line"><a name="l00782"></a><span class="lineno">  782</span>&#160;    current_material_ptr = 0;</div>
@@ -859,7 +859,7 @@ $(document).ready(function(){initNavTree('gl__context_8cxx_source.html',''); ini
 <div class="line"><a name="l00789"></a><span class="lineno">  789</span>&#160;        progs[i].destruct(*<span class="keyword">this</span>);</div>
 <div class="line"><a name="l00790"></a><span class="lineno">  790</span>&#160;}</div>
 <div class="line"><a name="l00791"></a><span class="lineno">  791</span>&#160; </div>
-<div class="line"><a name="l00793"></a><span class="lineno"><a class="line" href="classcgv_1_1render_1_1gl_1_1gl__context.html#a9ed0c4b653b9a3fcadc7fd393a650b05">  793</a></span>&#160;<a class="code" href="classcgv_1_1render_1_1shader__program.html">shader_program</a>&amp; gl_context::ref_default_shader_program(<span class="keywordtype">bool</span> texture_support)</div>
+<div class="line"><a name="l00793"></a><span class="lineno"><a class="line" href="classcgv_1_1render_1_1gl_1_1gl__context.html#a3a2796c75efe81c34caf6b9a34a33841">  793</a></span>&#160;<a class="code" href="classcgv_1_1render_1_1shader__program.html">shader_program</a>&amp; gl_context::ref_default_shader_program(<span class="keywordtype">bool</span> texture_support)</div>
 <div class="line"><a name="l00794"></a><span class="lineno">  794</span>&#160;{</div>
 <div class="line"><a name="l00795"></a><span class="lineno">  795</span>&#160;    <span class="keywordflow">if</span> (!texture_support) {</div>
 <div class="line"><a name="l00796"></a><span class="lineno">  796</span>&#160;        <span class="keywordflow">if</span> (!progs[0].is_created()) {</div>
@@ -886,7 +886,7 @@ $(document).ready(function(){initNavTree('gl__context_8cxx_source.html',''); ini
 <div class="line"><a name="l00817"></a><span class="lineno">  817</span>&#160;    <span class="keywordflow">return</span> progs[1];</div>
 <div class="line"><a name="l00818"></a><span class="lineno">  818</span>&#160;}</div>
 <div class="line"><a name="l00819"></a><span class="lineno">  819</span>&#160; </div>
-<div class="line"><a name="l00821"></a><span class="lineno"><a class="line" href="classcgv_1_1render_1_1gl_1_1gl__context.html#a0c6ee03056a67dbf7fd293766e5451fa">  821</a></span>&#160;<a class="code" href="classcgv_1_1render_1_1shader__program.html">shader_program</a>&amp; gl_context::ref_surface_shader_program(<span class="keywordtype">bool</span> texture_support)</div>
+<div class="line"><a name="l00821"></a><span class="lineno"><a class="line" href="classcgv_1_1render_1_1gl_1_1gl__context.html#a7bfb7e826cc1731dd3a53023a9deb256">  821</a></span>&#160;<a class="code" href="classcgv_1_1render_1_1shader__program.html">shader_program</a>&amp; gl_context::ref_surface_shader_program(<span class="keywordtype">bool</span> texture_support)</div>
 <div class="line"><a name="l00822"></a><span class="lineno">  822</span>&#160;{</div>
 <div class="line"><a name="l00823"></a><span class="lineno">  823</span>&#160;    <span class="keywordflow">if</span> (!texture_support) {</div>
 <div class="line"><a name="l00824"></a><span class="lineno">  824</span>&#160;        <span class="keywordflow">if</span> (!progs[2].is_created()) {</div>
@@ -912,7 +912,7 @@ $(document).ready(function(){initNavTree('gl__context_8cxx_source.html',''); ini
 <div class="line"><a name="l00844"></a><span class="lineno">  844</span>&#160;    <span class="keywordflow">return</span> progs[3];</div>
 <div class="line"><a name="l00845"></a><span class="lineno">  845</span>&#160;}</div>
 <div class="line"><a name="l00846"></a><span class="lineno">  846</span>&#160; </div>
-<div class="line"><a name="l00847"></a><span class="lineno"><a class="line" href="classcgv_1_1render_1_1gl_1_1gl__context.html#a224c67c3098fa44f517a44ef47f73e73">  847</a></span>&#160;<span class="keywordtype">void</span> gl_context::on_lights_changed()</div>
+<div class="line"><a name="l00847"></a><span class="lineno"><a class="line" href="classcgv_1_1render_1_1gl_1_1gl__context.html#ad26d834f2eaa0706780bef0e65d8b522">  847</a></span>&#160;<span class="keywordtype">void</span> gl_context::on_lights_changed()</div>
 <div class="line"><a name="l00848"></a><span class="lineno">  848</span>&#160;{</div>
 <div class="line"><a name="l00849"></a><span class="lineno">  849</span>&#160;    <span class="keywordflow">if</span> (support_compatibility_mode &amp;&amp; !core_profile) {</div>
 <div class="line"><a name="l00850"></a><span class="lineno">  850</span>&#160;        GLint max_nr_lights;</div>
@@ -961,7 +961,7 @@ $(document).ready(function(){initNavTree('gl__context_8cxx_source.html',''); ini
 <div class="line"><a name="l00893"></a><span class="lineno">  893</span>&#160;    context::on_lights_changed();</div>
 <div class="line"><a name="l00894"></a><span class="lineno">  894</span>&#160;}</div>
 <div class="line"><a name="l00895"></a><span class="lineno">  895</span>&#160; </div>
-<div class="line"><a name="l00896"></a><span class="lineno"><a class="line" href="classcgv_1_1render_1_1gl_1_1gl__context.html#aad0d3361ed9867f841a21b188b3aa958">  896</a></span>&#160;<span class="keywordtype">void</span> gl_context::tesselate_arrow(<span class="keywordtype">double</span> length, <span class="keywordtype">double</span> aspect, <span class="keywordtype">double</span> rel_tip_radius, <span class="keywordtype">double</span> tip_aspect, <span class="keywordtype">int</span> res, <span class="keywordtype">bool</span> edges)</div>
+<div class="line"><a name="l00896"></a><span class="lineno"><a class="line" href="classcgv_1_1render_1_1gl_1_1gl__context.html#a174b6fc6cb223930c81ef532eab05a10">  896</a></span>&#160;<span class="keywordtype">void</span> gl_context::tesselate_arrow(<span class="keywordtype">double</span> length, <span class="keywordtype">double</span> aspect, <span class="keywordtype">double</span> rel_tip_radius, <span class="keywordtype">double</span> tip_aspect, <span class="keywordtype">int</span> res, <span class="keywordtype">bool</span> edges)</div>
 <div class="line"><a name="l00897"></a><span class="lineno">  897</span>&#160;{</div>
 <div class="line"><a name="l00898"></a><span class="lineno">  898</span>&#160;    <span class="keywordtype">double</span> cyl_radius = length*aspect;</div>
 <div class="line"><a name="l00899"></a><span class="lineno">  899</span>&#160;    <span class="keywordtype">double</span> cone_radius = rel_tip_radius*cyl_radius;</div>
@@ -996,7 +996,7 @@ $(document).ready(function(){initNavTree('gl__context_8cxx_source.html',''); ini
 <div class="line"><a name="l00929"></a><span class="lineno">  929</span>&#160;    mul_modelview_matrix(cgv::math::rotate4&lt;double&gt;(180.0 / M_PI * angle, axis));</div>
 <div class="line"><a name="l00930"></a><span class="lineno">  930</span>&#160;}</div>
 <div class="line"><a name="l00931"></a><span class="lineno">  931</span>&#160; </div>
-<div class="line"><a name="l00933"></a><span class="lineno"><a class="line" href="classcgv_1_1render_1_1gl_1_1gl__context.html#a35c2e2ef74effc22a765f7dc71f5423a">  933</a></span>&#160;<span class="keywordtype">void</span> gl_context::tesselate_arrow(<span class="keyword">const</span> <a class="code" href="classcgv_1_1math_1_1fvec.html">dvec3</a>&amp; start, <span class="keyword">const</span> <a class="code" href="classcgv_1_1math_1_1fvec.html">dvec3</a>&amp; end, <span class="keywordtype">double</span> aspect, <span class="keywordtype">double</span> rel_tip_radius, <span class="keywordtype">double</span> tip_aspect, <span class="keywordtype">int</span> res, <span class="keywordtype">bool</span> edges)</div>
+<div class="line"><a name="l00933"></a><span class="lineno"><a class="line" href="classcgv_1_1render_1_1gl_1_1gl__context.html#aac10744b1e3cedbd13b37e031e184e1a">  933</a></span>&#160;<span class="keywordtype">void</span> gl_context::tesselate_arrow(<span class="keyword">const</span> <a class="code" href="classcgv_1_1math_1_1fvec.html">dvec3</a>&amp; start, <span class="keyword">const</span> <a class="code" href="classcgv_1_1math_1_1fvec.html">dvec3</a>&amp; end, <span class="keywordtype">double</span> aspect, <span class="keywordtype">double</span> rel_tip_radius, <span class="keywordtype">double</span> tip_aspect, <span class="keywordtype">int</span> res, <span class="keywordtype">bool</span> edges)</div>
 <div class="line"><a name="l00934"></a><span class="lineno">  934</span>&#160;{</div>
 <div class="line"><a name="l00935"></a><span class="lineno">  935</span>&#160;    <span class="keywordflow">if</span> ((start - end).length() &lt; 1e-8) {</div>
 <div class="line"><a name="l00936"></a><span class="lineno">  936</span>&#160;        error(<span class="stringliteral">&quot;ignored tesselate arrow called with start and end closer then 1e-8&quot;</span>);</div>
@@ -1009,7 +1009,7 @@ $(document).ready(function(){initNavTree('gl__context_8cxx_source.html',''); ini
 <div class="line"><a name="l00943"></a><span class="lineno">  943</span>&#160;    pop_modelview_matrix();</div>
 <div class="line"><a name="l00944"></a><span class="lineno">  944</span>&#160;}</div>
 <div class="line"><a name="l00945"></a><span class="lineno">  945</span>&#160; </div>
-<div class="line"><a name="l00946"></a><span class="lineno"><a class="line" href="classcgv_1_1render_1_1gl_1_1gl__context.html#a0eab426e06a80c2acaca53af493655ac">  946</a></span>&#160;<span class="keywordtype">void</span> gl_context::draw_light_source(<span class="keyword">const</span> <a class="code" href="classcgv_1_1media_1_1illum_1_1light__source.html">light_source</a>&amp; l, <span class="keywordtype">float</span> i, <span class="keywordtype">float</span> light_scale)</div>
+<div class="line"><a name="l00946"></a><span class="lineno"><a class="line" href="classcgv_1_1render_1_1gl_1_1gl__context.html#a2db848dbeee5feefda649d182293fe46">  946</a></span>&#160;<span class="keywordtype">void</span> gl_context::draw_light_source(<span class="keyword">const</span> <a class="code" href="classcgv_1_1media_1_1illum_1_1light__source.html">light_source</a>&amp; l, <span class="keywordtype">float</span> i, <span class="keywordtype">float</span> light_scale)</div>
 <div class="line"><a name="l00947"></a><span class="lineno">  947</span>&#160;{   </div>
 <div class="line"><a name="l00948"></a><span class="lineno">  948</span>&#160;    set_color(i*l.get_emission());</div>
 <div class="line"><a name="l00949"></a><span class="lineno">  949</span>&#160;    push_modelview_matrix();</div>
@@ -1046,7 +1046,7 @@ $(document).ready(function(){initNavTree('gl__context_8cxx_source.html',''); ini
 <div class="line"><a name="l00980"></a><span class="lineno">  980</span>&#160;    pop_modelview_matrix();</div>
 <div class="line"><a name="l00981"></a><span class="lineno">  981</span>&#160;}</div>
 <div class="line"><a name="l00982"></a><span class="lineno">  982</span>&#160; </div>
-<div class="line"><a name="l00983"></a><span class="lineno"><a class="line" href="classcgv_1_1render_1_1gl_1_1gl__context.html#ad6fc1fb21c0d6585aa9db18104ae8c9f">  983</a></span>&#160;<span class="keywordtype">void</span> gl_context::announce_external_frame_buffer_change(<span class="keywordtype">void</span>*&amp; fbo_handle)</div>
+<div class="line"><a name="l00983"></a><span class="lineno"><a class="line" href="classcgv_1_1render_1_1gl_1_1gl__context.html#af8c1dee137725bc943bc4ccc5aabcf31">  983</a></span>&#160;<span class="keywordtype">void</span> gl_context::announce_external_frame_buffer_change(<span class="keywordtype">void</span>*&amp; fbo_handle)</div>
 <div class="line"><a name="l00984"></a><span class="lineno">  984</span>&#160;{</div>
 <div class="line"><a name="l00985"></a><span class="lineno">  985</span>&#160;    <span class="keywordflow">if</span> (frame_buffer_stack.empty()) {</div>
 <div class="line"><a name="l00986"></a><span class="lineno">  986</span>&#160;        error(<span class="stringliteral">&quot;gl_context::announce_external_frame_buffer_change() called with empty frame buffer stack&quot;</span>);</div>
@@ -1058,7 +1058,7 @@ $(document).ready(function(){initNavTree('gl__context_8cxx_source.html',''); ini
 <div class="line"><a name="l00992"></a><span class="lineno">  992</span>&#160;    frame_buffer_stack.top()-&gt;handle = get_handle(fbo_id);</div>
 <div class="line"><a name="l00993"></a><span class="lineno">  993</span>&#160;}</div>
 <div class="line"><a name="l00994"></a><span class="lineno">  994</span>&#160; </div>
-<div class="line"><a name="l00995"></a><span class="lineno"><a class="line" href="classcgv_1_1render_1_1gl_1_1gl__context.html#ab50fadff59c974a78d448fd1abc3f02c">  995</a></span>&#160;<span class="keywordtype">void</span> gl_context::recover_from_external_frame_buffer_change(<span class="keywordtype">void</span>* fbo_handle)</div>
+<div class="line"><a name="l00995"></a><span class="lineno"><a class="line" href="classcgv_1_1render_1_1gl_1_1gl__context.html#a481ab612b2c30840de6b9646e3a6558a">  995</a></span>&#160;<span class="keywordtype">void</span> gl_context::recover_from_external_frame_buffer_change(<span class="keywordtype">void</span>* fbo_handle)</div>
 <div class="line"><a name="l00996"></a><span class="lineno">  996</span>&#160;{</div>
 <div class="line"><a name="l00997"></a><span class="lineno">  997</span>&#160;    glBindFramebuffer(GL_FRAMEBUFFER, get_gl_id(fbo_handle));</div>
 <div class="line"><a name="l00998"></a><span class="lineno">  998</span>&#160;    <span class="keywordflow">if</span> (frame_buffer_stack.empty())</div>
@@ -1066,7 +1066,7 @@ $(document).ready(function(){initNavTree('gl__context_8cxx_source.html',''); ini
 <div class="line"><a name="l01000"></a><span class="lineno"> 1000</span>&#160;    frame_buffer_stack.top()-&gt;handle = fbo_handle;</div>
 <div class="line"><a name="l01001"></a><span class="lineno"> 1001</span>&#160;}</div>
 <div class="line"><a name="l01002"></a><span class="lineno"> 1002</span>&#160; </div>
-<div class="line"><a name="l01003"></a><span class="lineno"><a class="line" href="classcgv_1_1render_1_1gl_1_1gl__context.html#a535403f7a4927979208dac93c0c42347"> 1003</a></span>&#160;<span class="keywordtype">void</span> gl_context::announce_external_viewport_change(<a class="code" href="classcgv_1_1math_1_1fvec.html">ivec4</a>&amp; cgv_viewport_storage)</div>
+<div class="line"><a name="l01003"></a><span class="lineno"><a class="line" href="classcgv_1_1render_1_1gl_1_1gl__context.html#a32c5309f21e7b970c9ac750ebe99eeb7"> 1003</a></span>&#160;<span class="keywordtype">void</span> gl_context::announce_external_viewport_change(<a class="code" href="classcgv_1_1math_1_1fvec.html">ivec4</a>&amp; cgv_viewport_storage)</div>
 <div class="line"><a name="l01004"></a><span class="lineno"> 1004</span>&#160;{</div>
 <div class="line"><a name="l01005"></a><span class="lineno"> 1005</span>&#160;    <span class="keywordflow">if</span> (window_transformation_stack.empty()) {</div>
 <div class="line"><a name="l01006"></a><span class="lineno"> 1006</span>&#160;        error(<span class="stringliteral">&quot;gl_context::announce_external_viewport_change() called with empty window transformation stack&quot;</span>);</div>
@@ -1078,7 +1078,7 @@ $(document).ready(function(){initNavTree('gl__context_8cxx_source.html',''); ini
 <div class="line"><a name="l01012"></a><span class="lineno"> 1012</span>&#160;    window_transformation_stack.top().front().viewport = <a class="code" href="namespacecgv.html#a31f6f176e22ec211e46f99a2b9e78e00">ivec4</a>(vp[0], vp[1], vp[2], vp[3]);</div>
 <div class="line"><a name="l01013"></a><span class="lineno"> 1013</span>&#160;}</div>
 <div class="line"><a name="l01014"></a><span class="lineno"> 1014</span>&#160; </div>
-<div class="line"><a name="l01015"></a><span class="lineno"><a class="line" href="classcgv_1_1render_1_1gl_1_1gl__context.html#a7fff8ad8d6cc8ec58b3f716ea7842908"> 1015</a></span>&#160;<span class="keywordtype">void</span> gl_context::recover_from_external_viewport_change(<span class="keyword">const</span> <a class="code" href="classcgv_1_1math_1_1fvec.html">ivec4</a>&amp; cgv_viewport_storage)</div>
+<div class="line"><a name="l01015"></a><span class="lineno"><a class="line" href="classcgv_1_1render_1_1gl_1_1gl__context.html#a600ef83bbadf8a0257266cca1565c330"> 1015</a></span>&#160;<span class="keywordtype">void</span> gl_context::recover_from_external_viewport_change(<span class="keyword">const</span> <a class="code" href="classcgv_1_1math_1_1fvec.html">ivec4</a>&amp; cgv_viewport_storage)</div>
 <div class="line"><a name="l01016"></a><span class="lineno"> 1016</span>&#160;{</div>
 <div class="line"><a name="l01017"></a><span class="lineno"> 1017</span>&#160;    glViewport(cgv_viewport_storage[0], cgv_viewport_storage[1], cgv_viewport_storage[2], cgv_viewport_storage[3]);</div>
 <div class="line"><a name="l01018"></a><span class="lineno"> 1018</span>&#160;    <span class="keywordflow">if</span> (window_transformation_stack.empty())</div>
@@ -1086,7 +1086,7 @@ $(document).ready(function(){initNavTree('gl__context_8cxx_source.html',''); ini
 <div class="line"><a name="l01020"></a><span class="lineno"> 1020</span>&#160;    window_transformation_stack.top().front().viewport = cgv_viewport_storage;</div>
 <div class="line"><a name="l01021"></a><span class="lineno"> 1021</span>&#160;}</div>
 <div class="line"><a name="l01022"></a><span class="lineno"> 1022</span>&#160; </div>
-<div class="line"><a name="l01024"></a><span class="lineno"><a class="line" href="classcgv_1_1render_1_1gl_1_1gl__context.html#a1906f71b925fe9b670cf610e8929146f"> 1024</a></span>&#160;<span class="keywordtype">void</span> gl_context::push_pixel_coords()</div>
+<div class="line"><a name="l01024"></a><span class="lineno"><a class="line" href="classcgv_1_1render_1_1gl_1_1gl__context.html#a079bce723e97cdca2dd84e50268e4519"> 1024</a></span>&#160;<span class="keywordtype">void</span> gl_context::push_pixel_coords()</div>
 <div class="line"><a name="l01025"></a><span class="lineno"> 1025</span>&#160;{</div>
 <div class="line"><a name="l01026"></a><span class="lineno"> 1026</span>&#160;    push_projection_matrix();</div>
 <div class="line"><a name="l01027"></a><span class="lineno"> 1027</span>&#160;    push_modelview_matrix();</div>
@@ -1109,13 +1109,13 @@ $(document).ready(function(){initNavTree('gl__context_8cxx_source.html',''); ini
 <div class="line"><a name="l01044"></a><span class="lineno"> 1044</span>&#160;    set_projection_matrix(cgv::math::ortho4&lt;double&gt;(vp[0], vp[0] + vp[2], vp[1], vp[1]+vp[3], -1, 1));</div>
 <div class="line"><a name="l01045"></a><span class="lineno"> 1045</span>&#160;}</div>
 <div class="line"><a name="l01046"></a><span class="lineno"> 1046</span>&#160; </div>
-<div class="line"><a name="l01048"></a><span class="lineno"><a class="line" href="classcgv_1_1render_1_1gl_1_1gl__context.html#a2bd0e001ce5e7b3036c609727da23103"> 1048</a></span>&#160;<span class="keywordtype">void</span> gl_context::pop_pixel_coords()</div>
+<div class="line"><a name="l01048"></a><span class="lineno"><a class="line" href="classcgv_1_1render_1_1gl_1_1gl__context.html#accd51f61ed9696ab2b3b811b4797834c"> 1048</a></span>&#160;<span class="keywordtype">void</span> gl_context::pop_pixel_coords()</div>
 <div class="line"><a name="l01049"></a><span class="lineno"> 1049</span>&#160;{</div>
 <div class="line"><a name="l01050"></a><span class="lineno"> 1050</span>&#160;    pop_modelview_matrix();</div>
 <div class="line"><a name="l01051"></a><span class="lineno"> 1051</span>&#160;    pop_projection_matrix();</div>
 <div class="line"><a name="l01052"></a><span class="lineno"> 1052</span>&#160;}</div>
 <div class="line"><a name="l01053"></a><span class="lineno"> 1053</span>&#160; </div>
-<div class="line"><a name="l01055"></a><span class="lineno"><a class="line" href="classcgv_1_1render_1_1gl_1_1gl__context.html#abb1a44910fcfbba66dc9daf592246f0e"> 1055</a></span>&#160;<span class="keywordtype">bool</span> gl_context::read_frame_buffer(<a class="code" href="classcgv_1_1data_1_1data__view.html">data::data_view</a>&amp; dv, </div>
+<div class="line"><a name="l01055"></a><span class="lineno"><a class="line" href="classcgv_1_1render_1_1gl_1_1gl__context.html#affd80cb544f48c550eb40effb9e764d2"> 1055</a></span>&#160;<span class="keywordtype">bool</span> gl_context::read_frame_buffer(<a class="code" href="classcgv_1_1data_1_1data__view.html">data::data_view</a>&amp; dv, </div>
 <div class="line"><a name="l01056"></a><span class="lineno"> 1056</span>&#160;                                              <span class="keywordtype">unsigned</span> <span class="keywordtype">int</span> x, <span class="keywordtype">unsigned</span> <span class="keywordtype">int</span> y, <a class="code" href="namespacecgv_1_1render.html#a6a9c2282e6df914ff013f5a587bbd49c">FrameBufferType</a> buffer_type, </div>
 <div class="line"><a name="l01057"></a><span class="lineno"> 1057</span>&#160;                                              <a class="code" href="namespacecgv_1_1type_1_1info.html#accf71420e941489dc6fb6737cd11b752">TypeId</a> type, <a class="code" href="namespacecgv_1_1data.html#a04ff4cdaed048a306aed8dd5a8c5c979">data::ComponentFormat</a> cf, <span class="keywordtype">int</span> w, <span class="keywordtype">int</span> h)</div>
 <div class="line"><a name="l01058"></a><span class="lineno"> 1058</span>&#160;{</div>
@@ -1341,7 +1341,7 @@ $(document).ready(function(){initNavTree('gl__context_8cxx_source.html',''); ini
 <div class="line"><a name="l01278"></a><span class="lineno"> 1278</span>&#160;    <span class="keywordflow">return</span> <span class="keyword">true</span>;</div>
 <div class="line"><a name="l01279"></a><span class="lineno"> 1279</span>&#160;}</div>
 <div class="line"><a name="l01280"></a><span class="lineno"> 1280</span>&#160; </div>
-<div class="line"><a name="l01282"></a><span class="lineno"><a class="line" href="classcgv_1_1render_1_1gl_1_1gl__context.html#a68196951d3aa7deef6e32f836cded30d"> 1282</a></span>&#160;<span class="keywordtype">void</span> gl_context::draw_edges_of_faces(</div>
+<div class="line"><a name="l01282"></a><span class="lineno"><a class="line" href="classcgv_1_1render_1_1gl_1_1gl__context.html#aae0507b9eb414d44cc76d5bc734239ba"> 1282</a></span>&#160;<span class="keywordtype">void</span> gl_context::draw_edges_of_faces(</div>
 <div class="line"><a name="l01283"></a><span class="lineno"> 1283</span>&#160;    <span class="keyword">const</span> <span class="keywordtype">float</span>* vertices, <span class="keyword">const</span> <span class="keywordtype">float</span>* normals, <span class="keyword">const</span> <span class="keywordtype">float</span>* tex_coords,</div>
 <div class="line"><a name="l01284"></a><span class="lineno"> 1284</span>&#160;    <span class="keyword">const</span> <span class="keywordtype">int</span>* vertex_indices, <span class="keyword">const</span> <span class="keywordtype">int</span>* normal_indices, <span class="keyword">const</span> <span class="keywordtype">int</span>* tex_coord_indices,</div>
 <div class="line"><a name="l01285"></a><span class="lineno"> 1285</span>&#160;    <span class="keywordtype">int</span> nr_faces, <span class="keywordtype">int</span> face_degree, <span class="keywordtype">bool</span> flip_normals)<span class="keyword"> const</span></div>
@@ -1390,7 +1390,7 @@ $(document).ready(function(){initNavTree('gl__context_8cxx_source.html',''); ini
 <div class="line"><a name="l01328"></a><span class="lineno"> 1328</span>&#160;    glGetInteger64v(GL_MAX_ELEMENTS_VERTICES, <span class="keyword">reinterpret_cast&lt;</span>GLint64*<span class="keyword">&gt;</span>(&amp;max_nr_vertices));</div>
 <div class="line"><a name="l01329"></a><span class="lineno"> 1329</span>&#160;}</div>
 <div class="line"><a name="l01330"></a><span class="lineno"> 1330</span>&#160; </div>
-<div class="line"><a name="l01332"></a><span class="lineno"><a class="line" href="classcgv_1_1render_1_1gl_1_1gl__context.html#aac60a70287cdaadca77dabbb538eb2b2"> 1332</a></span>&#160;<span class="keywordtype">void</span> gl_context::draw_edges_of_strip_or_fan(</div>
+<div class="line"><a name="l01332"></a><span class="lineno"><a class="line" href="classcgv_1_1render_1_1gl_1_1gl__context.html#aed825e7c06b20dae7f4c8f3faf64751d"> 1332</a></span>&#160;<span class="keywordtype">void</span> gl_context::draw_edges_of_strip_or_fan(</div>
 <div class="line"><a name="l01333"></a><span class="lineno"> 1333</span>&#160;    <span class="keyword">const</span> <span class="keywordtype">float</span>* vertices, <span class="keyword">const</span> <span class="keywordtype">float</span>* normals, <span class="keyword">const</span> <span class="keywordtype">float</span>* tex_coords,</div>
 <div class="line"><a name="l01334"></a><span class="lineno"> 1334</span>&#160;    <span class="keyword">const</span> <span class="keywordtype">int</span>* vertex_indices, <span class="keyword">const</span> <span class="keywordtype">int</span>* normal_indices, <span class="keyword">const</span> <span class="keywordtype">int</span>* tex_coord_indices,</div>
 <div class="line"><a name="l01335"></a><span class="lineno"> 1335</span>&#160;    <span class="keywordtype">int</span> nr_faces, <span class="keywordtype">int</span> face_degree, <span class="keywordtype">bool</span> is_fan, <span class="keywordtype">bool</span> flip_normals)<span class="keyword"> const</span></div>
@@ -1433,7 +1433,7 @@ $(document).ready(function(){initNavTree('gl__context_8cxx_source.html',''); ini
 <div class="line"><a name="l01372"></a><span class="lineno"> 1372</span>&#160;    release_attributes(normals, tex_coords, normal_indices, tex_coord_indices);</div>
 <div class="line"><a name="l01373"></a><span class="lineno"> 1373</span>&#160;}</div>
 <div class="line"><a name="l01374"></a><span class="lineno"> 1374</span>&#160; </div>
-<div class="line"><a name="l01375"></a><span class="lineno"><a class="line" href="classcgv_1_1render_1_1gl_1_1gl__context.html#a2de765ea2c536752f9b41e284b9d41dd"> 1375</a></span>&#160;<span class="keywordtype">void</span> gl_context::draw_faces(</div>
+<div class="line"><a name="l01375"></a><span class="lineno"><a class="line" href="classcgv_1_1render_1_1gl_1_1gl__context.html#ae0117a95e779fef3aae9b049b1e79dc7"> 1375</a></span>&#160;<span class="keywordtype">void</span> gl_context::draw_faces(</div>
 <div class="line"><a name="l01376"></a><span class="lineno"> 1376</span>&#160;    <span class="keyword">const</span> <span class="keywordtype">float</span>* vertices, <span class="keyword">const</span> <span class="keywordtype">float</span>* normals, <span class="keyword">const</span> <span class="keywordtype">float</span>* tex_coords, </div>
 <div class="line"><a name="l01377"></a><span class="lineno"> 1377</span>&#160;    <span class="keyword">const</span> <span class="keywordtype">int</span>* vertex_indices, <span class="keyword">const</span> <span class="keywordtype">int</span>* normal_indices, <span class="keyword">const</span> <span class="keywordtype">int</span>* tex_coord_indices, </div>
 <div class="line"><a name="l01378"></a><span class="lineno"> 1378</span>&#160;    <span class="keywordtype">int</span> nr_faces, <span class="keywordtype">int</span> face_degree, <span class="keywordtype">bool</span> flip_normals)<span class="keyword"> const</span></div>
@@ -1479,7 +1479,7 @@ $(document).ready(function(){initNavTree('gl__context_8cxx_source.html',''); ini
 <div class="line"><a name="l01418"></a><span class="lineno"> 1418</span>&#160;    release_attributes(normals, tex_coords, normal_indices, tex_coord_indices);</div>
 <div class="line"><a name="l01419"></a><span class="lineno"> 1419</span>&#160;}</div>
 <div class="line"><a name="l01420"></a><span class="lineno"> 1420</span>&#160; </div>
-<div class="line"><a name="l01421"></a><span class="lineno"><a class="line" href="classcgv_1_1render_1_1gl_1_1gl__context.html#a45bff3021b1c3e1567c83cb2bf1257a3"> 1421</a></span>&#160;<span class="keywordtype">void</span> gl_context::draw_strip_or_fan(</div>
+<div class="line"><a name="l01421"></a><span class="lineno"><a class="line" href="classcgv_1_1render_1_1gl_1_1gl__context.html#a846fe4094bcb613818ab6cc956acdd4f"> 1421</a></span>&#160;<span class="keywordtype">void</span> gl_context::draw_strip_or_fan(</div>
 <div class="line"><a name="l01422"></a><span class="lineno"> 1422</span>&#160;        <span class="keyword">const</span> <span class="keywordtype">float</span>* vertices, <span class="keyword">const</span> <span class="keywordtype">float</span>* normals, <span class="keyword">const</span> <span class="keywordtype">float</span>* tex_coords, </div>
 <div class="line"><a name="l01423"></a><span class="lineno"> 1423</span>&#160;        <span class="keyword">const</span> <span class="keywordtype">int</span>* vertex_indices, <span class="keyword">const</span> <span class="keywordtype">int</span>* normal_indices, <span class="keyword">const</span> <span class="keywordtype">int</span>* tex_coord_indices, </div>
 <div class="line"><a name="l01424"></a><span class="lineno"> 1424</span>&#160;        <span class="keywordtype">int</span> nr_faces, <span class="keywordtype">int</span> face_degree, <span class="keywordtype">bool</span> is_fan, <span class="keywordtype">bool</span> flip_normals)<span class="keyword"> const</span></div>
@@ -1617,7 +1617,7 @@ $(document).ready(function(){initNavTree('gl__context_8cxx_source.html',''); ini
 <div class="line"><a name="l01556"></a><span class="lineno"> 1556</span>&#160;    context::set_color_mask(flags);</div>
 <div class="line"><a name="l01557"></a><span class="lineno"> 1557</span>&#160;}</div>
 <div class="line"><a name="l01558"></a><span class="lineno"> 1558</span>&#160; </div>
-<div class="line"><a name="l01560"></a><span class="lineno"><a class="line" href="classcgv_1_1render_1_1gl_1_1gl__context.html#aacec22a8ae54d5886569865e8bbb74e6"> 1560</a></span>&#160;<a class="code" href="classcgv_1_1math_1_1fmat.html">dmat4</a> gl_context::get_modelview_matrix()<span class="keyword"> const</span></div>
+<div class="line"><a name="l01560"></a><span class="lineno"><a class="line" href="classcgv_1_1render_1_1gl_1_1gl__context.html#a4afff23dfa57273e232a9057d59f04da"> 1560</a></span>&#160;<a class="code" href="classcgv_1_1math_1_1fmat.html">dmat4</a> gl_context::get_modelview_matrix()<span class="keyword"> const</span></div>
 <div class="line"><a name="l01561"></a><span class="lineno"> 1561</span>&#160;<span class="keyword"></span>{</div>
 <div class="line"><a name="l01562"></a><span class="lineno"> 1562</span>&#160;    <span class="keywordflow">if</span> (support_compatibility_mode &amp;&amp; !core_profile) {</div>
 <div class="line"><a name="l01563"></a><span class="lineno"> 1563</span>&#160;        GLdouble V[16];</div>
@@ -1629,7 +1629,7 @@ $(document).ready(function(){initNavTree('gl__context_8cxx_source.html',''); ini
 <div class="line"><a name="l01569"></a><span class="lineno"> 1569</span>&#160;    <span class="keywordflow">return</span> modelview_matrix_stack.top();</div>
 <div class="line"><a name="l01570"></a><span class="lineno"> 1570</span>&#160;}</div>
 <div class="line"><a name="l01571"></a><span class="lineno"> 1571</span>&#160; </div>
-<div class="line"><a name="l01573"></a><span class="lineno"><a class="line" href="classcgv_1_1render_1_1gl_1_1gl__context.html#a467d3d36873e6883a7338fedb5aaad64"> 1573</a></span>&#160;<a class="code" href="classcgv_1_1math_1_1fmat.html">dmat4</a> gl_context::get_projection_matrix()<span class="keyword"> const</span></div>
+<div class="line"><a name="l01573"></a><span class="lineno"><a class="line" href="classcgv_1_1render_1_1gl_1_1gl__context.html#a6600dbbaa2f3921ff49eb1397e336f79"> 1573</a></span>&#160;<a class="code" href="classcgv_1_1math_1_1fmat.html">dmat4</a> gl_context::get_projection_matrix()<span class="keyword"> const</span></div>
 <div class="line"><a name="l01574"></a><span class="lineno"> 1574</span>&#160;<span class="keyword"></span>{</div>
 <div class="line"><a name="l01575"></a><span class="lineno"> 1575</span>&#160;    <span class="keywordflow">if</span> (support_compatibility_mode &amp;&amp; !core_profile) {</div>
 <div class="line"><a name="l01576"></a><span class="lineno"> 1576</span>&#160;        GLdouble P[16];</div>
@@ -1640,7 +1640,7 @@ $(document).ready(function(){initNavTree('gl__context_8cxx_source.html',''); ini
 <div class="line"><a name="l01581"></a><span class="lineno"> 1581</span>&#160;        <span class="keywordflow">return</span> identity4&lt;double&gt;();</div>
 <div class="line"><a name="l01582"></a><span class="lineno"> 1582</span>&#160;    <span class="keywordflow">return</span> projection_matrix_stack.top();</div>
 <div class="line"><a name="l01583"></a><span class="lineno"> 1583</span>&#160;}</div>
-<div class="line"><a name="l01585"></a><span class="lineno"><a class="line" href="classcgv_1_1render_1_1gl_1_1gl__context.html#a5093beaaad44310a37ef432abaff22b6"> 1585</a></span>&#160;<span class="keywordtype">void</span> gl_context::pop_window_transformation_array()</div>
+<div class="line"><a name="l01585"></a><span class="lineno"><a class="line" href="classcgv_1_1render_1_1gl_1_1gl__context.html#a39e8bdd03f3f7da889ba34d278da7f4a"> 1585</a></span>&#160;<span class="keywordtype">void</span> gl_context::pop_window_transformation_array()</div>
 <div class="line"><a name="l01586"></a><span class="lineno"> 1586</span>&#160;{</div>
 <div class="line"><a name="l01587"></a><span class="lineno"> 1587</span>&#160;    context::pop_window_transformation_array();</div>
 <div class="line"><a name="l01588"></a><span class="lineno"> 1588</span>&#160;    update_window_transformation_array();</div>
@@ -1667,7 +1667,7 @@ $(document).ready(function(){initNavTree('gl__context_8cxx_source.html',''); ini
 <div class="line"><a name="l01609"></a><span class="lineno"> 1609</span>&#160;    }</div>
 <div class="line"><a name="l01610"></a><span class="lineno"> 1610</span>&#160;}</div>
 <div class="line"><a name="l01611"></a><span class="lineno"> 1611</span>&#160; </div>
-<div class="line"><a name="l01612"></a><span class="lineno"><a class="line" href="classcgv_1_1render_1_1gl_1_1gl__context.html#aa95b8634cec81899131bb1a7727f8068"> 1612</a></span>&#160;<span class="keywordtype">unsigned</span> gl_context::get_max_window_transformation_array_size()<span class="keyword"> const</span></div>
+<div class="line"><a name="l01612"></a><span class="lineno"><a class="line" href="classcgv_1_1render_1_1gl_1_1gl__context.html#ab0bb047b4937a3a37503d0b7070d1238"> 1612</a></span>&#160;<span class="keywordtype">unsigned</span> gl_context::get_max_window_transformation_array_size()<span class="keyword"> const</span></div>
 <div class="line"><a name="l01613"></a><span class="lineno"> 1613</span>&#160;<span class="keyword"></span>{</div>
 <div class="line"><a name="l01614"></a><span class="lineno"> 1614</span>&#160;    GLint max_value = 1;</div>
 <div class="line"><a name="l01615"></a><span class="lineno"> 1615</span>&#160;    <span class="keywordflow">if</span> (GLEW_VERSION_4_1)</div>
@@ -1675,7 +1675,7 @@ $(document).ready(function(){initNavTree('gl__context_8cxx_source.html',''); ini
 <div class="line"><a name="l01617"></a><span class="lineno"> 1617</span>&#160;    <span class="keywordflow">return</span> max_value;</div>
 <div class="line"><a name="l01618"></a><span class="lineno"> 1618</span>&#160;}</div>
 <div class="line"><a name="l01619"></a><span class="lineno"> 1619</span>&#160; </div>
-<div class="line"><a name="l01621"></a><span class="lineno"><a class="line" href="classcgv_1_1render_1_1gl_1_1gl__context.html#a4d201de5bf23990fb7fca8aba9bed317"> 1621</a></span>&#160;<span class="keywordtype">void</span> gl_context::set_viewport(<span class="keyword">const</span> <a class="code" href="classcgv_1_1math_1_1fvec.html">ivec4</a>&amp; viewport, <span class="keywordtype">int</span> array_index)</div>
+<div class="line"><a name="l01621"></a><span class="lineno"><a class="line" href="classcgv_1_1render_1_1gl_1_1gl__context.html#ac77c597f06911c0f0d8caaaf711602a4"> 1621</a></span>&#160;<span class="keywordtype">void</span> gl_context::set_viewport(<span class="keyword">const</span> <a class="code" href="classcgv_1_1math_1_1fvec.html">ivec4</a>&amp; viewport, <span class="keywordtype">int</span> array_index)</div>
 <div class="line"><a name="l01622"></a><span class="lineno"> 1622</span>&#160;{</div>
 <div class="line"><a name="l01623"></a><span class="lineno"> 1623</span>&#160;    <span class="keywordtype">size_t</span> nr = window_transformation_stack.top().size();</div>
 <div class="line"><a name="l01624"></a><span class="lineno"> 1624</span>&#160;    context::set_viewport(viewport, array_index);</div>
@@ -1693,7 +1693,7 @@ $(document).ready(function(){initNavTree('gl__context_8cxx_source.html',''); ini
 <div class="line"><a name="l01636"></a><span class="lineno"> 1636</span>&#160;    }</div>
 <div class="line"><a name="l01637"></a><span class="lineno"> 1637</span>&#160;}</div>
 <div class="line"><a name="l01638"></a><span class="lineno"> 1638</span>&#160; </div>
-<div class="line"><a name="l01640"></a><span class="lineno"><a class="line" href="classcgv_1_1render_1_1gl_1_1gl__context.html#a9856fe9513aab8bad0c3693b39b0a77c"> 1640</a></span>&#160;<span class="keywordtype">void</span> gl_context::set_depth_range(<span class="keyword">const</span> <a class="code" href="classcgv_1_1math_1_1fvec.html">dvec2</a>&amp; depth_range, <span class="keywordtype">int</span> array_index)</div>
+<div class="line"><a name="l01640"></a><span class="lineno"><a class="line" href="classcgv_1_1render_1_1gl_1_1gl__context.html#a8230d1bc3a81aede1bc4168b52124828"> 1640</a></span>&#160;<span class="keywordtype">void</span> gl_context::set_depth_range(<span class="keyword">const</span> <a class="code" href="classcgv_1_1math_1_1fvec.html">dvec2</a>&amp; depth_range, <span class="keywordtype">int</span> array_index)</div>
 <div class="line"><a name="l01641"></a><span class="lineno"> 1641</span>&#160;{</div>
 <div class="line"><a name="l01642"></a><span class="lineno"> 1642</span>&#160;    <span class="keywordtype">size_t</span> nr = window_transformation_stack.top().size();</div>
 <div class="line"><a name="l01643"></a><span class="lineno"> 1643</span>&#160;    context::set_depth_range(depth_range, array_index);</div>
@@ -1722,7 +1722,7 @@ $(document).ready(function(){initNavTree('gl__context_8cxx_source.html',''); ini
 <div class="line"><a name="l01667"></a><span class="lineno"> 1667</span>&#160;<span class="comment">    return D;</span></div>
 <div class="line"><a name="l01668"></a><span class="lineno"> 1668</span>&#160;<span class="comment">}</span></div>
 <div class="line"><a name="l01669"></a><span class="lineno"> 1669</span>&#160;<span class="comment">*/</span></div>
-<div class="line"><a name="l01670"></a><span class="lineno"><a class="line" href="classcgv_1_1render_1_1gl_1_1gl__context.html#a4fcca8e1320cfec92d6690280c03699a"> 1670</a></span>&#160;<span class="keywordtype">void</span> gl_context::set_modelview_matrix(<span class="keyword">const</span> <a class="code" href="classcgv_1_1math_1_1fmat.html">dmat4</a>&amp; V)</div>
+<div class="line"><a name="l01670"></a><span class="lineno"><a class="line" href="classcgv_1_1render_1_1gl_1_1gl__context.html#a620cc0b0eccd9a49fcb52ba8dd1075fb"> 1670</a></span>&#160;<span class="keywordtype">void</span> gl_context::set_modelview_matrix(<span class="keyword">const</span> <a class="code" href="classcgv_1_1math_1_1fmat.html">dmat4</a>&amp; V)</div>
 <div class="line"><a name="l01671"></a><span class="lineno"> 1671</span>&#160;{</div>
 <div class="line"><a name="l01672"></a><span class="lineno"> 1672</span>&#160;    <span class="keywordflow">if</span> (support_compatibility_mode &amp;&amp; !core_profile) {</div>
 <div class="line"><a name="l01673"></a><span class="lineno"> 1673</span>&#160;        GLint mm;</div>
@@ -1734,7 +1734,7 @@ $(document).ready(function(){initNavTree('gl__context_8cxx_source.html',''); ini
 <div class="line"><a name="l01679"></a><span class="lineno"> 1679</span>&#160;    context::set_modelview_matrix(V);</div>
 <div class="line"><a name="l01680"></a><span class="lineno"> 1680</span>&#160;}</div>
 <div class="line"><a name="l01681"></a><span class="lineno"> 1681</span>&#160; </div>
-<div class="line"><a name="l01682"></a><span class="lineno"><a class="line" href="classcgv_1_1render_1_1gl_1_1gl__context.html#adb3c5acd82961387a0be41904b5a4a5a"> 1682</a></span>&#160;<span class="keywordtype">void</span> gl_context::set_projection_matrix(<span class="keyword">const</span> <a class="code" href="classcgv_1_1math_1_1fmat.html">dmat4</a>&amp; P)</div>
+<div class="line"><a name="l01682"></a><span class="lineno"><a class="line" href="classcgv_1_1render_1_1gl_1_1gl__context.html#aaee4ee98976b1d32a55a47dfbbc885cd"> 1682</a></span>&#160;<span class="keywordtype">void</span> gl_context::set_projection_matrix(<span class="keyword">const</span> <a class="code" href="classcgv_1_1math_1_1fmat.html">dmat4</a>&amp; P)</div>
 <div class="line"><a name="l01683"></a><span class="lineno"> 1683</span>&#160;{</div>
 <div class="line"><a name="l01684"></a><span class="lineno"> 1684</span>&#160;    <span class="keywordflow">if</span> (support_compatibility_mode &amp;&amp; !core_profile) {</div>
 <div class="line"><a name="l01685"></a><span class="lineno"> 1685</span>&#160;        GLint mm;</div>
@@ -1746,7 +1746,7 @@ $(document).ready(function(){initNavTree('gl__context_8cxx_source.html',''); ini
 <div class="line"><a name="l01691"></a><span class="lineno"> 1691</span>&#160;    context::set_projection_matrix(P);</div>
 <div class="line"><a name="l01692"></a><span class="lineno"> 1692</span>&#160;}</div>
 <div class="line"><a name="l01693"></a><span class="lineno"> 1693</span>&#160; </div>
-<div class="line"><a name="l01695"></a><span class="lineno"><a class="line" href="classcgv_1_1render_1_1gl_1_1gl__context.html#aa52252bbbcca5ffe9c2fa315be4906e0"> 1695</a></span>&#160;<span class="keywordtype">double</span> gl_context::get_window_z(<span class="keywordtype">int</span> x_window, <span class="keywordtype">int</span> y_window)<span class="keyword"> const</span></div>
+<div class="line"><a name="l01695"></a><span class="lineno"><a class="line" href="classcgv_1_1render_1_1gl_1_1gl__context.html#a624ec7b49f7d53dde1226ada24887c80"> 1695</a></span>&#160;<span class="keywordtype">double</span> gl_context::get_window_z(<span class="keywordtype">int</span> x_window, <span class="keywordtype">int</span> y_window)<span class="keyword"> const</span></div>
 <div class="line"><a name="l01696"></a><span class="lineno"> 1696</span>&#160;<span class="keyword"></span>{</div>
 <div class="line"><a name="l01697"></a><span class="lineno"> 1697</span>&#160;    GLfloat z_window;</div>
 <div class="line"><a name="l01698"></a><span class="lineno"> 1698</span>&#160; </div>
@@ -2540,7 +2540,7 @@ $(document).ready(function(){initNavTree('gl__context_8cxx_source.html',''); ini
 <div class="line"><a name="l02486"></a><span class="lineno"> 2486</span>&#160;    <span class="keywordflow">return</span> <span class="keyword">true</span>;</div>
 <div class="line"><a name="l02487"></a><span class="lineno"> 2487</span>&#160;}</div>
 <div class="line"><a name="l02488"></a><span class="lineno"> 2488</span>&#160; </div>
-<div class="line"><a name="l02490"></a><span class="lineno"><a class="line" href="classcgv_1_1render_1_1gl_1_1gl__context.html#accb16327d1d54c76f96ec72e540e06ec"> 2490</a></span>&#160;<span class="keywordtype">bool</span> gl_context::frame_buffer_disable(<a class="code" href="classcgv_1_1render_1_1frame__buffer__base.html">frame_buffer_base</a>&amp; fbb)</div>
+<div class="line"><a name="l02490"></a><span class="lineno"><a class="line" href="classcgv_1_1render_1_1gl_1_1gl__context.html#a1377dd23c7ece0b03812920fe1b21284"> 2490</a></span>&#160;<span class="keywordtype">bool</span> gl_context::frame_buffer_disable(<a class="code" href="classcgv_1_1render_1_1frame__buffer__base.html">frame_buffer_base</a>&amp; fbb)</div>
 <div class="line"><a name="l02491"></a><span class="lineno"> 2491</span>&#160;{</div>
 <div class="line"><a name="l02492"></a><span class="lineno"> 2492</span>&#160;    <span class="keywordflow">if</span> (!context::frame_buffer_disable(fbb))</div>
 <div class="line"><a name="l02493"></a><span class="lineno"> 2493</span>&#160;        <span class="keywordflow">return</span> <span class="keyword">false</span>;</div>
@@ -2631,7 +2631,7 @@ $(document).ready(function(){initNavTree('gl__context_8cxx_source.html',''); ini
 <div class="line"><a name="l02578"></a><span class="lineno"> 2578</span>&#160;    <span class="keywordflow">return</span> <span class="keyword">true</span>;</div>
 <div class="line"><a name="l02579"></a><span class="lineno"> 2579</span>&#160;}</div>
 <div class="line"><a name="l02580"></a><span class="lineno"> 2580</span>&#160; </div>
-<div class="line"><a name="l02582"></a><span class="lineno"><a class="line" href="classcgv_1_1render_1_1gl_1_1gl__context.html#a5ed23aa2555d8e45ea124d12ddb9f1bc"> 2582</a></span>&#160;<span class="keywordtype">bool</span> gl_context::frame_buffer_attach(<a class="code" href="classcgv_1_1render_1_1frame__buffer__base.html">frame_buffer_base</a>&amp; fbb, </div>
+<div class="line"><a name="l02582"></a><span class="lineno"><a class="line" href="classcgv_1_1render_1_1gl_1_1gl__context.html#ab7f9b11a93ee9dcfec9edfcfbaef6a36"> 2582</a></span>&#160;<span class="keywordtype">bool</span> gl_context::frame_buffer_attach(<a class="code" href="classcgv_1_1render_1_1frame__buffer__base.html">frame_buffer_base</a>&amp; fbb, </div>
 <div class="line"><a name="l02583"></a><span class="lineno"> 2583</span>&#160;                                                 <span class="keyword">const</span> <a class="code" href="classcgv_1_1render_1_1texture__base.html">texture_base</a>&amp; t, <span class="keywordtype">bool</span> is_depth,</div>
 <div class="line"><a name="l02584"></a><span class="lineno"> 2584</span>&#160;                                                 <span class="keywordtype">int</span> level, <span class="keywordtype">int</span> i, <span class="keywordtype">int</span> z_or_cube_side)<span class="keyword"> const</span></div>
 <div class="line"><a name="l02585"></a><span class="lineno"> 2585</span>&#160;<span class="keyword"></span>{</div>
@@ -2663,7 +2663,7 @@ $(document).ready(function(){initNavTree('gl__context_8cxx_source.html',''); ini
 <div class="line"><a name="l02611"></a><span class="lineno"> 2611</span>&#160;    <span class="keywordflow">return</span> result;</div>
 <div class="line"><a name="l02612"></a><span class="lineno"> 2612</span>&#160;}</div>
 <div class="line"><a name="l02613"></a><span class="lineno"> 2613</span>&#160; </div>
-<div class="line"><a name="l02615"></a><span class="lineno"><a class="line" href="classcgv_1_1render_1_1gl_1_1gl__context.html#a67a37e860bd4ef2700a7fb49a0de1f77"> 2615</a></span>&#160;<span class="keywordtype">bool</span> gl_context::frame_buffer_is_complete(<span class="keyword">const</span> <a class="code" href="classcgv_1_1render_1_1frame__buffer__base.html">frame_buffer_base</a>&amp; fbb)<span class="keyword"> const</span></div>
+<div class="line"><a name="l02615"></a><span class="lineno"><a class="line" href="classcgv_1_1render_1_1gl_1_1gl__context.html#a2535a580efa16eb92fb10e217ce64ff6"> 2615</a></span>&#160;<span class="keywordtype">bool</span> gl_context::frame_buffer_is_complete(<span class="keyword">const</span> <a class="code" href="classcgv_1_1render_1_1frame__buffer__base.html">frame_buffer_base</a>&amp; fbb)<span class="keyword"> const</span></div>
 <div class="line"><a name="l02616"></a><span class="lineno"> 2616</span>&#160;<span class="keyword"></span>{</div>
 <div class="line"><a name="l02617"></a><span class="lineno"> 2617</span>&#160;    <span class="keywordflow">if</span> (fbb.handle == 0) {</div>
 <div class="line"><a name="l02618"></a><span class="lineno"> 2618</span>&#160;        error(<span class="stringliteral">&quot;gl_context::frame_buffer_is_complete: attempt to check completeness on frame buffer that is not created&quot;</span>, &amp;fbb);</div>

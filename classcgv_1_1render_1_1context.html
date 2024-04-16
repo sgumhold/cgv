@@ -1555,7 +1555,7 @@ bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="stru
   </dd>
 </dl>
 
-<p>Reimplemented in <a class="el" href="classcgv_1_1render_1_1gl_1_1gl__context.html#a0eab426e06a80c2acaca53af493655ac">cgv::render::gl::gl_context</a>.</p>
+<p>Reimplemented in <a class="el" href="classcgv_1_1render_1_1gl_1_1gl__context.html#a2db848dbeee5feefda649d182293fe46">cgv::render::gl::gl_context</a>.</p>
 
 <p class="definition">Definition at line <a class="el" href="context_8cxx_source.html#l02032">2032</a> of file <a class="el" href="context_8cxx_source.html">context.cxx</a>.</p>
 
@@ -2031,7 +2031,7 @@ bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="stru
 <p>recover the previous viewport and depth range settings; an error is emitted if the <a class="el" href="structcgv_1_1render_1_1window__transformation.html" title="parameters necessary to define window transformation">window_transformation</a> stack becomes empty</p>
 <p>An error is emitted when the method fails because the stack of window transformations would become empty, which is not allowed. </p>
 
-<p>Reimplemented in <a class="el" href="classcgv_1_1render_1_1gl_1_1gl__context.html#a5093beaaad44310a37ef432abaff22b6">cgv::render::gl::gl_context</a>.</p>
+<p>Reimplemented in <a class="el" href="classcgv_1_1render_1_1gl_1_1gl__context.html#a39e8bdd03f3f7da889ba34d278da7f4a">cgv::render::gl::gl_context</a>.</p>
 
 <p class="definition">Definition at line <a class="el" href="context_8cxx_source.html#l01875">1875</a> of file <a class="el" href="context_8cxx_source.html">context.cxx</a>.</p>
 
@@ -2089,7 +2089,7 @@ bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="stru
 <p>use this to push new modelview and new projection matrices onto the transformation stacks such that x and y coordinates correspond to opengl coordinates with (0,0) in lower left corner. </p>
 <p>To transform mouse pointer coordinates to opengl coordinates use get_context()-&gt;<a class="el" href="classcgv_1_1render_1_1context.html#a6dde896fc37726e3ec39e7d450f1e168" title="return the height of the window">get_height()</a>-1-mouse_y. </p>
 
-<p>Implemented in <a class="el" href="classcgv_1_1render_1_1gl_1_1gl__context.html#a1906f71b925fe9b670cf610e8929146f">cgv::render::gl::gl_context</a>.</p>
+<p>Implemented in <a class="el" href="classcgv_1_1render_1_1gl_1_1gl__context.html#a079bce723e97cdca2dd84e50268e4519">cgv::render::gl::gl_context</a>.</p>
 
 <p class="reference">Referenced by <a class="el" href="gl__performance__monitor_8cxx_source.html#l00150">cgv::render::gl::gl_performance_monitor::draw()</a>, and <a class="el" href="vr__test_8cxx_source.html#l00528">vr_test::init_frame()</a>.</p>
 
@@ -2220,7 +2220,7 @@ bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="stru
 <p>x and y specify the pixel offset of the region measured from the left upper corner.</p>
 <p>The parameter buffer_type is only used in case of reading color or alpha components and specifies from which color buffer to read the data. </p>
 
-<p>Implemented in <a class="el" href="classcgv_1_1render_1_1gl_1_1gl__context.html#abb1a44910fcfbba66dc9daf592246f0e">cgv::render::gl::gl_context</a>.</p>
+<p>Implemented in <a class="el" href="classcgv_1_1render_1_1gl_1_1gl__context.html#affd80cb544f48c550eb40effb9e764d2">cgv::render::gl::gl_context</a>.</p>
 
 <p class="reference">Referenced by <a class="el" href="texture_8cxx_source.html#l00430">cgv::render::texture::write_to_file()</a>.</p>
 
@@ -2366,7 +2366,7 @@ bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="stru
 <p>set the current depth range or one of the depth ranges in the window transformation array </p>
 <p>The behaviour with respect to parameters <code>array_index</code> is the same as in the <a class="el" href="classcgv_1_1render_1_1context.html#af5a0b10387f70e5b22e3f1412e68f109" title="set the current viewport or one of the viewports in the window transformation array">set_viewport()</a> method. </p>
 
-<p>Reimplemented in <a class="el" href="classcgv_1_1render_1_1gl_1_1gl__context.html#a9856fe9513aab8bad0c3693b39b0a77c">cgv::render::gl::gl_context</a>.</p>
+<p>Reimplemented in <a class="el" href="classcgv_1_1render_1_1gl_1_1gl__context.html#a8230d1bc3a81aede1bc4168b52124828">cgv::render::gl::gl_context</a>.</p>
 
 <p class="definition">Definition at line <a class="el" href="context_8cxx_source.html#l01908">1908</a> of file <a class="el" href="context_8cxx_source.html">context.cxx</a>.</p>
 
@@ -2411,7 +2411,7 @@ bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="stru
 <p>set the current viewport or one of the viewports in the window transformation array </p>
 <p>If the parameter <code>array_index</code> is -1 (for example by not specifying it), the current window transformation array is resized to a single viewport and the viewport is set to the integer vector of pixel values in the <code>viewport</code> parameter: [x0,y0,width,height]. If an <code>array_index</code> &gt;= 0 is specified, the window transformation array is resized such that the specified <code>array_index</code> is valid and the corresponding viewport is set. If resizing generates new viewports or depth ranges, the default values are set, which are [0,0,widthOfContext, heightOfContext] for viewports and [0.0,1.0] for depth ranges. If resizing increases the number of viewport transformations over the allowed number, an error is issued. </p>
 
-<p>Reimplemented in <a class="el" href="classcgv_1_1render_1_1gl_1_1gl__context.html#a4d201de5bf23990fb7fca8aba9bed317">cgv::render::gl::gl_context</a>.</p>
+<p>Reimplemented in <a class="el" href="classcgv_1_1render_1_1gl_1_1gl__context.html#ac77c597f06911c0f0d8caaaf711602a4">cgv::render::gl::gl_context</a>.</p>
 
 <p class="definition">Definition at line <a class="el" href="context_8cxx_source.html#l01901">1901</a> of file <a class="el" href="context_8cxx_source.html">context.cxx</a>.</p>
 
@@ -2488,7 +2488,7 @@ bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="stru
   </dd>
 </dl>
 
-<p>Reimplemented in <a class="el" href="classcgv_1_1render_1_1gl_1_1gl__context.html#aad0d3361ed9867f841a21b188b3aa958">cgv::render::gl::gl_context</a>.</p>
+<p>Reimplemented in <a class="el" href="classcgv_1_1render_1_1gl_1_1gl__context.html#a174b6fc6cb223930c81ef532eab05a10">cgv::render::gl::gl_context</a>.</p>
 
 <p class="definition">Definition at line <a class="el" href="context_8cxx_source.html#l02022">2022</a> of file <a class="el" href="context_8cxx_source.html">context.cxx</a>.</p>
 
