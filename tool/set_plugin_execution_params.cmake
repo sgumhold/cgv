@@ -111,12 +111,14 @@ function(concat_vscode_launch_json_content LAUNCH_JSON_CONFIG_VAR TARGET_NAME)
 	endif()
 
 	# compose JSON list for both plugin and executable variants
-	# - plugin build, standard VS Code C++ debugging
-	format_vscode_launch_json_entry(JSON_LIST_STRING
-		${TARGET_NAME} DEBUGGER_TYPE cppdbg
-		LAUNCH_PROGRAM ${LAUNCH_PROGRAM_PLUGIN} CMD_ARGS ${CMD_ARGS_PLUGIN} 
-		WORKING_DIR ${CGVARG__WORKING_DIR}
-	)
+	# - plugin build, standard VS Code C++ debugging in case we're not on the Microsoft compiler
+	if (NOT CMAKE_CXX_COMPILER_ID MATCHES "MSVC")
+		format_vscode_launch_json_entry(JSON_LIST_STRING
+			${TARGET_NAME} DEBUGGER_TYPE cppdbg
+			LAUNCH_PROGRAM ${LAUNCH_PROGRAM_PLUGIN} CMD_ARGS ${CMD_ARGS_PLUGIN} 
+			WORKING_DIR ${CGVARG__WORKING_DIR}
+		)
+	endif()
 	# - plugin build, CodeLLDB debugging
 	format_vscode_launch_json_entry(JSON_LIST_STRING
 		${TARGET_NAME} DEBUGGER_TYPE CodeLLDB
@@ -124,13 +126,15 @@ function(concat_vscode_launch_json_content LAUNCH_JSON_CONFIG_VAR TARGET_NAME)
 		WORKING_DIR ${CGVARG__WORKING_DIR}
 	)
 	# - single executable build if not disabled
-	if(NOT CGVARG__NO_EXECUTABLE)
-		# standard VS Code C++ debugging
-		format_vscode_launch_json_entry(JSON_LIST_STRING
-			${NAME_EXE} DEBUGGER_TYPE cppdbg
-			LAUNCH_PROGRAM ${LAUNCH_PROGRAM_EXE} CMD_ARGS ${CMD_ARGS_EXE}
-			WORKING_DIR ${CGVARG__WORKING_DIR}
-		)
+	if (NOT CGVARG__NO_EXECUTABLE)
+		# standard VS Code C++ debugging in case we're not on the Microsoft compiler
+		if(NOT CMAKE_CXX_COMPILER_ID MATCHES "MSVC")
+			format_vscode_launch_json_entry(JSON_LIST_STRING
+				${NAME_EXE} DEBUGGER_TYPE cppdbg
+				LAUNCH_PROGRAM ${LAUNCH_PROGRAM_EXE} CMD_ARGS ${CMD_ARGS_EXE}
+				WORKING_DIR ${CGVARG__WORKING_DIR}
+			)
+		endif()
 		# CodeLLDB debugging
 		format_vscode_launch_json_entry(JSON_LIST_STRING
 			${NAME_EXE} DEBUGGER_TYPE CodeLLDB
