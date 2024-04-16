@@ -235,19 +235,8 @@ void texture::set_fixed_sample_locations(bool use)
 	fixed_sample_locations = use; 
 }
 
-bool is_power_of_two(unsigned int i)
-{
-	do {
-		if (i == 1)
-			return true;
-		if ((i & 1) != 0)
-			return false;
-		i /= 2;
-	} 
-	while (true);
-	return false;
-}
-bool is_power_of_two(size_t i)
+template <class int_type>
+bool is_power_of_two(int_type i)
 {
 	do {
 		if (i == 1)
@@ -260,16 +249,10 @@ bool is_power_of_two(size_t i)
 	return false;
 }
 
-unsigned int power_of_two_ub(unsigned int i)
+template <class int_type>
+int_type power_of_two_ub(int_type i)
 {
-	unsigned int res = 2;
-	while (res < i)
-		res *= 2;
-	return res;
-}
-size_t power_of_two_ub(size_t i)
-{
-	size_t res = 2;
+	int_type res = 2;
 	while (res < i)
 		res *= 2;
 	return res;

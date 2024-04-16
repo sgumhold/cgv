@@ -125,21 +125,52 @@ enum RenderPassFlags {
 };
 
 /// different sides of a material
-enum MaterialSide { MS_NONE, MS_FRONT, MS_BACK, MS_FRONT_AND_BACK };
+enum MaterialSide {
+	MS_NONE,
+	MS_FRONT,
+	MS_BACK,
+	MS_FRONT_AND_BACK
+};
 
 /// different illumination modes
 enum IlluminationMode {
-	IM_OFF, IM_ONE_SIDED, IM_TWO_SIDED
+	IM_OFF,
+	IM_ONE_SIDED,
+	IM_TWO_SIDED
 };
 
 /// different culling modes
 enum CullingMode {
-	CM_OFF, CM_BACKFACE, CM_FRONTFACE
+	CM_OFF,
+	CM_BACKFACE,
+	CM_FRONTFACE
 };
 
+/// different blend functions
+enum BlendFunction {
+	BF_ZERO,
+	BF_ONE,
+	BF_SRC_COLOR,
+	BF_ONE_MINUS_SRC_COLOR,
+	BF_DST_COLOR,
+	BF_ONE_MINUS_DST_COLOR,
+	BF_SRC_ALPHA,
+	BF_ONE_MINUS_SRC_ALPHA,
+	BF_DST_ALPHA,
+	BF_ONE_MINUS_DST_ALPHA,
+	BF_CONSTANT_COLOR,
+	BF_ONE_MINUS_CONSTANT_COLOR,
+	BF_CONSTANT_ALPHA,
+	BF_ONE_MINUS_CONSTANT_ALPHA,
+	BF_SRC_ALPHA_SATURATE,
+	BF_SRC1_COLOR,
+	BF_ONE_MINUS_SRC1_COLOR,
+	BF_SRC1_ALPHA,
+	BF_ONE_MINUS_SRC1_ALPHA
+};
 
 /// different texture wrap modes
-enum TextureWrap { 
+enum TextureWrap {
 	TW_REPEAT = 0, 
 	TW_CLAMP = 1, 
 	TW_CLAMP_TO_EDGE = 2, 
@@ -182,11 +213,11 @@ enum TextureType {
 
 /// the six different sides of a cube
 enum TextureCubeSides {
-	 TCS_PLUS_X,
+	TCS_PLUS_X,
 	TCS_MINUS_X,
-	 TCS_PLUS_Y,
+	TCS_PLUS_Y,
 	TCS_MINUS_Y,
-	 TCS_PLUS_Z,
+	TCS_PLUS_Z,
 	TCS_MINUS_Z
 };
 
@@ -218,7 +249,7 @@ enum TextureSampling
 	TS_VERTEX = 1  ///< \c tex_coord ranges from [0,0,0] to [1,1,1]
 };
 
-/// different sampling strategies for rendering to textures that steer the computation of the \c tex_coord input to the fragment shader
+/// different comparison functions used for depth testing or texture comparisons
 enum CompareFunction
 {
 	CF_LEQUAL,
@@ -598,6 +629,43 @@ public:
 	friend class CGV_API shader_program;
 	friend class CGV_API attribute_array_binding;
 	friend class CGV_API vertex_buffer;
+
+	/// Represents a depth test state used to configure depth testing.
+	struct DepthTestState {
+		/// whether the depth test is enabled
+		bool enabled = false;
+		/// the function used to compare depth values
+		CompareFunction test_func = CF_LESS;
+	};
+
+	/// Represents a blend state used to configure fragment blending.
+	struct BlendState {
+		/// whether blending is enabled
+		bool enabled = false;
+		/// the source color (rgb) factor
+		BlendFunction src_color = BF_ZERO;
+		/// the destination color (rgb) factor
+		BlendFunction dst_color = BF_ZERO;
+		/// the source alpha factor
+		BlendFunction src_alpha = BF_ZERO;
+		/// the destination alpha factor
+		BlendFunction dst_alpha = BF_ZERO;
+		// TODO: Add blend equation?
+	};
+
+	/// Represents a buffer mask used to mask depth and color buffer outputs.
+	struct BufferMask {
+		/// whether to write to the depth buffer if the depth test is enabled
+		bool depth_flag = true;
+		/// whether to write to the red channel of the color buffer
+		bool red_flag = true;
+		/// whether to write to the green channel of the color buffer
+		bool green_flag = true;
+		/// whether to write to the blue channel of the color buffer
+		bool blue_flag = true;
+		/// whether to write to the alpha channel of the color buffer
+		bool alpha_flag = true;
+	};
 protected:
 	friend class shader_program_base;
 
@@ -625,10 +693,29 @@ protected:
 	bool sRGB_framebuffer;
 	/// per color channel gamma value passed to shader programs that have gamma uniform
 	vec3 gamma3;
+
+	/// stack of background colors
+	std::stack<vec4> bg_color_stack;
+	/// stack of background depth values
+	std::stack<float> bg_depth_stack;
+	/// stack of background stencil values
+	std::stack<int> bg_stencil_stack;
+	/// stack of background accumulation colors
+	std::stack<vec4> bg_accum_color_stack;
+
+	/// stack of depth test states
+	std::stack<DepthTestState> depth_test_state_stack;
+	/// stack of culling mode states
+	std::stack<CullingMode> cull_state_stack;
+	/// stack of blend states
+	std::stack<BlendState> blend_state_stack;
+	/// stack of buffer masks
+	std::stack<BufferMask> buffer_mask_stack;
+
 	/// keep two matrix stacks for model view and projection matrices
 	std::stack<dmat4> modelview_matrix_stack, projection_matrix_stack;
 	/// keep stack of window transformations
-	std::stack<std::vector<window_transformation> > window_transformation_stack;
+	std::stack<std::vector<window_transformation>> window_transformation_stack;
 	/// stack of currently enabled frame buffers
 	std::stack<frame_buffer_base*> frame_buffer_stack;
 	/// stack of currently enabled shader programs
@@ -684,10 +771,6 @@ protected:
 	std::stack<render_info> render_pass_stack;
 	/// default render flags with which the main render pass is initialized
 	RenderPassFlags default_render_flags;
-	/// current background color, depth, stencil and accum color
-	float bg_r, bg_g, bg_b, bg_a, bg_d;
-	int   bg_s;
-	float bg_accum_r, bg_accum_g, bg_accum_b, bg_accum_a;
 	/// whether to use phong shading
 	bool phong_shading;
 	/// current back ground color index
@@ -899,34 +982,66 @@ public:
 		unsigned int x = 0, unsigned int y = 0, 
 		int w = -1, int h = -1,
 		float depth_offset = 0.9f, float depth_scale = 10.0f);
+
+	/// push a copy of the current background color onto the stack
+	void push_bg_color();
+	/// pop the top of the current background color from the stack
+	void pop_bg_color();
 	/// set a user defined background color
-	virtual void set_bg_color(float r, float g, float b, float a);
-	/// set a user defined background alpha value
-	virtual void set_bg_alpha(float a);
-	/// set a user defined background depth value
-	virtual void set_bg_depth(float d);
-	/// set a user defined background stencil value
-	virtual void set_bg_stencil(int s);
-	/// set a user defined background color for the accumulation buffer
-	virtual void set_bg_accum_color(float r, float g, float b, float a);
-	/// set a user defined background alpha value for the accumulation buffer
-	virtual void set_bg_accum_alpha(float a);
-	/// set an indexed background color
-	virtual void set_bg_clr_idx(unsigned int idx);
-	/// return the current index of the background color
-	unsigned int get_bg_clr_idx() const;
-	/// copy the current back ground rgba color into the given float array
+	virtual void set_bg_color(vec4 rgba);
+	/// set a user defined background color
+	void set_bg_color(float r, float g, float b, float a);
+	/// return the current color value for clearing the background
+	vec4 get_bg_color() const;
+	/// copy the current background rgba color into the given float array
 	void put_bg_color(float* rgba) const;
+	/// set a user defined background alpha value
+	void set_bg_alpha(float a);
 	/// return the current alpha value for clearing the background
 	float get_bg_alpha() const;
-	/// copy the current back ground rgba color of the accumulation buffer into the given float array
-	void put_bg_accum_color(float* rgba) const;
-	/// return the current alpha value for clearing the accumulation buffer
-	float get_bg_accum_alpha() const;
+	/// set an indexed background color
+	void set_bg_clr_idx(unsigned int idx);
+	/// return the current index of the background color
+	unsigned int get_bg_clr_idx() const;
+	
+	/// push a copy of the current background depth value onto the stack
+	void push_bg_depth();
+	/// pop the top of the current background depth value from the stack
+	void pop_bg_depth();
+	/// set a user defined background depth value
+	virtual void set_bg_depth(float d);
 	/// return the current depth value for clearing the background
 	float get_bg_depth() const;
+
+	/// push a copy of the current background stencil value onto the stack
+	void push_bg_stencil();
+	/// pop the top of the current background stencil value from the stack
+	void pop_bg_stencil();
+	/// set a user defined background stencil value
+	virtual void set_bg_stencil(int s);
 	/// return the current stencil value for clearing the background
 	int get_bg_stencil() const;
+
+	/// push a copy of the current background accumulation color onto the stack
+	void push_bg_accum_color();
+	/// pop the top of the current background accumulation color from the stack
+	void pop_bg_accum_color();
+	/// set a user defined background color for the accumulation buffer
+	virtual void set_bg_accum_color(vec4 rgba);
+	/// set a user defined background color for the accumulation buffer
+	void set_bg_accum_color(float r, float g, float b, float a);
+	/// return the current color value for clearing the accumulation buffer
+	vec4 get_bg_accum_color() const;
+	/// copy the current accumulation background rgba color into the given float array
+	void put_bg_accum_color(float* rgba) const;
+	/// set a user defined background alpha value for the accumulation buffer
+	void set_bg_accum_alpha(float a);
+	/// return the current alpha value for clearing the accumulation buffer
+	float get_bg_accum_alpha() const;
+
+	/// clear the buffer contents of the flagged buffers to the set background colors
+	virtual void clear_background(bool color_flag, bool depth_flag, bool stencil_flag = false, bool accum_flag = false) = 0;
+
 	/// the context will be redrawn when the system is idle again
 	virtual void post_redraw() = 0;
 	/// the context will be redrawn right now. This method cannot be called inside the following methods of a drawable: init, init_frame, draw, finish_draw
@@ -1138,6 +1253,77 @@ public:
 	virtual void draw_light_source(const cgv::media::illum::light_source& l, float intensity_scale, float light_scale); 
 	//@}
 
+	/**@name render state*/
+	//@{
+
+	/// push a copy of the current depth test state onto the stack
+	/// saved attributes: depth test enablement, depth test function
+	void push_depth_test_state();
+	/// pop the top of the current depth test state from the stack
+	void pop_depth_test_state();
+	/// return the current depth test state
+	DepthTestState get_depth_test_state() const;
+	/// set the depth test state
+	virtual void set_depth_test_state(DepthTestState state);
+	/// set the depth test function
+	virtual void set_depth_func(CompareFunction func);
+	/// enable the depth test
+	virtual void enable_depth_test();
+	/// disable the depth test
+	virtual void disable_depth_test();
+
+	/// push a copy of the current culling state onto the stack
+	/// saved attributes: cull face enablement, cull face
+	void push_cull_state();
+	/// pop the top of the current culling state from the stack
+	void pop_cull_state();
+	/// return the current culling state
+	CullingMode get_cull_state() const;
+	/// set the culling state
+	virtual void set_cull_state(CullingMode culling_mode);
+
+	/// push a copy of the current blend state onto the stack
+	/// saved attributes: blend enablement, color and alpha source and destinatin functions
+	void push_blend_state();
+	/// pop the top of the current culling state from the stack
+	void pop_blend_state();
+	/// return the current blend state
+	BlendState get_blend_state() const;
+	/// set the complete blend state
+	virtual void set_blend_state(BlendState state);
+	/// set the blend function
+	virtual void set_blend_func(BlendFunction src_factor, BlendFunction dst_factor);
+	/// set the blend function separately for color and alpha
+	virtual void set_blend_func_separate(BlendFunction src_color_factor, BlendFunction dst_color_factor, BlendFunction src_alpha_factor, BlendFunction dst_alpha_factor);
+	/// set the default blend function for front to back blending
+	void set_blend_func_front_to_back();
+	/// set the default blend function for back to front blending
+	void set_blend_func_back_to_front();
+	/// enable blending
+	virtual void enable_blending();
+	/// disable blending
+	virtual void disable_blending();
+
+	/// push a copy of the current buffer mask onto the stack
+	/// saved attributes: depth mask, color mask
+	void push_buffer_mask();
+	/// pop the top of the current buffer mask from the stack
+	void pop_buffer_mask();
+	/// return the current buffer mask
+	BufferMask get_buffer_mask() const;
+	/// set the buffer mask for depth and color buffers
+	virtual void set_buffer_mask(BufferMask mask);
+	/// get the depth buffer mask
+	bool get_depth_mask() const;
+	/// set the depth buffer mask
+	virtual void set_depth_mask(bool flag);
+	/// get the color buffer mask
+	bvec4 get_color_mask() const;
+	/// set the color buffer mask
+	virtual void set_color_mask(bvec4 flags);
+
+	//@}
+
 	/**@name transformations*/
 	//@{
 	DEPRECATED("deprecated: use get_modelview_matrix() instead.") dmatn get_V() const { return dmatn(4,4,&get_modelview_matrix()(0,0)); }
@@ -1194,6 +1380,8 @@ public:
 	virtual void recover_from_external_viewport_change(const ivec4& cgv_viewport_storage) = 0;
 	/// query the maximum number of supported window transformations, which is at least 1 
 	virtual unsigned get_max_window_transformation_array_size() const = 0;
+	//@}
+
 protected:
 	bool ensure_window_transformation_index(int& array_index);
 public:

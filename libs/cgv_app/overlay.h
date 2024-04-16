@@ -64,9 +64,7 @@ private:
 protected:
 	/// whether the overlay blocks events or lets them pass through to other handlers (by default only derived classes may set this property)
 	bool block_events = false;
-	/// if true the overlay contents are drawn in the finish_frame method instead of the draw method (by default only derived classes may set this property)
-	bool draw_in_finish_frame = false;
-
+	
 	/// called when the overlay visibility is changed through the default gui
 	virtual void on_visibility_change();
 

@@ -36,10 +36,10 @@ namespace cgv {
 	namespace render {
 		namespace gl {
 			
-GLuint map_to_gl(PrimitiveType pt)
+GLenum map_to_gl(PrimitiveType primitive_type)
 {
-	static GLuint pt_to_gl[] = {
-		GLuint (-1),
+	static const GLenum gl_primitive_type[] = {
+		GLenum(-1),
 		GL_POINTS,
 		GL_LINES,
 		GL_LINES_ADJACENCY,
@@ -56,27 +56,165 @@ GLuint map_to_gl(PrimitiveType pt)
 		GL_POLYGON,
 		GL_PATCHES
 	};
-	return pt_to_gl[pt];
+	return gl_primitive_type[primitive_type];
 }
 
-GLuint map_to_gl(MaterialSide ms)
+GLenum map_to_gl(MaterialSide material_side)
 {
-	static GLuint ms_to_gl[] = {
-		0,
+	static const GLenum gl_material_side[] = {
+		GLenum(0),
 		GL_FRONT,
 		GL_BACK,
 		GL_FRONT_AND_BACK
 	};
-	return ms_to_gl[ms];
+	return gl_material_side[material_side];
 }
 
-GLuint map_to_gl(AccessType at) {
-	static GLuint at_to_gl[] = {
+GLenum map_to_gl(AccessType access_type)
+{
+	static const GLenum gl_access_type[] = {
 		GL_READ_ONLY,
 		GL_WRITE_ONLY,
 		GL_READ_WRITE
 	};
-	return at_to_gl[at];
+	return gl_access_type[access_type];
+}
+
+GLenum map_to_gl(BlendFunction blend_function)
+{
+	static const GLenum gl_blend_func[] = {
+		GL_ZERO,
+		GL_ONE,
+		GL_SRC_COLOR,
+		GL_ONE_MINUS_SRC_COLOR,
+		GL_DST_COLOR,
+		GL_ONE_MINUS_DST_COLOR,
+		GL_SRC_ALPHA,
+		GL_ONE_MINUS_SRC_ALPHA,
+		GL_DST_ALPHA,
+		GL_ONE_MINUS_DST_ALPHA,
+		GL_CONSTANT_COLOR,
+		GL_ONE_MINUS_CONSTANT_COLOR,
+		GL_CONSTANT_ALPHA,
+		GL_ONE_MINUS_CONSTANT_ALPHA,
+		GL_SRC_ALPHA_SATURATE,
+		GL_SRC1_COLOR,
+		GL_ONE_MINUS_SRC1_COLOR,
+		GL_SRC1_ALPHA,
+		GL_ONE_MINUS_SRC1_ALPHA
+	};
+	return gl_blend_func[blend_function];
+}
+
+GLenum map_to_gl(CompareFunction compare_func)
+{
+	static const GLenum gl_compare_func[] = {
+		GL_LEQUAL,
+		GL_GEQUAL,
+		GL_LESS,
+		GL_GREATER,
+		GL_EQUAL,
+		GL_NOTEQUAL,
+		GL_ALWAYS,
+		GL_NEVER
+	};
+	return gl_compare_func[compare_func];
+}
+
+static const GLenum gl_depth_format_ids[] =
+{
+	GL_DEPTH_COMPONENT,
+	GL_DEPTH_COMPONENT16,
+	GL_DEPTH_COMPONENT24,
+	GL_DEPTH_COMPONENT32
+};
+
+static const GLenum gl_color_buffer_format_ids[] =
+{
+	GL_RGB,
+	GL_RGBA
+};
+
+static const char* depth_formats[] =
+{
+	"[D]",
+	"uint16[D]",
+	"uint32[D:24]",
+	"uint32[D]",
+	0
+};
+
+static const char* color_buffer_formats[] =
+{
+	"[R,G,B]",
+	"[R,G,B,A]",
+	0
+};
+
+GLenum get_tex_dim(TextureType texture_type)
+{
+	static const GLenum gl_texture_type[] = {
+		GLenum(0),
+		GL_TEXTURE_1D,
+		GL_TEXTURE_2D,
+		GL_TEXTURE_3D,
+		GL_TEXTURE_1D_ARRAY,
+		GL_TEXTURE_2D_ARRAY,
+		GL_TEXTURE_CUBE_MAP,
+		GL_TEXTURE_2D_MULTISAMPLE,
+		GL_TEXTURE_2D_MULTISAMPLE_ARRAY
+	};
+	return gl_texture_type[texture_type];
+}
+
+GLenum get_tex_bind(TextureType texture_type)
+{
+	static const GLenum gl_tex_binding[] = {
+		GLenum(0),
+		GL_TEXTURE_BINDING_1D,
+		GL_TEXTURE_BINDING_2D,
+		GL_TEXTURE_BINDING_3D,
+		GL_TEXTURE_BINDING_1D_ARRAY,
+		GL_TEXTURE_BINDING_2D_ARRAY,
+		GL_TEXTURE_BINDING_CUBE_MAP,
+		GL_TEXTURE_BUFFER,
+		GL_TEXTURE_BINDING_2D_MULTISAMPLE,
+		GL_TEXTURE_BINDING_2D_MULTISAMPLE_ARRAY
+	};
+	return gl_tex_binding[texture_type];
+}
+
+GLenum map_to_gl(TextureWrap texture_wrap)
+{
+	static const GLenum gl_texture_wrap[] = {
+		GL_REPEAT,
+		GL_CLAMP,
+		GL_CLAMP_TO_EDGE,
+		GL_CLAMP_TO_BORDER,
+		GL_MIRROR_CLAMP_EXT,
+		GL_MIRROR_CLAMP_TO_EDGE_EXT,
+		GL_MIRROR_CLAMP_TO_BORDER_EXT,
+		GL_MIRRORED_REPEAT
+	};
+	return gl_texture_wrap[texture_wrap];
+}
+
+GLenum map_to_gl(TextureFilter filter_type)
+{
+	static const GLenum gl_texture_filter[] = {
+		GL_NEAREST,
+		GL_LINEAR,
+		GL_NEAREST_MIPMAP_NEAREST,
+		GL_LINEAR_MIPMAP_NEAREST,
+		GL_NEAREST_MIPMAP_LINEAR,
+		GL_LINEAR_MIPMAP_LINEAR,
+		GL_LINEAR_MIPMAP_LINEAR
+	};
+	return gl_texture_filter[filter_type];
+}
+
+GLboolean map_to_gl(bool flag) {
+	return flag ? GL_TRUE : GL_FALSE;
 }
 
 GLuint get_gl_id(const void* handle)
@@ -142,6 +280,17 @@ gl_context::gl_context()
 	info_font_size = 14;
 	show_help = false;
 	show_stats = false;
+
+	// set initial GL state from stack contents
+	set_bg_color(get_bg_color());
+	set_bg_depth(get_bg_depth());
+	set_bg_stencil(get_bg_stencil());
+	set_bg_accum_color(get_bg_accum_color());
+
+	set_depth_test_state(get_depth_test_state());
+	set_cull_state(get_cull_state());
+	set_blend_state(get_blend_state());
+	set_buffer_mask(get_buffer_mask());
 }
 
 /// return the used rendering API
@@ -307,6 +456,41 @@ void gl_context::resize_gl()
 	}
 }
 
+void gl_context::set_bg_color(vec4 rgba) {
+	glClearColor(rgba[0], rgba[1], rgba[2], rgba[3]);
+	context::set_bg_color(rgba);
+}
+
+void gl_context::set_bg_depth(float d) {
+	glClearDepth(d);
+	context::set_bg_depth(d);
+}
+
+void gl_context::set_bg_stencil(int s) {
+	glClearStencil(s);
+	context::set_bg_stencil(s);
+}
+
+void gl_context::set_bg_accum_color(vec4 rgba) {
+	if(!core_profile)
+		glClearAccum(rgba[0], rgba[1], rgba[2], rgba[3]);
+	context::set_bg_accum_color(rgba);
+}
+
+void gl_context::clear_background(bool color_flag, bool depth_flag, bool stencil_flag, bool accum_flag) {
+	GLenum bits = 0;
+	if(color_flag)
+		bits |= GL_COLOR_BUFFER_BIT;
+	if(depth_flag)
+		bits |= GL_DEPTH_BUFFER_BIT;
+	if(stencil_flag)
+		bits |= GL_STENCIL_BUFFER_BIT;
+	if(accum_flag && !core_profile)
+		bits |= GL_ACCUM_BUFFER_BIT;
+	if(bits)
+		glClear(bits);
+}
+
 /// overwrite function to return info font size in case no font is currently selected
 float gl_context::get_current_font_size() const
 {
@@ -343,7 +527,6 @@ void gl_context::init_render_pass()
 	else
 		glDisable(GL_FRAMEBUFFER_SRGB);
 
-//	glPushAttrib(GL_ALL_ATTRIB_BITS);
 	static cgv::render::RenderPassFlags last_render_pass_flags = get_default_render_pass_flags();
 	cgv::render::RenderPassFlags current_render_pass_flags = get_render_pass_flags();
 	if (current_render_pass_flags & RPF_SET_LIGHTS) {
@@ -373,16 +556,14 @@ void gl_context::init_render_pass()
 	}
 	if (get_render_pass_flags()&RPF_SET_STATE_FLAGS) {
 		// set some default settings
-		glEnable(GL_DEPTH_TEST);
-		glCullFace(GL_BACK);
-		glEnable(GL_CULL_FACE);
+		enable_depth_test();
+		set_cull_state(CM_BACKFACE);
 		if (!core_profile)
 			glEnable(GL_NORMALIZE);
 	}
-	if ((get_render_pass_flags()&RPF_SET_PROJECTION) != 0) {
+	if ((get_render_pass_flags()&RPF_SET_PROJECTION) != 0)
 		set_projection_matrix(cgv::math::perspective4<double>(45.0, (double)get_width()/get_height(),0.001,1000.0));
-	}
-	//glMatrixMode(GL_MODELVIEW);
+
 	if ((get_render_pass_flags()&RPF_SET_MODELVIEW) != 0)
 		set_modelview_matrix(cgv::math::look_at4<double>(vec3(0,0,10), vec3(0,0,0), vec3(0,1,0)));
 	
@@ -398,35 +579,28 @@ void gl_context::init_render_pass()
 	if (check_gl_error("gl_context::init_render_pass after init_frame"))
 		return;
 	// this defines the background color to which the frame buffer is set by glClear
-	if (get_render_pass_flags()&RPF_SET_CLEAR_COLOR)
-		glClearColor(bg_r,bg_g,bg_b,bg_a);
+	if(get_render_pass_flags() & RPF_SET_CLEAR_COLOR)
+		set_bg_color(get_bg_color());
+	// this defines the background depth buffer value set by glClear
+	if(get_render_pass_flags() & RPF_SET_CLEAR_DEPTH)
+		set_bg_depth(get_bg_depth());
+	// this defines the background depth buffer value set by glClear
+	if(get_render_pass_flags() & RPF_SET_CLEAR_STENCIL)
+		set_bg_stencil(get_bg_stencil());
 	// this defines the background color to which the accum buffer is set by glClear
-	if (get_render_pass_flags()&RPF_SET_CLEAR_ACCUM)
-		glClearAccum(bg_accum_r,bg_accum_g,bg_accum_b,bg_accum_a);
-	// this defines the background depth buffer value set by glClear
-	if (get_render_pass_flags()&RPF_SET_CLEAR_DEPTH)
-		glClearDepth(bg_d);
-	// this defines the background depth buffer value set by glClear
-	if (get_render_pass_flags()&RPF_SET_CLEAR_STENCIL)
-		glClearStencil(bg_s);
-	// clear necessary buffers
-	GLenum bits = 0;
-	if (get_render_pass_flags()&RPF_CLEAR_COLOR)
-		bits |= GL_COLOR_BUFFER_BIT;
-	if (get_render_pass_flags()&RPF_CLEAR_DEPTH)
-		bits |= GL_DEPTH_BUFFER_BIT;
-	if (get_render_pass_flags()&RPF_CLEAR_STENCIL)
-		bits |= GL_STENCIL_BUFFER_BIT;
-	if (get_render_pass_flags()&RPF_CLEAR_ACCUM)
-		bits |= GL_ACCUM_BUFFER_BIT;
-	if (bits)
-		glClear(bits);
+	if(get_render_pass_flags() & RPF_SET_CLEAR_ACCUM && !core_profile)
+		set_bg_accum_color(get_bg_accum_color());
+	clear_background(
+		get_render_pass_flags() & RPF_CLEAR_COLOR,
+		get_render_pass_flags() & RPF_CLEAR_DEPTH,
+		get_render_pass_flags() & RPF_CLEAR_STENCIL,
+		get_render_pass_flags() & RPF_CLEAR_ACCUM
+	);
 }
 
 ///
 void gl_context::finish_render_pass()
 {
-//	glPopAttrib();
 }
 
 struct format_callback_handler : public traverse_callback_handler
@@ -454,15 +628,17 @@ void gl_context::draw_textual_info()
 {
 	if (show_help || show_stats) {
 		rgba tmp = current_color;
-		GLboolean depth_test = glIsEnabled(GL_DEPTH_TEST);
-		glDisable(GL_DEPTH_TEST);
+		push_depth_test_state();
+		disable_depth_test();
 
 		push_pixel_coords();
 		enable_font_face(info_font_face, info_font_size);
 
 		set_cursor(20, get_height()-1-20);
 
-		if (bg_r + bg_g + bg_b < 1.5f)
+		vec4 bg = get_bg_color();
+		//if (bg_r + bg_g + bg_b < 1.5f)
+		if (bg[0] + bg[1] + bg[2] < 1.5f)
 			set_color(rgba(1, 1, 1, 1));
 		else
 			set_color(rgba(0, 0, 0, 1));
@@ -475,7 +651,8 @@ void gl_context::draw_textual_info()
 			traverser(sma, "nc").traverse(grp, &fch);
 			output_stream() << std::endl;
 		}
-		if (bg_r + bg_g + bg_b < 1.5f)
+		//if (bg_r + bg_g + bg_b < 1.5f)
+		if(bg[0] + bg[1] + bg[2] < 1.5f)
 			set_color(rgba(1, 1, 0, 1));
 		else
 			set_color(rgba(0.4f, 0.3f, 0, 1));
@@ -487,8 +664,7 @@ void gl_context::draw_textual_info()
 			output_stream().flush();
 		}
 		pop_pixel_coords();
-		if (depth_test)
-			glEnable(GL_DEPTH_TEST);
+		pop_depth_test_state();
 	}
 }
 
@@ -795,11 +971,10 @@ void gl_context::draw_light_source(const light_source& l, float i, float light_s
 			else
 				mul_modelview_matrix(cgv::math::scale4<double>(t, t, 0.5f));
 			mul_modelview_matrix(cgv::math::translate4<double>(0, 0, -1));
-			GLboolean cull = glIsEnabled(GL_CULL_FACE);
-			glDisable(GL_CULL_FACE);
+			push_cull_state();
+			set_cull_state(CM_OFF);
 			tesselate_unit_cone();
-			if (cull)
-				glEnable(GL_CULL_FACE);
+			pop_cull_state();
 		}
 	}
 	pop_modelview_matrix();
@@ -1269,6 +1444,118 @@ void gl_context::draw_strip_or_fan(
 	release_attributes(normals, tex_coords, normal_indices, tex_coord_indices);
 }
 
+void gl_context::set_depth_test_state(DepthTestState state) {
+	if(state.enabled)
+		glEnable(GL_DEPTH_TEST);
+	else
+		glDisable(GL_DEPTH_TEST);
+	glDepthFunc(map_to_gl(state.test_func));
+	context::set_depth_test_state(state);
+}
+
+void gl_context::set_depth_func(CompareFunction func) {
+	glDepthFunc(map_to_gl(func));
+	context::set_depth_func(func);
+}
+
+void gl_context::enable_depth_test() {
+	glEnable(GL_DEPTH_TEST);
+	context::enable_depth_test();
+}
+
+void gl_context::disable_depth_test() {
+	glDisable(GL_DEPTH_TEST);
+	context::disable_depth_test();
+}
+
+void gl_context::set_cull_state(CullingMode culling_mode) {
+	switch(culling_mode) {
+	case CM_OFF:
+		glDisable(GL_CULL_FACE);
+		break;
+	case CM_BACKFACE:
+		glEnable(GL_CULL_FACE);
+		glCullFace(GL_BACK);
+		break;
+	case CM_FRONTFACE:
+		glEnable(GL_CULL_FACE);
+		glCullFace(GL_FRONT);
+		break;
+	default:
+		break;
+	}
+	context::set_cull_state(culling_mode);
+}
+
+void gl_context::set_blend_state(BlendState state) {
+	if(state.enabled)
+		glEnable(GL_BLEND);
+	else
+		glDisable(GL_BLEND);
+	if(GLEW_EXT_blend_func_separate) {
+		glBlendFuncSeparate(
+			map_to_gl(state.src_color),
+			map_to_gl(state.dst_color),
+			map_to_gl(state.src_alpha),
+			map_to_gl(state.dst_alpha)
+		);
+	} else {
+		glBlendFunc(map_to_gl(state.src_color), map_to_gl(state.dst_color));
+	}
+	context::set_blend_state(state);
+}
+
+void gl_context::set_blend_func(BlendFunction src_factor, BlendFunction dst_factor) {
+	glBlendFunc(map_to_gl(src_factor), map_to_gl(dst_factor));
+	context::set_blend_func(src_factor, dst_factor);
+}
+
+void gl_context::set_blend_func_separate(BlendFunction src_color_factor, BlendFunction dst_color_factor, BlendFunction src_alpha_factor, BlendFunction dst_alpha_factor) {
+	glBlendFuncSeparate(
+		map_to_gl(src_color_factor),
+		map_to_gl(dst_color_factor),
+		map_to_gl(src_alpha_factor),
+		map_to_gl(dst_alpha_factor)
+	);
+	context::set_blend_func_separate(src_color_factor, dst_color_factor, src_alpha_factor, dst_alpha_factor);
+}
+
+void gl_context::enable_blending() {
+	glEnable(GL_BLEND);
+	context::enable_blending();
+}
+
+void gl_context::disable_blending() {
+	glDisable(GL_BLEND);
+	context::disable_blending();
+}
+
+void gl_context::set_buffer_mask(BufferMask mask) {
+	glDepthMask(map_to_gl(mask.depth_flag));
+	glColorMask(
+		map_to_gl(mask.red_flag),
+		map_to_gl(mask.green_flag),
+		map_to_gl(mask.blue_flag),
+		map_to_gl(mask.alpha_flag)
+	);
+	context::set_buffer_mask(mask);
+}
+
+void gl_context::set_depth_mask(bool flag) {
+	glDepthMask(map_to_gl(flag));
+	context::set_depth_mask(flag);
+}
+
+void gl_context::set_color_mask(bvec4 flags) {
+	glColorMask(
+		map_to_gl(flags[0]),
+		map_to_gl(flags[1]),
+		map_to_gl(flags[2]),
+		map_to_gl(flags[3])
+	);
+	context::set_color_mask(flags);
+}
+
 /// return homogeneous 4x4 viewing matrix, which transforms from world to eye space
 dmat4 gl_context::get_modelview_matrix() const
 {
@@ -1431,83 +1718,6 @@ double gl_context::get_window_z(int x_window, int y_window) const
 	}
 	*/
 	return z_window;
-}
-static const GLenum gl_depth_format_ids[] = 
-{
-	GL_DEPTH_COMPONENT,
-	GL_DEPTH_COMPONENT16,
-	GL_DEPTH_COMPONENT24,
-	GL_DEPTH_COMPONENT32
-};
-
-static const GLenum gl_color_buffer_format_ids[] = 
-{
-	GL_RGB,
-	GL_RGBA
-};
-
-static const char* depth_formats[] = 
-{
-	"[D]",
-	"uint16[D]",
-	"uint32[D:24]",
-	"uint32[D]",
-	0
-};
-
-static const char* color_buffer_formats[] = 
-{
-	"[R,G,B]",
-	"[R,G,B,A]",
-	0
-};
-
-
-GLuint get_tex_dim(TextureType tt) {
-	static GLuint tex_dim[] = { 0, GL_TEXTURE_1D, GL_TEXTURE_2D, GL_TEXTURE_3D, GL_TEXTURE_1D_ARRAY, GL_TEXTURE_2D_ARRAY, GL_TEXTURE_CUBE_MAP, GL_TEXTURE_2D_MULTISAMPLE, GL_TEXTURE_2D_MULTISAMPLE_ARRAY };
-	return tex_dim[tt];
-}
-
-GLuint get_tex_bind(TextureType tt) {
-	static GLuint tex_bind[] = { 0, GL_TEXTURE_BINDING_1D, GL_TEXTURE_BINDING_2D, GL_TEXTURE_BINDING_3D, GL_TEXTURE_BINDING_1D_ARRAY, GL_TEXTURE_BINDING_2D_ARRAY, GL_TEXTURE_BINDING_CUBE_MAP, GL_TEXTURE_BUFFER, GL_TEXTURE_BINDING_2D_MULTISAMPLE, GL_TEXTURE_BINDING_2D_MULTISAMPLE_ARRAY };
-	return tex_bind[tt];
-}
-
-
-unsigned int map_to_gl(TextureWrap wrap)
-{
-	static const GLenum gl_texture_wrap[] = { 
-		GL_REPEAT, 
-		GL_CLAMP, GL_CLAMP_TO_EDGE, GL_CLAMP_TO_BORDER, 
-		GL_MIRROR_CLAMP_EXT, GL_MIRROR_CLAMP_TO_EDGE_EXT, GL_MIRROR_CLAMP_TO_BORDER_EXT, GL_MIRRORED_REPEAT
-	};
-	return gl_texture_wrap[wrap];
-}
-
-unsigned int map_to_gl(TextureFilter filter_type)
-{
-	static const GLenum gl_texture_filter[] = {
-		GL_NEAREST, GL_LINEAR,
-		GL_NEAREST_MIPMAP_NEAREST, GL_LINEAR_MIPMAP_NEAREST,
-		GL_NEAREST_MIPMAP_LINEAR, GL_LINEAR_MIPMAP_LINEAR,
-		GL_LINEAR_MIPMAP_LINEAR
-	};
-	return gl_texture_filter[filter_type];
-}
-
-unsigned int map_to_gl(CompareFunction cf)
-{
-	static const GLenum gl_cfs[] = {
-		GL_LEQUAL,
-		GL_GEQUAL,
-		GL_LESS,
-		GL_GREATER,
-		GL_EQUAL,
-		GL_NOTEQUAL,
-		GL_ALWAYS,
-		GL_NEVER
-	};
-	return gl_cfs[cf];
 }
 
 cgv::data::component_format gl_context::texture_find_best_format(
@@ -1682,13 +1892,13 @@ bool gl_context::texture_create(texture_base& tb, cgv::data::data_format& df) co
 		glTexImage2D(GL_TEXTURE_2D, 0, gl_format, GLsizei(df.get_width()), GLsizei(df.get_height()), 0, transfer_format, GL_UNSIGNED_BYTE, 0);
 		break;
 	case TT_MULTISAMPLE_2D:
-		glTexImage2DMultisample(GL_TEXTURE_2D_MULTISAMPLE, tb.nr_multi_samples, gl_format, GLsizei(df.get_width()), GLsizei(df.get_height()), tb.fixed_sample_locations ? GL_TRUE : GL_FALSE);
+		glTexImage2DMultisample(GL_TEXTURE_2D_MULTISAMPLE, tb.nr_multi_samples, gl_format, GLsizei(df.get_width()), GLsizei(df.get_height()), map_to_gl(tb.fixed_sample_locations));
 		break;
 	case TT_2D_ARRAY :
 		glTexImage3D(GL_TEXTURE_2D_ARRAY, 0, gl_format, GLsizei(df.get_width()), GLsizei(df.get_height()), GLsizei(df.get_depth()), 0, transfer_format, GL_UNSIGNED_BYTE, 0);
 		break;
 	case TT_MULTISAMPLE_2D_ARRAY:
-		glTexStorage3DMultisample(GL_TEXTURE_2D_MULTISAMPLE_ARRAY, tb.nr_multi_samples, gl_format, GLsizei(df.get_width()), GLsizei(df.get_height()), GLsizei(df.get_depth()), tb.fixed_sample_locations ? GL_TRUE : GL_FALSE);
+		glTexStorage3DMultisample(GL_TEXTURE_2D_MULTISAMPLE_ARRAY, tb.nr_multi_samples, gl_format, GLsizei(df.get_width()), GLsizei(df.get_height()), GLsizei(df.get_depth()), map_to_gl(tb.fixed_sample_locations));
 		break;
 	case TT_3D :
 		glTexImage3D(GL_TEXTURE_3D, 0,
@@ -1986,7 +2196,7 @@ bool gl_context::texture_create_mipmaps(texture_base& tb, cgv::data::data_format
 		}
 		break;
 	case TT_MULTISAMPLE_2D:
-		//glTexImage2DMultisample(GL_TEXTURE_2D_MULTISAMPLE, tb.nr_multi_samples, gl_format, df.get_width(), df.get_height(), tb.fixed_sample_locations ? GL_TRUE : GL_FALSE);
+		//glTexImage2DMultisample(GL_TEXTURE_2D_MULTISAMPLE, tb.nr_multi_samples, gl_format, df.get_width(), df.get_height(), map_to_gl(tb.fixed_sample_locations));
 		error("create mipmaps not implemented for 2D multisample textures", &tb);
 		result = false;
 		break;
@@ -1996,7 +2206,7 @@ bool gl_context::texture_create_mipmaps(texture_base& tb, cgv::data::data_format
 		result = false;
 		break;
 	case TT_MULTISAMPLE_2D_ARRAY:
-		//glTexStorage3DMultisample(GL_TEXTURE_2D_MULTISAMPLE_ARRAY, tb.nr_multi_samples, gl_format, df.get_width(), df.get_height(), df.get_depth(), tb.fixed_sample_locations ? GL_TRUE : GL_FALSE);
+		//glTexStorage3DMultisample(GL_TEXTURE_2D_MULTISAMPLE_ARRAY, tb.nr_multi_samples, gl_format, df.get_width(), df.get_height(), df.get_depth(), map_to_gl(tb.fixed_sample_locations));
 		error("create mipmaps not implemented for 2D multisample array textures", &tb);
 		result = false;
 		break;
@@ -2175,7 +2385,7 @@ bool gl_context::texture_bind_as_image(texture_base& tb, int tex_unit, int level
 	}
 
 	GLuint gl_format = (const GLuint&)tb.internal_format;
-	glBindImageTexture(tex_unit, tex_id, level, bind_array ? GL_TRUE : GL_FALSE, layer, map_to_gl(access), gl_format);
+	glBindImageTexture(tex_unit, tex_id, level, map_to_gl(bind_array), layer, map_to_gl(access), gl_format);
 	
 	bool result = !check_gl_error("gl_context::texture_bind_as_image", &tb);
 	return result;

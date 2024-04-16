@@ -33,7 +33,7 @@ public:
 	{
 		light_direction = normalize(cgv::vec3(1.0f, 1.5f, 1.0f));
 		if (!disp_calib.read(QUOTE_SYMBOL_VALUE(INPUT_DIR) "/visual.json"))
-			std::cerr << "could not read holographic display calibration form <"
+			std::cerr << "could not read holographic display calibration from <"
 					  << QUOTE_SYMBOL_VALUE(INPUT_DIR) "/visual.json>" << std::endl;
 		shader_calib.compute(disp_calib);
 	}

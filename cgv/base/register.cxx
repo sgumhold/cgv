@@ -1339,8 +1339,10 @@ std::string extend_plugin_name(const std::string& fn)
 	n += "14";
 #elif defined(_MSC_VER) && _MSC_VER < 1920
 	n += "141";
-#elif defined(_MSC_VER)
+#elif defined(_MSC_VER) && _MSC_VER < 1930
 	n += "142";
+#elif defined(_MSC_VER)
+	n += "143";
 #endif
 	n += ".dll";
 #else

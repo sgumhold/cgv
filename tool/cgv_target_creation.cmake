@@ -285,7 +285,7 @@ function(cgv_do_deferred_ops TARGET_NAME CONFIGURING_CGV)
 			set(CMD_LINE_ARGS_STRING "${CMD_LINE_ARGS_STRING} ${ADDITIONAL_ARGS_STRING}")
 		endif()
 
-		# create launch script and .vscode config in case of Make- and Ninja-based generators when the plugin is executable
+		# create launch scripts and .vscode configs
 		# - check if a specific working directory was requested
 		cgv_query_property(WORKING_DIR ${TARGET_NAME} CGVPROP_WORKING_DIR)
 		if (NOT WORKING_DIR)
@@ -296,7 +296,7 @@ function(cgv_do_deferred_ops TARGET_NAME CONFIGURING_CGV)
 		if (CONFIGURING_CGV AND NO_EXECUTABLE)
 			set(DO_CREATE_LAUNCH_CONFIG FALSE)
 		endif()
-		if (DO_CREATE_LAUNCH_CONFIG AND (CMAKE_GENERATOR MATCHES "Make" OR CMAKE_GENERATOR MATCHES "^Ninja"))
+		if (DO_CREATE_LAUNCH_CONFIG) # <-- removed requirement that CMAKE_GENERATOR MATCHES "Make" or CMAKE_GENERATOR MATCHES "^Ninja"
 			configure_file(
 				"${CGV_DIR}/make/cmake/run_plugin.sh.in" "${CMAKE_BINARY_DIR}/run_${TARGET_NAME}.sh"
 				FILE_PERMISSIONS OWNER_READ OWNER_WRITE OWNER_EXECUTE GROUP_READ GROUP_EXECUTE WORLD_READ WORLD_EXECUTE
@@ -325,7 +325,7 @@ function(cgv_do_deferred_ops TARGET_NAME CONFIGURING_CGV)
 			else()
 				set(VSCODE_LAUNCH_JSON_CONFIG_LIST "${VSCODE_TARGET_LAUNCH_JSON_CONFIGS},\n${VSCODE_LAUNCH_JSON_CONFIG_LIST}" PARENT_SCOPE)
 			endif()
-		elseif(DO_CREATE_LAUNCH_CONFIG)
+		# elseif(DO_CREATE_LAUNCH_CONFIG)  <-- merged with above branch (see comment above)
 			# try to set relevant options for all other generators in the hopes of ending up with a valid launch/debug
 			# configuration
 			cgv_get_static_or_exe_name(NAME_STATIC NAME_EXE ${TARGET_NAME} TRUE)
