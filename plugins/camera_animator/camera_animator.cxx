@@ -6,7 +6,139 @@
 
 #include <tinyxml2/tinyxml2.h>
 
+#include <stdio.h>
+
+#if WIN32
+#define popen(...) _popen(__VA_ARGS__);
+#define pclose(...) _pclose(__VA_ARGS__);
+#endif
+
 using namespace cgv::render;
+
+FILE* open_pile_for_write(std::string cmd)
+{
+#ifdef WIN32
+	const char* mode = "wb";
+#else
+	const char* mode = "w";
+#endif
+	return popen(cmd.c_str(), mode);
+}
+
+int close_pipe(FILE* fp)
+{
+	return pclose(fp);
+}
+
+pipe_thread::pipe_thread(const std::string& _pipe_name)
+{
+	pipe_name = _pipe_name;
+}
+void pipe_thread::run()
+{
+	pipe_ptr = new nes::pipe_ostream("video_pipe", std::ios_base::out | std::ios_base::binary);
+	if (pipe_ptr->fail()) {
+		delete pipe_ptr;
+		pipe_ptr = 0;
+		return;
+	}
+	has_connect = true;
+	while (!have_stop_request()) {
+		std::pair<char*, size_t> block = { 0,0 };
+		m.lock();
+		if (!blocks.empty()) {
+			block = blocks.front();
+			blocks.pop_front();
+		}
+		m.unlock();
+		if (block.first) {
+			pipe_ptr->write(block.first, block.second);
+			delete [] block.first;
+		}
+		else
+			wait(20);
+	}
+	pipe_ptr->close();
+}
+bool pipe_thread::has_connection() const
+{
+	return has_connect;
+}
+bool pipe_thread::write_to_pipe(const char* data, size_t count)
+{
+	char* block = new char[count];
+	std::copy(data, data + count, block);
+	m.lock();
+	blocks.push_back({ block, count });
+	m.unlock();
+	return true;
+}
+
+bool camera_animator::open_ffmpeg_pipe(const std::string& file_name)
+{
+	auto* ctx_ptr = get_context();
+	if (ctx_ptr == 0)
+		return false;
+	int w = ctx_ptr->get_width(), h = ctx_ptr->get_height();
+
+	std::string input_str = "-";
+
+	if (use_named_pipe) {
+		thread_ptr = new pipe_thread();
+		thread_ptr->start();
+		input_str = std::string(nes::pipe_root) + "video_pipe";
+	}
+	else {
+		if (thread_ptr) {
+			thread_ptr->stop();
+			thread_ptr->wait_for_completion();
+			delete thread_ptr;
+			thread_ptr = 0;
+		}
+	}
+	std::string cmd = "ffmpeg -y -f rawvideo -s "+cgv::utils::to_string(w)+"x"+ cgv::utils::to_string(h)+
+		" -framerate "+ cgv::utils::to_string(fps)+" -pix_fmt rgb24 -i "+input_str+" -c:v libx264 -shortest "+file_name;
+	std::cout << "Cmd: " << cmd << std::endl;
+	fp = open_pile_for_write(cmd);
+	return fp != 0;
+}
+
+bool camera_animator::write_image_to_ffmpeg_pipe()
+{
+	auto* ctx_ptr = get_context();
+	if (ctx_ptr == 0)
+		return false;
+	
+	cgv::data::data_view dv;
+	ctx_ptr->read_frame_buffer(dv);
+	auto* fmt_ptr = dv.get_format();
+	if (use_named_pipe && thread_ptr) {
+		if (thread_ptr->has_connection())
+			thread_ptr->write_to_pipe(dv.get_ptr<char>(), fmt_ptr->get_width() * fmt_ptr->get_height() * 3);
+		else
+			std::cout << "no connection" << std::endl;
+		return true;
+	}
+	else
+		return fwrite(dv.get_ptr<uint8_t>(), 1, fmt_ptr->get_width() * fmt_ptr->get_height() * 3, fp);
+}
+
+bool camera_animator::close_ffmpeg_pipe()
+{
+	if (use_named_pipe && thread_ptr) {
+		thread_ptr->stop();
+		std::cout << "wait_for_completion" << std::endl;
+		thread_ptr->wait_for_completion();
+		delete thread_ptr;
+		thread_ptr = 0;
+	}
+	std::cout << "wait_for_pipe_closure" << std::endl;
+	int ret = close_pipe(fp);
+	if (ret == -1)
+		return false;
+	std::cout << "ffmpeg returned " << ret << std::endl;
+	return true;
+}
 
 camera_animator::camera_animator() : application_plugin("Camera Animator") {
 
@@ -75,7 +207,9 @@ void camera_animator::clear(context& ctx) {
 
 bool camera_animator::self_reflect(cgv::reflect::reflection_handler& rh) {
 
-	return rh.reflect_member("input_path", input_file_helper.file_name);
+	return 
+		rh.reflect_member("input_path", input_file_helper.file_name) &&
+		rh.reflect_member("video_file", video_file_name);
 }
 
 bool camera_animator::handle_event(cgv::gui::event& e) {
@@ -121,36 +255,41 @@ bool camera_animator::handle_event(cgv::gui::event& e) {
 
 		if(ka == cgv::gui::KA_PRESS) {
 			unsigned short key = ke.get_key();
-
-			switch(ke.get_key()) {
-			case 'A':
-				apply = !apply;
-				on_set(&apply);
-				return true;
-			case 'C':
-				show_camera = !show_camera;
-				on_set(&show_camera);
-				return true;
-			case 'P':
-				show_path = !show_path;
-				on_set(&show_path);
-				return true;
-			case 'R':
-				record = !record;
-				on_set(&record);
-				return true;
-			case 'T':
-				show_timeline = !show_timeline;
-				on_set(&show_timeline);
-				return true;
-			
-			default: break;
+			if (ke.get_modifiers() == 0) {
+				switch (ke.get_key()) {
+				case 'A':
+					apply = !apply;
+					on_set(&apply);
+					return true;
+				case 'C':
+					show_camera = !show_camera;
+					on_set(&show_camera);
+					return true;
+				case 'P':
+					show_path = !show_path;
+					on_set(&show_path);
+					return true;
+				case 'R':
+					record = !record;
+					on_set(&record);
+					return true;
+				case 'T':
+					show_timeline = !show_timeline;
+					on_set(&show_timeline);
+					return true;
+				case 'V':
+					video_open = !video_open;
+					on_set(&video_open);
+					return true;
+				case 'B':
+					toggle_animation();
+					return true;
+				default: break;
+				}
 			}
 		}
-
 		return false;
 	}
-
 	return false;
 }
 
@@ -167,7 +306,20 @@ void camera_animator::handle_timer_event(double t, double dt) {
 }
 
 void camera_animator::handle_member_change(const cgv::utils::pointer_test& m) {
-
+	if (m.is(video_open)) {
+		if (video_open) {
+			if (!video_file_name.empty())
+				open_ffmpeg_pipe(video_file_name);
+			else {
+				video_open = false;
+				update_member(&video_open);
+				cgv::gui::message("Choose video file before opening.");
+			}
+		}
+		else {
+			close_ffmpeg_pipe();
+		}
+	}
 	if(m.is(input_file_helper.file_name)) {
 		const std::string& file_name = input_file_helper.file_name;
 		if(input_file_helper.save()) {
@@ -314,8 +466,10 @@ void camera_animator::after_finish(context& ctx) {
 			frame_number = "00" + frame_number;
 		else if(frame_number.length() == 2)
 			frame_number = "0" + frame_number;
-
-		write_image(output_directory_helper.directory_name + "/" + frame_number + ".bmp");
+		if (fp)
+			write_image_to_ffmpeg_pipe();
+		else
+			write_image(output_directory_helper.directory_name + "/" + frame_number + ".bmp");
 		if(set_animation_state(false))
 			animation->frame += 1;
 		else
@@ -329,7 +483,6 @@ void camera_animator::create_gui() {
 	help.create_gui(this);
 
 	input_file_helper.create_gui("Animation File");
-
 	add_member_control(this, "Show Camera", show_camera, "check");
 	add_member_control(this, "Show Path", show_path, "check");
 	add_member_control(this, "Show Timeline", show_timeline, "check");
@@ -355,8 +508,12 @@ void camera_animator::create_gui() {
 	connect_copy(add_button("@>|", options + "'Skip to end'")->click, rebind(this, &camera_animator::skip_to_end));
 	
 	add_decorator("", "separator");
+	add_decorator("Recording", "heading", "level=4");
 
 	output_directory_helper.create_gui("Output Folder");
+	add_gui("Video File", video_file_name, "file_name", "save=true;open=false;title='Save video file';filter='video (mp4):*.mp4|all files:*.*';w=170");
+	add_member_control(this, "Use Named Pipe", use_named_pipe, "toggle");
+	add_member_control(this, "Video Open", video_open, "toggle");
 	add_member_control(this, "Record to Disk", record, "check");
 	connect_copy(add_button("Save Current View")->click, rebind(this, &camera_animator::write_single_image));
 
