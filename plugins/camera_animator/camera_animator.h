@@ -121,7 +121,7 @@ protected:
 	void write_single_image();
 
 public:
-	class camera_animator();
+	camera_animator();
 	std::string get_type_name() const { return "camera_animator"; }
 
 	void clear(cgv::render::context& ctx);
