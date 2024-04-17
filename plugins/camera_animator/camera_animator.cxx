@@ -18,25 +18,26 @@ bool camera_animator::open_ffmpeg_pipe(const std::string& file_name)
 	int w = ctx_ptr->get_width(), h = ctx_ptr->get_height();
 
 	std::string input_str = "-";
+	std::string cmd_begin = "ffmpeg -y -f rawvideo -s " + 
+		cgv::utils::to_string(w) + "x" + cgv::utils::to_string(h) +
+		" -framerate " + cgv::utils::to_string(fps) + " -pix_fmt rgb24 -i ";
+	std::string cmd_end   = " -c:v libx264 -shortest " + file_name;
 
 	if (use_named_pipe) {
-		thread_ptr = new cgv::os::pipe_output_thread("video_pipe");
-		input_str  = thread_ptr->get_pipe_path();
-		thread_ptr->start();
+		named_thread_ptr = new cgv::os::named_pipe_output_thread("video_pipe");
+		std::string cmd = cmd_begin + named_thread_ptr->get_pipe_path() + cmd_end;
+		std::cout << "Cmd: " << cmd << std::endl;
+		named_thread_ptr->start();
+		fp = cgv::os::open_system_input(cmd);
+		return fp != 0;
 	}
 	else {
-		if (thread_ptr) {
-			thread_ptr->done();
-			thread_ptr->wait_for_completion();
-			delete thread_ptr;
-			thread_ptr = 0;
-		}
+		std::string cmd = cmd_begin + "-" + cmd_end;
+		std::cout << "Cmd: " << cmd << std::endl;
+		thread_ptr = new cgv::os::pipe_output_thread(cmd);
+		thread_ptr->start();
+		return true;
 	}
-	std::string cmd = "ffmpeg -y -f rawvideo -s "+cgv::utils::to_string(w)+"x"+ cgv::utils::to_string(h)+
-		" -framerate "+ cgv::utils::to_string(fps)+" -pix_fmt rgb24 -i "+input_str+" -c:v libx264 -shortest "+file_name;
-	std::cout << "Cmd: " << cmd << std::endl;
-	fp = cgv::os::open_system_input(cmd);
-	return fp != 0;
 }
 
 bool camera_animator::write_image_to_ffmpeg_pipe()
@@ -48,38 +49,52 @@ bool camera_animator::write_image_to_ffmpeg_pipe()
 	cgv::data::data_view dv;
 	ctx_ptr->read_frame_buffer(dv);
 	auto* fmt_ptr = dv.get_format();
-	if (use_named_pipe && thread_ptr) {
-		if (thread_ptr->has_connection()) {
-			thread_ptr->send_block(dv.get_ptr<char>(), fmt_ptr->get_width() * fmt_ptr->get_height() * 3);
-			nr_blocks = thread_ptr->get_nr_blocks();
-		}
-		else {
-			std::cout << "no connection" << std::endl;
-			nr_blocks = 0;
-		}
-		update_member(&nr_blocks);
-		return true;
-	}
+	cgv::os::queued_output_thread* queued_thread_ptr;
+	if (use_named_pipe)
+		queued_thread_ptr = named_thread_ptr;
 	else
-		return fwrite(dv.get_ptr<uint8_t>(), 1, fmt_ptr->get_width() * fmt_ptr->get_height() * 3, fp);
+		queued_thread_ptr = thread_ptr;
+
+	if (queued_thread_ptr->has_connection()) {
+		queued_thread_ptr->send_block(dv.get_ptr<char>(), fmt_ptr->get_width() * fmt_ptr->get_height() * 3);
+		nr_blocks = queued_thread_ptr->get_nr_blocks();
+	}
+	else {
+		std::cout << "no connection" << std::endl;
+		nr_blocks = 0;
+	}
+	update_member(&nr_blocks);
+	return true;
 }
 
 bool camera_animator::close_ffmpeg_pipe()
 {
-	if (use_named_pipe && thread_ptr) {
-		thread_ptr->done();
+	cgv::os::queued_output_thread* queued_thread_ptr;
+	if (use_named_pipe)
+		queued_thread_ptr = named_thread_ptr;
+	else
+		queued_thread_ptr = thread_ptr;
+
+	if (queued_thread_ptr) {
+		queued_thread_ptr->done();
 		std::cout << "wait_for_completion" << std::endl;
-		thread_ptr->wait_for_completion();
+		queued_thread_ptr->wait_for_completion();
+	}
+	int result;
+	if (use_named_pipe) {
+		std::cout << "wait_for_pipe_closure" << std::endl;
+		result = cgv::os::close_system_input(fp);
+		delete named_thread_ptr;
+		named_thread_ptr = 0;
+	}
+	else {
+		result = thread_ptr->get_result();
 		delete thread_ptr;
 		thread_ptr = 0;
-		nr_blocks = 0;
-		update_member(&nr_blocks);
 	}
-	std::cout << "wait_for_pipe_closure" << std::endl;
-	int ret = cgv::os::close_system_input(fp);
-	if (ret == -1)
-		return false;
-	std::cout << "ffmpeg returned " << ret << std::endl;
+	nr_blocks = 0;
+	update_member(&nr_blocks);
+	std::cout << "ffmpeg returned " << result << std::endl;
 	return true;
 }
 

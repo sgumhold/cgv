@@ -30,6 +30,7 @@ protected:
 	bool video_open = false;
 	bool use_named_pipe = true;
 	cgv::os::pipe_output_thread* thread_ptr = 0;
+	cgv::os::named_pipe_output_thread* named_thread_ptr = 0;
 	size_t nr_blocks = 0;
 	bool open_ffmpeg_pipe(const std::string& file_name);
 	bool write_image_to_ffmpeg_pipe();
