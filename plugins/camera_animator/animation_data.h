@@ -281,7 +281,7 @@ public:
 		if(delta != 0) {
 			std::vector<std::pair<int, int>> moves;
 
-			for(it; it != keyframes.end(); ++it) {
+			for(; it != keyframes.end(); ++it) {
 				int it_frame = static_cast<int>(it->first);
 				moves.push_back({ it_frame, it_frame + delta });
 			}
