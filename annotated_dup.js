@@ -405,6 +405,7 @@ var annotated_dup =
         [ "http_request", "structcgv_1_1os_1_1http__request.html", "structcgv_1_1os_1_1http__request" ],
         [ "mutex", "structcgv_1_1os_1_1mutex.html", "structcgv_1_1os_1_1mutex" ],
         [ "condition_mutex", "structcgv_1_1os_1_1condition__mutex.html", "structcgv_1_1os_1_1condition__mutex" ],
+        [ "pipe_output_thread", "classcgv_1_1os_1_1pipe__output__thread.html", "classcgv_1_1os_1_1pipe__output__thread" ],
         [ "socket", "classcgv_1_1os_1_1socket.html", "classcgv_1_1os_1_1socket" ],
         [ "socket_client", "classcgv_1_1os_1_1socket__client.html", "classcgv_1_1os_1_1socket__client" ],
         [ "socket_server", "classcgv_1_1os_1_1socket__server.html", "classcgv_1_1os_1_1socket__server" ],
@@ -852,6 +853,9 @@ var annotated_dup =
       [ "gamepad_state", "structgamepad_1_1gamepad__state.html", "structgamepad_1_1gamepad__state" ],
       [ "gamepad_driver", "structgamepad_1_1gamepad__driver.html", "structgamepad_1_1gamepad__driver" ],
       [ "driver_registry", "structgamepad_1_1driver__registry.html", "structgamepad_1_1driver__registry" ]
+    ] ],
+    [ "nes", null, [
+      [ "basic_pipe_ostream", "classnes_1_1basic__pipe__ostream.html", null ]
     ] ],
     [ "stl_reader", null, [
       [ "stl_reader_impl", null, [
