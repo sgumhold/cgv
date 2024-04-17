@@ -3,32 +3,12 @@
 #include <cgv/gui/theme_info.h>
 #include <cgv/gui/trigger.h>
 #include <cgv/utils/advanced_scan.h>
-
+#include <cgv/os/cmdline_tools.h>
 #include <tinyxml2/tinyxml2.h>
 
 #include <stdio.h>
 
-#if WIN32
-#define popen(...) _popen(__VA_ARGS__);
-#define pclose(...) _pclose(__VA_ARGS__);
-#endif
-
 using namespace cgv::render;
-
-FILE* open_pile_for_write(std::string cmd)
-{
-#ifdef WIN32
-	const char* mode = "wb";
-#else
-	const char* mode = "w";
-#endif
-	return popen(cmd.c_str(), mode);
-}
-
-int close_pipe(FILE* fp)
-{
-	return pclose(fp);
-}
 
 bool camera_animator::open_ffmpeg_pipe(const std::string& file_name)
 {
@@ -55,7 +35,7 @@ bool camera_animator::open_ffmpeg_pipe(const std::string& file_name)
 	std::string cmd = "ffmpeg -y -f rawvideo -s "+cgv::utils::to_string(w)+"x"+ cgv::utils::to_string(h)+
 		" -framerate "+ cgv::utils::to_string(fps)+" -pix_fmt rgb24 -i "+input_str+" -c:v libx264 -shortest "+file_name;
 	std::cout << "Cmd: " << cmd << std::endl;
-	fp = open_pile_for_write(cmd);
+	fp = cgv::os::open_system_input(cmd);
 	return fp != 0;
 }
 
@@ -96,7 +76,7 @@ bool camera_animator::close_ffmpeg_pipe()
 		update_member(&nr_blocks);
 	}
 	std::cout << "wait_for_pipe_closure" << std::endl;
-	int ret = close_pipe(fp);
+	int ret = cgv::os::close_system_input(fp);
 	if (ret == -1)
 		return false;
 	std::cout << "ffmpeg returned " << ret << std::endl;
