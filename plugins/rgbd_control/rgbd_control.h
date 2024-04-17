@@ -164,6 +164,7 @@ public:
 	bool acquire_next;
 	bool always_acquire_next;
 	bool visualisation_enabled;
+	//ths signal of new point cloud captured for vr labeling tool
 	cgv::signal::signal<> new_point_cloud_sig;
 
   protected:
