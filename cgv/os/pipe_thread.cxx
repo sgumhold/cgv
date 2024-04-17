@@ -1,28 +1,19 @@
 #include "pipe.hpp"
 #include "pipe_thread.h"
+#include "cmdline_tools.h"
 
 namespace cgv {
 	namespace os {
 
-pipe_output_thread::pipe_output_thread(const std::string& _pipe_name, bool _is_binary, unsigned _ms_to_wait)
+queued_output_thread::queued_output_thread(bool _is_binary, unsigned _ms_to_wait)
 {
-	pipe_name = _pipe_name;
 	is_binary = _is_binary;
 	ms_to_wait = _ms_to_wait;
 }
-std::string pipe_output_thread::get_pipe_path() const
+void queued_output_thread::run()
 {
-	return nes::pipe_root + pipe_name;
-}
-void pipe_output_thread::run()
-{
-	auto mode = is_binary ? (std::ios_base::out | std::ios_base::binary) : std::ios_base::out;
-	pipe_ptr = new nes::pipe_ostream(pipe_name, mode);
-	if (pipe_ptr->fail()) {
-		delete pipe_ptr;
-		pipe_ptr = 0;
+	if (!connect_to_child_process())
 		return;
-	}
 	m.lock();
 	connected = true;
 	m.unlock();
@@ -38,7 +29,7 @@ void pipe_output_thread::run()
 		// if this is available, 
 		if (block.first) {
 			// send it to the pipe and delete block
-			pipe_ptr->write(block.first, block.second);
+			write_block_to_pipe(block.first, block.second);
 			delete[] block.first;
 		}
 		else {
@@ -53,19 +44,17 @@ void pipe_output_thread::run()
 		}
 	}
 	// in case of stop request or done, close pipe
-	pipe_ptr->close();
-	delete pipe_ptr;
-	pipe_ptr = 0;
+	close();
 }
-bool pipe_output_thread::has_connection() const
+bool queued_output_thread::has_connection() const
 {
 	bool result;
 	m.lock();
-	result = pipe_ptr != 0 && connected;
+	result = connected;
 	m.unlock();
 	return result;
 }
-bool pipe_output_thread::send_block(const char* data, size_t count)
+bool queued_output_thread::send_block(const char* data, size_t count)
 {
 	bool all_sent;
 	m.lock();
@@ -89,7 +78,7 @@ bool pipe_output_thread::send_block(const char* data, size_t count)
 	m.unlock();
 	return true;
 }
-size_t pipe_output_thread::get_nr_blocks() const
+size_t queued_output_thread::get_nr_blocks() const
 {
 	size_t nr_blocks;
 	m.lock();
@@ -97,7 +86,7 @@ size_t pipe_output_thread::get_nr_blocks() const
 	m.unlock();
 	return nr_blocks;
 }
-size_t pipe_output_thread::get_nr_bytes() const
+size_t queued_output_thread::get_nr_bytes() const
 {
 	size_t nr_bytes = 0;
 	m.lock();
@@ -106,12 +95,67 @@ size_t pipe_output_thread::get_nr_bytes() const
 	m.unlock();
 	return nr_bytes;
 }
-void pipe_output_thread::done()
+void queued_output_thread::done()
 {
 	m.lock();
 	all_data_sent = true;
 	m.unlock();
 }
+
+named_pipe_output_thread::named_pipe_output_thread(const std::string& _pipe_name, bool _is_binary, unsigned _ms_to_wait)
+	: queued_output_thread(_is_binary, _ms_to_wait)
+{
+	pipe_name = _pipe_name;
+}
+std::string named_pipe_output_thread::get_pipe_path() const
+{
+	return nes::pipe_root + pipe_name;
+}
+bool named_pipe_output_thread::connect_to_child_process()
+{
+	auto mode = is_binary ? (std::ios_base::out | std::ios_base::binary) : std::ios_base::out;
+	pipe_ptr = new nes::pipe_ostream(pipe_name, mode);
+	if (pipe_ptr->fail()) {
+		delete pipe_ptr;
+		pipe_ptr = 0;
+		return false;
+	}
+	return true;
+}
+void named_pipe_output_thread::write_block_to_pipe(const char* data, size_t count)
+{
+	pipe_ptr->write(data, count);
+}
+void named_pipe_output_thread::close()
+{
+	pipe_ptr->close();
+	delete pipe_ptr;
+	pipe_ptr = 0;
+}
+
+pipe_output_thread::pipe_output_thread(const std::string& _cmd, bool _is_binary, unsigned _ms_to_wait)
+	: queued_output_thread(_is_binary, _ms_to_wait)
+{
+	cmd = _cmd;
+}
+bool pipe_output_thread::connect_to_child_process()
+{
+	fp = cgv::os::open_system_input(cmd, is_binary);
+	return fp != 0;
+}
+void pipe_output_thread::write_block_to_pipe(const char* data, size_t count)
+{
+	fwrite(data, 1, count, fp);
+}
+void pipe_output_thread::close()
+{
+	result = cgv::os::close_system_input(fp);
+}
+int pipe_output_thread::get_result() const
+{
+	return result;
+}
+
 
 	}
 }
