@@ -587,7 +587,10 @@ var hierarchy =
     [ "cgv::os::thread", "classcgv_1_1os_1_1thread.html", [
       [ "cgv::os::function_thread", "classcgv_1_1os_1_1function__thread.html", null ],
       [ "cgv::os::function_thread", "classcgv_1_1os_1_1function__thread.html", null ],
-      [ "cgv::os::pipe_output_thread", "classcgv_1_1os_1_1pipe__output__thread.html", null ],
+      [ "cgv::os::queued_output_thread", "classcgv_1_1os_1_1queued__output__thread.html", [
+        [ "cgv::os::named_pipe_output_thread", "classcgv_1_1os_1_1named__pipe__output__thread.html", null ],
+        [ "cgv::os::pipe_output_thread", "classcgv_1_1os_1_1pipe__output__thread.html", null ]
+      ] ],
       [ "cgv::os::web_server_thread", "classcgv_1_1os_1_1web__server__thread.html", null ]
     ] ],
     [ "cgv::os::web_server", "classcgv_1_1os_1_1web__server.html", [

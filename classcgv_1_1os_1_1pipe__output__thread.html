@@ -83,6 +83,7 @@ $(document).ready(function(){initNavTree('classcgv_1_1os_1_1pipe__output__thread
 <div class="header">
   <div class="summary">
 <a href="#pub-methods">Public Member Functions</a> &#124;
+<a href="#pro-methods">Protected Member Functions</a> &#124;
 <a href="#pro-attribs">Protected Attributes</a> &#124;
 <a href="classcgv_1_1os_1_1pipe__output__thread-members.html">List of all members</a>  </div>
   <div class="headertitle">
@@ -90,7 +91,7 @@ $(document).ready(function(){initNavTree('classcgv_1_1os_1_1pipe__output__thread
 </div><!--header-->
 <div class="contents">
 
-<p>class that manages a named pipe and a queue of data blocks in a separate thread  
+<p>queued thread class that manages a child process connecting to its input pipe  
  <a href="classcgv_1_1os_1_1pipe__output__thread.html#details">More...</a></p>
 
 <p><code>#include &lt;<a class="el" href="pipe__thread_8h_source.html">pipe_thread.h</a>&gt;</code></p>
@@ -100,44 +101,50 @@ Inheritance diagram for cgv::os::pipe_output_thread:</div>
  <div class="center">
   <img src="classcgv_1_1os_1_1pipe__output__thread.png" usemap="#cgv::os::pipe_5Foutput_5Fthread_map" alt=""/>
   <map id="cgv::os::pipe_5Foutput_5Fthread_map" name="cgv::os::pipe_5Foutput_5Fthread_map">
-<area href="classcgv_1_1os_1_1thread.html" title="Thread class implementation that uses pthreads internally." alt="cgv::os::thread" shape="rect" coords="0,0,166,24"/>
+<area href="classcgv_1_1os_1_1queued__output__thread.html" title="base class for system command input pipe or named pipe threads including a queue of data blocks and a..." alt="cgv::os::queued_output_thread" shape="rect" coords="0,56,183,80"/>
+<area href="classcgv_1_1os_1_1thread.html" title="Thread class implementation that uses pthreads internally." alt="cgv::os::thread" shape="rect" coords="0,0,183,24"/>
   </map>
 </div></div>
 <table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="pub-methods"></a>
 Public Member Functions</h2></td></tr>
-<tr class="memitem:a765c2d56e9a5363623a85b0ba8ce9911"><td class="memItemLeft" align="right" valign="top"><a id="a765c2d56e9a5363623a85b0ba8ce9911"></a>
-&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcgv_1_1os_1_1pipe__output__thread.html#a765c2d56e9a5363623a85b0ba8ce9911">pipe_output_thread</a> (const std::string &amp;_pipe_name, bool <a class="el" href="classcgv_1_1os_1_1pipe__output__thread.html#ab9a8d023710b6fbf014dcfd19f948922">is_binary</a>=true, unsigned _ms_to_wait=20)</td></tr>
-<tr class="memdesc:a765c2d56e9a5363623a85b0ba8ce9911"><td class="mdescLeft">&#160;</td><td class="mdescRight">construct pipe output thread from pipe name, whether binary mode is used and wait time in ms used when queue is empty <br /></td></tr>
-<tr class="separator:a765c2d56e9a5363623a85b0ba8ce9911"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:aeb8ea8181d59d0e98291255452d32ac8"><td class="memItemLeft" align="right" valign="top"><a id="aeb8ea8181d59d0e98291255452d32ac8"></a>
-std::string&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcgv_1_1os_1_1pipe__output__thread.html#aeb8ea8181d59d0e98291255452d32ac8">get_pipe_path</a> () const</td></tr>
-<tr class="memdesc:aeb8ea8181d59d0e98291255452d32ac8"><td class="mdescLeft">&#160;</td><td class="mdescRight">return path of pipe that can be used in command line arguments to child/client processes <br /></td></tr>
-<tr class="separator:aeb8ea8181d59d0e98291255452d32ac8"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a33fa6025c42d6c311ad6cf3835362c2b"><td class="memItemLeft" align="right" valign="top"><a id="a33fa6025c42d6c311ad6cf3835362c2b"></a>
-void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcgv_1_1os_1_1pipe__output__thread.html#a33fa6025c42d6c311ad6cf3835362c2b">run</a> ()</td></tr>
-<tr class="memdesc:a33fa6025c42d6c311ad6cf3835362c2b"><td class="mdescLeft">&#160;</td><td class="mdescRight">open pipe and continuously write queue content to pipe; if empty wait in intervals of <code>ms_to_wait</code> miliseconds or close pipe and terminate if <a class="el" href="classcgv_1_1os_1_1pipe__output__thread.html#a4dcc69255805f8ec088e10a743219235" title="call this to announce the all data has been sent">done()</a> had been called <br /></td></tr>
-<tr class="separator:a33fa6025c42d6c311ad6cf3835362c2b"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a36f7078901b30672fb243a658face8ba"><td class="memItemLeft" align="right" valign="top"><a id="a36f7078901b30672fb243a658face8ba"></a>
-bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcgv_1_1os_1_1pipe__output__thread.html#a36f7078901b30672fb243a658face8ba">has_connection</a> () const</td></tr>
-<tr class="memdesc:a36f7078901b30672fb243a658face8ba"><td class="mdescLeft">&#160;</td><td class="mdescRight">returns true as soon as child process has connected to pipe <br /></td></tr>
-<tr class="separator:a36f7078901b30672fb243a658face8ba"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a6d850e3a2dbc266c28af1807e109fec8"><td class="memItemLeft" align="right" valign="top"><a id="a6d850e3a2dbc266c28af1807e109fec8"></a>
-bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcgv_1_1os_1_1pipe__output__thread.html#a6d850e3a2dbc266c28af1807e109fec8">send_block</a> (const char *data, size_t count)</td></tr>
-<tr class="memdesc:a6d850e3a2dbc266c28af1807e109fec8"><td class="mdescLeft">&#160;</td><td class="mdescRight">if <a class="el" href="classcgv_1_1os_1_1pipe__output__thread.html#a4dcc69255805f8ec088e10a743219235" title="call this to announce the all data has been sent">done()</a> had not been called, insert a data block into the queue; can fail if <a class="el" href="classcgv_1_1os_1_1pipe__output__thread.html#a4dcc69255805f8ec088e10a743219235" title="call this to announce the all data has been sent">done()</a> or out of memory <br /></td></tr>
-<tr class="separator:a6d850e3a2dbc266c28af1807e109fec8"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a512e20b19d1f2ca61e90caab53ba6909"><td class="memItemLeft" align="right" valign="top"><a id="a512e20b19d1f2ca61e90caab53ba6909"></a>
-size_t&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcgv_1_1os_1_1pipe__output__thread.html#a512e20b19d1f2ca61e90caab53ba6909">get_nr_blocks</a> () const</td></tr>
-<tr class="memdesc:a512e20b19d1f2ca61e90caab53ba6909"><td class="mdescLeft">&#160;</td><td class="mdescRight">returns the number of blocks in the queue of not yet written data <br /></td></tr>
-<tr class="separator:a512e20b19d1f2ca61e90caab53ba6909"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:ad7b869f7ce990c2f0704bafa35253e79"><td class="memItemLeft" align="right" valign="top"><a id="ad7b869f7ce990c2f0704bafa35253e79"></a>
-size_t&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcgv_1_1os_1_1pipe__output__thread.html#ad7b869f7ce990c2f0704bafa35253e79">get_nr_bytes</a> () const</td></tr>
-<tr class="memdesc:ad7b869f7ce990c2f0704bafa35253e79"><td class="mdescLeft">&#160;</td><td class="mdescRight">returns the number of bytes in the queue of not yet written data, what is more time consuming than <a class="el" href="classcgv_1_1os_1_1pipe__output__thread.html#a512e20b19d1f2ca61e90caab53ba6909" title="returns the number of blocks in the queue of not yet written data">get_nr_blocks()</a> <br /></td></tr>
-<tr class="separator:ad7b869f7ce990c2f0704bafa35253e79"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a4dcc69255805f8ec088e10a743219235"><td class="memItemLeft" align="right" valign="top"><a id="a4dcc69255805f8ec088e10a743219235"></a>
-void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcgv_1_1os_1_1pipe__output__thread.html#a4dcc69255805f8ec088e10a743219235">done</a> ()</td></tr>
-<tr class="memdesc:a4dcc69255805f8ec088e10a743219235"><td class="mdescLeft">&#160;</td><td class="mdescRight">call this to announce the all data has been sent <br /></td></tr>
-<tr class="separator:a4dcc69255805f8ec088e10a743219235"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a7eb8a2cd4584fd130d952c4dc0bb47d4"><td class="memItemLeft" align="right" valign="top"><a id="a7eb8a2cd4584fd130d952c4dc0bb47d4"></a>
+&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcgv_1_1os_1_1pipe__output__thread.html#a7eb8a2cd4584fd130d952c4dc0bb47d4">pipe_output_thread</a> (const std::string &amp;_cmd, bool <a class="el" href="classcgv_1_1os_1_1queued__output__thread.html#aaa938ea35a45454cff05aea2f9ee2216">is_binary</a>=true, unsigned _ms_to_wait=20)</td></tr>
+<tr class="memdesc:a7eb8a2cd4584fd130d952c4dc0bb47d4"><td class="mdescLeft">&#160;</td><td class="mdescRight">construct pipe output thread from system command, whether to use binary mode and wait time in ms used when queue is empty <br /></td></tr>
+<tr class="separator:a7eb8a2cd4584fd130d952c4dc0bb47d4"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ac7c567e197dc70ae4031b7e962fe360e"><td class="memItemLeft" align="right" valign="top"><a id="ac7c567e197dc70ae4031b7e962fe360e"></a>
+int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcgv_1_1os_1_1pipe__output__thread.html#ac7c567e197dc70ae4031b7e962fe360e">get_result</a> () const</td></tr>
+<tr class="memdesc:ac7c567e197dc70ae4031b7e962fe360e"><td class="mdescLeft">&#160;</td><td class="mdescRight">return the result value returned from child process which is available only after termination of thread <br /></td></tr>
+<tr class="separator:ac7c567e197dc70ae4031b7e962fe360e"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="inherit_header pub_methods_classcgv_1_1os_1_1queued__output__thread"><td colspan="2" onclick="javascript:toggleInherit('pub_methods_classcgv_1_1os_1_1queued__output__thread')"><img src="closed.png" alt="-"/>&#160;Public Member Functions inherited from <a class="el" href="classcgv_1_1os_1_1queued__output__thread.html">cgv::os::queued_output_thread</a></td></tr>
+<tr class="memitem:acab0dbabf461583cfd7bc23baf5fe8c7 inherit pub_methods_classcgv_1_1os_1_1queued__output__thread"><td class="memItemLeft" align="right" valign="top"><a id="acab0dbabf461583cfd7bc23baf5fe8c7"></a>
+&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcgv_1_1os_1_1queued__output__thread.html#acab0dbabf461583cfd7bc23baf5fe8c7">queued_output_thread</a> (bool <a class="el" href="classcgv_1_1os_1_1queued__output__thread.html#aaa938ea35a45454cff05aea2f9ee2216">is_binary</a>=true, unsigned _ms_to_wait=20)</td></tr>
+<tr class="memdesc:acab0dbabf461583cfd7bc23baf5fe8c7 inherit pub_methods_classcgv_1_1os_1_1queued__output__thread"><td class="mdescLeft">&#160;</td><td class="mdescRight">construct queued output thread from flag, whether to use binary mode and wait time in ms used when queue is empty <br /></td></tr>
+<tr class="separator:acab0dbabf461583cfd7bc23baf5fe8c7 inherit pub_methods_classcgv_1_1os_1_1queued__output__thread"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a87f19e332366b60d58cd7a102e5bb911 inherit pub_methods_classcgv_1_1os_1_1queued__output__thread"><td class="memItemLeft" align="right" valign="top"><a id="a87f19e332366b60d58cd7a102e5bb911"></a>
+void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcgv_1_1os_1_1queued__output__thread.html#a87f19e332366b60d58cd7a102e5bb911">run</a> ()</td></tr>
+<tr class="memdesc:a87f19e332366b60d58cd7a102e5bb911 inherit pub_methods_classcgv_1_1os_1_1queued__output__thread"><td class="mdescLeft">&#160;</td><td class="mdescRight">connect to child process and continuously write queue content to pipe; if empty wait in intervals of <code>ms_to_wait</code> miliseconds or close pipe and terminate if <a class="el" href="classcgv_1_1os_1_1queued__output__thread.html#aaf5bbeaa96eb6dcbd4be3422f9ffc616" title="call this to announce the all data has been sent">done()</a> had been called <br /></td></tr>
+<tr class="separator:a87f19e332366b60d58cd7a102e5bb911 inherit pub_methods_classcgv_1_1os_1_1queued__output__thread"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:afb0b26acb233572ebfa7f2e951027911 inherit pub_methods_classcgv_1_1os_1_1queued__output__thread"><td class="memItemLeft" align="right" valign="top"><a id="afb0b26acb233572ebfa7f2e951027911"></a>
+bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcgv_1_1os_1_1queued__output__thread.html#afb0b26acb233572ebfa7f2e951027911">has_connection</a> () const</td></tr>
+<tr class="memdesc:afb0b26acb233572ebfa7f2e951027911 inherit pub_methods_classcgv_1_1os_1_1queued__output__thread"><td class="mdescLeft">&#160;</td><td class="mdescRight">returns true as soon as child process has connected to pipe <br /></td></tr>
+<tr class="separator:afb0b26acb233572ebfa7f2e951027911 inherit pub_methods_classcgv_1_1os_1_1queued__output__thread"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a593c897dc79209b96136c10e02da983a inherit pub_methods_classcgv_1_1os_1_1queued__output__thread"><td class="memItemLeft" align="right" valign="top"><a id="a593c897dc79209b96136c10e02da983a"></a>
+bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcgv_1_1os_1_1queued__output__thread.html#a593c897dc79209b96136c10e02da983a">send_block</a> (const char *data, size_t count)</td></tr>
+<tr class="memdesc:a593c897dc79209b96136c10e02da983a inherit pub_methods_classcgv_1_1os_1_1queued__output__thread"><td class="mdescLeft">&#160;</td><td class="mdescRight">if <a class="el" href="classcgv_1_1os_1_1queued__output__thread.html#aaf5bbeaa96eb6dcbd4be3422f9ffc616" title="call this to announce the all data has been sent">done()</a> had not been called, insert a data block into the queue; can fail if <a class="el" href="classcgv_1_1os_1_1queued__output__thread.html#aaf5bbeaa96eb6dcbd4be3422f9ffc616" title="call this to announce the all data has been sent">done()</a> or out of memory <br /></td></tr>
+<tr class="separator:a593c897dc79209b96136c10e02da983a inherit pub_methods_classcgv_1_1os_1_1queued__output__thread"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a1f4ef3ce0e2e38c4bb3ed5f225333187 inherit pub_methods_classcgv_1_1os_1_1queued__output__thread"><td class="memItemLeft" align="right" valign="top"><a id="a1f4ef3ce0e2e38c4bb3ed5f225333187"></a>
+size_t&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcgv_1_1os_1_1queued__output__thread.html#a1f4ef3ce0e2e38c4bb3ed5f225333187">get_nr_blocks</a> () const</td></tr>
+<tr class="memdesc:a1f4ef3ce0e2e38c4bb3ed5f225333187 inherit pub_methods_classcgv_1_1os_1_1queued__output__thread"><td class="mdescLeft">&#160;</td><td class="mdescRight">returns the number of blocks in the queue of not yet written data <br /></td></tr>
+<tr class="separator:a1f4ef3ce0e2e38c4bb3ed5f225333187 inherit pub_methods_classcgv_1_1os_1_1queued__output__thread"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:af8895e0f25509edc16d6133548aa1fef inherit pub_methods_classcgv_1_1os_1_1queued__output__thread"><td class="memItemLeft" align="right" valign="top"><a id="af8895e0f25509edc16d6133548aa1fef"></a>
+size_t&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcgv_1_1os_1_1queued__output__thread.html#af8895e0f25509edc16d6133548aa1fef">get_nr_bytes</a> () const</td></tr>
+<tr class="memdesc:af8895e0f25509edc16d6133548aa1fef inherit pub_methods_classcgv_1_1os_1_1queued__output__thread"><td class="mdescLeft">&#160;</td><td class="mdescRight">returns the number of bytes in the queue of not yet written data, what is more time consuming than <a class="el" href="classcgv_1_1os_1_1queued__output__thread.html#a1f4ef3ce0e2e38c4bb3ed5f225333187" title="returns the number of blocks in the queue of not yet written data">get_nr_blocks()</a> <br /></td></tr>
+<tr class="separator:af8895e0f25509edc16d6133548aa1fef inherit pub_methods_classcgv_1_1os_1_1queued__output__thread"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:aaf5bbeaa96eb6dcbd4be3422f9ffc616 inherit pub_methods_classcgv_1_1os_1_1queued__output__thread"><td class="memItemLeft" align="right" valign="top"><a id="aaf5bbeaa96eb6dcbd4be3422f9ffc616"></a>
+void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcgv_1_1os_1_1queued__output__thread.html#aaf5bbeaa96eb6dcbd4be3422f9ffc616">done</a> ()</td></tr>
+<tr class="memdesc:aaf5bbeaa96eb6dcbd4be3422f9ffc616 inherit pub_methods_classcgv_1_1os_1_1queued__output__thread"><td class="mdescLeft">&#160;</td><td class="mdescRight">call this to announce the all data has been sent <br /></td></tr>
+<tr class="separator:aaf5bbeaa96eb6dcbd4be3422f9ffc616 inherit pub_methods_classcgv_1_1os_1_1queued__output__thread"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="inherit_header pub_methods_classcgv_1_1os_1_1thread"><td colspan="2" onclick="javascript:toggleInherit('pub_methods_classcgv_1_1os_1_1thread')"><img src="closed.png" alt="-"/>&#160;Public Member Functions inherited from <a class="el" href="classcgv_1_1os_1_1thread.html">cgv::os::thread</a></td></tr>
 <tr class="memitem:a4ba0e1fd764d20f40099c2d8d27f6753 inherit pub_methods_classcgv_1_1os_1_1thread"><td class="memItemLeft" align="right" valign="top"><a id="a4ba0e1fd764d20f40099c2d8d27f6753"></a>
 &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcgv_1_1os_1_1thread.html#a4ba0e1fd764d20f40099c2d8d27f6753">thread</a> ()</td></tr>
@@ -173,36 +180,61 @@ thread_id_type&#160;</td><td class="memItemRight" valign="bottom"><a class="el" 
 <tr class="memdesc:a708e6bb109d18e44c87212bed08211f3 inherit pub_methods_classcgv_1_1os_1_1thread"><td class="mdescLeft">&#160;</td><td class="mdescRight">return id of this thread <br /></td></tr>
 <tr class="separator:a708e6bb109d18e44c87212bed08211f3 inherit pub_methods_classcgv_1_1os_1_1thread"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table><table class="memberdecls">
+<tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="pro-methods"></a>
+Protected Member Functions</h2></td></tr>
+<tr class="memitem:afdf590a46416dd21a67ab9b897ec77c2"><td class="memItemLeft" align="right" valign="top"><a id="afdf590a46416dd21a67ab9b897ec77c2"></a>
+bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcgv_1_1os_1_1pipe__output__thread.html#afdf590a46416dd21a67ab9b897ec77c2">connect_to_child_process</a> ()</td></tr>
+<tr class="memdesc:afdf590a46416dd21a67ab9b897ec77c2"><td class="mdescLeft">&#160;</td><td class="mdescRight">starts child process and connects to its stdin <br /></td></tr>
+<tr class="separator:afdf590a46416dd21a67ab9b897ec77c2"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a2f64b7b0869480adfa4486132429e402"><td class="memItemLeft" align="right" valign="top"><a id="a2f64b7b0869480adfa4486132429e402"></a>
+void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcgv_1_1os_1_1pipe__output__thread.html#a2f64b7b0869480adfa4486132429e402">write_block_to_pipe</a> (const char *data, size_t count)</td></tr>
+<tr class="memdesc:a2f64b7b0869480adfa4486132429e402"><td class="mdescLeft">&#160;</td><td class="mdescRight">write block to stdin pipe <br /></td></tr>
+<tr class="separator:a2f64b7b0869480adfa4486132429e402"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a7f5831a5df0d6cf5efd78bb1743fad8d"><td class="memItemLeft" align="right" valign="top"><a id="a7f5831a5df0d6cf5efd78bb1743fad8d"></a>
+void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcgv_1_1os_1_1pipe__output__thread.html#a7f5831a5df0d6cf5efd78bb1743fad8d">close</a> ()</td></tr>
+<tr class="memdesc:a7f5831a5df0d6cf5efd78bb1743fad8d"><td class="mdescLeft">&#160;</td><td class="mdescRight">closes stdin pipe and stores result value <br /></td></tr>
+<tr class="separator:a7f5831a5df0d6cf5efd78bb1743fad8d"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="inherit_header pro_methods_classcgv_1_1os_1_1thread"><td colspan="2" onclick="javascript:toggleInherit('pro_methods_classcgv_1_1os_1_1thread')"><img src="closed.png" alt="-"/>&#160;Protected Member Functions inherited from <a class="el" href="classcgv_1_1os_1_1thread.html">cgv::os::thread</a></td></tr>
+<tr class="memitem:a0b04f390cbcb27e543e22c455ab28c19 inherit pro_methods_classcgv_1_1os_1_1thread"><td class="memItemLeft" align="right" valign="top"><a id="a0b04f390cbcb27e543e22c455ab28c19"></a>
+void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcgv_1_1os_1_1thread.html#a0b04f390cbcb27e543e22c455ab28c19">execute</a> ()</td></tr>
+<tr class="memdesc:a0b04f390cbcb27e543e22c455ab28c19 inherit pro_methods_classcgv_1_1os_1_1thread"><td class="mdescLeft">&#160;</td><td class="mdescRight">executes the run method <br /></td></tr>
+<tr class="separator:a0b04f390cbcb27e543e22c455ab28c19 inherit pro_methods_classcgv_1_1os_1_1thread"><td class="memSeparator" colspan="2">&#160;</td></tr>
+</table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="pro-attribs"></a>
 Protected Attributes</h2></td></tr>
-<tr class="memitem:abc5eea2a9151657d9f0d6c7bc0badebe"><td class="memItemLeft" align="right" valign="top"><a id="abc5eea2a9151657d9f0d6c7bc0badebe"></a>
-std::string&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcgv_1_1os_1_1pipe__output__thread.html#abc5eea2a9151657d9f0d6c7bc0badebe">pipe_name</a></td></tr>
-<tr class="memdesc:abc5eea2a9151657d9f0d6c7bc0badebe"><td class="mdescLeft">&#160;</td><td class="mdescRight">based name of the <br /></td></tr>
-<tr class="separator:abc5eea2a9151657d9f0d6c7bc0badebe"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:ab9a8d023710b6fbf014dcfd19f948922"><td class="memItemLeft" align="right" valign="top"><a id="ab9a8d023710b6fbf014dcfd19f948922"></a>
-bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcgv_1_1os_1_1pipe__output__thread.html#ab9a8d023710b6fbf014dcfd19f948922">is_binary</a></td></tr>
-<tr class="memdesc:ab9a8d023710b6fbf014dcfd19f948922"><td class="mdescLeft">&#160;</td><td class="mdescRight">whether binary mode should be used <br /></td></tr>
-<tr class="separator:ab9a8d023710b6fbf014dcfd19f948922"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:ac9d6dde5edcfd1dd555b5ede2a29b58f"><td class="memItemLeft" align="right" valign="top"><a id="ac9d6dde5edcfd1dd555b5ede2a29b58f"></a>
-<a class="el" href="classnes_1_1basic__pipe__ostream.html">nes::basic_pipe_ostream</a>&lt; char, std::char_traits&lt; char &gt; &gt; *&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcgv_1_1os_1_1pipe__output__thread.html#ac9d6dde5edcfd1dd555b5ede2a29b58f">pipe_ptr</a> = 0</td></tr>
-<tr class="memdesc:ac9d6dde5edcfd1dd555b5ede2a29b58f"><td class="mdescLeft">&#160;</td><td class="mdescRight">pointer to the named pipe output stream <br /></td></tr>
-<tr class="separator:ac9d6dde5edcfd1dd555b5ede2a29b58f"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a2bcab65100d1b11e8b2fef00a593a201"><td class="memItemLeft" align="right" valign="top"><a id="a2bcab65100d1b11e8b2fef00a593a201"></a>
-bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcgv_1_1os_1_1pipe__output__thread.html#a2bcab65100d1b11e8b2fef00a593a201">connected</a> = false</td></tr>
-<tr class="memdesc:a2bcab65100d1b11e8b2fef00a593a201"><td class="mdescLeft">&#160;</td><td class="mdescRight">flag that tells whether the pipe has been connected to from the other side <br /></td></tr>
-<tr class="separator:a2bcab65100d1b11e8b2fef00a593a201"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a075227805571a341d89d5eab0dbed7da"><td class="memItemLeft" align="right" valign="top"><a id="a075227805571a341d89d5eab0dbed7da"></a>
-<a class="el" href="structcgv_1_1os_1_1mutex.html">cgv::os::mutex</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcgv_1_1os_1_1pipe__output__thread.html#a075227805571a341d89d5eab0dbed7da">m</a></td></tr>
-<tr class="memdesc:a075227805571a341d89d5eab0dbed7da"><td class="mdescLeft">&#160;</td><td class="mdescRight">mutex used to protect access to <code>blocks</code> <br /></td></tr>
-<tr class="separator:a075227805571a341d89d5eab0dbed7da"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a47f32b5b54e9ee8132f2361ae63e7094"><td class="memItemLeft" align="right" valign="top"><a id="a47f32b5b54e9ee8132f2361ae63e7094"></a>
-std::deque&lt; std::pair&lt; char *, size_t &gt; &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcgv_1_1os_1_1pipe__output__thread.html#a47f32b5b54e9ee8132f2361ae63e7094">blocks</a></td></tr>
-<tr class="memdesc:a47f32b5b54e9ee8132f2361ae63e7094"><td class="mdescLeft">&#160;</td><td class="mdescRight">deque used to queue the data blocks that should be written to the pipe by the thread <br /></td></tr>
-<tr class="separator:a47f32b5b54e9ee8132f2361ae63e7094"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a686d7f5d15fdc2051955a8a4116332eb"><td class="memItemLeft" align="right" valign="top"><a id="a686d7f5d15fdc2051955a8a4116332eb"></a>
-unsigned&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcgv_1_1os_1_1pipe__output__thread.html#a686d7f5d15fdc2051955a8a4116332eb">ms_to_wait</a></td></tr>
-<tr class="memdesc:a686d7f5d15fdc2051955a8a4116332eb"><td class="mdescLeft">&#160;</td><td class="mdescRight">time in miliseconds to wait while queue is empty <br /></td></tr>
-<tr class="separator:a686d7f5d15fdc2051955a8a4116332eb"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:afc702073e50b4041346739d98250528c"><td class="memItemLeft" align="right" valign="top"><a id="afc702073e50b4041346739d98250528c"></a>
+std::string&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcgv_1_1os_1_1pipe__output__thread.html#afc702073e50b4041346739d98250528c">cmd</a></td></tr>
+<tr class="memdesc:afc702073e50b4041346739d98250528c"><td class="mdescLeft">&#160;</td><td class="mdescRight">system command to be executed <br /></td></tr>
+<tr class="separator:afc702073e50b4041346739d98250528c"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:aaea0e5d61c22abf85e8acadad1a4a055"><td class="memItemLeft" align="right" valign="top"><a id="aaea0e5d61c22abf85e8acadad1a4a055"></a>
+FILE *&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcgv_1_1os_1_1pipe__output__thread.html#aaea0e5d61c22abf85e8acadad1a4a055">fp</a> = 0</td></tr>
+<tr class="memdesc:aaea0e5d61c22abf85e8acadad1a4a055"><td class="mdescLeft">&#160;</td><td class="mdescRight">file handle of stdin of child process <br /></td></tr>
+<tr class="separator:aaea0e5d61c22abf85e8acadad1a4a055"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a6c05d1d6d5dd94a33336b4c82f2b2b27"><td class="memItemLeft" align="right" valign="top"><a id="a6c05d1d6d5dd94a33336b4c82f2b2b27"></a>
+int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcgv_1_1os_1_1pipe__output__thread.html#a6c05d1d6d5dd94a33336b4c82f2b2b27">result</a> = -1</td></tr>
+<tr class="memdesc:a6c05d1d6d5dd94a33336b4c82f2b2b27"><td class="mdescLeft">&#160;</td><td class="mdescRight">result value of child process <br /></td></tr>
+<tr class="separator:a6c05d1d6d5dd94a33336b4c82f2b2b27"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="inherit_header pro_attribs_classcgv_1_1os_1_1queued__output__thread"><td colspan="2" onclick="javascript:toggleInherit('pro_attribs_classcgv_1_1os_1_1queued__output__thread')"><img src="closed.png" alt="-"/>&#160;Protected Attributes inherited from <a class="el" href="classcgv_1_1os_1_1queued__output__thread.html">cgv::os::queued_output_thread</a></td></tr>
+<tr class="memitem:aaa938ea35a45454cff05aea2f9ee2216 inherit pro_attribs_classcgv_1_1os_1_1queued__output__thread"><td class="memItemLeft" align="right" valign="top"><a id="aaa938ea35a45454cff05aea2f9ee2216"></a>
+bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcgv_1_1os_1_1queued__output__thread.html#aaa938ea35a45454cff05aea2f9ee2216">is_binary</a></td></tr>
+<tr class="memdesc:aaa938ea35a45454cff05aea2f9ee2216 inherit pro_attribs_classcgv_1_1os_1_1queued__output__thread"><td class="mdescLeft">&#160;</td><td class="mdescRight">whether binary mode should be used <br /></td></tr>
+<tr class="separator:aaa938ea35a45454cff05aea2f9ee2216 inherit pro_attribs_classcgv_1_1os_1_1queued__output__thread"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a0a328dc0552b84e8ea905b766fd7f7cd inherit pro_attribs_classcgv_1_1os_1_1queued__output__thread"><td class="memItemLeft" align="right" valign="top"><a id="a0a328dc0552b84e8ea905b766fd7f7cd"></a>
+bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcgv_1_1os_1_1queued__output__thread.html#a0a328dc0552b84e8ea905b766fd7f7cd">connected</a> = false</td></tr>
+<tr class="memdesc:a0a328dc0552b84e8ea905b766fd7f7cd inherit pro_attribs_classcgv_1_1os_1_1queued__output__thread"><td class="mdescLeft">&#160;</td><td class="mdescRight">flag that tells whether the pipe has been connected to from the other side <br /></td></tr>
+<tr class="separator:a0a328dc0552b84e8ea905b766fd7f7cd inherit pro_attribs_classcgv_1_1os_1_1queued__output__thread"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:adb98a260dc6fff4ffdbaa25aa68e67d1 inherit pro_attribs_classcgv_1_1os_1_1queued__output__thread"><td class="memItemLeft" align="right" valign="top"><a id="adb98a260dc6fff4ffdbaa25aa68e67d1"></a>
+<a class="el" href="structcgv_1_1os_1_1mutex.html">cgv::os::mutex</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcgv_1_1os_1_1queued__output__thread.html#adb98a260dc6fff4ffdbaa25aa68e67d1">m</a></td></tr>
+<tr class="memdesc:adb98a260dc6fff4ffdbaa25aa68e67d1 inherit pro_attribs_classcgv_1_1os_1_1queued__output__thread"><td class="mdescLeft">&#160;</td><td class="mdescRight">mutex used to protect access to <code>blocks</code> <br /></td></tr>
+<tr class="separator:adb98a260dc6fff4ffdbaa25aa68e67d1 inherit pro_attribs_classcgv_1_1os_1_1queued__output__thread"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a8594aaa59cd50b853df0181cf209ace7 inherit pro_attribs_classcgv_1_1os_1_1queued__output__thread"><td class="memItemLeft" align="right" valign="top"><a id="a8594aaa59cd50b853df0181cf209ace7"></a>
+std::deque&lt; std::pair&lt; char *, size_t &gt; &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcgv_1_1os_1_1queued__output__thread.html#a8594aaa59cd50b853df0181cf209ace7">blocks</a></td></tr>
+<tr class="memdesc:a8594aaa59cd50b853df0181cf209ace7 inherit pro_attribs_classcgv_1_1os_1_1queued__output__thread"><td class="mdescLeft">&#160;</td><td class="mdescRight">deque used to queue the data blocks that should be written to the pipe by the thread <br /></td></tr>
+<tr class="separator:a8594aaa59cd50b853df0181cf209ace7 inherit pro_attribs_classcgv_1_1os_1_1queued__output__thread"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a59052ad78db280de7fcec324d5396e4b inherit pro_attribs_classcgv_1_1os_1_1queued__output__thread"><td class="memItemLeft" align="right" valign="top"><a id="a59052ad78db280de7fcec324d5396e4b"></a>
+unsigned&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcgv_1_1os_1_1queued__output__thread.html#a59052ad78db280de7fcec324d5396e4b">ms_to_wait</a></td></tr>
+<tr class="memdesc:a59052ad78db280de7fcec324d5396e4b inherit pro_attribs_classcgv_1_1os_1_1queued__output__thread"><td class="mdescLeft">&#160;</td><td class="mdescRight">time in miliseconds to wait while queue is empty <br /></td></tr>
+<tr class="separator:a59052ad78db280de7fcec324d5396e4b inherit pro_attribs_classcgv_1_1os_1_1queued__output__thread"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="inherit_header pro_attribs_classcgv_1_1os_1_1thread"><td colspan="2" onclick="javascript:toggleInherit('pro_attribs_classcgv_1_1os_1_1thread')"><img src="closed.png" alt="-"/>&#160;Protected Attributes inherited from <a class="el" href="classcgv_1_1os_1_1thread.html">cgv::os::thread</a></td></tr>
 <tr class="memitem:ac319fb322f3394782f207cfb8fe80799 inherit pro_attribs_classcgv_1_1os_1_1thread"><td class="memItemLeft" align="right" valign="top"><a id="ac319fb322f3394782f207cfb8fe80799"></a>
 void *&#160;</td><td class="memItemRight" valign="bottom"><b>thread_ptr</b></td></tr>
@@ -243,20 +275,15 @@ static void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" hre
 static thread_id_type&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcgv_1_1os_1_1thread.html#ac996692241395b46421d15c3fc3e5307">get_current_thread_id</a> ()</td></tr>
 <tr class="memdesc:ac996692241395b46421d15c3fc3e5307 inherit pub_static_methods_classcgv_1_1os_1_1thread"><td class="mdescLeft">&#160;</td><td class="mdescRight">return the id of the currently executed thread <br /></td></tr>
 <tr class="separator:ac996692241395b46421d15c3fc3e5307 inherit pub_static_methods_classcgv_1_1os_1_1thread"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="inherit_header pro_methods_classcgv_1_1os_1_1thread"><td colspan="2" onclick="javascript:toggleInherit('pro_methods_classcgv_1_1os_1_1thread')"><img src="closed.png" alt="-"/>&#160;Protected Member Functions inherited from <a class="el" href="classcgv_1_1os_1_1thread.html">cgv::os::thread</a></td></tr>
-<tr class="memitem:a0b04f390cbcb27e543e22c455ab28c19 inherit pro_methods_classcgv_1_1os_1_1thread"><td class="memItemLeft" align="right" valign="top"><a id="a0b04f390cbcb27e543e22c455ab28c19"></a>
-void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcgv_1_1os_1_1thread.html#a0b04f390cbcb27e543e22c455ab28c19">execute</a> ()</td></tr>
-<tr class="memdesc:a0b04f390cbcb27e543e22c455ab28c19 inherit pro_methods_classcgv_1_1os_1_1thread"><td class="mdescLeft">&#160;</td><td class="mdescRight">executes the run method <br /></td></tr>
-<tr class="separator:a0b04f390cbcb27e543e22c455ab28c19 inherit pro_methods_classcgv_1_1os_1_1thread"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="inherit_header pro_static_methods_classcgv_1_1os_1_1thread"><td colspan="2" onclick="javascript:toggleInherit('pro_static_methods_classcgv_1_1os_1_1thread')"><img src="closed.png" alt="-"/>&#160;Static Protected Member Functions inherited from <a class="el" href="classcgv_1_1os_1_1thread.html">cgv::os::thread</a></td></tr>
 <tr class="memitem:aa18d58e4793e466877748c436eff9238 inherit pro_static_methods_classcgv_1_1os_1_1thread"><td class="memItemLeft" align="right" valign="top"><a id="aa18d58e4793e466877748c436eff9238"></a>
 static void *&#160;</td><td class="memItemRight" valign="bottom"><b>execute_s</b> (void *args)</td></tr>
 <tr class="separator:aa18d58e4793e466877748c436eff9238 inherit pro_static_methods_classcgv_1_1os_1_1thread"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
 <a name="details" id="details"></a><h2 class="groupheader">Detailed Description</h2>
-<div class="textblock"><p>class that manages a named pipe and a queue of data blocks in a separate thread </p>
+<div class="textblock"><p>queued thread class that manages a child process connecting to its input pipe </p>
 
-<p class="definition">Definition at line <a class="el" href="pipe__thread_8h_source.html#l00017">17</a> of file <a class="el" href="pipe__thread_8h_source.html">pipe_thread.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="pipe__thread_8h_source.html#l00079">79</a> of file <a class="el" href="pipe__thread_8h_source.html">pipe_thread.h</a>.</p>
 </div><hr/>The documentation for this class was generated from the following files:<ul>
 <li>cgv/os/<a class="el" href="pipe__thread_8h_source.html">pipe_thread.h</a></li>
 <li>cgv/os/<a class="el" href="pipe__thread_8cxx_source.html">pipe_thread.cxx</a></li>
