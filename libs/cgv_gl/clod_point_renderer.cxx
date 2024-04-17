@@ -174,6 +174,7 @@ namespace cgv {
 
 		bool clod_point_renderer::init(context& ctx)
 		{
+			//create shader program of reduce
 			if (!reduce_prog.is_created()) {
 				reduce_prog.create(ctx);
 				add_shader(ctx, reduce_prog, "point_clod_filter_points.glcs", cgv::render::ST_COMPUTE);
@@ -190,7 +191,7 @@ namespace cgv {
 				uniforms.spacing = reduce_prog.get_uniform_location(ctx, "spacing");
 				uniforms.target_buffer_size = reduce_prog.get_uniform_location(ctx, "target_buffer_size");
 			}
-			//create shader program
+			//create shader program of draw
 			if (!draw_prog.is_created()) {
 				draw_prog.build_program(ctx, "point_clod.glpr", true);
 			}
@@ -283,7 +284,8 @@ namespace cgv {
 
 		bool clod_point_renderer::disable(context& ctx)
 		{
-			draw_prog_ptr = &draw_prog;
+			// commented by Tianfang, seems redundant
+			//draw_prog_ptr = &draw_prog;
 
 			// draw related stuff
 			glBindBuffer(GL_DRAW_INDIRECT_BUFFER, 0);
@@ -578,10 +580,14 @@ namespace cgv {
 					return false;
 				cgv::render::clod_point_render_style* rs_ptr = reinterpret_cast<cgv::render::clod_point_render_style*>(value_ptr);
 				cgv::base::base* b = dynamic_cast<cgv::base::base*>(p);
+				p->add_decorator("Target spacing", "heading", "level=2");
 				p->add_member_control(b, "CLOD factor", rs_ptr->CLOD, "value_slider", "min=0.1;max=10;ticks=true");
+				p->add_decorator("Point spacing", "heading", "level=2");
 				p->add_member_control(b, "scale", rs_ptr->scale, "value_slider", "min=0.1;max=10;ticks=true");
 				p->add_member_control(b, "point spacing", rs_ptr->spacing, "value_slider", "min=0.1;max=10;ticks=true");
+				p->add_decorator("Draw_para", "heading", "level=2");
 				p->add_member_control(b, "point size", rs_ptr->pointSize, "value_slider", "min=0.1;max=10;ticks=true");
+				p->add_decorator("Scanner_para", "heading", "level=2");
 				p->add_member_control(b, "min millimeters", rs_ptr->min_millimeters, "value_slider", "min=0.1;max=10;ticks=true");
 				p->add_member_control(b, "draw circles", rs_ptr->draw_circles, "check");
 				return true;

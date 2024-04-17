@@ -73,9 +73,9 @@ namespace cgv {
 			/** := root spacing, match this to your inputs point spacing in the octrees root level, 
 				too low values may cause most of the pointcloud to go invisible */
 			float spacing;
-			// scales the target spacing
+			// scales the target spacing, actually it scales the pointspacing, by comparing point spacing and target spacing, then discard points
 			float scale;
-			// minimal size of the visible points
+			// minimal size of the visible points, this is sample density from the scanner
 			float min_millimeters;
 			float pointSize;
 			// draw circles instead of squares

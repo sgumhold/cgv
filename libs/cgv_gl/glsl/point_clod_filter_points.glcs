@@ -114,7 +114,7 @@ void main(){
 	vec3 viewPos = (model_view*vec4(position,1.0)).xyz;
 
 	// without level randomization
-	//float pointSpacing = uScale * uSpacing / pow(2, level);
+	//float pointSpacing = scale * spacing / pow(2, level);
 
 	// with level randomization
 	float pointSpacing = scale * spacing / pow(2, level + aRandom);

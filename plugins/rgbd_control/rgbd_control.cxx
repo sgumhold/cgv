@@ -764,6 +764,7 @@ void rgbd_control::timer_event(double t, double dt)
 			P = P2;
 			C = C2;
 			post_redraw();
+			//send signal to pc_cleaning slot
 			new_point_cloud_sig();
 		}
 	}
