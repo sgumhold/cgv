@@ -30,50 +30,6 @@ int close_pipe(FILE* fp)
 	return pclose(fp);
 }
 
-pipe_thread::pipe_thread(const std::string& _pipe_name)
-{
-	pipe_name = _pipe_name;
-}
-void pipe_thread::run()
-{
-	pipe_ptr = new nes::pipe_ostream("video_pipe", std::ios_base::out | std::ios_base::binary);
-	if (pipe_ptr->fail()) {
-		delete pipe_ptr;
-		pipe_ptr = 0;
-		return;
-	}
-	has_connect = true;
-	while (!have_stop_request()) {
-		std::pair<char*, size_t> block = { 0,0 };
-		m.lock();
-		if (!blocks.empty()) {
-			block = blocks.front();
-			blocks.pop_front();
-		}
-		m.unlock();
-		if (block.first) {
-			pipe_ptr->write(block.first, block.second);
-			delete [] block.first;
-		}
-		else
-			wait(20);
-	}
-	pipe_ptr->close();
-}
-bool pipe_thread::has_connection() const
-{
-	return has_connect;
-}
-bool pipe_thread::write_to_pipe(const char* data, size_t count)
-{
-	char* block = new char[count];
-	std::copy(data, data + count, block);
-	m.lock();
-	blocks.push_back({ block, count });
-	m.unlock();
-	return true;
-}
-
 bool camera_animator::open_ffmpeg_pipe(const std::string& file_name)
 {
 	auto* ctx_ptr = get_context();
@@ -84,13 +40,13 @@ bool camera_animator::open_ffmpeg_pipe(const std::string& file_name)
 	std::string input_str = "-";
 
 	if (use_named_pipe) {
-		thread_ptr = new pipe_thread();
+		thread_ptr = new cgv::os::pipe_output_thread("video_pipe");
+		input_str  = thread_ptr->get_pipe_path();
 		thread_ptr->start();
-		input_str = std::string(nes::pipe_root) + "video_pipe";
 	}
 	else {
 		if (thread_ptr) {
-			thread_ptr->stop();
+			thread_ptr->done();
 			thread_ptr->wait_for_completion();
 			delete thread_ptr;
 			thread_ptr = 0;
@@ -113,10 +69,15 @@ bool camera_animator::write_image_to_ffmpeg_pipe()
 	ctx_ptr->read_frame_buffer(dv);
 	auto* fmt_ptr = dv.get_format();
 	if (use_named_pipe && thread_ptr) {
-		if (thread_ptr->has_connection())
-			thread_ptr->write_to_pipe(dv.get_ptr<char>(), fmt_ptr->get_width() * fmt_ptr->get_height() * 3);
-		else
+		if (thread_ptr->has_connection()) {
+			thread_ptr->send_block(dv.get_ptr<char>(), fmt_ptr->get_width() * fmt_ptr->get_height() * 3);
+			nr_blocks = thread_ptr->get_nr_blocks();
+		}
+		else {
 			std::cout << "no connection" << std::endl;
+			nr_blocks = 0;
+		}
+		update_member(&nr_blocks);
 		return true;
 	}
 	else
@@ -126,11 +87,13 @@ bool camera_animator::write_image_to_ffmpeg_pipe()
 bool camera_animator::close_ffmpeg_pipe()
 {
 	if (use_named_pipe && thread_ptr) {
-		thread_ptr->stop();
+		thread_ptr->done();
 		std::cout << "wait_for_completion" << std::endl;
 		thread_ptr->wait_for_completion();
 		delete thread_ptr;
 		thread_ptr = 0;
+		nr_blocks = 0;
+		update_member(&nr_blocks);
 	}
 	std::cout << "wait_for_pipe_closure" << std::endl;
 	int ret = close_pipe(fp);
@@ -294,6 +257,14 @@ bool camera_animator::handle_event(cgv::gui::event& e) {
 }
 
 void camera_animator::handle_timer_event(double t, double dt) {
+
+	if (thread_ptr) {
+		size_t new_nr_blocks = thread_ptr->get_nr_blocks();
+		if (new_nr_blocks != nr_blocks) {
+			nr_blocks = new_nr_blocks;
+			update_member(&nr_blocks);
+		}
+	}
 
 	if(animate && !record) {
 		if(set_animation_state(true)) {
@@ -514,6 +485,7 @@ void camera_animator::create_gui() {
 	add_gui("Video File", video_file_name, "file_name", "save=true;open=false;title='Save video file';filter='video (mp4):*.mp4|all files:*.*';w=170");
 	add_member_control(this, "Use Named Pipe", use_named_pipe, "toggle");
 	add_member_control(this, "Video Open", video_open, "toggle");
+	add_view("Nr Queued Frames", nr_blocks);
 	add_member_control(this, "Record to Disk", record, "check");
 	connect_copy(add_button("Save Current View")->click, rebind(this, &camera_animator::write_single_image));
 
