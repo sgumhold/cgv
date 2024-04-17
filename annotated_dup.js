@@ -405,6 +405,8 @@ var annotated_dup =
         [ "http_request", "structcgv_1_1os_1_1http__request.html", "structcgv_1_1os_1_1http__request" ],
         [ "mutex", "structcgv_1_1os_1_1mutex.html", "structcgv_1_1os_1_1mutex" ],
         [ "condition_mutex", "structcgv_1_1os_1_1condition__mutex.html", "structcgv_1_1os_1_1condition__mutex" ],
+        [ "queued_output_thread", "classcgv_1_1os_1_1queued__output__thread.html", "classcgv_1_1os_1_1queued__output__thread" ],
+        [ "named_pipe_output_thread", "classcgv_1_1os_1_1named__pipe__output__thread.html", "classcgv_1_1os_1_1named__pipe__output__thread" ],
         [ "pipe_output_thread", "classcgv_1_1os_1_1pipe__output__thread.html", "classcgv_1_1os_1_1pipe__output__thread" ],
         [ "socket", "classcgv_1_1os_1_1socket.html", "classcgv_1_1os_1_1socket" ],
         [ "socket_client", "classcgv_1_1os_1_1socket__client.html", "classcgv_1_1os_1_1socket__client" ],
