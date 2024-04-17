@@ -439,7 +439,7 @@ $(document).ready(function(){initNavTree('gl__implicit__surface__drawable__base_
 <div class="line"><a name="l00356"></a><span class="lineno">  356</span>&#160; </div>
 <div class="line"><a name="l00357"></a><span class="lineno">  357</span>&#160;    <a class="code" href="classcgv_1_1math_1_1fvec.html">dvec3</a> n = cross(pk-pi, pj-pi);</div>
 <div class="line"><a name="l00358"></a><span class="lineno">  358</span>&#160;    <span class="keywordtype">double</span> l  = n.<a class="code" href="classcgv_1_1math_1_1fvec.html#a68f4c962a48bde5bf2b65494c6e89985">length</a>();</div>
-<div class="line"><a name="l00359"></a><span class="lineno">  359</span>&#160;    <span class="keywordflow">if</span> ((l &gt; 1e-6) &amp;&amp; (dot(n,ni) &gt; l*normal_threshold))</div>
+<div class="line"><a name="l00359"></a><span class="lineno">  359</span>&#160;    <span class="keywordflow">if</span> ((normal_computation_type != CORNER_GRADIENTS) &amp;&amp; (l &gt; 1e-6) &amp;&amp; (dot(n,ni) &gt; l*normal_threshold))</div>
 <div class="line"><a name="l00360"></a><span class="lineno">  360</span>&#160;        <span class="keywordflow">return</span> ni;</div>
 <div class="line"><a name="l00361"></a><span class="lineno">  361</span>&#160;    <span class="keywordflow">else</span> {</div>
 <div class="line"><a name="l00362"></a><span class="lineno">  362</span>&#160;        <a class="code" href="classcgv_1_1math_1_1fvec.html">dvec3</a> p = pi;</div>

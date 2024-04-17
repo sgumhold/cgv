@@ -27,6 +27,7 @@ var hierarchy =
     [ "base_drawable", null, [
       [ "cgv::app::generic_application_plugin< base_drawable >", "classcgv_1_1app_1_1generic__application__plugin.html", null ]
     ] ],
+    [ "nes::basic_pipe_ostream< char, std::char_traits< char > >", "classnes_1_1basic__pipe__ostream.html", null ],
     [ "cfg_reg_type", "structcfg__reg__type.html", null ],
     [ "cgv::app::color_map_editor::cm_container", "structcgv_1_1app_1_1color__map__editor_1_1cm__container.html", null ],
     [ "cgv::app::color_map_editor::layout_attributes", "structcgv_1_1app_1_1color__map__editor_1_1layout__attributes.html", null ],
@@ -586,6 +587,7 @@ var hierarchy =
     [ "cgv::os::thread", "classcgv_1_1os_1_1thread.html", [
       [ "cgv::os::function_thread", "classcgv_1_1os_1_1function__thread.html", null ],
       [ "cgv::os::function_thread", "classcgv_1_1os_1_1function__thread.html", null ],
+      [ "cgv::os::pipe_output_thread", "classcgv_1_1os_1_1pipe__output__thread.html", null ],
       [ "cgv::os::web_server_thread", "classcgv_1_1os_1_1web__server__thread.html", null ]
     ] ],
     [ "cgv::os::web_server", "classcgv_1_1os_1_1web__server.html", [
@@ -1108,6 +1110,7 @@ var hierarchy =
     [ "cgv::type::func::MakeConst::make_const_impl< drop_const< T >::type >", "structcgv_1_1type_1_1func_1_1MakeConst_1_1make__const__impl.html", [
       [ "cgv::type::func::make_const< T >", "structcgv_1_1type_1_1func_1_1make__const.html", null ]
     ] ],
+    [ "nes::basic_pipe_ostream< CharT, Traits >", "classnes_1_1basic__pipe__ostream.html", null ],
     [ "cgv::media::opacity_alpha_interface< color< T, cm, TRANSPARENCY > >", "structcgv_1_1media_1_1opacity__alpha__interface.html", [
       [ "cgv::media::transparency_alpha_interface< color< T, cm, TRANSPARENCY > >", "structcgv_1_1media_1_1transparency__alpha__interface_3_01color_3_01T_00_01cm_00_01TRANSPARENCY_01_4_01_4.html", null ]
     ] ],

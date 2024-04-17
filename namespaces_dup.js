@@ -239,6 +239,9 @@ var namespaces_dup =
       [ "set_driver_state", "gamepad_8cxx.html#a8d2fd2a6aaaf6ea1fb61b5cc4948ebdb", null ],
       [ "set_vibration", "gamepad_8cxx.html#a496315ebd50f632b5fd0e749e447e6ba", null ]
     ] ],
+    [ "nes", null, [
+      [ "basic_pipe_ostream", "classnes_1_1basic__pipe__ostream.html", null ]
+    ] ],
     [ "stl_reader", null, [
       [ "stl_reader_impl", null, [
         [ "CoordWithIndex", "structstl__reader_1_1stl__reader__impl_1_1CoordWithIndex.html", "structstl__reader_1_1stl__reader__impl_1_1CoordWithIndex" ],

@@ -923,6 +923,7 @@ var namespacecgv =
       [ "http_request", "structcgv_1_1os_1_1http__request.html", "structcgv_1_1os_1_1http__request" ],
       [ "mutex", "structcgv_1_1os_1_1mutex.html", "structcgv_1_1os_1_1mutex" ],
       [ "condition_mutex", "structcgv_1_1os_1_1condition__mutex.html", "structcgv_1_1os_1_1condition__mutex" ],
+      [ "pipe_output_thread", "classcgv_1_1os_1_1pipe__output__thread.html", "classcgv_1_1os_1_1pipe__output__thread" ],
       [ "socket", "classcgv_1_1os_1_1socket.html", "classcgv_1_1os_1_1socket" ],
       [ "socket_client", "classcgv_1_1os_1_1socket__client.html", "classcgv_1_1os_1_1socket__client" ],
       [ "socket_server", "classcgv_1_1os_1_1socket__server.html", "classcgv_1_1os_1_1socket__server" ],
@@ -947,6 +948,7 @@ var namespacecgv =
         [ "EP_NORMAL", "priority_8h.html#a3280d50641a1acf53c427003e070a9d4abf451adf9b905b18c4ab7edae5660333", null ],
         [ "EP_HIGH", "priority_8h.html#a3280d50641a1acf53c427003e070a9d4a100e13519596f85345d1881c6e4f7820", null ]
       ] ],
+      [ "close_system_input", "cmdline__tools_8cxx.html#a6192371a2f0f3963fd5d1ed808cfd4ec", null ],
       [ "compress_archive", "cmdline__tools_8cxx.html#a07714b32304797dbfabe23575eb484f4", null ],
       [ "copy_rgb_image_to_clipboard", "clipboard_8cxx.html#ac80824ae2d8d6f732a5be40141778872", null ],
       [ "copy_text_to_clipboard", "clipboard_8cxx.html#ac7925f0c4f11c57636affc37cd90b578", null ],
@@ -956,6 +958,7 @@ var namespacecgv =
       [ "expand_archive", "cmdline__tools_8cxx.html#a249e70e64a10cf8a55d9c00eadd076f0", null ],
       [ "get_execution_priority", "priority_8cxx.html#ab9a136bc9723eaee205e98e4f6c15e5a", null ],
       [ "get_mouse_cursor", "mouse__ctrl_8cxx.html#a3aa2e3579170743abe91917badab49b1", null ],
+      [ "open_system_input", "cmdline__tools_8cxx.html#a4506a7fc1ea6a98e299c967d9031737e", null ],
       [ "operator<<", "display_8cxx.html#a7ccea360e7f70450d09612165a45a76f", null ],
       [ "operator<<", "display_8cxx.html#a8025b12661113c94d0671b30470546fc", null ],
       [ "operator<<", "display_8cxx.html#a308d70d79931980242ff18eb9b937b07", null ],
