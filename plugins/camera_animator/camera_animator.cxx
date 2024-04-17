@@ -468,7 +468,7 @@ void camera_animator::create_gui() {
 	add_member_control(this, "", animation->time, "wheel", "min=0;max=4" + std::to_string(limits.second) + ";step=0.005");
 
 	std::string options = "w=25;tooltip=";
-	constexpr char* align = "%x+=10";
+	constexpr auto align = "%x+=10";
 
 	connect_copy(add_button("@|<", options + "'Rewind to start (keep playing)'", align)->click, rebind(this, &camera_animator::skip_to_start));
 	connect_copy(add_button("@square", options + "'Stop playback'", align)->click, rebind(this, &camera_animator::reset_animation));
@@ -708,7 +708,7 @@ void camera_animator::handle_editor_change(keyframe_editor_overlay::Event e) {
 		break;
 	case keyframe_editor_overlay::Event::kKeySelect:
 		if(timeline_ptr) {
-			if(selected_keyframe = animation->keyframe_at(timeline_ptr->get_selected_frame())) {
+			if(/**/(selected_keyframe = animation->keyframe_at(timeline_ptr->get_selected_frame()))/**/) {
 				eye_gizmo.set_position(selected_keyframe->camera_state.eye_position);
 				focus_gizmo.set_position(selected_keyframe->camera_state.focus_position);
 			}
