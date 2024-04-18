@@ -130,7 +130,7 @@ void keyframe_editor_overlay::handle_member_change(const cgv::utils::pointer_tes
 	}
 
 	if(m.is(new_frame_count)) {
-		new_frame_count = cgv::math::clamp(new_frame_count, 0ull, 9000ull);
+		new_frame_count = cgv::math::clamp((size_t)new_frame_count, (size_t)0, (size_t)9000);
 		if(data) {
 			new_duration = data->frame_to_time(new_frame_count);
 			update_member(&new_duration);
