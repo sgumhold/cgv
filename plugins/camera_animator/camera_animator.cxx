@@ -127,7 +127,6 @@ camera_animator::camera_animator() : application_plugin("Camera Animator") {
 
 	timeline_ptr = register_overlay<keyframe_editor_overlay>("Keyframe Editor");
 	timeline_ptr->set_on_change_callback(std::bind(&camera_animator::handle_editor_change, this, std::placeholders::_1));
-	timeline_ptr->set_visibility(show_timeline);
 	timeline_ptr->gui_options.create_default_tree_node = false;
 	timeline_ptr->gui_options.show_layout_options = false;
 
@@ -146,7 +145,7 @@ camera_animator::camera_animator() : application_plugin("Camera Animator") {
 	help.add_bullet_point("C : Toggle camera visibility");
 	help.add_bullet_point("P : Toggle camera path visibility");
 	help.add_bullet_point("R : Toggle record mode");
-	help.add_bullet_point("T : Toggle timeline visibility");
+	help.add_bullet_point("Spacebar : Play/pause animation");
 }
 
 void camera_animator::clear(context& ctx) {
@@ -216,30 +215,35 @@ bool camera_animator::handle_event(cgv::gui::event& e) {
 			if (ke.get_modifiers() == 0) {
 				switch (ke.get_key()) {
 				case 'A':
-					apply = !apply;
-					on_set(&apply);
-					return true;
+					if(!record) {
+						apply = !apply;
+						on_set(&apply);
+						return true;
+					}
+					break;
 				case 'C':
-					show_camera = !show_camera;
-					on_set(&show_camera);
-					return true;
+					if(!record) {
+						show_camera = !show_camera;
+						on_set(&show_camera);
+						return true;
+					}
+					break;
 				case 'P':
-					show_path = !show_path;
-					on_set(&show_path);
-					return true;
+					if(!record) {
+						show_path = !show_path;
+						on_set(&show_path);
+						return true;
+					}
+					break;
 				case 'R':
 					record = !record;
 					on_set(&record);
-					return true;
-				case 'T':
-					show_timeline = !show_timeline;
-					on_set(&show_timeline);
 					return true;
 				case 'V':
 					video_open = !video_open;
 					on_set(&video_open);
 					return true;
-				case 'B':
+				case cgv::gui::KEY_Space:
 					toggle_animation();
 					return true;
 				default: break;
@@ -310,14 +314,15 @@ void camera_animator::handle_member_change(const cgv::utils::pointer_test& m) {
 		get_context()->set_gamma(record ? 1.0f : 2.2f);
 		animation->use_continuous_time = !record;
 		
-		show_path = false;
-		update_member(&show_path);
-		show_camera = false;
-		update_member(&show_camera);
-		show_timeline = false;
-		on_set(&show_timeline);
-		apply = true;
-		on_set(&apply);
+		if(timeline_ptr)
+			timeline_ptr->set_visibility(!record);
+
+		std::string active = record ? "false" : "true";
+		set_control_property(show_camera, "active", active);
+		set_control_property(show_path, "active", active);
+		set_control_property(apply, "active", active);
+		
+		set_animation_state(false);
 	}
 
 	if(m.is(animation->frame))
@@ -328,11 +333,6 @@ void camera_animator::handle_member_change(const cgv::utils::pointer_test& m) {
 
 	if(m.is(apply))
 		set_animation_state(false);
-
-	if(m.one_of(show_timeline, hide_all)) {
-		if(timeline_ptr)
-			timeline_ptr->set_visibility(hide_all ? false : show_timeline);
-	}
 }
 
 bool camera_animator::on_exit_request() {
@@ -348,14 +348,12 @@ bool camera_animator::on_exit_request() {
 
 void camera_animator::on_select() {
 
-	hide_all = false;
-	on_set(&hide_all);
+	show();
 }
 
 void camera_animator::on_deselect() {
 
-	hide_all = true;
-	on_set(&hide_all);
+	hide();
 }
 
 bool camera_animator::init(context& ctx) {
@@ -402,25 +400,26 @@ void camera_animator::init_frame(context& ctx) {
 
 void camera_animator::finish_frame(context& ctx) {
 
-	if(!hide_all) {
-		if(show_camera) {
-			eye_rd.render(ctx, local_point_renderer);
+	if(record)
+		return;
 
-			ctx.push_modelview_matrix();
-			ctx.mul_modelview_matrix(view_transformation);
-			view_rd.render(ctx, local_line_renderer);
-			ctx.pop_modelview_matrix();
-		}
+	if(show_camera) {
+		eye_rd.render(ctx, local_point_renderer);
 
-		if(show_path) {
-			keyframes_rd.render(ctx, local_point_renderer);
-			paths_rd.render(ctx, local_line_renderer);
-		}
+		ctx.push_modelview_matrix();
+		ctx.mul_modelview_matrix(view_transformation);
+		view_rd.render(ctx, local_line_renderer);
+		ctx.pop_modelview_matrix();
+	}
 
-		if(selected_keyframe) {
-			eye_gizmo.draw(ctx);
-			focus_gizmo.draw(ctx);
-		}
+	if(show_path) {
+		keyframes_rd.render(ctx, local_point_renderer);
+		paths_rd.render(ctx, local_line_renderer);
+	}
+
+	if(selected_keyframe) {
+		eye_gizmo.draw(ctx);
+		focus_gizmo.draw(ctx);
 	}
 }
 
@@ -451,7 +450,6 @@ void camera_animator::create_gui() {
 	input_file_helper.create_gui("Animation File");
 	add_member_control(this, "Show Camera", show_camera, "check");
 	add_member_control(this, "Show Path", show_path, "check");
-	add_member_control(this, "Show Timeline", show_timeline, "check");
 	add_member_control(this, "Apply Animation", apply, "check");
 
 	add_decorator("Playback", "heading", "level=4");
@@ -550,7 +548,7 @@ bool camera_animator::set_animation_state(bool use_continuous_time) {
 	view_parameters view;
 	bool run = animation->current_view(view) && animation->frame < animation->frame_count();
 
-	if(run && apply)
+	if(run && apply || record)
 		view.apply(view_ptr);
 
 	create_camera_render_data(view);

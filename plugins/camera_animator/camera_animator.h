@@ -65,8 +65,6 @@ protected:
 	bool apply = false;
 	bool show_camera = true;
 	bool show_path = true;
-	bool show_timeline = true;
-	bool hide_all = true;
 
 	cgv::gui::button_ptr play_pause_btn;
 
