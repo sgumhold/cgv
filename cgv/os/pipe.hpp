@@ -61,8 +61,8 @@
 
 namespace nes
 {
-
-    inline constexpr const char pipe_root[] = "\\\\.\\pipe\\";
+    // removed inline keyword to make it C++14 compatible
+    constexpr const char pipe_root[] = "\\\\.\\pipe\\";
 
     template<typename CharT, typename Traits>
     class basic_pipe_istream;
@@ -277,7 +277,9 @@ namespace nes
             std::wstring out_path{};
             out_path.resize(static_cast<std::size_t>(MultiByteToWideChar(CP_UTF8, MB_ERR_INVALID_CHARS, std::data(path), static_cast<int>(std::size(path)), nullptr, 0)));
 
-            if (!MultiByteToWideChar(CP_UTF8, MB_ERR_INVALID_CHARS, std::data(path), static_cast<int>(std::size(path)), std::data(out_path), static_cast<int>(std::size(out_path))))
+            if (!MultiByteToWideChar(CP_UTF8, MB_ERR_INVALID_CHARS, std::data(path), static_cast<int>(std::size(path)), 
+                &out_path[0], // replaced std::data(out_path) with this to avoid pointer to be to const Elem*
+                static_cast<int>(std::size(out_path))))
                 throw std::runtime_error{ "Failed to convert the path to wide." };
 
             return out_path;
@@ -476,8 +478,8 @@ namespace nes
 
 namespace nes
 {
-
-    inline constexpr const char pipe_root[] = "/tmp/";
+    // removed inline keyword to make it C++14 compatible
+    constexpr const char pipe_root[] = "/tmp/";
 
     template<typename CharT, typename Traits>
     class basic_pipe_istream;
