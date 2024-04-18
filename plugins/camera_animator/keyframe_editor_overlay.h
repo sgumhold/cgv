@@ -1,5 +1,6 @@
 #pragma once
 
+#include <memory>
 #include <cgv/gui/dialog.h>
 #include <cgv/gui/help_message.h>
 #include <cgv/gui/key_event.h>
@@ -151,25 +152,25 @@ protected:
 
 	void init_styles() override;
 	
-	virtual void create_gui_impl();
+	virtual void create_gui_impl() override;
 
 public:
 	keyframe_editor_overlay();
-	std::string get_type_name() const { return "keyframe_editor_overlay"; }
+	std::string get_type_name() const override { return "keyframe_editor_overlay"; }
 
-	void clear(cgv::render::context& ctx);
+	void clear(cgv::render::context& ctx) override;
 
-	bool handle_event(cgv::gui::event& e);
-	void handle_member_change(const cgv::utils::pointer_test& m);
+	bool handle_event(cgv::gui::event& e) override;
+	void handle_member_change(const cgv::utils::pointer_test& m) override;
 
-	bool init(cgv::render::context& ctx);
-	void init_frame(cgv::render::context& ctx);
-	void draw_content(cgv::render::context& ctx);
+	bool init(cgv::render::context& ctx) override;
+	void init_frame(cgv::render::context& ctx) override;
+	void draw_content(cgv::render::context& ctx) override;
 
 	void set_view_ptr(cgv::render::view* view_ptr);
 	void set_data(std::shared_ptr<animation_data> data);
 
-	void update();
+	void update() override;
 
 	size_t get_selected_frame() { return selected_frame; }
 

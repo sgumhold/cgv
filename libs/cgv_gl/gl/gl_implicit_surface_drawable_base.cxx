@@ -356,7 +356,7 @@ dvec3 gl_implicit_surface_drawable_base::compute_corner_normal(const dvec3& pj, 
 
 	dvec3 n = cross(pk-pi, pj-pi);
 	double l  = n.length();
-	if ((l > 1e-6) && (dot(n,ni) > l*normal_threshold))
+	if ((normal_computation_type != CORNER_GRADIENTS) && (l > 1e-6) && (dot(n,ni) > l*normal_threshold))
 		return ni;
 	else {
 		dvec3 p = pi;
