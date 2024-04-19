@@ -46,7 +46,7 @@ protected:
 
 	template<typename T>
 	void connect_to_on_set(cgv::base::base* base_ptr, cgv::gui::control_ptr control, T& value) {
-		auto ptr = control.up_cast<cgv::gui::control<T>>();
+		auto ptr = control.down_cast<cgv::gui::control<T>>();
 		if(ptr)
 			connect_copy(ptr->value_change, cgv::signal::rebind(base_ptr, &cgv::base::base::on_set, &value));
 	}
