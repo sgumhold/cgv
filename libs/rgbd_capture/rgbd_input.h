@@ -30,6 +30,8 @@ public:
 	static unsigned get_nr_devices();
 	/// return the serial of the i-th rgbd devices
 	static std::string get_serial(int i);
+	/// find audio device id 
+	static std::string get_audio_device_id(int i);
 	//@}
 
 	/**@name device attachment */

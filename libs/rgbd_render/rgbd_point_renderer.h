@@ -63,6 +63,7 @@ namespace rgbd {
 		bool enable(cgv::render::context& ctx);
 		bool disable(cgv::render::context& ctx);
 		void draw(cgv::render::context& ctx, size_t start, size_t count, bool use_strips = false, bool use_adjacency = false, uint32_t strip_restart_index = -1);
+		void clear(const cgv::render::context& ctx);
 		// convenience function to add UI elements
 		void create_gui(cgv::base::base* bp, cgv::gui::provider& p);
 	};
