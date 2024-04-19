@@ -1,17 +1,20 @@
 #include "system_devices.h"
 #include <cgv/utils/convert.h>
 #include <iostream>
+#ifdef WIN32
 #include <windows.h>
 #include <initguid.h>
 #include <setupapi.h>
 #pragma comment (lib, "Setupapi.lib")
 #include <devpkey.h>
+#endif
 
 namespace cgv {
 	namespace os {
 
 bool enumerate_system_devices(std::vector<std::pair<std::string, cgv::utils::guid>>& devices, const std::string& selector, bool present)
 {
+#ifdef WIN32
 	// prepare device enumaration
 	const TCHAR* enumerator = 0;
 #ifdef UNICODE
@@ -52,6 +55,9 @@ bool enumerate_system_devices(std::vector<std::pair<std::string, cgv::utils::gui
 	}
 	SetupDiDestroyDeviceInfoList(deviceInfo);
 	return true;
+#else
+	std::cerr << "cgv::os::enumerate_system_devices() only implemented on Windows" << std::endl;
+#endif
 }
 
 	}
