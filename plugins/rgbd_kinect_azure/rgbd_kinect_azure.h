@@ -48,6 +48,7 @@ namespace rgbd {
 		/// create a detached kinect CLNUI device object
 		rgbd_kinect_azure();
 		~rgbd_kinect_azure();
+		std::string get_audio_device() const;
 		/// attach to the kinect device of the given serial
 		bool attach(const std::string& serial);
 		/// return whether device object is attached to a kinect device
@@ -189,6 +190,8 @@ namespace rgbd {
 		unsigned get_nr_devices();
 		/// return the serial of the i-th kinect devices
 		std::string get_serial(int i);
+		/// in case the rgbd device has a microphone or microphone array, return the id of the corresponding sound device (wsapi id under windows)
+		std::string get_audio_device_id(int i);
 		/// create a kinect device
 		rgbd_device* create_rgbd_device();
 	};
