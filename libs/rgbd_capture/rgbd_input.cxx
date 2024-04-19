@@ -77,6 +77,17 @@ string rgbd_input::get_serial(int id)
 	return string();
 }
 
+string rgbd_input::get_audio_device_id(int id)
+{
+	for (unsigned i = 0; i < ref_driver_list().size(); ++i) {
+		unsigned nr = ref_driver_list()[i]->get_nr_devices();
+		if (id < (int)nr)
+			return ref_driver_list()[i]->get_audio_device_id(id);
+		id -= nr;
+	}
+	return string();
+}
+
 rgbd_input::rgbd_input()
 {
 	rgbd = 0;

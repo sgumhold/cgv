@@ -2265,7 +2265,7 @@ bool gl_context::texture_generate_mipmaps(texture_base& tb, unsigned int dim) co
 
 bool gl_context::texture_destruct(texture_base& tb) const
 {
-	if (!is_created()) {
+	if (!tb.is_created()) {
 		error("gl_context::texture_destruct: attempt to destruct not created texture", &tb);
 		return false;
 	}

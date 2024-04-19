@@ -40,15 +40,11 @@ texture::texture(const std::string& description,
 	 taken place */
 texture::~texture()
 {
-	if (handle != 0) {
-		if (ctx_ptr == 0)
-			std::cerr << "texture not destructed" << std::endl;
-		else {
-			if (!ctx_ptr->is_current())
-				ctx_ptr->make_current();
-			destruct(*ctx_ptr);
-		}
-	}
+	if(ctx_ptr && ctx_ptr->make_current())
+		destruct(*ctx_ptr);
+
+	if(handle != 0)
+		std::cerr << "could not destruct texture properly" << std::endl;
 }
 
 /// change the data format and clear internal format
@@ -734,7 +730,9 @@ bool texture::destruct(const context& ctx)
 {
 	state_out_of_date = true;
 	internal_format = 0;
-	return ctx.texture_destruct(*this);
+	if(handle != 0)
+		return ctx.texture_destruct(*this);
+	return true;
 }
 
 //@}
