@@ -1,5 +1,10 @@
 var NAVTREEINDEX42 =
 {
+"structcgv_1_1app_1_1color__map__editor_1_1cm__container.html#a99089aaaf5927127e74ca1b821454958":[11,0,0,0,4,0,3],
+"structcgv_1_1app_1_1color__map__editor_1_1cm__container.html#aad3add0c9003724f131b266e5c0e9620":[11,0,0,0,4,0,6],
+"structcgv_1_1app_1_1color__map__editor_1_1cm__container.html#ab2978a7dfd084b6c748606aa044dfa17":[11,0,0,0,4,0,8],
+"structcgv_1_1app_1_1color__map__editor_1_1cm__container.html#aba31a1fdd92509523aabd91c1659211f":[11,0,0,0,4,0,5],
+"structcgv_1_1app_1_1color__map__editor_1_1color__point.html":[11,0,0,0,4,1],
 "structcgv_1_1app_1_1color__map__editor_1_1color__point.html#a3ed9a7e7f38ea263e4f2b0d4c5f97c3a":[11,0,0,0,4,1,1],
 "structcgv_1_1app_1_1color__map__editor_1_1color__point.html#a41105c5bd0a9616999f0440b0924d070":[11,0,0,0,4,1,6],
 "structcgv_1_1app_1_1color__map__editor_1_1color__point.html#a86609c68fbd5250eeeb275168e88134a":[11,0,0,0,4,1,2],
@@ -244,10 +249,5 @@ var NAVTREEINDEX42 =
 "structcgv_1_1base_1_1resource__file__registration.html":[11,0,0,2,70],
 "structcgv_1_1base_1_1resource__file__registration.html#a53eca6fc206aff0be190fbb8ce8076f5":[11,0,0,2,70,0],
 "structcgv_1_1base_1_1resource__string__registration.html":[11,0,0,2,71],
-"structcgv_1_1base_1_1resource__string__registration.html#a53704e97e8814932e19b2ca8461fa765":[11,0,0,2,71,0],
-"structcgv_1_1base_1_1server.html":[11,0,0,2,57],
-"structcgv_1_1base_1_1standard__type__property__access.html":[11,0,0,2,18],
-"structcgv_1_1base_1_1standard__type__property__access.html#a255a2a8185231664e92a58a7c37077f7":[11,0,0,2,18,4],
-"structcgv_1_1base_1_1standard__type__property__access.html#a4e7cc416e7670410497b129f1f22e30b":[11,0,0,2,18,3],
-"structcgv_1_1base_1_1standard__type__property__access.html#a5367cb191217c15d5a40ce82201e4392":[11,0,0,2,18,2]
+"structcgv_1_1base_1_1resource__string__registration.html#a53704e97e8814932e19b2ca8461fa765":[11,0,0,2,71,0]
 };

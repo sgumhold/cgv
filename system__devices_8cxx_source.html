@@ -127,22 +127,23 @@ $(document).ready(function(){initNavTree('system__devices_8cxx_source.html','');
 <div class="line"><a name="l00040"></a><span class="lineno">   40</span>&#160;        DWORD devicePathLength = 0;</div>
 <div class="line"><a name="l00041"></a><span class="lineno">   41</span>&#160;        <span class="keywordflow">if</span> (!SetupDiGetDeviceInstanceId(deviceInfo, &amp;deviceInfoData, devicePathBuffer, <span class="keyword">sizeof</span>(devicePathBuffer), &amp;devicePathLength))</div>
 <div class="line"><a name="l00042"></a><span class="lineno">   42</span>&#160;            <span class="keywordflow">continue</span>;</div>
-<div class="line"><a name="l00043"></a><span class="lineno">   43</span>&#160;        std::string device_path(devicePathBuffer, devicePathLength);</div>
-<div class="line"><a name="l00044"></a><span class="lineno">   44</span>&#160;<span class="preprocessor">#ifdef UNICODE</span></div>
-<div class="line"><a name="l00045"></a><span class="lineno">   45</span>&#160;        std::string device_path = <a class="code" href="namespacecgv_1_1utils.html#ae51531449e7c08f4306502dc502261b7">cgv::utils::wstr2str</a>(std::wstring(devicePathBuffer, devicePathLength));</div>
-<div class="line"><a name="l00046"></a><span class="lineno">   46</span>&#160;<span class="preprocessor">#endif</span></div>
-<div class="line"><a name="l00047"></a><span class="lineno">   47</span>&#160;        <a class="code" href="structcgv_1_1utils_1_1guid.html">cgv::utils::guid</a> container_id;</div>
-<div class="line"><a name="l00048"></a><span class="lineno">   48</span>&#160;        DEVPROPTYPE propType;</div>
-<div class="line"><a name="l00049"></a><span class="lineno">   49</span>&#160;        <span class="keywordflow">if</span> (!SetupDiGetDevicePropertyW(deviceInfo, &amp;deviceInfoData, &amp;DEVPKEY_Device_ContainerId, &amp;propType, <span class="keyword">reinterpret_cast&lt;</span>BYTE*<span class="keyword">&gt;</span>(&amp;container_id), <span class="keyword">sizeof</span>(GUID), <span class="keyword">nullptr</span>, 0))</div>
-<div class="line"><a name="l00050"></a><span class="lineno">   50</span>&#160;            std::cerr &lt;&lt; <span class="stringliteral">&quot;Error: &quot;</span> &lt;&lt; GetLastError() &lt;&lt; std::endl;</div>
-<div class="line"><a name="l00051"></a><span class="lineno">   51</span>&#160;        devices.push_back({ device_path,container_id });</div>
-<div class="line"><a name="l00052"></a><span class="lineno">   52</span>&#160;    }</div>
-<div class="line"><a name="l00053"></a><span class="lineno">   53</span>&#160;    SetupDiDestroyDeviceInfoList(deviceInfo);</div>
-<div class="line"><a name="l00054"></a><span class="lineno">   54</span>&#160;    <span class="keywordflow">return</span> <span class="keyword">true</span>;</div>
-<div class="line"><a name="l00055"></a><span class="lineno">   55</span>&#160;}</div>
-<div class="line"><a name="l00056"></a><span class="lineno">   56</span>&#160; </div>
-<div class="line"><a name="l00057"></a><span class="lineno">   57</span>&#160;    }</div>
-<div class="line"><a name="l00058"></a><span class="lineno">   58</span>&#160;}</div>
+<div class="line"><a name="l00043"></a><span class="lineno">   43</span>&#160;<span class="preprocessor">#ifdef UNICODE</span></div>
+<div class="line"><a name="l00044"></a><span class="lineno">   44</span>&#160;        std::string device_path = <a class="code" href="namespacecgv_1_1utils.html#ae51531449e7c08f4306502dc502261b7">cgv::utils::wstr2str</a>(std::wstring(devicePathBuffer, devicePathLength));</div>
+<div class="line"><a name="l00045"></a><span class="lineno">   45</span>&#160;<span class="preprocessor">#else</span></div>
+<div class="line"><a name="l00046"></a><span class="lineno">   46</span>&#160;        std::string device_path(devicePathBuffer, devicePathLength);</div>
+<div class="line"><a name="l00047"></a><span class="lineno">   47</span>&#160;<span class="preprocessor">#endif</span></div>
+<div class="line"><a name="l00048"></a><span class="lineno">   48</span>&#160;        <a class="code" href="structcgv_1_1utils_1_1guid.html">cgv::utils::guid</a> container_id;</div>
+<div class="line"><a name="l00049"></a><span class="lineno">   49</span>&#160;        DEVPROPTYPE propType;</div>
+<div class="line"><a name="l00050"></a><span class="lineno">   50</span>&#160;        <span class="keywordflow">if</span> (!SetupDiGetDevicePropertyW(deviceInfo, &amp;deviceInfoData, &amp;DEVPKEY_Device_ContainerId, &amp;propType, <span class="keyword">reinterpret_cast&lt;</span>BYTE*<span class="keyword">&gt;</span>(&amp;container_id), <span class="keyword">sizeof</span>(GUID), <span class="keyword">nullptr</span>, 0))</div>
+<div class="line"><a name="l00051"></a><span class="lineno">   51</span>&#160;            std::cerr &lt;&lt; <span class="stringliteral">&quot;Error: &quot;</span> &lt;&lt; GetLastError() &lt;&lt; std::endl;</div>
+<div class="line"><a name="l00052"></a><span class="lineno">   52</span>&#160;        devices.push_back({ device_path,container_id });</div>
+<div class="line"><a name="l00053"></a><span class="lineno">   53</span>&#160;    }</div>
+<div class="line"><a name="l00054"></a><span class="lineno">   54</span>&#160;    SetupDiDestroyDeviceInfoList(deviceInfo);</div>
+<div class="line"><a name="l00055"></a><span class="lineno">   55</span>&#160;    <span class="keywordflow">return</span> <span class="keyword">true</span>;</div>
+<div class="line"><a name="l00056"></a><span class="lineno">   56</span>&#160;}</div>
+<div class="line"><a name="l00057"></a><span class="lineno">   57</span>&#160; </div>
+<div class="line"><a name="l00058"></a><span class="lineno">   58</span>&#160;    }</div>
+<div class="line"><a name="l00059"></a><span class="lineno">   59</span>&#160;}</div>
 <div class="ttc" id="anamespacecgv_1_1utils_html_ab89ee8cc10713a3df171d4a469d0e320"><div class="ttname"><a href="namespacecgv_1_1utils.html#ab89ee8cc10713a3df171d4a469d0e320">cgv::utils::str2wstr</a></div><div class="ttdeci">std::wstring str2wstr(const std::string &amp;s)</div><div class="ttdoc">convert a 8-bit string to a 16-bit string</div><div class="ttdef"><b>Definition:</b> <a href="convert_8cxx_source.html#l00011">convert.cxx:11</a></div></div>
 <div class="ttc" id="anamespacecgv_1_1utils_html_ae51531449e7c08f4306502dc502261b7"><div class="ttname"><a href="namespacecgv_1_1utils.html#ae51531449e7c08f4306502dc502261b7">cgv::utils::wstr2str</a></div><div class="ttdeci">std::string wstr2str(const std::wstring &amp;ws)</div><div class="ttdoc">convert a 16-bit string to a 8-bit string</div><div class="ttdef"><b>Definition:</b> <a href="convert_8cxx_source.html#l00026">convert.cxx:26</a></div></div>
 <div class="ttc" id="anamespacecgv_html"><div class="ttname"><a href="namespacecgv.html">cgv</a></div><div class="ttdoc">the cgv namespace</div><div class="ttdef"><b>Definition:</b> <a href="print_8h_source.html#l00011">print.h:11</a></div></div>

@@ -1,5 +1,10 @@
 var NAVTREEINDEX53 =
 {
+"vec_8h.html#a944f7ad3594fbba4d34b9cef164f5943":[10,0,1,7,450],
+"vec_8h.html#a978d343e4d9cdf3c74249b3a9aefef15":[10,0,1,7,283],
+"vec_8h.html#aa52846938f1183bd690188020682e84b":[10,0,1,7,503],
+"vec_8h.html#aaa61b101ea94ade16da7638005ec0401":[10,0,1,7,229],
+"vec_8h.html#aad026e67ce49ceabab907db2eb48d418":[10,0,1,7,268],
 "vec_8h.html#ab28f6653e67305af650b4403934a1c13":[10,0,1,7,515],
 "vec_8h.html#ab33cb46398dd66cb74e2355ce3d2373f":[10,0,1,7,239],
 "vec_8h.html#ab64f0dd9dca92bc57478fd01ec0abf57":[10,0,1,7,264],

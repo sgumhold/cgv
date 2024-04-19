@@ -1,5 +1,10 @@
 var NAVTREEINDEX52 =
 {
+"structvr_1_1controller__input__config.html#ab198c80d1ea259c99b1992a2c5f48a63":[11,0,5,12,1],
+"structvr_1_1controller__input__config.html#acf5606e400fcc5736b729565ede2415a":[11,0,5,12,3],
+"structvr_1_1controller__input__config.html#ad2af02d92ee50b37d8c0a62b82263600":[11,0,5,12,0],
+"structvr_1_1driver__registry.html":[11,0,5,4],
+"structvr_1_1driver__registry.html#a413b7de4a8a8d43895d950cd96e6ccea":[11,0,5,4,0],
 "structvr_1_1vr__controller__info.html":[11,0,5,8],
 "structvr_1_1vr__controller__info.html#a06f7e58b86fce031d08e800028c33ee9":[11,0,5,8,0],
 "structvr_1_1vr__controller__info.html#a346e0ae8f7dbb47729fb6e88dad400ef":[11,0,5,8,3],
@@ -244,10 +249,5 @@ var NAVTREEINDEX52 =
 "vec_8h.html#a80001be79832e6abc3a7aa6493b3ea93":[10,0,1,7,66],
 "vec_8h.html#a853da46e7a3e423d27349fed4d810920":[10,0,1,7,100],
 "vec_8h.html#a89ef485c2fbf3a9f9b9caed9aa4df0e1":[10,0,1,7,336],
-"vec_8h.html#a92f1b79975130902277a2c38eb2ad56b":[10,0,1,7,384],
-"vec_8h.html#a944f7ad3594fbba4d34b9cef164f5943":[10,0,1,7,450],
-"vec_8h.html#a978d343e4d9cdf3c74249b3a9aefef15":[10,0,1,7,283],
-"vec_8h.html#aa52846938f1183bd690188020682e84b":[10,0,1,7,503],
-"vec_8h.html#aaa61b101ea94ade16da7638005ec0401":[10,0,1,7,229],
-"vec_8h.html#aad026e67ce49ceabab907db2eb48d418":[10,0,1,7,268]
+"vec_8h.html#a92f1b79975130902277a2c38eb2ad56b":[10,0,1,7,384]
 };
