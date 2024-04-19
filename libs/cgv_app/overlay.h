@@ -96,9 +96,6 @@ public:
 	/// options for the GUI creation of this overlay (must be set before GUI creation)
 	gui_options_t gui_options;
 
-	/// create an overlay in the bottom left corner with zero size
-	overlay() {}
-
 	/// overload to reflect members of derived classes
 	virtual bool self_reflect(cgv::reflect::reflection_handler& _rh) { return false; }
 
