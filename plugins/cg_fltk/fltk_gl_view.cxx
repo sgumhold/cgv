@@ -415,7 +415,7 @@ void fltk_gl_view::destroy()
 	else {
 		single_method_action<cgv::render::drawable,void,cgv::render::context&> sma(*this, &drawable::clear, true, true);
 		for (unsigned i=0; i<get_nr_children(); ++i)
-			traverser(sma, "nc").traverse(get_child(i));
+			traverser(sma, "nc", TS_DEPTH_FIRST, false, true).traverse(get_child(i));
 	}
 	//destruct_render_objects();
 	fltk::GlWindow::destroy();
@@ -425,7 +425,7 @@ void fltk_gl_view::destroy()
 void fltk_gl_view::clear_child(base_ptr child)
 {
 	single_method_action<cgv::render::drawable,void,cgv::render::context&> sma(*this, &drawable::clear, false, false);
-	traverser(sma,"nc").traverse(child);
+	traverser(sma, "nc", TS_DEPTH_FIRST, false, true).traverse(child);
 
 	on_remove_child(child);
 }
