@@ -40,9 +40,10 @@ bool enumerate_system_devices(std::vector<std::pair<std::string, cgv::utils::gui
 		DWORD devicePathLength = 0;
 		if (!SetupDiGetDeviceInstanceId(deviceInfo, &deviceInfoData, devicePathBuffer, sizeof(devicePathBuffer), &devicePathLength))
 			continue;
-		std::string device_path(devicePathBuffer, devicePathLength);
 #ifdef UNICODE
 		std::string device_path = cgv::utils::wstr2str(std::wstring(devicePathBuffer, devicePathLength));
+#else
+		std::string device_path(devicePathBuffer, devicePathLength);
 #endif
 		cgv::utils::guid container_id;
 		DEVPROPTYPE propType;
