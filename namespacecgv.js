@@ -957,6 +957,7 @@ var namespacecgv =
       [ "create_socket_client", "socket_8cxx.html#a04ad17d339a28e7b66f47739d9b3738a", null ],
       [ "create_socket_server", "socket_8cxx.html#a65e70d321efabcc8eadae87a555cd312", null ],
       [ "enum_resources", "resources_8cxx.html#ad5e743e66793811657f4e7c4d57e88fa", null ],
+      [ "enumerate_system_devices", "system__devices_8cxx.html#a0882d59705289d27ba9fe603fcc7120d", null ],
       [ "expand_archive", "cmdline__tools_8cxx.html#a249e70e64a10cf8a55d9c00eadd076f0", null ],
       [ "get_execution_priority", "priority_8cxx.html#ab9a136bc9723eaee205e98e4f6c15e5a", null ],
       [ "get_mouse_cursor", "mouse__ctrl_8cxx.html#a3aa2e3579170743abe91917badab49b1", null ],
