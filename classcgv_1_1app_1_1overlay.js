@@ -15,7 +15,6 @@ var classcgv_1_1app_1_1overlay =
       [ "SO_BOTH", "classcgv_1_1app_1_1overlay.html#a4759f42df95eb587a20f7854ea9edb4cab18ec2e42bfa75abc9b0d684e4140caa", null ],
       [ "SO_PERCENTUAL", "classcgv_1_1app_1_1overlay.html#a4759f42df95eb587a20f7854ea9edb4caa05166c0355b6ef13dca8746b312d6d7", null ]
     ] ],
-    [ "overlay", "classcgv_1_1app_1_1overlay.html#ae315760769f60738317ef59ae1b3af19", null ],
     [ "begin_overlay_gui", "classcgv_1_1app_1_1overlay.html#a503f34ae41cfffefc70c2cc87248504f", null ],
     [ "blocks_events", "classcgv_1_1app_1_1overlay.html#a6500203c06ee7f7fb9094fefafdb2371", null ],
     [ "create_gui", "classcgv_1_1app_1_1overlay.html#a16e468cbca5cdfabf45a8edc4818e76f", null ],
