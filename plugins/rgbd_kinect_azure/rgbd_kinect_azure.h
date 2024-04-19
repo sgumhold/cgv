@@ -40,6 +40,7 @@ namespace rgbd {
 		INTERPOLATION_BILINEAR_DEPTH   /**< Bilinear interpolation with invalidation when neighbor contain invalid
 													 data with value 0 */
 	} interpolation_t;
+
 	/// interface for kinect devices provided by a driver (only to be used by driver implementors)
 	class CGV_API rgbd_kinect_azure : public rgbd_device
 	{

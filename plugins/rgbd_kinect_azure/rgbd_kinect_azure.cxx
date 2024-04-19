@@ -1,4 +1,5 @@
 #include <iostream>
+#include <map>
 #include "rgbd_kinect_azure.h"
 #include <cgv/utils/convert.h>
 #include <cgv/math/pose.h>
@@ -16,6 +17,28 @@ void dummy(void* buffer,void* context){}
 constexpr rgbd::camera_intrinsics azure_color_intrinsics = { 3.765539746314990e+02, 3.758362623002023e+02,6.971111133663950e+02,3.753833895962808e+02, 0.0, 768, 1366 };
 
 namespace rgbd {
+	// store mapping from device index to serial of all attached devices
+	std::map<int, std::string> serial_map;
+	// put i-th serial in result and return whether device is attached to
+	bool query_serial(int i, std::string& result)
+	{
+		if (serial_map.find(i) != serial_map.end()) {
+			result = serial_map[i];
+			return true;
+		}
+		k4a::device device;
+		try {
+			device = k4a::device::open(i);
+			result = device.get_serialnum();
+			device.close();
+			return false;
+		}
+		catch (runtime_error e) {
+			cerr << "rgbd_kinect_azure_driver: " << e.what() << '\n';
+		}
+		return false;
+	}
+
 	/// create a detached kinect device object
 	rgbd_kinect_azure::rgbd_kinect_azure()
 	{
@@ -52,20 +75,21 @@ namespace rgbd {
 		current_read_color_frame = current_write_color_frame = current_read_depth_frame = current_write_depth_frame = current_read_ir_frame = current_write_ir_frame = 0;
 		has_new_color_frame = has_new_depth_frame = has_new_ir_frame = false;
 		//find device with given serial
-		for (int i = 0; i < int(k4a::device::get_installed_count());++i) {
-			string dev_serial;
-			try {
-				device = k4a::device::open(i);
-				dev_serial = device.get_serialnum();
-
-				if (dev_serial == serial) {
-					this->device_serial = serial;
-					return true;
+		uint32_t device_count = k4a::device::get_installed_count();
+		for (uint32_t i = 0; i < device_count;++i) {
+			std::string serial_i;
+			if (query_serial(i, serial_i)) {
+				if (serial_i == serial) {
+					std::cerr << "rgbd_kinect_azure::attach(" << serial << ") failed as physical device is already attached to other device." << std::endl;
+					return false;
 				}
-				device.close();
+				continue;
 			}
-			catch (runtime_error e) {
-				cerr << "rgbd_kinect_azure_driver: " << e.what() << '\n';
+			if (serial_i == serial) {
+				device = k4a::device::open(i);
+				this->device_serial = serial;
+				serial_map[i] = serial;
+				return true;
 			}
 		}
 		return false;
@@ -84,12 +108,17 @@ namespace rgbd {
 		}
 		if (is_attached()) {
 			device.close();
+			for (auto sme : serial_map) {
+				if (sme.second == device_serial) {
+					serial_map.erase(sme.first);
+					break;
+				}
+			}
 			device_serial = "";
 			return true;
 		}
 		return false;
 	}
-
 	/// check whether rgbd device has inertia measurement unit
 	bool rgbd_kinect_azure::has_IMU() const
 	{
@@ -1171,22 +1200,12 @@ namespace rgbd {
 	{
 		return k4a::device::get_installed_count();
 	}
-
 	/// return the serial of the i-th kinect devices
 	std::string rgbd_kinect_azure_driver::get_serial(int i)
 	{
-		k4a::device device;
-
-		try {
-			device = k4a::device::open(i);
-			string serial = device.get_serialnum();
-			device.close();
-			return serial;
-		}
-		catch (runtime_error e) {
-			cerr << "rgbd_kinect_azure_driver: " << e.what() << '\n';
-		}
-		return string();
+		std::string serial;
+		query_serial(i, serial);
+		return serial;
 	}
 
 	/// create a kinect device
