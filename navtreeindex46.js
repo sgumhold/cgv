@@ -1,5 +1,7 @@
 var NAVTREEINDEX46 =
 {
+"structcgv_1_1plot_1_1mapped__size.html#a77d080a242f79961319b32cd28023b2e":[11,0,0,9,10,1],
+"structcgv_1_1plot_1_1mapped__size.html#a8711e71646c6fb8efc5f587fd9b580af":[11,0,0,9,10,0],
 "structcgv_1_1plot_1_1mapped__size.html#aed95e4a63264ebf4c9ab69a7cf7f1e67":[11,0,0,9,10,2],
 "structcgv_1_1plot_1_1plot2d__config.html":[11,0,0,9,2],
 "structcgv_1_1plot_1_1plot2d__config.html#a84ca458b13bb27cae3eae5ff8fe3d6f5":[11,0,0,9,2,1],
@@ -247,7 +249,5 @@ var NAVTREEINDEX46 =
 "structcgv_1_1reflect_1_1find__reflection__handler_1_1group__info.html#ac61b7018c69e0660672e3b5710de629c":[11,0,0,11,2,0,2],
 "structcgv_1_1reflect_1_1method__interface.html":[11,0,0,11,9],
 "structcgv_1_1reflect_1_1method__interface.html#a5011ba5e4cfbfdc5c7194c64d0737d0b":[11,0,0,11,9,0],
-"structcgv_1_1reflect_1_1method__interface__impl.html":[11,0,0,11,12],
-"structcgv_1_1reflect_1_1method__parameter__traits__helper.html":[11,0,0,11,10],
-"structcgv_1_1reflect_1_1method__parameter__traits__helper.html#a5df6522c92a58a2d5a5fe552ba4e8c1c":[11,0,0,11,10,0]
+"structcgv_1_1reflect_1_1method__interface__impl.html":[11,0,0,11,12]
 };

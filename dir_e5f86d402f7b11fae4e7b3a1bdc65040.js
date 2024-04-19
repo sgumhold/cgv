@@ -28,6 +28,8 @@ var dir_e5f86d402f7b11fae4e7b3a1bdc65040 =
     [ "resources.h", "resources_8h_source.html", null ],
     [ "socket.cxx", "socket_8cxx_source.html", null ],
     [ "socket.h", "socket_8h_source.html", null ],
+    [ "system_devices.cxx", "system__devices_8cxx_source.html", null ],
+    [ "system_devices.h", "system__devices_8h_source.html", null ],
     [ "thread.cxx", "thread_8cxx_source.html", null ],
     [ "thread.h", "thread_8h_source.html", null ],
     [ "thread_pthread.h", "thread__pthread_8h_source.html", null ],
