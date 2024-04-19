@@ -177,7 +177,7 @@ public:
 	ref_ptr(const ref_ptr<S,is_ref_counted>& s) : base_type(s) {}
 	/// use static cast to convert from T to S if T is a base class of S and has a virtual destructor
 	template <typename S>
-	ref_ptr<S,is_ref_counted> up_cast() const {
+	ref_ptr<S,is_ref_counted> down_cast() const {
 		// ref_ptr conversion only valid if T is base of S
 		CGV_DEFINES_ASSERT(type::cond::is_base_of<T,S>::value);
 		// and S has a virtual destructor
