@@ -53,7 +53,7 @@ var searchData=
   ['traverse_5fpolicy_7480',['traverse_policy',['../classcgv_1_1base_1_1traverse__policy.html#af67134fa6d40c4b6add8225583a730c1',1,'cgv::base::traverse_policy']]],
   ['traverse_5ftmp_5f1_7481',['traverse_tmp_1',['../classcgv_1_1base_1_1traverser.html#a0b2e1912e2458ea9e8e097f7bdcd1752',1,'cgv::base::traverser']]],
   ['traverse_5ftmp_5f2_7482',['traverse_tmp_2',['../classcgv_1_1base_1_1traverser.html#a70a4b834d3f605118c94c87d1cda42c9',1,'cgv::base::traverser']]],
-  ['traverser_7483',['traverser',['../classcgv_1_1base_1_1traverser.html#a3e42ee0e9a36cf596b991724cf89d33d',1,'cgv::base::traverser']]],
+  ['traverser_7483',['traverser',['../classcgv_1_1base_1_1traverser.html#a0cba68be26c44b6374db88e1340d0f40',1,'cgv::base::traverser']]],
   ['tri_5fcorner_5fcoords_7484',['tri_corner_coords',['../classstl__reader_1_1StlMesh.html#a2914ca25fbb04c0a21eba8bde3a7eb87',1,'stl_reader::StlMesh']]],
   ['tri_5fcorner_5find_7485',['tri_corner_ind',['../classstl__reader_1_1StlMesh.html#a7c33fcd65b98ad6c3619638e54af1f4f',1,'stl_reader::StlMesh']]],
   ['tri_5fcorner_5finds_7486',['tri_corner_inds',['../classstl__reader_1_1StlMesh.html#a01b86a0f0fe7e2fb4d0a219c71f2280d',1,'stl_reader::StlMesh']]],

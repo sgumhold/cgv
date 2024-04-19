@@ -98,10 +98,10 @@ $(document).ready(function(){initNavTree('classcgv_1_1base_1_1traverser.html',''
 <table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="pub-methods"></a>
 Public Member Functions</h2></td></tr>
-<tr class="memitem:a3e42ee0e9a36cf596b991724cf89d33d"><td class="memItemLeft" align="right" valign="top"><a id="a3e42ee0e9a36cf596b991724cf89d33d"></a>
-&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcgv_1_1base_1_1traverser.html#a3e42ee0e9a36cf596b991724cf89d33d">traverser</a> (<a class="el" href="classcgv_1_1base_1_1action.html">action</a> &amp;_a, const std::string &amp;_visit_order=&quot;pnc&quot;, TraverseStrategy _strategy=TS_DEPTH_FIRST, bool _stop_if_not_implemented=false, bool _ignore_inactive=false)</td></tr>
-<tr class="memdesc:a3e42ee0e9a36cf596b991724cf89d33d"><td class="mdescLeft">&#160;</td><td class="mdescRight">construct from reference on action and traversal order string <br /></td></tr>
-<tr class="separator:a3e42ee0e9a36cf596b991724cf89d33d"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a0cba68be26c44b6374db88e1340d0f40"><td class="memItemLeft" align="right" valign="top"><a id="a0cba68be26c44b6374db88e1340d0f40"></a>
+&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcgv_1_1base_1_1traverser.html#a0cba68be26c44b6374db88e1340d0f40">traverser</a> (<a class="el" href="classcgv_1_1base_1_1action.html">action</a> &amp;_a, const std::string &amp;_visit_order=&quot;pnc&quot;, TraverseStrategy _strategy=TS_DEPTH_FIRST, bool _stop_if_not_implemented=false, bool _ignore_activation_state=false)</td></tr>
+<tr class="memdesc:a0cba68be26c44b6374db88e1340d0f40"><td class="mdescLeft">&#160;</td><td class="mdescRight">construct from reference on action and traversal order string <br /></td></tr>
+<tr class="separator:a0cba68be26c44b6374db88e1340d0f40"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ab27af01f9825c9b1d3947982d88869b5"><td class="memItemLeft" align="right" valign="top"><a id="ab27af01f9825c9b1d3947982d88869b5"></a>
 <a class="el" href="classcgv_1_1base_1_1traverser.html">traverser</a> &amp;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcgv_1_1base_1_1traverser.html#ab27af01f9825c9b1d3947982d88869b5">set_visit_order</a> (const std::string &amp;_visit_order)</td></tr>
 <tr class="memdesc:ab27af01f9825c9b1d3947982d88869b5"><td class="mdescLeft">&#160;</td><td class="mdescRight">set a different visiting order of node, children and parent <br /></td></tr>
@@ -142,9 +142,10 @@ std::string&#160;</td><td class="memItemRight" valign="bottom"><b>visit_order</b
 <tr class="memitem:aa2ecf50fe71273abd2165217dc377164"><td class="memItemLeft" align="right" valign="top"><a id="aa2ecf50fe71273abd2165217dc377164"></a>
 bool&#160;</td><td class="memItemRight" valign="bottom"><b>stop_if_not_implemented</b></td></tr>
 <tr class="separator:aa2ecf50fe71273abd2165217dc377164"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:aa9b609f1ce4e8d981720c7c069dd0f4f"><td class="memItemLeft" align="right" valign="top"><a id="aa9b609f1ce4e8d981720c7c069dd0f4f"></a>
-bool&#160;</td><td class="memItemRight" valign="bottom"><b>ignore_inactive</b></td></tr>
-<tr class="separator:aa9b609f1ce4e8d981720c7c069dd0f4f"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a0d309709f594e12576815d5ecc288d5b"><td class="memItemLeft" align="right" valign="top"><a id="a0d309709f594e12576815d5ecc288d5b"></a>
+bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcgv_1_1base_1_1traverser.html#a0d309709f594e12576815d5ecc288d5b">ignore_activation_state</a></td></tr>
+<tr class="memdesc:a0d309709f594e12576815d5ecc288d5b"><td class="mdescLeft">&#160;</td><td class="mdescRight">whether to ignore the active flag of the traverse policy of the traversed object <br /></td></tr>
+<tr class="separator:a0d309709f594e12576815d5ecc288d5b"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
 <a name="details" id="details"></a><h2 class="groupheader">Detailed Description</h2>
 <div class="textblock"><p>class used to traverse a tree structure </p>
