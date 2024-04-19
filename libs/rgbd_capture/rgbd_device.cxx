@@ -48,10 +48,12 @@ namespace rgbd {
 		}
 		return true;
 	}
-
-	/// virtual destructor
 	rgbd_device::~rgbd_device()
 	{
+	}
+	std::string rgbd_device::get_audio_device() const
+	{
+		return "";
 	}
 	const std::vector<color_parameter_info>& rgbd_device::get_supported_color_control_parameter_infos() const
 	{

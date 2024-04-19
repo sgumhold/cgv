@@ -1,9 +1,11 @@
 #include <iostream>
+#include <map>
+#include <regex>
 #include "rgbd_kinect_azure.h"
 #include <cgv/utils/convert.h>
+#include <cgv/os/system_devices.h>
 #include <cgv/math/pose.h>
 #include <k4a/k4atypes.h>
-
 
 using namespace std;
 using namespace std::chrono;
@@ -16,6 +18,74 @@ void dummy(void* buffer,void* context){}
 constexpr rgbd::camera_intrinsics azure_color_intrinsics = { 3.765539746314990e+02, 3.758362623002023e+02,6.971111133663950e+02,3.753833895962808e+02, 0.0, 768, 1366 };
 
 namespace rgbd {
+	// store mapping from device index to serial of all attached devices
+	std::map<int, std::string> serial_map;
+	// store mapping from serial to audio device id
+	std::map<std::string, std::string> audio_device_id_map;
+	// put i-th serial in result and return whether device is attached to
+	bool query_serial(int i, std::string& result)
+	{
+		if (serial_map.find(i) != serial_map.end()) {
+			result = serial_map[i];
+			return true;
+		}
+		k4a::device device;
+		try {
+			device = k4a::device::open(i);
+			result = device.get_serialnum();
+			device.close();
+			return false;
+		}
+		catch (runtime_error e) {
+			cerr << "rgbd_kinect_azure_driver: " << e.what() << '\n';
+		}
+		return false;
+	}
+	std::string query_audio_device_id(const std::string& serial)
+	{
+		// first check if audio_device_id_map knows result
+		auto iter = audio_device_id_map.find(serial);
+		if (iter != audio_device_id_map.end())
+			return iter->second;
+		// otherwise rebuild the audio_device_id_map
+		audio_device_id_map.clear();
+		// first construct map from container id to audio device id
+		std::map<cgv::utils::guid, std::string> container_to_audio_device_id_map;
+		std::vector<std::pair<std::string, cgv::utils::guid>> wasapi_devices;
+		cgv::os::enumerate_system_devices(wasapi_devices, "SWD");
+		for (const auto& SD : wasapi_devices) {
+			const std::regex wasapiRegex("(SWD\\\\MMDEVAPI\\\\)(.*)");
+			std::cmatch match;
+			if (!std::regex_match(SD.first.c_str(), match, wasapiRegex))
+				continue;
+			container_to_audio_device_id_map[SD.second] = match[2];
+		}
+
+		// next iterate azure devices and build map from azure serial number to audio device id by matching container ids
+		std::vector<std::pair<std::string, cgv::utils::guid>> azure_devices;
+		cgv::os::enumerate_system_devices(azure_devices, "USB");
+		for (const auto& AD : azure_devices) {
+			const std::regex vidPidRegex("(USB\\\\VID_([0-9A-F]{4})&PID_([0-9A-F]{4})\\\\(.*))");
+			std::cmatch match;
+			if (!std::regex_match(AD.first.c_str(), match, vidPidRegex))
+				continue;
+			// validate video id
+			if (uint16_t(std::stoul(match[2], nullptr, 16)) != uint16_t(0x045E))
+				continue;
+			// validate depth id
+			if (uint16_t(std::stoul(match[3], nullptr, 16)) != uint16_t(0x097C))
+				continue;
+			// find corresponding audio device and insert into map
+			auto jter = container_to_audio_device_id_map.find(AD.second);
+			if (jter != container_to_audio_device_id_map.end())
+				audio_device_id_map[match[4]] = jter->second;
+		}
+		// finally query new map and return audio device id or empty string if audio device could not be matched
+		iter = audio_device_id_map.find(serial);
+		if (iter != audio_device_id_map.end())
+			return iter->second;
+		return "";
+	}
 	/// create a detached kinect device object
 	rgbd_kinect_azure::rgbd_kinect_azure()
 	{
@@ -25,14 +95,19 @@ namespace rgbd {
 		has_new_IMU_data = false;
 		imu_enabled = false;
 	}
-
 	rgbd_kinect_azure::~rgbd_kinect_azure()
 	{
 		stop_device();
 		if (capture_thread)
 			capture_thread->join();
 	}
-
+	std::string rgbd_kinect_azure::get_audio_device() const
+	{
+		if (is_attached())
+			return query_audio_device_id(device_serial);
+		else
+			return "";
+	}
 	/// attach to the kinect device of the given serial
 	bool rgbd_kinect_azure::attach(const std::string& serial)
 	{
@@ -52,20 +127,21 @@ namespace rgbd {
 		current_read_color_frame = current_write_color_frame = current_read_depth_frame = current_write_depth_frame = current_read_ir_frame = current_write_ir_frame = 0;
 		has_new_color_frame = has_new_depth_frame = has_new_ir_frame = false;
 		//find device with given serial
-		for (int i = 0; i < int(k4a::device::get_installed_count());++i) {
-			string dev_serial;
-			try {
-				device = k4a::device::open(i);
-				dev_serial = device.get_serialnum();
-
-				if (dev_serial == serial) {
-					this->device_serial = serial;
-					return true;
+		uint32_t device_count = k4a::device::get_installed_count();
+		for (uint32_t i = 0; i < device_count;++i) {
+			std::string serial_i;
+			if (query_serial(i, serial_i)) {
+				if (serial_i == serial) {
+					std::cerr << "rgbd_kinect_azure::attach(" << serial << ") failed as physical device is already attached to other device." << std::endl;
+					return false;
 				}
-				device.close();
+				continue;
 			}
-			catch (runtime_error e) {
-				cerr << "rgbd_kinect_azure_driver: " << e.what() << '\n';
+			if (serial_i == serial) {
+				device = k4a::device::open(i);
+				this->device_serial = serial;
+				serial_map[i] = serial;
+				return true;
 			}
 		}
 		return false;
@@ -84,12 +160,17 @@ namespace rgbd {
 		}
 		if (is_attached()) {
 			device.close();
+			for (auto sme : serial_map) {
+				if (sme.second == device_serial) {
+					serial_map.erase(sme.first);
+					break;
+				}
+			}
 			device_serial = "";
 			return true;
 		}
 		return false;
 	}
-
 	/// check whether rgbd device has inertia measurement unit
 	bool rgbd_kinect_azure::has_IMU() const
 	{
@@ -1171,24 +1252,20 @@ namespace rgbd {
 	{
 		return k4a::device::get_installed_count();
 	}
-
 	/// return the serial of the i-th kinect devices
 	std::string rgbd_kinect_azure_driver::get_serial(int i)
 	{
-		k4a::device device;
-
-		try {
-			device = k4a::device::open(i);
-			string serial = device.get_serialnum();
-			device.close();
-			return serial;
-		}
-		catch (runtime_error e) {
-			cerr << "rgbd_kinect_azure_driver: " << e.what() << '\n';
-		}
-		return string();
+		std::string serial;
+		query_serial(i, serial);
+		return serial;
 	}
-
+	/// in case the rgbd device has a microphone or microphone array, return the id of the corresponding sound device (wsapi id under windows)
+	std::string rgbd_kinect_azure_driver::get_audio_device_id(int i)
+	{
+		std::string serial;
+		query_serial(i, serial);
+		return query_audio_device_id(serial);
+	}
 	/// create a kinect device
 	rgbd_device* rgbd_kinect_azure_driver::create_rgbd_device()
 	{

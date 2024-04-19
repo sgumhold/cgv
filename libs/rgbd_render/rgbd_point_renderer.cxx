@@ -107,6 +107,13 @@ void rgbd_point_renderer::draw(cgv::render::context& ctx, size_t start, size_t c
 	else
 		draw_impl(ctx, cgv::render::PT_POINTS, start, count);
 }
+
+void rgbd_point_renderer::clear(const cgv::render::context& ctx)
+{
+	if (distortion_tex.is_created())
+		distortion_tex.destruct(ctx);
+}
+
 // convenience function to add UI elements
 void rgbd_point_renderer::create_gui(cgv::base::base* bp, cgv::gui::provider& p)
 {
