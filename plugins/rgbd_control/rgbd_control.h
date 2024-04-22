@@ -34,7 +34,10 @@ class rgbd_control :
 public:
 	using vec2 = cgv::vec2;
 	using vec3 = cgv::vec3;
+	using dvec2 = cgv::dvec2;
+	using dvec3 = cgv::dvec3;
 	using ivec3 = cgv::ivec3;
+	using rgba8 = cgv::rgba8;
 
 	enum VisMode { VM_COLOR, VM_DEPTH, VM_INFRARED, VM_WARPED };
 	enum DeviceMode { DM_DETACHED, DM_PROTOCOL, DM_DEVICE };
