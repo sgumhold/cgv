@@ -60,6 +60,14 @@ class vr_rgbd : public cgv::base::node,
 				public cgv::gui::event_handler,
 				public cgv::gui::provider
 {
+  public:
+	  using vec3 = cgv::vec3;
+	  using quat = cgv::quat;
+	  using mat3 = cgv::mat3;
+	  using box3 = cgv::box3;
+	  using rgb = cgv::rgb;
+	  using rgba8 = cgv::rgba8;
+	  using dvec3 = cgv::dvec3;
   protected:
 	/// internal members used for data storage
 	rgbd::frame_type color_frame, depth_frame, warped_color_frame;
