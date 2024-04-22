@@ -12,6 +12,8 @@ extern CGV_API std::string get_device_enum(const std::string& prepend = "");
 
 extern CGV_API std::string get_stream_format_enum(const std::vector<rgbd::stream_format>& sfs);
 
+extern CGV_API std::string get_component_format(const rgbd::frame_format& ff);
+
 class CGV_API rgbd_starter_base
 {
 protected:
