@@ -125,6 +125,29 @@ namespace cgv {
 				M(2, 2) = cy * cp;
 				return M;
 			}
+		/// construct 3x3 rotation matrix from kardan angles (roll, pitch, yaw) in degrees
+		template <typename T> fmat<T, 3, 3> 
+			rotate3_rpy(const fvec<T, 3>& A)
+			{
+				fmat<T, 3, 3> M;
+				fvec<T, 3> angles = cgv::math::fvec<T, 3>(T(0.01745329252)) * A;
+				T cx = cos(angles[0]);
+				T sx = sin(angles[0]);
+				T cy = cos(angles[1]);
+				T sy = sin(angles[1]);
+				T cz = cos(angles[2]);
+				T sz = sin(angles[2]);
+				M(0, 0) = cy * cz;
+				M(0, 1) = sx * sy * cz - cx * sz;
+				M(0, 2) = cx * sy * cz + sx * sz;
+				M(1, 0) = cy * sz;
+				M(1, 1) = sx * sy * sz + cx * cz;
+				M(1, 2) = cx * sy * sz - sx * cz;
+				M(2, 0) = -sy;
+				M(2, 1) = sx * cy;
+				M(2, 2) = cx * cy;
+				return M;
+			}
 		/// construct 3x3 rotation matrix from spin vector via Rodrigues formula
 		template <typename T> fmat<T, 3, 3>
 			rotate3s(fvec<T, 3> k) {
@@ -181,6 +204,31 @@ namespace cgv {
 				M(2, 2) = cy * cp;
 				return M;
 			}
+
+		/// construct 4x4 rotation matrix from kardan angles (roll, pitch, yaw) in degrees
+		template <typename T> fmat<T, 4, 4> 
+			rotate4_rpy(const fvec<T, 3>& A)
+			{
+				fmat<T, 4, 4> M;
+				M.identity();
+				fvec<T, 3> angles = cgv::math::fvec<T, 3>(T(0.01745329252)) * A;
+				T cx = cos(angles[0]);
+				T sx = sin(angles[0]);
+				T cy = cos(angles[1]);
+				T sy = sin(angles[1]);
+				T cz = cos(angles[2]);
+				T sz = sin(angles[2]);
+				M(0, 0) = cy * cz;
+				M(0, 1) = sx * sy * cz - cx * sz;
+				M(0, 2) = cx * sy * cz + sx * sz;
+				M(1, 0) = cy * sz;
+				M(1, 1) = sx * sy * sz + cx * cz;
+				M(1, 2) = cx * sy * sz - sx * cz;
+				M(2, 0) = -sy;
+				M(2, 1) = sx * cy;
+				M(2, 2) = cx * cy;
+				return M;
+		}
 
 		/// construct 4x4 pose matrix from a 3x4 matrix
 		template <typename T> fmat<T, 4, 4>
