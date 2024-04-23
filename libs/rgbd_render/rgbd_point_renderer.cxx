@@ -10,7 +10,7 @@ void rgbd_point_renderer::update_defines(cgv::render::shader_define_map& defines
 }
 bool rgbd_point_renderer::build_shader_program(cgv::render::context& ctx, cgv::render::shader_program& prog, const cgv::render::shader_define_map& defines)
 {
-	return prog.build_program(ctx, "rgbd_pc.glpr", true, defines);
+	return prog.build_program(ctx, "rgbd_pc.glpr", true, defines) && mesh_prog.build_program(ctx, "rgbd_mesh.glpr", true, defines);
 }
 rgbd_point_renderer::rgbd_point_renderer() : distortion_tex("flt32[R,G]") 
 {
@@ -62,8 +62,15 @@ bool rgbd_point_renderer::validate_attributes(const cgv::render::context& ctx) c
 }
 bool rgbd_point_renderer::enable(cgv::render::context& ctx)
 {
-	if (!point_renderer::enable(ctx))
-		return false;
+	if (use_mesh_shader) {
+		set_prog(mesh_prog);
+		if (!group_renderer::enable(ctx))
+			return false;
+	}
+	else {
+		if (!point_renderer::enable(ctx))
+			return false;
+	}
 	set_rgbd_calibration_uniforms(ctx, ref_prog(), calib);
 	ref_prog().set_uniform(ctx, "invalid_color", invalid_color);
 	ref_prog().set_uniform(ctx, "discard_invalid_color_points", discard_invalid_color_points);
@@ -112,11 +119,13 @@ void rgbd_point_renderer::clear(const cgv::render::context& ctx)
 {
 	if (distortion_tex.is_created())
 		distortion_tex.destruct(ctx);
+	mesh_prog.destruct(ctx);
 }
 
 // convenience function to add UI elements
 void rgbd_point_renderer::create_gui(cgv::base::base* bp, cgv::gui::provider& p)
 {
+	p.add_member_control(bp, "use_mesh_shader", use_mesh_shader, "check");
 	p.add_member_control(bp, "lookup_color", lookup_color, "check");
 	p.add_member_control(bp, "discard_invalid_color_points", discard_invalid_color_points, "check");
 	p.add_member_control(bp, "invalid_color", invalid_color);
