@@ -133,9 +133,9 @@ bool shader_program::collect_program(const std::string& file_name, bool use_cach
 	std::string content;
 	if (!cgv::base::read_data_file(fn, content, true))
 		return false;
-#if WIN32
+
 	shader_code::decode_if_base64(content);
-#endif
+
 	std::vector<line> lines;
 	split_to_lines(content, lines);
 	bool added_file = false;
@@ -309,9 +309,7 @@ bool shader_program::open_program_file(std::string& file_name, bool use_cache, s
 			*last_error_ptr = "could not read shader program file " + file_name;
 		return false;
 	}
-#if WIN32
 	shader_code::decode_if_base64(content);
-#endif
 	split_to_lines(content, lines);
 	file_name = fn;
 	return true;
