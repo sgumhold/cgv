@@ -9,7 +9,9 @@ uint get_depth_width();
 uint get_depth_height();
 uint lookup_depth(ivec2 xp);
 bool construct_point(in vec2 xp, in float depth, out vec3 p);
+vec4 lookup_color(vec2 tc);
 bool lookup_color(vec3 p, out vec4 c);
+bool lookup_color_texcoord(vec3 p, out vec2 tc);
 bool lookup_color(vec3 p, float eps, out vec4 c);
 //***** end interface of rgbd.glsl ***********************************
 */
@@ -85,6 +87,22 @@ bool construct_point(in vec2 xp, in float depth, out vec3 p)
 	return true;
 }
 
+bool lookup_color_texcoord(vec3 p, out vec2 tc)
+{
+	p = ((p + depth_scale * color_translation) * color_rotation);
+	vec2 xu;
+	vec2 xd = vec2(p[0] / p[2], p[1] / p[2]);
+	mat2 J;
+	int result = apply_distortion_model(xd, xu, J, color_calib);
+	if (result != SUCCESS)
+		return false;
+	vec2 xp = image_to_pixel_coordinates(xu, color_calib);
+	if (xp[0] < 0.0 || xp[1] < 0.0 || xp[0] >= float(color_calib.w) || xp[1] >= float(color_calib.h))
+		return false;
+	tc = pixel_to_texture_coordinates(xp, color_calib);
+	return true;
+}
+
 bool lookup_color(vec3 p, float eps, out vec4 c)
 {
 	p = ((p + depth_scale*color_translation)*color_rotation);
@@ -115,4 +133,8 @@ bool lookup_color(vec3 p, out vec4 c)
 		return false;
 	c = texture(color_image, pixel_to_texture_coordinates(xp, color_calib));
 	return true;
+}
+vec4 lookup_color(vec2 tc)
+{
+	return texture(color_image, tc);
 }

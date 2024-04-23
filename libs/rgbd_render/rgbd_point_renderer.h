@@ -37,6 +37,7 @@ namespace rgbd {
 		} geometry_less_mode = GLM_MIXED;
 		// members that define shader uniforms
 		rgbd::rgbd_calibration calib;
+		bool use_mesh_shader = true;
 		bool use_distortion_map = false;
 		bool geometry_less_rendering = true;
 		bool lookup_color = true;
@@ -46,6 +47,7 @@ namespace rgbd {
 		std::vector<cgv::vec2> distortion_map;
 		cgv::render::texture distortion_tex;
 		// internal renderer functions
+		cgv::render::shader_program mesh_prog;
 		void update_defines(cgv::render::shader_define_map& defines);
 		bool build_shader_program(cgv::render::context& ctx, cgv::render::shader_program& prog, const cgv::render::shader_define_map& defines);
 	public:
