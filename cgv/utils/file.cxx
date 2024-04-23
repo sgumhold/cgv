@@ -563,6 +563,13 @@ std::string get_extension(const std::string& file_path)
 /// return the file path and name without extension
 std::string drop_extension(const std::string& file_path)
 {
+	// If there is no extension, the original path can be returned directly
+	// As paths can also contain dots (relative paths), we need to check the base name specifically, not the entire path
+	std::string base_name = get_file_name(file_path);
+	size_t pos = base_name.find_last_of('.');
+	if (pos == std::string::npos)
+		return file_path;
+
 	return file_path.substr(0,file_path.find_last_of('.'));
 }
 
