@@ -1,0 +1,12 @@
+vertex_file:rgbd_mesh.glvs
+vertex_file:camera.glsl
+vertex_file:rgbd.glsl
+geometry_file:rgbd_mesh.glgs
+geometry_file:view.glsl
+geometry_file:camera.glsl
+geometry_file:rgbd.glsl
+fragment_file:rgbd_mesh.glfs
+fragment_file:fragment.glfs
+fragment_file:camera.glsl
+fragment_file:rgbd.glsl
+
