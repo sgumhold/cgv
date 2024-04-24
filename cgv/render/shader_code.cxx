@@ -67,12 +67,25 @@ shader_config_ptr get_shader_config()
 }
 
 void shader_code::decode_if_base64(std::string& content) {
-
+//#ifdef _WIN32
 	if (!content.empty()) {
 		// test if the first character is equal to the base64 prefix (ANSI 'paragraph' char with hexcode A7)
 		if(content[0] == char(0xA7))
 			content = decode_base64(content.substr(1));
 	}
+/*#else
+	if (content.size() > 1) {
+		if ((uint8_t&)content[0]==0xC2 && (uint8_t&)content[1]==0xA7) // UTF-8 for '§'
+			content = decode_base64(content.substr(2));
+		else if (
+			content.size() > 2 &&
+			(int)content[0] == -17 &&
+			(int)content[1] == -65 &&
+			(int)content[2] == -67) {
+			content = decode_base64(content.substr(3));
+		}
+	}
+#endif*/
 }
 
 /** query the last error in a way that developer environments can 
