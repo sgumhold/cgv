@@ -1,0 +1,32 @@
+#version 330 core
+
+#define GEOMETRY_LESS_MODE 0
+
+//***** begin interface of rgbd.glsl ***********************************
+uint get_depth_width();
+uint get_depth_height();
+uint lookup_depth(ivec2 xp);
+bool construct_point(in vec2 xp, in float depth, out vec3 p);
+bool lookup_color(vec3 p, out vec4 c);
+bool lookup_color(vec3 p, float eps, out vec4 c);
+//***** end interface of rgbd.glsl ***********************************
+
+in ivec3 position;
+out ivec2 xp;
+
+void main()
+{
+	xp = position.xy;
+#if GEOMETRY_LESS_MODE == 0
+		xp.y = gl_VertexID/int(get_depth_width());
+		xp.x = gl_VertexID- xp.y*int(get_depth_width());
+#endif
+#if GEOMETRY_LESS_MODE == 1
+		xp.y = gl_InstanceID;
+		xp.x = gl_VertexID;
+#endif
+#if GEOMETRY_LESS_MODE == 2
+		xp.y = gl_InstanceID/int(get_depth_width());
+		xp.x = gl_InstanceID - xp.y*int(get_depth_width());
+#endif
+}
