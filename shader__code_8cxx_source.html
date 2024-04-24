@@ -152,25 +152,25 @@ $(document).ready(function(){initNavTree('shader__code_8cxx_source.html',''); in
 <div class="line"><a name="l00067"></a><span class="lineno">   67</span>&#160;}</div>
 <div class="line"><a name="l00068"></a><span class="lineno">   68</span>&#160; </div>
 <div class="line"><a name="l00069"></a><span class="lineno"><a class="line" href="classcgv_1_1render_1_1shader__code.html#a9714d2e8ba8d61e6e676928747fd606d">   69</a></span>&#160;<span class="keywordtype">void</span> shader_code::decode_if_base64(std::string&amp; content) {</div>
-<div class="line"><a name="l00070"></a><span class="lineno">   70</span>&#160;<span class="preprocessor">#ifdef _WIN32</span></div>
+<div class="line"><a name="l00070"></a><span class="lineno">   70</span>&#160;<span class="comment">//#ifdef _WIN32</span></div>
 <div class="line"><a name="l00071"></a><span class="lineno">   71</span>&#160;    <span class="keywordflow">if</span> (!content.empty()) {</div>
 <div class="line"><a name="l00072"></a><span class="lineno">   72</span>&#160;        <span class="comment">// test if the first character is equal to the base64 prefix (ANSI &#39;paragraph&#39; char with hexcode A7)</span></div>
 <div class="line"><a name="l00073"></a><span class="lineno">   73</span>&#160;        <span class="keywordflow">if</span>(content[0] == <span class="keywordtype">char</span>(0xA7))</div>
 <div class="line"><a name="l00074"></a><span class="lineno">   74</span>&#160;            content = <a class="code" href="namespacecgv_1_1utils.html#a854eea3971a00614eebb1efd38306d3d">decode_base64</a>(content.substr(1));</div>
 <div class="line"><a name="l00075"></a><span class="lineno">   75</span>&#160;    }</div>
-<div class="line"><a name="l00076"></a><span class="lineno">   76</span>&#160;<span class="preprocessor">#else</span></div>
-<div class="line"><a name="l00077"></a><span class="lineno">   77</span>&#160;    <span class="keywordflow">if</span> (content.size() &gt; 1) {</div>
-<div class="line"><a name="l00078"></a><span class="lineno">   78</span>&#160;        <span class="keywordflow">if</span> ((uint8_t&amp;)content[0]==0xC2 &amp;&amp; (uint8_t&amp;)content[1]==0xA7) <span class="comment">// UTF-8 for &#39;Â§&#39;</span></div>
-<div class="line"><a name="l00079"></a><span class="lineno">   79</span>&#160;            content = <a class="code" href="namespacecgv_1_1utils.html#a854eea3971a00614eebb1efd38306d3d">decode_base64</a>(content.substr(2));</div>
-<div class="line"><a name="l00080"></a><span class="lineno">   80</span>&#160;        <span class="keywordflow">else</span> <span class="keywordflow">if</span> (</div>
-<div class="line"><a name="l00081"></a><span class="lineno">   81</span>&#160;            content.size() &gt; 2 &amp;&amp;</div>
-<div class="line"><a name="l00082"></a><span class="lineno">   82</span>&#160;            (<span class="keywordtype">int</span>)content[0] == -17 &amp;&amp;</div>
-<div class="line"><a name="l00083"></a><span class="lineno">   83</span>&#160;            (<span class="keywordtype">int</span>)content[1] == -65 &amp;&amp;</div>
-<div class="line"><a name="l00084"></a><span class="lineno">   84</span>&#160;            (<span class="keywordtype">int</span>)content[2] == -67) {</div>
-<div class="line"><a name="l00085"></a><span class="lineno">   85</span>&#160;            content = <a class="code" href="namespacecgv_1_1utils.html#a854eea3971a00614eebb1efd38306d3d">decode_base64</a>(content.substr(3));</div>
-<div class="line"><a name="l00086"></a><span class="lineno">   86</span>&#160;        }</div>
-<div class="line"><a name="l00087"></a><span class="lineno">   87</span>&#160;    }</div>
-<div class="line"><a name="l00088"></a><span class="lineno">   88</span>&#160;<span class="preprocessor">#endif</span></div>
+<div class="line"><a name="l00076"></a><span class="lineno">   76</span>&#160;<span class="comment">/*#else</span></div>
+<div class="line"><a name="l00077"></a><span class="lineno">   77</span>&#160;<span class="comment">    if (content.size() &gt; 1) {</span></div>
+<div class="line"><a name="l00078"></a><span class="lineno">   78</span>&#160;<span class="comment">        if ((uint8_t&amp;)content[0]==0xC2 &amp;&amp; (uint8_t&amp;)content[1]==0xA7) // UTF-8 for &#39;§&#39;</span></div>
+<div class="line"><a name="l00079"></a><span class="lineno">   79</span>&#160;<span class="comment">            content = decode_base64(content.substr(2));</span></div>
+<div class="line"><a name="l00080"></a><span class="lineno">   80</span>&#160;<span class="comment">        else if (</span></div>
+<div class="line"><a name="l00081"></a><span class="lineno">   81</span>&#160;<span class="comment">            content.size() &gt; 2 &amp;&amp;</span></div>
+<div class="line"><a name="l00082"></a><span class="lineno">   82</span>&#160;<span class="comment">            (int)content[0] == -17 &amp;&amp;</span></div>
+<div class="line"><a name="l00083"></a><span class="lineno">   83</span>&#160;<span class="comment">            (int)content[1] == -65 &amp;&amp;</span></div>
+<div class="line"><a name="l00084"></a><span class="lineno">   84</span>&#160;<span class="comment">            (int)content[2] == -67) {</span></div>
+<div class="line"><a name="l00085"></a><span class="lineno">   85</span>&#160;<span class="comment">            content = decode_base64(content.substr(3));</span></div>
+<div class="line"><a name="l00086"></a><span class="lineno">   86</span>&#160;<span class="comment">        }</span></div>
+<div class="line"><a name="l00087"></a><span class="lineno">   87</span>&#160;<span class="comment">    }</span></div>
+<div class="line"><a name="l00088"></a><span class="lineno">   88</span>&#160;<span class="comment">#endif*/</span></div>
 <div class="line"><a name="l00089"></a><span class="lineno">   89</span>&#160;}</div>
 <div class="line"><a name="l00090"></a><span class="lineno">   90</span>&#160; </div>
 <div class="line"><a name="l00093"></a><span class="lineno"><a class="line" href="classcgv_1_1render_1_1shader__code.html#aaf7764ff05b7729d356261b7547d3a44">   93</a></span>&#160;std::string shader_code::get_last_error(<span class="keyword">const</span> std::string&amp; file_name, <span class="keyword">const</span> std::string&amp; last_error)</div>
@@ -444,9 +444,9 @@ $(document).ready(function(){initNavTree('shader__code_8cxx_source.html',''); in
 <div class="line"><a name="l00366"></a><span class="lineno">  366</span>&#160;    }</div>
 <div class="line"><a name="l00367"></a><span class="lineno">  367</span>&#160;    <span class="keywordflow">if</span> (<a class="code" href="namespacecgv_1_1render.html#a5929e262d43bd2e095c4776547eebe5b">get_shader_config</a>()-&gt;show_file_paths)</div>
 <div class="line"><a name="l00368"></a><span class="lineno">  368</span>&#160;        std::cout &lt;&lt; <span class="stringliteral">&quot;read shader code &lt;&quot;</span> &lt;&lt; fn &lt;&lt; <span class="stringliteral">&quot;&gt;&quot;</span> &lt;&lt; std::endl;</div>
-<div class="line"><a name="l00369"></a><span class="lineno">  369</span>&#160;<span class="preprocessor">#if WIN32</span></div>
+<div class="line"><a name="l00369"></a><span class="lineno">  369</span>&#160; </div>
 <div class="line"><a name="l00370"></a><span class="lineno">  370</span>&#160;    decode_if_base64(source);</div>
-<div class="line"><a name="l00371"></a><span class="lineno">  371</span>&#160;<span class="preprocessor">#endif</span></div>
+<div class="line"><a name="l00371"></a><span class="lineno">  371</span>&#160; </div>
 <div class="line"><a name="l00372"></a><span class="lineno">  372</span>&#160;    <span class="keywordflow">if</span> (file::get_extension(file_name)[0] == <span class="charliteral">&#39;p&#39;</span>) {</div>
 <div class="line"><a name="l00373"></a><span class="lineno">  373</span>&#160;        std::string code;</div>
 <div class="line"><a name="l00374"></a><span class="lineno">  374</span>&#160;        <a class="code" href="namespacecgv_1_1render.html#a5929e262d43bd2e095c4776547eebe5b">get_shader_config</a>()-&gt;inserted_shader_file_names.<a class="code" href="classcgv_1_1data_1_1ref__ptr.html#a7100a80c0b810ecad4c048af7c2ba0af">clear</a>();</div>
