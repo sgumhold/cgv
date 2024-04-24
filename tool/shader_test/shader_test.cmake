@@ -22,16 +22,18 @@ function(shader_test TARGET_NAME outfiles_var outinclude_var outinstall_var shad
 		list(APPEND OFILES ${OFILE_FULL_PATH})
 
 		# add corresponding entry to ..._shader_inc.h contents
-		set(
-			CGV_SHADER_INC_CONTENT
+		set(CGV_SHADER_INC_CONTENT
 			"${CGV_SHADER_INC_CONTENT}\n#include <${OFILE}>\ncgv::base::resource_string_registration ${CPP_NAME}_reg(\"${IFILE}\", ${CPP_NAME});\n"
 		)
 
 		# add the build rule
-		add_custom_command(OUTPUT ${OFILE_FULL_PATH}
-			COMMAND ${CMAKE_COMMAND} -E env CGV_DIR="${CGV_DIR}" CGV_OPTIONS="${CGV_OPTIONS}" $<TARGET_FILE:shader_test>
+		cgv_stringify_generatortime_list(CGV_OPTIONS_STRING "${CGV_OPTIONS}")
+		add_custom_command(
+			OUTPUT ${OFILE_FULL_PATH}
+			COMMAND ${CMAKE_COMMAND} -E env CGV_DIR="${CGV_DIR}" CGV_OPTIONS="${CGV_OPTIONS_STRING}" $<TARGET_FILE:shader_test>
 			ARGS "${IFILE_FULL_PATH}" "${OFILE_FULL_PATH}"
-			DEPENDS "${IFILE_FULL_PATH}")
+			DEPENDS "${IFILE_FULL_PATH}" shader_test
+		)
 	endforeach()
 
 	# generate the ..._shader_inc.h file

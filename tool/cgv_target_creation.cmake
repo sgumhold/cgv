@@ -1,4 +1,21 @@
 
+
+# helper function for lists: turns a list into a string with the ';' element seperation token replaced by the special
+# semicolon token provided by the generator expression '$<SEMICOLON>'. The resulting string can ONLY be used at
+# generation time (this includes instantiation of custom commands)!
+function(cgv_stringify_generatortime_list OUTPUT_VAR LIST_VAR)
+	set(LIST_STRING "")
+	set(LIST_CONTROL_HELPER TRUE) # <-- for distinguishing the first iteration within a foreach()
+	foreach(ELEM IS_FIRST IN ZIP_LISTS LIST_VAR LIST_CONTROL_HELPER)
+		if (IS_FIRST)
+			set(LIST_STRING "${ELEM}")
+		else()
+			set(LIST_STRING "${LIST_STRING}$<SEMICOLON>${ELEM}")
+		endif()
+	endforeach()
+	set(${OUTPUT_VAR} ${LIST_STRING} PARENT_SCOPE)
+endfunction()
+
 # helper function for lists: formats a string representing the list contents that will say "<none>" if empty
 function(cgv_format_list OUTPUT_VAR LIST_VAR)
 	set(${OUTPUT_VAR} "<none>" PARENT_SCOPE)
@@ -803,12 +820,13 @@ function(cgv_add_custom_sources TARGET_NAME)
 			list(APPEND TOOL_ARGS ${TOOL_ARG_PROCESSED})
 		endforeach()
 		# - add the actual build rule
+		cgv_stringify_generatortime_list(CGV_OPTIONS_STRING "${CGV_OPTIONS}")
 		add_custom_command(
 			OUTPUT ${OFILE_FULLPATH}
-			COMMAND ${CMAKE_COMMAND} -E env CGV_DIR="${CGV_DIR}" CGV_OPTIONS="${CGV_OPTIONS}" ${BUILD_TOOL}
+			COMMAND ${CMAKE_COMMAND} -E env CGV_DIR="${CGV_DIR}" CGV_OPTIONS="${CGV_OPTIONS_STRING}" ${BUILD_TOOL}
 			ARGS ${TOOL_ARGS}
 			WORKING_DIRECTORY $<PATH:GET_PARENT_PATH,${BUILD_TOOL}>
-			DEPENDS "${SRC_FULLPATH}"
+			DEPENDS "${SRC_FULLPATH}" ${BUILD_TOOL}
 		)
 		# - tie the rule to the appropriate targets
 		if (ADD_TO_SHARED)
