@@ -47,7 +47,6 @@ namespace rgbd {
 		std::vector<cgv::vec2> distortion_map;
 		cgv::render::texture distortion_tex;
 		// internal renderer functions
-		cgv::render::shader_program mesh_prog;
 		void update_defines(cgv::render::shader_define_map& defines);
 		bool build_shader_program(cgv::render::context& ctx, cgv::render::shader_program& prog, const cgv::render::shader_define_map& defines);
 	public:
@@ -57,6 +56,7 @@ namespace rgbd {
 		void set_geometry_less_rendering(bool active, GeometryLessMode mode = GLM_VERTEX);
 		bool do_geometry_less_rendering() const;
 		void set_color_lookup(bool active);
+		void set_mesh_shader(bool use);
 		bool do_lookup_color() const;
 		void set_distortion_map_usage(bool do_use = true);
 		void set_calibration(const rgbd::rgbd_calibration& _calib);
