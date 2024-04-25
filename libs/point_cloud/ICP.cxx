@@ -60,7 +60,8 @@ namespace cgv {
 		}
 
 		///output the rotation matrix and translation vector
-		void ICP::reg_icp(Mat& rotation_mat, Dir& translation_vec) {
+		void ICP::reg_icp(Mat& rotation_mat, Dir& translation_vec)
+		{
 			if (!tree) {
 				/// create the ann tree
 				build_ann_tree();
@@ -220,6 +221,8 @@ namespace cgv {
 			U.zeros();
 			V.zeros();
 			Sigma.zeros();
+			pc1.clear();
+			pc2.clear();
 			for (int iter = 0; iter < maxIterations && abs(cost) > eps; iter++)
 			{
 				cost = 0.0;
@@ -274,6 +277,7 @@ namespace cgv {
 				else {
 					break;
 				}
+				// this is for drawing corresponding lines after transforming
 				pc1.clear();
 				pc2.clear();
 				for (int i = 0; i < S.get_nr_points(); i++) {
@@ -284,8 +288,8 @@ namespace cgv {
 				for (int i = 0; i < Q.get_nr_points(); i++)
 					pc2.add_point(Q.pnt(i));
 			}
-			std::cout << "rotate_mat: " << rotation_mat << std::endl;
-			std::cout << "translation_vec: " << translation_vec << std::endl;
+			std::cout << "rotate_mat: \n" << rotation_mat << std::endl;
+			std::cout << "translation_vec: \n" << translation_vec << std::endl;
 			delete tree;
 		}
 		///print rotation matrix
