@@ -5,6 +5,7 @@ endif()
 
 # ToDo: old-style targets are temporarily decorated with the CGV-defined type property, remove when
 # converting them to the new system
+add_subdirectory(camera_animator)
 add_subdirectory(cg_ext)
 add_subdirectory(cg_icons)
 add_subdirectory(cmf_tt_gl_font)

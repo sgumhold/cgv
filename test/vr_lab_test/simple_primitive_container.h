@@ -4,7 +4,7 @@
 #include <cgv/render/drawable.h>
 #include <cg_nui/focusable.h>
 #include <cg_nui/pointable.h>
-#include <cg_nui/grabable.h>
+#include <cg_nui/grabbable.h>
 #include <cgv/gui/provider.h>
 #include <cgv_gl/sphere_renderer.h>
 
@@ -12,10 +12,13 @@ class simple_primitive_container:
 	public cgv::base::node,
 	public cgv::render::drawable,
 	public cgv::nui::focusable,
-	public cgv::nui::grabable,
+	public cgv::nui::grabbable,
 	public cgv::nui::pointable,
 	public cgv::gui::provider
 {
+	using vec3 = cgv::vec3;
+	using rgb = cgv::rgb;
+
 	cgv::render::sphere_render_style srs;
 	vec3 debug_point;
 	vec3 query_point_at_grab, position_at_grab;

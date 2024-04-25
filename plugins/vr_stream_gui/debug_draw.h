@@ -11,18 +11,18 @@ using namespace cgv::math;
 namespace trajectory {
 namespace util {
 	namespace debug {
-		struct point_t : public cgv::render::render_types {
-			vec3 p;
-			vec4 col;
+		struct point_t{
+			cgv::vec3 p;
+			cgv::vec4 col;
 		};
-		struct line_t : public cgv::render::render_types {
-			vec3 a;
-			vec3 b;
-			vec4 col;
+		struct line_t {
+			cgv::vec3 a;
+			cgv::vec3 b;
+			cgv::vec4 col;
 		};
-		struct rect_t : public cgv::render::render_types {
+		struct rect_t {
 			rectangle rect;
-			vec4 col;
+			cgv::vec4 col;
 		};
 
 		void draw_point(const point_t &point, const float size);

@@ -23,7 +23,7 @@ protected:
 	holo_disp::holographic_display_calibration disp_calib;
 	holo_disp::shader_display_calibration shader_calib;
 
-	vec3 light_direction;
+	cgv::vec3 light_direction;
 	bool enable_shadows = true;
 
 	bool debug_matrices = false;
@@ -31,9 +31,9 @@ protected:
 public:
 	holo_raycast() : cgv::base::node("Holographic Raycast Demo")
 	{
-		light_direction = normalize(vec3(1.0f, 1.5f, 1.0f));
+		light_direction = normalize(cgv::vec3(1.0f, 1.5f, 1.0f));
 		if (!disp_calib.read(QUOTE_SYMBOL_VALUE(INPUT_DIR) "/visual.json"))
-			std::cerr << "could not read holographic display calibration form <"
+			std::cerr << "could not read holographic display calibration from <"
 					  << QUOTE_SYMBOL_VALUE(INPUT_DIR) "/visual.json>" << std::endl;
 		shader_calib.compute(disp_calib);
 	}
@@ -134,7 +134,7 @@ public:
 	}
 	void test_matrix_interpolation(cgv::render::context& ctx, cgv::render::stereo_view* sview_ptr) {
 
-		const ivec4& current_vp = ctx.get_window_transformation_array().front().viewport;
+		const cgv::ivec4& current_vp = ctx.get_window_transformation_array().front().viewport;
 		float aspect = static_cast<float>(current_vp[2]) / static_cast<float>(current_vp[3]);
 		float y_extent_at_focus = static_cast<float>(stereo_view_ptr->get_y_extent_at_focus());
 		float eye_separation = static_cast<float>(stereo_view_ptr->get_eye_distance());
@@ -146,57 +146,57 @@ public:
 
 		eye_separation *= shader_calib.eye_separation_factor;
 
-		mat4 P0 = cgv::math::stereo_frustum_screen4(-1.0f, eye_separation, y_extent_at_focus * aspect, y_extent_at_focus, parallax_zero_depth, z_near, z_far);
-		mat4 P1 = cgv::math::stereo_frustum_screen4(1.0f, eye_separation, y_extent_at_focus * aspect, y_extent_at_focus, parallax_zero_depth, z_near, z_far);
+		cgv::mat4 P0 = cgv::math::stereo_frustum_screen4(-1.0f, eye_separation, y_extent_at_focus * aspect, y_extent_at_focus, parallax_zero_depth, z_near, z_far);
+		cgv::mat4 P1 = cgv::math::stereo_frustum_screen4(1.0f, eye_separation, y_extent_at_focus * aspect, y_extent_at_focus, parallax_zero_depth, z_near, z_far);
 
-		mat4 MV0 = ctx.get_modelview_matrix();
-		mat4 MV1 = ctx.get_modelview_matrix();
+		cgv::mat4 MV0 = ctx.get_modelview_matrix();
+		cgv::mat4 MV1 = ctx.get_modelview_matrix();
 		shader_calib.stereo_translate_modelview_matrix(-1.0f, eye_separation, screen_width, MV0);
 		shader_calib.stereo_translate_modelview_matrix(1.0f, eye_separation, screen_width, MV1);
 
-		mat4 iP0 = inv(P0);
-		mat4 iP1 = inv(P1);
+		cgv::mat4 iP0 = inv(P0);
+		cgv::mat4 iP1 = inv(P1);
 
-		mat4 iMV0 = inv(MV0);
-		mat4 iMV1 = inv(MV1);
+		cgv::mat4 iMV0 = inv(MV0);
+		cgv::mat4 iMV1 = inv(MV1);
 
-		mat4 MVP0 = P0 * MV0;
-		mat4 MVP1 = P1 * MV1;
+		cgv::mat4 MVP0 = P0 * MV0;
+		cgv::mat4 MVP1 = P1 * MV1;
 
-		mat4 iMVP0 = inv(MVP0);
-		mat4 iMVP1 = inv(MVP1);
+		cgv::mat4 iMVP0 = inv(MVP0);
+		cgv::mat4 iMVP1 = inv(MVP1);
 
 		float eye_value = view_test - 1.0f;
 		float interpolation_param = 0.5f * view_test;
 
-		mat4 Pmid = cgv::math::stereo_frustum_screen4(eye_value, eye_separation, y_extent_at_focus * aspect, y_extent_at_focus, parallax_zero_depth, z_near, z_far);
-		mat4 MVmid = ctx.get_modelview_matrix();
+		cgv::mat4 Pmid = cgv::math::stereo_frustum_screen4(eye_value, eye_separation, y_extent_at_focus * aspect, y_extent_at_focus, parallax_zero_depth, z_near, z_far);
+		cgv::mat4 MVmid = ctx.get_modelview_matrix();
 		shader_calib.stereo_translate_modelview_matrix(eye_value, eye_separation, screen_width, MVmid);
 
-		mat4 iPmid = inv(Pmid);
-		mat4 iMVmid = inv(MVmid);
+		cgv::mat4 iPmid = inv(Pmid);
+		cgv::mat4 iMVmid = inv(MVmid);
 
-		mat4 MVPmid = Pmid * MVmid;
-		mat4 iMVPmid = inv(MVPmid);
+		cgv::mat4 MVPmid = Pmid * MVmid;
+		cgv::mat4 iMVPmid = inv(MVPmid);
 
-		vec3 col20(iMVP0.col(2));
-		vec3 col30(iMVP0.col(3));
+		cgv::vec3 col20(iMVP0.col(2));
+		cgv::vec3 col30(iMVP0.col(3));
 
-		vec3 col21(iMVP1.col(2));
-		vec3 col31(iMVP1.col(3));
+		cgv::vec3 col21(iMVP1.col(2));
+		cgv::vec3 col31(iMVP1.col(3));
 
-		vec3 col2int = cgv::math::lerp(col20, col21, interpolation_param);
-		vec3 col3int = cgv::math::lerp(col30, col31, interpolation_param);
+		cgv::vec3 col2int = cgv::math::lerp(col20, col21, interpolation_param);
+		cgv::vec3 col3int = cgv::math::lerp(col30, col31, interpolation_param);
 
-		vec3 col2mid(iMVPmid.col(2));
-		vec3 col3mid(iMVPmid.col(3));
+		cgv::vec3 col2mid(iMVPmid.col(2));
+		cgv::vec3 col3mid(iMVPmid.col(3));
 
-		mat4 Pint(0.0f);
-		mat4 MVint(0.0f);
-		mat4 MVPint(0.0f);
-		mat4 iPint(0.0f);
-		mat4 iMVint(0.0f);
-		mat4 iMVPint(0.0f);
+		cgv::mat4 Pint(0.0f);
+		cgv::mat4 MVint(0.0f);
+		cgv::mat4 MVPint(0.0f);
+		cgv::mat4 iPint(0.0f);
+		cgv::mat4 iMVint(0.0f);
+		cgv::mat4 iMVPint(0.0f);
 		for(int i = 0; i < 4; ++i) {
 			for(int j = 0; j < 4; ++j) {
 				Pint(i, j) = cgv::math::lerp(P0(i, j), P1(i, j), interpolation_param);
@@ -208,7 +208,7 @@ public:
 			}
 		}
 
-		mat4 D(0.0f);
+		cgv::mat4 D(0.0f);
 		for(int i = 0; i < 4; ++i) {
 			for(int j = 0; j < 4; ++j) {
 				D(i, j) = iMVPmid(i, j) - iMVPint(i, j);
@@ -223,8 +223,8 @@ public:
 		std::cout << "Center: " << std::endl;
 		std::cout << iMVPmid << std::endl;
 		std::cout << "Diff: " << std::endl;
-		vec3 d2 = col2int - col2mid;
-		vec3 d3 = col3int - col3mid;
+		cgv::vec3 d2 = col2int - col2mid;
+		cgv::vec3 d3 = col3int - col3mid;
 		std::cout << d2 << std::endl;
 		std::cout << d3 << std::endl;
 		//std::cout << "Interpolated: " << std::endl;

@@ -6,6 +6,8 @@
 #include <cgv/math/ftransform.h>
 #include <cgv_gl/gl/gl.h>
 
+using namespace cgv::render;
+
 namespace cgv {
 namespace app {
 
@@ -13,7 +15,6 @@ navigator::navigator() {
 	
 	set_name("Navigator");
 	gui_options.allow_stretch = false;
-	block_events = false;
 
 	view_ptr = nullptr;
 	navigator_eye_pos = vec3(0.0f, 0.0f, 2.5f);
@@ -22,10 +23,10 @@ navigator::navigator() {
 
 	layout_size = 150;
 
-	set_overlay_alignment(AO_END, AO_END);
-	set_overlay_stretch(SO_NONE);
-	set_overlay_margin(ivec2(0));
-	set_overlay_size(ivec2(layout_size));
+	set_alignment(AO_END, AO_END);
+	set_stretch(SO_NONE);
+	set_margin(ivec2(0));
+	overlay::set_size(ivec2(layout_size));
 	
 	show_box = true;
 	show_wireframe = true;
@@ -33,29 +34,29 @@ navigator::navigator() {
 	hit_axis = 0;
 
 	box_data.style.default_extent = vec3(1.0f);
-	box_data.style.map_color_to_material = cgv::render::CM_COLOR_AND_OPACITY;
+	box_data.style.map_color_to_material = CM_COLOR_AND_OPACITY;
 	box_data.style.surface_color = rgb(0.5f);
 
-	box_data.style.illumination_mode = cgv::render::IM_TWO_SIDED;
-	box_data.style.culling_mode = cgv::render::CM_OFF;
+	box_data.style.illumination_mode = IM_TWO_SIDED;
+	box_data.style.culling_mode = CM_OFF;
 	box_data.style.material.set_diffuse_reflectance(rgb(0.5f));
 	box_data.style.material.set_emission(rgb(0.05f));
 	box_data.style.surface_opacity = 0.35f;
 
 	box_wire_data.style.default_color = rgb(0.75f);
-
-	sphere_data.style.illumination_mode = cgv::render::IM_OFF;
+	
+	sphere_data.style.illumination_mode = IM_OFF;
 	sphere_data.style.radius = 0.04f;
 	sphere_data.style.surface_color = rgb(0.5f);
 
-	arrow_data.style.illumination_mode = cgv::render::IM_OFF;
+	arrow_data.style.illumination_mode = IM_OFF;
 	arrow_data.style.radius_relative_to_length = 0.04f;
-	arrow_data.style.head_length_mode = cgv::render::AHLM_RELATIVE_TO_LENGTH;
+	arrow_data.style.head_length_mode = AHLM_RELATIVE_TO_LENGTH;
 	arrow_data.style.head_length_relative_to_length = 0.3f;
 	arrow_data.style.head_radius_scale = 2.5f;
 
-	rectangle_data.style.illumination_mode = cgv::render::IM_OFF;
-	rectangle_data.style.map_color_to_material = cgv::render::CM_COLOR_AND_OPACITY;
+	rectangle_data.style.illumination_mode = IM_OFF;
+	rectangle_data.style.map_color_to_material = CM_COLOR_AND_OPACITY;
 	rectangle_data.style.surface_color = rgb(0.05f, 0.25f, 1.0f);
 	rectangle_data.style.surface_opacity = 0.75f;
 	rectangle_data.style.pixel_blend = 0.0f;
@@ -63,7 +64,7 @@ navigator::navigator() {
 	rectangle_data.style.default_border_color = rgba(0.05f, 0.15f, 0.8f, 0.75f);
 }
 
-void navigator::clear(cgv::render::context& ctx) {
+void navigator::clear(context& ctx) {
 
 	blit_canvas.destruct(ctx);
 	fbc.destruct(ctx);
@@ -87,9 +88,6 @@ bool navigator::handle_event(cgv::gui::event& e) {
 	unsigned et = e.get_kind();
 	unsigned char modifiers = e.get_modifiers();
 
-	if(!show)
-		return false;
-
 	if(et == cgv::gui::EID_MOUSE) {
 		cgv::gui::mouse_event& me = (cgv::gui::mouse_event&) e;
 		cgv::gui::MouseAction ma = me.get_action();
@@ -98,7 +96,7 @@ bool navigator::handle_event(cgv::gui::event& e) {
 		hit_axis = 0;
 
 		if(get_context()) {
-			cgv::render::context& ctx = *get_context();
+			context& ctx = *get_context();
 
 			if(ma == cgv::gui::MA_LEAVE) {
 				hit_axis = 0;
@@ -106,7 +104,7 @@ bool navigator::handle_event(cgv::gui::event& e) {
 				ivec2 mpos(static_cast<int>(me.get_x()), static_cast<int>(me.get_y()));
 
 				mpos = get_local_mouse_pos(mpos);
-				vec2 window_coord = vec2(mpos) * vec2(2.0f) / get_overlay_size() - vec2(1.0f);
+				vec2 window_coord = vec2(mpos) * vec2(2.0f) / get_rectangle().size - vec2(1.0f);
 
 				vec3 origin = vec3(window_coord, navigator_eye_pos.z());
 				vec3 direction = vec3(0.0f, 0.0f, -1.0f);
@@ -195,14 +193,14 @@ void navigator::on_set(void* member_ptr) {
 
 	if(member_ptr == &layout_size) {
 		layout_size = cgv::math::clamp(layout_size, 10, 2000);
-		set_overlay_size(ivec2(layout_size));
+		overlay::set_size(ivec2(layout_size));
 	}
 
 	update_member(member_ptr);
 	post_redraw();
 }
 
-bool navigator::init(cgv::render::context& ctx) {
+bool navigator::init(context& ctx) {
 	
 	// get a bold font face to use for the cursor
 	auto font = cgv::media::font::find_font("Arial");
@@ -211,8 +209,8 @@ bool navigator::init(cgv::render::context& ctx) {
 	}
 
 	fbc.add_attachment("depth", "[D]");
-	fbc.add_attachment("color", "flt32[R,G,B,A]", cgv::render::TF_LINEAR);
-	fbc.set_size(2 * get_overlay_size());
+	fbc.add_attachment("color", "flt32[R,G,B,A]", TF_LINEAR);
+	fbc.set_size(2 * get_rectangle().size);
 	
 	bool success = true;
 
@@ -232,7 +230,7 @@ bool navigator::init(cgv::render::context& ctx) {
 	if(success) {
 		box_data.add_position(vec3(0.0f));
 		box_wire_data.add_position(vec3(0.0f));
-
+		
 		sphere_data.add_position(vec3(0.0f));
 
 		const float length = 0.5f;
@@ -257,55 +255,49 @@ bool navigator::init(cgv::render::context& ctx) {
 	return success;
 }
 
-void navigator::init_frame(cgv::render::context& ctx) {
+void navigator::init_frame(context& ctx) {
 
 	if(!view_ptr)
 		view_ptr = find_view_as_node();
 
-	if(ensure_overlay_layout(ctx)) {
-		ivec2 container_size = get_overlay_size();
-		
-		fbc.set_size(2*container_size);
+	if(ensure_layout(ctx)) {
+		fbc.set_size(2 * get_rectangle().size);
 		fbc.ensure(ctx);
 
 		blit_canvas.set_resolution(ctx, get_viewport_size());
 	}
 }
 
-void navigator::finish_draw(cgv::render::context& ctx) {
-
-	if(!show)
-		return;
+void navigator::finish_draw(context& ctx) {
 
 	fbc.enable(ctx);
 
-	glClearColor(0.0f, 0.0f, 0.0f, 0.0f);
-	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-	
+	ctx.push_bg_color();
+	ctx.set_bg_color({ 0.0f });
+	ctx.clear_background(true, true);
+	ctx.pop_bg_color();
+
 	ctx.push_projection_matrix();
 	ctx.set_projection_matrix(get_projection_matrix());
 
 	ctx.push_modelview_matrix();
 	ctx.set_modelview_matrix(get_view_matrix(ctx) * get_model_matrix(ctx));
 
-	glDisable(GL_DEPTH_TEST);
-	glEnable(GL_BLEND);
-	glBlendFuncSeparate(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA, GL_ONE, GL_ONE_MINUS_SRC_ALPHA);
+	ctx.push_depth_test_state();
+	ctx.disable_depth_test();
 
+	ctx.push_blend_state();
+	ctx.enable_blending();
+	ctx.set_blend_func_separate(BF_SRC_ALPHA, BF_ONE_MINUS_SRC_ALPHA, BF_ONE, BF_ONE_MINUS_SRC_ALPHA);
+	
 	if(show_box)
 		box_data.render(ctx, box_renderer);
 
 	if(show_wireframe)
 		box_wire_data.render(ctx);
 
-	glDisable(GL_BLEND);
-	glEnable(GL_DEPTH_TEST);
-
 	sphere_data.render(ctx);
 	arrow_data.render(ctx);
-
-	glDisable(GL_DEPTH_TEST);
-	glEnable(GL_BLEND);
 
 	if(hit_axis != 0) {
 		int axis_idx = abs(hit_axis) - 1;
@@ -334,19 +326,19 @@ void navigator::finish_draw(cgv::render::context& ctx) {
 
 	fbc.disable(ctx);
 
-	glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+	ctx.set_blend_func(BF_SRC_ALPHA, BF_ONE_MINUS_SRC_ALPHA);
 
 	// draw frame buffer texture to screen
 	auto& blit_prog = blit_canvas.enable_shader(ctx, "rectangle");
 
 	fbc.enable_attachment(ctx, "color", 0);
-	blit_canvas.draw_shape(ctx, get_overlay_position(), get_overlay_size());
+	blit_canvas.draw_shape(ctx, get_rectangle());
 	fbc.disable_attachment(ctx, "color");
 
 	blit_canvas.disable_current_shader(ctx);
 
-	glDisable(GL_BLEND);
-	glEnable(GL_DEPTH_TEST);
+	ctx.pop_blend_state();
+	ctx.pop_depth_test_state();
 }
 
 void navigator::set_size(int size) {
@@ -363,7 +355,7 @@ void navigator::create_gui_impl() {
 	add_member_control(this, "Use Perspective", use_perspective, "check");
 }
 
-navigator::mat4 navigator::get_model_matrix(cgv::render::context& ctx) {
+mat4 navigator::get_model_matrix(context& ctx) {
 
 	mat4 MV = ctx.get_modelview_matrix();
 
@@ -375,14 +367,14 @@ navigator::mat4 navigator::get_model_matrix(cgv::render::context& ctx) {
 	return MV;
 }
 
-navigator::mat4 navigator::get_view_matrix(cgv::render::context& ctx) {
+mat4 navigator::get_view_matrix(context& ctx) {
 
 	return cgv::math::look_at4(navigator_eye_pos, vec3(0.0f), vec3(0.0f, 1.0f, 0.0f));
 }
 
-navigator::mat4 navigator::get_projection_matrix() {
+mat4 navigator::get_projection_matrix() {
 
-	vec2 size = static_cast<vec2>(get_overlay_size());
+	vec2 size = static_cast<vec2>(get_rectangle().size);
 	float aspect = size.x() / size.y();
 	
 	if(use_perspective)

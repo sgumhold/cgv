@@ -148,6 +148,7 @@
 @}
 @if(pj::cppLanguageStandard != "")@{@//
       <LanguageStandard>@(pj::cppLanguageStandard)</LanguageStandard>
+      <AdditionalOptions>/Zc:__cplusplus %(AdditionalOptions)</AdditionalOptions>
 @}@//
 	</ClCompile>
     <@(pj::linker_tool_vs10[cj])>

@@ -69,7 +69,7 @@ bool fill_texture::execute(cgv::render::context& ctx, cgv::render::texture& text
 	prog->enable(ctx);
 	prog->set_uniform(ctx, "value", value);
 
-	uvec3 num_groups = calculate_num_groups(size, group_size);
+	uvec3 num_groups = calculate_num_groups(size, uvec3(group_size));
 
 	if(num_dimensions == 1) {
 		prog->set_uniform(ctx, "size", size.x());

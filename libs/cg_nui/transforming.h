@@ -8,7 +8,7 @@
 namespace cgv {
 	namespace nui {
 		/// interface for objects that provides a modelview_projection_window_matrix
-		class CGV_API transforming : public cgv::render::render_types
+		class CGV_API transforming
 		{
 		protected:
 			/// store model and inverse model matrix

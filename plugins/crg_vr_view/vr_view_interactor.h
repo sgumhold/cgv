@@ -68,6 +68,12 @@ bool your_class::init(cgv::render::context& ctx)
 class CGV_API vr_view_interactor : public stereo_view_interactor, public vr::vr_calibration_base
 {
 protected:
+	using vec4 = cgv::vec4;
+	using ivec4 = cgv::ivec4;
+	using mat3 = cgv::mat3;
+	using mat34 = cgv::mat34;
+	using rgb = cgv::rgb;
+
 	ivec4 cgv_viewport;
 	void* fbo_handle;
 
@@ -130,8 +136,6 @@ public:
 	//@}
 private:
 	mat34 start_pose;
-public:
-	typedef cgv::math::fmat<float,3,4> mat34;
 protected:
 	/// whether the window shows a separate view onto the scene or the one of the current vr kit
 	bool separate_view;
@@ -254,6 +258,8 @@ public:
 	bool vr_kits_drawn() const { return vis_type != VVT_NONE; }
 	/// set whether to draw vr kits
 	void draw_vr_kits(bool do_draw);
+	/// set whether to draw controllers
+	void draw_vr_controllers(bool do_draw);
 	/// check whether action zone is drawn 
 	bool action_zone_drawn() const { return show_action_zone; }
 	/// whether to draw action zone

@@ -26,7 +26,7 @@ class cube_demo : public node, public drawable, public provider
 	double speed;
 	double aspect;
 	double s;
-	dvec3  axis;
+	cgv::dvec3  axis;
 	surface_material axes_mat, cube_mat;
 public:
 	cube_demo() :
@@ -74,11 +74,11 @@ public:
 		float c = transformed ? 0.7f : 1;
 		float d = 1-c;
 		float l = float(axis.length()); 
-		ctx.set_color(rgb(c, d, d));
+		ctx.set_color(cgv::rgb(c, d, d));
 		ctx.tesselate_arrow(fvec<double,3>(0,0,0), fvec<double,3>(l,0,0), aspect);
-		ctx.set_color(rgb(d, c, d));
+		ctx.set_color(cgv::rgb(d, c, d));
 		ctx.tesselate_arrow(fvec<double,3>(0,0,0), fvec<double,3>(0,l,0), aspect);
-		ctx.set_color(rgb(d, d, c));
+		ctx.set_color(cgv::rgb(d, d, c));
 		ctx.tesselate_arrow(fvec<double,3>(0,0,0), fvec<double,3>(0,0,l), aspect);
 	}
 	void draw(context& c)
@@ -89,7 +89,7 @@ public:
 				c.ref_surface_shader_program().set_uniform(c, "map_color_to_material", 3);
 				c.set_material(axes_mat);
 				draw_axes(c, false);
-				c.set_color(rgb(0.6f,0.6f,0.6f));
+				c.set_color(cgv::rgb(0.6f,0.6f,0.6f));
 				c.tesselate_arrow(fvec<double,3>(0,0,0), axis, aspect);
 				c.mul_modelview_matrix(rotate4<double>(angle,axis));
 				draw_axes(c, true);
@@ -97,7 +97,7 @@ public:
 			c.ref_surface_shader_program().disable(c);
 
 			c.ref_default_shader_program().enable(c);
-				c.set_color(rgb(0, 0, 0));
+				c.set_color(cgv::rgb(0, 0, 0));
 				glLineWidth(3);
 				c.tesselate_unit_cube(false, true);
 			c.ref_default_shader_program().disable(c);

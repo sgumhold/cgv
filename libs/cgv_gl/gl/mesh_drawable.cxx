@@ -77,7 +77,7 @@ void mesh_drawable::center_view()
 	post_redraw();
 }
 /// return the axis aligned bounding box
-const mesh_drawable::box3& mesh_drawable::get_box() const
+const box3& mesh_drawable::get_box() const
 {
 	return box;
 }

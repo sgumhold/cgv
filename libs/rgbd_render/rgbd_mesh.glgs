@@ -1,0 +1,70 @@
+#version 330 core
+#extension GL_EXT_geometry_shader4 : enable
+
+layout(points) in;
+layout(triangle_strip, max_vertices = 4) out;
+
+//***** begin interface of rgbd.glsl ***********************************
+uint get_depth_width();
+uint get_depth_height();
+uint lookup_depth(ivec2 xp);
+bool construct_point(in vec2 xp, in float depth, out vec3 p);
+vec4 lookup_color(vec2 tc);
+bool lookup_color(vec3 p, out vec4 c);
+bool lookup_color_texcoord(vec3 p, out vec2 tc);
+bool lookup_color(vec3 p, float eps, out vec4 c);
+//***** end interface of rgbd.glsl ***********************************
+
+//***** begin interface of view.glsl ***********************************
+mat4 get_modelview_matrix();
+mat4 get_projection_matrix();
+mat4 get_modelview_projection_matrix();
+mat4 get_inverse_modelview_matrix();
+mat4 get_inverse_modelview_projection_matrix();
+mat3 get_normal_matrix();
+mat3 get_inverse_normal_matrix();
+//***** end interface of view.glsl ***********************************
+
+in ivec2 xp[];
+out vec2 texcoord;
+
+bool construct_vertex(in ivec2 xp, out vec3 pos, out vec2 tc)
+{
+	uint depth = lookup_depth(xp);
+	pos = vec3(0.0);
+	if (!construct_point(xp, depth, pos))
+		return false;
+	if (!lookup_color_texcoord(pos, tc))
+		return false;
+	return true;
+}
+
+void main()
+{
+	vec3 pos[4];
+	vec2 tc[4];
+	bool valid[4];
+	int count = 0;
+	valid[0] = construct_vertex(xp[0],            pos[0], tc[0]);
+	valid[1] = construct_vertex(xp[0]+ivec2(1,0), pos[1], tc[1]);
+	valid[2] = construct_vertex(xp[0]+ivec2(0,1), pos[2], tc[2]);
+	valid[3] = construct_vertex(xp[0]+ivec2(1,1), pos[3], tc[3]);
+	float min_depth = 1000.0;
+	float max_depth = 0.0;
+	for (int i=0;i<4;++i) {
+		if (valid[i]) {
+			++count;
+			min_depth = min(pos[i].z, min_depth);
+			max_depth = max(pos[i].z, max_depth);
+		}
+	}
+	if (count < 3 || ((max_depth-min_depth) > 0.1))
+		return;
+	for (int i=0;i<count;++i) {
+		if (valid[i]) {
+			gl_Position = get_modelview_projection_matrix()*vec4(pos[i],1.0);
+			texcoord = tc[i];
+			EmitVertex();
+		}
+	}
+}

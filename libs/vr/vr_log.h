@@ -1,5 +1,4 @@
 #pragma once
-#include <cgv/render/render_types.h>
 #include <vector>
 #include <unordered_map>
 #include <ostream>
@@ -8,19 +7,22 @@
 
 #include <libs/vr/vr_state.h>
 #include <cgv/data/ref_counted.h>
+//#include <cgv/math/fvec.h>
+//#include <cgv/math/vec.h>
+#include <cgv/math/fmat.h>
 #include "vr_driver.h"
 
 #include "lib_begin.h"
 
 namespace vr {
 	//! helper struct for logging vr events
-	class CGV_API vr_log : 
-		public cgv::render::render_types,
-		public cgv::data::ref_counted {
+	class CGV_API vr_log : public cgv::data::ref_counted {
 	public:
 		template<class T>
 		using container = std::vector<T, std::allocator<T>>;
-		using vec8 = cgv::math::fvec<float, 8>;
+		using vec2 = cgv::vec2;
+		using vecn = cgv::vecn;
+		using mat34 = cgv::mat34;
 		enum StorageMode {
 			SM_IN_MEMORY = 1,
 			SM_OSTREAM = 2,

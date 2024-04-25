@@ -593,14 +593,14 @@ unsigned configure_src_format(const cgv::data::const_data_view& data, GLuint& sr
 				for (unsigned i=0; i<pf.get_width(); ++i)
 					tmp[i] = pf.get<unsigned char>(ci, pv.step_i(pv.get_ptr<unsigned char>(), i))/255.0f;
 				switch (pf.get_component_name(ci)[0]) {
-				case 'R' : glPixelMapfv(GL_PIXEL_MAP_I_TO_R, pf.get_width(), &tmp.front()); break;
-				case 'G' : glPixelMapfv(GL_PIXEL_MAP_I_TO_G, pf.get_width(), &tmp.front()); break;
-				case 'B' : glPixelMapfv(GL_PIXEL_MAP_I_TO_B, pf.get_width(), &tmp.front()); break;
-				case 'A' : glPixelMapfv(GL_PIXEL_MAP_I_TO_A, pf.get_width(), &tmp.front()); break;
+				case 'R' : glPixelMapfv(GL_PIXEL_MAP_I_TO_R, GLsizei(pf.get_width()), &tmp.front()); break;
+				case 'G' : glPixelMapfv(GL_PIXEL_MAP_I_TO_G, GLsizei(pf.get_width()), &tmp.front()); break;
+				case 'B' : glPixelMapfv(GL_PIXEL_MAP_I_TO_B, GLsizei(pf.get_width()), &tmp.front()); break;
+				case 'A' : glPixelMapfv(GL_PIXEL_MAP_I_TO_A, GLsizei(pf.get_width()), &tmp.front()); break;
 				case 'L' : 
-					glPixelMapfv(GL_PIXEL_MAP_I_TO_R, pf.get_width(), &tmp.front());
-					glPixelMapfv(GL_PIXEL_MAP_I_TO_G, pf.get_width(), &tmp.front());
-					glPixelMapfv(GL_PIXEL_MAP_I_TO_B, pf.get_width(), &tmp.front());
+					glPixelMapfv(GL_PIXEL_MAP_I_TO_R, GLsizei(pf.get_width()), &tmp.front());
+					glPixelMapfv(GL_PIXEL_MAP_I_TO_G, GLsizei(pf.get_width()), &tmp.front());
+					glPixelMapfv(GL_PIXEL_MAP_I_TO_B, GLsizei(pf.get_width()), &tmp.front());
 					break;
 				}
 			}				
@@ -613,7 +613,7 @@ bool load_texture(const cgv::data::const_data_view& data, unsigned gl_tex_format
 {
 	unsigned nr_dim = data.get_format()->get_nr_dimensions();
 	const unsigned char* data_ptr = data.get_ptr<unsigned char>();
-	unsigned w = data.get_format()->get_width();
+	GLsizei w = GLsizei(data.get_format()->get_width());
 	bool cube_map = (nr_dim == 2) && (cube_side != -1);
 	bool texture_array = (nr_dim > 0) && (nr_dim < 4) && !cube_map && num_array_layers != 0;
 
@@ -637,29 +637,29 @@ bool load_texture(const cgv::data::const_data_view& data, unsigned gl_tex_format
 	case 2:
 		if(texture_array) {
 			if(num_array_layers < 0) {
-				glTexImage2D(GL_TEXTURE_1D_ARRAY, level, gl_tex_format, w, data.get_format()->get_height(), 0, src_fmt, src_type, data_ptr);
+				glTexImage2D(GL_TEXTURE_1D_ARRAY, level, gl_tex_format, w, GLsizei(data.get_format()->get_height()), 0, src_fmt, src_type, data_ptr);
 			} else {
 				if(ensure_glew_initialized() && GLEW_EXT_texture3D) {
-					glTexImage3D(GL_TEXTURE_2D_ARRAY, level, gl_tex_format, w, data.get_format()->get_height(), 1, 0, src_fmt, src_type, data_ptr);
+					glTexImage3D(GL_TEXTURE_2D_ARRAY, level, gl_tex_format, w, GLsizei(data.get_format()->get_height()), 1, 0, src_fmt, src_type, data_ptr);
 				}
 			}
 		} else {
 			glTexImage2D(cube_map ? get_gl_cube_map_target(cube_side) : GL_TEXTURE_2D, level,
-				gl_tex_format, w, data.get_format()->get_height(), 0, src_fmt, src_type, data_ptr);
+				gl_tex_format, w, GLsizei(data.get_format()->get_height()), 0, src_fmt, src_type, data_ptr);
 		}
 		break;
 	case 3:
 		if(ensure_glew_initialized() && GLEW_EXT_texture3D) {
 			if(texture_array) {
-				int num_layers = data.get_format()->get_depth();
+				GLsizei num_layers = GLsizei(data.get_format()->get_depth());
 				if(num_array_layers > 0)
-					num_layers = std::min(data.get_format()->get_depth(), (unsigned)num_array_layers);
+					num_layers = std::min(GLsizei(data.get_format()->get_depth()), num_array_layers);
 
-				glTexImage3D(GL_TEXTURE_2D_ARRAY, level, gl_tex_format, w, data.get_format()->get_height(),
+				glTexImage3D(GL_TEXTURE_2D_ARRAY, level, gl_tex_format, w, GLsizei(data.get_format()->get_height()),
 					num_layers, 0, src_fmt, src_type, data_ptr);
 			} else {
-				glTexImage3D(GL_TEXTURE_3D, level, gl_tex_format, w, data.get_format()->get_height(),
-					data.get_format()->get_depth(), 0, src_fmt, src_type, data_ptr);
+				glTexImage3D(GL_TEXTURE_3D, level, gl_tex_format, w, GLsizei(data.get_format()->get_height()),
+					GLsizei(data.get_format()->get_depth()), 0, src_fmt, src_type, data_ptr);
 			}
 		}
 		break;
@@ -676,7 +676,7 @@ bool replace_texture(const cgv::data::const_data_view& data, int level, int x, i
 {
 	unsigned nr_dim = data.get_format()->get_nr_dimensions();
 	const unsigned char* data_ptr = data.get_ptr<unsigned char>();
-	unsigned w = data.get_format()->get_width();
+	GLsizei w = GLsizei(data.get_format()->get_width());
 	bool cube_map = (nr_dim == 2) && (z != -1);
 
 	GLuint src_type, src_fmt;
@@ -692,14 +692,14 @@ bool replace_texture(const cgv::data::const_data_view& data, int level, int x, i
 	case 2 :
 		if (cube_map) 
 			glTexSubImage2D(get_gl_cube_map_target(z), level, x, y, w, 
-					data.get_format()->get_height(), src_fmt, src_type, data_ptr);
+				GLsizei(data.get_format()->get_height()), src_fmt, src_type, data_ptr);
 		else
 			glTexSubImage2D(GL_TEXTURE_2D, level, x, y, w, 
-					data.get_format()->get_height(), src_fmt, src_type, data_ptr);
+				GLsizei(data.get_format()->get_height()), src_fmt, src_type, data_ptr);
 		break;
 	case 3 :
 		glTexSubImage3D(GL_TEXTURE_3D, level, x, y, z, w, 
-				data.get_format()->get_height(), data.get_format()->get_depth(), src_fmt, src_type, data_ptr);
+			GLsizei(data.get_format()->get_height()), GLsizei(data.get_format()->get_depth()), src_fmt, src_type, data_ptr);
 		break;
 	}
 	if (gen_mipmap) 
@@ -747,7 +747,7 @@ bool cover_screen(context& ctx, shader_program* prog_ptr, bool flip_tex_v_coord,
 		}
 		else
 			if (!prog_ptr)
-				ctx.set_color(render_types::rgba(1, 1, 1, 1));
+				ctx.set_color(rgba(1, 1, 1, 1));
 	}
 	int pos_idx = prog.get_position_index();
 	int tex_idx = prog.get_texcoord_index();
@@ -762,21 +762,21 @@ bool cover_screen(context& ctx, shader_program* prog_ptr, bool flip_tex_v_coord,
 	ctx.push_projection_matrix();
 	ctx.set_projection_matrix(cgv::math::identity4<double>());
 	
-	render_types::vec4 positions[4] = {
-		render_types::vec4(xmin,ymin, 0, 1),
-		render_types::vec4(xmax,ymin, 0, 1),
-		render_types::vec4(xmin,ymax, 0, 1),
-		render_types::vec4(xmax,ymax, 0, 1)
+	vec4 positions[4] = {
+		vec4(xmin,ymin, 0, 1),
+		vec4(xmax,ymin, 0, 1),
+		vec4(xmin,ymax, 0, 1),
+		vec4(xmax,ymax, 0, 1)
 	};
-	render_types::vec2 texcoords[8] = {
-		render_types::vec2(umin, vmin),
-		render_types::vec2(umax, vmin),
-		render_types::vec2(umin, vmax),
-		render_types::vec2(umax, vmax),
-		render_types::vec2(umin, vmax),
-		render_types::vec2(umax, vmax),
-		render_types::vec2(umin, vmin),
-		render_types::vec2(umax, vmin)
+	vec2 texcoords[8] = {
+		vec2(umin, vmin),
+		vec2(umax, vmin),
+		vec2(umin, vmax),
+		vec2(umax, vmax),
+		vec2(umin, vmax),
+		vec2(umax, vmax),
+		vec2(umin, vmin),
+		vec2(umax, vmin)
 	};
 
 	attribute_array_binding::set_global_attribute_array(ctx, pos_idx, positions, 4);
@@ -905,7 +905,7 @@ void main()\n\
 bool render_to_texture3D(context& ctx, shader_program& prog, TextureSampling texture_sampling, texture& target_tex, texture* target_tex2, texture* target_tex3, texture* target_tex4)
 {
 	// extract texture resolution
-	unsigned tex_res[3] = { target_tex.get_width(), target_tex.get_height(), target_tex.get_depth() };
+	size_t tex_res[3] = { target_tex.get_width(), target_tex.get_height(), target_tex.get_depth() };
 	// check consistency of all texture resolutions
 	if (target_tex2) {
 		if (target_tex2->get_width() != tex_res[0] || target_tex2->get_height() != tex_res[1] || target_tex2->get_depth() != tex_res[2]) {
@@ -927,7 +927,7 @@ bool render_to_texture3D(context& ctx, shader_program& prog, TextureSampling tex
 	}
 	// create fbo with resolution of slices
 	cgv::render::frame_buffer fbo;
-	fbo.create(ctx, tex_res[0], tex_res[1]);
+	fbo.create(ctx, int(tex_res[0]), int(tex_res[1]));
 	fbo.attach(ctx, target_tex, 0, 0, 0);
 	if (!fbo.is_complete(ctx)) {
 		std::cerr << "fbo to update volume gradient not complete" << std::endl;
@@ -951,7 +951,7 @@ bool render_to_texture3D(context& ctx, shader_program& prog, TextureSampling tex
 		T[5] = T[7] = float(1.0 + 0.5 / tex_res[1]);
 	}
 	ctx.push_window_transformation_array();
-	ctx.set_viewport(render_types::ivec4(0, 0, tex_res[0], tex_res[1]));
+	ctx.set_viewport(ivec4(0, 0, int(tex_res[0]), int(tex_res[1])));
 	int slice_coord_loc = prog.get_uniform_location(ctx, "slice_coord");
 	// go through slices
 	for (int i = 0; i < (int) tex_res[2]; i++) {

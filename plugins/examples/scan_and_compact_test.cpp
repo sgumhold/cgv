@@ -4,6 +4,7 @@
 #include <cgv/gui/provider.h>
 #include <cgv/render/drawable.h>
 #include <cgv_gl/sphere_render_data.h>
+#include <cgv_gl/gl/gl_time_query.h>
 #include <cgv_gpgpu/scan_and_compact.h>
 
 class scan_and_compact_test : public cgv::base::node, public cgv::render::drawable, public cgv::gui::provider {
@@ -22,16 +23,15 @@ protected:
 	cgv::render::sphere_render_data<> spheres;
 
 	cgv::gpgpu::scan_and_compact sac;
-	bool do_sort;
+	cgv::render::gl::gl_time_query time_query;
 
 public:
 	scan_and_compact_test() : cgv::base::node("Scan and Compact Test")
 	{
 		view_ptr = nullptr;
 		n = 10000;
-		sphere_style.surface_color = rgb(0.5f);
+		sphere_style.surface_color = cgv::rgb(0.5f);
 		sphere_style.map_color_to_material = cgv::render::CM_COLOR;
-		do_sort = true;
 	}
 	void on_set(void* member_ptr)
 	{
@@ -48,6 +48,8 @@ public:
 		spheres.destruct(ctx);
 
 		sac.destruct(ctx);
+
+		time_query.destruct(ctx);
 	}
 	bool init(cgv::render::context& ctx)
 	{
@@ -63,6 +65,8 @@ public:
 		create_data();
 
 		view_ptr = find_view_as_node();
+
+		time_query.init(ctx);
 
 		return true;
 	}
@@ -89,10 +93,10 @@ public:
 				vote_prog.set_uniform(ctx, "threshold_min", threshold_min);
 				vote_prog.set_uniform(ctx, "threshold_max", threshold_max);
 
-				sac.begin_time_query();
+				time_query.begin();
 				unsigned count = sac.execute(ctx, *radius_buffer_ptr, *index_buffer_ptr);
-				float time = sac.end_time_query();
-				std::cout << "Filtering done in " << time << " ms. Drawing " << count << " of " << spheres.size() << " spheres." << std::endl;
+				double time = time_query.end();
+				std::cout << "Filtering done in " << (time / 1'000'000.0f) << " ms. Drawing " << count << " of " << spheres.size() << " spheres." << std::endl;
 
 				if(count > 0)
 					spheres.render(ctx, sr, sphere_style, 0, count);
@@ -130,11 +134,11 @@ public:
 		std::mt19937 rng(42);
 		std::uniform_real_distribution<float> snorm_distr(-1.0f, 1.0f);
 
-		rgb green(0.0f, 1.0f, 0.0f);
-		rgb red(1.0f, 0.0f, 0.0f);
+		cgv::rgb green(0.0f, 1.0f, 0.0f);
+		cgv::rgb red(1.0f, 0.0f, 0.0f);
 
 		for(unsigned i = 0; i < n; ++i) {
-			vec3 pos(
+			cgv::vec3 pos(
 				snorm_distr(rng),
 				snorm_distr(rng),
 				snorm_distr(rng)
@@ -143,7 +147,7 @@ public:
 			float t = 0.5f * snorm_distr(rng) + 0.5f;
 			float rad = cgv::math::lerp(rad_min, rad_max, t);
 
-			rgb col = (1.0f - t)*green + t*red;
+			cgv::rgb col = (1.0f - t)*green + t*red;
 
 			spheres.add(pos, col, rad);
 			spheres.add_index(i);

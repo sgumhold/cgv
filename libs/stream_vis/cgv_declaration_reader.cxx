@@ -100,7 +100,7 @@ namespace stream_vis {
 			return false;
 		return true;
 	}
-	bool cgv_declaration_reader::parse_color(const std::string& name, rgb& color)
+	bool cgv_declaration_reader::parse_color(const std::string& name, cgv::rgb& color)
 	{
 		auto iter = pp.find(name);
 		if (iter == pp.end())
@@ -112,7 +112,7 @@ namespace stream_vis {
 			color[j] = float(16 * parse_hex(value[2 * j]) + parse_hex(value[2 * j + 1])) / 255.0f;
 		return true;
 	}
-	bool cgv_declaration_reader::parse_color(const std::string& name, rgba& color)
+	bool cgv_declaration_reader::parse_color(const std::string& name, cgv::rgba& color)
 	{
 		auto iter = pp.find(name);
 		if (iter == pp.end())
@@ -126,7 +126,7 @@ namespace stream_vis {
 			color[j] = float(16 * parse_hex(value[2 * j]) + parse_hex(value[2 * j + 1])) / 255.0f;
 		return true;
 	}
-	bool cgv_declaration_reader::parse_quat(const std::string& name, quat& quat)
+	bool cgv_declaration_reader::parse_quat(const std::string& name, cgv::quat& quat)
 	{
 		auto iter = pp.find(name);
 		if (iter == pp.end())
@@ -136,7 +136,7 @@ namespace stream_vis {
 		bool is_permutation = false;
 		if (value.length() == 3) {
 			is_permutation = true;
-			cgv::render::render_types::mat3 R;
+			cgv::mat3 R;
 			R.zeros();
 			for (int i = 0; i < 3; ++i) {
 				switch (value[i]) {
@@ -156,14 +156,14 @@ namespace stream_vis {
 				}
 			}
 			if (is_permutation) {
-				quat = cgv::render::render_types::quat(R);
+				quat = cgv::quat(R);
 				return true;
 			}
 		}
 		// check for vec4 and interpret as axis and angle in degree
-		cgv::render::render_types::vec4 v;
+		cgv::vec4 v;
 		if (parse_vec4(name, v)) {
-			quat = cgv::render::render_types::quat((cgv::render::render_types::vec3&)v, float(M_PI / 180 * v[3]));
+			quat = cgv::quat((cgv::vec3&)v, float(M_PI / 180 * v[3]));
 			return true;
 		}
 		return false;
@@ -190,7 +190,7 @@ namespace stream_vis {
 	}
 	bool cgv_declaration_reader::parse_vecn(const std::string& name, float* v, uint32_t dim)
 	{
-		dvecn V(dim);
+		cgv::dvecn V(dim);
 		if (!parse_dvecn(name, V, dim))
 			return false;
 		for (unsigned i = 0; i < dim; ++i)

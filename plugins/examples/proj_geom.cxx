@@ -24,8 +24,8 @@ class proj_geom_demo : public node, public drawable, public provider
 {
 protected:
 	double tube_radius;
-	dvec3   x[2];
-	dvec3   l[2];
+	cgv::dvec3   x[2];
+	cgv::dvec3   l[2];
 	bool show_plane, show_line_plane[2], show_point[2], show_line[2], show_axes;
 	cgv::media::illum::surface_material axes_mat, surface_mat;
 	sphere_render_style srs;
@@ -33,21 +33,21 @@ public:
 	proj_geom_demo() :
 		axes_mat(
 			cgv::media::illum::BrdfType(cgv::media::illum::BT_OREN_NAYAR + cgv::media::illum::BT_COOK_TORRANCE),
-			rgb(0.1f, 0.1f, 0.1f),
+		cgv::rgb(0.1f, 0.1f, 0.1f),
 			0.1f, 0.5f, 0.2f
 		),
 		surface_mat(
 			cgv::media::illum::BT_OREN_NAYAR,
-			rgb(0.64f, 0.64f, 0.46f),
+			cgv::rgb(0.64f, 0.64f, 0.46f),
 			1.0f, 0.0f, 0.2f
 		)
 	{
 		surface_mat.set_transparency(0.3f);
 		set_name("proj_geom_demo");
-		x[0] = dvec3(1.0, 0.0, 1.0);
-		x[1] = dvec3(0.0, 1.0, 1.0);
+		x[0] = cgv::dvec3(1.0, 0.0, 1.0);
+		x[1] = cgv::dvec3(0.0, 1.0, 1.0);
 		l[0] = cross(x[0], x[1]);
-		l[1] = dvec3(-0.5, 0.5, 0.2);
+		l[1] = cgv::dvec3(-0.5, 0.5, 0.2);
 		tube_radius = 0.05;
 		srs.radius = 0.15f;
 		show_axes = true;
@@ -143,13 +143,13 @@ public:
 			end_tree_node(srs);
 		}
 	}
-	void arrow(context& c, const dvec3& b, const dvec3& e, const rgb& color)
+	void arrow(context& c, const cgv::dvec3& b, const cgv::dvec3& e, const cgv::rgb& color)
 	{
 		c.set_color(color);
 		double l = (b - e).length();
 		c.tesselate_arrow(b, e, srs.radius_scale*tube_radius / l);
 	}
-	void line(context& ctx, const dvec3& l, const rgb& color)
+	void line(context& ctx, const cgv::dvec3& l, const cgv::rgb& color)
 	{
 		ctx.set_color(color);
 		double a = l[0], b = l[1], c = l[2], r = 5;
@@ -169,7 +169,7 @@ public:
 			x1 = -x1;
 		//	(dx - a * c) / aabb;
 		//double x0 = -(dx + a * c) / aabb;
-		arrow(ctx, dvec3(x0, y0, 1), dvec3(x1, y1, 1), color);
+		arrow(ctx, cgv::dvec3(x0, y0, 1), cgv::dvec3(x1, y1, 1), color);
 	}
 	void draw(context& c)
 	{
@@ -179,34 +179,34 @@ public:
 		prog.set_uniform(c, "illumination_mode", 1);
 		c.set_material(axes_mat);
 		if (show_axes) {
-			arrow(c, dvec3(0, 0, 0), dvec3(3, 0, 0), rgb(1, 0, 0));
-			arrow(c, dvec3(0, 0, 0), dvec3(0, 3, 0), rgb(0, 1, 0));
-			arrow(c, dvec3(0, 0, 0), dvec3(0, 0, 3), rgb(0, 0, 1));
+			arrow(c, cgv::dvec3(0, 0, 0), cgv::dvec3(3, 0, 0), cgv::rgb(1, 0, 0));
+			arrow(c, cgv::dvec3(0, 0, 0), cgv::dvec3(0, 3, 0), cgv::rgb(0, 1, 0));
+			arrow(c, cgv::dvec3(0, 0, 0), cgv::dvec3(0, 0, 3), cgv::rgb(0, 0, 1));
 		}
 		for (unsigned i = 0; i < 2; ++i) {
 			if (show_point[i])
-				arrow(c, dvec3(0, 0, 0), dvec3((2.0f / x[i][2])*x[i]), rgb(0, 0.5f, 0.5f));
+				arrow(c, cgv::dvec3(0, 0, 0), cgv::dvec3((2.0f / x[i][2])*x[i]), cgv::rgb(0, 0.5f, 0.5f));
 			if (show_line[i]) {
-				arrow(c, dvec3(0, 0, 0), dvec3(l[i]), rgb(0.5f, 0, 0.5f));
-				line(c, l[i], rgb(1, 0, 1));
+				arrow(c, cgv::dvec3(0, 0, 0), cgv::dvec3(l[i]), cgv::rgb(0.5f, 0, 0.5f));
+				line(c, l[i], cgv::rgb(1, 0, 1));
 			}
 		}
 		c.ref_surface_shader_program().disable(c);
 
 		sphere_renderer& sr = ref_sphere_renderer(c);
 		sr.set_render_style(srs);
-		std::vector<vec3> P;
-		std::vector<rgb> C;
+		std::vector<cgv::vec3> P;
+		std::vector<cgv::rgb> C;
 		if (show_axes) {
-			P.push_back(vec3(0.0f));
-			C.push_back(rgb(0.5f, 0.5f, 0.5f));
+			P.push_back(cgv::vec3(0.0f));
+			C.push_back(cgv::rgb(0.5f, 0.5f, 0.5f));
 		}
 		for (unsigned i = 0; i < 2; ++i) {
 			if (show_point[i]) {
 				P.push_back(x[i]);
-				C.push_back(rgb(0, 1, 1));
+				C.push_back(cgv::rgb(0, 1, 1));
 				P.push_back((1.0f / x[i][2])*x[i]);
-				C.push_back(rgb(0, 0.5f, 0.5f));
+				C.push_back(cgv::rgb(0, 0.5f, 0.5f));
 			}
 		}
 		if (!P.empty()) {
@@ -234,9 +234,9 @@ public:
 		for (unsigned i = 0; i < 2; ++i) {
 			if (show_line_plane[i]) {
 				c.push_modelview_matrix();
-				dvec3 axis;
+				cgv::dvec3 axis;
 				double angle;
-				compute_rotation_axis_and_angle_from_vector_pair(dvec3(0, 0, 1), l[i], axis, angle);
+				compute_rotation_axis_and_angle_from_vector_pair(cgv::dvec3(0, 0, 1), l[i], axis, angle);
 				c.mul_modelview_matrix(rotate4<double>(180 / M_PI * angle, axis)*scale4<double>(3, 3, 3));
 				c.tesselate_unit_disk(50);
 				c.pop_modelview_matrix();

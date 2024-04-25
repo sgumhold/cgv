@@ -1,27 +1,24 @@
 #include "canvas_overlay.h"
 
+using namespace cgv::render;
+
 namespace cgv {
 namespace app {
 
 canvas_overlay::canvas_overlay() : overlay() {
 
-	blend_overlay = false;
+	blit_style_.use_blending = true;
+	blit_style_.use_texture = true;
+	blit_style_.feather_width = 0.0f;
 }
 
-void canvas_overlay::clear(cgv::render::context& ctx) {
-
-	content_canvas.destruct(ctx);
-	overlay_canvas.destruct(ctx);
-	fbc.destruct(ctx);
-}
-
-bool canvas_overlay::init(cgv::render::context& ctx) {
+bool canvas_overlay::init(context& ctx) {
 	
 	bool success = true;
 
-	fbc.add_attachment("color", "uint8[R,G,B,A]");
-	fbc.set_size(get_overlay_size());
-	success &= fbc.ensure(ctx);
+	frame_buffer_.add_attachment("color", "uint8[R,G,B,A]");
+	frame_buffer_.set_size(get_rectangle().size);
+	success &= frame_buffer_.ensure(ctx);
 
 	content_canvas.set_apply_gamma(false);
 	success &= content_canvas.init(ctx);
@@ -29,12 +26,16 @@ bool canvas_overlay::init(cgv::render::context& ctx) {
 	overlay_canvas.register_shader("rectangle", cgv::g2d::shaders::rectangle);
 	success &= overlay_canvas.init(ctx);
 
-	if(success)
-		init_overlay_style(ctx);
-
 	init_styles();
 
 	return success;
+}
+
+void canvas_overlay::clear(context& ctx) {
+
+	content_canvas.destruct(ctx);
+	overlay_canvas.destruct(ctx);
+	frame_buffer_.destruct(ctx);
 }
 
 void canvas_overlay::on_set(void* member_ptr) {
@@ -44,15 +45,9 @@ void canvas_overlay::on_set(void* member_ptr) {
 	post_damage();
 }
 
-void canvas_overlay::draw(cgv::render::context& ctx) {
+void canvas_overlay::after_finish(context& ctx) {
 
-	if(!draw_in_finish_frame && show)
-		draw_impl(ctx);
-}
-
-void canvas_overlay::finish_frame(cgv::render::context& ctx) {
-
-	if(draw_in_finish_frame && show)
+	if(is_visible())
 		draw_impl(ctx);
 }
 
@@ -61,41 +56,22 @@ void canvas_overlay::register_shader(const std::string& name, const std::string&
 	content_canvas.register_shader(name, filename);
 }
 
-void canvas_overlay::handle_theme_change(const cgv::gui::theme_info& theme) {
-	
-	init_styles();
-	post_damage();
-}
-
 void canvas_overlay::post_damage(bool redraw) {
-	has_damage = true;
+	has_damage_ = true;
 	if(redraw)
 		post_redraw();
 }
 
-void canvas_overlay::init_overlay_style(cgv::render::context& ctx) {
+bool canvas_overlay::ensure_layout(context& ctx) {
 
-	// configure style for final blending of overlay into main frame buffer
-	cgv::g2d::shape2d_style overlay_style;
-	overlay_style.use_texture = true;
-	overlay_style.use_blending = blend_overlay;
-	overlay_style.feather_width = 0.0f;
+	if(overlay::ensure_layout(ctx) || recreate_layout_requested_) {
+		recreate_layout_requested_ = false;
+		has_damage_ = true;
 
-	auto& overlay_prog = overlay_canvas.enable_shader(ctx, "rectangle");
-	overlay_style.apply(ctx, overlay_prog);
-	overlay_canvas.disable_current_shader(ctx);
-}
+		frame_buffer_.set_size(get_rectangle().size);
+		frame_buffer_.ensure(ctx);
 
-bool canvas_overlay::ensure_layout(cgv::render::context& ctx) {
-
-	if(ensure_overlay_layout(ctx) || recreate_layout) {
-		recreate_layout = false;
-		has_damage = true;
-
-		fbc.set_size(get_overlay_size());
-		fbc.ensure(ctx);
-
-		content_canvas.set_resolution(ctx, get_overlay_size());
+		content_canvas.set_resolution(ctx, get_rectangle().size);
 		overlay_canvas.set_resolution(ctx, get_viewport_size());
 		return true;
 	}
@@ -103,71 +79,64 @@ bool canvas_overlay::ensure_layout(cgv::render::context& ctx) {
 }
 
 void canvas_overlay::post_recreate_layout() {
-	recreate_layout = true;
+	recreate_layout_requested_ = true;
 }
 
 void canvas_overlay::clear_damage() {
-	has_damage = false;
+	has_damage_ = false;
 }
 
 bool canvas_overlay::is_damaged() const {
-	return has_damage;
+	return has_damage_;
 }
 
-void canvas_overlay::begin_content(cgv::render::context& ctx, bool clear_frame_buffer) {
+void canvas_overlay::begin_content(context& ctx, bool clear_frame_buffer) {
 
-	fbc.enable(ctx);
+	frame_buffer_.enable(ctx);
 	if(clear_frame_buffer) {
-		glClearColor(0.0f, 0.0f, 0.0f, 0.0f);
-		glClear(GL_COLOR_BUFFER_BIT);
+		ctx.push_bg_color();
+		ctx.set_bg_color({ 0.0f, 0.0f, 0.0f, 1.0f });
+		ctx.clear_background(true, false);
+		ctx.pop_bg_color();
 	}
 }
 
-void canvas_overlay::end_content(cgv::render::context& ctx, bool keep_damage) {
+void canvas_overlay::end_content(context& ctx, bool keep_damage) {
 
-	fbc.disable(ctx);
-	has_damage = keep_damage;
+	frame_buffer_.disable(ctx);
+	has_damage_ = keep_damage;
 }
 
-void canvas_overlay::enable_blending() {
+void canvas_overlay::draw_impl(context& ctx) {
 
-	glGetBooleanv(GL_BLEND, &blending_was_enabled);
-	if(!blending_was_enabled)
-		glEnable(GL_BLEND);
-	glBlendFuncSeparate(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA, GL_ONE, GL_ONE_MINUS_SRC_ALPHA);
-}
+	ctx.push_depth_test_state();
+	ctx.disable_depth_test();
 
-void canvas_overlay::disable_blending() {
+	ctx.push_blend_state();
+	const context::BlendState blend_state = {
+		true,
+		BF_SRC_ALPHA,
+		BF_ONE_MINUS_SRC_ALPHA,
+		BF_ZERO,
+		BF_ONE_MINUS_SRC_ALPHA
+	};
+	ctx.set_blend_state(blend_state);
 
-	if(!blending_was_enabled)
-		glDisable(GL_BLEND);
-}
-
-void canvas_overlay::draw_impl(cgv::render::context& ctx) {
-
-	GLboolean depth_test_was_enabled = false;
-	glGetBooleanv(GL_DEPTH_TEST, &depth_test_was_enabled);
-	if(depth_test_was_enabled)
-		glDisable(GL_DEPTH_TEST);
-
-	if(blend_overlay)
-		enable_blending();
-
-	if(has_damage)
+	if(has_damage_)
 		draw_content(ctx);
 
 	// draw frame buffer texture to screen
-	auto& overlay_prog = overlay_canvas.enable_shader(ctx, "rectangle");
-	fbc.enable_attachment(ctx, "color", 0);
-	overlay_canvas.draw_shape(ctx, get_overlay_position(), get_overlay_size());
-	fbc.disable_attachment(ctx, "color");
+	ctx.set_blend_func(BF_ONE, BF_SRC_ALPHA);
+
+	overlay_canvas.enable_shader(ctx, "rectangle");
+	overlay_canvas.set_style(ctx, blit_style_);
+	frame_buffer_.enable_attachment(ctx, "color", 0);
+	overlay_canvas.draw_shape(ctx, get_rectangle());
+	frame_buffer_.disable_attachment(ctx, "color");
 	overlay_canvas.disable_current_shader(ctx);
 
-	if(depth_test_was_enabled)
-		glEnable(GL_DEPTH_TEST);
-
-	if(blend_overlay)
-		disable_blending();
+	ctx.pop_blend_state();
+	ctx.pop_depth_test_state();
 }
 
 }

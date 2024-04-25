@@ -59,6 +59,10 @@ bool fltk_layout_group::set_void(const std::string& property, const std::string&
 		update_box_type();
 		redraw();
 	} else 
+	if(property == "w") {
+		fltk_base::set_void(this, this, property, value_type, value_ptr);
+		layout();
+	} else
 	if (formatter && formatter->set_void(property, value_type, value_ptr))
 		return true;
 	else {

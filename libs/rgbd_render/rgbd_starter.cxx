@@ -27,6 +27,35 @@ std::string get_stream_format_enum(const std::vector<rgbd::stream_format>& sfs)
 	}
 	return enum_def + "'";
 }
+std::string get_component_format(const rgbd::frame_format& ff)
+{
+	std::string fmt_descr("uint");
+	switch (ff.pixel_format) {
+	case PF_I: // infrared
+	case PF_DEPTH:
+	case PF_DEPTH_AND_PLAYER:
+	case PF_CONFIDENCE:
+		fmt_descr += cgv::utils::to_string(ff.nr_bits_per_pixel) + "[L]";
+		break;
+	case PF_RGB:   // 24 or 32 bit rgb format with byte alignment
+		fmt_descr += ff.nr_bits_per_pixel == 24 ? "8[R,G,B]" : "8[R,G,B,A]";
+		break;
+	case PF_BGR:   // 24 or 24 bit bgr format with byte alignment
+		fmt_descr += ff.nr_bits_per_pixel == 24 ? "8[B,G,R]" : "8[B,G,R,A]";
+		break;
+	case PF_RGBA:  // 32 bit rgba format
+		fmt_descr += "8[R,G,B,A]";
+		break;
+	case PF_BGRA:  // 32 bit bgra format
+		fmt_descr += "8[B,G,R,A]";
+		break;
+	case PF_BAYER: // 8 bit raw bayer pattern values
+		fmt_descr += "8[L]";
+		break;
+	}
+	return fmt_descr;
+}
+
 void rgbd_starter_base::update_stream_formats(cgv::gui::provider& p)
 {
 	color_stream_formats.clear();

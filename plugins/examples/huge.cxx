@@ -23,8 +23,8 @@ protected:
 	bool aam_out_of_date;
 	cgv::render::attribute_array_manager aam;
 	// per vertex location
-	std::vector<vec4> spheres;
-	std::vector<rgba> colors;
+	std::vector<cgv::vec4> spheres;
+	std::vector<cgv::rgba> colors;
 	bool sort_points;
 	bool blend;
 	size_t nr_primitives;
@@ -48,8 +48,8 @@ protected:
 		colors.resize(nr_primitives);
 		for (size_t i = 0; i < nr_primitives; ++i) {
 			prog.step();
-			spheres[i] = vec4(d(g), d(g), d(g), (d(g)+0.2f)*radius);
-			colors[i] = rgba(d(g), d(g), d(g), 0.5f*d(g) + 0.5f);
+			spheres[i] = cgv::vec4(d(g), d(g), d(g), (d(g)+0.2f)*radius);
+			colors[i] = cgv::rgba(d(g), d(g), d(g), 0.5f*d(g) + 0.5f);
 		}
 		aam_out_of_date = true;
 	}
@@ -83,7 +83,7 @@ public:
 	bool init(cgv::render::context& ctx)
 	{
 		if ((view_ptr = find_view_as_node()))
-			view_ptr->set_focus(vec3(0.5f, 0.5f, 0.5f));
+			view_ptr->set_focus(cgv::vec3(0.5f, 0.5f, 0.5f));
 		ctx.set_bg_clr_idx(4);
 
 		if (!s_renderer.init(ctx))
@@ -102,14 +102,14 @@ public:
 			for (unsigned i = 0; i < indices.size(); ++i)
 				indices[i] = i;
 			struct sort_pred {
-				const std::vector<vec4>& spheres;
-				const vec3& view_dir;
+				const std::vector<cgv::vec4>& spheres;
+				const cgv::vec3& view_dir;
 				bool operator () (GLint i, GLint j) const {
-					return dot(reinterpret_cast<const vec3&>(spheres[i]), view_dir) > dot(reinterpret_cast<const vec3&>(spheres[j]), view_dir);
+					return dot(cgv::vec3(spheres[i]), view_dir) > dot(cgv::vec3(spheres[j]), view_dir);
 				}
-				sort_pred(const std::vector<vec4>& _spheres, const vec3& _view_dir) : spheres(_spheres), view_dir(_view_dir) {}
+				sort_pred(const std::vector<cgv::vec4>& _spheres, const cgv::vec3& _view_dir) : spheres(_spheres), view_dir(_view_dir) {}
 			};
-			vec3 view_dir = view_ptr->get_view_dir();
+			cgv::vec3 view_dir = view_ptr->get_view_dir();
 			std::sort(indices.begin(), indices.end(), sort_pred(spheres, view_dir));
 			R.set_indices(ctx, indices);
 		}

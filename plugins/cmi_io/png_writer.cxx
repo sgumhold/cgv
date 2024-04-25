@@ -148,15 +148,15 @@ bool png_writer::write_image(const const_data_view& dv, const std::vector<const_
 
 	png_set_compression_level(png_ptr,compression_level);
 
-	int h = dv.get_format()->get_height();
-	png_set_IHDR(png_ptr, info_ptr, dv.get_format()->get_width(), h,
+	int h = int(dv.get_format()->get_height());
+	png_set_IHDR(png_ptr, info_ptr, png_uint_32(dv.get_format()->get_width()), h,
 				 bit_depth, color_type, interlacing?PNG_INTERLACE_ADAM7
 				 :PNG_INTERLACE_NONE,
 				 PNG_COMPRESSION_TYPE_DEFAULT, PNG_FILTER_TYPE_DEFAULT);
 
 	png_byte** row_data = new png_byte*[h];
 	const unsigned char* data = dv.get_ptr<unsigned char>();
-	int step_size = dv.get_step_size(0);
+	size_t step_size = dv.get_step_size(0);
 	for (int i=0; i<h; ++i)
 		row_data[i] = const_cast<unsigned char*>(data) + i*step_size;
 	png_set_rows(png_ptr, info_ptr, row_data);

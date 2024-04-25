@@ -20,7 +20,7 @@ class CGV_API light_interactor : public node, public event_handler, public provi
 {
 public:
 	typedef cgv::media::color<float> color_type;
-	typedef std::pair<vec3, vec3> ray;
+	typedef std::pair<cgv::vec3, cgv::vec3> ray;
 private:
 	int current_light_index;
 	std::default_random_engine RE;
@@ -37,17 +37,17 @@ protected:
 	void save_cb();
 	void load_cb();
 	void on_load();
-	vec3 delta_pos;
+	cgv::vec3 delta_pos;
 	float speed;
 
 	unsigned nr_light_rays;
 	cgv::render::view* view_ptr;
-	std::vector<vec3> light_rays;
+	std::vector<cgv::vec3> light_rays;
 	std::vector<int> current_ray_indices;
-	dmat4 last_modelview_matrix;
+	cgv::dmat4 last_modelview_matrix;
 
 	float ray_width;
-	rgb default_color;
+	cgv::rgb default_color;
 	float color_lambda;
 	float min_opacity, max_opacity;
 	cgv::render::shader_program prog;

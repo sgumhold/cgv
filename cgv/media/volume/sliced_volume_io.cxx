@@ -5,17 +5,12 @@
 #include "sliced_volume_io.h"
 #include <cgv/utils/scan.h>
 #include <cgv/utils/file.h>
-#include <cgv/utils/progression.h>
 #include <cgv/utils/advanced_scan.h>
 #include <cgv/utils/dir.h>
+#include <cgv/os/cmdline_tools.h>
 #include <cgv/media/video/video_reader.h>
 #include <cgv/media/image/image_reader.h>
-#include <sstream>
 
-#if WIN32
-#define popen(...) _popen(__VA_ARGS__);
-#define pclose(...) _pclose(__VA_ARGS__);
-#endif
 
 namespace cgv {
 	namespace media {
@@ -26,60 +21,6 @@ namespace cgv {
 				ST_INDEX,
 				ST_VIDEO
 			};
-
-			std::string query_system_output(std::string cmd, bool cerr) 
-			{
-				std::string data;
-				FILE* stream;
-				const int max_buffer = 256;
-				char buffer[max_buffer];
-				if (cerr)
-					cmd.append(" 2>&1");
-
-				stream = popen(cmd.c_str(), "r");
-
-				if (stream) {
-					while (!feof(stream))
-						if (fgets(buffer, max_buffer, stream) != NULL) data.append(buffer);
-					pclose(stream);
-				}
-				return data;
-			}
-			size_t read_system_output(std::string cmd, uint8_t* buffer, size_t buffer_size, const char* progression_text = 0, bool use_cerr = false, void (*on_progress_update)(int,void*) = 0, void* user_data = 0, size_t block_size = 4096, bool cycle_till_eof = false)
-			{
-				cgv::utils::progression* prog_ptr = 0;
-				if (progression_text != 0)
-					prog_ptr = new cgv::utils::progression(progression_text, buffer_size/block_size, 20);
-				FILE* fp;
-				if (use_cerr)
-					cmd.append(" 2>&1");
-#ifdef WIN32
-				const char* mode = "rb";
-#else
-				const char* mode = "r";
-#endif
-				fp = popen(cmd.c_str(), mode);
-				size_t nr_bytes_read = 0;
-				int block_cnt = 0;
-				if (fp) {
-					while ((nr_bytes_read < buffer_size || cycle_till_eof) && !feof(fp)) {
-						size_t nr_bytes = block_size;
-						if (!cycle_till_eof)
-							nr_bytes = std::min(nr_bytes, buffer_size - nr_bytes_read);
-						size_t offset = nr_bytes_read % buffer_size;
-						size_t nr_read = fread(buffer + offset, 1, nr_bytes, fp);
-						if (prog_ptr)
-							prog_ptr->step();
-						if (on_progress_update)
-							on_progress_update(++block_cnt, user_data);
-						nr_bytes_read += nr_read;
-						if (nr_read < nr_bytes)
-							break;
-					}
-					pclose(fp);
-				}
-				return nr_bytes_read;
-			}
 
 			bool read_volume_from_video_with_ffmpeg(volume& V, const std::string& file_name,
 				volume::dimension_type dims, volume::extent_type extent, const cgv::data::component_format& cf,
@@ -100,7 +41,7 @@ namespace cgv {
 						cmd += " -show_entries side_data=rotation -of default=nokey=1:noprint_wrappers=1 ";
 						cmd += fn_in_quotes;
 						std::cout << "Analyze Video with " << cmd << std::endl;
-						std::string video_info = query_system_output(cmd, false);
+						std::string video_info = cgv::os::query_system_output(cmd, false);
 						std::vector<cgv::utils::line> lines;
 						cgv::utils::split_to_lines(video_info, lines, true);
 						bool do_swap_sides = false;
@@ -169,7 +110,7 @@ namespace cgv {
 				V.get_format().set_depth(dims(2));
 				if (on_progress_update)
 					on_progress_update(-1, user_data);
-				dims(2) = V.get_format().get_depth();
+				dims(2) = int(V.get_format().get_depth());
 				V.resize(dims);
 				V.ref_extent() = extent;
 				std::string cmd = "ffmpeg -i ";
@@ -223,7 +164,7 @@ namespace cgv {
 				if (on_progress_update)
 					on_progress_update(0, user_data);
 				
-				size_t bytes_read = read_system_output(cmd, V.get_data_ptr<uint8_t>(), V.get_size(),
+				size_t bytes_read = cgv::os::read_system_output(cmd, V.get_data_ptr<uint8_t>(), V.get_size(),
 					"reading video", false, on_progress_update, user_data, V.get_slice_size(), cycle_till_eof);
 				if (bytes_read < V.get_size()) {
 					std::cerr << "Warning: could only read " << bytes_read << " of volume with size " << V.get_size() << std::endl;
@@ -318,11 +259,11 @@ namespace cgv {
 					}
 				}
 				if (dims(0) == -1) {
-					dims(0) = df.get_width();
+					dims(0) = int(df.get_width());
 					svol.ref_extent()(0) *= -dims(0);
 				}
 				if (dims(1) == -1) {
-					dims(1) = df.get_height();
+					dims(1) = int(df.get_height());
 					svol.ref_extent()(1) *= -dims(1);
 				}
 				svol.resize(dims);
@@ -382,7 +323,7 @@ namespace cgv {
 				std::string path = cgv::utils::file::get_path(file_name);
 				if (path.size() > 0)
 					file_name_pattern = path + "/" + file_name_pattern;
-				if (!svol.open_write(file_name, file_name_pattern, V.get_format().get_depth())) {
+				if (!svol.open_write(file_name, file_name_pattern, unsigned(V.get_format().get_depth()))) {
 					std::cerr << "could not open " << file_name << " for write." << std::endl;
 					return false;
 				}

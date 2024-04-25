@@ -1,11 +1,7 @@
 #include "image_view.h"
-
-//#include <cgv/media/image/image_reader.h>
-//#include <cgv/media/image/image_writer.h>
 #include <algorithm>
 
 using namespace cgv::type;
-//using namespace cgv::media::image;
 
 namespace cgv {
 	namespace data {
@@ -13,22 +9,22 @@ namespace cgv {
 template <typename T, typename S>
 void sub_sample_2_2(const const_data_view& src, data_view& dest)
 {
-	int w = src.get_format()->get_width();
-	int h = src.get_format()->get_height();
-	int W = dest.get_format()->get_width();
-	int H = dest.get_format()->get_height();
+	size_t w = src.get_format()->get_width();
+	size_t h = src.get_format()->get_height();
+	size_t W = dest.get_format()->get_width();
+	size_t H = dest.get_format()->get_height();
 	
-	int dx = src.get_step_size(1)/sizeof(T);
-	int dy = src.get_step_size(0)/sizeof(T);
+	size_t dx = src.get_step_size(1)/sizeof(T);
+	size_t dy = src.get_step_size(0)/sizeof(T);
 	const T* p0 = src.get_ptr<T>();
 	const T* p1 = p0+dy;
 	
 	T* q = dest.get_ptr<T>();
-	int Dx = dest.get_step_size(1)/sizeof(T);
-	int Dy = dest.get_step_size(0)/sizeof(T);
-	for (int i=0; i<H;++i) {
-		for (int j=0; j<W;++j) {
-			for (int k=0; k<dx; ++k) {
+	size_t Dx = dest.get_step_size(1)/sizeof(T);
+	size_t Dy = dest.get_step_size(0)/sizeof(T);
+	for (size_t i=0; i<H;++i) {
+		for (size_t j=0; j<W;++j) {
+			for (size_t k=0; k<dx; ++k) {
 				*q = (T) ( ( (S)p0[0] + p1[0] + p0[dx] + p1[dx] ) / 4 );
 				++q;
 				++p0;
@@ -42,15 +38,14 @@ void sub_sample_2_2(const const_data_view& src, data_view& dest)
 		q += Dy - W*Dx;
 	}
 }
-
 template <typename T>
-void copy_sub_view(const const_data_view& src, int x, int y, int w, int h, 
-				   data_view& dst, int X, int Y)
+void copy_sub_view(const const_data_view& src, std::ptrdiff_t x, std::ptrdiff_t y, std::ptrdiff_t w, std::ptrdiff_t h,
+				   data_view& dst, std::ptrdiff_t X, std::ptrdiff_t Y)
 { 
-	int max_w = src.get_format()->get_width() - x;
-	int max_h = src.get_format()->get_height() - y;
-	int max_W = dst.get_format()->get_width() - X;
-	int max_H = dst.get_format()->get_height() - Y;
+	std::ptrdiff_t max_w = src.get_format()->get_width() - x;
+	std::ptrdiff_t max_h = src.get_format()->get_height() - y;
+	std::ptrdiff_t max_W = dst.get_format()->get_width() - X;
+	std::ptrdiff_t max_H = dst.get_format()->get_height() - Y;
 	if (w == -1)
 		w = max_w;
 	if (h == -1)
@@ -59,16 +54,16 @@ void copy_sub_view(const const_data_view& src, int x, int y, int w, int h,
 	w = std::min(max_w,max_W);
 	h = std::min(max_h,max_H);
 
-	int dx = src.get_step_size(1)/sizeof(T);
-	int dy = src.get_step_size(0)/sizeof(T);
+	size_t dx = src.get_step_size(1)/sizeof(T);
+	size_t dy = src.get_step_size(0)/sizeof(T);
 	const T* p = src.get_ptr<T>()+x*dx+y*dy;
 	
-	int Dx = dst.get_step_size(1)/sizeof(T);
-	int Dy = dst.get_step_size(0)/sizeof(T);
+	size_t Dx = dst.get_step_size(1)/sizeof(T);
+	size_t Dy = dst.get_step_size(0)/sizeof(T);
 	T* q = dst.get_ptr<T>()+X*Dx+Y*Dy;
-	for (int i=0; i<h;++i) {
-		for (int j=0; j<w;++j) {
-			for (int k=0; k<dx;++k) {
+	for (size_t i=0; i<size_t(h);++i) {
+		for (size_t j=0; j<size_t(w);++j) {
+			for (size_t k=0; k<dx;++k) {
 				*q = *p;
 				++q;
 				++p;
@@ -84,7 +79,7 @@ image_view::image_view()
 {
 }
 
-void image_view::create(const std::string& fmt_dcr, int w, int h)
+void image_view::create(const std::string& fmt_dcr, std::ptrdiff_t w, std::ptrdiff_t h)
 {
 	dv.~data_view();
 	df.set_data_format(fmt_dcr);
@@ -95,12 +90,12 @@ void image_view::create(const std::string& fmt_dcr, int w, int h)
 	new (&dv) data_view(&df);
 }
 
-void* image_view::ref_void(int i, int j)
+void* image_view::ref_void(size_t i, size_t j)
 {
 	return dv.get_ptr<unsigned char>()+dv.get_step_size(1)*i+dv.get_step_size(0)*j;
 }
 
-const void* image_view::get_void(int i, int j) const
+const void* image_view::get_void(size_t i, size_t j) const
 {
 	return dv.get_ptr<unsigned char>()+dv.get_step_size(1)*i+dv.get_step_size(0)*j;
 }
@@ -141,23 +136,7 @@ void image_view::clear(double v)
 		break;
 	}
 }
-
-/*
-bool image_view::read(const std::string& fn)
-{
-	dv.~data_view();
-	image_reader rd(df);
-	return rd.read_image(fn,dv);
-}
-
-bool image_view::write(const std::string& fn) const
-{
-	image_writer wr(fn);
-	return wr.write_image(dv);
-}
-*/
-
-void image_view::copy_rectangle(const image_view& src, int X, int Y, int x, int y, int w, int h)
+void image_view::copy_rectangle(const image_view& src, std::ptrdiff_t X, std::ptrdiff_t Y, std::ptrdiff_t x, std::ptrdiff_t y, std::ptrdiff_t w, std::ptrdiff_t h)
 {
 	switch (df.get_component_type()) {
 	case TI_INT8   : copy_sub_view<int8_type>(src.dv, x, y, w, h, dv, X, Y); break;
@@ -172,7 +151,6 @@ void image_view::copy_rectangle(const image_view& src, int X, int Y, int x, int 
 	case TI_FLT64  : copy_sub_view<flt64_type>(src.dv, x, y, w, h, dv, X, Y); break;
 	}
 }
-
 void image_view::sub_sample()
 {
 	data_format df1(df);

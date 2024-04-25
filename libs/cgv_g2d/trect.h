@@ -1,6 +1,6 @@
 #pragma once
 
-#include <cgv/render/render_types.h>
+#include <cgv/math/fvec.h>
 
 namespace cgv {
 namespace g2d {
@@ -108,7 +108,7 @@ struct trect {
 	}
 };
 
-// declare some concrete rectangle types following the naming scheme of the cgv render_types
+// declare some concrete rectangle types
 
 /// declare rectangle using unsigned integer coordinates
 typedef trect<unsigned> urect;

@@ -5,17 +5,18 @@
 #ifndef _USE_MATH_DEFINES
 	#define _USE_MATH_DEFINES 1
 #endif
-#include <array>
-#include <limits>
 #include <algorithm>
-#include <iostream>
-#include <sstream>
+#include <array>
 #include <cmath>
+#include <cstdint>
+#include <iostream>
+#include <limits>
+#include <sstream>
 #include <cgv/type/standard_types.h>
 #include <cgv/math/functions.h>
 
 namespace cgv {
-	namespace math {
+namespace math {
 
 template <typename T> class vec;
 
@@ -643,14 +644,79 @@ fvec<T, 3> ortho(const fvec<T, 3>& v) {
 	return std::abs(v.x()) > std::abs(v.z()) ? fvec<T, 3>(-v.y(), v.x(), T(0)) : fvec<T, 3>(T(0), -v.z(), v.y());
 }
 
-	}
-}
+} // namespace math
 
+/// @name Predefined Types
+/// @{
+
+/// declare type of 2d boolean vectors
+typedef cgv::math::fvec<bool, 2> bvec2;
+/// declare type of 3d boolean vectors
+typedef cgv::math::fvec<bool, 3> bvec3;
+/// declare type of 4d boolean vectors
+typedef cgv::math::fvec<bool, 4> bvec4;
+
+/// declare type of 2d single precision floating point vectors
+typedef cgv::math::fvec<float, 2> vec2;
+/// declare type of 3d single precision floating point vectors
+typedef cgv::math::fvec<float, 3> vec3;
+/// declare type of 4d single precision floating point vectors (used for homogeneous coordinates)
+typedef cgv::math::fvec<float, 4> vec4;
+
+/// declare type of 2d double precision floating point vectors
+typedef cgv::math::fvec<double, 2> dvec2;
+/// declare type of 3d double precision floating point vectors
+typedef cgv::math::fvec<double, 3> dvec3;
+/// declare type of 4d double precision floating point vectors (used for homogeneous coordinates)
+typedef cgv::math::fvec<double, 4> dvec4;
+
+/// declare type of 2d 16 bit integer vectors
+typedef cgv::math::fvec<int16_t, 2> svec2;
+/// declare type of 3d 16 bit integer vectors
+typedef cgv::math::fvec<int16_t, 3> svec3;
+/// declare type of 4d 16 bit integer vectors
+typedef cgv::math::fvec<int16_t, 4> svec4;
+/// declare type of 2d 16 bit unsigned integer vectors
+typedef cgv::math::fvec<uint16_t, 2> usvec2;
+/// declare type of 3d 16 bit unsigned integer vectors
+typedef cgv::math::fvec<uint16_t, 3> usvec3;
+/// declare type of 4d 16 bit unsigned integer vectors
+typedef cgv::math::fvec<uint16_t, 4> usvec4;
+
+/// declare type of 2d 32 bit integer vectors
+typedef cgv::math::fvec<int32_t, 2> ivec2;
+/// declare type of 3d 32 bit integer vectors
+typedef cgv::math::fvec<int32_t, 3> ivec3;
+/// declare type of 4d 32 bit integer vectors
+typedef cgv::math::fvec<int32_t, 4> ivec4;
+/// declare type of 2d 32 bit unsigned integer vectors
+typedef cgv::math::fvec<uint32_t, 2> uvec2;
+/// declare type of 3d 32 bit unsigned integer vectors
+typedef cgv::math::fvec<uint32_t, 3> uvec3;
+/// declare type of 4d 32 bit unsigned integer vectors
+typedef cgv::math::fvec<uint32_t, 4> uvec4;
+
+/// declare type of 2d 64 bit integer vectors
+typedef cgv::math::fvec<int64_t, 2> lvec2;
+/// declare type of 3d 64 bit integer vectors
+typedef cgv::math::fvec<int64_t, 3> lvec3;
+/// declare type of 4d 64 bit integer vectors
+typedef cgv::math::fvec<int64_t, 4> lvec4;
+/// declare type of 2d 64 bit unsigned integer vectors
+typedef cgv::math::fvec<uint64_t, 2> ulvec2;
+/// declare type of 3d 64 bit unsigned integer vectors
+typedef cgv::math::fvec<uint64_t, 3> ulvec3;
+/// declare type of 4d 64 bit unsigned integer vectors
+typedef cgv::math::fvec<uint64_t, 4> ulvec4;
+
+/// @}
+
+} // namespace cgv
 
 #include "vec.h"
 
 namespace cgv {
-	namespace math {
+namespace math {
 
 /// conversion to vector type
 template <typename T, cgv::type::uint32_type N>
@@ -667,8 +733,8 @@ fvec<T, N> fvec<T, N>::from_vec(const vec<T>& v)
 	return fvec<T, N>(std::min(N, v.dim()), &v[0]);
 }
 
-	}
-}
+} // namespace math
+} // namespace cgv
 
 /*
 #include <cgv/utils/convert_string.h>

@@ -87,7 +87,7 @@ bool mipmap::execute(cgv::render::context& ctx, cgv::render::texture& source_tex
 		
 		prog->set_uniform(ctx, "level", level);
 
-		uvec3 num_groups = calculate_num_groups(output_size, group_size);
+		uvec3 num_groups = calculate_num_groups(output_size, uvec3(group_size));
 
 		if(num_dimensions == 1) {
 			prog->set_uniform(ctx, "output_size", output_size.x());

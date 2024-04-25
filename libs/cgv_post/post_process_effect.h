@@ -5,7 +5,6 @@
 #include <cgv/gui/subprovider.h>
 #include <cgv/render/context.h>
 #include <cgv/render/managed_frame_buffer.h>
-#include <cgv/render/render_types.h>
 #include <cgv/render/shader_library.h>
 #include <cgv/render/view.h>
 #include <cgv_gl/gl/gl_context.h>
@@ -15,7 +14,7 @@
 namespace cgv {
 namespace post {
 
-class CGV_API post_process_effect : public cgv::render::render_types, public cgv::gui::subprovider {
+class CGV_API post_process_effect : public cgv::gui::subprovider {
 protected:
 	/// a framebuffer to draw geometry into and use as a source to apply effects
 	cgv::render::managed_frame_buffer fbc_draw;

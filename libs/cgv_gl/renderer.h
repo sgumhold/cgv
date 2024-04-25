@@ -12,13 +12,13 @@ namespace cgv { // @<
 	namespace render { // @<
 		
 		/// base class for all render styles
-		struct CGV_API render_style : public render_types
+		struct CGV_API render_style
 		{
 			virtual ~render_style();
 		};
 		
 		/// abstract base class for all renderers that handles a shader program and position / color attribute
-		class CGV_API renderer : public render_types
+		class CGV_API renderer
 		{
 		private:
 			/// shader program

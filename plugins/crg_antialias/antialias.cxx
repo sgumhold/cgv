@@ -52,7 +52,7 @@ void antialias::generate_samples()
 
 void antialias::update_view(cgv::render::context& ctx, int i)
 {
-	dmat4 m;
+	cgv::dmat4 m;
 	m.identity();
 	double dx,dy;
 	put_sample(i,dx,dy);
@@ -63,7 +63,7 @@ void antialias::update_view(cgv::render::context& ctx, int i)
 
 void antialias::restore_view(cgv::render::context& ctx, int i)
 {
-	dmat4 m;
+	cgv::dmat4 m;
 	m.identity();
 	double dx,dy;
 	put_sample(i,dx,dy);

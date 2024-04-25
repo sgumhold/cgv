@@ -1,0 +1,7 @@
+@=
+projectName="jolt_physics";
+projectType="library";
+projectGUID="BC4F2606-52DD-4833-A99E-A9A5F5BD59B3";
+addIncDirs=[ [CGV_DIR."/3rd/JoltPhysics", "all"] ];
+addSharedDefines=["JPH_BUILD_SHARED_LIBRARY", ["JPH_SHARED_LIBRARY", "all"] ];
+cppLanguageStandard="stdcpp17";
