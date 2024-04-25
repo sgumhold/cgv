@@ -145,11 +145,12 @@ $(document).ready(function(){initNavTree('system__devices_8cxx_source.html','');
 <div class="line"><a name="l00058"></a><span class="lineno">   58</span>&#160;    <span class="keywordflow">return</span> <span class="keyword">true</span>;</div>
 <div class="line"><a name="l00059"></a><span class="lineno">   59</span>&#160;<span class="preprocessor">#else</span></div>
 <div class="line"><a name="l00060"></a><span class="lineno">   60</span>&#160;    std::cerr &lt;&lt; <span class="stringliteral">&quot;cgv::os::enumerate_system_devices() only implemented on Windows&quot;</span> &lt;&lt; std::endl;</div>
-<div class="line"><a name="l00061"></a><span class="lineno">   61</span>&#160;<span class="preprocessor">#endif</span></div>
-<div class="line"><a name="l00062"></a><span class="lineno">   62</span>&#160;}</div>
-<div class="line"><a name="l00063"></a><span class="lineno">   63</span>&#160; </div>
-<div class="line"><a name="l00064"></a><span class="lineno">   64</span>&#160;    }</div>
-<div class="line"><a name="l00065"></a><span class="lineno">   65</span>&#160;}</div>
+<div class="line"><a name="l00061"></a><span class="lineno">   61</span>&#160;    <span class="keywordflow">return</span> <span class="keyword">false</span>;</div>
+<div class="line"><a name="l00062"></a><span class="lineno">   62</span>&#160;<span class="preprocessor">#endif</span></div>
+<div class="line"><a name="l00063"></a><span class="lineno">   63</span>&#160;}</div>
+<div class="line"><a name="l00064"></a><span class="lineno">   64</span>&#160; </div>
+<div class="line"><a name="l00065"></a><span class="lineno">   65</span>&#160;    }</div>
+<div class="line"><a name="l00066"></a><span class="lineno">   66</span>&#160;}</div>
 <div class="ttc" id="anamespacecgv_1_1utils_html_ab89ee8cc10713a3df171d4a469d0e320"><div class="ttname"><a href="namespacecgv_1_1utils.html#ab89ee8cc10713a3df171d4a469d0e320">cgv::utils::str2wstr</a></div><div class="ttdeci">std::wstring str2wstr(const std::string &amp;s)</div><div class="ttdoc">convert a 8-bit string to a 16-bit string</div><div class="ttdef"><b>Definition:</b> <a href="convert_8cxx_source.html#l00011">convert.cxx:11</a></div></div>
 <div class="ttc" id="anamespacecgv_1_1utils_html_ae51531449e7c08f4306502dc502261b7"><div class="ttname"><a href="namespacecgv_1_1utils.html#ae51531449e7c08f4306502dc502261b7">cgv::utils::wstr2str</a></div><div class="ttdeci">std::string wstr2str(const std::wstring &amp;ws)</div><div class="ttdoc">convert a 16-bit string to a 8-bit string</div><div class="ttdef"><b>Definition:</b> <a href="convert_8cxx_source.html#l00026">convert.cxx:26</a></div></div>
 <div class="ttc" id="anamespacecgv_html"><div class="ttname"><a href="namespacecgv.html">cgv</a></div><div class="ttdoc">the cgv namespace</div><div class="ttdef"><b>Definition:</b> <a href="print_8h_source.html#l00011">print.h:11</a></div></div>
