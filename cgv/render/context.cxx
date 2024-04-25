@@ -9,6 +9,10 @@
 using namespace cgv::base;
 using namespace cgv::media::image;
 
+#define SAFE_STACK_POP(STACK, WHERE) \
+if(STACK.size() == 1) error("context::" WHERE "() ... attempt to completely empty stack avoided."); \
+else STACK.pop();
+
 namespace cgv {
 	namespace render {
 
@@ -127,6 +131,35 @@ context::context()
 
 	gpu_vendor = GPU_VENDOR_UNKNOWN;
 
+	current_background = 0;
+	bg_color_stack.push(vec4(0.0f));
+	bg_depth_stack.push(1.0f);
+	bg_stencil_stack.push(0);
+	bg_accum_color_stack.push(vec4(0.0f));
+
+	DepthTestState depth_test_state;
+	depth_test_state.enabled = false;
+	depth_test_state.test_func = CF_LESS;
+	depth_test_state_stack.push(depth_test_state);
+
+	cull_state_stack.push(CM_OFF);
+
+	BlendState blend_state;
+	blend_state.enabled = false;
+	blend_state.src_color = BF_ONE;
+	blend_state.src_alpha = BF_ONE;
+	blend_state.dst_color = BF_ZERO;
+	blend_state.dst_alpha = BF_ZERO;
+	blend_state_stack.push(blend_state);
+
+	BufferMask buffer_mask;
+	buffer_mask.depth_flag = true;
+	buffer_mask.red_flag = true;
+	buffer_mask.green_flag = true;
+	buffer_mask.blue_flag = true;
+	buffer_mask.alpha_flag = true;
+	buffer_mask_stack.push(buffer_mask);
+
 	static frame_buffer_base fbb;
 	frame_buffer_stack.push(&fbb);
 	modelview_matrix_stack.push(cgv::math::identity4<double>());
@@ -150,11 +183,7 @@ context::context()
 	gamma3 = vec3(2.2f);
 
 	default_render_flags = RenderPassFlags(RPF_DEFAULT);
-	current_background = 0;
-	bg_r = bg_g = bg_b = bg_a = 0.0f;
-	bg_accum_r = bg_accum_g = bg_accum_b = bg_accum_a = 0.0f;
-	bg_d = 1.0f;
-	bg_s = 0;
+	
 	current_font_size = 14;
 	
 	phong_shading = true;
@@ -252,116 +281,127 @@ void context::configure_new_child(base_ptr child)
 	}
 }
 
-/// set a user defined background color
+void context::push_bg_color() {
+	bg_color_stack.push(get_bg_color());
+}
+
+void context::pop_bg_color() {
+	SAFE_STACK_POP(bg_color_stack, "pop_bg_color");
+	set_bg_color(get_bg_color());
+}
+
+void context::set_bg_color(vec4 rgba) {
+	bg_color_stack.top() = rgba;
+}
+
 void context::set_bg_color(float r, float g, float b, float a)
 {
-	bg_r = r;
-	bg_g = g;
-	bg_b = b;
-	bg_a = a;
-	if (!in_render_process())
-		post_redraw();
+	set_bg_color(vec4(r, g, b, a));
 }
 
-/// set a user defined background alpha value
+vec4 context::get_bg_color() const {
+	return bg_color_stack.top();
+}
+
+void context::put_bg_color(float* rgba) const {
+	auto& c = bg_color_stack.top();
+	rgba[0] = c[0];
+	rgba[1] = c[1];
+	rgba[2] = c[2];
+	rgba[3] = c[3];
+}
+
 void context::set_bg_alpha(float a)
 {
-	bg_a = a;
-	if (!in_render_process())
-		post_redraw();
+	bg_color_stack.top()[3] = a;
 }
 
-/// set a user defined background color
-void context::set_bg_accum_color(float r, float g, float b, float a)
-{
-	bg_accum_r = r;
-	bg_accum_g = g;
-	bg_accum_b = b;
-	bg_accum_a = a;
-	if (!in_render_process())
-		post_redraw();
+float context::get_bg_alpha() const {
+	return bg_color_stack.top()[3];
 }
 
-/// set a user defined background alpha value
-void context::set_bg_accum_alpha(float a)
-{
-	bg_accum_a = a;
-	if (!in_render_process())
-		post_redraw();
-}
-
-/// set a user defined background depth
-void context::set_bg_depth(float d)
-{
-	bg_d = d;
-	if (!in_render_process())
-		post_redraw();
-}
-
-/// set a user defined background color
-void context::set_bg_stencil(int s)
-{
-	bg_s = s;
-	if (!in_render_process())
-		post_redraw();
-}
-
-/// copy the current back ground rgba color into the given float array
-void context::put_bg_color(float* rgba) const
-{
-	rgba[0] = bg_r;
-	rgba[1] = bg_g;
-	rgba[2] = bg_b;
-	rgba[3] = bg_a;
-}
-
-/// return the current alpha value for clearing the background
-float context::get_bg_alpha() const
-{
-	return bg_a;
-}
-
-void context::put_bg_accum_color(float* rgba) const
-{
-	rgba[0] = bg_accum_r;
-	rgba[1] = bg_accum_g;
-	rgba[2] = bg_accum_b;
-	rgba[3] = bg_accum_a;
-}
-
-float context::get_bg_accum_alpha() const
-{
-	return bg_accum_a;
-}
-
-/// return the current depth value for clearing the background
-float context::get_bg_depth() const
-{
-	return bg_d;
-}
-
-/// return the current stencil value for clearing the background
-int context::get_bg_stencil() const
-{
-	return bg_s;
-}
-
-
-/// set a user defined background color
-void context::set_bg_clr_idx(unsigned int idx)
-{
+void context::set_bg_clr_idx(unsigned int idx) {
 	current_background = idx;
-	if (idx == -1)
-		current_background = nr_backgrounds-1;
-	else if (current_background >= nr_backgrounds)
+	if(idx == -1)
+		current_background = nr_backgrounds - 1;
+	else if(current_background >= nr_backgrounds)
 		current_background = 0;
-	set_bg_color(background_colors[4*current_background],background_colors[4*current_background+1],background_colors[4*current_background+2],background_colors[4*current_background+3]);
+	set_bg_color(background_colors[4 * current_background], background_colors[4 * current_background + 1], background_colors[4 * current_background + 2], background_colors[4 * current_background + 3]);
 }
 
-/// return the current index of the background color
-unsigned int context::get_bg_clr_idx() const
-{
+unsigned int context::get_bg_clr_idx() const {
 	return current_background;
+}
+
+void context::push_bg_depth() {
+	bg_depth_stack.push(get_bg_depth());
+}
+
+void context::pop_bg_depth() {
+	SAFE_STACK_POP(bg_depth_stack, "pop_bg_depth");
+	set_bg_depth(get_bg_depth());
+}
+
+void context::set_bg_depth(float d) {
+	bg_depth_stack.top() = d;
+}
+
+float context::get_bg_depth() const {
+	return bg_depth_stack.top();
+}
+
+void context::push_bg_stencil() {
+	bg_stencil_stack.push(get_bg_stencil());
+}
+
+void context::pop_bg_stencil() {
+	SAFE_STACK_POP(bg_stencil_stack, "pop_bg_stencil");
+	set_bg_stencil(get_bg_stencil());
+}
+
+void context::set_bg_stencil(int s) {
+	bg_stencil_stack.top() = s;
+}
+
+int context::get_bg_stencil() const {
+	return bg_stencil_stack.top();
+}
+
+void context::push_bg_accum_color() {
+	bg_accum_color_stack.push(get_bg_accum_color());
+}
+
+void context::pop_bg_accum_color() {
+	SAFE_STACK_POP(bg_accum_color_stack, "pop_bg_accum_color");
+	set_bg_accum_color(get_bg_accum_color());
+}
+
+void context::set_bg_accum_color(vec4 rgba) {
+	bg_accum_color_stack.top() = rgba;
+}
+
+void context::set_bg_accum_color(float r, float g, float b, float a) {
+	set_bg_accum_color(vec4(r, g, b, a));
+}
+
+vec4 context::get_bg_accum_color() const {
+	return bg_accum_color_stack.top();
+}
+
+void context::put_bg_accum_color(float* rgba) const {
+	auto& c = bg_accum_color_stack.top();
+	rgba[0] = c[0];
+	rgba[1] = c[1];
+	rgba[2] = c[2];
+	rgba[3] = c[3];
+}
+
+void context::set_bg_accum_alpha(float a) {
+	bg_accum_color_stack.top()[3] = a;
+}
+
+float context::get_bg_accum_alpha() const {
+	return bg_accum_color_stack.top()[3];
 }
 
 /// enable phong shading with the help of a shader (enabled by default)
@@ -432,7 +472,7 @@ size_t context::get_nr_light_sources() const
 }
 
 /// helper function to place lights 
-context::vec3 context::get_light_eye_position(const cgv::media::illum::light_source& light, bool place_now) const
+vec3 context::get_light_eye_position(const cgv::media::illum::light_source& light, bool place_now) const
 {
 	vec3 Le = light.get_position();
 	if (place_now && !light.is_local_to_eye()) {
@@ -446,7 +486,7 @@ context::vec3 context::get_light_eye_position(const cgv::media::illum::light_sou
 }
 
 /// helper function to place lights 
-context::vec3 context::get_light_eye_spot_direction(const cgv::media::illum::light_source& light, bool place_now) const
+vec3 context::get_light_eye_spot_direction(const cgv::media::illum::light_source& light, bool place_now) const
 {
 	vec3 sd = light.get_spot_direction();
 	if (place_now && !light.is_local_to_eye()) {
@@ -897,10 +937,10 @@ bool context::write_frame_buffer_to_image(const std::string& file_name, data::Co
 			df.set_width(dv.get_format()->get_width());
 			df.set_height(dv.get_format()->get_height());
 			data::data_view dv1(&df);
-			unsigned int n = df.get_width()*df.get_height();
+			size_t n = df.get_width()*df.get_height();
 			const float* src = dv.get_ptr<float>();
 			unsigned char* dst = dv1.get_ptr<unsigned char>();
-			for (unsigned int i=0; i<n; ++i, ++dst, ++src)
+			for (size_t i=0; i<n; ++i, ++dst, ++src)
 				*dst = (unsigned char)((*src - depth_offset)*depth_scale*255);
 			image_writer w(file_name);
 			if (w.write_image(dv1)) {
@@ -911,10 +951,10 @@ bool context::write_frame_buffer_to_image(const std::string& file_name, data::Co
 	else if (read_frame_buffer(dv, x, y, buffer_type, type::info::TI_UINT8, cf, w, h)) {
 		if (cf == CF_S) {
 			const_cast<data::data_format*>(dv.get_format())->set_component_names("L");
-			unsigned int n = dv.get_format()->get_width()*dv.get_format()->get_height();
+			size_t n = dv.get_format()->get_width()*dv.get_format()->get_height();
 			unsigned char* dst = dv.get_ptr<unsigned char>();
 			unsigned char s = (int)depth_scale;
-			for (unsigned int i=0; i<n; ++i, ++dst)
+			for (size_t i=0; i<n; ++i, ++dst)
 				*dst *= s;
 		}
 		image_writer w(file_name);
@@ -994,13 +1034,13 @@ float blue[4]      = { 0, 0, 1, 1 };
 void compute_face_normals(const float* vertices, float* normals, const int* vertex_indices, int* normal_indices, int nr_faces, int face_degree)
 {
 	for (int i = 0; i < nr_faces; ++i) {
-		context::vec3& normal = reinterpret_cast<context::vec3&>(normals[3 * i]);
+		vec3& normal = reinterpret_cast<vec3&>(normals[3 * i]);
 		normal.zeros();
-		context::vec3 reference_pnt = *reinterpret_cast<const context::vec3*>(vertices + 3 * vertex_indices[face_degree*i + face_degree - 1]);
-		context::vec3 last_difference;
+		vec3 reference_pnt = *reinterpret_cast<const vec3*>(vertices + 3 * vertex_indices[face_degree*i + face_degree - 1]);
+		vec3 last_difference;
 		last_difference.zeros();
 		for (int j = 0; j < face_degree; ++j) {
-			context::vec3 new_difference = *reinterpret_cast<const context::vec3*>(vertices + 3 * vertex_indices[face_degree*i + j]) - reference_pnt;
+			vec3 new_difference = *reinterpret_cast<const vec3*>(vertices + 3 * vertex_indices[face_degree*i + j]) - reference_pnt;
 			normal += cross(last_difference, new_difference);
 			last_difference = new_difference;
 		}
@@ -1568,7 +1608,7 @@ const cgv::media::illum::surface_material* context::get_current_material() const
 }
 
 /// return current color
-const context::rgba& context::get_color() const
+const rgba& context::get_color() const
 {
 	return current_color;
 }
@@ -1626,6 +1666,139 @@ void context::set_textured_material(const textured_material& material)
 	prog.set_textured_material_uniform(*this, "material", material);
 }
 
+void context::push_depth_test_state() {
+	depth_test_state_stack.push(get_depth_test_state());
+}
+
+void context::pop_depth_test_state() {
+	SAFE_STACK_POP(depth_test_state_stack, "pop_depth_test_state");
+	set_depth_test_state(get_depth_test_state());
+}
+
+context::DepthTestState context::get_depth_test_state() const {
+	return depth_test_state_stack.top();
+}
+
+void context::set_depth_test_state(DepthTestState state) {
+	depth_test_state_stack.top() = state;
+}
+
+void context::set_depth_func(CompareFunction func) {
+	depth_test_state_stack.top().test_func = func;
+}
+
+
+void context::enable_depth_test() {
+	depth_test_state_stack.top().enabled = true;
+}
+
+void context::disable_depth_test() {
+	depth_test_state_stack.top().enabled = false;
+}
+
+void context::push_cull_state() {
+	cull_state_stack.push(get_cull_state());
+}
+
+void context::pop_cull_state() {
+	SAFE_STACK_POP(cull_state_stack, "pop_cull_state");
+	set_cull_state(get_cull_state());
+}
+
+CullingMode context::get_cull_state() const {
+	return cull_state_stack.top();
+}
+
+void context::set_cull_state(CullingMode culling_mode) {
+	cull_state_stack.push(culling_mode);
+}
+
+void context::push_blend_state() {
+	blend_state_stack.push(get_blend_state());
+}
+
+void context::pop_blend_state() {
+	SAFE_STACK_POP(blend_state_stack, "pop_blend_state");
+	set_blend_state(get_blend_state());
+}
+
+context::BlendState context::get_blend_state() const {
+	return blend_state_stack.top();
+}
+
+void context::set_blend_state(BlendState state) {
+	blend_state_stack.top() = state;
+}
+
+void context::set_blend_func(BlendFunction src_factor, BlendFunction dst_factor) {
+	BlendState& state = blend_state_stack.top();
+	state.src_color = src_factor;
+	state.dst_color = dst_factor;
+	state.src_alpha = src_factor;
+	state.dst_alpha = dst_factor;
+}
+
+void context::set_blend_func_separate(BlendFunction src_color_factor, BlendFunction dst_color_factor, BlendFunction src_alpha_factor, BlendFunction dst_alpha_factor) {
+	BlendState& state = blend_state_stack.top();
+	state.src_color = src_color_factor;
+	state.dst_color = dst_color_factor;
+	state.src_alpha = src_alpha_factor;
+	state.dst_alpha = dst_alpha_factor;
+}
+
+void context::set_blend_func_front_to_back() {
+	set_blend_func(BF_ONE_MINUS_DST_ALPHA, BF_ONE);
+}
+void context::set_blend_func_back_to_front() {
+	set_blend_func(BF_SRC_ALPHA, BF_ONE_MINUS_SRC_ALPHA);
+}
+
+void context::enable_blending() {
+	blend_state_stack.top().enabled = true;
+}
+
+void context::disable_blending() {
+	blend_state_stack.top().enabled = false;
+}
+
+void context::push_buffer_mask() {
+	buffer_mask_stack.push(get_buffer_mask());
+}
+
+void context::pop_buffer_mask() {
+	SAFE_STACK_POP(buffer_mask_stack, "pop_buffer_mask");
+	set_buffer_mask(get_buffer_mask());
+}
+
+context::BufferMask context::get_buffer_mask() const {
+	return buffer_mask_stack.top();
+}
+
+void context::set_buffer_mask(BufferMask mask) {
+	buffer_mask_stack.top() = mask;
+}
+
+bool context::get_depth_mask() const {
+	return buffer_mask_stack.top().depth_flag;
+}
+
+void context::set_depth_mask(bool flag) {
+	buffer_mask_stack.top().depth_flag = flag;
+}
+
+bvec4 context::get_color_mask() const {
+	auto& mask = buffer_mask_stack.top();
+	return bvec4(mask.red_flag, mask.green_flag, mask.blue_flag, mask.alpha_flag);
+}
+
+void context::set_color_mask(bvec4 flags) {
+	auto& mask = buffer_mask_stack.top();
+	mask.red_flag = flags[0];
+	mask.green_flag = flags[1];
+	mask.blue_flag = flags[2];
+	mask.alpha_flag = flags[3];
+}
+
 void context::push_modelview_matrix()
 {
 	modelview_matrix_stack.push(get_modelview_matrix());
@@ -1640,11 +1813,7 @@ void context::mul_modelview_matrix(const dmat4& V)
 /// see push_V for an explanation
 void context::pop_modelview_matrix()
 {
-	if (modelview_matrix_stack.size() == 1) {
-		error("context::pop_modelview_matrix() ... attempt to completely empty modelview stack avoided.");
-		return;
-	}
-	modelview_matrix_stack.pop();
+	SAFE_STACK_POP(modelview_matrix_stack, "pop_modelview_matrix");
 	set_modelview_matrix(modelview_matrix_stack.top());
 }
 /// same as push_V but for the projection matrix - a different matrix stack is used.
@@ -1655,11 +1824,7 @@ void context::push_projection_matrix()
 /// see push_P for an explanation
 void context::pop_projection_matrix()
 {
-	if (projection_matrix_stack.size() == 1) {
-		error("context::pop_projection_matrix() ... attempt to completely empty projection stack avoided.");
-		return;
-	}
-	projection_matrix_stack.pop();
+	SAFE_STACK_POP(projection_matrix_stack, "pop_projection_matrix");
 	set_projection_matrix(projection_matrix_stack.top());
 }
 /// multiply given matrix from right to current projection matrix
@@ -1709,10 +1874,7 @@ void context::push_window_transformation_array()
 /// recover the previous viewport and depth range settings; an error is emitted if the window_transformation stack becomes empty
 void context::pop_window_transformation_array()
 {
-	if (window_transformation_stack.size() <= 1)
-		error("context::pop_window_transformation_array() ... attempt to pop last window transformation array.");
-	else
-		window_transformation_stack.pop();
+	SAFE_STACK_POP(window_transformation_stack, "pop_window_transformation_array");
 }
 
 bool context::ensure_window_transformation_index(int& array_index)
@@ -1756,7 +1918,7 @@ const std::vector<window_transformation>& context::get_window_transformation_arr
 }
 
 /// return a homogeneous 4x4 matrix to transform clip to window coordinates, optionally specify for the case of multiple viewports/depth ranges
-context::dmat4 context::get_window_matrix(unsigned array_index) const
+dmat4 context::get_window_matrix(unsigned array_index) const
 {
 	if (array_index >= window_transformation_stack.top().size()) {
 		std::string message("context::get_window_matrix() ... attempt to query window matrix with array index ");
@@ -1778,17 +1940,17 @@ context::dmat4 context::get_window_matrix(unsigned array_index) const
 	return M;
 }
 /// return a homogeneous 4x4 matrix to transfrom from model to window coordinates, i.e. the product of modelview, projection and device matrix in reversed order (window_matrix*projection_matrix*modelview_matrix)
-context::dmat4 context::get_modelview_projection_window_matrix(unsigned array_index) const
+dmat4 context::get_modelview_projection_window_matrix(unsigned array_index) const
 {
 	return get_window_matrix(array_index)*get_projection_matrix()*get_modelview_matrix();
 }
 
 //! compute model space 3D point from the given window space point and the given modelview_projection_window matrix
-context::vec3 context::get_model_point(const dvec3& p_window, const dmat4& modelview_projection_window_matrix) 
+vec3 context::get_model_point(const dvec3& p_window, const dmat4& modelview_projection_window_matrix) 
 {
-	dmat_type A(4, 4, &modelview_projection_window_matrix(0, 0));
-	dvec_type x;
-	dvec_type b(p_window(0), p_window(1), p_window(2), 1.0);
+	dmatn A(4, 4, &modelview_projection_window_matrix(0, 0));
+	dvecn x;
+	dvecn b(p_window(0), p_window(1), p_window(2), 1.0);
 	svd_solve(A, b, x);
 	return vec3(float(x(0) / x(3)), float(x(1) / x(3)), float(x(2) / x(3)));
 }
@@ -1806,7 +1968,7 @@ void context::set_cursor(int x, int y)
 }
 
 /// transform point p into cursor coordinates and put x and y coordinates into the passed variables
-void context::put_cursor_coords(const vec_type& p, int& x, int& y) const
+void context::put_cursor_coords(const vecn& p, int& x, int& y) const
 {
 	dvec4 p4(0, 0, 0, 1);
 	for (unsigned int c = 0; c < p.size(); ++c)
@@ -1819,7 +1981,7 @@ void context::put_cursor_coords(const vec_type& p, int& x, int& y) const
 }
 
 /// sets the current text ouput position
-void context::set_cursor(const vec_type& pos, 
+void context::set_cursor(const vecn& pos, 
 		const std::string& text, TextAlignment ta,
 		int x_offset, int y_offset)
 {
@@ -1852,7 +2014,7 @@ void context::get_cursor(int& x, int& y) const
 }
 
 /// return homogeneous 4x4 matrix, which transforms from world to device space
-context::dmat4 context::get_modelview_projection_device_matrix() const
+dmat4 context::get_modelview_projection_device_matrix() const
 {
 	return get_window_matrix()*get_projection_matrix()*get_modelview_matrix();
 }
@@ -2309,3 +2471,5 @@ struct render_config_registration
 };
 
 render_config_registration render_config_registration_instance;
+
+#undef SAFE_STACK_POP

@@ -323,7 +323,7 @@ void gl_implicit_surface_drawable_base::new_vertex(unsigned int vi)
 	++nr_vertices;
 }
 
-gl_implicit_surface_drawable_base::dvec3 gl_implicit_surface_drawable_base::compute_face_normal(const std::vector<unsigned int> &vis, dvec3* _c) const
+dvec3 gl_implicit_surface_drawable_base::compute_face_normal(const std::vector<unsigned int> &vis, dvec3* _c) const
 {
 	std::vector<const dvec3*> p_pis;
 	for (unsigned int i=0; i<vis.size(); ++i)
@@ -346,7 +346,7 @@ void gl_implicit_surface_drawable_base::before_drop_vertex(unsigned int vertex_i
 {
 }
 
-gl_implicit_surface_drawable_base::dvec3 gl_implicit_surface_drawable_base::compute_corner_normal(const dvec3& pj, const dvec3& pi, const dvec3& pk, const dvec3& ni)
+dvec3 gl_implicit_surface_drawable_base::compute_corner_normal(const dvec3& pj, const dvec3& pi, const dvec3& pk, const dvec3& ni)
 {
 	if (normal_computation_type == FACE_NORMALS)
 		return dvec3(0.0);
@@ -356,7 +356,7 @@ gl_implicit_surface_drawable_base::dvec3 gl_implicit_surface_drawable_base::comp
 
 	dvec3 n = cross(pk-pi, pj-pi);
 	double l  = n.length();
-	if ((l > 1e-6) && (dot(n,ni) > l*normal_threshold))
+	if ((normal_computation_type != CORNER_GRADIENTS) && (l > 1e-6) && (dot(n,ni) > l*normal_threshold))
 		return ni;
 	else {
 		dvec3 p = pi;

@@ -160,10 +160,10 @@ bool tiff_writer::write_image(const const_data_view& dv, const std::vector<const
 
 	tdata_t buf = _TIFFmalloc(TIFFScanlineSize(fp));
 	const unsigned char* data_ptr = dv.get_ptr<unsigned char>();
-	unsigned int delta = dv.get_step_size(0);
-	for (unsigned int y = 0; y < dv.get_format()->get_height(); ++y) {
+	size_t delta = dv.get_step_size(0);
+	for (size_t y = 0; y < dv.get_format()->get_height(); ++y) {
 		memcpy(buf, data_ptr, delta);
-		if (TIFFWriteScanline(fp, buf, y, 0) < 0) {
+		if (TIFFWriteScanline(fp, buf, uint32(y), 0) < 0) {
 			_TIFFfree(buf);
 			return false;
 		}

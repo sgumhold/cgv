@@ -19,26 +19,26 @@ using namespace cgv::pointcloud;
 
 rgbd_icp_tool::rgbd_icp_tool() {
 	set_name("rgbd_icp_tool");
-
+	// point renderer style, not used
 	source_prs.measure_point_size_in_pixel = false;
-	source_prs.point_size = 0.25f;
+	source_prs.point_size = 1.0f;
 	source_prs.blend_width_in_pixel = 1.0f;
 	source_prs.blend_points = true;
 
 	target_prs.measure_point_size_in_pixel = false;
-	target_prs.point_size = 0.25f;
+	target_prs.point_size = 1.0f;
 	target_prs.blend_width_in_pixel = 1.0f;
 	target_prs.blend_points = true;
-
+	// surfel renderer style
 	source_srs.measure_point_size_in_pixel = false;
-	source_srs.point_size = 0.25f;
-	source_srs.blend_width_in_pixel = 1.0f;
+	source_srs.point_size = 5.0f;
+	source_srs.blend_width_in_pixel = 5.0f;
 	source_srs.blend_points = true;
 	source_srs.illumination_mode = cgv::render::IM_TWO_SIDED;
 
 	target_srs.measure_point_size_in_pixel = false;
-	target_srs.point_size = 0.25f;
-	target_srs.blend_width_in_pixel = 1.0f;
+	target_srs.point_size = 1.0f;
+	target_srs.blend_width_in_pixel = 5.0f;
 	target_srs.blend_points = true;
 	target_srs.illumination_mode = cgv::render::IM_TWO_SIDED;
 
@@ -51,11 +51,13 @@ rgbd_icp_tool::rgbd_icp_tool() {
 	//rcrs.radius = 0.001f;
 	//rcrs.rounded_caps = true;
 
+	// set ICP parameters
 	icp_iterations = 50;
 	icp_eps = 1e-8;
 	icp_random_samples = 0;
 
-	show_corresponding_lines = true;
+	show_corresponding_lines = false;
+	show_nmls = false;
 
 	goicp_distance_computation_mode = GoICP::DCM_DISTANCE_TRANSFORM;
 	sicp_computation_mode = SICP::CM_POINT_TO_POINT;
@@ -157,9 +159,11 @@ void rgbd_icp_tool::draw(cgv::render::context & ctx)
 {
 	//ctx.push_modelview_matrix();
 	draw_point_cloud(ctx, source_pc, source_srs,vec4(1.0,0.0,0.0,0.8));
-	draw_normals(ctx, source_pc, source_ars, vec4(0.0, 0.0, 1.0, 0.8));
 	draw_point_cloud(ctx, target_pc, target_srs, vec4(0.0, 1.0, 0.0, 0.8));
-	draw_normals(ctx, target_pc, target_ars, vec4(1.0, 1.0, 0.0, 0.8));
+	if (show_nmls) {
+		draw_normals(ctx, source_pc, source_ars, vec4(0.0, 0.0, 1.0, 0.8));
+		draw_normals(ctx, target_pc, target_ars, vec4(1.0, 1.0, 0.0, 0.8));
+	}
 	if (crs_srs_pc.get_nr_points() > 0 && crs_tgt_pc.get_nr_points() > 0 && show_corresponding_lines)
 		draw_correspondences(ctx, crs_srs_pc, crs_tgt_pc, rcrs, vec4(0.0, 1.0, 1.0, 0.8));
 	//ctx.pop_modelview_matrix();
@@ -218,9 +222,10 @@ void rgbd_icp_tool::create_gui()
 	connect_copy(add_button("save pc")->click, rebind(this, &rgbd_icp_tool::on_save_pc));
 	connect_copy(add_button("compare_pcs")->click, rebind(this, &rgbd_icp_tool::compare_two_pcs));
 	connect_copy(add_button("normals")->click, rebind(this, &rgbd_icp_tool::on_estimate_normals));
+	add_member_control(this, "show normals", show_nmls, "check");
 
 	add_decorator("point cloud", "heading", "level=2");
-	connect_copy(add_control("Point size", source_srs.point_size, "value_slider", "min=0.01;max=5.0;log=false;ticks=true")->value_change, rebind(this, &rgbd_icp_tool::on_point_cloud_style_cb));
+	connect_copy(add_control("Point size", source_srs.point_size, "value_slider", "min=0.01;max=15.0;log=false;ticks=true")->value_change, rebind(this, &rgbd_icp_tool::on_point_cloud_style_cb));
 
 	add_decorator("ICP", "heading", "level=2");
 	add_member_control(this, "Max. iterations", icp_iterations, "value_slider", "min=50;max=1000;ticks=false");
@@ -343,16 +348,13 @@ void rgbd_icp_tool::on_reg_ICP_cb()
 	icp.set_source_cloud(source_pc);
 	icp.set_target_cloud(target_pc);
 	icp.set_iterations(icp_iterations);
-	icp.set_eps(0.0000001f);
+	icp.set_eps(icp_eps);
 
 	point_cloud_types::Mat rotation;
 	rotation.identity();
 	point_cloud_types::Dir translation;
 	translation.zeros();
-	icp.set_source_cloud(source_pc);
-	icp.set_target_cloud(target_pc);
-	icp.set_iterations(5);
-	icp.set_eps(icp_eps);
+	
 	icp.set_num_random(icp_random_samples);
 
 	icp.build_ann_tree();

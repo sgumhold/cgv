@@ -3,20 +3,20 @@
 #include <algorithm>
 #include "functions.h"
 #include <cgv/math/vec.h>
+#include <cgv/math/fvec.h>
 #include <cgv/math/mat.h>
 #include <cgv/math/eig.h>
 #include <cgv/math/diag_mat.h>
 #include <cgv/math/perm_mat.h>
 #include <cgv/math/up_tri_mat.h>
 #include <cgv/math/low_tri_mat.h>
-#include <cgv/math/quat.h>
+#include <cgv/math/quaternion.h>
 #include <cmath>
 #include <set>
 //#include <cgv/math/constants.h>
 
 namespace cgv {
-	namespace math {
-
+namespace math {
 
 /**
 * High quality random number generator,
@@ -143,7 +143,7 @@ public:
 		rv =(float) v;
 	}
 
-	///generates a pseudo random single-precision floating point number uniformly distributed between 0 and 1
+	///generates a pseudo random single-precision floating point number uniformly distributed between min and max
 	void uniform(const float min,const float max, float& rv)
 	{
 		float f;
@@ -181,6 +181,22 @@ public:
 			uniform(min,max,rv(i));	
 	}
 
+	///generates a pseudo random single precision fixed-size vector with uniformly distribute components between 0 and 1
+	template<typename T, cgv::type::uint32_type N>
+	void uniform(cgv::math::fvec<T, N>& rv)
+	{
+		for(unsigned i = 0; i < N; i++)
+			uniform(rv(i));
+	}
+
+	///generates a pseudo random single precision fixed-size vector with uniformly distribute components between min and max
+	template<typename T, cgv::type::uint32_type N>
+	void uniform(const float min, const float max, cgv::math::fvec<T, N>& rv)
+	{
+		for(unsigned i = 0; i < N; i++)
+			uniform(min, max, rv(i));
+	}
+
 	///generates a pseudo random single precision full matrix with uniformly distribute components between 0 and 1
 	void uniform(mat<float>& rv)
 	{
@@ -207,7 +223,6 @@ public:
 			j=(i+j)%rv.size();
 			rv.swap(i,j);
 		}
-		std::random_shuffle(&(rv(0)),&(rv(rv.nrows())));	
 	}
 
 	///generates a pseudo random single precision upper triangular matrix with uniformly distribute components between 0 and 1
@@ -389,106 +404,50 @@ public:
 			 normal(v(i));
 		v.normalize();
 	}
-
-	///generates a single precision random orientation represented as a unit quaternion
-	void uniform_quat_orientation(vec<float>& q)
-	{
-		float x[3];
+	
+	///generates a random orientation represented as a unit quaternion
+	template<typename T>
+	void uniform_quat_orientation(quaternion<T>& q) {
+		T x[3];
 		uniform(x[0]);
 		uniform(x[1]);
 		uniform(x[2]);
-		float  a, b, c, d, s;
-		float  z, r, theta, omega;       
-		
+		T a, b, c, d, s;
+		T z, r, theta, omega;
 
 		z = x[0];
-		r = sqrt( 1 - z * z );
-		theta = 2.0f * 3.14159f * x[1];
-		omega = 3.14159f * x[2];
+		r = sqrt(1 - z * z);
+		theta = T(2) * T(3.14159) * x[1];
+		omega = T(3.14159) * x[2];
 
-
-		s = sin( omega );
-		a = cos( omega );
-		b = s * cos( theta ) * r;
-		c = s * sin( theta ) * r;
+		s = sin(omega);
+		a = cos(omega);
+		b = s * cos(theta) * r;
+		c = s * sin(theta) * r;
 		d = s * z;
 
-
-		q.set(b,c,d,a);
-	}
-
-
-	///generates a double precision random orientation 
-	///represented as a unit quaternion
-	void uniform_quat_orientation(vec<double>& q)
-	{
-		q.resize(4);
-		double x[3];
-		uniform(x[0]);
-		uniform(x[1]);
-		uniform(x[2]);
-		double  a, b, c, d, s;
-		double  z, r, theta, omega;       
-		
-
-		z = x[0];
-		r = sqrt( 1 - z * z );
-		theta = 2.0 * 3.14159 * x[1];
-		omega = 3.14159 * x[2];
-
-
-		s = sin( omega );
-		a = cos( omega );
-		b = s * cos( theta ) * r;
-		c = s * sin( theta ) * r;
-		d = s * z;
-
-
-		q.set(b,c,d,a);
+		q.set(b, c, d, a);
 	}
 	
-
 	///generates a single precision random orientation represented as a rotation matrix
-	void uniform_orientation(mat<float>& m)
+	template<typename T>
+	void uniform_orientation(fmat<T, 3, 3>& m)
 	{
-		if(m.nrows() == 3 && m.ncols() == 3)
-		{
-			vec<float> q(4);
-			uniform_quat_orientation(q);
-			m = quat_2_mat_33(q);
-			return;
-		}
-		if(m.nrows() == 4 && m.ncols() == 4)
-		{
-			vec<float> q(4);
-			uniform_quat_orientation(q);
-			m = quat_2_mat_44(q);
-			return;
-		}
-		assert(false);
-
+		quaternion<T> q;
+		uniform_quat_orientation(q);
+		q.put_matrix(m);
+		return;
 	}
 
-	///generates a double precision random orientation represented as a rotation matrix
-	void uniform_orientation( mat<double>& m)
+	///generates a single precision random orientation represented as a homogeneous rotation matrix
+	template<typename T>
+	void uniform_orientation(fmat<T, 4, 4>& m)
 	{
-		if(m.nrows() == 3 && m.ncols() == 3)
-		{
-			vec<double> q(4);
-			uniform_quat_orientation(q);
-			m = quat_2_mat_33(q);
-			return;
-		}
-		if(m.nrows() == 4 && m.ncols() == 4)
-		{
-			vec<double> q(4);
-			uniform_quat_orientation(q);
-			m = quat_2_mat_44(q);
-			return;
-		}
-		assert(false);
+		quaternion<T> q;
+		uniform_quat_orientation(q);
+		q.put_homogeneous_matrix(m);
+		return;
 	}
-
 
 	///creates an uniform distributed random point in unit box (0,0,...,0)..(1,1,...,1); if dim(p)=0, it is set to 3
 	void uniform_point_in_unit_box(vec<double>& p)
@@ -561,12 +520,9 @@ public:
 			
 	}
 
-	
-
-
 };
 
 
-}
-}
+} // namespace math
+} // namespace cgv
 

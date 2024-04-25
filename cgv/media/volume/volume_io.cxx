@@ -420,7 +420,7 @@ namespace cgv {
 					info_ptr->type_id = df.get_component_type();
 					info_ptr->components = df.get_standard_component_format();
 				}
-				volume::dimension_type size(df.get_width(), df.get_height(), n);
+				volume::dimension_type size(int(df.get_width()), int(df.get_height()), n);
 				if (info_ptr) {
 					info_ptr->dimensions = size;
 					info_ptr->position.zeros();
@@ -459,7 +459,7 @@ namespace cgv {
 					info_ptr->type_id = V.get_format().get_component_type();
 					info_ptr->components = V.get_format().get_standard_component_format();
 				}
-				volume::dimension_type size(df.get_width(), df.get_height(), nr_frames);
+				volume::dimension_type size(int(df.get_width()), int(df.get_height()), nr_frames);
 				if (info_ptr) {
 					info_ptr->dimensions = size;
 					info_ptr->position.zeros();
@@ -471,14 +471,14 @@ namespace cgv {
 					info_ptr->extent = V.get_extent();
 				cgv::data::data_view dv(&df);
 				unsigned char* src_ptr = dv.get_ptr<unsigned char>();
-				int n = df.get_width() * df.get_height();
+				size_t n = df.get_width() * df.get_height();
 				for (int i = 0; i < nr_frames; ++i) {
 					if (!vr.read_frame(dv)) {
 						std::cerr << "could not read slice " << i << " of file " << file_name << std::endl;
 						return false;
 					}
 					unsigned char* dst_ptr = V.get_slice_ptr<unsigned char>(i);
-					for (int j = 0; j < n; ++j)
+					for (size_t j = 0; j < n; ++j)
 						dst_ptr[j] = src_ptr[3 * j];
 				}
 				vr.close();

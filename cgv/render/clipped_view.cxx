@@ -37,7 +37,7 @@ void clipped_view::set_scene_extent(const dbox3& _box)
 }
 
 ///
-clipped_view::dbox3 clipped_view::get_scene_extent() const
+dbox3 clipped_view::get_scene_extent() const
 {
 	if (scene_extent.is_valid())
 		return scene_extent;

@@ -232,7 +232,7 @@ namespace vr {
 				float height_world = get_height()*pixel_size[1];
 				float b = scale * (-0.5f*height_world - eye_screen(1));
 				float t = scale * (+0.5f*height_world - eye_screen(1));
-				reinterpret_cast<mat4&>(*projection_matrix) = cgv::math::frustum4<float>(l, r, b, t, z_near, z_far);
+				reinterpret_cast<cgv::mat4&>(*projection_matrix) = cgv::math::frustum4<float>(l, r, b, t, z_near, z_far);
 			}
 		}
 	}
@@ -245,7 +245,7 @@ namespace vr {
 			vec3 eye_world = get_eye_position_world(eye, *reinterpret_cast<const mat34*>(hmd_pose));
 			mat3 R = get_screen_orientation();
 			R.transpose();
-			mat4& T = reinterpret_cast<mat4&>(*modelview_matrix);
+			cgv::mat4& T = reinterpret_cast<cgv::mat4&>(*modelview_matrix);
 			T.set_col(0, vec4(R.col(0), 0));
 			T.set_col(1, vec4(R.col(1), 0));
 			T.set_col(2, vec4(R.col(2), 0));

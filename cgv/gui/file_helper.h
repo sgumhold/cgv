@@ -130,7 +130,7 @@ public:
 	/// This method ensures the file_name hast the given extension and adds it if not present or in all
 	/// cases when force is true.
 	/// 
-	/// @param extension The extension string to add.
+	/// @param extension The extension string to add (without dot).
 	/// @param force Force adding the extension.
 	/// @return The extension of the file_name after this operation.
 	const std::string ensure_extension(const std::string& extension, bool force = false) {

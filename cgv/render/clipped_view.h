@@ -12,8 +12,6 @@ namespace cgv {
     and supports clipping plane computation from scene extent. */
 class CGV_API clipped_view : public view
 {
-public:
-	typedef media::axis_aligned_box<double,3> dbox3;
 protected:
 	double z_near;
 	double z_far;

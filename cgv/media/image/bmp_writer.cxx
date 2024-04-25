@@ -94,7 +94,7 @@ bool bmp_writer::write_image(const const_data_view& dv, const std::vector<const_
 		if (success) {
 			unsigned int bytes_per_line = width*3;
 			unsigned int line_padding   = 
-				packing_info::align(bytes_per_line,4) - bytes_per_line;
+				unsigned(packing_info::align(bytes_per_line,4)) - bytes_per_line;
 
 			data += (height-1)*bytes_per_line;
 			for (unsigned short y = 0; success && y < height; ++y) {
@@ -154,7 +154,7 @@ bool bmp_writer::write_image(const const_data_view& dv, const std::vector<const_
 		((unsigned short*)bmp_header)[11] = height;
 		bool success = fwrite(bmp_header, 1, 1078, fp) == 1078;
 		if (success) {
-			unsigned int line_padding =  packing_info::align(width,4) - width;
+			unsigned int line_padding =  unsigned(packing_info::align(width,4)) - width;
 			data += (height-1)*dv.get_format()->get_width();
 			for (unsigned short y = 0; success && y < height; ++y) {
 				if (!(success = fwrite(data, 1, width, fp) == width) ) {

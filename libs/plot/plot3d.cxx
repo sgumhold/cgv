@@ -133,7 +133,7 @@ plot3d_config& plot3d::ref_sub_plot3d_config(unsigned i)
 
 
 /// return the samples of the i-th sub plot
-std::vector<plot3d::vec3>& plot3d::ref_sub_plot_samples(unsigned i)
+std::vector<vec3>& plot3d::ref_sub_plot_samples(unsigned i)
 {
 	return samples[i];
 }

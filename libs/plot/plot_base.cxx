@@ -251,12 +251,12 @@ void plot_base::draw_sub_plot_samples(int count, const plot_base_config& spc, bo
 				glDrawArrays(strip ? GL_LINE_STRIP : GL_POINTS, GLint(spc.begin_sample), GLsizei(spc.end_sample - spc.begin_sample));
 	}
 }
-plot_base::vec3 plot_base::world_space_from_plot_space(const vecn& pnt_plot) const
+vec3 plot_base::world_space_from_plot_space(const vecn& pnt_plot) const
 {
 	vec3 pnt(pnt_plot(0), pnt_plot(1), pnt_plot.size() >= 3 ? pnt_plot(2) : 0.0f);
 	return orientation.apply(pnt) + center_location;
 }
-plot_base::vec3 plot_base::transform_to_world(const vecn& pnt_attr) const
+vec3 plot_base::transform_to_world(const vecn& pnt_attr) const
 {
 	unsigned n = pnt_attr.size();
 	vecn pnt_plot(n);
@@ -922,13 +922,13 @@ void plot_base::draw_legend(cgv::render::context& ctx, int layer_idx, bool is_fi
 	ctx.pop_modelview_matrix();
 }
 
-const plot_base::box2 plot_base::get_domain() const
+const box2 plot_base::get_domain() const
 {
 	const auto& acs = get_domain_config_ptr()->axis_configs;
 	return box2(vec2(acs[0].get_attribute_min(),acs[1].get_attribute_min()), 
 		        vec2(acs[0].get_attribute_max(), acs[1].get_attribute_max()));
 }
-const plot_base::box3 plot_base::get_domain3() const
+const box3 plot_base::get_domain3() const
 {
 	const auto& acs = get_domain_config_ptr()->axis_configs;
 	return box3(vec3(acs[0].get_attribute_min(), acs[1].get_attribute_min(), get_dim() == 2 ? 0 : acs[2].get_attribute_min()), 
@@ -947,7 +947,7 @@ void plot_base::set_domain3(const box3& dom)
 	for (unsigned ai = 0; ai < n; ++ai)
 		acs[ai].set_attribute_range(dom.get_min_pnt()(ai), dom.get_max_pnt()(ai));
 }
-plot_base::vecn plot_base::get_extent() const
+vecn plot_base::get_extent() const
 {
 	const auto& acs = get_domain_config_ptr()->axis_configs;
 	vecn extent(get_dim());
@@ -1008,19 +1008,19 @@ void plot_base::place_corner(unsigned corner_index, const vec3& new_corner_locat
 {
 	center_location += new_corner_location - get_corner(corner_index);
 }
-plot_base::vec3 plot_base::get_origin() const
+vec3 plot_base::get_origin() const
 {
 	return transform_to_world(get_domain3().get_min_pnt().to_vec());
 }
-const plot_base::quat& plot_base::get_orientation() const
+const quat& plot_base::get_orientation() const
 {
 	return orientation;
 }
-const plot_base::vec3& plot_base::get_center() const
+const vec3& plot_base::get_center() const
 {
 	return center_location;
 }
-plot_base::vec3 plot_base::get_corner(unsigned i) const
+vec3 plot_base::get_corner(unsigned i) const
 {
 	box3 B = get_domain3();
 	vec3 c3 = B.get_corner(i);
@@ -1029,7 +1029,7 @@ plot_base::vec3 plot_base::get_corner(unsigned i) const
 		c(j) = c3(j);
 	return transform_to_world(c);
 }
-const plot_base::vec3 plot_base::get_axis_direction(unsigned ai) const
+const vec3 plot_base::get_axis_direction(unsigned ai) const
 {
 	vec3 a(0.0f);
 	a(ai) = 1.0f;

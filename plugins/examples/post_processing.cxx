@@ -59,10 +59,10 @@ public:
 		use_colors = true;
 		use_illumination = true;
 
-		boxes.style.material.set_diffuse_reflectance(rgb(1.0f));
-		wire_boxes.style.default_color = rgb(1.0f);
-		cones.style.material.set_diffuse_reflectance(rgb(1.0f));
-		spheres.style.material.set_diffuse_reflectance(rgb(1.0f));
+		boxes.style.material.set_diffuse_reflectance(cgv::rgb(1.0f));
+		wire_boxes.style.default_color = cgv::rgb(1.0f);
+		cones.style.material.set_diffuse_reflectance(cgv::rgb(1.0f));
+		spheres.style.material.set_diffuse_reflectance(cgv::rgb(1.0f));
 
 		cones.style.radius_scale = 0.05f;
 		spheres.style.radius_scale = 0.1f;
@@ -163,7 +163,7 @@ public:
 
 		ctx.push_modelview_matrix();
 
-		mat4 M(0.0f);
+		cgv::mat4 M(0.0f);
 		M(0, 0) = scale;
 		M(1, 1) = scale;
 		M(2, 2) = scale;
@@ -204,27 +204,27 @@ public:
 		std::uniform_real_distribution<float> unorm_distr(0.0f, 1.0f);
 
 		for(int i = 0; i < n; ++i) {
-			vec3 pos(
+			cgv::vec3 pos(
 				snorm_distr(rng),
 				snorm_distr(rng),
 				snorm_distr(rng)
 			);
 
-			vec3 dir(
+			cgv::vec3 dir(
 				snorm_distr(rng),
 				snorm_distr(rng),
 				snorm_distr(rng)
 			);
 			dir.normalize();
 
-			vec3 ext(
+			cgv::vec3 ext(
 				unorm_distr(rng),
 				unorm_distr(rng),
 				unorm_distr(rng)
 			);
 			ext = 0.2f * ext + 0.1f;
 
-			rgb col(
+			cgv::rgb col(
 				unorm_distr(rng),
 				unorm_distr(rng),
 				unorm_distr(rng)
@@ -232,7 +232,7 @@ public:
 
 			boxes.add(pos, ext, col);
 
-			rgb inv_col(
+			cgv::rgb inv_col(
 				1.0f - col.R(),
 				1.0f - col.G(),
 				1.0f - col.B()

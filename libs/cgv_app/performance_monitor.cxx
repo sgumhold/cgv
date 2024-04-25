@@ -9,20 +9,14 @@ namespace app {
 performance_monitor::performance_monitor() {
 
 	set_name("Performance Monitor");
-	block_events = false;
-	blend_overlay = true;
 	gui_options.allow_stretch = false;
 
-	layout.padding = 13; // 10px plus 3px border
+	layout.padding = padding();
 	layout.total_size = ivec2(180, 90);
 
-	set_overlay_alignment(AO_START, AO_END);
-	set_overlay_stretch(SO_NONE);
-	set_overlay_margin(ivec2(-3));
-	set_overlay_size(layout.total_size);
+	set_size(layout.total_size);
 
 	bar_renderer = cgv::g2d::generic_2d_renderer(cgv::g2d::shaders::rectangle);
-	labels = cgv::g2d::msdf_text_geometry(cgv::g2d::msdf_font::FontFace::FF_LIGHT);
 }
 
 void performance_monitor::clear(cgv::render::context& ctx) {
@@ -37,14 +31,14 @@ void performance_monitor::clear(cgv::render::context& ctx) {
 	labels.destruct(ctx);
 }
 
-void performance_monitor::handle_member_change(const cgv::utils::pointer_test & m) {
+void performance_monitor::handle_member_change(const cgv::utils::pointer_test& m) {
 
 	if(m.is(show_plot)) {
 		layout.total_size.y() = show_plot ? 90 : 55;
-		set_overlay_size(layout.total_size);
+		set_size(layout.total_size);
 	}
 
-	if(m.one_of(show_background, invert_color))
+	if(m.one_of(background_visible_, invert_color))
 		init_styles();
 
 	if(m.is(monitor.enabled)) {
@@ -77,14 +71,13 @@ bool performance_monitor::init(cgv::render::context& ctx) {
 void performance_monitor::init_frame(cgv::render::context& ctx) {
 
 	if(ensure_layout(ctx)) {
-		ivec2 container_size = get_overlay_size();
-		layout.update(container_size);
+		layout.update(get_rectangle().size);
 		create_texts();
 		create_labels();
 	}
 
 	bool enabled = monitor.enabled;
-	if(monitor.enabled_only_when_visible && !show) {
+	if(monitor.enabled_only_when_visible && !is_visible()) {
 		enabled = false;
 	}
 	if(enabled) {
@@ -97,19 +90,11 @@ void performance_monitor::init_frame(cgv::render::context& ctx) {
 void performance_monitor::draw_content(cgv::render::context& ctx) {
 
 	begin_content(ctx);
-
-	content_canvas.enable_shader(ctx, "rectangle");
-
-	// draw container background
-	if(show_background) {
-		content_canvas.set_style(ctx, container_style);
-		content_canvas.draw_shape(ctx, ivec2(0), get_overlay_size());
-	}
-
 	auto& font_renderer = cgv::g2d::ref_msdf_gl_canvas_font_renderer(ctx);
 
 	if(show_plot) {
 		// draw plot border
+		content_canvas.enable_shader(ctx, "rectangle");
 		content_canvas.set_style(ctx, border_style);
 		content_canvas.draw_shape(ctx, layout.plot_rect.position - 1, layout.plot_rect.size + 2);
 
@@ -139,8 +124,10 @@ void performance_monitor::draw_content(cgv::render::context& ctx) {
 
 void performance_monitor::after_finish(cgv::render::context& ctx) {
 
+	themed_canvas_overlay::after_finish(ctx);
+
 	bool enabled = monitor.enabled;
-	if(monitor.enabled_only_when_visible && !show)
+	if(monitor.enabled_only_when_visible && !is_visible())
 		enabled = false;
 	
 	if(enabled) {
@@ -162,12 +149,6 @@ void performance_monitor::after_finish(cgv::render::context& ctx) {
 	}
 }
 
-void performance_monitor::set_show_background(bool flag) {
-
-	show_background = flag;
-	on_set(&show_background);
-}
-
 void performance_monitor::set_invert_color(bool flag) {
 
 	invert_color = flag;
@@ -185,10 +166,9 @@ void performance_monitor::enable_monitoring_only_when_visible(bool enabled) {
 
 void performance_monitor::on_visibility_change() {
 
-	if(monitor.enabled_only_when_visible && show) {
-		if(monitor.enabled) {
+	if(monitor.enabled_only_when_visible && is_visible()) {
+		if(monitor.enabled)
 			monitor.reset();
-		}
 	}
 }
 
@@ -198,30 +178,19 @@ void performance_monitor::create_gui_impl() {
 	add_member_control(this, "Show Plot", show_plot, "check", "w=78");
 	add_member_control(this, "Measure Interval (s)", monitor.interval, "value_slider", "min=0.01;max=1;step=0.01;ticks=true");
 	
-	add_member_control(this, "Background", show_background, "check", "w=100", " ");
+	add_member_control(this, "Background", background_visible_, "check", "w=100", " ");
 	add_member_control(this, "Invert Color", invert_color, "check", "w=88");
 }
 
 void performance_monitor::init_styles() {
-	// get theme colors
-	auto& ti = cgv::gui::theme_info::instance();
-	rgb border_color = ti.text();
+	auto& theme = cgv::gui::theme_info::instance();
+	rgb border_color = theme.text();
 
-	if(invert_color) {
-		border_color.R() = pow(1.0f - pow(border_color.R(), 2.2f), 1.0f/2.2f);
-		border_color.G() = pow(1.0f - pow(border_color.G(), 2.2f), 1.0f/2.2f);
-		border_color.B() = pow(1.0f - pow(border_color.B(), 2.2f), 1.0f/2.2f);
-	}
-
-	// configure style for the container rectangle
-	container_style.fill_color = ti.group();
-	container_style.border_color = ti.background();
-	container_style.border_width = 3.0f;
-	container_style.feather_width = 0.0f;
+	if(invert_color)
+		border_color = pow(rgb(1.0f) - pow(border_color, 2.2f), 1.0f / 2.2f);
 
 	// configure style for the border rectangle
-	border_style = container_style;
-	border_style.fill_color = show_background ? rgba(ti.text_background(), 1.0f) : rgba(0.0f);
+	border_style.fill_color = background_visible_ ? rgba(theme.text_background(), 1.0f) : rgba(0.0f);
 	border_style.border_color = rgba(border_color, 1.0);
 	border_style.border_width = 1.0f;
 	border_style.feather_width = 0.0f;
@@ -236,22 +205,10 @@ void performance_monitor::init_styles() {
 	bar_style.feather_width = 0.0f;
 
 	// configure text style
-	float label_border_alpha = 0.0f;
-	float border_width = 0.25f;
-	if(!show_background) {
-		label_border_alpha = 1.0f;
-		border_width = 0.0f;
-	}
-
-	text_style.fill_color = rgba(border_color, 1.0f);
-	text_style.border_color = rgba(border_color, label_border_alpha);
-	text_style.border_width = border_width;
-	text_style.feather_origin = 0.5f;
-	text_style.use_blending = true;
+	text_style.fill_color = border_color;
 	text_style.font_size = 12.0f;
 
 	label_style = text_style;
-	label_style.feather_width = 0.5f;
 	label_style.font_size = 10.0f;
 }
 
@@ -299,9 +256,9 @@ void performance_monitor::create_labels() {
 	
 	labels.clear();
 
-	ivec2 caret_pos = ivec2(layout.plot_rect.x(), layout.plot_rect.y1() + 2);
+	ivec2 caret_pos = ivec2(layout.plot_rect.x(), layout.plot_rect.y1());
 	labels.add_text("30", caret_pos, cgv::render::TA_TOP_LEFT);
-	caret_pos.y() = layout.plot_rect.center().y() + 1;
+	caret_pos.y() = layout.plot_rect.center().y();
 	labels.add_text("60", caret_pos, cgv::render::TA_LEFT);
 	caret_pos.y() = layout.plot_rect.y();
 	labels.add_text("120", caret_pos, cgv::render::TA_BOTTOM_LEFT);

@@ -11,7 +11,7 @@ namespace cgv {
 	namespace render {
 
 /** base class for all drawables, which is independent of the used rendering API. */
-class CGV_API drawable : public base::traverse_policy, public render_types
+class CGV_API drawable : public base::traverse_policy
 {
 private:
 	/// store the context
@@ -33,11 +33,11 @@ public:
 	void set_context(context* _ctx);
 	//! convenience function to find the view control in the current hierarchy
 	/*! this only works if your class inherits from the cgv::base::node class.*/
-	cgv::render::view* find_view_as_node(size_t view_idx = 0) const;
+	view* find_view_as_node(size_t view_idx = 0) const;
 	//! use given view together with depth buffer of context in order to compute the world location of the point at mouse pointer location (x,y)
 	/*! returns true if a world location could be computed which is the case when the context pointer of the drawable has been set and when 
 	    the mouse location points inside a valid view panel. */
-	bool get_world_location(int x, int y, const cgv::render::view& V, cgv::math::fvec<double, 3>& world_location, double* window_z_ptr = 0) const;
+	bool get_world_location(int x, int y, const view& V, dvec3& world_location, double* window_z_ptr = 0) const;
 	/// posts a redraw event to the current context if one is available
 	void post_redraw();
 	/// forces a redraw right now. This cannot be called from init, init_frame, draw, finish_draw, finish_frame and clear
@@ -56,7 +56,7 @@ public:
 	/// this method is called in one pass over all drawables after drawing
 	virtual void finish_frame(context&);
 	/// this method is called in one pass over all drawables after finish frame
-	virtual void after_finish(cgv::render::context&);
+	virtual void after_finish(context&);
 	/// clear all objects living in the context like textures or display lists
 	virtual void clear(context&);
 };
@@ -84,7 +84,7 @@ public:
 	bool multi_pass_terminate(const context& ctx);
 };
 
-	}
-}
+	} // namespace render
+} // namespace cgv
 
 #include <cgv/config/lib_end.h>

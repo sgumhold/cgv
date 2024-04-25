@@ -40,7 +40,8 @@ std::string fltk_base::get_property_declarations()
 {
 	return  "x:int32;y:int32;w:int32;h:int32;mw:int32;mh:int32;dw:int32;dh:int32;"
 			"image:string;fit_image:bool;label:string;name:string;tooltip:string;"
-			"active:bool;show:bool;color:int32;text_color:int32;label_color:int32;align:string;dolayout:int32;cursor:string";
+			"active:bool;show:bool;color:int32;text_color:int32;label_color:int32;"
+			"align:string;dolayout:int32;cursor:string;font_style:string;border:bool";
 }
 
 class cgvImage : public SharedImage 
@@ -74,10 +75,10 @@ public:
 			return false;
 		}
 		setpixeltype(pt);
-		int h = df.get_height();
-		setsize(df.get_width(), h);
-		for (int i=0; i<h; ++i) 
-			setpixels(dv.get_ptr<unsigned char>()+dv.get_step_size(0)*i, i);
+		size_t h = df.get_height();
+		setsize(int(df.get_width()), int(h));
+		for (size_t i=0; i<h; ++i) 
+			setpixels(dv.get_ptr<unsigned char>()+dv.get_step_size(0)*i, int(i));
 		return true;
 	}
 };
@@ -230,6 +231,11 @@ bool fltk_base::set_void(fltk::Widget* w, cgv::base::named* nam, const std::stri
 			fltk::HELVETICA_BOLD_ITALIC
 		};
 		w->labelfont(fonts[ei]);
+	}
+	else if(property == "border") {
+		bool has_border = false;
+		get_variant(has_border, value_type, value_ptr);
+		w->box(has_border ? fltk::BORDER_BOX : fltk::NO_BOX);
 	}
 	else
 		return false;

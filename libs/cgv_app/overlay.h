@@ -39,55 +39,62 @@ public:
 
 private:
 	/// the last recorded size of the viewport, is kept current with ensure_viewport
-	ivec2 last_viewport_size;
+	ivec2 last_viewport_size_ = ivec2(-1);
 	/// the last recorded size of this overlay
-	ivec2 last_size;
-
+	ivec2 last_size_ = ivec2(-1);
 	/// rectangle area this overlay is fully contained whithin
-	cgv::g2d::irect container;
+	cgv::g2d::irect container_;
+
+	/// layout parameters
+	AlignmentOption horizontal_alignment_ = AlignmentOption::AO_START;
+	AlignmentOption vertical_alignment_ = AlignmentOption::AO_START;
+	StretchOption stretch_ = SO_NONE;
+	ivec2 margin_ = ivec2(0);
+	vec2 percentual_offset_ = vec2(0.0f);
+	vec2 percentual_size_ = vec2(1.0f);
+
+	template<typename T>
+	data::ref_ptr<cgv::gui::control<T>> add_layout_member_control(const std::string& label, T& value, const std::string& gui_type = "", const std::string& options = "", const std::string& align = "\n") {
+		data::ref_ptr<cgv::gui::control<T>> cp = add_control(label, value, gui_type, options, align);
+		if(cp)
+			connect_copy(cp->value_change, cgv::signal::rebind(this, &overlay::on_layout_change));
+		return cp;
+	}
 
 protected:
-	/// layout parameters
-	AlignmentOption horizontal_alignment;
-	AlignmentOption vertical_alignment;
-	StretchOption stretch;
-	ivec2 margin;
-	//ivec2 size;
-	vec2 percentual_offset = vec2(0.0f);
-	vec2 percentual_size = vec2(1.0f);
-
-	/// whether the overlay is visible
-	bool show;
-	/// whether the overlay blocks events or lets them pass through to other handlers
-	bool block_events;
-	/// whether the overlay is
-	bool draw_in_finish_frame;
-
+	/// whether the overlay blocks events or lets them pass through to other handlers (by default only derived classes may set this property)
+	bool block_events = false;
+	
 	/// called when the overlay visibility is changed through the default gui
 	virtual void on_visibility_change();
 
 	/// called when the overlay layout parameters are changed through the default gui
 	virtual void on_layout_change();
 
-	/// updates the layout of the overlay container
-	void update_overlay_layout();
+	/// update the layout of the overlay container
+	void update_layout();
 
 	/// virtual method to implement the derived class gui creation
 	virtual void create_gui_impl() {};
 
 public:
-	struct {
+	struct gui_options_t {
 		std::string heading = "";
+		/// if true the overlay GUI will be placed inside a collapsible tree node
 		bool create_default_tree_node = true;
+		/// whether to show the overlay name as a heading
 		bool show_heading = false;
+		/// whether to show the layout options
 		bool show_layout_options = true;
+		/// whether to show the alignment options (show_layout_options must be enabled)
 		bool allow_alignment = true;
+		/// whether to show the stretch options (show_layout_options must be enabled)
 		bool allow_stretch = true;
+		/// whether to show the margin options (show_layout_options must be enabled)
 		bool allow_margin = true;
-	} gui_options;
-
-	/// creates an overlay in the bottom left corner with zero size
-	overlay();
+	};
+	/// options for the GUI creation of this overlay (must be set before GUI creation)
+	gui_options_t gui_options;
 
 	/// overload to reflect members of derived classes
 	virtual bool self_reflect(cgv::reflect::reflection_handler& _rh) { return false; }
@@ -104,92 +111,72 @@ public:
 	/// implement to handle member changes
 	virtual void handle_member_change(const cgv::utils::pointer_test& m) {}
 
-	/// default implementation of that calls handle_member_change and afterwards upates the member in the gui and post a redraw
+	/// default implementation of that calls handle_member_change and afterwards updates the member in the gui and post a redraw
 	virtual void on_set(void* member_ptr);
 
+	/// return whether this overlay blocks events, i.e. does not pass them to the next event handler
 	bool blocks_events() const { return block_events; }
 
-	/// returns the current viewport size
-	ivec2 get_viewport_size() const { return last_viewport_size; }
+	/// return the current viewport size
+	ivec2 get_viewport_size() const { return last_viewport_size_; }
 
-	/// returns the mouse position local to the container of this overlay
-	inline ivec2 get_local_mouse_pos(ivec2 mouse_pos) const {
-		return cgv::g2d::get_transformed_mouse_pos(mouse_pos, last_viewport_size) - container.position;
-	}
+	/// return the mouse position local to the container of this overlay
+	ivec2 get_local_mouse_pos(ivec2 mouse_pos) const;
 
-	/// sets the alignment options
-	void set_overlay_alignment(AlignmentOption horizontal, AlignmentOption vertical, vec2 percentual_offset = vec2(-1.0f));
+	/// return the current rectangle area (in screen coordinates) of the overlay taking layout into account
+	cgv::g2d::irect get_rectangle() const { return container_; }
 
-	/// sets the stretch option
-	void set_overlay_stretch(StretchOption stretch, vec2 percentual_size = vec2(-1.0f));
+	/// return the current rectangle area of the overlay in local space, i.e. with position set to zero
+	cgv::g2d::irect get_local_rectangle() const { return cgv::g2d::irect(ivec2(0), container_.size); }
 
-	/// returns the margin as set in the layout parameters
-	ivec2 get_overlay_margin() const { return margin; }
+	/// get the horizontal alignment
+	AlignmentOption get_horizontal_alignment() const { return horizontal_alignment_; }
 
-	/// sets the overlay margin
-	void set_overlay_margin(const ivec2& m) {
-		margin = m;
-		update_overlay_layout();
-	}
+	/// get the vertical alignment
+	AlignmentOption get_vertical_alignment() const { return vertical_alignment_; }
 
-	/// returns the current rectangle area of the overlay taking layout into account
-	cgv::g2d::irect get_overlay_rectangle() const { return container; }
+	/// get the percentual alignment offset (only valid if get_horizontal_alignment() or get_vertical_alignment() returns AlignmentOption::AO_PERCENTUAL)
+	vec2 get_percentual_offset() const { return percentual_offset_; }
 
-	/// returns the position of the overlay with origin at the bottom left
-	ivec2 get_overlay_position() const { return container.position; }
+	/// set the alignment options
+	void set_alignment(AlignmentOption horizontal, AlignmentOption vertical, vec2 percentual_offset = vec2(-1.0f));
 
-	/// returns the current size of the overlay taking strech layout into account
-	ivec2 get_overlay_size() const { return container.size; }
+	/// get the stretch
+	StretchOption get_stretch() const { return stretch_; }
 
-	/// sets the default size of the overlay before stretch gets applied
-	void set_overlay_size(const ivec2& s) {
-		//size = s;
-		container.size = s;
-		update_overlay_layout();
-	}
+	/// get the percentual stretch (only valid if get_stretch() returns StretchOption::SO_PERCENTUAL)
+	vec2 get_percentual_size() const { return percentual_size_; }
 
-	/// return the visibility state of the overlay
-	bool is_visible() const { return show; }
+	/// set the stretch option
+	void set_stretch(StretchOption stretch, vec2 percentual_size = vec2(-1.0f));
 
-	/// sets the visibility of the overlay to flag
-	void set_visibility(bool flag) {
-		show = flag;
-		on_visibility_change();
-	}
+	/// return the margin as set in the layout parameters
+	ivec2 get_margin() const { return margin_; }
 
-	/// convenience method to toggle the visibility of the overlay
-	void toggle_visibility() {
-		set_visibility(!show);
-	}
+	/// set the overlay margin
+	void set_margin(const ivec2& margin);
 
-	/// Set the draw_in_finish_frame flag.
-	/// If true, the the contents of this overlay are drawn in finish frame. Per default, the contents are drawn in draw.
-	void set_draw_in_finish_frame(bool flag) {
-		draw_in_finish_frame = flag;
-	}
+	/// set the default size of the overlay before stretch gets applied
+	void set_size(const ivec2& size);
 
-	/** Checks whether the viewport size has changed since the last call to
+	/// set the visibility of the overlay
+	void set_visibility(bool visible);
+
+	/// toggle the visibility of the overlay
+	void toggle_visibility();
+
+	/** Check whether the viewport size has changed since the last call to
 		this method. Call this in the init_frame method of your overlay.
 		Returns true if the size changed.
 	*/
 	bool ensure_viewport(cgv::render::context& ctx);
 
-	bool ensure_overlay_layout(cgv::render::context& ctx) {
-		bool ret = ensure_viewport(ctx);
+	bool ensure_layout(cgv::render::context& ctx);
 
-		ivec2 current_size = container.size;
-		if(last_size != current_size) {
-			last_size = current_size;
-			ret = true;
-		}
-
-		return ret;
-	}
-
-	/** Tests if the mouse pointer is hovering over this overlay and returns
+	/** Test if the mouse pointer is hovering over this overlay and returns
 		true if this is the case. Specifically it checks if the mouse position
 		is inside the rectangle defined by container. Override this method to
-		implement your own check, i.e. for different overlay shapes.
+		implement your own test, i.e. for different overlay shapes.
 	*/
 	virtual bool is_hit(const ivec2& mouse_pos) const;
 

@@ -8,6 +8,7 @@
 #include <cgv_app/gizmo.h>
 #include <cgv_gl/line_render_data.h>
 #include <cgv_gl/point_render_data.h>
+#include <cgv/os/pipe_thread.h>
 
 #include "easing_functions.h"
 #include "animation_data.h"
@@ -17,6 +18,24 @@
 
 class CGV_API camera_animator : public cgv::app::application_plugin {
 protected:
+	using vec2 = cgv::vec2;
+	using vec3 = cgv::vec3;
+	using vec4 = cgv::vec4;
+	using ivec2 = cgv::ivec2;
+	using rgb = cgv::rgb;
+
+	FILE* fp = 0;
+	int fps = 30;
+	std::string video_file_name;
+	bool video_open = false;
+	bool use_named_pipe = true;
+	cgv::os::pipe_output_thread* thread_ptr = 0;
+	cgv::os::named_pipe_output_thread* named_thread_ptr = 0;
+	size_t nr_blocks = 0;
+	bool open_ffmpeg_pipe(const std::string& file_name);
+	bool write_image_to_ffmpeg_pipe();
+	bool close_ffmpeg_pipe();
+
 	cgv::gui::help_message help;
 
 	/// store a pointer to the view
@@ -25,8 +44,8 @@ protected:
 	keyframe_editor_overlay_ptr timeline_ptr;
 	keyframe* selected_keyframe = nullptr;
 
-	cgv::render::rgb eye_color;
-	cgv::render::rgb focus_color;
+	rgb eye_color;
+	rgb focus_color;
 
 	cgv::render::point_renderer local_point_renderer;
 	cgv::render::line_renderer local_line_renderer;
@@ -34,7 +53,7 @@ protected:
 	cgv::render::point_render_data<> eye_rd, keyframes_rd;
 	cgv::render::line_render_data<> view_rd, paths_rd;
 
-	cgv::render::mat4 view_transformation;
+	cgv::mat4 view_transformation;
 
 	std::shared_ptr<animation_data> animation;
 
@@ -46,8 +65,6 @@ protected:
 	bool apply = false;
 	bool show_camera = true;
 	bool show_path = true;
-	bool show_timeline = true;
-	bool hide_all = true;
 
 	cgv::gui::button_ptr play_pause_btn;
 
@@ -88,7 +105,7 @@ protected:
 	void write_single_image();
 
 public:
-	class camera_animator();
+	 camera_animator();
 	std::string get_type_name() const { return "camera_animator"; }
 
 	void clear(cgv::render::context& ctx);

@@ -27,6 +27,8 @@ uniform vec2 text_size;
 uniform float font_size = 32.0;
 uniform float angle;
 
+//uniform bool align_to_pixels;
+
 out vec2 tex_coord;
 
 mat2 rotate(in float angle) {
@@ -62,7 +64,7 @@ void main() {
 
 	// offset local glyph position by text alignment
 	final_position += text_size * font_size * alignment_factors;
-
+	
 	// rotate local glyph position	
 	final_position = R * final_position;
 	
@@ -77,10 +79,11 @@ void main() {
 	// rotate
 	corner = R * corner;
 
-	//pix_coord = corner - 0.5*size;
-
 	// offset
 	corner += final_position;
 
+	//if(align_to_pixels)
+	//	corner = round(corner);
+	
 	gl_Position = transform_world_to_window_space(corner);
 }

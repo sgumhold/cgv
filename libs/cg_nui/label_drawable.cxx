@@ -173,7 +173,7 @@ bool label_drawable::is_coordsystem_valid(coordinate_system cs) const
 { 
 	return valid[static_cast<int>(cs)];
 }
-const label_drawable::mat34& label_drawable::get_coordsystem(coordinate_system cs) const 
+const mat34& label_drawable::get_coordsystem(coordinate_system cs) const 
 {
 	return pose[static_cast<int>(cs)]; 
 }

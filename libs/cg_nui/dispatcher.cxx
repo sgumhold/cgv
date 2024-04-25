@@ -1,5 +1,5 @@
 #include "dispatcher.h"
-#include "grabable.h"
+#include "grabbable.h"
 #include <cgv/gui/mouse_event.h>
 #include <cgv/gui/event_handler.h>
 #include <libs/cg_vr/vr_events.h>

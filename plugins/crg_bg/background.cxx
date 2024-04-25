@@ -20,8 +20,8 @@ class background : public node, public drawable, public provider, public event_h
 protected:
 	shader_program prog;
 	bool enable = true;
-	rgba color_1 = rgba(0.7f, 0.7f, 0.7f, 1.0f);
-	rgba color_2 = rgba(1.0f, 1.0f, 1.0f, 1.0f);
+	cgv::rgba color_1 = cgv::rgba(0.7f, 0.7f, 0.7f, 1.0f);
+	cgv::rgba color_2 = cgv::rgba(1.0f, 1.0f, 1.0f, 1.0f);
 	int mode = 0;
 	int checker_step = 16;
 public:

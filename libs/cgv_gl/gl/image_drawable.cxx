@@ -117,8 +117,8 @@ bool image_drawable::read_image(const std::string& _file_name)
 	data_format df;
 	image_reader ir(df);
 	ir.open(_file_name);
-	W = df.get_width();
-	H = df.get_height();
+	W = int(df.get_width());
+	H = int(df.get_height());
 	selection.invalidate();
 	selection.add_point(vec2i(0, 0));
 	selection.add_point(vec2i(W, H));
@@ -145,8 +145,8 @@ bool image_drawable::read_images(const std::string& _file_name, const std::vecto
 		data_format df;
 		image_reader ir(df);
 		ir.open(_file_name+"/"+_files[0]);
-		W = df.get_width();
-		H = df.get_height();
+		W = int(df.get_width());
+		H = int(df.get_height());
 		selection.invalidate();
 		selection.add_point(vec2i(0, 0));
 		selection.add_point(vec2i(W, H));

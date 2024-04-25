@@ -12,13 +12,13 @@ namespace stream_vis {
 	protected:
 		cgv::render::clipped_view current_view;
 		cgv::render::view default_view, last_view;
-		dmat4 MPW = dmat4(0.0);
+		cgv::dmat4 MPW = cgv::dmat4(0.0);
 		int last_x = 0, last_y = 0;
 		double check_for_click = 0.0;
-		vec2 pan_start_pos = vec2(0.0f);
+		cgv::vec2 pan_start_pos = cgv::vec2(0.0f);
 		float rotate_sensitivity = 1.0f;
 		float zoom_sensitivity = 1.0f;
-		void compute_matrices_and_viewport(mat4& projection_matrix, mat4& model_view_matrix, ivec4& viewport);
+		void compute_matrices_and_viewport(cgv::mat4& projection_matrix, cgv::mat4& model_view_matrix, cgv::ivec4& viewport);
 		void update_views();
 		void set_modelview_projection(cgv::render::context& ctx);
 		void toggle_default_view(bool set_default);

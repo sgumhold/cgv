@@ -52,8 +52,11 @@ namespace cgv {
 	}
 }
 
-struct holo_display_calibration : public cgv::render::render_types
+struct holo_display_calibration
 {
+	using vec3 = cgv::vec3;
+	using ivec2 = cgv::ivec2;
+
 	unsigned width = 3840;
 	unsigned height = 2160;
 
@@ -94,11 +97,11 @@ class CGV_API holo_view_interactor :
 	public cgv::render::stereo_view
 {
 public:
-	typedef cgv::math::fvec<float, 3>      vec3;
-	typedef cgv::math::fvec<double, 3>    dvec3;
-	typedef cgv::math::fmat<double, 3, 3> dmat3;
-	typedef cgv::math::fmat<double, 4, 4> dmat4;
-	typedef cgv::media::axis_aligned_box<double, 3> dbox3;
+	using rgb = cgv::rgb;
+	using vec2 = cgv::vec2;
+	using vec3 = cgv::vec3;
+	using vec4 = cgv::vec4;
+	using ivec4 = cgv::ivec4;
 protected:
 	// interaction
 	bool two_d_enabled;
@@ -205,7 +208,7 @@ protected:
 	bool gamepad_attached;
 	float deadzone;
 	int left_mode, right_mode;
-	cgv::math::fvec<float,2> left_stick, right_stick, trigger;
+	vec2 left_stick, right_stick, trigger;
 
 	bool gamepad_emulation;
 	bool emulation_active;

@@ -1,5 +1,7 @@
 #include "streaming_time_series.h"
 
+#include <cgv/media/color.h>
+
 namespace stream_vis {
 	const std::string& streaming_time_series::get_name() const
 	{
@@ -28,14 +30,14 @@ namespace stream_vis {
 		outofdate = true;
 		first_visible_sample_index = 0;
 		// mark default values as undefined
-		default_color = rgb(-1,-1,-1);
+		default_color = cgv::rgb(-1,-1,-1);
 		default_opacity = -1;
 		default_size = -1;
 		lower_bound_index = uint16_t(-1);
 		upper_bound_index = uint16_t(-1);
 		aabb_mode = AM_BLOCKED_16;
 		transform = TT_NONE;
-		transform_origin = dvec3(0.0);
+		transform_origin = cgv::dvec3(0.0);
 		//series().set_ringbuffer_size(1024);
 	}
 	cgv::type::info::TypeId streaming_time_series::get_value_type_id() const

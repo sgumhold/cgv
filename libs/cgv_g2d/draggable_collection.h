@@ -2,7 +2,6 @@
 
 #include <cgv/gui/event.h>
 #include <cgv/gui/mouse_event.h>
-#include <cgv/render/render_types.h>
 
 #include "canvas.h"
 #include "draggable.h"
@@ -15,7 +14,7 @@ namespace cgv {
 namespace g2d {
 
 template<class T>
-class draggable_collection : public cgv::render::render_types {
+class draggable_collection {
 protected:
 	typedef typename std::remove_pointer<T>::type raw_type;
 	typedef          raw_type* ptr_type;

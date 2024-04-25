@@ -47,7 +47,7 @@ cgv_define_option(
 	DOC "encode shader codes in base64 before embedding"
 )
 cgv_define_option(
-	"STDCPP17" DEFAULT ON
+	"STDCPP17" DEFAULT OFF
 	DOC "later makes cgv::utils use std::filesystem"
 )
 cgv_define_option(

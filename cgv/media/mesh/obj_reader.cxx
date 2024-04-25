@@ -201,7 +201,11 @@ bool obj_reader_base::read_obj(const std::string& file_name)
 	path_name = file::get_path(file_name);
 	if (!path_name.empty())
 		path_name += "/";
+	return parse_obj(content, path_name);
+}
 
+bool obj_reader_base::parse_obj(const std::string & content, const std::string path_name)
+{
 	std::vector<line> lines;
 	split_to_lines(content,lines);
 	

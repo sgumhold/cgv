@@ -187,7 +187,7 @@ bool tiff_reader::read_image(const data_format& df, const data_view& dv)
 		}
 
 		/* Read the image in one chunk into an RGBA array */
-		if (!TIFFReadRGBAImageOriented(fp, df.get_width(), df.get_height(), raster, ORIENTATION_TOPLEFT, 0)) {
+		if (!TIFFReadRGBAImageOriented(fp, uint32(df.get_width()), uint32(df.get_height()), raster, ORIENTATION_TOPLEFT, 0)) {
 			_TIFFfree(raster);
 			last_error = "Error in reading RGBA image";
 			return false;
@@ -199,7 +199,7 @@ bool tiff_reader::read_image(const data_format& df, const data_view& dv)
 #if HOST_BIGENDIAN
 		TIFFSwabArrayOfLong(raster, df.get_size());
 #endif
-		int pixel_count = df.get_nr_entries();
+		int pixel_count = (int)df.get_nr_entries();
 		if (df.get_entry_size() == 3) {
 			unsigned char *src, *dst;
 			src = (unsigned char *) raster;

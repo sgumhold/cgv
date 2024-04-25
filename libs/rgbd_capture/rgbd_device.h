@@ -140,6 +140,8 @@ namespace rgbd {
 	public:
 		/// virtual destructor
 		virtual ~rgbd_device();
+		/// in case the rgbd device has a microphone or microphone array, return the id of the corresponding sound device (wasapi id under windows)
+		virtual std::string get_audio_device() const;
 		/// attach to the kinect device of the given serial
 		virtual bool attach(const std::string& serial) = 0;
 		/// return whether device object is attached to a kinect_input device

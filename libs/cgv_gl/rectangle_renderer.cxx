@@ -58,8 +58,8 @@ namespace cgv {
 			texture_mode = RTM_REPLACE;
 			default_depth_offset = 0.0f;
 			blend_rectangles = false;
-			is_blend = GL_FALSE;
-			blend_src = blend_dst = 0;
+			//is_blend = GL_FALSE;
+			//blend_src = blend_dst = 0;
 		}
 		rectangle_renderer::rectangle_renderer() {
  			has_extents = false;
@@ -173,11 +173,9 @@ namespace cgv {
 				ref_prog().set_attribute(ctx, "border_info", vec3(rrs.border_width_in_pixel, rrs.percentual_border_width, float(rrs.border_mode)));
 			// configure opengl
 			if (rrs.blend_rectangles) {
-				rrs.is_blend = glIsEnabled(GL_BLEND);
-				glGetIntegerv(GL_BLEND_DST, reinterpret_cast<GLint*>(&rrs.blend_dst));
-				glGetIntegerv(GL_BLEND_SRC, reinterpret_cast<GLint*>(&rrs.blend_src));
-				glEnable(GL_BLEND);
-				glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+				ctx.push_blend_state();
+				ctx.enable_blending();
+				ctx.set_blend_func_back_to_front();
 			}
 			ref_prog().set_uniform(ctx, "has_rotations", has_rotations);
 			ref_prog().set_uniform(ctx, "has_translations", has_translations);
@@ -203,11 +201,8 @@ namespace cgv {
 				has_depth_offsets = false;
 			}
 			const rectangle_render_style& rrs = get_style<rectangle_render_style>();
-			if (rrs.blend_rectangles) {
-				if (!rrs.is_blend)
-					glDisable(GL_BLEND);
-				glBlendFunc(rrs.blend_src, rrs.blend_dst);
-			}
+			if (rrs.blend_rectangles)
+				ctx.pop_blend_state();
 			return surface_renderer::disable(ctx);
 		}
 		void rectangle_renderer::draw(context& ctx, size_t start, size_t count, bool use_strips, bool use_adjacency, uint32_t strip_restart_index)
@@ -260,7 +255,7 @@ namespace cgv {
 				p->add_member_control(b, "Border Width in Pixel", prs_ptr->border_width_in_pixel, "value_slider", "min=-10;max=10;ticks=true");
 				p->add_member_control(b, "Percentual Border Width", prs_ptr->percentual_border_width, "value_slider", "min=-0.5;max=0.5;ticks=true");
 				p->add_member_control(b, "Border Mode", (cgv::type::DummyEnum&)prs_ptr->border_mode, "dropdown",
-					"enums='Separate=0,Width,Height,Minimum (Width, Height)'");
+					"enums='Separate=0,Width,Height,Minimum Width/Height'");
 				p->add_member_control(b, "Pixel Blend", prs_ptr->pixel_blend, "value_slider", "min=0.0;max=2;ticks=true");
 				p->add_member_control(b, "Texture Mode", (cgv::type::DummyEnum&)prs_ptr->texture_mode, "dropdown",
 					"enums='Replace,Replace Alpha,Multiply Color,Multiply Secondary Color,Multiply Border Color,"

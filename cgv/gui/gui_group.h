@@ -148,7 +148,7 @@ public:
 		view_ptr vp = add_view_void(label, &value, 
 						enum_aware_type_name<T>::get_name(), 
 						gui_type, options, align);
-		return vp.up_cast<view<T> >();
+		return vp.down_cast<view<T> >();
 	}
 	/// add a newly created control to the group for the given value with the given %gui %type, init and align options
 	template <typename T>
@@ -156,7 +156,7 @@ public:
 		control_ptr cp = add_control_void(label, &value, 0,
 					enum_aware_type_name<T>::get_name(), 
 					gui_type, options, align, 0);
-		return cp.up_cast<control<T> >(); 
+		return cp.down_cast<control<T> >(); 
 	} 
 	/// add a newly created control to the group which is controlled by a control_provider
 	template <typename T>
@@ -166,7 +166,7 @@ public:
 		control_ptr cp = add_control_void(label, 0, provider, 
 					enum_aware_type_name<T>::get_name(), 
 					gui_type, options, align, user_data);
-		return cp.up_cast<control<T> >(); 
+		return cp.down_cast<control<T> >();
 	}
 	//@}
 
@@ -185,7 +185,7 @@ public:
 	template <typename T>
 	inline data::ref_ptr<view<T> > find_view(const T& value, int* idx_ptr=0) {
 		view_ptr vp = find_view_void(&value,idx_ptr);
-		return vp.up_cast<view<T> >(); 
+		return vp.down_cast<view<T> >();
 	}
 	//! find the next control of the given value in the current group. 
 	/*! If the index
@@ -194,7 +194,7 @@ public:
 	template <typename T>
 	inline data::ref_ptr<control<T> > find_control(T& value, int* idx_ptr=0) {
 		control_ptr cp = find_control_void(&value,idx_ptr);
-		return cp.up_cast<control<T> >(); 
+		return cp.down_cast<control<T> >();
 	}
 	//@}
 };
