@@ -19,6 +19,26 @@ function(format_vscode_launch_json_args CONTENT_VAR)
 	endif()
 endfunction()
 
+function(format_idea_launch_args CONTENT_VAR)
+	cmake_parse_arguments(PARSE_ARGV 1 CGVARG_ "" "" "ARGUMENT_LIST")
+
+	if (CGVARG__ARGUMENT_LIST)
+		set(LIST_CONTROL_HELPER TRUE) # <-- for distinguishing the first iteration within a foreach()
+		# generate a space-separated argument string
+		set(LOCAL_ARG_STRING "")
+		foreach(ARG IS_FIRST IN ZIP_LISTS CGVARG__ARGUMENT_LIST LIST_CONTROL_HELPER)
+			string(REGEX REPLACE "\"" "&quot;" ARG_QE ${ARG})
+			if (IS_FIRST)
+				set(LOCAL_ARG_STRING "${ARG_QE}")
+			else()
+				set(LOCAL_ARG_STRING "${LOCAL_ARG_STRING} ${ARG_QE}")
+			endif()
+		endforeach()
+		# append to output variable
+		set(${CONTENT_VAR} "${LOCAL_ARG_STRING}" PARENT_SCOPE)
+	endif()
+endfunction()
+
 function(format_vscode_launch_json_entry CONTENT_VAR TARGET_NAME)
 	cmake_parse_arguments(
 		PARSE_ARGV 2 CGVARG_ "" "DEBUGGER_TYPE;LAUNCH_PROGRAM;WORKING_DIR" "CMD_ARGS"
@@ -97,7 +117,7 @@ function(concat_vscode_launch_json_content LAUNCH_JSON_CONFIG_VAR TARGET_NAME)
 	# determine target names
 	cgv_get_static_or_exe_name(NAME_STATIC NAME_EXE ${TARGET_NAME} TRUE)
 
-	# devide what the program to invoke will be
+	# decide what the program to invoke will be
 	if (CGVARG__INVOCATION_PROXY)
 		set(LAUNCH_PROGRAM_PLUGIN "${CGVARG__INVOCATION_PROXY}")
 		set(LAUNCH_PROGRAM_EXE "${CGVARG__INVOCATION_PROXY}")
@@ -145,6 +165,51 @@ function(concat_vscode_launch_json_content LAUNCH_JSON_CONFIG_VAR TARGET_NAME)
 
 	# write to target variable
 	set(${LAUNCH_JSON_CONFIG_VAR} ${JSON_LIST_STRING} PARENT_SCOPE)
+endfunction()
+
+function(create_idea_run_entry CONTENT_VAR TARGET_NAME)
+	cmake_parse_arguments(
+		PARSE_ARGV 2 CGVARG_ "NO_EXECUTABLE" "INVOCATION_PROXY;WORKING_DIR" "PLUGIN_ARGS;EXE_ARGS"
+	)
+
+	# determine target names
+	cgv_get_static_or_exe_name(NAME_STATIC NAME_EXE ${TARGET_NAME} TRUE)
+
+	# decide what the program to invoke will be
+	if (CGVARG__INVOCATION_PROXY)
+		set(LAUNCH_PROGRAM_PLUGIN "${CGVARG__INVOCATION_PROXY}")
+		set(LAUNCH_PROGRAM_EXE "${CGVARG__INVOCATION_PROXY}")
+		set(CMD_ARGS_PLUGIN $<TARGET_FILE:cgv_viewer> "${CGVARG__PLUGIN_ARGS}")
+		set(CMD_ARGS_EXE $<TARGET_FILE:${NAME_EXE}> "${CGVARG__EXE_ARGS}")
+	else()
+		set(LAUNCH_PROGRAM_PLUGIN "$<TARGET_FILE:cgv_viewer>")
+		set(LAUNCH_PROGRAM_EXE "$<TARGET_FILE:${NAME_EXE}>")
+		set(CMD_ARGS_PLUGIN "${CGVARG__PLUGIN_ARGS}")
+		set(CMD_ARGS_EXE "${CGVARG__EXE_ARGS}")
+	endif()
+
+	# Generate plugin build launch config
+	set(IDEA_WORKING_DIR "file://${CGVARG__WORKING_DIR}")
+	set(IDEA_TARGET_NAME "${TARGET_NAME}")
+	set(IDEA_LAUNCH_CMD "${LAUNCH_PROGRAM_PLUGIN}")
+	format_idea_launch_args(IDEA_LAUNCH_ARGS ARGUMENT_LIST ${CMD_ARGS_PLUGIN})
+	configure_file("${CGV_DIR}/make/cmake/idea_launch.xml.in" "${CMAKE_SOURCE_DIR}/.idea/runConfigurations/${TARGET_NAME}.xml" @ONLY)
+	file(
+		GENERATE OUTPUT "${CMAKE_SOURCE_DIR}/.idea/runConfigurations/${TARGET_NAME}.xml"
+		INPUT "${CMAKE_SOURCE_DIR}/.idea/runConfigurations/${TARGET_NAME}.xml"
+		USE_SOURCE_PERMISSIONS
+	)
+	if (NOT CGVARG__NO_EXECUTABLE)
+		set(IDEA_TARGET_NAME "${NAME_EXE}")
+		set(IDEA_LAUNCH_CMD "${LAUNCH_PROGRAM_EXE}")
+		format_idea_launch_args(IDEA_LAUNCH_ARGS ARGUMENT_LIST ${CMD_ARGS_EXE})
+		configure_file("${CGV_DIR}/make/cmake/idea_launch.xml.in" "${CMAKE_SOURCE_DIR}/.idea/runConfigurations/${NAME_EXE}.xml" @ONLY)
+		file(
+			GENERATE OUTPUT "${CMAKE_SOURCE_DIR}/.idea/runConfigurations/${NAME_EXE}.xml"
+			INPUT "${CMAKE_SOURCE_DIR}/.idea/runConfigurations/${NAME_EXE}.xml"
+			USE_SOURCE_PERMISSIONS
+		)
+	endif()
 endfunction()
 
 function(set_plugin_execution_params target_name)
