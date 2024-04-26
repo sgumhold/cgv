@@ -193,20 +193,20 @@ function(create_idea_run_entry CONTENT_VAR TARGET_NAME)
 	set(IDEA_TARGET_NAME "${TARGET_NAME}")
 	set(IDEA_LAUNCH_CMD "${LAUNCH_PROGRAM_PLUGIN}")
 	format_idea_launch_args(IDEA_LAUNCH_ARGS ARGUMENT_LIST ${CMD_ARGS_PLUGIN})
-	configure_file("${CGV_DIR}/make/cmake/idea_launch.xml.in" "${CMAKE_SOURCE_DIR}/.idea/runConfigurations/${TARGET_NAME}.xml" @ONLY)
+	configure_file("${CGV_DIR}/make/cmake/idea_launch.xml.in" "${CMAKE_SOURCE_DIR}/.run/${TARGET_NAME}.xml" @ONLY)
 	file(
-		GENERATE OUTPUT "${CMAKE_SOURCE_DIR}/.idea/runConfigurations/${TARGET_NAME}.xml"
-		INPUT "${CMAKE_SOURCE_DIR}/.idea/runConfigurations/${TARGET_NAME}.xml"
+		GENERATE OUTPUT "${CMAKE_SOURCE_DIR}/.run/${TARGET_NAME}.xml"
+		INPUT "${CMAKE_SOURCE_DIR}/.run/${TARGET_NAME}.xml"
 		USE_SOURCE_PERMISSIONS
 	)
 	if (NOT CGVARG__NO_EXECUTABLE)
 		set(IDEA_TARGET_NAME "${NAME_EXE}")
 		set(IDEA_LAUNCH_CMD "${LAUNCH_PROGRAM_EXE}")
 		format_idea_launch_args(IDEA_LAUNCH_ARGS ARGUMENT_LIST ${CMD_ARGS_EXE})
-		configure_file("${CGV_DIR}/make/cmake/idea_launch.xml.in" "${CMAKE_SOURCE_DIR}/.idea/runConfigurations/${NAME_EXE}.xml" @ONLY)
+		configure_file("${CGV_DIR}/make/cmake/idea_launch.xml.in" "${CMAKE_SOURCE_DIR}/.run/${NAME_EXE}.xml" @ONLY)
 		file(
-			GENERATE OUTPUT "${CMAKE_SOURCE_DIR}/.idea/runConfigurations/${NAME_EXE}.xml"
-			INPUT "${CMAKE_SOURCE_DIR}/.idea/runConfigurations/${NAME_EXE}.xml"
+			GENERATE OUTPUT "${CMAKE_SOURCE_DIR}/.run/${NAME_EXE}.xml"
+			INPUT "${CMAKE_SOURCE_DIR}/.run/${NAME_EXE}.xml"
 			USE_SOURCE_PERMISSIONS
 		)
 	endif()
