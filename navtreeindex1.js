@@ -1,5 +1,6 @@
 var NAVTREEINDEX1 =
 {
+"classcgv_1_1app_1_1color__map__editor.html#a6e4fe87ad9f99ed91d20d75a5925a0aa":[11,0,0,0,4,35],
 "classcgv_1_1app_1_1color__map__editor.html#a6eb85c96cec930cdda19ea4c0a686e94":[11,0,0,0,4,61],
 "classcgv_1_1app_1_1color__map__editor.html#a72143e8235f6f984e4a9430a66d061c4":[11,0,0,0,4,42],
 "classcgv_1_1app_1_1color__map__editor.html#a7722fa6295feb918ab02cd84f365e065":[11,0,0,0,4,20],
@@ -57,7 +58,6 @@ var NAVTREEINDEX1 =
 "classcgv_1_1app_1_1color__map__legend.html":[11,0,0,0,5],
 "classcgv_1_1app_1_1color__map__legend.html#a01fe2e1ea0268cf8bc4dbdd7368f0795":[11,0,0,0,5,3],
 "classcgv_1_1app_1_1color__map__legend.html#a154efb74cbdaba32887277d174961097":[11,0,0,0,5,52],
-"VR.html#VRIntro":[7,0],
 "classcgv_1_1app_1_1color__map__legend.html#a1b2dfad85ec390dce489e8467e350852":[11,0,0,0,5,32],
 "classcgv_1_1app_1_1color__map__legend.html#a1cafad57c8ea8451989a2bae87571bb5":[11,0,0,0,5,42],
 "classcgv_1_1app_1_1color__map__legend.html#a217df41024a688c9967ff39f6ce50c37":[11,0,0,0,5,9],

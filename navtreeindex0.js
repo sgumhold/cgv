@@ -5,6 +5,7 @@ var NAVTREEINDEX0 =
 "VR.html#VRCalib":[7,1],
 "VR.html#VREmul":[7,2],
 "VR.html#VRInfo":[7,4],
+"VR.html#VRIntro":[7,0],
 "a__buffer_8cxx_source.html":[12,0,3,3,1],
 "a__buffer_8h_source.html":[12,0,3,3,2],
 "abst__signal_8cxx.html#a64bdfd83582e5c230bd63c8429135944":[10,0,1,14,8],
@@ -248,6 +249,5 @@ var NAVTREEINDEX0 =
 "classcgv_1_1app_1_1color__map__editor.html#a601f60a6527ff3759ea15e546583a2b7":[11,0,0,0,4,4],
 "classcgv_1_1app_1_1color__map__editor.html#a612ba411a2e1811f26664c4016621618":[11,0,0,0,4,70],
 "classcgv_1_1app_1_1color__map__editor.html#a6154a881d93d017f476fb0e0fef309bd":[11,0,0,0,4,37],
-"classcgv_1_1app_1_1color__map__editor.html#a6475c720fadde059213ca60748b6aaec":[11,0,0,0,4,38],
-"classcgv_1_1app_1_1color__map__editor.html#a6e4fe87ad9f99ed91d20d75a5925a0aa":[11,0,0,0,4,35]
+"classcgv_1_1app_1_1color__map__editor.html#a6475c720fadde059213ca60748b6aaec":[11,0,0,0,4,38]
 };
