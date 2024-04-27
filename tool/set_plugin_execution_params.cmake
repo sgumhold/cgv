@@ -190,24 +190,34 @@ function(create_idea_run_entry CONTENT_VAR TARGET_NAME)
 
 	# Generate plugin build launch config
 	set(IDEA_WORKING_DIR "file://${CGVARG__WORKING_DIR}")
+	if(CMAKE_BUILD_TYPE MATCHES "Release")
+		set(IDEA_CONFIG_NAME "${TARGET_NAME}")
+	else()
+		set(IDEA_CONFIG_NAME "${TARGET_NAME} (${CMAKE_BUILD_TYPE})")
+	endif()
 	set(IDEA_TARGET_NAME "${TARGET_NAME}")
 	set(IDEA_LAUNCH_CMD "${LAUNCH_PROGRAM_PLUGIN}")
 	format_idea_launch_args(IDEA_LAUNCH_ARGS ARGUMENT_LIST ${CMD_ARGS_PLUGIN})
-	configure_file("${CGV_DIR}/make/cmake/idea_launch.xml.in" "${CMAKE_SOURCE_DIR}/.run/${TARGET_NAME}.run.xml" @ONLY)
+	configure_file("${CGV_DIR}/make/cmake/idea_launch.xml.in" "${CMAKE_SOURCE_DIR}/.run/${IDEA_CONFIG_NAME}.run.xml" @ONLY)
 	file(
-		GENERATE OUTPUT "${CMAKE_SOURCE_DIR}/.run/${TARGET_NAME}.run.xml"
-		INPUT "${CMAKE_SOURCE_DIR}/.run/${TARGET_NAME}.run.xml"
+		GENERATE OUTPUT "${CMAKE_SOURCE_DIR}/.run/${IDEA_CONFIG_NAME}.run.xml"
+		INPUT "${CMAKE_SOURCE_DIR}/.run/${IDEA_CONFIG_NAME}.run.xml"
 		USE_SOURCE_PERMISSIONS
 	)
 	if (NOT CGVARG__NO_EXECUTABLE)
 		# If required, generate single-exec build launch config
+		if(CMAKE_BUILD_TYPE MATCHES "Release")
+			set(IDEA_CONFIG_NAME "${NAME_EXE}")
+		else()
+			set(IDEA_CONFIG_NAME "${NAME_EXE} (${CMAKE_BUILD_TYPE})")
+		endif()
 		set(IDEA_TARGET_NAME "${NAME_EXE}")
 		set(IDEA_LAUNCH_CMD "${LAUNCH_PROGRAM_EXE}")
 		format_idea_launch_args(IDEA_LAUNCH_ARGS ARGUMENT_LIST ${CMD_ARGS_EXE})
-		configure_file("${CGV_DIR}/make/cmake/idea_launch.xml.in" "${CMAKE_SOURCE_DIR}/.run/${NAME_EXE}.run.xml" @ONLY)
+		configure_file("${CGV_DIR}/make/cmake/idea_launch.xml.in" "${CMAKE_SOURCE_DIR}/.run/${IDEA_CONFIG_NAME}.run.xml" @ONLY)
 		file(
-			GENERATE OUTPUT "${CMAKE_SOURCE_DIR}/.run/${NAME_EXE}.run.xml"
-			INPUT "${CMAKE_SOURCE_DIR}/.run/${NAME_EXE}.run.xml"
+			GENERATE OUTPUT "${CMAKE_SOURCE_DIR}/.run/${IDEA_CONFIG_NAME}.run.xml"
+			INPUT "${CMAKE_SOURCE_DIR}/.run/${IDEA_CONFIG_NAME}.run.xml"
 			USE_SOURCE_PERMISSIONS
 		)
 	endif()
