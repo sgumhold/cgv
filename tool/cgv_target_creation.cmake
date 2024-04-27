@@ -1,5 +1,4 @@
 
-
 # helper function for lists: turns a list into a string with the ';' element seperation token replaced by the special
 # semicolon token provided by the generator expression '$<SEMICOLON>'. The resulting string can ONLY be used at
 # generation time (this includes instantiation of custom commands)!
@@ -22,6 +21,17 @@ function(cgv_format_list OUTPUT_VAR LIST_VAR)
 	if (LIST_VAR)
 		set(${OUTPUT_VAR} "${LIST_VAR}" PARENT_SCOPE)
 	endif()
+endfunction()
+
+# Checks whether the given CGV-Option is set
+function(cgv_has_option OUTPUT_VAR OPTION_NAME)
+	foreach(CGV_OPTION ${CGV_OPTIONS})
+		if (CGV_OPTION STREQUAL "${OPTION_NAME}")
+			set(${OUTPUT_VAR} TRUE PARENT_SCOPE)
+			return()
+		endif()
+	endforeach()
+	set(${OUTPUT_VAR} FALSE PARENT_SCOPE)
 endfunction()
 
 # retrieves a CGV-specific property and returns its content if any, otherwise returns something that evaluates to FALSE
@@ -661,6 +671,14 @@ function(cgv_add_target NAME)
 	if (NOT IS_CORELIB)
 		target_include_directories(${NAME_STATIC} PUBLIC $<BUILD_INTERFACE:${CGV_DIR}/libs>)
 	endif ()
+
+	# Prevent Clang complaining about illegal characters in string literals when baking base64-encoded shaders into the
+	# single executable
+	cgv_has_option(HAS_OPTION_ENCODE_SHADER_BASE64 "ENCODE_SHADER_BASE64")
+	if (    HAS_OPTION_ENCODE_SHADER_BASE64
+	    AND (CMAKE_C_COMPILER_ID MATCHES "Clang" OR CMAKE_CXX_COMPILER_ID MATCHES "Clang"))
+		target_compile_options(${NAME_STATIC} PRIVATE -Wno-invalid-source-encoding)
+	endif()
 
 	# add single executable version if not disabled for this target
 	if (IS_PLUGIN AND NOT CGVARG__NO_EXECUTABLE)
