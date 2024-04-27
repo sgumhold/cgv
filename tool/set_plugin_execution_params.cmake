@@ -167,9 +167,9 @@ function(concat_vscode_launch_json_content LAUNCH_JSON_CONFIG_VAR TARGET_NAME)
 	set(${LAUNCH_JSON_CONFIG_VAR} ${JSON_LIST_STRING} PARENT_SCOPE)
 endfunction()
 
-function(create_idea_run_entry CONTENT_VAR TARGET_NAME)
+function(create_idea_run_entry TARGET_NAME)
 	cmake_parse_arguments(
-		PARSE_ARGV 2 CGVARG_ "NO_EXECUTABLE" "INVOCATION_PROXY;WORKING_DIR" "PLUGIN_ARGS;EXE_ARGS"
+		PARSE_ARGV 1 CGVARG_ "NO_EXECUTABLE" "INVOCATION_PROXY;WORKING_DIR" "PLUGIN_ARGS;EXE_ARGS"
 	)
 
 	# determine target names

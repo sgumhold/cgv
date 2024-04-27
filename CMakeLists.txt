@@ -16,6 +16,12 @@ set(CGV_IS_CONFIGURING TRUE)
 # detect whether we're being included as a subproject
 get_directory_property(CGV_HAS_PARENT_PROJ PARENT_DIRECTORY)
 
+# detect whether we're configuring for a multi-config generator
+get_property(CGV_USING_MULTI_CONFIG GLOBAL PROPERTY GENERATOR_IS_MULTI_CONFIG)
+if(CGV_HAS_PARENT_PROJ)
+	set(CGV_USING_MULTI_CONFIG ${CGV_USING_MULTI_CONFIG} PARENT_SCOPE)
+endif()
+
 # setup relevant directories
 # - "the" CGV directory
 set(CGV_DIR ${PROJECT_SOURCE_DIR})

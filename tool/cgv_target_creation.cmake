@@ -333,12 +333,18 @@ function(cgv_do_deferred_ops TARGET_NAME CONFIGURING_CGV)
 				USE_SOURCE_PERMISSIONS
 			)
 
-			# (2) IntelliJ IDEA (CLion etc.)
-			create_idea_run_entry(
-				VSCODE_TARGET_LAUNCH_JSON_CONFIGS ${TARGET_NAME} ${NO_EXE_FLAG} WORKING_DIR ${WORKING_DIR}
-				PLUGIN_ARGS ${AUTOGEN_CMD_LINE_ARGS};${ADDITIONAL_ARGS} EXE_ARGS ${ADDITIONAL_ARGS}
-				INVOCATION_PROXY ${INVOCATION_PROXY}
-			)
+			# (2) JetBrains IDEs (IDEA, CLion etc.)
+			#   Multi-config generators are not properly supported in these IDEs (also unneccesary). Generating launch configs for them
+			#   becomes problematic with multi-config generators due to the way CMake invokes file generation, so the easiest workaround
+			#   is to just not generate launch configs when a multi-config generator is used.
+			#   TODO: proper handling of this is possible and should be implemented at some point
+			if (NOT CGV_USING_MULTI_CONFIG)
+				create_idea_run_entry(
+					${TARGET_NAME} ${NO_EXE_FLAG} WORKING_DIR ${WORKING_DIR}
+					PLUGIN_ARGS ${AUTOGEN_CMD_LINE_ARGS};${ADDITIONAL_ARGS} EXE_ARGS ${ADDITIONAL_ARGS}
+					INVOCATION_PROXY ${INVOCATION_PROXY}
+				)
+			endif()
 
 			# (3) Visual Studio Code
 			concat_vscode_launch_json_content(
