@@ -11,7 +11,14 @@ cgv_add_target(cgv_proc
 	SHADER_SOURCES  ${SHADERS}
 
 	DEPENDENCIES
-		glew cgv_utils cgv_type cgv_reflect cgv_reflect_types cgv_data cgv_base cgv_math cgv_media cgv_render cgv_gl
+		glew cgv_utils cgv_type cgv_reflect cgv_reflect_types cgv_data cgv_base cgv_math cgv_media cgv_render
+		cgv_gl
+
+	OVERRIDE_SHARED_EXPORT_DEFINE
+		CGV_PROCEDURAL_EXPORTS
+
+	OVERRIDE_FORCE_STATIC_DEFINE
+		CGV_PROCEDURAL_FORCE_STATIC
 )
 
 install(DIRECTORY glsl/. DESTINATION ${CGV_LIBS_INCLUDE_DEST}/cgv_proc/glsl)
