@@ -358,8 +358,8 @@ void rgbd_icp_tool::on_reg_ICP_cb()
 	icp.set_num_random(icp_random_samples);
 
 	icp.build_ann_tree();
-	icp.reg_icp(rotation, translation);
-	//icp.get_crspd(rotation, translation, crs_srs_pc, crs_tgt_pc);
+	//icp.reg_icp(rotation, translation);
+	icp.get_crspd(rotation, translation, crs_srs_pc, crs_tgt_pc);
 	// need to de-mean for rotation
 	source_pc.rotate(cgv::math::quaternion<float>(rotation));
 	source_pc.translate(translation);
