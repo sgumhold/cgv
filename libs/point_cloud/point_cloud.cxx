@@ -1340,9 +1340,9 @@ bool point_cloud::write_ply(const std::string& file_name) const
 			vertex.nz = 1.0f;
 		}
 		if (C.size() == P.size()) {
-			vertex.red = (unsigned char)(C[j][0]*255);
-			vertex.green = (unsigned char)(C[j][1]*255);
-			vertex.blue = (unsigned char)(C[j][2]*255);
+			vertex.red = (unsigned char)(C[j][0]);
+			vertex.green = (unsigned char)(C[j][1]);
+			vertex.blue = (unsigned char)(C[j][2]);
 		}
 		else {
 			vertex.red   = 255;
@@ -1946,14 +1946,14 @@ void point_cloud::estimate_normals(const index_image& img, Crd distance_threshol
 	if (nr_left_over)
 		*nr_left_over = int(not_set_normals.size());
 }
-
+/// modifiy color for ground truth s3d
 bool point_cloud::mdf_clr(const RGBA gt_clr, const Idx& id) {
 	C.at(id) = gt_clr;
 	if (C.at(id).R() == gt_clr.R())
 		return true;
 	return false;
 }
-
+/// modifiy color for ground truth s3d
 void point_cloud::mdf_clr_public(const RGBA gt_clr, const Idx& id) {
 	mdf_clr(gt_clr, id);
 		/*std::cout << "clr: " << gt_clr << " " << id << " " << C.at(id) << " " << C.at(id).R() << " " << C.at(id).G() << " " << C.at(id).B()
