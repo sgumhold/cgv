@@ -40,15 +40,11 @@ texture::texture(const std::string& description,
 	 taken place */
 texture::~texture()
 {
-	if (handle != 0) {
-		if (ctx_ptr == 0)
-			std::cerr << "texture not destructed" << std::endl;
-		else {
-			if (!ctx_ptr->is_current())
-				ctx_ptr->make_current();
-			destruct(*ctx_ptr);
-		}
-	}
+	if(ctx_ptr && ctx_ptr->make_current())
+		destruct(*ctx_ptr);
+
+	if(handle != 0)
+		std::cerr << "could not destruct texture properly" << std::endl;
 }
 
 /// change the data format and clear internal format
@@ -235,19 +231,8 @@ void texture::set_fixed_sample_locations(bool use)
 	fixed_sample_locations = use; 
 }
 
-bool is_power_of_two(unsigned int i)
-{
-	do {
-		if (i == 1)
-			return true;
-		if ((i & 1) != 0)
-			return false;
-		i /= 2;
-	} 
-	while (true);
-	return false;
-}
-bool is_power_of_two(size_t i)
+template <class int_type>
+bool is_power_of_two(int_type i)
 {
 	do {
 		if (i == 1)
@@ -260,16 +245,10 @@ bool is_power_of_two(size_t i)
 	return false;
 }
 
-unsigned int power_of_two_ub(unsigned int i)
+template <class int_type>
+int_type power_of_two_ub(int_type i)
 {
-	unsigned int res = 2;
-	while (res < i)
-		res *= 2;
-	return res;
-}
-size_t power_of_two_ub(size_t i)
-{
-	size_t res = 2;
+	int_type res = 2;
 	while (res < i)
 		res *= 2;
 	return res;
@@ -751,7 +730,9 @@ bool texture::destruct(const context& ctx)
 {
 	state_out_of_date = true;
 	internal_format = 0;
-	return ctx.texture_destruct(*this);
+	if(handle != 0)
+		return ctx.texture_destruct(*this);
+	return true;
 }
 
 //@}

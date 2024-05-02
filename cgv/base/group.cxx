@@ -16,10 +16,15 @@ void group::link(base_ptr child)
 }
 void group::unlink(base_ptr child)
 {
-	node_ptr n = child->get_node();
-	if (n.empty())
-		return;
-	n->set_parent(node_ptr());
+	group_ptr g = child->get_group();
+	if(g.empty()) {
+		node_ptr n = child->get_node();
+		if(n.empty())
+			return;
+		n->set_parent(node_ptr());
+	} else {
+		g->remove_all_children();
+	}
 }
 unsigned int group::get_nr_children() const
 {

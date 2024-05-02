@@ -34,6 +34,11 @@ class rgbd_icp_tool :
 	public cgv::gui::provider
 {
 public:
+	using vec3 = cgv::vec3;
+	using vec4 = cgv::vec4;
+	using mat3 = cgv::mat3;
+	using mat4 = cgv::mat4;
+
 	rgbd_icp_tool();
 
 	/// overload to return the type name of this object. By default the type interface is queried over get_type.
@@ -100,6 +105,7 @@ public:
 	cgv::pointcloud::ICP::Sampling_Type icp_filter_type;
 	bool view_find_point_cloud;
 	bool show_corresponding_lines;
+	bool show_nmls;
 	cgv::pointcloud::GoICP::DistanceComputationMode goicp_distance_computation_mode;
 	cgv::pointcloud::SICP::ComputationMode sicp_computation_mode;
 	normal_estimator* n_estimator;

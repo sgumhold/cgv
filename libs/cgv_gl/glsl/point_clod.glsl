@@ -58,7 +58,7 @@ void compute_point_size(in vec3 position, in vec4 color, in mat4 central_transfo
 
 	{ // point size based on target spacing
 		float ws = max(targetSpacing, minMilimeters / 1000.0);
-		//expected distance between points
+		//expected distance between points (between the center of points, at this time, the points have no size)
 		float l = sizeMultiplier * 2.0 * ws;
 		//calculate required size to fill spaces
 		vec4 v1 = viewPosition;

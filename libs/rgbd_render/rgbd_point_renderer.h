@@ -37,6 +37,7 @@ namespace rgbd {
 		} geometry_less_mode = GLM_MIXED;
 		// members that define shader uniforms
 		rgbd::rgbd_calibration calib;
+		bool use_mesh_shader = true;
 		bool use_distortion_map = false;
 		bool geometry_less_rendering = true;
 		bool lookup_color = true;
@@ -55,6 +56,7 @@ namespace rgbd {
 		void set_geometry_less_rendering(bool active, GeometryLessMode mode = GLM_VERTEX);
 		bool do_geometry_less_rendering() const;
 		void set_color_lookup(bool active);
+		void set_mesh_shader(bool use);
 		bool do_lookup_color() const;
 		void set_distortion_map_usage(bool do_use = true);
 		void set_calibration(const rgbd::rgbd_calibration& _calib);
@@ -63,6 +65,7 @@ namespace rgbd {
 		bool enable(cgv::render::context& ctx);
 		bool disable(cgv::render::context& ctx);
 		void draw(cgv::render::context& ctx, size_t start, size_t count, bool use_strips = false, bool use_adjacency = false, uint32_t strip_restart_index = -1);
+		void clear(const cgv::render::context& ctx);
 		// convenience function to add UI elements
 		void create_gui(cgv::base::base* bp, cgv::gui::provider& p);
 	};

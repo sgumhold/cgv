@@ -13,6 +13,15 @@ check_ipo_supported(RESULT IS_IPO_SUPPORTED)
 # make sure we know that we are currently configuring the CGV Framework
 set(CGV_IS_CONFIGURING TRUE)
 
+# detect whether we're being included as a subproject
+get_directory_property(CGV_HAS_PARENT_PROJ PARENT_DIRECTORY)
+
+# detect whether we're configuring for a multi-config generator
+get_property(CGV_USING_MULTI_CONFIG GLOBAL PROPERTY GENERATOR_IS_MULTI_CONFIG)
+if(CGV_HAS_PARENT_PROJ)
+	set(CGV_USING_MULTI_CONFIG ${CGV_USING_MULTI_CONFIG} PARENT_SCOPE)
+endif()
+
 # setup relevant directories
 # - "the" CGV directory
 set(CGV_DIR ${PROJECT_SOURCE_DIR})
@@ -47,7 +56,7 @@ cgv_define_option(
 	DOC "encode shader codes in base64 before embedding"
 )
 cgv_define_option(
-	"STDCPP17" DEFAULT ON
+	"STDCPP17" DEFAULT OFF
 	DOC "later makes cgv::utils use std::filesystem"
 )
 cgv_define_option(
@@ -86,8 +95,7 @@ set(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}/bin)
 set(CMAKE_LIBRARY_OUTPUT_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}/bin)
 set(CMAKE_ARCHIVE_OUTPUT_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}/lib)
 # - make sure these, the CGV_DIR and the CGV_OPTIONS are propagated to would-be parent CMake build processes that reference the CGV Framework
-get_directory_property(hasParent PARENT_DIRECTORY)
-if (hasParent)
+if (CGV_HAS_PARENT_PROJ)
 	set(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${CMAKE_RUNTIME_OUTPUT_DIRECTORY} PARENT_SCOPE)
 	set(CMAKE_LIBRARY_OUTPUT_DIRECTORY ${CMAKE_LIBRARY_OUTPUT_DIRECTORY} PARENT_SCOPE)
 	set(CMAKE_ARCHIVE_OUTPUT_DIRECTORY ${CMAKE_ARCHIVE_OUTPUT_DIRECTORY} PARENT_SCOPE)
@@ -137,7 +145,9 @@ if (NOT MSVC)
 	add_compile_options(-Wno-dangling-else -Wno-switch)
 	if (CMAKE_C_COMPILER_ID MATCHES "Clang" OR MAKE_CXX_COMPILER_ID MATCHES "Clang")
 		set(CGV_CLANG_SPECIFIC_DEBUG_FLAGS $<$<CONFIG:Debug,RelWithDebInfo>:-fstandalone-debug -fno-limit-debug-info>)
-		set(CGV_CLANG_SPECIFIC_DEBUG_FLAGS ${CGV_CLANG_SPECIFIC_DEBUG_FLAGS} PARENT_SCOPE)
+		if(CGV_HAS_PARENT_PROJ)
+			set(CGV_CLANG_SPECIFIC_DEBUG_FLAGS ${CGV_CLANG_SPECIFIC_DEBUG_FLAGS} PARENT_SCOPE)
+		endif()
 	endif()
 endif()
 
