@@ -104,6 +104,13 @@ public:
 		
 		for (i = 0; i < 10000; ++i) {
 			points.push_back(cgv::vec3(d(g), d(g), d(g)));
+			/* code used to render rounded cone and cylinder examples images
+			
+			if (i == 1)
+				points[1] = 0.9f * points[0] + 0.1f * points[1];
+			if (i == 3)
+				points[3] = 0.9f * points[2] + 0.1f * points[3];
+			*/
 			unsigned group_index = 0;
 			if (points.back()[0] > 0.5f)
 				group_index += 1;
@@ -119,11 +126,12 @@ public:
 			vertices.back().point = points.back();
 			vertices.back().normal = normals.back();
 			vertices.back().color = colors.back();
-			sizes.push_back(cgv::vec3(0.03f*d(g) + 0.001f, 0.03f*d(g) + 0.001f, 0.03f*d(g) + 0.001f));
+			sizes.push_back(cgv::vec3(0.03f * d(g) + 0.001f, 0.03f * d(g) + 0.001f, 0.03f * d(g) + 0.001f));
+			if (i == 0)
+				sizes[0][1] = sizes[0][0];
 			directions.push_back(100*sizes.back()[0] * normals.back());
 			boxes.push_back(cgv::box3(points.back() - 0.5f * sizes.back(), points.back() + 0.5f * sizes.back()));
 		}
-
 		compute_transformed_points();
 		for (i = 0; i < 8; ++i) {
 			group_colors.push_back(cgv::vec4((i & 1) != 0 ? 1.0f : 0.0f, (i & 2) != 0 ? 1.0f : 0.0f, (i & 4) != 0 ? 1.0f : 0.0f, 1.0f));
@@ -383,6 +391,7 @@ public:
 			rc_renderer.set_render_style(cone_style);
 			rc_renderer.enable_attribute_array_manager(ctx, rc_manager);
 			set_geometry(ctx, rc_renderer);
+			rc_renderer.set_radius_array(ctx, &sizes[0][0], sizes.size(), sizeof(cgv::vec3));
 			render_points(ctx, rc_renderer);
 			rc_renderer.disable_attribute_array_manager(ctx, rc_manager);
 		}	break;

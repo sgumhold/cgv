@@ -7,10 +7,14 @@ void rgbd_point_renderer::update_defines(cgv::render::shader_define_map& defines
 	point_renderer::update_defines(defines);
 	cgv::render::shader_code::set_define(defines, "USE_DISTORTION_MAP", use_distortion_map, false);
 	cgv::render::shader_code::set_define(defines, "GEOMETRY_LESS_MODE", (int&)geometry_less_mode, 0);
+	cgv::render::shader_code::set_define(defines, "USE_MESH_SHADER", use_mesh_shader, true);
 }
 bool rgbd_point_renderer::build_shader_program(cgv::render::context& ctx, cgv::render::shader_program& prog, const cgv::render::shader_define_map& defines)
 {
-	return prog.build_program(ctx, "rgbd_pc.glpr", true, defines);
+	if (use_mesh_shader)
+		return prog.build_program(ctx, "rgbd_mesh.glpr", true, defines);
+	else
+		return prog.build_program(ctx, "rgbd_pc.glpr", true, defines);
 }
 rgbd_point_renderer::rgbd_point_renderer() : distortion_tex("flt32[R,G]") 
 {
@@ -33,6 +37,10 @@ bool rgbd_point_renderer::do_geometry_less_rendering() const
 void rgbd_point_renderer::set_color_lookup(bool active) 
 {
 	lookup_color = active; 
+}
+void rgbd_point_renderer::set_mesh_shader(bool use)
+{
+	use_mesh_shader = use;
 }
 bool rgbd_point_renderer::do_lookup_color() const 
 {
@@ -62,13 +70,19 @@ bool rgbd_point_renderer::validate_attributes(const cgv::render::context& ctx) c
 }
 bool rgbd_point_renderer::enable(cgv::render::context& ctx)
 {
-	if (!point_renderer::enable(ctx))
-		return false;
-	set_rgbd_calibration_uniforms(ctx, ref_prog(), calib);
-	ref_prog().set_uniform(ctx, "invalid_color", invalid_color);
-	ref_prog().set_uniform(ctx, "discard_invalid_color_points", discard_invalid_color_points);
+	if (use_mesh_shader) {
+		if (!group_renderer::enable(ctx))
+			return false;
+	}
+	else {
+		if (!point_renderer::enable(ctx))
+			return false;
+		ref_prog().set_uniform(ctx, "invalid_color", invalid_color);
+		ref_prog().set_uniform(ctx, "discard_invalid_color_points", discard_invalid_color_points);
+		ref_prog().set_uniform(ctx, "do_lookup_color", lookup_color);
+	}
 	ref_prog().set_uniform(ctx, "geometry_less_rendering", geometry_less_rendering);
-	ref_prog().set_uniform(ctx, "do_lookup_color", lookup_color);
+	set_rgbd_calibration_uniforms(ctx, ref_prog(), calib);
 	if (use_distortion_map) {
 		if (distortion_map_outofdate) {
 			if (distortion_tex.is_created())
@@ -107,9 +121,17 @@ void rgbd_point_renderer::draw(cgv::render::context& ctx, size_t start, size_t c
 	else
 		draw_impl(ctx, cgv::render::PT_POINTS, start, count);
 }
+
+void rgbd_point_renderer::clear(const cgv::render::context& ctx)
+{
+	if (distortion_tex.is_created())
+		distortion_tex.destruct(ctx);
+}
+
 // convenience function to add UI elements
 void rgbd_point_renderer::create_gui(cgv::base::base* bp, cgv::gui::provider& p)
 {
+	p.add_member_control(bp, "use_mesh_shader", use_mesh_shader, "check");
 	p.add_member_control(bp, "lookup_color", lookup_color, "check");
 	p.add_member_control(bp, "discard_invalid_color_points", discard_invalid_color_points, "check");
 	p.add_member_control(bp, "invalid_color", invalid_color);

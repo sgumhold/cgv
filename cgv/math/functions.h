@@ -20,6 +20,9 @@ namespace cgv{
 		/// if v >= 0 returns 1 and otherwise -1
 		template<typename T>
 		T sign(const T&v) { return (v >= T(0)) ? T(1) : T(-1); }
+		/// return 1 if v > 0, -1 if v < 0 or 0 if v = 0
+		template<typename T>
+		T sgn(const T& v) { return (T(0) < v) - (v < T(0)); }
 		/// if v >= 0 returns v or 0 otherwise
 		template<typename T>
 		T plus(const T& v) { return v >= T(0) ? v : T(0); }

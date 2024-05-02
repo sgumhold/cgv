@@ -28,6 +28,9 @@ namespace cgv {
 			float eps;
 			point_cloud* crspd_source;
 			point_cloud* crspd_target;
+			std::shared_ptr<ann_tree> source_tree;
+			std::shared_ptr<ann_tree> target_tree;
+
 
 			ICP();
 			~ICP();
@@ -48,8 +51,9 @@ namespace cgv {
 
 			bool correspondences_filter(const point_cloud& source, const point_cloud& target, Pnt& source_p, Pnt& target_p);
 			float dis_pts(const Pnt& source_p, const Pnt& target_p);
-		private:
-			std::shared_ptr<ann_tree> tree;
+
+			void set_source_tree(const point_cloud& inputCloud);
+			void set_target_tree(const point_cloud& inputCloud);
 		};
 	}
 }

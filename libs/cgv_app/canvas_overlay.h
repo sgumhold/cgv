@@ -53,9 +53,8 @@ public:
 	virtual void on_set(void* member_ptr) override;
 	/// implement to handle member changes
 	virtual void handle_member_change(const cgv::utils::pointer_test& m) override {}
-
-	void draw(cgv::render::context& ctx) override;
-	void finish_frame(cgv::render::context&) override;
+	/// draw the content of the canvas overlay
+	void after_finish(cgv::render::context&) override;
 	virtual void draw_content(cgv::render::context& ctx) = 0;
 
 	void post_damage(bool redraw = true);

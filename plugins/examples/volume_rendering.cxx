@@ -13,11 +13,6 @@
 #include <cgv_gl/gl/gl.h>
 #include <cgv_gl/gl/gl_tools.h>
 
-namespace cgv {
-	namespace reflect {
-	}
-}
-
 volume_viewer::volume_viewer() : application_plugin("Volume Viewer"), depth_tex("[D]")
 {
 	// setup volume bounding box as unit cube centered around origin
@@ -51,6 +46,8 @@ volume_viewer::volume_viewer() : application_plugin("Volume Viewer"), depth_tex(
 
 	// instantiate a color map editor as an overlay for this viewer
 	transfer_function_editor_ptr = register_overlay<cgv::app::color_map_editor>("Editor");
+	// make the editor cover the whole width of the window
+	transfer_function_editor_ptr->set_stretch(cgv::app::overlay::StretchOption::SO_HORIZONTAL);
 	transfer_function_editor_ptr->gui_options.show_heading = false;
 	// enable support for editing opacity values
 	transfer_function_editor_ptr->set_opacity_support(true);
@@ -59,6 +56,8 @@ volume_viewer::volume_viewer() : application_plugin("Volume Viewer"), depth_tex(
 	
 	// instantiate a color map legend to show the used transfer function
 	transfer_function_legend_ptr = register_overlay<cgv::app::color_map_legend>("Legend");
+	// place the legend in the top left corner
+	transfer_function_legend_ptr->set_alignment(cgv::app::overlay::AlignmentOption::AO_START, cgv::app::overlay::AlignmentOption::AO_END);
 	transfer_function_legend_ptr->set_title("Density");
 }
 

@@ -9,6 +9,10 @@
 using namespace cgv::base;
 using namespace cgv::media::image;
 
+#define SAFE_STACK_POP(STACK, WHERE) \
+if(STACK.size() == 1) error("context::" WHERE "() ... attempt to completely empty stack avoided."); \
+else STACK.pop();
+
 namespace cgv {
 	namespace render {
 
@@ -127,6 +131,35 @@ context::context()
 
 	gpu_vendor = GPU_VENDOR_UNKNOWN;
 
+	current_background = 0;
+	bg_color_stack.push(vec4(0.0f));
+	bg_depth_stack.push(1.0f);
+	bg_stencil_stack.push(0);
+	bg_accum_color_stack.push(vec4(0.0f));
+
+	DepthTestState depth_test_state;
+	depth_test_state.enabled = false;
+	depth_test_state.test_func = CF_LESS;
+	depth_test_state_stack.push(depth_test_state);
+
+	cull_state_stack.push(CM_OFF);
+
+	BlendState blend_state;
+	blend_state.enabled = false;
+	blend_state.src_color = BF_ONE;
+	blend_state.src_alpha = BF_ONE;
+	blend_state.dst_color = BF_ZERO;
+	blend_state.dst_alpha = BF_ZERO;
+	blend_state_stack.push(blend_state);
+
+	BufferMask buffer_mask;
+	buffer_mask.depth_flag = true;
+	buffer_mask.red_flag = true;
+	buffer_mask.green_flag = true;
+	buffer_mask.blue_flag = true;
+	buffer_mask.alpha_flag = true;
+	buffer_mask_stack.push(buffer_mask);
+
 	static frame_buffer_base fbb;
 	frame_buffer_stack.push(&fbb);
 	modelview_matrix_stack.push(cgv::math::identity4<double>());
@@ -150,11 +183,7 @@ context::context()
 	gamma3 = vec3(2.2f);
 
 	default_render_flags = RenderPassFlags(RPF_DEFAULT);
-	current_background = 0;
-	bg_r = bg_g = bg_b = bg_a = 0.0f;
-	bg_accum_r = bg_accum_g = bg_accum_b = bg_accum_a = 0.0f;
-	bg_d = 1.0f;
-	bg_s = 0;
+	
 	current_font_size = 14;
 	
 	phong_shading = true;
@@ -252,116 +281,127 @@ void context::configure_new_child(base_ptr child)
 	}
 }
 
-/// set a user defined background color
+void context::push_bg_color() {
+	bg_color_stack.push(get_bg_color());
+}
+
+void context::pop_bg_color() {
+	SAFE_STACK_POP(bg_color_stack, "pop_bg_color");
+	set_bg_color(get_bg_color());
+}
+
+void context::set_bg_color(vec4 rgba) {
+	bg_color_stack.top() = rgba;
+}
+
 void context::set_bg_color(float r, float g, float b, float a)
 {
-	bg_r = r;
-	bg_g = g;
-	bg_b = b;
-	bg_a = a;
-	if (!in_render_process())
-		post_redraw();
+	set_bg_color(vec4(r, g, b, a));
 }
 
-/// set a user defined background alpha value
+vec4 context::get_bg_color() const {
+	return bg_color_stack.top();
+}
+
+void context::put_bg_color(float* rgba) const {
+	auto& c = bg_color_stack.top();
+	rgba[0] = c[0];
+	rgba[1] = c[1];
+	rgba[2] = c[2];
+	rgba[3] = c[3];
+}
+
 void context::set_bg_alpha(float a)
 {
-	bg_a = a;
-	if (!in_render_process())
-		post_redraw();
+	bg_color_stack.top()[3] = a;
 }
 
-/// set a user defined background color
-void context::set_bg_accum_color(float r, float g, float b, float a)
-{
-	bg_accum_r = r;
-	bg_accum_g = g;
-	bg_accum_b = b;
-	bg_accum_a = a;
-	if (!in_render_process())
-		post_redraw();
+float context::get_bg_alpha() const {
+	return bg_color_stack.top()[3];
 }
 
-/// set a user defined background alpha value
-void context::set_bg_accum_alpha(float a)
-{
-	bg_accum_a = a;
-	if (!in_render_process())
-		post_redraw();
-}
-
-/// set a user defined background depth
-void context::set_bg_depth(float d)
-{
-	bg_d = d;
-	if (!in_render_process())
-		post_redraw();
-}
-
-/// set a user defined background color
-void context::set_bg_stencil(int s)
-{
-	bg_s = s;
-	if (!in_render_process())
-		post_redraw();
-}
-
-/// copy the current back ground rgba color into the given float array
-void context::put_bg_color(float* rgba) const
-{
-	rgba[0] = bg_r;
-	rgba[1] = bg_g;
-	rgba[2] = bg_b;
-	rgba[3] = bg_a;
-}
-
-/// return the current alpha value for clearing the background
-float context::get_bg_alpha() const
-{
-	return bg_a;
-}
-
-void context::put_bg_accum_color(float* rgba) const
-{
-	rgba[0] = bg_accum_r;
-	rgba[1] = bg_accum_g;
-	rgba[2] = bg_accum_b;
-	rgba[3] = bg_accum_a;
-}
-
-float context::get_bg_accum_alpha() const
-{
-	return bg_accum_a;
-}
-
-/// return the current depth value for clearing the background
-float context::get_bg_depth() const
-{
-	return bg_d;
-}
-
-/// return the current stencil value for clearing the background
-int context::get_bg_stencil() const
-{
-	return bg_s;
-}
-
-
-/// set a user defined background color
-void context::set_bg_clr_idx(unsigned int idx)
-{
+void context::set_bg_clr_idx(unsigned int idx) {
 	current_background = idx;
-	if (idx == -1)
-		current_background = nr_backgrounds-1;
-	else if (current_background >= nr_backgrounds)
+	if(idx == -1)
+		current_background = nr_backgrounds - 1;
+	else if(current_background >= nr_backgrounds)
 		current_background = 0;
-	set_bg_color(background_colors[4*current_background],background_colors[4*current_background+1],background_colors[4*current_background+2],background_colors[4*current_background+3]);
+	set_bg_color(background_colors[4 * current_background], background_colors[4 * current_background + 1], background_colors[4 * current_background + 2], background_colors[4 * current_background + 3]);
 }
 
-/// return the current index of the background color
-unsigned int context::get_bg_clr_idx() const
-{
+unsigned int context::get_bg_clr_idx() const {
 	return current_background;
+}
+
+void context::push_bg_depth() {
+	bg_depth_stack.push(get_bg_depth());
+}
+
+void context::pop_bg_depth() {
+	SAFE_STACK_POP(bg_depth_stack, "pop_bg_depth");
+	set_bg_depth(get_bg_depth());
+}
+
+void context::set_bg_depth(float d) {
+	bg_depth_stack.top() = d;
+}
+
+float context::get_bg_depth() const {
+	return bg_depth_stack.top();
+}
+
+void context::push_bg_stencil() {
+	bg_stencil_stack.push(get_bg_stencil());
+}
+
+void context::pop_bg_stencil() {
+	SAFE_STACK_POP(bg_stencil_stack, "pop_bg_stencil");
+	set_bg_stencil(get_bg_stencil());
+}
+
+void context::set_bg_stencil(int s) {
+	bg_stencil_stack.top() = s;
+}
+
+int context::get_bg_stencil() const {
+	return bg_stencil_stack.top();
+}
+
+void context::push_bg_accum_color() {
+	bg_accum_color_stack.push(get_bg_accum_color());
+}
+
+void context::pop_bg_accum_color() {
+	SAFE_STACK_POP(bg_accum_color_stack, "pop_bg_accum_color");
+	set_bg_accum_color(get_bg_accum_color());
+}
+
+void context::set_bg_accum_color(vec4 rgba) {
+	bg_accum_color_stack.top() = rgba;
+}
+
+void context::set_bg_accum_color(float r, float g, float b, float a) {
+	set_bg_accum_color(vec4(r, g, b, a));
+}
+
+vec4 context::get_bg_accum_color() const {
+	return bg_accum_color_stack.top();
+}
+
+void context::put_bg_accum_color(float* rgba) const {
+	auto& c = bg_accum_color_stack.top();
+	rgba[0] = c[0];
+	rgba[1] = c[1];
+	rgba[2] = c[2];
+	rgba[3] = c[3];
+}
+
+void context::set_bg_accum_alpha(float a) {
+	bg_accum_color_stack.top()[3] = a;
+}
+
+float context::get_bg_accum_alpha() const {
+	return bg_accum_color_stack.top()[3];
 }
 
 /// enable phong shading with the help of a shader (enabled by default)
@@ -1626,6 +1666,139 @@ void context::set_textured_material(const textured_material& material)
 	prog.set_textured_material_uniform(*this, "material", material);
 }
 
+void context::push_depth_test_state() {
+	depth_test_state_stack.push(get_depth_test_state());
+}
+
+void context::pop_depth_test_state() {
+	SAFE_STACK_POP(depth_test_state_stack, "pop_depth_test_state");
+	set_depth_test_state(get_depth_test_state());
+}
+
+context::DepthTestState context::get_depth_test_state() const {
+	return depth_test_state_stack.top();
+}
+
+void context::set_depth_test_state(DepthTestState state) {
+	depth_test_state_stack.top() = state;
+}
+
+void context::set_depth_func(CompareFunction func) {
+	depth_test_state_stack.top().test_func = func;
+}
+
+
+void context::enable_depth_test() {
+	depth_test_state_stack.top().enabled = true;
+}
+
+void context::disable_depth_test() {
+	depth_test_state_stack.top().enabled = false;
+}
+
+void context::push_cull_state() {
+	cull_state_stack.push(get_cull_state());
+}
+
+void context::pop_cull_state() {
+	SAFE_STACK_POP(cull_state_stack, "pop_cull_state");
+	set_cull_state(get_cull_state());
+}
+
+CullingMode context::get_cull_state() const {
+	return cull_state_stack.top();
+}
+
+void context::set_cull_state(CullingMode culling_mode) {
+	cull_state_stack.push(culling_mode);
+}
+
+void context::push_blend_state() {
+	blend_state_stack.push(get_blend_state());
+}
+
+void context::pop_blend_state() {
+	SAFE_STACK_POP(blend_state_stack, "pop_blend_state");
+	set_blend_state(get_blend_state());
+}
+
+context::BlendState context::get_blend_state() const {
+	return blend_state_stack.top();
+}
+
+void context::set_blend_state(BlendState state) {
+	blend_state_stack.top() = state;
+}
+
+void context::set_blend_func(BlendFunction src_factor, BlendFunction dst_factor) {
+	BlendState& state = blend_state_stack.top();
+	state.src_color = src_factor;
+	state.dst_color = dst_factor;
+	state.src_alpha = src_factor;
+	state.dst_alpha = dst_factor;
+}
+
+void context::set_blend_func_separate(BlendFunction src_color_factor, BlendFunction dst_color_factor, BlendFunction src_alpha_factor, BlendFunction dst_alpha_factor) {
+	BlendState& state = blend_state_stack.top();
+	state.src_color = src_color_factor;
+	state.dst_color = dst_color_factor;
+	state.src_alpha = src_alpha_factor;
+	state.dst_alpha = dst_alpha_factor;
+}
+
+void context::set_blend_func_front_to_back() {
+	set_blend_func(BF_ONE_MINUS_DST_ALPHA, BF_ONE);
+}
+void context::set_blend_func_back_to_front() {
+	set_blend_func(BF_SRC_ALPHA, BF_ONE_MINUS_SRC_ALPHA);
+}
+
+void context::enable_blending() {
+	blend_state_stack.top().enabled = true;
+}
+
+void context::disable_blending() {
+	blend_state_stack.top().enabled = false;
+}
+
+void context::push_buffer_mask() {
+	buffer_mask_stack.push(get_buffer_mask());
+}
+
+void context::pop_buffer_mask() {
+	SAFE_STACK_POP(buffer_mask_stack, "pop_buffer_mask");
+	set_buffer_mask(get_buffer_mask());
+}
+
+context::BufferMask context::get_buffer_mask() const {
+	return buffer_mask_stack.top();
+}
+
+void context::set_buffer_mask(BufferMask mask) {
+	buffer_mask_stack.top() = mask;
+}
+
+bool context::get_depth_mask() const {
+	return buffer_mask_stack.top().depth_flag;
+}
+
+void context::set_depth_mask(bool flag) {
+	buffer_mask_stack.top().depth_flag = flag;
+}
+
+bvec4 context::get_color_mask() const {
+	auto& mask = buffer_mask_stack.top();
+	return bvec4(mask.red_flag, mask.green_flag, mask.blue_flag, mask.alpha_flag);
+}
+
+void context::set_color_mask(bvec4 flags) {
+	auto& mask = buffer_mask_stack.top();
+	mask.red_flag = flags[0];
+	mask.green_flag = flags[1];
+	mask.blue_flag = flags[2];
+	mask.alpha_flag = flags[3];
+}
+
 void context::push_modelview_matrix()
 {
 	modelview_matrix_stack.push(get_modelview_matrix());
@@ -1640,11 +1813,7 @@ void context::mul_modelview_matrix(const dmat4& V)
 /// see push_V for an explanation
 void context::pop_modelview_matrix()
 {
-	if (modelview_matrix_stack.size() == 1) {
-		error("context::pop_modelview_matrix() ... attempt to completely empty modelview stack avoided.");
-		return;
-	}
-	modelview_matrix_stack.pop();
+	SAFE_STACK_POP(modelview_matrix_stack, "pop_modelview_matrix");
 	set_modelview_matrix(modelview_matrix_stack.top());
 }
 /// same as push_V but for the projection matrix - a different matrix stack is used.
@@ -1655,11 +1824,7 @@ void context::push_projection_matrix()
 /// see push_P for an explanation
 void context::pop_projection_matrix()
 {
-	if (projection_matrix_stack.size() == 1) {
-		error("context::pop_projection_matrix() ... attempt to completely empty projection stack avoided.");
-		return;
-	}
-	projection_matrix_stack.pop();
+	SAFE_STACK_POP(projection_matrix_stack, "pop_projection_matrix");
 	set_projection_matrix(projection_matrix_stack.top());
 }
 /// multiply given matrix from right to current projection matrix
@@ -1709,10 +1874,7 @@ void context::push_window_transformation_array()
 /// recover the previous viewport and depth range settings; an error is emitted if the window_transformation stack becomes empty
 void context::pop_window_transformation_array()
 {
-	if (window_transformation_stack.size() <= 1)
-		error("context::pop_window_transformation_array() ... attempt to pop last window transformation array.");
-	else
-		window_transformation_stack.pop();
+	SAFE_STACK_POP(window_transformation_stack, "pop_window_transformation_array");
 }
 
 bool context::ensure_window_transformation_index(int& array_index)
@@ -2309,3 +2471,5 @@ struct render_config_registration
 };
 
 render_config_registration render_config_registration_instance;
+
+#undef SAFE_STACK_POP

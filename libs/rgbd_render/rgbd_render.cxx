@@ -1,7 +1,5 @@
 #include "rgbd_render.h"
 #include <nlohmann/json.hpp>
-#include <cgv_json/math.h>
-#include <cgv_json/rgbd.h>
 #include <fstream>
 
 namespace rgbd {
@@ -93,19 +91,6 @@ void construct_rgbd_render_data_with_color(
 			sP.push_back(cgv::usvec3(x, y, depth));
 			sC.push_back(cgv::rgb8(pix_ptr[2], pix_ptr[1], pix_ptr[0]));
 		}
-}
-
-bool read_rgbd_calibration(const std::string& fn, rgbd::rgbd_calibration& calib)
-{
-	nlohmann::json j;
-	std::ifstream is(fn);
-	if (is.fail())
-		return false;
-	is >> j;
-	std::string serial;
-	j.at("serial").get_to(serial);
-	j.at("calib").get_to(calib);
-	return true;
 }
 
 void set_camera_calibration_uniforms(cgv::render::context& ctx, cgv::render::shader_program& prog, const std::string& name, const cgv::math::camera<double>& calib)

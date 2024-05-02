@@ -13,10 +13,18 @@ function(cgv_define_option OPTION_NAME)
 	set(CGV_OPTIONS_LIST_LOCAL ${CGV_OPTIONS_LIST})
 	list(APPEND CGV_OPTIONS_LIST_LOCAL ${OPTION_NAME})
 
+	# Override the default provided in the definition with any preset values
+	# (e.g. from client projects using the framework)
+	if (DEFINED CGV_${OPTION_NAME})
+		set(ACTUAL_INIT_VALUE ${CGV_${OPTION_NAME}})
+	else()
+		set(ACTUAL_INIT_VALUE ${CGVARG__DEFAULT})
+	endif()
+
 	# propagate upwards
 	set(CGV_OPTIONS_LIST ${CGV_OPTIONS_LIST_LOCAL} PARENT_SCOPE)
 	set(CGV_${OPTION_NAME}_DOC ${CGVARG__DOC} PARENT_SCOPE)
-	set(CGV_${OPTION_NAME}_INIT ${CGVARG__DEFAULT} PARENT_SCOPE)
+	set(CGV_${OPTION_NAME}_INIT ${ACTUAL_INIT_VALUE} PARENT_SCOPE)
 endfunction()
 
 # handles declaring CGV options to CMake and initializing them

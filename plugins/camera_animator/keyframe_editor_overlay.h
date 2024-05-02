@@ -1,18 +1,19 @@
 #pragma once
 
+#include <memory>
 #include <cgv/gui/dialog.h>
 #include <cgv/gui/help_message.h>
 #include <cgv/gui/key_event.h>
 #include <cgv/gui/mouse_event.h>
 #include <cgv/math/ftransform.h>
-#include <cgv_app/canvas_overlay.h>
+#include <cgv_app/themed_canvas_overlay.h>
 #include <cgv_g2d/draggable_collection.h>
 #include <cgv_g2d/generic_2d_renderer.h>
 #include <cgv_g2d/msdf_gl_canvas_font_renderer.h>
 
 #include "animation_data.h"
 
-class keyframe_editor_overlay : public cgv::app::canvas_overlay {
+class keyframe_editor_overlay : public cgv::app::themed_canvas_overlay {
 public:
 	enum class Event {
 		kUndefined,
@@ -31,7 +32,6 @@ protected:
 	using rgb = cgv::rgb;
 
 	struct {
-		const int padding = 13; // 10px plus 3px border
 		const int timeline_height = 30;
 		const int marker_width = 13;
 		const int marker_height = 20;
@@ -45,17 +45,13 @@ protected:
 		rgb background_color = rgb(0.0f);
 		rgb control_color = rgb(0.0f);
 
-		cgv::g2d::irect container;
 		cgv::g2d::irect timeline;
 		cgv::g2d::irect scrollbar_constraint;
 		cgv::g2d::irect marker_constraint;
 
-		void update(const ivec2& container_size, size_t frames) {
-
+		void update(const ivec2& container_size, int padding, size_t frames) {
+			
 			timeline_frames = frames + 120;
-
-			container.position = ivec2(0);
-			container.size = container_size;
 
 			timeline.position = ivec2(padding, container_size.y() - timeline_height - marker_height - padding);
 			
@@ -73,9 +69,9 @@ protected:
 			marker_constraint.h() = marker_height;
 		}
 
-		int total_height() const {
+		int total_height(int padding) const {
 
-			return 2 * padding + marker_height + timeline_height + scrollbar_height;
+			return 2 * padding + marker_height + timeline_height + scrollbar_height + 10;
 		}
 	} layout;
 
@@ -106,7 +102,7 @@ protected:
 	
 	cgv::g2d::msdf_text_geometry labels;
 
-	cgv::g2d::shape2d_style container_style, border_style, rectangle_style, line_style, key_rect_style, scrollbar_style;
+	cgv::g2d::shape2d_style border_style, rectangle_style, line_style, key_rect_style, scrollbar_style;
 	cgv::g2d::circle2d_style key_circle_style;
 	cgv::g2d::arrow2d_style marker_handle_style;
 	cgv::g2d::grid2d_style grid_style;
@@ -156,25 +152,25 @@ protected:
 
 	void init_styles() override;
 	
-	virtual void create_gui_impl();
+	virtual void create_gui_impl() override;
 
 public:
 	keyframe_editor_overlay();
-	std::string get_type_name() const { return "keyframe_editor_overlay"; }
+	std::string get_type_name() const override { return "keyframe_editor_overlay"; }
 
-	void clear(cgv::render::context& ctx);
+	void clear(cgv::render::context& ctx) override;
 
-	bool handle_event(cgv::gui::event& e);
-	void handle_member_change(const cgv::utils::pointer_test& m);
+	bool handle_event(cgv::gui::event& e) override;
+	void handle_member_change(const cgv::utils::pointer_test& m) override;
 
-	bool init(cgv::render::context& ctx);
-	void init_frame(cgv::render::context& ctx);
-	void draw_content(cgv::render::context& ctx);
+	bool init(cgv::render::context& ctx) override;
+	void init_frame(cgv::render::context& ctx) override;
+	void draw_content(cgv::render::context& ctx) override;
 
 	void set_view_ptr(cgv::render::view* view_ptr);
 	void set_data(std::shared_ptr<animation_data> data);
 
-	void update();
+	void update() override;
 
 	size_t get_selected_frame() { return selected_frame; }
 

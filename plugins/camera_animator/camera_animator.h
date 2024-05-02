@@ -8,6 +8,7 @@
 #include <cgv_app/gizmo.h>
 #include <cgv_gl/line_render_data.h>
 #include <cgv_gl/point_render_data.h>
+#include <cgv/os/pipe_thread.h>
 
 #include "easing_functions.h"
 #include "animation_data.h"
@@ -22,6 +23,18 @@ protected:
 	using vec4 = cgv::vec4;
 	using ivec2 = cgv::ivec2;
 	using rgb = cgv::rgb;
+
+	FILE* fp = 0;
+	int fps = 30;
+	std::string video_file_name;
+	bool video_open = false;
+	bool use_named_pipe = true;
+	cgv::os::pipe_output_thread* thread_ptr = 0;
+	cgv::os::named_pipe_output_thread* named_thread_ptr = 0;
+	size_t nr_blocks = 0;
+	bool open_ffmpeg_pipe(const std::string& file_name);
+	bool write_image_to_ffmpeg_pipe();
+	bool close_ffmpeg_pipe();
 
 	cgv::gui::help_message help;
 
@@ -52,8 +65,6 @@ protected:
 	bool apply = false;
 	bool show_camera = true;
 	bool show_path = true;
-	bool show_timeline = true;
-	bool hide_all = true;
 
 	cgv::gui::button_ptr play_pause_btn;
 
@@ -94,7 +105,7 @@ protected:
 	void write_single_image();
 
 public:
-	class camera_animator();
+	 camera_animator();
 	std::string get_type_name() const { return "camera_animator"; }
 
 	void clear(cgv::render::context& ctx);

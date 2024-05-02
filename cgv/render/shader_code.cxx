@@ -67,15 +67,15 @@ shader_config_ptr get_shader_config()
 }
 
 void shader_code::decode_if_base64(std::string& content) {
-#ifdef _WIN32
+//#ifdef _WIN32
 	if (!content.empty()) {
 		// test if the first character is equal to the base64 prefix (ANSI 'paragraph' char with hexcode A7)
 		if(content[0] == char(0xA7))
 			content = decode_base64(content.substr(1));
 	}
-#else
+/*#else
 	if (content.size() > 1) {
-		if ((uint8_t&)content[0]==0xC2 && (uint8_t&)content[1]==0xA7) // UTF-8 for 'ยง'
+		if ((uint8_t&)content[0]==0xC2 && (uint8_t&)content[1]==0xA7) // UTF-8 for 'ง'
 			content = decode_base64(content.substr(2));
 		else if (
 			content.size() > 2 &&
@@ -85,7 +85,7 @@ void shader_code::decode_if_base64(std::string& content) {
 			content = decode_base64(content.substr(3));
 		}
 	}
-#endif
+#endif*/
 }
 
 /** query the last error in a way that developer environments can 
@@ -366,9 +366,9 @@ std::string shader_code::read_code_file(const std::string &file_name, std::strin
 	}
 	if (get_shader_config()->show_file_paths)
 		std::cout << "read shader code <" << fn << ">" << std::endl;
-#if WIN32
+
 	decode_if_base64(source);
-#endif
+
 	if (file::get_extension(file_name)[0] == 'p') {
 		std::string code;
 		get_shader_config()->inserted_shader_file_names.clear();

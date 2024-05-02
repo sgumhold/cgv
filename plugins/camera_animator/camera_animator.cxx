@@ -3,10 +3,100 @@
 #include <cgv/gui/theme_info.h>
 #include <cgv/gui/trigger.h>
 #include <cgv/utils/advanced_scan.h>
-
+#include <cgv/os/cmdline_tools.h>
 #include <tinyxml2/tinyxml2.h>
 
+#include <stdio.h>
+
 using namespace cgv::render;
+
+bool camera_animator::open_ffmpeg_pipe(const std::string& file_name)
+{
+	auto* ctx_ptr = get_context();
+	if (ctx_ptr == 0)
+		return false;
+	int w = ctx_ptr->get_width(), h = ctx_ptr->get_height();
+
+	std::string input_str = "-";
+	std::string cmd_begin = "ffmpeg -y -f rawvideo -s " + 
+		cgv::utils::to_string(w) + "x" + cgv::utils::to_string(h) +
+		" -framerate " + cgv::utils::to_string(fps) + " -pix_fmt rgb24 -i ";
+	std::string cmd_end   = " -c:v libx264 -shortest " + file_name;
+
+	if (use_named_pipe) {
+		named_thread_ptr = new cgv::os::named_pipe_output_thread("video_pipe");
+		std::string cmd = cmd_begin + named_thread_ptr->get_pipe_path() + cmd_end;
+		std::cout << "Cmd: " << cmd << std::endl;
+		named_thread_ptr->start();
+		fp = cgv::os::open_system_input(cmd);
+		return fp != 0;
+	}
+	else {
+		std::string cmd = cmd_begin + "-" + cmd_end;
+		std::cout << "Cmd: " << cmd << std::endl;
+		thread_ptr = new cgv::os::pipe_output_thread(cmd);
+		thread_ptr->start();
+		return true;
+	}
+}
+
+bool camera_animator::write_image_to_ffmpeg_pipe()
+{
+	auto* ctx_ptr = get_context();
+	if (ctx_ptr == 0)
+		return false;
+	
+	cgv::data::data_view dv;
+	ctx_ptr->read_frame_buffer(dv);
+	auto* fmt_ptr = dv.get_format();
+	cgv::os::queued_output_thread* queued_thread_ptr;
+	if (use_named_pipe)
+		queued_thread_ptr = named_thread_ptr;
+	else
+		queued_thread_ptr = thread_ptr;
+
+	if (queued_thread_ptr->has_connection()) {
+		queued_thread_ptr->send_block(dv.get_ptr<char>(), fmt_ptr->get_width() * fmt_ptr->get_height() * 3);
+		nr_blocks = queued_thread_ptr->get_nr_blocks();
+	}
+	else {
+		std::cout << "no connection" << std::endl;
+		nr_blocks = 0;
+	}
+	update_member(&nr_blocks);
+	return true;
+}
+
+bool camera_animator::close_ffmpeg_pipe()
+{
+	cgv::os::queued_output_thread* queued_thread_ptr;
+	if (use_named_pipe)
+		queued_thread_ptr = named_thread_ptr;
+	else
+		queued_thread_ptr = thread_ptr;
+
+	if (queued_thread_ptr) {
+		queued_thread_ptr->done();
+		std::cout << "wait_for_completion" << std::endl;
+		queued_thread_ptr->wait_for_completion();
+	}
+	int result;
+	if (use_named_pipe) {
+		std::cout << "wait_for_pipe_closure" << std::endl;
+		result = cgv::os::close_system_input(fp);
+		delete named_thread_ptr;
+		named_thread_ptr = 0;
+	}
+	else {
+		result = thread_ptr->get_result();
+		delete thread_ptr;
+		thread_ptr = 0;
+	}
+	nr_blocks = 0;
+	update_member(&nr_blocks);
+	std::cout << "ffmpeg returned " << result << std::endl;
+	return true;
+}
 
 camera_animator::camera_animator() : application_plugin("Camera Animator") {
 
@@ -37,7 +127,6 @@ camera_animator::camera_animator() : application_plugin("Camera Animator") {
 
 	timeline_ptr = register_overlay<keyframe_editor_overlay>("Keyframe Editor");
 	timeline_ptr->set_on_change_callback(std::bind(&camera_animator::handle_editor_change, this, std::placeholders::_1));
-	timeline_ptr->set_visibility(show_timeline);
 	timeline_ptr->gui_options.create_default_tree_node = false;
 	timeline_ptr->gui_options.show_layout_options = false;
 
@@ -56,7 +145,7 @@ camera_animator::camera_animator() : application_plugin("Camera Animator") {
 	help.add_bullet_point("C : Toggle camera visibility");
 	help.add_bullet_point("P : Toggle camera path visibility");
 	help.add_bullet_point("R : Toggle record mode");
-	help.add_bullet_point("T : Toggle timeline visibility");
+	help.add_bullet_point("Spacebar : Play/pause animation");
 }
 
 void camera_animator::clear(context& ctx) {
@@ -75,7 +164,9 @@ void camera_animator::clear(context& ctx) {
 
 bool camera_animator::self_reflect(cgv::reflect::reflection_handler& rh) {
 
-	return rh.reflect_member("input_path", input_file_helper.file_name);
+	return 
+		rh.reflect_member("input_path", input_file_helper.file_name) &&
+		rh.reflect_member("video_file", video_file_name);
 }
 
 bool camera_animator::handle_event(cgv::gui::event& e) {
@@ -121,40 +212,58 @@ bool camera_animator::handle_event(cgv::gui::event& e) {
 
 		if(ka == cgv::gui::KA_PRESS) {
 			unsigned short key = ke.get_key();
-
-			switch(ke.get_key()) {
-			case 'A':
-				apply = !apply;
-				on_set(&apply);
-				return true;
-			case 'C':
-				show_camera = !show_camera;
-				on_set(&show_camera);
-				return true;
-			case 'P':
-				show_path = !show_path;
-				on_set(&show_path);
-				return true;
-			case 'R':
-				record = !record;
-				on_set(&record);
-				return true;
-			case 'T':
-				show_timeline = !show_timeline;
-				on_set(&show_timeline);
-				return true;
-			
-			default: break;
+			if (ke.get_modifiers() == 0) {
+				switch (ke.get_key()) {
+				case 'A':
+					if(!record) {
+						apply = !apply;
+						on_set(&apply);
+						return true;
+					}
+					break;
+				case 'C':
+					if(!record) {
+						show_camera = !show_camera;
+						on_set(&show_camera);
+						return true;
+					}
+					break;
+				case 'P':
+					if(!record) {
+						show_path = !show_path;
+						on_set(&show_path);
+						return true;
+					}
+					break;
+				case 'R':
+					record = !record;
+					on_set(&record);
+					return true;
+				case 'V':
+					video_open = !video_open;
+					on_set(&video_open);
+					return true;
+				case cgv::gui::KEY_Space:
+					toggle_animation();
+					return true;
+				default: break;
+				}
 			}
 		}
-
 		return false;
 	}
-
 	return false;
 }
 
 void camera_animator::handle_timer_event(double t, double dt) {
+
+	if (thread_ptr) {
+		size_t new_nr_blocks = thread_ptr->get_nr_blocks();
+		if (new_nr_blocks != nr_blocks) {
+			nr_blocks = new_nr_blocks;
+			update_member(&nr_blocks);
+		}
+	}
 
 	if(animate && !record) {
 		if(set_animation_state(true)) {
@@ -167,7 +276,20 @@ void camera_animator::handle_timer_event(double t, double dt) {
 }
 
 void camera_animator::handle_member_change(const cgv::utils::pointer_test& m) {
-
+	if (m.is(video_open)) {
+		if (video_open) {
+			if (!video_file_name.empty())
+				open_ffmpeg_pipe(video_file_name);
+			else {
+				video_open = false;
+				update_member(&video_open);
+				cgv::gui::message("Choose video file before opening.");
+			}
+		}
+		else {
+			close_ffmpeg_pipe();
+		}
+	}
 	if(m.is(input_file_helper.file_name)) {
 		const std::string& file_name = input_file_helper.file_name;
 		if(input_file_helper.save()) {
@@ -192,14 +314,15 @@ void camera_animator::handle_member_change(const cgv::utils::pointer_test& m) {
 		get_context()->set_gamma(record ? 1.0f : 2.2f);
 		animation->use_continuous_time = !record;
 		
-		show_path = false;
-		update_member(&show_path);
-		show_camera = false;
-		update_member(&show_camera);
-		show_timeline = false;
-		on_set(&show_timeline);
-		apply = true;
-		on_set(&apply);
+		if(timeline_ptr)
+			timeline_ptr->set_visibility(!record);
+
+		std::string active = record ? "false" : "true";
+		set_control_property(show_camera, "active", active);
+		set_control_property(show_path, "active", active);
+		set_control_property(apply, "active", active);
+		
+		set_animation_state(false);
 	}
 
 	if(m.is(animation->frame))
@@ -210,11 +333,6 @@ void camera_animator::handle_member_change(const cgv::utils::pointer_test& m) {
 
 	if(m.is(apply))
 		set_animation_state(false);
-
-	if(m.one_of(show_timeline, hide_all)) {
-		if(timeline_ptr)
-			timeline_ptr->set_visibility(hide_all ? false : show_timeline);
-	}
 }
 
 bool camera_animator::on_exit_request() {
@@ -230,14 +348,12 @@ bool camera_animator::on_exit_request() {
 
 void camera_animator::on_select() {
 
-	hide_all = false;
-	on_set(&hide_all);
+	show();
 }
 
 void camera_animator::on_deselect() {
 
-	hide_all = true;
-	on_set(&hide_all);
+	hide();
 }
 
 bool camera_animator::init(context& ctx) {
@@ -284,25 +400,26 @@ void camera_animator::init_frame(context& ctx) {
 
 void camera_animator::finish_frame(context& ctx) {
 
-	if(!hide_all) {
-		if(show_camera) {
-			eye_rd.render(ctx, local_point_renderer);
+	if(record)
+		return;
 
-			ctx.push_modelview_matrix();
-			ctx.mul_modelview_matrix(view_transformation);
-			view_rd.render(ctx, local_line_renderer);
-			ctx.pop_modelview_matrix();
-		}
+	if(show_camera) {
+		eye_rd.render(ctx, local_point_renderer);
 
-		if(show_path) {
-			keyframes_rd.render(ctx, local_point_renderer);
-			paths_rd.render(ctx, local_line_renderer);
-		}
+		ctx.push_modelview_matrix();
+		ctx.mul_modelview_matrix(view_transformation);
+		view_rd.render(ctx, local_line_renderer);
+		ctx.pop_modelview_matrix();
+	}
 
-		if(selected_keyframe) {
-			eye_gizmo.draw(ctx);
-			focus_gizmo.draw(ctx);
-		}
+	if(show_path) {
+		keyframes_rd.render(ctx, local_point_renderer);
+		paths_rd.render(ctx, local_line_renderer);
+	}
+
+	if(selected_keyframe) {
+		eye_gizmo.draw(ctx);
+		focus_gizmo.draw(ctx);
 	}
 }
 
@@ -314,8 +431,10 @@ void camera_animator::after_finish(context& ctx) {
 			frame_number = "00" + frame_number;
 		else if(frame_number.length() == 2)
 			frame_number = "0" + frame_number;
-
-		write_image(output_directory_helper.directory_name + "/" + frame_number + ".bmp");
+		if (fp)
+			write_image_to_ffmpeg_pipe();
+		else
+			write_image(output_directory_helper.directory_name + "/" + frame_number + ".bmp");
 		if(set_animation_state(false))
 			animation->frame += 1;
 		else
@@ -329,10 +448,8 @@ void camera_animator::create_gui() {
 	help.create_gui(this);
 
 	input_file_helper.create_gui("Animation File");
-
 	add_member_control(this, "Show Camera", show_camera, "check");
 	add_member_control(this, "Show Path", show_path, "check");
-	add_member_control(this, "Show Timeline", show_timeline, "check");
 	add_member_control(this, "Apply Animation", apply, "check");
 
 	add_decorator("Playback", "heading", "level=4");
@@ -344,7 +461,7 @@ void camera_animator::create_gui() {
 	add_member_control(this, "", animation->time, "wheel", "min=0;max=4" + std::to_string(limits.second) + ";step=0.005");
 
 	std::string options = "w=25;tooltip=";
-	constexpr char* align = "%x+=10";
+	constexpr auto align = "%x+=10";
 
 	connect_copy(add_button("@|<", options + "'Rewind to start (keep playing)'", align)->click, rebind(this, &camera_animator::skip_to_start));
 	connect_copy(add_button("@square", options + "'Stop playback'", align)->click, rebind(this, &camera_animator::reset_animation));
@@ -355,8 +472,13 @@ void camera_animator::create_gui() {
 	connect_copy(add_button("@>|", options + "'Skip to end'")->click, rebind(this, &camera_animator::skip_to_end));
 	
 	add_decorator("", "separator");
+	add_decorator("Recording", "heading", "level=4");
 
 	output_directory_helper.create_gui("Output Folder");
+	add_gui("Video File", video_file_name, "file_name", "save=true;open=false;title='Save video file';filter='video (mp4):*.mp4|all files:*.*';w=170");
+	add_member_control(this, "Use Named Pipe", use_named_pipe, "toggle");
+	add_member_control(this, "Video Open", video_open, "toggle");
+	add_view("Nr Queued Frames", nr_blocks);
 	add_member_control(this, "Record to Disk", record, "check");
 	connect_copy(add_button("Save Current View")->click, rebind(this, &camera_animator::write_single_image));
 
@@ -426,7 +548,7 @@ bool camera_animator::set_animation_state(bool use_continuous_time) {
 	view_parameters view;
 	bool run = animation->current_view(view) && animation->frame < animation->frame_count();
 
-	if(run && apply)
+	if(run && apply || record)
 		view.apply(view_ptr);
 
 	create_camera_render_data(view);
@@ -579,7 +701,7 @@ void camera_animator::handle_editor_change(keyframe_editor_overlay::Event e) {
 		break;
 	case keyframe_editor_overlay::Event::kKeySelect:
 		if(timeline_ptr) {
-			if(selected_keyframe = animation->keyframe_at(timeline_ptr->get_selected_frame())) {
+			if(/**/(selected_keyframe = animation->keyframe_at(timeline_ptr->get_selected_frame()))/**/) {
 				eye_gizmo.set_position(selected_keyframe->camera_state.eye_position);
 				focus_gizmo.set_position(selected_keyframe->camera_state.focus_position);
 			}

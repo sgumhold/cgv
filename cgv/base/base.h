@@ -101,17 +101,17 @@ public:
 	virtual bool on_exit_request();
 	/// overload to show the content of this object
 	virtual void stream_stats(std::ostream&);
-	/// cast upward to named
+	/// perform downcast to named
 	virtual data::ref_ptr<named, true> get_named();
-	/// cast upward to node
+	/// perform downcast to node
 	virtual data::ref_ptr<node, true> get_node();
-	/// cast upward to group
+	/// perform downcast to group
 	virtual data::ref_ptr<group, true> get_group();
-	/// const cast upward to named
+	/// perform downcast to const named
 	virtual data::ref_ptr<const named, true> get_named_const() const;
-	/// const cast upward to node
+	/// perform downcast to const node
 	virtual data::ref_ptr<const node, true> get_node_const() const;
-	/// const cast upward to group
+	/// perform downcast to const group
 	virtual data::ref_ptr<const group, true> get_group_const() const;
 	/// cast to arbitrary class, but use the casts to named, node and group from the interface
 	template <class T>

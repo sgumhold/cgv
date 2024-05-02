@@ -96,7 +96,19 @@ namespace cgv {
 			}
 			return nr_bytes_read;
 		}
-
+		FILE* open_system_input(const std::string& cmd, bool in_binary_mode)
+		{
+#ifdef WIN32
+			const char* mode = in_binary_mode ? "wb" : "w";
+#else
+			const char* mode = "w";
+#endif
+			return popen(cmd.c_str(), mode);
+		}
+		int close_system_input(FILE* fp)
+		{
+			return pclose(fp);
+		}
 
 	}
 }

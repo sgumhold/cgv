@@ -79,7 +79,7 @@ namespace cgv {
 			if (IC.precision > 0)
 				value = IC.precision * floor(value / IC.precision + 0.5f);
 			if (IC.dead_zone > 0)
-				if (abs(value) < IC.dead_zone)
+				if (std::abs(value) < IC.dead_zone)
 					value = 0;
 				else
 					value = (value - IC.dead_zone) / (1.0f - IC.dead_zone);

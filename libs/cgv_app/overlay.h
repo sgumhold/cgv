@@ -64,9 +64,7 @@ private:
 protected:
 	/// whether the overlay blocks events or lets them pass through to other handlers (by default only derived classes may set this property)
 	bool block_events = false;
-	/// if true the overlay contents are drawn in the finish_frame method instead of the draw method (by default only derived classes may set this property)
-	bool draw_in_finish_frame = false;
-
+	
 	/// called when the overlay visibility is changed through the default gui
 	virtual void on_visibility_change();
 
@@ -97,9 +95,6 @@ public:
 	};
 	/// options for the GUI creation of this overlay (must be set before GUI creation)
 	gui_options_t gui_options;
-
-	/// create an overlay in the bottom left corner with zero size
-	overlay() {}
 
 	/// overload to reflect members of derived classes
 	virtual bool self_reflect(cgv::reflect::reflection_handler& _rh) { return false; }
@@ -134,13 +129,28 @@ public:
 	/// return the current rectangle area of the overlay in local space, i.e. with position set to zero
 	cgv::g2d::irect get_local_rectangle() const { return cgv::g2d::irect(ivec2(0), container_.size); }
 
+	/// get the horizontal alignment
+	AlignmentOption get_horizontal_alignment() const { return horizontal_alignment_; }
+
+	/// get the vertical alignment
+	AlignmentOption get_vertical_alignment() const { return vertical_alignment_; }
+
+	/// get the percentual alignment offset (only valid if get_horizontal_alignment() or get_vertical_alignment() returns AlignmentOption::AO_PERCENTUAL)
+	vec2 get_percentual_offset() const { return percentual_offset_; }
+
 	/// set the alignment options
 	void set_alignment(AlignmentOption horizontal, AlignmentOption vertical, vec2 percentual_offset = vec2(-1.0f));
+
+	/// get the stretch
+	StretchOption get_stretch() const { return stretch_; }
+
+	/// get the percentual stretch (only valid if get_stretch() returns StretchOption::SO_PERCENTUAL)
+	vec2 get_percentual_size() const { return percentual_size_; }
 
 	/// set the stretch option
 	void set_stretch(StretchOption stretch, vec2 percentual_size = vec2(-1.0f));
 
-	/// returns the margin as set in the layout parameters
+	/// return the margin as set in the layout parameters
 	ivec2 get_margin() const { return margin_; }
 
 	/// set the overlay margin
@@ -163,7 +173,7 @@ public:
 
 	bool ensure_layout(cgv::render::context& ctx);
 
-	/** Tests if the mouse pointer is hovering over this overlay and returns
+	/** Test if the mouse pointer is hovering over this overlay and returns
 		true if this is the case. Specifically it checks if the mouse position
 		is inside the rectangle defined by container. Override this method to
 		implement your own test, i.e. for different overlay shapes.
