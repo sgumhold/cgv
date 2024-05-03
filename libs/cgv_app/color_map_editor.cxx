@@ -19,7 +19,7 @@ const float color_map_editor::opacity_point::default_size = 12.0f;
 color_map_editor::color_map_editor() {
 
 	set_name("Color Scale Editor");
-	block_events = true;
+	blocks_events(true);
 
 	resolution = (cgv::type::DummyEnum)256;
 	opacity_scale_exponent = 1.0f;
