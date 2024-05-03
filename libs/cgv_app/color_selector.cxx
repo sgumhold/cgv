@@ -10,7 +10,7 @@ namespace app {
 color_selector::color_selector() {
 
 	set_name("Color Selector");
-	block_events = true;
+	blocks_events(true);
 
 	layout.padding = padding();
 
