@@ -87,7 +87,6 @@ $(document).ready(function(){initNavTree('classcgv_1_1app_1_1overlay.html',''); 
 <a href="#pub-methods">Public Member Functions</a> &#124;
 <a href="#pub-attribs">Public Attributes</a> &#124;
 <a href="#pro-methods">Protected Member Functions</a> &#124;
-<a href="#pro-attribs">Protected Attributes</a> &#124;
 <a href="classcgv_1_1app_1_1overlay-members.html">List of all members</a>  </div>
   <div class="headertitle">
 <div class="title">cgv::app::overlay Class Reference</div>  </div>
@@ -177,6 +176,10 @@ virtual void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" hr
 bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcgv_1_1app_1_1overlay.html#a6500203c06ee7f7fb9094fefafdb2371">blocks_events</a> () const</td></tr>
 <tr class="memdesc:a6500203c06ee7f7fb9094fefafdb2371"><td class="mdescLeft">&#160;</td><td class="mdescRight">return whether this overlay blocks events, i.e. does not pass them to the next event handler <br /></td></tr>
 <tr class="separator:a6500203c06ee7f7fb9094fefafdb2371"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a2a07a0c55d887bf80501916327ea3fe3"><td class="memItemLeft" align="right" valign="top"><a id="a2a07a0c55d887bf80501916327ea3fe3"></a>
+void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcgv_1_1app_1_1overlay.html#a2a07a0c55d887bf80501916327ea3fe3">blocks_events</a> (bool flag)</td></tr>
+<tr class="memdesc:a2a07a0c55d887bf80501916327ea3fe3"><td class="mdescLeft">&#160;</td><td class="mdescRight">set whether the overlay blocks events <br /></td></tr>
+<tr class="separator:a2a07a0c55d887bf80501916327ea3fe3"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a6e31ae938a4bb751c15307109002eae9"><td class="memItemLeft" align="right" valign="top"><a id="a6e31ae938a4bb751c15307109002eae9"></a>
 <a class="el" href="namespacecgv.html#a4fc9abee97018a017bb3a14b531a8f06">ivec2</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcgv_1_1app_1_1overlay.html#a6e31ae938a4bb751c15307109002eae9">get_viewport_size</a> () const</td></tr>
 <tr class="memdesc:a6e31ae938a4bb751c15307109002eae9"><td class="mdescLeft">&#160;</td><td class="mdescRight">return the current viewport size <br /></td></tr>
@@ -775,12 +778,22 @@ virtual void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" hr
 <tr class="memdesc:af30ecc2b9412b158cbe774babaacd402 inherit pro_methods_classcgv_1_1gui_1_1provider"><td class="mdescLeft">&#160;</td><td class="mdescRight">this is called by the gui group when the selection changes <br /></td></tr>
 <tr class="separator:af30ecc2b9412b158cbe774babaacd402 inherit pro_methods_classcgv_1_1gui_1_1provider"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table><table class="memberdecls">
-<tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="pro-attribs"></a>
-Protected Attributes</h2></td></tr>
-<tr class="memitem:adaf63a5af089bbca20910f8d187fe43c"><td class="memItemLeft" align="right" valign="top"><a id="adaf63a5af089bbca20910f8d187fe43c"></a>
-bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcgv_1_1app_1_1overlay.html#adaf63a5af089bbca20910f8d187fe43c">block_events</a> = false</td></tr>
-<tr class="memdesc:adaf63a5af089bbca20910f8d187fe43c"><td class="mdescLeft">&#160;</td><td class="mdescRight">whether the overlay blocks events or lets them pass through to other handlers (by default only derived classes may set this property) <br /></td></tr>
-<tr class="separator:adaf63a5af089bbca20910f8d187fe43c"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="inherited"></a>
+Additional Inherited Members</h2></td></tr>
+<tr class="inherit_header pub_static_methods_classcgv_1_1gui_1_1provider"><td colspan="2" onclick="javascript:toggleInherit('pub_static_methods_classcgv_1_1gui_1_1provider')"><img src="closed.png" alt="-"/>&#160;Static Public Member Functions inherited from <a class="el" href="classcgv_1_1gui_1_1provider.html">cgv::gui::provider</a></td></tr>
+<tr class="memitem:a9e722ce8fd3bd48387d8ee5761498189 inherit pub_static_methods_classcgv_1_1gui_1_1provider"><td class="memTemplParams" colspan="2">template&lt;typename T &gt; </td></tr>
+<tr class="memitem:a9e722ce8fd3bd48387d8ee5761498189 inherit pub_static_methods_classcgv_1_1gui_1_1provider"><td class="memTemplItemLeft" align="right" valign="top">static bool &amp;&#160;</td><td class="memTemplItemRight" valign="bottom"><a class="el" href="classcgv_1_1gui_1_1provider.html#a9e722ce8fd3bd48387d8ee5761498189">ref_tree_node_visible_flag</a> (const T &amp;value)</td></tr>
+<tr class="memdesc:a9e722ce8fd3bd48387d8ee5761498189 inherit pub_static_methods_classcgv_1_1gui_1_1provider"><td class="mdescLeft">&#160;</td><td class="mdescRight">return a reference to the boolean flag, that tells whether the tree node for the passed value is visible  <a href="classcgv_1_1gui_1_1provider.html#a9e722ce8fd3bd48387d8ee5761498189">More...</a><br /></td></tr>
+<tr class="separator:a9e722ce8fd3bd48387d8ee5761498189 inherit pub_static_methods_classcgv_1_1gui_1_1provider"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a001e91968dadb3c01162f00bfb101edc inherit pub_static_methods_classcgv_1_1gui_1_1provider"><td class="memItemLeft" align="right" valign="top"><a id="a001e91968dadb3c01162f00bfb101edc"></a>
+static bool &amp;&#160;</td><td class="memItemRight" valign="bottom"><b>ref_tree_node_visible_flag_void</b> (const void *value_ptr, int index=-1)</td></tr>
+<tr class="separator:a001e91968dadb3c01162f00bfb101edc inherit pub_static_methods_classcgv_1_1gui_1_1provider"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="inherit_header pro_static_methods_classcgv_1_1base_1_1base"><td colspan="2" onclick="javascript:toggleInherit('pro_static_methods_classcgv_1_1base_1_1base')"><img src="closed.png" alt="-"/>&#160;Static Protected Member Functions inherited from <a class="el" href="classcgv_1_1base_1_1base.html">cgv::base::base</a></td></tr>
+<tr class="memitem:ad8d0e6ffe70e6d8adc43876dfca2e84a inherit pro_static_methods_classcgv_1_1base_1_1base"><td class="memTemplParams" colspan="2"><a id="ad8d0e6ffe70e6d8adc43876dfca2e84a"></a>
+template&lt;class T &gt; </td></tr>
+<tr class="memitem:ad8d0e6ffe70e6d8adc43876dfca2e84a inherit pro_static_methods_classcgv_1_1base_1_1base"><td class="memTemplItemLeft" align="right" valign="top">static <a class="el" href="classcgv_1_1data_1_1ref__ptr.html">data::ref_ptr</a>&lt; T, true &gt;&#160;</td><td class="memTemplItemRight" valign="bottom"><a class="el" href="classcgv_1_1base_1_1base.html#ad8d0e6ffe70e6d8adc43876dfca2e84a">cast_dynamic</a> (<a class="el" href="classcgv_1_1base_1_1base.html">base</a> *b)</td></tr>
+<tr class="memdesc:ad8d0e6ffe70e6d8adc43876dfca2e84a inherit pro_static_methods_classcgv_1_1base_1_1base"><td class="mdescLeft">&#160;</td><td class="mdescRight">use dynamic cast for upcast to given class <br /></td></tr>
+<tr class="separator:ad8d0e6ffe70e6d8adc43876dfca2e84a inherit pro_static_methods_classcgv_1_1base_1_1base"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="inherit_header pro_attribs_classcgv_1_1base_1_1node"><td colspan="2" onclick="javascript:toggleInherit('pro_attribs_classcgv_1_1base_1_1node')"><img src="closed.png" alt="-"/>&#160;Protected Attributes inherited from <a class="el" href="classcgv_1_1base_1_1node.html">cgv::base::node</a></td></tr>
 <tr class="memitem:a28286049d6db60c75aedf4c6358dfc12 inherit pro_attribs_classcgv_1_1base_1_1node"><td class="memItemLeft" align="right" valign="top"><a id="a28286049d6db60c75aedf4c6358dfc12"></a>
 <a class="el" href="namespacecgv_1_1base.html#a876ea103d1a70f0477574fd136a99192">node_ptr</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcgv_1_1base_1_1node.html#a28286049d6db60c75aedf4c6358dfc12">parent</a></td></tr>
@@ -809,23 +822,6 @@ int&#160;</td><td class="memItemRight" valign="bottom"><b>focus</b></td></tr>
 <tr class="memitem:ab51c3efb4addaae6f9ab79e6f5d2f641 inherit pro_attribs_classcgv_1_1gui_1_1provider"><td class="memItemLeft" align="right" valign="top"><a id="ab51c3efb4addaae6f9ab79e6f5d2f641"></a>
 <a class="el" href="classcgv_1_1gui_1_1provider.html">provider</a> *&#160;</td><td class="memItemRight" valign="bottom"><b>parent_provider</b></td></tr>
 <tr class="separator:ab51c3efb4addaae6f9ab79e6f5d2f641 inherit pro_attribs_classcgv_1_1gui_1_1provider"><td class="memSeparator" colspan="2">&#160;</td></tr>
-</table><table class="memberdecls">
-<tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="inherited"></a>
-Additional Inherited Members</h2></td></tr>
-<tr class="inherit_header pub_static_methods_classcgv_1_1gui_1_1provider"><td colspan="2" onclick="javascript:toggleInherit('pub_static_methods_classcgv_1_1gui_1_1provider')"><img src="closed.png" alt="-"/>&#160;Static Public Member Functions inherited from <a class="el" href="classcgv_1_1gui_1_1provider.html">cgv::gui::provider</a></td></tr>
-<tr class="memitem:a9e722ce8fd3bd48387d8ee5761498189 inherit pub_static_methods_classcgv_1_1gui_1_1provider"><td class="memTemplParams" colspan="2">template&lt;typename T &gt; </td></tr>
-<tr class="memitem:a9e722ce8fd3bd48387d8ee5761498189 inherit pub_static_methods_classcgv_1_1gui_1_1provider"><td class="memTemplItemLeft" align="right" valign="top">static bool &amp;&#160;</td><td class="memTemplItemRight" valign="bottom"><a class="el" href="classcgv_1_1gui_1_1provider.html#a9e722ce8fd3bd48387d8ee5761498189">ref_tree_node_visible_flag</a> (const T &amp;value)</td></tr>
-<tr class="memdesc:a9e722ce8fd3bd48387d8ee5761498189 inherit pub_static_methods_classcgv_1_1gui_1_1provider"><td class="mdescLeft">&#160;</td><td class="mdescRight">return a reference to the boolean flag, that tells whether the tree node for the passed value is visible  <a href="classcgv_1_1gui_1_1provider.html#a9e722ce8fd3bd48387d8ee5761498189">More...</a><br /></td></tr>
-<tr class="separator:a9e722ce8fd3bd48387d8ee5761498189 inherit pub_static_methods_classcgv_1_1gui_1_1provider"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a001e91968dadb3c01162f00bfb101edc inherit pub_static_methods_classcgv_1_1gui_1_1provider"><td class="memItemLeft" align="right" valign="top"><a id="a001e91968dadb3c01162f00bfb101edc"></a>
-static bool &amp;&#160;</td><td class="memItemRight" valign="bottom"><b>ref_tree_node_visible_flag_void</b> (const void *value_ptr, int index=-1)</td></tr>
-<tr class="separator:a001e91968dadb3c01162f00bfb101edc inherit pub_static_methods_classcgv_1_1gui_1_1provider"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="inherit_header pro_static_methods_classcgv_1_1base_1_1base"><td colspan="2" onclick="javascript:toggleInherit('pro_static_methods_classcgv_1_1base_1_1base')"><img src="closed.png" alt="-"/>&#160;Static Protected Member Functions inherited from <a class="el" href="classcgv_1_1base_1_1base.html">cgv::base::base</a></td></tr>
-<tr class="memitem:ad8d0e6ffe70e6d8adc43876dfca2e84a inherit pro_static_methods_classcgv_1_1base_1_1base"><td class="memTemplParams" colspan="2"><a id="ad8d0e6ffe70e6d8adc43876dfca2e84a"></a>
-template&lt;class T &gt; </td></tr>
-<tr class="memitem:ad8d0e6ffe70e6d8adc43876dfca2e84a inherit pro_static_methods_classcgv_1_1base_1_1base"><td class="memTemplItemLeft" align="right" valign="top">static <a class="el" href="classcgv_1_1data_1_1ref__ptr.html">data::ref_ptr</a>&lt; T, true &gt;&#160;</td><td class="memTemplItemRight" valign="bottom"><a class="el" href="classcgv_1_1base_1_1base.html#ad8d0e6ffe70e6d8adc43876dfca2e84a">cast_dynamic</a> (<a class="el" href="classcgv_1_1base_1_1base.html">base</a> *b)</td></tr>
-<tr class="memdesc:ad8d0e6ffe70e6d8adc43876dfca2e84a inherit pro_static_methods_classcgv_1_1base_1_1base"><td class="mdescLeft">&#160;</td><td class="mdescRight">use dynamic cast for upcast to given class <br /></td></tr>
-<tr class="separator:ad8d0e6ffe70e6d8adc43876dfca2e84a inherit pro_static_methods_classcgv_1_1base_1_1base"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
 <a name="details" id="details"></a><h2 class="groupheader">Detailed Description</h2>
 <div class="textblock">
@@ -871,7 +867,7 @@ template&lt;class T &gt; </td></tr>
 
 <p class="definition">Definition at line <a class="el" href="overlay_8cxx_source.html#l00157">157</a> of file <a class="el" href="overlay_8cxx_source.html">overlay.cxx</a>.</p>
 
-<p class="reference">References <a class="el" href="overlay_8cxx_source.html#l00104">begin_overlay_gui()</a>, <a class="el" href="overlay_8h_source.html#l00084">cgv::app::overlay::gui_options_t::create_default_tree_node</a>, <a class="el" href="overlay_8h_source.html#l00078">create_gui_impl()</a>, <a class="el" href="overlay_8cxx_source.html#l00123">create_layout_gui()</a>, <a class="el" href="overlay_8cxx_source.html#l00117">end_overlay_gui()</a>, and <a class="el" href="overlay_8h_source.html#l00097">gui_options</a>.</p>
+<p class="reference">References <a class="el" href="overlay_8cxx_source.html#l00104">begin_overlay_gui()</a>, <a class="el" href="overlay_8h_source.html#l00083">cgv::app::overlay::gui_options_t::create_default_tree_node</a>, <a class="el" href="overlay_8h_source.html#l00077">create_gui_impl()</a>, <a class="el" href="overlay_8cxx_source.html#l00123">create_layout_gui()</a>, <a class="el" href="overlay_8cxx_source.html#l00117">end_overlay_gui()</a>, and <a class="el" href="overlay_8h_source.html#l00096">gui_options</a>.</p>
 
 </div>
 </div>

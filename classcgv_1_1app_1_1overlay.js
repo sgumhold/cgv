@@ -17,6 +17,7 @@ var classcgv_1_1app_1_1overlay =
     ] ],
     [ "begin_overlay_gui", "classcgv_1_1app_1_1overlay.html#a503f34ae41cfffefc70c2cc87248504f", null ],
     [ "blocks_events", "classcgv_1_1app_1_1overlay.html#a6500203c06ee7f7fb9094fefafdb2371", null ],
+    [ "blocks_events", "classcgv_1_1app_1_1overlay.html#a2a07a0c55d887bf80501916327ea3fe3", null ],
     [ "create_gui", "classcgv_1_1app_1_1overlay.html#a16e468cbca5cdfabf45a8edc4818e76f", null ],
     [ "create_gui_impl", "classcgv_1_1app_1_1overlay.html#af8938207c2973fc91a25e6dd9add2be7", null ],
     [ "create_layout_gui", "classcgv_1_1app_1_1overlay.html#a0aca30fe43808a58c2cc15cee6cb8e11", null ],
@@ -49,6 +50,5 @@ var classcgv_1_1app_1_1overlay =
     [ "stream_help", "classcgv_1_1app_1_1overlay.html#a08d13d1c1a4410111c067294c6ebdac6", null ],
     [ "toggle_visibility", "classcgv_1_1app_1_1overlay.html#a65832f0526e1ded543d96d001a17c94a", null ],
     [ "update_layout", "classcgv_1_1app_1_1overlay.html#a3dab76814dba0d3d46bbc70bc28724e8", null ],
-    [ "block_events", "classcgv_1_1app_1_1overlay.html#adaf63a5af089bbca20910f8d187fe43c", null ],
     [ "gui_options", "classcgv_1_1app_1_1overlay.html#a8a67de4ed4f9acebe0b075de2c59fbbb", null ]
 ];
