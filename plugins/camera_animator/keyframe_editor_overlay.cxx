@@ -10,7 +10,7 @@ using namespace cgv::render;
 keyframe_editor_overlay::keyframe_editor_overlay() {
 
 	set_name("Keyframe Editor");
-	block_events = true;
+	blocks_events(true);
 	gui_options.allow_stretch = false;
 	gui_options.allow_margin = false;
 	
