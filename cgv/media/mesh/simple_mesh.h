@@ -276,6 +276,8 @@ public:
 	vec2& tex_coord(idx_type ti) { return tex_coords[ti]; }
 	const vec2& tex_coord(idx_type ti) const { return tex_coords[ti]; }
 
+	/// compute the normal nml of a face and return whether this was possible
+	bool compute_face_normal(idx_type fi, vec3& nml) const;
 	/// compute face center
 	vec3 compute_face_center(idx_type fi) const;
 	/// compute per face normals (ensure that per corner normal indices are set correspondingly)
@@ -302,7 +304,7 @@ public:
 	/// compute the axis aligned bounding box
 	box_type compute_box() const;
 	/// compute vertex normals by averaging triangle normals
-	void compute_vertex_normals();
+	void compute_vertex_normals(bool use_parallel_implementation = true);
 	/// construct from obj loader
 	void construct(const obj_loader_generic<T>& loader, bool copy_grp_info, bool copy_material_info);
 	/// read simple mesh from file (currently only obj and stl are supported)
