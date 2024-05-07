@@ -281,6 +281,10 @@ bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="clas
 <tr class="memitem:a046dafa43b8d51c28c0bccd9de2d09d1"><td class="memItemLeft" align="right" valign="top"><a id="a046dafa43b8d51c28c0bccd9de2d09d1"></a>
 const <a class="el" href="classcgv_1_1media_1_1mesh_1_1simple__mesh.html#a4bced0d6a899b88f412cb24aeda0dd87">vec2</a> &amp;&#160;</td><td class="memItemRight" valign="bottom"><b>tex_coord</b> (<a class="el" href="classcgv_1_1media_1_1mesh_1_1simple__mesh__base.html#a0eb0181dc49db651e738bd0e66d1f0e6">idx_type</a> ti) const</td></tr>
 <tr class="separator:a046dafa43b8d51c28c0bccd9de2d09d1"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:aff38676773ca954956e3156c60030b42"><td class="memItemLeft" align="right" valign="top"><a id="aff38676773ca954956e3156c60030b42"></a>
+bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcgv_1_1media_1_1mesh_1_1simple__mesh.html#aff38676773ca954956e3156c60030b42">compute_face_normal</a> (<a class="el" href="classcgv_1_1media_1_1mesh_1_1simple__mesh__base.html#a0eb0181dc49db651e738bd0e66d1f0e6">idx_type</a> fi, <a class="el" href="classcgv_1_1media_1_1mesh_1_1simple__mesh.html#a2aeb9aff16268b7c5e3a844a2ba69356">vec3</a> &amp;nml) const</td></tr>
+<tr class="memdesc:aff38676773ca954956e3156c60030b42"><td class="mdescLeft">&#160;</td><td class="mdescRight">compute the normal nml of a face and return whether this was possible <br /></td></tr>
+<tr class="separator:aff38676773ca954956e3156c60030b42"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a9e2e018c1e31ec4ccad8675365e7acd0"><td class="memItemLeft" align="right" valign="top"><a id="a9e2e018c1e31ec4ccad8675365e7acd0"></a>
 <a class="el" href="classcgv_1_1media_1_1mesh_1_1simple__mesh.html#a2aeb9aff16268b7c5e3a844a2ba69356">vec3</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcgv_1_1media_1_1mesh_1_1simple__mesh.html#a9e2e018c1e31ec4ccad8675365e7acd0">compute_face_center</a> (<a class="el" href="classcgv_1_1media_1_1mesh_1_1simple__mesh__base.html#a0eb0181dc49db651e738bd0e66d1f0e6">idx_type</a> fi) const</td></tr>
 <tr class="memdesc:a9e2e018c1e31ec4ccad8675365e7acd0"><td class="mdescLeft">&#160;</td><td class="mdescRight">compute face center <br /></td></tr>
@@ -329,10 +333,10 @@ void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="clas
 <a class="el" href="classcgv_1_1media_1_1mesh_1_1simple__mesh.html#ace75aa18225995a4d947eedba63b2f7e">box_type</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcgv_1_1media_1_1mesh_1_1simple__mesh.html#a79169bcefbfd96a8a38f6093248b2a35">compute_box</a> () const</td></tr>
 <tr class="memdesc:a79169bcefbfd96a8a38f6093248b2a35"><td class="mdescLeft">&#160;</td><td class="mdescRight">compute the axis aligned bounding box <br /></td></tr>
 <tr class="separator:a79169bcefbfd96a8a38f6093248b2a35"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:aac7e05700c7c6f12af18b9aff8688a84"><td class="memItemLeft" align="right" valign="top"><a id="aac7e05700c7c6f12af18b9aff8688a84"></a>
-void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcgv_1_1media_1_1mesh_1_1simple__mesh.html#aac7e05700c7c6f12af18b9aff8688a84">compute_vertex_normals</a> ()</td></tr>
-<tr class="memdesc:aac7e05700c7c6f12af18b9aff8688a84"><td class="mdescLeft">&#160;</td><td class="mdescRight">compute vertex normals by averaging triangle normals <br /></td></tr>
-<tr class="separator:aac7e05700c7c6f12af18b9aff8688a84"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a2fdb24703da28882db25da34a50fa825"><td class="memItemLeft" align="right" valign="top"><a id="a2fdb24703da28882db25da34a50fa825"></a>
+void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcgv_1_1media_1_1mesh_1_1simple__mesh.html#a2fdb24703da28882db25da34a50fa825">compute_vertex_normals</a> (bool use_parallel_implementation=true)</td></tr>
+<tr class="memdesc:a2fdb24703da28882db25da34a50fa825"><td class="mdescLeft">&#160;</td><td class="mdescRight">compute vertex normals by averaging triangle normals <br /></td></tr>
+<tr class="separator:a2fdb24703da28882db25da34a50fa825"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a403426a00b611326530926db100e2da2"><td class="memItemLeft" align="right" valign="top"><a id="a403426a00b611326530926db100e2da2"></a>
 void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcgv_1_1media_1_1mesh_1_1simple__mesh.html#a403426a00b611326530926db100e2da2">construct</a> (const <a class="el" href="classcgv_1_1media_1_1mesh_1_1obj__loader__generic.html">obj_loader_generic</a>&lt; T &gt; &amp;loader, bool copy_grp_info, bool copy_material_info)</td></tr>
 <tr class="memdesc:a403426a00b611326530926db100e2da2"><td class="mdescLeft">&#160;</td><td class="mdescRight">construct from obj loader <br /></td></tr>
