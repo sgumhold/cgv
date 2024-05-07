@@ -531,7 +531,7 @@ typename simple_mesh<T>::box_type simple_mesh<T>::compute_box() const
 }
 /// compute vertex normals by averaging triangle normals
 template <typename T>
-void simple_mesh<T>::compute_vertex_normals()
+void simple_mesh<T>::compute_vertex_normals(bool use_parallel_implementation)
 {
 	// clear previous normal info
 	if (has_normals())
@@ -539,28 +539,28 @@ void simple_mesh<T>::compute_vertex_normals()
 	// copy position indices to normals
 	normal_indices = position_indices;
 	// initialize normals to null vectors
-	normals.resize(positions.size(), vec3(0.0f));
-	// iterate faces
-	for (idx_type fi = 0; fi < get_nr_faces(); ++fi) {
-		idx_type c0 = begin_corner(fi);
-		idx_type ce = end_corner(fi);
-		vec3 p0 = position(position_indices[c0]);
-		vec3 dj = position(position_indices[c0 + 1]) - p0;
-		vec3 nml(0.0f);
-		for (idx_type ci = c0+2; ci < ce; ++ci) {
-			vec3 di = position(position_indices[ci]) - p0;
-			nml += cross(dj, di);
-			dj = di;
+	normals.resize(positions.size(), vec3(T(0)));
+	if (use_parallel_implementation) {
+#pragma omp parallel for
+		for (int fi = 0; fi < int(get_nr_faces()); ++fi) {
+			vec3 nml;
+			if (compute_face_normal(fi, nml))
+				for (idx_type ci = begin_corner(fi); ci < end_corner(fi); ++ci)
+					normal(normal_indices[ci]) += nml;
 		}
-		T nl = nml.length();
-		if (nl > 1e-8f) {
-			nml *= 1.0f/nl;
-			for (idx_type ci = c0; ci < ce; ++ci)
-				normal(normal_indices[ci]) += nml;
-		}
+#pragma omp parallel for
+		for (int ni = 0; ni < int(normals.size()); ++ni)
+			normals[ni].normalize();
 	}
-	for (auto& n : normals)
-		n.normalize();
+	else {
+		vec3 nml;
+		for (idx_type fi = 0; fi < get_nr_faces(); ++fi)
+			if (compute_face_normal(fi, nml))
+				for (idx_type ci = begin_corner(fi); ci < end_corner(fi); ++ci)
+					normal(normal_indices[ci]) += nml;
+		for (auto& n : normals)
+			n.normalize();
+	}
 }
 
 template <typename T>
@@ -656,31 +656,37 @@ typename simple_mesh<T>::vec3 simple_mesh<T>::compute_face_center(idx_type fi) c
 	ctr /= float(nr);
 	return ctr;
 }
+template <typename T> 
+bool simple_mesh<T>::compute_face_normal(idx_type fi, vec3& nml_out) const
+{
+	idx_type c0 = begin_corner(fi);
+	idx_type ce = end_corner(fi);
+	vec3 p0 = position(position_indices[c0]);
+	vec3 dj = position(position_indices[c0 + 1]) - p0;
+	vec3 nml(0.0f);
+	for (idx_type ci = c0 + 2; ci < ce; ++ci) {
+		vec3 di = position(position_indices[ci]) - p0;
+		nml += cross(dj, di);
+		dj = di;
+	}
+	T nl = nml.length();
+	if (nl > T(1e-8f)) {
+		nml *= T(1) / nl;
+		nml_out = nml;
+		return true;
+	}
+	return false;
+}
 
 template <typename T> void simple_mesh<T>::compute_face_normals(bool construct_normal_indices)
 {
 	// compute per face normals
 	for (uint32_t fi = 0; fi < get_nr_faces(); ++fi) {
-		std::vector<vec3> P;
-		vec3 ctr(0.0f);
-		uint32_t ci, nr = 0;
-		for (ci = begin_corner(fi); ci < end_corner(fi); ++ci) {
-			P.push_back(position(c2p(ci)));
-			ctr += P.back();
-			++nr;
-		}
-		ctr /= float(nr);
-		vec3 prev_p = P.back() - ctr;
-		vec3 nml = vec3(0.0f);
-		for (uint32_t i = 0; i < P.size(); ++i) {
-			vec3 p = P[i] - ctr;
-			nml += cross(prev_p, p);
-			prev_p = p;
-		}
-		nml.normalize();
+		vec3 nml = vec3(T(1),0,0);
+		compute_face_normal(fi, nml);
 		uint32_t ni = new_normal(nml);
 		if (construct_normal_indices) {
-			for (ci = begin_corner(fi); ci < end_corner(fi); ++ci) {
+			for (idx_type ci = begin_corner(fi); ci < end_corner(fi); ++ci) {
 				normal_indices.push_back(ni);
 			}
 		}
