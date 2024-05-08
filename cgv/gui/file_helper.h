@@ -258,7 +258,7 @@ public:
 
 		if(cgv::utils::to_upper(current_extension) != cgv::utils::to_upper(extension)) {
 			if(current_extension.empty() || force) {
-				file_name += "." + extension;
+				set_file_name(file_name + "." + extension);
 				return extension;
 			}
 		}
