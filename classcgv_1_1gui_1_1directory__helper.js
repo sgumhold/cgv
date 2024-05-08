@@ -5,12 +5,19 @@ var classcgv_1_1gui_1_1directory__helper =
       [ "kSave", "classcgv_1_1gui_1_1directory__helper.html#a87adaa37a99fc1af3ac3e00644cfe7eea9843e55f008d0a5971feac276539ec85", null ]
     ] ],
     [ "directory_helper", "classcgv_1_1gui_1_1directory__helper.html#ae2325d11b32bebab4814add15ccd3ead", null ],
-    [ "directory_helper", "classcgv_1_1gui_1_1directory__helper.html#a7458cd34656e0889f395dfbbb6a60d59", null ],
-    [ "create_gui", "classcgv_1_1gui_1_1directory__helper.html#a7eb3b3bdea4d06e2141bc1adf6e7e60e", null ],
-    [ "save", "classcgv_1_1gui_1_1directory__helper.html#a7376e01fdfccfe0596c5b3017b0d66e3", null ],
-    [ "update", "classcgv_1_1gui_1_1directory__helper.html#a068939594bf04802b0e808bfe38687a0", null ],
+    [ "directory_helper", "classcgv_1_1gui_1_1directory__helper.html#a84af84025db21ecd70fb846b27d7f1c2", null ],
+    [ "can_open", "classcgv_1_1gui_1_1directory__helper.html#a7493f88c1d86481d195aff0eed645721", null ],
+    [ "can_save", "classcgv_1_1gui_1_1directory__helper.html#aa1ae2393cc65f1f161b348df6408bce8", null ],
+    [ "create_gui", "classcgv_1_1gui_1_1directory__helper.html#afede82a5690af9d8b5e2e0673e5c19ef", null ],
+    [ "get_default_path", "classcgv_1_1gui_1_1directory__helper.html#a445c7d5c54bba26e7d01fe581a626b2c", null ],
+    [ "get_title", "classcgv_1_1gui_1_1directory__helper.html#a139a6bb342657408bf82e0c103be656e", null ],
+    [ "is_save_action", "classcgv_1_1gui_1_1directory__helper.html#a1e9a3c6e35e9735c8de9a10b380a7e83", null ],
+    [ "set_default_path", "classcgv_1_1gui_1_1directory__helper.html#aebd5fbb09aecd7021c3b9002c986d9f9", null ],
+    [ "set_directory_name", "classcgv_1_1gui_1_1directory__helper.html#a15ae4ee7a7bc393903992b96aebedbe3", null ],
+    [ "set_title", "classcgv_1_1gui_1_1directory__helper.html#a7179ed8ac1955d0733d21535e1475b19", null ],
     [ "directory_name", "classcgv_1_1gui_1_1directory__helper.html#aa4e95e9afe21c9afdc76951a701147c0", null ],
-    [ "mode", "classcgv_1_1gui_1_1directory__helper.html#a1c593e21a913854fbe2949a71c59bbbb", null ],
-    [ "provider_ptr", "classcgv_1_1gui_1_1directory__helper.html#a81b63d1741e9b8da0f9eea490d2d63ac", null ],
-    [ "title", "classcgv_1_1gui_1_1directory__helper.html#ad70cacf1c89a2d6d7989aaed26e01527", null ]
+    [ "mode_", "classcgv_1_1gui_1_1directory__helper.html#a6e06f14473655c5b1a19f08b3c509232", null ],
+    [ "path_", "classcgv_1_1gui_1_1directory__helper.html#a0327e7b88100826cb15cb4058d99ecd0", null ],
+    [ "provider_ptr_", "classcgv_1_1gui_1_1directory__helper.html#a0ce2be5a7075d592a15ee4729479c269", null ],
+    [ "title_", "classcgv_1_1gui_1_1directory__helper.html#aff6a5eff1464a054f6081cba39e8c140", null ]
 ];

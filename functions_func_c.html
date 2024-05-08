@@ -115,8 +115,16 @@ $(document).ready(function(){initNavTree('functions_func_c.html',''); initResiza
 <li>can_be_primary()
 : <a class="el" href="classcgv_1_1os_1_1display.html#a7c2b688b507f49e46aed32749d9a7627">cgv::os::display</a>
 </li>
+<li>can_open()
+: <a class="el" href="classcgv_1_1gui_1_1directory__helper.html#a7493f88c1d86481d195aff0eed645721">cgv::gui::directory_helper</a>
+, <a class="el" href="classcgv_1_1gui_1_1file__helper.html#a6537b85617fba3ed4011e3386bbd3d51">cgv::gui::file_helper</a>
+</li>
 <li>can_open_and_close()
 : <a class="el" href="classcgv_1_1gui_1_1gui__group.html#a035e5dc708f9a01e045dc4348f41ed19">cgv::gui::gui_group</a>
+</li>
+<li>can_save()
+: <a class="el" href="classcgv_1_1gui_1_1directory__helper.html#aa1ae2393cc65f1f161b348df6408bce8">cgv::gui::directory_helper</a>
+, <a class="el" href="classcgv_1_1gui_1_1file__helper.html#ad4fb7951ce4d786986ebfc89c888a5dd">cgv::gui::file_helper</a>
 </li>
 <li>canvas_overlay()
 : <a class="el" href="classcgv_1_1app_1_1canvas__overlay.html#a11b93558a3107da59a78be81727d7059">cgv::app::canvas_overlay</a>
@@ -208,6 +216,7 @@ $(document).ready(function(){initNavTree('functions_func_c.html',''); initResiza
 , <a class="el" href="classcgv_1_1data_1_1packing__info.html#aff9e24ef33b9034e3791eb5537c69583">cgv::data::packing_info</a>
 , <a class="el" href="classcgv_1_1data_1_1ref__arr.html#a3648e22b642b604b4c6402d462de5b2e">cgv::data::ref_arr&lt; T &gt;</a>
 , <a class="el" href="classcgv_1_1data_1_1ref__ptr.html#a7100a80c0b810ecad4c048af7c2ba0af">cgv::data::ref_ptr&lt; T, is_ref_counted &gt;</a>
+, <a class="el" href="classcgv_1_1gui_1_1property__string.html#aa89726f5283d1be4f6aef50af49d4e13">cgv::gui::property_string</a>
 , <a class="el" href="classcgv_1_1math_1_1interval.html#a31083c435035b1cc6ee29e0298428351">cgv::math::interval&lt; T &gt;</a>
 , <a class="el" href="classcgv_1_1media_1_1mesh_1_1convex__polyhedron.html#af37eefe58d92d96e859b26f3d8110320">cgv::media::mesh::convex_polyhedron&lt; T, TCDim &gt;</a>
 , <a class="el" href="classcgv_1_1media_1_1mesh_1_1obj__loader__generic.html#a872f95f721c1a01cf5568496d86ba6da">cgv::media::mesh::obj_loader_generic&lt; T &gt;</a>
@@ -241,8 +250,8 @@ $(document).ready(function(){initNavTree('functions_func_c.html',''); initResiza
 <li>clear_displays()
 : <a class="el" href="classcgv_1_1os_1_1display.html#a73a8ecff988fdc4f8131250e3303aef5">cgv::os::display</a>
 </li>
-<li>clear_filter()
-: <a class="el" href="classcgv_1_1gui_1_1file__helper.html#a5c00abce40fe84028346055303ab5c8a">cgv::gui::file_helper</a>
+<li>clear_filters()
+: <a class="el" href="classcgv_1_1gui_1_1file__helper.html#a310cbfb37ead078ffb7f562b24677eca">cgv::gui::file_helper</a>
 </li>
 <li>clear_tracking_reference_states()
 : <a class="el" href="classvr_1_1vr__driver.html#a097335c4be60930fd03db11457c0f980">vr::vr_driver</a>
@@ -366,7 +375,7 @@ $(document).ready(function(){initNavTree('functions_func_c.html',''); initResiza
 : <a class="el" href="classcgv_1_1media_1_1mesh_1_1dual__contouring.html#a65788c8b4a3d9a921cf68a7d45a9aaca">cgv::media::mesh::dual_contouring&lt; X, T &gt;</a>
 </li>
 <li>compute_clipping_planes()
-: <a class="el" href="classcgv_1_1render_1_1clipped__view.html#acc62f6f7d8db6de34cf1a7041478f921">cgv::render::clipped_view</a>
+: <a class="el" href="classcgv_1_1render_1_1clipped__view.html#a4be3c0b8ec31aac361dca7beb61471b3">cgv::render::clipped_view</a>
 </li>
 <li>compute_distortion_map()
 : <a class="el" href="classcgv_1_1math_1_1distorted__pinhole.html#a43e67cdc82472553a87e8f3602901ed9">cgv::math::distorted_pinhole&lt; T &gt;</a>
@@ -525,7 +534,7 @@ $(document).ready(function(){initNavTree('functions_func_c.html',''); initResiza
 , <a class="el" href="classcgv_1_1math_1_1mat.html#a043bbae0ceb9222bdb9caef3146e1654">cgv::math::mat&lt; T &gt;</a>
 , <a class="el" href="classcgv_1_1math_1_1vec.html#a5b6f1bc13794db994fb8669d37cd9764">cgv::math::vec&lt; T &gt;</a>
 , <a class="el" href="classcgv_1_1media_1_1image_1_1image.html#afbf728f9f5e60bad3a7f02459ef82a0c">cgv::media::image::image</a>
-, <a class="el" href="classcgv_1_1render_1_1vertex__buffer.html#a48a3857f1425bd65a2dde405be1fa160">cgv::render::vertex_buffer</a>
+, <a class="el" href="classcgv_1_1render_1_1vertex__buffer.html#aa7f8028feae37954dd4b5d11d6de3a93">cgv::render::vertex_buffer</a>
 </li>
 <li>copy_depth_buffer()
 : <a class="el" href="classcgv_1_1render_1_1gl_1_1gl__depth__peeler.html#a0a6fc4bfa5c5a5481fe1da45af14f280">cgv::render::gl::gl_depth_peeler</a>
@@ -606,8 +615,8 @@ $(document).ready(function(){initNavTree('functions_func_c.html',''); initResiza
 <li>create_gui()
 : <a class="el" href="classcgv_1_1app_1_1overlay.html#a16e468cbca5cdfabf45a8edc4818e76f">cgv::app::overlay</a>
 , <a class="el" href="classcgv_1_1gui_1_1base__provider.html#a8c64ca85560364ad7533c0964bc0d38b">cgv::gui::base_provider</a>
-, <a class="el" href="classcgv_1_1gui_1_1directory__helper.html#a7eb3b3bdea4d06e2141bc1adf6e7e60e">cgv::gui::directory_helper</a>
-, <a class="el" href="classcgv_1_1gui_1_1file__helper.html#a67df544a8745dc61a9288728f7cbaf40">cgv::gui::file_helper</a>
+, <a class="el" href="classcgv_1_1gui_1_1directory__helper.html#afede82a5690af9d8b5e2e0673e5c19ef">cgv::gui::directory_helper</a>
+, <a class="el" href="classcgv_1_1gui_1_1file__helper.html#ab2eef5a0ce5ff1dbd2651aa56be255ee">cgv::gui::file_helper</a>
 , <a class="el" href="classcgv_1_1gui_1_1provider.html#a1d2f0b6c734c04d3c90a1c51ffbc0de9">cgv::gui::provider</a>
 , <a class="el" href="classcgv_1_1gui_1_1subprovider.html#ac9cd289137cd0934568b98f4565fcfcf">cgv::gui::subprovider</a>
 , <a class="el" href="classcgv_1_1plot_1_1axis__config.html#a0af9403569794417e90bc23ad58c5187">cgv::plot::axis_config</a>
