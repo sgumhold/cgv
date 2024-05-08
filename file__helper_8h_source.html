@@ -233,7 +233,7 @@ $(document).ready(function(){initNavTree('file__helper_8h_source.html',''); init
 <div class="line"><a name="l00258"></a><span class="lineno">  258</span>&#160; </div>
 <div class="line"><a name="l00259"></a><span class="lineno">  259</span>&#160;        <span class="keywordflow">if</span>(<a class="code" href="namespacecgv_1_1utils.html#a768fdf54202b2fc80c51ea8f312b2b82">cgv::utils::to_upper</a>(current_extension) != <a class="code" href="namespacecgv_1_1utils.html#a768fdf54202b2fc80c51ea8f312b2b82">cgv::utils::to_upper</a>(extension)) {</div>
 <div class="line"><a name="l00260"></a><span class="lineno">  260</span>&#160;            <span class="keywordflow">if</span>(current_extension.empty() || force) {</div>
-<div class="line"><a name="l00261"></a><span class="lineno">  261</span>&#160;                <a class="code" href="classcgv_1_1gui_1_1file__helper.html#aed0bc0b68076f906586765ed4b04de56">file_name</a> += <span class="stringliteral">&quot;.&quot;</span> + extension;</div>
+<div class="line"><a name="l00261"></a><span class="lineno">  261</span>&#160;                <a class="code" href="classcgv_1_1gui_1_1file__helper.html#af5e7705d89e3efc21eef787166e9d59d">set_file_name</a>(<a class="code" href="classcgv_1_1gui_1_1file__helper.html#aed0bc0b68076f906586765ed4b04de56">file_name</a> + <span class="stringliteral">&quot;.&quot;</span> + extension);</div>
 <div class="line"><a name="l00262"></a><span class="lineno">  262</span>&#160;                <span class="keywordflow">return</span> extension;</div>
 <div class="line"><a name="l00263"></a><span class="lineno">  263</span>&#160;            }</div>
 <div class="line"><a name="l00264"></a><span class="lineno">  264</span>&#160;        }</div>
