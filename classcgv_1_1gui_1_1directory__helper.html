@@ -95,7 +95,7 @@ $(document).ready(function(){initNavTree('classcgv_1_1gui_1_1directory__helper.h
 <p>A convenience class that provides a directory input gui control.  
  <a href="classcgv_1_1gui_1_1directory__helper.html#details">More...</a></p>
 
-<p><code>#include &lt;<a class="el" href="file__helper_8h_source.html">file_helper.h</a>&gt;</code></p>
+<p><code>#include &lt;<a class="el" href="directory__helper_8h_source.html">directory_helper.h</a>&gt;</code></p>
 <table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="pub-types"></a>
 Public Types</h2></td></tr>
@@ -110,51 +110,72 @@ Public Member Functions</h2></td></tr>
 <tr class="memitem:ae2325d11b32bebab4814add15ccd3ead"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcgv_1_1gui_1_1directory__helper.html#ae2325d11b32bebab4814add15ccd3ead">directory_helper</a> ()</td></tr>
 <tr class="memdesc:ae2325d11b32bebab4814add15ccd3ead"><td class="mdescLeft">&#160;</td><td class="mdescRight">Construct with default parameters.  <a href="classcgv_1_1gui_1_1directory__helper.html#ae2325d11b32bebab4814add15ccd3ead">More...</a><br /></td></tr>
 <tr class="separator:ae2325d11b32bebab4814add15ccd3ead"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a7458cd34656e0889f395dfbbb6a60d59"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcgv_1_1gui_1_1directory__helper.html#a7458cd34656e0889f395dfbbb6a60d59">directory_helper</a> (<a class="el" href="classcgv_1_1gui_1_1provider.html">cgv::gui::provider</a> *p, const std::string &amp;<a class="el" href="classcgv_1_1gui_1_1directory__helper.html#ad70cacf1c89a2d6d7989aaed26e01527">title</a>, <a class="el" href="classcgv_1_1gui_1_1directory__helper.html#a87adaa37a99fc1af3ac3e00644cfe7ee">Mode</a> <a class="el" href="classcgv_1_1gui_1_1directory__helper.html#a1c593e21a913854fbe2949a71c59bbbb">mode</a>)</td></tr>
-<tr class="memdesc:a7458cd34656e0889f395dfbbb6a60d59"><td class="mdescLeft">&#160;</td><td class="mdescRight">Construct with arguments.  <a href="classcgv_1_1gui_1_1directory__helper.html#a7458cd34656e0889f395dfbbb6a60d59">More...</a><br /></td></tr>
-<tr class="separator:a7458cd34656e0889f395dfbbb6a60d59"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a068939594bf04802b0e808bfe38687a0"><td class="memItemLeft" align="right" valign="top"><a id="a068939594bf04802b0e808bfe38687a0"></a>
-void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcgv_1_1gui_1_1directory__helper.html#a068939594bf04802b0e808bfe38687a0">update</a> ()</td></tr>
-<tr class="memdesc:a068939594bf04802b0e808bfe38687a0"><td class="mdescLeft">&#160;</td><td class="mdescRight">Update the gui control after changing directory_name. <br /></td></tr>
-<tr class="separator:a068939594bf04802b0e808bfe38687a0"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a7eb3b3bdea4d06e2141bc1adf6e7e60e"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcgv_1_1gui_1_1directory__helper.html#a7eb3b3bdea4d06e2141bc1adf6e7e60e">create_gui</a> (const std::string &amp;label, const std::string &amp;options=&quot;&quot;)</td></tr>
-<tr class="memdesc:a7eb3b3bdea4d06e2141bc1adf6e7e60e"><td class="mdescLeft">&#160;</td><td class="mdescRight">Create the gui control for the directoy input.  <a href="classcgv_1_1gui_1_1directory__helper.html#a7eb3b3bdea4d06e2141bc1adf6e7e60e">More...</a><br /></td></tr>
-<tr class="separator:a7eb3b3bdea4d06e2141bc1adf6e7e60e"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a7376e01fdfccfe0596c5b3017b0d66e3"><td class="memItemLeft" align="right" valign="top">bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcgv_1_1gui_1_1directory__helper.html#a7376e01fdfccfe0596c5b3017b0d66e3">save</a> () const</td></tr>
-<tr class="memdesc:a7376e01fdfccfe0596c5b3017b0d66e3"><td class="mdescLeft">&#160;</td><td class="mdescRight">Check whether a save action was performed.  <a href="classcgv_1_1gui_1_1directory__helper.html#a7376e01fdfccfe0596c5b3017b0d66e3">More...</a><br /></td></tr>
-<tr class="separator:a7376e01fdfccfe0596c5b3017b0d66e3"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a84af84025db21ecd70fb846b27d7f1c2"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcgv_1_1gui_1_1directory__helper.html#a84af84025db21ecd70fb846b27d7f1c2">directory_helper</a> (<a class="el" href="classcgv_1_1gui_1_1provider.html">provider</a> *p, const std::string &amp;title, <a class="el" href="classcgv_1_1gui_1_1directory__helper.html#a87adaa37a99fc1af3ac3e00644cfe7ee">Mode</a> mode)</td></tr>
+<tr class="memdesc:a84af84025db21ecd70fb846b27d7f1c2"><td class="mdescLeft">&#160;</td><td class="mdescRight">Construct with arguments.  <a href="classcgv_1_1gui_1_1directory__helper.html#a84af84025db21ecd70fb846b27d7f1c2">More...</a><br /></td></tr>
+<tr class="separator:a84af84025db21ecd70fb846b27d7f1c2"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a7493f88c1d86481d195aff0eed645721"><td class="memItemLeft" align="right" valign="top"><a id="a7493f88c1d86481d195aff0eed645721"></a>
+bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcgv_1_1gui_1_1directory__helper.html#a7493f88c1d86481d195aff0eed645721">can_open</a> () const</td></tr>
+<tr class="memdesc:a7493f88c1d86481d195aff0eed645721"><td class="mdescLeft">&#160;</td><td class="mdescRight">Return true if this <a class="el" href="classcgv_1_1gui_1_1directory__helper.html" title="A convenience class that provides a directory input gui control.">directory_helper</a> supports opening files, false otherwise. <br /></td></tr>
+<tr class="separator:a7493f88c1d86481d195aff0eed645721"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:aa1ae2393cc65f1f161b348df6408bce8"><td class="memItemLeft" align="right" valign="top"><a id="aa1ae2393cc65f1f161b348df6408bce8"></a>
+bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcgv_1_1gui_1_1directory__helper.html#aa1ae2393cc65f1f161b348df6408bce8">can_save</a> () const</td></tr>
+<tr class="memdesc:aa1ae2393cc65f1f161b348df6408bce8"><td class="mdescLeft">&#160;</td><td class="mdescRight">Return true if this <a class="el" href="classcgv_1_1gui_1_1directory__helper.html" title="A convenience class that provides a directory input gui control.">directory_helper</a> supports saving files, false otherwise. <br /></td></tr>
+<tr class="separator:aa1ae2393cc65f1f161b348df6408bce8"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a139a6bb342657408bf82e0c103be656e"><td class="memItemLeft" align="right" valign="top">const std::string &amp;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcgv_1_1gui_1_1directory__helper.html#a139a6bb342657408bf82e0c103be656e">get_title</a> () const</td></tr>
+<tr class="memdesc:a139a6bb342657408bf82e0c103be656e"><td class="mdescLeft">&#160;</td><td class="mdescRight">Get the title.  <a href="classcgv_1_1gui_1_1directory__helper.html#a139a6bb342657408bf82e0c103be656e">More...</a><br /></td></tr>
+<tr class="separator:a139a6bb342657408bf82e0c103be656e"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a7179ed8ac1955d0733d21535e1475b19"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcgv_1_1gui_1_1directory__helper.html#a7179ed8ac1955d0733d21535e1475b19">set_title</a> (const std::string &amp;title)</td></tr>
+<tr class="memdesc:a7179ed8ac1955d0733d21535e1475b19"><td class="mdescLeft">&#160;</td><td class="mdescRight">Set the title.  <a href="classcgv_1_1gui_1_1directory__helper.html#a7179ed8ac1955d0733d21535e1475b19">More...</a><br /></td></tr>
+<tr class="separator:a7179ed8ac1955d0733d21535e1475b19"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a445c7d5c54bba26e7d01fe581a626b2c"><td class="memItemLeft" align="right" valign="top">const std::string &amp;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcgv_1_1gui_1_1directory__helper.html#a445c7d5c54bba26e7d01fe581a626b2c">get_default_path</a> () const</td></tr>
+<tr class="memdesc:a445c7d5c54bba26e7d01fe581a626b2c"><td class="mdescLeft">&#160;</td><td class="mdescRight">Get the default path.  <a href="classcgv_1_1gui_1_1directory__helper.html#a445c7d5c54bba26e7d01fe581a626b2c">More...</a><br /></td></tr>
+<tr class="separator:a445c7d5c54bba26e7d01fe581a626b2c"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:aebd5fbb09aecd7021c3b9002c986d9f9"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcgv_1_1gui_1_1directory__helper.html#aebd5fbb09aecd7021c3b9002c986d9f9">set_default_path</a> (const std::string &amp;path)</td></tr>
+<tr class="memdesc:aebd5fbb09aecd7021c3b9002c986d9f9"><td class="mdescLeft">&#160;</td><td class="mdescRight">Set the default path.  <a href="classcgv_1_1gui_1_1directory__helper.html#aebd5fbb09aecd7021c3b9002c986d9f9">More...</a><br /></td></tr>
+<tr class="separator:aebd5fbb09aecd7021c3b9002c986d9f9"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a15ae4ee7a7bc393903992b96aebedbe3"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcgv_1_1gui_1_1directory__helper.html#a15ae4ee7a7bc393903992b96aebedbe3">set_directory_name</a> (const std::string &amp;<a class="el" href="classcgv_1_1gui_1_1directory__helper.html#aa4e95e9afe21c9afdc76951a701147c0">directory_name</a>)</td></tr>
+<tr class="memdesc:a15ae4ee7a7bc393903992b96aebedbe3"><td class="mdescLeft">&#160;</td><td class="mdescRight">Set the current directory name.  <a href="classcgv_1_1gui_1_1directory__helper.html#a15ae4ee7a7bc393903992b96aebedbe3">More...</a><br /></td></tr>
+<tr class="separator:a15ae4ee7a7bc393903992b96aebedbe3"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:afede82a5690af9d8b5e2e0673e5c19ef"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcgv_1_1gui_1_1directory__helper.html#afede82a5690af9d8b5e2e0673e5c19ef">create_gui</a> (const std::string &amp;label, const std::string &amp;extra_options=&quot;&quot;)</td></tr>
+<tr class="memdesc:afede82a5690af9d8b5e2e0673e5c19ef"><td class="mdescLeft">&#160;</td><td class="mdescRight">Create the gui control for the directoy input.  <a href="classcgv_1_1gui_1_1directory__helper.html#afede82a5690af9d8b5e2e0673e5c19ef">More...</a><br /></td></tr>
+<tr class="separator:afede82a5690af9d8b5e2e0673e5c19ef"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a1e9a3c6e35e9735c8de9a10b380a7e83"><td class="memItemLeft" align="right" valign="top">bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcgv_1_1gui_1_1directory__helper.html#a1e9a3c6e35e9735c8de9a10b380a7e83">is_save_action</a> () const</td></tr>
+<tr class="memdesc:a1e9a3c6e35e9735c8de9a10b380a7e83"><td class="mdescLeft">&#160;</td><td class="mdescRight">Check whether a save action was performed.  <a href="classcgv_1_1gui_1_1directory__helper.html#a1e9a3c6e35e9735c8de9a10b380a7e83">More...</a><br /></td></tr>
+<tr class="separator:a1e9a3c6e35e9735c8de9a10b380a7e83"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="pub-attribs"></a>
 Public Attributes</h2></td></tr>
-<tr class="memitem:aa4e95e9afe21c9afdc76951a701147c0"><td class="memItemLeft" align="right" valign="top"><a id="aa4e95e9afe21c9afdc76951a701147c0"></a>
-std::string&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcgv_1_1gui_1_1directory__helper.html#aa4e95e9afe21c9afdc76951a701147c0">directory_name</a> = &quot;&quot;</td></tr>
-<tr class="memdesc:aa4e95e9afe21c9afdc76951a701147c0"><td class="mdescLeft">&#160;</td><td class="mdescRight">The current store file name. <br /></td></tr>
+<tr class="memitem:aa4e95e9afe21c9afdc76951a701147c0"><td class="memItemLeft" align="right" valign="top">std::string&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcgv_1_1gui_1_1directory__helper.html#aa4e95e9afe21c9afdc76951a701147c0">directory_name</a> = &quot;&quot;</td></tr>
+<tr class="memdesc:aa4e95e9afe21c9afdc76951a701147c0"><td class="mdescLeft">&#160;</td><td class="mdescRight">The current directory name This member is public to make it accessible to the GUI control flow.  <a href="classcgv_1_1gui_1_1directory__helper.html#aa4e95e9afe21c9afdc76951a701147c0">More...</a><br /></td></tr>
 <tr class="separator:aa4e95e9afe21c9afdc76951a701147c0"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="pro-attribs"></a>
 Protected Attributes</h2></td></tr>
-<tr class="memitem:a81b63d1741e9b8da0f9eea490d2d63ac"><td class="memItemLeft" align="right" valign="top"><a id="a81b63d1741e9b8da0f9eea490d2d63ac"></a>
-<a class="el" href="classcgv_1_1gui_1_1provider.html">cgv::gui::provider</a> *&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcgv_1_1gui_1_1directory__helper.html#a81b63d1741e9b8da0f9eea490d2d63ac">provider_ptr</a> = nullptr</td></tr>
-<tr class="memdesc:a81b63d1741e9b8da0f9eea490d2d63ac"><td class="mdescLeft">&#160;</td><td class="mdescRight">The pointer to the gui provider for the control. <br /></td></tr>
-<tr class="separator:a81b63d1741e9b8da0f9eea490d2d63ac"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a1c593e21a913854fbe2949a71c59bbbb"><td class="memItemLeft" align="right" valign="top"><a id="a1c593e21a913854fbe2949a71c59bbbb"></a>
-<a class="el" href="classcgv_1_1gui_1_1directory__helper.html#a87adaa37a99fc1af3ac3e00644cfe7ee">Mode</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcgv_1_1gui_1_1directory__helper.html#a1c593e21a913854fbe2949a71c59bbbb">mode</a> = Mode::kOpen</td></tr>
-<tr class="memdesc:a1c593e21a913854fbe2949a71c59bbbb"><td class="mdescLeft">&#160;</td><td class="mdescRight">Operating mode of the control that controls the visibility of open and save buttons. Defaults to Mode::kOpen. <br /></td></tr>
-<tr class="separator:a1c593e21a913854fbe2949a71c59bbbb"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:ad70cacf1c89a2d6d7989aaed26e01527"><td class="memItemLeft" align="right" valign="top"><a id="ad70cacf1c89a2d6d7989aaed26e01527"></a>
-std::string&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcgv_1_1gui_1_1directory__helper.html#ad70cacf1c89a2d6d7989aaed26e01527">title</a> = &quot;&quot;</td></tr>
-<tr class="memdesc:ad70cacf1c89a2d6d7989aaed26e01527"><td class="mdescLeft">&#160;</td><td class="mdescRight">The title shown in the file system dialog. <br /></td></tr>
-<tr class="separator:ad70cacf1c89a2d6d7989aaed26e01527"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a0ce2be5a7075d592a15ee4729479c269"><td class="memItemLeft" align="right" valign="top"><a id="a0ce2be5a7075d592a15ee4729479c269"></a>
+<a class="el" href="classcgv_1_1gui_1_1provider.html">provider</a> *&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcgv_1_1gui_1_1directory__helper.html#a0ce2be5a7075d592a15ee4729479c269">provider_ptr_</a> = nullptr</td></tr>
+<tr class="memdesc:a0ce2be5a7075d592a15ee4729479c269"><td class="mdescLeft">&#160;</td><td class="mdescRight">The pointer to the gui provider for the control. <br /></td></tr>
+<tr class="separator:a0ce2be5a7075d592a15ee4729479c269"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a6e06f14473655c5b1a19f08b3c509232"><td class="memItemLeft" align="right" valign="top"><a id="a6e06f14473655c5b1a19f08b3c509232"></a>
+<a class="el" href="classcgv_1_1gui_1_1directory__helper.html#a87adaa37a99fc1af3ac3e00644cfe7ee">Mode</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcgv_1_1gui_1_1directory__helper.html#a6e06f14473655c5b1a19f08b3c509232">mode_</a> = Mode::kOpen</td></tr>
+<tr class="memdesc:a6e06f14473655c5b1a19f08b3c509232"><td class="mdescLeft">&#160;</td><td class="mdescRight">Operating mode of the control that controls the visibility of open and save buttons. Defaults to Mode::kOpen. <br /></td></tr>
+<tr class="separator:a6e06f14473655c5b1a19f08b3c509232"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:aff6a5eff1464a054f6081cba39e8c140"><td class="memItemLeft" align="right" valign="top"><a id="aff6a5eff1464a054f6081cba39e8c140"></a>
+std::string&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcgv_1_1gui_1_1directory__helper.html#aff6a5eff1464a054f6081cba39e8c140">title_</a> = &quot;&quot;</td></tr>
+<tr class="memdesc:aff6a5eff1464a054f6081cba39e8c140"><td class="mdescLeft">&#160;</td><td class="mdescRight">The title shown in the file system dialog. <br /></td></tr>
+<tr class="separator:aff6a5eff1464a054f6081cba39e8c140"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a0327e7b88100826cb15cb4058d99ecd0"><td class="memItemLeft" align="right" valign="top"><a id="a0327e7b88100826cb15cb4058d99ecd0"></a>
+std::string&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcgv_1_1gui_1_1directory__helper.html#a0327e7b88100826cb15cb4058d99ecd0">path_</a> = &quot;&quot;</td></tr>
+<tr class="memdesc:a0327e7b88100826cb15cb4058d99ecd0"><td class="mdescLeft">&#160;</td><td class="mdescRight">The default path used for the file system dialog. <br /></td></tr>
+<tr class="separator:a0327e7b88100826cb15cb4058d99ecd0"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
 <a name="details" id="details"></a><h2 class="groupheader">Detailed Description</h2>
 <div class="textblock"><p>A convenience class that provides a directory input gui control. </p>
 <p>Usage: Add as a member to your provider class: <a class="el" href="classcgv_1_1gui_1_1directory__helper.html" title="A convenience class that provides a directory input gui control.">cgv::gui::directory_helper</a> input;</p>
 <p>Set the provider pointer and mode in the constructor of your class: input = <a class="el" href="classcgv_1_1gui_1_1file__helper.html" title="A convenience class that provides a file input gui control.">cgv::gui::file_helper</a>(this, "Title", cgv::gui::file_helper::Mode::kOpenAndSave);</p>
 <p>Create the gui in your create_gui method: input.create_gui("Label");</p>
-<p>Testing for value changes in on_set(void* member_ptr): if(member_ptr == &amp;input.file_name) { if(input.save()) { ...handle save } else { ...handle open } }</p>
-<p>Manually updating the directory_name: input.directory_name = "some directory name"; input.update(); </p>
+<p>Testing for value changes in on_set(void* member_ptr): if(member_ptr == &amp;input.file_name) { if(input.is_save_action()) { ...handle save } else { ...handle open } } </p>
 
-<p class="definition">Definition at line <a class="el" href="file__helper_8h_source.html#l00207">207</a> of file <a class="el" href="file__helper_8h_source.html">file_helper.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="directory__helper_8h_source.html#l00029">29</a> of file <a class="el" href="directory__helper_8h_source.html">directory_helper.h</a>.</p>
 </div><h2 class="groupheader">Constructor &amp; Destructor Documentation</h2>
 <a id="ae2325d11b32bebab4814add15ccd3ead"></a>
 <h2 class="memtitle"><span class="permalink"><a href="#ae2325d11b32bebab4814add15ccd3ead">&#9670;&nbsp;</a></span>directory_helper() <span class="overload">[1/2]</span></h2>
@@ -182,12 +203,12 @@ std::string&#160;</td><td class="memItemRight" valign="bottom"><a class="el" hre
 <p>Construct with default parameters. </p>
 <p>Default constructor is given to enable using this class as a stack variable member in other classes. Before usage it must be re-assigned with a valid provider pointer. </p>
 
-<p class="definition">Definition at line <a class="el" href="file__helper_8h_source.html#l00230">230</a> of file <a class="el" href="file__helper_8h_source.html">file_helper.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="directory__helper_8h_source.html#l00056">56</a> of file <a class="el" href="directory__helper_8h_source.html">directory_helper.h</a>.</p>
 
 </div>
 </div>
-<a id="a7458cd34656e0889f395dfbbb6a60d59"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a7458cd34656e0889f395dfbbb6a60d59">&#9670;&nbsp;</a></span>directory_helper() <span class="overload">[2/2]</span></h2>
+<a id="a84af84025db21ecd70fb846b27d7f1c2"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a84af84025db21ecd70fb846b27d7f1c2">&#9670;&nbsp;</a></span>directory_helper() <span class="overload">[2/2]</span></h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -198,7 +219,7 @@ std::string&#160;</td><td class="memItemRight" valign="bottom"><a class="el" hre
         <tr>
           <td class="memname">cgv::gui::directory_helper::directory_helper </td>
           <td>(</td>
-          <td class="paramtype"><a class="el" href="classcgv_1_1gui_1_1provider.html">cgv::gui::provider</a> *&#160;</td>
+          <td class="paramtype"><a class="el" href="classcgv_1_1gui_1_1provider.html">provider</a> *&#160;</td>
           <td class="paramname"><em>p</em>, </td>
         </tr>
         <tr>
@@ -236,13 +257,13 @@ std::string&#160;</td><td class="memItemRight" valign="bottom"><a class="el" hre
   </dd>
 </dl>
 
-<p class="definition">Definition at line <a class="el" href="file__helper_8h_source.html#l00236">236</a> of file <a class="el" href="file__helper_8h_source.html">file_helper.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="directory__helper_8h_source.html#l00062">62</a> of file <a class="el" href="directory__helper_8h_source.html">directory_helper.h</a>.</p>
 
 </div>
 </div>
 <h2 class="groupheader">Member Function Documentation</h2>
-<a id="a7eb3b3bdea4d06e2141bc1adf6e7e60e"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a7eb3b3bdea4d06e2141bc1adf6e7e60e">&#9670;&nbsp;</a></span>create_gui()</h2>
+<a id="afede82a5690af9d8b5e2e0673e5c19ef"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#afede82a5690af9d8b5e2e0673e5c19ef">&#9670;&nbsp;</a></span>create_gui()</h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -260,7 +281,7 @@ std::string&#160;</td><td class="memItemRight" valign="bottom"><a class="el" hre
           <td class="paramkey"></td>
           <td></td>
           <td class="paramtype">const std::string &amp;&#160;</td>
-          <td class="paramname"><em>options</em> = <code>&quot;&quot;</code>&#160;</td>
+          <td class="paramname"><em>extra_options</em> = <code>&quot;&quot;</code>&#160;</td>
         </tr>
         <tr>
           <td></td>
@@ -279,19 +300,19 @@ std::string&#160;</td><td class="memItemRight" valign="bottom"><a class="el" hre
 <dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
     <tr><td class="paramname">label</td><td>The control label </td></tr>
-    <tr><td class="paramname">options</td><td>Additional options applied to the string input control. </td></tr>
+    <tr><td class="paramname">extra_options</td><td>Additional options applied to the string input control. </td></tr>
   </table>
   </dd>
 </dl>
 
-<p class="definition">Definition at line <a class="el" href="file__helper_8h_source.html#l00248">248</a> of file <a class="el" href="file__helper_8h_source.html">file_helper.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="directory__helper_8h_source.html#l00121">121</a> of file <a class="el" href="directory__helper_8h_source.html">directory_helper.h</a>.</p>
 
-<p class="reference">References <a class="el" href="provider_8h_source.html#l00247">cgv::gui::provider::add_gui()</a>, <a class="el" href="file__helper_8h_source.html#l00224">directory_name</a>, <a class="el" href="file__helper_8h_source.html#l00218">mode</a>, <a class="el" href="file__helper_8h_source.html#l00216">provider_ptr</a>, and <a class="el" href="file__helper_8h_source.html#l00220">title</a>.</p>
+<p class="reference">References <a class="el" href="property__string_8h_source.html#l00110">cgv::gui::property_string::add()</a>, <a class="el" href="property__string_8h_source.html#l00121">cgv::gui::property_string::add_bracketed()</a>, <a class="el" href="provider_8h_source.html#l00247">cgv::gui::provider::add_gui()</a>, <a class="el" href="directory__helper_8h_source.html#l00065">can_open()</a>, <a class="el" href="directory__helper_8h_source.html#l00070">can_save()</a>, <a class="el" href="directory__helper_8h_source.html#l00050">directory_name</a>, <a class="el" href="directory__helper_8h_source.html#l00044">path_</a>, and <a class="el" href="directory__helper_8h_source.html#l00038">provider_ptr_</a>.</p>
 
 </div>
 </div>
-<a id="a7376e01fdfccfe0596c5b3017b0d66e3"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a7376e01fdfccfe0596c5b3017b0d66e3">&#9670;&nbsp;</a></span>save()</h2>
+<a id="a445c7d5c54bba26e7d01fe581a626b2c"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a445c7d5c54bba26e7d01fe581a626b2c">&#9670;&nbsp;</a></span>get_default_path()</h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -300,7 +321,71 @@ std::string&#160;</td><td class="memItemRight" valign="bottom"><a class="el" hre
   <td class="mlabels-left">
       <table class="memname">
         <tr>
-          <td class="memname">bool cgv::gui::directory_helper::save </td>
+          <td class="memname">const std::string&amp; cgv::gui::directory_helper::get_default_path </td>
+          <td>(</td>
+          <td class="paramname"></td><td>)</td>
+          <td> const</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">inline</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p>Get the default path. </p>
+<dl class="section return"><dt>Returns</dt><dd>The default path string. </dd></dl>
+
+<p class="definition">Definition at line <a class="el" href="directory__helper_8h_source.html#l00094">94</a> of file <a class="el" href="directory__helper_8h_source.html">directory_helper.h</a>.</p>
+
+<p class="reference">References <a class="el" href="directory__helper_8h_source.html#l00044">path_</a>.</p>
+
+</div>
+</div>
+<a id="a139a6bb342657408bf82e0c103be656e"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a139a6bb342657408bf82e0c103be656e">&#9670;&nbsp;</a></span>get_title()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">const std::string&amp; cgv::gui::directory_helper::get_title </td>
+          <td>(</td>
+          <td class="paramname"></td><td>)</td>
+          <td> const</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">inline</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p>Get the title. </p>
+<dl class="section return"><dt>Returns</dt><dd>The title string. </dd></dl>
+
+<p class="definition">Definition at line <a class="el" href="directory__helper_8h_source.html#l00077">77</a> of file <a class="el" href="directory__helper_8h_source.html">directory_helper.h</a>.</p>
+
+<p class="reference">References <a class="el" href="directory__helper_8h_source.html#l00042">title_</a>.</p>
+
+</div>
+</div>
+<a id="a1e9a3c6e35e9735c8de9a10b380a7e83"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a1e9a3c6e35e9735c8de9a10b380a7e83">&#9670;&nbsp;</a></span>is_save_action()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">bool cgv::gui::directory_helper::is_save_action </td>
           <td>(</td>
           <td class="paramname"></td><td>)</td>
           <td> const</td>
@@ -316,14 +401,150 @@ std::string&#160;</td><td class="memItemRight" valign="bottom"><a class="el" hre
 <p>Check whether a save action was performed. </p>
 <dl class="section return"><dt>Returns</dt><dd>True if a save action occured, false otherwise. </dd></dl>
 
-<p class="definition">Definition at line <a class="el" href="file__helper_8h_source.html#l00263">263</a> of file <a class="el" href="file__helper_8h_source.html">file_helper.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="directory__helper_8h_source.html#l00137">137</a> of file <a class="el" href="directory__helper_8h_source.html">directory_helper.h</a>.</p>
 
-<p class="reference">References <a class="el" href="file__helper_8h_source.html#l00224">directory_name</a>, <a class="el" href="file__helper_8h_source.html#l00216">provider_ptr</a>, and <a class="el" href="provider_8h_source.html#l00217">cgv::gui::provider::ref_tree_node_visible_flag()</a>.</p>
+<p class="reference">References <a class="el" href="directory__helper_8h_source.html#l00050">directory_name</a>, <a class="el" href="directory__helper_8h_source.html#l00038">provider_ptr_</a>, and <a class="el" href="provider_8h_source.html#l00217">cgv::gui::provider::ref_tree_node_visible_flag()</a>.</p>
+
+</div>
+</div>
+<a id="aebd5fbb09aecd7021c3b9002c986d9f9"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#aebd5fbb09aecd7021c3b9002c986d9f9">&#9670;&nbsp;</a></span>set_default_path()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">void cgv::gui::directory_helper::set_default_path </td>
+          <td>(</td>
+          <td class="paramtype">const std::string &amp;&#160;</td>
+          <td class="paramname"><em>path</em></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">inline</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p>Set the default path. </p>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">path</td><td>The new defautl path. </td></tr>
+  </table>
+  </dd>
+</dl>
+
+<p class="definition">Definition at line <a class="el" href="directory__helper_8h_source.html#l00101">101</a> of file <a class="el" href="directory__helper_8h_source.html">directory_helper.h</a>.</p>
+
+<p class="reference">References <a class="el" href="directory__helper_8h_source.html#l00050">directory_name</a>, <a class="el" href="directory__helper_8h_source.html#l00044">path_</a>, <a class="el" href="directory__helper_8h_source.html#l00038">provider_ptr_</a>, and <a class="el" href="provider_8h_source.html#l00343">cgv::gui::provider::set_control_property()</a>.</p>
+
+</div>
+</div>
+<a id="a15ae4ee7a7bc393903992b96aebedbe3"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a15ae4ee7a7bc393903992b96aebedbe3">&#9670;&nbsp;</a></span>set_directory_name()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">void cgv::gui::directory_helper::set_directory_name </td>
+          <td>(</td>
+          <td class="paramtype">const std::string &amp;&#160;</td>
+          <td class="paramname"><em>directory_name</em></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">inline</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p>Set the current directory name. </p>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">directory_name</td><td>The directory name. </td></tr>
+  </table>
+  </dd>
+</dl>
+
+<p class="definition">Definition at line <a class="el" href="directory__helper_8h_source.html#l00111">111</a> of file <a class="el" href="directory__helper_8h_source.html">directory_helper.h</a>.</p>
+
+<p class="reference">References <a class="el" href="directory__helper_8h_source.html#l00050">directory_name</a>, <a class="el" href="directory__helper_8h_source.html#l00038">provider_ptr_</a>, and <a class="el" href="provider_8cxx_source.html#l00072">cgv::gui::provider::update_member()</a>.</p>
+
+</div>
+</div>
+<a id="a7179ed8ac1955d0733d21535e1475b19"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a7179ed8ac1955d0733d21535e1475b19">&#9670;&nbsp;</a></span>set_title()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">void cgv::gui::directory_helper::set_title </td>
+          <td>(</td>
+          <td class="paramtype">const std::string &amp;&#160;</td>
+          <td class="paramname"><em>title</em></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">inline</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p>Set the title. </p>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">title</td><td>The new title. </td></tr>
+  </table>
+  </dd>
+</dl>
+
+<p class="definition">Definition at line <a class="el" href="directory__helper_8h_source.html#l00084">84</a> of file <a class="el" href="directory__helper_8h_source.html">directory_helper.h</a>.</p>
+
+<p class="reference">References <a class="el" href="directory__helper_8h_source.html#l00050">directory_name</a>, <a class="el" href="directory__helper_8h_source.html#l00038">provider_ptr_</a>, <a class="el" href="provider_8h_source.html#l00343">cgv::gui::provider::set_control_property()</a>, and <a class="el" href="directory__helper_8h_source.html#l00042">title_</a>.</p>
+
+</div>
+</div>
+<h2 class="groupheader">Member Data Documentation</h2>
+<a id="aa4e95e9afe21c9afdc76951a701147c0"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#aa4e95e9afe21c9afdc76951a701147c0">&#9670;&nbsp;</a></span>directory_name</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">std::string cgv::gui::directory_helper::directory_name = &quot;&quot;</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>The current directory name This member is public to make it accessible to the GUI control flow. </p>
+<p>It should never be set directly and set_directory_name should be used instead. </p>
+
+<p class="definition">Definition at line <a class="el" href="directory__helper_8h_source.html#l00050">50</a> of file <a class="el" href="directory__helper_8h_source.html">directory_helper.h</a>.</p>
+
+<p class="reference">Referenced by <a class="el" href="directory__helper_8h_source.html#l00121">create_gui()</a>, <a class="el" href="directory__helper_8h_source.html#l00137">is_save_action()</a>, <a class="el" href="directory__helper_8h_source.html#l00101">set_default_path()</a>, <a class="el" href="directory__helper_8h_source.html#l00111">set_directory_name()</a>, and <a class="el" href="directory__helper_8h_source.html#l00084">set_title()</a>.</p>
 
 </div>
 </div>
 <hr/>The documentation for this class was generated from the following file:<ul>
-<li>cgv/gui/<a class="el" href="file__helper_8h_source.html">file_helper.h</a></li>
+<li>cgv/gui/<a class="el" href="directory__helper_8h_source.html">directory_helper.h</a></li>
 </ul>
 </div><!-- contents -->
 </div><!-- doc-content -->

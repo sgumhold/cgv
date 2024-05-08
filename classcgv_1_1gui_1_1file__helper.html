@@ -85,7 +85,6 @@ $(document).ready(function(){initNavTree('classcgv_1_1gui_1_1file__helper.html',
 <a href="#pub-types">Public Types</a> &#124;
 <a href="#pub-methods">Public Member Functions</a> &#124;
 <a href="#pub-attribs">Public Attributes</a> &#124;
-<a href="#pro-attribs">Protected Attributes</a> &#124;
 <a href="classcgv_1_1gui_1_1file__helper-members.html">List of all members</a>  </div>
   <div class="headertitle">
 <div class="title">cgv::gui::file_helper Class Reference</div>  </div>
@@ -111,79 +110,73 @@ Public Member Functions</h2></td></tr>
 <tr class="memitem:a38b705a78c0b40968807f6ce52dc3502"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcgv_1_1gui_1_1file__helper.html#a38b705a78c0b40968807f6ce52dc3502">file_helper</a> ()</td></tr>
 <tr class="memdesc:a38b705a78c0b40968807f6ce52dc3502"><td class="mdescLeft">&#160;</td><td class="mdescRight">Construct with default parameters.  <a href="classcgv_1_1gui_1_1file__helper.html#a38b705a78c0b40968807f6ce52dc3502">More...</a><br /></td></tr>
 <tr class="separator:a38b705a78c0b40968807f6ce52dc3502"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a62a98f6a70cc7f29a3151ec75c12d90d"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcgv_1_1gui_1_1file__helper.html#a62a98f6a70cc7f29a3151ec75c12d90d">file_helper</a> (<a class="el" href="classcgv_1_1gui_1_1provider.html">cgv::gui::provider</a> *p, const std::string &amp;<a class="el" href="classcgv_1_1gui_1_1file__helper.html#a75d5dec47d90db60837c424bdd9d05ce">title</a>, <a class="el" href="classcgv_1_1gui_1_1file__helper.html#a51045226bffa994b74b7402c03d002b8">Mode</a> <a class="el" href="classcgv_1_1gui_1_1file__helper.html#a119c524b2cfc1f211c0c73d17edc1ea2">mode</a>)</td></tr>
-<tr class="memdesc:a62a98f6a70cc7f29a3151ec75c12d90d"><td class="mdescLeft">&#160;</td><td class="mdescRight">Construct with arguments.  <a href="classcgv_1_1gui_1_1file__helper.html#a62a98f6a70cc7f29a3151ec75c12d90d">More...</a><br /></td></tr>
-<tr class="separator:a62a98f6a70cc7f29a3151ec75c12d90d"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a5c00abce40fe84028346055303ab5c8a"><td class="memItemLeft" align="right" valign="top"><a id="a5c00abce40fe84028346055303ab5c8a"></a>
-void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcgv_1_1gui_1_1file__helper.html#a5c00abce40fe84028346055303ab5c8a">clear_filter</a> ()</td></tr>
-<tr class="memdesc:a5c00abce40fe84028346055303ab5c8a"><td class="mdescLeft">&#160;</td><td class="mdescRight">Clear all custom filters. <br /></td></tr>
-<tr class="separator:a5c00abce40fe84028346055303ab5c8a"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a6247211e86d71a829a3cf6efc636ca67"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcgv_1_1gui_1_1file__helper.html#a6247211e86d71a829a3cf6efc636ca67">add_filter</a> (const std::string &amp;name, const std::string &amp;extension)</td></tr>
-<tr class="memdesc:a6247211e86d71a829a3cf6efc636ca67"><td class="mdescLeft">&#160;</td><td class="mdescRight">Add a custom filter matching a single extension.  <a href="classcgv_1_1gui_1_1file__helper.html#a6247211e86d71a829a3cf6efc636ca67">More...</a><br /></td></tr>
-<tr class="separator:a6247211e86d71a829a3cf6efc636ca67"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a1468f9246ad9c69835698eb4199bdd3f"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcgv_1_1gui_1_1file__helper.html#a1468f9246ad9c69835698eb4199bdd3f">add_multi_filter</a> (const std::string &amp;name, const std::vector&lt; std::string &gt; &amp;extensions)</td></tr>
-<tr class="memdesc:a1468f9246ad9c69835698eb4199bdd3f"><td class="mdescLeft">&#160;</td><td class="mdescRight">Add a custom filter matching multiple extensions.  <a href="classcgv_1_1gui_1_1file__helper.html#a1468f9246ad9c69835698eb4199bdd3f">More...</a><br /></td></tr>
-<tr class="separator:a1468f9246ad9c69835698eb4199bdd3f"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:aae95797f357ad55810c3831b6459c7ad"><td class="memItemLeft" align="right" valign="top"><a id="aae95797f357ad55810c3831b6459c7ad"></a>
-void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcgv_1_1gui_1_1file__helper.html#aae95797f357ad55810c3831b6459c7ad">update</a> ()</td></tr>
-<tr class="memdesc:aae95797f357ad55810c3831b6459c7ad"><td class="mdescLeft">&#160;</td><td class="mdescRight">Update the gui control after changing file_name. <br /></td></tr>
-<tr class="separator:aae95797f357ad55810c3831b6459c7ad"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a9d88baf963ae1d476e532c854c5b9a6e"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcgv_1_1gui_1_1file__helper.html#a9d88baf963ae1d476e532c854c5b9a6e">file_helper</a> (<a class="el" href="classcgv_1_1gui_1_1provider.html">provider</a> *p, const std::string &amp;title, <a class="el" href="classcgv_1_1gui_1_1file__helper.html#a51045226bffa994b74b7402c03d002b8">Mode</a> mode)</td></tr>
+<tr class="memdesc:a9d88baf963ae1d476e532c854c5b9a6e"><td class="mdescLeft">&#160;</td><td class="mdescRight">Construct with arguments.  <a href="classcgv_1_1gui_1_1file__helper.html#a9d88baf963ae1d476e532c854c5b9a6e">More...</a><br /></td></tr>
+<tr class="separator:a9d88baf963ae1d476e532c854c5b9a6e"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a6537b85617fba3ed4011e3386bbd3d51"><td class="memItemLeft" align="right" valign="top"><a id="a6537b85617fba3ed4011e3386bbd3d51"></a>
+bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcgv_1_1gui_1_1file__helper.html#a6537b85617fba3ed4011e3386bbd3d51">can_open</a> () const</td></tr>
+<tr class="memdesc:a6537b85617fba3ed4011e3386bbd3d51"><td class="mdescLeft">&#160;</td><td class="mdescRight">Return true if this <a class="el" href="classcgv_1_1gui_1_1file__helper.html" title="A convenience class that provides a file input gui control.">file_helper</a> supports opening files, false otherwise. <br /></td></tr>
+<tr class="separator:a6537b85617fba3ed4011e3386bbd3d51"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ad4fb7951ce4d786986ebfc89c888a5dd"><td class="memItemLeft" align="right" valign="top"><a id="ad4fb7951ce4d786986ebfc89c888a5dd"></a>
+bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcgv_1_1gui_1_1file__helper.html#ad4fb7951ce4d786986ebfc89c888a5dd">can_save</a> () const</td></tr>
+<tr class="memdesc:ad4fb7951ce4d786986ebfc89c888a5dd"><td class="mdescLeft">&#160;</td><td class="mdescRight">Return true if this <a class="el" href="classcgv_1_1gui_1_1file__helper.html" title="A convenience class that provides a file input gui control.">file_helper</a> supports saving files, false otherwise. <br /></td></tr>
+<tr class="separator:ad4fb7951ce4d786986ebfc89c888a5dd"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ada3d1be37ca1cdfc4f69542cc835f04c"><td class="memItemLeft" align="right" valign="top">const std::string &amp;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcgv_1_1gui_1_1file__helper.html#ada3d1be37ca1cdfc4f69542cc835f04c">get_title</a> (<a class="el" href="classcgv_1_1gui_1_1file__helper.html#a51045226bffa994b74b7402c03d002b8">Mode</a> mode=Mode::kOpenAndSave) const</td></tr>
+<tr class="memdesc:ada3d1be37ca1cdfc4f69542cc835f04c"><td class="mdescLeft">&#160;</td><td class="mdescRight">Get the title of the specified operation Mode.  <a href="classcgv_1_1gui_1_1file__helper.html#ada3d1be37ca1cdfc4f69542cc835f04c">More...</a><br /></td></tr>
+<tr class="separator:ada3d1be37ca1cdfc4f69542cc835f04c"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:adac61932cdd0c76b92378a73f2cd0a16"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcgv_1_1gui_1_1file__helper.html#adac61932cdd0c76b92378a73f2cd0a16">set_title</a> (const std::string &amp;title, <a class="el" href="classcgv_1_1gui_1_1file__helper.html#a51045226bffa994b74b7402c03d002b8">Mode</a> mode=Mode::kOpenAndSave)</td></tr>
+<tr class="memdesc:adac61932cdd0c76b92378a73f2cd0a16"><td class="mdescLeft">&#160;</td><td class="mdescRight">Set the title of the specified operation Mode.  <a href="classcgv_1_1gui_1_1file__helper.html#adac61932cdd0c76b92378a73f2cd0a16">More...</a><br /></td></tr>
+<tr class="separator:adac61932cdd0c76b92378a73f2cd0a16"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a4454b0c0a0d8e3a601088ec14b053d40"><td class="memItemLeft" align="right" valign="top">const std::string &amp;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcgv_1_1gui_1_1file__helper.html#a4454b0c0a0d8e3a601088ec14b053d40">get_default_path</a> (<a class="el" href="classcgv_1_1gui_1_1file__helper.html#a51045226bffa994b74b7402c03d002b8">Mode</a> mode=Mode::kOpenAndSave) const</td></tr>
+<tr class="memdesc:a4454b0c0a0d8e3a601088ec14b053d40"><td class="mdescLeft">&#160;</td><td class="mdescRight">Get the default path of the specified operation Mode.  <a href="classcgv_1_1gui_1_1file__helper.html#a4454b0c0a0d8e3a601088ec14b053d40">More...</a><br /></td></tr>
+<tr class="separator:a4454b0c0a0d8e3a601088ec14b053d40"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a50a1f5f7bdbeca5e4e485809a12cfefe"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcgv_1_1gui_1_1file__helper.html#a50a1f5f7bdbeca5e4e485809a12cfefe">set_default_path</a> (const std::string &amp;path, <a class="el" href="classcgv_1_1gui_1_1file__helper.html#a51045226bffa994b74b7402c03d002b8">Mode</a> mode=Mode::kOpenAndSave)</td></tr>
+<tr class="memdesc:a50a1f5f7bdbeca5e4e485809a12cfefe"><td class="mdescLeft">&#160;</td><td class="mdescRight">Set the default path of the specified operation Mode.  <a href="classcgv_1_1gui_1_1file__helper.html#a50a1f5f7bdbeca5e4e485809a12cfefe">More...</a><br /></td></tr>
+<tr class="separator:a50a1f5f7bdbeca5e4e485809a12cfefe"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:af5e7705d89e3efc21eef787166e9d59d"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcgv_1_1gui_1_1file__helper.html#af5e7705d89e3efc21eef787166e9d59d">set_file_name</a> (const std::string &amp;<a class="el" href="classcgv_1_1gui_1_1file__helper.html#aed0bc0b68076f906586765ed4b04de56">file_name</a>)</td></tr>
+<tr class="memdesc:af5e7705d89e3efc21eef787166e9d59d"><td class="mdescLeft">&#160;</td><td class="mdescRight">Set the current file name.  <a href="classcgv_1_1gui_1_1file__helper.html#af5e7705d89e3efc21eef787166e9d59d">More...</a><br /></td></tr>
+<tr class="separator:af5e7705d89e3efc21eef787166e9d59d"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a310cbfb37ead078ffb7f562b24677eca"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcgv_1_1gui_1_1file__helper.html#a310cbfb37ead078ffb7f562b24677eca">clear_filters</a> ()</td></tr>
+<tr class="memdesc:a310cbfb37ead078ffb7f562b24677eca"><td class="mdescLeft">&#160;</td><td class="mdescRight">Clear all custom filters.  <a href="classcgv_1_1gui_1_1file__helper.html#a310cbfb37ead078ffb7f562b24677eca">More...</a><br /></td></tr>
+<tr class="separator:a310cbfb37ead078ffb7f562b24677eca"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a221154b66fee976ae60b6a716895ee67"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcgv_1_1gui_1_1file__helper.html#a221154b66fee976ae60b6a716895ee67">add_filter</a> (const std::string &amp;name, const std::string &amp;extension, <a class="el" href="classcgv_1_1gui_1_1file__helper.html#a51045226bffa994b74b7402c03d002b8">Mode</a> mode=Mode::kOpenAndSave)</td></tr>
+<tr class="memdesc:a221154b66fee976ae60b6a716895ee67"><td class="mdescLeft">&#160;</td><td class="mdescRight">Add a custom filter matching a single extension.  <a href="classcgv_1_1gui_1_1file__helper.html#a221154b66fee976ae60b6a716895ee67">More...</a><br /></td></tr>
+<tr class="separator:a221154b66fee976ae60b6a716895ee67"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a1f0e386796138b7c7aae49205454fe0d"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcgv_1_1gui_1_1file__helper.html#a1f0e386796138b7c7aae49205454fe0d">add_multi_filter</a> (const std::string &amp;name, const std::vector&lt; std::string &gt; &amp;extensions, <a class="el" href="classcgv_1_1gui_1_1file__helper.html#a51045226bffa994b74b7402c03d002b8">Mode</a> mode=Mode::kOpenAndSave)</td></tr>
+<tr class="memdesc:a1f0e386796138b7c7aae49205454fe0d"><td class="mdescLeft">&#160;</td><td class="mdescRight">Add a custom filter matching multiple extensions.  <a href="classcgv_1_1gui_1_1file__helper.html#a1f0e386796138b7c7aae49205454fe0d">More...</a><br /></td></tr>
+<tr class="separator:a1f0e386796138b7c7aae49205454fe0d"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a5886e14809a585b880d31c38ff51c670"><td class="memItemLeft" align="right" valign="top"><a id="a5886e14809a585b880d31c38ff51c670"></a>
+void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcgv_1_1gui_1_1file__helper.html#a5886e14809a585b880d31c38ff51c670">add_filter_for_all_files</a> (<a class="el" href="classcgv_1_1gui_1_1file__helper.html#a51045226bffa994b74b7402c03d002b8">Mode</a> mode=Mode::kOpenAndSave)</td></tr>
+<tr class="memdesc:a5886e14809a585b880d31c38ff51c670"><td class="mdescLeft">&#160;</td><td class="mdescRight">Add a filter that matches all files. <br /></td></tr>
+<tr class="separator:a5886e14809a585b880d31c38ff51c670"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:af10e95e3f9ae46b8b148e2a2fa2e1bdc"><td class="memItemLeft" align="right" valign="top">bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcgv_1_1gui_1_1file__helper.html#af10e95e3f9ae46b8b148e2a2fa2e1bdc">compare_extension</a> (const std::string &amp;extension) const</td></tr>
 <tr class="memdesc:af10e95e3f9ae46b8b148e2a2fa2e1bdc"><td class="mdescLeft">&#160;</td><td class="mdescRight">Compare the extension of file_name to the given string (case insensitive)  <a href="classcgv_1_1gui_1_1file__helper.html#af10e95e3f9ae46b8b148e2a2fa2e1bdc">More...</a><br /></td></tr>
 <tr class="separator:af10e95e3f9ae46b8b148e2a2fa2e1bdc"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:afdf420bb42d593b2f98bd2d03ab9a02c"><td class="memItemLeft" align="right" valign="top">const std::string&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcgv_1_1gui_1_1file__helper.html#afdf420bb42d593b2f98bd2d03ab9a02c">ensure_extension</a> (const std::string &amp;extension, bool force=false)</td></tr>
 <tr class="memdesc:afdf420bb42d593b2f98bd2d03ab9a02c"><td class="mdescLeft">&#160;</td><td class="mdescRight">Ensure the stored file_name has the given extension.  <a href="classcgv_1_1gui_1_1file__helper.html#afdf420bb42d593b2f98bd2d03ab9a02c">More...</a><br /></td></tr>
 <tr class="separator:afdf420bb42d593b2f98bd2d03ab9a02c"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a67df544a8745dc61a9288728f7cbaf40"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcgv_1_1gui_1_1file__helper.html#a67df544a8745dc61a9288728f7cbaf40">create_gui</a> (const std::string &amp;label, const std::string &amp;options=&quot;&quot;)</td></tr>
-<tr class="memdesc:a67df544a8745dc61a9288728f7cbaf40"><td class="mdescLeft">&#160;</td><td class="mdescRight">Create the gui control for the file input.  <a href="classcgv_1_1gui_1_1file__helper.html#a67df544a8745dc61a9288728f7cbaf40">More...</a><br /></td></tr>
-<tr class="separator:a67df544a8745dc61a9288728f7cbaf40"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a1e05377cdd7e4c1acc81d4936f89981f"><td class="memItemLeft" align="right" valign="top">bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcgv_1_1gui_1_1file__helper.html#a1e05377cdd7e4c1acc81d4936f89981f">save</a> () const</td></tr>
-<tr class="memdesc:a1e05377cdd7e4c1acc81d4936f89981f"><td class="mdescLeft">&#160;</td><td class="mdescRight">Check whether a save action was performed.  <a href="classcgv_1_1gui_1_1file__helper.html#a1e05377cdd7e4c1acc81d4936f89981f">More...</a><br /></td></tr>
-<tr class="separator:a1e05377cdd7e4c1acc81d4936f89981f"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ab2eef5a0ce5ff1dbd2651aa56be255ee"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcgv_1_1gui_1_1file__helper.html#ab2eef5a0ce5ff1dbd2651aa56be255ee">create_gui</a> (const std::string &amp;label, const std::string &amp;extra_options=&quot;&quot;)</td></tr>
+<tr class="memdesc:ab2eef5a0ce5ff1dbd2651aa56be255ee"><td class="mdescLeft">&#160;</td><td class="mdescRight">Create the gui control for the file input.  <a href="classcgv_1_1gui_1_1file__helper.html#ab2eef5a0ce5ff1dbd2651aa56be255ee">More...</a><br /></td></tr>
+<tr class="separator:ab2eef5a0ce5ff1dbd2651aa56be255ee"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a0309f50674d28f79dd1cbe69370714f4"><td class="memItemLeft" align="right" valign="top">bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcgv_1_1gui_1_1file__helper.html#a0309f50674d28f79dd1cbe69370714f4">is_save_action</a> () const</td></tr>
+<tr class="memdesc:a0309f50674d28f79dd1cbe69370714f4"><td class="mdescLeft">&#160;</td><td class="mdescRight">Check whether a save action was performed.  <a href="classcgv_1_1gui_1_1file__helper.html#a0309f50674d28f79dd1cbe69370714f4">More...</a><br /></td></tr>
+<tr class="separator:a0309f50674d28f79dd1cbe69370714f4"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="pub-attribs"></a>
 Public Attributes</h2></td></tr>
-<tr class="memitem:ae03972a85b2a25d2376d189aca5dc410"><td class="memItemLeft" align="right" valign="top"><a id="ae03972a85b2a25d2376d189aca5dc410"></a>
-bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcgv_1_1gui_1_1file__helper.html#ae03972a85b2a25d2376d189aca5dc410">allow_all_files</a> = true</td></tr>
-<tr class="memdesc:ae03972a85b2a25d2376d189aca5dc410"><td class="mdescLeft">&#160;</td><td class="mdescRight">Whether to add a default filter matching all files. <br /></td></tr>
-<tr class="separator:ae03972a85b2a25d2376d189aca5dc410"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:ad8b1bbb4d1420b103ecc7fcf676adc52"><td class="memItemLeft" align="right" valign="top"><a id="ad8b1bbb4d1420b103ecc7fcf676adc52"></a>
-bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcgv_1_1gui_1_1file__helper.html#ad8b1bbb4d1420b103ecc7fcf676adc52">default_to_all_files</a> = false</td></tr>
-<tr class="memdesc:ad8b1bbb4d1420b103ecc7fcf676adc52"><td class="mdescLeft">&#160;</td><td class="mdescRight">Whether to default to the all files filter when opening the dialog. <br /></td></tr>
-<tr class="separator:ad8b1bbb4d1420b103ecc7fcf676adc52"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:aed0bc0b68076f906586765ed4b04de56"><td class="memItemLeft" align="right" valign="top"><a id="aed0bc0b68076f906586765ed4b04de56"></a>
-std::string&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcgv_1_1gui_1_1file__helper.html#aed0bc0b68076f906586765ed4b04de56">file_name</a> = &quot;&quot;</td></tr>
-<tr class="memdesc:aed0bc0b68076f906586765ed4b04de56"><td class="mdescLeft">&#160;</td><td class="mdescRight">The current store file name. <br /></td></tr>
+<tr class="memitem:aed0bc0b68076f906586765ed4b04de56"><td class="memItemLeft" align="right" valign="top">std::string&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcgv_1_1gui_1_1file__helper.html#aed0bc0b68076f906586765ed4b04de56">file_name</a> = &quot;&quot;</td></tr>
+<tr class="memdesc:aed0bc0b68076f906586765ed4b04de56"><td class="mdescLeft">&#160;</td><td class="mdescRight">The current file name.  <a href="classcgv_1_1gui_1_1file__helper.html#aed0bc0b68076f906586765ed4b04de56">More...</a><br /></td></tr>
 <tr class="separator:aed0bc0b68076f906586765ed4b04de56"><td class="memSeparator" colspan="2">&#160;</td></tr>
-</table><table class="memberdecls">
-<tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="pro-attribs"></a>
-Protected Attributes</h2></td></tr>
-<tr class="memitem:a798d58112697ea96098f21e1f803041c"><td class="memItemLeft" align="right" valign="top"><a id="a798d58112697ea96098f21e1f803041c"></a>
-<a class="el" href="classcgv_1_1gui_1_1provider.html">cgv::gui::provider</a> *&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcgv_1_1gui_1_1file__helper.html#a798d58112697ea96098f21e1f803041c">provider_ptr</a> = nullptr</td></tr>
-<tr class="memdesc:a798d58112697ea96098f21e1f803041c"><td class="mdescLeft">&#160;</td><td class="mdescRight">The pointer to the gui provider for the control. <br /></td></tr>
-<tr class="separator:a798d58112697ea96098f21e1f803041c"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a119c524b2cfc1f211c0c73d17edc1ea2"><td class="memItemLeft" align="right" valign="top"><a id="a119c524b2cfc1f211c0c73d17edc1ea2"></a>
-<a class="el" href="classcgv_1_1gui_1_1file__helper.html#a51045226bffa994b74b7402c03d002b8">Mode</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcgv_1_1gui_1_1file__helper.html#a119c524b2cfc1f211c0c73d17edc1ea2">mode</a> = Mode::kOpen</td></tr>
-<tr class="memdesc:a119c524b2cfc1f211c0c73d17edc1ea2"><td class="mdescLeft">&#160;</td><td class="mdescRight">Operating mode of the control that controls the visibility of open and save buttons. Defaults to Mode::kOpen. <br /></td></tr>
-<tr class="separator:a119c524b2cfc1f211c0c73d17edc1ea2"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a75d5dec47d90db60837c424bdd9d05ce"><td class="memItemLeft" align="right" valign="top"><a id="a75d5dec47d90db60837c424bdd9d05ce"></a>
-std::string&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcgv_1_1gui_1_1file__helper.html#a75d5dec47d90db60837c424bdd9d05ce">title</a> = &quot;&quot;</td></tr>
-<tr class="memdesc:a75d5dec47d90db60837c424bdd9d05ce"><td class="mdescLeft">&#160;</td><td class="mdescRight">The title shown in the file system dialog. <br /></td></tr>
-<tr class="separator:a75d5dec47d90db60837c424bdd9d05ce"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a9131f79815a2053100d05637f4a05ac0"><td class="memItemLeft" align="right" valign="top"><a id="a9131f79815a2053100d05637f4a05ac0"></a>
-std::string&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcgv_1_1gui_1_1file__helper.html#a9131f79815a2053100d05637f4a05ac0">filter</a> = &quot;&quot;</td></tr>
-<tr class="memdesc:a9131f79815a2053100d05637f4a05ac0"><td class="mdescLeft">&#160;</td><td class="mdescRight">The filter string used by the gui control, controlling the allowed file types. <br /></td></tr>
-<tr class="separator:a9131f79815a2053100d05637f4a05ac0"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
 <a name="details" id="details"></a><h2 class="groupheader">Detailed Description</h2>
 <div class="textblock"><p>A convenience class that provides a file input gui control. </p>
 <p>Usage: Add as a member to your provider class: <a class="el" href="classcgv_1_1gui_1_1file__helper.html" title="A convenience class that provides a file input gui control.">cgv::gui::file_helper</a> input;</p>
 <p>Set the provider pointer and mode in the constructor of your class: input = <a class="el" href="classcgv_1_1gui_1_1file__helper.html" title="A convenience class that provides a file input gui control.">cgv::gui::file_helper</a>(this, "Title", cgv::gui::file_helper::Mode::kOpenAndSave);</p>
+<p>Set filters to match file types as needed. The first filter that is added will be selected by default when openign the dialog. input.add_filter("Text Files", "txt");</p>
 <p>Create the gui in your create_gui method: input.create_gui("Label");</p>
-<p>Testing for value changes in on_set(void* member_ptr): if(member_ptr == &amp;input.file_name) { if(input.save()) { ...handle save } else { ...handle open } }</p>
-<p>Manually updating the file_name: input.file_name = "some file name"; input.update(); </p>
+<p>Testing for value changes in on_set(void* member_ptr): if(member_ptr == &amp;input.file_name) { if(input.is_save_action()) { ...handle save } else { ...handle open } } </p>
 
-<p class="definition">Definition at line <a class="el" href="file__helper_8h_source.html#l00034">34</a> of file <a class="el" href="file__helper_8h_source.html">file_helper.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="file__helper_8h_source.html#l00035">35</a> of file <a class="el" href="file__helper_8h_source.html">file_helper.h</a>.</p>
 </div><h2 class="groupheader">Constructor &amp; Destructor Documentation</h2>
 <a id="a38b705a78c0b40968807f6ce52dc3502"></a>
 <h2 class="memtitle"><span class="permalink"><a href="#a38b705a78c0b40968807f6ce52dc3502">&#9670;&nbsp;</a></span>file_helper() <span class="overload">[1/2]</span></h2>
@@ -211,12 +204,12 @@ std::string&#160;</td><td class="memItemRight" valign="bottom"><a class="el" hre
 <p>Construct with default parameters. </p>
 <p>Default constructor is given to enable using this class as a stack variable member in other classes. Before usage it must be re-assigned with a valid provider pointer. </p>
 
-<p class="definition">Definition at line <a class="el" href="file__helper_8h_source.html#l00064">64</a> of file <a class="el" href="file__helper_8h_source.html">file_helper.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="file__helper_8h_source.html#l00106">106</a> of file <a class="el" href="file__helper_8h_source.html">file_helper.h</a>.</p>
 
 </div>
 </div>
-<a id="a62a98f6a70cc7f29a3151ec75c12d90d"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a62a98f6a70cc7f29a3151ec75c12d90d">&#9670;&nbsp;</a></span>file_helper() <span class="overload">[2/2]</span></h2>
+<a id="a9d88baf963ae1d476e532c854c5b9a6e"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a9d88baf963ae1d476e532c854c5b9a6e">&#9670;&nbsp;</a></span>file_helper() <span class="overload">[2/2]</span></h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -227,7 +220,7 @@ std::string&#160;</td><td class="memItemRight" valign="bottom"><a class="el" hre
         <tr>
           <td class="memname">cgv::gui::file_helper::file_helper </td>
           <td>(</td>
-          <td class="paramtype"><a class="el" href="classcgv_1_1gui_1_1provider.html">cgv::gui::provider</a> *&#160;</td>
+          <td class="paramtype"><a class="el" href="classcgv_1_1gui_1_1provider.html">provider</a> *&#160;</td>
           <td class="paramname"><em>p</em>, </td>
         </tr>
         <tr>
@@ -265,13 +258,13 @@ std::string&#160;</td><td class="memItemRight" valign="bottom"><a class="el" hre
   </dd>
 </dl>
 
-<p class="definition">Definition at line <a class="el" href="file__helper_8h_source.html#l00070">70</a> of file <a class="el" href="file__helper_8h_source.html">file_helper.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="file__helper_8h_source.html#l00112">112</a> of file <a class="el" href="file__helper_8h_source.html">file_helper.h</a>.</p>
 
 </div>
 </div>
 <h2 class="groupheader">Member Function Documentation</h2>
-<a id="a6247211e86d71a829a3cf6efc636ca67"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a6247211e86d71a829a3cf6efc636ca67">&#9670;&nbsp;</a></span>add_filter()</h2>
+<a id="a221154b66fee976ae60b6a716895ee67"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a221154b66fee976ae60b6a716895ee67">&#9670;&nbsp;</a></span>add_filter()</h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -289,7 +282,13 @@ std::string&#160;</td><td class="memItemRight" valign="bottom"><a class="el" hre
           <td class="paramkey"></td>
           <td></td>
           <td class="paramtype">const std::string &amp;&#160;</td>
-          <td class="paramname"><em>extension</em>&#160;</td>
+          <td class="paramname"><em>extension</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype"><a class="el" href="classcgv_1_1gui_1_1file__helper.html#a51045226bffa994b74b7402c03d002b8">Mode</a>&#160;</td>
+          <td class="paramname"><em>mode</em> = <code>Mode::kOpenAndSave</code>&#160;</td>
         </tr>
         <tr>
           <td></td>
@@ -310,18 +309,17 @@ std::string&#160;</td><td class="memItemRight" valign="bottom"><a class="el" hre
   <table class="params">
     <tr><td class="paramname">name</td><td>The display name. </td></tr>
     <tr><td class="paramname">extension</td><td>The extensions matched. </td></tr>
+    <tr><td class="paramname">mode</td><td>The operation mode where this filter is used (defaults to kOpenAndSave). </td></tr>
   </table>
   </dd>
 </dl>
 
-<p class="definition">Definition at line <a class="el" href="file__helper_8h_source.html#l00087">87</a> of file <a class="el" href="file__helper_8h_source.html">file_helper.h</a>.</p>
-
-<p class="reference">References <a class="el" href="file__helper_8h_source.html#l00050">filter</a>.</p>
+<p class="definition">Definition at line <a class="el" href="file__helper_8h_source.html#l00215">215</a> of file <a class="el" href="file__helper_8h_source.html">file_helper.h</a>.</p>
 
 </div>
 </div>
-<a id="a1468f9246ad9c69835698eb4199bdd3f"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a1468f9246ad9c69835698eb4199bdd3f">&#9670;&nbsp;</a></span>add_multi_filter()</h2>
+<a id="a1f0e386796138b7c7aae49205454fe0d"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a1f0e386796138b7c7aae49205454fe0d">&#9670;&nbsp;</a></span>add_multi_filter()</h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -339,7 +337,13 @@ std::string&#160;</td><td class="memItemRight" valign="bottom"><a class="el" hre
           <td class="paramkey"></td>
           <td></td>
           <td class="paramtype">const std::vector&lt; std::string &gt; &amp;&#160;</td>
-          <td class="paramname"><em>extensions</em>&#160;</td>
+          <td class="paramname"><em>extensions</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype"><a class="el" href="classcgv_1_1gui_1_1file__helper.html#a51045226bffa994b74b7402c03d002b8">Mode</a>&#160;</td>
+          <td class="paramname"><em>mode</em> = <code>Mode::kOpenAndSave</code>&#160;</td>
         </tr>
         <tr>
           <td></td>
@@ -360,13 +364,44 @@ std::string&#160;</td><td class="memItemRight" valign="bottom"><a class="el" hre
   <table class="params">
     <tr><td class="paramname">name</td><td>The display name. </td></tr>
     <tr><td class="paramname">extension</td><td>The extensions matched. </td></tr>
+    <tr><td class="paramname">mode</td><td>The operation mode where this filter is used (defaults to kOpenAndSave). </td></tr>
   </table>
   </dd>
 </dl>
 
-<p class="definition">Definition at line <a class="el" href="file__helper_8h_source.html#l00104">104</a> of file <a class="el" href="file__helper_8h_source.html">file_helper.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="file__helper_8h_source.html#l00230">230</a> of file <a class="el" href="file__helper_8h_source.html">file_helper.h</a>.</p>
 
-<p class="reference">References <a class="el" href="file__helper_8h_source.html#l00050">filter</a>, and <a class="el" href="scan_8cxx_source.html#l00733">cgv::utils::join()</a>.</p>
+<p class="reference">References <a class="el" href="scan_8cxx_source.html#l00733">cgv::utils::join()</a>.</p>
+
+</div>
+</div>
+<a id="a310cbfb37ead078ffb7f562b24677eca"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a310cbfb37ead078ffb7f562b24677eca">&#9670;&nbsp;</a></span>clear_filters()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">void cgv::gui::file_helper::clear_filters </td>
+          <td>(</td>
+          <td class="paramname"></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">inline</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p>Clear all custom filters. </p>
+<p>After this method has been called new filters may be set. The gui must be redrawn manually in order for this change to take effect. </p>
+
+<p class="definition">Definition at line <a class="el" href="file__helper_8h_source.html#l00200">200</a> of file <a class="el" href="file__helper_8h_source.html">file_helper.h</a>.</p>
 
 </div>
 </div>
@@ -403,14 +438,14 @@ std::string&#160;</td><td class="memItemRight" valign="bottom"><a class="el" hre
 </dl>
 <dl class="section return"><dt>Returns</dt><dd>True if the stored file_name has extension, false otherwise. </dd></dl>
 
-<p class="definition">Definition at line <a class="el" href="file__helper_8h_source.html#l00122">122</a> of file <a class="el" href="file__helper_8h_source.html">file_helper.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="file__helper_8h_source.html#l00243">243</a> of file <a class="el" href="file__helper_8h_source.html">file_helper.h</a>.</p>
 
-<p class="reference">References <a class="el" href="file__helper_8h_source.html#l00058">file_name</a>, and <a class="el" href="scan_8cxx_source.html#l00106">cgv::utils::to_upper()</a>.</p>
+<p class="reference">References <a class="el" href="file__helper_8h_source.html#l00100">file_name</a>, and <a class="el" href="scan_8cxx_source.html#l00106">cgv::utils::to_upper()</a>.</p>
 
 </div>
 </div>
-<a id="a67df544a8745dc61a9288728f7cbaf40"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a67df544a8745dc61a9288728f7cbaf40">&#9670;&nbsp;</a></span>create_gui()</h2>
+<a id="ab2eef5a0ce5ff1dbd2651aa56be255ee"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#ab2eef5a0ce5ff1dbd2651aa56be255ee">&#9670;&nbsp;</a></span>create_gui()</h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -428,7 +463,7 @@ std::string&#160;</td><td class="memItemRight" valign="bottom"><a class="el" hre
           <td class="paramkey"></td>
           <td></td>
           <td class="paramtype">const std::string &amp;&#160;</td>
-          <td class="paramname"><em>options</em> = <code>&quot;&quot;</code>&#160;</td>
+          <td class="paramname"><em>extra_options</em> = <code>&quot;&quot;</code>&#160;</td>
         </tr>
         <tr>
           <td></td>
@@ -447,14 +482,14 @@ std::string&#160;</td><td class="memItemRight" valign="bottom"><a class="el" hre
 <dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
     <tr><td class="paramname">label</td><td>The control label </td></tr>
-    <tr><td class="paramname">options</td><td>Additional options applied to the string input control. </td></tr>
+    <tr><td class="paramname">extra_options</td><td>Additional options applied to the string input control. </td></tr>
   </table>
   </dd>
 </dl>
 
-<p class="definition">Definition at line <a class="el" href="file__helper_8h_source.html#l00153">153</a> of file <a class="el" href="file__helper_8h_source.html">file_helper.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="file__helper_8h_source.html#l00272">272</a> of file <a class="el" href="file__helper_8h_source.html">file_helper.h</a>.</p>
 
-<p class="reference">References <a class="el" href="provider_8h_source.html#l00247">cgv::gui::provider::add_gui()</a>, <a class="el" href="file__helper_8h_source.html#l00054">allow_all_files</a>, <a class="el" href="file__helper_8h_source.html#l00056">default_to_all_files</a>, <a class="el" href="file__helper_8h_source.html#l00058">file_name</a>, <a class="el" href="file__helper_8h_source.html#l00050">filter</a>, <a class="el" href="file__helper_8h_source.html#l00046">mode</a>, <a class="el" href="file__helper_8h_source.html#l00044">provider_ptr</a>, and <a class="el" href="file__helper_8h_source.html#l00048">title</a>.</p>
+<p class="reference">References <a class="el" href="property__string_8h_source.html#l00110">cgv::gui::property_string::add()</a>, <a class="el" href="property__string_8h_source.html#l00121">cgv::gui::property_string::add_bracketed()</a>, <a class="el" href="provider_8h_source.html#l00247">cgv::gui::provider::add_gui()</a>, <a class="el" href="file__helper_8h_source.html#l00121">can_open()</a>, <a class="el" href="file__helper_8h_source.html#l00126">can_save()</a>, and <a class="el" href="file__helper_8h_source.html#l00100">file_name</a>.</p>
 
 </div>
 </div>
@@ -503,14 +538,14 @@ std::string&#160;</td><td class="memItemRight" valign="bottom"><a class="el" hre
 </dl>
 <dl class="section return"><dt>Returns</dt><dd>The extension of the file_name after this operation. </dd></dl>
 
-<p class="definition">Definition at line <a class="el" href="file__helper_8h_source.html#l00136">136</a> of file <a class="el" href="file__helper_8h_source.html">file_helper.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="file__helper_8h_source.html#l00256">256</a> of file <a class="el" href="file__helper_8h_source.html">file_helper.h</a>.</p>
 
-<p class="reference">References <a class="el" href="file__helper_8h_source.html#l00058">file_name</a>, and <a class="el" href="scan_8cxx_source.html#l00106">cgv::utils::to_upper()</a>.</p>
+<p class="reference">References <a class="el" href="file__helper_8h_source.html#l00100">file_name</a>, and <a class="el" href="scan_8cxx_source.html#l00106">cgv::utils::to_upper()</a>.</p>
 
 </div>
 </div>
-<a id="a1e05377cdd7e4c1acc81d4936f89981f"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a1e05377cdd7e4c1acc81d4936f89981f">&#9670;&nbsp;</a></span>save()</h2>
+<a id="a4454b0c0a0d8e3a601088ec14b053d40"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a4454b0c0a0d8e3a601088ec14b053d40">&#9670;&nbsp;</a></span>get_default_path()</h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -519,7 +554,81 @@ std::string&#160;</td><td class="memItemRight" valign="bottom"><a class="el" hre
   <td class="mlabels-left">
       <table class="memname">
         <tr>
-          <td class="memname">bool cgv::gui::file_helper::save </td>
+          <td class="memname">const std::string&amp; cgv::gui::file_helper::get_default_path </td>
+          <td>(</td>
+          <td class="paramtype"><a class="el" href="classcgv_1_1gui_1_1file__helper.html#a51045226bffa994b74b7402c03d002b8">Mode</a>&#160;</td>
+          <td class="paramname"><em>mode</em> = <code>Mode::kOpenAndSave</code></td><td>)</td>
+          <td> const</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">inline</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p>Get the default path of the specified operation Mode. </p>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">mode</td><td>The operation Mode. </td></tr>
+  </table>
+  </dd>
+</dl>
+<dl class="section return"><dt>Returns</dt><dd>The default path string. </dd></dl>
+
+<p class="definition">Definition at line <a class="el" href="file__helper_8h_source.html#l00162">162</a> of file <a class="el" href="file__helper_8h_source.html">file_helper.h</a>.</p>
+
+</div>
+</div>
+<a id="ada3d1be37ca1cdfc4f69542cc835f04c"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#ada3d1be37ca1cdfc4f69542cc835f04c">&#9670;&nbsp;</a></span>get_title()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">const std::string&amp; cgv::gui::file_helper::get_title </td>
+          <td>(</td>
+          <td class="paramtype"><a class="el" href="classcgv_1_1gui_1_1file__helper.html#a51045226bffa994b74b7402c03d002b8">Mode</a>&#160;</td>
+          <td class="paramname"><em>mode</em> = <code>Mode::kOpenAndSave</code></td><td>)</td>
+          <td> const</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">inline</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p>Get the title of the specified operation Mode. </p>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">mode</td><td>The optional operation Mode. </td></tr>
+  </table>
+  </dd>
+</dl>
+<dl class="section return"><dt>Returns</dt><dd>The title string. </dd></dl>
+
+<p class="definition">Definition at line <a class="el" href="file__helper_8h_source.html#l00134">134</a> of file <a class="el" href="file__helper_8h_source.html">file_helper.h</a>.</p>
+
+</div>
+</div>
+<a id="a0309f50674d28f79dd1cbe69370714f4"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a0309f50674d28f79dd1cbe69370714f4">&#9670;&nbsp;</a></span>is_save_action()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">bool cgv::gui::file_helper::is_save_action </td>
           <td>(</td>
           <td class="paramname"></td><td>)</td>
           <td> const</td>
@@ -535,9 +644,167 @@ std::string&#160;</td><td class="memItemRight" valign="bottom"><a class="el" hre
 <p>Check whether a save action was performed. </p>
 <dl class="section return"><dt>Returns</dt><dd>True if a save action occured, false otherwise. </dd></dl>
 
-<p class="definition">Definition at line <a class="el" href="file__helper_8h_source.html#l00177">177</a> of file <a class="el" href="file__helper_8h_source.html">file_helper.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="file__helper_8h_source.html#l00295">295</a> of file <a class="el" href="file__helper_8h_source.html">file_helper.h</a>.</p>
 
-<p class="reference">References <a class="el" href="file__helper_8h_source.html#l00058">file_name</a>, <a class="el" href="file__helper_8h_source.html#l00044">provider_ptr</a>, and <a class="el" href="provider_8h_source.html#l00217">cgv::gui::provider::ref_tree_node_visible_flag()</a>.</p>
+<p class="reference">References <a class="el" href="file__helper_8h_source.html#l00100">file_name</a>, and <a class="el" href="provider_8h_source.html#l00217">cgv::gui::provider::ref_tree_node_visible_flag()</a>.</p>
+
+</div>
+</div>
+<a id="a50a1f5f7bdbeca5e4e485809a12cfefe"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a50a1f5f7bdbeca5e4e485809a12cfefe">&#9670;&nbsp;</a></span>set_default_path()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">void cgv::gui::file_helper::set_default_path </td>
+          <td>(</td>
+          <td class="paramtype">const std::string &amp;&#160;</td>
+          <td class="paramname"><em>path</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype"><a class="el" href="classcgv_1_1gui_1_1file__helper.html#a51045226bffa994b74b7402c03d002b8">Mode</a>&#160;</td>
+          <td class="paramname"><em>mode</em> = <code>Mode::kOpenAndSave</code>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">inline</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p>Set the default path of the specified operation Mode. </p>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">path</td><td>The new defautl path. </td></tr>
+    <tr><td class="paramname">mode</td><td>The operation Mode. </td></tr>
+  </table>
+  </dd>
+</dl>
+
+<p class="definition">Definition at line <a class="el" href="file__helper_8h_source.html#l00173">173</a> of file <a class="el" href="file__helper_8h_source.html">file_helper.h</a>.</p>
+
+<p class="reference">References <a class="el" href="file__helper_8h_source.html#l00100">file_name</a>, and <a class="el" href="provider_8h_source.html#l00343">cgv::gui::provider::set_control_property()</a>.</p>
+
+</div>
+</div>
+<a id="af5e7705d89e3efc21eef787166e9d59d"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#af5e7705d89e3efc21eef787166e9d59d">&#9670;&nbsp;</a></span>set_file_name()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">void cgv::gui::file_helper::set_file_name </td>
+          <td>(</td>
+          <td class="paramtype">const std::string &amp;&#160;</td>
+          <td class="paramname"><em>file_name</em></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">inline</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p>Set the current file name. </p>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">file_name</td><td>The file name. </td></tr>
+  </table>
+  </dd>
+</dl>
+
+<p class="definition">Definition at line <a class="el" href="file__helper_8h_source.html#l00189">189</a> of file <a class="el" href="file__helper_8h_source.html">file_helper.h</a>.</p>
+
+<p class="reference">References <a class="el" href="file__helper_8h_source.html#l00100">file_name</a>, and <a class="el" href="provider_8cxx_source.html#l00072">cgv::gui::provider::update_member()</a>.</p>
+
+</div>
+</div>
+<a id="adac61932cdd0c76b92378a73f2cd0a16"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#adac61932cdd0c76b92378a73f2cd0a16">&#9670;&nbsp;</a></span>set_title()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">void cgv::gui::file_helper::set_title </td>
+          <td>(</td>
+          <td class="paramtype">const std::string &amp;&#160;</td>
+          <td class="paramname"><em>title</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype"><a class="el" href="classcgv_1_1gui_1_1file__helper.html#a51045226bffa994b74b7402c03d002b8">Mode</a>&#160;</td>
+          <td class="paramname"><em>mode</em> = <code>Mode::kOpenAndSave</code>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">inline</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p>Set the title of the specified operation Mode. </p>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">title</td><td>The new title. </td></tr>
+    <tr><td class="paramname">mode</td><td>The operation Mode. </td></tr>
+  </table>
+  </dd>
+</dl>
+
+<p class="definition">Definition at line <a class="el" href="file__helper_8h_source.html#l00145">145</a> of file <a class="el" href="file__helper_8h_source.html">file_helper.h</a>.</p>
+
+<p class="reference">References <a class="el" href="file__helper_8h_source.html#l00100">file_name</a>, and <a class="el" href="provider_8h_source.html#l00343">cgv::gui::provider::set_control_property()</a>.</p>
+
+</div>
+</div>
+<h2 class="groupheader">Member Data Documentation</h2>
+<a id="aed0bc0b68076f906586765ed4b04de56"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#aed0bc0b68076f906586765ed4b04de56">&#9670;&nbsp;</a></span>file_name</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">std::string cgv::gui::file_helper::file_name = &quot;&quot;</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>The current file name. </p>
+<p>This member is public to make it accessible to the GUI control flow. It should never be set directly and set_file_name should be used instead. </p>
+
+<p class="definition">Definition at line <a class="el" href="file__helper_8h_source.html#l00100">100</a> of file <a class="el" href="file__helper_8h_source.html">file_helper.h</a>.</p>
+
+<p class="reference">Referenced by <a class="el" href="file__helper_8h_source.html#l00243">compare_extension()</a>, <a class="el" href="file__helper_8h_source.html#l00272">create_gui()</a>, <a class="el" href="file__helper_8h_source.html#l00256">ensure_extension()</a>, <a class="el" href="file__helper_8h_source.html#l00295">is_save_action()</a>, <a class="el" href="file__helper_8h_source.html#l00173">set_default_path()</a>, <a class="el" href="file__helper_8h_source.html#l00189">set_file_name()</a>, and <a class="el" href="file__helper_8h_source.html#l00145">set_title()</a>.</p>
 
 </div>
 </div>

@@ -410,6 +410,7 @@ var hierarchy =
     [ "cgv::gui::menu_provider", "classcgv_1_1gui_1_1menu__provider.html", null ],
     [ "cgv::gui::monitor_description", "structcgv_1_1gui_1_1monitor__description.html", null ],
     [ "cgv::gui::priority", "structcgv_1_1gui_1_1priority.html", null ],
+    [ "cgv::gui::property_string", "classcgv_1_1gui_1_1property__string.html", null ],
     [ "cgv::gui::resizable", "classcgv_1_1gui_1_1resizable.html", null ],
     [ "cgv::gui::shortcut", "classcgv_1_1gui_1_1shortcut.html", null ],
     [ "cgv::gui::subprovider", "classcgv_1_1gui_1_1subprovider.html", null ],
