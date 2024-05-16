@@ -83,8 +83,8 @@ $(document).ready(function(){initNavTree('classcgv_1_1app_1_1color__map__legend.
 <div class="header">
   <div class="summary">
 <a href="#nested-classes">Classes</a> &#124;
+<a href="#pub-types">Public Types</a> &#124;
 <a href="#pub-methods">Public Member Functions</a> &#124;
-<a href="#pro-types">Protected Types</a> &#124;
 <a href="#pro-methods">Protected Member Functions</a> &#124;
 <a href="#pro-attribs">Protected Attributes</a> &#124;
 <a href="classcgv_1_1app_1_1color__map__legend-members.html">List of all members</a>  </div>
@@ -119,6 +119,34 @@ Inheritance diagram for cgv::app::color_map_legend:</div>
 Classes</h2></td></tr>
 <tr class="memitem:"><td class="memItemLeft" align="right" valign="top">struct &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structcgv_1_1app_1_1color__map__legend_1_1layout__attributes.html">layout_attributes</a></td></tr>
 <tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
+</table><table class="memberdecls">
+<tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="pub-types"></a>
+Public Types</h2></td></tr>
+<tr class="memitem:a5b32f347f3c2c0411a6a732c6ec333bd"><td class="memItemLeft" align="right" valign="top"><a id="a5b32f347f3c2c0411a6a732c6ec333bd"></a>enum &#160;</td><td class="memItemRight" valign="bottom"><b>OrientationOption</b> { <b>OO_HORIZONTAL</b>
+, <b>OO_VERTICAL</b>
+ }</td></tr>
+<tr class="separator:a5b32f347f3c2c0411a6a732c6ec333bd"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="inherit_header pub_types_classcgv_1_1app_1_1overlay"><td colspan="2" onclick="javascript:toggleInherit('pub_types_classcgv_1_1app_1_1overlay')"><img src="closed.png" alt="-"/>&#160;Public Types inherited from <a class="el" href="classcgv_1_1app_1_1overlay.html">cgv::app::overlay</a></td></tr>
+<tr class="memitem:ab9d7823f22e5ae2d9ace6c186ea295fa inherit pub_types_classcgv_1_1app_1_1overlay"><td class="memItemLeft" align="right" valign="top"><a id="ab9d7823f22e5ae2d9ace6c186ea295fa"></a>enum &#160;</td><td class="memItemRight" valign="bottom"><b>AlignmentOption</b> { <br />
+&#160;&#160;<b>AO_FREE</b>
+, <b>AO_START</b>
+, <b>AO_CENTER</b>
+, <b>AO_END</b>
+, <br />
+&#160;&#160;<b>AO_PERCENTUAL</b>
+<br />
+ }</td></tr>
+<tr class="separator:ab9d7823f22e5ae2d9ace6c186ea295fa inherit pub_types_classcgv_1_1app_1_1overlay"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a4759f42df95eb587a20f7854ea9edb4c inherit pub_types_classcgv_1_1app_1_1overlay"><td class="memItemLeft" align="right" valign="top"><a id="a4759f42df95eb587a20f7854ea9edb4c"></a>enum &#160;</td><td class="memItemRight" valign="bottom"><b>StretchOption</b> { <br />
+&#160;&#160;<b>SO_NONE</b>
+, <b>SO_HORIZONTAL</b>
+, <b>SO_VERTICAL</b>
+, <b>SO_BOTH</b>
+, <br />
+&#160;&#160;<b>SO_PERCENTUAL</b>
+<br />
+ }</td></tr>
+<tr class="separator:a4759f42df95eb587a20f7854ea9edb4c inherit pub_types_classcgv_1_1app_1_1overlay"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="pub-methods"></a>
 Public Member Functions</h2></td></tr>
@@ -157,6 +185,18 @@ void&#160;</td><td class="memItemRight" valign="bottom"><b>set_height</b> (size_
 <tr class="memitem:a380a9e8452553fc94841101d759f5cb3"><td class="memItemLeft" align="right" valign="top"><a id="a380a9e8452553fc94841101d759f5cb3"></a>
 void&#160;</td><td class="memItemRight" valign="bottom"><b>set_title</b> (const std::string &amp;t)</td></tr>
 <tr class="separator:a380a9e8452553fc94841101d759f5cb3"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a1f0201dc0b430ef1eda76b79b6d9b046"><td class="memItemLeft" align="right" valign="top"><a id="a1f0201dc0b430ef1eda76b79b6d9b046"></a>
+OrientationOption&#160;</td><td class="memItemRight" valign="bottom"><b>get_orientation</b> () const</td></tr>
+<tr class="separator:a1f0201dc0b430ef1eda76b79b6d9b046"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a81a30ad9d3fa5ed9573a2443956ceeab"><td class="memItemLeft" align="right" valign="top"><a id="a81a30ad9d3fa5ed9573a2443956ceeab"></a>
+void&#160;</td><td class="memItemRight" valign="bottom"><b>set_orientation</b> (OrientationOption orientation)</td></tr>
+<tr class="separator:a81a30ad9d3fa5ed9573a2443956ceeab"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:aa4a3cda68d1417a225015543fdbe08c2"><td class="memItemLeft" align="right" valign="top"><a id="aa4a3cda68d1417a225015543fdbe08c2"></a>
+AlignmentOption&#160;</td><td class="memItemRight" valign="bottom"><b>get_label_alignment</b> () const</td></tr>
+<tr class="separator:aa4a3cda68d1417a225015543fdbe08c2"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ab64cecd085a2a70ed571c4969dd2e893"><td class="memItemLeft" align="right" valign="top"><a id="ab64cecd085a2a70ed571c4969dd2e893"></a>
+void&#160;</td><td class="memItemRight" valign="bottom"><b>set_label_alignment</b> (AlignmentOption alignment)</td></tr>
+<tr class="separator:ab64cecd085a2a70ed571c4969dd2e893"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:aa12bbd45fa2ff75f8262a9d2ffa77edc"><td class="memItemLeft" align="right" valign="top"><a id="aa12bbd45fa2ff75f8262a9d2ffa77edc"></a>
 <a class="el" href="namespacecgv.html#a8044b02f248048405a9d97418f545a1a">vec2</a>&#160;</td><td class="memItemRight" valign="bottom"><b>get_range</b> () const</td></tr>
 <tr class="separator:aa12bbd45fa2ff75f8262a9d2ffa77edc"><td class="memSeparator" colspan="2">&#160;</td></tr>
@@ -770,13 +810,6 @@ bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="clas
 <tr class="memdesc:a3dcd44ab999b271df3c9b6e1da9c21c4 inherit pub_methods_classcgv_1_1gui_1_1event__handler"><td class="mdescLeft">&#160;</td><td class="mdescRight">add a key control for the given property with the given options.  <a href="classcgv_1_1gui_1_1event__handler.html#a3dcd44ab999b271df3c9b6e1da9c21c4">More...</a><br /></td></tr>
 <tr class="separator:a3dcd44ab999b271df3c9b6e1da9c21c4 inherit pub_methods_classcgv_1_1gui_1_1event__handler"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table><table class="memberdecls">
-<tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="pro-types"></a>
-Protected Types</h2></td></tr>
-<tr class="memitem:a5b32f347f3c2c0411a6a732c6ec333bd"><td class="memItemLeft" align="right" valign="top"><a id="a5b32f347f3c2c0411a6a732c6ec333bd"></a>enum &#160;</td><td class="memItemRight" valign="bottom"><b>OrientationOption</b> { <b>OO_HORIZONTAL</b>
-, <b>OO_VERTICAL</b>
- }</td></tr>
-<tr class="separator:a5b32f347f3c2c0411a6a732c6ec333bd"><td class="memSeparator" colspan="2">&#160;</td></tr>
-</table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="pro-methods"></a>
 Protected Member Functions</h2></td></tr>
 <tr class="memitem:ad4e824de04484fc2560146dc026935fa"><td class="memItemLeft" align="right" valign="top"><a id="ad4e824de04484fc2560146dc026935fa"></a>
@@ -998,27 +1031,6 @@ int&#160;</td><td class="memItemRight" valign="bottom"><b>focus</b></td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="inherited"></a>
 Additional Inherited Members</h2></td></tr>
-<tr class="inherit_header pub_types_classcgv_1_1app_1_1overlay"><td colspan="2" onclick="javascript:toggleInherit('pub_types_classcgv_1_1app_1_1overlay')"><img src="closed.png" alt="-"/>&#160;Public Types inherited from <a class="el" href="classcgv_1_1app_1_1overlay.html">cgv::app::overlay</a></td></tr>
-<tr class="memitem:ab9d7823f22e5ae2d9ace6c186ea295fa inherit pub_types_classcgv_1_1app_1_1overlay"><td class="memItemLeft" align="right" valign="top"><a id="ab9d7823f22e5ae2d9ace6c186ea295fa"></a>enum &#160;</td><td class="memItemRight" valign="bottom"><b>AlignmentOption</b> { <br />
-&#160;&#160;<b>AO_FREE</b>
-, <b>AO_START</b>
-, <b>AO_CENTER</b>
-, <b>AO_END</b>
-, <br />
-&#160;&#160;<b>AO_PERCENTUAL</b>
-<br />
- }</td></tr>
-<tr class="separator:ab9d7823f22e5ae2d9ace6c186ea295fa inherit pub_types_classcgv_1_1app_1_1overlay"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a4759f42df95eb587a20f7854ea9edb4c inherit pub_types_classcgv_1_1app_1_1overlay"><td class="memItemLeft" align="right" valign="top"><a id="a4759f42df95eb587a20f7854ea9edb4c"></a>enum &#160;</td><td class="memItemRight" valign="bottom"><b>StretchOption</b> { <br />
-&#160;&#160;<b>SO_NONE</b>
-, <b>SO_HORIZONTAL</b>
-, <b>SO_VERTICAL</b>
-, <b>SO_BOTH</b>
-, <br />
-&#160;&#160;<b>SO_PERCENTUAL</b>
-<br />
- }</td></tr>
-<tr class="separator:a4759f42df95eb587a20f7854ea9edb4c inherit pub_types_classcgv_1_1app_1_1overlay"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="inherit_header pub_static_methods_classcgv_1_1gui_1_1provider"><td colspan="2" onclick="javascript:toggleInherit('pub_static_methods_classcgv_1_1gui_1_1provider')"><img src="closed.png" alt="-"/>&#160;Static Public Member Functions inherited from <a class="el" href="classcgv_1_1gui_1_1provider.html">cgv::gui::provider</a></td></tr>
 <tr class="memitem:a9e722ce8fd3bd48387d8ee5761498189 inherit pub_static_methods_classcgv_1_1gui_1_1provider"><td class="memTemplParams" colspan="2">template&lt;typename T &gt; </td></tr>
 <tr class="memitem:a9e722ce8fd3bd48387d8ee5761498189 inherit pub_static_methods_classcgv_1_1gui_1_1provider"><td class="memTemplItemLeft" align="right" valign="top">static bool &amp;&#160;</td><td class="memTemplItemRight" valign="bottom"><a class="el" href="classcgv_1_1gui_1_1provider.html#a9e722ce8fd3bd48387d8ee5761498189">ref_tree_node_visible_flag</a> (const T &amp;value)</td></tr>
