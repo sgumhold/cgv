@@ -235,6 +235,16 @@ void color_map_legend::set_title(const std::string& t) {
 	on_set(&title);
 }
 
+void color_map_legend::set_orientation(OrientationOption orientation) {
+	layout.orientation = orientation;
+	on_set(&layout.orientation);
+}
+
+void color_map_legend::set_label_alignment(AlignmentOption alignment) {
+	layout.label_alignment = alignment;
+	on_set(&layout.label_alignment);
+}
+
 void color_map_legend::set_range(vec2 r) {
 	flip_texture = r.x() > r.y();
 	if(flip_texture)
