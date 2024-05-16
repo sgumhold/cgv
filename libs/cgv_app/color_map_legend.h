@@ -13,12 +13,13 @@ namespace cgv {
 namespace app {
 
 class CGV_API color_map_legend : public themed_canvas_overlay {
-protected:
+public:
 	enum OrientationOption {
 		OO_HORIZONTAL,
 		OO_VERTICAL
 	};
 
+protected:
 	struct layout_attributes {
 		int padding = 0;
 		int label_space = 12;
@@ -128,6 +129,12 @@ public:
 	void set_height(size_t h);
 
 	void set_title(const std::string& t);
+
+	OrientationOption get_orientation() const { return layout.orientation; }
+	void set_orientation(OrientationOption orientation);
+
+	AlignmentOption get_label_alignment() const { return layout.label_alignment; }
+	void set_label_alignment(AlignmentOption alignment);
 
 	vec2 get_range() const { return value_range; }
 	void set_range(vec2 r);
