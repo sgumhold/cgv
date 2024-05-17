@@ -1,8 +1,7 @@
 var searchData=
 [
-  ['btb_5fall_5fbits_8649',['BTB_ALL_BITS',['../namespacecgv_1_1render.html#adba4fbd4582055f229fe59a0545833abaa24ddce855325962d74dbac77166f67c',1,'cgv::render']]],
-  ['btb_5fcolor_5fand_5fdepth_5fbits_8650',['BTB_COLOR_AND_DEPTH_BITS',['../namespacecgv_1_1render.html#adba4fbd4582055f229fe59a0545833abaafc4ddb9da0f009c1dab4c43e1ba5527',1,'cgv::render']]],
-  ['btb_5fcolor_5fbit_8651',['BTB_COLOR_BIT',['../namespacecgv_1_1render.html#adba4fbd4582055f229fe59a0545833aba03264569ff72f15010d2538a508e5951',1,'cgv::render']]],
-  ['btb_5fdepth_5fbit_8652',['BTB_DEPTH_BIT',['../namespacecgv_1_1render.html#adba4fbd4582055f229fe59a0545833abab93a33913d4a4383e4ee9477de95d2ca',1,'cgv::render']]],
-  ['btb_5fstencil_5fbit_8653',['BTB_STENCIL_BIT',['../namespacecgv_1_1render.html#adba4fbd4582055f229fe59a0545833aba6ba7d7f4cdadd1ea367d79e90c7da932',1,'cgv::render']]]
+  ['af_5fcolor_8659',['AF_color',['../classcgv_1_1media_1_1mesh_1_1simple__mesh__base.html#a211b6d732e1a6977bc8241b3e61c80afacb1db262dda1cb8bd46dcf8365a87743',1,'cgv::media::mesh::simple_mesh_base']]],
+  ['af_5fnormal_8660',['AF_normal',['../classcgv_1_1media_1_1mesh_1_1simple__mesh__base.html#a211b6d732e1a6977bc8241b3e61c80afa0ee4dcb814213f9a0cfbeeb58218d5af',1,'cgv::media::mesh::simple_mesh_base']]],
+  ['af_5ftangent_8661',['AF_tangent',['../classcgv_1_1media_1_1mesh_1_1simple__mesh__base.html#a211b6d732e1a6977bc8241b3e61c80afa4b23b370276d7a62d1552871cb9444ac',1,'cgv::media::mesh::simple_mesh_base']]],
+  ['af_5ftexcoords_8662',['AF_texcoords',['../classcgv_1_1media_1_1mesh_1_1simple__mesh__base.html#a211b6d732e1a6977bc8241b3e61c80afaf87a87a400868ab1a10d5f0d8e500c12',1,'cgv::media::mesh::simple_mesh_base']]]
 ];

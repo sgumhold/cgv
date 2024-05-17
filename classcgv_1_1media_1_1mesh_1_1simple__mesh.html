@@ -147,6 +147,29 @@ typedef <a class="el" href="classcgv_1_1media_1_1illum_1_1surface__material.html
 <tr class="memdesc:ae248fb6b460811ded7d88df559b13b93"><td class="mdescLeft">&#160;</td><td class="mdescRight">color type used in surface materials <br /></td></tr>
 <tr class="separator:ae248fb6b460811ded7d88df559b13b93"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="inherit_header pub_types_classcgv_1_1media_1_1mesh_1_1simple__mesh__base"><td colspan="2" onclick="javascript:toggleInherit('pub_types_classcgv_1_1media_1_1mesh_1_1simple__mesh__base')"><img src="closed.png" alt="-"/>&#160;Public Types inherited from <a class="el" href="classcgv_1_1media_1_1mesh_1_1simple__mesh__base.html">cgv::media::mesh::simple_mesh_base</a></td></tr>
+<tr class="memitem:ad4fc7270f07ba37b769e2cb6877a0a1f inherit pub_types_classcgv_1_1media_1_1mesh_1_1simple__mesh__base"><td class="memItemLeft" align="right" valign="top"><a id="ad4fc7270f07ba37b769e2cb6877a0a1f"></a>enum class &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcgv_1_1media_1_1mesh_1_1simple__mesh__base.html#ad4fc7270f07ba37b769e2cb6877a0a1f">attribute_type</a> { <br />
+&#160;&#160;<b>begin</b> =0
+, <b>position</b> =0
+, <b>texcoords</b> =1
+, <b>normal</b> =2
+, <br />
+&#160;&#160;<b>tangent</b> =3
+, <b>color</b> =4
+, <b>end</b> =5
+<br />
+ }</td></tr>
+<tr class="memdesc:ad4fc7270f07ba37b769e2cb6877a0a1f"><td class="mdescLeft">&#160;</td><td class="mdescRight">different mesh attributes <br /></td></tr>
+<tr class="separator:ad4fc7270f07ba37b769e2cb6877a0a1f inherit pub_types_classcgv_1_1media_1_1mesh_1_1simple__mesh__base"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a211b6d732e1a6977bc8241b3e61c80af inherit pub_types_classcgv_1_1media_1_1mesh_1_1simple__mesh__base"><td class="memItemLeft" align="right" valign="top">enum &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcgv_1_1media_1_1mesh_1_1simple__mesh__base.html#a211b6d732e1a6977bc8241b3e61c80af">AttributeFlags</a> { <br />
+&#160;&#160;<b>AF_position</b> = 1
+, <a class="el" href="classcgv_1_1media_1_1mesh_1_1simple__mesh__base.html#a211b6d732e1a6977bc8241b3e61c80afaf87a87a400868ab1a10d5f0d8e500c12">AF_texcoords</a> = 2
+, <a class="el" href="classcgv_1_1media_1_1mesh_1_1simple__mesh__base.html#a211b6d732e1a6977bc8241b3e61c80afa0ee4dcb814213f9a0cfbeeb58218d5af">AF_normal</a> = 4
+, <a class="el" href="classcgv_1_1media_1_1mesh_1_1simple__mesh__base.html#a211b6d732e1a6977bc8241b3e61c80afa4b23b370276d7a62d1552871cb9444ac">AF_tangent</a> = 8
+, <br />
+&#160;&#160;<a class="el" href="classcgv_1_1media_1_1mesh_1_1simple__mesh__base.html#a211b6d732e1a6977bc8241b3e61c80afacb1db262dda1cb8bd46dcf8365a87743">AF_color</a> = 16
+<br />
+ }</td></tr>
+<tr class="separator:a211b6d732e1a6977bc8241b3e61c80af inherit pub_types_classcgv_1_1media_1_1mesh_1_1simple__mesh__base"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a0eb0181dc49db651e738bd0e66d1f0e6 inherit pub_types_classcgv_1_1media_1_1mesh_1_1simple__mesh__base"><td class="memItemLeft" align="right" valign="top"><a id="a0eb0181dc49db651e738bd0e66d1f0e6"></a>
 typedef <a class="el" href="namespacecgv_1_1type.html#a946d7ae2eaadfe30e5b2c66601d64822">cgv::type::uint32_type</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcgv_1_1media_1_1mesh_1_1simple__mesh__base.html#a0eb0181dc49db651e738bd0e66d1f0e6">idx_type</a></td></tr>
 <tr class="memdesc:a0eb0181dc49db651e738bd0e66d1f0e6 inherit pub_types_classcgv_1_1media_1_1mesh_1_1simple__mesh__base"><td class="mdescLeft">&#160;</td><td class="mdescRight">define index type <br /></td></tr>
@@ -192,8 +215,9 @@ Public Member Functions</h2></td></tr>
 &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcgv_1_1media_1_1mesh_1_1simple__mesh.html#aecfc803f4f3672121a54d6305fefb4c2">simple_mesh</a> (<a class="el" href="classcgv_1_1media_1_1mesh_1_1simple__mesh.html">simple_mesh</a>&lt; T &gt; &amp;&amp;sm)</td></tr>
 <tr class="memdesc:aecfc803f4f3672121a54d6305fefb4c2"><td class="mdescLeft">&#160;</td><td class="mdescRight">move constructor <br /></td></tr>
 <tr class="separator:aecfc803f4f3672121a54d6305fefb4c2"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a44c75c9157ed9f86e0c69a583eacfb26"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcgv_1_1media_1_1mesh_1_1simple__mesh.html#a44c75c9157ed9f86e0c69a583eacfb26">simple_mesh</a> (const std::string &amp;conway_notation=&quot;&quot;)</td></tr>
-<tr class="memdesc:a44c75c9157ed9f86e0c69a583eacfb26"><td class="mdescLeft">&#160;</td><td class="mdescRight">assignment operator  <a href="classcgv_1_1media_1_1mesh_1_1simple__mesh.html#a44c75c9157ed9f86e0c69a583eacfb26">More...</a><br /></td></tr>
+<tr class="memitem:a44c75c9157ed9f86e0c69a583eacfb26"><td class="memItemLeft" align="right" valign="top"><a id="a44c75c9157ed9f86e0c69a583eacfb26"></a>
+&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcgv_1_1media_1_1mesh_1_1simple__mesh.html#a44c75c9157ed9f86e0c69a583eacfb26">simple_mesh</a> (const std::string &amp;conway_notation=&quot;&quot;)</td></tr>
+<tr class="memdesc:a44c75c9157ed9f86e0c69a583eacfb26"><td class="mdescLeft">&#160;</td><td class="mdescRight">assignment operator <br /></td></tr>
 <tr class="separator:a44c75c9157ed9f86e0c69a583eacfb26"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ad5e19124149e01a2f4d12879b45dd47f"><td class="memItemLeft" align="right" valign="top"><a id="ad5e19124149e01a2f4d12879b45dd47f"></a>
 <a class="el" href="classcgv_1_1media_1_1mesh_1_1simple__mesh.html">simple_mesh</a>&lt; T &gt; &amp;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcgv_1_1media_1_1mesh_1_1simple__mesh.html#ad5e19124149e01a2f4d12879b45dd47f">operator=</a> (const <a class="el" href="classcgv_1_1media_1_1mesh_1_1simple__mesh.html">simple_mesh</a>&lt; T &gt; &amp;sm)</td></tr>
@@ -203,6 +227,10 @@ Public Member Functions</h2></td></tr>
 <a class="el" href="classcgv_1_1media_1_1mesh_1_1simple__mesh.html">simple_mesh</a>&lt; T &gt; &amp;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcgv_1_1media_1_1mesh_1_1simple__mesh.html#ad958cc8eaba7bb0163a0ee44c67628cb">operator=</a> (<a class="el" href="classcgv_1_1media_1_1mesh_1_1simple__mesh.html">simple_mesh</a>&lt; T &gt; &amp;&amp;sm)</td></tr>
 <tr class="memdesc:ad958cc8eaba7bb0163a0ee44c67628cb"><td class="mdescLeft">&#160;</td><td class="mdescRight">move assignment operator <br /></td></tr>
 <tr class="separator:ad958cc8eaba7bb0163a0ee44c67628cb"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a45d47bace5e0947eb62922b406669b31"><td class="memItemLeft" align="right" valign="top"><a id="a45d47bace5e0947eb62922b406669b31"></a>
+uint32_t&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcgv_1_1media_1_1mesh_1_1simple__mesh.html#a45d47bace5e0947eb62922b406669b31">get_coord_size</a> () const</td></tr>
+<tr class="memdesc:a45d47bace5e0947eb62922b406669b31"><td class="mdescLeft">&#160;</td><td class="mdescRight">return the size of one coordinate in bytes <br /></td></tr>
+<tr class="separator:a45d47bace5e0947eb62922b406669b31"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a88800d4267ac06965741621cda81cc63"><td class="memItemLeft" align="right" valign="top"><a id="a88800d4267ac06965741621cda81cc63"></a>
 void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcgv_1_1media_1_1mesh_1_1simple__mesh.html#a88800d4267ac06965741621cda81cc63">clear</a> ()</td></tr>
 <tr class="memdesc:a88800d4267ac06965741621cda81cc63"><td class="mdescLeft">&#160;</td><td class="mdescRight">clear simple mesh <br /></td></tr>
@@ -488,6 +516,10 @@ void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="clas
 <tr class="memitem:a91dfd37d08cbcb2762767f0fd30913a6 inherit pub_methods_classcgv_1_1media_1_1mesh_1_1simple__mesh__base"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcgv_1_1media_1_1mesh_1_1simple__mesh__base.html#a91dfd37d08cbcb2762767f0fd30913a6">extract_wireframe_element_buffer</a> (const std::vector&lt; <a class="el" href="classcgv_1_1media_1_1mesh_1_1simple__mesh__base.html#a0eb0181dc49db651e738bd0e66d1f0e6">idx_type</a> &gt; &amp;vertex_indices, std::vector&lt; <a class="el" href="classcgv_1_1media_1_1mesh_1_1simple__mesh__base.html#a0eb0181dc49db651e738bd0e66d1f0e6">idx_type</a> &gt; &amp;edge_element_buffer) const</td></tr>
 <tr class="memdesc:a91dfd37d08cbcb2762767f0fd30913a6 inherit pub_methods_classcgv_1_1media_1_1mesh_1_1simple__mesh__base"><td class="mdescLeft">&#160;</td><td class="mdescRight">Extract element array buffers for edges in wireframe.  <a href="classcgv_1_1media_1_1mesh_1_1simple__mesh__base.html#a91dfd37d08cbcb2762767f0fd30913a6">More...</a><br /></td></tr>
 <tr class="separator:a91dfd37d08cbcb2762767f0fd30913a6 inherit pub_methods_classcgv_1_1media_1_1mesh_1_1simple__mesh__base"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a4bfdd7ed5e0d785cc5a6ef9cddd0d1a9 inherit pub_methods_classcgv_1_1media_1_1mesh_1_1simple__mesh__base"><td class="memItemLeft" align="right" valign="top"><a id="a4bfdd7ed5e0d785cc5a6ef9cddd0d1a9"></a>
+uint32_t&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcgv_1_1media_1_1mesh_1_1simple__mesh__base.html#a4bfdd7ed5e0d785cc5a6ef9cddd0d1a9">extract_vertex_attribute_buffer_base</a> (const std::vector&lt; <a class="el" href="classcgv_1_1media_1_1mesh_1_1simple__mesh__base.html#a0020cefcc7053881a18569fddbee2b44">vec4i</a> &gt; &amp;unique_quadruples, <a class="el" href="classcgv_1_1media_1_1mesh_1_1simple__mesh__base.html#a211b6d732e1a6977bc8241b3e61c80af">AttributeFlags</a> &amp;flags, std::vector&lt; uint8_t &gt; &amp;attrib_buffer) const</td></tr>
+<tr class="memdesc:a4bfdd7ed5e0d785cc5a6ef9cddd0d1a9 inherit pub_methods_classcgv_1_1media_1_1mesh_1_1simple__mesh__base"><td class="mdescLeft">&#160;</td><td class="mdescRight">extract vertex attribute buffer for the given flags and return size of vertex in bytes <br /></td></tr>
+<tr class="separator:a4bfdd7ed5e0d785cc5a6ef9cddd0d1a9 inherit pub_methods_classcgv_1_1media_1_1mesh_1_1simple__mesh__base"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a030e59a091b429b4ccc782d4bcb970ec inherit pub_methods_classcgv_1_1media_1_1mesh_1_1simple__mesh__base"><td class="memItemLeft" align="right" valign="top"><a id="a030e59a091b429b4ccc782d4bcb970ec"></a>
 void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcgv_1_1media_1_1mesh_1_1simple__mesh__base.html#a030e59a091b429b4ccc782d4bcb970ec">compute_inv</a> (std::vector&lt; uint32_t &gt; &amp;inv, std::vector&lt; uint32_t &gt; *p2c_ptr=0, std::vector&lt; uint32_t &gt; *next_ptr=0, std::vector&lt; uint32_t &gt; *prev_ptr=0) const</td></tr>
 <tr class="memdesc:a030e59a091b429b4ccc782d4bcb970ec inherit pub_methods_classcgv_1_1media_1_1mesh_1_1simple__mesh__base"><td class="mdescLeft">&#160;</td><td class="mdescRight">compute a index vector storing the inv corners per corner and optionally index vectors with per position corner index, per corner next and or prev corner index (implementation assumes closed manifold connectivity) <br /></td></tr>
@@ -600,6 +632,18 @@ void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="clas
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="pro-methods"></a>
 Protected Member Functions</h2></td></tr>
+<tr class="memitem:afacff8251d1dea3d0b01f155f0e3349d"><td class="memItemLeft" align="right" valign="top"><a id="afacff8251d1dea3d0b01f155f0e3349d"></a>
+bool&#160;</td><td class="memItemRight" valign="bottom"><b>has_attribute</b> (<a class="el" href="classcgv_1_1media_1_1mesh_1_1simple__mesh__base.html#ad4fc7270f07ba37b769e2cb6877a0a1f">attribute_type</a> attr) const</td></tr>
+<tr class="separator:afacff8251d1dea3d0b01f155f0e3349d"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a007771ef0834a6c913af35faa0fc4be0"><td class="memItemLeft" align="right" valign="top"><a id="a007771ef0834a6c913af35faa0fc4be0"></a>
+const uint8_t *&#160;</td><td class="memItemRight" valign="bottom"><b>get_attribute_ptr</b> (<a class="el" href="classcgv_1_1media_1_1mesh_1_1simple__mesh__base.html#ad4fc7270f07ba37b769e2cb6877a0a1f">attribute_type</a> attr, <a class="el" href="classcgv_1_1media_1_1mesh_1_1simple__mesh__base.html#a0eb0181dc49db651e738bd0e66d1f0e6">idx_type</a> ai=0) const</td></tr>
+<tr class="separator:a007771ef0834a6c913af35faa0fc4be0"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a9a9bdcea24a45ecfc5d065e4a5f6c6b1"><td class="memItemLeft" align="right" valign="top"><a id="a9a9bdcea24a45ecfc5d065e4a5f6c6b1"></a>
+size_t&#160;</td><td class="memItemRight" valign="bottom"><b>get_attribute_size</b> (<a class="el" href="classcgv_1_1media_1_1mesh_1_1simple__mesh__base.html#ad4fc7270f07ba37b769e2cb6877a0a1f">attribute_type</a> attr) const</td></tr>
+<tr class="separator:a9a9bdcea24a45ecfc5d065e4a5f6c6b1"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a66c9ba97c03f4ec7fbe03f6ec7c1c92c"><td class="memItemLeft" align="right" valign="top"><a id="a66c9ba97c03f4ec7fbe03f6ec7c1c92c"></a>
+size_t&#160;</td><td class="memItemRight" valign="bottom"><b>get_attribute_offset</b> (<a class="el" href="classcgv_1_1media_1_1mesh_1_1simple__mesh__base.html#ad4fc7270f07ba37b769e2cb6877a0a1f">attribute_type</a> attr) const</td></tr>
+<tr class="separator:a66c9ba97c03f4ec7fbe03f6ec7c1c92c"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:adfd6b7c5dc4c03246236e3dc94205f1e"><td class="memItemLeft" align="right" valign="top"><a id="adfd6b7c5dc4c03246236e3dc94205f1e"></a>
 <a class="el" href="classcgv_1_1media_1_1mesh_1_1simple__mesh.html#a2aeb9aff16268b7c5e3a844a2ba69356">vec3</a>&#160;</td><td class="memItemRight" valign="bottom"><b>compute_normal</b> (const <a class="el" href="classcgv_1_1media_1_1mesh_1_1simple__mesh.html#a2aeb9aff16268b7c5e3a844a2ba69356">vec3</a> &amp;p0, const <a class="el" href="classcgv_1_1media_1_1mesh_1_1simple__mesh.html#a2aeb9aff16268b7c5e3a844a2ba69356">vec3</a> &amp;p1, const <a class="el" href="classcgv_1_1media_1_1mesh_1_1simple__mesh.html#a2aeb9aff16268b7c5e3a844a2ba69356">vec3</a> &amp;p2)</td></tr>
 <tr class="separator:adfd6b7c5dc4c03246236e3dc94205f1e"><td class="memSeparator" colspan="2">&#160;</td></tr>
@@ -622,15 +666,15 @@ std::vector&lt; <a class="el" href="classcgv_1_1media_1_1mesh_1_1simple__mesh.ht
 <tr class="memitem:a368663cb8d5983120342bd49e6d2f8fd inherit pro_attribs_classcgv_1_1media_1_1mesh_1_1simple__mesh__base"><td class="memItemLeft" align="right" valign="top"><a id="a368663cb8d5983120342bd49e6d2f8fd"></a>
 std::vector&lt; <a class="el" href="classcgv_1_1media_1_1mesh_1_1simple__mesh__base.html#a0eb0181dc49db651e738bd0e66d1f0e6">idx_type</a> &gt;&#160;</td><td class="memItemRight" valign="bottom"><b>position_indices</b></td></tr>
 <tr class="separator:a368663cb8d5983120342bd49e6d2f8fd inherit pro_attribs_classcgv_1_1media_1_1mesh_1_1simple__mesh__base"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a86e7f83dc34c815e000f555dc0e3b262 inherit pro_attribs_classcgv_1_1media_1_1mesh_1_1simple__mesh__base"><td class="memItemLeft" align="right" valign="top"><a id="a86e7f83dc34c815e000f555dc0e3b262"></a>
+std::vector&lt; <a class="el" href="classcgv_1_1media_1_1mesh_1_1simple__mesh__base.html#a0eb0181dc49db651e738bd0e66d1f0e6">idx_type</a> &gt;&#160;</td><td class="memItemRight" valign="bottom"><b>tex_coord_indices</b></td></tr>
+<tr class="separator:a86e7f83dc34c815e000f555dc0e3b262 inherit pro_attribs_classcgv_1_1media_1_1mesh_1_1simple__mesh__base"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a9a9a7592d0723613f60ac76ccd2b2c37 inherit pro_attribs_classcgv_1_1media_1_1mesh_1_1simple__mesh__base"><td class="memItemLeft" align="right" valign="top"><a id="a9a9a7592d0723613f60ac76ccd2b2c37"></a>
 std::vector&lt; <a class="el" href="classcgv_1_1media_1_1mesh_1_1simple__mesh__base.html#a0eb0181dc49db651e738bd0e66d1f0e6">idx_type</a> &gt;&#160;</td><td class="memItemRight" valign="bottom"><b>normal_indices</b></td></tr>
 <tr class="separator:a9a9a7592d0723613f60ac76ccd2b2c37 inherit pro_attribs_classcgv_1_1media_1_1mesh_1_1simple__mesh__base"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ab5a3ef39a4f3644d130efb9f8c7bac86 inherit pro_attribs_classcgv_1_1media_1_1mesh_1_1simple__mesh__base"><td class="memItemLeft" align="right" valign="top"><a id="ab5a3ef39a4f3644d130efb9f8c7bac86"></a>
 std::vector&lt; <a class="el" href="classcgv_1_1media_1_1mesh_1_1simple__mesh__base.html#a0eb0181dc49db651e738bd0e66d1f0e6">idx_type</a> &gt;&#160;</td><td class="memItemRight" valign="bottom"><b>tangent_indices</b></td></tr>
 <tr class="separator:ab5a3ef39a4f3644d130efb9f8c7bac86 inherit pro_attribs_classcgv_1_1media_1_1mesh_1_1simple__mesh__base"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a86e7f83dc34c815e000f555dc0e3b262 inherit pro_attribs_classcgv_1_1media_1_1mesh_1_1simple__mesh__base"><td class="memItemLeft" align="right" valign="top"><a id="a86e7f83dc34c815e000f555dc0e3b262"></a>
-std::vector&lt; <a class="el" href="classcgv_1_1media_1_1mesh_1_1simple__mesh__base.html#a0eb0181dc49db651e738bd0e66d1f0e6">idx_type</a> &gt;&#160;</td><td class="memItemRight" valign="bottom"><b>tex_coord_indices</b></td></tr>
-<tr class="separator:a86e7f83dc34c815e000f555dc0e3b262 inherit pro_attribs_classcgv_1_1media_1_1mesh_1_1simple__mesh__base"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ab8bcd9e8e51535c96574bed3584cecd9 inherit pro_attribs_classcgv_1_1media_1_1mesh_1_1simple__mesh__base"><td class="memItemLeft" align="right" valign="top"><a id="ab8bcd9e8e51535c96574bed3584cecd9"></a>
 std::vector&lt; <a class="el" href="classcgv_1_1media_1_1mesh_1_1simple__mesh__base.html#a0eb0181dc49db651e738bd0e66d1f0e6">idx_type</a> &gt;&#160;</td><td class="memItemRight" valign="bottom"><b>faces</b></td></tr>
 <tr class="separator:ab8bcd9e8e51535c96574bed3584cecd9 inherit pro_attribs_classcgv_1_1media_1_1mesh_1_1simple__mesh__base"><td class="memSeparator" colspan="2">&#160;</td></tr>
@@ -657,6 +701,16 @@ Friends</h2></td></tr>
 <tr class="memitem:a7f151bd35f3311315224d926db157a75"><td class="memItemLeft" align="right" valign="top"><a id="a7f151bd35f3311315224d926db157a75"></a>
 class&#160;</td><td class="memItemRight" valign="bottom"><b>simple_mesh_obj_reader&lt; T &gt;</b></td></tr>
 <tr class="separator:a7f151bd35f3311315224d926db157a75"><td class="memSeparator" colspan="2">&#160;</td></tr>
+</table><table class="memberdecls">
+<tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="inherited"></a>
+Additional Inherited Members</h2></td></tr>
+<tr class="inherit_header pub_static_methods_classcgv_1_1media_1_1mesh_1_1simple__mesh__base"><td colspan="2" onclick="javascript:toggleInherit('pub_static_methods_classcgv_1_1media_1_1mesh_1_1simple__mesh__base')"><img src="closed.png" alt="-"/>&#160;Static Public Member Functions inherited from <a class="el" href="classcgv_1_1media_1_1mesh_1_1simple__mesh__base.html">cgv::media::mesh::simple_mesh_base</a></td></tr>
+<tr class="memitem:a6eafd8b3cc05ae7bed3cceeac0c347ef inherit pub_static_methods_classcgv_1_1media_1_1mesh_1_1simple__mesh__base"><td class="memItemLeft" align="right" valign="top"><a id="a6eafd8b3cc05ae7bed3cceeac0c347ef"></a>
+static std::string&#160;</td><td class="memItemRight" valign="bottom"><b>get_attribute_name</b> (<a class="el" href="classcgv_1_1media_1_1mesh_1_1simple__mesh__base.html#ad4fc7270f07ba37b769e2cb6877a0a1f">attribute_type</a> attr)</td></tr>
+<tr class="separator:a6eafd8b3cc05ae7bed3cceeac0c347ef inherit pub_static_methods_classcgv_1_1media_1_1mesh_1_1simple__mesh__base"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a6c9a719e3530f651e1adc7dc969cb2f8 inherit pub_static_methods_classcgv_1_1media_1_1mesh_1_1simple__mesh__base"><td class="memItemLeft" align="right" valign="top"><a id="a6c9a719e3530f651e1adc7dc969cb2f8"></a>
+static <a class="el" href="classcgv_1_1media_1_1mesh_1_1simple__mesh__base.html#a211b6d732e1a6977bc8241b3e61c80af">AttributeFlags</a>&#160;</td><td class="memItemRight" valign="bottom"><b>get_attribute_flag</b> (<a class="el" href="classcgv_1_1media_1_1mesh_1_1simple__mesh__base.html#ad4fc7270f07ba37b769e2cb6877a0a1f">attribute_type</a> attr)</td></tr>
+<tr class="separator:a6c9a719e3530f651e1adc7dc969cb2f8 inherit pub_static_methods_classcgv_1_1media_1_1mesh_1_1simple__mesh__base"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
 <a name="details" id="details"></a><h2 class="groupheader">Detailed Description</h2>
 <div class="textblock"><h3>template&lt;typename T = float&gt;<br />
@@ -664,34 +718,8 @@ class cgv::media::mesh::simple_mesh&lt; T &gt;</h3>
 
 <p>the <a class="el" href="classcgv_1_1media_1_1mesh_1_1simple__mesh.html" title="the simple_mesh class is templated over the coordinate type that defaults to float">simple_mesh</a> class is templated over the coordinate type that defaults to float </p>
 
-<p class="definition">Definition at line <a class="el" href="simple__mesh_8h_source.html#l00202">202</a> of file <a class="el" href="simple__mesh_8h_source.html">simple_mesh.h</a>.</p>
-</div><h2 class="groupheader">Constructor &amp; Destructor Documentation</h2>
-<a id="a44c75c9157ed9f86e0c69a583eacfb26"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a44c75c9157ed9f86e0c69a583eacfb26">&#9670;&nbsp;</a></span>simple_mesh()</h2>
-
-<div class="memitem">
-<div class="memproto">
-<div class="memtemplate">
-template&lt;typename T &gt; </div>
-      <table class="memname">
-        <tr>
-          <td class="memname"><a class="el" href="classcgv_1_1media_1_1mesh_1_1simple__mesh.html">cgv::media::mesh::simple_mesh</a>&lt; T &gt;::<a class="el" href="classcgv_1_1media_1_1mesh_1_1simple__mesh.html">simple_mesh</a> </td>
-          <td>(</td>
-          <td class="paramtype">const std::string &amp;&#160;</td>
-          <td class="paramname"><em>conway_notation</em> = <code>&quot;&quot;</code></td><td>)</td>
-          <td></td>
-        </tr>
-      </table>
-</div><div class="memdoc">
-
-<p>assignment operator </p>
-<p>construct from string corresponding to conway notation (defaults to empty mesh) </p>
-
-<p class="definition">Definition at line <a class="el" href="simple__mesh_8cxx_source.html#l00641">641</a> of file <a class="el" href="simple__mesh_8cxx_source.html">simple_mesh.cxx</a>.</p>
-
-</div>
-</div>
-<h2 class="groupheader">Member Function Documentation</h2>
+<p class="definition">Definition at line <a class="el" href="simple__mesh_8h_source.html#l00224">224</a> of file <a class="el" href="simple__mesh_8h_source.html">simple_mesh.h</a>.</p>
+</div><h2 class="groupheader">Member Function Documentation</h2>
 <a id="a19cf6b810e3e7140aa441cd90c881294"></a>
 <h2 class="memtitle"><span class="permalink"><a href="#a19cf6b810e3e7140aa441cd90c881294">&#9670;&nbsp;</a></span>extract_vertex_attribute_buffer()</h2>
 
@@ -765,7 +793,7 @@ template&lt;typename T &gt; </div>
 </dl>
 <dl class="section return"><dt>Returns</dt><dd>The size of one color in bytes. </dd></dl>
 
-<p class="definition">Definition at line <a class="el" href="simple__mesh_8cxx_source.html#l00567">567</a> of file <a class="el" href="simple__mesh_8cxx_source.html">simple_mesh.cxx</a>.</p>
+<p class="definition">Definition at line <a class="el" href="simple__mesh_8cxx_source.html#l00602">602</a> of file <a class="el" href="simple__mesh_8cxx_source.html">simple_mesh.cxx</a>.</p>
 
 </div>
 </div>
@@ -790,7 +818,7 @@ template&lt;typename T &gt; </div>
 <p>read simple mesh from file (currently only obj and stl are supported) </p>
 <p>read simple mesh from file </p>
 
-<p class="definition">Definition at line <a class="el" href="simple__mesh_8cxx_source.html#l00454">454</a> of file <a class="el" href="simple__mesh_8cxx_source.html">simple_mesh.cxx</a>.</p>
+<p class="definition">Definition at line <a class="el" href="simple__mesh_8cxx_source.html#l00489">489</a> of file <a class="el" href="simple__mesh_8cxx_source.html">simple_mesh.cxx</a>.</p>
 
 <p class="reference">References <a class="el" href="stl__reader_8h_source.html#l00303">stl_reader::StlMesh&lt; TNumber, TIndex &gt;::num_tris()</a>, <a class="el" href="stl__reader_8h_source.html#l00291">stl_reader::StlMesh&lt; TNumber, TIndex &gt;::num_vrts()</a>, <a class="el" href="stl__reader_8h_source.html#l00376">stl_reader::StlMesh&lt; TNumber, TIndex &gt;::raw_normals()</a>, <a class="el" href="obj__reader_8cxx_source.html#l00195">cgv::media::mesh::obj_reader_base::read_obj()</a>, <a class="el" href="scan_8cxx_source.html#l00039">cgv::utils::to_lower()</a>, <a class="el" href="stl__reader_8h_source.html#l00315">stl_reader::StlMesh&lt; TNumber, TIndex &gt;::tri_corner_ind()</a>, <a class="el" href="stl__reader_8h_source.html#l00333">stl_reader::StlMesh&lt; TNumber, TIndex &gt;::tri_normal()</a>, and <a class="el" href="stl__reader_8h_source.html#l00297">stl_reader::StlMesh&lt; TNumber, TIndex &gt;::vrt_coords()</a>.</p>
 
