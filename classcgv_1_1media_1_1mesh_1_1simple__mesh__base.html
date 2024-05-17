@@ -84,6 +84,7 @@ $(document).ready(function(){initNavTree('classcgv_1_1media_1_1mesh_1_1simple__m
   <div class="summary">
 <a href="#pub-types">Public Types</a> &#124;
 <a href="#pub-methods">Public Member Functions</a> &#124;
+<a href="#pub-static-methods">Static Public Member Functions</a> &#124;
 <a href="#pro-attribs">Protected Attributes</a> &#124;
 <a href="classcgv_1_1media_1_1mesh_1_1simple__mesh__base-members.html">List of all members</a>  </div>
   <div class="headertitle">
@@ -112,6 +113,29 @@ Inheritance diagram for cgv::media::mesh::simple_mesh_base:</div>
 <table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="pub-types"></a>
 Public Types</h2></td></tr>
+<tr class="memitem:ad4fc7270f07ba37b769e2cb6877a0a1f"><td class="memItemLeft" align="right" valign="top"><a id="ad4fc7270f07ba37b769e2cb6877a0a1f"></a>enum class &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcgv_1_1media_1_1mesh_1_1simple__mesh__base.html#ad4fc7270f07ba37b769e2cb6877a0a1f">attribute_type</a> { <br />
+&#160;&#160;<b>begin</b> =0
+, <b>position</b> =0
+, <b>texcoords</b> =1
+, <b>normal</b> =2
+, <br />
+&#160;&#160;<b>tangent</b> =3
+, <b>color</b> =4
+, <b>end</b> =5
+<br />
+ }</td></tr>
+<tr class="memdesc:ad4fc7270f07ba37b769e2cb6877a0a1f"><td class="mdescLeft">&#160;</td><td class="mdescRight">different mesh attributes <br /></td></tr>
+<tr class="separator:ad4fc7270f07ba37b769e2cb6877a0a1f"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a211b6d732e1a6977bc8241b3e61c80af"><td class="memItemLeft" align="right" valign="top">enum &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcgv_1_1media_1_1mesh_1_1simple__mesh__base.html#a211b6d732e1a6977bc8241b3e61c80af">AttributeFlags</a> { <br />
+&#160;&#160;<b>AF_position</b> = 1
+, <a class="el" href="classcgv_1_1media_1_1mesh_1_1simple__mesh__base.html#a211b6d732e1a6977bc8241b3e61c80afaf87a87a400868ab1a10d5f0d8e500c12">AF_texcoords</a> = 2
+, <a class="el" href="classcgv_1_1media_1_1mesh_1_1simple__mesh__base.html#a211b6d732e1a6977bc8241b3e61c80afa0ee4dcb814213f9a0cfbeeb58218d5af">AF_normal</a> = 4
+, <a class="el" href="classcgv_1_1media_1_1mesh_1_1simple__mesh__base.html#a211b6d732e1a6977bc8241b3e61c80afa4b23b370276d7a62d1552871cb9444ac">AF_tangent</a> = 8
+, <br />
+&#160;&#160;<a class="el" href="classcgv_1_1media_1_1mesh_1_1simple__mesh__base.html#a211b6d732e1a6977bc8241b3e61c80afacb1db262dda1cb8bd46dcf8365a87743">AF_color</a> = 16
+<br />
+ }</td></tr>
+<tr class="separator:a211b6d732e1a6977bc8241b3e61c80af"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a0eb0181dc49db651e738bd0e66d1f0e6"><td class="memItemLeft" align="right" valign="top"><a id="a0eb0181dc49db651e738bd0e66d1f0e6"></a>
 typedef <a class="el" href="namespacecgv_1_1type.html#a946d7ae2eaadfe30e5b2c66601d64822">cgv::type::uint32_type</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcgv_1_1media_1_1mesh_1_1simple__mesh__base.html#a0eb0181dc49db651e738bd0e66d1f0e6">idx_type</a></td></tr>
 <tr class="memdesc:a0eb0181dc49db651e738bd0e66d1f0e6"><td class="mdescLeft">&#160;</td><td class="mdescRight">define index type <br /></td></tr>
@@ -149,6 +173,18 @@ typedef <a class="el" href="classcgv_1_1media_1_1color.html">color</a>&lt; unsig
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="pub-methods"></a>
 Public Member Functions</h2></td></tr>
+<tr class="memitem:ace2966b458c16a708d5f83fce917eecb"><td class="memItemLeft" align="right" valign="top"><a id="ace2966b458c16a708d5f83fce917eecb"></a>
+virtual bool&#160;</td><td class="memItemRight" valign="bottom"><b>has_attribute</b> (<a class="el" href="classcgv_1_1media_1_1mesh_1_1simple__mesh__base.html#ad4fc7270f07ba37b769e2cb6877a0a1f">attribute_type</a> attr) const =0</td></tr>
+<tr class="separator:ace2966b458c16a708d5f83fce917eecb"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a94aafd5750962768a295846584737c4d"><td class="memItemLeft" align="right" valign="top"><a id="a94aafd5750962768a295846584737c4d"></a>
+virtual const uint8_t *&#160;</td><td class="memItemRight" valign="bottom"><b>get_attribute_ptr</b> (<a class="el" href="classcgv_1_1media_1_1mesh_1_1simple__mesh__base.html#ad4fc7270f07ba37b769e2cb6877a0a1f">attribute_type</a> attr, <a class="el" href="classcgv_1_1media_1_1mesh_1_1simple__mesh__base.html#a0eb0181dc49db651e738bd0e66d1f0e6">idx_type</a> ai=0) const =0</td></tr>
+<tr class="separator:a94aafd5750962768a295846584737c4d"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ad3c26e0433bb438422c91c43d7fa0e62"><td class="memItemLeft" align="right" valign="top"><a id="ad3c26e0433bb438422c91c43d7fa0e62"></a>
+virtual size_t&#160;</td><td class="memItemRight" valign="bottom"><b>get_attribute_size</b> (<a class="el" href="classcgv_1_1media_1_1mesh_1_1simple__mesh__base.html#ad4fc7270f07ba37b769e2cb6877a0a1f">attribute_type</a> attr) const =0</td></tr>
+<tr class="separator:ad3c26e0433bb438422c91c43d7fa0e62"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ac4df6eac35e7d496a241da05a9b47451"><td class="memItemLeft" align="right" valign="top"><a id="ac4df6eac35e7d496a241da05a9b47451"></a>
+virtual size_t&#160;</td><td class="memItemRight" valign="bottom"><b>get_attribute_offset</b> (<a class="el" href="classcgv_1_1media_1_1mesh_1_1simple__mesh__base.html#ad4fc7270f07ba37b769e2cb6877a0a1f">attribute_type</a> attr) const =0</td></tr>
+<tr class="separator:ac4df6eac35e7d496a241da05a9b47451"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a197a3fcf0aead6c1c50f2bd90d333252"><td class="memItemLeft" align="right" valign="top"><a id="a197a3fcf0aead6c1c50f2bd90d333252"></a>
 &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcgv_1_1media_1_1mesh_1_1simple__mesh__base.html#a197a3fcf0aead6c1c50f2bd90d333252">simple_mesh_base</a> ()</td></tr>
 <tr class="memdesc:a197a3fcf0aead6c1c50f2bd90d333252"><td class="mdescLeft">&#160;</td><td class="mdescRight">default constructor <br /></td></tr>
@@ -173,6 +209,10 @@ Public Member Functions</h2></td></tr>
 virtual <a class="el" href="classcgv_1_1media_1_1mesh_1_1simple__mesh__base.html#a0eb0181dc49db651e738bd0e66d1f0e6">idx_type</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcgv_1_1media_1_1mesh_1_1simple__mesh__base.html#aa5c14f7cd17464eea93a30926aea4ae3">get_nr_positions</a> () const =0</td></tr>
 <tr class="memdesc:aa5c14f7cd17464eea93a30926aea4ae3"><td class="mdescLeft">&#160;</td><td class="mdescRight">position count <br /></td></tr>
 <tr class="separator:aa5c14f7cd17464eea93a30926aea4ae3"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:aae1f5e45ff26b59e113f8b996a4d3972"><td class="memItemLeft" align="right" valign="top"><a id="aae1f5e45ff26b59e113f8b996a4d3972"></a>
+virtual uint32_t&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcgv_1_1media_1_1mesh_1_1simple__mesh__base.html#aae1f5e45ff26b59e113f8b996a4d3972">get_coord_size</a> () const =0</td></tr>
+<tr class="memdesc:aae1f5e45ff26b59e113f8b996a4d3972"><td class="mdescLeft">&#160;</td><td class="mdescRight">return the size of one coordinate in bytes <br /></td></tr>
+<tr class="separator:aae1f5e45ff26b59e113f8b996a4d3972"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a58ec8ca84b58127b2579294cb0606433"><td class="memItemLeft" align="right" valign="top"><a class="el" href="classcgv_1_1media_1_1mesh_1_1simple__mesh__base.html#a0eb0181dc49db651e738bd0e66d1f0e6">idx_type</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcgv_1_1media_1_1mesh_1_1simple__mesh__base.html#a58ec8ca84b58127b2579294cb0606433">start_face</a> ()</td></tr>
 <tr class="memdesc:a58ec8ca84b58127b2579294cb0606433"><td class="mdescLeft">&#160;</td><td class="mdescRight">Create a new empty face to which new corners are added.  <a href="classcgv_1_1media_1_1mesh_1_1simple__mesh__base.html#a58ec8ca84b58127b2579294cb0606433">More...</a><br /></td></tr>
 <tr class="separator:a58ec8ca84b58127b2579294cb0606433"><td class="memSeparator" colspan="2">&#160;</td></tr>
@@ -281,6 +321,10 @@ void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="clas
 <tr class="memitem:a91dfd37d08cbcb2762767f0fd30913a6"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcgv_1_1media_1_1mesh_1_1simple__mesh__base.html#a91dfd37d08cbcb2762767f0fd30913a6">extract_wireframe_element_buffer</a> (const std::vector&lt; <a class="el" href="classcgv_1_1media_1_1mesh_1_1simple__mesh__base.html#a0eb0181dc49db651e738bd0e66d1f0e6">idx_type</a> &gt; &amp;vertex_indices, std::vector&lt; <a class="el" href="classcgv_1_1media_1_1mesh_1_1simple__mesh__base.html#a0eb0181dc49db651e738bd0e66d1f0e6">idx_type</a> &gt; &amp;edge_element_buffer) const</td></tr>
 <tr class="memdesc:a91dfd37d08cbcb2762767f0fd30913a6"><td class="mdescLeft">&#160;</td><td class="mdescRight">Extract element array buffers for edges in wireframe.  <a href="classcgv_1_1media_1_1mesh_1_1simple__mesh__base.html#a91dfd37d08cbcb2762767f0fd30913a6">More...</a><br /></td></tr>
 <tr class="separator:a91dfd37d08cbcb2762767f0fd30913a6"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a4bfdd7ed5e0d785cc5a6ef9cddd0d1a9"><td class="memItemLeft" align="right" valign="top"><a id="a4bfdd7ed5e0d785cc5a6ef9cddd0d1a9"></a>
+uint32_t&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcgv_1_1media_1_1mesh_1_1simple__mesh__base.html#a4bfdd7ed5e0d785cc5a6ef9cddd0d1a9">extract_vertex_attribute_buffer_base</a> (const std::vector&lt; <a class="el" href="classcgv_1_1media_1_1mesh_1_1simple__mesh__base.html#a0020cefcc7053881a18569fddbee2b44">vec4i</a> &gt; &amp;unique_quadruples, <a class="el" href="classcgv_1_1media_1_1mesh_1_1simple__mesh__base.html#a211b6d732e1a6977bc8241b3e61c80af">AttributeFlags</a> &amp;flags, std::vector&lt; uint8_t &gt; &amp;attrib_buffer) const</td></tr>
+<tr class="memdesc:a4bfdd7ed5e0d785cc5a6ef9cddd0d1a9"><td class="mdescLeft">&#160;</td><td class="mdescRight">extract vertex attribute buffer for the given flags and return size of vertex in bytes <br /></td></tr>
+<tr class="separator:a4bfdd7ed5e0d785cc5a6ef9cddd0d1a9"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a030e59a091b429b4ccc782d4bcb970ec"><td class="memItemLeft" align="right" valign="top"><a id="a030e59a091b429b4ccc782d4bcb970ec"></a>
 void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcgv_1_1media_1_1mesh_1_1simple__mesh__base.html#a030e59a091b429b4ccc782d4bcb970ec">compute_inv</a> (std::vector&lt; uint32_t &gt; &amp;inv, std::vector&lt; uint32_t &gt; *p2c_ptr=0, std::vector&lt; uint32_t &gt; *next_ptr=0, std::vector&lt; uint32_t &gt; *prev_ptr=0) const</td></tr>
 <tr class="memdesc:a030e59a091b429b4ccc782d4bcb970ec"><td class="mdescLeft">&#160;</td><td class="mdescRight">compute a index vector storing the inv corners per corner and optionally index vectors with per position corner index, per corner next and or prev corner index (implementation assumes closed manifold connectivity) <br /></td></tr>
@@ -391,20 +435,29 @@ void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="clas
 <tr class="memdesc:a21dc960d749c8c30a0ab9fe2ad463fe3 inherit pub_methods_classcgv_1_1media_1_1colored__model"><td class="mdescLeft">&#160;</td><td class="mdescRight">destruct color storage <br /></td></tr>
 <tr class="separator:a21dc960d749c8c30a0ab9fe2ad463fe3 inherit pub_methods_classcgv_1_1media_1_1colored__model"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table><table class="memberdecls">
+<tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="pub-static-methods"></a>
+Static Public Member Functions</h2></td></tr>
+<tr class="memitem:a6eafd8b3cc05ae7bed3cceeac0c347ef"><td class="memItemLeft" align="right" valign="top"><a id="a6eafd8b3cc05ae7bed3cceeac0c347ef"></a>
+static std::string&#160;</td><td class="memItemRight" valign="bottom"><b>get_attribute_name</b> (<a class="el" href="classcgv_1_1media_1_1mesh_1_1simple__mesh__base.html#ad4fc7270f07ba37b769e2cb6877a0a1f">attribute_type</a> attr)</td></tr>
+<tr class="separator:a6eafd8b3cc05ae7bed3cceeac0c347ef"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a6c9a719e3530f651e1adc7dc969cb2f8"><td class="memItemLeft" align="right" valign="top"><a id="a6c9a719e3530f651e1adc7dc969cb2f8"></a>
+static <a class="el" href="classcgv_1_1media_1_1mesh_1_1simple__mesh__base.html#a211b6d732e1a6977bc8241b3e61c80af">AttributeFlags</a>&#160;</td><td class="memItemRight" valign="bottom"><b>get_attribute_flag</b> (<a class="el" href="classcgv_1_1media_1_1mesh_1_1simple__mesh__base.html#ad4fc7270f07ba37b769e2cb6877a0a1f">attribute_type</a> attr)</td></tr>
+<tr class="separator:a6c9a719e3530f651e1adc7dc969cb2f8"><td class="memSeparator" colspan="2">&#160;</td></tr>
+</table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="pro-attribs"></a>
 Protected Attributes</h2></td></tr>
 <tr class="memitem:a368663cb8d5983120342bd49e6d2f8fd"><td class="memItemLeft" align="right" valign="top"><a id="a368663cb8d5983120342bd49e6d2f8fd"></a>
 std::vector&lt; <a class="el" href="classcgv_1_1media_1_1mesh_1_1simple__mesh__base.html#a0eb0181dc49db651e738bd0e66d1f0e6">idx_type</a> &gt;&#160;</td><td class="memItemRight" valign="bottom"><b>position_indices</b></td></tr>
 <tr class="separator:a368663cb8d5983120342bd49e6d2f8fd"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a86e7f83dc34c815e000f555dc0e3b262"><td class="memItemLeft" align="right" valign="top"><a id="a86e7f83dc34c815e000f555dc0e3b262"></a>
+std::vector&lt; <a class="el" href="classcgv_1_1media_1_1mesh_1_1simple__mesh__base.html#a0eb0181dc49db651e738bd0e66d1f0e6">idx_type</a> &gt;&#160;</td><td class="memItemRight" valign="bottom"><b>tex_coord_indices</b></td></tr>
+<tr class="separator:a86e7f83dc34c815e000f555dc0e3b262"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a9a9a7592d0723613f60ac76ccd2b2c37"><td class="memItemLeft" align="right" valign="top"><a id="a9a9a7592d0723613f60ac76ccd2b2c37"></a>
 std::vector&lt; <a class="el" href="classcgv_1_1media_1_1mesh_1_1simple__mesh__base.html#a0eb0181dc49db651e738bd0e66d1f0e6">idx_type</a> &gt;&#160;</td><td class="memItemRight" valign="bottom"><b>normal_indices</b></td></tr>
 <tr class="separator:a9a9a7592d0723613f60ac76ccd2b2c37"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ab5a3ef39a4f3644d130efb9f8c7bac86"><td class="memItemLeft" align="right" valign="top"><a id="ab5a3ef39a4f3644d130efb9f8c7bac86"></a>
 std::vector&lt; <a class="el" href="classcgv_1_1media_1_1mesh_1_1simple__mesh__base.html#a0eb0181dc49db651e738bd0e66d1f0e6">idx_type</a> &gt;&#160;</td><td class="memItemRight" valign="bottom"><b>tangent_indices</b></td></tr>
 <tr class="separator:ab5a3ef39a4f3644d130efb9f8c7bac86"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a86e7f83dc34c815e000f555dc0e3b262"><td class="memItemLeft" align="right" valign="top"><a id="a86e7f83dc34c815e000f555dc0e3b262"></a>
-std::vector&lt; <a class="el" href="classcgv_1_1media_1_1mesh_1_1simple__mesh__base.html#a0eb0181dc49db651e738bd0e66d1f0e6">idx_type</a> &gt;&#160;</td><td class="memItemRight" valign="bottom"><b>tex_coord_indices</b></td></tr>
-<tr class="separator:a86e7f83dc34c815e000f555dc0e3b262"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ab8bcd9e8e51535c96574bed3584cecd9"><td class="memItemLeft" align="right" valign="top"><a id="ab8bcd9e8e51535c96574bed3584cecd9"></a>
 std::vector&lt; <a class="el" href="classcgv_1_1media_1_1mesh_1_1simple__mesh__base.html#a0eb0181dc49db651e738bd0e66d1f0e6">idx_type</a> &gt;&#160;</td><td class="memItemRight" valign="bottom"><b>faces</b></td></tr>
 <tr class="separator:ab8bcd9e8e51535c96574bed3584cecd9"><td class="memSeparator" colspan="2">&#160;</td></tr>
@@ -430,7 +483,34 @@ std::vector&lt; <a class="el" href="classcgv_1_1media_1_1mesh_1_1simple__mesh__b
 <div class="textblock"><p>coordinate type independent base class of simple mesh data structure that handles indices and colors. </p>
 
 <p class="definition">Definition at line <a class="el" href="simple__mesh_8h_source.html#l00026">26</a> of file <a class="el" href="simple__mesh_8h_source.html">simple_mesh.h</a>.</p>
-</div><h2 class="groupheader">Member Function Documentation</h2>
+</div><h2 class="groupheader">Member Enumeration Documentation</h2>
+<a id="a211b6d732e1a6977bc8241b3e61c80af"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a211b6d732e1a6977bc8241b3e61c80af">&#9670;&nbsp;</a></span>AttributeFlags</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">enum <a class="el" href="classcgv_1_1media_1_1mesh_1_1simple__mesh__base.html#a211b6d732e1a6977bc8241b3e61c80af">cgv::media::mesh::simple_mesh_base::AttributeFlags</a></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+<table class="fieldtable">
+<tr><th colspan="2">Enumerator</th></tr><tr><td class="fieldname"><a id="a211b6d732e1a6977bc8241b3e61c80afaf87a87a400868ab1a10d5f0d8e500c12"></a>AF_texcoords&#160;</td><td class="fielddoc"><p>vertex position </p>
+</td></tr>
+<tr><td class="fieldname"><a id="a211b6d732e1a6977bc8241b3e61c80afa0ee4dcb814213f9a0cfbeeb58218d5af"></a>AF_normal&#160;</td><td class="fielddoc"><p>texture coordinates </p>
+</td></tr>
+<tr><td class="fieldname"><a id="a211b6d732e1a6977bc8241b3e61c80afa4b23b370276d7a62d1552871cb9444ac"></a>AF_tangent&#160;</td><td class="fielddoc"><p>surface normal </p>
+</td></tr>
+<tr><td class="fieldname"><a id="a211b6d732e1a6977bc8241b3e61c80afacb1db262dda1cb8bd46dcf8365a87743"></a>AF_color&#160;</td><td class="fielddoc"><p>tangent vectors for u coordinate </p>
+</td></tr>
+</table>
+
+<p class="definition">Definition at line <a class="el" href="simple__mesh_8h_source.html#l00044">44</a> of file <a class="el" href="simple__mesh_8h_source.html">simple_mesh.h</a>.</p>
+
+</div>
+</div>
+<h2 class="groupheader">Member Function Documentation</h2>
 <a id="ae52c2f6d9faf71fd4b97740795977b98"></a>
 <h2 class="memtitle"><span class="permalink"><a href="#ae52c2f6d9faf71fd4b97740795977b98">&#9670;&nbsp;</a></span>begin_corner()</h2>
 
@@ -464,9 +544,9 @@ std::vector&lt; <a class="el" href="classcgv_1_1media_1_1mesh_1_1simple__mesh__b
 </dl>
 <dl class="section return"><dt>Returns</dt><dd>Index of the face's first vertex. </dd></dl>
 
-<p class="definition">Definition at line <a class="el" href="simple__mesh_8h_source.html#l00097">97</a> of file <a class="el" href="simple__mesh_8h_source.html">simple_mesh.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="simple__mesh_8h_source.html#l00117">117</a> of file <a class="el" href="simple__mesh_8h_source.html">simple_mesh.h</a>.</p>
 
-<p class="reference">Referenced by <a class="el" href="simple__mesh_8cxx_source.html#l00267">compute_c2e()</a>, <a class="el" href="simple__mesh_8cxx_source.html#l00168">extract_triangle_element_buffer()</a>, <a class="el" href="simple__mesh_8cxx_source.html#l00200">extract_wireframe_element_buffer()</a>, and <a class="el" href="simple__mesh_8cxx_source.html#l00098">revert_face_orientation()</a>.</p>
+<p class="reference">Referenced by <a class="el" href="simple__mesh_8cxx_source.html#l00470">cgv::media::mesh::simple_mesh&lt; float &gt;::clear()</a>, <a class="el" href="simple__mesh_8cxx_source.html#l00321">compute_c2f()</a>, <a class="el" href="simple__mesh_8cxx_source.html#l00265">compute_inv()</a>, <a class="el" href="simple__mesh_8cxx_source.html#l00163">extract_triangle_element_buffer()</a>, <a class="el" href="simple__mesh_8cxx_source.html#l00193">extract_wireframe_element_buffer()</a>, and <a class="el" href="simple__mesh_8cxx_source.html#l00096">revert_face_orientation()</a>.</p>
 
 </div>
 </div>
@@ -505,9 +585,7 @@ std::vector&lt; <a class="el" href="classcgv_1_1media_1_1mesh_1_1simple__mesh__b
 <p>given the inv corners compute index vector per corner its edge index and optionally per edge its corner index and return edge count (implementation assumes closed manifold connectivity) </p>
 <p>given the inv corners compute index vector per corner its edge index and optionally per edge its corner index (implementation assumes closed manifold connectivity) </p>
 
-<p class="definition">Definition at line <a class="el" href="simple__mesh_8cxx_source.html#l00267">267</a> of file <a class="el" href="simple__mesh_8cxx_source.html">simple_mesh.cxx</a>.</p>
-
-<p class="reference">References <a class="el" href="simple__mesh_8h_source.html#l00097">begin_corner()</a>, <a class="el" href="simple__mesh_8h_source.html#l00104">end_corner()</a>, <a class="el" href="simple__mesh_8h_source.html#l00090">get_nr_corners()</a>, and <a class="el" href="simple__mesh_8h_source.html#l00088">get_nr_faces()</a>.</p>
+<p class="definition">Definition at line <a class="el" href="simple__mesh_8cxx_source.html#l00302">302</a> of file <a class="el" href="simple__mesh_8cxx_source.html">simple_mesh.cxx</a>.</p>
 
 </div>
 </div>
@@ -544,9 +622,9 @@ std::vector&lt; <a class="el" href="classcgv_1_1media_1_1mesh_1_1simple__mesh__b
 </dl>
 <dl class="section return"><dt>Returns</dt><dd>Index of the face's last vertex + 1. </dd></dl>
 
-<p class="definition">Definition at line <a class="el" href="simple__mesh_8h_source.html#l00104">104</a> of file <a class="el" href="simple__mesh_8h_source.html">simple_mesh.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="simple__mesh_8h_source.html#l00124">124</a> of file <a class="el" href="simple__mesh_8h_source.html">simple_mesh.h</a>.</p>
 
-<p class="reference">Referenced by <a class="el" href="simple__mesh_8cxx_source.html#l00267">compute_c2e()</a>, <a class="el" href="simple__mesh_8cxx_source.html#l00168">extract_triangle_element_buffer()</a>, <a class="el" href="simple__mesh_8cxx_source.html#l00200">extract_wireframe_element_buffer()</a>, and <a class="el" href="simple__mesh_8cxx_source.html#l00098">revert_face_orientation()</a>.</p>
+<p class="reference">Referenced by <a class="el" href="simple__mesh_8cxx_source.html#l00470">cgv::media::mesh::simple_mesh&lt; float &gt;::clear()</a>, <a class="el" href="simple__mesh_8cxx_source.html#l00321">compute_c2f()</a>, <a class="el" href="simple__mesh_8cxx_source.html#l00265">compute_inv()</a>, <a class="el" href="simple__mesh_8cxx_source.html#l00163">extract_triangle_element_buffer()</a>, <a class="el" href="simple__mesh_8cxx_source.html#l00193">extract_wireframe_element_buffer()</a>, and <a class="el" href="simple__mesh_8cxx_source.html#l00096">revert_face_orientation()</a>.</p>
 
 </div>
 </div>
@@ -602,9 +680,9 @@ std::vector&lt; <a class="el" href="classcgv_1_1media_1_1mesh_1_1simple__mesh__b
 <dd>
 <a class="el" href="classcgv_1_1media_1_1mesh_1_1simple__mesh__base.html#ab5cc67e7a85610d8a316305dcadb4c55" title="Calculate a permutation of face indices which sorts them by group and/or material.">simple_mesh::sort_faces()</a> for getting a permutation </dd></dl>
 
-<p class="definition">Definition at line <a class="el" href="simple__mesh_8cxx_source.html#l00168">168</a> of file <a class="el" href="simple__mesh_8cxx_source.html">simple_mesh.cxx</a>.</p>
+<p class="definition">Definition at line <a class="el" href="simple__mesh_8cxx_source.html#l00163">163</a> of file <a class="el" href="simple__mesh_8cxx_source.html">simple_mesh.cxx</a>.</p>
 
-<p class="reference">References <a class="el" href="simple__mesh_8h_source.html#l00097">begin_corner()</a>, <a class="el" href="simple__mesh_8h_source.html#l00104">end_corner()</a>, and <a class="el" href="simple__mesh_8h_source.html#l00106">face_degree()</a>.</p>
+<p class="reference">References <a class="el" href="simple__mesh_8h_source.html#l00117">begin_corner()</a>, <a class="el" href="simple__mesh_8h_source.html#l00124">end_corner()</a>, and <a class="el" href="simple__mesh_8h_source.html#l00126">face_degree()</a>.</p>
 
 <p class="reference">Referenced by <a class="el" href="mesh__render__info_8cxx_source.html#l00023">cgv::render::mesh_render_info::construct_index_buffers()</a>.</p>
 
@@ -637,7 +715,6 @@ std::vector&lt; <a class="el" href="classcgv_1_1media_1_1mesh_1_1simple__mesh__b
 </div><div class="memdoc">
 
 <p>Extract element array buffers for edges in wireframe. </p>
-<p>extract element array buffers for edges in wireframe</p>
 <dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
     <tr><td class="paramdir">[in]</td><td class="paramname">vertex_indices</td><td>Contains indices into a list of vertices. </td></tr>
@@ -647,9 +724,9 @@ std::vector&lt; <a class="el" href="classcgv_1_1media_1_1mesh_1_1simple__mesh__b
 </dl>
 <dl class="section see"><dt>See also</dt><dd><a class="el" href="classcgv_1_1media_1_1mesh_1_1simple__mesh__base.html#a308e232556ccf1621e69fde8d6ceffe7" title="Transforms n individual vertex attribute indices into one list of unique index n-tuples.">simple_mesh::merge_indices()</a> </dd></dl>
 
-<p class="definition">Definition at line <a class="el" href="simple__mesh_8cxx_source.html#l00200">200</a> of file <a class="el" href="simple__mesh_8cxx_source.html">simple_mesh.cxx</a>.</p>
+<p class="definition">Definition at line <a class="el" href="simple__mesh_8cxx_source.html#l00193">193</a> of file <a class="el" href="simple__mesh_8cxx_source.html">simple_mesh.cxx</a>.</p>
 
-<p class="reference">References <a class="el" href="simple__mesh_8h_source.html#l00097">begin_corner()</a>, and <a class="el" href="simple__mesh_8h_source.html#l00104">end_corner()</a>.</p>
+<p class="reference">References <a class="el" href="simple__mesh_8h_source.html#l00117">begin_corner()</a>, and <a class="el" href="simple__mesh_8h_source.html#l00124">end_corner()</a>.</p>
 
 <p class="reference">Referenced by <a class="el" href="mesh__render__info_8cxx_source.html#l00023">cgv::render::mesh_render_info::construct_index_buffers()</a>.</p>
 
@@ -704,7 +781,7 @@ std::vector&lt; <a class="el" href="classcgv_1_1media_1_1mesh_1_1simple__mesh__b
 <p>See <a href="https://www.opengl-tutorial.org/intermediate-tutorials/tutorial-9-vbo-indexing/">https://www.opengl-tutorial.org/intermediate-tutorials/tutorial-9-vbo-indexing/</a> for further details.</p>
 <dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
-    <tr><td class="paramdir">[out]</td><td class="paramname">vertex_indices</td><td>will be filled with indicies into the unique tuple list. </td></tr>
+    <tr><td class="paramdir">[out]</td><td class="paramname">vertex_indices</td><td>will be filled per corner with index into the unique tuple list. </td></tr>
     <tr><td class="paramdir">[out]</td><td class="paramname">unique_tuples</td><td>will be filled with all the unique n-tuples. </td></tr>
     <tr><td class="paramdir">[in,out]</td><td class="paramname">include_tex_coords_ptr</td><td>if nullptr then texture coordinates won't be included in the n-tuples. Otherwise the pointed to bool will be set to true if the mesh even contains texture coordinates or false if not. </td></tr>
     <tr><td class="paramdir">[in,out]</td><td class="paramname">include_normals_ptr</td><td>if nullptr then normals won't be included in the n-tuples. Otherwise the pointed to bool will be set to true if the mesh even contains normals or false if not. </td></tr>
@@ -716,7 +793,7 @@ std::vector&lt; <a class="el" href="classcgv_1_1media_1_1mesh_1_1simple__mesh__b
 <dd>
 <a class="el" href="classcgv_1_1media_1_1mesh_1_1simple__mesh__base.html#a91dfd37d08cbcb2762767f0fd30913a6" title="Extract element array buffers for edges in wireframe.">simple_mesh::extract_wireframe_element_buffer()</a> </dd></dl>
 
-<p class="definition">Definition at line <a class="el" href="simple__mesh_8cxx_source.html#l00130">130</a> of file <a class="el" href="simple__mesh_8cxx_source.html">simple_mesh.cxx</a>.</p>
+<p class="definition">Definition at line <a class="el" href="simple__mesh_8cxx_source.html#l00126">126</a> of file <a class="el" href="simple__mesh_8cxx_source.html">simple_mesh.cxx</a>.</p>
 
 <p class="reference">Referenced by <a class="el" href="mesh__render__info_8cxx_source.html#l00023">cgv::render::mesh_render_info::construct_index_buffers()</a>.</p>
 
@@ -767,7 +844,7 @@ std::vector&lt; <a class="el" href="classcgv_1_1media_1_1mesh_1_1simple__mesh__b
 
 <p class="definition">Definition at line <a class="el" href="simple__mesh_8cxx_source.html#l00086">86</a> of file <a class="el" href="simple__mesh_8cxx_source.html">simple_mesh.cxx</a>.</p>
 
-<p class="reference">Referenced by <a class="el" href="simple__mesh_8cxx_source.html#l00751">cgv::media::mesh::simple_mesh&lt; T &gt;::ambo()</a>, <a class="el" href="simple__mesh_8cxx_source.html#l00868">cgv::media::mesh::simple_mesh&lt; T &gt;::dual()</a>, <a class="el" href="gltf__support_8cxx_source.html#l00328">cgv::render::extract_mesh()</a>, <a class="el" href="simple__mesh_8cxx_source.html#l00900">cgv::media::mesh::simple_mesh&lt; T &gt;::gyro()</a>, <a class="el" href="simple__mesh_8cxx_source.html#l00952">cgv::media::mesh::simple_mesh&lt; T &gt;::join()</a>, <a class="el" href="gl__implicit__surface__drawable__base_8cxx_source.html#l00223">cgv::render::gl::gl_implicit_surface_drawable_base::new_polygon()</a>, <a class="el" href="simple__mesh_8cxx_source.html#l00823">cgv::media::mesh::simple_mesh&lt; T &gt;::snub()</a>, and <a class="el" href="simple__mesh_8cxx_source.html#l00787">cgv::media::mesh::simple_mesh&lt; T &gt;::truncate()</a>.</p>
+<p class="reference">Referenced by <a class="el" href="simple__mesh_8cxx_source.html#l00776">cgv::media::mesh::simple_mesh&lt; T &gt;::ambo()</a>, <a class="el" href="simple__mesh_8cxx_source.html#l00893">cgv::media::mesh::simple_mesh&lt; T &gt;::dual()</a>, <a class="el" href="gltf__support_8cxx_source.html#l00328">cgv::render::extract_mesh()</a>, <a class="el" href="simple__mesh_8cxx_source.html#l00925">cgv::media::mesh::simple_mesh&lt; T &gt;::gyro()</a>, <a class="el" href="simple__mesh_8cxx_source.html#l00971">cgv::media::mesh::simple_mesh&lt; T &gt;::join()</a>, <a class="el" href="gl__implicit__surface__drawable__base_8cxx_source.html#l00223">cgv::render::gl::gl_implicit_surface_drawable_base::new_polygon()</a>, <a class="el" href="simple__mesh_8cxx_source.html#l00848">cgv::media::mesh::simple_mesh&lt; T &gt;::snub()</a>, and <a class="el" href="simple__mesh_8cxx_source.html#l00812">cgv::media::mesh::simple_mesh&lt; T &gt;::truncate()</a>.</p>
 
 </div>
 </div>
@@ -814,9 +891,9 @@ std::vector&lt; <a class="el" href="classcgv_1_1media_1_1mesh_1_1simple__mesh__b
 </dl>
 <dl class="section see"><dt>See also</dt><dd><a class="el" href="classcgv_1_1media_1_1mesh_1_1simple__mesh__base.html#a116d992457d26966664db28542b423ea" title="Extract element array buffers for triangulation.">simple_mesh::extract_triangle_element_buffer()</a> for applying the sorting permutation </dd></dl>
 
-<p class="definition">Definition at line <a class="el" href="simple__mesh_8cxx_source.html#l00117">117</a> of file <a class="el" href="simple__mesh_8cxx_source.html">simple_mesh.cxx</a>.</p>
+<p class="definition">Definition at line <a class="el" href="simple__mesh_8cxx_source.html#l00114">114</a> of file <a class="el" href="simple__mesh_8cxx_source.html">simple_mesh.cxx</a>.</p>
 
-<p class="reference">References <a class="el" href="simple__mesh_8h_source.html#l00120">get_nr_groups()</a>, and <a class="el" href="simple__mesh_8h_source.html#l00108">get_nr_materials()</a>.</p>
+<p class="reference">References <a class="el" href="simple__mesh_8h_source.html#l00140">get_nr_groups()</a>, and <a class="el" href="simple__mesh_8h_source.html#l00128">get_nr_materials()</a>.</p>
 
 <p class="reference">Referenced by <a class="el" href="mesh__render__info_8cxx_source.html#l00023">cgv::render::mesh_render_info::construct_index_buffers()</a>.</p>
 
@@ -840,9 +917,9 @@ std::vector&lt; <a class="el" href="classcgv_1_1media_1_1mesh_1_1simple__mesh__b
 <p>Create a new empty face to which new corners are added. </p>
 <dl class="section return"><dt>Returns</dt><dd>The index to the newly created face. </dd></dl>
 
-<p class="definition">Definition at line <a class="el" href="simple__mesh_8cxx_source.html#l00076">76</a> of file <a class="el" href="simple__mesh_8cxx_source.html">simple_mesh.cxx</a>.</p>
+<p class="definition">Definition at line <a class="el" href="simple__mesh_8cxx_source.html#l00077">77</a> of file <a class="el" href="simple__mesh_8cxx_source.html">simple_mesh.cxx</a>.</p>
 
-<p class="reference">Referenced by <a class="el" href="simple__mesh_8cxx_source.html#l00751">cgv::media::mesh::simple_mesh&lt; T &gt;::ambo()</a>, <a class="el" href="simple__mesh_8cxx_source.html#l00868">cgv::media::mesh::simple_mesh&lt; T &gt;::dual()</a>, <a class="el" href="gltf__support_8cxx_source.html#l00328">cgv::render::extract_mesh()</a>, <a class="el" href="simple__mesh_8cxx_source.html#l00900">cgv::media::mesh::simple_mesh&lt; T &gt;::gyro()</a>, <a class="el" href="simple__mesh_8cxx_source.html#l00952">cgv::media::mesh::simple_mesh&lt; T &gt;::join()</a>, <a class="el" href="gl__implicit__surface__drawable__base_8cxx_source.html#l00223">cgv::render::gl::gl_implicit_surface_drawable_base::new_polygon()</a>, <a class="el" href="simple__mesh_8cxx_source.html#l00823">cgv::media::mesh::simple_mesh&lt; T &gt;::snub()</a>, and <a class="el" href="simple__mesh_8cxx_source.html#l00787">cgv::media::mesh::simple_mesh&lt; T &gt;::truncate()</a>.</p>
+<p class="reference">Referenced by <a class="el" href="simple__mesh_8cxx_source.html#l00776">cgv::media::mesh::simple_mesh&lt; T &gt;::ambo()</a>, <a class="el" href="simple__mesh_8cxx_source.html#l00893">cgv::media::mesh::simple_mesh&lt; T &gt;::dual()</a>, <a class="el" href="gltf__support_8cxx_source.html#l00328">cgv::render::extract_mesh()</a>, <a class="el" href="simple__mesh_8cxx_source.html#l00925">cgv::media::mesh::simple_mesh&lt; T &gt;::gyro()</a>, <a class="el" href="simple__mesh_8cxx_source.html#l00971">cgv::media::mesh::simple_mesh&lt; T &gt;::join()</a>, <a class="el" href="gl__implicit__surface__drawable__base_8cxx_source.html#l00223">cgv::render::gl::gl_implicit_surface_drawable_base::new_polygon()</a>, <a class="el" href="simple__mesh_8cxx_source.html#l00848">cgv::media::mesh::simple_mesh&lt; T &gt;::snub()</a>, and <a class="el" href="simple__mesh_8cxx_source.html#l00812">cgv::media::mesh::simple_mesh&lt; T &gt;::truncate()</a>.</p>
 
 </div>
 </div>
