@@ -731,6 +731,8 @@ var hierarchy =
     [ "cgv::render::gl::gl_traits< unsigned short >", "structcgv_1_1render_1_1gl_1_1gl__traits_3_01unsigned_01short_01_4.html", null ],
     [ "cgv::render::managed_frame_buffer", "classcgv_1_1render_1_1managed__frame__buffer.html", null ],
     [ "cgv::render::managed_frame_buffer::attachment", "structcgv_1_1render_1_1managed__frame__buffer_1_1attachment.html", null ],
+    [ "cgv::render::mesh_render_info::attribute_configuration", "structcgv_1_1render_1_1mesh__render__info_1_1attribute__configuration.html", null ],
+    [ "cgv::render::mesh_render_info::vbo_configuration", "structcgv_1_1render_1_1mesh__render__info_1_1vbo__configuration.html", null ],
     [ "cgv::render::performance_measurement", "structcgv_1_1render_1_1performance__measurement.html", null ],
     [ "cgv::render::performance_monitor", "classcgv_1_1render_1_1performance__monitor.html", [
       [ "cgv::render::gl::gl_performance_monitor", "classcgv_1_1render_1_1gl_1_1gl__performance__monitor.html", null ]

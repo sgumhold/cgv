@@ -1,9 +1,11 @@
 var searchData=
 [
-  ['layout_5finline_5fptr_8469',['layout_inline_ptr',['../namespacecgv_1_1gui.html#a1568b5c96eec466f2990ee7c7e6254bf',1,'cgv::gui']]],
-  ['layout_5fptr_8470',['layout_ptr',['../namespacecgv_1_1gui.html#a6f7b5d233f9b765527c277616a6bf9a3',1,'cgv::gui']]],
-  ['layout_5ftable_5fptr_8471',['layout_table_ptr',['../namespacecgv_1_1gui.html#a9265f54c5bc1f0abe8e00dd1718fe861',1,'cgv::gui']]],
-  ['lvec2_8472',['lvec2',['../namespacecgv.html#a02d00092edd3ecfa18a4cd3dfdf64c7b',1,'cgv']]],
-  ['lvec3_8473',['lvec3',['../namespacecgv.html#a95f1f4d36e505255b6091a6af16927c4',1,'cgv']]],
-  ['lvec4_8474',['lvec4',['../namespacecgv.html#ad43d929aa97380af48cb8616e6f5c75a',1,'cgv']]]
+  ['idx_5ftype_8484',['idx_type',['../classcgv_1_1media_1_1mesh_1_1simple__mesh__base.html#a0eb0181dc49db651e738bd0e66d1f0e6',1,'cgv::media::mesh::simple_mesh_base::idx_type()'],['../classcgv_1_1render_1_1render__info.html#aafe690fb7b914175edea602a1d7b0317',1,'cgv::render::render_info::idx_type()'],['../classcgv_1_1media_1_1mesh_1_1dynamic__mesh.html#a0eb0181dc49db651e738bd0e66d1f0e6',1,'cgv::media::mesh::dynamic_mesh::idx_type()']]],
+  ['int16_5ftype_8485',['int16_type',['../namespacecgv_1_1type.html#a50499c679872cbbe57b912ecd37abcc7',1,'cgv::type']]],
+  ['int32_5ftype_8486',['int32_type',['../namespacecgv_1_1type.html#a4a069c98fd72278c38dc39b9ce3faecf',1,'cgv::type']]],
+  ['int64_5ftype_8487',['int64_type',['../namespacecgv_1_1type.html#abba5e35ae5a2295d1c8c5928b0c991e7',1,'cgv::type']]],
+  ['int8_5ftype_8488',['int8_type',['../namespacecgv_1_1type.html#a33601cfa7f4a197e11c3cd383b3acc4c',1,'cgv::type']]],
+  ['ivec2_8489',['ivec2',['../namespacecgv.html#a4fc9abee97018a017bb3a14b531a8f06',1,'cgv']]],
+  ['ivec3_8490',['ivec3',['../namespacecgv.html#a3175362df034aa66edfc8c18bbdde695',1,'cgv']]],
+  ['ivec4_8491',['ivec4',['../namespacecgv.html#a31f6f176e22ec211e46f99a2b9e78e00',1,'cgv']]]
 ];

@@ -1,8 +1,6 @@
 var searchData=
 [
-  ['render_5fconfig_5fptr_8494',['render_config_ptr',['../namespacecgv_1_1render.html#a140190d5ae0854d5f6d150f58221b640',1,'cgv::render']]],
-  ['rgb_8495',['rgb',['../structcgv_1_1media_1_1color__storage__types.html#a2b0606813dd8c5d4f17bb10afaae5c22',1,'cgv::media::color_storage_types::rgb()'],['../classcgv_1_1media_1_1illum_1_1light__source.html#a44ec372546581cdafed4966c8bfdc185',1,'cgv::media::illum::light_source::rgb()'],['../namespacecgv.html#a465f589beeb5e4e76eb2db8d1f6057c1',1,'cgv::rgb()']]],
-  ['rgb8_8496',['rgb8',['../namespacecgv.html#a6e001bf8cb90ee62dfc1a0504b43d9e0',1,'cgv']]],
-  ['rgba_8497',['rgba',['../namespacecgv.html#a0cf3c7d9673d8f1d9d33685e3ce5c889',1,'cgv']]],
-  ['rgba8_8498',['rgba8',['../namespacecgv.html#a0aac95bcebcb6689b96f8317226e2b6d',1,'cgv']]]
+  ['qem_5ftype_8514',['qem_type',['../classcgv_1_1media_1_1mesh_1_1dual__contouring.html#aa6c5cae820e4524724092146cfb1d28a',1,'cgv::media::mesh::dual_contouring']]],
+  ['quat_8515',['quat',['../classcgv_1_1gui_1_1pose__event.html#aa304ba805e6a735e99b5f588cd7ef3b1',1,'cgv::gui::pose_event::quat()'],['../namespacecgv.html#a19377b8deaf65280e6c1de7ace18cab9',1,'cgv::quat()']]],
+  ['quat_5ftype_8516',['quat_type',['../classcgv_1_1math_1_1rigid__transform.html#a802f2af3acf0710f812517ec3522e91e',1,'cgv::math::rigid_transform']]]
 ];

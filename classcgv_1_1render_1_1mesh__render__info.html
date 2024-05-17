@@ -82,6 +82,7 @@ $(document).ready(function(){initNavTree('classcgv_1_1render_1_1mesh__render__in
 
 <div class="header">
   <div class="summary">
+<a href="#nested-classes">Classes</a> &#124;
 <a href="#pub-types">Public Types</a> &#124;
 <a href="#pub-methods">Public Member Functions</a> &#124;
 <a href="#pro-methods">Protected Member Functions</a> &#124;
@@ -106,8 +107,21 @@ Inheritance diagram for cgv::render::mesh_render_info:</div>
   </map>
 </div></div>
 <table class="memberdecls">
+<tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="nested-classes"></a>
+Classes</h2></td></tr>
+<tr class="memitem:"><td class="memItemLeft" align="right" valign="top">struct &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structcgv_1_1render_1_1mesh__render__info_1_1attribute__configuration.html">attribute_configuration</a></td></tr>
+<tr class="memdesc:"><td class="mdescLeft">&#160;</td><td class="mdescRight">information needed per mesh attribute to know where it is stored in vbos  <a href="structcgv_1_1render_1_1mesh__render__info_1_1attribute__configuration.html#details">More...</a><br /></td></tr>
+<tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:"><td class="memItemLeft" align="right" valign="top">struct &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structcgv_1_1render_1_1mesh__render__info_1_1vbo__configuration.html">vbo_configuration</a></td></tr>
+<tr class="memdesc:"><td class="mdescLeft">&#160;</td><td class="mdescRight">information stored per vbo  <a href="structcgv_1_1render_1_1mesh__render__info_1_1vbo__configuration.html#details">More...</a><br /></td></tr>
+<tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
+</table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="pub-types"></a>
 Public Types</h2></td></tr>
+<tr class="memitem:a7a0fda67d9aeb30d2fb67e6be2499f7c"><td class="memItemLeft" align="right" valign="top"><a id="a7a0fda67d9aeb30d2fb67e6be2499f7c"></a>
+typedef cgv::media::mesh::simple_mesh_base::attribute_type&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcgv_1_1render_1_1mesh__render__info.html#a7a0fda67d9aeb30d2fb67e6be2499f7c">attribute_type</a></td></tr>
+<tr class="memdesc:a7a0fda67d9aeb30d2fb67e6be2499f7c"><td class="mdescLeft">&#160;</td><td class="mdescRight">redeclare attribute type for shorter name <br /></td></tr>
+<tr class="separator:a7a0fda67d9aeb30d2fb67e6be2499f7c"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a06bc37b1fcbdd73e106f6fb9096f3023"><td class="memItemLeft" align="right" valign="top"><a id="a06bc37b1fcbdd73e106f6fb9096f3023"></a>
 typedef <a class="el" href="classcgv_1_1math_1_1fvec.html">cgv::math::fvec</a>&lt; <a class="el" href="classcgv_1_1render_1_1render__info.html#aafe690fb7b914175edea602a1d7b0317">idx_type</a>, 3 &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcgv_1_1render_1_1mesh__render__info.html#a06bc37b1fcbdd73e106f6fb9096f3023">vec3i</a></td></tr>
 <tr class="memdesc:a06bc37b1fcbdd73e106f6fb9096f3023"><td class="mdescLeft">&#160;</td><td class="mdescRight">index triple type <br /></td></tr>
@@ -116,6 +130,10 @@ typedef <a class="el" href="classcgv_1_1math_1_1fvec.html">cgv::math::fvec</a>&l
 typedef <a class="el" href="classcgv_1_1math_1_1fvec.html">cgv::math::fvec</a>&lt; <a class="el" href="classcgv_1_1render_1_1render__info.html#aafe690fb7b914175edea602a1d7b0317">idx_type</a>, 4 &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcgv_1_1render_1_1mesh__render__info.html#a7b7eca1b2317d2bd6106b21bf209a862">vec4i</a></td></tr>
 <tr class="memdesc:a7b7eca1b2317d2bd6106b21bf209a862"><td class="mdescLeft">&#160;</td><td class="mdescRight">index quartuple type <br /></td></tr>
 <tr class="separator:a7b7eca1b2317d2bd6106b21bf209a862"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ae4c1a06fd77326a552a467e0878f8c25"><td class="memItemLeft" align="right" valign="top"><a id="ae4c1a06fd77326a552a467e0878f8c25"></a>
+typedef std::map&lt; <a class="el" href="classcgv_1_1render_1_1mesh__render__info.html#a7a0fda67d9aeb30d2fb67e6be2499f7c">attribute_type</a>, uint32_t &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcgv_1_1render_1_1mesh__render__info.html#ae4c1a06fd77326a552a467e0878f8c25">attribute_map</a></td></tr>
+<tr class="memdesc:ae4c1a06fd77326a552a467e0878f8c25"><td class="mdescLeft">&#160;</td><td class="mdescRight">type of map from mesh attribute to vbo index <br /></td></tr>
+<tr class="separator:ae4c1a06fd77326a552a467e0878f8c25"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="inherit_header pub_types_classcgv_1_1render_1_1render__info"><td colspan="2" onclick="javascript:toggleInherit('pub_types_classcgv_1_1render_1_1render__info')"><img src="closed.png" alt="-"/>&#160;Public Types inherited from <a class="el" href="classcgv_1_1render_1_1render__info.html">cgv::render::render_info</a></td></tr>
 <tr class="memitem:aafe690fb7b914175edea602a1d7b0317 inherit pub_types_classcgv_1_1render_1_1render__info"><td class="memItemLeft" align="right" valign="top"><a id="aafe690fb7b914175edea602a1d7b0317"></a>
 typedef <a class="el" href="namespacecgv_1_1type.html#a946d7ae2eaadfe30e5b2c66601d64822">cgv::type::uint32_type</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcgv_1_1render_1_1render__info.html#aafe690fb7b914175edea602a1d7b0317">idx_type</a></td></tr>
@@ -138,10 +156,21 @@ bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="clas
 <tr class="separator:a2f17efe64c9f1c86ea2f4c9cabe0a6b0"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:af34abaa76c71b3832a18a0f43492fa4c"><td class="memTemplParams" colspan="2">template&lt;typename T &gt; </td></tr>
 <tr class="memitem:af34abaa76c71b3832a18a0f43492fa4c"><td class="memTemplItemLeft" align="right" valign="top">void&#160;</td><td class="memTemplItemRight" valign="bottom"><a class="el" href="classcgv_1_1render_1_1mesh__render__info.html#af34abaa76c71b3832a18a0f43492fa4c">construct</a> (<a class="el" href="classcgv_1_1render_1_1context.html">cgv::render::context</a> &amp;ctx, <a class="el" href="classcgv_1_1media_1_1mesh_1_1simple__mesh.html">cgv::media::mesh::simple_mesh</a>&lt; T &gt; &amp;mesh, std::vector&lt; <a class="el" href="classcgv_1_1render_1_1render__info.html#aafe690fb7b914175edea602a1d7b0317">idx_type</a> &gt; *tuple_pos_indices=nullptr, std::vector&lt; <a class="el" href="classcgv_1_1render_1_1render__info.html#aafe690fb7b914175edea602a1d7b0317">idx_type</a> &gt; *tuple_normal_indices=nullptr, int *num_floats_in_vertex=nullptr)</td></tr>
-<tr class="memdesc:af34abaa76c71b3832a18a0f43492fa4c"><td class="mdescLeft">&#160;</td><td class="mdescRight">Construct mesh render info from a given simple mesh and store attributes in vertex buffer objects.  <a href="classcgv_1_1render_1_1mesh__render__info.html#af34abaa76c71b3832a18a0f43492fa4c">More...</a><br /></td></tr>
+<tr class="memdesc:af34abaa76c71b3832a18a0f43492fa4c"><td class="mdescLeft">&#160;</td><td class="mdescRight">Construct mesh render info from a given simple mesh and store all vertex attributes in interleaved in one vertex buffer object that does not allow dynamic updates.  <a href="classcgv_1_1render_1_1mesh__render__info.html#af34abaa76c71b3832a18a0f43492fa4c">More...</a><br /></td></tr>
 <tr class="separator:af34abaa76c71b3832a18a0f43492fa4c"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a5e9586a37d83a629d41201b1692c5236"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcgv_1_1render_1_1mesh__render__info.html#a5e9586a37d83a629d41201b1692c5236">set_nr_instances</a> (unsigned nr)</td></tr>
-<tr class="memdesc:a5e9586a37d83a629d41201b1692c5236"><td class="mdescLeft">&#160;</td><td class="mdescRight">set the number of to be drawn instances - in case of 0, instanced drawing is turned off  <a href="classcgv_1_1render_1_1mesh__render__info.html#a5e9586a37d83a629d41201b1692c5236">More...</a><br /></td></tr>
+<tr class="memitem:aeab641c7f8b9c0de59f70c40f2c46ab5"><td class="memTemplParams" colspan="2"><a id="aeab641c7f8b9c0de59f70c40f2c46ab5"></a>
+template&lt;typename T &gt; </td></tr>
+<tr class="memitem:aeab641c7f8b9c0de59f70c40f2c46ab5"><td class="memTemplItemLeft" align="right" valign="top">void&#160;</td><td class="memTemplItemRight" valign="bottom"><a class="el" href="classcgv_1_1render_1_1mesh__render__info.html#aeab641c7f8b9c0de59f70c40f2c46ab5">construct_dynamic</a> (<a class="el" href="classcgv_1_1render_1_1context.html">cgv::render::context</a> &amp;ctx, <a class="el" href="classcgv_1_1media_1_1mesh_1_1simple__mesh.html">cgv::media::mesh::simple_mesh</a>&lt; T &gt; &amp;mesh, const <a class="el" href="classcgv_1_1render_1_1mesh__render__info.html#ae4c1a06fd77326a552a467e0878f8c25">attribute_map</a> &amp;va_vbo_idx, const std::vector&lt; int &gt; &amp;dynamic_vbo_idx)</td></tr>
+<tr class="memdesc:aeab641c7f8b9c0de59f70c40f2c46ab5"><td class="mdescLeft">&#160;</td><td class="mdescRight">Construct mesh render info from a given simple mesh and store vertex attributes flexibly in multiple vertex buffer objects which allow for dynamic updates. <br /></td></tr>
+<tr class="separator:aeab641c7f8b9c0de59f70c40f2c46ab5"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a2d19c7d4c832f49c5211688a5168ad9b"><td class="memTemplParams" colspan="2"><a id="a2d19c7d4c832f49c5211688a5168ad9b"></a>
+template&lt;typename T &gt; </td></tr>
+<tr class="memitem:a2d19c7d4c832f49c5211688a5168ad9b"><td class="memTemplItemLeft" align="right" valign="top">void&#160;</td><td class="memTemplItemRight" valign="bottom"><a class="el" href="classcgv_1_1render_1_1mesh__render__info.html#a2d19c7d4c832f49c5211688a5168ad9b">update_vbo</a> (<a class="el" href="classcgv_1_1render_1_1context.html">cgv::render::context</a> &amp;ctx, <a class="el" href="classcgv_1_1media_1_1mesh_1_1simple__mesh.html">cgv::media::mesh::simple_mesh</a>&lt; T &gt; &amp;mesh, int vbo_index)</td></tr>
+<tr class="memdesc:a2d19c7d4c832f49c5211688a5168ad9b"><td class="mdescLeft">&#160;</td><td class="mdescRight">replace the content of one vbo from a mesh <br /></td></tr>
+<tr class="separator:a2d19c7d4c832f49c5211688a5168ad9b"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a5e9586a37d83a629d41201b1692c5236"><td class="memItemLeft" align="right" valign="top"><a id="a5e9586a37d83a629d41201b1692c5236"></a>
+void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcgv_1_1render_1_1mesh__render__info.html#a5e9586a37d83a629d41201b1692c5236">set_nr_instances</a> (unsigned nr)</td></tr>
+<tr class="memdesc:a5e9586a37d83a629d41201b1692c5236"><td class="mdescLeft">&#160;</td><td class="mdescRight">set the number of to be drawn instances - in case of 0, instanced drawing is turned off <br /></td></tr>
 <tr class="separator:a5e9586a37d83a629d41201b1692c5236"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ad37eed23447b45e0243d1af483d9091a"><td class="memItemLeft" align="right" valign="top"><a id="ad37eed23447b45e0243d1af483d9091a"></a>
 size_t&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcgv_1_1render_1_1mesh__render__info.html#ad37eed23447b45e0243d1af483d9091a">get_nr_primitives</a> () const</td></tr>
@@ -255,15 +284,23 @@ void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="clas
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="pro-methods"></a>
 Protected Member Functions</h2></td></tr>
-<tr class="memitem:ad85cf218bcf5f6be8ec13d4a67c27135"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcgv_1_1render_1_1mesh__render__info.html#ad85cf218bcf5f6be8ec13d4a67c27135">construct_vbos_base</a> (<a class="el" href="classcgv_1_1render_1_1context.html">cgv::render::context</a> &amp;c, const <a class="el" href="classcgv_1_1media_1_1mesh_1_1simple__mesh__base.html">cgv::media::mesh::simple_mesh_base</a> &amp;mesh, std::vector&lt; <a class="el" href="classcgv_1_1render_1_1render__info.html#aafe690fb7b914175edea602a1d7b0317">idx_type</a> &gt; &amp;vertex_indices, std::vector&lt; <a class="el" href="classcgv_1_1render_1_1mesh__render__info.html#a7b7eca1b2317d2bd6106b21bf209a862">vec4i</a> &gt; &amp;unique_quartuples, std::vector&lt; <a class="el" href="classcgv_1_1render_1_1render__info.html#aafe690fb7b914175edea602a1d7b0317">idx_type</a> &gt; &amp;triangle_element_buffer, std::vector&lt; <a class="el" href="classcgv_1_1render_1_1render__info.html#aafe690fb7b914175edea602a1d7b0317">idx_type</a> &gt; &amp;edge_element_buffer)</td></tr>
-<tr class="memdesc:ad85cf218bcf5f6be8ec13d4a67c27135"><td class="mdescLeft">&#160;</td><td class="mdescRight">Transform the given mesh into vectors which are suitable for upload into a VBO/EBO.  <a href="classcgv_1_1render_1_1mesh__render__info.html#ad85cf218bcf5f6be8ec13d4a67c27135">More...</a><br /></td></tr>
-<tr class="separator:ad85cf218bcf5f6be8ec13d4a67c27135"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:ab72ad1a84daff5512fb964634a899d25"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcgv_1_1render_1_1mesh__render__info.html#ab72ad1a84daff5512fb964634a899d25">finish_construct_vbos_base</a> (<a class="el" href="classcgv_1_1render_1_1context.html">cgv::render::context</a> &amp;ctx, const std::vector&lt; <a class="el" href="classcgv_1_1render_1_1render__info.html#aafe690fb7b914175edea602a1d7b0317">idx_type</a> &gt; &amp;triangle_element_buffer, const std::vector&lt; <a class="el" href="classcgv_1_1render_1_1render__info.html#aafe690fb7b914175edea602a1d7b0317">idx_type</a> &gt; &amp;edge_element_buffer)</td></tr>
-<tr class="memdesc:ab72ad1a84daff5512fb964634a899d25"><td class="mdescLeft">&#160;</td><td class="mdescRight">Uploads the given element buffers into EBOs on the GPU.  <a href="classcgv_1_1render_1_1mesh__render__info.html#ab72ad1a84daff5512fb964634a899d25">More...</a><br /></td></tr>
-<tr class="separator:ab72ad1a84daff5512fb964634a899d25"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a8feb1c293fcaec4f9cda4878efe5516c"><td class="memItemLeft" align="right" valign="top"><a id="a8feb1c293fcaec4f9cda4878efe5516c"></a>
+bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcgv_1_1render_1_1mesh__render__info.html#a8feb1c293fcaec4f9cda4878efe5516c">attribute_is_used</a> (<a class="el" href="classcgv_1_1render_1_1mesh__render__info.html#a7a0fda67d9aeb30d2fb67e6be2499f7c">attribute_type</a> at) const</td></tr>
+<tr class="memdesc:a8feb1c293fcaec4f9cda4878efe5516c"><td class="mdescLeft">&#160;</td><td class="mdescRight">check whether a mesh attribute is used <br /></td></tr>
+<tr class="separator:a8feb1c293fcaec4f9cda4878efe5516c"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a628f4cdef16529d30f222e5de72ae7e1"><td class="memItemLeft" align="right" valign="top"><a id="a628f4cdef16529d30f222e5de72ae7e1"></a>
+bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcgv_1_1render_1_1mesh__render__info.html#a628f4cdef16529d30f222e5de72ae7e1">configure_vbos</a> (<a class="el" href="classcgv_1_1render_1_1context.html">cgv::render::context</a> &amp;ctx, const <a class="el" href="classcgv_1_1media_1_1mesh_1_1simple__mesh__base.html">cgv::media::mesh::simple_mesh_base</a> &amp;mesh, const <a class="el" href="classcgv_1_1render_1_1mesh__render__info.html#ae4c1a06fd77326a552a467e0878f8c25">attribute_map</a> &amp;attribute_to_vbo_index_map, const std::vector&lt; int &gt; &amp;dynamic_vbo_idx)</td></tr>
+<tr class="memdesc:a628f4cdef16529d30f222e5de72ae7e1"><td class="mdescLeft">&#160;</td><td class="mdescRight">configure which attributes should be stored, in which vbos they go and which vbos should support dynamic updates <br /></td></tr>
+<tr class="separator:a628f4cdef16529d30f222e5de72ae7e1"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a818e8d020097fe5ec0568eb8a7de5e4a"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcgv_1_1render_1_1mesh__render__info.html#a818e8d020097fe5ec0568eb8a7de5e4a">construct_index_buffers</a> (<a class="el" href="classcgv_1_1render_1_1context.html">cgv::render::context</a> &amp;ctx, const <a class="el" href="classcgv_1_1media_1_1mesh_1_1simple__mesh__base.html">cgv::media::mesh::simple_mesh_base</a> &amp;mesh, std::vector&lt; <a class="el" href="classcgv_1_1render_1_1mesh__render__info.html#a7b7eca1b2317d2bd6106b21bf209a862">vec4i</a> &gt; &amp;unique_quartuples, std::vector&lt; <a class="el" href="classcgv_1_1render_1_1render__info.html#aafe690fb7b914175edea602a1d7b0317">idx_type</a> &gt; &amp;per_corner_vertex_index, std::vector&lt; <a class="el" href="classcgv_1_1render_1_1render__info.html#aafe690fb7b914175edea602a1d7b0317">idx_type</a> &gt; &amp;edges_element_buffer, std::vector&lt; <a class="el" href="classcgv_1_1render_1_1render__info.html#aafe690fb7b914175edea602a1d7b0317">idx_type</a> &gt; &amp;triangles_element_buffer)</td></tr>
+<tr class="memdesc:a818e8d020097fe5ec0568eb8a7de5e4a"><td class="mdescLeft">&#160;</td><td class="mdescRight">Prepare vertex attribute data creation by extraction of unique combinations of attribute indices.  <a href="classcgv_1_1render_1_1mesh__render__info.html#a818e8d020097fe5ec0568eb8a7de5e4a">More...</a><br /></td></tr>
+<tr class="separator:a818e8d020097fe5ec0568eb8a7de5e4a"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a6c476c4ecfbcd54e003290d543aeb263"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcgv_1_1render_1_1mesh__render__info.html#a6c476c4ecfbcd54e003290d543aeb263">construct_element_vbo</a> (<a class="el" href="classcgv_1_1render_1_1context.html">cgv::render::context</a> &amp;ctx, const std::vector&lt; <a class="el" href="classcgv_1_1render_1_1render__info.html#aafe690fb7b914175edea602a1d7b0317">idx_type</a> &gt; &amp;edge_element_buffer, const std::vector&lt; <a class="el" href="classcgv_1_1render_1_1render__info.html#aafe690fb7b914175edea602a1d7b0317">idx_type</a> &gt; &amp;triangle_element_buffer)</td></tr>
+<tr class="memdesc:a6c476c4ecfbcd54e003290d543aeb263"><td class="mdescLeft">&#160;</td><td class="mdescRight">Uploads the given element buffers into EBOs on the GPU.  <a href="classcgv_1_1render_1_1mesh__render__info.html#a6c476c4ecfbcd54e003290d543aeb263">More...</a><br /></td></tr>
+<tr class="separator:a6c476c4ecfbcd54e003290d543aeb263"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a793bd6f244d7df036b390a1f13804734"><td class="memItemLeft" align="right" valign="top"><a id="a793bd6f244d7df036b390a1f13804734"></a>
 void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcgv_1_1render_1_1mesh__render__info.html#a793bd6f244d7df036b390a1f13804734">construct_draw_calls</a> (<a class="el" href="classcgv_1_1render_1_1context.html">cgv::render::context</a> &amp;ctx)</td></tr>
-<tr class="memdesc:a793bd6f244d7df036b390a1f13804734"><td class="mdescLeft">&#160;</td><td class="mdescRight">bind the attribute array to the given shader program <br /></td></tr>
+<tr class="memdesc:a793bd6f244d7df036b390a1f13804734"><td class="mdescLeft">&#160;</td><td class="mdescRight">for each combination of primitive (face group of mesh) and material create and store one draw call <br /></td></tr>
 <tr class="separator:a793bd6f244d7df036b390a1f13804734"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="inherit_header pro_methods_classcgv_1_1render_1_1render__info"><td colspan="2" onclick="javascript:toggleInherit('pro_methods_classcgv_1_1render_1_1render__info')"><img src="closed.png" alt="-"/>&#160;Protected Member Functions inherited from <a class="el" href="classcgv_1_1render_1_1render__info.html">cgv::render::render_info</a></td></tr>
 <tr class="memitem:ad3c1fd0848ea844f53ec995b4b74e2f8 inherit pro_methods_classcgv_1_1render_1_1render__info"><td class="memItemLeft" align="right" valign="top"><a id="ad3c1fd0848ea844f53ec995b4b74e2f8"></a>
@@ -333,6 +370,18 @@ size_t&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="cl
 cgv::media::ColorType&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcgv_1_1render_1_1mesh__render__info.html#a801dc4517ddecd253951d8bc0b5be58d">ct</a></td></tr>
 <tr class="memdesc:a801dc4517ddecd253951d8bc0b5be58d"><td class="mdescLeft">&#160;</td><td class="mdescRight">color type <br /></td></tr>
 <tr class="separator:a801dc4517ddecd253951d8bc0b5be58d"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a3b88c9c92af416f1d575319d567fd3a3"><td class="memItemLeft" align="right" valign="top"><a id="a3b88c9c92af416f1d575319d567fd3a3"></a>
+std::vector&lt; <a class="el" href="structcgv_1_1render_1_1mesh__render__info_1_1vbo__configuration.html">vbo_configuration</a> &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcgv_1_1render_1_1mesh__render__info.html#a3b88c9c92af416f1d575319d567fd3a3">vbo_config</a></td></tr>
+<tr class="memdesc:a3b88c9c92af416f1d575319d567fd3a3"><td class="mdescLeft">&#160;</td><td class="mdescRight">store for each vbo its configuration <br /></td></tr>
+<tr class="separator:a3b88c9c92af416f1d575319d567fd3a3"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a3131377c932c39b86b7b2e403f5aeb34"><td class="memItemLeft" align="right" valign="top"><a id="a3131377c932c39b86b7b2e403f5aeb34"></a>
+std::map&lt; <a class="el" href="classcgv_1_1render_1_1mesh__render__info.html#a7a0fda67d9aeb30d2fb67e6be2499f7c">attribute_type</a>, <a class="el" href="structcgv_1_1render_1_1mesh__render__info_1_1attribute__configuration.html">attribute_configuration</a> &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcgv_1_1render_1_1mesh__render__info.html#a3131377c932c39b86b7b2e403f5aeb34">per_attribute_vbo_config</a></td></tr>
+<tr class="memdesc:a3131377c932c39b86b7b2e403f5aeb34"><td class="mdescLeft">&#160;</td><td class="mdescRight">for each mesh attribute that is used, map attribute type to the vbo index <br /></td></tr>
+<tr class="separator:a3131377c932c39b86b7b2e403f5aeb34"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:aacf4a5d86816242d8b8996823206d4e7"><td class="memItemLeft" align="right" valign="top"><a id="aacf4a5d86816242d8b8996823206d4e7"></a>
+std::vector&lt; <a class="el" href="classcgv_1_1render_1_1mesh__render__info.html#a7b7eca1b2317d2bd6106b21bf209a862">vec4i</a> &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcgv_1_1render_1_1mesh__render__info.html#aacf4a5d86816242d8b8996823206d4e7">unique_quadruples</a></td></tr>
+<tr class="memdesc:aacf4a5d86816242d8b8996823206d4e7"><td class="mdescLeft">&#160;</td><td class="mdescRight">in case that at least one vbo is replaceable, store per vertex the unique quadruple of attribute indices <br /></td></tr>
+<tr class="separator:aacf4a5d86816242d8b8996823206d4e7"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="inherit_header pro_attribs_classcgv_1_1render_1_1render__info"><td colspan="2" onclick="javascript:toggleInherit('pro_attribs_classcgv_1_1render_1_1render__info')"><img src="closed.png" alt="-"/>&#160;Protected Attributes inherited from <a class="el" href="classcgv_1_1render_1_1render__info.html">cgv::render::render_info</a></td></tr>
 <tr class="memitem:a2241ea16be0dad1b5e49410b6ca3638f inherit pro_attribs_classcgv_1_1render_1_1render__info"><td class="memItemLeft" align="right" valign="top"><a id="a2241ea16be0dad1b5e49410b6ca3638f"></a>
 std::vector&lt; <a class="el" href="classcgv_1_1render_1_1textured__material.html">textured_material</a> * &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcgv_1_1render_1_1render__info.html#a2241ea16be0dad1b5e49410b6ca3638f">materials</a></td></tr>
@@ -360,7 +409,7 @@ std::vector&lt; <a class="el" href="structcgv_1_1render_1_1draw__call.html">draw
 <p>The vertex buffer can be constructed from a simple mesh and the attribute array binding is bound to a specific shader program which defines the attribute locations. <br  />
  </p>
 
-<p class="definition">Definition at line <a class="el" href="mesh__render__info_8h_source.html#l00018">18</a> of file <a class="el" href="mesh__render__info_8h_source.html">mesh_render_info.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="mesh__render__info_8h_source.html#l00015">15</a> of file <a class="el" href="mesh__render__info_8h_source.html">mesh_render_info.h</a>.</p>
 </div><h2 class="groupheader">Member Function Documentation</h2>
 <a id="af34abaa76c71b3832a18a0f43492fa4c"></a>
 <h2 class="memtitle"><span class="permalink"><a href="#af34abaa76c71b3832a18a0f43492fa4c">&#9670;&nbsp;</a></span>construct()</h2>
@@ -416,7 +465,7 @@ template&lt;typename T &gt; </div>
 </table>
 </div><div class="memdoc">
 
-<p>Construct mesh render info from a given simple mesh and store attributes in vertex buffer objects. </p>
+<p>Construct mesh render info from a given simple mesh and store all vertex attributes in interleaved in one vertex buffer object that does not allow dynamic updates. </p>
 <dl class="tparams"><dt>Template Parameters</dt><dd>
   <table class="tparams">
     <tr><td class="paramname">T</td><td>The coordinate type which is used in the <a class="el" href="classcgv_1_1media_1_1mesh_1_1simple__mesh.html" title="the simple_mesh class is templated over the coordinate type that defaults to float">cgv::media::mesh::simple_mesh</a> </td></tr>
@@ -434,16 +483,16 @@ template&lt;typename T &gt; </div>
   </dd>
 </dl>
 
-<p class="definition">Definition at line <a class="el" href="mesh__render__info_8h_source.html#l00103">103</a> of file <a class="el" href="mesh__render__info_8h_source.html">mesh_render_info.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="mesh__render__info_8h_source.html#l00131">131</a> of file <a class="el" href="mesh__render__info_8h_source.html">mesh_render_info.h</a>.</p>
 
-<p class="reference">References <a class="el" href="simple__mesh_8cxx_source.html#l00567">cgv::media::mesh::simple_mesh&lt; T &gt;::extract_vertex_attribute_buffer()</a>, and <a class="el" href="context_8h_source.html#l00416">cgv::render::VBT_VERTICES</a>.</p>
+<p class="reference">References <a class="el" href="colored__model_8cxx_source.html#l00045">cgv::media::colored_model::has_colors()</a>, <a class="el" href="simple__mesh_8h_source.html#l00257">cgv::media::mesh::simple_mesh&lt; T &gt;::has_normals()</a>, <a class="el" href="simple__mesh_8h_source.html#l00266">cgv::media::mesh::simple_mesh&lt; T &gt;::has_tangents()</a>, <a class="el" href="simple__mesh_8h_source.html#l00274">cgv::media::mesh::simple_mesh&lt; T &gt;::has_tex_coords()</a>, and <a class="el" href="context_8h_source.html#l00416">cgv::render::VBT_VERTICES</a>.</p>
 
 <p class="reference">Referenced by <a class="el" href="gl__implicit__surface__drawable__base_8cxx_source.html#l00443">cgv::render::gl::gl_implicit_surface_drawable_base::draw()</a>, <a class="el" href="vr__test_8cxx_source.html#l00457">vr_test::init()</a>, and <a class="el" href="mesh__drawable_8cxx_source.html#l00016">cgv::render::gl::mesh_drawable::init_frame()</a>.</p>
 
 </div>
 </div>
-<a id="ad85cf218bcf5f6be8ec13d4a67c27135"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#ad85cf218bcf5f6be8ec13d4a67c27135">&#9670;&nbsp;</a></span>construct_vbos_base()</h2>
+<a id="a6c476c4ecfbcd54e003290d543aeb263"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a6c476c4ecfbcd54e003290d543aeb263">&#9670;&nbsp;</a></span>construct_element_vbo()</h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -452,85 +501,7 @@ template&lt;typename T &gt; </div>
   <td class="mlabels-left">
       <table class="memname">
         <tr>
-          <td class="memname">void cgv::render::mesh_render_info::construct_vbos_base </td>
-          <td>(</td>
-          <td class="paramtype"><a class="el" href="classcgv_1_1render_1_1context.html">cgv::render::context</a> &amp;&#160;</td>
-          <td class="paramname"><em>c</em>, </td>
-        </tr>
-        <tr>
-          <td class="paramkey"></td>
-          <td></td>
-          <td class="paramtype">const <a class="el" href="classcgv_1_1media_1_1mesh_1_1simple__mesh__base.html">cgv::media::mesh::simple_mesh_base</a> &amp;&#160;</td>
-          <td class="paramname"><em>mesh</em>, </td>
-        </tr>
-        <tr>
-          <td class="paramkey"></td>
-          <td></td>
-          <td class="paramtype">std::vector&lt; <a class="el" href="classcgv_1_1render_1_1render__info.html#aafe690fb7b914175edea602a1d7b0317">idx_type</a> &gt; &amp;&#160;</td>
-          <td class="paramname"><em>vertex_indices</em>, </td>
-        </tr>
-        <tr>
-          <td class="paramkey"></td>
-          <td></td>
-          <td class="paramtype">std::vector&lt; <a class="el" href="classcgv_1_1render_1_1mesh__render__info.html#a7b7eca1b2317d2bd6106b21bf209a862">vec4i</a> &gt; &amp;&#160;</td>
-          <td class="paramname"><em>unique_quartuples</em>, </td>
-        </tr>
-        <tr>
-          <td class="paramkey"></td>
-          <td></td>
-          <td class="paramtype">std::vector&lt; <a class="el" href="classcgv_1_1render_1_1render__info.html#aafe690fb7b914175edea602a1d7b0317">idx_type</a> &gt; &amp;&#160;</td>
-          <td class="paramname"><em>triangle_element_buffer</em>, </td>
-        </tr>
-        <tr>
-          <td class="paramkey"></td>
-          <td></td>
-          <td class="paramtype">std::vector&lt; <a class="el" href="classcgv_1_1render_1_1render__info.html#aafe690fb7b914175edea602a1d7b0317">idx_type</a> &gt; &amp;&#160;</td>
-          <td class="paramname"><em>edge_element_buffer</em>&#160;</td>
-        </tr>
-        <tr>
-          <td></td>
-          <td>)</td>
-          <td></td><td></td>
-        </tr>
-      </table>
-  </td>
-  <td class="mlabels-right">
-<span class="mlabels"><span class="mlabel">protected</span></span>  </td>
-  </tr>
-</table>
-</div><div class="memdoc">
-
-<p>Transform the given mesh into vectors which are suitable for upload into a VBO/EBO. </p>
-<dl class="params"><dt>Parameters</dt><dd>
-  <table class="params">
-    <tr><td class="paramdir">[in]</td><td class="paramname">c</td><td>The CGV drawing context. </td></tr>
-    <tr><td class="paramdir">[in]</td><td class="paramname">mesh</td><td>The mesh which shall be transformed. </td></tr>
-    <tr><td class="paramdir">[out]</td><td class="paramname">vertex_indices</td><td>the list of indices into the unique n-tuples. </td></tr>
-    <tr><td class="paramdir">[out]</td><td class="paramname">unique_quartuples</td><td>the list of n-tuples which aggregate unique combinations of vertex attribute indices. </td></tr>
-    <tr><td class="paramdir">[out]</td><td class="paramname">triangle_element_buffer</td><td>the buffer with successive index triples, which make up a triangle. </td></tr>
-    <tr><td class="paramdir">[out]</td><td class="paramname">edge_element_buffer</td><td>the buffer with successive index pairs, which make up the edges of a face.</td></tr>
-  </table>
-  </dd>
-</dl>
-<dl class="section see"><dt>See also</dt><dd><a class="el" href="classcgv_1_1render_1_1mesh__render__info.html#ab72ad1a84daff5512fb964634a899d25" title="Uploads the given element buffers into EBOs on the GPU.">mesh_render_info::finish_construct_vbos_base()</a> </dd></dl>
-
-<p class="definition">Definition at line <a class="el" href="mesh__render__info_8cxx_source.html#l00026">26</a> of file <a class="el" href="mesh__render__info_8cxx_source.html">mesh_render_info.cxx</a>.</p>
-
-<p class="reference">References <a class="el" href="mesh__render__info_8h_source.html#l00055">ct</a>, <a class="el" href="simple__mesh_8cxx_source.html#l00168">cgv::media::mesh::simple_mesh_base::extract_triangle_element_buffer()</a>, <a class="el" href="simple__mesh_8cxx_source.html#l00200">cgv::media::mesh::simple_mesh_base::extract_wireframe_element_buffer()</a>, <a class="el" href="colored__model_8cxx_source.html#l00128">cgv::media::colored_model::get_color_storage_type()</a>, <a class="el" href="simple__mesh_8h_source.html#l00112">cgv::media::mesh::simple_mesh_base::get_material()</a>, <a class="el" href="simple__mesh_8h_source.html#l00120">cgv::media::mesh::simple_mesh_base::get_nr_groups()</a>, <a class="el" href="simple__mesh_8h_source.html#l00108">cgv::media::mesh::simple_mesh_base::get_nr_materials()</a>, <a class="el" href="mesh__render__info_8h_source.html#l00037">include_colors</a>, <a class="el" href="mesh__render__info_8h_source.html#l00033">include_normals</a>, <a class="el" href="mesh__render__info_8h_source.html#l00035">include_tangents</a>, <a class="el" href="mesh__render__info_8h_source.html#l00031">include_tex_coords</a>, <a class="el" href="mesh__render__info_8h_source.html#l00029">material_primitive_start</a>, <a class="el" href="simple__mesh_8cxx_source.html#l00130">cgv::media::mesh::simple_mesh_base::merge_indices()</a>, <a class="el" href="mesh__render__info_8h_source.html#l00041">nr_edge_elements</a>, <a class="el" href="mesh__render__info_8h_source.html#l00043">nr_triangle_elements</a>, <a class="el" href="mesh__render__info_8h_source.html#l00039">nr_vertices</a>, <a class="el" href="render__info_8cxx_source.html#l00146">cgv::render::render_info::ref_materials()</a>, and <a class="el" href="simple__mesh_8cxx_source.html#l00117">cgv::media::mesh::simple_mesh_base::sort_faces()</a>.</p>
-
-</div>
-</div>
-<a id="ab72ad1a84daff5512fb964634a899d25"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#ab72ad1a84daff5512fb964634a899d25">&#9670;&nbsp;</a></span>finish_construct_vbos_base()</h2>
-
-<div class="memitem">
-<div class="memproto">
-<table class="mlabels">
-  <tr>
-  <td class="mlabels-left">
-      <table class="memname">
-        <tr>
-          <td class="memname">void cgv::render::mesh_render_info::finish_construct_vbos_base </td>
+          <td class="memname">void cgv::render::mesh_render_info::construct_element_vbo </td>
           <td>(</td>
           <td class="paramtype"><a class="el" href="classcgv_1_1render_1_1context.html">cgv::render::context</a> &amp;&#160;</td>
           <td class="paramname"><em>ctx</em>, </td>
@@ -539,13 +510,13 @@ template&lt;typename T &gt; </div>
           <td class="paramkey"></td>
           <td></td>
           <td class="paramtype">const std::vector&lt; <a class="el" href="classcgv_1_1render_1_1render__info.html#aafe690fb7b914175edea602a1d7b0317">idx_type</a> &gt; &amp;&#160;</td>
-          <td class="paramname"><em>triangle_element_buffer</em>, </td>
+          <td class="paramname"><em>edge_element_buffer</em>, </td>
         </tr>
         <tr>
           <td class="paramkey"></td>
           <td></td>
           <td class="paramtype">const std::vector&lt; <a class="el" href="classcgv_1_1render_1_1render__info.html#aafe690fb7b914175edea602a1d7b0317">idx_type</a> &gt; &amp;&#160;</td>
-          <td class="paramname"><em>edge_element_buffer</em>&#160;</td>
+          <td class="paramname"><em>triangle_element_buffer</em>&#160;</td>
         </tr>
         <tr>
           <td></td>
@@ -564,41 +535,94 @@ template&lt;typename T &gt; </div>
 <dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
     <tr><td class="paramdir">[in]</td><td class="paramname">ctx</td><td>The CGV drawing context. </td></tr>
-    <tr><td class="paramdir">[in]</td><td class="paramname">triangle_element_buffer</td><td>The vector of indices which make up triangles. </td></tr>
-    <tr><td class="paramdir">[in]</td><td class="paramname">edge_element_buffer</td><td>The vector of indices which make up the edges of faces.</td></tr>
+    <tr><td class="paramdir">[in]</td><td class="paramname">edge_element_buffer</td><td>The vector of indices which make up the edges of faces. </td></tr>
+    <tr><td class="paramdir">[in]</td><td class="paramname">triangle_element_buffer</td><td>The vector of indices which make up triangles.</td></tr>
   </table>
   </dd>
 </dl>
-<dl class="section see"><dt>See also</dt><dd><a class="el" href="classcgv_1_1render_1_1mesh__render__info.html#ad85cf218bcf5f6be8ec13d4a67c27135" title="Transform the given mesh into vectors which are suitable for upload into a VBO/EBO.">mesh_render_info::construct_vbos_base()</a> </dd></dl>
+<dl class="section see"><dt>See also</dt><dd><a class="el" href="classcgv_1_1render_1_1mesh__render__info.html#a628f4cdef16529d30f222e5de72ae7e1" title="configure which attributes should be stored, in which vbos they go and which vbos should support dyna...">mesh_render_info::configure_vbos()</a> </dd></dl>
 
-<p class="definition">Definition at line <a class="el" href="mesh__render__info_8cxx_source.html#l00057">57</a> of file <a class="el" href="mesh__render__info_8cxx_source.html">mesh_render_info.cxx</a>.</p>
+<p class="definition">Definition at line <a class="el" href="mesh__render__info_8cxx_source.html#l00053">53</a> of file <a class="el" href="mesh__render__info_8cxx_source.html">mesh_render_info.cxx</a>.</p>
 
-<p class="reference">References <a class="el" href="vertex__buffer_8cxx_source.html#l00058">cgv::render::vertex_buffer::create()</a>, <a class="el" href="mesh__render__info_8h_source.html#l00041">nr_edge_elements</a>, <a class="el" href="mesh__render__info_8h_source.html#l00043">nr_triangle_elements</a>, <a class="el" href="render__info_8cxx_source.html#l00152">cgv::render::render_info::ref_vbos()</a>, <a class="el" href="vertex__buffer_8h_source.html#l00155">cgv::render::vertex_buffer::replace()</a>, and <a class="el" href="context_8h_source.html#l00417">cgv::render::VBT_INDICES</a>.</p>
+<p class="reference">References <a class="el" href="vertex__buffer_8cxx_source.html#l00058">cgv::render::vertex_buffer::create()</a>, <a class="el" href="mesh__render__info_8h_source.html#l00042">nr_edge_elements</a>, <a class="el" href="mesh__render__info_8h_source.html#l00044">nr_triangle_elements</a>, <a class="el" href="render__info_8cxx_source.html#l00152">cgv::render::render_info::ref_vbos()</a>, <a class="el" href="vertex__buffer_8h_source.html#l00155">cgv::render::vertex_buffer::replace()</a>, and <a class="el" href="context_8h_source.html#l00417">cgv::render::VBT_INDICES</a>.</p>
 
 </div>
 </div>
-<a id="a5e9586a37d83a629d41201b1692c5236"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a5e9586a37d83a629d41201b1692c5236">&#9670;&nbsp;</a></span>set_nr_instances()</h2>
+<a id="a818e8d020097fe5ec0568eb8a7de5e4a"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a818e8d020097fe5ec0568eb8a7de5e4a">&#9670;&nbsp;</a></span>construct_index_buffers()</h2>
 
 <div class="memitem">
 <div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
       <table class="memname">
         <tr>
-          <td class="memname">void cgv::render::mesh_render_info::set_nr_instances </td>
+          <td class="memname">void cgv::render::mesh_render_info::construct_index_buffers </td>
           <td>(</td>
-          <td class="paramtype">unsigned&#160;</td>
-          <td class="paramname"><em>nr</em></td><td>)</td>
+          <td class="paramtype"><a class="el" href="classcgv_1_1render_1_1context.html">cgv::render::context</a> &amp;&#160;</td>
+          <td class="paramname"><em>ctx</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
           <td></td>
+          <td class="paramtype">const <a class="el" href="classcgv_1_1media_1_1mesh_1_1simple__mesh__base.html">cgv::media::mesh::simple_mesh_base</a> &amp;&#160;</td>
+          <td class="paramname"><em>mesh</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">std::vector&lt; <a class="el" href="classcgv_1_1render_1_1mesh__render__info.html#a7b7eca1b2317d2bd6106b21bf209a862">vec4i</a> &gt; &amp;&#160;</td>
+          <td class="paramname"><em>unique_quartuples</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">std::vector&lt; <a class="el" href="classcgv_1_1render_1_1render__info.html#aafe690fb7b914175edea602a1d7b0317">idx_type</a> &gt; &amp;&#160;</td>
+          <td class="paramname"><em>per_corner_vertex_index</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">std::vector&lt; <a class="el" href="classcgv_1_1render_1_1render__info.html#aafe690fb7b914175edea602a1d7b0317">idx_type</a> &gt; &amp;&#160;</td>
+          <td class="paramname"><em>edges_element_buffer</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">std::vector&lt; <a class="el" href="classcgv_1_1render_1_1render__info.html#aafe690fb7b914175edea602a1d7b0317">idx_type</a> &gt; &amp;&#160;</td>
+          <td class="paramname"><em>triangles_element_buffer</em>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
         </tr>
       </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">protected</span></span>  </td>
+  </tr>
+</table>
 </div><div class="memdoc">
 
-<p>set the number of to be drawn instances - in case of 0, instanced drawing is turned off </p>
-<p>set the number of to be drawn instances - in case of 1, instanced drawing is turned off </p>
+<p>Prepare vertex attribute data creation by extraction of unique combinations of attribute indices. </p>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramdir">[in]</td><td class="paramname">ctx</td><td>The render context. </td></tr>
+    <tr><td class="paramdir">[in]</td><td class="paramname">mesh</td><td>The mesh which shall be transformed. </td></tr>
+    <tr><td class="paramdir">[out]</td><td class="paramname">vertex_indices</td><td>per face corner the vertex index or index of attribute index tuple </td></tr>
+    <tr><td class="paramdir">[out]</td><td class="paramname">unique_quartuples</td><td>the list of attribute index tuples which aggregate unique combinations of vertex attribute indices </td></tr>
+    <tr><td class="paramdir">[out]</td><td class="paramname">triangle_element_buffer</td><td>the buffer with successive vertex index triples, which make up mesh triangles. </td></tr>
+    <tr><td class="paramdir">[out]</td><td class="paramname">edge_element_buffer</td><td>the buffer with successive vertex index pairs, which make up the mesh edges</td></tr>
+  </table>
+  </dd>
+</dl>
+<dl class="section see"><dt>See also</dt><dd>mesh_render_info::finish_construct_vbos_base() </dd></dl>
 
-<p class="definition">Definition at line <a class="el" href="mesh__render__info_8cxx_source.html#l00202">202</a> of file <a class="el" href="mesh__render__info_8cxx_source.html">mesh_render_info.cxx</a>.</p>
+<p class="definition">Definition at line <a class="el" href="mesh__render__info_8cxx_source.html#l00023">23</a> of file <a class="el" href="mesh__render__info_8cxx_source.html">mesh_render_info.cxx</a>.</p>
 
-<p class="reference">References <a class="el" href="render__info_8cxx_source.html#l00169">cgv::render::render_info::ref_draw_calls()</a>.</p>
+<p class="reference">References <a class="el" href="mesh__render__info_8cxx_source.html#l00061">attribute_is_used()</a>, <a class="el" href="mesh__render__info_8h_source.html#l00056">ct</a>, <a class="el" href="simple__mesh_8cxx_source.html#l00168">cgv::media::mesh::simple_mesh_base::extract_triangle_element_buffer()</a>, <a class="el" href="simple__mesh_8cxx_source.html#l00200">cgv::media::mesh::simple_mesh_base::extract_wireframe_element_buffer()</a>, <a class="el" href="colored__model_8cxx_source.html#l00128">cgv::media::colored_model::get_color_storage_type()</a>, <a class="el" href="simple__mesh_8h_source.html#l00112">cgv::media::mesh::simple_mesh_base::get_material()</a>, <a class="el" href="simple__mesh_8h_source.html#l00120">cgv::media::mesh::simple_mesh_base::get_nr_groups()</a>, <a class="el" href="simple__mesh_8h_source.html#l00108">cgv::media::mesh::simple_mesh_base::get_nr_materials()</a>, <a class="el" href="mesh__render__info_8h_source.html#l00038">include_colors</a>, <a class="el" href="mesh__render__info_8h_source.html#l00034">include_normals</a>, <a class="el" href="mesh__render__info_8h_source.html#l00036">include_tangents</a>, <a class="el" href="mesh__render__info_8h_source.html#l00032">include_tex_coords</a>, <a class="el" href="mesh__render__info_8h_source.html#l00030">material_primitive_start</a>, <a class="el" href="simple__mesh_8cxx_source.html#l00130">cgv::media::mesh::simple_mesh_base::merge_indices()</a>, <a class="el" href="mesh__render__info_8h_source.html#l00042">nr_edge_elements</a>, <a class="el" href="mesh__render__info_8h_source.html#l00044">nr_triangle_elements</a>, <a class="el" href="mesh__render__info_8h_source.html#l00040">nr_vertices</a>, <a class="el" href="render__info_8cxx_source.html#l00146">cgv::render::render_info::ref_materials()</a>, and <a class="el" href="simple__mesh_8cxx_source.html#l00117">cgv::media::mesh::simple_mesh_base::sort_faces()</a>.</p>
 
 </div>
 </div>
