@@ -174,11 +174,14 @@ public:
 template<typename iterator_type>
 class count_iterator : public indexed_iterator<iterator_type> {
 public:
+    typedef indexed_iterator<iterator_type> super;
+    using iterator = typename super::iterator;
+    using index_type = typename super::index_type;
     count_iterator() = delete;
     explicit count_iterator(iterator iter, index_type start)
-        : indexed_iterator(iter, start) {}
+        : super(iter, start) {}
     index_type operator*() const {
-        return index;
+        return super::index;
     }
 };
 
@@ -248,11 +251,15 @@ decltype(auto) count(type(&content)[N],
 template<typename iterator_type>
 class enumerate_iterator : public indexed_iterator<iterator_type> {
 public:
+    typedef indexed_iterator<iterator_type> super;
+    using iterator = typename super::iterator;
+    using index_type = typename super::index_type;
+    using reference = typename super::reference;
     enumerate_iterator() = delete;
     explicit enumerate_iterator(iterator iter, index_type start)
-        : indexed_iterator(iter, start) {}
+        : super(iter, start) {}
     std::pair<reference, const index_type&> operator*() const {
-        return { *iter, index };
+        return { *super::iter, super::index };
     }
 };
 
