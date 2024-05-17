@@ -172,8 +172,6 @@ void color_map_legend::create_gui_impl() {
 	add_member_control(this, "Auto", label_format.auto_precision, "check", "w=52", "");
 	add_member_control(this, "Show 0s", label_format.trailing_zeros, "check", "w=74", "");
 	add_member_control(this, "Int", label_format.integers, "check", "w=40");
-
-	add_gui("", color_map_style);
 }
 
 void color_map_legend::set_color_map(cgv::render::context& ctx, const cgv::render::color_map& cm) {
@@ -235,6 +233,16 @@ void color_map_legend::set_height(size_t h) {
 void color_map_legend::set_title(const std::string& t) {
 	title = t;
 	on_set(&title);
+}
+
+void color_map_legend::set_orientation(OrientationOption orientation) {
+	layout.orientation = orientation;
+	on_set(&layout.orientation);
+}
+
+void color_map_legend::set_label_alignment(AlignmentOption alignment) {
+	layout.label_alignment = alignment;
+	on_set(&layout.label_alignment);
 }
 
 void color_map_legend::set_range(vec2 r) {

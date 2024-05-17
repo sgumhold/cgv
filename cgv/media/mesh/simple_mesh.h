@@ -36,11 +36,29 @@ public:
 	typedef cgv::math::fvec<idx_type, 4> vec4i;
 	/// define material type
 	typedef illum::textured_surface_material mat_type;
+	/// different mesh attributes
+	enum class attribute_type {
+		begin=0, position=0, texcoords=1, normal=2, tangent=3, color=4, end=5
+	};
+	// flags to define a selection of attributes
+	enum AttributeFlags {
+		AF_position = 1, /// vertex position 
+		AF_texcoords = 2, /// texture coordinates
+		AF_normal = 4, /// surface normal
+		AF_tangent = 8, /// tangent vectors for u coordinate
+		AF_color = 16  /// vertex colors (uses position indexing)
+	};
+	static std::string get_attribute_name(attribute_type attr);
+	static AttributeFlags get_attribute_flag(attribute_type attr);
+	virtual          bool  has_attribute(attribute_type attr) const = 0;
+	virtual const uint8_t* get_attribute_ptr(attribute_type attr, idx_type ai = 0) const = 0;
+	virtual        size_t  get_attribute_size(attribute_type attr) const = 0;
+	virtual        size_t  get_attribute_offset(attribute_type attr) const = 0;
 protected:
 	std::vector<idx_type> position_indices;
+	std::vector<idx_type> tex_coord_indices;
 	std::vector<idx_type> normal_indices;
 	std::vector<idx_type> tangent_indices;
-	std::vector<idx_type> tex_coord_indices;
 	std::vector<idx_type> faces;
 	std::vector<idx_type> group_indices;
 	std::vector<std::string> group_names;
@@ -59,6 +77,8 @@ public:
 	simple_mesh_base& operator=(simple_mesh_base&& smb);
 	/// position count
 	virtual idx_type get_nr_positions() const = 0;
+	/// return the size of one coordinate in bytes
+	virtual uint32_t get_coord_size() const = 0;
 	/**
 	 * Create a new empty face to which new corners are added.
 	 * 
@@ -150,7 +170,7 @@ public:
 	 * 
 	 * See https://www.opengl-tutorial.org/intermediate-tutorials/tutorial-9-vbo-indexing/ for further details.
 	 *
-	 * \param [out] vertex_indices will be filled with indicies into the unique tuple list.
+	 * \param [out] vertex_indices will be filled per corner with index into the unique tuple list.
 	 * \param [out] unique_tuples will be filled with all the unique n-tuples.
 	 * \param [in,out] include_tex_coords_ptr if nullptr then texture coordinates won't be included in the n-tuples.
 	 * Otherwise the pointed to bool will be set to true if the mesh even contains texture coordinates or false if not.
@@ -189,6 +209,8 @@ public:
 	 */
 	void extract_wireframe_element_buffer(const std::vector<idx_type>& vertex_indices,
 										  std::vector<idx_type>& edge_element_buffer) const;
+	/// extract vertex attribute buffer for the given flags and return size of vertex in bytes
+	uint32_t extract_vertex_attribute_buffer_base(const std::vector<vec4i>& unique_quadruples, AttributeFlags& flags, std::vector<uint8_t>& attrib_buffer) const;
 	/// compute a index vector storing the inv corners per corner and optionally index vectors with per position corner index, per corner next and or prev corner index (implementation assumes closed manifold connectivity)
 	void compute_inv(std::vector<uint32_t>& inv, std::vector<uint32_t>* p2c_ptr = 0, std::vector<uint32_t>* next_ptr = 0, std::vector<uint32_t>* prev_ptr = 0) const;
 	/// given the inv corners compute index vector per corner its edge index and optionally per edge its corner index and return edge count (implementation assumes closed manifold connectivity)
@@ -226,7 +248,43 @@ protected:
 	std::vector<vec3>  normals;
 	std::vector<vec3>  tangents;
 	std::vector<vec2>  tex_coords;
-
+	bool  has_attribute(attribute_type attr) const {
+		switch (attr) {
+		case attribute_type::position:  return true;
+		case attribute_type::texcoords: return has_tex_coords() && has_tex_coord_indices();
+		case attribute_type::normal:    return has_normals() && has_normal_indices();
+		case attribute_type::tangent:   return has_tangents();
+		case attribute_type::color:     return has_colors();
+		}
+		return false;
+	}
+	const uint8_t* get_attribute_ptr(attribute_type attr, idx_type ai = 0) const {
+		switch (attr) {
+		case attribute_type::position:  return reinterpret_cast<const uint8_t*>( &positions[ai]);
+		case attribute_type::texcoords: return reinterpret_cast<const uint8_t*>(&tex_coords[ai]);
+		case attribute_type::normal:    return reinterpret_cast<const uint8_t*>(   &normals[ai]);
+		case attribute_type::tangent:   return reinterpret_cast<const uint8_t*>(  &tangents[ai]);
+		case attribute_type::color:     return reinterpret_cast<const uint8_t*>(get_color_data_ptr()) + ai * get_color_size();
+		}
+		return nullptr;
+	}
+	size_t get_attribute_size(attribute_type attr) const {
+		switch (attr) {
+		case attribute_type::position:  return sizeof(vec3);
+		case attribute_type::texcoords: return sizeof(vec2);
+		case attribute_type::normal:    return sizeof(vec3);
+		case attribute_type::tangent:   return sizeof(vec3);
+		case attribute_type::color:     return get_color_size();
+		}
+		return 0;
+	}
+	size_t get_attribute_offset(attribute_type attr) const
+	{
+		size_t s = get_attribute_size(attr);
+		if (s < sizeof(T))
+			s = sizeof(T);
+		return s;
+	}
 	vec3 compute_normal(const vec3& p0, const vec3& p1, const vec3& p2);
 public:
 	/// copy constructor
@@ -239,6 +297,8 @@ public:
 	simple_mesh<T>& operator= (const simple_mesh<T>& sm);
 	/// move assignment operator
 	simple_mesh<T>& operator= (simple_mesh<T>&& sm);
+	/// return the size of one coordinate in bytes
+	uint32_t get_coord_size() const { return sizeof(T); }
 	/// clear simple mesh
 	void clear();
 

@@ -134,12 +134,19 @@ camera_animator::camera_animator() : application_plugin("Camera Animator") {
 
 	animation = std::make_shared<animation_data>();
 
-	input_file_helper = cgv::gui::file_helper(this, "Open/Save Camera Animation", cgv::gui::file_helper::Mode::kOpenAndSave);
+	input_file_helper = cgv::gui::file_helper(this, "Camera Animation", cgv::gui::file_helper::Mode::kOpenAndSave);
+	input_file_helper.set_title("Open Camera Animation", cgv::gui::file_helper::Mode::kOpen);
+	input_file_helper.set_title("Save Camera Animation", cgv::gui::file_helper::Mode::kSave);
 	input_file_helper.add_filter("Camera Animation", "xml");
+	input_file_helper.add_filter_for_all_files();
 
 	output_directory_helper = cgv::gui::directory_helper(this, "Select Output Folder", cgv::gui::directory_helper::Mode::kOpen);
-	output_directory_helper.directory_name = "./output";
+	output_directory_helper.set_directory_name("./output");
 	
+	video_file_helper = cgv::gui::file_helper(this, "Save Video File", cgv::gui::file_helper::Mode::kSave);
+	video_file_helper.add_filter("MPEG-4", "mp4");
+	video_file_helper.add_filter_for_all_files();
+
 	help.add_line("Keybindings:");
 	help.add_bullet_point("A : Toggle apply animation to camera");
 	help.add_bullet_point("C : Toggle camera visibility");
@@ -166,7 +173,7 @@ bool camera_animator::self_reflect(cgv::reflect::reflection_handler& rh) {
 
 	return 
 		rh.reflect_member("input_path", input_file_helper.file_name) &&
-		rh.reflect_member("video_file", video_file_name);
+		rh.reflect_member("video_file", video_file_helper.file_name);
 }
 
 bool camera_animator::handle_event(cgv::gui::event& e) {
@@ -276,28 +283,27 @@ void camera_animator::handle_timer_event(double t, double dt) {
 }
 
 void camera_animator::handle_member_change(const cgv::utils::pointer_test& m) {
-	if (m.is(video_open)) {
-		if (video_open) {
-			if (!video_file_name.empty())
-				open_ffmpeg_pipe(video_file_name);
-			else {
+	if(m.is(video_open)) {
+		if(video_open) {
+			if(video_file_helper.file_name.empty()) {
 				video_open = false;
 				update_member(&video_open);
 				cgv::gui::message("Choose video file before opening.");
+			} else {
+				open_ffmpeg_pipe(video_file_helper.file_name);
 			}
-		}
-		else {
+		} else {
 			close_ffmpeg_pipe();
 		}
 	}
+
 	if(m.is(input_file_helper.file_name)) {
 		const std::string& file_name = input_file_helper.file_name;
-		if(input_file_helper.save()) {
+		if(input_file_helper.is_save_action()) {
 			// force the file name to have a xml extension if not already present
 			input_file_helper.ensure_extension("xml", true);
 
 			if(save_animation(file_name)) {
-				input_file_helper.update();
 				// TODO: implement note on unsaved changes
 				//has_unsaved_changes = false;
 				//on_set(&has_unsaved_changes);
@@ -475,7 +481,7 @@ void camera_animator::create_gui() {
 	add_decorator("Recording", "heading", "level=4");
 
 	output_directory_helper.create_gui("Output Folder");
-	add_gui("Video File", video_file_name, "file_name", "save=true;open=false;title='Save video file';filter='video (mp4):*.mp4|all files:*.*';w=170");
+	video_file_helper.create_gui("Video File");
 	add_member_control(this, "Use Named Pipe", use_named_pipe, "toggle");
 	add_member_control(this, "Video Open", video_open, "toggle");
 	add_view("Nr Queued Frames", nr_blocks);
