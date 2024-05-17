@@ -1,9 +1,8 @@
 var searchData=
 [
-  ['shader_5fconfig_5fptr_8499',['shader_config_ptr',['../namespacecgv_1_1render.html#aa37e7abafc356dc57179bc80e61b77c4',1,'cgv::render']]],
-  ['shader_5fdefine_5fmap_8500',['shader_define_map',['../namespacecgv_1_1render.html#a0e875e06326ba0599a1289f0bacdb116',1,'cgv::render']]],
-  ['shell_5ftype_8501',['shell_type',['../classcgv_1_1media_1_1mesh_1_1convex__polyhedron__base.html#ac86e10439f0b22ac45006b494be7f8c0',1,'cgv::media::mesh::convex_polyhedron_base']]],
-  ['svec2_8502',['svec2',['../namespacecgv.html#aba618cfd391238101d1376e3b096ad16',1,'cgv']]],
-  ['svec3_8503',['svec3',['../namespacecgv.html#a53edbf4ad9631b07410ca4b4f97180ea',1,'cgv']]],
-  ['svec4_8504',['svec4',['../namespacecgv.html#adcf27fc959e34f8ddcd9dfb8b5d7668a',1,'cgv']]]
+  ['render_5fconfig_5fptr_8517',['render_config_ptr',['../namespacecgv_1_1render.html#a140190d5ae0854d5f6d150f58221b640',1,'cgv::render']]],
+  ['rgb_8518',['rgb',['../structcgv_1_1media_1_1color__storage__types.html#a2b0606813dd8c5d4f17bb10afaae5c22',1,'cgv::media::color_storage_types::rgb()'],['../classcgv_1_1media_1_1illum_1_1light__source.html#a44ec372546581cdafed4966c8bfdc185',1,'cgv::media::illum::light_source::rgb()'],['../namespacecgv.html#a465f589beeb5e4e76eb2db8d1f6057c1',1,'cgv::rgb()']]],
+  ['rgb8_8519',['rgb8',['../namespacecgv.html#a6e001bf8cb90ee62dfc1a0504b43d9e0',1,'cgv']]],
+  ['rgba_8520',['rgba',['../namespacecgv.html#a0cf3c7d9673d8f1d9d33685e3ce5c889',1,'cgv']]],
+  ['rgba8_8521',['rgba8',['../namespacecgv.html#a0aac95bcebcb6689b96f8317226e2b6d',1,'cgv']]]
 ];
