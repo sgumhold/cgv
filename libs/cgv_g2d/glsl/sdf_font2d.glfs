@@ -45,6 +45,6 @@ void main() {
 	
 	float signed_distance = -(screen_pixel_range()*(sd-0.5) + 0.5) / zoom_factor;
 	signed_distance -= feather_origin*get_feather_width();
-		
-	finish_sdf_fragment2d(signed_distance, get_active_color(color));	
+	
+	finish_sdf_fragment2d(signed_distance, get_active_color(color));
 }
