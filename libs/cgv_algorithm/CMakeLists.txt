@@ -2,7 +2,11 @@
 file(GLOB_RECURSE SOURCES RELATIVE "${CMAKE_CURRENT_SOURCE_DIR}" "*.cxx")
 file(GLOB_RECURSE HEADERS RELATIVE "${CMAKE_CURRENT_SOURCE_DIR}" "*.h")
 
-cgv_create_lib(cgv_algorithm SOURCES ${SOURCES} HEADERS ${HEADERS})
+cgv_add_target(cgv_algorithm
+	TYPE library
+	SOURCES ${SOURCES}
+	HEADERS ${HEADERS}
+)
 	
 target_compile_definitions(cgv_algorithm PRIVATE CGV_ALGORITHM_EXPORTS)
 target_compile_definitions(cgv_algorithm_static PRIVATE CGV_ALGORITHM_FORCE_STATIC)
