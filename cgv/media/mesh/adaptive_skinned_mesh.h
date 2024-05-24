@@ -27,6 +27,7 @@ public:
 	using typename simple_mesh<T>::mesh_type;
 	using typename simple_mesh<T>::mat3;
 	using typename simple_mesh<T>::mat4;
+	using typename dynamic_mesh<T>::lbs_source_mode;
 	/// number of blend shapes that define mesh shape
 	unsigned nr_shapes = 0;
 	/// per joint for each mesh position a weight used to regress the joint locations
