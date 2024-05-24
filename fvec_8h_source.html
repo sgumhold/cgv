@@ -240,7 +240,7 @@ $(document).ready(function(){initNavTree('fvec_8h_source.html',''); initResizabl
 <div class="line"><a name="l00242"></a><span class="lineno">  242</span>&#160;    <span class="comment">//@name functions</span></div>
 <div class="line"><a name="l00244"></a><span class="lineno">  244</span>&#160;<span class="comment"></span>    T <a class="code" href="classcgv_1_1math_1_1fvec.html#a68f4c962a48bde5bf2b65494c6e89985">length</a>()<span class="keyword"> const</span></div>
 <div class="line"><a name="l00246"></a><span class="lineno">  246</span>&#160;<span class="keyword">    </span>{</div>
-<div class="line"><a name="l00247"></a><span class="lineno">  247</span>&#160;        <span class="keywordflow">return</span> (T)sqrt((<span class="keywordtype">double</span>)<a class="code" href="classcgv_1_1math_1_1fvec.html#a5cd801220df833f820048962abe40d89">sqr_length</a>());</div>
+<div class="line"><a name="l00247"></a><span class="lineno">  247</span>&#160;        <span class="keywordflow">return</span> (T)std::sqrt((<span class="keywordtype">double</span>)<a class="code" href="classcgv_1_1math_1_1fvec.html#a5cd801220df833f820048962abe40d89">sqr_length</a>());</div>
 <div class="line"><a name="l00248"></a><span class="lineno">  248</span>&#160;    }</div>
 <div class="line"><a name="l00249"></a><span class="lineno">  249</span>&#160; </div>
 <div class="line"><a name="l00251"></a><span class="lineno"><a class="line" href="classcgv_1_1math_1_1fvec.html#a4e8ab8f759404ce077e80a9fd47f370d">  251</a></span>&#160;    <span class="keywordtype">void</span> <a class="code" href="classcgv_1_1math_1_1fvec.html#a4e8ab8f759404ce077e80a9fd47f370d">sign</a>() {</div>
@@ -404,7 +404,7 @@ $(document).ready(function(){initNavTree('fvec_8h_source.html',''); initResizabl
 <div class="line"><a name="l00435"></a><span class="lineno">  435</span>&#160;}</div>
 <div class="line"><a name="l00436"></a><span class="lineno">  436</span>&#160; </div>
 <div class="line"><a name="l00438"></a><span class="lineno">  438</span>&#160;<span class="keyword">template</span> &lt;<span class="keyword">typename</span> T, cgv::type::u<span class="keywordtype">int</span>32_type N&gt;</div>
-<div class="line"><a name="l00439"></a><span class="lineno">  439</span>&#160;<span class="keyword">inline</span> T length(<span class="keyword">const</span> fvec&lt;T, N&gt;&amp; v) { <span class="keywordflow">return</span> sqrt(dot(v, v)); }</div>
+<div class="line"><a name="l00439"></a><span class="lineno">  439</span>&#160;<span class="keyword">inline</span> T length(<span class="keyword">const</span> fvec&lt;T, N&gt;&amp; v) { <span class="keywordflow">return</span> std::sqrt(dot(v, v)); }</div>
 <div class="line"><a name="l00440"></a><span class="lineno">  440</span>&#160; </div>
 <div class="line"><a name="l00442"></a><span class="lineno">  442</span>&#160;<span class="keyword">template</span> &lt;<span class="keyword">typename</span> T, cgv::type::u<span class="keywordtype">int</span>32_type N&gt;</div>
 <div class="line"><a name="l00443"></a><span class="lineno">  443</span>&#160;<span class="keyword">inline</span> fvec&lt;T, N&gt; sign(<span class="keyword">const</span> fvec&lt;T, N&gt;&amp; v) { fvec&lt;T, N&gt; r(v); r.sign(); <span class="keywordflow">return</span> r; }</div>
