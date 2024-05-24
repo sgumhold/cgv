@@ -1,5 +1,7 @@
 #pragma once
 
+#include <memory>
+
 #include <cgv/gui/control.h>
 #include <cgv/type/variant.h>
 

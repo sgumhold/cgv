@@ -1,3 +1,4 @@
+#include <memory>
 #include "mesh_render_info.h"
 
 namespace cgv {
