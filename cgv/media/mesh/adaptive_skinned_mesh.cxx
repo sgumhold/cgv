@@ -1,4 +1,4 @@
-#include "shape_corrected_skinned_mesh.h"
+#include "adaptive_skinned_mesh.h"
 #include <cgv/math/ftransform.h>
 
 namespace cgv {
@@ -6,7 +6,7 @@ namespace cgv {
 		namespace mesh {
 
 template <typename T>
-void shape_corrected_skinned_mesh<T>::compute_rotation_matrices(const std::vector<vec3>& pose, std::vector<mat3>& rotation_matrices)
+void adaptive_skinned_mesh<T>::compute_rotation_matrices(const std::vector<vec3>& pose, std::vector<mat3>& rotation_matrices)
 {
 	// convert pose (excluding global orientation) to flattened vector of rotation matrices
 	rotation_matrices.clear();
@@ -19,7 +19,7 @@ void shape_corrected_skinned_mesh<T>::compute_rotation_matrices(const std::vecto
 }
 
 template <typename T>
-void shape_corrected_skinned_mesh<T>::compute_joint_locations(const std::vector<vec3>& P)
+void adaptive_skinned_mesh<T>::compute_joint_locations(const std::vector<vec3>& P)
 {
 	joint_locations.resize(joint_regressors.size());
 	std::fill(joint_locations.begin(), joint_locations.end(), cgv::vec3(0.0f));
@@ -30,7 +30,19 @@ void shape_corrected_skinned_mesh<T>::compute_joint_locations(const std::vector<
 }
 
 template <typename T>
-std::vector<T> shape_corrected_skinned_mesh<T>::compute_pose_correction_vector(const std::vector<vec3>& pose, const std::vector<mat3>& rotation_matrices) const
+void adaptive_skinned_mesh<T>::compute_aternate_joint_regressors()
+{
+	alternate_joint_regressors.resize(joint_regressors.size());
+	/*std::fill(joint_locations.begin(), joint_locations.end(), cgv::vec3(0.0f));
+	for (unsigned vi = 0; vi < P.size(); ++vi) {
+		for (size_t ji = 0; ji < joint_regressors.size(); ++ji)
+			joint_locations[ji] += joint_regressors[ji][vi] * P[vi];
+	}
+	*/
+}
+
+template <typename T>
+std::vector<T> adaptive_skinned_mesh<T>::compute_pose_correction_vector(const std::vector<vec3>& pose, const std::vector<mat3>& rotation_matrices) const
 {
 	// flattened vector of rotation matrices
 	std::vector<T> PCs;
@@ -45,7 +57,7 @@ std::vector<T> shape_corrected_skinned_mesh<T>::compute_pose_correction_vector(c
 }
 
 template <typename T>
-void shape_corrected_skinned_mesh<T>::shape_mesh(const std::vector<T>& shape, bool use_parallel_implementation)
+void adaptive_skinned_mesh<T>::shape_mesh(const std::vector<T>& shape, bool use_parallel_implementation)
 {
 	apply_blend_shapes(shape, 0, false, use_parallel_implementation);
 	shaped_positions = positions;
@@ -53,7 +65,7 @@ void shape_corrected_skinned_mesh<T>::shape_mesh(const std::vector<T>& shape, bo
 }
 
 template <typename T>
-void shape_corrected_skinned_mesh<T>::pose_mesh(const vec3& translation, const std::vector<vec3>& pose, bool apply_pose_correction, bool use_parallel_implementation)
+void adaptive_skinned_mesh<T>::pose_mesh(const vec3& translation, const std::vector<vec3>& pose, bool apply_pose_correction, bool use_parallel_implementation)
 {
 	std::vector<mat3> rotation_matrices;
 	compute_rotation_matrices(pose, rotation_matrices);
@@ -66,7 +78,7 @@ void shape_corrected_skinned_mesh<T>::pose_mesh(const vec3& translation, const s
 }
 
 
-template class shape_corrected_skinned_mesh<float>;
+template class adaptive_skinned_mesh<float>;
 
 		}
 	}
