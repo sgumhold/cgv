@@ -1,5 +1,7 @@
 var dir_a14adb562a0c3e273f9c52429d05db33 =
 [
+    [ "adaptive_skinned_mesh.cxx", "adaptive__skinned__mesh_8cxx_source.html", null ],
+    [ "adaptive_skinned_mesh.h", "adaptive__skinned__mesh_8h_source.html", null ],
     [ "convex_polyhedron.cxx", "convex__polyhedron_8cxx_source.html", null ],
     [ "convex_polyhedron.h", "convex__polyhedron_8h_source.html", null ],
     [ "cuberille.h", "cuberille_8h_source.html", null ],
