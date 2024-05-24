@@ -146,8 +146,8 @@ $(document).ready(function(){initNavTree('adaptive__skinned__mesh_8cxx_source.ht
 <div class="line"><a name="l00059"></a><span class="lineno">   59</span>&#160;<span class="keyword">template</span> &lt;<span class="keyword">typename</span> T&gt;</div>
 <div class="line"><a name="l00060"></a><span class="lineno">   60</span>&#160;<span class="keywordtype">void</span> adaptive_skinned_mesh&lt;T&gt;::shape_mesh(<span class="keyword">const</span> std::vector&lt;T&gt;&amp; shape, <span class="keywordtype">bool</span> use_parallel_implementation)</div>
 <div class="line"><a name="l00061"></a><span class="lineno">   61</span>&#160;{</div>
-<div class="line"><a name="l00062"></a><span class="lineno">   62</span>&#160;    apply_blend_shapes(shape, 0, <span class="keyword">false</span>, use_parallel_implementation);</div>
-<div class="line"><a name="l00063"></a><span class="lineno">   63</span>&#160;    shaped_positions = positions;</div>
+<div class="line"><a name="l00062"></a><span class="lineno">   62</span>&#160;    this-&gt;apply_blend_shapes(shape, 0, <span class="keyword">false</span>, use_parallel_implementation);</div>
+<div class="line"><a name="l00063"></a><span class="lineno">   63</span>&#160;    shaped_positions = this-&gt;positions;</div>
 <div class="line"><a name="l00064"></a><span class="lineno">   64</span>&#160;    compute_joint_locations(shaped_positions);</div>
 <div class="line"><a name="l00065"></a><span class="lineno">   65</span>&#160;}</div>
 <div class="line"><a name="l00066"></a><span class="lineno">   66</span>&#160; </div>
@@ -157,11 +157,11 @@ $(document).ready(function(){initNavTree('adaptive__skinned__mesh_8cxx_source.ht
 <div class="line"><a name="l00070"></a><span class="lineno">   70</span>&#160;    std::vector&lt;mat3&gt; rotation_matrices;</div>
 <div class="line"><a name="l00071"></a><span class="lineno">   71</span>&#160;    compute_rotation_matrices(pose, rotation_matrices);</div>
 <div class="line"><a name="l00072"></a><span class="lineno">   72</span>&#160;    <span class="comment">// on pose change apply pose correction to mesh positions</span></div>
-<div class="line"><a name="l00073"></a><span class="lineno">   73</span>&#160;    positions = shaped_positions;</div>
+<div class="line"><a name="l00073"></a><span class="lineno">   73</span>&#160;    this-&gt;positions = shaped_positions;</div>
 <div class="line"><a name="l00074"></a><span class="lineno">   74</span>&#160;    <span class="keywordflow">if</span> (apply_pose_correction)</div>
 <div class="line"><a name="l00075"></a><span class="lineno">   75</span>&#160;        apply_blend_shapes(compute_pose_correction_vector(pose, rotation_matrices), nr_shapes, <span class="keyword">true</span>, use_parallel_implementation);</div>
-<div class="line"><a name="l00076"></a><span class="lineno">   76</span>&#160;    lbs(compute_joint_transformations(joint_locations, translation, rotation_matrices), lbs_source_mode::position);</div>
-<div class="line"><a name="l00077"></a><span class="lineno">   77</span>&#160;    compute_vertex_normals(use_parallel_implementation);</div>
+<div class="line"><a name="l00076"></a><span class="lineno">   76</span>&#160;    this-&gt;lbs(compute_joint_transformations(joint_locations, translation, rotation_matrices), lbs_source_mode::position);</div>
+<div class="line"><a name="l00077"></a><span class="lineno">   77</span>&#160;    this-&gt;compute_vertex_normals(use_parallel_implementation);</div>
 <div class="line"><a name="l00078"></a><span class="lineno">   78</span>&#160;}</div>
 <div class="line"><a name="l00079"></a><span class="lineno">   79</span>&#160; </div>
 <div class="line"><a name="l00080"></a><span class="lineno">   80</span>&#160; </div>
