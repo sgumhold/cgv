@@ -244,7 +244,7 @@ public:
 	///length of the vector L2-Norm
 	T length() const
 	{
-		return (T)sqrt((double)sqr_length());
+		return (T)std::sqrt((double)sqr_length());
 	}
 
 	///componentwise sign values
@@ -436,7 +436,7 @@ inline S dot_dir(const fvec<T,N+1>& v, const fvec<S,N>& w)
 
 ///returns the length of vector v 
 template <typename T, cgv::type::uint32_type N>
-inline T length(const fvec<T, N>& v) { return sqrt(dot(v, v)); }
+inline T length(const fvec<T, N>& v) { return std::sqrt(dot(v, v)); }
 
 /// apply sign function component wise to vector
 template <typename T, cgv::type::uint32_type N>
