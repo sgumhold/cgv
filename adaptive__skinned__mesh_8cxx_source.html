@@ -159,8 +159,8 @@ $(document).ready(function(){initNavTree('adaptive__skinned__mesh_8cxx_source.ht
 <div class="line"><a name="l00072"></a><span class="lineno">   72</span>&#160;    <span class="comment">// on pose change apply pose correction to mesh positions</span></div>
 <div class="line"><a name="l00073"></a><span class="lineno">   73</span>&#160;    this-&gt;positions = shaped_positions;</div>
 <div class="line"><a name="l00074"></a><span class="lineno">   74</span>&#160;    <span class="keywordflow">if</span> (apply_pose_correction)</div>
-<div class="line"><a name="l00075"></a><span class="lineno">   75</span>&#160;        apply_blend_shapes(compute_pose_correction_vector(pose, rotation_matrices), nr_shapes, <span class="keyword">true</span>, use_parallel_implementation);</div>
-<div class="line"><a name="l00076"></a><span class="lineno">   76</span>&#160;    this-&gt;lbs(compute_joint_transformations(joint_locations, translation, rotation_matrices), lbs_source_mode::position);</div>
+<div class="line"><a name="l00075"></a><span class="lineno">   75</span>&#160;        this-&gt;apply_blend_shapes(compute_pose_correction_vector(pose, rotation_matrices), nr_shapes, <span class="keyword">true</span>, use_parallel_implementation);</div>
+<div class="line"><a name="l00076"></a><span class="lineno">   76</span>&#160;    this-&gt;lbs(this-&gt;compute_joint_transformations(this-&gt;joint_locations, translation, rotation_matrices), lbs_source_mode::position);</div>
 <div class="line"><a name="l00077"></a><span class="lineno">   77</span>&#160;    this-&gt;compute_vertex_normals(use_parallel_implementation);</div>
 <div class="line"><a name="l00078"></a><span class="lineno">   78</span>&#160;}</div>
 <div class="line"><a name="l00079"></a><span class="lineno">   79</span>&#160; </div>
