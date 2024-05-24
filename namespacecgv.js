@@ -669,6 +669,7 @@ var namespacecgv =
       ] ],
       [ "image", "namespacecgv_1_1media_1_1image.html", "namespacecgv_1_1media_1_1image" ],
       [ "mesh", null, [
+        [ "adaptive_skinned_mesh", "classcgv_1_1media_1_1mesh_1_1adaptive__skinned__mesh.html", "classcgv_1_1media_1_1mesh_1_1adaptive__skinned__mesh" ],
         [ "convex_polyhedron_base", "classcgv_1_1media_1_1mesh_1_1convex__polyhedron__base.html", "classcgv_1_1media_1_1mesh_1_1convex__polyhedron__base" ],
         [ "convex_polyhedron", "classcgv_1_1media_1_1mesh_1_1convex__polyhedron.html", "classcgv_1_1media_1_1mesh_1_1convex__polyhedron" ],
         [ "greater_equal", "structcgv_1_1media_1_1mesh_1_1greater__equal.html", "structcgv_1_1media_1_1mesh_1_1greater__equal" ],
