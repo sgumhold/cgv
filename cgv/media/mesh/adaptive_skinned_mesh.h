@@ -11,7 +11,7 @@ namespace cgv {
 /// @brief Extension of dynamic_mesh that supports regression of joint locations from shaped mesh
 /// @tparam T The coordinate base-type
 template <typename T = float>
-class CGV_API shape_corrected_skinned_mesh : public dynamic_mesh<T>
+class CGV_API adaptive_skinned_mesh : public dynamic_mesh<T>
 {
 public:
 	using typename simple_mesh_base::idx_type;
@@ -31,6 +31,8 @@ public:
 	unsigned nr_shapes = 0;
 	/// per joint for each mesh position a weight used to regress the joint locations
 	std::vector<std::vector<T>> joint_regressors;
+	/// alternative representation of joint regressors with one vector per joint and base mesh/shape
+	std::vector<std::vector<vec3>> alternate_joint_regressors;
 	/// regressed joint locations
 	std::vector<vec3> joint_locations;
 protected:
@@ -40,6 +42,8 @@ protected:
 	void compute_rotation_matrices(const std::vector<vec3>& pose, std::vector<mat3>& rotation_matrices);
 	std::vector<T> compute_pose_correction_vector(const std::vector<vec3>& pose, const std::vector<mat3>& rotation_matrices) const;
 	void compute_joint_locations(const std::vector<vec3>& P);
+	/// compute the alternate joint regressors after shape blend shapes have been defined
+	void compute_aternate_joint_regressors();
 public:
 	size_t get_nr_shapes() const { return nr_shapes; }
 	void shape_mesh(const std::vector<T>& shape, bool use_parallel_implementation = false);
