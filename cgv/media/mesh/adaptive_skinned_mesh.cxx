@@ -59,8 +59,8 @@ std::vector<T> adaptive_skinned_mesh<T>::compute_pose_correction_vector(const st
 template <typename T>
 void adaptive_skinned_mesh<T>::shape_mesh(const std::vector<T>& shape, bool use_parallel_implementation)
 {
-	apply_blend_shapes(shape, 0, false, use_parallel_implementation);
-	shaped_positions = positions;
+	this->apply_blend_shapes(shape, 0, false, use_parallel_implementation);
+	shaped_positions = this->positions;
 	compute_joint_locations(shaped_positions);
 }
 
@@ -70,11 +70,11 @@ void adaptive_skinned_mesh<T>::pose_mesh(const vec3& translation, const std::vec
 	std::vector<mat3> rotation_matrices;
 	compute_rotation_matrices(pose, rotation_matrices);
 	// on pose change apply pose correction to mesh positions
-	positions = shaped_positions;
+	this->positions = shaped_positions;
 	if (apply_pose_correction)
 		apply_blend_shapes(compute_pose_correction_vector(pose, rotation_matrices), nr_shapes, true, use_parallel_implementation);
-	lbs(compute_joint_transformations(joint_locations, translation, rotation_matrices), lbs_source_mode::position);
-	compute_vertex_normals(use_parallel_implementation);
+	this->lbs(compute_joint_transformations(joint_locations, translation, rotation_matrices), lbs_source_mode::position);
+	this->compute_vertex_normals(use_parallel_implementation);
 }
 
 
