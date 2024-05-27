@@ -1,9 +1,10 @@
 #pragma once
 
-#include <iterator>
-#include <initializer_list>
-#include <string>
 #include <algorithm>
+#include <initializer_list>
+#include <iterator>
+#include <string>
+#include <vector>
 
 #include "lib_begin.h"
 
@@ -135,6 +136,25 @@ std::string transform_join(const InputIt first, const InputIt last, UnaryOp oper
     }
 
     return res;
+}
+
+/// @brief Return a collection of pairwise adjacent elements in the range [first, last) as.
+/// 
+/// If the input range contains less than two elements the resulting collection will be empty.
+/// 
+/// @tparam InputIt An iterator.
+/// @param first The start of the input range.
+/// @param last The end of the input range.
+/// @return A std::vector of std::pair s containing copies of adjacent elements.
+template<class InputIt>
+std::vector<std::pair<typename InputIt::value_type, typename InputIt::value_type>> pair_adjacent(const InputIt first, const InputIt last) {
+	std::vector<std::pair<typename InputIt::value_type, typename InputIt::value_type>> res;
+	if(std::distance(first, last) > 1) {
+		std::transform(first, std::prev(last), std::next(first), std::back_inserter(res), [](const auto& a, const auto& b) {
+			return std::make_pair(a, b);
+		});
+	}
+	return res;
 }
 
 // Extended version of enumerate and count ranges.
