@@ -9,19 +9,18 @@ namespace render {
 /// @brief Render data for surfel geometry with support for the surfel_renderer. See render_data_base.
 /// @tparam ColorType The type used to represent colors. Must be cgv::render::rgb or cgv::render::rgba.
 template <typename ColorType = rgb>
-class surfel_render_data : public render_data_base<ColorType> {
-public:
+class surfel_render_data : public render_data_base<surfel_renderer, surfel_render_style, ColorType> {
+private:
 	// Base class we're going to use virtual functions from
-	typedef render_data_base<ColorType> super;
+	typedef render_data_base<surfel_renderer, surfel_render_style, ColorType> super;
 
-	/// stores an array of normals
-	std::vector<vec3> normals;
-	/// stores an array of diameters
-	std::vector<float> diameters;
+	surfel_renderer& ref_renderer_singleton(context& ctx, int ref_count_change = 0) override {
+		return ref_surfel_renderer(ctx, ref_count_change);
+	}
 	
 protected:
 	/// @brief See render_data_base::transfer.
-	bool transfer(context& ctx, surfel_renderer& r) {
+	bool transfer(context& ctx, surfel_renderer& r) override {
 		if(super::transfer(ctx, r)) {
 			CGV_RDB_TRANSFER_ARRAY(normal, normals);
 			CGV_RDB_TRANSFER_ARRAY(point_size, diameters);
@@ -31,6 +30,11 @@ protected:
 	}
 
 public:
+	/// array of normals
+	std::vector<vec3> normals;
+	/// array of diameters
+	std::vector<float> diameters;
+
 	void clear() {
 		super::clear();
 		normals.clear();
@@ -76,8 +80,6 @@ public:
 	void fill_diameters(const float diameter) {
 		super::fill(diameters, diameter);
 	}
-
-	CGV_RDB_BASE_FUNC_DEF(surfel_renderer, surfel_render_style);
 };
 
 }
