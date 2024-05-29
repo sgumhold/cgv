@@ -53,7 +53,18 @@ namespace cgv {
 			has_line_widths = false;
 			has_depth_offsets = false;
 		}
-
+		void line_renderer::remove_normal_array(const context& ctx) {
+			has_normals = false;
+			remove_attribute_array(ctx, "normal");
+		}
+		void line_renderer::remove_line_width_array(const context& ctx) {
+			has_line_widths = false;
+			remove_attribute_array(ctx, "line_width");
+		}
+		void line_renderer::remove_depth_offset_array(const context& ctx) {
+			has_depth_offsets = false;
+			remove_attribute_array(ctx, "depth_offset");
+		}
 		line_renderer::line_renderer()
 		{
 			has_normals = false;

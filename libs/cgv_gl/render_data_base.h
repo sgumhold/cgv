@@ -6,6 +6,13 @@
 
 // Define macros to easily define recurring methods in derived classes
 
+/// Define the members and template-like methods specific to each render style and renderer
+#define CGV_RDB_TRANSFER_ARRAY(NAME, DATA) \
+if(DATA.size() == super::size()) \
+	r.set_##NAME##_array(ctx, DATA); \
+else if(DATA.empty()) \
+	r.remove_##NAME##_array(ctx);
+
 /// @brief Perform a transfer of the stored data to the attribute_array right now.
 ///
 /// Only executed if state_out_of_date is true. Normally the transfer operation is
@@ -15,7 +22,7 @@
 /// 
 /// @param ctx The GL context.
 /// @param r The used renderer class instance.
-#define RDB_EARLY_TRANSFER_FUNC_DEF(RENDERER) \
+#define CGV_RDB_EARLY_TRANSFER_FUNC_DEF(RENDERER) \
 void early_transfer(context& ctx, RENDERER& r) { \
 	r.enable_attribute_array_manager(ctx, this->attribute_array); \
 	if(this->state_out_of_date) transfer(ctx, r); \
@@ -25,7 +32,7 @@ void early_transfer(context& ctx, RENDERER& r) { \
 /// @brief Initialize the render data and increase the reference count of the
 /// specific renderer. See render_data_base::init.
 /// @param ctx The GL context.
-#define RDB_INIT_FUNC_DEF(RENDERER) \
+#define CGV_RDB_INIT_FUNC_DEF(RENDERER) \
 bool init(context& ctx) { \
 	ref_##RENDERER(ctx, 1); \
 	return super::init(ctx); \
@@ -34,7 +41,7 @@ bool init(context& ctx) { \
 /// @brief Destruct the render data and decrease the reference count of the
 /// specific renderer. See render_data_base::destruct.
 /// @param ctx The GL context.
-#define RDB_DESTRUCT_FUNC_DEF(RENDERER) \
+#define CGV_RDB_DESTRUCT_FUNC_DEF(RENDERER) \
 void destruct(context& ctx) { \
 	ref_##RENDERER(ctx, -1); \
 	super::destruct(ctx); \
@@ -49,7 +56,7 @@ void destruct(context& ctx) { \
 /// @param ctx The GL context.
 /// @param r The used renderer class instance.
 /// @param style The used render style.
-#define RDB_ENABLE_FUNC_DEF(RENDERER, STYLE) \
+#define CGV_RDB_ENABLE_FUNC_DEF(RENDERER, STYLE) \
 bool enable(context& ctx, RENDERER& r, const STYLE& s) { \
 	if(this->size() > 0) { \
 		r.set_render_style(s); \
@@ -73,7 +80,7 @@ bool enable(context& ctx, RENDERER& r, const STYLE& s) { \
 /// @param ctx The GL context.
 /// @param offset The vertex offset.
 /// @param count The vertex count.
-#define RDB_RENDER_FUNC3_DEF(RENDERER) \
+#define CGV_RDB_RENDER_FUNC3_DEF(RENDERER) \
 void render(context& ctx, unsigned offset = 0, int count = -1) { \
 	render(ctx, ref_##RENDERER(ctx), style, offset, count); \
 }
@@ -89,7 +96,7 @@ void render(context& ctx, unsigned offset = 0, int count = -1) { \
 /// @param style The used render style.
 /// @param offset The vertex offset.
 /// @param count The vertex count.
-#define RDB_RENDER_FUNC2_DEF(RENDERER, STYLE) \
+#define CGV_RDB_RENDER_FUNC2_DEF(RENDERER, STYLE) \
 void render(context& ctx, const STYLE& s, unsigned offset = 0, int count = -1) { \
 	render(ctx, ref_##RENDERER(ctx), s, offset, count); \
 }
@@ -105,7 +112,7 @@ void render(context& ctx, const STYLE& s, unsigned offset = 0, int count = -1) {
 /// @param r The used renderer class instance.
 /// @param offset The vertex offset.
 /// @param count The vertex count.
-#define RDB_RENDER_FUNC1_DEF(RENDERER) \
+#define CGV_RDB_RENDER_FUNC1_DEF(RENDERER) \
 void render(context& ctx, RENDERER& r, unsigned offset = 0, int count = -1) { \
 	render(ctx, r, style, offset, count); \
 }
@@ -122,7 +129,7 @@ void render(context& ctx, RENDERER& r, unsigned offset = 0, int count = -1) { \
 /// @param style The used render style.
 /// @param offset The vertex offset.
 /// @param count The vertex count.
-#define RDB_RENDER_FUNC0_DEF(RENDERER, STYLE) \
+#define CGV_RDB_RENDER_FUNC0_DEF(RENDERER, STYLE) \
 void render(context& ctx, RENDERER& r, const STYLE& s, unsigned offset = 0, int count = -1) { \
 	if(enable(ctx, r, s)) { \
 		this->draw(ctx, r, offset, count); \
@@ -131,16 +138,16 @@ void render(context& ctx, RENDERER& r, const STYLE& s, unsigned offset = 0, int 
 }
 
 /// Define the members and template-like methods specific to each render style and renderer
-#define RDB_BASE_FUNC_DEF(RENDERER, STYLE) \
+#define CGV_RDB_BASE_FUNC_DEF(RENDERER, STYLE) \
 	STYLE style; \
-	RDB_EARLY_TRANSFER_FUNC_DEF(RENDERER) \
-	RDB_INIT_FUNC_DEF(RENDERER) \
-	RDB_DESTRUCT_FUNC_DEF(RENDERER) \
-	RDB_ENABLE_FUNC_DEF(RENDERER, STYLE) \
-	RDB_RENDER_FUNC3_DEF(RENDERER) \
-	RDB_RENDER_FUNC2_DEF(RENDERER, STYLE) \
-	RDB_RENDER_FUNC1_DEF(RENDERER) \
-	RDB_RENDER_FUNC0_DEF(RENDERER, STYLE) \
+	CGV_RDB_EARLY_TRANSFER_FUNC_DEF(RENDERER) \
+	CGV_RDB_INIT_FUNC_DEF(RENDERER) \
+	CGV_RDB_DESTRUCT_FUNC_DEF(RENDERER) \
+	CGV_RDB_ENABLE_FUNC_DEF(RENDERER, STYLE) \
+	CGV_RDB_RENDER_FUNC3_DEF(RENDERER) \
+	CGV_RDB_RENDER_FUNC2_DEF(RENDERER, STYLE) \
+	CGV_RDB_RENDER_FUNC1_DEF(RENDERER) \
+	CGV_RDB_RENDER_FUNC0_DEF(RENDERER, STYLE) \
 
 namespace cgv {
 namespace render {
@@ -221,6 +228,11 @@ protected:
 			r.set_position_array(ctx, positions);
 			if(colors.size() == size())
 				r.set_color_array(ctx, colors);
+			else if(colors.empty())
+				r.remove_color_array(ctx);
+
+			//if(colors.size() == size())
+			//	r.set_color_array(ctx, colors);
 			if(!indices.empty())
 				r.set_indices(ctx, indices);
 			else

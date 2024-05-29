@@ -21,8 +21,7 @@ protected:
 	/// @brief See render_data_base::transfer.
 	bool transfer(context& ctx, sphere_renderer& r) {
 		if(super::transfer(ctx, r)) {
-			if(radii.size() == super::size())
-				r.set_radius_array(ctx, radii);
+			CGV_RDB_TRANSFER_ARRAY(radius, radii);
 			return true;
 		}
 		return false;
@@ -55,7 +54,7 @@ public:
 		super::fill(radii, radius);
 	}
 
-	RDB_BASE_FUNC_DEF(sphere_renderer, sphere_render_style);
+	CGV_RDB_BASE_FUNC_DEF(sphere_renderer, sphere_render_style);
 };
 
 }

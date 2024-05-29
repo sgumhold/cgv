@@ -59,6 +59,8 @@ namespace cgv { // @<
 			/// extent array specifies box extends in case of position_is_center=true, otherwise the maximum point of each box
 			template <typename T>
 			void set_extent_array(const context& ctx, const T* extents, size_t nr_elements, unsigned stride_in_bytes = 0) { has_extents = true;  set_attribute_array(ctx, "extent", extents, nr_elements, stride_in_bytes); }
+			/// remove the extent attribute
+			void remove_extent_array(const context& ctx);
 			/// specify a single box. This sets position_is_center to false as well as position and extent attributes
 			template <typename T>
 			void set_box(const context& ctx, const cgv::media::axis_aligned_box<T, 3>& box) {
@@ -90,12 +92,16 @@ namespace cgv { // @<
 			/// template method to set the translations from a vector of vectors of type T, which should have 3 components
 			template <typename T>
 			void set_translation_array(const context& ctx, const T* translations, size_t nr_elements, unsigned stride_in_bytes = 0) { has_translations = true; set_attribute_array(ctx, "translation", translations, nr_elements, stride_in_bytes); }
+			/// remove the translation attribute
+			void remove_translation_array(const context& ctx);
 			/// template method to set the rotation from a vector of quaternions of type T, which should have 4 components
 			template <typename T>
 			void set_rotation_array(const context& ctx, const std::vector<T>& rotations) { has_rotations = true; set_attribute_array(ctx, "rotation", rotations); }
 			/// template method to set the rotation from a vector of quaternions of type T, which should have 4 components
 			template <typename T>
 			void set_rotation_array(const context& ctx, const T* rotations, size_t nr_elements, unsigned stride_in_bytes = 0) { has_rotations = true; set_attribute_array(ctx, "rotation", rotations, nr_elements, stride_in_bytes); }
+			/// remove the rotation attribute
+			void remove_rotation_array(const context& ctx);
 			///
 			bool disable(context& ctx);
 			///

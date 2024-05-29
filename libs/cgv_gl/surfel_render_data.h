@@ -23,10 +23,8 @@ protected:
 	/// @brief See render_data_base::transfer.
 	bool transfer(context& ctx, surfel_renderer& r) {
 		if(super::transfer(ctx, r)) {
-			if(normals.size() == super::size())
-				r.set_normal_array(ctx, normals);
-			if(diameters.size() == super::size())
-				r.set_point_size_array(ctx, diameters);
+			CGV_RDB_TRANSFER_ARRAY(normal, normals);
+			CGV_RDB_TRANSFER_ARRAY(point_size, diameters);
 			return true;
 		}
 		return false;
@@ -79,7 +77,7 @@ public:
 		super::fill(diameters, diameter);
 	}
 
-	RDB_BASE_FUNC_DEF(surfel_renderer, surfel_render_style);
+	CGV_RDB_BASE_FUNC_DEF(surfel_renderer, surfel_render_style);
 };
 
 }
