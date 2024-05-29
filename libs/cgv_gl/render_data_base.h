@@ -4,150 +4,12 @@
 
 #include "renderer.h"
 
-// Define macros to easily define recurring methods in derived classes
-
-/// Define the members and template-like methods specific to each render style and renderer
+/// Define a macro to automatically produce the boilerplate code needed to set or remove a vertex attribute in the attribute array manager.
 #define CGV_RDB_TRANSFER_ARRAY(NAME, DATA) \
 if(DATA.size() == super::size()) \
 	r.set_##NAME##_array(ctx, DATA); \
 else if(DATA.empty()) \
 	r.remove_##NAME##_array(ctx);
-
-/// @brief Perform a transfer of the stored data to the attribute_array right now.
-///
-/// Only executed if state_out_of_date is true. Normally the transfer operation is
-/// performed when enable is called. However, sometimes it is necessary for the data
-/// to be stored in the attribute_array and hence in the GPU buffer before rendering,
-/// in order to be able to manipulate the data through, e.g., compute shaders.
-/// 
-/// @param ctx The GL context.
-/// @param r The used renderer class instance.
-#define CGV_RDB_EARLY_TRANSFER_FUNC_DEF(RENDERER) \
-void early_transfer(context& ctx, RENDERER& r) { \
-	r.enable_attribute_array_manager(ctx, this->attribute_array); \
-	if(this->state_out_of_date) transfer(ctx, r); \
-	r.disable_attribute_array_manager(ctx, this->attribute_array); \
-}
-
-/// @brief Initialize the render data and increase the reference count of the
-/// specific renderer. See render_data_base::init.
-/// @param ctx The GL context.
-#define CGV_RDB_INIT_FUNC_DEF(RENDERER) \
-bool init(context& ctx) { \
-	ref_##RENDERER(ctx, 1); \
-	return super::init(ctx); \
-}
-
-/// @brief Destruct the render data and decrease the reference count of the
-/// specific renderer. See render_data_base::destruct.
-/// @param ctx The GL context.
-#define CGV_RDB_DESTRUCT_FUNC_DEF(RENDERER) \
-void destruct(context& ctx) { \
-	ref_##RENDERER(ctx, -1); \
-	super::destruct(ctx); \
-}
-
-/// @brief Enable the render data for rendering.
-///
-/// Prepares the renderer to render using the attribute_array and given style.
-/// If state_out_of_date is true, the attribute_array is updated to reflect
-/// the stored data. Overrides the per-default used renderer and style.
-/// 
-/// @param ctx The GL context.
-/// @param r The used renderer class instance.
-/// @param style The used render style.
-#define CGV_RDB_ENABLE_FUNC_DEF(RENDERER, STYLE) \
-bool enable(context& ctx, RENDERER& r, const STYLE& s) { \
-	if(this->size() > 0) { \
-		r.set_render_style(s); \
-		r.enable_attribute_array_manager(ctx, this->attribute_array); \
-		if(this->state_out_of_date) transfer(ctx, r); \
-		this->set_const_attributes(ctx, r); \
-		return r.validate_and_enable(ctx); \
-	} else if(this->state_out_of_date) { \
-		early_transfer(ctx, r); \
-	} \
-	return false; \
-}
-
-/// @brief Render the stored geometry.
-///
-/// If offset and count are not specified the full data range is rendered.
-/// Validates whether offset and count produce a valid range according to
-/// the value returned by render_data_base::render_count and clamps the count
-/// values if necessary.
-/// 
-/// @param ctx The GL context.
-/// @param offset The vertex offset.
-/// @param count The vertex count.
-#define CGV_RDB_RENDER_FUNC3_DEF(RENDERER) \
-void render(context& ctx, unsigned offset = 0, int count = -1) { \
-	render(ctx, ref_##RENDERER(ctx), style, offset, count); \
-}
-
-/// @brief Render the stored geometry using the given style.
-///
-/// If offset and count are not specified the full data range is rendered.
-/// Validates whether offset and count produce a valid range according to
-/// the value returned by render_data_base::render_count and clamps the count
-/// values if necessary.
-/// 
-/// @param ctx The GL context.
-/// @param style The used render style.
-/// @param offset The vertex offset.
-/// @param count The vertex count.
-#define CGV_RDB_RENDER_FUNC2_DEF(RENDERER, STYLE) \
-void render(context& ctx, const STYLE& s, unsigned offset = 0, int count = -1) { \
-	render(ctx, ref_##RENDERER(ctx), s, offset, count); \
-}
-
-/// @brief Render the stored geometry using the given renderer.
-///
-/// If offset and count are not specified the full data range is rendered.
-/// Validates whether offset and count produce a valid range according to
-/// the value returned by render_data_base::render_count and clamps the count
-/// values if necessary.
-/// 
-/// @param ctx The GL context.
-/// @param r The used renderer class instance.
-/// @param offset The vertex offset.
-/// @param count The vertex count.
-#define CGV_RDB_RENDER_FUNC1_DEF(RENDERER) \
-void render(context& ctx, RENDERER& r, unsigned offset = 0, int count = -1) { \
-	render(ctx, r, style, offset, count); \
-}
-
-/// @brief Render the stored geometry using the given renderer and style.
-///
-/// If offset and count are not specified the full data range is rendered.
-/// Validates whether offset and count produce a valid range according to
-/// the value returned by render_data_base::render_count and clamps the count
-/// values if necessary.
-/// 
-/// @param ctx The GL context.
-/// @param r The used renderer class instance.
-/// @param style The used render style.
-/// @param offset The vertex offset.
-/// @param count The vertex count.
-#define CGV_RDB_RENDER_FUNC0_DEF(RENDERER, STYLE) \
-void render(context& ctx, RENDERER& r, const STYLE& s, unsigned offset = 0, int count = -1) { \
-	if(enable(ctx, r, s)) { \
-		this->draw(ctx, r, offset, count); \
-		this->disable(ctx, r); \
-	} \
-}
-
-/// Define the members and template-like methods specific to each render style and renderer
-#define CGV_RDB_BASE_FUNC_DEF(RENDERER, STYLE) \
-	STYLE style; \
-	CGV_RDB_EARLY_TRANSFER_FUNC_DEF(RENDERER) \
-	CGV_RDB_INIT_FUNC_DEF(RENDERER) \
-	CGV_RDB_DESTRUCT_FUNC_DEF(RENDERER) \
-	CGV_RDB_ENABLE_FUNC_DEF(RENDERER, STYLE) \
-	CGV_RDB_RENDER_FUNC3_DEF(RENDERER) \
-	CGV_RDB_RENDER_FUNC2_DEF(RENDERER, STYLE) \
-	CGV_RDB_RENDER_FUNC1_DEF(RENDERER) \
-	CGV_RDB_RENDER_FUNC0_DEF(RENDERER, STYLE) \
 
 namespace cgv {
 namespace render {
@@ -162,8 +24,9 @@ namespace render {
 /// is automatically increased and decreased by the init and destruct methods. Both
 /// the default style and renderer can be exchanged for user-provided ones.
 /// 
-/// Each derived class may add storage for vertex attributes according to the
-/// capabilities of its target renderer.
+/// Each derived class must specify the exact renderer and render style used and may
+/// add storage for vertex attributes according to the capabilities of its target
+/// renderer.
 /// 
 /// Data handling:
 /// Host side storage is provided through vector members and GPU side storage is
@@ -196,30 +59,30 @@ namespace render {
 /// This is used by, e.g., line-type geometries, to quickly add a single attribute value
 /// for start and end points. Example: add_segment_color(color_for_whole_segment);
 /// 
+/// @tparam RendererType The type of the used renderer. Must be derived from cgv::render::renderer.
+/// @tparam renderStyleType The type of the used render style. Must be supported by RendererType.
 /// @tparam ColorType The type used to represent colors. Must be cgv::render::rgb or cgv::render::rgba.
-template <typename ColorType = rgb>
+template <class RendererType, class RenderStyleType, typename ColorType = rgb>
 class render_data_base {
-public:
-	/// stores an array of indices
-	std::vector<uint32_t> indices;
-	/// stores an array of positions
-	std::vector<vec3> positions;
-	/// stores an array of colors
-	std::vector<ColorType> colors;
-	/// stores an optional constant color used for all elements
-	cgv::data::optional<ColorType> const_color;
-
-protected:
+private:
 	/// whether the state of this render datas members are out of date with the attribute_array
 	bool state_out_of_date = true;
 	/// the attribute array manager storing the data in GL buffers
 	attribute_array_manager attribute_array;
 
+protected:
+	/// @brief Manage the singleton of the used renderer. this mehtod needs to be implemented in derived classes.
+	/// 
+	/// @param ctx The GL context.
+	/// @param ref_count_change The amount by which to change the singleton reference count. Usually -1, 0 or 1.
+	/// @return A reference to the renderer sigleton.
+	virtual RendererType& ref_renderer_singleton(context& ctx, int ref_count_change = 0) = 0;
+
 	/// @brief Transfers the data stored in members to the attribute array.
 	/// @param ctx The GL context.
 	/// @param r The used renderer instance.
 	/// @return True is successful, false otherwise.
-	virtual bool transfer(context& ctx, renderer& r) {
+	virtual bool transfer(context& ctx, RendererType& r) {
 		state_out_of_date = false;
 
 		// The positions array determines the amount of stored vertices.
@@ -258,7 +121,7 @@ protected:
 	/// 
 	/// @param ctx The GL context.
 	/// @param r The used renderer instance.
-	virtual void set_const_attributes(context& ctx, renderer& r) {
+	virtual void set_const_attributes(context& ctx, RendererType& r) {
 		if(colors.empty() && const_color)
 			r.set_color(ctx, const_color.value());
 	}
@@ -278,36 +141,17 @@ protected:
 	}
 
 public:
-	/// @brief Initialize the attribute array manager.
-	/// @param ctx The GL context.
-	virtual bool init(context& ctx) {
-		return attribute_array.init(ctx);
-	}
+	/// the default render style
+	RenderStyleType style;
 
-	/// @brief Destruct the attribute array manager.
-	/// @param ctx The GL context.
-	virtual void destruct(context& ctx) {
-		attribute_array.destruct(ctx);
-	}
-
-	/// Clear the stored data and set state out of date.
-	void clear() {
-		indices.clear();
-		positions.clear();
-		colors.clear();
-		
-		state_out_of_date = true;
-	}
-
-	/// @brief Notify the render data about state changes.
-	///
-	/// Calling this method will result in the state_out_of_date flag being set to true
-	/// and a call to transfer upon the next call to render or enable. This method shall
-	/// never be called implicitly as a side effect of another member method, except clear,
-	/// and must always be called explicitly after changing the stored data.
-	void set_out_of_date() {
-		state_out_of_date = true;
-	}
+	/// array of indices used for optional indexed rendering
+	std::vector<uint32_t> indices;
+	/// array of positions
+	std::vector<vec3> positions;
+	/// array of colors
+	std::vector<ColorType> colors;
+	/// optional constant color used for all elements
+	cgv::data::optional<ColorType> const_color;
 
 	/// @brief Return the number of stored positions.
 	/// @return The number of stored positions.
@@ -322,6 +166,25 @@ public:
 	/// @return True if empty, false otherwise.
 	bool empty() const {
 		return positions.empty();
+	}
+
+	/// Clear the stored data and set state out of date.
+	void clear() {
+		indices.clear();
+		positions.clear();
+		colors.clear();
+
+		state_out_of_date = true;
+	}
+
+	/// @brief Notify the render data about state changes.
+	///
+	/// Calling this method will result in the state_out_of_date flag being set to true
+	/// and a call to transfer upon the next call to render or enable. This method shall
+	/// never be called implicitly as a side effect of another member method, except clear,
+	/// and must always be called explicitly after changing the stored data.
+	void set_out_of_date() {
+		state_out_of_date = true;
 	}
 
 	/// @brief Return the number of vertices that will be rendered.
@@ -346,6 +209,144 @@ public:
 		return attribute_array;
 	}
 
+	/// @brief Initialize the attribute array manager.
+	/// @param ctx The GL context.
+	bool init(context& ctx) {
+		ref_renderer_singleton(ctx, 1);
+		return attribute_array.init(ctx);
+	}
+
+	/// @brief Destruct the attribute array manager and decrease the reference count of the used renderer.
+	/// @param ctx The GL context.
+	void destruct(context& ctx) {
+		ref_renderer_singleton(ctx, -1);
+		attribute_array.destruct(ctx);
+	}
+
+	/// @brief Perform a transfer of the stored data to the attribute_array right now.
+	///
+	/// Only executed if state_out_of_date is true. Normally the transfer operation is
+	/// performed when enable is called. However, sometimes it is necessary for the data
+	/// to be stored in the attribute_array and hence in the GPU buffer before rendering,
+	/// in order to be able to manipulate the data through, e.g., compute shaders.
+	/// 
+	/// @param ctx The GL context.
+	/// @param r The used renderer class instance.
+	void early_transfer(context& ctx, RendererType& r) {
+		r.enable_attribute_array_manager(ctx, this->attribute_array);
+		if(this->state_out_of_date)
+			transfer(ctx, r);
+		r.disable_attribute_array_manager(ctx, this->attribute_array);
+	}
+
+	/// @brief Enable the render data for rendering.
+	///
+	/// Prepares the renderer to render using the attribute_array and given style.
+	/// If state_out_of_date is true, the attribute_array is updated to reflect
+	/// the stored data. Overrides the per-default used renderer and style.
+	/// 
+	/// @param ctx The GL context.
+	/// @param r The used renderer class instance.
+	/// @param style The used render style.
+	bool enable(context& ctx, RendererType& r, const RenderStyleType& s) {
+		if(this->size() > 0) {
+			r.set_render_style(s);
+			r.enable_attribute_array_manager(ctx, this->attribute_array);
+
+			if(this->state_out_of_date)
+				transfer(ctx, r);
+			this->set_const_attributes(ctx, r);
+
+			return r.validate_and_enable(ctx);
+		} else if(this->state_out_of_date) {
+			early_transfer(ctx, r);
+		}
+		return false;
+	}
+
+	/// @brief Disable the renderer and attribute_array.
+	/// @param ctx The GL context.
+	/// @param r The used renderer class instance.
+	/// @return True if disabling was successful.
+	bool disable(context& ctx, renderer& r) {
+		bool res = r.disable(ctx);
+		r.disable_attribute_array_manager(ctx, attribute_array);
+		return res;
+	}
+
+	/// @brief Draw the stored geometry using the given renderer.
+	/// 
+	/// This method must only be called after a successful call to enable.
+	/// Afterwards, disable must be called.
+	/// 
+	/// If offset and count are not specified the full data range is rendered.
+	/// Validates whether offset and count produce a valid range according to
+	/// the value returned by render_data_base::render_count and clamps the count
+	/// values if necessary.
+	/// 
+	/// @param ctx The GL context.
+	/// @param r The used renderer class instance.
+	/// @param offset The vertex offset.
+	/// @param count The vertex count.
+	void draw(context& ctx, renderer& r, unsigned offset = 0, int count = -1) {
+		size_t draw_count = render_count();
+		offset = std::min(offset, static_cast<unsigned>(draw_count));
+		draw_count = std::min(offset + (count < 0 ? draw_count : count), draw_count) - offset;
+
+		r.draw(ctx, offset, draw_count);
+	}
+
+	/// @brief Render the stored geometry.
+	///
+	/// See draw for usage of offset and count.
+	/// 
+	/// @param ctx The GL context.
+	/// @param offset The vertex offset.
+	/// @param count The vertex count.
+	void render(context& ctx, unsigned offset = 0, int count = -1) {
+		render(ctx, ref_renderer_singleton(ctx), style, offset, count);
+	}
+
+	/// @brief Render the stored geometry using the given style.
+	///
+	/// See draw for usage of offset and count.
+	/// 
+	/// @param ctx The GL context.
+	/// @param style The used render style.
+	/// @param offset The vertex offset.
+	/// @param count The vertex count.
+	void render(context& ctx, const RenderStyleType& s, unsigned offset = 0, int count = -1) {
+		render(ctx, ref_renderer_singleton, s, offset, count);
+	}
+
+	/// @brief Render the stored geometry using the given renderer.
+	///
+	/// See draw for usage of offset and count.
+	/// 
+	/// @param ctx The GL context.
+	/// @param r The used renderer class instance.
+	/// @param offset The vertex offset.
+	/// @param count The vertex count.
+	void render(context& ctx, RendererType& r, unsigned offset = 0, int count = -1) {
+		render(ctx, r, style, offset, count);
+	}
+
+	/// @brief Render the stored geometry using the given renderer and style.
+	///
+	/// See draw for usage of offset and count.
+	/// 
+	/// @param ctx The GL context.
+	/// @param r The used renderer class instance.
+	/// @param style The used render style.
+	/// @param offset The vertex offset.
+	/// @param count The vertex count.
+	void render(context& ctx, RendererType& r, const RenderStyleType& s, unsigned offset = 0, int count = -1) {
+		if(enable(ctx, r, s)) {
+			this->draw(ctx, r, offset, count);
+			this->disable(ctx, r);
+		}
+	}
+
 	void add_index(const uint32_t index) {
 		indices.push_back(index);
 	}
@@ -365,37 +366,6 @@ public:
 
 	void fill_colors(const ColorType& color) {
 		fill(colors, color);
-	}
-
-	/// @brief Disable the renderer and attribute_array.
-	/// @param ctx The GL context.
-	/// @param r The used renderer class instance.
-	/// @return True if disabling was successful.
-	bool disable(context& ctx, renderer& r) {
-		bool res = r.disable(ctx);
-		r.disable_attribute_array_manager(ctx, attribute_array);
-		return res;
-	}
-
-	/// @brief Draw the stored geometry using the given renderer.
-	/// 
-	/// This method must only be called after a successful call to enable.
-	/// Afterwards, disable must be called.
-	/// If offset and count are not specified the full data range is rendered.
-	/// Validates whether offset and count produce a valid range according to
-	/// the value returned by render_data_base::render_count and clamps the count
-	/// values if necessary.
-	/// 
-	/// @param ctx The GL context.
-	/// @param r The used renderer class instance.
-	/// @param offset The vertex offset.
-	/// @param count The vertex count.
-	void draw(context& ctx, renderer& r, unsigned offset = 0, int count = -1) {		
-		size_t draw_count = render_count();
-		offset = std::min(offset, static_cast<unsigned>(draw_count));
-		draw_count = std::min(offset + (count < 0 ? draw_count : count), draw_count) - offset;
-
-		r.draw(ctx, offset, draw_count);
 	}
 };
 
