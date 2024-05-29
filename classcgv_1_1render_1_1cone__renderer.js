@@ -9,6 +9,7 @@ var classcgv_1_1render_1_1cone__renderer =
     [ "draw", "classcgv_1_1render_1_1cone__renderer.html#a667fabd0a3f0af62061b5d134bd6280a", null ],
     [ "enable", "classcgv_1_1render_1_1cone__renderer.html#afe641c31a568cdfb098e589d8c85da32", null ],
     [ "enable_attribute_array_manager", "classcgv_1_1render_1_1cone__renderer.html#ab699d15ebe8b6f5470aaa13b4a16b0c3", null ],
+    [ "remove_radius_array", "classcgv_1_1render_1_1cone__renderer.html#ad521624a985935bafc2f8ca48beda92c", null ],
     [ "set_albedo_texture", "classcgv_1_1render_1_1cone__renderer.html#aed320e5e13abbe70117e153a92f403d5", null ],
     [ "set_density_texture", "classcgv_1_1render_1_1cone__renderer.html#a66097c4ef8ee2b0e4d86b3a932f0c6f6", null ],
     [ "set_radius_array", "classcgv_1_1render_1_1cone__renderer.html#a543aea39c4556753222fc8de88d0ba11", null ],

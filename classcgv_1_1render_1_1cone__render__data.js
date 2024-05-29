@@ -11,9 +11,9 @@ var classcgv_1_1render_1_1cone__render__data =
     [ "add_radius", "classcgv_1_1render_1_1cone__render__data.html#a221cdcd27d76051157f291c6756f38e8", null ],
     [ "add_segment_color", "classcgv_1_1render_1_1cone__render__data.html#ad80aff29b432de2ae021c03620cba012", null ],
     [ "add_segment_radius", "classcgv_1_1render_1_1cone__render__data.html#aeb8be399a8df84bb5e9b5104ab57fa2c", null ],
+    [ "CGV_RDB_BASE_FUNC_DEF", "classcgv_1_1render_1_1cone__render__data.html#a3d965d6c00a5cd754f419cc5e870e82f", null ],
     [ "clear", "classcgv_1_1render_1_1cone__render__data.html#a5894417cded7d8d06790a78e6dc2e214", null ],
     [ "fill_radii", "classcgv_1_1render_1_1cone__render__data.html#ab4b48521357f4bba7d6212de4ca62625", null ],
-    [ "RDB_BASE_FUNC_DEF", "classcgv_1_1render_1_1cone__render__data.html#a30ee245f6be88ae86196c58acaf564e1", null ],
     [ "transfer", "classcgv_1_1render_1_1cone__render__data.html#a7d77d4ee99fdfca6210a770f50e10807", null ],
     [ "radii", "classcgv_1_1render_1_1cone__render__data.html#a2b60c841e2245803031a26f653a6be32", null ]
 ];

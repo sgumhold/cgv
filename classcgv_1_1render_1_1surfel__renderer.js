@@ -8,6 +8,8 @@ var classcgv_1_1render_1_1surfel__renderer =
     [ "draw", "classcgv_1_1render_1_1surfel__renderer.html#a575b88d8b31b712bfebe2c94af24bab2", null ],
     [ "enable", "classcgv_1_1render_1_1surfel__renderer.html#a721896846fecb8500533c1048c1b1632", null ],
     [ "enable_attribute_array_manager", "classcgv_1_1render_1_1surfel__renderer.html#a6930b9ea8d8ba92906fda4773d753f2c", null ],
+    [ "remove_indexed_color_array", "classcgv_1_1render_1_1surfel__renderer.html#ab664b74df0c3ea5698ff4f2487b9f983", null ],
+    [ "remove_point_size_array", "classcgv_1_1render_1_1surfel__renderer.html#a9dce8f5af812fdefbdc7cff8dd30d3e8", null ],
     [ "set_group_point_sizes", "classcgv_1_1render_1_1surfel__renderer.html#ae48aeeb555696099c899b2990897df24", null ],
     [ "set_indexed_color_array", "classcgv_1_1render_1_1surfel__renderer.html#a6d87031935ed6050902304f74089762c", null ],
     [ "set_indexed_color_array", "classcgv_1_1render_1_1surfel__renderer.html#a580c5a2b77cd96e13afc00526a526f30", null ],

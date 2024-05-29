@@ -8,10 +8,10 @@ var classcgv_1_1render_1_1surfel__render__data =
     [ "add", "classcgv_1_1render_1_1surfel__render__data.html#abe4f7b2c334304df1d11b114d56bb139", null ],
     [ "add_diameter", "classcgv_1_1render_1_1surfel__render__data.html#ad9fad04651911a736089361ab99e9115", null ],
     [ "add_normal", "classcgv_1_1render_1_1surfel__render__data.html#a8f84877d5d60d1ed4ea03af8d92caf9b", null ],
+    [ "CGV_RDB_BASE_FUNC_DEF", "classcgv_1_1render_1_1surfel__render__data.html#ab51e2e0fddaf5f43ece0bb2a1966d99f", null ],
     [ "clear", "classcgv_1_1render_1_1surfel__render__data.html#a458e0027fb30678e4bd1f2cc6f64cb38", null ],
     [ "fill_diameters", "classcgv_1_1render_1_1surfel__render__data.html#a3436c029028c6512cc8b6b519fbb0585", null ],
     [ "fill_normals", "classcgv_1_1render_1_1surfel__render__data.html#adc1d0ed54f9c0b2ea80fb0542b70d1d7", null ],
-    [ "RDB_BASE_FUNC_DEF", "classcgv_1_1render_1_1surfel__render__data.html#a1352ef557fb778909cb65f634a1e7801", null ],
     [ "transfer", "classcgv_1_1render_1_1surfel__render__data.html#aa10f67d84c8e54c3f3b3ca8d4465f81f", null ],
     [ "diameters", "classcgv_1_1render_1_1surfel__render__data.html#ad1fc72ddce5c16e6f238e7c20451c32b", null ],
     [ "normals", "classcgv_1_1render_1_1surfel__render__data.html#a2d5146563739de11a4c23c5c31aa79de", null ]

@@ -104,86 +104,84 @@ $(document).ready(function(){initNavTree('cone__render__data_8h_source.html','')
 <div class="line"><a name="l00020"></a><span class="lineno">   20</span>&#160;<span class="keyword">protected</span>:</div>
 <div class="line"><a name="l00022"></a><span class="lineno"><a class="line" href="classcgv_1_1render_1_1cone__render__data.html#a7d77d4ee99fdfca6210a770f50e10807">   22</a></span>&#160;    <span class="keywordtype">bool</span> <a class="code" href="classcgv_1_1render_1_1cone__render__data.html#a7d77d4ee99fdfca6210a770f50e10807">transfer</a>(<a class="code" href="classcgv_1_1render_1_1context.html">context</a>&amp; ctx, <a class="code" href="classcgv_1_1render_1_1cone__renderer.html">cone_renderer</a>&amp; r) {</div>
 <div class="line"><a name="l00023"></a><span class="lineno">   23</span>&#160;        <span class="keywordflow">if</span>(<a class="code" href="classcgv_1_1render_1_1render__data__base.html#a6eafc7f4d5989dfec84d7c7358ffd89d">super::transfer</a>(ctx, r)) {</div>
-<div class="line"><a name="l00024"></a><span class="lineno">   24</span>&#160;            <span class="keywordflow">if</span>(<a class="code" href="classcgv_1_1render_1_1cone__render__data.html#a2b60c841e2245803031a26f653a6be32">radii</a>.size() == <a class="code" href="classcgv_1_1render_1_1render__data__base.html#a1cf12b5dac4a906bf13f37d2ebbc47f9">super::size</a>())</div>
-<div class="line"><a name="l00025"></a><span class="lineno">   25</span>&#160;                r.set_radius_array(ctx, <a class="code" href="classcgv_1_1render_1_1cone__render__data.html#a2b60c841e2245803031a26f653a6be32">radii</a>);</div>
-<div class="line"><a name="l00026"></a><span class="lineno">   26</span>&#160;            <span class="keywordflow">return</span> <span class="keyword">true</span>;</div>
-<div class="line"><a name="l00027"></a><span class="lineno">   27</span>&#160;        }</div>
-<div class="line"><a name="l00028"></a><span class="lineno">   28</span>&#160;        <span class="keywordflow">return</span> <span class="keyword">false</span>;</div>
-<div class="line"><a name="l00029"></a><span class="lineno">   29</span>&#160;    }</div>
-<div class="line"><a name="l00030"></a><span class="lineno">   30</span>&#160; </div>
-<div class="line"><a name="l00031"></a><span class="lineno">   31</span>&#160;<span class="keyword">public</span>:</div>
-<div class="line"><a name="l00032"></a><span class="lineno">   32</span>&#160;    <span class="keywordtype">void</span> clear() {</div>
-<div class="line"><a name="l00033"></a><span class="lineno">   33</span>&#160;        <a class="code" href="classcgv_1_1render_1_1render__data__base.html#a35307902c25fdc6fa6964bf5d1721241">super::clear</a>();</div>
-<div class="line"><a name="l00034"></a><span class="lineno">   34</span>&#160;        <a class="code" href="classcgv_1_1render_1_1cone__render__data.html#a2b60c841e2245803031a26f653a6be32">radii</a>.clear();</div>
-<div class="line"><a name="l00035"></a><span class="lineno">   35</span>&#160;    }</div>
-<div class="line"><a name="l00036"></a><span class="lineno">   36</span>&#160; </div>
-<div class="line"><a name="l00037"></a><span class="lineno">   37</span>&#160;    <span class="keywordtype">void</span> add_radius(<span class="keyword">const</span> <span class="keywordtype">float</span> radius) {</div>
-<div class="line"><a name="l00038"></a><span class="lineno">   38</span>&#160;        <a class="code" href="classcgv_1_1render_1_1cone__render__data.html#a2b60c841e2245803031a26f653a6be32">radii</a>.push_back(radius);</div>
-<div class="line"><a name="l00039"></a><span class="lineno">   39</span>&#160;    }</div>
-<div class="line"><a name="l00040"></a><span class="lineno">   40</span>&#160; </div>
-<div class="line"><a name="l00041"></a><span class="lineno">   41</span>&#160;    <span class="keywordtype">void</span> add_segment_radius(<span class="keyword">const</span> <span class="keywordtype">float</span> radius) {</div>
+<div class="line"><a name="l00024"></a><span class="lineno">   24</span>&#160;            CGV_RDB_TRANSFER_ARRAY(radius, <a class="code" href="classcgv_1_1render_1_1cone__render__data.html#a2b60c841e2245803031a26f653a6be32">radii</a>);</div>
+<div class="line"><a name="l00025"></a><span class="lineno">   25</span>&#160;            <span class="keywordflow">return</span> <span class="keyword">true</span>;</div>
+<div class="line"><a name="l00026"></a><span class="lineno">   26</span>&#160;        }</div>
+<div class="line"><a name="l00027"></a><span class="lineno">   27</span>&#160;        <span class="keywordflow">return</span> <span class="keyword">false</span>;</div>
+<div class="line"><a name="l00028"></a><span class="lineno">   28</span>&#160;    }</div>
+<div class="line"><a name="l00029"></a><span class="lineno">   29</span>&#160; </div>
+<div class="line"><a name="l00030"></a><span class="lineno">   30</span>&#160;<span class="keyword">public</span>:</div>
+<div class="line"><a name="l00031"></a><span class="lineno">   31</span>&#160;    <span class="keywordtype">void</span> clear() {</div>
+<div class="line"><a name="l00032"></a><span class="lineno">   32</span>&#160;        <a class="code" href="classcgv_1_1render_1_1render__data__base.html#a35307902c25fdc6fa6964bf5d1721241">super::clear</a>();</div>
+<div class="line"><a name="l00033"></a><span class="lineno">   33</span>&#160;        <a class="code" href="classcgv_1_1render_1_1cone__render__data.html#a2b60c841e2245803031a26f653a6be32">radii</a>.clear();</div>
+<div class="line"><a name="l00034"></a><span class="lineno">   34</span>&#160;    }</div>
+<div class="line"><a name="l00035"></a><span class="lineno">   35</span>&#160; </div>
+<div class="line"><a name="l00036"></a><span class="lineno">   36</span>&#160;    <span class="keywordtype">void</span> add_radius(<span class="keyword">const</span> <span class="keywordtype">float</span> radius) {</div>
+<div class="line"><a name="l00037"></a><span class="lineno">   37</span>&#160;        <a class="code" href="classcgv_1_1render_1_1cone__render__data.html#a2b60c841e2245803031a26f653a6be32">radii</a>.push_back(radius);</div>
+<div class="line"><a name="l00038"></a><span class="lineno">   38</span>&#160;    }</div>
+<div class="line"><a name="l00039"></a><span class="lineno">   39</span>&#160; </div>
+<div class="line"><a name="l00040"></a><span class="lineno">   40</span>&#160;    <span class="keywordtype">void</span> add_segment_radius(<span class="keyword">const</span> <span class="keywordtype">float</span> radius) {</div>
+<div class="line"><a name="l00041"></a><span class="lineno">   41</span>&#160;        add_radius(radius);</div>
 <div class="line"><a name="l00042"></a><span class="lineno">   42</span>&#160;        add_radius(radius);</div>
-<div class="line"><a name="l00043"></a><span class="lineno">   43</span>&#160;        add_radius(radius);</div>
-<div class="line"><a name="l00044"></a><span class="lineno">   44</span>&#160;    }</div>
-<div class="line"><a name="l00045"></a><span class="lineno">   45</span>&#160; </div>
-<div class="line"><a name="l00046"></a><span class="lineno">   46</span>&#160;    <span class="keywordtype">void</span> add_segment_color(<span class="keyword">const</span> ColorType&amp; color) {</div>
+<div class="line"><a name="l00043"></a><span class="lineno">   43</span>&#160;    }</div>
+<div class="line"><a name="l00044"></a><span class="lineno">   44</span>&#160; </div>
+<div class="line"><a name="l00045"></a><span class="lineno">   45</span>&#160;    <span class="keywordtype">void</span> add_segment_color(<span class="keyword">const</span> ColorType&amp; color) {</div>
+<div class="line"><a name="l00046"></a><span class="lineno">   46</span>&#160;        super::add_color(color);</div>
 <div class="line"><a name="l00047"></a><span class="lineno">   47</span>&#160;        super::add_color(color);</div>
-<div class="line"><a name="l00048"></a><span class="lineno">   48</span>&#160;        super::add_color(color);</div>
-<div class="line"><a name="l00049"></a><span class="lineno">   49</span>&#160;    }</div>
-<div class="line"><a name="l00050"></a><span class="lineno">   50</span>&#160; </div>
-<div class="line"><a name="l00051"></a><span class="lineno">   51</span>&#160;    <span class="comment">// Explicitly use add from the base class since it is shadowed by the overloaded versions</span></div>
-<div class="line"><a name="l00052"></a><span class="lineno">   52</span>&#160;    <span class="keyword">using</span> super::add;</div>
-<div class="line"><a name="l00053"></a><span class="lineno">   53</span>&#160; </div>
-<div class="line"><a name="l00054"></a><span class="lineno">   54</span>&#160;    <span class="keywordtype">void</span> add(<span class="keyword">const</span> <a class="code" href="namespacecgv.html#a986c65184af5066fa26d468fd606c4fb">vec3</a>&amp; start_position, <span class="keyword">const</span> <a class="code" href="namespacecgv.html#a986c65184af5066fa26d468fd606c4fb">vec3</a>&amp; end_position) {</div>
-<div class="line"><a name="l00055"></a><span class="lineno">   55</span>&#160;        super::add_position(start_position);</div>
-<div class="line"><a name="l00056"></a><span class="lineno">   56</span>&#160;        super::add_position(end_position);</div>
-<div class="line"><a name="l00057"></a><span class="lineno">   57</span>&#160;    }</div>
-<div class="line"><a name="l00058"></a><span class="lineno">   58</span>&#160; </div>
-<div class="line"><a name="l00059"></a><span class="lineno">   59</span>&#160;    <span class="keywordtype">void</span> add(<span class="keyword">const</span> <a class="code" href="namespacecgv.html#a986c65184af5066fa26d468fd606c4fb">vec3</a>&amp; start_position, <span class="keyword">const</span> <a class="code" href="namespacecgv.html#a986c65184af5066fa26d468fd606c4fb">vec3</a>&amp; end_position, <span class="keyword">const</span> ColorType&amp; color) {</div>
-<div class="line"><a name="l00060"></a><span class="lineno">   60</span>&#160;        add(start_position, end_position);</div>
-<div class="line"><a name="l00061"></a><span class="lineno">   61</span>&#160;        add_segment_color(color);</div>
-<div class="line"><a name="l00062"></a><span class="lineno">   62</span>&#160;    }</div>
-<div class="line"><a name="l00063"></a><span class="lineno">   63</span>&#160; </div>
-<div class="line"><a name="l00064"></a><span class="lineno">   64</span>&#160;    <span class="keywordtype">void</span> add(<span class="keyword">const</span> <a class="code" href="namespacecgv.html#a986c65184af5066fa26d468fd606c4fb">vec3</a>&amp; start_position, <span class="keyword">const</span> <a class="code" href="namespacecgv.html#a986c65184af5066fa26d468fd606c4fb">vec3</a>&amp; end_position, <span class="keyword">const</span> <span class="keywordtype">float</span> radius) {</div>
-<div class="line"><a name="l00065"></a><span class="lineno">   65</span>&#160;        add(start_position, end_position);</div>
-<div class="line"><a name="l00066"></a><span class="lineno">   66</span>&#160;        add_segment_radius(radius);</div>
-<div class="line"><a name="l00067"></a><span class="lineno">   67</span>&#160;    }</div>
-<div class="line"><a name="l00068"></a><span class="lineno">   68</span>&#160; </div>
-<div class="line"><a name="l00069"></a><span class="lineno">   69</span>&#160;    <span class="keywordtype">void</span> add(<span class="keyword">const</span> <a class="code" href="namespacecgv.html#a986c65184af5066fa26d468fd606c4fb">vec3</a>&amp; start_position, <span class="keyword">const</span> <a class="code" href="namespacecgv.html#a986c65184af5066fa26d468fd606c4fb">vec3</a>&amp; end_position, <span class="keyword">const</span> ColorType&amp; color, <span class="keyword">const</span> <span class="keywordtype">float</span> radius) {</div>
-<div class="line"><a name="l00070"></a><span class="lineno">   70</span>&#160;        add(start_position, end_position);</div>
-<div class="line"><a name="l00071"></a><span class="lineno">   71</span>&#160;        add_segment_color(color);</div>
-<div class="line"><a name="l00072"></a><span class="lineno">   72</span>&#160;        add_segment_radius(radius);</div>
-<div class="line"><a name="l00073"></a><span class="lineno">   73</span>&#160;    }</div>
-<div class="line"><a name="l00074"></a><span class="lineno">   74</span>&#160; </div>
-<div class="line"><a name="l00075"></a><span class="lineno">   75</span>&#160;    <span class="keywordtype">void</span> add(<span class="keyword">const</span> <span class="keywordtype">float</span> start_radius, <span class="keyword">const</span> <span class="keywordtype">float</span> end_radius) {</div>
-<div class="line"><a name="l00076"></a><span class="lineno">   76</span>&#160;        add_radius(start_radius);</div>
-<div class="line"><a name="l00077"></a><span class="lineno">   77</span>&#160;        add_radius(end_radius);</div>
-<div class="line"><a name="l00078"></a><span class="lineno">   78</span>&#160;    }</div>
-<div class="line"><a name="l00079"></a><span class="lineno">   79</span>&#160; </div>
-<div class="line"><a name="l00080"></a><span class="lineno">   80</span>&#160;    <span class="keywordtype">void</span> add(<span class="keyword">const</span> ColorType&amp; start_color, <span class="keyword">const</span> ColorType&amp; end_color) {</div>
-<div class="line"><a name="l00081"></a><span class="lineno">   81</span>&#160;        super::add_color(start_color);</div>
-<div class="line"><a name="l00082"></a><span class="lineno">   82</span>&#160;        super::add_color(end_color);</div>
-<div class="line"><a name="l00083"></a><span class="lineno">   83</span>&#160;    }</div>
-<div class="line"><a name="l00084"></a><span class="lineno">   84</span>&#160; </div>
-<div class="line"><a name="l00085"></a><span class="lineno">   85</span>&#160;    <span class="keywordtype">void</span> fill_radii(<span class="keyword">const</span> <span class="keywordtype">float</span> radius) {</div>
-<div class="line"><a name="l00086"></a><span class="lineno">   86</span>&#160;        <a class="code" href="classcgv_1_1render_1_1render__data__base.html#af24e1bfc685ca921dfa7302d5af57afe">super::fill</a>(<a class="code" href="classcgv_1_1render_1_1cone__render__data.html#a2b60c841e2245803031a26f653a6be32">radii</a>, radius);</div>
-<div class="line"><a name="l00087"></a><span class="lineno">   87</span>&#160;    }</div>
-<div class="line"><a name="l00088"></a><span class="lineno">   88</span>&#160; </div>
-<div class="line"><a name="l00089"></a><span class="lineno">   89</span>&#160;    RDB_BASE_FUNC_DEF(cone_renderer, cone_render_style);</div>
-<div class="line"><a name="l00090"></a><span class="lineno">   90</span>&#160;};</div>
-<div class="line"><a name="l00091"></a><span class="lineno">   91</span>&#160; </div>
+<div class="line"><a name="l00048"></a><span class="lineno">   48</span>&#160;    }</div>
+<div class="line"><a name="l00049"></a><span class="lineno">   49</span>&#160; </div>
+<div class="line"><a name="l00050"></a><span class="lineno">   50</span>&#160;    <span class="comment">// Explicitly use add from the base class since it is shadowed by the overloaded versions</span></div>
+<div class="line"><a name="l00051"></a><span class="lineno">   51</span>&#160;    <span class="keyword">using</span> super::add;</div>
+<div class="line"><a name="l00052"></a><span class="lineno">   52</span>&#160; </div>
+<div class="line"><a name="l00053"></a><span class="lineno">   53</span>&#160;    <span class="keywordtype">void</span> add(<span class="keyword">const</span> <a class="code" href="namespacecgv.html#a986c65184af5066fa26d468fd606c4fb">vec3</a>&amp; start_position, <span class="keyword">const</span> <a class="code" href="namespacecgv.html#a986c65184af5066fa26d468fd606c4fb">vec3</a>&amp; end_position) {</div>
+<div class="line"><a name="l00054"></a><span class="lineno">   54</span>&#160;        super::add_position(start_position);</div>
+<div class="line"><a name="l00055"></a><span class="lineno">   55</span>&#160;        super::add_position(end_position);</div>
+<div class="line"><a name="l00056"></a><span class="lineno">   56</span>&#160;    }</div>
+<div class="line"><a name="l00057"></a><span class="lineno">   57</span>&#160; </div>
+<div class="line"><a name="l00058"></a><span class="lineno">   58</span>&#160;    <span class="keywordtype">void</span> add(<span class="keyword">const</span> <a class="code" href="namespacecgv.html#a986c65184af5066fa26d468fd606c4fb">vec3</a>&amp; start_position, <span class="keyword">const</span> <a class="code" href="namespacecgv.html#a986c65184af5066fa26d468fd606c4fb">vec3</a>&amp; end_position, <span class="keyword">const</span> ColorType&amp; color) {</div>
+<div class="line"><a name="l00059"></a><span class="lineno">   59</span>&#160;        add(start_position, end_position);</div>
+<div class="line"><a name="l00060"></a><span class="lineno">   60</span>&#160;        add_segment_color(color);</div>
+<div class="line"><a name="l00061"></a><span class="lineno">   61</span>&#160;    }</div>
+<div class="line"><a name="l00062"></a><span class="lineno">   62</span>&#160; </div>
+<div class="line"><a name="l00063"></a><span class="lineno">   63</span>&#160;    <span class="keywordtype">void</span> add(<span class="keyword">const</span> <a class="code" href="namespacecgv.html#a986c65184af5066fa26d468fd606c4fb">vec3</a>&amp; start_position, <span class="keyword">const</span> <a class="code" href="namespacecgv.html#a986c65184af5066fa26d468fd606c4fb">vec3</a>&amp; end_position, <span class="keyword">const</span> <span class="keywordtype">float</span> radius) {</div>
+<div class="line"><a name="l00064"></a><span class="lineno">   64</span>&#160;        add(start_position, end_position);</div>
+<div class="line"><a name="l00065"></a><span class="lineno">   65</span>&#160;        add_segment_radius(radius);</div>
+<div class="line"><a name="l00066"></a><span class="lineno">   66</span>&#160;    }</div>
+<div class="line"><a name="l00067"></a><span class="lineno">   67</span>&#160; </div>
+<div class="line"><a name="l00068"></a><span class="lineno">   68</span>&#160;    <span class="keywordtype">void</span> add(<span class="keyword">const</span> <a class="code" href="namespacecgv.html#a986c65184af5066fa26d468fd606c4fb">vec3</a>&amp; start_position, <span class="keyword">const</span> <a class="code" href="namespacecgv.html#a986c65184af5066fa26d468fd606c4fb">vec3</a>&amp; end_position, <span class="keyword">const</span> ColorType&amp; color, <span class="keyword">const</span> <span class="keywordtype">float</span> radius) {</div>
+<div class="line"><a name="l00069"></a><span class="lineno">   69</span>&#160;        add(start_position, end_position);</div>
+<div class="line"><a name="l00070"></a><span class="lineno">   70</span>&#160;        add_segment_color(color);</div>
+<div class="line"><a name="l00071"></a><span class="lineno">   71</span>&#160;        add_segment_radius(radius);</div>
+<div class="line"><a name="l00072"></a><span class="lineno">   72</span>&#160;    }</div>
+<div class="line"><a name="l00073"></a><span class="lineno">   73</span>&#160; </div>
+<div class="line"><a name="l00074"></a><span class="lineno">   74</span>&#160;    <span class="keywordtype">void</span> add(<span class="keyword">const</span> <span class="keywordtype">float</span> start_radius, <span class="keyword">const</span> <span class="keywordtype">float</span> end_radius) {</div>
+<div class="line"><a name="l00075"></a><span class="lineno">   75</span>&#160;        add_radius(start_radius);</div>
+<div class="line"><a name="l00076"></a><span class="lineno">   76</span>&#160;        add_radius(end_radius);</div>
+<div class="line"><a name="l00077"></a><span class="lineno">   77</span>&#160;    }</div>
+<div class="line"><a name="l00078"></a><span class="lineno">   78</span>&#160; </div>
+<div class="line"><a name="l00079"></a><span class="lineno">   79</span>&#160;    <span class="keywordtype">void</span> add(<span class="keyword">const</span> ColorType&amp; start_color, <span class="keyword">const</span> ColorType&amp; end_color) {</div>
+<div class="line"><a name="l00080"></a><span class="lineno">   80</span>&#160;        super::add_color(start_color);</div>
+<div class="line"><a name="l00081"></a><span class="lineno">   81</span>&#160;        super::add_color(end_color);</div>
+<div class="line"><a name="l00082"></a><span class="lineno">   82</span>&#160;    }</div>
+<div class="line"><a name="l00083"></a><span class="lineno">   83</span>&#160; </div>
+<div class="line"><a name="l00084"></a><span class="lineno">   84</span>&#160;    <span class="keywordtype">void</span> fill_radii(<span class="keyword">const</span> <span class="keywordtype">float</span> radius) {</div>
+<div class="line"><a name="l00085"></a><span class="lineno">   85</span>&#160;        <a class="code" href="classcgv_1_1render_1_1render__data__base.html#af24e1bfc685ca921dfa7302d5af57afe">super::fill</a>(<a class="code" href="classcgv_1_1render_1_1cone__render__data.html#a2b60c841e2245803031a26f653a6be32">radii</a>, radius);</div>
+<div class="line"><a name="l00086"></a><span class="lineno">   86</span>&#160;    }</div>
+<div class="line"><a name="l00087"></a><span class="lineno">   87</span>&#160; </div>
+<div class="line"><a name="l00088"></a><span class="lineno">   88</span>&#160;    CGV_RDB_BASE_FUNC_DEF(cone_renderer, cone_render_style);</div>
+<div class="line"><a name="l00089"></a><span class="lineno">   89</span>&#160;};</div>
+<div class="line"><a name="l00090"></a><span class="lineno">   90</span>&#160; </div>
+<div class="line"><a name="l00091"></a><span class="lineno">   91</span>&#160;}</div>
 <div class="line"><a name="l00092"></a><span class="lineno">   92</span>&#160;}</div>
-<div class="line"><a name="l00093"></a><span class="lineno">   93</span>&#160;}</div>
 <div class="ttc" id="aclasscgv_1_1render_1_1cone__render__data_html"><div class="ttname"><a href="classcgv_1_1render_1_1cone__render__data.html">cgv::render::cone_render_data</a></div><div class="ttdoc">Render data for cone geometry with support for the cone_renderer.</div><div class="ttdef"><b>Definition:</b> <a href="cone__render__data_8h_source.html#l00012">cone_render_data.h:12</a></div></div>
 <div class="ttc" id="aclasscgv_1_1render_1_1cone__render__data_html_a2b60c841e2245803031a26f653a6be32"><div class="ttname"><a href="classcgv_1_1render_1_1cone__render__data.html#a2b60c841e2245803031a26f653a6be32">cgv::render::cone_render_data::radii</a></div><div class="ttdeci">std::vector&lt; float &gt; radii</div><div class="ttdoc">stores an array of radii</div><div class="ttdef"><b>Definition:</b> <a href="cone__render__data_8h_source.html#l00018">cone_render_data.h:18</a></div></div>
 <div class="ttc" id="aclasscgv_1_1render_1_1cone__render__data_html_a7d77d4ee99fdfca6210a770f50e10807"><div class="ttname"><a href="classcgv_1_1render_1_1cone__render__data.html#a7d77d4ee99fdfca6210a770f50e10807">cgv::render::cone_render_data::transfer</a></div><div class="ttdeci">bool transfer(context &amp;ctx, cone_renderer &amp;r)</div><div class="ttdoc">See render_data_base::transfer.</div><div class="ttdef"><b>Definition:</b> <a href="cone__render__data_8h_source.html#l00022">cone_render_data.h:22</a></div></div>
 <div class="ttc" id="aclasscgv_1_1render_1_1cone__renderer_html"><div class="ttname"><a href="classcgv_1_1render_1_1cone__renderer.html">cgv::render::cone_renderer</a></div><div class="ttdoc">renderer that supports raycasting of cones</div><div class="ttdef"><b>Definition:</b> <a href="cone__renderer_8h_source.html#l00061">cone_renderer.h:62</a></div></div>
 <div class="ttc" id="aclasscgv_1_1render_1_1context_html"><div class="ttname"><a href="classcgv_1_1render_1_1context.html">cgv::render::context</a></div><div class="ttdoc">base class for all drawables, which is independent of the used rendering API.</div><div class="ttdef"><b>Definition:</b> <a href="context_8h_source.html#l00617">context.h:618</a></div></div>
-<div class="ttc" id="aclasscgv_1_1render_1_1render__data__base_html"><div class="ttname"><a href="classcgv_1_1render_1_1render__data__base.html">cgv::render::render_data_base</a></div><div class="ttdoc">A base class for storing render data and style usable with the default renderers provided in the cgv:...</div><div class="ttdef"><b>Definition:</b> <a href="render__data__base_8h_source.html#l00194">render_data_base.h:194</a></div></div>
-<div class="ttc" id="aclasscgv_1_1render_1_1render__data__base_html_a1cf12b5dac4a906bf13f37d2ebbc47f9"><div class="ttname"><a href="classcgv_1_1render_1_1render__data__base.html#a1cf12b5dac4a906bf13f37d2ebbc47f9">cgv::render::render_data_base::size</a></div><div class="ttdeci">size_t size()</div><div class="ttdoc">Return the number of stored positions.</div><div class="ttdef"><b>Definition:</b> <a href="render__data__base_8h_source.html#l00302">render_data_base.h:302</a></div></div>
-<div class="ttc" id="aclasscgv_1_1render_1_1render__data__base_html_a35307902c25fdc6fa6964bf5d1721241"><div class="ttname"><a href="classcgv_1_1render_1_1render__data__base.html#a35307902c25fdc6fa6964bf5d1721241">cgv::render::render_data_base::clear</a></div><div class="ttdeci">void clear()</div><div class="ttdoc">Clear the stored data and set state out of date.</div><div class="ttdef"><b>Definition:</b> <a href="render__data__base_8h_source.html#l00282">render_data_base.h:282</a></div></div>
-<div class="ttc" id="aclasscgv_1_1render_1_1render__data__base_html_a6eafc7f4d5989dfec84d7c7358ffd89d"><div class="ttname"><a href="classcgv_1_1render_1_1render__data__base.html#a6eafc7f4d5989dfec84d7c7358ffd89d">cgv::render::render_data_base::transfer</a></div><div class="ttdeci">virtual bool transfer(context &amp;ctx, renderer &amp;r)</div><div class="ttdoc">Transfers the data stored in members to the attribute array.</div><div class="ttdef"><b>Definition:</b> <a href="render__data__base_8h_source.html#l00215">render_data_base.h:215</a></div></div>
-<div class="ttc" id="aclasscgv_1_1render_1_1render__data__base_html_af24e1bfc685ca921dfa7302d5af57afe"><div class="ttname"><a href="classcgv_1_1render_1_1render__data__base.html#af24e1bfc685ca921dfa7302d5af57afe">cgv::render::render_data_base::fill</a></div><div class="ttdeci">void fill(std::vector&lt; T &gt; &amp;vector, const T &amp;value)</div><div class="ttdoc">Template for filling a member array to the size of the render data.</div><div class="ttdef"><b>Definition:</b> <a href="render__data__base_8h_source.html#l00263">render_data_base.h:263</a></div></div>
+<div class="ttc" id="aclasscgv_1_1render_1_1render__data__base_html"><div class="ttname"><a href="classcgv_1_1render_1_1render__data__base.html">cgv::render::render_data_base</a></div><div class="ttdoc">A base class for storing render data and style usable with the default renderers provided in the cgv:...</div><div class="ttdef"><b>Definition:</b> <a href="render__data__base_8h_source.html#l00201">render_data_base.h:201</a></div></div>
+<div class="ttc" id="aclasscgv_1_1render_1_1render__data__base_html_a35307902c25fdc6fa6964bf5d1721241"><div class="ttname"><a href="classcgv_1_1render_1_1render__data__base.html#a35307902c25fdc6fa6964bf5d1721241">cgv::render::render_data_base::clear</a></div><div class="ttdeci">void clear()</div><div class="ttdoc">Clear the stored data and set state out of date.</div><div class="ttdef"><b>Definition:</b> <a href="render__data__base_8h_source.html#l00294">render_data_base.h:294</a></div></div>
+<div class="ttc" id="aclasscgv_1_1render_1_1render__data__base_html_a6eafc7f4d5989dfec84d7c7358ffd89d"><div class="ttname"><a href="classcgv_1_1render_1_1render__data__base.html#a6eafc7f4d5989dfec84d7c7358ffd89d">cgv::render::render_data_base::transfer</a></div><div class="ttdeci">virtual bool transfer(context &amp;ctx, renderer &amp;r)</div><div class="ttdoc">Transfers the data stored in members to the attribute array.</div><div class="ttdef"><b>Definition:</b> <a href="render__data__base_8h_source.html#l00222">render_data_base.h:222</a></div></div>
+<div class="ttc" id="aclasscgv_1_1render_1_1render__data__base_html_af24e1bfc685ca921dfa7302d5af57afe"><div class="ttname"><a href="classcgv_1_1render_1_1render__data__base.html#af24e1bfc685ca921dfa7302d5af57afe">cgv::render::render_data_base::fill</a></div><div class="ttdeci">void fill(std::vector&lt; T &gt; &amp;vector, const T &amp;value)</div><div class="ttdoc">Template for filling a member array to the size of the render data.</div><div class="ttdef"><b>Definition:</b> <a href="render__data__base_8h_source.html#l00275">render_data_base.h:275</a></div></div>
 <div class="ttc" id="anamespacecgv_html"><div class="ttname"><a href="namespacecgv.html">cgv</a></div><div class="ttdoc">the cgv namespace</div><div class="ttdef"><b>Definition:</b> <a href="print_8h_source.html#l00011">print.h:11</a></div></div>
 <div class="ttc" id="anamespacecgv_html_a986c65184af5066fa26d468fd606c4fb"><div class="ttname"><a href="namespacecgv.html#a986c65184af5066fa26d468fd606c4fb">cgv::vec3</a></div><div class="ttdeci">cgv::math::fvec&lt; float, 3 &gt; vec3</div><div class="ttdoc">declare type of 3d single precision floating point vectors</div><div class="ttdef"><b>Definition:</b> <a href="fvec_8h_source.html#l00662">fvec.h:662</a></div></div>
 </div><!-- fragment --></div><!-- contents -->

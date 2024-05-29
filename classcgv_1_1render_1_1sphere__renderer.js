@@ -8,6 +8,7 @@ var classcgv_1_1render_1_1sphere__renderer =
     [ "draw", "classcgv_1_1render_1_1sphere__renderer.html#a204c1eea71cdaa4af9386ea87e092bb5", null ],
     [ "enable", "classcgv_1_1render_1_1sphere__renderer.html#a16999b4e345d954c099616f430e8020d", null ],
     [ "enable_attribute_array_manager", "classcgv_1_1render_1_1sphere__renderer.html#a2dd91474ce25839a3d4a6c7c272c99a3", null ],
+    [ "remove_radius_array", "classcgv_1_1render_1_1sphere__renderer.html#a25bd8262fdf3e213db2bc6f89c5895f2", null ],
     [ "set_group_radii", "classcgv_1_1render_1_1sphere__renderer.html#aeea227e32db74470a4e3e0bf0e0263e6", null ],
     [ "set_radius", "classcgv_1_1render_1_1sphere__renderer.html#a3f59070039c59f6686c25db6f7cb82b1", null ],
     [ "set_radius_array", "classcgv_1_1render_1_1sphere__renderer.html#a4c58133509a7f15d63654499e549be9e", null ],

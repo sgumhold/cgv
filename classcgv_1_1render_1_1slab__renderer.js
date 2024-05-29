@@ -24,7 +24,6 @@ var classcgv_1_1render_1_1slab__renderer =
     [ "has_extents", "classcgv_1_1render_1_1slab__renderer.html#a0b5da0f67e4dd358dab77bdfd5d03151", null ],
     [ "has_rotations", "classcgv_1_1render_1_1slab__renderer.html#adfd699d183ba5b4dde1e57ca136ccbb9", null ],
     [ "has_texture_indices", "classcgv_1_1render_1_1slab__renderer.html#a2e91552aa53503d5699d0b2fa06bd264", null ],
-    [ "has_thicknesses", "classcgv_1_1render_1_1slab__renderer.html#a38fd3c873341ac8e12a50ca0a4b9b67b", null ],
     [ "has_translations", "classcgv_1_1render_1_1slab__renderer.html#a78387e0d8b20178e9681930eddd6b9dd", null ],
     [ "position_is_center", "classcgv_1_1render_1_1slab__renderer.html#abb55d9eed717db9bc9439e23560ec282", null ]
 ];
