@@ -11,6 +11,7 @@ var classcgv_1_1render_1_1attribute__array__manager =
     [ "init", "classcgv_1_1render_1_1attribute__array__manager.html#ace2f5d8b6d00ebbf06b9c4190b422025", null ],
     [ "is_created", "classcgv_1_1render_1_1attribute__array__manager.html#ad47f8ae6d5df1147ff2147749b04dcfb", null ],
     [ "ref_composed_attribute_array", "classcgv_1_1render_1_1attribute__array__manager.html#a530ff3fa8caa789d37460e296b7dd26e", null ],
+    [ "remove_attribute_array", "classcgv_1_1render_1_1attribute__array__manager.html#a81372fc88d235771504cd4bf3dbf3905", null ],
     [ "remove_indices", "classcgv_1_1render_1_1attribute__array__manager.html#ae6b546a6187815724719834ac2d7e324", null ],
     [ "set_attribute_array", "classcgv_1_1render_1_1attribute__array__manager.html#a9a04040ebd1052e5524ef8d28578233f", null ],
     [ "set_attribute_array", "classcgv_1_1render_1_1attribute__array__manager.html#a1bcc4d6e18e7cd7da14465aa32267836", null ],

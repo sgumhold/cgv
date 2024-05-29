@@ -117,32 +117,41 @@ $(document).ready(function(){initNavTree('attribute__array__manager_8cxx_source.
 <div class="line"><a name="l00032"></a><span class="lineno">   32</span>&#160;        <a class="code" href="classcgv_1_1render_1_1attribute__array__manager.html#a0204e5b65d71cbc67d735148c9a8fa6f">vbos</a>[-1] = 0;</div>
 <div class="line"><a name="l00033"></a><span class="lineno">   33</span>&#160;    }</div>
 <div class="line"><a name="l00034"></a><span class="lineno">   34</span>&#160;}</div>
-<div class="line"><a name="l00035"></a><span class="lineno">   35</span>&#160;<span class="keywordtype">bool</span> attribute_array_manager::is_created() {</div>
-<div class="line"><a name="l00036"></a><span class="lineno">   36</span>&#160;    <span class="keywordflow">return</span> <a class="code" href="classcgv_1_1render_1_1attribute__array__manager.html#aada2b020a230d0392294576224148e27">aab</a>.<a class="code" href="classcgv_1_1render_1_1render__component.html#a4c896d2654616448824f5f2f759b8947">is_created</a>();</div>
-<div class="line"><a name="l00037"></a><span class="lineno">   37</span>&#160;}</div>
-<div class="line"><a name="l00038"></a><span class="lineno">   38</span>&#160;<span class="keywordtype">bool</span> attribute_array_manager::init(context&amp; ctx) {</div>
-<div class="line"><a name="l00039"></a><span class="lineno">   39</span>&#160;    <span class="keywordflow">return</span> <a class="code" href="classcgv_1_1render_1_1attribute__array__manager.html#aada2b020a230d0392294576224148e27">aab</a>.<a class="code" href="classcgv_1_1render_1_1attribute__array__binding.html#a180fc55e536437e5798b2cf355c017eb">create</a>(ctx);</div>
-<div class="line"><a name="l00040"></a><span class="lineno">   40</span>&#160;}</div>
-<div class="line"><a name="l00041"></a><span class="lineno">   41</span>&#160;<span class="keywordtype">bool</span> attribute_array_manager::enable(context&amp; ctx) {</div>
-<div class="line"><a name="l00042"></a><span class="lineno">   42</span>&#160;    <span class="keywordflow">return</span> <a class="code" href="classcgv_1_1render_1_1attribute__array__manager.html#aada2b020a230d0392294576224148e27">aab</a>.<a class="code" href="classcgv_1_1render_1_1attribute__array__binding.html#a1444cdefabef6ea00406b1b4db900b2c">enable</a>(ctx);</div>
+<div class="line"><a name="l00035"></a><span class="lineno">   35</span>&#160;<span class="keywordtype">void</span> attribute_array_manager::remove_attribute_array(<span class="keyword">const</span> context&amp; ctx, <span class="keywordtype">int</span> loc) {</div>
+<div class="line"><a name="l00036"></a><span class="lineno">   36</span>&#160;    vertex_buffer*&amp; vbo_ptr = <a class="code" href="classcgv_1_1render_1_1attribute__array__manager.html#a0204e5b65d71cbc67d735148c9a8fa6f">vbos</a>[loc];</div>
+<div class="line"><a name="l00037"></a><span class="lineno">   37</span>&#160;    <span class="keywordflow">if</span>(vbo_ptr) {</div>
+<div class="line"><a name="l00038"></a><span class="lineno">   38</span>&#160;        vbo_ptr-&gt;destruct(ctx);</div>
+<div class="line"><a name="l00039"></a><span class="lineno">   39</span>&#160;        <span class="keyword">delete</span> vbo_ptr;</div>
+<div class="line"><a name="l00040"></a><span class="lineno">   40</span>&#160;        <a class="code" href="classcgv_1_1render_1_1attribute__array__manager.html#a0204e5b65d71cbc67d735148c9a8fa6f">vbos</a>.erase(loc);</div>
+<div class="line"><a name="l00041"></a><span class="lineno">   41</span>&#160;        ctx.enable_attribute_array(&amp;<a class="code" href="classcgv_1_1render_1_1attribute__array__manager.html#aada2b020a230d0392294576224148e27">aab</a>, loc, <span class="keyword">false</span>);</div>
+<div class="line"><a name="l00042"></a><span class="lineno">   42</span>&#160;    }</div>
 <div class="line"><a name="l00043"></a><span class="lineno">   43</span>&#160;}</div>
-<div class="line"><a name="l00044"></a><span class="lineno">   44</span>&#160;<span class="keywordtype">bool</span> attribute_array_manager::disable(context&amp; ctx) {</div>
-<div class="line"><a name="l00045"></a><span class="lineno">   45</span>&#160;    <span class="keywordflow">return</span> <a class="code" href="classcgv_1_1render_1_1attribute__array__manager.html#aada2b020a230d0392294576224148e27">aab</a>.<a class="code" href="classcgv_1_1render_1_1attribute__array__binding.html#a2a0667d238f86218e29e7d8ee0a6c39a">disable</a>(ctx);</div>
+<div class="line"><a name="l00044"></a><span class="lineno">   44</span>&#160;<span class="keywordtype">bool</span> attribute_array_manager::is_created() {</div>
+<div class="line"><a name="l00045"></a><span class="lineno">   45</span>&#160;    <span class="keywordflow">return</span> <a class="code" href="classcgv_1_1render_1_1attribute__array__manager.html#aada2b020a230d0392294576224148e27">aab</a>.<a class="code" href="classcgv_1_1render_1_1render__component.html#a4c896d2654616448824f5f2f759b8947">is_created</a>();</div>
 <div class="line"><a name="l00046"></a><span class="lineno">   46</span>&#160;}</div>
-<div class="line"><a name="l00048"></a><span class="lineno">   48</span>&#160;<span class="keywordtype">void</span> attribute_array_manager::destruct(<span class="keyword">const</span> context&amp; ctx) {</div>
-<div class="line"><a name="l00049"></a><span class="lineno">   49</span>&#160;    <span class="keywordflow">for</span>(<span class="keyword">auto</span>&amp; p : <a class="code" href="classcgv_1_1render_1_1attribute__array__manager.html#a0204e5b65d71cbc67d735148c9a8fa6f">vbos</a>) {</div>
-<div class="line"><a name="l00050"></a><span class="lineno">   50</span>&#160;        <span class="keywordflow">if</span> (p.second) {</div>
-<div class="line"><a name="l00051"></a><span class="lineno">   51</span>&#160;            p.second-&gt;destruct(ctx);</div>
-<div class="line"><a name="l00052"></a><span class="lineno">   52</span>&#160;            <span class="keyword">delete</span> p.second;</div>
-<div class="line"><a name="l00053"></a><span class="lineno">   53</span>&#160;            p.second = 0;</div>
-<div class="line"><a name="l00054"></a><span class="lineno">   54</span>&#160;        }</div>
-<div class="line"><a name="l00055"></a><span class="lineno">   55</span>&#160;    }</div>
-<div class="line"><a name="l00056"></a><span class="lineno">   56</span>&#160;    <a class="code" href="classcgv_1_1render_1_1attribute__array__manager.html#a0204e5b65d71cbc67d735148c9a8fa6f">vbos</a>.clear();</div>
-<div class="line"><a name="l00057"></a><span class="lineno">   57</span>&#160;    <a class="code" href="classcgv_1_1render_1_1attribute__array__manager.html#aada2b020a230d0392294576224148e27">aab</a>.<a class="code" href="classcgv_1_1render_1_1attribute__array__binding.html#a1ef96378af593d78ee52e82aa45945c0">destruct</a>(ctx);</div>
-<div class="line"><a name="l00058"></a><span class="lineno">   58</span>&#160;}</div>
-<div class="line"><a name="l00059"></a><span class="lineno">   59</span>&#160; </div>
-<div class="line"><a name="l00060"></a><span class="lineno">   60</span>&#160;}</div>
-<div class="line"><a name="l00061"></a><span class="lineno">   61</span>&#160;}</div>
+<div class="line"><a name="l00047"></a><span class="lineno">   47</span>&#160;<span class="keywordtype">bool</span> attribute_array_manager::init(context&amp; ctx) {</div>
+<div class="line"><a name="l00048"></a><span class="lineno">   48</span>&#160;    <span class="keywordflow">return</span> <a class="code" href="classcgv_1_1render_1_1attribute__array__manager.html#aada2b020a230d0392294576224148e27">aab</a>.<a class="code" href="classcgv_1_1render_1_1attribute__array__binding.html#a180fc55e536437e5798b2cf355c017eb">create</a>(ctx);</div>
+<div class="line"><a name="l00049"></a><span class="lineno">   49</span>&#160;}</div>
+<div class="line"><a name="l00050"></a><span class="lineno">   50</span>&#160;<span class="keywordtype">bool</span> attribute_array_manager::enable(context&amp; ctx) {</div>
+<div class="line"><a name="l00051"></a><span class="lineno">   51</span>&#160;    <span class="keywordflow">return</span> <a class="code" href="classcgv_1_1render_1_1attribute__array__manager.html#aada2b020a230d0392294576224148e27">aab</a>.<a class="code" href="classcgv_1_1render_1_1attribute__array__binding.html#a1444cdefabef6ea00406b1b4db900b2c">enable</a>(ctx);</div>
+<div class="line"><a name="l00052"></a><span class="lineno">   52</span>&#160;}</div>
+<div class="line"><a name="l00053"></a><span class="lineno">   53</span>&#160;<span class="keywordtype">bool</span> attribute_array_manager::disable(context&amp; ctx) {</div>
+<div class="line"><a name="l00054"></a><span class="lineno">   54</span>&#160;    <span class="keywordflow">return</span> <a class="code" href="classcgv_1_1render_1_1attribute__array__manager.html#aada2b020a230d0392294576224148e27">aab</a>.<a class="code" href="classcgv_1_1render_1_1attribute__array__binding.html#a2a0667d238f86218e29e7d8ee0a6c39a">disable</a>(ctx);</div>
+<div class="line"><a name="l00055"></a><span class="lineno">   55</span>&#160;}</div>
+<div class="line"><a name="l00057"></a><span class="lineno">   57</span>&#160;<span class="keywordtype">void</span> attribute_array_manager::destruct(<span class="keyword">const</span> context&amp; ctx) {</div>
+<div class="line"><a name="l00058"></a><span class="lineno">   58</span>&#160;    <span class="keywordflow">for</span>(<span class="keyword">auto</span>&amp; p : <a class="code" href="classcgv_1_1render_1_1attribute__array__manager.html#a0204e5b65d71cbc67d735148c9a8fa6f">vbos</a>) {</div>
+<div class="line"><a name="l00059"></a><span class="lineno">   59</span>&#160;        <span class="keywordflow">if</span> (p.second) {</div>
+<div class="line"><a name="l00060"></a><span class="lineno">   60</span>&#160;            p.second-&gt;destruct(ctx);</div>
+<div class="line"><a name="l00061"></a><span class="lineno">   61</span>&#160;            <span class="keyword">delete</span> p.second;</div>
+<div class="line"><a name="l00062"></a><span class="lineno">   62</span>&#160;            p.second = 0;</div>
+<div class="line"><a name="l00063"></a><span class="lineno">   63</span>&#160;        }</div>
+<div class="line"><a name="l00064"></a><span class="lineno">   64</span>&#160;    }</div>
+<div class="line"><a name="l00065"></a><span class="lineno">   65</span>&#160;    <a class="code" href="classcgv_1_1render_1_1attribute__array__manager.html#a0204e5b65d71cbc67d735148c9a8fa6f">vbos</a>.clear();</div>
+<div class="line"><a name="l00066"></a><span class="lineno">   66</span>&#160;    <a class="code" href="classcgv_1_1render_1_1attribute__array__manager.html#aada2b020a230d0392294576224148e27">aab</a>.<a class="code" href="classcgv_1_1render_1_1attribute__array__binding.html#a1ef96378af593d78ee52e82aa45945c0">destruct</a>(ctx);</div>
+<div class="line"><a name="l00067"></a><span class="lineno">   67</span>&#160;}</div>
+<div class="line"><a name="l00068"></a><span class="lineno">   68</span>&#160; </div>
+<div class="line"><a name="l00069"></a><span class="lineno">   69</span>&#160;}</div>
+<div class="line"><a name="l00070"></a><span class="lineno">   70</span>&#160;}</div>
 <div class="ttc" id="aclasscgv_1_1render_1_1attribute__array__binding_html_a1444cdefabef6ea00406b1b4db900b2c"><div class="ttname"><a href="classcgv_1_1render_1_1attribute__array__binding.html#a1444cdefabef6ea00406b1b4db900b2c">cgv::render::attribute_array_binding::enable</a></div><div class="ttdeci">bool enable(context &amp;ctx)</div><div class="ttdoc">enable whole the attribute array binding object</div><div class="ttdef"><b>Definition:</b> <a href="attribute__array__binding_8cxx_source.html#l00101">attribute_array_binding.cxx:101</a></div></div>
 <div class="ttc" id="aclasscgv_1_1render_1_1attribute__array__binding_html_a180fc55e536437e5798b2cf355c017eb"><div class="ttname"><a href="classcgv_1_1render_1_1attribute__array__binding.html#a180fc55e536437e5798b2cf355c017eb">cgv::render::attribute_array_binding::create</a></div><div class="ttdeci">bool create(const context &amp;ctx)</div><div class="ttdoc">create the attribute array binding object</div><div class="ttdef"><b>Definition:</b> <a href="attribute__array__binding_8cxx_source.html#l00088">attribute_array_binding.cxx:88</a></div></div>
 <div class="ttc" id="aclasscgv_1_1render_1_1attribute__array__binding_html_a1ef96378af593d78ee52e82aa45945c0"><div class="ttname"><a href="classcgv_1_1render_1_1attribute__array__binding.html#a1ef96378af593d78ee52e82aa45945c0">cgv::render::attribute_array_binding::destruct</a></div><div class="ttdeci">void destruct(const context &amp;ctx)</div><div class="ttdoc">destruct attribute array binding object</div><div class="ttdef"><b>Definition:</b> <a href="attribute__array__binding_8cxx_source.html#l00094">attribute_array_binding.cxx:94</a></div></div>

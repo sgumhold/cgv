@@ -5,6 +5,7 @@ var classcgv_1_1render_1_1group__renderer =
     [ "disable_attribute_array_manager", "classcgv_1_1render_1_1group__renderer.html#af13979ad9da37d9e8393330ac94b320a", null ],
     [ "enable", "classcgv_1_1render_1_1group__renderer.html#af44ec3345ceb1fb2e09ce4181e4e26ac", null ],
     [ "enable_attribute_array_manager", "classcgv_1_1render_1_1group__renderer.html#a3cc2bfa02c2442c70a9cf254b239f47b", null ],
+    [ "remove_group_index_array", "classcgv_1_1render_1_1group__renderer.html#a45fd164f2e2e0aa28a6a54739ff676d6", null ],
     [ "set_group_colors", "classcgv_1_1render_1_1group__renderer.html#a792a522d7f726b34aeabd8a1addd0a40", null ],
     [ "set_group_colors", "classcgv_1_1render_1_1group__renderer.html#ac71ae30d9c52755580f7cc51a03e813a", null ],
     [ "set_group_index_array", "classcgv_1_1render_1_1group__renderer.html#a119e7917665a2392a0da0c67cca97192", null ],

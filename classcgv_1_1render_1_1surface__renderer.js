@@ -5,6 +5,8 @@ var classcgv_1_1render_1_1surface__renderer =
     [ "disable_attribute_array_manager", "classcgv_1_1render_1_1surface__renderer.html#a4b54bec7e7eee2da8f770f7562243bc3", null ],
     [ "enable", "classcgv_1_1render_1_1surface__renderer.html#a97cc97633428aac33c5d8856600adef9", null ],
     [ "enable_attribute_array_manager", "classcgv_1_1render_1_1surface__renderer.html#a70f2835e792aa01529445b06d3c5ec79", null ],
+    [ "remove_normal_array", "classcgv_1_1render_1_1surface__renderer.html#a663aa52e2ca1e7ba9b11278ab16968da", null ],
+    [ "remove_texcoord_array", "classcgv_1_1render_1_1surface__renderer.html#a88d5cbdccd15bb2456bb8bd95736c031", null ],
     [ "set_normal", "classcgv_1_1render_1_1surface__renderer.html#a6d8d6f5b6860f649ddfbb36abf809170", null ],
     [ "set_normal_array", "classcgv_1_1render_1_1surface__renderer.html#a235d8a6d6c44d73f8bc2879a21c10140", null ],
     [ "set_normal_array", "classcgv_1_1render_1_1surface__renderer.html#afab0228a4e7f5f88c4a8c1ea441f1463", null ],
