@@ -21,11 +21,10 @@ protected:
 	/// @brief See render_data_base::transfer.
 	bool transfer(context& ctx, arrow_renderer& r) {
 		if(super::transfer(ctx, r)) {
-			if(directions.size() == super::size()) {
-				if(direction_is_end_point)
-					r.set_end_point_array(ctx, directions);
-				else
-					r.set_direction_array(ctx, directions);
+			if(direction_is_end_point) {
+				CGV_RDB_TRANSFER_ARRAY(end_point, directions);
+			} else {
+				CGV_RDB_TRANSFER_ARRAY(direction, directions);
 			}
 			return true;
 		}
@@ -59,7 +58,7 @@ public:
 		super::fill(directions, direction);
 	}
 
-	RDB_BASE_FUNC_DEF(arrow_renderer, arrow_render_style);
+	CGV_RDB_BASE_FUNC_DEF(arrow_renderer, arrow_render_style);
 };
 
 }

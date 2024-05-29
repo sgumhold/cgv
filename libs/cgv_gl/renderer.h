@@ -144,6 +144,19 @@ namespace cgv { // @<
 				enabled_attribute_arrays.insert(loc);
 				return attribute_array_binding::set_global_attribute_array(ctx, loc, &elem, nr_elements, sizeof(C));
 			}
+			bool remove_attribute_array(const context& ctx, const std::string& name) {
+				// TODO: move to cpp
+				int loc = get_prog_attribute_location(ctx, name);
+				if(loc < 0)
+					return false;
+				
+				if(aam_ptr) {
+					aam_ptr->remove_attribute_array(ctx, loc);
+					return true;
+				}
+				enabled_attribute_arrays.erase(loc);
+				return true;
+			}
 		public:
 			/// default implementation of draw method with support for indexed rendering and different primitive types
 			void draw_impl(context& ctx, PrimitiveType pt, size_t start, size_t count, bool use_strips = false, bool use_adjacency = false, uint32_t strip_restart_index = -1);
@@ -185,6 +198,8 @@ namespace cgv { // @<
 			/// template method to set the position attribute from a vertex buffer object, the element type must be given as explicit template parameter
 			template <typename T>
 			void set_position_array(const context& ctx, const vertex_buffer& vbo, size_t offset_in_bytes, size_t nr_elements, unsigned stride_in_bytes = 0) { set_position_array(ctx, type_descriptor(element_descriptor_traits<T>::get_type_descriptor(T()), true), vbo, offset_in_bytes, nr_elements, stride_in_bytes); }
+			/// remove the position attribute
+			void remove_position_array(const context& ctx);
 			/// templated method to set the color attribute from a single color of type T
 			template <typename T>
 			void set_color(const context& ctx, const T& color) { has_colors = true; ref_prog().set_attribute(ctx, get_prog_attribute_location(ctx, "color"), color); }
@@ -199,6 +214,8 @@ namespace cgv { // @<
 			/// template method to set the color attribute from a vertex buffer object, the element type must be given as explicit template parameter
 			template <typename T>
 			void set_color_array(const context& ctx, const vertex_buffer& vbo, size_t offset_in_bytes, size_t nr_elements, unsigned stride_in_bytes = 0) { set_color_array(ctx, type_descriptor(element_descriptor_traits<T>::get_type_descriptor(T()), true), vbo, offset_in_bytes, nr_elements, stride_in_bytes); }
+			/// remove the color attribute
+			void remove_color_array(const context& ctx);
 			/// <summary>
 			/// Set the indices for indexed rendering from a vector. If an attribute array manager is
 			/// enabled and keep_on_cpu is false (default), create GPU index buffer and transfer indices 

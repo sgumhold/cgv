@@ -23,10 +23,8 @@ protected:
 	/// @brief See render_data_base::transfer.
 	bool transfer(context& ctx, line_renderer& r) {
 		if(super::transfer(ctx, r)) {
-			if(normals.size() == super::size())
-				r.set_normal_array(ctx, normals);
-			if(widths.size() == super::size())
-				r.set_line_width_array(ctx, widths);
+			CGV_RDB_TRANSFER_ARRAY(normal, normals);
+			CGV_RDB_TRANSFER_ARRAY(line_width, widths);
 			return true;
 		}
 		return false;
@@ -109,7 +107,7 @@ public:
 		super::fill(widths, width);
 	}
 
-	RDB_BASE_FUNC_DEF(line_renderer, line_render_style);
+	CGV_RDB_BASE_FUNC_DEF(line_renderer, line_render_style);
 };
 
 }

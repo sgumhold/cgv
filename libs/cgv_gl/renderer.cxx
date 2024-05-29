@@ -91,10 +91,18 @@ namespace cgv {
 			has_positions = true;
 			set_attribute_array(ctx, "position", element_type, vbo, offset_in_bytes, nr_elements, stride_in_bytes);
 		}
+		void renderer::remove_position_array(const context& ctx) {
+			has_positions = false;
+			remove_attribute_array(ctx, "position");
+		}
 		void renderer::set_color_array(const context& ctx, type_descriptor element_type, const vertex_buffer& vbo, size_t offset_in_bytes, size_t nr_elements, unsigned stride_in_bytes)
 		{
 			has_colors = true;
 			set_attribute_array(ctx, "color", element_type, vbo, offset_in_bytes, nr_elements, stride_in_bytes);
+		}
+		void renderer::remove_color_array(const context& ctx) {
+			has_colors = false;
+			remove_attribute_array(ctx, "color");
 		}
 		void renderer::remove_indices(const context& ctx)
 		{

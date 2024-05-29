@@ -21,8 +21,7 @@ protected:
 	/// @brief See render_data_base::transfer.
 	bool transfer(context& ctx, point_renderer& r) {
 		if(super::transfer(ctx, r)) {
-			if(diameters.size() == super::size())
-				r.set_point_size_array(ctx, diameters);
+			CGV_RDB_TRANSFER_ARRAY(point_size, diameters);
 			return true;
 		}
 		return false;
@@ -55,7 +54,7 @@ public:
 		super::fill(diameters, diameter);
 	}
 
-	RDB_BASE_FUNC_DEF(point_renderer, point_render_style);
+	CGV_RDB_BASE_FUNC_DEF(point_renderer, point_render_style);
 };
 
 }

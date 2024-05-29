@@ -25,12 +25,9 @@ protected:
 	/// @brief See render_data_base::transfer.
 	bool transfer(context& ctx, box_renderer& r) {
 		if(super::transfer(ctx, r)) {
-			if(extents.size() == super::size())
-				r.set_extent_array(ctx, extents);
-			if(translations.size() == super::size())
-				r.set_translation_array(ctx, translations);
-			if(rotations.size() == super::size())
-				r.set_rotation_array(ctx, rotations);
+			CGV_RDB_TRANSFER_ARRAY(extent, extents);
+			CGV_RDB_TRANSFER_ARRAY(translation, translations);
+			CGV_RDB_TRANSFER_ARRAY(rotation, rotations);
 			return true;
 		}
 		return false;
@@ -92,7 +89,7 @@ public:
 		super::fill(rotations, rotation);
 	}
 
-	RDB_BASE_FUNC_DEF(box_renderer, box_render_style);
+	CGV_RDB_BASE_FUNC_DEF(box_renderer, box_render_style);
 };
 
 }
