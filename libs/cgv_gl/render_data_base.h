@@ -316,7 +316,7 @@ public:
 	/// @param offset The vertex offset.
 	/// @param count The vertex count.
 	void render(context& ctx, const RenderStyleType& s, unsigned offset = 0, int count = -1) {
-		render(ctx, ref_renderer_singleton, s, offset, count);
+		render(ctx, ref_renderer_singleton(ctx), s, offset, count);
 	}
 
 	/// @brief Render the stored geometry using the given renderer.
