@@ -260,7 +260,7 @@ $(document).ready(function(){initNavTree('functions_r.html',''); initResizable()
 : <a class="el" href="classcgv_1_1data_1_1ref__arr.html#ad3cd363ef2c50cbe3809d23c621143af">cgv::data::ref_arr&lt; T &gt;</a>
 </li>
 <li>ref_attribute_array_manager()
-: <a class="el" href="classcgv_1_1render_1_1render__data__base.html#a83c0d12a34cc446f6595bc1ed396005a">cgv::render::render_data_base&lt; ColorType &gt;</a>
+: <a class="el" href="classcgv_1_1render_1_1render__data__base.html#a0f3d69357b5cf0b6d45c23d8a17ad0f1">cgv::render::render_data_base&lt; RendererType, RenderStyleType, ColorType &gt;</a>
 </li>
 <li>ref_b_entry()
 : <a class="el" href="classcgv_1_1math_1_1sparse__les.html#a760674e8ce74d59d46edbc7da59cdb73">cgv::math::sparse_les</a>
@@ -345,7 +345,7 @@ $(document).ready(function(){initNavTree('functions_r.html',''); initResizable()
 : <a class="el" href="classcgv_1_1render_1_1renderer.html#a4a2d7ec910f589aaaf436f1df09c1ab9">cgv::render::renderer</a>
 </li>
 <li>ref_ptr()
-: <a class="el" href="classcgv_1_1data_1_1ref__ptr.html#a56312846c6d826b7beb58b9596bbfe0c">cgv::data::ref_ptr&lt; T, is_ref_counted &gt;</a>
+: <a class="el" href="classcgv_1_1data_1_1ref__ptr.html#a74642a7814732595210f99315cdcea6f">cgv::data::ref_ptr&lt; T, is_ref_counted &gt;</a>
 </li>
 <li>ref_ptr_impl()
 : <a class="el" href="classcgv_1_1data_1_1ref__ptr__impl.html#a4323035ad2266fab26b017fb166dad4c">cgv::data::ref_ptr_impl&lt; T, is_ref_counted &gt;</a>
@@ -353,6 +353,9 @@ $(document).ready(function(){initNavTree('functions_r.html',''); initResizable()
 </li>
 <li>ref_quaternion()
 : <a class="el" href="classcgv_1_1math_1_1rigid__transform.html#a4c7827cac839348b0ad48b984b8be25e">cgv::math::rigid_transform&lt; T &gt;</a>
+</li>
+<li>ref_renderer_singleton()
+: <a class="el" href="classcgv_1_1render_1_1render__data__base.html#a4e6117096675cfee2084433ab5317523">cgv::render::render_data_base&lt; RendererType, RenderStyleType, ColorType &gt;</a>
 </li>
 <li>ref_size
 : <a class="el" href="structcgv_1_1plot_1_1plot__base__config.html#a9e9fa6f5b0278adc4943d4c3abc63e4b">cgv::plot::plot_base_config</a>
@@ -675,7 +678,8 @@ $(document).ready(function(){initNavTree('functions_r.html',''); initResizable()
 : <a class="el" href="classcgv_1_1math_1_1fvec.html#ab2de7d24f958c8f77470e906f7eef73d">cgv::math::fvec&lt; T, N &gt;</a>
 </li>
 <li>render()
-: <a class="el" href="classcgv_1_1render_1_1renderer.html#ae7ad80376b8aad17791972a347afa839">cgv::render::renderer</a>
+: <a class="el" href="classcgv_1_1render_1_1render__data__base.html#a4500ed76ce2b724f7670730f9a353ab8">cgv::render::render_data_base&lt; RendererType, RenderStyleType, ColorType &gt;</a>
+, <a class="el" href="classcgv_1_1render_1_1renderer.html#ae7ad80376b8aad17791972a347afa839">cgv::render::renderer</a>
 </li>
 <li>render_buffer()
 : <a class="el" href="classcgv_1_1render_1_1render__buffer.html#a36c6cf8e12ab3605a838d94ebe2961bb">cgv::render::render_buffer</a>
@@ -693,7 +697,7 @@ $(document).ready(function(){initNavTree('functions_r.html',''); initResizable()
 : <a class="el" href="structcgv_1_1render_1_1render__config.html#a379e8d4af63dfba5eb311ed39dd905ef">cgv::render::render_config</a>
 </li>
 <li>render_count()
-: <a class="el" href="classcgv_1_1render_1_1render__data__base.html#a589922c37ca60dc09bee24b3d8202c1e">cgv::render::render_data_base&lt; ColorType &gt;</a>
+: <a class="el" href="classcgv_1_1render_1_1render__data__base.html#a3c447cf24ee5f6519b7d63b335ebbaa0">cgv::render::render_data_base&lt; RendererType, RenderStyleType, ColorType &gt;</a>
 </li>
 <li>render_info()
 : <a class="el" href="classcgv_1_1render_1_1render__info.html#a992b855ac6170941755a6a87bfe729b4">cgv::render::render_info</a>
@@ -840,8 +844,7 @@ $(document).ready(function(){initNavTree('functions_r.html',''); initResizable()
 : <a class="el" href="classcgv_1_1render_1_1gl_1_1gl__context.html#abb1064ca3d862dcb7bd6cf376e2472ab">cgv::render::gl::gl_context</a>
 </li>
 <li>rotations
-: <a class="el" href="classcgv_1_1render_1_1box__render__data.html#a74cc3edcdf9afcfc4c2afd6291a22915">cgv::render::box_render_data&lt; ColorType &gt;</a>
-, <a class="el" href="classcgv_1_1render_1_1box__wire__render__data.html#a3f707cc4051ff3bc4ef51657f881cf05">cgv::render::box_wire_render_data&lt; ColorType &gt;</a>
+: <a class="el" href="classcgv_1_1render_1_1box__render__data__base.html#a69801a6dc377ebbd6869703b65fd6894">cgv::render::box_render_data_base&lt; RendererType, RenderStyleType, ColorType &gt;</a>
 , <a class="el" href="classcgv_1_1render_1_1rectangle__render__data.html#abbf20564e2538476c62a3388c040d247">cgv::render::rectangle_render_data&lt; ColorType &gt;</a>
 </li>
 <li>roughness

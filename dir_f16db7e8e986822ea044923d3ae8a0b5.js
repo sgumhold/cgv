@@ -9,6 +9,7 @@ var dir_f16db7e8e986822ea044923d3ae8a0b5 =
     [ "attribute_array_manager.cxx", "attribute__array__manager_8cxx_source.html", null ],
     [ "attribute_array_manager.h", "attribute__array__manager_8h_source.html", null ],
     [ "box_render_data.h", "box__render__data_8h_source.html", null ],
+    [ "box_render_data_base.h", "box__render__data__base_8h_source.html", null ],
     [ "box_renderer.cxx", "box__renderer_8cxx_source.html", null ],
     [ "box_renderer.h", "box__renderer_8h_source.html", null ],
     [ "box_wire_render_data.h", "box__wire__render__data_8h_source.html", null ],

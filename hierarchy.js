@@ -762,7 +762,14 @@ var hierarchy =
         [ "cgv::render::vertex_buffer", "classcgv_1_1render_1_1vertex__buffer.html", null ]
       ] ]
     ] ],
-    [ "cgv::render::render_data_base< ColorType >", "classcgv_1_1render_1_1render__data__base.html", null ],
+    [ "cgv::render::render_data_base< RendererType, RenderStyleType, ColorType >", "classcgv_1_1render_1_1render__data__base.html", [
+      [ "cgv::render::box_render_data_base< box_renderer, box_render_style, rgb >", "classcgv_1_1render_1_1box__render__data__base.html", [
+        [ "cgv::render::box_render_data< ColorType >", "classcgv_1_1render_1_1box__render__data.html", null ]
+      ] ],
+      [ "cgv::render::box_render_data_base< box_wire_renderer, box_wire_render_style, rgb >", "classcgv_1_1render_1_1box__render__data__base.html", [
+        [ "cgv::render::box_wire_render_data< ColorType >", "classcgv_1_1render_1_1box__wire__render__data.html", null ]
+      ] ]
+    ] ],
     [ "cgv::render::render_info", "classcgv_1_1render_1_1render__info.html", [
       [ "cgv::render::mesh_render_info", "classcgv_1_1render_1_1mesh__render__info.html", null ]
     ] ],
@@ -1138,15 +1145,28 @@ var hierarchy =
     ] ],
     [ "register_driver_and_object", "structregister__driver__and__object.html", null ],
     [ "render_config_registration", "structrender__config__registration.html", null ],
-    [ "cgv::render::render_data_base< rgb >", "classcgv_1_1render_1_1render__data__base.html", [
-      [ "cgv::render::arrow_render_data< ColorType >", "classcgv_1_1render_1_1arrow__render__data.html", null ],
-      [ "cgv::render::box_render_data< ColorType >", "classcgv_1_1render_1_1box__render__data.html", null ],
-      [ "cgv::render::box_wire_render_data< ColorType >", "classcgv_1_1render_1_1box__wire__render__data.html", null ],
-      [ "cgv::render::cone_render_data< ColorType >", "classcgv_1_1render_1_1cone__render__data.html", null ],
-      [ "cgv::render::line_render_data< ColorType >", "classcgv_1_1render_1_1line__render__data.html", null ],
-      [ "cgv::render::point_render_data< ColorType >", "classcgv_1_1render_1_1point__render__data.html", null ],
-      [ "cgv::render::rectangle_render_data< ColorType >", "classcgv_1_1render_1_1rectangle__render__data.html", null ],
-      [ "cgv::render::sphere_render_data< ColorType >", "classcgv_1_1render_1_1sphere__render__data.html", null ],
+    [ "cgv::render::render_data_base< arrow_renderer, arrow_render_style, rgb >", "classcgv_1_1render_1_1render__data__base.html", [
+      [ "cgv::render::arrow_render_data< ColorType >", "classcgv_1_1render_1_1arrow__render__data.html", null ]
+    ] ],
+    [ "cgv::render::render_data_base< cone_renderer, cone_render_style, rgb >", "classcgv_1_1render_1_1render__data__base.html", [
+      [ "cgv::render::cone_render_data< ColorType >", "classcgv_1_1render_1_1cone__render__data.html", null ]
+    ] ],
+    [ "cgv::render::render_data_base< line_renderer, line_render_style, rgb >", "classcgv_1_1render_1_1render__data__base.html", [
+      [ "cgv::render::line_render_data< ColorType >", "classcgv_1_1render_1_1line__render__data.html", null ]
+    ] ],
+    [ "cgv::render::render_data_base< point_renderer, point_render_style, rgb >", "classcgv_1_1render_1_1render__data__base.html", [
+      [ "cgv::render::point_render_data< ColorType >", "classcgv_1_1render_1_1point__render__data.html", null ]
+    ] ],
+    [ "cgv::render::render_data_base< rectangle_renderer, rectangle_render_style, rgb >", "classcgv_1_1render_1_1render__data__base.html", [
+      [ "cgv::render::rectangle_render_data< ColorType >", "classcgv_1_1render_1_1rectangle__render__data.html", null ]
+    ] ],
+    [ "cgv::render::render_data_base< RendererType, RenderStyleType, rgb >", "classcgv_1_1render_1_1render__data__base.html", [
+      [ "cgv::render::box_render_data_base< RendererType, RenderStyleType, ColorType >", "classcgv_1_1render_1_1box__render__data__base.html", null ]
+    ] ],
+    [ "cgv::render::render_data_base< sphere_renderer, sphere_render_style, rgb >", "classcgv_1_1render_1_1render__data__base.html", [
+      [ "cgv::render::sphere_render_data< ColorType >", "classcgv_1_1render_1_1sphere__render__data.html", null ]
+    ] ],
+    [ "cgv::render::render_data_base< surfel_renderer, surfel_render_style, rgb >", "classcgv_1_1render_1_1render__data__base.html", [
       [ "cgv::render::surfel_render_data< ColorType >", "classcgv_1_1render_1_1surfel__render__data.html", null ]
     ] ],
     [ "cgv::media::rgb_color_interface< color< T, HLS, am > >", "structcgv_1_1media_1_1rgb__color__interface.html", [
