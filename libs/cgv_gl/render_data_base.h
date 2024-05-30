@@ -268,9 +268,9 @@ public:
 	/// @param ctx The GL context.
 	/// @param r The used renderer class instance.
 	/// @return True if disabling was successful.
-	bool disable(context& ctx, renderer& r) {
+	bool disable(context& ctx, RendererType& r) {
 		bool res = r.disable(ctx);
-		r.disable_attribute_array_manager(ctx, attribute_array);
+		r.disable_attribute_array_manager(ctx, this->attribute_array);
 		return res;
 	}
 
