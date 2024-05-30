@@ -97,7 +97,6 @@ namespace cgv { // @<
 
 			template <typename T>
 			bool set_attribute_array(const context& ctx, const std::string& name, const T& array) {
-			//bool set_attribute_array(const context& ctx, int loc, const T& array) {
 				int loc = get_prog_attribute_location(ctx, name);
 				if(loc < 0)
 					return false;
@@ -108,7 +107,6 @@ namespace cgv { // @<
 			}
 			template <typename T>
 			bool set_attribute_array(const context& ctx, const std::string& name, const T* array_ptr, size_t nr_elements, unsigned stride) {
-			//bool set_attribute_array(const context& ctx, int loc, const T* array_ptr, size_t nr_elements, unsigned stride) {
 				int loc = get_prog_attribute_location(ctx, name);
 				if(loc < 0)
 					return false;
@@ -122,7 +120,6 @@ namespace cgv { // @<
 			/// in case that several attributes are stored interleaved, call this function for the first and ref_composed_attribute_array() for all others
 			template <typename C, typename T>
 			bool set_composed_attribute_array(const context& ctx, const std::string& name, const C* array_ptr, size_t nr_elements, const T& elem) {
-			//bool set_composed_attribute_array(const context& ctx, int loc, const C* array_ptr, size_t nr_elements, const T& elem) {
 				int loc = get_prog_attribute_location(ctx, name);
 				if(loc < 0)
 					return false;
@@ -134,7 +131,6 @@ namespace cgv { // @<
 			/// in case that several attributes are stored interleaved, call set_composed_attribute_array() for the first and this function for all others
 			template <typename C, typename T>
 			bool ref_composed_attribute_array(const context& ctx, const std::string& name, const std::string& name_ref, const C* array_ptr, size_t nr_elements, const T& elem) {
-			//bool ref_composed_attribute_array(const context& ctx, int loc, int loc_ref, const C* array_ptr, size_t nr_elements, const T& elem) {
 				int loc = get_prog_attribute_location(ctx, name);
 				int loc_ref = get_prog_attribute_location(ctx, name_ref);
 				if(loc < 0 || loc_ref < 0)
@@ -144,19 +140,7 @@ namespace cgv { // @<
 				enabled_attribute_arrays.insert(loc);
 				return attribute_array_binding::set_global_attribute_array(ctx, loc, &elem, nr_elements, sizeof(C));
 			}
-			bool remove_attribute_array(const context& ctx, const std::string& name) {
-				// TODO: move to cpp
-				int loc = get_prog_attribute_location(ctx, name);
-				if(loc < 0)
-					return false;
-				
-				if(aam_ptr) {
-					aam_ptr->remove_attribute_array(ctx, loc);
-					return true;
-				}
-				enabled_attribute_arrays.erase(loc);
-				return true;
-			}
+			bool remove_attribute_array(const context& ctx, const std::string& name);
 		public:
 			/// default implementation of draw method with support for indexed rendering and different primitive types
 			void draw_impl(context& ctx, PrimitiveType pt, size_t start, size_t count, bool use_strips = false, bool use_adjacency = false, uint32_t strip_restart_index = -1);
