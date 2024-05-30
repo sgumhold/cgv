@@ -6,7 +6,7 @@ var classcgv_1_1render_1_1render__data__base =
     [ "add_position", "classcgv_1_1render_1_1render__data__base.html#a94c9ebd7dd991c2d5f554d6abca6cd30", null ],
     [ "clear", "classcgv_1_1render_1_1render__data__base.html#a9f67ac6dbac64801bb183741aebbe46c", null ],
     [ "destruct", "classcgv_1_1render_1_1render__data__base.html#a9632809092e9b7552c786e00e3d36f1d", null ],
-    [ "disable", "classcgv_1_1render_1_1render__data__base.html#a2716bf12e42bfc23141c613ed03d0c69", null ],
+    [ "disable", "classcgv_1_1render_1_1render__data__base.html#a17b7f14e1b605d1e931cc988d910e49a", null ],
     [ "draw", "classcgv_1_1render_1_1render__data__base.html#ab37ed823437b56400a0514171a97d76b", null ],
     [ "early_transfer", "classcgv_1_1render_1_1render__data__base.html#a27957a2a1459367db004ddcb5d078f43", null ],
     [ "empty", "classcgv_1_1render_1_1render__data__base.html#aa6b3b7888999532e7fed09df2646d717", null ],
