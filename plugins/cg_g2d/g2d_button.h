@@ -23,7 +23,7 @@ public:
 	/// destruct g2d button
 	~g2d_button() {}
 	/// return "g2d_button"
-	std::string get_type_name() const { return "g2d_button"; }
+	std::string get_type_name() const override { return "g2d_button"; }
 	/// handle mouse events
 	bool handle_mouse_event(cgv::gui::mouse_event& e, cgv::ivec2 mouse_position) override;
 	/// draw the button with its label
