@@ -6,5 +6,6 @@ var structcgv_1_1render_1_1clod__point__render__style =
     [ "min_millimeters", "structcgv_1_1render_1_1clod__point__render__style.html#a165a77a2aa2fa7cd34a593140b1246c1", null ],
     [ "pointSize", "structcgv_1_1render_1_1clod__point__render__style.html#a2f6eb75f5b99d2b7e8fad8993735730d", null ],
     [ "scale", "structcgv_1_1render_1_1clod__point__render__style.html#af17d73d14dccd0003e1472ae557d8803", null ],
-    [ "spacing", "structcgv_1_1render_1_1clod__point__render__style.html#ad1f2c69eb543d524d081109fe0847aa1", null ]
+    [ "spacing", "structcgv_1_1render_1_1clod__point__render__style.html#ad1f2c69eb543d524d081109fe0847aa1", null ],
+    [ "use_clod", "structcgv_1_1render_1_1clod__point__render__style.html#aefefaa4969b531c80801cd1cd398c962", null ]
 ];

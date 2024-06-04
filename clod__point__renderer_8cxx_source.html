@@ -339,342 +339,346 @@ $(document).ready(function(){initNavTree('clod__point__renderer_8cxx_source.html
 <div class="line"><a name="l00254"></a><span class="lineno">  254</span>&#160;            reduce_prog.<a class="code" href="classcgv_1_1render_1_1shader__program.html#a1edb6aa2749c16c3743bf86d7557b22a">set_uniform</a>(ctx, uniforms.pivot, pivot_point_in_view_space);</div>
 <div class="line"><a name="l00255"></a><span class="lineno">  255</span>&#160;            reduce_prog.<a class="code" href="classcgv_1_1render_1_1shader__program.html#a1edb6aa2749c16c3743bf86d7557b22a">set_uniform</a>(ctx, uniforms.screenSize, screenSize);</div>
 <div class="line"><a name="l00256"></a><span class="lineno">  256</span>&#160; </div>
-<div class="line"><a name="l00257"></a><span class="lineno">  257</span>&#160; </div>
-<div class="line"><a name="l00258"></a><span class="lineno">  258</span>&#160;            <span class="comment">//extract frustum</span></div>
-<div class="line"><a name="l00259"></a><span class="lineno">  259</span>&#160;            <a class="code" href="namespacecgv.html#a6c3091f6c4a7b32a0dec501e8c056734">dmat4</a> transform = ctx.get_projection_matrix();</div>
-<div class="line"><a name="l00260"></a><span class="lineno">  260</span>&#160;            <a class="code" href="namespacecgv.html#a0add29f049bd6be760ed993da79a5872">vec4</a> p4 = transform.row(3);</div>
-<div class="line"><a name="l00261"></a><span class="lineno">  261</span>&#160;                        </div>
-<div class="line"><a name="l00262"></a><span class="lineno">  262</span>&#160;            <a class="code" href="namespacecgv.html#a0add29f049bd6be760ed993da79a5872">vec4</a> hpa = p4 - transform.row(1);</div>
-<div class="line"><a name="l00263"></a><span class="lineno">  263</span>&#160;            <a class="code" href="namespacecgv.html#a0add29f049bd6be760ed993da79a5872">vec4</a> hpb = p4 + transform.row(1);</div>
-<div class="line"><a name="l00264"></a><span class="lineno">  264</span>&#160; </div>
-<div class="line"><a name="l00265"></a><span class="lineno">  265</span>&#160;            <a class="code" href="namespacecgv.html#a986c65184af5066fa26d468fd606c4fb">vec3</a> pa = <a class="code" href="namespacecgv.html#a986c65184af5066fa26d468fd606c4fb">vec3</a>(hpa.x(), hpa.y(), hpa.z());</div>
-<div class="line"><a name="l00266"></a><span class="lineno">  266</span>&#160;            <a class="code" href="namespacecgv.html#a986c65184af5066fa26d468fd606c4fb">vec3</a> pb = <a class="code" href="namespacecgv.html#a986c65184af5066fa26d468fd606c4fb">vec3</a>(hpb.x(), hpb.y(), hpb.z());</div>
-<div class="line"><a name="l00267"></a><span class="lineno">  267</span>&#160; </div>
-<div class="line"><a name="l00268"></a><span class="lineno">  268</span>&#160;            <span class="keywordtype">double</span> y_view_angle = PI - acos(dot(pa, pb) / (pa.length() * pb.length()));</div>
-<div class="line"><a name="l00269"></a><span class="lineno">  269</span>&#160;            <span class="keywordtype">float</span> pixel_extent_per_depth = (float)(2.0 * tan(0.5 * y_view_angle) / ctx.get_height());</div>
-<div class="line"><a name="l00270"></a><span class="lineno">  270</span>&#160; </div>
-<div class="line"><a name="l00271"></a><span class="lineno">  271</span>&#160;            <span class="comment">//general point renderer uniforms</span></div>
-<div class="line"><a name="l00272"></a><span class="lineno">  272</span>&#160;            draw_prog_ptr-&gt;<a class="code" href="classcgv_1_1render_1_1shader__program.html#a1edb6aa2749c16c3743bf86d7557b22a">set_uniform</a>(ctx, <span class="stringliteral">&quot;use_color_index&quot;</span>, <span class="keyword">false</span>);</div>
-<div class="line"><a name="l00273"></a><span class="lineno">  273</span>&#160;            draw_prog_ptr-&gt;<a class="code" href="classcgv_1_1render_1_1shader__program.html#a1edb6aa2749c16c3743bf86d7557b22a">set_uniform</a>(ctx, <span class="stringliteral">&quot;pixel_extent_per_depth&quot;</span>, pixel_extent_per_depth);</div>
-<div class="line"><a name="l00274"></a><span class="lineno">  274</span>&#160; </div>
-<div class="line"><a name="l00275"></a><span class="lineno">  275</span>&#160;            <span class="keywordflow">return</span> <span class="keyword">true</span>;</div>
-<div class="line"><a name="l00276"></a><span class="lineno">  276</span>&#160;        }</div>
-<div class="line"><a name="l00277"></a><span class="lineno">  277</span>&#160; </div>
-<div class="line"><a name="l00278"></a><span class="lineno"><a class="line" href="classcgv_1_1render_1_1clod__point__renderer.html#a395aceb0771cb59738863a88a146af55">  278</a></span>&#160;        <span class="keywordtype">bool</span> <a class="code" href="classcgv_1_1render_1_1clod__point__renderer.html#a395aceb0771cb59738863a88a146af55">clod_point_renderer::enable</a>(<a class="code" href="classcgv_1_1render_1_1context.html">context</a>&amp; ctx)</div>
-<div class="line"><a name="l00279"></a><span class="lineno">  279</span>&#160;        {</div>
-<div class="line"><a name="l00280"></a><span class="lineno">  280</span>&#160;            <a class="code" href="classcgv_1_1math_1_1fmat.html">mat4</a> reduce_model_view = ctx.<a class="code" href="classcgv_1_1render_1_1context.html#adf6b241cf3e57c435ef50cbb21427194">get_modelview_matrix</a>();</div>
-<div class="line"><a name="l00281"></a><span class="lineno">  281</span>&#160;            <span class="keywordflow">return</span> <a class="code" href="classcgv_1_1render_1_1clod__point__renderer.html#a395aceb0771cb59738863a88a146af55">enable</a>(ctx, reduce_model_view);</div>
-<div class="line"><a name="l00282"></a><span class="lineno">  282</span>&#160;        }</div>
-<div class="line"><a name="l00283"></a><span class="lineno">  283</span>&#160; </div>
-<div class="line"><a name="l00284"></a><span class="lineno">  284</span>&#160;        <span class="keywordtype">bool</span> clod_point_renderer::disable(<a class="code" href="classcgv_1_1render_1_1context.html">context</a>&amp; ctx)</div>
-<div class="line"><a name="l00285"></a><span class="lineno">  285</span>&#160;        {</div>
-<div class="line"><a name="l00286"></a><span class="lineno">  286</span>&#160;            draw_prog_ptr = &amp;draw_prog;</div>
-<div class="line"><a name="l00287"></a><span class="lineno">  287</span>&#160; </div>
-<div class="line"><a name="l00288"></a><span class="lineno">  288</span>&#160;            <span class="comment">// draw related stuff</span></div>
-<div class="line"><a name="l00289"></a><span class="lineno">  289</span>&#160;            glBindBuffer(GL_DRAW_INDIRECT_BUFFER, 0);</div>
-<div class="line"><a name="l00290"></a><span class="lineno">  290</span>&#160;            glBindVertexArray(0);</div>
-<div class="line"><a name="l00291"></a><span class="lineno">  291</span>&#160;            <span class="comment">// reduce related stuff</span></div>
-<div class="line"><a name="l00292"></a><span class="lineno">  292</span>&#160;            glBindBuffer(GL_SHADER_STORAGE_BUFFER, 0);</div>
-<div class="line"><a name="l00293"></a><span class="lineno">  293</span>&#160;            <span class="keywordflow">return</span> <span class="keyword">false</span>;</div>
-<div class="line"><a name="l00294"></a><span class="lineno">  294</span>&#160;        }</div>
-<div class="line"><a name="l00295"></a><span class="lineno">  295</span>&#160; </div>
-<div class="line"><a name="l00296"></a><span class="lineno">  296</span>&#160;        <span class="keywordtype">void</span> clod_point_renderer::clear(<a class="code" href="classcgv_1_1render_1_1context.html">cgv::render::context</a>&amp; ctx)</div>
-<div class="line"><a name="l00297"></a><span class="lineno">  297</span>&#160;        {</div>
-<div class="line"><a name="l00298"></a><span class="lineno">  298</span>&#160;            reduce_prog.<a class="code" href="classcgv_1_1render_1_1shader__program.html#a4dbded816a1b75be5763494cb949f03e">destruct</a>(ctx);</div>
-<div class="line"><a name="l00299"></a><span class="lineno">  299</span>&#160;            draw_prog.<a class="code" href="classcgv_1_1render_1_1shader__program.html#a4dbded816a1b75be5763494cb949f03e">destruct</a>(ctx);</div>
-<div class="line"><a name="l00300"></a><span class="lineno">  300</span>&#160;            clear_buffers(ctx);</div>
-<div class="line"><a name="l00301"></a><span class="lineno">  301</span>&#160;        }</div>
-<div class="line"><a name="l00302"></a><span class="lineno">  302</span>&#160; </div>
-<div class="line"><a name="l00303"></a><span class="lineno">  303</span>&#160;        <span class="keywordtype">void</span> clod_point_renderer::disable_buffer_manager()</div>
-<div class="line"><a name="l00304"></a><span class="lineno">  304</span>&#160;        {</div>
-<div class="line"><a name="l00305"></a><span class="lineno">  305</span>&#160;            enable_buffer_manager(buffer_manager); <span class="comment">//enable the internal buffer manager to disable any external</span></div>
-<div class="line"><a name="l00306"></a><span class="lineno">  306</span>&#160;        }</div>
-<div class="line"><a name="l00307"></a><span class="lineno">  307</span>&#160; </div>
-<div class="line"><a name="l00308"></a><span class="lineno"><a class="line" href="classcgv_1_1render_1_1clod__point__renderer.html#ac666206ddf453d0756851838d0118fba">  308</a></span>&#160;        <span class="keywordtype">void</span> <a class="code" href="classcgv_1_1render_1_1clod__point__renderer.html#ac666206ddf453d0756851838d0118fba">clod_point_renderer::draw</a>(<a class="code" href="classcgv_1_1render_1_1context.html">context</a>&amp; ctx, <span class="keywordtype">size_t</span> start, <span class="keywordtype">size_t</span> count)</div>
-<div class="line"><a name="l00309"></a><span class="lineno">  309</span>&#160;        {</div>
-<div class="line"><a name="l00310"></a><span class="lineno">  310</span>&#160;            <a class="code" href="classcgv_1_1render_1_1clod__point__renderer.html#a4930435b033cb2f0909343178b466e7a">reduce_points</a>(ctx, start, count);</div>
-<div class="line"><a name="l00311"></a><span class="lineno">  311</span>&#160;            <a class="code" href="classcgv_1_1render_1_1clod__point__renderer.html#a2e443ebe8daa3512f084e3bb4d4ab184">draw_points</a>(ctx);</div>
-<div class="line"><a name="l00312"></a><span class="lineno">  312</span>&#160;        }</div>
-<div class="line"><a name="l00313"></a><span class="lineno">  313</span>&#160; </div>
-<div class="line"><a name="l00314"></a><span class="lineno">  314</span>&#160;        <span class="keywordtype">bool</span> clod_point_renderer::render(<a class="code" href="classcgv_1_1render_1_1context.html">context</a>&amp; ctx, <span class="keywordtype">size_t</span> start, <span class="keywordtype">size_t</span> count)</div>
-<div class="line"><a name="l00315"></a><span class="lineno">  315</span>&#160;        {</div>
-<div class="line"><a name="l00316"></a><span class="lineno">  316</span>&#160;            <span class="keywordflow">if</span> (<a class="code" href="classcgv_1_1render_1_1clod__point__renderer.html#a395aceb0771cb59738863a88a146af55">enable</a>(ctx)) {</div>
-<div class="line"><a name="l00317"></a><span class="lineno">  317</span>&#160;                <a class="code" href="classcgv_1_1render_1_1clod__point__renderer.html#ac666206ddf453d0756851838d0118fba">draw</a>(ctx, start, count);</div>
-<div class="line"><a name="l00318"></a><span class="lineno">  318</span>&#160;                <span class="keywordflow">return</span> <span class="keyword">true</span>;</div>
-<div class="line"><a name="l00319"></a><span class="lineno">  319</span>&#160;            }</div>
-<div class="line"><a name="l00320"></a><span class="lineno">  320</span>&#160;            <span class="keywordflow">return</span> disable(ctx);</div>
-<div class="line"><a name="l00321"></a><span class="lineno">  321</span>&#160;        }</div>
-<div class="line"><a name="l00322"></a><span class="lineno">  322</span>&#160; </div>
-<div class="line"><a name="l00323"></a><span class="lineno"><a class="line" href="classcgv_1_1render_1_1clod__point__renderer.html#a40cb51e12d04785de9efa3c2fa0f3a72">  323</a></span>&#160;        <span class="keywordtype">void</span> <a class="code" href="classcgv_1_1render_1_1clod__point__renderer.html#a40cb51e12d04785de9efa3c2fa0f3a72">clod_point_renderer::set_points</a>(<a class="code" href="classcgv_1_1render_1_1context.html">cgv::render::context</a>&amp; ctx, <span class="keyword">const</span> <a class="code" href="structcgv_1_1render_1_1clod__point__renderer_1_1Point.html">Point</a>* pnts, <span class="keyword">const</span> <span class="keywordtype">size_t</span> num_points) {</div>
-<div class="line"><a name="l00324"></a><span class="lineno">  324</span>&#160;            assert(input_buffer != 0);</div>
-<div class="line"><a name="l00325"></a><span class="lineno">  325</span>&#160;            glBindBuffer(GL_SHADER_STORAGE_BUFFER, input_buffer);</div>
-<div class="line"><a name="l00326"></a><span class="lineno">  326</span>&#160;            glBufferData(GL_SHADER_STORAGE_BUFFER, num_points * <span class="keyword">sizeof</span>(<a class="code" href="structcgv_1_1render_1_1clod__point__renderer_1_1Point.html">Point</a>), pnts, GL_STATIC_READ);</div>
-<div class="line"><a name="l00327"></a><span class="lineno">  327</span>&#160;            glBindBuffer(GL_SHADER_STORAGE_BUFFER, 0);</div>
-<div class="line"><a name="l00328"></a><span class="lineno">  328</span>&#160;            input_buffer_size = num_points * <span class="keyword">sizeof</span>(<a class="code" href="structcgv_1_1render_1_1clod__point__renderer_1_1Point.html">Point</a>);</div>
-<div class="line"><a name="l00329"></a><span class="lineno">  329</span>&#160;            input_buffer_num_points = <span class="keyword">static_cast&lt;</span>GLuint<span class="keyword">&gt;</span>(num_points);</div>
-<div class="line"><a name="l00330"></a><span class="lineno">  330</span>&#160;            buffers_outofdate = <span class="keyword">true</span>;</div>
-<div class="line"><a name="l00331"></a><span class="lineno">  331</span>&#160;        }</div>
-<div class="line"><a name="l00332"></a><span class="lineno">  332</span>&#160; </div>
-<div class="line"><a name="l00333"></a><span class="lineno"><a class="line" href="classcgv_1_1render_1_1clod__point__renderer.html#a9fcd01416698e24578026992cfe45a47">  333</a></span>&#160;        <span class="keywordtype">void</span> <a class="code" href="classcgv_1_1render_1_1clod__point__renderer.html#a40cb51e12d04785de9efa3c2fa0f3a72">clod_point_renderer::set_points</a>(<a class="code" href="classcgv_1_1render_1_1context.html">cgv::render::context</a>&amp; ctx, <span class="keyword">const</span> <a class="code" href="classcgv_1_1math_1_1fvec.html">vec3</a>* positions, <span class="keyword">const</span> <a class="code" href="classcgv_1_1media_1_1color.html">rgb8</a>* colors, <span class="keyword">const</span> uint8_t* lods, <span class="keyword">const</span> <span class="keywordtype">size_t</span> num_points, <span class="keyword">const</span> <span class="keywordtype">unsigned</span> stride)</div>
-<div class="line"><a name="l00334"></a><span class="lineno">  334</span>&#160;        {</div>
-<div class="line"><a name="l00335"></a><span class="lineno">  335</span>&#160;            std::vector&lt;Point&gt; input_buffer_data(num_points);</div>
-<div class="line"><a name="l00336"></a><span class="lineno">  336</span>&#160;            <span class="keyword">const</span> uint8_t* pos_end = (uint8_t*)positions + (stride * num_points);</div>
-<div class="line"><a name="l00337"></a><span class="lineno">  337</span>&#160; </div>
-<div class="line"><a name="l00338"></a><span class="lineno">  338</span>&#160;            <span class="keyword">auto</span> input_it = input_buffer_data.begin();</div>
-<div class="line"><a name="l00339"></a><span class="lineno">  339</span>&#160; </div>
-<div class="line"><a name="l00340"></a><span class="lineno">  340</span>&#160;            <span class="keywordflow">for</span> (<span class="keywordtype">int</span> i = 0; i &lt; num_points; ++i) {</div>
-<div class="line"><a name="l00341"></a><span class="lineno">  341</span>&#160;                input_it-&gt;position() = *positions;</div>
-<div class="line"><a name="l00342"></a><span class="lineno">  342</span>&#160;                input_it-&gt;color() = *colors;</div>
-<div class="line"><a name="l00343"></a><span class="lineno">  343</span>&#160;                input_it-&gt;level() = *lods;</div>
-<div class="line"><a name="l00344"></a><span class="lineno">  344</span>&#160;                ++input_it;</div>
-<div class="line"><a name="l00345"></a><span class="lineno">  345</span>&#160; </div>
-<div class="line"><a name="l00346"></a><span class="lineno">  346</span>&#160;                <span class="keywordflow">if</span> (stride) {</div>
-<div class="line"><a name="l00347"></a><span class="lineno">  347</span>&#160;                    positions = (<a class="code" href="classcgv_1_1math_1_1fvec.html">vec3</a>*)((uint8_t*)positions + stride);</div>
-<div class="line"><a name="l00348"></a><span class="lineno">  348</span>&#160;                    colors = (<a class="code" href="classcgv_1_1media_1_1color.html">rgb8</a>*)((uint8_t*)colors + stride);</div>
-<div class="line"><a name="l00349"></a><span class="lineno">  349</span>&#160;                    lods += stride;</div>
-<div class="line"><a name="l00350"></a><span class="lineno">  350</span>&#160;                }</div>
-<div class="line"><a name="l00351"></a><span class="lineno">  351</span>&#160;                <span class="keywordflow">else</span> {</div>
-<div class="line"><a name="l00352"></a><span class="lineno">  352</span>&#160;                    ++positions;</div>
-<div class="line"><a name="l00353"></a><span class="lineno">  353</span>&#160;                    ++colors;</div>
-<div class="line"><a name="l00354"></a><span class="lineno">  354</span>&#160;                    ++lods;</div>
-<div class="line"><a name="l00355"></a><span class="lineno">  355</span>&#160;                }</div>
-<div class="line"><a name="l00356"></a><span class="lineno">  356</span>&#160; </div>
-<div class="line"><a name="l00357"></a><span class="lineno">  357</span>&#160;            }</div>
-<div class="line"><a name="l00358"></a><span class="lineno">  358</span>&#160;            <a class="code" href="classcgv_1_1render_1_1clod__point__renderer.html#a40cb51e12d04785de9efa3c2fa0f3a72">set_points</a>(ctx, input_buffer_data.data(),input_buffer_data.size());</div>
-<div class="line"><a name="l00359"></a><span class="lineno">  359</span>&#160;        }</div>
-<div class="line"><a name="l00360"></a><span class="lineno">  360</span>&#160; </div>
-<div class="line"><a name="l00361"></a><span class="lineno">  361</span>&#160;        <span class="keywordtype">bool</span> clod_point_renderer::enable_buffer_manager(<a class="code" href="classcgv_1_1render_1_1clod__point__buffer__manager.html">clod_point_buffer_manager</a>&amp; manager)</div>
-<div class="line"><a name="l00362"></a><span class="lineno">  362</span>&#160;        {</div>
-<div class="line"><a name="l00363"></a><span class="lineno">  363</span>&#160;            active_buffer_manager_ptr = &amp;manager;</div>
-<div class="line"><a name="l00364"></a><span class="lineno">  364</span>&#160;            active_render_buffer = manager.<a class="code" href="classcgv_1_1render_1_1clod__point__buffer__manager.html#a5bd3b916718beb7228cd02762b53e3a4">get_reduced_points</a>();</div>
-<div class="line"><a name="l00365"></a><span class="lineno">  365</span>&#160;            active_draw_parameter_buffer = manager.<a class="code" href="classcgv_1_1render_1_1clod__point__buffer__manager.html#ad5a797703b40bbffe77fde933a8c60ff">get_draw_parameters</a>();</div>
-<div class="line"><a name="l00366"></a><span class="lineno">  366</span>&#160;            active_index_buffer = manager.<a class="code" href="classcgv_1_1render_1_1clod__point__buffer__manager.html#a5de006eaf30ab45b35f9ef6a75080c11">get_index_buffer</a>();</div>
-<div class="line"><a name="l00367"></a><span class="lineno">  367</span>&#160;            active_vertex_array = manager.get_vertex_array();</div>
-<div class="line"><a name="l00368"></a><span class="lineno">  368</span>&#160; </div>
-<div class="line"><a name="l00369"></a><span class="lineno">  369</span>&#160;            <span class="keywordflow">return</span> <span class="keyword">true</span>;</div>
-<div class="line"><a name="l00370"></a><span class="lineno">  370</span>&#160;        }</div>
-<div class="line"><a name="l00371"></a><span class="lineno">  371</span>&#160; </div>
-<div class="line"><a name="l00372"></a><span class="lineno">  372</span>&#160;        <span class="keywordtype">void</span> clod_point_renderer::set_max_drawn_points(<a class="code" href="classcgv_1_1render_1_1context.html">cgv::render::context</a>&amp; ctx, <span class="keyword">const</span> <span class="keywordtype">unsigned</span> max_points)</div>
-<div class="line"><a name="l00373"></a><span class="lineno">  373</span>&#160;        {</div>
-<div class="line"><a name="l00374"></a><span class="lineno">  374</span>&#160;            <span class="keywordflow">if</span> (active_buffer_manager_ptr-&gt;<a class="code" href="classcgv_1_1render_1_1clod__point__buffer__manager.html#a9073bb5747aa72df9490a29a956e3d73">size</a>() != max_points) {</div>
-<div class="line"><a name="l00375"></a><span class="lineno">  375</span>&#160;                active_buffer_manager_ptr-&gt;resize(max_points);</div>
-<div class="line"><a name="l00376"></a><span class="lineno">  376</span>&#160;            }</div>
-<div class="line"><a name="l00377"></a><span class="lineno">  377</span>&#160;        }</div>
-<div class="line"><a name="l00378"></a><span class="lineno">  378</span>&#160; </div>
-<div class="line"><a name="l00379"></a><span class="lineno">  379</span>&#160;        <span class="keywordtype">void</span> clod_point_renderer::set_frustum_extend(<span class="keyword">const</span> <span class="keywordtype">float</span>&amp; fe)</div>
-<div class="line"><a name="l00380"></a><span class="lineno">  380</span>&#160;        {</div>
-<div class="line"><a name="l00381"></a><span class="lineno">  381</span>&#160;            frustum_extend = fe;</div>
-<div class="line"><a name="l00382"></a><span class="lineno">  382</span>&#160;        }</div>
-<div class="line"><a name="l00383"></a><span class="lineno">  383</span>&#160; </div>
-<div class="line"><a name="l00384"></a><span class="lineno">  384</span>&#160;        <span class="keywordtype">void</span> clod_point_renderer::set_pivot_point(<span class="keyword">const</span> <a class="code" href="namespacecgv.html#a0add29f049bd6be760ed993da79a5872">vec4</a>&amp; pivot)</div>
-<div class="line"><a name="l00385"></a><span class="lineno">  385</span>&#160;        {</div>
-<div class="line"><a name="l00386"></a><span class="lineno">  386</span>&#160;            pivot_point_in_view_space = pivot;</div>
-<div class="line"><a name="l00387"></a><span class="lineno">  387</span>&#160;        }</div>
-<div class="line"><a name="l00388"></a><span class="lineno">  388</span>&#160; </div>
-<div class="line"><a name="l00389"></a><span class="lineno">  389</span>&#160;        <span class="keywordtype">void</span> clod_point_renderer::set_render_style(<span class="keyword">const</span> render_style&amp; rs)</div>
-<div class="line"><a name="l00390"></a><span class="lineno">  390</span>&#160;        {</div>
-<div class="line"><a name="l00391"></a><span class="lineno">  391</span>&#160;            this-&gt;rs = &amp;rs;</div>
-<div class="line"><a name="l00392"></a><span class="lineno">  392</span>&#160;        }</div>
-<div class="line"><a name="l00393"></a><span class="lineno">  393</span>&#160; </div>
-<div class="line"><a name="l00394"></a><span class="lineno">  394</span>&#160;        <span class="keywordtype">void</span> clod_point_renderer::manage_singelton(context&amp; ctx, <span class="keyword">const</span> std::string&amp; renderer_name, <span class="keywordtype">int</span>&amp; ref_count, <span class="keywordtype">int</span> ref_count_change)</div>
-<div class="line"><a name="l00395"></a><span class="lineno">  395</span>&#160;        {</div>
-<div class="line"><a name="l00396"></a><span class="lineno">  396</span>&#160;            <span class="keywordflow">switch</span> (ref_count_change) {</div>
-<div class="line"><a name="l00397"></a><span class="lineno">  397</span>&#160;            <span class="keywordflow">case</span> 1:</div>
-<div class="line"><a name="l00398"></a><span class="lineno">  398</span>&#160;                <span class="keywordflow">if</span> (ref_count == 0) {</div>
-<div class="line"><a name="l00399"></a><span class="lineno">  399</span>&#160;                    <span class="keywordflow">if</span> (!init(ctx))</div>
-<div class="line"><a name="l00400"></a><span class="lineno">  400</span>&#160;                        ctx.error(std::string(<span class="stringliteral">&quot;unable to initialize &quot;</span>) + renderer_name + <span class="stringliteral">&quot; singelton&quot;</span>);</div>
-<div class="line"><a name="l00401"></a><span class="lineno">  401</span>&#160;                }</div>
-<div class="line"><a name="l00402"></a><span class="lineno">  402</span>&#160;                ++ref_count;</div>
-<div class="line"><a name="l00403"></a><span class="lineno">  403</span>&#160;                <span class="keywordflow">break</span>;</div>
-<div class="line"><a name="l00404"></a><span class="lineno">  404</span>&#160;            <span class="keywordflow">case</span> 0:</div>
-<div class="line"><a name="l00405"></a><span class="lineno">  405</span>&#160;                <span class="keywordflow">break</span>;</div>
-<div class="line"><a name="l00406"></a><span class="lineno">  406</span>&#160;            <span class="keywordflow">case</span> -1:</div>
-<div class="line"><a name="l00407"></a><span class="lineno">  407</span>&#160;                <span class="keywordflow">if</span> (ref_count == 0)</div>
-<div class="line"><a name="l00408"></a><span class="lineno">  408</span>&#160;                    ctx.error(std::string(<span class="stringliteral">&quot;attempt to decrease reference count of &quot;</span>) + renderer_name + <span class="stringliteral">&quot; singelton below 0&quot;</span>);</div>
-<div class="line"><a name="l00409"></a><span class="lineno">  409</span>&#160;                <span class="keywordflow">else</span> {</div>
-<div class="line"><a name="l00410"></a><span class="lineno">  410</span>&#160;                    <span class="keywordflow">if</span> (--ref_count == 0)</div>
-<div class="line"><a name="l00411"></a><span class="lineno">  411</span>&#160;                        clear(ctx);</div>
-<div class="line"><a name="l00412"></a><span class="lineno">  412</span>&#160;                }</div>
-<div class="line"><a name="l00413"></a><span class="lineno">  413</span>&#160;                <span class="keywordflow">break</span>;</div>
-<div class="line"><a name="l00414"></a><span class="lineno">  414</span>&#160;            <span class="keywordflow">default</span>:</div>
-<div class="line"><a name="l00415"></a><span class="lineno">  415</span>&#160;                ctx.error(std::string(<span class="stringliteral">&quot;invalid change reference count outside {-1,0,1} for &quot;</span>) + renderer_name + <span class="stringliteral">&quot; singelton&quot;</span>);</div>
-<div class="line"><a name="l00416"></a><span class="lineno">  416</span>&#160;            }</div>
-<div class="line"><a name="l00417"></a><span class="lineno">  417</span>&#160;        }</div>
-<div class="line"><a name="l00418"></a><span class="lineno">  418</span>&#160; </div>
-<div class="line"><a name="l00419"></a><span class="lineno"><a class="line" href="classcgv_1_1render_1_1clod__point__renderer.html#a1051e44c0dcf7cd22b1190080505ce90">  419</a></span>&#160;        <span class="keywordtype">void</span> <a class="code" href="classcgv_1_1render_1_1clod__point__renderer.html#a1051e44c0dcf7cd22b1190080505ce90">clod_point_renderer::set_prog</a>(<a class="code" href="classcgv_1_1render_1_1shader__program.html">shader_program</a>&amp; one_shot_prog)</div>
-<div class="line"><a name="l00420"></a><span class="lineno">  420</span>&#160;        {</div>
-<div class="line"><a name="l00421"></a><span class="lineno">  421</span>&#160;            draw_prog_ptr = &amp;one_shot_prog;</div>
-<div class="line"><a name="l00422"></a><span class="lineno">  422</span>&#160;        }</div>
-<div class="line"><a name="l00423"></a><span class="lineno">  423</span>&#160;        </div>
-<div class="line"><a name="l00424"></a><span class="lineno">  424</span>&#160; </div>
-<div class="line"><a name="l00425"></a><span class="lineno">  425</span>&#160;        <span class="keywordtype">void</span> clod_point_renderer::add_shader(<a class="code" href="classcgv_1_1render_1_1context.html">context</a>&amp; ctx, <a class="code" href="classcgv_1_1render_1_1shader__program.html">shader_program</a>&amp; prog, <span class="keyword">const</span> std::string&amp; sf,<span class="keyword">const</span> <a class="code" href="namespacecgv_1_1render.html#aa829197f51559124b8c72a2bd024b8db">cgv::render::ShaderType</a> st)</div>
-<div class="line"><a name="l00426"></a><span class="lineno">  426</span>&#160;        {</div>
-<div class="line"><a name="l00427"></a><span class="lineno">  427</span>&#160;<span class="preprocessor">#ifndef NDEBUG</span></div>
-<div class="line"><a name="l00428"></a><span class="lineno">  428</span>&#160;            std::cout &lt;&lt; <span class="stringliteral">&quot;add shader &quot;</span> &lt;&lt; sf &lt;&lt; <span class="charliteral">&#39;\n&#39;</span>;</div>
-<div class="line"><a name="l00429"></a><span class="lineno">  429</span>&#160;<span class="preprocessor">#endif </span><span class="comment">// #ifdef NDEBUG</span></div>
-<div class="line"><a name="l00430"></a><span class="lineno">  430</span>&#160;            prog.<a class="code" href="classcgv_1_1render_1_1shader__program.html#aae8bc974eed4fd1e2ac923fe98091862">attach_file</a>(ctx, sf, st);</div>
-<div class="line"><a name="l00431"></a><span class="lineno">  431</span>&#160;<span class="preprocessor">#ifndef NDEBUG</span></div>
-<div class="line"><a name="l00432"></a><span class="lineno">  432</span>&#160;            <span class="keywordflow">if</span> (prog.<a class="code" href="classcgv_1_1render_1_1render__component.html#a95f40a817168467d5a0d3fdbb09e0b79">last_error</a>.size() &gt; 0) {</div>
-<div class="line"><a name="l00433"></a><span class="lineno">  433</span>&#160;                std::cerr &lt;&lt; prog.<a class="code" href="classcgv_1_1render_1_1render__component.html#a95f40a817168467d5a0d3fdbb09e0b79">last_error</a> &lt;&lt; <span class="charliteral">&#39;\n&#39;</span>;</div>
-<div class="line"><a name="l00434"></a><span class="lineno">  434</span>&#160;                prog.<a class="code" href="classcgv_1_1render_1_1render__component.html#a95f40a817168467d5a0d3fdbb09e0b79">last_error</a> = <span class="stringliteral">&quot;&quot;</span>;</div>
-<div class="line"><a name="l00435"></a><span class="lineno">  435</span>&#160;            }   </div>
-<div class="line"><a name="l00436"></a><span class="lineno">  436</span>&#160;<span class="preprocessor">#endif </span><span class="comment">// #ifdef NDEBUG</span></div>
-<div class="line"><a name="l00437"></a><span class="lineno">  437</span>&#160; </div>
-<div class="line"><a name="l00438"></a><span class="lineno">  438</span>&#160;        }</div>
-<div class="line"><a name="l00439"></a><span class="lineno">  439</span>&#160; </div>
-<div class="line"><a name="l00440"></a><span class="lineno"><a class="line" href="classcgv_1_1render_1_1clod__point__renderer.html#a697e77b7f41463865fdc626e7ea3ca5f">  440</a></span>&#160;        <span class="keywordtype">unsigned</span> <span class="keywordtype">int</span> <a class="code" href="classcgv_1_1render_1_1clod__point__renderer.html#a697e77b7f41463865fdc626e7ea3ca5f">clod_point_renderer::num_reduced_points</a>()</div>
-<div class="line"><a name="l00441"></a><span class="lineno">  441</span>&#160;        {</div>
-<div class="line"><a name="l00442"></a><span class="lineno">  442</span>&#160;            DrawParameters* device_draw_parameters = <span class="keyword">static_cast&lt;</span>DrawParameters*<span class="keyword">&gt;</span>(glMapNamedBufferRange(active_draw_parameter_buffer, 0, <span class="keyword">sizeof</span>(DrawParameters), GL_MAP_READ_BIT));</div>
-<div class="line"><a name="l00443"></a><span class="lineno">  443</span>&#160;            <span class="keywordtype">unsigned</span> ret = device_draw_parameters-&gt;count;</div>
-<div class="line"><a name="l00444"></a><span class="lineno">  444</span>&#160;            glUnmapNamedBuffer(active_draw_parameter_buffer);</div>
-<div class="line"><a name="l00445"></a><span class="lineno">  445</span>&#160;            <span class="keywordflow">return</span> ret;</div>
-<div class="line"><a name="l00446"></a><span class="lineno">  446</span>&#160;        }</div>
-<div class="line"><a name="l00447"></a><span class="lineno">  447</span>&#160; </div>
-<div class="line"><a name="l00448"></a><span class="lineno">  448</span>&#160;        <span class="keywordtype">void</span> clod_point_renderer::clear_buffers(<a class="code" href="classcgv_1_1render_1_1context.html">context</a>&amp; ctx)</div>
-<div class="line"><a name="l00449"></a><span class="lineno">  449</span>&#160;        {</div>
-<div class="line"><a name="l00450"></a><span class="lineno">  450</span>&#160;            glDeleteBuffers(1, &amp;input_buffer);</div>
-<div class="line"><a name="l00451"></a><span class="lineno">  451</span>&#160;            buffer_manager.clear(ctx);</div>
-<div class="line"><a name="l00452"></a><span class="lineno">  452</span>&#160;            input_buffer = 0;</div>
-<div class="line"><a name="l00453"></a><span class="lineno">  453</span>&#160;        }</div>
-<div class="line"><a name="l00454"></a><span class="lineno">  454</span>&#160; </div>
-<div class="line"><a name="l00455"></a><span class="lineno">  455</span>&#160;        <span class="keywordtype">void</span> clod_point_renderer::reset_draw_parameters(context&amp; ctx, GLuint draw_parameter_buffer)</div>
-<div class="line"><a name="l00456"></a><span class="lineno">  456</span>&#160;        {</div>
-<div class="line"><a name="l00457"></a><span class="lineno">  457</span>&#160;            <span class="comment">// reset draw parameters, using SubData here is better for performance</span></div>
-<div class="line"><a name="l00458"></a><span class="lineno">  458</span>&#160;            DrawParameters dp = DrawParameters();</div>
-<div class="line"><a name="l00459"></a><span class="lineno">  459</span>&#160;            glNamedBufferSubData(draw_parameter_buffer, 0, <span class="keyword">sizeof</span>(DrawParameters), &amp;dp);</div>
-<div class="line"><a name="l00460"></a><span class="lineno">  460</span>&#160;        }</div>
-<div class="line"><a name="l00461"></a><span class="lineno">  461</span>&#160;                </div>
-<div class="line"><a name="l00462"></a><span class="lineno">  462</span>&#160;        <span class="keywordtype">bool</span> clod_point_render_style_reflect::self_reflect(<a class="code" href="classcgv_1_1reflect_1_1reflection__handler.html">cgv::reflect::reflection_handler</a>&amp; rh)</div>
-<div class="line"><a name="l00463"></a><span class="lineno">  463</span>&#160;        {</div>
-<div class="line"><a name="l00464"></a><span class="lineno">  464</span>&#160;            <span class="keywordflow">return</span></div>
-<div class="line"><a name="l00465"></a><span class="lineno">  465</span>&#160;                <span class="comment">// rh.reflect_base(*static_cast&lt;cgv::render::clod_point_render_style*&gt;(this)) &amp;&amp;</span></div>
-<div class="line"><a name="l00466"></a><span class="lineno">  466</span>&#160;                rh.<a class="code" href="classcgv_1_1reflect_1_1reflection__handler.html#ae10eef5e76075a7eb676d8ba40839291">reflect_member</a>(<span class="stringliteral">&quot;CLOD_factor&quot;</span>, CLOD) &amp;&amp; </div>
-<div class="line"><a name="l00467"></a><span class="lineno">  467</span>&#160;                rh.<a class="code" href="classcgv_1_1reflect_1_1reflection__handler.html#ae10eef5e76075a7eb676d8ba40839291">reflect_member</a>(<span class="stringliteral">&quot;spacing&quot;</span>, <a class="code" href="structcgv_1_1render_1_1clod__point__render__style.html#ad1f2c69eb543d524d081109fe0847aa1">spacing</a>) &amp;&amp;</div>
-<div class="line"><a name="l00468"></a><span class="lineno">  468</span>&#160;                rh.<a class="code" href="classcgv_1_1reflect_1_1reflection__handler.html#ae10eef5e76075a7eb676d8ba40839291">reflect_member</a>(<span class="stringliteral">&quot;scale&quot;</span>, scale) &amp;&amp;</div>
-<div class="line"><a name="l00469"></a><span class="lineno">  469</span>&#160;                rh.<a class="code" href="classcgv_1_1reflect_1_1reflection__handler.html#ae10eef5e76075a7eb676d8ba40839291">reflect_member</a>(<span class="stringliteral">&quot;min_millimeters&quot;</span>, min_millimeters) &amp;&amp;</div>
-<div class="line"><a name="l00470"></a><span class="lineno">  470</span>&#160;                rh.<a class="code" href="classcgv_1_1reflect_1_1reflection__handler.html#ae10eef5e76075a7eb676d8ba40839291">reflect_member</a>(<span class="stringliteral">&quot;point_size&quot;</span>, pointSize) &amp;&amp;</div>
-<div class="line"><a name="l00471"></a><span class="lineno">  471</span>&#160;                rh.<a class="code" href="classcgv_1_1reflect_1_1reflection__handler.html#ae10eef5e76075a7eb676d8ba40839291">reflect_member</a>(<span class="stringliteral">&quot;draw_circles&quot;</span>, draw_circles);</div>
-<div class="line"><a name="l00472"></a><span class="lineno">  472</span>&#160;        }</div>
-<div class="line"><a name="l00473"></a><span class="lineno">  473</span>&#160; </div>
-<div class="line"><a name="l00474"></a><span class="lineno">  474</span>&#160;        <a class="code" href="structcgv_1_1reflect_1_1extern__reflection__traits.html">cgv::reflect::extern_reflection_traits&lt;clod_point_render_style, clod_point_render_style_reflect&gt;</a> get_reflection_traits(<span class="keyword">const</span> clod_point_render_style&amp;)</div>
-<div class="line"><a name="l00475"></a><span class="lineno">  475</span>&#160;        {</div>
-<div class="line"><a name="l00476"></a><span class="lineno">  476</span>&#160;            <span class="keywordflow">return</span> <a class="code" href="structcgv_1_1reflect_1_1extern__reflection__traits.html">cgv::reflect::extern_reflection_traits&lt;clod_point_render_style, clod_point_render_style_reflect&gt;</a>();</div>
-<div class="line"><a name="l00477"></a><span class="lineno">  477</span>&#160;        }</div>
-<div class="line"><a name="l00478"></a><span class="lineno">  478</span>&#160; </div>
-<div class="line"><a name="l00479"></a><span class="lineno">  479</span>&#160;        GLuint clod_point_buffer_manager::get_vertex_array()</div>
-<div class="line"><a name="l00480"></a><span class="lineno">  480</span>&#160;        {</div>
-<div class="line"><a name="l00481"></a><span class="lineno">  481</span>&#160;            <span class="keywordflow">return</span> vertex_array;</div>
-<div class="line"><a name="l00482"></a><span class="lineno">  482</span>&#160;        }</div>
-<div class="line"><a name="l00483"></a><span class="lineno">  483</span>&#160; </div>
-<div class="line"><a name="l00484"></a><span class="lineno">  484</span>&#160;        <span class="keywordtype">void</span> clod_point_buffer_manager::init(context&amp; ctx)</div>
-<div class="line"><a name="l00485"></a><span class="lineno">  485</span>&#160;        {</div>
-<div class="line"><a name="l00486"></a><span class="lineno">  486</span>&#160;            glCreateBuffers(1, &amp;points);</div>
-<div class="line"><a name="l00487"></a><span class="lineno">  487</span>&#160;            glCreateBuffers(1, &amp;indices);</div>
-<div class="line"><a name="l00488"></a><span class="lineno">  488</span>&#160;            glCreateBuffers(1, &amp;draw_parameters);</div>
-<div class="line"><a name="l00489"></a><span class="lineno">  489</span>&#160;            glGenVertexArrays(1, &amp;vertex_array);</div>
-<div class="line"><a name="l00490"></a><span class="lineno">  490</span>&#160;            <span class="comment">//define vertex array</span></div>
-<div class="line"><a name="l00491"></a><span class="lineno">  491</span>&#160;            {</div>
-<div class="line"><a name="l00492"></a><span class="lineno">  492</span>&#160;                glBindVertexArray(vertex_array);</div>
-<div class="line"><a name="l00493"></a><span class="lineno">  493</span>&#160;                <span class="comment">// position</span></div>
-<div class="line"><a name="l00494"></a><span class="lineno">  494</span>&#160;                glBindBuffer(GL_ARRAY_BUFFER, points);</div>
-<div class="line"><a name="l00495"></a><span class="lineno">  495</span>&#160;                glVertexAttribPointer(0, 4, GL_FLOAT, GL_FALSE, <span class="keyword">sizeof</span>(clod_point_renderer::Point), (<span class="keywordtype">void</span>*)0);</div>
-<div class="line"><a name="l00496"></a><span class="lineno">  496</span>&#160;                glEnableVertexAttribArray(0);</div>
-<div class="line"><a name="l00497"></a><span class="lineno">  497</span>&#160;                <span class="comment">// color</span></div>
-<div class="line"><a name="l00498"></a><span class="lineno">  498</span>&#160;                glVertexAttribPointer(1, 4, GL_UNSIGNED_BYTE, GL_TRUE, <span class="keyword">sizeof</span>(clod_point_renderer::Point),</div>
-<div class="line"><a name="l00499"></a><span class="lineno">  499</span>&#160;                                      (<span class="keywordtype">void</span>*)(<span class="keyword">sizeof</span>(<a class="code" href="namespacecgv.html#a986c65184af5066fa26d468fd606c4fb">vec3</a>)));</div>
-<div class="line"><a name="l00500"></a><span class="lineno">  500</span>&#160;                glEnableVertexAttribArray(1);</div>
-<div class="line"><a name="l00501"></a><span class="lineno">  501</span>&#160;                <span class="comment">// index</span></div>
-<div class="line"><a name="l00502"></a><span class="lineno">  502</span>&#160;                glBindBuffer(GL_ARRAY_BUFFER, indices);</div>
-<div class="line"><a name="l00503"></a><span class="lineno">  503</span>&#160;                glVertexAttribIPointer(2, 1, GL_UNSIGNED_INT, 0, (<span class="keywordtype">void</span>*)0);</div>
-<div class="line"><a name="l00504"></a><span class="lineno">  504</span>&#160;                glEnableVertexAttribArray(2);</div>
-<div class="line"><a name="l00505"></a><span class="lineno">  505</span>&#160;                glBindBuffer(GL_ARRAY_BUFFER, 0);</div>
-<div class="line"><a name="l00506"></a><span class="lineno">  506</span>&#160;                glBindVertexArray(0);</div>
-<div class="line"><a name="l00507"></a><span class="lineno">  507</span>&#160;            }</div>
-<div class="line"><a name="l00508"></a><span class="lineno">  508</span>&#160;            <span class="comment">//init fixed size buffer</span></div>
-<div class="line"><a name="l00509"></a><span class="lineno">  509</span>&#160;            glBindBuffer(GL_SHADER_STORAGE_BUFFER, draw_parameters);</div>
-<div class="line"><a name="l00510"></a><span class="lineno">  510</span>&#160;            glBufferData(GL_SHADER_STORAGE_BUFFER, <span class="keyword">sizeof</span>(DrawParameters), <span class="keyword">nullptr</span>, GL_STREAM_DRAW);</div>
-<div class="line"><a name="l00511"></a><span class="lineno">  511</span>&#160;            glBindBuffer(GL_SHADER_STORAGE_BUFFER, 0);</div>
-<div class="line"><a name="l00512"></a><span class="lineno">  512</span>&#160;        }</div>
-<div class="line"><a name="l00513"></a><span class="lineno">  513</span>&#160; </div>
-<div class="line"><a name="l00514"></a><span class="lineno">  514</span>&#160;        <span class="keywordtype">void</span> clod_point_buffer_manager::clear(context&amp; ctx) {</div>
-<div class="line"><a name="l00515"></a><span class="lineno">  515</span>&#160;            glDeleteBuffers(1, &amp;points);</div>
-<div class="line"><a name="l00516"></a><span class="lineno">  516</span>&#160;            glDeleteBuffers(1, &amp;indices);</div>
-<div class="line"><a name="l00517"></a><span class="lineno">  517</span>&#160;            glDeleteBuffers(1, &amp;draw_parameters);</div>
-<div class="line"><a name="l00518"></a><span class="lineno">  518</span>&#160;            glDeleteVertexArrays(1, &amp;vertex_array);</div>
-<div class="line"><a name="l00519"></a><span class="lineno">  519</span>&#160;        }</div>
-<div class="line"><a name="l00520"></a><span class="lineno">  520</span>&#160; </div>
-<div class="line"><a name="l00521"></a><span class="lineno">  521</span>&#160;        <span class="keywordtype">void</span> clod_point_buffer_manager::resize(GLuint num_points) {</div>
-<div class="line"><a name="l00522"></a><span class="lineno">  522</span>&#160;            <span class="keywordflow">if</span> (max_num_points == num_points)</div>
-<div class="line"><a name="l00523"></a><span class="lineno">  523</span>&#160;                <span class="keywordflow">return</span>;</div>
-<div class="line"><a name="l00524"></a><span class="lineno">  524</span>&#160;            glBindBuffer(GL_SHADER_STORAGE_BUFFER, <a class="code" href="classcgv_1_1render_1_1clod__point__buffer__manager.html#a5bd3b916718beb7228cd02762b53e3a4">get_reduced_points</a>());</div>
-<div class="line"><a name="l00525"></a><span class="lineno">  525</span>&#160;            glBufferData(GL_SHADER_STORAGE_BUFFER, num_points * <span class="keyword">sizeof</span>(clod_point_renderer::Point), <span class="keyword">nullptr</span>, GL_DYNAMIC_DRAW);</div>
-<div class="line"><a name="l00526"></a><span class="lineno">  526</span>&#160; </div>
-<div class="line"><a name="l00527"></a><span class="lineno">  527</span>&#160;            glBindBuffer(GL_SHADER_STORAGE_BUFFER, <a class="code" href="classcgv_1_1render_1_1clod__point__buffer__manager.html#a5de006eaf30ab45b35f9ef6a75080c11">get_index_buffer</a>());</div>
-<div class="line"><a name="l00528"></a><span class="lineno">  528</span>&#160;            glBufferData(GL_SHADER_STORAGE_BUFFER, num_points * <span class="keyword">sizeof</span>(GLuint), <span class="keyword">nullptr</span>, GL_DYNAMIC_DRAW);</div>
-<div class="line"><a name="l00529"></a><span class="lineno">  529</span>&#160;            glBindBuffer(GL_SHADER_STORAGE_BUFFER, 0);</div>
-<div class="line"><a name="l00530"></a><span class="lineno">  530</span>&#160; </div>
-<div class="line"><a name="l00531"></a><span class="lineno">  531</span>&#160;            max_num_points = num_points;</div>
-<div class="line"><a name="l00532"></a><span class="lineno">  532</span>&#160;        }</div>
-<div class="line"><a name="l00533"></a><span class="lineno">  533</span>&#160; </div>
-<div class="line"><a name="l00534"></a><span class="lineno"><a class="line" href="classcgv_1_1render_1_1clod__point__buffer__manager.html#a5de006eaf30ab45b35f9ef6a75080c11">  534</a></span>&#160;        GLuint <a class="code" href="classcgv_1_1render_1_1clod__point__buffer__manager.html#a5de006eaf30ab45b35f9ef6a75080c11">clod_point_buffer_manager::get_index_buffer</a>()</div>
-<div class="line"><a name="l00535"></a><span class="lineno">  535</span>&#160;        {</div>
-<div class="line"><a name="l00536"></a><span class="lineno">  536</span>&#160;            <span class="keywordflow">return</span> indices;</div>
-<div class="line"><a name="l00537"></a><span class="lineno">  537</span>&#160;        }</div>
-<div class="line"><a name="l00538"></a><span class="lineno">  538</span>&#160; </div>
-<div class="line"><a name="l00539"></a><span class="lineno"><a class="line" href="classcgv_1_1render_1_1clod__point__buffer__manager.html#ad5a797703b40bbffe77fde933a8c60ff">  539</a></span>&#160;        GLuint <a class="code" href="classcgv_1_1render_1_1clod__point__buffer__manager.html#ad5a797703b40bbffe77fde933a8c60ff">clod_point_buffer_manager::get_draw_parameters</a>()</div>
-<div class="line"><a name="l00540"></a><span class="lineno">  540</span>&#160;        {</div>
-<div class="line"><a name="l00541"></a><span class="lineno">  541</span>&#160;            <span class="keywordflow">return</span> draw_parameters;</div>
-<div class="line"><a name="l00542"></a><span class="lineno">  542</span>&#160;        }</div>
-<div class="line"><a name="l00543"></a><span class="lineno">  543</span>&#160; </div>
-<div class="line"><a name="l00544"></a><span class="lineno"><a class="line" href="classcgv_1_1render_1_1clod__point__buffer__manager.html#a5bd3b916718beb7228cd02762b53e3a4">  544</a></span>&#160;        GLuint <a class="code" href="classcgv_1_1render_1_1clod__point__buffer__manager.html#a5bd3b916718beb7228cd02762b53e3a4">clod_point_buffer_manager::get_reduced_points</a>()</div>
-<div class="line"><a name="l00545"></a><span class="lineno">  545</span>&#160;        {</div>
-<div class="line"><a name="l00546"></a><span class="lineno">  546</span>&#160;            <span class="keywordflow">return</span> points;</div>
-<div class="line"><a name="l00547"></a><span class="lineno">  547</span>&#160;        }</div>
-<div class="line"><a name="l00548"></a><span class="lineno">  548</span>&#160; </div>
-<div class="line"><a name="l00549"></a><span class="lineno"><a class="line" href="classcgv_1_1render_1_1clod__point__buffer__manager.html#aaadc1622beb9686ab6590fa53b9e7821">  549</a></span>&#160;        GLuint <a class="code" href="classcgv_1_1render_1_1clod__point__buffer__manager.html#aaadc1622beb9686ab6590fa53b9e7821">clod_point_buffer_manager::num_reduced_points</a>()</div>
-<div class="line"><a name="l00550"></a><span class="lineno">  550</span>&#160;        {</div>
-<div class="line"><a name="l00551"></a><span class="lineno">  551</span>&#160;            DrawParameters* device_draw_parameters = <span class="keyword">static_cast&lt;</span>DrawParameters*<span class="keyword">&gt;</span>(</div>
-<div class="line"><a name="l00552"></a><span class="lineno">  552</span>&#160;                  glMapNamedBufferRange(draw_parameters, 0, <span class="keyword">sizeof</span>(DrawParameters), GL_MAP_READ_BIT));</div>
-<div class="line"><a name="l00553"></a><span class="lineno">  553</span>&#160;            GLuint ret = device_draw_parameters-&gt;count;</div>
-<div class="line"><a name="l00554"></a><span class="lineno">  554</span>&#160;            glUnmapNamedBuffer(draw_parameters);</div>
-<div class="line"><a name="l00555"></a><span class="lineno">  555</span>&#160;            <span class="keywordflow">return</span> ret;</div>
-<div class="line"><a name="l00556"></a><span class="lineno">  556</span>&#160;        }</div>
-<div class="line"><a name="l00557"></a><span class="lineno">  557</span>&#160; </div>
-<div class="line"><a name="l00558"></a><span class="lineno"><a class="line" href="classcgv_1_1render_1_1clod__point__buffer__manager.html#a9073bb5747aa72df9490a29a956e3d73">  558</a></span>&#160;        GLuint <a class="code" href="classcgv_1_1render_1_1clod__point__buffer__manager.html#a9073bb5747aa72df9490a29a956e3d73">clod_point_buffer_manager::size</a>()</div>
-<div class="line"><a name="l00559"></a><span class="lineno">  559</span>&#160;        {</div>
-<div class="line"><a name="l00560"></a><span class="lineno">  560</span>&#160;            <span class="keywordflow">return</span> max_num_points;</div>
-<div class="line"><a name="l00561"></a><span class="lineno">  561</span>&#160;        }</div>
-<div class="line"><a name="l00562"></a><span class="lineno">  562</span>&#160; </div>
-<div class="line"><a name="l00563"></a><span class="lineno">  563</span>&#160;        } <span class="comment">// namespace render</span></div>
-<div class="line"><a name="l00564"></a><span class="lineno">  564</span>&#160;        }</div>
-<div class="line"><a name="l00565"></a><span class="lineno">  565</span>&#160; </div>
-<div class="line"><a name="l00566"></a><span class="lineno">  566</span>&#160; </div>
-<div class="line"><a name="l00567"></a><span class="lineno">  567</span>&#160;<span class="preprocessor">#include &lt;cgv/gui/provider.h&gt;</span></div>
+<div class="line"><a name="l00257"></a><span class="lineno">  257</span>&#160;            reduce_prog.<a class="code" href="classcgv_1_1render_1_1shader__program.html#a1edb6aa2749c16c3743bf86d7557b22a">set_uniform</a>(ctx, <span class="stringliteral">&quot;use_clod&quot;</span>, prs.use_clod);</div>
+<div class="line"><a name="l00258"></a><span class="lineno">  258</span>&#160; </div>
+<div class="line"><a name="l00259"></a><span class="lineno">  259</span>&#160;            <span class="comment">//extract frustum</span></div>
+<div class="line"><a name="l00260"></a><span class="lineno">  260</span>&#160;            <a class="code" href="namespacecgv.html#a6c3091f6c4a7b32a0dec501e8c056734">dmat4</a> transform = ctx.get_projection_matrix();</div>
+<div class="line"><a name="l00261"></a><span class="lineno">  261</span>&#160;            <a class="code" href="namespacecgv.html#a0add29f049bd6be760ed993da79a5872">vec4</a> p4 = transform.row(3);</div>
+<div class="line"><a name="l00262"></a><span class="lineno">  262</span>&#160;                        </div>
+<div class="line"><a name="l00263"></a><span class="lineno">  263</span>&#160;            <a class="code" href="namespacecgv.html#a0add29f049bd6be760ed993da79a5872">vec4</a> hpa = p4 - transform.row(1);</div>
+<div class="line"><a name="l00264"></a><span class="lineno">  264</span>&#160;            <a class="code" href="namespacecgv.html#a0add29f049bd6be760ed993da79a5872">vec4</a> hpb = p4 + transform.row(1);</div>
+<div class="line"><a name="l00265"></a><span class="lineno">  265</span>&#160; </div>
+<div class="line"><a name="l00266"></a><span class="lineno">  266</span>&#160;            <a class="code" href="namespacecgv.html#a986c65184af5066fa26d468fd606c4fb">vec3</a> pa = <a class="code" href="namespacecgv.html#a986c65184af5066fa26d468fd606c4fb">vec3</a>(hpa.x(), hpa.y(), hpa.z());</div>
+<div class="line"><a name="l00267"></a><span class="lineno">  267</span>&#160;            <a class="code" href="namespacecgv.html#a986c65184af5066fa26d468fd606c4fb">vec3</a> pb = <a class="code" href="namespacecgv.html#a986c65184af5066fa26d468fd606c4fb">vec3</a>(hpb.x(), hpb.y(), hpb.z());</div>
+<div class="line"><a name="l00268"></a><span class="lineno">  268</span>&#160; </div>
+<div class="line"><a name="l00269"></a><span class="lineno">  269</span>&#160;            <span class="keywordtype">double</span> y_view_angle = PI - acos(dot(pa, pb) / (pa.length() * pb.length()));</div>
+<div class="line"><a name="l00270"></a><span class="lineno">  270</span>&#160;            <span class="keywordtype">float</span> pixel_extent_per_depth = (float)(2.0 * tan(0.5 * y_view_angle) / ctx.get_height());</div>
+<div class="line"><a name="l00271"></a><span class="lineno">  271</span>&#160; </div>
+<div class="line"><a name="l00272"></a><span class="lineno">  272</span>&#160;            <span class="comment">//general point renderer uniforms</span></div>
+<div class="line"><a name="l00273"></a><span class="lineno">  273</span>&#160;            draw_prog_ptr-&gt;<a class="code" href="classcgv_1_1render_1_1shader__program.html#a1edb6aa2749c16c3743bf86d7557b22a">set_uniform</a>(ctx, <span class="stringliteral">&quot;use_color_index&quot;</span>, <span class="keyword">false</span>);</div>
+<div class="line"><a name="l00274"></a><span class="lineno">  274</span>&#160;            draw_prog_ptr-&gt;<a class="code" href="classcgv_1_1render_1_1shader__program.html#a1edb6aa2749c16c3743bf86d7557b22a">set_uniform</a>(ctx, <span class="stringliteral">&quot;pixel_extent_per_depth&quot;</span>, pixel_extent_per_depth);</div>
+<div class="line"><a name="l00275"></a><span class="lineno">  275</span>&#160; </div>
+<div class="line"><a name="l00276"></a><span class="lineno">  276</span>&#160;            <span class="keywordflow">return</span> <span class="keyword">true</span>;</div>
+<div class="line"><a name="l00277"></a><span class="lineno">  277</span>&#160;        }</div>
+<div class="line"><a name="l00278"></a><span class="lineno">  278</span>&#160; </div>
+<div class="line"><a name="l00279"></a><span class="lineno"><a class="line" href="classcgv_1_1render_1_1clod__point__renderer.html#a395aceb0771cb59738863a88a146af55">  279</a></span>&#160;        <span class="keywordtype">bool</span> <a class="code" href="classcgv_1_1render_1_1clod__point__renderer.html#a395aceb0771cb59738863a88a146af55">clod_point_renderer::enable</a>(<a class="code" href="classcgv_1_1render_1_1context.html">context</a>&amp; ctx)</div>
+<div class="line"><a name="l00280"></a><span class="lineno">  280</span>&#160;        {</div>
+<div class="line"><a name="l00281"></a><span class="lineno">  281</span>&#160;            <a class="code" href="classcgv_1_1math_1_1fmat.html">mat4</a> reduce_model_view = ctx.<a class="code" href="classcgv_1_1render_1_1context.html#adf6b241cf3e57c435ef50cbb21427194">get_modelview_matrix</a>();</div>
+<div class="line"><a name="l00282"></a><span class="lineno">  282</span>&#160;            <span class="keywordflow">return</span> <a class="code" href="classcgv_1_1render_1_1clod__point__renderer.html#a395aceb0771cb59738863a88a146af55">enable</a>(ctx, reduce_model_view);</div>
+<div class="line"><a name="l00283"></a><span class="lineno">  283</span>&#160;        }</div>
+<div class="line"><a name="l00284"></a><span class="lineno">  284</span>&#160; </div>
+<div class="line"><a name="l00285"></a><span class="lineno">  285</span>&#160;        <span class="keywordtype">bool</span> clod_point_renderer::disable(<a class="code" href="classcgv_1_1render_1_1context.html">context</a>&amp; ctx)</div>
+<div class="line"><a name="l00286"></a><span class="lineno">  286</span>&#160;        {</div>
+<div class="line"><a name="l00287"></a><span class="lineno">  287</span>&#160;            draw_prog_ptr = &amp;draw_prog;</div>
+<div class="line"><a name="l00288"></a><span class="lineno">  288</span>&#160; </div>
+<div class="line"><a name="l00289"></a><span class="lineno">  289</span>&#160;            <span class="comment">// draw related stuff</span></div>
+<div class="line"><a name="l00290"></a><span class="lineno">  290</span>&#160;            glBindBuffer(GL_DRAW_INDIRECT_BUFFER, 0);</div>
+<div class="line"><a name="l00291"></a><span class="lineno">  291</span>&#160;            glBindVertexArray(0);</div>
+<div class="line"><a name="l00292"></a><span class="lineno">  292</span>&#160;            <span class="comment">// reduce related stuff</span></div>
+<div class="line"><a name="l00293"></a><span class="lineno">  293</span>&#160;            glBindBuffer(GL_SHADER_STORAGE_BUFFER, 0);</div>
+<div class="line"><a name="l00294"></a><span class="lineno">  294</span>&#160;            <span class="keywordflow">return</span> <span class="keyword">false</span>;</div>
+<div class="line"><a name="l00295"></a><span class="lineno">  295</span>&#160;        }</div>
+<div class="line"><a name="l00296"></a><span class="lineno">  296</span>&#160; </div>
+<div class="line"><a name="l00297"></a><span class="lineno">  297</span>&#160;        <span class="keywordtype">void</span> clod_point_renderer::clear(<a class="code" href="classcgv_1_1render_1_1context.html">cgv::render::context</a>&amp; ctx)</div>
+<div class="line"><a name="l00298"></a><span class="lineno">  298</span>&#160;        {</div>
+<div class="line"><a name="l00299"></a><span class="lineno">  299</span>&#160;            reduce_prog.<a class="code" href="classcgv_1_1render_1_1shader__program.html#a4dbded816a1b75be5763494cb949f03e">destruct</a>(ctx);</div>
+<div class="line"><a name="l00300"></a><span class="lineno">  300</span>&#160;            draw_prog.<a class="code" href="classcgv_1_1render_1_1shader__program.html#a4dbded816a1b75be5763494cb949f03e">destruct</a>(ctx);</div>
+<div class="line"><a name="l00301"></a><span class="lineno">  301</span>&#160;            clear_buffers(ctx);</div>
+<div class="line"><a name="l00302"></a><span class="lineno">  302</span>&#160;        }</div>
+<div class="line"><a name="l00303"></a><span class="lineno">  303</span>&#160; </div>
+<div class="line"><a name="l00304"></a><span class="lineno">  304</span>&#160;        <span class="keywordtype">void</span> clod_point_renderer::disable_buffer_manager()</div>
+<div class="line"><a name="l00305"></a><span class="lineno">  305</span>&#160;        {</div>
+<div class="line"><a name="l00306"></a><span class="lineno">  306</span>&#160;            enable_buffer_manager(buffer_manager); <span class="comment">//enable the internal buffer manager to disable any external</span></div>
+<div class="line"><a name="l00307"></a><span class="lineno">  307</span>&#160;        }</div>
+<div class="line"><a name="l00308"></a><span class="lineno">  308</span>&#160; </div>
+<div class="line"><a name="l00309"></a><span class="lineno"><a class="line" href="classcgv_1_1render_1_1clod__point__renderer.html#ac666206ddf453d0756851838d0118fba">  309</a></span>&#160;        <span class="keywordtype">void</span> <a class="code" href="classcgv_1_1render_1_1clod__point__renderer.html#ac666206ddf453d0756851838d0118fba">clod_point_renderer::draw</a>(<a class="code" href="classcgv_1_1render_1_1context.html">context</a>&amp; ctx, <span class="keywordtype">size_t</span> start, <span class="keywordtype">size_t</span> count)</div>
+<div class="line"><a name="l00310"></a><span class="lineno">  310</span>&#160;        {</div>
+<div class="line"><a name="l00311"></a><span class="lineno">  311</span>&#160;            <a class="code" href="classcgv_1_1render_1_1clod__point__renderer.html#a4930435b033cb2f0909343178b466e7a">reduce_points</a>(ctx, start, count);</div>
+<div class="line"><a name="l00312"></a><span class="lineno">  312</span>&#160;            <a class="code" href="classcgv_1_1render_1_1clod__point__renderer.html#a2e443ebe8daa3512f084e3bb4d4ab184">draw_points</a>(ctx);</div>
+<div class="line"><a name="l00313"></a><span class="lineno">  313</span>&#160;        }</div>
+<div class="line"><a name="l00314"></a><span class="lineno">  314</span>&#160; </div>
+<div class="line"><a name="l00315"></a><span class="lineno">  315</span>&#160;        <span class="keywordtype">bool</span> clod_point_renderer::render(<a class="code" href="classcgv_1_1render_1_1context.html">context</a>&amp; ctx, <span class="keywordtype">size_t</span> start, <span class="keywordtype">size_t</span> count)</div>
+<div class="line"><a name="l00316"></a><span class="lineno">  316</span>&#160;        {</div>
+<div class="line"><a name="l00317"></a><span class="lineno">  317</span>&#160;            <span class="keywordflow">if</span> (<a class="code" href="classcgv_1_1render_1_1clod__point__renderer.html#a395aceb0771cb59738863a88a146af55">enable</a>(ctx)) {</div>
+<div class="line"><a name="l00318"></a><span class="lineno">  318</span>&#160;                <a class="code" href="classcgv_1_1render_1_1clod__point__renderer.html#ac666206ddf453d0756851838d0118fba">draw</a>(ctx, start, count);</div>
+<div class="line"><a name="l00319"></a><span class="lineno">  319</span>&#160;                <span class="keywordflow">return</span> <span class="keyword">true</span>;</div>
+<div class="line"><a name="l00320"></a><span class="lineno">  320</span>&#160;            }</div>
+<div class="line"><a name="l00321"></a><span class="lineno">  321</span>&#160;            <span class="keywordflow">return</span> disable(ctx);</div>
+<div class="line"><a name="l00322"></a><span class="lineno">  322</span>&#160;        }</div>
+<div class="line"><a name="l00323"></a><span class="lineno">  323</span>&#160; </div>
+<div class="line"><a name="l00324"></a><span class="lineno"><a class="line" href="classcgv_1_1render_1_1clod__point__renderer.html#a40cb51e12d04785de9efa3c2fa0f3a72">  324</a></span>&#160;        <span class="keywordtype">void</span> <a class="code" href="classcgv_1_1render_1_1clod__point__renderer.html#a40cb51e12d04785de9efa3c2fa0f3a72">clod_point_renderer::set_points</a>(<a class="code" href="classcgv_1_1render_1_1context.html">cgv::render::context</a>&amp; ctx, <span class="keyword">const</span> <a class="code" href="structcgv_1_1render_1_1clod__point__renderer_1_1Point.html">Point</a>* pnts, <span class="keyword">const</span> <span class="keywordtype">size_t</span> num_points) {</div>
+<div class="line"><a name="l00325"></a><span class="lineno">  325</span>&#160;            assert(input_buffer != 0);</div>
+<div class="line"><a name="l00326"></a><span class="lineno">  326</span>&#160;            glBindBuffer(GL_SHADER_STORAGE_BUFFER, input_buffer);</div>
+<div class="line"><a name="l00327"></a><span class="lineno">  327</span>&#160;            glBufferData(GL_SHADER_STORAGE_BUFFER, num_points * <span class="keyword">sizeof</span>(<a class="code" href="structcgv_1_1render_1_1clod__point__renderer_1_1Point.html">Point</a>), pnts, GL_STATIC_READ);</div>
+<div class="line"><a name="l00328"></a><span class="lineno">  328</span>&#160;            glBindBuffer(GL_SHADER_STORAGE_BUFFER, 0);</div>
+<div class="line"><a name="l00329"></a><span class="lineno">  329</span>&#160;            input_buffer_size = num_points * <span class="keyword">sizeof</span>(<a class="code" href="structcgv_1_1render_1_1clod__point__renderer_1_1Point.html">Point</a>);</div>
+<div class="line"><a name="l00330"></a><span class="lineno">  330</span>&#160;            input_buffer_num_points = <span class="keyword">static_cast&lt;</span>GLuint<span class="keyword">&gt;</span>(num_points);</div>
+<div class="line"><a name="l00331"></a><span class="lineno">  331</span>&#160;            buffers_outofdate = <span class="keyword">true</span>;</div>
+<div class="line"><a name="l00332"></a><span class="lineno">  332</span>&#160;        }</div>
+<div class="line"><a name="l00333"></a><span class="lineno">  333</span>&#160; </div>
+<div class="line"><a name="l00334"></a><span class="lineno"><a class="line" href="classcgv_1_1render_1_1clod__point__renderer.html#a9fcd01416698e24578026992cfe45a47">  334</a></span>&#160;        <span class="keywordtype">void</span> <a class="code" href="classcgv_1_1render_1_1clod__point__renderer.html#a40cb51e12d04785de9efa3c2fa0f3a72">clod_point_renderer::set_points</a>(<a class="code" href="classcgv_1_1render_1_1context.html">cgv::render::context</a>&amp; ctx, <span class="keyword">const</span> <a class="code" href="classcgv_1_1math_1_1fvec.html">vec3</a>* positions, <span class="keyword">const</span> <a class="code" href="classcgv_1_1media_1_1color.html">rgb8</a>* colors, <span class="keyword">const</span> uint8_t* lods, <span class="keyword">const</span> <span class="keywordtype">size_t</span> num_points, <span class="keyword">const</span> <span class="keywordtype">unsigned</span> stride)</div>
+<div class="line"><a name="l00335"></a><span class="lineno">  335</span>&#160;        {</div>
+<div class="line"><a name="l00336"></a><span class="lineno">  336</span>&#160;            std::vector&lt;Point&gt; input_buffer_data(num_points);</div>
+<div class="line"><a name="l00337"></a><span class="lineno">  337</span>&#160;            <span class="keyword">const</span> uint8_t* pos_end = (uint8_t*)positions + (stride * num_points);</div>
+<div class="line"><a name="l00338"></a><span class="lineno">  338</span>&#160; </div>
+<div class="line"><a name="l00339"></a><span class="lineno">  339</span>&#160;            <span class="keyword">auto</span> input_it = input_buffer_data.begin();</div>
+<div class="line"><a name="l00340"></a><span class="lineno">  340</span>&#160; </div>
+<div class="line"><a name="l00341"></a><span class="lineno">  341</span>&#160;            <span class="keywordflow">for</span> (<span class="keywordtype">int</span> i = 0; i &lt; num_points; ++i) {</div>
+<div class="line"><a name="l00342"></a><span class="lineno">  342</span>&#160;                input_it-&gt;position() = *positions;</div>
+<div class="line"><a name="l00343"></a><span class="lineno">  343</span>&#160;                input_it-&gt;color() = *colors;</div>
+<div class="line"><a name="l00344"></a><span class="lineno">  344</span>&#160;                input_it-&gt;level() = *lods;</div>
+<div class="line"><a name="l00345"></a><span class="lineno">  345</span>&#160;                ++input_it;</div>
+<div class="line"><a name="l00346"></a><span class="lineno">  346</span>&#160; </div>
+<div class="line"><a name="l00347"></a><span class="lineno">  347</span>&#160;                <span class="keywordflow">if</span> (stride) {</div>
+<div class="line"><a name="l00348"></a><span class="lineno">  348</span>&#160;                    positions = (<a class="code" href="classcgv_1_1math_1_1fvec.html">vec3</a>*)((uint8_t*)positions + stride);</div>
+<div class="line"><a name="l00349"></a><span class="lineno">  349</span>&#160;                    colors = (<a class="code" href="classcgv_1_1media_1_1color.html">rgb8</a>*)((uint8_t*)colors + stride);</div>
+<div class="line"><a name="l00350"></a><span class="lineno">  350</span>&#160;                    lods += stride;</div>
+<div class="line"><a name="l00351"></a><span class="lineno">  351</span>&#160;                }</div>
+<div class="line"><a name="l00352"></a><span class="lineno">  352</span>&#160;                <span class="keywordflow">else</span> {</div>
+<div class="line"><a name="l00353"></a><span class="lineno">  353</span>&#160;                    ++positions;</div>
+<div class="line"><a name="l00354"></a><span class="lineno">  354</span>&#160;                    ++colors;</div>
+<div class="line"><a name="l00355"></a><span class="lineno">  355</span>&#160;                    ++lods;</div>
+<div class="line"><a name="l00356"></a><span class="lineno">  356</span>&#160;                }</div>
+<div class="line"><a name="l00357"></a><span class="lineno">  357</span>&#160; </div>
+<div class="line"><a name="l00358"></a><span class="lineno">  358</span>&#160;            }</div>
+<div class="line"><a name="l00359"></a><span class="lineno">  359</span>&#160;            <a class="code" href="classcgv_1_1render_1_1clod__point__renderer.html#a40cb51e12d04785de9efa3c2fa0f3a72">set_points</a>(ctx, input_buffer_data.data(),input_buffer_data.size());</div>
+<div class="line"><a name="l00360"></a><span class="lineno">  360</span>&#160;        }</div>
+<div class="line"><a name="l00361"></a><span class="lineno">  361</span>&#160; </div>
+<div class="line"><a name="l00362"></a><span class="lineno">  362</span>&#160;        <span class="keywordtype">bool</span> clod_point_renderer::enable_buffer_manager(<a class="code" href="classcgv_1_1render_1_1clod__point__buffer__manager.html">clod_point_buffer_manager</a>&amp; manager)</div>
+<div class="line"><a name="l00363"></a><span class="lineno">  363</span>&#160;        {</div>
+<div class="line"><a name="l00364"></a><span class="lineno">  364</span>&#160;            active_buffer_manager_ptr = &amp;manager;</div>
+<div class="line"><a name="l00365"></a><span class="lineno">  365</span>&#160;            active_render_buffer = manager.<a class="code" href="classcgv_1_1render_1_1clod__point__buffer__manager.html#a5bd3b916718beb7228cd02762b53e3a4">get_reduced_points</a>();</div>
+<div class="line"><a name="l00366"></a><span class="lineno">  366</span>&#160;            active_draw_parameter_buffer = manager.<a class="code" href="classcgv_1_1render_1_1clod__point__buffer__manager.html#ad5a797703b40bbffe77fde933a8c60ff">get_draw_parameters</a>();</div>
+<div class="line"><a name="l00367"></a><span class="lineno">  367</span>&#160;            active_index_buffer = manager.<a class="code" href="classcgv_1_1render_1_1clod__point__buffer__manager.html#a5de006eaf30ab45b35f9ef6a75080c11">get_index_buffer</a>();</div>
+<div class="line"><a name="l00368"></a><span class="lineno">  368</span>&#160;            active_vertex_array = manager.get_vertex_array();</div>
+<div class="line"><a name="l00369"></a><span class="lineno">  369</span>&#160; </div>
+<div class="line"><a name="l00370"></a><span class="lineno">  370</span>&#160;            <span class="keywordflow">return</span> <span class="keyword">true</span>;</div>
+<div class="line"><a name="l00371"></a><span class="lineno">  371</span>&#160;        }</div>
+<div class="line"><a name="l00372"></a><span class="lineno">  372</span>&#160; </div>
+<div class="line"><a name="l00373"></a><span class="lineno">  373</span>&#160;        <span class="keywordtype">void</span> clod_point_renderer::set_max_drawn_points(<a class="code" href="classcgv_1_1render_1_1context.html">cgv::render::context</a>&amp; ctx, <span class="keyword">const</span> <span class="keywordtype">unsigned</span> max_points)</div>
+<div class="line"><a name="l00374"></a><span class="lineno">  374</span>&#160;        {</div>
+<div class="line"><a name="l00375"></a><span class="lineno">  375</span>&#160;            <span class="keywordflow">if</span> (active_buffer_manager_ptr-&gt;<a class="code" href="classcgv_1_1render_1_1clod__point__buffer__manager.html#a9073bb5747aa72df9490a29a956e3d73">size</a>() != max_points) {</div>
+<div class="line"><a name="l00376"></a><span class="lineno">  376</span>&#160;                active_buffer_manager_ptr-&gt;resize(max_points);</div>
+<div class="line"><a name="l00377"></a><span class="lineno">  377</span>&#160;            }</div>
+<div class="line"><a name="l00378"></a><span class="lineno">  378</span>&#160;        }</div>
+<div class="line"><a name="l00379"></a><span class="lineno">  379</span>&#160; </div>
+<div class="line"><a name="l00380"></a><span class="lineno">  380</span>&#160;        <span class="keywordtype">void</span> clod_point_renderer::set_frustum_extend(<span class="keyword">const</span> <span class="keywordtype">float</span>&amp; fe)</div>
+<div class="line"><a name="l00381"></a><span class="lineno">  381</span>&#160;        {</div>
+<div class="line"><a name="l00382"></a><span class="lineno">  382</span>&#160;            frustum_extend = fe;</div>
+<div class="line"><a name="l00383"></a><span class="lineno">  383</span>&#160;        }</div>
+<div class="line"><a name="l00384"></a><span class="lineno">  384</span>&#160; </div>
+<div class="line"><a name="l00385"></a><span class="lineno">  385</span>&#160;        <span class="keywordtype">void</span> clod_point_renderer::set_pivot_point(<span class="keyword">const</span> <a class="code" href="namespacecgv.html#a0add29f049bd6be760ed993da79a5872">vec4</a>&amp; pivot)</div>
+<div class="line"><a name="l00386"></a><span class="lineno">  386</span>&#160;        {</div>
+<div class="line"><a name="l00387"></a><span class="lineno">  387</span>&#160;            pivot_point_in_view_space = pivot;</div>
+<div class="line"><a name="l00388"></a><span class="lineno">  388</span>&#160;        }</div>
+<div class="line"><a name="l00389"></a><span class="lineno">  389</span>&#160; </div>
+<div class="line"><a name="l00390"></a><span class="lineno">  390</span>&#160;        <span class="keywordtype">void</span> clod_point_renderer::set_render_style(<span class="keyword">const</span> render_style&amp; rs)</div>
+<div class="line"><a name="l00391"></a><span class="lineno">  391</span>&#160;        {</div>
+<div class="line"><a name="l00392"></a><span class="lineno">  392</span>&#160;            this-&gt;rs = &amp;rs;</div>
+<div class="line"><a name="l00393"></a><span class="lineno">  393</span>&#160;        }</div>
+<div class="line"><a name="l00394"></a><span class="lineno">  394</span>&#160; </div>
+<div class="line"><a name="l00395"></a><span class="lineno">  395</span>&#160;        <span class="keywordtype">void</span> clod_point_renderer::manage_singelton(context&amp; ctx, <span class="keyword">const</span> std::string&amp; renderer_name, <span class="keywordtype">int</span>&amp; ref_count, <span class="keywordtype">int</span> ref_count_change)</div>
+<div class="line"><a name="l00396"></a><span class="lineno">  396</span>&#160;        {</div>
+<div class="line"><a name="l00397"></a><span class="lineno">  397</span>&#160;            <span class="keywordflow">switch</span> (ref_count_change) {</div>
+<div class="line"><a name="l00398"></a><span class="lineno">  398</span>&#160;            <span class="keywordflow">case</span> 1:</div>
+<div class="line"><a name="l00399"></a><span class="lineno">  399</span>&#160;                <span class="keywordflow">if</span> (ref_count == 0) {</div>
+<div class="line"><a name="l00400"></a><span class="lineno">  400</span>&#160;                    <span class="keywordflow">if</span> (!init(ctx))</div>
+<div class="line"><a name="l00401"></a><span class="lineno">  401</span>&#160;                        ctx.error(std::string(<span class="stringliteral">&quot;unable to initialize &quot;</span>) + renderer_name + <span class="stringliteral">&quot; singelton&quot;</span>);</div>
+<div class="line"><a name="l00402"></a><span class="lineno">  402</span>&#160;                }</div>
+<div class="line"><a name="l00403"></a><span class="lineno">  403</span>&#160;                ++ref_count;</div>
+<div class="line"><a name="l00404"></a><span class="lineno">  404</span>&#160;                <span class="keywordflow">break</span>;</div>
+<div class="line"><a name="l00405"></a><span class="lineno">  405</span>&#160;            <span class="keywordflow">case</span> 0:</div>
+<div class="line"><a name="l00406"></a><span class="lineno">  406</span>&#160;                <span class="keywordflow">break</span>;</div>
+<div class="line"><a name="l00407"></a><span class="lineno">  407</span>&#160;            <span class="keywordflow">case</span> -1:</div>
+<div class="line"><a name="l00408"></a><span class="lineno">  408</span>&#160;                <span class="keywordflow">if</span> (ref_count == 0)</div>
+<div class="line"><a name="l00409"></a><span class="lineno">  409</span>&#160;                    ctx.error(std::string(<span class="stringliteral">&quot;attempt to decrease reference count of &quot;</span>) + renderer_name + <span class="stringliteral">&quot; singelton below 0&quot;</span>);</div>
+<div class="line"><a name="l00410"></a><span class="lineno">  410</span>&#160;                <span class="keywordflow">else</span> {</div>
+<div class="line"><a name="l00411"></a><span class="lineno">  411</span>&#160;                    <span class="keywordflow">if</span> (--ref_count == 0)</div>
+<div class="line"><a name="l00412"></a><span class="lineno">  412</span>&#160;                        clear(ctx);</div>
+<div class="line"><a name="l00413"></a><span class="lineno">  413</span>&#160;                }</div>
+<div class="line"><a name="l00414"></a><span class="lineno">  414</span>&#160;                <span class="keywordflow">break</span>;</div>
+<div class="line"><a name="l00415"></a><span class="lineno">  415</span>&#160;            <span class="keywordflow">default</span>:</div>
+<div class="line"><a name="l00416"></a><span class="lineno">  416</span>&#160;                ctx.error(std::string(<span class="stringliteral">&quot;invalid change reference count outside {-1,0,1} for &quot;</span>) + renderer_name + <span class="stringliteral">&quot; singelton&quot;</span>);</div>
+<div class="line"><a name="l00417"></a><span class="lineno">  417</span>&#160;            }</div>
+<div class="line"><a name="l00418"></a><span class="lineno">  418</span>&#160;        }</div>
+<div class="line"><a name="l00419"></a><span class="lineno">  419</span>&#160; </div>
+<div class="line"><a name="l00420"></a><span class="lineno"><a class="line" href="classcgv_1_1render_1_1clod__point__renderer.html#a1051e44c0dcf7cd22b1190080505ce90">  420</a></span>&#160;        <span class="keywordtype">void</span> <a class="code" href="classcgv_1_1render_1_1clod__point__renderer.html#a1051e44c0dcf7cd22b1190080505ce90">clod_point_renderer::set_prog</a>(<a class="code" href="classcgv_1_1render_1_1shader__program.html">shader_program</a>&amp; one_shot_prog)</div>
+<div class="line"><a name="l00421"></a><span class="lineno">  421</span>&#160;        {</div>
+<div class="line"><a name="l00422"></a><span class="lineno">  422</span>&#160;            draw_prog_ptr = &amp;one_shot_prog;</div>
+<div class="line"><a name="l00423"></a><span class="lineno">  423</span>&#160;        }</div>
+<div class="line"><a name="l00424"></a><span class="lineno">  424</span>&#160;        </div>
+<div class="line"><a name="l00425"></a><span class="lineno">  425</span>&#160; </div>
+<div class="line"><a name="l00426"></a><span class="lineno">  426</span>&#160;        <span class="keywordtype">void</span> clod_point_renderer::add_shader(<a class="code" href="classcgv_1_1render_1_1context.html">context</a>&amp; ctx, <a class="code" href="classcgv_1_1render_1_1shader__program.html">shader_program</a>&amp; prog, <span class="keyword">const</span> std::string&amp; sf,<span class="keyword">const</span> <a class="code" href="namespacecgv_1_1render.html#aa829197f51559124b8c72a2bd024b8db">cgv::render::ShaderType</a> st)</div>
+<div class="line"><a name="l00427"></a><span class="lineno">  427</span>&#160;        {</div>
+<div class="line"><a name="l00428"></a><span class="lineno">  428</span>&#160;<span class="preprocessor">#ifndef NDEBUG</span></div>
+<div class="line"><a name="l00429"></a><span class="lineno">  429</span>&#160;            std::cout &lt;&lt; <span class="stringliteral">&quot;add shader &quot;</span> &lt;&lt; sf &lt;&lt; <span class="charliteral">&#39;\n&#39;</span>;</div>
+<div class="line"><a name="l00430"></a><span class="lineno">  430</span>&#160;<span class="preprocessor">#endif </span><span class="comment">// #ifdef NDEBUG</span></div>
+<div class="line"><a name="l00431"></a><span class="lineno">  431</span>&#160;            prog.<a class="code" href="classcgv_1_1render_1_1shader__program.html#aae8bc974eed4fd1e2ac923fe98091862">attach_file</a>(ctx, sf, st);</div>
+<div class="line"><a name="l00432"></a><span class="lineno">  432</span>&#160;<span class="preprocessor">#ifndef NDEBUG</span></div>
+<div class="line"><a name="l00433"></a><span class="lineno">  433</span>&#160;            <span class="keywordflow">if</span> (prog.<a class="code" href="classcgv_1_1render_1_1render__component.html#a95f40a817168467d5a0d3fdbb09e0b79">last_error</a>.size() &gt; 0) {</div>
+<div class="line"><a name="l00434"></a><span class="lineno">  434</span>&#160;                std::cerr &lt;&lt; prog.<a class="code" href="classcgv_1_1render_1_1render__component.html#a95f40a817168467d5a0d3fdbb09e0b79">last_error</a> &lt;&lt; <span class="charliteral">&#39;\n&#39;</span>;</div>
+<div class="line"><a name="l00435"></a><span class="lineno">  435</span>&#160;                prog.<a class="code" href="classcgv_1_1render_1_1render__component.html#a95f40a817168467d5a0d3fdbb09e0b79">last_error</a> = <span class="stringliteral">&quot;&quot;</span>;</div>
+<div class="line"><a name="l00436"></a><span class="lineno">  436</span>&#160;            }   </div>
+<div class="line"><a name="l00437"></a><span class="lineno">  437</span>&#160;<span class="preprocessor">#endif </span><span class="comment">// #ifdef NDEBUG</span></div>
+<div class="line"><a name="l00438"></a><span class="lineno">  438</span>&#160; </div>
+<div class="line"><a name="l00439"></a><span class="lineno">  439</span>&#160;        }</div>
+<div class="line"><a name="l00440"></a><span class="lineno">  440</span>&#160; </div>
+<div class="line"><a name="l00441"></a><span class="lineno"><a class="line" href="classcgv_1_1render_1_1clod__point__renderer.html#a697e77b7f41463865fdc626e7ea3ca5f">  441</a></span>&#160;        <span class="keywordtype">unsigned</span> <span class="keywordtype">int</span> <a class="code" href="classcgv_1_1render_1_1clod__point__renderer.html#a697e77b7f41463865fdc626e7ea3ca5f">clod_point_renderer::num_reduced_points</a>()</div>
+<div class="line"><a name="l00442"></a><span class="lineno">  442</span>&#160;        {</div>
+<div class="line"><a name="l00443"></a><span class="lineno">  443</span>&#160;            DrawParameters* device_draw_parameters = <span class="keyword">static_cast&lt;</span>DrawParameters*<span class="keyword">&gt;</span>(glMapNamedBufferRange(active_draw_parameter_buffer, 0, <span class="keyword">sizeof</span>(DrawParameters), GL_MAP_READ_BIT));</div>
+<div class="line"><a name="l00444"></a><span class="lineno">  444</span>&#160;            <span class="keywordtype">unsigned</span> ret = device_draw_parameters-&gt;count;</div>
+<div class="line"><a name="l00445"></a><span class="lineno">  445</span>&#160;            glUnmapNamedBuffer(active_draw_parameter_buffer);</div>
+<div class="line"><a name="l00446"></a><span class="lineno">  446</span>&#160;            <span class="keywordflow">return</span> ret;</div>
+<div class="line"><a name="l00447"></a><span class="lineno">  447</span>&#160;        }</div>
+<div class="line"><a name="l00448"></a><span class="lineno">  448</span>&#160; </div>
+<div class="line"><a name="l00449"></a><span class="lineno">  449</span>&#160;        <span class="keywordtype">void</span> clod_point_renderer::clear_buffers(<a class="code" href="classcgv_1_1render_1_1context.html">context</a>&amp; ctx)</div>
+<div class="line"><a name="l00450"></a><span class="lineno">  450</span>&#160;        {</div>
+<div class="line"><a name="l00451"></a><span class="lineno">  451</span>&#160;            glDeleteBuffers(1, &amp;input_buffer);</div>
+<div class="line"><a name="l00452"></a><span class="lineno">  452</span>&#160;            buffer_manager.clear(ctx);</div>
+<div class="line"><a name="l00453"></a><span class="lineno">  453</span>&#160;            input_buffer = 0;</div>
+<div class="line"><a name="l00454"></a><span class="lineno">  454</span>&#160;        }</div>
+<div class="line"><a name="l00455"></a><span class="lineno">  455</span>&#160; </div>
+<div class="line"><a name="l00456"></a><span class="lineno">  456</span>&#160;        <span class="keywordtype">void</span> clod_point_renderer::reset_draw_parameters(context&amp; ctx, GLuint draw_parameter_buffer)</div>
+<div class="line"><a name="l00457"></a><span class="lineno">  457</span>&#160;        {</div>
+<div class="line"><a name="l00458"></a><span class="lineno">  458</span>&#160;            <span class="comment">// reset draw parameters, using SubData here is better for performance</span></div>
+<div class="line"><a name="l00459"></a><span class="lineno">  459</span>&#160;            DrawParameters dp = DrawParameters();</div>
+<div class="line"><a name="l00460"></a><span class="lineno">  460</span>&#160;            glNamedBufferSubData(draw_parameter_buffer, 0, <span class="keyword">sizeof</span>(DrawParameters), &amp;dp);</div>
+<div class="line"><a name="l00461"></a><span class="lineno">  461</span>&#160;        }</div>
+<div class="line"><a name="l00462"></a><span class="lineno">  462</span>&#160;                </div>
+<div class="line"><a name="l00463"></a><span class="lineno">  463</span>&#160;        <span class="keywordtype">bool</span> clod_point_render_style_reflect::self_reflect(<a class="code" href="classcgv_1_1reflect_1_1reflection__handler.html">cgv::reflect::reflection_handler</a>&amp; rh)</div>
+<div class="line"><a name="l00464"></a><span class="lineno">  464</span>&#160;        {</div>
+<div class="line"><a name="l00465"></a><span class="lineno">  465</span>&#160;            <span class="keywordflow">return</span></div>
+<div class="line"><a name="l00466"></a><span class="lineno">  466</span>&#160;                  <span class="comment">// rh.reflect_base(*static_cast&lt;cgv::render::clod_point_render_style*&gt;(this)) &amp;&amp;</span></div>
+<div class="line"><a name="l00467"></a><span class="lineno">  467</span>&#160;                  rh.<a class="code" href="classcgv_1_1reflect_1_1reflection__handler.html#ae10eef5e76075a7eb676d8ba40839291">reflect_member</a>(<span class="stringliteral">&quot;CLOD_factor&quot;</span>, CLOD) &amp;&amp; </div>
+<div class="line"><a name="l00468"></a><span class="lineno">  468</span>&#160;                  rh.<a class="code" href="classcgv_1_1reflect_1_1reflection__handler.html#ae10eef5e76075a7eb676d8ba40839291">reflect_member</a>(<span class="stringliteral">&quot;spacing&quot;</span>, <a class="code" href="structcgv_1_1render_1_1clod__point__render__style.html#ad1f2c69eb543d524d081109fe0847aa1">spacing</a>) &amp;&amp;</div>
+<div class="line"><a name="l00469"></a><span class="lineno">  469</span>&#160;                  rh.<a class="code" href="classcgv_1_1reflect_1_1reflection__handler.html#ae10eef5e76075a7eb676d8ba40839291">reflect_member</a>(<span class="stringliteral">&quot;scale&quot;</span>, scale) &amp;&amp; </div>
+<div class="line"><a name="l00470"></a><span class="lineno">  470</span>&#160;                  rh.<a class="code" href="classcgv_1_1reflect_1_1reflection__handler.html#ae10eef5e76075a7eb676d8ba40839291">reflect_member</a>(<span class="stringliteral">&quot;min_millimeters&quot;</span>, min_millimeters) &amp;&amp;</div>
+<div class="line"><a name="l00471"></a><span class="lineno">  471</span>&#160;                  rh.<a class="code" href="classcgv_1_1reflect_1_1reflection__handler.html#ae10eef5e76075a7eb676d8ba40839291">reflect_member</a>(<span class="stringliteral">&quot;point_size&quot;</span>, pointSize) &amp;&amp;</div>
+<div class="line"><a name="l00472"></a><span class="lineno">  472</span>&#160;                  rh.<a class="code" href="classcgv_1_1reflect_1_1reflection__handler.html#ae10eef5e76075a7eb676d8ba40839291">reflect_member</a>(<span class="stringliteral">&quot;use_clod&quot;</span>, use_clod);</div>
+<div class="line"><a name="l00473"></a><span class="lineno">  473</span>&#160;                </div>
+<div class="line"><a name="l00474"></a><span class="lineno">  474</span>&#160;        }</div>
+<div class="line"><a name="l00475"></a><span class="lineno">  475</span>&#160; </div>
+<div class="line"><a name="l00476"></a><span class="lineno">  476</span>&#160;        <a class="code" href="structcgv_1_1reflect_1_1extern__reflection__traits.html">cgv::reflect::extern_reflection_traits&lt;clod_point_render_style, clod_point_render_style_reflect&gt;</a> get_reflection_traits(<span class="keyword">const</span> clod_point_render_style&amp;)</div>
+<div class="line"><a name="l00477"></a><span class="lineno">  477</span>&#160;        {</div>
+<div class="line"><a name="l00478"></a><span class="lineno">  478</span>&#160;            <span class="keywordflow">return</span> <a class="code" href="structcgv_1_1reflect_1_1extern__reflection__traits.html">cgv::reflect::extern_reflection_traits&lt;clod_point_render_style, clod_point_render_style_reflect&gt;</a>();</div>
+<div class="line"><a name="l00479"></a><span class="lineno">  479</span>&#160;        }</div>
+<div class="line"><a name="l00480"></a><span class="lineno">  480</span>&#160; </div>
+<div class="line"><a name="l00481"></a><span class="lineno">  481</span>&#160;        GLuint clod_point_buffer_manager::get_vertex_array()</div>
+<div class="line"><a name="l00482"></a><span class="lineno">  482</span>&#160;        {</div>
+<div class="line"><a name="l00483"></a><span class="lineno">  483</span>&#160;            <span class="keywordflow">return</span> vertex_array;</div>
+<div class="line"><a name="l00484"></a><span class="lineno">  484</span>&#160;        }</div>
+<div class="line"><a name="l00485"></a><span class="lineno">  485</span>&#160; </div>
+<div class="line"><a name="l00486"></a><span class="lineno">  486</span>&#160;        <span class="keywordtype">void</span> clod_point_buffer_manager::init(context&amp; ctx)</div>
+<div class="line"><a name="l00487"></a><span class="lineno">  487</span>&#160;        {</div>
+<div class="line"><a name="l00488"></a><span class="lineno">  488</span>&#160;            glCreateBuffers(1, &amp;points);</div>
+<div class="line"><a name="l00489"></a><span class="lineno">  489</span>&#160;            glCreateBuffers(1, &amp;indices);</div>
+<div class="line"><a name="l00490"></a><span class="lineno">  490</span>&#160;            glCreateBuffers(1, &amp;draw_parameters);</div>
+<div class="line"><a name="l00491"></a><span class="lineno">  491</span>&#160;            glGenVertexArrays(1, &amp;vertex_array);</div>
+<div class="line"><a name="l00492"></a><span class="lineno">  492</span>&#160;            <span class="comment">//define vertex array</span></div>
+<div class="line"><a name="l00493"></a><span class="lineno">  493</span>&#160;            {</div>
+<div class="line"><a name="l00494"></a><span class="lineno">  494</span>&#160;                glBindVertexArray(vertex_array);</div>
+<div class="line"><a name="l00495"></a><span class="lineno">  495</span>&#160;                <span class="comment">// position</span></div>
+<div class="line"><a name="l00496"></a><span class="lineno">  496</span>&#160;                glBindBuffer(GL_ARRAY_BUFFER, points);</div>
+<div class="line"><a name="l00497"></a><span class="lineno">  497</span>&#160;                glVertexAttribPointer(0, 4, GL_FLOAT, GL_FALSE, <span class="keyword">sizeof</span>(clod_point_renderer::Point), (<span class="keywordtype">void</span>*)0);</div>
+<div class="line"><a name="l00498"></a><span class="lineno">  498</span>&#160;                glEnableVertexAttribArray(0);</div>
+<div class="line"><a name="l00499"></a><span class="lineno">  499</span>&#160;                <span class="comment">// color</span></div>
+<div class="line"><a name="l00500"></a><span class="lineno">  500</span>&#160;                glVertexAttribPointer(1, 4, GL_UNSIGNED_BYTE, GL_TRUE, <span class="keyword">sizeof</span>(clod_point_renderer::Point),</div>
+<div class="line"><a name="l00501"></a><span class="lineno">  501</span>&#160;                                      (<span class="keywordtype">void</span>*)(<span class="keyword">sizeof</span>(<a class="code" href="namespacecgv.html#a986c65184af5066fa26d468fd606c4fb">vec3</a>)));</div>
+<div class="line"><a name="l00502"></a><span class="lineno">  502</span>&#160;                glEnableVertexAttribArray(1);</div>
+<div class="line"><a name="l00503"></a><span class="lineno">  503</span>&#160;                <span class="comment">// index</span></div>
+<div class="line"><a name="l00504"></a><span class="lineno">  504</span>&#160;                glBindBuffer(GL_ARRAY_BUFFER, indices);</div>
+<div class="line"><a name="l00505"></a><span class="lineno">  505</span>&#160;                glVertexAttribIPointer(2, 1, GL_UNSIGNED_INT, 0, (<span class="keywordtype">void</span>*)0);</div>
+<div class="line"><a name="l00506"></a><span class="lineno">  506</span>&#160;                glEnableVertexAttribArray(2);</div>
+<div class="line"><a name="l00507"></a><span class="lineno">  507</span>&#160;                glBindBuffer(GL_ARRAY_BUFFER, 0);</div>
+<div class="line"><a name="l00508"></a><span class="lineno">  508</span>&#160;                glBindVertexArray(0);</div>
+<div class="line"><a name="l00509"></a><span class="lineno">  509</span>&#160;            }</div>
+<div class="line"><a name="l00510"></a><span class="lineno">  510</span>&#160;            <span class="comment">//init fixed size buffer</span></div>
+<div class="line"><a name="l00511"></a><span class="lineno">  511</span>&#160;            glBindBuffer(GL_SHADER_STORAGE_BUFFER, draw_parameters);</div>
+<div class="line"><a name="l00512"></a><span class="lineno">  512</span>&#160;            glBufferData(GL_SHADER_STORAGE_BUFFER, <span class="keyword">sizeof</span>(DrawParameters), <span class="keyword">nullptr</span>, GL_STREAM_DRAW);</div>
+<div class="line"><a name="l00513"></a><span class="lineno">  513</span>&#160;            glBindBuffer(GL_SHADER_STORAGE_BUFFER, 0);</div>
+<div class="line"><a name="l00514"></a><span class="lineno">  514</span>&#160;        }</div>
+<div class="line"><a name="l00515"></a><span class="lineno">  515</span>&#160; </div>
+<div class="line"><a name="l00516"></a><span class="lineno">  516</span>&#160;        <span class="keywordtype">void</span> clod_point_buffer_manager::clear(context&amp; ctx) {</div>
+<div class="line"><a name="l00517"></a><span class="lineno">  517</span>&#160;            glDeleteBuffers(1, &amp;points);</div>
+<div class="line"><a name="l00518"></a><span class="lineno">  518</span>&#160;            glDeleteBuffers(1, &amp;indices);</div>
+<div class="line"><a name="l00519"></a><span class="lineno">  519</span>&#160;            glDeleteBuffers(1, &amp;draw_parameters);</div>
+<div class="line"><a name="l00520"></a><span class="lineno">  520</span>&#160;            glDeleteVertexArrays(1, &amp;vertex_array);</div>
+<div class="line"><a name="l00521"></a><span class="lineno">  521</span>&#160;        }</div>
+<div class="line"><a name="l00522"></a><span class="lineno">  522</span>&#160; </div>
+<div class="line"><a name="l00523"></a><span class="lineno">  523</span>&#160;        <span class="keywordtype">void</span> clod_point_buffer_manager::resize(GLuint num_points) {</div>
+<div class="line"><a name="l00524"></a><span class="lineno">  524</span>&#160;            <span class="keywordflow">if</span> (max_num_points == num_points)</div>
+<div class="line"><a name="l00525"></a><span class="lineno">  525</span>&#160;                <span class="keywordflow">return</span>;</div>
+<div class="line"><a name="l00526"></a><span class="lineno">  526</span>&#160;            glBindBuffer(GL_SHADER_STORAGE_BUFFER, <a class="code" href="classcgv_1_1render_1_1clod__point__buffer__manager.html#a5bd3b916718beb7228cd02762b53e3a4">get_reduced_points</a>());</div>
+<div class="line"><a name="l00527"></a><span class="lineno">  527</span>&#160;            glBufferData(GL_SHADER_STORAGE_BUFFER, num_points * <span class="keyword">sizeof</span>(clod_point_renderer::Point), <span class="keyword">nullptr</span>, GL_DYNAMIC_DRAW);</div>
+<div class="line"><a name="l00528"></a><span class="lineno">  528</span>&#160; </div>
+<div class="line"><a name="l00529"></a><span class="lineno">  529</span>&#160;            glBindBuffer(GL_SHADER_STORAGE_BUFFER, <a class="code" href="classcgv_1_1render_1_1clod__point__buffer__manager.html#a5de006eaf30ab45b35f9ef6a75080c11">get_index_buffer</a>());</div>
+<div class="line"><a name="l00530"></a><span class="lineno">  530</span>&#160;            glBufferData(GL_SHADER_STORAGE_BUFFER, num_points * <span class="keyword">sizeof</span>(GLuint), <span class="keyword">nullptr</span>, GL_DYNAMIC_DRAW);</div>
+<div class="line"><a name="l00531"></a><span class="lineno">  531</span>&#160;            glBindBuffer(GL_SHADER_STORAGE_BUFFER, 0);</div>
+<div class="line"><a name="l00532"></a><span class="lineno">  532</span>&#160; </div>
+<div class="line"><a name="l00533"></a><span class="lineno">  533</span>&#160;            max_num_points = num_points;</div>
+<div class="line"><a name="l00534"></a><span class="lineno">  534</span>&#160;        }</div>
+<div class="line"><a name="l00535"></a><span class="lineno">  535</span>&#160; </div>
+<div class="line"><a name="l00536"></a><span class="lineno"><a class="line" href="classcgv_1_1render_1_1clod__point__buffer__manager.html#a5de006eaf30ab45b35f9ef6a75080c11">  536</a></span>&#160;        GLuint <a class="code" href="classcgv_1_1render_1_1clod__point__buffer__manager.html#a5de006eaf30ab45b35f9ef6a75080c11">clod_point_buffer_manager::get_index_buffer</a>()</div>
+<div class="line"><a name="l00537"></a><span class="lineno">  537</span>&#160;        {</div>
+<div class="line"><a name="l00538"></a><span class="lineno">  538</span>&#160;            <span class="keywordflow">return</span> indices;</div>
+<div class="line"><a name="l00539"></a><span class="lineno">  539</span>&#160;        }</div>
+<div class="line"><a name="l00540"></a><span class="lineno">  540</span>&#160; </div>
+<div class="line"><a name="l00541"></a><span class="lineno"><a class="line" href="classcgv_1_1render_1_1clod__point__buffer__manager.html#ad5a797703b40bbffe77fde933a8c60ff">  541</a></span>&#160;        GLuint <a class="code" href="classcgv_1_1render_1_1clod__point__buffer__manager.html#ad5a797703b40bbffe77fde933a8c60ff">clod_point_buffer_manager::get_draw_parameters</a>()</div>
+<div class="line"><a name="l00542"></a><span class="lineno">  542</span>&#160;        {</div>
+<div class="line"><a name="l00543"></a><span class="lineno">  543</span>&#160;            <span class="keywordflow">return</span> draw_parameters;</div>
+<div class="line"><a name="l00544"></a><span class="lineno">  544</span>&#160;        }</div>
+<div class="line"><a name="l00545"></a><span class="lineno">  545</span>&#160; </div>
+<div class="line"><a name="l00546"></a><span class="lineno"><a class="line" href="classcgv_1_1render_1_1clod__point__buffer__manager.html#a5bd3b916718beb7228cd02762b53e3a4">  546</a></span>&#160;        GLuint <a class="code" href="classcgv_1_1render_1_1clod__point__buffer__manager.html#a5bd3b916718beb7228cd02762b53e3a4">clod_point_buffer_manager::get_reduced_points</a>()</div>
+<div class="line"><a name="l00547"></a><span class="lineno">  547</span>&#160;        {</div>
+<div class="line"><a name="l00548"></a><span class="lineno">  548</span>&#160;            <span class="keywordflow">return</span> points;</div>
+<div class="line"><a name="l00549"></a><span class="lineno">  549</span>&#160;        }</div>
+<div class="line"><a name="l00550"></a><span class="lineno">  550</span>&#160; </div>
+<div class="line"><a name="l00551"></a><span class="lineno"><a class="line" href="classcgv_1_1render_1_1clod__point__buffer__manager.html#aaadc1622beb9686ab6590fa53b9e7821">  551</a></span>&#160;        GLuint <a class="code" href="classcgv_1_1render_1_1clod__point__buffer__manager.html#aaadc1622beb9686ab6590fa53b9e7821">clod_point_buffer_manager::num_reduced_points</a>()</div>
+<div class="line"><a name="l00552"></a><span class="lineno">  552</span>&#160;        {</div>
+<div class="line"><a name="l00553"></a><span class="lineno">  553</span>&#160;            DrawParameters* device_draw_parameters = <span class="keyword">static_cast&lt;</span>DrawParameters*<span class="keyword">&gt;</span>(</div>
+<div class="line"><a name="l00554"></a><span class="lineno">  554</span>&#160;                  glMapNamedBufferRange(draw_parameters, 0, <span class="keyword">sizeof</span>(DrawParameters), GL_MAP_READ_BIT));</div>
+<div class="line"><a name="l00555"></a><span class="lineno">  555</span>&#160;            GLuint ret = device_draw_parameters-&gt;count;</div>
+<div class="line"><a name="l00556"></a><span class="lineno">  556</span>&#160;            glUnmapNamedBuffer(draw_parameters);</div>
+<div class="line"><a name="l00557"></a><span class="lineno">  557</span>&#160;            <span class="keywordflow">return</span> ret;</div>
+<div class="line"><a name="l00558"></a><span class="lineno">  558</span>&#160;        }</div>
+<div class="line"><a name="l00559"></a><span class="lineno">  559</span>&#160; </div>
+<div class="line"><a name="l00560"></a><span class="lineno"><a class="line" href="classcgv_1_1render_1_1clod__point__buffer__manager.html#a9073bb5747aa72df9490a29a956e3d73">  560</a></span>&#160;        GLuint <a class="code" href="classcgv_1_1render_1_1clod__point__buffer__manager.html#a9073bb5747aa72df9490a29a956e3d73">clod_point_buffer_manager::size</a>()</div>
+<div class="line"><a name="l00561"></a><span class="lineno">  561</span>&#160;        {</div>
+<div class="line"><a name="l00562"></a><span class="lineno">  562</span>&#160;            <span class="keywordflow">return</span> max_num_points;</div>
+<div class="line"><a name="l00563"></a><span class="lineno">  563</span>&#160;        }</div>
+<div class="line"><a name="l00564"></a><span class="lineno">  564</span>&#160; </div>
+<div class="line"><a name="l00565"></a><span class="lineno">  565</span>&#160;        } <span class="comment">// namespace render</span></div>
+<div class="line"><a name="l00566"></a><span class="lineno">  566</span>&#160;        }</div>
+<div class="line"><a name="l00567"></a><span class="lineno">  567</span>&#160; </div>
 <div class="line"><a name="l00568"></a><span class="lineno">  568</span>&#160; </div>
-<div class="line"><a name="l00569"></a><span class="lineno">  569</span>&#160;<span class="keyword">namespace </span><a class="code" href="namespacecgv.html">cgv</a> {</div>
-<div class="line"><a name="l00570"></a><span class="lineno">  570</span>&#160;    <span class="keyword">namespace </span>gui {</div>
-<div class="line"><a name="l00571"></a><span class="lineno">  571</span>&#160; </div>
-<div class="line"><a name="l00572"></a><span class="lineno"><a class="line" href="structcgv_1_1gui_1_1clod__point__render__style__gui__creator.html">  572</a></span>&#160;        <span class="keyword">struct </span><a class="code" href="structcgv_1_1gui_1_1clod__point__render__style__gui__creator.html">clod_point_render_style_gui_creator</a> : <span class="keyword">public</span> <a class="code" href="structcgv_1_1gui_1_1gui__creator.html">gui_creator</a> {</div>
-<div class="line"><a name="l00574"></a><span class="lineno"><a class="line" href="structcgv_1_1gui_1_1clod__point__render__style__gui__creator.html#a04647481f95ac6ddeb3098a3e2d03cf9">  574</a></span>&#160;            <span class="keywordtype">bool</span> <a class="code" href="structcgv_1_1gui_1_1clod__point__render__style__gui__creator.html#a04647481f95ac6ddeb3098a3e2d03cf9">create</a>(<a class="code" href="classcgv_1_1gui_1_1provider.html">provider</a>* p, <span class="keyword">const</span> std::string&amp; label,</div>
-<div class="line"><a name="l00575"></a><span class="lineno">  575</span>&#160;                <span class="keywordtype">void</span>* value_ptr, <span class="keyword">const</span> std::string&amp; value_type,</div>
-<div class="line"><a name="l00576"></a><span class="lineno">  576</span>&#160;                <span class="keyword">const</span> std::string&amp; gui_type, <span class="keyword">const</span> std::string&amp; options, <span class="keywordtype">bool</span>*) {</div>
-<div class="line"><a name="l00577"></a><span class="lineno">  577</span>&#160;                <span class="keywordflow">if</span> (value_type != <a class="code" href="structcgv_1_1type_1_1info_1_1type__name.html">cgv::type::info::type_name&lt;cgv::render::clod_point_render_style&gt;::get_name</a>())</div>
-<div class="line"><a name="l00578"></a><span class="lineno">  578</span>&#160;                    <span class="keywordflow">return</span> <span class="keyword">false</span>;</div>
-<div class="line"><a name="l00579"></a><span class="lineno">  579</span>&#160;                <a class="code" href="structcgv_1_1render_1_1clod__point__render__style.html">cgv::render::clod_point_render_style</a>* rs_ptr = <span class="keyword">reinterpret_cast&lt;</span><a class="code" href="structcgv_1_1render_1_1clod__point__render__style.html">cgv::render::clod_point_render_style</a>*<span class="keyword">&gt;</span>(value_ptr);</div>
-<div class="line"><a name="l00580"></a><span class="lineno">  580</span>&#160;                <a class="code" href="classcgv_1_1base_1_1base.html">cgv::base::base</a>* b = <span class="keyword">dynamic_cast&lt;</span><a class="code" href="classcgv_1_1base_1_1base.html">cgv::base::base</a>*<span class="keyword">&gt;</span>(p);</div>
-<div class="line"><a name="l00581"></a><span class="lineno">  581</span>&#160;                p-&gt;<a class="code" href="classcgv_1_1gui_1_1provider.html#af1b62a00070bd3dcdb8962da4f1921b0">add_member_control</a>(b, <span class="stringliteral">&quot;CLOD factor&quot;</span>, rs_ptr-&gt;CLOD, <span class="stringliteral">&quot;value_slider&quot;</span>, <span class="stringliteral">&quot;min=0.1;max=10;ticks=true&quot;</span>);</div>
-<div class="line"><a name="l00582"></a><span class="lineno">  582</span>&#160;                p-&gt;<a class="code" href="classcgv_1_1gui_1_1provider.html#af1b62a00070bd3dcdb8962da4f1921b0">add_member_control</a>(b, <span class="stringliteral">&quot;scale&quot;</span>, rs_ptr-&gt;scale, <span class="stringliteral">&quot;value_slider&quot;</span>, <span class="stringliteral">&quot;min=0.1;max=10;ticks=true&quot;</span>);</div>
-<div class="line"><a name="l00583"></a><span class="lineno">  583</span>&#160;                p-&gt;<a class="code" href="classcgv_1_1gui_1_1provider.html#af1b62a00070bd3dcdb8962da4f1921b0">add_member_control</a>(b, <span class="stringliteral">&quot;point spacing&quot;</span>, rs_ptr-&gt;<a class="code" href="structcgv_1_1render_1_1clod__point__render__style.html#ad1f2c69eb543d524d081109fe0847aa1">spacing</a>, <span class="stringliteral">&quot;value_slider&quot;</span>, <span class="stringliteral">&quot;min=0.1;max=10;ticks=true&quot;</span>);</div>
-<div class="line"><a name="l00584"></a><span class="lineno">  584</span>&#160;                p-&gt;<a class="code" href="classcgv_1_1gui_1_1provider.html#af1b62a00070bd3dcdb8962da4f1921b0">add_member_control</a>(b, <span class="stringliteral">&quot;point size&quot;</span>, rs_ptr-&gt;pointSize, <span class="stringliteral">&quot;value_slider&quot;</span>, <span class="stringliteral">&quot;min=0.1;max=10;ticks=true&quot;</span>);</div>
-<div class="line"><a name="l00585"></a><span class="lineno">  585</span>&#160;                p-&gt;<a class="code" href="classcgv_1_1gui_1_1provider.html#af1b62a00070bd3dcdb8962da4f1921b0">add_member_control</a>(b, <span class="stringliteral">&quot;min millimeters&quot;</span>, rs_ptr-&gt;min_millimeters, <span class="stringliteral">&quot;value_slider&quot;</span>, <span class="stringliteral">&quot;min=0.1;max=10;ticks=true&quot;</span>);</div>
-<div class="line"><a name="l00586"></a><span class="lineno">  586</span>&#160;                p-&gt;<a class="code" href="classcgv_1_1gui_1_1provider.html#af1b62a00070bd3dcdb8962da4f1921b0">add_member_control</a>(b, <span class="stringliteral">&quot;draw circles&quot;</span>, rs_ptr-&gt;draw_circles, <span class="stringliteral">&quot;check&quot;</span>);</div>
-<div class="line"><a name="l00587"></a><span class="lineno">  587</span>&#160;                <span class="keywordflow">return</span> <span class="keyword">true</span>;</div>
-<div class="line"><a name="l00588"></a><span class="lineno">  588</span>&#160;            }</div>
-<div class="line"><a name="l00589"></a><span class="lineno">  589</span>&#160;        };</div>
+<div class="line"><a name="l00569"></a><span class="lineno">  569</span>&#160;<span class="preprocessor">#include &lt;cgv/gui/provider.h&gt;</span></div>
+<div class="line"><a name="l00570"></a><span class="lineno">  570</span>&#160; </div>
+<div class="line"><a name="l00571"></a><span class="lineno">  571</span>&#160;<span class="keyword">namespace </span><a class="code" href="namespacecgv.html">cgv</a> {</div>
+<div class="line"><a name="l00572"></a><span class="lineno">  572</span>&#160;    <span class="keyword">namespace </span>gui {</div>
+<div class="line"><a name="l00573"></a><span class="lineno">  573</span>&#160; </div>
+<div class="line"><a name="l00574"></a><span class="lineno"><a class="line" href="structcgv_1_1gui_1_1clod__point__render__style__gui__creator.html">  574</a></span>&#160;        <span class="keyword">struct </span><a class="code" href="structcgv_1_1gui_1_1clod__point__render__style__gui__creator.html">clod_point_render_style_gui_creator</a> : <span class="keyword">public</span> <a class="code" href="structcgv_1_1gui_1_1gui__creator.html">gui_creator</a> {</div>
+<div class="line"><a name="l00576"></a><span class="lineno"><a class="line" href="structcgv_1_1gui_1_1clod__point__render__style__gui__creator.html#a04647481f95ac6ddeb3098a3e2d03cf9">  576</a></span>&#160;            <span class="keywordtype">bool</span> <a class="code" href="structcgv_1_1gui_1_1clod__point__render__style__gui__creator.html#a04647481f95ac6ddeb3098a3e2d03cf9">create</a>(<a class="code" href="classcgv_1_1gui_1_1provider.html">provider</a>* p, <span class="keyword">const</span> std::string&amp; label,</div>
+<div class="line"><a name="l00577"></a><span class="lineno">  577</span>&#160;                <span class="keywordtype">void</span>* value_ptr, <span class="keyword">const</span> std::string&amp; value_type,</div>
+<div class="line"><a name="l00578"></a><span class="lineno">  578</span>&#160;                <span class="keyword">const</span> std::string&amp; gui_type, <span class="keyword">const</span> std::string&amp; options, <span class="keywordtype">bool</span>*) {</div>
+<div class="line"><a name="l00579"></a><span class="lineno">  579</span>&#160;                <span class="keywordflow">if</span> (value_type != <a class="code" href="structcgv_1_1type_1_1info_1_1type__name.html">cgv::type::info::type_name&lt;cgv::render::clod_point_render_style&gt;::get_name</a>())</div>
+<div class="line"><a name="l00580"></a><span class="lineno">  580</span>&#160;                    <span class="keywordflow">return</span> <span class="keyword">false</span>;</div>
+<div class="line"><a name="l00581"></a><span class="lineno">  581</span>&#160;                <a class="code" href="structcgv_1_1render_1_1clod__point__render__style.html">cgv::render::clod_point_render_style</a>* rs_ptr = <span class="keyword">reinterpret_cast&lt;</span><a class="code" href="structcgv_1_1render_1_1clod__point__render__style.html">cgv::render::clod_point_render_style</a>*<span class="keyword">&gt;</span>(value_ptr);</div>
+<div class="line"><a name="l00582"></a><span class="lineno">  582</span>&#160;                <a class="code" href="classcgv_1_1base_1_1base.html">cgv::base::base</a>* b = <span class="keyword">dynamic_cast&lt;</span><a class="code" href="classcgv_1_1base_1_1base.html">cgv::base::base</a>*<span class="keyword">&gt;</span>(p);</div>
+<div class="line"><a name="l00583"></a><span class="lineno">  583</span>&#160;                p-&gt;<a class="code" href="classcgv_1_1gui_1_1provider.html#af1b62a00070bd3dcdb8962da4f1921b0">add_member_control</a>(b, <span class="stringliteral">&quot;CLOD factor&quot;</span>, rs_ptr-&gt;CLOD, <span class="stringliteral">&quot;value_slider&quot;</span>, <span class="stringliteral">&quot;min=0.1;max=10;ticks=true&quot;</span>);</div>
+<div class="line"><a name="l00584"></a><span class="lineno">  584</span>&#160;                p-&gt;<a class="code" href="classcgv_1_1gui_1_1provider.html#af1b62a00070bd3dcdb8962da4f1921b0">add_member_control</a>(b, <span class="stringliteral">&quot;scale&quot;</span>, rs_ptr-&gt;scale, <span class="stringliteral">&quot;value_slider&quot;</span>, <span class="stringliteral">&quot;min=0.1;max=10;ticks=true&quot;</span>);</div>
+<div class="line"><a name="l00585"></a><span class="lineno">  585</span>&#160;                p-&gt;<a class="code" href="classcgv_1_1gui_1_1provider.html#af1b62a00070bd3dcdb8962da4f1921b0">add_member_control</a>(b, <span class="stringliteral">&quot;point spacing&quot;</span>, rs_ptr-&gt;<a class="code" href="structcgv_1_1render_1_1clod__point__render__style.html#ad1f2c69eb543d524d081109fe0847aa1">spacing</a>, <span class="stringliteral">&quot;value_slider&quot;</span>, <span class="stringliteral">&quot;min=0.1;max=10;ticks=true&quot;</span>);</div>
+<div class="line"><a name="l00586"></a><span class="lineno">  586</span>&#160;                p-&gt;<a class="code" href="classcgv_1_1gui_1_1provider.html#af1b62a00070bd3dcdb8962da4f1921b0">add_member_control</a>(b, <span class="stringliteral">&quot;point size&quot;</span>, rs_ptr-&gt;pointSize, <span class="stringliteral">&quot;value_slider&quot;</span>, <span class="stringliteral">&quot;min=0.1;max=10;ticks=true&quot;</span>);</div>
+<div class="line"><a name="l00587"></a><span class="lineno">  587</span>&#160;                p-&gt;<a class="code" href="classcgv_1_1gui_1_1provider.html#af1b62a00070bd3dcdb8962da4f1921b0">add_member_control</a>(b, <span class="stringliteral">&quot;min millimeters&quot;</span>, rs_ptr-&gt;min_millimeters, <span class="stringliteral">&quot;value_slider&quot;</span>, <span class="stringliteral">&quot;min=0.1;max=10;ticks=true&quot;</span>);</div>
+<div class="line"><a name="l00588"></a><span class="lineno">  588</span>&#160;                p-&gt;<a class="code" href="classcgv_1_1gui_1_1provider.html#af1b62a00070bd3dcdb8962da4f1921b0">add_member_control</a>(b, <span class="stringliteral">&quot;draw circles&quot;</span>, rs_ptr-&gt;draw_circles, <span class="stringliteral">&quot;check&quot;</span>);</div>
+<div class="line"><a name="l00589"></a><span class="lineno">  589</span>&#160;                p-&gt;<a class="code" href="classcgv_1_1gui_1_1provider.html#af1b62a00070bd3dcdb8962da4f1921b0">add_member_control</a>(b, <span class="stringliteral">&quot;use clod&quot;</span>, rs_ptr-&gt;use_clod, <span class="stringliteral">&quot;check&quot;</span>);</div>
 <div class="line"><a name="l00590"></a><span class="lineno">  590</span>&#160; </div>
-<div class="line"><a name="l00591"></a><span class="lineno">  591</span>&#160;        <a class="code" href="classcgv_1_1gui_1_1gui__creator__registration.html">cgv::gui::gui_creator_registration&lt;clod_point_render_style_gui_creator&gt;</a> cprsgc(<span class="stringliteral">&quot;clod_point_render_style_gui_creator&quot;</span>);</div>
-<div class="line"><a name="l00592"></a><span class="lineno">  592</span>&#160;    }</div>
-<div class="line"><a name="l00593"></a><span class="lineno">  593</span>&#160;}</div>
+<div class="line"><a name="l00591"></a><span class="lineno">  591</span>&#160;                <span class="keywordflow">return</span> <span class="keyword">true</span>;</div>
+<div class="line"><a name="l00592"></a><span class="lineno">  592</span>&#160;            }</div>
+<div class="line"><a name="l00593"></a><span class="lineno">  593</span>&#160;        };</div>
+<div class="line"><a name="l00594"></a><span class="lineno">  594</span>&#160; </div>
+<div class="line"><a name="l00595"></a><span class="lineno">  595</span>&#160;        <a class="code" href="classcgv_1_1gui_1_1gui__creator__registration.html">cgv::gui::gui_creator_registration&lt;clod_point_render_style_gui_creator&gt;</a> cprsgc(<span class="stringliteral">&quot;clod_point_render_style_gui_creator&quot;</span>);</div>
+<div class="line"><a name="l00596"></a><span class="lineno">  596</span>&#160;    }</div>
+<div class="line"><a name="l00597"></a><span class="lineno">  597</span>&#160;}</div>
 <div class="ttc" id="aclasscgv_1_1base_1_1base_html"><div class="ttname"><a href="classcgv_1_1base_1_1base.html">cgv::base::base</a></div><div class="ttdoc">base class for all classes that can be registered with support for dynamic properties (see also secti...</div><div class="ttdef"><b>Definition:</b> <a href="base_8h_source.html#l00074">base.h:75</a></div></div>
 <div class="ttc" id="aclasscgv_1_1gui_1_1gui__creator__registration_html"><div class="ttname"><a href="classcgv_1_1gui_1_1gui__creator__registration.html">cgv::gui::gui_creator_registration</a></div><div class="ttdoc">helper template for registration of gui creators</div><div class="ttdef"><b>Definition:</b> <a href="gui__creator_8h_source.html#l00031">gui_creator.h:32</a></div></div>
 <div class="ttc" id="aclasscgv_1_1gui_1_1provider_html"><div class="ttname"><a href="classcgv_1_1gui_1_1provider.html">cgv::gui::provider</a></div><div class="ttdoc">derive from this class to provide a gui to the current viewer</div><div class="ttdef"><b>Definition:</b> <a href="provider_8h_source.html#l00063">provider.h:64</a></div></div>
@@ -685,21 +689,21 @@ $(document).ready(function(){initNavTree('clod__point__renderer_8cxx_source.html
 <div class="ttc" id="aclasscgv_1_1reflect_1_1reflection__handler_html"><div class="ttname"><a href="classcgv_1_1reflect_1_1reflection__handler.html">cgv::reflect::reflection_handler</a></div><div class="ttdoc">the self reflection handler is passed to the virtual self_reflect() method of cgv::base::base.</div><div class="ttdef"><b>Definition:</b> <a href="reflection__handler_8h_source.html#l00062">reflection_handler.h:63</a></div></div>
 <div class="ttc" id="aclasscgv_1_1reflect_1_1reflection__handler_html_ae10eef5e76075a7eb676d8ba40839291"><div class="ttname"><a href="classcgv_1_1reflect_1_1reflection__handler.html#ae10eef5e76075a7eb676d8ba40839291">cgv::reflect::reflection_handler::reflect_member</a></div><div class="ttdeci">bool reflect_member(const std::string &amp;member_name, T &amp;member_ref, bool hard_cast=false)</div><div class="ttdoc">call this to reflect a member by member name and reference to the member.</div><div class="ttdef"><b>Definition:</b> <a href="reflection__handler_8h_source.html#l00323">reflection_handler.h:323</a></div></div>
 <div class="ttc" id="aclasscgv_1_1render_1_1clod__point__buffer__manager_html"><div class="ttname"><a href="classcgv_1_1render_1_1clod__point__buffer__manager.html">cgv::render::clod_point_buffer_manager</a></div><div class="ttdef"><b>Definition:</b> <a href="clod__point__renderer_8h_source.html#l00028">clod_point_renderer.h:29</a></div></div>
-<div class="ttc" id="aclasscgv_1_1render_1_1clod__point__buffer__manager_html_a5bd3b916718beb7228cd02762b53e3a4"><div class="ttname"><a href="classcgv_1_1render_1_1clod__point__buffer__manager.html#a5bd3b916718beb7228cd02762b53e3a4">cgv::render::clod_point_buffer_manager::get_reduced_points</a></div><div class="ttdeci">GLuint get_reduced_points()</div><div class="ttdoc">get the opengl id used to access the internal draw buffer</div><div class="ttdef"><b>Definition:</b> <a href="clod__point__renderer_8cxx_source.html#l00544">clod_point_renderer.cxx:544</a></div></div>
-<div class="ttc" id="aclasscgv_1_1render_1_1clod__point__buffer__manager_html_a5de006eaf30ab45b35f9ef6a75080c11"><div class="ttname"><a href="classcgv_1_1render_1_1clod__point__buffer__manager.html#a5de006eaf30ab45b35f9ef6a75080c11">cgv::render::clod_point_buffer_manager::get_index_buffer</a></div><div class="ttdeci">GLuint get_index_buffer()</div><div class="ttdoc">get the opengl id used to access the index buffer</div><div class="ttdef"><b>Definition:</b> <a href="clod__point__renderer_8cxx_source.html#l00534">clod_point_renderer.cxx:534</a></div></div>
-<div class="ttc" id="aclasscgv_1_1render_1_1clod__point__buffer__manager_html_a9073bb5747aa72df9490a29a956e3d73"><div class="ttname"><a href="classcgv_1_1render_1_1clod__point__buffer__manager.html#a9073bb5747aa72df9490a29a956e3d73">cgv::render::clod_point_buffer_manager::size</a></div><div class="ttdeci">GLuint size()</div><div class="ttdoc">max number of points stored in the managed buffers without resizing</div><div class="ttdef"><b>Definition:</b> <a href="clod__point__renderer_8cxx_source.html#l00558">clod_point_renderer.cxx:558</a></div></div>
-<div class="ttc" id="aclasscgv_1_1render_1_1clod__point__buffer__manager_html_aaadc1622beb9686ab6590fa53b9e7821"><div class="ttname"><a href="classcgv_1_1render_1_1clod__point__buffer__manager.html#aaadc1622beb9686ab6590fa53b9e7821">cgv::render::clod_point_buffer_manager::num_reduced_points</a></div><div class="ttdeci">GLuint num_reduced_points()</div><div class="ttdoc">maps draw_parameters to memory and reads size</div><div class="ttdef"><b>Definition:</b> <a href="clod__point__renderer_8cxx_source.html#l00549">clod_point_renderer.cxx:549</a></div></div>
-<div class="ttc" id="aclasscgv_1_1render_1_1clod__point__buffer__manager_html_ad5a797703b40bbffe77fde933a8c60ff"><div class="ttname"><a href="classcgv_1_1render_1_1clod__point__buffer__manager.html#ad5a797703b40bbffe77fde933a8c60ff">cgv::render::clod_point_buffer_manager::get_draw_parameters</a></div><div class="ttdeci">GLuint get_draw_parameters()</div><div class="ttdoc">get the opengl id used to access the internal draw parameters</div><div class="ttdef"><b>Definition:</b> <a href="clod__point__renderer_8cxx_source.html#l00539">clod_point_renderer.cxx:539</a></div></div>
-<div class="ttc" id="aclasscgv_1_1render_1_1clod__point__renderer_html"><div class="ttname"><a href="classcgv_1_1render_1_1clod__point__renderer.html">cgv::render::clod_point_renderer</a></div><div class="ttdef"><b>Definition:</b> <a href="clod__point__renderer_8h_source.html#l00094">clod_point_renderer.h:94</a></div></div>
-<div class="ttc" id="aclasscgv_1_1render_1_1clod__point__renderer_html_a1051e44c0dcf7cd22b1190080505ce90"><div class="ttname"><a href="classcgv_1_1render_1_1clod__point__renderer.html#a1051e44c0dcf7cd22b1190080505ce90">cgv::render::clod_point_renderer::set_prog</a></div><div class="ttdeci">void set_prog(shader_program &amp;one_shot_prog)</div><div class="ttdoc">set a custom shader program that is used for one enable disable cycle</div><div class="ttdef"><b>Definition:</b> <a href="clod__point__renderer_8cxx_source.html#l00419">clod_point_renderer.cxx:419</a></div></div>
+<div class="ttc" id="aclasscgv_1_1render_1_1clod__point__buffer__manager_html_a5bd3b916718beb7228cd02762b53e3a4"><div class="ttname"><a href="classcgv_1_1render_1_1clod__point__buffer__manager.html#a5bd3b916718beb7228cd02762b53e3a4">cgv::render::clod_point_buffer_manager::get_reduced_points</a></div><div class="ttdeci">GLuint get_reduced_points()</div><div class="ttdoc">get the opengl id used to access the internal draw buffer</div><div class="ttdef"><b>Definition:</b> <a href="clod__point__renderer_8cxx_source.html#l00546">clod_point_renderer.cxx:546</a></div></div>
+<div class="ttc" id="aclasscgv_1_1render_1_1clod__point__buffer__manager_html_a5de006eaf30ab45b35f9ef6a75080c11"><div class="ttname"><a href="classcgv_1_1render_1_1clod__point__buffer__manager.html#a5de006eaf30ab45b35f9ef6a75080c11">cgv::render::clod_point_buffer_manager::get_index_buffer</a></div><div class="ttdeci">GLuint get_index_buffer()</div><div class="ttdoc">get the opengl id used to access the index buffer</div><div class="ttdef"><b>Definition:</b> <a href="clod__point__renderer_8cxx_source.html#l00536">clod_point_renderer.cxx:536</a></div></div>
+<div class="ttc" id="aclasscgv_1_1render_1_1clod__point__buffer__manager_html_a9073bb5747aa72df9490a29a956e3d73"><div class="ttname"><a href="classcgv_1_1render_1_1clod__point__buffer__manager.html#a9073bb5747aa72df9490a29a956e3d73">cgv::render::clod_point_buffer_manager::size</a></div><div class="ttdeci">GLuint size()</div><div class="ttdoc">max number of points stored in the managed buffers without resizing</div><div class="ttdef"><b>Definition:</b> <a href="clod__point__renderer_8cxx_source.html#l00560">clod_point_renderer.cxx:560</a></div></div>
+<div class="ttc" id="aclasscgv_1_1render_1_1clod__point__buffer__manager_html_aaadc1622beb9686ab6590fa53b9e7821"><div class="ttname"><a href="classcgv_1_1render_1_1clod__point__buffer__manager.html#aaadc1622beb9686ab6590fa53b9e7821">cgv::render::clod_point_buffer_manager::num_reduced_points</a></div><div class="ttdeci">GLuint num_reduced_points()</div><div class="ttdoc">maps draw_parameters to memory and reads size</div><div class="ttdef"><b>Definition:</b> <a href="clod__point__renderer_8cxx_source.html#l00551">clod_point_renderer.cxx:551</a></div></div>
+<div class="ttc" id="aclasscgv_1_1render_1_1clod__point__buffer__manager_html_ad5a797703b40bbffe77fde933a8c60ff"><div class="ttname"><a href="classcgv_1_1render_1_1clod__point__buffer__manager.html#ad5a797703b40bbffe77fde933a8c60ff">cgv::render::clod_point_buffer_manager::get_draw_parameters</a></div><div class="ttdeci">GLuint get_draw_parameters()</div><div class="ttdoc">get the opengl id used to access the internal draw parameters</div><div class="ttdef"><b>Definition:</b> <a href="clod__point__renderer_8cxx_source.html#l00541">clod_point_renderer.cxx:541</a></div></div>
+<div class="ttc" id="aclasscgv_1_1render_1_1clod__point__renderer_html"><div class="ttname"><a href="classcgv_1_1render_1_1clod__point__renderer.html">cgv::render::clod_point_renderer</a></div><div class="ttdef"><b>Definition:</b> <a href="clod__point__renderer_8h_source.html#l00095">clod_point_renderer.h:95</a></div></div>
+<div class="ttc" id="aclasscgv_1_1render_1_1clod__point__renderer_html_a1051e44c0dcf7cd22b1190080505ce90"><div class="ttname"><a href="classcgv_1_1render_1_1clod__point__renderer.html#a1051e44c0dcf7cd22b1190080505ce90">cgv::render::clod_point_renderer::set_prog</a></div><div class="ttdeci">void set_prog(shader_program &amp;one_shot_prog)</div><div class="ttdoc">set a custom shader program that is used for one enable disable cycle</div><div class="ttdef"><b>Definition:</b> <a href="clod__point__renderer_8cxx_source.html#l00420">clod_point_renderer.cxx:420</a></div></div>
 <div class="ttc" id="aclasscgv_1_1render_1_1clod__point__renderer_html_a1ff8ecaab7165f78733a0d80a5965106"><div class="ttname"><a href="classcgv_1_1render_1_1clod__point__renderer.html#a1ff8ecaab7165f78733a0d80a5965106">cgv::render::clod_point_renderer::reduce_buffer</a></div><div class="ttdeci">void reduce_buffer(context &amp;ctx, const GLuint buffer, const GLuint point_id_buffer, size_t start, size_t count)</div><div class="ttdoc">reduces a provided opengl buffer</div><div class="ttdef"><b>Definition:</b> <a href="clod__point__renderer_8cxx_source.html#l00060">clod_point_renderer.cxx:60</a></div></div>
 <div class="ttc" id="aclasscgv_1_1render_1_1clod__point__renderer_html_a2e443ebe8daa3512f084e3bb4d4ab184"><div class="ttname"><a href="classcgv_1_1render_1_1clod__point__renderer.html#a2e443ebe8daa3512f084e3bb4d4ab184">cgv::render::clod_point_renderer::draw_points</a></div><div class="ttdeci">void draw_points(context &amp;ctx)</div><div class="ttdoc">render reduced points, you need to call reduce_points first to fill the render_buffer</div><div class="ttdef"><b>Definition:</b> <a href="clod__point__renderer_8cxx_source.html#l00138">clod_point_renderer.cxx:138</a></div></div>
-<div class="ttc" id="aclasscgv_1_1render_1_1clod__point__renderer_html_a395aceb0771cb59738863a88a146af55"><div class="ttname"><a href="classcgv_1_1render_1_1clod__point__renderer.html#a395aceb0771cb59738863a88a146af55">cgv::render::clod_point_renderer::enable</a></div><div class="ttdeci">bool enable(context &amp;ctx)</div><div class="ttdoc">sets most uniforms</div><div class="ttdef"><b>Definition:</b> <a href="clod__point__renderer_8cxx_source.html#l00278">clod_point_renderer.cxx:278</a></div></div>
-<div class="ttc" id="aclasscgv_1_1render_1_1clod__point__renderer_html_a40cb51e12d04785de9efa3c2fa0f3a72"><div class="ttname"><a href="classcgv_1_1render_1_1clod__point__renderer.html#a40cb51e12d04785de9efa3c2fa0f3a72">cgv::render::clod_point_renderer::set_points</a></div><div class="ttdeci">void set_points(cgv::render::context &amp;ctx, const Point *pnts, const size_t num_points)</div><div class="ttdoc">this method can be used if the data format of pnts matches with the internal format given by the Poin...</div><div class="ttdef"><b>Definition:</b> <a href="clod__point__renderer_8cxx_source.html#l00323">clod_point_renderer.cxx:323</a></div></div>
+<div class="ttc" id="aclasscgv_1_1render_1_1clod__point__renderer_html_a395aceb0771cb59738863a88a146af55"><div class="ttname"><a href="classcgv_1_1render_1_1clod__point__renderer.html#a395aceb0771cb59738863a88a146af55">cgv::render::clod_point_renderer::enable</a></div><div class="ttdeci">bool enable(context &amp;ctx)</div><div class="ttdoc">sets most uniforms</div><div class="ttdef"><b>Definition:</b> <a href="clod__point__renderer_8cxx_source.html#l00279">clod_point_renderer.cxx:279</a></div></div>
+<div class="ttc" id="aclasscgv_1_1render_1_1clod__point__renderer_html_a40cb51e12d04785de9efa3c2fa0f3a72"><div class="ttname"><a href="classcgv_1_1render_1_1clod__point__renderer.html#a40cb51e12d04785de9efa3c2fa0f3a72">cgv::render::clod_point_renderer::set_points</a></div><div class="ttdeci">void set_points(cgv::render::context &amp;ctx, const Point *pnts, const size_t num_points)</div><div class="ttdoc">this method can be used if the data format of pnts matches with the internal format given by the Poin...</div><div class="ttdef"><b>Definition:</b> <a href="clod__point__renderer_8cxx_source.html#l00324">clod_point_renderer.cxx:324</a></div></div>
 <div class="ttc" id="aclasscgv_1_1render_1_1clod__point__renderer_html_a4930435b033cb2f0909343178b466e7a"><div class="ttname"><a href="classcgv_1_1render_1_1clod__point__renderer.html#a4930435b033cb2f0909343178b466e7a">cgv::render::clod_point_renderer::reduce_points</a></div><div class="ttdeci">void reduce_points(context &amp;ctx, size_t start, size_t count)</div><div class="ttdoc">run point reduction step on the input data, you need to call enable first</div><div class="ttdef"><b>Definition:</b> <a href="clod__point__renderer_8cxx_source.html#l00084">clod_point_renderer.cxx:84</a></div></div>
 <div class="ttc" id="aclasscgv_1_1render_1_1clod__point__renderer_html_a54111701e3ec88dddbfa1e1f1b9eafef"><div class="ttname"><a href="classcgv_1_1render_1_1clod__point__renderer.html#a54111701e3ec88dddbfa1e1f1b9eafef">cgv::render::clod_point_renderer::reduce_chunks</a></div><div class="ttdeci">void reduce_chunks(context &amp;ctx, const uint32_t *chunk_starts, const uint32_t *chunk_point_counts, const uint32_t *reduction_sources, uint32_t num_reduction_sources)</div><div class="ttdoc">do a point reduction over preselected segments of the input buffer</div><div class="ttdef"><b>Definition:</b> <a href="clod__point__renderer_8cxx_source.html#l00113">clod_point_renderer.cxx:113</a></div></div>
-<div class="ttc" id="aclasscgv_1_1render_1_1clod__point__renderer_html_a697e77b7f41463865fdc626e7ea3ca5f"><div class="ttname"><a href="classcgv_1_1render_1_1clod__point__renderer.html#a697e77b7f41463865fdc626e7ea3ca5f">cgv::render::clod_point_renderer::num_reduced_points</a></div><div class="ttdeci">unsigned int num_reduced_points()</div><div class="ttdoc">gives the number of points written to the reduction buffer</div><div class="ttdef"><b>Definition:</b> <a href="clod__point__renderer_8cxx_source.html#l00440">clod_point_renderer.cxx:440</a></div></div>
-<div class="ttc" id="aclasscgv_1_1render_1_1clod__point__renderer_html_ac666206ddf453d0756851838d0118fba"><div class="ttname"><a href="classcgv_1_1render_1_1clod__point__renderer.html#ac666206ddf453d0756851838d0118fba">cgv::render::clod_point_renderer::draw</a></div><div class="ttdeci">void draw(context &amp;ctx, size_t start=0, size_t count=0)</div><div class="ttdoc">reduces and renders the input by calling reduce_points and draw_points</div><div class="ttdef"><b>Definition:</b> <a href="clod__point__renderer_8cxx_source.html#l00308">clod_point_renderer.cxx:308</a></div></div>
+<div class="ttc" id="aclasscgv_1_1render_1_1clod__point__renderer_html_a697e77b7f41463865fdc626e7ea3ca5f"><div class="ttname"><a href="classcgv_1_1render_1_1clod__point__renderer.html#a697e77b7f41463865fdc626e7ea3ca5f">cgv::render::clod_point_renderer::num_reduced_points</a></div><div class="ttdeci">unsigned int num_reduced_points()</div><div class="ttdoc">gives the number of points written to the reduction buffer</div><div class="ttdef"><b>Definition:</b> <a href="clod__point__renderer_8cxx_source.html#l00441">clod_point_renderer.cxx:441</a></div></div>
+<div class="ttc" id="aclasscgv_1_1render_1_1clod__point__renderer_html_ac666206ddf453d0756851838d0118fba"><div class="ttname"><a href="classcgv_1_1render_1_1clod__point__renderer.html#ac666206ddf453d0756851838d0118fba">cgv::render::clod_point_renderer::draw</a></div><div class="ttdeci">void draw(context &amp;ctx, size_t start=0, size_t count=0)</div><div class="ttdoc">reduces and renders the input by calling reduce_points and draw_points</div><div class="ttdef"><b>Definition:</b> <a href="clod__point__renderer_8cxx_source.html#l00309">clod_point_renderer.cxx:309</a></div></div>
 <div class="ttc" id="aclasscgv_1_1render_1_1clod__point__renderer_html_ad36b2176bed9de4f9244db7d0c1e1c4c"><div class="ttname"><a href="classcgv_1_1render_1_1clod__point__renderer.html#ad36b2176bed9de4f9244db7d0c1e1c4c">cgv::render::clod_point_renderer::reduce_buffer_finish</a></div><div class="ttdeci">void reduce_buffer_finish(context &amp;ctx)</div><div class="ttdoc">synchronizes and disables the shader prog.</div><div class="ttdef"><b>Definition:</b> <a href="clod__point__renderer_8cxx_source.html#l00078">clod_point_renderer.cxx:78</a></div></div>
 <div class="ttc" id="aclasscgv_1_1render_1_1clod__point__renderer_html_ae576276bfa57785b53d0a2c89d2b12c8"><div class="ttname"><a href="classcgv_1_1render_1_1clod__point__renderer.html#ae576276bfa57785b53d0a2c89d2b12c8">cgv::render::clod_point_renderer::reduce_buffer_init</a></div><div class="ttdeci">void reduce_buffer_init(context &amp;ctx, bool reset_parameters=true)</div><div class="ttdoc">initializes reduce,</div><div class="ttdef"><b>Definition:</b> <a href="clod__point__renderer_8cxx_source.html#l00046">clod_point_renderer.cxx:46</a></div></div>
 <div class="ttc" id="aclasscgv_1_1render_1_1context_html"><div class="ttname"><a href="classcgv_1_1render_1_1context.html">cgv::render::context</a></div><div class="ttdoc">base class for all drawables, which is independent of the used rendering API.</div><div class="ttdef"><b>Definition:</b> <a href="context_8h_source.html#l00617">context.h:618</a></div></div>
@@ -724,15 +728,15 @@ $(document).ready(function(){initNavTree('clod__point__renderer_8cxx_source.html
 <div class="ttc" id="anamespacecgv_html_a8044b02f248048405a9d97418f545a1a"><div class="ttname"><a href="namespacecgv.html#a8044b02f248048405a9d97418f545a1a">cgv::vec2</a></div><div class="ttdeci">cgv::math::fvec&lt; float, 2 &gt; vec2</div><div class="ttdoc">declare type of 2d single precision floating point vectors</div><div class="ttdef"><b>Definition:</b> <a href="fvec_8h_source.html#l00660">fvec.h:660</a></div></div>
 <div class="ttc" id="anamespacecgv_html_a986c65184af5066fa26d468fd606c4fb"><div class="ttname"><a href="namespacecgv.html#a986c65184af5066fa26d468fd606c4fb">cgv::vec3</a></div><div class="ttdeci">cgv::math::fvec&lt; float, 3 &gt; vec3</div><div class="ttdoc">declare type of 3d single precision floating point vectors</div><div class="ttdef"><b>Definition:</b> <a href="fvec_8h_source.html#l00662">fvec.h:662</a></div></div>
 <div class="ttc" id="anamespacecgv_html_aac1220367b5c60325f351a680dcc2689"><div class="ttname"><a href="namespacecgv.html#aac1220367b5c60325f351a680dcc2689">cgv::mat4</a></div><div class="ttdeci">cgv::math::fmat&lt; float, 4, 4 &gt; mat4</div><div class="ttdoc">declare type of 4x4 matrices</div><div class="ttdef"><b>Definition:</b> <a href="fmat_8h_source.html#l00357">fmat.h:357</a></div></div>
-<div class="ttc" id="astructcgv_1_1gui_1_1clod__point__render__style__gui__creator_html"><div class="ttname"><a href="structcgv_1_1gui_1_1clod__point__render__style__gui__creator.html">cgv::gui::clod_point_render_style_gui_creator</a></div><div class="ttdef"><b>Definition:</b> <a href="clod__point__renderer_8cxx_source.html#l00572">clod_point_renderer.cxx:572</a></div></div>
-<div class="ttc" id="astructcgv_1_1gui_1_1clod__point__render__style__gui__creator_html_a04647481f95ac6ddeb3098a3e2d03cf9"><div class="ttname"><a href="structcgv_1_1gui_1_1clod__point__render__style__gui__creator.html#a04647481f95ac6ddeb3098a3e2d03cf9">cgv::gui::clod_point_render_style_gui_creator::create</a></div><div class="ttdeci">bool create(provider *p, const std::string &amp;label, void *value_ptr, const std::string &amp;value_type, const std::string &amp;gui_type, const std::string &amp;options, bool *)</div><div class="ttdoc">attempt to create a gui and return whether this was successful</div><div class="ttdef"><b>Definition:</b> <a href="clod__point__renderer_8cxx_source.html#l00574">clod_point_renderer.cxx:574</a></div></div>
+<div class="ttc" id="astructcgv_1_1gui_1_1clod__point__render__style__gui__creator_html"><div class="ttname"><a href="structcgv_1_1gui_1_1clod__point__render__style__gui__creator.html">cgv::gui::clod_point_render_style_gui_creator</a></div><div class="ttdef"><b>Definition:</b> <a href="clod__point__renderer_8cxx_source.html#l00574">clod_point_renderer.cxx:574</a></div></div>
+<div class="ttc" id="astructcgv_1_1gui_1_1clod__point__render__style__gui__creator_html_a04647481f95ac6ddeb3098a3e2d03cf9"><div class="ttname"><a href="structcgv_1_1gui_1_1clod__point__render__style__gui__creator.html#a04647481f95ac6ddeb3098a3e2d03cf9">cgv::gui::clod_point_render_style_gui_creator::create</a></div><div class="ttdeci">bool create(provider *p, const std::string &amp;label, void *value_ptr, const std::string &amp;value_type, const std::string &amp;gui_type, const std::string &amp;options, bool *)</div><div class="ttdoc">attempt to create a gui and return whether this was successful</div><div class="ttdef"><b>Definition:</b> <a href="clod__point__renderer_8cxx_source.html#l00576">clod_point_renderer.cxx:576</a></div></div>
 <div class="ttc" id="astructcgv_1_1gui_1_1gui__creator_html"><div class="ttname"><a href="structcgv_1_1gui_1_1gui__creator.html">cgv::gui::gui_creator</a></div><div class="ttdoc">interface for gui creators</div><div class="ttdef"><b>Definition:</b> <a href="gui__creator_8h_source.html#l00013">gui_creator.h:14</a></div></div>
 <div class="ttc" id="astructcgv_1_1reflect_1_1extern__reflection__traits_html"><div class="ttname"><a href="structcgv_1_1reflect_1_1extern__reflection__traits.html">cgv::reflect::extern_reflection_traits</a></div><div class="ttdoc">this reflection traits implementation is used for external self_reflect implementations of instances ...</div><div class="ttdef"><b>Definition:</b> <a href="reflect__extern_8h_source.html#l00027">reflect_extern.h:28</a></div></div>
 <div class="ttc" id="astructcgv_1_1render_1_1anonymous__namespace_02clod__point__renderer_8cxx_03_1_1DrawParameters_html"><div class="ttname"><a href="structcgv_1_1render_1_1anonymous__namespace_02clod__point__renderer_8cxx_03_1_1DrawParameters.html">cgv::render::anonymous_namespace{clod_point_renderer.cxx}::DrawParameters</a></div><div class="ttdef"><b>Definition:</b> <a href="clod__point__renderer_8cxx_source.html#l00019">clod_point_renderer.cxx:20</a></div></div>
 <div class="ttc" id="astructcgv_1_1render_1_1clod__point__render__style_html"><div class="ttname"><a href="structcgv_1_1render_1_1clod__point__render__style.html">cgv::render::clod_point_render_style</a></div><div class="ttdoc">render style for sphere rendere</div><div class="ttdef"><b>Definition:</b> <a href="clod__point__renderer_8h_source.html#l00067">clod_point_renderer.h:68</a></div></div>
 <div class="ttc" id="astructcgv_1_1render_1_1clod__point__render__style_html_a60193014900d0b6fdcbc038a31f13c5f"><div class="ttname"><a href="structcgv_1_1render_1_1clod__point__render__style.html#a60193014900d0b6fdcbc038a31f13c5f">cgv::render::clod_point_render_style::clod_point_render_style</a></div><div class="ttdeci">clod_point_render_style()</div><div class="ttdoc">construct with default values</div><div class="ttdef"><b>Definition:</b> <a href="clod__point__renderer_8cxx_source.html#l00036">clod_point_renderer.cxx:36</a></div></div>
 <div class="ttc" id="astructcgv_1_1render_1_1clod__point__render__style_html_ad1f2c69eb543d524d081109fe0847aa1"><div class="ttname"><a href="structcgv_1_1render_1_1clod__point__render__style.html#ad1f2c69eb543d524d081109fe0847aa1">cgv::render::clod_point_render_style::spacing</a></div><div class="ttdeci">float spacing</div><div class="ttdoc">:= root spacing, match this to your inputs point spacing in the octrees root level,...</div><div class="ttdef"><b>Definition:</b> <a href="clod__point__renderer_8h_source.html#l00075">clod_point_renderer.h:75</a></div></div>
-<div class="ttc" id="astructcgv_1_1render_1_1clod__point__renderer_1_1Point_html"><div class="ttname"><a href="structcgv_1_1render_1_1clod__point__renderer_1_1Point.html">cgv::render::clod_point_renderer::Point</a></div><div class="ttdef"><b>Definition:</b> <a href="clod__point__renderer_8h_source.html#l00097">clod_point_renderer.h:97</a></div></div>
+<div class="ttc" id="astructcgv_1_1render_1_1clod__point__renderer_1_1Point_html"><div class="ttname"><a href="structcgv_1_1render_1_1clod__point__renderer_1_1Point.html">cgv::render::clod_point_renderer::Point</a></div><div class="ttdef"><b>Definition:</b> <a href="clod__point__renderer_8h_source.html#l00098">clod_point_renderer.h:98</a></div></div>
 <div class="ttc" id="astructcgv_1_1render_1_1render__style_html"><div class="ttname"><a href="structcgv_1_1render_1_1render__style.html">cgv::render::render_style</a></div><div class="ttdoc">base class for all render styles</div><div class="ttdef"><b>Definition:</b> <a href="renderer_8h_source.html#l00015">renderer.h:16</a></div></div>
 <div class="ttc" id="astructcgv_1_1type_1_1info_1_1type__name_html"><div class="ttname"><a href="structcgv_1_1type_1_1info_1_1type__name.html">cgv::type::info::type_name</a></div><div class="ttdoc">traits class with a static function get_name() of type const char* that returns the type name of the ...</div><div class="ttdef"><b>Definition:</b> <a href="type__name_8h_source.html#l00053">type_name.h:54</a></div></div>
 </div><!-- fragment --></div><!-- contents -->
