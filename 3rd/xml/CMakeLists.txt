@@ -20,4 +20,8 @@ target_include_directories(xml_static PUBLIC
         $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}>
         $<INSTALL_INTERFACE:${CGV_3RD_INCLUDE_DEST}/xml>)
 
+if (NOT WIN32)
+    target_compile_options(xml_static PUBLIC -fPIC)
+endif()
+
 install(TARGETS xml_static EXPORT cgv_3rd DESTINATION ${CGV_BIN_DEST})

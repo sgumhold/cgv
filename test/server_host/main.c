@@ -47,7 +47,7 @@ int main (int argc, char** argv)
 	#ifdef _WIN32
 		HMODULE hlib = LoadLibrary(argv[1]);
 	#else
-		void *hlib = dlopen(argv[1]);
+		void *hlib = dlopen(argv[1], RTLD_LAZY);
 	#endif
 
 	// check if server could be loaded
