@@ -19,6 +19,10 @@ void generate_gui(gui_driver_ptr d)
 	register_object(w, "register viewer window");
 }
 
+extern "C"
+#if (defined(_WIN32) || defined(WIN32))
+    __declspec(dllexport)
+#endif
 int main(int argc, char** argv)
 {
 	cgv::render::render_config_ptr rcp = cgv::render::get_render_config();
