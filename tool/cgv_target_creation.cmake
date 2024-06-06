@@ -612,6 +612,9 @@ function(cgv_add_target NAME)
 	if (IS_PLUGIN AND CGVARG__NO_EXECUTABLE)
 		set_target_properties(${NAME} PROPERTIES CGVPROP_NO_EXECUTABLE TRUE)
 	endif()
+	if (IS_PLUGIN AND CGVARG__SERVER)
+		set_target_properties(${NAME} PROPERTIES CGVPROP_SERVER TRUE)
+	endif()
 
 	target_include_directories(${NAME} PUBLIC
 			${CGVARG__ADDITIONAL_INCLUDE_PATHS}
