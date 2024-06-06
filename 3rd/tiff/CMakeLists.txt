@@ -51,6 +51,10 @@ else ()
     target_compile_options(tif_static PRIVATE -w)
 endif ()
 
+if (NOT WIN32)
+    target_compile_options(tif_static PUBLIC -fPIC)
+endif()
+
 target_include_directories(tif_static PUBLIC
         $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}>
         $<INSTALL_INTERFACE:${CGV_3RD_INCLUDE_DEST}/tif>)

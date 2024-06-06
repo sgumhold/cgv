@@ -664,6 +664,9 @@ function(cgv_add_target NAME)
 	target_compile_definitions(${NAME_STATIC} PRIVATE ${PRIVATE_STATIC_TARGET_DEFINES})
 	target_compile_definitions(${NAME_STATIC} PUBLIC "CGV_FORCE_STATIC" ${CGVARG__ADDITIONAL_PUBLIC_DEFINES})
 	target_compile_options(${NAME_STATIC} PUBLIC ${CGV_CLANG_SPECIFIC_DEBUG_FLAGS})
+	if (NOT WIN32)
+		target_compile_options(${NAME_STATIC} PUBLIC -fPIC)
+	endif()
 
 	target_link_directories(${NAME_STATIC} PUBLIC ${CGVARG__ADDITIONAL_LINKER_PATHS})
 	if (NOT MSVC)
@@ -1041,6 +1044,9 @@ function(cgv_create_lib NAME)
 	if (NOT ARGS_CORE_LIB)
 		target_include_directories(${NAME_STATIC} PUBLIC $<BUILD_INTERFACE:${CGV_DIR}/libs>)
 	endif ()
+	if (NOT WIN32)
+		target_compile_options(${NAME_STATIC} PUBLIC -fPIC)
+	endif()
 
 
 	# handle whole-program / link-time optimization
