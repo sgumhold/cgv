@@ -212,10 +212,10 @@ function(cgv_get_static_or_exe_name STATIC_NAME_OUT EXE_NAME_OUT TARGET_NAME IS_
 	set(${STATIC_NAME_OUT} "${TARGET_NAME}_static" PARENT_SCOPE)
 endfunction()
 
-# internal helper function returning the name of the server target pf a target
-function(cgv_get_server_name SERVER_NAME_OUT TARGET_NAME IS_PLUGIN)
+# internal helper function returning the name of the service target pf a target
+function(cgv_get_service_name SERVICE_NAME_OUT TARGET_NAME IS_PLUGIN)
 	if (IS_PLUGIN)
-		set(${SERVER_NAME_OUT} "${TARGET_NAME}_server" PARENT_SCOPE)
+		set(${SERVICE_NAME_OUT} "${TARGET_NAME}_svc" PARENT_SCOPE)
 	endif()
 endfunction()
 
@@ -231,7 +231,7 @@ function(cgv_do_deferred_ops TARGET_NAME CONFIGURING_CGV)
 
 	# derive target names
 	cgv_get_static_or_exe_name(NAME_STATIC NAME_EXE ${TARGET_NAME} TRUE)
-	cgv_get_server_name(NAME_SERVER ${TARGET_NAME} TRUE)
+	cgv_get_service_name(NAME_SVC ${TARGET_NAME} TRUE)
 
 	# do plugin-specific deferred operations
 	if (TARGET_TYPE MATCHES "plugin$")
@@ -294,11 +294,11 @@ function(cgv_do_deferred_ops TARGET_NAME CONFIGURING_CGV)
 			target_link_options(${NAME_EXE} PRIVATE ${TARGET_LINK_OPTS_PRIVATE})
 			target_link_libraries(${NAME_EXE} PRIVATE ${TARGET_LINK_LIBS_PRIVATE})
 		endif()
-		# - apply to servers
-		cgv_query_property(HAS_SERVER ${TARGET_NAME} CGVPROP_SERVER)
-		if (HAS_SERVER)
-			target_link_options(${NAME_SERVER} PRIVATE ${TARGET_LINK_OPTS_PRIVATE})
-			target_link_libraries(${NAME_SERVER} PRIVATE ${TARGET_LINK_LIBS_PRIVATE})
+		# - apply to services
+		cgv_query_property(HAS_SERVICE ${TARGET_NAME} CGVPROP_SERVICE)
+		if (HAS_SERVICE)
+			target_link_options(${NAME_SVC} PRIVATE ${TARGET_LINK_OPTS_PRIVATE})
+			target_link_libraries(${NAME_SVC} PRIVATE ${TARGET_LINK_LIBS_PRIVATE})
 		endif()
 
 		# (3) extract list of plugins to load
@@ -349,9 +349,9 @@ function(cgv_do_deferred_ops TARGET_NAME CONFIGURING_CGV)
 			if (NO_EXECUTABLE)
 				set(NO_EXE_FLAG "NO_EXECUTABLE")
 			endif()
-			set(SERVER_FLAG "")
-			if (HAS_SERVER)
-				set(SERVER_FLAG "SERVER")
+			set(SERVICE_FLAG "")
+			if (HAS_SERVICE)
+				set(SERVICE_FLAG "SERVICE")
 			endif()
 			cgv_query_property(INVOCATION_PROXY ${TARGET_NAME} CGVPROP_INVOCATION_PROXY)
 
@@ -374,7 +374,7 @@ function(cgv_do_deferred_ops TARGET_NAME CONFIGURING_CGV)
 			#   TODO: proper handling of this is possible and should be implemented at some point
 			if (NOT CGV_USING_MULTI_CONFIG)
 				create_idea_run_entry(
-					${TARGET_NAME} ${NO_EXE_FLAG} ${SERVER_FLAG} WORKING_DIR ${WORKING_DIR}
+					${TARGET_NAME} ${NO_EXE_FLAG} ${SERVICE_FLAG} WORKING_DIR ${WORKING_DIR}
 					PLUGIN_ARGS ${AUTOGEN_CMD_LINE_ARGS};${ADDITIONAL_ARGS} EXE_ARGS ${ADDITIONAL_ARGS}
 					INVOCATION_PROXY ${INVOCATION_PROXY}
 				)
@@ -382,7 +382,7 @@ function(cgv_do_deferred_ops TARGET_NAME CONFIGURING_CGV)
 
 			# (3) Visual Studio Code
 			concat_vscode_launch_json_content(
-				VSCODE_TARGET_LAUNCH_JSON_CONFIGS ${TARGET_NAME} ${NO_EXE_FLAG} ${SERVER_FLAG}
+				VSCODE_TARGET_LAUNCH_JSON_CONFIGS ${TARGET_NAME} ${NO_EXE_FLAG} ${SERVICE_FLAG}
 				WORKING_DIR ${WORKING_DIR} PLUGIN_ARGS ${AUTOGEN_CMD_LINE_ARGS};${ADDITIONAL_ARGS}
 				EXE_ARGS ${ADDITIONAL_ARGS} INVOCATION_PROXY ${INVOCATION_PROXY}
 			)
@@ -402,9 +402,9 @@ function(cgv_do_deferred_ops TARGET_NAME CONFIGURING_CGV)
 				set_plugin_execution_params(${NAME_EXE} ARGUMENTS ${ADDITIONAL_ARGS_STRING} ALTERNATIVE_COMMAND $<TARGET_FILE:${NAME_EXE}>)
 				set_plugin_execution_working_dir(${NAME_EXE} ${CMAKE_CURRENT_SOURCE_DIR})
 			endif()
-			if (HAS_SERVER)
-				set_plugin_execution_params(${NAME_SERVER} ARGUMENTS "$<TARGET_FILE:${NAME_SERVER}> ${ADDITIONAL_ARGS_STRING}" ALTERNATIVE_COMMAND $<TARGET_FILE:server_host>)
-				set_plugin_execution_working_dir(${NAME_SERVER} ${CMAKE_CURRENT_SOURCE_DIR})
+			if (HAS_SERVICE)
+				set_plugin_execution_params(${NAME_SVC} ARGUMENTS "$<TARGET_FILE:${NAME_SVC}> ${ADDITIONAL_ARGS_STRING}" ALTERNATIVE_COMMAND $<TARGET_FILE:service_host>)
+				set_plugin_execution_working_dir(${NAME_SVC} ${CMAKE_CURRENT_SOURCE_DIR})
 			endif()
 		endif()
 	endif()
@@ -504,7 +504,7 @@ endfunction()
 function(cgv_add_target NAME)
 	cmake_parse_arguments(
 		PARSE_ARGV 1 CGVARG_
-		"NO_EXECUTABLE;SERVER" "TYPE;OVERRIDE_SHARED_EXPORT_DEFINE;OVERRIDE_FORCE_STATIC_DEFINE;WORKING_DIR"
+		"NO_EXECUTABLE;SERVICE" "TYPE;OVERRIDE_SHARED_EXPORT_DEFINE;OVERRIDE_FORCE_STATIC_DEFINE;WORKING_DIR"
 		"SOURCES;PPP_SOURCES;HEADERS;RESOURCES;AUDIO_RESOURCES;SHADER_SOURCES;ADDITIONAL_PRIVATE_DEFINES;ADDITIONAL_PUBLIC_DEFINES;DEPENDENCIES;LINKTIME_PLUGIN_DEPENDENCIES;ADDITIONAL_INCLUDE_PATHS;ADDITIONAL_LINKER_PATHS;ADDITIONAL_CMDLINE_ARGS;INVOCATION_PROXY"
 	)
 
@@ -587,7 +587,7 @@ function(cgv_add_target NAME)
 
 	# determine name for static variant
 	cgv_get_static_or_exe_name(NAME_STATIC NAME_EXE ${NAME} ${IS_PLUGIN})
-	cgv_get_server_name(NAME_SERVER ${NAME} ${IS_PLUGIN})
+	cgv_get_service_name(NAME_SVC ${NAME} ${IS_PLUGIN})
 	string(TOUPPER ${NAME} NAME_UPPER) # <-- used in compile-time definitions
 
 	# for plugin builds
@@ -640,8 +640,8 @@ function(cgv_add_target NAME)
 	if (IS_PLUGIN AND CGVARG__NO_EXECUTABLE)
 		set_target_properties(${NAME} PROPERTIES CGVPROP_NO_EXECUTABLE TRUE)
 	endif()
-	if (IS_PLUGIN AND CGVARG__SERVER)
-		set_target_properties(${NAME} PROPERTIES CGVPROP_SERVER TRUE)
+	if (IS_PLUGIN AND CGVARG__SERVICE)
+		set_target_properties(${NAME} PROPERTIES CGVPROP_SERVICE TRUE)
 	endif()
 
 	target_include_directories(${NAME} PUBLIC
@@ -727,18 +727,18 @@ function(cgv_add_target NAME)
 		target_link_libraries(${NAME_EXE} PRIVATE ${NAME_STATIC})
 	endif()
 
-	# add a server target if requested
-	if (IS_PLUGIN AND CGVARG__SERVER)
-		add_library(${NAME_SERVER} SHARED)
-		set_target_properties(${NAME_SERVER} PROPERTIES OUTPUT_NAME "${NAME}_server")
-		target_compile_definitions(${NAME_SERVER} PRIVATE ${PRIVATE_STATIC_TARGET_DEFINES})
+	# add a service target if requested
+	if (IS_PLUGIN AND CGVARG__SERVICE)
+		add_library(${NAME_SVC} SHARED)
+		set_target_properties(${NAME_SVC} PROPERTIES OUTPUT_NAME "${NAME_SVC}")
+		target_compile_definitions(${NAME_SVC} PRIVATE ${PRIVATE_STATIC_TARGET_DEFINES})
 		target_include_directories(
-			${NAME_SERVER} PUBLIC
+			${NAME_SVC} PUBLIC
 			${CGVARG__ADDITIONAL_INCLUDE_PATHS} "$<BUILD_INTERFACE:${CGV_DIR}>" "$<BUILD_INTERFACE:${CGV_DIR}/libs>"
 			"$<BUILD_INTERFACE:${PPP_INCLUDES}>" "$<BUILD_INTERFACE:${ST_INCLUDE}>" "$<INSTALL_INTERFACE:include>"
 		)
-		target_link_libraries(${NAME_SERVER} PRIVATE ${NAME_STATIC})
-		add_dependencies(${NAME_SERVER} server_host)
+		target_link_libraries(${NAME_SVC} PRIVATE ${NAME_STATIC})
+		add_dependencies(${NAME_SVC} service_host)
 	endif()
 
 	# observe STDCPP17 option
@@ -785,8 +785,8 @@ function(cgv_add_target NAME)
 		if (IS_PLUGIN AND NOT CGVARG__NO_EXECUTABLE)
 			list(APPEND MY_TARGETS ${NAME_EXE})
 		endif()
-		if (IS_PLUGIN AND CGVARG__SERVER)
-			list(APPEND MY_TARGETS ${NAME_SERVER})
+		if (IS_PLUGIN AND CGVARG__SERVICE)
+			list(APPEND MY_TARGETS ${NAME_SVC})
 		endif()
 		set_property(GLOBAL APPEND PROPERTY "CGVPROP_USER_TARGETS" ${MY_TARGETS})
 	endif()
@@ -826,9 +826,9 @@ function(cgv_add_target NAME)
 			set_target_properties(${NAME} PROPERTIES FOLDER "Application Plugin")
 			set_target_properties(${NAME_EXE} PROPERTIES FOLDER "Application Plugin")
 		endif()
-		if (CGVARG__SERVER)
+		if (CGVARG__SERVICE)
 			cgv_query_property(IDE_FOLDER ${NAME} "FOLDER")
-			set_target_properties(${NAME_SERVER} PROPERTIES FOLDER ${IDE_FOLDER})
+			set_target_properties(${NAME_SVC} PROPERTIES FOLDER ${IDE_FOLDER})
 		endif()
 	endif()
 	set_target_properties(${NAME_STATIC} PROPERTIES FOLDER "_obj")
