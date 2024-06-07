@@ -15,17 +15,11 @@ endif()
 if(WIN32)
 	set(WINDOWS_DEPENDENCIES cmv_avi co_web)
 endif()
-
-# decide whether we want a server version of the plugin.
-if(CGV_BUILD_TESTS)
-	set(SERVER "SERVER")
-endif()
-
 # add our target to the CGV CMake build system
 cgv_add_target(examples
 	TYPE plugin     # if we didn't want a single executable target to be generated, we could add the NO_EXECUTABLE flag
-	     ${SERVER}  # if building tests is enabled, we want a 'server' target created. This is similar to a single executable,
-	                # but the resulting build artifact is shared library that needs to be hosted by another process.
+	     SERVER     # for illustration purposes, we want a "server" target created. This is similar to a single executable,
+	                # but the resulting build artifact is a shared library that needs to be hosted by another process.
 
 	SOURCES         ${SOURCES}
 	PPP_SOURCES     ${PPP_SOURCES}
