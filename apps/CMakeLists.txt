@@ -1,2 +1,2 @@
 add_subdirectory(cgv_viewer)
-add_subdirectory(server_host)
+add_subdirectory(service_host)

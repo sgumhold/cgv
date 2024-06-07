@@ -1,4 +1,4 @@
-/* server_host: a minimal utility for launching server targets.
+/* service_host: a minimal utility for launching server targets.
    It simply loads the shared library provided to it via the command line and calls its main() function.
    This is the extent of the protocol for CGV server targets for now - they just need to export their
    main() function (typically provided by the cgv_viewer_main static library) in C language mode, and the

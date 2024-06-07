@@ -113,28 +113,28 @@ endfunction()
 
 function(concat_vscode_launch_json_content LAUNCH_JSON_CONFIG_VAR TARGET_NAME)
 	cmake_parse_arguments(
-		PARSE_ARGV 2 CGVARG_ "NO_EXECUTABLE;SERVER" "INVOCATION_PROXY;WORKING_DIR" "PLUGIN_ARGS;EXE_ARGS"
+		PARSE_ARGV 2 CGVARG_ "NO_EXECUTABLE;SERVICE" "INVOCATION_PROXY;WORKING_DIR" "PLUGIN_ARGS;EXE_ARGS"
 	)
 
 	# determine target names
 	cgv_get_static_or_exe_name(NAME_STATIC NAME_EXE ${TARGET_NAME} TRUE)
-	cgv_get_server_name(NAME_SERVER ${TARGET_NAME} TRUE)
+	cgv_get_service_name(NAME_SVC ${TARGET_NAME} TRUE)
 
 	# decide what the program to invoke will be
 	if (CGVARG__INVOCATION_PROXY)
 		set(LAUNCH_PROGRAM_PLUGIN "${CGVARG__INVOCATION_PROXY}")
 		set(LAUNCH_PROGRAM_EXE "${CGVARG__INVOCATION_PROXY}")
-		set(LAUNCH_PROGRAM_SERVER "${CGVARG__INVOCATION_PROXY}")
+		set(LAUNCH_PROGRAM_SERVICE "${CGVARG__INVOCATION_PROXY}")
 		set(CMD_ARGS_PLUGIN $<TARGET_FILE:cgv_viewer> "${CGVARG__PLUGIN_ARGS}")
 		set(CMD_ARGS_EXE $<TARGET_FILE:${NAME_EXE}> "${CGVARG__EXE_ARGS}")
-		set(CMD_ARGS_SERVER $<TARGET_FILE:server_host> $<TARGET_FILE:${NAME_SERVER}> "${CGVARG__EXE_ARGS}")
+		set(CMD_ARGS_SERVICE $<TARGET_FILE:service_host> $<TARGET_FILE:${NAME_SVC}> "${CGVARG__EXE_ARGS}")
 	else()
 		set(LAUNCH_PROGRAM_PLUGIN $<TARGET_FILE:cgv_viewer>)
 		set(LAUNCH_PROGRAM_EXE $<TARGET_FILE:${NAME_EXE}>)
-		set(LAUNCH_PROGRAM_SERVER $<TARGET_FILE:server_host>)
+		set(LAUNCH_PROGRAM_SERVICE $<TARGET_FILE:service_host>)
 		set(CMD_ARGS_PLUGIN "${CGVARG__PLUGIN_ARGS}")
 		set(CMD_ARGS_EXE "${CGVARG__EXE_ARGS}")
-		set(CMD_ARGS_SERVER $<TARGET_FILE:${NAME_SERVER}> "${CGVARG__EXE_ARGS}")
+		set(CMD_ARGS_SERVICE $<TARGET_FILE:${NAME_SVC}> "${CGVARG__EXE_ARGS}")
 	endif()
 
 	# compose JSON list for both plugin and executable variants
@@ -169,20 +169,20 @@ function(concat_vscode_launch_json_content LAUNCH_JSON_CONFIG_VAR TARGET_NAME)
 			WORKING_DIR ${CGVARG__WORKING_DIR}
 		)
 	endif()
-	# - server build if requested
-	if (CGVARG__SERVER)
+	# - service build if requested
+	if (CGVARG__SERVICE)
 		# standard VS Code C++ debugging in case we're not on the Microsoft compiler
 		if(NOT CMAKE_CXX_COMPILER_ID MATCHES "MSVC")
 			format_vscode_launch_json_entry(JSON_LIST_STRING
-					${NAME_SERVER} DEBUGGER_TYPE cppdbg
-					LAUNCH_PROGRAM ${LAUNCH_PROGRAM_SERVER} CMD_ARGS ${CMD_ARGS_SERVER}
+					${NAME_SVC} DEBUGGER_TYPE cppdbg
+					LAUNCH_PROGRAM ${LAUNCH_PROGRAM_SERVICE} CMD_ARGS ${CMD_ARGS_SERVICE}
 					WORKING_DIR ${CGVARG__WORKING_DIR}
 			)
 		endif()
 		# CodeLLDB debugging
 		format_vscode_launch_json_entry(JSON_LIST_STRING
-				${NAME_SERVER} DEBUGGER_TYPE CodeLLDB
-				LAUNCH_PROGRAM ${LAUNCH_PROGRAM_SERVER} CMD_ARGS ${CMD_ARGS_SERVER}
+				${NAME_SVC} DEBUGGER_TYPE CodeLLDB
+				LAUNCH_PROGRAM ${LAUNCH_PROGRAM_SERVICE} CMD_ARGS ${CMD_ARGS_SERVICE}
 				WORKING_DIR ${CGVARG__WORKING_DIR}
 		)
 	endif()
@@ -193,28 +193,28 @@ endfunction()
 
 function(create_idea_run_entry TARGET_NAME)
 	cmake_parse_arguments(
-		PARSE_ARGV 1 CGVARG_ "NO_EXECUTABLE;SERVER" "INVOCATION_PROXY;WORKING_DIR" "PLUGIN_ARGS;EXE_ARGS"
+		PARSE_ARGV 1 CGVARG_ "NO_EXECUTABLE;SERVICE" "INVOCATION_PROXY;WORKING_DIR" "PLUGIN_ARGS;EXE_ARGS"
 	)
 
 	# determine target names
 	cgv_get_static_or_exe_name(NAME_STATIC NAME_EXE ${TARGET_NAME} TRUE)
-	cgv_get_server_name(NAME_SERVER ${TARGET_NAME} TRUE)
+	cgv_get_service_name(NAME_SVC ${TARGET_NAME} TRUE)
 
 	# decide what the program to invoke will be
 	if (CGVARG__INVOCATION_PROXY)
 		set(LAUNCH_PROGRAM_PLUGIN "${CGVARG__INVOCATION_PROXY}")
 		set(LAUNCH_PROGRAM_EXE "${CGVARG__INVOCATION_PROXY}")
-		set(LAUNCH_PROGRAM_SERVER "${CGVARG__INVOCATION_PROXY}")
+		set(LAUNCH_PROGRAM_SERVICE "${CGVARG__INVOCATION_PROXY}")
 		set(CMD_ARGS_PLUGIN $<TARGET_FILE:cgv_viewer> "${CGVARG__PLUGIN_ARGS}")
 		set(CMD_ARGS_EXE $<TARGET_FILE:${NAME_EXE}> "${CGVARG__EXE_ARGS}")
-		set(CMD_ARGS_SERVER $<TARGET_FILE:server_host> $<TARGET_FILE:${NAME_SERVER}> "${CGVARG__EXE_ARGS}")
+		set(CMD_ARGS_SERVICE $<TARGET_FILE:service_host> $<TARGET_FILE:${NAME_SVC}> "${CGVARG__EXE_ARGS}")
 	else()
 		set(LAUNCH_PROGRAM_PLUGIN "$<TARGET_FILE:cgv_viewer>")
 		set(LAUNCH_PROGRAM_EXE "$<TARGET_FILE:${NAME_EXE}>")
-		set(LAUNCH_PROGRAM_SERVER "$<TARGET_FILE:server_host>")
+		set(LAUNCH_PROGRAM_SERVICE "$<TARGET_FILE:service_host>")
 		set(CMD_ARGS_PLUGIN "${CGVARG__PLUGIN_ARGS}")
 		set(CMD_ARGS_EXE "${CGVARG__EXE_ARGS}")
-		set(CMD_ARGS_SERVER "$<TARGET_FILE:${NAME_SERVER}>" "${CGVARG__EXE_ARGS}")
+		set(CMD_ARGS_SERVICE "$<TARGET_FILE:${NAME_SVC}>" "${CGVARG__EXE_ARGS}")
 	endif()
 
 	# Generate plugin build launch config
@@ -250,16 +250,16 @@ function(create_idea_run_entry TARGET_NAME)
 			USE_SOURCE_PERMISSIONS
 		)
 	endif()
-	# If requested, generate server build launch config
-	if (CGVARG__SERVER)
+	# If requested, generate service build launch config
+	if (CGVARG__SERVICE)
 		if(CMAKE_BUILD_TYPE MATCHES "Release")
-			set(IDEA_CONFIG_NAME "${NAME_SERVER}")
+			set(IDEA_CONFIG_NAME "${NAME_SVC}")
 		else()
-			set(IDEA_CONFIG_NAME "${NAME_SERVER} (${CMAKE_BUILD_TYPE})")
+			set(IDEA_CONFIG_NAME "${NAME_SVC} (${CMAKE_BUILD_TYPE})")
 		endif()
-		set(IDEA_TARGET_NAME "${NAME_SERVER}")
-		set(IDEA_LAUNCH_CMD "${LAUNCH_PROGRAM_SERVER}")
-		format_idea_launch_args(IDEA_LAUNCH_ARGS ARGUMENT_LIST ${CMD_ARGS_SERVER})
+		set(IDEA_TARGET_NAME "${NAME_SVC}")
+		set(IDEA_LAUNCH_CMD "${LAUNCH_PROGRAM_SERVICE}")
+		format_idea_launch_args(IDEA_LAUNCH_ARGS ARGUMENT_LIST ${CMD_ARGS_SERVICE})
 		configure_file("${CGV_DIR}/make/cmake/idea_launch.xml.in" "${CMAKE_SOURCE_DIR}/.run/${IDEA_CONFIG_NAME}.run.xml" @ONLY)
 		file(
 				GENERATE OUTPUT "${CMAKE_SOURCE_DIR}/.run/${IDEA_CONFIG_NAME}.run.xml"
