@@ -5,7 +5,6 @@ add_subdirectory(vr)
 
 if (CGV_BUILD_TESTS)
 	add_subdirectory(font_test)
-	add_subdirectory(server_host)
 	add_subdirectory(vr_draw)
 	add_subdirectory(vr_lab_test)
 endif()

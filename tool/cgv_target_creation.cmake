@@ -349,6 +349,10 @@ function(cgv_do_deferred_ops TARGET_NAME CONFIGURING_CGV)
 			if (NO_EXECUTABLE)
 				set(NO_EXE_FLAG "NO_EXECUTABLE")
 			endif()
+			set(SERVER_FLAG "")
+			if (HAS_SERVER)
+				set(SERVER_FLAG "SERVER")
+			endif()
 			cgv_query_property(INVOCATION_PROXY ${TARGET_NAME} CGVPROP_INVOCATION_PROXY)
 
 			# (1) Shell script
@@ -370,7 +374,7 @@ function(cgv_do_deferred_ops TARGET_NAME CONFIGURING_CGV)
 			#   TODO: proper handling of this is possible and should be implemented at some point
 			if (NOT CGV_USING_MULTI_CONFIG)
 				create_idea_run_entry(
-					${TARGET_NAME} ${NO_EXE_FLAG} WORKING_DIR ${WORKING_DIR}
+					${TARGET_NAME} ${NO_EXE_FLAG} ${SERVER_FLAG} WORKING_DIR ${WORKING_DIR}
 					PLUGIN_ARGS ${AUTOGEN_CMD_LINE_ARGS};${ADDITIONAL_ARGS} EXE_ARGS ${ADDITIONAL_ARGS}
 					INVOCATION_PROXY ${INVOCATION_PROXY}
 				)
@@ -378,9 +382,9 @@ function(cgv_do_deferred_ops TARGET_NAME CONFIGURING_CGV)
 
 			# (3) Visual Studio Code
 			concat_vscode_launch_json_content(
-				VSCODE_TARGET_LAUNCH_JSON_CONFIGS ${TARGET_NAME} ${NO_EXE_FLAG} WORKING_DIR ${WORKING_DIR}
-				PLUGIN_ARGS ${AUTOGEN_CMD_LINE_ARGS};${ADDITIONAL_ARGS} EXE_ARGS ${ADDITIONAL_ARGS}
-				INVOCATION_PROXY ${INVOCATION_PROXY}
+				VSCODE_TARGET_LAUNCH_JSON_CONFIGS ${TARGET_NAME} ${NO_EXE_FLAG} ${SERVER_FLAG}
+				WORKING_DIR ${WORKING_DIR} PLUGIN_ARGS ${AUTOGEN_CMD_LINE_ARGS};${ADDITIONAL_ARGS}
+				EXE_ARGS ${ADDITIONAL_ARGS} INVOCATION_PROXY ${INVOCATION_PROXY}
 			)
 			if (NOT VSCODE_LAUNCH_JSON_CONFIG_LIST OR VSCODE_LAUNCH_JSON_CONFIG_LIST STREQUAL "")
 				set(VSCODE_LAUNCH_JSON_CONFIG_LIST "${VSCODE_TARGET_LAUNCH_JSON_CONFIGS}" PARENT_SCOPE)
@@ -397,6 +401,10 @@ function(cgv_do_deferred_ops TARGET_NAME CONFIGURING_CGV)
 			if (NOT NO_EXECUTABLE)
 				set_plugin_execution_params(${NAME_EXE} ARGUMENTS ${ADDITIONAL_ARGS_STRING} ALTERNATIVE_COMMAND $<TARGET_FILE:${NAME_EXE}>)
 				set_plugin_execution_working_dir(${NAME_EXE} ${CMAKE_CURRENT_SOURCE_DIR})
+			endif()
+			if (HAS_SERVER)
+				set_plugin_execution_params(${NAME_SERVER} ARGUMENTS "$<TARGET_FILE:server_host>;${ADDITIONAL_ARGS_STRING}" ALTERNATIVE_COMMAND $<TARGET_FILE:server_host>)
+				set_plugin_execution_working_dir(${NAME_SERVER} ${CMAKE_CURRENT_SOURCE_DIR})
 			endif()
 		endif()
 	endif()
@@ -730,6 +738,7 @@ function(cgv_add_target NAME)
 			"$<BUILD_INTERFACE:${PPP_INCLUDES}>" "$<BUILD_INTERFACE:${ST_INCLUDE}>" "$<INSTALL_INTERFACE:include>"
 		)
 		target_link_libraries(${NAME_SERVER} PRIVATE ${NAME_STATIC})
+		add_dependencies(${NAME_SERVER} server_host)
 	endif()
 
 	# observe STDCPP17 option

@@ -1,1 +1,2 @@
 add_subdirectory(cgv_viewer)
+add_subdirectory(server_host)
