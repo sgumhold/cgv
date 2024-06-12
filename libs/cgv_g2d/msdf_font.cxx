@@ -85,6 +85,10 @@ vec2 msdf_font::compute_render_size(const std::string& str, float scale) const {
 	return scale * vec2(compute_normalized_length(str), 1.0f);
 }
 
+vec2 msdf_font::compute_render_size(const std::string& str, size_t end, float scale) const {
+	return scale * vec2(compute_normalized_length(str, end), 1.0f);
+}
+
 void msdf_font::generate_vertex_data(const std::string& str, std::vector<vec4>& quads, std::vector<vec4>& texcoords) const {
 	float accumulated_advance = 0.0f;
 	for(char c : str) {
