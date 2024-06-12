@@ -3,7 +3,7 @@
 #define MODE 1
 
 //***** begin interface of shape2d.glsl ***********************************
-uniform bool origin_upper_left = false;
+uniform bool origin_top_left = false;
 
 uniform float border_radius = 0.0;
 uniform float feather_origin = 0.5;
@@ -108,7 +108,7 @@ void main() {
 
 	//col = color0;
 
-	if(origin_upper_left)
+	if(origin_top_left)
 		v_dir = -v_dir;
 
 	emit_corner(0, position_a, u_dir, v_dir, color0);

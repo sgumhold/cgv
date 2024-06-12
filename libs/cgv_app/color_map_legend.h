@@ -5,7 +5,7 @@
 #include <cgv/utils/convert_string.h>
 #include <cgv_app/themed_canvas_overlay.h>
 #include <cgv_g2d/generic_2d_renderer.h>
-#include <cgv_g2d/msdf_gl_canvas_font_renderer.h>
+#include <cgv_g2d/msdf_text_geometry.h>
 
 #include "lib_begin.h"
 
@@ -106,7 +106,7 @@ protected:
 	tick_geometry ticks;
 
 	void init_styles() override;
-	void create_labels();
+	void create_labels(const cgv::render::context& ctx);
 	void create_ticks();
 
 	void create_gui_impl() override;

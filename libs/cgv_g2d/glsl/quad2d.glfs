@@ -1,7 +1,7 @@
 #version 150
 
 //***** begin interface of shape2d.glsl ***********************************
-uniform bool origin_upper_left = false;
+uniform bool origin_top_left = false;
 
 vec2 get_adjusted_size(vec2 size);
 vec4 get_active_color(vec4 color);
@@ -87,7 +87,7 @@ void main() {
 	
 	vec2 uv = inv_bilinear2(pix_coord, position01_fs.zw, position01_fs.xy, position23_fs.zw, position23_fs.xy);
 
-	if(origin_upper_left)
+	if(origin_top_left)
 		uv.y = 1.0 - uv.y;
 
 	finish_sdf_fragment2d(dist, color, uv);
