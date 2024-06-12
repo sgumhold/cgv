@@ -60,7 +60,7 @@ bool msdf_font::init(cgv::render::context& ctx) {
 	return success;
 }
 
-float msdf_font::compute_length(const std::string& str, size_t end) const {
+float msdf_font::compute_normalized_length(const std::string& str, size_t end) const {
 	float length = 0.0f;
 	float acc_advance = 0.0f;
 
@@ -81,24 +81,22 @@ float msdf_font::compute_length(const std::string& str, size_t end) const {
 	return length;
 }
 
-std::vector<vec4> msdf_font::create_vertex_data(const std::string& str) const {
-	std::vector<vec4> vertices;
-	vertices.reserve(2 * str.size());
+vec2 msdf_font::compute_render_size(const std::string& str, float scale) const {
+	return scale * vec2(compute_normalized_length(str), 1.0f);
+}
 
+void msdf_font::generate_vertex_data(const std::string& str, std::vector<vec4>& quads, std::vector<vec4>& texcoords) const {
 	float accumulated_advance = 0.0f;
-
 	for(char c : str) {
 		const auto& glyph = get_glyph_info(static_cast<unsigned char>(c));
 
-		vec2 position = glyph.position + vec2(accumulated_advance, 0.0f);
-		vec2 size = glyph.size;
+		vec2 min_position = glyph.position + vec2(accumulated_advance, 0.0f);
+		vec2 max_position = min_position + glyph.size;
 		accumulated_advance += glyph.advance;
 
-		vertices.emplace_back(position.x(), position.y(), size.x(), size.y());
-		vertices.emplace_back(glyph.texcoords);
+		quads.emplace_back(min_position.x(), min_position.y(), max_position.x(), max_position.y());
+		texcoords.emplace_back(glyph.texcoords);
 	}
-
-	return vertices;
 }
 
 bool msdf_font::enable(cgv::render::context& ctx) {

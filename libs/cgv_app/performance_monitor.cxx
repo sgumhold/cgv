@@ -2,6 +2,7 @@
 
 #include <cgv/gui/theme_info.h>
 #include <cgv/math/ftransform.h>
+#include <cgv_g2d/msdf_gl_font_renderer.h>
 
 namespace cgv {
 namespace app {
@@ -17,18 +18,27 @@ performance_monitor::performance_monitor() {
 	set_size(layout.total_size);
 
 	bar_renderer = cgv::g2d::generic_2d_renderer(cgv::g2d::shaders::rectangle);
+
+	std::vector<std::string> strs = {
+		"Frames per Second:",
+		"Frametime (ms):",
+		"",
+		"",
+		"30",
+		"60",
+		"120"
+	};
 }
 
 void performance_monitor::clear(cgv::render::context& ctx) {
 
-	cgv::g2d::ref_msdf_gl_canvas_font_renderer(ctx, -1);
+	cgv::g2d::ref_msdf_gl_font_renderer_2d(ctx, -1);
 
 	canvas_overlay::clear(ctx);
 
 	bar_renderer.destruct(ctx);
 	bars.destruct(ctx);
-	texts.destruct(ctx);
-	labels.destruct(ctx);
+	text_geometry.destruct(ctx);
 }
 
 void performance_monitor::handle_member_change(const cgv::utils::pointer_test& m) {
@@ -49,7 +59,7 @@ void performance_monitor::handle_member_change(const cgv::utils::pointer_test& m
 
 bool performance_monitor::init(cgv::render::context& ctx) {
 
-	cgv::g2d::ref_msdf_gl_canvas_font_renderer(ctx, 1);
+	cgv::g2d::ref_msdf_gl_font_renderer_2d(ctx, 1);
 
 	register_shader("rectangle", cgv::g2d::shaders::rectangle);
 	register_shader("line", cgv::g2d::shaders::line);
@@ -57,8 +67,7 @@ bool performance_monitor::init(cgv::render::context& ctx) {
 	bool success = canvas_overlay::init(ctx);
 
 	success &= bar_renderer.init(ctx);
-	success &= texts.init(ctx);
-	success &= labels.init(ctx);
+	success &= text_geometry.init(ctx);
 
 	plot_color_map.add_color_point(0.0f, rgb(0.5f, 1.0f, 0.5f));
 	plot_color_map.add_color_point(0.25f, rgb(0.0f, 0.9f, 0.0f));
@@ -72,8 +81,8 @@ void performance_monitor::init_frame(cgv::render::context& ctx) {
 
 	if(ensure_layout(ctx)) {
 		layout.update(get_rectangle().size);
-		create_texts();
-		create_labels();
+		create_texts(ctx);
+		//create_labels(ctx);
 	}
 
 	bool enabled = monitor.enabled;
@@ -83,14 +92,17 @@ void performance_monitor::init_frame(cgv::render::context& ctx) {
 	if(enabled) {
 		if(show_plot)
 			update_plot();
-		update_stats_texts();
+		update_texts(ctx);
 	}
 }
 
 void performance_monitor::draw_content(cgv::render::context& ctx) {
 
 	begin_content(ctx);
-	auto& font_renderer = cgv::g2d::ref_msdf_gl_canvas_font_renderer(ctx);
+	auto& font_renderer = cgv::g2d::ref_msdf_gl_font_renderer_2d(ctx);
+
+	// draw text
+	font_renderer.render(ctx, content_canvas, text_geometry, text_style, 0, 4);
 
 	if(show_plot) {
 		// draw plot border
@@ -113,11 +125,8 @@ void performance_monitor::draw_content(cgv::render::context& ctx) {
 		content_canvas.disable_current_shader(ctx);
 
 		// draw labels
-		font_renderer.render(ctx, content_canvas, labels, label_style);
+		font_renderer.render(ctx, content_canvas, text_geometry, tick_text_style, 4);
 	}
-
-	// draw text
-	font_renderer.render(ctx, content_canvas, texts, text_style);
 
 	end_content(ctx);
 }
@@ -208,17 +217,17 @@ void performance_monitor::init_styles() {
 	text_style.fill_color = border_color;
 	text_style.font_size = 12.0f;
 
-	label_style = text_style;
-	label_style.font_size = 10.0f;
+	tick_text_style = text_style;
+	tick_text_style.font_size = 10.0f;
 }
 
-void performance_monitor::create_texts() {
+void performance_monitor::create_texts(const cgv::render::context& ctx) {
 
-	texts.clear();
+	text_geometry.clear();
 
-	const int line_spacing = static_cast<int>(1.25f* text_style.font_size);
+	text_geometry.set_text_array(ctx, labels);
 
-	ivec2 caret_pos = ivec2(layout.content_rect.x(), layout.content_rect.y1() - (int)text_style.font_size);
+	/*ivec2 caret_pos = ivec2(layout.content_rect.x(), layout.content_rect.y1() - (int)text_style.font_size);
 	texts.add_text("Frames per Second:", caret_pos, cgv::render::TA_BOTTOM_LEFT);
 	caret_pos.y() -= line_spacing;
 	texts.add_text("Frametime (ms):", caret_pos, cgv::render::TA_BOTTOM_LEFT);
@@ -226,19 +235,50 @@ void performance_monitor::create_texts() {
 	caret_pos = ivec2(layout.content_rect.x1(), layout.content_rect.y1() - (int)text_style.font_size);
 	texts.add_text("", caret_pos, cgv::render::TA_BOTTOM_RIGHT);
 	caret_pos.y() -= line_spacing;
-	texts.add_text("", caret_pos, cgv::render::TA_BOTTOM_RIGHT);
+	texts.add_text("", caret_pos, cgv::render::TA_BOTTOM_RIGHT);*/
+
+	const float line_spacing = 1.25f * text_style.font_size;
+	cgv::g2d::rect content_rect = static_cast<cgv::g2d::rect>(layout.content_rect);
+
+	vec3 caret_pos(content_rect.x(), content_rect.y1() - text_style.font_size, 0.0f);
+	text_geometry.positions.push_back(caret_pos);
+	caret_pos.y() -= line_spacing;
+	text_geometry.positions.push_back(caret_pos);
+
+	caret_pos = vec3(content_rect.x1(), content_rect.y1() - text_style.font_size, 0.0f);
+	text_geometry.positions.push_back(caret_pos);
+	caret_pos.y() -= line_spacing;
+	text_geometry.positions.push_back(caret_pos);
+
+	cgv::g2d::rect plot_rect = static_cast<cgv::g2d::rect>(layout.plot_rect);
+
+	caret_pos = vec3(plot_rect.x(), plot_rect.y1(), 0.0f);
+	text_geometry.positions.push_back(caret_pos);
+	caret_pos.y() = plot_rect.center().y();
+	text_geometry.positions.push_back(caret_pos);
+	caret_pos.y() = plot_rect.y();
+	text_geometry.positions.push_back(caret_pos);
+
+	text_geometry.alignments = {
+		cgv::render::TA_BOTTOM_LEFT,
+		cgv::render::TA_BOTTOM_LEFT,
+		cgv::render::TA_BOTTOM_RIGHT,
+		cgv::render::TA_BOTTOM_RIGHT,
+		cgv::render::TA_TOP_LEFT,
+		cgv::render::TA_LEFT,
+		cgv::render::TA_BOTTOM_LEFT
+	};
 }
 
-void performance_monitor::update_stats_texts() {
+void performance_monitor::update_texts(const cgv::render::context& ctx) {
 
-	if(texts.size() > 3) {
+	if(labels.size() > 3) {
 		std::stringstream ss;
 		ss.precision(2);
 		ss << std::fixed;
 		ss << monitor.avg_fps;
 
-		std::string str = ss.str();
-		texts.set_text(2, ss.str());
+		labels[2] = ss.str();
 
 		ss.str(std::string());
 		if(monitor.avg_fps < 0.001f)
@@ -246,13 +286,15 @@ void performance_monitor::update_stats_texts() {
 		else
 			ss << 1000.0 / monitor.avg_fps;
 
-		texts.set_text(3, ss.str());
+		labels[3] = ss.str();
 
 		post_damage();
 	}
+
+	text_geometry.set_text_array(ctx, labels);
 }
 
-void performance_monitor::create_labels() {
+/*void performance_monitor::create_labels(const cgv::render::context& ctx) {
 	
 	labels.clear();
 
@@ -262,7 +304,7 @@ void performance_monitor::create_labels() {
 	labels.add_text("60", caret_pos, cgv::render::TA_LEFT);
 	caret_pos.y() = layout.plot_rect.y();
 	labels.add_text("120", caret_pos, cgv::render::TA_BOTTOM_LEFT);
-}
+}*/
 
 void performance_monitor::update_plot() {
 

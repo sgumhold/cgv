@@ -3467,14 +3467,31 @@ bool gl_context::is_attribute_array_enabled(const attribute_array_binding_base* 
 GLenum buffer_target(VertexBufferType vbt)
 {
 	static GLenum buffer_targets[] = {
-		GL_ARRAY_BUFFER, GL_ELEMENT_ARRAY_BUFFER, GL_TEXTURE_BUFFER, GL_UNIFORM_BUFFER, GL_TRANSFORM_FEEDBACK_BUFFER, GL_SHADER_STORAGE_BUFFER, GL_ATOMIC_COUNTER_BUFFER
+		GL_ARRAY_BUFFER,
+		GL_ELEMENT_ARRAY_BUFFER,
+		GL_TEXTURE_BUFFER,
+		GL_UNIFORM_BUFFER,
+		GL_TRANSFORM_FEEDBACK_BUFFER,
+		GL_SHADER_STORAGE_BUFFER,
+		GL_ATOMIC_COUNTER_BUFFER,
+		GL_DRAW_INDIRECT_BUFFER
 	};
 	return buffer_targets[vbt];
 }
 
 GLenum buffer_usage(VertexBufferUsage vbu)
 {
-	static GLenum buffer_usages[] = { GL_STREAM_DRAW, GL_STREAM_READ, GL_STREAM_COPY, GL_STATIC_DRAW, GL_STATIC_READ, GL_STATIC_COPY, GL_DYNAMIC_DRAW, GL_DYNAMIC_READ, GL_DYNAMIC_COPY };
+	static GLenum buffer_usages[] = {
+		GL_STREAM_DRAW,
+		GL_STREAM_READ,
+		GL_STREAM_COPY,
+		GL_STATIC_DRAW,
+		GL_STATIC_READ,
+		GL_STATIC_COPY,
+		GL_DYNAMIC_DRAW,
+		GL_DYNAMIC_READ,
+		GL_DYNAMIC_COPY
+	};
 	return buffer_usages[vbu];
 }
 
