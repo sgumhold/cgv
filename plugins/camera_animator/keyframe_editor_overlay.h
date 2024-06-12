@@ -9,7 +9,7 @@
 #include <cgv_app/themed_canvas_overlay.h>
 #include <cgv_g2d/draggable_collection.h>
 #include <cgv_g2d/generic_2d_renderer.h>
-#include <cgv_g2d/msdf_gl_canvas_font_renderer.h>
+#include <cgv_g2d/msdf_text_geometry.h>
 
 #include "animation_data.h"
 
@@ -29,6 +29,7 @@ public:
 protected:
 	using vec2 = cgv::vec2;
 	using ivec2 = cgv::ivec2;
+	using vec3 = cgv::vec3;
 	using rgb = cgv::rgb;
 
 	struct {
@@ -100,6 +101,7 @@ protected:
 	cgv::g2d::draggable_collection<cgv::g2d::draggable> marker;
 	cgv::g2d::draggable_collection<keyframe_draggable> keyframes;
 	
+	std::vector<std::string> label_texts;
 	cgv::g2d::msdf_text_geometry labels;
 
 	cgv::g2d::shape2d_style border_style, rectangle_style, line_style, key_rect_style, scrollbar_style;

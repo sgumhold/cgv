@@ -4,6 +4,7 @@
 #include <cgv/gui/mouse_event.h>
 #include <cgv/math/ftransform.h>
 #include <cgv/utils/convert_string.h>
+#include <cgv_g2d/msdf_gl_font_renderer.h>
 
 using namespace cgv::render;
 
@@ -33,7 +34,7 @@ keyframe_editor_overlay::keyframe_editor_overlay() {
 
 void keyframe_editor_overlay::clear(context& ctx) {
 
-	cgv::g2d::ref_msdf_gl_canvas_font_renderer(ctx, -1);
+	cgv::g2d::ref_msdf_gl_font_renderer_2d(ctx, -1);
 
 	themed_canvas_overlay::clear(ctx);
 
@@ -148,7 +149,7 @@ void keyframe_editor_overlay::handle_member_change(const cgv::utils::pointer_tes
 
 bool keyframe_editor_overlay::init(context& ctx) {
 
-	cgv::g2d::ref_msdf_gl_canvas_font_renderer(ctx, 1);
+	cgv::g2d::ref_msdf_gl_font_renderer_2d(ctx, 1);
 
 	register_shader("background", cgv::g2d::shaders::grid);
 	register_shader("rectangle", cgv::g2d::shaders::rectangle);
@@ -190,18 +191,25 @@ void keyframe_editor_overlay::init_frame(context& ctx) {
 		marker.set_constraint(layout.marker_constraint);
 
 		labels.clear();
-		labels.add_text("0", vec2(0.0f), TA_BOTTOM);
-
+		label_texts.clear();
+		label_texts.push_back("0");
+		labels.positions.push_back(vec3(0.0f));
+		
 		for(size_t i = 0; i <= layout.timeline_frames; ++i) {
 			if(i % 5 == 0) {
-				vec2 position = vec2(
+				vec3 position(
 					static_cast<float>(padding() + layout.frame_width * i + layout.frame_width / 2),
-					static_cast<float>(layout.total_height(padding()) - 10 - layout.marker_height + 7)
+					static_cast<float>(layout.total_height(padding()) - 10 - layout.marker_height + 7),
+					0.0f
 				);
-				labels.add_text(std::to_string(i), position, TA_BOTTOM);
+				label_texts.push_back(std::to_string(i));
+				labels.positions.push_back(position);
+				labels.alignments.push_back(TA_BOTTOM);
 			}
 		}
 		
+		labels.alignment = TA_BOTTOM;
+
 		create_keyframe_draggables();
 		keyframes.set_constraint(layout.timeline);
 
@@ -587,7 +595,7 @@ void keyframe_editor_overlay::draw_time_marker_and_labels(cgv::render::context& 
 	};
 
 	// draw frame number labels
-	auto& font_renderer = cgv::g2d::ref_msdf_gl_canvas_font_renderer(ctx);
+	auto& font_renderer = cgv::g2d::ref_msdf_gl_font_renderer_2d(ctx);
 	font_renderer.render(ctx, content_canvas, labels, label_style, 1);
 
 	// draw time marker line
@@ -619,8 +627,9 @@ void keyframe_editor_overlay::draw_time_marker_and_labels(cgv::render::context& 
 	content_canvas.disable_current_shader(ctx);
 
 	// draw time marker frame number label
-	labels.set_text(0, std::to_string(data->frame));
-	labels.set_position(0, vec2(pos0.x(), pos1.y() + 7));
+	label_texts[0] = std::to_string(data->frame);
+	labels.set_text_array(ctx, label_texts);
+	labels.positions[0] = vec3(pos0.x(), pos1.y() + 7.0f, 0.0f);
 	font_renderer.render(ctx, content_canvas, labels, label_style, 0, 1);
 }
 
