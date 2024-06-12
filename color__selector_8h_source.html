@@ -90,7 +90,7 @@ $(document).ready(function(){initNavTree('color__selector_8h_source.html',''); i
 <div class="line"><a name="l00003"></a><span class="lineno">    3</span>&#160;<span class="preprocessor">#include &lt;cgv/render/texture.h&gt;</span></div>
 <div class="line"><a name="l00004"></a><span class="lineno">    4</span>&#160;<span class="preprocessor">#include &lt;cgv_app/themed_canvas_overlay.h&gt;</span></div>
 <div class="line"><a name="l00005"></a><span class="lineno">    5</span>&#160;<span class="preprocessor">#include &lt;cgv_g2d/draggable_collection.h&gt;</span></div>
-<div class="line"><a name="l00006"></a><span class="lineno">    6</span>&#160;<span class="preprocessor">#include &lt;cgv_g2d/msdf_gl_canvas_font_renderer.h&gt;</span></div>
+<div class="line"><a name="l00006"></a><span class="lineno">    6</span>&#160;<span class="preprocessor">#include &lt;cgv_g2d/msdf_text_geometry.h&gt;</span></div>
 <div class="line"><a name="l00007"></a><span class="lineno">    7</span>&#160;<span class="preprocessor">#include &lt;cgv_g2d/shape2d_styles.h&gt;</span></div>
 <div class="line"><a name="l00008"></a><span class="lineno">    8</span>&#160; </div>
 <div class="line"><a name="l00009"></a><span class="lineno">    9</span>&#160;<span class="preprocessor">#include &quot;lib_begin.h&quot;</span></div>
@@ -158,70 +158,71 @@ $(document).ready(function(){initNavTree('color__selector_8h_source.html',''); i
 <div class="line"><a name="l00071"></a><span class="lineno">   71</span>&#160;    <span class="keywordtype">bool</span> has_opacity = <span class="keyword">false</span>;</div>
 <div class="line"><a name="l00072"></a><span class="lineno">   72</span>&#160;    <span class="keywordtype">bool</span> auto_show = <span class="keyword">true</span>;</div>
 <div class="line"><a name="l00073"></a><span class="lineno">   73</span>&#160; </div>
-<div class="line"><a name="l00074"></a><span class="lineno">   74</span>&#160;    cgv::g2d::msdf_text_geometry texts;</div>
-<div class="line"><a name="l00075"></a><span class="lineno">   75</span>&#160; </div>
-<div class="line"><a name="l00076"></a><span class="lineno">   76</span>&#160;    cgv::g2d::shape2d_style border_style, color_texture_style, hue_texture_style, opacity_color_style, color_handle_style, hue_handle_style;</div>
-<div class="line"><a name="l00077"></a><span class="lineno">   77</span>&#160;    cgv::g2d::text2d_style text_style;</div>
-<div class="line"><a name="l00078"></a><span class="lineno">   78</span>&#160;    cgv::g2d::grid2d_style opacity_bg_style;</div>
-<div class="line"><a name="l00079"></a><span class="lineno">   79</span>&#160; </div>
-<div class="line"><a name="l00080"></a><span class="lineno">   80</span>&#160;    cgv::g2d::draggable_collection&lt;selector_handle&gt; selector_handles;</div>
-<div class="line"><a name="l00081"></a><span class="lineno">   81</span>&#160; </div>
-<div class="line"><a name="l00082"></a><span class="lineno">   82</span>&#160;    <a class="code" href="classcgv_1_1render_1_1texture.html">cgv::render::texture</a> color_tex;</div>
-<div class="line"><a name="l00083"></a><span class="lineno">   83</span>&#160;    <a class="code" href="classcgv_1_1render_1_1texture.html">cgv::render::texture</a> hue_tex;</div>
-<div class="line"><a name="l00084"></a><span class="lineno">   84</span>&#160; </div>
-<div class="line"><a name="l00085"></a><span class="lineno">   85</span>&#160;    <a class="code" href="classcgv_1_1media_1_1color.html">rgb</a> rgb_color = <a class="code" href="namespacecgv.html#a465f589beeb5e4e76eb2db8d1f6057c1">rgb</a>(0.0f);</div>
-<div class="line"><a name="l00086"></a><span class="lineno">   86</span>&#160;    <a class="code" href="classcgv_1_1media_1_1color.html">rgba</a> rgba_color = <a class="code" href="namespacecgv.html#a0cf3c7d9673d8f1d9d33685e3ce5c889">rgba</a>(0.0f);</div>
-<div class="line"><a name="l00087"></a><span class="lineno">   87</span>&#160; </div>
-<div class="line"><a name="l00088"></a><span class="lineno">   88</span>&#160;    <span class="keywordtype">void</span> update_layout(<span class="keyword">const</span> <a class="code" href="classcgv_1_1math_1_1fvec.html">ivec2</a>&amp; parent_size);</div>
-<div class="line"><a name="l00089"></a><span class="lineno">   89</span>&#160; </div>
-<div class="line"><a name="l00090"></a><span class="lineno">   90</span>&#160;    <span class="keywordtype">void</span> init_styles() <span class="keyword">override</span>;</div>
-<div class="line"><a name="l00091"></a><span class="lineno">   91</span>&#160;    <span class="keywordtype">void</span> init_textures(<a class="code" href="classcgv_1_1render_1_1context.html">cgv::render::context</a>&amp; ctx);</div>
-<div class="line"><a name="l00092"></a><span class="lineno">   92</span>&#160;    <span class="keywordtype">void</span> update_color_texture();</div>
-<div class="line"><a name="l00093"></a><span class="lineno">   93</span>&#160;    <span class="keywordtype">void</span> update_color();</div>
-<div class="line"><a name="l00094"></a><span class="lineno">   94</span>&#160;    <span class="keywordtype">void</span> update_texts();</div>
-<div class="line"><a name="l00095"></a><span class="lineno">   95</span>&#160; </div>
-<div class="line"><a name="l00096"></a><span class="lineno">   96</span>&#160;    <span class="keywordtype">void</span> handle_selector_drag();</div>
-<div class="line"><a name="l00097"></a><span class="lineno">   97</span>&#160; </div>
-<div class="line"><a name="l00098"></a><span class="lineno">   98</span>&#160;    <span class="keywordtype">void</span> set_color(<a class="code" href="classcgv_1_1media_1_1color.html">rgba</a> color, <span class="keywordtype">bool</span> opacity, <span class="keywordtype">bool</span> init = <span class="keyword">false</span>);</div>
-<div class="line"><a name="l00099"></a><span class="lineno">   99</span>&#160; </div>
-<div class="line"><a name="l00100"></a><span class="lineno">  100</span>&#160;    std::function&lt;void(<a class="code" href="classcgv_1_1media_1_1color.html">rgb</a>)&gt; on_change_rgb_callback;</div>
-<div class="line"><a name="l00101"></a><span class="lineno">  101</span>&#160;    std::function&lt;void(<a class="code" href="classcgv_1_1media_1_1color.html">rgba</a>)&gt; on_change_rgba_callback;</div>
-<div class="line"><a name="l00102"></a><span class="lineno">  102</span>&#160; </div>
-<div class="line"><a name="l00103"></a><span class="lineno">  103</span>&#160;    <span class="keywordtype">void</span> create_gui_impl() <span class="keyword">override</span>;</div>
-<div class="line"><a name="l00104"></a><span class="lineno">  104</span>&#160;    </div>
-<div class="line"><a name="l00105"></a><span class="lineno">  105</span>&#160;<span class="keyword">public</span>:</div>
-<div class="line"><a name="l00106"></a><span class="lineno">  106</span>&#160;    <a class="code" href="classcgv_1_1app_1_1color__selector.html">color_selector</a>();</div>
-<div class="line"><a name="l00107"></a><span class="lineno"><a class="line" href="classcgv_1_1app_1_1color__selector.html#ad4e2e7403de0e8d9cc825b8bf66e8847">  107</a></span>&#160;    std::string <a class="code" href="classcgv_1_1app_1_1color__selector.html#ad4e2e7403de0e8d9cc825b8bf66e8847">get_type_name</a>()<span class="keyword"> const override </span>{ <span class="keywordflow">return</span> <span class="stringliteral">&quot;color_selector&quot;</span>; }</div>
-<div class="line"><a name="l00108"></a><span class="lineno">  108</span>&#160; </div>
-<div class="line"><a name="l00109"></a><span class="lineno">  109</span>&#160;    <span class="keywordtype">void</span> clear(<a class="code" href="classcgv_1_1render_1_1context.html">cgv::render::context</a>&amp; ctx) <span class="keyword">override</span>;</div>
-<div class="line"><a name="l00110"></a><span class="lineno">  110</span>&#160; </div>
-<div class="line"><a name="l00111"></a><span class="lineno">  111</span>&#160;    <span class="keywordtype">bool</span> handle_event(<a class="code" href="classcgv_1_1gui_1_1event.html">cgv::gui::event</a>&amp; e) <span class="keyword">override</span>;</div>
-<div class="line"><a name="l00112"></a><span class="lineno">  112</span>&#160;    <span class="keywordtype">void</span> handle_member_change(<span class="keyword">const</span> <a class="code" href="classcgv_1_1utils_1_1pointer__test.html">cgv::utils::pointer_test</a>&amp; m) <span class="keyword">override</span>;</div>
-<div class="line"><a name="l00113"></a><span class="lineno">  113</span>&#160; </div>
-<div class="line"><a name="l00114"></a><span class="lineno">  114</span>&#160;    <span class="keywordtype">bool</span> init(<a class="code" href="classcgv_1_1render_1_1context.html">cgv::render::context</a>&amp; ctx) <span class="keyword">override</span>;</div>
-<div class="line"><a name="l00115"></a><span class="lineno">  115</span>&#160;    <span class="keywordtype">void</span> init_frame(<a class="code" href="classcgv_1_1render_1_1context.html">cgv::render::context</a>&amp; ctx) <span class="keyword">override</span>;</div>
-<div class="line"><a name="l00116"></a><span class="lineno">  116</span>&#160;    <span class="keywordtype">void</span> draw_content(<a class="code" href="classcgv_1_1render_1_1context.html">cgv::render::context</a>&amp; ctx) <span class="keyword">override</span>;</div>
-<div class="line"><a name="l00117"></a><span class="lineno">  117</span>&#160; </div>
-<div class="line"><a name="l00119"></a><span class="lineno"><a class="line" href="classcgv_1_1app_1_1color__selector.html#ad6a1daf906d20a685356deca607cf9ec">  119</a></span>&#160;    <span class="keywordtype">void</span> <a class="code" href="classcgv_1_1app_1_1color__selector.html#ad6a1daf906d20a685356deca607cf9ec">set_auto_show</a>(<span class="keywordtype">bool</span> enabled) { auto_show = enabled; }</div>
-<div class="line"><a name="l00120"></a><span class="lineno">  120</span>&#160; </div>
-<div class="line"><a name="l00121"></a><span class="lineno">  121</span>&#160;    <span class="keywordtype">void</span> set_rgb_color(<a class="code" href="classcgv_1_1media_1_1color.html">rgb</a> color);</div>
-<div class="line"><a name="l00122"></a><span class="lineno">  122</span>&#160;    <span class="keywordtype">void</span> set_rgba_color(<a class="code" href="classcgv_1_1media_1_1color.html">rgba</a> color);</div>
-<div class="line"><a name="l00123"></a><span class="lineno">  123</span>&#160;    <a class="code" href="classcgv_1_1media_1_1color.html">rgb</a> get_rgb_color()<span class="keyword"> const </span>{ <span class="keywordflow">return</span> rgb_color; }</div>
-<div class="line"><a name="l00124"></a><span class="lineno">  124</span>&#160;    <a class="code" href="classcgv_1_1media_1_1color.html">rgba</a> get_rgba_color()<span class="keyword"> const </span>{ <span class="keywordflow">return</span> rgba_color; }</div>
-<div class="line"><a name="l00125"></a><span class="lineno">  125</span>&#160; </div>
-<div class="line"><a name="l00126"></a><span class="lineno">  126</span>&#160;    <span class="keywordtype">void</span> set_on_change_rgb_callback(std::function&lt;<span class="keywordtype">void</span>(<a class="code" href="namespacecgv.html#a465f589beeb5e4e76eb2db8d1f6057c1">rgb</a>)&gt; cb) { on_change_rgb_callback = cb; }</div>
-<div class="line"><a name="l00127"></a><span class="lineno">  127</span>&#160;    <span class="keywordtype">void</span> set_on_change_rgba_callback(std::function&lt;<span class="keywordtype">void</span>(<a class="code" href="namespacecgv.html#a0cf3c7d9673d8f1d9d33685e3ce5c889">rgba</a>)&gt; cb) { on_change_rgba_callback = cb; }</div>
-<div class="line"><a name="l00128"></a><span class="lineno">  128</span>&#160;};</div>
-<div class="line"><a name="l00129"></a><span class="lineno">  129</span>&#160; </div>
-<div class="line"><a name="l00130"></a><span class="lineno">  130</span>&#160;<span class="keyword">typedef</span> <a class="code" href="classcgv_1_1data_1_1ref__ptr.html">cgv::data::ref_ptr&lt;color_selector&gt;</a> color_selector_ptr;</div>
-<div class="line"><a name="l00131"></a><span class="lineno">  131</span>&#160; </div>
-<div class="line"><a name="l00132"></a><span class="lineno">  132</span>&#160;}</div>
+<div class="line"><a name="l00074"></a><span class="lineno">   74</span>&#160;    std::vector&lt;std::string&gt; texts;</div>
+<div class="line"><a name="l00075"></a><span class="lineno">   75</span>&#160;    cgv::g2d::msdf_text_geometry text_geometry;</div>
+<div class="line"><a name="l00076"></a><span class="lineno">   76</span>&#160; </div>
+<div class="line"><a name="l00077"></a><span class="lineno">   77</span>&#160;    cgv::g2d::shape2d_style border_style, color_texture_style, hue_texture_style, opacity_color_style, color_handle_style, hue_handle_style;</div>
+<div class="line"><a name="l00078"></a><span class="lineno">   78</span>&#160;    cgv::g2d::text2d_style text_style;</div>
+<div class="line"><a name="l00079"></a><span class="lineno">   79</span>&#160;    cgv::g2d::grid2d_style opacity_bg_style;</div>
+<div class="line"><a name="l00080"></a><span class="lineno">   80</span>&#160; </div>
+<div class="line"><a name="l00081"></a><span class="lineno">   81</span>&#160;    cgv::g2d::draggable_collection&lt;selector_handle&gt; selector_handles;</div>
+<div class="line"><a name="l00082"></a><span class="lineno">   82</span>&#160; </div>
+<div class="line"><a name="l00083"></a><span class="lineno">   83</span>&#160;    <a class="code" href="classcgv_1_1render_1_1texture.html">cgv::render::texture</a> color_tex;</div>
+<div class="line"><a name="l00084"></a><span class="lineno">   84</span>&#160;    <a class="code" href="classcgv_1_1render_1_1texture.html">cgv::render::texture</a> hue_tex;</div>
+<div class="line"><a name="l00085"></a><span class="lineno">   85</span>&#160; </div>
+<div class="line"><a name="l00086"></a><span class="lineno">   86</span>&#160;    <a class="code" href="classcgv_1_1media_1_1color.html">rgb</a> rgb_color = <a class="code" href="namespacecgv.html#a465f589beeb5e4e76eb2db8d1f6057c1">rgb</a>(0.0f);</div>
+<div class="line"><a name="l00087"></a><span class="lineno">   87</span>&#160;    <a class="code" href="classcgv_1_1media_1_1color.html">rgba</a> rgba_color = <a class="code" href="namespacecgv.html#a0cf3c7d9673d8f1d9d33685e3ce5c889">rgba</a>(0.0f);</div>
+<div class="line"><a name="l00088"></a><span class="lineno">   88</span>&#160; </div>
+<div class="line"><a name="l00089"></a><span class="lineno">   89</span>&#160;    <span class="keywordtype">void</span> update_layout(<span class="keyword">const</span> <a class="code" href="classcgv_1_1math_1_1fvec.html">ivec2</a>&amp; parent_size);</div>
+<div class="line"><a name="l00090"></a><span class="lineno">   90</span>&#160; </div>
+<div class="line"><a name="l00091"></a><span class="lineno">   91</span>&#160;    <span class="keywordtype">void</span> init_styles() <span class="keyword">override</span>;</div>
+<div class="line"><a name="l00092"></a><span class="lineno">   92</span>&#160;    <span class="keywordtype">void</span> init_textures(<a class="code" href="classcgv_1_1render_1_1context.html">cgv::render::context</a>&amp; ctx);</div>
+<div class="line"><a name="l00093"></a><span class="lineno">   93</span>&#160;    <span class="keywordtype">void</span> update_color_texture();</div>
+<div class="line"><a name="l00094"></a><span class="lineno">   94</span>&#160;    <span class="keywordtype">void</span> update_color();</div>
+<div class="line"><a name="l00095"></a><span class="lineno">   95</span>&#160;    <span class="keywordtype">void</span> update_texts();</div>
+<div class="line"><a name="l00096"></a><span class="lineno">   96</span>&#160; </div>
+<div class="line"><a name="l00097"></a><span class="lineno">   97</span>&#160;    <span class="keywordtype">void</span> handle_selector_drag();</div>
+<div class="line"><a name="l00098"></a><span class="lineno">   98</span>&#160; </div>
+<div class="line"><a name="l00099"></a><span class="lineno">   99</span>&#160;    <span class="keywordtype">void</span> set_color(<a class="code" href="classcgv_1_1media_1_1color.html">rgba</a> color, <span class="keywordtype">bool</span> opacity, <span class="keywordtype">bool</span> init = <span class="keyword">false</span>);</div>
+<div class="line"><a name="l00100"></a><span class="lineno">  100</span>&#160; </div>
+<div class="line"><a name="l00101"></a><span class="lineno">  101</span>&#160;    std::function&lt;void(<a class="code" href="classcgv_1_1media_1_1color.html">rgb</a>)&gt; on_change_rgb_callback;</div>
+<div class="line"><a name="l00102"></a><span class="lineno">  102</span>&#160;    std::function&lt;void(<a class="code" href="classcgv_1_1media_1_1color.html">rgba</a>)&gt; on_change_rgba_callback;</div>
+<div class="line"><a name="l00103"></a><span class="lineno">  103</span>&#160; </div>
+<div class="line"><a name="l00104"></a><span class="lineno">  104</span>&#160;    <span class="keywordtype">void</span> create_gui_impl() <span class="keyword">override</span>;</div>
+<div class="line"><a name="l00105"></a><span class="lineno">  105</span>&#160;    </div>
+<div class="line"><a name="l00106"></a><span class="lineno">  106</span>&#160;<span class="keyword">public</span>:</div>
+<div class="line"><a name="l00107"></a><span class="lineno">  107</span>&#160;    <a class="code" href="classcgv_1_1app_1_1color__selector.html">color_selector</a>();</div>
+<div class="line"><a name="l00108"></a><span class="lineno"><a class="line" href="classcgv_1_1app_1_1color__selector.html#ad4e2e7403de0e8d9cc825b8bf66e8847">  108</a></span>&#160;    std::string <a class="code" href="classcgv_1_1app_1_1color__selector.html#ad4e2e7403de0e8d9cc825b8bf66e8847">get_type_name</a>()<span class="keyword"> const override </span>{ <span class="keywordflow">return</span> <span class="stringliteral">&quot;color_selector&quot;</span>; }</div>
+<div class="line"><a name="l00109"></a><span class="lineno">  109</span>&#160; </div>
+<div class="line"><a name="l00110"></a><span class="lineno">  110</span>&#160;    <span class="keywordtype">void</span> clear(<a class="code" href="classcgv_1_1render_1_1context.html">cgv::render::context</a>&amp; ctx) <span class="keyword">override</span>;</div>
+<div class="line"><a name="l00111"></a><span class="lineno">  111</span>&#160; </div>
+<div class="line"><a name="l00112"></a><span class="lineno">  112</span>&#160;    <span class="keywordtype">bool</span> handle_event(<a class="code" href="classcgv_1_1gui_1_1event.html">cgv::gui::event</a>&amp; e) <span class="keyword">override</span>;</div>
+<div class="line"><a name="l00113"></a><span class="lineno">  113</span>&#160;    <span class="keywordtype">void</span> handle_member_change(<span class="keyword">const</span> <a class="code" href="classcgv_1_1utils_1_1pointer__test.html">cgv::utils::pointer_test</a>&amp; m) <span class="keyword">override</span>;</div>
+<div class="line"><a name="l00114"></a><span class="lineno">  114</span>&#160; </div>
+<div class="line"><a name="l00115"></a><span class="lineno">  115</span>&#160;    <span class="keywordtype">bool</span> init(<a class="code" href="classcgv_1_1render_1_1context.html">cgv::render::context</a>&amp; ctx) <span class="keyword">override</span>;</div>
+<div class="line"><a name="l00116"></a><span class="lineno">  116</span>&#160;    <span class="keywordtype">void</span> init_frame(<a class="code" href="classcgv_1_1render_1_1context.html">cgv::render::context</a>&amp; ctx) <span class="keyword">override</span>;</div>
+<div class="line"><a name="l00117"></a><span class="lineno">  117</span>&#160;    <span class="keywordtype">void</span> draw_content(<a class="code" href="classcgv_1_1render_1_1context.html">cgv::render::context</a>&amp; ctx) <span class="keyword">override</span>;</div>
+<div class="line"><a name="l00118"></a><span class="lineno">  118</span>&#160; </div>
+<div class="line"><a name="l00120"></a><span class="lineno"><a class="line" href="classcgv_1_1app_1_1color__selector.html#ad6a1daf906d20a685356deca607cf9ec">  120</a></span>&#160;    <span class="keywordtype">void</span> <a class="code" href="classcgv_1_1app_1_1color__selector.html#ad6a1daf906d20a685356deca607cf9ec">set_auto_show</a>(<span class="keywordtype">bool</span> enabled) { auto_show = enabled; }</div>
+<div class="line"><a name="l00121"></a><span class="lineno">  121</span>&#160; </div>
+<div class="line"><a name="l00122"></a><span class="lineno">  122</span>&#160;    <span class="keywordtype">void</span> set_rgb_color(<a class="code" href="classcgv_1_1media_1_1color.html">rgb</a> color);</div>
+<div class="line"><a name="l00123"></a><span class="lineno">  123</span>&#160;    <span class="keywordtype">void</span> set_rgba_color(<a class="code" href="classcgv_1_1media_1_1color.html">rgba</a> color);</div>
+<div class="line"><a name="l00124"></a><span class="lineno">  124</span>&#160;    <a class="code" href="classcgv_1_1media_1_1color.html">rgb</a> get_rgb_color()<span class="keyword"> const </span>{ <span class="keywordflow">return</span> rgb_color; }</div>
+<div class="line"><a name="l00125"></a><span class="lineno">  125</span>&#160;    <a class="code" href="classcgv_1_1media_1_1color.html">rgba</a> get_rgba_color()<span class="keyword"> const </span>{ <span class="keywordflow">return</span> rgba_color; }</div>
+<div class="line"><a name="l00126"></a><span class="lineno">  126</span>&#160; </div>
+<div class="line"><a name="l00127"></a><span class="lineno">  127</span>&#160;    <span class="keywordtype">void</span> set_on_change_rgb_callback(std::function&lt;<span class="keywordtype">void</span>(<a class="code" href="namespacecgv.html#a465f589beeb5e4e76eb2db8d1f6057c1">rgb</a>)&gt; cb) { on_change_rgb_callback = cb; }</div>
+<div class="line"><a name="l00128"></a><span class="lineno">  128</span>&#160;    <span class="keywordtype">void</span> set_on_change_rgba_callback(std::function&lt;<span class="keywordtype">void</span>(<a class="code" href="namespacecgv.html#a0cf3c7d9673d8f1d9d33685e3ce5c889">rgba</a>)&gt; cb) { on_change_rgba_callback = cb; }</div>
+<div class="line"><a name="l00129"></a><span class="lineno">  129</span>&#160;};</div>
+<div class="line"><a name="l00130"></a><span class="lineno">  130</span>&#160; </div>
+<div class="line"><a name="l00131"></a><span class="lineno">  131</span>&#160;<span class="keyword">typedef</span> <a class="code" href="classcgv_1_1data_1_1ref__ptr.html">cgv::data::ref_ptr&lt;color_selector&gt;</a> color_selector_ptr;</div>
+<div class="line"><a name="l00132"></a><span class="lineno">  132</span>&#160; </div>
 <div class="line"><a name="l00133"></a><span class="lineno">  133</span>&#160;}</div>
-<div class="line"><a name="l00134"></a><span class="lineno">  134</span>&#160; </div>
-<div class="line"><a name="l00135"></a><span class="lineno">  135</span>&#160;<span class="preprocessor">#include &lt;cgv/config/lib_end.h&gt;</span></div>
+<div class="line"><a name="l00134"></a><span class="lineno">  134</span>&#160;}</div>
+<div class="line"><a name="l00135"></a><span class="lineno">  135</span>&#160; </div>
+<div class="line"><a name="l00136"></a><span class="lineno">  136</span>&#160;<span class="preprocessor">#include &lt;cgv/config/lib_end.h&gt;</span></div>
 <div class="ttc" id="aclasscgv_1_1app_1_1color__selector_html"><div class="ttname"><a href="classcgv_1_1app_1_1color__selector.html">cgv::app::color_selector</a></div><div class="ttdef"><b>Definition:</b> <a href="color__selector_8h_source.html#l00014">color_selector.h:14</a></div></div>
-<div class="ttc" id="aclasscgv_1_1app_1_1color__selector_html_ad4e2e7403de0e8d9cc825b8bf66e8847"><div class="ttname"><a href="classcgv_1_1app_1_1color__selector.html#ad4e2e7403de0e8d9cc825b8bf66e8847">cgv::app::color_selector::get_type_name</a></div><div class="ttdeci">std::string get_type_name() const override</div><div class="ttdoc">overload to return the type name of this object</div><div class="ttdef"><b>Definition:</b> <a href="color__selector_8h_source.html#l00107">color_selector.h:107</a></div></div>
-<div class="ttc" id="aclasscgv_1_1app_1_1color__selector_html_ad6a1daf906d20a685356deca607cf9ec"><div class="ttname"><a href="classcgv_1_1app_1_1color__selector.html#ad6a1daf906d20a685356deca607cf9ec">cgv::app::color_selector::set_auto_show</a></div><div class="ttdeci">void set_auto_show(bool enabled)</div><div class="ttdoc">whether to automatically make the overlay visible if a color is set</div><div class="ttdef"><b>Definition:</b> <a href="color__selector_8h_source.html#l00119">color_selector.h:119</a></div></div>
+<div class="ttc" id="aclasscgv_1_1app_1_1color__selector_html_ad4e2e7403de0e8d9cc825b8bf66e8847"><div class="ttname"><a href="classcgv_1_1app_1_1color__selector.html#ad4e2e7403de0e8d9cc825b8bf66e8847">cgv::app::color_selector::get_type_name</a></div><div class="ttdeci">std::string get_type_name() const override</div><div class="ttdoc">overload to return the type name of this object</div><div class="ttdef"><b>Definition:</b> <a href="color__selector_8h_source.html#l00108">color_selector.h:108</a></div></div>
+<div class="ttc" id="aclasscgv_1_1app_1_1color__selector_html_ad6a1daf906d20a685356deca607cf9ec"><div class="ttname"><a href="classcgv_1_1app_1_1color__selector.html#ad6a1daf906d20a685356deca607cf9ec">cgv::app::color_selector::set_auto_show</a></div><div class="ttdeci">void set_auto_show(bool enabled)</div><div class="ttdoc">whether to automatically make the overlay visible if a color is set</div><div class="ttdef"><b>Definition:</b> <a href="color__selector_8h_source.html#l00120">color_selector.h:120</a></div></div>
 <div class="ttc" id="aclasscgv_1_1app_1_1themed__canvas__overlay_html"><div class="ttname"><a href="classcgv_1_1app_1_1themed__canvas__overlay.html">cgv::app::themed_canvas_overlay</a></div><div class="ttdef"><b>Definition:</b> <a href="themed__canvas__overlay_8h_source.html#l00011">themed_canvas_overlay.h:11</a></div></div>
 <div class="ttc" id="aclasscgv_1_1data_1_1ref__ptr_html"><div class="ttname"><a href="classcgv_1_1data_1_1ref__ptr.html">cgv::data::ref_ptr</a></div><div class="ttdoc">reference counted pointer, which can work together with types that are derived from ref_counted,...</div><div class="ttdef"><b>Definition:</b> <a href="ref__ptr_8h_source.html#l00159">ref_ptr.h:160</a></div></div>
 <div class="ttc" id="aclasscgv_1_1gui_1_1event_html"><div class="ttname"><a href="classcgv_1_1gui_1_1event.html">cgv::gui::event</a></div><div class="ttdef"><b>Definition:</b> <a href="event_8h_source.html#l00058">event.h:59</a></div></div>
@@ -230,7 +231,7 @@ $(document).ready(function(){initNavTree('color__selector_8h_source.html',''); i
 <div class="ttc" id="aclasscgv_1_1math_1_1fvec_html_a8d199c8049b2ed5806be3c3af7d2860e"><div class="ttname"><a href="classcgv_1_1math_1_1fvec.html#a8d199c8049b2ed5806be3c3af7d2860e">cgv::math::fvec::y</a></div><div class="ttdeci">T &amp; y()</div><div class="ttdoc">second element</div><div class="ttdef"><b>Definition:</b> <a href="fvec_8h_source.html#l00159">fvec.h:159</a></div></div>
 <div class="ttc" id="aclasscgv_1_1math_1_1fvec_html_afea901268f6ba41a98e59d08b417f024"><div class="ttname"><a href="classcgv_1_1math_1_1fvec.html#afea901268f6ba41a98e59d08b417f024">cgv::math::fvec::size</a></div><div class="ttdeci">static cgv::type::uint32_type size()</div><div class="ttdoc">return number of elements</div><div class="ttdef"><b>Definition:</b> <a href="fvec_8h_source.html#l00175">fvec.h:175</a></div></div>
 <div class="ttc" id="aclasscgv_1_1media_1_1color_html"><div class="ttname"><a href="classcgv_1_1media_1_1color.html">cgv::media::color&lt; float, cgv::media::RGB &gt;</a></div></div>
-<div class="ttc" id="aclasscgv_1_1render_1_1context_html"><div class="ttname"><a href="classcgv_1_1render_1_1context.html">cgv::render::context</a></div><div class="ttdoc">base class for all drawables, which is independent of the used rendering API.</div><div class="ttdef"><b>Definition:</b> <a href="context_8h_source.html#l00617">context.h:618</a></div></div>
+<div class="ttc" id="aclasscgv_1_1render_1_1context_html"><div class="ttname"><a href="classcgv_1_1render_1_1context.html">cgv::render::context</a></div><div class="ttdoc">base class for all drawables, which is independent of the used rendering API.</div><div class="ttdef"><b>Definition:</b> <a href="context_8h_source.html#l00618">context.h:619</a></div></div>
 <div class="ttc" id="aclasscgv_1_1render_1_1texture_html"><div class="ttname"><a href="classcgv_1_1render_1_1texture.html">cgv::render::texture</a></div><div class="ttdoc">the texture class encapsulates all functionality independent of the rendering api.</div><div class="ttdef"><b>Definition:</b> <a href="texture_8h_source.html#l00014">texture.h:15</a></div></div>
 <div class="ttc" id="aclasscgv_1_1utils_1_1pointer__test_html"><div class="ttname"><a href="classcgv_1_1utils_1_1pointer__test.html">cgv::utils::pointer_test</a></div><div class="ttdef"><b>Definition:</b> <a href="pointer__test_8h_source.html#l00009">pointer_test.h:9</a></div></div>
 <div class="ttc" id="anamespacecgv_html"><div class="ttname"><a href="namespacecgv.html">cgv</a></div><div class="ttdoc">the cgv namespace</div><div class="ttdef"><b>Definition:</b> <a href="print_8h_source.html#l00011">print.h:11</a></div></div>

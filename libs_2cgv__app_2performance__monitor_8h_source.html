@@ -92,7 +92,7 @@ $(document).ready(function(){initNavTree('libs_2cgv__app_2performance__monitor_8
 <div class="line"><a name="l00005"></a><span class="lineno">    5</span>&#160;<span class="preprocessor">#include &lt;cgv/utils/stopwatch.h&gt;</span></div>
 <div class="line"><a name="l00006"></a><span class="lineno">    6</span>&#160;<span class="preprocessor">#include &lt;cgv_app/themed_canvas_overlay.h&gt;</span></div>
 <div class="line"><a name="l00007"></a><span class="lineno">    7</span>&#160;<span class="preprocessor">#include &lt;cgv_g2d/generic_2d_renderer.h&gt;</span></div>
-<div class="line"><a name="l00008"></a><span class="lineno">    8</span>&#160;<span class="preprocessor">#include &lt;cgv_g2d/msdf_gl_canvas_font_renderer.h&gt;</span></div>
+<div class="line"><a name="l00008"></a><span class="lineno">    8</span>&#160;<span class="preprocessor">#include &lt;cgv_g2d/msdf_text_geometry.h&gt;</span></div>
 <div class="line"><a name="l00009"></a><span class="lineno">    9</span>&#160; </div>
 <div class="line"><a name="l00010"></a><span class="lineno">   10</span>&#160;<span class="preprocessor">#include &quot;lib_begin.h&quot;</span></div>
 <div class="line"><a name="l00011"></a><span class="lineno">   11</span>&#160; </div>
@@ -153,14 +153,14 @@ $(document).ready(function(){initNavTree('libs_2cgv__app_2performance__monitor_8
 <div class="line"><a name="l00077"></a><span class="lineno">   77</span>&#160;    <a class="code" href="classcgv_1_1render_1_1color__map.html">cgv::render::color_map</a> plot_color_map;</div>
 <div class="line"><a name="l00078"></a><span class="lineno">   78</span>&#160; </div>
 <div class="line"><a name="l00079"></a><span class="lineno">   79</span>&#160;    <span class="comment">// text appearance</span></div>
-<div class="line"><a name="l00080"></a><span class="lineno">   80</span>&#160;    cgv::g2d::text2d_style text_style, label_style;</div>
-<div class="line"><a name="l00081"></a><span class="lineno">   81</span>&#160;    cgv::g2d::msdf_text_geometry texts;</div>
-<div class="line"><a name="l00082"></a><span class="lineno">   82</span>&#160;    cgv::g2d::msdf_text_geometry labels;</div>
+<div class="line"><a name="l00080"></a><span class="lineno">   80</span>&#160;    std::vector&lt;std::string&gt; labels;</div>
+<div class="line"><a name="l00081"></a><span class="lineno">   81</span>&#160;    cgv::g2d::text2d_style text_style, tick_text_style;</div>
+<div class="line"><a name="l00082"></a><span class="lineno">   82</span>&#160;    cgv::g2d::msdf_text_geometry text_geometry;</div>
 <div class="line"><a name="l00083"></a><span class="lineno">   83</span>&#160; </div>
 <div class="line"><a name="l00084"></a><span class="lineno">   84</span>&#160;    <span class="keywordtype">void</span> init_styles() <span class="keyword">override</span>;</div>
-<div class="line"><a name="l00085"></a><span class="lineno">   85</span>&#160;    <span class="keywordtype">void</span> create_texts();</div>
-<div class="line"><a name="l00086"></a><span class="lineno">   86</span>&#160;    <span class="keywordtype">void</span> update_stats_texts();</div>
-<div class="line"><a name="l00087"></a><span class="lineno">   87</span>&#160;    <span class="keywordtype">void</span> create_labels();</div>
+<div class="line"><a name="l00085"></a><span class="lineno">   85</span>&#160;    <span class="keywordtype">void</span> create_texts(<span class="keyword">const</span> <a class="code" href="classcgv_1_1render_1_1context.html">cgv::render::context</a>&amp; ctx);</div>
+<div class="line"><a name="l00086"></a><span class="lineno">   86</span>&#160;    <span class="keywordtype">void</span> update_texts(<span class="keyword">const</span> <a class="code" href="classcgv_1_1render_1_1context.html">cgv::render::context</a>&amp; ctx);</div>
+<div class="line"><a name="l00087"></a><span class="lineno">   87</span>&#160;    <span class="comment">//void create_labels(const cgv::render::context&amp; ctx);</span></div>
 <div class="line"><a name="l00088"></a><span class="lineno">   88</span>&#160;    <span class="keywordtype">void</span> update_plot();</div>
 <div class="line"><a name="l00089"></a><span class="lineno">   89</span>&#160; </div>
 <div class="line"><a name="l00090"></a><span class="lineno">   90</span>&#160;    <span class="keywordtype">void</span> on_visibility_change() <span class="keyword">override</span>;</div>
@@ -200,7 +200,7 @@ $(document).ready(function(){initNavTree('libs_2cgv__app_2performance__monitor_8
 <div class="ttc" id="aclasscgv_1_1math_1_1fvec_html_afea901268f6ba41a98e59d08b417f024"><div class="ttname"><a href="classcgv_1_1math_1_1fvec.html#afea901268f6ba41a98e59d08b417f024">cgv::math::fvec::size</a></div><div class="ttdeci">static cgv::type::uint32_type size()</div><div class="ttdoc">return number of elements</div><div class="ttdef"><b>Definition:</b> <a href="fvec_8h_source.html#l00175">fvec.h:175</a></div></div>
 <div class="ttc" id="aclasscgv_1_1media_1_1color_html"><div class="ttname"><a href="classcgv_1_1media_1_1color.html">cgv::media::color&lt; float, cgv::media::RGB &gt;</a></div></div>
 <div class="ttc" id="aclasscgv_1_1render_1_1color__map_html"><div class="ttname"><a href="classcgv_1_1render_1_1color__map.html">cgv::render::color_map</a></div><div class="ttdef"><b>Definition:</b> <a href="color__map_8h_source.html#l00013">color_map.h:13</a></div></div>
-<div class="ttc" id="aclasscgv_1_1render_1_1context_html"><div class="ttname"><a href="classcgv_1_1render_1_1context.html">cgv::render::context</a></div><div class="ttdoc">base class for all drawables, which is independent of the used rendering API.</div><div class="ttdef"><b>Definition:</b> <a href="context_8h_source.html#l00617">context.h:618</a></div></div>
+<div class="ttc" id="aclasscgv_1_1render_1_1context_html"><div class="ttname"><a href="classcgv_1_1render_1_1context.html">cgv::render::context</a></div><div class="ttdoc">base class for all drawables, which is independent of the used rendering API.</div><div class="ttdef"><b>Definition:</b> <a href="context_8h_source.html#l00618">context.h:619</a></div></div>
 <div class="ttc" id="aclasscgv_1_1utils_1_1pointer__test_html"><div class="ttname"><a href="classcgv_1_1utils_1_1pointer__test.html">cgv::utils::pointer_test</a></div><div class="ttdef"><b>Definition:</b> <a href="pointer__test_8h_source.html#l00009">pointer_test.h:9</a></div></div>
 <div class="ttc" id="aclasscgv_1_1utils_1_1stopwatch_html"><div class="ttname"><a href="classcgv_1_1utils_1_1stopwatch.html">cgv::utils::stopwatch</a></div><div class="ttdoc">A trivial stop watch class for time measurement.</div><div class="ttdef"><b>Definition:</b> <a href="stopwatch_8h_source.html#l00034">stopwatch.h:35</a></div></div>
 <div class="ttc" id="aclasscgv_1_1utils_1_1stopwatch_html_aaa5315b7fb02ea374190c3650915d0eb"><div class="ttname"><a href="classcgv_1_1utils_1_1stopwatch.html#aaa5315b7fb02ea374190c3650915d0eb">cgv::utils::stopwatch::restart</a></div><div class="ttdeci">double restart()</div><div class="ttdoc">restart timer and return time elapsed until restart</div><div class="ttdef"><b>Definition:</b> <a href="stopwatch_8cxx_source.html#l00075">stopwatch.cxx:75</a></div></div>
