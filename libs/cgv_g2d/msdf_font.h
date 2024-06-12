@@ -65,6 +65,8 @@ public:
 
 	vec2 compute_render_size(const std::string& str, float scale) const;
 
+	vec2 compute_render_size(const std::string& str, size_t end, float scale) const;
+
 	void generate_vertex_data(const std::string& str, std::vector<vec4>& quads, std::vector<vec4>& texcoords) const;
 
 	bool enable(cgv::render::context& ctx);
