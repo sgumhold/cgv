@@ -8,7 +8,7 @@ var classcgv_1_1app_1_1color__map__legend =
     [ "color_map_legend", "classcgv_1_1app_1_1color__map__legend.html#a58677432464a646689923c04e98de86c", null ],
     [ "clear", "classcgv_1_1app_1_1color__map__legend.html#a01fe2e1ea0268cf8bc4dbdd7368f0795", null ],
     [ "create_gui_impl", "classcgv_1_1app_1_1color__map__legend.html#a9ce0775c61c8d56cffaad4ad92dee90a", null ],
-    [ "create_labels", "classcgv_1_1app_1_1color__map__legend.html#a85b19ea5a2a2c372158769cd9ba3f68d", null ],
+    [ "create_labels", "classcgv_1_1app_1_1color__map__legend.html#a2a9b4e08aa4898051bcea0d15df27b0e", null ],
     [ "create_ticks", "classcgv_1_1app_1_1color__map__legend.html#a317d892df6238a317846eedac59abff7", null ],
     [ "DEFINE_GENERIC_RENDER_DATA_CLASS", "classcgv_1_1app_1_1color__map__legend.html#ad4e824de04484fc2560146dc026935fa", null ],
     [ "draw_content", "classcgv_1_1app_1_1color__map__legend.html#a53a0512fe0afb631f3f13b8934b0d6e0", null ],

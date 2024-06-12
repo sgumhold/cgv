@@ -783,6 +783,9 @@ void&#160;</td><td class="memItemRight" valign="bottom"><b>remove_point</b> (con
 <tr class="memitem:a5b6ed5b52b4e723d8dfd3cfdb8999cd7"><td class="memItemLeft" align="right" valign="top"><a id="a5b6ed5b52b4e723d8dfd3cfdb8999cd7"></a>
 cgv::g2d::draggable *&#160;</td><td class="memItemRight" valign="bottom"><b>get_hit_point</b> (const <a class="el" href="namespacecgv.html#a8044b02f248048405a9d97418f545a1a">vec2</a> &amp;pos)</td></tr>
 <tr class="separator:a5b6ed5b52b4e723d8dfd3cfdb8999cd7"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a7f7aec11a226bbbfa166a0bc82895e74"><td class="memItemLeft" align="right" valign="top"><a id="a7f7aec11a226bbbfa166a0bc82895e74"></a>
+void&#160;</td><td class="memItemRight" valign="bottom"><b>update_value_label_rectangle</b> (<a class="el" href="namespacecgv.html#a8044b02f248048405a9d97418f545a1a">vec2</a> position, const cgv::g2d::rect &amp;parent_rectangle)</td></tr>
+<tr class="separator:a7f7aec11a226bbbfa166a0bc82895e74"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:aa52667d64fda4997e6898dafb6f245ef"><td class="memItemLeft" align="right" valign="top"><a id="aa52667d64fda4997e6898dafb6f245ef"></a>
 void&#160;</td><td class="memItemRight" valign="bottom"><b>handle_color_point_drag</b> ()</td></tr>
 <tr class="separator:aa52667d64fda4997e6898dafb6f245ef"><td class="memSeparator" colspan="2">&#160;</td></tr>
@@ -925,15 +928,21 @@ bool&#160;</td><td class="memItemRight" valign="bottom"><b>use_linear_filtering<
 <tr class="memitem:a960dda51c0584e334cda29796c0bb188"><td class="memItemLeft" align="right" valign="top"><a id="a960dda51c0584e334cda29796c0bb188"></a>
 <a class="el" href="namespacecgv.html#a8044b02f248048405a9d97418f545a1a">vec2</a>&#160;</td><td class="memItemRight" valign="bottom"><b>range</b></td></tr>
 <tr class="separator:a960dda51c0584e334cda29796c0bb188"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:acb99c295720bff0c57de94af087e0d44"><td class="memItemLeft" align="right" valign="top"><a id="acb99c295720bff0c57de94af087e0d44"></a>
-<a class="el" href="namespacecgv.html#a4fc9abee97018a017bb3a14b531a8f06">ivec2</a>&#160;</td><td class="memItemRight" valign="bottom"><b>cursor_pos</b></td></tr>
-<tr class="separator:acb99c295720bff0c57de94af087e0d44"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:adc768a0b65b174da8b4f35fc838bb375"><td class="memItemLeft" align="right" valign="top"><a id="adc768a0b65b174da8b4f35fc838bb375"></a>
-int&#160;</td><td class="memItemRight" valign="bottom"><b>cursor_label_index</b></td></tr>
-<tr class="separator:adc768a0b65b174da8b4f35fc838bb375"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a269dc786827010af7acf27a96a8dda17"><td class="memItemLeft" align="right" valign="top"><a id="a269dc786827010af7acf27a96a8dda17"></a>
+<a class="el" href="namespacecgv.html#a4fc9abee97018a017bb3a14b531a8f06">ivec2</a>&#160;</td><td class="memItemRight" valign="bottom"><b>cursor_position</b></td></tr>
+<tr class="separator:a269dc786827010af7acf27a96a8dda17"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:af2e3f4998aaf19b182ddf06e7e72b842"><td class="memItemLeft" align="right" valign="top"><a id="af2e3f4998aaf19b182ddf06e7e72b842"></a>
+std::string&#160;</td><td class="memItemRight" valign="bottom"><b>cursor_label</b></td></tr>
+<tr class="separator:af2e3f4998aaf19b182ddf06e7e72b842"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a83a84e51382dbe4bbfcd95b682be0d4f"><td class="memItemLeft" align="right" valign="top"><a id="a83a84e51382dbe4bbfcd95b682be0d4f"></a>
 bool&#160;</td><td class="memItemRight" valign="bottom"><b>show_value_label</b></td></tr>
 <tr class="separator:a83a84e51382dbe4bbfcd95b682be0d4f"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ae00a9c639a74a67a7dc282560eb9896b"><td class="memItemLeft" align="right" valign="top"><a id="ae00a9c639a74a67a7dc282560eb9896b"></a>
+std::string&#160;</td><td class="memItemRight" valign="bottom"><b>value_label</b></td></tr>
+<tr class="separator:ae00a9c639a74a67a7dc282560eb9896b"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a6310aae51a15bd60b19950e7da0d0a5b"><td class="memItemLeft" align="right" valign="top"><a id="a6310aae51a15bd60b19950e7da0d0a5b"></a>
+cgv::g2d::rect&#160;</td><td class="memItemRight" valign="bottom"><b>value_label_rectangle</b></td></tr>
+<tr class="separator:a6310aae51a15bd60b19950e7da0d0a5b"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a8e63c834dfc0aac6909491f0813ada2e"><td class="memItemLeft" align="right" valign="top"><a id="a8e63c834dfc0aac6909491f0813ada2e"></a>
 <a class="el" href="namespacecgv.html#a0cf3c7d9673d8f1d9d33685e3ce5c889">rgba</a>&#160;</td><td class="memItemRight" valign="bottom"><b>handle_color</b> = <a class="el" href="namespacecgv.html#a0cf3c7d9673d8f1d9d33685e3ce5c889">rgba</a>(0.9f, 0.9f, 0.9f, 1.0f)</td></tr>
 <tr class="separator:a8e63c834dfc0aac6909491f0813ada2e"><td class="memSeparator" colspan="2">&#160;</td></tr>
@@ -976,12 +985,6 @@ cgv::g2d::text2d_style&#160;</td><td class="memItemRight" valign="bottom"><b>cur
 <tr class="memitem:afaf2f83b194b2a44ba73a48a2a250741"><td class="memItemLeft" align="right" valign="top"><a id="afaf2f83b194b2a44ba73a48a2a250741"></a>
 cgv::g2d::text2d_style&#160;</td><td class="memItemRight" valign="bottom"><b>value_label_style</b></td></tr>
 <tr class="separator:afaf2f83b194b2a44ba73a48a2a250741"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a3bf3b85d031f0d5856c3a130bec4d192"><td class="memItemLeft" align="right" valign="top"><a id="a3bf3b85d031f0d5856c3a130bec4d192"></a>
-cgv::g2d::msdf_text_geometry&#160;</td><td class="memItemRight" valign="bottom"><b>cursor_labels</b></td></tr>
-<tr class="separator:a3bf3b85d031f0d5856c3a130bec4d192"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:adf9e744e0a3bb2c149e42b25b87386db"><td class="memItemLeft" align="right" valign="top"><a id="adf9e744e0a3bb2c149e42b25b87386db"></a>
-cgv::g2d::msdf_text_geometry&#160;</td><td class="memItemRight" valign="bottom"><b>value_labels</b></td></tr>
-<tr class="separator:adf9e744e0a3bb2c149e42b25b87386db"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:aee72379e8a8384ec28be730281ccabee"><td class="memItemLeft" align="right" valign="top"><a id="aee72379e8a8384ec28be730281ccabee"></a>
 std::vector&lt; unsigned &gt;&#160;</td><td class="memItemRight" valign="bottom"><b>histogram</b></td></tr>
 <tr class="separator:aee72379e8a8384ec28be730281ccabee"><td class="memSeparator" colspan="2">&#160;</td></tr>

@@ -43,6 +43,7 @@ var classcgv_1_1app_1_1color__selector =
     [ "rgb_color", "classcgv_1_1app_1_1color__selector.html#aaf1b6b9f7f304d15727a1eaf9bcad49c", null ],
     [ "rgba_color", "classcgv_1_1app_1_1color__selector.html#aadbf6c078a0a12af307ea0352124c297", null ],
     [ "selector_handles", "classcgv_1_1app_1_1color__selector.html#a85e001ab95225eadac726a2776889c24", null ],
+    [ "text_geometry", "classcgv_1_1app_1_1color__selector.html#a4a668af112a7663f7ebfb74c0b391a41", null ],
     [ "text_style", "classcgv_1_1app_1_1color__selector.html#a6660b1b3a33f68daf4168e4991141b67", null ],
-    [ "texts", "classcgv_1_1app_1_1color__selector.html#a24e0fdd08e1b25d5c85ea031859b5400", null ]
+    [ "texts", "classcgv_1_1app_1_1color__selector.html#aca7f7c96296190f939f680934a032ec0", null ]
 ];

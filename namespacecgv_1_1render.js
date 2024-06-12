@@ -411,7 +411,8 @@ var namespacecgv_1_1render =
       [ "VBT_UNIFORM", "namespacecgv_1_1render.html#ad2f311c0b3d1f95cfd5fcb4b638fead3ad4e4c7ea3d346f6a7555fb17b1990ea0", null ],
       [ "VBT_FEEDBACK", "namespacecgv_1_1render.html#ad2f311c0b3d1f95cfd5fcb4b638fead3af2afd156162c09c3ff3ed3326fa801fe", null ],
       [ "VBT_STORAGE", "namespacecgv_1_1render.html#ad2f311c0b3d1f95cfd5fcb4b638fead3ac24b1f5816bb8f65a23ae8ca901c3f1f", null ],
-      [ "VBT_ATOMIC_COUNTER", "namespacecgv_1_1render.html#ad2f311c0b3d1f95cfd5fcb4b638fead3aa91030375b0a4aa5ef7b26b7703d0263", null ]
+      [ "VBT_ATOMIC_COUNTER", "namespacecgv_1_1render.html#ad2f311c0b3d1f95cfd5fcb4b638fead3aa91030375b0a4aa5ef7b26b7703d0263", null ],
+      [ "VBT_INDIRECT", "namespacecgv_1_1render.html#ad2f311c0b3d1f95cfd5fcb4b638fead3aeb97a1f73794b5acf23db74499fdecf5", null ]
     ] ],
     [ "VertexBufferUsage", "namespacecgv_1_1render.html#a7ca439553e212967238e29e838343eb9", [
       [ "VBU_STREAM_DRAW", "namespacecgv_1_1render.html#a7ca439553e212967238e29e838343eb9af611814ee9546db6d52ea3f8e5dd1ec4", null ],

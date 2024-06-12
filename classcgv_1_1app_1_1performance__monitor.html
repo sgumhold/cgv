@@ -738,15 +738,12 @@ Protected Member Functions</h2></td></tr>
 <tr class="memitem:a21b3ebacc8848dbdc08138beb3a4dc05"><td class="memItemLeft" align="right" valign="top"><a id="a21b3ebacc8848dbdc08138beb3a4dc05"></a>
 void&#160;</td><td class="memItemRight" valign="bottom"><b>init_styles</b> () override</td></tr>
 <tr class="separator:a21b3ebacc8848dbdc08138beb3a4dc05"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:aa88d1d6fa1e76362e73a0f3af23ea866"><td class="memItemLeft" align="right" valign="top"><a id="aa88d1d6fa1e76362e73a0f3af23ea866"></a>
-void&#160;</td><td class="memItemRight" valign="bottom"><b>create_texts</b> ()</td></tr>
-<tr class="separator:aa88d1d6fa1e76362e73a0f3af23ea866"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a40b957ed98215bdf67546e65635ba845"><td class="memItemLeft" align="right" valign="top"><a id="a40b957ed98215bdf67546e65635ba845"></a>
-void&#160;</td><td class="memItemRight" valign="bottom"><b>update_stats_texts</b> ()</td></tr>
-<tr class="separator:a40b957ed98215bdf67546e65635ba845"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a55c99b869a6015e0a10e19daf2d08547"><td class="memItemLeft" align="right" valign="top"><a id="a55c99b869a6015e0a10e19daf2d08547"></a>
-void&#160;</td><td class="memItemRight" valign="bottom"><b>create_labels</b> ()</td></tr>
-<tr class="separator:a55c99b869a6015e0a10e19daf2d08547"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:aa33055d0de0251a564487e62fdc4c14c"><td class="memItemLeft" align="right" valign="top"><a id="aa33055d0de0251a564487e62fdc4c14c"></a>
+void&#160;</td><td class="memItemRight" valign="bottom"><b>create_texts</b> (const <a class="el" href="classcgv_1_1render_1_1context.html">cgv::render::context</a> &amp;ctx)</td></tr>
+<tr class="separator:aa33055d0de0251a564487e62fdc4c14c"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a441af153c0675980080b0c5536c13d88"><td class="memItemLeft" align="right" valign="top"><a id="a441af153c0675980080b0c5536c13d88"></a>
+void&#160;</td><td class="memItemRight" valign="bottom"><b>update_texts</b> (const <a class="el" href="classcgv_1_1render_1_1context.html">cgv::render::context</a> &amp;ctx)</td></tr>
+<tr class="separator:a441af153c0675980080b0c5536c13d88"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:af953789ef8fc8920538faa228cefcb43"><td class="memItemLeft" align="right" valign="top"><a id="af953789ef8fc8920538faa228cefcb43"></a>
 void&#160;</td><td class="memItemRight" valign="bottom"><b>update_plot</b> ()</td></tr>
 <tr class="separator:af953789ef8fc8920538faa228cefcb43"><td class="memSeparator" colspan="2">&#160;</td></tr>
@@ -916,18 +913,18 @@ cgv::g2d::line2d_style&#160;</td><td class="memItemRight" valign="bottom"><b>lin
 <tr class="memitem:a653d87ec486752f802d37579ffce4d9c"><td class="memItemLeft" align="right" valign="top"><a id="a653d87ec486752f802d37579ffce4d9c"></a>
 <a class="el" href="classcgv_1_1render_1_1color__map.html">cgv::render::color_map</a>&#160;</td><td class="memItemRight" valign="bottom"><b>plot_color_map</b></td></tr>
 <tr class="separator:a653d87ec486752f802d37579ffce4d9c"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:aab31bf16231e1531de21520895f52f64"><td class="memItemLeft" align="right" valign="top"><a id="aab31bf16231e1531de21520895f52f64"></a>
+std::vector&lt; std::string &gt;&#160;</td><td class="memItemRight" valign="bottom"><b>labels</b></td></tr>
+<tr class="separator:aab31bf16231e1531de21520895f52f64"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:aa2203e2f3996b301833c0e941a27fff3"><td class="memItemLeft" align="right" valign="top"><a id="aa2203e2f3996b301833c0e941a27fff3"></a>
 cgv::g2d::text2d_style&#160;</td><td class="memItemRight" valign="bottom"><b>text_style</b></td></tr>
 <tr class="separator:aa2203e2f3996b301833c0e941a27fff3"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a053f5eb1965083c1d08dc09ce6f1f96c"><td class="memItemLeft" align="right" valign="top"><a id="a053f5eb1965083c1d08dc09ce6f1f96c"></a>
-cgv::g2d::text2d_style&#160;</td><td class="memItemRight" valign="bottom"><b>label_style</b></td></tr>
-<tr class="separator:a053f5eb1965083c1d08dc09ce6f1f96c"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:aaf2266787cd3fc0148dd99232c84410b"><td class="memItemLeft" align="right" valign="top"><a id="aaf2266787cd3fc0148dd99232c84410b"></a>
-cgv::g2d::msdf_text_geometry&#160;</td><td class="memItemRight" valign="bottom"><b>texts</b></td></tr>
-<tr class="separator:aaf2266787cd3fc0148dd99232c84410b"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a178d13de02ce456b377035b803edad2f"><td class="memItemLeft" align="right" valign="top"><a id="a178d13de02ce456b377035b803edad2f"></a>
-cgv::g2d::msdf_text_geometry&#160;</td><td class="memItemRight" valign="bottom"><b>labels</b></td></tr>
-<tr class="separator:a178d13de02ce456b377035b803edad2f"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ae3393b3c16bd9d6529f4ac2f8048bfb7"><td class="memItemLeft" align="right" valign="top"><a id="ae3393b3c16bd9d6529f4ac2f8048bfb7"></a>
+cgv::g2d::text2d_style&#160;</td><td class="memItemRight" valign="bottom"><b>tick_text_style</b></td></tr>
+<tr class="separator:ae3393b3c16bd9d6529f4ac2f8048bfb7"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a717d51054454db7d8c632c4fca574907"><td class="memItemLeft" align="right" valign="top"><a id="a717d51054454db7d8c632c4fca574907"></a>
+cgv::g2d::msdf_text_geometry&#160;</td><td class="memItemRight" valign="bottom"><b>text_geometry</b></td></tr>
+<tr class="separator:a717d51054454db7d8c632c4fca574907"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="inherit_header pro_attribs_classcgv_1_1app_1_1themed__canvas__overlay"><td colspan="2" onclick="javascript:toggleInherit('pro_attribs_classcgv_1_1app_1_1themed__canvas__overlay')"><img src="closed.png" alt="-"/>&#160;Protected Attributes inherited from <a class="el" href="classcgv_1_1app_1_1themed__canvas__overlay.html">cgv::app::themed_canvas_overlay</a></td></tr>
 <tr class="memitem:a92159dc158ff2460805e8459b3421c34 inherit pro_attribs_classcgv_1_1app_1_1themed__canvas__overlay"><td class="memItemLeft" align="right" valign="top"><a id="a92159dc158ff2460805e8459b3421c34"></a>
 bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcgv_1_1app_1_1themed__canvas__overlay.html#a92159dc158ff2460805e8459b3421c34">background_visible_</a> = true</td></tr>

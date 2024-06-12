@@ -41,6 +41,7 @@ var classcgv_1_1app_1_1color__map__editor =
     [ "update_color_map", "classcgv_1_1app_1_1color__map__editor.html#a6475c720fadde059213ca60748b6aaec", null ],
     [ "update_geometry", "classcgv_1_1app_1_1color__map__editor.html#ac9d38e6a1cacec9a2bb5c98d74435449", null ],
     [ "update_point_positions", "classcgv_1_1app_1_1color__map__editor.html#ae8f36c79fa0901db111cf912ffff0640", null ],
+    [ "update_value_label_rectangle", "classcgv_1_1app_1_1color__map__editor.html#a7f7aec11a226bbbfa166a0bc82895e74", null ],
     [ "value_to_string", "classcgv_1_1app_1_1color__map__editor.html#ad3057d2cf82cbfb1ce586dde5de4a593", null ],
     [ "bg_style", "classcgv_1_1app_1_1color__map__editor.html#a72143e8235f6f984e4a9430a66d061c4", null ],
     [ "bg_tex", "classcgv_1_1app_1_1color__map__editor.html#a5b3440ecf27ab9d382d1a64d5605292e", null ],
@@ -49,10 +50,9 @@ var classcgv_1_1app_1_1color__map__editor =
     [ "color_handle_renderer", "classcgv_1_1app_1_1color__map__editor.html#aba8eceb5c3057f3f5e89b47b076c4b78", null ],
     [ "color_handle_style", "classcgv_1_1app_1_1color__map__editor.html#a8983e4f1ddc6445bbb5f6d329caa5e75", null ],
     [ "color_map_style", "classcgv_1_1app_1_1color__map__editor.html#adfd252d04c2f90c9ca50c6bb8c7db2e5", null ],
-    [ "cursor_label_index", "classcgv_1_1app_1_1color__map__editor.html#adc768a0b65b174da8b4f35fc838bb375", null ],
+    [ "cursor_label", "classcgv_1_1app_1_1color__map__editor.html#af2e3f4998aaf19b182ddf06e7e72b842", null ],
     [ "cursor_label_style", "classcgv_1_1app_1_1color__map__editor.html#ad9d4701df19b3c7bccc1d21d7b15b10c", null ],
-    [ "cursor_labels", "classcgv_1_1app_1_1color__map__editor.html#a3bf3b85d031f0d5856c3a130bec4d192", null ],
-    [ "cursor_pos", "classcgv_1_1app_1_1color__map__editor.html#acb99c295720bff0c57de94af087e0d44", null ],
+    [ "cursor_position", "classcgv_1_1app_1_1color__map__editor.html#a269dc786827010af7acf27a96a8dda17", null ],
     [ "handle_color", "classcgv_1_1app_1_1color__map__editor.html#a8e63c834dfc0aac6909491f0813ada2e", null ],
     [ "highlight_color", "classcgv_1_1app_1_1color__map__editor.html#aec923cee38105e6d6b27ebd8eea7b235", null ],
     [ "highlight_color_hex", "classcgv_1_1app_1_1color__map__editor.html#a027d18c0b046dd705a27c1200ec6a41d", null ],
@@ -84,6 +84,7 @@ var classcgv_1_1app_1_1color__map__editor =
     [ "supports_opacity", "classcgv_1_1app_1_1color__map__editor.html#aebcdf3a51eb409f98aa8cf55baec8350", null ],
     [ "use_interpolation", "classcgv_1_1app_1_1color__map__editor.html#a1fe90d329ab11b8d08efe2b0d239cca0", null ],
     [ "use_linear_filtering", "classcgv_1_1app_1_1color__map__editor.html#ae9adec0201d846d75fce8de43695b104", null ],
-    [ "value_label_style", "classcgv_1_1app_1_1color__map__editor.html#afaf2f83b194b2a44ba73a48a2a250741", null ],
-    [ "value_labels", "classcgv_1_1app_1_1color__map__editor.html#adf9e744e0a3bb2c149e42b25b87386db", null ]
+    [ "value_label", "classcgv_1_1app_1_1color__map__editor.html#ae00a9c639a74a67a7dc282560eb9896b", null ],
+    [ "value_label_rectangle", "classcgv_1_1app_1_1color__map__editor.html#a6310aae51a15bd60b19950e7da0d0a5b", null ],
+    [ "value_label_style", "classcgv_1_1app_1_1color__map__editor.html#afaf2f83b194b2a44ba73a48a2a250741", null ]
 ];
