@@ -85,6 +85,14 @@ public:
 	{
 		std::cout << "destruction of gui test" << std::endl;
 	}
+	void on_set(void* member_ptr)
+	{
+		if (member_ptr == &show_first) {
+			ref_tree_node_visible_flag(s1) = show_first;
+			post_recreate_gui();
+		}
+		update_member(member_ptr);
+	}
 	/// overload to return the type name of this object
 	std::string get_type_name() const
 	{
@@ -119,12 +127,13 @@ public:
 	/// you must overload this for gui creation
 	void create_gui()
 	{
-		connect_copy(add_control("show_first", show_first,"toggle")->value_change,
-			         rebind(static_cast<provider*>(this),&provider::recreate_gui));
+		add_member_control(this, "show_first", show_first,"toggle");
 		connect_copy(add_control("show_second", show_second,"toggle")->value_change,
 			         rebind(static_cast<provider*>(this),&provider::post_recreate_gui));
-		if (add_tree_node("First Sub GUI", show_first, 1))
+		if (begin_tree_node("First Sub GUI", s1, show_first, "level=1")) {
 			inline_object_gui(s1);
+			end_tree_node(show_first);
+		}
 		if (add_tree_node("Second Sub GUI", show_second, 1))
 			inline_object_gui(s2);
 		connect_copy(add_button("destroy")->click, rebind(this, &gui_test::destruct));
