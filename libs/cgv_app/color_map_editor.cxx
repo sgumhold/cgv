@@ -7,6 +7,8 @@
 #include <cgv/utils/advanced_scan.h>
 #include <cgv/utils/file.h>
 #include <cgv_gl/gl/gl.h>
+#include <cgv_g2d/msdf_font.h>
+#include <cgv_g2d/msdf_gl_font_renderer.h>
 
 namespace cgv {
 namespace app {
@@ -34,8 +36,7 @@ color_map_editor::color_map_editor() {
 	set_size(ivec2(600u, layout.total_height));
 	
 	mouse_is_on_overlay = false;
-	cursor_pos = ivec2(-100);
-	cursor_label_index = -1;
+	cursor_position = { 0 };
 	show_value_label = false;
 
 	cmc.color_points.set_constraint(layout.color_handles_rect);
@@ -56,7 +57,8 @@ color_map_editor::color_map_editor() {
 
 void color_map_editor::clear(cgv::render::context& ctx) {
 
-	cgv::g2d::ref_msdf_gl_canvas_font_renderer(ctx, -1);
+	cgv::g2d::ref_msdf_font_regular(ctx, -1);
+	cgv::g2d::ref_msdf_gl_font_renderer_2d(ctx, -1);
 
 	canvas_overlay::clear(ctx);
 
@@ -68,9 +70,6 @@ void color_map_editor::clear(cgv::render::context& ctx) {
 	bg_tex.destruct(ctx);
 	preview_tex.destruct(ctx);
 	hist_tex.destruct(ctx);
-
-	cursor_labels.destruct(ctx);
-	value_labels.destruct(ctx);
 }
 
 bool color_map_editor::handle_event(cgv::gui::event& e) {
@@ -85,11 +84,11 @@ bool color_map_editor::handle_event(cgv::gui::event& e) {
 		if (ke.get_action() == cgv::gui::KA_PRESS) {
 			switch (ke.get_key()) {
 			case cgv::gui::KEY_Left_Ctrl:
-				cursor_label_index = 1;
+				cursor_label = "+";
 				post_damage();
 				break;
 			case cgv::gui::KEY_Left_Alt:
-				cursor_label_index = 0;
+				cursor_label = "-";
 				post_damage();
 				break;
 			}
@@ -98,7 +97,7 @@ bool color_map_editor::handle_event(cgv::gui::event& e) {
 			switch (ke.get_key()) {
 			case cgv::gui::KEY_Left_Ctrl:
 			case cgv::gui::KEY_Left_Alt:
-				cursor_label_index = -1;
+				cursor_label = "";
 				post_damage();
 				break;
 			}
@@ -119,8 +118,8 @@ bool color_map_editor::handle_event(cgv::gui::event& e) {
 		case cgv::gui::MA_MOVE:
 		case cgv::gui::MA_DRAG:
 			if(get_context())
-				cursor_pos = ivec2(me.get_x(), get_context()->get_height() - 1 - me.get_y());
-			if(cursor_label_index > -1)
+				cursor_position = ivec2(me.get_x(), get_context()->get_height() - 1 - me.get_y());
+			if(!cursor_label.empty())
 				post_damage();
 			break;
 		}
@@ -243,7 +242,8 @@ void color_map_editor::handle_member_change(const cgv::utils::pointer_test& m) {
 
 bool color_map_editor::init(cgv::render::context& ctx) {
 	
-	cgv::g2d::ref_msdf_gl_canvas_font_renderer(ctx, 1);
+	cgv::g2d::ref_msdf_font_regular(ctx, 1);
+	cgv::g2d::ref_msdf_gl_font_renderer_2d(ctx, 1);
 	
 	register_shader("rectangle", cgv::g2d::shaders::rectangle);
 	register_shader("circle", cgv::g2d::shaders::circle);
@@ -256,16 +256,7 @@ bool color_map_editor::init(cgv::render::context& ctx) {
 	success &= opacity_handle_renderer.init(ctx);
 	success &= line_renderer.init(ctx);
 	success &= polygon_renderer.init(ctx);
-	success &= cursor_labels.init(ctx);
-	success &= value_labels.init(ctx);
-
-	if(success) {
-		cursor_labels.add_text("-", vec2(0.0f));
-		cursor_labels.add_text("+", vec2(0.0f));
-
-		value_labels.add_text("", ivec2(0), cgv::render::TA_BOTTOM);
-	}
-
+	
 	init_preview_texture(ctx);
 	update_color_map(false);
 
@@ -375,34 +366,29 @@ void color_map_editor::draw_content(cgv::render::context& ctx) {
 		content_canvas.disable_current_shader(ctx);
 	}
 
-	auto& font_renderer = cgv::g2d::ref_msdf_gl_canvas_font_renderer(ctx);
+	auto& font = cgv::g2d::ref_msdf_font_regular(ctx);
+	auto& font_renderer = cgv::g2d::ref_msdf_gl_font_renderer_2d(ctx);
+	cgv::g2d::msdf_gl_font_renderer::text_render_info text_render_info;
 
 	if(show_value_label) {
-		content_canvas.enable_shader(ctx, "rectangle");
-		content_canvas.set_style(ctx, label_box_style);
-
-		cgv::g2d::irect rectangle(
-			value_labels.ref_texts()[0].position,
-			static_cast<ivec2>(value_labels.get_text_render_size(0, value_label_style.font_size))
-		);
+		cgv::g2d::irect rectangle = value_label_rectangle;
 		rectangle.translate(0, 5);
 		rectangle.size += ivec2(10, 6);
 
+		content_canvas.enable_shader(ctx, "rectangle");
+		content_canvas.set_style(ctx, label_box_style);
 		content_canvas.draw_shape(ctx, rectangle);
 		content_canvas.disable_current_shader(ctx);
 
-		font_renderer.render(ctx, content_canvas, value_labels, value_label_style);
+		text_render_info.alignment = cgv::render::TextAlignment::TA_BOTTOM;
+		font_renderer.render(ctx, content_canvas, font, value_label, value_label_rectangle.position, text_render_info, value_label_style);
 	}
 
 	// draw cursor decorators to show interaction hints
-	if(mouse_is_on_overlay && cursor_label_index > -1) {
-		ivec2 pos = cursor_pos + ivec2(14, 10);
-		content_canvas.push_modelview_matrix();
-		content_canvas.mul_modelview_matrix(ctx, cgv::math::translate2h(pos));
-
-		font_renderer.render(ctx, content_canvas, cursor_labels, cursor_label_style,  cursor_label_index, 1);
-
-		content_canvas.pop_modelview_matrix(ctx);
+	if(mouse_is_on_overlay && !cursor_label.empty()) {
+		vec2 position = static_cast<vec2>(cursor_position + ivec2(12, 6));
+		text_render_info.alignment = cgv::render::TextAlignment::TA_NONE;
+		font_renderer.render(ctx, content_canvas, font, cursor_label, vec3(position, 0.0f), text_render_info, cursor_label_style);
 	}
 
 	end_content(ctx);
@@ -733,6 +719,21 @@ cgv::g2d::draggable* color_map_editor::get_hit_point(const vec2& pos) {
 	return hit;
 }
 
+void color_map_editor::update_value_label_rectangle(vec2 position, const cgv::g2d::rect& parent_rectangle) {
+
+	value_label_rectangle.position = position;
+
+	if(auto ctx = get_context()) {
+		auto& font = cgv::g2d::ref_msdf_font_regular(*get_context());
+		value_label_rectangle.size = font.compute_render_size(value_label, value_label_style.font_size);
+	}
+
+	float padding = std::ceil(0.5f * value_label_rectangle.w()) + 4.0f;
+	float min_x = layout.color_editor_rect.x() + padding;
+	float max_x = layout.color_editor_rect.x1() - padding;
+	value_label_rectangle.position.x() = cgv::math::clamp(value_label_rectangle.position.x(), min_x, max_x);
+}
+
 void color_map_editor::handle_color_point_drag() {
 
 	auto dragged_point = cmc.color_points.get_dragged();
@@ -740,16 +741,10 @@ void color_map_editor::handle_color_point_drag() {
 	update_color_map(true);
 
 	show_value_label = true;
-	std::string value_label = value_to_string(dragged_point->val);
-	value_labels.set_text(0, value_label);
+	value_label = value_to_string(dragged_point->val);
+	update_value_label_rectangle(dragged_point->position, layout.color_editor_rect);
+	value_label_rectangle.position.y() += 25.0f;
 
-	float width = value_labels.get_text_render_size(0, value_label_style.font_size).x();
-	int padding = static_cast<int>(ceil(0.5f*width)) + 4;
-	ivec2 label_position = dragged_point->position;
-	label_position.x() = cgv::math::clamp(label_position.x(), layout.color_editor_rect.x() + padding, layout.color_editor_rect.x1() - padding);
-	label_position.y() += 25;
-	value_labels.set_position(0, label_position);
-	
 	if(dragged_point && on_color_point_select_callback)
 		on_color_point_select_callback(dragged_point->col);
 
@@ -765,15 +760,10 @@ void color_map_editor::handle_opacity_point_drag() {
 	show_value_label = true;
 	std::string x_label = value_to_string(dragged_point->val.x());
 	std::string y_label = cgv::utils::to_string(dragged_point->val.y(), -1, 3u);
-	std::string value_label = x_label + ", " + y_label;
-	value_labels.set_text(0, value_label);
-
-	float width = value_labels.get_text_render_size(0, value_label_style.font_size).x();
-	int padding = static_cast<int>(ceil(0.5f*width)) + 4;
-	ivec2 label_position = dragged_point->position;
-	label_position.x() = cgv::math::clamp(label_position.x(), layout.opacity_editor_rect.x() + padding, layout.opacity_editor_rect.x1() - padding);
-	label_position.y() = std::min(label_position.y() + 10, layout.opacity_editor_rect.y1() - 6);
-	value_labels.set_position(0, label_position);
+	value_label = x_label + ", " + y_label;
+	
+	update_value_label_rectangle(dragged_point->position, layout.opacity_editor_rect);
+	value_label_rectangle.position.y() = std::min(value_label_rectangle.position.y() + 10.0f, static_cast<float>(layout.opacity_editor_rect.y1() - 6));
 
 	post_damage();
 }

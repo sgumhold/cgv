@@ -9,10 +9,15 @@ void quaternion_to_matrix(in vec4 q, out mat3 M);
 void rigid_to_matrix(in vec4 q, in vec3 t, out mat4 M);
 //***** end interface of quaternion.glsl ***********************************
 
-//***** begin interface of shape2d.glsl ***********************************
-uniform bool origin_top_left = false;
-vec4 transform_world_to_window_space(vec2 p);
-//***** end interface of shape2d.glsl ***********************************
+//***** begin interface of view.glsl ***********************************
+mat4 get_modelview_matrix();
+mat4 get_projection_matrix();
+mat4 get_modelview_projection_matrix();
+mat4 get_inverse_modelview_matrix();
+mat4 get_inverse_modelview_projection_matrix();
+mat3 get_normal_matrix();
+mat3 get_inverse_normal_matrix();
+//***** end interface of view.glsl ***********************************
 
 const vec2 corners[4] = vec2[](
 	vec2(0.0, 0.0),
@@ -29,7 +34,6 @@ struct vertex {
 layout(location = 0) in vec4 quad;
 layout(location = 1) in vec4 texcoord;
 
-uniform float font_size = 32.0;
 uniform vec2 text_size;
 uniform vec3 translation;
 uniform vec4 rotation;
@@ -43,25 +47,16 @@ void main() {
 	vec2 position = mix(quad.xy, quad.zw, corner);
 	tex_coord = mix(texcoord.xy, texcoord.zw, corner);
 
-	vec2 adjusted_percentual_offset = percentual_offset;
-	if(origin_top_left) {
-		position.y = -position.y;
-		adjusted_percentual_offset.y = -adjusted_percentual_offset.y;
-	}
-
-	// compute total scale factor from font size and text scale
-	vec2 scale = font_size * text_size;
-
-	// scale normalized position by scale factor
-	position *= scale.y;
+	// scale normalized position by font size and text scale
+	position *= text_size.y;
 
 	// offset local glyph position by text alignment
-	position += scale * adjusted_percentual_offset;
+	position += text_size * percentual_offset;
 	
 	// transform vertex according to text translation and rotation
 	mat4 T;
 	rigid_to_matrix(rotation, translation, T);
-	position = (T * vec4(position, 0.0, 1.0)).xy;
-	
-	gl_Position = transform_world_to_window_space(position);
+	mat4 M = get_modelview_matrix() * T;
+
+	gl_Position = get_projection_matrix() * M * vec4(position, 0.0, 1.0);
 }

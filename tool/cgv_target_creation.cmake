@@ -212,6 +212,13 @@ function(cgv_get_static_or_exe_name STATIC_NAME_OUT EXE_NAME_OUT TARGET_NAME IS_
 	set(${STATIC_NAME_OUT} "${TARGET_NAME}_static" PARENT_SCOPE)
 endfunction()
 
+# internal helper function returning the name of the service target pf a target
+function(cgv_get_service_name SERVICE_NAME_OUT TARGET_NAME IS_PLUGIN)
+	if (IS_PLUGIN)
+		set(${SERVICE_NAME_OUT} "${TARGET_NAME}_svc" PARENT_SCOPE)
+	endif()
+endfunction()
+
 # internal helper function that takes over deferred computations that require other targets to have already been fully
 # defined
 # - global state the function can modify
@@ -221,6 +228,10 @@ function(cgv_do_deferred_ops TARGET_NAME CONFIGURING_CGV)
 	# output notification of deferred operation
 	get_target_property(TARGET_TYPE ${TARGET_NAME} CGVPROP_TYPE)
 	message(STATUS "Performing deferred operations for ${TARGET_TYPE} '${TARGET_NAME}'")
+
+	# derive target names
+	cgv_get_static_or_exe_name(NAME_STATIC NAME_EXE ${TARGET_NAME} TRUE)
+	cgv_get_service_name(NAME_SVC ${TARGET_NAME} TRUE)
 
 	# do plugin-specific deferred operations
 	if (TARGET_TYPE MATCHES "plugin$")
@@ -252,33 +263,42 @@ function(cgv_do_deferred_ops TARGET_NAME CONFIGURING_CGV)
 			set(SHADER_PATHS FALSE)
 		endif()
 
-		# (2) if the plugin is single executable-enabled, link in all static libraries - this is done in the deferred
+		# (2) if the plugin is single binary-enabled, link in all static libraries - this is done in the deferred
 		#     step to catch all transitively included object libraries, which CMake stupidly doesn't do by itself
+		# - gather properties
+		if (NOT MSVC)
+			set(TARGET_LINK_OPTS_PRIVATE -Wl,--copy-dt-needed-entries)
+		endif()
+		foreach (DEPENDENCY ${DEPENDENCIES})
+			# special handling for the viewer, as the static build variants of the viewer app is called differently
+			if (DEPENDENCY STREQUAL "cgv_viewer")
+				list(APPEND TARGET_LINK_LIBS_PRIVATE cgv_viewer_main)
+			else()
+				# for all other dependencies, we check if it is a CGV component and act appropriately
+				cgv_is_cgvtarget(IS_CGV_TARGET ${DEPENDENCY} GET_TYPE DEPENDENCY_TYPE)
+				if (NOT IS_CGV_TARGET)
+					# this branch should trigger for all non-CGV link dependencies
+					list(APPEND TARGET_LINK_LIBS_PRIVATE ${DEPENDENCY})
+				elseif (NOT DEPENDENCY_TYPE STREQUAL "app")
+					# this branch should trigger for all CGV libraries and plugins
+					list(APPEND TARGET_LINK_LIBS_PRIVATE ${DEPENDENCY}_static)
+				else()
+					# this branch should currently trigger only if it's a CGV app
+					# ...nothing to do here!
+				endif()
+			endif()
+		endforeach()
+		# - apply to single executables
 		cgv_query_property(NO_EXECUTABLE ${TARGET_NAME} CGVPROP_NO_EXECUTABLE)
 		if (NOT NO_EXECUTABLE)
-			set(NAME_EXE ${TARGET_NAME}_exe)
-			if (NOT MSVC)
-				target_link_options(${NAME_EXE} PRIVATE -Wl,--copy-dt-needed-entries)
-			endif()
-			foreach (DEPENDENCY ${DEPENDENCIES})
-				# special handling for the viewer, as the static build variants of the viewer app is called differently
-				if (DEPENDENCY STREQUAL "cgv_viewer")
-					target_link_libraries(${NAME_EXE} PRIVATE cgv_viewer_main)
-				else()
-					# for all other dependencies, we check if it is a CGV component and act appropriately
-					cgv_is_cgvtarget(IS_CGV_TARGET ${DEPENDENCY} GET_TYPE DEPENDENCY_TYPE)
-					if (NOT IS_CGV_TARGET)
-						# this branch should trigger for all non-CGV link dependencies
-						target_link_libraries(${NAME_EXE} PRIVATE ${DEPENDENCY})
-					elseif (NOT DEPENDENCY_TYPE STREQUAL "app")
-						# this branch should trigger for all CGV libraries and plugins
-						target_link_libraries(${NAME_EXE} PRIVATE ${DEPENDENCY}_static)
-					else()
-						# this branch should currently trigger only if it's a CGV app
-						# ...nothing to do here!
-					endif()
-				endif()
-			endforeach()
+			target_link_options(${NAME_EXE} PRIVATE ${TARGET_LINK_OPTS_PRIVATE})
+			target_link_libraries(${NAME_EXE} PRIVATE ${TARGET_LINK_LIBS_PRIVATE})
+		endif()
+		# - apply to services
+		cgv_query_property(HAS_SERVICE ${TARGET_NAME} CGVPROP_SERVICE)
+		if (HAS_SERVICE)
+			target_link_options(${NAME_SVC} PRIVATE ${TARGET_LINK_OPTS_PRIVATE})
+			target_link_libraries(${NAME_SVC} PRIVATE ${TARGET_LINK_LIBS_PRIVATE})
 		endif()
 
 		# (3) extract list of plugins to load
@@ -329,6 +349,10 @@ function(cgv_do_deferred_ops TARGET_NAME CONFIGURING_CGV)
 			if (NO_EXECUTABLE)
 				set(NO_EXE_FLAG "NO_EXECUTABLE")
 			endif()
+			set(SERVICE_FLAG "")
+			if (HAS_SERVICE)
+				set(SERVICE_FLAG "SERVICE")
+			endif()
 			cgv_query_property(INVOCATION_PROXY ${TARGET_NAME} CGVPROP_INVOCATION_PROXY)
 
 			# (1) Shell script
@@ -350,7 +374,7 @@ function(cgv_do_deferred_ops TARGET_NAME CONFIGURING_CGV)
 			#   TODO: proper handling of this is possible and should be implemented at some point
 			if (NOT CGV_USING_MULTI_CONFIG)
 				create_idea_run_entry(
-					${TARGET_NAME} ${NO_EXE_FLAG} WORKING_DIR ${WORKING_DIR}
+					${TARGET_NAME} ${NO_EXE_FLAG} ${SERVICE_FLAG} WORKING_DIR ${WORKING_DIR}
 					PLUGIN_ARGS ${AUTOGEN_CMD_LINE_ARGS};${ADDITIONAL_ARGS} EXE_ARGS ${ADDITIONAL_ARGS}
 					INVOCATION_PROXY ${INVOCATION_PROXY}
 				)
@@ -358,9 +382,9 @@ function(cgv_do_deferred_ops TARGET_NAME CONFIGURING_CGV)
 
 			# (3) Visual Studio Code
 			concat_vscode_launch_json_content(
-				VSCODE_TARGET_LAUNCH_JSON_CONFIGS ${TARGET_NAME} ${NO_EXE_FLAG} WORKING_DIR ${WORKING_DIR}
-				PLUGIN_ARGS ${AUTOGEN_CMD_LINE_ARGS};${ADDITIONAL_ARGS} EXE_ARGS ${ADDITIONAL_ARGS}
-				INVOCATION_PROXY ${INVOCATION_PROXY}
+				VSCODE_TARGET_LAUNCH_JSON_CONFIGS ${TARGET_NAME} ${NO_EXE_FLAG} ${SERVICE_FLAG}
+				WORKING_DIR ${WORKING_DIR} PLUGIN_ARGS ${AUTOGEN_CMD_LINE_ARGS};${ADDITIONAL_ARGS}
+				EXE_ARGS ${ADDITIONAL_ARGS} INVOCATION_PROXY ${INVOCATION_PROXY}
 			)
 			if (NOT VSCODE_LAUNCH_JSON_CONFIG_LIST OR VSCODE_LAUNCH_JSON_CONFIG_LIST STREQUAL "")
 				set(VSCODE_LAUNCH_JSON_CONFIG_LIST "${VSCODE_TARGET_LAUNCH_JSON_CONFIGS}" PARENT_SCOPE)
@@ -372,12 +396,15 @@ function(cgv_do_deferred_ops TARGET_NAME CONFIGURING_CGV)
 		# elseif(DO_CREATE_LAUNCH_CONFIG)  <-- merged with above branch (see comment above)
 			# try to set relevant options for all other generators in the hopes of ending up with a valid launch/debug
 			# configuration
-			cgv_get_static_or_exe_name(NAME_STATIC NAME_EXE ${TARGET_NAME} TRUE)
 			set_plugin_execution_params(${TARGET_NAME} ARGUMENTS ${CMD_LINE_ARGS_STRING})
 			set_plugin_execution_working_dir(${TARGET_NAME} ${WORKING_DIR})
 			if (NOT NO_EXECUTABLE)
 				set_plugin_execution_params(${NAME_EXE} ARGUMENTS ${ADDITIONAL_ARGS_STRING} ALTERNATIVE_COMMAND $<TARGET_FILE:${NAME_EXE}>)
 				set_plugin_execution_working_dir(${NAME_EXE} ${CMAKE_CURRENT_SOURCE_DIR})
+			endif()
+			if (HAS_SERVICE)
+				set_plugin_execution_params(${NAME_SVC} ARGUMENTS "$<TARGET_FILE:${NAME_SVC}> ${ADDITIONAL_ARGS_STRING}" ALTERNATIVE_COMMAND $<TARGET_FILE:service_host>)
+				set_plugin_execution_working_dir(${NAME_SVC} ${CMAKE_CURRENT_SOURCE_DIR})
 			endif()
 		endif()
 	endif()
@@ -477,7 +504,7 @@ endfunction()
 function(cgv_add_target NAME)
 	cmake_parse_arguments(
 		PARSE_ARGV 1 CGVARG_
-		"NO_EXECUTABLE" "TYPE;OVERRIDE_SHARED_EXPORT_DEFINE;OVERRIDE_FORCE_STATIC_DEFINE;WORKING_DIR"
+		"NO_EXECUTABLE;SERVICE" "TYPE;OVERRIDE_SHARED_EXPORT_DEFINE;OVERRIDE_FORCE_STATIC_DEFINE;WORKING_DIR"
 		"SOURCES;PPP_SOURCES;HEADERS;RESOURCES;AUDIO_RESOURCES;SHADER_SOURCES;ADDITIONAL_PRIVATE_DEFINES;ADDITIONAL_PUBLIC_DEFINES;DEPENDENCIES;LINKTIME_PLUGIN_DEPENDENCIES;ADDITIONAL_INCLUDE_PATHS;ADDITIONAL_LINKER_PATHS;ADDITIONAL_CMDLINE_ARGS;INVOCATION_PROXY"
 	)
 
@@ -560,6 +587,7 @@ function(cgv_add_target NAME)
 
 	# determine name for static variant
 	cgv_get_static_or_exe_name(NAME_STATIC NAME_EXE ${NAME} ${IS_PLUGIN})
+	cgv_get_service_name(NAME_SVC ${NAME} ${IS_PLUGIN})
 	string(TOUPPER ${NAME} NAME_UPPER) # <-- used in compile-time definitions
 
 	# for plugin builds
@@ -612,6 +640,9 @@ function(cgv_add_target NAME)
 	if (IS_PLUGIN AND CGVARG__NO_EXECUTABLE)
 		set_target_properties(${NAME} PROPERTIES CGVPROP_NO_EXECUTABLE TRUE)
 	endif()
+	if (IS_PLUGIN AND CGVARG__SERVICE)
+		set_target_properties(${NAME} PROPERTIES CGVPROP_SERVICE TRUE)
+	endif()
 
 	target_include_directories(${NAME} PUBLIC
 			${CGVARG__ADDITIONAL_INCLUDE_PATHS}
@@ -641,6 +672,9 @@ function(cgv_add_target NAME)
 	target_compile_definitions(${NAME_STATIC} PRIVATE ${PRIVATE_STATIC_TARGET_DEFINES})
 	target_compile_definitions(${NAME_STATIC} PUBLIC "CGV_FORCE_STATIC" ${CGVARG__ADDITIONAL_PUBLIC_DEFINES})
 	target_compile_options(${NAME_STATIC} PUBLIC ${CGV_CLANG_SPECIFIC_DEBUG_FLAGS})
+	if (NOT WIN32)
+		target_compile_options(${NAME_STATIC} PUBLIC -fPIC)
+	endif()
 
 	target_link_directories(${NAME_STATIC} PUBLIC ${CGVARG__ADDITIONAL_LINKER_PATHS})
 	if (NOT MSVC)
@@ -693,6 +727,20 @@ function(cgv_add_target NAME)
 		target_link_libraries(${NAME_EXE} PRIVATE ${NAME_STATIC})
 	endif()
 
+	# add a service target if requested
+	if (IS_PLUGIN AND CGVARG__SERVICE)
+		add_library(${NAME_SVC} SHARED)
+		set_target_properties(${NAME_SVC} PROPERTIES OUTPUT_NAME "${NAME_SVC}")
+		target_compile_definitions(${NAME_SVC} PRIVATE ${PRIVATE_STATIC_TARGET_DEFINES})
+		target_include_directories(
+			${NAME_SVC} PUBLIC
+			${CGVARG__ADDITIONAL_INCLUDE_PATHS} "$<BUILD_INTERFACE:${CGV_DIR}>" "$<BUILD_INTERFACE:${CGV_DIR}/libs>"
+			"$<BUILD_INTERFACE:${PPP_INCLUDES}>" "$<BUILD_INTERFACE:${ST_INCLUDE}>" "$<INSTALL_INTERFACE:include>"
+		)
+		target_link_libraries(${NAME_SVC} PRIVATE ${NAME_STATIC})
+		add_dependencies(${NAME_SVC} service_host)
+	endif()
+
 	# observe STDCPP17 option
 	if (CGV_STDCPP17)
 		target_compile_features(${NAME} PRIVATE cxx_std_17)
@@ -737,6 +785,9 @@ function(cgv_add_target NAME)
 		if (IS_PLUGIN AND NOT CGVARG__NO_EXECUTABLE)
 			list(APPEND MY_TARGETS ${NAME_EXE})
 		endif()
+		if (IS_PLUGIN AND CGVARG__SERVICE)
+			list(APPEND MY_TARGETS ${NAME_SVC})
+		endif()
 		set_property(GLOBAL APPEND PROPERTY "CGVPROP_USER_TARGETS" ${MY_TARGETS})
 	endif()
 
@@ -774,6 +825,10 @@ function(cgv_add_target NAME)
 		else()
 			set_target_properties(${NAME} PROPERTIES FOLDER "Application Plugin")
 			set_target_properties(${NAME_EXE} PROPERTIES FOLDER "Application Plugin")
+		endif()
+		if (CGVARG__SERVICE)
+			cgv_query_property(IDE_FOLDER ${NAME} "FOLDER")
+			set_target_properties(${NAME_SVC} PROPERTIES FOLDER ${IDE_FOLDER})
 		endif()
 	endif()
 	set_target_properties(${NAME_STATIC} PROPERTIES FOLDER "_obj")
@@ -998,6 +1053,9 @@ function(cgv_create_lib NAME)
 	if (NOT ARGS_CORE_LIB)
 		target_include_directories(${NAME_STATIC} PUBLIC $<BUILD_INTERFACE:${CGV_DIR}/libs>)
 	endif ()
+	if (NOT WIN32)
+		target_compile_options(${NAME_STATIC} PUBLIC -fPIC)
+	endif()
 
 
 	# handle whole-program / link-time optimization

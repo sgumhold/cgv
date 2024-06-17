@@ -80,6 +80,8 @@ namespace cgv {
 			///
 			template <typename T = float>
 			void set_point_size_array(const context& ctx, const std::vector<T>& point_sizes) { has_point_sizes = true; set_attribute_array(ctx, "point_size", point_sizes); }
+			/// remove the point size attribute
+			void remove_point_size_array(const context& ctx);
 			///
 			template <typename T = unsigned, typename C = cgv::media::color<float, cgv::media::RGB, cgv::media::OPACITY> >
 			void set_indexed_color_array(const context& ctx, const std::vector<T>& color_indices, const std::vector<C>& palette) {
@@ -94,6 +96,8 @@ namespace cgv {
 				set_attribute_array(ctx, "color_index", color_index_ptr, nr_elements, stride);
 				ref_prog().set_uniform_array(ctx, "palette", palette);
 			}
+			/// remove the indexed color attribute
+			void remove_indexed_color_array(const context& ctx);
 			///
 			template <typename T = float>
 			void set_group_point_sizes(const context& ctx, const std::vector<T>& group_point_sizes) { has_group_point_sizes = true; ref_prog().set_uniform_array(ctx, "group_point_sizes", group_point_sizes); }

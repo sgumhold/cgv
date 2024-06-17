@@ -3,7 +3,7 @@
 #define MODE 1
 
 //***** begin interface of shape2d.glsl ***********************************
-uniform bool origin_upper_left = false;
+uniform bool origin_top_left = false;
 
 float get_feather_width();
 vec2 get_shape_size();
@@ -91,7 +91,7 @@ void main() {
 	vec2 uv1 = uv_gs[1];
 #endif
 
-	if(origin_upper_left)
+	if(origin_top_left)
 		v_dir = -v_dir;
 
 	emit_corner(0, start.xy - u_dir + v_dir, uv0, color0);

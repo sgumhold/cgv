@@ -10,7 +10,6 @@
 #include <cgv/math/det.h>
 #include "ann_tree.h"
 #include "SICP.h"
-#include "Eigen/Eigen"
 
 using namespace std;
 using namespace cgv::math;
@@ -148,12 +147,13 @@ namespace cgv {
 			}
 		}
 
-		void SICP::point_to_plane(vec3* X,vec3* Y,vec3* N,const float* u, size_t size, mat3& rotation, vec3& translation)
+		void SICP::point_to_plane(vec3* X, vec3* Y, vec3* N, const float* u, size_t size, mat3& rotation,
+									   vec3& translation)
 		{
-			typedef Eigen::Matrix<float, 6, 6> Mat66;
-			typedef Eigen::Matrix<float, 6, 1> Vec6;
-			typedef Eigen::Block<Mat66, 3, 3> Blk33;
-			typedef Eigen::Matrix<float, 3, 1> Vec3;
+			/* typedef cgv::math::fmat<float, 6, 6> Mat66;
+			typedef cgv::math::fmat<float, 6, 1> Vec6;
+			typedef mat33 blk33;
+			typedef cgv::math::fmat<float, 3, 1> Vec3;
 
 			vec3 X_mean = accumulate(X, X + size, vec3(0, 0, 0)) / ((float)size);
 
@@ -161,36 +161,45 @@ namespace cgv {
 				X[i] -= X_mean;
 			}
 
-			Mat66 LHS = Mat66::Zero();
-			Vec6 RHS = Vec6::Zero();
-			Blk33 TL = LHS.topLeftCorner<3, 3>();
-			Blk33 TR = LHS.topRightCorner<3, 3>();
-			Blk33 BR = LHS.bottomRightCorner<3, 3>();
-			Eigen::MatrixXf C = Eigen::MatrixXf::Zero(3, size);
+			Mat66 LHS;
+			LHS.zeros();
+			Vec6 RHS;
+			RHS.zeros();
+			auto TL = LHS.block(0, 0, 3, 3); // Top-left 3x3 block
+			auto TR = LHS.block(0, 3, 3, 3); // Top-right 3x3 block
+			auto BR = LHS.block(3, 3, 3, 3); // Bottom-right 3x3 block
+			cgv::math::mat<float, 3> C = Eigen::MatrixXf::Zero(3, size);
+			mat<float, 3, Dynamic> C(3, size);
 			for (int i = 0; i < size; i++) {
 				vec3 csp = cross(X[i], N[i]);
-				C.col(i) = Eigen::Matrix<float,3,1>(csp.x(),csp.y(),csp.z());
+				C.set_column(i, {csp.x(), csp.y(), csp.z()});
 			}
-			for (int i = 0; i < size; i++) TL.selfadjointView<Eigen::Upper>().rankUpdate(C.col(i), 1);
 
 			for (int i = 0; i < size; i++) {
-				Eigen::Matrix<float, 3, 1> normal = Vec3(N[i].x(),N[i].y(),N[i].z());
-				TR += (C.col(i)*normal.transpose());
+				TL += C.get_column(i) * C.get_column(i).transpose();
 			}
+
 			for (int i = 0; i < size; i++) {
-				Eigen::Matrix<float, 3, 1> normal = Vec3(N[i].x(), N[i].y(), N[i].z());
-				BR.selfadjointView<Eigen::Upper>().rankUpdate(normal, 1);
+				auto normal = vec<float, 3>{N[i].x(), N[i].y(), N[i].z()};
+				TR += C.get_column(i) * normal.transpose();
 			}
-			for (int i = 0; i < C.cols(); i++) {
-				float dist_to_plane = -( dot(X[i] - (Y[i]- X_mean),N[i]) - u[i] )*1.f;
-				RHS.head<3>() += C.col(i)*dist_to_plane;
-				Eigen::Matrix<float, 3, 1> normal = Vec3(N[i].x(), N[i].y(), N[i].z());
-				RHS.tail<3>() += normal*dist_to_plane;
+
+			for (int i = 0; i < size; i++) {
+				auto normal = vec<float, 3>{N[i].x(), N[i].y(), N[i].z()};
+				BR += normal * normal.transpose();
 			}
-			LHS = LHS.selfadjointView<Eigen::Upper>();
-			Eigen::Affine3f transformation;
-			Eigen::LDLT<Mat66> ldlt(LHS);
-			RHS = ldlt.solve(RHS);
+
+			for (int i = 0; i < size; i++) {
+				float dist_to_plane = -(dot(X[i] - (Y[i] - X_mean), N[i]) - u[i]);
+				RHS.head<3>() += C.get_column(i) * dist_to_plane;
+				auto normal = vec<float, 3>{N[i].x(), N[i].y(), N[i].z()};
+				RHS.tail<3>() += normal * dist_to_plane;
+			}
+			Mat66 L = LHS;
+			cgv::diag_mat<float, 6> D;
+			ldlt_decompose(LHS, L, D);
+
+			RHS = ldlt_solve(L, D, RHS);
 
 			transformation = Eigen::AngleAxisf(RHS(0), Eigen::Vector3f::UnitX()) *
 				Eigen::AngleAxisf(RHS(1), Eigen::Vector3f::UnitY()) *
@@ -203,7 +212,7 @@ namespace cgv {
 
 			for (int i = 0; i < size; ++i) {
 				X[i] = rotation * X[i] + translation + X_mean;
-			}
+			}*/
 		}
 
 		void SICP::register_point_to_point(mat3& rotation, vec3& translation)

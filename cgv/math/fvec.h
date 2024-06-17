@@ -83,12 +83,12 @@ public:
 	fvec() {}
 	///creates a vector, where all N components are initialized to the constant value a
 	fvec(const T &a) { std::fill(v, v+N, a); }
-	/// construct and init first two coordinates to the given values	
+	/// construct and init first two coordinates to the given values
 	fvec(const T &x, const T &y) { set(x,y); }
-	/// construct and init first three coordinates to the given values	
+	/// construct and init first three coordinates to the given values
 	fvec(const T &x, const T &y, const T &z) { set(x,y,z); }
-	/// construct and init first four coordinates to the given values	
-	fvec(const T &x, const T &y, const T &z,const T &w) { set(x,y,z,w); }	
+	/// construct and init first four coordinates to the given values
+	fvec(const T &x, const T &y, const T &z,const T &w) { set(x,y,z,w); }
 	///creates a vector from a n-element array a, if n < N remaining N-n elements are set to zero
 	fvec(cgv::type::uint32_type n, const T *a) {
 		cgv::type::uint32_type i, min_n = n < N ? n : N;
@@ -97,7 +97,7 @@ public:
 	}
 	///creates a column vector initialized to array of a different type with zeros filled to not copied components
 	template <typename S>
-	fvec(cgv::type::uint32_type n, const S *a) { 
+	fvec(cgv::type::uint32_type n, const S *a) {
 		cgv::type::uint32_type i, min_n = n < N ? n : N;
 		for (i=0; i<min_n; ++i) v[i] = (T)a[i];
 		for (; i < N; ++i) v[i] = T(0);
@@ -118,7 +118,7 @@ public:
 	///assign vector rhs, if vector and rhs have different sizes, vector has been resized to match the size of
 	fvec & operator = (const fvec<T,N> &rhs) { if (this != &rhs) std::copy(rhs.v, rhs.v+N, v); return *this; }
 	/// set all components of vector to constant value a
-	fvec & operator = (const T &a) { std::fill(v, v+N, a); return *this; }	
+	fvec & operator = (const T &a) { std::fill(v, v+N, a); return *this; }
 	/// set to the contents of the given std::array with same size
 	fvec & operator = (const std::array<T, N>& arr) { std::copy(arr.cbegin(), arr.cend(), v); return *this; }
 	/// set the first two components

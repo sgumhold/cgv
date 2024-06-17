@@ -46,7 +46,14 @@ namespace cgv {
 			has_point_sizes = false;
 			has_indexed_colors = false;
 		}
-
+		void surfel_renderer::remove_point_size_array(const context& ctx) {
+			has_point_sizes = false;
+			remove_attribute_array(ctx, "point_size");
+		}
+		void surfel_renderer::remove_indexed_color_array(const context& ctx) {
+			has_indexed_colors = false;
+			remove_attribute_array(ctx, "indexed_color");
+		}
 		surfel_renderer::surfel_renderer()
 		{
 			has_point_sizes = false;
