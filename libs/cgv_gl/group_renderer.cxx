@@ -50,6 +50,10 @@ namespace cgv {
 			has_group_indices = true;
 			set_attribute_array(ctx, "group_index", element_type, vbo, offset_in_bytes, nr_elements, stride_in_bytes);
 		}
+		void group_renderer::remove_group_index_array(const context& ctx) {
+			has_group_indices = false;
+			remove_attribute_array(ctx, "group_index");
+		}
 		bool group_renderer::validate_attributes(const context& ctx) const
 		{
 			// validate set attributes

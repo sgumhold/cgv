@@ -1,0 +1,86 @@
+#version 430
+
+//***** begin interface of shape2d.glsl ***********************************
+//uniform float zoom_factor = 1.0;
+
+uniform vec4 fill_color;
+uniform float border_radius = 0.0;
+uniform float feather_origin = 0.5;
+uniform float feather_width = 1.0;
+
+//float get_feather_width();
+vec2 get_shape_size();
+vec4 get_active_color(vec4 color);
+vec4 transform_world_to_window_space(vec2 p);
+//***** end interface of shape2d.glsl ***********************************
+
+//***** begin interface of fragment2d.glfs ***********************************
+uniform layout(binding = 0) sampler2D tex;
+
+void finish_sdf_fragment2d(in float signed_distance, in vec4 color);
+void finish_sdf_fragment2d(in float signed_distance, in vec4 color, in vec2 texcoords);
+void finish_fragment2d(in vec4 color);
+void finish_fragment2d(in vec4 color, in vec2 texcoords);
+//***** end interface of fragment2d.glfs ***********************************
+
+uniform float src_size = 32.0;
+uniform float pixel_range = 2.0;
+uniform vec2 text_size;
+uniform float font_size = 32.0;
+uniform vec4 color;
+
+in vec2 tex_coord;
+
+float median(float r, float g, float b) {
+	return max(min(r, g), min(max(r, g), b));
+}
+
+float screen_pixel_range() {
+    vec2 unit_range = vec2(pixel_range)/vec2(textureSize(tex, 0));
+    vec2 screen_tex_size = vec2(1.0)/fwidth(tex_coord);
+    return max(0.5 * dot(unit_range, screen_tex_size), 1.0);
+}
+
+vec4 textureCubic(sampler2D tex, vec2 coord) {
+	// shift the coordinate from [0,1] to [-0.5, tex_size-0.5]
+	vec2 tex_size = vec2(textureSize(tex, 0));
+	vec2 coord_grid = coord * tex_size - 0.5;
+	vec2 index = floor(coord_grid);
+	vec2 fraction = coord_grid - index;
+	vec2 one_frac = 1.0 - fraction;
+
+	vec2 w0 = 1.0/6.0 * one_frac*one_frac*one_frac;
+	vec2 w1 = 2.0/3.0 - 0.5 * fraction*fraction*(2.0-fraction);
+	vec2 w2 = 2.0/3.0 - 0.5 * one_frac*one_frac*(2.0-one_frac);
+	vec2 w3 = 1.0/6.0 * fraction*fraction*fraction;
+
+	vec2 g0 = w0 + w1;
+	vec2 g1 = w2 + w3;
+	vec2 mult = 1.0 / tex_size;
+	vec2 h0 = mult * ((w1 / g0) - 0.5 + index);  //h0 = w1/g0 - 1, move from [-0.5, nrOfVoxels-0.5] to [0,1]
+	vec2 h1 = mult * ((w3 / g1) + 1.5 + index);  //h1 = w3/g1 + 1, move from [-0.5, nrOfVoxels-0.5] to [0,1]
+
+	// fetch the eight linear interpolations
+	// weighting and fetching is interleaved for performance and stability reasons
+	vec4 tex00 = texture(tex, h0);
+	vec4 tex10 = texture(tex, vec2(h1.x, h0.y));
+	tex00 = mix(tex10, tex00, g0.x);  //weigh along the x-direction
+	vec4 tex01 = texture(tex, vec2(h0.x, h1.y));
+	vec4 tex11 = texture(tex, h1);
+	tex01 = mix(tex11, tex01, g0.x);  //weigh along the x-direction
+
+	return mix(tex01, tex00, g0.y);  //weigh along the y-direction
+}
+
+void main() {
+	vec4 mtsd = textureCubic(tex, tex_coord);
+	float sd = median(mtsd.r, mtsd.g, mtsd.b);
+	
+	float signed_distance = -(screen_pixel_range()*(sd-0.5) + 0.5);// / zoom_factor;
+	signed_distance -= feather_origin*feather_width;//get_feather_width();
+	
+	if(signed_distance < 0.0)
+		finish_sdf_fragment2d(signed_distance, get_active_color(color));
+	else
+		discard;
+}

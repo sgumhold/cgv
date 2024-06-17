@@ -65,8 +65,6 @@ namespace cgv { // @<
 			bool has_texture_indices;
 			/// whether position is slab center, if not it is lower left bottom corner
 			bool position_is_center;
-			/// store whether thickness array has been specified
-			bool has_thicknesses;
 			/// overload to allow instantiation of box_renderer
 			render_style* create_render_style() const;
 			/// build slab program

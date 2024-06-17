@@ -2,6 +2,7 @@
 
 #include <cgv/gui/mouse_event.h>
 #include <cgv/gui/theme_info.h>
+#include <cgv_g2d/msdf_gl_font_renderer.h>
 #include <cgv_gl/gl/gl.h>
 
 namespace cgv {
@@ -22,13 +23,13 @@ color_selector::color_selector() {
 
 void color_selector::clear(cgv::render::context& ctx) {
 
-	cgv::g2d::ref_msdf_gl_canvas_font_renderer(ctx, -1);
+	cgv::g2d::ref_msdf_gl_font_renderer_2d(ctx, -1);
 
 	canvas_overlay::clear(ctx);
 
 	color_tex.destruct(ctx);
 	hue_tex.destruct(ctx);
-	texts.destruct(ctx);
+	text_geometry.destruct(ctx);
 }
 
 bool color_selector::handle_event(cgv::gui::event& e) {
@@ -101,7 +102,7 @@ void color_selector::handle_member_change(const cgv::utils::pointer_test& m) {
 
 bool color_selector::init(cgv::render::context& ctx) {
 	
-	cgv::g2d::ref_msdf_gl_canvas_font_renderer(ctx, 1);
+	cgv::g2d::ref_msdf_gl_font_renderer_2d(ctx, 1);
 	
 	register_shader("rectangle", cgv::g2d::shaders::rectangle);
 	register_shader("circle", cgv::g2d::shaders::circle);
@@ -109,17 +110,18 @@ bool color_selector::init(cgv::render::context& ctx) {
 	
 	bool success = canvas_overlay::init(ctx);
 
-	success &= texts.init(ctx);
+	success &= text_geometry.init(ctx);
 
+	texts = { "R", "0", "G", "0", "B", "0", "A", "0" };
 	if(success) {
-		texts.add_text("R: ", ivec2(0), cgv::render::TA_LEFT);
-		texts.add_text("0", ivec2(0), cgv::render::TA_RIGHT);
-		texts.add_text("G: ", ivec2(0), cgv::render::TA_LEFT);
-		texts.add_text("0", ivec2(0), cgv::render::TA_RIGHT);
-		texts.add_text("B: ", ivec2(0), cgv::render::TA_LEFT);
-		texts.add_text("0", ivec2(0), cgv::render::TA_RIGHT);
-		texts.add_text("A:", ivec2(0), cgv::render::TA_LEFT);
-		texts.add_text("0", ivec2(0), cgv::render::TA_RIGHT);
+		text_geometry.set_text_array(ctx, texts);
+		
+		for(size_t i = 0; i < 4; ++i) {
+			text_geometry.alignments.push_back(cgv::render::TA_LEFT);
+			text_geometry.alignments.push_back(cgv::render::TA_RIGHT);
+		}
+
+		text_geometry.positions = std::vector<vec3>(8, { 0.0f });
 	}
 
 	init_textures(ctx);
@@ -166,7 +168,8 @@ void color_selector::init_frame(cgv::render::context& ctx) {
 
 		ivec2 text_position = ivec2(layout.preview_rect.b().x() + 10, layout.preview_rect.center().y());
 		for(unsigned i = 0; i < texts.size(); ++i) {
-			texts.set_position(i, text_position);
+			//texts.set_position(i, text_position);
+			text_geometry.positions[i] = vec3(text_position, 0.0f);
 			text_position.x() += i & 1 ? 15 : 40;
 		}
 	}
@@ -190,7 +193,7 @@ void color_selector::draw_content(cgv::render::context& ctx) {
 	text_bg.size.x() = 48;
 	int n_labels = has_opacity ? 4 : 3;
 	for(size_t i = 0; i < n_labels; ++i) {
-		text_bg.position.x() = static_cast<int>(texts.ref_texts()[2 * i].position.x() - 4.0f);
+		text_bg.position.x() = static_cast<int>(text_geometry.positions[2 * i].x() - 4.0f);
 		content_canvas.draw_shape(ctx, text_bg, text_background_color);
 	}
 
@@ -242,7 +245,8 @@ void color_selector::draw_content(cgv::render::context& ctx) {
 
 	glDisable(GL_SCISSOR_TEST);
 
-	cgv::g2d::ref_msdf_gl_canvas_font_renderer(ctx).render(ctx, content_canvas, texts, text_style, 0, 2 * n_labels);
+	//cgv::g2d::ref_msdf_gl_canvas_font_renderer(ctx).render(ctx, content_canvas, texts, text_style, 0, 2 * n_labels);
+	cgv::g2d::ref_msdf_gl_font_renderer_2d(ctx).render(ctx, content_canvas, text_geometry, text_style, 0, 2 * n_labels);
 
 	end_content(ctx);
 }
@@ -453,10 +457,13 @@ void color_selector::update_texts() {
 
 	components = cgv::math::clamp(components, 0, 255);
 
-	texts.set_text(1, std::to_string(components[0]));
-	texts.set_text(3, std::to_string(components[1]));
-	texts.set_text(5, std::to_string(components[2]));
-	texts.set_text(7, std::to_string(components[3]));
+	texts[1] = std::to_string(components[0]);
+	texts[3] = std::to_string(components[1]);
+	texts[5] = std::to_string(components[2]);
+	texts[7] = std::to_string(components[3]);
+
+	if(auto* ctx_ptr = get_context())
+		text_geometry.set_text_array(*ctx_ptr, texts);
 }
 
 void color_selector::handle_selector_drag() {

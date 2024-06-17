@@ -10,6 +10,7 @@ add_subdirectory(libsndfile)
 # Disable warnings we can't do anything about since it would require changing the original source code
 if (CMAKE_C_COMPILER_ID MATCHES "GNU" OR MAKE_CXX_COMPILER_ID MATCHES "GNU")
 	target_compile_options(sndfile PRIVATE -Wno-format-truncation)
+	target_link_options(sndfile PRIVATE -fpic)
 endif()
 
 # tack on IDE fluff

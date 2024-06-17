@@ -3,7 +3,7 @@
 #include <cgv/render/texture.h>
 #include <cgv_app/themed_canvas_overlay.h>
 #include <cgv_g2d/draggable_collection.h>
-#include <cgv_g2d/msdf_gl_canvas_font_renderer.h>
+#include <cgv_g2d/msdf_text_geometry.h>
 #include <cgv_g2d/shape2d_styles.h>
 
 #include "lib_begin.h"
@@ -71,7 +71,8 @@ protected:
 	bool has_opacity = false;
 	bool auto_show = true;
 
-	cgv::g2d::msdf_text_geometry texts;
+	std::vector<std::string> texts;
+	cgv::g2d::msdf_text_geometry text_geometry;
 
 	cgv::g2d::shape2d_style border_style, color_texture_style, hue_texture_style, opacity_color_style, color_handle_style, hue_handle_style;
 	cgv::g2d::text2d_style text_style;

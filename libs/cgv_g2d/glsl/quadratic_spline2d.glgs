@@ -3,7 +3,7 @@
 #define MODE 1
 
 //***** begin interface of shape2d.glsl ***********************************
-uniform bool origin_upper_left = false;
+uniform bool origin_top_left = false;
 
 float get_feather_width();
 vec2 get_shape_size();
@@ -67,7 +67,7 @@ void emit_bounding_box(vec4 box) {
 	box.xy -= 0.5*final_width;
 	box.zw += 0.5*final_width;
 
-	if(origin_upper_left) {
+	if(origin_top_left) {
 		float temp = box.y;
 		box.y = box.w;
 		box.w = temp;

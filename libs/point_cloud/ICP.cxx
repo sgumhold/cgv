@@ -117,7 +117,7 @@ namespace cgv {
 			/// sample the source point cloud
 			if (numRandomSamples > 0 && numRandomSamples < sourceCloud->get_nr_points()) {
 				std::vector<int> numbers(sourceCloud->get_nr_points());
-				for (int i = 0; i < sourceCloud->get_nr_points(); ++i)
+				for (unsigned int i = 0; i < sourceCloud->get_nr_points(); ++i)
 					numbers[i] = i;
 				std::random_device rd;
 				std::default_random_engine rng(std::time(0));
@@ -126,7 +126,7 @@ namespace cgv {
 				S.resize(numRandomSamples);
 				Q.resize(numRandomSamples);
 				std::srand(std::time(0));
-				for (int i = 0; i < numRandomSamples; i++)
+				for (unsigned int i = 0; i < numRandomSamples; i++)
 					S.pnt(i) = sourceCloud->pnt(numbers[i]);
 			}
 			else {
@@ -142,13 +142,13 @@ namespace cgv {
 			for (int iter = 0; iter < maxIterations; iter++)
 			{
 				// update S
-				for (int i = 0; i < S.get_nr_points(); i++)
+				for (unsigned int i = 0; i < S.get_nr_points(); i++)
 					S.pnt(i) = rotation_update_mat * S.pnt(i) + translation_update_vec;
 				// update center
 				get_center_point(S, source_center);
 			
 				fA.zeros();
-				for (int i = 0; i < S.get_nr_points(); i++)
+				for (unsigned int i = 0; i < S.get_nr_points(); i++)
 				{
 					/// get the closest point to p from the target point cloud
 					Pnt p = S.pnt(i);
@@ -173,7 +173,7 @@ namespace cgv {
 				translation_update_vec = target_center - rotation_update_mat * source_center;
 				///calculate error function E(R,t)
 				cost = 0.f;
-				for (int i = 0; i < S.get_nr_points(); i++) {
+				for (unsigned int i = 0; i < S.get_nr_points(); i++) {
 					///the new rotation matrix: rotation_update_mat
 					cost += error(Q.pnt(i), S.pnt(i), rotation_update_mat, translation_update_vec);
 				}
@@ -261,7 +261,7 @@ namespace cgv {
 				Q.clear();
 				source_center = rotation_mat * source_center + translation_vec;
 				fA.zeros();
-				for (int i = 0; i < sourceCloud->get_nr_points(); i++)
+				for (unsigned int i = 0; i < sourceCloud->get_nr_points(); i++)
 				{
 					//int randSample = std::rand() % sourceCloud->get_nr_points();
 					/// sample the source point cloud
@@ -287,7 +287,7 @@ namespace cgv {
 				Mat rotation_update_mat = fU * cgv::math::transpose(fV);
 				Dir translation_update_vec = target_center - rotation_update_mat * source_center;
 				///calculate error function E(R,t)
-				for (int i = 0; i < S.get_nr_points(); i++) {
+				for (unsigned int i = 0; i < S.get_nr_points(); i++) {
 					///transform Pi to R*Pi + t
 					S.pnt(i) = rotation_mat * S.pnt(i) + translation_vec;
 					///the new rotation matrix: rotation_update_mat
@@ -310,12 +310,12 @@ namespace cgv {
 				// this is for drawing corresponding lines after transforming
 				pc1.clear();
 				pc2.clear();
-				for (int i = 0; i < S.get_nr_points(); i++) {
+				for (unsigned int i = 0; i < S.get_nr_points(); i++) {
 					// this is for drawing corresponding lines after transforming
 					S.pnt(i) = rotation_mat * S.pnt(i) + translation_vec;
 					pc1.add_point(S.pnt(i));
 				}
-				for (int i = 0; i < Q.get_nr_points(); i++)
+				for (unsigned int i = 0; i < Q.get_nr_points(); i++)
 					pc2.add_point(Q.pnt(i));
 			}
 			std::cout << "rotate_mat: \n" << rotation_mat << std::endl;

@@ -254,6 +254,7 @@ namespace cgv {
 			reduce_prog.set_uniform(ctx, uniforms.pivot, pivot_point_in_view_space);
 			reduce_prog.set_uniform(ctx, uniforms.screenSize, screenSize);
 
+			reduce_prog.set_uniform(ctx, "use_clod", prs.use_clod);
 
 			//extract frustum
 			dmat4 transform = ctx.get_projection_matrix();
@@ -462,13 +463,14 @@ namespace cgv {
 		bool clod_point_render_style_reflect::self_reflect(cgv::reflect::reflection_handler& rh)
 		{
 			return
-				// rh.reflect_base(*static_cast<cgv::render::clod_point_render_style*>(this)) &&
-				rh.reflect_member("CLOD_factor", CLOD) && 
-				rh.reflect_member("spacing", spacing) &&
-				rh.reflect_member("scale", scale) &&
-				rh.reflect_member("min_millimeters", min_millimeters) &&
-				rh.reflect_member("point_size", pointSize) &&
-				rh.reflect_member("draw_circles", draw_circles);
+				  // rh.reflect_base(*static_cast<cgv::render::clod_point_render_style*>(this)) &&
+				  rh.reflect_member("CLOD_factor", CLOD) && 
+				  rh.reflect_member("spacing", spacing) &&
+				  rh.reflect_member("scale", scale) && 
+				  rh.reflect_member("min_millimeters", min_millimeters) &&
+				  rh.reflect_member("point_size", pointSize) &&
+				  rh.reflect_member("use_clod", use_clod);
+				
 		}
 
 		cgv::reflect::extern_reflection_traits<clod_point_render_style, clod_point_render_style_reflect> get_reflection_traits(const clod_point_render_style&)
@@ -584,6 +586,8 @@ namespace cgv {
 				p->add_member_control(b, "point size", rs_ptr->pointSize, "value_slider", "min=0.1;max=10;ticks=true");
 				p->add_member_control(b, "min millimeters", rs_ptr->min_millimeters, "value_slider", "min=0.1;max=10;ticks=true");
 				p->add_member_control(b, "draw circles", rs_ptr->draw_circles, "check");
+				p->add_member_control(b, "use clod", rs_ptr->use_clod, "check");
+
 				return true;
 			}
 		};

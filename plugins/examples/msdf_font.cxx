@@ -17,7 +17,8 @@
 #include <cgv_g2d/canvas.h>
 #include <cgv_g2d/draggable.h>
 #include <cgv_g2d/draggable_collection.h>
-#include <cgv_g2d/msdf_gl_canvas_font_renderer.h>
+#include <cgv_g2d/msdf_text_geometry.h>
+#include <cgv_g2d/msdf_gl_font_renderer.h>
 #include <cgv_g2d/trect.h>
 #include <cgv_g2d/shape2d_styles.h>
 
@@ -55,9 +56,14 @@ public:
 		viewport_rect.position = cgv::ivec2(0);
 		viewport_rect.size = cgv::ivec2(-1);
 
+		text_style.fill_color = cgv::rgba(0.0f, 0.0f, 0.0f, 1.0f);
+		text_style.border_color = cgv::rgba(0.0f, 0.0f, 1.0f, 1.0f);
 		text_style.font_size = 1.0f;
 
 		text_align = cgv::render::TA_BOTTOM_LEFT;
+		texts_light.alignment = text_align;
+		texts_regular.alignment = text_align;
+		texts_bold.alignment = text_align;
 	}
 	void stream_help(std::ostream& os) {
 		return;
@@ -108,15 +114,16 @@ public:
 	}
 	void on_set(void* member_ptr) {
 		if(member_ptr == &text_align) {
-			set_text_alignment(texts_light);
-			set_text_alignment(texts_regular);
-			set_text_alignment(texts_bold);
+			texts_light.alignment = text_align;
+			texts_regular.alignment = text_align;
+			texts_bold.alignment = text_align;
 		}
 
 		if(member_ptr == &text_angle) {
-			set_text_angle(texts_light);
-			set_text_angle(texts_regular);
-			set_text_angle(texts_bold);
+			cgv::quat rotation(cgv::quat::AxisEnum::Z_AXIS, cgv::math::deg2rad(text_angle));
+			texts_light.rotation = rotation;
+			texts_regular.rotation = rotation;
+			texts_bold.rotation = rotation;
 		}
 
 		post_redraw();
@@ -129,7 +136,7 @@ public:
 		canvas.destruct(ctx);
 
 		// decrease reference count of msdf font renderer singleton
-		cgv::g2d::ref_msdf_gl_canvas_font_renderer(ctx, -1);
+		cgv::g2d::ref_msdf_gl_font_renderer_2d(ctx, -1);
 		cgv::g2d::ref_msdf_font_regular(ctx, -1);
 		cgv::g2d::ref_msdf_font_light(ctx, -1);
 		cgv::g2d::ref_msdf_font_bold(ctx, -1);
@@ -138,16 +145,17 @@ public:
 		bool success = true;
 
 		success &= canvas.init(ctx);
+		success &= texts_light.init(ctx);
+		success &= texts_regular.init(ctx);
+		success &= texts_bold.init(ctx);
 
 		// increase reference count of msdf font renderer singleton
-		cgv::g2d::ref_msdf_gl_canvas_font_renderer(ctx, 1);
-		cgv::g2d::ref_msdf_font_light(ctx, 1);
-		cgv::g2d::ref_msdf_font_bold(ctx, 1);
-
-		texts_light.set_msdf_font(&cgv::g2d::ref_msdf_font_light(ctx, 1));
-		texts_regular.set_msdf_font(&cgv::g2d::ref_msdf_font_regular(ctx, 1));
-		texts_bold.set_msdf_font(&cgv::g2d::ref_msdf_font_bold(ctx, 1));
-		create_text_render_data();
+		cgv::g2d::ref_msdf_gl_font_renderer_2d(ctx, 1);
+		
+		texts_light.set_msdf_font(ctx, &cgv::g2d::ref_msdf_font_light(ctx, 1));
+		texts_regular.set_msdf_font(ctx, &cgv::g2d::ref_msdf_font_regular(ctx, 1));
+		texts_bold.set_msdf_font(ctx, &cgv::g2d::ref_msdf_font_bold(ctx, 1));
+		create_text_render_data(ctx);
 		
 		return success;
 	}
@@ -157,7 +165,7 @@ public:
 		if(viewport_resolution != viewport_rect.size) {
 			viewport_rect.size = viewport_resolution;
 
-			texts_offset = viewport_rect.w() - texts_bold.get_text_render_size(0, 1.0f).x() - texts_origin;
+			texts_offset = viewport_rect.w() - texts_bold.compute_text_render_size(0, 1.0f).x() - texts_origin;
 			texts_offset *= 0.5f;
 
 			canvas.set_resolution(ctx, viewport_rect.size);
@@ -172,7 +180,7 @@ public:
 		canvas.mul_modelview_matrix(ctx, get_view_matrix());
 		canvas.set_zoom_factor(view_params.scale);
 
-		cgv::g2d::msdf_gl_canvas_font_renderer& font_renderer = cgv::g2d::ref_msdf_gl_canvas_font_renderer(ctx, 0);
+		cgv::g2d::msdf_gl_font_renderer_2d& font_renderer = cgv::g2d::ref_msdf_gl_font_renderer_2d(ctx);
 		font_renderer.render(ctx, canvas, texts_light, text_style);
 
 		canvas.push_modelview_matrix();
@@ -191,33 +199,38 @@ public:
 		glDisable(GL_BLEND);
 		glEnable(GL_DEPTH_TEST);
 	}
-	void create_text_render_data() {
-		//std::vector<std::string> strs;
-		std::string str = "MSDF Font";
+	void create_text_render_data(const cgv::render::context& ctx) {
+		std::vector<std::string> strs(8, "MSDF Font");
 
-		cgv::vec2 position(texts_origin);
+		cgv::vec3 position(texts_origin, 0.0f);
 		float size = 128.0f;
 
-		texts_light.clear();
-		texts_regular.clear();
-		texts_bold.clear();
-		for(size_t i = 0; i < 8; ++i) {
-			texts_light.add_text(str, position, text_align, size);
-			texts_regular.add_text(str, position, text_align, size);
-			texts_bold.add_text(str, position, text_align, size);
+		std::vector<cgv::vec3> positions;
+		std::vector<float> scales;
 
+		for(size_t i = 0; i < 8; ++i) {
+			positions.push_back(position);
+			scales.push_back(size);
 			position.y() += 1.5f * size;
 			size -= 16.0f;
 			size = std::max(size, 8.0f);
 		}
-	}
-	void set_text_alignment(cgv::g2d::msdf_text_geometry& texts) {
-		for(unsigned i = 0; i < static_cast<unsigned>(texts.size()); ++i)
-			texts.set_alignment(i, text_align);
-	}
-	void set_text_angle(cgv::g2d::msdf_text_geometry& texts) {
-		for(unsigned i = 0; i < static_cast<unsigned>(texts.size()); ++i)
-			texts.set_angle(i, text_angle);
+
+		texts_light.clear();
+		texts_regular.clear();
+		texts_bold.clear();
+
+		texts_light.set_text_array(ctx, strs);
+		texts_regular.set_text_array(ctx, strs);
+		texts_bold.set_text_array(ctx, strs);
+
+		texts_light.positions = positions;
+		texts_regular.positions = positions;
+		texts_bold.positions = positions;
+
+		texts_light.scales = scales;
+		texts_regular.scales = scales;
+		texts_bold.scales = scales;
 	}
 	cgv::mat3 get_view_matrix() {
 		cgv::mat3 T0 = cgv::math::translate2h(cgv::vec2(-viewport_rect.center()));

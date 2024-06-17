@@ -127,6 +127,8 @@ namespace cgv {
 			/// extent array specifies plane side lengths from origin to edge
 			template <typename T>
 			void set_extent_array(const context& ctx, const cgv::math::fvec<T, 2U>* extents, size_t nr_elements, unsigned stride_in_bytes = 0) { has_extents = true;  set_attribute_array(ctx, "extent", extents, nr_elements, stride_in_bytes); }
+			/// remove the extent attribute
+			void remove_extent_array(const context& ctx);
 			/// specify a single rectangle without array. This sets position_is_center to false as well as position and extent array
 			template <typename T>
 			void set_rectangle(const context& ctx, const cgv::media::axis_aligned_box<T, 2>& box) {
@@ -190,6 +192,8 @@ namespace cgv {
 			/// template method to set the secondary color attribute from a vertex buffer object, the element type must be given as explicit template parameter
 			template <typename T>
 			void set_secondary_color_array(const context& ctx, const vertex_buffer& vbo, size_t offset_in_bytes, size_t nr_elements, unsigned stride_in_bytes = 0) { set_secondary_color_array(ctx, type_descriptor(element_descriptor_traits<T>::get_type_descriptor(T()), true), vbo, offset_in_bytes, nr_elements, stride_in_bytes); }
+			/// remove the secondary color attribute
+			void remove_secondary_color_array(const context& ctx);
 
 			/// templated method to set the border color attribute from a single color of type T
 			template <typename T>
@@ -205,6 +209,8 @@ namespace cgv {
 			/// template method to set the border color attribute from a vertex buffer object, the element type must be given as explicit template parameter
 			template <typename T>
 			void set_border_color_array(const context& ctx, const vertex_buffer& vbo, size_t offset_in_bytes, size_t nr_elements, unsigned stride_in_bytes = 0) { set_border_color_array(ctx, type_descriptor(element_descriptor_traits<T>::get_type_descriptor(T()), true), vbo, offset_in_bytes, nr_elements, stride_in_bytes); }
+			/// remove the border color attribute
+			void remove_border_color_array(const context& ctx);
 			/// specify a single border_info for all lines
 			template <typename T>
 			void set_border_info(const context& ctx, const cgv::math::fvec<T, 3>& border_info) { has_border_infos = true;  ref_prog().set_attribute(ctx, get_prog_attribute_location(ctx, "border_info"), border_info); }
@@ -219,6 +225,8 @@ namespace cgv {
 			/// template method to set the border_info attribute from a vertex buffer object, the element type must be given as explicit template parameter
 			template <typename T>
 			void set_border_info_array(const context& ctx, const vertex_buffer& vbo, size_t offset_in_bytes, size_t nr_elements, unsigned stride_in_bytes = 0) { set_border_info_array(ctx, type_descriptor(element_descriptor_traits<T>::get_type_descriptor(T()), true), vbo, offset_in_bytes, nr_elements, stride_in_bytes); }
+			/// remove the border info attribute
+			void remove_border_info_array(const context& ctx);
 
 			/// specify a single depth_offset for all lines
 			template <typename T>
@@ -226,6 +234,8 @@ namespace cgv {
 			/// set per rectangle depth offsets
 			template <typename T = float>
 			void set_depth_offset_array(const context& ctx, const std::vector<T>& depth_offsets) { has_depth_offsets = true; set_attribute_array(ctx, "depth_offset", depth_offsets); }
+			/// remove the depth offset attribute
+			void remove_depth_offset_array(const context& ctx);
 			/// template method to set translation for all rectangles from a vector type T, which should have 3 components
 			template <typename T>
 			void set_translation(const context& ctx, const T& translation) { has_translations = true; ref_prog().set_attribute(ctx, get_prog_attribute_location(ctx, "translation"), translation); }
@@ -235,6 +245,8 @@ namespace cgv {
 			/// template method to set the translations from a vector of vectors of type T, which should have 3 components
 			template <typename T>
 			void set_translation_array(const context& ctx, const T* translations, size_t nr_elements, unsigned stride) { has_translations = true; set_attribute_array(ctx, "translation", translations, nr_elements, stride); }
+			/// remove the translation attribute
+			void remove_translation_array(const context& ctx);
 			/// set single rotation for all rectangles from a quaternion of type T, which has 4 components
 			template <typename T>
 			void set_rotation(const context& ctx, const T& rotation) { has_rotations = true; ref_prog().set_attribute(ctx, get_prog_attribute_location(ctx, "rotation"), rotation); }
@@ -244,6 +256,8 @@ namespace cgv {
 			/// template method to set the rotation from a vector of quaternions of type T, which should have 4 components
 			template <typename T>
 			void set_rotation_array(const context& ctx, const T* rotations, size_t nr_elements, unsigned stride = 0) { has_rotations = true; set_attribute_array(ctx, "rotation", rotations, nr_elements, stride); }
+			/// remove the rotation attribute
+			void remove_rotation_array(const context& ctx);
 			///
 			bool validate_attributes(const context& ctx) const;
 			///

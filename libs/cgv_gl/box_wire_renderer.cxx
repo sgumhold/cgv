@@ -50,7 +50,18 @@ namespace cgv {
 			has_translations = false;
 			has_rotations = false;
 		}
-
+		void box_wire_renderer::remove_extent_array(const context& ctx) {
+			has_extents = false;
+			remove_attribute_array(ctx, "extent");
+		}
+		void box_wire_renderer::remove_translation_array(const context& ctx) {
+			has_translations = false;
+			remove_attribute_array(ctx, "translation");
+		}
+		void box_wire_renderer::remove_rotation_array(const context& ctx) {
+			has_rotations = false;
+			remove_attribute_array(ctx, "rotation");
+		}
 		/// set the flag, whether the position is interpreted as the box center
 		void box_wire_renderer::set_position_is_center(bool _position_is_center)
 		{

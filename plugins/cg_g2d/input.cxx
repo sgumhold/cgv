@@ -1,7 +1,7 @@
 #include "input.h"
 
 #include <cgv_g2d/msdf_font.h>
-#include <cgv_g2d/msdf_gl_canvas_font_renderer.h>
+#include <cgv_g2d/msdf_gl_font_renderer.h>
 
 using namespace cgv::render;
 
@@ -159,14 +159,17 @@ void input::draw(context& ctx, cgv::g2d::canvas& cnvs, const styles& style) {
 
 	cgv::ivec2 position(rectangle.x(), rectangle.center().y());
 
-	cgv::g2d::ref_msdf_gl_canvas_font_renderer(ctx).render(ctx, cnvs, font, label, style.text, position - cgv::ivec2(5, 0), TA_RIGHT);
+	auto& font_renderer = cgv::g2d::ref_msdf_gl_font_renderer_2d(ctx);
+	cgv::g2d::msdf_gl_font_renderer::text_render_info render_info;
+	render_info.alignment = TA_RIGHT;
+	font_renderer.render(ctx, cnvs, font, label, static_cast<cgv::vec2>(position - cgv::ivec2(5, 0)), render_info, style.text);
 
 	cgv::g2d::rect cursor_rectangle;
 	cursor_rectangle.size = cgv::vec2(1.0f, rectangle.h() - 4.0f);
 
 	int text_offset = 0;
 	if(focused) {
-		cgv::vec2 text_size = style.text.font_size * cgv::vec2(font.compute_length(text, cursor_position), 1.0f);
+		cgv::vec2 text_size = font.compute_render_size(text, cursor_position, style.text.font_size);
 
 		cursor_rectangle.position = rectangle.position;
 		cursor_rectangle.x() += text_size.x() + 5.0f;
@@ -183,7 +186,8 @@ void input::draw(context& ctx, cgv::g2d::canvas& cnvs, const styles& style) {
 
 	glEnable(GL_SCISSOR_TEST);
 	glScissor(rectangle.x(), rectangle.y(), rectangle.w(), rectangle.h());
-	cgv::g2d::ref_msdf_gl_canvas_font_renderer(ctx).render(ctx, cnvs, font, text, style.text, position + cgv::ivec2(5 + text_offset, 0), TA_LEFT);
+	render_info.alignment = TA_LEFT;
+	font_renderer.render(ctx, cnvs, font, label, static_cast<cgv::vec2>(position + cgv::ivec2(5 + text_offset, 0)), render_info, style.text);
 	glDisable(GL_SCISSOR_TEST);
 	
 	if(focused) {

@@ -131,7 +131,7 @@ void canvas::warning(const std::string& what) const {
 void canvas::set_view(cgv::render::context& ctx, cgv::render::shader_program& prog) {
 	prog.set_uniform(ctx, "resolution", resolution);
 	prog.set_uniform(ctx, "modelview2d_matrix", modelview_matrix_stack.top());
-	prog.set_uniform(ctx, "origin_upper_left", origin_setting == Origin::kTopLeft);
+	prog.set_uniform(ctx, "origin_top_left", origin_setting == Origin::kTopLeft);
 	prog.set_uniform(ctx, "apply_gamma", apply_gamma);
 	prog.set_uniform(ctx, "zoom_factor", zoom_factor);
 }
