@@ -53,7 +53,7 @@ public:
 	/// return the number of blend shapes used to for shape adaptation
 	size_t get_nr_shapes() const { return nr_shapes; }
 	/// return number of pose correction blend shapes
-	size_t get_nr_pose_corrections() const { return get_nr_blend_shapes() - get_nr_shapes(); }
+	size_t get_nr_pose_corrections() const { return this->get_nr_blend_shapes() - get_nr_shapes(); }
 	/// given shape weights, compute the rest pose shaped mesh vertex locations into the dynamic_mesh<T> member \c shaped_positions
 	void shape_mesh(const std::vector<T>& shape, bool use_parallel_implementation = false);
 	/// starting with vertex position in member \c shaped_positions, optionally apply pose correction, perform linear blend skinning and finally recompute surface normals
