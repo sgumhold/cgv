@@ -42,11 +42,7 @@ protected:
 	bool use_colors;
 	bool use_illumination;
 	
-	
-	
-	float scale = 1.0f;
-
-
+	float scene_scale = 1.0f;
 
 public:
 	post_processing() : cgv::base::node("Post Processing Demo") {
@@ -152,7 +148,7 @@ public:
 	}
 
 	void draw(cgv::render::context& ctx) {
-		// TODO: fxaa produces black backgorund
+		// TODO: fxaa produces black background
 
 		// Post processing effects need to encapsulate the draw calls of the geometry to which they shall be applied.
 		// Call begin() before drawing the main geometry to enable the post process framebuffers.
@@ -164,9 +160,9 @@ public:
 		ctx.push_modelview_matrix();
 
 		cgv::mat4 M(0.0f);
-		M(0, 0) = scale;
-		M(1, 1) = scale;
-		M(2, 2) = scale;
+		M(0, 0) = scene_scale;
+		M(1, 1) = scene_scale;
+		M(2, 2) = scene_scale;
 		M(3, 3) = 1.0f;
 
 		ctx.mul_modelview_matrix(M);
@@ -257,40 +253,12 @@ public:
 		add_member_control(this, "Color", use_colors, "toggle");
 		add_member_control(this, "Illumination", use_illumination, "toggle");
 
-		add_member_control(this, "Scene Scale", scale, "value_slider", "min=0;max=10;step=0.01");
+		add_member_control(this, "Scene Scale", scene_scale, "value_slider", "min=0;max=10;step=0.01");
 
-		// TODO: add gui creators
-		if(begin_tree_node("TAA", taa, false)) {
-			align("\a");
-			//add_gui("", taa);
-			taa.create_gui(this);
-			align("\b");
-			end_tree_node(taa);
-		}
-
-		if(begin_tree_node("SSAO", ssao, false)) {
-			align("\a");
-			//add_gui("", ssao);
-			ssao.create_gui(this);
-			align("\b");
-			end_tree_node(ssao);
-		}
-
-		if(begin_tree_node("Depth Halos", dh, false)) {
-			align("\a");
-			//add_gui("", dh);
-			dh.create_gui(this);
-			align("\b");
-			end_tree_node(dh);
-		}
-
-		if(begin_tree_node("Outline", ol, false)) {
-			align("\a");
-			//add_gui("", dh);
-			ol.create_gui(this);
-			align("\b");
-			end_tree_node(ol);
-		}
+		taa.create_gui_tree_node(this, "TAA", false);
+		ssao.create_gui_tree_node(this, "SSAO", false);
+		dh.create_gui_tree_node(this, "Depth Halos", false);
+		ol.create_gui_tree_node(this, "Outline", false);
 	}
 };
 
