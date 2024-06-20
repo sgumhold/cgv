@@ -103,7 +103,7 @@ var searchData=
   ['alpha_5freference_104',['alpha_reference',['../structcgv_1_1media_1_1alpha__reference.html',1,'cgv::media']]],
   ['alpha_5freference_3c_20t_2c_20no_5falpha_20_3e_105',['alpha_reference&lt; T, NO_ALPHA &gt;',['../structcgv_1_1media_1_1alpha__reference_3_01T_00_01NO__ALPHA_01_4.html',1,'cgv::media']]],
   ['alphatestfunc_106',['AlphaTestFunc',['../classcgv_1_1render_1_1textured__material.html#a2dc01136a85115d05a1de7083b093053',1,'cgv::render::textured_material']]],
-  ['alternate_5fjoint_5fregressors_107',['alternate_joint_regressors',['../classcgv_1_1media_1_1mesh_1_1adaptive__skinned__mesh.html#aceb255364bf91369fd06bc0369a20e36',1,'cgv::media::mesh::adaptive_skinned_mesh']]],
+  ['alternative_5fjoint_5fregressors_107',['alternative_joint_regressors',['../classcgv_1_1media_1_1mesh_1_1adaptive__skinned__mesh.html#af8576014f620b50abb0fc469baa44195',1,'cgv::media::mesh::adaptive_skinned_mesh']]],
   ['always_5fvalid_108',['always_valid',['../structcgv_1_1media_1_1mesh_1_1always__valid.html',1,'cgv::media::mesh']]],
   ['ambient_109',['ambient',['../classcgv_1_1media_1_1illum_1_1phong__material.html#a0fb45dbd4b2cc1161081fffd8db3be47',1,'cgv::media::illum::phong_material']]],
   ['ambient_5findex_110',['ambient_index',['../classcgv_1_1media_1_1illum_1_1textured__surface__material.html#aba25cf261c1c0aac3bfab7b0b58d63af',1,'cgv::media::illum::textured_surface_material']]],
