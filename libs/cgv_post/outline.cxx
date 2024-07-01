@@ -50,6 +50,7 @@ void outline::end(cgv::render::context& ctx) {
 
 	auto& depth_halo_prog = shaders.get("outline");
 	depth_halo_prog.enable(ctx);
+	depth_halo_prog.set_uniform(ctx, "outline_color", color);
 	depth_halo_prog.set_uniform(ctx, "strength", strength);
 	depth_halo_prog.set_uniform(ctx, "threshold", threshold);
 
@@ -64,6 +65,7 @@ void outline::end(cgv::render::context& ctx) {
 void outline::create_gui_impl(cgv::base::base* b, cgv::gui::provider* p) {
 
 	post_process_effect::create_gui_impl(b, p);
+	p->add_member_control(b, "Color", color);
 	p->add_member_control(b, "Strength", strength, "value_slider", "min=0;step=0.001;max=5");
 	p->add_member_control(b, "Threshold", threshold, "value_slider", "min=0;step=0.001;max=1");
 }
