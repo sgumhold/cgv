@@ -9,6 +9,7 @@
 #include <cgv_gl/cone_render_data.h>
 #include <cgv_gl/sphere_render_data.h>
 #include <cgv_post/depth_halos.h>
+#include <cgv_post/depth_masking.h>
 #include <cgv_post/outline.h>
 #include <cgv_post/screen_space_ambient_occlusion.h>
 #include <cgv_post/temporal_anti_aliasing.h>
@@ -25,6 +26,7 @@ protected:
 	view* view_ptr = nullptr;
 	
 	cgv::post::depth_halos dh;
+	cgv::post::depth_masking dm;
 	cgv::post::outline ol;
 	cgv::post::screen_space_ambient_occlusion ssao;
 	cgv::post::temporal_anti_aliasing taa;
@@ -104,6 +106,7 @@ public:
 	void clear(cgv::render::context& ctx) {
 		// post processing effects need to be destructed to free created resources
 		dh.destruct(ctx);
+		dm.destruct(ctx);
 		ol.destruct(ctx);
 		ssao.destruct(ctx);
 		taa.destruct(ctx);
@@ -114,6 +117,7 @@ public:
 
 		// all post_processing effects need to be initialized to create internally used objects and buffers
 		success &= dh.init(ctx);
+		success &= dm.init(ctx);
 		success &= ol.init(ctx);
 		success &= ssao.init(ctx);
 		success &= taa.init(ctx);
@@ -138,10 +142,13 @@ public:
 		if(!view_ptr && (view_ptr = find_view_as_node())) {
 			// temporal anti aliasing needs access to the current view
 			taa.set_view(view_ptr);
+
+			dm.set_view(view_ptr);
 		}
 
 		// call ensure in init_frame on post processing effects to make sure the internal buffers are created and sized accordingly
 		dh.ensure(ctx);
+		dm.ensure(ctx);
 		ol.ensure(ctx);
 		ssao.ensure(ctx);
 		taa.ensure(ctx);
@@ -154,6 +161,7 @@ public:
 		// Call begin() before drawing the main geometry to enable the post process framebuffers.
 		taa.begin(ctx);
 		dh.begin(ctx);
+		dm.begin(ctx);
 		ol.begin(ctx);
 		ssao.begin(ctx);
 
@@ -183,6 +191,7 @@ public:
 		// Attention! When using multiple effects they must be ended in reverse order.
 		ssao.end(ctx);
 		ol.end(ctx);
+		dm.end(ctx);
 		dh.end(ctx);
 		taa.end(ctx);
 	}
@@ -258,6 +267,7 @@ public:
 		taa.create_gui_tree_node(this, "TAA", false);
 		ssao.create_gui_tree_node(this, "SSAO", false);
 		dh.create_gui_tree_node(this, "Depth Halos", false);
+		dm.create_gui_tree_node(this, "Depth Masking", false);
 		ol.create_gui_tree_node(this, "Outline", false);
 	}
 };
@@ -265,4 +275,5 @@ public:
 #include <cgv/base/register.h>
 
 /// register a factory to create new post processing demos
-cgv::base::factory_registration<post_processing> post_processing_fac("New/Demo/Post Processing");
+//cgv::base::factory_registration<post_processing> post_processing_fac("New/Demo/Post Processing");
+cgv::base::object_registration<post_processing> post_processing_fac("New/Demo/Post Processing");

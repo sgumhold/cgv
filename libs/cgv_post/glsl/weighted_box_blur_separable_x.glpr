@@ -1,0 +1,2 @@
+vertex_file:screen_quad.glvs
+fragment_file:weighted_box_blur_separable_x.glfs
