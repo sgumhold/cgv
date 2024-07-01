@@ -1,0 +1,32 @@
+#version 430
+
+layout (binding = 0) uniform sampler2D input_tex;
+layout (binding = 1) uniform sampler2D weight_tex;
+
+uniform int radius;
+
+in vec2 texcoord_fs;
+
+layout(location = 0) out vec4 frag_color;
+
+void main()
+{
+	vec2 texel_size = 1.0 / textureSize(input_tex, 0);
+
+	float value_sum = 0.0;
+	float weight_sum = 0.0;
+	
+	for(int i = -radius; i <= radius; ++i) {
+		vec2 sample_coords = texcoord_fs + vec2(0, i * texel_size.y);
+		vec2 value_and_weight = texture(input_tex, sample_coords).rg;
+		value_sum += value_and_weight.r;
+		weight_sum += value_and_weight.g;
+	}
+
+	if(weight_sum == 0.0)
+		value_sum = texture(input_tex, texcoord_fs).r;
+	else
+		value_sum /= weight_sum;
+
+	frag_color = vec4(value_sum, weight_sum, 0.0, 0.0);
+}
