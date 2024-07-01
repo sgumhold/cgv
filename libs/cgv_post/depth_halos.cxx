@@ -58,6 +58,7 @@ void depth_halos::end(cgv::render::context& ctx) {
 
 	auto& depth_halo_prog = shaders.get("depth_halo");
 	depth_halo_prog.enable(ctx);
+	depth_halo_prog.set_uniform(ctx, "halo_color", color);
 	depth_halo_prog.set_uniform(ctx, "strength", strength);
 	depth_halo_prog.set_uniform(ctx, "radius", radius);
 	depth_halo_prog.set_uniform(ctx, "threshold", threshold);
@@ -78,6 +79,7 @@ void depth_halos::create_gui_impl(cgv::base::base* b, cgv::gui::provider* p) {
 	connect_copy(
 		p->add_member_control(b, "Mode", mode, "dropdown", "enums='Inside,Outside;Center'")->value_change,
 		cgv::signal::rebind(this, &depth_halos::on_change_mode));
+	p->add_member_control(b, "Color", color);
 	p->add_member_control(b, "Strength", strength, "value_slider", "min=0;step=0.001;max=5");
 	p->add_member_control(b, "Radius", radius, "value_slider", "min=0;step=0.001;max=20");
 	p->add_member_control(b, "Threshold", threshold, "value_slider", "min=0;step=0.001;max=1");
