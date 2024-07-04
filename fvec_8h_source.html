@@ -576,7 +576,7 @@ $(document).ready(function(){initNavTree('fvec_8h_source.html',''); initResizabl
 <div class="line"><a name="l00634"></a><span class="lineno">  634</span>&#160; </div>
 <div class="line"><a name="l00636"></a><span class="lineno">  636</span>&#160;<span class="keyword">template</span> &lt;<span class="keyword">typename</span> T&gt;</div>
 <div class="line"><a name="l00637"></a><span class="lineno">  637</span>&#160;fvec&lt;T, 2&gt; ortho(<span class="keyword">const</span> fvec&lt;T, 2&gt;&amp; v) {</div>
-<div class="line"><a name="l00638"></a><span class="lineno">  638</span>&#160;    <span class="keywordflow">return</span> fvec&lt;T, 2&gt;(v.y(), -v.x());</div>
+<div class="line"><a name="l00638"></a><span class="lineno">  638</span>&#160;    <span class="keywordflow">return</span> fvec&lt;T, 2&gt;(-v.y(), v.x());</div>
 <div class="line"><a name="l00639"></a><span class="lineno">  639</span>&#160;}</div>
 <div class="line"><a name="l00640"></a><span class="lineno">  640</span>&#160; </div>
 <div class="line"><a name="l00642"></a><span class="lineno">  642</span>&#160;<span class="keyword">template</span> &lt;<span class="keyword">typename</span> T&gt;</div>
