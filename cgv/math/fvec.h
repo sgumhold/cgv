@@ -632,13 +632,13 @@ const fvec<T, N> pow(const fvec<T, N>& v, const fvec<T, N>& e) {
 template <typename T, cgv::type::uint32_type N>
 fvec<T, N> ortho(const fvec<T, N>& v) = delete;
 
-/// returns an orthogonal vector to v
+/// returns an orthogonal vector to v (not normalized; rotated counter-clockwise)
 template <typename T>
 fvec<T, 2> ortho(const fvec<T, 2>& v) {
-	return fvec<T, 2>(v.y(), -v.x());
+	return fvec<T, 2>(-v.y(), v.x());
 }
 
-/// returns an orthogonal vector to v
+/// returns an orthogonal vector to v (not normalized)
 template <typename T>
 fvec<T, 3> ortho(const fvec<T, 3>& v) {
 	return std::abs(v.x()) > std::abs(v.z()) ? fvec<T, 3>(-v.y(), v.x(), T(0)) : fvec<T, 3>(T(0), -v.z(), v.y());
