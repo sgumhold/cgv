@@ -316,9 +316,8 @@ void navigator::finish_draw(context& ctx) {
 		rectangle_data.add_position(position);
 		rectangle_data.add_rotation(rotation);
 
-		auto& rectangle_renderer = ref_rectangle_renderer(ctx);
-		rectangle_renderer.set_extent(ctx, vec2(0.9f));
-		rectangle_data.render(ctx, rectangle_renderer);
+		rectangle_data.const_extent = vec2(0.9f);
+		rectangle_data.render(ctx);
 	}
 
 	ctx.pop_modelview_matrix();
