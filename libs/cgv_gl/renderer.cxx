@@ -86,15 +86,35 @@ namespace cgv {
 			enabled_attribute_arrays.insert(loc);
 			return attribute_array_binding::set_global_attribute_array(ctx, loc, element_type, vbo, offset_in_bytes, nr_elements, stride_in_bytes);
 		}
+		bool renderer::remove_attribute_array(const context& ctx, const std::string& name)
+		{
+			int loc = get_prog_attribute_location(ctx, name);
+			if(loc < 0)
+				return false;
+			if(aam_ptr) {
+				aam_ptr->remove_attribute_array(ctx, loc);
+				return true;
+			}
+			enabled_attribute_arrays.erase(loc);
+			return true;
+		}
 		void renderer::set_position_array(const context& ctx, type_descriptor element_type, const vertex_buffer& vbo, size_t offset_in_bytes, size_t nr_elements, unsigned stride_in_bytes)
 		{
 			has_positions = true;
 			set_attribute_array(ctx, "position", element_type, vbo, offset_in_bytes, nr_elements, stride_in_bytes);
 		}
+		void renderer::remove_position_array(const context& ctx) {
+			has_positions = false;
+			remove_attribute_array(ctx, "position");
+		}
 		void renderer::set_color_array(const context& ctx, type_descriptor element_type, const vertex_buffer& vbo, size_t offset_in_bytes, size_t nr_elements, unsigned stride_in_bytes)
 		{
 			has_colors = true;
 			set_attribute_array(ctx, "color", element_type, vbo, offset_in_bytes, nr_elements, stride_in_bytes);
+		}
+		void renderer::remove_color_array(const context& ctx) {
+			has_colors = false;
+			remove_attribute_array(ctx, "color");
 		}
 		void renderer::remove_indices(const context& ctx)
 		{

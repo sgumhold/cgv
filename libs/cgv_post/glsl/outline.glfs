@@ -14,6 +14,7 @@ mat3 get_inverse_normal_matrix();
 layout (binding = 0) uniform sampler2D depth_tex;
 layout (binding = 1) uniform sampler2D color_tex;
 
+uniform vec3 outline_color;
 uniform float strength;
 uniform float threshold;
 
@@ -66,7 +67,7 @@ void main()
 	float depth = sample_depth(texcoord_fs);
 	vec4 color = texture(color_tex, texcoord_fs);
 	
-	color.rgb *= 1.0 - compute_outline(depth) * strength;
+	color.rgb = mix(color.rgb, outline_color, compute_outline(depth) * strength);
 
 	frag_color = color;
 	gl_FragDepth = depth;

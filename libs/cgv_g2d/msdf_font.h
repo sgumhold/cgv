@@ -61,9 +61,13 @@ public:
 
 	float get_cap_height() const { return cap_height; }
 
-	float compute_length(const std::string& str, size_t end = std::string::npos) const;
+	float compute_normalized_length(const std::string& str, size_t end = std::string::npos) const;
 
-	std::vector<vec4> create_vertex_data(const std::string& str) const;
+	vec2 compute_render_size(const std::string& str, float scale) const;
+
+	vec2 compute_render_size(const std::string& str, size_t end, float scale) const;
+
+	void generate_vertex_data(const std::string& str, std::vector<vec4>& quads, std::vector<vec4>& texcoords) const;
 
 	bool enable(cgv::render::context& ctx);
 

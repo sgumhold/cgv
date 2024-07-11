@@ -115,6 +115,11 @@ define_property(TARGET
 	FULL_DOCS "For plugins, indicates that no single executable version should be generated."
 )
 define_property(TARGET
+	PROPERTY CGVPROP_SERVICE
+	BRIEF_DOCS "Creates a special target that instead of a single executable, creates a singular shared library for use by arbitrary client applications."
+	FULL_DOCS "For plugins, indicates that a service target should be created - that is a single shared library (with all CGV dependencies statically linked in) which must be dynamically loaded by another process, typically a client making use of the functionality the plugin implements."
+)
+define_property(TARGET
 	PROPERTY CGVPROP_SHADERPATH
 	BRIEF_DOCS "The shaderpath for this target"
 	FULL_DOCS "The list of absolute paths where shaders used by the component are located."

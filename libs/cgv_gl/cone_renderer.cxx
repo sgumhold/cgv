@@ -72,7 +72,10 @@ namespace cgv {
 			surface_renderer::disable_attribute_array_manager(ctx, aam);
 			has_radii = false;
 		}
-
+		void cone_renderer::remove_radius_array(const context& ctx) {
+			has_radii = false;
+			remove_attribute_array(ctx, "radius");
+		}
 		bool cone_renderer::validate_attributes(const context& ctx) const
 		{
 			const cone_render_style& crs = get_style<cone_render_style>();

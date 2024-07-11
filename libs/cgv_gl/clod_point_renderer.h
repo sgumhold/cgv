@@ -81,6 +81,7 @@ namespace cgv {
 			// draw circles instead of squares
 			bool draw_circles = false;
 			//@}
+			bool use_clod = false;
 		  private:
 			char reserved_space[36]; //this is here to fix some mess in serialization
 
@@ -170,14 +171,14 @@ namespace cgv {
 			//cached uniform locations
 			struct uniform_locations {
 				int batch_offset,
-					batch_size,
-					CLOD,
-					scale,
-					spacing,
-					screenSize,
-					pivot,
+					batch_size, 
+					CLOD, 
+					scale, 
+					spacing, 
+					screenSize, 
+					pivot, 
 					frustum_extent,
-					protection_zone_points,
+					protection_zone_points, 
 					target_buffer_size;
 				//uniform blocks
 				int CLODParameterBlock;

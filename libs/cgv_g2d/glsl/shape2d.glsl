@@ -5,7 +5,7 @@ The following interface is implemented in this shader:
 //***** begin interface of shape2d.glsl ***********************************
 uniform ivec2 resolution;
 uniform mat3 modelview2d_matrix = mat3(1.0);
-uniform bool origin_upper_left = false;
+uniform bool origin_top_left = false;
 uniform float zoom_factor = 1.0;
 
 uniform vec4 fill_color;
@@ -34,7 +34,7 @@ vec4 transform_world_to_window_space(vec2 p);
 // canvas parameters
 uniform ivec2 resolution;
 uniform mat3 modelview2d_matrix = mat3(1.0);
-uniform bool origin_upper_left = false;
+uniform bool origin_top_left = false;
 uniform float zoom_factor = 1.0;
 
 // appearance
@@ -78,7 +78,7 @@ vec4 transform_world_to_window_space(vec2 p) {
 
 	// transform to window space
 	pos /= resolution;
-	if(origin_upper_left)
+	if(origin_top_left)
 		pos.y = 1.0 - pos.y;
 	return vec4(2.0 * pos - 1.0, 0.0, 1.0);
 }

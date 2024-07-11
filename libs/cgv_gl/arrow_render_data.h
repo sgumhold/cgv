@@ -7,25 +7,23 @@ namespace cgv {
 namespace render {
 
 template <typename ColorType = rgb>
-class arrow_render_data : public render_data_base<ColorType> {
-public:
+class arrow_render_data : public render_data_base<arrow_renderer, arrow_render_style, ColorType> {
+private:
 	// Base class we're going to use virtual functions from
-	typedef render_data_base<ColorType> super;
+	typedef render_data_base<arrow_renderer, arrow_render_style, ColorType> super;
 
-	/// stores an array of directions
-	std::vector<vec3> directions;
-	/// whether to interpret the direction attribute as the arrow end point position
-	bool direction_is_end_point = false;
+	arrow_renderer& ref_renderer_singleton(context& ctx, int ref_count_change = 0) override {
+		return ref_arrow_renderer(ctx, ref_count_change);
+	}
 
 protected:
 	/// @brief See render_data_base::transfer.
-	bool transfer(context& ctx, arrow_renderer& r) {
+	bool transfer(context& ctx, arrow_renderer& r) override {
 		if(super::transfer(ctx, r)) {
-			if(directions.size() == super::size()) {
-				if(direction_is_end_point)
-					r.set_end_point_array(ctx, directions);
-				else
-					r.set_direction_array(ctx, directions);
+			if(direction_is_end_point) {
+				CGV_RDB_TRANSFER_ARRAY(end_point, directions);
+			} else {
+				CGV_RDB_TRANSFER_ARRAY(direction, directions);
 			}
 			return true;
 		}
@@ -33,6 +31,11 @@ protected:
 	}
 
 public:
+	/// array of directions
+	std::vector<vec3> directions;
+	/// whether to interpret the direction attribute as the arrow end point position
+	bool direction_is_end_point = false;
+
 	void clear() {
 		super::clear();
 		directions.clear();
@@ -58,8 +61,6 @@ public:
 	void fill_directions(const vec3& direction) {
 		super::fill(directions, direction);
 	}
-
-	RDB_BASE_FUNC_DEF(arrow_renderer, arrow_render_style);
 };
 
 }

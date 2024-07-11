@@ -32,6 +32,15 @@ void attribute_array_manager::remove_indices(const context& ctx) {
 		vbos[-1] = 0;
 	}
 }
+void attribute_array_manager::remove_attribute_array(const context& ctx, int loc) {
+	vertex_buffer*& vbo_ptr = vbos[loc];
+	if(vbo_ptr) {
+		vbo_ptr->destruct(ctx);
+		delete vbo_ptr;
+		vbos.erase(loc);
+		ctx.enable_attribute_array(&aab, loc, false);
+	}
+}
 bool attribute_array_manager::is_created() {
 	return aab.is_created();
 }

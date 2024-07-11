@@ -6,6 +6,8 @@
 #include <iostream>
 #include <iomanip> 
 #include <cgv/math/svd.h> 
+#include <cgv/math/ldlt.h>
+#include <cgv/math/mat_block.h>
 #include "point_cloud.h"
 #include "normal_estimator.h"
 #include "lib_begin.h"

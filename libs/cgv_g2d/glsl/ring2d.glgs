@@ -1,7 +1,7 @@
 #version 150
 
 //***** begin interface of shape2d.glsl ***********************************
-uniform bool origin_upper_left = false;
+uniform bool origin_top_left = false;
 uniform float feather_origin = 0.5;
 
 float get_feather_width();
@@ -35,7 +35,7 @@ void emit_corner(int id, vec2 final_size) {
 	pix_coord = final_size*corner;
 	tex_coord = corner + 0.5;
 
-	if(origin_upper_left)
+	if(origin_top_left)
 		corner.y = -corner.y;
 
 	// transform corner to world pixel coordinates

@@ -18,13 +18,21 @@ endif()
 
 # add our target to the CGV CMake build system
 cgv_add_target(examples
-	TYPE plugin     # if we didn't want a single executable target to be generated, we could add the NO_EXECUTABLE flag
+	TYPE plugin        # we're creating a plugin to be loaded by the cgv_viewer
+	   # NO_EXECUTABLE # we could add this flag if we didn't want a single-executable target to be generated
+	     SERVICE       # for illustration purposes: we want a "service" target created. This is similar to a single-executable,
+	                   # but the resulting build artifact is a shared library that needs to be hosted by another process, typically
+	                   # some client that wants to use our plugin like a kind of visualization service. Typically such plugins then
+	                   # define a set of functions which a client can call to steer the behaviour of our application plugin (e.g.
+	                   # stream in new data to visualize). At this point, none of the included examples expose such an API.
+
 	SOURCES         ${SOURCES}
 	PPP_SOURCES     ${PPP_SOURCES}
 	HEADERS         ${HEADERS}
 	SHADER_SOURCES  ${SHADERS}
 	RESOURCES       ${IMAGES}
 	AUDIO_RESOURCES ${AUDIO}	# <-- inclusion of audio resources is automatically disabled when BUILD_WITH_AUDIO is off
+
 	DEPENDENCIES
 		cgv_viewer delaunay plot maptiles cg_gamepad holo_disp cgv_proc cgv_gl cgv_os cgv_signal cgv_g2d cgv_gpgpu cgv_app
 		cgv_post cg_ext cg_fltk cg_icons cg_meta cmi_io cgv_proc cmf_tt_gl_font crg_antialias crg_depth_of_field crg_grid

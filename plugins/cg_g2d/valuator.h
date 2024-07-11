@@ -18,7 +18,7 @@ public:
 
 	double get_value() const { return value; }
 
-	bool set_value(double v);
+	virtual bool set_value(double v);
 	
 	cgv::dvec2 get_range() const { return range; }
 

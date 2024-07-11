@@ -54,7 +54,14 @@ namespace cgv {
 			has_normals = false;
 			has_texcoords = false;
 		}
-
+		void surface_renderer::remove_normal_array(const context& ctx) {
+			has_normals = false;
+			remove_attribute_array(ctx, "normal");
+		}
+		void surface_renderer::remove_texcoord_array(const context& ctx) {
+			has_texcoords = false;
+			remove_attribute_array(ctx, "texcoord");
+		}
 		void set_gl_material_color(GLenum side, const cgv::media::illum::phong_material::color_type& c, float alpha, GLenum type)
 		{
 			GLfloat v[4] = { c[0], c[1], c[2], c[3] * alpha };

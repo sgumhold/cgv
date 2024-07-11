@@ -44,6 +44,16 @@ namespace cgv {
 			surface_renderer::disable_attribute_array_manager(ctx, aam);
 			has_directions = false;
 		}
+		void arrow_renderer::remove_direction_array(const context& ctx) {
+			has_directions = false;
+			direction_is_end_point = false;
+			remove_attribute_array(ctx, "direction");
+		}
+		void arrow_renderer::remove_end_point_array(const context& ctx) {
+			has_directions = false;
+			direction_is_end_point = true;
+			remove_attribute_array(ctx, "direction");
+		}
 		arrow_renderer::arrow_renderer()
 		{
 			has_directions = false;

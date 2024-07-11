@@ -62,6 +62,18 @@ namespace cgv {
 			has_indexed_colors = false;
 			has_depth_offsets = false;
 		}
+		void point_renderer::remove_point_size_array(const context& ctx) {
+			has_point_sizes = false;
+			remove_attribute_array(ctx, "point_size");
+		}
+		void point_renderer::remove_depth_offset_array(const context& ctx) {
+			has_depth_offsets = false;
+			remove_attribute_array(ctx, "depth_offset");
+		}
+		void point_renderer::remove_indexed_color_array(const context& ctx) {
+			has_indexed_colors = false;
+			remove_attribute_array(ctx, "indexed_color");
+		}
 		///
 		void point_renderer::set_reference_point_size(float _reference_point_size)
 		{

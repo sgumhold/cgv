@@ -1,0 +1,32 @@
+#version 430
+
+layout (binding = 0) uniform sampler2D color_tex;
+layout (binding = 1) uniform sampler2D depth_tex;
+
+uniform vec2 viewport_size;
+uniform int multiplier;
+
+in vec2 texcoord_fs;
+
+layout(location = 0) out vec4 frag_color;
+
+void main()
+{
+	vec2 texel_size = 1.0 / (viewport_size);
+	vec4 color = vec4(0.0);
+	float depth = 0.0;
+
+	for(int y = 0; y < multiplier; ++y) {
+		for(int x = 0; x < multiplier; ++x) {
+			vec2 coord = texcoord_fs + vec2(x, y) * texel_size;
+			color += texture(color_tex, coord);
+			depth += texture(depth_tex, texcoord_fs).r;
+		}
+	}
+
+	color /= float(multiplier * multiplier);
+	depth /= float(multiplier * multiplier);
+
+	frag_color = color;
+	gl_FragDepth = depth;
+}

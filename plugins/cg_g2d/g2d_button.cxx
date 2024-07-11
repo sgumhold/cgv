@@ -1,7 +1,7 @@
 #include "g2d_button.h"
 
 #include <cgv_g2d/msdf_font.h>
-#include <cgv_g2d/msdf_gl_canvas_font_renderer.h>
+#include <cgv_g2d/msdf_gl_font_renderer.h>
 
 namespace cg {
 namespace g2d {
@@ -77,7 +77,10 @@ void g2d_button::draw(cgv::render::context& ctx, cgv::g2d::canvas& cnvs, const s
 		label_position.y() -= 1;
 
 	auto& font = cgv::g2d::ref_msdf_font_regular(ctx);
-	cgv::g2d::ref_msdf_gl_canvas_font_renderer(ctx).render(ctx, cnvs, font, label, style.text, label_position, label_alignment);
+	auto& font_renderer = cgv::g2d::ref_msdf_gl_font_renderer_2d(ctx);
+	cgv::g2d::msdf_gl_font_renderer::text_render_info render_info;
+	render_info.alignment = label_alignment;
+	font_renderer.render(ctx, cnvs, font, label, static_cast<cgv::vec2>(label_position), render_info, style.text);
 }
 
 }

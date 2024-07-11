@@ -58,6 +58,26 @@ namespace cgv {
 			has_rotations = false;
 			has_secondary_colors = false;
 		}
+		void box_renderer::remove_extent_array(const context& ctx) {
+			has_extents = false;
+			remove_attribute_array(ctx, "extent");
+		}
+		void box_renderer::remove_radius_array(const context& ctx) {
+			has_radii = false;
+			remove_attribute_array(ctx, "radius");
+		}
+		void box_renderer::remove_secondary_color_array(const context& ctx) {
+			has_secondary_colors = false;
+			remove_attribute_array(ctx, "secondary_color");
+		}
+		void box_renderer::remove_translation_array(const context& ctx) {
+			has_translations = false;
+			remove_attribute_array(ctx, "translation");
+		}
+		void box_renderer::remove_rotation_array(const context& ctx) {
+			has_rotations = false;
+			remove_attribute_array(ctx, "rotation");
+		}
 		/// set the flag, whether the position is interpreted as the box center
 		void box_renderer::set_position_is_center(bool _position_is_center)
 		{
