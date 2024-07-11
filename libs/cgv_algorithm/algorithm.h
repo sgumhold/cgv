@@ -1,9 +1,10 @@
 #pragma once
 
-#include <iterator>
-#include <initializer_list>
-#include <string>
 #include <algorithm>
+#include <initializer_list>
+#include <iterator>
+#include <string>
+#include <vector>
 
 #include "lib_begin.h"
 
@@ -137,6 +138,42 @@ std::string transform_join(const InputIt first, const InputIt last, UnaryOp oper
     return res;
 }
 
+/// @brief Transform the elements in the range [first, last) to adjacent pairs and store the results in an output range starting from d_first.
+/// 
+/// If the input range contains less than two elements d_first remains unaltered.
+/// 
+/// @tparam InputIt An iterator.
+/// @tparam OutputIt An iterator.
+/// @param first The start of the input range.
+/// @param last The end of the input range.
+/// @param d_first The beginning of the destination range, may be equal to first.
+/// @return Output iterator to the element that follows the last element transformed.
+template<class InputIt, class OutputIt>
+OutputIt pair_adjacent(const InputIt first, const InputIt last, OutputIt d_first) {
+	if(std::distance(first, last) > 1) {
+		return std::transform(first, std::prev(last), std::next(first), d_first, [](const auto& a, const auto& b) {
+			return std::make_pair(a, b);
+		});
+	}
+	return d_first;
+}
+
+
+/// @brief Return a collection of pairwise adjacent elements in the range [first, last) as.
+/// 
+/// If the input range contains less than two elements the resulting collection will be empty.
+/// 
+/// @tparam InputIt An iterator.
+/// @param first The start of the input range.
+/// @param last The end of the input range.
+/// @return A std::vector of std::pair s containing copies of adjacent elements.
+template<class InputIt>
+std::vector<std::pair<typename InputIt::value_type, typename InputIt::value_type>> pair_adjacent(const InputIt first, const InputIt last) {
+	std::vector<std::pair<typename InputIt::value_type, typename InputIt::value_type>> res;
+	pair_adjacent(first, last, std::back_inserter(res));
+	return res;
+}
+
 // Extended version of enumerate and count ranges.
 // Original copyright by https://www.numbercrunch.de/blog/2018/02/range-based-for-loops-with-counters/
 
@@ -174,11 +211,14 @@ public:
 template<typename iterator_type>
 class count_iterator : public indexed_iterator<iterator_type> {
 public:
+    typedef indexed_iterator<iterator_type> super;
+    using iterator = typename super::iterator;
+    using index_type = typename super::index_type;
     count_iterator() = delete;
     explicit count_iterator(iterator iter, index_type start)
-        : indexed_iterator(iter, start) {}
+        : super(iter, start) {}
     index_type operator*() const {
-        return index;
+        return super::index;
     }
 };
 
@@ -248,11 +288,15 @@ decltype(auto) count(type(&content)[N],
 template<typename iterator_type>
 class enumerate_iterator : public indexed_iterator<iterator_type> {
 public:
+    typedef indexed_iterator<iterator_type> super;
+    using iterator = typename super::iterator;
+    using index_type = typename super::index_type;
+    using reference = typename super::reference;
     enumerate_iterator() = delete;
     explicit enumerate_iterator(iterator iter, index_type start)
-        : indexed_iterator(iter, start) {}
+        : super(iter, start) {}
     std::pair<reference, const index_type&> operator*() const {
-        return { *iter, index };
+        return { *super::iter, super::index };
     }
 };
 

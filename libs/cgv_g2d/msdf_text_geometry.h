@@ -1,8 +1,10 @@
 #pragma once
 
-#include <cgv/render/context.h>
+#include <cgv_gl/attribute_array_manager.h>
 #include <cgv_gl/gl/gl.h>
+#include <cgv/render/context.h>
 #include <cgv/render/vertex_buffer.h>
+
 #include "msdf_font.h" 
 
 #include "lib_begin.h"
@@ -14,44 +16,40 @@ class CGV_API msdf_text_geometry {
 public:
 	struct text_info {
 		std::string str = "";
-		int offset = 0;
-		vec2 position = vec2(0.0f);
-		vec2 size = vec2(0.0f);
-		cgv::render::TextAlignment alignment = cgv::render::TextAlignment::TA_NONE;
-		float angle = 0.0f;
-		rgba color = rgba(0.0f, 0.0f, 0.0f, 1.0f);
-
-		text_info() : text_info("", vec2(0.0f), vec2(1.0f)) {}
-
-		text_info(const std::string& str, const vec2& position, const vec2& size, const cgv::render::TextAlignment alignment = cgv::render::TA_NONE, float angle = 0.0f, rgba color = rgba(0.0f, 0.0f, 0.0f, 1.0f))
-			: str(str), position(position), size(size), alignment(alignment), angle(angle), color(color) {}
+		unsigned offset = 0;
+		float normalized_width = 0.0f;
 	};
 
-protected:
+private:
 	msdf_font::FontFace font_face = msdf_font::FontFace::FF_REGULAR;
 	msdf_font* msdf_font_ptr = nullptr;
 	msdf_font* custom_msdf_font_ptr = nullptr;
 
-	std::vector<text_info> texts;
-	std::vector<vec4> vertices;
+	std::vector<text_info> text_infos;
 
-	cgv::render::vertex_buffer geometry_buffer;
-	bool state_out_of_date = true;
+	/// the attribute array manager storing the data in GL buffers
+	cgv::render::attribute_array_manager attribute_arrays;
 
 	msdf_font& handle_font_ref(cgv::render::context& ctx, int ref_count_change);
 
 	msdf_font& ref_font() const;
 
-	void update_offsets(size_t begin);
-
-	void create_vertex_data();
-
 public:
-	msdf_text_geometry();
+	std::vector<vec3> positions;
+	std::vector<rgba> colors;
+	std::vector<float> scales;
+	std::vector<quat> rotations;
+	std::vector<cgv::render::TextAlignment> alignments;
+	
+	vec3 position = { 0.0f };
+	rgba color = rgba(0.0f, 0.0f, 0.0f, 1.0f);
+	float scale = 1.0f;
+	quat rotation;
+	cgv::render::TextAlignment alignment = cgv::render::TextAlignment::TA_NONE;
 
-	msdf_text_geometry(msdf_font::FontFace font_face);
+	msdf_text_geometry() {}
 
-	~msdf_text_geometry();
+	msdf_text_geometry(msdf_font::FontFace font_face) : font_face(font_face) {}
 
 	bool init(cgv::render::context& ctx);
 
@@ -59,53 +57,49 @@ public:
 
 	void clear();
 
-	bool is_created() const { return !state_out_of_date; }
+	size_t size() const { return text_infos.size(); }
 
-	const msdf_font& get_msdf_font() { return ref_font(); }
+	bool empty() const { return text_infos.empty(); }
 
-	void set_msdf_font(msdf_font* font_ptr, bool update_texts = true);
+	msdf_font& ref_msdf_font() { return ref_font(); }
 
-	void set_text(unsigned i, const std::string& text);
+	void set_msdf_font(const cgv::render::context& ctx, msdf_font* font_ptr);
 
-	template<typename T>
-	void set_position(unsigned i, const cgv::math::fvec<T, 2>& position) {
-		if(i < texts.size())
-			texts[i].position = static_cast<vec2>(position);
+	void set_text_array(const cgv::render::context& ctx, const std::vector<std::string>& texts);
+
+	const std::vector<text_info>& ref_text_infos() const {
+		return text_infos;
 	}
 
-	void set_alignment(unsigned i, const cgv::render::TextAlignment alignment);
-
-	void set_scale(unsigned i, float scale);
-
-	void set_angle(unsigned i, const float angle);
-
-	void set_color(unsigned i, const rgba color);
-
-	size_t size() const { return texts.size(); }
-
-	const std::vector<text_info>& ref_texts() const { return texts; }
-
-	vec2 get_text_render_size(unsigned i, float font_size, size_t length = std::string::npos) const;
-
-	template<typename T>
-	void add_text(const std::string& str, const cgv::math::fvec<T, 2>& position, const cgv::render::TextAlignment alignment = cgv::render::TA_NONE, float scale = 1.0f, float angle = 0.0f, rgba color = rgba(0.0f, 0.0f, 0.0f, 1.0f)) {
-		int offset = 0;
-		if(texts.size() > 0) {
-			const text_info& last_text = texts.back();
-			offset = int(last_text.offset + last_text.str.size());
-		}
-
-		texts.emplace_back(str, static_cast<vec2>(position), vec2(ref_font().compute_length(str), scale), alignment, angle, color);
-		texts.back().offset = offset;
-
-		state_out_of_date = true;
+	const text_info& get_text_info(size_t index) const {
+		return text_infos[index];
 	}
 
-	bool create(cgv::render::context& ctx);
+	vec3 get_position(size_t index) const {
+		return index < positions.size() ? positions[index] : position;
+	}
+
+	rgba get_color(size_t index) const {
+		return index < colors.size() ? colors[index] : color;
+	}
+
+	float get_scale(size_t index) const {
+		return index < scales.size() ? scales[index] : scale;
+	}
+
+	quat get_rotation(size_t index) const {
+		return index < rotations.size() ? rotations[index] : rotation;
+	}
+
+	cgv::render::TextAlignment get_alignment(size_t index) const {
+		return index < alignments.size() ? alignments[index] : alignment;
+	}
+
+	vec2 compute_text_render_size(size_t index, float font_size) const;
 
 	bool enable(cgv::render::context& ctx);
 
-	void disable(cgv::render::context& ctx);
+	bool disable(cgv::render::context& ctx);
 };
 
 }

@@ -22,6 +22,8 @@ protected:
 	bool do_reload_shader = false;
 	/// halo mode
 	Mode mode = Mode::Outside;
+	/// color of the halo
+	rgb color = { 0.0f };
 	/// strength scale of the halo darkening
 	float strength = 1.0f;
 	/// halo radius in pixel
@@ -57,6 +59,10 @@ public:
 
 	void set_mode(Mode m) { set_and_update_member(mode, m); on_change_mode(); }
 	
+	rgb get_color() const { return color; }
+
+	void set_color(rgb c) { set_and_update_member(color, c); }
+
 	float get_strength() const { return strength; }
 
 	void set_strength(float s) { set_and_update_member(strength, s); }

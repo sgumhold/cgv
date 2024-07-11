@@ -1,7 +1,7 @@
 #include "provider.h"
 
 #include <cgv_g2d/msdf_font.h>
-#include <cgv_g2d/msdf_gl_canvas_font_renderer.h>
+#include <cgv_g2d/msdf_gl_font_renderer.h>
 
 using namespace cgv::render;
 
@@ -12,8 +12,8 @@ bool provider::init(context& ctx) {
 
 	// TODO: ensure the canvas has the needed shaders
 
-	cgv::g2d::ref_msdf_gl_canvas_font_renderer(ctx, 1);
 	cgv::g2d::ref_msdf_font_regular(ctx, 1);
+	cgv::g2d::ref_msdf_gl_font_renderer_2d(ctx, 1);
 
 	//shaders.add("rectangle", shaders::rectangle);
 	//shaders.add("line", shaders::line, { { "MODE", "0" } });
@@ -26,8 +26,8 @@ bool provider::init(context& ctx) {
 
 void provider::destruct(context& ctx) {
 
-	cgv::g2d::ref_msdf_gl_canvas_font_renderer(ctx, -1);
 	cgv::g2d::ref_msdf_font_regular(ctx, -1);
+	cgv::g2d::ref_msdf_gl_font_renderer_2d(ctx, -1);
 }
 
 void provider::clear() {

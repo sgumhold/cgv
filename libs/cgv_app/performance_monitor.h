@@ -5,7 +5,7 @@
 #include <cgv/utils/stopwatch.h>
 #include <cgv_app/themed_canvas_overlay.h>
 #include <cgv_g2d/generic_2d_renderer.h>
-#include <cgv_g2d/msdf_gl_canvas_font_renderer.h>
+#include <cgv_g2d/msdf_text_geometry.h>
 
 #include "lib_begin.h"
 
@@ -77,14 +77,14 @@ protected:
 	cgv::render::color_map plot_color_map;
 
 	// text appearance
-	cgv::g2d::text2d_style text_style, label_style;
-	cgv::g2d::msdf_text_geometry texts;
-	cgv::g2d::msdf_text_geometry labels;
+	std::vector<std::string> labels;
+	cgv::g2d::text2d_style text_style, tick_text_style;
+	cgv::g2d::msdf_text_geometry text_geometry;
 
 	void init_styles() override;
-	void create_texts();
-	void update_stats_texts();
-	void create_labels();
+	void create_texts(const cgv::render::context& ctx);
+	void update_texts(const cgv::render::context& ctx);
+	//void create_labels(const cgv::render::context& ctx);
 	void update_plot();
 
 	void on_visibility_change() override;

@@ -44,6 +44,8 @@ private:
 	ivec2 last_size_ = ivec2(-1);
 	/// rectangle area this overlay is fully contained whithin
 	cgv::g2d::irect container_;
+	/// whether the overlay blocks events or lets them pass through to other handlers
+	bool blocks_events_ = false;
 
 	/// layout parameters
 	AlignmentOption horizontal_alignment_ = AlignmentOption::AO_START;
@@ -62,9 +64,6 @@ private:
 	}
 
 protected:
-	/// whether the overlay blocks events or lets them pass through to other handlers (by default only derived classes may set this property)
-	bool block_events = false;
-	
 	/// called when the overlay visibility is changed through the default gui
 	virtual void on_visibility_change();
 
@@ -115,7 +114,10 @@ public:
 	virtual void on_set(void* member_ptr);
 
 	/// return whether this overlay blocks events, i.e. does not pass them to the next event handler
-	bool blocks_events() const { return block_events; }
+	bool blocks_events() const { return blocks_events_; }
+
+	/// set whether the overlay blocks events
+	void blocks_events(bool flag) { blocks_events_ = flag; }
 
 	/// return the current viewport size
 	ivec2 get_viewport_size() const { return last_viewport_size_; }

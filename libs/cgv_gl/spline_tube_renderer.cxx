@@ -44,7 +44,14 @@ namespace cgv {
 			has_radii = false;
 			has_tangents = false;
 		}
-
+		void spline_tube_renderer::remove_radius_array(const context& ctx) {
+			has_radii = false;
+			remove_attribute_array(ctx, "radii");
+		}
+		void spline_tube_renderer::remove_tangent_array(const context& ctx) {
+			has_tangents = false;
+			remove_attribute_array(ctx, "tangent");
+		}
 		bool spline_tube_renderer::validate_attributes(const context& ctx) const
 		{
 			const spline_tube_render_style& strs = get_style<spline_tube_render_style>();

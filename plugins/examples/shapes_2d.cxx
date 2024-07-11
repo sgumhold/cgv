@@ -18,7 +18,7 @@
 #include <cgv_g2d/draggable.h>
 #include <cgv_g2d/draggable_collection.h>
 #include <cgv_g2d/generic_2d_render_data.h>
-#include <cgv_g2d/msdf_gl_canvas_font_renderer.h>
+#include <cgv_g2d/msdf_gl_font_renderer.h>
 #include <cgv_g2d/trect.h>
 #include <cgv_g2d/shape2d_styles.h>
 
@@ -93,11 +93,11 @@ protected:
 	bool apply_gamma = true;
 
 	// text appearance
+	std::vector<std::string> texts;
 	cgv::render::TextAlignment text_align_h, text_align_v;
 	float text_angle = 0.0f;
-
-	cgv::g2d::msdf_text_geometry texts;
-
+	cgv::g2d::msdf_text_geometry text_geometry;
+	
 	// test variables
 	struct {
 		cgv::vec2 translation = cgv::vec2(0.0f);
@@ -126,6 +126,9 @@ public:
 		point_renderer = cgv::render::generic_renderer(cgv::g2d::shaders::circle);
 
 		text_align_h = text_align_v = cgv::render::TA_NONE;
+
+		texts.push_back("Hello World!");
+		texts.push_back("CGV Framework");
 
 		// set callbacks for changes to draggable control points
 		line_handles.set_drag_callback(std::bind(&shapes_2d::create_line_render_data, this));
@@ -210,15 +213,11 @@ public:
 			create_curve_render_data();
 		}
 
-		if(member_ptr == &text_align_h || member_ptr == &text_align_v) {
-			for(unsigned i=0; i<(unsigned)texts.size(); ++i)
-				texts.set_alignment(i, static_cast<cgv::render::TextAlignment>(text_align_h | text_align_v));
-		}
+		if(member_ptr == &text_align_h || member_ptr == &text_align_v)
+			text_geometry.alignment = static_cast<cgv::render::TextAlignment>(text_align_h | text_align_v);
 
-		if(member_ptr == &text_angle) {
-			for(unsigned i = 0; i < (unsigned)texts.size(); ++i)
-				texts.set_angle(i, text_angle);
-		}
+		if(member_ptr == &text_angle)
+			text_geometry.rotation = cgv::quat(cgv::quat::AxisEnum::Z_AXIS, cgv::math::deg2rad(text_angle));
 
 		post_redraw();
 		update_member(member_ptr);
@@ -232,7 +231,7 @@ public:
 
 		// decrease reference count of msdf font and renderer singletons, potentially causing them to be destructed
 		cgv::g2d::ref_msdf_font_regular(ctx, -1);
-		cgv::g2d::ref_msdf_gl_canvas_font_renderer(ctx, -1);
+		cgv::g2d::ref_msdf_gl_font_renderer_2d(ctx, -1);
 	}
 	bool init(cgv::render::context& ctx) {
 		bool success = true;
@@ -243,6 +242,7 @@ public:
 		success &= quadratic_spline_renderer.init(ctx);
 		success &= cubic_spline_renderer.init(ctx);
 		success &= point_renderer.init(ctx);
+		success &= text_geometry.init(ctx);
 
 		set_default_styles();
 
@@ -267,12 +267,8 @@ public:
 			image_tex.create_from_image(image_format, image_data, ctx, "res://alhambra.png", (unsigned char*)0, 0);
 		}
 		
-		// increase reference count of msdf font and renderer singletons, potentially causing them to be initialized
-		cgv::g2d::msdf_font_regular& msdf_font = cgv::g2d::ref_msdf_font_regular(ctx, 1);
-		cgv::g2d::ref_msdf_gl_canvas_font_renderer(ctx, 1);
-
-		if(msdf_font.is_initialized())
-			texts.set_msdf_font(&msdf_font);
+		// increase reference count of msdf font renderer singleton, potentially causing it to be initialized
+		cgv::g2d::ref_msdf_gl_font_renderer_2d(ctx, 1);
 
 		const auto& setup_point = [](const cgv::vec2 & position) {
 			cgv::g2d::circle_draggable p(position, cgv::vec2(16.0f));
@@ -431,8 +427,8 @@ public:
 
 		image_tex.disable(ctx);
 
-		cgv::g2d::msdf_gl_canvas_font_renderer& font_renderer = cgv::g2d::ref_msdf_gl_canvas_font_renderer(ctx, 0);
-		font_renderer.render(ctx, canvas, texts, text_style);
+		cgv::g2d::msdf_gl_font_renderer_2d& font_renderer = cgv::g2d::ref_msdf_gl_font_renderer_2d(ctx);
+		font_renderer.render(ctx, canvas, text_geometry, text_style);
 		
 		draw_control_lines(ctx);
 		draw_draggables(ctx);
@@ -541,15 +537,23 @@ public:
 		labels.push_back("Hello World!");
 		labels.push_back("CGV Framework");
 
-		texts.clear();
-		for(unsigned i=0; i<2; ++i) {
-			std::string str = labels[i];
-			texts.add_text(str, text_handles[i]->position, static_cast<cgv::render::TextAlignment>(text_align_h | text_align_v));
-		}
+		text_geometry.set_text_array(ctx, labels);
+
+		text_geometry.positions.clear();
+		for(unsigned i = 0; i < 2; ++i)
+			text_geometry.positions.push_back(cgv::vec3(text_handles[i]->position, 0.0f));
+
+		text_geometry.alignment = static_cast<cgv::render::TextAlignment>(text_align_h | text_align_v);
 	}
 	void set_text_positions() {
-		for(unsigned i=0; i<2; ++i)
-			texts.set_position(i, text_handles[i]->position);
+		cgv::render::context* ctx_ptr = get_context();
+		if(!ctx_ptr)
+			return;
+		cgv::render::context& ctx = *ctx_ptr;
+
+		text_geometry.positions.clear();
+		for(unsigned i = 0; i < 2; ++i)
+			text_geometry.positions.push_back(cgv::vec3(text_handles[i]->position, 0.0f));
 
 		cgv::ivec2 p(text_handles[0]->position);
 		std::string pos_str = "(";
@@ -557,7 +561,8 @@ public:
 		pos_str += ", ";
 		pos_str += std::to_string(p.y());
 		pos_str += ")";
-		texts.set_text(0, pos_str);
+		texts[0] = pos_str;
+		text_geometry.set_text_array(ctx, texts);
 	}
 	void set_resolution_uniform(cgv::render::context& ctx, cgv::render::shader_program& prog) {
 		prog.enable(ctx);

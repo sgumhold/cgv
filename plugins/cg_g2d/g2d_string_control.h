@@ -2,6 +2,8 @@
 
 #include <cgv/gui/control.h>
 
+#include <memory>
+
 #include "widget.h"
 #include "input.h"
 

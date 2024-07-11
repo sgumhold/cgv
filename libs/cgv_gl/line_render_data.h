@@ -9,30 +9,32 @@ namespace render {
 /// @brief Render data for line geometry with support for the line_renderer. See render_data_base.
 /// @tparam ColorType The type used to represent colors. Must be cgv::render::rgb or cgv::render::rgba.
 template <typename ColorType = rgb>
-class line_render_data : public render_data_base<ColorType> {
-public:
+class line_render_data : public render_data_base<line_renderer, line_render_style, ColorType> {
+private:
 	// Base class we're going to use virtual functions from
-	typedef render_data_base<ColorType> super;
+	typedef render_data_base<line_renderer, line_render_style, ColorType> super;
 
-	/// stores an array of normals
-	std::vector<vec3> normals;
-	/// stores an array of widths
-	std::vector<float> widths;
+	line_renderer& ref_renderer_singleton(context& ctx, int ref_count_change = 0) override {
+		return ref_line_renderer(ctx, ref_count_change);
+	}
 
 protected:
 	/// @brief See render_data_base::transfer.
-	bool transfer(context& ctx, line_renderer& r) {
+	bool transfer(context& ctx, line_renderer& r) override {
 		if(super::transfer(ctx, r)) {
-			if(normals.size() == super::size())
-				r.set_normal_array(ctx, normals);
-			if(widths.size() == super::size())
-				r.set_line_width_array(ctx, widths);
+			CGV_RDB_TRANSFER_ARRAY(normal, normals);
+			CGV_RDB_TRANSFER_ARRAY(line_width, widths);
 			return true;
 		}
 		return false;
 	}
 
 public:
+	/// array of normals
+	std::vector<vec3> normals;
+	/// array of widths
+	std::vector<float> widths;
+
 	void clear() {
 		super::clear();
 		normals.clear();
@@ -108,8 +110,6 @@ public:
 	void fill_widths(const float width) {
 		super::fill(widths, width);
 	}
-
-	RDB_BASE_FUNC_DEF(line_renderer, line_render_style);
 };
 
 }

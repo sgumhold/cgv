@@ -1,5 +1,6 @@
 #pragma once
 
+#include <cgv/gui/directory_helper.h>
 #include <cgv/gui/file_helper.h>
 #include <cgv/gui/help_message.h>
 #include <cgv/utils/file.h>
@@ -26,7 +27,6 @@ protected:
 
 	FILE* fp = 0;
 	int fps = 30;
-	std::string video_file_name;
 	bool video_open = false;
 	bool use_named_pipe = true;
 	cgv::os::pipe_output_thread* thread_ptr = 0;
@@ -59,6 +59,7 @@ protected:
 
 	cgv::gui::file_helper input_file_helper;
 	cgv::gui::directory_helper output_directory_helper;
+	cgv::gui::file_helper video_file_helper;
 
 	bool animate = false;
 	bool record = false;
