@@ -70,7 +70,7 @@ mat4 compute_stereo_frustum_screen(in float eye) {
 }
 
 // eye from left to right / -1 to 1
-void stereo_translate_modelview_matrix(in float eye, in out mat4 M) {
+void stereo_translate_modelview_matrix(in float eye, inout mat4 M) {
 	M[3].x += -0.5 * eye_separation * eye * screen_width;
 }
 

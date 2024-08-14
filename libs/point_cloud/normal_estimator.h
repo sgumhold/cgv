@@ -38,12 +38,13 @@ public:
 	void compute_weights(Idx vi, std::vector<Crd>& weights, std::vector<Pnt>* points_ptr = 0) const;
 	Crd estimate_scale(Idx vi) const;
 	/// (re)compute normals from neighbor graph and distance weights
-	void compute_weighted_normals(bool reorient);
+	void compute_weighted_normals(bool reorient, float* means = 0, float* eig_vals = 0, float* eig_vecs = 0);
+
 	void compute_bilateral_weights(Idx vi, std::vector<Crd>& weights, std::vector<Pnt>* points_ptr = 0) const;
 	/// recompute normals from neighbor graph and distance and normal weights
-	void compute_bilateral_weighted_normals(bool reorient);
+	void compute_bilateral_weighted_normals(bool reorient, float* means = 0, float* eig_vals = 0, float* eig_vecs = 0);
 	/// recompute normals from neighbor graph and distance and normal weights
-	void compute_plane_bilateral_weighted_normals(bool reorient);
+	void compute_plane_bilateral_weighted_normals(bool reorient, float* means = 0, float* eig_vals = 0, float* eig_vecs = 0);
 	/// try to compute consistent normal orientation
 	void orient_normals();
 	/// orient normals towards given point

@@ -1,4 +1,5 @@
 files:sdf_font2d
+vertex_file:quaternion.glsl
 vertex_file:shape2d.glsl
 fragment_file:shape2d.glsl
 fragment_file:fragment2d.glfs

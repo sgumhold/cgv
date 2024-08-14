@@ -48,6 +48,10 @@ namespace cgv {
 			surface_renderer::disable_attribute_array_manager(ctx, aam);
 			has_radii = false;
 		}
+		void sphere_renderer::remove_radius_array(const context& ctx) {
+			has_radii = false;
+			remove_attribute_array(ctx, "radius");
+		}
 		///
 		void sphere_renderer::set_y_view_angle(float _y_view_angle)
 		{

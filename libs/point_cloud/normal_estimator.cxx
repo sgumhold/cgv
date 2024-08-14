@@ -132,7 +132,7 @@ void normal_estimator::compute_weights(Idx vi, std::vector<Crd>& weights, std::v
 }
 
 /// recompute normals from neighbor graph and distance and normal weights
-void normal_estimator::compute_weighted_normals(bool reorient)
+void normal_estimator::compute_weighted_normals(bool reorient, float* means, float* eig_vals, float* eig_vecs)
 {
 	if (!pc.has_normals()) {
 		pc.create_normals();
@@ -143,10 +143,18 @@ void normal_estimator::compute_weighted_normals(bool reorient)
 	for (Idx vi = 0; vi < (Idx)pc.get_nr_points(); ++vi) {
 		compute_weights(vi, weights, &points);
 		Nml new_nml;
-		cgv::math::estimate_normal_wls((unsigned)points.size(), points[0], &weights[0], new_nml);
+		cgv::math::estimate_normal_wls((unsigned)points.size(), points[0], &weights[0], new_nml, eig_vals, means, eig_vecs);
 		if (reorient && (dot(new_nml,pc.nml(vi)) < 0))
 			new_nml = -new_nml;
 		pc.nml(vi) = new_nml;
+
+		
+		if (means)
+			means += 3;
+		if (eig_vals)
+			eig_vals += 3;
+		if (eig_vals)
+			eig_vecs += 9;
 	}
 }
 
@@ -180,7 +188,7 @@ void normal_estimator::compute_bilateral_weights(Idx vi, std::vector<Crd>& weigh
 }
 
 /// recompute normals from neighbor graph and distance and normal weights
-void normal_estimator::compute_bilateral_weighted_normals(bool reorient)
+void normal_estimator::compute_bilateral_weighted_normals(bool reorient, float* means, float* eig_vals, float* eig_vecs)
 {
 	if (!pc.has_normals())
 		compute_weighted_normals(reorient);
@@ -199,16 +207,25 @@ void normal_estimator::compute_bilateral_weighted_normals(bool reorient)
 
 		compute_bilateral_weights(vi, weights, &points);
 
-		cgv::math::estimate_normal_wls((unsigned)points.size(), points[0], &weights[0], NS[vi]);
+		cgv::math::estimate_normal_wls((unsigned)points.size(), points[0], &weights[0], NS[vi], eig_vals, means,
+									   eig_vecs);
 		if (reorient && (dot(NS[vi],pc.nml(vi)) < 0))
 			NS[vi] = -NS[vi];
+
+		if (means)
+			means += 3;
+		if (eig_vals)
+			eig_vals += 3;
+		if (eig_vals)
+			eig_vecs += 9;
 	}
 	for (i = 0; i < n; ++i)
 		pc.nml(i) = NS[i];
 }
 
 /// recompute normals from neighbor graph and distance and normal weights
-void normal_estimator::compute_plane_bilateral_weighted_normals(bool reorient)
+void normal_estimator::compute_plane_bilateral_weighted_normals(bool reorient, float* means, float* eig_vals,
+																float* eig_vecs)
 {
 	if (!pc.has_normals())
 		compute_weighted_normals(reorient);
@@ -246,9 +263,17 @@ void normal_estimator::compute_plane_bilateral_weighted_normals(bool reorient)
 			weights[j+1] = w;
 			points[j+1] = pc.pnt(vj);
 		}
-		cgv::math::estimate_normal_wls((unsigned)points.size(), points[0], &weights[0], NS[vi]);
+		cgv::math::estimate_normal_wls((unsigned)points.size(), points[0], &weights[0], NS[vi], eig_vals, means,
+									   eig_vecs);
 		if (reorient && (dot(NS[vi],pc.nml(vi)) < 0))
 			NS[vi] = -NS[vi];
+
+		if (means)
+			means += 3;
+		if (eig_vals)
+			eig_vals += 3;
+		if (eig_vals)
+			eig_vecs += 9;
 	}
 	for (i = 0; i < n; ++i)
 		pc.nml(i) = NS[i];

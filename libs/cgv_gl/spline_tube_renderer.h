@@ -57,12 +57,16 @@ namespace cgv { // @<
 			/// 
 			template <typename T = float>
 			void set_radius_array(const context& ctx, const T* radii, size_t nr_elements, unsigned stride_in_bytes = 0) { has_radii = true; set_attribute_array(ctx, "radius", radii, nr_elements, stride_in_bytes); }
+			/// remove the radius attribute
+			void remove_radius_array(const context& ctx);
 			///
 			template <typename T = float>
 			void set_tangent_array(const context& ctx, const std::vector<T>& tangents) { has_tangents = true; set_attribute_array(ctx, "tangent", tangents); }
 			/// 
 			template <typename T = float>
 			void set_tangent_array(const context& ctx, const T* tangents, size_t nr_elements, unsigned stride_in_bytes = 0) { has_tangents = true; set_attribute_array(ctx, "tangent", tangents, nr_elements, stride_in_bytes); }
+			/// remove the tangent attribute
+			void remove_tangent_array(const context& ctx);
 			///
 			bool validate_attributes(const context& ctx) const;
 			///

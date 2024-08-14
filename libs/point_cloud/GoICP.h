@@ -13,7 +13,7 @@ WIP
 #include "3ddt.h"
 #include "ICP.h"
 #include "ann_tree.h"
-
+#include <queue>
 
 #include "lib_begin.h"
 

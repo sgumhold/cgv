@@ -3,6 +3,7 @@
 #include <cgv/gui/theme_info.h>
 #include <cgv/math/ftransform.h>
 #include <cgv/utils/scan.h>
+#include <cgv_g2d/msdf_gl_font_renderer.h>
 
 namespace cgv {
 namespace app {
@@ -22,7 +23,7 @@ color_map_legend::color_map_legend() {
 
 void color_map_legend::clear(cgv::render::context& ctx) {
 
-	cgv::g2d::ref_msdf_gl_canvas_font_renderer(ctx, -1);
+	cgv::g2d::ref_msdf_gl_font_renderer_2d(ctx, -1);
 
 	canvas_overlay::clear(ctx);
 
@@ -58,7 +59,7 @@ void color_map_legend::handle_member_change(const cgv::utils::pointer_test& m) {
 
 bool color_map_legend::init(cgv::render::context& ctx) {
 
-	cgv::g2d::ref_msdf_gl_canvas_font_renderer(ctx, 1);
+	cgv::g2d::ref_msdf_gl_font_renderer_2d(ctx, 1);
 
 	register_shader("rectangle", cgv::g2d::shaders::rectangle);
 	register_shader("grid", cgv::g2d::shaders::grid);
@@ -75,7 +76,7 @@ bool color_map_legend::init(cgv::render::context& ctx) {
 void color_map_legend::init_frame(cgv::render::context& ctx) {
 
 	if(ensure_layout(ctx)) {
-		create_labels();
+		create_labels(ctx);
 		layout.update(get_rectangle().size);
 		create_ticks();
 
@@ -138,15 +139,15 @@ void color_map_legend::draw_content(cgv::render::context& ctx) {
 	tick_renderer.render(ctx, content_canvas, cgv::render::PT_POINTS, ticks, tick_style);
 
 	// draw tick labels
-	auto& font_renderer = cgv::g2d::ref_msdf_gl_canvas_font_renderer(ctx);
+	auto& font_renderer = cgv::g2d::ref_msdf_gl_font_renderer_2d(ctx);
 	if(font_renderer.enable(ctx, content_canvas, labels, text_style)) {
-		font_renderer.draw(ctx, labels, 0, int(labels.size()) - 1);
+		font_renderer.draw(ctx, content_canvas, labels, 0, static_cast<int>(num_ticks));
 
 		content_canvas.push_modelview_matrix();
 		content_canvas.mul_modelview_matrix(ctx, cgv::math::translate2h(layout.title_position));
 		content_canvas.mul_modelview_matrix(ctx, cgv::math::rotate2h(layout.title_angle));
 
-		font_renderer.draw(ctx, content_canvas, labels, labels.size() - 1, 1);
+		font_renderer.draw(ctx, content_canvas, labels, num_ticks, 1);
 
 		content_canvas.pop_modelview_matrix(ctx);
 		font_renderer.disable(ctx, labels);
@@ -172,8 +173,6 @@ void color_map_legend::create_gui_impl() {
 	add_member_control(this, "Auto", label_format.auto_precision, "check", "w=52", "");
 	add_member_control(this, "Show 0s", label_format.trailing_zeros, "check", "w=74", "");
 	add_member_control(this, "Int", label_format.integers, "check", "w=40");
-
-	add_gui("", color_map_style);
 }
 
 void color_map_legend::set_color_map(cgv::render::context& ctx, const cgv::render::color_map& cm) {
@@ -235,6 +234,16 @@ void color_map_legend::set_height(size_t h) {
 void color_map_legend::set_title(const std::string& t) {
 	title = t;
 	on_set(&title);
+}
+
+void color_map_legend::set_orientation(OrientationOption orientation) {
+	layout.orientation = orientation;
+	on_set(&layout.orientation);
+}
+
+void color_map_legend::set_label_alignment(AlignmentOption alignment) {
+	layout.label_alignment = alignment;
+	on_set(&layout.label_alignment);
 }
 
 void color_map_legend::set_range(vec2 r) {
@@ -320,7 +329,7 @@ void color_map_legend::init_styles() {
 	tick_style.feather_width = 0.0f;
 }
 
-void color_map_legend::create_labels() {
+void color_map_legend::create_labels(const cgv::render::context& ctx) {
 
 	labels.clear();
 
@@ -348,7 +357,9 @@ void color_map_legend::create_labels() {
 		}
 	}
 
-	float max_length = -1.0f;
+	float max_width = -1.0f;
+
+	std::vector<std::string> label_texts;
 
 	for(size_t i = 0; i < num_ticks; ++i) {
 		float fi = static_cast<float>(i);
@@ -365,20 +376,28 @@ void color_map_legend::create_labels() {
 				cgv::utils::rtrim(cgv::utils::rtrim(str, "0"), ".");
 		}
 
-		labels.add_text(str, ivec2(0), cgv::render::TextAlignment::TA_NONE);
-		max_length = std::max(max_length, labels.ref_texts().back().size.x());
+		label_texts.push_back(str);
 	}
+
+	label_texts.push_back(title);
+
+	labels.set_text_array(ctx, label_texts);
+	labels.positions.resize(label_texts.size(), { 0.0f });
+	labels.alignments.resize(label_texts.size(), cgv::render::TextAlignment::TA_NONE);
+	labels.alignments.back() = cgv::render::TextAlignment::TA_BOTTOM_LEFT;
+
+	auto& text_infos = labels.ref_text_infos();
+	for(size_t i = 0; i < static_cast<size_t>(num_ticks); ++i)
+		max_width = std::max(max_width, text_infos[i].normalized_width);
 
 	if(labels.size() > 1) {
 		if(layout.orientation == OO_HORIZONTAL)
-			layout.x_label_size = static_cast<int>(std::max(labels.ref_texts().front().size.x(), labels.ref_texts().back().size.x()) * text_style.font_size);
+			layout.x_label_size = static_cast<int>(std::max(text_infos.front().normalized_width, text_infos[text_infos.size() - 2].normalized_width) * text_style.font_size);
 		else
-			layout.x_label_size = static_cast<int>(max_length * text_style.font_size);
+			layout.x_label_size = static_cast<int>(max_width * text_style.font_size);
 	} else {
 		layout.x_label_size = 0;
 	}
-
-	labels.add_text(title, ivec2(0), cgv::render::TextAlignment::TA_BOTTOM_LEFT);
 }
 
 void color_map_legend::create_ticks() {
@@ -482,14 +501,14 @@ void color_map_legend::create_ticks() {
 
 		ticks.add(tick_pos, tick_size);
 
-		labels.set_position(int(i), label_pos);
-		labels.set_alignment(int(i), alignment);
+		labels.positions[i] = vec3(label_pos, 0.0f);
+		labels.alignments[i] = alignment;
 	}
 
 	layout.title_position = title_pos;
 
-	if(labels.size() > 0)
-		labels.set_alignment(unsigned(labels.ref_texts().size() - 1), title_alignment);
+	if(labels.alignments.size() > 0)
+		labels.alignments.back() = title_alignment;
 }
 
 }

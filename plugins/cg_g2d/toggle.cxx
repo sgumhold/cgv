@@ -1,7 +1,7 @@
 #include "toggle.h"
 
 #include <cgv_g2d/msdf_font.h>
-#include <cgv_g2d/msdf_gl_canvas_font_renderer.h>
+#include <cgv_g2d/msdf_gl_font_renderer.h>
 
 using namespace cgv::render;
 
@@ -63,7 +63,11 @@ void toggle::draw(context& ctx, cgv::g2d::canvas& cnvs, const styles& style) {
 	cnvs.disable_current_shader(ctx);
 
 	auto& font = cgv::g2d::ref_msdf_font_regular(ctx);
-	cgv::g2d::ref_msdf_gl_canvas_font_renderer(ctx).render(ctx, cnvs, font, label, style.text, cgv::ivec2(rectangle.x() - 5, rectangle.center().y()), TA_RIGHT);
+	auto& font_renderer = cgv::g2d::ref_msdf_gl_font_renderer_2d(ctx);
+	cgv::g2d::msdf_gl_font_renderer::text_render_info render_info;
+	render_info.alignment = TA_RIGHT;
+	cgv::ivec2 position(rectangle.x() - 5, rectangle.center().y());
+	font_renderer.render(ctx, cnvs, font, label, static_cast<cgv::vec2>(position), render_info, style.text);
 }
 
 }

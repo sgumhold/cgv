@@ -9,6 +9,8 @@ namespace post {
 
 class CGV_API outline : public post_process_effect {
 protected:
+	/// color of the outline
+	rgb color = { 0.0f };
 	/// strength scale of the outline
 	float strength = 1.0f;
 	/// depth difference threshold
@@ -30,6 +32,10 @@ public:
 	void end(cgv::render::context& ctx);
 
 	/// accessors
+	rgb get_color() const { return color; }
+
+	void set_color(rgb c) { set_and_update_member(color, c); }
+
 	float get_strength() const { return strength; }
 
 	void set_strength(float s) { set_and_update_member(strength, s); }

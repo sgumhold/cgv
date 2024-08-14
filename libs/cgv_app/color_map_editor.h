@@ -7,7 +7,7 @@
 #include <cgv_g2d/draggable_collection.h>
 #include <cgv_g2d/generic_2d_renderer.h>
 #include <cgv_g2d/generic_2d_render_data.h>
-#include <cgv_g2d/msdf_gl_canvas_font_renderer.h>
+#include <cgv_g2d/msdf_text_geometry.h>
 
 #include "lib_begin.h"
 
@@ -118,10 +118,12 @@ protected:
 	bool use_linear_filtering;
 	vec2 range;
 
-	ivec2 cursor_pos;
-	int cursor_label_index;
+	ivec2 cursor_position;
+	std::string cursor_label;
 	bool show_value_label;
-
+	std::string value_label;
+	cgv::g2d::rect value_label_rectangle;
+	
 	// general appearance
 	rgba handle_color = rgba(0.9f, 0.9f, 0.9f, 1.0f);
 	rgba highlight_color = rgba(0.5f, 0.5f, 0.5f, 1.0f);
@@ -132,7 +134,6 @@ protected:
 
 	// label appearance
 	cgv::g2d::text2d_style cursor_label_style, value_label_style;
-	cgv::g2d::msdf_text_geometry cursor_labels, value_labels;
 
 	std::vector<unsigned> histogram;
 	unsigned hist_max = 1;
@@ -185,6 +186,7 @@ protected:
 	void remove_point(const cgv::g2d::draggable* ptr);
 	cgv::g2d::draggable* get_hit_point(const vec2& pos);
 	
+	void update_value_label_rectangle(vec2 position, const cgv::g2d::rect& parent_rectangle);
 	void handle_color_point_drag();
 	void handle_opacity_point_drag();
 	void handle_drag_end();

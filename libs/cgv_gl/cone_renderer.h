@@ -89,10 +89,11 @@ namespace cgv { // @<
 			template <typename T = float>
 
 			void set_radius_array(const context& ctx, const std::vector<T>& radii) { has_radii = true; set_attribute_array(ctx, "radius", radii); }
-			/// 
+			///
 			template <typename T = float>
-
 			void set_radius_array(const context& ctx, const T* radii, size_t nr_elements, unsigned stride_in_bytes = 0) { has_radii = true; set_attribute_array(ctx, "radius", radii, nr_elements, stride_in_bytes); }
+			/// remove the radius attribute
+			void remove_radius_array(const context& ctx);
 			/// use this function if you store spheres in vec4 with the 4th component the radius
 			template <typename T = float>
 			void set_sphere_array(const context& ctx, const std::vector<cgv::math::fvec<T, 4> >& spheres) {

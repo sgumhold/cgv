@@ -9,6 +9,7 @@
 #include <cgv_gl/cone_render_data.h>
 #include <cgv_gl/sphere_render_data.h>
 #include <cgv_post/depth_halos.h>
+#include <cgv_post/depth_masking.h>
 #include <cgv_post/outline.h>
 #include <cgv_post/screen_space_ambient_occlusion.h>
 #include <cgv_post/temporal_anti_aliasing.h>
@@ -25,6 +26,7 @@ protected:
 	view* view_ptr = nullptr;
 	
 	cgv::post::depth_halos dh;
+	cgv::post::depth_masking dm;
 	cgv::post::outline ol;
 	cgv::post::screen_space_ambient_occlusion ssao;
 	cgv::post::temporal_anti_aliasing taa;
@@ -42,11 +44,7 @@ protected:
 	bool use_colors;
 	bool use_illumination;
 	
-	
-	
-	float scale = 1.0f;
-
-
+	float scene_scale = 1.0f;
 
 public:
 	post_processing() : cgv::base::node("Post Processing Demo") {
@@ -108,6 +106,7 @@ public:
 	void clear(cgv::render::context& ctx) {
 		// post processing effects need to be destructed to free created resources
 		dh.destruct(ctx);
+		dm.destruct(ctx);
 		ol.destruct(ctx);
 		ssao.destruct(ctx);
 		taa.destruct(ctx);
@@ -118,6 +117,7 @@ public:
 
 		// all post_processing effects need to be initialized to create internally used objects and buffers
 		success &= dh.init(ctx);
+		success &= dm.init(ctx);
 		success &= ol.init(ctx);
 		success &= ssao.init(ctx);
 		success &= taa.init(ctx);
@@ -142,31 +142,35 @@ public:
 		if(!view_ptr && (view_ptr = find_view_as_node())) {
 			// temporal anti aliasing needs access to the current view
 			taa.set_view(view_ptr);
+
+			dm.set_view(view_ptr);
 		}
 
 		// call ensure in init_frame on post processing effects to make sure the internal buffers are created and sized accordingly
 		dh.ensure(ctx);
+		dm.ensure(ctx);
 		ol.ensure(ctx);
 		ssao.ensure(ctx);
 		taa.ensure(ctx);
 	}
 
 	void draw(cgv::render::context& ctx) {
-		// TODO: fxaa produces black backgorund
+		// TODO: fxaa produces black background
 
 		// Post processing effects need to encapsulate the draw calls of the geometry to which they shall be applied.
 		// Call begin() before drawing the main geometry to enable the post process framebuffers.
 		taa.begin(ctx);
 		dh.begin(ctx);
+		dm.begin(ctx);
 		ol.begin(ctx);
 		ssao.begin(ctx);
 
 		ctx.push_modelview_matrix();
 
 		cgv::mat4 M(0.0f);
-		M(0, 0) = scale;
-		M(1, 1) = scale;
-		M(2, 2) = scale;
+		M(0, 0) = scene_scale;
+		M(1, 1) = scene_scale;
+		M(2, 2) = scene_scale;
 		M(3, 3) = 1.0f;
 
 		ctx.mul_modelview_matrix(M);
@@ -187,6 +191,7 @@ public:
 		// Attention! When using multiple effects they must be ended in reverse order.
 		ssao.end(ctx);
 		ol.end(ctx);
+		dm.end(ctx);
 		dh.end(ctx);
 		taa.end(ctx);
 	}
@@ -257,44 +262,18 @@ public:
 		add_member_control(this, "Color", use_colors, "toggle");
 		add_member_control(this, "Illumination", use_illumination, "toggle");
 
-		add_member_control(this, "Scene Scale", scale, "value_slider", "min=0;max=10;step=0.01");
+		add_member_control(this, "Scene Scale", scene_scale, "value_slider", "min=0;max=10;step=0.01");
 
-		// TODO: add gui creators
-		if(begin_tree_node("TAA", taa, false)) {
-			align("\a");
-			//add_gui("", taa);
-			taa.create_gui(this);
-			align("\b");
-			end_tree_node(taa);
-		}
-
-		if(begin_tree_node("SSAO", ssao, false)) {
-			align("\a");
-			//add_gui("", ssao);
-			ssao.create_gui(this);
-			align("\b");
-			end_tree_node(ssao);
-		}
-
-		if(begin_tree_node("Depth Halos", dh, false)) {
-			align("\a");
-			//add_gui("", dh);
-			dh.create_gui(this);
-			align("\b");
-			end_tree_node(dh);
-		}
-
-		if(begin_tree_node("Outline", ol, false)) {
-			align("\a");
-			//add_gui("", dh);
-			ol.create_gui(this);
-			align("\b");
-			end_tree_node(ol);
-		}
+		taa.create_gui_tree_node(this, "TAA", false);
+		ssao.create_gui_tree_node(this, "SSAO", false);
+		dh.create_gui_tree_node(this, "Depth Halos", false);
+		dm.create_gui_tree_node(this, "Depth Masking", false);
+		ol.create_gui_tree_node(this, "Outline", false);
 	}
 };
 
 #include <cgv/base/register.h>
 
 /// register a factory to create new post processing demos
-cgv::base::factory_registration<post_processing> post_processing_fac("New/Demo/Post Processing");
+//cgv::base::factory_registration<post_processing> post_processing_fac("New/Demo/Post Processing");
+cgv::base::object_registration<post_processing> post_processing_fac("New/Demo/Post Processing");

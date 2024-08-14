@@ -1,5 +1,4 @@
 #include "GoICP.h"
-#include <queue>
 #include <cassert>
 
 using namespace std;

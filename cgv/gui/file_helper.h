@@ -1,5 +1,6 @@
 #pragma once
 
+#include <cgv/gui/property_string.h>
 #include <cgv/gui/provider.h>
 #include <cgv/utils/file.h>
 #include <cgv/utils/scan.h>
@@ -16,21 +17,21 @@ namespace gui {
 /// Set the provider pointer and mode in the constructor of your class:
 ///		input = cgv::gui::file_helper(this, "Title", cgv::gui::file_helper::Mode::kOpenAndSave);
 /// 
+/// Set filters to match file types as needed. The first filter that is added will be selected
+/// by default when openign the dialog.
+///		input.add_filter("Text Files", "txt");
+/// 
 /// Create the gui in your create_gui method:
 ///		input.create_gui("Label");
 /// 
 /// Testing for value changes in on_set(void* member_ptr):
 ///		if(member_ptr == &input.file_name) {
-///			if(input.save()) {
+///			if(input.is_save_action()) {
 ///				...handle save
 ///			} else {
 ///				...handle open
 ///			}
 ///		}
-/// 
-/// Manually updating the file_name:
-///		input.file_name = "some file name";
-///		input.update();
 class file_helper {
 public:
 	/// @brief Operation mode enum
@@ -39,22 +40,63 @@ public:
 		kSave,
 		kOpenAndSave
 	};
-protected:
+
+private:
 	/// The pointer to the gui provider for the control
-	cgv::gui::provider* provider_ptr = nullptr;
+	provider* provider_ptr_ = nullptr;
+
 	/// Operating mode of the control that controls the visibility of open and save buttons. Defaults to Mode::kOpen.
-	Mode mode = Mode::kOpen;
-	/// The title shown in the file system dialog
-	std::string title = "";
-	/// The filter string used by the gui control, controlling the allowed file types
-	std::string filter = "";
+	Mode mode_ = Mode::kOpen;
+	/// The title shown in the file system dialog in open mode
+	std::string open_title_ = "";
+	/// The title shown in the file system dialog in save mode
+	std::string save_title_ = "";
+	/// The filter string used to control the allowed file types in open mode
+	std::string open_filter_ = "";
+	/// The filter string used to control the allowed file types in save mode
+	std::string save_filter_ = "";
+	/// The default path used for the file system dialog in open mode
+	std::string open_path_ = "";
+	/// The default path used for the file system dialog in save mode
+	std::string save_path_ = "";
+
+	/// @brief Return true if the given mode supports opening files, false otherwise.
+	bool mode_allows_open(Mode mode) const {
+		return mode == Mode::kOpenAndSave || mode == Mode::kOpen;
+	}
+
+	/// @brief Return true if the given mode supports saving files, false otherwise.
+	bool mode_allows_save(Mode mode) const {
+		return mode == Mode::kOpenAndSave || mode == Mode::kSave;
+	}
+
+	/// @brief Extend the given filter string with entry
+	///
+	/// Add the given entry to the back of the given filter string using '|' as separator if
+	/// the filter string is not empty.
+	///
+	/// @param entry The entry to add.
+	/// @param to_filter The filter string to extend.
+	void extend_filter_string(const std::string& entry, std::string& to_filter) {
+		if(!to_filter.empty())
+			to_filter += "|";
+
+		to_filter += entry;
+	}
+
+	/// @brief Add entry to the filter string/s based on to the value of the operation mode member.
+	void add_filter_entry(const std::string& entry, Mode mode) {
+		if(mode_allows_open(mode))
+			extend_filter_string(entry, open_filter_);
+
+		if(mode_allows_save(mode))
+			extend_filter_string(entry, save_filter_);
+	}
 
 public:
-	/// Whether to add a default filter matching all files
-	bool allow_all_files = true;
-	/// Whether to default to the all files filter when opening the dialog
-	bool default_to_all_files = false;
-	/// The current store file name
+	/// The current file name.
+	/// This member is public to make it accessible to the GUI control flow. It should never be set directly
+	/// and set_file_name should be used instead.
 	std::string file_name = "";
 
 	/// @brief Construct with default parameters
@@ -67,12 +109,97 @@ public:
 	/// @param p The gui provider pointer.
 	/// @param title The title shown in the file dialog.
 	/// @param mode The operating mode.
-	file_helper(cgv::gui::provider* p, const std::string& title, Mode mode) : provider_ptr(p), title(title), mode(mode) {}
+	file_helper(provider* p, const std::string& title, Mode mode) : provider_ptr_(p), mode_(mode) {
+		if(mode_allows_open(mode_))
+			open_title_ = title;
 
-	/// Clear all custom filters
-	void clear_filter() {
+		if(mode_allows_save(mode_))
+			save_title_ = title;
+	}
 
-		filter = "";
+	/// @brief Return true if this file_helper supports opening files, false otherwise.
+	bool can_open() const {
+		return mode_allows_open(mode_);
+	}
+
+	/// @brief Return true if this file_helper supports saving files, false otherwise.
+	bool can_save() const {
+		return mode_allows_save(mode_);
+	}
+
+	/// @brief Get the title of the specified operation Mode
+	/// 
+	/// @param mode The optional operation Mode.
+	/// @return The title string.
+	const std::string& get_title(Mode mode = Mode::kOpenAndSave) const {
+		if(mode_allows_open(mode))
+			return open_title_;
+
+		return save_title_;
+	}
+
+	/// @brief Set the title of the specified operation Mode
+	/// 
+	/// @param title The new title.
+	/// @param mode The operation Mode.
+	void set_title(const std::string& title, Mode mode = Mode::kOpenAndSave) {
+		if(mode_allows_open(mode))
+			open_title_ = title;
+
+		if(mode_allows_save(mode))
+			save_title_ = title;
+
+		if(provider_ptr_) {
+			provider_ptr_->set_control_property(file_name, "open_title", open_title_);
+			provider_ptr_->set_control_property(file_name, "save_title", save_title_);
+		}
+	}
+
+	/// @brief Get the default path of the specified operation Mode
+	/// 
+	/// @param mode The operation Mode.
+	/// @return The default path string.
+	const std::string& get_default_path(Mode mode = Mode::kOpenAndSave) const {
+		if(mode_allows_open(mode))
+			return open_path_;
+
+		return save_path_;
+	}
+
+	/// @brief Set the default path of the specified operation Mode
+	/// 
+	/// @param path The new defautl path.
+	/// @param mode The operation Mode.
+	void set_default_path(const std::string& path, Mode mode = Mode::kOpenAndSave) {
+		if(mode_allows_open(mode))
+			open_path_ = path;
+
+		if(mode_allows_save(mode))
+			save_path_ = path;
+
+		if(provider_ptr_) {
+			provider_ptr_->set_control_property(file_name, "open_path", open_path_);
+			provider_ptr_->set_control_property(file_name, "save_path", save_path_);
+		}
+	}
+
+	/// @brief Set the current file name
+	/// 
+	/// @param file_name The file name.
+	void set_file_name(const std::string& file_name) {
+		this->file_name = file_name;
+
+		if(provider_ptr_)
+			provider_ptr_->update_member(&this->file_name);
+	}
+
+	/// @brief Clear all custom filters
+	/// 
+	/// After this method has been called new filters may be set.
+	/// The gui must be redrawn manually in order for this change to take effect.
+	void clear_filters() {
+		open_filter_ = "";
+		save_filter_ = "";
 	}
 
 	/// @brief Add a custom filter matching a single extension
@@ -84,12 +211,10 @@ public:
 	/// 
 	/// @param name The display name.
 	/// @param extension The extensions matched.
-	void add_filter(const std::string& name, const std::string& extension) {
-
-		if(!filter.empty())
-			filter += "|";
-
-		filter += name + " (*." + extension + "):*." + extension;
+	/// @param mode The operation mode where this filter is used (defaults to kOpenAndSave).
+	void add_filter(const std::string& name, const std::string& extension, Mode mode = Mode::kOpenAndSave) {
+		std::string entry = name + " (*." + extension + "):*." + extension;
+		add_filter_entry(entry, mode);
 	}
 
 	/// @brief Add a custom filter matching multiple extensions
@@ -101,26 +226,21 @@ public:
 	/// 
 	/// @param name The display name.
 	/// @param extension The extensions matched.
-	void add_multi_filter(const std::string& name, const std::vector<std::string>& extensions) {
-
-		if(!filter.empty())
-			filter += "|";
-
-		filter += name + " (*." + cgv::utils::join(extensions, ", *.") + "):*." + cgv::utils::join(extensions, ";*.");
+	/// @param mode The operation mode where this filter is used (defaults to kOpenAndSave).
+	void add_multi_filter(const std::string& name, const std::vector<std::string>& extensions, Mode mode = Mode::kOpenAndSave) {
+		std::string entry = name + " (*." + cgv::utils::join(extensions, ", *.") + "):*." + cgv::utils::join(extensions, ";*.");
+		add_filter_entry(entry, mode);
 	}
 
-	/// Update the gui control after changing file_name
-	void update() {
-
-		if(provider_ptr)
-			provider_ptr->update_member(&file_name);
+	/// @brief Add a filter that matches all files
+	void add_filter_for_all_files(Mode mode = Mode::kOpenAndSave) {
+		add_filter_entry("All Files (*.*):*.*", mode);
 	}
 
 	/// @brief Compare the extension of file_name to the given string (case insensitive)
 	/// @param extension The extension to compare against.
 	/// @return True if the stored file_name has extension, false otherwise.
 	bool compare_extension(const std::string& extension) const {
-
 		return cgv::utils::to_upper(cgv::utils::file::get_extension(file_name)) == cgv::utils::to_upper(extension);
 	}
 
@@ -134,12 +254,11 @@ public:
 	/// @param force Force adding the extension.
 	/// @return The extension of the file_name after this operation.
 	const std::string ensure_extension(const std::string& extension, bool force = false) {
-
 		std::string current_extension = cgv::utils::file::get_extension(file_name);
 
 		if(cgv::utils::to_upper(current_extension) != cgv::utils::to_upper(extension)) {
 			if(current_extension.empty() || force) {
-				file_name += "." + extension;
+				set_file_name(file_name + "." + extension);
 				return extension;
 			}
 		}
@@ -149,120 +268,32 @@ public:
 
 	/// @brief Create the gui control for the file input
 	/// @param label The control label
-	/// @param options Additional options applied to the string input control.
-	void create_gui(const std::string& label, const std::string& options = "") {
+	/// @param extra_options Additional options applied to the string input control.
+	void create_gui(const std::string& label, const std::string& extra_options = "") {
+		property_string options;
 
-		std::string configuration = "";
-		switch(mode) {
-		case Mode::kOpen: configuration = "open=true"; break;
-		case Mode::kSave: configuration = "save=true"; break;
-		case Mode::kOpenAndSave: configuration = "open=true;save=true"; break;
-		default: "open=false;save=false"; break;
-		}
+		options.add("open", can_open());
+		options.add("save", can_save());
 
-		std::string all_files_filter = allow_all_files ? "All Files (*.*):*.*" : "";
-		std::string file_filter = filter;
+		options.add_bracketed("open_title", open_title_);
+		options.add_bracketed("save_title", save_title_);
 
-		if(default_to_all_files)
-			file_filter = all_files_filter + "|" + filter;
-		else
-			file_filter = filter + "|" + all_files_filter;
+		options.add_bracketed("open_filter", open_filter_);
+		options.add_bracketed("save_filter", save_filter_);
 
-		if(provider_ptr)
-			provider_ptr->add_gui(label, file_name, "file_name", "title='" + title + "';filter='" + file_filter + "';" + configuration + ";" + options);
+		options.add_bracketed("open_path", open_path_);
+		options.add_bracketed("save_path", save_path_);
+
+		options.add("", extra_options);
+
+		if(provider_ptr_)
+			provider_ptr_->add_gui(label, file_name, "file_name", options);
 	}
 
 	/// @brief Check whether a save action was performed
 	/// @return True if a save action occured, false otherwise.
-	bool save() const {
-
-		return provider_ptr ? provider_ptr->ref_tree_node_visible_flag(file_name) : false;
-	}
-};
-
-/// @brief A convenience class that provides a directory input gui control
-///
-/// Usage:
-/// Add as a member to your provider class:
-///		cgv::gui::directory_helper input;
-/// 
-/// Set the provider pointer and mode in the constructor of your class:
-///		input = cgv::gui::file_helper(this, "Title", cgv::gui::file_helper::Mode::kOpenAndSave);
-/// 
-/// Create the gui in your create_gui method:
-///		input.create_gui("Label");
-/// 
-/// Testing for value changes in on_set(void* member_ptr):
-///		if(member_ptr == &input.file_name) {
-///			if(input.save()) {
-///				...handle save
-///			} else {
-///				...handle open
-///			}
-///		}
-/// 
-/// Manually updating the directory_name:
-///		input.directory_name = "some directory name";
-///		input.update();
-class directory_helper {
-public:
-	/// @brief Operation mode enum
-	enum class Mode {
-		kOpen,
-		kSave
-	};
-protected:
-	/// The pointer to the gui provider for the control
-	cgv::gui::provider* provider_ptr = nullptr;
-	/// Operating mode of the control that controls the visibility of open and save buttons. Defaults to Mode::kOpen.
-	Mode mode = Mode::kOpen;
-	/// The title shown in the file system dialog
-	std::string title = "";
-
-public:
-	/// The current store file name
-	std::string directory_name = "";
-
-	/// @brief Construct with default parameters
-	///
-	/// Default constructor is given to enable using this class as a stack variable member in other classes.
-	/// Before usage it must be re-assigned with a valid provider pointer.
-	directory_helper() {}
-
-	/// @brief Construct with arguments
-	/// @param p The gui provider pointer.
-	/// @param title The title shown in the directory dialog.
-	/// @param mode The operating mode.
-	directory_helper(cgv::gui::provider* p, const std::string& title, Mode mode) : provider_ptr(p), title(title), mode(mode) {}
-
-	/// Update the gui control after changing directory_name
-	void update() {
-
-		if(provider_ptr)
-			provider_ptr->update_member(&directory_name);
-	}
-
-	/// @brief Create the gui control for the directoy input
-	/// @param label The control label
-	/// @param options Additional options applied to the string input control.
-	void create_gui(const std::string& label, const std::string& options = "") {
-
-		std::string configuration = "";
-		switch(mode) {
-		case Mode::kOpen: configuration = "open=true"; break;
-		case Mode::kSave: configuration = "save=true"; break;
-		default: "open=false;save=false"; break;
-		}
-
-		if(provider_ptr)
-			provider_ptr->add_gui(label, directory_name, "directory", "title='" + title + "';" + configuration + ";" + options);
-	}
-
-	/// @brief Check whether a save action was performed
-	/// @return True if a save action occured, false otherwise.
-	bool save() const {
-
-		return provider_ptr ? provider_ptr->ref_tree_node_visible_flag(directory_name) : false;
+	bool is_save_action() const {
+		return provider_ptr_ ? provider_ptr_->ref_tree_node_visible_flag(file_name) : false;
 	}
 };
 

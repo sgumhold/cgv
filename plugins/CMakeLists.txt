@@ -7,6 +7,7 @@ endif()
 # converting them to the new system
 add_subdirectory(camera_animator)
 add_subdirectory(cg_ext)
+add_subdirectory(cg_g2d)
 add_subdirectory(cg_icons)
 add_subdirectory(cmf_tt_gl_font)
 add_subdirectory(cg_fltk)

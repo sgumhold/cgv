@@ -51,6 +51,8 @@ namespace cgv { // @<
 			/// template method to set the group index color attribute from a vertex buffer object, the element type must be given as explicit template parameter
 			template <typename T>
 			void set_group_index_array(const context& ctx, const vertex_buffer& vbo, size_t offset_in_bytes, size_t nr_elements, unsigned stride_in_bytes = 0) { set_group_index_array(ctx, type_descriptor(element_descriptor_traits<T>::get_type_descriptor(T()), true), vbo, offset_in_bytes, nr_elements, stride_in_bytes); }
+			/// remove the group index attribute
+			void remove_group_index_array(const context& ctx);
 			/// template method to set the group colors from a vector of colors of type T
 			template <typename T>
 			void set_group_colors(const context& ctx, const std::vector<T>& colors) { has_group_colors = true;  ref_prog().set_uniform_array(ctx, "group_colors", colors); }

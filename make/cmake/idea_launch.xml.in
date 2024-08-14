@@ -1,0 +1,11 @@
+<component name="ProjectRunConfigurationManager">
+  <configuration default="false" name="@IDEA_CONFIG_NAME@" type="CMakeRunConfiguration" factoryName="Application" PROGRAM_PARAMS="@IDEA_LAUNCH_ARGS@" REDIRECT_INPUT="false" ELEVATE="false" USE_EXTERNAL_CONSOLE="false" EMULATE_TERMINAL="true" WORKING_DIR="@IDEA_WORKING_DIR@" PASS_PARENT_ENVS_2="true" PROJECT_NAME="@CMAKE_PROJECT_NAME@" TARGET_NAME="@IDEA_TARGET_NAME@" CONFIG_NAME="Debug" RUN_PATH="@IDEA_LAUNCH_CMD@">
+    <envs>
+      <env name="CGV_DIR" value="@CGV_DIR@" />
+      <env name="CGV_OPTIONS" value="@CGV_OPTIONS@" />
+    </envs>
+    <method v="2">
+      <option name="com.jetbrains.cidr.execution.CidrBuildBeforeRunTaskProvider$BuildBeforeRunTask" enabled="true" />
+    </method>
+  </configuration>
+</component>
