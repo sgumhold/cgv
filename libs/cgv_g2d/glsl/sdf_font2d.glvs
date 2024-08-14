@@ -1,7 +1,16 @@
 #version 460
 
+//***** begin interface of quaternion.glsl ***********************************
+vec4 unit_quaternion();
+vec3 rotate_vector_with_quaternion(in vec3 preimage, in vec4 q);
+vec3 inverse_rotate_vector_with_quaternion(in vec3 v, in vec4 q);
+void quaternion_to_axes(in vec4 q, out vec3 x, out vec3 y, out vec3 z);
+void quaternion_to_matrix(in vec4 q, out mat3 M);
+void rigid_to_matrix(in vec4 q, in vec3 t, out mat4 M);
+//***** end interface of quaternion.glsl ***********************************
+
 //***** begin interface of shape2d.glsl ***********************************
-uniform bool origin_upper_left = false;
+uniform bool origin_top_left = false;
 vec4 transform_world_to_window_space(vec2 p);
 //***** end interface of shape2d.glsl ***********************************
 
@@ -17,73 +26,42 @@ struct vertex {
 	vec4 texcoords;
 };
 
-layout (std430, binding = 0) readonly buffer data_buffer {
-	vertex in_data[];
-};
+layout(location = 0) in vec4 quad;
+layout(location = 1) in vec4 texcoord;
 
-uniform vec2 position_offset;
-uniform vec2 alignment_offset_factors;
-uniform vec2 text_size;
 uniform float font_size = 32.0;
-uniform float angle;
-
-//uniform bool align_to_pixels;
+uniform vec2 text_size;
+uniform vec3 translation;
+uniform vec4 rotation;
+uniform vec2 percentual_offset;
 
 out vec2 tex_coord;
 
-mat2 rotate(in float angle) {
-	float c = cos(angle);
-	float s = sin(angle);
-	mat2 M = mat2(
-		c, s,
-		-s, c
-	);
-	return M;
-}
-
 void main() {
-	int id = gl_VertexID;
-	vec2 corner = corners[id];
+	// interpolate local vertex position and texture coordinates based on corner
+	vec2 corner = corners[gl_VertexID];
+	vec2 position = mix(quad.xy, quad.zw, corner);
+	tex_coord = mix(texcoord.xy, texcoord.zw, corner);
 
-	vertex v = in_data[gl_BaseInstance + gl_InstanceID];
-	v.position_size *= font_size * text_size.y;
-
-	mat2 R = rotate(radians(angle));
-
-	tex_coord = vec2(mix(v.texcoords.xy, v.texcoords.zw, corner));
-
-	if(origin_upper_left)
-		corner.y = 1.0 - corner.y;
-
-	vec2 final_position = v.position_size.xy;
-	vec2 alignment_factors = alignment_offset_factors;
-	if(origin_upper_left) {
-		final_position.y = -(final_position.y + v.position_size.w);
-		alignment_factors.y = -alignment_factors.y;
+	vec2 adjusted_percentual_offset = percentual_offset;
+	if(origin_top_left) {
+		position.y = -position.y;
+		adjusted_percentual_offset.y = -adjusted_percentual_offset.y;
 	}
 
+	// compute total scale factor from font size and text scale
+	vec2 scale = font_size * text_size;
+
+	// scale normalized position by scale factor
+	position *= scale.y;
+
 	// offset local glyph position by text alignment
-	final_position += text_size * font_size * alignment_factors;
+	position += scale * adjusted_percentual_offset;
 	
-	// rotate local glyph position	
-	final_position = R * final_position;
+	// transform vertex according to text translation and rotation
+	mat4 T;
+	rigid_to_matrix(rotation, translation, T);
+	position = (T * vec4(position, 0.0, 1.0)).xy;
 	
-	// move glyph to global position
-	final_position += position_offset;
-
-	vec2 size = v.position_size.zw;
-	
-	// transform to pixel coordinates
-	corner *= size;
-
-	// rotate
-	corner = R * corner;
-
-	// offset
-	corner += final_position;
-
-	//if(align_to_pixels)
-	//	corner = round(corner);
-	
-	gl_Position = transform_world_to_window_space(corner);
+	gl_Position = transform_world_to_window_space(position);
 }

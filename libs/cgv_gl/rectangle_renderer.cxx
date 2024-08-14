@@ -93,6 +93,34 @@ namespace cgv {
 			has_border_infos = true;
 			set_attribute_array(ctx, "border_info", element_type, vbo, offset_in_bytes, nr_elements, stride_in_bytes);
 		}
+		void rectangle_renderer::remove_extent_array(const context& ctx) {
+			has_extents = false;
+			remove_attribute_array(ctx, "extent");
+		}
+		void rectangle_renderer::remove_secondary_color_array(const context& ctx) {
+			has_secondary_colors = false;
+			remove_attribute_array(ctx, "secondary_color");
+		}
+		void rectangle_renderer::remove_border_color_array(const context& ctx) {
+			has_border_colors = false;
+			remove_attribute_array(ctx, "border_color");
+		}
+		void rectangle_renderer::remove_border_info_array(const context& ctx) {
+			has_border_infos = false;
+			remove_attribute_array(ctx, "border_info");
+		}
+		void rectangle_renderer::remove_depth_offset_array(const context& ctx) {
+			has_depth_offsets = false;
+			remove_attribute_array(ctx, "depth_offset");
+		}
+		void rectangle_renderer::remove_translation_array(const context& ctx) {
+			has_translations = false;
+			remove_attribute_array(ctx, "translation");
+		}
+		void rectangle_renderer::remove_rotation_array(const context& ctx) {
+			has_rotations = false;
+			remove_attribute_array(ctx, "rotation");
+		}
 		void rectangle_renderer::enable_attribute_array_manager(const context& ctx, attribute_array_manager& aam)
 		{
 			surface_renderer::enable_attribute_array_manager(ctx, aam);

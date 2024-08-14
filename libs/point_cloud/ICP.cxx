@@ -9,12 +9,17 @@ namespace cgv {
 		ICP::ICP() {
 			sourceCloud = nullptr;
 			targetCloud = nullptr;
-			tree = nullptr;
+			//tree = nullptr;
+			source_tree = nullptr;
+			target_tree = nullptr;
 			crspd_source = nullptr;
 			crspd_target = nullptr;
 			this->maxIterations = 400;
 			this->numRandomSamples = 400;
 			this->eps = 1e-8;
+
+			//ann_tree* tree = new ann_tree();
+			//tree->build(*sourceCloud);
 		}
 
 		ICP::~ICP() {
@@ -22,29 +27,44 @@ namespace cgv {
 		}
 
 		void ICP::build_ann_tree()
+		{ 
+			;
+		}
+
+		void ICP::set_source_tree(const point_cloud& inputCloud)
+		{
+			if (!sourceCloud) {
+				std::cerr << "ICP::build_ann_tree: source cloud missing, can't build ann tree\n";
+				return;
+			}
+			source_tree = std::make_shared<ann_tree>();
+			source_tree->build(*sourceCloud);
+		}
+
+		void ICP::set_target_tree(const point_cloud& inputCloud)
 		{
 			if (!targetCloud) {
 				std::cerr << "ICP::build_ann_tree: target cloud missing, can't build ann tree\n";
 				return;
 			}
-
-			tree = std::make_shared<ann_tree>();
-			tree->build(*targetCloud);
+			target_tree = std::make_shared<ann_tree>();
+			target_tree->build(*targetCloud);
 		}
-
 		void ICP::clear()
 		{
-			tree = nullptr;
+			source_tree = nullptr;
+			target_tree = nullptr;
 		}
 
 		void ICP::set_source_cloud(const point_cloud& inputCloud) {
 			sourceCloud = &inputCloud;
 		}
 
-		void ICP::set_target_cloud(const point_cloud& inputCloud, std::shared_ptr<ann_tree> precomputed_tree) {
+		void ICP::set_target_cloud(const point_cloud& inputCloud, std::shared_ptr<ann_tree> precomputed_tree)
+		{
 			targetCloud = &inputCloud;
 			if (precomputed_tree)
-				tree = precomputed_tree;
+				target_tree = precomputed_tree;
 		}
 
 		void ICP::set_iterations(int Iter) {
@@ -62,9 +82,10 @@ namespace cgv {
 		///output the rotation matrix and translation vector
 		void ICP::reg_icp(Mat& rotation_mat, Dir& translation_vec)
 		{
-			if (!tree) {
+			if (!target_tree) {
 				/// create the ann tree
-				build_ann_tree();
+				//build_ann_tree();
+				set_target_tree(*targetCloud);
 				//std::cerr << "ICP::reg_icp: called reg_icp before initialization!\n";
 			}
 			if (!(sourceCloud && targetCloud)) {
@@ -96,7 +117,7 @@ namespace cgv {
 			/// sample the source point cloud
 			if (numRandomSamples > 0 && numRandomSamples < sourceCloud->get_nr_points()) {
 				std::vector<int> numbers(sourceCloud->get_nr_points());
-				for (int i = 0; i < sourceCloud->get_nr_points(); ++i)
+				for (unsigned int i = 0; i < sourceCloud->get_nr_points(); ++i)
 					numbers[i] = i;
 				std::random_device rd;
 				std::default_random_engine rng(std::time(0));
@@ -105,7 +126,7 @@ namespace cgv {
 				S.resize(numRandomSamples);
 				Q.resize(numRandomSamples);
 				std::srand(std::time(0));
-				for (int i = 0; i < numRandomSamples; i++)
+				for (unsigned int i = 0; i < numRandomSamples; i++)
 					S.pnt(i) = sourceCloud->pnt(numbers[i]);
 			}
 			else {
@@ -121,17 +142,17 @@ namespace cgv {
 			for (int iter = 0; iter < maxIterations; iter++)
 			{
 				// update S
-				for (int i = 0; i < S.get_nr_points(); i++)
+				for (unsigned int i = 0; i < S.get_nr_points(); i++)
 					S.pnt(i) = rotation_update_mat * S.pnt(i) + translation_update_vec;
 				// update center
 				get_center_point(S, source_center);
 			
 				fA.zeros();
-				for (int i = 0; i < S.get_nr_points(); i++)
+				for (unsigned int i = 0; i < S.get_nr_points(); i++)
 				{
 					/// get the closest point to p from the target point cloud
 					Pnt p = S.pnt(i);
-					Pnt q = targetCloud->pnt(tree->find_closest(p));
+					Pnt q = targetCloud->pnt(target_tree->find_closest(p));
 					Q.pnt(i) = q; 
 					fA += Mat(q - target_center, p - source_center);
 				}
@@ -152,7 +173,7 @@ namespace cgv {
 				translation_update_vec = target_center - rotation_update_mat * source_center;
 				///calculate error function E(R,t)
 				cost = 0.f;
-				for (int i = 0; i < S.get_nr_points(); i++) {
+				for (unsigned int i = 0; i < S.get_nr_points(); i++) {
 					///the new rotation matrix: rotation_update_mat
 					cost += error(Q.pnt(i), S.pnt(i), rotation_update_mat, translation_update_vec);
 				}
@@ -193,8 +214,17 @@ namespace cgv {
 			source_center.zeros();
 			target_center.zeros();
 			/// create the ann tree
-			ann_tree* tree = new ann_tree();
-			tree->build(*targetCloud);
+			if (!target_tree && !source_tree)
+			{
+				/// create the ann tree
+				//build_ann_tree();
+				set_target_tree(*targetCloud);
+				set_source_tree(*sourceCloud);
+			}
+			if (!(sourceCloud && targetCloud)) {
+				std::cerr << "ICP::reg_icp: source or target cloud not set!\n";
+				return;
+			}
 			size_t num_source_points = sourceCloud->get_nr_points();
 			
 			get_center_point(*targetCloud, target_center);
@@ -231,7 +261,7 @@ namespace cgv {
 				Q.clear();
 				source_center = rotation_mat * source_center + translation_vec;
 				fA.zeros();
-				for (int i = 0; i < sourceCloud->get_nr_points(); i++)
+				for (unsigned int i = 0; i < sourceCloud->get_nr_points(); i++)
 				{
 					//int randSample = std::rand() % sourceCloud->get_nr_points();
 					/// sample the source point cloud
@@ -257,7 +287,7 @@ namespace cgv {
 				Mat rotation_update_mat = fU * cgv::math::transpose(fV);
 				Dir translation_update_vec = target_center - rotation_update_mat * source_center;
 				///calculate error function E(R,t)
-				for (int i = 0; i < S.get_nr_points(); i++) {
+				for (unsigned int i = 0; i < S.get_nr_points(); i++) {
 					///transform Pi to R*Pi + t
 					S.pnt(i) = rotation_mat * S.pnt(i) + translation_vec;
 					///the new rotation matrix: rotation_update_mat
@@ -280,17 +310,16 @@ namespace cgv {
 				// this is for drawing corresponding lines after transforming
 				pc1.clear();
 				pc2.clear();
-				for (int i = 0; i < S.get_nr_points(); i++) {
+				for (unsigned int i = 0; i < S.get_nr_points(); i++) {
 					// this is for drawing corresponding lines after transforming
 					S.pnt(i) = rotation_mat * S.pnt(i) + translation_vec;
 					pc1.add_point(S.pnt(i));
 				}
-				for (int i = 0; i < Q.get_nr_points(); i++)
+				for (unsigned int i = 0; i < Q.get_nr_points(); i++)
 					pc2.add_point(Q.pnt(i));
 			}
 			std::cout << "rotate_mat: \n" << rotation_mat << std::endl;
 			std::cout << "translation_vec: \n" << translation_vec << std::endl;
-			delete tree;
 		}
 		///print rotation matrix
 		void ICP::print_rotation(float* rotation) {
@@ -307,23 +336,16 @@ namespace cgv {
 
 		bool ICP::correspondences_filter(const point_cloud& source, const point_cloud& target, Pnt& source_p, Pnt& target_p)
 		{
-			ann_tree* tree = new ann_tree();
-			tree->build(target);
-			ann_tree* tree_inv = new ann_tree();
-			tree_inv->build(source);
-			float dist, dist_inv = 0.0;
+			// Use the already built trees
 			int randSample = std::rand() % source.get_nr_points();
 			source_p = source.pnt(randSample);
-			target_p = target.pnt(tree->find_closest(source_p));
-			//std::cout << "source_p: " << source_p << "target_p: " << target_p << std::endl;
-			dist = dis_pts(source_p, target_p);
-			Pnt source_p_inv = source.pnt(tree_inv->find_closest(target_p));
-			dist_inv = dis_pts(source_p_inv, target_p);
-			if (dist > 1.5 * dist_inv || dist < 0.667 * dist_inv)
-			{
-				return false;
-			}
-			return true;
+			target_p = target.pnt(target_tree->find_closest(source_p));
+
+			float dist = dis_pts(source_p, target_p);
+			Pnt source_p_inv = source.pnt(source_tree->find_closest(target_p));
+			float dist_inv = dis_pts(source_p_inv, target_p);
+
+			return dist <= 1.5 * dist_inv && dist >= 0.667 * dist_inv;
 		}
 
 		float ICP::dis_pts(const Pnt& source_p, const Pnt& target_p)

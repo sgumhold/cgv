@@ -5,7 +5,7 @@
 #include <cgv/utils/convert_string.h>
 #include <cgv_app/themed_canvas_overlay.h>
 #include <cgv_g2d/generic_2d_renderer.h>
-#include <cgv_g2d/msdf_gl_canvas_font_renderer.h>
+#include <cgv_g2d/msdf_text_geometry.h>
 
 #include "lib_begin.h"
 
@@ -13,12 +13,13 @@ namespace cgv {
 namespace app {
 
 class CGV_API color_map_legend : public themed_canvas_overlay {
-protected:
+public:
 	enum OrientationOption {
 		OO_HORIZONTAL,
 		OO_VERTICAL
 	};
 
+protected:
 	struct layout_attributes {
 		int padding = 0;
 		int label_space = 12;
@@ -105,7 +106,7 @@ protected:
 	tick_geometry ticks;
 
 	void init_styles() override;
-	void create_labels();
+	void create_labels(const cgv::render::context& ctx);
 	void create_ticks();
 
 	void create_gui_impl() override;
@@ -128,6 +129,12 @@ public:
 	void set_height(size_t h);
 
 	void set_title(const std::string& t);
+
+	OrientationOption get_orientation() const { return layout.orientation; }
+	void set_orientation(OrientationOption orientation);
+
+	AlignmentOption get_label_alignment() const { return layout.label_alignment; }
+	void set_label_alignment(AlignmentOption alignment);
 
 	vec2 get_range() const { return value_range; }
 	void set_range(vec2 r);

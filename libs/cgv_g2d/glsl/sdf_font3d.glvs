@@ -1,0 +1,62 @@
+#version 460
+
+//***** begin interface of quaternion.glsl ***********************************
+vec4 unit_quaternion();
+vec3 rotate_vector_with_quaternion(in vec3 preimage, in vec4 q);
+vec3 inverse_rotate_vector_with_quaternion(in vec3 v, in vec4 q);
+void quaternion_to_axes(in vec4 q, out vec3 x, out vec3 y, out vec3 z);
+void quaternion_to_matrix(in vec4 q, out mat3 M);
+void rigid_to_matrix(in vec4 q, in vec3 t, out mat4 M);
+//***** end interface of quaternion.glsl ***********************************
+
+//***** begin interface of view.glsl ***********************************
+mat4 get_modelview_matrix();
+mat4 get_projection_matrix();
+mat4 get_modelview_projection_matrix();
+mat4 get_inverse_modelview_matrix();
+mat4 get_inverse_modelview_projection_matrix();
+mat3 get_normal_matrix();
+mat3 get_inverse_normal_matrix();
+//***** end interface of view.glsl ***********************************
+
+const vec2 corners[4] = vec2[](
+	vec2(0.0, 0.0),
+	vec2(1.0, 0.0),
+	vec2(0.0, 1.0),
+	vec2(1.0, 1.0)
+);
+
+struct vertex {
+	vec4 position_size;
+	vec4 texcoords;
+};
+
+layout(location = 0) in vec4 quad;
+layout(location = 1) in vec4 texcoord;
+
+uniform vec2 text_size;
+uniform vec3 translation;
+uniform vec4 rotation;
+uniform vec2 percentual_offset;
+
+out vec2 tex_coord;
+
+void main() {
+	// interpolate local vertex position and texture coordinates based on corner
+	vec2 corner = corners[gl_VertexID];
+	vec2 position = mix(quad.xy, quad.zw, corner);
+	tex_coord = mix(texcoord.xy, texcoord.zw, corner);
+
+	// scale normalized position by font size and text scale
+	position *= text_size.y;
+
+	// offset local glyph position by text alignment
+	position += text_size * percentual_offset;
+	
+	// transform vertex according to text translation and rotation
+	mat4 T;
+	rigid_to_matrix(rotation, translation, T);
+	mat4 M = get_modelview_matrix() * T;
+
+	gl_Position = get_projection_matrix() * M * vec4(position, 0.0, 1.0);
+}

@@ -83,12 +83,12 @@ public:
 	fvec() {}
 	///creates a vector, where all N components are initialized to the constant value a
 	fvec(const T &a) { std::fill(v, v+N, a); }
-	/// construct and init first two coordinates to the given values	
+	/// construct and init first two coordinates to the given values
 	fvec(const T &x, const T &y) { set(x,y); }
-	/// construct and init first three coordinates to the given values	
+	/// construct and init first three coordinates to the given values
 	fvec(const T &x, const T &y, const T &z) { set(x,y,z); }
-	/// construct and init first four coordinates to the given values	
-	fvec(const T &x, const T &y, const T &z,const T &w) { set(x,y,z,w); }	
+	/// construct and init first four coordinates to the given values
+	fvec(const T &x, const T &y, const T &z,const T &w) { set(x,y,z,w); }
 	///creates a vector from a n-element array a, if n < N remaining N-n elements are set to zero
 	fvec(cgv::type::uint32_type n, const T *a) {
 		cgv::type::uint32_type i, min_n = n < N ? n : N;
@@ -97,7 +97,7 @@ public:
 	}
 	///creates a column vector initialized to array of a different type with zeros filled to not copied components
 	template <typename S>
-	fvec(cgv::type::uint32_type n, const S *a) { 
+	fvec(cgv::type::uint32_type n, const S *a) {
 		cgv::type::uint32_type i, min_n = n < N ? n : N;
 		for (i=0; i<min_n; ++i) v[i] = (T)a[i];
 		for (; i < N; ++i) v[i] = T(0);
@@ -118,7 +118,7 @@ public:
 	///assign vector rhs, if vector and rhs have different sizes, vector has been resized to match the size of
 	fvec & operator = (const fvec<T,N> &rhs) { if (this != &rhs) std::copy(rhs.v, rhs.v+N, v); return *this; }
 	/// set all components of vector to constant value a
-	fvec & operator = (const T &a) { std::fill(v, v+N, a); return *this; }	
+	fvec & operator = (const T &a) { std::fill(v, v+N, a); return *this; }
 	/// set to the contents of the given std::array with same size
 	fvec & operator = (const std::array<T, N>& arr) { std::copy(arr.cbegin(), arr.cend(), v); return *this; }
 	/// set the first two components
@@ -244,7 +244,7 @@ public:
 	///length of the vector L2-Norm
 	T length() const
 	{
-		return (T)sqrt((double)sqr_length());
+		return (T)std::sqrt((double)sqr_length());
 	}
 
 	///componentwise sign values
@@ -436,7 +436,7 @@ inline S dot_dir(const fvec<T,N+1>& v, const fvec<S,N>& w)
 
 ///returns the length of vector v 
 template <typename T, cgv::type::uint32_type N>
-inline T length(const fvec<T, N>& v) { return sqrt(dot(v, v)); }
+inline T length(const fvec<T, N>& v) { return std::sqrt(dot(v, v)); }
 
 /// apply sign function component wise to vector
 template <typename T, cgv::type::uint32_type N>
@@ -632,13 +632,13 @@ const fvec<T, N> pow(const fvec<T, N>& v, const fvec<T, N>& e) {
 template <typename T, cgv::type::uint32_type N>
 fvec<T, N> ortho(const fvec<T, N>& v) = delete;
 
-/// returns an orthogonal vector to v
+/// returns an orthogonal vector to v (not normalized; rotated counter-clockwise)
 template <typename T>
 fvec<T, 2> ortho(const fvec<T, 2>& v) {
-	return fvec<T, 2>(v.y(), -v.x());
+	return fvec<T, 2>(-v.y(), v.x());
 }
 
-/// returns an orthogonal vector to v
+/// returns an orthogonal vector to v (not normalized)
 template <typename T>
 fvec<T, 3> ortho(const fvec<T, 3>& v) {
 	return std::abs(v.x()) > std::abs(v.z()) ? fvec<T, 3>(-v.y(), v.x(), T(0)) : fvec<T, 3>(T(0), -v.z(), v.y());

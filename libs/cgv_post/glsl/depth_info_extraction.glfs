@@ -1,0 +1,24 @@
+#version 430
+
+layout (binding = 0) uniform sampler2D depth_tex;
+
+uniform float z_near;
+uniform float z_far;
+
+in vec2 texcoord_fs;
+
+layout(location = 0) out float frag_linear_depth;
+layout(location = 1) out float frag_mask;
+
+float linearize_depth(float d, float z_near, float z_far) {
+    float z_n = 2.0 * d - 1.0;
+    return 2.0 * z_near * z_far / (z_far + z_near - z_n * (z_far - z_near));
+}
+
+void main()
+{
+	float depth = texture(depth_tex, texcoord_fs).r;
+
+	frag_linear_depth = linearize_depth(depth, z_near, z_far);
+	frag_mask = depth == 1.0 ? 0.0 : 1.0;
+}

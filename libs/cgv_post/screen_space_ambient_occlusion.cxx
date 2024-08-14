@@ -27,7 +27,7 @@ bool screen_space_ambient_occlusion::init(cgv::render::context& ctx) {
 
 	shaders.add("ssao", "ssao.glpr");
 	shaders.add("ssao_resolve", "ssao_resolve.glpr");
-	shaders.add("blur", "box_blur.glpr", { { "CHANNELS", "1" }, { "RADIUS", "2" } });
+	shaders.add("blur", "box_blur.glpr", { { "CHANNELS", "1" } });
 
 	generate_samples_and_noise_texture(ctx);
 	
@@ -94,6 +94,7 @@ void screen_space_ambient_occlusion::end(cgv::render::context& ctx) {
 
 	auto& blur_prog = shaders.get("blur");
 	blur_prog.enable(ctx);
+	blur_prog.set_uniform(ctx, "radius", 2);
 
 	glDrawArrays(GL_TRIANGLE_STRIP, 0, 4);
 

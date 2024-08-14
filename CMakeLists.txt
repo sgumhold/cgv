@@ -13,6 +13,15 @@ check_ipo_supported(RESULT IS_IPO_SUPPORTED)
 # make sure we know that we are currently configuring the CGV Framework
 set(CGV_IS_CONFIGURING TRUE)
 
+# detect whether we're being included as a subproject
+get_directory_property(CGV_HAS_PARENT_PROJ PARENT_DIRECTORY)
+
+# detect whether we're configuring for a multi-config generator
+get_property(CGV_USING_MULTI_CONFIG GLOBAL PROPERTY GENERATOR_IS_MULTI_CONFIG)
+if(CGV_HAS_PARENT_PROJ)
+	set(CGV_USING_MULTI_CONFIG ${CGV_USING_MULTI_CONFIG} PARENT_SCOPE)
+endif()
+
 # setup relevant directories
 # - "the" CGV directory
 set(CGV_DIR ${PROJECT_SOURCE_DIR})
@@ -86,8 +95,7 @@ set(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}/bin)
 set(CMAKE_LIBRARY_OUTPUT_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}/bin)
 set(CMAKE_ARCHIVE_OUTPUT_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}/lib)
 # - make sure these, the CGV_DIR and the CGV_OPTIONS are propagated to would-be parent CMake build processes that reference the CGV Framework
-get_directory_property(hasParent PARENT_DIRECTORY)
-if (hasParent)
+if (CGV_HAS_PARENT_PROJ)
 	set(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${CMAKE_RUNTIME_OUTPUT_DIRECTORY} PARENT_SCOPE)
 	set(CMAKE_LIBRARY_OUTPUT_DIRECTORY ${CMAKE_LIBRARY_OUTPUT_DIRECTORY} PARENT_SCOPE)
 	set(CMAKE_ARCHIVE_OUTPUT_DIRECTORY ${CMAKE_ARCHIVE_OUTPUT_DIRECTORY} PARENT_SCOPE)
@@ -105,6 +113,11 @@ define_property(TARGET
 	PROPERTY CGVPROP_NO_EXECUTABLE
 	BRIEF_DOCS "Disables generating a single executable target for plugins"
 	FULL_DOCS "For plugins, indicates that no single executable version should be generated."
+)
+define_property(TARGET
+	PROPERTY CGVPROP_SERVICE
+	BRIEF_DOCS "Creates a special target that instead of a single executable, creates a singular shared library for use by arbitrary client applications."
+	FULL_DOCS "For plugins, indicates that a service target should be created - that is a single shared library (with all CGV dependencies statically linked in) which must be dynamically loaded by another process, typically a client making use of the functionality the plugin implements."
 )
 define_property(TARGET
 	PROPERTY CGVPROP_SHADERPATH
@@ -137,7 +150,9 @@ if (NOT MSVC)
 	add_compile_options(-Wno-dangling-else -Wno-switch)
 	if (CMAKE_C_COMPILER_ID MATCHES "Clang" OR MAKE_CXX_COMPILER_ID MATCHES "Clang")
 		set(CGV_CLANG_SPECIFIC_DEBUG_FLAGS $<$<CONFIG:Debug,RelWithDebInfo>:-fstandalone-debug -fno-limit-debug-info>)
-		set(CGV_CLANG_SPECIFIC_DEBUG_FLAGS ${CGV_CLANG_SPECIFIC_DEBUG_FLAGS} PARENT_SCOPE)
+		if(CGV_HAS_PARENT_PROJ)
+			set(CGV_CLANG_SPECIFIC_DEBUG_FLAGS ${CGV_CLANG_SPECIFIC_DEBUG_FLAGS} PARENT_SCOPE)
+		endif()
 	endif()
 endif()
 

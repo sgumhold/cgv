@@ -29,5 +29,8 @@ target_include_directories(glew_static PUBLIC
 if(APPLE)
    target_include_directories(glew_static PUBLIC "/opt/X11/include")
 endif()
+if (NOT WIN32)
+   target_compile_options(glew_static PUBLIC -fPIC)
+endif()
 
 install(TARGETS glew_static EXPORT cgv_3rd DESTINATION ${CGV_BIN_DEST})

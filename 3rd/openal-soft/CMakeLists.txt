@@ -17,13 +17,21 @@ option(ALSOFT_INSTALL_UTILS OFF)
 # include the OpenAL-soft build tree
 add_subdirectory(openal-soft)
 
+# log all targets added by the 3rd party lib
+cgv_get_all_directory_targets(OAL_TARGETS ${CMAKE_CURRENT_LIST_DIR} RECURSIVE)
+
 # Disable warnings we can't do anything about since it would require changing the original source code
-if (CMAKE_C_COMPILER_ID MATCHES "GNU" OR MAKE_CXX_COMPILER_ID MATCHES "GNU")
-	target_compile_options(OpenAL PRIVATE -Wno-stringop-overflow -Wno-inline)
-elseif(CMAKE_C_COMPILER_ID MATCHES "Clang" OR MAKE_CXX_COMPILER_ID MATCHES "Clang")
-	target_compile_options(OpenAL PRIVATE -Wno-unused-but-set-variable)
-endif()
+foreach(OAL_TGT ${OAL_TARGETS})
+	# check wether we can add flags to the target
+	get_target_property(TGT_TYPE ${OAL_TGT} TYPE)
+	if (NOT TGT_TYPE STREQUAL "UTILITY")
+		if (CMAKE_C_COMPILER_ID MATCHES "GNU" OR CMAKE_CXX_COMPILER_ID MATCHES "GNU")
+			target_compile_options(${OAL_TGT} PRIVATE -Wno-stringop-overflow -Wno-inline)
+		elseif(CMAKE_C_COMPILER_ID MATCHES "Clang" OR CMAKE_CXX_COMPILER_ID MATCHES "Clang")
+			target_compile_options(${OAL_TGT} PRIVATE -Wno-everything)
+		endif()
+	endif()
+endforeach()
 
 # tack on IDE fluff
-cgv_get_all_directory_targets(OAL_TARGETS ${CMAKE_CURRENT_LIST_DIR} RECURSIVE)
 set_target_properties(${OAL_TARGETS} PROPERTIES FOLDER "3rd/openal")

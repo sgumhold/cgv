@@ -358,8 +358,8 @@ void rgbd_icp_tool::on_reg_ICP_cb()
 	icp.set_num_random(icp_random_samples);
 
 	icp.build_ann_tree();
-	icp.reg_icp(rotation, translation);
-	//icp.get_crspd(rotation, translation, crs_srs_pc, crs_tgt_pc);
+	//icp.reg_icp(rotation, translation);
+	icp.get_crspd(rotation, translation, crs_srs_pc, crs_tgt_pc);
 	// need to de-mean for rotation
 	source_pc.rotate(cgv::math::quaternion<float>(rotation));
 	source_pc.translate(translation);
@@ -540,7 +540,6 @@ void rgbd_icp_tool::on_estimate_normals()
 		n_graph.build<ann_tree>(this->source_pc.get_nr_points(), 10, *tree_source);
 		n_estimator = new normal_estimator(this->source_pc, this->n_graph);
 		n_estimator->compute_bilateral_weighted_normals(false);
-		std::cout << "if there is normal: " << source_pc.has_normals() << std::endl;
 	}
 	if (target_pc.get_nr_points() > 0) {
 		tree_target = std::make_shared<ann_tree>();
@@ -548,7 +547,6 @@ void rgbd_icp_tool::on_estimate_normals()
 		n_graph.build<ann_tree>(this->target_pc.get_nr_points(), 10, *tree_target);
 		n_estimator = new normal_estimator(this->target_pc, this->n_graph);
 		n_estimator->compute_bilateral_weighted_normals(false);
-		std::cout << "if there is normal: " << target_pc.has_normals() << std::endl;
 	}
 }
 

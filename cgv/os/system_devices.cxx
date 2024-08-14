@@ -58,6 +58,7 @@ bool enumerate_system_devices(std::vector<std::pair<std::string, cgv::utils::gui
 	return true;
 #else
 	std::cerr << "cgv::os::enumerate_system_devices() only implemented on Windows" << std::endl;
+    return false;
 #endif
 }
 

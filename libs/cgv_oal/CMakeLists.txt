@@ -6,7 +6,7 @@ cgv_add_target(cgv_oal
 		al_context.h
 		al_context.cpp
 	DEPENDENCIES
-		OpenAL::OpenAL SndFile::sndfile cgv_math
+		OpenAL sndfile cgv_math
 )
 
 # enforce '17 standard compliance

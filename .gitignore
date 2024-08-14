@@ -1,11 +1,21 @@
-cmake/local_build_dir.cmake
-lib
-.vscode
-.vs
-.idea
+
+# Ignore Build output
+cmake-build*
 build
-cmake-build-debug
-cmake-build-release
+lib
+
+# Ignore Visual Studio files
+*.vs
+Debug
+Release
+ipch
+
+# Ignore VS Code configuration
+.vscode
+
+# Ignore JetBrains configurations
+.idea
+.run
 
 # Ignore files generated from .ph template headers
 cgv/base/call_interface_impl.h

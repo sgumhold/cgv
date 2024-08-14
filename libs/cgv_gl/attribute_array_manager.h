@@ -143,6 +143,7 @@ public:
 			reinterpret_cast<const void*>(reinterpret_cast<const cgv::type::uint8_type*>(&elem) - reinterpret_cast<const cgv::type::uint8_type*>(array_ptr)),
 			nr_elements, sizeof(C));
 	}
+	void remove_attribute_array(const context& ctx, int loc);
 public:
 	/// default initialization
 	attribute_array_manager(VertexBufferUsage _default_usage = VBU_STREAM_DRAW);

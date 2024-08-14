@@ -81,6 +81,7 @@ uniform mat4 model_view_projection;
 uniform mat4 model_view;
 
 uniform bool use_index_as_id = true;
+uniform bool use_clod;
 
 float rand(float n){
 	return fract(cos(n) * 123456.789);
@@ -115,9 +116,15 @@ void main(){
 
 	// without level randomization
 	//float pointSpacing = scale * spacing / pow(2, level);
-
+	//float pointSpacing = scale * spacing / pow(2, level);
 	// with level randomization
-	float pointSpacing = scale * spacing / pow(2, level + aRandom);
+	//float pointSpacing = scale * spacing / pow(2, level + aRandom);
+	float pointSpacing;
+	if(use_clod){
+		pointSpacing = scale * spacing / pow(2, level + aRandom);
+	} else {
+		pointSpacing = scale * spacing / pow(2, level);
+	}
 	
 	float d = distance(viewPos, pivot.xyz);
 	float dc = length((projected.xy/screenSize)-vec2(1.0,1.0)); //distance to center in device coordinates, dc is zero at the center of the screen, and one at the border.

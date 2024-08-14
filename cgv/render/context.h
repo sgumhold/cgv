@@ -412,14 +412,15 @@ public:
 
 /// Provides vertex buffer types to allow implicit binding
 enum VertexBufferType {
-	VBT_UNDEF = -1,	   ///< The buffer has no type
-	VBT_VERTICES,	   ///< The buffer contains vertices and will be bound to GL_ARRAY_BUFFER
-	VBT_INDICES,	   ///< The buffer contains indices and will be bound to GL_ELEMENT_ARRAY_BUFFER
-	VBT_TEXTURE,	   ///< The buffer contains texture data and will be bound to GL_TEXTURE_BUFFER
-	VBT_UNIFORM,	   ///< The buffer contains uniforms and will be bound to GL_UNIFORM_BUFFER
-	VBT_FEEDBACK,	   ///< The buffer is used for transform&feedback and will be bound to GL_TRANSFORM_FEEDBACK_BUFFER
-	VBT_STORAGE,	   ///< The buffer contains arbitrary data and will be bound to GL_SHADER_STORAGE_BUFFER
-	VBT_ATOMIC_COUNTER ///< The buffer contains atomic counter and will be bound to GL_ATOMIC_COUNTER_BUFFER
+	VBT_UNDEF = -1,		///< The buffer has no type
+	VBT_VERTICES,		///< The buffer contains vertices and will be bound to GL_ARRAY_BUFFER
+	VBT_INDICES,		///< The buffer contains indices and will be bound to GL_ELEMENT_ARRAY_BUFFER
+	VBT_TEXTURE,		///< The buffer contains texture data and will be bound to GL_TEXTURE_BUFFER
+	VBT_UNIFORM,		///< The buffer contains uniforms and will be bound to GL_UNIFORM_BUFFER
+	VBT_FEEDBACK,		///< The buffer is used for transform&feedback and will be bound to GL_TRANSFORM_FEEDBACK_BUFFER
+	VBT_STORAGE,		///< The buffer contains arbitrary data and will be bound to GL_SHADER_STORAGE_BUFFER
+	VBT_ATOMIC_COUNTER,	///< The buffer contains atomic counter and will be bound to GL_ATOMIC_COUNTER_BUFFER
+	VBT_INDIRECT		///< The buffer contains indirect draw commands and will be bound to GL_DRAW_INDIRECT_BUFFER
 };
 
 /// Provides vertex buffer usage hints as defined in OpenGL

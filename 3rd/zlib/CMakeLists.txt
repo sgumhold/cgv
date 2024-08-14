@@ -50,4 +50,8 @@ target_include_directories(zlib_static PUBLIC
         $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}>
         $<INSTALL_INTERFACE:${CGV_3RD_INCLUDE_DEST}/zlib>)
 
+if (NOT WIN32)
+    target_compile_options(zlib_static PUBLIC -fPIC)
+endif()
+
 install(TARGETS zlib_static EXPORT cgv_3rd DESTINATION ${CGV_BIN_DEST})
