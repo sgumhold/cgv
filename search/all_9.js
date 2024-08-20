@@ -128,7 +128,7 @@ var searchData=
   ['is_5ffront_5fto_5fback_1978',['is_front_to_back',['../classcgv_1_1render_1_1gl_1_1gl__depth__peeler.html#a101f4a44f300d506a1053151dde8ee3e',1,'cgv::render::gl::gl_depth_peeler']]],
   ['is_5ffunc_1979',['is_func',['../classcgv_1_1ppp_1_1variant.html#a722ed5683ff878d2471bfc5232db979d',1,'cgv::ppp::variant']]],
   ['is_5fglobal_5farray_5fenabled_1980',['is_global_array_enabled',['../classcgv_1_1render_1_1attribute__array__binding.html#a3ba9bf85f516b3629515e9fd44ebd674',1,'cgv::render::attribute_array_binding']]],
-  ['is_5fhit_1981',['is_hit',['../classcgv_1_1app_1_1overlay.html#acdc428df9fe33a5a6375449e88c48004',1,'cgv::app::overlay']]],
+  ['is_5fhit_1981',['is_hit',['../classcgv_1_1app_1_1canvas__overlay.html#a224a87b1ca69c43dbbbe76e4b5c551b7',1,'cgv::app::canvas_overlay::is_hit()'],['../classcgv_1_1app_1_1overlay.html#acdc428df9fe33a5a6375449e88c48004',1,'cgv::app::overlay::is_hit()']]],
   ['is_5finitialized_1982',['is_initialized',['../classcgv_1_1render_1_1gl_1_1gl__depth__peeler.html#a2d464e3ce60eeb74158f77201b8d57cc',1,'cgv::render::gl::gl_depth_peeler::is_initialized()'],['../classcgv_1_1render_1_1gl_1_1gl__time__query.html#a7c24a321833ef135fb25883749c22fd5',1,'cgv::render::gl::gl_time_query::is_initialized()']]],
   ['is_5finstalled_1983',['is_installed',['../classvr_1_1vr__driver.html#ae379baab3bac7e432160f01de10f9479',1,'vr::vr_driver::is_installed()'],['../classvr__emulator.html#a598b9b62e6f1639e443f616e0d2fc163',1,'vr_emulator::is_installed()']]],
   ['is_5fint_1984',['is_int',['../classcgv_1_1ppp_1_1variant.html#a33428506498b43ec48f94dcd62b71f7f',1,'cgv::ppp::variant']]],
