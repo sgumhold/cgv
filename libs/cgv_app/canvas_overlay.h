@@ -58,6 +58,16 @@ public:
 	virtual void draw_content(cgv::render::context& ctx) = 0;
 
 	void post_damage(bool redraw = true);
+
+	/// return the mouse position local to the container of this overlay taking the canvas origin into account
+	ivec2 get_local_mouse_pos(ivec2 mouse_pos) const override;
+
+	/** Test if the mouse pointer is hovering over this overlay and returns
+		true if this is the case. Specifically it checks if the mouse position
+		is inside the rectangle defined by container. Override this method to
+		implement your own test, i.e. for different overlay shapes.
+	*/
+	bool is_hit(const ivec2& mouse_pos) const override;
 };
 
 typedef cgv::data::ref_ptr<canvas_overlay> canvas_overlay_ptr;

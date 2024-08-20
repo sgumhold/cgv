@@ -58,7 +58,7 @@ uniform bool apply_gamma = true;
 
 // returns the adjusted feather width
 float get_feather_width() {
-	return feather_width / zoom_factor;
+	return use_blending ? feather_width / zoom_factor : 0.0;
 }
 
 // return the adjusted size of the shape, which is half the actual size minus the border radius plus feather sizes
