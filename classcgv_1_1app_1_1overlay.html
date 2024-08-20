@@ -185,7 +185,7 @@ void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="clas
 <tr class="memdesc:a6e31ae938a4bb751c15307109002eae9"><td class="mdescLeft">&#160;</td><td class="mdescRight">return the current viewport size <br /></td></tr>
 <tr class="separator:a6e31ae938a4bb751c15307109002eae9"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ab02e9b6c66e700ae41b3e075269705f2"><td class="memItemLeft" align="right" valign="top"><a id="ab02e9b6c66e700ae41b3e075269705f2"></a>
-<a class="el" href="namespacecgv.html#a4fc9abee97018a017bb3a14b531a8f06">ivec2</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcgv_1_1app_1_1overlay.html#ab02e9b6c66e700ae41b3e075269705f2">get_local_mouse_pos</a> (<a class="el" href="namespacecgv.html#a4fc9abee97018a017bb3a14b531a8f06">ivec2</a> mouse_pos) const</td></tr>
+virtual <a class="el" href="namespacecgv.html#a4fc9abee97018a017bb3a14b531a8f06">ivec2</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcgv_1_1app_1_1overlay.html#ab02e9b6c66e700ae41b3e075269705f2">get_local_mouse_pos</a> (<a class="el" href="namespacecgv.html#a4fc9abee97018a017bb3a14b531a8f06">ivec2</a> mouse_pos) const</td></tr>
 <tr class="memdesc:ab02e9b6c66e700ae41b3e075269705f2"><td class="mdescLeft">&#160;</td><td class="mdescRight">return the mouse position local to the container of this overlay <br /></td></tr>
 <tr class="separator:ab02e9b6c66e700ae41b3e075269705f2"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a100e056c4a856eb9fb8968816e42d7a6"><td class="memItemLeft" align="right" valign="top"><a id="a100e056c4a856eb9fb8968816e42d7a6"></a>
@@ -865,9 +865,9 @@ int&#160;</td><td class="memItemRight" valign="bottom"><b>focus</b></td></tr>
 
 <p>Implements <a class="el" href="classcgv_1_1gui_1_1provider.html#a1d2f0b6c734c04d3c90a1c51ffbc0de9">cgv::gui::provider</a>.</p>
 
-<p class="definition">Definition at line <a class="el" href="overlay_8cxx_source.html#l00157">157</a> of file <a class="el" href="overlay_8cxx_source.html">overlay.cxx</a>.</p>
+<p class="definition">Definition at line <a class="el" href="overlay_8cxx_source.html#l00156">156</a> of file <a class="el" href="overlay_8cxx_source.html">overlay.cxx</a>.</p>
 
-<p class="reference">References <a class="el" href="overlay_8cxx_source.html#l00104">begin_overlay_gui()</a>, <a class="el" href="overlay_8h_source.html#l00083">cgv::app::overlay::gui_options_t::create_default_tree_node</a>, <a class="el" href="overlay_8h_source.html#l00077">create_gui_impl()</a>, <a class="el" href="overlay_8cxx_source.html#l00123">create_layout_gui()</a>, <a class="el" href="overlay_8cxx_source.html#l00117">end_overlay_gui()</a>, and <a class="el" href="overlay_8h_source.html#l00096">gui_options</a>.</p>
+<p class="reference">References <a class="el" href="overlay_8cxx_source.html#l00103">begin_overlay_gui()</a>, <a class="el" href="overlay_8h_source.html#l00083">cgv::app::overlay::gui_options_t::create_default_tree_node</a>, <a class="el" href="overlay_8h_source.html#l00077">create_gui_impl()</a>, <a class="el" href="overlay_8cxx_source.html#l00122">create_layout_gui()</a>, <a class="el" href="overlay_8cxx_source.html#l00116">end_overlay_gui()</a>, and <a class="el" href="overlay_8h_source.html#l00096">gui_options</a>.</p>
 
 </div>
 </div>
@@ -892,7 +892,7 @@ int&#160;</td><td class="memItemRight" valign="bottom"><b>focus</b></td></tr>
 
 <p class="definition">Definition at line <a class="el" href="overlay_8cxx_source.html#l00076">76</a> of file <a class="el" href="overlay_8cxx_source.html">overlay.cxx</a>.</p>
 
-<p class="reference">References <a class="el" href="classcgv_1_1render_1_1context.html#a6dde896fc37726e3ec39e7d450f1e168">cgv::render::context::get_height()</a>, <a class="el" href="classcgv_1_1render_1_1context.html#a473170ee5d7651a063695574f4b9f91f">cgv::render::context::get_width()</a>, and <a class="el" href="overlay_8cxx_source.html#l00171">update_layout()</a>.</p>
+<p class="reference">References <a class="el" href="classcgv_1_1render_1_1context.html#a6dde896fc37726e3ec39e7d450f1e168">cgv::render::context::get_height()</a>, <a class="el" href="classcgv_1_1render_1_1context.html#a473170ee5d7651a063695574f4b9f91f">cgv::render::context::get_width()</a>, and <a class="el" href="overlay_8cxx_source.html#l00170">update_layout()</a>.</p>
 
 </div>
 </div>
@@ -923,9 +923,9 @@ int&#160;</td><td class="memItemRight" valign="bottom"><b>focus</b></td></tr>
 <p>Test if the mouse pointer is hovering over this overlay and returns true if this is the case. </p>
 <p>Specifically it checks if the mouse position is inside the rectangle defined by container. Override this method to implement your own test, i.e. for different overlay shapes. </p>
 
-<p class="definition">Definition at line <a class="el" href="overlay_8cxx_source.html#l00098">98</a> of file <a class="el" href="overlay_8cxx_source.html">overlay.cxx</a>.</p>
+<p>Reimplemented in <a class="el" href="classcgv_1_1app_1_1canvas__overlay.html#a224a87b1ca69c43dbbbe76e4b5c551b7">cgv::app::canvas_overlay</a>.</p>
 
-<p class="reference">Referenced by <a class="el" href="color__map__editor_8cxx_source.html#l00075">cgv::app::color_map_editor::handle_event()</a>.</p>
+<p class="definition">Definition at line <a class="el" href="overlay_8cxx_source.html#l00098">98</a> of file <a class="el" href="overlay_8cxx_source.html">overlay.cxx</a>.</p>
 
 </div>
 </div>
