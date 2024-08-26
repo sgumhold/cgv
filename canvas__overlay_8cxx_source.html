@@ -221,25 +221,26 @@ $(document).ready(function(){initNavTree('canvas__overlay_8cxx_source.html','');
 <div class="line"><a name="l00134"></a><span class="lineno">  134</span>&#160;    };</div>
 <div class="line"><a name="l00135"></a><span class="lineno">  135</span>&#160;    ctx.<a class="code" href="classcgv_1_1render_1_1context.html#ad43d4c50f4db203fb15f24b1afc84c79">set_blend_state</a>(blend_state);</div>
 <div class="line"><a name="l00136"></a><span class="lineno">  136</span>&#160; </div>
-<div class="line"><a name="l00137"></a><span class="lineno">  137</span>&#160;    <span class="keywordflow">if</span>(has_damage_)</div>
-<div class="line"><a name="l00138"></a><span class="lineno">  138</span>&#160;        draw_content(ctx);</div>
-<div class="line"><a name="l00139"></a><span class="lineno">  139</span>&#160; </div>
-<div class="line"><a name="l00140"></a><span class="lineno">  140</span>&#160;    <span class="comment">// draw frame buffer texture to screen</span></div>
-<div class="line"><a name="l00141"></a><span class="lineno">  141</span>&#160;    ctx.<a class="code" href="classcgv_1_1render_1_1context.html#a015186cbc9c25e2ad4b959796ab67476">set_blend_func</a>(BF_ONE, BF_SRC_ALPHA);</div>
-<div class="line"><a name="l00142"></a><span class="lineno">  142</span>&#160; </div>
-<div class="line"><a name="l00143"></a><span class="lineno">  143</span>&#160;    overlay_canvas.enable_shader(ctx, <span class="stringliteral">&quot;rectangle&quot;</span>);</div>
-<div class="line"><a name="l00144"></a><span class="lineno">  144</span>&#160;    overlay_canvas.set_style(ctx, blit_style_);</div>
-<div class="line"><a name="l00145"></a><span class="lineno">  145</span>&#160;    frame_buffer_.enable_attachment(ctx, <span class="stringliteral">&quot;color&quot;</span>, 0);</div>
-<div class="line"><a name="l00146"></a><span class="lineno">  146</span>&#160;    overlay_canvas.draw_shape(ctx, <a class="code" href="classcgv_1_1app_1_1overlay.html#a100e056c4a856eb9fb8968816e42d7a6">get_rectangle</a>());</div>
-<div class="line"><a name="l00147"></a><span class="lineno">  147</span>&#160;    frame_buffer_.disable_attachment(ctx, <span class="stringliteral">&quot;color&quot;</span>);</div>
-<div class="line"><a name="l00148"></a><span class="lineno">  148</span>&#160;    overlay_canvas.disable_current_shader(ctx);</div>
-<div class="line"><a name="l00149"></a><span class="lineno">  149</span>&#160; </div>
-<div class="line"><a name="l00150"></a><span class="lineno">  150</span>&#160;    ctx.<a class="code" href="classcgv_1_1render_1_1context.html#a4583d99fc8c330adda1b89d11a9700b1">pop_blend_state</a>();</div>
-<div class="line"><a name="l00151"></a><span class="lineno">  151</span>&#160;    ctx.<a class="code" href="classcgv_1_1render_1_1context.html#a59b545a5cd48b4782c60b35dc53456cd">pop_depth_test_state</a>();</div>
-<div class="line"><a name="l00152"></a><span class="lineno">  152</span>&#160;}</div>
-<div class="line"><a name="l00153"></a><span class="lineno">  153</span>&#160; </div>
-<div class="line"><a name="l00154"></a><span class="lineno">  154</span>&#160;}</div>
+<div class="line"><a name="l00137"></a><span class="lineno">  137</span>&#160;    </div>
+<div class="line"><a name="l00138"></a><span class="lineno">  138</span>&#160;    <span class="keywordflow">if</span>(has_damage_)</div>
+<div class="line"><a name="l00139"></a><span class="lineno">  139</span>&#160;        draw_content(ctx);</div>
+<div class="line"><a name="l00140"></a><span class="lineno">  140</span>&#160; </div>
+<div class="line"><a name="l00141"></a><span class="lineno">  141</span>&#160;    <span class="comment">// draw frame buffer texture to screen</span></div>
+<div class="line"><a name="l00142"></a><span class="lineno">  142</span>&#160;    ctx.<a class="code" href="classcgv_1_1render_1_1context.html#a015186cbc9c25e2ad4b959796ab67476">set_blend_func</a>(BF_ONE, BF_SRC_ALPHA);</div>
+<div class="line"><a name="l00143"></a><span class="lineno">  143</span>&#160; </div>
+<div class="line"><a name="l00144"></a><span class="lineno">  144</span>&#160;    overlay_canvas.enable_shader(ctx, <span class="stringliteral">&quot;rectangle&quot;</span>);</div>
+<div class="line"><a name="l00145"></a><span class="lineno">  145</span>&#160;    overlay_canvas.set_style(ctx, blit_style_);</div>
+<div class="line"><a name="l00146"></a><span class="lineno">  146</span>&#160;    frame_buffer_.enable_attachment(ctx, <span class="stringliteral">&quot;color&quot;</span>, 0);</div>
+<div class="line"><a name="l00147"></a><span class="lineno">  147</span>&#160;    overlay_canvas.draw_shape(ctx, <a class="code" href="classcgv_1_1app_1_1overlay.html#a100e056c4a856eb9fb8968816e42d7a6">get_rectangle</a>());</div>
+<div class="line"><a name="l00148"></a><span class="lineno">  148</span>&#160;    frame_buffer_.disable_attachment(ctx, <span class="stringliteral">&quot;color&quot;</span>);</div>
+<div class="line"><a name="l00149"></a><span class="lineno">  149</span>&#160;    overlay_canvas.disable_current_shader(ctx);</div>
+<div class="line"><a name="l00150"></a><span class="lineno">  150</span>&#160; </div>
+<div class="line"><a name="l00151"></a><span class="lineno">  151</span>&#160;    ctx.<a class="code" href="classcgv_1_1render_1_1context.html#a4583d99fc8c330adda1b89d11a9700b1">pop_blend_state</a>();</div>
+<div class="line"><a name="l00152"></a><span class="lineno">  152</span>&#160;    ctx.<a class="code" href="classcgv_1_1render_1_1context.html#a59b545a5cd48b4782c60b35dc53456cd">pop_depth_test_state</a>();</div>
+<div class="line"><a name="l00153"></a><span class="lineno">  153</span>&#160;}</div>
+<div class="line"><a name="l00154"></a><span class="lineno">  154</span>&#160; </div>
 <div class="line"><a name="l00155"></a><span class="lineno">  155</span>&#160;}</div>
+<div class="line"><a name="l00156"></a><span class="lineno">  156</span>&#160;}</div>
 <div class="ttc" id="aclasscgv_1_1app_1_1canvas__overlay_html_a224a87b1ca69c43dbbbe76e4b5c551b7"><div class="ttname"><a href="classcgv_1_1app_1_1canvas__overlay.html#a224a87b1ca69c43dbbbe76e4b5c551b7">cgv::app::canvas_overlay::is_hit</a></div><div class="ttdeci">bool is_hit(const ivec2 &amp;mouse_pos) const override</div><div class="ttdoc">Test if the mouse pointer is hovering over this overlay and returns true if this is the case.</div><div class="ttdef"><b>Definition:</b> <a href="canvas__overlay_8cxx_source.html#l00072">canvas_overlay.cxx:72</a></div></div>
 <div class="ttc" id="aclasscgv_1_1app_1_1canvas__overlay_html_a5e2434f8ff34547c6ddfc43384f964fb"><div class="ttname"><a href="classcgv_1_1app_1_1canvas__overlay.html#a5e2434f8ff34547c6ddfc43384f964fb">cgv::app::canvas_overlay::clear</a></div><div class="ttdeci">void clear(cgv::render::context &amp;ctx) override</div><div class="ttdoc">clear all objects living in the context like textures or display lists</div><div class="ttdef"><b>Definition:</b> <a href="canvas__overlay_8cxx_source.html#l00034">canvas_overlay.cxx:34</a></div></div>
 <div class="ttc" id="aclasscgv_1_1app_1_1canvas__overlay_html_a730db6eb68746dcf89fe83876aaa38ff"><div class="ttname"><a href="classcgv_1_1app_1_1canvas__overlay.html#a730db6eb68746dcf89fe83876aaa38ff">cgv::app::canvas_overlay::get_local_mouse_pos</a></div><div class="ttdeci">ivec2 get_local_mouse_pos(ivec2 mouse_pos) const override</div><div class="ttdoc">return the mouse position local to the container of this overlay taking the canvas origin into accoun...</div><div class="ttdef"><b>Definition:</b> <a href="canvas__overlay_8cxx_source.html#l00065">canvas_overlay.cxx:65</a></div></div>
