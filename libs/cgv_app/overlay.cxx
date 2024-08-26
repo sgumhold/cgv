@@ -3,14 +3,12 @@
 namespace cgv {
 namespace app {
 
-void overlay::on_visibility_change() 
-{
+void overlay::on_visibility_change() {
 	update_member(&(cgv::render::drawable::active));
 	post_redraw();
 }
 
 void overlay::on_layout_change() {
-
 	update_layout();
 	post_redraw();
 }
@@ -26,8 +24,7 @@ ivec2 overlay::get_local_mouse_pos(ivec2 mouse_pos) const {
 	return cgv::g2d::apply_origin_setting(mouse_pos, last_viewport_size_, cgv::g2d::OriginSetting::kUpperLeft, cgv::g2d::OriginSetting::kLowerLeft) - container_.position;
 }
 
-void overlay::set_alignment(AlignmentOption horizontal, AlignmentOption vertical, vec2 percentual_offset)
-{
+void overlay::set_alignment(AlignmentOption horizontal, AlignmentOption vertical, vec2 percentual_offset) {
 	horizontal_alignment_ = horizontal;
 	vertical_alignment_ = vertical;
 	
@@ -36,11 +33,10 @@ void overlay::set_alignment(AlignmentOption horizontal, AlignmentOption vertical
 			percentual_offset_[i] = percentual_offset[i];
 	}
 
-	update_layout();
+	on_layout_change();
 }
 
-void overlay::set_stretch(StretchOption stretch, vec2 percentual_size)
-{
+void overlay::set_stretch(StretchOption stretch, vec2 percentual_size) {
 	stretch_ = stretch;
 
 	for(int i = 0; i < 2; ++i) {
@@ -48,17 +44,17 @@ void overlay::set_stretch(StretchOption stretch, vec2 percentual_size)
 			percentual_size_[i] = percentual_size[i];
 	}
 
-	update_layout();
+	on_layout_change();
 }
 
 void overlay::set_margin(const ivec2& margin) {
 	margin_ = margin;
-	update_layout();
+	on_layout_change();
 }
 
 void overlay::set_size(const ivec2& size) {
 	container_.size = size;
-	update_layout();
+	on_layout_change();
 }
 
 void overlay::set_visibility(bool visible) {
@@ -74,7 +70,6 @@ void overlay::toggle_visibility() {
 }
 
 bool overlay::ensure_viewport(cgv::render::context& ctx) {
-
 	ivec2 viewport_size(ctx.get_width(), ctx.get_height());
 	if(last_viewport_size_ != viewport_size) {
 		last_viewport_size_ = viewport_size;
@@ -114,13 +109,11 @@ bool overlay::begin_overlay_gui() {
 }
 
 void overlay::end_overlay_gui() {
-
 	align("\b");
 	end_tree_node(name);
 }
 
 void overlay::create_layout_gui() {
-
 	if(!gui_options.show_layout_options)
 		return;
 
@@ -154,7 +147,6 @@ void overlay::create_layout_gui() {
 }
 
 void overlay::create_gui() {
-
 	if(gui_options.create_default_tree_node) {
 		if(begin_overlay_gui()) {
 			create_layout_gui();
@@ -168,7 +160,6 @@ void overlay::create_gui() {
 }
 
 void overlay::update_layout() {
-
 	container_.position = margin_;
 	ivec2 max_size = last_viewport_size_ - 2 * margin_;
 
