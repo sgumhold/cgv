@@ -134,6 +134,7 @@ void canvas_overlay::draw_impl(context& ctx) {
 	};
 	ctx.set_blend_state(blend_state);
 
+	
 	if(has_damage_)
 		draw_content(ctx);
 
