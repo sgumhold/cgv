@@ -123,7 +123,7 @@ public:
 	ivec2 get_viewport_size() const { return last_viewport_size_; }
 
 	/// return the mouse position local to the container of this overlay
-	ivec2 get_local_mouse_pos(ivec2 mouse_pos) const;
+	virtual ivec2 get_local_mouse_pos(ivec2 mouse_pos) const;
 
 	/// return the current rectangle area (in screen coordinates) of the overlay taking layout into account
 	cgv::g2d::irect get_rectangle() const { return container_; }

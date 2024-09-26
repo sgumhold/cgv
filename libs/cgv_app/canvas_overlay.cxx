@@ -62,6 +62,18 @@ void canvas_overlay::post_damage(bool redraw) {
 		post_redraw();
 }
 
+ivec2 canvas_overlay::get_local_mouse_pos(ivec2 mouse_pos) const {
+	ivec2 pos = cgv::g2d::apply_origin_setting(mouse_pos, get_viewport_size(), cgv::g2d::OriginSetting::kUpperLeft, overlay_canvas.get_origin_setting());
+	pos -= get_rectangle().position;
+	pos = cgv::g2d::apply_origin_setting(pos, get_rectangle().size, overlay_canvas.get_origin_setting(), content_canvas.get_origin_setting());
+	return pos;
+}
+
+bool canvas_overlay::is_hit(const ivec2& mouse_pos) const {
+	ivec2 test_pos = cgv::g2d::apply_origin_setting(mouse_pos, get_viewport_size(), cgv::g2d::OriginSetting::kUpperLeft, overlay_canvas.get_origin_setting());
+	return get_rectangle().contains(test_pos);
+}
+
 bool canvas_overlay::ensure_layout(context& ctx) {
 
 	if(overlay::ensure_layout(ctx) || recreate_layout_requested_) {
@@ -122,6 +134,7 @@ void canvas_overlay::draw_impl(context& ctx) {
 	};
 	ctx.set_blend_state(blend_state);
 
+	
 	if(has_damage_)
 		draw_content(ctx);
 

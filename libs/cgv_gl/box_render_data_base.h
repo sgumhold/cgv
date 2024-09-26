@@ -42,11 +42,11 @@ public:
 		rotations.clear();
 	}
 
-	void add_extent(const vec3 extent) {
+	void add_extent(const vec3& extent) {
 		extents.push_back(extent);
 	}
 
-	void add_translation(const vec3 translation) {
+	void add_translation(const vec3& translation) {
 		translations.push_back(translation);
 	}
 
