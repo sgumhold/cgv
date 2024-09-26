@@ -22,6 +22,8 @@ protected:
 	/// @brief See render_data_base::transfer.
 	bool transfer(context& ctx, rectangle_renderer& r) override {
 		if(super::transfer(ctx, r)) {
+			CGV_RDB_TRANSFER_ARRAY(secondary_color, secondary_colors);
+			CGV_RDB_TRANSFER_ARRAY(border_color, border_colors);
 			CGV_RDB_TRANSFER_ARRAY(extent, extents);
 			CGV_RDB_TRANSFER_ARRAY(translation, translations);
 			CGV_RDB_TRANSFER_ARRAY(rotation, rotations);
@@ -34,6 +36,10 @@ protected:
 	/// @brief See render_data_base::set_const_attributes.
 	void set_const_attributes(context& ctx, rectangle_renderer& r) override {
 		super::set_const_attributes(ctx, r);
+		if(secondary_colors.empty() && const_secondary_color)
+			r.set_secondary_color(ctx, const_secondary_color.value());
+		if(border_colors.empty() && const_border_color)
+			r.set_border_color(ctx, const_border_color.value());
 		if(extents.empty() && const_extent)
 			r.set_extent(ctx, const_extent.value());
 		if(translations.empty() && const_translation)
@@ -45,6 +51,10 @@ protected:
 	}
 
 public:
+	/// array of secondary colors
+	std::vector<ColorType> secondary_colors;
+	/// array of border colors
+	std::vector<ColorType> border_colors;
 	/// array of extents
 	std::vector<vec2> extents;
 	/// array of translations
@@ -53,6 +63,11 @@ public:
 	std::vector<quat> rotations;
 	/// array of texcoords
 	std::vector<vec4> texcoords;
+
+	/// optional constant secondary color used for all elements
+	cgv::data::optional<ColorType> const_secondary_color;
+	/// optional constant border color used for all elements
+	cgv::data::optional<ColorType> const_border_color;
 	/// optional constant extent used for all elements
 	cgv::data::optional<vec2> const_extent;
 	/// optional constant translation used for all elements
@@ -64,17 +79,27 @@ public:
 
 	void clear() {
 		super::clear();
+		secondary_colors.clear();
+		border_colors.clear();
 		extents.clear();
 		translations.clear();
 		rotations.clear();
 		texcoords.clear();
 	}
 
-	void add_extent(const vec2 extent) {
+	void add_secondary_color(const ColorType& color) {
+		secondary_colors.push_back(color);
+	}
+
+	void add_border_color(const ColorType& color) {
+		border_colors.push_back(color);
+	}
+
+	void add_extent(const vec2& extent) {
 		extents.push_back(extent);
 	}
 
-	void add_translation(const vec3 translation) {
+	void add_translation(const vec3& translation) {
 		translations.push_back(translation);
 	}
 
@@ -115,8 +140,20 @@ public:
 		add_rotation(rotation);
 	}
 
+	void fill_secondary_colors(const vec2& color) {
+		super::fill(secondary_colors, color);
+	}
+
+	void fill_border_colors(const vec2& color) {
+		super::fill(border_colors, color);
+	}
+
 	void fill_extents(const vec2& extent) {
 		super::fill(extents, extent);
+	}
+
+	void fill_translations(const vec3& translation) {
+		super::fill(translations, translation);
 	}
 
 	void fill_rotations(const quat& rotation) {

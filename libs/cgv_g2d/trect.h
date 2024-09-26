@@ -94,8 +94,8 @@ struct trect {
 	// return true if the query point is inside the rectangle, false otherwise
 	bool contains(point_type p) const {
 		return
-			p.x() >= x() && p.x() <= x1() &&
-			p.y() >= y() && p.y() <= y1();
+			p.x() >= x() && p.x() < x1() &&
+			p.y() >= y() && p.y() < y1();
 	}
 
 	// allow cast to rectangle of other coordinate type
