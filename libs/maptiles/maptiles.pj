@@ -2,7 +2,7 @@
 projectType="library";
 projectName="maptiles";
 projectGUID="33995ABC-37FF-9B1A-2C03-A6936CB7BD69";
-addProjectDirs=[CGV_DIR."/3rd"];
+addProjectDirs=[CGV_DIR."/libs"];
 excludeSourceDirs=[
 	INPUT_DIR."/3rd/cpp-httplib/example", INPUT_DIR."/3rd/cpp-httplib/test",
 	INPUT_DIR."/3rd/earcut/test", INPUT_DIR."/3rd/glm/doc",
@@ -15,6 +15,6 @@ addIncDirs=[
 	INPUT_DIR."/3rd/glm", INPUT_DIR."/3rd/stb_image",
 	INPUT_DIR."/3rd/WGS84toCartesian"
 ];
-addProjectDeps=["xml", "zlib"];
+addProjectDeps=["xml", "zlib", "cgv_gl"];
 addSharedDefines=["MAPTILES_BUILDING"];
 addStaticDefines=["MAPTILES_STATIC"];
