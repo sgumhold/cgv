@@ -1,0 +1,25 @@
+#version 330
+
+//***** begin interface of view.glsl ***********************************
+mat4 get_modelview_projection_matrix();
+//***** end interface of view.glsl ***********************************
+
+layout(location = 0) in vec3 position;
+layout(location = 1) in vec4 color;
+layout(location = 2) in vec3 normal;
+
+uniform vec3 camera_pos;
+
+out vec4 color_fs;
+out vec3 normal_fs;
+out vec3 dir_to_cam;
+
+void main()
+{
+	color_fs = color;
+	normal_fs = normal;
+	dir_to_cam = camera_pos - position;
+
+	// transform vertex to clip space
+	gl_Position = get_modelview_projection_matrix()*vec4(position, 1.0f);
+}

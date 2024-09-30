@@ -1,0 +1,13 @@
+#version 150
+
+in vec4 color_fs;
+in vec3 normal_fs;
+in vec3 dir_to_cam;
+
+out vec4 frag_color;
+
+void main()
+{
+	float intensity = max(0.0, dot(normalize(dir_to_cam), normalize(normal_fs)));
+	frag_color = color_fs * intensity;
+}

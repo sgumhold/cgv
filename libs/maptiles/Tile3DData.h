@@ -10,9 +10,10 @@ class Tile3DData
 public:
 	MAPTILES_API Tile3DData();
 	MAPTILES_API Tile3DData(double latMin, double lonMin, double latMax, double lonMax, std::vector<glm::dvec3>& mesh);
+	MAPTILES_API Tile3DData(double latMin, double lonMin, double latMax, double lonMax);
 	MAPTILES_API void ConvertTo3DCoordinates(double refLat, double refLon);
 
   public:
-	double m_latMin, m_lonMin, m_latMax, m_lonMax;
-	std::vector<glm::dvec3> m_mesh;
+	double lat_min, lon_min, lat_max, lon_max;
+	std::vector<glm::dvec3> mesh;
 };
