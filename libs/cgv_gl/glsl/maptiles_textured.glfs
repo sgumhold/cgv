@@ -1,0 +1,13 @@
+#version 150
+
+uniform sampler2D texture;
+
+in vec2 texcoord_fs;
+
+out vec4 frag_color;
+
+void main()
+{
+	frag_color = texture2D(texture, texcoord_fs);
+    //frag_color = vec4(1.0f, 0.0f, 0.0f, 1.0f) * texcoord_fs.y;
+}

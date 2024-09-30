@@ -26,18 +26,12 @@ RasterTileData& TileManagerData::GetRasterTile(int zoom, int x, int y)
 {
 	RasterTileIndex index = { (unsigned)zoom, x, y };
 	
-	{
-		//Timer t("GetRasterTile [Cached]");
 
-		if (m_RasterTileCache.find(index) != m_RasterTileCache.end())
-		{
-			return m_RasterTileCache[index];
-		}
-		// If we don't return from the function in the if statement above, the tile in not in the cache
-		//t.Cancel();
+	if (m_RasterTileCache.find(index) != m_RasterTileCache.end())
+	{
+		return m_RasterTileCache[index];
 	}
 
-	//Timer t("GetRasterTile [Non-Cached]");
 	OSMRasterTileLoader loader(zoom, x, y);
 	loader.FetchTile();
 
@@ -62,34 +56,23 @@ Tile3DData& TileManagerData::GetTile3D(double lat, double lon)
 {
 	Tile3DIndex index = { lat, lon };
 	
-	{
-		//Timer t("GetTile3D [Cached]");
 
-		if (m_Tile3DCache.find(index) != m_Tile3DCache.end())
-		{
-			return m_Tile3DCache[index];
-		}
-		//t.Cancel();
+	if (m_Tile3DCache.find(index) != m_Tile3DCache.end())
+	{
+		return m_Tile3DCache[index];
 	}
 
-
-	//Timer t("GetTile3D [Non-Cached]");
-	
 	double size = m_config.Tile3DSize;
 	OSMDataLoader loader(lat, lon, lat + size, lon + size);
 	loader.FetchOSMWays();
-
 	OSMDataProcessor processor(loader);
 	Tile3DData tile3DData(lat, lon, lat + size, lon + size, processor.GetTileGeometry());
 
-	// Do the coordinate conversion here
-	{
-		//Timer t1("Coordinate Conversion");
-	//tile3DData.ConvertTo3DCoordinates(m_config.ReferencePoint.lat, m_config.ReferencePoint.lon);
-	}
+	tile3DData.ConvertTo3DCoordinates(m_config.ReferencePoint.lat, m_config.ReferencePoint.lon);
 
 	std::lock_guard<std::mutex> lockActive(m_MutexTile3Ds);
 	m_Tile3DCache[index] = tile3DData;
+	std::cout << "Cache Size: " << m_Tile3DCache.size() << "\n";
 
 	return m_Tile3DCache[index];
 }

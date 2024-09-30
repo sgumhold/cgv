@@ -25,6 +25,6 @@ struct GlobalConfig
 
 	// Detemines how many neighbours will be fetched
 	// For a neighbourhood size of n, a (n * 2 + 1) x (n * 2 + 1) grid will be fetched
-	int NeighbourhoodFetchSizeRasterTile = 2;
+	int NeighbourhoodFetchSizeRasterTile = 1;
 	int NeighbourhoodFetchSizeTile3D = 1;
 };

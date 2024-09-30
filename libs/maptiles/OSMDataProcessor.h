@@ -48,7 +48,7 @@ class OSMDataProcessor
 {
 public:
 	MAPTILES_API OSMDataProcessor(OSMDataLoader& loader);
-	MAPTILES_API std::vector<glm::dvec3>& GetTileGeometry() { return m_mesh; }
+	MAPTILES_API std::vector<glm::dvec3>& GetTileGeometry() { return mesh; }
 
 private:
 	void Parse(std::string& response);
@@ -61,5 +61,5 @@ private:
 
 	// a list of vertices of all the building meshes
 	// 3 consecutive vertices form a face
-	std::vector<glm::dvec3> m_mesh;
+	std::vector<glm::dvec3> mesh;
 };

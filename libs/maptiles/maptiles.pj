@@ -2,7 +2,7 @@
 projectType="library";
 projectName="maptiles";
 projectGUID="33995ABC-37FF-9B1A-2C03-A6936CB7BD69";
-addProjectDirs=[CGV_DIR."/libs"];
+addProjectDirs=[CGV_DIR."/libs", CGV_DIR."/3rd"];
 excludeSourceDirs=[
 	INPUT_DIR."/3rd/cpp-httplib/example", INPUT_DIR."/3rd/cpp-httplib/test",
 	INPUT_DIR."/3rd/earcut/test", INPUT_DIR."/3rd/glm/doc",

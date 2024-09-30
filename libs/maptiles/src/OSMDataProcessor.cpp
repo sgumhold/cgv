@@ -144,7 +144,7 @@ void OSMDataProcessor::ExtractBuildingGeometry(OSMWay& way)
         }
         catch (...)
         {
-            buildingColour = { 1.0, 1.0, 1.0 };
+            buildingColour = { 0.5, 0.5, 0.5 };
         }
     }
     
@@ -173,7 +173,7 @@ void OSMDataProcessor::ExtractBuildingGeometry(OSMWay& way)
         }
         catch (...)
         {
-            roofColour = { 1.0, 1.0, 1.0 };
+            roofColour = { 1.0, 0.0, 1.0 };
         }
     }
 
@@ -201,19 +201,19 @@ void OSMDataProcessor::ExtractBuildingGeometry(OSMWay& way)
         // The mesh will will store the vertex location as (lat, lon, altitude)
         // altitude will be in meters
         
-        m_mesh.push_back({ v1.m_lat, v1.m_lon, 0 });
-        m_mesh.push_back(buildingColour);
-        m_mesh.push_back({ v2.m_lat, v2.m_lon, 0 });
-        m_mesh.push_back(buildingColour);
-        m_mesh.push_back({ v2.m_lat, v2.m_lon, height });
-        m_mesh.push_back(buildingColour);
+        mesh.push_back({ v1.m_lat, v1.m_lon, 0 });
+        mesh.push_back(buildingColour);
+        mesh.push_back({ v2.m_lat, v2.m_lon, 0 });
+        mesh.push_back(buildingColour);
+        mesh.push_back({ v2.m_lat, v2.m_lon, height });
+        mesh.push_back(buildingColour);
 
-        m_mesh.push_back({ v1.m_lat, v1.m_lon, 0 });
-        m_mesh.push_back(buildingColour);
-        m_mesh.push_back({ v2.m_lat, v2.m_lon, height });
-        m_mesh.push_back(buildingColour);
-        m_mesh.push_back({ v1.m_lat, v1.m_lon, height });
-        m_mesh.push_back(buildingColour);
+        mesh.push_back({ v1.m_lat, v1.m_lon, 0 });
+        mesh.push_back(buildingColour);
+        mesh.push_back({ v2.m_lat, v2.m_lon, height });
+        mesh.push_back(buildingColour);
+        mesh.push_back({ v1.m_lat, v1.m_lon, height });
+        mesh.push_back(buildingColour);
         
     }
 
@@ -248,9 +248,9 @@ void OSMDataProcessor::ExtractBuildingGeometry(OSMWay& way)
     for (auto index : indices)
     {
         glm::dvec2 vertex = { polygon[0][index][0], polygon[0][index][1] };
-        m_mesh.push_back({ vertex.x, vertex.y, height });
-        m_mesh.push_back(roofColour);
-        //m_mesh.push_back(colours[((int)i / 3)%colours.size()]);
+        mesh.push_back({ vertex.x, vertex.y, height });
+        mesh.push_back(roofColour);
+        //mesh.push_back(colours[((int)i / 3)%colours.size()]);
         //i++;
     }
 }
