@@ -24,7 +24,7 @@ class RasterTileRender
 public:
 	cgv::render::vertex_buffer vertex_buffer;
 	cgv::render::attribute_array_binding vertex_array;
-	cgv::render::texture texture;
+	//cgv::render::texture texture;
 	// TODO: Remove MapTiles::Texture. Use cgv::render::texture instead
 	std::shared_ptr<MapTiles::Texture> tmp_texture;
 

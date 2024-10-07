@@ -67,14 +67,14 @@ public:
 	MAPTILES_API TileManagerData();
 	MAPTILES_API ~TileManagerData();
 
-	MAPTILES_API void Init(GlobalConfig config);
+	MAPTILES_API void Init(GlobalConfig* config);
 	
 	MAPTILES_API RasterTileData& GetRasterTile(int zoom, int x, int y);
 	MAPTILES_API RasterTileData& GetRasterTile(int zoom, double lat, double lon);
 	MAPTILES_API Tile3DData& GetTile3D(double lat, double lon);
 
 private:
-	GlobalConfig m_config;
+	GlobalConfig* m_config;
 
 	std::map<RasterTileIndex, RasterTileData> m_RasterTileCache;
 	std::map<Tile3DIndex, Tile3DData> m_Tile3DCache;
