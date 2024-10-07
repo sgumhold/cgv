@@ -7,11 +7,11 @@ Tile3DRender::Tile3DRender(cgv::render::context& ctx, const Tile3DData& tile, do
 	lat_max = tile.lat_max;
 	lon_max = tile.lon_max;
 
-	for (int i = 0; i < tile.mesh.size(); i += 3) {
+	for (int i = 0; i < tile.mesh_cartesian.size(); i += 3) {
 		Vertex v;
-		v.position	= vec3(tile.mesh[i][0],			tile.mesh[i][1],		tile.mesh[i][2]);
-		v.color		= vec4(tile.mesh[i + 1][0],		tile.mesh[i + 1][1],	tile.mesh[i + 1][2],	1.0f);
-		v.normal	= vec3(tile.mesh[i + 2][0],		tile.mesh[i + 2][1],	tile.mesh[i + 2][2]);
+		v.position	= vec3(tile.mesh_cartesian[i][0],			tile.mesh_cartesian[i][1],		tile.mesh_cartesian[i][2]);
+		v.color		= vec4(tile.mesh_cartesian[i + 1][0],		tile.mesh_cartesian[i + 1][1],	tile.mesh_cartesian[i + 1][2],	1.0f);
+		v.normal	= vec3(tile.mesh_cartesian[i + 2][0],		tile.mesh_cartesian[i + 2][1],	tile.mesh_cartesian[i + 2][2]);
 		mesh.push_back(v);
 	}
 

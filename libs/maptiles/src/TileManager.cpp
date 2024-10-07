@@ -2,15 +2,34 @@
 #include "utils.h"
 
 TileManager::TileManager()
-: lat(0), lon(0), altitude(0) {}
+: lat(0), lon(0), altitude(0), config(nullptr) {}
 
-void TileManager::Init(double _lat, double _lon, double _altitude, GlobalConfig& _conf)
+void TileManager::Init(double _lat, double _lon, double _altitude, GlobalConfig* _conf)
 { 
 	lat = _lat;
 	lon = _lon;
 	altitude = _altitude;
 	config = _conf;
 	tile_manager_data.Init(config);
+}
+
+void TileManager::ReInit(double _lat, double _lon, double _altitude, GlobalConfig* _conf) 
+{ 
+	while (!last_update_finsihed)
+	{
+
+	}
+
+	lat = _lat;
+	lon = _lon;
+	altitude = _altitude;
+	config = _conf;
+
+	active_raster_tile.clear();
+	background_raster_tile.clear();
+	active_tile3D.clear();
+	background_tile3D.clear();
+
 }
 
 void TileManager::Finalize() 
@@ -72,7 +91,7 @@ void TileManager::SetPosition(double _lat, double _lon, double _alt)
 
 void TileManager::GenerateRasterTileNeighbours() 
 {
-	int k = config.NeighbourhoodFetchSizeRasterTile;
+	int k = config->NeighbourhoodFetchSizeRasterTile;
 
 	int centerX;
 	int centerY;
@@ -105,8 +124,8 @@ void TileManager::GenerateTile3DNeighbours()
 { 
 	neighbour_set_tile3D.clear();
 
-	int k = config.NeighbourhoodFetchSizeTile3D;
-	double size = config.Tile3DSize;
+	int k = config->NeighbourhoodFetchSizeTile3D;
+	double size = config->Tile3DSize;
 
 	double centerLat = std::floor(lat / size) * size;
 	double centerLon = std::floor(lon / size) * size;
@@ -131,7 +150,7 @@ void TileManager::GenerateTile3DNeighbours()
 
 void TileManager::RemoveRasterTiles() 
 {
-	int gridSize = config.NeighbourhoodFetchSizeRasterTile * 2 + 1;
+	int gridSize = config->NeighbourhoodFetchSizeRasterTile * 2 + 1;
 
 	// Create a vector that will store the indices that need to be removed
 	std::vector<RasterTileIndex> indices;
@@ -169,7 +188,7 @@ void TileManager::RemoveRasterTiles()
 
 void TileManager::RemoveTile3Ds() 
 {
-	int gridSize = config.NeighbourhoodFetchSizeTile3D * 2 + 1;
+	int gridSize = config->NeighbourhoodFetchSizeTile3D * 2 + 1;
 
 	// Create a vector that will store the indices that need to be removed
 	std::vector<Tile3DIndex> indices;
@@ -305,7 +324,7 @@ void TileManager::AddRasterTiles(cgv::render::context& ctx)
 	std::lock_guard<std::mutex> lockActive(m_MutexBackgroundRasterTiles);
 	while (!queue_raster_tiles.empty()) {
 		auto& element = *(queue_raster_tiles.begin());
-		RasterTileRender tile(ctx, element.second, config.ReferencePoint.lat, config.ReferencePoint.lon);
+		RasterTileRender tile(ctx, element.second, config->ReferencePoint.lat, config->ReferencePoint.lon);
 
 		background_raster_tile[element.first] = tile;
 
@@ -326,7 +345,7 @@ void TileManager::AddTile3D(cgv::render::context& ctx)
 	while (!queue_tile3Ds.empty())
 	{
 		auto const& element = *(queue_tile3Ds.begin());
-		Tile3DRender tile(ctx, element.second, config.ReferencePoint.lat, config.ReferencePoint.lon);
+		Tile3DRender tile(ctx, element.second, config->ReferencePoint.lat, config->ReferencePoint.lon);
 
 		background_tile3D[element.first] = tile;
 
@@ -350,11 +369,11 @@ bool TileManager::AllQueuesEmpty()
 
 bool TileManager::AllBackgroundTilesProcessed() 
 {
-	int tile3DGridSize = config.NeighbourhoodFetchSizeTile3D * 2 + 1;
+	int tile3DGridSize = config->NeighbourhoodFetchSizeTile3D * 2 + 1;
 	if (background_tile3D.size() != tile3DGridSize * tile3DGridSize)
 		return false;
 
-	int rasterTileGridSize = config.NeighbourhoodFetchSizeRasterTile * 2 + 1;
+	int rasterTileGridSize = config->NeighbourhoodFetchSizeRasterTile * 2 + 1;
 	if (background_raster_tile.size() != rasterTileGridSize * rasterTileGridSize)
 		return false;
 

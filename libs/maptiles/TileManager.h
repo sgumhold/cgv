@@ -16,7 +16,8 @@ class MAPTILES_API TileManager
 public:
 	TileManager();
 
-	void Init(double _lat, double _lon, double altitude, GlobalConfig& conf);
+	void Init(double _lat, double _lon, double altitude, GlobalConfig* conf);
+	void ReInit(double _lat, double _lon, double altitude, GlobalConfig* conf);
 	void Finalize();
 
 	void Update(cgv::render::context& ctx);
@@ -54,7 +55,7 @@ private:
 
 private:
 	double lat, lon, altitude;
-	GlobalConfig config;
+	GlobalConfig* config;
 	TileManagerData tile_manager_data;
 
 	std::set<RasterTileIndex> neighbour_set_raster_tile;
