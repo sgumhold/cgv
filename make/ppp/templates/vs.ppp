@@ -3,7 +3,6 @@
 ::config_name=["Release","Debug","Release Dll","Debug Dll","Release Exe","Debug Exe"];
 ::link_inc=[1,2,1,2,1,2];
 ::use_lib_deps=[1,1,0,0,1,1];
-::is_dbg=["false","true","false","true","false","true"];
 ::vs_platform = "Win32";
 if (CGV_PLATFORM != "") {
 	if (CGV_PLATFORM != "WIN32") {
@@ -87,8 +86,15 @@ func(::extend_project_info_vs; :>project_name = "", :>return = 1)
 	pj::output_dir       = ["","","","","",""];
 	pj::linker_tool      = ["","","","","",""];
 	pj::linker_tool_vs10 = ["","","","","",""];
-	
-
+	if (pj::cudaEnabled) {
+		if (env::CUDA_PATH ~~ UNDEF) {
+			pj::cudaEnabled = (1 == 0);
+			cout("As CUDA_PATH is empty, CUDA support turned off in project ".pj::projectName."\n");
+		}
+		else {
+			pj::cudaVersion = env::CUDA_PATH + (2+!(env::CUDA_PATH - "/"));
+		}
+	}
 	for (:>cj=0; cj<!pj::config_indices; ++cj) {
 		:>configDefsAdd     = [];
 		:>ci = pj::config_indices[cj];
@@ -146,6 +152,52 @@ func(::extend_project_info_vs; :>project_name = "", :>return = 1)
 //	if (!pj::referenceDeps) {
 		append_library_dependencies_vs(project_name);
 //	}
+	if (pj::cudaEnabled) {
+		:>codeGenIsValid = FALSE;
+		if (pj::cudaCodeGeneration !~ UNDEF) {
+			:>needOptions = FALSE;
+			codeGenIsValid = TRUE;
+			pj::cudaCodeGenerationOptions = "";
+			pj::cudaCodeGenerationVS = "";
+			if (pj::cudaCodeGeneration ~~ STRING) {
+				pj::cudaCodeGenerationOptions = "-arch=".pj::cudaCodeGeneration;
+				needOptions = TRUE;
+			}
+			elif (pj::cudaCodeGeneration ~~ MAP && pj::cudaCodeGeneration::architecture ~~ STRING) {
+				if (pj::cudaCodeGeneration::code ~~ LIST) {
+					for (:>i=0; i<!pj::cudaCodeGeneration::code; ++i) {
+						if (i > 0) {
+							pj::cudaCodeGenerationVS = pj::cudaCodeGenerationVS.";";
+						}
+						pj::cudaCodeGenerationVS = pj::cudaCodeGenerationVS.pj::cudaCodeGeneration::architecture.",".pj::cudaCodeGeneration::code[i];
+					}
+				}
+				elif (pj::cudaCodeGeneration::code ~~ STRING) {
+					pj::cudaCodeGenerationVS = pj::cudaCodeGeneration::architecture.",".pj::cudaCodeGeneration::code;
+				}
+				else {
+					pj::cudaCodeGenerationOptions = "-arch=".pj::cudaCodeGeneration::architecture;				
+					needOptions = TRUE;
+				}
+			}
+			else {
+				codeGenIsValid = FALSE;
+			}
+			if (codeGenIsValid) {
+				if (needOptions) {
+					pj::cudaCodeGenerationVS = "";
+				}
+				else {
+					pj::cudaCodeGenerationOptions = "";
+				}
+			}
+		}
+		if (!codeGenIsValid) {
+			pj::cudaCodeGenerationOptions = "-arch=native";
+			pj::cudaCodeGenerationVS = "";
+		}
+		//cout("cuOptions = ".pj::cudaCodeGenerationOptions."\ncuVS = ".pj::cudaCodeGenerationVS."\n");
+	}
 }
 
 func(::get_rule_id_vs10; :>pj=MAP, :>ext="", :>return="")
@@ -153,6 +205,9 @@ func(::get_rule_id_vs10; :>pj=MAP, :>ext="", :>return="")
 	return = get_rule_id(<:pj =& pj, <:ext=ext);
 	if (return == "sources_rule") {
 		return = "ClCompile";
+	}
+	elif (return == "cuda_rule") {
+		return = "CudaCompile";
 	}
 	elif (return == "headers_rule" && !check_is_rule(pj,ext)) {
 		return = "ClInclude";
