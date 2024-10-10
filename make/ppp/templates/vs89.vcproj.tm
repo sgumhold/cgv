@@ -2,7 +2,7 @@
 @func(::gen_config; :>ci=0, :>project_name="", :>return="")@{
 	@define(:>pj =& projects[project_name])
 	@define(:>is_shared=pj::is_shared[ci])
-	@define(:>is_debug=(is_dbg[ci] == "true"))@//
+	@define(:>is_debug=pj::is_debug[ci])@//
     <Configuration
 			Name=@"config_name[ci].'|Win32'"
 			OutputDirectory=@"CGV_INSTALL.'/'.pj::output_dir[ci]"
@@ -95,7 +95,7 @@
 @if(pj::defFile ~~ STRING)@{@if((!pj::defFile)>0)@{
 				ModuleDefinitionFile=@"pj::defFile"
 @}@}
-				GenerateDebugInformation=@"is_dbg[ci]"
+				GenerateDebugInformation=@if(is_debug)@{"true"@}@else@{"false"@}
 				SubSystem=@"pj::sub_system[ci]"
 @if(!pj::is_executable[ci])@{
 				ImportLibrary=@"CGV_INSTALL.'/lib/$(TargetName).lib'"
