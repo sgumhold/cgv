@@ -483,9 +483,9 @@ Internal Makefiles (Windows only)</h1>
 <div class="line">// enable openmp support by the following line (default value is 0 or 1 if env::CGV_OPTIONS containts OPENMP)</div>
 <div class="line">useOpenMP = 1;</div>
 <div class="line"> </div>
-<div class="line">// set the C++ language standard to &quot;stdcpp14&quot; or &quot;stdcpp17&quot; by the following line,</div>
-<div class="line">//     which defaults to empty or &quot;stdcpp17&quot; if env::CGV_OPTIONS contains STDCPP17</div>
-<div class="line">cppLanguageStandard = &quot;stdcpp17&quot;;</div>
+<div class="line">// set the C++ language standard to &quot;stdcpp11&quot;, &quot;stdcpp14&quot; &quot;stdcpp17&quot;, or &quot;stdcpp20&quot; by the following line,</div>
+<div class="line">//     which defaults to empty, or &quot;stdcpp17|stdcpp20&quot; if env::CGV_OPTIONS contains STDCPP17|STDCPP20</div>
+<div class="line">cppLanguageStandard = &quot;stdcpp20&quot;;</div>
 <div class="line"> </div>
 <div class="line">// overwrite windows character set used to encode string, which defaults to &quot;Unicode&quot; or if set env::CGV_CHARSET</div>
 <div class="line">charset = &quot;MultiByte&quot;;</div>
@@ -538,6 +538,56 @@ Internal Makefiles (Windows only)</h1>
 <div class="line">//                                    2 ... second rule target</div>
 <div class="line">//                                    3 ... etc</div>
 <div class="line">addRules=[];</div>
+<div class="line"> </div>
+<div class="line">// visual studio supports CUDA for the x64 plattform through special project properties </div>
+<div class="line">// and targets. CUDA support can be turned on for a project by setting cudaEnabled = TRUE.</div>
+<div class="line">// This extracts the CUDA version from env::CUDA_PATH and adds rules for the</div>
+<div class="line">// extensions &quot;cu&quot; and &quot;cuh&quot; which put corresponding files in the &quot;cuda&quot; and</div>
+<div class="line">// &quot;cuda_headers&quot; visual studio project folders and uses CudaCompile for cu-files.</div>
+<div class="line">//</div>
+<div class="line">// The cuda compiler nvcc can compile code into a compute architecture specific text file *.ptx</div>
+<div class="line">// and from this to binary code for specific real GPUs stored in *.cubin files. Furthermore, nvcc can</div>
+<div class="line">// create multiple cubin and ptx files in one call and pack them into a *.fatbin file. Finally, the</div>
+<div class="line">// ptx, cubin, and fatbin files can all be integrated in obj files by incoporating C++ declarations </div>
+<div class="line">// into an intermediate C++ file. </div>
+<div class="line">// Ppp cuda support defaults to the latter incorporation strategy and code generation is controlled </div>
+<div class="line">// through the projects cudaCodeGeneration variable in multiple possible ways:</div>
+<div class="line">//</div>
+<div class="line">// cudaCodeGeneration = &quot;all&quot;; </div>
+<div class="line">//     ... compiles to all possible platforms (takes long and gives huge libs/exes; only works if </div>
+<div class="line">//                                             implementation supports all architectures)</div>
+<div class="line">// cudaCodeGeneration = &quot;native&quot;;</div>
+<div class="line">//     ... compiles to these GPUs that are installed in the computer used for compilation </div>
+<div class="line">//         (has fastest compilation and leads to smallest libs/exes; therefore this is the default setting)</div>
+<div class="line">// cudaCodeGeneration = MAP.[[&quot;architecture&quot;,&quot;sm_75&quot;]];</div>
+<div class="line">//     ... compiles to compute_75 ptx and sm_75 native code</div>
+<div class="line">// cudaCodeGeneration = MAP.[[&quot;architecture&quot;,&quot;compute_75&quot;], [&quot;code&quot;,&quot;sm_75&quot;]];</div>
+<div class="line">//     ... compiles to sm_75 cubin using compute_75 architecture for preprocessing</div>
+<div class="line">// cudaCodeGeneration = MAP.[[&quot;architecture&quot;,&quot;compute_75&quot;], [code, [&quot;sm_75, &quot;compute_75&quot;, &quot;sm_80&quot;] ] ];</div>
+<div class="line">//     ... compiles to compute_75 ptx as well as to sm_75 cubin and sm_80 cubin using compute_75 </div>
+<div class="line">//         architecture for preprocessing</div>
+<div class="line">//</div>
+<div class="line">// The possible compute architecture are of the form &quot;compute_??&quot; and the real GPUs of form &quot;sm_??&quot;.</div>
+<div class="line">// The 2 digit number ?? describes for compute architecture as well as for real GPUs the supported feature:</div>
+<div class="line">//  - Maxwell ... 50|52|53</div>
+<div class="line">//  - Pascal  ... 60|61|62</div>
+<div class="line">//  - Volta   ... 70|72</div>
+<div class="line">//  - Turing  ... 75</div>
+<div class="line">//  - Ampere  ... 80|86|87</div>
+<div class="line">//  - Ada     ... 89</div>
+<div class="line">//  - Hopper  ... 90|90a</div>
+<div class="line">// The architecture number must be smaller or equal than all the code numbers.</div>
+<div class="line">//</div>
+<div class="line">// Ppp automatically specifies nvcc compiler options to synch the C++ standard with the cc compiler </div>
+<div class="line">// and the options for the host compiler (-Xcompiler). Further options can be specified per project</div>
+<div class="line">// space separated in the string variable cudaOptions. Typical options to choose from are</div>
+<div class="line">//</div>
+<div class="line">// cudaOptions = &quot;--verbose --extended-lambda --expt-relaxed-constexpr --use_fast_math -dopt=on&quot;;</div>
+<div class="line">// </div>
+<div class="line">// CUDA support variables default to the following settings:</div>
+<div class="line">cudaEnabled = FALSE;</div>
+<div class="line">cudaOptions = &quot;&quot;;</div>
+<div class="line">cudaCodeGeneration = &quot;native&quot;;</div>
 </div><!-- fragment --> </div></div><!-- contents -->
 </div><!-- PageDoc -->
 </div><!-- doc-content -->
