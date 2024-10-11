@@ -10,7 +10,7 @@ if (env::TCNN_MIN_GPU_ARCH ~~ UNDEF) {
 else {
 	TCNN_MIN_GPU_ARCH_TMP = env::TCNN_MIN_GPU_ARCH;
 }
-if (env::TCNN_DIRX ~~ UNDEF) {
+if (env::TCNN_DIR ~~ UNDEF) {
 	cout("----------------------- WARNING -------------------------------------------------------------------\n");
 	cout("To use cgv-tcnn.pj you need to recursively clone https://github.com/NVlabs/tiny-cuda-nn.git and set\n");
 	cout("the environment variable TCNN_DIR to the target path of the clone operation. There is no need to\n");
