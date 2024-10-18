@@ -63,6 +63,5 @@ RasterTileRender::RasterTileRender(cgv::render::context& ctx, RasterTileData& ti
 	vertex_array.set_attribute_array(ctx, my_shader.get_texcoord_index(), vec2type, vertex_buffer, sizeof(vec3),
 									 vertices.size(), sizeof(Vertex));
 
-	//texture.create_from_image(ctx, "C:\\Users\\shali\\Desktop\\2770.png");
 	tmp_texture = std::make_shared<MapTiles::Texture>(tile.m_image, tile.m_height, tile.m_width);
 }
