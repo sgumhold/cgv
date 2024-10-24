@@ -27,7 +27,7 @@
 #include <maptiles/3rd/WGS84toCartesian/WGS84toCartesian.hpp>
 
 //#include <cgv/render/texture.h>
-
+#include <cgv/render/stereo_view.h>
 
 
 //////
@@ -85,13 +85,25 @@ class maptiles : public cgv::app::application_plugin // inherit from application
 	////
 	// Interfrace: cgv::app::application_plugin
 
+	bool self_reflect(cgv::reflect::reflection_handler& rh)
+	{ 
+		bool success = true;
+
+		success = rh.reflect_member("latitude", latitude) && success;
+		success = rh.reflect_member("longitude", longitude) && success;
+
+		return success;
+	}
+
 	virtual bool init(cgv::render::context &ctx) override
 	{ 
-		config.ReferencePoint = {51.02596, 13.7230};
+		//config.ReferencePoint = {51.02596, 13.7230};
+		config.ReferencePoint = {latitude, longitude};
+		
 		renderer.Init(ctx);
-		manager.Init(51.02596, 13.7230, 10, &config);
+		manager.Init(config.ReferencePoint.lat, config.ReferencePoint.lon, 10, &config);
 		connect_copy(manager.tile_downloaded, cgv::signal::rebind(this, &maptiles::tile_download_callback));
-		manager.Update(ctx);
+		//manager.Update(ctx);
 
 		return true;
 	}
@@ -117,6 +129,17 @@ class maptiles : public cgv::app::application_plugin // inherit from application
 
 	virtual void draw(cgv::render::context &ctx) override 
 	{ 
+		/*
+		if (initialize_view_ptr())
+		{
+		auto camera = dynamic_cast<cgv::render::stereo_view*>(view_ptr);
+		cgv::math::vec<double> minp(0.0f, 0.0f, 0.0f), maxp(100.0f, 100.0f, 100.0f);
+		cgv::dbox3 box(minp, maxp);
+		//std::cout << "Box: " << box;
+		camera->set_scene_extent(box);
+		//set_scene_extent
+		}
+		*/
 		// We need to keep track of the x and y coordinate of the original camera matrix for recentering
 		auto& real_mv = ctx.get_modelview_matrix();
 		x = real_mv(0, 3);
@@ -161,6 +184,12 @@ class maptiles : public cgv::app::application_plugin // inherit from application
 
 	void on_set(void* member_ptr)
 	{ 
+		if (member_ptr == &latitude || member_ptr == &longitude)
+		{
+			config.ReferencePoint = {latitude, longitude};
+			manager.ReInit(latitude, longitude, altitude, &config);
+		}
+
 		update_member(member_ptr);
 		post_redraw();
 	}
@@ -208,4 +237,5 @@ class maptiles : public cgv::app::application_plugin // inherit from application
 //
 
 // Our maptiles plugin
-cgv::base::factory_registration<maptiles> maptiles_factory("New/Demo/Map Tiles", "", true);
+//cgv::base::factory_registration<maptiles> maptiles_factory("New/Demo/Map Tiles", "", true);
+cgv::base::object_registration<maptiles> maptiles_object("");
