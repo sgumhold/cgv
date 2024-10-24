@@ -1,0 +1,9 @@
+@=
+projectType="library";
+projectName="httplib";
+projectGUID="12395CBA-21DF-9D2D-5C74-B6396CB7BD32";
+excludeSourceDirs=[
+	INPUT_DIR."/example", INPUT_DIR."/test"
+];
+excludeSourceFiles=[INPUT_DIR."/meson_options.txt"];
+addIncDirs=[INPUT_DIR];

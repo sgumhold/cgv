@@ -14,5 +14,6 @@ addProjectDeps=[
 	];
 addShaderPaths=[INPUT_DIR];
 addCommandLineArguments=[
+	'config:"'.CGV_DIR.'/plugins/maptiles_plugin/config.def"',
 	after("SHADER_PATHS", "cg_fltk")
 ];
