@@ -104,13 +104,14 @@ $(document).ready(function(){initNavTree('cmdline__tools_8h_source.html',''); in
 <div class="line"><a name="l00020"></a><span class="lineno">   20</span>&#160; </div>
 <div class="line"><a name="l00034"></a><span class="lineno">   34</span>&#160;<span class="keyword">extern</span> CGV_API <span class="keywordtype">size_t</span> read_system_output(std::string cmd, uint8_t* buffer, <span class="keywordtype">size_t</span> buffer_size, <span class="keyword">const</span> <span class="keywordtype">char</span>* progression_text = 0, <span class="keywordtype">bool</span> use_cerr = <span class="keyword">false</span>, <span class="keywordtype">void</span> (*on_progress_update)(<span class="keywordtype">int</span>, <span class="keywordtype">void</span>*) = 0, <span class="keywordtype">void</span>* user_data = 0, <span class="keywordtype">size_t</span> block_size = 4096, <span class="keywordtype">bool</span> cycle_till_eof = <span class="keyword">false</span>);</div>
 <div class="line"><a name="l00035"></a><span class="lineno">   35</span>&#160; </div>
-<div class="line"><a name="l00041"></a><span class="lineno">   41</span>&#160;<span class="keyword">extern</span> CGV_API FILE* open_system_input(<span class="keyword">const</span> std::string&amp; cmd, <span class="keywordtype">bool</span> in_binary_mode = <span class="keyword">true</span>);</div>
-<div class="line"><a name="l00047"></a><span class="lineno">   47</span>&#160;<span class="keyword">extern</span> CGV_API <span class="keywordtype">int</span> close_system_input(FILE* fp);</div>
-<div class="line"><a name="l00048"></a><span class="lineno">   48</span>&#160; </div>
-<div class="line"><a name="l00049"></a><span class="lineno">   49</span>&#160;    }</div>
-<div class="line"><a name="l00050"></a><span class="lineno">   50</span>&#160;}</div>
-<div class="line"><a name="l00051"></a><span class="lineno">   51</span>&#160; </div>
-<div class="line"><a name="l00052"></a><span class="lineno">   52</span>&#160;<span class="preprocessor">#include &lt;cgv/config/lib_end.h&gt;</span></div>
+<div class="line"><a name="l00041"></a><span class="lineno">   41</span>&#160;<span class="keyword">extern</span> CGV_API FILE* open_system_output(<span class="keyword">const</span> std::string&amp; cmd, <span class="keywordtype">bool</span> in_binary_mode = <span class="keyword">true</span>);</div>
+<div class="line"><a name="l00048"></a><span class="lineno">   48</span>&#160;<span class="keyword">extern</span> CGV_API FILE* open_system_input(<span class="keyword">const</span> std::string&amp; cmd, <span class="keywordtype">bool</span> in_binary_mode = <span class="keyword">true</span>);</div>
+<div class="line"><a name="l00054"></a><span class="lineno">   54</span>&#160;<span class="keyword">extern</span> CGV_API <span class="keywordtype">int</span> close_system_input(FILE* fp);</div>
+<div class="line"><a name="l00055"></a><span class="lineno">   55</span>&#160; </div>
+<div class="line"><a name="l00056"></a><span class="lineno">   56</span>&#160;    }</div>
+<div class="line"><a name="l00057"></a><span class="lineno">   57</span>&#160;}</div>
+<div class="line"><a name="l00058"></a><span class="lineno">   58</span>&#160; </div>
+<div class="line"><a name="l00059"></a><span class="lineno">   59</span>&#160;<span class="preprocessor">#include &lt;cgv/config/lib_end.h&gt;</span></div>
 <div class="ttc" id="anamespacecgv_html"><div class="ttname"><a href="namespacecgv.html">cgv</a></div><div class="ttdoc">the cgv namespace</div><div class="ttdef"><b>Definition:</b> <a href="print_8h_source.html#l00011">print.h:11</a></div></div>
 </div><!-- fragment --></div><!-- contents -->
 </div><!-- doc-content -->

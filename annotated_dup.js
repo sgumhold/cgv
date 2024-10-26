@@ -410,6 +410,9 @@ var annotated_dup =
         [ "queued_output_thread", "classcgv_1_1os_1_1queued__output__thread.html", "classcgv_1_1os_1_1queued__output__thread" ],
         [ "named_pipe_output_thread", "classcgv_1_1os_1_1named__pipe__output__thread.html", "classcgv_1_1os_1_1named__pipe__output__thread" ],
         [ "pipe_output_thread", "classcgv_1_1os_1_1pipe__output__thread.html", "classcgv_1_1os_1_1pipe__output__thread" ],
+        [ "queued_input_thread", "classcgv_1_1os_1_1queued__input__thread.html", "classcgv_1_1os_1_1queued__input__thread" ],
+        [ "named_pipe_input_thread", "classcgv_1_1os_1_1named__pipe__input__thread.html", "classcgv_1_1os_1_1named__pipe__input__thread" ],
+        [ "pipe_input_thread", "classcgv_1_1os_1_1pipe__input__thread.html", "classcgv_1_1os_1_1pipe__input__thread" ],
         [ "socket", "classcgv_1_1os_1_1socket.html", "classcgv_1_1os_1_1socket" ],
         [ "socket_client", "classcgv_1_1os_1_1socket__client.html", "classcgv_1_1os_1_1socket__client" ],
         [ "socket_server", "classcgv_1_1os_1_1socket__server.html", "classcgv_1_1os_1_1socket__server" ],
@@ -860,7 +863,8 @@ var annotated_dup =
       [ "driver_registry", "structgamepad_1_1driver__registry.html", "structgamepad_1_1driver__registry" ]
     ] ],
     [ "nes", null, [
-      [ "basic_pipe_ostream", "classnes_1_1basic__pipe__ostream.html", null ]
+      [ "basic_pipe_ostream", "classnes_1_1basic__pipe__ostream.html", null ],
+      [ "basic_pipe_istream", "classnes_1_1basic__pipe__istream.html", null ]
     ] ],
     [ "stl_reader", null, [
       [ "stl_reader_impl", null, [

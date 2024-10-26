@@ -1,5 +1,6 @@
 var NAVTREEINDEX27 =
 {
+"classcgv_1_1render_1_1volume__renderer.html#aa410b3cecee0dcb292fe7e816f9d836e":[11,0,0,12,117,21],
 "classcgv_1_1render_1_1volume__renderer.html#ab7c24b5845b03cc1db4029a8b500b7cf":[11,0,0,12,117,13],
 "classcgv_1_1render_1_1volume__renderer.html#acad4f08e3dc03099aab07d244cbded5a":[11,0,0,12,117,2],
 "classcgv_1_1render_1_1volume__renderer.html#ace19d995dc487ec5efd577632a3e8434":[11,0,0,12,117,9],
@@ -183,6 +184,7 @@ var NAVTREEINDEX27 =
 "classgui__config__file__observer.html#ad3aaa0eacdd219e7793cd1c483114437":[11,0,16,7],
 "classgui__config__file__observer.html#afbb77495774efba97ab2daf14e6a0565":[11,0,16,2],
 "classgui__config__file__observer.html#afd22601de6366d1848d961748e439e98":[11,0,16,4],
+"classnes_1_1basic__pipe__istream.html":[11,0,3,1],
 "classnes_1_1basic__pipe__ostream.html":[11,0,3,0],
 "classstl__reader_1_1StlMesh.html":[11,0,4,1],
 "classstl__reader_1_1StlMesh.html#a01b86a0f0fe7e2fb4d0a219c71f2280d":[11,0,4,1,16],
@@ -247,7 +249,5 @@ var NAVTREEINDEX27 =
 "classvr_1_1vr__camera.html#a625919bc31b47da77c083b8e3d1fb7e2":[11,0,5,1,12],
 "classvr_1_1vr__camera.html#a6c6431708b2fecd53bca7f49449f2966":[11,0,5,1,10],
 "classvr_1_1vr__camera.html#a7cbe485a8c40fabc089c91bcd5c5698a":[11,0,5,1,1],
-"classvr_1_1vr__camera.html#a82d0b4e9a3181895e7c54b8bcd932384":[11,0,5,1,9],
-"classvr_1_1vr__camera.html#a90ce130e2aecf93cafa4ae43c6efd4b9":[11,0,5,1,21],
-"classvr_1_1vr__camera.html#aabeb87ef3a6250b231fc85cb1316dfcb":[11,0,5,1,22]
+"classvr_1_1vr__camera.html#a82d0b4e9a3181895e7c54b8bcd932384":[11,0,5,1,9]
 };
