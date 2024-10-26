@@ -1,5 +1,8 @@
 var NAVTREEINDEX40 =
 {
+"namespacevr.html#ae5690db873471f4275d4f2a842dbb7b8a708f4e50a5591326cc9144bd9733113e":[10,0,6,27,3],
+"namespacevr.html#ae5690db873471f4275d4f2a842dbb7b8a7b4ca841164019fff67223549929572d":[10,0,6,27,1],
+"namespacevr.html#ae5690db873471f4275d4f2a842dbb7b8ab42b8df4320d15b1fca2b0d2d55a404e":[10,0,6,27,0],
 "namespacevr.html#ae5690db873471f4275d4f2a842dbb7b8ab86e8caea9b98c9e310dead05f68b019":[10,0,6,27,2],
 "namespacevr.html#ae75e313f505840cc107976f1bb063232":[10,0,6,44],
 "namespacevr.html#ae76a72a70f5b257a07481bc63c3d473b":[10,0,6,65],
@@ -246,8 +249,5 @@ var NAVTREEINDEX40 =
 "plugins_2vr__test_2intersection_8h.html#a28fef49758c013c7ae3c367ec9c1607c":[10,0,1,8,113],
 "plugins_2vr__test_2intersection_8h.html#a79ed6516c576a241462fe981d1d09853":[10,0,1,8,121],
 "plugins_2vr__test_2intersection_8h_source.html":[12,0,4,1,1],
-"point__operations_8h.html#a0cbde1707c4f8fd2327f11968be1e8c0":[10,0,1,7,554],
-"point__operations_8h.html#a25946a259b309f6d01344d7117fd5b37":[10,0,1,7,99],
-"point__operations_8h.html#a3f4720e06972baa64a69acb0bb8b8d3e":[10,0,1,7,125],
-"point__operations_8h.html#a41efc72e1a7aad03a48a289c7fad23c8":[10,0,1,7,535]
+"point__operations_8h.html#a0cbde1707c4f8fd2327f11968be1e8c0":[10,0,1,7,554]
 };

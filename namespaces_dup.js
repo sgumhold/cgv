@@ -240,7 +240,8 @@ var namespaces_dup =
       [ "set_vibration", "gamepad_8cxx.html#a496315ebd50f632b5fd0e749e447e6ba", null ]
     ] ],
     [ "nes", null, [
-      [ "basic_pipe_ostream", "classnes_1_1basic__pipe__ostream.html", null ]
+      [ "basic_pipe_ostream", "classnes_1_1basic__pipe__ostream.html", null ],
+      [ "basic_pipe_istream", "classnes_1_1basic__pipe__istream.html", null ]
     ] ],
     [ "stl_reader", null, [
       [ "stl_reader_impl", null, [
