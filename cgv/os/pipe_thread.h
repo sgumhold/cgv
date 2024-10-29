@@ -7,6 +7,7 @@
 namespace nes {
 	// forward declaration of pipe output stream to avoid inclusion of pipe header here
 	template<typename CharT, typename Traits> class basic_pipe_ostream;
+	template <typename CharT, typename Traits> class basic_pipe_istream;
 }
 
 namespace cgv {
@@ -73,6 +74,7 @@ namespace cgv {
 			/// return path of pipe that can be used in command line arguments to child/client processes
 			std::string get_pipe_path() const;
 		};
+
 		/// <summary>
 		/// queued thread class that manages a child process connecting to its input pipe 
 		/// </summary>
@@ -95,6 +97,83 @@ namespace cgv {
 			/// construct pipe output thread from system command, whether to use binary mode and wait time in ms used when queue is empty
 			pipe_output_thread(const std::string& _cmd, bool is_binary = true, unsigned _ms_to_wait = 20);
 			/// return the result value returned from child process which is available only after termination of thread
+			int get_result() const;
+		};
+
+
+		/// <summary>
+		/// Base class for system command output pipe or named pipe threads including a queue of data blocks and a
+		/// separate thread
+		/// </summary>
+		class CGV_API queued_input_thread : public cgv::os::thread
+		{
+		  protected:
+			/// flag to mark end of data stream
+			bool all_data_received = false;
+			/// whether binary mode should be used
+			bool is_binary;
+			/// block size used for reading data
+			size_t block_buffer_size;
+			/// mutex used to protect access to \c blocks
+			mutable cgv::os::mutex m;
+			/// deque to store data blocks read from the pipe by the thread
+			std::deque<char*> blocks;
+			/// time in milliseconds to wait while pipe is empty
+			unsigned ms_to_wait;
+			/// to be implemented in derived classes
+			virtual bool connect_to_source() = 0;
+			/// to be implemented in derived classes
+			virtual size_t read_block_from_pipe(char* buffer) = 0;
+			/// to be implemented in derived classes
+			virtual void close() = 0;
+
+		  public:
+			/// construct queued input thread with binary mode flag and wait time in ms used when pipe is empty
+			queued_input_thread(bool is_binary = true, unsigned _ms_to_wait = 20);
+
+			void set_block_buffer_size(size_t buffer_size);
+			/// continuously read from pipe and store in queue; if empty, wait in intervals of \c ms_to_wait
+			/// milliseconds
+			void run();
+			/// if done() had not been called, read a data block from the queue; can fail if no data or done() was
+			/// called
+			bool receive_block(char* buffer);
+			/// returns the number of blocks in the queue of not yet read data
+			size_t get_nr_blocks() const;
+			/// call this to indicate no more data will come
+			void done();
+		};
+
+		class CGV_API named_pipe_input_thread : public cgv::os::queued_input_thread
+		{
+			protected:
+			std::string pipe_name;
+			nes::basic_pipe_istream<char, std::char_traits<char>>* pipe_ptr = 0;
+			bool connect_to_source();
+			size_t read_block_from_pipe(char* buffer);
+			void close();
+
+		  public:
+			named_pipe_input_thread(const std::string& _pipe_name, bool is_binary = true, size_t _block_size = 4096,
+									unsigned _ms_to_wait = 20);
+			std::string get_pipe_path() const;
+		};
+
+		class CGV_API pipe_input_thread : public cgv::os::queued_input_thread
+		{
+		  protected:
+			std::string cmd;
+			FILE* fp = 0;
+
+			int result = -1;
+
+			bool connect_to_source() override;
+			size_t read_block_from_pipe(char* buffer) override;
+			void close();
+
+		  public:
+			pipe_input_thread(const std::string& _cmd, bool is_binary = true, size_t _block_size = 4096,
+							  unsigned _ms_to_wait = 20);
 			int get_result() const;
 		};
 	}
