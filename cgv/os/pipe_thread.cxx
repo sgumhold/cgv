@@ -156,7 +156,130 @@ int pipe_output_thread::get_result() const
 	return result;
 }
 
+queued_input_thread::queued_input_thread(bool _is_binary, unsigned _ms_to_wait)
+{
+	is_binary = _is_binary;
+	ms_to_wait = _ms_to_wait;
+}
+void queued_input_thread::set_block_buffer_size(size_t buffer_size) 
+{ block_buffer_size = buffer_size; }
+void queued_input_thread::run() 
+{
+	if (!connect_to_source())
+		return;
 
+	while (!have_stop_request()) {
+		// Allocate buffer for reading
+		char* buffer = new char[block_buffer_size];
+		size_t bytes_read = read_block_from_pipe(buffer);
+
+		if (bytes_read > 0) {
+			// Add block to queue if data was read
+			m.lock();
+			blocks.push_back({buffer});
+			m.unlock();
+		}
+		else {
+			// No data, check for termination
+			bool done;
+			m.lock();
+			done = all_data_received;
+			m.unlock();
+			delete[] buffer;
+			if (done)
+				break;
+			wait(ms_to_wait);
+		}
 	}
+
+	// Clean up and close source
+	close();
+}
+bool queued_input_thread::receive_block(char* buffer)
+{
+	m.lock();
+	if (blocks.empty()) {
+		m.unlock();
+		return false;
+	}
+	auto block = std::move(blocks.front());
+	blocks.pop_front();
+	m.unlock();
+
+	if (block) {
+		std::copy(block, block + block_buffer_size, buffer);
+	}
+	delete[] block;
+	return true;
+}
+size_t queued_input_thread::get_nr_blocks() const
+{ 
+	size_t nr_blocks;
+	m.lock();
+	nr_blocks = blocks.size();
+	m.unlock();
+	return nr_blocks;
+}
+void queued_input_thread::done()
+{
+	m.lock();
+	all_data_received = true;
+	m.unlock();
+}
+bool named_pipe_input_thread::connect_to_source() 
+{ 
+	auto mode = is_binary ? (std::ios_base::in | std::ios_base::binary) : std::ios_base::in;
+	pipe_ptr = new nes::pipe_istream(pipe_name, mode);
+	if (pipe_ptr->fail()) {
+		delete pipe_ptr;
+		pipe_ptr = 0;
+		return false;
+	}
+	return true;
+}
+size_t named_pipe_input_thread::read_block_from_pipe(char* buffer) {
+	pipe_ptr->read(buffer, block_buffer_size);
+	return pipe_ptr->gcount();
+}
+void named_pipe_input_thread::close() 
+{
+	if (pipe_ptr) {
+		pipe_ptr->close();
+		delete pipe_ptr;
+		pipe_ptr = 0;	
+	}
+}
+named_pipe_input_thread::named_pipe_input_thread(const std::string& _pipe_name, bool is_binary, size_t _block_size,
+												 unsigned _ms_to_wait)
+	: queued_input_thread(is_binary, _ms_to_wait)
+{
+	pipe_name = _pipe_name;
+	set_block_buffer_size(_block_size);
+}
+std::string named_pipe_input_thread::get_pipe_path() const 
+{ 
+	return nes::pipe_root + pipe_name; 
+}
+bool pipe_input_thread::connect_to_source() { 
+	fp = cgv::os::open_system_output(cmd, is_binary);
+	return fp != 0;
+}
+size_t pipe_input_thread::read_block_from_pipe(char* buffer) { 
+	fread(buffer, 1, block_buffer_size, fp);
+	return block_buffer_size;
+}
+void pipe_input_thread::close() 
+{ 
+	result = cgv::os::close_system_input(fp); 
+}
+pipe_input_thread::pipe_input_thread(const std::string& _cmd, bool is_binary, size_t _block_size, unsigned _ms_to_wait)
+{
+	cmd = _cmd;
+	set_block_buffer_size(_block_size);
+}
+int pipe_input_thread::get_result() const { 
+	return result; 
+}
+	} // namespace os
 }
 
