@@ -64,14 +64,14 @@ struct Tile3DIndex
 class TileManagerData
 {
 public:
-	MAPTILES_API TileManagerData();
-	MAPTILES_API ~TileManagerData();
+	TileManagerData();
+	~TileManagerData();
 
-	MAPTILES_API void Init(GlobalConfig* config);
+	void Init(GlobalConfig* config);
 	
-	MAPTILES_API RasterTileData& GetRasterTile(int zoom, int x, int y);
-	MAPTILES_API RasterTileData& GetRasterTile(int zoom, double lat, double lon);
-	MAPTILES_API Tile3DData& GetTile3D(double lat, double lon);
+	RasterTileData& GetRasterTile(int zoom, int x, int y);
+	RasterTileData& GetRasterTile(int zoom, double lat, double lon);
+	Tile3DData& GetTile3D(double lat, double lon);
 
 private:
 	GlobalConfig* m_config;

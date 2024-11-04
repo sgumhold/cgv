@@ -80,7 +80,7 @@ Tile3DData& TileManagerData::GetTile3D(double lat, double lon)
 
 	std::lock_guard<std::mutex> lockActive(m_MutexTile3Ds);
 	m_Tile3DCache[index] = tile3DData;
-	std::cout << "Cache Size: " << m_Tile3DCache.size() << "\n";
+	std::cout << "Cache Size: " << m_Tile3DCache.size() << " (" << index.lat << ", " << index.lon << ")\n";
 
 	return m_Tile3DCache[index];
 }

@@ -1,12 +1,13 @@
 #include "TileManager2.h"
 #include "utils.h"
+#include "WGS84toCartesian.hpp"
 
-TileManager2::TileManager2() : lat(0), lon(0), altitude(0), config(nullptr) {}
+TileManager2::TileManager2() : cam_lat(0), cam_lon(0), altitude(0), config(nullptr) {}
 
 void TileManager2::Init(double _lat, double _lon, double _altitude, GlobalConfig* _conf)
 {
-	lat = _lat;
-	lon = _lon;
+	cam_lat = _lat;
+	cam_lon = _lon;
 	altitude = _altitude;
 	config = _conf;
 	tile_manager_data.Init(config);
@@ -14,8 +15,8 @@ void TileManager2::Init(double _lat, double _lon, double _altitude, GlobalConfig
 
 void TileManager2::ReInit(double _lat, double _lon, double _altitude, GlobalConfig* _conf)
 {
-	lat = _lat;
-	lon = _lon;
+	cam_lat = _lat;
+	cam_lon = _lon;
 	altitude = _altitude;
 	config = _conf;
 
@@ -34,8 +35,10 @@ void TileManager2::Update(cgv::render::context& ctx)
 	AddRasterTiles(ctx);
 	AddTile3D(ctx);
 
-	GenerateRasterTileNeighbours();
-	GenerateTile3DNeighbours();
+	//GenerateRasterTileNeighbours();
+	//GenerateTile3DNeighbours();
+	GenerateRasterTileFrustumNeighbours();
+	GenerateTile3DFrustumNeighbours();
 	RemoveRasterTiles();
 	RemoveTile3Ds();
 	PruneNeighbourSetRasterTile();
@@ -46,9 +49,126 @@ void TileManager2::Update(cgv::render::context& ctx)
 
 void TileManager2::SetPosition(double _lat, double _lon, double _alt)
 {
-	lat = _lat;
-	lon = _lon;
+	cam_lat = _lat;
+	cam_lon = _lon;
 	altitude = _alt;
+}
+
+void TileManager2::GenerateRasterTileFrustumNeighbours() 
+{
+	int zoom = (int)GetZoom();
+
+	int camX = long2tilex(cam_lon, zoom);
+	int camY = lat2tiley(cam_lat, zoom);
+
+	int minX = long2tilex(frustum_min_lon, zoom);
+	int maxY = lat2tiley(frustum_min_lat, zoom);
+	int maxX = long2tilex(frustum_max_lon, zoom);
+	int minY = lat2tiley(frustum_max_lat, zoom);
+
+	// Number of tiles at the current zoom level
+	int nTiles = std::exp2(zoom);
+
+	int count = 0;
+
+	for (int i = minX; i <= maxX; i++) {
+		// check if we are out of bounds
+		if (i < 0 || i >= nTiles || std::abs(i - camX) > config->FrustumRasterTilesCount)
+			continue;
+		for (int j = minY; j <= maxY; j++) {
+			// check if we are out of bounds
+			if (j < 0 || j >= nTiles || std::abs(j - camY) > config->FrustumRasterTilesCount)
+				continue;
+
+			bool isVisible = true;
+			cgv::math::fvec<float, 3> tileMin, tileMax;
+
+			double lat_min = tiley2lat(j, zoom);
+			double lat_max = tiley2lat(j + 1, zoom);
+			double lon_min = tilex2long(i, zoom);
+			double lon_max = tilex2long(i + 1, zoom);
+
+			std::array<double, 2> min =
+				  wgs84::toCartesian({config->ReferencePoint.lat, config->ReferencePoint.lon}, {lat_min, lon_min});
+			std::array<double, 2> max = wgs84::toCartesian({config->ReferencePoint.lat, config->ReferencePoint.lon},
+														   {lat_max, lon_max});
+
+			tileMin[0] = min[0];
+			tileMin[1] = min[1];
+			tileMin[2] = 0.0f;
+
+			tileMax[0] = max[0];
+			tileMax[1] = max[1];
+			tileMax[2] = 1.0f;
+
+			for (int i = 0; i < 6; i++) {
+				if (IsBoxCompletelyBehindPlane(tileMin, tileMax, frustum_planes[i])) {
+					isVisible = false;
+					break;
+				}
+			}
+
+			if (isVisible) {
+				RasterTileIndex index = {zoom, i, j};
+				neighbour_set_raster_tile.insert(index);
+				count++;
+			}
+
+		}
+	}
+	std::cout << "Raster Tile Count: " << count << std::endl;
+}
+
+void TileManager2::GenerateTile3DFrustumNeighbours() 
+{
+	double size = config->Tile3DSize;
+
+	int count = 0;
+
+	for (double lat = frustum_min_lat; lat <= frustum_max_lat; lat+=size) {
+		// check if we are out of bounds
+		if (lat < -89 || lat >= 89 || std::abs(lat - cam_lat) > config->FrustumTile3DMaxDistance)
+			continue;
+		for (double lon = frustum_min_lon; lon <= frustum_max_lon; lon+=size) {
+			if (lon < -180 || lon >= 180 || std::abs(lon - cam_lon) > config->FrustumTile3DMaxDistance)
+				continue;
+
+			bool isVisible = true;
+			cgv::math::fvec<float, 3> tileMin, tileMax;
+
+			std::array<double, 2> min = wgs84::toCartesian({config->ReferencePoint.lat, config->ReferencePoint.lon}, {lat, lon});
+			std::array<double, 2> max = wgs84::toCartesian({config->ReferencePoint.lat, config->ReferencePoint.lon}, {lat + size, lon + size});
+			
+			tileMin[0] = min[0];
+			tileMin[1] = min[1];
+			tileMin[2] = 0.0f;
+
+			tileMax[0] = max[0];
+			tileMax[1] = max[1];
+			tileMax[2] = 100.0f;
+
+			for (int i = 0; i < 6; i++)
+			{
+				if (IsBoxCompletelyBehindPlane(tileMin, tileMax, frustum_planes[i]))
+				{
+					isVisible = false;
+					break;
+				}
+			}
+
+			if (isVisible)
+			{
+				// hack to get around floating point precision issues
+				lat = (double)llround(lat * (1/size)) * size;
+				lon = (double)llround(lon * (1/size)) * size;
+				
+				Tile3DIndex index = {lat, lon};
+				neighbour_set_tile3D.insert(index);
+				count++;
+			}
+		}
+	}
+	std::cout << "3D Tile Count: " << count << std::endl;
 }
 
 void TileManager2::GenerateRasterTileNeighbours()
@@ -60,8 +180,8 @@ void TileManager2::GenerateRasterTileNeighbours()
 
 	int zoom = (int)GetZoom();
 
-	centerX = long2tilex(lon, zoom);
-	centerY = lat2tiley(lat, zoom);
+	centerX = long2tilex(cam_lon, zoom);
+	centerY = lat2tiley(cam_lat, zoom);
 	// Number of tiles at the current zoom level
 	int nTiles = std::exp2(zoom);
 
@@ -87,8 +207,8 @@ void TileManager2::GenerateTile3DNeighbours()
 	int k = config->NeighbourhoodFetchSizeTile3D;
 	double size = config->Tile3DSize;
 
-	double centerLat = std::floor(lat / size) * size;
-	double centerLon = std::floor(lon / size) * size;
+	double centerLat = std::floor(cam_lat / size) * size;
+	double centerLon = std::floor(cam_lon / size) * size;
 
 	for (int i = -k; i <= k; i++) {
 		// check if we are out of bounds
@@ -173,6 +293,7 @@ void TileManager2::RemoveTile3Ds()
 	for (auto const& element : active_tile3D) {
 		if (neighbour_set_tile3D.find(element.first) == neighbour_set_tile3D.end()) {
 			indices.push_back(element.first);
+			std::cout << "Removing Tile: (" << element.first.lat << ", " << element.first.lon << ")\n";
 		}
 	}
 
@@ -312,5 +433,68 @@ void TileManager2::AddTile3D(cgv::render::context& ctx)
 
 		queue_tile3Ds.erase(element.first);
 	}
+}
+
+bool TileManager2::IsBoxCompletelyBehindPlane(const cgv::math::fvec<float, 3>& boxMin, const cgv::math::fvec<float, 3>& boxMax,
+								const cgv::math::fvec<float, 4>& plane)
+{
+	return cgv::math::dot(plane, cgv::math::fvec<float, 4>(boxMin.x(), boxMin.y(), boxMin.z(), 1)) < 0 &&
+		   cgv::math::dot(plane, cgv::math::fvec<float, 4>(boxMin.x(), boxMin.y(), boxMax.z(), 1)) < 0 &&
+		   cgv::math::dot(plane, cgv::math::fvec<float, 4>(boxMin.x(), boxMax.y(), boxMin.z(), 1)) < 0 &&
+		   cgv::math::dot(plane, cgv::math::fvec<float, 4>(boxMin.x(), boxMax.y(), boxMax.z(), 1)) < 0 &&
+		   cgv::math::dot(plane, cgv::math::fvec<float, 4>(boxMax.x(), boxMin.y(), boxMin.z(), 1)) < 0 &&
+		   cgv::math::dot(plane, cgv::math::fvec<float, 4>(boxMax.x(), boxMin.y(), boxMax.z(), 1)) < 0 &&
+		   cgv::math::dot(plane, cgv::math::fvec<float, 4>(boxMax.x(), boxMax.y(), boxMin.z(), 1)) < 0 &&
+		   cgv::math::dot(plane, cgv::math::fvec<float, 4>(boxMax.x(), boxMax.y(), boxMin.z(), 1)) < 0;
+}
+
+void TileManager2::CalculateViewFrustum(const cgv::mat4& mvp) 
+{
+	frustum_planes[0] = (mvp.row(3) + mvp.row(0));
+	frustum_planes[1] = (mvp.row(3) - mvp.row(0));
+	frustum_planes[2] = (mvp.row(3) + mvp.row(1));
+	frustum_planes[3] = (mvp.row(3) - mvp.row(1));
+	frustum_planes[4] = (mvp.row(3) + mvp.row(2));
+	frustum_planes[5] = (mvp.row(3) - mvp.row(2));
+
+	constexpr double double_min = std::numeric_limits<double>::min();
+	constexpr double double_max = std::numeric_limits<double>::max();
+	frustum_bbox_min.set(double_max, double_max, double_max);
+	frustum_bbox_max.set(double_min, double_min, double_min);
+
+	cgv::mat4 invMvp = inv(mvp);
+
+	for (int x = -1; x <= 1; x += 2)
+		for (int y = -1; y <= 1; y += 2)
+			for (int z = -1; z <= 1; z += 2) 
+			{
+				cgv::math::fvec<double, 4> corner = invMvp * cgv::math::fvec<float, 4>((double)x, (double)y, (double)z, 1);
+				corner /= corner.w();
+				if (corner[0] < frustum_bbox_min[0])
+					frustum_bbox_min[0] = corner[0];
+				if (corner[0] > frustum_bbox_max[0])
+					frustum_bbox_max[0] = corner[0];
+				if (corner[1] < frustum_bbox_min[1])
+					frustum_bbox_min[1] = corner[1];
+				if (corner[1] > frustum_bbox_max[1])
+					frustum_bbox_max[1] = corner[1];
+				if (corner[2] < frustum_bbox_min[2])
+					frustum_bbox_min[2] = corner[2];
+				if (corner[2] > frustum_bbox_max[2])
+					frustum_bbox_max[2] = corner[2];
+			}
+
+	std::array<double, 2> frustum_min = wgs84::fromCartesian(
+		  {config->ReferencePoint.lat, config->ReferencePoint.lon}, {frustum_bbox_min[0], frustum_bbox_min[1]});
+
+	std::array<double, 2> frustum_max = wgs84::fromCartesian({config->ReferencePoint.lat, config->ReferencePoint.lon},
+															 {frustum_bbox_max[0], frustum_bbox_max[1]});
+
+	double& size = config->Tile3DSize;
+	frustum_min_lat = std::floor(frustum_min[0] / size) * size;
+	frustum_min_lon = std::floor(frustum_min[1] / size) * size;
+	frustum_max_lat = std::ceil(frustum_max[0] / size) * size;
+	frustum_max_lon = std::ceil(frustum_max[1] / size) * size;
+
 }
 
