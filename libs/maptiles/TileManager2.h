@@ -10,6 +10,7 @@
 #include <cgv/render/context.h>
 
 #include <vector>
+#include <array>
 
 class MAPTILES_API TileManager2
 {
@@ -30,6 +31,8 @@ class MAPTILES_API TileManager2
 	cgv::signal::signal<> tile_downloaded;
 
   private:
+	void GenerateRasterTileFrustumNeighbours();
+	void GenerateTile3DFrustumNeighbours();
 	void GenerateRasterTileNeighbours();
 	void GenerateTile3DNeighbours();
 	void RemoveRasterTiles();
@@ -45,17 +48,22 @@ class MAPTILES_API TileManager2
 
 	inline float GetZoom()
 	{
-		return std::min(19.0f, std::log2f(40075016 * std::cos(glm::radians(lat)) /
+		return std::min(19.0f, std::log2f(40075016 * std::cos(glm::radians(cam_lat)) /
 										  (std::max(1.0, altitude)))); /*Circumference of earth = 40075016*/
 	}
 	inline float GetZoomAtAltitude(float alt)
 	{
-		return std::min(19.0f, std::log2f(40075016 * std::cos(glm::radians(lat)) /
+		return std::min(19.0f, std::log2f(40075016 * std::cos(glm::radians(cam_lat)) /
 										  (std::max(1.0f, alt)))); /*Circumference of earth = 40075016*/
 	}
 
+  public:
+	void CalculateViewFrustum(const cgv::mat4& mvp);
+	bool IsBoxCompletelyBehindPlane(const cgv::math::fvec<float, 3>& boxMin, const cgv::math::fvec<float, 3>& boxMax,
+									const cgv::math::fvec<float, 4>& plane);
+
   private:
-	double lat, lon, altitude;
+	double cam_lat, cam_lon, altitude;
 	GlobalConfig* config;
 	TileManagerData tile_manager_data;
 
@@ -76,4 +84,8 @@ class MAPTILES_API TileManager2
 
 	mutable std::mutex m_MutexQueueRasterTiles;
 	mutable std::mutex m_MutexQueueTile3Ds;
+
+	std::array<cgv::math::fvec<double, 4>, 6> frustum_planes;
+	cgv::math::fvec<double, 3> frustum_bbox_min, frustum_bbox_max;
+	double frustum_min_lat, frustum_max_lat, frustum_min_lon, frustum_max_lon;
 };
