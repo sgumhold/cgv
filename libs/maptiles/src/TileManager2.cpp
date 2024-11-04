@@ -116,7 +116,7 @@ void TileManager2::GenerateRasterTileFrustumNeighbours()
 
 		}
 	}
-	std::cout << "Raster Tile Count: " << count << std::endl;
+	//std::cout << "Raster Tile Count: " << count << std::endl;
 }
 
 void TileManager2::GenerateTile3DFrustumNeighbours() 
@@ -168,7 +168,7 @@ void TileManager2::GenerateTile3DFrustumNeighbours()
 			}
 		}
 	}
-	std::cout << "3D Tile Count: " << count << std::endl;
+	//std::cout << "3D Tile Count: " << count << std::endl;
 }
 
 void TileManager2::GenerateRasterTileNeighbours()
@@ -293,7 +293,7 @@ void TileManager2::RemoveTile3Ds()
 	for (auto const& element : active_tile3D) {
 		if (neighbour_set_tile3D.find(element.first) == neighbour_set_tile3D.end()) {
 			indices.push_back(element.first);
-			std::cout << "Removing Tile: (" << element.first.lat << ", " << element.first.lon << ")\n";
+			//std::cout << "Removing Tile: (" << element.first.lat << ", " << element.first.lon << ")\n";
 		}
 	}
 

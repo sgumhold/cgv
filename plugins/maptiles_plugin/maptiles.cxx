@@ -143,25 +143,37 @@ class maptiles : public cgv::app::application_plugin // inherit from application
 		x = original_mv_inverse(0, 3);
 		y = original_mv_inverse(1, 3);
 
+		cgv::mat4 rotation(0);
+		for (int i = 0; i < 3; i++)
+			for (int j = 0; j < 3; j++)
+				rotation(j, i) = original_mv(i, j);
+		rotation(3, 3) = 1;
+
 		ctx.push_modelview_matrix();
 		ctx.set_modelview_matrix(offset * original_mv);
 		
 		auto& mv = ctx.get_modelview_matrix();
-		auto cam_pos = inv(mv) * vec4(0.0, 0.0, 0.0, 1.0);
+		//auto cam_pos = inv(mv) * vec4(0.0, 0.0, 0.0, 1.0);
+		
+		//hack to get rid of the additional offset issue when recentering
+		auto cam_pos = inv(offset * rotation * original_mv) * vec4(0.0, 0.0, 0.0, 1.0);
 
 		if (auto_recenter && (cam_pos[0] > config.AutoRecenterDistance || cam_pos[1] > config.AutoRecenterDistance))
 			recenter();
 
-		std::cout << "ModelView (OG): \n" << original_mv << std::endl;
-		std::cout << "ModelView: \n" << mv << std::endl;
+		/*
+		std::cout << "ModelView (OG):\n" << original_mv << std::endl;
+		std::cout << "ModelView:\n" << mv << std::endl;
+		std::cout << "Inverse MV:\n" << inv(mv) << std::endl;
+		*/
 		std::array<double, 2> cameraPosWGS84 =
 			  wgs84::fromCartesian({config.ReferencePoint.lat, config.ReferencePoint.lon}, {cam_pos[0], cam_pos[1]});
 
 		manager.CalculateViewFrustum(ctx.get_projection_matrix() * mv);
 
-		std::cout << "Camera: " << cam_pos << " (" << cameraPosWGS84[0] << ", " << cameraPosWGS84[1] << ")\n";
-		std::cout << "Offset Matrix\n" << offset << std::endl;
-		std::cout << "Offset: (" << x << ", " << y << ")\n";
+		//std::cout << "Camera: " << cam_pos << " (" << cameraPosWGS84[0] << ", " << cameraPosWGS84[1] << ")\n";
+		//std::cout << "Offset Matrix\n" << offset << std::endl;
+		//std::cout << "Offset: (" << x << ", " << y << ")\n";
 		//std::cout << "MVP (OG): \n" << ctx.get_projection_matrix() * original_mv << std::endl;
 		//std::cout << "MVP: \n" << ctx.get_projection_matrix() * mv << std::endl;
 
