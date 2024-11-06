@@ -2,7 +2,11 @@
 #include "utils.h"
 #include "WGS84toCartesian.hpp"
 
-TileManager2::TileManager2() : cam_lat(0), cam_lon(0), altitude(0), config(nullptr) {}
+TileManager2::TileManager2() :	cam_lat(0), cam_lon(0), altitude(0), config(nullptr), 
+								frustum_min_lat(0), frustum_max_lat(0), frustum_min_lon(0), 
+								frustum_max_lon(0), min_extent({0, 0}), max_extent({0, 0})
+{
+}
 
 void TileManager2::Init(double _lat, double _lon, double _altitude, GlobalConfig* _conf)
 {
@@ -35,6 +39,9 @@ void TileManager2::Update(cgv::render::context& ctx)
 	AddRasterTiles(ctx);
 	AddTile3D(ctx);
 
+	min_extent = {90, 180};
+	max_extent = {-90, -180};
+
 	//GenerateRasterTileNeighbours();
 	//GenerateTile3DNeighbours();
 	GenerateRasterTileFrustumNeighbours();
@@ -52,6 +59,11 @@ void TileManager2::SetPosition(double _lat, double _lon, double _alt)
 	cam_lat = _lat;
 	cam_lon = _lon;
 	altitude = _alt;
+}
+
+std::pair<std::array<double, 2>, std::array<double, 2>> TileManager2::GetExtent()
+{
+	return std::pair<std::array<double, 2>, std::array<double, 2>>(min_extent, max_extent);
 }
 
 void TileManager2::GenerateRasterTileFrustumNeighbours() 
@@ -109,6 +121,15 @@ void TileManager2::GenerateRasterTileFrustumNeighbours()
 			}
 
 			if (isVisible) {
+				if (lat_min < min_extent[0])
+					min_extent[0] = lat_min;
+				if (lat_max > max_extent[0])
+					max_extent[0] = lat_max;
+				if (lon_min < min_extent[1])
+					min_extent[1] = lon_min;
+				if (lon_max > max_extent[1])
+					max_extent[1] = lon_max;
+
 				RasterTileIndex index = {zoom, i, j};
 				neighbour_set_raster_tile.insert(index);
 				count++;
@@ -158,10 +179,19 @@ void TileManager2::GenerateTile3DFrustumNeighbours()
 
 			if (isVisible)
 			{
-				// hack to get around floating point precision issues
+				// hack to get around floating point precision issues for indexing tiles
 				lat = (double)llround(lat * (1/size)) * size;
 				lon = (double)llround(lon * (1/size)) * size;
 				
+				if (lat < min_extent[0])
+					min_extent[0] = lat;
+				if (lat + size > max_extent[0])
+					max_extent[0] = lat + size;
+				if (lon < min_extent[1])
+					min_extent[1] = lon;
+				if (lon + size > max_extent[1])
+					max_extent[1] = lon + size;
+
 				Tile3DIndex index = {lat, lon};
 				neighbour_set_tile3D.insert(index);
 				count++;

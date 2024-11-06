@@ -33,10 +33,9 @@ void TileRenderer::Draw(cgv::render::context& ctx, RasterTileRender& tile)
 	shader_raster_tile.disable(ctx);
 }
 
-void TileRenderer::Draw(cgv::render::context& ctx, Tile3DRender& tile, cgv::math::fvec<float, 3> camera_pos)
+void TileRenderer::Draw(cgv::render::context& ctx, Tile3DRender& tile)
 {
 	shader_tile3D.enable(ctx);
-	//shader_tile3D.set_uniform(ctx, "camera_pos", camera_pos, true);
 	ctx.set_color(cgv::rgba(0.5, 0.5, 0.5, 1.0));
 
 	tile.vertex_array.enable(ctx);

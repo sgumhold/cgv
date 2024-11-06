@@ -8,6 +8,6 @@ out vec4 frag_color;
 
 void main()
 {
-	float intensity = max(0.0, dot(normalize(dir_to_cam), normalize(normal_fs)));
+	float intensity = min(0.75, max(0.0, dot(normalize(dir_to_cam), normalize(normal_fs))));
 	frag_color = color_fs * intensity;
 }
