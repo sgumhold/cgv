@@ -475,11 +475,11 @@ $(document).ready(function(){initNavTree('gl__context_8cxx_source.html',''); ini
 <div class="line"><a name="l00394"></a><span class="lineno">  394</span>&#160;    std::string vendor_string(<span class="keyword">reinterpret_cast&lt;</span><span class="keyword">const </span><span class="keywordtype">char</span>*<span class="keyword">&gt;</span>(vendor_c_string));</div>
 <div class="line"><a name="l00395"></a><span class="lineno">  395</span>&#160;    vendor_string = <a class="code" href="namespacecgv_1_1utils.html#a768fdf54202b2fc80c51ea8f312b2b82">cgv::utils::to_upper</a>(vendor_string);</div>
 <div class="line"><a name="l00396"></a><span class="lineno">  396</span>&#160;    </div>
-<div class="line"><a name="l00397"></a><span class="lineno">  397</span>&#160;    <span class="keywordflow">if</span> (vendor_string.find(<span class="stringliteral">&quot;NVIDIA&quot;</span>))</div>
+<div class="line"><a name="l00397"></a><span class="lineno">  397</span>&#160;    <span class="keywordflow">if</span> (vendor_string.find(<span class="stringliteral">&quot;NVIDIA&quot;</span>) != std::string::npos)</div>
 <div class="line"><a name="l00398"></a><span class="lineno">  398</span>&#160;        gpu_vendor = GPU_VENDOR_NVIDIA;</div>
-<div class="line"><a name="l00399"></a><span class="lineno">  399</span>&#160;    <span class="keywordflow">else</span> <span class="keywordflow">if</span> (vendor_string.find(<span class="stringliteral">&quot;INTEL&quot;</span>))</div>
+<div class="line"><a name="l00399"></a><span class="lineno">  399</span>&#160;    <span class="keywordflow">else</span> <span class="keywordflow">if</span> (vendor_string.find(<span class="stringliteral">&quot;INTEL&quot;</span>) != std::string::npos)</div>
 <div class="line"><a name="l00400"></a><span class="lineno">  400</span>&#160;        gpu_vendor = GPU_VENDOR_INTEL;</div>
-<div class="line"><a name="l00401"></a><span class="lineno">  401</span>&#160;    <span class="keywordflow">else</span> <span class="keywordflow">if</span> (vendor_string.find(<span class="stringliteral">&quot;AMD&quot;</span>) || vendor_string.find(<span class="stringliteral">&quot;ATI&quot;</span>))</div>
+<div class="line"><a name="l00401"></a><span class="lineno">  401</span>&#160;    <span class="keywordflow">else</span> <span class="keywordflow">if</span> (vendor_string.find(<span class="stringliteral">&quot;AMD&quot;</span>) != std::string::npos || vendor_string.find(<span class="stringliteral">&quot;ATI&quot;</span>) != std::string::npos)</div>
 <div class="line"><a name="l00402"></a><span class="lineno">  402</span>&#160;        gpu_vendor = GPU_VENDOR_AMD;</div>
 <div class="line"><a name="l00403"></a><span class="lineno">  403</span>&#160;    </div>
 <div class="line"><a name="l00404"></a><span class="lineno">  404</span>&#160;<span class="preprocessor">#ifdef _DEBUG</span></div>
