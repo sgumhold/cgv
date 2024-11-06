@@ -29,6 +29,8 @@
 //#include <cgv/render/texture.h>
 #include <cgv/render/stereo_view.h>
 
+//Interfacer
+#include <maptiles_interfacer.h>
 
 //////
 //
@@ -77,6 +79,7 @@ class maptiles : public cgv::app::application_plugin // inherit from application
 		offset(2, 2) = 1.0f;
 		offset(3, 3) = 1.0f;
 
+		maptiles_interfacer::set_pointer(this); 
 	}
 
 	/// The destructor.
@@ -105,7 +108,6 @@ class maptiles : public cgv::app::application_plugin // inherit from application
 		renderer.Init(ctx);
 		manager.Init(config.ReferencePoint.lat, config.ReferencePoint.lon, 10, &config);
 		connect_copy(manager.tile_downloaded, cgv::signal::rebind(this, &maptiles::tile_download_callback));
-		//manager.Update(ctx);
 		initialize_view_ptr();
 		return true;
 	}
@@ -143,20 +145,21 @@ class maptiles : public cgv::app::application_plugin // inherit from application
 		x = original_mv_inverse(0, 3);
 		y = original_mv_inverse(1, 3);
 
-		cgv::mat4 rotation(0);
+		cgv::mat4 inv_rotation(0);
 		for (int i = 0; i < 3; i++)
 			for (int j = 0; j < 3; j++)
-				rotation(j, i) = original_mv(i, j);
-		rotation(3, 3) = 1;
+				inv_rotation(j, i) = original_mv(i, j);
+		inv_rotation(3, 3) = 1;
 
 		ctx.push_modelview_matrix();
 		ctx.set_modelview_matrix(offset * original_mv);
 		
+		
 		auto& mv = ctx.get_modelview_matrix();
 		//auto cam_pos = inv(mv) * vec4(0.0, 0.0, 0.0, 1.0);
 		
-		//hack to get rid of the additional offset issue when recentering
-		auto cam_pos = inv(offset * rotation * original_mv) * vec4(0.0, 0.0, 0.0, 1.0);
+		//hack to get rid of the (unwanted) additional offset issue when recentering
+		auto cam_pos = inv(offset * inv_rotation * original_mv) * vec4(0.0, 0.0, 0.0, 1.0);
 
 		if (auto_recenter && (cam_pos[0] > config.AutoRecenterDistance || cam_pos[1] > config.AutoRecenterDistance))
 			recenter();
@@ -186,27 +189,21 @@ class maptiles : public cgv::app::application_plugin // inherit from application
 
 		{
 			auto camera = dynamic_cast<cgv::render::stereo_view*>(view_ptr);
-			cgv::math::vec<double> minp(0.0, 0.0, 0.0), maxp(0.0f, 0.0, 40.0);
-			auto& tile3Ds = manager.GetActiveTile3Ds();
-			double lat_min, lat_max, lon_min, lon_max;
-			if (!tile3Ds.empty()) {
-				lat_min = (*tile3Ds.begin()).first.lat;
-				lon_min = (*tile3Ds.begin()).first.lon;
-				lat_max = (*tile3Ds.rbegin()).first.lat + config.Tile3DSize;
-				lon_max = (*tile3Ds.rbegin()).first.lon + config.Tile3DSize;
+			//camera->set_focus
+			cgv::math::vec<double> minp(0.0, 0.0, 0.0), maxp(0.0f, 0.0, 100.0);
+			auto extents = manager.GetExtent();
+			std::array<double, 2> min_pos = wgs84::toCartesian({config.ReferencePoint.lat, config.ReferencePoint.lon},
+															   {extents.first[0], extents.first[1]});
+			std::array<double, 2> max_pos = wgs84::toCartesian({config.ReferencePoint.lat, config.ReferencePoint.lon},
+															   {extents.second[0], extents.second[1]});
 
-				std::array<double, 2> min_pos =
-					  wgs84::toCartesian({config.ReferencePoint.lat, config.ReferencePoint.lon}, {lat_min, lon_min});
-				std::array<double, 2> max_pos =
-					  wgs84::toCartesian({config.ReferencePoint.lat, config.ReferencePoint.lon}, {lat_max, lon_max});
-
-				minp[0] = min_pos[0];
-				minp[1] = min_pos[1];
-				maxp[0] = max_pos[0];
-				maxp[1] = max_pos[1];
-				cgv::dbox3 box(minp, maxp);
-				camera->set_scene_extent(box);
-			}
+			minp[0] = min_pos[0];
+			minp[1] = min_pos[1];
+			maxp[0] = max_pos[0];
+			maxp[1] = max_pos[1];
+			cgv::dbox3 box(minp, maxp);
+			camera->set_scene_extent(box);
+			
 		}
 
 		if (render_raster_tile)
@@ -221,11 +218,11 @@ class maptiles : public cgv::app::application_plugin // inherit from application
 		if (render_tile3D) 
 		{
 			auto& tile3Ds = manager.GetActiveTile3Ds();
-			cgv::math::fvec<double, 3> camera_pos = {cam_pos[0], cam_pos[1], cam_pos[2]};
+			//cgv::math::fvec<double, 3> camera_pos = {cam_pos[0], cam_pos[1], cam_pos[2]};
 			for (auto& pair : tile3Ds)
 			{
 				auto& tile3D = pair.second;
-				renderer.Draw(ctx, tile3D, camera_pos);
+				renderer.Draw(ctx, tile3D);
 			}
 		}
 
@@ -253,6 +250,11 @@ class maptiles : public cgv::app::application_plugin // inherit from application
 		config.ReferencePoint = {latitude, longitude};
 		manager.ReInit(latitude, longitude, altitude, &config);
 		post_redraw();
+	}
+
+	cgv::dmat4& get_offset_matrix()
+	{ 
+		return offset;
 	}
 
 	void tile_download_callback() 

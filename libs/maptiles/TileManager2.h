@@ -27,6 +27,8 @@ class MAPTILES_API TileManager2
 	std::map<Tile3DIndex, Tile3DRender>& GetActiveTile3Ds() { return active_tile3D; }
 	std::map<RasterTileIndex, RasterTileRender>& GetActiveRasterTiles() { return active_raster_tile; }
 	
+	std::pair<std::array<double, 2>, std::array<double, 2>> GetExtent();
+
 	// Signal for when a tile is downloaded. In this implmentation, this signal informs the application to post a redraw
 	cgv::signal::signal<> tile_downloaded;
 
@@ -88,4 +90,5 @@ class MAPTILES_API TileManager2
 	std::array<cgv::math::fvec<double, 4>, 6> frustum_planes;
 	cgv::math::fvec<double, 3> frustum_bbox_min, frustum_bbox_max;
 	double frustum_min_lat, frustum_max_lat, frustum_min_lon, frustum_max_lon;
+	std::array<double, 2> min_extent, max_extent;
 };
