@@ -56,6 +56,8 @@ class maptiles : public cgv::app::application_plugin // inherit from application
 	bool render_raster_tile;
 	bool render_tile3D;
 	bool auto_recenter;
+
+	cgv::render::stereo_view* camera;
   public:
 
 	////
@@ -78,6 +80,8 @@ class maptiles : public cgv::app::application_plugin // inherit from application
 		offset(1, 1) = 1.0f;
 		offset(2, 2) = 1.0f;
 		offset(3, 3) = 1.0f;
+
+		camera = nullptr;
 
 		maptiles_interfacer::set_pointer(this); 
 	}
@@ -108,7 +112,10 @@ class maptiles : public cgv::app::application_plugin // inherit from application
 		renderer.Init(ctx);
 		manager.Init(config.ReferencePoint.lat, config.ReferencePoint.lon, 10, &config);
 		connect_copy(manager.tile_downloaded, cgv::signal::rebind(this, &maptiles::tile_download_callback));
+		
 		initialize_view_ptr();
+		camera = dynamic_cast<cgv::render::stereo_view*>(view_ptr);
+		
 		return true;
 	}
 
@@ -151,24 +158,26 @@ class maptiles : public cgv::app::application_plugin // inherit from application
 				inv_rotation(j, i) = original_mv(i, j);
 		inv_rotation(3, 3) = 1;
 
-		ctx.push_modelview_matrix();
-		ctx.set_modelview_matrix(offset * original_mv);
+		//ctx.push_modelview_matrix();
+		//ctx.set_modelview_matrix(offset * original_mv);
 		
 		
 		auto& mv = ctx.get_modelview_matrix();
 		//auto cam_pos = inv(mv) * vec4(0.0, 0.0, 0.0, 1.0);
 		
 		//hack to get rid of the (unwanted) additional offset issue when recentering
-		auto cam_pos = inv(offset * inv_rotation * original_mv) * vec4(0.0, 0.0, 0.0, 1.0);
+		//auto cam_pos = inv(offset * inv_rotation * original_mv) * vec4(0.0, 0.0, 0.0, 1.0);
+		auto cam_pos = inv(inv_rotation * original_mv) * vec4(0.0, 0.0, 0.0, 1.0);
+
 
 		if (auto_recenter && (cam_pos[0] > config.AutoRecenterDistance || cam_pos[1] > config.AutoRecenterDistance))
 			recenter();
 
-		/*
-		std::cout << "ModelView (OG):\n" << original_mv << std::endl;
-		std::cout << "ModelView:\n" << mv << std::endl;
-		std::cout << "Inverse MV:\n" << inv(mv) << std::endl;
-		*/
+		
+		//std::cout << "ModelView (OG):\n" << original_mv << std::endl;
+		//std::cout << "ModelView:\n" << mv << std::endl;
+		//std::cout << "Inverse MV:\n" << inv(mv) << std::endl;
+		
 		std::array<double, 2> cameraPosWGS84 =
 			  wgs84::fromCartesian({config.ReferencePoint.lat, config.ReferencePoint.lon}, {cam_pos[0], cam_pos[1]});
 
@@ -188,8 +197,6 @@ class maptiles : public cgv::app::application_plugin // inherit from application
 		manager.Update(ctx);
 
 		{
-			auto camera = dynamic_cast<cgv::render::stereo_view*>(view_ptr);
-			//camera->set_focus
 			cgv::math::vec<double> minp(0.0, 0.0, 0.0), maxp(0.0f, 0.0, 100.0);
 			auto extents = manager.GetExtent();
 			std::array<double, 2> min_pos = wgs84::toCartesian({config.ReferencePoint.lat, config.ReferencePoint.lon},
@@ -226,7 +233,7 @@ class maptiles : public cgv::app::application_plugin // inherit from application
 			}
 		}
 
-		ctx.pop_modelview_matrix();
+		//ctx.pop_modelview_matrix();
 	}
 
 	void on_set(void* member_ptr)
@@ -243,15 +250,24 @@ class maptiles : public cgv::app::application_plugin // inherit from application
 
 	void recenter() 
 	{ 
-		std::cout << "recentering at (" << latitude << ", " << longitude << ")\n ";
+		std::cout << "recentering at (" << latitude << ", " << longitude << ")\n";
 
 		offset(0, 3) = x;
 		offset(1, 3) = y;
+
+		// Setting the focus also offsets the camera position which means we don't need to manually offset the camera
+		auto focus = camera->get_focus();
+		focus[0] -= x;
+		focus[1] -= y;
+		camera->set_focus(focus);
+
 		config.ReferencePoint = {latitude, longitude};
 		manager.ReInit(latitude, longitude, altitude, &config);
 		post_redraw();
 	}
 
+	// return the offset matrix
+	// can be used to properly align positions/vectors external to the plugin with the plugin's coordinate system
 	cgv::dmat4& get_offset_matrix()
 	{ 
 		return offset;
