@@ -378,6 +378,21 @@ bool rgbd_input::start(const std::vector<stream_format>& stream_formats)
 	return started;
 }
 
+bool rgbd_input::start(const std::vector<stream_format>& stream_formats, int32_t delay_to_master) {
+	if (!is_attached()) {
+		cerr << "rgbd_input::start called on device that has not been attached" << endl;
+		return false;
+	}
+	if (started)
+		return true;
+	started = rgbd->start_device(stream_formats,delay_to_master);
+	streams = stream_formats;
+	if (!protocol_path.empty()) {
+		write_protocol_headers(streams, protocol_path);
+	}
+	return started;
+}
+
 bool rgbd_input::is_started() const
 {
 	return started;
