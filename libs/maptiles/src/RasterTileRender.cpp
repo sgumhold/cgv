@@ -4,6 +4,8 @@
 #include "WGS84toCartesian.hpp"
 
 
+cgv::render::shader_program RasterTileRender::shader;
+
 RasterTileRender::RasterTileRender(cgv::render::context& ctx, RasterTileData& tile, double ref_lat, double ref_lon) 
 {
 	// Calculate the bounding quad
@@ -18,38 +20,8 @@ RasterTileRender::RasterTileRender(cgv::render::context& ctx, RasterTileData& ti
 	std::vector<Vertex> vertices;
 	Vertex V;
 
-	/*
-	V.position = vec3(bottomLeftCartesian[0], bottomLeftCartesian[1], 0);
-	//V.position = vec3(bottomLeftCartesian[0], 0, bottomLeftCartesian[1]);
-	V.texcoord = vec2(0.0f, 0.0f);
-	vertices.push_back(V);
-
-	V.position = vec3(topRightCartesian[0], bottomLeftCartesian[1], 0);
-	//V.position = vec3(topRightCartesian[0], 0, bottomLeftCartesian[1]);
-	V.texcoord = vec2(1.0f, 0.0f);
-	vertices.push_back(V);
-
-	V.position = vec3(topRightCartesian[0], topRightCartesian[1], 0);
-	//V.position = vec3(topRightCartesian[0], 0, topRightCartesian[1]);
-	V.texcoord = vec2(1.0f, 1.0f);
-	vertices.push_back(V);
-
-	V.position = vec3(bottomLeftCartesian[0], bottomLeftCartesian[1], 0);
-	//V.position = vec3(bottomLeftCartesian[0], 0, bottomLeftCartesian[1]);
-	V.texcoord = vec2(0.0f, 0.0f);
-	vertices.push_back(V);
-
-	V.position = vec3(topRightCartesian[0], topRightCartesian[1], 0);
-	//V.position = vec3(topRightCartesian[0], 0, topRightCartesian[1]);
-	V.texcoord = vec2(1.0f, 1.0f);
-	vertices.push_back(V);
-
-	V.position = vec3(bottomLeftCartesian[0], topRightCartesian[1], 0);
-	//V.position = vec3(bottomLeftCartesian[0], 0, topRightCartesian[1]);
-	V.texcoord = vec2(0.0f, 1.0f);
-	vertices.push_back(V);
-	*/
-
+	// the inversion of the z-axis is required in order to convert from the left-hand coordinate system (used during the
+	// wgs to cartesian conversion) to the right-hand coordinate system (used for rendering)
 	V.position = vec3(bottomLeftCartesian[0], 0, -bottomLeftCartesian[1]);
 	V.texcoord = vec2(0.0f, 0.0f);
 	vertices.push_back(V);
@@ -76,12 +48,6 @@ RasterTileRender::RasterTileRender(cgv::render::context& ctx, RasterTileData& ti
 
 	vertex_buffer.create(ctx, &(vertices[0]), vertices.size());
 
-	cgv::render::shader_program my_shader;
-	my_shader.build_program(ctx, "maptiles_textured.glpr");
-	my_shader.specify_standard_uniforms(true, false, false, true);
-	my_shader.specify_standard_vertex_attribute_names(ctx, false, false, true);
-	my_shader.allow_context_to_set_color(true);
-
 	cgv::render::type_descriptor vec3type =
 		  cgv::render::element_descriptor_traits<vec3>::get_type_descriptor(vertices[0].position);
 	cgv::render::type_descriptor vec2type =
@@ -89,10 +55,11 @@ RasterTileRender::RasterTileRender(cgv::render::context& ctx, RasterTileData& ti
 
 	vertex_array.create(ctx);
 
-	vertex_array.set_attribute_array(ctx, my_shader.get_position_index(), vec3type, vertex_buffer, 0,
+	vertex_array.set_attribute_array(ctx, shader.get_position_index(), vec3type, vertex_buffer, 0,
 									 vertices.size(), sizeof(Vertex));
 
-	vertex_array.set_attribute_array(ctx, my_shader.get_texcoord_index(), vec2type, vertex_buffer, sizeof(vec3),
+	vertex_array.set_attribute_array(ctx, shader.get_texcoord_index(), vec2type, vertex_buffer,
+									 sizeof(vec3),
 									 vertices.size(), sizeof(Vertex));
 
 	tmp_texture = std::make_shared<MapTiles::Texture>(tile.m_image, tile.m_height, tile.m_width);

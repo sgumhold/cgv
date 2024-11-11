@@ -108,7 +108,17 @@ class maptiles : public cgv::app::application_plugin // inherit from application
 	{ 
 		//config.ReferencePoint = {51.02596, 13.7230};
 		config.ReferencePoint = {latitude, longitude};
+
+		RasterTileRender::shader.build_program(ctx, "maptiles_textured.glpr");
+		RasterTileRender::shader.specify_standard_uniforms(true, false, false, true);
+		RasterTileRender::shader.specify_standard_vertex_attribute_names(ctx, false, false, true);
+		RasterTileRender::shader.allow_context_to_set_color(true);
 		
+		Tile3DRender::shader.build_program(ctx, "maptiles.glpr");
+		Tile3DRender::shader.specify_standard_uniforms(true, false, false, true);
+		Tile3DRender::shader.specify_standard_vertex_attribute_names(ctx, true, true, false);
+		Tile3DRender::shader.allow_context_to_set_color(true);
+
 		renderer.Init(ctx);
 		manager.Init(config.ReferencePoint.lat, config.ReferencePoint.lon, 10, &config);
 		connect_copy(manager.tile_downloaded, cgv::signal::rebind(this, &maptiles::tile_download_callback));
@@ -260,13 +270,13 @@ class maptiles : public cgv::app::application_plugin // inherit from application
 		focus[0] -= x;
 		focus[2] -= z;
 		camera->set_focus(focus);
-
+		
 		config.ReferencePoint = {latitude, longitude};
 		manager.ReInit(latitude, longitude, altitude, &config);
 		post_redraw();
 	}
 
-	// return the offset matrix
+	// returns the offset matrix
 	// can be used to properly align positions/vectors external to the plugin with the plugin's coordinate system
 	cgv::dmat4& get_offset_matrix()
 	{ 
@@ -288,11 +298,19 @@ class maptiles : public cgv::app::application_plugin // inherit from application
 		add_member_control(this, "Raster Tiles", render_raster_tile, "check");
 		add_member_control(this, "Tile 3Ds", render_tile3D, "check");
 		
+		add_decorator("Grid-Based Rendering", "text", "level=3");
 		add_member_control(this, "Grid Size Raster Tile", config.NeighbourhoodFetchSizeRasterTile, "value_slider",
 						   "min=0;max=5;ticks=false");
 		add_member_control(this, "Grid Size Tile3D", config.NeighbourhoodFetchSizeTile3D, "value_slider",
 						   "min=0;max=5;ticks=false");
+
+		add_decorator("Frustum-Based Rendering", "text", "level=3");
+		add_member_control(this, "Raster Tile Count", config.FrustumRasterTilesCount, "value_slider",
+						   "min=0;max=20;ticks=false");
+		add_member_control(this, "Tile 3D Distance", config.FrustumTile3DMaxDistance, "value_slider",
+						   "min=0;max=0.1;ticks=false");
 		
+		add_decorator("Re-Centering", "text", "level=3");
 		connect_copy(add_button("Re-Center")->click, cgv::signal::rebind(this, &maptiles::recenter));
 		add_member_control(this, "Auto Recenter", auto_recenter, "check");
 	}

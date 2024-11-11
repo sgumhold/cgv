@@ -10,7 +10,7 @@
 
 #include "Texture.h"
 
-class RasterTileRender
+class MAPTILES_API RasterTileRender
 {
 	typedef cgv::math::fvec<float, 3> vec3;
 	typedef cgv::math::fvec<float, 2> vec2;
@@ -24,6 +24,7 @@ class RasterTileRender
 public:
 	cgv::render::vertex_buffer vertex_buffer;
 	cgv::render::attribute_array_binding vertex_array;
+	static cgv::render::shader_program shader;
 	//cgv::render::texture texture;
 	// TODO: Remove MapTiles::Texture. Use cgv::render::texture instead
 	std::shared_ptr<MapTiles::Texture> tmp_texture;
