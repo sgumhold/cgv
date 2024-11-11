@@ -16,6 +16,7 @@ class MAPTILES_API TileManager2
 {
   public:
 	TileManager2();
+	~TileManager2();
 
 	void Init(double _lat, double _lon, double altitude, GlobalConfig* conf);
 	void ReInit(double _lat, double _lon, double altitude, GlobalConfig* conf);

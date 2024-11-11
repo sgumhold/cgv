@@ -1,5 +1,7 @@
 #include "Tile3DRender.h"
 
+Tile3DRender::Tile3DRender() :lat_min(0), lat_max(0), lon_min(0), lon_max(0) {}
+
 Tile3DRender::Tile3DRender(cgv::render::context& ctx, const Tile3DData& tile, double lat, double lon)
 {
 	lat_min = tile.lat_min;
@@ -67,3 +69,4 @@ Tile3DRender::Tile3DRender(cgv::render::context& ctx, const Tile3DData& tile, do
 			  success;
 	*/
 }
+

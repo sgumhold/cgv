@@ -51,7 +51,7 @@ class maptiles : public cgv::app::application_plugin // inherit from application
 	double altitude;
 
 	cgv::dmat4 offset;
-	double x, y;
+	double x, z;
 
 	bool render_raster_tile;
 	bool render_tile3D;
@@ -73,7 +73,7 @@ class maptiles : public cgv::app::application_plugin // inherit from application
 		longitude = 0;
 		altitude = 0;
 		x = 0; 
-		y = 0;
+		z = 0;
 
 		offset.zeros();
 		offset(0, 0) = 1.0f;
@@ -150,7 +150,7 @@ class maptiles : public cgv::app::application_plugin // inherit from application
 		
 		auto original_mv_inverse = inv(original_mv);
 		x = original_mv_inverse(0, 3);
-		y = original_mv_inverse(1, 3);
+		z = original_mv_inverse(2, 3);
 
 		cgv::mat4 inv_rotation(0);
 		for (int i = 0; i < 3; i++)
@@ -170,7 +170,7 @@ class maptiles : public cgv::app::application_plugin // inherit from application
 		auto cam_pos = inv(inv_rotation * original_mv) * vec4(0.0, 0.0, 0.0, 1.0);
 
 
-		if (auto_recenter && (cam_pos[0] > config.AutoRecenterDistance || cam_pos[1] > config.AutoRecenterDistance))
+		if (auto_recenter && (std::abs(cam_pos[0]) > config.AutoRecenterDistance || std::abs(cam_pos[2]) > config.AutoRecenterDistance))
 			recenter();
 
 		
@@ -179,7 +179,7 @@ class maptiles : public cgv::app::application_plugin // inherit from application
 		//std::cout << "Inverse MV:\n" << inv(mv) << std::endl;
 		
 		std::array<double, 2> cameraPosWGS84 =
-			  wgs84::fromCartesian({config.ReferencePoint.lat, config.ReferencePoint.lon}, {cam_pos[0], cam_pos[1]});
+			  wgs84::fromCartesian({config.ReferencePoint.lat, config.ReferencePoint.lon}, {cam_pos[0], -cam_pos[2]});
 
 		manager.CalculateViewFrustum(ctx.get_projection_matrix() * mv);
 
@@ -191,13 +191,13 @@ class maptiles : public cgv::app::application_plugin // inherit from application
 
 		latitude = cameraPosWGS84[0];
 		longitude = cameraPosWGS84[1];
-		altitude = std::max(cam_pos[2], 1.0);
+		altitude = std::max(cam_pos[1], 1.0);
 
-		manager.SetPosition(cameraPosWGS84[0], cameraPosWGS84[1], std::max((cam_pos[2] * 0.25), 1.0));
+		manager.SetPosition(cameraPosWGS84[0], cameraPosWGS84[1], std::max((cam_pos[1] * 0.25), 1.0));
 		manager.Update(ctx);
 
 		{
-			cgv::math::vec<double> minp(0.0, 0.0, 0.0), maxp(0.0f, 0.0, 100.0);
+			cgv::math::vec<double> minp(0.0, 0.0, 0.0), maxp(0.0f, 100.0, 0.0);
 			auto extents = manager.GetExtent();
 			std::array<double, 2> min_pos = wgs84::toCartesian({config.ReferencePoint.lat, config.ReferencePoint.lon},
 															   {extents.first[0], extents.first[1]});
@@ -205,9 +205,9 @@ class maptiles : public cgv::app::application_plugin // inherit from application
 															   {extents.second[0], extents.second[1]});
 
 			minp[0] = min_pos[0];
-			minp[1] = min_pos[1];
+			minp[2] = -min_pos[1];
 			maxp[0] = max_pos[0];
-			maxp[1] = max_pos[1];
+			maxp[2] = -max_pos[1];
 			cgv::dbox3 box(minp, maxp);
 			camera->set_scene_extent(box);
 			
@@ -253,12 +253,12 @@ class maptiles : public cgv::app::application_plugin // inherit from application
 		std::cout << "recentering at (" << latitude << ", " << longitude << ")\n";
 
 		offset(0, 3) = x;
-		offset(1, 3) = y;
+		offset(2, 3) = z;
 
 		// Setting the focus also offsets the camera position which means we don't need to manually offset the camera
 		auto focus = camera->get_focus();
 		focus[0] -= x;
-		focus[1] -= y;
+		focus[2] -= z;
 		camera->set_focus(focus);
 
 		config.ReferencePoint = {latitude, longitude};

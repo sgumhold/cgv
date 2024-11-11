@@ -31,6 +31,6 @@ public:
 
 	bool success = true;
  public:
-	Tile3DRender(){}
+	Tile3DRender();
 	Tile3DRender(cgv::render::context& ctx, const Tile3DData& tile, double lat, double lon);
 };
