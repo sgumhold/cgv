@@ -28,19 +28,19 @@ void Tile3DData::ConvertTo3DCoordinates(double refLat, double refLon)
 		auto p1 = wgs84::toCartesian({ refLat, refLon }, { mesh_wgs[i + 2].x, mesh_wgs[i + 2].y });
 		auto p2 = wgs84::toCartesian({ refLat, refLon }, { mesh_wgs[i + 4].x, mesh_wgs[i + 4].y });
 
-		glm::dvec3 v2 = { p0[0], p0[1], mesh_wgs[i][2] };
-		glm::dvec3 v1 = { p1[0], p1[1], mesh_wgs[i + 2][2] };
-		glm::dvec3 v0 = { p2[0], p2[1], mesh_wgs[i + 4][2] };
+		glm::dvec3 v0 = { p0[0], mesh_wgs[i][2],	 -p0[1]};
+		glm::dvec3 v1 = { p1[0], mesh_wgs[i + 2][2], -p1[1]};
+		glm::dvec3 v2 = { p2[0], mesh_wgs[i + 4][2], -p2[1]};
 
-		glm::dvec3 normal = glm::normalize(glm::cross((v2 - v1), (v0 - v1)));
+		glm::dvec3 normal = glm::normalize(glm::cross((v0 - v1), (v2 - v1)));
 		mesh_cartesian.push_back(v0);
+		mesh_cartesian.push_back(mesh_wgs[i + 1]);
+		mesh_cartesian.push_back(normal);
+		mesh_cartesian.push_back(v2);
 		mesh_cartesian.push_back(mesh_wgs[i + 5]);
 		mesh_cartesian.push_back(normal);
 		mesh_cartesian.push_back(v1);
 		mesh_cartesian.push_back(mesh_wgs[i + 3]);
-		mesh_cartesian.push_back(normal);
-		mesh_cartesian.push_back(v2);
-		mesh_cartesian.push_back(mesh_wgs[i + 1]);
 		mesh_cartesian.push_back(normal);
 	}
 

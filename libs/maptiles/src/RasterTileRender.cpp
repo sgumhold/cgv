@@ -18,6 +18,7 @@ RasterTileRender::RasterTileRender(cgv::render::context& ctx, RasterTileData& ti
 	std::vector<Vertex> vertices;
 	Vertex V;
 
+	/*
 	V.position = vec3(bottomLeftCartesian[0], bottomLeftCartesian[1], 0);
 	//V.position = vec3(bottomLeftCartesian[0], 0, bottomLeftCartesian[1]);
 	V.texcoord = vec2(0.0f, 0.0f);
@@ -45,6 +46,31 @@ RasterTileRender::RasterTileRender(cgv::render::context& ctx, RasterTileData& ti
 
 	V.position = vec3(bottomLeftCartesian[0], topRightCartesian[1], 0);
 	//V.position = vec3(bottomLeftCartesian[0], 0, topRightCartesian[1]);
+	V.texcoord = vec2(0.0f, 1.0f);
+	vertices.push_back(V);
+	*/
+
+	V.position = vec3(bottomLeftCartesian[0], 0, -bottomLeftCartesian[1]);
+	V.texcoord = vec2(0.0f, 0.0f);
+	vertices.push_back(V);
+
+	V.position = vec3(topRightCartesian[0], 0, -bottomLeftCartesian[1]);
+	V.texcoord = vec2(1.0f, 0.0f);
+	vertices.push_back(V);
+
+	V.position = vec3(topRightCartesian[0], 0, -topRightCartesian[1]);
+	V.texcoord = vec2(1.0f, 1.0f);
+	vertices.push_back(V);
+
+	V.position = vec3(bottomLeftCartesian[0], 0, -bottomLeftCartesian[1]);
+	V.texcoord = vec2(0.0f, 0.0f);
+	vertices.push_back(V);
+
+	V.position = vec3(topRightCartesian[0], 0, -topRightCartesian[1]);
+	V.texcoord = vec2(1.0f, 1.0f);
+	vertices.push_back(V);
+
+	V.position = vec3(bottomLeftCartesian[0], 0, -topRightCartesian[1]);
 	V.texcoord = vec2(0.0f, 1.0f);
 	vertices.push_back(V);
 

@@ -14,7 +14,8 @@ TileManagerData::TileManagerData() : m_config(nullptr)
 }
 
 TileManagerData::~TileManagerData()
-{
+{ 
+	m_config = nullptr;
 }
 
 void TileManagerData::Init(GlobalConfig* config)

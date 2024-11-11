@@ -8,6 +8,11 @@ TileManager2::TileManager2() :	cam_lat(0), cam_lon(0), altitude(0), config(nullp
 {
 }
 
+TileManager2::~TileManager2() 
+{ 
+	config = nullptr;
+}
+
 void TileManager2::Init(double _lat, double _lon, double _altitude, GlobalConfig* _conf)
 {
 	cam_lat = _lat;
@@ -106,12 +111,12 @@ void TileManager2::GenerateRasterTileFrustumNeighbours()
 														   {lat_max, lon_max});
 
 			tileMin[0] = min[0];
-			tileMin[1] = min[1];
-			tileMin[2] = 0.0f;
+			tileMin[1] = 0.0f;
+			tileMin[2] = -min[1];
 
 			tileMax[0] = max[0];
-			tileMax[1] = max[1];
-			tileMax[2] = 1.0f;
+			tileMax[1] = 1.0f;
+			tileMax[2] = -max[1];
 
 			for (int i = 0; i < 6; i++) {
 				if (IsBoxCompletelyBehindPlane(tileMin, tileMax, frustum_planes[i])) {
@@ -161,12 +166,12 @@ void TileManager2::GenerateTile3DFrustumNeighbours()
 			std::array<double, 2> max = wgs84::toCartesian({config->ReferencePoint.lat, config->ReferencePoint.lon}, {lat + size, lon + size});
 			
 			tileMin[0] = min[0];
-			tileMin[1] = min[1];
-			tileMin[2] = 0.0f;
+			tileMin[1] = 0.0f;
+			tileMin[2] = -min[1];
 
 			tileMax[0] = max[0];
-			tileMax[1] = max[1];
-			tileMax[2] = 100.0f;
+			tileMax[1] = 100.0f;
+			tileMax[2] = -max[1];
 
 			for (int i = 0; i < 6; i++)
 			{
@@ -515,11 +520,11 @@ void TileManager2::CalculateViewFrustum(const cgv::mat4& mvp)
 			}
 
 	std::array<double, 2> frustum_min = wgs84::fromCartesian(
-		  {config->ReferencePoint.lat, config->ReferencePoint.lon}, {frustum_bbox_min[0], frustum_bbox_min[1]});
+		  {config->ReferencePoint.lat, config->ReferencePoint.lon}, {frustum_bbox_min[0], -frustum_bbox_max[2]});
 
 	std::array<double, 2> frustum_max = wgs84::fromCartesian({config->ReferencePoint.lat, config->ReferencePoint.lon},
-															 {frustum_bbox_max[0], frustum_bbox_max[1]});
-
+															 {frustum_bbox_max[0], -frustum_bbox_min[2]});	  
+	
 	double& size = config->Tile3DSize;
 	frustum_min_lat = std::floor(frustum_min[0] / size) * size;
 	frustum_min_lon = std::floor(frustum_min[1] / size) * size;
