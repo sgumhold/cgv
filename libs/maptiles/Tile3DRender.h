@@ -26,6 +26,7 @@ public:
 	
 	cgv::render::vertex_buffer vertex_buffer;
 	cgv::render::attribute_array_binding vertex_array;
+	static cgv::render::shader_program shader;
 
 	uint32_t count = 0;
 

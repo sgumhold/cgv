@@ -228,6 +228,21 @@ void TileManager2::GenerateRasterTileNeighbours()
 			// check if we are out of bounds
 			if ((j + centerY) < 0 || (j + centerY) >= nTiles)
 				continue;
+			
+			
+			auto pos_min = wgs84::fromCartesian({config->ReferencePoint.lat, config->ReferencePoint.lon},
+												{tiley2lat(j + centerY, zoom), tilex2long(i + centerX, zoom)});
+			auto pos_max = wgs84::fromCartesian({config->ReferencePoint.lat, config->ReferencePoint.lon},
+												{tiley2lat(j + centerY + 1, zoom), tilex2long(i + centerX + 1, zoom)});
+
+			if (pos_min[0] < min_extent[0])
+				min_extent[0] = pos_min[0];
+			if (pos_max[0] > max_extent[0])
+				max_extent[0] = pos_max[0];
+			if (pos_min[1] < min_extent[1])
+				min_extent[1] = pos_min[1];
+			if (pos_max[1] > max_extent[1])
+				max_extent[1] = pos_max[1];
 
 			RasterTileIndex index = {zoom, i + centerX, j + centerY};
 			neighbour_set_raster_tile.insert(index);
@@ -255,6 +270,18 @@ void TileManager2::GenerateTile3DNeighbours()
 
 			double _lat = i * size + centerLat;
 			double _lon = j * size + centerLon;
+
+			_lat = (double)llround(_lat * (1 / size)) * size;
+			_lon = (double)llround(_lon * (1 / size)) * size;
+
+			if (_lat < min_extent[0])
+				min_extent[0] = _lat;
+			if (_lat + size > max_extent[0])
+				max_extent[0] = _lat + size;
+			if (_lon < min_extent[1])
+				min_extent[1] = _lon;
+			if (_lon + size > max_extent[1])
+				max_extent[1] = _lon + size;
 
 			Tile3DIndex index = {_lat, _lon};
 			neighbour_set_tile3D.insert(index);
