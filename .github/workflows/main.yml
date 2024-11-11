@@ -17,7 +17,7 @@ jobs:
         run: docker run -v $(pwd):/app build-image
 
       - name: Upload Install zip for Ubuntu
-        uses: actions/upload-artifact@v2
+        uses: actions/upload-artifact@v4
         with:
           name: cgv-install-ubuntu
           path: ./install
@@ -45,7 +45,7 @@ jobs:
         run: cmake --build . --target install
 
       - name: Upload Install zip for Windows
-        uses: actions/upload-artifact@v2
+        uses: actions/upload-artifact@v4
         with:
           name: cgv-install-windows
           path: ./install
@@ -55,7 +55,7 @@ jobs:
     runs-on: ubuntu-latest
     needs: [build-ubuntu, build-windows]
     steps:
-      - uses: actions/download-artifact@v2
+      - uses: actions/download-artifact@v4.1.7
 
       - run: zip -r cgv-install-ubuntu.zip cgv-install-ubuntu/
       - run: zip -r cgv-install-windows.zip cgv-install-windows/

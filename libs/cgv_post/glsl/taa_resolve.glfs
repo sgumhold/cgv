@@ -30,14 +30,30 @@ vec3 closest_fragment_coord(in float depth) {
 
 	ivec2 closest_offset = ivec2(0);
 	float closest_depth = depth;
-	for(int i = 0; i < 8; ++i) {
-		ivec2 offset = offsets[i];
-		float sample_depth = textureOffset(depth_tex, texcoord_fs, offset).r;	
-		if(sample_depth < closest_depth) {
-			closest_depth = sample_depth;
-			closest_offset = offset;
-		}
+
+	// Check whether a neighboring fragment is closer than all previous
+	// fragments.
+	// Looping over all neighbors must be manually unrolled to ensure that
+	// `offset` is a constant expression as required by `textureOffset`.
+	#define CHECK_NEIGHBOR(NEIGHBOR_IDX) { \
+		const ivec2 offset = offsets[NEIGHBOR_IDX]; \
+		float sample_depth = textureOffset(depth_tex, texcoord_fs, offset).r; \
+		if(sample_depth < closest_depth) { \
+			closest_depth = sample_depth; \
+			closest_offset = offset; \
+		} \
 	}
+
+	CHECK_NEIGHBOR(0);
+	CHECK_NEIGHBOR(1);
+	CHECK_NEIGHBOR(2);
+	CHECK_NEIGHBOR(3);
+	CHECK_NEIGHBOR(4);
+	CHECK_NEIGHBOR(5);
+	CHECK_NEIGHBOR(6);
+	CHECK_NEIGHBOR(7);
+	#undef CHECK_NEIGHBOR
+
 	return vec3(gl_FragCoord.xy + closest_offset, closest_depth);
 }
 
@@ -45,7 +61,7 @@ vec2 calculate_velocity_from_frag_coord(in vec3 frag_coord) {
 
 	// transform fragment coordinates from window coordinates to clip coordinates
     vec4 curr_pos_clip = vec4(frag_coord, 0.0)
-        * vec4(2.0 / viewport_size.x, 2.0 / viewport_size.y, 2.0, 0.0) 
+        * vec4(2.0 / viewport_size.x, 2.0 / viewport_size.y, 2.0, 0.0)
         + vec4(-1.0, -1.0, -1.0, 1.0);
 
     // transform fragment coordinates from clip coordinates to eye coordinates
@@ -53,7 +69,7 @@ vec2 calculate_velocity_from_frag_coord(in vec3 frag_coord) {
     //curr_pos_eye /= curr_pos_eye.w;
 
 		//vec4 curr_pos_eye = vec4(position, 1.0);
-	
+
 		//vec4 curr_pos_clip = curr_projection_matrix * curr_pos_eye;
 		//curr_pos_clip /= curr_pos_clip.w;
 
@@ -88,7 +104,7 @@ void main()
 	float depth = texture(depth_tex, texcoord_fs).r;
 	vec3 curr_color = texture(curr_color_tex, texcoord_fs).rgb;
 	vec2 velocity = use_velocity ? calculate_velocity_from_frag_coord(closest_fragment_coord(depth)) : vec2(0.0);
-	
+
 	vec3 prev_color = vec3(0.0);
 
 	if(is_static)
@@ -103,10 +119,10 @@ void main()
 
 	vec3 cn_min = min(curr_color, min(cn_0, min(cn_1, min(cn_2, cn_3))));
 	vec3 cn_max = max(curr_color, max(cn_0, max(cn_1, max(cn_2, cn_3))));
-    
+
 	if(!is_static)
 		prev_color = clip(curr_color, prev_color, cn_min, cn_max);
-	
+
 	frag_color.rgb = mix(prev_color, curr_color, curr_mix_factor);
 
 	if(isnan(frag_color.x) || isnan(frag_color.y) || isnan(frag_color.z))
