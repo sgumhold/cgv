@@ -19,6 +19,8 @@ var classcgv_1_1media_1_1colored__model =
     [ "put_color", "classcgv_1_1media_1_1colored__model.html#aadc4f1a240a87fab05bddb040c53aaff", null ],
     [ "put_color", "classcgv_1_1media_1_1colored__model.html#a3560b8f0fa774cc42d4ec8a4f5f1f7fe", null ],
     [ "put_color", "classcgv_1_1media_1_1colored__model.html#abe3462ab345edc51bd1c8c4034bf7d75", null ],
+    [ "ref_color_data_ptr", "classcgv_1_1media_1_1colored__model.html#aab371d5ac317c20c83763f99d5391485", null ],
+    [ "ref_color_data_vector_ptr", "classcgv_1_1media_1_1colored__model.html#a220d07fb4288679cfef5a7ce90c48962", null ],
     [ "resize_colors", "classcgv_1_1media_1_1colored__model.html#aff8866d3dac313c062c58dca4fc958b7", null ],
     [ "set_color", "classcgv_1_1media_1_1colored__model.html#a4a1b15ab6cf9d5724b07ff2223aa8fef", null ],
     [ "set_color", "classcgv_1_1media_1_1colored__model.html#a75a1df214c43d5995eb8f2c5332132f7", null ],
