@@ -87,6 +87,6 @@ var searchData=
   ['extract_5ftriangle_5felement_5fbuffer_5907',['extract_triangle_element_buffer',['../classcgv_1_1media_1_1mesh_1_1simple__mesh__base.html#a116d992457d26966664db28542b423ea',1,'cgv::media::mesh::simple_mesh_base']]],
   ['extract_5ftype_5fname_5908',['extract_type_name',['../namespacecgv_1_1type_1_1info.html#afed173238b5c123d553cf43e7860111b',1,'cgv::type::info']]],
   ['extract_5fvertex_5fattribute_5fbuffer_5909',['extract_vertex_attribute_buffer',['../classcgv_1_1media_1_1mesh_1_1simple__mesh.html#a19cf6b810e3e7140aa441cd90c881294',1,'cgv::media::mesh::simple_mesh']]],
-  ['extract_5fvertex_5fattribute_5fbuffer_5fbase_5910',['extract_vertex_attribute_buffer_base',['../classcgv_1_1media_1_1mesh_1_1simple__mesh__base.html#a4bfdd7ed5e0d785cc5a6ef9cddd0d1a9',1,'cgv::media::mesh::simple_mesh_base']]],
+  ['extract_5fvertex_5fattribute_5fbuffer_5fbase_5910',['extract_vertex_attribute_buffer_base',['../classcgv_1_1media_1_1mesh_1_1simple__mesh__base.html#af8aa492fb4459be0bdccf3ec9e184b02',1,'cgv::media::mesh::simple_mesh_base']]],
   ['extract_5fwireframe_5felement_5fbuffer_5911',['extract_wireframe_element_buffer',['../classcgv_1_1media_1_1mesh_1_1simple__mesh__base.html#a91dfd37d08cbcb2762767f0fd30913a6',1,'cgv::media::mesh::simple_mesh_base']]]
 ];
