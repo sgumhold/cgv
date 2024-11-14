@@ -123,15 +123,17 @@ $(document).ready(function(){initNavTree('colored__model_8h_source.html',''); in
 <div class="line"><a name="l00061"></a><span class="lineno">   61</span>&#160; </div>
 <div class="line"><a name="l00062"></a><span class="lineno">   62</span>&#160;            <span class="keyword">const</span> <span class="keywordtype">void</span>* get_color_data_ptr() <span class="keyword">const</span>;</div>
 <div class="line"><a name="l00063"></a><span class="lineno">   63</span>&#160;            <span class="keyword">const</span> <span class="keywordtype">void</span>* get_color_data_vector_ptr() <span class="keyword">const</span>;</div>
-<div class="line"><a name="l00064"></a><span class="lineno">   64</span>&#160; </div>
+<div class="line"><a name="l00064"></a><span class="lineno">   64</span>&#160;            <span class="keywordtype">void</span>* ref_color_data_ptr();</div>
+<div class="line"><a name="l00065"></a><span class="lineno">   65</span>&#160;            <span class="keywordtype">void</span>* ref_color_data_vector_ptr();</div>
 <div class="line"><a name="l00066"></a><span class="lineno">   66</span>&#160; </div>
-<div class="line"><a name="l00067"></a><span class="lineno">   67</span>&#160;            <span class="keywordtype">void</span> ensure_colors(ColorType _color_type, <span class="keywordtype">size_t</span> nr_colors = -1);</div>
-<div class="line"><a name="l00069"></a><span class="lineno">   69</span>&#160;            <span class="keywordtype">void</span> destruct_colors();</div>
-<div class="line"><a name="l00070"></a><span class="lineno">   70</span>&#160;        };</div>
-<div class="line"><a name="l00071"></a><span class="lineno">   71</span>&#160;    }</div>
-<div class="line"><a name="l00072"></a><span class="lineno">   72</span>&#160;}</div>
-<div class="line"><a name="l00073"></a><span class="lineno">   73</span>&#160; </div>
-<div class="line"><a name="l00074"></a><span class="lineno">   74</span>&#160;<span class="preprocessor">#include &lt;cgv/config/lib_end.h&gt;</span></div>
+<div class="line"><a name="l00068"></a><span class="lineno">   68</span>&#160; </div>
+<div class="line"><a name="l00069"></a><span class="lineno">   69</span>&#160;            <span class="keywordtype">void</span> ensure_colors(ColorType _color_type, <span class="keywordtype">size_t</span> nr_colors = -1);</div>
+<div class="line"><a name="l00071"></a><span class="lineno">   71</span>&#160;            <span class="keywordtype">void</span> destruct_colors();</div>
+<div class="line"><a name="l00072"></a><span class="lineno">   72</span>&#160;        };</div>
+<div class="line"><a name="l00073"></a><span class="lineno">   73</span>&#160;    }</div>
+<div class="line"><a name="l00074"></a><span class="lineno">   74</span>&#160;}</div>
+<div class="line"><a name="l00075"></a><span class="lineno">   75</span>&#160; </div>
+<div class="line"><a name="l00076"></a><span class="lineno">   76</span>&#160;<span class="preprocessor">#include &lt;cgv/config/lib_end.h&gt;</span></div>
 <div class="ttc" id="aclasscgv_1_1media_1_1abst__color__storage_html"><div class="ttname"><a href="classcgv_1_1media_1_1abst__color__storage.html">cgv::media::abst_color_storage</a></div><div class="ttdoc">interface for color storage of different internal types</div><div class="ttdef"><b>Definition:</b> <a href="color__storage_8h_source.html#l00037">color_storage.h:38</a></div></div>
 <div class="ttc" id="aclasscgv_1_1media_1_1color_html"><div class="ttname"><a href="classcgv_1_1media_1_1color.html">cgv::media::color&lt; float, RGB &gt;</a></div></div>
 <div class="ttc" id="aclasscgv_1_1media_1_1colored__model_html"><div class="ttname"><a href="classcgv_1_1media_1_1colored__model.html">cgv::media::colored_model</a></div><div class="ttdoc">coordinate type independent base class of simple mesh data structure that handles indices and colors.</div><div class="ttdef"><b>Definition:</b> <a href="colored__model_8h_source.html#l00011">colored_model.h:12</a></div></div>
