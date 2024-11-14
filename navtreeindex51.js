@@ -1,5 +1,6 @@
 var NAVTREEINDEX51 =
 {
+"structcgv_1_1type_1_1traits_1_1one__fct_3_01float_01_4.html":[11,0,0,14,4,28],
 "structcgv_1_1type_1_1traits_1_1one__fct_3_01float_01_4.html#a444b63789f282d0c818eaa8385d07e1d":[11,0,0,14,4,28,0],
 "structcgv_1_1type_1_1traits_1_1zero.html":[11,0,0,14,4,30],
 "structcgv_1_1type_1_1traits_1_1zero.html#aa3f7f8cbd8ded6e3eb0a2e2e2b9603b4":[11,0,0,14,4,30,0],
@@ -248,6 +249,5 @@ var NAVTREEINDEX51 =
 "structfx_1_1gltf_1_1Material_1_1PBRMetallicRoughness.html":[11,0,1,0,10,2],
 "structfx_1_1gltf_1_1Material_1_1PBRMetallicRoughness.html#a20187f47ca287d77aa25d657e138173a":[11,0,1,0,10,2,6],
 "structfx_1_1gltf_1_1Material_1_1PBRMetallicRoughness.html#a281286c6bfa89fb2afcac0945e933754":[11,0,1,0,10,2,1],
-"structfx_1_1gltf_1_1Material_1_1PBRMetallicRoughness.html#a582acb68a5495dd32f1b738648df7afd":[11,0,1,0,10,2,4],
-"structfx_1_1gltf_1_1Material_1_1PBRMetallicRoughness.html#a58dfe6fe7bbf466a2af5cda2ccc1e180":[11,0,1,0,10,2,5]
+"structfx_1_1gltf_1_1Material_1_1PBRMetallicRoughness.html#a582acb68a5495dd32f1b738648df7afd":[11,0,1,0,10,2,4]
 };

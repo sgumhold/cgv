@@ -323,21 +323,21 @@ void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="clas
 <tr class="memitem:a91dfd37d08cbcb2762767f0fd30913a6"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcgv_1_1media_1_1mesh_1_1simple__mesh__base.html#a91dfd37d08cbcb2762767f0fd30913a6">extract_wireframe_element_buffer</a> (const std::vector&lt; <a class="el" href="classcgv_1_1media_1_1mesh_1_1simple__mesh__base.html#a0eb0181dc49db651e738bd0e66d1f0e6">idx_type</a> &gt; &amp;vertex_indices, std::vector&lt; <a class="el" href="classcgv_1_1media_1_1mesh_1_1simple__mesh__base.html#a0eb0181dc49db651e738bd0e66d1f0e6">idx_type</a> &gt; &amp;edge_element_buffer) const</td></tr>
 <tr class="memdesc:a91dfd37d08cbcb2762767f0fd30913a6"><td class="mdescLeft">&#160;</td><td class="mdescRight">Extract element array buffers for edges in wireframe.  <a href="classcgv_1_1media_1_1mesh_1_1simple__mesh__base.html#a91dfd37d08cbcb2762767f0fd30913a6">More...</a><br /></td></tr>
 <tr class="separator:a91dfd37d08cbcb2762767f0fd30913a6"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a4bfdd7ed5e0d785cc5a6ef9cddd0d1a9"><td class="memItemLeft" align="right" valign="top"><a id="a4bfdd7ed5e0d785cc5a6ef9cddd0d1a9"></a>
-uint32_t&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcgv_1_1media_1_1mesh_1_1simple__mesh__base.html#a4bfdd7ed5e0d785cc5a6ef9cddd0d1a9">extract_vertex_attribute_buffer_base</a> (const std::vector&lt; <a class="el" href="classcgv_1_1media_1_1mesh_1_1simple__mesh__base.html#a0020cefcc7053881a18569fddbee2b44">vec4i</a> &gt; &amp;unique_quadruples, <a class="el" href="classcgv_1_1media_1_1mesh_1_1simple__mesh__base.html#a211b6d732e1a6977bc8241b3e61c80af">AttributeFlags</a> &amp;flags, std::vector&lt; uint8_t &gt; &amp;attrib_buffer) const</td></tr>
-<tr class="memdesc:a4bfdd7ed5e0d785cc5a6ef9cddd0d1a9"><td class="mdescLeft">&#160;</td><td class="mdescRight">extract vertex attribute buffer for the given flags and return size of vertex in bytes <br /></td></tr>
-<tr class="separator:a4bfdd7ed5e0d785cc5a6ef9cddd0d1a9"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a030e59a091b429b4ccc782d4bcb970ec"><td class="memItemLeft" align="right" valign="top"><a id="a030e59a091b429b4ccc782d4bcb970ec"></a>
-void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcgv_1_1media_1_1mesh_1_1simple__mesh__base.html#a030e59a091b429b4ccc782d4bcb970ec">compute_inv</a> (std::vector&lt; uint32_t &gt; &amp;inv, std::vector&lt; uint32_t &gt; *p2c_ptr=0, std::vector&lt; uint32_t &gt; *next_ptr=0, std::vector&lt; uint32_t &gt; *prev_ptr=0) const</td></tr>
-<tr class="memdesc:a030e59a091b429b4ccc782d4bcb970ec"><td class="mdescLeft">&#160;</td><td class="mdescRight">compute a index vector storing the inv corners per corner and optionally index vectors with per position corner index, per corner next and or prev corner index (implementation assumes closed manifold connectivity) <br /></td></tr>
-<tr class="separator:a030e59a091b429b4ccc782d4bcb970ec"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:af5be206bfb473e25f81cb0b4859e63c3"><td class="memItemLeft" align="right" valign="top">uint32_t&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcgv_1_1media_1_1mesh_1_1simple__mesh__base.html#af5be206bfb473e25f81cb0b4859e63c3">compute_c2e</a> (const std::vector&lt; uint32_t &gt; &amp;inv, std::vector&lt; uint32_t &gt; &amp;c2e, std::vector&lt; uint32_t &gt; *e2c_ptr=0) const</td></tr>
-<tr class="memdesc:af5be206bfb473e25f81cb0b4859e63c3"><td class="mdescLeft">&#160;</td><td class="mdescRight">given the inv corners compute index vector per corner its edge index and optionally per edge its corner index and return edge count (implementation assumes closed manifold connectivity)  <a href="classcgv_1_1media_1_1mesh_1_1simple__mesh__base.html#af5be206bfb473e25f81cb0b4859e63c3">More...</a><br /></td></tr>
-<tr class="separator:af5be206bfb473e25f81cb0b4859e63c3"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a71fa0904d805a0e8da9fb1bfddb569e7"><td class="memItemLeft" align="right" valign="top"><a id="a71fa0904d805a0e8da9fb1bfddb569e7"></a>
-void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcgv_1_1media_1_1mesh_1_1simple__mesh__base.html#a71fa0904d805a0e8da9fb1bfddb569e7">compute_c2f</a> (std::vector&lt; uint32_t &gt; &amp;c2f) const</td></tr>
-<tr class="memdesc:a71fa0904d805a0e8da9fb1bfddb569e7"><td class="mdescLeft">&#160;</td><td class="mdescRight">compute index vector with per corner its face index <br /></td></tr>
-<tr class="separator:a71fa0904d805a0e8da9fb1bfddb569e7"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:af8aa492fb4459be0bdccf3ec9e184b02"><td class="memItemLeft" align="right" valign="top"><a id="af8aa492fb4459be0bdccf3ec9e184b02"></a>
+<a class="el" href="classcgv_1_1media_1_1mesh_1_1simple__mesh__base.html#a0eb0181dc49db651e738bd0e66d1f0e6">idx_type</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcgv_1_1media_1_1mesh_1_1simple__mesh__base.html#af8aa492fb4459be0bdccf3ec9e184b02">extract_vertex_attribute_buffer_base</a> (const std::vector&lt; <a class="el" href="classcgv_1_1media_1_1mesh_1_1simple__mesh__base.html#a0020cefcc7053881a18569fddbee2b44">vec4i</a> &gt; &amp;unique_quadruples, <a class="el" href="classcgv_1_1media_1_1mesh_1_1simple__mesh__base.html#a211b6d732e1a6977bc8241b3e61c80af">AttributeFlags</a> &amp;flags, std::vector&lt; uint8_t &gt; &amp;attrib_buffer) const</td></tr>
+<tr class="memdesc:af8aa492fb4459be0bdccf3ec9e184b02"><td class="mdescLeft">&#160;</td><td class="mdescRight">extract vertex attribute buffer for the given flags and return size of vertex in bytes <br /></td></tr>
+<tr class="separator:af8aa492fb4459be0bdccf3ec9e184b02"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a34d6eefa7fd6d41bb8b3f692d2bb9e11"><td class="memItemLeft" align="right" valign="top"><a class="el" href="classcgv_1_1media_1_1mesh_1_1simple__mesh__base.html#a0eb0181dc49db651e738bd0e66d1f0e6">idx_type</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcgv_1_1media_1_1mesh_1_1simple__mesh__base.html#a34d6eefa7fd6d41bb8b3f692d2bb9e11">compute_inv</a> (std::vector&lt; <a class="el" href="classcgv_1_1media_1_1mesh_1_1simple__mesh__base.html#a0eb0181dc49db651e738bd0e66d1f0e6">idx_type</a> &gt; &amp;inv, bool link_non_manifold_edges=false, std::vector&lt; <a class="el" href="classcgv_1_1media_1_1mesh_1_1simple__mesh__base.html#a0eb0181dc49db651e738bd0e66d1f0e6">idx_type</a> &gt; *p2c_ptr=0, std::vector&lt; <a class="el" href="classcgv_1_1media_1_1mesh_1_1simple__mesh__base.html#a0eb0181dc49db651e738bd0e66d1f0e6">idx_type</a> &gt; *next_ptr=0, std::vector&lt; <a class="el" href="classcgv_1_1media_1_1mesh_1_1simple__mesh__base.html#a0eb0181dc49db651e738bd0e66d1f0e6">idx_type</a> &gt; *prev_ptr=0, std::vector&lt; <a class="el" href="classcgv_1_1media_1_1mesh_1_1simple__mesh__base.html#a0eb0181dc49db651e738bd0e66d1f0e6">idx_type</a> &gt; *unmatched=0, std::vector&lt; <a class="el" href="classcgv_1_1media_1_1mesh_1_1simple__mesh__base.html#a0eb0181dc49db651e738bd0e66d1f0e6">idx_type</a> &gt; *non_manifold=0, std::vector&lt; <a class="el" href="classcgv_1_1media_1_1mesh_1_1simple__mesh__base.html#a0eb0181dc49db651e738bd0e66d1f0e6">idx_type</a> &gt; *unmatched_elements=0, std::vector&lt; <a class="el" href="classcgv_1_1media_1_1mesh_1_1simple__mesh__base.html#a0eb0181dc49db651e738bd0e66d1f0e6">idx_type</a> &gt; *non_manifold_elements=0) const</td></tr>
+<tr class="memdesc:a34d6eefa7fd6d41bb8b3f692d2bb9e11"><td class="mdescLeft">&#160;</td><td class="mdescRight">Do inverse matching of half-edges.  <a href="classcgv_1_1media_1_1mesh_1_1simple__mesh__base.html#a34d6eefa7fd6d41bb8b3f692d2bb9e11">More...</a><br /></td></tr>
+<tr class="separator:a34d6eefa7fd6d41bb8b3f692d2bb9e11"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a7da20c57eb12f5f0cfbf8e69f87cb146"><td class="memItemLeft" align="right" valign="top"><a id="a7da20c57eb12f5f0cfbf8e69f87cb146"></a>
+<a class="el" href="classcgv_1_1media_1_1mesh_1_1simple__mesh__base.html#a0eb0181dc49db651e738bd0e66d1f0e6">idx_type</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcgv_1_1media_1_1mesh_1_1simple__mesh__base.html#a7da20c57eb12f5f0cfbf8e69f87cb146">compute_c2e</a> (const std::vector&lt; <a class="el" href="classcgv_1_1media_1_1mesh_1_1simple__mesh__base.html#a0eb0181dc49db651e738bd0e66d1f0e6">idx_type</a> &gt; &amp;inv, std::vector&lt; <a class="el" href="classcgv_1_1media_1_1mesh_1_1simple__mesh__base.html#a0eb0181dc49db651e738bd0e66d1f0e6">idx_type</a> &gt; &amp;c2e, std::vector&lt; <a class="el" href="classcgv_1_1media_1_1mesh_1_1simple__mesh__base.html#a0eb0181dc49db651e738bd0e66d1f0e6">idx_type</a> &gt; *e2c_ptr=0) const</td></tr>
+<tr class="memdesc:a7da20c57eb12f5f0cfbf8e69f87cb146"><td class="mdescLeft">&#160;</td><td class="mdescRight">given the inv corners compute vector storing per corner the edge index and optionally per edge one corner index and return edge count (implementation assumes closed manifold connectivity) <br /></td></tr>
+<tr class="separator:a7da20c57eb12f5f0cfbf8e69f87cb146"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a05a9945ea50d1d70ed3289fc7b4302b2"><td class="memItemLeft" align="right" valign="top"><a id="a05a9945ea50d1d70ed3289fc7b4302b2"></a>
+void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcgv_1_1media_1_1mesh_1_1simple__mesh__base.html#a05a9945ea50d1d70ed3289fc7b4302b2">compute_c2f</a> (std::vector&lt; <a class="el" href="classcgv_1_1media_1_1mesh_1_1simple__mesh__base.html#a0eb0181dc49db651e738bd0e66d1f0e6">idx_type</a> &gt; &amp;c2f) const</td></tr>
+<tr class="memdesc:a05a9945ea50d1d70ed3289fc7b4302b2"><td class="mdescLeft">&#160;</td><td class="mdescRight">compute index vector with per corner its face index <br /></td></tr>
+<tr class="separator:a05a9945ea50d1d70ed3289fc7b4302b2"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="inherit_header pub_methods_classcgv_1_1media_1_1colored__model"><td colspan="2" onclick="javascript:toggleInherit('pub_methods_classcgv_1_1media_1_1colored__model')"><img src="closed.png" alt="-"/>&#160;Public Member Functions inherited from <a class="el" href="classcgv_1_1media_1_1colored__model.html">cgv::media::colored_model</a></td></tr>
 <tr class="memitem:a312433d0cdfa4eceba0d7dcc6bd70e86 inherit pub_methods_classcgv_1_1media_1_1colored__model"><td class="memItemLeft" align="right" valign="top"><a id="a312433d0cdfa4eceba0d7dcc6bd70e86"></a>
 &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcgv_1_1media_1_1colored__model.html#a312433d0cdfa4eceba0d7dcc6bd70e86">colored_model</a> ()</td></tr>
@@ -548,33 +548,69 @@ std::vector&lt; <a class="el" href="classcgv_1_1media_1_1mesh_1_1simple__mesh__b
 
 <p class="definition">Definition at line <a class="el" href="simple__mesh_8h_source.html#l00117">117</a> of file <a class="el" href="simple__mesh_8h_source.html">simple_mesh.h</a>.</p>
 
-<p class="reference">Referenced by <a class="el" href="simple__mesh_8cxx_source.html#l00470">cgv::media::mesh::simple_mesh&lt; float &gt;::clear()</a>, <a class="el" href="simple__mesh_8cxx_source.html#l00321">compute_c2f()</a>, <a class="el" href="simple__mesh_8cxx_source.html#l00265">compute_inv()</a>, <a class="el" href="simple__mesh_8cxx_source.html#l00163">extract_triangle_element_buffer()</a>, <a class="el" href="simple__mesh_8cxx_source.html#l00193">extract_wireframe_element_buffer()</a>, and <a class="el" href="simple__mesh_8cxx_source.html#l00096">revert_face_orientation()</a>.</p>
+<p class="reference">Referenced by <a class="el" href="simple__mesh_8cxx_source.html#l00424">compute_c2f()</a>, <a class="el" href="simple__mesh_8cxx_source.html#l00265">compute_inv()</a>, <a class="el" href="simple__mesh_8cxx_source.html#l00164">extract_triangle_element_buffer()</a>, <a class="el" href="simple__mesh_8cxx_source.html#l00194">extract_wireframe_element_buffer()</a>, and <a class="el" href="simple__mesh_8cxx_source.html#l00097">revert_face_orientation()</a>.</p>
 
 </div>
 </div>
-<a id="af5be206bfb473e25f81cb0b4859e63c3"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#af5be206bfb473e25f81cb0b4859e63c3">&#9670;&nbsp;</a></span>compute_c2e()</h2>
+<a id="a34d6eefa7fd6d41bb8b3f692d2bb9e11"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a34d6eefa7fd6d41bb8b3f692d2bb9e11">&#9670;&nbsp;</a></span>compute_inv()</h2>
 
 <div class="memitem">
 <div class="memproto">
       <table class="memname">
         <tr>
-          <td class="memname">uint32_t cgv::media::mesh::simple_mesh_base::compute_c2e </td>
+          <td class="memname"><a class="el" href="classcgv_1_1media_1_1mesh_1_1simple__mesh__base.html#a0eb0181dc49db651e738bd0e66d1f0e6">simple_mesh_base::idx_type</a> cgv::media::mesh::simple_mesh_base::compute_inv </td>
           <td>(</td>
-          <td class="paramtype">const std::vector&lt; uint32_t &gt; &amp;&#160;</td>
+          <td class="paramtype">std::vector&lt; <a class="el" href="classcgv_1_1media_1_1mesh_1_1simple__mesh__base.html#a0eb0181dc49db651e738bd0e66d1f0e6">idx_type</a> &gt; &amp;&#160;</td>
           <td class="paramname"><em>inv</em>, </td>
         </tr>
         <tr>
           <td class="paramkey"></td>
           <td></td>
-          <td class="paramtype">std::vector&lt; uint32_t &gt; &amp;&#160;</td>
-          <td class="paramname"><em>c2e</em>, </td>
+          <td class="paramtype">bool&#160;</td>
+          <td class="paramname"><em>link_non_manifold_edges</em> = <code>false</code>, </td>
         </tr>
         <tr>
           <td class="paramkey"></td>
           <td></td>
-          <td class="paramtype">std::vector&lt; uint32_t &gt; *&#160;</td>
-          <td class="paramname"><em>e2c_ptr</em> = <code>0</code>&#160;</td>
+          <td class="paramtype">std::vector&lt; <a class="el" href="classcgv_1_1media_1_1mesh_1_1simple__mesh__base.html#a0eb0181dc49db651e738bd0e66d1f0e6">idx_type</a> &gt; *&#160;</td>
+          <td class="paramname"><em>p2c_ptr</em> = <code>0</code>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">std::vector&lt; <a class="el" href="classcgv_1_1media_1_1mesh_1_1simple__mesh__base.html#a0eb0181dc49db651e738bd0e66d1f0e6">idx_type</a> &gt; *&#160;</td>
+          <td class="paramname"><em>next_ptr</em> = <code>0</code>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">std::vector&lt; <a class="el" href="classcgv_1_1media_1_1mesh_1_1simple__mesh__base.html#a0eb0181dc49db651e738bd0e66d1f0e6">idx_type</a> &gt; *&#160;</td>
+          <td class="paramname"><em>prev_ptr</em> = <code>0</code>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">std::vector&lt; <a class="el" href="classcgv_1_1media_1_1mesh_1_1simple__mesh__base.html#a0eb0181dc49db651e738bd0e66d1f0e6">idx_type</a> &gt; *&#160;</td>
+          <td class="paramname"><em>unmatched</em> = <code>0</code>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">std::vector&lt; <a class="el" href="classcgv_1_1media_1_1mesh_1_1simple__mesh__base.html#a0eb0181dc49db651e738bd0e66d1f0e6">idx_type</a> &gt; *&#160;</td>
+          <td class="paramname"><em>non_manifold</em> = <code>0</code>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">std::vector&lt; <a class="el" href="classcgv_1_1media_1_1mesh_1_1simple__mesh__base.html#a0eb0181dc49db651e738bd0e66d1f0e6">idx_type</a> &gt; *&#160;</td>
+          <td class="paramname"><em>unmatched_elements</em> = <code>0</code>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">std::vector&lt; <a class="el" href="classcgv_1_1media_1_1mesh_1_1simple__mesh__base.html#a0eb0181dc49db651e738bd0e66d1f0e6">idx_type</a> &gt; *&#160;</td>
+          <td class="paramname"><em>non_manifold_elements</em> = <code>0</code>&#160;</td>
         </tr>
         <tr>
           <td></td>
@@ -584,10 +620,20 @@ std::vector&lt; <a class="el" href="classcgv_1_1media_1_1mesh_1_1simple__mesh__b
       </table>
 </div><div class="memdoc">
 
-<p>given the inv corners compute index vector per corner its edge index and optionally per edge its corner index and return edge count (implementation assumes closed manifold connectivity) </p>
-<p>given the inv corners compute index vector per corner its edge index and optionally per edge its corner index (implementation assumes closed manifold connectivity) </p>
+<p>Do inverse matching of half-edges. </p>
+<p>For this corners are converted to the half - edges that point in winding order away from the corner. The inverse matching result is stored in the vector <code>inv</code> with one index per corner. This index is -1 for unmatched half-edges and the index of the corner corresponding to matched half-edges. For non-manifold edges two strategies are supported: cyclic linking (<code>link_non_manifold_edges</code> = true) or cutting into unmatched half-edges (<code>link_non_manifold_edges</code> = false). The function fills the optionally provided vectors</p><ul>
+<li><code>p2c</code> ... per position the index of one incident corner</li>
+<li><code>next</code> ... per corner the index of the next corner in the face</li>
+<li><code>prev</code> ... per corner the index of the prev corner in the face</li>
+<li><code>unmatched</code> ... corners with unmatched half-edges</li>
+<li><code>non_manifold</code> ... one corner index per non-manifold edge</li>
+<li><code>unmatched_elements</code> ... position indices of unmatched half-edges</li>
+<li><code>non_manifold_elements</code> ... position indices of non-manifold edges The function returns the number of interior manifold edges </li>
+</ul>
 
-<p class="definition">Definition at line <a class="el" href="simple__mesh_8cxx_source.html#l00302">302</a> of file <a class="el" href="simple__mesh_8cxx_source.html">simple_mesh.cxx</a>.</p>
+<p class="definition">Definition at line <a class="el" href="simple__mesh_8cxx_source.html#l00265">265</a> of file <a class="el" href="simple__mesh_8cxx_source.html">simple_mesh.cxx</a>.</p>
+
+<p class="reference">References <a class="el" href="simple__mesh_8h_source.html#l00117">begin_corner()</a>, <a class="el" href="simple__mesh_8h_source.html#l00098">c2p()</a>, <a class="el" href="simple__mesh_8h_source.html#l00124">end_corner()</a>, <a class="el" href="simple__mesh_8h_source.html#l00110">get_nr_corners()</a>, <a class="el" href="simple__mesh_8h_source.html#l00108">get_nr_faces()</a>, and <a class="el" href="classcgv_1_1media_1_1mesh_1_1simple__mesh__base.html#aa5c14f7cd17464eea93a30926aea4ae3">get_nr_positions()</a>.</p>
 
 </div>
 </div>
@@ -626,7 +672,7 @@ std::vector&lt; <a class="el" href="classcgv_1_1media_1_1mesh_1_1simple__mesh__b
 
 <p class="definition">Definition at line <a class="el" href="simple__mesh_8h_source.html#l00124">124</a> of file <a class="el" href="simple__mesh_8h_source.html">simple_mesh.h</a>.</p>
 
-<p class="reference">Referenced by <a class="el" href="simple__mesh_8cxx_source.html#l00470">cgv::media::mesh::simple_mesh&lt; float &gt;::clear()</a>, <a class="el" href="simple__mesh_8cxx_source.html#l00321">compute_c2f()</a>, <a class="el" href="simple__mesh_8cxx_source.html#l00265">compute_inv()</a>, <a class="el" href="simple__mesh_8cxx_source.html#l00163">extract_triangle_element_buffer()</a>, <a class="el" href="simple__mesh_8cxx_source.html#l00193">extract_wireframe_element_buffer()</a>, and <a class="el" href="simple__mesh_8cxx_source.html#l00096">revert_face_orientation()</a>.</p>
+<p class="reference">Referenced by <a class="el" href="simple__mesh_8cxx_source.html#l00424">compute_c2f()</a>, <a class="el" href="simple__mesh_8cxx_source.html#l00265">compute_inv()</a>, <a class="el" href="simple__mesh_8cxx_source.html#l00164">extract_triangle_element_buffer()</a>, <a class="el" href="simple__mesh_8cxx_source.html#l00194">extract_wireframe_element_buffer()</a>, and <a class="el" href="simple__mesh_8cxx_source.html#l00097">revert_face_orientation()</a>.</p>
 
 </div>
 </div>
@@ -682,7 +728,7 @@ std::vector&lt; <a class="el" href="classcgv_1_1media_1_1mesh_1_1simple__mesh__b
 <dd>
 <a class="el" href="classcgv_1_1media_1_1mesh_1_1simple__mesh__base.html#ab5cc67e7a85610d8a316305dcadb4c55" title="Calculate a permutation of face indices which sorts them by group and/or material.">simple_mesh::sort_faces()</a> for getting a permutation </dd></dl>
 
-<p class="definition">Definition at line <a class="el" href="simple__mesh_8cxx_source.html#l00163">163</a> of file <a class="el" href="simple__mesh_8cxx_source.html">simple_mesh.cxx</a>.</p>
+<p class="definition">Definition at line <a class="el" href="simple__mesh_8cxx_source.html#l00164">164</a> of file <a class="el" href="simple__mesh_8cxx_source.html">simple_mesh.cxx</a>.</p>
 
 <p class="reference">References <a class="el" href="simple__mesh_8h_source.html#l00117">begin_corner()</a>, <a class="el" href="simple__mesh_8h_source.html#l00124">end_corner()</a>, and <a class="el" href="simple__mesh_8h_source.html#l00126">face_degree()</a>.</p>
 
@@ -726,7 +772,7 @@ std::vector&lt; <a class="el" href="classcgv_1_1media_1_1mesh_1_1simple__mesh__b
 </dl>
 <dl class="section see"><dt>See also</dt><dd><a class="el" href="classcgv_1_1media_1_1mesh_1_1simple__mesh__base.html#a308e232556ccf1621e69fde8d6ceffe7" title="Transforms n individual vertex attribute indices into one list of unique index n-tuples.">simple_mesh::merge_indices()</a> </dd></dl>
 
-<p class="definition">Definition at line <a class="el" href="simple__mesh_8cxx_source.html#l00193">193</a> of file <a class="el" href="simple__mesh_8cxx_source.html">simple_mesh.cxx</a>.</p>
+<p class="definition">Definition at line <a class="el" href="simple__mesh_8cxx_source.html#l00194">194</a> of file <a class="el" href="simple__mesh_8cxx_source.html">simple_mesh.cxx</a>.</p>
 
 <p class="reference">References <a class="el" href="simple__mesh_8h_source.html#l00117">begin_corner()</a>, and <a class="el" href="simple__mesh_8h_source.html#l00124">end_corner()</a>.</p>
 
@@ -795,7 +841,7 @@ std::vector&lt; <a class="el" href="classcgv_1_1media_1_1mesh_1_1simple__mesh__b
 <dd>
 <a class="el" href="classcgv_1_1media_1_1mesh_1_1simple__mesh__base.html#a91dfd37d08cbcb2762767f0fd30913a6" title="Extract element array buffers for edges in wireframe.">simple_mesh::extract_wireframe_element_buffer()</a> </dd></dl>
 
-<p class="definition">Definition at line <a class="el" href="simple__mesh_8cxx_source.html#l00126">126</a> of file <a class="el" href="simple__mesh_8cxx_source.html">simple_mesh.cxx</a>.</p>
+<p class="definition">Definition at line <a class="el" href="simple__mesh_8cxx_source.html#l00127">127</a> of file <a class="el" href="simple__mesh_8cxx_source.html">simple_mesh.cxx</a>.</p>
 
 <p class="reference">Referenced by <a class="el" href="mesh__render__info_8cxx_source.html#l00024">cgv::render::mesh_render_info::construct_index_buffers()</a>.</p>
 
@@ -844,9 +890,9 @@ std::vector&lt; <a class="el" href="classcgv_1_1media_1_1mesh_1_1simple__mesh__b
 </dl>
 <dl class="section return"><dt>Returns</dt><dd>the index of the newly created corner </dd></dl>
 
-<p class="definition">Definition at line <a class="el" href="simple__mesh_8cxx_source.html#l00086">86</a> of file <a class="el" href="simple__mesh_8cxx_source.html">simple_mesh.cxx</a>.</p>
+<p class="definition">Definition at line <a class="el" href="simple__mesh_8cxx_source.html#l00087">87</a> of file <a class="el" href="simple__mesh_8cxx_source.html">simple_mesh.cxx</a>.</p>
 
-<p class="reference">Referenced by <a class="el" href="simple__mesh_8cxx_source.html#l00776">cgv::media::mesh::simple_mesh&lt; T &gt;::ambo()</a>, <a class="el" href="simple__mesh_8cxx_source.html#l00893">cgv::media::mesh::simple_mesh&lt; T &gt;::dual()</a>, <a class="el" href="gltf__support_8cxx_source.html#l00328">cgv::render::extract_mesh()</a>, <a class="el" href="simple__mesh_8cxx_source.html#l00925">cgv::media::mesh::simple_mesh&lt; T &gt;::gyro()</a>, <a class="el" href="simple__mesh_8cxx_source.html#l00971">cgv::media::mesh::simple_mesh&lt; T &gt;::join()</a>, <a class="el" href="gl__implicit__surface__drawable__base_8cxx_source.html#l00223">cgv::render::gl::gl_implicit_surface_drawable_base::new_polygon()</a>, <a class="el" href="simple__mesh_8cxx_source.html#l00848">cgv::media::mesh::simple_mesh&lt; T &gt;::snub()</a>, and <a class="el" href="simple__mesh_8cxx_source.html#l00812">cgv::media::mesh::simple_mesh&lt; T &gt;::truncate()</a>.</p>
+<p class="reference">Referenced by <a class="el" href="simple__mesh_8cxx_source.html#l01001">cgv::media::mesh::simple_mesh&lt; T &gt;::ambo()</a>, <a class="el" href="simple__mesh_8cxx_source.html#l01118">cgv::media::mesh::simple_mesh&lt; T &gt;::dual()</a>, <a class="el" href="gltf__support_8cxx_source.html#l00328">cgv::render::extract_mesh()</a>, <a class="el" href="simple__mesh_8cxx_source.html#l01150">cgv::media::mesh::simple_mesh&lt; T &gt;::gyro()</a>, <a class="el" href="simple__mesh_8cxx_source.html#l01196">cgv::media::mesh::simple_mesh&lt; T &gt;::join()</a>, <a class="el" href="gl__implicit__surface__drawable__base_8cxx_source.html#l00223">cgv::render::gl::gl_implicit_surface_drawable_base::new_polygon()</a>, <a class="el" href="simple__mesh_8cxx_source.html#l01073">cgv::media::mesh::simple_mesh&lt; T &gt;::snub()</a>, and <a class="el" href="simple__mesh_8cxx_source.html#l01037">cgv::media::mesh::simple_mesh&lt; T &gt;::truncate()</a>.</p>
 
 </div>
 </div>
@@ -893,7 +939,7 @@ std::vector&lt; <a class="el" href="classcgv_1_1media_1_1mesh_1_1simple__mesh__b
 </dl>
 <dl class="section see"><dt>See also</dt><dd><a class="el" href="classcgv_1_1media_1_1mesh_1_1simple__mesh__base.html#a116d992457d26966664db28542b423ea" title="Extract element array buffers for triangulation.">simple_mesh::extract_triangle_element_buffer()</a> for applying the sorting permutation </dd></dl>
 
-<p class="definition">Definition at line <a class="el" href="simple__mesh_8cxx_source.html#l00114">114</a> of file <a class="el" href="simple__mesh_8cxx_source.html">simple_mesh.cxx</a>.</p>
+<p class="definition">Definition at line <a class="el" href="simple__mesh_8cxx_source.html#l00115">115</a> of file <a class="el" href="simple__mesh_8cxx_source.html">simple_mesh.cxx</a>.</p>
 
 <p class="reference">References <a class="el" href="simple__mesh_8h_source.html#l00140">get_nr_groups()</a>, and <a class="el" href="simple__mesh_8h_source.html#l00128">get_nr_materials()</a>.</p>
 
@@ -919,9 +965,9 @@ std::vector&lt; <a class="el" href="classcgv_1_1media_1_1mesh_1_1simple__mesh__b
 <p>Create a new empty face to which new corners are added. </p>
 <dl class="section return"><dt>Returns</dt><dd>The index to the newly created face. </dd></dl>
 
-<p class="definition">Definition at line <a class="el" href="simple__mesh_8cxx_source.html#l00077">77</a> of file <a class="el" href="simple__mesh_8cxx_source.html">simple_mesh.cxx</a>.</p>
+<p class="definition">Definition at line <a class="el" href="simple__mesh_8cxx_source.html#l00078">78</a> of file <a class="el" href="simple__mesh_8cxx_source.html">simple_mesh.cxx</a>.</p>
 
-<p class="reference">Referenced by <a class="el" href="simple__mesh_8cxx_source.html#l00776">cgv::media::mesh::simple_mesh&lt; T &gt;::ambo()</a>, <a class="el" href="simple__mesh_8cxx_source.html#l00893">cgv::media::mesh::simple_mesh&lt; T &gt;::dual()</a>, <a class="el" href="gltf__support_8cxx_source.html#l00328">cgv::render::extract_mesh()</a>, <a class="el" href="simple__mesh_8cxx_source.html#l00925">cgv::media::mesh::simple_mesh&lt; T &gt;::gyro()</a>, <a class="el" href="simple__mesh_8cxx_source.html#l00971">cgv::media::mesh::simple_mesh&lt; T &gt;::join()</a>, <a class="el" href="gl__implicit__surface__drawable__base_8cxx_source.html#l00223">cgv::render::gl::gl_implicit_surface_drawable_base::new_polygon()</a>, <a class="el" href="simple__mesh_8cxx_source.html#l00848">cgv::media::mesh::simple_mesh&lt; T &gt;::snub()</a>, and <a class="el" href="simple__mesh_8cxx_source.html#l00812">cgv::media::mesh::simple_mesh&lt; T &gt;::truncate()</a>.</p>
+<p class="reference">Referenced by <a class="el" href="simple__mesh_8cxx_source.html#l01001">cgv::media::mesh::simple_mesh&lt; T &gt;::ambo()</a>, <a class="el" href="simple__mesh_8cxx_source.html#l01118">cgv::media::mesh::simple_mesh&lt; T &gt;::dual()</a>, <a class="el" href="gltf__support_8cxx_source.html#l00328">cgv::render::extract_mesh()</a>, <a class="el" href="simple__mesh_8cxx_source.html#l01150">cgv::media::mesh::simple_mesh&lt; T &gt;::gyro()</a>, <a class="el" href="simple__mesh_8cxx_source.html#l01196">cgv::media::mesh::simple_mesh&lt; T &gt;::join()</a>, <a class="el" href="gl__implicit__surface__drawable__base_8cxx_source.html#l00223">cgv::render::gl::gl_implicit_surface_drawable_base::new_polygon()</a>, <a class="el" href="simple__mesh_8cxx_source.html#l01073">cgv::media::mesh::simple_mesh&lt; T &gt;::snub()</a>, and <a class="el" href="simple__mesh_8cxx_source.html#l01037">cgv::media::mesh::simple_mesh&lt; T &gt;::truncate()</a>.</p>
 
 </div>
 </div>

@@ -16,7 +16,7 @@ var classcgv_1_1media_1_1mesh_1_1simple__mesh =
     [ "clear", "classcgv_1_1media_1_1mesh_1_1simple__mesh.html#a88800d4267ac06965741621cda81cc63", null ],
     [ "compute_box", "classcgv_1_1media_1_1mesh_1_1simple__mesh.html#a79169bcefbfd96a8a38f6093248b2a35", null ],
     [ "compute_face_center", "classcgv_1_1media_1_1mesh_1_1simple__mesh.html#a9e2e018c1e31ec4ccad8675365e7acd0", null ],
-    [ "compute_face_normal", "classcgv_1_1media_1_1mesh_1_1simple__mesh.html#aff38676773ca954956e3156c60030b42", null ],
+    [ "compute_face_normal", "classcgv_1_1media_1_1mesh_1_1simple__mesh.html#ae3097c6963632a119ca7211a0e62671d", null ],
     [ "compute_face_normals", "classcgv_1_1media_1_1mesh_1_1simple__mesh.html#a0fefda5b4672d686ce645774f5d9530f", null ],
     [ "compute_face_tangents", "classcgv_1_1media_1_1mesh_1_1simple__mesh.html#a6c144f392baf70203d61b16741315f6d", null ],
     [ "compute_normal", "classcgv_1_1media_1_1mesh_1_1simple__mesh.html#adfd6b7c5dc4c03246236e3dc94205f1e", null ],
