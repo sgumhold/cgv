@@ -394,11 +394,11 @@ bool gl_context::configure_gl()
 	std::string vendor_string(reinterpret_cast<const char*>(vendor_c_string));
 	vendor_string = cgv::utils::to_upper(vendor_string);
 	
-	if (vendor_string.find("NVIDIA"))
+	if (vendor_string.find("NVIDIA") != std::string::npos)
 		gpu_vendor = GPU_VENDOR_NVIDIA;
-	else if (vendor_string.find("INTEL"))
+	else if (vendor_string.find("INTEL") != std::string::npos)
 		gpu_vendor = GPU_VENDOR_INTEL;
-	else if (vendor_string.find("AMD") || vendor_string.find("ATI"))
+	else if (vendor_string.find("AMD") != std::string::npos || vendor_string.find("ATI") != std::string::npos)
 		gpu_vendor = GPU_VENDOR_AMD;
 	
 #ifdef _DEBUG
