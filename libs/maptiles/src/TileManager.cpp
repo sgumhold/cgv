@@ -1,95 +1,229 @@
 #include "TileManager.h"
 #include "utils.h"
+#include "WGS84toCartesian.hpp"
 
-TileManager::TileManager()
-: lat(0), lon(0), altitude(0), config(nullptr) {}
+TileManager::TileManager() :	cam_lat(0), cam_lon(0), altitude(0), config(nullptr), 
+								frustum_min_lat(0), frustum_max_lat(0), frustum_min_lon(0), 
+								frustum_max_lon(0), min_extent({0, 0}), max_extent({0, 0})
+{
+}
+
+TileManager::~TileManager() 
+{ 
+	config = nullptr;
+}
 
 void TileManager::Init(double _lat, double _lon, double _altitude, GlobalConfig* _conf)
-{ 
-	lat = _lat;
-	lon = _lon;
+{
+	cam_lat = _lat;
+	cam_lon = _lon;
 	altitude = _altitude;
 	config = _conf;
 	tile_manager_data.Init(config);
 }
 
-void TileManager::ReInit(double _lat, double _lon, double _altitude, GlobalConfig* _conf) 
-{ 
-	while (!last_update_finsihed)
-	{
-
-	}
-
-	lat = _lat;
-	lon = _lon;
+void TileManager::ReInit(double _lat, double _lon, double _altitude, GlobalConfig* _conf)
+{
+	cam_lat = _lat;
+	cam_lon = _lon;
 	altitude = _altitude;
 	config = _conf;
 
 	active_raster_tile.clear();
-	background_raster_tile.clear();
 	active_tile3D.clear();
-	background_tile3D.clear();
-
 }
 
-void TileManager::Finalize() 
-{ 
-	//active_raster_tiles.clear();
-	//neighbour_set_raster_tile.clear();
-
+void TileManager::Finalize()
+{
+	// active_raster_tiles.clear();
+	// neighbour_set_raster_tile.clear();
 }
 
-void TileManager::Update(cgv::render::context& ctx) 
+std::map<Tile3DIndex, Tile3DRender>& TileManager::GetActiveTile3Ds()
 { 
-	//std::cout << "Moved: " << moved << " | Last Update Finished: " << last_update_finsihed << "\n";
-	//std::cout << "Queues Empty: " << AllQueuesEmpty() << " | All Tiles Processed: " << AllBackgroundTilesProcessed()
-	//		  << "\n";
-	
+	return active_tile3D;
+}
+
+std::map<RasterTileIndex, RasterTileRender>& TileManager::GetActiveRasterTiles()
+{
+	return active_raster_tile;
+}
+
+void TileManager::Update(cgv::render::context& ctx)
+{
 	AddRasterTiles(ctx);
 	AddTile3D(ctx);
 
+	min_extent = {90, 180};
+	max_extent = {-90, -180};
 
-	if (AllQueuesEmpty() && AllBackgroundTilesProcessed() && !last_update_finsihed)
+	if (config->FrustumBasedTileGeneration)
 	{
-		std::swap(active_tile3D, background_tile3D);
-		std::swap(active_raster_tile, background_raster_tile);
-		last_update_finsihed = true;
+		GenerateRasterTileFrustumNeighbours();
+		GenerateTile3DFrustumNeighbours();
+	}
+	else
+	{
+		GenerateRasterTileNeighbours();
+		GenerateTile3DNeighbours();
 	}
 
-	//if (!moved)
-		//return;
-
-	if (!last_update_finsihed)
-		return;
-
-	//moved = false;
-	//last_update_finsihed = false;
-
-	GenerateRasterTileNeighbours(); 
-	GenerateTile3DNeighbours();
 	RemoveRasterTiles();
 	RemoveTile3Ds();
 	PruneNeighbourSetRasterTile();
 	PruneNeighbourSetTile3D();
 	GetRasterTileNeighbours();
 	GetTile3DNeighbours();
-
 }
 
-void TileManager::SetPosition(double _lat, double _lon, double _alt) 
-{ 
-	if (!moved && lat - _lat < EPSILON && lon - _lon < EPSILON && GetZoom() == GetZoomAtAltitude(_alt))
-	{
-		//return;
-	}
-
-	lat = _lat;
-	lon = _lon;
+void TileManager::SetPosition(double _lat, double _lon, double _alt)
+{
+	cam_lat = _lat;
+	cam_lon = _lon;
 	altitude = _alt;
-	moved = true;
 }
 
-void TileManager::GenerateRasterTileNeighbours() 
+std::pair<std::array<double, 2>, std::array<double, 2>> TileManager::GetExtent()
+{
+	return std::pair<std::array<double, 2>, std::array<double, 2>>(min_extent, max_extent);
+}
+
+void TileManager::GenerateRasterTileFrustumNeighbours() 
+{
+	int zoom = (int)GetZoom();
+
+	int camX = long2tilex(cam_lon, zoom);
+	int camY = lat2tiley(cam_lat, zoom);
+
+	int minX = long2tilex(frustum_min_lon, zoom);
+	int maxY = lat2tiley(frustum_min_lat, zoom);
+	int maxX = long2tilex(frustum_max_lon, zoom);
+	int minY = lat2tiley(frustum_max_lat, zoom);
+
+	// Number of tiles at the current zoom level
+	int nTiles = std::exp2(zoom);
+
+	int count = 0;
+
+	for (int i = minX; i <= maxX; i++) {
+		// check if we are out of bounds
+		if (i < 0 || i >= nTiles || std::abs(i - camX) > config->FrustumRasterTilesCount)
+			continue;
+		for (int j = minY; j <= maxY; j++) {
+			// check if we are out of bounds
+			if (j < 0 || j >= nTiles || std::abs(j - camY) > config->FrustumRasterTilesCount)
+				continue;
+
+			bool isVisible = true;
+			cgv::math::fvec<float, 3> tileMin, tileMax;
+
+			double lat_min = tiley2lat(j, zoom);
+			double lat_max = tiley2lat(j + 1, zoom);
+			double lon_min = tilex2long(i, zoom);
+			double lon_max = tilex2long(i + 1, zoom);
+
+			std::array<double, 2> min =
+				  wgs84::toCartesian({config->ReferencePoint.lat, config->ReferencePoint.lon}, {lat_min, lon_min});
+			std::array<double, 2> max = wgs84::toCartesian({config->ReferencePoint.lat, config->ReferencePoint.lon},
+														   {lat_max, lon_max});
+
+			tileMin[0] = min[0];
+			tileMin[1] = 0.0f;
+			tileMin[2] = -min[1];
+
+			tileMax[0] = max[0];
+			tileMax[1] = 1.0f;
+			tileMax[2] = -max[1];
+
+			for (int i = 0; i < 6; i++) {
+				if (IsBoxCompletelyBehindPlane(tileMin, tileMax, frustum_planes[i])) {
+					isVisible = false;
+					break;
+				}
+			}
+
+			if (isVisible) {
+				if (lat_min < min_extent[0])
+					min_extent[0] = lat_min;
+				if (lat_max > max_extent[0])
+					max_extent[0] = lat_max;
+				if (lon_min < min_extent[1])
+					min_extent[1] = lon_min;
+				if (lon_max > max_extent[1])
+					max_extent[1] = lon_max;
+
+				RasterTileIndex index = {zoom, i, j};
+				neighbour_set_raster_tile.insert(index);
+				count++;
+			}
+
+		}
+	}
+	//std::cout << "Raster Tile Count: " << count << std::endl;
+}
+
+void TileManager::GenerateTile3DFrustumNeighbours() 
+{
+	double size = config->Tile3DSize;
+
+	int count = 0;
+
+	for (double lat = frustum_min_lat; lat <= frustum_max_lat; lat+=size) {
+		// check if we are out of bounds
+		if (lat < -89 || lat >= 89 || std::abs(lat - cam_lat) > config->FrustumTile3DMaxDistance)
+			continue;
+		for (double lon = frustum_min_lon; lon <= frustum_max_lon; lon+=size) {
+			if (lon < -180 || lon >= 180 || std::abs(lon - cam_lon) > config->FrustumTile3DMaxDistance)
+				continue;
+
+			bool isVisible = true;
+			cgv::math::fvec<float, 3> tileMin, tileMax;
+
+			std::array<double, 2> min = wgs84::toCartesian({config->ReferencePoint.lat, config->ReferencePoint.lon}, {lat, lon});
+			std::array<double, 2> max = wgs84::toCartesian({config->ReferencePoint.lat, config->ReferencePoint.lon}, {lat + size, lon + size});
+			
+			tileMin[0] = min[0];
+			tileMin[1] = 0.0f;
+			tileMin[2] = -min[1];
+
+			tileMax[0] = max[0];
+			tileMax[1] = 100.0f;
+			tileMax[2] = -max[1];
+
+			for (int i = 0; i < 6; i++)
+			{
+				if (IsBoxCompletelyBehindPlane(tileMin, tileMax, frustum_planes[i]))
+				{
+					isVisible = false;
+					break;
+				}
+			}
+
+			if (isVisible)
+			{
+				// hack to get around floating point precision issues for indexing tiles
+				lat = (double)llround(lat * (1/size)) * size;
+				lon = (double)llround(lon * (1/size)) * size;
+				
+				if (lat < min_extent[0])
+					min_extent[0] = lat;
+				if (lat + size > max_extent[0])
+					max_extent[0] = lat + size;
+				if (lon < min_extent[1])
+					min_extent[1] = lon;
+				if (lon + size > max_extent[1])
+					max_extent[1] = lon + size;
+
+				Tile3DIndex index = {lat, lon};
+				neighbour_set_tile3D.insert(index);
+				count++;
+			}
+		}
+	}
+	//std::cout << "3D Tile Count: " << count << std::endl;
+}
+
+void TileManager::GenerateRasterTileNeighbours()
 {
 	int k = config->NeighbourhoodFetchSizeRasterTile;
 
@@ -98,8 +232,8 @@ void TileManager::GenerateRasterTileNeighbours()
 
 	int zoom = (int)GetZoom();
 
-	centerX = long2tilex(lon, zoom);
-	centerY = lat2tiley(lat, zoom);
+	centerX = long2tilex(cam_lon, zoom);
+	centerY = lat2tiley(cam_lat, zoom);
 	// Number of tiles at the current zoom level
 	int nTiles = std::exp2(zoom);
 
@@ -111,24 +245,35 @@ void TileManager::GenerateRasterTileNeighbours()
 			// check if we are out of bounds
 			if ((j + centerY) < 0 || (j + centerY) >= nTiles)
 				continue;
+			
+			
+			auto pos_min = wgs84::fromCartesian({config->ReferencePoint.lat, config->ReferencePoint.lon},
+												{tiley2lat(j + centerY, zoom), tilex2long(i + centerX, zoom)});
+			auto pos_max = wgs84::fromCartesian({config->ReferencePoint.lat, config->ReferencePoint.lon},
+												{tiley2lat(j + centerY + 1, zoom), tilex2long(i + centerX + 1, zoom)});
+
+			if (pos_min[0] < min_extent[0])
+				min_extent[0] = pos_min[0];
+			if (pos_max[0] > max_extent[0])
+				max_extent[0] = pos_max[0];
+			if (pos_min[1] < min_extent[1])
+				min_extent[1] = pos_min[1];
+			if (pos_max[1] > max_extent[1])
+				max_extent[1] = pos_max[1];
 
 			RasterTileIndex index = {zoom, i + centerX, j + centerY};
-			std::lock_guard<std::mutex> lock(m_MutexNeighbourSetRasterTiles);
 			neighbour_set_raster_tile.insert(index);
 		}
 	}
 }
 
-
-void TileManager::GenerateTile3DNeighbours() 
-{ 
-	neighbour_set_tile3D.clear();
-
+void TileManager::GenerateTile3DNeighbours()
+{
 	int k = config->NeighbourhoodFetchSizeTile3D;
 	double size = config->Tile3DSize;
 
-	double centerLat = std::floor(lat / size) * size;
-	double centerLon = std::floor(lon / size) * size;
+	double centerLat = std::floor(cam_lat / size) * size;
+	double centerLon = std::floor(cam_lon / size) * size;
 
 	for (int i = -k; i <= k; i++) {
 		// check if we are out of bounds
@@ -141,20 +286,31 @@ void TileManager::GenerateTile3DNeighbours()
 			double _lat = i * size + centerLat;
 			double _lon = j * size + centerLon;
 
+			_lat = (double)llround(_lat * (1 / size)) * size;
+			_lon = (double)llround(_lon * (1 / size)) * size;
+
+			if (_lat < min_extent[0])
+				min_extent[0] = _lat;
+			if (_lat + size > max_extent[0])
+				max_extent[0] = _lat + size;
+			if (_lon < min_extent[1])
+				min_extent[1] = _lon;
+			if (_lon + size > max_extent[1])
+				max_extent[1] = _lon + size;
+
 			Tile3DIndex index = {_lat, _lon};
-			std::lock_guard<std::mutex> lock(m_MutexNeighbourSetTile3Ds);
 			neighbour_set_tile3D.insert(index);
 		}
 	}
 }
 
-void TileManager::RemoveRasterTiles() 
+void TileManager::RemoveRasterTiles()
 {
-	int gridSize = config->NeighbourhoodFetchSizeRasterTile * 2 + 1;
+	int size = GetActiveRasterTiles().size();
 
 	// Create a vector that will store the indices that need to be removed
 	std::vector<RasterTileIndex> indices;
-	indices.resize(gridSize * gridSize);
+	indices.resize(size);
 
 	// Get the indices to be removed from the queue
 	for (auto const& element : queue_raster_tiles) {
@@ -172,27 +328,27 @@ void TileManager::RemoveRasterTiles()
 	// clear the indices
 	indices.clear();
 
-	// Get the indices to be removed from the background list 
-	for (auto const& element : background_raster_tile) {
+	// Get the indices to be removed from the background list
+	for (auto const& element : active_raster_tile) {
 		if (neighbour_set_raster_tile.find(element.first) == neighbour_set_raster_tile.end()) {
 			indices.push_back(element.first);
 		}
 	}
 
 	// Remove Raster Tiles from the background list
-	std::lock_guard<std::mutex> lockActive(m_MutexBackgroundRasterTiles);
+	std::lock_guard<std::mutex> lockActive(m_MutexActiveRasterTiles);
 	for (auto& index : indices) {
-		background_raster_tile.erase(index);
+		active_raster_tile.erase(index);
 	}
 }
 
-void TileManager::RemoveTile3Ds() 
+void TileManager::RemoveTile3Ds()
 {
-	int gridSize = config->NeighbourhoodFetchSizeTile3D * 2 + 1;
+	int size = GetActiveTile3Ds().size();
 
 	// Create a vector that will store the indices that need to be removed
 	std::vector<Tile3DIndex> indices;
-	indices.resize(gridSize * gridSize);
+	indices.resize(size);
 
 	// Get the indices to be removed from the queue
 	for (auto const& element : queue_tile3Ds) {
@@ -211,20 +367,21 @@ void TileManager::RemoveTile3Ds()
 	indices.clear();
 
 	// Get the indices to be removed from the background list
-	for (auto const& element : background_tile3D) {
+	for (auto const& element : active_tile3D) {
 		if (neighbour_set_tile3D.find(element.first) == neighbour_set_tile3D.end()) {
 			indices.push_back(element.first);
+			//std::cout << "Removing Tile: (" << element.first.lat << ", " << element.first.lon << ")\n";
 		}
 	}
 
 	// Remove Raster Tiles from the background list
-	std::lock_guard<std::mutex> lockActive(m_MutexBackgroundTile3Ds);
+	std::lock_guard<std::mutex> lockActive(m_MutexActiveTile3Ds);
 	for (auto& index : indices) {
-		background_tile3D.erase(index);
+		active_tile3D.erase(index);
 	}
 }
 
-void TileManager::PruneNeighbourSetRasterTile() 
+void TileManager::PruneNeighbourSetRasterTile()
 {
 	std::vector<RasterTileIndex> indices;
 
@@ -232,19 +389,19 @@ void TileManager::PruneNeighbourSetRasterTile()
 		if (queue_raster_tiles.find(element) != queue_raster_tiles.end()) {
 			indices.push_back(element);
 		}
-		else if (background_raster_tile.find(element) != background_raster_tile.end()) {
+		else if (active_raster_tile.find(element) != active_raster_tile.end()) {
+			indices.push_back(element);
+		}
+		else if (requested_raster_tile.find(element) != requested_raster_tile.end())
+		{
 			indices.push_back(element);
 		}
 	}
 
 	// Remove already present tiles from the neighbour set
-	std::lock_guard<std::mutex> lockActive(m_MutexNeighbourSetRasterTiles);
 	for (auto& index : indices) {
 		neighbour_set_raster_tile.erase(index);
 	}
-
-	if (neighbour_set_raster_tile.size() > 0)
-		last_update_finsihed = false;
 }
 
 void TileManager::PruneNeighbourSetTile3D()
@@ -255,131 +412,166 @@ void TileManager::PruneNeighbourSetTile3D()
 		if (queue_tile3Ds.find(element) != queue_tile3Ds.end()) {
 			indices.push_back(element);
 		}
-		else if (background_tile3D.find(element) != background_tile3D.end()) {
+		else if (active_tile3D.find(element) != active_tile3D.end()) {
+			indices.push_back(element);
+		}
+		else if (requested_tile3D.find(element) != requested_tile3D.end()) {
 			indices.push_back(element);
 		}
 	}
 
 	// Remove already present tiles from the neighbour set
-	std::lock_guard<std::mutex> lockActive(m_MutexNeighbourSetTile3Ds);
 	for (auto& index : indices) {
 		neighbour_set_tile3D.erase(index);
 	}
-
-	if (neighbour_set_tile3D.size() > 0)
-		last_update_finsihed = false;
 }
 
-void TileManager::GetRasterTileNeighbours() 
+void TileManager::GetRasterTileNeighbours()
 {
 	for (const RasterTileIndex& itr : neighbour_set_raster_tile) {
 		const RasterTileIndex& index = itr;
 
 		std::thread t(&TileManager::AddRasterTileToQueue, this, index);
 		t.detach();
+		requested_raster_tile.insert(index);
 	}
 
 	// Once the request is made, remove the index from the set
-	std::lock_guard<std::mutex> lock(m_MutexNeighbourSetRasterTiles);
 	neighbour_set_raster_tile.clear();
 }
 
-
-void TileManager::GetTile3DNeighbours() 
-{ 
-	 for (const Tile3DIndex& itr : neighbour_set_tile3D) {
+void TileManager::GetTile3DNeighbours()
+{
+	for (const Tile3DIndex& itr : neighbour_set_tile3D) {
 		const Tile3DIndex& index = itr;
 
 		std::thread t(&TileManager::AddTile3DToQueue, this, index);
 		t.detach();
-	 }
+		requested_tile3D.insert(index);
+	}
 
 	// Once the request is made, remove the index from the set
-	std::lock_guard<std::mutex> lock(m_MutexNeighbourSetTile3Ds);
 	neighbour_set_tile3D.clear();
-
 }
 
-void TileManager::AddRasterTileToQueue(RasterTileIndex index) 
+void TileManager::AddRasterTileToQueue(RasterTileIndex index)
 {
 	RasterTileData tileData = tile_manager_data.GetRasterTile(index.zoom, index.x, index.y);
 	std::lock_guard<std::mutex> lock(m_MutexQueueRasterTiles);
 	queue_raster_tiles[index] = tileData;
-	downloaded();
+	requested_raster_tile.erase(index);
+	
+	// Send the signal that the tile was downloaded
+	tile_downloaded();
 }
 
-void TileManager::AddTile3DToQueue(Tile3DIndex index) 
+void TileManager::AddTile3DToQueue(Tile3DIndex index)
 {
 	Tile3DData tileData = tile_manager_data.GetTile3D(index.lat, index.lon);
 	std::lock_guard<std::mutex> lock(m_MutexQueueTile3Ds);
 	queue_tile3Ds[index] = tileData;
-	downloaded();
+	requested_tile3D.erase(index);
+
+	// Send the signal that the tile was downloaded
+	tile_downloaded();
 }
 
-void TileManager::AddRasterTiles(cgv::render::context& ctx) 
+void TileManager::AddRasterTiles(cgv::render::context& ctx)
 {
 	std::lock_guard<std::mutex> lockQueue(m_MutexQueueRasterTiles);
 	if (queue_raster_tiles.empty()) {
 		return;
 	}
 
-	std::lock_guard<std::mutex> lockActive(m_MutexBackgroundRasterTiles);
+	std::lock_guard<std::mutex> lockActive(m_MutexActiveRasterTiles);
 	while (!queue_raster_tiles.empty()) {
 		auto& element = *(queue_raster_tiles.begin());
 		RasterTileRender tile(ctx, element.second, config->ReferencePoint.lat, config->ReferencePoint.lon);
 
-		background_raster_tile[element.first] = tile;
+		active_raster_tile[element.first] = tile;
 
 		queue_raster_tiles.erase(element.first);
 	}
 }
 
-
-void TileManager::AddTile3D(cgv::render::context& ctx) 
+void TileManager::AddTile3D(cgv::render::context& ctx)
 {
 	std::lock_guard<std::mutex> lockQueue(m_MutexQueueTile3Ds);
 	if (queue_tile3Ds.empty()) {
 		return;
 	}
 
-	
-	std::lock_guard<std::mutex> lockActive(m_MutexBackgroundTile3Ds);
-	while (!queue_tile3Ds.empty())
-	{
+	std::lock_guard<std::mutex> lockActive(m_MutexActiveTile3Ds);
+	while (!queue_tile3Ds.empty()) {
 		auto const& element = *(queue_tile3Ds.begin());
 		Tile3DRender tile(ctx, element.second, config->ReferencePoint.lat, config->ReferencePoint.lon);
 
-		background_tile3D[element.first] = tile;
+		active_tile3D[element.first] = tile;
 
-		queue_tile3Ds.erase(element.first);	
+		queue_tile3Ds.erase(element.first);
 	}
-	
 }
 
-bool TileManager::AllQueuesEmpty() 
-{ 
-	if (!neighbour_set_raster_tile.empty())
-		return false;
-	if (!neighbour_set_tile3D.empty())
-		return false;
-	if (!queue_raster_tiles.empty())
-		return false;
-	if (!queue_tile3Ds.empty())
-		return false;
-	return true; 
-}
-
-bool TileManager::AllBackgroundTilesProcessed() 
+bool TileManager::IsBoxCompletelyBehindPlane(const cgv::math::fvec<float, 3>& boxMin, const cgv::math::fvec<float, 3>& boxMax,
+								const cgv::math::fvec<float, 4>& plane)
 {
-	int tile3DGridSize = config->NeighbourhoodFetchSizeTile3D * 2 + 1;
-	if (background_tile3D.size() != tile3DGridSize * tile3DGridSize)
-		return false;
-
-	int rasterTileGridSize = config->NeighbourhoodFetchSizeRasterTile * 2 + 1;
-	if (background_raster_tile.size() != rasterTileGridSize * rasterTileGridSize)
-		return false;
-
-	return true;
+	return cgv::math::dot(plane, cgv::math::fvec<float, 4>(boxMin.x(), boxMin.y(), boxMin.z(), 1)) < 0 &&
+		   cgv::math::dot(plane, cgv::math::fvec<float, 4>(boxMin.x(), boxMin.y(), boxMax.z(), 1)) < 0 &&
+		   cgv::math::dot(plane, cgv::math::fvec<float, 4>(boxMin.x(), boxMax.y(), boxMin.z(), 1)) < 0 &&
+		   cgv::math::dot(plane, cgv::math::fvec<float, 4>(boxMin.x(), boxMax.y(), boxMax.z(), 1)) < 0 &&
+		   cgv::math::dot(plane, cgv::math::fvec<float, 4>(boxMax.x(), boxMin.y(), boxMin.z(), 1)) < 0 &&
+		   cgv::math::dot(plane, cgv::math::fvec<float, 4>(boxMax.x(), boxMin.y(), boxMax.z(), 1)) < 0 &&
+		   cgv::math::dot(plane, cgv::math::fvec<float, 4>(boxMax.x(), boxMax.y(), boxMin.z(), 1)) < 0 &&
+		   cgv::math::dot(plane, cgv::math::fvec<float, 4>(boxMax.x(), boxMax.y(), boxMin.z(), 1)) < 0;
 }
 
+void TileManager::CalculateViewFrustum(const cgv::mat4& mvp) 
+{
+	frustum_planes[0] = (mvp.row(3) + mvp.row(0));
+	frustum_planes[1] = (mvp.row(3) - mvp.row(0));
+	frustum_planes[2] = (mvp.row(3) + mvp.row(1));
+	frustum_planes[3] = (mvp.row(3) - mvp.row(1));
+	frustum_planes[4] = (mvp.row(3) + mvp.row(2));
+	frustum_planes[5] = (mvp.row(3) - mvp.row(2));
+
+	constexpr double double_min = std::numeric_limits<double>::min();
+	constexpr double double_max = std::numeric_limits<double>::max();
+	frustum_bbox_min.set(double_max, double_max, double_max);
+	frustum_bbox_max.set(double_min, double_min, double_min);
+
+	cgv::mat4 invMvp = inv(mvp);
+
+	for (int x = -1; x <= 1; x += 2)
+		for (int y = -1; y <= 1; y += 2)
+			for (int z = -1; z <= 1; z += 2) 
+			{
+				cgv::math::fvec<double, 4> corner = invMvp * cgv::math::fvec<float, 4>((double)x, (double)y, (double)z, 1);
+				corner /= corner.w();
+				if (corner[0] < frustum_bbox_min[0])
+					frustum_bbox_min[0] = corner[0];
+				if (corner[0] > frustum_bbox_max[0])
+					frustum_bbox_max[0] = corner[0];
+				if (corner[1] < frustum_bbox_min[1])
+					frustum_bbox_min[1] = corner[1];
+				if (corner[1] > frustum_bbox_max[1])
+					frustum_bbox_max[1] = corner[1];
+				if (corner[2] < frustum_bbox_min[2])
+					frustum_bbox_min[2] = corner[2];
+				if (corner[2] > frustum_bbox_max[2])
+					frustum_bbox_max[2] = corner[2];
+			}
+
+	std::array<double, 2> frustum_min = wgs84::fromCartesian(
+		  {config->ReferencePoint.lat, config->ReferencePoint.lon}, {frustum_bbox_min[0], -frustum_bbox_max[2]});
+
+	std::array<double, 2> frustum_max = wgs84::fromCartesian({config->ReferencePoint.lat, config->ReferencePoint.lon},
+															 {frustum_bbox_max[0], -frustum_bbox_min[2]});	  
+	
+	double& size = config->Tile3DSize;
+	frustum_min_lat = std::floor(frustum_min[0] / size) * size;
+	frustum_min_lon = std::floor(frustum_min[1] / size) * size;
+	frustum_max_lat = std::ceil(frustum_max[0] / size) * size;
+	frustum_max_lon = std::ceil(frustum_max[1] / size) * size;
+
+}
 
