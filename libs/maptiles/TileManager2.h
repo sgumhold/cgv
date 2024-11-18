@@ -25,10 +25,14 @@ class MAPTILES_API TileManager2
 	void Update(cgv::render::context& ctx);
 	void SetPosition(double _lat, double _lon, double _alt);
 	
-	std::map<Tile3DIndex, Tile3DRender>& GetActiveTile3Ds() { return active_tile3D; }
-	std::map<RasterTileIndex, RasterTileRender>& GetActiveRasterTiles() { return active_raster_tile; }
+	std::map<Tile3DIndex, Tile3DRender>& GetActiveTile3Ds();
+	std::map<RasterTileIndex, RasterTileRender>& GetActiveRasterTiles();
 	
 	std::pair<std::array<double, 2>, std::array<double, 2>> GetExtent();
+
+	void CalculateViewFrustum(const cgv::mat4& mvp);
+	bool IsBoxCompletelyBehindPlane(const cgv::math::fvec<float, 3>& boxMin, const cgv::math::fvec<float, 3>& boxMax,
+									const cgv::math::fvec<float, 4>& plane);
 
 	// Signal for when a tile is downloaded. In this implmentation, this signal informs the application to post a redraw
 	cgv::signal::signal<> tile_downloaded;
@@ -49,21 +53,16 @@ class MAPTILES_API TileManager2
 	void AddRasterTiles(cgv::render::context& ctx);
 	void AddTile3D(cgv::render::context& ctx);
 
-	inline float GetZoom()
+	inline float GetZoom() const
 	{
 		return std::min(19.0f, std::log2f(40075016 * std::cos(glm::radians(cam_lat)) /
 										  (std::max(1.0, altitude)))); /*Circumference of earth = 40075016*/
 	}
-	inline float GetZoomAtAltitude(float alt)
+	inline float GetZoomAtAltitude(float alt) const
 	{
 		return std::min(19.0f, std::log2f(40075016 * std::cos(glm::radians(cam_lat)) /
 										  (std::max(1.0f, alt)))); /*Circumference of earth = 40075016*/
 	}
-
-  public:
-	void CalculateViewFrustum(const cgv::mat4& mvp);
-	bool IsBoxCompletelyBehindPlane(const cgv::math::fvec<float, 3>& boxMin, const cgv::math::fvec<float, 3>& boxMax,
-									const cgv::math::fvec<float, 4>& plane);
 
   private:
 	double cam_lat, cam_lon, altitude;

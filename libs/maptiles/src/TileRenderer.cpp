@@ -2,14 +2,18 @@
 
 #include <iostream>
 
+TileRenderer::TileRenderer() {}
+
+TileRenderer::~TileRenderer() {}
+
 void TileRenderer::Init(cgv::render::context& ctx, std::string shader_3D, std::string shader_raster)
 {
-	shader_raster_tile.build_program(ctx, "maptiles_textured.glpr");
+	shader_raster_tile.build_program(ctx, shader_raster);
 	shader_raster_tile.specify_standard_uniforms(true, false, false, true);
 	shader_raster_tile.specify_standard_vertex_attribute_names(ctx, false, false, true);
 	shader_raster_tile.allow_context_to_set_color(true);
 
-	shader_tile3D.build_program(ctx, "maptiles.glpr");
+	shader_tile3D.build_program(ctx, shader_3D);
 	shader_tile3D.specify_standard_uniforms(true, false, false, true);
 	shader_tile3D.specify_standard_vertex_attribute_names(ctx, true, true, false);
 	shader_tile3D.allow_context_to_set_color(true);
@@ -44,4 +48,10 @@ void TileRenderer::Draw(cgv::render::context& ctx, Tile3DRender& tile)
 
 	tile.vertex_array.disable(ctx);
 	shader_tile3D.disable(ctx);
+}
+
+void TileRenderer::Finalize(cgv::render::context& ctx) 
+{ 
+	shader_raster_tile.destruct(ctx);
+	shader_tile3D.destruct(ctx);
 }

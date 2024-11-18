@@ -29,7 +29,7 @@ struct GlobalConfig
 	// when using frustum based tile generation
 	double FrustumTile3DMaxDistance = 0.045; // in degrees
 
-	// Distance at which the tile manager will change its ReferencePoint
+	// Distance at which the tile manager will change its ReferencePoint if Auto Recentering is enabled
 	// this is required to avoid floating point precision based artifacts
 	double AutoRecenterDistance = 10000; // in meters
 
@@ -37,4 +37,6 @@ struct GlobalConfig
 	// For a neighbourhood size of n, a (n * 2 + 1) x (n * 2 + 1) grid will be fetched
 	int NeighbourhoodFetchSizeRasterTile = 1;
 	int NeighbourhoodFetchSizeTile3D = 1;
+
+	bool FrustumBasedTileGeneration = false;
 };
