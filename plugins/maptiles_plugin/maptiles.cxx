@@ -87,10 +87,9 @@ class maptiles : public cgv::app::application_plugin // inherit from application
 	}
 
 	/// The destructor.
-	virtual ~maptiles()
+	virtual ~maptiles() 
 	{}
-
-
+	
 	////
 	// Interfrace: cgv::app::application_plugin
 
@@ -108,18 +107,23 @@ class maptiles : public cgv::app::application_plugin // inherit from application
 	{ 
 		//config.ReferencePoint = {51.02596, 13.7230};
 		config.ReferencePoint = {latitude, longitude};
+		
+		config.FrustumBasedTileGeneration = true;
 
-		RasterTileRender::shader.build_program(ctx, "maptiles_textured.glpr");
+		std::string shader_raster_tile = "maptiles_textured.glpr";
+		std::string shader_tile3D = "maptiles.glpr";
+
+		RasterTileRender::shader.build_program(ctx, shader_raster_tile);
 		RasterTileRender::shader.specify_standard_uniforms(true, false, false, true);
 		RasterTileRender::shader.specify_standard_vertex_attribute_names(ctx, false, false, true);
 		RasterTileRender::shader.allow_context_to_set_color(true);
 		
-		Tile3DRender::shader.build_program(ctx, "maptiles.glpr");
+		Tile3DRender::shader.build_program(ctx, shader_tile3D);
 		Tile3DRender::shader.specify_standard_uniforms(true, false, false, true);
 		Tile3DRender::shader.specify_standard_vertex_attribute_names(ctx, true, true, false);
 		Tile3DRender::shader.allow_context_to_set_color(true);
 
-		renderer.Init(ctx);
+		renderer.Init(ctx, shader_tile3D, shader_raster_tile);
 		manager.Init(config.ReferencePoint.lat, config.ReferencePoint.lon, 10, &config);
 		connect_copy(manager.tile_downloaded, cgv::signal::rebind(this, &maptiles::tile_download_callback));
 		
@@ -155,7 +159,7 @@ class maptiles : public cgv::app::application_plugin // inherit from application
 
 	virtual void draw(cgv::render::context &ctx) override 
 	{ 
-		// We need to keep track of the x and y coordinate of the original camera matrix for recentering
+		// We need to keep track of the x and z coordinate of the original camera matrix for recentering
 		auto& original_mv = ctx.get_modelview_matrix();
 		
 		auto original_mv_inverse = inv(original_mv);
@@ -168,42 +172,23 @@ class maptiles : public cgv::app::application_plugin // inherit from application
 				inv_rotation(j, i) = original_mv(i, j);
 		inv_rotation(3, 3) = 1;
 
-		//ctx.push_modelview_matrix();
-		//ctx.set_modelview_matrix(offset * original_mv);
-		
-		
 		auto& mv = ctx.get_modelview_matrix();
-		//auto cam_pos = inv(mv) * vec4(0.0, 0.0, 0.0, 1.0);
 		
-		//hack to get rid of the (unwanted) additional offset issue when recentering
-		//auto cam_pos = inv(offset * inv_rotation * original_mv) * vec4(0.0, 0.0, 0.0, 1.0);
 		auto cam_pos = inv(inv_rotation * original_mv) * vec4(0.0, 0.0, 0.0, 1.0);
-
 
 		if (auto_recenter && (std::abs(cam_pos[0]) > config.AutoRecenterDistance || std::abs(cam_pos[2]) > config.AutoRecenterDistance))
 			recenter();
-
-		
-		//std::cout << "ModelView (OG):\n" << original_mv << std::endl;
-		//std::cout << "ModelView:\n" << mv << std::endl;
-		//std::cout << "Inverse MV:\n" << inv(mv) << std::endl;
 		
 		std::array<double, 2> cameraPosWGS84 =
 			  wgs84::fromCartesian({config.ReferencePoint.lat, config.ReferencePoint.lon}, {cam_pos[0], -cam_pos[2]});
 
 		manager.CalculateViewFrustum(ctx.get_projection_matrix() * mv);
 
-		//std::cout << "Camera: " << cam_pos << " (" << cameraPosWGS84[0] << ", " << cameraPosWGS84[1] << ")\n";
-		//std::cout << "Offset Matrix\n" << offset << std::endl;
-		//std::cout << "Offset: (" << x << ", " << y << ")\n";
-		//std::cout << "MVP (OG): \n" << ctx.get_projection_matrix() * original_mv << std::endl;
-		//std::cout << "MVP: \n" << ctx.get_projection_matrix() * mv << std::endl;
-
 		latitude = cameraPosWGS84[0];
 		longitude = cameraPosWGS84[1];
 		altitude = std::max(cam_pos[1], 1.0);
-
 		manager.SetPosition(cameraPosWGS84[0], cameraPosWGS84[1], std::max((cam_pos[1] * 0.25), 1.0));
+
 		manager.Update(ctx);
 
 		{
@@ -219,6 +204,10 @@ class maptiles : public cgv::app::application_plugin // inherit from application
 			maxp[0] = max_pos[0];
 			maxp[2] = -max_pos[1];
 			cgv::dbox3 box(minp, maxp);
+			/*
+			if (camera)
+				camera->set_scene_extent(box);
+			*/
 			camera->set_scene_extent(box);
 			
 		}
@@ -235,15 +224,12 @@ class maptiles : public cgv::app::application_plugin // inherit from application
 		if (render_tile3D) 
 		{
 			auto& tile3Ds = manager.GetActiveTile3Ds();
-			//cgv::math::fvec<double, 3> camera_pos = {cam_pos[0], cam_pos[1], cam_pos[2]};
 			for (auto& pair : tile3Ds)
 			{
 				auto& tile3D = pair.second;
 				renderer.Draw(ctx, tile3D);
 			}
 		}
-
-		//ctx.pop_modelview_matrix();
 	}
 
 	void on_set(void* member_ptr)
@@ -260,6 +246,14 @@ class maptiles : public cgv::app::application_plugin // inherit from application
 
 	void recenter() 
 	{ 
+		/*
+		if (!camera)
+		{
+			std::cout << "Cannot Recenter [Camera is not initialized].\n";
+			return;
+		}
+		*/
+
 		std::cout << "recentering at (" << latitude << ", " << longitude << ")\n";
 
 		offset(0, 3) = x;
@@ -309,7 +303,8 @@ class maptiles : public cgv::app::application_plugin // inherit from application
 						   "min=0;max=20;ticks=false");
 		add_member_control(this, "Tile 3D Distance", config.FrustumTile3DMaxDistance, "value_slider",
 						   "min=0;max=0.1;ticks=false");
-		
+		add_member_control(this, "Frustum Tile Generation", config.FrustumBasedTileGeneration, "check");
+
 		add_decorator("Re-Centering", "text", "level=3");
 		connect_copy(add_button("Re-Center")->click, cgv::signal::rebind(this, &maptiles::recenter));
 		add_member_control(this, "Auto Recenter", auto_recenter, "check");

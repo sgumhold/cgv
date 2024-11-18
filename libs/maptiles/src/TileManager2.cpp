@@ -39,6 +39,16 @@ void TileManager2::Finalize()
 	// neighbour_set_raster_tile.clear();
 }
 
+std::map<Tile3DIndex, Tile3DRender>& TileManager2::GetActiveTile3Ds()
+{ 
+	return active_tile3D;
+}
+
+std::map<RasterTileIndex, RasterTileRender>& TileManager2::GetActiveRasterTiles()
+{
+	return active_raster_tile;
+}
+
 void TileManager2::Update(cgv::render::context& ctx)
 {
 	AddRasterTiles(ctx);
@@ -47,10 +57,17 @@ void TileManager2::Update(cgv::render::context& ctx)
 	min_extent = {90, 180};
 	max_extent = {-90, -180};
 
-	//GenerateRasterTileNeighbours();
-	//GenerateTile3DNeighbours();
-	GenerateRasterTileFrustumNeighbours();
-	GenerateTile3DFrustumNeighbours();
+	if (config->FrustumBasedTileGeneration)
+	{
+		GenerateRasterTileFrustumNeighbours();
+		GenerateTile3DFrustumNeighbours();
+	}
+	else
+	{
+		GenerateRasterTileNeighbours();
+		GenerateTile3DNeighbours();
+	}
+
 	RemoveRasterTiles();
 	RemoveTile3Ds();
 	PruneNeighbourSetRasterTile();
@@ -252,8 +269,6 @@ void TileManager2::GenerateRasterTileNeighbours()
 
 void TileManager2::GenerateTile3DNeighbours()
 {
-	neighbour_set_tile3D.clear();
-
 	int k = config->NeighbourhoodFetchSizeTile3D;
 	double size = config->Tile3DSize;
 
@@ -291,11 +306,11 @@ void TileManager2::GenerateTile3DNeighbours()
 
 void TileManager2::RemoveRasterTiles()
 {
-	int gridSize = config->NeighbourhoodFetchSizeRasterTile * 2 + 1;
+	int size = GetActiveRasterTiles().size();
 
 	// Create a vector that will store the indices that need to be removed
 	std::vector<RasterTileIndex> indices;
-	indices.resize(gridSize * gridSize);
+	indices.resize(size);
 
 	// Get the indices to be removed from the queue
 	for (auto const& element : queue_raster_tiles) {
@@ -329,11 +344,11 @@ void TileManager2::RemoveRasterTiles()
 
 void TileManager2::RemoveTile3Ds()
 {
-	int gridSize = config->NeighbourhoodFetchSizeTile3D * 2 + 1;
+	int size = GetActiveTile3Ds().size();
 
 	// Create a vector that will store the indices that need to be removed
 	std::vector<Tile3DIndex> indices;
-	indices.resize(gridSize * gridSize);
+	indices.resize(size);
 
 	// Get the indices to be removed from the queue
 	for (auto const& element : queue_tile3Ds) {
