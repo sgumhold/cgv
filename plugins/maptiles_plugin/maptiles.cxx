@@ -22,7 +22,7 @@
 #include <cgv_app/application_plugin.h>
 
 // Maptiles library
-#include <maptiles/TileManager2.h>
+#include <maptiles/TileManager.h>
 #include <maptiles/TileRenderer.h>
 #include <maptiles/3rd/WGS84toCartesian/WGS84toCartesian.hpp>
 
@@ -42,7 +42,7 @@ class maptiles : public cgv::app::application_plugin // inherit from application
 {
 	typedef cgv::math::fvec<double, 4> vec4;
   protected:
-	TileManager2 manager;
+	TileManager manager;
 	TileRenderer renderer;
 	GlobalConfig config;
 
