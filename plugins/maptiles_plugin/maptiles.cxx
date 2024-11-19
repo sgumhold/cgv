@@ -107,8 +107,8 @@ class maptiles : public cgv::app::application_plugin // inherit from application
 
 	virtual bool init(cgv::render::context &ctx) override
 	{ 
-		config.ReferencePoint = {51.02596, 13.7230};
-		//config.ReferencePoint = {latitude, longitude};
+		//config.ReferencePoint = {51.02596, 13.7230};
+		config.ReferencePoint = {latitude, longitude};
 		
 		std::string shader_raster_tile = "maptiles_textured.glpr";
 		std::string shader_tile3D = "maptiles.glpr";
@@ -275,9 +275,9 @@ class maptiles : public cgv::app::application_plugin // inherit from application
 	void create_gui() override
 	{
 		add_decorator("Map Tiles GUI", "heading");
-		//add_decorator("Position", "heading", "level=3");
-		//add_member_control(this, "latitude", latitude, "value_slider", "min=-90;max=90;ticks=false");
-		//add_member_control(this, "latitude", longitude, "value_slider", "min=-90;max=90;ticks=false");
+		add_decorator("Position", "heading", "level=3");
+		add_member_control(this, "latitude", latitude, "value", "min=-90;max=90");
+		add_member_control(this, "latitude", longitude, "value", "min=-180;max=180");
 		add_decorator("Rendering", "heading", "level=3");
 		add_member_control(this, "Raster Tiles", render_raster_tile, "check");
 		add_member_control(this, "Tile 3Ds", render_tile3D, "check");
