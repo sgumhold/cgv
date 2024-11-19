@@ -32,6 +32,8 @@
 //Interfacer
 #include <maptiles_interfacer.h>
 
+maptiles* maptiles_interfacer::ptr = nullptr;
+
 //////
 //
 // Class definitions / implelentations
@@ -108,8 +110,6 @@ class maptiles : public cgv::app::application_plugin // inherit from application
 		//config.ReferencePoint = {51.02596, 13.7230};
 		config.ReferencePoint = {latitude, longitude};
 		
-		config.FrustumBasedTileGeneration = true;
-
 		std::string shader_raster_tile = "maptiles_textured.glpr";
 		std::string shader_tile3D = "maptiles.glpr";
 
@@ -127,15 +127,13 @@ class maptiles : public cgv::app::application_plugin // inherit from application
 		manager.Init(config.ReferencePoint.lat, config.ReferencePoint.lon, 10, &config);
 		connect_copy(manager.tile_downloaded, cgv::signal::rebind(this, &maptiles::tile_download_callback));
 		
-		initialize_view_ptr();
-		camera = dynamic_cast<cgv::render::stereo_view*>(view_ptr);
-		
 		return true;
 	}
 
 	virtual void init_frame(cgv::render::context& ctx) override
 	{
-		
+		if (!camera && initialize_view_ptr())
+			camera = dynamic_cast<cgv::render::stereo_view*>(view_ptr);
 	}
 
 	virtual void clear(cgv::render::context &ctx) override
@@ -246,14 +244,6 @@ class maptiles : public cgv::app::application_plugin // inherit from application
 
 	void recenter() 
 	{ 
-		/*
-		if (!camera)
-		{
-			std::cout << "Cannot Recenter [Camera is not initialized].\n";
-			return;
-		}
-		*/
-
 		std::cout << "recentering at (" << latitude << ", " << longitude << ")\n";
 
 		offset(0, 3) = x;
@@ -312,6 +302,10 @@ class maptiles : public cgv::app::application_plugin // inherit from application
 };
 
 
+
+#if CGV_FORCE_STATIC
+	//#include <maptiles_plugin_shader_inc.h>
+#endif
 
 //////
 //
