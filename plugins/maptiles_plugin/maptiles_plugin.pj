@@ -3,7 +3,7 @@ projectType="application_plugin";
 projectName="maptiles_plugin";
 projectGUID="2c5a2590-fcb9-23ad-81cf-1129200d9a42";
 addProjectDirs=[CGV_DIR."/libs", CGV_DIR."/plugins", CGV_DIR."/3rd"];
-addIncDirs=[INPUT_DIR, CGV_DIR."/libs", CGV_DIR."/libs/maptiles/3rd/glm"];
+addIncDirs=[INPUT_DIR, CGV_DIR."/libs", CGV_DIR."/libs/maptiles/3rd/glm", CGV_DIR."/build/vs143/maptiles_plugin"];
 addProjectDeps=[
 		"cgv_utils", "cgv_type", "cgv_reflect", "cgv_data", "cgv_signal", "cgv_base", "cgv_media", 
 		"cgv_gui", "cgv_render","cgv_os", "fltk", "cgv_gl", "cgv_proc", "plot", "glew", 

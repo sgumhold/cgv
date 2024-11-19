@@ -107,8 +107,8 @@ class maptiles : public cgv::app::application_plugin // inherit from application
 
 	virtual bool init(cgv::render::context &ctx) override
 	{ 
-		//config.ReferencePoint = {51.02596, 13.7230};
-		config.ReferencePoint = {latitude, longitude};
+		config.ReferencePoint = {51.02596, 13.7230};
+		//config.ReferencePoint = {latitude, longitude};
 		
 		std::string shader_raster_tile = "maptiles_textured.glpr";
 		std::string shader_tile3D = "maptiles.glpr";
@@ -304,7 +304,7 @@ class maptiles : public cgv::app::application_plugin // inherit from application
 
 
 #if CGV_FORCE_STATIC
-	//#include <maptiles_plugin_shader_inc.h>
+	#include <maptiles_plugin_shader_inc.h>
 #endif
 
 //////
