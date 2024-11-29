@@ -136,8 +136,12 @@ class maptiles : public cgv::app::application_plugin // inherit from application
 			camera = dynamic_cast<cgv::render::stereo_view*>(view_ptr);
 	}
 
-	virtual void clear(cgv::render::context &ctx) override
-	{}
+	virtual void clear(cgv::render::context &ctx) override 
+	{ 
+		RasterTileRender::shader.destruct(ctx);
+		Tile3DRender::shader.destruct(ctx);
+		renderer.Finalize(ctx);
+	}
 
 	virtual void handle_member_change(const cgv::utils::pointer_test &m) override
 	{}
