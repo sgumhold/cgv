@@ -91,7 +91,7 @@ $(document).ready(function(){initNavTree('classcgv_1_1os_1_1queued__input__threa
 </div><!--header-->
 <div class="contents">
 
-<p>Base class for system command output pipe or named pipe threads including a queue of data blocks and a separate thread  
+<p>Base class for system command output pipe or named pipe threads including a queue of data blocks, a vector storing smaller data packages and a separate thread  
  <a href="classcgv_1_1os_1_1queued__input__thread.html#details">More...</a></p>
 
 <p><code>#include &lt;<a class="el" href="pipe__thread_8h_source.html">pipe_thread.h</a>&gt;</code></p>
@@ -109,21 +109,18 @@ Inheritance diagram for cgv::os::queued_input_thread:</div>
 <table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="pub-methods"></a>
 Public Member Functions</h2></td></tr>
-<tr class="memitem:a81b43a638f12e02bb3a79c6e9e20d83d"><td class="memItemLeft" align="right" valign="top"><a id="a81b43a638f12e02bb3a79c6e9e20d83d"></a>
-&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcgv_1_1os_1_1queued__input__thread.html#a81b43a638f12e02bb3a79c6e9e20d83d">queued_input_thread</a> (bool <a class="el" href="classcgv_1_1os_1_1queued__input__thread.html#ac3f928c6c36249f779d28779bb0e69d0">is_binary</a>=true, unsigned _ms_to_wait=20)</td></tr>
-<tr class="memdesc:a81b43a638f12e02bb3a79c6e9e20d83d"><td class="mdescLeft">&#160;</td><td class="mdescRight">construct queued input thread with binary mode flag and wait time in ms used when pipe is empty <br /></td></tr>
-<tr class="separator:a81b43a638f12e02bb3a79c6e9e20d83d"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:ab2e7485b22f23d0c901ec5baaf30f650"><td class="memItemLeft" align="right" valign="top"><a id="ab2e7485b22f23d0c901ec5baaf30f650"></a>
-void&#160;</td><td class="memItemRight" valign="bottom"><b>set_block_buffer_size</b> (size_t buffer_size)</td></tr>
-<tr class="separator:ab2e7485b22f23d0c901ec5baaf30f650"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a0a9b6c9fdfecfa0597e845165783f52e"><td class="memItemLeft" align="right" valign="top"><a id="a0a9b6c9fdfecfa0597e845165783f52e"></a>
+&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcgv_1_1os_1_1queued__input__thread.html#a0a9b6c9fdfecfa0597e845165783f52e">queued_input_thread</a> (bool _is_binary, size_t _package_size, size_t _packeges_per_block, unsigned _ms_to_wait)</td></tr>
+<tr class="memdesc:a0a9b6c9fdfecfa0597e845165783f52e"><td class="mdescLeft">&#160;</td><td class="mdescRight">construct queued input thread with binary mode flag and wait time in ms used when pipe is empty <br /></td></tr>
+<tr class="separator:a0a9b6c9fdfecfa0597e845165783f52e"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a7c2ea30ef95b610381e42bc295c35c8a"><td class="memItemLeft" align="right" valign="top"><a id="a7c2ea30ef95b610381e42bc295c35c8a"></a>
 void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcgv_1_1os_1_1queued__input__thread.html#a7c2ea30ef95b610381e42bc295c35c8a">run</a> ()</td></tr>
-<tr class="memdesc:a7c2ea30ef95b610381e42bc295c35c8a"><td class="mdescLeft">&#160;</td><td class="mdescRight">continuously read from pipe and store in queue; if empty, wait in intervals of <code>ms_to_wait</code> milliseconds <br /></td></tr>
+<tr class="memdesc:a7c2ea30ef95b610381e42bc295c35c8a"><td class="mdescLeft">&#160;</td><td class="mdescRight">continuously read from pipe and store in queue; if empty, wait in intervals of ms_to_wait milliseconds <br /></td></tr>
 <tr class="separator:a7c2ea30ef95b610381e42bc295c35c8a"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:ad33f8a3d405d32536e65127e95748acb"><td class="memItemLeft" align="right" valign="top"><a id="ad33f8a3d405d32536e65127e95748acb"></a>
-bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcgv_1_1os_1_1queued__input__thread.html#ad33f8a3d405d32536e65127e95748acb">receive_block</a> (char *buffer)</td></tr>
-<tr class="memdesc:ad33f8a3d405d32536e65127e95748acb"><td class="mdescLeft">&#160;</td><td class="mdescRight">if <a class="el" href="classcgv_1_1os_1_1queued__input__thread.html#ad68eec45f64157dc31e4794f06310d66" title="call this to indicate no more data will come">done()</a> had not been called, read a data block from the queue; can fail if no data or <a class="el" href="classcgv_1_1os_1_1queued__input__thread.html#ad68eec45f64157dc31e4794f06310d66" title="call this to indicate no more data will come">done()</a> was called <br /></td></tr>
-<tr class="separator:ad33f8a3d405d32536e65127e95748acb"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a2fecff057c2b089963552b1fe097c013"><td class="memItemLeft" align="right" valign="top"><a id="a2fecff057c2b089963552b1fe097c013"></a>
+bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcgv_1_1os_1_1queued__input__thread.html#a2fecff057c2b089963552b1fe097c013">pop_data_block</a> (char *buffer)</td></tr>
+<tr class="memdesc:a2fecff057c2b089963552b1fe097c013"><td class="mdescLeft">&#160;</td><td class="mdescRight">if <a class="el" href="classcgv_1_1os_1_1queued__input__thread.html#ad68eec45f64157dc31e4794f06310d66" title="call this to indicate no more data will come">done()</a> had not been called, read a data block from the queue; can fail if no data or <a class="el" href="classcgv_1_1os_1_1queued__input__thread.html#ad68eec45f64157dc31e4794f06310d66" title="call this to indicate no more data will come">done()</a> was called <br /></td></tr>
+<tr class="separator:a2fecff057c2b089963552b1fe097c013"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a771d403912fc60d99c1c5764396d1976"><td class="memItemLeft" align="right" valign="top"><a id="a771d403912fc60d99c1c5764396d1976"></a>
 size_t&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcgv_1_1os_1_1queued__input__thread.html#a771d403912fc60d99c1c5764396d1976">get_nr_blocks</a> () const</td></tr>
 <tr class="memdesc:a771d403912fc60d99c1c5764396d1976"><td class="mdescLeft">&#160;</td><td class="mdescRight">returns the number of blocks in the queue of not yet read data <br /></td></tr>
@@ -173,10 +170,14 @@ Protected Member Functions</h2></td></tr>
 virtual bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcgv_1_1os_1_1queued__input__thread.html#a394ccd58255c66dff228182c96045c81">connect_to_source</a> ()=0</td></tr>
 <tr class="memdesc:a394ccd58255c66dff228182c96045c81"><td class="mdescLeft">&#160;</td><td class="mdescRight">to be implemented in derived classes <br /></td></tr>
 <tr class="separator:a394ccd58255c66dff228182c96045c81"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a625fd2d8adb5b9ee775ff0e62866713f"><td class="memItemLeft" align="right" valign="top"><a id="a625fd2d8adb5b9ee775ff0e62866713f"></a>
-virtual size_t&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcgv_1_1os_1_1queued__input__thread.html#a625fd2d8adb5b9ee775ff0e62866713f">read_block_from_pipe</a> (char *buffer)=0</td></tr>
-<tr class="memdesc:a625fd2d8adb5b9ee775ff0e62866713f"><td class="mdescLeft">&#160;</td><td class="mdescRight">to be implemented in derived classes <br /></td></tr>
-<tr class="separator:a625fd2d8adb5b9ee775ff0e62866713f"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a3405c9bca673dfc072c36619b79f06f9"><td class="memItemLeft" align="right" valign="top"><a id="a3405c9bca673dfc072c36619b79f06f9"></a>
+virtual size_t&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcgv_1_1os_1_1queued__input__thread.html#a3405c9bca673dfc072c36619b79f06f9">read_package_from_pipe</a> (char *buffer, size_t <a class="el" href="classcgv_1_1os_1_1queued__input__thread.html#a1194608605933ccc4b3cb10031dd2332">package_size</a>)=0</td></tr>
+<tr class="memdesc:a3405c9bca673dfc072c36619b79f06f9"><td class="mdescLeft">&#160;</td><td class="mdescRight">to be implemented in derived classes <br /></td></tr>
+<tr class="separator:a3405c9bca673dfc072c36619b79f06f9"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:affdfc42f4014c6bcf8fd98f5c4c7193f"><td class="memItemLeft" align="right" valign="top"><a id="affdfc42f4014c6bcf8fd98f5c4c7193f"></a>
+virtual void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcgv_1_1os_1_1queued__input__thread.html#affdfc42f4014c6bcf8fd98f5c4c7193f">move_packages_to_data_blocks</a> ()</td></tr>
+<tr class="memdesc:affdfc42f4014c6bcf8fd98f5c4c7193f"><td class="mdescLeft">&#160;</td><td class="mdescRight">combine the packages to a data block and push it to the queue <br /></td></tr>
+<tr class="separator:affdfc42f4014c6bcf8fd98f5c4c7193f"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a32619322e0c6826ff62fa879e9e726fa"><td class="memItemLeft" align="right" valign="top"><a id="a32619322e0c6826ff62fa879e9e726fa"></a>
 virtual void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcgv_1_1os_1_1queued__input__thread.html#a32619322e0c6826ff62fa879e9e726fa">close</a> ()=0</td></tr>
 <tr class="memdesc:a32619322e0c6826ff62fa879e9e726fa"><td class="mdescLeft">&#160;</td><td class="mdescRight">to be implemented in derived classes <br /></td></tr>
@@ -197,18 +198,34 @@ bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="clas
 bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcgv_1_1os_1_1queued__input__thread.html#ac3f928c6c36249f779d28779bb0e69d0">is_binary</a></td></tr>
 <tr class="memdesc:ac3f928c6c36249f779d28779bb0e69d0"><td class="mdescLeft">&#160;</td><td class="mdescRight">whether binary mode should be used <br /></td></tr>
 <tr class="separator:ac3f928c6c36249f779d28779bb0e69d0"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a6a4d3a885e340db19667b9a952526d60"><td class="memItemLeft" align="right" valign="top"><a id="a6a4d3a885e340db19667b9a952526d60"></a>
-size_t&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcgv_1_1os_1_1queued__input__thread.html#a6a4d3a885e340db19667b9a952526d60">block_buffer_size</a></td></tr>
-<tr class="memdesc:a6a4d3a885e340db19667b9a952526d60"><td class="mdescLeft">&#160;</td><td class="mdescRight">block size used for reading data <br /></td></tr>
-<tr class="separator:a6a4d3a885e340db19667b9a952526d60"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a617edc393242424d79382cb6f4ab9b8b"><td class="memItemLeft" align="right" valign="top"><a id="a617edc393242424d79382cb6f4ab9b8b"></a>
-<a class="el" href="structcgv_1_1os_1_1mutex.html">cgv::os::mutex</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcgv_1_1os_1_1queued__input__thread.html#a617edc393242424d79382cb6f4ab9b8b">m</a></td></tr>
-<tr class="memdesc:a617edc393242424d79382cb6f4ab9b8b"><td class="mdescLeft">&#160;</td><td class="mdescRight">mutex used to protect access to <code>blocks</code> <br /></td></tr>
-<tr class="separator:a617edc393242424d79382cb6f4ab9b8b"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a833f8f4e9226b23eedf65b21a3c61271"><td class="memItemLeft" align="right" valign="top"><a id="a833f8f4e9226b23eedf65b21a3c61271"></a>
-std::deque&lt; char * &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcgv_1_1os_1_1queued__input__thread.html#a833f8f4e9226b23eedf65b21a3c61271">blocks</a></td></tr>
-<tr class="memdesc:a833f8f4e9226b23eedf65b21a3c61271"><td class="mdescLeft">&#160;</td><td class="mdescRight">deque to store data blocks read from the pipe by the thread <br /></td></tr>
-<tr class="separator:a833f8f4e9226b23eedf65b21a3c61271"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a1194608605933ccc4b3cb10031dd2332"><td class="memItemLeft" align="right" valign="top"><a id="a1194608605933ccc4b3cb10031dd2332"></a>
+size_t&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcgv_1_1os_1_1queued__input__thread.html#a1194608605933ccc4b3cb10031dd2332">package_size</a></td></tr>
+<tr class="memdesc:a1194608605933ccc4b3cb10031dd2332"><td class="mdescLeft">&#160;</td><td class="mdescRight">size of an indiviual package <br /></td></tr>
+<tr class="separator:a1194608605933ccc4b3cb10031dd2332"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a8a9de6723e560d31df20a61b397315c7"><td class="memItemLeft" align="right" valign="top"><a id="a8a9de6723e560d31df20a61b397315c7"></a>
+size_t&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcgv_1_1os_1_1queued__input__thread.html#a8a9de6723e560d31df20a61b397315c7">package_index</a></td></tr>
+<tr class="memdesc:a8a9de6723e560d31df20a61b397315c7"><td class="mdescLeft">&#160;</td><td class="mdescRight">index of the next package to be read <br /></td></tr>
+<tr class="separator:a8a9de6723e560d31df20a61b397315c7"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a2e2679eadd5fd4cf501d26d475bed2f5"><td class="memItemLeft" align="right" valign="top"><a id="a2e2679eadd5fd4cf501d26d475bed2f5"></a>
+size_t&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcgv_1_1os_1_1queued__input__thread.html#a2e2679eadd5fd4cf501d26d475bed2f5">packages_per_block</a></td></tr>
+<tr class="memdesc:a2e2679eadd5fd4cf501d26d475bed2f5"><td class="mdescLeft">&#160;</td><td class="mdescRight">amount of packeges needed to form one data block <br /></td></tr>
+<tr class="separator:a2e2679eadd5fd4cf501d26d475bed2f5"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a93ffd9c2b6cd55fb2c9dcc1124e9df6d"><td class="memItemLeft" align="right" valign="top"><a id="a93ffd9c2b6cd55fb2c9dcc1124e9df6d"></a>
+std::mutex&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcgv_1_1os_1_1queued__input__thread.html#a93ffd9c2b6cd55fb2c9dcc1124e9df6d">mutex_packages</a></td></tr>
+<tr class="memdesc:a93ffd9c2b6cd55fb2c9dcc1124e9df6d"><td class="mdescLeft">&#160;</td><td class="mdescRight">mutex used to protect access to packages <br /></td></tr>
+<tr class="separator:a93ffd9c2b6cd55fb2c9dcc1124e9df6d"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ac717919093dec155495a4bd3011feaf7"><td class="memItemLeft" align="right" valign="top"><a id="ac717919093dec155495a4bd3011feaf7"></a>
+std::mutex&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcgv_1_1os_1_1queued__input__thread.html#ac717919093dec155495a4bd3011feaf7">mutex_data_blocks</a></td></tr>
+<tr class="memdesc:ac717919093dec155495a4bd3011feaf7"><td class="mdescLeft">&#160;</td><td class="mdescRight">mutex used to protect access to data_blocks <br /></td></tr>
+<tr class="separator:ac717919093dec155495a4bd3011feaf7"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a3b540ca8eeb2b63d70a2d9d948c7c71e"><td class="memItemLeft" align="right" valign="top"><a id="a3b540ca8eeb2b63d70a2d9d948c7c71e"></a>
+char *&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcgv_1_1os_1_1queued__input__thread.html#a3b540ca8eeb2b63d70a2d9d948c7c71e">packages</a></td></tr>
+<tr class="memdesc:a3b540ca8eeb2b63d70a2d9d948c7c71e"><td class="mdescLeft">&#160;</td><td class="mdescRight">allocated memory for smaller data packages <br /></td></tr>
+<tr class="separator:a3b540ca8eeb2b63d70a2d9d948c7c71e"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a20551523e5f04ac157417ba586bf57ca"><td class="memItemLeft" align="right" valign="top"><a id="a20551523e5f04ac157417ba586bf57ca"></a>
+std::deque&lt; std::vector&lt; char &gt; &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcgv_1_1os_1_1queued__input__thread.html#a20551523e5f04ac157417ba586bf57ca">data_blocks</a></td></tr>
+<tr class="memdesc:a20551523e5f04ac157417ba586bf57ca"><td class="mdescLeft">&#160;</td><td class="mdescRight">deque to store data blocks that are formed by packages <br /></td></tr>
+<tr class="separator:a20551523e5f04ac157417ba586bf57ca"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:acd4dd1019a1dc07dabbd5e457cc0ab9f"><td class="memItemLeft" align="right" valign="top"><a id="acd4dd1019a1dc07dabbd5e457cc0ab9f"></a>
 unsigned&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcgv_1_1os_1_1queued__input__thread.html#acd4dd1019a1dc07dabbd5e457cc0ab9f">ms_to_wait</a></td></tr>
 <tr class="memdesc:acd4dd1019a1dc07dabbd5e457cc0ab9f"><td class="mdescLeft">&#160;</td><td class="mdescRight">time in milliseconds to wait while pipe is empty <br /></td></tr>
@@ -259,9 +276,9 @@ static void *&#160;</td><td class="memItemRight" valign="bottom"><b>execute_s</b
 <tr class="separator:aa18d58e4793e466877748c436eff9238 inherit pro_static_methods_classcgv_1_1os_1_1thread"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
 <a name="details" id="details"></a><h2 class="groupheader">Detailed Description</h2>
-<div class="textblock"><p>Base class for system command output pipe or named pipe threads including a queue of data blocks and a separate thread </p>
+<div class="textblock"><p>Base class for system command output pipe or named pipe threads including a queue of data blocks, a vector storing smaller data packages and a separate thread </p>
 
-<p class="definition">Definition at line <a class="el" href="pipe__thread_8h_source.html#l00108">108</a> of file <a class="el" href="pipe__thread_8h_source.html">pipe_thread.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="pipe__thread_8h_source.html#l00109">109</a> of file <a class="el" href="pipe__thread_8h_source.html">pipe_thread.h</a>.</p>
 </div><hr/>The documentation for this class was generated from the following files:<ul>
 <li>cgv/os/<a class="el" href="pipe__thread_8h_source.html">pipe_thread.h</a></li>
 <li>cgv/os/<a class="el" href="pipe__thread_8cxx_source.html">pipe_thread.cxx</a></li>
