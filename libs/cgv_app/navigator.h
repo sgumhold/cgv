@@ -26,12 +26,6 @@ protected:
 
 	double check_for_click;
 
-	bool mouse_is_on_overlay;
-	bool show_cursor;
-	ivec2 cursor_pos;
-	std::string cursor_drawtext;
-	cgv::media::font::font_face_ptr cursor_font_face;
-
 	cgv::render::managed_frame_buffer fbc;
 
 	cgv::g2d::canvas blit_canvas;
