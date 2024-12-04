@@ -15,6 +15,7 @@ var namespacecgv_1_1media_1_1font =
     [ "default_font", "namespacecgv_1_1media_1_1font.html#a56c0acc1f8ec62e79f3efca8f3a61e60", null ],
     [ "enumerate_font_names", "namespacecgv_1_1media_1_1font.html#ae6cdd43d498d8b69c54fad78396afb0c", null ],
     [ "find_font", "namespacecgv_1_1media_1_1font.html#a1e4663cbf69db4df186482045f888406", null ],
+    [ "find_font_by_prefix", "namespacecgv_1_1media_1_1font.html#a3c2468aa80773a900ebb6e11128294b6", null ],
     [ "find_font_or_default", "namespacecgv_1_1media_1_1font.html#ab57fb7a3ceaa9e7bfb658810a66c1212", null ],
     [ "get_font_server", "namespacecgv_1_1media_1_1font.html#a27f5fb0f90d77406f74b262d17911348", null ],
     [ "ref_font_server", "namespacecgv_1_1media_1_1font.html#a18899253be978f4eb4038b1ab3c91e3d", null ],

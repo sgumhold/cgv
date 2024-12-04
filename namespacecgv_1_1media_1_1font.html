@@ -136,6 +136,9 @@ Functions</h2></td></tr>
 <tr class="memitem:a1e4663cbf69db4df186482045f888406"><td class="memItemLeft" align="right" valign="top"><a class="el" href="namespacecgv_1_1media_1_1font.html#ac5151bb36a5366f021affc1726149e28">font_ptr</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespacecgv_1_1media_1_1font.html#a1e4663cbf69db4df186482045f888406">find_font</a> (const std::string &amp;font_name)</td></tr>
 <tr class="memdesc:a1e4663cbf69db4df186482045f888406"><td class="mdescLeft">&#160;</td><td class="mdescRight">find an installed font by name  <a href="namespacecgv_1_1media_1_1font.html#a1e4663cbf69db4df186482045f888406">More...</a><br /></td></tr>
 <tr class="separator:a1e4663cbf69db4df186482045f888406"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a3c2468aa80773a900ebb6e11128294b6"><td class="memItemLeft" align="right" valign="top"><a class="el" href="namespacecgv_1_1media_1_1font.html#ac5151bb36a5366f021affc1726149e28">font_ptr</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespacecgv_1_1media_1_1font.html#a3c2468aa80773a900ebb6e11128294b6">find_font_by_prefix</a> (const std::string &amp;font_name_prefix)</td></tr>
+<tr class="memdesc:a3c2468aa80773a900ebb6e11128294b6"><td class="mdescLeft">&#160;</td><td class="mdescRight">find an installed font by name prefix  <a href="namespacecgv_1_1media_1_1font.html#a3c2468aa80773a900ebb6e11128294b6">More...</a><br /></td></tr>
+<tr class="separator:a3c2468aa80773a900ebb6e11128294b6"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ab57fb7a3ceaa9e7bfb658810a66c1212"><td class="memItemLeft" align="right" valign="top"><a class="el" href="namespacecgv_1_1media_1_1font.html#ac5151bb36a5366f021affc1726149e28">font_ptr</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespacecgv_1_1media_1_1font.html#ab57fb7a3ceaa9e7bfb658810a66c1212">find_font_or_default</a> (const std::string &amp;font_name, bool default_font_mono_space)</td></tr>
 <tr class="memdesc:ab57fb7a3ceaa9e7bfb658810a66c1212"><td class="mdescLeft">&#160;</td><td class="mdescRight">find an installed font by name  <a href="namespacecgv_1_1media_1_1font.html#ab57fb7a3ceaa9e7bfb658810a66c1212">More...</a><br /></td></tr>
 <tr class="separator:ab57fb7a3ceaa9e7bfb658810a66c1212"><td class="memSeparator" colspan="2">&#160;</td></tr>
@@ -180,11 +183,11 @@ void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="name
 <p>return platform dependend default font </p>
 <p>return potentially font driver and platform-specific default font </p>
 
-<p class="definition">Definition at line <a class="el" href="font_8cxx_source.html#l00049">49</a> of file <a class="el" href="font_8cxx_source.html">font.cxx</a>.</p>
+<p class="definition">Definition at line <a class="el" href="font_8cxx_source.html#l00057">57</a> of file <a class="el" href="font_8cxx_source.html">font.cxx</a>.</p>
 
 <p class="reference">References <a class="el" href="font__server_8cxx_source.html#l00014">get_font_server()</a>.</p>
 
-<p class="reference">Referenced by <a class="el" href="plot__base_8cxx_source.html#l00273">cgv::plot::plot_base::ensure_font_names()</a>, and <a class="el" href="font_8cxx_source.html#l00040">find_font_or_default()</a>.</p>
+<p class="reference">Referenced by <a class="el" href="plot__base_8cxx_source.html#l00275">cgv::plot::plot_base::ensure_font_names()</a>, and <a class="el" href="font_8cxx_source.html#l00048">find_font_or_default()</a>.</p>
 
 </div>
 </div>
@@ -211,7 +214,32 @@ void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="name
 
 <p class="reference">References <a class="el" href="font__server_8cxx_source.html#l00014">get_font_server()</a>.</p>
 
-<p class="reference">Referenced by <a class="el" href="font_8cxx_source.html#l00040">find_font_or_default()</a>, <a class="el" href="navigator_8cxx_source.html#l00203">cgv::app::navigator::init()</a>, <a class="el" href="vr__test_8cxx_source.html#l00457">vr_test::init()</a>, <a class="el" href="plot__base_8cxx_source.html#l00319">cgv::plot::plot_base::on_font_selection()</a>, and <a class="el" href="vr__test_8cxx_source.html#l00307">vr_test::on_set()</a>.</p>
+<p class="reference">Referenced by <a class="el" href="font_8cxx_source.html#l00048">find_font_or_default()</a>, <a class="el" href="vr__test_8cxx_source.html#l00457">vr_test::init()</a>, <a class="el" href="plot__base_8cxx_source.html#l00327">cgv::plot::plot_base::on_font_selection()</a>, and <a class="el" href="vr__test_8cxx_source.html#l00307">vr_test::on_set()</a>.</p>
+
+</div>
+</div>
+<a id="a3c2468aa80773a900ebb6e11128294b6"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a3c2468aa80773a900ebb6e11128294b6">&#9670;&nbsp;</a></span>find_font_by_prefix()</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">CGV_API <a class="el" href="namespacecgv_1_1media_1_1font.html#ac5151bb36a5366f021affc1726149e28">font_ptr</a> cgv::media::font::find_font_by_prefix </td>
+          <td>(</td>
+          <td class="paramtype">const std::string &amp;&#160;</td>
+          <td class="paramname"><em>font_name_prefix</em></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>find an installed font by name prefix </p>
+<p>find an installed font by name prefix (returns a null pointer if font could not be found) </p>
+
+<p class="definition">Definition at line <a class="el" href="font_8cxx_source.html#l00040">40</a> of file <a class="el" href="font_8cxx_source.html">font.cxx</a>.</p>
+
+<p class="reference">References <a class="el" href="font__server_8cxx_source.html#l00014">get_font_server()</a>.</p>
 
 </div>
 </div>
@@ -244,9 +272,9 @@ void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="name
 <p>find an installed font by name </p>
 <p>find an installed font by name or return platform-specific default font if no font with that name exists </p>
 
-<p class="definition">Definition at line <a class="el" href="font_8cxx_source.html#l00040">40</a> of file <a class="el" href="font_8cxx_source.html">font.cxx</a>.</p>
+<p class="definition">Definition at line <a class="el" href="font_8cxx_source.html#l00048">48</a> of file <a class="el" href="font_8cxx_source.html">font.cxx</a>.</p>
 
-<p class="reference">References <a class="el" href="font_8cxx_source.html#l00049">default_font()</a>, and <a class="el" href="font_8cxx_source.html#l00032">find_font()</a>.</p>
+<p class="reference">References <a class="el" href="font_8cxx_source.html#l00057">default_font()</a>, and <a class="el" href="font_8cxx_source.html#l00032">find_font()</a>.</p>
 
 </div>
 </div>
