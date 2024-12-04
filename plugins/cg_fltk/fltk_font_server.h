@@ -6,11 +6,11 @@ namespace fltk {
 	struct Font;
 }
 
-using namespace cgv::media::font;
+//using namespace cgv::media::font;
 
 #include "lib_begin.h"
 
-class fltk_font_face : public font_face
+class fltk_font_face : public cgv::media::font::font_face
 {
 	fltk::Font* f;
 public:
@@ -30,7 +30,7 @@ public:
 	fltk::Font* get_fltk_font() const;
 };
 
-class fltk_font : public font
+class fltk_font : public cgv::media::font::font
 {
 	fltk::Font* f;
 	int ffa;
@@ -46,7 +46,7 @@ public:
 	/// enumerate the supported font sizes
 	void enumerate_sizes(std::vector<int>& supported_sizes) const override;
 	/// return a pointer to a font face
-	font_face_ptr get_font_face(cgv::media::font::FontFaceAttributes _ffa) const override;
+	cgv::media::font::font_face_ptr get_font_face(cgv::media::font::FontFaceAttributes _ffa) const override;
 };
 
 /// always use this ref counted pointer to store font faces
@@ -55,7 +55,7 @@ typedef cgv::data::ref_ptr<fltk_font_face> fltk_font_face_ptr;
 typedef cgv::data::ref_ptr<fltk_font> fltk_font_ptr;
 
 /// implements a trigger server with fltk
-class CGV_API fltk_font_server : public font_server
+class CGV_API fltk_font_server : public cgv::media::font::font_server
 {
 public:
 	/// register server in frame work
@@ -63,7 +63,9 @@ public:
 	/// return "fltk_font_server"
 	std::string get_type_name() const;
 	/// find an installed font by name
-	font_ptr find_font(const std::string& font_name);
+	cgv::media::font::font_ptr find_font(const std::string& font_name);
+	/// find an installed font by name prefix
+	cgv::media::font::font_ptr find_font_by_prefix(const std::string& font_name_prefix);
 	/// enumerate the names of all installed fonts
 	void enumerate_font_names(std::vector<const char*>& font_names);
 };
