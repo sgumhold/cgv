@@ -150,6 +150,8 @@ extern CGV_API size_t get_tt_gl_fonts_timestamp();
 void ensure_font_table();
 /// looks for a specific font after having ensured that font table is built with ensure_font_table()
 extern CGV_API tt_gl_font_ptr find_font(const std::string& font_name);
+/// looks for a specific font by its name prefix after having ensured that font table is built with ensure_font_table()
+extern CGV_API tt_gl_font_ptr find_font_by_prefix(const std::string& font_name_prefix);
 /// return reference to cached list of all scanned font names after having ensured that font table is built with ensure_font_table()
 extern CGV_API const std::vector<std::string>& get_font_names();
 /// return a string "enums='Arial,...'" with all scanned fonts that can be used to define a dropdown menu on an int variable i which provides font name via get_font_names()[i]
