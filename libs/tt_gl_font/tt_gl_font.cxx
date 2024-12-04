@@ -621,6 +621,27 @@ namespace cgv {
 		return f_ptr;
 	}
 
+	tt_gl_font_ptr find_font_by_prefix(const std::string& font_name_prefix)
+	{
+		ensure_font_table();
+		// Will return an iterator to the next smallest font whose name is lexicographically
+		// greater or equal to the given name, i.e, either an exact match or possibly one with
+		// the closest matching prefix.
+		auto it = ref_font_table().lower_bound(font_name_prefix);
+		// Return null if the result does not exists or does not have the given prefix.
+		if(it == ref_font_table().end() || it->first.compare(0, font_name_prefix.size(), font_name_prefix) != 0)
+			return tt_gl_font_ptr();
+
+		// Use the full name to add it to the cache.
+		std::string font_name = it->first;
+		tt_gl_font_ptr& f_ptr = ref_font_cache()[font_name];
+		if(f_ptr)
+			return f_ptr;
+
+		f_ptr = new tt_gl_font(font_name, 24, it->second);
+		return f_ptr;
+	}
+
 	size_t& ref_tt_gl_fonts_timestamp()
 	{
 		static size_t timestamp = 1;
