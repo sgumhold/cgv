@@ -1,4 +1,4 @@
-#version 460
+#version 330
 
 //***** begin interface of quaternion.glsl ***********************************
 vec4 unit_quaternion();

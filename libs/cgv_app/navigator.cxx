@@ -202,12 +202,6 @@ void navigator::on_set(void* member_ptr) {
 
 bool navigator::init(context& ctx) {
 	
-	// get a bold font face to use for the cursor
-	auto font = cgv::media::font::find_font("Arial");
-	if(!font.empty()) {
-		cursor_font_face = font->get_font_face(cgv::media::font::FFA_BOLD);
-	}
-
 	fbc.add_attachment("depth", "[D]");
 	fbc.add_attachment("color", "flt32[R,G,B,A]", TF_LINEAR);
 	fbc.set_size(2 * get_rectangle().size);

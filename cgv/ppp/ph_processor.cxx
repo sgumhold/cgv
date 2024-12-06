@@ -6,6 +6,7 @@
 #include <sstream>
 #include <stdlib.h>
 #include <cgv/utils/file.h>
+#include <cgv/utils/dir.h>
 #include <cgv/utils/tokenizer.h>
 #include <random>
 #include "ph_processor.h"
@@ -1648,7 +1649,7 @@ namespace cgv {
 					//if (fh == 0) {
 					//	error("path \"" + directory + "\" does not exist", commands[i]);
 					//}
-					if(!cgv::utils::file::exists(directory + "/*")) {
+					if(!cgv::utils::dir::exists(directory)) {
 						error("path \"" + directory + "\" does not exist", commands[i]);
 					}
 

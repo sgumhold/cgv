@@ -1,14 +1,16 @@
 #include "plot_base.h"
+
+#include <algorithm>
+
+#include <cgv/math/ftransform.h>
+#include <cgv/media/color_scale.h>
+#include <cgv/render/attribute_array_binding.h>
+#include <cgv/render/color_scale.h>
 #include <cgv/render/shader_program.h>
 #include <cgv/signal/rebind.h>
-#include <cgv/media/color_scale.h>
-#include <cgv/math/ftransform.h>
-#include <cgv/render/attribute_array_binding.h>
 #include <libs/cgv_gl/gl/gl.h>
-#include <cgv/render/color_scale.h>
 #include <libs/cgv_gl/rectangle_renderer.h>
 #include <libs/tt_gl_font/tt_gl_font.h>
-#include <algorithm>
 
 namespace cgv {
 	namespace plot {
@@ -285,22 +287,28 @@ void plot_base::ensure_font_names()
 	}
 	if (!label_font) {
 		get_domain_config_ptr()->label_font_index = 0;
-		std::string font_name = cgv::media::font::default_font(true)->get_name();
-		for (auto iter = font_names.begin(); iter != font_names.end(); ++iter)
-			if (std::string(*iter) == font_name) {
-				get_domain_config_ptr()->label_font_index = (unsigned)(iter - font_names.begin());
-				break;
-			}
+		cgv::media::font::font_ptr font_ptr = cgv::media::font::default_font(true);
+		if(font_ptr) {
+			std::string font_name = font_ptr->get_name();
+			for(auto iter = font_names.begin(); iter != font_names.end(); ++iter)
+				if(std::string(*iter) == font_name) {
+					get_domain_config_ptr()->label_font_index = (unsigned)(iter - font_names.begin());
+					break;
+				}
+		}
 		on_font_selection();
 	}
 	if (!title_font) {
 		get_domain_config_ptr()->title_font_index = 0;
-		std::string font_name = cgv::media::font::default_font(false)->get_name();
-		for (auto iter = font_names.begin(); iter != font_names.end(); ++iter)
-			if (std::string(*iter) == font_name) {
-				get_domain_config_ptr()->title_font_index = (unsigned)(iter - font_names.begin());
-				break;
-			}
+		cgv::media::font::font_ptr font_ptr = cgv::media::font::default_font(false);
+		if(font_ptr) {
+			std::string font_name = font_ptr->get_name();
+			for(auto iter = font_names.begin(); iter != font_names.end(); ++iter)
+				if(std::string(*iter) == font_name) {
+					get_domain_config_ptr()->title_font_index = (unsigned)(iter - font_names.begin());
+					break;
+				}
+		}
 		on_font_selection();
 	}
 }

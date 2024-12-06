@@ -41,7 +41,7 @@ void main()
 	float percentual_radial_position = length(uv);
 	if (percentual_radial_position > percentual_splat_size)
 		discard;
-
+	
 	frag_position = vec4(position, 1.0);
 	frag_normal = normal;
 	finish_fragment(compute_blended_color_with_halo(

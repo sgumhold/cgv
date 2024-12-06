@@ -1,5 +1,13 @@
 @=
 
+if (TRUE ~~ UNDEF) {
+	cout("HINT: Please update cgv framework to get new ppp version.\n");
+	TRUE = (1 == 1);
+}
+if (FALSE ~~ UNDEF) {
+	FALSE = (1 == 0);
+}
+
 // define the project independent variables
 //
 // CGV_COMPILER, CGV_COMPILER_VERSION, CGV_IDE

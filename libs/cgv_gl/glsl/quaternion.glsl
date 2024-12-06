@@ -1,4 +1,4 @@
-#version 150 compatibility
+#version 150
 
 /*
 The following interface is implemented in this shader:
