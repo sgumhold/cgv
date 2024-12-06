@@ -11,8 +11,10 @@
 // Includes
 //
 
-// C standard library
-#include <stdio.h>
+// C++ STL
+#include <iostream>
+#include <thread>
+#include <future>
 
 // Platform SDKs
 #ifdef _WIN32
@@ -42,26 +44,26 @@ service service_main;
 // Functions
 //
 
-// Called as an in-between to actually handing over control flow to the service, for the
-// purpose of being able to debug argument forwarding.
-static inline int main_runner_proxy (int argc, char** argv)
+// The service runner thread entry point
+static void service_runner (std::promise<int> &&retval, int argc, char** argv)
 {
 	// Output debug info
-	printf("Handing over control flow to the service '%s'\n", argv[0]);
-	printf("- number of arguments: %i\n", argc-1);
+	std::cout << "Handing over control flow to the service '"<<argv[0]<<'\'' << std::endl
+	          << "- number of arguments: "<<argc-1 << std::endl;
 	for (int i=1; i<argc; i++)
-		printf("  %i: %s\n", i, argv[i]);
-	printf("\n");
+		std::cout << "  "<<i<<": "<<argv[i] << std::endl;
+	std::cout << std::endl;
 
 	// Start hosting the service
-	return service_main(argc, argv);
+	retval.set_value(service_main(argc, argv));
 }
 
+// Application entry point
 int main (int argc, char** argv)
 {
 	// Validate command line
 	if (argc < 2) {
-		printf("No service library to host was provided in the command line!\n\n");
+		std::cout << "No service library to host was provided in the command line!" << std::endl<<std::endl;
 		return -1;
 	}
 
@@ -73,8 +75,8 @@ int main (int argc, char** argv)
 	#endif
 
 	// Check if service could be loaded
-	if (hlib == NULL) {
-		printf("Unable to load service library \"%s\"!\n\n", argv[1]);
+	if (hlib == nullptr) {
+		std::cout << "Unable to load service library \""<<argv[1]<<"\"!" << std::endl<<std::endl;
 		return -1;
 	}
 
@@ -82,15 +84,23 @@ int main (int argc, char** argv)
 	#ifdef _WIN32
 		service_main = (service)GetProcAddress(hlib, "main");
 	#else
-		service_main = dlsym(hlib, "main");
+		service_main = (service)dlsym(hlib, "main");
 	#endif
 
 	// Check if the entry point could be found
-	if (service_main == NULL) {
-		printf("Library \"%s\" does not export a function 'main'!\n\n", argv[1]);
+	if (service_main == nullptr) {
+		std::cout << "Library \""<<argv[1]<<"\" does not export a function 'main'!" << std::endl<<std::endl;
 		return -1;
 	}
 
 	// Forward control to the service
-	return main_runner_proxy(argc-1, argv+1);
+	// - obtain a future for the return value
+	std::promise<int> retval_promise;
+	std::future<int> retval = retval_promise.get_future();
+	// - spawn runner thread executing the service main function
+	std::thread service_thread(service_runner, std::move(retval_promise), argc-1, argv+1);
+
+	// Wait for service to exit and report exit code
+	service_thread.join();
+	return retval.get();
 }
