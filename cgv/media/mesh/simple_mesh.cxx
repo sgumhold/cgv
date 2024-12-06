@@ -3,6 +3,7 @@
 #include "obj_loader.h"
 #include <cgv/math/inv.h>
 #include <cgv/utils/scan.h>
+#include <cgv/utils/advanced_scan.h>
 #include <cgv/media/mesh/obj_reader.h>
 #include <cgv/math/bucket_sort.h>
 #include <fstream>
@@ -218,7 +219,7 @@ void simple_mesh_base::extract_wireframe_element_buffer(const std::vector<idx_ty
 		}
 	}
 }
-uint32_t simple_mesh_base::extract_vertex_attribute_buffer_base(const std::vector<vec4i>& unique_quadruples, AttributeFlags& flags, std::vector<uint8_t>& attrib_buffer) const
+simple_mesh_base::idx_type simple_mesh_base::extract_vertex_attribute_buffer_base(const std::vector<vec4i>& unique_quadruples, AttributeFlags& flags, std::vector<uint8_t>& attrib_buffer) const
 {
 	// update flags of to be used attributes
 	if (position_indices.empty() && (flags & AF_position))
@@ -261,8 +262,16 @@ uint32_t simple_mesh_base::extract_vertex_attribute_buffer_base(const std::vecto
 	}
 	return vs;
 }
-
-void simple_mesh_base::compute_inv(std::vector<uint32_t>& inv, std::vector<uint32_t>* p2c_ptr, std::vector<uint32_t>* next_ptr, std::vector<uint32_t>* prev_ptr) const
+simple_mesh_base::idx_type simple_mesh_base::compute_inv(
+	std::vector<idx_type>& inv,
+	bool link_non_manifold_edges,
+	std::vector<idx_type>* p2c_ptr,
+	std::vector<idx_type>* next_ptr,
+	std::vector<idx_type>* prev_ptr,
+	std::vector<idx_type>* unmatched,
+	std::vector<idx_type>* non_manifold,
+	std::vector<idx_type>* unmatched_elements,
+	std::vector<idx_type>* non_manifold_elements) const
 {
 	uint32_t fi, e = 0;
 	if (p2c_ptr)
@@ -272,6 +281,101 @@ void simple_mesh_base::compute_inv(std::vector<uint32_t>& inv, std::vector<uint3
 	if (prev_ptr)
 		prev_ptr->resize(get_nr_corners());
 	inv.resize(get_nr_corners(), uint32_t(-1));
+	std::vector<idx_type> pis(get_nr_corners()), perm0, perm;
+	// extract min position indices per corner
+	//idx_type a = 0;
+	//std::cout << "before sort" << std::endl;
+	for (fi = 0; fi < get_nr_faces(); ++fi) {
+		idx_type cb = begin_corner(fi), ce = end_corner(fi), cp = ce - 1, pp = c2p(cp);
+		for (idx_type ci = cb; ci < ce; ++ci) {
+			idx_type pi = c2p(ci);
+			if (p2c_ptr)
+				p2c_ptr->at(pi) = ci;
+			if (next_ptr)
+				next_ptr->at(cp) = ci;
+			if (prev_ptr)
+				prev_ptr->at(ci) = cp;
+			pis[cp] = std::min(pp, pi);
+			//if (++a < 20)
+			//	std::cout << "   " << a - 1 << " : " << pp << "," << pi << std::endl;
+			cp = ci;
+			pp = pi;
+		}
+	}
+	// sort corners by min position indices
+	cgv::math::bucket_sort(pis, get_nr_positions(), perm0);
+	//std::cout << "after min sort" << std::endl;
+	//for (a=0; a < 20; ++a)
+	//	std::cout << "   " << a << " : " << c2p(perm0[a]) << "," << c2p(next_ptr->at(perm0[a])) << " (" << pis[perm0[a]] << ")" << std::endl;
+	// extract max position indices per corner and fill p2c, next and prev vectors
+	for (fi = 0; fi < get_nr_faces(); ++fi) {
+		idx_type cb = begin_corner(fi), ce = end_corner(fi), cp = ce - 1;
+		for (idx_type ci = cb; ci < ce; ++ci) {
+			idx_type pi = c2p(ci);
+			pis[cp] = std::max(c2p(cp), pi);
+			cp = ci;
+		}
+	}
+	// sort corners by max position indices
+	cgv::math::bucket_sort(pis, get_nr_positions(), perm, &perm0);
+	//std::cout << "after max sort" << std::endl;
+	//for (a = 0; a < 20; ++a)
+	//	std::cout << "   " << a << " : " << c2p(perm[a]) << "," << c2p(next_ptr->at(perm[a])) << " (" << pis[perm[a]] << ")" << std::endl;
+	// store target in pis
+	for (fi = 0; fi < get_nr_faces(); ++fi) {
+		idx_type cb = begin_corner(fi), ce = end_corner(fi), cp = ce - 1;
+		for (idx_type ci = cb; ci < ce; ++ci) {
+			pis[cp] = c2p(ci);
+			cp = ci;
+		}
+	}
+	perm0.clear();
+	// finally perform matching
+	idx_type i = 0;
+	while (i < perm.size()) {
+		idx_type ci = perm[i], pi0 = c2p(ci), pi1 = pis[ci];
+		idx_type cnt = 1;
+		while (i + cnt < perm.size()) {
+			idx_type cj = perm[i + cnt], pj0 = c2p(cj), pj1 = pis[cj];
+			if (std::min(pi0, pi1) == std::min(pj0, pj1) && std::max(pi0, pi1) == std::max(pj0, pj1)) {
+				++cnt;
+			}
+			else
+				break;
+		}
+		if (cnt == 1) {
+			if (unmatched)
+				unmatched->push_back(ci);
+			if (unmatched_elements) {
+				unmatched_elements->push_back(pi0);
+				unmatched_elements->push_back(pi1);
+			}
+		}
+		else if (cnt == 2) {
+			inv[perm[i]] = perm[i + 1];
+			inv[perm[i + 1]] = perm[i];
+			++e;
+		}
+		else {
+			if (link_non_manifold_edges) {
+				idx_type cl = perm[i + cnt - 1];
+				for (idx_type k = 0; k < cnt; ++k) {
+					idx_type ck = perm[i + k];
+					inv[cl] = ck;
+					cl = ck;
+				}
+			}
+			if (non_manifold)
+				non_manifold->push_back(ci);
+			if (non_manifold_elements) {
+				non_manifold_elements->push_back(pi0);
+				non_manifold_elements->push_back(pi1);
+			}
+		}
+		i += cnt;
+	}
+	return e;
+	/*
 	std::map<std::pair<uint32_t, uint32_t>, uint32_t> pipj2ci;
 	for (fi = 0; fi < get_nr_faces(); ++fi) {
 		uint32_t prev_ci = end_corner(fi) - 1;
@@ -297,9 +401,9 @@ void simple_mesh_base::compute_inv(std::vector<uint32_t>& inv, std::vector<uint3
 			}
 		}
 	}
+	*/
 }
-/// given the inv corners compute index vector per corner its edge index and optionally per edge its corner index (implementation assumes closed manifold connectivity)
-uint32_t simple_mesh_base::compute_c2e(const std::vector<uint32_t>& inv, std::vector<uint32_t>& c2e, std::vector<uint32_t>* e2c_ptr) const
+simple_mesh_base::idx_type simple_mesh_base::compute_c2e(const std::vector<uint32_t>& inv, std::vector<uint32_t>& c2e, std::vector<uint32_t>* e2c_ptr) const
 {
 	uint32_t e = 0;
 	c2e.resize(get_nr_corners(), -1);
@@ -317,7 +421,6 @@ uint32_t simple_mesh_base::compute_c2e(const std::vector<uint32_t>& inv, std::ve
 	}
 	return e;
 }
-/// compute index vector with per corner its face index
 void simple_mesh_base::compute_c2f(std::vector<uint32_t>& c2f) const
 {
 	c2f.resize(get_nr_corners(), -1);
@@ -326,8 +429,6 @@ void simple_mesh_base::compute_c2f(std::vector<uint32_t>& c2f) const
 			c2f[ci] = fi;
 	}
 }
-
-/// construct from obj loader
 template <typename T>
 void simple_mesh<T>::construct(const obj_loader_generic<T>& loader, bool copy_grp_info, bool copy_material_info)
 {
@@ -484,6 +585,110 @@ void simple_mesh<T>::clear()
 	destruct_colors();
 }
 
+template <typename T>
+bool read_off(const std::string& file_name, 
+	std::vector<cgv::math::fvec<T,3>>& positions, std::vector<cgv::rgba>& vertex_colors, 
+	std::vector<std::vector<uint32_t>>& faces, std::vector<cgv::rgba>& face_colors)
+{
+	std::string content;
+	if (!cgv::utils::file::read(file_name, content, true))
+		return false;
+	std::vector<cgv::utils::line> lines;
+	cgv::utils::split_to_lines(content, lines);
+	if (!(lines[0] == "OFF")) {
+		std::cerr << "WARNING: first line in OFF file " << file_name << " does not contain 'OFF'" << std::endl;
+		return false;
+	}
+	unsigned real_li = 1;
+	int v, f, e;
+	for (unsigned li = 1; li < lines.size(); ++li) {
+		if (lines[li].empty())
+			continue;
+		if (lines[li].begin[0] == '#')
+			continue;
+		++real_li;
+		std::vector<cgv::utils::token> toks;
+		cgv::utils::split_to_tokens(lines[li], toks, "");
+		if (real_li == 2) {
+			if (toks.size() != 3) {
+				std::cerr << "WARNING: second line in OFF file " << file_name << " does provide 3 tokens" << std::endl;
+				return false;
+			}
+			int I[3];
+			for (int i = 0; i < 3; ++i) {
+				if (!cgv::utils::is_integer(toks[i].begin, toks[i].end, I[i])) {
+					std::cerr << "WARNING: token " << i << " on second line in OFF file " << file_name << " is not an integer value" << std::endl;
+					return false;
+				}
+			}
+			v = I[0]; f = I[1]; e = I[2];
+			std::cout << "OFF file " << file_name << " found " << v << " vertices, " << f << " faces, and " << e << " edges." << std::endl;
+			continue;
+		}
+		if (int(real_li) < v+3) {
+			if (!(toks.size() == 3 || toks.size() == 6 || toks.size() == 7)) {
+				std::cerr << "WARNING: line of vertex " << real_li - 3 << " contains " << toks.size() << " tokens instead of 3 or 7." << std::endl;
+				return false;
+			}
+			double x[3];
+			for (unsigned i = 0; i < 3; ++i) {
+				if (!cgv::utils::is_double(toks[i].begin, toks[i].end, x[i])) {
+					std::cerr << "WARNING: line of vertex " << real_li - 3 << " no double in XYZ component " << i << " but <" << toks[i] << ">." << std::endl;
+					return false;
+				}
+			}
+			positions.push_back(cgv::math::fvec<T, 3>(T(x[0]), T(x[1]), T(x[2])));
+			if (toks.size() >= 6) {
+				double c[4] = { 0,0,0,1 };
+				for (unsigned i = 0; i+3 < toks.size(); ++i) {
+					if (!cgv::utils::is_double(toks[i+3].begin, toks[i+3].end, c[i])) {
+						std::cerr << "WARNING: line of vertex " << real_li - 3 << " no double in RGB[A] component " << i << " but <" << toks[i+3] << ">." << std::endl;
+						return false;
+					}
+				}
+				while (vertex_colors.size() + 1 < positions.size())
+					vertex_colors.push_back(vertex_colors.empty() ? cgv::rgba(0.5, 0.5, 0.5, 1.0f) : vertex_colors.back());
+				vertex_colors.push_back(cgv::rgba(float(c[0]), float(c[1]), float(c[2]), float(1.0-c[3])));
+			}
+		}
+		else {
+			int n;
+			if (!cgv::utils::is_integer(toks[0].begin, toks[0].end, n)) {
+				std::cerr << "WARNING: first token on face " << faces.size() << " is not of type integer " << std::endl;
+				return false;
+			}
+			if (!(toks.size() == n + 1 || toks.size() == n + 4 || toks.size() == n + 5)) {
+				std::cerr << "WARNING: line of face " << faces.size() << " contains " << toks.size() << " tokens instead of " << n+1 << " or " << n+5 << std::endl;
+				return false;
+			}
+			faces.push_back({});
+			auto& face = faces.back();
+			for (int i = 0; i<n; ++i) {
+				int pi;
+				if (!cgv::utils::is_integer(toks[i+1].begin, toks[i + 1].end, pi)) {
+					std::cerr << "WARNING: token " << i+1 << " on face " << faces.size()-1 << " is not of type integer " << std::endl;
+					return false;
+				}
+				face.push_back(uint32_t(pi));
+			}
+			if (toks.size() >= n + 4) {
+				double c[4] = { 0,0,0,1 };
+				for (unsigned i = 0; i < toks.size()-n-1; ++i) {
+					if (!cgv::utils::is_double(toks[i + n + 1].begin, toks[i + n + 1].end, c[i])) {
+						std::cerr << "WARNING: line of vertex " << real_li - 3 << " no double in RGBA component " << i << " but <" << toks[i + n + 1] << ">." << std::endl;
+						return false;
+					}
+				}
+				while (face_colors.size()+1 < faces.size())
+					face_colors.push_back(face_colors.empty() ? cgv::rgba(0.5, 0.5, 0.5, 1.0f) : face_colors.back());
+				face_colors.push_back(cgv::rgba(float(c[0]), float(c[1]), float(c[2]), float(1.0 - c[3])));
+			}
+		}
+	}
+	return true;
+}
+
+
 /// read simple mesh from file
 template <typename T>
 bool simple_mesh<T>::read(const std::string& file_name)
@@ -516,6 +721,20 @@ bool simple_mesh<T>::read(const std::string& file_name)
 			std::cout << e.what() << std::endl;
 			return false;
 		}
+	}
+	if (ext == "off") {
+		ensure_colors(cgv::media::ColorType::CT_RGBA);
+		auto& vertex_colors = *reinterpret_cast<std::vector<cgv::rgba>*>(ref_color_data_vector_ptr());
+		std::vector<cgv::rgba> face_colors;
+		std::vector<std::vector<idx_type>> faces;
+		if (!read_off(file_name, ref_positions(), vertex_colors, faces, face_colors))
+			return false;
+		for (const auto& f : faces) {
+			start_face();
+			for (auto pi : f)
+				new_corner(pi);
+		}
+		return true;
 	}
 	std::cerr << "unknown mesh file extension '*." << ext << "'" << std::endl;
 	return false;
@@ -677,7 +896,7 @@ template <typename T> typename simple_mesh<T>::vec3 simple_mesh<T>::compute_face
 	ctr /= float(nr);
 	return ctr;
 }
-template <typename T> bool simple_mesh<T>::compute_face_normal(idx_type fi, vec3& nml_out) const
+template <typename T> bool simple_mesh<T>::compute_face_normal(idx_type fi, vec3& nml_out, bool normalize) const
 {
 	idx_type c0 = begin_corner(fi);
 	idx_type ce = end_corner(fi);
@@ -689,6 +908,10 @@ template <typename T> bool simple_mesh<T>::compute_face_normal(idx_type fi, vec3
 		nml += cross(dj, di);
 		dj = di;
 	}
+	if (!normalize) {
+		nml_out = nml;
+		return true;
+	}
 	T nl = nml.length();
 	if (nl > T(1e-8f)) {
 		nml *= T(1) / nl;
@@ -699,6 +922,8 @@ template <typename T> bool simple_mesh<T>::compute_face_normal(idx_type fi, vec3
 }
 template <typename T> void simple_mesh<T>::compute_face_normals(bool construct_normal_indices)
 {
+	if (construct_normal_indices)
+		normal_indices.clear();
 	// compute per face normals
 	for (uint32_t fi = 0; fi < get_nr_faces(); ++fi) {
 		vec3 nml = vec3(T(1),0,0);

@@ -210,13 +210,37 @@ public:
 	void extract_wireframe_element_buffer(const std::vector<idx_type>& vertex_indices,
 										  std::vector<idx_type>& edge_element_buffer) const;
 	/// extract vertex attribute buffer for the given flags and return size of vertex in bytes
-	uint32_t extract_vertex_attribute_buffer_base(const std::vector<vec4i>& unique_quadruples, AttributeFlags& flags, std::vector<uint8_t>& attrib_buffer) const;
-	/// compute a index vector storing the inv corners per corner and optionally index vectors with per position corner index, per corner next and or prev corner index (implementation assumes closed manifold connectivity)
-	void compute_inv(std::vector<uint32_t>& inv, std::vector<uint32_t>* p2c_ptr = 0, std::vector<uint32_t>* next_ptr = 0, std::vector<uint32_t>* prev_ptr = 0) const;
-	/// given the inv corners compute index vector per corner its edge index and optionally per edge its corner index and return edge count (implementation assumes closed manifold connectivity)
-	uint32_t compute_c2e(const std::vector<uint32_t>& inv, std::vector<uint32_t>& c2e, std::vector<uint32_t>* e2c_ptr = 0) const;
+	idx_type extract_vertex_attribute_buffer_base(const std::vector<vec4i>& unique_quadruples, AttributeFlags& flags, std::vector<uint8_t>& attrib_buffer) const;
+	//! Do inverse matching of half-edges.
+	/*! For this corners are converted to the half - edges that point in winding order
+		away from the corner. The inverse matching result is stored in the vector \c inv
+		with one index per corner. This index is -1 for unmatched half-edges and the 
+		index of the corner corresponding to matched half-edges. For non-manifold edges
+		two strategies are supported: cyclic linking (\c link_non_manifold_edges = true)
+		or cutting into unmatched half-edges (\c link_non_manifold_edges = false).
+		The function fills the optionally provided vectors
+		- \c p2c ... per position the index of one incident corner
+		- \c next ... per corner the index of the next corner in the face
+		- \c prev ... per corner the index of the prev corner in the face
+		- \c unmatched ... corners with unmatched half-edges 
+		- \c non_manifold ... one corner index per non-manifold edge
+		- \c unmatched_elements ... position indices of unmatched half-edges
+		- \c non_manifold_elements ... position indices of non-manifold edges 
+		The function returns the number of interior manifold edges */
+	idx_type compute_inv(
+		std::vector<idx_type>& inv,
+		bool link_non_manifold_edges = false,
+		std::vector<idx_type>* p2c_ptr = 0, 
+		std::vector<idx_type>* next_ptr = 0, 
+		std::vector<idx_type>* prev_ptr = 0,
+		std::vector<idx_type>* unmatched = 0,
+		std::vector<idx_type>* non_manifold = 0,
+		std::vector<idx_type>* unmatched_elements = 0,
+		std::vector<idx_type>* non_manifold_elements = 0) const;
+	/// given the inv corners compute vector storing per corner the edge index and optionally per edge one corner index and return edge count (implementation assumes closed manifold connectivity)
+	idx_type compute_c2e(const std::vector<idx_type>& inv, std::vector<idx_type>& c2e, std::vector<idx_type>* e2c_ptr = 0) const;
 	/// compute index vector with per corner its face index
-	void compute_c2f(std::vector<uint32_t>& c2f) const;
+	void compute_c2f(std::vector<idx_type>& c2f) const;
 };
 
 /// the simple_mesh class is templated over the coordinate type that defaults to float
@@ -337,7 +361,7 @@ public:
 	const vec2& tex_coord(idx_type ti) const { return tex_coords[ti]; }
 
 	/// compute the normal nml of a face and return whether this was possible
-	bool compute_face_normal(idx_type fi, vec3& nml) const;
+	bool compute_face_normal(idx_type fi, vec3& nml, bool normalize = true) const;
 	/// compute face center
 	vec3 compute_face_center(idx_type fi) const;
 	/// compute per face normals (ensure that per corner normal indices are set correspondingly)

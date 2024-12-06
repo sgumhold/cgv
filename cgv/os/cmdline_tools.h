@@ -38,6 +38,13 @@ extern CGV_API size_t read_system_output(std::string cmd, uint8_t* buffer, size_
 /// </summary>
 /// <param name="cmd">to be executed system command</param>
 /// <returns>file handle or null_ptr in case of failure; use close_system_input() function to close</returns>
+extern CGV_API FILE* open_system_output(const std::string& cmd, bool in_binary_mode = true);
+/// <summary>
+/// start a child process with a system command and return file handle that allows to read to standard output of system
+/// command
+/// </summary>
+/// <param name="cmd">to be executed system command</param>
+/// <returns>file handle or null_ptr in case of failure; use close_system_input() function to close</returns>
 extern CGV_API FILE* open_system_input(const std::string& cmd, bool in_binary_mode = true);
 /// <summary>
 /// function to close a system command standard input file handle

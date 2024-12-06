@@ -387,92 +387,13 @@ namespace rgbd {
 			std::cerr << "rgbd_kinect_azure::start_device: could not recover from errors\n";
 			return false;
 		}
-
 		k4a_device_configuration_t cfg = K4A_DEVICE_CONFIG_INIT_DISABLE_ALL;
-		cfg.color_resolution = K4A_COLOR_RESOLUTION_OFF;
-		cfg.color_format = K4A_IMAGE_FORMAT_COLOR_BGRA32;
-		cfg.depth_mode = K4A_DEPTH_MODE_OFF;
-		switch (multi_device_role) {
-		case MDR_LEADER: cfg.wired_sync_mode = K4A_WIRED_SYNC_MODE_MASTER; break;
-		case MDR_FOLLOWER: cfg.wired_sync_mode = K4A_WIRED_SYNC_MODE_SUBORDINATE; break;
-		default : cfg.wired_sync_mode = K4A_WIRED_SYNC_MODE_STANDALONE; break;
-		}
-		cfg.depth_delay_off_color_usec = 0;
-		cfg.subordinate_delay_off_master_usec = 0;
-		cfg.disable_streaming_indicator = false;
-		float fps = 0;
+		int is = 0;
 
-		int color_stream_ix=-1, depth_stream_ix=-1, ir_stream_ix=-1;
-
-		for (int i = 0; i < stream_formats.size();++i) {
-			auto &format = stream_formats[i];
-			if (fps == 0) {
-				if (format.fps == 5) cfg.camera_fps = K4A_FRAMES_PER_SECOND_5;
-				else if (format.fps == 15) cfg.camera_fps = K4A_FRAMES_PER_SECOND_15;
-				else if (format.fps == 30) cfg.camera_fps = K4A_FRAMES_PER_SECOND_30;
-				fps = format.fps;
-			}
-			else if (fps != format.fps) {
-				cerr << "rgbd_kinect_azure::start_device: missmatching fps in selected formats\n";
-				return false;
-			}
-			if (format.pixel_format == PF_BGR) {
-				color_stream_ix = i;
-			}
-			else if (format.pixel_format == PF_DEPTH) {
-				depth_stream_ix = i;
-			}
-			else if (format.pixel_format == PF_I) {
-				ir_stream_ix = i;
-			}
+		if(!make_basic_configuration(cfg,stream_formats,is)){
+			return false;
 		}
-
-		if (color_stream_ix != -1) {
-			auto &format = stream_formats[color_stream_ix];
-			if (format.height == 720) cfg.color_resolution = K4A_COLOR_RESOLUTION_720P;
-			else if (format.height == 1080) cfg.color_resolution = K4A_COLOR_RESOLUTION_1080P;
-			else if (format.height == 1440) cfg.color_resolution = K4A_COLOR_RESOLUTION_1440P;
-			else if (format.height == 1536) cfg.color_resolution = K4A_COLOR_RESOLUTION_1536P;
-			else if (format.height == 2160) cfg.color_resolution = K4A_COLOR_RESOLUTION_2160P;
-			else if (format.height == 3072) cfg.color_resolution = K4A_COLOR_RESOLUTION_3072P;
-			color_format = format;
-		}
-		if (depth_stream_ix != -1) {
-			auto &format = stream_formats[depth_stream_ix];
-			if (format.height == 288) cfg.depth_mode = K4A_DEPTH_MODE_NFOV_2X2BINNED;
-			else if (format.height == 576) cfg.depth_mode = K4A_DEPTH_MODE_NFOV_UNBINNED;
-			else if (format.height == 512) cfg.depth_mode = K4A_DEPTH_MODE_WFOV_2X2BINNED;
-			else if (format.height == 1024) cfg.depth_mode = K4A_DEPTH_MODE_WFOV_UNBINNED;
-			depth_format = format;
-		}
-
-		if (ir_stream_ix != -1) {
-			auto &format = stream_formats[ir_stream_ix];
-			if (depth_stream_ix != -1) {
-				if (stream_formats[depth_stream_ix].height != format.height && stream_formats[depth_stream_ix].width != format.width) {
-					cerr << "rgbd_kinect_azure::start_device: selected ir and depth format need matching resolutions\n";
-					return false;
-				}
-				ir_format = format;
-			}
-			else if (format.height == 1024 && format.width == 1024){
-				cfg.depth_mode = K4A_DEPTH_MODE_PASSIVE_IR;
-				ir_format = format;
-			}
-			else {
-				cerr << "rgbd_kinect_azure::start_device: Without a depth stream the only supported ir resolution is 1024x1024.\n";
-				return false;
-			}
-		}
-
-		cfg.synchronized_images_only = (color_stream_ix != -1 && depth_stream_ix != -1);
 		
-		camera_calibration = device.get_calibration(cfg.depth_mode, cfg.color_resolution);
-		camera_transform = k4a::transformation(camera_calibration);
-		intrinsics = &camera_calibration.depth_camera_calibration.intrinsics.parameters;
-		camera_calibration_t = &camera_calibration.depth_camera_calibration;
-		intrinsics_t = &camera_calibration.depth_camera_calibration.intrinsics;
-
 		try { device.start_cameras(&cfg); }
 		catch (runtime_error e) {
 			cerr << e.what() << '\n';
@@ -486,13 +407,46 @@ namespace rgbd {
 			imu_enabled = false;
 		}
 		device_started = true;
-		
-		int is =
-			((color_stream_ix != -1) ? IS_COLOR : IS_NONE) |
-			((depth_stream_ix != -1) ? IS_DEPTH : IS_NONE) |
-			((ir_stream_ix != -1) ? IS_INFRARED : IS_NONE);
 				
 		capture_thread = make_unique<thread>(&rgbd_kinect_azure::capture,this,is);
+		return true;
+	}
+
+	bool rgbd_kinect_azure::start_device(const std::vector<stream_format>& stream_formats, int32_t delay_to_master)
+	{
+		if (is_running())
+			return true;
+
+		// reset error information
+		if (capture_thread_device_error && !recover_from_errors()) {
+			std::cerr << "rgbd_kinect_azure::start_device: could not recover from errors\n";
+			return false;
+		}
+		k4a_device_configuration_t cfg = K4A_DEVICE_CONFIG_INIT_DISABLE_ALL;
+		int is = 0;
+
+		if (!make_basic_configuration(cfg, stream_formats, is)) {
+			return false;
+		}
+
+		cfg.subordinate_delay_off_master_usec = delay_to_master;
+
+		try {
+			device.start_cameras(&cfg);
+		} catch (runtime_error e) {
+			cerr << e.what() << '\n';
+			return false;
+		}
+		try {
+			device.start_imu();
+			imu_enabled = true;
+		} catch (runtime_error e) {
+			cerr << "failed to start IMU\n" << e.what() << '\n';
+			imu_enabled = false;
+		}
+		device_started = true;
+
+		capture_thread = make_unique<thread>(&rgbd_kinect_azure::capture, this, is);
 		return true;
 	}
 	
@@ -887,6 +841,123 @@ namespace rgbd {
 		std::string old_dev_serial = device_serial;
 		detach();
 		return attach(old_dev_serial);
+	}
+
+	bool rgbd_kinect_azure::make_basic_configuration(k4a_device_configuration_t& cfg,
+											 const std::vector<stream_format>& stream_formats, int& is)
+	{
+		cfg = K4A_DEVICE_CONFIG_INIT_DISABLE_ALL;
+		cfg.color_resolution = K4A_COLOR_RESOLUTION_OFF;
+		cfg.color_format = K4A_IMAGE_FORMAT_COLOR_BGRA32;
+		cfg.depth_mode = K4A_DEPTH_MODE_OFF;
+		switch (multi_device_role) {
+		case MDR_LEADER:
+			cfg.wired_sync_mode = K4A_WIRED_SYNC_MODE_MASTER;
+			break;
+		case MDR_FOLLOWER:
+			cfg.wired_sync_mode = K4A_WIRED_SYNC_MODE_SUBORDINATE;
+			break;
+		default:
+			cfg.wired_sync_mode = K4A_WIRED_SYNC_MODE_STANDALONE;
+			break;
+		}
+		cfg.depth_delay_off_color_usec = 0;
+		cfg.subordinate_delay_off_master_usec = 0;
+		cfg.disable_streaming_indicator = false;
+		float fps = 0;
+
+		int color_stream_ix = -1, depth_stream_ix = -1, ir_stream_ix = -1;
+
+		for (int i = 0; i < stream_formats.size(); ++i) {
+			auto& format = stream_formats[i];
+			if (fps == 0) {
+				if (format.fps == 5)
+					cfg.camera_fps = K4A_FRAMES_PER_SECOND_5;
+				else if (format.fps == 15)
+					cfg.camera_fps = K4A_FRAMES_PER_SECOND_15;
+				else if (format.fps == 30)
+					cfg.camera_fps = K4A_FRAMES_PER_SECOND_30;
+				fps = format.fps;
+			}
+			else if (fps != format.fps) {
+				cerr << "rgbd_kinect_azure::start_device: missmatching fps in selected formats\n";
+				return false;
+			}
+			if (format.pixel_format == PF_BGR) {
+				color_stream_ix = i;
+			}
+			else if (format.pixel_format == PF_DEPTH) {
+				depth_stream_ix = i;
+			}
+			else if (format.pixel_format == PF_I) {
+				ir_stream_ix = i;
+			}
+		}
+
+		if (color_stream_ix != -1) {
+			auto& format = stream_formats[color_stream_ix];
+			if (format.height == 720)
+				cfg.color_resolution = K4A_COLOR_RESOLUTION_720P;
+			else if (format.height == 1080)
+				cfg.color_resolution = K4A_COLOR_RESOLUTION_1080P;
+			else if (format.height == 1440)
+				cfg.color_resolution = K4A_COLOR_RESOLUTION_1440P;
+			else if (format.height == 1536)
+				cfg.color_resolution = K4A_COLOR_RESOLUTION_1536P;
+			else if (format.height == 2160)
+				cfg.color_resolution = K4A_COLOR_RESOLUTION_2160P;
+			else if (format.height == 3072)
+				cfg.color_resolution = K4A_COLOR_RESOLUTION_3072P;
+			color_format = format;
+		}
+		if (depth_stream_ix != -1) {
+			auto& format = stream_formats[depth_stream_ix];
+			if (format.height == 288)
+				cfg.depth_mode = K4A_DEPTH_MODE_NFOV_2X2BINNED;
+			else if (format.height == 576)
+				cfg.depth_mode = K4A_DEPTH_MODE_NFOV_UNBINNED;
+			else if (format.height == 512)
+				cfg.depth_mode = K4A_DEPTH_MODE_WFOV_2X2BINNED;
+			else if (format.height == 1024)
+				cfg.depth_mode = K4A_DEPTH_MODE_WFOV_UNBINNED;
+			depth_format = format;
+		}
+
+		if (ir_stream_ix != -1) {
+			auto& format = stream_formats[ir_stream_ix];
+			if (depth_stream_ix != -1) {
+				if (stream_formats[depth_stream_ix].height != format.height &&
+					stream_formats[depth_stream_ix].width != format.width)
+				{
+					cerr << "rgbd_kinect_azure::start_device: selected ir and depth format need matching resolutions\n";
+					return false;
+				}
+				ir_format = format;
+			}
+			else if (format.height == 1024 && format.width == 1024) {
+				cfg.depth_mode = K4A_DEPTH_MODE_PASSIVE_IR;
+				ir_format = format;
+			}
+			else {
+				cerr << "rgbd_kinect_azure::start_device: Without a depth stream the only supported ir resolution is "
+						"1024x1024.\n";
+				return false;
+			}
+		}
+
+		cfg.synchronized_images_only = (color_stream_ix != -1 && depth_stream_ix != -1);
+
+		is = ((color_stream_ix != -1) ? IS_COLOR : IS_NONE) | 
+			 ((depth_stream_ix != -1) ? IS_DEPTH : IS_NONE) |
+		     ((ir_stream_ix != -1) ? IS_INFRARED : IS_NONE);
+
+		camera_calibration = device.get_calibration(cfg.depth_mode, cfg.color_resolution);
+		camera_transform = k4a::transformation(camera_calibration);
+		intrinsics = &camera_calibration.depth_camera_calibration.intrinsics.parameters;
+		camera_calibration_t = &camera_calibration.depth_camera_calibration;
+		intrinsics_t = &camera_calibration.depth_camera_calibration.intrinsics;
+
+		return true;
 	}
 
 	auto extract_frame(const k4a::image& col, const rgbd::stream_format& color_format)

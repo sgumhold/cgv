@@ -124,7 +124,14 @@ namespace cgv {
 		{
 			return color_storage_ptr->get_data_vector_ptr();
 		}
-
+		void* colored_model::ref_color_data_ptr()
+		{
+			return color_storage_ptr->ref_data_ptr();
+		}
+		void* colored_model::ref_color_data_vector_ptr()
+		{
+			return color_storage_ptr->ref_data_vector_ptr();
+		}
 		ColorType colored_model::get_color_storage_type() const
 		{
 			return color_storage_ptr ? color_storage_ptr->get_color_type() : CT_RGBA8;
