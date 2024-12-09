@@ -1,5 +1,6 @@
 var NAVTREEINDEX45 =
 {
+"structcgv_1_1math_1_1weighted__edge.html#a75f24a187eea128e1f7128f286d4dfea":[11,0,0,6,1,1],
 "structcgv_1_1math_1_1weighted__edge.html#a77d777f3a618c86e4109a40dd58148db":[11,0,0,6,1,3],
 "structcgv_1_1math_1_1weighted__edge.html#ad68844b59a187223f142c24f208e3efd":[11,0,0,6,1,2],
 "structcgv_1_1media_1_1alpha__model__traits.html":[11,0,0,7,12],
@@ -248,6 +249,5 @@ var NAVTREEINDEX45 =
 "structcgv_1_1media_1_1volume_1_1ooc__sliced__volume.html#a44e5c281ebd2f89cd01e36d350745bf4":[11,0,0,7,5,0,0],
 "structcgv_1_1media_1_1volume_1_1ooc__sliced__volume.html#a59449c925494d573556054da445e0ed0":[11,0,0,7,5,0,3],
 "structcgv_1_1media_1_1volume_1_1ooc__sliced__volume.html#a5b83619abd5fb7ca88863ebd428676ed":[11,0,0,7,5,0,2],
-"structcgv_1_1media_1_1volume_1_1ooc__sliced__volume.html#a5c635eefcade49466a92d1a05c91344a":[11,0,0,7,5,0,4],
-"structcgv_1_1media_1_1volume_1_1ooc__sliced__volume.html#a8be681bc224a0b26990286d8d90cfb03":[11,0,0,7,5,0,12]
+"structcgv_1_1media_1_1volume_1_1ooc__sliced__volume.html#a5c635eefcade49466a92d1a05c91344a":[11,0,0,7,5,0,4]
 };
