@@ -1,5 +1,6 @@
 var NAVTREEINDEX34 =
 {
+"math_2sphere_8h.html#a3a37054032218681ba09883a23d794df":[10,0,1,7,406],
 "math_2sphere_8h.html#a60162fd6544ef9225c3d0680266a84f7":[10,0,1,7,507],
 "math_2sphere_8h.html#aa0f80cfa8700f246807ae76fa63bbc1e":[10,0,1,7,512],
 "math_2sphere_8h.html#aa668eda4b3e0077fdeced5dfac9652c6":[10,0,1,7,510],
@@ -248,6 +249,5 @@ var NAVTREEINDEX34 =
 "namespacecgv_1_1base.html#ab8197d89c413eb148311cd082a5f48b5":[10,0,1,2,138],
 "namespacecgv_1_1base.html#ab96231d3482baebc956228d6e0565884":[10,0,1,2,160],
 "namespacecgv_1_1base.html#ab9656474bcbb2a4b09c8e557a1e5621c":[10,0,1,2,143],
-"namespacecgv_1_1base.html#aba72200bc48e79f8a676410773a8345c":[10,0,1,2,162],
-"namespacecgv_1_1base.html#abee0e7ce76f41bd6555327d9e3d9e502":[10,0,1,2,83]
+"namespacecgv_1_1base.html#aba72200bc48e79f8a676410773a8345c":[10,0,1,2,162]
 };
