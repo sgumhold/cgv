@@ -1,5 +1,6 @@
 var NAVTREEINDEX30 =
 {
+"color_8h.html#ab5dc258b25c0c13d39e3e46a0d65d22a":[10,0,1,8,63],
 "color_8h.html#abf418a700d1f53a8ace996f8df2142b2":[10,0,1,8,92],
 "color_8h.html#ad6fcda18018bff2a8785b6bfe489ee69":[10,0,1,8,80],
 "color_8h.html#ae53beb140883bf0def63f967eaf8b9e5":[10,0,1,8,66],
@@ -248,6 +249,5 @@ var NAVTREEINDEX30 =
 "doc_8pj_source.html":[12,0,2,0],
 "drawable_8cxx_source.html":[12,0,1,10,12],
 "drawable_8h_source.html":[12,0,1,10,13],
-"drop__const_8h_source.html":[12,0,1,12,2,1],
-"drop__pointer_8h_source.html":[12,0,1,12,2,2]
+"drop__const_8h_source.html":[12,0,1,12,2,1]
 };

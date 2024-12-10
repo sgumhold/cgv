@@ -1,5 +1,6 @@
 var NAVTREEINDEX31 =
 {
+"drop__pointer_8h_source.html":[12,0,1,12,2,2],
 "drop__ref_8h_source.html":[12,0,1,12,2,3],
 "dual__contouring_8h_source.html":[12,0,1,6,3,5],
 "dynamic__mesh_8cxx_source.html":[12,0,1,6,3,6],
@@ -194,8 +195,8 @@ var NAVTREEINDEX31 =
 "functions_enum.html":[11,3,4],
 "functions_eval.html":[11,3,5],
 "functions_f.html":[11,3,0,6],
-"functions_func.html":[11,3,1],
 "functions_func.html":[11,3,1,0],
+"functions_func.html":[11,3,1],
 "functions_func_b.html":[11,3,1,1],
 "functions_func_c.html":[11,3,1,2],
 "functions_func_d.html":[11,3,1,3],
@@ -248,6 +249,5 @@ var NAVTREEINDEX31 =
 "functions_vars_d.html":[11,3,2,4],
 "functions_vars_e.html":[11,3,2,5],
 "functions_vars_f.html":[11,3,2,6],
-"functions_vars_g.html":[11,3,2,7],
-"functions_vars_h.html":[11,3,2,8]
+"functions_vars_g.html":[11,3,2,7]
 };

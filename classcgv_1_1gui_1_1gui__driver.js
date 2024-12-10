@@ -11,6 +11,7 @@ var classcgv_1_1gui_1_1gui__driver =
     [ "copy_to_clipboard", "classcgv_1_1gui_1_1gui__driver.html#a183dc79b06a902bb698d0ed8d3a0e968", null ],
     [ "create_text_editor", "classcgv_1_1gui_1_1gui__driver.html#a9812dce48c9fde4f0078d7374de6993e", null ],
     [ "create_window", "classcgv_1_1gui_1_1gui__driver.html#a00dbbeb1a3ef0049cd55589e9db0c94c", null ],
+    [ "destroy_all_windows", "classcgv_1_1gui_1_1gui__driver.html#a47fa9d84c17111aee99b71635564a2c1", null ],
     [ "enumerate_monitors", "classcgv_1_1gui_1_1gui__driver.html#accf7dd239119a4c80491bd6649337bdd", null ],
     [ "file_open_dialog", "classcgv_1_1gui_1_1gui__driver.html#aee37eaa7ca985731c446126ccee90428", null ],
     [ "file_save_dialog", "classcgv_1_1gui_1_1gui__driver.html#a594e1dba0534d7c3a2ebf68265076418", null ],

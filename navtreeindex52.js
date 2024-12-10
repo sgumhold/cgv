@@ -1,5 +1,6 @@
 var NAVTREEINDEX52 =
 {
+"structfx_1_1gltf_1_1Material.html#af7e693d5372bceef31a6a7d3a83bf470":[11,0,1,0,10,10],
 "structfx_1_1gltf_1_1Material_1_1NormalTexture.html":[11,0,1,0,10,0],
 "structfx_1_1gltf_1_1Material_1_1NormalTexture.html#a35984f277ff8affe3085003cc645690c":[11,0,1,0,10,0,0],
 "structfx_1_1gltf_1_1Material_1_1OcclusionTexture.html":[11,0,1,0,10,1],
@@ -248,6 +249,5 @@ var NAVTREEINDEX52 =
 "surface__renderer_8cxx_source.html":[12,0,3,3,46],
 "surface__renderer_8h_source.html":[12,0,3,3,47],
 "surfel__render__data_8h_source.html":[12,0,3,3,48],
-"surfel__renderer_8cxx_source.html":[12,0,3,3,49],
-"surfel__renderer_8h_source.html":[12,0,3,3,50]
+"surfel__renderer_8cxx_source.html":[12,0,3,3,49]
 };

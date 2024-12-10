@@ -1,5 +1,6 @@
 var NAVTREEINDEX11 =
 {
+"classcgv_1_1math_1_1sparse__mat.html#afbb8b1e3d0a0d41c6a84af154c707ab7":[11,0,0,6,37,8],
 "classcgv_1_1math_1_1tri__diag__mat.html":[11,0,0,6,40],
 "classcgv_1_1math_1_1tri__diag__mat.html#a02059a8f9873f6a3405c6d84b2ae450f":[11,0,0,6,40,0],
 "classcgv_1_1math_1_1tri__diag__mat.html#a104ccf8ae116f24e564262d361f08441":[11,0,0,6,40,22],
@@ -248,6 +249,5 @@ var NAVTREEINDEX11 =
 "classcgv_1_1media_1_1color__storage.html#a03d9ec1de5d460578b6fd7840944120b":[11,0,0,7,45,7],
 "classcgv_1_1media_1_1color__storage.html#a2ac531b20056597e3ea1220a34db64fd":[11,0,0,7,45,8],
 "classcgv_1_1media_1_1color__storage.html#a3d8aafe53fa5cf8646994af9c9957fd9":[11,0,0,7,45,19],
-"classcgv_1_1media_1_1color__storage.html#a47d52af35d6a399e3b82736aafe7ce1e":[11,0,0,7,45,18],
-"classcgv_1_1media_1_1color__storage.html#a51f5cb200ff099582c1ca0ca0b86afd0":[11,0,0,7,45,17]
+"classcgv_1_1media_1_1color__storage.html#a47d52af35d6a399e3b82736aafe7ce1e":[11,0,0,7,45,18]
 };
