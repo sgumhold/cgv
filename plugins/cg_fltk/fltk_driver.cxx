@@ -467,11 +467,6 @@ void fltk_driver::quit(int exit_code)
 	for (unsigned int i = 0; i < windows.size(); ++i) {
 		static_cast<fltk::Window*>(static_cast<fltk::Widget*>(windows[i]->get_user_data()))->hide();
 	}
-#ifdef _WIN32
-	TerminateProcess(GetCurrentProcess(), exit_code);
-#else
-	exit(exit_code);
-#endif
 }
 
 /// copy text to the clipboard
