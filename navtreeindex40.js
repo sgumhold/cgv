@@ -1,5 +1,6 @@
 var NAVTREEINDEX40 =
 {
+"namespacevr.html#a665837299018b23cf40411e8603afcb5aa8ae62dd9c84e847ef2c3e8c05d4c380":[10,0,6,29,0],
 "namespacevr.html#a665837299018b23cf40411e8603afcb5ac8c94d1a5ca2a798d0f9990c88c7e010":[10,0,6,29,2],
 "namespacevr.html#a6d121e6f946b755074e30719508caab0":[10,0,6,36],
 "namespacevr.html#a6d4e47f98bcfe1b122c9cffb7381f796":[10,0,6,59],
@@ -248,6 +249,5 @@ var NAVTREEINDEX40 =
 "plot__base_8cxx.html#a04958e13bbd5d59f2372e493eda0733d":[10,0,1,10,27],
 "plot__base_8cxx.html#a76f6cca3ed7375bd1e9112af7f88c448":[10,0,1,10,25],
 "plot__base_8cxx.html#a77120894b7fdaf4de1a2f4d1fe52aebf":[10,0,1,10,26],
-"plot__base_8cxx.html#ad8a03cb2c5416e4ec8acb95ee317f4ff":[10,0,1,10,24],
-"plot__base_8cxx_source.html":[12,0,3,6,8]
+"plot__base_8cxx.html#ad8a03cb2c5416e4ec8acb95ee317f4ff":[10,0,1,10,24]
 };

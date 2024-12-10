@@ -1,5 +1,6 @@
 var NAVTREEINDEX53 =
 {
+"surfel__renderer_8h_source.html":[12,0,3,3,50],
 "svd_8h.html#a15d19805e29525bb8e3450411eaf43f4":[10,0,1,7,393],
 "svd_8h.html#a8801c55a874b826030c7e4fa60d26f59":[10,0,1,7,285],
 "svd_8h.html#aa30e2708c9fc4b66e81160b24a73475d":[10,0,1,7,385],
@@ -248,6 +249,5 @@ var NAVTREEINDEX53 =
 "vr__emulator_8h.html#a6708520d05d6db460928ffa3d18e8237":[12,0,5,0,3,3],
 "vr__emulator_8h.html#a6708520d05d6db460928ffa3d18e8237a2bfd4aee0719eb2a25dff2139b30f2fa":[12,0,5,0,3,3,3],
 "vr__emulator_8h.html#a6708520d05d6db460928ffa3d18e8237ad31f4f21532d5c201fa866b99948f43d":[12,0,5,0,3,3,0],
-"vr__emulator_8h.html#a6708520d05d6db460928ffa3d18e8237ad7ebcd03a4e66104fbc5718cb6922541":[12,0,5,0,3,3,1],
-"vr__emulator_8h.html#a6708520d05d6db460928ffa3d18e8237ae1e30bb33a33b9eeb236f4b5f65a2bca":[12,0,5,0,3,3,2]
+"vr__emulator_8h.html#a6708520d05d6db460928ffa3d18e8237ad7ebcd03a4e66104fbc5718cb6922541":[12,0,5,0,3,3,1]
 };
