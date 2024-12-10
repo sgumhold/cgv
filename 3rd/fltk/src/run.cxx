@@ -398,11 +398,13 @@ static bool in_idle;
 int fltk::run() {
   // dispatch events as long as we have opened windows
   while (Window::first()) wait(FOREVER);
-  // clean up
-  while (CreatedWindow::first) {
-    if (CreatedWindow::first->window)
-      CreatedWindow::first->window->destroy();
-  }
+  #ifdef _WIN32
+    // clean up explicitly on Windows
+    while (CreatedWindow::first) {
+      if (CreatedWindow::first->window)
+        CreatedWindow::first->window->destroy();
+    }
+  #endif
   return(0);
 // WAS: This was tried for fltk 2.0, and the callback for closing the last
 // window in Window.C called exit(). This proved to be unpopular:
