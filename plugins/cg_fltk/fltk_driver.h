@@ -26,6 +26,8 @@ protected:
 public:
 	/// remove a window that has been destroyed
 	void remove_window(window_ptr w);
+	/// destroy every window, releasing all their resources.
+	virtual void destroy_all_windows();
 	/// register driver in cgv frame work
 	void on_register();
 	/// returns "fltk_driver"
