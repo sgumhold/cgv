@@ -135,7 +135,7 @@ void fltk::glsetfont(fltk::Font* font, float size) {
   drawn correctly, others draw as question marks.
 */
 void fltk::gldrawtext(const char* str) {
-  gldrawtext(str, strlen(str));
+  gldrawtext(str, int(strlen(str)));
 }
 
 /**
@@ -221,7 +221,7 @@ void fltk::gldrawtext(const char* text, int n) {
   Draw \a text at the given point in 3D space transformed to the screen.
 */
 void fltk::gldrawtext(const char* str, float x, float y, float z) {
-  gldrawtext(str, strlen(str), x, y, z);
+  gldrawtext(str, int(strlen(str)), x, y, z);
 }
 
 /**

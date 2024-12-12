@@ -31,6 +31,7 @@
 #include <stdlib.h>
 #include <iostream>
 #include <vector>
+#include <map>
 using namespace fltk;
 
 #define DEBUG_PFD (0) // 1 = PFD selection debug output, 0 = no debug output
@@ -61,10 +62,13 @@ static void debug_print_pfd(int pfd_id, const PIXELFORMATDESCRIPTOR& pfd) {
 
 static GlChoice* first;
 
-int*& GlChoice::ref_attrib_list()
+std::vector<int>& GlChoice::ref_gl_context_attrib_list(const Window* window)
 {
-	static int* attrib_list = 0;
-	return attrib_list;
+    static std::vector<int> default_attrib_list;
+	static std::map<const Window*, std::vector<int>> attrib_list_map;
+    if (window == 0)
+        return default_attrib_list;
+    return attrib_list_map[window];
 }
 
 GlChoice* GlChoice::find(int mode) {
@@ -275,6 +279,36 @@ static GLContext first_context;
 
 #if USE_X11
 
+GLXFBConfig findFBConfigFromVisual(Display* display, XVisualInfo* visualInfo) 
+{
+    if (!display || !visualInfo) {
+        fprintf(stderr, "Invalid display or visualInfo\n");
+        return NULL;
+    }
+
+    int fbCount;
+    GLXFBConfig* fbConfigs = glXGetFBConfigs(display, DefaultScreen(display), &fbCount);
+    if (!fbConfigs || fbCount == 0) {
+        fprintf(stderr, "Failed to get framebuffer configurations\n");
+        return NULL;
+    }
+
+    GLXFBConfig matchingFBConfig = NULL;
+    for (int i = 0; i < fbCount; i++) {
+        XVisualInfo* vi = glXGetVisualFromFBConfig(display, fbConfigs[i]);
+        if (vi) {
+            if (vi->visualid == visualInfo->visualid) {
+                matchingFBConfig = fbConfigs[i];
+                XFree(vi);
+                break;
+            }
+            XFree(vi);
+        }
+    }
+    XFree(fbConfigs);
+    return matchingFBConfig;
+}
+
 // Define this to destroy all OpenGL contexts at exit to try to fix NVidia crashes
 #define DESTROY_ON_EXIT 0
 
@@ -298,16 +332,16 @@ static void destructor() {
 
 GLContext fltk::create_gl_context(XVisualInfo* vis) {
   GLContext context;
-#if 0 // enable OpenGL3 support if possible
+#if 1 // enable OpenGL3 support if possible
   // This is disabled because it does not work on SUSE11 with NVidia cards.
   // I tried all the visuals and none worked. Error is returned when attempts
   // are made to use the context:
   // XRequest.144: BadAlloc (insufficient resources for operation) 0x1e00006
   // XRequest.144: GLXBadContext 0x1e00006
   // XRequest.144: GLXBadDrawable 0x1e00004
-  typedef GLXFBConfig (*PFNGLXGETFBCONFIGFROMVISUALSGIXPROC)(
-		Display *dpy,
-		XVisualInfo *vis );
+  //typedef GLXFBConfig (*PFNGLXGETFBCONFIGFROMVISUALSGIXPROC)(
+	//	Display *dpy,
+	//	XVisualInfo *vis );
   typedef GLXContext (*PFNGLXCREATECONTEXTATTRIBSARB)(
 		Display *dpy,
 		GLXFBConfig config,
@@ -315,26 +349,26 @@ GLContext fltk::create_gl_context(XVisualInfo* vis) {
 		Bool direct,
 		const int *attrib_list);
 
-  PFNGLXGETFBCONFIGFROMVISUALSGIXPROC glXGetFBConfigFromVisualSGIX = (PFNGLXGETFBCONFIGFROMVISUALSGIXPROC)
-		glXGetProcAddress((const GLubyte *) "glXGetFBConfigFromVisualSGIX");
+  //PFNGLXGETFBCONFIGFROMVISUALSGIXPROC glXGetFBConfigFromVisualSGIX = (PFNGLXGETFBCONFIGFROMVISUALSGIXPROC)
+	//	glXGetProcAddress((const GLubyte *) "glXGetFBConfigFromVisualSGIX");
 
   PFNGLXCREATECONTEXTATTRIBSARB glXCreateContextAttribsARB =
 		(PFNGLXCREATECONTEXTATTRIBSARB)  glXGetProcAddress((const GLubyte *) "glXCreateContextAttribsARB");
 
-  if (glXGetFBConfigFromVisualSGIX && glXCreateContextAttribsARB) {
-    printf("A\n");
+  if (!GlChoice::ref_gl_context_attrib_list(window).empty() && glXCreateContextAttribsARB) {
+    //printf("A\n");
     // printf("Success!\n");
-    GLXFBConfig c = glXGetFBConfigFromVisualSGIX(xdisplay, vis);
-    printf("B\n");
-#   define GLX_CONTEXT_MAJOR_VERSION_ARB		0x2091
-#   define GLX_CONTEXT_MINOR_VERSION_ARB		0x2092
-    int arr2[] = {  GLX_CONTEXT_MAJOR_VERSION_ARB, 3,
-                    GLX_CONTEXT_MINOR_VERSION_ARB, 0, None };
-    context = glXCreateContextAttribsARB(xdisplay, c, first_context, True, arr2);
-    printf("C\n");
+    GLXFBConfig c = findFBConfigFromVisual(xdisplay, vis);
+//    printf("B\n");
+//#   define GLX_CONTEXT_MAJOR_VERSION_ARB		0x2091
+//#   define GLX_CONTEXT_MINOR_VERSION_ARB		0x2092
+//    int arr2[] = {  GLX_CONTEXT_MAJOR_VERSION_ARB, 3,
+//                    GLX_CONTEXT_MINOR_VERSION_ARB, 0, None };
+    context = glXCreateContextAttribsARB(xdisplay, c, first_context, True, GlChoice::ref_gl_context_attrib_list(window).data());
+//    printf("C\n");
   } else
 #endif
-    context = glXCreateContext(xdisplay, vis, first_context, 1);
+      context = glXCreateContext(xdisplay, vis, first_context, 1);
 #if DESTROY_ON_EXIT
   Contexts* p = new Contexts;
   p->context = context;
@@ -356,7 +390,7 @@ GLContext fltk::create_gl_context(const Window* window, const GlChoice* g, int l
   SetPixelFormat(i->dc, g->pixelFormat, &g->pfd);
 
   GLContext context = 0;
-  if (GlChoice::ref_attrib_list()) {
+  if (!GlChoice::ref_gl_context_attrib_list(window).empty()) {
 	  HGLRC tempRC = wglCreateContext(i->dc);
 	  wglMakeCurrent(i->dc, tempRC);
 	  GLenum err = glewInit();
@@ -431,21 +465,15 @@ GLContext fltk::create_gl_context(const Window* window, const GlChoice* g, int l
 		//	std::cerr << "FL_Gl_Choice::wglChoosePixelFormatARB failed" << std::endl;
 
 		  bool is_first_context = first_context == 0;
-		  if (layer != 0) {
-			  int n = 0;
-			  while (GlChoice::ref_attrib_list()[n] != 0)
-				  n += 2;
-			  int* new_attribs = new int[n + 3];
-			  for (int j = 0; j < n; ++j)
-				  new_attribs[j] = GlChoice::ref_attrib_list()[j];
-			  new_attribs[n] = WGL_CONTEXT_LAYER_PLANE_ARB;
-			  new_attribs[n + 1] = layer;
-			  new_attribs[n + 2] = 0;
-			  context = wglCreateContextAttribsARB(i->dc, first_context, new_attribs);
-			  delete[] new_attribs;
+          auto& attrib_list = GlChoice::ref_gl_context_attrib_list(window);
+          if (layer != 0) {
+              attrib_list.back() = WGL_CONTEXT_LAYER_PLANE_ARB;
+              attrib_list.push_back(layer);
+              attrib_list.push_back(0);
+			  context = wglCreateContextAttribsARB(i->dc, first_context, attrib_list.data());
 		  }
 		  else
-			  context = wglCreateContextAttribsARB(i->dc, first_context, GlChoice::ref_attrib_list());
+			  context = wglCreateContextAttribsARB(i->dc, first_context, attrib_list.data());
 		  if (!context) {
 			  int err = glGetError();
 			  std::cerr << "WGL error: " << glewGetErrorString(err) << std::endl;

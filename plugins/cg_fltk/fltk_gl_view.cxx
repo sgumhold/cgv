@@ -162,7 +162,6 @@ void fltk_gl_view::change_mode(int m)
 	in_recreate_context = true;
 	if (mode() == m)
 		mode_ = -1;
-	fltk_driver::set_context_creation_attrib_list(*this);
 	if (!mode(m))
 		std::cerr << "could not change mode to " << m << std::endl;
 	current_font_face.clear();
@@ -773,6 +772,13 @@ void fltk_gl_view::enable_font_face(font_face_ptr font_face, float font_size)
 	if (fff.empty())
 		gl_context::enable_font_face(font_face, font_size);
 	else {
+		static bool asked_user = false;
+		if (core_profile && !asked_user) {
+			if (cgv::gui::question("Switch to compatibility profile?", "yes=1,no=0")) {
+				core_profile = false;
+				on_set(&core_profile);
+			}
+		}
 		// avoid fltk fonts in core profile
 		if (!core_profile)
 			fff->enable(static_cast<cgv::render::context*>(this), font_size);
