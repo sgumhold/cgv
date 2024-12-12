@@ -95,6 +95,10 @@ int main(int argc, char** argv)
 			std::cerr << "WARNING: unknown command line argument '" << args[ai] << "'" << std::endl;
 	}
 	bool res = application::run();
+
+	// cleanup
 	unregister_all_objects();
+	get_gui_driver()->destroy_all_windows();
+
 	return res;
 }

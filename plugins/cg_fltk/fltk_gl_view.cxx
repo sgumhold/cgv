@@ -766,7 +766,7 @@ void fltk_gl_view::force_redraw()
 }
 
 /// select a font given by a font handle
-void fltk_gl_view::enable_font_face(font_face_ptr font_face, float font_size)
+void fltk_gl_view::enable_font_face(cgv::media::font::font_face_ptr font_face, float font_size)
 {
 	fltk_font_face_ptr fff = dynamic_cast<fltk_font_face*>(&*font_face);
 	if (fff.empty())

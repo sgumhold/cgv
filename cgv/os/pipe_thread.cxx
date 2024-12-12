@@ -2,6 +2,9 @@
 #include "pipe_thread.h"
 #include "cmdline_tools.h"
 
+#include <cstring>
+#include <mutex>
+
 namespace cgv {
 	namespace os {
 
@@ -40,7 +43,7 @@ void queued_output_thread::run()
 			m.unlock();
 			if (all_sent)
 				break;
-			wait(20);
+			wait(ms_to_wait);
 		}
 	}
 	// in case of stop request or done, close pipe
@@ -156,13 +159,18 @@ int pipe_output_thread::get_result() const
 	return result;
 }
 
-queued_input_thread::queued_input_thread(bool _is_binary, unsigned _ms_to_wait)
+queued_input_thread::queued_input_thread(bool _is_binary, size_t _package_size, size_t _packeges_per_block,
+										 unsigned _ms_to_wait)
 {
 	is_binary = _is_binary;
 	ms_to_wait = _ms_to_wait;
+	package_size = _package_size;
+	packages_per_block = _packeges_per_block;
+	package_index = 0;
+
+	packages = new char[package_size * packages_per_block];
 }
-void queued_input_thread::set_block_buffer_size(size_t buffer_size) 
-{ block_buffer_size = buffer_size; }
+
 void queued_input_thread::run() 
 {
 	if (!connect_to_source())
@@ -170,21 +178,27 @@ void queued_input_thread::run()
 
 	while (!have_stop_request()) {
 		// Allocate buffer for reading
-		char* buffer = new char[block_buffer_size];
-		size_t bytes_read = read_block_from_pipe(buffer);
+		
+		char* buffer = new char[package_size];
+		size_t bytes_read = read_package_from_pipe(buffer,package_size);
 
 		if (bytes_read > 0) {
 			// Add block to queue if data was read
-			m.lock();
-			blocks.push_back({buffer});
-			m.unlock();
+			mutex_packages.lock();
+			memcpy(packages + package_size * package_index, buffer, bytes_read);
+			package_index++;
+			mutex_packages.unlock();
+			if (package_index == packages_per_block) {
+				move_packages_to_data_blocks();
+			}
+			delete[] buffer;
 		}
 		else {
 			// No data, check for termination
 			bool done;
-			m.lock();
+			mutex_packages.lock();
 			done = all_data_received;
-			m.unlock();
+			mutex_packages.unlock();
 			delete[] buffer;
 			if (done)
 				break;
@@ -195,36 +209,52 @@ void queued_input_thread::run()
 	// Clean up and close source
 	close();
 }
-bool queued_input_thread::receive_block(char* buffer)
+
+void queued_input_thread::move_packages_to_data_blocks() {
+
+	char* data = new char[package_size * packages_per_block];
+
+	mutex_packages.lock();
+
+	memcpy(data, packages, package_size * packages_per_block);
+	package_index = 0;
+
+	mutex_packages.unlock();
+
+	mutex_data_blocks.lock();
+	data_blocks.emplace_back(std::vector<char>(data, data + package_size * packages_per_block));
+	mutex_data_blocks.unlock();
+
+}
+
+bool queued_input_thread::pop_data_block(char* buffer)
 {
-	m.lock();
-	if (blocks.empty()) {
-		m.unlock();
+	mutex_data_blocks.lock();
+	if (data_blocks.empty()) {
+		mutex_data_blocks.unlock();
 		return false;
 	}
-	auto block = std::move(blocks.front());
-	blocks.pop_front();
-	m.unlock();
 
-	if (block) {
-		std::copy(block, block + block_buffer_size, buffer);
-	}
-	delete[] block;
+	auto block = std::move(data_blocks.front());
+	data_blocks.pop_front();
+	mutex_data_blocks.unlock();
+	memcpy(buffer, block.data(),package_size * packages_per_block);
+
 	return true;
 }
 size_t queued_input_thread::get_nr_blocks() const
 { 
 	size_t nr_blocks;
-	m.lock();
-	nr_blocks = blocks.size();
-	m.unlock();
+	mutex_data_blocks.lock();
+	nr_blocks = data_blocks.size();
+	mutex_data_blocks.unlock();
 	return nr_blocks;
 }
 void queued_input_thread::done()
 {
-	m.lock();
+	mutex_packages.lock();
 	all_data_received = true;
-	m.unlock();
+	mutex_packages.unlock();
 }
 bool named_pipe_input_thread::connect_to_source() 
 { 
@@ -237,8 +267,13 @@ bool named_pipe_input_thread::connect_to_source()
 	}
 	return true;
 }
-size_t named_pipe_input_thread::read_block_from_pipe(char* buffer) {
-	pipe_ptr->read(buffer, block_buffer_size);
+size_t named_pipe_input_thread::read_package_from_pipe(char* buffer,size_t package_size) {
+	if (!pipe_ptr->read(buffer, package_size)) {
+		mutex_packages.lock();
+		all_data_received = true;
+		mutex_packages.unlock();
+		return 0;
+	}
 	return pipe_ptr->gcount();
 }
 void named_pipe_input_thread::close() 
@@ -249,12 +284,11 @@ void named_pipe_input_thread::close()
 		pipe_ptr = 0;	
 	}
 }
-named_pipe_input_thread::named_pipe_input_thread(const std::string& _pipe_name, bool is_binary, size_t _block_size,
-												 unsigned _ms_to_wait)
-	: queued_input_thread(is_binary, _ms_to_wait)
+named_pipe_input_thread::named_pipe_input_thread(const std::string& _pipe_name, bool is_binary,
+						size_t _package_size, size_t _packeges_per_block, unsigned _ms_to_wait)
+	: queued_input_thread(is_binary,_package_size,_packeges_per_block, _ms_to_wait)
 {
 	pipe_name = _pipe_name;
-	set_block_buffer_size(_block_size);
 }
 std::string named_pipe_input_thread::get_pipe_path() const 
 { 
@@ -264,18 +298,24 @@ bool pipe_input_thread::connect_to_source() {
 	fp = cgv::os::open_system_output(cmd, is_binary);
 	return fp != 0;
 }
-size_t pipe_input_thread::read_block_from_pipe(char* buffer) { 
-	fread(buffer, 1, block_buffer_size, fp);
-	return block_buffer_size;
+size_t pipe_input_thread::read_package_from_pipe(char* buffer, size_t package_size)
+{ 
+	if (!fread(buffer, 1, package_size, fp)) {
+		mutex_packages.lock();
+		all_data_received = true;
+		mutex_packages.unlock();
+		return 0;
+	}
+	return package_size;
 }
 void pipe_input_thread::close() 
 { 
 	result = cgv::os::close_system_input(fp); 
 }
-pipe_input_thread::pipe_input_thread(const std::string& _cmd, bool is_binary, size_t _block_size, unsigned _ms_to_wait)
+pipe_input_thread::pipe_input_thread(const std::string& _cmd, bool is_binary, size_t _package_size,size_t _packages_per_block, unsigned _ms_to_wait)
+	: queued_input_thread(is_binary, _package_size, _packages_per_block, _ms_to_wait)
 {
 	cmd = _cmd;
-	set_block_buffer_size(_block_size);
 }
 int pipe_input_thread::get_result() const { 
 	return result; 
