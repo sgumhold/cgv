@@ -378,7 +378,9 @@ bool fltk_driver::enumerate_monitors(std::vector<monitor_description>& monitor_d
 void fltk_driver::set_context_creation_attrib_list(cgv::render::context_config& cc)
 {
 	const fltk::GlWindow* window = static_cast<const fltk::GlWindow*>(static_cast<const fltk_gl_view*>(&cc));
+#ifdef _WIN32
 	fltk::GlChoice::ref_gl_context_attrib_list(window) = cgv::render::gl::get_context_creation_attrib_list(cc);
+#endif
 }
 
 /// create a window of the given type. Currently only the types "viewer with gui", "viewer" and "gui" are supported
