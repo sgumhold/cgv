@@ -1456,18 +1456,18 @@ void holo_view_interactor::draw_focus()
 	glLineWidth(1.0f);
 	glColor3f(0.5f, 0.5f, 0.5f);
 	glBegin(GL_LINES);
-	glVertex3dv(get_focus());
-	glVertex3dv(get_focus() + dvec3(0.5 * get_y_extent_at_focus(), 0, 0));
-	glVertex3dv(get_focus());
-	glVertex3dv(get_focus() + dvec3(0, 0.5 * get_y_extent_at_focus(), 0));
-	glVertex3dv(get_focus());
-	glVertex3dv(get_focus() + dvec3(0, 0, 0.5 * get_y_extent_at_focus()));
-	glVertex3dv(get_focus());
-	glVertex3dv(get_focus() + dvec3(-0.5 * get_y_extent_at_focus(), 0, 0));
-	glVertex3dv(get_focus());
-	glVertex3dv(get_focus() + dvec3(0, -0.5 * get_y_extent_at_focus(), 0));
-	glVertex3dv(get_focus());
-	glVertex3dv(get_focus() + dvec3(0, 0, -0.5 * get_y_extent_at_focus()));
+	glVertex3dv(get_focus().data());
+	glVertex3dv((get_focus() + dvec3(0.5 * get_y_extent_at_focus(), 0, 0)).data());
+	glVertex3dv(get_focus().data());
+	glVertex3dv((get_focus() + dvec3(0, 0.5 * get_y_extent_at_focus(), 0)).data());
+	glVertex3dv(get_focus().data());
+	glVertex3dv((get_focus() + dvec3(0, 0, 0.5 * get_y_extent_at_focus())).data());
+	glVertex3dv(get_focus().data());
+	glVertex3dv((get_focus() + dvec3(-0.5 * get_y_extent_at_focus(), 0, 0)).data());
+	glVertex3dv(get_focus().data());
+	glVertex3dv((get_focus() + dvec3(0, -0.5 * get_y_extent_at_focus(), 0)).data());
+	glVertex3dv(get_focus().data());
+	glVertex3dv((get_focus() + dvec3(0, 0, -0.5 * get_y_extent_at_focus())).data());
 	glEnd();
 }
 
