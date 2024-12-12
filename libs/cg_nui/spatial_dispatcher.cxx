@@ -166,7 +166,7 @@ namespace cgv {
 					int ci = vrpe.get_trackable_index();
 					if (ci >= 0 && ci <= 1) {
 						gi.check_intersection = rfi.foc_info_ptr->config.spatial.pointing && ctrl_infos[ci].pointing;
-						vrpe.get_state().controller[ci].put_ray(gi.inter_info.ray_origin, gi.inter_info.ray_direction);
+						vrpe.get_state().controller[ci].put_ray(gi.inter_info.ray_origin.data(), gi.inter_info.ray_direction.data());
 						gi.check_proximity = rfi.foc_info_ptr->config.spatial.proximity && ctrl_infos[ci].grabbing;
 						gi.prox_info.query_point = gi.inter_info.ray_origin + max_grabbing_distance*gi.inter_info.ray_direction;
 						gi.inter_info.ray_origin += (ctrl_infos[ci].grabbing ? min_pointing_distance : 0.0f) * gi.inter_info.ray_direction;
