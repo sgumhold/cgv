@@ -79,6 +79,8 @@
 # define GLContext GLXContext
 #endif
 
+#include <vector>
+
 namespace fltk {
 
 // Describes crap needed to create a GLContext.
@@ -97,7 +99,7 @@ public:
 #endif
   // Return one of these structures for a given gl mode, or null if impossible:
   static GlChoice *find(int mode);
-  static int*& ref_attrib_list();
+  static std::vector<int>& ref_gl_context_attrib_list(const Window* window = 0);
   int get_mode() const { return mode; }
 };
 
