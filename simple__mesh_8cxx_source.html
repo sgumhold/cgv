@@ -991,390 +991,391 @@ $(document).ready(function(){initNavTree('simple__mesh_8cxx_source.html',''); in
 <div class="line"><a name="l00924"></a><span class="lineno">  924</span>&#160;{</div>
 <div class="line"><a name="l00925"></a><span class="lineno">  925</span>&#160;    <span class="keywordflow">if</span> (construct_normal_indices)</div>
 <div class="line"><a name="l00926"></a><span class="lineno">  926</span>&#160;        normal_indices.<a class="code" href="classcgv_1_1media_1_1mesh_1_1simple__mesh.html#a88800d4267ac06965741621cda81cc63">clear</a>();</div>
-<div class="line"><a name="l00927"></a><span class="lineno">  927</span>&#160;    <span class="comment">// compute per face normals</span></div>
-<div class="line"><a name="l00928"></a><span class="lineno">  928</span>&#160;    <span class="keywordflow">for</span> (uint32_t fi = 0; fi &lt; get_nr_faces(); ++fi) {</div>
-<div class="line"><a name="l00929"></a><span class="lineno">  929</span>&#160;        <a class="code" href="classcgv_1_1math_1_1fvec.html">vec3</a> nml = <a class="code" href="classcgv_1_1math_1_1fvec.html">vec3</a>(T(1),0,0);</div>
-<div class="line"><a name="l00930"></a><span class="lineno">  930</span>&#160;        compute_face_normal(fi, nml);</div>
-<div class="line"><a name="l00931"></a><span class="lineno">  931</span>&#160;        uint32_t ni = new_normal(nml);</div>
-<div class="line"><a name="l00932"></a><span class="lineno">  932</span>&#160;        <span class="keywordflow">if</span> (construct_normal_indices) {</div>
-<div class="line"><a name="l00933"></a><span class="lineno">  933</span>&#160;            <span class="keywordflow">for</span> (<a class="code" href="classcgv_1_1media_1_1mesh_1_1simple__mesh__base.html#a0eb0181dc49db651e738bd0e66d1f0e6">idx_type</a> ci = begin_corner(fi); ci &lt; end_corner(fi); ++ci) {</div>
-<div class="line"><a name="l00934"></a><span class="lineno">  934</span>&#160;                normal_indices.push_back(ni);</div>
-<div class="line"><a name="l00935"></a><span class="lineno">  935</span>&#160;            }</div>
-<div class="line"><a name="l00936"></a><span class="lineno">  936</span>&#160;        }</div>
-<div class="line"><a name="l00937"></a><span class="lineno">  937</span>&#160;    }</div>
-<div class="line"><a name="l00938"></a><span class="lineno">  938</span>&#160;}</div>
-<div class="line"><a name="l00939"></a><span class="lineno">  939</span>&#160;<span class="keyword">template</span> &lt;<span class="keyword">typename</span> T&gt; <span class="keyword">typename</span> <a class="code" href="classcgv_1_1media_1_1mesh_1_1simple__mesh.html">simple_mesh&lt;T&gt;::vec3</a> <a class="code" href="classcgv_1_1media_1_1mesh_1_1simple__mesh.html">simple_mesh&lt;T&gt;::compute_normal</a>(<span class="keyword">const</span> <a class="code" href="classcgv_1_1math_1_1fvec.html">vec3</a>&amp; p0, <span class="keyword">const</span> <a class="code" href="classcgv_1_1math_1_1fvec.html">vec3</a>&amp; p1, <span class="keyword">const</span> <a class="code" href="classcgv_1_1math_1_1fvec.html">vec3</a>&amp; p2)</div>
-<div class="line"><a name="l00940"></a><span class="lineno">  940</span>&#160;{</div>
-<div class="line"><a name="l00941"></a><span class="lineno">  941</span>&#160;    <span class="keywordflow">return</span> normalize(cross(p1 - p0, p2 - p0));</div>
-<div class="line"><a name="l00942"></a><span class="lineno">  942</span>&#160;}</div>
-<div class="line"><a name="l00943"></a><span class="lineno"><a class="line" href="classcgv_1_1media_1_1mesh_1_1simple__mesh.html#a6c144f392baf70203d61b16741315f6d">  943</a></span>&#160;<span class="keyword">template</span> &lt;<span class="keyword">typename</span> T&gt; <span class="keywordtype">void</span> <a class="code" href="classcgv_1_1media_1_1mesh_1_1simple__mesh.html">simple_mesh&lt;T&gt;::compute_face_tangents</a>(<span class="keywordtype">bool</span> construct_tangent_indices) {</div>
-<div class="line"><a name="l00944"></a><span class="lineno">  944</span>&#160;    <span class="comment">// compute per face tangents</span></div>
-<div class="line"><a name="l00945"></a><span class="lineno">  945</span>&#160;    <span class="keywordflow">if</span>(!has_tex_coords())</div>
-<div class="line"><a name="l00946"></a><span class="lineno">  946</span>&#160;        <span class="keywordflow">return</span>;</div>
-<div class="line"><a name="l00947"></a><span class="lineno">  947</span>&#160; </div>
-<div class="line"><a name="l00948"></a><span class="lineno">  948</span>&#160;    <span class="keywordflow">for</span>(uint32_t fi = 0; fi &lt; get_nr_faces(); ++fi) {</div>
-<div class="line"><a name="l00949"></a><span class="lineno">  949</span>&#160;        std::vector&lt;vec3&gt; _P;</div>
-<div class="line"><a name="l00950"></a><span class="lineno">  950</span>&#160;        std::vector&lt;vec2&gt; _T;</div>
-<div class="line"><a name="l00951"></a><span class="lineno">  951</span>&#160;        <a class="code" href="classcgv_1_1math_1_1fvec.html">vec3</a> ctr(0.0f);</div>
-<div class="line"><a name="l00952"></a><span class="lineno">  952</span>&#160;        uint32_t ci, nr = 0;</div>
-<div class="line"><a name="l00953"></a><span class="lineno">  953</span>&#160;        <span class="keywordflow">for</span>(ci = begin_corner(fi); ci &lt; end_corner(fi); ++ci) {</div>
-<div class="line"><a name="l00954"></a><span class="lineno">  954</span>&#160;            _P.push_back(position(c2p(ci)));</div>
-<div class="line"><a name="l00955"></a><span class="lineno">  955</span>&#160;            _T.push_back(tex_coord(c2t(ci)));</div>
-<div class="line"><a name="l00956"></a><span class="lineno">  956</span>&#160;            ctr += _P.back();</div>
-<div class="line"><a name="l00957"></a><span class="lineno">  957</span>&#160;            ++nr;</div>
-<div class="line"><a name="l00958"></a><span class="lineno">  958</span>&#160;        }</div>
-<div class="line"><a name="l00959"></a><span class="lineno">  959</span>&#160;        <a class="code" href="classcgv_1_1math_1_1fvec.html">vec3</a> tng(1.0f, 0.0f, 0.0f);</div>
-<div class="line"><a name="l00960"></a><span class="lineno">  960</span>&#160;        <span class="comment">// calculate tangents for faces with at least three corners</span></div>
-<div class="line"><a name="l00961"></a><span class="lineno">  961</span>&#160;        <span class="comment">// for more than 3 corners only use the first two edges and assume the face to be planar</span></div>
-<div class="line"><a name="l00962"></a><span class="lineno">  962</span>&#160;        <span class="keywordflow">if</span>(_P.size() &gt; 2) {</div>
-<div class="line"><a name="l00963"></a><span class="lineno">  963</span>&#160;            <a class="code" href="classcgv_1_1math_1_1fvec.html">vec3</a> edge0 = _P[1] - _P[0];</div>
-<div class="line"><a name="l00964"></a><span class="lineno">  964</span>&#160;            <a class="code" href="classcgv_1_1math_1_1fvec.html">vec3</a> edge1 = _P[2] - _P[0];</div>
-<div class="line"><a name="l00965"></a><span class="lineno">  965</span>&#160;            <a class="code" href="classcgv_1_1math_1_1fvec.html">vec2</a> delta_uv0 = _T[1] - _T[0];</div>
-<div class="line"><a name="l00966"></a><span class="lineno">  966</span>&#160;            <a class="code" href="classcgv_1_1math_1_1fvec.html">vec2</a> delta_uv1 = _T[2] - _T[0];</div>
-<div class="line"><a name="l00967"></a><span class="lineno">  967</span>&#160; </div>
-<div class="line"><a name="l00968"></a><span class="lineno">  968</span>&#160;            <span class="keywordtype">float</span> dir_correction = (delta_uv1.<a class="code" href="classcgv_1_1math_1_1fvec.html#a306998e8905416d17894fd66d8a15b0b">x</a>() * delta_uv0.<a class="code" href="classcgv_1_1math_1_1fvec.html#a8d199c8049b2ed5806be3c3af7d2860e">y</a>() - delta_uv1.<a class="code" href="classcgv_1_1math_1_1fvec.html#a8d199c8049b2ed5806be3c3af7d2860e">y</a>() * delta_uv0.<a class="code" href="classcgv_1_1math_1_1fvec.html#a306998e8905416d17894fd66d8a15b0b">x</a>()) &lt; 0.0f ? -1.0f : 1.0f;</div>
-<div class="line"><a name="l00969"></a><span class="lineno">  969</span>&#160; </div>
-<div class="line"><a name="l00970"></a><span class="lineno">  970</span>&#160;            <span class="comment">// when t1, t2, t3 in same position in UV space, just use default UV direction.</span></div>
-<div class="line"><a name="l00971"></a><span class="lineno">  971</span>&#160;            <span class="keywordflow">if</span>(delta_uv0.<a class="code" href="classcgv_1_1math_1_1fvec.html#a306998e8905416d17894fd66d8a15b0b">x</a>() * delta_uv1.<a class="code" href="classcgv_1_1math_1_1fvec.html#a8d199c8049b2ed5806be3c3af7d2860e">y</a>() == delta_uv0.<a class="code" href="classcgv_1_1math_1_1fvec.html#a8d199c8049b2ed5806be3c3af7d2860e">y</a>() * delta_uv1.<a class="code" href="classcgv_1_1math_1_1fvec.html#a306998e8905416d17894fd66d8a15b0b">x</a>()) {</div>
-<div class="line"><a name="l00972"></a><span class="lineno">  972</span>&#160;                delta_uv0.<a class="code" href="classcgv_1_1math_1_1fvec.html#a306998e8905416d17894fd66d8a15b0b">x</a>() = 0.0f;</div>
-<div class="line"><a name="l00973"></a><span class="lineno">  973</span>&#160;                delta_uv0.<a class="code" href="classcgv_1_1math_1_1fvec.html#a8d199c8049b2ed5806be3c3af7d2860e">y</a>() = 1.0f;</div>
-<div class="line"><a name="l00974"></a><span class="lineno">  974</span>&#160;                delta_uv1.<a class="code" href="classcgv_1_1math_1_1fvec.html#a306998e8905416d17894fd66d8a15b0b">x</a>() = 1.0f;</div>
-<div class="line"><a name="l00975"></a><span class="lineno">  975</span>&#160;                delta_uv1.<a class="code" href="classcgv_1_1math_1_1fvec.html#a8d199c8049b2ed5806be3c3af7d2860e">y</a>() = 0.0f;</div>
-<div class="line"><a name="l00976"></a><span class="lineno">  976</span>&#160;            }</div>
-<div class="line"><a name="l00977"></a><span class="lineno">  977</span>&#160; </div>
-<div class="line"><a name="l00978"></a><span class="lineno">  978</span>&#160;            tng.<a class="code" href="classcgv_1_1math_1_1fvec.html#a306998e8905416d17894fd66d8a15b0b">x</a>() = delta_uv0.<a class="code" href="classcgv_1_1math_1_1fvec.html#a8d199c8049b2ed5806be3c3af7d2860e">y</a>() * edge1.<a class="code" href="classcgv_1_1math_1_1fvec.html#a306998e8905416d17894fd66d8a15b0b">x</a>() - delta_uv1.<a class="code" href="classcgv_1_1math_1_1fvec.html#a8d199c8049b2ed5806be3c3af7d2860e">y</a>() * edge0.<a class="code" href="classcgv_1_1math_1_1fvec.html#a306998e8905416d17894fd66d8a15b0b">x</a>();</div>
-<div class="line"><a name="l00979"></a><span class="lineno">  979</span>&#160;            tng.<a class="code" href="classcgv_1_1math_1_1fvec.html#a8d199c8049b2ed5806be3c3af7d2860e">y</a>() = delta_uv0.<a class="code" href="classcgv_1_1math_1_1fvec.html#a8d199c8049b2ed5806be3c3af7d2860e">y</a>() * edge1.<a class="code" href="classcgv_1_1math_1_1fvec.html#a8d199c8049b2ed5806be3c3af7d2860e">y</a>() - delta_uv1.<a class="code" href="classcgv_1_1math_1_1fvec.html#a8d199c8049b2ed5806be3c3af7d2860e">y</a>() * edge0.<a class="code" href="classcgv_1_1math_1_1fvec.html#a8d199c8049b2ed5806be3c3af7d2860e">y</a>();</div>
-<div class="line"><a name="l00980"></a><span class="lineno">  980</span>&#160;            tng.<a class="code" href="classcgv_1_1math_1_1fvec.html#a37ec1163fda9dd3f48f863333d2bfa19">z</a>() = delta_uv0.<a class="code" href="classcgv_1_1math_1_1fvec.html#a8d199c8049b2ed5806be3c3af7d2860e">y</a>() * edge1.<a class="code" href="classcgv_1_1math_1_1fvec.html#a37ec1163fda9dd3f48f863333d2bfa19">z</a>() - delta_uv1.<a class="code" href="classcgv_1_1math_1_1fvec.html#a8d199c8049b2ed5806be3c3af7d2860e">y</a>() * edge0.<a class="code" href="classcgv_1_1math_1_1fvec.html#a37ec1163fda9dd3f48f863333d2bfa19">z</a>();</div>
-<div class="line"><a name="l00981"></a><span class="lineno">  981</span>&#160;            tng *= dir_correction;</div>
-<div class="line"><a name="l00982"></a><span class="lineno">  982</span>&#160;        } <span class="keywordflow">else</span> {</div>
-<div class="line"><a name="l00983"></a><span class="lineno">  983</span>&#160;            std::cout &lt;&lt; <span class="stringliteral">&quot;could not compute tangent for non-triangular face&quot;</span> &lt;&lt; std::endl;</div>
-<div class="line"><a name="l00984"></a><span class="lineno">  984</span>&#160;        }</div>
-<div class="line"><a name="l00985"></a><span class="lineno">  985</span>&#160; </div>
-<div class="line"><a name="l00986"></a><span class="lineno">  986</span>&#160;        tng.<a class="code" href="classcgv_1_1math_1_1fvec.html#a170e4ee6c48d7bfc16d4a89c0bbf3f8b">normalize</a>();</div>
-<div class="line"><a name="l00987"></a><span class="lineno">  987</span>&#160;        uint32_t ti = new_tangent(tng);</div>
-<div class="line"><a name="l00988"></a><span class="lineno">  988</span>&#160;        <span class="keywordflow">if</span>(construct_tangent_indices) {</div>
-<div class="line"><a name="l00989"></a><span class="lineno">  989</span>&#160;            <span class="keywordflow">for</span>(ci = begin_corner(fi); ci &lt; end_corner(fi); ++ci) {</div>
-<div class="line"><a name="l00990"></a><span class="lineno">  990</span>&#160;                tangent_indices.push_back(ti);</div>
-<div class="line"><a name="l00991"></a><span class="lineno">  991</span>&#160;            }</div>
-<div class="line"><a name="l00992"></a><span class="lineno">  992</span>&#160;        }</div>
-<div class="line"><a name="l00993"></a><span class="lineno">  993</span>&#160;    }</div>
-<div class="line"><a name="l00994"></a><span class="lineno">  994</span>&#160;}</div>
-<div class="line"><a name="l00995"></a><span class="lineno">  995</span>&#160; </div>
-<div class="line"><a name="l00996"></a><span class="lineno"><a class="line" href="classcgv_1_1media_1_1mesh_1_1simple__mesh.html#a44c75c9157ed9f86e0c69a583eacfb26">  996</a></span>&#160;<span class="keyword">template</span> &lt;<span class="keyword">typename</span> T&gt; <a class="code" href="classcgv_1_1media_1_1mesh_1_1simple__mesh.html">simple_mesh&lt;T&gt;::simple_mesh</a>(<span class="keyword">const</span> std::string&amp; conway_notation)</div>
-<div class="line"><a name="l00997"></a><span class="lineno">  997</span>&#160;{</div>
-<div class="line"><a name="l00998"></a><span class="lineno">  998</span>&#160;    <span class="keywordflow">if</span> (!conway_notation.empty())</div>
-<div class="line"><a name="l00999"></a><span class="lineno">  999</span>&#160;        construct_conway_polyhedron(conway_notation);</div>
-<div class="line"><a name="l01000"></a><span class="lineno"> 1000</span>&#160;}</div>
-<div class="line"><a name="l01001"></a><span class="lineno"><a class="line" href="classcgv_1_1media_1_1mesh_1_1simple__mesh.html#a51234fbc0d5c740aa2b26385c1156a36"> 1001</a></span>&#160;<span class="keyword">template</span> &lt;<span class="keyword">typename</span> T&gt; <span class="keywordtype">void</span> <a class="code" href="classcgv_1_1media_1_1mesh_1_1simple__mesh.html">simple_mesh&lt;T&gt;::ambo</a>()</div>
-<div class="line"><a name="l01002"></a><span class="lineno"> 1002</span>&#160;{</div>
-<div class="line"><a name="l01003"></a><span class="lineno"> 1003</span>&#160;    std::vector&lt;uint32_t&gt; c2e;</div>
-<div class="line"><a name="l01004"></a><span class="lineno"> 1004</span>&#160;    std::vector&lt;uint32_t&gt; e2c;</div>
-<div class="line"><a name="l01005"></a><span class="lineno"> 1005</span>&#160;    std::vector&lt;uint32_t&gt; inv;</div>
-<div class="line"><a name="l01006"></a><span class="lineno"> 1006</span>&#160;    std::vector&lt;uint32_t&gt; prev;</div>
-<div class="line"><a name="l01007"></a><span class="lineno"> 1007</span>&#160;    std::vector&lt;uint32_t&gt; p2c;</div>
-<div class="line"><a name="l01008"></a><span class="lineno"> 1008</span>&#160;    compute_inv(inv, &amp;p2c, 0, &amp;prev);</div>
-<div class="line"><a name="l01009"></a><span class="lineno"> 1009</span>&#160;    uint32_t e = compute_c2e(inv, c2e, &amp;e2c);</div>
-<div class="line"><a name="l01010"></a><span class="lineno"> 1010</span>&#160;    <a class="code" href="classcgv_1_1media_1_1mesh_1_1simple__mesh.html">mesh_type</a> new_M;</div>
-<div class="line"><a name="l01011"></a><span class="lineno"> 1011</span>&#160;    <span class="comment">// create one vertex per edge</span></div>
-<div class="line"><a name="l01012"></a><span class="lineno"> 1012</span>&#160;    <span class="keywordflow">for</span> (uint32_t ei = 0; ei &lt; e; ++ei) {</div>
-<div class="line"><a name="l01013"></a><span class="lineno"> 1013</span>&#160;        uint32_t pi = c2p(e2c[ei]);</div>
-<div class="line"><a name="l01014"></a><span class="lineno"> 1014</span>&#160;        uint32_t pj = c2p(inv[e2c[ei]]);</div>
-<div class="line"><a name="l01015"></a><span class="lineno"> 1015</span>&#160;        new_M.<a class="code" href="classcgv_1_1media_1_1mesh_1_1simple__mesh.html#a263f989e34397ba19477aca0e1ea4e75">new_position</a>(normalize(position(pi) + position(pj)));</div>
-<div class="line"><a name="l01016"></a><span class="lineno"> 1016</span>&#160;    }</div>
-<div class="line"><a name="l01017"></a><span class="lineno"> 1017</span>&#160;    <span class="comment">// create one face for original faces</span></div>
-<div class="line"><a name="l01018"></a><span class="lineno"> 1018</span>&#160;    <span class="keywordflow">for</span> (uint32_t fi = 0; fi &lt; get_nr_faces(); ++fi) {</div>
-<div class="line"><a name="l01019"></a><span class="lineno"> 1019</span>&#160;        uint32_t new_fi = new_M.<a class="code" href="classcgv_1_1media_1_1mesh_1_1simple__mesh__base.html#a58ec8ca84b58127b2579294cb0606433">start_face</a>();</div>
-<div class="line"><a name="l01020"></a><span class="lineno"> 1020</span>&#160;        <span class="keywordflow">for</span> (uint32_t ci = begin_corner(fi); ci &lt; end_corner(fi); ++ci)</div>
-<div class="line"><a name="l01021"></a><span class="lineno"> 1021</span>&#160;            new_M.<a class="code" href="classcgv_1_1media_1_1mesh_1_1simple__mesh__base.html#acc42be4837826d4977a349316f1585b8">new_corner</a>(c2e[ci], new_fi);</div>
-<div class="line"><a name="l01022"></a><span class="lineno"> 1022</span>&#160;    }</div>
-<div class="line"><a name="l01023"></a><span class="lineno"> 1023</span>&#160;    <span class="comment">// create one face for original vertices</span></div>
-<div class="line"><a name="l01024"></a><span class="lineno"> 1024</span>&#160;    <span class="keywordflow">for</span> (uint32_t pi = 0; pi &lt; get_nr_positions(); ++pi) {</div>
-<div class="line"><a name="l01025"></a><span class="lineno"> 1025</span>&#160;        uint32_t c0 = p2c[pi];</div>
-<div class="line"><a name="l01026"></a><span class="lineno"> 1026</span>&#160;        uint32_t ci = c0;</div>
-<div class="line"><a name="l01027"></a><span class="lineno"> 1027</span>&#160;        uint32_t new_fi = new_M.<a class="code" href="classcgv_1_1media_1_1mesh_1_1simple__mesh__base.html#a58ec8ca84b58127b2579294cb0606433">start_face</a>();</div>
-<div class="line"><a name="l01028"></a><span class="lineno"> 1028</span>&#160;        <span class="keywordflow">do</span> {</div>
-<div class="line"><a name="l01029"></a><span class="lineno"> 1029</span>&#160;            new_M.<a class="code" href="classcgv_1_1media_1_1mesh_1_1simple__mesh__base.html#acc42be4837826d4977a349316f1585b8">new_corner</a>(c2e[ci], new_fi);</div>
-<div class="line"><a name="l01030"></a><span class="lineno"> 1030</span>&#160;            ci = prev[ci];</div>
-<div class="line"><a name="l01031"></a><span class="lineno"> 1031</span>&#160;            ci = inv[ci];</div>
-<div class="line"><a name="l01032"></a><span class="lineno"> 1032</span>&#160;        } <span class="keywordflow">while</span> (ci != c0);</div>
-<div class="line"><a name="l01033"></a><span class="lineno"> 1033</span>&#160;    }</div>
-<div class="line"><a name="l01034"></a><span class="lineno"> 1034</span>&#160;    new_M.<a class="code" href="classcgv_1_1media_1_1mesh_1_1simple__mesh.html#a0fefda5b4672d686ce645774f5d9530f">compute_face_normals</a>();</div>
-<div class="line"><a name="l01035"></a><span class="lineno"> 1035</span>&#160;    *<span class="keyword">this</span> = new_M;</div>
-<div class="line"><a name="l01036"></a><span class="lineno"> 1036</span>&#160;}</div>
-<div class="line"><a name="l01037"></a><span class="lineno"><a class="line" href="classcgv_1_1media_1_1mesh_1_1simple__mesh.html#a6b5c3e0092587d5357b60f088589c0d4"> 1037</a></span>&#160;<span class="keyword">template</span> &lt;<span class="keyword">typename</span> T&gt; <span class="keywordtype">void</span> <a class="code" href="classcgv_1_1media_1_1mesh_1_1simple__mesh.html">simple_mesh&lt;T&gt;::truncate</a>(T lambda)</div>
-<div class="line"><a name="l01038"></a><span class="lineno"> 1038</span>&#160;{</div>
-<div class="line"><a name="l01039"></a><span class="lineno"> 1039</span>&#160;    std::vector&lt;uint32_t&gt; inv;</div>
-<div class="line"><a name="l01040"></a><span class="lineno"> 1040</span>&#160;    std::vector&lt;uint32_t&gt; prev;</div>
-<div class="line"><a name="l01041"></a><span class="lineno"> 1041</span>&#160;    std::vector&lt;uint32_t&gt; p2c;</div>
-<div class="line"><a name="l01042"></a><span class="lineno"> 1042</span>&#160;    compute_inv(inv, &amp;p2c, 0, &amp;prev);</div>
-<div class="line"><a name="l01043"></a><span class="lineno"> 1043</span>&#160;    uint32_t c = get_nr_corners();</div>
-<div class="line"><a name="l01044"></a><span class="lineno"> 1044</span>&#160;    <a class="code" href="classcgv_1_1media_1_1mesh_1_1simple__mesh.html">mesh_type</a> new_M;</div>
-<div class="line"><a name="l01045"></a><span class="lineno"> 1045</span>&#160;    <span class="comment">// create one vertex per corner</span></div>
-<div class="line"><a name="l01046"></a><span class="lineno"> 1046</span>&#160;    <span class="keywordflow">for</span> (uint32_t ci = 0; ci &lt; c; ++ci) {</div>
-<div class="line"><a name="l01047"></a><span class="lineno"> 1047</span>&#160;        uint32_t pi = c2p(ci);</div>
-<div class="line"><a name="l01048"></a><span class="lineno"> 1048</span>&#160;        uint32_t pj = c2p(inv[ci]);</div>
-<div class="line"><a name="l01049"></a><span class="lineno"> 1049</span>&#160;        new_M.<a class="code" href="classcgv_1_1media_1_1mesh_1_1simple__mesh.html#a263f989e34397ba19477aca0e1ea4e75">new_position</a>(normalize((1 - lambda) * position(pi) + lambda * position(pj)));</div>
-<div class="line"><a name="l01050"></a><span class="lineno"> 1050</span>&#160;    }</div>
-<div class="line"><a name="l01051"></a><span class="lineno"> 1051</span>&#160;    <span class="comment">// create one face for original faces</span></div>
-<div class="line"><a name="l01052"></a><span class="lineno"> 1052</span>&#160;    <span class="keywordflow">for</span> (uint32_t fi = 0; fi &lt; get_nr_faces(); ++fi) {</div>
-<div class="line"><a name="l01053"></a><span class="lineno"> 1053</span>&#160;        uint32_t new_fi = new_M.<a class="code" href="classcgv_1_1media_1_1mesh_1_1simple__mesh__base.html#a58ec8ca84b58127b2579294cb0606433">start_face</a>();</div>
-<div class="line"><a name="l01054"></a><span class="lineno"> 1054</span>&#160;        <span class="keywordflow">for</span> (uint32_t ci = begin_corner(fi); ci &lt; end_corner(fi); ++ci) {</div>
-<div class="line"><a name="l01055"></a><span class="lineno"> 1055</span>&#160;            new_M.<a class="code" href="classcgv_1_1media_1_1mesh_1_1simple__mesh__base.html#acc42be4837826d4977a349316f1585b8">new_corner</a>(ci, new_fi);</div>
-<div class="line"><a name="l01056"></a><span class="lineno"> 1056</span>&#160;            new_M.<a class="code" href="classcgv_1_1media_1_1mesh_1_1simple__mesh__base.html#acc42be4837826d4977a349316f1585b8">new_corner</a>(inv[ci], new_fi);</div>
-<div class="line"><a name="l01057"></a><span class="lineno"> 1057</span>&#160;        }</div>
-<div class="line"><a name="l01058"></a><span class="lineno"> 1058</span>&#160;    }</div>
-<div class="line"><a name="l01059"></a><span class="lineno"> 1059</span>&#160;    <span class="comment">// create one face for original vertices</span></div>
-<div class="line"><a name="l01060"></a><span class="lineno"> 1060</span>&#160;    <span class="keywordflow">for</span> (uint32_t pi = 0; pi &lt; get_nr_positions(); ++pi) {</div>
-<div class="line"><a name="l01061"></a><span class="lineno"> 1061</span>&#160;        uint32_t c0 = p2c[pi];</div>
-<div class="line"><a name="l01062"></a><span class="lineno"> 1062</span>&#160;        uint32_t ci = c0;</div>
-<div class="line"><a name="l01063"></a><span class="lineno"> 1063</span>&#160;        uint32_t new_fi = new_M.<a class="code" href="classcgv_1_1media_1_1mesh_1_1simple__mesh__base.html#a58ec8ca84b58127b2579294cb0606433">start_face</a>();</div>
-<div class="line"><a name="l01064"></a><span class="lineno"> 1064</span>&#160;        <span class="keywordflow">do</span> {</div>
-<div class="line"><a name="l01065"></a><span class="lineno"> 1065</span>&#160;            new_M.<a class="code" href="classcgv_1_1media_1_1mesh_1_1simple__mesh__base.html#acc42be4837826d4977a349316f1585b8">new_corner</a>(ci, new_fi);</div>
-<div class="line"><a name="l01066"></a><span class="lineno"> 1066</span>&#160;            ci = prev[ci];</div>
-<div class="line"><a name="l01067"></a><span class="lineno"> 1067</span>&#160;            ci = inv[ci];</div>
-<div class="line"><a name="l01068"></a><span class="lineno"> 1068</span>&#160;        } <span class="keywordflow">while</span> (ci != c0);</div>
-<div class="line"><a name="l01069"></a><span class="lineno"> 1069</span>&#160;    }</div>
-<div class="line"><a name="l01070"></a><span class="lineno"> 1070</span>&#160;    new_M.<a class="code" href="classcgv_1_1media_1_1mesh_1_1simple__mesh.html#a0fefda5b4672d686ce645774f5d9530f">compute_face_normals</a>();</div>
-<div class="line"><a name="l01071"></a><span class="lineno"> 1071</span>&#160;    *<span class="keyword">this</span> = new_M;</div>
-<div class="line"><a name="l01072"></a><span class="lineno"> 1072</span>&#160;}</div>
-<div class="line"><a name="l01073"></a><span class="lineno"><a class="line" href="classcgv_1_1media_1_1mesh_1_1simple__mesh.html#a933a4d71daf16b234db4cbddefc2d9cd"> 1073</a></span>&#160;<span class="keyword">template</span> &lt;<span class="keyword">typename</span> T&gt; <span class="keywordtype">void</span> <a class="code" href="classcgv_1_1media_1_1mesh_1_1simple__mesh.html">simple_mesh&lt;T&gt;::snub</a>(T lambda)</div>
-<div class="line"><a name="l01074"></a><span class="lineno"> 1074</span>&#160;{</div>
-<div class="line"><a name="l01075"></a><span class="lineno"> 1075</span>&#160;    std::vector&lt;uint32_t&gt; inv;</div>
-<div class="line"><a name="l01076"></a><span class="lineno"> 1076</span>&#160;    std::vector&lt;uint32_t&gt; prev;</div>
-<div class="line"><a name="l01077"></a><span class="lineno"> 1077</span>&#160;    std::vector&lt;uint32_t&gt; p2c;</div>
-<div class="line"><a name="l01078"></a><span class="lineno"> 1078</span>&#160;    compute_inv(inv, &amp;p2c, 0, &amp;prev);</div>
-<div class="line"><a name="l01079"></a><span class="lineno"> 1079</span>&#160;    uint32_t c = get_nr_corners();</div>
-<div class="line"><a name="l01080"></a><span class="lineno"> 1080</span>&#160;    <a class="code" href="classcgv_1_1media_1_1mesh_1_1simple__mesh.html">mesh_type</a> new_M;</div>
-<div class="line"><a name="l01081"></a><span class="lineno"> 1081</span>&#160;    <span class="comment">// create one vertex per corner</span></div>
-<div class="line"><a name="l01082"></a><span class="lineno"> 1082</span>&#160;    <span class="keywordflow">for</span> (uint32_t ci = 0; ci &lt; c; ++ci) {</div>
-<div class="line"><a name="l01083"></a><span class="lineno"> 1083</span>&#160;        uint32_t pi = c2p(ci);</div>
-<div class="line"><a name="l01084"></a><span class="lineno"> 1084</span>&#160;        uint32_t pj = c2p(inv[ci]);</div>
-<div class="line"><a name="l01085"></a><span class="lineno"> 1085</span>&#160;        new_M.<a class="code" href="classcgv_1_1media_1_1mesh_1_1simple__mesh.html#a263f989e34397ba19477aca0e1ea4e75">new_position</a>(normalize((1 - lambda) * position(pi) + lambda * position(pj)));</div>
-<div class="line"><a name="l01086"></a><span class="lineno"> 1086</span>&#160;    }</div>
-<div class="line"><a name="l01087"></a><span class="lineno"> 1087</span>&#160;    <span class="comment">// create central face for original faces</span></div>
-<div class="line"><a name="l01088"></a><span class="lineno"> 1088</span>&#160;    uint32_t fi;</div>
-<div class="line"><a name="l01089"></a><span class="lineno"> 1089</span>&#160;    <span class="keywordflow">for</span> (fi = 0; fi &lt; get_nr_faces(); ++fi) {</div>
-<div class="line"><a name="l01090"></a><span class="lineno"> 1090</span>&#160;        uint32_t new_fi = new_M.<a class="code" href="classcgv_1_1media_1_1mesh_1_1simple__mesh__base.html#a58ec8ca84b58127b2579294cb0606433">start_face</a>();</div>
-<div class="line"><a name="l01091"></a><span class="lineno"> 1091</span>&#160;        <span class="keywordflow">for</span> (uint32_t ci = begin_corner(fi); ci &lt; end_corner(fi); ++ci)</div>
-<div class="line"><a name="l01092"></a><span class="lineno"> 1092</span>&#160;            new_M.<a class="code" href="classcgv_1_1media_1_1mesh_1_1simple__mesh__base.html#acc42be4837826d4977a349316f1585b8">new_corner</a>(ci, new_fi);</div>
-<div class="line"><a name="l01093"></a><span class="lineno"> 1093</span>&#160;    }</div>
-<div class="line"><a name="l01094"></a><span class="lineno"> 1094</span>&#160;    <span class="comment">// create one per corner inside original faces</span></div>
-<div class="line"><a name="l01095"></a><span class="lineno"> 1095</span>&#160;    <span class="keywordflow">for</span> (fi = 0; fi &lt; get_nr_faces(); ++fi) {</div>
-<div class="line"><a name="l01096"></a><span class="lineno"> 1096</span>&#160;        <span class="keywordflow">for</span> (uint32_t ci = begin_corner(fi); ci &lt; end_corner(fi); ++ci) {</div>
-<div class="line"><a name="l01097"></a><span class="lineno"> 1097</span>&#160;            uint32_t new_fi = new_M.<a class="code" href="classcgv_1_1media_1_1mesh_1_1simple__mesh__base.html#a58ec8ca84b58127b2579294cb0606433">start_face</a>();</div>
-<div class="line"><a name="l01098"></a><span class="lineno"> 1098</span>&#160;            uint32_t prev_ci = prev[ci];</div>
-<div class="line"><a name="l01099"></a><span class="lineno"> 1099</span>&#160;            new_M.<a class="code" href="classcgv_1_1media_1_1mesh_1_1simple__mesh__base.html#acc42be4837826d4977a349316f1585b8">new_corner</a>(prev_ci, new_fi);</div>
-<div class="line"><a name="l01100"></a><span class="lineno"> 1100</span>&#160;            new_M.<a class="code" href="classcgv_1_1media_1_1mesh_1_1simple__mesh__base.html#acc42be4837826d4977a349316f1585b8">new_corner</a>(inv[prev_ci], new_fi);</div>
-<div class="line"><a name="l01101"></a><span class="lineno"> 1101</span>&#160;            new_M.<a class="code" href="classcgv_1_1media_1_1mesh_1_1simple__mesh__base.html#acc42be4837826d4977a349316f1585b8">new_corner</a>(ci, new_fi);</div>
-<div class="line"><a name="l01102"></a><span class="lineno"> 1102</span>&#160;        }</div>
-<div class="line"><a name="l01103"></a><span class="lineno"> 1103</span>&#160;    }</div>
-<div class="line"><a name="l01104"></a><span class="lineno"> 1104</span>&#160;    <span class="comment">// create one face for original vertices</span></div>
-<div class="line"><a name="l01105"></a><span class="lineno"> 1105</span>&#160;    <span class="keywordflow">for</span> (uint32_t pi = 0; pi &lt; get_nr_positions(); ++pi) {</div>
-<div class="line"><a name="l01106"></a><span class="lineno"> 1106</span>&#160;        uint32_t c0 = p2c[pi];</div>
-<div class="line"><a name="l01107"></a><span class="lineno"> 1107</span>&#160;        uint32_t ci = c0;</div>
-<div class="line"><a name="l01108"></a><span class="lineno"> 1108</span>&#160;        uint32_t new_fi = new_M.<a class="code" href="classcgv_1_1media_1_1mesh_1_1simple__mesh__base.html#a58ec8ca84b58127b2579294cb0606433">start_face</a>();</div>
-<div class="line"><a name="l01109"></a><span class="lineno"> 1109</span>&#160;        <span class="keywordflow">do</span> {</div>
-<div class="line"><a name="l01110"></a><span class="lineno"> 1110</span>&#160;            new_M.<a class="code" href="classcgv_1_1media_1_1mesh_1_1simple__mesh__base.html#acc42be4837826d4977a349316f1585b8">new_corner</a>(ci, new_fi);</div>
-<div class="line"><a name="l01111"></a><span class="lineno"> 1111</span>&#160;            ci = prev[ci];</div>
-<div class="line"><a name="l01112"></a><span class="lineno"> 1112</span>&#160;            ci = inv[ci];</div>
-<div class="line"><a name="l01113"></a><span class="lineno"> 1113</span>&#160;        } <span class="keywordflow">while</span> (ci != c0);</div>
-<div class="line"><a name="l01114"></a><span class="lineno"> 1114</span>&#160;    }</div>
-<div class="line"><a name="l01115"></a><span class="lineno"> 1115</span>&#160;    new_M.<a class="code" href="classcgv_1_1media_1_1mesh_1_1simple__mesh.html#a0fefda5b4672d686ce645774f5d9530f">compute_face_normals</a>();</div>
-<div class="line"><a name="l01116"></a><span class="lineno"> 1116</span>&#160;    *<span class="keyword">this</span> = new_M;</div>
-<div class="line"><a name="l01117"></a><span class="lineno"> 1117</span>&#160;}</div>
-<div class="line"><a name="l01118"></a><span class="lineno"><a class="line" href="classcgv_1_1media_1_1mesh_1_1simple__mesh.html#af83e9d1812f7cd899c9fbff880f7bafd"> 1118</a></span>&#160;<span class="keyword">template</span> &lt;<span class="keyword">typename</span> T&gt; <span class="keywordtype">void</span> <a class="code" href="classcgv_1_1media_1_1mesh_1_1simple__mesh.html">simple_mesh&lt;T&gt;::dual</a>()</div>
-<div class="line"><a name="l01119"></a><span class="lineno"> 1119</span>&#160;{</div>
-<div class="line"><a name="l01120"></a><span class="lineno"> 1120</span>&#160;    std::vector&lt;uint32_t&gt; c2f;</div>
-<div class="line"><a name="l01121"></a><span class="lineno"> 1121</span>&#160;    std::vector&lt;uint32_t&gt; p2c;</div>
-<div class="line"><a name="l01122"></a><span class="lineno"> 1122</span>&#160;    std::vector&lt;uint32_t&gt; inv;</div>
-<div class="line"><a name="l01123"></a><span class="lineno"> 1123</span>&#160;    std::vector&lt;uint32_t&gt; prev;</div>
-<div class="line"><a name="l01124"></a><span class="lineno"> 1124</span>&#160;    compute_inv(inv, &amp;p2c, 0, &amp;prev);</div>
-<div class="line"><a name="l01125"></a><span class="lineno"> 1125</span>&#160;    compute_c2f(c2f);</div>
-<div class="line"><a name="l01126"></a><span class="lineno"> 1126</span>&#160;    uint32_t f = get_nr_faces();</div>
-<div class="line"><a name="l01127"></a><span class="lineno"> 1127</span>&#160;    <a class="code" href="classcgv_1_1media_1_1mesh_1_1simple__mesh.html">mesh_type</a> new_M;</div>
-<div class="line"><a name="l01128"></a><span class="lineno"> 1128</span>&#160;    <span class="comment">// create one vertex per face</span></div>
-<div class="line"><a name="l01129"></a><span class="lineno"> 1129</span>&#160;    <span class="keywordflow">for</span> (uint32_t fi = 0; fi &lt; f; ++fi) {</div>
-<div class="line"><a name="l01130"></a><span class="lineno"> 1130</span>&#160;        <a class="code" href="classcgv_1_1math_1_1fvec.html">vec3</a> ctr = <a class="code" href="classcgv_1_1math_1_1fvec.html">vec3</a>(0.0f);</div>
-<div class="line"><a name="l01131"></a><span class="lineno"> 1131</span>&#160;        <span class="keywordflow">for</span> (uint32_t ci = begin_corner(fi); ci &lt; end_corner(fi); ++ci)</div>
-<div class="line"><a name="l01132"></a><span class="lineno"> 1132</span>&#160;            ctr += position(c2p(ci));</div>
-<div class="line"><a name="l01133"></a><span class="lineno"> 1133</span>&#160;        ctr.<a class="code" href="classcgv_1_1math_1_1fvec.html#a170e4ee6c48d7bfc16d4a89c0bbf3f8b">normalize</a>();</div>
-<div class="line"><a name="l01134"></a><span class="lineno"> 1134</span>&#160;        new_M.<a class="code" href="classcgv_1_1media_1_1mesh_1_1simple__mesh.html#a263f989e34397ba19477aca0e1ea4e75">new_position</a>(ctr);</div>
-<div class="line"><a name="l01135"></a><span class="lineno"> 1135</span>&#160;    }</div>
-<div class="line"><a name="l01136"></a><span class="lineno"> 1136</span>&#160;    <span class="comment">// create one face for original vertices</span></div>
-<div class="line"><a name="l01137"></a><span class="lineno"> 1137</span>&#160;    <span class="keywordflow">for</span> (uint32_t pi = 0; pi &lt; get_nr_positions(); ++pi) {</div>
-<div class="line"><a name="l01138"></a><span class="lineno"> 1138</span>&#160;        uint32_t c0 = p2c[pi];</div>
-<div class="line"><a name="l01139"></a><span class="lineno"> 1139</span>&#160;        uint32_t ci = c0;</div>
-<div class="line"><a name="l01140"></a><span class="lineno"> 1140</span>&#160;        uint32_t new_fi = new_M.<a class="code" href="classcgv_1_1media_1_1mesh_1_1simple__mesh__base.html#a58ec8ca84b58127b2579294cb0606433">start_face</a>();</div>
-<div class="line"><a name="l01141"></a><span class="lineno"> 1141</span>&#160;        <span class="keywordflow">do</span> {</div>
-<div class="line"><a name="l01142"></a><span class="lineno"> 1142</span>&#160;            new_M.<a class="code" href="classcgv_1_1media_1_1mesh_1_1simple__mesh__base.html#acc42be4837826d4977a349316f1585b8">new_corner</a>(c2f[ci], new_fi);</div>
-<div class="line"><a name="l01143"></a><span class="lineno"> 1143</span>&#160;            ci = prev[ci];</div>
-<div class="line"><a name="l01144"></a><span class="lineno"> 1144</span>&#160;            ci = inv[ci];</div>
-<div class="line"><a name="l01145"></a><span class="lineno"> 1145</span>&#160;        } <span class="keywordflow">while</span> (ci != c0);</div>
-<div class="line"><a name="l01146"></a><span class="lineno"> 1146</span>&#160;    }</div>
-<div class="line"><a name="l01147"></a><span class="lineno"> 1147</span>&#160;    new_M.<a class="code" href="classcgv_1_1media_1_1mesh_1_1simple__mesh.html#a0fefda5b4672d686ce645774f5d9530f">compute_face_normals</a>();</div>
-<div class="line"><a name="l01148"></a><span class="lineno"> 1148</span>&#160;    *<span class="keyword">this</span> = new_M;</div>
-<div class="line"><a name="l01149"></a><span class="lineno"> 1149</span>&#160;}</div>
-<div class="line"><a name="l01150"></a><span class="lineno"><a class="line" href="classcgv_1_1media_1_1mesh_1_1simple__mesh.html#a8080ed06759bfff42b462e27044b21dd"> 1150</a></span>&#160;<span class="keyword">template</span> &lt;<span class="keyword">typename</span> T&gt; <span class="keywordtype">void</span> <a class="code" href="classcgv_1_1media_1_1mesh_1_1simple__mesh.html">simple_mesh&lt;T&gt;::gyro</a>(T lambda)</div>
-<div class="line"><a name="l01151"></a><span class="lineno"> 1151</span>&#160;{</div>
-<div class="line"><a name="l01152"></a><span class="lineno"> 1152</span>&#160;    std::vector&lt;uint32_t&gt; c2f;</div>
-<div class="line"><a name="l01153"></a><span class="lineno"> 1153</span>&#160;    std::vector&lt;uint32_t&gt; p2c;</div>
-<div class="line"><a name="l01154"></a><span class="lineno"> 1154</span>&#160;    std::vector&lt;uint32_t&gt; inv;</div>
-<div class="line"><a name="l01155"></a><span class="lineno"> 1155</span>&#160;    std::vector&lt;uint32_t&gt; prev;</div>
-<div class="line"><a name="l01156"></a><span class="lineno"> 1156</span>&#160;    compute_inv(inv, &amp;p2c, 0, &amp;prev);</div>
-<div class="line"><a name="l01157"></a><span class="lineno"> 1157</span>&#160;    compute_c2f(c2f);</div>
-<div class="line"><a name="l01158"></a><span class="lineno"> 1158</span>&#160;    uint32_t v = get_nr_positions();</div>
-<div class="line"><a name="l01159"></a><span class="lineno"> 1159</span>&#160;    uint32_t f = get_nr_faces();</div>
-<div class="line"><a name="l01160"></a><span class="lineno"> 1160</span>&#160;    uint32_t c = get_nr_corners();</div>
-<div class="line"><a name="l01161"></a><span class="lineno"> 1161</span>&#160;    <a class="code" href="classcgv_1_1media_1_1mesh_1_1simple__mesh.html">mesh_type</a> new_M;</div>
-<div class="line"><a name="l01162"></a><span class="lineno"> 1162</span>&#160;    <span class="comment">// copy vertices</span></div>
-<div class="line"><a name="l01163"></a><span class="lineno"> 1163</span>&#160;    <span class="keywordflow">for</span> (uint32_t pi = 0; pi &lt; v; ++pi)</div>
-<div class="line"><a name="l01164"></a><span class="lineno"> 1164</span>&#160;        new_M.<a class="code" href="classcgv_1_1media_1_1mesh_1_1simple__mesh.html#a263f989e34397ba19477aca0e1ea4e75">new_position</a>(position(pi));</div>
-<div class="line"><a name="l01165"></a><span class="lineno"> 1165</span>&#160;    <span class="comment">// create one vertex per face</span></div>
-<div class="line"><a name="l01166"></a><span class="lineno"> 1166</span>&#160;    <span class="keywordflow">for</span> (uint32_t fi = 0; fi &lt; f; ++fi) {</div>
-<div class="line"><a name="l01167"></a><span class="lineno"> 1167</span>&#160;        <a class="code" href="classcgv_1_1math_1_1fvec.html">vec3</a> ctr = <a class="code" href="classcgv_1_1math_1_1fvec.html">vec3</a>(0.0f);</div>
-<div class="line"><a name="l01168"></a><span class="lineno"> 1168</span>&#160;        <span class="keywordflow">for</span> (uint32_t ci = begin_corner(fi); ci &lt; end_corner(fi); ++ci)</div>
-<div class="line"><a name="l01169"></a><span class="lineno"> 1169</span>&#160;            ctr += position(c2p(ci));</div>
-<div class="line"><a name="l01170"></a><span class="lineno"> 1170</span>&#160;        ctr.<a class="code" href="classcgv_1_1math_1_1fvec.html#a170e4ee6c48d7bfc16d4a89c0bbf3f8b">normalize</a>();</div>
-<div class="line"><a name="l01171"></a><span class="lineno"> 1171</span>&#160;        new_M.<a class="code" href="classcgv_1_1media_1_1mesh_1_1simple__mesh.html#a263f989e34397ba19477aca0e1ea4e75">new_position</a>(ctr);</div>
-<div class="line"><a name="l01172"></a><span class="lineno"> 1172</span>&#160;    }</div>
-<div class="line"><a name="l01173"></a><span class="lineno"> 1173</span>&#160;    <span class="comment">// create one vertex per corner</span></div>
-<div class="line"><a name="l01174"></a><span class="lineno"> 1174</span>&#160;    uint32_t ci;</div>
-<div class="line"><a name="l01175"></a><span class="lineno"> 1175</span>&#160;    <span class="keywordflow">for</span> (ci = 0; ci &lt; c; ++ci) {</div>
-<div class="line"><a name="l01176"></a><span class="lineno"> 1176</span>&#160;        uint32_t pi = c2p(ci);</div>
-<div class="line"><a name="l01177"></a><span class="lineno"> 1177</span>&#160;        uint32_t pj = c2p(inv[ci]);</div>
-<div class="line"><a name="l01178"></a><span class="lineno"> 1178</span>&#160;        new_M.<a class="code" href="classcgv_1_1media_1_1mesh_1_1simple__mesh.html#a263f989e34397ba19477aca0e1ea4e75">new_position</a>(normalize((1 - lambda) * position(pi) + lambda * position(pj)));</div>
-<div class="line"><a name="l01179"></a><span class="lineno"> 1179</span>&#160;    }</div>
-<div class="line"><a name="l01180"></a><span class="lineno"> 1180</span>&#160;    <span class="comment">// create one face for per original corner</span></div>
-<div class="line"><a name="l01181"></a><span class="lineno"> 1181</span>&#160;    <span class="keywordflow">for</span> (ci = 0; ci &lt; c; ++ci) {</div>
-<div class="line"><a name="l01182"></a><span class="lineno"> 1182</span>&#160;        uint32_t inv_ci = inv[ci];</div>
-<div class="line"><a name="l01183"></a><span class="lineno"> 1183</span>&#160;        uint32_t prev_inv_ci = inv[prev[ci]];</div>
-<div class="line"><a name="l01184"></a><span class="lineno"> 1184</span>&#160;        uint32_t fi = c2f[ci];</div>
-<div class="line"><a name="l01185"></a><span class="lineno"> 1185</span>&#160;        uint32_t pi = c2p(ci);</div>
-<div class="line"><a name="l01186"></a><span class="lineno"> 1186</span>&#160;        uint32_t new_fi = new_M.<a class="code" href="classcgv_1_1media_1_1mesh_1_1simple__mesh__base.html#a58ec8ca84b58127b2579294cb0606433">start_face</a>();</div>
-<div class="line"><a name="l01187"></a><span class="lineno"> 1187</span>&#160;        new_M.<a class="code" href="classcgv_1_1media_1_1mesh_1_1simple__mesh__base.html#acc42be4837826d4977a349316f1585b8">new_corner</a>(pi, new_fi);</div>
-<div class="line"><a name="l01188"></a><span class="lineno"> 1188</span>&#160;        new_M.<a class="code" href="classcgv_1_1media_1_1mesh_1_1simple__mesh__base.html#acc42be4837826d4977a349316f1585b8">new_corner</a>(ci + v + f, new_fi);</div>
-<div class="line"><a name="l01189"></a><span class="lineno"> 1189</span>&#160;        new_M.<a class="code" href="classcgv_1_1media_1_1mesh_1_1simple__mesh__base.html#acc42be4837826d4977a349316f1585b8">new_corner</a>(inv_ci + v + f, new_fi);</div>
-<div class="line"><a name="l01190"></a><span class="lineno"> 1190</span>&#160;        new_M.<a class="code" href="classcgv_1_1media_1_1mesh_1_1simple__mesh__base.html#acc42be4837826d4977a349316f1585b8">new_corner</a>(v + fi, new_fi);</div>
-<div class="line"><a name="l01191"></a><span class="lineno"> 1191</span>&#160;        new_M.<a class="code" href="classcgv_1_1media_1_1mesh_1_1simple__mesh__base.html#acc42be4837826d4977a349316f1585b8">new_corner</a>(prev_inv_ci + v + f, new_fi);</div>
-<div class="line"><a name="l01192"></a><span class="lineno"> 1192</span>&#160;    }</div>
-<div class="line"><a name="l01193"></a><span class="lineno"> 1193</span>&#160;    new_M.<a class="code" href="classcgv_1_1media_1_1mesh_1_1simple__mesh.html#a0fefda5b4672d686ce645774f5d9530f">compute_face_normals</a>();</div>
-<div class="line"><a name="l01194"></a><span class="lineno"> 1194</span>&#160;    *<span class="keyword">this</span> = new_M;</div>
-<div class="line"><a name="l01195"></a><span class="lineno"> 1195</span>&#160;}</div>
-<div class="line"><a name="l01196"></a><span class="lineno"><a class="line" href="classcgv_1_1media_1_1mesh_1_1simple__mesh.html#ab31c9e57c628c07bec0cea3c88c7bed1"> 1196</a></span>&#160;<span class="keyword">template</span> &lt;<span class="keyword">typename</span> T&gt; <span class="keywordtype">void</span> <a class="code" href="namespacecgv_1_1utils.html#ab965cca354619eefb296b13d8a9e87d4">simple_mesh&lt;T&gt;::join</a>()</div>
-<div class="line"><a name="l01197"></a><span class="lineno"> 1197</span>&#160;{</div>
-<div class="line"><a name="l01198"></a><span class="lineno"> 1198</span>&#160;    std::vector&lt;uint32_t&gt; c2e;</div>
-<div class="line"><a name="l01199"></a><span class="lineno"> 1199</span>&#160;    std::vector&lt;uint32_t&gt; e2c;</div>
-<div class="line"><a name="l01200"></a><span class="lineno"> 1200</span>&#160;    std::vector&lt;uint32_t&gt; inv;</div>
-<div class="line"><a name="l01201"></a><span class="lineno"> 1201</span>&#160;    std::vector&lt;uint32_t&gt; prev;</div>
-<div class="line"><a name="l01202"></a><span class="lineno"> 1202</span>&#160;    std::vector&lt;uint32_t&gt; p2c;</div>
-<div class="line"><a name="l01203"></a><span class="lineno"> 1203</span>&#160;    compute_inv(inv, &amp;p2c, 0, &amp;prev);</div>
-<div class="line"><a name="l01204"></a><span class="lineno"> 1204</span>&#160;    uint32_t e = compute_c2e(inv, c2e, &amp;e2c);</div>
-<div class="line"><a name="l01205"></a><span class="lineno"> 1205</span>&#160;    std::vector&lt;uint32_t&gt; c2f;</div>
-<div class="line"><a name="l01206"></a><span class="lineno"> 1206</span>&#160;    compute_c2f(c2f);</div>
-<div class="line"><a name="l01207"></a><span class="lineno"> 1207</span>&#160; </div>
-<div class="line"><a name="l01208"></a><span class="lineno"> 1208</span>&#160;    uint32_t f = get_nr_faces();</div>
-<div class="line"><a name="l01209"></a><span class="lineno"> 1209</span>&#160;    uint32_t v = get_nr_positions();</div>
-<div class="line"><a name="l01210"></a><span class="lineno"> 1210</span>&#160;    <a class="code" href="classcgv_1_1media_1_1mesh_1_1simple__mesh.html">mesh_type</a> new_M;</div>
-<div class="line"><a name="l01211"></a><span class="lineno"> 1211</span>&#160;    <span class="comment">// copy vertices</span></div>
-<div class="line"><a name="l01212"></a><span class="lineno"> 1212</span>&#160;    <span class="keywordflow">for</span> (uint32_t pi = 0; pi &lt; v; ++pi)</div>
-<div class="line"><a name="l01213"></a><span class="lineno"> 1213</span>&#160;        new_M.<a class="code" href="classcgv_1_1media_1_1mesh_1_1simple__mesh.html#a263f989e34397ba19477aca0e1ea4e75">new_position</a>(position(pi));</div>
-<div class="line"><a name="l01214"></a><span class="lineno"> 1214</span>&#160; </div>
-<div class="line"><a name="l01215"></a><span class="lineno"> 1215</span>&#160;    <span class="comment">// append one vertex per face</span></div>
-<div class="line"><a name="l01216"></a><span class="lineno"> 1216</span>&#160;    <span class="keywordflow">for</span> (uint32_t fi = 0; fi &lt; f; ++fi) {</div>
-<div class="line"><a name="l01217"></a><span class="lineno"> 1217</span>&#160;        <a class="code" href="classcgv_1_1math_1_1fvec.html">vec3</a> ctr = <a class="code" href="classcgv_1_1math_1_1fvec.html">vec3</a>(0.0f);</div>
-<div class="line"><a name="l01218"></a><span class="lineno"> 1218</span>&#160;        <span class="keywordflow">for</span> (uint32_t ci = begin_corner(fi); ci &lt; end_corner(fi); ++ci)</div>
-<div class="line"><a name="l01219"></a><span class="lineno"> 1219</span>&#160;            ctr += position(c2p(ci));</div>
-<div class="line"><a name="l01220"></a><span class="lineno"> 1220</span>&#160;        ctr.<a class="code" href="classcgv_1_1math_1_1fvec.html#a170e4ee6c48d7bfc16d4a89c0bbf3f8b">normalize</a>();</div>
-<div class="line"><a name="l01221"></a><span class="lineno"> 1221</span>&#160;        new_M.<a class="code" href="classcgv_1_1media_1_1mesh_1_1simple__mesh.html#a263f989e34397ba19477aca0e1ea4e75">new_position</a>(ctr);</div>
-<div class="line"><a name="l01222"></a><span class="lineno"> 1222</span>&#160;    }</div>
-<div class="line"><a name="l01223"></a><span class="lineno"> 1223</span>&#160; </div>
-<div class="line"><a name="l01224"></a><span class="lineno"> 1224</span>&#160;    <span class="comment">// create one face per edge</span></div>
-<div class="line"><a name="l01225"></a><span class="lineno"> 1225</span>&#160;    <span class="keywordflow">for</span> (uint32_t ei = 0; ei &lt; e; ++ei) {</div>
-<div class="line"><a name="l01226"></a><span class="lineno"> 1226</span>&#160;        uint32_t ci = e2c[ei];</div>
-<div class="line"><a name="l01227"></a><span class="lineno"> 1227</span>&#160;        uint32_t fi = c2f[ci];</div>
-<div class="line"><a name="l01228"></a><span class="lineno"> 1228</span>&#160;        uint32_t pi = c2p(ci);</div>
-<div class="line"><a name="l01229"></a><span class="lineno"> 1229</span>&#160;        uint32_t cj = inv[ci];</div>
-<div class="line"><a name="l01230"></a><span class="lineno"> 1230</span>&#160;        uint32_t fj = c2f[cj];</div>
-<div class="line"><a name="l01231"></a><span class="lineno"> 1231</span>&#160;        uint32_t pj = c2p(cj);</div>
-<div class="line"><a name="l01232"></a><span class="lineno"> 1232</span>&#160;        new_M.<a class="code" href="classcgv_1_1media_1_1mesh_1_1simple__mesh__base.html#a58ec8ca84b58127b2579294cb0606433">start_face</a>();</div>
-<div class="line"><a name="l01233"></a><span class="lineno"> 1233</span>&#160;        new_M.<a class="code" href="classcgv_1_1media_1_1mesh_1_1simple__mesh__base.html#acc42be4837826d4977a349316f1585b8">new_corner</a>(fi + v, ei);</div>
-<div class="line"><a name="l01234"></a><span class="lineno"> 1234</span>&#160;        new_M.<a class="code" href="classcgv_1_1media_1_1mesh_1_1simple__mesh__base.html#acc42be4837826d4977a349316f1585b8">new_corner</a>(pi, ei);</div>
-<div class="line"><a name="l01235"></a><span class="lineno"> 1235</span>&#160;        new_M.<a class="code" href="classcgv_1_1media_1_1mesh_1_1simple__mesh__base.html#acc42be4837826d4977a349316f1585b8">new_corner</a>(fj + v, ei);</div>
-<div class="line"><a name="l01236"></a><span class="lineno"> 1236</span>&#160;        new_M.<a class="code" href="classcgv_1_1media_1_1mesh_1_1simple__mesh__base.html#acc42be4837826d4977a349316f1585b8">new_corner</a>(pj, ei);</div>
-<div class="line"><a name="l01237"></a><span class="lineno"> 1237</span>&#160;    }</div>
-<div class="line"><a name="l01238"></a><span class="lineno"> 1238</span>&#160;    new_M.<a class="code" href="classcgv_1_1media_1_1mesh_1_1simple__mesh.html#a0fefda5b4672d686ce645774f5d9530f">compute_face_normals</a>();</div>
-<div class="line"><a name="l01239"></a><span class="lineno"> 1239</span>&#160;    *<span class="keyword">this</span> = new_M;</div>
-<div class="line"><a name="l01240"></a><span class="lineno"> 1240</span>&#160;}</div>
-<div class="line"><a name="l01241"></a><span class="lineno"><a class="line" href="classcgv_1_1media_1_1mesh_1_1simple__mesh.html#a5ad2bb66489e81898cb1143952a16791"> 1241</a></span>&#160;<span class="keyword">template</span> &lt;<span class="keyword">typename</span> T&gt; <span class="keywordtype">void</span> <a class="code" href="classcgv_1_1media_1_1mesh_1_1simple__mesh.html">simple_mesh&lt;T&gt;::ortho</a>()</div>
-<div class="line"><a name="l01242"></a><span class="lineno"> 1242</span>&#160;{</div>
-<div class="line"><a name="l01243"></a><span class="lineno"> 1243</span>&#160;    <a class="code" href="namespacecgv_1_1utils.html#ab965cca354619eefb296b13d8a9e87d4">join</a>();</div>
+<div class="line"><a name="l00927"></a><span class="lineno">  927</span>&#160;    normals.clear();</div>
+<div class="line"><a name="l00928"></a><span class="lineno">  928</span>&#160;    <span class="comment">// compute per face normals</span></div>
+<div class="line"><a name="l00929"></a><span class="lineno">  929</span>&#160;    <span class="keywordflow">for</span> (uint32_t fi = 0; fi &lt; get_nr_faces(); ++fi) {</div>
+<div class="line"><a name="l00930"></a><span class="lineno">  930</span>&#160;        <a class="code" href="classcgv_1_1math_1_1fvec.html">vec3</a> nml = <a class="code" href="classcgv_1_1math_1_1fvec.html">vec3</a>(T(1),0,0);</div>
+<div class="line"><a name="l00931"></a><span class="lineno">  931</span>&#160;        compute_face_normal(fi, nml);</div>
+<div class="line"><a name="l00932"></a><span class="lineno">  932</span>&#160;        uint32_t ni = new_normal(nml);</div>
+<div class="line"><a name="l00933"></a><span class="lineno">  933</span>&#160;        <span class="keywordflow">if</span> (construct_normal_indices) {</div>
+<div class="line"><a name="l00934"></a><span class="lineno">  934</span>&#160;            <span class="keywordflow">for</span> (<a class="code" href="classcgv_1_1media_1_1mesh_1_1simple__mesh__base.html#a0eb0181dc49db651e738bd0e66d1f0e6">idx_type</a> ci = begin_corner(fi); ci &lt; end_corner(fi); ++ci) {</div>
+<div class="line"><a name="l00935"></a><span class="lineno">  935</span>&#160;                normal_indices.push_back(ni);</div>
+<div class="line"><a name="l00936"></a><span class="lineno">  936</span>&#160;            }</div>
+<div class="line"><a name="l00937"></a><span class="lineno">  937</span>&#160;        }</div>
+<div class="line"><a name="l00938"></a><span class="lineno">  938</span>&#160;    }</div>
+<div class="line"><a name="l00939"></a><span class="lineno">  939</span>&#160;}</div>
+<div class="line"><a name="l00940"></a><span class="lineno">  940</span>&#160;<span class="keyword">template</span> &lt;<span class="keyword">typename</span> T&gt; <span class="keyword">typename</span> <a class="code" href="classcgv_1_1media_1_1mesh_1_1simple__mesh.html">simple_mesh&lt;T&gt;::vec3</a> <a class="code" href="classcgv_1_1media_1_1mesh_1_1simple__mesh.html">simple_mesh&lt;T&gt;::compute_normal</a>(<span class="keyword">const</span> <a class="code" href="classcgv_1_1math_1_1fvec.html">vec3</a>&amp; p0, <span class="keyword">const</span> <a class="code" href="classcgv_1_1math_1_1fvec.html">vec3</a>&amp; p1, <span class="keyword">const</span> <a class="code" href="classcgv_1_1math_1_1fvec.html">vec3</a>&amp; p2)</div>
+<div class="line"><a name="l00941"></a><span class="lineno">  941</span>&#160;{</div>
+<div class="line"><a name="l00942"></a><span class="lineno">  942</span>&#160;    <span class="keywordflow">return</span> normalize(cross(p1 - p0, p2 - p0));</div>
+<div class="line"><a name="l00943"></a><span class="lineno">  943</span>&#160;}</div>
+<div class="line"><a name="l00944"></a><span class="lineno"><a class="line" href="classcgv_1_1media_1_1mesh_1_1simple__mesh.html#a6c144f392baf70203d61b16741315f6d">  944</a></span>&#160;<span class="keyword">template</span> &lt;<span class="keyword">typename</span> T&gt; <span class="keywordtype">void</span> <a class="code" href="classcgv_1_1media_1_1mesh_1_1simple__mesh.html">simple_mesh&lt;T&gt;::compute_face_tangents</a>(<span class="keywordtype">bool</span> construct_tangent_indices) {</div>
+<div class="line"><a name="l00945"></a><span class="lineno">  945</span>&#160;    <span class="comment">// compute per face tangents</span></div>
+<div class="line"><a name="l00946"></a><span class="lineno">  946</span>&#160;    <span class="keywordflow">if</span>(!has_tex_coords())</div>
+<div class="line"><a name="l00947"></a><span class="lineno">  947</span>&#160;        <span class="keywordflow">return</span>;</div>
+<div class="line"><a name="l00948"></a><span class="lineno">  948</span>&#160; </div>
+<div class="line"><a name="l00949"></a><span class="lineno">  949</span>&#160;    <span class="keywordflow">for</span>(uint32_t fi = 0; fi &lt; get_nr_faces(); ++fi) {</div>
+<div class="line"><a name="l00950"></a><span class="lineno">  950</span>&#160;        std::vector&lt;vec3&gt; _P;</div>
+<div class="line"><a name="l00951"></a><span class="lineno">  951</span>&#160;        std::vector&lt;vec2&gt; _T;</div>
+<div class="line"><a name="l00952"></a><span class="lineno">  952</span>&#160;        <a class="code" href="classcgv_1_1math_1_1fvec.html">vec3</a> ctr(0.0f);</div>
+<div class="line"><a name="l00953"></a><span class="lineno">  953</span>&#160;        uint32_t ci, nr = 0;</div>
+<div class="line"><a name="l00954"></a><span class="lineno">  954</span>&#160;        <span class="keywordflow">for</span>(ci = begin_corner(fi); ci &lt; end_corner(fi); ++ci) {</div>
+<div class="line"><a name="l00955"></a><span class="lineno">  955</span>&#160;            _P.push_back(position(c2p(ci)));</div>
+<div class="line"><a name="l00956"></a><span class="lineno">  956</span>&#160;            _T.push_back(tex_coord(c2t(ci)));</div>
+<div class="line"><a name="l00957"></a><span class="lineno">  957</span>&#160;            ctr += _P.back();</div>
+<div class="line"><a name="l00958"></a><span class="lineno">  958</span>&#160;            ++nr;</div>
+<div class="line"><a name="l00959"></a><span class="lineno">  959</span>&#160;        }</div>
+<div class="line"><a name="l00960"></a><span class="lineno">  960</span>&#160;        <a class="code" href="classcgv_1_1math_1_1fvec.html">vec3</a> tng(1.0f, 0.0f, 0.0f);</div>
+<div class="line"><a name="l00961"></a><span class="lineno">  961</span>&#160;        <span class="comment">// calculate tangents for faces with at least three corners</span></div>
+<div class="line"><a name="l00962"></a><span class="lineno">  962</span>&#160;        <span class="comment">// for more than 3 corners only use the first two edges and assume the face to be planar</span></div>
+<div class="line"><a name="l00963"></a><span class="lineno">  963</span>&#160;        <span class="keywordflow">if</span>(_P.size() &gt; 2) {</div>
+<div class="line"><a name="l00964"></a><span class="lineno">  964</span>&#160;            <a class="code" href="classcgv_1_1math_1_1fvec.html">vec3</a> edge0 = _P[1] - _P[0];</div>
+<div class="line"><a name="l00965"></a><span class="lineno">  965</span>&#160;            <a class="code" href="classcgv_1_1math_1_1fvec.html">vec3</a> edge1 = _P[2] - _P[0];</div>
+<div class="line"><a name="l00966"></a><span class="lineno">  966</span>&#160;            <a class="code" href="classcgv_1_1math_1_1fvec.html">vec2</a> delta_uv0 = _T[1] - _T[0];</div>
+<div class="line"><a name="l00967"></a><span class="lineno">  967</span>&#160;            <a class="code" href="classcgv_1_1math_1_1fvec.html">vec2</a> delta_uv1 = _T[2] - _T[0];</div>
+<div class="line"><a name="l00968"></a><span class="lineno">  968</span>&#160; </div>
+<div class="line"><a name="l00969"></a><span class="lineno">  969</span>&#160;            <span class="keywordtype">float</span> dir_correction = (delta_uv1.<a class="code" href="classcgv_1_1math_1_1fvec.html#a306998e8905416d17894fd66d8a15b0b">x</a>() * delta_uv0.<a class="code" href="classcgv_1_1math_1_1fvec.html#a8d199c8049b2ed5806be3c3af7d2860e">y</a>() - delta_uv1.<a class="code" href="classcgv_1_1math_1_1fvec.html#a8d199c8049b2ed5806be3c3af7d2860e">y</a>() * delta_uv0.<a class="code" href="classcgv_1_1math_1_1fvec.html#a306998e8905416d17894fd66d8a15b0b">x</a>()) &lt; 0.0f ? -1.0f : 1.0f;</div>
+<div class="line"><a name="l00970"></a><span class="lineno">  970</span>&#160; </div>
+<div class="line"><a name="l00971"></a><span class="lineno">  971</span>&#160;            <span class="comment">// when t1, t2, t3 in same position in UV space, just use default UV direction.</span></div>
+<div class="line"><a name="l00972"></a><span class="lineno">  972</span>&#160;            <span class="keywordflow">if</span>(delta_uv0.<a class="code" href="classcgv_1_1math_1_1fvec.html#a306998e8905416d17894fd66d8a15b0b">x</a>() * delta_uv1.<a class="code" href="classcgv_1_1math_1_1fvec.html#a8d199c8049b2ed5806be3c3af7d2860e">y</a>() == delta_uv0.<a class="code" href="classcgv_1_1math_1_1fvec.html#a8d199c8049b2ed5806be3c3af7d2860e">y</a>() * delta_uv1.<a class="code" href="classcgv_1_1math_1_1fvec.html#a306998e8905416d17894fd66d8a15b0b">x</a>()) {</div>
+<div class="line"><a name="l00973"></a><span class="lineno">  973</span>&#160;                delta_uv0.<a class="code" href="classcgv_1_1math_1_1fvec.html#a306998e8905416d17894fd66d8a15b0b">x</a>() = 0.0f;</div>
+<div class="line"><a name="l00974"></a><span class="lineno">  974</span>&#160;                delta_uv0.<a class="code" href="classcgv_1_1math_1_1fvec.html#a8d199c8049b2ed5806be3c3af7d2860e">y</a>() = 1.0f;</div>
+<div class="line"><a name="l00975"></a><span class="lineno">  975</span>&#160;                delta_uv1.<a class="code" href="classcgv_1_1math_1_1fvec.html#a306998e8905416d17894fd66d8a15b0b">x</a>() = 1.0f;</div>
+<div class="line"><a name="l00976"></a><span class="lineno">  976</span>&#160;                delta_uv1.<a class="code" href="classcgv_1_1math_1_1fvec.html#a8d199c8049b2ed5806be3c3af7d2860e">y</a>() = 0.0f;</div>
+<div class="line"><a name="l00977"></a><span class="lineno">  977</span>&#160;            }</div>
+<div class="line"><a name="l00978"></a><span class="lineno">  978</span>&#160; </div>
+<div class="line"><a name="l00979"></a><span class="lineno">  979</span>&#160;            tng.<a class="code" href="classcgv_1_1math_1_1fvec.html#a306998e8905416d17894fd66d8a15b0b">x</a>() = delta_uv0.<a class="code" href="classcgv_1_1math_1_1fvec.html#a8d199c8049b2ed5806be3c3af7d2860e">y</a>() * edge1.<a class="code" href="classcgv_1_1math_1_1fvec.html#a306998e8905416d17894fd66d8a15b0b">x</a>() - delta_uv1.<a class="code" href="classcgv_1_1math_1_1fvec.html#a8d199c8049b2ed5806be3c3af7d2860e">y</a>() * edge0.<a class="code" href="classcgv_1_1math_1_1fvec.html#a306998e8905416d17894fd66d8a15b0b">x</a>();</div>
+<div class="line"><a name="l00980"></a><span class="lineno">  980</span>&#160;            tng.<a class="code" href="classcgv_1_1math_1_1fvec.html#a8d199c8049b2ed5806be3c3af7d2860e">y</a>() = delta_uv0.<a class="code" href="classcgv_1_1math_1_1fvec.html#a8d199c8049b2ed5806be3c3af7d2860e">y</a>() * edge1.<a class="code" href="classcgv_1_1math_1_1fvec.html#a8d199c8049b2ed5806be3c3af7d2860e">y</a>() - delta_uv1.<a class="code" href="classcgv_1_1math_1_1fvec.html#a8d199c8049b2ed5806be3c3af7d2860e">y</a>() * edge0.<a class="code" href="classcgv_1_1math_1_1fvec.html#a8d199c8049b2ed5806be3c3af7d2860e">y</a>();</div>
+<div class="line"><a name="l00981"></a><span class="lineno">  981</span>&#160;            tng.<a class="code" href="classcgv_1_1math_1_1fvec.html#a37ec1163fda9dd3f48f863333d2bfa19">z</a>() = delta_uv0.<a class="code" href="classcgv_1_1math_1_1fvec.html#a8d199c8049b2ed5806be3c3af7d2860e">y</a>() * edge1.<a class="code" href="classcgv_1_1math_1_1fvec.html#a37ec1163fda9dd3f48f863333d2bfa19">z</a>() - delta_uv1.<a class="code" href="classcgv_1_1math_1_1fvec.html#a8d199c8049b2ed5806be3c3af7d2860e">y</a>() * edge0.<a class="code" href="classcgv_1_1math_1_1fvec.html#a37ec1163fda9dd3f48f863333d2bfa19">z</a>();</div>
+<div class="line"><a name="l00982"></a><span class="lineno">  982</span>&#160;            tng *= dir_correction;</div>
+<div class="line"><a name="l00983"></a><span class="lineno">  983</span>&#160;        } <span class="keywordflow">else</span> {</div>
+<div class="line"><a name="l00984"></a><span class="lineno">  984</span>&#160;            std::cout &lt;&lt; <span class="stringliteral">&quot;could not compute tangent for non-triangular face&quot;</span> &lt;&lt; std::endl;</div>
+<div class="line"><a name="l00985"></a><span class="lineno">  985</span>&#160;        }</div>
+<div class="line"><a name="l00986"></a><span class="lineno">  986</span>&#160; </div>
+<div class="line"><a name="l00987"></a><span class="lineno">  987</span>&#160;        tng.<a class="code" href="classcgv_1_1math_1_1fvec.html#a170e4ee6c48d7bfc16d4a89c0bbf3f8b">normalize</a>();</div>
+<div class="line"><a name="l00988"></a><span class="lineno">  988</span>&#160;        uint32_t ti = new_tangent(tng);</div>
+<div class="line"><a name="l00989"></a><span class="lineno">  989</span>&#160;        <span class="keywordflow">if</span>(construct_tangent_indices) {</div>
+<div class="line"><a name="l00990"></a><span class="lineno">  990</span>&#160;            <span class="keywordflow">for</span>(ci = begin_corner(fi); ci &lt; end_corner(fi); ++ci) {</div>
+<div class="line"><a name="l00991"></a><span class="lineno">  991</span>&#160;                tangent_indices.push_back(ti);</div>
+<div class="line"><a name="l00992"></a><span class="lineno">  992</span>&#160;            }</div>
+<div class="line"><a name="l00993"></a><span class="lineno">  993</span>&#160;        }</div>
+<div class="line"><a name="l00994"></a><span class="lineno">  994</span>&#160;    }</div>
+<div class="line"><a name="l00995"></a><span class="lineno">  995</span>&#160;}</div>
+<div class="line"><a name="l00996"></a><span class="lineno">  996</span>&#160; </div>
+<div class="line"><a name="l00997"></a><span class="lineno"><a class="line" href="classcgv_1_1media_1_1mesh_1_1simple__mesh.html#a44c75c9157ed9f86e0c69a583eacfb26">  997</a></span>&#160;<span class="keyword">template</span> &lt;<span class="keyword">typename</span> T&gt; <a class="code" href="classcgv_1_1media_1_1mesh_1_1simple__mesh.html">simple_mesh&lt;T&gt;::simple_mesh</a>(<span class="keyword">const</span> std::string&amp; conway_notation)</div>
+<div class="line"><a name="l00998"></a><span class="lineno">  998</span>&#160;{</div>
+<div class="line"><a name="l00999"></a><span class="lineno">  999</span>&#160;    <span class="keywordflow">if</span> (!conway_notation.empty())</div>
+<div class="line"><a name="l01000"></a><span class="lineno"> 1000</span>&#160;        construct_conway_polyhedron(conway_notation);</div>
+<div class="line"><a name="l01001"></a><span class="lineno"> 1001</span>&#160;}</div>
+<div class="line"><a name="l01002"></a><span class="lineno"><a class="line" href="classcgv_1_1media_1_1mesh_1_1simple__mesh.html#a51234fbc0d5c740aa2b26385c1156a36"> 1002</a></span>&#160;<span class="keyword">template</span> &lt;<span class="keyword">typename</span> T&gt; <span class="keywordtype">void</span> <a class="code" href="classcgv_1_1media_1_1mesh_1_1simple__mesh.html">simple_mesh&lt;T&gt;::ambo</a>()</div>
+<div class="line"><a name="l01003"></a><span class="lineno"> 1003</span>&#160;{</div>
+<div class="line"><a name="l01004"></a><span class="lineno"> 1004</span>&#160;    std::vector&lt;uint32_t&gt; c2e;</div>
+<div class="line"><a name="l01005"></a><span class="lineno"> 1005</span>&#160;    std::vector&lt;uint32_t&gt; e2c;</div>
+<div class="line"><a name="l01006"></a><span class="lineno"> 1006</span>&#160;    std::vector&lt;uint32_t&gt; inv;</div>
+<div class="line"><a name="l01007"></a><span class="lineno"> 1007</span>&#160;    std::vector&lt;uint32_t&gt; prev;</div>
+<div class="line"><a name="l01008"></a><span class="lineno"> 1008</span>&#160;    std::vector&lt;uint32_t&gt; p2c;</div>
+<div class="line"><a name="l01009"></a><span class="lineno"> 1009</span>&#160;    compute_inv(inv, &amp;p2c, 0, &amp;prev);</div>
+<div class="line"><a name="l01010"></a><span class="lineno"> 1010</span>&#160;    uint32_t e = compute_c2e(inv, c2e, &amp;e2c);</div>
+<div class="line"><a name="l01011"></a><span class="lineno"> 1011</span>&#160;    <a class="code" href="classcgv_1_1media_1_1mesh_1_1simple__mesh.html">mesh_type</a> new_M;</div>
+<div class="line"><a name="l01012"></a><span class="lineno"> 1012</span>&#160;    <span class="comment">// create one vertex per edge</span></div>
+<div class="line"><a name="l01013"></a><span class="lineno"> 1013</span>&#160;    <span class="keywordflow">for</span> (uint32_t ei = 0; ei &lt; e; ++ei) {</div>
+<div class="line"><a name="l01014"></a><span class="lineno"> 1014</span>&#160;        uint32_t pi = c2p(e2c[ei]);</div>
+<div class="line"><a name="l01015"></a><span class="lineno"> 1015</span>&#160;        uint32_t pj = c2p(inv[e2c[ei]]);</div>
+<div class="line"><a name="l01016"></a><span class="lineno"> 1016</span>&#160;        new_M.<a class="code" href="classcgv_1_1media_1_1mesh_1_1simple__mesh.html#a263f989e34397ba19477aca0e1ea4e75">new_position</a>(normalize(position(pi) + position(pj)));</div>
+<div class="line"><a name="l01017"></a><span class="lineno"> 1017</span>&#160;    }</div>
+<div class="line"><a name="l01018"></a><span class="lineno"> 1018</span>&#160;    <span class="comment">// create one face for original faces</span></div>
+<div class="line"><a name="l01019"></a><span class="lineno"> 1019</span>&#160;    <span class="keywordflow">for</span> (uint32_t fi = 0; fi &lt; get_nr_faces(); ++fi) {</div>
+<div class="line"><a name="l01020"></a><span class="lineno"> 1020</span>&#160;        uint32_t new_fi = new_M.<a class="code" href="classcgv_1_1media_1_1mesh_1_1simple__mesh__base.html#a58ec8ca84b58127b2579294cb0606433">start_face</a>();</div>
+<div class="line"><a name="l01021"></a><span class="lineno"> 1021</span>&#160;        <span class="keywordflow">for</span> (uint32_t ci = begin_corner(fi); ci &lt; end_corner(fi); ++ci)</div>
+<div class="line"><a name="l01022"></a><span class="lineno"> 1022</span>&#160;            new_M.<a class="code" href="classcgv_1_1media_1_1mesh_1_1simple__mesh__base.html#acc42be4837826d4977a349316f1585b8">new_corner</a>(c2e[ci], new_fi);</div>
+<div class="line"><a name="l01023"></a><span class="lineno"> 1023</span>&#160;    }</div>
+<div class="line"><a name="l01024"></a><span class="lineno"> 1024</span>&#160;    <span class="comment">// create one face for original vertices</span></div>
+<div class="line"><a name="l01025"></a><span class="lineno"> 1025</span>&#160;    <span class="keywordflow">for</span> (uint32_t pi = 0; pi &lt; get_nr_positions(); ++pi) {</div>
+<div class="line"><a name="l01026"></a><span class="lineno"> 1026</span>&#160;        uint32_t c0 = p2c[pi];</div>
+<div class="line"><a name="l01027"></a><span class="lineno"> 1027</span>&#160;        uint32_t ci = c0;</div>
+<div class="line"><a name="l01028"></a><span class="lineno"> 1028</span>&#160;        uint32_t new_fi = new_M.<a class="code" href="classcgv_1_1media_1_1mesh_1_1simple__mesh__base.html#a58ec8ca84b58127b2579294cb0606433">start_face</a>();</div>
+<div class="line"><a name="l01029"></a><span class="lineno"> 1029</span>&#160;        <span class="keywordflow">do</span> {</div>
+<div class="line"><a name="l01030"></a><span class="lineno"> 1030</span>&#160;            new_M.<a class="code" href="classcgv_1_1media_1_1mesh_1_1simple__mesh__base.html#acc42be4837826d4977a349316f1585b8">new_corner</a>(c2e[ci], new_fi);</div>
+<div class="line"><a name="l01031"></a><span class="lineno"> 1031</span>&#160;            ci = prev[ci];</div>
+<div class="line"><a name="l01032"></a><span class="lineno"> 1032</span>&#160;            ci = inv[ci];</div>
+<div class="line"><a name="l01033"></a><span class="lineno"> 1033</span>&#160;        } <span class="keywordflow">while</span> (ci != c0);</div>
+<div class="line"><a name="l01034"></a><span class="lineno"> 1034</span>&#160;    }</div>
+<div class="line"><a name="l01035"></a><span class="lineno"> 1035</span>&#160;    new_M.<a class="code" href="classcgv_1_1media_1_1mesh_1_1simple__mesh.html#a0fefda5b4672d686ce645774f5d9530f">compute_face_normals</a>();</div>
+<div class="line"><a name="l01036"></a><span class="lineno"> 1036</span>&#160;    *<span class="keyword">this</span> = new_M;</div>
+<div class="line"><a name="l01037"></a><span class="lineno"> 1037</span>&#160;}</div>
+<div class="line"><a name="l01038"></a><span class="lineno"><a class="line" href="classcgv_1_1media_1_1mesh_1_1simple__mesh.html#a6b5c3e0092587d5357b60f088589c0d4"> 1038</a></span>&#160;<span class="keyword">template</span> &lt;<span class="keyword">typename</span> T&gt; <span class="keywordtype">void</span> <a class="code" href="classcgv_1_1media_1_1mesh_1_1simple__mesh.html">simple_mesh&lt;T&gt;::truncate</a>(T lambda)</div>
+<div class="line"><a name="l01039"></a><span class="lineno"> 1039</span>&#160;{</div>
+<div class="line"><a name="l01040"></a><span class="lineno"> 1040</span>&#160;    std::vector&lt;uint32_t&gt; inv;</div>
+<div class="line"><a name="l01041"></a><span class="lineno"> 1041</span>&#160;    std::vector&lt;uint32_t&gt; prev;</div>
+<div class="line"><a name="l01042"></a><span class="lineno"> 1042</span>&#160;    std::vector&lt;uint32_t&gt; p2c;</div>
+<div class="line"><a name="l01043"></a><span class="lineno"> 1043</span>&#160;    compute_inv(inv, &amp;p2c, 0, &amp;prev);</div>
+<div class="line"><a name="l01044"></a><span class="lineno"> 1044</span>&#160;    uint32_t c = get_nr_corners();</div>
+<div class="line"><a name="l01045"></a><span class="lineno"> 1045</span>&#160;    <a class="code" href="classcgv_1_1media_1_1mesh_1_1simple__mesh.html">mesh_type</a> new_M;</div>
+<div class="line"><a name="l01046"></a><span class="lineno"> 1046</span>&#160;    <span class="comment">// create one vertex per corner</span></div>
+<div class="line"><a name="l01047"></a><span class="lineno"> 1047</span>&#160;    <span class="keywordflow">for</span> (uint32_t ci = 0; ci &lt; c; ++ci) {</div>
+<div class="line"><a name="l01048"></a><span class="lineno"> 1048</span>&#160;        uint32_t pi = c2p(ci);</div>
+<div class="line"><a name="l01049"></a><span class="lineno"> 1049</span>&#160;        uint32_t pj = c2p(inv[ci]);</div>
+<div class="line"><a name="l01050"></a><span class="lineno"> 1050</span>&#160;        new_M.<a class="code" href="classcgv_1_1media_1_1mesh_1_1simple__mesh.html#a263f989e34397ba19477aca0e1ea4e75">new_position</a>(normalize((1 - lambda) * position(pi) + lambda * position(pj)));</div>
+<div class="line"><a name="l01051"></a><span class="lineno"> 1051</span>&#160;    }</div>
+<div class="line"><a name="l01052"></a><span class="lineno"> 1052</span>&#160;    <span class="comment">// create one face for original faces</span></div>
+<div class="line"><a name="l01053"></a><span class="lineno"> 1053</span>&#160;    <span class="keywordflow">for</span> (uint32_t fi = 0; fi &lt; get_nr_faces(); ++fi) {</div>
+<div class="line"><a name="l01054"></a><span class="lineno"> 1054</span>&#160;        uint32_t new_fi = new_M.<a class="code" href="classcgv_1_1media_1_1mesh_1_1simple__mesh__base.html#a58ec8ca84b58127b2579294cb0606433">start_face</a>();</div>
+<div class="line"><a name="l01055"></a><span class="lineno"> 1055</span>&#160;        <span class="keywordflow">for</span> (uint32_t ci = begin_corner(fi); ci &lt; end_corner(fi); ++ci) {</div>
+<div class="line"><a name="l01056"></a><span class="lineno"> 1056</span>&#160;            new_M.<a class="code" href="classcgv_1_1media_1_1mesh_1_1simple__mesh__base.html#acc42be4837826d4977a349316f1585b8">new_corner</a>(ci, new_fi);</div>
+<div class="line"><a name="l01057"></a><span class="lineno"> 1057</span>&#160;            new_M.<a class="code" href="classcgv_1_1media_1_1mesh_1_1simple__mesh__base.html#acc42be4837826d4977a349316f1585b8">new_corner</a>(inv[ci], new_fi);</div>
+<div class="line"><a name="l01058"></a><span class="lineno"> 1058</span>&#160;        }</div>
+<div class="line"><a name="l01059"></a><span class="lineno"> 1059</span>&#160;    }</div>
+<div class="line"><a name="l01060"></a><span class="lineno"> 1060</span>&#160;    <span class="comment">// create one face for original vertices</span></div>
+<div class="line"><a name="l01061"></a><span class="lineno"> 1061</span>&#160;    <span class="keywordflow">for</span> (uint32_t pi = 0; pi &lt; get_nr_positions(); ++pi) {</div>
+<div class="line"><a name="l01062"></a><span class="lineno"> 1062</span>&#160;        uint32_t c0 = p2c[pi];</div>
+<div class="line"><a name="l01063"></a><span class="lineno"> 1063</span>&#160;        uint32_t ci = c0;</div>
+<div class="line"><a name="l01064"></a><span class="lineno"> 1064</span>&#160;        uint32_t new_fi = new_M.<a class="code" href="classcgv_1_1media_1_1mesh_1_1simple__mesh__base.html#a58ec8ca84b58127b2579294cb0606433">start_face</a>();</div>
+<div class="line"><a name="l01065"></a><span class="lineno"> 1065</span>&#160;        <span class="keywordflow">do</span> {</div>
+<div class="line"><a name="l01066"></a><span class="lineno"> 1066</span>&#160;            new_M.<a class="code" href="classcgv_1_1media_1_1mesh_1_1simple__mesh__base.html#acc42be4837826d4977a349316f1585b8">new_corner</a>(ci, new_fi);</div>
+<div class="line"><a name="l01067"></a><span class="lineno"> 1067</span>&#160;            ci = prev[ci];</div>
+<div class="line"><a name="l01068"></a><span class="lineno"> 1068</span>&#160;            ci = inv[ci];</div>
+<div class="line"><a name="l01069"></a><span class="lineno"> 1069</span>&#160;        } <span class="keywordflow">while</span> (ci != c0);</div>
+<div class="line"><a name="l01070"></a><span class="lineno"> 1070</span>&#160;    }</div>
+<div class="line"><a name="l01071"></a><span class="lineno"> 1071</span>&#160;    new_M.<a class="code" href="classcgv_1_1media_1_1mesh_1_1simple__mesh.html#a0fefda5b4672d686ce645774f5d9530f">compute_face_normals</a>();</div>
+<div class="line"><a name="l01072"></a><span class="lineno"> 1072</span>&#160;    *<span class="keyword">this</span> = new_M;</div>
+<div class="line"><a name="l01073"></a><span class="lineno"> 1073</span>&#160;}</div>
+<div class="line"><a name="l01074"></a><span class="lineno"><a class="line" href="classcgv_1_1media_1_1mesh_1_1simple__mesh.html#a933a4d71daf16b234db4cbddefc2d9cd"> 1074</a></span>&#160;<span class="keyword">template</span> &lt;<span class="keyword">typename</span> T&gt; <span class="keywordtype">void</span> <a class="code" href="classcgv_1_1media_1_1mesh_1_1simple__mesh.html">simple_mesh&lt;T&gt;::snub</a>(T lambda)</div>
+<div class="line"><a name="l01075"></a><span class="lineno"> 1075</span>&#160;{</div>
+<div class="line"><a name="l01076"></a><span class="lineno"> 1076</span>&#160;    std::vector&lt;uint32_t&gt; inv;</div>
+<div class="line"><a name="l01077"></a><span class="lineno"> 1077</span>&#160;    std::vector&lt;uint32_t&gt; prev;</div>
+<div class="line"><a name="l01078"></a><span class="lineno"> 1078</span>&#160;    std::vector&lt;uint32_t&gt; p2c;</div>
+<div class="line"><a name="l01079"></a><span class="lineno"> 1079</span>&#160;    compute_inv(inv, &amp;p2c, 0, &amp;prev);</div>
+<div class="line"><a name="l01080"></a><span class="lineno"> 1080</span>&#160;    uint32_t c = get_nr_corners();</div>
+<div class="line"><a name="l01081"></a><span class="lineno"> 1081</span>&#160;    <a class="code" href="classcgv_1_1media_1_1mesh_1_1simple__mesh.html">mesh_type</a> new_M;</div>
+<div class="line"><a name="l01082"></a><span class="lineno"> 1082</span>&#160;    <span class="comment">// create one vertex per corner</span></div>
+<div class="line"><a name="l01083"></a><span class="lineno"> 1083</span>&#160;    <span class="keywordflow">for</span> (uint32_t ci = 0; ci &lt; c; ++ci) {</div>
+<div class="line"><a name="l01084"></a><span class="lineno"> 1084</span>&#160;        uint32_t pi = c2p(ci);</div>
+<div class="line"><a name="l01085"></a><span class="lineno"> 1085</span>&#160;        uint32_t pj = c2p(inv[ci]);</div>
+<div class="line"><a name="l01086"></a><span class="lineno"> 1086</span>&#160;        new_M.<a class="code" href="classcgv_1_1media_1_1mesh_1_1simple__mesh.html#a263f989e34397ba19477aca0e1ea4e75">new_position</a>(normalize((1 - lambda) * position(pi) + lambda * position(pj)));</div>
+<div class="line"><a name="l01087"></a><span class="lineno"> 1087</span>&#160;    }</div>
+<div class="line"><a name="l01088"></a><span class="lineno"> 1088</span>&#160;    <span class="comment">// create central face for original faces</span></div>
+<div class="line"><a name="l01089"></a><span class="lineno"> 1089</span>&#160;    uint32_t fi;</div>
+<div class="line"><a name="l01090"></a><span class="lineno"> 1090</span>&#160;    <span class="keywordflow">for</span> (fi = 0; fi &lt; get_nr_faces(); ++fi) {</div>
+<div class="line"><a name="l01091"></a><span class="lineno"> 1091</span>&#160;        uint32_t new_fi = new_M.<a class="code" href="classcgv_1_1media_1_1mesh_1_1simple__mesh__base.html#a58ec8ca84b58127b2579294cb0606433">start_face</a>();</div>
+<div class="line"><a name="l01092"></a><span class="lineno"> 1092</span>&#160;        <span class="keywordflow">for</span> (uint32_t ci = begin_corner(fi); ci &lt; end_corner(fi); ++ci)</div>
+<div class="line"><a name="l01093"></a><span class="lineno"> 1093</span>&#160;            new_M.<a class="code" href="classcgv_1_1media_1_1mesh_1_1simple__mesh__base.html#acc42be4837826d4977a349316f1585b8">new_corner</a>(ci, new_fi);</div>
+<div class="line"><a name="l01094"></a><span class="lineno"> 1094</span>&#160;    }</div>
+<div class="line"><a name="l01095"></a><span class="lineno"> 1095</span>&#160;    <span class="comment">// create one per corner inside original faces</span></div>
+<div class="line"><a name="l01096"></a><span class="lineno"> 1096</span>&#160;    <span class="keywordflow">for</span> (fi = 0; fi &lt; get_nr_faces(); ++fi) {</div>
+<div class="line"><a name="l01097"></a><span class="lineno"> 1097</span>&#160;        <span class="keywordflow">for</span> (uint32_t ci = begin_corner(fi); ci &lt; end_corner(fi); ++ci) {</div>
+<div class="line"><a name="l01098"></a><span class="lineno"> 1098</span>&#160;            uint32_t new_fi = new_M.<a class="code" href="classcgv_1_1media_1_1mesh_1_1simple__mesh__base.html#a58ec8ca84b58127b2579294cb0606433">start_face</a>();</div>
+<div class="line"><a name="l01099"></a><span class="lineno"> 1099</span>&#160;            uint32_t prev_ci = prev[ci];</div>
+<div class="line"><a name="l01100"></a><span class="lineno"> 1100</span>&#160;            new_M.<a class="code" href="classcgv_1_1media_1_1mesh_1_1simple__mesh__base.html#acc42be4837826d4977a349316f1585b8">new_corner</a>(prev_ci, new_fi);</div>
+<div class="line"><a name="l01101"></a><span class="lineno"> 1101</span>&#160;            new_M.<a class="code" href="classcgv_1_1media_1_1mesh_1_1simple__mesh__base.html#acc42be4837826d4977a349316f1585b8">new_corner</a>(inv[prev_ci], new_fi);</div>
+<div class="line"><a name="l01102"></a><span class="lineno"> 1102</span>&#160;            new_M.<a class="code" href="classcgv_1_1media_1_1mesh_1_1simple__mesh__base.html#acc42be4837826d4977a349316f1585b8">new_corner</a>(ci, new_fi);</div>
+<div class="line"><a name="l01103"></a><span class="lineno"> 1103</span>&#160;        }</div>
+<div class="line"><a name="l01104"></a><span class="lineno"> 1104</span>&#160;    }</div>
+<div class="line"><a name="l01105"></a><span class="lineno"> 1105</span>&#160;    <span class="comment">// create one face for original vertices</span></div>
+<div class="line"><a name="l01106"></a><span class="lineno"> 1106</span>&#160;    <span class="keywordflow">for</span> (uint32_t pi = 0; pi &lt; get_nr_positions(); ++pi) {</div>
+<div class="line"><a name="l01107"></a><span class="lineno"> 1107</span>&#160;        uint32_t c0 = p2c[pi];</div>
+<div class="line"><a name="l01108"></a><span class="lineno"> 1108</span>&#160;        uint32_t ci = c0;</div>
+<div class="line"><a name="l01109"></a><span class="lineno"> 1109</span>&#160;        uint32_t new_fi = new_M.<a class="code" href="classcgv_1_1media_1_1mesh_1_1simple__mesh__base.html#a58ec8ca84b58127b2579294cb0606433">start_face</a>();</div>
+<div class="line"><a name="l01110"></a><span class="lineno"> 1110</span>&#160;        <span class="keywordflow">do</span> {</div>
+<div class="line"><a name="l01111"></a><span class="lineno"> 1111</span>&#160;            new_M.<a class="code" href="classcgv_1_1media_1_1mesh_1_1simple__mesh__base.html#acc42be4837826d4977a349316f1585b8">new_corner</a>(ci, new_fi);</div>
+<div class="line"><a name="l01112"></a><span class="lineno"> 1112</span>&#160;            ci = prev[ci];</div>
+<div class="line"><a name="l01113"></a><span class="lineno"> 1113</span>&#160;            ci = inv[ci];</div>
+<div class="line"><a name="l01114"></a><span class="lineno"> 1114</span>&#160;        } <span class="keywordflow">while</span> (ci != c0);</div>
+<div class="line"><a name="l01115"></a><span class="lineno"> 1115</span>&#160;    }</div>
+<div class="line"><a name="l01116"></a><span class="lineno"> 1116</span>&#160;    new_M.<a class="code" href="classcgv_1_1media_1_1mesh_1_1simple__mesh.html#a0fefda5b4672d686ce645774f5d9530f">compute_face_normals</a>();</div>
+<div class="line"><a name="l01117"></a><span class="lineno"> 1117</span>&#160;    *<span class="keyword">this</span> = new_M;</div>
+<div class="line"><a name="l01118"></a><span class="lineno"> 1118</span>&#160;}</div>
+<div class="line"><a name="l01119"></a><span class="lineno"><a class="line" href="classcgv_1_1media_1_1mesh_1_1simple__mesh.html#af83e9d1812f7cd899c9fbff880f7bafd"> 1119</a></span>&#160;<span class="keyword">template</span> &lt;<span class="keyword">typename</span> T&gt; <span class="keywordtype">void</span> <a class="code" href="classcgv_1_1media_1_1mesh_1_1simple__mesh.html">simple_mesh&lt;T&gt;::dual</a>()</div>
+<div class="line"><a name="l01120"></a><span class="lineno"> 1120</span>&#160;{</div>
+<div class="line"><a name="l01121"></a><span class="lineno"> 1121</span>&#160;    std::vector&lt;uint32_t&gt; c2f;</div>
+<div class="line"><a name="l01122"></a><span class="lineno"> 1122</span>&#160;    std::vector&lt;uint32_t&gt; p2c;</div>
+<div class="line"><a name="l01123"></a><span class="lineno"> 1123</span>&#160;    std::vector&lt;uint32_t&gt; inv;</div>
+<div class="line"><a name="l01124"></a><span class="lineno"> 1124</span>&#160;    std::vector&lt;uint32_t&gt; prev;</div>
+<div class="line"><a name="l01125"></a><span class="lineno"> 1125</span>&#160;    compute_inv(inv, &amp;p2c, 0, &amp;prev);</div>
+<div class="line"><a name="l01126"></a><span class="lineno"> 1126</span>&#160;    compute_c2f(c2f);</div>
+<div class="line"><a name="l01127"></a><span class="lineno"> 1127</span>&#160;    uint32_t f = get_nr_faces();</div>
+<div class="line"><a name="l01128"></a><span class="lineno"> 1128</span>&#160;    <a class="code" href="classcgv_1_1media_1_1mesh_1_1simple__mesh.html">mesh_type</a> new_M;</div>
+<div class="line"><a name="l01129"></a><span class="lineno"> 1129</span>&#160;    <span class="comment">// create one vertex per face</span></div>
+<div class="line"><a name="l01130"></a><span class="lineno"> 1130</span>&#160;    <span class="keywordflow">for</span> (uint32_t fi = 0; fi &lt; f; ++fi) {</div>
+<div class="line"><a name="l01131"></a><span class="lineno"> 1131</span>&#160;        <a class="code" href="classcgv_1_1math_1_1fvec.html">vec3</a> ctr = <a class="code" href="classcgv_1_1math_1_1fvec.html">vec3</a>(0.0f);</div>
+<div class="line"><a name="l01132"></a><span class="lineno"> 1132</span>&#160;        <span class="keywordflow">for</span> (uint32_t ci = begin_corner(fi); ci &lt; end_corner(fi); ++ci)</div>
+<div class="line"><a name="l01133"></a><span class="lineno"> 1133</span>&#160;            ctr += position(c2p(ci));</div>
+<div class="line"><a name="l01134"></a><span class="lineno"> 1134</span>&#160;        ctr.<a class="code" href="classcgv_1_1math_1_1fvec.html#a170e4ee6c48d7bfc16d4a89c0bbf3f8b">normalize</a>();</div>
+<div class="line"><a name="l01135"></a><span class="lineno"> 1135</span>&#160;        new_M.<a class="code" href="classcgv_1_1media_1_1mesh_1_1simple__mesh.html#a263f989e34397ba19477aca0e1ea4e75">new_position</a>(ctr);</div>
+<div class="line"><a name="l01136"></a><span class="lineno"> 1136</span>&#160;    }</div>
+<div class="line"><a name="l01137"></a><span class="lineno"> 1137</span>&#160;    <span class="comment">// create one face for original vertices</span></div>
+<div class="line"><a name="l01138"></a><span class="lineno"> 1138</span>&#160;    <span class="keywordflow">for</span> (uint32_t pi = 0; pi &lt; get_nr_positions(); ++pi) {</div>
+<div class="line"><a name="l01139"></a><span class="lineno"> 1139</span>&#160;        uint32_t c0 = p2c[pi];</div>
+<div class="line"><a name="l01140"></a><span class="lineno"> 1140</span>&#160;        uint32_t ci = c0;</div>
+<div class="line"><a name="l01141"></a><span class="lineno"> 1141</span>&#160;        uint32_t new_fi = new_M.<a class="code" href="classcgv_1_1media_1_1mesh_1_1simple__mesh__base.html#a58ec8ca84b58127b2579294cb0606433">start_face</a>();</div>
+<div class="line"><a name="l01142"></a><span class="lineno"> 1142</span>&#160;        <span class="keywordflow">do</span> {</div>
+<div class="line"><a name="l01143"></a><span class="lineno"> 1143</span>&#160;            new_M.<a class="code" href="classcgv_1_1media_1_1mesh_1_1simple__mesh__base.html#acc42be4837826d4977a349316f1585b8">new_corner</a>(c2f[ci], new_fi);</div>
+<div class="line"><a name="l01144"></a><span class="lineno"> 1144</span>&#160;            ci = prev[ci];</div>
+<div class="line"><a name="l01145"></a><span class="lineno"> 1145</span>&#160;            ci = inv[ci];</div>
+<div class="line"><a name="l01146"></a><span class="lineno"> 1146</span>&#160;        } <span class="keywordflow">while</span> (ci != c0);</div>
+<div class="line"><a name="l01147"></a><span class="lineno"> 1147</span>&#160;    }</div>
+<div class="line"><a name="l01148"></a><span class="lineno"> 1148</span>&#160;    new_M.<a class="code" href="classcgv_1_1media_1_1mesh_1_1simple__mesh.html#a0fefda5b4672d686ce645774f5d9530f">compute_face_normals</a>();</div>
+<div class="line"><a name="l01149"></a><span class="lineno"> 1149</span>&#160;    *<span class="keyword">this</span> = new_M;</div>
+<div class="line"><a name="l01150"></a><span class="lineno"> 1150</span>&#160;}</div>
+<div class="line"><a name="l01151"></a><span class="lineno"><a class="line" href="classcgv_1_1media_1_1mesh_1_1simple__mesh.html#a8080ed06759bfff42b462e27044b21dd"> 1151</a></span>&#160;<span class="keyword">template</span> &lt;<span class="keyword">typename</span> T&gt; <span class="keywordtype">void</span> <a class="code" href="classcgv_1_1media_1_1mesh_1_1simple__mesh.html">simple_mesh&lt;T&gt;::gyro</a>(T lambda)</div>
+<div class="line"><a name="l01152"></a><span class="lineno"> 1152</span>&#160;{</div>
+<div class="line"><a name="l01153"></a><span class="lineno"> 1153</span>&#160;    std::vector&lt;uint32_t&gt; c2f;</div>
+<div class="line"><a name="l01154"></a><span class="lineno"> 1154</span>&#160;    std::vector&lt;uint32_t&gt; p2c;</div>
+<div class="line"><a name="l01155"></a><span class="lineno"> 1155</span>&#160;    std::vector&lt;uint32_t&gt; inv;</div>
+<div class="line"><a name="l01156"></a><span class="lineno"> 1156</span>&#160;    std::vector&lt;uint32_t&gt; prev;</div>
+<div class="line"><a name="l01157"></a><span class="lineno"> 1157</span>&#160;    compute_inv(inv, &amp;p2c, 0, &amp;prev);</div>
+<div class="line"><a name="l01158"></a><span class="lineno"> 1158</span>&#160;    compute_c2f(c2f);</div>
+<div class="line"><a name="l01159"></a><span class="lineno"> 1159</span>&#160;    uint32_t v = get_nr_positions();</div>
+<div class="line"><a name="l01160"></a><span class="lineno"> 1160</span>&#160;    uint32_t f = get_nr_faces();</div>
+<div class="line"><a name="l01161"></a><span class="lineno"> 1161</span>&#160;    uint32_t c = get_nr_corners();</div>
+<div class="line"><a name="l01162"></a><span class="lineno"> 1162</span>&#160;    <a class="code" href="classcgv_1_1media_1_1mesh_1_1simple__mesh.html">mesh_type</a> new_M;</div>
+<div class="line"><a name="l01163"></a><span class="lineno"> 1163</span>&#160;    <span class="comment">// copy vertices</span></div>
+<div class="line"><a name="l01164"></a><span class="lineno"> 1164</span>&#160;    <span class="keywordflow">for</span> (uint32_t pi = 0; pi &lt; v; ++pi)</div>
+<div class="line"><a name="l01165"></a><span class="lineno"> 1165</span>&#160;        new_M.<a class="code" href="classcgv_1_1media_1_1mesh_1_1simple__mesh.html#a263f989e34397ba19477aca0e1ea4e75">new_position</a>(position(pi));</div>
+<div class="line"><a name="l01166"></a><span class="lineno"> 1166</span>&#160;    <span class="comment">// create one vertex per face</span></div>
+<div class="line"><a name="l01167"></a><span class="lineno"> 1167</span>&#160;    <span class="keywordflow">for</span> (uint32_t fi = 0; fi &lt; f; ++fi) {</div>
+<div class="line"><a name="l01168"></a><span class="lineno"> 1168</span>&#160;        <a class="code" href="classcgv_1_1math_1_1fvec.html">vec3</a> ctr = <a class="code" href="classcgv_1_1math_1_1fvec.html">vec3</a>(0.0f);</div>
+<div class="line"><a name="l01169"></a><span class="lineno"> 1169</span>&#160;        <span class="keywordflow">for</span> (uint32_t ci = begin_corner(fi); ci &lt; end_corner(fi); ++ci)</div>
+<div class="line"><a name="l01170"></a><span class="lineno"> 1170</span>&#160;            ctr += position(c2p(ci));</div>
+<div class="line"><a name="l01171"></a><span class="lineno"> 1171</span>&#160;        ctr.<a class="code" href="classcgv_1_1math_1_1fvec.html#a170e4ee6c48d7bfc16d4a89c0bbf3f8b">normalize</a>();</div>
+<div class="line"><a name="l01172"></a><span class="lineno"> 1172</span>&#160;        new_M.<a class="code" href="classcgv_1_1media_1_1mesh_1_1simple__mesh.html#a263f989e34397ba19477aca0e1ea4e75">new_position</a>(ctr);</div>
+<div class="line"><a name="l01173"></a><span class="lineno"> 1173</span>&#160;    }</div>
+<div class="line"><a name="l01174"></a><span class="lineno"> 1174</span>&#160;    <span class="comment">// create one vertex per corner</span></div>
+<div class="line"><a name="l01175"></a><span class="lineno"> 1175</span>&#160;    uint32_t ci;</div>
+<div class="line"><a name="l01176"></a><span class="lineno"> 1176</span>&#160;    <span class="keywordflow">for</span> (ci = 0; ci &lt; c; ++ci) {</div>
+<div class="line"><a name="l01177"></a><span class="lineno"> 1177</span>&#160;        uint32_t pi = c2p(ci);</div>
+<div class="line"><a name="l01178"></a><span class="lineno"> 1178</span>&#160;        uint32_t pj = c2p(inv[ci]);</div>
+<div class="line"><a name="l01179"></a><span class="lineno"> 1179</span>&#160;        new_M.<a class="code" href="classcgv_1_1media_1_1mesh_1_1simple__mesh.html#a263f989e34397ba19477aca0e1ea4e75">new_position</a>(normalize((1 - lambda) * position(pi) + lambda * position(pj)));</div>
+<div class="line"><a name="l01180"></a><span class="lineno"> 1180</span>&#160;    }</div>
+<div class="line"><a name="l01181"></a><span class="lineno"> 1181</span>&#160;    <span class="comment">// create one face for per original corner</span></div>
+<div class="line"><a name="l01182"></a><span class="lineno"> 1182</span>&#160;    <span class="keywordflow">for</span> (ci = 0; ci &lt; c; ++ci) {</div>
+<div class="line"><a name="l01183"></a><span class="lineno"> 1183</span>&#160;        uint32_t inv_ci = inv[ci];</div>
+<div class="line"><a name="l01184"></a><span class="lineno"> 1184</span>&#160;        uint32_t prev_inv_ci = inv[prev[ci]];</div>
+<div class="line"><a name="l01185"></a><span class="lineno"> 1185</span>&#160;        uint32_t fi = c2f[ci];</div>
+<div class="line"><a name="l01186"></a><span class="lineno"> 1186</span>&#160;        uint32_t pi = c2p(ci);</div>
+<div class="line"><a name="l01187"></a><span class="lineno"> 1187</span>&#160;        uint32_t new_fi = new_M.<a class="code" href="classcgv_1_1media_1_1mesh_1_1simple__mesh__base.html#a58ec8ca84b58127b2579294cb0606433">start_face</a>();</div>
+<div class="line"><a name="l01188"></a><span class="lineno"> 1188</span>&#160;        new_M.<a class="code" href="classcgv_1_1media_1_1mesh_1_1simple__mesh__base.html#acc42be4837826d4977a349316f1585b8">new_corner</a>(pi, new_fi);</div>
+<div class="line"><a name="l01189"></a><span class="lineno"> 1189</span>&#160;        new_M.<a class="code" href="classcgv_1_1media_1_1mesh_1_1simple__mesh__base.html#acc42be4837826d4977a349316f1585b8">new_corner</a>(ci + v + f, new_fi);</div>
+<div class="line"><a name="l01190"></a><span class="lineno"> 1190</span>&#160;        new_M.<a class="code" href="classcgv_1_1media_1_1mesh_1_1simple__mesh__base.html#acc42be4837826d4977a349316f1585b8">new_corner</a>(inv_ci + v + f, new_fi);</div>
+<div class="line"><a name="l01191"></a><span class="lineno"> 1191</span>&#160;        new_M.<a class="code" href="classcgv_1_1media_1_1mesh_1_1simple__mesh__base.html#acc42be4837826d4977a349316f1585b8">new_corner</a>(v + fi, new_fi);</div>
+<div class="line"><a name="l01192"></a><span class="lineno"> 1192</span>&#160;        new_M.<a class="code" href="classcgv_1_1media_1_1mesh_1_1simple__mesh__base.html#acc42be4837826d4977a349316f1585b8">new_corner</a>(prev_inv_ci + v + f, new_fi);</div>
+<div class="line"><a name="l01193"></a><span class="lineno"> 1193</span>&#160;    }</div>
+<div class="line"><a name="l01194"></a><span class="lineno"> 1194</span>&#160;    new_M.<a class="code" href="classcgv_1_1media_1_1mesh_1_1simple__mesh.html#a0fefda5b4672d686ce645774f5d9530f">compute_face_normals</a>();</div>
+<div class="line"><a name="l01195"></a><span class="lineno"> 1195</span>&#160;    *<span class="keyword">this</span> = new_M;</div>
+<div class="line"><a name="l01196"></a><span class="lineno"> 1196</span>&#160;}</div>
+<div class="line"><a name="l01197"></a><span class="lineno"><a class="line" href="classcgv_1_1media_1_1mesh_1_1simple__mesh.html#ab31c9e57c628c07bec0cea3c88c7bed1"> 1197</a></span>&#160;<span class="keyword">template</span> &lt;<span class="keyword">typename</span> T&gt; <span class="keywordtype">void</span> <a class="code" href="namespacecgv_1_1utils.html#ab965cca354619eefb296b13d8a9e87d4">simple_mesh&lt;T&gt;::join</a>()</div>
+<div class="line"><a name="l01198"></a><span class="lineno"> 1198</span>&#160;{</div>
+<div class="line"><a name="l01199"></a><span class="lineno"> 1199</span>&#160;    std::vector&lt;uint32_t&gt; c2e;</div>
+<div class="line"><a name="l01200"></a><span class="lineno"> 1200</span>&#160;    std::vector&lt;uint32_t&gt; e2c;</div>
+<div class="line"><a name="l01201"></a><span class="lineno"> 1201</span>&#160;    std::vector&lt;uint32_t&gt; inv;</div>
+<div class="line"><a name="l01202"></a><span class="lineno"> 1202</span>&#160;    std::vector&lt;uint32_t&gt; prev;</div>
+<div class="line"><a name="l01203"></a><span class="lineno"> 1203</span>&#160;    std::vector&lt;uint32_t&gt; p2c;</div>
+<div class="line"><a name="l01204"></a><span class="lineno"> 1204</span>&#160;    compute_inv(inv, &amp;p2c, 0, &amp;prev);</div>
+<div class="line"><a name="l01205"></a><span class="lineno"> 1205</span>&#160;    uint32_t e = compute_c2e(inv, c2e, &amp;e2c);</div>
+<div class="line"><a name="l01206"></a><span class="lineno"> 1206</span>&#160;    std::vector&lt;uint32_t&gt; c2f;</div>
+<div class="line"><a name="l01207"></a><span class="lineno"> 1207</span>&#160;    compute_c2f(c2f);</div>
+<div class="line"><a name="l01208"></a><span class="lineno"> 1208</span>&#160; </div>
+<div class="line"><a name="l01209"></a><span class="lineno"> 1209</span>&#160;    uint32_t f = get_nr_faces();</div>
+<div class="line"><a name="l01210"></a><span class="lineno"> 1210</span>&#160;    uint32_t v = get_nr_positions();</div>
+<div class="line"><a name="l01211"></a><span class="lineno"> 1211</span>&#160;    <a class="code" href="classcgv_1_1media_1_1mesh_1_1simple__mesh.html">mesh_type</a> new_M;</div>
+<div class="line"><a name="l01212"></a><span class="lineno"> 1212</span>&#160;    <span class="comment">// copy vertices</span></div>
+<div class="line"><a name="l01213"></a><span class="lineno"> 1213</span>&#160;    <span class="keywordflow">for</span> (uint32_t pi = 0; pi &lt; v; ++pi)</div>
+<div class="line"><a name="l01214"></a><span class="lineno"> 1214</span>&#160;        new_M.<a class="code" href="classcgv_1_1media_1_1mesh_1_1simple__mesh.html#a263f989e34397ba19477aca0e1ea4e75">new_position</a>(position(pi));</div>
+<div class="line"><a name="l01215"></a><span class="lineno"> 1215</span>&#160; </div>
+<div class="line"><a name="l01216"></a><span class="lineno"> 1216</span>&#160;    <span class="comment">// append one vertex per face</span></div>
+<div class="line"><a name="l01217"></a><span class="lineno"> 1217</span>&#160;    <span class="keywordflow">for</span> (uint32_t fi = 0; fi &lt; f; ++fi) {</div>
+<div class="line"><a name="l01218"></a><span class="lineno"> 1218</span>&#160;        <a class="code" href="classcgv_1_1math_1_1fvec.html">vec3</a> ctr = <a class="code" href="classcgv_1_1math_1_1fvec.html">vec3</a>(0.0f);</div>
+<div class="line"><a name="l01219"></a><span class="lineno"> 1219</span>&#160;        <span class="keywordflow">for</span> (uint32_t ci = begin_corner(fi); ci &lt; end_corner(fi); ++ci)</div>
+<div class="line"><a name="l01220"></a><span class="lineno"> 1220</span>&#160;            ctr += position(c2p(ci));</div>
+<div class="line"><a name="l01221"></a><span class="lineno"> 1221</span>&#160;        ctr.<a class="code" href="classcgv_1_1math_1_1fvec.html#a170e4ee6c48d7bfc16d4a89c0bbf3f8b">normalize</a>();</div>
+<div class="line"><a name="l01222"></a><span class="lineno"> 1222</span>&#160;        new_M.<a class="code" href="classcgv_1_1media_1_1mesh_1_1simple__mesh.html#a263f989e34397ba19477aca0e1ea4e75">new_position</a>(ctr);</div>
+<div class="line"><a name="l01223"></a><span class="lineno"> 1223</span>&#160;    }</div>
+<div class="line"><a name="l01224"></a><span class="lineno"> 1224</span>&#160; </div>
+<div class="line"><a name="l01225"></a><span class="lineno"> 1225</span>&#160;    <span class="comment">// create one face per edge</span></div>
+<div class="line"><a name="l01226"></a><span class="lineno"> 1226</span>&#160;    <span class="keywordflow">for</span> (uint32_t ei = 0; ei &lt; e; ++ei) {</div>
+<div class="line"><a name="l01227"></a><span class="lineno"> 1227</span>&#160;        uint32_t ci = e2c[ei];</div>
+<div class="line"><a name="l01228"></a><span class="lineno"> 1228</span>&#160;        uint32_t fi = c2f[ci];</div>
+<div class="line"><a name="l01229"></a><span class="lineno"> 1229</span>&#160;        uint32_t pi = c2p(ci);</div>
+<div class="line"><a name="l01230"></a><span class="lineno"> 1230</span>&#160;        uint32_t cj = inv[ci];</div>
+<div class="line"><a name="l01231"></a><span class="lineno"> 1231</span>&#160;        uint32_t fj = c2f[cj];</div>
+<div class="line"><a name="l01232"></a><span class="lineno"> 1232</span>&#160;        uint32_t pj = c2p(cj);</div>
+<div class="line"><a name="l01233"></a><span class="lineno"> 1233</span>&#160;        new_M.<a class="code" href="classcgv_1_1media_1_1mesh_1_1simple__mesh__base.html#a58ec8ca84b58127b2579294cb0606433">start_face</a>();</div>
+<div class="line"><a name="l01234"></a><span class="lineno"> 1234</span>&#160;        new_M.<a class="code" href="classcgv_1_1media_1_1mesh_1_1simple__mesh__base.html#acc42be4837826d4977a349316f1585b8">new_corner</a>(fi + v, ei);</div>
+<div class="line"><a name="l01235"></a><span class="lineno"> 1235</span>&#160;        new_M.<a class="code" href="classcgv_1_1media_1_1mesh_1_1simple__mesh__base.html#acc42be4837826d4977a349316f1585b8">new_corner</a>(pi, ei);</div>
+<div class="line"><a name="l01236"></a><span class="lineno"> 1236</span>&#160;        new_M.<a class="code" href="classcgv_1_1media_1_1mesh_1_1simple__mesh__base.html#acc42be4837826d4977a349316f1585b8">new_corner</a>(fj + v, ei);</div>
+<div class="line"><a name="l01237"></a><span class="lineno"> 1237</span>&#160;        new_M.<a class="code" href="classcgv_1_1media_1_1mesh_1_1simple__mesh__base.html#acc42be4837826d4977a349316f1585b8">new_corner</a>(pj, ei);</div>
+<div class="line"><a name="l01238"></a><span class="lineno"> 1238</span>&#160;    }</div>
+<div class="line"><a name="l01239"></a><span class="lineno"> 1239</span>&#160;    new_M.<a class="code" href="classcgv_1_1media_1_1mesh_1_1simple__mesh.html#a0fefda5b4672d686ce645774f5d9530f">compute_face_normals</a>();</div>
+<div class="line"><a name="l01240"></a><span class="lineno"> 1240</span>&#160;    *<span class="keyword">this</span> = new_M;</div>
+<div class="line"><a name="l01241"></a><span class="lineno"> 1241</span>&#160;}</div>
+<div class="line"><a name="l01242"></a><span class="lineno"><a class="line" href="classcgv_1_1media_1_1mesh_1_1simple__mesh.html#a5ad2bb66489e81898cb1143952a16791"> 1242</a></span>&#160;<span class="keyword">template</span> &lt;<span class="keyword">typename</span> T&gt; <span class="keywordtype">void</span> <a class="code" href="classcgv_1_1media_1_1mesh_1_1simple__mesh.html">simple_mesh&lt;T&gt;::ortho</a>()</div>
+<div class="line"><a name="l01243"></a><span class="lineno"> 1243</span>&#160;{</div>
 <div class="line"><a name="l01244"></a><span class="lineno"> 1244</span>&#160;    <a class="code" href="namespacecgv_1_1utils.html#ab965cca354619eefb296b13d8a9e87d4">join</a>();</div>
-<div class="line"><a name="l01245"></a><span class="lineno"> 1245</span>&#160;}</div>
-<div class="line"><a name="l01246"></a><span class="lineno"><a class="line" href="classcgv_1_1media_1_1mesh_1_1simple__mesh.html#a7ef582d4c3e0b782a23dc194aeee44d0"> 1246</a></span>&#160;<span class="keyword">template</span> &lt;<span class="keyword">typename</span> T&gt; <span class="keywordtype">void</span> <a class="code" href="classcgv_1_1media_1_1mesh_1_1simple__mesh.html">simple_mesh&lt;T&gt;::construct_conway_polyhedron</a>(<span class="keyword">const</span> std::string&amp; conway_notation)</div>
-<div class="line"><a name="l01247"></a><span class="lineno"> 1247</span>&#160;{</div>
-<div class="line"><a name="l01248"></a><span class="lineno"> 1248</span>&#160;    <span class="keywordflow">if</span> (conway_notation.back() == <span class="charliteral">&#39;C&#39;</span> || conway_notation.back() == <span class="charliteral">&#39;O&#39;</span>) {</div>
-<div class="line"><a name="l01249"></a><span class="lineno"> 1249</span>&#160;        <span class="comment">// cube</span></div>
-<div class="line"><a name="l01250"></a><span class="lineno"> 1250</span>&#160;        <span class="keyword">static</span> <span class="keywordtype">float</span> V[8 * 3] = { -1,-1,+1, +1,-1,+1, -1,+1,+1, +1,+1,+1, -1,-1,-1, +1,-1,-1, -1,+1,-1, +1,+1,-1 };</div>
-<div class="line"><a name="l01251"></a><span class="lineno"> 1251</span>&#160;        <span class="keyword">static</span> <span class="keywordtype">float</span> N[6 * 3] = { -1,0,0, +1,0,0, 0,-1,0, 0,+1,0, 0,0,-1, 0,0,+1 };</div>
-<div class="line"><a name="l01252"></a><span class="lineno"> 1252</span>&#160;        <span class="keyword">static</span> <span class="keywordtype">int</span> F[6 * 4] = { 0,2,6,4, 1,5,7,3, 0,4,5,1, 2,3,7,6, 4,6,7,5, 0,1,3,2 };</div>
-<div class="line"><a name="l01253"></a><span class="lineno"> 1253</span>&#160;        <span class="keywordflow">for</span> (<span class="keywordtype">int</span> vi = 0; vi &lt; 8; ++vi)</div>
-<div class="line"><a name="l01254"></a><span class="lineno"> 1254</span>&#160;            new_position(normalize(<a class="code" href="classcgv_1_1math_1_1fvec.html">vec3</a>(3, &amp;V[3 * vi])));</div>
-<div class="line"><a name="l01255"></a><span class="lineno"> 1255</span>&#160;        <span class="keywordflow">for</span> (<span class="keywordtype">int</span> ni = 0; ni &lt; 6; ++ni)</div>
-<div class="line"><a name="l01256"></a><span class="lineno"> 1256</span>&#160;            new_normal(<a class="code" href="classcgv_1_1math_1_1fvec.html">vec3</a>(3, &amp;N[3 * ni]));</div>
-<div class="line"><a name="l01257"></a><span class="lineno"> 1257</span>&#160;        <span class="keywordflow">for</span> (<span class="keywordtype">int</span> fi = 0; fi &lt; 6; ++fi) {</div>
-<div class="line"><a name="l01258"></a><span class="lineno"> 1258</span>&#160;            start_face();</div>
-<div class="line"><a name="l01259"></a><span class="lineno"> 1259</span>&#160;            <span class="keywordflow">for</span> (<span class="keywordtype">int</span> ci = 0; ci &lt; 4; ++ci)</div>
-<div class="line"><a name="l01260"></a><span class="lineno"> 1260</span>&#160;                new_corner(F[4 * fi + ci], fi);</div>
-<div class="line"><a name="l01261"></a><span class="lineno"> 1261</span>&#160;        }</div>
-<div class="line"><a name="l01262"></a><span class="lineno"> 1262</span>&#160;        <span class="keywordflow">if</span> (conway_notation.back() == <span class="charliteral">&#39;O&#39;</span>)</div>
-<div class="line"><a name="l01263"></a><span class="lineno"> 1263</span>&#160;            dual();</div>
-<div class="line"><a name="l01264"></a><span class="lineno"> 1264</span>&#160;    }</div>
-<div class="line"><a name="l01265"></a><span class="lineno"> 1265</span>&#160;    <span class="keywordflow">if</span> (conway_notation.back() == <span class="charliteral">&#39;T&#39;</span> || conway_notation.back() == <span class="charliteral">&#39;I&#39;</span> || conway_notation.back() == <span class="charliteral">&#39;D&#39;</span>) {</div>
-<div class="line"><a name="l01266"></a><span class="lineno"> 1266</span>&#160;        <span class="keyword">static</span> <span class="keyword">const</span> <span class="keywordtype">float</span> a = float(1.0 / (2 * sqrt(3.0)));</div>
-<div class="line"><a name="l01267"></a><span class="lineno"> 1267</span>&#160;        <span class="keyword">static</span> <span class="keyword">const</span> <span class="keywordtype">float</span> b = float(1.0 / (3 * sqrt(3.0 / 2)));</div>
-<div class="line"><a name="l01268"></a><span class="lineno"> 1268</span>&#160;        <span class="keyword">static</span> <span class="keyword">const</span> <span class="keywordtype">float</span> V[4 * 3] = { -0.5f, -a, -b,  0.5f, -a, -b,  0,2 * a, -b,  0,  0,2 * b };</div>
-<div class="line"><a name="l01269"></a><span class="lineno"> 1269</span>&#160;        <span class="keyword">static</span> <span class="keyword">const</span> <span class="keywordtype">int</span> F[4 * 3] = { 0,2,1,3,2,0,3,0,1,3,1,2 };</div>
-<div class="line"><a name="l01270"></a><span class="lineno"> 1270</span>&#160;        <span class="keywordflow">for</span> (<span class="keywordtype">int</span> vi = 0; vi &lt; 4; ++vi)</div>
-<div class="line"><a name="l01271"></a><span class="lineno"> 1271</span>&#160;            new_position(normalize(<a class="code" href="classcgv_1_1math_1_1fvec.html">vec3</a>(3, &amp;V[3 * vi])));</div>
-<div class="line"><a name="l01272"></a><span class="lineno"> 1272</span>&#160;        <span class="keywordflow">for</span> (<span class="keywordtype">int</span> fi = 0; fi &lt; 4; ++fi) {</div>
-<div class="line"><a name="l01273"></a><span class="lineno"> 1273</span>&#160;            start_face();</div>
-<div class="line"><a name="l01274"></a><span class="lineno"> 1274</span>&#160;            new_normal(compute_normal(position(F[3 * fi]), position(F[3 * fi + 1]), position(F[3 * fi + 2])));</div>
-<div class="line"><a name="l01275"></a><span class="lineno"> 1275</span>&#160;            <span class="keywordflow">for</span> (<span class="keywordtype">int</span> ci = 0; ci &lt; 3; ++ci)</div>
-<div class="line"><a name="l01276"></a><span class="lineno"> 1276</span>&#160;                new_corner(F[3 * fi + ci], fi);</div>
-<div class="line"><a name="l01277"></a><span class="lineno"> 1277</span>&#160;        }</div>
-<div class="line"><a name="l01278"></a><span class="lineno"> 1278</span>&#160;        <span class="keywordflow">if</span> (conway_notation.back() != <span class="charliteral">&#39;T&#39;</span>) {</div>
-<div class="line"><a name="l01279"></a><span class="lineno"> 1279</span>&#160;            snub();</div>
-<div class="line"><a name="l01280"></a><span class="lineno"> 1280</span>&#160;            dual();</div>
-<div class="line"><a name="l01281"></a><span class="lineno"> 1281</span>&#160;            <span class="keywordflow">if</span> (conway_notation.back() == <span class="charliteral">&#39;I&#39;</span>)</div>
-<div class="line"><a name="l01282"></a><span class="lineno"> 1282</span>&#160;                dual();</div>
-<div class="line"><a name="l01283"></a><span class="lineno"> 1283</span>&#160;        }</div>
-<div class="line"><a name="l01284"></a><span class="lineno"> 1284</span>&#160;    }</div>
-<div class="line"><a name="l01285"></a><span class="lineno"> 1285</span>&#160;    <span class="keywordflow">for</span> (<span class="keywordtype">int</span> ci = (<span class="keywordtype">int</span>)conway_notation.size() - 1; ci &gt;= 0; --ci) {</div>
-<div class="line"><a name="l01286"></a><span class="lineno"> 1286</span>&#160;        <span class="keywordflow">switch</span> (conway_notation[ci]) {</div>
-<div class="line"><a name="l01287"></a><span class="lineno"> 1287</span>&#160;        <span class="keywordflow">case</span> <span class="charliteral">&#39;t&#39;</span>: truncate(); <span class="keywordflow">break</span>;</div>
-<div class="line"><a name="l01288"></a><span class="lineno"> 1288</span>&#160;        <span class="keywordflow">case</span> <span class="charliteral">&#39;a&#39;</span>: ambo(); <span class="keywordflow">break</span>;</div>
-<div class="line"><a name="l01289"></a><span class="lineno"> 1289</span>&#160;        <span class="keywordflow">case</span> <span class="charliteral">&#39;d&#39;</span>: dual(); <span class="keywordflow">break</span>;</div>
-<div class="line"><a name="l01290"></a><span class="lineno"> 1290</span>&#160;        <span class="keywordflow">case</span> <span class="charliteral">&#39;j&#39;</span>: <a class="code" href="namespacecgv_1_1utils.html#ab965cca354619eefb296b13d8a9e87d4">join</a>(); <span class="keywordflow">break</span>;</div>
-<div class="line"><a name="l01291"></a><span class="lineno"> 1291</span>&#160;        <span class="keywordflow">case</span> <span class="charliteral">&#39;o&#39;</span>: ortho(); <span class="keywordflow">break</span>;</div>
-<div class="line"><a name="l01292"></a><span class="lineno"> 1292</span>&#160;        <span class="keywordflow">case</span> <span class="charliteral">&#39;s&#39;</span>: snub(); <span class="keywordflow">break</span>;</div>
-<div class="line"><a name="l01293"></a><span class="lineno"> 1293</span>&#160;        <span class="keywordflow">case</span> <span class="charliteral">&#39;g&#39;</span>: gyro(); <span class="keywordflow">break</span>;</div>
-<div class="line"><a name="l01294"></a><span class="lineno"> 1294</span>&#160;        }</div>
-<div class="line"><a name="l01295"></a><span class="lineno"> 1295</span>&#160;    }</div>
-<div class="line"><a name="l01296"></a><span class="lineno"> 1296</span>&#160;}</div>
-<div class="line"><a name="l01297"></a><span class="lineno"> 1297</span>&#160; </div>
-<div class="line"><a name="l01298"></a><span class="lineno"> 1298</span>&#160;<span class="keyword">template</span> <span class="keyword">class </span><a class="code" href="classcgv_1_1media_1_1mesh_1_1simple__mesh.html">simple_mesh&lt;float&gt;</a>;</div>
-<div class="line"><a name="l01299"></a><span class="lineno"> 1299</span>&#160;<span class="keyword">template</span> <span class="keyword">class </span><a class="code" href="classcgv_1_1media_1_1mesh_1_1simple__mesh.html">simple_mesh&lt;double&gt;</a>;</div>
-<div class="line"><a name="l01300"></a><span class="lineno"> 1300</span>&#160; </div>
-<div class="line"><a name="l01301"></a><span class="lineno"> 1301</span>&#160;        }</div>
-<div class="line"><a name="l01302"></a><span class="lineno"> 1302</span>&#160;    }</div>
-<div class="line"><a name="l01303"></a><span class="lineno"> 1303</span>&#160;}</div>
+<div class="line"><a name="l01245"></a><span class="lineno"> 1245</span>&#160;    <a class="code" href="namespacecgv_1_1utils.html#ab965cca354619eefb296b13d8a9e87d4">join</a>();</div>
+<div class="line"><a name="l01246"></a><span class="lineno"> 1246</span>&#160;}</div>
+<div class="line"><a name="l01247"></a><span class="lineno"><a class="line" href="classcgv_1_1media_1_1mesh_1_1simple__mesh.html#a7ef582d4c3e0b782a23dc194aeee44d0"> 1247</a></span>&#160;<span class="keyword">template</span> &lt;<span class="keyword">typename</span> T&gt; <span class="keywordtype">void</span> <a class="code" href="classcgv_1_1media_1_1mesh_1_1simple__mesh.html">simple_mesh&lt;T&gt;::construct_conway_polyhedron</a>(<span class="keyword">const</span> std::string&amp; conway_notation)</div>
+<div class="line"><a name="l01248"></a><span class="lineno"> 1248</span>&#160;{</div>
+<div class="line"><a name="l01249"></a><span class="lineno"> 1249</span>&#160;    <span class="keywordflow">if</span> (conway_notation.back() == <span class="charliteral">&#39;C&#39;</span> || conway_notation.back() == <span class="charliteral">&#39;O&#39;</span>) {</div>
+<div class="line"><a name="l01250"></a><span class="lineno"> 1250</span>&#160;        <span class="comment">// cube</span></div>
+<div class="line"><a name="l01251"></a><span class="lineno"> 1251</span>&#160;        <span class="keyword">static</span> <span class="keywordtype">float</span> V[8 * 3] = { -1,-1,+1, +1,-1,+1, -1,+1,+1, +1,+1,+1, -1,-1,-1, +1,-1,-1, -1,+1,-1, +1,+1,-1 };</div>
+<div class="line"><a name="l01252"></a><span class="lineno"> 1252</span>&#160;        <span class="keyword">static</span> <span class="keywordtype">float</span> N[6 * 3] = { -1,0,0, +1,0,0, 0,-1,0, 0,+1,0, 0,0,-1, 0,0,+1 };</div>
+<div class="line"><a name="l01253"></a><span class="lineno"> 1253</span>&#160;        <span class="keyword">static</span> <span class="keywordtype">int</span> F[6 * 4] = { 0,2,6,4, 1,5,7,3, 0,4,5,1, 2,3,7,6, 4,6,7,5, 0,1,3,2 };</div>
+<div class="line"><a name="l01254"></a><span class="lineno"> 1254</span>&#160;        <span class="keywordflow">for</span> (<span class="keywordtype">int</span> vi = 0; vi &lt; 8; ++vi)</div>
+<div class="line"><a name="l01255"></a><span class="lineno"> 1255</span>&#160;            new_position(normalize(<a class="code" href="classcgv_1_1math_1_1fvec.html">vec3</a>(3, &amp;V[3 * vi])));</div>
+<div class="line"><a name="l01256"></a><span class="lineno"> 1256</span>&#160;        <span class="keywordflow">for</span> (<span class="keywordtype">int</span> ni = 0; ni &lt; 6; ++ni)</div>
+<div class="line"><a name="l01257"></a><span class="lineno"> 1257</span>&#160;            new_normal(<a class="code" href="classcgv_1_1math_1_1fvec.html">vec3</a>(3, &amp;N[3 * ni]));</div>
+<div class="line"><a name="l01258"></a><span class="lineno"> 1258</span>&#160;        <span class="keywordflow">for</span> (<span class="keywordtype">int</span> fi = 0; fi &lt; 6; ++fi) {</div>
+<div class="line"><a name="l01259"></a><span class="lineno"> 1259</span>&#160;            start_face();</div>
+<div class="line"><a name="l01260"></a><span class="lineno"> 1260</span>&#160;            <span class="keywordflow">for</span> (<span class="keywordtype">int</span> ci = 0; ci &lt; 4; ++ci)</div>
+<div class="line"><a name="l01261"></a><span class="lineno"> 1261</span>&#160;                new_corner(F[4 * fi + ci], fi);</div>
+<div class="line"><a name="l01262"></a><span class="lineno"> 1262</span>&#160;        }</div>
+<div class="line"><a name="l01263"></a><span class="lineno"> 1263</span>&#160;        <span class="keywordflow">if</span> (conway_notation.back() == <span class="charliteral">&#39;O&#39;</span>)</div>
+<div class="line"><a name="l01264"></a><span class="lineno"> 1264</span>&#160;            dual();</div>
+<div class="line"><a name="l01265"></a><span class="lineno"> 1265</span>&#160;    }</div>
+<div class="line"><a name="l01266"></a><span class="lineno"> 1266</span>&#160;    <span class="keywordflow">if</span> (conway_notation.back() == <span class="charliteral">&#39;T&#39;</span> || conway_notation.back() == <span class="charliteral">&#39;I&#39;</span> || conway_notation.back() == <span class="charliteral">&#39;D&#39;</span>) {</div>
+<div class="line"><a name="l01267"></a><span class="lineno"> 1267</span>&#160;        <span class="keyword">static</span> <span class="keyword">const</span> <span class="keywordtype">float</span> a = float(1.0 / (2 * sqrt(3.0)));</div>
+<div class="line"><a name="l01268"></a><span class="lineno"> 1268</span>&#160;        <span class="keyword">static</span> <span class="keyword">const</span> <span class="keywordtype">float</span> b = float(1.0 / (3 * sqrt(3.0 / 2)));</div>
+<div class="line"><a name="l01269"></a><span class="lineno"> 1269</span>&#160;        <span class="keyword">static</span> <span class="keyword">const</span> <span class="keywordtype">float</span> V[4 * 3] = { -0.5f, -a, -b,  0.5f, -a, -b,  0,2 * a, -b,  0,  0,2 * b };</div>
+<div class="line"><a name="l01270"></a><span class="lineno"> 1270</span>&#160;        <span class="keyword">static</span> <span class="keyword">const</span> <span class="keywordtype">int</span> F[4 * 3] = { 0,2,1,3,2,0,3,0,1,3,1,2 };</div>
+<div class="line"><a name="l01271"></a><span class="lineno"> 1271</span>&#160;        <span class="keywordflow">for</span> (<span class="keywordtype">int</span> vi = 0; vi &lt; 4; ++vi)</div>
+<div class="line"><a name="l01272"></a><span class="lineno"> 1272</span>&#160;            new_position(normalize(<a class="code" href="classcgv_1_1math_1_1fvec.html">vec3</a>(3, &amp;V[3 * vi])));</div>
+<div class="line"><a name="l01273"></a><span class="lineno"> 1273</span>&#160;        <span class="keywordflow">for</span> (<span class="keywordtype">int</span> fi = 0; fi &lt; 4; ++fi) {</div>
+<div class="line"><a name="l01274"></a><span class="lineno"> 1274</span>&#160;            start_face();</div>
+<div class="line"><a name="l01275"></a><span class="lineno"> 1275</span>&#160;            new_normal(compute_normal(position(F[3 * fi]), position(F[3 * fi + 1]), position(F[3 * fi + 2])));</div>
+<div class="line"><a name="l01276"></a><span class="lineno"> 1276</span>&#160;            <span class="keywordflow">for</span> (<span class="keywordtype">int</span> ci = 0; ci &lt; 3; ++ci)</div>
+<div class="line"><a name="l01277"></a><span class="lineno"> 1277</span>&#160;                new_corner(F[3 * fi + ci], fi);</div>
+<div class="line"><a name="l01278"></a><span class="lineno"> 1278</span>&#160;        }</div>
+<div class="line"><a name="l01279"></a><span class="lineno"> 1279</span>&#160;        <span class="keywordflow">if</span> (conway_notation.back() != <span class="charliteral">&#39;T&#39;</span>) {</div>
+<div class="line"><a name="l01280"></a><span class="lineno"> 1280</span>&#160;            snub();</div>
+<div class="line"><a name="l01281"></a><span class="lineno"> 1281</span>&#160;            dual();</div>
+<div class="line"><a name="l01282"></a><span class="lineno"> 1282</span>&#160;            <span class="keywordflow">if</span> (conway_notation.back() == <span class="charliteral">&#39;I&#39;</span>)</div>
+<div class="line"><a name="l01283"></a><span class="lineno"> 1283</span>&#160;                dual();</div>
+<div class="line"><a name="l01284"></a><span class="lineno"> 1284</span>&#160;        }</div>
+<div class="line"><a name="l01285"></a><span class="lineno"> 1285</span>&#160;    }</div>
+<div class="line"><a name="l01286"></a><span class="lineno"> 1286</span>&#160;    <span class="keywordflow">for</span> (<span class="keywordtype">int</span> ci = (<span class="keywordtype">int</span>)conway_notation.size() - 1; ci &gt;= 0; --ci) {</div>
+<div class="line"><a name="l01287"></a><span class="lineno"> 1287</span>&#160;        <span class="keywordflow">switch</span> (conway_notation[ci]) {</div>
+<div class="line"><a name="l01288"></a><span class="lineno"> 1288</span>&#160;        <span class="keywordflow">case</span> <span class="charliteral">&#39;t&#39;</span>: truncate(); <span class="keywordflow">break</span>;</div>
+<div class="line"><a name="l01289"></a><span class="lineno"> 1289</span>&#160;        <span class="keywordflow">case</span> <span class="charliteral">&#39;a&#39;</span>: ambo(); <span class="keywordflow">break</span>;</div>
+<div class="line"><a name="l01290"></a><span class="lineno"> 1290</span>&#160;        <span class="keywordflow">case</span> <span class="charliteral">&#39;d&#39;</span>: dual(); <span class="keywordflow">break</span>;</div>
+<div class="line"><a name="l01291"></a><span class="lineno"> 1291</span>&#160;        <span class="keywordflow">case</span> <span class="charliteral">&#39;j&#39;</span>: <a class="code" href="namespacecgv_1_1utils.html#ab965cca354619eefb296b13d8a9e87d4">join</a>(); <span class="keywordflow">break</span>;</div>
+<div class="line"><a name="l01292"></a><span class="lineno"> 1292</span>&#160;        <span class="keywordflow">case</span> <span class="charliteral">&#39;o&#39;</span>: ortho(); <span class="keywordflow">break</span>;</div>
+<div class="line"><a name="l01293"></a><span class="lineno"> 1293</span>&#160;        <span class="keywordflow">case</span> <span class="charliteral">&#39;s&#39;</span>: snub(); <span class="keywordflow">break</span>;</div>
+<div class="line"><a name="l01294"></a><span class="lineno"> 1294</span>&#160;        <span class="keywordflow">case</span> <span class="charliteral">&#39;g&#39;</span>: gyro(); <span class="keywordflow">break</span>;</div>
+<div class="line"><a name="l01295"></a><span class="lineno"> 1295</span>&#160;        }</div>
+<div class="line"><a name="l01296"></a><span class="lineno"> 1296</span>&#160;    }</div>
+<div class="line"><a name="l01297"></a><span class="lineno"> 1297</span>&#160;}</div>
+<div class="line"><a name="l01298"></a><span class="lineno"> 1298</span>&#160; </div>
+<div class="line"><a name="l01299"></a><span class="lineno"> 1299</span>&#160;<span class="keyword">template</span> <span class="keyword">class </span><a class="code" href="classcgv_1_1media_1_1mesh_1_1simple__mesh.html">simple_mesh&lt;float&gt;</a>;</div>
+<div class="line"><a name="l01300"></a><span class="lineno"> 1300</span>&#160;<span class="keyword">template</span> <span class="keyword">class </span><a class="code" href="classcgv_1_1media_1_1mesh_1_1simple__mesh.html">simple_mesh&lt;double&gt;</a>;</div>
+<div class="line"><a name="l01301"></a><span class="lineno"> 1301</span>&#160; </div>
+<div class="line"><a name="l01302"></a><span class="lineno"> 1302</span>&#160;        }</div>
+<div class="line"><a name="l01303"></a><span class="lineno"> 1303</span>&#160;    }</div>
+<div class="line"><a name="l01304"></a><span class="lineno"> 1304</span>&#160;}</div>
 <div class="ttc" id="aadvanced__scan_8h_html"><div class="ttname"><a href="advanced__scan_8h.html">advanced_scan.h</a></div><div class="ttdoc">More advanced text processing for splitting text into lines or tokens.</div></div>
 <div class="ttc" id="aclasscgv_1_1math_1_1fmat_html"><div class="ttname"><a href="classcgv_1_1math_1_1fmat.html">cgv::math::fmat</a></div><div class="ttdoc">matrix of fixed size dimensions</div><div class="ttdef"><b>Definition:</b> <a href="fmat_8h_source.html#l00022">fmat.h:23</a></div></div>
 <div class="ttc" id="aclasscgv_1_1math_1_1fvec_html"><div class="ttname"><a href="classcgv_1_1math_1_1fvec.html">cgv::math::fvec</a></div><div class="ttdoc">A vector with zero based index.</div><div class="ttdef"><b>Definition:</b> <a href="fvec_8h_source.html#l00025">fvec.h:26</a></div></div>
-<div class="ttc" id="aclasscgv_1_1math_1_1fvec_html_a170e4ee6c48d7bfc16d4a89c0bbf3f8b"><div class="ttname"><a href="classcgv_1_1math_1_1fvec.html#a170e4ee6c48d7bfc16d4a89c0bbf3f8b">cgv::math::fvec::normalize</a></div><div class="ttdeci">T normalize()</div><div class="ttdoc">normalize the vector using the L2-Norm and return the length</div><div class="ttdef"><b>Definition:</b> <a href="fvec_8h_source.html#l00298">fvec.h:298</a></div></div>
+<div class="ttc" id="aclasscgv_1_1math_1_1fvec_html_a170e4ee6c48d7bfc16d4a89c0bbf3f8b"><div class="ttname"><a href="classcgv_1_1math_1_1fvec.html#a170e4ee6c48d7bfc16d4a89c0bbf3f8b">cgv::math::fvec::normalize</a></div><div class="ttdeci">T normalize()</div><div class="ttdoc">normalize the vector using the L2-Norm and return the length</div><div class="ttdef"><b>Definition:</b> <a href="fvec_8h_source.html#l00302">fvec.h:302</a></div></div>
 <div class="ttc" id="aclasscgv_1_1math_1_1fvec_html_a306998e8905416d17894fd66d8a15b0b"><div class="ttname"><a href="classcgv_1_1math_1_1fvec.html#a306998e8905416d17894fd66d8a15b0b">cgv::math::fvec::x</a></div><div class="ttdeci">T &amp; x()</div><div class="ttdoc">first element</div><div class="ttdef"><b>Definition:</b> <a href="fvec_8h_source.html#l00155">fvec.h:155</a></div></div>
 <div class="ttc" id="aclasscgv_1_1math_1_1fvec_html_a37ec1163fda9dd3f48f863333d2bfa19"><div class="ttname"><a href="classcgv_1_1math_1_1fvec.html#a37ec1163fda9dd3f48f863333d2bfa19">cgv::math::fvec::z</a></div><div class="ttdeci">T &amp; z()</div><div class="ttdoc">third element</div><div class="ttdef"><b>Definition:</b> <a href="fvec_8h_source.html#l00163">fvec.h:163</a></div></div>
-<div class="ttc" id="aclasscgv_1_1math_1_1fvec_html_a68f4c962a48bde5bf2b65494c6e89985"><div class="ttname"><a href="classcgv_1_1math_1_1fvec.html#a68f4c962a48bde5bf2b65494c6e89985">cgv::math::fvec::length</a></div><div class="ttdeci">T length() const</div><div class="ttdoc">length of the vector L2-Norm</div><div class="ttdef"><b>Definition:</b> <a href="fvec_8h_source.html#l00245">fvec.h:245</a></div></div>
+<div class="ttc" id="aclasscgv_1_1math_1_1fvec_html_a68f4c962a48bde5bf2b65494c6e89985"><div class="ttname"><a href="classcgv_1_1math_1_1fvec.html#a68f4c962a48bde5bf2b65494c6e89985">cgv::math::fvec::length</a></div><div class="ttdeci">T length() const</div><div class="ttdoc">length of the vector L2-Norm</div><div class="ttdef"><b>Definition:</b> <a href="fvec_8h_source.html#l00249">fvec.h:249</a></div></div>
 <div class="ttc" id="aclasscgv_1_1math_1_1fvec_html_a8d199c8049b2ed5806be3c3af7d2860e"><div class="ttname"><a href="classcgv_1_1math_1_1fvec.html#a8d199c8049b2ed5806be3c3af7d2860e">cgv::math::fvec::y</a></div><div class="ttdeci">T &amp; y()</div><div class="ttdoc">second element</div><div class="ttdef"><b>Definition:</b> <a href="fvec_8h_source.html#l00159">fvec.h:159</a></div></div>
 <div class="ttc" id="aclasscgv_1_1media_1_1axis__aligned__box_html"><div class="ttname"><a href="classcgv_1_1media_1_1axis__aligned__box.html">cgv::media::axis_aligned_box</a></div><div class="ttdoc">An axis aligned box, defined by to points: min and max.</div><div class="ttdef"><b>Definition:</b> <a href="axis__aligned__box_8h_source.html#l00014">axis_aligned_box.h:15</a></div></div>
 <div class="ttc" id="aclasscgv_1_1media_1_1axis__aligned__box_html_a3365862ca70f3d02981781f99bf238be"><div class="ttname"><a href="classcgv_1_1media_1_1axis__aligned__box.html#a3365862ca70f3d02981781f99bf238be">cgv::media::axis_aligned_box::add_point</a></div><div class="ttdeci">void add_point(const fpnt_type &amp;p)</div><div class="ttdoc">extent box to include given point</div><div class="ttdef"><b>Definition:</b> <a href="axis__aligned__box_8h_source.html#l00094">axis_aligned_box.h:94</a></div></div>

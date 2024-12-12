@@ -1500,11 +1500,15 @@ bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="stru
 bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structcgv_1_1render_1_1context__config.html#abc1a5f04f585d5427e3027fdba361382">core_profile</a></td></tr>
 <tr class="memdesc:abc1a5f04f585d5427e3027fdba361382 inherit pub_attribs_structcgv_1_1render_1_1context__config"><td class="mdescLeft">&#160;</td><td class="mdescRight">default: false <br /></td></tr>
 <tr class="separator:abc1a5f04f585d5427e3027fdba361382 inherit pub_attribs_structcgv_1_1render_1_1context__config"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a8c55abe24d04321946ed65c6fe2debfd inherit pub_attribs_structcgv_1_1render_1_1context__config"><td class="memItemLeft" align="right" valign="top"><a id="a8c55abe24d04321946ed65c6fe2debfd"></a>
+std::vector&lt; int &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structcgv_1_1render_1_1context__config.html#a8c55abe24d04321946ed65c6fe2debfd">context_creation_attrib_list</a></td></tr>
+<tr class="memdesc:a8c55abe24d04321946ed65c6fe2debfd inherit pub_attribs_structcgv_1_1render_1_1context__config"><td class="mdescLeft">&#160;</td><td class="mdescRight">provide integer vector to store context creation attribute list <br /></td></tr>
+<tr class="separator:a8c55abe24d04321946ed65c6fe2debfd inherit pub_attribs_structcgv_1_1render_1_1context__config"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
 <a name="details" id="details"></a><h2 class="groupheader">Detailed Description</h2>
 <div class="textblock"><p>base class for all drawables, which is independent of the used rendering API. </p>
 
-<p class="definition">Definition at line <a class="el" href="context_8h_source.html#l00618">618</a> of file <a class="el" href="context_8h_source.html">context.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="context_8h_source.html#l00620">620</a> of file <a class="el" href="context_8h_source.html">context.h</a>.</p>
 </div><h2 class="groupheader">Member Function Documentation</h2>
 <a id="a1122ce9221bb982f6842138ae5978b66"></a>
 <h2 class="memtitle"><span class="permalink"><a href="#a1122ce9221bb982f6842138ae5978b66">&#9670;&nbsp;</a></span>draw_light_source()</h2>
@@ -1633,7 +1637,7 @@ bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="stru
 
 <p class="definition">Definition at line <a class="el" href="context_8cxx_source.html#l00489">489</a> of file <a class="el" href="context_8cxx_source.html">context.cxx</a>.</p>
 
-<p class="reference">References <a class="el" href="fvec_8h_source.html#l00245">cgv::math::fvec&lt; T, N &gt;::length()</a>.</p>
+<p class="reference">References <a class="el" href="fvec_8h_source.html#l00249">cgv::math::fvec&lt; T, N &gt;::length()</a>.</p>
 
 </div>
 </div>
@@ -1705,7 +1709,7 @@ bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="stru
 <p>compute model space 3D point from the given window space point </p>
 <p>the function inversely transforms the window space 3D point with the current modelview_projection_window matrix </p>
 
-<p class="definition">Definition at line <a class="el" href="context_8h_source.html#l01445">1445</a> of file <a class="el" href="context_8h_source.html">context.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="context_8h_source.html#l01447">1447</a> of file <a class="el" href="context_8h_source.html">context.h</a>.</p>
 
 </div>
 </div>
@@ -1746,7 +1750,7 @@ bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="stru
 <p>compute model space 3D point from the given opengl pixel location (window location) </p>
 <p>the function queries the window z coordinate from the depth buffer and inversely transforms the window space 3D point with the current modelview_projection_window matrix </p>
 
-<p class="definition">Definition at line <a class="el" href="context_8h_source.html#l01421">1421</a> of file <a class="el" href="context_8h_source.html">context.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="context_8h_source.html#l01423">1423</a> of file <a class="el" href="context_8h_source.html">context.h</a>.</p>
 
 <p class="reference">Referenced by <a class="el" href="drawable_8cxx_source.html#l00059">cgv::render::drawable::get_world_location()</a>.</p>
 
@@ -1795,7 +1799,7 @@ bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="stru
 <p>compute model space 3D point from the given opengl pixel location (window location) and modelview_projection_window matrix </p>
 <p>the function queries the window z coordinate from the depth buffer and inversely transforms the window space 3D point with the given modelview_projection_window matrix </p>
 
-<p class="definition">Definition at line <a class="el" href="context_8h_source.html#l01433">1433</a> of file <a class="el" href="context_8h_source.html">context.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="context_8h_source.html#l01435">1435</a> of file <a class="el" href="context_8h_source.html">context.h</a>.</p>
 
 </div>
 </div>
@@ -1842,7 +1846,7 @@ bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="stru
 <p>compute model space 3D point from the given opengl pixel location (window location) </p>
 <p>the function inversely transforms the window space 3D point with the current modelview_projection_window matrix </p>
 
-<p class="definition">Definition at line <a class="el" href="context_8h_source.html#l01427">1427</a> of file <a class="el" href="context_8h_source.html">context.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="context_8h_source.html#l01429">1429</a> of file <a class="el" href="context_8h_source.html">context.h</a>.</p>
 
 </div>
 </div>
@@ -1895,7 +1899,7 @@ bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="stru
 <p>compute model space 3D point from the given opengl pixel location (window location) with the given modelview_projection_window matrix </p>
 <p>the function inversely transforms the window space 3D point with the given modelview_projection_window matrix </p>
 
-<p class="definition">Definition at line <a class="el" href="context_8h_source.html#l01439">1439</a> of file <a class="el" href="context_8h_source.html">context.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="context_8h_source.html#l01441">1441</a> of file <a class="el" href="context_8h_source.html">context.h</a>.</p>
 
 </div>
 </div>
@@ -1967,7 +1971,7 @@ bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="stru
 
 <p class="definition">Definition at line <a class="el" href="context_8cxx_source.html#l01921">1921</a> of file <a class="el" href="context_8cxx_source.html">context.cxx</a>.</p>
 
-<p class="reference">References <a class="el" href="context_8h_source.html#l00614">cgv::render::window_transformation::depth_range</a>, <a class="el" href="convert__string_8cxx_source.html#l00007">cgv::utils::to_string()</a>, and <a class="el" href="context_8h_source.html#l00612">cgv::render::window_transformation::viewport</a>.</p>
+<p class="reference">References <a class="el" href="context_8h_source.html#l00616">cgv::render::window_transformation::depth_range</a>, <a class="el" href="convert__string_8cxx_source.html#l00007">cgv::utils::to_string()</a>, and <a class="el" href="context_8h_source.html#l00614">cgv::render::window_transformation::viewport</a>.</p>
 
 </div>
 </div>
@@ -2140,7 +2144,7 @@ bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="stru
 
 <p class="definition">Definition at line <a class="el" href="context_8cxx_source.html#l01971">1971</a> of file <a class="el" href="context_8cxx_source.html">context.cxx</a>.</p>
 
-<p class="reference">References <a class="el" href="vec_8h_source.html#l00097">cgv::math::vec&lt; T &gt;::size()</a>.</p>
+<p class="reference">References <a class="el" href="vec_8h_source.html#l00059">cgv::math::vec&lt; T &gt;::size()</a>.</p>
 
 </div>
 </div>

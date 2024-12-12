@@ -5,6 +5,7 @@ var structcgv_1_1render_1_1context__config =
     [ "accumulation_bits", "structcgv_1_1render_1_1context__config.html#aeb072927666ef67dbd34c9a0bdbbbb04", null ],
     [ "accumulation_buffer", "structcgv_1_1render_1_1context__config.html#ae47197871eac2f7c445cc9e277de7abd", null ],
     [ "alpha_buffer", "structcgv_1_1render_1_1context__config.html#a9b40a24a254bc728b1f54f8c1a4bcb6c", null ],
+    [ "context_creation_attrib_list", "structcgv_1_1render_1_1context__config.html#a8c55abe24d04321946ed65c6fe2debfd", null ],
     [ "core_profile", "structcgv_1_1render_1_1context__config.html#abc1a5f04f585d5427e3027fdba361382", null ],
     [ "debug", "structcgv_1_1render_1_1context__config.html#a7fc273c2e75fd6a690e1f6029036f431", null ],
     [ "depth_bits", "structcgv_1_1render_1_1context__config.html#a3f3095f1511792b9ee39f7f45d9d9775", null ],
