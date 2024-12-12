@@ -41,10 +41,10 @@ void gpu_algorithm::ensure_buffer(const cgv::render::context& ctx, cgv::render::
 	}
 }
 
-void gpu_algorithm::delete_buffer(const cgv::render::context& ctx, cgv::render::vertex_buffer& buffer) {
-
-	buffer.destruct(ctx);
-}
+//void gpu_algorithm::delete_buffer(const cgv::render::context& ctx, cgv::render::vertex_buffer& buffer) {
+//
+//	buffer.destruct(ctx);
+//}
 
 }
 }

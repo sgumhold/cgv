@@ -18,25 +18,25 @@ public:
 	gpu_algorithm() {}
 	~gpu_algorithm() {}
 
-	virtual bool init(cgv::render::context& ctx, size_t count) = 0;
+	//virtual bool init(cgv::render::context& ctx, size_t count) = 0;
 
-	virtual void destruct(const cgv::render::context& ctx) = 0;
+	//virtual void destruct(const cgv::render::context& ctx) = 0;
 
-	bool is_initialized() const { return is_initialized_; }
+	bool is_initialized() const { return _is_initialized; }
 
 protected:
-	bool is_initialized_ = false;
+	bool _is_initialized = false;
 
 	// TODO: Move this functionality to the shader_program class.
 	std::map<std::string, int> get_program_uniforms(cgv::render::context& ctx, cgv::render::shader_program& prog) const;
 
 	void ensure_buffer(const cgv::render::context& ctx, cgv::render::vertex_buffer& buffer, size_t size, cgv::render::VertexBufferType type = cgv::render::VertexBufferType::VBT_STORAGE, cgv::render::VertexBufferUsage usage = cgv::render::VertexBufferUsage::VBU_STREAM_COPY);
 
-	void delete_buffer(const cgv::render::context& ctx, cgv::render::vertex_buffer& buffer);
+	//void delete_buffer(const cgv::render::context& ctx, cgv::render::vertex_buffer& buffer);
 
-	virtual bool load_shader_programs(cgv::render::context& ctx) = 0;
+	//virtual bool load_shader_programs(cgv::render::context& ctx) = 0;
 
-	// TODO: Move to utils or math.
+	// TODO: Move to utils or math?
 	/// @brief Return the closest power of two larger than x
 	uint32_t next_power_of_two(uint32_t x) const {
 		uint32_t pot = 1;
@@ -64,6 +64,7 @@ protected:
 		return calculate_num_groups_void(num_elements, num_elements_per_group);
 	}
 
+	/*
 	void dispatch_compute1d(unsigned num_groups) {
 		glDispatchCompute(num_groups, 1u, 1u);
 	}
@@ -75,6 +76,7 @@ protected:
 	void dispatch_compute3d(uvec3 num_groups) {
 		glDispatchCompute(num_groups[0], num_groups[1], num_groups[2]);
 	}
+	*/
 
 	void dispatch_compute(unsigned num_groups_x, unsigned num_groups_y, unsigned num_groups_z) {
 		glDispatchCompute(num_groups_x, num_groups_y, num_groups_z);
@@ -91,9 +93,9 @@ private:
 
 // TODO: Move to utility.
 template<typename T>
-class double_buffer {
+class double_buffer_wrapper {
 public:
-	double_buffer(T* first, T* second) : _first(first), _second(second) {}
+	double_buffer_wrapper(T* first, T* second) : _first(first), _second(second) {}
 
 	T* first() { return _first; }
 	T* second() { return _second; }
