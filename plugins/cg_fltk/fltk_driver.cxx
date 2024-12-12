@@ -1,15 +1,14 @@
 #include "fltk_driver.h"
 
-#include <cgv_gl/gl/wgl.h>
-
 #ifdef _WIN32
 #include <windows.h>
 #define USE_WIN32
 #else
-#include <fltk/file_chooser.h>
 #define USE_GLEW 1
 #define USE_FLTK
+#include <fltk/file_chooser.h>
 #endif
+#include <cgv_gl/gl/wgl.h>
 #include <fltk/../../OpenGL/GlChoice.h>
 
 #include "fltk_button.h"
