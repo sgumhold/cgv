@@ -1,5 +1,11 @@
 var NAVTREEINDEX31 =
 {
+"distance__transform_8h.html#ae111715a4f488edeb34ecbd1d790ece3":[10,0,1,7,519],
+"distance__transform_8h_source.html":[12,0,1,5,12],
+"doc_8pj_source.html":[12,0,2,0],
+"drawable_8cxx_source.html":[12,0,1,10,12],
+"drawable_8h_source.html":[12,0,1,10,13],
+"drop__const_8h_source.html":[12,0,1,12,2,1],
 "drop__pointer_8h_source.html":[12,0,1,12,2,2],
 "drop__ref_8h_source.html":[12,0,1,12,2,3],
 "dual__contouring_8h_source.html":[12,0,1,6,3,5],
@@ -195,8 +201,8 @@ var NAVTREEINDEX31 =
 "functions_enum.html":[11,3,4],
 "functions_eval.html":[11,3,5],
 "functions_f.html":[11,3,0,6],
-"functions_func.html":[11,3,1,0],
 "functions_func.html":[11,3,1],
+"functions_func.html":[11,3,1,0],
 "functions_func_b.html":[11,3,1,1],
 "functions_func_c.html":[11,3,1,2],
 "functions_func_d.html":[11,3,1,3],
@@ -241,13 +247,7 @@ var NAVTREEINDEX31 =
 "functions_type.html":[11,3,3],
 "functions_u.html":[11,3,0,21],
 "functions_v.html":[11,3,0,22],
-"functions_vars.html":[11,3,2,0],
 "functions_vars.html":[11,3,2],
-"functions_vars_a.html":[11,3,2,1],
-"functions_vars_b.html":[11,3,2,2],
-"functions_vars_c.html":[11,3,2,3],
-"functions_vars_d.html":[11,3,2,4],
-"functions_vars_e.html":[11,3,2,5],
-"functions_vars_f.html":[11,3,2,6],
-"functions_vars_g.html":[11,3,2,7]
+"functions_vars.html":[11,3,2,0],
+"functions_vars_a.html":[11,3,2,1]
 };

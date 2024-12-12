@@ -137,6 +137,14 @@ void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="clas
 void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcgv_1_1render_1_1gl_1_1gl__context.html#a7a1d5d5802abaee13e9b44b96657946e">clear_background</a> (bool color_flag, bool depth_flag, bool stencil_flag=false, bool accum_flag=false) override</td></tr>
 <tr class="memdesc:a7a1d5d5802abaee13e9b44b96657946e"><td class="mdescLeft">&#160;</td><td class="mdescRight">clear the buffer contents of the flagged buffers to the set background colors <br /></td></tr>
 <tr class="separator:a7a1d5d5802abaee13e9b44b96657946e"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a7674f74b02399ea1b9346a51dc61901d"><td class="memItemLeft" align="right" valign="top"><a id="a7674f74b02399ea1b9346a51dc61901d"></a>
+float&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcgv_1_1render_1_1gl_1_1gl__context.html#a7674f74b02399ea1b9346a51dc61901d">get_info_font_size</a> () const</td></tr>
+<tr class="memdesc:a7674f74b02399ea1b9346a51dc61901d"><td class="mdescLeft">&#160;</td><td class="mdescRight">return info font size <br /></td></tr>
+<tr class="separator:a7674f74b02399ea1b9346a51dc61901d"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a44024ec8edbe63009344a16d0ea34acb"><td class="memItemLeft" align="right" valign="top"><a id="a44024ec8edbe63009344a16d0ea34acb"></a>
+<a class="el" href="namespacecgv_1_1media_1_1font.html#a64ce756a8996bfd2245707fe4418456c">cgv::media::font::font_face_ptr</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcgv_1_1render_1_1gl_1_1gl__context.html#a44024ec8edbe63009344a16d0ea34acb">get_info_font_face</a> () const</td></tr>
+<tr class="memdesc:a44024ec8edbe63009344a16d0ea34acb"><td class="mdescLeft">&#160;</td><td class="mdescRight">return info font face and ensure that it is created <br /></td></tr>
+<tr class="separator:a44024ec8edbe63009344a16d0ea34acb"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:aa504ce6faf597e5ac1ecc995da85e85a"><td class="memItemLeft" align="right" valign="top"><a id="aa504ce6faf597e5ac1ecc995da85e85a"></a>
 float&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcgv_1_1render_1_1gl_1_1gl__context.html#aa504ce6faf597e5ac1ecc995da85e85a">get_current_font_size</a> () const override</td></tr>
 <tr class="memdesc:aa504ce6faf597e5ac1ecc995da85e85a"><td class="mdescLeft">&#160;</td><td class="mdescRight">overwrite function to return info font size in case no font is currently selected <br /></td></tr>
@@ -1507,6 +1515,10 @@ bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="stru
 bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structcgv_1_1render_1_1context__config.html#abc1a5f04f585d5427e3027fdba361382">core_profile</a></td></tr>
 <tr class="memdesc:abc1a5f04f585d5427e3027fdba361382 inherit pub_attribs_structcgv_1_1render_1_1context__config"><td class="mdescLeft">&#160;</td><td class="mdescRight">default: false <br /></td></tr>
 <tr class="separator:abc1a5f04f585d5427e3027fdba361382 inherit pub_attribs_structcgv_1_1render_1_1context__config"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a8c55abe24d04321946ed65c6fe2debfd inherit pub_attribs_structcgv_1_1render_1_1context__config"><td class="memItemLeft" align="right" valign="top"><a id="a8c55abe24d04321946ed65c6fe2debfd"></a>
+std::vector&lt; int &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structcgv_1_1render_1_1context__config.html#a8c55abe24d04321946ed65c6fe2debfd">context_creation_attrib_list</a></td></tr>
+<tr class="memdesc:a8c55abe24d04321946ed65c6fe2debfd inherit pub_attribs_structcgv_1_1render_1_1context__config"><td class="mdescLeft">&#160;</td><td class="mdescRight">provide integer vector to store context creation attribute list <br /></td></tr>
+<tr class="separator:a8c55abe24d04321946ed65c6fe2debfd inherit pub_attribs_structcgv_1_1render_1_1context__config"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="inherit_header pro_static_methods_classcgv_1_1render_1_1context"><td colspan="2" onclick="javascript:toggleInherit('pro_static_methods_classcgv_1_1render_1_1context')"><img src="closed.png" alt="-"/>&#160;Static Protected Member Functions inherited from <a class="el" href="classcgv_1_1render_1_1context.html">cgv::render::context</a></td></tr>
 <tr class="memitem:afa79bbedeeea1ddf825dcc99d5464320 inherit pro_static_methods_classcgv_1_1render_1_1context"><td class="memItemLeft" align="right" valign="top"><a id="afa79bbedeeea1ddf825dcc99d5464320"></a>
 static void&#160;</td><td class="memItemRight" valign="bottom"><b>get_buffer_list</b> (<a class="el" href="classcgv_1_1render_1_1frame__buffer__base.html">frame_buffer_base</a> &amp;fbb, bool &amp;<a class="el" href="structcgv_1_1render_1_1context__config.html#afe52005a1741b6dc2f24359d4ae1429e">depth_buffer</a>, std::vector&lt; int &gt; &amp;buffers, int offset=0)</td></tr>
@@ -1520,7 +1532,7 @@ static const unsigned&#160;</td><td class="memItemRight" valign="bottom"><a clas
 <a name="details" id="details"></a><h2 class="groupheader">Detailed Description</h2>
 <div class="textblock"><p>implementation of the context API for the OpenGL API excluding methods for font selection, redraw and initiation of render passes. </p>
 
-<p class="definition">Definition at line <a class="el" href="gl__context_8h_source.html#l00034">34</a> of file <a class="el" href="gl__context_8h_source.html">gl_context.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="gl__context_8h_source.html#l00037">37</a> of file <a class="el" href="gl__context_8h_source.html">gl_context.h</a>.</p>
 </div><h2 class="groupheader">Constructor &amp; Destructor Documentation</h2>
 <a id="a404532ca5cc6edd6aa950b3efd5eeddd"></a>
 <h2 class="memtitle"><span class="permalink"><a href="#a404532ca5cc6edd6aa950b3efd5eeddd">&#9670;&nbsp;</a></span>gl_context()</h2>
@@ -1540,7 +1552,7 @@ static const unsigned&#160;</td><td class="memItemRight" valign="bottom"><a clas
 <p>construct context and attach signals </p>
 <p>construct <a class="el" href="classcgv_1_1render_1_1gl_1_1gl__context.html" title="implementation of the context API for the OpenGL API excluding methods for font selection,...">gl_context</a> and attach signals </p>
 
-<p class="definition">Definition at line <a class="el" href="gl__context_8cxx_source.html#l00275">275</a> of file <a class="el" href="gl__context_8cxx_source.html">gl_context.cxx</a>.</p>
+<p class="definition">Definition at line <a class="el" href="gl__context_8cxx_source.html#l00341">341</a> of file <a class="el" href="gl__context_8cxx_source.html">gl_context.cxx</a>.</p>
 
 </div>
 </div>
@@ -1563,7 +1575,7 @@ static const unsigned&#160;</td><td class="memItemRight" valign="bottom"><a clas
 <p>ensure that glew is initialized, define lighting mode, viewing pyramid and the rendering mode and return whether gl configuration was successful </p>
 <p>define lighting mode, viewing pyramid and the rendering mode </p>
 
-<p class="definition">Definition at line <a class="el" href="gl__context_8cxx_source.html#l00355">355</a> of file <a class="el" href="gl__context_8cxx_source.html">gl_context.cxx</a>.</p>
+<p class="definition">Definition at line <a class="el" href="gl__context_8cxx_source.html#l00421">421</a> of file <a class="el" href="gl__context_8cxx_source.html">gl_context.cxx</a>.</p>
 
 <p class="reference">References <a class="el" href="gl_8cxx_source.html#l00019">cgv::render::gl::ensure_glew_initialized()</a>, <a class="el" href="group_8cxx_source.html#l00033">cgv::base::group::get_child()</a>, <a class="el" href="group_8cxx_source.html#l00029">cgv::base::group::get_nr_children()</a>, <a class="el" href="scan_8cxx_source.html#l00106">cgv::utils::to_upper()</a>, and <a class="el" href="traverser_8cxx_source.html#l00373">cgv::base::traverser::traverse()</a>.</p>
 
@@ -1620,7 +1632,7 @@ static const unsigned&#160;</td><td class="memItemRight" valign="bottom"><a clas
 
 <p>Reimplemented from <a class="el" href="classcgv_1_1render_1_1context.html#a1122ce9221bb982f6842138ae5978b66">cgv::render::context</a>.</p>
 
-<p class="definition">Definition at line <a class="el" href="gl__context_8cxx_source.html#l00946">946</a> of file <a class="el" href="gl__context_8cxx_source.html">gl_context.cxx</a>.</p>
+<p class="definition">Definition at line <a class="el" href="gl__context_8cxx_source.html#l01004">1004</a> of file <a class="el" href="gl__context_8cxx_source.html">gl_context.cxx</a>.</p>
 
 </div>
 </div>
@@ -1687,7 +1699,7 @@ static const unsigned&#160;</td><td class="memItemRight" valign="bottom"><a clas
 
 <p>Implements <a class="el" href="classcgv_1_1render_1_1context.html#adb2581c0b04da895beebf73bf17c5115">cgv::render::context</a>.</p>
 
-<p class="definition">Definition at line <a class="el" href="gl__context_8cxx_source.html#l00714">714</a> of file <a class="el" href="gl__context_8cxx_source.html">gl_context.cxx</a>.</p>
+<p class="definition">Definition at line <a class="el" href="gl__context_8cxx_source.html#l00772">772</a> of file <a class="el" href="gl__context_8cxx_source.html">gl_context.cxx</a>.</p>
 
 </div>
 </div>
@@ -1720,7 +1732,7 @@ static const unsigned&#160;</td><td class="memItemRight" valign="bottom"><a clas
 
 <p>Implements <a class="el" href="classcgv_1_1render_1_1context.html#a6a26ce9b9278534c75ca4a90b9456961">cgv::render::context</a>.</p>
 
-<p class="definition">Definition at line <a class="el" href="gl__context_8cxx_source.html#l00821">821</a> of file <a class="el" href="gl__context_8cxx_source.html">gl_context.cxx</a>.</p>
+<p class="definition">Definition at line <a class="el" href="gl__context_8cxx_source.html#l00879">879</a> of file <a class="el" href="gl__context_8cxx_source.html">gl_context.cxx</a>.</p>
 
 </div>
 </div>
@@ -1795,7 +1807,7 @@ static const unsigned&#160;</td><td class="memItemRight" valign="bottom"><a clas
 
 <p>Reimplemented from <a class="el" href="classcgv_1_1render_1_1context.html#a3aa654fdda36fb32c355f30d5010e849">cgv::render::context</a>.</p>
 
-<p class="definition">Definition at line <a class="el" href="gl__context_8cxx_source.html#l00896">896</a> of file <a class="el" href="gl__context_8cxx_source.html">gl_context.cxx</a>.</p>
+<p class="definition">Definition at line <a class="el" href="gl__context_8cxx_source.html#l00954">954</a> of file <a class="el" href="gl__context_8cxx_source.html">gl_context.cxx</a>.</p>
 
 </div>
 </div>

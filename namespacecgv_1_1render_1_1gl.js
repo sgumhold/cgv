@@ -65,6 +65,7 @@ var namespacecgv_1_1render_1_1gl =
     [ "find_best_texture_format", "namespacecgv_1_1render_1_1gl.html#adefebd65f54bf21200ea885afd907e77", null ],
     [ "generate_mipmaps", "namespacecgv_1_1render_1_1gl.html#ade99498730fa5bebc76bdc80bfba703c", null ],
     [ "get_aab_ptr", "namespacecgv_1_1render_1_1gl.html#ae783af0745e7fb1a194f3b2dec9698da", null ],
+    [ "get_context_creation_attrib_list", "namespacecgv_1_1render_1_1gl.html#aebeeb40a74c70aa18b66223c0a411aba", null ],
     [ "get_gl_cube_map_target", "namespacecgv_1_1render_1_1gl.html#ae9b23475ee19c4e83e21a3af389fe294", null ],
     [ "get_gl_format", "namespacecgv_1_1render_1_1gl.html#aec7728923218737504e224c2e9e2c844", null ],
     [ "get_gl_id", "namespacecgv_1_1render_1_1gl.html#a7948b87f3119188926ca9ab189a1533d", null ],

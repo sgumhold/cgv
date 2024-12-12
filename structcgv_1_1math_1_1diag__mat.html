@@ -231,14 +231,14 @@ unsigned&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="
 virtual&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structcgv_1_1math_1_1diag__mat.html#a9870bbc9084c9ee7eb9967ba3d65f9e0">~diag_mat</a> ()</td></tr>
 <tr class="memdesc:a9870bbc9084c9ee7eb9967ba3d65f9e0"><td class="mdescLeft">&#160;</td><td class="mdescRight">destructor <br /></td></tr>
 <tr class="separator:a9870bbc9084c9ee7eb9967ba3d65f9e0"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a935a21b8ec27c6d6375df48056dc520f"><td class="memItemLeft" align="right" valign="top"><a id="a935a21b8ec27c6d6375df48056dc520f"></a>
-&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structcgv_1_1math_1_1diag__mat.html#a935a21b8ec27c6d6375df48056dc520f">operator T*</a> ()</td></tr>
-<tr class="memdesc:a935a21b8ec27c6d6375df48056dc520f"><td class="mdescLeft">&#160;</td><td class="mdescRight">cast into array of element type <br /></td></tr>
-<tr class="separator:a935a21b8ec27c6d6375df48056dc520f"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:abf907022d255bb311c9b27f8a0849698"><td class="memItemLeft" align="right" valign="top"><a id="abf907022d255bb311c9b27f8a0849698"></a>
-&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structcgv_1_1math_1_1diag__mat.html#abf907022d255bb311c9b27f8a0849698">operator const T *</a> () const</td></tr>
-<tr class="memdesc:abf907022d255bb311c9b27f8a0849698"><td class="mdescLeft">&#160;</td><td class="mdescRight">cast into array of const element type <br /></td></tr>
-<tr class="separator:abf907022d255bb311c9b27f8a0849698"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a28524f06ece6e0f5a2113d6233c9fc67"><td class="memItemLeft" align="right" valign="top"><a id="a28524f06ece6e0f5a2113d6233c9fc67"></a>
+T *&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structcgv_1_1math_1_1diag__mat.html#a28524f06ece6e0f5a2113d6233c9fc67">data</a> ()</td></tr>
+<tr class="memdesc:a28524f06ece6e0f5a2113d6233c9fc67"><td class="mdescLeft">&#160;</td><td class="mdescRight">cast into array of element type <br /></td></tr>
+<tr class="separator:a28524f06ece6e0f5a2113d6233c9fc67"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a0d02e28793ff55cde9cf6faf89539d3e"><td class="memItemLeft" align="right" valign="top"><a id="a0d02e28793ff55cde9cf6faf89539d3e"></a>
+const T *&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structcgv_1_1math_1_1diag__mat.html#a0d02e28793ff55cde9cf6faf89539d3e">data</a> () const</td></tr>
+<tr class="memdesc:a0d02e28793ff55cde9cf6faf89539d3e"><td class="mdescLeft">&#160;</td><td class="mdescRight">cast into array of const element type <br /></td></tr>
+<tr class="separator:a0d02e28793ff55cde9cf6faf89539d3e"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a1427653f4ad8000b5aca8148b27d8d24"><td class="memItemLeft" align="right" valign="top"><a id="a1427653f4ad8000b5aca8148b27d8d24"></a>
 <a class="el" href="structcgv_1_1math_1_1diag__mat.html">diag_mat</a>&lt; T &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structcgv_1_1math_1_1diag__mat.html#a1427653f4ad8000b5aca8148b27d8d24">sub_mat</a> (unsigned top_left, unsigned <a class="el" href="structcgv_1_1math_1_1diag__mat.html#a82d9f2698f92fa19ac4d9b0ee9e57361">size</a>) const</td></tr>
 <tr class="memdesc:a1427653f4ad8000b5aca8148b27d8d24"><td class="mdescLeft">&#160;</td><td class="mdescRight">create sub diagonal matrix d(top_left)...d(top_left+size) <br /></td></tr>
@@ -274,6 +274,14 @@ const T &amp;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" h
 T &amp;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structcgv_1_1math_1_1diag__mat.html#ac3f80c350d91dbf76992515dab41646b">operator()</a> (unsigned i)</td></tr>
 <tr class="memdesc:ac3f80c350d91dbf76992515dab41646b"><td class="mdescLeft">&#160;</td><td class="mdescRight">non const access to the ith diagonal element <br /></td></tr>
 <tr class="separator:ac3f80c350d91dbf76992515dab41646b"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a0c0604a228ce648de4847584e4a51d0b"><td class="memItemLeft" align="right" valign="top"><a id="a0c0604a228ce648de4847584e4a51d0b"></a>
+const T &amp;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structcgv_1_1math_1_1diag__mat.html#a0c0604a228ce648de4847584e4a51d0b">operator[]</a> (unsigned i) const</td></tr>
+<tr class="memdesc:a0c0604a228ce648de4847584e4a51d0b"><td class="mdescLeft">&#160;</td><td class="mdescRight">const access to the ith diagonal element <br /></td></tr>
+<tr class="separator:a0c0604a228ce648de4847584e4a51d0b"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:aace098e8e1d533d6fc1f743b06db47ff"><td class="memItemLeft" align="right" valign="top"><a id="aace098e8e1d533d6fc1f743b06db47ff"></a>
+T &amp;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structcgv_1_1math_1_1diag__mat.html#aace098e8e1d533d6fc1f743b06db47ff">operator[]</a> (unsigned i)</td></tr>
+<tr class="memdesc:aace098e8e1d533d6fc1f743b06db47ff"><td class="mdescLeft">&#160;</td><td class="mdescRight">non const access to the ith diagonal element <br /></td></tr>
+<tr class="separator:aace098e8e1d533d6fc1f743b06db47ff"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a08e66bed86c19d891483782614b7a657"><td class="memItemLeft" align="right" valign="top"><a id="a08e66bed86c19d891483782614b7a657"></a>
 bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structcgv_1_1math_1_1diag__mat.html#a08e66bed86c19d891483782614b7a657">is_square</a> ()</td></tr>
 <tr class="memdesc:a08e66bed86c19d891483782614b7a657"><td class="mdescLeft">&#160;</td><td class="mdescRight">returns true because diagonal matrices are always square <br /></td></tr>
