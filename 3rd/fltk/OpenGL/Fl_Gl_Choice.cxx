@@ -330,7 +330,7 @@ static void destructor() {
 }
 #endif
 
-GLContext fltk::create_gl_context(XVisualInfo* vis) {
+GLContext fltk::create_gl_context(const Window* window, XVisualInfo* vis) {
   GLContext context;
 #if 1 // enable OpenGL3 support if possible
   // This is disabled because it does not work on SUSE11 with NVidia cards.

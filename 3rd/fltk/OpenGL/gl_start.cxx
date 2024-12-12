@@ -94,7 +94,7 @@ void fltk::glstart() {
 #elif defined(__APPLE__)
     context = create_gl_context(Window::drawing_window(), gl_choice);
 #else
-    context = create_gl_context(xvisual);
+    context = create_gl_context(Window::drawing_window(), xvisual);
 #endif
   }
   set_gl_context(Window::drawing_window(), context);
