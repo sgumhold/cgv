@@ -241,9 +241,9 @@ bool OALSource::init(OALContext& ctx, std::string sound_name)
 	return ctx.is_no_error();
 }
 
-void OALSource::set_position(cgv::math::fvec<float, 3> pos) { alSourcefv(src_id, AL_POSITION, pos); }
+void OALSource::set_position(cgv::math::fvec<float, 3> pos) { alSourcefv(src_id, AL_POSITION, pos.data()); }
 
-void OALSource::set_velocity(cgv::math::fvec<float, 3> vel) { alSourcefv(src_id, AL_VELOCITY, vel); }
+void OALSource::set_velocity(cgv::math::fvec<float, 3> vel) { alSourcefv(src_id, AL_VELOCITY, vel.data()); }
 
 void OALSource::set_pitch(float pitch) { alSourcef(src_id, AL_PITCH, pitch); }
 
@@ -257,14 +257,14 @@ void OALSource::set_looping(bool should_loop)
 cgv::math::fvec<float, 3> OALSource::get_position() const
 {
 	cgv::math::fvec<float, 3> vec;
-	alGetSourcefv(src_id, AL_POSITION, vec);
+	alGetSourcefv(src_id, AL_POSITION, vec.data());
 	return vec;
 }
 
 cgv::math::fvec<float, 3> OALSource::get_velocity() const
 {
 	cgv::math::fvec<float, 3> vec;
-	alGetSourcefv(src_id, AL_VELOCITY, vec);
+	alGetSourcefv(src_id, AL_VELOCITY, vec.data());
 	return vec;
 }
 
@@ -317,27 +317,27 @@ void OALSource::rewind() { alSourceRewind(src_id); }
 cgv::math::fvec<float, 3> OALListener::get_position()
 {
 	cgv::math::fvec<float, 3> pos;
-	alGetListenerfv(AL_POSITION, pos);
+	alGetListenerfv(AL_POSITION, pos.data());
 	return pos;
 }
 
 cgv::math::fvec<float, 3> OALListener::get_velocity()
 {
 	cgv::math::fvec<float, 3> vel;
-	alGetListenerfv(AL_VELOCITY, vel);
+	alGetListenerfv(AL_VELOCITY, vel.data());
 	return vel;
 }
 
 cgv::math::fmat<float, 3, 2> OALListener::get_orientation()
 {
 	cgv::math::fmat<float, 3, 2> orientation;
-	alGetListenerfv(AL_ORIENTATION, orientation);
+	alGetListenerfv(AL_ORIENTATION, orientation.data());
 	return orientation;
 }
 
-void OALListener::set_position(cgv::math::fvec<float, 3> pos) { alListenerfv(AL_POSITION, pos); }
+void OALListener::set_position(cgv::math::fvec<float, 3> pos) { alListenerfv(AL_POSITION, pos.data()); }
 
-void OALListener::set_velocity(cgv::math::fvec<float, 3> vel) { alListenerfv(AL_VELOCITY, vel); }
+void OALListener::set_velocity(cgv::math::fvec<float, 3> vel) { alListenerfv(AL_VELOCITY, vel.data()); }
 
 void OALListener::set_orientation(cgv::math::fvec<float, 3> at, cgv::math::fvec<float, 3> up)
 {
