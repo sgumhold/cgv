@@ -117,11 +117,11 @@ GLContext create_gl_context(const Window*, const GlChoice*, int layer=0);
 
 #else
 
-GLContext create_gl_context(XVisualInfo* vis);
+GLContext create_gl_context(const Window*, XVisualInfo* vis);
 
 static inline
-GLContext create_gl_context(const Window*, const GlChoice* g) {
-  return create_gl_context(g->vis);
+GLContext create_gl_context(const Window* w, const GlChoice* g) {
+  return create_gl_context(w, g->vis);
 }
 
 #endif
