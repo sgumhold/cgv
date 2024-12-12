@@ -4,7 +4,7 @@
 
 namespace cgv {
 	namespace math {
-		/// compute a permutation perm with bucket_sort over index typed keys that a limited to nr_keys, optionally provide an initial permutation
+		/// compute a permutation perm with bucket_sort over index typed keys that a limited to nr_keys, optionally provide an initial permutation that cannot be the same as the output permutation
 		template <typename key_type, typename idx_type>
 		void bucket_sort(const std::vector<key_type>& keys, size_t nr_keys, std::vector<idx_type>& perm, std::vector<idx_type>* perm_in_ptr = 0)
 		{

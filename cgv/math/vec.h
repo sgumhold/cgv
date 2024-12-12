@@ -42,107 +42,49 @@ public:
 	typedef std::ptrdiff_t difference_type;
 	typedef T*             pointer;
 	typedef const T*       const_pointer;
-
     typedef T*             iterator;
     typedef const T*       const_iterator;
-    
-   
 	typedef std::reverse_iterator<iterator> reverse_iterator;
 	typedef std::reverse_iterator<const_iterator> const_reverse_iterator;
 
-	iterator begin()
-	{
-		return _data;
-	}
-
-	iterator end()
-	{
-		return _data+_size;
-	}
-
-	const_iterator begin() const
-	{
-		return _data;
-	}
-
-	const_iterator end() const
-	{
-		return _data+_size;
-	}
-
-	reverse_iterator rbegin()
-	{
-		return reverse_iterator(end());
-	}
-
-	reverse_iterator rend()
-	{
-		return reverse_iterator(begin());
-	}
-
-	const_reverse_iterator rbegin() const
-	{
-		return const_reverse_iterator(end());
-	}
-
-	const_reverse_iterator rend() const
-	{
-		return const_reverse_iterator(begin());
-	}
-
-
-
-
+	iterator begin() { return _data;	}
+	iterator end() { return _data+_size; }
+	const_iterator begin() const { return _data; }
+	const_iterator end() const { return _data+_size; }
+	reverse_iterator rbegin() { return reverse_iterator(end()); }
+	reverse_iterator rend() { return reverse_iterator(begin()); }
+	const_reverse_iterator rbegin() const { return const_reverse_iterator(end()); }
+	const_reverse_iterator rend() const { return const_reverse_iterator(begin()); }
 	///number of elements
-	unsigned size() const
-	{
-		return _size;
-	}
-
+	unsigned size() const { return _size; }
 	///number of elements
-	unsigned dim() const
-	{
-		return _size;
-	}
-	
+	unsigned dim() const { return _size; }
 	///standard constructor
-	vec()
-	{
-		_data = NULL;
-		_size = 0;
-		data_is_external = false;
-	}
-
+	vec() : _data(0), _size(0), data_is_external(false) {}
 	///creates a vector with dim elements
-	explicit vec(unsigned dim, const T& value = T(0))
-	{
-		_size=dim;
+	explicit vec(unsigned dim, const T& value = T(0)) {
+		_size = dim;
 		if (dim > 0) {
 			_data = new T[_size];
 			std::fill(_data, _data + _size, value);
 		}
 		else
-			_data = NULL;
+			_data = 0;
 		data_is_external = false;
 	}
-
-
 	///creates a vector with dim elements from an array
-	vec(unsigned dim, const T* marray)
-	{
+	vec(unsigned dim, const T* marray) {
 		_size = dim;
-		if(dim > 0)
-		{		
+		if(dim > 0) {		
 			_data = new T[_size];
 			memcpy(_data,marray,_size*sizeof(T));
-		}else
+		}
+		else
 			_data = NULL;
 		data_is_external = false;
 	}
-
 	///copy constructor for vectors with equal element type	
-	vec(const vec<T>&v)
-	{
+	vec(const vec<T>&v) {
 		_size = v.size();
 		if (v._data) {
 			_data = new T[v.size()];
@@ -152,11 +94,9 @@ public:
 			_data=NULL;
 		data_is_external = false;
 	}
-
 	///copy constructor for vectors with different element type
 	template <typename S>
-	vec(const vec<S>& v)
-	{
+	vec(const vec<S>& v) {
 		_size = v.size();
 		if(v.size() > 0) {
 			_data = new T[v.size()];
@@ -167,18 +107,14 @@ public:
 			_data =NULL;
 		data_is_external = false;
 	}
-
 	///creates a 2d vector (c0,c1)^T
-	vec(const T& c0, const T& c1)
-	{
+	vec(const T& c0, const T& c1) {
 		_size = 2;
 		_data = new T[2];
 		_data[0] = c0; 
 		_data[1] = c1; 	
 		data_is_external = false;
-	}
-
-	
+	}	
 	///creates a 3d vector (c0,c1,c2)^T
 	vec(const T& c0, const T& c1, const T& c2)
 	{
@@ -253,13 +189,13 @@ public:
 	}
 
 	///cast into non const array 
-	operator T*()
+	T* data()
 	{
 		return _data;
 	}
 
 	///cast into const array
-	operator const T*() const
+	const T* data() const
 	{
 		return _data;
 	}
@@ -301,12 +237,20 @@ public:
 	}
 
 	///const element accessor
-	const T& operator () (unsigned i) const 
-	{
+	const T& operator () (unsigned i) const {
 		assert(i < _size);
 		return _data[i]; 
 	}
-
+	///element accessor
+	T& operator [] (unsigned i) {
+		assert(i < _size);
+		return _data[i]; 
+	}
+	///const element accessor
+	const T& operator [] (unsigned i) const  {
+		assert(i < _size);
+		return _data[i]; 
+	}
 	///element accessor for the first element
 	T& first()   
 	{
@@ -320,23 +264,18 @@ public:
 		assert( _size > 0);
 		return _data[0]; 
 	}
-
-
-
 	///element accessor for the flast element
 	T& last()   
 	{
 		assert( _size > 0);
 		return _data[_size-1]; 
 	}
-
 	///const element accessor for the last element
 	const T& last()  const 
 	{
 		assert( _size > 0);
 		return _data[_size-1]; 
 	}
-	
 	///element accessor for the first element
 	T& x()   
 	{

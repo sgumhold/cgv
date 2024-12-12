@@ -121,15 +121,15 @@ public:
 	}
 
 	///cast into array of element type
-	operator T*()
+	T* data()
 	{
-		return (T*)_data;
+		return _data.data();
 	}
 
 	///cast into array of const element type
-	operator const T*() const
+	const T* data() const
 	{
-		return (const T*)_data;
+		return _data.data();
 	}
 
 	///create sub diagonal matrix d(top_left)...d(top_left+size)
@@ -197,6 +197,18 @@ public:
 		return _data[i];
 	}
 
+	///const access to the ith diagonal element
+	const T& operator[] (unsigned i) const 
+	{
+		return _data[i];
+	}
+
+	///non const access to the ith diagonal element
+	T& operator[] (unsigned i) 
+	{
+		return _data[i];
+	}
+
 
 	///returns true because diagonal matrices are always square
 	bool is_square()
@@ -240,9 +252,6 @@ public:
 		fill (s);
 		return *this; 
 	}
-
-	
-
 	///returns the frobenius norm of matrix m
 	T frobenius_norm() const
 	{

@@ -628,7 +628,7 @@ public:
 							cgv::vec2 new_pos((float)p_d.x(), (float)p_d.y());
 							cgv::vec2 diff = new_pos - last_pos;
 							polygon[selected_index] += diff;
-							on_set(polygon[selected_index]);
+							on_set(&polygon[selected_index]);
 							last_pos = new_pos;
 						}
 					}
@@ -661,7 +661,7 @@ public:
 						}
 						selected_index = edge_index + 1;
 						edge_index = -1;
-						on_set(polygon[edge_index + 1]);
+						on_set(&polygon[edge_index + 1]);
 						on_set(&edge_index);
 						on_set(&selected_index);
 						if (find_control(nr_steps))
@@ -679,7 +679,7 @@ public:
 							polygon.erase(polygon.begin() + selected_index);
 							colors.erase(colors.begin() + selected_index);
 							selected_index = -1;
-							on_set(polygon[0]);
+							on_set(&polygon[0]);
 							on_set(&selected_index);
 							if (find_control(nr_steps))
 								find_control(nr_steps)->set("max", polygon.size() - 2);

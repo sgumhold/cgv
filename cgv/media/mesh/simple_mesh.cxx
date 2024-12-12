@@ -924,6 +924,7 @@ template <typename T> void simple_mesh<T>::compute_face_normals(bool construct_n
 {
 	if (construct_normal_indices)
 		normal_indices.clear();
+	normals.clear();
 	// compute per face normals
 	for (uint32_t fi = 0; fi < get_nr_faces(); ++fi) {
 		vec3 nml = vec3(T(1),0,0);

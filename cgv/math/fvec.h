@@ -171,12 +171,16 @@ public:
 	T& operator()(const int i) { return v[i]; }
 	///access i'th element of const vector
 	const T & operator()(const int i) const { return v[i]; }
+	///access i'th element
+	T& operator[](const int i) { return v[i]; }
+	///access i'th element of const vector
+	const T & operator[](const int i) const { return v[i]; }
 	///return number of elements
 	static cgv::type::uint32_type size() { return N; }
-	///cast into array. This allows calls like glVertex<N><T>v(p) instead of glVertex<N><T,N>(p.x(),p.y(),....)
-	operator T*() { return v; }
+	/// cast into array. This allows calls like glVertex<N><T>v(p.data()) instead of glVertex<N><T,N>(p.x(),p.y(),....)
+	T* data() { return v; }
 	///cast into const array
-	operator const T*() const { return v; }
+	const T* data() const { return v; }
 	//@}
 
 	//@name operators
