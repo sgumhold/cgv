@@ -191,7 +191,7 @@ namespace stream_vis {
 	bool cgv_declaration_reader::parse_vecn(const std::string& name, float* v, uint32_t dim)
 	{
 		cgv::dvecn V(dim);
-		if (!parse_dvecn(name, V, dim))
+		if (!parse_dvecn(name, V.data(), dim))
 			return false;
 		for (unsigned i = 0; i < dim; ++i)
 			v[i] = float(V[i]);
