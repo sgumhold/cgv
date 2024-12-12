@@ -1,9 +1,9 @@
 #include "fltk_driver.h"
 
 #ifdef _WIN32
+#include <cgv_gl/gl/wgl.h>
 #include <windows.h>
 #define USE_WIN32
-#include <cgv_gl/gl/wgl.h>
 #include <fltk/../../OpenGL/GlChoice.h>
 #else
 #include <fltk/file_chooser.h>
