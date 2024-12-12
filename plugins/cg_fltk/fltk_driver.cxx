@@ -1,5 +1,7 @@
 #include "fltk_driver.h"
 
+#include <cgv_gl/gl/wgl.h>
+
 #ifdef _WIN32
 #include <windows.h>
 #define USE_WIN32
@@ -28,7 +30,6 @@
 
 #include <cgv/gui/base_provider_generator.h>
 #include <cgv/gui/menu_provider.h>
-#include <cgv_gl/gl/wgl.h>
 
 
 
