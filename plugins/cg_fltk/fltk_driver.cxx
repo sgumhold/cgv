@@ -337,6 +337,21 @@ void fltk_driver::remove_window(window_ptr w)
 	}
 }
 
+void fltk_driver::destroy_all_windows()
+{
+	for (auto &wnd : windows) {
+		auto generic_wnd = wnd->get_interface<CI<fltk::Window>>();
+		if (generic_wnd) {
+			generic_wnd->destroy();
+		}
+		else {
+			auto generic_wnd = wnd->get_interface<fltk::Window>();
+			generic_wnd->destroy();
+		}
+		remove_window(wnd);
+	}
+}
+
 std::string fltk_driver::get_type_name() const
 {
 	return "fltk_driver";
@@ -412,11 +427,6 @@ void fltk_driver::quit(int exit_code)
 	for (unsigned int i = 0; i < windows.size(); ++i) {
 		static_cast<fltk::Window*>(static_cast<fltk::Widget*>(windows[i]->get_user_data()))->hide();
 	}
-#ifdef _WIN32
-	TerminateProcess(GetCurrentProcess(), exit_code);
-#else
-	exit(exit_code);
-#endif
 }
 
 /// copy text to the clipboard
