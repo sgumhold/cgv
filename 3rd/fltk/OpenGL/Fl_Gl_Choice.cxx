@@ -26,6 +26,9 @@
 #include <config.h>
 #if HAVE_GL
 
+#ifndef _WIN32
+	#undef USE_GLEW // make sure the GLX headers use function prototypes instead of pointers
+#endif
 #include "GlChoice.h"
 #include <fltk/visual.h>
 #include <stdlib.h>
