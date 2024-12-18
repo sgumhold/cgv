@@ -279,6 +279,7 @@ protected:
 		case attribute_type::normal:    return has_normals() && has_normal_indices();
 		case attribute_type::tangent:   return has_tangents();
 		case attribute_type::color:     return has_colors();
+		default: /* see below */;
 		}
 		return false;
 	}
@@ -289,6 +290,7 @@ protected:
 		case attribute_type::normal:    return reinterpret_cast<const uint8_t*>(   &normals[ai]);
 		case attribute_type::tangent:   return reinterpret_cast<const uint8_t*>(  &tangents[ai]);
 		case attribute_type::color:     return reinterpret_cast<const uint8_t*>(get_color_data_ptr()) + ai * get_color_size();
+		default: /* see below */;
 		}
 		return nullptr;
 	}
@@ -299,6 +301,7 @@ protected:
 		case attribute_type::normal:    return sizeof(vec3);
 		case attribute_type::tangent:   return sizeof(vec3);
 		case attribute_type::color:     return get_color_size();
+		default: /* see below */;
 		}
 		return 0;
 	}
