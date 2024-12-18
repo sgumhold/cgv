@@ -1006,7 +1006,7 @@ template <typename T> void simple_mesh<T>::ambo()
 	std::vector<uint32_t> inv;
 	std::vector<uint32_t> prev;
 	std::vector<uint32_t> p2c;
-	compute_inv(inv, &p2c, 0, &prev);
+	compute_inv(inv, /*link_non_manifold_edges*/false, &p2c, 0, &prev);
 	uint32_t e = compute_c2e(inv, c2e, &e2c);
 	mesh_type new_M;
 	// create one vertex per edge
@@ -1040,7 +1040,7 @@ template <typename T> void simple_mesh<T>::truncate(T lambda)
 	std::vector<uint32_t> inv;
 	std::vector<uint32_t> prev;
 	std::vector<uint32_t> p2c;
-	compute_inv(inv, &p2c, 0, &prev);
+	compute_inv(inv, /*link_non_manifold_edges*/false, &p2c, 0, &prev);
 	uint32_t c = get_nr_corners();
 	mesh_type new_M;
 	// create one vertex per corner
@@ -1076,7 +1076,7 @@ template <typename T> void simple_mesh<T>::snub(T lambda)
 	std::vector<uint32_t> inv;
 	std::vector<uint32_t> prev;
 	std::vector<uint32_t> p2c;
-	compute_inv(inv, &p2c, 0, &prev);
+	compute_inv(inv, /*link_non_manifold_edges*/false, &p2c, 0, &prev);
 	uint32_t c = get_nr_corners();
 	mesh_type new_M;
 	// create one vertex per corner
@@ -1122,7 +1122,7 @@ template <typename T> void simple_mesh<T>::dual()
 	std::vector<uint32_t> p2c;
 	std::vector<uint32_t> inv;
 	std::vector<uint32_t> prev;
-	compute_inv(inv, &p2c, 0, &prev);
+	compute_inv(inv, /*link_non_manifold_edges*/false, &p2c, 0, &prev);
 	compute_c2f(c2f);
 	uint32_t f = get_nr_faces();
 	mesh_type new_M;
@@ -1154,7 +1154,7 @@ template <typename T> void simple_mesh<T>::gyro(T lambda)
 	std::vector<uint32_t> p2c;
 	std::vector<uint32_t> inv;
 	std::vector<uint32_t> prev;
-	compute_inv(inv, &p2c, 0, &prev);
+	compute_inv(inv, /*link_non_manifold_edges*/false, &p2c, 0, &prev);
 	compute_c2f(c2f);
 	uint32_t v = get_nr_positions();
 	uint32_t f = get_nr_faces();
@@ -1201,7 +1201,7 @@ template <typename T> void simple_mesh<T>::join()
 	std::vector<uint32_t> inv;
 	std::vector<uint32_t> prev;
 	std::vector<uint32_t> p2c;
-	compute_inv(inv, &p2c, 0, &prev);
+	compute_inv(inv, /*link_non_manifold_edges*/false, &p2c, 0, &prev);
 	uint32_t e = compute_c2e(inv, c2e, &e2c);
 	std::vector<uint32_t> c2f;
 	compute_c2f(c2f);
