@@ -1,0 +1,12 @@
+#version 330 core
+
+in uvec2 node_ids;
+
+flat out uvec2 node_ids_gs;
+flat out int segment_id_gs;
+
+
+void main() {
+	node_ids_gs = node_ids;
+	segment_id_gs = gl_VertexID;
+}

@@ -60,7 +60,7 @@ namespace cgv {
 		}
 		bool spline_tube_renderer::build_shader_program(context& ctx, shader_program& prog, const shader_define_map& defines)
 		{
-			return prog.build_program(ctx, "spline_tube.glpr", true, defines);
+			return prog.build_program(ctx, "spline_tube_new.glpr", true, defines);
 		}
 		bool spline_tube_renderer::enable(context& ctx)
 		{
