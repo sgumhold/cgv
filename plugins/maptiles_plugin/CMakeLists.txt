@@ -11,7 +11,7 @@ cgv_add_target(maptiles_plugin
 
 	DEPENDENCIES
 		cgv_utils cgv_type cgv_reflect cgv_data cgv_signal cgv_base cgv_media cgv_gui cgv_render cgv_os fltk cgv_gl
-		glew cgv_viewer cg_fltk cg_ext crg_stereo_view crg_bg cg_meta cmi_io cgv_app maptiles
+		glew cgv_viewer cg_fltk cg_ext crg_stereo_view cg_meta cmi_io cgv_app maptiles
 
 	ADDITIONAL_CMDLINE_ARGS
 		"config:\"${CMAKE_CURRENT_LIST_DIR}/config.def\""
