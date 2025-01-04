@@ -24,12 +24,3 @@ cgv_add_target(maptiles
 	OVERRIDE_SHARED_EXPORT_DEFINE MAPTILES_BUILDING
 	OVERRIDE_FORCE_STATIC_DEFINE  MAPTILES_STATIC
 )
-
-# Remove include for ppp-genereated cgv/signal headers as they conflict with POSIX signal.h
-if (NOT MSVC)
-	get_target_property(AUTO_INCLUDES maptiles INTERFACE_INCLUDE_DIRECTORIES)
-	message("----MAPTILES---- auto includes: ${AUTO_INCLUDES}")
-	#string(REPLACE ${what_needs_to_go} "" new_include_dirs ${the_include_dirs})
-	#set_property(DIRECTORY foo PROPERTY INCLUDE_DIRECTORIES ${new_include_dirs})
-	#target_link_options(maptiles_static PRIVATE -Wno-stringop-overflow)
-endif()

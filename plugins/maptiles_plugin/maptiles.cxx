@@ -95,7 +95,7 @@ class maptiles : public cgv::app::application_plugin // inherit from application
 	////
 	// Interfrace: cgv::app::application_plugin
 
-	bool self_reflect(cgv::reflect::reflection_handler& rh)
+	bool self_reflect(cgv::reflect::reflection_handler& rh) override
 	{ 
 		bool success = true;
 
@@ -158,7 +158,7 @@ class maptiles : public cgv::app::application_plugin // inherit from application
 	virtual void draw(cgv::render::context &ctx) override 
 	{ 
 		// We need to keep track of the x and z coordinate of the original camera matrix for recentering
-		auto& original_mv = ctx.get_modelview_matrix();
+		auto original_mv = ctx.get_modelview_matrix();
 		
 		auto original_mv_inverse = inv(original_mv);
 		x = original_mv_inverse(0, 3);
@@ -170,7 +170,7 @@ class maptiles : public cgv::app::application_plugin // inherit from application
 				inv_rotation(j, i) = original_mv(i, j);
 		inv_rotation(3, 3) = 1;
 
-		auto& mv = ctx.get_modelview_matrix();
+		auto mv = ctx.get_modelview_matrix();
 		
 		auto cam_pos = inv(inv_rotation * original_mv) * vec4(0.0, 0.0, 0.0, 1.0);
 
@@ -230,7 +230,7 @@ class maptiles : public cgv::app::application_plugin // inherit from application
 		}
 	}
 
-	void on_set(void* member_ptr)
+	void on_set(void* member_ptr) override
 	{ 
 		if (member_ptr == &latitude || member_ptr == &longitude)
 		{
