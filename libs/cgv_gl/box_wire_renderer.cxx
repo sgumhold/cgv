@@ -1,4 +1,5 @@
 #include "box_wire_renderer.h"
+#include <cgv_reflect_types/math/fvec.h>
 #include <cgv_gl/gl/gl.h>
 #include <cgv_gl/gl/gl_tools.h>
 

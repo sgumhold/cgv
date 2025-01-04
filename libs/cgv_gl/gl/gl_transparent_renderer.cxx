@@ -103,13 +103,13 @@ void gl_transparent_renderer::blend_texture_over_viewport(context& ctx, texture&
 
 		glBegin(GL_QUADS);
 			glTexCoord2f(0,0);
-			glVertex4fv(p_lb);
+			glVertex4fv(p_lb.data());
 			glTexCoord2f(1,0);
-			glVertex4fv(p_rb);
+			glVertex4fv(p_rb.data());
 			glTexCoord2f(1,1);
-			glVertex4fv(p_rt);
+			glVertex4fv(p_rt.data());
 			glTexCoord2f(0,1);
-			glVertex4fv(p_lt);
+			glVertex4fv(p_lt.data());
 		glEnd();
 
 	tex.disable(ctx);

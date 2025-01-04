@@ -489,7 +489,7 @@ public:
 		_nrows = nrows;
 		_ncols = ncols;	
 		if(column_major)
-			memcpy(_data, marray, size()*sizeof(T));
+			memcpy(_data.data(), marray, size()*sizeof(T));
 		else
 		{
 			
@@ -605,21 +605,16 @@ public:
 		T val = (T)v;
 		_data.fill(val); 
 	}
-
 	///access to the element in the ith row in column j
-	T& operator () (unsigned i, unsigned j)  
-	{
+	T& operator () (unsigned i, unsigned j) {
 		assert(i < _nrows && j < _ncols);
 		return _data[j*_nrows+i]; 
 	}
-	
 	///const access to the element in the ith row on column j 
-	const T& operator () (unsigned i, unsigned j) const 
-	{
-		assert(_data != NULL && i < _nrows && j < _ncols);
+	const T& operator () (unsigned i, unsigned j) const {
+		assert(_data.data() != NULL && i < _nrows && j < _ncols);
 		return _data[j*_nrows+i]; 
 	}
-
 	///test for equality
 	template <typename S> 
 	bool operator == (const mat<S>& m) const
