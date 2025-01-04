@@ -148,6 +148,8 @@ namespace cgv { // @<
 			volume_renderer();
 			/// construct shader programs and return whether this was successful, call inside of init method of drawable
 			bool init(context& ctx);
+			/// clean up
+			virtual void clear (const context& ctx);
 			/// sets the 3D volume texture containing scalar values (density or other measured quantities)
 			bool set_volume_texture(texture* tex);
 			/// sets the transfer function used for classification; must be 1D or 2D (as loaded from an image)

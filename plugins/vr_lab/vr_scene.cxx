@@ -389,7 +389,7 @@ void vr_scene::init_frame(cgv::render::context& ctx)
 			}
 		}
 	}
-	cgv::mat34 table_pose(4, 4, table->get_transform());
+	cgv::mat34 table_pose(4, 4, table->get_transform().data());
 	set_coordinate_systems(vr_view_ptr ? vr_view_ptr->get_current_vr_state() : 0, table.empty() ? 0 : &table_pose);
 	label_drawable::init_frame(ctx);
 	if (environment_mode == EM_SKYBOX) {
@@ -457,7 +457,7 @@ void vr_scene::draw(cgv::render::context& ctx)
 			double time = cgv::gui::trigger::get_current_time();
 			for (int ci = 0; ci < 2; ++ci) {
 				vec3 ro, rd;
-				state_ptr->controller[ci].put_ray(ro, rd);
+				state_ptr->controller[ci].put_ray(ro.data(), rd.data());
 				if (ctrl_infos[ci].grabbing) {
 					sphere_positions.push_back(ro + max_grabbing_distance * rd);
 					sphere_colors.push_back(ctrl_infos[ci].color);

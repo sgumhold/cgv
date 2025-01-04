@@ -27,6 +27,8 @@ public:
 	virtual window_ptr create_window(int w, int h, const std::string& title, const std::string& window_type) = 0;
 	/// remove a window that has been destroyed
 	virtual void remove_window(window_ptr w) = 0;
+	/// destroy every window, releasing all their resources.
+	virtual void destroy_all_windows() = 0;
 	/// set the input focus to the given window
 	virtual bool set_focus(const_window_ptr) = 0;
 	/// return the number of created windows

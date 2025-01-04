@@ -20,10 +20,10 @@ font_ptr font_server::default_font(bool mono_space)
 {
 	// list typical monospace fonts that should be present on most operating systems
 	static std::vector<std::string> monospace_font_names = {
-		"fConsolas", // Windows default, but should also be available on Mac OS.
+		"Consolas", // Windows default, but should also be available on Mac OS.
 		"Courier", // Should be available on Mac OS. Will also match Courier New (Windows) and Courier 10 Pitch (Linux-based systems).
 		"FreeMono", // For Linux-based systems.
-		"DejaVus Sans Mono" // Alternative for Linux-based systems.
+		"DejaVu Sans Mono" // Alternative for Linux-based systems.
 	};
 
 	// list typical sans-serif fonts that should be present on most operating systems
@@ -31,7 +31,7 @@ font_ptr font_server::default_font(bool mono_space)
 		"Open Sans", // Microsoft font.
 		"Arial", // Available on Windows. Should also be available on MacOS.
 		"Tahoma", // Available on Windows. Should also be available on MacOS.
-		"DejaVus Sans", // Available on Linux-based systems.
+		"DejaVu Sans", // Available on Linux-based systems.
 		"Lucida", // Available on Mac OS. Will also match Lucida Grande.
 		"Helvetica" // Available on Mac OS. Will also match Helvetica Neue.
 	};
