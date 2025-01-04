@@ -1,8 +1,5 @@
 
-#ifndef _WIN32
-	#include <unistd.h>
-	#define Sleep sleep
-#endif
+#include <thread>
 
 #include "OSMRasterTileLoader.h"
 #include "utils.h"
@@ -47,7 +44,7 @@ void OSMRasterTileLoader::FetchTile()
 	while ((int)m_result.error() || GetHTTPStatus() != 200)
 	{
 		// Avoid making too many requests at the same time
-		Sleep(500);
+		std::this_thread::sleep_for(std::chrono::milliseconds(500));
 		m_result = client.Get(m_query);
 	}
 }

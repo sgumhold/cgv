@@ -1,4 +1,4 @@
-#include "ostream_printf.h"
+#include <cgv/utils/ostream_printf.h>
 
 #include <stdlib.h>
 

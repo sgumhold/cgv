@@ -1,5 +1,7 @@
 #pragma once
 
+#include <memory>
+
 #include <cgv/render/context.h>
 #include <cgv/render/vertex_buffer.h>
 #include <cgv/render/attribute_array_binding.h>
