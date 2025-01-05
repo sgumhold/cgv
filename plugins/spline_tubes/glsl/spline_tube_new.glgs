@@ -112,55 +112,6 @@ const mat4 unitCube[2] = mat4[2](
 	     vec4(0, 0, 1, 1), vec4(0, 1, 1, 1))
 );
 
-float saturate(float x) { return clamp(x, 0.0, 1.0); }
-
-vec3 ProjToPlane(vec3 vec, vec3 n)
-{
-	return vec - n * dot(vec, n) / dot(n, n);
-}
-
-#define DEF_EvalCSplineMidPoint(T)					\
-void EvalCSplineMidPoint(T p1, T t1, T p2, T t2,	\
-	out T out_p, out T out_t)						\
-{													\
-	T h1 = p1 + t1 * ONE_OVER_THREE;				\
-	T h2 = p2 - t2 * ONE_OVER_THREE;				\
-													\
-	T a1 = (p1 + h1) * 0.5;							\
-	T a2 = (h1 + h2) * 0.5;							\
-	T a3 = (h2 + p2) * 0.5;							\
-													\
-	T b1 = (a1 + a2) * 0.5;							\
-	T b2 = (a2 + a3) * 0.5;							\
-													\
-	out_t = (b2 - b1) * 3.0;						\
-	out_p = (b1 + b2) * 0.5;						\
-}
-
-DEF_EvalCSplineMidPoint(float)
-DEF_EvalCSplineMidPoint(vec3)
-
-void SplinePointsToPolyCoeffs(float p0, float h, float p1, out float o_c[3])
-{
-	o_c[0] = p0;
-	o_c[1] = -2.0 * p0 + 2.0 * h;
-	o_c[2] =   p0 + p1 - 2.0 * h;
-}
-
-float EvalPolyD0(float x, float c[3]) {
-
-	return x * (x * c[2] + c[1]) + c[0];
-}
-
-/* Always works if the input is non-zero.
- * Doesn�t require the input to be normalised.
- * Doesn�t normalise the output. 
- http://lolengine.net/blog/2013/09/21/picking-orthogonal-vector-combing-coconuts */
-vec3 GetOrthoVec(vec3 v)
-{
-    return abs(v.x) > abs(v.z) ? vec3(-v.y, v.x, 0.0) : vec3(0.0, -v.z, v.y);
-}
-
 void emit_bounding_box(int segment_idx, QTube qTube) {
 
 	mat3 curve;
@@ -233,27 +184,23 @@ void emit_bounding_box(int segment_idx, QTube qTube) {
 void main()
 {	
 	mat4 hermite = mat4(gl_in[0].gl_Position, tangent_gs[0], gl_in[1].gl_Position, tangent_gs[1]);
-	mat3x4 b0, b1;
-	split_hermite_to_quadratic(b0, b1, hermite);
+	mat3x4[2] b;
+	split_hermite_to_quadratic(b[0], b[1], hermite);
 	
-	QTube qTube0, qTube1;
-	qTube0.s.pos = b0[0].xyz;
-	qTube0.s.rad = b0[0].w;
-	qTube0.h.pos = b0[1].xyz;
-	qTube0.h.rad = b0[1].w;
-	qTube0.e.pos = b0[2].xyz;
-	qTube0.e.rad = b0[2].w;
+	QTube[2] qTubes;
 
-	qTube1.s.pos = b1[0].xyz;
-	qTube1.s.rad = b1[0].w;
-	qTube1.h.pos = b1[1].xyz;
-	qTube1.h.rad = b1[1].w;
-	qTube1.e.pos = b1[2].xyz;
-	qTube1.e.rad = b1[2].w;
+	for (int i = 0; i < 2; i++){
+		qTubes[i].s.pos = b[i][0].xyz;
+		qTubes[i].s.rad = b[i][0].w;
+		qTubes[i].h.pos = b[i][1].xyz;
+		qTubes[i].h.rad = b[i][1].w;
+		qTubes[i].e.pos = b[i][2].xyz;
+		qTubes[i].e.rad = b[i][2].w;
+	}
 
 	color0_fs = color_gs[0];
 	color1_fs = color_gs[1];
 	
-	emit_bounding_box(0, qTube0);
-	emit_bounding_box(1, qTube1);
+	emit_bounding_box(0, qTubes[0]);
+	emit_bounding_box(1, qTubes[1]);
 }
