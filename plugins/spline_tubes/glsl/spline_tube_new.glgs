@@ -11,6 +11,8 @@ mat3 get_normal_matrix();
 mat3 get_inverse_normal_matrix();
 //***** end interface of view.glsl ***********************************
 
+mat4 curve_obb_trans (const mat3 curve, const vec3 radius);
+
 layout(lines) in;
 layout(triangle_strip, max_vertices = 28) out;
 
@@ -50,24 +52,20 @@ out flat vec4 color0_fs;
 out flat vec4 color1_fs;
 out flat QTube qTube_fs;
 
-#define BBOX_LEFT_DN_FRNT bbox[0]
-#define BBOX_LEFT_UP_FRNT bbox[1]
-#define BBOX_RGHT_DN_FRNT bbox[2]
-#define BBOX_RGHT_UP_FRNT bbox[3]
-#define BBOX_RGHT_DN_BACK bbox[4]
-#define BBOX_RGHT_UP_BACK bbox[5]
-#define BBOX_LEFT_DN_BACK bbox[6]
-#define BBOX_LEFT_UP_BACK bbox[7]
-const vec4 corners[8] = {
-	vec4(-0.5, -0.5, -0.5, 1.0),
-	vec4(-0.5, +0.5, -0.5, 1.0),
-	vec4(+0.5, -0.5, -0.5, 1.0),
-	vec4(+0.5, +0.5, -0.5, 1.0),
-	vec4(+0.5, -0.5, +0.5, 1.0),
-	vec4(+0.5, +0.5, +0.5, 1.0),
-	vec4(-0.5, -0.5, +0.5, 1.0),
-	vec4(-0.5, +0.5, +0.5, 1.0)
-};
+#define BBOX_LEFT_DN_FRNT bbox[0][0]
+#define BBOX_LEFT_UP_FRNT bbox[0][1]
+#define BBOX_RGHT_DN_FRNT bbox[0][2]
+#define BBOX_RGHT_UP_FRNT bbox[0][3]
+#define BBOX_RGHT_DN_BACK bbox[1][0]
+#define BBOX_RGHT_UP_BACK bbox[1][1]
+#define BBOX_LEFT_DN_BACK bbox[1][2]
+#define BBOX_LEFT_UP_BACK bbox[1][3]
+const mat4 unitCube[2] = mat4[2](
+	mat4(vec4(0, 0, 0, 1), vec4(0, 1, 0, 1),
+	     vec4(1, 0, 0, 1), vec4(1, 1, 0, 1)),
+	mat4(vec4(1, 0, 1, 1), vec4(1, 1, 1, 1),
+	     vec4(0, 0, 1, 1), vec4(0, 1, 1, 1))
+);
 
 float saturate(float x) { return clamp(x, 0.0, 1.0); }
 
@@ -97,6 +95,7 @@ void EvalCSplineMidPoint(T p1, T t1, T p2, T t2,	\
 DEF_EvalCSplineMidPoint(float)
 DEF_EvalCSplineMidPoint(vec3)
 
+
 #define DEF_SplitCurve(T)						\
 void SplitCurve(T v0, T d0, T v1, T d1,			\
 	out T v00_out, out T h0_out, out T v10_out,	\
@@ -112,21 +111,58 @@ void SplitCurve(T v0, T d0, T v1, T d1,			\
 	v11_out = v1;								\
 }
 
-DEF_SplitCurve(float)
-DEF_SplitCurve(vec3)
+#define USE_OLD 1
+#if USE_OLD == 1
 
-#define SPLIT_CURVE(TUBE, MEM_V, MEM_D, QTUBE0, QTUBE1)		\
-SplitCurve(													\
-	TUBE.s.MEM_V, TUBE.s.MEM_D, TUBE.e.MEM_V, TUBE.e.MEM_D,	\
-	QTUBE0.s.MEM_V, QTUBE0.h.MEM_V, QTUBE0.e.MEM_V,			\
-	QTUBE1.s.MEM_V, QTUBE1.h.MEM_V, QTUBE1.e.MEM_V			\
-)
+	DEF_SplitCurve(float)
+	DEF_SplitCurve(vec3)
 
-void SplitTube(Tube tube, out QTube qTube0, out QTube qTube1)
-{
-	SPLIT_CURVE(tube, pos, pos_tan, qTube0, qTube1);
-	SPLIT_CURVE(tube, rad, rad_tan, qTube0, qTube1);
-}
+	#define SPLIT_CURVE(TUBE, MEM_V, MEM_D, QTUBE0, QTUBE1)		\
+	SplitCurve(													\
+		TUBE.s.MEM_V, TUBE.s.MEM_D, TUBE.e.MEM_V, TUBE.e.MEM_D,	\
+		QTUBE0.s.MEM_V, QTUBE0.h.MEM_V, QTUBE0.e.MEM_V,			\
+		QTUBE1.s.MEM_V, QTUBE1.h.MEM_V, QTUBE1.e.MEM_V			\
+	)
+
+	void SplitTube(Tube tube, out QTube qTube0, out QTube qTube1)
+	{
+		SPLIT_CURVE(tube, pos, pos_tan, qTube0, qTube1);
+		SPLIT_CURVE(tube, rad, rad_tan, qTube0, qTube1);
+	}
+
+#else
+
+	DEF_SplitCurve(vec4)
+
+	void SplitTube(Tube tube, out QTube qTube0, out QTube qTube1)
+	{
+		vec4 pos_rad_s = vec4(tube.s.pos, tube.s.rad);
+		vec4 pos_rad_tan_s = vec4(tube.s.pos_tan, tube.s.rad_tan);
+		vec4 pos_rad_e = vec4(tube.e.pos, tube.e.rad);
+		vec4 pos_rad_tan_e = vec4(tube.e.pos_tan, tube.e.rad_tan);
+		
+		vec4 qTube0s, qTube0h, qTube0e, qTube1s, qTube1h, qTube1e;
+
+		SplitCurve(
+			pos_rad_s, pos_rad_tan_s, pos_rad_e, pos_rad_tan_e,
+			qTube0s, qTube0h, qTube0e,
+			qTube1s, qTube1h, qTube1e
+		);
+
+		qTube0.s.pos = qTube0s.xyz;
+		qTube0.s.rad = qTube0s.w;
+		qTube0.h.pos = qTube0h.xyz;
+		qTube0.h.rad = qTube0h.w;
+		qTube0.e.pos = qTube0e.xyz;
+		qTube0.e.rad = qTube0e.w;
+		qTube1.s.pos = qTube1s.xyz;
+		qTube1.s.rad = qTube1s.w;
+		qTube1.h.pos = qTube1h.xyz;
+		qTube1.h.rad = qTube1h.w;
+		qTube1.e.pos = qTube1e.xyz;
+		qTube1.e.rad = qTube1e.w;
+	}
+#endif
 
 void SplinePointsToPolyCoeffs(float p0, float h, float p1, out float o_c[3])
 {
@@ -151,110 +187,17 @@ vec3 GetOrthoVec(vec3 v)
 
 void emit_bounding_box(int segment_idx, QTube qTube) {
 
-	vec3 x, y, z;
-	float xl, yl;
-	bool xq = false;
-	bool yq = false;
-	{
-		x = qTube.e.pos - qTube.s.pos;
-		xl = length(x);
-		
-		if(xl < 0.0001) {
-			y = qTube.h.pos - qTube.s.pos;
-			yl = length(y);
-			
-			if(yl < 0.0001) {
-				x = vec3(1.0, 0.0, 0.0);
-				y = vec3(0.0, 1.0, 0.0);
-				z = vec3(0.0, 0.0, 1.0);
-				
-				xl = 1.0; xq = true;
-				yl = 1.0; yq = true;
-			} else {
-				x = normalize(GetOrthoVec(x));
-				xl = 1.0; xq = true;
-				
-				z = cross(x, y);
-			}
-		} else {
-			y = ProjToPlane(qTube.h.pos - qTube.s.pos, x);
-			yl = length(y);
-			
-			if(yl < 0.0001) {
-				y = normalize(GetOrthoVec(x));
-				yl = 1.0; yq = true;
-			}
-			
-			z = cross(x, y);
-		}
-	}	
+	mat3 curve;
+	curve[0] = qTube.s.pos;
+	curve[1] = qTube.h.pos;
+	curve[2] = qTube.e.pos;
 
-	vec3 xd = x / xl;
-	vec3 yd = y / yl;
-	vec3 zd = normalize(z);
+	vec3 radius = vec3(qTube.s.rad, qTube.h.rad, qTube.e.rad);
+
+	mat4 M = curve_obb_trans(curve, radius);
+	M = get_modelview_matrix() * M;
 	
-	float xm, xp, ym, yp, zm;
-	{
-		float xyl = dot(qTube.h.pos - qTube.s.pos, xd);
-		
-		float cx[3];
-		SplinePointsToPolyCoeffs(0.0, xyl, xl, cx);
-		
-		float cy[3];
-		SplinePointsToPolyCoeffs(0.0, yl, 0.0, cy);
-		
-		float rc[3];
-		SplinePointsToPolyCoeffs(qTube.s.rad, qTube.h.rad, qTube.e.rad, rc);
-		
-		float c_xm[3];
-		c_xm[0] = cx[0] - rc[0]; c_xm[1] = cx[1] - rc[1]; c_xm[2] = cx[2] - rc[2];
-		
-		float c_xp[3];
-		c_xp[0] = cx[0] + rc[0]; c_xp[1] = cx[1] + rc[1]; c_xp[2] = cx[2] + rc[2];
-		
-		xm = min(-qTube.s.rad, min(xl - qTube.e.rad, EvalPolyD0(saturate(-c_xm[1] / c_xm[2] * 0.5), c_xm)));
-		xp = max( qTube.s.rad, max(xl + qTube.e.rad, EvalPolyD0(saturate(-c_xp[1] / c_xp[2] * 0.5), c_xp)));
-		
-		float c_ym[3];
-		c_ym[0] = cy[0] - rc[0]; c_ym[1] = cy[1] - rc[1]; c_ym[2] = cy[2] - rc[2];
-		
-		float c_yp[3];
-		c_yp[0] = cy[0] + rc[0]; c_yp[1] = cy[1] + rc[1]; c_yp[2] = cy[2] + rc[2];
-		
-		ym = min(-qTube.s.rad, min(-qTube.e.rad, EvalPolyD0(saturate(-c_ym[1] / c_ym[2] * 0.5), c_ym)));
-		yp = max( qTube.s.rad, max( qTube.e.rad, EvalPolyD0(saturate(-c_yp[1] / c_yp[2] * 0.5), c_yp)));
-		
-		zm = max( qTube.s.rad, max( qTube.e.rad, EvalPolyD0(saturate(-rc[1] / rc[2] * 0.5), rc)));
-		
-		if(xq) { xm = -zm; xp = zm; }
-		if(yq) { ym = -zm; yp = zm; }
-	}
-	
-	
-	mat3 mat;
-	mat[0] = (xp - xm) * xd;
-	mat[1] = (yp - ym) * yd;
-	mat[2] =  zm * 2.0 * zd;
-	
-	vec3 center = qTube.s.pos;
-	center += xd * (xm + xp) * 0.5;
-	center += yd * (ym + yp) * 0.5;
-	
-	mat4 mat_4 = mat4(mat);
-	mat_4[3] = vec4(center, 1.0);
-	mat4 M = get_modelview_matrix() * mat_4;
-	//mat4 M = mat_4;
-	
-	const vec4 bbox[8] = {
-		M * corners[0],
-		M * corners[1],
-		M * corners[2],
-		M * corners[3],
-		M * corners[4],
-		M * corners[5],
-		M * corners[6],
-		M * corners[7]
-	};
+	mat4 bbox[2] = mat4[2](M*unitCube[0], M*unitCube[1]);
 
 	qTube.s.pos = (get_modelview_matrix() * vec4(qTube.s.pos, 1.0)).xyz;
 	qTube.h.pos = (get_modelview_matrix() * vec4(qTube.h.pos, 1.0)).xyz;
