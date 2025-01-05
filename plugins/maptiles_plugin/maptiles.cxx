@@ -131,10 +131,7 @@ class maptiles : public cgv::app::application_plugin // inherit from application
 	}
 
 	virtual void init_frame(cgv::render::context& ctx) override
-	{
-		if (!camera && initialize_view_ptr())
-			camera = dynamic_cast<cgv::render::stereo_view*>(view_ptr);
-	}
+	{}
 
 	virtual void clear(cgv::render::context &ctx) override
 	{}
@@ -206,8 +203,9 @@ class maptiles : public cgv::app::application_plugin // inherit from application
 			if (camera)
 				camera->set_scene_extent(box);
 			*/
+			if (!camera && initialize_view_ptr())
+				camera = dynamic_cast<cgv::render::stereo_view*>(view_ptr);
 			camera->set_scene_extent(box);
-			
 		}
 
 		if (render_raster_tile)
@@ -239,7 +237,7 @@ class maptiles : public cgv::app::application_plugin // inherit from application
 		}
 
 		update_member(member_ptr);
-		post_redraw();
+		//post_redraw();
 	}
 
 	void recenter() 
@@ -257,7 +255,7 @@ class maptiles : public cgv::app::application_plugin // inherit from application
 		
 		config.ReferencePoint = {latitude, longitude};
 		manager.ReInit(latitude, longitude, altitude, &config);
-		post_redraw();
+		//post_redraw();
 	}
 
 	// returns the offset matrix
@@ -269,7 +267,7 @@ class maptiles : public cgv::app::application_plugin // inherit from application
 
 	void tile_download_callback() 
 	{ 
-		post_redraw();
+		//post_redraw();
 	}
 
 	void create_gui() override
@@ -277,7 +275,7 @@ class maptiles : public cgv::app::application_plugin // inherit from application
 		add_decorator("Map Tiles GUI", "heading");
 		add_decorator("Position", "heading", "level=3");
 		add_member_control(this, "latitude", latitude, "value", "min=-90;max=90");
-		add_member_control(this, "latitude", longitude, "value", "min=-180;max=180");
+		add_member_control(this, "longitude", longitude, "value", "min=-180;max=180");
 		add_decorator("Rendering", "heading", "level=3");
 		add_member_control(this, "Raster Tiles", render_raster_tile, "check");
 		add_member_control(this, "Tile 3Ds", render_tile3D, "check");
@@ -301,11 +299,21 @@ class maptiles : public cgv::app::application_plugin // inherit from application
 	}
 };
 
-
-
 #if CGV_FORCE_STATIC
 	#include <maptiles_plugin_shader_inc.h>
 #endif
+
+
+
+//////
+//
+// Public interface
+//
+
+void maptiles_interfacer::force_draw (cgv::render::context &ctx) {
+	get_pointer()->draw(ctx);
+}
+
 
 //////
 //
