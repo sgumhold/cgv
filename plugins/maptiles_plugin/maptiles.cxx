@@ -32,7 +32,10 @@
 //Interfacer
 #include <maptiles_interfacer.h>
 
+
 maptiles* maptiles_interfacer::ptr = nullptr;
+
+
 
 //////
 //
@@ -70,7 +73,7 @@ class maptiles : public cgv::app::application_plugin // inherit from application
 	{ 
 		render_raster_tile = true;
 		render_tile3D = true;
-		auto_recenter = true;
+		auto_recenter = false;
 		latitude = 0;
 		longitude = 0;
 		altitude = 0;
@@ -101,6 +104,7 @@ class maptiles : public cgv::app::application_plugin // inherit from application
 
 		success = rh.reflect_member("latitude", latitude) && success;
 		success = rh.reflect_member("longitude", longitude) && success;
+		success = rh.reflect_member("auto_recenter", auto_recenter) && success;
 
 		return success;
 	}
@@ -237,7 +241,7 @@ class maptiles : public cgv::app::application_plugin // inherit from application
 		}
 
 		update_member(member_ptr);
-		//post_redraw();
+		post_redraw();
 	}
 
 	void recenter() 
@@ -255,7 +259,7 @@ class maptiles : public cgv::app::application_plugin // inherit from application
 		
 		config.ReferencePoint = {latitude, longitude};
 		manager.ReInit(latitude, longitude, altitude, &config);
-		//post_redraw();
+		post_redraw();
 	}
 
 	// returns the offset matrix
@@ -267,7 +271,7 @@ class maptiles : public cgv::app::application_plugin // inherit from application
 
 	void tile_download_callback() 
 	{ 
-		//post_redraw();
+		post_redraw();
 	}
 
 	void create_gui() override
@@ -310,9 +314,10 @@ class maptiles : public cgv::app::application_plugin // inherit from application
 // Public interface
 //
 
-void maptiles_interfacer::force_draw (cgv::render::context &ctx) {
+void MAPTILES_PLUGIN_API maptiles_interfacer::force_draw (cgv::render::context& ctx) {
 	get_pointer()->draw(ctx);
 }
+
 
 
 //////
