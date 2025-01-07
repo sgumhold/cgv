@@ -104,6 +104,9 @@ class maptiles : public cgv::app::application_plugin // inherit from application
 
 		success = rh.reflect_member("latitude", latitude) && success;
 		success = rh.reflect_member("longitude", longitude) && success;
+		success = rh.reflect_member("frustum_raster_tiles_count", config.FrustumRasterTilesCount) && success;
+		success = rh.reflect_member("frustum_3d_tiles_distance", config.FrustumTile3DMaxDistance) && success;
+		success = rh.reflect_member("frustum_based_tiles", config.FrustumBasedTileGeneration) && success;
 		success = rh.reflect_member("auto_recenter", auto_recenter) && success;
 
 		return success;
@@ -234,7 +237,8 @@ class maptiles : public cgv::app::application_plugin // inherit from application
 
 	void on_set(void* member_ptr) override
 	{ 
-		if (member_ptr == &latitude || member_ptr == &longitude)
+		if (   member_ptr == &latitude || member_ptr == &longitude || member_ptr == &config.FrustumRasterTilesCount
+		    || member_ptr == &config.FrustumTile3DMaxDistance || member_ptr == &config.FrustumBasedTileGeneration)
 		{
 			config.ReferencePoint = {latitude, longitude};
 			manager.ReInit(latitude, longitude, altitude, &config);
