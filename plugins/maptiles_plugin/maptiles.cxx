@@ -341,14 +341,18 @@ public:
 // Public interface
 //
 
-bool MAPTILES_PLUGIN_API maptiles_interfacer::enable (void) {
-	const bool prev = get_pointer()->enabled;
-	get_pointer()->enabled = true;
+bool MAPTILES_PLUGIN_API maptiles_interfacer::enable(void) {
+	auto& maptiles_plugin = *get_pointer();
+	const bool prev = maptiles_plugin.enabled;
+	maptiles_plugin.enabled = true;
+	maptiles_plugin.update_member(&maptiles_plugin.enabled);
 	return prev;
 }
 bool MAPTILES_PLUGIN_API maptiles_interfacer::disable (void) {
-	const bool prev = get_pointer()->enabled;
-	get_pointer()->enabled = false;
+	auto& maptiles_plugin = *get_pointer();
+	const bool prev = maptiles_plugin.enabled;
+	maptiles_plugin.enabled = false;
+	maptiles_plugin.update_member(&maptiles_plugin.enabled);
 	return prev;
 }
 
@@ -369,6 +373,7 @@ bool MAPTILES_PLUGIN_API maptiles_interfacer::disable_foreign_draw_control (void
 	get_pointer()->foreign_draw_control = false;
 	return prev;
 }
+
 void MAPTILES_PLUGIN_API maptiles_interfacer::force_draw (cgv::render::context& ctx) {
 	auto &maptiles_plugin = *get_pointer();
 	const bool prev_state = maptiles_plugin.foreign_draw_control;
@@ -381,7 +386,7 @@ void MAPTILES_PLUGIN_API maptiles_interfacer::force_draw (cgv::render::context& 
 
 //////
 //
-// Plugins registration
+// Plugin registration
 //
 
 // Our maptiles plugin
