@@ -36,6 +36,14 @@ font_ptr find_font(const std::string& font_name)
 	return font_ptr();
 }
 
+/// find an installed font by name prefix
+font_ptr find_font_by_prefix(const std::string& font_name_prefix)
+{
+	if(get_font_server())
+		return get_font_server()->find_font_by_prefix(font_name_prefix);
+	return font_ptr();
+}
+
 /// find an installed font by name
 font_ptr find_font_or_default(const std::string& font_name, bool default_font_mono_space)
 {

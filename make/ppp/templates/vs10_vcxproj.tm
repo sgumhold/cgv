@@ -80,6 +80,9 @@
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.props" />
   <ImportGroup Label="ExtensionSettings">
     <Import Project=@"pj::projectName.'.props'" />
+@if(pj::cudaEnabled)@{@//
+    <Import Project=@('"')$(VCTargetsPath)\BuildCustomizations\CUDA @(pj::cudaVersion).props@('"') />
+@}@//
   </ImportGroup>
 @for(:>ci=0;ci<6;++ci)@{
     @define(:>cj=cfg_ord1[ci])
@@ -99,7 +102,7 @@
     <IntDir Condition=@('"'."'")$(Configuration)|$(Platform)@("'=='")@(config_name[cj])|@(vs_platform)@("'".'"')>@((pj::build_dir."/$(ProjectName)_$(Configuration)/")*clean_path)</IntDir>
     <TargetName Condition=@('"'."'")$(Configuration)|$(Platform)@("'=='")@(config_name[cj])|@(vs_platform)@("'".'"')>$(ProjectName)@(pj::output_post[cj])</TargetName>
 @if(pj::is_executable[cj] || pj::is_shared[cj])@{@//
-    <LinkIncremental Condition=@('"'."'")$(Configuration)|$(Platform)@("'=='")@(config_name[cj])|@(vs_platform)@("'".'"')>@(is_dbg[cj])</LinkIncremental>
+    <LinkIncremental Condition=@('"'."'")$(Configuration)|$(Platform)@("'=='")@(config_name[cj])|@(vs_platform)@("'".'"')>@if(pj::is_debug[cj])@{true@}@else@{false@}</LinkIncremental>
 @}      
     @}
   @}@//
@@ -125,11 +128,11 @@
 	@}@//
       <PreprocessorDefinitions>@(concat(D,';'))</PreprocessorDefinitions>
       <RuntimeLibrary>@(pj::runtime_lib_vs10[cj])</RuntimeLibrary>
-@if(is_dbg[cj] == "true")@{@//
+@if(pj::is_debug[cj])@{@//
       <Optimization>Disabled</Optimization>
 @}@//
       <DebugInformationFormat>@(pj::debug_info_vs10[cj])</DebugInformationFormat>
-@if(is_dbg[cj] == "true")@{@//
+@if(pj::is_debug[cj])@{@//
 @if(cgv_compiler_version < 142)@{@//
       <MinimalRebuild>true</MinimalRebuild>
 @}@//
@@ -151,6 +154,18 @@
       <AdditionalOptions>/Zc:__cplusplus %(AdditionalOptions)</AdditionalOptions>
 @}@//
 	</ClCompile>
+@if(pj::cudaEnabled)@{@//
+    <CudaCompile>
+      <Include>@(concat(['$(CGV_DIR)','$(CGV_BUILD)'].pj::incDirs[cj%4], ';')*clean_path);%(Include)</Include>
+      <Defines>@(concat(["%(Defines)"].D,';'))</Defines>
+      <AdditionalOptions>%(AdditionalOptions)@(" ".pj::cudaCodeGenerationOptions)@(" ".pj::cudaOptions)@if(pj::cppLanguageStandard)@{ -std=c++@(pj::cppLanguageStandard+6)@} -Xcompiler="/EHsc -Zi -Ob0 /bigobj"</AdditionalOptions>
+      <CodeGeneration>@(pj::cudaCodeGenerationVS)</CodeGeneration>
+      <CompileOut>$(IntDir)%(Filename).obj</CompileOut>
+      <CudaRuntime>@if(pj::is_static[cj])@{static@}@else@{shared@}</CudaRuntime>
+      <GPUDebugInfo>false</GPUDebugInfo>
+      <UseHostInclude>false</UseHostInclude>
+    </CudaCompile>
+@}@//
     <@(pj::linker_tool_vs10[cj])>
       <AdditionalDependencies>@(concat(pj::dependencies[cj%4],';','','.lib')*clean_path);%(AdditionalDependencies)</AdditionalDependencies>
       <AdditionalLibraryDirectories>@(concat(['$(CGV_DIR)/lib','$(CGV_BUILD)/lib'].pj::libDirs[cj%4], ';')*clean_path);%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
@@ -158,7 +173,7 @@
       <ModuleDefinitionFile>@(pj::defFile*clean_path)</ModuleDefinitionFile>
 @}
 @if(pj::is_executable[cj] || pj::is_shared[cj])@{@//
-      <GenerateDebugInformation>@(is_dbg[cj])</GenerateDebugInformation>
+      <GenerateDebugInformation>@if(pj::is_debug[cj])@{true@}@else@{false@}</GenerateDebugInformation>
       <SubSystem>@(pj::sub_system_vs10[cj])</SubSystem>
 @if(pj::is_executable[cj])@{@//
       <OutputFile>$(OutDir)$(ProjectName)@(pj::output_post[cj]).exe</OutputFile>
@@ -173,6 +188,12 @@
     <ProjectReference>
       <UseLibraryDependencyInputs>true</UseLibraryDependencyInputs>
     </ProjectReference>
+@}@//
+@if(pj::cudaEnabled)@{@//
+    <CudaLink>
+      <AdditionalOptions>-forward-unknown-to-host-compiler -Wno-deprecated-gpu-targets </AdditionalOptions>
+      <PerformDeviceLink>false</PerformDeviceLink>
+    </CudaLink>
 @}@//
   </ItemDefinitionGroup>
 @}
@@ -192,6 +213,9 @@
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
     <Import Project=@"pj::projectName.'.targets'" />
+@if(pj::cudaEnabled)@{@//
+    <Import Project=@('"')$(VCTargetsPath)\BuildCustomizations\CUDA @(pj::cudaVersion).targets@('"') />
+@}@//
   </ImportGroup>
 </Project>@//
 @}

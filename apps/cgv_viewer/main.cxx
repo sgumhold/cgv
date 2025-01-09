@@ -64,6 +64,10 @@ int main(int argc, char** argv)
 	}
 
 	if (!loaded_config) {
+		std::string base_cfg_file_name = "base.cfg";
+		if(cgv::utils::file::exists(base_cfg_file_name))
+			process_config_file(base_cfg_file_name);
+
 		std::string cfg_file_name = cgv::utils::file::drop_extension(argv[0]) + ".cfg";
 		if (cgv::utils::file::exists(cfg_file_name))
 			process_config_file(cfg_file_name);
@@ -91,6 +95,10 @@ int main(int argc, char** argv)
 			std::cerr << "WARNING: unknown command line argument '" << args[ai] << "'" << std::endl;
 	}
 	bool res = application::run();
+
+	// cleanup
 	unregister_all_objects();
+	get_gui_driver()->destroy_all_windows();
+
 	return res;
 }

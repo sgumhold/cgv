@@ -177,7 +177,7 @@ void mesh_render_info::construct_draw_calls(cgv::render::context& ctx)
 			if (fi + 1 < material_primitive_start.size())
 				next_start = material_primitive_start[fi + 1][2];
 			dc.count = uint32_t(next_start - mps[2]);
-			dc.indices = (void*)(sizeof(idx_type)*(nr_edge_elements+3*mps[2]));
+			dc.indices = (void*)(sizeof(idx_type)*(nr_edge_elements+mps[2]));
 			dc.material_index = mps[0];
 			if (dc.material_index != -1) {
 				const auto& mat = *ref_materials()[dc.material_index];

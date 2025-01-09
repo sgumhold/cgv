@@ -38,6 +38,8 @@ namespace cgv {
 				current_namespace = new namespace_info(false);
 				ref_variable("UNDEF") = variant();
 				ref_variable("BOOL") = variant(true);
+				ref_variable("TRUE") = variant(true);
+				ref_variable("FALSE") = variant(false);
 				ref_variable("INT") = variant(7);
 				ref_variable("STRING") = variant(std::string());
 				ref_variable("LIST") = variant(std::vector<variant>());

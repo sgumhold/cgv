@@ -57,16 +57,14 @@ bool application_plugin_base::handle(cgv::gui::event& e)
 			}
 		}
 
-		bool was_handled = false;
 		bool was_blocked = false;
-		bool result = false;
+		bool was_handled = false;
 
 		// Call handle_event on the active overlay, if found, and record the result and whether the overlay
 		// will block the event from further processing.
 		if(blocking_overlay_ptr) {
-			was_handled = true;
 			was_blocked = blocking_overlay_ptr->blocks_events();
-			result = blocking_overlay_ptr->handle_event(e);
+			was_handled = blocking_overlay_ptr->handle_event(e);
 		}
 
 		// An MA_RELASE action will reset the active overlay.
@@ -76,16 +74,12 @@ bool application_plugin_base::handle(cgv::gui::event& e)
 		// Store the current active overlay for reference to the next event.
 		last_blocking_overlay_ptr = blocking_overlay_ptr;
 
-		// Return the result of handle_event from the overlay or true if it was blocked, indicating that the event will not be passed on to the next plugin.
-		// If the event was not handled, pass it to the application plugin itself.
-		if(was_handled) {
-			if(was_blocked)
-				return true;
-			else
-				return result;
-		} else {
-			return handle_event(e);
-		}
+		// Return true if the event was blocked or handled by the overlay to prevent it from being passed on to the next event handler.
+		if(was_blocked || was_handled)
+			return true;
+		
+		// Otherwise pass the event to the application plugin itself.
+		return handle_event(e);
 	} else {
 		// TODO: make the overlay have a handles keys flag?
 		// TODO: have a flag that enables blocking the event from further processing when returning true or false?

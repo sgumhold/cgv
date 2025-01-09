@@ -73,6 +73,9 @@ typedef data::ref_ptr<font> font_ptr;
 /// find an installed font by name (returns a null pointer if font could not be found)
 extern CGV_API font_ptr find_font(const std::string& font_name);
 
+/// find an installed font by name prefix (returns a null pointer if font could not be found)
+extern CGV_API font_ptr find_font_by_prefix(const std::string& font_name_prefix);
+
 /// find an installed font by name or return platform-specific default font if no font with that name exists
 extern CGV_API font_ptr find_font_or_default(const std::string& font_name, bool default_font_mono_space = false);
 

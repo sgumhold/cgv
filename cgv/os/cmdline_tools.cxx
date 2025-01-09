@@ -105,6 +105,15 @@ namespace cgv {
 #endif
 			return popen(cmd.c_str(), mode);
 		}
+		FILE* open_system_output(const std::string& cmd, bool in_binary_mode)
+		{
+#ifdef WIN32
+			const char* mode = in_binary_mode ? "rb" : "r";
+#else
+			const char* mode = "r";
+#endif
+			return popen(cmd.c_str(), mode);
+		}
 		int close_system_input(FILE* fp)
 		{
 			return pclose(fp);
