@@ -43,7 +43,8 @@ maptiles* maptiles_interfacer::ptr = nullptr;
 //
 
 /// Example application plugin showcasing the maptiles library inside the CGV Framework.
-class maptiles : public cgv::app::application_plugin // inherit from application plugin to enable overlay support
+class maptiles : public cgv::base::node, public cgv::render::drawable, public cgv::gui::provider,
+                 public cgv::gui::event_handler
 {
 	friend class maptiles_interfacer;
 	typedef cgv::math::fvec<double, 4> vec4;
@@ -75,7 +76,7 @@ public:
 	// Object construction / destruction
 
 	/// The default constructor.
-	maptiles() : application_plugin("Map Tiles")
+	maptiles() : node("Map Tiles")
 	{ 
 		render_raster_tile = true;
 		render_tile3D = true;
@@ -153,18 +154,14 @@ public:
 	virtual void clear(cgv::render::context &ctx) override
 	{}
 
-	virtual void handle_member_change(const cgv::utils::pointer_test &m) override
-	{}
-
 	std::string get_type_name() const override { return "maptiles"; }
 
-	void stream_help(std::ostream &os) override
-	{
+	virtual void stream_help (std::ostream &os) override {
 		os << "Map Tiles:\a\n"
 		   << "";
 	}
 
-	virtual bool handle_event (cgv::gui::event &e) override
+	virtual bool handle (cgv::gui::event &e) override
 	{
 		return false;
 	}
@@ -222,8 +219,8 @@ public:
 				if (camera)
 					camera->set_scene_extent(box);
 				*/
-				if (!camera && initialize_view_ptr())
-					camera = dynamic_cast<cgv::render::stereo_view*>(view_ptr);
+				if (!camera)
+					camera = dynamic_cast<cgv::render::stereo_view*>(find_view_as_node());
 				camera->set_scene_extent(box);
 			}
 
