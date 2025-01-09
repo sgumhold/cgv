@@ -12,6 +12,7 @@
 	#define MAPTILES_PLUGIN_API
 #endif
 
+
 class maptiles;
 
 class maptiles_interfacer
@@ -22,5 +23,10 @@ private:
 public:
 	static void set_pointer (maptiles* _ptr) { ptr = _ptr; }
 	static maptiles* get_pointer (void) { return ptr; }
+
+	static MAPTILES_PLUGIN_API bool enable (void); // returns previous state as boolean (`true` if it was enabled)
+	static MAPTILES_PLUGIN_API bool disable (void); // returns previous state as boolean (`true` if it was enabled)
+	static MAPTILES_PLUGIN_API void reref (const cgv::dvec2& latlong);
+	static MAPTILES_PLUGIN_API void recenter (void);
 	static MAPTILES_PLUGIN_API void force_draw (cgv::render::context& ctx);
 };
