@@ -50,6 +50,7 @@ class maptiles : public cgv::app::application_plugin // inherit from application
 
 protected:
 	bool enabled = true;
+	bool foreign_draw_control = false;
 
 	TileManager manager;
 	TileRenderer renderer;
@@ -67,7 +68,8 @@ protected:
 	bool auto_recenter;
 
 	cgv::render::stereo_view* camera;
-  public:
+
+public:
 
 	////
 	// Object construction / destruction
@@ -98,7 +100,8 @@ protected:
 	/// The destructor.
 	virtual ~maptiles() 
 	{}
-	
+
+
 	////
 	// Interfrace: cgv::app::application_plugin
 
@@ -168,7 +171,7 @@ protected:
 
 	virtual void draw(cgv::render::context &ctx) override 
 	{
-		if (enabled)
+		if (enabled && !foreign_draw_control)
 		{
 			// We need to keep track of the x and z coordinate of the original camera matrix for recentering
 			auto original_mv = ctx.get_modelview_matrix();
@@ -300,6 +303,7 @@ protected:
 	void create_gui() override
 	{
 		add_decorator("Map Tiles GUI", "heading");
+		add_member_control(this, "active", enabled, "check");
 		add_decorator("Position", "heading", "level=3");
 		add_member_control(this, "latitude", latitude, "value", "min=-90;max=90");
 		add_member_control(this, "longitude", longitude, "value", "min=-180;max=180");
@@ -351,13 +355,26 @@ bool MAPTILES_PLUGIN_API maptiles_interfacer::disable (void) {
 void MAPTILES_PLUGIN_API maptiles_interfacer::reref (const cgv::dvec2& latlong) {
 	get_pointer()->reref(latlong.x(), latlong.y());
 }
-
 void MAPTILES_PLUGIN_API maptiles_interfacer::recenter (void) {
 	get_pointer()->recenter();
 }
 
+bool MAPTILES_PLUGIN_API maptiles_interfacer::enable_foreign_draw_control (void) {
+	const bool prev = get_pointer()->foreign_draw_control;
+	get_pointer()->foreign_draw_control = true;
+	return prev;
+}
+bool MAPTILES_PLUGIN_API maptiles_interfacer::disable_foreign_draw_control (void) {
+	const bool prev = get_pointer()->foreign_draw_control;
+	get_pointer()->foreign_draw_control = false;
+	return prev;
+}
 void MAPTILES_PLUGIN_API maptiles_interfacer::force_draw (cgv::render::context& ctx) {
-	get_pointer()->draw(ctx);
+	auto &maptiles_plugin = *get_pointer();
+	const bool prev_state = maptiles_plugin.foreign_draw_control;
+	maptiles_plugin.foreign_draw_control = false;
+	maptiles_plugin.draw(ctx);
+	maptiles_plugin.foreign_draw_control = prev_state;
 }
 
 

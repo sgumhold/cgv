@@ -26,7 +26,11 @@ public:
 
 	static MAPTILES_PLUGIN_API bool enable (void); // returns previous state as boolean (`true` if it was enabled)
 	static MAPTILES_PLUGIN_API bool disable (void); // returns previous state as boolean (`true` if it was enabled)
+
 	static MAPTILES_PLUGIN_API void reref (const cgv::dvec2& latlong);
 	static MAPTILES_PLUGIN_API void recenter (void);
+
+	static MAPTILES_PLUGIN_API bool enable_foreign_draw_control (void); // returns previous state as boolean (`true` if it was enabled)
+	static MAPTILES_PLUGIN_API bool disable_foreign_draw_control (void); // returns previous state as boolean (`true` if it was enabled)
 	static MAPTILES_PLUGIN_API void force_draw (cgv::render::context& ctx);
 };
