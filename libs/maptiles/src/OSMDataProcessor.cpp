@@ -49,7 +49,7 @@ void OSMDataProcessor::Parse(std::string& response)
             }
 
             if (way.m_nodeReferences.front() == way.m_nodeReferences.back()) way.m_type = OSMWay::WayType::closed;
-            else OSMWay::WayType::open;
+            else way.m_type = OSMWay::WayType::open;
 
             // Collect all the tags
             tinyxml2::XMLElement* tag = OSMElement->FirstChildElement("tag");
