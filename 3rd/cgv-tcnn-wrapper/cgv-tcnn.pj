@@ -1,0 +1,70 @@
+@=
+projectName="cgv-tcnn";
+projectType="static_library";
+projectGUID="43000811-AB3D-4DC8-A928-CC49FC6153C2";
+cudaEnabled=TRUE;
+cudaOptions = "--extended-lambda --expt-relaxed-constexpr --use_fast_math -dopt=on";
+if (env::TCNN_MIN_GPU_ARCH ~~ UNDEF) {
+	TCNN_MIN_GPU_ARCH_TMP = 75;
+}
+else {
+	TCNN_MIN_GPU_ARCH_TMP = env::TCNN_MIN_GPU_ARCH;
+}
+if (env::TCNN_DIR ~~ UNDEF) {
+	cout("----------------------- WARNING -------------------------------------------------------------------\n");
+	cout("To use cgv-tcnn.pj you need to recursively clone https://github.com/NVlabs/tiny-cuda-nn.git and set\n");
+	cout("the environment variable TCNN_DIR to the target path of the clone operation. There is no need to\n");
+	cout("build tiny-cuda-nn.\n\n");
+	cout("Use tiny-cuda-nn in your project as follows (first two lines are optional):\n");
+	cout("cudaEnabled=TRUE;\n");
+	cout("cudaOptions = ".'"'."--extended-lambda --expt-relaxed-constexpr --use_fast_math -dopt=on".'"'.";\n");
+	cout("addProjectDirs=[ CGV_DIR.".'"'."/3rd".'"'." ];\n");
+	cout("addProjectDeps=[ ".'"'."cgv-tcnn".'"'." ]\n");
+	cout("----------------------- WARNING -------------------------------------------------------------------\n");
+	cout("What do you think?\n:>");
+	cin(answer);
+	cout("Thanks for your answering ".'"'.answer.'"'."\n");
+	cout("Press <Ctrl-C> or <Enter> and I will throw a stupid error\n");
+	cin(answer);
+	STOP=STOP;
+}
+addDefines = [ ["TCNN_MIN_GPU_ARCH=".env::TCNN_MIN_GPU_ARCH,"all"] ];
+cppLanguageStandard = "stdcpp17";
+sourceDirs = [env::TCNN_DIR."/src"];
+sourceFiles = [
+	env::TCNN_DIR."/dependencies/fmt/src/format.cc",
+	env::TCNN_DIR."/dependencies/fmt/src/os.cc"
+];
+addIncDirs = [ 
+	[env::CUDA_PATH."/include","all"],
+	[env::TCNN_DIR."/include","all"], 
+	[env::TCNN_DIR."/dependencies","all"], 
+	[env::TCNN_DIR."/dependencies/cutlass/include","all"], 
+	[env::TCNN_DIR."/dependencies/cutlass/tools/util/include","all"], 
+	[env::TCNN_DIR."/dependencies/fmt/include","all"]
+];
+addLibDirs = [ 
+	[env::CUDA_PATH."/lib/x64","all"]
+];
+addMapDeps=[ 
+    [["cuda", [
+		"cuda",
+		"cuda",
+		"cuda",
+		"cuda"]], "all"],
+    [["cudadevrt", [
+		"cudadevrt",
+		"cudadevrt",
+		"cudadevrt",
+		"cudadevrt"]], "all"],
+    [["cudart_static", [
+		"cudart_static",
+		"cudart_static",
+		"cudart_static",
+		"cudart_static"]], "all"]
+];
+addDependencies=[
+	["cuda", "all"],
+	["cudadevrt", "all"],
+	["cudart_static", "all"]
+];

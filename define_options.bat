@@ -11,10 +11,11 @@ echo [1] ... toggle NO_OPENVR (allows to avoid the start of openvr during develo
 echo [2] ... toggle SHADER_DEVELOPER (make shader_test throw errors that cause the build process to fail)
 echo [3] ... toggle ENCODE_SHADER_BASE64 (encode shader codes in base64 before embedding)
 echo [4] ... toggle STDCPP17 (later makes cgv::utils use std::filesystem)
-echo [5] ... toggle BUILD_WITH_AUDIO (requires checking out the git submodules when building from the repository)
-echo [6] ... toggle OPENMP (uses OpenMP as default for all projects)
-echo [7] ... toggle custom option
-echo [8] ... clear all options
+echo [5] ... toggle STDCPP20 (overwrites STDCPP17)
+echo [6] ... toggle BUILD_WITH_AUDIO (requires checking out the git submodules when building from the repository)
+echo [7] ... toggle OPENMP (uses OpenMP as default for all projects)
+echo [8] ... toggle custom option
+echo [9] ... clear all options
 echo.
 echo [q] ... quit script
 echo.
@@ -44,14 +45,18 @@ if "%selection%" == "4" (
 	goto :publish_options
 )
 if "%selection%" == "5" (
-	call :toggle_in_list CGV_OPTIONS BUILD_WITH_AUDIO
+	call :toggle_in_list CGV_OPTIONS STDCPP20
 	goto :publish_options
 )
 if "%selection%" == "6" (
-	call :toggle_in_list CGV_OPTIONS OPENMP
+	call :toggle_in_list CGV_OPTIONS BUILD_WITH_AUDIO
 	goto :publish_options
 )
 if "%selection%" == "7" (
+	call :toggle_in_list CGV_OPTIONS OPENMP
+	goto :publish_options
+)
+if "%selection%" == "8" (
 	set /P custom_option=enter curstom option:^>
 	call :toggle_in_list CGV_OPTIONS !custom_option!
 	goto :publish_options

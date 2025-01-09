@@ -18,7 +18,7 @@ protected:
 	cgv::render::shader_library shaders;
 
 	ivec2 resolution;
-	Origin origin_setting;
+	OriginSetting origin_setting;
 	bool apply_gamma;
 	float zoom_factor;
 
@@ -51,9 +51,9 @@ public:
 
 	void set_resolution(cgv::render::context& ctx, const ivec2& resolution);
 
-	Origin get_origin_setting() const;
+	OriginSetting get_origin_setting() const;
 
-	void set_origin_setting(Origin origin);
+	void set_origin_setting(OriginSetting origin);
 
 	void set_apply_gamma(bool flag);
 

@@ -32,6 +32,7 @@ protected:
 
 	shader_library shaders;
 
+	bool do_gen_ibl_maps = true;
 	unsigned shadow_map_resolution = 4*256u;
 	texture depth_map;
 	texture color_map;
@@ -224,7 +225,7 @@ public:
 	}
 	void on_set(void* member_ptr) {
 		
-		if(member_ptr == &sun_position[0] || member_ptr == &sun_position[1]) {
+		if(member_ptr == &sun_position[0] || member_ptr == &sun_position[1] || member_ptr == &do_gen_ibl_maps) {
 			context& ctx = *get_context();
 			generate_ibl_maps(ctx);
 		}
@@ -537,49 +538,49 @@ public:
 		sky_cubemap_gen.enable(ctx);
 		glDrawArrays(GL_POINTS, 0, 6);
 		sky_cubemap_gen.disable(ctx);
+		if (do_gen_ibl_maps) {
+			// configure the viewport to the capture dimensions of the irradiance map
+			ctx.set_viewport(cgv::ivec4(0, 0, irradiance_resolution, irradiance_resolution));
 
-		// configure the viewport to the capture dimensions of the irradiance map
-		ctx.set_viewport(cgv::ivec4(0, 0, irradiance_resolution, irradiance_resolution));
+			environment_map.enable(ctx, 0);
 
-		environment_map.enable(ctx, 0);
+			auto& irradiance_map_gen = shaders.get("irradiance_map_gen");
 
-		auto& irradiance_map_gen = shaders.get("irradiance_map_gen");
-
-		glFramebufferTexture(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, (unsigned)((size_t)irradiance_map.handle) - 1, 0);
-		glClear(GL_COLOR_BUFFER_BIT);
-
-		irradiance_map_gen.enable(ctx);
-		glDrawArrays(GL_POINTS, 0, 6);
-		irradiance_map_gen.disable(ctx);
-
-		auto& prefiltered_specular_map_gen = shaders.get("prefiltered_specular_map_gen");
-
-		unsigned int maxMipLevels = 5;
-		for(unsigned int mip = 0; mip < maxMipLevels; ++mip) {
-			unsigned int mip_resolution = (unsigned)(float(prefiltered_specular_resolution) * std::pow(0.5f, float(mip)));
-			// configure the viewport to the capture dimensions of the prefiltered specular map mipmap level
-			ctx.set_viewport(cgv::ivec4(0, 0, mip_resolution, mip_resolution));
-
-			float roughness = (float)mip / (float)(maxMipLevels - 1);
-			prefiltered_specular_map_gen.set_uniform(ctx, "roughness", roughness);
-
-			glFramebufferTexture(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, (unsigned)((size_t)prefiltered_specular_map.handle) - 1, mip);
+			glFramebufferTexture(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, (unsigned)((size_t)irradiance_map.handle) - 1, 0);
 			glClear(GL_COLOR_BUFFER_BIT);
 
-			prefiltered_specular_map_gen.enable(ctx);
+			irradiance_map_gen.enable(ctx);
 			glDrawArrays(GL_POINTS, 0, 6);
-			prefiltered_specular_map_gen.disable(ctx);
+			irradiance_map_gen.disable(ctx);
 
+			auto& prefiltered_specular_map_gen = shaders.get("prefiltered_specular_map_gen");
+
+			unsigned int maxMipLevels = 5;
+			for (unsigned int mip = 0; mip < maxMipLevels; ++mip) {
+				unsigned int mip_resolution = (unsigned)(float(prefiltered_specular_resolution) * std::pow(0.5f, float(mip)));
+				// configure the viewport to the capture dimensions of the prefiltered specular map mipmap level
+				ctx.set_viewport(cgv::ivec4(0, 0, mip_resolution, mip_resolution));
+
+				float roughness = (float)mip / (float)(maxMipLevels - 1);
+				prefiltered_specular_map_gen.set_uniform(ctx, "roughness", roughness);
+
+				glFramebufferTexture(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, (unsigned)((size_t)prefiltered_specular_map.handle) - 1, mip);
+				glClear(GL_COLOR_BUFFER_BIT);
+
+				prefiltered_specular_map_gen.enable(ctx);
+				glDrawArrays(GL_POINTS, 0, 6);
+				prefiltered_specular_map_gen.disable(ctx);
+
+			}
+
+			glBindFramebuffer(GL_FRAMEBUFFER, 0);
+
+			environment_map.disable(ctx);
+
+			glEnable(GL_DEPTH_TEST);
+
+			capture_fbo.destruct(ctx);
 		}
-
-		glBindFramebuffer(GL_FRAMEBUFFER, 0);
-			
-		environment_map.disable(ctx);
-		
-		glEnable(GL_DEPTH_TEST);
-
-		capture_fbo.destruct(ctx);
-		
 		// restore previous viewport
 		ctx.pop_window_transformation_array();
 	}
@@ -744,6 +745,7 @@ public:
 		add_decorator("Environment Demo", "heading");
 
 		add_member_control(this, "Show Environment", show_environment, "check");
+		add_member_control(this, "do_gen_ibl_maps", do_gen_ibl_maps, "check");
 		add_decorator("Sun Position", "heading", "level=3");
 		add_member_control(this, "Horizontal", sun_position[0], "value_slider", "min=0;max=1;step=0.01;ticks=true");
 		add_member_control(this, "Vertical", sun_position[1], "value_slider", "min=0.4;max=1;step=0.01;ticks=true");

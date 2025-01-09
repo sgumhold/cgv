@@ -275,5 +275,4 @@ public:
 #include <cgv/base/register.h>
 
 /// register a factory to create new post processing demos
-//cgv::base::factory_registration<post_processing> post_processing_fac("New/Demo/Post Processing");
-cgv::base::object_registration<post_processing> post_processing_fac("New/Demo/Post Processing");
+cgv::base::factory_registration<post_processing> post_processing_fac("New/Demo/Post Processing");
