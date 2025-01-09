@@ -338,7 +338,7 @@ public:
 // Public interface
 //
 
-bool MAPTILES_PLUGIN_API maptiles_interfacer::enable(void) {
+bool MAPTILES_PLUGIN_API maptiles_interfacer::enable (void) {
 	auto& maptiles_plugin = *get_pointer();
 	const bool prev = maptiles_plugin.enabled;
 	maptiles_plugin.enabled = true;
@@ -370,7 +370,6 @@ bool MAPTILES_PLUGIN_API maptiles_interfacer::disable_foreign_draw_control (void
 	get_pointer()->foreign_draw_control = false;
 	return prev;
 }
-
 void MAPTILES_PLUGIN_API maptiles_interfacer::force_draw (cgv::render::context& ctx) {
 	auto &maptiles_plugin = *get_pointer();
 	const bool prev_state = maptiles_plugin.foreign_draw_control;
