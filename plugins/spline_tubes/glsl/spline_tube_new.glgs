@@ -63,20 +63,6 @@ layout(triangle_strip, max_vertices = 28) out;
 
 #define ONE_OVER_THREE 1.0 / 3.0
 
-struct TubeNode {
-	vec3 pos;
-	float rad;
-
-	vec3 pos_tan;
-	float rad_tan;
-};
-
-struct Tube {
-	TubeNode s;
-	TubeNode e;
-};
-
-
 struct QTubeNode {
 	vec3 pos;
 	float rad;

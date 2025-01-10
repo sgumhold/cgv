@@ -24,6 +24,10 @@ void finish_fragment(vec4 color);
 void finish_fragment(vec4 color, float depth);
 //***** end interface of fragment.glfs ***********************************
 
+//***** begin interface of curve_tools.glsl *****************************
+vec3 solve_quadratic (const vec3 monomial);
+//***** end interface of curve_tools.glsl *******************************
+
 struct QTubeNode {
 	vec3 pos;
 	float rad;
@@ -140,7 +144,9 @@ void FindRoots##D(float poly_C[N1], float x_i[N], int m_i[N], out float x_o[N+1]
 				}                                                                                     \
 				for(uint j = 0; j < ITERATION_COUNT; ++j) {                                           \
 					float m = (n + p) * 0.5;                                                          \
-					float f = EvalPoly##D(m, poly_C);                                                 \
+					float f = EvalPoly##D(m, poly_C);												  \
+					float q = EvalPoly##D(n, poly_C);                                                 \
+					q = q - f/q; 																	  \	
 					if(f < 0.0) n = m;                                                                \
 					else p = m;                                                                       \
 				}                                                                                     \
@@ -228,8 +234,10 @@ float func##_BinRootFinder_Eval(float n, float p, func##_ParasDec) { \
 	for(uint i = 0; i < ITERATION_COUNT; ++i) {                      \
 		float m = (n + p) * 0.5;                                     \
 		float f = func##Eval(m, func##_Paras);                       \
+		float q = func##Eval(n, func##_Paras);						 \	
+		q = q - f/q;												 \
 			                                                         \
-		if(f < 0.0) n = m;                                           \
+		if(f < 0.0) n = m;                                 \
 		else p = m;                                                  \
 	}                                                                \
 		                                                             \
@@ -289,6 +297,8 @@ Hit EvalSplineISect(vec3 dir, vec3 s, vec3 h, vec3 t, float rs, float rh, float 
 	int m2[4];
 	
 	vec2 r = SolveQuadratic(polyB_C[4] * 12.0, polyB_C[3] * 6.0, polyB_C[2] * 2.0);
+	//vec3 result = solve_quadratic(vec3(polyB_C[4] * 12.0, polyB_C[3] * 6.0, polyB_C[2] * 2.0));
+	//vec2 r = result.yz;
 	x2[0] = 0.0;
 	x2[1] = r.x;
 	x2[2] = r.y;
@@ -399,7 +409,7 @@ Hit EvalSplineISect(vec3 dir, vec3 s, vec3 h, vec3 t, float rs, float rh, float 
 }
 
 void main() {
-	/* Uncomment to show the bounding box
+	/*// Uncomment to show the bounding box
 	vec3 normal = normalize(cross(dFdx(position_fs), dFdy(position_fs)));
 	finish_fragment(vec4(normal * 0.5 + 0.5, 1.0));
 	return;

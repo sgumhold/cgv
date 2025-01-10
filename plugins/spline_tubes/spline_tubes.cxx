@@ -18,6 +18,8 @@
 
 #include <cgv_app/application_plugin.h>
 
+#include <random>
+
 class spline_tubes : public cgv::app::application_plugin
 {
 protected:
@@ -109,6 +111,29 @@ public:
 		indices.push_back(4);
 		*/
 
+		//std::random_device dev;
+		//std::mt19937 rng(dev());
+		
+		std::mt19937 rng(0);
+		std::uniform_int_distribution<std::mt19937::result_type> dist6(0, 20); 
+
+		std::cout << dist6(rng) << std::endl;
+
+		unsigned int index_count = 0;
+		for (int i = 0; i < 2000; i++) {
+			points.push_back(cgv::vec3(dist6(rng), dist6(rng), dist6(rng)) - cgv::vec3(10, 10, 40));
+			points.push_back(cgv::vec3(dist6(rng), dist6(rng), dist6(rng)) - cgv::vec3(10, 10, 40));
+			tangents.push_back(cgv::vec4(cgv::vec3(dist6(rng), dist6(rng), dist6(rng)), 0));
+			tangents.push_back(cgv::vec4(cgv::vec3(dist6(rng), dist6(rng), dist6(rng)), 0));
+			colors.push_back(cgv::vec4(dist6(rng) / 20.0, dist6(rng) / 20.0, dist6(rng) / 20.0, 1));
+			colors.push_back(cgv::vec4(dist6(rng) / 20.0, dist6(rng) / 20.0, dist6(rng) / 20.0, 1));
+			radii.push_back(.2);
+			radii.push_back(.2);
+			indices.push_back(index_count++);
+			indices.push_back(index_count++);
+		}
+
+		/*
 		points.push_back(cgv::vec3(-2, 0, 0));
 		points.push_back(cgv::vec3(2, 0, 0));
 		tangents.push_back(cgv::vec4(cgv::math::normalize(cgv::vec3(-1, 0, 1)), 0));
@@ -122,6 +147,7 @@ public:
 
 		indices.push_back(0);
 		indices.push_back(1);
+		*/
 	}
 
     virtual ~spline_tubes()
