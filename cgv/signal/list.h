@@ -3,7 +3,7 @@
 #include <iostream>
 #include <set>
 #include <cgv/utils/convert_string.h>
-#include "signal.h"
+#include <cgv/signal/signal.h>
 #include "lib_begin.h"
 
 namespace cgv {

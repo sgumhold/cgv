@@ -48,7 +48,7 @@ context_config::context_config()
 #else
 	debug = false;
 #endif
-	core_profile = false;
+	core_profile = true;
 	accumulation_bits = 0;
 	version_major = -1;
 	version_minor = -1;

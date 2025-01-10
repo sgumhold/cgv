@@ -159,7 +159,7 @@ OutputIt pair_adjacent(const InputIt first, const InputIt last, OutputIt d_first
 }
 
 
-/// @brief Return a collection of pairwise adjacent elements in the range [first, last) as.
+/// @brief Return a collection of pairwise adjacent elements in the range [first, last).
 /// 
 /// If the input range contains less than two elements the resulting collection will be empty.
 /// 

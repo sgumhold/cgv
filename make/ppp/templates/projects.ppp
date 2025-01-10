@@ -34,6 +34,9 @@ func(read_project; :>pj_file = "", :>return = MAP)
 		:>defFile = "";
 		:>useOpenMP = CGV_OPENMP;
 		:>cppLanguageStandard = CGV_STDCPP;
+		:>cudaEnabled = FALSE;
+		:>cudaCodeGeneration = "native";
+		:>cudaOptions = "";
 		:>charset = CGV_CHARSET;
 		:>subsystem = "Console";
 		:>addRuleFiles=[];
@@ -109,12 +112,14 @@ func(check_project_info; :>pj = MAP, :>return=1)
 //	- projectDeps:LIST of STRING ... list of dependent projects
 //	- projectDirs:LIST of STRING ... list of project directories
 //	- config_indices ... list of configuration indices [
-//							0...release static, 
-//							1...debug static, 
-//							2... release shared, 
+//							0 ... release static, 
+//							1 ... debug static, 
+//							2 ... release shared, 
 //							3 ... debug shared,
 //							4 ... release executable from static (only for application_plugin)
 //							5 ... debug executable from static   (only for application_plugin) ]
+// if cudaEnabled is true, project rules are extended for cu and cuh files
+//
 func(interpret_input; :>pj = MAP, :>return = "")
 {
 	pj::build_dir = CGV_BUILD_DIR.'/'.pj::projectName;
@@ -138,6 +143,7 @@ func(interpret_input; :>pj = MAP, :>return = "")
 	pj::is_executable = [0,0,0,0];
 	pj::is_static = [1,1,1,1];
 	pj::is_shared = [0,0,0,0];
+	pj::is_debug  =[FALSE,TRUE,FALSE,TRUE,FALSE,TRUE];
 	pj::config_indices = [0,1,2,3];
 	if(pj::projectType=="tool") {
 		pj::config_indices = [0];
@@ -176,6 +182,19 @@ func(interpret_input; :>pj = MAP, :>return = "")
 	pj::excludeProjectDeps = excludeProjectDeps;
 	pj::ruleFiles = ruleFiles;
 	pj::parents = [];
+	if (pj::cudaEnabled) {
+		cout(pj::projectName.": add cuda rules\n");
+		pj::rules = pj::rules.[
+			MAP.[ 
+				["extensions",["cuh"]],
+				["folder","cuda_headers"] 
+			],
+			MAP.[
+				["extensions",["cu"]],
+				["folder","cuda"] 
+			]
+		];
+	}
 }
 
 func(map_cfg_idx; :>idx = 0, :>cfg_idxs=[], :>return=0)

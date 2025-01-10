@@ -3,8 +3,6 @@ if(CGV_BUILD_WITH_AUDIO)
 	add_subdirectory(cg_audio)
 endif()
 
-# ToDo: old-style targets are temporarily decorated with the CGV-defined type property, remove when
-# converting them to the new system
 add_subdirectory(camera_animator)
 add_subdirectory(cg_ext)
 add_subdirectory(cg_g2d)
@@ -23,8 +21,9 @@ add_subdirectory(crg_stereo_view)
 add_subdirectory(crg_holo_view)
 
 add_subdirectory(crg_vr_wall)
-add_subdirectory(openvr_driver)
 add_subdirectory(crg_vr_view)
+add_subdirectory(maptiles_plugin)
+add_subdirectory(openvr_driver)
 add_subdirectory(vr_lab)
 add_subdirectory(vr_test)
 set_target_properties(vr_test PROPERTIES CGVPROP_TYPE "plugin")

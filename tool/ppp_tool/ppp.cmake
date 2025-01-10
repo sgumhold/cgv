@@ -9,7 +9,7 @@ function(ppp_compile base outfiles_var outinclude_var outinstall_var)
     foreach (infile ${ARGN})
         ppp_command_add("${PPP_BASE}" "${infile}" outfile outinclude)
         list(APPEND o_files ${outfile})
-        list(APPEND o_includes ${outinclude})
+        #list(APPEND o_includes ${outinclude})
     endforeach ()
 
     set(${outfiles_var} ${o_files} PARENT_SCOPE)

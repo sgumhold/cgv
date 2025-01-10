@@ -88,6 +88,8 @@ namespace rgbd {
 		bool start_device(InputStreams is, std::vector<stream_format>& stream_formats);
 		/// start the rgbd device with given stream formats 
 		virtual bool start_device(const std::vector<stream_format>& stream_formats);
+		/// start the rgbd input with given stream formats and delay to master device in microseconds
+		virtual bool start_device(const std::vector<stream_format>& stream_formats, int32_t delay_to_master) override;
 		///
 		bool query_calibration(rgbd_calibration& calib);
 		/// stop the camera
@@ -176,6 +178,8 @@ namespace rgbd {
 		void capture(int is);
 		void check_errors();
 		bool recover_from_errors();
+
+		bool make_basic_configuration(k4a_device_configuration_t& cfg, const std::vector<stream_format>& stream_formats,int& is);
 	};
 
 	/// interface for kinect drivers (implement only as driver implementor)

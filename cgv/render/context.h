@@ -563,6 +563,8 @@ struct CGV_API context_config
 	context_config();
 	/// reflect the shader_path member
 	bool self_reflect(cgv::reflect::reflection_handler& srh);
+	/// provide integer vector to store context creation attribute list
+	std::vector<int> context_creation_attrib_list;
 };
 
 /// type of ref counted pointer to context creation configuration

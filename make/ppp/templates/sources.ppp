@@ -4,6 +4,7 @@ include "projects.ppp"
 
 func(collect_source_file; :>file = "", :>pj = MAP, :>T=MAP, :>return = 0)
 {
+	//cout("     file: ".file."\n");
 	file = file*clean_path;
 	if (!(file < pj::excludeSourceFiles) && !(drop_path(file) < pj::excludeSourceFiles)) {
 		:>ext = get_extension(file);
@@ -101,6 +102,7 @@ func(collect_source_file; :>file = "", :>pj = MAP, :>T=MAP, :>return = 0)
 func(collect_source_files; :>dir = "", :>projectName = "", :>return = MAP)
 {
 	:>pj =& projects[projectName];
+	//cout("  dir: ".dir."\n");
 	// recursively collect source files
 	:>T = MAP;
 	:>subdirs = [];
@@ -125,6 +127,7 @@ func(collect_sources; :>projectName = "", :>return = 1)
 	if (pj::sourceTree ~~ UNDEF) {
 		if (debug_make) {
 			cout("collect sources of ".projectName."\n");
+			//cout(pj::rules);cout("\n");
 		}
 		pj::sourceTree = MAP;
 		// analyze general structure

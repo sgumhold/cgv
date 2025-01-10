@@ -64,7 +64,7 @@ textured_surface_material::textured_surface_material(const obj_material& obj_mat
 	set_diffuse_reflectance(obj_mat.get_diffuse());
 	set_specular_reflectance(obj_mat.get_specular());
 	set_emission(obj_mat.get_emission());
-	set_roughness(1.0f/obj_mat.get_shininess() - 1.0f/128.0f);
+	set_roughness(std::max(0.0f, std::min(1.0f, 1.0f/(1.0,obj_mat.get_shininess()+ 0.992307f) - 0.0077524f)));
 	set_transparency(1.0f - obj_mat.get_opacity());
 	set_bump_scale(obj_mat.get_bump_scale());
 	std::map<std::string, int> file_name_map;

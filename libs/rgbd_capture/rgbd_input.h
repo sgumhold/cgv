@@ -108,6 +108,8 @@ public:
 	bool start(InputStreams, std::vector<stream_format>& stream_formats);
 	/// start the rgbd input with given stream formats 
 	bool start(const std::vector<stream_format>& stream_formats);
+	/// start the rgbd input with given stream formats and delay to master device in microseconds
+	bool start(const std::vector<stream_format>& stream_formats, int32_t delay_to_master);
 	/// query the calibration information and return whether this was successful
 	bool query_calibration(rgbd_calibration& calib);
 	/// check whether device is started

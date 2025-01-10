@@ -202,6 +202,8 @@ namespace rgbd {
 		virtual bool query_calibration(rgbd_calibration& calib);
 		/// start the rgbd device with given stream formats 
 		virtual bool start_device(const std::vector<stream_format>& stream_formats) = 0;
+		/// start the rgbd input with given stream formats and delay to master device in microseconds
+		virtual bool start_device(const std::vector<stream_format>& stream_formats, int32_t delay_to_master);
 		/// stop the rgbd device
 		virtual bool stop_device() = 0;
 		/// return whether device has been started

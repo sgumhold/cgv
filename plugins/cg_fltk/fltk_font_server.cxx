@@ -4,6 +4,8 @@
 #include <fltk/Font.h>
 #include <fltk/gl.h>
 
+using namespace cgv::media::font;
+
 /// construct from attributes
 fltk_font_face::fltk_font_face(fltk::Font* _f, int _ffa) : f(_f), font_face(_ffa)
 {
@@ -115,16 +117,27 @@ std::string fltk_font_server::get_type_name() const
 /// find an installed font by name
 font_ptr fltk_font_server::find_font(const std::string& font_name)
 {
-	fltk::Font* f = fltk::font(font_name.c_str(),0);
-	if (!f)
+	// The implementation given by fltk::font will match by prefix,
+	// so we have to manually check for an exact match.
+	font_ptr f_ptr = find_font_by_prefix(font_name);
+	if (f_ptr && f_ptr->get_name() != font_name)
 		return font_ptr();
-	f->name();
+	return f_ptr;
+}
+
+/// find an installed font by name prefix
+font_ptr fltk_font_server::find_font_by_prefix(const std::string& font_name_prefix)
+{
+	// fltk::font will match names by prefix by default.
+	fltk::Font* f = fltk::font(font_name_prefix.c_str(), 0);
+	if(!f)
+		return font_ptr();
 	int ffa = 0;
-	if (f->bold() != 0)
+	if(f->bold() != 0)
 		ffa += FFA_BOLD;
-	if (f->italic() != 0)
+	if(f->italic() != 0)
 		ffa += FFA_ITALIC;
-	return font_ptr(new fltk_font(f,ffa));
+	return font_ptr(new fltk_font(f, ffa));
 }
 
 /// enumerate the names of all installed fonts

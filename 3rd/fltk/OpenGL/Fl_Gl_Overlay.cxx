@@ -120,7 +120,7 @@ void GlOverlay::create() {
   Window *w = window();
   for (;;) {Window *w1 = w->window(); if (!w1) break; w = w1;}
   XSetWMColormapWindows(xdisplay, xid(w), &(CreatedWindow::find(this)->xid), 1);
-  context(create_gl_context(fl_overlay_visual), 1);
+  context(create_gl_context(window(), fl_overlay_visual), 1);
   valid(0);
 }
 

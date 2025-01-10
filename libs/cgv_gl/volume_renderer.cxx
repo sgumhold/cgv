@@ -10,7 +10,12 @@ namespace cgv {
 		{
 			static int ref_count = 0;
 			static volume_renderer r;
+			/*if (ref_count == 0) {
+				r.init(ctx);
+			}*/
 			r.manage_singleton(ctx, "volume_renderer", ref_count, ref_count_change);
+			/*if (ref_count < 1)
+				r.clear(ctx);*/
 			return r;
 		}
 
@@ -154,6 +159,12 @@ namespace cgv {
 				init_noise_texture(ctx);
 
 			return res;
+		}
+		void volume_renderer::clear (const context& ctx) {
+			disable_attribute_array_manager(ctx, position_aam);
+			position_aam.destruct(ctx);
+			noise_texture.destruct(ctx);
+			renderer::clear(ctx); // perform upstream actions
 		}
 
 		bool volume_renderer::set_volume_texture(texture* tex) {
