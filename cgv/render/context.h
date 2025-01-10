@@ -556,7 +556,7 @@ struct CGV_API context_config
 	bool forward_compatible;
 	/// default: false in release and true in debug version
 	bool debug;
-	/// default: false
+	/// default: true
 	bool core_profile;
 	//@}
 	/// construct config with default parameters
