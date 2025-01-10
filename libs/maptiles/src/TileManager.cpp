@@ -428,30 +428,44 @@ void TileManager::PruneNeighbourSetTile3D()
 
 void TileManager::GetRasterTileNeighbours()
 {
+	std::set<RasterTileIndex> to_be_removed;
+
 	for (const RasterTileIndex& itr : neighbour_set_raster_tile) {
 		const RasterTileIndex& index = itr;
 
-		std::thread t(&TileManager::AddRasterTileToQueue, this, index);
-		t.detach();
-		requested_raster_tile.insert(index);
+		if (requested_raster_tile.size() < config->MaxRasterTileRequestThreads) {
+			std::thread t(&TileManager::AddRasterTileToQueue, this, index);
+			t.detach();
+			requested_raster_tile.insert(index);
+			to_be_removed.insert(index);
+		}
 	}
 
 	// Once the request is made, remove the index from the set
-	neighbour_set_raster_tile.clear();
+	for (const RasterTileIndex& index : to_be_removed) {
+		neighbour_set_raster_tile.erase(index);
+	}
 }
 
 void TileManager::GetTile3DNeighbours()
 {
+	std::set<Tile3DIndex> to_be_removed;
+
 	for (const Tile3DIndex& itr : neighbour_set_tile3D) {
 		const Tile3DIndex& index = itr;
 
-		std::thread t(&TileManager::AddTile3DToQueue, this, index);
-		t.detach();
-		requested_tile3D.insert(index);
+		if (requested_tile3D.size() < config->MaxTile3DRequestThreads) {
+			std::thread t(&TileManager::AddTile3DToQueue, this, index);
+			t.detach();
+			requested_tile3D.insert(index);
+			to_be_removed.insert(index);
+		}
 	}
 
 	// Once the request is made, remove the index from the set
-	neighbour_set_tile3D.clear();
+	for (const Tile3DIndex& index : to_be_removed) {
+		neighbour_set_tile3D.erase(index);
+	}
 }
 
 void TileManager::AddRasterTileToQueue(RasterTileIndex index)

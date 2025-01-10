@@ -39,4 +39,7 @@ struct GlobalConfig
 	int NeighbourhoodFetchSizeTile3D = 1;
 
 	bool FrustumBasedTileGeneration = false;
+
+	int MaxRasterTileRequestThreads = 10;
+	int MaxTile3DRequestThreads = 10;
 };
