@@ -774,7 +774,9 @@ void fltk_gl_view::enable_font_face(cgv::media::font::font_face_ptr font_face, f
 	else {
 		static bool asked_user = false;
 		if (core_profile && !asked_user) {
-			if (cgv::gui::question("Switch to compatibility profile?", "yes=1,no=0")) {
+			asked_user = true;
+			if (cgv::gui::question("FLTK fonts that are only supported in compatibility profile have been enabled in core compatibility. Switch to compatibility profile?\nTo avoid this message use cmf_tt_gl_font plugin or add 'name(Main):core_profile=true' to your config file.", 
+				"Yes=1,No=0", 0)) {
 				core_profile = false;
 				on_set(&core_profile);
 			}
