@@ -493,14 +493,16 @@ int fltk_driver::question(const std::string& _question, const std::vector<std::s
 	switch(answers.size()) {
 	case 0: return fltk::ask(_question.c_str());
 	case 1: return fltk::ask(_question.c_str());
-	case 2: return fltk::ask(_question.c_str(), answer_ptrs[0], answer_ptrs[1]);
-	case 3: return fltk::choice(_question.c_str(), answer_ptrs[0], answer_ptrs[1], answer_ptrs[2]);
-	case 4: return fltk::choice(_question.c_str(), answer_ptrs[0], answer_ptrs[1], answer_ptrs[2], answer_ptrs[3]);
-	case 5: return fltk::choice(_question.c_str(), answer_ptrs[0], answer_ptrs[1], answer_ptrs[2], answer_ptrs[3], answer_ptrs[4]);
-	case 6: return fltk::choice(_question.c_str(), answer_ptrs[0], answer_ptrs[1], answer_ptrs[2], answer_ptrs[3], answer_ptrs[4], answer_ptrs[5]);
-	default: break;
+	case 2: return fltk::ask(_question.c_str(),    answer_ptrs[1], answer_ptrs[0]);
+	case 3: return 2-fltk::choice(_question.c_str(), answer_ptrs[2], answer_ptrs[1], answer_ptrs[0]);
+	//case 4: return 3-fltk::choice(_question.c_str(), answer_ptrs[3], answer_ptrs[2], answer_ptrs[1], answer_ptrs[0]);
+	//case 5: return 4-fltk::choice(_question.c_str(), answer_ptrs[4], answer_ptrs[3], answer_ptrs[2], answer_ptrs[1], answer_ptrs[0]);
+	//case 6: return 5-fltk::choice(_question.c_str(), answer_ptrs[5], answer_ptrs[4], answer_ptrs[3], answer_ptrs[2], answer_ptrs[1], answer_ptrs[0]);
+	default: 
+		std::cerr << "cgv::gui::question() only supports maximum of three answers!" << std::endl;
+		break;
 	}
-	return -1;
+	return 0;
 }
 
 bool fltk_driver::query(const std::string& question, std::string& text, bool password)
