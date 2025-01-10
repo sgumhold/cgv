@@ -1,4 +1,6 @@
 #include <algorithm>
+#include <iostream>
+
 #include "rgbd_device.h"
 
 namespace rgbd {
@@ -139,7 +141,14 @@ namespace rgbd {
 	}
 	bool rgbd_device::query_calibration(rgbd_calibration& calib)
 	{
-		return false;
+		return false; }
+	bool rgbd_device::start_device(const std::vector<stream_format>& stream_formats, int32_t delay_to_master)
+	{ 
+	std::cerr << "start_device(const std::vector<stream_format>& stream_formats, int32_t delay_to_master) "
+				 "not implemented for this device! Continue with start_device(const std::vector<stream_format>& "
+				 "stream_formats)"
+				 << std::endl;
+		return start_device(stream_formats);
 	}
 	bool rgbd_device::get_emulator_configuration(emulator_parameters& cfg) const
 	{

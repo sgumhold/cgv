@@ -32,7 +32,10 @@
 //Interfacer
 #include <maptiles_interfacer.h>
 
+
 maptiles* maptiles_interfacer::ptr = nullptr;
+
+
 
 //////
 //
@@ -40,10 +43,16 @@ maptiles* maptiles_interfacer::ptr = nullptr;
 //
 
 /// Example application plugin showcasing the maptiles library inside the CGV Framework.
-class maptiles : public cgv::app::application_plugin // inherit from application plugin to enable overlay support
+class maptiles : public cgv::base::node, public cgv::render::drawable, public cgv::gui::provider,
+                 public cgv::gui::event_handler
 {
+	friend class maptiles_interfacer;
 	typedef cgv::math::fvec<double, 4> vec4;
-  protected:
+
+protected:
+	bool enabled = true;
+	bool foreign_draw_control = false;
+
 	TileManager manager;
 	TileRenderer renderer;
 	GlobalConfig config;
@@ -60,17 +69,18 @@ class maptiles : public cgv::app::application_plugin // inherit from application
 	bool auto_recenter;
 
 	cgv::render::stereo_view* camera;
-  public:
+
+public:
 
 	////
 	// Object construction / destruction
 
 	/// The default constructor.
-	maptiles() : application_plugin("Map Tiles")
+	maptiles() : node("Map Tiles")
 	{ 
 		render_raster_tile = true;
 		render_tile3D = true;
-		auto_recenter = true;
+		auto_recenter = false;
 		latitude = 0;
 		longitude = 0;
 		altitude = 0;
@@ -91,17 +101,21 @@ class maptiles : public cgv::app::application_plugin // inherit from application
 	/// The destructor.
 	virtual ~maptiles() 
 	{}
-	
+
+
 	////
 	// Interfrace: cgv::app::application_plugin
 
-	bool self_reflect(cgv::reflect::reflection_handler& rh)
+	bool self_reflect(cgv::reflect::reflection_handler& rh) override
 	{ 
 		bool success = true;
-
+		success = rh.reflect_member("enabled", enabled) && success;
 		success = rh.reflect_member("latitude", latitude) && success;
 		success = rh.reflect_member("longitude", longitude) && success;
-
+		success = rh.reflect_member("frustum_raster_tiles_count", config.FrustumRasterTilesCount) && success;
+		success = rh.reflect_member("frustum_3d_tiles_distance", config.FrustumTile3DMaxDistance) && success;
+		success = rh.reflect_member("frustum_based_tiles", config.FrustumBasedTileGeneration) && success;
+		success = rh.reflect_member("auto_recenter", auto_recenter) && success;
 		return success;
 	}
 
@@ -132,8 +146,9 @@ class maptiles : public cgv::app::application_plugin // inherit from application
 
 	virtual void init_frame(cgv::render::context& ctx) override
 	{
-		if (!camera && initialize_view_ptr())
-			camera = dynamic_cast<cgv::render::stereo_view*>(view_ptr);
+		if (enabled) {
+			/* nothing here yet */
+		}
 	}
 
 	virtual void clear(cgv::render::context &ctx) override 
@@ -143,106 +158,118 @@ class maptiles : public cgv::app::application_plugin // inherit from application
 		renderer.Finalize(ctx);
 	}
 
-	virtual void handle_member_change(const cgv::utils::pointer_test &m) override
-	{}
-
 	std::string get_type_name() const override { return "maptiles"; }
 
-	void stream_help(std::ostream &os) override
-	{
+	virtual void stream_help (std::ostream &os) override {
 		os << "Map Tiles:\a\n"
 		   << "";
 	}
 
-	virtual bool handle_event (cgv::gui::event &e) override
+	virtual bool handle (cgv::gui::event &e) override
 	{
 		return false;
 	}
 
 	virtual void draw(cgv::render::context &ctx) override 
-	{ 
-		// We need to keep track of the x and z coordinate of the original camera matrix for recentering
-		auto& original_mv = ctx.get_modelview_matrix();
-		
-		auto original_mv_inverse = inv(original_mv);
-		x = original_mv_inverse(0, 3);
-		z = original_mv_inverse(2, 3);
-
-		cgv::mat4 inv_rotation(0);
-		for (int i = 0; i < 3; i++)
-			for (int j = 0; j < 3; j++)
-				inv_rotation(j, i) = original_mv(i, j);
-		inv_rotation(3, 3) = 1;
-
-		auto& mv = ctx.get_modelview_matrix();
-		
-		auto cam_pos = inv(inv_rotation * original_mv) * vec4(0.0, 0.0, 0.0, 1.0);
-
-		if (auto_recenter && (std::abs(cam_pos[0]) > config.AutoRecenterDistance || std::abs(cam_pos[2]) > config.AutoRecenterDistance))
-			recenter();
-		
-		std::array<double, 2> cameraPosWGS84 =
-			  wgs84::fromCartesian({config.ReferencePoint.lat, config.ReferencePoint.lon}, {cam_pos[0], -cam_pos[2]});
-
-		manager.CalculateViewFrustum(ctx.get_projection_matrix() * mv);
-
-		latitude = cameraPosWGS84[0];
-		longitude = cameraPosWGS84[1];
-		altitude = std::max(cam_pos[1], 1.0);
-		manager.SetPosition(cameraPosWGS84[0], cameraPosWGS84[1], std::max((cam_pos[1] * 0.25), 1.0));
-
-		manager.Update(ctx);
-
+	{
+		if (enabled && !foreign_draw_control)
 		{
-			cgv::math::vec<double> minp(0.0, 0.0, 0.0), maxp(0.0f, 100.0, 0.0);
-			auto extents = manager.GetExtent();
-			std::array<double, 2> min_pos = wgs84::toCartesian({config.ReferencePoint.lat, config.ReferencePoint.lon},
-															   {extents.first[0], extents.first[1]});
-			std::array<double, 2> max_pos = wgs84::toCartesian({config.ReferencePoint.lat, config.ReferencePoint.lon},
-															   {extents.second[0], extents.second[1]});
+			// We need to keep track of the x and z coordinate of the original camera matrix for recentering
+			auto original_mv = ctx.get_modelview_matrix();
 
-			minp[0] = min_pos[0];
-			minp[2] = -min_pos[1];
-			maxp[0] = max_pos[0];
-			maxp[2] = -max_pos[1];
-			cgv::dbox3 box(minp, maxp);
-			/*
-			if (camera)
-				camera->set_scene_extent(box);
-			*/
-			camera->set_scene_extent(box);
-			
-		}
+			auto original_mv_inverse = inv(original_mv);
+			x = original_mv_inverse(0, 3);
+			z = original_mv_inverse(2, 3);
 
-		if (render_raster_tile)
-		{
-			auto& raster_tiles = manager.GetActiveRasterTiles();
-			for (auto& pair : raster_tiles) {
-				auto& raster_tile = pair.second;
-				renderer.Draw(ctx, raster_tile);
-			}
-		}
+			cgv::mat4 inv_rotation(0);
+			for (int i = 0; i < 3; i++)
+				for (int j = 0; j < 3; j++)
+					inv_rotation(j, i) = original_mv(i, j);
+			inv_rotation(3, 3) = 1;
 
-		if (render_tile3D) 
-		{
-			auto& tile3Ds = manager.GetActiveTile3Ds();
-			for (auto& pair : tile3Ds)
+			auto mv = ctx.get_modelview_matrix();
+
+			auto cam_pos = inv(inv_rotation * original_mv) * vec4(0.0, 0.0, 0.0, 1.0);
+
+			if (auto_recenter && (std::abs(cam_pos[0]) > config.AutoRecenterDistance || std::abs(cam_pos[2]) > config.AutoRecenterDistance))
+				recenter();
+
+			std::array<double, 2> cameraPosWGS84 =
+				  wgs84::fromCartesian({config.ReferencePoint.lat, config.ReferencePoint.lon}, {cam_pos[0], -cam_pos[2]});
+
+			manager.CalculateViewFrustum(ctx.get_projection_matrix() * mv);
+
+			latitude = cameraPosWGS84[0];
+			longitude = cameraPosWGS84[1];
+			altitude = std::max(cam_pos[1], 1.0);
+			manager.SetPosition(cameraPosWGS84[0], cameraPosWGS84[1], std::max((cam_pos[1] * 0.25), 1.0));
+
+			manager.Update(ctx);
+
 			{
-				auto& tile3D = pair.second;
-				renderer.Draw(ctx, tile3D);
+				cgv::math::vec<double> minp(0.0, 0.0, 0.0), maxp(0.0f, 100.0, 0.0);
+				auto extents = manager.GetExtent();
+				std::array<double, 2> min_pos = wgs84::toCartesian({config.ReferencePoint.lat, config.ReferencePoint.lon},
+																   {extents.first[0], extents.first[1]});
+				std::array<double, 2> max_pos = wgs84::toCartesian({config.ReferencePoint.lat, config.ReferencePoint.lon},
+																   {extents.second[0], extents.second[1]});
+
+				minp[0] = min_pos[0];
+				minp[2] = -min_pos[1];
+				maxp[0] = max_pos[0];
+				maxp[2] = -max_pos[1];
+				cgv::dbox3 box(minp, maxp);
+				/*
+				if (camera)
+					camera->set_scene_extent(box);
+				*/
+				if (!camera)
+					camera = dynamic_cast<cgv::render::stereo_view*>(find_view_as_node());
+				camera->set_scene_extent(box);
+			}
+
+			if (render_raster_tile)
+			{
+				auto& raster_tiles = manager.GetActiveRasterTiles();
+				for (auto& pair : raster_tiles) {
+					auto& raster_tile = pair.second;
+					renderer.Draw(ctx, raster_tile);
+				}
+			}
+
+			if (render_tile3D)
+			{
+				auto& tile3Ds = manager.GetActiveTile3Ds();
+				for (auto& pair : tile3Ds)
+				{
+					auto& tile3D = pair.second;
+					renderer.Draw(ctx, tile3D);
+				}
 			}
 		}
 	}
 
-	void on_set(void* member_ptr)
+	void on_set(void* member_ptr) override
 	{ 
-		if (member_ptr == &latitude || member_ptr == &longitude)
+		if (   member_ptr == &latitude || member_ptr == &longitude || member_ptr == &config.FrustumRasterTilesCount
+		    || member_ptr == &config.FrustumTile3DMaxDistance || member_ptr == &config.FrustumBasedTileGeneration)
 		{
 			config.ReferencePoint = {latitude, longitude};
 			manager.ReInit(latitude, longitude, altitude, &config);
 		}
 
 		update_member(member_ptr);
+		post_redraw();
+	}
+
+	void reref (double latitude, double longitude)
+	{
+		maptiles::latitude = latitude;
+		maptiles::longitude = longitude;
+		update_member(&this->latitude);
+		update_member(&this->longitude);
+		config.ReferencePoint = {latitude, longitude};
+		manager.ReInit(latitude, longitude, altitude, &config);
 		post_redraw();
 	}
 
@@ -259,9 +286,7 @@ class maptiles : public cgv::app::application_plugin // inherit from application
 		focus[2] -= z;
 		camera->set_focus(focus);
 		
-		config.ReferencePoint = {latitude, longitude};
-		manager.ReInit(latitude, longitude, altitude, &config);
-		post_redraw();
+		reref(latitude, longitude);
 	}
 
 	// returns the offset matrix
@@ -271,17 +296,18 @@ class maptiles : public cgv::app::application_plugin // inherit from application
 		return offset;
 	}
 
-	void tile_download_callback() 
-	{ 
-		post_redraw();
+	void tile_download_callback()  {
+		if (enabled)
+			post_redraw();
 	}
 
 	void create_gui() override
 	{
 		add_decorator("Map Tiles GUI", "heading");
+		add_member_control(this, "active", enabled, "check");
 		add_decorator("Position", "heading", "level=3");
 		add_member_control(this, "latitude", latitude, "value", "min=-90;max=90");
-		add_member_control(this, "latitude", longitude, "value", "min=-180;max=180");
+		add_member_control(this, "longitude", longitude, "value", "min=-180;max=180");
 		add_decorator("Rendering", "heading", "level=3");
 		add_member_control(this, "Raster Tiles", render_raster_tile, "check");
 		add_member_control(this, "Tile 3Ds", render_tile3D, "check");
@@ -305,15 +331,62 @@ class maptiles : public cgv::app::application_plugin // inherit from application
 	}
 };
 
-
-
 #if CGV_FORCE_STATIC
 	#include <maptiles_plugin_shader_inc.h>
 #endif
 
+
+
 //////
 //
-// Plugins registration
+// Public interface
+//
+
+bool MAPTILES_PLUGIN_API maptiles_interfacer::enable (void) {
+	auto& maptiles_plugin = *get_pointer();
+	const bool prev = maptiles_plugin.enabled;
+	maptiles_plugin.enabled = true;
+	maptiles_plugin.update_member(&maptiles_plugin.enabled);
+	return prev;
+}
+bool MAPTILES_PLUGIN_API maptiles_interfacer::disable (void) {
+	auto& maptiles_plugin = *get_pointer();
+	const bool prev = maptiles_plugin.enabled;
+	maptiles_plugin.enabled = false;
+	maptiles_plugin.update_member(&maptiles_plugin.enabled);
+	return prev;
+}
+
+void MAPTILES_PLUGIN_API maptiles_interfacer::reref (const cgv::dvec2& latlong) {
+	get_pointer()->reref(latlong.x(), latlong.y());
+}
+void MAPTILES_PLUGIN_API maptiles_interfacer::recenter (void) {
+	get_pointer()->recenter();
+}
+
+bool MAPTILES_PLUGIN_API maptiles_interfacer::enable_foreign_draw_control (void) {
+	const bool prev = get_pointer()->foreign_draw_control;
+	get_pointer()->foreign_draw_control = true;
+	return prev;
+}
+bool MAPTILES_PLUGIN_API maptiles_interfacer::disable_foreign_draw_control (void) {
+	const bool prev = get_pointer()->foreign_draw_control;
+	get_pointer()->foreign_draw_control = false;
+	return prev;
+}
+void MAPTILES_PLUGIN_API maptiles_interfacer::force_draw (cgv::render::context& ctx) {
+	auto &maptiles_plugin = *get_pointer();
+	const bool prev_state = maptiles_plugin.foreign_draw_control;
+	maptiles_plugin.foreign_draw_control = false;
+	maptiles_plugin.draw(ctx);
+	maptiles_plugin.foreign_draw_control = prev_state;
+}
+
+
+
+//////
+//
+// Plugin registration
 //
 
 // Our maptiles plugin

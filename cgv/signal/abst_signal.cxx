@@ -1,5 +1,5 @@
 #include <cgv/signal/abst_signal.h>
-#include "signal.h"
+#include <cgv/signal/signal.h>
 
 namespace cgv {
 	namespace signal {

@@ -1,3 +1,6 @@
+
+#include <thread>
+
 #include "TileManager.h"
 #include "utils.h"
 #include "WGS84toCartesian.hpp"
@@ -156,7 +159,7 @@ void TileManager::GenerateRasterTileFrustumNeighbours()
 				if (lon_max > max_extent[1])
 					max_extent[1] = lon_max;
 
-				RasterTileIndex index = {zoom, i, j};
+				RasterTileIndex index = {static_cast<unsigned>(zoom), i, j};
 				neighbour_set_raster_tile.insert(index);
 				count++;
 			}
@@ -273,7 +276,7 @@ void TileManager::GenerateRasterTileNeighbours()
 			if (pos_max[1] > max_extent[1])
 				max_extent[1] = pos_max[1];
 
-			RasterTileIndex index = {zoom, i + centerX, j + centerY};
+			RasterTileIndex index = {static_cast<unsigned>(zoom), i + centerX, j + centerY};
 			neighbour_set_raster_tile.insert(index);
 		}
 	}

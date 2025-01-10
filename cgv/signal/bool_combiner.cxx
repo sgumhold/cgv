@@ -1,6 +1,6 @@
 #include <iostream>
 #include <cgv/signal/bool_combiner.h>
-#include "bool_signal.h"
+#include <cgv/signal/bool_signal.h>
 
 namespace cgv {
 	namespace signal {
