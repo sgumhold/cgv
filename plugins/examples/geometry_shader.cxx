@@ -164,13 +164,25 @@ public:
 	}
 	void create_gui()
 	{
-		add_member_control(this, "nr_subdivisions", nr_subdivisions, "value_slider", "min=2;max=256;log=true;ticks=true");
+		if (begin_tree_node("sphere style", srs)) {
+			align("\a");
+			add_gui("sphere style", srs);
+			align("\b");
+			end_tree_node(srs);
+		}
+		add_member_control(this, "line_width", line_width, "value_slider", "min=1;max=10;ticks=true");
 		add_member_control(this, "mode", (cgv::type::DummyEnum&)mode, "dropdown", "enums='linear,bezier,hermite'");
-		add_member_control(this, "scene", (cgv::type::DummyEnum&)scene_index, "dropdown", "enums='simple,random'");
+		add_member_control(this, "nr_subdivisions", nr_subdivisions, "value_slider", "min=2;max=256;log=true;ticks=true");
 		add_member_control(this, "show_segments", show_segments, "check");
 		add_member_control(this, "show_tangents", show_tangents, "check");
 		add_member_control(this, "tangent_scale", tangent_scale, "value_slider", "min=0.1;max=10;log=true;ticks=true");
-		add_member_control(this, "line_width", line_width, "value_slider", "min=1;max=10;ticks=true");
+		if (begin_tree_node("arrow style", ars)) {
+			align("\a");
+			add_gui("arrow style", ars);
+			align("\b");
+			end_tree_node(ars);
+		}
+		add_member_control(this, "scene", (cgv::type::DummyEnum&)scene_index, "dropdown", "enums='simple,random'");
 		if (begin_tree_node("simple scene", P[0])) {
 			align("\a");
 			for (size_t i = 0; i < P[0].size(); ++i) {
@@ -188,18 +200,6 @@ public:
 			add_member_control(this, "max_extent", max_extent, "value_slider", "min=1;max=10;ticks=true;log=true");
 			align("\b");
 			end_tree_node(P[1]);
-		}
-		if (begin_tree_node("sphere style", srs)) {
-			align("\a");
-			add_gui("sphere style", srs);
-			align("\b");
-			end_tree_node(srs);
-		}
-		if (begin_tree_node("arrow style", ars)) {
-			align("\a");
-			add_gui("arrow style", ars);
-			align("\b");
-			end_tree_node(ars);
 		}
 	}
 };
