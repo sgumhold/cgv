@@ -28,6 +28,21 @@ void finish_fragment(vec4 color, float depth);
 vec3 solve_quadratic (const vec3 monomial);
 //***** end interface of curve_tools.glsl *******************************
 
+//***** begin interface of spline_tube_tools.glsl ***********************
+float EvalPolyD0(float x, float c[3]);
+float EvalPolyD1(float x, float c[3]);
+float EvalPolyD2(float x, float c[3]);
+float EvalPolyD0(float x, float c[5]);
+float EvalPolyD1(float x, float c[5]);
+float EvalPolyD2(float x, float c[5]);
+float EvalPolyD3(float x, float c[5]);
+
+float BisectionMethodPolyD0(float c[5], float n, float p, int max_iter);
+float BisectionMethodPolyD1(float c[5], float n, float p, int max_iter);
+float NewtonsMethodPolyD0(float c[5], float x, int max_iter);
+float NewtonsMethodPolyD1(float c[5], float x, int max_iter);
+//***** end interface of spine_tube_tools.glsl **************************
+
 struct QTubeNode {
 	vec3 pos;
 	float rad;
@@ -83,31 +98,6 @@ void Sub(in float a[5], in float b[5], out float o_c[5]) {
 	o_c[4] = a[4] - b[4];
 }
 
-float EvalPoly(float x, float c0, float c1, float c2, float c3, float c4, float c5, float c6) { return x * (x * (x * (x * (x * (x * c6 + c5) + c4) + c3) + c2) + c1) + c0; }
-float EvalPoly(float x, float c0, float c1, float c2, float c3, float c4, float c5) { return EvalPoly(x, c0,c1,c2,c3,c4,c5,0.0); }
-float EvalPoly(float x, float c0, float c1, float c2, float c3, float c4) { return EvalPoly(x, c0,c1,c2,c3,c4,0.0,0.0); }
-float EvalPoly(float x, float c0, float c1, float c2, float c3) { return EvalPoly(x, c0,c1,c2,c3,0.0,0.0,0.0); }
-float EvalPoly(float x, float c0, float c1, float c2) { return EvalPoly(x, c0,c1,c2,0.0,0.0,0.0,0.0); }
-float EvalPoly(float x, float c0, float c1) { return EvalPoly(x, c0,c1,0.0,0.0,0.0,0.0,0.0); }
-float EvalPoly(float x, float c0) { return EvalPoly(x, c0,0.0,0.0,0.0,0.0,0.0,0.0); }
-
-//float EvalPolyD0(float x, float c[3]) { return EvalPoly(x, c[0], c[1], c[2]); }
-//float EvalPolyD1(float x, float c[3]) { return EvalPoly(x, c[1], c[2] * 2.0); }
-//float EvalPolyD2(float x, float c[3]) { return EvalPoly(x, c[2] * 2.0);       }
-//float EvalPolyD0(float x, float c[5]) { return EvalPoly(x, c[0], c[1], c[2], c[3], c[4]);             }
-//float EvalPolyD1(float x, float c[5]) { return EvalPoly(x, c[1], c[2] * 2.0, c[3] * 3.0, c[4] * 4.0); }
-//float EvalPolyD2(float x, float c[5]) { return EvalPoly(x, c[2] * 2.0, c[3] * 6.0, c[4] * 12.0);      }
-//float EvalPolyD3(float x, float c[5]) { return EvalPoly(x, c[3] * 6.0, c[4] * 24.0);                  }
-
-// same as above, but multiplication wit 2, 3, or 4 is replaced with addition (gives a small performance boost)
-float EvalPolyD0(float x, float c[3]) { return EvalPoly(x, c[0], c[1], c[2]); }
-float EvalPolyD1(float x, float c[3]) { return EvalPoly(x, c[1], c[2] + c[2]); }
-float EvalPolyD2(float x, float c[3]) { return EvalPoly(x, c[2] + c[2]); }
-float EvalPolyD0(float x, float c[5]) { return EvalPoly(x, c[0], c[1], c[2], c[3], c[4]); }
-float EvalPolyD1(float x, float c[5]) { return EvalPoly(x, c[1], c[2] + c[2], c[3] + c[3] + c[3], c[4] + c[4] + c[4] + c[4]); }
-float EvalPolyD2(float x, float c[5]) { return EvalPoly(x, c[2] + c[2], c[3] * 6.0, c[4] * 12.0); }
-float EvalPolyD3(float x, float c[5]) { return EvalPoly(x, c[3] * 6.0, c[4] * 24.0); }
-
 vec3 EvalCSpline(vec3 p1, vec3 t1, vec3 p2, vec3 t2, float l) {
 	vec3 h1 = p1 + t1 / 3.0;
 	vec3 h2 = p2 - t2 / 3.0;
@@ -142,15 +132,7 @@ void FindRoots##D(float poly_C[N1], float x_i[N], int m_i[N], out float x_o[N+1]
 					float t = n;                                                                      \
 					n = p; p = t;                                                                     \
 				}                                                                                     \
-				for(uint j = 0; j < ITERATION_COUNT; ++j) {                                           \
-					float m = (n + p) * 0.5;                                                          \
-					float f = EvalPoly##D(m, poly_C);												  \
-					float q = EvalPoly##D(n, poly_C);                                                 \
-					q = q - f/q; 																	  \	
-					if(f < 0.0) n = m;                                                                \
-					else p = m;                                                                       \
-				}                                                                                     \
-				x_o[i] = (n + p) * 0.5;                                                               \
+				x_o[i] = BisectionMethodPoly##D(poly_C, n, p, 10);									  \
 				m_o[i] = 1;                                                                           \
 			} else {			                                                                      \
 				m_o[i] = 0;                                                                           \

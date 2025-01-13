@@ -15,3 +15,4 @@ fragment_file:a_buffer_lib.glfs
 fragment_file:transform.glsl
 fragment_file:curve_tools.glsl
 fragment_file:rcc.glsl
+fragment_file:spline_tube_tools.glsl
