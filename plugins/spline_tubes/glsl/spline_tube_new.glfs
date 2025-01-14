@@ -29,6 +29,13 @@ vec3 solve_quadratic (const vec3 monomial);
 //***** end interface of curve_tools.glsl *******************************
 
 //***** begin interface of spline_tube_tools.glsl ***********************
+float Pow2(float x);
+float Pow3(float x);
+void Pow2(in float c[3], out float o_c[5]);
+void Sub(in float a[5], in float b[5], out float o_c[5]);
+
+void SplinePointsToPolyCoeffs(float p0, float h, float p1, out float o_c[3]);
+
 float EvalPolyD0(float x, float c[3]);
 float EvalPolyD1(float x, float c[3]);
 float EvalPolyD2(float x, float c[3]);
@@ -37,10 +44,22 @@ float EvalPolyD1(float x, float c[5]);
 float EvalPolyD2(float x, float c[5]);
 float EvalPolyD3(float x, float c[5]);
 
+float qSplineIDistEval(float t, float curveX[3], float polyB_C[5]);
+float qSplineD1Eval(float t, float curveX[3], float polyB_C[5]);
+float qSplineD2Eval(float t, float curveX[3], float polyB_C[5]);
+float qSplineD3Eval(float t, float polyB_C[5]);
+
+float qSplineIDistEval_BinRootFinder_Eval(float n, float p, float curveX[3], float polyB_C[5], int max_iter);
+float qSplineD1_BinRootFinder_Eval(float n, float p, float curveX[3], float polyB_C[5], int max_iter);
+float qSplineD2_BinRootFinder_Eval(float n, float p, float curveX[3], float polyB_C[5], int max_iter);
+float qSplineD3_BinRootFinder_Eval(float n, float p, float polyB_C[5], int max_iter);
+
 float BisectionMethodPolyD0(float c[5], float n, float p, int max_iter);
 float BisectionMethodPolyD1(float c[5], float n, float p, int max_iter);
 float NewtonsMethodPolyD0(float c[5], float x, int max_iter);
 float NewtonsMethodPolyD1(float c[5], float x, int max_iter);
+float NewtonsMethodPolyD0(float c[5], float x, float epsilon, int max_iter);
+float NewtonsMethodPolyD1(float c[5], float x, float epsilon, int max_iter);
 //***** end interface of spine_tube_tools.glsl **************************
 
 struct QTubeNode {
@@ -64,9 +83,6 @@ in flat vec4 color0_fs;
 in flat vec4 color1_fs;
 in flat QTube qTube_fs;
 
-float Pow2(float x) { return x * x; }
-float Pow3(float x) { return x * x * x; }
-
 vec2 SolveQuadratic(float a, float b, float c) {
     if(abs(a) < FLT_EPS) {
 		if(abs(b) < FLT_EPS)
@@ -80,22 +96,6 @@ vec2 SolveQuadratic(float a, float b, float c) {
 		vec2 r = (-vec2(b) + vec2(-1.0, 1.0) * vec2(sqrt(discr))) / (2.0 * a);
 		return r.x < r.y ? r.xy : r.yx;
     }
-}
-
-void Pow2(in float c[3], out float o_c[5]) {
-	o_c[0] = c[0] * c[0]; 
-	o_c[1] =  2.0 * c[0] * c[1];
-	o_c[2] = c[1] * c[1] +  2.0 * c[0] * c[2];
-	o_c[3] =  2.0 * c[2] * c[1];
-	o_c[4] = c[2] * c[2];
-}
-
-void Sub(in float a[5], in float b[5], out float o_c[5]) {
-	o_c[0] = a[0] - b[0];
-	o_c[1] = a[1] - b[1];
-	o_c[2] = a[2] - b[2];
-	o_c[3] = a[3] - b[3];
-	o_c[4] = a[4] - b[4];
 }
 
 vec3 EvalCSpline(vec3 p1, vec3 t1, vec3 p2, vec3 t2, float l) {
@@ -157,81 +157,9 @@ vec3 GetOrthoVec(vec3 v) {
     return abs(v.x) > abs(v.z) ? vec3(-v.y, v.x, 0.0f) : vec3(0.0f, -v.z, v.y);
 }
 
-void SplinePointsToPolyCoeffs(float p0, float h, float p1, out float o_c[3]) {
-	o_c[0] = p0;
-	o_c[1] = -2.0 * p0 + 2.0 * h;
-	o_c[2] =   p0 + p1 - 2.0 * h;
-}
-
 vec3 qSplineEval(float l, float curveX[N0], float curveY[N0], float curveZ[N0]) {
 	return vec3(EvalPolyD0(l, curveX), EvalPolyD0(l, curveY), EvalPolyD0(l, curveZ));
 }
-
-float qSplineIDistEval(float t, float curveX[N0], float polyB_C[N1]) {		
-	float term  = EvalPolyD0(t, curveX);
-	float discr = EvalPolyD0(t, polyB_C);
-	if(discr < 0.0) return POS_INF;
-	else return term - sqrt(discr);
-}
-#define qSplineIDist_ParasDec float curveX[N0], float polyB_C[N1]
-#define qSplineIDist_Paras curveX, polyB_C
-
-float qSplineD1Eval(float t, float curveX[N0], float polyB_C[N1]) {	 		
-	float f1D1 = EvalPolyD1(t, curveX);	
-	float f2D0 = EvalPolyD0(t, polyB_C);
-	float f2D1 = EvalPolyD1(t, polyB_C);
-	return f1D1 - f2D1 * 0.5 * inversesqrt(max(0.0, f2D0));
-}
-#define qSplineD1_ParasDec float curveX[N0], float polyB_C[N1]
-#define qSplineD1_Paras curveX, polyB_C
-
-float qSplineD2Eval(float t, float curveX[N0], float polyB_C[N1]) {		
-	float f1D1 = EvalPolyD1(t, curveX);
-	float f1D2 = EvalPolyD2(t, curveX);
-	float f2D0 = EvalPolyD0(t, polyB_C);
-	float f2D1 = EvalPolyD1(t, polyB_C);
-	float f2D2 = EvalPolyD2(t, polyB_C);
-	f2D0 = max(0.0, f2D0);
-	return (Pow2(f2D1) / f2D0 * 0.25 - f2D2 * 0.5) * inversesqrt(f2D0) + f1D2;
-}
-#define qSplineD2_ParasDec float curveX[N0], float polyB_C[N1]
-#define qSplineD2_Paras curveX, polyB_C
-
-float qSplineD3Eval(float t, float polyB_C[N1]) {
-	float f2D0 = EvalPolyD0(t, polyB_C);
-	float f2D1 = EvalPolyD1(t, polyB_C);
-	float f2D2 = EvalPolyD2(t, polyB_C);
-	float f2D3 = EvalPolyD3(t, polyB_C);
-	f2D0 = max(0.0, f2D0);
-	return (-3.0 * Pow3(f2D1) + 6.0 * f2D0 * f2D1 * f2D2 - 4.0 * Pow2(f2D0) * f2D3) / Pow2(f2D0) * inversesqrt(f2D0);
-}
-#define qSplineD3_ParasDec float polyB_C[N1]
-#define qSplineD3_Paras polyB_C
-
-#define DEF_binRootFinder(func)										 \
-float func##_BinRootFinder_Eval(float n, float p, func##_ParasDec) { \
-	if(func##Eval(n, func##_Paras) > 0.0) return n;					 \
-	if(func##Eval(p, func##_Paras) < 0.0) return p;					 \
-																	 \
-	for(uint i = 0; i < ITERATION_COUNT; ++i) {                      \
-		float m = (n + p) * 0.5;                                     \
-		float f = func##Eval(m, func##_Paras);                       \
-		float q = func##Eval(n, func##_Paras);						 \	
-		q = q - f/q;												 \
-			                                                         \
-		if(f < 0.0) n = m;                                 \
-		else p = m;                                                  \
-	}                                                                \
-		                                                             \
-	return (n + p) * 0.5;                                            \
-}
-
-DEF_binRootFinder(qSplineIDist)
-DEF_binRootFinder(qSplineD1)
-DEF_binRootFinder(qSplineD2)
-DEF_binRootFinder(qSplineD3)
-
-#define binRootFinder_Eval(n, p, func) func##_BinRootFinder_Eval(n, p, func##_Paras)
 
 Hit EvalSplineISect(vec3 dir, vec3 s, vec3 h, vec3 t, float rs, float rh, float rt) {
 	Hit hit;
@@ -343,19 +271,19 @@ Hit EvalSplineISect(vec3 dir, vec3 s, vec3 h, vec3 t, float rs, float rh, float 
 		//region finalize
 		if(rootType > 0) {
 			if(rootType == 30) {
-				float rootD3 = binRootFinder_Eval(roots.x, roots.y, qSplineD3);
+				float rootD3 = qSplineD3_BinRootFinder_Eval(roots.x, roots.y, polyB_C, 10);
 				
 				vec2 rootsD2;
-				rootsD2.x = binRootFinder_Eval(rootD3, roots.x, qSplineD2);
-				rootsD2.y = binRootFinder_Eval(rootD3, roots.y, qSplineD2);
+				rootsD2.x = qSplineD2_BinRootFinder_Eval(rootD3, roots.x, curveX, polyB_C, 10);
+				rootsD2.y = qSplineD2_BinRootFinder_Eval(rootD3, roots.y, curveX, polyB_C, 10);
 				
-				l1 = binRootFinder_Eval(roots.x, rootsD2.x, qSplineD1);
-				l2 = binRootFinder_Eval(rootsD2.y, roots.y, qSplineD1);
+				l1 = qSplineD1_BinRootFinder_Eval(roots.x, rootsD2.x, curveX, polyB_C, 10);
+				l2 = qSplineD1_BinRootFinder_Eval(rootsD2.y, roots.y, curveX, polyB_C, 10);
 			} else {
-				l1 = binRootFinder_Eval(roots.x, roots.y, qSplineD1);
+				l1 = qSplineD1_BinRootFinder_Eval(roots.x, roots.y, curveX, polyB_C, 10);
 				
 				if(rootType == 20)
-					l2 = binRootFinder_Eval(roots.z, roots.w, qSplineD1);
+					l2 = qSplineD1_BinRootFinder_Eval(roots.z, roots.w, curveX, polyB_C, 10);
 				else
 					l2 = l1;
 			}
