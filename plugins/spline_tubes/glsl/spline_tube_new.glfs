@@ -54,12 +54,19 @@ float qSplineD1_BinRootFinder_Eval(float n, float p, float curveX[3], float poly
 float qSplineD2_BinRootFinder_Eval(float n, float p, float curveX[3], float polyB_C[5], int max_iter);
 float qSplineD3_BinRootFinder_Eval(float n, float p, float polyB_C[5], int max_iter);
 
+float qSplineIDistEval_NewtonRootFinder_Eval(float n, float p, float curveX[3], float polyB_C[5], int max_iter);
+float qSplineD1_NewtonRootFinder_Eval(float n, float p, float curveX[3], float polyB_C[5], int max_iter);
+float qSplineD2_NewtonRootFinder_Eval(float n, float p, float curveX[3], float polyB_C[5], int max_iter);
+
 float BisectionMethodPolyD0(float c[5], float n, float p, int max_iter);
 float BisectionMethodPolyD1(float c[5], float n, float p, int max_iter);
 float NewtonsMethodPolyD0(float c[5], float x, int max_iter);
 float NewtonsMethodPolyD1(float c[5], float x, int max_iter);
 float NewtonsMethodPolyD0(float c[5], float x, float epsilon, int max_iter);
 float NewtonsMethodPolyD1(float c[5], float x, float epsilon, int max_iter);
+
+void FindRootsPolyD0(float poly_C[N1], float x_i[5], int m_i[5], out float x_o[6], out int m_o[6]);
+void FindRootsPolyD1(float poly_C[N1], float x_i[4], int m_i[4], out float x_o[5], out int m_o[5]);
 //***** end interface of spine_tube_tools.glsl **************************
 
 struct QTubeNode {
@@ -108,46 +115,6 @@ vec3 EvalCSpline(vec3 p1, vec3 t1, vec3 p2, vec3 t2, float l) {
 	vec3 b2 = mix(a2, a3, l);
 	return mix(b1, b2, l);
 }
-
-#define DEF_FINDROOTS(N, D)																			  \
-void FindRoots##D(float poly_C[N1], float x_i[N], int m_i[N], out float x_o[N+1], out int m_o[N+1]) { \
-    m_o[0] = m_o[N] = 1;																			  \
-	x_o[0] = x_i[0];                                                                                  \
-	uint j = 0;                                                                                       \
-	float x_l = x_i[0];                                                                               \
-	float y_l = EvalPoly##D(x_l, poly_C);                                                             \
-	float sy_l = sign(y_l);                                                                           \
-	for(uint i = 1; i < N; ++i) {                                                                     \
-		float x_r = x_i[i];                                                                           \
-		float y_r = EvalPoly##D(x_r, poly_C);                                                         \
-		float sy_r = sign(y_r);                                                                       \
-		x_o[i] = 0.0;                                                                                 \
-		if(m_i[i] == 1) {                                                                             \
-			if(sy_l != sy_r) {                                                                        \
-				float n = x_l;                                                                        \
-				float p = x_r;                                                                        \
-				float ny = EvalPoly##D(n, poly_C);                                                    \
-				float py = EvalPoly##D(p, poly_C);                                                    \
-				if(ny > 0.0 && py < 0.0) {                                                            \
-					float t = n;                                                                      \
-					n = p; p = t;                                                                     \
-				}                                                                                     \
-				x_o[i] = BisectionMethodPoly##D(poly_C, n, p, 10);									  \
-				m_o[i] = 1;                                                                           \
-			} else {			                                                                      \
-				m_o[i] = 0;                                                                           \
-			}                                                                                         \
-			x_l = x_r;                                                                                \
-			y_l = y_r;                                                                                \
-			sy_l = sy_r;                                                                              \
-		} else {                                                                                      \
-			m_o[i] = 0;                                                                               \
-		}                                                                                             \
-	}                                                                                                 \
-	x_o[N] = x_i[N - 1];                                                                              \
-}
-DEF_FINDROOTS(4, D1)
-DEF_FINDROOTS(5, D0)
 
 //-----------------------------------------------------------//
 // Produces an orthogonal vector to v. Doesn’t require the input
@@ -220,13 +187,15 @@ Hit EvalSplineISect(vec3 dir, vec3 s, vec3 h, vec3 t, float rs, float rh, float 
 
 	float x3[5];
 	int m3[5];
-	FindRootsD1(polyB_C, x2, m2, x3, m3);
+	//FindRootsD1(polyB_C, x2, m2, x3, m3);
+	FindRootsPolyD1(polyB_C, x2, m2, x3, m3);
 
 	float x4[6];
 	int m4[6];
 	
 	{		
-		FindRootsD0(polyB_C, x3, m3, x4, m4);
+		//FindRootsD0(polyB_C, x3, m3, x4, m4);
+		FindRootsPolyD0(polyB_C, x3, m3, x4, m4);
 
 		int rootType = 0;
 		int rn = 0;

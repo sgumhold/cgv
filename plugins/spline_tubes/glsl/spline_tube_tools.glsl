@@ -36,17 +36,22 @@ float EvalPolyD1(float x, float c[5]);
 float EvalPolyD2(float x, float c[5]);
 float EvalPolyD3(float x, float c[5]);
 
-// Evaluate a quadratic spline(and it's first, second and third dervatives) at parameter t
+// Evaluate a quadratic spline(and its first, second and third dervatives) at parameter t
 float qSplineIDistEval(float t, float curveX[3], float polyB_C[5]);
 float qSplineD1Eval(float t, float curveX[3], float polyB_C[5]);
 float qSplineD2Eval(float t, float curveX[3], float polyB_C[5]);
 float qSplineD3Eval(float t, float polyB_C[5]);
 
-// Bisection method for finding roots for 'f(t)' and it's first, second, and third derivatives
+// Bisection method for finding roots for 'f(t)' and its first, second, and third derivatives
 float qSplineIDistEval_BinRootFinder_Eval(float n, float p, float curveX[3], float polyB_C[5], int max_iter);
 float qSplineD1_BinRootFinder_Eval(float n, float p, float curveX[3], float polyB_C[5], int max_iter);
 float qSplineD2_BinRootFinder_Eval(float n, float p, float curveX[3], float polyB_C[5], int max_iter);
 float qSplineD3_BinRootFinder_Eval(float n, float p, float polyB_C[5], int max_iter);
+
+// Newtons method for finding roots for 'f(t)' and its first and second derivatives
+float qSplineIDistEval_NewtonRootFinder_Eval(float n, float p, float curveX[3], float polyB_C[5], int max_iter);
+float qSplineD1_NewtonRootFinder_Eval(float n, float p, float curveX[3], float polyB_C[5], int max_iter);
+float qSplineD2_NewtonRootFinder_Eval(float n, float p, float curveX[3], float polyB_C[5], int max_iter);
 
 // Bisection method for finding roots of a polynomial
 // c: coefficients of the polynomial
@@ -66,6 +71,10 @@ float NewtonsMethodPolyD1(float c[5], float x, int max_iter);
 // epsilon: maximum error
 float NewtonsMethodPolyD0(float c[5], float x, float epsilon, int max_iter);
 float NewtonsMethodPolyD1(float c[5], float x, float epsilon, int max_iter);
+
+// Find the roots of a polynomial given the roots of its derivative (in order words, given its extrema)
+void FindRootsPolyD0(float poly_C[5], float x_i[5], int m_i[5], out float x_o[6], out int m_o[6]);
+void FindRootsPolyD1(float poly_C[5], float x_i[4], int m_i[4], out float x_o[5], out int m_o[5]);
 ///***** end interface of curve_tools.glsl ************************************/
 
 
@@ -217,6 +226,44 @@ float qSplineD3_BinRootFinder_Eval(float n, float p, float polyB_C[5], int max_i
 	return (n + p) * 0.5;
 }
 
+float qSplineIDistEval_NewtonRootFinder_Eval(float n, float p, float curveX[3], float polyB_C[5], int max_iter) {
+	if(qSplineIDistEval(n, curveX, polyB_C) > 0.0) return n;
+	if(qSplineIDistEval(p, curveX, polyB_C) < 0.0) return p;
+	
+	float x0 = (n + p) * 0.5;
+    for (int i = 0; i < max_iter; i++) {
+        float f = qSplineIDistEval(x0, curveX, polyB_C);
+        float df = qSplineD1Eval(x0, curveX, polyB_C);
+        x0 -= f / df;
+    }
+    return x0;
+}
+
+float qSplineD1_NewtonRootFinder_Eval(float n, float p, float curveX[3], float polyB_C[5], int max_iter) {
+	if(qSplineD1Eval(n, curveX, polyB_C) > 0.0) return n;
+	if(qSplineD1Eval(p, curveX, polyB_C) < 0.0) return p;
+	
+	float x0 = (n + p) * 0.5;
+    for (int i = 0; i < max_iter; i++) {
+        float f = qSplineD1Eval(x0, curveX, polyB_C);
+        float df = qSplineD2Eval(x0, curveX, polyB_C);
+        x0 -= f / df;
+    }
+    return x0;
+}
+float qSplineD2_NewtonRootFinder_Eval(float n, float p, float curveX[3], float polyB_C[5], int max_iter) {
+	if(qSplineD2Eval(n, curveX, polyB_C) > 0.0) return n;
+	if(qSplineD2Eval(p, curveX, polyB_C) < 0.0) return p;
+	
+	float x0 = (n + p) * 0.5;
+    for (int i = 0; i < max_iter; i++) {
+        float f = qSplineD2Eval(x0, curveX, polyB_C);
+        float df = qSplineD3Eval(x0, polyB_C);
+        x0 -= f / df;
+    }
+    return x0;
+}
+
 float BisectionMethodPolyD0(float c[5], float n, float p, int max_iter) {
     for(int j = 0; j < max_iter; ++j) {                                           
 		float m = (n + p) * 0.5;                                                          
@@ -279,3 +326,74 @@ float NewtonsMethodPolyD1(float c[5], float x, float epsilon, int max_iter) {
     return x0;
 }
 
+void FindRootsPolyD0(float poly_C[5], float x_i[5], int m_i[5], out float x_o[6], out int m_o[6]) {
+	m_o[0] = m_o[5] = 1;																			  
+	x_o[0] = x_i[0];                                                                                  
+	float x_l = x_i[0];                                                                               
+	float y_l = EvalPolyD0(x_l, poly_C);                                                             
+	float sy_l = sign(y_l);                                                                           
+	for(int i = 1; i < 5; ++i) {                                                                     
+		float x_r = x_i[i];                                                                           
+		float y_r = EvalPolyD0(x_r, poly_C);                                                         
+		float sy_r = sign(y_r);                                                                       
+		x_o[i] = 0.0;                                                                                 
+		if(m_i[i] == 1) {                                                                             
+			if(sy_l != sy_r) {                                                                        
+				float n = x_l;                                                                        
+				float p = x_r;                                                                        
+				float ny = EvalPolyD0(n, poly_C);                                                    
+				float py = EvalPolyD0(p, poly_C);                                                    
+				if(ny > 0.0 && py < 0.0) {                                                            
+					float t = n;                                                                      
+					n = p; p = t;                                                                     
+				}                                                                                     
+				x_o[i] = BisectionMethodPolyD0(poly_C, n, p, 10);								  	  
+				m_o[i] = 1;                                                                           
+			} else {			                                                                      
+				m_o[i] = 0;                                                                           
+			}                                                                                         
+			x_l = x_r;                                                                                
+			y_l = y_r;                                                                                
+			sy_l = sy_r;                                                                              
+		} else {                                                                                      
+			m_o[i] = 0;                                                                               
+		}                                                                                             
+	}                                                                                                 
+	x_o[5] = x_i[4];                                                                              
+}
+
+void FindRootsPolyD1(float poly_C[5], float x_i[4], int m_i[4], out float x_o[5], out int m_o[5]) {
+	m_o[0] = m_o[4] = 1;																			  
+	x_o[0] = x_i[0];                                                                                      
+	float x_l = x_i[0];                                                                               
+	float y_l = EvalPolyD1(x_l, poly_C);                                                             
+	float sy_l = sign(y_l);                                                                           
+	for(int i = 1; i < 4; ++i) {                                                                     
+		float x_r = x_i[i];                                                                           
+		float y_r = EvalPolyD1(x_r, poly_C);                                                         
+		float sy_r = sign(y_r);                                                                       
+		x_o[i] = 0.0;                                                                                 
+		if(m_i[i] == 1) {                                                                             
+			if(sy_l != sy_r) {                                                                        
+				float n = x_l;                                                                        
+				float p = x_r;                                                                        
+				float ny = EvalPolyD1(n, poly_C);                                                    
+				float py = EvalPolyD1(p, poly_C);                                                    
+				if(ny > 0.0 && py < 0.0) {                                                            
+					float t = n;                                                                      
+					n = p; p = t;                                                                     
+				}                                                                                     
+				x_o[i] = BisectionMethodPolyD1(poly_C, n, p, 10);								  	  
+				m_o[i] = 1;                                                                           
+			} else {			                                                                      
+				m_o[i] = 0;                                                                           
+			}                                                                                         
+			x_l = x_r;                                                                                
+			y_l = y_r;                                                                                
+			sy_l = sy_r;                                                                              
+		} else {                                                                                      
+			m_o[i] = 0;                                                                               
+		}                                                                                             
+	}                                                                                                 
+	x_o[4] = x_i[3];
+}
