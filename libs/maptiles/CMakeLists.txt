@@ -4,12 +4,10 @@ file(GLOB HEADERS RELATIVE "${CMAKE_CURRENT_LIST_DIR}" "*.h")
 file(GLOB_RECURSE SHADERS RELATIVE "${CMAKE_CURRENT_LIST_DIR}" "*.gl*")
 
 set(ADDITIONAL_INCLUDES
-	"${CMAKE_CURRENT_LIST_DIR}/3rd/cpp-httplib"
-	"${CMAKE_CURRENT_LIST_DIR}/3rd/earcut/include"
-	"${CMAKE_CURRENT_LIST_DIR}/3rd/glm"
-	"${CMAKE_CURRENT_LIST_DIR}/3rd/stb_image"
-	"${CMAKE_CURRENT_LIST_DIR}/3rd/WGS84toCartesian"
-	"${CGV_DIR}/3rd/cpp-httplib"
+	"$<BUILD_INTERFACE:${CMAKE_CURRENT_LIST_DIR}/3rd/earcut/include>$<INSTALL_INTERFACE:3rd/earcut/include>"
+	"$<BUILD_INTERFACE:${CMAKE_CURRENT_LIST_DIR}/3rd/glm>$<INSTALL_INTERFACE:3rd/glm>"
+	"$<BUILD_INTERFACE:${CMAKE_CURRENT_LIST_DIR}/3rd/stb_image>$<INSTALL_INTERFACE:3rd/stb_image>"
+	"$<BUILD_INTERFACE:${CMAKE_CURRENT_LIST_DIR}/3rd/WGS84toCartesian>$<INSTALL_INTERFACE:3rd/WGS84toCartesian>"
 )
 
 cgv_add_target(maptiles
@@ -17,7 +15,7 @@ cgv_add_target(maptiles
 	SOURCES ${SOURCES}
 	HEADERS ${HEADERS}
 
-	DEPENDENCIES xml zlib cgv_gl
+	DEPENDENCIES xml zlib httplib cgv_gl
 
 	ADDITIONAL_INCLUDE_PATHS ${ADDITIONAL_INCLUDES}
 
