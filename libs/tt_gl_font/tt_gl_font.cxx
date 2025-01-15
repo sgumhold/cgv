@@ -529,6 +529,7 @@ namespace cgv {
 	}
 	box2 tt_gl_font_face::compute_box(const std::string& text, float scale, bool flip_y) const
 	{
+		const_cast<tt_gl_font_face*>(this)->ensure_bitmap();
 		box2 extent;
 		vec2 p(0.0f);
 		float y_scale = !flip_y ? -1.0f : 1.0f;
