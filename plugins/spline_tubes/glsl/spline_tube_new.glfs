@@ -28,6 +28,10 @@ void finish_fragment(vec4 color, float depth);
 vec3 solve_quadratic (const vec3 monomial);
 //***** end interface of curve_tools.glsl *******************************
 
+//***** begin interace of rcc.glsl **************************************
+mat4 rcc_calc_model_transform_x (const vec3 orig, const vec3 dir);
+//***** end interface of rcc.glsl **************************************
+
 //***** begin interface of spline_tube_tools.glsl ***********************
 float Pow2(float x);
 float Pow3(float x);
@@ -43,6 +47,9 @@ float EvalPolyD0(float x, float c[5]);
 float EvalPolyD1(float x, float c[5]);
 float EvalPolyD2(float x, float c[5]);
 float EvalPolyD3(float x, float c[5]);
+
+vec3 qSplineEval(float l, float curveX[3], float curveY[3], float curveZ[3]);
+vec3 EvalCSpline(vec3 p1, vec3 t1, vec3 p2, vec3 t2, float l);
 
 float qSplineIDistEval(float t, float curveX[3], float polyB_C[5]);
 float qSplineD1Eval(float t, float curveX[3], float polyB_C[5]);
@@ -65,8 +72,8 @@ float NewtonsMethodPolyD1(float c[5], float x, int max_iter);
 float NewtonsMethodPolyD0(float c[5], float x, float epsilon, int max_iter);
 float NewtonsMethodPolyD1(float c[5], float x, float epsilon, int max_iter);
 
-void FindRootsPolyD0(float poly_C[N1], float x_i[5], int m_i[5], out float x_o[6], out int m_o[6]);
-void FindRootsPolyD1(float poly_C[N1], float x_i[4], int m_i[4], out float x_o[5], out int m_o[5]);
+void FindRootsPolyD0(float poly_C[N1], float x_i[5], int m_i[5], out float x_o[6], out int m_o[6], int max_iter);
+void FindRootsPolyD1(float poly_C[N1], float x_i[4], int m_i[4], out float x_o[5], out int m_o[5], int max_iter);
 //***** end interface of spine_tube_tools.glsl **************************
 
 struct QTubeNode {
@@ -105,39 +112,14 @@ vec2 SolveQuadratic(float a, float b, float c) {
     }
 }
 
-vec3 EvalCSpline(vec3 p1, vec3 t1, vec3 p2, vec3 t2, float l) {
-	vec3 h1 = p1 + t1 / 3.0;
-	vec3 h2 = p2 - t2 / 3.0;
-	vec3 a1 = mix(p1, h1, l);
-	vec3 a2 = mix(h1, h2, l);
-	vec3 a3 = mix(h2, p2, l);
-	vec3 b1 = mix(a1, a2, l);
-	vec3 b2 = mix(a2, a3, l);
-	return mix(b1, b2, l);
-}
-
-//-----------------------------------------------------------//
-// Produces an orthogonal vector to v. Doesn’t require the input
-// to be normalized and doesn’t normalise the output. 
-// source: http://lolengine.net/blog/2013/09/21/picking-orthogonal-vector-combing-coconuts
-vec3 GetOrthoVec(vec3 v) {
-    return abs(v.x) > abs(v.z) ? vec3(-v.y, v.x, 0.0f) : vec3(0.0f, -v.z, v.y);
-}
-
-vec3 qSplineEval(float l, float curveX[N0], float curveY[N0], float curveZ[N0]) {
-	return vec3(EvalPolyD0(l, curveX), EvalPolyD0(l, curveY), EvalPolyD0(l, curveZ));
-}
-
 Hit EvalSplineISect(vec3 dir, vec3 s, vec3 h, vec3 t, float rs, float rh, float rt) {
 	Hit hit;
 	hit.l = 0.0;
 	hit.t = POS_INF;
 	hit.normal = vec3(0.0);
 	
-	mat3 RM;
-	RM[0] = dir;
-	RM[1] = normalize(GetOrthoVec(dir));
-	RM[2] = cross(dir, RM[1]);
+	// get the rotation matrix for ray centric coordinates
+	mat3 RM = mat3(rcc_calc_model_transform_x(vec3(0.0, 0.0, 0.0), dir));
 	
 	s *= RM;
 	t *= RM;
@@ -173,9 +155,8 @@ Hit EvalSplineISect(vec3 dir, vec3 s, vec3 h, vec3 t, float rs, float rh, float 
 	float x2[4];
 	int m2[4];
 	
+	
 	vec2 r = SolveQuadratic(polyB_C[4] * 12.0, polyB_C[3] * 6.0, polyB_C[2] * 2.0);
-	//vec3 result = solve_quadratic(vec3(polyB_C[4] * 12.0, polyB_C[3] * 6.0, polyB_C[2] * 2.0));
-	//vec2 r = result.yz;
 	x2[0] = 0.0;
 	x2[1] = r.x;
 	x2[2] = r.y;
@@ -184,33 +165,66 @@ Hit EvalSplineISect(vec3 dir, vec3 s, vec3 h, vec3 t, float rs, float rh, float 
 	m2[1] = (x2[1] <= 0.0 || x2[1] >= 1.0) ? 0 : 1;
 	m2[2] = (x2[2] <= 0.0 || x2[2] >= 1.0) ? 0 : 1;
 	m2[3] = 1;
+	
+
+	/*
+	vec3 result = solve_quadratic(vec3(polyB_C[4] * 12.0, polyB_C[3] * 6.0, polyB_C[2] * 2.0));
+	vec2 r = result.yz;
+	m2[0] = 1;
+	x2[0] = 0.0;
+
+	m2[1] = 0;
+	m2[2] = 0;
+
+	m2[3] = 1;
+	x2[3] = 1.0;
+
+	if(result.x == 1)
+	{	m2[1] = 1;
+		x2[1] = r.x;
+	}
+	else if(result.x == 2)
+	{	
+		m2[1] = 1;
+		m2[2] = 1;
+		r = r.x < r.y ? r : r.yx;
+		x2[1] = r.x;
+		x2[2] = r.y;
+	}
+	*/
 
 	float x3[5];
 	int m3[5];
-	//FindRootsD1(polyB_C, x2, m2, x3, m3);
-	FindRootsPolyD1(polyB_C, x2, m2, x3, m3);
+	FindRootsPolyD1(polyB_C, x2, m2, x3, m3, ITERATION_COUNT);
 
 	float x4[6];
 	int m4[6];
 	
 	{		
-		//FindRootsD0(polyB_C, x3, m3, x4, m4);
-		FindRootsPolyD0(polyB_C, x3, m3, x4, m4);
+		FindRootsPolyD0(polyB_C, x3, m3, x4, m4, ITERATION_COUNT);
 
+		// let t0 = 0, t[1,2,3,4] = x4[1,2,3,4] and t5 = 1.0
+		// rootTypes:
+		// 0 => no real roots, or only one of t0, t1, t2, t3 are real
+		// 10 => exactly two roots are real and they are consecutive, eg: (t0, t1), (t3, t4) ...
+		// 15 => only t4 is real
+		// 20 => 3 or more real roots
+		// 30 => exactly two real roots but they are not consecutive, eg: (t0, t3), (t1, t3) ...
 		int rootType = 0;
 		int rn = 0;
 		
+		// check whether we have a real root at t=0
 		if(EvalPolyD0(0.0, polyB_C) >= 0.0) {
 								  roots.x =  0; rn = 1; rootType = 15;
 		}
-		if(m4[1] == 1) {
-			if(rn == 0) 		{ roots.x = x4[1]; rn = 1; rootType = 15;						}
+		if(m4[1] == 1) {																			
+			if(rn == 0) 		{ roots.x = x4[1]; rn = 1; rootType = 15;						}	
 			else				{ roots.y = x4[1]; rn = 2; rootType = 10; 						}	
-		} else if(rootType == 15) {
+		} else if(rootType == 15) {												
 			rootType = 0;
 		}
-		if(m4[2] == 1) {
-			if     (rn == 0) 	{ roots.x = x4[2]; rn = 1; rootType = 15;						}
+		if(m4[2] == 1) {														
+			if     (rn == 0) 	{ roots.x = x4[2]; rn = 1; rootType = 15;						}	
 			else if(rn == 1)	{ roots.y = x4[2]; rn = 2; rootType = rootType == 0 ? 30 : 10;	}	
 			else 				{ roots.z = x4[2]; rn = 3; rootType = 20; 						}	
 		} else if(rootType == 15) {
@@ -236,24 +250,30 @@ Hit EvalSplineISect(vec3 dir, vec3 s, vec3 h, vec3 t, float rs, float rh, float 
 			if     (rn == 1)	{ roots.y =   1.0; rn = 1; rootType = rootType == 0 ? 30 : 10;	}
 			else				{ roots.w =   1.0; rn = 2; rootType = 20; 						}	
 		}
-		if(rootType == 10 || rootType == 15) rootType = 30;
+		if(rootType == 10 || rootType == 15) rootType = 30;		// dont know why 15 needs to be here
 		//region finalize
-		if(rootType > 0) {
-			if(rootType == 30) {
-				float rootD3 = qSplineD3_BinRootFinder_Eval(roots.x, roots.y, polyB_C, 10);
+		if(rootType > 0) {										// rootType = 0 implies there is no real interval
+			if(rootType == 30) {								// rootType = 30 (and 10) implies exactly 2 real roots or one real interval
+				float rootD3 = qSplineD3_BinRootFinder_Eval(roots.x, roots.y, polyB_C, ITERATION_COUNT);
 				
 				vec2 rootsD2;
-				rootsD2.x = qSplineD2_BinRootFinder_Eval(rootD3, roots.x, curveX, polyB_C, 10);
-				rootsD2.y = qSplineD2_BinRootFinder_Eval(rootD3, roots.y, curveX, polyB_C, 10);
+				rootsD2.x = qSplineD2_BinRootFinder_Eval(rootD3, roots.x, curveX, polyB_C, ITERATION_COUNT);
+				//rootsD2.x = qSplineD2_NewtonRootFinder_Eval(rootD3, roots.x, curveX, polyB_C, 4);
+				rootsD2.y = qSplineD2_BinRootFinder_Eval(rootD3, roots.y, curveX, polyB_C, ITERATION_COUNT);
+				//rootsD2.y = qSplineD2_NewtonRootFinder_Eval(rootD3, roots.y, curveX, polyB_C, 4);
 				
-				l1 = qSplineD1_BinRootFinder_Eval(roots.x, rootsD2.x, curveX, polyB_C, 10);
-				l2 = qSplineD1_BinRootFinder_Eval(rootsD2.y, roots.y, curveX, polyB_C, 10);
-			} else {
-				l1 = qSplineD1_BinRootFinder_Eval(roots.x, roots.y, curveX, polyB_C, 10);
+				l1 = qSplineD1_BinRootFinder_Eval(roots.x, rootsD2.x, curveX, polyB_C, ITERATION_COUNT);
+				//l1 = qSplineD1_NewtonRootFinder_Eval(roots.x, rootsD2.x, curveX, polyB_C, 4);
+				l2 = qSplineD1_BinRootFinder_Eval(rootsD2.y, roots.y, curveX, polyB_C, ITERATION_COUNT);
+				//l2 = qSplineD1_NewtonRootFinder_Eval(rootsD2.y, roots.y, curveX, polyB_C, 4);
+			} else {											// rootType = 20 implies more than 2 real roots
+				l1 = qSplineD1_BinRootFinder_Eval(roots.x, roots.y, curveX, polyB_C, ITERATION_COUNT);
+				//l1 = qSplineD1_NewtonRootFinder_Eval(roots.x, roots.y, curveX, polyB_C, 4);
 				
-				if(rootType == 20)
-					l2 = qSplineD1_BinRootFinder_Eval(roots.z, roots.w, curveX, polyB_C, 10);
-				else
+				if(rootType == 20) {
+					l2 = qSplineD1_BinRootFinder_Eval(roots.z, roots.w, curveX, polyB_C, ITERATION_COUNT);
+					//l2 = qSplineD1_NewtonRootFinder_Eval(roots.z, roots.w, curveX, polyB_C, 4);
+				} else
 					l2 = l1;
 			}
 			float t1 = qSplineIDistEval(l1, curveX, polyB_C);
