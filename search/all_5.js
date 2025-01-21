@@ -72,7 +72,7 @@ var searchData=
   ['add_5ftask_69',['add_task',['../classcgv_1_1render_1_1performance__monitor.html#aa642932d842a04c64eba7a7f06f49b39',1,'cgv::render::performance_monitor']]],
   ['add_5ftext_70',['add_text',['../classcgv_1_1gui_1_1help__menu__entry.html#a6697c7f387314fd3ee5a231a54a51215',1,'cgv::gui::help_menu_entry']]],
   ['add_5ftexture_5freference_71',['add_texture_reference',['../classcgv_1_1render_1_1textured__material.html#adf89736c38a1640923a915bae186c1e7',1,'cgv::render::textured_material']]],
-  ['add_5ftrackable_5fspheres_72',['add_trackable_spheres',['../classvr__view__interactor.html#ad109569973ab13b4dce93f131326e6ad',1,'vr_view_interactor']]],
+  ['add_5ftrackable_5fspheres_72',['add_trackable_spheres',['../classvr__view__interactor.html#a296ecef53192f92d2d0910466b16f01f',1,'vr_view_interactor']]],
   ['add_5ftree_5fnode_73',['add_tree_node',['../classcgv_1_1gui_1_1provider.html#a71d52460406852908aeaceb573cbd00e',1,'cgv::gui::provider']]],
   ['add_5fvertex_74',['add_vertex',['../classcgv_1_1math_1_1adjacency__list.html#ae36a7f8efe0c1233662a5a82ff20f700',1,'cgv::math::adjacency_list']]],
   ['add_5fview_75',['add_view',['../classcgv_1_1gui_1_1gui__driver.html#a9fef9c3d75c26339ad619de4ae74d6bf',1,'cgv::gui::gui_driver::add_view()'],['../classcgv_1_1gui_1_1gui__group.html#ab9598efe7773796eae770e699db50e27',1,'cgv::gui::gui_group::add_view()'],['../classcgv_1_1gui_1_1provider.html#aafec0a837d2dc9ffe66a75f7809901dd',1,'cgv::gui::provider::add_view(const std::string &amp;label, const T &amp;value, const std::string &amp;gui_type=&quot;&quot;, const std::string &amp;options=&quot;&quot;, const std::string &amp;align=&quot;\n&quot;)']]],

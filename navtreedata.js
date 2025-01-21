@@ -151,7 +151,7 @@ var NAVTREEINDEX =
 "classcgv_1_1render_1_1texture.html#acba0f381988a48e15d99da6ef0507736",
 "classcgv_1_1render_1_1volume__renderer.html#aa410b3cecee0dcb292fe7e816f9d836e",
 "classvr_1_1vr__camera.html#a395148da99f5bb4c15bb096fd5cb1d65",
-"classvr__view__interactor.html#acbbaff159de92b1d9b3a1c35954c6dc6",
+"classvr__view__interactor.html#ac213fd235fb4f61609acb0c6a0e81109",
 "functions_vars_p.html",
 "namespacecgv.html#aa5206a03879af3fe8eaf6f99d40a905d",
 "namespacecgv_1_1gui.html#a8c92a55911d18de7ab802b3be6d65df1a7958f62dea5d22d7bb2daf4f277be97e",

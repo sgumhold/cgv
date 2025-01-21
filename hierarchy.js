@@ -451,6 +451,8 @@ var hierarchy =
     [ "cgv::math::fvec< T, N >", "classcgv_1_1math_1_1fvec.html", [
       [ "cgv::math::fmat< volume::coord_type, 3, 3 >", "classcgv_1_1math_1_1fmat.html", null ],
       [ "cgv::math::fmat< float, 4, 4 >", "classcgv_1_1math_1_1fmat.html", null ],
+      [ "cgv::math::fmat< float, 3, 3 >", "classcgv_1_1math_1_1fmat.html", null ],
+      [ "cgv::math::fmat< float, 3, 4 >", "classcgv_1_1math_1_1fmat.html", null ],
       [ "cgv::math::quaternion< float >", "classcgv_1_1math_1_1quaternion.html", null ]
     ] ],
     [ "cgv::math::interpolator< T >", "classcgv_1_1math_1_1interpolator.html", [
