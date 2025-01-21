@@ -20,9 +20,6 @@ namespace vr {
 	public:
 		template<class T>
 		using container = std::vector<T, std::allocator<T>>;
-		using vec2 = cgv::vec2;
-		using vecn = cgv::vecn;
-		using mat34 = cgv::mat34;
 		enum StorageMode {
 			SM_IN_MEMORY = 1,
 			SM_OSTREAM = 2,
@@ -42,12 +39,12 @@ namespace vr {
 
 		container<double> time_stamp;
 
-		container<mat34> hmd_pose;
+		container<cgv::mat3x4> hmd_pose;
 		container<uint8_t> hmd_status;
 
-		container<vecn> controller_axes[max_nr_controllers];
-		container<mat34> controller_pose[max_nr_controllers];
-		container<vec2> controller_vibration[max_nr_controllers];
+		container<cgv::vecn> controller_axes[max_nr_controllers];
+		container<cgv::mat3x4> controller_pose[max_nr_controllers];
+		container<cgv::vec2> controller_vibration[max_nr_controllers];
 		container<unsigned> controller_button_flags[max_nr_controllers];
 		container<uint8_t> controller_status[max_nr_controllers];
 	private:
