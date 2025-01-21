@@ -1,6 +1,6 @@
 var classvr__emulated__kit =
 [
-    [ "construct_pos_matrix", "classvr__emulated__kit.html#abaaaabf8ea2a27a46c1968598cc9554b", null ],
+    [ "construct_pos_matrix", "classvr__emulated__kit.html#a6bfbca740ffc1cd0bf9fa3e543a60e02", null ],
     [ "put_eye_to_head_matrix", "classvr__emulated__kit.html#af6d4888024027830848c571d2b583937", null ],
     [ "put_projection_matrix", "classvr__emulated__kit.html#a6f76ffc10e82c7cbd6768facccad7037", null ],
     [ "query_state_impl", "classvr__emulated__kit.html#aaba8c76e93d49c8e41e6d664da69f9fa", null ],
