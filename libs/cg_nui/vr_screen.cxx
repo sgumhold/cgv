@@ -206,8 +206,8 @@ void vr_screen::placement_trigger(const cgv::gui::vr_key_event& vrke, cgv::nui::
 	const auto& ctrl_state = vr_state.controller[ci];
 	if (vrke.get_action() == cgv::gui::KA_PRESS) {
 		start_placement_pose = cgv::math::pose_concat(
-			cgv::math::pose_inverse(reinterpret_cast<const mat34&>(vr_state.hmd.pose[0])),
-			reinterpret_cast<const mat34&>(ctrl_state.pose[0])
+			cgv::math::pose_inverse(reinterpret_cast<const mat3x4&>(vr_state.hmd.pose[0])),
+			reinterpret_cast<const mat3x4&>(ctrl_state.pose[0])
 		);
 		start_placement_time = vrke.get_time();
 		if (initial_placement) {
@@ -352,11 +352,11 @@ bool vr_screen::place_screen(const vr::vr_kit_state& state)
 	if (state.hmd.status != vr::VRS_TRACKED)
 		return false;
 
-	const mat34& hmd_pose = reinterpret_cast<const mat34&>(state.hmd.pose[0]);
+	const mat3x4& hmd_pose = reinterpret_cast<const mat3x4&>(state.hmd.pose[0]);
 	if (state.controller[hid_id.index].status == vr::VRS_TRACKED) {
-		const mat34& hand_pose = cgv::math::pose_concat(
-			cgv::math::pose_inverse(reinterpret_cast<const mat34&>(hmd_pose[0])),
-			reinterpret_cast<const mat34&>(state.controller[hid_id.index].pose[0])
+		const mat3x4& hand_pose = cgv::math::pose_concat(
+			cgv::math::pose_inverse(reinterpret_cast<const mat3x4&>(hmd_pose[0])),
+			reinterpret_cast<const mat3x4&>(state.controller[hid_id.index].pose[0])
 		);
 		vec3 z = hand_pose.col(2);
 		vec3 z0 = start_placement_pose.col(2);
