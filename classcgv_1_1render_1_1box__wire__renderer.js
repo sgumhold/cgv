@@ -1,6 +1,5 @@
 var classcgv_1_1render_1_1box__wire__renderer =
 [
-    [ "box_wire_renderer", "classcgv_1_1render_1_1box__wire__renderer.html#aba2aad1c4cf833c37acd3b1275904a6d", null ],
     [ "build_shader_program", "classcgv_1_1render_1_1box__wire__renderer.html#a88fff15e3e80e3e1f4b01bca43540a14", null ],
     [ "create_render_style", "classcgv_1_1render_1_1box__wire__renderer.html#aba9a748083c906a1b037ddc6f99fd7d2", null ],
     [ "disable", "classcgv_1_1render_1_1box__wire__renderer.html#a546adbcfe84431e11661bb30142fa9e2", null ],
@@ -22,7 +21,6 @@ var classcgv_1_1render_1_1box__wire__renderer =
     [ "set_rotation_array", "classcgv_1_1render_1_1box__wire__renderer.html#ab838b18b683f5f3851494feaec1baaf1", null ],
     [ "set_translation_array", "classcgv_1_1render_1_1box__wire__renderer.html#a76d03f46e7e470f16f7e6e2029bebf64", null ],
     [ "set_translation_array", "classcgv_1_1render_1_1box__wire__renderer.html#ab150e2b82ed24aa14c55073f6df3ba32", null ],
-    [ "has_extents", "classcgv_1_1render_1_1box__wire__renderer.html#af759fdfcf7cd140d3e53f42eda58fab0", null ],
     [ "has_rotations", "classcgv_1_1render_1_1box__wire__renderer.html#aaafff249b8b17e447b0c21b6d6ddc45e", null ],
     [ "has_translations", "classcgv_1_1render_1_1box__wire__renderer.html#a7574b0ddcdbac8ce8570e34d02a3fa2e", null ],
     [ "position_is_center", "classcgv_1_1render_1_1box__wire__renderer.html#ac3b85dc5947d2e53fe7bd751cfc45ce8", null ]

@@ -4,7 +4,7 @@ var classcgv_1_1gui_1_1gui__driver =
     [ "add_control", "classcgv_1_1gui_1_1gui__driver.html#a42fef760019901c3afea6d82c3716bb3", null ],
     [ "add_decorator", "classcgv_1_1gui_1_1gui__driver.html#af59acc7ba00ebf1610ef12e3c0a6dbf0", null ],
     [ "add_group", "classcgv_1_1gui_1_1gui__driver.html#adf7021d86bffbfb66f443dbf1689aa90", null ],
-    [ "add_menu_bool_control", "classcgv_1_1gui_1_1gui__driver.html#a5be7e0c5eb097bb3dca8f551a9da1ea5", null ],
+    [ "add_menu_bool_control", "classcgv_1_1gui_1_1gui__driver.html#a08af8318ca0945de9ce4d7ce5d89484c", null ],
     [ "add_menu_button", "classcgv_1_1gui_1_1gui__driver.html#a67a8ae92d9069b20c82513c0c78006c5", null ],
     [ "add_menu_separator", "classcgv_1_1gui_1_1gui__driver.html#adbd67b04f9f297002affce8524a027a4", null ],
     [ "add_view", "classcgv_1_1gui_1_1gui__driver.html#a9fef9c3d75c26339ad619de4ae74d6bf", null ],

@@ -7,7 +7,7 @@ var classcgv_1_1math_1_1sparse__les =
     [ "get_x_entry", "classcgv_1_1math_1_1sparse__les.html#a3153cbd6ff12c89650dd4ca09ed1b9ff", null ],
     [ "get_x_entry", "classcgv_1_1math_1_1sparse__les.html#adbec19807f7cd510050e89838ccbfb95", null ],
     [ "ref_b_entry", "classcgv_1_1math_1_1sparse__les.html#a760674e8ce74d59d46edbc7da59cdb73", null ],
-    [ "ref_b_entry", "classcgv_1_1math_1_1sparse__les.html#a117b5f5f728bd5bdd2edc856ed9e8bd6", null ],
+    [ "ref_b_entry", "classcgv_1_1math_1_1sparse__les.html#ade0342572cc77ca57d99095b45427e35", null ],
     [ "register_solver_factory", "classcgv_1_1math_1_1sparse__les.html#a9df35119253fcc49034f64a871de1ed3", null ],
     [ "set_b_entry", "classcgv_1_1math_1_1sparse__les.html#aa6a96143e37efa27a9baed685adcfd5a", null ],
     [ "set_b_entry", "classcgv_1_1math_1_1sparse__les.html#acee1d2283d9aa2e7ba639e33bf53582c", null ],

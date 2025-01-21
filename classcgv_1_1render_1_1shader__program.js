@@ -43,11 +43,5 @@ var classcgv_1_1render_1_1shader__program =
     [ "set_uniform_array", "classcgv_1_1render_1_1shader__program.html#a9e1dc39cd4d74250a36c86e5d64d1ab4", null ],
     [ "set_uniform_array", "classcgv_1_1render_1_1shader__program.html#aee0c43db29be8ed42c07940123cffeb5", null ],
     [ "update_state", "classcgv_1_1render_1_1shader__program.html#a88e2480f41b18f91f0b13b072a0587ae", null ],
-    [ "files_cache", "classcgv_1_1render_1_1shader__program.html#aba6ed2b32baabff53801df5ce7f52602", null ],
-    [ "linked", "classcgv_1_1render_1_1shader__program.html#a562b9419f4114402da32ff8beda09ba1", null ],
-    [ "managed_codes", "classcgv_1_1render_1_1shader__program.html#a16bc509cc3bfb3492d01e9edc737e668", null ],
-    [ "nr_attached_geometry_shaders", "classcgv_1_1render_1_1shader__program.html#ab490db34ea38fb7895c1641a9317cefd", null ],
-    [ "program_file_cache", "classcgv_1_1render_1_1shader__program.html#a136af580100935a0751f226655b295ee", null ],
-    [ "show_code_errors", "classcgv_1_1render_1_1shader__program.html#ab894bcbbb774cb62b9d6fc4d0147cc33", null ],
-    [ "state_out_of_date", "classcgv_1_1render_1_1shader__program.html#add7893c9c6a2642476902dbaa9b73ba8", null ]
+    [ "program_file_cache", "classcgv_1_1render_1_1shader__program.html#a136af580100935a0751f226655b295ee", null ]
 ];

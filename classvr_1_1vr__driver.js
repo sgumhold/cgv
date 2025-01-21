@@ -20,14 +20,13 @@ var classvr_1_1vr__driver =
     [ "put_x_direction", "classvr_1_1vr__driver.html#ad9da35d23b2b9b97e539683fa8b4deed", null ],
     [ "ref_tracking_reference_state", "classvr_1_1vr__driver.html#aa16c5d1a283ab6f9ed4424a44e0ff2fa", null ],
     [ "register_vr_kit", "classvr_1_1vr__driver.html#a99c62a41ae4f26da211c4580881d1b04", null ],
-    [ "replace_by_index", "classvr_1_1vr__driver.html#a2bfda8bae3728274a01cf5ede8d6fcd9", null ],
+    [ "replace_by_index", "classvr_1_1vr__driver.html#afc4fbd74653260511ff15723fe60a743", null ],
     [ "replace_by_pointer", "classvr_1_1vr__driver.html#ab90f32406cdee38b36d8f3655753c419", null ],
     [ "replace_vr_kit", "classvr_1_1vr__driver.html#a743caf4fc72ab32c1967daf2fe946145", null ],
-    [ "scan_vr_kits", "classvr_1_1vr__driver.html#a1b8a68956599ea27e00d6b1e028b3243", null ],
+    [ "scan_vr_kits", "classvr_1_1vr__driver.html#af399280d4dc9ab22fbb6326e75f9270d", null ],
     [ "set_calibration_transformation", "classvr_1_1vr__driver.html#a2842d97959f00de266ce44be3a71f824", null ],
     [ "set_index", "classvr_1_1vr__driver.html#a004b050d3642db06611d05e7eb17a070", null ],
     [ "register_driver", "classvr_1_1vr__driver.html#a85846213d5c9cd2574b7dfd1295beaf0", null ],
-    [ "vr_calibration_base", "classvr_1_1vr__driver.html#a7fd4ad40c2dbe5f3a4515305ee35f642", null ],
     [ "vr_kit", "classvr_1_1vr__driver.html#adfa8def6bdff2d081e03aef18406f411", null ],
     [ "tracking_system_info", "classvr_1_1vr__driver.html#a5370947258e7feda9f1745d7085ba3cd", null ]
 ];

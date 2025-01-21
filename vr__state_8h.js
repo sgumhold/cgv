@@ -1,8 +1,8 @@
 var vr__state_8h =
 [
-    [ "vr_trackable_state", "structvr_1_1vr__trackable__state.html", "structvr_1_1vr__trackable__state" ],
-    [ "vr_controller_state", "structvr_1_1vr__controller__state.html", "structvr_1_1vr__controller__state" ],
-    [ "vr_kit_state", "structvr_1_1vr__kit__state.html", "structvr_1_1vr__kit__state" ],
+    [ "vr::vr_trackable_state", "structvr_1_1vr__trackable__state.html", "structvr_1_1vr__trackable__state" ],
+    [ "vr::vr_controller_state", "structvr_1_1vr__controller__state.html", "structvr_1_1vr__controller__state" ],
+    [ "vr::vr_kit_state", "structvr_1_1vr__kit__state.html", "structvr_1_1vr__kit__state" ],
     [ "KeyAction", "vr__state_8h.html#aef3295070e29d71a25db0d6374da32ff", [
       [ "KA_RELEASE", "vr__state_8h.html#aef3295070e29d71a25db0d6374da32ffa2cd6bb09d1633173510f01644afd8e3d", null ],
       [ "KA_PRESS", "vr__state_8h.html#aef3295070e29d71a25db0d6374da32ffa89218f9f6b749cecbae39b82c58237a8", null ],

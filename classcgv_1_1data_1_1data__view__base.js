@@ -8,8 +8,5 @@ var classcgv_1_1data_1_1data__view__base =
     [ "get_step_size", "classcgv_1_1data_1_1data__view__base.html#a3e0e8901895fc857d5e381742540c46f", null ],
     [ "manage_format", "classcgv_1_1data_1_1data__view__base.html#a444103b4275a1f462339e3846e20c7ae", null ],
     [ "set_format", "classcgv_1_1data_1_1data__view__base.html#a8bb5ffd715289c579970a5414e8d429b", null ],
-    [ "dim", "classcgv_1_1data_1_1data__view__base.html#a3af7cfaccde815e1558a994ff2059dfc", null ],
-    [ "format", "classcgv_1_1data_1_1data__view__base.html#a5a53b58b629899f4bddb6623ee913978", null ],
-    [ "owns_format", "classcgv_1_1data_1_1data__view__base.html#afce821532fa741853508ceb4fce0bc10", null ],
-    [ "step_sizes", "classcgv_1_1data_1_1data__view__base.html#ad0fb991f3f1af8fc5d76a58da67847f8", null ]
+    [ "owns_format", "classcgv_1_1data_1_1data__view__base.html#afce821532fa741853508ceb4fce0bc10", null ]
 ];

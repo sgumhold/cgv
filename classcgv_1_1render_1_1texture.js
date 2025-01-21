@@ -3,7 +3,6 @@ var classcgv_1_1render_1_1texture =
     [ "texture", "classcgv_1_1render_1_1texture.html#a71d20777f97d8ce4a252f1cbcf291738", null ],
     [ "~texture", "classcgv_1_1render_1_1texture.html#a2d184c0f1510ce86bc216010d597ea2b", null ],
     [ "bind_as_image", "classcgv_1_1render_1_1texture.html#aeffbee453aafa31808bffad5fb53b82c", null ],
-    [ "complete_create", "classcgv_1_1render_1_1texture.html#a2e3c812067ebfa941e340a8f76b8ea57", null ],
     [ "create", "classcgv_1_1render_1_1texture.html#ab5967492788c5bc01af2d9bb6a9ff612", null ],
     [ "create", "classcgv_1_1render_1_1texture.html#a2b89a0bb09f73e84dec467a61b3fcc8b", null ],
     [ "create_from_buffer", "classcgv_1_1render_1_1texture.html#a46847d2f61498776e3c161da31438a31", null ],
@@ -55,7 +54,5 @@ var classcgv_1_1render_1_1texture =
     [ "set_wrap_t", "classcgv_1_1render_1_1texture.html#a81df3fa4d66b5d141e538532a83b08ee", null ],
     [ "use_fixed_sample_locations", "classcgv_1_1render_1_1texture.html#a55d4600cf15f6f662f0ebc0e0224b638", null ],
     [ "write_to_file", "classcgv_1_1render_1_1texture.html#ab6a31e3c5d142c7edc7da3e939a80ccd", null ],
-    [ "last_error", "classcgv_1_1render_1_1texture.html#a95f40a817168467d5a0d3fdbb09e0b79", null ],
-    [ "state_out_of_date", "classcgv_1_1render_1_1texture.html#a82b66c2dcb2041034863c7a1f7b7ff26", null ],
-    [ "tex_unit", "classcgv_1_1render_1_1texture.html#aef73d270a5c22faf8475f013ca1b6e0d", null ]
+    [ "last_error", "classcgv_1_1render_1_1texture.html#a95f40a817168467d5a0d3fdbb09e0b79", null ]
 ];

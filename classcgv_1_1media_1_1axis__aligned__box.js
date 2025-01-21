@@ -1,9 +1,7 @@
 var classcgv_1_1media_1_1axis__aligned__box =
 [
     [ "fpnt_type", "classcgv_1_1media_1_1axis__aligned__box.html#afd9c1a97b16eedcc8c636bc3c29d35cd", null ],
-    [ "fvec_type", "classcgv_1_1media_1_1axis__aligned__box.html#a0be9a0e88a53aa5ddc3959d5a53c195b", null ],
     [ "pnt_type", "classcgv_1_1media_1_1axis__aligned__box.html#a347c96ec1b53a6fc64e72c51741b6f72", null ],
-    [ "vec_type", "classcgv_1_1media_1_1axis__aligned__box.html#a3ba47cefa40795ec5d1be5957f3074c0", null ],
     [ "axis_aligned_box", "classcgv_1_1media_1_1axis__aligned__box.html#a7728e0b4cbfddcd994c6a98a4fc85c80", null ],
     [ "axis_aligned_box", "classcgv_1_1media_1_1axis__aligned__box.html#a5fa3fc58318b2ee8b9b8f9cc24879015", null ],
     [ "axis_aligned_box", "classcgv_1_1media_1_1axis__aligned__box.html#a34c00f0cf3312e3e9fa16f0f27a6bd4d", null ],
@@ -16,16 +14,14 @@ var classcgv_1_1media_1_1axis__aligned__box =
     [ "get_corner", "classcgv_1_1media_1_1axis__aligned__box.html#ac1e3fee239fdecbb794c8407cf400750", null ],
     [ "get_extent", "classcgv_1_1media_1_1axis__aligned__box.html#ad557a358e6cf7eff922b7199b61e7da6", null ],
     [ "get_max_extent_coord_index", "classcgv_1_1media_1_1axis__aligned__box.html#a6d1b204f17b0f17e444fe9913d8c9bcb", null ],
-    [ "get_max_pnt", "classcgv_1_1media_1_1axis__aligned__box.html#ab9defb9f7625ed727808d35c6ed96522", null ],
-    [ "get_min_pnt", "classcgv_1_1media_1_1axis__aligned__box.html#a15da541e92cbacc680f7b1cbc44a7a0f", null ],
+    [ "get_max_pnt", "classcgv_1_1media_1_1axis__aligned__box.html#ae3915ac8d500bc6c0196a7693ce85237", null ],
+    [ "get_min_pnt", "classcgv_1_1media_1_1axis__aligned__box.html#ae4324750543455d76044ca8ee99f2f56", null ],
     [ "inside", "classcgv_1_1media_1_1axis__aligned__box.html#a6391e4ae7c324d058111e8bfa6eacadc", null ],
-    [ "intersect", "classcgv_1_1media_1_1axis__aligned__box.html#a740053fa8e3d7170aacca2b0096fca01", null ],
+    [ "intersect", "classcgv_1_1media_1_1axis__aligned__box.html#ae5695509d1bebc269204c85c552619fe", null ],
     [ "invalidate", "classcgv_1_1media_1_1axis__aligned__box.html#a147cf684bc35aa99ed1dc779930a1fc4", null ],
     [ "is_valid", "classcgv_1_1media_1_1axis__aligned__box.html#af6685654bb0ac752ee8551e79658737d", null ],
-    [ "ref_max_pnt", "classcgv_1_1media_1_1axis__aligned__box.html#a78f1160d42a073fdb40b240f3de0108f", null ],
-    [ "ref_min_pnt", "classcgv_1_1media_1_1axis__aligned__box.html#a6b6feb8db28359a7cf3491ffe432afaa", null ],
+    [ "ref_max_pnt", "classcgv_1_1media_1_1axis__aligned__box.html#a59e8569b2b55171bf09af4bbb06dcd5a", null ],
+    [ "ref_min_pnt", "classcgv_1_1media_1_1axis__aligned__box.html#a5f5d9ab082b028c11619f6c4d0f76a65", null ],
     [ "scale", "classcgv_1_1media_1_1axis__aligned__box.html#ac7b92d13ec99828dc80e4f85c9f77538", null ],
-    [ "translate", "classcgv_1_1media_1_1axis__aligned__box.html#aadda54ad0b42b1b41b94209157896c5d", null ],
-    [ "maxp", "classcgv_1_1media_1_1axis__aligned__box.html#a156ebc228acce96ff230adbdb75e420d", null ],
-    [ "minp", "classcgv_1_1media_1_1axis__aligned__box.html#a5ecc8d7c2c3c035b371a50c2cfa64669", null ]
+    [ "translate", "classcgv_1_1media_1_1axis__aligned__box.html#aadda54ad0b42b1b41b94209157896c5d", null ]
 ];

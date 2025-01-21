@@ -20,8 +20,5 @@ var classcgv_1_1render_1_1line__renderer =
     [ "set_line_width_array", "classcgv_1_1render_1_1line__renderer.html#a93716e5832a6c8b571a1327c0a0d2fd1", null ],
     [ "set_normal", "classcgv_1_1render_1_1line__renderer.html#a68e7f59b5bcc1fb1aa53447f3a590c8e", null ],
     [ "set_normal_array", "classcgv_1_1render_1_1line__renderer.html#a21e58e4529e548aba109a318e8991bf2", null ],
-    [ "set_normal_array", "classcgv_1_1render_1_1line__renderer.html#ab5704348447d5631b4d44f33dc037477", null ],
-    [ "has_depth_offsets", "classcgv_1_1render_1_1line__renderer.html#a5386d00852fb5d8150cc0d88026bee86", null ],
-    [ "has_line_widths", "classcgv_1_1render_1_1line__renderer.html#a476a7fe95adf026850c02c15ca5422fe", null ],
-    [ "has_normals", "classcgv_1_1render_1_1line__renderer.html#a18615df8099b5dbd7b55aef0d36a1695", null ]
+    [ "set_normal_array", "classcgv_1_1render_1_1line__renderer.html#ab5704348447d5631b4d44f33dc037477", null ]
 ];

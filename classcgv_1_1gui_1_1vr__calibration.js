@@ -6,6 +6,5 @@ var classcgv_1_1gui_1_1vr__calibration =
     [ "update_driver_calibration", "classcgv_1_1gui_1_1vr__calibration.html#ae600855fabdb06b256504102ec92dd64", null ],
     [ "update_driver_calibration", "classcgv_1_1gui_1_1vr__calibration.html#a1b96552b35c0258b6bd415f9d45ddd50", null ],
     [ "write_calibration", "classcgv_1_1gui_1_1vr__calibration.html#aee4f54f550688f82173487d2e2885e89", null ],
-    [ "ref_vr_calibration", "classcgv_1_1gui_1_1vr__calibration.html#a344fb1bc3128bc19b5a0e0f3e35dd828", null ],
-    [ "calibration_info", "classcgv_1_1gui_1_1vr__calibration.html#af7a67ff81b74b60bb25798a080967663", null ]
+    [ "ref_vr_calibration", "classcgv_1_1gui_1_1vr__calibration.html#aa4b97b8c687f44a685faad1e4e21be0a", null ]
 ];

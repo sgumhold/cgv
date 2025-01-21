@@ -1,7 +1,6 @@
 var classcgv_1_1media_1_1image_1_1image__reader =
 [
     [ "image_reader", "classcgv_1_1media_1_1image_1_1image__reader.html#abe89ffd5db0943e20d19bc3494e25e88", null ],
-    [ "~image_reader", "classcgv_1_1media_1_1image_1_1image__reader.html#a43557e0a153abd83aa1577d2010d75a6", null ],
     [ "close", "classcgv_1_1media_1_1image_1_1image__reader.html#a6dcb64349ead610304e739e09997099e", null ],
     [ "construct_filter_string", "classcgv_1_1media_1_1image_1_1image__reader.html#a4300692a9dd706fafb21c4707b57e360", null ],
     [ "get_current_image", "classcgv_1_1media_1_1image_1_1image__reader.html#a18763a40a7245c344b161a9b1c2dc6d8", null ],

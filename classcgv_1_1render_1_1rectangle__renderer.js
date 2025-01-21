@@ -1,6 +1,5 @@
 var classcgv_1_1render_1_1rectangle__renderer =
 [
-    [ "rectangle_renderer", "classcgv_1_1render_1_1rectangle__renderer.html#a258e3e08ec6b8e83a3c854de9a632eb0", null ],
     [ "build_shader_program", "classcgv_1_1render_1_1rectangle__renderer.html#a0e24d0c14419ef2688518b3e0fcc88fb", null ],
     [ "create_render_style", "classcgv_1_1render_1_1rectangle__renderer.html#a3b260c8a459e1e12cfd25ebf85890993", null ],
     [ "disable", "classcgv_1_1render_1_1rectangle__renderer.html#a91487d9245c6b3efcea028ccc72b6385", null ],
@@ -30,7 +29,7 @@ var classcgv_1_1render_1_1rectangle__renderer =
     [ "set_depth_offset_array", "classcgv_1_1render_1_1rectangle__renderer.html#a0e66d4dca408a5e1115416ce70f595fc", null ],
     [ "set_extent", "classcgv_1_1render_1_1rectangle__renderer.html#ae8c5dae24efaaa65978936d58b5481cd", null ],
     [ "set_extent_array", "classcgv_1_1render_1_1rectangle__renderer.html#a299571e108d182a0b56244f3008f9400", null ],
-    [ "set_extent_array", "classcgv_1_1render_1_1rectangle__renderer.html#af1b36989ab0f666b1cc91e7e8a399dd2", null ],
+    [ "set_extent_array", "classcgv_1_1render_1_1rectangle__renderer.html#ac3ccd1dce71409c36db8a3242ed555b6", null ],
     [ "set_position_is_center", "classcgv_1_1render_1_1rectangle__renderer.html#abe998a792a764fa0d2f6307b5ce4b22f", null ],
     [ "set_rectangle", "classcgv_1_1render_1_1rectangle__renderer.html#a3567aa23167b949d95ded2d4c7e27a60", null ],
     [ "set_rectangle_array", "classcgv_1_1render_1_1rectangle__renderer.html#a59b2d10ee72c5b63d59de9a288b9e1c0", null ],
@@ -49,7 +48,6 @@ var classcgv_1_1render_1_1rectangle__renderer =
     [ "set_translation", "classcgv_1_1render_1_1rectangle__renderer.html#aaa7c0f49a3118809e13083b85a1ec152", null ],
     [ "set_translation_array", "classcgv_1_1render_1_1rectangle__renderer.html#a61ee5f51eaa049f2e14734a457cb225e", null ],
     [ "set_translation_array", "classcgv_1_1render_1_1rectangle__renderer.html#a2842560ad7e7525957bb06a04418fea0", null ],
-    [ "set_y_view_angle", "classcgv_1_1render_1_1rectangle__renderer.html#a867106a07eb0269d4d1bd684c84606f8", null ],
     [ "validate_attributes", "classcgv_1_1render_1_1rectangle__renderer.html#a4bffb6b05e293f234c6ece9a07c4d793", null ],
     [ "has_border_colors", "classcgv_1_1render_1_1rectangle__renderer.html#a30ae7e75327f2208d8497f22b6a7c876", null ],
     [ "has_border_infos", "classcgv_1_1render_1_1rectangle__renderer.html#a90c037d66f20bfb8ed949a4573721396", null ],
@@ -57,6 +55,5 @@ var classcgv_1_1render_1_1rectangle__renderer =
     [ "has_extents", "classcgv_1_1render_1_1rectangle__renderer.html#a07e47a8489136a677ea44d91c4e83f03", null ],
     [ "has_rotations", "classcgv_1_1render_1_1rectangle__renderer.html#ac3f149528002dd8f218d004d578599e0", null ],
     [ "has_secondary_colors", "classcgv_1_1render_1_1rectangle__renderer.html#a4e0ba83eb74334e6d0a00b2679898165", null ],
-    [ "has_translations", "classcgv_1_1render_1_1rectangle__renderer.html#a930ca93185271bafc2a27f484fc565ed", null ],
-    [ "y_view_angle", "classcgv_1_1render_1_1rectangle__renderer.html#aee05604fb7f242349d19eb6c449465ad", null ]
+    [ "has_translations", "classcgv_1_1render_1_1rectangle__renderer.html#a930ca93185271bafc2a27f484fc565ed", null ]
 ];

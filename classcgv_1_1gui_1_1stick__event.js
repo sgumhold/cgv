@@ -1,26 +1,22 @@
 var classcgv_1_1gui_1_1stick__event =
 [
-    [ "vec2", "classcgv_1_1gui_1_1stick__event.html#ac4be023f746e63caefd00fdd0866c9c6", null ],
     [ "stick_event", "classcgv_1_1gui_1_1stick__event.html#a605b0497adc3922c4bbe4f38bd1b0b8d", null ],
     [ "get_action", "classcgv_1_1gui_1_1stick__event.html#ab6f7b9fdf6938ee54dad7db24b85876d", null ],
     [ "get_controller_index", "classcgv_1_1gui_1_1stick__event.html#a84522a2e57dec950f24d8d3ab3b0bdcc", null ],
-    [ "get_difference", "classcgv_1_1gui_1_1stick__event.html#a0d14fde8ae02350680dcbef016de8d75", null ],
+    [ "get_difference", "classcgv_1_1gui_1_1stick__event.html#a42aa25629fa43e20b9950a9485789b43", null ],
     [ "get_dx", "classcgv_1_1gui_1_1stick__event.html#aab52662e1f049e8906ed85fb536b9a94", null ],
     [ "get_dy", "classcgv_1_1gui_1_1stick__event.html#a73b7a23648f476c282bd063842c3b2e7", null ],
-    [ "get_last_position", "classcgv_1_1gui_1_1stick__event.html#abf28d1f1b7c715e87b9da7652fe1ae22", null ],
+    [ "get_last_position", "classcgv_1_1gui_1_1stick__event.html#aad4fef3b5e2b03831821f86121c8a03c", null ],
     [ "get_last_x", "classcgv_1_1gui_1_1stick__event.html#a22d7a4ee59165b6b5d95d272777d98cb", null ],
     [ "get_last_y", "classcgv_1_1gui_1_1stick__event.html#a83294b8429c8ef0eee2e2814ab895233", null ],
     [ "get_player_index", "classcgv_1_1gui_1_1stick__event.html#ab3c0a1b5cd8fda7fe1cac238f4cfa925", null ],
-    [ "get_position", "classcgv_1_1gui_1_1stick__event.html#ada48ca8dcf92ebc5bbb7f1233df57a0e", null ],
+    [ "get_position", "classcgv_1_1gui_1_1stick__event.html#a19d6aebf3cc4237914ba208a82db9359", null ],
     [ "get_stick_index", "classcgv_1_1gui_1_1stick__event.html#a0ef8ca83a1676aa08a3c83da3db6d37d", null ],
     [ "get_x", "classcgv_1_1gui_1_1stick__event.html#ad209f67c4f9856e50d64aad731a3ac97", null ],
     [ "get_y", "classcgv_1_1gui_1_1stick__event.html#a2de6c3501e4d96617ffe0e4422f05af6", null ],
     [ "stream_in", "classcgv_1_1gui_1_1stick__event.html#a3885e80eff45797081392ac8297f6ed0", null ],
     [ "stream_out", "classcgv_1_1gui_1_1stick__event.html#aaad9cdeb877b37e7f9da589f4d453154", null ],
     [ "action", "classcgv_1_1gui_1_1stick__event.html#a8ed6c4838f66fb193e7bae82df62bb79", null ],
-    [ "controller_index", "classcgv_1_1gui_1_1stick__event.html#a3658c1e9c886897258e58a02ed2d548d", null ],
     [ "difference", "classcgv_1_1gui_1_1stick__event.html#a032e412c6246130d8df65098166c14cb", null ],
-    [ "player_index", "classcgv_1_1gui_1_1stick__event.html#a74cb3d3e5a6ecf61ed5490d92f79eeda", null ],
-    [ "position", "classcgv_1_1gui_1_1stick__event.html#a53576a3b42c7ef8fc02181fa0c7c98cf", null ],
-    [ "stick_index", "classcgv_1_1gui_1_1stick__event.html#ab4b402cf318df4cc006e993af9f80ba3", null ]
+    [ "position", "classcgv_1_1gui_1_1stick__event.html#a53576a3b42c7ef8fc02181fa0c7c98cf", null ]
 ];

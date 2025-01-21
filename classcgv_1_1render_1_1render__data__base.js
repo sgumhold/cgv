@@ -1,9 +1,5 @@
 var classcgv_1_1render_1_1render__data__base =
 [
-    [ "add", "classcgv_1_1render_1_1render__data__base.html#a3542860939b15dcb4709005ca2b0e0e2", null ],
-    [ "add_color", "classcgv_1_1render_1_1render__data__base.html#ad562b8641e040d9fec72b5160c5e89db", null ],
-    [ "add_index", "classcgv_1_1render_1_1render__data__base.html#ab9997033bcf996eca84c6780325c592d", null ],
-    [ "add_position", "classcgv_1_1render_1_1render__data__base.html#a94c9ebd7dd991c2d5f554d6abca6cd30", null ],
     [ "clear", "classcgv_1_1render_1_1render__data__base.html#a9f67ac6dbac64801bb183741aebbe46c", null ],
     [ "destruct", "classcgv_1_1render_1_1render__data__base.html#a9632809092e9b7552c786e00e3d36f1d", null ],
     [ "disable", "classcgv_1_1render_1_1render__data__base.html#a17b7f14e1b605d1e931cc988d910e49a", null ],
@@ -12,10 +8,9 @@ var classcgv_1_1render_1_1render__data__base =
     [ "empty", "classcgv_1_1render_1_1render__data__base.html#aa6b3b7888999532e7fed09df2646d717", null ],
     [ "enable", "classcgv_1_1render_1_1render__data__base.html#ad826a2dcd7d25c6f510adc2067ce8d12", null ],
     [ "fill", "classcgv_1_1render_1_1render__data__base.html#ad31bda3d59022e7ff4d9075a0a763779", null ],
-    [ "fill_colors", "classcgv_1_1render_1_1render__data__base.html#ad29510494047fc780d511f3416e2752d", null ],
     [ "init", "classcgv_1_1render_1_1render__data__base.html#a7e61460c62c813e700e7e5fd37c99388", null ],
-    [ "ref_attribute_array_manager", "classcgv_1_1render_1_1render__data__base.html#a0f3d69357b5cf0b6d45c23d8a17ad0f1", null ],
-    [ "ref_renderer_singleton", "classcgv_1_1render_1_1render__data__base.html#a4e6117096675cfee2084433ab5317523", null ],
+    [ "ref_attribute_array_manager", "classcgv_1_1render_1_1render__data__base.html#a0789e1e9d0a7edb3229fcfc6d6f5f460", null ],
+    [ "ref_renderer_singleton", "classcgv_1_1render_1_1render__data__base.html#af15cd0ec8a40f846e6aee490829b831f", null ],
     [ "render", "classcgv_1_1render_1_1render__data__base.html#a27249c6ba32e422de64e0dfcad85ef76", null ],
     [ "render", "classcgv_1_1render_1_1render__data__base.html#a9b9572b2ffdc0ca48c76b146c6c7ff2c", null ],
     [ "render", "classcgv_1_1render_1_1render__data__base.html#a7f12a681fb3b8f7f7756fdba1ef2df6e", null ],

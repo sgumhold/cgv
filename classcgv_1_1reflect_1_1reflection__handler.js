@@ -34,8 +34,5 @@ var classcgv_1_1reflect_1_1reflection__handler =
     [ "reflect_method", "classcgv_1_1reflect_1_1reflection__handler.html#a38dca49ce52abd11c27540995a0790bb", null ],
     [ "reflect_method_void", "classcgv_1_1reflect_1_1reflection__handler.html#a0503fef23264c80cb35047551d3ace5b", null ],
     [ "self_reflect_member", "classcgv_1_1reflect_1_1reflection__handler.html#aa2931771e48131fec6804fa4d1007d07", null ],
-    [ "detail", "classcgv_1_1reflect_1_1reflection__handler.html#a5ce259f8d14df5fdd188ad80b23a4994", null ],
-    [ "reflect_enum", "classcgv_1_1reflect_1_1reflection__handler.html#a78cdb56797192b96ec6e5c6791cff160", null ],
-    [ "reflect_string", "classcgv_1_1reflect_1_1reflection__handler.html#a5c805fbc775d8430e9a59ea16ce4407f", null ],
     [ "nesting_info_stack", "classcgv_1_1reflect_1_1reflection__handler.html#aab3baa8fe1069e24bcf58c204e66a68f", null ]
 ];

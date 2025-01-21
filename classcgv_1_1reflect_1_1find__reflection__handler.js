@@ -1,31 +1,16 @@
 var classcgv_1_1reflect_1_1find__reflection__handler =
 [
-    [ "group_info", "structcgv_1_1reflect_1_1find__reflection__handler_1_1group__info.html", "structcgv_1_1reflect_1_1find__reflection__handler_1_1group__info" ],
+    [ "group_info", "structcgv_1_1reflect_1_1find__reflection__handler_1_1group__info.html", null ],
     [ "find_reflection_handler", "classcgv_1_1reflect_1_1find__reflection__handler.html#a73e9f90d2cf89177c3d629aacb9ad8a9", null ],
     [ "find_reflection_handler", "classcgv_1_1reflect_1_1find__reflection__handler.html#a42e3d51c7dc84b22e82448932b419470", null ],
-    [ "~find_reflection_handler", "classcgv_1_1reflect_1_1find__reflection__handler.html#ab7712a3bfc8ffe9ca0073537427245b1", null ],
-    [ "check_for_index_increment", "classcgv_1_1reflect_1_1find__reflection__handler.html#a4e1a0537298e81b07c589bc9bc07521c", null ],
     [ "found_target", "classcgv_1_1reflect_1_1find__reflection__handler.html#a33abab7202cbcbbbdd97f1ec39dce180", null ],
     [ "found_valid_target", "classcgv_1_1reflect_1_1find__reflection__handler.html#a8365fa09670cc068bbc1181cb8123eb8", null ],
     [ "get_member_name", "classcgv_1_1reflect_1_1find__reflection__handler.html#aae2c807d8c3fc7ef6bbdd8ca517733ad", null ],
     [ "get_member_ptr", "classcgv_1_1reflect_1_1find__reflection__handler.html#a977c56c4cf54fc2c260d8b05063cd8c5", null ],
     [ "get_reflection_traits", "classcgv_1_1reflect_1_1find__reflection__handler.html#afb66dafec8993d66f7df4f46ccbff7e2", null ],
     [ "process_member_void", "classcgv_1_1reflect_1_1find__reflection__handler.html#ae88c9ea0992b047037ea57627f6d09d6", null ],
-    [ "push_group", "classcgv_1_1reflect_1_1find__reflection__handler.html#a4fd377a497955f5919de342f6af8241d", null ],
     [ "reflect_group_begin", "classcgv_1_1reflect_1_1find__reflection__handler.html#aaf2b9206a361ebe8f9a1d185bf4974a6", null ],
     [ "reflect_group_end", "classcgv_1_1reflect_1_1find__reflection__handler.html#a5de58dc8766ab19f894a4624553616fe", null ],
     [ "reflect_member_void", "classcgv_1_1reflect_1_1find__reflection__handler.html#adecaff1146783441adcf225bfce98797", null ],
-    [ "reflect_method_void", "classcgv_1_1reflect_1_1find__reflection__handler.html#a927f0d8d66495b69d97f107822e3af8f", null ],
-    [ "found", "classcgv_1_1reflect_1_1find__reflection__handler.html#adcb77df6abc18d412b6803f91797e169", null ],
-    [ "group_kind", "classcgv_1_1reflect_1_1find__reflection__handler.html#a07cbc8505d8c0eb15a10b999aabb8b1e", null ],
-    [ "grp_size", "classcgv_1_1reflect_1_1find__reflection__handler.html#aa063764aa9bcc0c672d6bc01b41b3c0a", null ],
-    [ "member_name", "classcgv_1_1reflect_1_1find__reflection__handler.html#a7483c769747dcedb9d98b46620e96238", null ],
-    [ "member_ptr", "classcgv_1_1reflect_1_1find__reflection__handler.html#a8eb7afa5d631077c28044f260f520081", null ],
-    [ "rt", "classcgv_1_1reflect_1_1find__reflection__handler.html#a3c0c80336b64a9acdfe5e8c3166cd9a6", null ],
-    [ "target", "classcgv_1_1reflect_1_1find__reflection__handler.html#a478f03dc05bc370ebabc849c98861392", null ],
-    [ "target_ptr", "classcgv_1_1reflect_1_1find__reflection__handler.html#a8dc137be0da49279daba463298489838", null ],
-    [ "target_tokens", "classcgv_1_1reflect_1_1find__reflection__handler.html#a5293a17553d106d7007f24332457e434", null ],
-    [ "traverse_matched_groups", "classcgv_1_1reflect_1_1find__reflection__handler.html#a389b97542a8cf600e12deea66c0c2c2e", null ],
-    [ "traversed_groups", "classcgv_1_1reflect_1_1find__reflection__handler.html#a9009c66bf40c626124ef5c7ea453ded6", null ],
-    [ "valid", "classcgv_1_1reflect_1_1find__reflection__handler.html#ab75e8af88d08ae142ad83c4d9c49470b", null ]
+    [ "reflect_method_void", "classcgv_1_1reflect_1_1find__reflection__handler.html#a927f0d8d66495b69d97f107822e3af8f", null ]
 ];
