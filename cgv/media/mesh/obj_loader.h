@@ -65,13 +65,13 @@ class CGV_API obj_loader_generic : public obj_reader_generic<T>
 {
 public:
 	// We need to repeat the typenames here, because gcc will not inherit them in templates
-	typedef typename obj_reader_generic<T>::v3d_type v3d_type;
-	typedef typename obj_reader_generic<T>::v2d_type v2d_type;
+	typedef typename obj_reader_generic<T>::vec3_type vec3_type;
+	typedef typename obj_reader_generic<T>::vec2_type vec2_type;
 	typedef obj_reader_base::color_type color_type;
 	
-	std::vector<v3d_type> vertices; 
-    std::vector<v3d_type> normals; 
-    std::vector<v2d_type> texcoords;
+	std::vector<vec3_type> vertices; 
+    std::vector<vec3_type> normals; 
+    std::vector<vec2_type> texcoords;
 	std::vector<color_type> colors;
 
 	std::vector<unsigned> vertex_indices;
@@ -86,11 +86,11 @@ protected:
 	/**@name virtual interface*/
 	//@{
 	/// overide this function to process a vertex
-	void process_vertex(const v3d_type& p);
+	void process_vertex(const vec3_type& p);
 	/// overide this function to process a texcoord
-	void process_texcoord(const v2d_type& t);
+	void process_texcoord(const vec2_type& t);
 	/// overide this function to process a normal
-	void process_normal(const v3d_type& n);
+	void process_normal(const vec3_type& n);
 	/// overide this function to process a color (this called for vc prefixes which is is not in the standard but for example used in pobj-files)
 	void process_color(const color_type& c);
 	/// overide this function to process a line
