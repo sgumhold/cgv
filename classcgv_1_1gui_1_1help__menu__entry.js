@@ -9,7 +9,5 @@ var classcgv_1_1gui_1_1help__menu__entry =
     [ "add_key_bindings", "classcgv_1_1gui_1_1help__menu__entry.html#a1d05a06e5292312c6bb4d62ff89479bc", null ],
     [ "add_text", "classcgv_1_1gui_1_1help__menu__entry.html#a6697c7f387314fd3ee5a231a54a51215", null ],
     [ "on_register", "classcgv_1_1gui_1_1help__menu__entry.html#aef8d0706a5f720f5a6541159b860ea6f", null ],
-    [ "unregister", "classcgv_1_1gui_1_1help__menu__entry.html#a60ae693d685a393dcaf97678eb0d19b5", null ],
-    [ "groups", "classcgv_1_1gui_1_1help__menu__entry.html#a7e990d57b7cf845f8cfc5d13de16703f", null ],
-    [ "wnd", "classcgv_1_1gui_1_1help__menu__entry.html#a452a7e726df0d54c2e6b187ffcf208e4", null ]
+    [ "unregister", "classcgv_1_1gui_1_1help__menu__entry.html#a60ae693d685a393dcaf97678eb0d19b5", null ]
 ];

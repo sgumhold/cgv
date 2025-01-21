@@ -1,6 +1,6 @@
 var classcgv_1_1gui_1_1base__provider__generator =
 [
-    [ "gui_definition", "structcgv_1_1gui_1_1base__provider__generator_1_1gui__definition.html", "structcgv_1_1gui_1_1base__provider__generator_1_1gui__definition" ],
+    [ "gui_definition", "structcgv_1_1gui_1_1base__provider__generator_1_1gui__definition.html", null ],
     [ "def_map_iter", "classcgv_1_1gui_1_1base__provider__generator.html#a28398d67fca4fac4ee2ccde3ff3bc8ac", null ],
     [ "def_map_type", "classcgv_1_1gui_1_1base__provider__generator.html#afa6dc8db59a751b104aacd6e8edf0b3c", null ],
     [ "pvd_map_iter", "classcgv_1_1gui_1_1base__provider__generator.html#ad6d714cdeba0af0aa283106d27832f4b", null ],
@@ -12,7 +12,6 @@ var classcgv_1_1gui_1_1base__provider__generator =
     [ "parse_gui_file", "classcgv_1_1gui_1_1base__provider__generator.html#a19160706d72650eeefe5861a4f880937", null ],
     [ "register_object", "classcgv_1_1gui_1_1base__provider__generator.html#a6dfd18d35365869d7d4001f709fcbddd", null ],
     [ "self_reflect", "classcgv_1_1gui_1_1base__provider__generator.html#a7923e83fb605dfcf5faf5246ea98ec0c", null ],
-    [ "timer_event", "classcgv_1_1gui_1_1base__provider__generator.html#a57ec818924dd7827e0cc485b85cda612", null ],
     [ "unregister_object", "classcgv_1_1gui_1_1base__provider__generator.html#a7760e259a63d9b5632a416111e470827", null ],
     [ "check_file_update", "classcgv_1_1gui_1_1base__provider__generator.html#ac44dfcceca96803baa2d2249abeeee5b", null ],
     [ "defs_by_name", "classcgv_1_1gui_1_1base__provider__generator.html#a41294a574a7487f210fe4a53d324888d", null ],

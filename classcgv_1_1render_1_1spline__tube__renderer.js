@@ -10,13 +10,7 @@ var classcgv_1_1render_1_1spline__tube__renderer =
     [ "enable_attribute_array_manager", "classcgv_1_1render_1_1spline__tube__renderer.html#aeb5251f496d06e59517ba1bc7095fe7a", null ],
     [ "remove_radius_array", "classcgv_1_1render_1_1spline__tube__renderer.html#a2aa171a7f1844db7551c8eb403ea6c9b", null ],
     [ "remove_tangent_array", "classcgv_1_1render_1_1spline__tube__renderer.html#a424805364376e3572eaca0a88ee6f446", null ],
-    [ "set_eye_pos", "classcgv_1_1render_1_1spline__tube__renderer.html#a386da3ed2ddd50a2457d8996ba05b9d9", null ],
-    [ "set_radius_array", "classcgv_1_1render_1_1spline__tube__renderer.html#a908051dc0d7fdc148b38de432db63d94", null ],
-    [ "set_radius_array", "classcgv_1_1render_1_1spline__tube__renderer.html#ac5bec37991410d60bad09cb292449f2d", null ],
-    [ "set_tangent_array", "classcgv_1_1render_1_1spline__tube__renderer.html#a14b622f26c876f037439c18c68367ac9", null ],
-    [ "set_tangent_array", "classcgv_1_1render_1_1spline__tube__renderer.html#a21ecf2d24d60b52bdd807d2ee3ba3550", null ],
     [ "validate_attributes", "classcgv_1_1render_1_1spline__tube__renderer.html#a893d7a27c171e1ce2e7c4b77d976ef74", null ],
-    [ "eye_pos", "classcgv_1_1render_1_1spline__tube__renderer.html#a939702618f677e184c69e096a5f40156", null ],
     [ "has_radii", "classcgv_1_1render_1_1spline__tube__renderer.html#a69a70810eec2ba6fc81c2c7e63219d74", null ],
     [ "has_tangents", "classcgv_1_1render_1_1spline__tube__renderer.html#a2a4886a8d796b38287294da3659ca19a", null ]
 ];

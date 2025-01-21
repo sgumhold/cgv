@@ -1,20 +1,6 @@
 var classcgv_1_1app_1_1overlay =
 [
     [ "gui_options_t", "structcgv_1_1app_1_1overlay_1_1gui__options__t.html", "structcgv_1_1app_1_1overlay_1_1gui__options__t" ],
-    [ "AlignmentOption", "classcgv_1_1app_1_1overlay.html#ab9d7823f22e5ae2d9ace6c186ea295fa", [
-      [ "AO_FREE", "classcgv_1_1app_1_1overlay.html#ab9d7823f22e5ae2d9ace6c186ea295faa02055b1da9556499022c81625aedae93", null ],
-      [ "AO_START", "classcgv_1_1app_1_1overlay.html#ab9d7823f22e5ae2d9ace6c186ea295faa5965c6309319be5681199160b734df75", null ],
-      [ "AO_CENTER", "classcgv_1_1app_1_1overlay.html#ab9d7823f22e5ae2d9ace6c186ea295faa07e935755b42c3a5e984841f7fc0dbde", null ],
-      [ "AO_END", "classcgv_1_1app_1_1overlay.html#ab9d7823f22e5ae2d9ace6c186ea295faafe93c85525ce192837a6a9ee409a1658", null ],
-      [ "AO_PERCENTUAL", "classcgv_1_1app_1_1overlay.html#ab9d7823f22e5ae2d9ace6c186ea295faacea02e38aba872c4b56027b7f2e9d817", null ]
-    ] ],
-    [ "StretchOption", "classcgv_1_1app_1_1overlay.html#a4759f42df95eb587a20f7854ea9edb4c", [
-      [ "SO_NONE", "classcgv_1_1app_1_1overlay.html#a4759f42df95eb587a20f7854ea9edb4ca807804b7b4e70d9a468725afa2641c1d", null ],
-      [ "SO_HORIZONTAL", "classcgv_1_1app_1_1overlay.html#a4759f42df95eb587a20f7854ea9edb4ca6d712490e8c956ddd65cacd3de6f6a85", null ],
-      [ "SO_VERTICAL", "classcgv_1_1app_1_1overlay.html#a4759f42df95eb587a20f7854ea9edb4cab1ed926567c7ad68a397157d26537240", null ],
-      [ "SO_BOTH", "classcgv_1_1app_1_1overlay.html#a4759f42df95eb587a20f7854ea9edb4cab18ec2e42bfa75abc9b0d684e4140caa", null ],
-      [ "SO_PERCENTUAL", "classcgv_1_1app_1_1overlay.html#a4759f42df95eb587a20f7854ea9edb4caa05166c0355b6ef13dca8746b312d6d7", null ]
-    ] ],
     [ "begin_overlay_gui", "classcgv_1_1app_1_1overlay.html#a503f34ae41cfffefc70c2cc87248504f", null ],
     [ "blocks_events", "classcgv_1_1app_1_1overlay.html#a6500203c06ee7f7fb9094fefafdb2371", null ],
     [ "blocks_events", "classcgv_1_1app_1_1overlay.html#a2a07a0c55d887bf80501916327ea3fe3", null ],
@@ -22,7 +8,6 @@ var classcgv_1_1app_1_1overlay =
     [ "create_gui_impl", "classcgv_1_1app_1_1overlay.html#af8938207c2973fc91a25e6dd9add2be7", null ],
     [ "create_layout_gui", "classcgv_1_1app_1_1overlay.html#a0aca30fe43808a58c2cc15cee6cb8e11", null ],
     [ "end_overlay_gui", "classcgv_1_1app_1_1overlay.html#a116176c1cc615778a26e7dcc63880e11", null ],
-    [ "ensure_layout", "classcgv_1_1app_1_1overlay.html#a694388636554b3ae0d84559cef99ca3e", null ],
     [ "ensure_viewport", "classcgv_1_1app_1_1overlay.html#a4c13e3b1cd78c998a8c7d8155c346fc6", null ],
     [ "get_horizontal_alignment", "classcgv_1_1app_1_1overlay.html#a6cbc5eacc8d70f4c708f28e08aff1a8b", null ],
     [ "get_local_mouse_pos", "classcgv_1_1app_1_1overlay.html#ab02e9b6c66e700ae41b3e075269705f2", null ],

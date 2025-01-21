@@ -13,8 +13,5 @@ var classcgv_1_1render_1_1gl_1_1mesh__drawable =
     [ "read_mesh", "classcgv_1_1render_1_1gl_1_1mesh__drawable.html#a442f0f098bc3629904696c9e9b6cb084", null ],
     [ "box", "classcgv_1_1render_1_1gl_1_1mesh__drawable.html#afc64be8997b59edf15b825a7e4966f17", null ],
     [ "file_name", "classcgv_1_1render_1_1gl_1_1mesh__drawable.html#abc7001dfaee5655494b6b3bf4567e97f", null ],
-    [ "mesh", "classcgv_1_1render_1_1gl_1_1mesh__drawable.html#a83ddc8a3cac8218a40a8840b128f8e5f", null ],
-    [ "mesh_info", "classcgv_1_1render_1_1gl_1_1mesh__drawable.html#ab004c9abd60102b501218d785b3a505e", null ],
-    [ "model_path", "classcgv_1_1render_1_1gl_1_1mesh__drawable.html#aef7141b88a9661b9682261f36c4077ed", null ],
-    [ "rebuild_mesh_info", "classcgv_1_1render_1_1gl_1_1mesh__drawable.html#af5f6e1bc95afd12f9cd3ff215375c529", null ]
+    [ "model_path", "classcgv_1_1render_1_1gl_1_1mesh__drawable.html#aef7141b88a9661b9682261f36c4077ed", null ]
 ];

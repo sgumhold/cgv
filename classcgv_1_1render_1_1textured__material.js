@@ -20,9 +20,5 @@ var classcgv_1_1render_1_1textured__material =
     [ "get_texture", "classcgv_1_1render_1_1textured__material.html#a054ef903c22bb0c84761925b1a4774d5", null ],
     [ "ref_alpha_test_func", "classcgv_1_1render_1_1textured__material.html#a0048fbea03705f8fb04de4bf7313e386", null ],
     [ "ref_alpha_threshold", "classcgv_1_1render_1_1textured__material.html#a7b564283fa01e127856d2e6f4daf4cba", null ],
-    [ "set_alpha_test", "classcgv_1_1render_1_1textured__material.html#a855ded26a0193a7c93d839d9ba0df1ce", null ],
-    [ "alpha_test_func", "classcgv_1_1render_1_1textured__material.html#a60a8715f925cdb767fa1c6cc165588da", null ],
-    [ "alpha_threshold", "classcgv_1_1render_1_1textured__material.html#a6c8fb4301bcab808cc10192a6aadbceb", null ],
-    [ "ctx_ptr", "classcgv_1_1render_1_1textured__material.html#af0d3d3bd2162c2dfe32cf026d66058c6", null ],
-    [ "textures", "classcgv_1_1render_1_1textured__material.html#ac2f758b4bf8cd81d53bbb4754ed9b4e9", null ]
+    [ "set_alpha_test", "classcgv_1_1render_1_1textured__material.html#a855ded26a0193a7c93d839d9ba0df1ce", null ]
 ];

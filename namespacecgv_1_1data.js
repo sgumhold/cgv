@@ -1,20 +1,20 @@
 var namespacecgv_1_1data =
 [
-    [ "ascii_reflection_handler", "classcgv_1_1data_1_1ascii__reflection__handler.html", "classcgv_1_1data_1_1ascii__reflection__handler" ],
     [ "ascii_read_reflection_handler", "classcgv_1_1data_1_1ascii__read__reflection__handler.html", "classcgv_1_1data_1_1ascii__read__reflection__handler" ],
+    [ "ascii_reflection_handler", "classcgv_1_1data_1_1ascii__reflection__handler.html", "classcgv_1_1data_1_1ascii__reflection__handler" ],
     [ "ascii_write_reflection_handler", "classcgv_1_1data_1_1ascii__write__reflection__handler.html", "classcgv_1_1data_1_1ascii__write__reflection__handler" ],
-    [ "binary_reflection_handler", "classcgv_1_1data_1_1binary__reflection__handler.html", "classcgv_1_1data_1_1binary__reflection__handler" ],
     [ "binary_read_reflection_handler", "classcgv_1_1data_1_1binary__read__reflection__handler.html", "classcgv_1_1data_1_1binary__read__reflection__handler" ],
+    [ "binary_reflection_handler", "classcgv_1_1data_1_1binary__reflection__handler.html", null ],
     [ "binary_write_reflection_handler", "classcgv_1_1data_1_1binary__write__reflection__handler.html", "classcgv_1_1data_1_1binary__write__reflection__handler" ],
     [ "component_format", "classcgv_1_1data_1_1component__format.html", "classcgv_1_1data_1_1component__format" ],
+    [ "const_data_view", "classcgv_1_1data_1_1const__data__view.html", "classcgv_1_1data_1_1const__data__view" ],
     [ "data_format", "classcgv_1_1data_1_1data__format.html", "classcgv_1_1data_1_1data__format" ],
+    [ "data_view", "classcgv_1_1data_1_1data__view.html", "classcgv_1_1data_1_1data__view" ],
     [ "data_view_base", "classcgv_1_1data_1_1data__view__base.html", "classcgv_1_1data_1_1data__view__base" ],
     [ "data_view_impl", "classcgv_1_1data_1_1data__view__impl.html", "classcgv_1_1data_1_1data__view__impl" ],
-    [ "data_view", "classcgv_1_1data_1_1data__view.html", "classcgv_1_1data_1_1data__view" ],
-    [ "const_data_view", "classcgv_1_1data_1_1const__data__view.html", "classcgv_1_1data_1_1const__data__view" ],
     [ "dynamic_priority_queue", "classcgv_1_1data_1_1dynamic__priority__queue.html", "classcgv_1_1data_1_1dynamic__priority__queue" ],
     [ "grid", "classcgv_1_1data_1_1grid.html", "classcgv_1_1data_1_1grid" ],
-    [ "image_view", "classcgv_1_1data_1_1image__view.html", "classcgv_1_1data_1_1image__view" ],
+    [ "image_view", "classcgv_1_1data_1_1image__view.html", null ],
     [ "interval_map", "classcgv_1_1data_1_1interval__map.html", "classcgv_1_1data_1_1interval__map" ],
     [ "io_reflection_handler", "classcgv_1_1data_1_1io__reflection__handler.html", "classcgv_1_1data_1_1io__reflection__handler" ],
     [ "optional", "classcgv_1_1data_1_1optional.html", "classcgv_1_1data_1_1optional" ],
@@ -23,9 +23,9 @@ var namespacecgv_1_1data =
     [ "ref_arr", "classcgv_1_1data_1_1ref__arr.html", "classcgv_1_1data_1_1ref__arr" ],
     [ "ref_counted", "classcgv_1_1data_1_1ref__counted.html", "classcgv_1_1data_1_1ref__counted" ],
     [ "ref_ptr", "classcgv_1_1data_1_1ref__ptr.html", "classcgv_1_1data_1_1ref__ptr" ],
-    [ "ref_ptr_tag", "classcgv_1_1data_1_1ref__ptr__tag.html", "classcgv_1_1data_1_1ref__ptr__tag" ],
     [ "ref_ptr_impl", "classcgv_1_1data_1_1ref__ptr__impl.html", "classcgv_1_1data_1_1ref__ptr__impl" ],
     [ "ref_ptr_impl< T, true >", "classcgv_1_1data_1_1ref__ptr__impl_3_01T_00_01true_01_4.html", "classcgv_1_1data_1_1ref__ptr__impl_3_01T_00_01true_01_4" ],
+    [ "ref_ptr_tag", "classcgv_1_1data_1_1ref__ptr__tag.html", "classcgv_1_1data_1_1ref__ptr__tag" ],
     [ "union_find", "structcgv_1_1data_1_1union__find.html", "structcgv_1_1data_1_1union__find" ],
     [ "ComponentFormat", "namespacecgv_1_1data.html#a04ff4cdaed048a306aed8dd5a8c5c979", [
       [ "CF_UNDEF", "namespacecgv_1_1data.html#a04ff4cdaed048a306aed8dd5a8c5c979a21e044c2db6fef80997427db99403175", null ],
@@ -72,14 +72,8 @@ var namespacecgv_1_1data =
       [ "NC_SHORT", "namespacecgv_1_1data.html#a23911e7b468889249037adbd0ca557dca02e9f248a24dd3db696c86b7937f6436", null ],
       [ "NC_LONG", "namespacecgv_1_1data.html#a23911e7b468889249037adbd0ca557dca2ded1a40693c89228092a92acbf9d9fb", null ]
     ] ],
-    [ "copy_sub_view", "namespacecgv_1_1data.html#adc9642347239706d958e1a574430fc0b", null ],
-    [ "extract_special_type", "namespacecgv_1_1data.html#a8fb715e8a744f281920098db1fb3ae3c", null ],
     [ "find_best_match", "namespacecgv_1_1data.html#a72746e597b531caf780c41d81d4151e7", null ],
     [ "fmt1_compares_better", "namespacecgv_1_1data.html#ac3e8fa9c9e306979feb1f4dfd3b20830", null ],
-    [ "get_reflection_traits", "namespacecgv_1_1data.html#aa2dc4703b731c5c368f5ea2beaf07f3a", null ],
     [ "operator<<", "namespacecgv_1_1data.html#a35a6f7270f64a7cd8197c0733bbf4d7d", null ],
-    [ "operator<<", "namespacecgv_1_1data.html#adbbf5162b8aa15daa93023b37169b165", null ],
-    [ "sub_sample_2_2", "namespacecgv_1_1data.html#a574f704b983c82551ecc876d344098a9", null ],
-    [ "component_formats", "namespacecgv_1_1data.html#aad395dd3626902fea5430ef67f701820", null ],
-    [ "const_data_view", "namespacecgv_1_1data.html#af451d8243357788744b7146d3e14e721", null ]
+    [ "operator<<", "namespacecgv_1_1data.html#adbbf5162b8aa15daa93023b37169b165", null ]
 ];

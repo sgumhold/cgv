@@ -1,6 +1,6 @@
 var classcgv_1_1data_1_1data__format =
 [
-    [ "dimension_info", "structcgv_1_1data_1_1data__format_1_1dimension__info.html", "structcgv_1_1data_1_1data__format_1_1dimension__info" ],
+    [ "dimension_info", "structcgv_1_1data_1_1data__format_1_1dimension__info.html", null ],
     [ "data_format", "classcgv_1_1data_1_1data__format.html#ac554dd3b3d218cb9168d4353fbbfc6c9", null ],
     [ "data_format", "classcgv_1_1data_1_1data__format.html#abc7caed8c9d8d9a8b773cabdbf7dc700", null ],
     [ "data_format", "classcgv_1_1data_1_1data__format.html#aa7a66d21b8b49b0ac0c9d55e2cfb6803", null ],
@@ -37,6 +37,6 @@ var classcgv_1_1data_1_1data__format =
     [ "set_nr_time_steps", "classcgv_1_1data_1_1data__format.html#a185f4e673ab0d5e7feb2ae429fb15e4c", null ],
     [ "set_resolution", "classcgv_1_1data_1_1data__format.html#a22e3b2ba8599b99d29c2505fe5b7945c", null ],
     [ "set_width", "classcgv_1_1data_1_1data__format.html#a5eac02e768e21dd0e8c38a457729daa6", null ],
-    [ "operator<<", "classcgv_1_1data_1_1data__format.html#ac59d14d5832b7b3e031c814a88b5b464", null ],
+    [ "operator<<", "classcgv_1_1data_1_1data__format.html#a90a2e067d3c48fd9ffbf1e53c597b588", null ],
     [ "dimensions", "classcgv_1_1data_1_1data__format.html#a4453bc6dc88d4c936831ac9921157645", null ]
 ];

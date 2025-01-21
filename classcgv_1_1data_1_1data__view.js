@@ -15,7 +15,6 @@ var classcgv_1_1data_1_1data__view =
     [ "set", "classcgv_1_1data_1_1data__view.html#ad6663d91d3af21d0c935d42b2229528e", null ],
     [ "set_ptr", "classcgv_1_1data_1_1data__view.html#aa8ac25003c5ddefb41d7401753c95cd1", null ],
     [ "set_ptr", "classcgv_1_1data_1_1data__view.html#a0d51c667e776b88796410599a6e00620", null ],
-    [ "const_data_view", "classcgv_1_1data_1_1data__view.html#a04645ea386188d9a298ec545648a6048", null ],
     [ "data_view_impl< data_view, unsigned char * >", "classcgv_1_1data_1_1data__view.html#a4aed604c3f66ccb193c6369d8730a90c", null ],
     [ "owns_ptr", "classcgv_1_1data_1_1data__view.html#a1c131a7d6d20c8c1eb35a92210196093", null ]
 ];

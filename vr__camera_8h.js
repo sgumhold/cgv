@@ -1,6 +1,6 @@
 var vr__camera_8h =
 [
-    [ "vr_camera", "classvr_1_1vr__camera.html", "classvr_1_1vr__camera" ],
+    [ "vr::vr_camera", "classvr_1_1vr__camera.html", "classvr_1_1vr__camera" ],
     [ "CameraFrameFormat", "vr__camera_8h.html#aa7ff189a9f487df57ab41daf2a8b5214", [
       [ "CFF_RGBA", "vr__camera_8h.html#aa7ff189a9f487df57ab41daf2a8b5214a50ae16c3c832a424ea9a530016827076", null ]
     ] ],

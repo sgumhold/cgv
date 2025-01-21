@@ -1,8 +1,8 @@
 var vr__driver_8h =
 [
-    [ "vr_calibration_base", "classvr_1_1vr__calibration__base.html", "classvr_1_1vr__calibration__base" ],
-    [ "vr_driver", "classvr_1_1vr__driver.html", "classvr_1_1vr__driver" ],
-    [ "driver_registry", "structvr_1_1driver__registry.html", "structvr_1_1driver__registry" ],
+    [ "vr::vr_calibration_base", "classvr_1_1vr__calibration__base.html", "classvr_1_1vr__calibration__base" ],
+    [ "vr::vr_driver", "classvr_1_1vr__driver.html", "classvr_1_1vr__driver" ],
+    [ "vr::driver_registry< T >", "structvr_1_1driver__registry.html", null ],
     [ "get_vr_drivers", "vr__driver_8h.html#a715b77ea48336bbd440f9e297a6a8b47", null ],
     [ "get_vr_kit", "vr__driver_8h.html#a3420569d66aab89ad53aa8ee86f76733", null ],
     [ "register_driver", "vr__driver_8h.html#a79801f1f8d60a2fa8b4c57f057035d0f", null ],

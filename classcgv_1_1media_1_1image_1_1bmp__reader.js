@@ -11,8 +11,5 @@ var classcgv_1_1media_1_1image_1_1bmp__reader =
     [ "read_image", "classcgv_1_1media_1_1image_1_1bmp__reader.html#a064688f5c860af22bae737b0b19b1c13", null ],
     [ "read_line", "classcgv_1_1media_1_1image_1_1bmp__reader.html#a7eab14f8f67041243f698fbf33f75dfe", null ],
     [ "read_palette", "classcgv_1_1media_1_1image_1_1bmp__reader.html#a24e6fef57a43ce497bd37804c0d9d9de", null ],
-    [ "supports_per_line_read", "classcgv_1_1media_1_1image_1_1bmp__reader.html#a5baccd1891d10101100936389e89836f", null ],
-    [ "fp", "classcgv_1_1media_1_1image_1_1bmp__reader.html#a5c720c5e880e3facd0c374ec70173798", null ],
-    [ "last_error", "classcgv_1_1media_1_1image_1_1bmp__reader.html#a5ffffc6f1be0acd3a9dcb58e8d48d576", null ],
-    [ "palette", "classcgv_1_1media_1_1image_1_1bmp__reader.html#ae8d7cfb72d2849dc3fd68cfada066643", null ]
+    [ "supports_per_line_read", "classcgv_1_1media_1_1image_1_1bmp__reader.html#a5baccd1891d10101100936389e89836f", null ]
 ];

@@ -1,8 +1,5 @@
 var classcgv_1_1base_1_1base__generator =
 [
-    [ "const_iter_type", "classcgv_1_1base_1_1base__generator.html#a6cb1a12c825e811ab2448c09210737cb", null ],
-    [ "iter_type", "classcgv_1_1base_1_1base__generator.html#a8511d930c60fd44c84388acd3516c0db", null ],
-    [ "map_type", "classcgv_1_1base_1_1base__generator.html#aca506ef0ef41232ac5769c83853252ee", null ],
     [ "~base_generator", "classcgv_1_1base_1_1base__generator.html#a4e1e05d8a09e354331bb253e72bd3113", null ],
     [ "add", "classcgv_1_1base_1_1base__generator.html#afe603ac4fd757dc92231142c66c58807", null ],
     [ "add_void", "classcgv_1_1base_1_1base__generator.html#aa45d072ac0165d352c80ede36f15a3f1", null ],
