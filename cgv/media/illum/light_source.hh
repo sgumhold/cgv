@@ -15,11 +15,6 @@ enum LightType { LT_DIRECTIONAL, LT_POINT, LT_SPOT };
 ///@>simple class to hold the properties of a light source
 class CGV_API light_source
 {
-public: //@<
-	///@>used color type
-	typedef color<float,RGB> rgb;
-	///@>type of vector used for directions
-	typedef cgv::math::fvec<float,3> vec3;
 protected: //@<
 	///@>type of light source
 	LightType type;

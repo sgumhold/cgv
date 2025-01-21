@@ -29,7 +29,7 @@ namespace cgv {
 			};
 
 
-/** data structure for the information that is cached per volume slice bz the cuberille algorithm */
+/** data structure for the information that is cached per volume slice by the cuberille algorithm */
 template <typename T, class P>
 struct c_slice_info
 {

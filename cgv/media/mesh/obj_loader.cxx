@@ -35,20 +35,20 @@ namespace cgv {
 
 			/// overide this function to process a vertex
 template <typename T>
-void obj_loader_generic<T>::process_vertex(const v3d_type& p)
+void obj_loader_generic<T>::process_vertex(const vec3_type& p)
 {
 	vertices.push_back(p);
 }
 
 /// overide this function to process a texcoord
 template <typename T>
-void obj_loader_generic<T>::process_texcoord(const v2d_type& t)
+void obj_loader_generic<T>::process_texcoord(const vec2_type& t)
 {
 	texcoords.push_back(t);
 }
 /// overide this function to process a normal
 template <typename T>
-void obj_loader_generic<T>::process_normal(const v3d_type& n)
+void obj_loader_generic<T>::process_normal(const vec3_type& n)
 {
 	normals.push_back(n);
 }
@@ -220,7 +220,7 @@ bool obj_loader_generic<T>::read_obj_bin(const std::string& file_name)
 		colors.resize(v);
 
 	vertex_indices.resize(h);
-	if (v != fread(&vertices[0], sizeof(v3d_type), v, fp) ||
+	if (v != fread(&vertices[0], sizeof(vec3_type), v, fp) ||
 		h > 0 && h != fread(&vertex_indices[0], sizeof(unsigned), h, fp) )
 	{
 		fclose(fp);
@@ -236,7 +236,7 @@ bool obj_loader_generic<T>::read_obj_bin(const std::string& file_name)
 	if (n > 0) {
 		normals.resize(n);
 		normal_indices.resize(h);
-		if (n != fread(&normals[0], sizeof(v3d_type), n, fp) ||
+		if (n != fread(&normals[0], sizeof(vec3_type), n, fp) ||
 			h > 0 && h != fread(&normal_indices[0], sizeof(unsigned), h, fp) )
 		{
 			fclose(fp);
@@ -246,7 +246,7 @@ bool obj_loader_generic<T>::read_obj_bin(const std::string& file_name)
 	if (t > 0) {
 		texcoords.resize(t);
 		texcoord_indices.resize(h);
-		if (t != fread(&texcoords[0], sizeof(v2d_type), t, fp) ||
+		if (t != fread(&texcoords[0], sizeof(vec2_type), t, fp) ||
 			h > 0 && h != fread(&texcoord_indices[0], sizeof(unsigned), h, fp) )
 		{
 			fclose(fp);
@@ -357,7 +357,7 @@ bool obj_loader_generic<T>::write_obj_bin(const std::string& file_name) const
 			return false;
 		}
 	}
-	if (v != fwrite(&vertices[0], sizeof(v3d_type), v, fp) ||
+	if (v != fwrite(&vertices[0], sizeof(vec3_type), v, fp) ||
 		h > 0 && h != fwrite(&vertex_indices[0], sizeof(unsigned), h, fp) )
 	{
 		fclose(fp);
@@ -372,7 +372,7 @@ bool obj_loader_generic<T>::write_obj_bin(const std::string& file_name) const
 		}
 	}
 	if (n > 0) {
-		if (n != fwrite(&normals[0], sizeof(v3d_type), n, fp) ||
+		if (n != fwrite(&normals[0], sizeof(vec3_type), n, fp) ||
 			h > 0 && h != fwrite(&normal_indices[0], sizeof(unsigned), h, fp) )
 		{
 			fclose(fp);
@@ -380,7 +380,7 @@ bool obj_loader_generic<T>::write_obj_bin(const std::string& file_name) const
 		}
 	}
 	if (t > 0) {
-		if (t != fwrite(&texcoords[0], sizeof(v2d_type), t, fp) ||
+		if (t != fwrite(&texcoords[0], sizeof(vec2_type), t, fp) ||
 			h > 0 && h != fwrite(&texcoord_indices[0], sizeof(unsigned), h, fp) )
 		{
 			fclose(fp);

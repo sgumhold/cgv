@@ -124,7 +124,7 @@ void simple_mesh_base::sort_faces(std::vector<idx_type>& perm, bool by_group, bo
 	else
 		cgv::math::bucket_sort(material_indices, get_nr_materials(), perm);
 }
-void simple_mesh_base::merge_indices(std::vector<idx_type>& indices, std::vector<vec4i>& unique_quadruples, bool* include_tex_coords_ptr, bool* include_normals_ptr, bool* include_tangents_ptr) const
+void simple_mesh_base::merge_indices(std::vector<idx_type>& indices, std::vector<idx4_type>& unique_quadruples, bool* include_tex_coords_ptr, bool* include_normals_ptr, bool* include_tangents_ptr) const
 {
 	bool include_tex_coords = false;
 	if (include_tex_coords_ptr)
@@ -141,7 +141,7 @@ void simple_mesh_base::merge_indices(std::vector<idx_type>& indices, std::vector
 	std::map<std::tuple<idx_type, idx_type, idx_type, idx_type>, idx_type> corner_to_index;
 	for (idx_type ci = 0; ci < position_indices.size(); ++ci) {
 		// construct corner
-		vec4i c(position_indices[ci], 
+		idx4_type c(position_indices[ci], 
 			    (include_tex_coords && ci < tex_coord_indices.size()) ? tex_coord_indices[ci] : 0, 
 			    (include_normals && ci < normal_indices.size()) ? normal_indices[ci] : 0,
 			    (include_tangents && ci < tangent_indices.size()) ? tangent_indices[ci] : 0);
@@ -163,7 +163,7 @@ void simple_mesh_base::merge_indices(std::vector<idx_type>& indices, std::vector
 }
 void simple_mesh_base::extract_triangle_element_buffer(
 	const std::vector<idx_type>& vertex_indices, std::vector<idx_type>& triangle_element_buffer, 
-	const std::vector<idx_type>* face_permutation_ptr, std::vector<vec3i>* material_group_start_ptr) const
+	const std::vector<idx_type>* face_permutation_ptr, std::vector<idx3_type>* material_group_start_ptr) const
 {
 	idx_type mi = idx_type(-1);
 	idx_type gi = idx_type(-1);
@@ -174,7 +174,7 @@ void simple_mesh_base::extract_triangle_element_buffer(
 			if (mi != material_indices[fj] || gi != group_indices[fj]) {
 				mi = material_indices[fj];
 				gi = group_indices[fj];
-				material_group_start_ptr->push_back(vec3i(mi, gi, idx_type(triangle_element_buffer.size())));
+				material_group_start_ptr->push_back(idx3_type(mi, gi, idx_type(triangle_element_buffer.size())));
 			}
 		}
 		if (face_degree(fj) == 3) {
@@ -219,7 +219,7 @@ void simple_mesh_base::extract_wireframe_element_buffer(const std::vector<idx_ty
 		}
 	}
 }
-simple_mesh_base::idx_type simple_mesh_base::extract_vertex_attribute_buffer_base(const std::vector<vec4i>& unique_quadruples, AttributeFlags& flags, std::vector<uint8_t>& attrib_buffer) const
+simple_mesh_base::idx_type simple_mesh_base::extract_vertex_attribute_buffer_base(const std::vector<idx4_type>& unique_quadruples, AttributeFlags& flags, std::vector<uint8_t>& attrib_buffer) const
 {
 	// update flags of to be used attributes
 	if (position_indices.empty() && (flags & AF_position))
@@ -466,11 +466,11 @@ class simple_mesh_obj_reader : public obj_reader_generic<T>
 {
 public:
 	/// type of coordinates
-	typedef T crd_type;
+	typedef T coord_type;
 	/// type used to store texture coordinates
-	typedef cgv::math::fvec<T,2> v2d_type;
+	typedef cgv::math::fvec<T,2> vec2_type;
 	/// type used to store positions and normal vectors
-	typedef cgv::math::fvec<T,3> v3d_type;
+	typedef cgv::math::fvec<T,3> vec3_type;
 	/// type used for rgba colors
 	typedef illum::obj_material::color_type color_type;
 
@@ -480,13 +480,13 @@ protected:
 public:
 	simple_mesh_obj_reader(simple_mesh<T>& _mesh) : mesh(_mesh) {}
 	/// overide this function to process a vertex
-	void process_vertex(const v3d_type& p) { mesh.positions.push_back(p); }
+	void process_vertex(const vec3_type& p) { mesh.positions.push_back(p); }
 	/// overide this function to process a texcoord
-	void process_texcoord(const v2d_type& t) { mesh.tex_coords.push_back(v2d_type(t(0),t(1))); }
+	void process_texcoord(const vec2_type& t) { mesh.tex_coords.push_back(vec2_type(t(0),t(1))); }
 	/// overide this function to process a color (this called for vc prefixes which is is not in the standard but for example used in pobj-files)
 	void process_color(const color_type& c) { mesh.resize_colors(mesh.get_nr_colors() + 1); mesh.set_color(mesh.get_nr_colors()-1, c); }
 	/// overide this function to process a normal
-	void process_normal(const v3d_type& n) { mesh.normals.push_back(n); }
+	void process_normal(const vec3_type& n) { mesh.normals.push_back(n); }
 	/// overide this function to process a face, the indices start with 0
 	void process_face(unsigned vcount, int *vertices, int *texcoords, int *normals)
 	{
@@ -793,11 +793,11 @@ void simple_mesh<T>::compute_vertex_normals(bool use_parallel_implementation)
 	// copy position indices to normals
 	normal_indices = position_indices;
 	// initialize normals to null vectors
-	normals.resize(positions.size(), vec3(T(0)));
+	normals.resize(positions.size(), vec3_type(T(0)));
 	if (use_parallel_implementation) {
 #pragma omp parallel for
 		for (int fi = 0; fi < int(get_nr_faces()); ++fi) {
-			vec3 nml;
+			vec3_type nml;
 			if (compute_face_normal(fi, nml))
 				for (idx_type ci = begin_corner(fi); ci < end_corner(fi); ++ci)
 					normal(normal_indices[ci]) += nml;
@@ -807,7 +807,7 @@ void simple_mesh<T>::compute_vertex_normals(bool use_parallel_implementation)
 			normals[ni].normalize();
 	}
 	else {
-		vec3 nml;
+		vec3_type nml;
 		for (idx_type fi = 0; fi < get_nr_faces(); ++fi)
 			if (compute_face_normal(fi, nml))
 				for (idx_type ci = begin_corner(fi); ci < end_corner(fi); ++ci)
@@ -818,7 +818,7 @@ void simple_mesh<T>::compute_vertex_normals(bool use_parallel_implementation)
 }
 
 template <typename T>
-unsigned simple_mesh<T>::extract_vertex_attribute_buffer(const std::vector<vec4i>& unique_quadruples,
+unsigned simple_mesh<T>::extract_vertex_attribute_buffer(const std::vector<idx4_type>& unique_quadruples,
 														 bool include_tex_coords, bool include_normals,
 														 bool include_tangents, std::vector<T>& attrib_buffer,
 														 bool* include_colors_ptr, int* num_floats_in_vertex) const
@@ -848,18 +848,18 @@ unsigned simple_mesh<T>::extract_vertex_attribute_buffer(const std::vector<vec4i
 	attrib_buffer.resize(nr_floats * unique_quadruples.size());
 	T* data_ptr = &attrib_buffer.front();
 	for (auto t : unique_quadruples) {
-		*reinterpret_cast<vec3*>(data_ptr) = positions[t[0]];
+		*reinterpret_cast<vec3_type*>(data_ptr) = positions[t[0]];
 		data_ptr += 3;
 		if (include_tex_coords) {
-			*reinterpret_cast<vec2*>(data_ptr) = tex_coords[t[1]];
+			*reinterpret_cast<vec2_type*>(data_ptr) = tex_coords[t[1]];
 			data_ptr += 2;
 		}
 		if (include_normals) {
-			*reinterpret_cast<vec3*>(data_ptr) = normals[t[2]];
+			*reinterpret_cast<vec3_type*>(data_ptr) = normals[t[2]];
 			data_ptr += 3;
 		}
 		if (include_tangents) {
-			*reinterpret_cast<vec3*>(data_ptr) = tangents[t[3]];
+			*reinterpret_cast<vec3_type*>(data_ptr) = tangents[t[3]];
 			data_ptr += 3;
 		}
 		if (include_colors) {
@@ -870,12 +870,12 @@ unsigned simple_mesh<T>::extract_vertex_attribute_buffer(const std::vector<vec4i
 	return color_increment;
 }
 
-template <typename T> void simple_mesh<T>::transform(const mat3& linear_transformation, const vec3& translation)
+template <typename T> void simple_mesh<T>::transform(const mat3_type& linear_transformation, const vec3_type& translation)
 {
-	mat3 inverse_linear_transform = inv(linear_transformation);
+	mat3_type inverse_linear_transform = inv(linear_transformation);
 	transform(linear_transformation, translation, inverse_linear_transform);
 }
-template <typename T> void simple_mesh<T>::transform(const mat3& linear_transform, const vec3& translation, const mat3& inverse_linear_transform)
+template <typename T> void simple_mesh<T>::transform(const mat3_type& linear_transform, const vec3_type& translation, const mat3_type& inverse_linear_transform)
 {
 	for (auto& p : positions)
 		p = linear_transform * p + translation;
@@ -885,9 +885,9 @@ template <typename T> void simple_mesh<T>::transform(const mat3& linear_transfor
 		t = t * inverse_linear_transform;
 }
 
-template <typename T> typename simple_mesh<T>::vec3 simple_mesh<T>::compute_face_center(idx_type fi) const
+template <typename T> typename simple_mesh<T>::vec3_type simple_mesh<T>::compute_face_center(idx_type fi) const
 {
-	vec3 ctr = vec3(0.0f);
+	vec3_type ctr = vec3_type(0.0f);
 	uint32_t nr = 0;
 	for (uint32_t ci = begin_corner(fi); ci < end_corner(fi); ++ci) {
 		ctr += position(c2p(ci));
@@ -896,15 +896,15 @@ template <typename T> typename simple_mesh<T>::vec3 simple_mesh<T>::compute_face
 	ctr /= float(nr);
 	return ctr;
 }
-template <typename T> bool simple_mesh<T>::compute_face_normal(idx_type fi, vec3& nml_out, bool normalize) const
+template <typename T> bool simple_mesh<T>::compute_face_normal(idx_type fi, vec3_type& nml_out, bool normalize) const
 {
 	idx_type c0 = begin_corner(fi);
 	idx_type ce = end_corner(fi);
-	vec3 p0 = position(position_indices[c0]);
-	vec3 dj = position(position_indices[c0 + 1]) - p0;
-	vec3 nml(0.0f);
+	vec3_type p0 = position(position_indices[c0]);
+	vec3_type dj = position(position_indices[c0 + 1]) - p0;
+	vec3_type nml(0.0f);
 	for (idx_type ci = c0 + 2; ci < ce; ++ci) {
-		vec3 di = position(position_indices[ci]) - p0;
+		vec3_type di = position(position_indices[ci]) - p0;
 		nml += cross(dj, di);
 		dj = di;
 	}
@@ -927,7 +927,7 @@ template <typename T> void simple_mesh<T>::compute_face_normals(bool construct_n
 	normals.clear();
 	// compute per face normals
 	for (uint32_t fi = 0; fi < get_nr_faces(); ++fi) {
-		vec3 nml = vec3(T(1),0,0);
+		vec3_type nml = vec3_type(T(1),0,0);
 		compute_face_normal(fi, nml);
 		uint32_t ni = new_normal(nml);
 		if (construct_normal_indices) {
@@ -937,7 +937,7 @@ template <typename T> void simple_mesh<T>::compute_face_normals(bool construct_n
 		}
 	}
 }
-template <typename T> typename simple_mesh<T>::vec3 simple_mesh<T>::compute_normal(const vec3& p0, const vec3& p1, const vec3& p2)
+template <typename T> typename simple_mesh<T>::vec3_type simple_mesh<T>::compute_normal(const vec3_type& p0, const vec3_type& p1, const vec3_type& p2)
 {
 	return normalize(cross(p1 - p0, p2 - p0));
 }
@@ -947,9 +947,9 @@ template <typename T> void simple_mesh<T>::compute_face_tangents(bool construct_
 		return;
 
 	for(uint32_t fi = 0; fi < get_nr_faces(); ++fi) {
-		std::vector<vec3> _P;
-		std::vector<vec2> _T;
-		vec3 ctr(0.0f);
+		std::vector<vec3_type> _P;
+		std::vector<vec2_type> _T;
+		vec3_type ctr(0.0f);
 		uint32_t ci, nr = 0;
 		for(ci = begin_corner(fi); ci < end_corner(fi); ++ci) {
 			_P.push_back(position(c2p(ci)));
@@ -957,14 +957,14 @@ template <typename T> void simple_mesh<T>::compute_face_tangents(bool construct_
 			ctr += _P.back();
 			++nr;
 		}
-		vec3 tng(1.0f, 0.0f, 0.0f);
+		vec3_type tng(1.0f, 0.0f, 0.0f);
 		// calculate tangents for faces with at least three corners
 		// for more than 3 corners only use the first two edges and assume the face to be planar
 		if(_P.size() > 2) {
-			vec3 edge0 = _P[1] - _P[0];
-			vec3 edge1 = _P[2] - _P[0];
-			vec2 delta_uv0 = _T[1] - _T[0];
-			vec2 delta_uv1 = _T[2] - _T[0];
+			vec3_type edge0 = _P[1] - _P[0];
+			vec3_type edge1 = _P[2] - _P[0];
+			vec2_type delta_uv0 = _T[1] - _T[0];
+			vec2_type delta_uv1 = _T[2] - _T[0];
 
 			float dir_correction = (delta_uv1.x() * delta_uv0.y() - delta_uv1.y() * delta_uv0.x()) < 0.0f ? -1.0f : 1.0f;
 
@@ -1128,7 +1128,7 @@ template <typename T> void simple_mesh<T>::dual()
 	mesh_type new_M;
 	// create one vertex per face
 	for (uint32_t fi = 0; fi < f; ++fi) {
-		vec3 ctr = vec3(0.0f);
+		vec3_type ctr = vec3_type(0.0f);
 		for (uint32_t ci = begin_corner(fi); ci < end_corner(fi); ++ci)
 			ctr += position(c2p(ci));
 		ctr.normalize();
@@ -1165,7 +1165,7 @@ template <typename T> void simple_mesh<T>::gyro(T lambda)
 		new_M.new_position(position(pi));
 	// create one vertex per face
 	for (uint32_t fi = 0; fi < f; ++fi) {
-		vec3 ctr = vec3(0.0f);
+		vec3_type ctr = vec3_type(0.0f);
 		for (uint32_t ci = begin_corner(fi); ci < end_corner(fi); ++ci)
 			ctr += position(c2p(ci));
 		ctr.normalize();
@@ -1215,7 +1215,7 @@ template <typename T> void simple_mesh<T>::join()
 
 	// append one vertex per face
 	for (uint32_t fi = 0; fi < f; ++fi) {
-		vec3 ctr = vec3(0.0f);
+		vec3_type ctr = vec3_type(0.0f);
 		for (uint32_t ci = begin_corner(fi); ci < end_corner(fi); ++ci)
 			ctr += position(c2p(ci));
 		ctr.normalize();
@@ -1252,9 +1252,9 @@ template <typename T> void simple_mesh<T>::construct_conway_polyhedron(const std
 		static float N[6 * 3] = { -1,0,0, +1,0,0, 0,-1,0, 0,+1,0, 0,0,-1, 0,0,+1 };
 		static int F[6 * 4] = { 0,2,6,4, 1,5,7,3, 0,4,5,1, 2,3,7,6, 4,6,7,5, 0,1,3,2 };
 		for (int vi = 0; vi < 8; ++vi)
-			new_position(normalize(vec3(3, &V[3 * vi])));
+			new_position(normalize(vec3_type(3, &V[3 * vi])));
 		for (int ni = 0; ni < 6; ++ni)
-			new_normal(vec3(3, &N[3 * ni]));
+			new_normal(vec3_type(3, &N[3 * ni]));
 		for (int fi = 0; fi < 6; ++fi) {
 			start_face();
 			for (int ci = 0; ci < 4; ++ci)
@@ -1269,7 +1269,7 @@ template <typename T> void simple_mesh<T>::construct_conway_polyhedron(const std
 		static const float V[4 * 3] = { -0.5f, -a, -b,  0.5f, -a, -b,  0,2 * a, -b,  0,  0,2 * b };
 		static const int F[4 * 3] = { 0,2,1,3,2,0,3,0,1,3,1,2 };
 		for (int vi = 0; vi < 4; ++vi)
-			new_position(normalize(vec3(3, &V[3 * vi])));
+			new_position(normalize(vec3_type(3, &V[3 * vi])));
 		for (int fi = 0; fi < 4; ++fi) {
 			start_face();
 			new_normal(compute_normal(position(F[3 * fi]), position(F[3 * fi + 1]), position(F[3 * fi + 2])));

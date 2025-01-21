@@ -98,20 +98,20 @@ class CGV_API obj_reader_generic : public obj_reader_base
 {
 public:
 	/// type of coordinates
-	typedef T crd_type;
+	typedef T coord_type;
 	/// type used to store texture coordinates
-	typedef cgv::math::fvec<T,2> v2d_type;
+	typedef cgv::math::fvec<T,2> vec2_type;
 	/// type used to store positions and normal vectors
-	typedef cgv::math::fvec<T,3> v3d_type;
+	typedef cgv::math::fvec<T,3> vec3_type;
 	///
-	static bool is_double(const char* begin, const char* end, crd_type& value);
+	static bool is_double(const char* begin, const char* end, coord_type& value);
 protected:
 	/**@name template type dependent helpers for reading*/
 	//@{
 	/// parse 2d vector
-	v2d_type   parse_v2d(const std::vector<cgv::utils::token>& t) const;
+	vec2_type   parse_vec2(const std::vector<cgv::utils::token>& t) const;
 	/// parse 3d vector
-	v3d_type   parse_v3d(const std::vector<cgv::utils::token>& t) const;
+	vec3_type   parse_vec3(const std::vector<cgv::utils::token>& t) const;
 	///
 	void parse_and_process_vertex(const std::vector<cgv::utils::token>& tokens);
 	///
@@ -123,11 +123,11 @@ protected:
 	/**@name virtual interface*/
 	//@{
 	/// overide this function to process a vertex
-	virtual void process_vertex(const v3d_type& p);
+	virtual void process_vertex(const vec3_type& p);
 	/// overide this function to process a texcoord
-	virtual void process_texcoord(const v2d_type& t);
+	virtual void process_texcoord(const vec2_type& t);
 	/// overide this function to process a normal
-	virtual void process_normal(const v3d_type& n);
+	virtual void process_normal(const vec3_type& n);
 	//@}
 public:
 	/// default constructor

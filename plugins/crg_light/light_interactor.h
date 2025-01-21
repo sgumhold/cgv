@@ -18,9 +18,6 @@ using namespace cgv::media::illum;
 /// interaction class for light sources
 class CGV_API light_interactor : public node, public event_handler, public provider, public drawable
 {
-public:
-	typedef cgv::media::color<float> color_type;
-	typedef std::pair<cgv::vec3, cgv::vec3> ray;
 private:
 	int current_light_index;
 	std::default_random_engine RE;
