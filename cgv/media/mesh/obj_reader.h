@@ -1,7 +1,7 @@
 #pragma once
 
 #include <cgv/math/fvec.h>
-#include <cgv/media/illum/obj_material.hh>
+#include <cgv/media/illum/obj_material.h>
 #include <cgv/utils/tokenizer.h>
 #include <set>
 #include <map>

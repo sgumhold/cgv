@@ -2,7 +2,7 @@
 
 #include <cgv/render/drawable.h>
 #include <cgv/render/shader_program.h>
-#include <cgv/media/illum/light_source.hh>
+#include <cgv/media/illum/light_source.h>
 #include <cgv/gui/event_handler.h>
 #include <cgv/gui/provider.h>
 #include <random>

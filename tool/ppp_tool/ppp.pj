@@ -10,6 +10,6 @@ sourceFiles=[CGV_DIR."/cgv/utils/scan.cxx",
              CGV_DIR."/cgv/utils/file.cxx",
              CGV_DIR."/cgv/utils/dir.cxx"];
 addDefines=["CGV_FORCE_STATIC"];
-addCommandLineArguments=['"'.CGV_DIR."/cgv/media/color_model.hh".'"',
+addCommandLineArguments=['"'.CGV_DIR."/cgv/media/color_model.h".'"',
                          '"'.CGV_DIR."/cgv/type/info/type_interface_h.tm".'"',
                          '"'.CGV_DIR."/cgv/media/color_model.tih".'"'];
