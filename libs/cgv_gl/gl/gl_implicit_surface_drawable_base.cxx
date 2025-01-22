@@ -197,7 +197,7 @@ void gl_implicit_surface_drawable_base::set_box(const dbox3& _box)
 	post_rebuild();
 }
 
-const gl_implicit_surface_drawable_base::dbox3& gl_implicit_surface_drawable_base::get_box() const
+const dbox3& gl_implicit_surface_drawable_base::get_box() const
 {
 	return box;
 }
@@ -304,7 +304,7 @@ void gl_implicit_surface_drawable_base::new_vertex(unsigned int vi)
 	dvec3 p = sm_ptr->vertex_location(vi);
 	mesh.new_position(p);
 	if (normal_computation_type != FACE_NORMALS) {
-		vec_type grad = func_ptr->evaluate_gradient(p.to_vec());
+		dvecn grad = func_ptr->evaluate_gradient(p.to_vec());
 		dvec3 n(grad.size(), grad.data());
 		n.normalize();
 		sm_ptr->vertex_normal(vi) = n;
@@ -362,7 +362,7 @@ dvec3 gl_implicit_surface_drawable_base::compute_corner_normal(const dvec3& pj, 
 		dvec3 p = pi;
 		if (normal_computation_type == CORNER_GRADIENTS) {
 			p = (2.0/3)*pi+(1.0/6)*(pj+pk);
-			vec_type grad = func_ptr->evaluate_gradient(p.to_vec());
+			dvecn grad = func_ptr->evaluate_gradient(p.to_vec());
 			n = dvec3(grad.size(),grad.data());
 			n.normalize();
 		}

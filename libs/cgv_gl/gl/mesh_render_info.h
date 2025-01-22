@@ -18,16 +18,16 @@ public:
 	/// redeclare attribute type for shorter name
 	typedef cgv::media::mesh::simple_mesh_base::attribute_type attribute_type;
 	/// index triple type
-	typedef cgv::math::fvec<idx_type, 3> vec3i;
-	/// index quartuple type
-	typedef cgv::math::fvec<idx_type, 4> vec4i;
+	typedef cgv::math::fvec<idx_type, 3> idx3_type;
+	/// index quadruple type
+	typedef cgv::math::fvec<idx_type, 4> idx4_type;
 	/// type of map from mesh attribute to vbo index
 	typedef std::map<attribute_type, uint32_t> attribute_map;
 protected:
 	/// store list of primitive names
 	std::vector<std::string> primitive_names;
 	/// index triple storing the material index, the primitive index and the offset (element index) in the triangle element buffer
-	std::vector<vec3i> material_primitive_start;
+	std::vector<idx3_type> material_primitive_start;
 	/// store whether tex coords are in vbo
 	bool include_tex_coords;
 	/// store whether normals are in vbo
@@ -75,7 +75,7 @@ protected:
 	/// for each mesh attribute that is used, map attribute type to the vbo index
 	std::map<attribute_type, attribute_configuration> per_attribute_vbo_config;
 	/// in case that at least one vbo is replaceable, store per vertex the unique quadruple of attribute indices
-	std::vector<vec4i> unique_quadruples;
+	std::vector<idx4_type> unique_quadruples;
 	/// check whether a mesh attribute is used
 	bool attribute_is_used(attribute_type at) const;
 	/// configure which attributes should be stored, in which vbos they go and which vbos should support dynamic updates
@@ -89,14 +89,14 @@ protected:
 	 * \param [in] ctx The render context.
 	 * \param [in] mesh The mesh which shall be transformed.
 	 * \param [out] vertex_indices per face corner the vertex index or index of attribute index tuple
-	 * \param [out] unique_quartuples the list of attribute index tuples which aggregate unique combinations of vertex attribute indices
+	 * \param [out] unique_quadruples the list of attribute index tuples which aggregate unique combinations of vertex attribute indices
 	 * \param [out] triangle_element_buffer the buffer with successive vertex index triples, which make up mesh triangles.
 	 * \param [out] edge_element_buffer the buffer with successive vertex index pairs, which make up the mesh edges
 	 * 
 	 * \see mesh_render_info::finish_construct_vbos_base()
 	 */
 	void construct_index_buffers(cgv::render::context& ctx, const cgv::media::mesh::simple_mesh_base& mesh,
-								 std::vector<vec4i>& unique_quartuples, std::vector<idx_type>& per_corner_vertex_index,
+								 std::vector<idx4_type>& unique_quadruples, std::vector<idx_type>& per_corner_vertex_index,
 		                         std::vector<idx_type>& edges_element_buffer, std::vector<idx_type>& triangles_element_buffer);
 	/**
 	 * Uploads the given element buffers into EBOs on the GPU.
@@ -135,9 +135,9 @@ public:
 	{
 		element_size = sizeof(T);
 		position_descr = cgv::render::element_descriptor_traits<
-			typename cgv::media::mesh::simple_mesh<T>::vec3>::get_type_descriptor(mesh.position(0));
-		tex_coords_descr = cgv::render::element_descriptor_traits<typename cgv::media::mesh::simple_mesh<T>::vec2>::
-			get_type_descriptor(typename cgv::media::mesh::simple_mesh<T>::vec2());
+			typename cgv::media::mesh::simple_mesh<T>::vec3_type>::get_type_descriptor(mesh.position(0));
+		tex_coords_descr = cgv::render::element_descriptor_traits<typename cgv::media::mesh::simple_mesh<T>::vec2_type>::
+			get_type_descriptor(typename cgv::media::mesh::simple_mesh<T>::vec2_type());
 		attribute_map va_vbo_idx = { { attribute_type::position, 0 } };
 		if (mesh.has_tex_coords())
 			va_vbo_idx[attribute_type::texcoords] = 0;
@@ -150,17 +150,17 @@ public:
 		configure_vbos(ctx, mesh, va_vbo_idx, {});
 		// construct render buffers
 		std::vector<idx_type> vertex_indices, edge_element_buffer, triangle_element_buffer;
-		std::vector<vec4i> unique_quartuples;
-		construct_index_buffers(ctx, mesh, unique_quartuples, vertex_indices, edge_element_buffer, triangle_element_buffer);
+		std::vector<idx4_type> unique_quadruples;
+		construct_index_buffers(ctx, mesh, unique_quadruples, vertex_indices, edge_element_buffer, triangle_element_buffer);
 		// record which attributes each unique tuple was referencing
-		for (const auto& tuple : unique_quartuples) {
+		for (const auto& tuple : unique_quadruples) {
 			if (tuple_pos_indices)
 				tuple_pos_indices->push_back(tuple[0]);
 			if (tuple_normal_indices)
 				tuple_normal_indices->push_back(tuple[2]);
 		}
 		std::vector<uint8_t> attrib_buffer;
-		mesh.extract_vertex_attribute_buffer_base(unique_quartuples, vbo_config.front().attributes, attrib_buffer);
+		mesh.extract_vertex_attribute_buffer_base(unique_quadruples, vbo_config.front().attributes, attrib_buffer);
 		ref_vbos().push_back(new cgv::render::vertex_buffer(cgv::render::VBT_VERTICES));
 		ref_vbos().back()->create(ctx, attrib_buffer);
 		construct_element_vbo(ctx, edge_element_buffer, triangle_element_buffer);
@@ -180,15 +180,15 @@ public:
 		bool keep_unique_quadrupels = !dynamic_vbo_idx.empty();
 		// construct unique attribute index tupels that form vertices in the render data together with
 		// vector of per corner vertex indices, vertex index pairs forming edges and vertex index triples forming triangles
-		std::vector<vec4i> tmp_unique_quartuples;
-		std::vector<vec4i>& unique_quartuples_ref = keep_unique_quadrupels ? unique_quadruples : tmp_unique_quartuples;
+		std::vector<idx4_type> tmp_unique_quadruples;
+		std::vector<idx4_type>& unique_quadruples_ref = keep_unique_quadrupels ? unique_quadruples : tmp_unique_quadruples;
 		std::vector<idx_type> per_corner_vertex_index, edge_element_buffer, triangle_element_buffer;
-		construct_index_buffers(ctx, mesh, unique_quartuples_ref, per_corner_vertex_index, edge_element_buffer, triangle_element_buffer);
+		construct_index_buffers(ctx, mesh, unique_quadruples_ref, per_corner_vertex_index, edge_element_buffer, triangle_element_buffer);
 		//
 		for (const auto& vc : vbo_config) {
 			std::vector<uint8_t> attrib_buffer;
 			auto vca = vc.attributes;
-			mesh.extract_vertex_attribute_buffer_base(unique_quartuples_ref, vca, attrib_buffer);
+			mesh.extract_vertex_attribute_buffer_base(unique_quadruples_ref, vca, attrib_buffer);
 			ref_vbos().push_back(new cgv::render::vertex_buffer(cgv::render::VBT_VERTICES));
 			ref_vbos().back()->create(ctx, attrib_buffer);
 		}

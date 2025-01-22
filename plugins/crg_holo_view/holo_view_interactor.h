@@ -54,35 +54,32 @@ namespace cgv {
 
 struct holo_display_calibration
 {
-	using vec3 = cgv::vec3;
-	using ivec2 = cgv::ivec2;
-
 	unsigned width = 3840;
 	unsigned height = 2160;
 
-	vec3 x_min = vec3(0.01f);
-	vec3 x_max = vec3(0.99f);
+	cgv::vec3 x_min = cgv::vec3(0.01f);
+	cgv::vec3 x_max = cgv::vec3(0.99f);
 
-	vec3 y_min = vec3(0.01f);
-	vec3 y_max = vec3(0.99f);
+	cgv::vec3 y_min = cgv::vec3(0.01f);
+	cgv::vec3 y_max = cgv::vec3(0.99f);
 
 	float length = 42.8996f;
 	float step_x = 35.3762f;
 	float step_y = 1.0f;
-	vec3 offset = vec3(42.4f, 39.8f, 37.2f);
+	cgv::vec3 offset = cgv::vec3(42.4f, 39.8f, 37.2f);
 
-	vec3 compute_subpixel_base_line_coordinates(ivec2 pixel)
+	cgv::vec3 compute_subpixel_base_line_coordinates(cgv::ivec2 pixel)
 	{
-		vec3 bl_crd_0 = vec3(step_x * float(pixel.x()) + step_y * float(int(height) - pixel.y() - 1)) + offset;
-		vec3 bl_crd_1 = mod(bl_crd_0, vec3(length));
-		vec3 bl_crd_2 = bl_crd_1 / length;
+		cgv::vec3 bl_crd_0 = cgv::vec3(step_x * float(pixel.x()) + step_y * float(int(height) - pixel.y() - 1)) + offset;
+		cgv::vec3 bl_crd_1 = mod(bl_crd_0, cgv::vec3(length));
+		cgv::vec3 bl_crd_2 = bl_crd_1 / length;
 		return bl_crd_2;
 	}
-	vec3 compute_subpixel_x_coordinates(ivec2 pixel)
+	cgv::vec3 compute_subpixel_x_coordinates(cgv::ivec2 pixel)
 	{
 		return float(pixel.x()) * (x_max-x_min) + x_min;
 	}
-	vec3 compute_subpixel_y_coordinates(ivec2 pixel)
+	cgv::vec3 compute_subpixel_y_coordinates(cgv::ivec2 pixel)
 	{
 		return float(pixel.y()) * (y_max - y_min) + y_min;
 	}
@@ -96,12 +93,6 @@ class CGV_API holo_view_interactor :
 	public cgv::gui::provider,
 	public cgv::render::stereo_view
 {
-public:
-	using rgb = cgv::rgb;
-	using vec2 = cgv::vec2;
-	using vec3 = cgv::vec3;
-	using vec4 = cgv::vec4;
-	using ivec4 = cgv::ivec4;
 protected:
 	// interaction
 	bool two_d_enabled;
@@ -133,7 +124,7 @@ private:
 	cgv::render::frame_buffer display_fbo;
 protected:
 	// quilt
-	rgb quilt_bg_color = rgb(0.5f, 0.5f, 0.5f);
+	cgv::rgb quilt_bg_color = cgv::rgb(0.5f, 0.5f, 0.5f);
 	bool quilt_use_offline_texture = true;
 	unsigned quilt_width = 8192;
 	unsigned quilt_height = 8192;
@@ -181,11 +172,11 @@ protected:
 	///
 	StereoMousePointer stereo_mouse_pointer;
 	///
-	void draw_mouse_pointer_as_bitmap(cgv::render::context& ctx, int x, int y, int center_x, int center_y, int vp_width, int vp_height, bool visible, const dmat4 &MPW);
+	void draw_mouse_pointer_as_bitmap(cgv::render::context& ctx, int x, int y, int center_x, int center_y, int vp_width, int vp_height, bool visible, const cgv::dmat4 &MPW);
 	///
-	void draw_mouse_pointer_as_pixels(cgv::render::context& ctx, int x, int y, int center_x, int center_y, int vp_width, int vp_height, bool visible, const dmat4 &MPW);
+	void draw_mouse_pointer_as_pixels(cgv::render::context& ctx, int x, int y, int center_x, int center_y, int vp_width, int vp_height, bool visible, const cgv::dmat4 &MPW);
 	///
-	void draw_mouse_pointer_as_arrow(cgv::render::context& ctx, int x, int y, int center_x, int center_y, int vp_width, int vp_height, bool visible, const dmat4 &MPW);
+	void draw_mouse_pointer_as_arrow(cgv::render::context& ctx, int x, int y, int center_x, int center_y, int vp_width, int vp_height, bool visible, const cgv::dmat4 &MPW);
 	///
 	void draw_mouse_pointer(cgv::render::context& ctx, bool visible);
 	///
@@ -208,7 +199,7 @@ protected:
 	bool gamepad_attached;
 	float deadzone;
 	int left_mode, right_mode;
-	vec2 left_stick, right_stick, trigger;
+	cgv::vec2 left_stick, right_stick, trigger;
 
 	bool gamepad_emulation;
 	bool emulation_active;
@@ -224,7 +215,7 @@ protected:
 	void minus_key_action(int i, cgv::gui::KeyAction action);
 
 	void timer_event(double t, double dt);
-	ivec4 split_viewport(const ivec4 vp, int col_idx, int row_idx) const;
+	cgv::ivec4 split_viewport(const cgv::ivec4 vp, int col_idx, int row_idx) const;
 	//@}
 
 
@@ -259,8 +250,8 @@ public:
 	//@}
 	//! given a mouse location and the pixel extent of the context, return the MPW matrix for unprojection
 	int get_modelview_projection_window_matrices(int x, int y, int width, int height,
-		const dmat4** MPW_pptr,
-		const dmat4** MPW_other_pptr = 0, int* x_other_ptr = 0, int* y_other_ptr = 0,
+		const cgv::dmat4** MPW_pptr,
+		const cgv::dmat4** MPW_other_pptr = 0, int* x_other_ptr = 0, int* y_other_ptr = 0,
 		int* vp_col_idx_ptr = 0, int* vp_row_idx_ptr = 0,
 		int* vp_width_ptr = 0, int *vp_height_ptr = 0,
 		int* vp_center_x_ptr = 0, int* vp_center_y_ptr = 0,
@@ -269,10 +260,10 @@ public:
 	/*! in case of stereo rendering two z-values exist that can be unprojected to two points in world
 	    coordinates. In this case the possibility with smaller z value is selected. */
 	void get_vp_col_and_row_indices(cgv::render::context& ctx, int x, int y, int& vp_col_idx, int& vp_row_idx);
-	double get_z_and_unproject(cgv::render::context& ctx, int x, int y, dvec3& p);
-	void set_focus(const dvec3& foc) { stereo_view::set_focus(foc); update_vec_member(view::focus); }
-	void set_view_up_dir(const dvec3& vud) { stereo_view::set_view_up_dir(vud); update_vec_member(view_up_dir); }
-	void set_view_dir(const dvec3& vd) { stereo_view::set_view_dir(vd); update_vec_member(view_dir); }
+	double get_z_and_unproject(cgv::render::context& ctx, int x, int y, cgv::dvec3& p);
+	void set_focus(const cgv::dvec3& foc) { stereo_view::set_focus(foc); update_vec_member(view::focus); }
+	void set_view_up_dir(const cgv::dvec3& vud) { stereo_view::set_view_up_dir(vud); update_vec_member(view_up_dir); }
+	void set_view_dir(const cgv::dvec3& vd) { stereo_view::set_view_dir(vd); update_vec_member(view_dir); }
 	void set_y_extent_at_focus(double ext) { stereo_view::set_y_extent_at_focus(ext); on_set(&y_extent_at_focus); }
 	void set_y_view_angle(double angle) { stereo_view::set_y_view_angle(angle); on_set(&y_view_angle); }
 	void set_eye_distance(double e) { stereo_view::set_eye_distance(e); on_set(&eye_distance); }
@@ -308,8 +299,8 @@ public:
 private:
 	double check_for_click;
 	
-	dmat4 MPW, MPW_right;
-	dmat4 V, P;
+	cgv::dmat4 MPW, MPW_right;
+	cgv::dmat4 V, P;
 
 	float current_e = 0.0f;
 	//int current_vp[4], current_sb[4];
@@ -318,7 +309,7 @@ private:
 	unsigned nr_viewport_columns;
 	unsigned nr_viewport_rows;
 	unsigned viewport_shrinkage;
-	std::vector<dmat4> MPWs, MPWs_right;
+	std::vector<cgv::dmat4> MPWs, MPWs_right;
 	std::vector<cgv::render::view> views;
 	std::vector<bool> use_individual_view;
 

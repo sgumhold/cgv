@@ -26,8 +26,8 @@ image_drawable::image_drawable() : min_value(0,0,0,0), max_value(1,1,1,1), gamma
 	use_blending = false;
 	animate = false;
 	show_selection = false;
-	selection.add_point(vec2i(100, 50));
-	selection.add_point(vec2i(300, 150));
+	selection.add_point(ivec2(100, 50));
+	selection.add_point(ivec2(300, 150));
 	W = 1;
 	H = 1;
 
@@ -120,8 +120,8 @@ bool image_drawable::read_image(const std::string& _file_name)
 	W = int(df.get_width());
 	H = int(df.get_height());
 	selection.invalidate();
-	selection.add_point(vec2i(0, 0));
-	selection.add_point(vec2i(W, H));
+	selection.add_point(ivec2(0, 0));
+	selection.add_point(ivec2(W, H));
 	current_image = 0;
 	start_time = -2;
 	file_name = _file_name;
@@ -148,8 +148,8 @@ bool image_drawable::read_images(const std::string& _file_name, const std::vecto
 		W = int(df.get_width());
 		H = int(df.get_height());
 		selection.invalidate();
-		selection.add_point(vec2i(0, 0));
-		selection.add_point(vec2i(W, H));
+		selection.add_point(ivec2(0, 0));
+		selection.add_point(ivec2(W, H));
 	}
 	current_image = 0;
 	start_time = -2;
@@ -161,7 +161,7 @@ bool image_drawable::read_images(const std::string& _file_name, const std::vecto
 
 bool image_drawable::save_images(const std::string& output_file_name)
 {
-	bool crop = (selection.get_min_pnt() != vec2i(0) || selection.get_max_pnt() != vec2i(W,H));
+	bool crop = (selection.get_min_pnt() != ivec2(0) || selection.get_max_pnt() != ivec2(W,H));
 	int w = selection.get_extent()(0);
 	int h = selection.get_extent()(1);
 

@@ -258,8 +258,8 @@ public:
 		aspect = float(W) / H;
 		slice_size = w*h*voxel_size;
 		selection.invalidate();
-		selection.add_point(vec2i(0, 0));
-		selection.add_point(vec2i(W, H));
+		selection.add_point(cgv::ivec2(0, 0));
+		selection.add_point(cgv::ivec2(W, H));
 		current_image = 0;
 		start_time = -2;
 		file_name = _file_name;

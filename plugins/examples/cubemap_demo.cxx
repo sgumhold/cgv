@@ -20,8 +20,6 @@ class cubemap_demo :
 	public cgv::gui::event_handler
 {
 protected:
-	typedef cgv::math::fvec<signed char, 4u> cvec4;
-
 	view* view_ptr;
 
 	shader_library shaders;

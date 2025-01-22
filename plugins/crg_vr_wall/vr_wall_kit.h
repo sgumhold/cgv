@@ -16,26 +16,18 @@
 namespace vr {
 	class CGV_API vr_wall_kit : public vr_kit
 	{
-	public:
-		using vec2 = cgv::vec2;
-		using vec3 = cgv::vec3;
-		using vec4 = cgv::vec4;
-		using mat3 = cgv::mat3;
-		using mat34 = cgv::mat34;
-		using quat = cgv::quat;
-
 	protected:
 		/// vr kit to which to be attached
 		vr_kit* parent_kit;
 		/// allow vr_wall to access the protected members in order to create gui and incorporate them into reflection
 		friend class vr_wall;
 		/// store screen coordinate and position in a way that it can be cast into a pose matrix
-		mat34 screen_pose;
+		cgv::mat3x4 screen_pose;
 		/// x- and y-pixel sizes in meters
-		vec2 pixel_size;
+		cgv::vec2 pixel_size;
 		/// head calibration information
-		vec3 eye_center_tracker;
-		vec3 eye_separation_dir_tracker;
+		cgv::vec3 eye_center_tracker;
+		cgv::vec3 eye_separation_dir_tracker;
 		float eye_separation;
 		/// index of trackable used for head tracking (-1 if parent hmd is used)
 		int hmd_trackable_index;
@@ -46,17 +38,17 @@ namespace vr {
 		/// update state by swapping information of hmd and trackable used to emulate hmd
 		bool query_state_impl(vr_kit_state& state, int pose_query);
 	public:
-		inline const mat3& get_screen_orientation() const { return reinterpret_cast<const mat3&>(screen_pose); }
-		inline const vec3& get_screen_center() const { return screen_pose.col(3); }
-		inline void set_screen_orientation(const quat& q) { q.put_matrix(reinterpret_cast<mat3&>(screen_pose)); }
+		inline const cgv::mat3& get_screen_orientation() const { return reinterpret_cast<const cgv::mat3&>(screen_pose); }
+		inline const cgv::vec3& get_screen_center() const { return screen_pose.col(3); }
+		inline void set_screen_orientation(const cgv::quat& q) { q.put_matrix(reinterpret_cast<cgv::mat3&>(screen_pose)); }
 		/// transform to coordinate system of screen with [0,0,0] in center and corners [+-aspect,+-1,0]; z is signed distance to screen in world unites (typically meters) 
-		vec3 transform_world_to_screen(const vec3& p) const;
+		cgv::vec3 transform_world_to_screen(const cgv::vec3& p) const;
 		/// transform from coordinate system of screen with [0,0,0] in center and corners [+-aspect,+-1,0]; z is signed distance to screen in world unites (typically meters) 
-		vec3 transform_screen_to_world(const vec3& p) const;
+		cgv::vec3 transform_screen_to_world(const cgv::vec3& p) const;
 		/// eye = 0 ..left | 1 ..right
-		inline vec3 get_eye_position_tracker(int eye) const { return eye_center_tracker + ((eye-0.5f)*eye_separation)*eye_separation_dir_tracker; }
+		inline cgv::vec3 get_eye_position_tracker(int eye) const { return eye_center_tracker + ((eye-0.5f)*eye_separation)*eye_separation_dir_tracker; }
 		/// eye = 0 ..left | 1 ..right
-		inline vec3 get_eye_position_world(int eye, const mat34& tracker_pose) const { return tracker_pose * vec4(get_eye_position_tracker(eye), 1.0f); }
+		inline cgv::vec3 get_eye_position_world(int eye, const cgv::mat3x4& tracker_pose) const { return tracker_pose * cgv::vec4(get_eye_position_tracker(eye), 1.0f); }
 		/// construct vr wall kit by attaching to another vr kit
 		vr_wall_kit(int vr_kit_parent_index, unsigned width, unsigned height, const std::string& _name);
 		/// return pointer to parent to which wall kit is attached or nullptr if not attached
