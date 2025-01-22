@@ -180,8 +180,8 @@ public:
 		bool keep_unique_quadrupels = !dynamic_vbo_idx.empty();
 		// construct unique attribute index tupels that form vertices in the render data together with
 		// vector of per corner vertex indices, vertex index pairs forming edges and vertex index triples forming triangles
-		std::vector<vec4i> unique_quadruples;
-		std::vector<vec4i>& unique_quadruples_ref = keep_unique_quadrupels ? unique_quadruples : tmp_unique_quadruples;
+		std::vector<idx4_type> tmp_unique_quadruples;
+		std::vector<idx4_type>& unique_quadruples_ref = keep_unique_quadrupels ? unique_quadruples : tmp_unique_quadruples;
 		std::vector<idx_type> per_corner_vertex_index, edge_element_buffer, triangle_element_buffer;
 		construct_index_buffers(ctx, mesh, unique_quadruples_ref, per_corner_vertex_index, edge_element_buffer, triangle_element_buffer);
 		//
