@@ -15,11 +15,11 @@ namespace cgv {
 			{
 			public:
 				typedef float coord_type;
-				typedef cgv::math::fvec<int, 3> index_type;
-				typedef cgv::math::fvec<int, 3> dimension_type;
-				typedef cgv::math::fvec<coord_type, 3> point_type;
-				typedef cgv::math::fvec<coord_type, 3> extent_type;
-				typedef cgv::media::axis_aligned_box<coord_type, 3> box_type;
+				typedef cgv::math::fvec<int,3> index_type;
+				typedef cgv::math::fvec<int,3> dimension_type;
+				typedef cgv::math::fvec<coord_type,3> point_type;
+				typedef cgv::math::fvec<coord_type,3> extent_type;
+				typedef cgv::media::axis_aligned_box<coord_type,3> box_type;
 			protected:
 				/// format description of volume data
 				cgv::data::data_format df;

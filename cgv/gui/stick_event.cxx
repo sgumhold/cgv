@@ -86,19 +86,19 @@ float stick_event::get_dy() const
 	return difference[1];
 }
 /// return current position
-const stick_event::vec2& stick_event::get_position() const
+const vec2& stick_event::get_position() const
 {
 	return position;
 }
 
 /// return the vector of coordinate differences (dx,dy)
-const stick_event::vec2& stick_event::get_difference() const
+const vec2& stick_event::get_difference() const
 {
 	return difference;
 }
 
 /// return last position
-stick_event::vec2 stick_event::get_last_position() const
+vec2 stick_event::get_last_position() const
 {
 	return position - difference;
 }
