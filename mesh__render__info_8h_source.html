@@ -219,8 +219,8 @@ $(document).ready(function(){initNavTree('mesh__render__info_8h_source.html','')
 <div class="line"><a id="l00180" name="l00180"></a><span class="lineno">  180</span>        <span class="keywordtype">bool</span> keep_unique_quadrupels = !dynamic_vbo_idx.empty();</div>
 <div class="line"><a id="l00181" name="l00181"></a><span class="lineno">  181</span>        <span class="comment">// construct unique attribute index tupels that form vertices in the render data together with</span></div>
 <div class="line"><a id="l00182" name="l00182"></a><span class="lineno">  182</span>        <span class="comment">// vector of per corner vertex indices, vertex index pairs forming edges and vertex index triples forming triangles</span></div>
-<div class="line"><a id="l00183" name="l00183"></a><span class="lineno">  183</span>        std::vector&lt;vec4i&gt; unique_quadruples;</div>
-<div class="line"><a id="l00184" name="l00184"></a><span class="lineno">  184</span>        std::vector&lt;vec4i&gt;&amp; unique_quadruples_ref = keep_unique_quadrupels ? unique_quadruples : tmp_unique_quadruples;</div>
+<div class="line"><a id="l00183" name="l00183"></a><span class="lineno">  183</span>        std::vector&lt;idx4_type&gt; tmp_unique_quadruples;</div>
+<div class="line"><a id="l00184" name="l00184"></a><span class="lineno">  184</span>        std::vector&lt;idx4_type&gt;&amp; unique_quadruples_ref = keep_unique_quadrupels ? unique_quadruples : tmp_unique_quadruples;</div>
 <div class="line"><a id="l00185" name="l00185"></a><span class="lineno">  185</span>        std::vector&lt;idx_type&gt; per_corner_vertex_index, edge_element_buffer, triangle_element_buffer;</div>
 <div class="line"><a id="l00186" name="l00186"></a><span class="lineno">  186</span>        construct_index_buffers(ctx, mesh, unique_quadruples_ref, per_corner_vertex_index, edge_element_buffer, triangle_element_buffer);</div>
 <div class="line"><a id="l00187" name="l00187"></a><span class="lineno">  187</span>        <span class="comment">//</span></div>
