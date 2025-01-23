@@ -25,12 +25,12 @@ public:
 	///
 	point_cloud_obj_loader(std::vector<Pnt>& _P, std::vector<Nml>& _N, std::vector<Clr>& _C) : P(_P), N(_N), C(_C) {}
 	/// overide this function to process a vertex
-	void process_vertex(const v3d_type& p)
+	void process_vertex(const vec3_type& p)
 	{
 		P.push_back(point_cloud::Pnt(p));
 	}
 	/// overide this function to process a normal
-	void process_normal(const v3d_type& n)
+	void process_normal(const vec3_type& n)
 	{
 		N.push_back(point_cloud::Nml(n));
 	}
