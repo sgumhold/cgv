@@ -34,6 +34,8 @@ class MAPTILES_API TileManager
 	bool IsBoxCompletelyBehindPlane(const cgv::math::fvec<float, 3>& boxMin, const cgv::math::fvec<float, 3>& boxMax,
 									const cgv::math::fvec<float, 4>& plane);
 
+	void ClearRenderCache();
+
 	// Signal for when a tile is downloaded. In this implmentation, this signal informs the application to post a redraw
 	cgv::signal::signal<> tile_downloaded;
 
@@ -91,4 +93,7 @@ class MAPTILES_API TileManager
 	cgv::math::fvec<double, 3> frustum_bbox_min, frustum_bbox_max;
 	double frustum_min_lat, frustum_max_lat, frustum_min_lon, frustum_max_lon;
 	std::array<double, 2> min_extent, max_extent;
+
+	std::map<RasterTileIndex, RasterTileRender> raster_tile_cache;
+	std::map<Tile3DIndex, Tile3DRender> tile3D_cache;
 };
