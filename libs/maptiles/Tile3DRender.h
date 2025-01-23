@@ -34,4 +34,5 @@ public:
  public:
 	Tile3DRender();
 	Tile3DRender(cgv::render::context& ctx, const Tile3DData& tile, double lat, double lon);
+	~Tile3DRender();
 };

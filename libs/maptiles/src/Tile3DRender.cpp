@@ -1,5 +1,6 @@
 #include "Tile3DRender.h"
 
+
 cgv::render::shader_program Tile3DRender::shader;
 
 Tile3DRender::Tile3DRender() :lat_min(0), lat_max(0), lon_min(0), lon_max(0) {}
@@ -40,5 +41,10 @@ Tile3DRender::Tile3DRender(cgv::render::context& ctx, const Tile3DData& tile, do
 	success = vertex_array.set_attribute_array(ctx, shader.get_normal_index(), vec3type, vertex_buffer,
 											   sizeof(vec3) + sizeof(vec4),
 											   mesh.size(), sizeof(Vertex)) && success;
+}
+
+Tile3DRender::~Tile3DRender() 
+{ 
+	//std::cout << "Tile3DRender Destructor\n"; 
 }
 

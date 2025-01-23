@@ -347,14 +347,14 @@ void TileManager::RemoveRasterTiles()
 	// clear the indices
 	indices.clear();
 
-	// Get the indices to be removed from the background list
+	// Get the indices to be removed from the active list
 	for (auto const& element : active_raster_tile) {
 		if (neighbour_set_raster_tile.find(element.first) == neighbour_set_raster_tile.end()) {
 			indices.push_back(element.first);
 		}
 	}
 
-	// Remove Raster Tiles from the background list
+	// Remove Raster Tiles from the active list
 	std::lock_guard<std::mutex> lockActive(m_MutexActiveRasterTiles);
 	for (auto& index : indices) {
 		active_raster_tile.erase(index);
@@ -385,7 +385,7 @@ void TileManager::RemoveTile3Ds()
 	// clear the indices
 	indices.clear();
 
-	// Get the indices to be removed from the background list
+	// Get the indices to be removed from the active list
 	for (auto const& element : active_tile3D) {
 		if (neighbour_set_tile3D.find(element.first) == neighbour_set_tile3D.end()) {
 			indices.push_back(element.first);
@@ -393,7 +393,7 @@ void TileManager::RemoveTile3Ds()
 		}
 	}
 
-	// Remove Raster Tiles from the background list
+	// Remove Raster Tiles from the active list
 	std::lock_guard<std::mutex> lockActive(m_MutexActiveTile3Ds);
 	for (auto& index : indices) {
 		active_tile3D.erase(index);
@@ -452,7 +452,11 @@ void TileManager::GetRasterTileNeighbours()
 	for (const RasterTileIndex& itr : neighbour_set_raster_tile) {
 		const RasterTileIndex& index = itr;
 
-		if (requested_raster_tile.size() < config->MaxRasterTileRequestThreads) {
+		if (raster_tile_cache.find(index) != raster_tile_cache.end()) {
+			active_raster_tile[index] = raster_tile_cache[index];
+			to_be_removed.insert(index);
+		}
+		else if (requested_raster_tile.size() < config->MaxRasterTileRequestThreads) {
 			std::thread t(&TileManager::AddRasterTileToQueue, this, index);
 			t.detach();
 			requested_raster_tile.insert(index);
@@ -473,7 +477,11 @@ void TileManager::GetTile3DNeighbours()
 	for (const Tile3DIndex& itr : neighbour_set_tile3D) {
 		const Tile3DIndex& index = itr;
 
-		if (requested_tile3D.size() < config->MaxTile3DRequestThreads) {
+		if (tile3D_cache.find(index) != tile3D_cache.end()) {
+			active_tile3D[index] = tile3D_cache[index];
+			to_be_removed.insert(index);
+		}
+		else if (requested_tile3D.size() < config->MaxTile3DRequestThreads) {
 			std::thread t(&TileManager::AddTile3DToQueue, this, index);
 			t.detach();
 			requested_tile3D.insert(index);
@@ -522,6 +530,7 @@ void TileManager::AddRasterTiles(cgv::render::context& ctx)
 		RasterTileRender tile(ctx, element.second, config->ReferencePoint.lat, config->ReferencePoint.lon);
 
 		active_raster_tile[element.first] = tile;
+		raster_tile_cache.emplace(element.first, tile);
 
 		queue_raster_tiles.erase(element.first);
 	}
@@ -540,6 +549,7 @@ void TileManager::AddTile3D(cgv::render::context& ctx)
 		Tile3DRender tile(ctx, element.second, config->ReferencePoint.lat, config->ReferencePoint.lon);
 
 		active_tile3D[element.first] = tile;
+		tile3D_cache.emplace(element.first, tile);
 
 		queue_tile3Ds.erase(element.first);
 	}
@@ -556,6 +566,15 @@ bool TileManager::IsBoxCompletelyBehindPlane(const cgv::math::fvec<float, 3>& bo
 		   cgv::math::dot(plane, cgv::math::fvec<float, 4>(boxMax.x(), boxMin.y(), boxMax.z(), 1)) < 0 &&
 		   cgv::math::dot(plane, cgv::math::fvec<float, 4>(boxMax.x(), boxMax.y(), boxMin.z(), 1)) < 0 &&
 		   cgv::math::dot(plane, cgv::math::fvec<float, 4>(boxMax.x(), boxMax.y(), boxMin.z(), 1)) < 0;
+}
+
+void TileManager::ClearRenderCache() 
+{ 
+	std::cout << "Clearing Render Cache\n";
+	std::cout << "Raster Tile Cache Size: " << raster_tile_cache.size() << std::endl;
+	std::cout << "Tile3D Cache Size: " << tile3D_cache.size() << std::endl;
+	raster_tile_cache.clear();
+	tile3D_cache.clear();
 }
 
 void TileManager::CalculateViewFrustum(const cgv::mat4& mvp) 
