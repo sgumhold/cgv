@@ -83,7 +83,7 @@ namespace cgv {
 			
 			if (!has_radii)
 				ref_prog().set_attribute(ctx, "radius", srs.radius);
-			
+
 			ref_prog().set_uniform(ctx, "use_group_radius", srs.use_group_radius);
 			ref_prog().set_uniform(ctx, "radius_scale", srs.radius_scale);
 			float pixel_extent_per_depth = (float)(2.0*tan(0.5*0.0174532925199*y_view_angle) / ctx.get_height());
@@ -93,6 +93,7 @@ namespace cgv {
 			ref_prog().set_uniform(ctx, "halo_width_in_pixel", srs.halo_width_in_pixel);
 			ref_prog().set_uniform(ctx, "halo_color", srs.halo_color);
 			ref_prog().set_uniform(ctx, "halo_color_strength", srs.halo_color_strength);
+
 			return true;
 		}
 
