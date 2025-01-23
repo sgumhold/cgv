@@ -21,7 +21,7 @@ void mesh_render_info::destruct(cgv::render::context& ctx)
 	per_attribute_vbo_config.clear();
 	element_size = 0;
 }
-void mesh_render_info::construct_index_buffers(cgv::render::context& ctx, const cgv::media::mesh::simple_mesh_base& mesh, std::vector<vec4i>& _unique_quartuples, std::vector<idx_type>& per_corner_vertex_index, std::vector<idx_type>& edges_element_buffer, std::vector<idx_type>& triangles_element_buffer)
+void mesh_render_info::construct_index_buffers(cgv::render::context& ctx, const cgv::media::mesh::simple_mesh_base& mesh, std::vector<idx4_type>& _unique_quadruples, std::vector<idx_type>& per_corner_vertex_index, std::vector<idx_type>& edges_element_buffer, std::vector<idx_type>& triangles_element_buffer)
 {
 	include_tex_coords = attribute_is_used(attribute_type::texcoords);
 	include_normals = attribute_is_used(attribute_type::normal);
@@ -41,8 +41,8 @@ void mesh_render_info::construct_index_buffers(cgv::render::context& ctx, const 
 		permutation = std::make_unique<std::vector<idx_type>>();
 		mesh.sort_faces(*permutation, sort_by_groups, sort_by_materials);
 	}
-	mesh.merge_indices(per_corner_vertex_index, _unique_quartuples, &include_tex_coords, &include_normals, &include_tangents);
-	nr_vertices = _unique_quartuples.size();
+	mesh.merge_indices(per_corner_vertex_index, _unique_quadruples, &include_tex_coords, &include_normals, &include_tangents);
+	nr_vertices = _unique_quadruples.size();
 	mesh.extract_triangle_element_buffer(per_corner_vertex_index, triangles_element_buffer, permutation.get(),
 										 mesh.get_nr_materials() > 0 ? &material_primitive_start : 0);
 	

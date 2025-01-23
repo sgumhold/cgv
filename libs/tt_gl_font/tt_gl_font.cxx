@@ -544,8 +544,7 @@ namespace cgv {
 		extent.scale(scale);
 		return extent;
 	}
-	vec2 tt_gl_font_face::align_text(const vec2& p, const std::string& text, cgv::render::TextAlignment ta, float scale, bool flip_y) const
-	{
+	vec2 tt_gl_font_face::align_text(const vec2& p, const std::string& text, cgv::render::TextAlignment ta, float scale, bool flip_y) const	{
 		box2 B = compute_box(text, scale, flip_y);
 		vec2 a = B.get_center();
 		vec2 hE = 0.5f * B.get_extent();

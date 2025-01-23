@@ -56,15 +56,15 @@ void performance_monitor::set_file_name(const std::string& _file_name)
 void performance_monitor::init_tasks()
 {
 	tasks.clear();
-	add_task("frame", Col(0.5f,0.5f,0.5f));
-	add_task("main", Col(0.8f,0.2f,0.2f));
-	add_task("stereo", Col(0.2f,0.2f,0.8f));
-	add_task("shadow_map", Col(0.1f, 0.1f, 0.1f));
-	add_task("shadow_volume", Col(0.2f, 0.2f, 0.2f));
-	add_task("opaque_surface", Col(1,1,0));
-	add_task("transparent_surfaces", Col(0.9f,0.7f,0.5f));
-	add_task("pick", Col(0, 0, 1));
-	add_task("user", Col(0, 1, 0));
+	add_task("frame", rgb(0.5f, 0.5f, 0.5f));
+	add_task("main", rgb(0.8f, 0.2f, 0.2f));
+	add_task("stereo", rgb(0.2f, 0.2f, 0.8f));
+	add_task("shadow_map", rgb(0.1f, 0.1f, 0.1f));
+	add_task("shadow_volume", rgb(0.2f, 0.2f, 0.2f));
+	add_task("opaque_surface", rgb(1.0f, 1.0f, 0.0f));
+	add_task("transparent_surfaces", rgb(0.9f, 0.7f, 0.5f));
+	add_task("pick", rgb(0.0f, 0.0f, 1.0f));
+	add_task("user", rgb(0.0f, 1.0f, 0.0f));
 }
 
 /// removes all items of the bar config and hides the bar
@@ -79,7 +79,7 @@ void performance_monitor::add_bar_item(PerformanceMonitoringBar item)
 }
 
 /// place the performance monitor on screen in pixel coordinates
-void performance_monitor::set_placement(const Rec& rectangle) 
+void performance_monitor::set_placement(const ibox2& rectangle) 
 {
 	placement = rectangle;
 }

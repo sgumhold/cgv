@@ -42,9 +42,6 @@ struct CGV_API performance_task
 class CGV_API performance_monitor
 {
 public:
-	typedef cgv::math::fvec<int,2> Pos;
-	typedef cgv::media::axis_aligned_box<int,2> Rec;
-	typedef cgv::media::color<float> Col;
 	typedef std::vector<performance_measurement> frame_data;
 private:
 	bool frame_finished;
@@ -53,10 +50,10 @@ protected:
 	bool enabled;
 	double fps_alpha;
 	double fps;
-	Rec placement;
+	ibox2 placement;
 	int nr_display_cycles;
 	int bar_line_width;
-	Col plot_color;
+	rgb plot_color;
 	std::string file_name;
 	std::vector<performance_task> tasks;
 	std::deque<frame_data> data;
@@ -64,8 +61,8 @@ protected:
 
 	cgv::utils::stopwatch watch;
 	float time_scale;
-	std::vector<Pos> positions;
-	std::vector<Col> colors;
+	std::vector<ivec2> positions;
+	std::vector<rgb> colors;
 
 	void compute_colors(const frame_data& fdata);
 	void compute_positions(int x, int y, int dx, int dy, const frame_data& fdata);
@@ -94,7 +91,7 @@ public:
 	/// initialize the list of tasks to one for the frame and one for each default rendering pass
 	void init_tasks();
 	/// add a new to me monitored item
-	int add_task(const std::string& name, const Col& col);
+	int add_task(const std::string& name, const rgb& col);
 	/// return the size of the buffer to store frame data
 	unsigned get_buffer_size() const { return placement.get_extent()(0); }
 	/// start performance measurement of a new frame 
@@ -116,9 +113,9 @@ public:
 	/// add a bar item to the bar config
 	void add_bar_item(PerformanceMonitoringBar item);
 	/// place the performance monitor on screen in pixel coordinates
-	void set_placement(const Rec& rectangle);
+	void set_placement(const ibox2& rectangle);
 	/// return placement of performance monitor
-	Rec get_placement() const { return placement; }
+	ibox2 get_placement() const { return placement; }
 	/// set the number of display cycles to by drawn for the performance monitor
 	void set_nr_display_cycles(unsigned _nr_cycles);
 	/// return the number of display cycles to by drawn for the performance monitor

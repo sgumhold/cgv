@@ -9,9 +9,9 @@
 #include <cgv/data/data_view.h>
 #include <cgv/media/font/font.h>
 #include <cgv/media/axis_aligned_box.h>
-#include <cgv/media/illum/phong_material.hh>
+#include <cgv/media/illum/phong_material.h>
 #include <cgv/media/illum/textured_surface_material.h>
-#include <cgv/media/illum/light_source.hh>
+#include <cgv/media/illum/light_source.h>
 #include <cgv/signal/callback_stream.h>
 #include <cgv/math/vec.h>
 #include <cgv/math/inv.h>

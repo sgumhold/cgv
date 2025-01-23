@@ -22,19 +22,8 @@ namespace cgv {
 		template <> struct color_storage_traits<color<unsigned char, RGB> > { static const ColorType color_type = CT_RGB8; };
 		template <> struct color_storage_traits<color<unsigned char, RGB, OPACITY> > { static const ColorType color_type = CT_RGBA8; };
 
-		/// declaration of types for color storage  
-		struct color_storage_types
-		{
-		public:			
-			/// define supported color types
-			typedef color<float, RGB> rgb;
-			typedef color<float, RGB, OPACITY> rgba;
-			typedef color<unsigned char, RGB> rgb8;
-			typedef color<unsigned char, RGB, OPACITY> rgba8;
-		};
-
 		/// interface for color storage of different internal types
-		class abst_color_storage : public color_storage_types
+		class abst_color_storage
 		{
 		protected:
 			// type of color stored in storage

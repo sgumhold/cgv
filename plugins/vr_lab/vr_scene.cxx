@@ -137,7 +137,7 @@ void vr_scene::unregister_object(base_ptr object, const std::string& options)
 	std::cout << "unregister focusable: " << object->get_name_or_type_name() << std::endl;
 	remove_object(object);
 }
-void vr_scene::set_label_border_color(const rgba& border_color)
+void vr_scene::set_label_border_color(const cgv::rgba& border_color)
 {
 	label_drawable::set_label_border_color(border_color);
 	update_member(&rrs.percentual_border_width);
@@ -149,26 +149,26 @@ void vr_scene::set_label_border_width(float border_width)
 }
 void vr_scene::construct_room(float w, float d, float h, float W, bool walls, bool ceiling) {
 	// construct floor
-	boxes.push_back(box3(vec3(-0.5f * w, -W, -0.5f * d), vec3(0.5f * w, 0, 0.5f * d)));
-	box_colors.push_back(rgb(0.2f, 0.2f, 0.2f));
+	boxes.push_back(cgv::box3(cgv::vec3(-0.5f * w, -W, -0.5f * d), cgv::vec3(0.5f * w, 0, 0.5f * d)));
+	box_colors.push_back(cgv::rgb(0.2f, 0.2f, 0.2f));
 
 	if (walls) {
 		// construct walls
-		boxes.push_back(box3(vec3(-0.5f * w, -W, -0.5f * d - W), vec3(0.5f * w, h, -0.5f * d)));
-		box_colors.push_back(rgb(0.8f, 0.5f, 0.5f));
-		boxes.push_back(box3(vec3(-0.5f * w, -W, 0.5f * d), vec3(0.5f * w, h, 0.5f * d + W)));
-		box_colors.push_back(rgb(0.8f, 0.5f, 0.5f));
+		boxes.push_back(cgv::box3(cgv::vec3(-0.5f * w, -W, -0.5f * d - W), cgv::vec3(0.5f * w, h, -0.5f * d)));
+		box_colors.push_back(cgv::rgb(0.8f, 0.5f, 0.5f));
+		boxes.push_back(cgv::box3(cgv::vec3(-0.5f * w, -W, 0.5f * d), cgv::vec3(0.5f * w, h, 0.5f * d + W)));
+		box_colors.push_back(cgv::rgb(0.8f, 0.5f, 0.5f));
 
-		boxes.push_back(box3(vec3(0.5f * w, -W, -0.5f * d - W), vec3(0.5f * w + W, h, 0.5f * d + W)));
-		box_colors.push_back(rgb(0.5f, 0.8f, 0.5f));
+		boxes.push_back(cgv::box3(cgv::vec3(0.5f * w, -W, -0.5f * d - W), cgv::vec3(0.5f * w + W, h, 0.5f * d + W)));
+		box_colors.push_back(cgv::rgb(0.5f, 0.8f, 0.5f));
 
-		boxes.push_back(box3(vec3(-0.5f * w, -W, -0.5f * d - W), vec3(-0.5f * w - W, h, 0.5f * d + W)));
-		box_colors.push_back(rgb(0.5f, 0.8f, 0.5f));
+		boxes.push_back(cgv::box3(cgv::vec3(-0.5f * w, -W, -0.5f * d - W), cgv::vec3(-0.5f * w - W, h, 0.5f * d + W)));
+		box_colors.push_back(cgv::rgb(0.5f, 0.8f, 0.5f));
 	}
 	if (ceiling) {
 		// construct ceiling
-		boxes.push_back(box3(vec3(-0.5f * w - W, h, -0.5f * d - W), vec3(0.5f * w + W, h + W, 0.5f * d + W)));
-		box_colors.push_back(rgb(0.5f, 0.5f, 0.8f));
+		boxes.push_back(cgv::box3(cgv::vec3(-0.5f * w - W, h, -0.5f * d - W), cgv::vec3(0.5f * w + W, h + W, 0.5f * d + W)));
+		box_colors.push_back(cgv::rgb(0.5f, 0.5f, 0.8f));
 	}
 }
 void vr_scene::construct_ground(float s, float ew, float ed, float w, float d, float h) {
@@ -185,8 +185,8 @@ void vr_scene::construct_ground(float s, float ew, float ed, float w, float d, f
 			if (fabsf(x) < 0.5f * w && fabsf(x + s) < 0.5f * w && fabsf(z) < 0.5f * d && fabsf(z + s) < 0.5f * d)
 				continue;
 			float h = 0.2f * (std::max(abs(x) - 0.5f * w, 0.0f) + std::max(abs(z) - 0.5f * d, 0.0f)) * distribution(generator) + 0.1f;
-			boxes.push_back(box3(vec3(x, 0.0f, z), vec3(x + s, h, z + s)));
-			rgb color = cgv::media::color<float, cgv::media::HLS>(distribution(generator), 0.1f * distribution(generator) + 0.15f, 0.3f);
+			boxes.push_back(cgv::box3(cgv::vec3(x, 0.0f, z), cgv::vec3(x + s, h, z + s)));
+			cgv::rgb color = cgv::media::color<float, cgv::media::HLS>(distribution(generator), 0.1f * distribution(generator) + 0.15f, 0.3f);
 			box_colors.push_back(color);
 		}
 	}
@@ -232,7 +232,7 @@ vr_scene::vr_scene()
 	terrain_style.material.set_brdf_type(cgv::media::illum::BT_OREN_NAYAR);
 	terrain_style.material.set_roughness(1.0f);
 	terrain_style.material.set_ambient_occlusion(0.5f);
-	terrain_translation = dvec3(0, -14.0, 0);
+	terrain_translation = cgv::dvec3(0, -14.0, 0);
 	terrain_scale = 0.1f;
 
 	grid_width = 10;
@@ -389,7 +389,7 @@ void vr_scene::init_frame(cgv::render::context& ctx)
 			}
 		}
 	}
-	cgv::mat34 table_pose(4, 4, table->get_transform().data());
+	cgv::mat3x4 table_pose(4, 4, table->get_transform().data());
 	set_coordinate_systems(vr_view_ptr ? vr_view_ptr->get_current_vr_state() : 0, table.empty() ? 0 : &table_pose);
 	label_drawable::init_frame(ctx);
 	if (environment_mode == EM_SKYBOX) {
@@ -425,7 +425,7 @@ void vr_scene::draw(cgv::render::context& ctx)
 	}
 	if (ground_mode == GM_TERRAIN && !custom_indices.empty()) {
 		ctx.push_modelview_matrix();
-		ctx.mul_modelview_matrix(cgv::math::scale4<double>(dvec3(terrain_scale))*cgv::math::translate4<double>(terrain_translation));
+		ctx.mul_modelview_matrix(cgv::math::scale4<double>(cgv::dvec3(terrain_scale))*cgv::math::translate4<double>(terrain_translation));
 			auto& tr = cgv::render::ref_terrain_renderer(ctx);
 			tr.set_render_style(terrain_style);
 			tr.set_position_array(ctx, custom_positions);
@@ -456,7 +456,7 @@ void vr_scene::draw(cgv::render::context& ctx)
 			cone_colors.clear();
 			double time = cgv::gui::trigger::get_current_time();
 			for (int ci = 0; ci < 2; ++ci) {
-				vec3 ro, rd;
+				cgv::vec3 ro, rd;
 				state_ptr->controller[ci].put_ray(ro.data(), rd.data());
 				if (ctrl_infos[ci].grabbing) {
 					sphere_positions.push_back(ro + max_grabbing_distance * rd);
@@ -513,7 +513,7 @@ void vr_scene::construct_hit_geometry()
 {
 	cone_positions.clear();
 	cone_colors.clear();
-	rgb nml_color(0.5f, 0.5f, 0.5f);
+	cgv::rgb nml_color(0.5f, 0.5f, 0.5f);
 	for (const auto& di : dis_info_hid_map) {
 		if (!di.second)
 			continue;
@@ -523,7 +523,7 @@ void vr_scene::construct_hit_geometry()
 			const auto* idi_ptr = reinterpret_cast<const cgv::nui::intersection_dispatch_info*>(di.second);			
 			cone_positions.push_back(idi_ptr->ray_origin);
 			cone_positions.push_back(idi_ptr->hit_point);
-			rgb color = rgb(1, 1, 0);
+			cgv::rgb color = cgv::rgb(1, 1, 0);
 			cone_colors.push_back(color);
 			cone_colors.push_back(color);
 		}
@@ -531,7 +531,7 @@ void vr_scene::construct_hit_geometry()
 			const auto* pdi_ptr = reinterpret_cast<const cgv::nui::proximity_dispatch_info*>(di.second);
 			cone_positions.push_back(pdi_ptr->query_point);
 			cone_positions.push_back(pdi_ptr->hit_point);
-			rgb color = rgb(1, 1, 1);
+			cgv::rgb color = cgv::rgb(1, 1, 1);
 			cone_colors.push_back(color);
 			cone_colors.push_back(color);
 		}
