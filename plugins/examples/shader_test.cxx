@@ -3,7 +3,7 @@
 #include <cgv/gui/provider.h>
 #include <cgv/gui/event_handler.h>
 #include <cgv/gui/key_event.h>
-#include <cgv/media/illum/phong_material.hh>
+#include <cgv/media/illum/phong_material.h>
 #include <cgv/render/drawable.h>
 #include <cgv_gl/gl/gl.h>
 #include <cgv_gl/gl/gl_tools.h>

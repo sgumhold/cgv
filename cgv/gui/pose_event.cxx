@@ -40,60 +40,60 @@ void pose_event::stream_in(std::istream& is)
 }
 
 /// return current orientation matrix
-const pose_event::mat3& pose_event::get_orientation() const
+const mat3& pose_event::get_orientation() const
 {
 	return reinterpret_cast<const mat3&>(pose[0]);
 }
 
 /// return current position
-const pose_event::vec3& pose_event::get_position() const
+const vec3& pose_event::get_position() const
 {
 	return reinterpret_cast<const vec3&>(pose[9]);
 }
 /// return current pose matrix
-const pose_event::mat3x4& pose_event::get_pose_matrix() const
+const mat3x4& pose_event::get_pose_matrix() const
 {
 	return reinterpret_cast<const mat3x4&>(pose[0]);
 }
 /// return current orientation quaternion
-pose_event::quat pose_event::get_quaternion() const
+quat pose_event::get_quaternion() const
 {
 	return quat(get_orientation());
 }
 /// return last orientation matrix
-const pose_event::mat3& pose_event::get_last_orientation() const
+const mat3& pose_event::get_last_orientation() const
 {
 	return reinterpret_cast<const mat3&>(last_pose[0]);
 }
 /// return last position
-const pose_event::vec3& pose_event::get_last_position() const
+const vec3& pose_event::get_last_position() const
 {
 	return reinterpret_cast<const vec3&>(last_pose[9]);
 }
 /// return last pose matrix
-const pose_event::mat3x4& pose_event::get_last_pose_matrix() const
+const mat3x4& pose_event::get_last_pose_matrix() const
 {
 	return reinterpret_cast<const mat3x4&>(last_pose[0]);
 }
 
 /// return last orientation quaternion
-pose_event::quat pose_event::get_last_quaternion() const
+quat pose_event::get_last_quaternion() const
 {
 	return quat(get_last_orientation());
 }
 
 /// return difference vector from last to current position
-pose_event::vec3 pose_event::get_different() const
+vec3 pose_event::get_different() const
 {
 	return get_position() - get_last_position();
 }
 /// return rotation matrix between from the last to current orientation
-pose_event::mat3 pose_event::get_rotation_matrix() const
+mat3 pose_event::get_rotation_matrix() const
 {
 	return get_orientation() * transpose(get_last_orientation());
 }
 /// return rotation quaternion between from the last to current orientation
-pose_event::quat pose_event::get_rotation_quaternion() const
+quat pose_event::get_rotation_quaternion() const
 {
 	return quat(get_rotation_matrix());
 }

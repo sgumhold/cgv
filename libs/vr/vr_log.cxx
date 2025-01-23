@@ -151,18 +151,18 @@ void vr::vr_log::log_vr_state(const vr::vr_kit_state& state, const int mode, con
 		controller_status[ci].push_back(state.controller[ci].status);
 		if (mode & SM_IN_MEMORY) {
 			if (filter & F_VIBRATION) {
-				vec2 vibration = vec2(state.controller[ci].vibration[0], state.controller[ci].vibration[1]);
+				cgv::vec2 vibration = cgv::vec2(state.controller[ci].vibration[0], state.controller[ci].vibration[1]);
 				this->controller_vibration[ci].push_back(vibration);
 			}
 			if (filter & F_AXES) {
-				vecn axes(max_nr_controller_axes);
+				cgv::vecn axes(max_nr_controller_axes);
 				for (int j = 0; j < max_nr_controller_axes; ++j) {
 					axes(j) = state.controller[ci].axes[j];
 				}
 				this->controller_axes[ci].push_back(axes);
 			}
 			if (filter & F_POSE) {
-				mat34 pose = mat34(3, 4, state.controller[ci].pose);
+				cgv::mat3x4 pose = cgv::mat3x4(3, 4, state.controller[ci].pose);
 				this->controller_pose[ci].push_back(pose);
 			}
 			if (filter & F_BUTTON) {
@@ -199,7 +199,7 @@ void vr::vr_log::log_vr_state(const vr::vr_kit_state& state, const int mode, con
 
 	//hmd state
 	if (filter & F_HMD) {
-		mat34 pose = mat34(3, 4, state.hmd.pose);
+		cgv::mat3x4 pose = cgv::mat3x4(3, 4, state.hmd.pose);
 		if (mode & SM_IN_MEMORY) {
 			hmd_pose.push_back(pose);
 			hmd_status.push_back(state.hmd.status);
