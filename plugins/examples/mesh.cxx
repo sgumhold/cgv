@@ -82,9 +82,7 @@ private:
 	bool have_new_mesh;
 public:
 	typedef cgv::media::mesh::simple_mesh<float> mesh_type;
-	typedef mesh_type::idx_type idx_type;
-	typedef mesh_type::vec3i vec3i;
-
+	
 	bool show_surface;
 	CullingMode cull_mode;
 	ColorMapping color_mapping;

@@ -1,6 +1,6 @@
 #pragma once
 
-#include <cgv/media/illum/obj_material.hh>
+#include <cgv/media/illum/obj_material.h>
 #include <cgv_reflect_types/media/illum/phong_material.h>
 #include <cgv/reflect/reflect_extern.h>
 

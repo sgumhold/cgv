@@ -63,7 +63,7 @@ private:
 protected:
 	bool initial_placement = true;
 	double start_placement_time;
-	mat34 start_placement_pose;
+	mat3x4 start_placement_pose;
 	bool place_screen(const vr::vr_kit_state& state); // define reference, rotation, distance, scale and x_offset based on hmd and placement controller
 
 	// screen capture support

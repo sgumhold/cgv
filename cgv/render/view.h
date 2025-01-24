@@ -20,11 +20,6 @@ namespace cgv {
 */
 class CGV_API view
 {
-public:
-	typedef cgv::math::fvec<float, 3>      vec3;
-	typedef cgv::math::fvec<double, 3>    dvec3;
-	typedef cgv::math::fmat<double, 3, 3> dmat3;
-	typedef cgv::math::fmat<double, 4, 4> dmat4;
 protected:
 	/// focus of the view
 	dvec3 focus;

@@ -134,8 +134,6 @@ namespace cgv {
   */
 		class CGV_API vr_server
 		{
-		public:
-			typedef stick_event::vec2 vec2;
 		protected:
 			double last_device_scan;
 			double device_scan_interval;

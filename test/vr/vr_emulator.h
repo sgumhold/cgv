@@ -29,12 +29,6 @@ enum TrackerAttachment
 
 class CGV_API vr_emulated_kit : public vr::vr_kit
 {
-public:
-	using vec3 = cgv::vec3;
-	using vec4 = cgv::vec4;
-	using mat3 = cgv::mat3;
-	using mat4 = cgv::mat4;
-	using mat34 = cgv::mat34;
 protected:
 	friend class vr_emulator;
 	vr::vr_kit_state state;
@@ -44,25 +38,25 @@ protected:
 	float hip_parameter;
 	float yaw_parameter;
 	float fovy;
-	vec3 body_position;
+	cgv::vec3 body_position;
 
-	vec3 hand_position[2];
+	cgv::vec3 hand_position[2];
 	quat hand_orientation[2];
 
-	vec3 tracker_positions[4];
+	cgv::vec3 tracker_positions[4];
 	quat tracker_orientations[4];
 	bool tracker_enabled[4];
 	TrackerAttachment tracker_attachments[4];
 
 	/// helper functions to construct matrices
-	mat34 construct_pos_matrix(const quat& orientation, const vec3& position);
-	mat4 construct_homogeneous_matrix(const quat& orientation, const vec3& position);
-	void set_pose_matrix(const mat4& H, float* pose) const;
+	cgv::mat3x4 construct_pos_matrix(const quat& orientation, const cgv::vec3& position);
+	cgv::mat4 construct_homogeneous_matrix(const quat& orientation, const cgv::vec3& position);
+	void set_pose_matrix(const cgv::mat4& H, float* pose) const;
 	void compute_state_poses();
 	bool query_state_impl(vr::vr_kit_state& state, int pose_query = 2);
 public:
-	vr_emulated_kit(float _body_direction, const vec3& _body_position, float _body_height, unsigned _width, unsigned _height, vr::vr_driver* _driver, void* _handle, const std::string& _name, int _nr_trackers);
-	vec3 get_body_direction() const;
+	vr_emulated_kit(float _body_direction, const cgv::vec3& _body_position, float _body_height, unsigned _width, unsigned _height, vr::vr_driver* _driver, void* _handle, const std::string& _name, int _nr_trackers);
+	cgv::vec3 get_body_direction() const;
 	const std::vector<std::pair<int, int> >& get_controller_throttles_and_sticks(int controller_index) const;
 	const std::vector<std::pair<float, float> >& get_controller_throttles_and_sticks_deadzone_and_precision(int controller_index) const;
 	bool set_vibration(unsigned controller_index, float low_frequency_strength, float high_frequency_strength);
@@ -90,29 +84,23 @@ class CGV_API vr_emulator :
 	public vr::vr_driver, public cgv::gui::provider, public cgv::gui::event_handler
 {
 public:
-	using quat = cgv::quat;
-	using vec3 = cgv::vec3;
-	using vec4 = cgv::vec4;
-	using mat3 = cgv::mat3;
-	using mat34 = cgv::mat34;
-
 	std::vector<vr_emulated_kit*> kits;
 	static bool gamepad_connected;
 	unsigned screen_width, screen_height;
 	unsigned counter;
 	int nr_trackers = 2;
-	vec3 body_position;
+	cgv::vec3 body_position;
 	float body_direction;
 	float body_height;
 	InteractionMode interaction_mode;
-	quat hand_orientation[2];
+	cgv::quat hand_orientation[2];
 
 	// coordinate transform used to emulate a displacement between tracking and world system
-	quat coordinate_rotation;
-	vec3 coordinate_displacement;
+	cgv::quat coordinate_rotation;
+	cgv::vec3 coordinate_displacement;
 	// information used to define reference states
-	std::vector<quat> base_orientations;
-	std::vector<vec3> base_positions;
+	std::vector<cgv::quat> base_orientations;
+	std::vector<cgv::vec3> base_positions;
 	std::vector<std::string> base_serials;
 	/// update a single renference state or all from base_orientations, base_positions and base_serials
 	void update_reference_states(int i = -1);

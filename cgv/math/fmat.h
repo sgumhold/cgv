@@ -356,7 +356,7 @@ typedef cgv::math::fmat<float, 3, 3> mat3;
 /// declare type of 4x4 matrices
 typedef cgv::math::fmat<float, 4, 4> mat4;
 /// declare type of 3x4 matrices which are often used to store a pose
-typedef cgv::math::fmat<float, 3, 4> mat34;
+typedef cgv::math::fmat<float, 3, 4> mat3x4;
 
 /// declare type of 2x2 matrices
 typedef cgv::math::fmat<double, 2, 2> dmat2;
@@ -365,7 +365,7 @@ typedef cgv::math::fmat<double, 3, 3> dmat3;
 /// declare type of 4x4 matrices
 typedef cgv::math::fmat<double, 4, 4> dmat4;
 /// declare type of 3x4 matrices which are often used to store a pose
-typedef cgv::math::fmat<double, 3, 4> dmat34;
+typedef cgv::math::fmat<double, 3, 4> dmat3x4;
 
 /// @}
 

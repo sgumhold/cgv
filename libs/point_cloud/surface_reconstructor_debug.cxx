@@ -37,8 +37,8 @@ void surface_reconstructor::draw_colored_edge(const Pnt& p, const Pnt& q, float 
 	glColor3f(r,g,b);
 	glLineWidth(width*line_width);
 	glBegin(GL_LINES);
-	glVertex3fv(p);
-	glVertex3fv(q);
+	glVertex3fv(p.data());
+	glVertex3fv(q.data());
 	glEnd();
 }
 
