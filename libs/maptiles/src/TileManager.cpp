@@ -555,6 +555,38 @@ void TileManager::AddTile3D(cgv::render::context& ctx)
 	}
 }
 
+void TileManager::CacheTrim() 
+{ 
+	std::set<RasterTileIndex> to_be_removed_raster_tile;
+	std::set<Tile3DIndex> to_be_removed_tile3D;
+
+	for (const auto& element : raster_tile_cache)
+	{
+		// Get the position of the tile in degrees
+		double lat = tiley2lat(element.first.y, element.first.zoom);
+		double lon = tilex2long(element.first.x, element.first.zoom);
+
+		if (std::abs(lat - cam_lat) > config->RasterTileRenderCacheTrimDistance || 
+			std::abs(lon - cam_lon) > config->RasterTileRenderCacheTrimDistance)
+			to_be_removed_raster_tile.insert(element.first);
+	}
+
+	for (const auto& element : tile3D_cache) {
+		// Get the position of the tile in degrees
+		double lat = element.first.lat;
+		double lon = element.first.lon;
+		if (std::abs(lat - cam_lat) > config->Tile3DRenderCacheTrimDistance ||
+			std::abs(lon - cam_lon) > config->Tile3DRenderCacheTrimDistance)
+			to_be_removed_tile3D.insert(element.first);
+	}
+
+	for (const auto& index : to_be_removed_raster_tile)
+		raster_tile_cache.erase(index);
+
+	for (const auto& index : to_be_removed_tile3D)
+		tile3D_cache.erase(index);
+}
+
 bool TileManager::IsBoxCompletelyBehindPlane(const cgv::math::fvec<float, 3>& boxMin, const cgv::math::fvec<float, 3>& boxMax,
 								const cgv::math::fvec<float, 4>& plane)
 {

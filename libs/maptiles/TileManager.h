@@ -35,6 +35,7 @@ class MAPTILES_API TileManager
 									const cgv::math::fvec<float, 4>& plane);
 
 	void ClearRenderCache();
+	void CacheTrim();
 
 	// Signal for when a tile is downloaded. In this implmentation, this signal informs the application to post a redraw
 	cgv::signal::signal<> tile_downloaded;
