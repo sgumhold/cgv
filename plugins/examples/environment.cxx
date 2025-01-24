@@ -26,7 +26,7 @@ class environment_demo :
 	public cgv::gui::event_handler
 {
 protected:
-	typedef cgv::math::fvec<signed char, 4u> cvec4;
+	typedef cgv::math::fvec<int8_t, 4> i8vec4;
 
 	view* view_ptr;
 
@@ -645,7 +645,7 @@ public:
 		int samples_u = 8;
 		int samples_v = 8;
 
-		std::vector<cvec4> jitter_data(size * size * samples_u * samples_v / 2);
+		std::vector<i8vec4> jitter_data(size * size * samples_u * samples_v / 2);
 
 		/*const rgb white = rgb(1.0f);
 		const rgb red = rgb(1.0f, 0.0f, 0.0f);
@@ -712,7 +712,7 @@ public:
 					}*/
 
 					// save samples as signed bytes to reduce memory requirements
-					jitter_data[(k * size * size + j * size + i)] = static_cast<cvec4>(127.0f * d);
+					jitter_data[(k * size * size + j * size + i)] = static_cast<i8vec4>(127.0f * d);
 				}
 			}
 		}

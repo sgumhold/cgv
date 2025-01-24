@@ -36,7 +36,7 @@ protected:
 	///
 	cgv::nui::label_manager lm;
 	/// store poses of different coordinate systems. These are computed in init_frame() function
-	mat34 pose[static_cast<int>(coordinate_system::TOTAL)];
+	mat3x4 pose[static_cast<int>(coordinate_system::TOTAL)];
 	/// store whether poses are valid
 	bool valid[static_cast<int>(coordinate_system::TOTAL)];
 	/// store label placements for rectangle renderer
@@ -83,7 +83,7 @@ public:
 	/// standard constructor for scene
 	label_drawable();
 	/// set coordinate systems from optional vr state and optional table pose
-	void set_coordinate_systems(const vr::vr_kit_state* state_ptr = 0, const mat34* table_pose_ptr = 0);
+	void set_coordinate_systems(const vr::vr_kit_state* state_ptr = 0, const mat3x4* table_pose_ptr = 0);
 	/// initialization called once per context creation
 	bool init(cgv::render::context& ctx);
 	/// initialization called once per frame
@@ -97,7 +97,7 @@ public:
 	/// check whether coordinate system is available
 	bool is_coordsystem_valid(coordinate_system cs) const;
 	/// provide access to coordinate system - check validity with is_coordsystem_valid() before
-	const mat34& get_coordsystem(coordinate_system cs) const;
+	const mat3x4& get_coordsystem(coordinate_system cs) const;
 };
 
 	}

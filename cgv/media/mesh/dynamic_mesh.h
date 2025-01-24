@@ -15,18 +15,18 @@ class CGV_API dynamic_mesh : public simple_mesh<T>
 {
 public:
 	using typename simple_mesh_base::idx_type;
-	using typename simple_mesh_base::vec2i;
-	using typename simple_mesh_base::vec3i;
-	using typename simple_mesh_base::vec4i;
+	using typename simple_mesh_base::idx2_type;
+	using typename simple_mesh_base::idx3_type;
+	using typename simple_mesh_base::idx4_type;
 	using typename simple_mesh_base::mat_type;
-	using typename simple_mesh<T>::vec2;
-	using typename simple_mesh<T>::vec3;
-	using typename simple_mesh<T>::vec4;
-	using typename simple_mesh<T>::box_type;
-	using typename simple_mesh<T>::clr_type;
+	using typename simple_mesh<T>::vec2_type;
+	using typename simple_mesh<T>::vec3_type;
+	/// type of 4d vector
+	typedef typename cgv::math::fvec<T, 4> vec4_type;
 	using typename simple_mesh<T>::mesh_type;
-	using typename simple_mesh<T>::mat3;
-	using typename simple_mesh<T>::mat4;
+	using typename simple_mesh<T>::mat3_type;
+	/// linear transformation 
+	typedef typename cgv::math::fmat<T, 4, 4> mat4_type;
 	
 	/// @brief specifies how the blend shapes are stored
 	enum class blend_shape_mode {
@@ -40,11 +40,11 @@ public:
 
   protected:
 	/// Storage for vertex positions in the bind-pose
-	std::vector<vec3> reference_positions;
+	std::vector<vec3_type> reference_positions;
 	/// Storage for vertex positions after Linear Blend Skinning
-	std::vector<vec3> intermediate_positions;
+	std::vector<vec3_type> intermediate_positions;
 	/// Storage for the blend shape vertices
-	std::vector<vec3> blend_shape_data;
+	std::vector<vec3_type> blend_shape_data;
 	/// Storage for the indices (if the blend shapes are defined by indices)
 	std::vector<uint32_t> blend_shape_indices;
 	/// @brief Captures where and how the blandshape data is stored
@@ -53,9 +53,9 @@ public:
 		/// How the blendshape is stored
 		blend_shape_mode mode;
 		/// The range of indices (indices into a std::vector!) which hold the blendshape vertices
-		vec2i blend_shape_data_range;
+		idx2_type blend_shape_data_range;
 		/// The range of indices (indices into a std::vector!) which hold the indices into the data-buffer
-		vec2i blend_shape_index_range;
+		idx2_type blend_shape_index_range;
 	};
 	/// @brief Storage for all the blendshape definitions
 	std::vector<blend_shape> blend_shapes;
@@ -98,7 +98,7 @@ public:
 	/// store current positions in intermediate positions
 	void store_in_intermediate_positions();
 	/// return const reference to intermediate position vector
-	const std::vector<vec3>& get_intermediate_positions() const;
+	const std::vector<vec3_type>& get_intermediate_positions() const;
 	/// copy intermediate positions to positions
 	void recover_intermediate_positions();
 	//@}
@@ -112,7 +112,7 @@ public:
 	/// @return the index of the newly created blend shape
 	uint32_t add_blend_shape(blend_shape_mode mode, idx_type nr_data, idx_type nr_indices = 0);
 	/// @brief Add another data point to the data buffer
-	void add_blend_shape_data(const vec3& d);
+	void add_blend_shape_data(const vec3_type& d);
 	/// @brief Add another index to the index buffer
 	void add_blend_shape_index(idx_type i);
 	/// @brief Query if a blend shape has a vertex with a given ID
@@ -122,7 +122,7 @@ public:
 	/// @brief Returns one vertex of one blend shape
 	/// @param[in] bi	Index of the desired blend shape
 	/// @param[in] vi	Index of the desired vertex
-	vec3 get_blend_shape_vector(idx_type bi, idx_type vi) const;
+	vec3_type get_blend_shape_vector(idx_type bi, idx_type vi) const;
 	/// @brief Return how many blend shapes this mesh has
 	size_t get_nr_blend_shapes() const;
 	//! this function applies weights.size() number of blend shapes starting at offset blend_shape_offset and stores result in mesh position attribute
@@ -159,11 +159,11 @@ public:
 	///
 	idx_type get_nr_joints() const;
 	/// compute joint transformations from reference joint locations, target translation and target spin vectors
-	std::vector<mat4> compute_joint_transformations(const std::vector<vec3>& reference_joint_locations,
-		const vec3& translation, const std::vector<vec3>& target_spin_vectors) const;
+	std::vector<mat4_type> compute_joint_transformations(const std::vector<vec3_type>& reference_joint_locations,
+		const vec3_type& translation, const std::vector<vec3_type>& target_spin_vectors) const;
 	/// compute joint transformations from reference joint locations, target translation and target rotation matrices
-	std::vector<mat4> compute_joint_transformations(const std::vector<vec3>& reference_joint_locations,
-		const vec3& translation, const std::vector<mat3>& target_rotations) const;
+	std::vector<mat4_type> compute_joint_transformations(const std::vector<vec3_type>& reference_joint_locations,
+		const vec3_type& translation, const std::vector<mat3_type>& target_rotations) const;
 	/// return const reference to joint parent vector
 	const std::vector<int32_t>& get_joint_parents() const;
 	/// return mutable reference to joint parent vector
@@ -178,7 +178,7 @@ public:
 		intermediate };
 	//! perform linear blend skinning on reference positions or the current mesh position attribute
 	/*! the joint matrices define per joint the transformation from reference positions or intermediate positions.*/
-	void lbs(const std::vector<mat4>& joint_matrices, lbs_source_mode mode);
+	void lbs(const std::vector<mat4_type>& joint_matrices, lbs_source_mode mode);
 	//@}
 };
 		}

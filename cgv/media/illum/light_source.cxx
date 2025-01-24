@@ -1,4 +1,4 @@
-#include "light_source.hh"
+#include "light_source.h"
 
 namespace cgv { 
 	namespace media { 

@@ -68,21 +68,15 @@ bool your_class::init(cgv::render::context& ctx)
 class CGV_API vr_view_interactor : public stereo_view_interactor, public vr::vr_calibration_base
 {
 protected:
-	using vec4 = cgv::vec4;
-	using ivec4 = cgv::ivec4;
-	using mat3 = cgv::mat3;
-	using mat34 = cgv::mat34;
-	using rgb = cgv::rgb;
-
-	ivec4 cgv_viewport;
+	cgv::ivec4 cgv_viewport;
 	void* fbo_handle;
 
 	/**@name head tracking */
 	//@{
 	/// head orientation from tracker orientation
-	mat3 head_tracker_orientation;
+	cgv::mat3 head_tracker_orientation;
 	/// head position from tracker location
-	vec3 head_tracker_position;
+	cgv::vec3 head_tracker_position;
 	//@}
 
 	/**@name calibation of tracker coordinate system
@@ -111,9 +105,9 @@ protected:
 	/// rotation angle around the y-axis
 	float tracking_rotation;
 	/// location in tracking coordinate system around which rotation is defined
-	vec3 tracking_rotation_origin;
+	cgv::vec3 tracking_rotation_origin;
 	/// origin of tracking coordinate system given in world coordinates
-	vec3 tracking_origin;
+	cgv::vec3 tracking_origin;
 	/// perform driver calibration
 	void calibrate_driver();
 	/// path to calibration file
@@ -126,16 +120,16 @@ public:
 	float get_tracking_rotation() {
 		return tracking_rotation;
 	}
-	void set_tracking_origin(vec3 ori) {
+	void set_tracking_origin(cgv::vec3 ori) {
 		tracking_origin = ori;
 		calibrate_driver();
 	}
-	vec3 get_tracking_origin() {
+	cgv::vec3 get_tracking_origin() {
 		return tracking_origin;
 	}
 	//@}
 private:
-	mat34 start_pose;
+	cgv::mat3x4 start_pose;
 protected:
 	/// whether the window shows a separate view onto the scene or the one of the current vr kit
 	bool separate_view;
@@ -163,7 +157,7 @@ protected:
 	// visualization of kits and action zone
 	VRkitVisType vis_type, hmd_vis_type, controller_vis_type, tracker_vis_type, base_vis_type;
 	bool show_action_zone;
-	rgb fence_color1, fence_color2;
+	cgv::rgb fence_color1, fence_color2;
 	float fence_frequency;
 	float fence_line_width;
 	
@@ -200,7 +194,7 @@ protected:
 	///
 	virtual void on_device_change(void* handle, bool attach);
 	/// helper to visualize pose with colored spheres
-	void add_trackable_spheres(const float* pose, int i, std::vector<vec4>& spheres, std::vector<rgb>& sphere_colors);
+	void add_trackable_spheres(const float* pose, int i, std::vector<cgv::vec4>& spheres, std::vector<cgv::rgb>& sphere_colors);
 public:
 	///
 	vr_view_interactor(const char* name);
@@ -231,12 +225,12 @@ public:
 	/*! if parameter vr_kit_idx defaults to -1, the view direction of the current vr kit is returned
 	    if there are not vr kits or the \c vr_kit_idx parameter is invalid the view direction of the 
 		\c vr_view_interactor is returned*/
-	dvec3 get_view_dir_of_kit(int vr_kit_idx = -1) const;
+	cgv::dvec3 get_view_dir_of_kit(int vr_kit_idx = -1) const;
 	//! query view up direction of a vr kit
 	/*! if parameter vr_kit_idx defaults to -1, the view up direction of the current vr kit is returned
 		if there are not vr kits or the \c vr_kit_idx parameter is invalid the view up direction of the
 		\c vr_view_interactor is returned*/
-	dvec3 get_view_up_dir_of_kit(int vr_kit_idx = -1) const;
+	cgv::dvec3 get_view_up_dir_of_kit(int vr_kit_idx = -1) const;
 	//! query the eye position of a vr kit.
 	/*! parameter \c eye is one of
 	    -1 .. left eye
@@ -245,7 +239,7 @@ public:
 		if parameter vr_kit_idx defaults to -1, the eye position of the current vr kit is returned
 		if there are not vr kits or the \c vr_kit_idx parameter is invalid the eye position of the
 		\c vr_view_interactor is returned*/
-	dvec3 get_eye_of_kit(int eye = 0, int vr_kit_idx = -1) const;
+	cgv::dvec3 get_eye_of_kit(int eye = 0, int vr_kit_idx = -1) const;
 	//@}
 	
 	/**@name vr rendering*/

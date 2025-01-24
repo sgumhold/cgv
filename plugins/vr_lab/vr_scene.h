@@ -80,13 +80,6 @@ class CGV_API vr_scene :
 	public cgv::nui::spatial_dispatcher,
 	public cgv::gui::provider
 {
-	using vec2 = cgv::vec2;
-	using vec3 = cgv::vec3;
-	using dvec3 = cgv::dvec3;
-	using rgb = cgv::rgb;
-	using rgba = cgv::rgba;
-	using box3 = cgv::box3;
-
 private:
 	// keep reference to vr view (initialized in init function)
 	vr_view_interactor* vr_view_ptr;
@@ -101,8 +94,8 @@ private:
 	//@{	
 
 	// store the static part of the scene as colored boxes with the table in the last 5 boxes
-	std::vector<box3> boxes;
-	std::vector<rgb> box_colors;
+	std::vector<cgv::box3> boxes;
+	std::vector<cgv::rgb> box_colors;
 
 	// rendering style for rendering of boxes
 	cgv::render::box_render_style box_style;
@@ -116,12 +109,12 @@ private:
 	GroundMode ground_mode;
 
 	// terrain members
-	std::vector<vec2> custom_positions;
+	std::vector<cgv::vec2> custom_positions;
 	std::vector<unsigned int> custom_indices;
 	cgv::render::terrain_render_style terrain_style;
 	int grid_width;
 	int grid_height;
-	dvec3 terrain_translation;
+	cgv::dvec3 terrain_translation;
 	double terrain_scale;
 
 	EnvironmentMode environment_mode;
@@ -141,7 +134,7 @@ private:
 	void clear_scene();
 	//@}
 	/// set the common border color of labels
-	void set_label_border_color(const rgba& border_color);
+	void set_label_border_color(const cgv::rgba& border_color);
 	/// set the common border width in percent of the minimal extent
 	void set_label_border_width(float border_width);
 
@@ -150,10 +143,10 @@ protected:
 	bool draw_controller_mode;
 	cgv::render::sphere_render_style srs;
 	cgv::render::cone_render_style crs;
-	std::vector<vec3> sphere_positions;
-	std::vector<rgb> sphere_colors;
-	std::vector<vec3> cone_positions;
-	std::vector<rgb> cone_colors;
+	std::vector<cgv::vec3> sphere_positions;
+	std::vector<cgv::rgb> sphere_colors;
+	std::vector<cgv::vec3> cone_positions;
+	std::vector<cgv::rgb> cone_colors;
 	void construct_hit_geometry();
 public:
 	/// overload to handle registration events

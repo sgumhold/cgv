@@ -129,7 +129,7 @@ void holo_view_interactor::timer_event(double t, double dt)
 		if (!(left_stick.length() > deadzone || right_stick.length() > deadzone || fabs(trigger[1] - trigger[0]) > deadzone))
 			return;
 	}
-	dvec3 x, y, z;
+	cgv::dvec3 x, y, z;
 	put_coordinate_system(x, y, z);
 	if (left_stick.length() > deadzone) {
 		float mode_sign = (right_mode == 1 ? -1.0f : 1.0f);
@@ -313,9 +313,9 @@ void holo_view_interactor::disable_viewport_splitting()
 	do_viewport_splitting = false;
 }
 
-holo_view_interactor::ivec4 holo_view_interactor::split_viewport(const ivec4 vp, int col_idx, int row_idx) const
+cgv::ivec4 holo_view_interactor::split_viewport(const cgv::ivec4 vp, int col_idx, int row_idx) const
 {
-	ivec4 new_vp;
+	cgv::ivec4 new_vp;
 	new_vp[2] = vp[2] / nr_viewport_columns;
 	new_vp[0] = vp[0] + col_idx * new_vp[2];
 	new_vp[3] = vp[3] / nr_viewport_rows;
@@ -334,8 +334,8 @@ void holo_view_interactor::activate_split_viewport(cgv::render::context& ctx, un
 {
 	if (!do_viewport_splitting)
 		return;
-	const ivec4& current_vp = ctx.get_window_transformation_array().front().viewport;
-	ivec4 new_vp = split_viewport(current_vp, col_index, row_index);
+	const cgv::ivec4& current_vp = ctx.get_window_transformation_array().front().viewport;
+	cgv::ivec4 new_vp = split_viewport(current_vp, col_index, row_index);
 	ctx.push_window_transformation_array();
 	ctx.set_viewport(new_vp);
 	double aspect = (double)new_vp[2] / new_vp[3];
@@ -357,7 +357,7 @@ void holo_view_interactor::deactivate_split_viewport(cgv::render::context& ctx)
 	if (!do_viewport_splitting)
 		return;
 	ctx.pop_window_transformation_array();
-	const ivec4& current_vp = ctx.get_window_transformation_array().front().viewport;
+	const cgv::ivec4& current_vp = ctx.get_window_transformation_array().front().viewport;
 	double aspect = (double)current_vp[2] / current_vp[3];
 	gl_set_projection_matrix(ctx, current_e, aspect);
 	gl_set_modelview_matrix(ctx, current_e, aspect, *this);
@@ -381,15 +381,15 @@ cgv::render::view& holo_view_interactor::ref_viewport_view(unsigned col_index, u
 
 //! given a mouse location and the pixel extent of the context, return the MPW matrix for unprojection
 int holo_view_interactor::get_modelview_projection_window_matrices(int x, int y, int width, int height,
-	const dmat4** MPW_pptr,
-	const dmat4** MPW_other_pptr, int* x_other_ptr, int* y_other_ptr,
+	const cgv::dmat4** MPW_pptr,
+	const cgv::dmat4** MPW_other_pptr, int* x_other_ptr, int* y_other_ptr,
 	int* vp_col_idx_ptr, int* vp_row_idx_ptr,
 	int* vp_width_ptr, int* vp_height_ptr,
 	int* vp_center_x_ptr, int* vp_center_y_ptr,
 	int* vp_center_x_other_ptr, int* vp_center_y_other_ptr) const
 {
 	*MPW_pptr = &MPW;
-	const dmat4* MPW_other_ptr_local = &MPW;
+	const cgv::dmat4* MPW_other_ptr_local = &MPW;
 	int vp_width = width;
 	int vp_height = height;
 	int eye_panel = 0;
@@ -497,14 +497,14 @@ int holo_view_interactor::get_modelview_projection_window_matrices(int x, int y,
 
 void holo_view_interactor::get_vp_col_and_row_indices(cgv::render::context& ctx, int x, int y, int& vp_col_idx, int& vp_row_idx)
 {
-	const dmat4* MPW_ptr, * MPW_other_ptr;
+	const cgv::dmat4* MPW_ptr, * MPW_other_ptr;
 	int x_other, y_other, vp_width, vp_height;
 	int eye_panel = get_modelview_projection_window_matrices(x, y, ctx.get_width(), ctx.get_height(), &MPW_ptr, &MPW_other_ptr, &x_other, &y_other, &vp_col_idx, &vp_row_idx, &vp_width, &vp_height);
 }
 
-double holo_view_interactor::get_z_and_unproject(cgv::render::context& ctx, int x, int y, dvec3& p)
+double holo_view_interactor::get_z_and_unproject(cgv::render::context& ctx, int x, int y, cgv::dvec3& p)
 {
-	const dmat4* MPW_ptr, * MPW_other_ptr;
+	const cgv::dmat4* MPW_ptr, * MPW_other_ptr;
 	int x_other, y_other, vp_col_idx, vp_row_idx, vp_width, vp_height;
 	int eye_panel = get_modelview_projection_window_matrices(x, y, ctx.get_width(), ctx.get_height(), &MPW_ptr, &MPW_other_ptr, &x_other, &y_other, &vp_col_idx, &vp_row_idx, &vp_width, &vp_height);
 	ctx.make_current();
@@ -521,22 +521,22 @@ double holo_view_interactor::get_z_and_unproject(cgv::render::context& ctx, int 
 	}
 }
 
-cgv::render::view::dvec3 unpack_dir(char c)
+cgv::dvec3 unpack_dir(char c)
 {
 	switch (c) {
-	case 'x': return cgv::render::view::dvec3(1, 0, 0);
-	case 'X': return cgv::render::view::dvec3(-1, 0, 0);
-	case 'y': return cgv::render::view::dvec3(0, 1, 0);
-	case 'Y': return cgv::render::view::dvec3(0, -1, 0);
-	case 'z': return cgv::render::view::dvec3(0, 0, 1);
-	case 'Z': return cgv::render::view::dvec3(0, 0, -1);
+	case 'x': return cgv::dvec3(1, 0, 0);
+	case 'X': return cgv::dvec3(-1, 0, 0);
+	case 'y': return cgv::dvec3(0, 1, 0);
+	case 'Y': return cgv::dvec3(0, -1, 0);
+	case 'z': return cgv::dvec3(0, 0, 1);
+	case 'Z': return cgv::dvec3(0, 0, -1);
 	}
-	return cgv::render::view::dvec3(0, 0, 0);
+	return cgv::dvec3(0, 0, 0);
 }
 
 void holo_view_interactor::set_view_orientation(const std::string& axes)
 {
-	dvec3 axis;
+	cgv::dvec3 axis;
 	double angle;
 	compute_axis_and_angle(unpack_dir(axes[0]), unpack_dir(axes[1]), axis, angle);
 	cgv::gui::animate_with_axis_rotation(view_dir, axis, angle, 0.5)->set_base_ptr(this);
@@ -754,7 +754,7 @@ bool holo_view_interactor::handle(event& e)
 		int center_x = 320, center_y = 240;
 		int vp_col_idx, vp_row_idx;
 		cgv::render::view* view_ptr = this;
-		const dmat4* MPW_ptr = 0;
+		const cgv::dmat4* MPW_ptr = 0;
 		if (get_context()) {
 			int eye = get_modelview_projection_window_matrices(x_gl, y_gl,
 				get_context()->get_width(), get_context()->get_height(),
@@ -764,7 +764,7 @@ bool holo_view_interactor::handle(event& e)
 				view_ptr = &views[view_index];
 			}
 		}
-		dvec3 x, y, z;
+		cgv::dvec3 x, y, z;
 		view_ptr->put_coordinate_system(x, y, z);
 
 		switch (me.get_action()) {
@@ -785,11 +785,11 @@ bool holo_view_interactor::handle(event& e)
 				if (dt < 0.2) {
 					if (get_context()) {
 						cgv::render::context& ctx = *get_context();
-						dvec3 p;
+						cgv::dvec3 p;
 						double z = get_z_and_unproject(ctx, x_gl, y_gl, p);
 						if (z > 0 && z < 1) {
 							if (y_view_angle > 0.1) {
-								dvec3 e = view_ptr->get_eye();
+								cgv::dvec3 e = view_ptr->get_eye();
 								double l_old = (e - view_ptr->get_focus()).length();
 								double l_new = dot(p - e, view_ptr->get_view_dir());
 								//std::cout << "e=(" << e << "), p=(" << p << "), vd=(" << view_ptr->get_view_dir() << ") l_old=" << l_old << ", l_new=" << l_new << std::endl;
@@ -885,7 +885,7 @@ bool holo_view_interactor::handle(event& e)
 				double scale = exp(0.2 * me.get_dy() / zoom_sensitivity);
 				if (get_context()) {
 					cgv::render::context& ctx = *get_context();
-					dvec3 p;
+					cgv::dvec3 p;
 					double z = get_z_and_unproject(ctx, x_gl, y_gl, p);
 					if (z > 0 && z < 1) {
 						view_ptr->set_focus(p + scale * (view_ptr->get_focus() - p));
@@ -957,7 +957,7 @@ void holo_view_interactor::finish_frame(cgv::render::context& ctx)
 	}
 }
 ///
-void holo_view_interactor::draw_mouse_pointer_as_bitmap(cgv::render::context& ctx, int x, int y, int center_x, int center_y, int vp_width, int vp_height, bool visible, const dmat4& MPW)
+void holo_view_interactor::draw_mouse_pointer_as_bitmap(cgv::render::context& ctx, int x, int y, int center_x, int center_y, int vp_width, int vp_height, bool visible, const cgv::dmat4& MPW)
 {
 	static unsigned char bitmap_data[] = {
 		0x40, 0x00,
@@ -979,7 +979,7 @@ void holo_view_interactor::draw_mouse_pointer_as_bitmap(cgv::render::context& ct
 	};
 
 	double z0_D = get_z_D(-get_parallax_zero_depth(), z_near_derived, z_far_derived);
-	vec3 p = ctx.get_model_point(x, y, z0_D, MPW);
+	cgv::vec3 p = ctx.get_model_point(x, y, z0_D, MPW);
 	glRasterPos3d(p(0), p(1), p(2));
 	if (visible)
 		glColor3f(1.0f, 1.0f, 1.0f);
@@ -989,7 +989,7 @@ void holo_view_interactor::draw_mouse_pointer_as_bitmap(cgv::render::context& ct
 	glBitmap(16, 16, 0, 0, 0, 0, bitmap_data);
 }
 ///
-void holo_view_interactor::draw_mouse_pointer_as_pixels(cgv::render::context& ctx, int x, int y, int center_x, int center_y, int vp_width, int vp_height, bool visible, const dmat4& MPW)
+void holo_view_interactor::draw_mouse_pointer_as_pixels(cgv::render::context& ctx, int x, int y, int center_x, int center_y, int vp_width, int vp_height, bool visible, const cgv::dmat4& MPW)
 {
 	static unsigned char pixel_data[] = {
 		0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
@@ -1018,7 +1018,7 @@ void holo_view_interactor::draw_mouse_pointer_as_pixels(cgv::render::context& ct
 
 	double z0_D = get_z_D(-get_parallax_zero_depth(), z_near_derived, z_far_derived);
 
-	vec3 p = ctx.get_model_point(x, y, z0_D, MPW);
+	cgv::vec3 p = ctx.get_model_point(x, y, z0_D, MPW);
 	glRasterPos3d(p(0), p(1), p(2));
 
 	glEnable(GL_ALPHA_TEST);
@@ -1033,13 +1033,13 @@ void holo_view_interactor::draw_mouse_pointer_as_pixels(cgv::render::context& ct
 	glDrawPixels(16, 16, GL_COLOR_INDEX, GL_UNSIGNED_BYTE, pixel_data);
 }
 ///
-void holo_view_interactor::draw_mouse_pointer_as_arrow(cgv::render::context& ctx, int x, int y, int center_x, int center_y, int vp_width, int vp_height, bool visible, const dmat4& MPW)
+void holo_view_interactor::draw_mouse_pointer_as_arrow(cgv::render::context& ctx, int x, int y, int center_x, int center_y, int vp_width, int vp_height, bool visible, const cgv::dmat4& MPW)
 {
 	static cgv::media::illum::surface_material smp_mat_visible;
 	static cgv::media::illum::surface_material smp_mat_hidden;
-	smp_mat_visible.set_diffuse_reflectance(rgb(1, 1, 1));
-	smp_mat_hidden.set_diffuse_reflectance(rgb(0.3f, 0.3f, 0.3f));
-	smp_mat_hidden.set_emission(rgb(0.3f, 0.3f, 0.3f));
+	smp_mat_visible.set_diffuse_reflectance(cgv::rgb(1, 1, 1));
+	smp_mat_hidden.set_diffuse_reflectance(cgv::rgb(0.3f, 0.3f, 0.3f));
+	smp_mat_hidden.set_emission(cgv::rgb(0.3f, 0.3f, 0.3f));
 
 	double z0_D = get_z_D(-get_parallax_zero_depth(), z_near_derived, z_far_derived);
 
@@ -1069,8 +1069,8 @@ void holo_view_interactor::draw_mouse_pointer_as_arrow(cgv::render::context& ctx
 	float ds_begin = 1.5f / len;
 	int dx_begin = int(dx * ds_begin);
 	int dy_begin = int(dy * ds_begin);
-	dvec3 p_end = ctx.get_model_point(x + dx_begin, y + dy_begin, z0_D, MPW);
-	dvec3 p_begin = ctx.get_model_point(x + dx_end, y + dy_end, z0_D, MPW);
+	cgv::dvec3 p_end = ctx.get_model_point(x + dx_begin, y + dy_begin, z0_D, MPW);
+	cgv::dvec3 p_begin = ctx.get_model_point(x + dx_end, y + dy_end, z0_D, MPW);
 	p_begin -= 0.3f * (p_begin - p_end).length() * get_view_dir();
 
 	shader_program& prog = ctx.ref_surface_shader_program();
@@ -1099,7 +1099,7 @@ void holo_view_interactor::draw_mouse_pointer_as_arrow(cgv::render::context& ctx
 
 void holo_view_interactor::draw_mouse_pointer(cgv::render::context& ctx, bool visible)
 {
-	const dmat4* MPW_ptr, * MPW_other_ptr;
+	const cgv::dmat4* MPW_ptr, * MPW_other_ptr;
 	int x_other, y_other, vp_col_idx, vp_row_idx, vp_width, vp_height, vp_center_x, vp_center_y, vp_center_x_other, vp_center_y_other;
 	int eye_panel = get_modelview_projection_window_matrices(last_x, last_y, ctx.get_width(), ctx.get_height(),
 		&MPW_ptr, &MPW_other_ptr, &x_other, &y_other,
@@ -1167,7 +1167,7 @@ static unsigned int cms[8][2][3] = {
 /// set the current projection matrix
 void holo_view_interactor::gl_set_projection_matrix(cgv::render::context& ctx, float e, double aspect)
 {
-	dmat4 P;
+	cgv::dmat4 P;
 	if (y_view_angle <= 0.1)
 		P = ortho4<double>(-aspect * y_extent_at_focus, aspect * y_extent_at_focus, -y_extent_at_focus, y_extent_at_focus, z_near_derived, z_far_derived);
 	else {
@@ -1263,7 +1263,7 @@ void holo_view_interactor::init_frame(context& ctx)
 		if (!multi_pass_ignore_finish(ctx)) {
 			current_e = compute_eye_base(vi);
 			if (holo_mode == HM_QUILT) {
-				ivec4 vp(quilt_col * view_width, quilt_row * view_height, view_width, view_height);
+				cgv::ivec4 vp(quilt_col * view_width, quilt_row * view_height, view_width, view_height);
 				glViewport(vp[0], vp[1], vp[2], vp[3]);
 				glScissor(vp[0], vp[1], vp[2], vp[3]);
 				glEnable(GL_SCISSOR_TEST);
@@ -1288,12 +1288,12 @@ void holo_view_interactor::init_frame(context& ctx)
 	if (current_e == GLSU_RIGHT) {
 		MPW_right = ctx.get_modelview_projection_window_matrix();
 		if (do_viewport_splitting)
-			MPWs_right = std::vector<dmat4>(nr_viewport_rows * nr_viewport_columns, MPW_right);
+			MPWs_right = std::vector<cgv::dmat4>(nr_viewport_rows * nr_viewport_columns, MPW_right);
 	}
 	else {
 		MPW = ctx.get_modelview_projection_window_matrix();
 		if (do_viewport_splitting)
-			MPWs = std::vector<dmat4>(nr_viewport_rows * nr_viewport_columns, MPW);
+			MPWs = std::vector<cgv::dmat4>(nr_viewport_rows * nr_viewport_columns, MPW);
 	}
 }
 
@@ -1414,7 +1414,7 @@ void holo_view_interactor::post_process_surface(cgv::render::context& ctx)
 			display_write_to_file = false;
 			on_set(&display_write_to_file);
 		}
-		vec4 src_rect(float(blit_offset_x), float(blit_offset_y), float(blit_offset_x+ctx.get_width()), float(blit_offset_y+ctx.get_height()));
+		cgv::vec4 src_rect(float(blit_offset_x), float(blit_offset_y), float(blit_offset_x+ctx.get_width()), float(blit_offset_y+ctx.get_height()));
 		display_fbo.blit_to(ctx, src_rect, cgv::render::BTB_COLOR_BIT, false);
 	}
 	else {
@@ -1457,17 +1457,17 @@ void holo_view_interactor::draw_focus()
 	glColor3f(0.5f, 0.5f, 0.5f);
 	glBegin(GL_LINES);
 	glVertex3dv(get_focus().data());
-	glVertex3dv((get_focus() + dvec3(0.5 * get_y_extent_at_focus(), 0, 0)).data());
+	glVertex3dv((get_focus() + cgv::dvec3(0.5 * get_y_extent_at_focus(), 0, 0)).data());
 	glVertex3dv(get_focus().data());
-	glVertex3dv((get_focus() + dvec3(0, 0.5 * get_y_extent_at_focus(), 0)).data());
+	glVertex3dv((get_focus() + cgv::dvec3(0, 0.5 * get_y_extent_at_focus(), 0)).data());
 	glVertex3dv(get_focus().data());
-	glVertex3dv((get_focus() + dvec3(0, 0, 0.5 * get_y_extent_at_focus())).data());
+	glVertex3dv((get_focus() + cgv::dvec3(0, 0, 0.5 * get_y_extent_at_focus())).data());
 	glVertex3dv(get_focus().data());
-	glVertex3dv((get_focus() + dvec3(-0.5 * get_y_extent_at_focus(), 0, 0)).data());
+	glVertex3dv((get_focus() + cgv::dvec3(-0.5 * get_y_extent_at_focus(), 0, 0)).data());
 	glVertex3dv(get_focus().data());
-	glVertex3dv((get_focus() + dvec3(0, -0.5 * get_y_extent_at_focus(), 0)).data());
+	glVertex3dv((get_focus() + cgv::dvec3(0, -0.5 * get_y_extent_at_focus(), 0)).data());
 	glVertex3dv(get_focus().data());
-	glVertex3dv((get_focus() + dvec3(0, 0, -0.5 * get_y_extent_at_focus())).data());
+	glVertex3dv((get_focus() + cgv::dvec3(0, 0, -0.5 * get_y_extent_at_focus())).data());
 	glEnd();
 }
 

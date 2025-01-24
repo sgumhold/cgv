@@ -7,7 +7,7 @@
 #include <cgv/type/func/promote_const.h>
 #include <cgv/type/traits/max.h>
 #include <cgv/type/info/type_name.h>
-#include "color_model.hh"
+#include "color_model.h"
 #include <math.h>
 
 namespace cgv {
