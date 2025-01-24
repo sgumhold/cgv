@@ -165,7 +165,7 @@ $(document).ready(function(){initNavTree('textured__surface__material_8cxx_sourc
 <div class="line"><a id="l00064" name="l00064"></a><span class="lineno">   64</span>    set_diffuse_reflectance(obj_mat.get_diffuse());</div>
 <div class="line"><a id="l00065" name="l00065"></a><span class="lineno">   65</span>    set_specular_reflectance(obj_mat.get_specular());</div>
 <div class="line"><a id="l00066" name="l00066"></a><span class="lineno">   66</span>    set_emission(obj_mat.get_emission());</div>
-<div class="line"><a id="l00067" name="l00067"></a><span class="lineno">   67</span>    set_roughness(std::max(0.0f, std::min(1.0f, 1.0f/(1.0,obj_mat.get_shininess()+ 0.992307f) - 0.0077524f)));</div>
+<div class="line"><a id="l00067" name="l00067"></a><span class="lineno">   67</span>    set_roughness(std::max(0.0f, std::min(1.0f, 1.0f/(obj_mat.get_shininess()+0.992307f) - 0.0077524f)));</div>
 <div class="line"><a id="l00068" name="l00068"></a><span class="lineno">   68</span>    set_transparency(1.0f - obj_mat.<a class="code hl_function" href="classcgv_1_1media_1_1illum_1_1obj__material.html#a5e6e2299515565ea72da5a7b4b0a3721">get_opacity</a>());</div>
 <div class="line"><a id="l00069" name="l00069"></a><span class="lineno">   69</span>    <a class="code hl_function" href="classcgv_1_1media_1_1illum_1_1textured__surface__material.html#a4f7b04553dd6d9de85a45246f21357e0">set_bump_scale</a>(obj_mat.<a class="code hl_function" href="classcgv_1_1media_1_1illum_1_1obj__material.html#a27753b5beb68b9de7428c78135ac5e88">get_bump_scale</a>());</div>
 <div class="line"><a id="l00070" name="l00070"></a><span class="lineno">   70</span>    std::map&lt;std::string, int&gt; file_name_map;</div>
