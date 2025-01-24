@@ -277,6 +277,8 @@ public:
 	{ 
 		std::cout << "recentering at (" << latitude << ", " << longitude << ")\n";
 
+		manager.ClearRenderCache();
+
 		offset(0, 3) = x;
 		offset(2, 3) = z;
 
@@ -329,6 +331,9 @@ public:
 		connect_copy(add_button("Re-Center")->click, cgv::signal::rebind(this, &maptiles::recenter));
 		add_member_control(this, "Auto Recenter", auto_recenter, "check");
 		connect_copy(add_button("Clear Render Cache")->click, cgv::signal::rebind(&manager, &TileManager::ClearRenderCache));
+		connect_copy(add_button("Trim Render Cache")->click,
+					 cgv::signal::rebind(&manager, &TileManager::CacheTrim));
+
 	}
 };
 
