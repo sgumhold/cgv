@@ -46,21 +46,28 @@ RasterTileRender::RasterTileRender(cgv::render::context& ctx, RasterTileData& ti
 	V.texcoord = vec2(0.0f, 1.0f);
 	vertices.push_back(V);
 
-	vertex_buffer.create(ctx, &(vertices[0]), vertices.size());
+	vertex_buffer = std::make_shared<cgv::render::vertex_buffer>();
+	vertex_buffer->create(ctx, &(vertices[0]), vertices.size());
 
 	cgv::render::type_descriptor vec3type =
 		  cgv::render::element_descriptor_traits<vec3>::get_type_descriptor(vertices[0].position);
 	cgv::render::type_descriptor vec2type =
 		  cgv::render::element_descriptor_traits<vec2>::get_type_descriptor(vertices[0].texcoord);
 
-	vertex_array.create(ctx);
+	vertex_array = std::make_shared<cgv::render::attribute_array_binding>();
+	vertex_array->create(ctx);
 
-	vertex_array.set_attribute_array(ctx, shader.get_position_index(), vec3type, vertex_buffer, 0,
+	vertex_array->set_attribute_array(ctx, shader.get_position_index(), vec3type, *vertex_buffer.get(), 0,
 									 vertices.size(), sizeof(Vertex));
 
-	vertex_array.set_attribute_array(ctx, shader.get_texcoord_index(), vec2type, vertex_buffer,
+	vertex_array->set_attribute_array(ctx, shader.get_texcoord_index(), vec2type, *vertex_buffer.get(),
 									 sizeof(vec3),
 									 vertices.size(), sizeof(Vertex));
 
 	tmp_texture = std::make_shared<MapTiles::Texture>(tile.m_image, tile.m_height, tile.m_width);
+}
+
+RasterTileRender::~RasterTileRender() 
+{
+
 }

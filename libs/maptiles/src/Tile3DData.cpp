@@ -37,7 +37,6 @@ Tile3DData::Tile3DData(Tile3DData&& other) noexcept
 
 Tile3DData::~Tile3DData() 
 {
-
 }
 
 void Tile3DData::ConvertTo3DCoordinates(double refLat, double refLon)

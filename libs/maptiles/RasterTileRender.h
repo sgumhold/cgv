@@ -24,8 +24,8 @@ class MAPTILES_API RasterTileRender
 	};
 
 public:
-	cgv::render::vertex_buffer vertex_buffer;
-	cgv::render::attribute_array_binding vertex_array;
+	std::shared_ptr<cgv::render::vertex_buffer> vertex_buffer;
+	std::shared_ptr<cgv::render::attribute_array_binding> vertex_array;
 	static cgv::render::shader_program shader;
 	//cgv::render::texture texture;
 	// TODO: Remove MapTiles::Texture. Use cgv::render::texture instead
@@ -34,4 +34,5 @@ public:
 public:
 	RasterTileRender() {}
 	RasterTileRender(cgv::render::context& ctx, RasterTileData& tile, double ref_lat, double ref_lon);
+	~RasterTileRender();
 };
