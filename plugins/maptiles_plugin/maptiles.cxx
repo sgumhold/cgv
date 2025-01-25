@@ -330,9 +330,17 @@ public:
 		add_decorator("Re-Centering", "text", "level=3");
 		connect_copy(add_button("Re-Center")->click, cgv::signal::rebind(this, &maptiles::recenter));
 		add_member_control(this, "Auto Recenter", auto_recenter, "check");
-		connect_copy(add_button("Clear Render Cache")->click, cgv::signal::rebind(&manager, &TileManager::ClearRenderCache));
+		
+		connect_copy(add_button("Clear Render Cache")->click, 
+					 cgv::signal::rebind(&manager, &TileManager::ClearRenderCache));
 		connect_copy(add_button("Trim Render Cache")->click,
-					 cgv::signal::rebind(&manager, &TileManager::CacheTrim));
+					 cgv::signal::rebind(&manager, &TileManager::TrimRenderCache));
+		/*
+		connect_copy(add_button("Clear Data Cache")->click,
+					 cgv::signal::rebind(&manager, &TileManager::ClearDataCache));
+		connect_copy(add_button("Trim Data Cache")->click,
+					 cgv::signal::rebind(&manager, &TileManager::TrimDataCache));
+		*/
 
 	}
 };

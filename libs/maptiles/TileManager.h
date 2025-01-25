@@ -35,7 +35,9 @@ class MAPTILES_API TileManager
 									const cgv::math::fvec<float, 4>& plane);
 
 	void ClearRenderCache();
-	void CacheTrim();
+	void TrimRenderCache();
+	void ClearDataCache();
+	void TrimDataCache();
 
 	// Signal for when a tile is downloaded. In this implmentation, this signal informs the application to post a redraw
 	cgv::signal::signal<> tile_downloaded;
@@ -79,7 +81,7 @@ class MAPTILES_API TileManager
 	std::map<RasterTileIndex, RasterTileRender> active_raster_tile;
 	std::map<Tile3DIndex, Tile3DRender> active_tile3D;
 	std::map<RasterTileIndex, RasterTileData> queue_raster_tiles;
-	std::map<Tile3DIndex, Tile3DData> queue_tile3Ds;
+	std::map<Tile3DIndex, Tile3DData&> queue_tile3Ds;
 
 	mutable std::mutex m_MutexActiveRasterTiles;
 	mutable std::mutex m_MutexActiveTile3Ds;
