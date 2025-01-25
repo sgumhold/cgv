@@ -6,8 +6,8 @@
 class MAPTILES_API RasterTileData
 {
 public:
-	RasterTileData();
 	RasterTileData(unsigned char* image, int height, int width, int zoom, int x, int y);
+	RasterTileData(RasterTileData&& other) noexcept;
 	~RasterTileData();
 
 public:

@@ -30,7 +30,7 @@ RasterTileData& TileManagerData::GetRasterTile(int zoom, int x, int y)
 
 	if (m_RasterTileCache.find(index) != m_RasterTileCache.end())
 	{
-		return m_RasterTileCache[index];
+		return m_RasterTileCache.at(index);
 	}
 
 	OSMRasterTileLoader loader(zoom, x, y);
@@ -40,9 +40,9 @@ RasterTileData& TileManagerData::GetRasterTile(int zoom, int x, int y)
 	RasterTileData rasterTile(processor.GetImage(), processor.GetHeight(), processor.GetWidth(), zoom, loader.GetX(), loader.GetY());
 
 	std::lock_guard<std::mutex> lockActive(m_MutexRasterTiles);
-	m_RasterTileCache[index] = std::move(rasterTile);
+	m_RasterTileCache.emplace(index, std::move(rasterTile));
 
-	return m_RasterTileCache[index];
+	return m_RasterTileCache.at(index);
 }
 
 RasterTileData& TileManagerData::GetRasterTile(int zoom, double lat, double lon)

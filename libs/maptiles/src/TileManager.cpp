@@ -497,9 +497,9 @@ void TileManager::GetTile3DNeighbours()
 
 void TileManager::AddRasterTileToQueue(RasterTileIndex index)
 {
-	RasterTileData tileData = tile_manager_data.GetRasterTile(index.zoom, index.x, index.y);
+	RasterTileData& tileData = tile_manager_data.GetRasterTile(index.zoom, index.x, index.y);
 	std::lock_guard<std::mutex> lock(m_MutexQueueRasterTiles);
-	queue_raster_tiles[index] = tileData;
+	queue_raster_tiles.emplace(index, tileData);
 	requested_raster_tile.erase(index);
 	
 	// Send the signal that the tile was downloaded
