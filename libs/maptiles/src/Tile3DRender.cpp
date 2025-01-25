@@ -22,9 +22,11 @@ Tile3DRender::Tile3DRender(cgv::render::context& ctx, const Tile3DData& tile, do
 
 	count = mesh.size();
 
-	success = vertex_buffer.create(ctx, &(mesh[0]), mesh.size()) && success;
+	vertex_buffer = std::make_shared<cgv::render::vertex_buffer>();
+	success = vertex_buffer->create(ctx, &(mesh[0]), mesh.size()) && success;
 
-	success = vertex_array.create(ctx) && success;
+	vertex_array = std::make_shared<cgv::render::attribute_array_binding>();
+	success = vertex_array->create(ctx) && success;
 
 	cgv::render::type_descriptor vec3type =
 		  cgv::render::element_descriptor_traits<vec3>::get_type_descriptor(mesh[0].position);
@@ -32,19 +34,18 @@ Tile3DRender::Tile3DRender(cgv::render::context& ctx, const Tile3DData& tile, do
 		  cgv::render::element_descriptor_traits<vec4>::get_type_descriptor(mesh[0].color);
 
 
-	success = vertex_array.set_attribute_array(ctx, shader.get_position_index(), vec3type, vertex_buffer, 0,
+	success = vertex_array->set_attribute_array(ctx, shader.get_position_index(), vec3type, *vertex_buffer.get(), 0,
 											   mesh.size(), sizeof(Vertex)) && success;
 
-	success = vertex_array.set_attribute_array(ctx, shader.get_color_index(), vec4type, vertex_buffer,
+	success = vertex_array->set_attribute_array(ctx, shader.get_color_index(), vec4type, *vertex_buffer.get(),
 											   sizeof(vec3), mesh.size(), sizeof(Vertex)) && success;
 
-	success = vertex_array.set_attribute_array(ctx, shader.get_normal_index(), vec3type, vertex_buffer,
+	success = vertex_array->set_attribute_array(ctx, shader.get_normal_index(), vec3type, *vertex_buffer.get(),
 											   sizeof(vec3) + sizeof(vec4),
 											   mesh.size(), sizeof(Vertex)) && success;
 }
 
 Tile3DRender::~Tile3DRender() 
 { 
-	//std::cout << "Tile3DRender Destructor\n"; 
 }
 

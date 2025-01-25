@@ -60,7 +60,7 @@ Tile3DData& TileManagerData::GetTile3D(double lat, double lon)
 
 	if (m_Tile3DCache.find(index) != m_Tile3DCache.end())
 	{
-		auto& tile = m_Tile3DCache.at(index);
+		Tile3DData& tile = m_Tile3DCache.at(index);
 		if (tile.ref_lat == m_config->ReferencePoint.lat && tile.ref_lon == m_config->ReferencePoint.lon)
 		{
 			return tile;

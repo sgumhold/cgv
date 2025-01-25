@@ -8,6 +8,8 @@
 
 #include "Tile3DData.h"
 
+#include <memory>
+
 class MAPTILES_API Tile3DRender
 {
 	typedef cgv::math::fvec<float, 3> vec3;
@@ -24,8 +26,8 @@ public:
 	std::vector<Vertex> mesh;
 	float lat_min, lon_min, lat_max, lon_max;
 	
-	cgv::render::vertex_buffer vertex_buffer;
-	cgv::render::attribute_array_binding vertex_array;
+	std::shared_ptr<cgv::render::vertex_buffer> vertex_buffer;
+	std::shared_ptr<cgv::render::attribute_array_binding> vertex_array;
 	static cgv::render::shader_program shader;
 
 	uint32_t count = 0;

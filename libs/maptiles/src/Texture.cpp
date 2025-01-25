@@ -21,7 +21,6 @@ Texture::Texture(unsigned char* buffer, int height, int width)
 Texture::~Texture()
 {
 	glDeleteTextures(1, &m_Id);
-	// free(m_LocalBuffer);
 }
 
 void Texture::Bind(unsigned int slot) const
