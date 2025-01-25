@@ -90,7 +90,6 @@ void TileManagerData::ClearCache()
 {
 	std::lock_guard<std::mutex> lockRasterTiles(m_MutexRasterTiles);
 	m_RasterTileCache.clear();
-	lockRasterTiles.~lock_guard();
 
 	std::lock_guard<std::mutex> lockTile3D(m_MutexTile3Ds);
 	m_Tile3DCache.clear();
@@ -122,8 +121,6 @@ void TileManagerData::TrimCache()
 	std::lock_guard<std::mutex> lockRasterTiles(m_MutexRasterTiles);
 	for (const auto& index : to_be_removed_raster_tile)
 		m_RasterTileCache.erase(index);
-
-	lockRasterTiles.~lock_guard();
 
 	std::lock_guard<std::mutex> lockTile3D(m_MutexTile3Ds);
 	for (const auto& index : to_be_removed_tile3D)

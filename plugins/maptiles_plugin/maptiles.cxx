@@ -251,8 +251,7 @@ public:
 
 	void on_set(void* member_ptr) override
 	{ 
-		if (   member_ptr == &latitude || member_ptr == &longitude || member_ptr == &config.FrustumRasterTilesCount
-		    || member_ptr == &config.FrustumTile3DMaxDistance || member_ptr == &config.FrustumBasedTileGeneration)
+		if (   member_ptr == &latitude || member_ptr == &longitude )
 		{
 			config.ReferencePoint = {latitude, longitude};
 			manager.ReInit(latitude, longitude, altitude, &config);
@@ -335,12 +334,12 @@ public:
 					 cgv::signal::rebind(&manager, &TileManager::ClearRenderCache));
 		connect_copy(add_button("Trim Render Cache")->click,
 					 cgv::signal::rebind(&manager, &TileManager::TrimRenderCache));
-		/*
+		
 		connect_copy(add_button("Clear Data Cache")->click,
 					 cgv::signal::rebind(&manager, &TileManager::ClearDataCache));
 		connect_copy(add_button("Trim Data Cache")->click,
 					 cgv::signal::rebind(&manager, &TileManager::TrimDataCache));
-		*/
+		
 
 	}
 };
