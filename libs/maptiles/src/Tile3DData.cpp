@@ -3,11 +3,6 @@
 #include "WGS84toCartesian.hpp"
 #include <iostream>
 
-Tile3DData::Tile3DData() : lat_min(0), lon_min(0), lat_max(0), lon_max(0), ref_lat(0), ref_lon(0)
-{
-
-}
-
 Tile3DData::Tile3DData(double latMin, double lonMin, double latMax, double lonMax, std::vector<glm::dvec3>& _mesh)
 	: lat_min(latMin), lon_min(lonMin), lat_max(latMax), lon_max(lonMax), ref_lat(0), ref_lon(0)
 {
@@ -26,6 +21,23 @@ Tile3DData::Tile3DData(double latMin, double lonMin, double latMax, double lonMa
 	mesh_wgs.push_back({.5, .5, .5});
 	mesh_wgs.push_back({lat_min, lon_max, -100});
 	mesh_wgs.push_back({.5, .5, .5});
+}
+
+Tile3DData::Tile3DData(Tile3DData&& other) noexcept 
+{
+	lat_min = other.lat_min;
+	lon_min = other.lon_min;
+	lat_max = other.lat_max;
+	lon_max = other.lon_max;
+	ref_lat = other.ref_lat;
+	ref_lon = other.ref_lon;
+	mesh_cartesian = std::move(other.mesh_cartesian);
+	mesh_wgs = std::move(other.mesh_wgs);
+}
+
+Tile3DData::~Tile3DData() 
+{
+
 }
 
 void Tile3DData::ConvertTo3DCoordinates(double refLat, double refLon)

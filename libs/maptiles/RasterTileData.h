@@ -8,6 +8,8 @@ class MAPTILES_API RasterTileData
 public:
 	RasterTileData();
 	RasterTileData(unsigned char* image, int height, int width, int zoom, int x, int y);
+	~RasterTileData();
+
 public:
 	int m_zoom;
 	int m_x, m_y;

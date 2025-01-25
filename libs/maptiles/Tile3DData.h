@@ -8,8 +8,9 @@
 class Tile3DData
 {
 public:
-	MAPTILES_API Tile3DData();
 	MAPTILES_API Tile3DData(double latMin, double lonMin, double latMax, double lonMax, std::vector<glm::dvec3>& mesh);
+	MAPTILES_API Tile3DData(Tile3DData&& other) noexcept;
+	MAPTILES_API ~Tile3DData();
 	MAPTILES_API void ConvertTo3DCoordinates(double refLat, double refLon);
 
   public:

@@ -508,9 +508,9 @@ void TileManager::AddRasterTileToQueue(RasterTileIndex index)
 
 void TileManager::AddTile3DToQueue(Tile3DIndex index)
 {
-	Tile3DData tileData = tile_manager_data.GetTile3D(index.lat, index.lon);
+	Tile3DData& tileData = tile_manager_data.GetTile3D(index.lat, index.lon);
 	std::lock_guard<std::mutex> lock(m_MutexQueueTile3Ds);
-	queue_tile3Ds[index] = tileData;
+	queue_tile3Ds.emplace(index, tileData);
 	requested_tile3D.erase(index);
 
 	// Send the signal that the tile was downloaded
@@ -555,7 +555,7 @@ void TileManager::AddTile3D(cgv::render::context& ctx)
 	}
 }
 
-void TileManager::CacheTrim() 
+void TileManager::TrimRenderCache() 
 { 
 	std::set<RasterTileIndex> to_be_removed_raster_tile;
 	std::set<Tile3DIndex> to_be_removed_tile3D;
@@ -585,6 +585,16 @@ void TileManager::CacheTrim()
 
 	for (const auto& index : to_be_removed_tile3D)
 		tile3D_cache.erase(index);
+}
+
+void TileManager::ClearDataCache() 
+{ 
+	tile_manager_data.ClearCache(); 
+}
+
+void TileManager::TrimDataCache() 
+{ 
+	tile_manager_data.TrimCache();
 }
 
 bool TileManager::IsBoxCompletelyBehindPlane(const cgv::math::fvec<float, 3>& boxMin, const cgv::math::fvec<float, 3>& boxMax,

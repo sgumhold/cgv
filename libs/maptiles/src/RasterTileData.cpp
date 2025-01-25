@@ -10,3 +10,8 @@ RasterTileData::RasterTileData(unsigned char* image, int height, int width, int 
 	: m_zoom(zoom), m_x(x), m_y(y), m_height(height), m_width(width), m_image(image)
 {
 }
+
+RasterTileData::~RasterTileData() 
+{
+	
+}
