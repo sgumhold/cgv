@@ -11,7 +11,7 @@ cgv_add_target(cgv_gl
 	PPP_SOURCES ${PPP_SOURCES}
 	SHADER_SOURCES ${SHADERS}
 	DEPENDENCIES
-		OpenGL ${CGV_OGL_PLATFORM_DEPS} glew json cgv_utils cgv_type cgv_data cgv_base cgv_signal cgv_math
+		OpenGL::GL OpenGL::GLU ${CGV_OGL_PLATFORM_DEPS} glew json cgv_utils cgv_type cgv_data cgv_base cgv_signal cgv_math
 		cgv_media cgv_render cgv_gui cgv_reflect_types
 
 	OVERRIDE_SHARED_EXPORT_DEFINE CGV_RENDER_GL_EXPORTS

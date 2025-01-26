@@ -54,7 +54,7 @@ add_executable(shader_test
 
 target_link_libraries(shader_test
         ${X11_LIBRARIES}
-        OpenGL
+        OpenGL::GL
         ${CGV_OGL_PLATFORM_DEPS}
         glew
         fltk

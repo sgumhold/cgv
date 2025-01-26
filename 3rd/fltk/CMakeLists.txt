@@ -172,7 +172,7 @@ install(DIRECTORY include/. DESTINATION ${CGV_3RD_INCLUDE_DEST} FILES_MATCHING P
 add_library(fltk SHARED ${SOURCES})
 target_link_libraries(fltk
         ${X11_LIBRARIES}
-        OpenGL
+        OpenGL::GL
         glew
         jpeg
         png)
@@ -211,7 +211,7 @@ install(TARGETS fltk EXPORT cgv_3rd DESTINATION ${CGV_BIN_DEST})
 add_library(fltk_static STATIC ${SOURCES})
 target_link_libraries(fltk_static
         ${X11_LIBRARIES}
-        OpenGL
+        OpenGL::GL
         glew_static
         jpeg_static
         png_static)

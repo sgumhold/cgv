@@ -7,8 +7,8 @@ if (WIN32)
     target_sources(glsu PRIVATE glsu.def)
 endif()
 
-target_link_libraries(glsu OpenGL)
-target_link_libraries(glsu_static OpenGL)
+target_link_libraries(glsu OpenGL::GL)
+target_link_libraries(glsu_static OpenGL::GL)
 
 target_include_directories(glsu PUBLIC
         $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}>
