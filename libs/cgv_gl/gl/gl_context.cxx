@@ -2851,9 +2851,9 @@ bool gl_context::shader_program_set_state(shader_program_base& spb) const
 		return false;
 	}
 	GLuint p_id = get_gl_id(spb.handle);
-	glProgramParameteriARB(p_id, GL_GEOMETRY_VERTICES_OUT_ARB, spb.geometry_shader_output_count);
-	glProgramParameteriARB(p_id, GL_GEOMETRY_INPUT_TYPE_ARB, map_to_gl(spb.geometry_shader_input_type));
-	glProgramParameteriARB(p_id, GL_GEOMETRY_OUTPUT_TYPE_ARB, map_to_gl(spb.geometry_shader_output_type));
+	glProgramParameteri(p_id, GL_GEOMETRY_VERTICES_OUT_ARB, spb.geometry_shader_output_count);
+	glProgramParameteri(p_id, GL_GEOMETRY_INPUT_TYPE_ARB, map_to_gl(spb.geometry_shader_input_type));
+	glProgramParameteri(p_id, GL_GEOMETRY_OUTPUT_TYPE_ARB, map_to_gl(spb.geometry_shader_output_type));
 	return true;
 }
 
