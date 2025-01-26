@@ -6,7 +6,7 @@ install(DIRECTORY GL DESTINATION ${CGV_3RD_INCLUDE_DEST} FILES_MATCHING PATTERN 
 
 # Shared Library
 add_library(glew SHARED glew.c)
-target_link_libraries(glew OpenGL)
+target_link_libraries(glew OpenGL::GL)
 target_compile_definitions(glew PRIVATE GLEW_BUILD)
 target_include_directories(glew PUBLIC
         $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}>
