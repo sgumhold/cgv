@@ -10,6 +10,16 @@ set(BUILD_SHARED_LIBS ON)
 set(CMAKE_CXX_STANDARD_REQUIRED 17)
 check_ipo_supported(RESULT IS_IPO_SUPPORTED)
 
+# for now, we have a hard dependency on OpenGL (could be made optional for non-graphical projects)
+find_package(OpenGL REQUIRED)
+set(CGV_OGL_PLATFORM_DEPS "")
+if (NOT WIN32)
+	set(CGV_OGL_PLATFORM_DEPS OpenGL::GLX)
+endif()
+if (NOT CMAKE_CURRENT_LIST_DIR STREQUAL CMAKE_SOURCE_DIR)
+	set(CGV_OGL_PLATFORM_DEPS ${CGV_OGL_PLATFORM_DEPS} PARENT_SCOPE)
+endif()
+
 # make sure we know that we are currently configuring the CGV Framework
 set(CGV_IS_CONFIGURING TRUE)
 
