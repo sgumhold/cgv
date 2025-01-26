@@ -10,7 +10,7 @@ cgv_add_target(cgv_post
 	HEADERS ${HEADERS}
 
 	DEPENDENCIES
-		OpenGL glew cgv_utils cgv_type cgv_data cgv_base cgv_signal
+		cgv_utils cgv_type cgv_data cgv_base cgv_signal
 		cgv_media cgv_render cgv_gui cgv_reflect_types cgv_gl
 )
 

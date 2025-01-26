@@ -12,7 +12,7 @@ cgv_add_target(cgv_g2d
 	SHADER_SOURCES ${SHADERS}
 
 	DEPENDENCIES
-		OpenGL glew cgv_utils cgv_type cgv_data cgv_base cgv_signal cgv_math
+		cgv_utils cgv_type cgv_data cgv_base cgv_signal cgv_math
 		cgv_media cgv_render cgv_gui cg_msdf cgv_reflect_types cgv_gl
 )
 
