@@ -300,7 +300,7 @@ void surface_reconstructor::compute_weighted_normals(bool reorient)
 			points[j+1] = pc->pnt(vj);
 		}
 		Nml new_nml;
-		estimate_normal_wls((Cnt)points.size(), points[0], &weights[0], new_nml);
+		cgv::math::estimate_normal_wls((Cnt)points.size(), points[0].data(), &weights[0], new_nml.data());
 		if (reorient && (dot(new_nml,pc->nml(vi)) < 0))
 			new_nml = -new_nml;
 		pc->nml(vi) = new_nml;
@@ -342,7 +342,7 @@ void surface_reconstructor::compute_bilateral_weighted_normals(bool reorient)
 			weights[j+1] = w;
 			points[j+1] = pc->pnt(vj);
 		}
-		estimate_normal_wls((Cnt)points.size(), points[0], &weights[0], NS[vi]);
+		cgv::math::estimate_normal_wls((Cnt)points.size(), points[0].data(), &weights[0], NS[vi].data());
 		if (reorient && (dot(NS[vi],pc->nml(vi)) < 0))
 			NS[vi] = -NS[vi];
 	}

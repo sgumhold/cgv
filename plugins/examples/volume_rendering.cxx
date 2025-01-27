@@ -232,22 +232,16 @@ void volume_viewer::create_gui()
 		align("/a");
 		cgv::vec3& a = volume_bounding_box.ref_min_pnt();
 		cgv::vec3& b = volume_bounding_box.ref_max_pnt();
-
-		add_member_control(this, "Min X", a.x(), "value_slider", "min=-1;max=1;step=0.05;");
-		add_member_control(this, "Y", a.y(), "value_slider", "min=-1;max=1;step=0.05;");
-		add_member_control(this, "Z", a.z(), "value_slider", "min=-1;max=1;step=0.05;");
-
-		add_member_control(this, "Max X", b.x(), "value_slider", "min=-1;max=1;step=0.05;");
-		add_member_control(this, "Y", b.y(), "value_slider", "min=-1;max=1;step=0.05;");
-		add_member_control(this, "Z", b.z(), "value_slider", "min=-1;max=1;step=0.05;");
+		add_gui("Bounding Box", volume_bounding_box, "",
+				"options='w=100;min=-2;max=2;step=0.01;ticks=true;align=\"BL\"';align_col=' '");
 		align("/b");
 		end_tree_node(volume_bounding_box);
 	}
 
-	add_decorator("Scaling", "heading", "level=3");
-	connect_copy(add_button("Fit to Resolution")->click, cgv::signal::rebind(this, &volume_viewer::fit_to_resolution));
-	connect_copy(add_button("Fit to Spacing")->click, cgv::signal::rebind(this, &volume_viewer::fit_to_spacing));
-	connect_copy(add_button("Fit to Both")->click, cgv::signal::rebind(this, &volume_viewer::fit_to_resolution_and_spacing));
+	add_decorator("Fit Scaling to", "heading", "level=3");
+	connect_copy(add_button("Resolution", "w=80"," ")->click, cgv::signal::rebind(this, &volume_viewer::fit_to_resolution));
+	connect_copy(add_button("Spacing", "w=70", " ")->click, cgv::signal::rebind(this, &volume_viewer::fit_to_spacing));
+	connect_copy(add_button("Both", "w=40")->click, cgv::signal::rebind(this, &volume_viewer::fit_to_resolution_and_spacing));
 
 	add_decorator("Transfer Function", "heading", "level=3");
 	add_member_control(this, "Preset", transfer_function_preset_idx, "dropdown", "enums='#1 (White),#2,#3 (Aneurysm),#4 (Head)'");

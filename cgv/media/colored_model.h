@@ -8,7 +8,7 @@
 namespace cgv {
 	namespace media {
 		/** coordinate type independent base class of simple mesh data structure that handles indices and colors. */
-		class CGV_API colored_model : public color_storage_types
+		class CGV_API colored_model
 		{
 		protected:
 			/// pointer to color storage

@@ -171,11 +171,11 @@ install(DIRECTORY include/. DESTINATION ${CGV_3RD_INCLUDE_DEST} FILES_MATCHING P
 # Shared Library
 add_library(fltk SHARED ${SOURCES})
 target_link_libraries(fltk
-        jpeg
-        png
+        ${X11_LIBRARIES}
+        OpenGL::GL
         glew
-        ${OPENGL_LIBRARIES}
-        ${X11_LIBRARIES})
+        jpeg
+        png)
 
 if (WIN32)
     set(ADD_DEFINITIONS "_WIN32" "WIN32_LEAN_AND_MEAN" "VC_EXTRA_LEAN" "WIN32_EXTRA_LEAN")
@@ -210,11 +210,11 @@ install(TARGETS fltk EXPORT cgv_3rd DESTINATION ${CGV_BIN_DEST})
 # Static Library
 add_library(fltk_static STATIC ${SOURCES})
 target_link_libraries(fltk_static
-        jpeg_static
-        png_static
+        ${X11_LIBRARIES}
+        OpenGL::GL
         glew_static
-        ${OPENGL_LIBRARIES}
-        ${X11_LIBRARIES})
+        jpeg_static
+        png_static)
 
 if (WIN32)
     set(ADD_DEFINITIONS "_WIN32" "WIN32_LEAN_AND_MEAN" "VC_EXTRA_LEAN" "WIN32_EXTRA_LEAN")

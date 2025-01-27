@@ -1,5 +1,5 @@
 #include <cgv/gui/provider.h>
-#include <cgv/media/illum/light_source.hh>
+#include <cgv/media/illum/light_source.h>
 
 using namespace cgv::media::illum;
 using namespace cgv::signal;

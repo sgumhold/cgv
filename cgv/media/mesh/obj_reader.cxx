@@ -34,15 +34,15 @@ namespace cgv {
 
 ///
 template <typename T>
-bool obj_reader_generic<T>::is_double(const char* begin, const char* end, crd_type& value)
+bool obj_reader_generic<T>::is_double(const char* begin, const char* end, coord_type& value)
 {
 	return is_double_impl(begin, end, value);
 }
 
 template <typename T>
-typename obj_reader_generic<T>::v2d_type obj_reader_generic<T>::parse_v2d(const std::vector<token>& t) const
+typename obj_reader_generic<T>::vec2_type obj_reader_generic<T>::parse_vec2(const std::vector<token>& t) const
 {
-	v2d_type v(0.0);
+	vec2_type v(0.0);
 	t.size() > 2 && 
 	is_double(t[1].begin,t[1].end, v(0)) && 
 	is_double(t[2].begin,t[2].end, v(1));
@@ -50,9 +50,9 @@ typename obj_reader_generic<T>::v2d_type obj_reader_generic<T>::parse_v2d(const 
 }
 
 template <typename T>
-typename obj_reader_generic<T>::v3d_type obj_reader_generic<T>::parse_v3d(const std::vector<token>& t) const
+typename obj_reader_generic<T>::vec3_type obj_reader_generic<T>::parse_vec3(const std::vector<token>& t) const
 {
-	v3d_type v(0,0,0);
+	vec3_type v(0,0,0);
 	t.size() > 3 && 
 	is_double(t[1].begin,t[1].end, v(0)) && 
 	is_double(t[2].begin,t[2].end, v(1)) && 
@@ -113,19 +113,19 @@ void obj_reader_base::process_comment(const std::string& comment)
 
 /// overide this function to process a vertex
 template <typename T>
-void obj_reader_generic<T>::process_vertex(const v3d_type& p)
+void obj_reader_generic<T>::process_vertex(const vec3_type& p)
 {
 }
 
 /// overide this function to process a texcoord
 template <typename T>
-void obj_reader_generic<T>::process_texcoord(const v2d_type& t)
+void obj_reader_generic<T>::process_texcoord(const vec2_type& t)
 {
 }
 
 /// overide this function to process a normal
 template <typename T>
-void obj_reader_generic<T>::process_normal(const v3d_type& n)
+void obj_reader_generic<T>::process_normal(const vec3_type& n)
 {
 }
 
@@ -177,19 +177,19 @@ void obj_reader_base::process_material(const cgv::media::illum::obj_material& mt
 template <typename T>
 void obj_reader_generic<T>::parse_and_process_vertex(const std::vector<cgv::utils::token>& tokens)
 {
-	process_vertex(parse_v3d(tokens));
+	process_vertex(parse_vec3(tokens));
 }
 ///
 template <typename T>
 void obj_reader_generic<T>::parse_and_process_normal(const std::vector<cgv::utils::token>& tokens)
 {
-	process_normal(parse_v3d(tokens));
+	process_normal(parse_vec3(tokens));
 }
 ///
 template <typename T>
 void obj_reader_generic<T>::parse_and_process_texcoord(const std::vector<cgv::utils::token>& tokens)
 {
-	process_texcoord(parse_v2d(tokens));
+	process_texcoord(parse_vec2(tokens));
 }
 
 bool obj_reader_base::read_obj(const std::string& file_name)

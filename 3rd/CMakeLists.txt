@@ -20,6 +20,10 @@ set_target_properties(annf_static PROPERTIES
 	CXX_STANDARD "14"
 )
 
+add_subdirectory(cpp-httplib)
+cgv_get_all_directory_targets(CPPHTTPLIB_TARGETS "${CMAKE_CURRENT_LIST_DIR}/cpp-httplib" RECURSIVE)
+set_target_properties(${CPPHTTPLIB_TARGETS} PROPERTIES FOLDER "3rd/cpp-httplib")
+
 add_subdirectory(fltk)
 set_target_properties(fltk PROPERTIES CGVPROP_TYPE "library")
 set_target_properties(fltk PROPERTIES FOLDER "3rd")

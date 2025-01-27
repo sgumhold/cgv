@@ -10,14 +10,26 @@ set(BUILD_SHARED_LIBS ON)
 set(CMAKE_CXX_STANDARD_REQUIRED 17)
 check_ipo_supported(RESULT IS_IPO_SUPPORTED)
 
-# make sure we know that we are currently configuring the CGV Framework
-set(CGV_IS_CONFIGURING TRUE)
-
 # detect whether we're being included as a subproject
 get_directory_property(CGV_HAS_PARENT_PROJ PARENT_DIRECTORY)
 
+# make sure we know that we are currently configuring the CGV Framework
+set(CGV_IS_CONFIGURING TRUE)
+
+# for now, we have a hard dependency on OpenGL (could be made optional for non-graphical projects)
+find_package(OpenGL REQUIRED)
+set(CGV_OGL_PLATFORM_DEPS "")
+if (NOT WIN32)
+	set(CGV_OGL_PLATFORM_DEPS OpenGL::GLX)
+endif()
+# - propagate to would-be parent CMake build processes that reference the CGV Framework
+if (CGV_HAS_PARENT_PROJ)
+	set(CGV_OGL_PLATFORM_DEPS ${CGV_OGL_PLATFORM_DEPS} PARENT_SCOPE)
+endif()
+
 # detect whether we're configuring for a multi-config generator
 get_property(CGV_USING_MULTI_CONFIG GLOBAL PROPERTY GENERATOR_IS_MULTI_CONFIG)
+# - propagate to would-be parent CMake build processes that reference the CGV Framework
 if(CGV_HAS_PARENT_PROJ)
 	set(CGV_USING_MULTI_CONFIG ${CGV_USING_MULTI_CONFIG} PARENT_SCOPE)
 endif()
@@ -94,7 +106,7 @@ endif()
 set(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}/bin)
 set(CMAKE_LIBRARY_OUTPUT_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}/bin)
 set(CMAKE_ARCHIVE_OUTPUT_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}/lib)
-# - make sure these, the CGV_DIR and the CGV_OPTIONS are propagated to would-be parent CMake build processes that reference the CGV Framework
+# - propagate to would-be parent CMake build processes that reference the CGV Framework
 if (CGV_HAS_PARENT_PROJ)
 	set(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${CMAKE_RUNTIME_OUTPUT_DIRECTORY} PARENT_SCOPE)
 	set(CMAKE_LIBRARY_OUTPUT_DIRECTORY ${CMAKE_LIBRARY_OUTPUT_DIRECTORY} PARENT_SCOPE)
@@ -150,6 +162,7 @@ if (NOT MSVC)
 	add_compile_options(-Wno-dangling-else -Wno-switch)
 	if (CMAKE_C_COMPILER_ID MATCHES "Clang" OR MAKE_CXX_COMPILER_ID MATCHES "Clang")
 		set(CGV_CLANG_SPECIFIC_DEBUG_FLAGS $<$<CONFIG:Debug,RelWithDebInfo>:-fstandalone-debug -fno-limit-debug-info>)
+		# - propagate to would-be parent CMake build processes that reference the CGV Framework
 		if(CGV_HAS_PARENT_PROJ)
 			set(CGV_CLANG_SPECIFIC_DEBUG_FLAGS ${CGV_CLANG_SPECIFIC_DEBUG_FLAGS} PARENT_SCOPE)
 		endif()
