@@ -192,18 +192,18 @@ public:
 		B.push_back(
 			construct_body(
 				{ -8.0f,0.0f,0.0f }, { 1.0f,0.0f,0.0f,0.0f },    // X, O
-				{ 0.0f,0.0f,0.0f }, { 0.03f,50.0f,0.0f },          // P, L
-				1.0f, { 1.0f,4.0f,8.0f }, { 1.0f,0.7f,0.3f }));  // rho, extent, color
+				{ 0.0f,0.0f,0.0f }, { 0.0f,50.0f,0.0f },          // P, L
+				1.0f, { 1.0f,4.0f,8.0f }, { 1.0f,0.3f,0.3f }));  // rho, extent, color
 		B.push_back(
 			construct_body(
 				{ 0.0f,0.0f,0.0f }, { 1.0f,0.0f,0.0f,0.0f },     // X, O
 				{ 0.0f,0.0f,0.0f }, { 0.03f,50.0f,0.0f },          // P, L
-				1.0f, { 4.0f,8.0f,1.0f }, { 1.0f,0.7f,0.3f }));  // rho, extent, color
+				1.0f, { 4.0f,8.0f,1.0f }, { 0.3f,1.0f,0.3f }));  // rho, extent, color
 		B.push_back(
 			construct_body(
 				{ 8.0f,0.0f,0.0f }, { 1.0f,0.0f,0.0f,0.0f },    // X, O
 				{ 0.0f,0.0f,0.0f }, { 0.03f,50.0f,0.0f },          // P, L
-				1.0f, { 8.0f,1.0f,4.0f }, { 1.0f,0.7f,0.3f }));  // rho, extent, color
+				1.0f, { 8.0f,1.0f,4.0f }, { 0.3f,0.3f,1.0f }));  // rho, extent, color
 
 		dB.clear();
 		for (const auto& b : B)
