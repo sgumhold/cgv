@@ -1,6 +1,4 @@
 
-find_package(OpenGL REQUIRED)
-
 cgv_create_lib(glsu SOURCES glsu.c)
 
 if (WIN32)
@@ -9,8 +7,8 @@ if (WIN32)
     target_sources(glsu PRIVATE glsu.def)
 endif()
 
-target_link_libraries(glsu ${OPENGL_LIBRARIES})
-target_link_libraries(glsu_static ${OPENGL_LIBRARIES})
+target_link_libraries(glsu OpenGL::GL)
+target_link_libraries(glsu_static OpenGL::GL)
 
 target_include_directories(glsu PUBLIC
         $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}>
