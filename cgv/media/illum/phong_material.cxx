@@ -1,4 +1,4 @@
-#include "phong_material.hh"
+#include "phong_material.h"
 
 namespace cgv {
 	namespace media { 

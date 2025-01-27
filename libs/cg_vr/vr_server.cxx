@@ -86,7 +86,7 @@ namespace cgv {
 			return value;
 		}
 		///
-		vr_server::vec2 vr_server::correct_deadzone_and_precision(const vec2& position, const vr::controller_input_config& IC)
+		vec2 vr_server::correct_deadzone_and_precision(const vec2& position, const vr::controller_input_config& IC)
 		{
 			vec2 result = position;
 			if (IC.precision > 0)

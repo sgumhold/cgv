@@ -51,16 +51,20 @@ add_executable(shader_test
         ${SOURCES_SIGNAL}
         ${SOURCES_PPP}
         ${PPP_FILES})
+
 target_link_libraries(shader_test
-        fltk
-        glew
         ${X11_LIBRARIES}
-        ${OPENGL_LIBRARIES}
+        OpenGL::GL
+        ${CGV_OGL_PLATFORM_DEPS}
+        glew
+        fltk
         ${CMAKE_DL_LIBS})
+
 target_include_directories(shader_test PRIVATE
         ${CGV_DIR}
         ${CGV_DIR}/libs
         ${PPP_INCLUDES})
+
 target_compile_definitions(shader_test PRIVATE CGV_FORCE_STATIC)
 set_target_properties(shader_test PROPERTIES CGVPROP_TYPE "app")
 set_target_properties(shader_test PROPERTIES FOLDER "App/tool")
