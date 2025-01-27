@@ -19,7 +19,7 @@ install(TARGETS glew EXPORT cgv_3rd DESTINATION ${CGV_BIN_DEST})
 
 # Static Library
 add_library(glew_static STATIC glew.c)
-target_link_libraries(glew_static OpenGL)
+target_link_libraries(glew_static OpenGL::GL)
 target_compile_definitions(glew_static PUBLIC GLEW_STATIC)
 target_include_directories(glew_static PUBLIC
         $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}>
