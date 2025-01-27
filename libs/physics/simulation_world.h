@@ -214,8 +214,8 @@ public:
 	/// @param collision_shape_settings The settings used by JoltPhysics to create the collision shape.
 	/// @param shape_representation The visual representation of the rigid_body. Can be different from the collision shape.
 	/// @param activate If true, the body is awake upon creation and will be updated in the simulation, otherwise the body will sleep until a first contact is registered.
-	/// @return True if the body was successfully created, false if we ran out of available memory for physics bodies.
-	bool create_and_add_rigid_body(const JPH::BodyCreationSettings& collision_shape_settings, const std::shared_ptr<const abstract_shape_representation> shape_representation, bool activate = true);
+	/// @return The JoltPhysics BodyID of the created Body or an invalid ID if we ran out of memory and the body could not be created.
+	JPH::BodyID create_and_add_rigid_body(const JPH::BodyCreationSettings& collision_shape_settings, const std::shared_ptr<const abstract_shape_representation> shape_representation, bool activate = true);
 
 	/// Return a const reference to the list of registered rigid_bodies.
 	const std::vector<rigid_body>& ref_rigid_bodies() const { return rigid_bodies; }
