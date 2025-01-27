@@ -70,15 +70,13 @@ bool simulation_world::init(physics_system_creation_settings creation_settings) 
 	return true;
 }
 
-bool simulation_world::create_and_add_rigid_body(const BodyCreationSettings& collision_shape_settings, const std::shared_ptr<const abstract_shape_representation> shape_representation, bool activate) {
+JPH::BodyID simulation_world::create_and_add_rigid_body(const BodyCreationSettings& collision_shape_settings, const std::shared_ptr<const abstract_shape_representation> shape_representation, bool activate) {
 	BodyID id = get_body_interface().CreateAndAddBody(collision_shape_settings, activate ? EActivation::Activate : EActivation::DontActivate);
 
-	// If we run out of available bodies the returned ID is invalid.
-	if(id.IsInvalid())
-		return false;
+	if(!id.IsInvalid())
+		rigid_bodies.push_back({ id, shape_representation });
 
-	rigid_bodies.push_back({ id, shape_representation });
-	return true;
+	return id;
 }
 
 void simulation_world::update(float delta_time) {
