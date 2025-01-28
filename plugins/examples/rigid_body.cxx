@@ -260,9 +260,9 @@ public:
 				{ 0.0f,0.0f,0.0f }, { 0.3f,500.0f,0.0f },          // P, L
 				0.5f, e2, { 0.3f,0.3f,1.0f }));  // rho, extent, color
 
-		use_food_points = (scene_index == 1);
+		use_foot_points = (scene_index == 1);
 		apply_gravity = (scene_index == 1);
-		update_member(&use_food_points);
+		update_member(&use_foot_points);
 		update_member(&apply_gravity);
 
 		dB.clear();
