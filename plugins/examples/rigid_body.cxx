@@ -104,6 +104,7 @@ class rigid_body_test :
 public:
 protected:
 	// simulation data
+	int scene_index = 0;
 	bool animate = false;
 	double t;
 	double h = 0.001f;
@@ -177,9 +178,7 @@ protected:
 				if (use_food_points) {
 					if (foot_points_word[i][1] < -9.99999) {
 						b.X[1] -= foot_points_word[i][1] + 9.999995;
-						cgv::dvec3 r = foot_points_word[i] - b.X;
-						double cosine = abs(r[1]) / r.length();
-						T = cross(r, -cosine * G);
+						T = cross(cgv::dvec3(foot_points_word[i]) - b.X, -G);
 						G[1] = 0.0;
 					}
 				}
@@ -194,9 +193,7 @@ protected:
 				if (use_food_points) {
 					if (foot_points_word[i][1] < -9.99999f) {
 						b.X[1] -= foot_points_word[i][1] + 9.999995f;
-						cgv::vec3 r = foot_points_word[i] - b.X;
-						float cosine = abs(r[1]) / r.length();
-						T = cross(r, -cosine * G);
+						T = cross(foot_points_word[i] - b.X, -G);
 						G[1] = 0.0f;
 					}
 				}
@@ -232,7 +229,21 @@ public:
 	}
 	void construct_scene()
 	{
+		foot_points.clear();
+		foot_points.push_back(cgv::vec3(0.0f, -10.0f, 0.0f));
+		foot_points.push_back(cgv::vec3(0.0f, -10.0f, 0.0f));
+		foot_points.push_back(cgv::vec3(0.0f, -10.0f, 0.0f));
+
 		B.clear();
+		cgv::vec3 e1(4.0f, 8.0f, 1.0f);
+		cgv::vec3 e2(4.0f, 1.0f, 8.0f);
+		cgv::vec3 X2(8.0f, 0.0f, 0.0f);
+		if (scene_index == 1) {
+			e1 = cgv::vec3(2.0f, 8.0f, 2.0f);
+			e2 = cgv::vec3(4.0f, 1.0f, 4.0f);
+			X2 = cgv::vec3(8.0f, -5.0f, 1.0f);
+			foot_points[2] = cgv::vec3(0.0f, -5.0f, 0.0f);
+		}
 		B.push_back(
 			construct_body(
 				{ -8.0f,0.0f,0.0f }, { 1.0f,0.0f,0.0f,0.0f },    // X, O
@@ -241,22 +252,23 @@ public:
 		B.push_back(
 			construct_body(
 				{ 0.0f,0.0f,0.0f }, { 1.0f,0.0f,0.0f,0.0f },     // X, O
-				{ 0.0f,0.0f,0.0f }, { 0.03f,500.0f,0.0f },          // P, L
-				0.5f, { 4.0f,8.0f,1.0f }, { 0.3f,1.0f,0.3f }));  // rho, extent, color
+				{ 0.0f,0.0f,0.0f }, { 0.3f,500.0f,0.0f },          // P, L
+				0.5f, e1, { 0.3f,1.0f,0.3f }));  // rho, extent, color
 		B.push_back(
 			construct_body(
-				{ 8.0f,0.0f,0.0f }, { 1.0f,0.0f,0.0f,0.0f },    // X, O
-				{ 0.0f,0.0f,0.0f }, { 0.03f,500.0f,0.0f },          // P, L
-				0.5f, { 4.0f,1.0f,8.0f }, { 0.3f,0.3f,1.0f }));  // rho, extent, color
+				X2, { 1.0f,0.0f,0.0f,0.0f },    // X, O
+				{ 0.0f,0.0f,0.0f }, { 0.3f,500.0f,0.0f },          // P, L
+				0.5f, e2, { 0.3f,0.3f,1.0f }));  // rho, extent, color
+
+		use_food_points = (scene_index == 1);
+		apply_gravity = (scene_index == 1);
+		update_member(&use_food_points);
+		update_member(&apply_gravity);
 
 		dB.clear();
 		for (const auto& b : B)
 			dB.push_back(rigid_body<double>(b));
 
-		foot_points.clear();
-		foot_points.push_back(cgv::vec3(0.0f, -10.0f, 0.0f));
-		foot_points.push_back(cgv::vec3(0.0f, -10.0f, 0.0f));
-		foot_points.push_back(cgv::vec3(0.0f, -10.0f, 0.0f));
 	}
 	/// define format and texture filters in constructor
 	rigid_body_test() : cgv::base::node("Rigid Body")
@@ -277,6 +289,11 @@ public:
 	}
 	void on_set(void* member_ptr)
 	{
+		if (member_ptr == &scene_index) {
+			construct_scene();
+			t = 0;
+			update_member(&t);
+		}
 		update_member(member_ptr);
 		post_redraw();
 	}
@@ -426,11 +443,13 @@ public:
 		t = 0;
 		construct_scene();
 		update_member(&t);
+		post_redraw();
 	}
 	void create_gui()
 	{
 		add_decorator("Rigid Body Test", "heading");
 		add_view("time", t);
+		add_member_control(this, "Scene", (cgv::type::DummyEnum&)scene_index, "dropdown", "enums='TRE,spinning tops';shortcut='S'");
 		add_member_control(this, "Use Double", use_double, "toggle", "shortcut='D'");
 		add_member_control(this, "Use Matrix", use_matrix, "toggle", "shortcut='M'");
 		add_member_control(this, "Do Normalize", do_normalize, "toggle", "shortcut='N'");
