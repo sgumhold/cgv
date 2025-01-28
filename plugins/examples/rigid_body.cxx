@@ -104,19 +104,21 @@ class rigid_body_test :
 public:
 protected:
 	// simulation data
-	bool animate = true;
+	bool animate = false;
 	double t;
 	double h = 0.001f;
 	float gravity = 9.81f;
-	bool apply_gravity = false;
+	bool apply_gravity = true;
 	bool use_matrix = false;
 	bool do_normalize = true;
 	bool integrate_omega = false;
 	double time_scale = 1.0f;
+	bool use_food_points = true;
 	std::vector<rigid_body<float>>   B;
 	std::vector<rigid_body<double>> dB;
+	std::vector<cgv::vec3> foot_points;
 	// visualization data
-	bool wireframe = true;
+	bool wireframe = false;
 	bool use_double = true;
 	bool show_boxes = true;
 	bool show_centers = true;
@@ -146,19 +148,61 @@ protected:
 			for (const auto& b : B)
 				omegas.push_back(b.compute_omega());
 	}
+
+	void compute_foot_points_world(std::vector<cgv::vec3>& foot_points_word)
+	{
+		foot_points_word = foot_points;
+		for (size_t i = 0; i < foot_points.size(); ++i)
+			if (use_double) {
+				cgv::dmat3 R;
+				dB[i].O.put_matrix(R);
+				foot_points_word[i] = cgv::vec3(R * cgv::dvec3(foot_points[i]) + dB[i].X);
+			}
+			else {
+				cgv::mat3 R;
+				B[i].O.put_matrix(R);
+				foot_points_word[i] = R * foot_points[i] + B[i].X;
+			}
+	}
 	void integrate(double dt)
 	{
+		std::vector<cgv::vec3> foot_points_word;
+		if (use_food_points)
+			compute_foot_points_world(foot_points_word);
+		size_t i = 0;
 		if (use_double) {
-			cgv::dvec3 g(0.0, apply_gravity ? double(-gravity) : 0.0, 0.0);
-			cgv::dvec3 T(0.0);
-			for (auto& b : dB)
-				b.integrate(dt, g / b.iM, T, use_matrix, do_normalize, integrate_omega);
+			for (auto& b : dB) {
+				cgv::dvec3 G(0.0, apply_gravity ? double(-gravity / b.iM) : 0.0, 0.0);
+				cgv::dvec3 T(0.0);
+				if (use_food_points) {
+					if (foot_points_word[i][1] < -9.99999) {
+						b.X[1] -= foot_points_word[i][1] + 9.999995;
+						cgv::dvec3 r = foot_points_word[i] - b.X;
+						double cosine = abs(r[1]) / r.length();
+						T = cross(r, -cosine * G);
+						G[1] = 0.0;
+					}
+				}
+				b.integrate(dt, G, T, use_matrix, do_normalize, integrate_omega);
+				++i;
+			}
 		}
 		else {
-			cgv::vec3 g(0.0f, apply_gravity ? -gravity : 0.0f, 0.0f);
-			cgv::vec3 T(0.0f);
-			for (auto& b : B)
-				b.integrate(float(dt), g / b.iM, T, use_matrix, do_normalize, integrate_omega);
+			for (auto& b : B) {
+				cgv::vec3 G(0.0f, apply_gravity ? (-gravity / b.iM) : 0.0f, 0.0f);
+				cgv::vec3 T(0.0f);
+				if (use_food_points) {
+					if (foot_points_word[i][1] < -9.99999f) {
+						b.X[1] -= foot_points_word[i][1] + 9.999995f;
+						cgv::vec3 r = foot_points_word[i] - b.X;
+						float cosine = abs(r[1]) / r.length();
+						T = cross(r, -cosine * G);
+						G[1] = 0.0f;
+					}
+				}
+				b.integrate(float(dt), G, T, use_matrix, do_normalize, integrate_omega);
+				++i;
+			}
 		}
 	}
 	void timer_event(double, double dt)
@@ -192,22 +236,27 @@ public:
 		B.push_back(
 			construct_body(
 				{ -8.0f,0.0f,0.0f }, { 1.0f,0.0f,0.0f,0.0f },    // X, O
-				{ 0.0f,0.0f,0.0f }, { 0.0f,50.0f,0.0f },          // P, L
-				1.0f, { 1.0f,4.0f,8.0f }, { 1.0f,0.3f,0.3f }));  // rho, extent, color
+				{ 0.0f,0.0f,0.0f }, { 0.0f,500.0f,0.0f },          // P, L
+				0.5f, { 1.0f,4.0f,8.0f }, { 1.0f,0.3f,0.3f }));  // rho, extent, color
 		B.push_back(
 			construct_body(
 				{ 0.0f,0.0f,0.0f }, { 1.0f,0.0f,0.0f,0.0f },     // X, O
-				{ 0.0f,0.0f,0.0f }, { 0.03f,50.0f,0.0f },          // P, L
-				1.0f, { 4.0f,8.0f,1.0f }, { 0.3f,1.0f,0.3f }));  // rho, extent, color
+				{ 0.0f,0.0f,0.0f }, { 0.03f,500.0f,0.0f },          // P, L
+				0.5f, { 4.0f,8.0f,1.0f }, { 0.3f,1.0f,0.3f }));  // rho, extent, color
 		B.push_back(
 			construct_body(
 				{ 8.0f,0.0f,0.0f }, { 1.0f,0.0f,0.0f,0.0f },    // X, O
-				{ 0.0f,0.0f,0.0f }, { 0.03f,50.0f,0.0f },          // P, L
-				1.0f, { 8.0f,1.0f,4.0f }, { 0.3f,0.3f,1.0f }));  // rho, extent, color
+				{ 0.0f,0.0f,0.0f }, { 0.03f,500.0f,0.0f },          // P, L
+				0.5f, { 4.0f,1.0f,8.0f }, { 0.3f,0.3f,1.0f }));  // rho, extent, color
 
 		dB.clear();
 		for (const auto& b : B)
 			dB.push_back(rigid_body<double>(b));
+
+		foot_points.clear();
+		foot_points.push_back(cgv::vec3(0.0f, -10.0f, 0.0f));
+		foot_points.push_back(cgv::vec3(0.0f, -10.0f, 0.0f));
+		foot_points.push_back(cgv::vec3(0.0f, -10.0f, 0.0f));
 	}
 	/// define format and texture filters in constructor
 	rigid_body_test() : cgv::base::node("Rigid Body")
@@ -307,30 +356,55 @@ public:
 				r.set_extent_array(ctx, E);
 				r.render(ctx, 0, B.size());
 			}
+			cgv::box3 box(cgv::vec3(-30.0f, -12.0f, -20.0f), cgv::vec3(30.0f, -10.0f, 20.0f));
+			cgv::rgb box_color(0.5f, 0.5f, 0.5f);
+			auto& r = cgv::render::ref_box_renderer(ctx);
+			r.set_render_style(box_style);
+			r.set_box_array(ctx, &box, 1);
+			r.set_color_array(ctx, &box_color, 1);
+			r.render(ctx, 0, 1);
 		}
 		if (show_angular_momentum) {
 			auto& r = cgv::render::ref_arrow_renderer(ctx);
 			r.set_render_style(arrow_style);
-			r.set_color(ctx, cgv::rgba(0.0f, 0.3f, 1.0f,1.0f));
 			r.set_position_array(ctx, X);
+			r.set_color(ctx, cgv::rgba(0.0f, 0.3f, 1.0f, 1.0f));
 			r.set_direction_array(ctx, L);
 			r.render(ctx, 0, B.size());
 		}
 		if (show_angular_velocity) {
 			auto& r = cgv::render::ref_arrow_renderer(ctx);
 			r.set_render_style(arrow_style);
-			r.set_color(ctx, cgv::rgba(1.0f, 0.3f, 0.0f,1.0f));
 			r.set_position_array(ctx, X);
+			r.set_color(ctx, cgv::rgba(1.0f, 0.3f, 0.0f, 1.0f));
 			r.set_direction_array(ctx, omegas);
 			r.render(ctx, 0, B.size());
 		}
 		if (show_Y) {
 			auto& r = cgv::render::ref_arrow_renderer(ctx);
 			r.set_render_style(arrow_style);
-			r.set_color(ctx, cgv::rgba(1.0f, 0.3f, 0.0f,1.0f));
 			r.set_position_array(ctx, X);
+			r.set_color(ctx, cgv::rgba(0.0f, 1.0f, 0.0f, 1.0f));
 			r.set_direction_array(ctx, Y);
 			r.render(ctx, 0, B.size());
+		}
+		if (show_centers) {
+			auto& r = cgv::render::ref_sphere_renderer(ctx);
+			r.set_render_style(sphere_style);
+			r.set_position_array(ctx, X);
+			r.set_color_array(ctx, C);
+			r.set_radius(ctx, 0.2f);
+			r.render(ctx, 0, B.size());
+		}
+		if (use_food_points) {
+			std::vector<cgv::vec3> P;
+			compute_foot_points_world(P);
+			auto& r = cgv::render::ref_sphere_renderer(ctx);
+			r.set_render_style(sphere_style);
+			r.set_position_array(ctx, P);
+			r.set_color_array(ctx, C);
+			r.set_radius(ctx, 0.2f);
+			r.render(ctx, 0, P.size());
 		}
 	}
 	void clear(cgv::render::context& ctx)
@@ -366,6 +440,7 @@ public:
 		add_member_control(this, "Time Scale", time_scale, "value_slider", "min=0.1;max=100.0;log=true;step=0.01");
 		add_member_control(this, "Step Size", h, "value_slider", "min=0.00001;max=0.1;log=true;step=0.000001");
 		add_member_control(this, "Apply Gravity", apply_gravity, "check", "shortcut='G'");
+		add_member_control(this, "Foot Points", use_food_points, "check", "shortcut='F'");
 		add_member_control(this, "Show Boxes", show_boxes, "check", "shortcut='B'");
 		add_member_control(this, "Wireframe", wireframe, "check", "shortcut='W'");
 		add_member_control(this, "Show Centers", show_centers, "check", "shortcut='C'");
@@ -373,7 +448,7 @@ public:
 		add_member_control(this, "Show Linear Velocity", show_linear_momentum, "check", "shortcut='V'");
 		add_member_control(this, "Show Angular Momenta", show_angular_momentum, "check", "shortcut='L'");
 		add_member_control(this, "Show Angular Velocity", show_angular_velocity, "check", "shortcut='O'");
-		add_member_control(this, "Show Y", show_angular_velocity, "check", "shortcut='Y'");
+		add_member_control(this, "Show Y", show_Y, "check", "shortcut='Y'");
 		if (begin_tree_node("Box Style", box_style, false)) {
 			align("\a");
 			add_gui("box_style", box_style);
@@ -401,4 +476,4 @@ public:
 	}
 };
 
-cgv::base::factory_registration<rigid_body_test> fr_renderer_test("New/Demo/Rigid Body", 'R', true);
+cgv::base::factory_registration<rigid_body_test> rigidbody_test("New/Demo/Rigid Body", 'R', true);
