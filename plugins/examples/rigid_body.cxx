@@ -113,7 +113,7 @@ protected:
 	bool do_normalize = true;
 	bool integrate_omega = false;
 	double time_scale = 1.0f;
-	bool use_food_points = true;
+	bool use_foot_points = true;
 	std::vector<rigid_body<float>>   B;
 	std::vector<rigid_body<double>> dB;
 	std::vector<cgv::vec3> foot_points;
@@ -167,14 +167,14 @@ protected:
 	void integrate(double dt)
 	{
 		std::vector<cgv::vec3> foot_points_word;
-		if (use_food_points)
+		if (use_foot_points)
 			compute_foot_points_world(foot_points_word);
 		size_t i = 0;
 		if (use_double) {
 			for (auto& b : dB) {
 				cgv::dvec3 G(0.0, apply_gravity ? double(-gravity / b.iM) : 0.0, 0.0);
 				cgv::dvec3 T(0.0);
-				if (use_food_points) {
+				if (use_foot_points) {
 					if (foot_points_word[i][1] < -9.99999) {
 						b.X[1] -= foot_points_word[i][1] + 9.999995;
 						cgv::dvec3 r = foot_points_word[i] - b.X;
@@ -191,7 +191,7 @@ protected:
 			for (auto& b : B) {
 				cgv::vec3 G(0.0f, apply_gravity ? (-gravity / b.iM) : 0.0f, 0.0f);
 				cgv::vec3 T(0.0f);
-				if (use_food_points) {
+				if (use_foot_points) {
 					if (foot_points_word[i][1] < -9.99999f) {
 						b.X[1] -= foot_points_word[i][1] + 9.999995f;
 						cgv::vec3 r = foot_points_word[i] - b.X;
@@ -396,7 +396,7 @@ public:
 			r.set_radius(ctx, 0.2f);
 			r.render(ctx, 0, B.size());
 		}
-		if (use_food_points) {
+		if (use_foot_points) {
 			std::vector<cgv::vec3> P;
 			compute_foot_points_world(P);
 			auto& r = cgv::render::ref_sphere_renderer(ctx);
@@ -440,7 +440,7 @@ public:
 		add_member_control(this, "Time Scale", time_scale, "value_slider", "min=0.1;max=100.0;log=true;step=0.01");
 		add_member_control(this, "Step Size", h, "value_slider", "min=0.00001;max=0.1;log=true;step=0.000001");
 		add_member_control(this, "Apply Gravity", apply_gravity, "check", "shortcut='G'");
-		add_member_control(this, "Foot Points", use_food_points, "check", "shortcut='F'");
+		add_member_control(this, "Foot Points", use_foot_points, "check", "shortcut='F'");
 		add_member_control(this, "Show Boxes", show_boxes, "check", "shortcut='B'");
 		add_member_control(this, "Wireframe", wireframe, "check", "shortcut='W'");
 		add_member_control(this, "Show Centers", show_centers, "check", "shortcut='C'");
