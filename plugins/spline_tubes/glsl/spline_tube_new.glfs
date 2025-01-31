@@ -1,10 +1,20 @@
 #version 420
 
-#define ITERATION_COUNT 10
 #define FLT_EPS 1.19209290e-07
 #define POS_INF 3e+37
 #define N0 3
 #define N1 5
+
+/* 	0: BisectionSearch
+	1: NewtonsMethod */
+#define ROOT_SEARCH_METHOD_POLY 1
+
+/*	0: BisectionSearch
+	1: NewtonsMethod */
+#define ROOT_SEARCH_METHOD_F 0
+
+#define ITERATION_COUNT_BISECTION 10
+#define ITERATION_COUNT_NEWTON 10
 
 //***** begin interface of view.glsl ***********************************
 mat4 get_modelview_matrix();
@@ -52,9 +62,6 @@ vec3 qSplineEval(float l, float curveX[3], float curveY[3], float curveZ[3]);
 vec3 EvalCSpline(vec3 p1, vec3 t1, vec3 p2, vec3 t2, float l);
 
 float qSplineIDistEval(float t, float curveX[3], float polyB_C[5]);
-float qSplineD1Eval(float t, float curveX[3], float polyB_C[5]);
-float qSplineD2Eval(float t, float curveX[3], float polyB_C[5]);
-float qSplineD3Eval(float t, float polyB_C[5]);
 
 float qSplineIDistEval_BinRootFinder_Eval(float n, float p, float curveX[3], float polyB_C[5], int max_iter);
 float qSplineD1_BinRootFinder_Eval(float n, float p, float curveX[3], float polyB_C[5], int max_iter);
@@ -65,15 +72,10 @@ float qSplineIDistEval_NewtonRootFinder_Eval(float n, float p, float curveX[3], 
 float qSplineD1_NewtonRootFinder_Eval(float n, float p, float curveX[3], float polyB_C[5], int max_iter);
 float qSplineD2_NewtonRootFinder_Eval(float n, float p, float curveX[3], float polyB_C[5], int max_iter);
 
-float BisectionMethodPolyD0(float c[5], float n, float p, int max_iter);
-float BisectionMethodPolyD1(float c[5], float n, float p, int max_iter);
-float NewtonsMethodPolyD0(float c[5], float x, int max_iter);
-float NewtonsMethodPolyD1(float c[5], float x, int max_iter);
-float NewtonsMethodPolyD0(float c[5], float x, float epsilon, int max_iter);
-float NewtonsMethodPolyD1(float c[5], float x, float epsilon, int max_iter);
-
-void FindRootsPolyD0(float poly_C[N1], float x_i[5], int m_i[5], out float x_o[6], out int m_o[6], int max_iter);
-void FindRootsPolyD1(float poly_C[N1], float x_i[4], int m_i[4], out float x_o[5], out int m_o[5], int max_iter);
+void FindRootsPolyBisectionD0(float poly_C[5], float x_i[5], int m_i[5], out float x_o[6], out int m_o[6], int max_iter);
+void FindRootsPolyBisectionD1(float poly_C[5], float x_i[4], int m_i[4], out float x_o[5], out int m_o[5], int max_iter);
+void FindRootsPolyNewtonD0(float poly_C[5], float x_i[5], int m_i[5], out float x_o[6], out int m_o[6], int max_iter);
+void FindRootsPolyNewtonD1(float poly_C[5], float x_i[4], int m_i[4], out float x_o[5], out int m_o[5], int max_iter);
 //***** end interface of spine_tube_tools.glsl **************************
 
 struct QTubeNode {
@@ -195,13 +197,23 @@ Hit EvalSplineISect(vec3 dir, vec3 s, vec3 h, vec3 t, float rs, float rh, float 
 
 	float x3[5];
 	int m3[5];
-	FindRootsPolyD1(polyB_C, x2, m2, x3, m3, ITERATION_COUNT);
+
+	#if ROOT_SEARCH_METHOD_POLY == 0
+		FindRootsPolyBisectionD1(polyB_C, x2, m2, x3, m3, ITERATION_COUNT_BISECTION);
+	#elif ROOT_SEARCH_METHOD_POLY == 1
+		FindRootsPolyNewtonD1(polyB_C, x2, m2, x3, m3, ITERATION_COUNT_NEWTON);
+	#endif
 
 	float x4[6];
 	int m4[6];
 	
-	{		
-		FindRootsPolyD0(polyB_C, x3, m3, x4, m4, ITERATION_COUNT);
+	{	
+
+		#if ROOT_SEARCH_METHOD_POLY == 0
+			FindRootsPolyBisectionD0(polyB_C, x3, m3, x4, m4, ITERATION_COUNT_BISECTION);
+		#elif ROOT_SEARCH_METHOD_POLY == 1
+			FindRootsPolyNewtonD0(polyB_C, x3, m3, x4, m4, ITERATION_COUNT_NEWTON);
+		#endif
 
 		// let t0 = 0, t[1,2,3,4] = x4[1,2,3,4] and t5 = 1.0
 		// rootTypes:
@@ -252,30 +264,51 @@ Hit EvalSplineISect(vec3 dir, vec3 s, vec3 h, vec3 t, float rs, float rh, float 
 		}
 		if(rootType == 10 || rootType == 15) rootType = 30;		// dont know why 15 needs to be here
 		//region finalize
+
 		if(rootType > 0) {										// rootType = 0 implies there is no real interval
-			if(rootType == 30) {								// rootType = 30 (and 10) implies exactly 2 real roots or one real interval
-				float rootD3 = qSplineD3_BinRootFinder_Eval(roots.x, roots.y, polyB_C, ITERATION_COUNT);
-				
-				vec2 rootsD2;
-				rootsD2.x = qSplineD2_BinRootFinder_Eval(rootD3, roots.x, curveX, polyB_C, ITERATION_COUNT);
-				//rootsD2.x = qSplineD2_NewtonRootFinder_Eval(rootD3, roots.x, curveX, polyB_C, 4);
-				rootsD2.y = qSplineD2_BinRootFinder_Eval(rootD3, roots.y, curveX, polyB_C, ITERATION_COUNT);
-				//rootsD2.y = qSplineD2_NewtonRootFinder_Eval(rootD3, roots.y, curveX, polyB_C, 4);
-				
-				l1 = qSplineD1_BinRootFinder_Eval(roots.x, rootsD2.x, curveX, polyB_C, ITERATION_COUNT);
-				//l1 = qSplineD1_NewtonRootFinder_Eval(roots.x, rootsD2.x, curveX, polyB_C, 4);
-				l2 = qSplineD1_BinRootFinder_Eval(rootsD2.y, roots.y, curveX, polyB_C, ITERATION_COUNT);
-				//l2 = qSplineD1_NewtonRootFinder_Eval(rootsD2.y, roots.y, curveX, polyB_C, 4);
-			} else {											// rootType = 20 implies more than 2 real roots
-				l1 = qSplineD1_BinRootFinder_Eval(roots.x, roots.y, curveX, polyB_C, ITERATION_COUNT);
-				//l1 = qSplineD1_NewtonRootFinder_Eval(roots.x, roots.y, curveX, polyB_C, 4);
-				
-				if(rootType == 20) {
-					l2 = qSplineD1_BinRootFinder_Eval(roots.z, roots.w, curveX, polyB_C, ITERATION_COUNT);
-					//l2 = qSplineD1_NewtonRootFinder_Eval(roots.z, roots.w, curveX, polyB_C, 4);
-				} else
-					l2 = l1;
-			}
+
+			#if ROOT_SEARCH_METHOD_F == 0
+				if(rootType == 30) {								// rootType = 30 (and 10) implies exactly 2 real roots or one real interval
+					float rootD3 = qSplineD3_BinRootFinder_Eval(roots.x, roots.y, polyB_C, ITERATION_COUNT_BISECTION);
+					
+					vec2 rootsD2;
+					rootsD2.x = qSplineD2_BinRootFinder_Eval(rootD3, roots.x, curveX, polyB_C, ITERATION_COUNT_BISECTION);
+					rootsD2.y = qSplineD2_BinRootFinder_Eval(rootD3, roots.y, curveX, polyB_C, ITERATION_COUNT_BISECTION);
+					
+					l1 = qSplineD1_BinRootFinder_Eval(roots.x, rootsD2.x, curveX, polyB_C, ITERATION_COUNT_BISECTION);
+					l2 = qSplineD1_BinRootFinder_Eval(rootsD2.y, roots.y, curveX, polyB_C, ITERATION_COUNT_BISECTION);
+				} 
+				else {											// rootType = 20 implies more than 2 real roots
+					l1 = qSplineD1_BinRootFinder_Eval(roots.x, roots.y, curveX, polyB_C, ITERATION_COUNT_BISECTION);
+					
+					if(rootType == 20) {
+						l2 = qSplineD1_BinRootFinder_Eval(roots.z, roots.w, curveX, polyB_C, ITERATION_COUNT_BISECTION);
+					} else
+						l2 = l1;
+				}
+
+			#elif ROOT_SEARCH_METHOD_F == 1
+				if(rootType == 30) {								// rootType = 30 (and 10) implies exactly 2 real roots or one real interval
+					float rootD3 = qSplineD3_BinRootFinder_Eval(roots.x, roots.y, polyB_C, ITERATION_COUNT_BISECTION);
+					
+					vec2 rootsD2;
+					rootsD2.x = qSplineD2_NewtonRootFinder_Eval(rootD3, roots.x, curveX, polyB_C, ITERATION_COUNT_NEWTON);
+					rootsD2.y = qSplineD2_NewtonRootFinder_Eval(rootD3, roots.y, curveX, polyB_C, ITERATION_COUNT_NEWTON);
+					
+					l1 = qSplineD1_NewtonRootFinder_Eval(roots.x, rootsD2.x, curveX, polyB_C, ITERATION_COUNT_NEWTON);
+					l2 = qSplineD1_NewtonRootFinder_Eval(rootsD2.y, roots.y, curveX, polyB_C, ITERATION_COUNT_NEWTON);
+				} 
+				else {											// rootType = 20 implies more than 2 real roots
+					l1 = qSplineD1_NewtonRootFinder_Eval(roots.x, roots.y, curveX, polyB_C, ITERATION_COUNT_NEWTON);
+					
+					if(rootType == 20) {
+						l2 = qSplineD1_NewtonRootFinder_Eval(roots.z, roots.w, curveX, polyB_C, ITERATION_COUNT_NEWTON);
+					} else
+						l2 = l1;
+				}
+			#endif
+
+
 			float t1 = qSplineIDistEval(l1, curveX, polyB_C);
 			float t2 = qSplineIDistEval(l2, curveX, polyB_C);
 			float r1 = EvalPolyD0(l1, rcurve);
