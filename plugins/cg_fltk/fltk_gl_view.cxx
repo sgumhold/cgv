@@ -789,10 +789,9 @@ void fltk_gl_view::enable_font_face(cgv::media::font::font_face_ptr font_face, f
 	}
 }
 
-bool fltk_gl_view::dispatch_event(const event& e)
+bool fltk_gl_view::dispatch_event(event& e)
 {
-	// FIXME: cast from (const event&) to (event&) is dirty
-	single_method_action<event_handler,bool,event&> sma((event&)e,&event_handler::handle);
+	single_method_action<event_handler,bool,event&> sma(e,&event_handler::handle);
 	return traverser(sma).traverse(group_ptr(this));
 }
 
