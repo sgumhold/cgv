@@ -12,8 +12,11 @@ namespace render {
 
 class color_map {
 protected:
-	typedef cgv::math::control_point_container<rgb>::control_point color_control_point_type;
-	typedef cgv::math::control_point_container<float>::control_point opacity_control_point_type;
+	typedef rgb color_type;
+	typedef float opacity_type;
+	typedef std::pair<opacity_type, color_type> sample_point_type;
+	typedef cgv::math::control_point_container<color_type>::control_point_type color_control_point_type;
+	typedef cgv::math::control_point_container<opacity_type>::control_point_type opacity_control_point_type;
 
 	cgv::math::control_point_container<rgb> color_points;
 	cgv::math::control_point_container<float> opacity_points;
@@ -39,6 +42,62 @@ protected:
 public:
 	color_map() {
 		construct_interpolators();
+	}
+
+	color_map(const std::initializer_list<color_control_point_type> color_points) : color_map() {
+		this->color_points.assign(color_points);
+	}
+
+	color_map(const std::initializer_list<color_type> colors) : color_map() {
+		std::vector<color_control_point_type> color_points;
+		color_points.reserve(colors.size());
+
+		float step_size = 0.0f;
+		if(colors.size() > 0)
+			step_size = 1.0f / static_cast<float>(colors.size());
+
+		size_t i = 0;
+		for(const color_type& color : colors) {
+			color_points.push_back({ static_cast<float>(i) * step_size, color });
+			++i;
+		}
+
+		this->color_points.assign(color_points);
+	}
+
+	color_map(const std::initializer_list<opacity_control_point_type> opacity_points) : color_map() {
+		this->opacity_points.assign(opacity_points);
+	}
+
+	color_map(const std::initializer_list<opacity_type> opacities) : color_map() {
+		std::vector<opacity_control_point_type> opacity_points;
+		opacity_points.reserve(opacities.size());
+
+		float step_size = 0.0f;
+		if(opacities.size() > 0)
+			step_size = 1.0f / static_cast<float>(opacities.size());
+
+		size_t i = 0;
+		for(const opacity_type& opacity : opacities) {
+			opacity_points.push_back({ static_cast<float>(i) * step_size, opacity });
+			++i;
+		}
+
+		this->opacity_points.assign(opacity_points);
+	}
+
+	color_map(const std::initializer_list<std::pair<float, sample_point_type>> control_points) : color_map() {
+		std::vector<color_control_point_type> color_points;
+		std::vector<opacity_control_point_type> opacity_points;
+		color_points.reserve(control_points.size());
+		opacity_points.reserve(control_points.size());
+		for(const std::pair<float, sample_point_type>& control_point : control_points) {
+			color_points.push_back({ control_point.first, color_type(control_point.second.second) });
+			opacity_points.push_back({ control_point.first, control_point.second.first });
+		}
+
+		this->color_points.assign(color_points);
+		this->opacity_points.assign(opacity_points);
 	}
 
 	virtual ~color_map() {}
@@ -78,7 +137,6 @@ public:
 	}
 
 	void flip() {
-
 		cgv::math::control_point_container<rgb> flipped_color_points;
 		cgv::math::control_point_container<float> flipped_opacity_points;
 
@@ -93,7 +151,6 @@ public:
 	}
 
 	void apply_gamma(float gamma) {
-
 		cgv::math::control_point_container<rgb> corrected_color_points;
 
 		for(const color_control_point_type& color_point : color_points)
@@ -116,27 +173,22 @@ public:
 	const std::vector<opacity_control_point_type>& ref_opacity_points() const { return opacity_points.ref_points(); }
 
 	rgb interpolate_color(float t) const {
-
 		return color_interpolator_ptr->interpolate(color_points, t);
 	}
 
 	std::vector<rgb> interpolate_color(size_t n) const {
-
 		return color_interpolator_ptr->interpolate(color_points, n);
 	}
 
 	float interpolate_opacity(float t) const {
-
 		return opacity_interpolator_ptr->interpolate(opacity_points, t);
 	}
 
 	std::vector<float> interpolate_opacity(size_t n) const {
-
 		return opacity_interpolator_ptr->interpolate(opacity_points, n);
 	}
 
 	rgba interpolate(float t) const {
-
 		rgb color = interpolate_color(t);
 		float opacity = interpolate_opacity(t);
 
@@ -144,7 +196,6 @@ public:
 	}
 
 	std::vector<rgba> interpolate(size_t n) const {
-
 		const std::vector<rgb>& colors = interpolate_color(n);
 		const std::vector<float>& opacities = interpolate_opacity(n);
 
@@ -299,5 +350,5 @@ public:
 	texture& ref_texture() { return tex; }
 };
 
-}
-}
+} // namespace render
+} // namespace cgv
