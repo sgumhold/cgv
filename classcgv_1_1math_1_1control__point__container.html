@@ -99,10 +99,10 @@ $(document).ready(function(){initNavTree('classcgv_1_1math_1_1control__point__co
 <table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="pub-types" name="pub-types"></a>
 Public Types</h2></td></tr>
-<tr class="memitem:a4e00592d41788f8e5d7c937280ed8478" id="r_a4e00592d41788f8e5d7c937280ed8478"><td class="memItemLeft" align="right" valign="top">typedef std::pair&lt; float, T &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcgv_1_1math_1_1control__point__container.html#a4e00592d41788f8e5d7c937280ed8478">control_point</a></td></tr>
-<tr class="separator:a4e00592d41788f8e5d7c937280ed8478"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:ad03b8abf78bb49c6bb58044fecbd65bb" id="r_ad03b8abf78bb49c6bb58044fecbd65bb"><td class="memItemLeft" align="right" valign="top">using&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcgv_1_1math_1_1control__point__container.html#ad03b8abf78bb49c6bb58044fecbd65bb">const_iterator</a> = typename std::vector&lt; control_point &gt;::const_iterator</td></tr>
-<tr class="separator:ad03b8abf78bb49c6bb58044fecbd65bb"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ac91571a77b382a09c04570c91b08c590" id="r_ac91571a77b382a09c04570c91b08c590"><td class="memItemLeft" align="right" valign="top">typedef std::pair&lt; float, T &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcgv_1_1math_1_1control__point__container.html#ac91571a77b382a09c04570c91b08c590">control_point_type</a></td></tr>
+<tr class="separator:ac91571a77b382a09c04570c91b08c590"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a4cf42d17b7ea80479c7d64dda7ec85b8" id="r_a4cf42d17b7ea80479c7d64dda7ec85b8"><td class="memItemLeft" align="right" valign="top">using&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcgv_1_1math_1_1control__point__container.html#a4cf42d17b7ea80479c7d64dda7ec85b8">const_iterator</a> = typename std::vector&lt; control_point_type &gt;::const_iterator</td></tr>
+<tr class="separator:a4cf42d17b7ea80479c7d64dda7ec85b8"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="pub-methods" name="pub-methods"></a>
 Public Member Functions</h2></td></tr>
@@ -114,28 +114,30 @@ Public Member Functions</h2></td></tr>
 <tr class="separator:ac18a66f3ff2927387a6e37a7cddd7d60"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ad7a29e1c783ad539c57d8236c619db77" id="r_ad7a29e1c783ad539c57d8236c619db77"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcgv_1_1math_1_1control__point__container.html#ad7a29e1c783ad539c57d8236c619db77">push_back</a> (float t, const T &amp;v)</td></tr>
 <tr class="separator:ad7a29e1c783ad539c57d8236c619db77"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a91377baab572c6c3851f85f94cdcf9e0" id="r_a91377baab572c6c3851f85f94cdcf9e0"><td class="memItemLeft" align="right" valign="top">control_point&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcgv_1_1math_1_1control__point__container.html#a91377baab572c6c3851f85f94cdcf9e0">operator[]</a> (size_t i) const</td></tr>
-<tr class="separator:a91377baab572c6c3851f85f94cdcf9e0"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a09843632a9a747b92f808eaa98dc2574" id="r_a09843632a9a747b92f808eaa98dc2574"><td class="memItemLeft" align="right" valign="top">control_point &amp;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcgv_1_1math_1_1control__point__container.html#a09843632a9a747b92f808eaa98dc2574">operator[]</a> (size_t i)</td></tr>
-<tr class="separator:a09843632a9a747b92f808eaa98dc2574"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a9759164676af65591c3d57feab560367" id="r_a9759164676af65591c3d57feab560367"><td class="memItemLeft" align="right" valign="top">const std::vector&lt; control_point &gt; &amp;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcgv_1_1math_1_1control__point__container.html#a9759164676af65591c3d57feab560367">ref_points</a> () const</td></tr>
-<tr class="separator:a9759164676af65591c3d57feab560367"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ac0d5f426b06cfc2268c1887df6339929" id="r_ac0d5f426b06cfc2268c1887df6339929"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcgv_1_1math_1_1control__point__container.html#ac0d5f426b06cfc2268c1887df6339929">assign</a> (const std::vector&lt; control_point_type &gt; &amp;control_points)</td></tr>
+<tr class="separator:ac0d5f426b06cfc2268c1887df6339929"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a0f09b1dc663492e52616df724956d490" id="r_a0f09b1dc663492e52616df724956d490"><td class="memItemLeft" align="right" valign="top">control_point_type&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcgv_1_1math_1_1control__point__container.html#a0f09b1dc663492e52616df724956d490">operator[]</a> (size_t i) const</td></tr>
+<tr class="separator:a0f09b1dc663492e52616df724956d490"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ae6674ec48d0b9dedb39f513fb32b1349" id="r_ae6674ec48d0b9dedb39f513fb32b1349"><td class="memItemLeft" align="right" valign="top">control_point_type &amp;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcgv_1_1math_1_1control__point__container.html#ae6674ec48d0b9dedb39f513fb32b1349">operator[]</a> (size_t i)</td></tr>
+<tr class="separator:ae6674ec48d0b9dedb39f513fb32b1349"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a124bb228875e57857b57f89058153b88" id="r_a124bb228875e57857b57f89058153b88"><td class="memItemLeft" align="right" valign="top">const std::vector&lt; control_point_type &gt; &amp;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcgv_1_1math_1_1control__point__container.html#a124bb228875e57857b57f89058153b88">ref_points</a> () const</td></tr>
+<tr class="separator:a124bb228875e57857b57f89058153b88"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a070354afcb4baafe3dda58ba667019a9" id="r_a070354afcb4baafe3dda58ba667019a9"><td class="memItemLeft" align="right" valign="top">const_iterator&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcgv_1_1math_1_1control__point__container.html#a070354afcb4baafe3dda58ba667019a9">begin</a> () const</td></tr>
 <tr class="separator:a070354afcb4baafe3dda58ba667019a9"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a0b67e73c0cda97cd5c8507f5b2facd74" id="r_a0b67e73c0cda97cd5c8507f5b2facd74"><td class="memItemLeft" align="right" valign="top">const_iterator&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcgv_1_1math_1_1control__point__container.html#a0b67e73c0cda97cd5c8507f5b2facd74">end</a> () const</td></tr>
 <tr class="separator:a0b67e73c0cda97cd5c8507f5b2facd74"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a5883d03732d680161208a9d8d12cf6de" id="r_a5883d03732d680161208a9d8d12cf6de"><td class="memItemLeft" align="right" valign="top">control_point&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcgv_1_1math_1_1control__point__container.html#a5883d03732d680161208a9d8d12cf6de">min</a> () const</td></tr>
-<tr class="separator:a5883d03732d680161208a9d8d12cf6de"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a72b2598f5e7498ea9352743f59c2865b" id="r_a72b2598f5e7498ea9352743f59c2865b"><td class="memItemLeft" align="right" valign="top">control_point&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcgv_1_1math_1_1control__point__container.html#a72b2598f5e7498ea9352743f59c2865b">max</a> () const</td></tr>
-<tr class="separator:a72b2598f5e7498ea9352743f59c2865b"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a109bb935ba6a07620fe31e73ee8ea041" id="r_a109bb935ba6a07620fe31e73ee8ea041"><td class="memItemLeft" align="right" valign="top">control_point_type&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcgv_1_1math_1_1control__point__container.html#a109bb935ba6a07620fe31e73ee8ea041">min</a> () const</td></tr>
+<tr class="separator:a109bb935ba6a07620fe31e73ee8ea041"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a6d1a7d788823863b8302939cb843c114" id="r_a6d1a7d788823863b8302939cb843c114"><td class="memItemLeft" align="right" valign="top">control_point_type&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcgv_1_1math_1_1control__point__container.html#a6d1a7d788823863b8302939cb843c114">max</a> () const</td></tr>
+<tr class="separator:a6d1a7d788823863b8302939cb843c114"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
 <a name="details" id="details"></a><h2 class="groupheader">Detailed Description</h2>
 <div class="textblock"><div class="compoundTemplParams">template&lt;typename T&gt;<br />
 class cgv::math::control_point_container&lt; T &gt;</div>
 <p class="definition">Definition at line <a class="el" href="interpolator_8h_source.html#l00012">12</a> of file <a class="el" href="interpolator_8h_source.html">interpolator.h</a>.</p>
 </div><h2 class="groupheader">Member Typedef Documentation</h2>
-<a id="ad03b8abf78bb49c6bb58044fecbd65bb" name="ad03b8abf78bb49c6bb58044fecbd65bb"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#ad03b8abf78bb49c6bb58044fecbd65bb">&#9670;&#160;</a></span>const_iterator</h2>
+<a id="a4cf42d17b7ea80479c7d64dda7ec85b8" name="a4cf42d17b7ea80479c7d64dda7ec85b8"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a4cf42d17b7ea80479c7d64dda7ec85b8">&#9670;&#160;</a></span>const_iterator</h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -143,7 +145,7 @@ class cgv::math::control_point_container&lt; T &gt;</div>
 template&lt;typename T &gt; </div>
       <table class="memname">
         <tr>
-          <td class="memname">using <a class="el" href="classcgv_1_1math_1_1control__point__container.html">cgv::math::control_point_container</a>&lt; T &gt;::const_iterator =  typename std::vector&lt;control_point&gt;::const_iterator</td>
+          <td class="memname">using <a class="el" href="classcgv_1_1math_1_1control__point__container.html">cgv::math::control_point_container</a>&lt; T &gt;::const_iterator =  typename std::vector&lt;control_point_type&gt;::const_iterator</td>
         </tr>
       </table>
 </div><div class="memdoc">
@@ -152,8 +154,8 @@ template&lt;typename T &gt; </div>
 
 </div>
 </div>
-<a id="a4e00592d41788f8e5d7c937280ed8478" name="a4e00592d41788f8e5d7c937280ed8478"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a4e00592d41788f8e5d7c937280ed8478">&#9670;&#160;</a></span>control_point</h2>
+<a id="ac91571a77b382a09c04570c91b08c590" name="ac91571a77b382a09c04570c91b08c590"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#ac91571a77b382a09c04570c91b08c590">&#9670;&#160;</a></span>control_point_type</h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -161,7 +163,7 @@ template&lt;typename T &gt; </div>
 template&lt;typename T &gt; </div>
       <table class="memname">
         <tr>
-          <td class="memname">typedef std::pair&lt;float, T&gt; <a class="el" href="classcgv_1_1math_1_1control__point__container.html">cgv::math::control_point_container</a>&lt; T &gt;::control_point</td>
+          <td class="memname">typedef std::pair&lt;float, T&gt; <a class="el" href="classcgv_1_1math_1_1control__point__container.html">cgv::math::control_point_container</a>&lt; T &gt;::control_point_type</td>
         </tr>
       </table>
 </div><div class="memdoc">
@@ -196,7 +198,7 @@ template&lt;typename T &gt; </div>
 </table>
 </div><div class="memdoc">
 
-<p class="definition">Definition at line <a class="el" href="interpolator_8h_source.html#l00021">21</a> of file <a class="el" href="interpolator_8h_source.html">interpolator.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="interpolator_8h_source.html#l00025">25</a> of file <a class="el" href="interpolator_8h_source.html">interpolator.h</a>.</p>
 
 </div>
 </div>
@@ -225,11 +227,41 @@ template&lt;typename T &gt; </div>
 </table>
 </div><div class="memdoc">
 
-<p class="definition">Definition at line <a class="el" href="interpolator_8h_source.html#l00022">22</a> of file <a class="el" href="interpolator_8h_source.html">interpolator.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="interpolator_8h_source.html#l00026">26</a> of file <a class="el" href="interpolator_8h_source.html">interpolator.h</a>.</p>
 
 </div>
 </div>
 <h2 class="groupheader">Member Function Documentation</h2>
+<a id="ac0d5f426b06cfc2268c1887df6339929" name="ac0d5f426b06cfc2268c1887df6339929"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#ac0d5f426b06cfc2268c1887df6339929">&#9670;&#160;</a></span>assign()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<div class="memtemplate">
+template&lt;typename T &gt; </div>
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">void <a class="el" href="classcgv_1_1math_1_1control__point__container.html">cgv::math::control_point_container</a>&lt; T &gt;::assign </td>
+          <td>(</td>
+          <td class="paramtype">const std::vector&lt; control_point_type &gt; &amp;&#160;</td>
+          <td class="paramname"><em>control_points</em></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">inline</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p class="definition">Definition at line <a class="el" href="interpolator_8h_source.html#l00043">43</a> of file <a class="el" href="interpolator_8h_source.html">interpolator.h</a>.</p>
+
+</div>
+</div>
 <a id="a070354afcb4baafe3dda58ba667019a9" name="a070354afcb4baafe3dda58ba667019a9"></a>
 <h2 class="memtitle"><span class="permalink"><a href="#a070354afcb4baafe3dda58ba667019a9">&#9670;&#160;</a></span>begin()</h2>
 
@@ -255,7 +287,7 @@ template&lt;typename T &gt; </div>
 </table>
 </div><div class="memdoc">
 
-<p class="definition">Definition at line <a class="el" href="interpolator_8h_source.html#l00051">51</a> of file <a class="el" href="interpolator_8h_source.html">interpolator.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="interpolator_8h_source.html#l00060">60</a> of file <a class="el" href="interpolator_8h_source.html">interpolator.h</a>.</p>
 
 </div>
 </div>
@@ -284,7 +316,7 @@ template&lt;typename T &gt; </div>
 </table>
 </div><div class="memdoc">
 
-<p class="definition">Definition at line <a class="el" href="interpolator_8h_source.html#l00024">24</a> of file <a class="el" href="interpolator_8h_source.html">interpolator.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="interpolator_8h_source.html#l00028">28</a> of file <a class="el" href="interpolator_8h_source.html">interpolator.h</a>.</p>
 
 </div>
 </div>
@@ -313,7 +345,7 @@ template&lt;typename T &gt; </div>
 </table>
 </div><div class="memdoc">
 
-<p class="definition">Definition at line <a class="el" href="interpolator_8h_source.html#l00028">28</a> of file <a class="el" href="interpolator_8h_source.html">interpolator.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="interpolator_8h_source.html#l00032">32</a> of file <a class="el" href="interpolator_8h_source.html">interpolator.h</a>.</p>
 
 </div>
 </div>
@@ -342,12 +374,12 @@ template&lt;typename T &gt; </div>
 </table>
 </div><div class="memdoc">
 
-<p class="definition">Definition at line <a class="el" href="interpolator_8h_source.html#l00052">52</a> of file <a class="el" href="interpolator_8h_source.html">interpolator.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="interpolator_8h_source.html#l00061">61</a> of file <a class="el" href="interpolator_8h_source.html">interpolator.h</a>.</p>
 
 </div>
 </div>
-<a id="a72b2598f5e7498ea9352743f59c2865b" name="a72b2598f5e7498ea9352743f59c2865b"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a72b2598f5e7498ea9352743f59c2865b">&#9670;&#160;</a></span>max()</h2>
+<a id="a6d1a7d788823863b8302939cb843c114" name="a6d1a7d788823863b8302939cb843c114"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a6d1a7d788823863b8302939cb843c114">&#9670;&#160;</a></span>max()</h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -358,7 +390,7 @@ template&lt;typename T &gt; </div>
   <td class="mlabels-left">
       <table class="memname">
         <tr>
-          <td class="memname">control_point <a class="el" href="classcgv_1_1math_1_1control__point__container.html">cgv::math::control_point_container</a>&lt; T &gt;::max </td>
+          <td class="memname">control_point_type <a class="el" href="classcgv_1_1math_1_1control__point__container.html">cgv::math::control_point_container</a>&lt; T &gt;::max </td>
           <td>(</td>
           <td class="paramname"></td><td>)</td>
           <td> const</td>
@@ -371,12 +403,12 @@ template&lt;typename T &gt; </div>
 </table>
 </div><div class="memdoc">
 
-<p class="definition">Definition at line <a class="el" href="interpolator_8h_source.html#l00060">60</a> of file <a class="el" href="interpolator_8h_source.html">interpolator.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="interpolator_8h_source.html#l00069">69</a> of file <a class="el" href="interpolator_8h_source.html">interpolator.h</a>.</p>
 
 </div>
 </div>
-<a id="a5883d03732d680161208a9d8d12cf6de" name="a5883d03732d680161208a9d8d12cf6de"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a5883d03732d680161208a9d8d12cf6de">&#9670;&#160;</a></span>min()</h2>
+<a id="a109bb935ba6a07620fe31e73ee8ea041" name="a109bb935ba6a07620fe31e73ee8ea041"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a109bb935ba6a07620fe31e73ee8ea041">&#9670;&#160;</a></span>min()</h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -387,7 +419,7 @@ template&lt;typename T &gt; </div>
   <td class="mlabels-left">
       <table class="memname">
         <tr>
-          <td class="memname">control_point <a class="el" href="classcgv_1_1math_1_1control__point__container.html">cgv::math::control_point_container</a>&lt; T &gt;::min </td>
+          <td class="memname">control_point_type <a class="el" href="classcgv_1_1math_1_1control__point__container.html">cgv::math::control_point_container</a>&lt; T &gt;::min </td>
           <td>(</td>
           <td class="paramname"></td><td>)</td>
           <td> const</td>
@@ -400,12 +432,12 @@ template&lt;typename T &gt; </div>
 </table>
 </div><div class="memdoc">
 
-<p class="definition">Definition at line <a class="el" href="interpolator_8h_source.html#l00054">54</a> of file <a class="el" href="interpolator_8h_source.html">interpolator.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="interpolator_8h_source.html#l00063">63</a> of file <a class="el" href="interpolator_8h_source.html">interpolator.h</a>.</p>
 
 </div>
 </div>
-<a id="a09843632a9a747b92f808eaa98dc2574" name="a09843632a9a747b92f808eaa98dc2574"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a09843632a9a747b92f808eaa98dc2574">&#9670;&#160;</a></span>operator[]() <span class="overload">[1/2]</span></h2>
+<a id="ae6674ec48d0b9dedb39f513fb32b1349" name="ae6674ec48d0b9dedb39f513fb32b1349"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#ae6674ec48d0b9dedb39f513fb32b1349">&#9670;&#160;</a></span>operator[]() <span class="overload">[1/2]</span></h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -416,7 +448,7 @@ template&lt;typename T &gt; </div>
   <td class="mlabels-left">
       <table class="memname">
         <tr>
-          <td class="memname">control_point &amp; <a class="el" href="classcgv_1_1math_1_1control__point__container.html">cgv::math::control_point_container</a>&lt; T &gt;::operator[] </td>
+          <td class="memname">control_point_type &amp; <a class="el" href="classcgv_1_1math_1_1control__point__container.html">cgv::math::control_point_container</a>&lt; T &gt;::operator[] </td>
           <td>(</td>
           <td class="paramtype">size_t&#160;</td>
           <td class="paramname"><em>i</em></td><td>)</td>
@@ -430,12 +462,12 @@ template&lt;typename T &gt; </div>
 </table>
 </div><div class="memdoc">
 
-<p class="definition">Definition at line <a class="el" href="interpolator_8h_source.html#l00043">43</a> of file <a class="el" href="interpolator_8h_source.html">interpolator.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="interpolator_8h_source.html#l00052">52</a> of file <a class="el" href="interpolator_8h_source.html">interpolator.h</a>.</p>
 
 </div>
 </div>
-<a id="a91377baab572c6c3851f85f94cdcf9e0" name="a91377baab572c6c3851f85f94cdcf9e0"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a91377baab572c6c3851f85f94cdcf9e0">&#9670;&#160;</a></span>operator[]() <span class="overload">[2/2]</span></h2>
+<a id="a0f09b1dc663492e52616df724956d490" name="a0f09b1dc663492e52616df724956d490"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a0f09b1dc663492e52616df724956d490">&#9670;&#160;</a></span>operator[]() <span class="overload">[2/2]</span></h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -446,7 +478,7 @@ template&lt;typename T &gt; </div>
   <td class="mlabels-left">
       <table class="memname">
         <tr>
-          <td class="memname">control_point <a class="el" href="classcgv_1_1math_1_1control__point__container.html">cgv::math::control_point_container</a>&lt; T &gt;::operator[] </td>
+          <td class="memname">control_point_type <a class="el" href="classcgv_1_1math_1_1control__point__container.html">cgv::math::control_point_container</a>&lt; T &gt;::operator[] </td>
           <td>(</td>
           <td class="paramtype">size_t&#160;</td>
           <td class="paramname"><em>i</em></td><td>)</td>
@@ -460,7 +492,7 @@ template&lt;typename T &gt; </div>
 </table>
 </div><div class="memdoc">
 
-<p class="definition">Definition at line <a class="el" href="interpolator_8h_source.html#l00039">39</a> of file <a class="el" href="interpolator_8h_source.html">interpolator.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="interpolator_8h_source.html#l00048">48</a> of file <a class="el" href="interpolator_8h_source.html">interpolator.h</a>.</p>
 
 </div>
 </div>
@@ -500,12 +532,12 @@ template&lt;typename T &gt; </div>
 </table>
 </div><div class="memdoc">
 
-<p class="definition">Definition at line <a class="el" href="interpolator_8h_source.html#l00034">34</a> of file <a class="el" href="interpolator_8h_source.html">interpolator.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="interpolator_8h_source.html#l00038">38</a> of file <a class="el" href="interpolator_8h_source.html">interpolator.h</a>.</p>
 
 </div>
 </div>
-<a id="a9759164676af65591c3d57feab560367" name="a9759164676af65591c3d57feab560367"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a9759164676af65591c3d57feab560367">&#9670;&#160;</a></span>ref_points()</h2>
+<a id="a124bb228875e57857b57f89058153b88" name="a124bb228875e57857b57f89058153b88"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a124bb228875e57857b57f89058153b88">&#9670;&#160;</a></span>ref_points()</h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -516,7 +548,7 @@ template&lt;typename T &gt; </div>
   <td class="mlabels-left">
       <table class="memname">
         <tr>
-          <td class="memname">const std::vector&lt; control_point &gt; &amp; <a class="el" href="classcgv_1_1math_1_1control__point__container.html">cgv::math::control_point_container</a>&lt; T &gt;::ref_points </td>
+          <td class="memname">const std::vector&lt; control_point_type &gt; &amp; <a class="el" href="classcgv_1_1math_1_1control__point__container.html">cgv::math::control_point_container</a>&lt; T &gt;::ref_points </td>
           <td>(</td>
           <td class="paramname"></td><td>)</td>
           <td> const</td>
@@ -529,7 +561,7 @@ template&lt;typename T &gt; </div>
 </table>
 </div><div class="memdoc">
 
-<p class="definition">Definition at line <a class="el" href="interpolator_8h_source.html#l00047">47</a> of file <a class="el" href="interpolator_8h_source.html">interpolator.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="interpolator_8h_source.html#l00056">56</a> of file <a class="el" href="interpolator_8h_source.html">interpolator.h</a>.</p>
 
 </div>
 </div>
@@ -558,7 +590,7 @@ template&lt;typename T &gt; </div>
 </table>
 </div><div class="memdoc">
 
-<p class="definition">Definition at line <a class="el" href="interpolator_8h_source.html#l00030">30</a> of file <a class="el" href="interpolator_8h_source.html">interpolator.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="interpolator_8h_source.html#l00034">34</a> of file <a class="el" href="interpolator_8h_source.html">interpolator.h</a>.</p>
 
 </div>
 </div>

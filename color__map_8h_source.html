@@ -112,295 +112,346 @@ $(document).ready(function(){initNavTree('color__map_8h_source.html',''); initRe
 <div class="foldopen" id="foldopen00013" data-start="{" data-end="};">
 <div class="line"><a id="l00013" name="l00013"></a><span class="lineno"><a class="line" href="classcgv_1_1render_1_1color__map.html">   13</a></span><span class="keyword">class </span><a class="code hl_class" href="classcgv_1_1render_1_1color__map.html">color_map</a> {</div>
 <div class="line"><a id="l00014" name="l00014"></a><span class="lineno">   14</span><span class="keyword">protected</span>:</div>
-<div class="line"><a id="l00015" name="l00015"></a><span class="lineno">   15</span>    <span class="keyword">typedef</span> cgv::math::control_point_container&lt;rgb&gt;::control_point color_control_point_type;</div>
-<div class="line"><a id="l00016" name="l00016"></a><span class="lineno">   16</span>    <span class="keyword">typedef</span> cgv::math::control_point_container&lt;float&gt;::control_point opacity_control_point_type;</div>
-<div class="line"><a id="l00017" name="l00017"></a><span class="lineno">   17</span> </div>
-<div class="line"><a id="l00018" name="l00018"></a><span class="lineno">   18</span>    <a class="code hl_class" href="classcgv_1_1math_1_1control__point__container.html">cgv::math::control_point_container&lt;rgb&gt;</a> color_points;</div>
-<div class="line"><a id="l00019" name="l00019"></a><span class="lineno">   19</span>    <a class="code hl_class" href="classcgv_1_1math_1_1control__point__container.html">cgv::math::control_point_container&lt;float&gt;</a> opacity_points;</div>
+<div class="line"><a id="l00015" name="l00015"></a><span class="lineno">   15</span>    <span class="keyword">typedef</span> <a class="code hl_class" href="classcgv_1_1media_1_1color.html">rgb</a> <a class="code hl_class" href="classcgv_1_1media_1_1color.html">color_type</a>;</div>
+<div class="line"><a id="l00016" name="l00016"></a><span class="lineno">   16</span>    <span class="keyword">typedef</span> <span class="keywordtype">float</span> opacity_type;</div>
+<div class="line"><a id="l00017" name="l00017"></a><span class="lineno">   17</span>    <span class="keyword">typedef</span> std::pair&lt;opacity_type, color_type&gt; sample_point_type;</div>
+<div class="line"><a id="l00018" name="l00018"></a><span class="lineno">   18</span>    <span class="keyword">typedef</span> cgv::math::control_point_container&lt;color_type&gt;::control_point_type color_control_point_type;</div>
+<div class="line"><a id="l00019" name="l00019"></a><span class="lineno">   19</span>    <span class="keyword">typedef</span> cgv::math::control_point_container&lt;opacity_type&gt;::control_point_type opacity_control_point_type;</div>
 <div class="line"><a id="l00020" name="l00020"></a><span class="lineno">   20</span> </div>
-<div class="line"><a id="l00021" name="l00021"></a><span class="lineno">   21</span>    std::shared_ptr&lt;cgv::math::interpolator&lt;rgb&gt;&gt; color_interpolator_ptr = <span class="keyword">nullptr</span>;</div>
-<div class="line"><a id="l00022" name="l00022"></a><span class="lineno">   22</span>    std::shared_ptr&lt;cgv::math::interpolator&lt;float&gt;&gt; opacity_interpolator_ptr = <span class="keyword">nullptr</span>;</div>
+<div class="line"><a id="l00021" name="l00021"></a><span class="lineno">   21</span>    <a class="code hl_class" href="classcgv_1_1math_1_1control__point__container.html">cgv::math::control_point_container&lt;rgb&gt;</a> color_points;</div>
+<div class="line"><a id="l00022" name="l00022"></a><span class="lineno">   22</span>    <a class="code hl_class" href="classcgv_1_1math_1_1control__point__container.html">cgv::math::control_point_container&lt;float&gt;</a> opacity_points;</div>
 <div class="line"><a id="l00023" name="l00023"></a><span class="lineno">   23</span> </div>
-<div class="line"><a id="l00025" name="l00025"></a><span class="lineno"><a class="line" href="classcgv_1_1render_1_1color__map.html#a09dec0994e36b33d2df6348d6303b35e">   25</a></span>    <span class="keywordtype">unsigned</span> <a class="code hl_variable" href="classcgv_1_1render_1_1color__map.html#a09dec0994e36b33d2df6348d6303b35e">resolution</a> = 256u;</div>
-<div class="line"><a id="l00027" name="l00027"></a><span class="lineno"><a class="line" href="classcgv_1_1render_1_1color__map.html#a1c4498564651cf32a6811e303e262eb2">   27</a></span>    <span class="keywordtype">bool</span> <a class="code hl_variable" href="classcgv_1_1render_1_1color__map.html#a1c4498564651cf32a6811e303e262eb2">use_interpolation</a> = <span class="keyword">true</span>;</div>
-<div class="line"><a id="l00028" name="l00028"></a><span class="lineno">   28</span>    </div>
-<div class="line"><a id="l00029" name="l00029"></a><span class="lineno">   29</span>    <span class="keywordtype">void</span> construct_interpolators() {</div>
-<div class="line"><a id="l00030" name="l00030"></a><span class="lineno">   30</span>        <span class="keywordflow">if</span>(<a class="code hl_variable" href="classcgv_1_1render_1_1color__map.html#a1c4498564651cf32a6811e303e262eb2">use_interpolation</a>) {</div>
-<div class="line"><a id="l00031" name="l00031"></a><span class="lineno">   31</span>            color_interpolator_ptr = std::make_shared&lt;cgv::math::piecewise_linear_interpolator&lt;rgb&gt;&gt;();</div>
-<div class="line"><a id="l00032" name="l00032"></a><span class="lineno">   32</span>            opacity_interpolator_ptr = std::make_shared&lt;cgv::math::piecewise_linear_interpolator&lt;float&gt;&gt;();</div>
-<div class="line"><a id="l00033" name="l00033"></a><span class="lineno">   33</span>        } <span class="keywordflow">else</span> {</div>
-<div class="line"><a id="l00034" name="l00034"></a><span class="lineno">   34</span>            color_interpolator_ptr = std::make_shared&lt;cgv::math::piecewise_nearest_interpolator&lt;rgb&gt;&gt;();</div>
-<div class="line"><a id="l00035" name="l00035"></a><span class="lineno">   35</span>            opacity_interpolator_ptr = std::make_shared&lt;cgv::math::piecewise_nearest_interpolator&lt;float&gt;&gt;();</div>
-<div class="line"><a id="l00036" name="l00036"></a><span class="lineno">   36</span>        }</div>
-<div class="line"><a id="l00037" name="l00037"></a><span class="lineno">   37</span>    }</div>
-<div class="line"><a id="l00038" name="l00038"></a><span class="lineno">   38</span> </div>
-<div class="line"><a id="l00039" name="l00039"></a><span class="lineno">   39</span><span class="keyword">public</span>:</div>
-<div class="line"><a id="l00040" name="l00040"></a><span class="lineno">   40</span>    <a class="code hl_class" href="classcgv_1_1render_1_1color__map.html">color_map</a>() {</div>
-<div class="line"><a id="l00041" name="l00041"></a><span class="lineno">   41</span>        construct_interpolators();</div>
-<div class="line"><a id="l00042" name="l00042"></a><span class="lineno">   42</span>    }</div>
-<div class="line"><a id="l00043" name="l00043"></a><span class="lineno">   43</span> </div>
-<div class="line"><a id="l00044" name="l00044"></a><span class="lineno">   44</span>    <span class="keyword">virtual</span> ~color_map() {}</div>
-<div class="line"><a id="l00045" name="l00045"></a><span class="lineno">   45</span> </div>
-<div class="line"><a id="l00046" name="l00046"></a><span class="lineno">   46</span>    <span class="keyword">virtual</span> <span class="keywordtype">bool</span> has_texture_support()<span class="keyword"> const </span>{</div>
-<div class="line"><a id="l00047" name="l00047"></a><span class="lineno">   47</span>        <span class="keywordflow">return</span> <span class="keyword">false</span>;</div>
-<div class="line"><a id="l00048" name="l00048"></a><span class="lineno">   48</span>    }</div>
-<div class="line"><a id="l00049" name="l00049"></a><span class="lineno">   49</span> </div>
-<div class="line"><a id="l00050" name="l00050"></a><span class="lineno">   50</span>    <span class="keywordtype">void</span> clear() {</div>
-<div class="line"><a id="l00051" name="l00051"></a><span class="lineno">   51</span>        color_points.clear();</div>
-<div class="line"><a id="l00052" name="l00052"></a><span class="lineno">   52</span>        opacity_points.clear();</div>
-<div class="line"><a id="l00053" name="l00053"></a><span class="lineno">   53</span>    }</div>
+<div class="line"><a id="l00024" name="l00024"></a><span class="lineno">   24</span>    std::shared_ptr&lt;cgv::math::interpolator&lt;rgb&gt;&gt; color_interpolator_ptr = <span class="keyword">nullptr</span>;</div>
+<div class="line"><a id="l00025" name="l00025"></a><span class="lineno">   25</span>    std::shared_ptr&lt;cgv::math::interpolator&lt;float&gt;&gt; opacity_interpolator_ptr = <span class="keyword">nullptr</span>;</div>
+<div class="line"><a id="l00026" name="l00026"></a><span class="lineno">   26</span> </div>
+<div class="line"><a id="l00028" name="l00028"></a><span class="lineno"><a class="line" href="classcgv_1_1render_1_1color__map.html#a09dec0994e36b33d2df6348d6303b35e">   28</a></span>    <span class="keywordtype">unsigned</span> <a class="code hl_variable" href="classcgv_1_1render_1_1color__map.html#a09dec0994e36b33d2df6348d6303b35e">resolution</a> = 256u;</div>
+<div class="line"><a id="l00030" name="l00030"></a><span class="lineno"><a class="line" href="classcgv_1_1render_1_1color__map.html#a1c4498564651cf32a6811e303e262eb2">   30</a></span>    <span class="keywordtype">bool</span> <a class="code hl_variable" href="classcgv_1_1render_1_1color__map.html#a1c4498564651cf32a6811e303e262eb2">use_interpolation</a> = <span class="keyword">true</span>;</div>
+<div class="line"><a id="l00031" name="l00031"></a><span class="lineno">   31</span>    </div>
+<div class="line"><a id="l00032" name="l00032"></a><span class="lineno">   32</span>    <span class="keywordtype">void</span> construct_interpolators() {</div>
+<div class="line"><a id="l00033" name="l00033"></a><span class="lineno">   33</span>        <span class="keywordflow">if</span>(<a class="code hl_variable" href="classcgv_1_1render_1_1color__map.html#a1c4498564651cf32a6811e303e262eb2">use_interpolation</a>) {</div>
+<div class="line"><a id="l00034" name="l00034"></a><span class="lineno">   34</span>            color_interpolator_ptr = std::make_shared&lt;cgv::math::piecewise_linear_interpolator&lt;rgb&gt;&gt;();</div>
+<div class="line"><a id="l00035" name="l00035"></a><span class="lineno">   35</span>            opacity_interpolator_ptr = std::make_shared&lt;cgv::math::piecewise_linear_interpolator&lt;float&gt;&gt;();</div>
+<div class="line"><a id="l00036" name="l00036"></a><span class="lineno">   36</span>        } <span class="keywordflow">else</span> {</div>
+<div class="line"><a id="l00037" name="l00037"></a><span class="lineno">   37</span>            color_interpolator_ptr = std::make_shared&lt;cgv::math::piecewise_nearest_interpolator&lt;rgb&gt;&gt;();</div>
+<div class="line"><a id="l00038" name="l00038"></a><span class="lineno">   38</span>            opacity_interpolator_ptr = std::make_shared&lt;cgv::math::piecewise_nearest_interpolator&lt;float&gt;&gt;();</div>
+<div class="line"><a id="l00039" name="l00039"></a><span class="lineno">   39</span>        }</div>
+<div class="line"><a id="l00040" name="l00040"></a><span class="lineno">   40</span>    }</div>
+<div class="line"><a id="l00041" name="l00041"></a><span class="lineno">   41</span> </div>
+<div class="line"><a id="l00042" name="l00042"></a><span class="lineno">   42</span><span class="keyword">public</span>:</div>
+<div class="line"><a id="l00043" name="l00043"></a><span class="lineno">   43</span>    <a class="code hl_class" href="classcgv_1_1render_1_1color__map.html">color_map</a>() {</div>
+<div class="line"><a id="l00044" name="l00044"></a><span class="lineno">   44</span>        construct_interpolators();</div>
+<div class="line"><a id="l00045" name="l00045"></a><span class="lineno">   45</span>    }</div>
+<div class="line"><a id="l00046" name="l00046"></a><span class="lineno">   46</span> </div>
+<div class="line"><a id="l00047" name="l00047"></a><span class="lineno">   47</span>    color_map(<span class="keyword">const</span> std::initializer_list&lt;color_control_point_type&gt; color_points) : color_map() {</div>
+<div class="line"><a id="l00048" name="l00048"></a><span class="lineno">   48</span>        this-&gt;color_points.assign(color_points);</div>
+<div class="line"><a id="l00049" name="l00049"></a><span class="lineno">   49</span>    }</div>
+<div class="line"><a id="l00050" name="l00050"></a><span class="lineno">   50</span> </div>
+<div class="line"><a id="l00051" name="l00051"></a><span class="lineno">   51</span>    color_map(<span class="keyword">const</span> std::initializer_list&lt;color_type&gt; colors) : color_map() {</div>
+<div class="line"><a id="l00052" name="l00052"></a><span class="lineno">   52</span>        std::vector&lt;color_control_point_type&gt; color_points;</div>
+<div class="line"><a id="l00053" name="l00053"></a><span class="lineno">   53</span>        color_points.reserve(colors.size());</div>
 <div class="line"><a id="l00054" name="l00054"></a><span class="lineno">   54</span> </div>
-<div class="line"><a id="l00055" name="l00055"></a><span class="lineno">   55</span>    <span class="keywordtype">void</span> clear_color_points() {</div>
-<div class="line"><a id="l00056" name="l00056"></a><span class="lineno">   56</span>        color_points.clear();</div>
-<div class="line"><a id="l00057" name="l00057"></a><span class="lineno">   57</span>    }</div>
+<div class="line"><a id="l00055" name="l00055"></a><span class="lineno">   55</span>        <span class="keywordtype">float</span> step_size = 0.0f;</div>
+<div class="line"><a id="l00056" name="l00056"></a><span class="lineno">   56</span>        <span class="keywordflow">if</span>(colors.size() &gt; 0)</div>
+<div class="line"><a id="l00057" name="l00057"></a><span class="lineno">   57</span>            step_size = 1.0f / <span class="keyword">static_cast&lt;</span><span class="keywordtype">float</span><span class="keyword">&gt;</span>(colors.size());</div>
 <div class="line"><a id="l00058" name="l00058"></a><span class="lineno">   58</span> </div>
-<div class="line"><a id="l00059" name="l00059"></a><span class="lineno">   59</span>    <span class="keywordtype">void</span> clear_opacity_points() {</div>
-<div class="line"><a id="l00060" name="l00060"></a><span class="lineno">   60</span>        opacity_points.clear();</div>
-<div class="line"><a id="l00061" name="l00061"></a><span class="lineno">   61</span>    }</div>
-<div class="line"><a id="l00062" name="l00062"></a><span class="lineno">   62</span> </div>
-<div class="line"><a id="l00063" name="l00063"></a><span class="lineno">   63</span>    <span class="keywordtype">bool</span> empty()<span class="keyword"> const </span>{</div>
-<div class="line"><a id="l00064" name="l00064"></a><span class="lineno">   64</span>        <span class="keywordflow">return</span> color_points.empty() &amp;&amp; opacity_points.empty();</div>
-<div class="line"><a id="l00065" name="l00065"></a><span class="lineno">   65</span>    }</div>
-<div class="line"><a id="l00066" name="l00066"></a><span class="lineno">   66</span> </div>
-<div class="line"><a id="l00067" name="l00067"></a><span class="lineno">   67</span>    <span class="keywordtype">unsigned</span> get_resolution()<span class="keyword"> const </span>{ <span class="keywordflow">return</span> <a class="code hl_variable" href="classcgv_1_1render_1_1color__map.html#a09dec0994e36b33d2df6348d6303b35e">resolution</a>; }</div>
-<div class="line"><a id="l00068" name="l00068"></a><span class="lineno">   68</span> </div>
-<div class="line"><a id="l00069" name="l00069"></a><span class="lineno">   69</span>    <span class="keywordtype">void</span> set_resolution(<span class="keywordtype">unsigned</span> <a class="code hl_variable" href="classcgv_1_1render_1_1color__map.html#a09dec0994e36b33d2df6348d6303b35e">resolution</a>) {</div>
-<div class="line"><a id="l00070" name="l00070"></a><span class="lineno">   70</span>        this-&gt;resolution = std::max(<a class="code hl_variable" href="classcgv_1_1render_1_1color__map.html#a09dec0994e36b33d2df6348d6303b35e">resolution</a>, 2u);</div>
-<div class="line"><a id="l00071" name="l00071"></a><span class="lineno">   71</span>    }</div>
-<div class="line"><a id="l00072" name="l00072"></a><span class="lineno">   72</span> </div>
-<div class="line"><a id="l00073" name="l00073"></a><span class="lineno">   73</span>    <span class="keywordtype">bool</span> is_interpolation_enabled()<span class="keyword"> const </span>{ <span class="keywordflow">return</span> <a class="code hl_variable" href="classcgv_1_1render_1_1color__map.html#a1c4498564651cf32a6811e303e262eb2">use_interpolation</a>; }</div>
-<div class="line"><a id="l00074" name="l00074"></a><span class="lineno">   74</span> </div>
-<div class="line"><a id="l00075" name="l00075"></a><span class="lineno">   75</span>    <span class="keywordtype">void</span> enable_interpolation(<span class="keywordtype">bool</span> enabled) {</div>
-<div class="line"><a id="l00076" name="l00076"></a><span class="lineno">   76</span>        <a class="code hl_variable" href="classcgv_1_1render_1_1color__map.html#a1c4498564651cf32a6811e303e262eb2">use_interpolation</a> = enabled;</div>
-<div class="line"><a id="l00077" name="l00077"></a><span class="lineno">   77</span>        construct_interpolators();</div>
-<div class="line"><a id="l00078" name="l00078"></a><span class="lineno">   78</span>    }</div>
+<div class="line"><a id="l00059" name="l00059"></a><span class="lineno">   59</span>        <span class="keywordtype">size_t</span> i = 0;</div>
+<div class="line"><a id="l00060" name="l00060"></a><span class="lineno">   60</span>        <span class="keywordflow">for</span>(<span class="keyword">const</span> color_type&amp; color : colors) {</div>
+<div class="line"><a id="l00061" name="l00061"></a><span class="lineno">   61</span>            color_points.push_back({ <span class="keyword">static_cast&lt;</span><span class="keywordtype">float</span><span class="keyword">&gt;</span>(i) * step_size, color });</div>
+<div class="line"><a id="l00062" name="l00062"></a><span class="lineno">   62</span>            ++i;</div>
+<div class="line"><a id="l00063" name="l00063"></a><span class="lineno">   63</span>        }</div>
+<div class="line"><a id="l00064" name="l00064"></a><span class="lineno">   64</span> </div>
+<div class="line"><a id="l00065" name="l00065"></a><span class="lineno">   65</span>        this-&gt;color_points.assign(color_points);</div>
+<div class="line"><a id="l00066" name="l00066"></a><span class="lineno">   66</span>    }</div>
+<div class="line"><a id="l00067" name="l00067"></a><span class="lineno">   67</span> </div>
+<div class="line"><a id="l00068" name="l00068"></a><span class="lineno">   68</span>    color_map(<span class="keyword">const</span> std::initializer_list&lt;opacity_control_point_type&gt; opacity_points) : color_map() {</div>
+<div class="line"><a id="l00069" name="l00069"></a><span class="lineno">   69</span>        this-&gt;opacity_points.assign(opacity_points);</div>
+<div class="line"><a id="l00070" name="l00070"></a><span class="lineno">   70</span>    }</div>
+<div class="line"><a id="l00071" name="l00071"></a><span class="lineno">   71</span> </div>
+<div class="line"><a id="l00072" name="l00072"></a><span class="lineno">   72</span>    color_map(<span class="keyword">const</span> std::initializer_list&lt;opacity_type&gt; opacities) : color_map() {</div>
+<div class="line"><a id="l00073" name="l00073"></a><span class="lineno">   73</span>        std::vector&lt;opacity_control_point_type&gt; opacity_points;</div>
+<div class="line"><a id="l00074" name="l00074"></a><span class="lineno">   74</span>        opacity_points.reserve(opacities.size());</div>
+<div class="line"><a id="l00075" name="l00075"></a><span class="lineno">   75</span> </div>
+<div class="line"><a id="l00076" name="l00076"></a><span class="lineno">   76</span>        <span class="keywordtype">float</span> step_size = 0.0f;</div>
+<div class="line"><a id="l00077" name="l00077"></a><span class="lineno">   77</span>        <span class="keywordflow">if</span>(opacities.size() &gt; 0)</div>
+<div class="line"><a id="l00078" name="l00078"></a><span class="lineno">   78</span>            step_size = 1.0f / <span class="keyword">static_cast&lt;</span><span class="keywordtype">float</span><span class="keyword">&gt;</span>(opacities.size());</div>
 <div class="line"><a id="l00079" name="l00079"></a><span class="lineno">   79</span> </div>
-<div class="line"><a id="l00080" name="l00080"></a><span class="lineno">   80</span>    <span class="keywordtype">void</span> flip() {</div>
-<div class="line"><a id="l00081" name="l00081"></a><span class="lineno">   81</span> </div>
-<div class="line"><a id="l00082" name="l00082"></a><span class="lineno">   82</span>        <a class="code hl_class" href="classcgv_1_1math_1_1control__point__container.html">cgv::math::control_point_container&lt;rgb&gt;</a> flipped_color_points;</div>
-<div class="line"><a id="l00083" name="l00083"></a><span class="lineno">   83</span>        <a class="code hl_class" href="classcgv_1_1math_1_1control__point__container.html">cgv::math::control_point_container&lt;float&gt;</a> flipped_opacity_points;</div>
-<div class="line"><a id="l00084" name="l00084"></a><span class="lineno">   84</span> </div>
-<div class="line"><a id="l00085" name="l00085"></a><span class="lineno">   85</span>        <span class="keywordflow">for</span>(<span class="keyword">const</span> color_control_point_type&amp; color_point : color_points)</div>
-<div class="line"><a id="l00086" name="l00086"></a><span class="lineno">   86</span>            flipped_color_points.push_back(1.0f - color_point.first, color_point.second);</div>
-<div class="line"><a id="l00087" name="l00087"></a><span class="lineno">   87</span> </div>
-<div class="line"><a id="l00088" name="l00088"></a><span class="lineno">   88</span>        <span class="keywordflow">for</span>(<span class="keyword">const</span> opacity_control_point_type&amp; opacity_point : opacity_points)</div>
-<div class="line"><a id="l00089" name="l00089"></a><span class="lineno">   89</span>            flipped_opacity_points.push_back(1.0f - opacity_point.first, opacity_point.second);</div>
-<div class="line"><a id="l00090" name="l00090"></a><span class="lineno">   90</span> </div>
-<div class="line"><a id="l00091" name="l00091"></a><span class="lineno">   91</span>        color_points = flipped_color_points;</div>
-<div class="line"><a id="l00092" name="l00092"></a><span class="lineno">   92</span>        opacity_points = flipped_opacity_points;</div>
-<div class="line"><a id="l00093" name="l00093"></a><span class="lineno">   93</span>    }</div>
-<div class="line"><a id="l00094" name="l00094"></a><span class="lineno">   94</span> </div>
-<div class="line"><a id="l00095" name="l00095"></a><span class="lineno">   95</span>    <span class="keywordtype">void</span> apply_gamma(<span class="keywordtype">float</span> gamma) {</div>
-<div class="line"><a id="l00096" name="l00096"></a><span class="lineno">   96</span> </div>
-<div class="line"><a id="l00097" name="l00097"></a><span class="lineno">   97</span>        <a class="code hl_class" href="classcgv_1_1math_1_1control__point__container.html">cgv::math::control_point_container&lt;rgb&gt;</a> corrected_color_points;</div>
+<div class="line"><a id="l00080" name="l00080"></a><span class="lineno">   80</span>        <span class="keywordtype">size_t</span> i = 0;</div>
+<div class="line"><a id="l00081" name="l00081"></a><span class="lineno">   81</span>        <span class="keywordflow">for</span>(<span class="keyword">const</span> opacity_type&amp; opacity : opacities) {</div>
+<div class="line"><a id="l00082" name="l00082"></a><span class="lineno">   82</span>            opacity_points.push_back({ <span class="keyword">static_cast&lt;</span><span class="keywordtype">float</span><span class="keyword">&gt;</span>(i) * step_size, opacity });</div>
+<div class="line"><a id="l00083" name="l00083"></a><span class="lineno">   83</span>            ++i;</div>
+<div class="line"><a id="l00084" name="l00084"></a><span class="lineno">   84</span>        }</div>
+<div class="line"><a id="l00085" name="l00085"></a><span class="lineno">   85</span> </div>
+<div class="line"><a id="l00086" name="l00086"></a><span class="lineno">   86</span>        this-&gt;opacity_points.assign(opacity_points);</div>
+<div class="line"><a id="l00087" name="l00087"></a><span class="lineno">   87</span>    }</div>
+<div class="line"><a id="l00088" name="l00088"></a><span class="lineno">   88</span> </div>
+<div class="line"><a id="l00089" name="l00089"></a><span class="lineno">   89</span>    color_map(<span class="keyword">const</span> std::initializer_list&lt;std::pair&lt;float, sample_point_type&gt;&gt; control_points) : color_map() {</div>
+<div class="line"><a id="l00090" name="l00090"></a><span class="lineno">   90</span>        std::vector&lt;color_control_point_type&gt; color_points;</div>
+<div class="line"><a id="l00091" name="l00091"></a><span class="lineno">   91</span>        std::vector&lt;opacity_control_point_type&gt; opacity_points;</div>
+<div class="line"><a id="l00092" name="l00092"></a><span class="lineno">   92</span>        color_points.reserve(control_points.size());</div>
+<div class="line"><a id="l00093" name="l00093"></a><span class="lineno">   93</span>        opacity_points.reserve(control_points.size());</div>
+<div class="line"><a id="l00094" name="l00094"></a><span class="lineno">   94</span>        <span class="keywordflow">for</span>(<span class="keyword">const</span> std::pair&lt;float, sample_point_type&gt;&amp; control_point : control_points) {</div>
+<div class="line"><a id="l00095" name="l00095"></a><span class="lineno">   95</span>            color_points.push_back({ control_point.first, color_type(control_point.second.second) });</div>
+<div class="line"><a id="l00096" name="l00096"></a><span class="lineno">   96</span>            opacity_points.push_back({ control_point.first, control_point.second.first });</div>
+<div class="line"><a id="l00097" name="l00097"></a><span class="lineno">   97</span>        }</div>
 <div class="line"><a id="l00098" name="l00098"></a><span class="lineno">   98</span> </div>
-<div class="line"><a id="l00099" name="l00099"></a><span class="lineno">   99</span>        <span class="keywordflow">for</span>(<span class="keyword">const</span> color_control_point_type&amp; color_point : color_points)</div>
-<div class="line"><a id="l00100" name="l00100"></a><span class="lineno">  100</span>            corrected_color_points.push_back(color_point.first, <a class="code hl_namespace" href="namespacecgv.html">cgv</a>::media::pow(color_point.second, gamma));</div>
-<div class="line"><a id="l00101" name="l00101"></a><span class="lineno">  101</span> </div>
-<div class="line"><a id="l00102" name="l00102"></a><span class="lineno">  102</span>        color_points = corrected_color_points;</div>
-<div class="line"><a id="l00103" name="l00103"></a><span class="lineno">  103</span>    }</div>
+<div class="line"><a id="l00099" name="l00099"></a><span class="lineno">   99</span>        this-&gt;color_points.assign(color_points);</div>
+<div class="line"><a id="l00100" name="l00100"></a><span class="lineno">  100</span>        this-&gt;opacity_points.assign(opacity_points);</div>
+<div class="line"><a id="l00101" name="l00101"></a><span class="lineno">  101</span>    }</div>
+<div class="line"><a id="l00102" name="l00102"></a><span class="lineno">  102</span> </div>
+<div class="line"><a id="l00103" name="l00103"></a><span class="lineno">  103</span>    <span class="keyword">virtual</span> ~color_map() {}</div>
 <div class="line"><a id="l00104" name="l00104"></a><span class="lineno">  104</span> </div>
-<div class="line"><a id="l00105" name="l00105"></a><span class="lineno">  105</span>    <span class="keywordtype">void</span> add_color_point(<span class="keywordtype">float</span> t, <a class="code hl_typedef" href="namespacecgv.html#a465f589beeb5e4e76eb2db8d1f6057c1">rgb</a> color) {</div>
-<div class="line"><a id="l00106" name="l00106"></a><span class="lineno">  106</span>        t = cgv::math::clamp(t, 0.0f, 1.0f);</div>
-<div class="line"><a id="l00107" name="l00107"></a><span class="lineno">  107</span>        color_points.push_back(t, color);</div>
-<div class="line"><a id="l00108" name="l00108"></a><span class="lineno">  108</span>    }</div>
-<div class="line"><a id="l00109" name="l00109"></a><span class="lineno">  109</span> </div>
-<div class="line"><a id="l00110" name="l00110"></a><span class="lineno">  110</span>    <span class="keywordtype">void</span> add_opacity_point(<span class="keywordtype">float</span> t, <span class="keywordtype">float</span> opacity) {</div>
-<div class="line"><a id="l00111" name="l00111"></a><span class="lineno">  111</span>        t = cgv::math::clamp(t, 0.0f, 1.0f);</div>
-<div class="line"><a id="l00112" name="l00112"></a><span class="lineno">  112</span>        opacity_points.push_back(t, opacity);</div>
-<div class="line"><a id="l00113" name="l00113"></a><span class="lineno">  113</span>    }</div>
-<div class="line"><a id="l00114" name="l00114"></a><span class="lineno">  114</span> </div>
-<div class="line"><a id="l00115" name="l00115"></a><span class="lineno">  115</span>    <span class="keyword">const</span> std::vector&lt;color_control_point_type&gt;&amp; ref_color_points()<span class="keyword"> const </span>{ <span class="keywordflow">return</span> color_points.ref_points(); }</div>
-<div class="line"><a id="l00116" name="l00116"></a><span class="lineno">  116</span>    <span class="keyword">const</span> std::vector&lt;opacity_control_point_type&gt;&amp; ref_opacity_points()<span class="keyword"> const </span>{ <span class="keywordflow">return</span> opacity_points.ref_points(); }</div>
+<div class="line"><a id="l00105" name="l00105"></a><span class="lineno">  105</span>    <span class="keyword">virtual</span> <span class="keywordtype">bool</span> has_texture_support()<span class="keyword"> const </span>{</div>
+<div class="line"><a id="l00106" name="l00106"></a><span class="lineno">  106</span>        <span class="keywordflow">return</span> <span class="keyword">false</span>;</div>
+<div class="line"><a id="l00107" name="l00107"></a><span class="lineno">  107</span>    }</div>
+<div class="line"><a id="l00108" name="l00108"></a><span class="lineno">  108</span> </div>
+<div class="line"><a id="l00109" name="l00109"></a><span class="lineno">  109</span>    <span class="keywordtype">void</span> clear() {</div>
+<div class="line"><a id="l00110" name="l00110"></a><span class="lineno">  110</span>        color_points.clear();</div>
+<div class="line"><a id="l00111" name="l00111"></a><span class="lineno">  111</span>        opacity_points.clear();</div>
+<div class="line"><a id="l00112" name="l00112"></a><span class="lineno">  112</span>    }</div>
+<div class="line"><a id="l00113" name="l00113"></a><span class="lineno">  113</span> </div>
+<div class="line"><a id="l00114" name="l00114"></a><span class="lineno">  114</span>    <span class="keywordtype">void</span> clear_color_points() {</div>
+<div class="line"><a id="l00115" name="l00115"></a><span class="lineno">  115</span>        color_points.clear();</div>
+<div class="line"><a id="l00116" name="l00116"></a><span class="lineno">  116</span>    }</div>
 <div class="line"><a id="l00117" name="l00117"></a><span class="lineno">  117</span> </div>
-<div class="line"><a id="l00118" name="l00118"></a><span class="lineno">  118</span>    <a class="code hl_typedef" href="namespacecgv.html#a465f589beeb5e4e76eb2db8d1f6057c1">rgb</a> interpolate_color(<span class="keywordtype">float</span> t)<span class="keyword"> const </span>{</div>
-<div class="line"><a id="l00119" name="l00119"></a><span class="lineno">  119</span> </div>
-<div class="line"><a id="l00120" name="l00120"></a><span class="lineno">  120</span>        <span class="keywordflow">return</span> color_interpolator_ptr-&gt;interpolate(color_points, t);</div>
-<div class="line"><a id="l00121" name="l00121"></a><span class="lineno">  121</span>    }</div>
-<div class="line"><a id="l00122" name="l00122"></a><span class="lineno">  122</span> </div>
-<div class="line"><a id="l00123" name="l00123"></a><span class="lineno">  123</span>    std::vector&lt;rgb&gt; interpolate_color(<span class="keywordtype">size_t</span> n)<span class="keyword"> const </span>{</div>
-<div class="line"><a id="l00124" name="l00124"></a><span class="lineno">  124</span> </div>
-<div class="line"><a id="l00125" name="l00125"></a><span class="lineno">  125</span>        <span class="keywordflow">return</span> color_interpolator_ptr-&gt;interpolate(color_points, n);</div>
-<div class="line"><a id="l00126" name="l00126"></a><span class="lineno">  126</span>    }</div>
+<div class="line"><a id="l00118" name="l00118"></a><span class="lineno">  118</span>    <span class="keywordtype">void</span> clear_opacity_points() {</div>
+<div class="line"><a id="l00119" name="l00119"></a><span class="lineno">  119</span>        opacity_points.clear();</div>
+<div class="line"><a id="l00120" name="l00120"></a><span class="lineno">  120</span>    }</div>
+<div class="line"><a id="l00121" name="l00121"></a><span class="lineno">  121</span> </div>
+<div class="line"><a id="l00122" name="l00122"></a><span class="lineno">  122</span>    <span class="keywordtype">bool</span> empty()<span class="keyword"> const </span>{</div>
+<div class="line"><a id="l00123" name="l00123"></a><span class="lineno">  123</span>        <span class="keywordflow">return</span> color_points.empty() &amp;&amp; opacity_points.empty();</div>
+<div class="line"><a id="l00124" name="l00124"></a><span class="lineno">  124</span>    }</div>
+<div class="line"><a id="l00125" name="l00125"></a><span class="lineno">  125</span> </div>
+<div class="line"><a id="l00126" name="l00126"></a><span class="lineno">  126</span>    <span class="keywordtype">unsigned</span> get_resolution()<span class="keyword"> const </span>{ <span class="keywordflow">return</span> <a class="code hl_variable" href="classcgv_1_1render_1_1color__map.html#a09dec0994e36b33d2df6348d6303b35e">resolution</a>; }</div>
 <div class="line"><a id="l00127" name="l00127"></a><span class="lineno">  127</span> </div>
-<div class="line"><a id="l00128" name="l00128"></a><span class="lineno">  128</span>    <span class="keywordtype">float</span> interpolate_opacity(<span class="keywordtype">float</span> t)<span class="keyword"> const </span>{</div>
-<div class="line"><a id="l00129" name="l00129"></a><span class="lineno">  129</span> </div>
-<div class="line"><a id="l00130" name="l00130"></a><span class="lineno">  130</span>        <span class="keywordflow">return</span> opacity_interpolator_ptr-&gt;interpolate(opacity_points, t);</div>
-<div class="line"><a id="l00131" name="l00131"></a><span class="lineno">  131</span>    }</div>
-<div class="line"><a id="l00132" name="l00132"></a><span class="lineno">  132</span> </div>
-<div class="line"><a id="l00133" name="l00133"></a><span class="lineno">  133</span>    std::vector&lt;float&gt; interpolate_opacity(<span class="keywordtype">size_t</span> n)<span class="keyword"> const </span>{</div>
-<div class="line"><a id="l00134" name="l00134"></a><span class="lineno">  134</span> </div>
-<div class="line"><a id="l00135" name="l00135"></a><span class="lineno">  135</span>        <span class="keywordflow">return</span> opacity_interpolator_ptr-&gt;interpolate(opacity_points, n);</div>
-<div class="line"><a id="l00136" name="l00136"></a><span class="lineno">  136</span>    }</div>
-<div class="line"><a id="l00137" name="l00137"></a><span class="lineno">  137</span> </div>
-<div class="line"><a id="l00138" name="l00138"></a><span class="lineno">  138</span>    <a class="code hl_typedef" href="namespacecgv.html#a0cf3c7d9673d8f1d9d33685e3ce5c889">rgba</a> interpolate(<span class="keywordtype">float</span> t)<span class="keyword"> const </span>{</div>
-<div class="line"><a id="l00139" name="l00139"></a><span class="lineno">  139</span> </div>
-<div class="line"><a id="l00140" name="l00140"></a><span class="lineno">  140</span>        <a class="code hl_typedef" href="namespacecgv.html#a465f589beeb5e4e76eb2db8d1f6057c1">rgb</a> color = interpolate_color(t);</div>
-<div class="line"><a id="l00141" name="l00141"></a><span class="lineno">  141</span>        <span class="keywordtype">float</span> opacity = interpolate_opacity(t);</div>
+<div class="line"><a id="l00128" name="l00128"></a><span class="lineno">  128</span>    <span class="keywordtype">void</span> set_resolution(<span class="keywordtype">unsigned</span> <a class="code hl_variable" href="classcgv_1_1render_1_1color__map.html#a09dec0994e36b33d2df6348d6303b35e">resolution</a>) {</div>
+<div class="line"><a id="l00129" name="l00129"></a><span class="lineno">  129</span>        this-&gt;resolution = std::max(<a class="code hl_variable" href="classcgv_1_1render_1_1color__map.html#a09dec0994e36b33d2df6348d6303b35e">resolution</a>, 2u);</div>
+<div class="line"><a id="l00130" name="l00130"></a><span class="lineno">  130</span>    }</div>
+<div class="line"><a id="l00131" name="l00131"></a><span class="lineno">  131</span> </div>
+<div class="line"><a id="l00132" name="l00132"></a><span class="lineno">  132</span>    <span class="keywordtype">bool</span> is_interpolation_enabled()<span class="keyword"> const </span>{ <span class="keywordflow">return</span> <a class="code hl_variable" href="classcgv_1_1render_1_1color__map.html#a1c4498564651cf32a6811e303e262eb2">use_interpolation</a>; }</div>
+<div class="line"><a id="l00133" name="l00133"></a><span class="lineno">  133</span> </div>
+<div class="line"><a id="l00134" name="l00134"></a><span class="lineno">  134</span>    <span class="keywordtype">void</span> enable_interpolation(<span class="keywordtype">bool</span> enabled) {</div>
+<div class="line"><a id="l00135" name="l00135"></a><span class="lineno">  135</span>        <a class="code hl_variable" href="classcgv_1_1render_1_1color__map.html#a1c4498564651cf32a6811e303e262eb2">use_interpolation</a> = enabled;</div>
+<div class="line"><a id="l00136" name="l00136"></a><span class="lineno">  136</span>        construct_interpolators();</div>
+<div class="line"><a id="l00137" name="l00137"></a><span class="lineno">  137</span>    }</div>
+<div class="line"><a id="l00138" name="l00138"></a><span class="lineno">  138</span> </div>
+<div class="line"><a id="l00139" name="l00139"></a><span class="lineno">  139</span>    <span class="keywordtype">void</span> flip() {</div>
+<div class="line"><a id="l00140" name="l00140"></a><span class="lineno">  140</span>        <a class="code hl_class" href="classcgv_1_1math_1_1control__point__container.html">cgv::math::control_point_container&lt;rgb&gt;</a> flipped_color_points;</div>
+<div class="line"><a id="l00141" name="l00141"></a><span class="lineno">  141</span>        <a class="code hl_class" href="classcgv_1_1math_1_1control__point__container.html">cgv::math::control_point_container&lt;float&gt;</a> flipped_opacity_points;</div>
 <div class="line"><a id="l00142" name="l00142"></a><span class="lineno">  142</span> </div>
-<div class="line"><a id="l00143" name="l00143"></a><span class="lineno">  143</span>        <span class="keywordflow">return</span> <a class="code hl_typedef" href="namespacecgv.html#a0cf3c7d9673d8f1d9d33685e3ce5c889">rgba</a>(color.R(), color.G(), color.B(), opacity);</div>
-<div class="line"><a id="l00144" name="l00144"></a><span class="lineno">  144</span>    }</div>
+<div class="line"><a id="l00143" name="l00143"></a><span class="lineno">  143</span>        <span class="keywordflow">for</span>(<span class="keyword">const</span> color_control_point_type&amp; color_point : color_points)</div>
+<div class="line"><a id="l00144" name="l00144"></a><span class="lineno">  144</span>            flipped_color_points.push_back(1.0f - color_point.first, color_point.second);</div>
 <div class="line"><a id="l00145" name="l00145"></a><span class="lineno">  145</span> </div>
-<div class="line"><a id="l00146" name="l00146"></a><span class="lineno">  146</span>    std::vector&lt;rgba&gt; interpolate(<span class="keywordtype">size_t</span> n)<span class="keyword"> const </span>{</div>
-<div class="line"><a id="l00147" name="l00147"></a><span class="lineno">  147</span> </div>
-<div class="line"><a id="l00148" name="l00148"></a><span class="lineno">  148</span>        <span class="keyword">const</span> std::vector&lt;rgb&gt;&amp; colors = interpolate_color(n);</div>
-<div class="line"><a id="l00149" name="l00149"></a><span class="lineno">  149</span>        <span class="keyword">const</span> std::vector&lt;float&gt;&amp; opacities = interpolate_opacity(n);</div>
-<div class="line"><a id="l00150" name="l00150"></a><span class="lineno">  150</span> </div>
-<div class="line"><a id="l00151" name="l00151"></a><span class="lineno">  151</span>        std::vector&lt;rgba&gt; data(n);</div>
-<div class="line"><a id="l00152" name="l00152"></a><span class="lineno">  152</span>        <span class="keywordflow">for</span>(<span class="keywordtype">size_t</span> i = 0; i &lt; n; ++i) {</div>
-<div class="line"><a id="l00153" name="l00153"></a><span class="lineno">  153</span>            <span class="keyword">const</span> <a class="code hl_typedef" href="namespacecgv.html#a465f589beeb5e4e76eb2db8d1f6057c1">rgb</a>&amp; color = colors[i];</div>
-<div class="line"><a id="l00154" name="l00154"></a><span class="lineno">  154</span>            data[i] = <a class="code hl_typedef" href="namespacecgv.html#a0cf3c7d9673d8f1d9d33685e3ce5c889">rgba</a>(color.R(), color.G(), color.B(), opacities[i]);</div>
-<div class="line"><a id="l00155" name="l00155"></a><span class="lineno">  155</span>        }</div>
-<div class="line"><a id="l00156" name="l00156"></a><span class="lineno">  156</span> </div>
-<div class="line"><a id="l00157" name="l00157"></a><span class="lineno">  157</span>        <span class="keywordflow">return</span> data;</div>
-<div class="line"><a id="l00158" name="l00158"></a><span class="lineno">  158</span>    }</div>
-<div class="line"><a id="l00159" name="l00159"></a><span class="lineno">  159</span>};</div>
+<div class="line"><a id="l00146" name="l00146"></a><span class="lineno">  146</span>        <span class="keywordflow">for</span>(<span class="keyword">const</span> opacity_control_point_type&amp; opacity_point : opacity_points)</div>
+<div class="line"><a id="l00147" name="l00147"></a><span class="lineno">  147</span>            flipped_opacity_points.push_back(1.0f - opacity_point.first, opacity_point.second);</div>
+<div class="line"><a id="l00148" name="l00148"></a><span class="lineno">  148</span> </div>
+<div class="line"><a id="l00149" name="l00149"></a><span class="lineno">  149</span>        color_points = flipped_color_points;</div>
+<div class="line"><a id="l00150" name="l00150"></a><span class="lineno">  150</span>        opacity_points = flipped_opacity_points;</div>
+<div class="line"><a id="l00151" name="l00151"></a><span class="lineno">  151</span>    }</div>
+<div class="line"><a id="l00152" name="l00152"></a><span class="lineno">  152</span> </div>
+<div class="line"><a id="l00153" name="l00153"></a><span class="lineno">  153</span>    <span class="keywordtype">void</span> apply_gamma(<span class="keywordtype">float</span> gamma) {</div>
+<div class="line"><a id="l00154" name="l00154"></a><span class="lineno">  154</span>        <a class="code hl_class" href="classcgv_1_1math_1_1control__point__container.html">cgv::math::control_point_container&lt;rgb&gt;</a> corrected_color_points;</div>
+<div class="line"><a id="l00155" name="l00155"></a><span class="lineno">  155</span> </div>
+<div class="line"><a id="l00156" name="l00156"></a><span class="lineno">  156</span>        <span class="keywordflow">for</span>(<span class="keyword">const</span> color_control_point_type&amp; color_point : color_points)</div>
+<div class="line"><a id="l00157" name="l00157"></a><span class="lineno">  157</span>            corrected_color_points.push_back(color_point.first, <a class="code hl_namespace" href="namespacecgv.html">cgv</a>::media::pow(color_point.second, gamma));</div>
+<div class="line"><a id="l00158" name="l00158"></a><span class="lineno">  158</span> </div>
+<div class="line"><a id="l00159" name="l00159"></a><span class="lineno">  159</span>        color_points = corrected_color_points;</div>
+<div class="line"><a id="l00160" name="l00160"></a><span class="lineno">  160</span>    }</div>
+<div class="line"><a id="l00161" name="l00161"></a><span class="lineno">  161</span> </div>
+<div class="line"><a id="l00162" name="l00162"></a><span class="lineno">  162</span>    <span class="keywordtype">void</span> add_color_point(<span class="keywordtype">float</span> t, <a class="code hl_typedef" href="namespacecgv.html#a465f589beeb5e4e76eb2db8d1f6057c1">rgb</a> color) {</div>
+<div class="line"><a id="l00163" name="l00163"></a><span class="lineno">  163</span>        t = cgv::math::clamp(t, 0.0f, 1.0f);</div>
+<div class="line"><a id="l00164" name="l00164"></a><span class="lineno">  164</span>        color_points.push_back(t, color);</div>
+<div class="line"><a id="l00165" name="l00165"></a><span class="lineno">  165</span>    }</div>
+<div class="line"><a id="l00166" name="l00166"></a><span class="lineno">  166</span> </div>
+<div class="line"><a id="l00167" name="l00167"></a><span class="lineno">  167</span>    <span class="keywordtype">void</span> add_opacity_point(<span class="keywordtype">float</span> t, <span class="keywordtype">float</span> opacity) {</div>
+<div class="line"><a id="l00168" name="l00168"></a><span class="lineno">  168</span>        t = cgv::math::clamp(t, 0.0f, 1.0f);</div>
+<div class="line"><a id="l00169" name="l00169"></a><span class="lineno">  169</span>        opacity_points.push_back(t, opacity);</div>
+<div class="line"><a id="l00170" name="l00170"></a><span class="lineno">  170</span>    }</div>
+<div class="line"><a id="l00171" name="l00171"></a><span class="lineno">  171</span> </div>
+<div class="line"><a id="l00172" name="l00172"></a><span class="lineno">  172</span>    <span class="keyword">const</span> std::vector&lt;color_control_point_type&gt;&amp; ref_color_points()<span class="keyword"> const </span>{ <span class="keywordflow">return</span> color_points.ref_points(); }</div>
+<div class="line"><a id="l00173" name="l00173"></a><span class="lineno">  173</span>    <span class="keyword">const</span> std::vector&lt;opacity_control_point_type&gt;&amp; ref_opacity_points()<span class="keyword"> const </span>{ <span class="keywordflow">return</span> opacity_points.ref_points(); }</div>
+<div class="line"><a id="l00174" name="l00174"></a><span class="lineno">  174</span> </div>
+<div class="line"><a id="l00175" name="l00175"></a><span class="lineno">  175</span>    <a class="code hl_typedef" href="namespacecgv.html#a465f589beeb5e4e76eb2db8d1f6057c1">rgb</a> interpolate_color(<span class="keywordtype">float</span> t)<span class="keyword"> const </span>{</div>
+<div class="line"><a id="l00176" name="l00176"></a><span class="lineno">  176</span>        <span class="keywordflow">return</span> color_interpolator_ptr-&gt;interpolate(color_points, t);</div>
+<div class="line"><a id="l00177" name="l00177"></a><span class="lineno">  177</span>    }</div>
+<div class="line"><a id="l00178" name="l00178"></a><span class="lineno">  178</span> </div>
+<div class="line"><a id="l00179" name="l00179"></a><span class="lineno">  179</span>    std::vector&lt;rgb&gt; interpolate_color(<span class="keywordtype">size_t</span> n)<span class="keyword"> const </span>{</div>
+<div class="line"><a id="l00180" name="l00180"></a><span class="lineno">  180</span>        <span class="keywordflow">return</span> color_interpolator_ptr-&gt;interpolate(color_points, n);</div>
+<div class="line"><a id="l00181" name="l00181"></a><span class="lineno">  181</span>    }</div>
+<div class="line"><a id="l00182" name="l00182"></a><span class="lineno">  182</span> </div>
+<div class="line"><a id="l00183" name="l00183"></a><span class="lineno">  183</span>    <span class="keywordtype">float</span> interpolate_opacity(<span class="keywordtype">float</span> t)<span class="keyword"> const </span>{</div>
+<div class="line"><a id="l00184" name="l00184"></a><span class="lineno">  184</span>        <span class="keywordflow">return</span> opacity_interpolator_ptr-&gt;interpolate(opacity_points, t);</div>
+<div class="line"><a id="l00185" name="l00185"></a><span class="lineno">  185</span>    }</div>
+<div class="line"><a id="l00186" name="l00186"></a><span class="lineno">  186</span> </div>
+<div class="line"><a id="l00187" name="l00187"></a><span class="lineno">  187</span>    std::vector&lt;float&gt; interpolate_opacity(<span class="keywordtype">size_t</span> n)<span class="keyword"> const </span>{</div>
+<div class="line"><a id="l00188" name="l00188"></a><span class="lineno">  188</span>        <span class="keywordflow">return</span> opacity_interpolator_ptr-&gt;interpolate(opacity_points, n);</div>
+<div class="line"><a id="l00189" name="l00189"></a><span class="lineno">  189</span>    }</div>
+<div class="line"><a id="l00190" name="l00190"></a><span class="lineno">  190</span> </div>
+<div class="line"><a id="l00191" name="l00191"></a><span class="lineno">  191</span>    <a class="code hl_typedef" href="namespacecgv.html#a0cf3c7d9673d8f1d9d33685e3ce5c889">rgba</a> interpolate(<span class="keywordtype">float</span> t)<span class="keyword"> const </span>{</div>
+<div class="line"><a id="l00192" name="l00192"></a><span class="lineno">  192</span>        <a class="code hl_typedef" href="namespacecgv.html#a465f589beeb5e4e76eb2db8d1f6057c1">rgb</a> color = interpolate_color(t);</div>
+<div class="line"><a id="l00193" name="l00193"></a><span class="lineno">  193</span>        <span class="keywordtype">float</span> opacity = interpolate_opacity(t);</div>
+<div class="line"><a id="l00194" name="l00194"></a><span class="lineno">  194</span> </div>
+<div class="line"><a id="l00195" name="l00195"></a><span class="lineno">  195</span>        <span class="keywordflow">return</span> <a class="code hl_typedef" href="namespacecgv.html#a0cf3c7d9673d8f1d9d33685e3ce5c889">rgba</a>(color.R(), color.G(), color.B(), opacity);</div>
+<div class="line"><a id="l00196" name="l00196"></a><span class="lineno">  196</span>    }</div>
+<div class="line"><a id="l00197" name="l00197"></a><span class="lineno">  197</span> </div>
+<div class="line"><a id="l00198" name="l00198"></a><span class="lineno">  198</span>    std::vector&lt;rgba&gt; interpolate(<span class="keywordtype">size_t</span> n)<span class="keyword"> const </span>{</div>
+<div class="line"><a id="l00199" name="l00199"></a><span class="lineno">  199</span>        <span class="keyword">const</span> std::vector&lt;rgb&gt;&amp; colors = interpolate_color(n);</div>
+<div class="line"><a id="l00200" name="l00200"></a><span class="lineno">  200</span>        <span class="keyword">const</span> std::vector&lt;float&gt;&amp; opacities = interpolate_opacity(n);</div>
+<div class="line"><a id="l00201" name="l00201"></a><span class="lineno">  201</span> </div>
+<div class="line"><a id="l00202" name="l00202"></a><span class="lineno">  202</span>        std::vector&lt;rgba&gt; data(n);</div>
+<div class="line"><a id="l00203" name="l00203"></a><span class="lineno">  203</span>        <span class="keywordflow">for</span>(<span class="keywordtype">size_t</span> i = 0; i &lt; n; ++i) {</div>
+<div class="line"><a id="l00204" name="l00204"></a><span class="lineno">  204</span>            <span class="keyword">const</span> <a class="code hl_typedef" href="namespacecgv.html#a465f589beeb5e4e76eb2db8d1f6057c1">rgb</a>&amp; color = colors[i];</div>
+<div class="line"><a id="l00205" name="l00205"></a><span class="lineno">  205</span>            data[i] = <a class="code hl_typedef" href="namespacecgv.html#a0cf3c7d9673d8f1d9d33685e3ce5c889">rgba</a>(color.R(), color.G(), color.B(), opacities[i]);</div>
+<div class="line"><a id="l00206" name="l00206"></a><span class="lineno">  206</span>        }</div>
+<div class="line"><a id="l00207" name="l00207"></a><span class="lineno">  207</span> </div>
+<div class="line"><a id="l00208" name="l00208"></a><span class="lineno">  208</span>        <span class="keywordflow">return</span> data;</div>
+<div class="line"><a id="l00209" name="l00209"></a><span class="lineno">  209</span>    }</div>
+<div class="line"><a id="l00210" name="l00210"></a><span class="lineno">  210</span>};</div>
 </div>
-<div class="line"><a id="l00160" name="l00160"></a><span class="lineno">  160</span> </div>
-<div class="foldopen" id="foldopen00161" data-start="{" data-end="};">
-<div class="line"><a id="l00161" name="l00161"></a><span class="lineno"><a class="line" href="classcgv_1_1render_1_1gl__color__map.html">  161</a></span><span class="keyword">class </span><a class="code hl_class" href="classcgv_1_1render_1_1gl__color__map.html">gl_color_map</a> : <span class="keyword">public</span> <a class="code hl_class" href="classcgv_1_1render_1_1color__map.html">color_map</a> {</div>
-<div class="line"><a id="l00162" name="l00162"></a><span class="lineno">  162</span><span class="keyword">protected</span>:</div>
-<div class="line"><a id="l00164" name="l00164"></a><span class="lineno"><a class="line" href="classcgv_1_1render_1_1gl__color__map.html#a25b70823ebf6e0bd5e0bae82404b9bad">  164</a></span>    <span class="keywordtype">bool</span> <a class="code hl_variable" href="classcgv_1_1render_1_1gl__color__map.html#a25b70823ebf6e0bd5e0bae82404b9bad">use_linear_filtering</a> = <span class="keyword">true</span>;</div>
-<div class="line"><a id="l00165" name="l00165"></a><span class="lineno">  165</span>    <a class="code hl_class" href="classcgv_1_1render_1_1texture.html">texture</a> tex;</div>
-<div class="line"><a id="l00166" name="l00166"></a><span class="lineno">  166</span>    </div>
-<div class="line"><a id="l00167" name="l00167"></a><span class="lineno">  167</span>    <a class="code hl_enumeration" href="namespacecgv_1_1render.html#a36d5eafecd046d656ad030c042dfeaea">TextureFilter</a> get_texture_filter() {</div>
-<div class="line"><a id="l00168" name="l00168"></a><span class="lineno">  168</span>        <span class="keywordflow">return</span> <a class="code hl_variable" href="classcgv_1_1render_1_1gl__color__map.html#a25b70823ebf6e0bd5e0bae82404b9bad">use_linear_filtering</a> ? TF_LINEAR : TF_NEAREST;</div>
-<div class="line"><a id="l00169" name="l00169"></a><span class="lineno">  169</span>    }</div>
-<div class="line"><a id="l00170" name="l00170"></a><span class="lineno">  170</span> </div>
-<div class="line"><a id="l00171" name="l00171"></a><span class="lineno">  171</span>    <span class="keywordtype">void</span> setup_texture(<span class="keywordtype">bool</span> use_opacity) {</div>
-<div class="line"><a id="l00172" name="l00172"></a><span class="lineno">  172</span>        std::string format = use_opacity ? <span class="stringliteral">&quot;uint8[R,G,B,A]&quot;</span> : <span class="stringliteral">&quot;uint8[R,G,B]&quot;</span>;</div>
-<div class="line"><a id="l00173" name="l00173"></a><span class="lineno">  173</span>        <a class="code hl_enumeration" href="namespacecgv_1_1render.html#a36d5eafecd046d656ad030c042dfeaea">TextureFilter</a> filter = get_texture_filter();</div>
-<div class="line"><a id="l00174" name="l00174"></a><span class="lineno">  174</span>        tex = <a class="code hl_class" href="classcgv_1_1render_1_1texture.html">texture</a>(format, filter, filter);</div>
-<div class="line"><a id="l00175" name="l00175"></a><span class="lineno">  175</span>    }</div>
-<div class="line"><a id="l00176" name="l00176"></a><span class="lineno">  176</span> </div>
-<div class="line"><a id="l00177" name="l00177"></a><span class="lineno">  177</span>    <span class="keywordtype">void</span> generate_rgb_texture(context&amp; ctx) {</div>
-<div class="line"><a id="l00178" name="l00178"></a><span class="lineno">  178</span>        std::vector&lt;rgb&gt; data = interpolate_color(<span class="keyword">static_cast&lt;</span><span class="keywordtype">size_t</span><span class="keyword">&gt;</span>(<a class="code hl_variable" href="classcgv_1_1render_1_1color__map.html#a09dec0994e36b33d2df6348d6303b35e">resolution</a>));</div>
-<div class="line"><a id="l00179" name="l00179"></a><span class="lineno">  179</span>        </div>
-<div class="line"><a id="l00180" name="l00180"></a><span class="lineno">  180</span>        std::vector&lt;uint8_t&gt; data_8(3 * data.size());</div>
-<div class="line"><a id="l00181" name="l00181"></a><span class="lineno">  181</span>        <span class="keywordflow">for</span>(<span class="keywordtype">size_t</span> i = 0; i &lt; data.size(); ++i) {</div>
-<div class="line"><a id="l00182" name="l00182"></a><span class="lineno">  182</span>            <a class="code hl_class" href="classcgv_1_1media_1_1color.html">rgb</a> col = data[i];</div>
-<div class="line"><a id="l00183" name="l00183"></a><span class="lineno">  183</span>            data_8[3 * i + 0] = <span class="keyword">static_cast&lt;</span>uint8_t<span class="keyword">&gt;</span>(255.0f * col.R());</div>
-<div class="line"><a id="l00184" name="l00184"></a><span class="lineno">  184</span>            data_8[3 * i + 1] = <span class="keyword">static_cast&lt;</span>uint8_t<span class="keyword">&gt;</span>(255.0f * col.G());</div>
-<div class="line"><a id="l00185" name="l00185"></a><span class="lineno">  185</span>            data_8[3 * i + 2] = <span class="keyword">static_cast&lt;</span>uint8_t<span class="keyword">&gt;</span>(255.0f * col.B());</div>
-<div class="line"><a id="l00186" name="l00186"></a><span class="lineno">  186</span>        }</div>
-<div class="line"><a id="l00187" name="l00187"></a><span class="lineno">  187</span> </div>
-<div class="line"><a id="l00188" name="l00188"></a><span class="lineno">  188</span>        <a class="code hl_class" href="classcgv_1_1data_1_1data__view.html">cgv::data::data_view</a> dv = <a class="code hl_class" href="classcgv_1_1data_1_1data__view.html">cgv::data::data_view</a>(<span class="keyword">new</span> <a class="code hl_class" href="classcgv_1_1data_1_1data__format.html">cgv::data::data_format</a>(<a class="code hl_variable" href="classcgv_1_1render_1_1color__map.html#a09dec0994e36b33d2df6348d6303b35e">resolution</a>, <a class="code hl_enumvalue" href="namespacecgv_1_1type_1_1info.html#accf71420e941489dc6fb6737cd11b752a60aaeda29715a39905dd9cbfbd0130ca">TI_UINT8</a>, <a class="code hl_enumvalue" href="namespacecgv_1_1data.html#a04ff4cdaed048a306aed8dd5a8c5c979a5e0a20ab9e288dea753eade67973a28d">cgv::data::CF_RGB</a>), data_8.data());</div>
-<div class="line"><a id="l00189" name="l00189"></a><span class="lineno">  189</span> </div>
-<div class="line"><a id="l00190" name="l00190"></a><span class="lineno">  190</span>        <span class="keywordtype">unsigned</span> width = (unsigned)tex.<a class="code hl_function" href="classcgv_1_1data_1_1data__format.html#a8dc999987a5635f88121814aa385e51e">get_width</a>();</div>
-<div class="line"><a id="l00191" name="l00191"></a><span class="lineno">  191</span> </div>
-<div class="line"><a id="l00192" name="l00192"></a><span class="lineno">  192</span>        <span class="keywordtype">bool</span> replaced = <span class="keyword">false</span>;</div>
-<div class="line"><a id="l00193" name="l00193"></a><span class="lineno">  193</span>        <span class="keywordflow">if</span>(tex.<a class="code hl_function" href="classcgv_1_1render_1_1render__component.html#a4c896d2654616448824f5f2f759b8947">is_created</a>() &amp;&amp; width == <a class="code hl_variable" href="classcgv_1_1render_1_1color__map.html#a09dec0994e36b33d2df6348d6303b35e">resolution</a> &amp;&amp; tex.<a class="code hl_function" href="classcgv_1_1data_1_1component__format.html#aff1bf203447a682b49b88af95fcda3f0">get_nr_components</a>() == 3) {</div>
-<div class="line"><a id="l00194" name="l00194"></a><span class="lineno">  194</span>            <a class="code hl_enumeration" href="namespacecgv_1_1render.html#a36d5eafecd046d656ad030c042dfeaea">TextureFilter</a> filter = get_texture_filter();</div>
-<div class="line"><a id="l00195" name="l00195"></a><span class="lineno">  195</span>            tex.<a class="code hl_function" href="classcgv_1_1render_1_1texture.html#ae16b594b6a561303de2dde63af981317">set_min_filter</a>(filter);</div>
-<div class="line"><a id="l00196" name="l00196"></a><span class="lineno">  196</span>            tex.<a class="code hl_function" href="classcgv_1_1render_1_1texture.html#a0164a6d3a2161bc4190daac067d78c5e">set_mag_filter</a>(filter);</div>
-<div class="line"><a id="l00197" name="l00197"></a><span class="lineno">  197</span>            replaced = tex.<a class="code hl_function" href="classcgv_1_1render_1_1texture.html#ac29e0ac55e94328ffc453fdbc794ca6f">replace</a>(ctx, 0, dv);</div>
-<div class="line"><a id="l00198" name="l00198"></a><span class="lineno">  198</span>        }</div>
-<div class="line"><a id="l00199" name="l00199"></a><span class="lineno">  199</span> </div>
-<div class="line"><a id="l00200" name="l00200"></a><span class="lineno">  200</span>        <span class="keywordflow">if</span>(!replaced) {</div>
-<div class="line"><a id="l00201" name="l00201"></a><span class="lineno">  201</span>            tex.<a class="code hl_function" href="classcgv_1_1render_1_1texture.html#a848ffff0ddb2851add7c293dad6f446f">destruct</a>(ctx);</div>
-<div class="line"><a id="l00202" name="l00202"></a><span class="lineno">  202</span>            setup_texture(<span class="keyword">false</span>);</div>
-<div class="line"><a id="l00203" name="l00203"></a><span class="lineno">  203</span>            tex.<a class="code hl_function" href="classcgv_1_1render_1_1texture.html#a2b89a0bb09f73e84dec467a61b3fcc8b">create</a>(ctx, dv, 0);</div>
-<div class="line"><a id="l00204" name="l00204"></a><span class="lineno">  204</span>        }</div>
-<div class="line"><a id="l00205" name="l00205"></a><span class="lineno">  205</span>    }</div>
-<div class="line"><a id="l00206" name="l00206"></a><span class="lineno">  206</span> </div>
-<div class="line"><a id="l00207" name="l00207"></a><span class="lineno">  207</span>    <span class="keywordtype">void</span> generate_rgba_texture(context&amp; ctx) {</div>
-<div class="line"><a id="l00208" name="l00208"></a><span class="lineno">  208</span>        std::vector&lt;rgba&gt; data = interpolate(<span class="keyword">static_cast&lt;</span><span class="keywordtype">size_t</span><span class="keyword">&gt;</span>(<a class="code hl_variable" href="classcgv_1_1render_1_1color__map.html#a09dec0994e36b33d2df6348d6303b35e">resolution</a>));</div>
-<div class="line"><a id="l00209" name="l00209"></a><span class="lineno">  209</span> </div>
-<div class="line"><a id="l00210" name="l00210"></a><span class="lineno">  210</span>        std::vector&lt;uint8_t&gt; data_8(4 * data.size());</div>
-<div class="line"><a id="l00211" name="l00211"></a><span class="lineno">  211</span>        <span class="keywordflow">for</span>(<span class="keywordtype">size_t</span> i = 0; i &lt; data.size(); ++i) {</div>
-<div class="line"><a id="l00212" name="l00212"></a><span class="lineno">  212</span>            <a class="code hl_typedef" href="namespacecgv.html#a0cf3c7d9673d8f1d9d33685e3ce5c889">rgba</a> col = data[i];</div>
-<div class="line"><a id="l00213" name="l00213"></a><span class="lineno">  213</span>            data_8[4 * i + 0] = <span class="keyword">static_cast&lt;</span>uint8_t<span class="keyword">&gt;</span>(255.0f * col.R());</div>
-<div class="line"><a id="l00214" name="l00214"></a><span class="lineno">  214</span>            data_8[4 * i + 1] = <span class="keyword">static_cast&lt;</span>uint8_t<span class="keyword">&gt;</span>(255.0f * col.G());</div>
-<div class="line"><a id="l00215" name="l00215"></a><span class="lineno">  215</span>            data_8[4 * i + 2] = <span class="keyword">static_cast&lt;</span>uint8_t<span class="keyword">&gt;</span>(255.0f * col.B());</div>
-<div class="line"><a id="l00216" name="l00216"></a><span class="lineno">  216</span>            data_8[4 * i + 3] = <span class="keyword">static_cast&lt;</span>uint8_t<span class="keyword">&gt;</span>(255.0f * col.alpha());</div>
-<div class="line"><a id="l00217" name="l00217"></a><span class="lineno">  217</span>        }</div>
-<div class="line"><a id="l00218" name="l00218"></a><span class="lineno">  218</span> </div>
-<div class="line"><a id="l00219" name="l00219"></a><span class="lineno">  219</span>        <a class="code hl_class" href="classcgv_1_1data_1_1data__view.html">cgv::data::data_view</a> dv = <a class="code hl_class" href="classcgv_1_1data_1_1data__view.html">cgv::data::data_view</a>(<span class="keyword">new</span> <a class="code hl_class" href="classcgv_1_1data_1_1data__format.html">cgv::data::data_format</a>(<a class="code hl_variable" href="classcgv_1_1render_1_1color__map.html#a09dec0994e36b33d2df6348d6303b35e">resolution</a>, <a class="code hl_enumvalue" href="namespacecgv_1_1type_1_1info.html#accf71420e941489dc6fb6737cd11b752a60aaeda29715a39905dd9cbfbd0130ca">TI_UINT8</a>, <a class="code hl_enumvalue" href="namespacecgv_1_1data.html#a04ff4cdaed048a306aed8dd5a8c5c979a21c9ff1f110a3761d1e811a2ae8401ac">cgv::data::CF_RGBA</a>), data_8.data());</div>
-<div class="line"><a id="l00220" name="l00220"></a><span class="lineno">  220</span> </div>
-<div class="line"><a id="l00221" name="l00221"></a><span class="lineno">  221</span>        <span class="keywordtype">unsigned</span> width = (unsigned)tex.<a class="code hl_function" href="classcgv_1_1data_1_1data__format.html#a8dc999987a5635f88121814aa385e51e">get_width</a>();</div>
-<div class="line"><a id="l00222" name="l00222"></a><span class="lineno">  222</span> </div>
-<div class="line"><a id="l00223" name="l00223"></a><span class="lineno">  223</span>        <span class="keywordtype">bool</span> replaced = <span class="keyword">false</span>;</div>
-<div class="line"><a id="l00224" name="l00224"></a><span class="lineno">  224</span>        <span class="keywordflow">if</span>(tex.<a class="code hl_function" href="classcgv_1_1render_1_1render__component.html#a4c896d2654616448824f5f2f759b8947">is_created</a>() &amp;&amp; width == <a class="code hl_variable" href="classcgv_1_1render_1_1color__map.html#a09dec0994e36b33d2df6348d6303b35e">resolution</a> &amp;&amp; tex.<a class="code hl_function" href="classcgv_1_1data_1_1component__format.html#aff1bf203447a682b49b88af95fcda3f0">get_nr_components</a>() == 4) {</div>
-<div class="line"><a id="l00225" name="l00225"></a><span class="lineno">  225</span>            <a class="code hl_enumeration" href="namespacecgv_1_1render.html#a36d5eafecd046d656ad030c042dfeaea">TextureFilter</a> filter = get_texture_filter();</div>
-<div class="line"><a id="l00226" name="l00226"></a><span class="lineno">  226</span>            tex.<a class="code hl_function" href="classcgv_1_1render_1_1texture.html#ae16b594b6a561303de2dde63af981317">set_min_filter</a>(filter);</div>
-<div class="line"><a id="l00227" name="l00227"></a><span class="lineno">  227</span>            tex.<a class="code hl_function" href="classcgv_1_1render_1_1texture.html#a0164a6d3a2161bc4190daac067d78c5e">set_mag_filter</a>(filter);</div>
-<div class="line"><a id="l00228" name="l00228"></a><span class="lineno">  228</span>            replaced = tex.<a class="code hl_function" href="classcgv_1_1render_1_1texture.html#ac29e0ac55e94328ffc453fdbc794ca6f">replace</a>(ctx, 0, dv);</div>
-<div class="line"><a id="l00229" name="l00229"></a><span class="lineno">  229</span>        }</div>
-<div class="line"><a id="l00230" name="l00230"></a><span class="lineno">  230</span> </div>
-<div class="line"><a id="l00231" name="l00231"></a><span class="lineno">  231</span>        <span class="keywordflow">if</span>(!replaced) {</div>
-<div class="line"><a id="l00232" name="l00232"></a><span class="lineno">  232</span>            tex.<a class="code hl_function" href="classcgv_1_1render_1_1texture.html#a848ffff0ddb2851add7c293dad6f446f">destruct</a>(ctx);</div>
-<div class="line"><a id="l00233" name="l00233"></a><span class="lineno">  233</span>            setup_texture(<span class="keyword">true</span>);</div>
-<div class="line"><a id="l00234" name="l00234"></a><span class="lineno">  234</span>            tex.<a class="code hl_function" href="classcgv_1_1render_1_1texture.html#a2b89a0bb09f73e84dec467a61b3fcc8b">create</a>(ctx, dv, 0);</div>
-<div class="line"><a id="l00235" name="l00235"></a><span class="lineno">  235</span>        }</div>
-<div class="line"><a id="l00236" name="l00236"></a><span class="lineno">  236</span>    }</div>
-<div class="line"><a id="l00237" name="l00237"></a><span class="lineno">  237</span> </div>
-<div class="line"><a id="l00238" name="l00238"></a><span class="lineno">  238</span><span class="keyword">public</span>:</div>
-<div class="line"><a id="l00239" name="l00239"></a><span class="lineno">  239</span>    gl_color_map() : color_map() {}</div>
+<div class="line"><a id="l00211" name="l00211"></a><span class="lineno">  211</span> </div>
+<div class="foldopen" id="foldopen00212" data-start="{" data-end="};">
+<div class="line"><a id="l00212" name="l00212"></a><span class="lineno"><a class="line" href="classcgv_1_1render_1_1gl__color__map.html">  212</a></span><span class="keyword">class </span><a class="code hl_class" href="classcgv_1_1render_1_1gl__color__map.html">gl_color_map</a> : <span class="keyword">public</span> <a class="code hl_class" href="classcgv_1_1render_1_1color__map.html">color_map</a> {</div>
+<div class="line"><a id="l00213" name="l00213"></a><span class="lineno">  213</span><span class="keyword">protected</span>:</div>
+<div class="line"><a id="l00215" name="l00215"></a><span class="lineno"><a class="line" href="classcgv_1_1render_1_1gl__color__map.html#a25b70823ebf6e0bd5e0bae82404b9bad">  215</a></span>    <span class="keywordtype">bool</span> <a class="code hl_variable" href="classcgv_1_1render_1_1gl__color__map.html#a25b70823ebf6e0bd5e0bae82404b9bad">use_linear_filtering</a> = <span class="keyword">true</span>;</div>
+<div class="line"><a id="l00216" name="l00216"></a><span class="lineno">  216</span>    <a class="code hl_class" href="classcgv_1_1render_1_1texture.html">texture</a> tex;</div>
+<div class="line"><a id="l00217" name="l00217"></a><span class="lineno">  217</span>    </div>
+<div class="line"><a id="l00218" name="l00218"></a><span class="lineno">  218</span>    <a class="code hl_enumeration" href="namespacecgv_1_1render.html#a36d5eafecd046d656ad030c042dfeaea">TextureFilter</a> get_texture_filter() {</div>
+<div class="line"><a id="l00219" name="l00219"></a><span class="lineno">  219</span>        <span class="keywordflow">return</span> <a class="code hl_variable" href="classcgv_1_1render_1_1gl__color__map.html#a25b70823ebf6e0bd5e0bae82404b9bad">use_linear_filtering</a> ? TF_LINEAR : TF_NEAREST;</div>
+<div class="line"><a id="l00220" name="l00220"></a><span class="lineno">  220</span>    }</div>
+<div class="line"><a id="l00221" name="l00221"></a><span class="lineno">  221</span> </div>
+<div class="line"><a id="l00222" name="l00222"></a><span class="lineno">  222</span>    <span class="keywordtype">void</span> setup_texture(<span class="keywordtype">bool</span> use_opacity) {</div>
+<div class="line"><a id="l00223" name="l00223"></a><span class="lineno">  223</span>        std::string format = use_opacity ? <span class="stringliteral">&quot;uint8[R,G,B,A]&quot;</span> : <span class="stringliteral">&quot;uint8[R,G,B]&quot;</span>;</div>
+<div class="line"><a id="l00224" name="l00224"></a><span class="lineno">  224</span>        <a class="code hl_enumeration" href="namespacecgv_1_1render.html#a36d5eafecd046d656ad030c042dfeaea">TextureFilter</a> filter = get_texture_filter();</div>
+<div class="line"><a id="l00225" name="l00225"></a><span class="lineno">  225</span>        tex = <a class="code hl_class" href="classcgv_1_1render_1_1texture.html">texture</a>(format, filter, filter);</div>
+<div class="line"><a id="l00226" name="l00226"></a><span class="lineno">  226</span>    }</div>
+<div class="line"><a id="l00227" name="l00227"></a><span class="lineno">  227</span> </div>
+<div class="line"><a id="l00228" name="l00228"></a><span class="lineno">  228</span>    <span class="keywordtype">void</span> generate_rgb_texture(context&amp; ctx) {</div>
+<div class="line"><a id="l00229" name="l00229"></a><span class="lineno">  229</span>        std::vector&lt;rgb&gt; data = interpolate_color(<span class="keyword">static_cast&lt;</span><span class="keywordtype">size_t</span><span class="keyword">&gt;</span>(<a class="code hl_variable" href="classcgv_1_1render_1_1color__map.html#a09dec0994e36b33d2df6348d6303b35e">resolution</a>));</div>
+<div class="line"><a id="l00230" name="l00230"></a><span class="lineno">  230</span>        </div>
+<div class="line"><a id="l00231" name="l00231"></a><span class="lineno">  231</span>        std::vector&lt;uint8_t&gt; data_8(3 * data.size());</div>
+<div class="line"><a id="l00232" name="l00232"></a><span class="lineno">  232</span>        <span class="keywordflow">for</span>(<span class="keywordtype">size_t</span> i = 0; i &lt; data.size(); ++i) {</div>
+<div class="line"><a id="l00233" name="l00233"></a><span class="lineno">  233</span>            <a class="code hl_class" href="classcgv_1_1media_1_1color.html">rgb</a> col = data[i];</div>
+<div class="line"><a id="l00234" name="l00234"></a><span class="lineno">  234</span>            data_8[3 * i + 0] = <span class="keyword">static_cast&lt;</span>uint8_t<span class="keyword">&gt;</span>(255.0f * col.R());</div>
+<div class="line"><a id="l00235" name="l00235"></a><span class="lineno">  235</span>            data_8[3 * i + 1] = <span class="keyword">static_cast&lt;</span>uint8_t<span class="keyword">&gt;</span>(255.0f * col.G());</div>
+<div class="line"><a id="l00236" name="l00236"></a><span class="lineno">  236</span>            data_8[3 * i + 2] = <span class="keyword">static_cast&lt;</span>uint8_t<span class="keyword">&gt;</span>(255.0f * col.B());</div>
+<div class="line"><a id="l00237" name="l00237"></a><span class="lineno">  237</span>        }</div>
+<div class="line"><a id="l00238" name="l00238"></a><span class="lineno">  238</span> </div>
+<div class="line"><a id="l00239" name="l00239"></a><span class="lineno">  239</span>        <a class="code hl_class" href="classcgv_1_1data_1_1data__view.html">cgv::data::data_view</a> dv = <a class="code hl_class" href="classcgv_1_1data_1_1data__view.html">cgv::data::data_view</a>(<span class="keyword">new</span> <a class="code hl_class" href="classcgv_1_1data_1_1data__format.html">cgv::data::data_format</a>(<a class="code hl_variable" href="classcgv_1_1render_1_1color__map.html#a09dec0994e36b33d2df6348d6303b35e">resolution</a>, <a class="code hl_enumvalue" href="namespacecgv_1_1type_1_1info.html#accf71420e941489dc6fb6737cd11b752a60aaeda29715a39905dd9cbfbd0130ca">TI_UINT8</a>, <a class="code hl_enumvalue" href="namespacecgv_1_1data.html#a04ff4cdaed048a306aed8dd5a8c5c979a5e0a20ab9e288dea753eade67973a28d">cgv::data::CF_RGB</a>), data_8.data());</div>
 <div class="line"><a id="l00240" name="l00240"></a><span class="lineno">  240</span> </div>
-<div class="line"><a id="l00241" name="l00241"></a><span class="lineno">  241</span>    gl_color_map(<span class="keywordtype">unsigned</span> <a class="code hl_variable" href="classcgv_1_1render_1_1color__map.html#a09dec0994e36b33d2df6348d6303b35e">resolution</a>) : gl_color_map() {</div>
-<div class="line"><a id="l00242" name="l00242"></a><span class="lineno">  242</span>        <a class="code hl_variable" href="classcgv_1_1render_1_1color__map.html#a09dec0994e36b33d2df6348d6303b35e">resolution</a> = std::max(<a class="code hl_variable" href="classcgv_1_1render_1_1color__map.html#a09dec0994e36b33d2df6348d6303b35e">resolution</a>, 2u);</div>
-<div class="line"><a id="l00243" name="l00243"></a><span class="lineno">  243</span>    }</div>
-<div class="line"><a id="l00244" name="l00244"></a><span class="lineno">  244</span>    </div>
-<div class="line"><a id="l00245" name="l00245"></a><span class="lineno">  245</span>    gl_color_map(<span class="keyword">const</span> color_map&amp; cm) : gl_color_map() {</div>
-<div class="line"><a id="l00246" name="l00246"></a><span class="lineno">  246</span>        <a class="code hl_variable" href="classcgv_1_1render_1_1color__map.html#a09dec0994e36b33d2df6348d6303b35e">resolution</a> = cm.get_resolution();</div>
-<div class="line"><a id="l00247" name="l00247"></a><span class="lineno">  247</span>        <a class="code hl_variable" href="classcgv_1_1render_1_1color__map.html#a1c4498564651cf32a6811e303e262eb2">use_interpolation</a> = cm.is_interpolation_enabled();</div>
-<div class="line"><a id="l00248" name="l00248"></a><span class="lineno">  248</span>        </div>
-<div class="line"><a id="l00249" name="l00249"></a><span class="lineno">  249</span>        construct_interpolators();</div>
+<div class="line"><a id="l00241" name="l00241"></a><span class="lineno">  241</span>        <span class="keywordtype">unsigned</span> width = (unsigned)tex.<a class="code hl_function" href="classcgv_1_1data_1_1data__format.html#a8dc999987a5635f88121814aa385e51e">get_width</a>();</div>
+<div class="line"><a id="l00242" name="l00242"></a><span class="lineno">  242</span> </div>
+<div class="line"><a id="l00243" name="l00243"></a><span class="lineno">  243</span>        <span class="keywordtype">bool</span> replaced = <span class="keyword">false</span>;</div>
+<div class="line"><a id="l00244" name="l00244"></a><span class="lineno">  244</span>        <span class="keywordflow">if</span>(tex.<a class="code hl_function" href="classcgv_1_1render_1_1render__component.html#a4c896d2654616448824f5f2f759b8947">is_created</a>() &amp;&amp; width == <a class="code hl_variable" href="classcgv_1_1render_1_1color__map.html#a09dec0994e36b33d2df6348d6303b35e">resolution</a> &amp;&amp; tex.<a class="code hl_function" href="classcgv_1_1data_1_1component__format.html#aff1bf203447a682b49b88af95fcda3f0">get_nr_components</a>() == 3) {</div>
+<div class="line"><a id="l00245" name="l00245"></a><span class="lineno">  245</span>            <a class="code hl_enumeration" href="namespacecgv_1_1render.html#a36d5eafecd046d656ad030c042dfeaea">TextureFilter</a> filter = get_texture_filter();</div>
+<div class="line"><a id="l00246" name="l00246"></a><span class="lineno">  246</span>            tex.<a class="code hl_function" href="classcgv_1_1render_1_1texture.html#ae16b594b6a561303de2dde63af981317">set_min_filter</a>(filter);</div>
+<div class="line"><a id="l00247" name="l00247"></a><span class="lineno">  247</span>            tex.<a class="code hl_function" href="classcgv_1_1render_1_1texture.html#a0164a6d3a2161bc4190daac067d78c5e">set_mag_filter</a>(filter);</div>
+<div class="line"><a id="l00248" name="l00248"></a><span class="lineno">  248</span>            replaced = tex.<a class="code hl_function" href="classcgv_1_1render_1_1texture.html#ac29e0ac55e94328ffc453fdbc794ca6f">replace</a>(ctx, 0, dv);</div>
+<div class="line"><a id="l00249" name="l00249"></a><span class="lineno">  249</span>        }</div>
 <div class="line"><a id="l00250" name="l00250"></a><span class="lineno">  250</span> </div>
-<div class="line"><a id="l00251" name="l00251"></a><span class="lineno">  251</span>        <span class="keywordflow">for</span>(<span class="keyword">auto</span>&amp; p : cm.ref_color_points())</div>
-<div class="line"><a id="l00252" name="l00252"></a><span class="lineno">  252</span>            add_color_point(p.first, p.second);</div>
-<div class="line"><a id="l00253" name="l00253"></a><span class="lineno">  253</span>        <span class="keywordflow">for</span>(<span class="keyword">auto</span>&amp; p : cm.ref_opacity_points())</div>
-<div class="line"><a id="l00254" name="l00254"></a><span class="lineno">  254</span>            add_opacity_point(p.first, p.second);</div>
-<div class="line"><a id="l00255" name="l00255"></a><span class="lineno">  255</span>    }</div>
-<div class="line"><a id="l00256" name="l00256"></a><span class="lineno">  256</span> </div>
-<div class="line"><a id="l00257" name="l00257"></a><span class="lineno">  257</span>    <span class="keyword">virtual</span> ~gl_color_map() {</div>
-<div class="line"><a id="l00258" name="l00258"></a><span class="lineno">  258</span>        clear();</div>
-<div class="line"><a id="l00259" name="l00259"></a><span class="lineno">  259</span>    }</div>
+<div class="line"><a id="l00251" name="l00251"></a><span class="lineno">  251</span>        <span class="keywordflow">if</span>(!replaced) {</div>
+<div class="line"><a id="l00252" name="l00252"></a><span class="lineno">  252</span>            tex.<a class="code hl_function" href="classcgv_1_1render_1_1texture.html#a848ffff0ddb2851add7c293dad6f446f">destruct</a>(ctx);</div>
+<div class="line"><a id="l00253" name="l00253"></a><span class="lineno">  253</span>            setup_texture(<span class="keyword">false</span>);</div>
+<div class="line"><a id="l00254" name="l00254"></a><span class="lineno">  254</span>            tex.<a class="code hl_function" href="classcgv_1_1render_1_1texture.html#a2b89a0bb09f73e84dec467a61b3fcc8b">create</a>(ctx, dv, 0);</div>
+<div class="line"><a id="l00255" name="l00255"></a><span class="lineno">  255</span>        }</div>
+<div class="line"><a id="l00256" name="l00256"></a><span class="lineno">  256</span>    }</div>
+<div class="line"><a id="l00257" name="l00257"></a><span class="lineno">  257</span> </div>
+<div class="line"><a id="l00258" name="l00258"></a><span class="lineno">  258</span>    <span class="keywordtype">void</span> generate_rgba_texture(context&amp; ctx) {</div>
+<div class="line"><a id="l00259" name="l00259"></a><span class="lineno">  259</span>        std::vector&lt;rgba&gt; data = interpolate(<span class="keyword">static_cast&lt;</span><span class="keywordtype">size_t</span><span class="keyword">&gt;</span>(<a class="code hl_variable" href="classcgv_1_1render_1_1color__map.html#a09dec0994e36b33d2df6348d6303b35e">resolution</a>));</div>
 <div class="line"><a id="l00260" name="l00260"></a><span class="lineno">  260</span> </div>
-<div class="line"><a id="l00261" name="l00261"></a><span class="lineno">  261</span>    <span class="keyword">virtual</span> <span class="keywordtype">bool</span> has_texture_support()<span class="keyword"> const </span>{</div>
-<div class="line"><a id="l00262" name="l00262"></a><span class="lineno">  262</span>        <span class="keywordflow">return</span> <span class="keyword">true</span>;</div>
-<div class="line"><a id="l00263" name="l00263"></a><span class="lineno">  263</span>    }</div>
-<div class="line"><a id="l00264" name="l00264"></a><span class="lineno">  264</span> </div>
-<div class="line"><a id="l00265" name="l00265"></a><span class="lineno">  265</span>    <span class="keywordtype">void</span> clear() {</div>
-<div class="line"><a id="l00266" name="l00266"></a><span class="lineno">  266</span>        color_map::clear();</div>
-<div class="line"><a id="l00267" name="l00267"></a><span class="lineno">  267</span>    }</div>
-<div class="line"><a id="l00268" name="l00268"></a><span class="lineno">  268</span> </div>
-<div class="line"><a id="l00269" name="l00269"></a><span class="lineno">  269</span>    <span class="keywordtype">bool</span> destruct(context&amp; ctx) {</div>
-<div class="line"><a id="l00270" name="l00270"></a><span class="lineno">  270</span>        <span class="keywordflow">if</span>(tex.<a class="code hl_function" href="classcgv_1_1render_1_1render__component.html#a4c896d2654616448824f5f2f759b8947">is_created</a>())</div>
-<div class="line"><a id="l00271" name="l00271"></a><span class="lineno">  271</span>            <span class="keywordflow">return</span> tex.<a class="code hl_function" href="classcgv_1_1render_1_1texture.html#a848ffff0ddb2851add7c293dad6f446f">destruct</a>(ctx);</div>
-<div class="line"><a id="l00272" name="l00272"></a><span class="lineno">  272</span>        <span class="keywordflow">return</span> <span class="keyword">true</span>;</div>
-<div class="line"><a id="l00273" name="l00273"></a><span class="lineno">  273</span>    }</div>
-<div class="line"><a id="l00274" name="l00274"></a><span class="lineno">  274</span> </div>
-<div class="line"><a id="l00275" name="l00275"></a><span class="lineno">  275</span>    <span class="keywordtype">bool</span> is_linear_filtering_enabled()<span class="keyword"> const </span>{ <span class="keywordflow">return</span> <a class="code hl_variable" href="classcgv_1_1render_1_1gl__color__map.html#a25b70823ebf6e0bd5e0bae82404b9bad">use_linear_filtering</a>; }</div>
-<div class="line"><a id="l00276" name="l00276"></a><span class="lineno">  276</span> </div>
-<div class="line"><a id="l00277" name="l00277"></a><span class="lineno">  277</span>    <span class="keywordtype">void</span> enable_linear_filtering(<span class="keywordtype">bool</span> enabled) {</div>
-<div class="line"><a id="l00278" name="l00278"></a><span class="lineno">  278</span>        <a class="code hl_variable" href="classcgv_1_1render_1_1gl__color__map.html#a25b70823ebf6e0bd5e0bae82404b9bad">use_linear_filtering</a> = enabled;</div>
-<div class="line"><a id="l00279" name="l00279"></a><span class="lineno">  279</span>        construct_interpolators();</div>
-<div class="line"><a id="l00280" name="l00280"></a><span class="lineno">  280</span>    }</div>
+<div class="line"><a id="l00261" name="l00261"></a><span class="lineno">  261</span>        std::vector&lt;uint8_t&gt; data_8(4 * data.size());</div>
+<div class="line"><a id="l00262" name="l00262"></a><span class="lineno">  262</span>        <span class="keywordflow">for</span>(<span class="keywordtype">size_t</span> i = 0; i &lt; data.size(); ++i) {</div>
+<div class="line"><a id="l00263" name="l00263"></a><span class="lineno">  263</span>            <a class="code hl_typedef" href="namespacecgv.html#a0cf3c7d9673d8f1d9d33685e3ce5c889">rgba</a> col = data[i];</div>
+<div class="line"><a id="l00264" name="l00264"></a><span class="lineno">  264</span>            data_8[4 * i + 0] = <span class="keyword">static_cast&lt;</span>uint8_t<span class="keyword">&gt;</span>(255.0f * col.R());</div>
+<div class="line"><a id="l00265" name="l00265"></a><span class="lineno">  265</span>            data_8[4 * i + 1] = <span class="keyword">static_cast&lt;</span>uint8_t<span class="keyword">&gt;</span>(255.0f * col.G());</div>
+<div class="line"><a id="l00266" name="l00266"></a><span class="lineno">  266</span>            data_8[4 * i + 2] = <span class="keyword">static_cast&lt;</span>uint8_t<span class="keyword">&gt;</span>(255.0f * col.B());</div>
+<div class="line"><a id="l00267" name="l00267"></a><span class="lineno">  267</span>            data_8[4 * i + 3] = <span class="keyword">static_cast&lt;</span>uint8_t<span class="keyword">&gt;</span>(255.0f * col.alpha());</div>
+<div class="line"><a id="l00268" name="l00268"></a><span class="lineno">  268</span>        }</div>
+<div class="line"><a id="l00269" name="l00269"></a><span class="lineno">  269</span> </div>
+<div class="line"><a id="l00270" name="l00270"></a><span class="lineno">  270</span>        <a class="code hl_class" href="classcgv_1_1data_1_1data__view.html">cgv::data::data_view</a> dv = <a class="code hl_class" href="classcgv_1_1data_1_1data__view.html">cgv::data::data_view</a>(<span class="keyword">new</span> <a class="code hl_class" href="classcgv_1_1data_1_1data__format.html">cgv::data::data_format</a>(<a class="code hl_variable" href="classcgv_1_1render_1_1color__map.html#a09dec0994e36b33d2df6348d6303b35e">resolution</a>, <a class="code hl_enumvalue" href="namespacecgv_1_1type_1_1info.html#accf71420e941489dc6fb6737cd11b752a60aaeda29715a39905dd9cbfbd0130ca">TI_UINT8</a>, <a class="code hl_enumvalue" href="namespacecgv_1_1data.html#a04ff4cdaed048a306aed8dd5a8c5c979a21c9ff1f110a3761d1e811a2ae8401ac">cgv::data::CF_RGBA</a>), data_8.data());</div>
+<div class="line"><a id="l00271" name="l00271"></a><span class="lineno">  271</span> </div>
+<div class="line"><a id="l00272" name="l00272"></a><span class="lineno">  272</span>        <span class="keywordtype">unsigned</span> width = (unsigned)tex.<a class="code hl_function" href="classcgv_1_1data_1_1data__format.html#a8dc999987a5635f88121814aa385e51e">get_width</a>();</div>
+<div class="line"><a id="l00273" name="l00273"></a><span class="lineno">  273</span> </div>
+<div class="line"><a id="l00274" name="l00274"></a><span class="lineno">  274</span>        <span class="keywordtype">bool</span> replaced = <span class="keyword">false</span>;</div>
+<div class="line"><a id="l00275" name="l00275"></a><span class="lineno">  275</span>        <span class="keywordflow">if</span>(tex.<a class="code hl_function" href="classcgv_1_1render_1_1render__component.html#a4c896d2654616448824f5f2f759b8947">is_created</a>() &amp;&amp; width == <a class="code hl_variable" href="classcgv_1_1render_1_1color__map.html#a09dec0994e36b33d2df6348d6303b35e">resolution</a> &amp;&amp; tex.<a class="code hl_function" href="classcgv_1_1data_1_1component__format.html#aff1bf203447a682b49b88af95fcda3f0">get_nr_components</a>() == 4) {</div>
+<div class="line"><a id="l00276" name="l00276"></a><span class="lineno">  276</span>            <a class="code hl_enumeration" href="namespacecgv_1_1render.html#a36d5eafecd046d656ad030c042dfeaea">TextureFilter</a> filter = get_texture_filter();</div>
+<div class="line"><a id="l00277" name="l00277"></a><span class="lineno">  277</span>            tex.<a class="code hl_function" href="classcgv_1_1render_1_1texture.html#ae16b594b6a561303de2dde63af981317">set_min_filter</a>(filter);</div>
+<div class="line"><a id="l00278" name="l00278"></a><span class="lineno">  278</span>            tex.<a class="code hl_function" href="classcgv_1_1render_1_1texture.html#a0164a6d3a2161bc4190daac067d78c5e">set_mag_filter</a>(filter);</div>
+<div class="line"><a id="l00279" name="l00279"></a><span class="lineno">  279</span>            replaced = tex.<a class="code hl_function" href="classcgv_1_1render_1_1texture.html#ac29e0ac55e94328ffc453fdbc794ca6f">replace</a>(ctx, 0, dv);</div>
+<div class="line"><a id="l00280" name="l00280"></a><span class="lineno">  280</span>        }</div>
 <div class="line"><a id="l00281" name="l00281"></a><span class="lineno">  281</span> </div>
-<div class="line"><a id="l00282" name="l00282"></a><span class="lineno">  282</span>    <span class="keywordtype">bool</span> init(context&amp; ctx) {</div>
-<div class="line"><a id="l00283" name="l00283"></a><span class="lineno">  283</span>        std::vector&lt;uint8_t&gt; data(3 * <a class="code hl_variable" href="classcgv_1_1render_1_1color__map.html#a09dec0994e36b33d2df6348d6303b35e">resolution</a>);</div>
-<div class="line"><a id="l00284" name="l00284"></a><span class="lineno">  284</span> </div>
-<div class="line"><a id="l00285" name="l00285"></a><span class="lineno">  285</span>        tex.<a class="code hl_function" href="classcgv_1_1render_1_1texture.html#a848ffff0ddb2851add7c293dad6f446f">destruct</a>(ctx);</div>
-<div class="line"><a id="l00286" name="l00286"></a><span class="lineno">  286</span>        <a class="code hl_class" href="classcgv_1_1data_1_1data__view.html">cgv::data::data_view</a> dv = <a class="code hl_class" href="classcgv_1_1data_1_1data__view.html">cgv::data::data_view</a>(<span class="keyword">new</span> <a class="code hl_class" href="classcgv_1_1data_1_1data__format.html">cgv::data::data_format</a>(<a class="code hl_variable" href="classcgv_1_1render_1_1color__map.html#a09dec0994e36b33d2df6348d6303b35e">resolution</a>, <a class="code hl_enumvalue" href="namespacecgv_1_1type_1_1info.html#accf71420e941489dc6fb6737cd11b752a60aaeda29715a39905dd9cbfbd0130ca">TI_UINT8</a>, <a class="code hl_enumvalue" href="namespacecgv_1_1data.html#a04ff4cdaed048a306aed8dd5a8c5c979a5e0a20ab9e288dea753eade67973a28d">cgv::data::CF_RGB</a>), data.data());</div>
-<div class="line"><a id="l00287" name="l00287"></a><span class="lineno">  287</span>        setup_texture(<span class="keyword">false</span>);</div>
-<div class="line"><a id="l00288" name="l00288"></a><span class="lineno">  288</span>        <span class="keywordflow">return</span> tex.<a class="code hl_function" href="classcgv_1_1render_1_1texture.html#a2b89a0bb09f73e84dec467a61b3fcc8b">create</a>(ctx, dv, 0);</div>
-<div class="line"><a id="l00289" name="l00289"></a><span class="lineno">  289</span>    }</div>
-<div class="line"><a id="l00290" name="l00290"></a><span class="lineno">  290</span> </div>
-<div class="line"><a id="l00291" name="l00291"></a><span class="lineno">  291</span>    <span class="keywordtype">void</span> generate_texture(context&amp; ctx) {</div>
-<div class="line"><a id="l00292" name="l00292"></a><span class="lineno">  292</span> </div>
-<div class="line"><a id="l00293" name="l00293"></a><span class="lineno">  293</span>        <span class="keywordflow">if</span>(ref_opacity_points().size() &gt; 0)</div>
-<div class="line"><a id="l00294" name="l00294"></a><span class="lineno">  294</span>            generate_rgba_texture(ctx);</div>
-<div class="line"><a id="l00295" name="l00295"></a><span class="lineno">  295</span>        <span class="keywordflow">else</span></div>
-<div class="line"><a id="l00296" name="l00296"></a><span class="lineno">  296</span>            generate_rgb_texture(ctx);</div>
-<div class="line"><a id="l00297" name="l00297"></a><span class="lineno">  297</span>    }</div>
-<div class="line"><a id="l00298" name="l00298"></a><span class="lineno">  298</span> </div>
-<div class="line"><a id="l00299" name="l00299"></a><span class="lineno">  299</span>    texture&amp; ref_texture() { <span class="keywordflow">return</span> tex; }</div>
-<div class="line"><a id="l00300" name="l00300"></a><span class="lineno">  300</span>};</div>
-</div>
+<div class="line"><a id="l00282" name="l00282"></a><span class="lineno">  282</span>        <span class="keywordflow">if</span>(!replaced) {</div>
+<div class="line"><a id="l00283" name="l00283"></a><span class="lineno">  283</span>            tex.<a class="code hl_function" href="classcgv_1_1render_1_1texture.html#a848ffff0ddb2851add7c293dad6f446f">destruct</a>(ctx);</div>
+<div class="line"><a id="l00284" name="l00284"></a><span class="lineno">  284</span>            setup_texture(<span class="keyword">true</span>);</div>
+<div class="line"><a id="l00285" name="l00285"></a><span class="lineno">  285</span>            tex.<a class="code hl_function" href="classcgv_1_1render_1_1texture.html#a2b89a0bb09f73e84dec467a61b3fcc8b">create</a>(ctx, dv, 0);</div>
+<div class="line"><a id="l00286" name="l00286"></a><span class="lineno">  286</span>        }</div>
+<div class="line"><a id="l00287" name="l00287"></a><span class="lineno">  287</span>    }</div>
+<div class="line"><a id="l00288" name="l00288"></a><span class="lineno">  288</span> </div>
+<div class="line"><a id="l00289" name="l00289"></a><span class="lineno">  289</span><span class="keyword">public</span>:</div>
+<div class="line"><a id="l00290" name="l00290"></a><span class="lineno">  290</span>    gl_color_map() : color_map() {}</div>
+<div class="line"><a id="l00291" name="l00291"></a><span class="lineno">  291</span> </div>
+<div class="line"><a id="l00292" name="l00292"></a><span class="lineno">  292</span>    gl_color_map(<span class="keywordtype">unsigned</span> <a class="code hl_variable" href="classcgv_1_1render_1_1color__map.html#a09dec0994e36b33d2df6348d6303b35e">resolution</a>) : gl_color_map() {</div>
+<div class="line"><a id="l00293" name="l00293"></a><span class="lineno">  293</span>        <a class="code hl_variable" href="classcgv_1_1render_1_1color__map.html#a09dec0994e36b33d2df6348d6303b35e">resolution</a> = std::max(<a class="code hl_variable" href="classcgv_1_1render_1_1color__map.html#a09dec0994e36b33d2df6348d6303b35e">resolution</a>, 2u);</div>
+<div class="line"><a id="l00294" name="l00294"></a><span class="lineno">  294</span>    }</div>
+<div class="line"><a id="l00295" name="l00295"></a><span class="lineno">  295</span>    </div>
+<div class="line"><a id="l00296" name="l00296"></a><span class="lineno">  296</span>    gl_color_map(<span class="keyword">const</span> color_map&amp; cm) : gl_color_map() {</div>
+<div class="line"><a id="l00297" name="l00297"></a><span class="lineno">  297</span>        <a class="code hl_variable" href="classcgv_1_1render_1_1color__map.html#a09dec0994e36b33d2df6348d6303b35e">resolution</a> = cm.get_resolution();</div>
+<div class="line"><a id="l00298" name="l00298"></a><span class="lineno">  298</span>        <a class="code hl_variable" href="classcgv_1_1render_1_1color__map.html#a1c4498564651cf32a6811e303e262eb2">use_interpolation</a> = cm.is_interpolation_enabled();</div>
+<div class="line"><a id="l00299" name="l00299"></a><span class="lineno">  299</span>        </div>
+<div class="line"><a id="l00300" name="l00300"></a><span class="lineno">  300</span>        construct_interpolators();</div>
 <div class="line"><a id="l00301" name="l00301"></a><span class="lineno">  301</span> </div>
-<div class="line"><a id="l00302" name="l00302"></a><span class="lineno">  302</span>}</div>
-<div class="line"><a id="l00303" name="l00303"></a><span class="lineno">  303</span>}</div>
+<div class="line"><a id="l00302" name="l00302"></a><span class="lineno">  302</span>        <span class="keywordflow">for</span>(<span class="keyword">auto</span>&amp; p : cm.ref_color_points())</div>
+<div class="line"><a id="l00303" name="l00303"></a><span class="lineno">  303</span>            add_color_point(p.first, p.second);</div>
+<div class="line"><a id="l00304" name="l00304"></a><span class="lineno">  304</span>        <span class="keywordflow">for</span>(<span class="keyword">auto</span>&amp; p : cm.ref_opacity_points())</div>
+<div class="line"><a id="l00305" name="l00305"></a><span class="lineno">  305</span>            add_opacity_point(p.first, p.second);</div>
+<div class="line"><a id="l00306" name="l00306"></a><span class="lineno">  306</span>    }</div>
+<div class="line"><a id="l00307" name="l00307"></a><span class="lineno">  307</span> </div>
+<div class="line"><a id="l00308" name="l00308"></a><span class="lineno">  308</span>    <span class="keyword">virtual</span> ~gl_color_map() {</div>
+<div class="line"><a id="l00309" name="l00309"></a><span class="lineno">  309</span>        clear();</div>
+<div class="line"><a id="l00310" name="l00310"></a><span class="lineno">  310</span>    }</div>
+<div class="line"><a id="l00311" name="l00311"></a><span class="lineno">  311</span> </div>
+<div class="line"><a id="l00312" name="l00312"></a><span class="lineno">  312</span>    <span class="keyword">virtual</span> <span class="keywordtype">bool</span> has_texture_support()<span class="keyword"> const </span>{</div>
+<div class="line"><a id="l00313" name="l00313"></a><span class="lineno">  313</span>        <span class="keywordflow">return</span> <span class="keyword">true</span>;</div>
+<div class="line"><a id="l00314" name="l00314"></a><span class="lineno">  314</span>    }</div>
+<div class="line"><a id="l00315" name="l00315"></a><span class="lineno">  315</span> </div>
+<div class="line"><a id="l00316" name="l00316"></a><span class="lineno">  316</span>    <span class="keywordtype">void</span> clear() {</div>
+<div class="line"><a id="l00317" name="l00317"></a><span class="lineno">  317</span>        color_map::clear();</div>
+<div class="line"><a id="l00318" name="l00318"></a><span class="lineno">  318</span>    }</div>
+<div class="line"><a id="l00319" name="l00319"></a><span class="lineno">  319</span> </div>
+<div class="line"><a id="l00320" name="l00320"></a><span class="lineno">  320</span>    <span class="keywordtype">bool</span> destruct(context&amp; ctx) {</div>
+<div class="line"><a id="l00321" name="l00321"></a><span class="lineno">  321</span>        <span class="keywordflow">if</span>(tex.<a class="code hl_function" href="classcgv_1_1render_1_1render__component.html#a4c896d2654616448824f5f2f759b8947">is_created</a>())</div>
+<div class="line"><a id="l00322" name="l00322"></a><span class="lineno">  322</span>            <span class="keywordflow">return</span> tex.<a class="code hl_function" href="classcgv_1_1render_1_1texture.html#a848ffff0ddb2851add7c293dad6f446f">destruct</a>(ctx);</div>
+<div class="line"><a id="l00323" name="l00323"></a><span class="lineno">  323</span>        <span class="keywordflow">return</span> <span class="keyword">true</span>;</div>
+<div class="line"><a id="l00324" name="l00324"></a><span class="lineno">  324</span>    }</div>
+<div class="line"><a id="l00325" name="l00325"></a><span class="lineno">  325</span> </div>
+<div class="line"><a id="l00326" name="l00326"></a><span class="lineno">  326</span>    <span class="keywordtype">bool</span> is_linear_filtering_enabled()<span class="keyword"> const </span>{ <span class="keywordflow">return</span> <a class="code hl_variable" href="classcgv_1_1render_1_1gl__color__map.html#a25b70823ebf6e0bd5e0bae82404b9bad">use_linear_filtering</a>; }</div>
+<div class="line"><a id="l00327" name="l00327"></a><span class="lineno">  327</span> </div>
+<div class="line"><a id="l00328" name="l00328"></a><span class="lineno">  328</span>    <span class="keywordtype">void</span> enable_linear_filtering(<span class="keywordtype">bool</span> enabled) {</div>
+<div class="line"><a id="l00329" name="l00329"></a><span class="lineno">  329</span>        <a class="code hl_variable" href="classcgv_1_1render_1_1gl__color__map.html#a25b70823ebf6e0bd5e0bae82404b9bad">use_linear_filtering</a> = enabled;</div>
+<div class="line"><a id="l00330" name="l00330"></a><span class="lineno">  330</span>        construct_interpolators();</div>
+<div class="line"><a id="l00331" name="l00331"></a><span class="lineno">  331</span>    }</div>
+<div class="line"><a id="l00332" name="l00332"></a><span class="lineno">  332</span> </div>
+<div class="line"><a id="l00333" name="l00333"></a><span class="lineno">  333</span>    <span class="keywordtype">bool</span> init(context&amp; ctx) {</div>
+<div class="line"><a id="l00334" name="l00334"></a><span class="lineno">  334</span>        std::vector&lt;uint8_t&gt; data(3 * <a class="code hl_variable" href="classcgv_1_1render_1_1color__map.html#a09dec0994e36b33d2df6348d6303b35e">resolution</a>);</div>
+<div class="line"><a id="l00335" name="l00335"></a><span class="lineno">  335</span> </div>
+<div class="line"><a id="l00336" name="l00336"></a><span class="lineno">  336</span>        tex.<a class="code hl_function" href="classcgv_1_1render_1_1texture.html#a848ffff0ddb2851add7c293dad6f446f">destruct</a>(ctx);</div>
+<div class="line"><a id="l00337" name="l00337"></a><span class="lineno">  337</span>        <a class="code hl_class" href="classcgv_1_1data_1_1data__view.html">cgv::data::data_view</a> dv = <a class="code hl_class" href="classcgv_1_1data_1_1data__view.html">cgv::data::data_view</a>(<span class="keyword">new</span> <a class="code hl_class" href="classcgv_1_1data_1_1data__format.html">cgv::data::data_format</a>(<a class="code hl_variable" href="classcgv_1_1render_1_1color__map.html#a09dec0994e36b33d2df6348d6303b35e">resolution</a>, <a class="code hl_enumvalue" href="namespacecgv_1_1type_1_1info.html#accf71420e941489dc6fb6737cd11b752a60aaeda29715a39905dd9cbfbd0130ca">TI_UINT8</a>, <a class="code hl_enumvalue" href="namespacecgv_1_1data.html#a04ff4cdaed048a306aed8dd5a8c5c979a5e0a20ab9e288dea753eade67973a28d">cgv::data::CF_RGB</a>), data.data());</div>
+<div class="line"><a id="l00338" name="l00338"></a><span class="lineno">  338</span>        setup_texture(<span class="keyword">false</span>);</div>
+<div class="line"><a id="l00339" name="l00339"></a><span class="lineno">  339</span>        <span class="keywordflow">return</span> tex.<a class="code hl_function" href="classcgv_1_1render_1_1texture.html#a2b89a0bb09f73e84dec467a61b3fcc8b">create</a>(ctx, dv, 0);</div>
+<div class="line"><a id="l00340" name="l00340"></a><span class="lineno">  340</span>    }</div>
+<div class="line"><a id="l00341" name="l00341"></a><span class="lineno">  341</span> </div>
+<div class="line"><a id="l00342" name="l00342"></a><span class="lineno">  342</span>    <span class="keywordtype">void</span> generate_texture(context&amp; ctx) {</div>
+<div class="line"><a id="l00343" name="l00343"></a><span class="lineno">  343</span> </div>
+<div class="line"><a id="l00344" name="l00344"></a><span class="lineno">  344</span>        <span class="keywordflow">if</span>(ref_opacity_points().size() &gt; 0)</div>
+<div class="line"><a id="l00345" name="l00345"></a><span class="lineno">  345</span>            generate_rgba_texture(ctx);</div>
+<div class="line"><a id="l00346" name="l00346"></a><span class="lineno">  346</span>        <span class="keywordflow">else</span></div>
+<div class="line"><a id="l00347" name="l00347"></a><span class="lineno">  347</span>            generate_rgb_texture(ctx);</div>
+<div class="line"><a id="l00348" name="l00348"></a><span class="lineno">  348</span>    }</div>
+<div class="line"><a id="l00349" name="l00349"></a><span class="lineno">  349</span> </div>
+<div class="line"><a id="l00350" name="l00350"></a><span class="lineno">  350</span>    texture&amp; ref_texture() { <span class="keywordflow">return</span> tex; }</div>
+<div class="line"><a id="l00351" name="l00351"></a><span class="lineno">  351</span>};</div>
+</div>
+<div class="line"><a id="l00352" name="l00352"></a><span class="lineno">  352</span> </div>
+<div class="line"><a id="l00353" name="l00353"></a><span class="lineno">  353</span>} <span class="comment">// namespace render</span></div>
+<div class="line"><a id="l00354" name="l00354"></a><span class="lineno">  354</span>} <span class="comment">// namespace cgv</span></div>
 <div class="ttc" id="aclasscgv_1_1data_1_1component__format_html_aff1bf203447a682b49b88af95fcda3f0"><div class="ttname"><a href="classcgv_1_1data_1_1component__format.html#aff1bf203447a682b49b88af95fcda3f0">cgv::data::component_format::get_nr_components</a></div><div class="ttdeci">unsigned int get_nr_components() const</div><div class="ttdoc">return the number of components</div><div class="ttdef"><b>Definition</b> <a href="component__format_8cxx_source.html#l00322">component_format.cxx:322</a></div></div>
 <div class="ttc" id="aclasscgv_1_1data_1_1data__format_html"><div class="ttname"><a href="classcgv_1_1data_1_1data__format.html">cgv::data::data_format</a></div><div class="ttdoc">A data_format describes a multidimensional data block of data entries.</div><div class="ttdef"><b>Definition</b> <a href="data__format_8h_source.html#l00018">data_format.h:19</a></div></div>
 <div class="ttc" id="aclasscgv_1_1data_1_1data__format_html_a8dc999987a5635f88121814aa385e51e"><div class="ttname"><a href="classcgv_1_1data_1_1data__format.html#a8dc999987a5635f88121814aa385e51e">cgv::data::data_format::get_width</a></div><div class="ttdeci">size_t get_width() const</div><div class="ttdoc">return the resolution in the first dimension, or 1 if not defined</div><div class="ttdef"><b>Definition</b> <a href="data__format_8cxx_source.html#l00214">data_format.cxx:214</a></div></div>
@@ -408,10 +459,10 @@ $(document).ready(function(){initNavTree('color__map_8h_source.html',''); initRe
 <div class="ttc" id="aclasscgv_1_1math_1_1control__point__container_html"><div class="ttname"><a href="classcgv_1_1math_1_1control__point__container.html">cgv::math::control_point_container</a></div><div class="ttdef"><b>Definition</b> <a href="interpolator_8h_source.html#l00012">interpolator.h:12</a></div></div>
 <div class="ttc" id="aclasscgv_1_1media_1_1color_html"><div class="ttname"><a href="classcgv_1_1media_1_1color.html">cgv::media::color&lt; float, cgv::media::RGB &gt;</a></div></div>
 <div class="ttc" id="aclasscgv_1_1render_1_1color__map_html"><div class="ttname"><a href="classcgv_1_1render_1_1color__map.html">cgv::render::color_map</a></div><div class="ttdef"><b>Definition</b> <a href="color__map_8h_source.html#l00013">color_map.h:13</a></div></div>
-<div class="ttc" id="aclasscgv_1_1render_1_1color__map_html_a09dec0994e36b33d2df6348d6303b35e"><div class="ttname"><a href="classcgv_1_1render_1_1color__map.html#a09dec0994e36b33d2df6348d6303b35e">cgv::render::color_map::resolution</a></div><div class="ttdeci">unsigned resolution</div><div class="ttdoc">resolution of the sampled color map; mostly used when generating textures from color maps</div><div class="ttdef"><b>Definition</b> <a href="color__map_8h_source.html#l00025">color_map.h:25</a></div></div>
-<div class="ttc" id="aclasscgv_1_1render_1_1color__map_html_a1c4498564651cf32a6811e303e262eb2"><div class="ttname"><a href="classcgv_1_1render_1_1color__map.html#a1c4498564651cf32a6811e303e262eb2">cgv::render::color_map::use_interpolation</a></div><div class="ttdeci">bool use_interpolation</div><div class="ttdoc">whether to use interpolation between the samples or just take the nearest one</div><div class="ttdef"><b>Definition</b> <a href="color__map_8h_source.html#l00027">color_map.h:27</a></div></div>
-<div class="ttc" id="aclasscgv_1_1render_1_1gl__color__map_html"><div class="ttname"><a href="classcgv_1_1render_1_1gl__color__map.html">cgv::render::gl_color_map</a></div><div class="ttdef"><b>Definition</b> <a href="color__map_8h_source.html#l00161">color_map.h:161</a></div></div>
-<div class="ttc" id="aclasscgv_1_1render_1_1gl__color__map_html_a25b70823ebf6e0bd5e0bae82404b9bad"><div class="ttname"><a href="classcgv_1_1render_1_1gl__color__map.html#a25b70823ebf6e0bd5e0bae82404b9bad">cgv::render::gl_color_map::use_linear_filtering</a></div><div class="ttdeci">bool use_linear_filtering</div><div class="ttdoc">whether to use linear or nearest neighbour texture filtering</div><div class="ttdef"><b>Definition</b> <a href="color__map_8h_source.html#l00164">color_map.h:164</a></div></div>
+<div class="ttc" id="aclasscgv_1_1render_1_1color__map_html_a09dec0994e36b33d2df6348d6303b35e"><div class="ttname"><a href="classcgv_1_1render_1_1color__map.html#a09dec0994e36b33d2df6348d6303b35e">cgv::render::color_map::resolution</a></div><div class="ttdeci">unsigned resolution</div><div class="ttdoc">resolution of the sampled color map; mostly used when generating textures from color maps</div><div class="ttdef"><b>Definition</b> <a href="color__map_8h_source.html#l00028">color_map.h:28</a></div></div>
+<div class="ttc" id="aclasscgv_1_1render_1_1color__map_html_a1c4498564651cf32a6811e303e262eb2"><div class="ttname"><a href="classcgv_1_1render_1_1color__map.html#a1c4498564651cf32a6811e303e262eb2">cgv::render::color_map::use_interpolation</a></div><div class="ttdeci">bool use_interpolation</div><div class="ttdoc">whether to use interpolation between the samples or just take the nearest one</div><div class="ttdef"><b>Definition</b> <a href="color__map_8h_source.html#l00030">color_map.h:30</a></div></div>
+<div class="ttc" id="aclasscgv_1_1render_1_1gl__color__map_html"><div class="ttname"><a href="classcgv_1_1render_1_1gl__color__map.html">cgv::render::gl_color_map</a></div><div class="ttdef"><b>Definition</b> <a href="color__map_8h_source.html#l00212">color_map.h:212</a></div></div>
+<div class="ttc" id="aclasscgv_1_1render_1_1gl__color__map_html_a25b70823ebf6e0bd5e0bae82404b9bad"><div class="ttname"><a href="classcgv_1_1render_1_1gl__color__map.html#a25b70823ebf6e0bd5e0bae82404b9bad">cgv::render::gl_color_map::use_linear_filtering</a></div><div class="ttdeci">bool use_linear_filtering</div><div class="ttdoc">whether to use linear or nearest neighbour texture filtering</div><div class="ttdef"><b>Definition</b> <a href="color__map_8h_source.html#l00215">color_map.h:215</a></div></div>
 <div class="ttc" id="aclasscgv_1_1render_1_1render__component_html_a4c896d2654616448824f5f2f759b8947"><div class="ttname"><a href="classcgv_1_1render_1_1render__component.html#a4c896d2654616448824f5f2f759b8947">cgv::render::render_component::is_created</a></div><div class="ttdeci">virtual bool is_created() const</div><div class="ttdoc">return whether component has been created</div><div class="ttdef"><b>Definition</b> <a href="context_8cxx_source.html#l02046">context.cxx:2046</a></div></div>
 <div class="ttc" id="aclasscgv_1_1render_1_1texture_html"><div class="ttname"><a href="classcgv_1_1render_1_1texture.html">cgv::render::texture</a></div><div class="ttdoc">the texture class encapsulates all functionality independent of the rendering api.</div><div class="ttdef"><b>Definition</b> <a href="texture_8h_source.html#l00014">texture.h:15</a></div></div>
 <div class="ttc" id="aclasscgv_1_1render_1_1texture_html_a0164a6d3a2161bc4190daac067d78c5e"><div class="ttname"><a href="classcgv_1_1render_1_1texture.html#a0164a6d3a2161bc4190daac067d78c5e">cgv::render::texture::set_mag_filter</a></div><div class="ttdeci">void set_mag_filter(TextureFilter _mag_filter)</div><div class="ttdoc">set the magnification filter</div><div class="ttdef"><b>Definition</b> <a href="texture_8cxx_source.html#l00137">texture.cxx:137</a></div></div>
