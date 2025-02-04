@@ -62,7 +62,7 @@ public:
 	/// complete drawing method that configures opengl whenever the context has changed, initializes the current frame and draws the scene
 	void draw();
 	/// dispatch a cgv event to the children
-	bool dispatch_event(const cgv::gui::event& e);
+	bool dispatch_event(cgv::gui::event& e);
 	/// process focus and key press and release events here
 	int handle(int event);
 	//@}

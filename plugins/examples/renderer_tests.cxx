@@ -14,6 +14,7 @@
 #include <cgv_gl/box_renderer.h>
 #include <cgv_gl/box_wire_renderer.h>
 #include <cgv_gl/cone_renderer.h>
+#include <cgv_gl/ellipsoid_renderer.h>
 #include <cgv_gl/gl/gl.h>
 #include <random>
 
@@ -23,7 +24,7 @@ class renderer_tests :
 	public cgv::gui::provider
 {
 public:
-	enum RenderMode { RM_POINTS, RM_SURFELS, RM_BOXES, RM_BOX_WIRES, RM_NORMALS, RM_ARROWS, RM_SPHERES, RM_CONES };
+	enum RenderMode { RM_POINTS, RM_SURFELS, RM_BOXES, RM_BOX_WIRES, RM_NORMALS, RM_ARROWS, RM_SPHERES, RM_CONES, RM_ELLIPSOIDS };
 	struct vertex {
 		cgv::vec3 point;
 		cgv::vec3 normal;
@@ -35,6 +36,7 @@ protected:
 	std::vector<unsigned> group_indices;
 	std::vector<cgv::vec3> normals;
 	std::vector<cgv::vec3> directions;
+	std::vector<cgv::quat> orientations;
 	std::vector<cgv::vec4> colors;
 	std::vector<cgv::box3> boxes;
 	bool use_box_array;
@@ -68,6 +70,7 @@ protected:
 	cgv::render::arrow_render_style arrow_style;
 	cgv::render::sphere_render_style sphere_style;
 	cgv::render::cone_render_style cone_style;
+	cgv::render::ellipsoid_render_style ellipsoid_style;
 
 	// declare attribute managers
 	cgv::render::attribute_array_manager p_manager;
@@ -78,6 +81,7 @@ protected:
 	cgv::render::attribute_array_manager a_manager;
 	cgv::render::attribute_array_manager s_manager;
 	cgv::render::attribute_array_manager rc_manager;
+	cgv::render::attribute_array_manager e_manager;
 public:
 	/// define format and texture filters in constructor
 	renderer_tests() : cgv::base::node("Renderer Test")
@@ -130,6 +134,7 @@ public:
 			if (i == 0)
 				sizes[0][1] = sizes[0][0];
 			directions.push_back(100*sizes.back()[0] * normals.back());
+			orientations.push_back(cgv::quat(normals.back(), cgv::math::deg2rad(360.0f * d(g))));
 			boxes.push_back(cgv::box3(points.back() - 0.5f * sizes.back(), points.back() + 0.5f * sizes.back()));
 		}
 		compute_transformed_points();
@@ -149,6 +154,7 @@ public:
 		sphere_style.map_color_to_material = cgv::render::CM_COLOR_AND_OPACITY;
 		cone_style.radius = 0.01f;
 		cone_style.rounded_caps = false;
+		ellipsoid_style.size_scale = 2.0f;
 	}
 	std::string get_type_name() const
 	{
@@ -208,15 +214,18 @@ public:
 			return false;
 		if (!rc_manager.init(ctx))
 			return false;
+		if (!e_manager.init(ctx))
+			return false;
 		// increase reference counts of used renderer singletons
-		cgv::render::ref_point_renderer			(ctx, 1);
-		cgv::render::ref_surfel_renderer		(ctx, 1);
-		cgv::render::ref_box_renderer			(ctx, 1);
-		cgv::render::ref_box_wire_renderer		(ctx, 1);
-		cgv::render::ref_normal_renderer		(ctx, 1);
-		cgv::render::ref_arrow_renderer			(ctx, 1);
-		cgv::render::ref_sphere_renderer		(ctx, 1);
-		cgv::render::ref_cone_renderer	(ctx, 1);
+		cgv::render::ref_point_renderer(ctx, 1);
+		cgv::render::ref_surfel_renderer(ctx, 1);
+		cgv::render::ref_box_renderer(ctx, 1);
+		cgv::render::ref_box_wire_renderer(ctx, 1);
+		cgv::render::ref_normal_renderer(ctx, 1);
+		cgv::render::ref_arrow_renderer(ctx, 1);
+		cgv::render::ref_sphere_renderer(ctx, 1);
+		cgv::render::ref_cone_renderer(ctx, 1);
+		cgv::render::ref_ellipsoid_renderer(ctx, 1);
 		return true;
 	}
 
@@ -226,7 +235,7 @@ public:
 		sr.set_group_translations(ctx, group_translations);
 		sr.set_group_rotations(ctx, group_rotations);
 	}
-	void set_geometry(cgv::render::context& ctx, cgv::render::group_renderer& sr)
+	void set_geometry(cgv::render::context& ctx, cgv::render::group_renderer& sr, bool use_group_indices = true)
 	{
 		if (interleaved_mode) {
 			sr.set_position_array(ctx, &vertices.front().point, vertices.size(), sizeof(vertex));
@@ -237,7 +246,8 @@ public:
 			//sr.set_position_array(ctx, points);
 			sr.set_color_array(ctx, colors);
 		}
-		sr.set_group_index_array(ctx, group_indices);
+		if(use_group_indices)
+			sr.set_group_index_array(ctx, group_indices);
 	}
 	void render_points(cgv::render::context& ctx, cgv::render::renderer& R)
 	{
@@ -395,6 +405,18 @@ public:
 			render_points(ctx, rc_renderer);
 			rc_renderer.disable_attribute_array_manager(ctx, rc_manager);
 		}	break;
+		case RM_ELLIPSOIDS:
+		{
+			cgv::render::ellipsoid_renderer& e_renderer = cgv::render::ref_ellipsoid_renderer(ctx);
+			e_renderer.set_render_style(ellipsoid_style);
+			e_renderer.enable_attribute_array_manager(ctx, e_manager);
+			// don't use group indices because the ellipsoid renderer does not yet support groups
+			set_geometry(ctx, e_renderer, false);
+			e_renderer.set_size_array(ctx, sizes);
+			e_renderer.set_orientation_array(ctx, orientations);
+			render_points(ctx, e_renderer);
+			e_renderer.disable_attribute_array_manager(ctx, e_manager);
+		}	break;
 		}
 		if (disable_depth)
 			glDepthFunc(GL_LESS);
@@ -417,21 +439,23 @@ public:
 		a_manager.destruct(ctx);
 		s_manager.destruct(ctx);
 		rc_manager.destruct(ctx);
+		e_manager.destruct(ctx);
 
 		// decrease reference counts of used renderer singletons
-		cgv::render::ref_point_renderer			(ctx, -1);
-		cgv::render::ref_surfel_renderer		(ctx, -1);
-		cgv::render::ref_box_renderer			(ctx, -1);
-		cgv::render::ref_box_wire_renderer		(ctx, -1);
-		cgv::render::ref_normal_renderer		(ctx, -1);
-		cgv::render::ref_arrow_renderer			(ctx, -1);
-		cgv::render::ref_sphere_renderer		(ctx, -1);
-		cgv::render::ref_cone_renderer  (ctx, -1);
+		cgv::render::ref_point_renderer(ctx, -1);
+		cgv::render::ref_surfel_renderer(ctx, -1);
+		cgv::render::ref_box_renderer(ctx, -1);
+		cgv::render::ref_box_wire_renderer(ctx, -1);
+		cgv::render::ref_normal_renderer(ctx, -1);
+		cgv::render::ref_arrow_renderer(ctx, -1);
+		cgv::render::ref_sphere_renderer(ctx, -1);
+		cgv::render::ref_cone_renderer(ctx, -1);
+		cgv::render::ref_ellipsoid_renderer(ctx, -1);
 	}
 	void create_gui()
 	{
 		add_decorator("Renderer Tests", "heading");
-		add_member_control(this, "Mode", mode, "dropdown", "enums='Points,Surfels,Boxes,Box Wires,Normals,Arrows,Spheres,Cones'");
+		add_member_control(this, "Mode", mode, "dropdown", "enums='Points,Surfels,Boxes,Box Wires,Normals,Arrows,Spheres,Cones,Ellipsoids'");
 		if (begin_tree_node("Transformation", lambda, false)) {
 			align("\a");
 			add_member_control(this, "Lambda", lambda, "value_slider", "min=0;max=1;ticks=true");
@@ -522,11 +546,17 @@ public:
 			align("\b");
 			end_tree_node(sphere_style);
 		}
-		if(begin_tree_node("Cone Rendering", cone_style, false)) {
+		if (begin_tree_node("Cone Rendering", cone_style, false)) {
 			align("\a");
 			add_gui("cone_style", cone_style);
 			align("\b");
 			end_tree_node(cone_style);
+		}
+		if (begin_tree_node("Ellispoid Rendering", ellipsoid_style, false)) {
+			align("\a");
+			add_gui("ellipsoid_style", ellipsoid_style);
+			align("\b");
+			end_tree_node(ellipsoid_style);
 		}
 	}
 };
