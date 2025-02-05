@@ -33,121 +33,41 @@ protected:
     
 public:
     spline_tubes() : application_plugin("Spline Tubes")
-    { 
-		/*
-		float factor = 10;
-        points.push_back(cgv::vec3(-0.5, 0, 0)*factor);
-		points.push_back(cgv::vec3(-0.25, 0, 0.33)*factor);
-		points.push_back(cgv::vec3( 0,   0, 0.5)*factor);
-		points.push_back(cgv::vec3(0.25, 0, 0.5)*factor);
-		points.push_back(cgv::vec3(0.5, 0, 0.33)*factor);
-		points.push_back(cgv::vec3( 0.75, 0, 0)*factor);
-
-        tangents.push_back(cgv::vec3(1.0, 0, 0));
-		tangents.push_back(cgv::math::normalize(cgv::vec3(1.0, 0, 1.0)));
-		tangents.push_back(cgv::vec3(1.0, 0, 0));
-		tangents.push_back(cgv::vec3(1.0, 0, 0));
-		tangents.push_back(cgv::math::normalize(cgv::vec3(1.0, 0, 1.0)));
-		tangents.push_back(cgv::vec3(1.0, 0, 0));
-
-        colors.push_back(cgv::vec4(1.0, 0, 0, 1));
-		colors.push_back(cgv::vec4(0, 1.0, 0, 1));
-		colors.push_back(cgv::vec4(0, 1.0, 0, 1));
-		colors.push_back(cgv::vec4(0, 0, 1.0, 1));
-		colors.push_back(cgv::vec4(0, 0, 1.0, 1));
-		colors.push_back(cgv::vec4(0, 0, 1.0, 1));
-		
-        radii.push_back(0.2);
-		radii.push_back(0.2);
-		radii.push_back(0.2);
-		radii.push_back(0.2);
-		radii.push_back(0.2);
-		radii.push_back(0.2);
-
-        indices.push_back(0);
-		indices.push_back(1);
-		indices.push_back(1);
-		indices.push_back(2);
-		indices.push_back(2);
-		indices.push_back(3);
-		indices.push_back(3);
-		indices.push_back(4);
-		indices.push_back(4);
-		indices.push_back(5);
-		*/
-
-		/*
-		points.push_back(cgv::vec3(-2, 0, 0));
-		points.push_back(cgv::vec3(-1, 0.5, 0.5));
-		points.push_back(cgv::vec3(0, 0, 1));
-		points.push_back(cgv::vec3(1, -0.5, 0.5));
-		points.push_back(cgv::vec3(2, 0, 0));
-
-		tangents.push_back(cgv::vec4(cgv::math::normalize(cgv::vec3(1, 1, 1)),  0));
-		tangents.push_back(cgv::vec4(cgv::math::normalize(cgv::vec3(1, -1, 1)), 0));
-		tangents.push_back(cgv::vec4(cgv::math::normalize(cgv::vec3(1, -1, 0)), 0));
-		tangents.push_back(cgv::vec4(cgv::math::normalize(cgv::vec3(1, 1, -1)), 0));
-		tangents.push_back(cgv::vec4(cgv::math::normalize(cgv::vec3(1, 1, -1)), 0));
-
-		colors.push_back(cgv::vec4(1.0, 0, 0, 1));
-		colors.push_back(cgv::vec4(1.0, 1, 0, 1));
-		colors.push_back(cgv::vec4(0, 1.0, 0, 1));
-		colors.push_back(cgv::vec4(0, 1.0, 1, 1));
-		colors.push_back(cgv::vec4(0, 0, 1, 1));
-		
-		radii.push_back(.2f);
-		radii.push_back(.2f);
-		radii.push_back(.2f);
-		radii.push_back(.2f);
-		radii.push_back(.2f);
-
-		indices.push_back(0);
-		indices.push_back(1);
-		indices.push_back(1);
-		indices.push_back(2);
-		indices.push_back(2);
-		indices.push_back(3);
-		indices.push_back(3);
-		indices.push_back(4);
-		*/
-
+    {
 		//std::random_device dev;
 		//std::mt19937 rng(dev());
 		
+		// fix seed for performance testing
 		std::mt19937 rng(0);
-		std::uniform_int_distribution<std::mt19937::result_type> dist6(0, 20); 
+		std::uniform_int_distribution<std::mt19937::result_type> dist(0, 20); 
 
-		std::cout << dist6(rng) << std::endl;
+		std::cout << dist(rng) << std::endl;
 
 		unsigned int index_count = 0;
 		for (int i = 0; i < 2000; i++) {
-			points.push_back(cgv::vec3(dist6(rng), dist6(rng), dist6(rng)) - cgv::vec3(10, 10, 40));
-			points.push_back(cgv::vec3(dist6(rng), dist6(rng), dist6(rng)) - cgv::vec3(10, 10, 40));
-			tangents.push_back(cgv::vec4(cgv::vec3(dist6(rng), dist6(rng), dist6(rng)), 0));
-			tangents.push_back(cgv::vec4(cgv::vec3(dist6(rng), dist6(rng), dist6(rng)), 0));
-			colors.push_back(cgv::vec4(dist6(rng) / 20.0, dist6(rng) / 20.0, dist6(rng) / 20.0, 1));
-			colors.push_back(cgv::vec4(dist6(rng) / 20.0, dist6(rng) / 20.0, dist6(rng) / 20.0, 1));
-			radii.push_back(.2);
-			radii.push_back(.2);
-			indices.push_back(index_count++);
-			indices.push_back(index_count++);
+			if (1)
+			{
+				points.push_back(cgv::vec3(dist(rng), dist(rng), dist(rng)) - cgv::vec3(10, 10, 40));
+				points.push_back(cgv::vec3(dist(rng), dist(rng), dist(rng)) - cgv::vec3(10, 10, 40));
+				tangents.push_back(cgv::vec4(cgv::vec3(dist(rng), dist(rng), dist(rng)), 0));
+				tangents.push_back(cgv::vec4(cgv::vec3(dist(rng), dist(rng), dist(rng)), 0));
+				colors.push_back(cgv::vec4(dist(rng) / 20.0, dist(rng) / 20.0, dist(rng) / 20.0, 1));
+				colors.push_back(cgv::vec4(dist(rng) / 20.0, dist(rng) / 20.0, dist(rng) / 20.0, 1));
+				radii.push_back(.2);
+				radii.push_back(.2);
+				indices.push_back(index_count++);
+				indices.push_back(index_count++);
+			}
+			else
+			{
+				cgv::vec3(dist(rng), dist(rng), dist(rng));
+				cgv::vec3(dist(rng), dist(rng), dist(rng));
+				cgv::vec4(cgv::vec3(dist(rng), dist(rng), dist(rng)), 0);
+				cgv::vec4(cgv::vec3(dist(rng), dist(rng), dist(rng)), 0);
+				cgv::vec4(dist(rng) / 20.0, dist(rng) / 20.0, dist(rng) / 20.0, 1);
+				cgv::vec4(dist(rng) / 20.0, dist(rng) / 20.0, dist(rng) / 20.0, 1);
+			}
 		}
-
-		/*
-		points.push_back(cgv::vec3(-2, 0, 0));
-		points.push_back(cgv::vec3(2, 0, 0));
-		tangents.push_back(cgv::vec4(cgv::math::normalize(cgv::vec3(-1, 0, 1)), 0));
-		tangents.push_back(cgv::vec4(cgv::math::normalize(cgv::vec3(-1, 0, -1)), 0));
-
-		colors.push_back(cgv::vec4(1.0, 0, 0, 1));
-		colors.push_back(cgv::vec4(0, 0, 1, 1));
-
-		radii.push_back(.2);
-		radii.push_back(.2);
-
-		indices.push_back(0);
-		indices.push_back(1);
-		*/
 	}
 
     virtual ~spline_tubes()

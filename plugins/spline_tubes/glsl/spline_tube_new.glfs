@@ -1,20 +1,19 @@
 #version 420
 
-#define FLT_EPS 1.19209290e-07
 #define POS_INF 3e+37
 #define N0 3
 #define N1 5
 
 /* 	0: BisectionSearch
 	1: NewtonsMethod */
-#define ROOT_SEARCH_METHOD_POLY 1
+#define ROOT_SEARCH_METHOD_POLY 0
 
 /*	0: BisectionSearch
 	1: NewtonsMethod */
 #define ROOT_SEARCH_METHOD_F 0
 
 #define ITERATION_COUNT_BISECTION 10
-#define ITERATION_COUNT_NEWTON 10
+#define ITERATION_COUNT_NEWTON 4
 
 //***** begin interface of view.glsl ***********************************
 mat4 get_modelview_matrix();
@@ -47,6 +46,8 @@ float Pow2(float x);
 float Pow3(float x);
 void Pow2(in float c[3], out float o_c[5]);
 void Sub(in float a[5], in float b[5], out float o_c[5]);
+
+vec2 SolveQuadratic(float a, float b, float c);
 
 void SplinePointsToPolyCoeffs(float p0, float h, float p1, out float o_c[3]);
 
@@ -99,20 +100,6 @@ in flat vec4 color0_fs;
 in flat vec4 color1_fs;
 in flat QTube qTube_fs;
 
-vec2 SolveQuadratic(float a, float b, float c) {
-    if(abs(a) < FLT_EPS) {
-		if(abs(b) < FLT_EPS)
-			return vec2(-2.0, 2.0);
-		else
-			return vec2(-c / b, 2.0);
-    } else {
-		float discr = b * b - 4.0 * a * c;
-		if(abs(discr) < FLT_EPS) return vec2(-b / (2.0 * a), 2.0);
-		if(discr < 0.0) return vec2(-2.0, 2.0);
-		vec2 r = (-vec2(b) + vec2(-1.0, 1.0) * vec2(sqrt(discr))) / (2.0 * a);
-		return r.x < r.y ? r.xy : r.yx;
-    }
-}
 
 Hit EvalSplineISect(vec3 dir, vec3 s, vec3 h, vec3 t, float rs, float rh, float rt) {
 	Hit hit;
@@ -157,7 +144,7 @@ Hit EvalSplineISect(vec3 dir, vec3 s, vec3 h, vec3 t, float rs, float rh, float 
 	float x2[4];
 	int m2[4];
 	
-	
+	// return +-2.0 for imaginary roots
 	vec2 r = SolveQuadratic(polyB_C[4] * 12.0, polyB_C[3] * 6.0, polyB_C[2] * 2.0);
 	x2[0] = 0.0;
 	x2[1] = r.x;
@@ -168,32 +155,6 @@ Hit EvalSplineISect(vec3 dir, vec3 s, vec3 h, vec3 t, float rs, float rh, float 
 	m2[2] = (x2[2] <= 0.0 || x2[2] >= 1.0) ? 0 : 1;
 	m2[3] = 1;
 	
-
-	/*
-	vec3 result = solve_quadratic(vec3(polyB_C[4] * 12.0, polyB_C[3] * 6.0, polyB_C[2] * 2.0));
-	vec2 r = result.yz;
-	m2[0] = 1;
-	x2[0] = 0.0;
-
-	m2[1] = 0;
-	m2[2] = 0;
-
-	m2[3] = 1;
-	x2[3] = 1.0;
-
-	if(result.x == 1)
-	{	m2[1] = 1;
-		x2[1] = r.x;
-	}
-	else if(result.x == 2)
-	{	
-		m2[1] = 1;
-		m2[2] = 1;
-		r = r.x < r.y ? r : r.yx;
-		x2[1] = r.x;
-		x2[2] = r.y;
-	}
-	*/
 
 	float x3[5];
 	int m3[5];

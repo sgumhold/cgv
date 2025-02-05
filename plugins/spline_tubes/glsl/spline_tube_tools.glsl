@@ -9,7 +9,7 @@
 
 // --- defines -----------------------
 #define POS_INF 3e+37
-
+#define FLT_EPS 1.19209290e-07
 // --- functions -----------------------
 
 float Pow2(float x);
@@ -17,6 +17,8 @@ float Pow3(float x);
 // Raises a quadratic polynomial to the power of 2
 void Pow2(in float c[3], out float o_c[5]);
 void Sub(in float a[5], in float b[5], out float o_c[5]);
+
+vec2 SolveQuadratic(float a, float b, float c);
 
 void SplinePointsToPolyCoeffs(float p0, float h, float p1, out float o_c[3]);
 
@@ -117,6 +119,21 @@ void Sub(in float a[5], in float b[5], out float o_c[5]) {
 	o_c[4] = a[4] - b[4];
 }
 
+vec2 SolveQuadratic(float a, float b, float c) {
+    if(abs(a) < FLT_EPS) {
+		if(abs(b) < FLT_EPS)
+			return vec2(-2.0, 2.0);
+		else
+			return vec2(-c / b, 2.0);
+    } else {
+		float discr = b * b - 4.0 * a * c;
+		if(abs(discr) < FLT_EPS) return vec2(-b / (2.0 * a), 2.0);
+		if(discr < 0.0) return vec2(-2.0, 2.0);
+		vec2 r = (-vec2(b) + vec2(-1.0, 1.0) * vec2(sqrt(discr))) / (2.0 * a);
+		return r.x < r.y ? r.xy : r.yx;
+    }
+}
+
 void SplinePointsToPolyCoeffs(float p0, float h, float p1, out float o_c[3]) {
 	o_c[0] = p0;
 	o_c[1] = -2.0 * p0 + 2.0 * h;
@@ -147,6 +164,28 @@ float EvalPolyD0(float x, float c[5]) { return EvalPoly(x, c[0], c[1], c[2], c[3
 float EvalPolyD1(float x, float c[5]) { return EvalPoly(x, c[1], c[2] + c[2], c[3] + c[3] + c[3], c[4] + c[4] + c[4] + c[4]); }
 float EvalPolyD2(float x, float c[5]) { return EvalPoly(x, c[2] + c[2], c[3] * 6.0, c[4] * 12.0); }
 float EvalPolyD3(float x, float c[5]) { return EvalPoly(x, c[3] * 6.0, c[4] * 24.0); }
+
+/*
+float factorD0 = 0.1;
+float factorD1 = 1.0;
+float factorD2 = 1.0;
+float factorD3 = 1.0;
+float EvalPolyD0Dampened(float x, float c[3]) { return EvalPoly(x, c[0] * factorD0, c[1] * factorD0, c[2] * factorD0); }
+float EvalPolyD1Dampened(float x, float c[3]) { return EvalPoly(x, c[1] * factorD1, c[2] * 2.0 * factorD1); }
+float EvalPolyD2Dampened(float x, float c[3]) { return EvalPoly(x, c[2] * 2.0 * factorD2);       }
+float EvalPolyD0Dampened(float x, float c[5]) { return EvalPoly(x, c[0] * factorD0, c[1] * factorD0, c[2] * factorD0, c[3] * factorD0, c[4] * factorD0);             }
+float EvalPolyD1Dampened(float x, float c[5]) { return EvalPoly(x, c[1] * factorD1, c[2] * 2.0 * factorD1, c[3] * 3.0 * factorD1, c[4] * 4.0 * factorD1); }
+float EvalPolyD2Dampened(float x, float c[5]) { return EvalPoly(x, c[2] * 2.0 * factorD2, c[3] * 6.0 * factorD2, c[4] * 12.0 * factorD2);      }
+float EvalPolyD3Dampened(float x, float c[5]) { return EvalPoly(x, c[3] * 6.0 * factorD3, c[4] * 24.0 * factorD3);                  }
+
+float EvalPolyD0Dampened(float x, float c[3], float factor) { return factor * EvalPoly(x, c[0], c[1], c[2]); }
+float EvalPolyD1Dampened(float x, float c[3], float factor) { return factor * EvalPoly(x, c[1], c[2] + c[2]); }
+float EvalPolyD2Dampened(float x, float c[3], float factor) { return factor * EvalPoly(x, c[2] + c[2]); }
+float EvalPolyD0Dampened(float x, float c[5], float factor) { return factor * EvalPoly(x, c[0], c[1], c[2], c[3], c[4]); }
+float EvalPolyD1Dampened(float x, float c[5], float factor) { return factor * EvalPoly(x, c[1], c[2] + c[2], c[3] + c[3] + c[3], c[4] + c[4] + c[4] + c[4]); }
+float EvalPolyD2Dampened(float x, float c[5], float factor) { return factor * EvalPoly(x, c[2] + c[2], c[3] * 6.0, c[4] * 12.0); }
+float EvalPolyD3Dampened(float x, float c[5], float factor) { return factor * EvalPoly(x, c[3] * 6.0, c[4] * 24.0); }
+*/
 
 vec3 qSplineEval(float l, float curveX[3], float curveY[3], float curveZ[3]) {
 	return vec3(EvalPolyD0(l, curveX), EvalPolyD0(l, curveY), EvalPolyD0(l, curveZ));
@@ -353,6 +392,7 @@ float NewtonsMethodPolyD1(float c[5], float x, float epsilon, int max_iter) {
 }
 
 /*
+// Experimental Stuff
 float SecantMethodPolyD0(float c[5], float n, float p, int max_iter) {
 	float x_n2 = n*0.75 + p*0.25;
 	float x_n1 = p*0.75 + n*0.25;
@@ -494,12 +534,7 @@ void FindRootsPolyNewtonD0(float poly_C[5], float x_i[5], int m_i[5], out float 
 			if(sy_l != sy_r) {
 				float n = x_l;
 				float p = x_r;
-				float ny = EvalPolyD0(n, poly_C);
-				float py = EvalPolyD0(p, poly_C);
-				if(ny > 0.0 && py < 0.0) {
-					float t = n;
-					n = p; p = t;
-				}
+
 				x_o[i] = NewtonsMethodPolyD0(poly_C, (n+p) * 0.5, max_iter);
 				m_o[i] = 1;
 			} else {
@@ -530,12 +565,7 @@ void FindRootsPolyNewtonD1(float poly_C[5], float x_i[4], int m_i[4], out float 
 			if(sy_l != sy_r) {
 				float n = x_l;
 				float p = x_r;
-				float ny = EvalPolyD1(n, poly_C);
-				float py = EvalPolyD1(p, poly_C);
-				if(ny > 0.0 && py < 0.0) {
-					float t = n;
-					n = p; p = t;
-				}
+
 				x_o[i] = NewtonsMethodPolyD1(poly_C, (n+p) * 0.5, max_iter);
 				m_o[i] = 1;
 			} else {
