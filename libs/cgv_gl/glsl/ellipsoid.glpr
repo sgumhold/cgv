@@ -1,0 +1,13 @@
+files:ellipsoid
+vertex_file:view.glsl
+vertex_file:quaternion.glsl
+geometry_file:view.glsl
+geometry_file:ellipsoid_base.glgs
+fragment_file:ellipsoid_base.glfs
+fragment_file:side.glsl
+fragment_file:lights.glsl
+fragment_file:brdf.glsl
+fragment_file:bump_map.glfs
+fragment_file:surface.glsl
+fragment_file:fragment.glfs
+fragment_file:a_buffer_lib.glfs
