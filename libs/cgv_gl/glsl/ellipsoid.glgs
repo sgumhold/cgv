@@ -1,0 +1,20 @@
+#version 330
+
+layout(points) in;
+layout(triangle_strip, max_vertices = 4) out;
+
+in vec3 center[];
+in mat3 T[];
+in vec4 color_gs[];
+
+out vec4 color_fs;
+
+//***** begin interface of ellipsoid_base.glgs ****************************
+void cover_ellipsoid_with_quad(in vec3 center, in mat3 T);
+//***** end interface of ellipsoid_base.glgs ******************************
+
+void main()
+{
+	color_fs = color_gs[0];
+	cover_ellipsoid_with_quad(center[0], T[0]);
+}
