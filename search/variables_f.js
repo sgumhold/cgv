@@ -17,10 +17,11 @@ var searchData=
   ['opacity_5fwindow_5fzero_5fposition_14',['opacity_window_zero_position',['../classcgv_1_1plot_1_1plot__base.html#a31cdc7d9629ce16ec919a8245158914e',1,'cgv::plot::plot_base']]],
   ['orient_5fsplats_15',['orient_splats',['../structcgv_1_1render_1_1surfel__render__style.html#a7dcb5f4ba047993daa2d11d93a828cc6',1,'cgv::render::surfel_render_style']]],
   ['orientation_16',['orientation',['../classcgv_1_1plot_1_1plot__base.html#a596d6232da547724f735eb908fbd7a2c',1,'cgv::plot::plot_base']]],
-  ['out_5fof_5frange_5fmode_17',['out_of_range_mode',['../classcgv_1_1plot_1_1plot__base.html#a79b083c7be943db712595d7f80973b46',1,'cgv::plot::plot_base']]],
-  ['out_5fstream_18',['out_stream',['../classcgv_1_1render_1_1context.html#afd2384f196ed5c318c3979a798c9a48b',1,'cgv::render::context']]],
-  ['output_19',['output',['../classcgv_1_1reflect_1_1debug__reflection__handler.html#a2a61cf142c064887cf7ddae21a310bcf',1,'cgv::reflect::debug_reflection_handler']]],
-  ['overlays_20',['overlays',['../classcgv_1_1app_1_1application__plugin__base.html#a87d94e00268c0abac8f96e94cfda30e4',1,'cgv::app::application_plugin_base']]],
-  ['owns_5fformat_21',['owns_format',['../classcgv_1_1data_1_1data__view__base.html#afce821532fa741853508ceb4fce0bc10',1,'cgv::data::data_view_base']]],
-  ['owns_5fptr_22',['owns_ptr',['../classcgv_1_1data_1_1data__view.html#a1c131a7d6d20c8c1eb35a92210196093',1,'cgv::data::data_view']]]
+  ['orientations_17',['orientations',['../classcgv_1_1render_1_1ellipsoid__render__data.html#a52514b77a13ce7e844ec38f18c9b7176',1,'cgv::render::ellipsoid_render_data']]],
+  ['out_5fof_5frange_5fmode_18',['out_of_range_mode',['../classcgv_1_1plot_1_1plot__base.html#a79b083c7be943db712595d7f80973b46',1,'cgv::plot::plot_base']]],
+  ['out_5fstream_19',['out_stream',['../classcgv_1_1render_1_1context.html#afd2384f196ed5c318c3979a798c9a48b',1,'cgv::render::context']]],
+  ['output_20',['output',['../classcgv_1_1reflect_1_1debug__reflection__handler.html#a2a61cf142c064887cf7ddae21a310bcf',1,'cgv::reflect::debug_reflection_handler']]],
+  ['overlays_21',['overlays',['../classcgv_1_1app_1_1application__plugin__base.html#a87d94e00268c0abac8f96e94cfda30e4',1,'cgv::app::application_plugin_base']]],
+  ['owns_5fformat_22',['owns_format',['../classcgv_1_1data_1_1data__view__base.html#afce821532fa741853508ceb4fce0bc10',1,'cgv::data::data_view_base']]],
+  ['owns_5fptr_23',['owns_ptr',['../classcgv_1_1data_1_1data__view.html#a1c131a7d6d20c8c1eb35a92210196093',1,'cgv::data::data_view']]]
 ];
