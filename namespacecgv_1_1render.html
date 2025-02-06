@@ -220,6 +220,17 @@ Classes</h2></td></tr>
 <tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:"><td class="memItemLeft" align="right" valign="top">struct &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structcgv_1_1render_1_1element__descriptor__traits_3_01cgv_1_1media_1_1color_3_01T_00_01cm_00_01am_01_4_01_4.html">element_descriptor_traits&lt; cgv::media::color&lt; T, cm, am &gt; &gt;</a></td></tr>
 <tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:"><td class="memItemLeft" align="right" valign="top">class &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcgv_1_1render_1_1ellipsoid__render__data.html">ellipsoid_render_data</a></td></tr>
+<tr class="memdesc:"><td class="mdescLeft">&#160;</td><td class="mdescRight">Render data for ellipsoid geometry with support for the <a class="el" href="classcgv_1_1render_1_1ellipsoid__renderer.html" title="renderer that supports splatting of ellipsoids">ellipsoid_renderer</a>.  <a href="classcgv_1_1render_1_1ellipsoid__render__data.html#details">More...</a><br /></td></tr>
+<tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:"><td class="memItemLeft" align="right" valign="top">struct &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structcgv_1_1render_1_1ellipsoid__render__style.html">ellipsoid_render_style</a></td></tr>
+<tr class="memdesc:"><td class="mdescLeft">&#160;</td><td class="mdescRight">render style for ellipsoid rendere  <a href="structcgv_1_1render_1_1ellipsoid__render__style.html#details">More...</a><br /></td></tr>
+<tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:"><td class="memItemLeft" align="right" valign="top">struct &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structcgv_1_1render_1_1ellipsoid__render__style__reflect.html">ellipsoid_render_style_reflect</a></td></tr>
+<tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:"><td class="memItemLeft" align="right" valign="top">class &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcgv_1_1render_1_1ellipsoid__renderer.html">ellipsoid_renderer</a></td></tr>
+<tr class="memdesc:"><td class="mdescLeft">&#160;</td><td class="mdescRight">renderer that supports splatting of ellipsoids  <a href="classcgv_1_1render_1_1ellipsoid__renderer.html#details">More...</a><br /></td></tr>
+<tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:"><td class="memItemLeft" align="right" valign="top">class &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcgv_1_1render_1_1frame__buffer.html">frame_buffer</a></td></tr>
 <tr class="memdesc:"><td class="mdescLeft">&#160;</td><td class="mdescRight">this class encapsulate frame buffers that live on the GPU and can be used as destination for the render process.  <a href="classcgv_1_1render_1_1frame__buffer.html#details">More...</a><br /></td></tr>
 <tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
@@ -921,6 +932,11 @@ Functions</h2></td></tr>
 <tr class="separator:a41a6e252b09926b43b640b2141c8fb24"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:acee0ec1ea916e836416e3d81a175eebb" id="r_acee0ec1ea916e836416e3d81a175eebb"><td class="memItemLeft" align="right" valign="top"><a class="el" href="structcgv_1_1reflect_1_1extern__reflection__traits.html">cgv::reflect::extern_reflection_traits</a>&lt; <a class="el" href="structcgv_1_1render_1_1cone__render__style.html">cone_render_style</a>, <a class="el" href="structcgv_1_1render_1_1cone__render__style__reflect.html">cone_render_style_reflect</a> &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespacecgv_1_1render.html#acee0ec1ea916e836416e3d81a175eebb">get_reflection_traits</a> (const <a class="el" href="structcgv_1_1render_1_1cone__render__style.html">cone_render_style</a> &amp;)</td></tr>
 <tr class="separator:acee0ec1ea916e836416e3d81a175eebb"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ae0e88338f28b2f0db70b0bc6487c9146" id="r_ae0e88338f28b2f0db70b0bc6487c9146"><td class="memItemLeft" align="right" valign="top"><a class="el" href="classcgv_1_1render_1_1ellipsoid__renderer.html">ellipsoid_renderer</a> &amp;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespacecgv_1_1render.html#ae0e88338f28b2f0db70b0bc6487c9146">ref_ellipsoid_renderer</a> (<a class="el" href="classcgv_1_1render_1_1context.html">context</a> &amp;ctx, int ref_count_change=0)</td></tr>
+<tr class="memdesc:ae0e88338f28b2f0db70b0bc6487c9146"><td class="mdescLeft">&#160;</td><td class="mdescRight">reference to a singleton ellipsoid renderer that can be shared among drawables  <br /></td></tr>
+<tr class="separator:ae0e88338f28b2f0db70b0bc6487c9146"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a65e19cf66a4c7c807beb177be0e89ef1" id="r_a65e19cf66a4c7c807beb177be0e89ef1"><td class="memItemLeft" align="right" valign="top"><a class="el" href="structcgv_1_1reflect_1_1extern__reflection__traits.html">cgv::reflect::extern_reflection_traits</a>&lt; <a class="el" href="structcgv_1_1render_1_1ellipsoid__render__style.html">ellipsoid_render_style</a>, <a class="el" href="structcgv_1_1render_1_1ellipsoid__render__style__reflect.html">ellipsoid_render_style_reflect</a> &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespacecgv_1_1render.html#a65e19cf66a4c7c807beb177be0e89ef1">get_reflection_traits</a> (const <a class="el" href="structcgv_1_1render_1_1ellipsoid__render__style.html">ellipsoid_render_style</a> &amp;)</td></tr>
+<tr class="separator:a65e19cf66a4c7c807beb177be0e89ef1"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ac1c6026d5e38a153edd00586bc413984" id="r_ac1c6026d5e38a153edd00586bc413984"><td class="memItemLeft" align="right" valign="top"><a id="ac1c6026d5e38a153edd00586bc413984" name="ac1c6026d5e38a153edd00586bc413984"></a>
 &#160;</td><td class="memItemRight" valign="bottom"><b>DEFINE_GENERIC_RENDER_DATA_CLASS</b> (generic_render_data_vec3, 1, <a class="el" href="namespacecgv.html#a986c65184af5066fa26d468fd606c4fb">vec3</a>, position)</td></tr>
 <tr class="memdesc:ac1c6026d5e38a153edd00586bc413984"><td class="mdescLeft">&#160;</td><td class="mdescRight">Defines a generic render data class using attributes: vec3 position. <br /></td></tr>
@@ -1073,6 +1089,8 @@ Variables</h2></td></tr>
 <tr class="separator:a2bb6f26f04e0bcbcfbd9543b262ecec4"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a6c6b9c4062d4409b1680b44476ad614b" id="r_a6c6b9c4062d4409b1680b44476ad614b"><td class="memItemLeft" align="right" valign="top">class CGV_API&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespacecgv_1_1render.html#a6c6b9c4062d4409b1680b44476ad614b">cone_renderer</a></td></tr>
 <tr class="separator:a6c6b9c4062d4409b1680b44476ad614b"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ad4df9e681dffa30113b7bb9b195ba6ce" id="r_ad4df9e681dffa30113b7bb9b195ba6ce"><td class="memItemLeft" align="right" valign="top">class CGV_API&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespacecgv_1_1render.html#ad4df9e681dffa30113b7bb9b195ba6ce">ellipsoid_renderer</a></td></tr>
+<tr class="separator:ad4df9e681dffa30113b7bb9b195ba6ce"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:aaec9182259c8224ed16246f02658f15b" id="r_aaec9182259c8224ed16246f02658f15b"><td class="memItemLeft" align="right" valign="top">class CGV_API&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespacecgv_1_1render.html#aaec9182259c8224ed16246f02658f15b">normal_renderer</a></td></tr>
 <tr class="separator:aaec9182259c8224ed16246f02658f15b"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a8671fd310e8da827d7be0fbe3adf2c4e" id="r_a8671fd310e8da827d7be0fbe3adf2c4e"><td class="memItemLeft" align="right" valign="top">class CGV_API&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespacecgv_1_1render.html#a8671fd310e8da827d7be0fbe3adf2c4e">point_renderer</a></td></tr>
@@ -2409,7 +2427,7 @@ template&lt;typename T &gt; </div>
 </div>
 </div>
 <a id="ad435a5a8a8fa313ba3b3662d3addba06" name="ad435a5a8a8fa313ba3b3662d3addba06"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#ad435a5a8a8fa313ba3b3662d3addba06">&#9670;&#160;</a></span>get_reflection_traits() <span class="overload">[1/17]</span></h2>
+<h2 class="memtitle"><span class="permalink"><a href="#ad435a5a8a8fa313ba3b3662d3addba06">&#9670;&#160;</a></span>get_reflection_traits() <span class="overload">[1/18]</span></h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -2429,7 +2447,7 @@ template&lt;typename T &gt; </div>
 </div>
 </div>
 <a id="a612312c0715a4fdd59d11aca07c254f0" name="a612312c0715a4fdd59d11aca07c254f0"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a612312c0715a4fdd59d11aca07c254f0">&#9670;&#160;</a></span>get_reflection_traits() <span class="overload">[2/17]</span></h2>
+<h2 class="memtitle"><span class="permalink"><a href="#a612312c0715a4fdd59d11aca07c254f0">&#9670;&#160;</a></span>get_reflection_traits() <span class="overload">[2/18]</span></h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -2449,7 +2467,7 @@ template&lt;typename T &gt; </div>
 </div>
 </div>
 <a id="a32b8d3f738ade07276ca7e72b7fd2756" name="a32b8d3f738ade07276ca7e72b7fd2756"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a32b8d3f738ade07276ca7e72b7fd2756">&#9670;&#160;</a></span>get_reflection_traits() <span class="overload">[3/17]</span></h2>
+<h2 class="memtitle"><span class="permalink"><a href="#a32b8d3f738ade07276ca7e72b7fd2756">&#9670;&#160;</a></span>get_reflection_traits() <span class="overload">[3/18]</span></h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -2469,7 +2487,7 @@ template&lt;typename T &gt; </div>
 </div>
 </div>
 <a id="a9dd3b82e2737d165d9f21b70c53cb1d8" name="a9dd3b82e2737d165d9f21b70c53cb1d8"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a9dd3b82e2737d165d9f21b70c53cb1d8">&#9670;&#160;</a></span>get_reflection_traits() <span class="overload">[4/17]</span></h2>
+<h2 class="memtitle"><span class="permalink"><a href="#a9dd3b82e2737d165d9f21b70c53cb1d8">&#9670;&#160;</a></span>get_reflection_traits() <span class="overload">[4/18]</span></h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -2489,7 +2507,7 @@ template&lt;typename T &gt; </div>
 </div>
 </div>
 <a id="af0d3f0580f127248efc673bb92c8057a" name="af0d3f0580f127248efc673bb92c8057a"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#af0d3f0580f127248efc673bb92c8057a">&#9670;&#160;</a></span>get_reflection_traits() <span class="overload">[5/17]</span></h2>
+<h2 class="memtitle"><span class="permalink"><a href="#af0d3f0580f127248efc673bb92c8057a">&#9670;&#160;</a></span>get_reflection_traits() <span class="overload">[5/18]</span></h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -2509,7 +2527,7 @@ template&lt;typename T &gt; </div>
 </div>
 </div>
 <a id="a4835db065c5840d820ffdcc1e0941696" name="a4835db065c5840d820ffdcc1e0941696"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a4835db065c5840d820ffdcc1e0941696">&#9670;&#160;</a></span>get_reflection_traits() <span class="overload">[6/17]</span></h2>
+<h2 class="memtitle"><span class="permalink"><a href="#a4835db065c5840d820ffdcc1e0941696">&#9670;&#160;</a></span>get_reflection_traits() <span class="overload">[6/18]</span></h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -2529,7 +2547,7 @@ template&lt;typename T &gt; </div>
 </div>
 </div>
 <a id="acee0ec1ea916e836416e3d81a175eebb" name="acee0ec1ea916e836416e3d81a175eebb"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#acee0ec1ea916e836416e3d81a175eebb">&#9670;&#160;</a></span>get_reflection_traits() <span class="overload">[7/17]</span></h2>
+<h2 class="memtitle"><span class="permalink"><a href="#acee0ec1ea916e836416e3d81a175eebb">&#9670;&#160;</a></span>get_reflection_traits() <span class="overload">[7/18]</span></h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -2548,8 +2566,28 @@ template&lt;typename T &gt; </div>
 
 </div>
 </div>
+<a id="a65e19cf66a4c7c807beb177be0e89ef1" name="a65e19cf66a4c7c807beb177be0e89ef1"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a65e19cf66a4c7c807beb177be0e89ef1">&#9670;&#160;</a></span>get_reflection_traits() <span class="overload">[8/18]</span></h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">CGV_API <a class="el" href="structcgv_1_1reflect_1_1extern__reflection__traits.html">cgv::reflect::extern_reflection_traits</a>&lt; <a class="el" href="structcgv_1_1render_1_1ellipsoid__render__style.html">ellipsoid_render_style</a>, <a class="el" href="structcgv_1_1render_1_1ellipsoid__render__style__reflect.html">ellipsoid_render_style_reflect</a> &gt; cgv::render::get_reflection_traits </td>
+          <td>(</td>
+          <td class="paramtype">const <a class="el" href="structcgv_1_1render_1_1ellipsoid__render__style.html">ellipsoid_render_style</a> &amp;&#160;</td>
+          <td class="paramname"></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p class="definition">Definition at line <a class="el" href="ellipsoid__renderer_8cxx_source.html#l00106">106</a> of file <a class="el" href="ellipsoid__renderer_8cxx_source.html">ellipsoid_renderer.cxx</a>.</p>
+
+</div>
+</div>
 <a id="ae0e88fdc069b506f2c78e308976f430b" name="ae0e88fdc069b506f2c78e308976f430b"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#ae0e88fdc069b506f2c78e308976f430b">&#9670;&#160;</a></span>get_reflection_traits() <span class="overload">[8/17]</span></h2>
+<h2 class="memtitle"><span class="permalink"><a href="#ae0e88fdc069b506f2c78e308976f430b">&#9670;&#160;</a></span>get_reflection_traits() <span class="overload">[9/18]</span></h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -2569,7 +2607,7 @@ template&lt;typename T &gt; </div>
 </div>
 </div>
 <a id="aa814dd2b57f0c6f0981d14c7b5815c8f" name="aa814dd2b57f0c6f0981d14c7b5815c8f"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#aa814dd2b57f0c6f0981d14c7b5815c8f">&#9670;&#160;</a></span>get_reflection_traits() <span class="overload">[9/17]</span></h2>
+<h2 class="memtitle"><span class="permalink"><a href="#aa814dd2b57f0c6f0981d14c7b5815c8f">&#9670;&#160;</a></span>get_reflection_traits() <span class="overload">[10/18]</span></h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -2589,7 +2627,7 @@ template&lt;typename T &gt; </div>
 </div>
 </div>
 <a id="ade0642c46d5cabdb19058ddd06d631c6" name="ade0642c46d5cabdb19058ddd06d631c6"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#ade0642c46d5cabdb19058ddd06d631c6">&#9670;&#160;</a></span>get_reflection_traits() <span class="overload">[10/17]</span></h2>
+<h2 class="memtitle"><span class="permalink"><a href="#ade0642c46d5cabdb19058ddd06d631c6">&#9670;&#160;</a></span>get_reflection_traits() <span class="overload">[11/18]</span></h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -2609,7 +2647,7 @@ template&lt;typename T &gt; </div>
 </div>
 </div>
 <a id="aa3427c5595e09fde1dc607377f9b49df" name="aa3427c5595e09fde1dc607377f9b49df"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#aa3427c5595e09fde1dc607377f9b49df">&#9670;&#160;</a></span>get_reflection_traits() <span class="overload">[11/17]</span></h2>
+<h2 class="memtitle"><span class="permalink"><a href="#aa3427c5595e09fde1dc607377f9b49df">&#9670;&#160;</a></span>get_reflection_traits() <span class="overload">[12/18]</span></h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -2631,7 +2669,7 @@ template&lt;typename T &gt; </div>
 </div>
 </div>
 <a id="a90430facb3bcbbc7c5db7513577befcd" name="a90430facb3bcbbc7c5db7513577befcd"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a90430facb3bcbbc7c5db7513577befcd">&#9670;&#160;</a></span>get_reflection_traits() <span class="overload">[12/17]</span></h2>
+<h2 class="memtitle"><span class="permalink"><a href="#a90430facb3bcbbc7c5db7513577befcd">&#9670;&#160;</a></span>get_reflection_traits() <span class="overload">[13/18]</span></h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -2653,7 +2691,7 @@ template&lt;typename T &gt; </div>
 </div>
 </div>
 <a id="a41d2bd404b4569e430e68e147f406b16" name="a41d2bd404b4569e430e68e147f406b16"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a41d2bd404b4569e430e68e147f406b16">&#9670;&#160;</a></span>get_reflection_traits() <span class="overload">[13/17]</span></h2>
+<h2 class="memtitle"><span class="permalink"><a href="#a41d2bd404b4569e430e68e147f406b16">&#9670;&#160;</a></span>get_reflection_traits() <span class="overload">[14/18]</span></h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -2673,7 +2711,7 @@ template&lt;typename T &gt; </div>
 </div>
 </div>
 <a id="ad89cc33b78e31b574d98009088544c57" name="ad89cc33b78e31b574d98009088544c57"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#ad89cc33b78e31b574d98009088544c57">&#9670;&#160;</a></span>get_reflection_traits() <span class="overload">[14/17]</span></h2>
+<h2 class="memtitle"><span class="permalink"><a href="#ad89cc33b78e31b574d98009088544c57">&#9670;&#160;</a></span>get_reflection_traits() <span class="overload">[15/18]</span></h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -2693,7 +2731,7 @@ template&lt;typename T &gt; </div>
 </div>
 </div>
 <a id="a7c42e42983c969b9c0cdd1af0ea5fe70" name="a7c42e42983c969b9c0cdd1af0ea5fe70"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a7c42e42983c969b9c0cdd1af0ea5fe70">&#9670;&#160;</a></span>get_reflection_traits() <span class="overload">[15/17]</span></h2>
+<h2 class="memtitle"><span class="permalink"><a href="#a7c42e42983c969b9c0cdd1af0ea5fe70">&#9670;&#160;</a></span>get_reflection_traits() <span class="overload">[16/18]</span></h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -2713,7 +2751,7 @@ template&lt;typename T &gt; </div>
 </div>
 </div>
 <a id="a5db51b83b02ae598796bfd15ba30ba97" name="a5db51b83b02ae598796bfd15ba30ba97"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a5db51b83b02ae598796bfd15ba30ba97">&#9670;&#160;</a></span>get_reflection_traits() <span class="overload">[16/17]</span></h2>
+<h2 class="memtitle"><span class="permalink"><a href="#a5db51b83b02ae598796bfd15ba30ba97">&#9670;&#160;</a></span>get_reflection_traits() <span class="overload">[17/18]</span></h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -2733,7 +2771,7 @@ template&lt;typename T &gt; </div>
 </div>
 </div>
 <a id="a69ec3f46c578ffa2971a03bb9c6790c0" name="a69ec3f46c578ffa2971a03bb9c6790c0"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a69ec3f46c578ffa2971a03bb9c6790c0">&#9670;&#160;</a></span>get_reflection_traits() <span class="overload">[17/17]</span></h2>
+<h2 class="memtitle"><span class="permalink"><a href="#a69ec3f46c578ffa2971a03bb9c6790c0">&#9670;&#160;</a></span>get_reflection_traits() <span class="overload">[18/18]</span></h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -3126,6 +3164,41 @@ template&lt;class int_type &gt; </div>
 </div><div class="memdoc">
 
 <p class="definition">Definition at line <a class="el" href="context_8cxx_source.html#l02423">2423</a> of file <a class="el" href="context_8cxx_source.html">context.cxx</a>.</p>
+
+</div>
+</div>
+<a id="ae0e88338f28b2f0db70b0bc6487c9146" name="ae0e88338f28b2f0db70b0bc6487c9146"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#ae0e88338f28b2f0db70b0bc6487c9146">&#9670;&#160;</a></span>ref_ellipsoid_renderer()</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">CGV_API <a class="el" href="classcgv_1_1render_1_1ellipsoid__renderer.html">ellipsoid_renderer</a> &amp; cgv::render::ref_ellipsoid_renderer </td>
+          <td>(</td>
+          <td class="paramtype"><a class="el" href="classcgv_1_1render_1_1context.html">context</a> &amp;&#160;</td>
+          <td class="paramname"><em>ctx</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">int&#160;</td>
+          <td class="paramname"><em>ref_count_change</em> = <code>0</code>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>reference to a singleton ellipsoid renderer that can be shared among drawables </p>
+<p>the second parameter is used for reference counting. Use +1 in your init method, -1 in your clear method and default 0 argument otherwise. If internal reference counter decreases to 0, singleton renderer is destructed. </p>
+
+<p class="definition">Definition at line <a class="el" href="ellipsoid__renderer_8cxx_source.html#l00007">7</a> of file <a class="el" href="ellipsoid__renderer_8cxx_source.html">ellipsoid_renderer.cxx</a>.</p>
+
+<p class="reference">References <a class="el" href="renderer_8cxx_source.html#l00023">cgv::render::renderer::manage_singleton()</a>.</p>
 
 </div>
 </div>
@@ -3972,6 +4045,22 @@ template&lt;class int_type &gt; </div>
 </div><div class="memdoc">
 
 <p class="definition">Definition at line <a class="el" href="context_8h_source.html#l00027">27</a> of file <a class="el" href="context_8h_source.html">context.h</a>.</p>
+
+</div>
+</div>
+<a id="ad4df9e681dffa30113b7bb9b195ba6ce" name="ad4df9e681dffa30113b7bb9b195ba6ce"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#ad4df9e681dffa30113b7bb9b195ba6ce">&#9670;&#160;</a></span>ellipsoid_renderer</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">class CGV_API <a class="el" href="classcgv_1_1render_1_1ellipsoid__renderer.html">cgv::render::ellipsoid_renderer</a></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p class="definition">Definition at line <a class="el" href="ellipsoid__renderer_8h_source.html#l00009">9</a> of file <a class="el" href="ellipsoid__renderer_8h_source.html">ellipsoid_renderer.h</a>.</p>
 
 </div>
 </div>

@@ -21,6 +21,7 @@ var namespacecgv_1_1gui =
     [ "control_provider", "structcgv_1_1gui_1_1control__provider.html", "structcgv_1_1gui_1_1control__provider" ],
     [ "dialog", "classcgv_1_1gui_1_1dialog.html", "classcgv_1_1gui_1_1dialog" ],
     [ "directory_helper", "classcgv_1_1gui_1_1directory__helper.html", "classcgv_1_1gui_1_1directory__helper" ],
+    [ "ellipsoid_render_style_gui_creator", "structcgv_1_1gui_1_1ellipsoid__render__style__gui__creator.html", "structcgv_1_1gui_1_1ellipsoid__render__style__gui__creator" ],
     [ "event", "classcgv_1_1gui_1_1event.html", "classcgv_1_1gui_1_1event" ],
     [ "event_handler", "classcgv_1_1gui_1_1event__handler.html", "classcgv_1_1gui_1_1event__handler" ],
     [ "file_helper", "classcgv_1_1gui_1_1file__helper.html", "classcgv_1_1gui_1_1file__helper" ],

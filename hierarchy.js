@@ -396,6 +396,7 @@ var hierarchy =
       [ "cgv::gui::box_wire_render_style_gui_creator", "structcgv_1_1gui_1_1box__wire__render__style__gui__creator.html", null ],
       [ "cgv::gui::clod_point_render_style_gui_creator", "structcgv_1_1gui_1_1clod__point__render__style__gui__creator.html", null ],
       [ "cgv::gui::cone_render_style_gui_creator", "structcgv_1_1gui_1_1cone__render__style__gui__creator.html", null ],
+      [ "cgv::gui::ellipsoid_render_style_gui_creator", "structcgv_1_1gui_1_1ellipsoid__render__style__gui__creator.html", null ],
       [ "cgv::gui::group_render_style_gui_creator", "structcgv_1_1gui_1_1group__render__style__gui__creator.html", null ],
       [ "cgv::gui::line_render_style_gui_creator", "structcgv_1_1gui_1_1line__render__style__gui__creator.html", null ],
       [ "cgv::gui::normal_render_style_gui_creator", "structcgv_1_1gui_1_1normal__render__style__gui__creator.html", null ],
@@ -784,6 +785,7 @@ var hierarchy =
         [ "cgv::render::box_wire_render_data< ColorType >", "classcgv_1_1render_1_1box__wire__render__data.html", null ]
       ] ],
       [ "cgv::render::cone_render_data< ColorType >", "classcgv_1_1render_1_1cone__render__data.html", null ],
+      [ "cgv::render::ellipsoid_render_data< ColorType >", "classcgv_1_1render_1_1ellipsoid__render__data.html", null ],
       [ "cgv::render::line_render_data< ColorType >", "classcgv_1_1render_1_1line__render__data.html", null ],
       [ "cgv::render::point_render_data< ColorType >", "classcgv_1_1render_1_1point__render__data.html", null ],
       [ "cgv::render::rectangle_render_data< ColorType >", "classcgv_1_1render_1_1rectangle__render__data.html", null ],
@@ -824,6 +826,9 @@ var hierarchy =
           [ "cgv::render::cone_render_style", "structcgv_1_1render_1_1cone__render__style.html", [
             [ "cgv::render::cone_render_style_reflect", "structcgv_1_1render_1_1cone__render__style__reflect.html", null ]
           ] ],
+          [ "cgv::render::ellipsoid_render_style", "structcgv_1_1render_1_1ellipsoid__render__style.html", [
+            [ "cgv::render::ellipsoid_render_style_reflect", "structcgv_1_1render_1_1ellipsoid__render__style__reflect.html", null ]
+          ] ],
           [ "cgv::render::rectangle_render_style", "structcgv_1_1render_1_1rectangle__render__style.html", [
             [ "cgv::render::rectangle_render_style_reflect", "structcgv_1_1render_1_1rectangle__render__style__reflect.html", null ]
           ] ],
@@ -853,6 +858,7 @@ var hierarchy =
           [ "cgv::render::arrow_renderer", "classcgv_1_1render_1_1arrow__renderer.html", null ],
           [ "cgv::render::box_renderer", "classcgv_1_1render_1_1box__renderer.html", null ],
           [ "cgv::render::cone_renderer", "classcgv_1_1render_1_1cone__renderer.html", null ],
+          [ "cgv::render::ellipsoid_renderer", "classcgv_1_1render_1_1ellipsoid__renderer.html", null ],
           [ "cgv::render::rectangle_renderer", "classcgv_1_1render_1_1rectangle__renderer.html", null ],
           [ "cgv::render::sphere_renderer", "classcgv_1_1render_1_1sphere__renderer.html", null ],
           [ "cgv::render::spline_tube_renderer", "classcgv_1_1render_1_1spline__tube__renderer.html", null ],
@@ -1178,6 +1184,7 @@ var hierarchy =
     [ "cgv::render::render_data_base< box_renderer, box_render_style, rgb >", "classcgv_1_1render_1_1render__data__base.html", null ],
     [ "cgv::render::render_data_base< box_wire_renderer, box_wire_render_style, rgb >", "classcgv_1_1render_1_1render__data__base.html", null ],
     [ "cgv::render::render_data_base< cone_renderer, cone_render_style, rgb >", "classcgv_1_1render_1_1render__data__base.html", null ],
+    [ "cgv::render::render_data_base< ellipsoid_renderer, ellipsoid_render_style, rgb >", "classcgv_1_1render_1_1render__data__base.html", null ],
     [ "cgv::render::render_data_base< line_renderer, line_render_style, rgb >", "classcgv_1_1render_1_1render__data__base.html", null ],
     [ "cgv::render::render_data_base< point_renderer, point_render_style, rgb >", "classcgv_1_1render_1_1render__data__base.html", null ],
     [ "cgv::render::render_data_base< rectangle_renderer, rectangle_render_style, rgb >", "classcgv_1_1render_1_1render__data__base.html", null ],
