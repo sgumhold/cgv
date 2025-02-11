@@ -389,8 +389,10 @@ void vr_scene::init_frame(cgv::render::context& ctx)
 			}
 		}
 	}
-	cgv::mat3x4 table_pose(4, 4, table->get_transform().data());
-	set_coordinate_systems(vr_view_ptr ? vr_view_ptr->get_current_vr_state() : 0, table.empty() ? 0 : &table_pose);
+	if (table) {
+		cgv::mat3x4 table_pose(4, 4, table->get_transform().data());
+		set_coordinate_systems(vr_view_ptr ? vr_view_ptr->get_current_vr_state() : 0, table.empty() ? 0 : &table_pose);
+	}
 	label_drawable::init_frame(ctx);
 	if (environment_mode == EM_SKYBOX) {
 		static std::string last_file_names;
