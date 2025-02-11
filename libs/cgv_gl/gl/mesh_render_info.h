@@ -173,9 +173,9 @@ public:
 	{
 		element_size = sizeof(T);
 		position_descr = cgv::render::element_descriptor_traits<
-			typename cgv::media::mesh::simple_mesh<T>::vec3>::get_type_descriptor(mesh.position(0));
-		tex_coords_descr = cgv::render::element_descriptor_traits<typename cgv::media::mesh::simple_mesh<T>::vec2>::
-			get_type_descriptor(typename cgv::media::mesh::simple_mesh<T>::vec2());
+			typename cgv::media::mesh::simple_mesh<T>::vec3_type>::get_type_descriptor(mesh.position(0));
+		tex_coords_descr = cgv::render::element_descriptor_traits<typename cgv::media::mesh::simple_mesh<T>::vec2_type>::
+			get_type_descriptor(typename cgv::media::mesh::simple_mesh<T>::vec2_type());
 		configure_vbos(ctx, mesh, va_vbo_idx, dynamic_vbo_idx);
 		bool keep_unique_quadrupels = !dynamic_vbo_idx.empty();
 		// construct unique attribute index tupels that form vertices in the render data together with
