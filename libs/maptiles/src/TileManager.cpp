@@ -114,11 +114,13 @@ void TileManager::GenerateRasterTileFrustumNeighbours()
 
 	for (int i = minX; i <= maxX; i++) {
 		// check if we are out of bounds
-		if (i < 0 || i >= nTiles || std::abs(i - camX) > config->FrustumRasterTilesCount)
+		//if (i < 0 || i >= nTiles || std::abs(tilex2long(i, zoom) - cam_lon) > config->FrustumRasterTilesDistance)
+		if (i < 0 || i >= nTiles || (std::abs(tilex2long(i, zoom) - cam_lon) > config->FrustumRasterTilesDistance && std::abs(i - camX) > config->FrustumRasterTilesCount))
 			continue;
 		for (int j = minY; j <= maxY; j++) {
 			// check if we are out of bounds
-			if (j < 0 || j >= nTiles || std::abs(j - camY) > config->FrustumRasterTilesCount)
+			//if (j < 0 || j >= nTiles || std::abs(tiley2lat(j, zoom) - cam_lat) > config->FrustumRasterTilesDistance)
+			if (j < 0 || j >= nTiles || (std::abs(tiley2lat(j, zoom) - cam_lat) > config->FrustumRasterTilesDistance && std::abs(j - camY) > config->FrustumRasterTilesCount))
 				continue;
 
 			bool isVisible = true;

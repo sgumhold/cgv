@@ -323,6 +323,8 @@ public:
 		add_decorator("Frustum-Based Rendering", "text", "level=3");
 		add_member_control(this, "Raster Tile Count", config.FrustumRasterTilesCount, "value_slider",
 						   "min=0;max=20;ticks=false");
+		add_member_control(this, "Raster Tile Distance", config.FrustumRasterTilesDistance, "value_slider",
+						   "min=0;max=0.1;ticks=false");
 		add_member_control(this, "Tile 3D Distance", config.FrustumTile3DMaxDistance, "value_slider",
 						   "min=0;max=0.1;ticks=false");
 		add_member_control(this, "Frustum Tile Generation", config.FrustumBasedTileGeneration, "check");
