@@ -84,4 +84,6 @@ private:
 
 	mutable std::mutex m_MutexRasterTiles;
 	mutable std::mutex m_MutexTile3Ds;
+
+	static Tile3DData EmptyTile3D;
 };

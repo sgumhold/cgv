@@ -9,8 +9,12 @@
 
 #include "Timer.h"
 
+Tile3DData TileManagerData::EmptyTile3D = Tile3DData(0, 0, 0, 0, std::vector<glm::dvec3>());
+
 TileManagerData::TileManagerData() : m_config(nullptr) 
 {
+	// Set the empty tile to invalid
+	EmptyTile3D.valid = false;
 }
 
 TileManagerData::~TileManagerData()
@@ -74,6 +78,14 @@ Tile3DData& TileManagerData::GetTile3D(double lat, double lon)
 	double size = m_config->Tile3DSize;
 	OSMDataLoader loader(lat, lon, lat + size, lon + size);
 	loader.FetchOSMWays();
+
+	// Check if the API request was unsuccessful
+	// if so, return an empty tile
+	if (loader.GetErrorStatus() != 0 || loader.GetHTTPStatus() != 200) {
+		std::cout << "Error fetching OSM data\n";
+		return EmptyTile3D;
+	}
+
 	OSMDataProcessor processor(loader);
 	Tile3DData tile3DData(lat, lon, lat + size, lon + size, processor.GetTileGeometry());
 

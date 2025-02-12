@@ -13,7 +13,8 @@ public:
 	MAPTILES_API ~Tile3DData();
 	MAPTILES_API void ConvertTo3DCoordinates(double refLat, double refLon);
 
-  public:
+ public:
+	bool valid;
 	double lat_min, lon_min, lat_max, lon_max;
 	double ref_lat, ref_lon;
 	std::vector<glm::dvec3> mesh_cartesian;

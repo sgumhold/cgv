@@ -38,11 +38,15 @@ void OSMDataLoader::FetchOSMWays()
 
 	m_result = client.Get(m_query);
 
+	// Number of attempts to make the API request before giving up
+	int attempts = 0;
+
 	// sometimes the API request results in an error 
-	while ((int)m_result.error() || GetHTTPStatus() != 200)
+	while ((int)m_result.error() || GetHTTPStatus() != 200 && attempts < 10)
 	{
 		// Avoid making too many requests at the same time
 		Sleep(250);
 		m_result = client.Get(m_query);
+		attempts++;
 	}
 }
