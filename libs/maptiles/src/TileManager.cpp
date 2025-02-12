@@ -498,8 +498,11 @@ void TileManager::GetTile3DNeighbours()
 void TileManager::AddRasterTileToQueue(RasterTileIndex index)
 {
 	RasterTileData& tileData = tile_manager_data.GetRasterTile(index.zoom, index.x, index.y);
-	std::lock_guard<std::mutex> lock(m_MutexQueueRasterTiles);
-	queue_raster_tiles.emplace(index, tileData);
+	if (tileData.valid)
+	{
+		std::lock_guard<std::mutex> lock(m_MutexQueueRasterTiles);
+		queue_raster_tiles.emplace(index, tileData);
+	}
 	requested_raster_tile.erase(index);
 	
 	// Send the signal that the tile was downloaded
@@ -509,9 +512,11 @@ void TileManager::AddRasterTileToQueue(RasterTileIndex index)
 void TileManager::AddTile3DToQueue(Tile3DIndex index)
 {
 	Tile3DData& tileData = tile_manager_data.GetTile3D(index.lat, index.lon);
-	std::lock_guard<std::mutex> lock(m_MutexQueueTile3Ds);
 	if (tileData.valid)
+	{
+		std::lock_guard<std::mutex> lock(m_MutexQueueTile3Ds);
 		queue_tile3Ds.emplace(index, tileData);
+	}
 	requested_tile3D.erase(index);
 
 	// Send the signal that the tile was downloaded

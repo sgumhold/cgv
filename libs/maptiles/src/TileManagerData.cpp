@@ -10,11 +10,13 @@
 #include "Timer.h"
 
 Tile3DData TileManagerData::EmptyTile3D = Tile3DData(0, 0, 0, 0, std::vector<glm::dvec3>());
+RasterTileData TileManagerData::EmptyRasterTile = RasterTileData(nullptr, 0, 0, 0, 0, 0);
 
 TileManagerData::TileManagerData() : m_config(nullptr) 
 {
-	// Set the empty tile to invalid
+	// Set the empty tiles to invalid
 	EmptyTile3D.valid = false;
+	EmptyRasterTile.valid = false;
 }
 
 TileManagerData::~TileManagerData()
@@ -39,6 +41,12 @@ RasterTileData& TileManagerData::GetRasterTile(int zoom, int x, int y)
 
 	OSMRasterTileLoader loader(zoom, x, y);
 	loader.FetchTile();
+
+	if (loader.GetErrorStatus() != 0 || loader.GetHTTPStatus() != 200)
+	{
+		std::cout << "Error fetching Raster Tile\n";
+		return EmptyRasterTile;
+	}
 
 	OSMRasterTileProcessor processor(loader);
 	RasterTileData rasterTile(processor.GetImage(), processor.GetHeight(), processor.GetWidth(), zoom, loader.GetX(), loader.GetY());
