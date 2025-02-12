@@ -179,7 +179,7 @@ target_link_libraries(fltk PUBLIC
 
 if (WIN32)
     set(ADD_DEFINITIONS "_WIN32" "WIN32_LEAN_AND_MEAN" "VC_EXTRA_LEAN" "WIN32_EXTRA_LEAN")
-    target_link_libraries(fltk ws2_32)
+    target_link_libraries(fltk PUBLIC ws2_32)
 else ()
     find_package(Freetype REQUIRED)
     target_include_directories(fltk PUBLIC ${FREETYPE_INCLUDE_DIRS})
@@ -223,7 +223,7 @@ target_link_libraries(fltk_static PUBLIC
 
 if (WIN32)
     set(ADD_DEFINITIONS "_WIN32" "WIN32_LEAN_AND_MEAN" "VC_EXTRA_LEAN" "WIN32_EXTRA_LEAN")
-    target_link_libraries(fltk_static ws2_32)
+    target_link_libraries(fltk_static PUBLIC ws2_32)
 else ()
     target_include_directories(fltk_static PUBLIC ${FREETYPE_INCLUDE_DIRS})
     target_link_libraries(fltk_static PUBLIC ${FREETYPE_LIBRARIES} Xft)
