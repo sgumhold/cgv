@@ -2,7 +2,7 @@
 #include "utils.h"
 
 RasterTileData::RasterTileData(unsigned char* image, int height, int width, int zoom, int x, int y)
-	: m_zoom(zoom), m_x(x), m_y(y), m_height(height), m_width(width), m_image(image)
+	: m_zoom(zoom), m_x(x), m_y(y), m_height(height), m_width(width), m_image(image), valid(true)
 {
 }
 
@@ -14,6 +14,8 @@ RasterTileData::RasterTileData(RasterTileData&& other) noexcept
 	m_height = other.m_height;
 	m_width = other.m_width;
 	m_image = other.m_image;
+	valid = other.valid;
+	other.valid = false;
 	other.m_image = nullptr;
 }
 
