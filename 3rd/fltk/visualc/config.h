@@ -56,8 +56,9 @@
 
 /* Use the new Xft library to draw fonts, which is how you get
    anti-aliasing. (ignored if !USE_X11) */
-#define USE_XFT			0
-
+#ifndef USE_XFT
+#define USE_XFT 0
+#endif
 /* Use the Cairo library to draw everything. Ignored if !USE_X11
    Currently only partly implemented, though line drawing looks
    nice. For more info on Cairo see http://www.cairographics.org */
