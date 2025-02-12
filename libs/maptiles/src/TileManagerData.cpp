@@ -95,7 +95,7 @@ Tile3DData& TileManagerData::GetTile3D(double lat, double lon)
 	}
 
 	OSMDataProcessor processor(loader);
-	Tile3DData tile3DData(lat, lon, lat + size, lon + size, processor.GetTileGeometry());
+	Tile3DData tile3DData(lat, lon, lat + size, lon + size, std::move(processor.GetTileGeometry()));
 
 	tile3DData.ConvertTo3DCoordinates(m_config->ReferencePoint.lat, m_config->ReferencePoint.lon);
 
