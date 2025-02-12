@@ -1,3 +1,24 @@
+﻿#version 150
+
+/*
+The following interface is implemented in this shader:
+//***** begin interface of intersect.glsl ***********************************
+// return ray parameter of intersection between ray (ro,rd) and plane p=[nx,ny,nz,d]
+float plane_intersection(in vec3 ro, in vec3 rd, in vec4 p);
+// return near and far ray parameters as well as near normal of intersection between ray (ro,rd) and axis aligned box centered around box_pos and with extents box_size
+vec2 box_intersection(in vec3 ro, in vec3 rd, in vec3 box_pos, in vec3 box_size, out vec3 outNormal);
+// return near and far ray parameters as well as near normal of intersection between ray (ro,rd) and sphere (center,rad)
+vec2 sphere_intersection(in vec3 ro, in vec3 rd, in vec3 center, float rad, out vec3 outNormal);
+// return near ray parameters as well as near normal of intersection between ray (ro,rd) and cylinder of radius rad connecting points a and b
+float cylinder_intersection(in vec3 ro, in vec3 rd, in vec3 a, in vec3 b, float rad, out vec3 outNormal);
+// return near ray parameters of intersection between ray (ro,rd) and torus in xy-plane around pos with major and minor radius given in tor
+float torus_intersection(in vec3 ro, in vec3 rd, in vec3 pos, in vec2 tor);
+// return normal of point on torus in xy-point around origin with with major and minor radius given in tor
+vec3 torus_normal(in vec3 delta_pos, vec2 tor);
+//***** end interface of intersect.glsl ***********************************
+*/
+
+
 // The MIT License
 // Copyright 2019 Inigo Quilez
 // Permission is hereby granted, free of charge, to any person obtaining a copy of this software and associated documentation files (the "Software"), to deal in the Software without restriction, including without limitation the rights to use, copy, modify, merge, publish, distribute, sublicense, and/or sell copies of the Software, and to permit persons to whom the Software is furnished to do so, subject to the following conditions: The above copyright notice and this permission notice shall be included in all copies or substantial portions of the Software. THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
@@ -83,7 +104,7 @@ float torus_intersection(in vec3 ro, in vec3 rd, in vec3 pos, in vec2 tor) {
     float k2 = n*n - Ra2*dot(rd.xy,rd.xy) + k;
     float k1 = n*k - Ra2*dot(rd.xy,ro.xy);
     float k0 = k*k - Ra2*dot(ro.xy,ro.xy);
-
+    
     if( abs(k3*(k3*k3-k2)+k1) < 0.01 )
     {
         po = -1.0;
@@ -93,7 +114,7 @@ float torus_intersection(in vec3 ro, in vec3 rd, in vec3 pos, in vec2 tor) {
         k2 = k2*k0;
         k3 = k3*k0;
     }
-
+    
     float c2 = k2*2.0 - 3.0*k3*k3;
     float c1 = k3*(k3*k3-k2)+k1;
     float c0 = k3*(k3*(c2+2.0*k2)-8.0*k1)+4.0*k0;
@@ -103,7 +124,7 @@ float torus_intersection(in vec3 ro, in vec3 rd, in vec3 pos, in vec2 tor) {
     float Q = c2*c2 + c0;
     float R = c2*c2*c2 - 3.0*c2*c0 + c1*c1;
     float h = R*R - Q*Q*Q;
-
+    
     if( h>=0.0 )  
     {
         h = sqrt(h);
@@ -120,7 +141,7 @@ float torus_intersection(in vec3 ro, in vec3 rd, in vec3 pos, in vec2 tor) {
         if( t2>0.0 ) t=min(t,t2);
         return t;
     }
-
+    
     float sQ = sqrt(Q);
     float w = sQ*cos( acos(-R/(sQ*Q)) / 3.0 );
     float d2 = -(w+c2); if( d2<0.0 ) return -1.0;
