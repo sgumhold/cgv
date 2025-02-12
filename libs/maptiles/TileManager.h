@@ -86,7 +86,7 @@ class MAPTILES_API TileManager
 	mutable std::mutex m_MutexActiveRasterTiles;
 	mutable std::mutex m_MutexActiveTile3Ds;
 
-	mutable std::mutex m_MutexRequestedRasterTiles;
+	mutable std::mutex m_MutexRequestRasterTiles;
 	mutable std::mutex m_MutexRequestTile3Ds;
 
 	mutable std::mutex m_MutexQueueRasterTiles;
