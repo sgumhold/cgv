@@ -24,7 +24,10 @@ struct GlobalConfig
 	double Tile3DSize = 0.01;	// in degrees
 
 	// The max number of raster tiles generated along one axis when using frustum based tile generation
-	int FrustumRasterTilesCount = 10;			
+	int FrustumRasterTilesCount = 10;
+	// The max distance from the camera at which a raster tile can be generated
+	// when using frustum based tile generation
+	double FrustumRasterTilesDistance = 0.045; // in degrees
 	// The max distance from the camera at which a 3D tile can be generated
 	// when using frustum based tile generation
 	double FrustumTile3DMaxDistance = 0.045; // in degrees
@@ -44,9 +47,9 @@ struct GlobalConfig
 	int MaxTile3DRequestThreads = 10;
 
 	// The maximum distance in degrees at which a Render Tile will not be removed when the Render Cache is trimmed
-	double RasterTileRenderCacheTrimDistance = 0.03;
+	double RasterTileRenderCacheTrimDistance = 0.04;
 	double Tile3DRenderCacheTrimDistance = 0.04;
 
 	// The maximum altitude at which a 3D tile will be rendered
-	int MaxTile3DRenderAltitude = 2500; // in meters
+	int MaxTile3DRenderAltitude = 3000; // in meters
 };
