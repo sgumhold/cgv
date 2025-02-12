@@ -174,6 +174,9 @@ void TileManager::GenerateTile3DFrustumNeighbours()
 	// we need to clear the set of neighbours so that we don't create requests for tiles
 	// that were previously in the set but are no longer in the frustum
 	neighbour_set_tile3D.clear();
+	
+	if (config->MaxTile3DRenderAltitude < altitude)
+		return;
 
 	double size = config->Tile3DSize;
 
@@ -287,6 +290,9 @@ void TileManager::GenerateTile3DNeighbours()
 	// we need to clear the set of neighbours so that we don't create requests for tiles
 	// that were previously in the set but are no longer in the grid
 	neighbour_set_tile3D.clear();
+
+	if (config->MaxTile3DRenderAltitude < altitude)
+		return;
 
 	int k = config->NeighbourhoodFetchSizeTile3D;
 	double size = config->Tile3DSize;

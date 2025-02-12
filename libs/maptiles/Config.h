@@ -46,4 +46,7 @@ struct GlobalConfig
 	// The maximum distance in degrees at which a Render Tile will not be removed when the Render Cache is trimmed
 	double RasterTileRenderCacheTrimDistance = 0.03;
 	double Tile3DRenderCacheTrimDistance = 0.04;
+
+	// The maximum altitude at which a 3D tile will be rendered
+	int MaxTile3DRenderAltitude = 2500; // in meters
 };
