@@ -364,7 +364,6 @@ void TileManager::RemoveRasterTiles()
 	}
 
 	// Remove Raster Tiles from the active list
-	std::lock_guard<std::mutex> lockActive(m_MutexActiveRasterTiles);
 	for (auto& index : indices) {
 		active_raster_tile.erase(index);
 	}
@@ -405,7 +404,6 @@ void TileManager::RemoveTile3Ds()
 	}
 
 	// Remove Raster Tiles from the active list
-	std::lock_guard<std::mutex> lockActive(m_MutexActiveTile3Ds);
 	for (auto& index : indices) {
 		active_tile3D.erase(index);
 	}
@@ -551,7 +549,6 @@ void TileManager::AddRasterTiles(cgv::render::context& ctx)
 		return;
 	}
 
-	std::lock_guard<std::mutex> lockActive(m_MutexActiveRasterTiles);
 	while (!queue_raster_tiles.empty()) {
 		auto& element = *(queue_raster_tiles.begin());
 		RasterTileRender tile(ctx, element.second, config->ReferencePoint.lat, config->ReferencePoint.lon);
@@ -570,7 +567,6 @@ void TileManager::AddTile3D(cgv::render::context& ctx)
 		return;
 	}
 
-	std::lock_guard<std::mutex> lockActive(m_MutexActiveTile3Ds);
 	while (!queue_tile3Ds.empty()) {
 		auto const& element = *(queue_tile3Ds.begin());
 		Tile3DRender tile(ctx, element.second, config->ReferencePoint.lat, config->ReferencePoint.lon);
