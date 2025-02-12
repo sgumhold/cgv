@@ -62,6 +62,7 @@ namespace cgv {
 		}
 		bool arrow_renderer::build_shader_program(context& ctx, shader_program& prog, const shader_define_map& defines)
 		{
+			prog.allow_context_to_set_color(false);
 			return prog.build_program(ctx, "arrow.glpr", true, defines);
 		}
 
