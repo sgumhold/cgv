@@ -191,6 +191,7 @@ public:
 
 			auto cam_pos = inv(inv_rotation * original_mv) * vec4(0.0, 0.0, 0.0, 1.0);
 
+			// make AutoRecenterDistance dependent on the altitude, making moving at greater altitude (consequently moving at greater speeds) easier
 			if (auto_recenter && (std::abs(cam_pos[0]) > std::max(config.AutoRecenterDistance, cam_pos[1]) || std::abs(cam_pos[2]) > std::max(config.AutoRecenterDistance, cam_pos[1])))
 				recenter();
 
