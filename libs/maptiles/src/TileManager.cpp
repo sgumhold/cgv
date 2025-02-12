@@ -510,7 +510,8 @@ void TileManager::AddTile3DToQueue(Tile3DIndex index)
 {
 	Tile3DData& tileData = tile_manager_data.GetTile3D(index.lat, index.lon);
 	std::lock_guard<std::mutex> lock(m_MutexQueueTile3Ds);
-	queue_tile3Ds.emplace(index, tileData);
+	if (tileData.valid)
+		queue_tile3Ds.emplace(index, tileData);
 	requested_tile3D.erase(index);
 
 	// Send the signal that the tile was downloaded

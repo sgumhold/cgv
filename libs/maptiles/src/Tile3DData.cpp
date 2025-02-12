@@ -4,7 +4,7 @@
 #include <iostream>
 
 Tile3DData::Tile3DData(double latMin, double lonMin, double latMax, double lonMax, std::vector<glm::dvec3>& _mesh)
-	: lat_min(latMin), lon_min(lonMin), lat_max(latMax), lon_max(lonMax), ref_lat(0), ref_lon(0)
+	: lat_min(latMin), lon_min(lonMin), lat_max(latMax), lon_max(lonMax), ref_lat(0), ref_lon(0), valid(true)
 {
 	mesh_wgs = std::move(_mesh);
 
@@ -31,6 +31,7 @@ Tile3DData::Tile3DData(Tile3DData&& other) noexcept
 	lon_max = other.lon_max;
 	ref_lat = other.ref_lat;
 	ref_lon = other.ref_lon;
+	valid = other.valid;
 	mesh_cartesian = std::move(other.mesh_cartesian);
 	mesh_wgs = std::move(other.mesh_wgs);
 }
