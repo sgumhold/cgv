@@ -320,7 +320,7 @@ physics_viewer::body_creation_info physics_viewer::create_sphere(float radius) {
 	return { new JPH::SphereShape(radius), sphere };
 }
 
-void physics_viewer::add_body(body_creation_info creation_info, JPH::EMotionType motion_type, JPH::ObjectLayer layer, bool activate) {
+JPH::BodyID physics_viewer::add_body(body_creation_info creation_info, JPH::EMotionType motion_type, JPH::ObjectLayer layer, bool activate) {
 
 	JPH::BodyCreationSettings settings(creation_info.collision_shape,
 									   cgv::physics::convert::to_Jolt_Vec3(creation_info.position),
@@ -328,7 +328,7 @@ void physics_viewer::add_body(body_creation_info creation_info, JPH::EMotionType
 									   motion_type,
 									   layer);
 
-	physics_world.create_and_add_rigid_body(settings, creation_info.representation, activate);
+	return physics_world.create_and_add_rigid_body(settings, creation_info.representation, activate);
 }
 
 void physics_viewer::clear_scene() {

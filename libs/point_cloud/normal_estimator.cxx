@@ -145,8 +145,7 @@ void normal_estimator::compute_weighted_normals(bool reorient, float* means, flo
 		Nml new_nml;
 		cgv::math::estimate_normal_wls((unsigned)points.size(), points[0].data(), &weights[0], new_nml.data(), eig_vals,
 									   means,
-									   eig_vecs);
-		if (reorient && (dot(new_nml,pc.nml(vi)) < 0))
+									   eig_vecs);		if (reorient && (dot(new_nml,pc.nml(vi)) < 0))
 			new_nml = -new_nml;
 		pc.nml(vi) = new_nml;
 

@@ -28,6 +28,243 @@ using namespace cgv::media::illum;
 // define maximum index as restart index
 #define RESTART_INDEX std::numeric_limits<cgv::type::uint32_type>::max()
 
+class parametric_surface
+{
+protected:
+	const float   eps  = 10.0f*std::numeric_limits<float>::epsilon();
+	const float i2eps  = 0.5f / eps;
+	const float i4eps2 = 0.25f / (eps*eps);
+public:
+	virtual cgv::vec3 eval(float u, float v) const = 0;
+	virtual cgv::vec3 diff_u(float u, float v) const 
+	{
+		return i2eps*(eval(u+eps,v) - eval(u-eps,v));
+	}
+	virtual cgv::vec3 diff_v(float u, float v) const
+	{
+		return i2eps * (eval(u,v + eps) - eval(u,v - eps));
+	}
+	virtual bool compute_normal(float u, float v, cgv::vec3& nml) const
+	{
+		nml = cross(diff_u(u, v), diff_v(u, v));
+		return nml.safe_normalize() != 0;
+	}
+	virtual cgv::vec3 diff_uu(float u, float v) const 
+	{
+		return i4eps2 * (eval(u + eps, v) - 2.0f*eval(u, v) + eval(u - eps, v));
+	}
+	virtual cgv::vec3 diff_vv(float u, float v) const 
+	{
+		return i4eps2 * (eval(u, v + eps) - 2.0f*eval(u, v) + eval(u, v - eps));
+	}
+	virtual cgv::vec3 diff_uv(float u, float v) const
+	{
+		return i2eps * (diff_v(u + eps, v) - diff_v(u - eps, v));
+	}
+	virtual cgv::vec3 diff_vu(float u, float v) const
+	{
+		return i2eps * (diff_u(u, v + eps) - diff_u(u, v - eps));
+	}
+	virtual bool compute_fst_fundamental(float u, float v, float& E, float& F, float& G) const
+	{
+		cgv::vec3 su = diff_u(u, v);
+		cgv::vec3 sv = diff_v(u, v);
+		E = dot(su, su);
+		F = dot(su, sv);
+		G = dot(sv, sv);
+		return true;
+	}
+	virtual bool compute_fst_fundamental(float u, float v, cgv::mat2& I) const
+	{
+		float E, F, G;
+		if (!compute_fst_fundamental(u, v, E, F, G))
+			return false;
+		I = cgv::mat2(cgv::vec2(E, F), cgv::vec2(F, G));
+		return true;
+	}
+	virtual bool compute_snd_fundamental(float u, float v, float& L, float& M, float& N) const
+	{
+		cgv::vec3 nml;
+		if (!compute_normal(u, v, nml))
+			return false;
+		cgv::vec3 suu = diff_uu(u, v);
+		cgv::vec3 suv = diff_uv(u, v);
+		cgv::vec3 svv = diff_vv(u, v);
+		L = dot(suu, nml);
+		M = dot(suv, nml);
+		N = dot(svv, nml);
+		return true;
+	}
+	virtual bool compute_snd_fundamental(float u, float v, cgv::mat2& II) const
+	{
+		float L, M, N;
+		if (!compute_snd_fundamental(u, v, L, M, N))
+			return false;
+		II = cgv::mat2(cgv::vec2(L, M), cgv::vec2(M, N));
+		return true;
+	}
+};
+
+class sphere_surface : public parametric_surface
+{
+protected:
+	const float pi = (float)M_PI;
+public:
+	cgv::vec3 eval(float u, float v) const {
+		float a = 2 * pi * u;
+		float b = pi * (v - 0.5f);
+		float sa = sin(a);
+		float ca = cos(a);
+		float sb = sin(b);
+		float cb = cos(b);
+		return cgv::vec3(ca * cb, sa * cb, sb);
+	}
+	bool compute_normal(float u, float v, cgv::vec3& nml) const
+	{
+		nml = eval(u, v);
+		return true;
+	}
+};
+
+class torus_surface : public parametric_surface
+{
+protected:
+	const float pi = (float)M_PI;
+	const float r = 0.5f;
+	const float R = 2.0f;
+public:
+	virtual cgv::vec3 eval(float u, float v) const {
+		float a = 2*pi * u;
+		float b = 2*pi * v;
+		float sa = sin(a);
+		float ca = cos(a);
+		float sb = sin(b);
+		float cb = cos(b);
+		return cgv::vec3((r*cb+R)*ca, (r * cb + R) * sa, r*sb);
+	}
+};
+/// geometry computation of Klein bottle inspired by https://commons.wikimedia.org/wiki/File:Klein_bottle.svg
+class klein_bottle : public parametric_surface
+{
+protected:
+	const float pi = (float)M_PI;
+	void prepare(float u, float v, float& a, float& b, float& sa, float& ca, float& sb, float& cb) const
+	{
+		b = 4 * pi * v;
+		sb = sin(b);
+		cb = cos(b);
+		a = 2 * pi * u;
+		sa = sin(a);
+		ca = cos(a);
+	}
+	cgv::vec3 eval(float u, float v, float a, float b, float sa, float ca, float sb, float cb) const {
+		return v < 0.25 ? cgv::vec3((2.5 - 1.5 * cb) * ca, (2.5 - 1.5 * cb) * sa, -2.5 * sb) : (
+			   v < 0.50 ? cgv::vec3((2.5 - 1.5 * cb) * ca, (2.5 - 1.5 * cb) * sa, 3 * b - 3 * pi) : (
+			   v < 0.75 ? cgv::vec3(-2 + (2 + ca) * cb, sa, (2 + ca) * sb + 3 * pi) :
+					      cgv::vec3(-2 + 2 * cb - ca, sa, -3 * b + 12 * pi)));
+	}
+	cgv::vec3 diff_u(float u, float v, float a, float b, float sa, float ca, float sb, float cb) const {
+		return v < 0.25 ? cgv::vec3(-pi*(5 - 3 * cb) * sa, pi*(5 - 3 * cb) * ca, 0) : (
+			   v < 0.50 ? cgv::vec3(-pi*(5 - 3 * cb) * sa, pi*(5 - 3 * cb) * ca, 0) : (
+			   v < 0.75 ? cgv::vec3(-2*pi*cb*sa, 2*pi*ca, -2*pi*sb*sa) :
+					      cgv::vec3(2*pi*sa, 2*pi*ca, 0)));
+	}
+	cgv::vec3 diff_v(float u, float v, float a, float b, float sa, float ca, float sb, float cb) const {
+		return v < 0.25 ? cgv::vec3(6*pi*ca*sb, 6*pi*sa*sb, -10*pi*cb) : (
+			   v < 0.50 ? cgv::vec3(6*pi*ca*sb, 6*pi*sa*sb, 12*pi) : (
+			   v < 0.75 ? cgv::vec3(-4*pi*ca*sb, 0, 4*pi*ca*cb) :
+					      cgv::vec3(-8*pi*sb, 0, -12*pi)));
+	}
+	bool compute_normal(float u, float v, float a, float b, float sa, float ca, float sb, float cb, cgv::vec3& nml) const {
+		nml = cross(diff_u(u, v, a, b, sa, ca, sb, cb), diff_v(u, v, a, b, sa, ca, sb, cb));
+		return nml.safe_normalize();
+	}
+	cgv::vec3 diff_uu(float u, float v, float a, float b, float sa, float ca, float sb, float cb) const {
+		return v < 0.25 ? cgv::vec3(-pi*pi*(10-6*cb)*ca, -pi*pi*(10-6*cb)*sa, 0) : (
+			   v < 0.50 ? cgv::vec3(-pi*pi*(10-6*cb)*ca, -pi*pi*(10-6*cb)*sa, 0) : (
+			   v < 0.75 ? cgv::vec3(-4*pi*pi*cb*ca, -4*pi*pi*sa, -4*pi*pi*sb*ca) :
+					      cgv::vec3(4*pi*pi*ca, -4*pi*pi*sa, 0)));
+	}
+	cgv::vec3 diff_uv(float u, float v, float a, float b, float sa, float ca, float sb, float cb) const {
+		return v < 0.25 ? cgv::vec3(-12*pi*pi*sa*sb, 12*pi*pi*ca*sb, 0) : (
+			   v < 0.50 ? cgv::vec3(-12*pi*pi*sa*sb, 12*pi*pi*ca*sb, 0) : (
+			   v < 0.75 ? cgv::vec3(  8*pi*pi*sa*sb, 0, -8*pi*pi*sa*cb) :
+					      cgv::vec3(0, 0, 0)));
+	}
+	cgv::vec3 diff_vv(float u, float v, float a, float b, float sa, float ca, float sb, float cb) const {
+		return v < 0.25 ? cgv::vec3(24*pi*pi*ca*cb, 24*pi*pi*sa*cb, 40*pi*pi*sb) : (
+			   v < 0.50 ? cgv::vec3(24*pi*pi*ca*cb, 24*pi*pi*sa*cb, 0) : (
+			   v < 0.75 ? cgv::vec3(-16*pi*pi*ca*cb, 0, -16*pi*pi*ca*sb) :
+					      cgv::vec3(-32*pi*pi*cb, 0, 0)));
+	}
+public:
+	cgv::vec3 eval(float u, float v) const {
+		float a, b, sa, ca, sb, cb;
+		prepare(u,v, a,b,sa,ca,sb,cb);
+		return eval(u,v, a,b,sa,ca,sb,cb);
+	}
+	cgv::vec3 diff_u(float u, float v) const {
+		float a, b, sa, ca, sb, cb;
+		prepare(u,v, a,b,sa,ca,sb,cb);
+		return diff_u(u,v, a,b,sa,ca,sb,cb);
+	}
+	cgv::vec3 diff_v(float u, float v) const
+	{
+		float a, b, sa, ca, sb, cb;
+		prepare(u,v, a,b,sa,ca,sb,cb);
+		return diff_v(u,v, a,b,sa,ca,sb,cb);
+	}
+	bool compute_normal(float u, float v, cgv::vec3& nml) const {
+		float a, b, sa, ca, sb, cb;
+		prepare(u,v, a,b,sa,ca,sb,cb);
+		return compute_normal(u,v, a,b,sa,ca,sb,cb, nml);
+	}
+	cgv::vec3 diff_uu(float u, float v) const {
+		float a, b, sa, ca, sb, cb;
+		prepare(u, v, a, b, sa, ca, sb, cb);
+		return diff_uu(u, v, a, b, sa, ca, sb, cb);
+	}
+	cgv::vec3 diff_uv(float u, float v) const
+	{
+		float a, b, sa, ca, sb, cb;
+		prepare(u, v, a, b, sa, ca, sb, cb);
+		return diff_uv(u, v, a, b, sa, ca, sb, cb);
+	}
+	cgv::vec3 diff_vv(float u, float v) const
+	{
+		float a, b, sa, ca, sb, cb;
+		prepare(u, v, a, b, sa, ca, sb, cb);
+		return diff_vv(u, v, a, b, sa, ca, sb, cb);
+	}
+	virtual bool compute_fst_fundamental(float u, float v, float& E, float& F, float& G) const
+	{
+		float a, b, sa, ca, sb, cb;
+		prepare(u, v, a, b, sa, ca, sb, cb);
+		cgv::vec3 su = diff_u(u, v, a, b, sa, ca, sb, cb);
+		cgv::vec3 sv = diff_v(u, v, a, b, sa, ca, sb, cb);
+		E = dot(su, su);
+		F = dot(su, sv);
+		G = dot(sv, sv);
+		return true;
+	}
+	virtual bool compute_snd_fundamental(float u, float v, float& L, float& M, float& N) const
+	{
+		float a, b, sa, ca, sb, cb;
+		prepare(u, v, a, b, sa, ca, sb, cb);
+		cgv::vec3 nml;
+		if (!compute_normal(u, v, a, b, sa, ca, sb, cb, nml))
+			return false;
+		cgv::vec3 suu = diff_uu(u, v, a, b, sa, ca, sb, cb);
+		cgv::vec3 suv = diff_uv(u, v, a, b, sa, ca, sb, cb);
+		cgv::vec3 svv = diff_vv(u, v, a, b, sa, ca, sb, cb);
+		L = dot(suu, nml);
+		M = dot(suv, nml);
+		N = dot(svv, nml);
+		return true;
+	}
+};
+
+
 /*
 
 This example illustrates how to construct vertex buffer objects containing vertex
@@ -106,6 +343,8 @@ public:
 	IlluminationMode illumination_mode;
 	surface_material material;
 
+	bool auto_set_radius = true;
+	bool auto_set_view = true;
 	bool show_wireframe;
 	float line_width;
 	bool map_color_to_wireframe;
@@ -118,6 +357,13 @@ public:
 	int n, m;
 	float a, b;
 	float lb, ub;
+	cgv::box2 domain = { cgv::vec2(0.0f), cgv::vec2(1.0f) };
+	enum SurfaceType {
+		ST_SPHERE,
+		ST_TORUS,
+		ST_DINI,
+		ST_KLEIN
+	} surface_type = ST_KLEIN;
 public:
 	vbo_aab() : node("vbo_aab")
 	{
@@ -147,6 +393,68 @@ public:
 		cgv::vec3 normal;
 		cgv::rgb  color;
 	};
+	cgv::box3 construct_vertices(const parametric_surface& S, cgv::box2 dom, int n, int m, int N, int M, std::vector<vertex_type>& V) const
+	{
+		cgv::box3 box;
+		V.resize(N * M);
+		auto e = dom.get_extent();
+		float in = 1.0f / n;
+		float im = 1.0f / m;
+		for (int j = 0; j < M; ++j) {
+			float v = im * j;
+			float b = e(1)*v + dom.get_min_pnt()(1);
+			for (int i = 0; i < N; ++i) {
+				float u = in * i;
+				float a = e(0)*u + dom.get_min_pnt()(0);
+				int vi = N * j + i;
+				vertex_type& vertex = V[vi];
+				vertex.position = S.eval(a,b);
+				S.compute_normal(a,b, vertex.normal);
+				vertex.color = cgv::rgb(u, v, 0.0f);
+				// update bounding box
+				box.add_point(vertex.position);
+			}
+		}
+		return box;
+	}
+	void construct_indices(int N, int M, std::vector<cgv::type::uint32_type>& indices, size_t& nr_triangle_elements, size_t& nr_line_elements) const
+	{
+		int i, j;
+		for (j = 1; j < M; ++j) {
+			if (j > 1)
+				indices.push_back(RESTART_INDEX);
+			for (i = 0; i < N; ++i) {
+				indices.push_back(N * j + i);
+				indices.push_back(N *(j-1) + i);
+			}
+		}
+		nr_triangle_elements = indices.size();
+
+		// generate u parameter lines
+		for (j = 0; j < M; ++j) {
+			if (j > 0)
+				indices.push_back(RESTART_INDEX);
+			for (int i = 0; i < N; ++i)
+				indices.push_back(N*j + i);
+		}
+		for (i = 0; i < N; ++i) {
+			indices.push_back(RESTART_INDEX);
+			for (int j = 0; j < M; ++j)
+				indices.push_back(N*j + i);
+			//indices.push_back(N*j);
+		}
+		nr_line_elements = indices.size() - nr_triangle_elements;
+	}
+	cgv::box3 generate_surface_geometry(const parametric_surface& S, cgv::render::context& ctx)
+	{
+		int N = n+1, M = m+1;
+		std::vector<vertex_type> V;
+		cgv::box3 box =	construct_vertices(S, domain, n, m, N, M, V);
+		std::vector<cgv::type::uint32_type> indices;
+		construct_indices(N, M, indices, nr_triangle_elements, nr_line_elements);
+		construct_vbo_and_aab(ctx, V, indices);
+		return box;
+	}
 	cgv::box3 generate_dini_surface_geometry(cgv::render::context& ctx)
 	{
 		cgv::box3 box;
@@ -279,11 +587,16 @@ public:
 	}
 	void on_set(void* member_ptr)
 	{
-		if (member_ptr == &n || member_ptr == &m ||
+		if (member_ptr == &surface_type ||
+			member_ptr == &n || member_ptr == &m ||
 			member_ptr == &lb || member_ptr == &ub ||
-			member_ptr == &a || member_ptr == &b) {
-
+			member_ptr == &a || member_ptr == &b ||
+			(member_ptr >= &domain && member_ptr < &domain+1)) {
 			generate_new_geometry = true;
+		}
+		if (member_ptr == &sphere_style.radius) {
+			auto_set_radius = false;
+			update_member(&auto_set_radius);
 		}
 		update_member(member_ptr);
 		post_redraw();
@@ -293,12 +606,16 @@ public:
 		add_decorator("vbo_aab", "heading", "level=2");
 		if (begin_tree_node("generate", a, true)) {
 			align("\a");
+			add_member_control(this, "surface", surface_type, "dropdown", "enums='Sphere,Torus,Dini,Klein'");
+			add_gui("domain", domain, "", "options='min=0;max=1;ticks=true'");
 			add_member_control(this, "a", a, "value_slider", "min=0.1;max=10;ticks=true;log=true");
 			add_member_control(this, "b", b, "value_slider", "min=0.1;max=10;ticks=true;log=true");
 			add_member_control(this, "lb", lb, "value_slider", "min=0.001;step=0.0001;max=1;ticks=true;log=true");
 			add_member_control(this, "ub", ub, "value_slider", "min=1;max=10;ticks=true;log=true");
 			add_member_control(this, "n", n, "value_slider", "min=5;max=100;ticks=true;log=true");
 			add_member_control(this, "m", m, "value_slider", "min=5;max=100;ticks=true;log=true");
+			add_member_control(this, "set View", auto_set_view, "toggle");
+			add_member_control(this, "set Radius", auto_set_radius, "toggle");
 			align("\b");
 			end_tree_node(a);
 		}
@@ -366,17 +683,26 @@ public:
 	void init_frame(context& ctx)
 	{
 		if (generate_new_geometry) {
-			cgv::box3 box = generate_dini_surface_geometry(ctx);
+			cgv::box3 box;
+			switch (surface_type) {
+			case ST_SPHERE: box = generate_surface_geometry(sphere_surface(), ctx); break;
+			case ST_TORUS:  box = generate_surface_geometry(torus_surface(), ctx); break;
+			case ST_DINI: box = generate_dini_surface_geometry(ctx); break;
+			case ST_KLEIN:  box = generate_surface_geometry(klein_bottle(), ctx); break;
+			}
 			generate_new_geometry = false;
 
-			sphere_style.radius = float(0.05*sqrt(box.get_extent().sqr_length() / nr_positions));
+			if (auto_set_radius)
+				sphere_style.radius = float(0.05*sqrt(box.get_extent().sqr_length() / nr_positions));
 
-			// focus view on new mesh
-			clipped_view* view_ptr = dynamic_cast<clipped_view*>(find_view_as_node());
-			if (view_ptr) {
-				view_ptr->set_scene_extent(box);
-				view_ptr->set_focus(box.get_center());
-				view_ptr->set_y_extent_at_focus(box.get_extent().length());
+			if (auto_set_view) {
+				// focus view on new mesh
+				clipped_view* view_ptr = dynamic_cast<clipped_view*>(find_view_as_node());
+				if (view_ptr) {
+					view_ptr->set_scene_extent(box);
+					view_ptr->set_focus(box.get_center());
+					view_ptr->set_y_extent_at_focus(box.get_extent().length());
+				}
 			}
 		}
 	}
