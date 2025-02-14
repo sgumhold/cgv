@@ -170,18 +170,22 @@ install(DIRECTORY include/. DESTINATION ${CGV_3RD_INCLUDE_DEST} FILES_MATCHING P
 
 # Shared Library
 add_library(fltk SHARED ${SOURCES})
-target_link_libraries(fltk
-        jpeg
-        png
+target_link_libraries(fltk PUBLIC
+        ${X11_LIBRARIES}
+        OpenGL::GL
         glew
-        ${OPENGL_LIBRARIES}
-        ${X11_LIBRARIES})
+        jpeg
+        png)
 
 if (WIN32)
     set(ADD_DEFINITIONS "_WIN32" "WIN32_LEAN_AND_MEAN" "VC_EXTRA_LEAN" "WIN32_EXTRA_LEAN")
-    target_link_libraries(fltk ws2_32)
+    target_link_libraries(fltk PUBLIC ws2_32)
 else ()
-    target_link_libraries(fltk Xext)
+    find_package(Freetype REQUIRED)
+    target_include_directories(fltk PUBLIC ${FREETYPE_INCLUDE_DIRS})
+    target_link_libraries(fltk PUBLIC ${FREETYPE_LIBRARIES} Xft)
+    target_compile_definitions(fltk PUBLIC USE_XFT)
+    target_link_libraries(fltk PUBLIC Xext)
 endif ()
 
 if (MSVC)
@@ -200,6 +204,7 @@ target_compile_definitions(fltk PRIVATE
 target_compile_definitions(fltk PUBLIC FL_SHARED)
 
 target_include_directories(fltk PUBLIC
+        ${FREETYPE_INCLUDE_DIRS}       
         $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/include>
         $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/visualc>
         $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/compat>
@@ -209,18 +214,21 @@ install(TARGETS fltk EXPORT cgv_3rd DESTINATION ${CGV_BIN_DEST})
 
 # Static Library
 add_library(fltk_static STATIC ${SOURCES})
-target_link_libraries(fltk_static
-        jpeg_static
-        png_static
+target_link_libraries(fltk_static PUBLIC
+        ${X11_LIBRARIES}
+        OpenGL::GL
         glew_static
-        ${OPENGL_LIBRARIES}
-        ${X11_LIBRARIES})
+        jpeg_static
+        png_static)
 
 if (WIN32)
     set(ADD_DEFINITIONS "_WIN32" "WIN32_LEAN_AND_MEAN" "VC_EXTRA_LEAN" "WIN32_EXTRA_LEAN")
-    target_link_libraries(fltk_static ws2_32)
+    target_link_libraries(fltk_static PUBLIC ws2_32)
 else ()
-    target_link_libraries(fltk_static Xext)
+    target_include_directories(fltk_static PUBLIC ${FREETYPE_INCLUDE_DIRS})
+    target_link_libraries(fltk_static PUBLIC ${FREETYPE_LIBRARIES} Xft)
+    target_compile_definitions(fltk_static PUBLIC USE_XFT)
+    target_link_libraries(fltk_static PUBLIC Xext)
 endif ()
 
 if (MSVC)

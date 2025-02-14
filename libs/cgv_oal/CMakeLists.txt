@@ -4,7 +4,7 @@ cgv_add_target(cgv_oal
 	SOURCES
 		lib_begin.h
 		al_context.h
-		al_context.cpp
+		al_context.cxx
 	DEPENDENCIES
 		OpenAL sndfile cgv_math
 )
