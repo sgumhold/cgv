@@ -12,6 +12,11 @@
 #define FLT_EPS 1.19209290e-07
 // --- functions -----------------------
 
+// Functions to computer the control points of two quadratic curves that each cover one half of the given cubic hermite spline
+void split_hermite_to_quadratic(out mat3x4 b0, out mat3x4 b1, const mat4 hermite);
+void split_hermite_to_quadratic(out mat3 b0, out mat3 b1, const mat4 hermite);
+void split_hermite_to_quadratic(out vec3 b0, out vec3 b1, const vec4 hermite);
+
 float Pow2(float x);
 float Pow3(float x);
 // Raises a quadratic polynomial to the power of 2
@@ -96,6 +101,46 @@ void FindRootsPolyNewtonD1(float poly_C[5], float x_i[4], int m_i[4], out float 
 //****************************************************************************/
 //******** Function Definitions***********************************************/
 //****************************************************************************/
+
+// compute the control points of two 4D quadratic curves that each cover one half of the given 4D cubic hermite spline
+// the control points P and their tangents T are laid out as columns in the following order => [P0 T0 P1 T1]
+void split_hermite_to_quadratic(out mat3x4 b0, out mat3x4 b1, const mat4 hermite)
+{
+	b0[0] = hermite[0];
+	b0[1] = hermite[0] + hermite[1] * 0.25;
+
+	b1[2] = hermite[2];
+	b1[1] = hermite[2] - hermite[3] * 0.25;
+
+	b0[2] = b1[0] = (b0[1] + b1[1]) * 0.5;
+}
+
+// compute the control points of two 3D quadratic curves that each cover one half of the given 3D cubic hermite spline
+// the control points P and their tangents T are laid out as columns in the following order => [P0 T0 P1 T1]
+void split_hermite_to_quadratic(out mat3 b0, out mat3 b1, const mat4x3 hermite)
+{
+	b0[0] = hermite[0];
+	b0[1] = hermite[0] + hermite[1] * 0.25;
+
+	b1[2] = hermite[2];
+	b1[1] = hermite[2] - hermite[3] * 0.25;
+
+	b0[2] = b1[0] = (b0[1] + b1[1]) * 0.5;
+}
+
+// compute the control points of two scalar quadratic curves that each cover one half of the given scalar cubic hermite spline
+// the control points P and their tangents T are laid out as columns in the following order => [P0 T0 P1 T1]
+void split_hermite_to_quadratic(out vec3 b0, out vec3 b1, const vec4 hermite)
+{
+	b0[0] = hermite[0];
+	b0[1] = hermite[0] + hermite[1] * 0.25;
+
+	b1[2] = hermite[2];
+	b1[1] = hermite[2] - hermite[3] * 0.25;
+
+	b0[2] = b1[0] = (b0[1] + b1[1]) * 0.5;
+}
+
 float Pow2(float x) { 
 	return x * x; 
 }

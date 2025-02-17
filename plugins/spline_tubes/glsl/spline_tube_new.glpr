@@ -4,6 +4,7 @@ vertex_file:view.glsl
 geometry_file:view.glsl
 geometry_file:transform.glsl
 geometry_file:curve_tools.glsl
+geometry_file:spline_tube_tools.glsl
 fragment_file:view.glsl
 fragment_file:side.glsl
 fragment_file:lights.glsl

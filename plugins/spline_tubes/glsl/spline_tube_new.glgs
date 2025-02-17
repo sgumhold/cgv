@@ -15,48 +15,11 @@ mat3 get_inverse_normal_matrix();
 mat4 curve_obb_trans (const mat3 curve, const vec3 radius);
 //***** end interface of curve_tools.glsl *****************************
 
+//***** begin interface of spline_tube_tools.glsl *********************
 void split_hermite_to_quadratic(out mat3x4 b0, out mat3x4 b1, const mat4 hermite);
 void split_hermite_to_quadratic(out mat3 b0, out mat3 b1, const mat4 hermite);
 void split_hermite_to_quadratic(out vec3 b0, out vec3 b1, const vec4 hermite);
-
-// compute the control points of two 4D quadratic curves that each cover one half of the given 4D cubic hermite spline
-// the control points P and their tangents T are laid out as columns in the following order => [P0 T0 P1 T1]
-void split_hermite_to_quadratic(out mat3x4 b0, out mat3x4 b1, const mat4 hermite)
-{
-	b0[0] = hermite[0];
-	b0[1] = hermite[0] + hermite[1] * 0.25;
-
-	b1[2] = hermite[2];
-	b1[1] = hermite[2] - hermite[3] * 0.25;
-
-	b0[2] = b1[0] = (b0[1] + b1[1]) * 0.5;
-}
-
-// compute the control points of two 3D quadratic curves that each cover one half of the given 3D cubic hermite spline
-// the control points P and their tangents T are laid out as columns in the following order => [P0 T0 P1 T1]
-void split_hermite_to_quadratic(out mat3 b0, out mat3 b1, const mat4x3 hermite)
-{
-	b0[0] = hermite[0];
-	b0[1] = hermite[0] + hermite[1] * 0.25;
-
-	b1[2] = hermite[2];
-	b1[1] = hermite[2] - hermite[3] * 0.25;
-
-	b0[2] = b1[0] = (b0[1] + b1[1]) * 0.5;
-}
-
-// compute the control points of two scalar quadratic curves that each cover one half of the given scalar cubic hermite spline
-// the control points P and their tangents T are laid out as columns in the following order => [P0 T0 P1 T1]
-void split_hermite_to_quadratic(out vec3 b0, out vec3 b1, const vec4 hermite)
-{
-	b0[0] = hermite[0];
-	b0[1] = hermite[0] + hermite[1] * 0.25;
-
-	b1[2] = hermite[2];
-	b1[1] = hermite[2] - hermite[3] * 0.25;
-
-	b0[2] = b1[0] = (b0[1] + b1[1]) * 0.5;
-}
+//***** end interface of spline_tube_tools.glsl ************************
 
 layout(lines) in;
 layout(triangle_strip, max_vertices = 28) out;
