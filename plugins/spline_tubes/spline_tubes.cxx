@@ -30,6 +30,9 @@ protected:
 	std::vector<unsigned int> indices;
 	cgv::render::spline_tube_render_style spline_style;
 	cgv::render::attribute_array_manager manager;
+
+	float f0, df0, f1, df1;
+	int iteration;
     
 public:
     spline_tubes() : application_plugin("Spline Tubes")
@@ -43,7 +46,7 @@ public:
 
 		std::cout << dist(rng) << std::endl;
 
-		unsigned int index_count = 0;
+		int index_count = 0;
 		for (int i = 0; i < 2000; i++) {
 			if (1)
 			{
@@ -68,6 +71,9 @@ public:
 				cgv::vec4(dist(rng) / 20.0, dist(rng) / 20.0, dist(rng) / 20.0, 1);
 			}
 		}
+
+		f0 = f1 = df0 = df1 = 1.0;
+		iteration = 10;
 	}
 
     virtual ~spline_tubes()
@@ -113,18 +119,36 @@ public:
 		renderer.set_indices(ctx, indices);
 		renderer.set_radius_array(ctx, &radii.front(), radii.size(), sizeof(float));
 		renderer.set_tangent_array(ctx, &tangents.front(), tangents.size(), sizeof(cgv::vec4));
-        renderer.render(ctx, 0, indices.size());
+
+		auto& prog = renderer.ref_prog();
+		
+		prog.set_uniform(ctx, prog.get_uniform_location(ctx, "f0"),		f0);
+		prog.set_uniform(ctx, prog.get_uniform_location(ctx, "df0"),	df0);
+		prog.set_uniform(ctx, prog.get_uniform_location(ctx, "f1"),		f1);
+		prog.set_uniform(ctx, prog.get_uniform_location(ctx, "df1"),	df1);
+		prog.set_uniform(ctx, prog.get_uniform_location(ctx, "iteration_count"), iteration);
+        
+		renderer.render(ctx, 0, indices.size());
         renderer.disable_attribute_array_manager(ctx, manager);
     }
 
-    void on_set(void* member_ptr)
-    {
-
+    void on_set(void* member_ptr) 
+	{ 
+		update_member(member_ptr);
+		post_redraw();
     }
 
     void create_gui() override
     {
         add_decorator("Spline Tubes GUI", "heading");
+		add_member_control(this, "iterations", iteration, "value", "min=0;max=20");
+		add_decorator("Newtons Method Tuning", "heading");
+		add_decorator("RootFindD1", "heading", "level=2");
+		add_member_control(this, "f", f1, "value", "min=0.0001;max=100");
+		add_member_control(this, "df", df1, "value", "min=0.0001;max=100");
+		add_decorator("RootFindD0", "heading", "level=2");
+		add_member_control(this, "f", f0, "value", "min=0.0001;max=100");
+		add_member_control(this, "df", df0, "value", "min=0.0001;max=100");
     }
 };
 

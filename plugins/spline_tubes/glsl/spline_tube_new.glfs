@@ -1,5 +1,11 @@
 #version 420
 
+uniform float f0;
+uniform float df0;
+uniform float f1;
+uniform float df1;
+uniform int iteration_count;
+
 #define POS_INF 3e+37
 #define N0 3
 #define N1 5
@@ -77,6 +83,8 @@ void FindRootsPolyBisectionD0(float poly_C[5], float x_i[5], int m_i[5], out flo
 void FindRootsPolyBisectionD1(float poly_C[5], float x_i[4], int m_i[4], out float x_o[5], out int m_o[5], int max_iter);
 void FindRootsPolyNewtonD0(float poly_C[5], float x_i[5], int m_i[5], out float x_o[6], out int m_o[6], int max_iter);
 void FindRootsPolyNewtonD1(float poly_C[5], float x_i[4], int m_i[4], out float x_o[5], out int m_o[5], int max_iter);
+void FindRootsPolyNewtonD0(float poly_C[5], float x_i[5], int m_i[5], out float x_o[6], out int m_o[6], int max_iter, float factorD0, float factorD1);
+void FindRootsPolyNewtonD1(float poly_C[5], float x_i[4], int m_i[4], out float x_o[5], out int m_o[5], int max_iter, float factorD0, float factorD1);
 //***** end interface of spine_tube_tools.glsl **************************
 
 struct QTubeNode {
@@ -160,9 +168,11 @@ Hit EvalSplineISect(vec3 dir, vec3 s, vec3 h, vec3 t, float rs, float rh, float 
 	int m3[5];
 
 	#if ROOT_SEARCH_METHOD_POLY == 0
-		FindRootsPolyBisectionD1(polyB_C, x2, m2, x3, m3, ITERATION_COUNT_BISECTION);
+		//FindRootsPolyBisectionD1(polyB_C, x2, m2, x3, m3, ITERATION_COUNT_BISECTION);
+		FindRootsPolyBisectionD1(polyB_C, x2, m2, x3, m3, iteration_count);
 	#elif ROOT_SEARCH_METHOD_POLY == 1
-		FindRootsPolyNewtonD1(polyB_C, x2, m2, x3, m3, ITERATION_COUNT_NEWTON);
+		//FindRootsPolyNewtonD1(polyB_C, x2, m2, x3, m3, ITERATION_COUNT_NEWTON, f1, df1);
+		FindRootsPolyNewtonD1(polyB_C, x2, m2, x3, m3, iteration_count, f1, df1);
 	#endif
 
 	float x4[6];
@@ -171,9 +181,11 @@ Hit EvalSplineISect(vec3 dir, vec3 s, vec3 h, vec3 t, float rs, float rh, float 
 	{	
 
 		#if ROOT_SEARCH_METHOD_POLY == 0
-			FindRootsPolyBisectionD0(polyB_C, x3, m3, x4, m4, ITERATION_COUNT_BISECTION);
+			//FindRootsPolyBisectionD0(polyB_C, x3, m3, x4, m4, ITERATION_COUNT_BISECTION);
+			FindRootsPolyBisectionD0(polyB_C, x3, m3, x4, m4, iteration_count);
 		#elif ROOT_SEARCH_METHOD_POLY == 1
-			FindRootsPolyNewtonD0(polyB_C, x3, m3, x4, m4, ITERATION_COUNT_NEWTON);
+			//FindRootsPolyNewtonD0(polyB_C, x3, m3, x4, m4, ITERATION_COUNT_NEWTON, f0, df0);
+			FindRootsPolyNewtonD0(polyB_C, x3, m3, x4, m4, iteration_count, f0, df0);
 		#endif
 
 		// let t0 = 0, t[1,2,3,4] = x4[1,2,3,4] and t5 = 1.0

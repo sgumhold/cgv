@@ -73,21 +73,22 @@ float BisectionMethodPolyD1(float c[5], float n, float p, int max_iter);
 // max_iter: maximum number of iterations
 float NewtonsMethodPolyD0(float c[5], float x, int max_iter);
 float NewtonsMethodPolyD1(float c[5], float x, int max_iter);
+// same as above, but with a dampening factor
+float NewtonsMethodPolyD0(float c[5], float x, int max_iter, float factorD0, float factorD1);
+float NewtonsMethodPolyD1(float c[5], float x, int max_iter, float factorD0, float factorD1);
 // Similar to above, but with an additional epsilon parameter
 // epsilon: maximum error
 float NewtonsMethodPolyD0(float c[5], float x, float epsilon, int max_iter);
 float NewtonsMethodPolyD1(float c[5], float x, float epsilon, int max_iter);
 
-/* Experimental Stuff
-float SecantMethodPolyD0(float c[5], float n, float p, int max_iter);
-float SecantMethodPolyD1(float c[5], float n, float p, int max_iter);
-*/
 
-// Find the roots of a polynomial given the roots of its derivative (in order words, given its extrema)
+// Find the roots of a polynomial given the roots of its derivative (in other words, given its extrema)
 void FindRootsPolyBisectionD0(float poly_C[5], float x_i[5], int m_i[5], out float x_o[6], out int m_o[6], int max_iter);
 void FindRootsPolyBisectionD1(float poly_C[5], float x_i[4], int m_i[4], out float x_o[5], out int m_o[5], int max_iter);
 void FindRootsPolyNewtonD0(float poly_C[5], float x_i[5], int m_i[5], out float x_o[6], out int m_o[6], int max_iter);
 void FindRootsPolyNewtonD1(float poly_C[5], float x_i[4], int m_i[4], out float x_o[5], out int m_o[5], int max_iter);
+void FindRootsPolyNewtonD0(float poly_C[5], float x_i[5], int m_i[5], out float x_o[6], out int m_o[6], int max_iter, float factorD0, float factorD1);
+void FindRootsPolyNewtonD1(float poly_C[5], float x_i[4], int m_i[4], out float x_o[5], out int m_o[5], int max_iter, float factorD0, float factorD1);
 ///***** end interface of curve_tools.glsl ************************************/
 
 
@@ -165,19 +166,16 @@ float EvalPolyD1(float x, float c[5]) { return EvalPoly(x, c[1], c[2] + c[2], c[
 float EvalPolyD2(float x, float c[5]) { return EvalPoly(x, c[2] + c[2], c[3] * 6.0, c[4] * 12.0); }
 float EvalPolyD3(float x, float c[5]) { return EvalPoly(x, c[3] * 6.0, c[4] * 24.0); }
 
-/*
-float factorD0 = 0.1;
-float factorD1 = 1.0;
-float factorD2 = 1.0;
-float factorD3 = 1.0;
-float EvalPolyD0Dampened(float x, float c[3]) { return EvalPoly(x, c[0] * factorD0, c[1] * factorD0, c[2] * factorD0); }
-float EvalPolyD1Dampened(float x, float c[3]) { return EvalPoly(x, c[1] * factorD1, c[2] * 2.0 * factorD1); }
-float EvalPolyD2Dampened(float x, float c[3]) { return EvalPoly(x, c[2] * 2.0 * factorD2);       }
-float EvalPolyD0Dampened(float x, float c[5]) { return EvalPoly(x, c[0] * factorD0, c[1] * factorD0, c[2] * factorD0, c[3] * factorD0, c[4] * factorD0);             }
-float EvalPolyD1Dampened(float x, float c[5]) { return EvalPoly(x, c[1] * factorD1, c[2] * 2.0 * factorD1, c[3] * 3.0 * factorD1, c[4] * 4.0 * factorD1); }
-float EvalPolyD2Dampened(float x, float c[5]) { return EvalPoly(x, c[2] * 2.0 * factorD2, c[3] * 6.0 * factorD2, c[4] * 12.0 * factorD2);      }
-float EvalPolyD3Dampened(float x, float c[5]) { return EvalPoly(x, c[3] * 6.0 * factorD3, c[4] * 24.0 * factorD3);                  }
 
+float EvalPolyD0Dampened(float x, float c[3], float factor) { return EvalPoly(x, c[0] * factor, c[1] * factor, c[2] * factor); }
+float EvalPolyD1Dampened(float x, float c[3], float factor) { return EvalPoly(x, c[1] * factor, c[2] * 2.0 * factor); }
+float EvalPolyD2Dampened(float x, float c[3], float factor) { return EvalPoly(x, c[2] * 2.0 * factor);       }
+float EvalPolyD0Dampened(float x, float c[5], float factor) { return EvalPoly(x, c[0] * factor, c[1] * factor, c[2] * factor, c[3] * factor, c[4] * factor);             }
+float EvalPolyD1Dampened(float x, float c[5], float factor) { return EvalPoly(x, c[1] * factor, c[2] * 2.0 * factor, c[3] * 3.0 * factor, c[4] * 4.0 * factor); }
+float EvalPolyD2Dampened(float x, float c[5], float factor) { return EvalPoly(x, c[2] * 2.0 * factor, c[3] * 6.0 * factor, c[4] * 12.0 * factor);      }
+float EvalPolyD3Dampened(float x, float c[5], float factor) { return EvalPoly(x, c[3] * 6.0 * factor, c[4] * 24.0 * factor);                  }
+
+/*
 float EvalPolyD0Dampened(float x, float c[3], float factor) { return factor * EvalPoly(x, c[0], c[1], c[2]); }
 float EvalPolyD1Dampened(float x, float c[3], float factor) { return factor * EvalPoly(x, c[1], c[2] + c[2]); }
 float EvalPolyD2Dampened(float x, float c[3], float factor) { return factor * EvalPoly(x, c[2] + c[2]); }
@@ -186,7 +184,6 @@ float EvalPolyD1Dampened(float x, float c[5], float factor) { return factor * Ev
 float EvalPolyD2Dampened(float x, float c[5], float factor) { return factor * EvalPoly(x, c[2] + c[2], c[3] * 6.0, c[4] * 12.0); }
 float EvalPolyD3Dampened(float x, float c[5], float factor) { return factor * EvalPoly(x, c[3] * 6.0, c[4] * 24.0); }
 */
-
 vec3 qSplineEval(float l, float curveX[3], float curveY[3], float curveZ[3]) {
 	return vec3(EvalPolyD0(l, curveX), EvalPolyD0(l, curveY), EvalPolyD0(l, curveZ));
 }
@@ -369,6 +366,26 @@ float NewtonsMethodPolyD1(float c[5], float x, int max_iter) {
     return x0;
 }
 
+float NewtonsMethodPolyD0(float c[5], float x, int max_iter, float factorD0, float factorD1) {
+    float x0 = x;
+    for (int i = 0; i < max_iter; i++) {
+        float f = EvalPolyD0Dampened(x0, c, factorD0);
+        float df = EvalPolyD1Dampened(x0, c, factorD1);
+        x0 -= f / df;
+    }
+    return x0;
+}
+
+float NewtonsMethodPolyD1(float c[5], float x, int max_iter, float factorD0, float factorD1) {
+    float x0 = x;
+    for (int i = 0; i < max_iter; i++) {
+        float f = EvalPolyD1Dampened(x0, c, factorD0);
+        float df = EvalPolyD2Dampened(x0, c, factorD1);
+        x0 -= f / df;
+    }
+    return x0;
+}
+
 float NewtonsMethodPolyD0(float c[5], float x, float epsilon, int max_iter) {
     float x0 = x;
     for (int i = 0; i < max_iter; i++) {
@@ -391,58 +408,32 @@ float NewtonsMethodPolyD1(float c[5], float x, float epsilon, int max_iter) {
     return x0;
 }
 
-/*
-// Experimental Stuff
-float SecantMethodPolyD0(float c[5], float n, float p, int max_iter) {
-	float x_n2 = n*0.75 + p*0.25;
-	float x_n1 = p*0.75 + n*0.25;
-	float x;
-	for (int i = 0; i < max_iter; i++) {
-		float f_n2 = EvalPolyD0(x_n2, c);
-		float f_n1 = EvalPolyD0(x_n1, c);
-		x = x_n1 - f_n1 * (x_n1 - x_n2) / (f_n1 - f_n2);
-		x_n2 = x_n1;
-		x_n1 = x;
-	}
-	return x;
-}
-
-float SecantMethodPolyD1(float c[5], float n, float p, int max_iter) {
-	float x_n2 = n*0.75 + p*0.25;
-	float x_n1 = p*0.75 + n*0.25;
-	float x;
-	for (int i = 0; i < max_iter; i++) {
-		float f_n2 = EvalPolyD1(x_n2, c);
-		float f_n1 = EvalPolyD1(x_n1, c);
-		x = x_n1 - f_n1 * (x_n1 - x_n2) / (f_n1 - f_n2);
-		x_n2 = x_n1;
-		x_n1 = x;
-	}
-	return x;
-}
-
-float HybridMethodPolyD0(float c[5], float n, float p, int max_iter) {
-	float x0 = (n + p) * 0.5;
-	float f;
+float NewtonsMethodPolyD0(float c[5], float x, float epsilon, int max_iter, float factorD0, float factorD1) {
+    float x0 = x;
+	float x_prev = x0;
     for (int i = 0; i < max_iter; i++) {
-        f = EvalPolyD0(x0, c);
-        float df = EvalPolyD1(x0, c);
+        float f = EvalPolyD0Dampened(x0, c, factorD0);
+        float df = EvalPolyD1Dampened(x0, c, factorD1);
         x0 -= f / df;
+		if(abs(x0 - x_prev) < epsilon) break;
+		x_prev = x0;
     }
-    return (abs(f) < 1e-7) ? x0 : BisectionMethodPolyD0(c, n, p, max_iter * 2);
+    return x0;
 }
 
-float HybridMethodPolyD1(float c[5], float n, float p, int max_iter) {
-	float x0 = (n + p) * 0.5;
-	float f;
-	for (int i = 0; i < max_iter; i++) {
-		f = EvalPolyD1(x0, c);
-		float df = EvalPolyD2(x0, c);
-		x0 -= f / df;
-	}
-	return (abs(f) < 1e-7) ? x0 : BisectionMethodPolyD1(c, n, p, max_iter * 2);
+float NewtonsMethodPolyD1(float c[5], float x, float epsilon, int max_iter, float factorD0, float factorD1) {	
+    float x0 = x;
+	float x_prev = x0;
+    for (int i = 0; i < max_iter; i++) {
+        float f = EvalPolyD1Dampened(x0, c, factorD0);
+        float df = EvalPolyD2Dampened(x0, c, factorD1);
+        x0 -= f / df;
+		if(abs(x0 - x_prev) < epsilon) break;
+		x_prev = x0;
+    }
+    return x0;
 }
-*/
+
 void FindRootsPolyBisectionD0(float poly_C[5], float x_i[5], int m_i[5], out float x_o[6], out int m_o[6], int max_iter) {
 	m_o[0] = m_o[5] = 1;
 	x_o[0] = x_i[0];
@@ -456,6 +447,7 @@ void FindRootsPolyBisectionD0(float poly_C[5], float x_i[5], int m_i[5], out flo
 			float sy_r = sign(y_r);
 			x_o[i] = 0.0;
 			if(sy_l != sy_r) {
+				
 				float n = x_l;
 				float p = x_r;
 				float ny = EvalPolyD0(n, poly_C);
@@ -467,6 +459,8 @@ void FindRootsPolyBisectionD0(float poly_C[5], float x_i[5], int m_i[5], out flo
 					n = p; p = t;
 				}
 				x_o[i] = BisectionMethodPolyD0(poly_C, n, p, max_iter);
+				
+				//x_o[i] = (x_l + x_r) * 0.5;
 				m_o[i] = 1;
 			} else {
 				m_o[i] = 0;
@@ -536,6 +530,7 @@ void FindRootsPolyNewtonD0(float poly_C[5], float x_i[5], int m_i[5], out float 
 				float p = x_r;
 
 				x_o[i] = NewtonsMethodPolyD0(poly_C, (n+p) * 0.5, max_iter);
+				//x_o[i] = (n+p) * 0.5;
 				m_o[i] = 1;
 			} else {
 				m_o[i] = 0;
@@ -567,6 +562,69 @@ void FindRootsPolyNewtonD1(float poly_C[5], float x_i[4], int m_i[4], out float 
 				float p = x_r;
 
 				x_o[i] = NewtonsMethodPolyD1(poly_C, (n+p) * 0.5, max_iter);
+				m_o[i] = 1;
+			} else {
+				m_o[i] = 0;
+			}
+			x_l = x_r;
+			y_l = y_r;
+			sy_l = sy_r;
+		} else {
+			m_o[i] = 0;
+		}
+	}
+	x_o[4] = x_i[3];
+}
+
+void FindRootsPolyNewtonD0(float poly_C[5], float x_i[5], int m_i[5], out float x_o[6], out int m_o[6], int max_iter, float factorD0, float factorD1) {
+	m_o[0] = m_o[5] = 1;
+	x_o[0] = x_i[0];
+	float x_l = x_i[0];
+	float y_l = EvalPolyD0(x_l, poly_C);
+	float sy_l = sign(y_l);
+	for(int i = 1; i < 5; ++i) {
+		if(m_i[i] == 1) {
+			float x_r = x_i[i];
+			float y_r = EvalPolyD0(x_r, poly_C);
+			float sy_r = sign(y_r);
+			x_o[i] = 0.0;
+			if(sy_l != sy_r) {
+				float n = x_l;
+				float p = x_r;
+
+				x_o[i] = NewtonsMethodPolyD0(poly_C, (n+p) * 0.5, max_iter, factorD0, factorD1);
+				//x_o[i] = (n+p) * 0.5;
+				m_o[i] = 1;
+			} else {
+				m_o[i] = 0;
+			}
+			x_l = x_r;
+			y_l = y_r;
+			sy_l = sy_r;
+		} else {
+			m_o[i] = 0;
+		}
+	}
+	x_o[5] = x_i[4];
+}
+
+void FindRootsPolyNewtonD1(float poly_C[5], float x_i[4], int m_i[4], out float x_o[5], out int m_o[5], int max_iter, float factorD0, float factorD1) {
+	m_o[0] = m_o[4] = 1;
+	x_o[0] = x_i[0];
+	float x_l = x_i[0];
+	float y_l = EvalPolyD1(x_l, poly_C);
+	float sy_l = sign(y_l);
+	for(int i = 1; i < 4; ++i) {
+		if(m_i[i] == 1) {
+			float x_r = x_i[i];
+			float y_r = EvalPolyD1(x_r, poly_C);
+			float sy_r = sign(y_r);
+			x_o[i] = 0.0;
+			if(sy_l != sy_r) {
+				float n = x_l;
+				float p = x_r;
+
+				x_o[i] = NewtonsMethodPolyD1(poly_C, (n+p) * 0.5, max_iter, factorD0, factorD1);
 				m_o[i] = 1;
 			} else {
 				m_o[i] = 0;
