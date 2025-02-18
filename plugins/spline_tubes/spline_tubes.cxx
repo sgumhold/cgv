@@ -126,7 +126,7 @@ public:
 		prog.set_uniform(ctx, prog.get_uniform_location(ctx, "df0"),	df0);
 		prog.set_uniform(ctx, prog.get_uniform_location(ctx, "f1"),		f1);
 		prog.set_uniform(ctx, prog.get_uniform_location(ctx, "df1"),	df1);
-		prog.set_uniform(ctx, prog.get_uniform_location(ctx, "iteration_count"), iteration);
+		//prog.set_uniform(ctx, prog.get_uniform_location(ctx, "iteration_count"), iteration);
         
 		renderer.render(ctx, 0, indices.size());
         renderer.disable_attribute_array_manager(ctx, manager);

@@ -492,7 +492,7 @@ void FindRootsPolyBisectionD0(float poly_C[5], float x_i[5], int m_i[5], out flo
 			float sy_r = sign(y_r);
 			x_o[i] = 0.0;
 			if(sy_l != sy_r) {
-				
+				/*
 				float n = x_l;
 				float p = x_r;
 				float ny = EvalPolyD0(n, poly_C);
@@ -504,8 +504,8 @@ void FindRootsPolyBisectionD0(float poly_C[5], float x_i[5], int m_i[5], out flo
 					n = p; p = t;
 				}
 				x_o[i] = BisectionMethodPolyD0(poly_C, n, p, max_iter);
-				
-				//x_o[i] = (x_l + x_r) * 0.5;
+				*/
+				x_o[i] = (x_l + x_r) * 0.5;
 				m_o[i] = 1;
 			} else {
 				m_o[i] = 0;
@@ -574,8 +574,8 @@ void FindRootsPolyNewtonD0(float poly_C[5], float x_i[5], int m_i[5], out float 
 				float n = x_l;
 				float p = x_r;
 
-				x_o[i] = NewtonsMethodPolyD0(poly_C, (n+p) * 0.5, max_iter);
-				//x_o[i] = (n+p) * 0.5;
+				//x_o[i] = NewtonsMethodPolyD0(poly_C, (n+p) * 0.5, max_iter);
+				x_o[i] = (n+p) * 0.5;
 				m_o[i] = 1;
 			} else {
 				m_o[i] = 0;
@@ -637,8 +637,8 @@ void FindRootsPolyNewtonD0(float poly_C[5], float x_i[5], int m_i[5], out float 
 				float n = x_l;
 				float p = x_r;
 
-				x_o[i] = NewtonsMethodPolyD0(poly_C, (n+p) * 0.5, max_iter, factorD0, factorD1);
-				//x_o[i] = (n+p) * 0.5;
+				//x_o[i] = NewtonsMethodPolyD0(poly_C, (n+p) * 0.5, max_iter, factorD0, factorD1);
+				x_o[i] = (n+p) * 0.5;
 				m_o[i] = 1;
 			} else {
 				m_o[i] = 0;

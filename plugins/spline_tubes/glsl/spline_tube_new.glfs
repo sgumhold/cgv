@@ -4,7 +4,6 @@ uniform float f0;
 uniform float df0;
 uniform float f1;
 uniform float df1;
-uniform int iteration_count;
 
 #define POS_INF 3e+37
 #define N0 3
@@ -12,14 +11,14 @@ uniform int iteration_count;
 
 /* 	0: BisectionSearch
 	1: NewtonsMethod */
-#define ROOT_SEARCH_METHOD_POLY 0
+#define ROOT_SEARCH_METHOD_POLY 1
 
 /*	0: BisectionSearch
 	1: NewtonsMethod */
 #define ROOT_SEARCH_METHOD_F 0
 
 #define ITERATION_COUNT_BISECTION 10
-#define ITERATION_COUNT_NEWTON 4
+#define ITERATION_COUNT_NEWTON 10
 
 //***** begin interface of view.glsl ***********************************
 mat4 get_modelview_matrix();
@@ -168,11 +167,9 @@ Hit EvalSplineISect(vec3 dir, vec3 s, vec3 h, vec3 t, float rs, float rh, float 
 	int m3[5];
 
 	#if ROOT_SEARCH_METHOD_POLY == 0
-		//FindRootsPolyBisectionD1(polyB_C, x2, m2, x3, m3, ITERATION_COUNT_BISECTION);
-		FindRootsPolyBisectionD1(polyB_C, x2, m2, x3, m3, iteration_count);
+		FindRootsPolyBisectionD1(polyB_C, x2, m2, x3, m3, ITERATION_COUNT_BISECTION);
 	#elif ROOT_SEARCH_METHOD_POLY == 1
-		//FindRootsPolyNewtonD1(polyB_C, x2, m2, x3, m3, ITERATION_COUNT_NEWTON, f1, df1);
-		FindRootsPolyNewtonD1(polyB_C, x2, m2, x3, m3, iteration_count, f1, df1);
+		FindRootsPolyNewtonD1(polyB_C, x2, m2, x3, m3, ITERATION_COUNT_NEWTON, f1, df1);
 	#endif
 
 	float x4[6];
@@ -181,11 +178,9 @@ Hit EvalSplineISect(vec3 dir, vec3 s, vec3 h, vec3 t, float rs, float rh, float 
 	{	
 
 		#if ROOT_SEARCH_METHOD_POLY == 0
-			//FindRootsPolyBisectionD0(polyB_C, x3, m3, x4, m4, ITERATION_COUNT_BISECTION);
-			FindRootsPolyBisectionD0(polyB_C, x3, m3, x4, m4, iteration_count);
+			FindRootsPolyBisectionD0(polyB_C, x3, m3, x4, m4, ITERATION_COUNT_BISECTION);
 		#elif ROOT_SEARCH_METHOD_POLY == 1
-			//FindRootsPolyNewtonD0(polyB_C, x3, m3, x4, m4, ITERATION_COUNT_NEWTON, f0, df0);
-			FindRootsPolyNewtonD0(polyB_C, x3, m3, x4, m4, iteration_count, f0, df0);
+			FindRootsPolyNewtonD0(polyB_C, x3, m3, x4, m4, ITERATION_COUNT_NEWTON, f0, df0);
 		#endif
 
 		// let t0 = 0, t[1,2,3,4] = x4[1,2,3,4] and t5 = 1.0
