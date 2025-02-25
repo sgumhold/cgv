@@ -516,40 +516,35 @@ void TileManager::AddTile3DToQueue(Tile3DIndex index)
 	AddTilesToQueue(index, requested_tile3D, queue_tile3Ds, m_MutexQueueTile3Ds, m_MutexRequestTile3Ds);
 }
 
-void TileManager::AddRasterTiles(cgv::render::context& ctx)
+template <typename index_type, typename data_type, typename render_type>
+void TileManager::AddTiles(cgv::render::context& ctx, std::map<index_type, data_type>& queue_tiles,
+						   std::map<index_type, render_type>& cache_tiles,
+						   std::map<index_type, render_type>& active_tiles, std::mutex& queue_lock)
 {
-	std::lock_guard<std::mutex> lockQueue(m_MutexQueueRasterTiles);
-	if (queue_raster_tiles.empty()) {
+	std::lock_guard<std::mutex> lockQueue(queue_lock);
+	if (queue_tiles.empty()) {
 		return;
 	}
 
-	while (!queue_raster_tiles.empty()) {
-		auto& element = *(queue_raster_tiles.begin());
-		RasterTileRender tile(ctx, element.second, config->ReferencePoint.lat, config->ReferencePoint.lon);
+	while (!queue_tiles.empty()) {
+		auto& element = *(queue_tiles.begin());
+		render_type tile(ctx, element.second, config->ReferencePoint.lat, config->ReferencePoint.lon);
 
-		active_raster_tile[element.first] = tile;
-		raster_tile_cache.emplace(element.first, tile);
+		active_tiles[element.first] = tile;
+		cache_tiles.emplace(element.first, tile);
 
-		queue_raster_tiles.erase(element.first);
+		queue_tiles.erase(element.first);
 	}
+}
+
+void TileManager::AddRasterTiles(cgv::render::context& ctx)
+{
+	AddTiles(ctx, queue_raster_tiles, raster_tile_cache, active_raster_tile, m_MutexQueueRasterTiles);
 }
 
 void TileManager::AddTile3D(cgv::render::context& ctx)
 {
-	std::lock_guard<std::mutex> lockQueue(m_MutexQueueTile3Ds);
-	if (queue_tile3Ds.empty()) {
-		return;
-	}
-
-	while (!queue_tile3Ds.empty()) {
-		auto const& element = *(queue_tile3Ds.begin());
-		Tile3DRender tile(ctx, element.second, config->ReferencePoint.lat, config->ReferencePoint.lon);
-
-		active_tile3D[element.first] = tile;
-		tile3D_cache.emplace(element.first, tile);
-
-		queue_tile3Ds.erase(element.first);
-	}
+	AddTiles(ctx, queue_tile3Ds, tile3D_cache, active_tile3D, m_MutexQueueTile3Ds);
 }
 
 void TileManager::TrimRenderCache() 

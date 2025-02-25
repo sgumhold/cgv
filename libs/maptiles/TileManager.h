@@ -61,6 +61,7 @@ class MAPTILES_API TileManager
 						   std::mutex& queue_lock, std::mutex& request_lock);
 	void PruneNeighbourSetRasterTile();
 	void PruneNeighbourSetTile3D();
+	
 	void GetRasterTileNeighbours();
 	void GetTile3DNeighbours();
 
@@ -70,6 +71,11 @@ class MAPTILES_API TileManager
 						 std::mutex& request_lock);
 	void AddRasterTileToQueue(RasterTileIndex index);
 	void AddTile3DToQueue(Tile3DIndex index);
+
+	template <typename index_type, typename data_type, typename render_type>
+	void AddTiles(cgv::render::context& ctx, std::map<index_type, data_type>& queue_tiles,
+				  std::map<index_type, render_type>& cache_tiles,
+				  std::map<index_type, render_type>& active_tiles, std::mutex& queue_lock);
 	void AddRasterTiles(cgv::render::context& ctx);
 	void AddTile3D(cgv::render::context& ctx);
 
