@@ -331,27 +331,30 @@ void TileManager::GenerateTile3DNeighbours()
 	}
 }
 
-void TileManager::RemoveRasterTiles()
+template <typename index_type, typename data_type, typename render_type>
+void TileManager::RemoveTiles(std::map<index_type, render_type>& active_tiles,
+									 std::set<index_type>& neighbour_set, std::set<index_type>& requested_tiles,
+									 std::map<index_type, data_type&>& queue_tiles, std::mutex& queue_lock)
 {
-	int size = GetActiveRasterTiles().size();
+	int size = active_tiles.size();
 
 	// Create a vector that will store the indices that need to be removed
-	std::vector<RasterTileIndex> indices;
+	std::vector<index_type> indices;
 	indices.resize(size);
 
 	{
-		std::lock_guard<std::mutex> lockQueue(m_MutexQueueRasterTiles);
+		std::lock_guard<std::mutex> lockQueue(queue_lock);
 
 		// Get the indices to be removed from the queue
-		for (auto const& element : queue_raster_tiles) {
-			if (neighbour_set_raster_tile.find(element.first) == neighbour_set_raster_tile.end()) {
+		for (auto const& element : queue_tiles) {
+			if (neighbour_set.find(element.first) == neighbour_set.end()) {
 				indices.push_back(element.first);
 			}
 		}
 
 		// Remove Raster Tiles from the queue
 		for (auto& index : indices) {
-			queue_raster_tiles.erase(index);
+			queue_tiles.erase(index);
 		}
 	}
 
@@ -359,56 +362,27 @@ void TileManager::RemoveRasterTiles()
 	indices.clear();
 
 	// Get the indices to be removed from the active list
-	for (auto const& element : active_raster_tile) {
-		if (neighbour_set_raster_tile.find(element.first) == neighbour_set_raster_tile.end()) {
+	for (auto const& element : active_tiles) {
+		if (neighbour_set.find(element.first) == neighbour_set.end()) {
 			indices.push_back(element.first);
 		}
 	}
 
 	// Remove Raster Tiles from the active list
 	for (auto& index : indices) {
-		active_raster_tile.erase(index);
+		active_tiles.erase(index);
 	}
 }
 
-void TileManager::RemoveTile3Ds()
+void TileManager::RemoveRasterTiles()
+{ 
+	RemoveTiles(active_raster_tile, neighbour_set_raster_tile, requested_raster_tile, queue_raster_tiles,
+				m_MutexQueueRasterTiles);
+}
+
+void TileManager::RemoveTile3Ds() 
 {
-	int size = GetActiveTile3Ds().size();
-
-	// Create a vector that will store the indices that need to be removed
-	std::vector<Tile3DIndex> indices;
-	indices.resize(size);
-
-	{
-		std::lock_guard<std::mutex> lockQueue(m_MutexQueueTile3Ds);
-		// Get the indices to be removed from the queue
-		for (auto const& element : queue_tile3Ds) {
-			if (neighbour_set_tile3D.find(element.first) == neighbour_set_tile3D.end()) {
-				indices.push_back(element.first);
-			}
-		}
-
-		// Remove Raster Tiles from the queue
-		for (auto& index : indices) {
-			queue_tile3Ds.erase(index);
-		}
-	}
-
-	// clear the indices
-	indices.clear();
-
-	// Get the indices to be removed from the active list
-	for (auto const& element : active_tile3D) {
-		if (neighbour_set_tile3D.find(element.first) == neighbour_set_tile3D.end()) {
-			indices.push_back(element.first);
-			//std::cout << "Removing Tile: (" << element.first.lat << ", " << element.first.lon << ")\n";
-		}
-	}
-
-	// Remove Raster Tiles from the active list
-	for (auto& index : indices) {
-		active_tile3D.erase(index);
-	}
+	RemoveTiles(active_tile3D, neighbour_set_tile3D, requested_tile3D, queue_tile3Ds, m_MutexQueueTile3Ds);
 }
 
 void TileManager::PruneNeighbourSetRasterTile()
