@@ -385,55 +385,45 @@ void TileManager::RemoveTile3Ds()
 	RemoveTiles(active_tile3D, neighbour_set_tile3D, requested_tile3D, queue_tile3Ds, m_MutexQueueTile3Ds);
 }
 
-void TileManager::PruneNeighbourSetRasterTile()
+template <typename index_type, typename data_type, typename render_type>
+void TileManager::PruneNeighbourSet(std::map<index_type, render_type>& active_tiles,
+									std::set<index_type>& neighbour_set, std::set<index_type>& requested_tiles,
+									std::map<index_type, data_type&>& queue_tiles, std::mutex& queue_lock,
+									std::mutex& request_lock)
 {
-	std::vector<RasterTileIndex> indices;
+	std::vector<index_type> indices;
 
-	std::lock_guard<std::mutex> lockRequested(m_MutexRequestRasterTiles);
-	std::lock_guard<std::mutex> lockActive(m_MutexQueueRasterTiles);
+	std::lock_guard<std::mutex> lockRequested(request_lock);
+	std::lock_guard<std::mutex> lockQueue(queue_lock);
 
-	for (const auto& element : neighbour_set_raster_tile) {
-		if (queue_raster_tiles.find(element) != queue_raster_tiles.end()) {
+	for (const auto& element : neighbour_set) {
+		if (queue_tiles.find(element) != queue_tiles.end()) {
 			indices.push_back(element);
 		}
-		else if (active_raster_tile.find(element) != active_raster_tile.end()) {
+		else if (active_tiles.find(element) != active_tiles.end()) {
 			indices.push_back(element);
 		}
-		else if (requested_raster_tile.find(element) != requested_raster_tile.end())
-		{
+		else if (requested_tiles.find(element) != requested_tiles.end()) {
 			indices.push_back(element);
 		}
 	}
 
 	// Remove already present tiles from the neighbour set
 	for (auto& index : indices) {
-		neighbour_set_raster_tile.erase(index);
+		neighbour_set.erase(index);
 	}
+}
+
+void TileManager::PruneNeighbourSetRasterTile()
+{
+	PruneNeighbourSet(active_raster_tile, neighbour_set_raster_tile, requested_raster_tile, queue_raster_tiles,
+		  m_MutexQueueRasterTiles, m_MutexRequestRasterTiles);
 }
 
 void TileManager::PruneNeighbourSetTile3D()
 {
-	std::vector<Tile3DIndex> indices;
-
-	std::lock_guard<std::mutex> lockRequested(m_MutexRequestTile3Ds);
-	std::lock_guard<std::mutex> lockActive(m_MutexQueueTile3Ds);
-
-	for (const auto& element : neighbour_set_tile3D) {
-		if (queue_tile3Ds.find(element) != queue_tile3Ds.end()) {
-			indices.push_back(element);
-		}
-		else if (active_tile3D.find(element) != active_tile3D.end()) {
-			indices.push_back(element);
-		}
-		else if (requested_tile3D.find(element) != requested_tile3D.end()) {
-			indices.push_back(element);
-		}
-	}
-
-	// Remove already present tiles from the neighbour set
-	for (auto& index : indices) {
-		neighbour_set_tile3D.erase(index);
-	}
+	PruneNeighbourSet(active_tile3D, neighbour_set_tile3D, requested_tile3D, queue_tile3Ds, m_MutexQueueTile3Ds,
+					  m_MutexRequestTile3Ds);
 }
 
 void TileManager::GetRasterTileNeighbours()
