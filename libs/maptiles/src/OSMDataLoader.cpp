@@ -42,7 +42,7 @@ void OSMDataLoader::FetchOSMWays()
 	int attempts = 0;
 
 	// sometimes the API request results in an error 
-	while ((int)m_result.error() || GetHTTPStatus() != 200 && attempts < 10)
+	while ((int)m_result.error() || GetHTTPStatus() != 200 && attempts < 4)
 	{
 		// Avoid making too many requests at the same time
 		Sleep(250);
