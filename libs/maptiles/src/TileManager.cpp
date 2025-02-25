@@ -478,34 +478,42 @@ void TileManager::GetTile3DNeighbours()
 	}
 }
 
+template <typename index_type, typename data_type>
+void TileManager::AddTilesToQueue(index_type index, std::set<index_type>& requested_tiles,
+								  std::map<index_type, data_type&>& queue_tiles, std::mutex& queue_lock,
+								  std::mutex& request_lock)
+{
+	data_type* tileData = nullptr;
+
+	if constexpr (std::is_same_v<index_type, RasterTileIndex>) {
+		tileData = &tile_manager_data.GetRasterTile(index.zoom, index.x, index.y);
+	}
+	else if constexpr (std::is_same_v<index_type, Tile3DIndex>) {
+		tileData = &tile_manager_data.GetTile3D(index.lat, index.lon);
+	}
+
+	if (tileData->valid) {
+		std::lock_guard<std::mutex> lockQueue(queue_lock);
+		queue_tiles.emplace(index, *tileData);
+
+		// Send the signal that the tile was downloaded
+		tile_downloaded();
+	}
+	
+	std::lock_guard<std::mutex> lockRequest(request_lock);
+	requested_tiles.erase(index);
+
+}
+
 void TileManager::AddRasterTileToQueue(RasterTileIndex index)
 {
-	RasterTileData& tileData = tile_manager_data.GetRasterTile(index.zoom, index.x, index.y);
-	if (tileData.valid)
-	{
-		std::lock_guard<std::mutex> lockQueue(m_MutexQueueRasterTiles);
-		queue_raster_tiles.emplace(index, tileData);
-	}
-	std::lock_guard<std::mutex> lockRequest(m_MutexRequestRasterTiles);
-	requested_raster_tile.erase(index);
-	
-	// Send the signal that the tile was downloaded
-	tile_downloaded();
+	AddTilesToQueue(index, requested_raster_tile, queue_raster_tiles, m_MutexQueueRasterTiles,
+					m_MutexRequestRasterTiles);
 }
 
 void TileManager::AddTile3DToQueue(Tile3DIndex index)
 {
-	Tile3DData& tileData = tile_manager_data.GetTile3D(index.lat, index.lon);
-	if (tileData.valid)
-	{
-		std::lock_guard<std::mutex> lockQueue(m_MutexQueueTile3Ds);
-		queue_tile3Ds.emplace(index, tileData);
-	}
-	std::lock_guard<std::mutex> lockRequest(m_MutexRequestTile3Ds);
-	requested_tile3D.erase(index);
-
-	// Send the signal that the tile was downloaded
-	tile_downloaded();
+	AddTilesToQueue(index, requested_tile3D, queue_tile3Ds, m_MutexQueueTile3Ds, m_MutexRequestTile3Ds);
 }
 
 void TileManager::AddRasterTiles(cgv::render::context& ctx)
