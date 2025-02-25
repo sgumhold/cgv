@@ -54,6 +54,11 @@ class MAPTILES_API TileManager
 					 std::mutex& queue_lock);
 	void RemoveRasterTiles();
 	void RemoveTile3Ds();
+
+	template <typename index_type, typename data_type, typename render_type>
+	void PruneNeighbourSet(std::map<index_type, render_type>& active_tiles, std::set<index_type>& neighbour_set,
+						   std::set<index_type>& requested_tiles, std::map<index_type, data_type&>& queue_tiles,
+						   std::mutex& queue_lock, std::mutex& request_lock);
 	void PruneNeighbourSetRasterTile();
 	void PruneNeighbourSetTile3D();
 	void GetRasterTileNeighbours();
