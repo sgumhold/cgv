@@ -47,6 +47,11 @@ class MAPTILES_API TileManager
 	void GenerateTile3DFrustumNeighbours();
 	void GenerateRasterTileNeighbours();
 	void GenerateTile3DNeighbours();
+
+	template <typename index_type, typename data_type, typename render_type>
+	void RemoveTiles(std::map<index_type, render_type>& active_tiles, std::set<index_type>& neighbour_set,
+					 std::set<index_type>& requested_tiles, std::map<index_type, data_type&>& queue_tiles,
+					 std::mutex& queue_lock);
 	void RemoveRasterTiles();
 	void RemoveTile3Ds();
 	void PruneNeighbourSetRasterTile();
