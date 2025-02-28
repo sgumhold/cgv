@@ -46,6 +46,7 @@ var hierarchy =
     [ "cgv::app::performance_monitor::layout_attributes", "structcgv_1_1app_1_1performance__monitor_1_1layout__attributes.html", null ],
     [ "cgv::audio::OALContext", "classcgv_1_1audio_1_1OALContext.html", null ],
     [ "cgv::audio::OALListener", "classcgv_1_1audio_1_1OALListener.html", null ],
+    [ "cgv::audio::OALSoundFormat", "structcgv_1_1audio_1_1OALSoundFormat.html", null ],
     [ "cgv::audio::OALSource", "classcgv_1_1audio_1_1OALSource.html", null ],
     [ "cgv::base::abst_property_access", "structcgv_1_1base_1_1abst__property__access.html", [
       [ "cgv::base::standard_type_property_access< bool >", "structcgv_1_1base_1_1standard__type__property__access.html", [

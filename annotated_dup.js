@@ -20,6 +20,7 @@ var annotated_dup =
       [ "audio", null, [
         [ "OALContext", "classcgv_1_1audio_1_1OALContext.html", "classcgv_1_1audio_1_1OALContext" ],
         [ "OALListener", "classcgv_1_1audio_1_1OALListener.html", "classcgv_1_1audio_1_1OALListener" ],
+        [ "OALSoundFormat", "structcgv_1_1audio_1_1OALSoundFormat.html", null ],
         [ "OALSource", "classcgv_1_1audio_1_1OALSource.html", "classcgv_1_1audio_1_1OALSource" ]
       ] ],
       [ "base", "namespacecgv_1_1base.html", [

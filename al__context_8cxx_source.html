@@ -115,414 +115,494 @@ $(document).ready(function(){initNavTree('al__context_8cxx_source.html',''); ini
 <div class="line"><a id="l00016" name="l00016"></a><span class="lineno">   16</span><span class="keyword">namespace </span><a class="code hl_namespace" href="namespacecgv.html">cgv</a> {</div>
 <div class="line"><a id="l00017" name="l00017"></a><span class="lineno">   17</span><span class="keyword">namespace </span>audio {</div>
 <div class="line"><a id="l00018" name="l00018"></a><span class="lineno">   18</span> </div>
-<div class="line"><a id="l00019" name="l00019"></a><span class="lineno">   19</span>OALContext::OALContext() : OALContext(<span class="stringliteral">&quot;&quot;</span>){};</div>
-<div class="line"><a id="l00020" name="l00020"></a><span class="lineno">   20</span> </div>
-<div class="foldopen" id="foldopen00021" data-start="{" data-end="}">
-<div class="line"><a id="l00021" name="l00021"></a><span class="lineno"><a class="line" href="classcgv_1_1audio_1_1OALContext.html#aa24c338882c4cded6ce349ad19050a56">   21</a></span>OALContext::OALContext(<span class="keyword">const</span> std::string&amp; device)</div>
-<div class="line"><a id="l00022" name="l00022"></a><span class="lineno">   22</span>    : oal_device(alcOpenDevice(device.empty() ? nullptr : device.c_str()))</div>
-<div class="line"><a id="l00023" name="l00023"></a><span class="lineno">   23</span>{</div>
-<div class="line"><a id="l00024" name="l00024"></a><span class="lineno">   24</span>    <span class="keywordflow">if</span> (oal_device) {</div>
-<div class="line"><a id="l00025" name="l00025"></a><span class="lineno">   25</span>        oal_context = alcCreateContext(oal_device, <span class="keyword">nullptr</span>);</div>
-<div class="line"><a id="l00026" name="l00026"></a><span class="lineno">   26</span>        alcMakeContextCurrent(oal_context);</div>
-<div class="line"><a id="l00027" name="l00027"></a><span class="lineno">   27</span>    }</div>
-<div class="line"><a id="l00028" name="l00028"></a><span class="lineno">   28</span>}</div>
+<div class="foldopen" id="foldopen00019" data-start="{" data-end="}">
+<div class="line"><a id="l00019" name="l00019"></a><span class="lineno"><a class="line" href="classcgv_1_1audio_1_1OALContext.html#a4cf127a20671e7fa3b1fa1fe333fe169">   19</a></span>std::string <a class="code hl_function" href="classcgv_1_1audio_1_1OALContext.html#a4cf127a20671e7fa3b1fa1fe333fe169">OALContext::get_default_device_name</a>()</div>
+<div class="line"><a id="l00020" name="l00020"></a><span class="lineno">   20</span>{</div>
+<div class="line"><a id="l00021" name="l00021"></a><span class="lineno">   21</span>    <span class="keyword">const</span> ALCchar* dev_string = alcGetString(<span class="keyword">nullptr</span>, ALC_DEFAULT_ALL_DEVICES_SPECIFIER);</div>
+<div class="line"><a id="l00022" name="l00022"></a><span class="lineno">   22</span>    assert(dev_string);</div>
+<div class="line"><a id="l00023" name="l00023"></a><span class="lineno">   23</span>    <span class="keywordflow">return</span> dev_string ? std::string(dev_string) : std::string();</div>
+<div class="line"><a id="l00024" name="l00024"></a><span class="lineno">   24</span>}</div>
 </div>
-<div class="line"><a id="l00029" name="l00029"></a><span class="lineno">   29</span> </div>
-<div class="line"><a id="l00030" name="l00030"></a><span class="lineno">   30</span>OALContext::~OALContext()</div>
-<div class="line"><a id="l00031" name="l00031"></a><span class="lineno">   31</span>{</div>
-<div class="line"><a id="l00032" name="l00032"></a><span class="lineno">   32</span>    <span class="comment">// TODO first, delete all sources</span></div>
-<div class="line"><a id="l00033" name="l00033"></a><span class="lineno">   33</span> </div>
-<div class="line"><a id="l00034" name="l00034"></a><span class="lineno">   34</span>    <span class="keywordflow">for</span> (<span class="keyword">const</span> <span class="keyword">auto</span>&amp; buf : sample_buffers) {</div>
-<div class="line"><a id="l00035" name="l00035"></a><span class="lineno">   35</span>        alDeleteBuffers(1, &amp;buf.second);</div>
-<div class="line"><a id="l00036" name="l00036"></a><span class="lineno">   36</span>    }</div>
-<div class="line"><a id="l00037" name="l00037"></a><span class="lineno">   37</span> </div>
-<div class="line"><a id="l00038" name="l00038"></a><span class="lineno">   38</span>    <span class="keyword">auto</span>* <span class="keyword">const</span> context = alcGetCurrentContext();</div>
-<div class="line"><a id="l00039" name="l00039"></a><span class="lineno">   39</span>    <span class="keyword">auto</span>* <span class="keyword">const</span> device = alcGetContextsDevice(context);</div>
-<div class="line"><a id="l00040" name="l00040"></a><span class="lineno">   40</span>    alcMakeContextCurrent(<span class="keyword">nullptr</span>);</div>
-<div class="line"><a id="l00041" name="l00041"></a><span class="lineno">   41</span>    alcDestroyContext(context);</div>
-<div class="line"><a id="l00042" name="l00042"></a><span class="lineno">   42</span>    alcCloseDevice(device);</div>
-<div class="line"><a id="l00043" name="l00043"></a><span class="lineno">   43</span>}</div>
-<div class="line"><a id="l00044" name="l00044"></a><span class="lineno">   44</span> </div>
-<div class="foldopen" id="foldopen00045" data-start="{" data-end="}">
-<div class="line"><a id="l00045" name="l00045"></a><span class="lineno"><a class="line" href="classcgv_1_1audio_1_1OALContext.html#a6f73bd05ef149d0a8af6e9faa9b9f5db">   45</a></span><span class="keywordtype">void</span> <a class="code hl_function" href="classcgv_1_1audio_1_1OALContext.html#a6f73bd05ef149d0a8af6e9faa9b9f5db">OALContext::load_sample</a>(std::string filepath)</div>
-<div class="line"><a id="l00046" name="l00046"></a><span class="lineno">   46</span>{</div>
-<div class="line"><a id="l00047" name="l00047"></a><span class="lineno">   47</span>    std::filesystem::path path(filepath);</div>
-<div class="line"><a id="l00048" name="l00048"></a><span class="lineno">   48</span>    <span class="keywordflow">if</span> (path.empty() || !std::filesystem::exists(path))</div>
-<div class="line"><a id="l00049" name="l00049"></a><span class="lineno">   49</span>        <span class="keywordflow">return</span>;</div>
-<div class="line"><a id="l00050" name="l00050"></a><span class="lineno">   50</span> </div>
-<div class="line"><a id="l00051" name="l00051"></a><span class="lineno">   51</span>    SndfileHandle soundfile(path.string().c_str());</div>
-<div class="line"><a id="l00052" name="l00052"></a><span class="lineno">   52</span>    <span class="keywordflow">if</span> (soundfile.error() != SF_ERR_NO_ERROR) {</div>
-<div class="line"><a id="l00053" name="l00053"></a><span class="lineno">   53</span>        std::cerr &lt;&lt; soundfile.strError() &lt;&lt; std::endl;</div>
-<div class="line"><a id="l00054" name="l00054"></a><span class="lineno">   54</span>        <span class="keywordflow">return</span>;</div>
-<div class="line"><a id="l00055" name="l00055"></a><span class="lineno">   55</span>    }</div>
-<div class="line"><a id="l00056" name="l00056"></a><span class="lineno">   56</span> </div>
-<div class="line"><a id="l00057" name="l00057"></a><span class="lineno">   57</span>    assert(oal_context);</div>
-<div class="line"><a id="l00058" name="l00058"></a><span class="lineno">   58</span>    assert(oal_device);</div>
-<div class="line"><a id="l00059" name="l00059"></a><span class="lineno">   59</span> </div>
-<div class="line"><a id="l00060" name="l00060"></a><span class="lineno">   60</span>    ALuint buffer;</div>
-<div class="line"><a id="l00061" name="l00061"></a><span class="lineno">   61</span>    alGenBuffers(1, &amp;buffer);</div>
-<div class="line"><a id="l00062" name="l00062"></a><span class="lineno">   62</span>    assert(AL_NO_ERROR == alcGetError(oal_device));</div>
-<div class="line"><a id="l00063" name="l00063"></a><span class="lineno">   63</span> </div>
-<div class="line"><a id="l00064" name="l00064"></a><span class="lineno">   64</span>    assert(soundfile.channels() == 1 || soundfile.channels() == 2);</div>
-<div class="line"><a id="l00065" name="l00065"></a><span class="lineno">   65</span>    <span class="keyword">const</span> <span class="keywordtype">size_t</span> num_bytes{soundfile.frames() * soundfile.channels() * <span class="keyword">sizeof</span>(std::int16_t)};</div>
-<div class="line"><a id="l00066" name="l00066"></a><span class="lineno">   66</span>    <span class="keyword">const</span> <span class="keyword">auto</span> buf = std::make_unique&lt;std::int16_t[]&gt;(num_bytes);</div>
-<div class="line"><a id="l00067" name="l00067"></a><span class="lineno">   67</span>    <span class="comment">// libsndfile documentation notes that reading from float files into int buffers could require scaling</span></div>
-<div class="line"><a id="l00068" name="l00068"></a><span class="lineno">   68</span>    soundfile.command(SFC_SET_SCALE_FLOAT_INT_READ, <span class="keyword">nullptr</span>, SF_TRUE);</div>
-<div class="line"><a id="l00069" name="l00069"></a><span class="lineno">   69</span>    soundfile.readf(buf.get(), soundfile.frames());</div>
-<div class="line"><a id="l00070" name="l00070"></a><span class="lineno">   70</span>    <span class="keywordflow">if</span> (soundfile.error() != SF_ERR_NO_ERROR) {</div>
-<div class="line"><a id="l00071" name="l00071"></a><span class="lineno">   71</span>        std::cerr &lt;&lt; soundfile.strError() &lt;&lt; std::endl;</div>
-<div class="line"><a id="l00072" name="l00072"></a><span class="lineno">   72</span>        <span class="keywordflow">return</span>;</div>
-<div class="line"><a id="l00073" name="l00073"></a><span class="lineno">   73</span>    }</div>
-<div class="line"><a id="l00074" name="l00074"></a><span class="lineno">   74</span> </div>
-<div class="line"><a id="l00075" name="l00075"></a><span class="lineno">   75</span>    alBufferData(buffer, soundfile.channels() == 2 ? AL_FORMAT_STEREO16 : AL_FORMAT_MONO16, buf.get(), (ALsizei)num_bytes,</div>
-<div class="line"><a id="l00076" name="l00076"></a><span class="lineno">   76</span>                 (ALsizei)soundfile.samplerate());</div>
-<div class="line"><a id="l00077" name="l00077"></a><span class="lineno">   77</span>    assert(AL_NO_ERROR == alcGetError(oal_device));</div>
-<div class="line"><a id="l00078" name="l00078"></a><span class="lineno">   78</span> </div>
-<div class="line"><a id="l00079" name="l00079"></a><span class="lineno">   79</span>    assert(path.has_filename());</div>
-<div class="line"><a id="l00080" name="l00080"></a><span class="lineno">   80</span>    sample_buffers.emplace(path.stem().string(), buffer);</div>
-<div class="line"><a id="l00081" name="l00081"></a><span class="lineno">   81</span>}</div>
+<div class="foldopen" id="foldopen00025" data-start="{" data-end="}">
+<div class="line"><a id="l00025" name="l00025"></a><span class="lineno"><a class="line" href="classcgv_1_1audio_1_1OALContext.html#a441f37204792899d81bded2236b7637a">   25</a></span>std::vector&lt;std::string&gt; <a class="code hl_function" href="classcgv_1_1audio_1_1OALContext.html#a441f37204792899d81bded2236b7637a">OALContext::enumerate_devices</a>()</div>
+<div class="line"><a id="l00026" name="l00026"></a><span class="lineno">   26</span>{</div>
+<div class="line"><a id="l00027" name="l00027"></a><span class="lineno">   27</span>    assert(alcIsExtensionPresent(<span class="keyword">nullptr</span>, <span class="stringliteral">&quot;ALC_ENUMERATE_ALL_EXT&quot;</span>));</div>
+<div class="line"><a id="l00028" name="l00028"></a><span class="lineno">   28</span>    <span class="keyword">const</span> ALCchar* dev_strings = alcGetString(<span class="keyword">nullptr</span>, ALC_ALL_DEVICES_SPECIFIER);</div>
+<div class="line"><a id="l00029" name="l00029"></a><span class="lineno">   29</span>    assert(dev_strings);</div>
+<div class="line"><a id="l00030" name="l00030"></a><span class="lineno">   30</span> </div>
+<div class="line"><a id="l00031" name="l00031"></a><span class="lineno">   31</span>    std::vector&lt;std::string&gt; device_names;</div>
+<div class="line"><a id="l00032" name="l00032"></a><span class="lineno">   32</span>    <span class="comment">// alcGetString returns cstring array terminated by two successive null bytes</span></div>
+<div class="line"><a id="l00033" name="l00033"></a><span class="lineno">   33</span>    <span class="comment">// (the first terminating the last cstring, the second terminating the array)</span></div>
+<div class="line"><a id="l00034" name="l00034"></a><span class="lineno">   34</span>    <span class="keywordflow">while</span> (strlen(dev_strings) != 0) {</div>
+<div class="line"><a id="l00035" name="l00035"></a><span class="lineno">   35</span>        device_names.emplace_back(dev_strings);</div>
+<div class="line"><a id="l00036" name="l00036"></a><span class="lineno">   36</span>        <span class="comment">// +1 for the null byte</span></div>
+<div class="line"><a id="l00037" name="l00037"></a><span class="lineno">   37</span>        dev_strings += device_names.back().length() + 1;</div>
+<div class="line"><a id="l00038" name="l00038"></a><span class="lineno">   38</span>    }</div>
+<div class="line"><a id="l00039" name="l00039"></a><span class="lineno">   39</span>    <span class="keywordflow">return</span> device_names;</div>
+<div class="line"><a id="l00040" name="l00040"></a><span class="lineno">   40</span>}</div>
 </div>
-<div class="line"><a id="l00082" name="l00082"></a><span class="lineno">   82</span> </div>
-<div class="foldopen" id="foldopen00083" data-start="{" data-end="}">
-<div class="line"><a id="l00083" name="l00083"></a><span class="lineno"><a class="line" href="classcgv_1_1audio_1_1OALContext.html#a8c2aae410cf79943d2d211b5dcee22eb">   83</a></span><span class="keywordtype">void</span> <a class="code hl_function" href="classcgv_1_1audio_1_1OALContext.html#a6f73bd05ef149d0a8af6e9faa9b9f5db">OALContext::load_sample</a>(std::string symbolic_name, <span class="keyword">const</span> <span class="keywordtype">char</span>* data, <span class="keywordtype">size_t</span> data_length)</div>
-<div class="line"><a id="l00084" name="l00084"></a><span class="lineno">   84</span>{</div>
-<div class="line"><a id="l00085" name="l00085"></a><span class="lineno">   85</span>    <span class="keywordflow">if</span> (symbolic_name.empty())</div>
-<div class="line"><a id="l00086" name="l00086"></a><span class="lineno">   86</span>        <span class="keywordflow">throw</span> std::invalid_argument(<span class="stringliteral">&quot;Symbolic file name can not be empty!&quot;</span>);</div>
-<div class="line"><a id="l00087" name="l00087"></a><span class="lineno">   87</span>    <span class="keywordflow">if</span> (std::end(sample_buffers) != sample_buffers.find(symbolic_name))</div>
-<div class="line"><a id="l00088" name="l00088"></a><span class="lineno">   88</span>        <span class="keywordflow">throw</span> std::invalid_argument(<span class="stringliteral">&quot;Symbolic name \&quot;&quot;</span> + symbolic_name + <span class="stringliteral">&quot;\&quot; already present&quot;</span>);</div>
-<div class="line"><a id="l00089" name="l00089"></a><span class="lineno">   89</span>    assert(data);</div>
-<div class="line"><a id="l00090" name="l00090"></a><span class="lineno">   90</span> </div>
-<div class="line"><a id="l00091" name="l00091"></a><span class="lineno">   91</span>    <span class="comment">// The state describing a virtual file descriptor (as anonymous type)</span></div>
-<div class="line"><a id="l00092" name="l00092"></a><span class="lineno">   92</span>    <span class="keyword">struct </span>VIO_state</div>
-<div class="line"><a id="l00093" name="l00093"></a><span class="lineno">   93</span>    {</div>
-<div class="line"><a id="l00094" name="l00094"></a><span class="lineno">   94</span>        <span class="keyword">const</span> <span class="keywordtype">char</span>* <span class="keyword">const</span> data;</div>
-<div class="line"><a id="l00095" name="l00095"></a><span class="lineno">   95</span>        <span class="keywordtype">size_t</span> data_length;</div>
-<div class="line"><a id="l00096" name="l00096"></a><span class="lineno">   96</span>        <span class="keyword">const</span> <span class="keywordtype">char</span>* current_byte_ptr;</div>
-<div class="line"><a id="l00097" name="l00097"></a><span class="lineno">   97</span>    } vio_state{data, data_length, data}; <span class="comment">// and a concrete variable with list initialization performed</span></div>
-<div class="line"><a id="l00098" name="l00098"></a><span class="lineno">   98</span> </div>
-<div class="line"><a id="l00099" name="l00099"></a><span class="lineno">   99</span>    SF_VIRTUAL_IO sfvio;</div>
-<div class="line"><a id="l00100" name="l00100"></a><span class="lineno">  100</span>    sfvio.get_filelen = [](<span class="keywordtype">void</span>* user_data) -&gt; sf_count_t {</div>
-<div class="line"><a id="l00101" name="l00101"></a><span class="lineno">  101</span>        <span class="keywordflow">return</span> <span class="keyword">static_cast&lt;</span><span class="keyword">const </span>VIO_state*<span class="keyword">&gt;</span>(user_data)-&gt;data_length;</div>
-<div class="line"><a id="l00102" name="l00102"></a><span class="lineno">  102</span>    };</div>
-<div class="line"><a id="l00103" name="l00103"></a><span class="lineno">  103</span>    sfvio.seek = [](sf_count_t offset, <span class="keywordtype">int</span> whence, <span class="keywordtype">void</span>* user_data) -&gt; sf_count_t {</div>
-<div class="line"><a id="l00104" name="l00104"></a><span class="lineno">  104</span>        <span class="keyword">auto</span>* state = <span class="keyword">static_cast&lt;</span>VIO_state*<span class="keyword">&gt;</span>(user_data);</div>
-<div class="line"><a id="l00105" name="l00105"></a><span class="lineno">  105</span>        <span class="keywordflow">switch</span> (whence) {</div>
-<div class="line"><a id="l00106" name="l00106"></a><span class="lineno">  106</span>        <span class="keywordflow">case</span> SEEK_CUR:</div>
-<div class="line"><a id="l00107" name="l00107"></a><span class="lineno">  107</span>            state-&gt;current_byte_ptr += offset;</div>
-<div class="line"><a id="l00108" name="l00108"></a><span class="lineno">  108</span>            <span class="keywordflow">return</span> state-&gt;current_byte_ptr - state-&gt;data;</div>
-<div class="line"><a id="l00109" name="l00109"></a><span class="lineno">  109</span>        <span class="keywordflow">case</span> SEEK_SET:</div>
-<div class="line"><a id="l00110" name="l00110"></a><span class="lineno">  110</span>            state-&gt;current_byte_ptr = state-&gt;data + offset;</div>
-<div class="line"><a id="l00111" name="l00111"></a><span class="lineno">  111</span>            <span class="keywordflow">return</span> offset;</div>
-<div class="line"><a id="l00112" name="l00112"></a><span class="lineno">  112</span>        <span class="keywordflow">case</span> SEEK_END:</div>
-<div class="line"><a id="l00113" name="l00113"></a><span class="lineno">  113</span>            state-&gt;current_byte_ptr = (state-&gt;data + state-&gt;data_length - 1) - offset;</div>
-<div class="line"><a id="l00114" name="l00114"></a><span class="lineno">  114</span>            <span class="keywordflow">return</span> state-&gt;current_byte_ptr - state-&gt;data;</div>
-<div class="line"><a id="l00115" name="l00115"></a><span class="lineno">  115</span>        <span class="keywordflow">default</span>:</div>
-<div class="line"><a id="l00116" name="l00116"></a><span class="lineno">  116</span>            <span class="keywordflow">return</span> 0;</div>
-<div class="line"><a id="l00117" name="l00117"></a><span class="lineno">  117</span>        }</div>
-<div class="line"><a id="l00118" name="l00118"></a><span class="lineno">  118</span>    };</div>
-<div class="line"><a id="l00119" name="l00119"></a><span class="lineno">  119</span>    sfvio.read = [](<span class="keywordtype">void</span>* ptr, sf_count_t count, <span class="keywordtype">void</span>* user_data) -&gt; sf_count_t {</div>
-<div class="line"><a id="l00120" name="l00120"></a><span class="lineno">  120</span>        <span class="keyword">auto</span>* state = <span class="keyword">static_cast&lt;</span>VIO_state*<span class="keyword">&gt;</span>(user_data);</div>
-<div class="line"><a id="l00121" name="l00121"></a><span class="lineno">  121</span>        memcpy(ptr, state-&gt;current_byte_ptr, count);</div>
-<div class="line"><a id="l00122" name="l00122"></a><span class="lineno">  122</span>        state-&gt;current_byte_ptr += count;</div>
-<div class="line"><a id="l00123" name="l00123"></a><span class="lineno">  123</span>        <span class="keywordflow">return</span> count;</div>
-<div class="line"><a id="l00124" name="l00124"></a><span class="lineno">  124</span>    };</div>
-<div class="line"><a id="l00125" name="l00125"></a><span class="lineno">  125</span>    sfvio.write = [](<span class="keyword">const</span> <span class="keywordtype">void</span>* ptr, sf_count_t count, <span class="keywordtype">void</span>* user_data) -&gt; sf_count_t { <span class="keywordflow">return</span> 0; };</div>
-<div class="line"><a id="l00126" name="l00126"></a><span class="lineno">  126</span>    sfvio.tell = [](<span class="keywordtype">void</span>* user_data) -&gt; sf_count_t {</div>
-<div class="line"><a id="l00127" name="l00127"></a><span class="lineno">  127</span>        <span class="keyword">auto</span>* state = <span class="keyword">static_cast&lt;</span><span class="keyword">const </span>VIO_state*<span class="keyword">&gt;</span>(user_data);</div>
-<div class="line"><a id="l00128" name="l00128"></a><span class="lineno">  128</span>        <span class="keywordflow">return</span> state-&gt;current_byte_ptr - state-&gt;data;</div>
-<div class="line"><a id="l00129" name="l00129"></a><span class="lineno">  129</span>    };</div>
-<div class="line"><a id="l00130" name="l00130"></a><span class="lineno">  130</span> </div>
-<div class="line"><a id="l00131" name="l00131"></a><span class="lineno">  131</span>    SndfileHandle soundfile(sfvio, &amp;vio_state);</div>
-<div class="line"><a id="l00132" name="l00132"></a><span class="lineno">  132</span>    <span class="keywordflow">if</span> (soundfile.error() != SF_ERR_NO_ERROR) {</div>
-<div class="line"><a id="l00133" name="l00133"></a><span class="lineno">  133</span>        std::cerr &lt;&lt; soundfile.strError() &lt;&lt; std::endl;</div>
-<div class="line"><a id="l00134" name="l00134"></a><span class="lineno">  134</span>        <span class="keywordflow">return</span>;</div>
-<div class="line"><a id="l00135" name="l00135"></a><span class="lineno">  135</span>    }</div>
-<div class="line"><a id="l00136" name="l00136"></a><span class="lineno">  136</span> </div>
-<div class="line"><a id="l00137" name="l00137"></a><span class="lineno">  137</span>    assert(oal_context);</div>
-<div class="line"><a id="l00138" name="l00138"></a><span class="lineno">  138</span>    assert(oal_device);</div>
-<div class="line"><a id="l00139" name="l00139"></a><span class="lineno">  139</span> </div>
-<div class="line"><a id="l00140" name="l00140"></a><span class="lineno">  140</span>    ALuint buffer;</div>
-<div class="line"><a id="l00141" name="l00141"></a><span class="lineno">  141</span>    alGenBuffers(1, &amp;buffer);</div>
-<div class="line"><a id="l00142" name="l00142"></a><span class="lineno">  142</span>    assert(AL_NO_ERROR == alcGetError(oal_device));</div>
-<div class="line"><a id="l00143" name="l00143"></a><span class="lineno">  143</span> </div>
-<div class="line"><a id="l00144" name="l00144"></a><span class="lineno">  144</span>    assert(soundfile.channels() == 1 || soundfile.channels() == 2);</div>
-<div class="line"><a id="l00145" name="l00145"></a><span class="lineno">  145</span>    <span class="keyword">const</span> <span class="keywordtype">size_t</span> num_bytes{soundfile.frames() * soundfile.channels() * <span class="keyword">sizeof</span>(std::int16_t)};</div>
-<div class="line"><a id="l00146" name="l00146"></a><span class="lineno">  146</span>    <span class="keyword">const</span> <span class="keyword">auto</span> buf = std::make_unique&lt;std::int16_t[]&gt;(num_bytes);</div>
-<div class="line"><a id="l00147" name="l00147"></a><span class="lineno">  147</span>    <span class="keyword">const</span> std::vector&lt;std::int16_t&gt; data_buffer(num_bytes, 0);</div>
-<div class="line"><a id="l00148" name="l00148"></a><span class="lineno">  148</span>    <span class="comment">// libsndfile documentation notes that reading from float files into int buffers could require scaling</span></div>
-<div class="line"><a id="l00149" name="l00149"></a><span class="lineno">  149</span>    soundfile.command(SFC_SET_SCALE_FLOAT_INT_READ, <span class="keyword">nullptr</span>, SF_TRUE);</div>
-<div class="line"><a id="l00150" name="l00150"></a><span class="lineno">  150</span>    soundfile.readf(buf.get(), soundfile.frames());</div>
-<div class="line"><a id="l00151" name="l00151"></a><span class="lineno">  151</span>    <span class="keywordflow">if</span> (soundfile.error() != SF_ERR_NO_ERROR) {</div>
-<div class="line"><a id="l00152" name="l00152"></a><span class="lineno">  152</span>        std::cerr &lt;&lt; soundfile.strError() &lt;&lt; std::endl;</div>
-<div class="line"><a id="l00153" name="l00153"></a><span class="lineno">  153</span>        <span class="keywordflow">return</span>;</div>
-<div class="line"><a id="l00154" name="l00154"></a><span class="lineno">  154</span>    }</div>
-<div class="line"><a id="l00155" name="l00155"></a><span class="lineno">  155</span> </div>
-<div class="line"><a id="l00156" name="l00156"></a><span class="lineno">  156</span>    alBufferData(buffer, soundfile.channels() == 2 ? AL_FORMAT_STEREO16 : AL_FORMAT_MONO16, buf.get(), (ALsizei)num_bytes,</div>
-<div class="line"><a id="l00157" name="l00157"></a><span class="lineno">  157</span>                 (ALsizei)soundfile.samplerate());</div>
-<div class="line"><a id="l00158" name="l00158"></a><span class="lineno">  158</span>    assert(AL_NO_ERROR == alcGetError(oal_device));</div>
-<div class="line"><a id="l00159" name="l00159"></a><span class="lineno">  159</span> </div>
-<div class="line"><a id="l00160" name="l00160"></a><span class="lineno">  160</span>    sample_buffers.emplace(symbolic_name, buffer);</div>
-<div class="line"><a id="l00161" name="l00161"></a><span class="lineno">  161</span>}</div>
+<div class="foldopen" id="foldopen00041" data-start="{" data-end="}">
+<div class="line"><a id="l00041" name="l00041"></a><span class="lineno"><a class="line" href="classcgv_1_1audio_1_1OALContext.html#af9ee9ae71be6f500207173ee3b2d22f8">   41</a></span><a class="code hl_function" href="classcgv_1_1audio_1_1OALContext.html#af9ee9ae71be6f500207173ee3b2d22f8">OALContext::OALContext</a>(<span class="keyword">const</span> std::string&amp; device) :</div>
+<div class="line"><a id="l00042" name="l00042"></a><span class="lineno">   42</span>    oal_device(alcOpenDevice(device.empty() ? nullptr : device.c_str()))</div>
+<div class="line"><a id="l00043" name="l00043"></a><span class="lineno">   43</span>{</div>
+<div class="line"><a id="l00044" name="l00044"></a><span class="lineno">   44</span>    <span class="keywordflow">if</span> (oal_device) {</div>
+<div class="line"><a id="l00045" name="l00045"></a><span class="lineno">   45</span>        oal_context = alcCreateContext(oal_device, <span class="keyword">nullptr</span>);</div>
+<div class="line"><a id="l00046" name="l00046"></a><span class="lineno">   46</span>        alcMakeContextCurrent(oal_context);</div>
+<div class="line"><a id="l00047" name="l00047"></a><span class="lineno">   47</span>    }</div>
+<div class="line"><a id="l00048" name="l00048"></a><span class="lineno">   48</span>}</div>
 </div>
-<div class="line"><a id="l00162" name="l00162"></a><span class="lineno">  162</span> </div>
-<div class="foldopen" id="foldopen00163" data-start="{" data-end="}">
-<div class="line"><a id="l00163" name="l00163"></a><span class="lineno"><a class="line" href="classcgv_1_1audio_1_1OALContext.html#a040d8f4f4325096f6d03e236bc83544f">  163</a></span><span class="keywordtype">void</span> <a class="code hl_function" href="classcgv_1_1audio_1_1OALContext.html#a040d8f4f4325096f6d03e236bc83544f">OALContext::load_samples</a>(std::string folder, <span class="keywordtype">bool</span> recursive)</div>
-<div class="line"><a id="l00164" name="l00164"></a><span class="lineno">  164</span>{</div>
-<div class="line"><a id="l00165" name="l00165"></a><span class="lineno">  165</span>    std::filesystem::path f(folder);</div>
-<div class="line"><a id="l00166" name="l00166"></a><span class="lineno">  166</span>    <span class="keywordflow">if</span> (!std::filesystem::is_directory(f)) {</div>
-<div class="line"><a id="l00167" name="l00167"></a><span class="lineno">  167</span>        std::cerr &lt;&lt; __FUNCTION__ &lt;&lt; <span class="stringliteral">&quot;: no valid folder &#39;&quot;</span> &lt;&lt; folder &lt;&lt; <span class="stringliteral">&quot;&#39;&quot;</span>;</div>
-<div class="line"><a id="l00168" name="l00168"></a><span class="lineno">  168</span>        <span class="keywordflow">return</span>;</div>
-<div class="line"><a id="l00169" name="l00169"></a><span class="lineno">  169</span>    }</div>
-<div class="line"><a id="l00170" name="l00170"></a><span class="lineno">  170</span> </div>
-<div class="line"><a id="l00171" name="l00171"></a><span class="lineno">  171</span>    <span class="comment">// TODO code duplication should be removed via static tag dispatching</span></div>
-<div class="line"><a id="l00172" name="l00172"></a><span class="lineno">  172</span>    <span class="keywordflow">if</span> (recursive) {</div>
-<div class="line"><a id="l00173" name="l00173"></a><span class="lineno">  173</span>        <span class="keywordflow">for</span> (<span class="keyword">auto</span> <span class="keyword">const</span>&amp; entry : std::filesystem::recursive_directory_iterator(f)) {</div>
-<div class="line"><a id="l00174" name="l00174"></a><span class="lineno">  174</span>            <span class="keywordflow">if</span> (!entry.is_regular_file())</div>
-<div class="line"><a id="l00175" name="l00175"></a><span class="lineno">  175</span>                <span class="keywordflow">continue</span>;</div>
-<div class="line"><a id="l00176" name="l00176"></a><span class="lineno">  176</span>            <a class="code hl_function" href="classcgv_1_1audio_1_1OALContext.html#a6f73bd05ef149d0a8af6e9faa9b9f5db">load_sample</a>(<span class="keyword">static_cast&lt;</span>std::filesystem::path<span class="keyword">&gt;</span>(entry).<span class="keywordtype">string</span>());</div>
-<div class="line"><a id="l00177" name="l00177"></a><span class="lineno">  177</span>        }</div>
-<div class="line"><a id="l00178" name="l00178"></a><span class="lineno">  178</span>    }</div>
-<div class="line"><a id="l00179" name="l00179"></a><span class="lineno">  179</span>    <span class="keywordflow">else</span> {</div>
-<div class="line"><a id="l00180" name="l00180"></a><span class="lineno">  180</span>        <span class="keywordflow">for</span> (<span class="keyword">auto</span> <span class="keyword">const</span>&amp; entry : std::filesystem::directory_iterator(f)) {</div>
-<div class="line"><a id="l00181" name="l00181"></a><span class="lineno">  181</span>            <span class="keywordflow">if</span> (!entry.is_regular_file())</div>
-<div class="line"><a id="l00182" name="l00182"></a><span class="lineno">  182</span>                <span class="keywordflow">continue</span>;</div>
-<div class="line"><a id="l00183" name="l00183"></a><span class="lineno">  183</span>            <a class="code hl_function" href="classcgv_1_1audio_1_1OALContext.html#a6f73bd05ef149d0a8af6e9faa9b9f5db">load_sample</a>(<span class="keyword">static_cast&lt;</span>std::filesystem::path<span class="keyword">&gt;</span>(entry).<span class="keywordtype">string</span>());</div>
-<div class="line"><a id="l00184" name="l00184"></a><span class="lineno">  184</span>        }</div>
-<div class="line"><a id="l00185" name="l00185"></a><span class="lineno">  185</span>    }</div>
-<div class="line"><a id="l00186" name="l00186"></a><span class="lineno">  186</span>}</div>
+<div class="foldopen" id="foldopen00049" data-start="{" data-end="}">
+<div class="line"><a id="l00049" name="l00049"></a><span class="lineno"><a class="line" href="classcgv_1_1audio_1_1OALContext.html#a10276711305b3c51ae10022fa64f180c">   49</a></span><span class="keywordtype">void</span> <a class="code hl_function" href="classcgv_1_1audio_1_1OALContext.html#a10276711305b3c51ae10022fa64f180c">OALContext::make_current</a>()</div>
+<div class="line"><a id="l00050" name="l00050"></a><span class="lineno">   50</span>{</div>
+<div class="line"><a id="l00051" name="l00051"></a><span class="lineno">   51</span>    alcMakeContextCurrent(oal_context);</div>
+<div class="line"><a id="l00052" name="l00052"></a><span class="lineno">   52</span>}</div>
 </div>
-<div class="line"><a id="l00187" name="l00187"></a><span class="lineno">  187</span> </div>
-<div class="foldopen" id="foldopen00188" data-start="{" data-end="}">
-<div class="line"><a id="l00188" name="l00188"></a><span class="lineno"><a class="line" href="classcgv_1_1audio_1_1OALContext.html#afe0cd13fe5d25010696ad63c6cd22b66">  188</a></span>ALuint <a class="code hl_function" href="classcgv_1_1audio_1_1OALContext.html#afe0cd13fe5d25010696ad63c6cd22b66">OALContext::get_buffer_id</a>(std::string sound_name)<span class="keyword"> const</span></div>
-<div class="line"><a id="l00189" name="l00189"></a><span class="lineno">  189</span><span class="keyword"></span>{</div>
-<div class="line"><a id="l00190" name="l00190"></a><span class="lineno">  190</span>    <span class="keyword">auto</span> buffer_id = sample_buffers.find(sound_name);</div>
-<div class="line"><a id="l00191" name="l00191"></a><span class="lineno">  191</span>    <span class="keywordflow">return</span> buffer_id != sample_buffers.end() ? buffer_id-&gt;second : AL_NONE;</div>
-<div class="line"><a id="l00192" name="l00192"></a><span class="lineno">  192</span>}</div>
+<div class="foldopen" id="foldopen00053" data-start="{" data-end="}">
+<div class="line"><a id="l00053" name="l00053"></a><span class="lineno"><a class="line" href="classcgv_1_1audio_1_1OALContext.html#a249991bf87b10be729c2cf8c6e1a52c4">   53</a></span>std::string <a class="code hl_function" href="classcgv_1_1audio_1_1OALContext.html#a249991bf87b10be729c2cf8c6e1a52c4">OALContext::get_device_name</a>()<span class="keyword"> const</span></div>
+<div class="line"><a id="l00054" name="l00054"></a><span class="lineno">   54</span><span class="keyword"></span>{</div>
+<div class="line"><a id="l00055" name="l00055"></a><span class="lineno">   55</span>    <span class="keyword">const</span> ALCchar* device_name = alcGetString(oal_device, ALC_ALL_DEVICES_SPECIFIER);</div>
+<div class="line"><a id="l00056" name="l00056"></a><span class="lineno">   56</span>    <span class="keywordflow">return</span> std::string(device_name);</div>
+<div class="line"><a id="l00057" name="l00057"></a><span class="lineno">   57</span>}</div>
 </div>
-<div class="line"><a id="l00193" name="l00193"></a><span class="lineno">  193</span> </div>
-<div class="foldopen" id="foldopen00194" data-start="{" data-end="}">
-<div class="line"><a id="l00194" name="l00194"></a><span class="lineno"><a class="line" href="classcgv_1_1audio_1_1OALContext.html#a1428a16474ca49303a63484ec74bd56b">  194</a></span>std::list&lt;std::string&gt; <a class="code hl_function" href="classcgv_1_1audio_1_1OALContext.html#a1428a16474ca49303a63484ec74bd56b">OALContext::enumerate_devices</a>()</div>
-<div class="line"><a id="l00195" name="l00195"></a><span class="lineno">  195</span>{</div>
-<div class="line"><a id="l00196" name="l00196"></a><span class="lineno">  196</span>    assert(alcIsExtensionPresent(<span class="keyword">nullptr</span>, <span class="stringliteral">&quot;ALC_ENUMERATE_ALL_EXT&quot;</span>));</div>
-<div class="line"><a id="l00197" name="l00197"></a><span class="lineno">  197</span>    <span class="keyword">const</span> ALCchar* dev_strings = alcGetString(<span class="keyword">nullptr</span>, ALC_ALL_DEVICES_SPECIFIER);</div>
-<div class="line"><a id="l00198" name="l00198"></a><span class="lineno">  198</span>    assert(dev_strings);</div>
-<div class="line"><a id="l00199" name="l00199"></a><span class="lineno">  199</span> </div>
-<div class="line"><a id="l00200" name="l00200"></a><span class="lineno">  200</span>    std::list&lt;std::string&gt; device_names;</div>
-<div class="line"><a id="l00201" name="l00201"></a><span class="lineno">  201</span>    <span class="comment">// alcGetString returns cstring array terminated by two successive null bytes</span></div>
-<div class="line"><a id="l00202" name="l00202"></a><span class="lineno">  202</span>    <span class="comment">// (the first terminating the last cstring, the second terminating the array)</span></div>
-<div class="line"><a id="l00203" name="l00203"></a><span class="lineno">  203</span>    <span class="keywordflow">while</span> (strlen(dev_strings) != 0) {</div>
-<div class="line"><a id="l00204" name="l00204"></a><span class="lineno">  204</span>        device_names.emplace_back(dev_strings);</div>
-<div class="line"><a id="l00205" name="l00205"></a><span class="lineno">  205</span>        <span class="comment">// +1 for the null byte</span></div>
-<div class="line"><a id="l00206" name="l00206"></a><span class="lineno">  206</span>        dev_strings += device_names.back().length() + 1;</div>
-<div class="line"><a id="l00207" name="l00207"></a><span class="lineno">  207</span>    }</div>
-<div class="line"><a id="l00208" name="l00208"></a><span class="lineno">  208</span>    <span class="keywordflow">return</span> device_names;</div>
-<div class="line"><a id="l00209" name="l00209"></a><span class="lineno">  209</span>}</div>
+<div class="foldopen" id="foldopen00058" data-start="{" data-end="}">
+<div class="line"><a id="l00058" name="l00058"></a><span class="lineno"><a class="line" href="classcgv_1_1audio_1_1OALContext.html#a65dc424fc4be728d2fc20f64d9f3a509">   58</a></span><a class="code hl_function" href="classcgv_1_1audio_1_1OALContext.html#a65dc424fc4be728d2fc20f64d9f3a509">OALContext::~OALContext</a>()</div>
+<div class="line"><a id="l00059" name="l00059"></a><span class="lineno">   59</span>{</div>
+<div class="line"><a id="l00060" name="l00060"></a><span class="lineno">   60</span>    <span class="comment">// TODO first, delete all sources</span></div>
+<div class="line"><a id="l00061" name="l00061"></a><span class="lineno">   61</span>    <span class="keywordflow">for</span> (<span class="keyword">const</span> <span class="keyword">auto</span>&amp; buf : sample_buffers) {</div>
+<div class="line"><a id="l00062" name="l00062"></a><span class="lineno">   62</span>        alDeleteBuffers(1, &amp;buf.second);</div>
+<div class="line"><a id="l00063" name="l00063"></a><span class="lineno">   63</span>    }</div>
+<div class="line"><a id="l00064" name="l00064"></a><span class="lineno">   64</span>    <span class="keyword">auto</span>* <span class="keyword">const</span> context = alcGetCurrentContext();</div>
+<div class="line"><a id="l00065" name="l00065"></a><span class="lineno">   65</span>    <span class="keyword">auto</span>* <span class="keyword">const</span> device = alcGetContextsDevice(context);</div>
+<div class="line"><a id="l00066" name="l00066"></a><span class="lineno">   66</span>    alcMakeContextCurrent(<span class="keyword">nullptr</span>);</div>
+<div class="line"><a id="l00067" name="l00067"></a><span class="lineno">   67</span>    alcDestroyContext(context);</div>
+<div class="line"><a id="l00068" name="l00068"></a><span class="lineno">   68</span>    alcCloseDevice(device);</div>
+<div class="line"><a id="l00069" name="l00069"></a><span class="lineno">   69</span>}</div>
 </div>
-<div class="line"><a id="l00210" name="l00210"></a><span class="lineno">  210</span> </div>
-<div class="line"><a id="l00211" name="l00211"></a><span class="lineno"><a class="line" href="classcgv_1_1audio_1_1OALContext.html#a4793753a40efc6732903cdf70aef115e">  211</a></span>std::string <a class="code hl_function" href="classcgv_1_1audio_1_1OALContext.html#a4793753a40efc6732903cdf70aef115e">OALContext::get_error_string</a>() { <span class="keywordflow">return</span> {alGetString(alGetError())}; }</div>
-<div class="line"><a id="l00212" name="l00212"></a><span class="lineno">  212</span> </div>
-<div class="line"><a id="l00213" name="l00213"></a><span class="lineno"><a class="line" href="classcgv_1_1audio_1_1OALContext.html#abcbc203beb11e2a70a8383de59cfbbb3">  213</a></span><span class="keywordtype">bool</span> <a class="code hl_function" href="classcgv_1_1audio_1_1OALContext.html#abcbc203beb11e2a70a8383de59cfbbb3">OALContext::is_no_error</a>() { <span class="keywordflow">return</span> AL_NO_ERROR == alGetError(); }</div>
-<div class="line"><a id="l00214" name="l00214"></a><span class="lineno">  214</span> </div>
+<div class="line"><a id="l00070" name="l00070"></a><span class="lineno">   70</span><span class="keywordtype">bool</span> read_soundfile_to_memory_buffer(SndfileHandle&amp; soundfile, <a class="code hl_struct" href="structcgv_1_1audio_1_1OALSoundFormat.html">OALSoundFormat</a>&amp; format, std::vector&lt;int16_t&gt;&amp; memory_buffer)</div>
+<div class="line"><a id="l00071" name="l00071"></a><span class="lineno">   71</span>{</div>
+<div class="line"><a id="l00072" name="l00072"></a><span class="lineno">   72</span>    <span class="keywordflow">if</span> (soundfile.error() != SF_ERR_NO_ERROR) {</div>
+<div class="line"><a id="l00073" name="l00073"></a><span class="lineno">   73</span>        std::cerr &lt;&lt; soundfile.strError() &lt;&lt; std::endl;</div>
+<div class="line"><a id="l00074" name="l00074"></a><span class="lineno">   74</span>        <span class="keywordflow">return</span> <span class="keyword">false</span>;</div>
+<div class="line"><a id="l00075" name="l00075"></a><span class="lineno">   75</span>    }</div>
+<div class="line"><a id="l00076" name="l00076"></a><span class="lineno">   76</span>    assert(soundfile.channels() == 1 || soundfile.channels() == 2);</div>
+<div class="line"><a id="l00077" name="l00077"></a><span class="lineno">   77</span>    format.nr_channels = OALSoundFormat::Channels(soundfile.channels());</div>
+<div class="line"><a id="l00078" name="l00078"></a><span class="lineno">   78</span>    format.nr_frames = int(soundfile.frames());</div>
+<div class="line"><a id="l00079" name="l00079"></a><span class="lineno">   79</span>    format.sampling_rate = soundfile.samplerate();</div>
+<div class="line"><a id="l00080" name="l00080"></a><span class="lineno">   80</span>    format.value_type = OALSoundFormat::SFT_INT16;</div>
+<div class="line"><a id="l00081" name="l00081"></a><span class="lineno">   81</span>    <span class="keywordtype">size_t</span> num_values = soundfile.frames() * soundfile.channels();</div>
+<div class="line"><a id="l00082" name="l00082"></a><span class="lineno">   82</span>    memory_buffer.resize(num_values);</div>
+<div class="line"><a id="l00083" name="l00083"></a><span class="lineno">   83</span>    <span class="comment">// libsndfile documentation notes that reading from float files into int buffers could require scaling</span></div>
+<div class="line"><a id="l00084" name="l00084"></a><span class="lineno">   84</span>    soundfile.command(SFC_SET_SCALE_FLOAT_INT_READ, <span class="keyword">nullptr</span>, SF_TRUE);</div>
+<div class="line"><a id="l00085" name="l00085"></a><span class="lineno">   85</span>    soundfile.readf(memory_buffer.data(), soundfile.frames());</div>
+<div class="line"><a id="l00086" name="l00086"></a><span class="lineno">   86</span>    <span class="keywordflow">if</span> (soundfile.error() != SF_ERR_NO_ERROR) {</div>
+<div class="line"><a id="l00087" name="l00087"></a><span class="lineno">   87</span>        std::cerr &lt;&lt; soundfile.strError() &lt;&lt; std::endl;</div>
+<div class="line"><a id="l00088" name="l00088"></a><span class="lineno">   88</span>        <span class="keywordflow">return</span> <span class="keyword">false</span>;</div>
+<div class="line"><a id="l00089" name="l00089"></a><span class="lineno">   89</span>    }</div>
+<div class="line"><a id="l00090" name="l00090"></a><span class="lineno">   90</span>    <span class="keywordflow">return</span> <span class="keyword">true</span>;</div>
+<div class="line"><a id="l00091" name="l00091"></a><span class="lineno">   91</span>}</div>
+<div class="foldopen" id="foldopen00092" data-start="{" data-end="}">
+<div class="line"><a id="l00092" name="l00092"></a><span class="lineno"><a class="line" href="classcgv_1_1audio_1_1OALContext.html#a608d61e794cafd11bb605df7c2eecebf">   92</a></span><span class="keywordtype">bool</span> <a class="code hl_function" href="classcgv_1_1audio_1_1OALContext.html#a608d61e794cafd11bb605df7c2eecebf">OALContext::decode_sound_file</a>(<span class="keyword">const</span> <span class="keywordtype">void</span>* data, <span class="keywordtype">size_t</span> data_length, <a class="code hl_struct" href="structcgv_1_1audio_1_1OALSoundFormat.html">OALSoundFormat</a>&amp; format, std::vector&lt;int16_t&gt;&amp; memory_buffer)</div>
+<div class="line"><a id="l00093" name="l00093"></a><span class="lineno">   93</span>{</div>
+<div class="line"><a id="l00094" name="l00094"></a><span class="lineno">   94</span>    <span class="keyword">const</span> <span class="keywordtype">char</span>* data_ptr = <span class="keyword">reinterpret_cast&lt;</span><span class="keyword">const </span><span class="keywordtype">char</span>*<span class="keyword">&gt;</span>(data);</div>
+<div class="line"><a id="l00095" name="l00095"></a><span class="lineno">   95</span>    <span class="comment">// The state describing a virtual file descriptor (as anonymous type)</span></div>
+<div class="line"><a id="l00096" name="l00096"></a><span class="lineno">   96</span>    <span class="keyword">struct </span>VIO_state</div>
+<div class="line"><a id="l00097" name="l00097"></a><span class="lineno">   97</span>    {</div>
+<div class="line"><a id="l00098" name="l00098"></a><span class="lineno">   98</span>        <span class="keyword">const</span> <span class="keywordtype">char</span>* <span class="keyword">const</span> data;</div>
+<div class="line"><a id="l00099" name="l00099"></a><span class="lineno">   99</span>        <span class="keywordtype">size_t</span> data_length;</div>
+<div class="line"><a id="l00100" name="l00100"></a><span class="lineno">  100</span>        <span class="keyword">const</span> <span class="keywordtype">char</span>* current_byte_ptr;</div>
+<div class="line"><a id="l00101" name="l00101"></a><span class="lineno">  101</span>    } vio_state{ data_ptr, data_length, data_ptr }; <span class="comment">// and a concrete variable with list initialization performed</span></div>
+<div class="line"><a id="l00102" name="l00102"></a><span class="lineno">  102</span> </div>
+<div class="line"><a id="l00103" name="l00103"></a><span class="lineno">  103</span>    SF_VIRTUAL_IO sfvio;</div>
+<div class="line"><a id="l00104" name="l00104"></a><span class="lineno">  104</span>    sfvio.get_filelen = [](<span class="keywordtype">void</span>* user_data) -&gt; sf_count_t {</div>
+<div class="line"><a id="l00105" name="l00105"></a><span class="lineno">  105</span>        <span class="keywordflow">return</span> <span class="keyword">static_cast&lt;</span><span class="keyword">const </span>VIO_state*<span class="keyword">&gt;</span>(user_data)-&gt;data_length;</div>
+<div class="line"><a id="l00106" name="l00106"></a><span class="lineno">  106</span>    };</div>
+<div class="line"><a id="l00107" name="l00107"></a><span class="lineno">  107</span>    sfvio.seek = [](sf_count_t offset, <span class="keywordtype">int</span> whence, <span class="keywordtype">void</span>* user_data) -&gt; sf_count_t {</div>
+<div class="line"><a id="l00108" name="l00108"></a><span class="lineno">  108</span>        <span class="keyword">auto</span>* state = <span class="keyword">static_cast&lt;</span>VIO_state*<span class="keyword">&gt;</span>(user_data);</div>
+<div class="line"><a id="l00109" name="l00109"></a><span class="lineno">  109</span>        <span class="keywordflow">switch</span> (whence) {</div>
+<div class="line"><a id="l00110" name="l00110"></a><span class="lineno">  110</span>        <span class="keywordflow">case</span> SEEK_CUR:</div>
+<div class="line"><a id="l00111" name="l00111"></a><span class="lineno">  111</span>            state-&gt;current_byte_ptr += offset;</div>
+<div class="line"><a id="l00112" name="l00112"></a><span class="lineno">  112</span>            <span class="keywordflow">return</span> state-&gt;current_byte_ptr - state-&gt;data;</div>
+<div class="line"><a id="l00113" name="l00113"></a><span class="lineno">  113</span>        <span class="keywordflow">case</span> SEEK_SET:</div>
+<div class="line"><a id="l00114" name="l00114"></a><span class="lineno">  114</span>            state-&gt;current_byte_ptr = state-&gt;data + offset;</div>
+<div class="line"><a id="l00115" name="l00115"></a><span class="lineno">  115</span>            <span class="keywordflow">return</span> offset;</div>
+<div class="line"><a id="l00116" name="l00116"></a><span class="lineno">  116</span>        <span class="keywordflow">case</span> SEEK_END:</div>
+<div class="line"><a id="l00117" name="l00117"></a><span class="lineno">  117</span>            state-&gt;current_byte_ptr = (state-&gt;data + state-&gt;data_length - 1) - offset;</div>
+<div class="line"><a id="l00118" name="l00118"></a><span class="lineno">  118</span>            <span class="keywordflow">return</span> state-&gt;current_byte_ptr - state-&gt;data;</div>
+<div class="line"><a id="l00119" name="l00119"></a><span class="lineno">  119</span>        <span class="keywordflow">default</span>:</div>
+<div class="line"><a id="l00120" name="l00120"></a><span class="lineno">  120</span>            <span class="keywordflow">return</span> 0;</div>
+<div class="line"><a id="l00121" name="l00121"></a><span class="lineno">  121</span>        }</div>
+<div class="line"><a id="l00122" name="l00122"></a><span class="lineno">  122</span>    };</div>
+<div class="line"><a id="l00123" name="l00123"></a><span class="lineno">  123</span>    sfvio.read = [](<span class="keywordtype">void</span>* ptr, sf_count_t count, <span class="keywordtype">void</span>* user_data) -&gt; sf_count_t {</div>
+<div class="line"><a id="l00124" name="l00124"></a><span class="lineno">  124</span>        <span class="keyword">auto</span>* state = <span class="keyword">static_cast&lt;</span>VIO_state*<span class="keyword">&gt;</span>(user_data);</div>
+<div class="line"><a id="l00125" name="l00125"></a><span class="lineno">  125</span>        memcpy(ptr, state-&gt;current_byte_ptr, count);</div>
+<div class="line"><a id="l00126" name="l00126"></a><span class="lineno">  126</span>        state-&gt;current_byte_ptr += count;</div>
+<div class="line"><a id="l00127" name="l00127"></a><span class="lineno">  127</span>        <span class="keywordflow">return</span> count;</div>
+<div class="line"><a id="l00128" name="l00128"></a><span class="lineno">  128</span>    };</div>
+<div class="line"><a id="l00129" name="l00129"></a><span class="lineno">  129</span>    sfvio.write = [](<span class="keyword">const</span> <span class="keywordtype">void</span>* ptr, sf_count_t count, <span class="keywordtype">void</span>* user_data) -&gt; sf_count_t { <span class="keywordflow">return</span> 0; };</div>
+<div class="line"><a id="l00130" name="l00130"></a><span class="lineno">  130</span>    sfvio.tell = [](<span class="keywordtype">void</span>* user_data) -&gt; sf_count_t {</div>
+<div class="line"><a id="l00131" name="l00131"></a><span class="lineno">  131</span>        <span class="keyword">auto</span>* state = <span class="keyword">static_cast&lt;</span><span class="keyword">const </span>VIO_state*<span class="keyword">&gt;</span>(user_data);</div>
+<div class="line"><a id="l00132" name="l00132"></a><span class="lineno">  132</span>        <span class="keywordflow">return</span> state-&gt;current_byte_ptr - state-&gt;data;</div>
+<div class="line"><a id="l00133" name="l00133"></a><span class="lineno">  133</span>    };</div>
+<div class="line"><a id="l00134" name="l00134"></a><span class="lineno">  134</span>    SndfileHandle soundfile(sfvio, &amp;vio_state);</div>
+<div class="line"><a id="l00135" name="l00135"></a><span class="lineno">  135</span>    <span class="keywordflow">return</span> read_soundfile_to_memory_buffer(soundfile, format, memory_buffer);</div>
+<div class="line"><a id="l00136" name="l00136"></a><span class="lineno">  136</span>}</div>
+</div>
+<div class="foldopen" id="foldopen00137" data-start="{" data-end="}">
+<div class="line"><a id="l00137" name="l00137"></a><span class="lineno"><a class="line" href="classcgv_1_1audio_1_1OALContext.html#aae313d90f1c7d7bb7f968f90bef8bf20">  137</a></span><span class="keywordtype">bool</span> <a class="code hl_function" href="classcgv_1_1audio_1_1OALContext.html#aae313d90f1c7d7bb7f968f90bef8bf20">OALContext::load_sound_file</a>(<span class="keyword">const</span> std::string&amp; filepath, <a class="code hl_struct" href="structcgv_1_1audio_1_1OALSoundFormat.html">OALSoundFormat</a>&amp; format, std::vector&lt;int16_t&gt;&amp; memory_buffer)</div>
+<div class="line"><a id="l00138" name="l00138"></a><span class="lineno">  138</span>{</div>
+<div class="line"><a id="l00139" name="l00139"></a><span class="lineno">  139</span>    std::filesystem::path path(filepath);</div>
+<div class="line"><a id="l00140" name="l00140"></a><span class="lineno">  140</span>    <span class="keywordflow">if</span> (path.empty() || !std::filesystem::exists(path))</div>
+<div class="line"><a id="l00141" name="l00141"></a><span class="lineno">  141</span>        <span class="keywordflow">return</span> <span class="keyword">false</span>;</div>
+<div class="line"><a id="l00142" name="l00142"></a><span class="lineno">  142</span>    SndfileHandle soundfile(path.string().c_str());</div>
+<div class="line"><a id="l00143" name="l00143"></a><span class="lineno">  143</span>    <span class="keywordflow">if</span> (soundfile.error() != SF_ERR_NO_ERROR) {</div>
+<div class="line"><a id="l00144" name="l00144"></a><span class="lineno">  144</span>        std::cerr &lt;&lt; soundfile.strError() &lt;&lt; std::endl;</div>
+<div class="line"><a id="l00145" name="l00145"></a><span class="lineno">  145</span>        <span class="keywordflow">return</span> <span class="keyword">false</span>;</div>
+<div class="line"><a id="l00146" name="l00146"></a><span class="lineno">  146</span>    }</div>
+<div class="line"><a id="l00147" name="l00147"></a><span class="lineno">  147</span>    <span class="keywordflow">return</span> read_soundfile_to_memory_buffer(soundfile, format, memory_buffer);</div>
+<div class="line"><a id="l00148" name="l00148"></a><span class="lineno">  148</span>}</div>
+</div>
+<div class="foldopen" id="foldopen00149" data-start="{" data-end="}">
+<div class="line"><a id="l00149" name="l00149"></a><span class="lineno"><a class="line" href="classcgv_1_1audio_1_1OALContext.html#a7bf35c7aca67ddf98a6787e15a8c2569">  149</a></span><span class="keywordtype">void</span> <a class="code hl_function" href="classcgv_1_1audio_1_1OALContext.html#a7bf35c7aca67ddf98a6787e15a8c2569">OALContext::create_buffer</a>(<span class="keyword">const</span> std::string&amp; symbolic_name, <span class="keyword">const</span> <a class="code hl_struct" href="structcgv_1_1audio_1_1OALSoundFormat.html">OALSoundFormat</a>&amp; format, <span class="keyword">const</span> <span class="keywordtype">void</span>* data, <span class="keywordtype">size_t</span> data_length)</div>
+<div class="line"><a id="l00150" name="l00150"></a><span class="lineno">  150</span>{</div>
+<div class="line"><a id="l00151" name="l00151"></a><span class="lineno">  151</span>    <span class="keywordflow">if</span> (symbolic_name.empty())</div>
+<div class="line"><a id="l00152" name="l00152"></a><span class="lineno">  152</span>        <span class="keywordflow">throw</span> std::invalid_argument(<span class="stringliteral">&quot;Symbolic file name can not be empty!&quot;</span>);</div>
+<div class="line"><a id="l00153" name="l00153"></a><span class="lineno">  153</span>    <span class="keywordflow">if</span> (std::end(sample_buffers) != sample_buffers.find(symbolic_name))</div>
+<div class="line"><a id="l00154" name="l00154"></a><span class="lineno">  154</span>        <span class="keywordflow">throw</span> std::invalid_argument(<span class="stringliteral">&quot;Symbolic name \&quot;&quot;</span> + symbolic_name + <span class="stringliteral">&quot;\&quot; already present&quot;</span>);</div>
+<div class="line"><a id="l00155" name="l00155"></a><span class="lineno">  155</span>    assert(data);</div>
+<div class="line"><a id="l00156" name="l00156"></a><span class="lineno">  156</span>    assert(oal_context);</div>
+<div class="line"><a id="l00157" name="l00157"></a><span class="lineno">  157</span>    assert(oal_device);</div>
+<div class="line"><a id="l00158" name="l00158"></a><span class="lineno">  158</span> </div>
+<div class="line"><a id="l00159" name="l00159"></a><span class="lineno">  159</span>    ALuint buffer;</div>
+<div class="line"><a id="l00160" name="l00160"></a><span class="lineno">  160</span>    alGenBuffers(1, &amp;buffer);</div>
+<div class="line"><a id="l00161" name="l00161"></a><span class="lineno">  161</span>    assert(AL_NO_ERROR == alcGetError(oal_device));</div>
+<div class="line"><a id="l00162" name="l00162"></a><span class="lineno">  162</span>    alBufferData(buffer, format.value_type == OALSoundFormat::SFT_UINT8 ?</div>
+<div class="line"><a id="l00163" name="l00163"></a><span class="lineno">  163</span>          (format.nr_channels == OALSoundFormat::Channels::SFC_STEREO ? AL_FORMAT_STEREO8 : AL_FORMAT_MONO8)</div>
+<div class="line"><a id="l00164" name="l00164"></a><span class="lineno">  164</span>        : (format.nr_channels == OALSoundFormat::Channels::SFC_STEREO ? AL_FORMAT_STEREO16 : AL_FORMAT_MONO16),</div>
+<div class="line"><a id="l00165" name="l00165"></a><span class="lineno">  165</span>        data, (ALsizei)data_length, (ALsizei)format.sampling_rate);</div>
+<div class="line"><a id="l00166" name="l00166"></a><span class="lineno">  166</span>    assert(AL_NO_ERROR == alcGetError(oal_device));</div>
+<div class="line"><a id="l00167" name="l00167"></a><span class="lineno">  167</span>    sample_buffers.emplace(symbolic_name, buffer);</div>
+<div class="line"><a id="l00168" name="l00168"></a><span class="lineno">  168</span>}</div>
+</div>
+<div class="foldopen" id="foldopen00169" data-start="{" data-end="}">
+<div class="line"><a id="l00169" name="l00169"></a><span class="lineno"><a class="line" href="classcgv_1_1audio_1_1OALContext.html#aa758f6d2532ceeb769a0ab931c2361a3">  169</a></span><span class="keywordtype">void</span> <a class="code hl_function" href="classcgv_1_1audio_1_1OALContext.html#aa758f6d2532ceeb769a0ab931c2361a3">OALContext::load_sample</a>(std::string filepath, std::string symbolic_name)</div>
+<div class="line"><a id="l00170" name="l00170"></a><span class="lineno">  170</span>{</div>
+<div class="line"><a id="l00171" name="l00171"></a><span class="lineno">  171</span>    <span class="keywordflow">if</span> (symbolic_name.empty()) {</div>
+<div class="line"><a id="l00172" name="l00172"></a><span class="lineno">  172</span>        std::filesystem::path path(filepath);</div>
+<div class="line"><a id="l00173" name="l00173"></a><span class="lineno">  173</span>        <span class="keywordflow">if</span> (path.empty() || !std::filesystem::exists(path))</div>
+<div class="line"><a id="l00174" name="l00174"></a><span class="lineno">  174</span>            <span class="keywordflow">return</span>;</div>
+<div class="line"><a id="l00175" name="l00175"></a><span class="lineno">  175</span>        assert(path.has_filename());</div>
+<div class="line"><a id="l00176" name="l00176"></a><span class="lineno">  176</span>        symbolic_name = path.stem().string();</div>
+<div class="line"><a id="l00177" name="l00177"></a><span class="lineno">  177</span>    }</div>
+<div class="line"><a id="l00178" name="l00178"></a><span class="lineno">  178</span>    <a class="code hl_struct" href="structcgv_1_1audio_1_1OALSoundFormat.html">OALSoundFormat</a> format;</div>
+<div class="line"><a id="l00179" name="l00179"></a><span class="lineno">  179</span>    std::vector&lt;int16_t&gt; memory_buffer;</div>
+<div class="line"><a id="l00180" name="l00180"></a><span class="lineno">  180</span>    <span class="keywordflow">if</span> (!<a class="code hl_function" href="classcgv_1_1audio_1_1OALContext.html#aae313d90f1c7d7bb7f968f90bef8bf20">load_sound_file</a>(filepath, format, memory_buffer))</div>
+<div class="line"><a id="l00181" name="l00181"></a><span class="lineno">  181</span>        <span class="keywordflow">return</span>;</div>
+<div class="line"><a id="l00182" name="l00182"></a><span class="lineno">  182</span>    <a class="code hl_function" href="classcgv_1_1audio_1_1OALContext.html#a7bf35c7aca67ddf98a6787e15a8c2569">create_buffer</a>(symbolic_name, format, memory_buffer.data(), <span class="keyword">sizeof</span>(int16_t) * memory_buffer.size());</div>
+<div class="line"><a id="l00183" name="l00183"></a><span class="lineno">  183</span>}</div>
+</div>
+<div class="foldopen" id="foldopen00184" data-start="{" data-end="}">
+<div class="line"><a id="l00184" name="l00184"></a><span class="lineno"><a class="line" href="classcgv_1_1audio_1_1OALContext.html#aa82fb501954869afc024c39e1b420153">  184</a></span><span class="keywordtype">void</span> <a class="code hl_function" href="classcgv_1_1audio_1_1OALContext.html#aa758f6d2532ceeb769a0ab931c2361a3">OALContext::load_sample</a>(std::string symbolic_name, <span class="keyword">const</span> <span class="keywordtype">void</span>* data, <span class="keywordtype">size_t</span> data_length)</div>
+<div class="line"><a id="l00185" name="l00185"></a><span class="lineno">  185</span>{</div>
+<div class="line"><a id="l00186" name="l00186"></a><span class="lineno">  186</span>    std::vector&lt;int16_t&gt; memory_buffer;</div>
+<div class="line"><a id="l00187" name="l00187"></a><span class="lineno">  187</span>    <a class="code hl_struct" href="structcgv_1_1audio_1_1OALSoundFormat.html">OALSoundFormat</a> format;</div>
+<div class="line"><a id="l00188" name="l00188"></a><span class="lineno">  188</span>    <span class="keywordflow">if</span> (!<a class="code hl_function" href="classcgv_1_1audio_1_1OALContext.html#a608d61e794cafd11bb605df7c2eecebf">decode_sound_file</a>(data, data_length, format, memory_buffer))</div>
+<div class="line"><a id="l00189" name="l00189"></a><span class="lineno">  189</span>        <span class="keywordflow">return</span>;</div>
+<div class="line"><a id="l00190" name="l00190"></a><span class="lineno">  190</span>    <a class="code hl_function" href="classcgv_1_1audio_1_1OALContext.html#a7bf35c7aca67ddf98a6787e15a8c2569">create_buffer</a>(symbolic_name, format, <span class="keyword">reinterpret_cast&lt;</span><span class="keyword">const </span><span class="keywordtype">char</span>*<span class="keyword">&gt;</span>(memory_buffer.data()), <span class="keyword">sizeof</span>(int16_t)*memory_buffer.size());</div>
+<div class="line"><a id="l00191" name="l00191"></a><span class="lineno">  191</span>}</div>
+</div>
+<div class="foldopen" id="foldopen00192" data-start="{" data-end="}">
+<div class="line"><a id="l00192" name="l00192"></a><span class="lineno"><a class="line" href="classcgv_1_1audio_1_1OALContext.html#a040d8f4f4325096f6d03e236bc83544f">  192</a></span><span class="keywordtype">void</span> <a class="code hl_function" href="classcgv_1_1audio_1_1OALContext.html#a040d8f4f4325096f6d03e236bc83544f">OALContext::load_samples</a>(std::string folder, <span class="keywordtype">bool</span> recursive)</div>
+<div class="line"><a id="l00193" name="l00193"></a><span class="lineno">  193</span>{</div>
+<div class="line"><a id="l00194" name="l00194"></a><span class="lineno">  194</span>    std::filesystem::path f(folder);</div>
+<div class="line"><a id="l00195" name="l00195"></a><span class="lineno">  195</span>    <span class="keywordflow">if</span> (!std::filesystem::is_directory(f)) {</div>
+<div class="line"><a id="l00196" name="l00196"></a><span class="lineno">  196</span>        std::cerr &lt;&lt; __FUNCTION__ &lt;&lt; <span class="stringliteral">&quot;: no valid folder &#39;&quot;</span> &lt;&lt; folder &lt;&lt; <span class="stringliteral">&quot;&#39;&quot;</span>;</div>
+<div class="line"><a id="l00197" name="l00197"></a><span class="lineno">  197</span>        <span class="keywordflow">return</span>;</div>
+<div class="line"><a id="l00198" name="l00198"></a><span class="lineno">  198</span>    }</div>
+<div class="line"><a id="l00199" name="l00199"></a><span class="lineno">  199</span>    <span class="comment">// TODO code duplication should be removed via static tag dispatching</span></div>
+<div class="line"><a id="l00200" name="l00200"></a><span class="lineno">  200</span>    <span class="keywordflow">if</span> (recursive) {</div>
+<div class="line"><a id="l00201" name="l00201"></a><span class="lineno">  201</span>        <span class="keywordflow">for</span> (<span class="keyword">auto</span> <span class="keyword">const</span>&amp; entry : std::filesystem::recursive_directory_iterator(f)) {</div>
+<div class="line"><a id="l00202" name="l00202"></a><span class="lineno">  202</span>            <span class="keywordflow">if</span> (!entry.is_regular_file())</div>
+<div class="line"><a id="l00203" name="l00203"></a><span class="lineno">  203</span>                <span class="keywordflow">continue</span>;</div>
+<div class="line"><a id="l00204" name="l00204"></a><span class="lineno">  204</span>            <a class="code hl_function" href="classcgv_1_1audio_1_1OALContext.html#aa758f6d2532ceeb769a0ab931c2361a3">load_sample</a>(<span class="keyword">static_cast&lt;</span>std::filesystem::path<span class="keyword">&gt;</span>(entry).<span class="keywordtype">string</span>());</div>
+<div class="line"><a id="l00205" name="l00205"></a><span class="lineno">  205</span>        }</div>
+<div class="line"><a id="l00206" name="l00206"></a><span class="lineno">  206</span>    }</div>
+<div class="line"><a id="l00207" name="l00207"></a><span class="lineno">  207</span>    <span class="keywordflow">else</span> {</div>
+<div class="line"><a id="l00208" name="l00208"></a><span class="lineno">  208</span>        <span class="keywordflow">for</span> (<span class="keyword">auto</span> <span class="keyword">const</span>&amp; entry : std::filesystem::directory_iterator(f)) {</div>
+<div class="line"><a id="l00209" name="l00209"></a><span class="lineno">  209</span>            <span class="keywordflow">if</span> (!entry.is_regular_file())</div>
+<div class="line"><a id="l00210" name="l00210"></a><span class="lineno">  210</span>                <span class="keywordflow">continue</span>;</div>
+<div class="line"><a id="l00211" name="l00211"></a><span class="lineno">  211</span>            <a class="code hl_function" href="classcgv_1_1audio_1_1OALContext.html#aa758f6d2532ceeb769a0ab931c2361a3">load_sample</a>(<span class="keyword">static_cast&lt;</span>std::filesystem::path<span class="keyword">&gt;</span>(entry).<span class="keywordtype">string</span>());</div>
+<div class="line"><a id="l00212" name="l00212"></a><span class="lineno">  212</span>        }</div>
+<div class="line"><a id="l00213" name="l00213"></a><span class="lineno">  213</span>    }</div>
+<div class="line"><a id="l00214" name="l00214"></a><span class="lineno">  214</span>}</div>
+</div>
 <div class="foldopen" id="foldopen00215" data-start="{" data-end="}">
-<div class="line"><a id="l00215" name="l00215"></a><span class="lineno"><a class="line" href="classcgv_1_1audio_1_1OALContext.html#ae65efe87004dcbb3d8ac45e73146ef5f">  215</a></span><span class="keywordtype">void</span> <a class="code hl_function" href="classcgv_1_1audio_1_1OALContext.html#ae65efe87004dcbb3d8ac45e73146ef5f">OALContext::set_HRTF</a>(<span class="keywordtype">bool</span> active)</div>
-<div class="line"><a id="l00216" name="l00216"></a><span class="lineno">  216</span>{</div>
-<div class="line"><a id="l00217" name="l00217"></a><span class="lineno">  217</span>    <span class="keyword">auto</span>* oal_device = <a class="code hl_function" href="classcgv_1_1audio_1_1OALContext.html#a0f8227ba499d6a770c64650081c633c8">get_native_device</a>();</div>
-<div class="line"><a id="l00218" name="l00218"></a><span class="lineno">  218</span>    <span class="comment">//assert(alcIsExtensionPresent(oal_device, &quot;SOFT_HRTF&quot;));</span></div>
-<div class="line"><a id="l00219" name="l00219"></a><span class="lineno">  219</span> </div>
-<div class="line"><a id="l00220" name="l00220"></a><span class="lineno">  220</span>    <span class="keyword">auto</span> reset_function = (LPALCRESETDEVICESOFT)alcGetProcAddress(oal_device, <span class="stringliteral">&quot;alcResetDeviceSOFT&quot;</span>);</div>
-<div class="line"><a id="l00221" name="l00221"></a><span class="lineno">  221</span> </div>
-<div class="line"><a id="l00222" name="l00222"></a><span class="lineno">  222</span>    std::array&lt;ALCint, 2&gt; attribs = {ALC_OUTPUT_MODE_SOFT, active ? ALC_STEREO_HRTF_SOFT : ALC_STEREO_BASIC_SOFT};</div>
-<div class="line"><a id="l00223" name="l00223"></a><span class="lineno">  223</span>    reset_function(oal_device, attribs.data());</div>
-<div class="line"><a id="l00224" name="l00224"></a><span class="lineno">  224</span>}</div>
+<div class="line"><a id="l00215" name="l00215"></a><span class="lineno"><a class="line" href="classcgv_1_1audio_1_1OALContext.html#afe0cd13fe5d25010696ad63c6cd22b66">  215</a></span>ALuint <a class="code hl_function" href="classcgv_1_1audio_1_1OALContext.html#afe0cd13fe5d25010696ad63c6cd22b66">OALContext::get_buffer_id</a>(std::string sound_name)<span class="keyword"> const</span></div>
+<div class="line"><a id="l00216" name="l00216"></a><span class="lineno">  216</span><span class="keyword"></span>{</div>
+<div class="line"><a id="l00217" name="l00217"></a><span class="lineno">  217</span>    <span class="keyword">auto</span> buffer_id = sample_buffers.find(sound_name);</div>
+<div class="line"><a id="l00218" name="l00218"></a><span class="lineno">  218</span>    <span class="keywordflow">return</span> buffer_id != sample_buffers.end() ? buffer_id-&gt;second : AL_NONE;</div>
+<div class="line"><a id="l00219" name="l00219"></a><span class="lineno">  219</span>}</div>
 </div>
-<div class="line"><a id="l00225" name="l00225"></a><span class="lineno">  225</span> </div>
-<div class="line"><a id="l00226" name="l00226"></a><span class="lineno"><a class="line" href="classcgv_1_1audio_1_1OALContext.html#a0f8227ba499d6a770c64650081c633c8">  226</a></span>ALCdevice* <a class="code hl_function" href="classcgv_1_1audio_1_1OALContext.html#a0f8227ba499d6a770c64650081c633c8">OALContext::get_native_device</a>() { <span class="keywordflow">return</span> oal_device; }</div>
-<div class="line"><a id="l00227" name="l00227"></a><span class="lineno">  227</span> </div>
-<div class="line"><a id="l00228" name="l00228"></a><span class="lineno"><a class="line" href="classcgv_1_1audio_1_1OALContext.html#aff820da73611357c412f78f5166a3373">  228</a></span>ALCcontext* <a class="code hl_function" href="classcgv_1_1audio_1_1OALContext.html#aff820da73611357c412f78f5166a3373">OALContext::get_native_context</a>() { <span class="keywordflow">return</span> oal_context; }</div>
-<div class="line"><a id="l00229" name="l00229"></a><span class="lineno">  229</span> </div>
-<div class="line"><a id="l00230" name="l00230"></a><span class="lineno">  230</span>OALSource::~OALSource() { alDeleteSources(1, &amp;src_id); }</div>
-<div class="line"><a id="l00231" name="l00231"></a><span class="lineno">  231</span> </div>
-<div class="foldopen" id="foldopen00232" data-start="{" data-end="}">
-<div class="line"><a id="l00232" name="l00232"></a><span class="lineno"><a class="line" href="classcgv_1_1audio_1_1OALSource.html#a17bb054cc95d83cd46ad7ee4acfcf58e">  232</a></span><span class="keywordtype">bool</span> <a class="code hl_function" href="classcgv_1_1audio_1_1OALSource.html#a17bb054cc95d83cd46ad7ee4acfcf58e">OALSource::init</a>(<a class="code hl_class" href="classcgv_1_1audio_1_1OALContext.html">OALContext</a>&amp; ctx, std::string sound_name)</div>
-<div class="line"><a id="l00233" name="l00233"></a><span class="lineno">  233</span>{</div>
-<div class="line"><a id="l00234" name="l00234"></a><span class="lineno">  234</span>    this-&gt;ctx = &amp;ctx;</div>
-<div class="line"><a id="l00235" name="l00235"></a><span class="lineno">  235</span> </div>
-<div class="line"><a id="l00236" name="l00236"></a><span class="lineno">  236</span>    alcMakeContextCurrent(ctx.<a class="code hl_function" href="classcgv_1_1audio_1_1OALContext.html#aff820da73611357c412f78f5166a3373">get_native_context</a>());</div>
-<div class="line"><a id="l00237" name="l00237"></a><span class="lineno">  237</span>    alGenSources(1, &amp;src_id);</div>
-<div class="line"><a id="l00238" name="l00238"></a><span class="lineno">  238</span> </div>
-<div class="line"><a id="l00239" name="l00239"></a><span class="lineno">  239</span>    alSourcei(src_id, AL_BUFFER, ctx.<a class="code hl_function" href="classcgv_1_1audio_1_1OALContext.html#afe0cd13fe5d25010696ad63c6cd22b66">get_buffer_id</a>(sound_name));</div>
-<div class="line"><a id="l00240" name="l00240"></a><span class="lineno">  240</span> </div>
-<div class="line"><a id="l00241" name="l00241"></a><span class="lineno">  241</span>    <span class="keywordflow">return</span> ctx.<a class="code hl_function" href="classcgv_1_1audio_1_1OALContext.html#abcbc203beb11e2a70a8383de59cfbbb3">is_no_error</a>();</div>
-<div class="line"><a id="l00242" name="l00242"></a><span class="lineno">  242</span>}</div>
+<div class="line"><a id="l00220" name="l00220"></a><span class="lineno"><a class="line" href="classcgv_1_1audio_1_1OALContext.html#a4793753a40efc6732903cdf70aef115e">  220</a></span>std::string <a class="code hl_function" href="classcgv_1_1audio_1_1OALContext.html#a4793753a40efc6732903cdf70aef115e">OALContext::get_error_string</a>() { <span class="keywordflow">return</span> {alGetString(alGetError())}; }</div>
+<div class="line"><a id="l00221" name="l00221"></a><span class="lineno"><a class="line" href="classcgv_1_1audio_1_1OALContext.html#abcbc203beb11e2a70a8383de59cfbbb3">  221</a></span><span class="keywordtype">bool</span> <a class="code hl_function" href="classcgv_1_1audio_1_1OALContext.html#abcbc203beb11e2a70a8383de59cfbbb3">OALContext::is_no_error</a>() { <span class="keywordflow">return</span> AL_NO_ERROR == alGetError(); }</div>
+<div class="foldopen" id="foldopen00222" data-start="{" data-end="}">
+<div class="line"><a id="l00222" name="l00222"></a><span class="lineno"><a class="line" href="classcgv_1_1audio_1_1OALContext.html#ae65efe87004dcbb3d8ac45e73146ef5f">  222</a></span><span class="keywordtype">void</span> <a class="code hl_function" href="classcgv_1_1audio_1_1OALContext.html#ae65efe87004dcbb3d8ac45e73146ef5f">OALContext::set_HRTF</a>(<span class="keywordtype">bool</span> active)</div>
+<div class="line"><a id="l00223" name="l00223"></a><span class="lineno">  223</span>{</div>
+<div class="line"><a id="l00224" name="l00224"></a><span class="lineno">  224</span>    <span class="keyword">auto</span>* oal_device = <a class="code hl_function" href="classcgv_1_1audio_1_1OALContext.html#a0f8227ba499d6a770c64650081c633c8">get_native_device</a>();</div>
+<div class="line"><a id="l00225" name="l00225"></a><span class="lineno">  225</span>    <span class="comment">//assert(alcIsExtensionPresent(oal_device, &quot;SOFT_HRTF&quot;));</span></div>
+<div class="line"><a id="l00226" name="l00226"></a><span class="lineno">  226</span> </div>
+<div class="line"><a id="l00227" name="l00227"></a><span class="lineno">  227</span>    <span class="keyword">auto</span> reset_function = (LPALCRESETDEVICESOFT)alcGetProcAddress(oal_device, <span class="stringliteral">&quot;alcResetDeviceSOFT&quot;</span>);</div>
+<div class="line"><a id="l00228" name="l00228"></a><span class="lineno">  228</span> </div>
+<div class="line"><a id="l00229" name="l00229"></a><span class="lineno">  229</span>    std::array&lt;ALCint, 2&gt; attribs = {ALC_OUTPUT_MODE_SOFT, active ? ALC_STEREO_HRTF_SOFT : ALC_STEREO_BASIC_SOFT};</div>
+<div class="line"><a id="l00230" name="l00230"></a><span class="lineno">  230</span>    reset_function(oal_device, attribs.data());</div>
+<div class="line"><a id="l00231" name="l00231"></a><span class="lineno">  231</span>}</div>
 </div>
-<div class="line"><a id="l00243" name="l00243"></a><span class="lineno">  243</span> </div>
-<div class="line"><a id="l00244" name="l00244"></a><span class="lineno"><a class="line" href="classcgv_1_1audio_1_1OALSource.html#a3ca31cf1c407eb7fcf7bef3c33c49627">  244</a></span><span class="keywordtype">void</span> <a class="code hl_function" href="classcgv_1_1audio_1_1OALSource.html#a3ca31cf1c407eb7fcf7bef3c33c49627">OALSource::set_position</a>(<a class="code hl_class" href="classcgv_1_1math_1_1fvec.html">cgv::math::fvec&lt;float, 3&gt;</a> pos) { alSourcefv(src_id, AL_POSITION, pos.<a class="code hl_function" href="classcgv_1_1math_1_1fvec.html#a57442f3e304ed4d7879cae42cb774167">data</a>()); }</div>
-<div class="line"><a id="l00245" name="l00245"></a><span class="lineno">  245</span> </div>
-<div class="line"><a id="l00246" name="l00246"></a><span class="lineno"><a class="line" href="classcgv_1_1audio_1_1OALSource.html#a71547f8492425b75bf784791e2509cf1">  246</a></span><span class="keywordtype">void</span> <a class="code hl_function" href="classcgv_1_1audio_1_1OALSource.html#a71547f8492425b75bf784791e2509cf1">OALSource::set_velocity</a>(<a class="code hl_class" href="classcgv_1_1math_1_1fvec.html">cgv::math::fvec&lt;float, 3&gt;</a> vel) { alSourcefv(src_id, AL_VELOCITY, vel.<a class="code hl_function" href="classcgv_1_1math_1_1fvec.html#a57442f3e304ed4d7879cae42cb774167">data</a>()); }</div>
-<div class="line"><a id="l00247" name="l00247"></a><span class="lineno">  247</span> </div>
-<div class="line"><a id="l00248" name="l00248"></a><span class="lineno"><a class="line" href="classcgv_1_1audio_1_1OALSource.html#afec38e8c7c6602cc604421092dc6425b">  248</a></span><span class="keywordtype">void</span> <a class="code hl_function" href="classcgv_1_1audio_1_1OALSource.html#afec38e8c7c6602cc604421092dc6425b">OALSource::set_pitch</a>(<span class="keywordtype">float</span> pitch) { alSourcef(src_id, AL_PITCH, pitch); }</div>
-<div class="line"><a id="l00249" name="l00249"></a><span class="lineno">  249</span> </div>
-<div class="line"><a id="l00250" name="l00250"></a><span class="lineno"><a class="line" href="classcgv_1_1audio_1_1OALSource.html#afb58f9df1d5b20daf6625ee32c66e339">  250</a></span><span class="keywordtype">void</span> <a class="code hl_function" href="classcgv_1_1audio_1_1OALSource.html#afb58f9df1d5b20daf6625ee32c66e339">OALSource::set_gain</a>(<span class="keywordtype">float</span> gain) { alSourcef(src_id, AL_GAIN, gain); }</div>
+<div class="line"><a id="l00232" name="l00232"></a><span class="lineno">  232</span> </div>
+<div class="line"><a id="l00233" name="l00233"></a><span class="lineno"><a class="line" href="classcgv_1_1audio_1_1OALContext.html#a0f8227ba499d6a770c64650081c633c8">  233</a></span>ALCdevice* <a class="code hl_function" href="classcgv_1_1audio_1_1OALContext.html#a0f8227ba499d6a770c64650081c633c8">OALContext::get_native_device</a>() { <span class="keywordflow">return</span> oal_device; }</div>
+<div class="line"><a id="l00234" name="l00234"></a><span class="lineno">  234</span> </div>
+<div class="line"><a id="l00235" name="l00235"></a><span class="lineno"><a class="line" href="classcgv_1_1audio_1_1OALContext.html#aff820da73611357c412f78f5166a3373">  235</a></span>ALCcontext* <a class="code hl_function" href="classcgv_1_1audio_1_1OALContext.html#aff820da73611357c412f78f5166a3373">OALContext::get_native_context</a>() { <span class="keywordflow">return</span> oal_context; }</div>
+<div class="line"><a id="l00236" name="l00236"></a><span class="lineno">  236</span> </div>
+<div class="foldopen" id="foldopen00237" data-start="{" data-end="}">
+<div class="line"><a id="l00237" name="l00237"></a><span class="lineno"><a class="line" href="classcgv_1_1audio_1_1OALSource.html#a08e86d0b99116740a2bed30629d73390">  237</a></span><span class="keywordtype">void</span> <a class="code hl_function" href="classcgv_1_1audio_1_1OALSource.html#a08e86d0b99116740a2bed30629d73390">OALSource::clear</a>()</div>
+<div class="line"><a id="l00238" name="l00238"></a><span class="lineno">  238</span>{</div>
+<div class="line"><a id="l00239" name="l00239"></a><span class="lineno">  239</span>    <span class="keywordflow">if</span> (<a class="code hl_function" href="classcgv_1_1audio_1_1OALSource.html#ab41ee6e117281144e3301891279b0aae">get_state</a>() == OALSS_PAUSED || <a class="code hl_function" href="classcgv_1_1audio_1_1OALSource.html#ab41ee6e117281144e3301891279b0aae">get_state</a>() == OALSS_PLAYING)</div>
+<div class="line"><a id="l00240" name="l00240"></a><span class="lineno">  240</span>        <a class="code hl_function" href="classcgv_1_1audio_1_1OALSource.html#a30153266030e6c12187e4155fb53b120">stop</a>();</div>
+<div class="line"><a id="l00241" name="l00241"></a><span class="lineno">  241</span>    <span class="keywordflow">if</span> (src_id != 0) {</div>
+<div class="line"><a id="l00242" name="l00242"></a><span class="lineno">  242</span>        alDeleteSources(1, &amp;src_id);</div>
+<div class="line"><a id="l00243" name="l00243"></a><span class="lineno">  243</span>        src_id = 0;</div>
+<div class="line"><a id="l00244" name="l00244"></a><span class="lineno">  244</span>    }</div>
+<div class="line"><a id="l00245" name="l00245"></a><span class="lineno">  245</span>}</div>
+</div>
+<div class="line"><a id="l00246" name="l00246"></a><span class="lineno">  246</span> </div>
+<div class="line"><a id="l00247" name="l00247"></a><span class="lineno">  247</span>OALSource::~OALSource()</div>
+<div class="line"><a id="l00248" name="l00248"></a><span class="lineno">  248</span>{</div>
+<div class="line"><a id="l00249" name="l00249"></a><span class="lineno">  249</span>    <a class="code hl_function" href="classcgv_1_1audio_1_1OALSource.html#a08e86d0b99116740a2bed30629d73390">clear</a>();</div>
+<div class="line"><a id="l00250" name="l00250"></a><span class="lineno">  250</span>}</div>
 <div class="line"><a id="l00251" name="l00251"></a><span class="lineno">  251</span> </div>
 <div class="foldopen" id="foldopen00252" data-start="{" data-end="}">
-<div class="line"><a id="l00252" name="l00252"></a><span class="lineno"><a class="line" href="classcgv_1_1audio_1_1OALSource.html#a303dbbf93f9f73dcf7d5b492253e0144">  252</a></span><span class="keywordtype">void</span> <a class="code hl_function" href="classcgv_1_1audio_1_1OALSource.html#a303dbbf93f9f73dcf7d5b492253e0144">OALSource::set_looping</a>(<span class="keywordtype">bool</span> should_loop)</div>
+<div class="line"><a id="l00252" name="l00252"></a><span class="lineno"><a class="line" href="classcgv_1_1audio_1_1OALSource.html#a67f7dcc5b4e733c0229eea5a42c13ca5">  252</a></span><span class="keywordtype">bool</span> <a class="code hl_function" href="classcgv_1_1audio_1_1OALSource.html#a67f7dcc5b4e733c0229eea5a42c13ca5">OALSource::init</a>(<a class="code hl_class" href="classcgv_1_1audio_1_1OALContext.html">OALContext</a>&amp; ctx, std::string sound_name)</div>
 <div class="line"><a id="l00253" name="l00253"></a><span class="lineno">  253</span>{</div>
-<div class="line"><a id="l00254" name="l00254"></a><span class="lineno">  254</span>    alSourcei(src_id, AL_LOOPING, should_loop ? AL_TRUE : AL_FALSE);</div>
-<div class="line"><a id="l00255" name="l00255"></a><span class="lineno">  255</span>}</div>
+<div class="line"><a id="l00254" name="l00254"></a><span class="lineno">  254</span>    this-&gt;ctx_ptr = &amp;ctx;</div>
+<div class="line"><a id="l00255" name="l00255"></a><span class="lineno">  255</span> </div>
+<div class="line"><a id="l00256" name="l00256"></a><span class="lineno">  256</span>    alcMakeContextCurrent(ctx.<a class="code hl_function" href="classcgv_1_1audio_1_1OALContext.html#aff820da73611357c412f78f5166a3373">get_native_context</a>());</div>
+<div class="line"><a id="l00257" name="l00257"></a><span class="lineno">  257</span>    alGenSources(1, &amp;src_id);</div>
+<div class="line"><a id="l00258" name="l00258"></a><span class="lineno">  258</span>    <span class="keywordflow">if</span> (!sound_name.empty())</div>
+<div class="line"><a id="l00259" name="l00259"></a><span class="lineno">  259</span>        append_sound_impl(sound_name);</div>
+<div class="line"><a id="l00260" name="l00260"></a><span class="lineno">  260</span>    <span class="keywordflow">return</span> ctx.<a class="code hl_function" href="classcgv_1_1audio_1_1OALContext.html#abcbc203beb11e2a70a8383de59cfbbb3">is_no_error</a>();</div>
+<div class="line"><a id="l00261" name="l00261"></a><span class="lineno">  261</span>}</div>
 </div>
-<div class="line"><a id="l00256" name="l00256"></a><span class="lineno">  256</span> </div>
-<div class="foldopen" id="foldopen00257" data-start="{" data-end="}">
-<div class="line"><a id="l00257" name="l00257"></a><span class="lineno"><a class="line" href="classcgv_1_1audio_1_1OALSource.html#ae4620553f331940ce977487487dae294">  257</a></span><a class="code hl_class" href="classcgv_1_1math_1_1fvec.html">cgv::math::fvec&lt;float, 3&gt;</a> <a class="code hl_function" href="classcgv_1_1audio_1_1OALSource.html#ae4620553f331940ce977487487dae294">OALSource::get_position</a>()<span class="keyword"> const</span></div>
-<div class="line"><a id="l00258" name="l00258"></a><span class="lineno">  258</span><span class="keyword"></span>{</div>
-<div class="line"><a id="l00259" name="l00259"></a><span class="lineno">  259</span>    <a class="code hl_class" href="classcgv_1_1math_1_1fvec.html">cgv::math::fvec&lt;float, 3&gt;</a> vec;</div>
-<div class="line"><a id="l00260" name="l00260"></a><span class="lineno">  260</span>    alGetSourcefv(src_id, AL_POSITION, vec.<a class="code hl_function" href="classcgv_1_1math_1_1fvec.html#a57442f3e304ed4d7879cae42cb774167">data</a>());</div>
-<div class="line"><a id="l00261" name="l00261"></a><span class="lineno">  261</span>    <span class="keywordflow">return</span> vec;</div>
-<div class="line"><a id="l00262" name="l00262"></a><span class="lineno">  262</span>}</div>
+<div class="line"><a id="l00262" name="l00262"></a><span class="lineno">  262</span> </div>
+<div class="foldopen" id="foldopen00263" data-start="{" data-end="}">
+<div class="line"><a id="l00263" name="l00263"></a><span class="lineno"><a class="line" href="classcgv_1_1audio_1_1OALSource.html#a1bf073758e20425c6385d7736717c4c7">  263</a></span><span class="keywordtype">bool</span> <a class="code hl_function" href="classcgv_1_1audio_1_1OALSource.html#a1bf073758e20425c6385d7736717c4c7">OALSource::append_sound</a>(std::string sound_name)</div>
+<div class="line"><a id="l00264" name="l00264"></a><span class="lineno">  264</span>{</div>
+<div class="line"><a id="l00265" name="l00265"></a><span class="lineno">  265</span>    alcMakeContextCurrent(ctx_ptr-&gt;<a class="code hl_function" href="classcgv_1_1audio_1_1OALContext.html#aff820da73611357c412f78f5166a3373">get_native_context</a>());</div>
+<div class="line"><a id="l00266" name="l00266"></a><span class="lineno">  266</span>    <span class="keywordflow">return</span> append_sound_impl(sound_name);</div>
+<div class="line"><a id="l00267" name="l00267"></a><span class="lineno">  267</span>}</div>
 </div>
-<div class="line"><a id="l00263" name="l00263"></a><span class="lineno">  263</span> </div>
-<div class="foldopen" id="foldopen00264" data-start="{" data-end="}">
-<div class="line"><a id="l00264" name="l00264"></a><span class="lineno"><a class="line" href="classcgv_1_1audio_1_1OALSource.html#aa3a5bcaa763096de556c011c3ea004f5">  264</a></span><a class="code hl_class" href="classcgv_1_1math_1_1fvec.html">cgv::math::fvec&lt;float, 3&gt;</a> <a class="code hl_function" href="classcgv_1_1audio_1_1OALSource.html#aa3a5bcaa763096de556c011c3ea004f5">OALSource::get_velocity</a>()<span class="keyword"> const</span></div>
-<div class="line"><a id="l00265" name="l00265"></a><span class="lineno">  265</span><span class="keyword"></span>{</div>
-<div class="line"><a id="l00266" name="l00266"></a><span class="lineno">  266</span>    <a class="code hl_class" href="classcgv_1_1math_1_1fvec.html">cgv::math::fvec&lt;float, 3&gt;</a> vec;</div>
-<div class="line"><a id="l00267" name="l00267"></a><span class="lineno">  267</span>    alGetSourcefv(src_id, AL_VELOCITY, vec.<a class="code hl_function" href="classcgv_1_1math_1_1fvec.html#a57442f3e304ed4d7879cae42cb774167">data</a>());</div>
-<div class="line"><a id="l00268" name="l00268"></a><span class="lineno">  268</span>    <span class="keywordflow">return</span> vec;</div>
-<div class="line"><a id="l00269" name="l00269"></a><span class="lineno">  269</span>}</div>
-</div>
-<div class="line"><a id="l00270" name="l00270"></a><span class="lineno">  270</span> </div>
-<div class="foldopen" id="foldopen00271" data-start="{" data-end="}">
-<div class="line"><a id="l00271" name="l00271"></a><span class="lineno"><a class="line" href="classcgv_1_1audio_1_1OALSource.html#ae33c89245513382c3ea9f84b7c3f2c4f">  271</a></span><span class="keywordtype">float</span> <a class="code hl_function" href="classcgv_1_1audio_1_1OALSource.html#ae33c89245513382c3ea9f84b7c3f2c4f">OALSource::get_pitch</a>()<span class="keyword"> const</span></div>
-<div class="line"><a id="l00272" name="l00272"></a><span class="lineno">  272</span><span class="keyword"></span>{</div>
-<div class="line"><a id="l00273" name="l00273"></a><span class="lineno">  273</span>    <span class="keywordtype">float</span> pitch;</div>
-<div class="line"><a id="l00274" name="l00274"></a><span class="lineno">  274</span>    alGetSourcef(src_id, AL_PITCH, &amp;pitch);</div>
-<div class="line"><a id="l00275" name="l00275"></a><span class="lineno">  275</span>    <span class="keywordflow">return</span> pitch;</div>
-<div class="line"><a id="l00276" name="l00276"></a><span class="lineno">  276</span>}</div>
-</div>
-<div class="line"><a id="l00277" name="l00277"></a><span class="lineno">  277</span> </div>
-<div class="foldopen" id="foldopen00278" data-start="{" data-end="}">
-<div class="line"><a id="l00278" name="l00278"></a><span class="lineno"><a class="line" href="classcgv_1_1audio_1_1OALSource.html#aded347ef9cbc0d79b8b427a0b5976056">  278</a></span><span class="keywordtype">float</span> <a class="code hl_function" href="classcgv_1_1audio_1_1OALSource.html#aded347ef9cbc0d79b8b427a0b5976056">OALSource::get_gain</a>()<span class="keyword"> const</span></div>
-<div class="line"><a id="l00279" name="l00279"></a><span class="lineno">  279</span><span class="keyword"></span>{</div>
-<div class="line"><a id="l00280" name="l00280"></a><span class="lineno">  280</span>    <span class="keywordtype">float</span> gain;</div>
-<div class="line"><a id="l00281" name="l00281"></a><span class="lineno">  281</span>    alGetSourcef(src_id, AL_GAIN, &amp;gain);</div>
-<div class="line"><a id="l00282" name="l00282"></a><span class="lineno">  282</span>    <span class="keywordflow">return</span> gain;</div>
+<div class="line"><a id="l00268" name="l00268"></a><span class="lineno">  268</span> </div>
+<div class="line"><a id="l00269" name="l00269"></a><span class="lineno">  269</span><span class="keywordtype">bool</span> OALSource::append_sound_impl(std::string sound_name)</div>
+<div class="line"><a id="l00270" name="l00270"></a><span class="lineno">  270</span>{</div>
+<div class="line"><a id="l00271" name="l00271"></a><span class="lineno">  271</span>    ALuint buf_id = ctx_ptr-&gt;<a class="code hl_function" href="classcgv_1_1audio_1_1OALContext.html#afe0cd13fe5d25010696ad63c6cd22b66">get_buffer_id</a>(sound_name);</div>
+<div class="line"><a id="l00272" name="l00272"></a><span class="lineno">  272</span>    <span class="keywordflow">switch</span> (<a class="code hl_function" href="classcgv_1_1audio_1_1OALSource.html#ab41ee6e117281144e3301891279b0aae">get_state</a>()) {</div>
+<div class="line"><a id="l00273" name="l00273"></a><span class="lineno">  273</span>    <span class="keywordflow">case</span> OALSS_INITIAL:</div>
+<div class="line"><a id="l00274" name="l00274"></a><span class="lineno">  274</span>    <span class="keywordflow">case</span> OALSS_STOPPED:</div>
+<div class="line"><a id="l00275" name="l00275"></a><span class="lineno">  275</span>        alSourcei(src_id, AL_BUFFER, buf_id);</div>
+<div class="line"><a id="l00276" name="l00276"></a><span class="lineno">  276</span>        <span class="keywordflow">break</span>;</div>
+<div class="line"><a id="l00277" name="l00277"></a><span class="lineno">  277</span>    <span class="keywordflow">case</span> OALSS_PLAYING:</div>
+<div class="line"><a id="l00278" name="l00278"></a><span class="lineno">  278</span>    <span class="keywordflow">case</span> OALSS_PAUSED:</div>
+<div class="line"><a id="l00279" name="l00279"></a><span class="lineno">  279</span>        alSourceQueueBuffers(src_id, 1, &amp;buf_id);</div>
+<div class="line"><a id="l00280" name="l00280"></a><span class="lineno">  280</span>        <span class="keywordflow">break</span>;</div>
+<div class="line"><a id="l00281" name="l00281"></a><span class="lineno">  281</span>    }</div>
+<div class="line"><a id="l00282" name="l00282"></a><span class="lineno">  282</span>    <span class="keywordflow">return</span> ctx_ptr-&gt;<a class="code hl_function" href="classcgv_1_1audio_1_1OALContext.html#abcbc203beb11e2a70a8383de59cfbbb3">is_no_error</a>();</div>
 <div class="line"><a id="l00283" name="l00283"></a><span class="lineno">  283</span>}</div>
-</div>
 <div class="line"><a id="l00284" name="l00284"></a><span class="lineno">  284</span> </div>
-<div class="foldopen" id="foldopen00285" data-start="{" data-end="}">
-<div class="line"><a id="l00285" name="l00285"></a><span class="lineno"><a class="line" href="classcgv_1_1audio_1_1OALSource.html#aa9debb814f016e26618bfca1979cb011">  285</a></span><span class="keywordtype">bool</span> <a class="code hl_function" href="classcgv_1_1audio_1_1OALSource.html#aa9debb814f016e26618bfca1979cb011">OALSource::is_looping</a>()<span class="keyword"> const</span></div>
-<div class="line"><a id="l00286" name="l00286"></a><span class="lineno">  286</span><span class="keyword"></span>{</div>
-<div class="line"><a id="l00287" name="l00287"></a><span class="lineno">  287</span>    ALint looping;</div>
-<div class="line"><a id="l00288" name="l00288"></a><span class="lineno">  288</span>    alGetSourcei(src_id, AL_LOOPING, &amp;looping);</div>
-<div class="line"><a id="l00289" name="l00289"></a><span class="lineno">  289</span>    <span class="keywordflow">return</span> looping == AL_TRUE;</div>
-<div class="line"><a id="l00290" name="l00290"></a><span class="lineno">  290</span>}</div>
+<div class="line"><a id="l00285" name="l00285"></a><span class="lineno"><a class="line" href="classcgv_1_1audio_1_1OALSource.html#a3ca31cf1c407eb7fcf7bef3c33c49627">  285</a></span><span class="keywordtype">void</span> <a class="code hl_function" href="classcgv_1_1audio_1_1OALSource.html#a3ca31cf1c407eb7fcf7bef3c33c49627">OALSource::set_position</a>(<a class="code hl_class" href="classcgv_1_1math_1_1fvec.html">cgv::math::fvec&lt;float, 3&gt;</a> pos) { alSourcefv(src_id, AL_POSITION, pos.<a class="code hl_function" href="classcgv_1_1math_1_1fvec.html#a57442f3e304ed4d7879cae42cb774167">data</a>()); }</div>
+<div class="line"><a id="l00286" name="l00286"></a><span class="lineno">  286</span> </div>
+<div class="line"><a id="l00287" name="l00287"></a><span class="lineno"><a class="line" href="classcgv_1_1audio_1_1OALSource.html#a71547f8492425b75bf784791e2509cf1">  287</a></span><span class="keywordtype">void</span> <a class="code hl_function" href="classcgv_1_1audio_1_1OALSource.html#a71547f8492425b75bf784791e2509cf1">OALSource::set_velocity</a>(<a class="code hl_class" href="classcgv_1_1math_1_1fvec.html">cgv::math::fvec&lt;float, 3&gt;</a> vel) { alSourcefv(src_id, AL_VELOCITY, vel.<a class="code hl_function" href="classcgv_1_1math_1_1fvec.html#a57442f3e304ed4d7879cae42cb774167">data</a>()); }</div>
+<div class="line"><a id="l00288" name="l00288"></a><span class="lineno">  288</span> </div>
+<div class="line"><a id="l00289" name="l00289"></a><span class="lineno"><a class="line" href="classcgv_1_1audio_1_1OALSource.html#afec38e8c7c6602cc604421092dc6425b">  289</a></span><span class="keywordtype">void</span> <a class="code hl_function" href="classcgv_1_1audio_1_1OALSource.html#afec38e8c7c6602cc604421092dc6425b">OALSource::set_pitch</a>(<span class="keywordtype">float</span> pitch) { alSourcef(src_id, AL_PITCH, pitch); }</div>
+<div class="line"><a id="l00290" name="l00290"></a><span class="lineno">  290</span> </div>
+<div class="line"><a id="l00291" name="l00291"></a><span class="lineno"><a class="line" href="classcgv_1_1audio_1_1OALSource.html#afb58f9df1d5b20daf6625ee32c66e339">  291</a></span><span class="keywordtype">void</span> <a class="code hl_function" href="classcgv_1_1audio_1_1OALSource.html#afb58f9df1d5b20daf6625ee32c66e339">OALSource::set_gain</a>(<span class="keywordtype">float</span> gain) { alSourcef(src_id, AL_GAIN, gain); }</div>
+<div class="line"><a id="l00292" name="l00292"></a><span class="lineno">  292</span> </div>
+<div class="foldopen" id="foldopen00293" data-start="{" data-end="}">
+<div class="line"><a id="l00293" name="l00293"></a><span class="lineno"><a class="line" href="classcgv_1_1audio_1_1OALSource.html#a303dbbf93f9f73dcf7d5b492253e0144">  293</a></span><span class="keywordtype">void</span> <a class="code hl_function" href="classcgv_1_1audio_1_1OALSource.html#a303dbbf93f9f73dcf7d5b492253e0144">OALSource::set_looping</a>(<span class="keywordtype">bool</span> should_loop)</div>
+<div class="line"><a id="l00294" name="l00294"></a><span class="lineno">  294</span>{</div>
+<div class="line"><a id="l00295" name="l00295"></a><span class="lineno">  295</span>    alSourcei(src_id, AL_LOOPING, should_loop ? AL_TRUE : AL_FALSE);</div>
+<div class="line"><a id="l00296" name="l00296"></a><span class="lineno">  296</span>}</div>
 </div>
-<div class="line"><a id="l00291" name="l00291"></a><span class="lineno">  291</span> </div>
-<div class="foldopen" id="foldopen00292" data-start="{" data-end="}">
-<div class="line"><a id="l00292" name="l00292"></a><span class="lineno"><a class="line" href="classcgv_1_1audio_1_1OALSource.html#aab2f07045cab91ffac966925d8ce113f">  292</a></span><span class="keywordtype">bool</span> <a class="code hl_function" href="classcgv_1_1audio_1_1OALSource.html#aab2f07045cab91ffac966925d8ce113f">OALSource::is_playing</a>()<span class="keyword"> const</span></div>
-<div class="line"><a id="l00293" name="l00293"></a><span class="lineno">  293</span><span class="keyword"></span>{</div>
-<div class="line"><a id="l00294" name="l00294"></a><span class="lineno">  294</span>    ALint playing;</div>
-<div class="line"><a id="l00295" name="l00295"></a><span class="lineno">  295</span>    alGetSourcei(src_id, AL_PLAYING, &amp;playing);</div>
-<div class="line"><a id="l00296" name="l00296"></a><span class="lineno">  296</span>    <span class="keywordflow">return</span> playing == AL_TRUE;</div>
-<div class="line"><a id="l00297" name="l00297"></a><span class="lineno">  297</span>}</div>
+<div class="line"><a id="l00297" name="l00297"></a><span class="lineno">  297</span> </div>
+<div class="foldopen" id="foldopen00298" data-start="{" data-end="}">
+<div class="line"><a id="l00298" name="l00298"></a><span class="lineno"><a class="line" href="classcgv_1_1audio_1_1OALSource.html#ae4620553f331940ce977487487dae294">  298</a></span><a class="code hl_class" href="classcgv_1_1math_1_1fvec.html">cgv::math::fvec&lt;float, 3&gt;</a> <a class="code hl_function" href="classcgv_1_1audio_1_1OALSource.html#ae4620553f331940ce977487487dae294">OALSource::get_position</a>()<span class="keyword"> const</span></div>
+<div class="line"><a id="l00299" name="l00299"></a><span class="lineno">  299</span><span class="keyword"></span>{</div>
+<div class="line"><a id="l00300" name="l00300"></a><span class="lineno">  300</span>    <a class="code hl_class" href="classcgv_1_1math_1_1fvec.html">cgv::math::fvec&lt;float, 3&gt;</a> vec;</div>
+<div class="line"><a id="l00301" name="l00301"></a><span class="lineno">  301</span>    alGetSourcefv(src_id, AL_POSITION, vec.<a class="code hl_function" href="classcgv_1_1math_1_1fvec.html#a57442f3e304ed4d7879cae42cb774167">data</a>());</div>
+<div class="line"><a id="l00302" name="l00302"></a><span class="lineno">  302</span>    <span class="keywordflow">return</span> vec;</div>
+<div class="line"><a id="l00303" name="l00303"></a><span class="lineno">  303</span>}</div>
 </div>
-<div class="line"><a id="l00298" name="l00298"></a><span class="lineno">  298</span> </div>
-<div class="line"><a id="l00299" name="l00299"></a><span class="lineno"><a class="line" href="classcgv_1_1audio_1_1OALSource.html#a894f6d10519178265c507ff86c5b2b3c">  299</a></span><span class="keywordtype">void</span> <a class="code hl_function" href="classcgv_1_1audio_1_1OALSource.html#a894f6d10519178265c507ff86c5b2b3c">OALSource::play</a>() { alSourcePlay(src_id); }</div>
-<div class="line"><a id="l00300" name="l00300"></a><span class="lineno">  300</span> </div>
-<div class="line"><a id="l00301" name="l00301"></a><span class="lineno"><a class="line" href="classcgv_1_1audio_1_1OALSource.html#a9c2afad2e0b8924a7ae03e3b64706c5b">  301</a></span><span class="keywordtype">void</span> <a class="code hl_function" href="classcgv_1_1audio_1_1OALSource.html#a9c2afad2e0b8924a7ae03e3b64706c5b">OALSource::pause</a>() { alSourcePause(src_id); }</div>
-<div class="line"><a id="l00302" name="l00302"></a><span class="lineno">  302</span> </div>
-<div class="foldopen" id="foldopen00303" data-start="{" data-end="}">
-<div class="line"><a id="l00303" name="l00303"></a><span class="lineno"><a class="line" href="classcgv_1_1audio_1_1OALSource.html#a428ff3a8a4c6aac1788eefcaba5a860d">  303</a></span><span class="keywordtype">void</span> <a class="code hl_function" href="classcgv_1_1audio_1_1OALSource.html#a428ff3a8a4c6aac1788eefcaba5a860d">OALSource::play_pause</a>(<span class="keywordtype">bool</span> should_play)</div>
-<div class="line"><a id="l00304" name="l00304"></a><span class="lineno">  304</span>{</div>
-<div class="line"><a id="l00305" name="l00305"></a><span class="lineno">  305</span>    <span class="keywordflow">if</span> (should_play) {</div>
-<div class="line"><a id="l00306" name="l00306"></a><span class="lineno">  306</span>        this-&gt;<a class="code hl_function" href="classcgv_1_1audio_1_1OALSource.html#a894f6d10519178265c507ff86c5b2b3c">play</a>();</div>
-<div class="line"><a id="l00307" name="l00307"></a><span class="lineno">  307</span>    }</div>
-<div class="line"><a id="l00308" name="l00308"></a><span class="lineno">  308</span>    <span class="keywordflow">else</span> {</div>
-<div class="line"><a id="l00309" name="l00309"></a><span class="lineno">  309</span>        this-&gt;<a class="code hl_function" href="classcgv_1_1audio_1_1OALSource.html#a9c2afad2e0b8924a7ae03e3b64706c5b">pause</a>();</div>
-<div class="line"><a id="l00310" name="l00310"></a><span class="lineno">  310</span>    }</div>
-<div class="line"><a id="l00311" name="l00311"></a><span class="lineno">  311</span>}</div>
+<div class="line"><a id="l00304" name="l00304"></a><span class="lineno">  304</span> </div>
+<div class="foldopen" id="foldopen00305" data-start="{" data-end="}">
+<div class="line"><a id="l00305" name="l00305"></a><span class="lineno"><a class="line" href="classcgv_1_1audio_1_1OALSource.html#aa3a5bcaa763096de556c011c3ea004f5">  305</a></span><a class="code hl_class" href="classcgv_1_1math_1_1fvec.html">cgv::math::fvec&lt;float, 3&gt;</a> <a class="code hl_function" href="classcgv_1_1audio_1_1OALSource.html#aa3a5bcaa763096de556c011c3ea004f5">OALSource::get_velocity</a>()<span class="keyword"> const</span></div>
+<div class="line"><a id="l00306" name="l00306"></a><span class="lineno">  306</span><span class="keyword"></span>{</div>
+<div class="line"><a id="l00307" name="l00307"></a><span class="lineno">  307</span>    <a class="code hl_class" href="classcgv_1_1math_1_1fvec.html">cgv::math::fvec&lt;float, 3&gt;</a> vec;</div>
+<div class="line"><a id="l00308" name="l00308"></a><span class="lineno">  308</span>    alGetSourcefv(src_id, AL_VELOCITY, vec.<a class="code hl_function" href="classcgv_1_1math_1_1fvec.html#a57442f3e304ed4d7879cae42cb774167">data</a>());</div>
+<div class="line"><a id="l00309" name="l00309"></a><span class="lineno">  309</span>    <span class="keywordflow">return</span> vec;</div>
+<div class="line"><a id="l00310" name="l00310"></a><span class="lineno">  310</span>}</div>
 </div>
-<div class="line"><a id="l00312" name="l00312"></a><span class="lineno">  312</span> </div>
-<div class="line"><a id="l00313" name="l00313"></a><span class="lineno"><a class="line" href="classcgv_1_1audio_1_1OALSource.html#a30153266030e6c12187e4155fb53b120">  313</a></span><span class="keywordtype">void</span> <a class="code hl_function" href="classcgv_1_1audio_1_1OALSource.html#a30153266030e6c12187e4155fb53b120">OALSource::stop</a>() { alSourceStop(src_id); }</div>
-<div class="line"><a id="l00314" name="l00314"></a><span class="lineno">  314</span> </div>
-<div class="line"><a id="l00315" name="l00315"></a><span class="lineno"><a class="line" href="classcgv_1_1audio_1_1OALSource.html#a8bdf8f4837446c4a4de79f5f8c972ed6">  315</a></span><span class="keywordtype">void</span> <a class="code hl_function" href="classcgv_1_1audio_1_1OALSource.html#a8bdf8f4837446c4a4de79f5f8c972ed6">OALSource::rewind</a>() { alSourceRewind(src_id); }</div>
-<div class="line"><a id="l00316" name="l00316"></a><span class="lineno">  316</span> </div>
-<div class="foldopen" id="foldopen00317" data-start="{" data-end="}">
-<div class="line"><a id="l00317" name="l00317"></a><span class="lineno"><a class="line" href="classcgv_1_1audio_1_1OALListener.html#a0f8db8a0f1a6aa285931c29e76d6f7a4">  317</a></span><a class="code hl_class" href="classcgv_1_1math_1_1fvec.html">cgv::math::fvec&lt;float, 3&gt;</a> <a class="code hl_function" href="classcgv_1_1audio_1_1OALListener.html#a0f8db8a0f1a6aa285931c29e76d6f7a4">OALListener::get_position</a>()</div>
-<div class="line"><a id="l00318" name="l00318"></a><span class="lineno">  318</span>{</div>
-<div class="line"><a id="l00319" name="l00319"></a><span class="lineno">  319</span>    <a class="code hl_class" href="classcgv_1_1math_1_1fvec.html">cgv::math::fvec&lt;float, 3&gt;</a> pos;</div>
-<div class="line"><a id="l00320" name="l00320"></a><span class="lineno">  320</span>    alGetListenerfv(AL_POSITION, pos.<a class="code hl_function" href="classcgv_1_1math_1_1fvec.html#a57442f3e304ed4d7879cae42cb774167">data</a>());</div>
-<div class="line"><a id="l00321" name="l00321"></a><span class="lineno">  321</span>    <span class="keywordflow">return</span> pos;</div>
-<div class="line"><a id="l00322" name="l00322"></a><span class="lineno">  322</span>}</div>
+<div class="line"><a id="l00311" name="l00311"></a><span class="lineno">  311</span> </div>
+<div class="foldopen" id="foldopen00312" data-start="{" data-end="}">
+<div class="line"><a id="l00312" name="l00312"></a><span class="lineno"><a class="line" href="classcgv_1_1audio_1_1OALSource.html#ae33c89245513382c3ea9f84b7c3f2c4f">  312</a></span><span class="keywordtype">float</span> <a class="code hl_function" href="classcgv_1_1audio_1_1OALSource.html#ae33c89245513382c3ea9f84b7c3f2c4f">OALSource::get_pitch</a>()<span class="keyword"> const</span></div>
+<div class="line"><a id="l00313" name="l00313"></a><span class="lineno">  313</span><span class="keyword"></span>{</div>
+<div class="line"><a id="l00314" name="l00314"></a><span class="lineno">  314</span>    <span class="keywordtype">float</span> pitch;</div>
+<div class="line"><a id="l00315" name="l00315"></a><span class="lineno">  315</span>    alGetSourcef(src_id, AL_PITCH, &amp;pitch);</div>
+<div class="line"><a id="l00316" name="l00316"></a><span class="lineno">  316</span>    <span class="keywordflow">return</span> pitch;</div>
+<div class="line"><a id="l00317" name="l00317"></a><span class="lineno">  317</span>}</div>
 </div>
-<div class="line"><a id="l00323" name="l00323"></a><span class="lineno">  323</span> </div>
-<div class="foldopen" id="foldopen00324" data-start="{" data-end="}">
-<div class="line"><a id="l00324" name="l00324"></a><span class="lineno"><a class="line" href="classcgv_1_1audio_1_1OALListener.html#a497512e9f21ba4e05049fc25a52451bc">  324</a></span><a class="code hl_class" href="classcgv_1_1math_1_1fvec.html">cgv::math::fvec&lt;float, 3&gt;</a> <a class="code hl_function" href="classcgv_1_1audio_1_1OALListener.html#a497512e9f21ba4e05049fc25a52451bc">OALListener::get_velocity</a>()</div>
-<div class="line"><a id="l00325" name="l00325"></a><span class="lineno">  325</span>{</div>
-<div class="line"><a id="l00326" name="l00326"></a><span class="lineno">  326</span>    <a class="code hl_class" href="classcgv_1_1math_1_1fvec.html">cgv::math::fvec&lt;float, 3&gt;</a> vel;</div>
-<div class="line"><a id="l00327" name="l00327"></a><span class="lineno">  327</span>    alGetListenerfv(AL_VELOCITY, vel.<a class="code hl_function" href="classcgv_1_1math_1_1fvec.html#a57442f3e304ed4d7879cae42cb774167">data</a>());</div>
-<div class="line"><a id="l00328" name="l00328"></a><span class="lineno">  328</span>    <span class="keywordflow">return</span> vel;</div>
-<div class="line"><a id="l00329" name="l00329"></a><span class="lineno">  329</span>}</div>
+<div class="line"><a id="l00318" name="l00318"></a><span class="lineno">  318</span> </div>
+<div class="foldopen" id="foldopen00319" data-start="{" data-end="}">
+<div class="line"><a id="l00319" name="l00319"></a><span class="lineno"><a class="line" href="classcgv_1_1audio_1_1OALSource.html#aded347ef9cbc0d79b8b427a0b5976056">  319</a></span><span class="keywordtype">float</span> <a class="code hl_function" href="classcgv_1_1audio_1_1OALSource.html#aded347ef9cbc0d79b8b427a0b5976056">OALSource::get_gain</a>()<span class="keyword"> const</span></div>
+<div class="line"><a id="l00320" name="l00320"></a><span class="lineno">  320</span><span class="keyword"></span>{</div>
+<div class="line"><a id="l00321" name="l00321"></a><span class="lineno">  321</span>    <span class="keywordtype">float</span> gain;</div>
+<div class="line"><a id="l00322" name="l00322"></a><span class="lineno">  322</span>    alGetSourcef(src_id, AL_GAIN, &amp;gain);</div>
+<div class="line"><a id="l00323" name="l00323"></a><span class="lineno">  323</span>    <span class="keywordflow">return</span> gain;</div>
+<div class="line"><a id="l00324" name="l00324"></a><span class="lineno">  324</span>}</div>
 </div>
-<div class="line"><a id="l00330" name="l00330"></a><span class="lineno">  330</span> </div>
-<div class="foldopen" id="foldopen00331" data-start="{" data-end="}">
-<div class="line"><a id="l00331" name="l00331"></a><span class="lineno"><a class="line" href="classcgv_1_1audio_1_1OALListener.html#a65116bf7d99fbd440ca8e33c3cb8d9a7">  331</a></span><a class="code hl_class" href="classcgv_1_1math_1_1fmat.html">cgv::math::fmat&lt;float, 3, 2&gt;</a> <a class="code hl_function" href="classcgv_1_1audio_1_1OALListener.html#a65116bf7d99fbd440ca8e33c3cb8d9a7">OALListener::get_orientation</a>()</div>
-<div class="line"><a id="l00332" name="l00332"></a><span class="lineno">  332</span>{</div>
-<div class="line"><a id="l00333" name="l00333"></a><span class="lineno">  333</span>    <a class="code hl_class" href="classcgv_1_1math_1_1fmat.html">cgv::math::fmat&lt;float, 3, 2&gt;</a> orientation;</div>
-<div class="line"><a id="l00334" name="l00334"></a><span class="lineno">  334</span>    alGetListenerfv(AL_ORIENTATION, orientation.<a class="code hl_function" href="classcgv_1_1math_1_1fvec.html#a57442f3e304ed4d7879cae42cb774167">data</a>());</div>
-<div class="line"><a id="l00335" name="l00335"></a><span class="lineno">  335</span>    <span class="keywordflow">return</span> orientation;</div>
-<div class="line"><a id="l00336" name="l00336"></a><span class="lineno">  336</span>}</div>
+<div class="line"><a id="l00325" name="l00325"></a><span class="lineno">  325</span> </div>
+<div class="foldopen" id="foldopen00326" data-start="{" data-end="}">
+<div class="line"><a id="l00326" name="l00326"></a><span class="lineno"><a class="line" href="classcgv_1_1audio_1_1OALSource.html#aa9debb814f016e26618bfca1979cb011">  326</a></span><span class="keywordtype">bool</span> <a class="code hl_function" href="classcgv_1_1audio_1_1OALSource.html#aa9debb814f016e26618bfca1979cb011">OALSource::is_looping</a>()<span class="keyword"> const</span></div>
+<div class="line"><a id="l00327" name="l00327"></a><span class="lineno">  327</span><span class="keyword"></span>{</div>
+<div class="line"><a id="l00328" name="l00328"></a><span class="lineno">  328</span>    ALint looping;</div>
+<div class="line"><a id="l00329" name="l00329"></a><span class="lineno">  329</span>    alGetSourcei(src_id, AL_LOOPING, &amp;looping);</div>
+<div class="line"><a id="l00330" name="l00330"></a><span class="lineno">  330</span>    <span class="keywordflow">return</span> looping == AL_TRUE;</div>
+<div class="line"><a id="l00331" name="l00331"></a><span class="lineno">  331</span>}</div>
 </div>
-<div class="line"><a id="l00337" name="l00337"></a><span class="lineno">  337</span> </div>
-<div class="line"><a id="l00338" name="l00338"></a><span class="lineno"><a class="line" href="classcgv_1_1audio_1_1OALListener.html#a592a571841f089e1e70d2757aa09fa5b">  338</a></span><span class="keywordtype">void</span> <a class="code hl_function" href="classcgv_1_1audio_1_1OALListener.html#a592a571841f089e1e70d2757aa09fa5b">OALListener::set_position</a>(<a class="code hl_class" href="classcgv_1_1math_1_1fvec.html">cgv::math::fvec&lt;float, 3&gt;</a> pos) { alListenerfv(AL_POSITION, pos.<a class="code hl_function" href="classcgv_1_1math_1_1fvec.html#a57442f3e304ed4d7879cae42cb774167">data</a>()); }</div>
+<div class="line"><a id="l00332" name="l00332"></a><span class="lineno">  332</span> </div>
+<div class="foldopen" id="foldopen00333" data-start="{" data-end="}">
+<div class="line"><a id="l00333" name="l00333"></a><span class="lineno"><a class="line" href="classcgv_1_1audio_1_1OALSource.html#aab2f07045cab91ffac966925d8ce113f">  333</a></span><span class="keywordtype">bool</span> <a class="code hl_function" href="classcgv_1_1audio_1_1OALSource.html#aab2f07045cab91ffac966925d8ce113f">OALSource::is_playing</a>()<span class="keyword"> const</span></div>
+<div class="line"><a id="l00334" name="l00334"></a><span class="lineno">  334</span><span class="keyword"></span>{</div>
+<div class="line"><a id="l00335" name="l00335"></a><span class="lineno">  335</span>    ALint playing;</div>
+<div class="line"><a id="l00336" name="l00336"></a><span class="lineno">  336</span>    alGetSourcei(src_id, AL_PLAYING, &amp;playing);</div>
+<div class="line"><a id="l00337" name="l00337"></a><span class="lineno">  337</span>    <span class="keywordflow">return</span> playing == AL_TRUE;</div>
+<div class="line"><a id="l00338" name="l00338"></a><span class="lineno">  338</span>}</div>
+</div>
 <div class="line"><a id="l00339" name="l00339"></a><span class="lineno">  339</span> </div>
-<div class="line"><a id="l00340" name="l00340"></a><span class="lineno"><a class="line" href="classcgv_1_1audio_1_1OALListener.html#aafc3928073037345a8ad2391c0949b98">  340</a></span><span class="keywordtype">void</span> <a class="code hl_function" href="classcgv_1_1audio_1_1OALListener.html#aafc3928073037345a8ad2391c0949b98">OALListener::set_velocity</a>(<a class="code hl_class" href="classcgv_1_1math_1_1fvec.html">cgv::math::fvec&lt;float, 3&gt;</a> vel) { alListenerfv(AL_VELOCITY, vel.<a class="code hl_function" href="classcgv_1_1math_1_1fvec.html#a57442f3e304ed4d7879cae42cb774167">data</a>()); }</div>
-<div class="line"><a id="l00341" name="l00341"></a><span class="lineno">  341</span> </div>
-<div class="foldopen" id="foldopen00342" data-start="{" data-end="}">
-<div class="line"><a id="l00342" name="l00342"></a><span class="lineno"><a class="line" href="classcgv_1_1audio_1_1OALListener.html#a5eefffecb06b0cf897d3b9213757eb0f">  342</a></span><span class="keywordtype">void</span> <a class="code hl_function" href="classcgv_1_1audio_1_1OALListener.html#a5eefffecb06b0cf897d3b9213757eb0f">OALListener::set_orientation</a>(<a class="code hl_class" href="classcgv_1_1math_1_1fvec.html">cgv::math::fvec&lt;float, 3&gt;</a> at, <a class="code hl_class" href="classcgv_1_1math_1_1fvec.html">cgv::math::fvec&lt;float, 3&gt;</a> up)</div>
-<div class="line"><a id="l00343" name="l00343"></a><span class="lineno">  343</span>{</div>
-<div class="line"><a id="l00344" name="l00344"></a><span class="lineno">  344</span>    <span class="keyword">const</span> std::array&lt;float, 6&gt; orientation = {at[0], at[1], at[2], up[0], up[1], up[2]};</div>
-<div class="line"><a id="l00345" name="l00345"></a><span class="lineno">  345</span>    alListenerfv(AL_ORIENTATION, orientation.data());</div>
-<div class="line"><a id="l00346" name="l00346"></a><span class="lineno">  346</span>}</div>
+<div class="foldopen" id="foldopen00340" data-start="{" data-end="}">
+<div class="line"><a id="l00340" name="l00340"></a><span class="lineno"><a class="line" href="classcgv_1_1audio_1_1OALSource.html#ab41ee6e117281144e3301891279b0aae">  340</a></span>OALSourceState <a class="code hl_function" href="classcgv_1_1audio_1_1OALSource.html#ab41ee6e117281144e3301891279b0aae">OALSource::get_state</a>()<span class="keyword"> const</span></div>
+<div class="line"><a id="l00341" name="l00341"></a><span class="lineno">  341</span><span class="keyword"></span>{</div>
+<div class="line"><a id="l00342" name="l00342"></a><span class="lineno">  342</span>    ALint state;</div>
+<div class="line"><a id="l00343" name="l00343"></a><span class="lineno">  343</span>    alGetSourcei(src_id, AL_SOURCE_STATE, &amp;state);</div>
+<div class="line"><a id="l00344" name="l00344"></a><span class="lineno">  344</span>    <span class="keywordflow">return</span> OALSourceState(state - AL_INITIAL);</div>
+<div class="line"><a id="l00345" name="l00345"></a><span class="lineno">  345</span>}</div>
 </div>
-<div class="line"><a id="l00347" name="l00347"></a><span class="lineno">  347</span> </div>
-<div class="line"><a id="l00348" name="l00348"></a><span class="lineno">  348</span>} <span class="comment">// namespace cgv</span></div>
-<div class="line"><a id="l00349" name="l00349"></a><span class="lineno">  349</span>} <span class="comment">// namespace audio</span></div>
-<div class="ttc" id="aclasscgv_1_1audio_1_1OALContext_html"><div class="ttname"><a href="classcgv_1_1audio_1_1OALContext.html">cgv::audio::OALContext</a></div><div class="ttdoc">This class provides easy sample loading, device enumeration and error retrieval.</div><div class="ttdef"><b>Definition</b> <a href="al__context_8h_source.html#l00021">al_context.h:22</a></div></div>
-<div class="ttc" id="aclasscgv_1_1audio_1_1OALContext_html_a040d8f4f4325096f6d03e236bc83544f"><div class="ttname"><a href="classcgv_1_1audio_1_1OALContext.html#a040d8f4f4325096f6d03e236bc83544f">cgv::audio::OALContext::load_samples</a></div><div class="ttdeci">void load_samples(std::string folder, bool recursive=false)</div><div class="ttdoc">Loads all audio files in a folder into the internal buffer list.</div><div class="ttdef"><b>Definition</b> <a href="al__context_8cxx_source.html#l00163">al_context.cxx:163</a></div></div>
-<div class="ttc" id="aclasscgv_1_1audio_1_1OALContext_html_a0f8227ba499d6a770c64650081c633c8"><div class="ttname"><a href="classcgv_1_1audio_1_1OALContext.html#a0f8227ba499d6a770c64650081c633c8">cgv::audio::OALContext::get_native_device</a></div><div class="ttdeci">ALCdevice * get_native_device()</div><div class="ttdoc">Gets the native device handle for direct OpenAL calls.</div><div class="ttdef"><b>Definition</b> <a href="al__context_8cxx_source.html#l00226">al_context.cxx:226</a></div></div>
-<div class="ttc" id="aclasscgv_1_1audio_1_1OALContext_html_a1428a16474ca49303a63484ec74bd56b"><div class="ttname"><a href="classcgv_1_1audio_1_1OALContext.html#a1428a16474ca49303a63484ec74bd56b">cgv::audio::OALContext::enumerate_devices</a></div><div class="ttdeci">static std::list&lt; std::string &gt; enumerate_devices()</div><div class="ttdoc">Enumerates all devices which are output targets for the OpenAL context.</div><div class="ttdef"><b>Definition</b> <a href="al__context_8cxx_source.html#l00194">al_context.cxx:194</a></div></div>
-<div class="ttc" id="aclasscgv_1_1audio_1_1OALContext_html_a4793753a40efc6732903cdf70aef115e"><div class="ttname"><a href="classcgv_1_1audio_1_1OALContext.html#a4793753a40efc6732903cdf70aef115e">cgv::audio::OALContext::get_error_string</a></div><div class="ttdeci">std::string get_error_string()</div><div class="ttdoc">Returns the last error from the OpenAL context.</div><div class="ttdef"><b>Definition</b> <a href="al__context_8cxx_source.html#l00211">al_context.cxx:211</a></div></div>
-<div class="ttc" id="aclasscgv_1_1audio_1_1OALContext_html_a6f73bd05ef149d0a8af6e9faa9b9f5db"><div class="ttname"><a href="classcgv_1_1audio_1_1OALContext.html#a6f73bd05ef149d0a8af6e9faa9b9f5db">cgv::audio::OALContext::load_sample</a></div><div class="ttdeci">void load_sample(std::string filepath)</div><div class="ttdoc">Loads a sound into the internal buffer list.</div><div class="ttdef"><b>Definition</b> <a href="al__context_8cxx_source.html#l00045">al_context.cxx:45</a></div></div>
-<div class="ttc" id="aclasscgv_1_1audio_1_1OALContext_html_abcbc203beb11e2a70a8383de59cfbbb3"><div class="ttname"><a href="classcgv_1_1audio_1_1OALContext.html#abcbc203beb11e2a70a8383de59cfbbb3">cgv::audio::OALContext::is_no_error</a></div><div class="ttdeci">bool is_no_error()</div><div class="ttdoc">Determines if there were any errors since last call.</div><div class="ttdef"><b>Definition</b> <a href="al__context_8cxx_source.html#l00213">al_context.cxx:213</a></div></div>
-<div class="ttc" id="aclasscgv_1_1audio_1_1OALContext_html_ae65efe87004dcbb3d8ac45e73146ef5f"><div class="ttname"><a href="classcgv_1_1audio_1_1OALContext.html#ae65efe87004dcbb3d8ac45e73146ef5f">cgv::audio::OALContext::set_HRTF</a></div><div class="ttdeci">void set_HRTF(bool active)</div><div class="ttdoc">Toggles the OpenAL output mode to use HRTF.</div><div class="ttdef"><b>Definition</b> <a href="al__context_8cxx_source.html#l00215">al_context.cxx:215</a></div></div>
-<div class="ttc" id="aclasscgv_1_1audio_1_1OALContext_html_afe0cd13fe5d25010696ad63c6cd22b66"><div class="ttname"><a href="classcgv_1_1audio_1_1OALContext.html#afe0cd13fe5d25010696ad63c6cd22b66">cgv::audio::OALContext::get_buffer_id</a></div><div class="ttdeci">ALuint get_buffer_id(std::string sound_name) const</div><div class="ttdoc">Gets the buffer identifier for the symbolic name.</div><div class="ttdef"><b>Definition</b> <a href="al__context_8cxx_source.html#l00188">al_context.cxx:188</a></div></div>
-<div class="ttc" id="aclasscgv_1_1audio_1_1OALContext_html_aff820da73611357c412f78f5166a3373"><div class="ttname"><a href="classcgv_1_1audio_1_1OALContext.html#aff820da73611357c412f78f5166a3373">cgv::audio::OALContext::get_native_context</a></div><div class="ttdeci">ALCcontext * get_native_context()</div><div class="ttdoc">Gets the native context handle for direct OpenAL calls.</div><div class="ttdef"><b>Definition</b> <a href="al__context_8cxx_source.html#l00228">al_context.cxx:228</a></div></div>
-<div class="ttc" id="aclasscgv_1_1audio_1_1OALListener_html_a0f8db8a0f1a6aa285931c29e76d6f7a4"><div class="ttname"><a href="classcgv_1_1audio_1_1OALListener.html#a0f8db8a0f1a6aa285931c29e76d6f7a4">cgv::audio::OALListener::get_position</a></div><div class="ttdeci">static cgv::math::fvec&lt; float, 3 &gt; get_position()</div><div class="ttdoc">Gets the listener position.</div><div class="ttdef"><b>Definition</b> <a href="al__context_8cxx_source.html#l00317">al_context.cxx:317</a></div></div>
-<div class="ttc" id="aclasscgv_1_1audio_1_1OALListener_html_a497512e9f21ba4e05049fc25a52451bc"><div class="ttname"><a href="classcgv_1_1audio_1_1OALListener.html#a497512e9f21ba4e05049fc25a52451bc">cgv::audio::OALListener::get_velocity</a></div><div class="ttdeci">static cgv::math::fvec&lt; float, 3 &gt; get_velocity()</div><div class="ttdoc">Gets the listener velocity.</div><div class="ttdef"><b>Definition</b> <a href="al__context_8cxx_source.html#l00324">al_context.cxx:324</a></div></div>
-<div class="ttc" id="aclasscgv_1_1audio_1_1OALListener_html_a592a571841f089e1e70d2757aa09fa5b"><div class="ttname"><a href="classcgv_1_1audio_1_1OALListener.html#a592a571841f089e1e70d2757aa09fa5b">cgv::audio::OALListener::set_position</a></div><div class="ttdeci">static void set_position(cgv::math::fvec&lt; float, 3 &gt; pos)</div><div class="ttdoc">Sets the listener position.</div><div class="ttdef"><b>Definition</b> <a href="al__context_8cxx_source.html#l00338">al_context.cxx:338</a></div></div>
-<div class="ttc" id="aclasscgv_1_1audio_1_1OALListener_html_a5eefffecb06b0cf897d3b9213757eb0f"><div class="ttname"><a href="classcgv_1_1audio_1_1OALListener.html#a5eefffecb06b0cf897d3b9213757eb0f">cgv::audio::OALListener::set_orientation</a></div><div class="ttdeci">static void set_orientation(cgv::math::fvec&lt; float, 3 &gt; at, cgv::math::fvec&lt; float, 3 &gt; up)</div><div class="ttdoc">Sets the listener orientation.</div><div class="ttdef"><b>Definition</b> <a href="al__context_8cxx_source.html#l00342">al_context.cxx:342</a></div></div>
-<div class="ttc" id="aclasscgv_1_1audio_1_1OALListener_html_a65116bf7d99fbd440ca8e33c3cb8d9a7"><div class="ttname"><a href="classcgv_1_1audio_1_1OALListener.html#a65116bf7d99fbd440ca8e33c3cb8d9a7">cgv::audio::OALListener::get_orientation</a></div><div class="ttdeci">static cgv::math::fmat&lt; float, 3, 2 &gt; get_orientation()</div><div class="ttdoc">Gets the listener orientation.</div><div class="ttdef"><b>Definition</b> <a href="al__context_8cxx_source.html#l00331">al_context.cxx:331</a></div></div>
-<div class="ttc" id="aclasscgv_1_1audio_1_1OALListener_html_aafc3928073037345a8ad2391c0949b98"><div class="ttname"><a href="classcgv_1_1audio_1_1OALListener.html#aafc3928073037345a8ad2391c0949b98">cgv::audio::OALListener::set_velocity</a></div><div class="ttdeci">static void set_velocity(cgv::math::fvec&lt; float, 3 &gt; vel)</div><div class="ttdoc">Sets the listener velocity.</div><div class="ttdef"><b>Definition</b> <a href="al__context_8cxx_source.html#l00340">al_context.cxx:340</a></div></div>
-<div class="ttc" id="aclasscgv_1_1audio_1_1OALSource_html_a17bb054cc95d83cd46ad7ee4acfcf58e"><div class="ttname"><a href="classcgv_1_1audio_1_1OALSource.html#a17bb054cc95d83cd46ad7ee4acfcf58e">cgv::audio::OALSource::init</a></div><div class="ttdeci">bool init(OALContext &amp;ctx, std::string sound_name)</div><div class="ttdoc">This function links a source to a context.</div><div class="ttdef"><b>Definition</b> <a href="al__context_8cxx_source.html#l00232">al_context.cxx:232</a></div></div>
-<div class="ttc" id="aclasscgv_1_1audio_1_1OALSource_html_a30153266030e6c12187e4155fb53b120"><div class="ttname"><a href="classcgv_1_1audio_1_1OALSource.html#a30153266030e6c12187e4155fb53b120">cgv::audio::OALSource::stop</a></div><div class="ttdeci">void stop()</div><div class="ttdoc">Stops the playback of the sound buffer and moves the playhead to the beginning.</div><div class="ttdef"><b>Definition</b> <a href="al__context_8cxx_source.html#l00313">al_context.cxx:313</a></div></div>
-<div class="ttc" id="aclasscgv_1_1audio_1_1OALSource_html_a303dbbf93f9f73dcf7d5b492253e0144"><div class="ttname"><a href="classcgv_1_1audio_1_1OALSource.html#a303dbbf93f9f73dcf7d5b492253e0144">cgv::audio::OALSource::set_looping</a></div><div class="ttdeci">void set_looping(bool should_loop)</div><div class="ttdoc">Sets the looping property of the source.</div><div class="ttdef"><b>Definition</b> <a href="al__context_8cxx_source.html#l00252">al_context.cxx:252</a></div></div>
-<div class="ttc" id="aclasscgv_1_1audio_1_1OALSource_html_a3ca31cf1c407eb7fcf7bef3c33c49627"><div class="ttname"><a href="classcgv_1_1audio_1_1OALSource.html#a3ca31cf1c407eb7fcf7bef3c33c49627">cgv::audio::OALSource::set_position</a></div><div class="ttdeci">void set_position(cgv::math::fvec&lt; float, 3 &gt; pos)</div><div class="ttdoc">Sets the source position.</div><div class="ttdef"><b>Definition</b> <a href="al__context_8cxx_source.html#l00244">al_context.cxx:244</a></div></div>
-<div class="ttc" id="aclasscgv_1_1audio_1_1OALSource_html_a428ff3a8a4c6aac1788eefcaba5a860d"><div class="ttname"><a href="classcgv_1_1audio_1_1OALSource.html#a428ff3a8a4c6aac1788eefcaba5a860d">cgv::audio::OALSource::play_pause</a></div><div class="ttdeci">void play_pause(bool should_play)</div><div class="ttdoc">Explicitly toggles between pausing and playing the sound buffer.</div><div class="ttdef"><b>Definition</b> <a href="al__context_8cxx_source.html#l00303">al_context.cxx:303</a></div></div>
-<div class="ttc" id="aclasscgv_1_1audio_1_1OALSource_html_a71547f8492425b75bf784791e2509cf1"><div class="ttname"><a href="classcgv_1_1audio_1_1OALSource.html#a71547f8492425b75bf784791e2509cf1">cgv::audio::OALSource::set_velocity</a></div><div class="ttdeci">void set_velocity(cgv::math::fvec&lt; float, 3 &gt; vel)</div><div class="ttdoc">Sets the source velocity.</div><div class="ttdef"><b>Definition</b> <a href="al__context_8cxx_source.html#l00246">al_context.cxx:246</a></div></div>
-<div class="ttc" id="aclasscgv_1_1audio_1_1OALSource_html_a894f6d10519178265c507ff86c5b2b3c"><div class="ttname"><a href="classcgv_1_1audio_1_1OALSource.html#a894f6d10519178265c507ff86c5b2b3c">cgv::audio::OALSource::play</a></div><div class="ttdeci">void play()</div><div class="ttdoc">Commences the playback of the sound buffer.</div><div class="ttdef"><b>Definition</b> <a href="al__context_8cxx_source.html#l00299">al_context.cxx:299</a></div></div>
-<div class="ttc" id="aclasscgv_1_1audio_1_1OALSource_html_a8bdf8f4837446c4a4de79f5f8c972ed6"><div class="ttname"><a href="classcgv_1_1audio_1_1OALSource.html#a8bdf8f4837446c4a4de79f5f8c972ed6">cgv::audio::OALSource::rewind</a></div><div class="ttdeci">void rewind()</div><div class="ttdoc">Moves the playhead to the beginning of the buffer.</div><div class="ttdef"><b>Definition</b> <a href="al__context_8cxx_source.html#l00315">al_context.cxx:315</a></div></div>
-<div class="ttc" id="aclasscgv_1_1audio_1_1OALSource_html_a9c2afad2e0b8924a7ae03e3b64706c5b"><div class="ttname"><a href="classcgv_1_1audio_1_1OALSource.html#a9c2afad2e0b8924a7ae03e3b64706c5b">cgv::audio::OALSource::pause</a></div><div class="ttdeci">void pause()</div><div class="ttdoc">Pauses the playback of the sound buffer without moving the playhead.</div><div class="ttdef"><b>Definition</b> <a href="al__context_8cxx_source.html#l00301">al_context.cxx:301</a></div></div>
-<div class="ttc" id="aclasscgv_1_1audio_1_1OALSource_html_aa3a5bcaa763096de556c011c3ea004f5"><div class="ttname"><a href="classcgv_1_1audio_1_1OALSource.html#aa3a5bcaa763096de556c011c3ea004f5">cgv::audio::OALSource::get_velocity</a></div><div class="ttdeci">cgv::math::fvec&lt; float, 3 &gt; get_velocity() const</div><div class="ttdoc">Gets the source velocity.</div><div class="ttdef"><b>Definition</b> <a href="al__context_8cxx_source.html#l00264">al_context.cxx:264</a></div></div>
-<div class="ttc" id="aclasscgv_1_1audio_1_1OALSource_html_aa9debb814f016e26618bfca1979cb011"><div class="ttname"><a href="classcgv_1_1audio_1_1OALSource.html#aa9debb814f016e26618bfca1979cb011">cgv::audio::OALSource::is_looping</a></div><div class="ttdeci">bool is_looping() const</div><div class="ttdoc">Determines if the source has the looping property.</div><div class="ttdef"><b>Definition</b> <a href="al__context_8cxx_source.html#l00285">al_context.cxx:285</a></div></div>
-<div class="ttc" id="aclasscgv_1_1audio_1_1OALSource_html_aab2f07045cab91ffac966925d8ce113f"><div class="ttname"><a href="classcgv_1_1audio_1_1OALSource.html#aab2f07045cab91ffac966925d8ce113f">cgv::audio::OALSource::is_playing</a></div><div class="ttdeci">bool is_playing() const</div><div class="ttdoc">Determines if the source is playing.</div><div class="ttdef"><b>Definition</b> <a href="al__context_8cxx_source.html#l00292">al_context.cxx:292</a></div></div>
-<div class="ttc" id="aclasscgv_1_1audio_1_1OALSource_html_aded347ef9cbc0d79b8b427a0b5976056"><div class="ttname"><a href="classcgv_1_1audio_1_1OALSource.html#aded347ef9cbc0d79b8b427a0b5976056">cgv::audio::OALSource::get_gain</a></div><div class="ttdeci">float get_gain() const</div><div class="ttdoc">Gets the source gain.</div><div class="ttdef"><b>Definition</b> <a href="al__context_8cxx_source.html#l00278">al_context.cxx:278</a></div></div>
-<div class="ttc" id="aclasscgv_1_1audio_1_1OALSource_html_ae33c89245513382c3ea9f84b7c3f2c4f"><div class="ttname"><a href="classcgv_1_1audio_1_1OALSource.html#ae33c89245513382c3ea9f84b7c3f2c4f">cgv::audio::OALSource::get_pitch</a></div><div class="ttdeci">float get_pitch() const</div><div class="ttdoc">Gets the source pitch.</div><div class="ttdef"><b>Definition</b> <a href="al__context_8cxx_source.html#l00271">al_context.cxx:271</a></div></div>
-<div class="ttc" id="aclasscgv_1_1audio_1_1OALSource_html_ae4620553f331940ce977487487dae294"><div class="ttname"><a href="classcgv_1_1audio_1_1OALSource.html#ae4620553f331940ce977487487dae294">cgv::audio::OALSource::get_position</a></div><div class="ttdeci">cgv::math::fvec&lt; float, 3 &gt; get_position() const</div><div class="ttdoc">Gets the source position.</div><div class="ttdef"><b>Definition</b> <a href="al__context_8cxx_source.html#l00257">al_context.cxx:257</a></div></div>
-<div class="ttc" id="aclasscgv_1_1audio_1_1OALSource_html_afb58f9df1d5b20daf6625ee32c66e339"><div class="ttname"><a href="classcgv_1_1audio_1_1OALSource.html#afb58f9df1d5b20daf6625ee32c66e339">cgv::audio::OALSource::set_gain</a></div><div class="ttdeci">void set_gain(float gain)</div><div class="ttdoc">Sets the source gain.</div><div class="ttdef"><b>Definition</b> <a href="al__context_8cxx_source.html#l00250">al_context.cxx:250</a></div></div>
-<div class="ttc" id="aclasscgv_1_1audio_1_1OALSource_html_afec38e8c7c6602cc604421092dc6425b"><div class="ttname"><a href="classcgv_1_1audio_1_1OALSource.html#afec38e8c7c6602cc604421092dc6425b">cgv::audio::OALSource::set_pitch</a></div><div class="ttdeci">void set_pitch(float pitch)</div><div class="ttdoc">Sets the source pitch.</div><div class="ttdef"><b>Definition</b> <a href="al__context_8cxx_source.html#l00248">al_context.cxx:248</a></div></div>
+<div class="line"><a id="l00346" name="l00346"></a><span class="lineno">  346</span> </div>
+<div class="line"><a id="l00347" name="l00347"></a><span class="lineno"><a class="line" href="classcgv_1_1audio_1_1OALSource.html#a894f6d10519178265c507ff86c5b2b3c">  347</a></span><span class="keywordtype">void</span> <a class="code hl_function" href="classcgv_1_1audio_1_1OALSource.html#a894f6d10519178265c507ff86c5b2b3c">OALSource::play</a>() { alSourcePlay(src_id); }</div>
+<div class="line"><a id="l00348" name="l00348"></a><span class="lineno">  348</span> </div>
+<div class="line"><a id="l00349" name="l00349"></a><span class="lineno"><a class="line" href="classcgv_1_1audio_1_1OALSource.html#a9c2afad2e0b8924a7ae03e3b64706c5b">  349</a></span><span class="keywordtype">void</span> <a class="code hl_function" href="classcgv_1_1audio_1_1OALSource.html#a9c2afad2e0b8924a7ae03e3b64706c5b">OALSource::pause</a>() { alSourcePause(src_id); }</div>
+<div class="line"><a id="l00350" name="l00350"></a><span class="lineno">  350</span> </div>
+<div class="foldopen" id="foldopen00351" data-start="{" data-end="}">
+<div class="line"><a id="l00351" name="l00351"></a><span class="lineno"><a class="line" href="classcgv_1_1audio_1_1OALSource.html#a428ff3a8a4c6aac1788eefcaba5a860d">  351</a></span><span class="keywordtype">void</span> <a class="code hl_function" href="classcgv_1_1audio_1_1OALSource.html#a428ff3a8a4c6aac1788eefcaba5a860d">OALSource::play_pause</a>(<span class="keywordtype">bool</span> should_play)</div>
+<div class="line"><a id="l00352" name="l00352"></a><span class="lineno">  352</span>{</div>
+<div class="line"><a id="l00353" name="l00353"></a><span class="lineno">  353</span>    <span class="keywordflow">if</span> (should_play) {</div>
+<div class="line"><a id="l00354" name="l00354"></a><span class="lineno">  354</span>        this-&gt;<a class="code hl_function" href="classcgv_1_1audio_1_1OALSource.html#a894f6d10519178265c507ff86c5b2b3c">play</a>();</div>
+<div class="line"><a id="l00355" name="l00355"></a><span class="lineno">  355</span>    }</div>
+<div class="line"><a id="l00356" name="l00356"></a><span class="lineno">  356</span>    <span class="keywordflow">else</span> {</div>
+<div class="line"><a id="l00357" name="l00357"></a><span class="lineno">  357</span>        this-&gt;<a class="code hl_function" href="classcgv_1_1audio_1_1OALSource.html#a9c2afad2e0b8924a7ae03e3b64706c5b">pause</a>();</div>
+<div class="line"><a id="l00358" name="l00358"></a><span class="lineno">  358</span>    }</div>
+<div class="line"><a id="l00359" name="l00359"></a><span class="lineno">  359</span>}</div>
+</div>
+<div class="line"><a id="l00360" name="l00360"></a><span class="lineno">  360</span> </div>
+<div class="line"><a id="l00361" name="l00361"></a><span class="lineno"><a class="line" href="classcgv_1_1audio_1_1OALSource.html#a30153266030e6c12187e4155fb53b120">  361</a></span><span class="keywordtype">void</span> <a class="code hl_function" href="classcgv_1_1audio_1_1OALSource.html#a30153266030e6c12187e4155fb53b120">OALSource::stop</a>() { alSourceStop(src_id); }</div>
+<div class="line"><a id="l00362" name="l00362"></a><span class="lineno">  362</span> </div>
+<div class="line"><a id="l00363" name="l00363"></a><span class="lineno"><a class="line" href="classcgv_1_1audio_1_1OALSource.html#a8bdf8f4837446c4a4de79f5f8c972ed6">  363</a></span><span class="keywordtype">void</span> <a class="code hl_function" href="classcgv_1_1audio_1_1OALSource.html#a8bdf8f4837446c4a4de79f5f8c972ed6">OALSource::rewind</a>() { alSourceRewind(src_id); }</div>
+<div class="line"><a id="l00364" name="l00364"></a><span class="lineno">  364</span> </div>
+<div class="foldopen" id="foldopen00365" data-start="{" data-end="}">
+<div class="line"><a id="l00365" name="l00365"></a><span class="lineno"><a class="line" href="classcgv_1_1audio_1_1OALListener.html#a0f8db8a0f1a6aa285931c29e76d6f7a4">  365</a></span><a class="code hl_class" href="classcgv_1_1math_1_1fvec.html">cgv::math::fvec&lt;float, 3&gt;</a> <a class="code hl_function" href="classcgv_1_1audio_1_1OALListener.html#a0f8db8a0f1a6aa285931c29e76d6f7a4">OALListener::get_position</a>()</div>
+<div class="line"><a id="l00366" name="l00366"></a><span class="lineno">  366</span>{</div>
+<div class="line"><a id="l00367" name="l00367"></a><span class="lineno">  367</span>    <a class="code hl_class" href="classcgv_1_1math_1_1fvec.html">cgv::math::fvec&lt;float, 3&gt;</a> pos;</div>
+<div class="line"><a id="l00368" name="l00368"></a><span class="lineno">  368</span>    alGetListenerfv(AL_POSITION, pos.<a class="code hl_function" href="classcgv_1_1math_1_1fvec.html#a57442f3e304ed4d7879cae42cb774167">data</a>());</div>
+<div class="line"><a id="l00369" name="l00369"></a><span class="lineno">  369</span>    <span class="keywordflow">return</span> pos;</div>
+<div class="line"><a id="l00370" name="l00370"></a><span class="lineno">  370</span>}</div>
+</div>
+<div class="line"><a id="l00371" name="l00371"></a><span class="lineno">  371</span> </div>
+<div class="foldopen" id="foldopen00372" data-start="{" data-end="}">
+<div class="line"><a id="l00372" name="l00372"></a><span class="lineno"><a class="line" href="classcgv_1_1audio_1_1OALListener.html#a497512e9f21ba4e05049fc25a52451bc">  372</a></span><a class="code hl_class" href="classcgv_1_1math_1_1fvec.html">cgv::math::fvec&lt;float, 3&gt;</a> <a class="code hl_function" href="classcgv_1_1audio_1_1OALListener.html#a497512e9f21ba4e05049fc25a52451bc">OALListener::get_velocity</a>()</div>
+<div class="line"><a id="l00373" name="l00373"></a><span class="lineno">  373</span>{</div>
+<div class="line"><a id="l00374" name="l00374"></a><span class="lineno">  374</span>    <a class="code hl_class" href="classcgv_1_1math_1_1fvec.html">cgv::math::fvec&lt;float, 3&gt;</a> vel;</div>
+<div class="line"><a id="l00375" name="l00375"></a><span class="lineno">  375</span>    alGetListenerfv(AL_VELOCITY, vel.<a class="code hl_function" href="classcgv_1_1math_1_1fvec.html#a57442f3e304ed4d7879cae42cb774167">data</a>());</div>
+<div class="line"><a id="l00376" name="l00376"></a><span class="lineno">  376</span>    <span class="keywordflow">return</span> vel;</div>
+<div class="line"><a id="l00377" name="l00377"></a><span class="lineno">  377</span>}</div>
+</div>
+<div class="line"><a id="l00378" name="l00378"></a><span class="lineno">  378</span> </div>
+<div class="foldopen" id="foldopen00379" data-start="{" data-end="}">
+<div class="line"><a id="l00379" name="l00379"></a><span class="lineno"><a class="line" href="classcgv_1_1audio_1_1OALListener.html#a65116bf7d99fbd440ca8e33c3cb8d9a7">  379</a></span><a class="code hl_class" href="classcgv_1_1math_1_1fmat.html">cgv::math::fmat&lt;float, 3, 2&gt;</a> <a class="code hl_function" href="classcgv_1_1audio_1_1OALListener.html#a65116bf7d99fbd440ca8e33c3cb8d9a7">OALListener::get_orientation</a>()</div>
+<div class="line"><a id="l00380" name="l00380"></a><span class="lineno">  380</span>{</div>
+<div class="line"><a id="l00381" name="l00381"></a><span class="lineno">  381</span>    <a class="code hl_class" href="classcgv_1_1math_1_1fmat.html">cgv::math::fmat&lt;float, 3, 2&gt;</a> orientation;</div>
+<div class="line"><a id="l00382" name="l00382"></a><span class="lineno">  382</span>    alGetListenerfv(AL_ORIENTATION, orientation.<a class="code hl_function" href="classcgv_1_1math_1_1fvec.html#a57442f3e304ed4d7879cae42cb774167">data</a>());</div>
+<div class="line"><a id="l00383" name="l00383"></a><span class="lineno">  383</span>    <span class="keywordflow">return</span> orientation;</div>
+<div class="line"><a id="l00384" name="l00384"></a><span class="lineno">  384</span>}</div>
+</div>
+<div class="line"><a id="l00385" name="l00385"></a><span class="lineno">  385</span> </div>
+<div class="line"><a id="l00386" name="l00386"></a><span class="lineno"><a class="line" href="classcgv_1_1audio_1_1OALListener.html#a592a571841f089e1e70d2757aa09fa5b">  386</a></span><span class="keywordtype">void</span> <a class="code hl_function" href="classcgv_1_1audio_1_1OALListener.html#a592a571841f089e1e70d2757aa09fa5b">OALListener::set_position</a>(<a class="code hl_class" href="classcgv_1_1math_1_1fvec.html">cgv::math::fvec&lt;float, 3&gt;</a> pos) { alListenerfv(AL_POSITION, pos.<a class="code hl_function" href="classcgv_1_1math_1_1fvec.html#a57442f3e304ed4d7879cae42cb774167">data</a>()); }</div>
+<div class="line"><a id="l00387" name="l00387"></a><span class="lineno">  387</span> </div>
+<div class="line"><a id="l00388" name="l00388"></a><span class="lineno"><a class="line" href="classcgv_1_1audio_1_1OALListener.html#aafc3928073037345a8ad2391c0949b98">  388</a></span><span class="keywordtype">void</span> <a class="code hl_function" href="classcgv_1_1audio_1_1OALListener.html#aafc3928073037345a8ad2391c0949b98">OALListener::set_velocity</a>(<a class="code hl_class" href="classcgv_1_1math_1_1fvec.html">cgv::math::fvec&lt;float, 3&gt;</a> vel) { alListenerfv(AL_VELOCITY, vel.<a class="code hl_function" href="classcgv_1_1math_1_1fvec.html#a57442f3e304ed4d7879cae42cb774167">data</a>()); }</div>
+<div class="line"><a id="l00389" name="l00389"></a><span class="lineno">  389</span> </div>
+<div class="foldopen" id="foldopen00390" data-start="{" data-end="}">
+<div class="line"><a id="l00390" name="l00390"></a><span class="lineno"><a class="line" href="classcgv_1_1audio_1_1OALListener.html#a5eefffecb06b0cf897d3b9213757eb0f">  390</a></span><span class="keywordtype">void</span> <a class="code hl_function" href="classcgv_1_1audio_1_1OALListener.html#a5eefffecb06b0cf897d3b9213757eb0f">OALListener::set_orientation</a>(<a class="code hl_class" href="classcgv_1_1math_1_1fvec.html">cgv::math::fvec&lt;float, 3&gt;</a> at, <a class="code hl_class" href="classcgv_1_1math_1_1fvec.html">cgv::math::fvec&lt;float, 3&gt;</a> up)</div>
+<div class="line"><a id="l00391" name="l00391"></a><span class="lineno">  391</span>{</div>
+<div class="line"><a id="l00392" name="l00392"></a><span class="lineno">  392</span>    <span class="keyword">const</span> std::array&lt;float, 6&gt; orientation = {at[0], at[1], at[2], up[0], up[1], up[2]};</div>
+<div class="line"><a id="l00393" name="l00393"></a><span class="lineno">  393</span>    alListenerfv(AL_ORIENTATION, orientation.data());</div>
+<div class="line"><a id="l00394" name="l00394"></a><span class="lineno">  394</span>}</div>
+</div>
+<div class="line"><a id="l00395" name="l00395"></a><span class="lineno">  395</span> </div>
+<div class="line"><a id="l00396" name="l00396"></a><span class="lineno">  396</span>} <span class="comment">// namespace cgv</span></div>
+<div class="line"><a id="l00397" name="l00397"></a><span class="lineno">  397</span>} <span class="comment">// namespace audio</span></div>
+<div class="ttc" id="aclasscgv_1_1audio_1_1OALContext_html"><div class="ttname"><a href="classcgv_1_1audio_1_1OALContext.html">cgv::audio::OALContext</a></div><div class="ttdoc">This class provides easy sample loading, device enumeration and error retrieval.</div><div class="ttdef"><b>Definition</b> <a href="al__context_8h_source.html#l00039">al_context.h:40</a></div></div>
+<div class="ttc" id="aclasscgv_1_1audio_1_1OALContext_html_a040d8f4f4325096f6d03e236bc83544f"><div class="ttname"><a href="classcgv_1_1audio_1_1OALContext.html#a040d8f4f4325096f6d03e236bc83544f">cgv::audio::OALContext::load_samples</a></div><div class="ttdeci">void load_samples(std::string folder, bool recursive=false)</div><div class="ttdoc">Loads all audio files in a folder into the internal buffer list.</div><div class="ttdef"><b>Definition</b> <a href="al__context_8cxx_source.html#l00192">al_context.cxx:192</a></div></div>
+<div class="ttc" id="aclasscgv_1_1audio_1_1OALContext_html_a0f8227ba499d6a770c64650081c633c8"><div class="ttname"><a href="classcgv_1_1audio_1_1OALContext.html#a0f8227ba499d6a770c64650081c633c8">cgv::audio::OALContext::get_native_device</a></div><div class="ttdeci">ALCdevice * get_native_device()</div><div class="ttdoc">Gets the native device handle for direct OpenAL calls.</div><div class="ttdef"><b>Definition</b> <a href="al__context_8cxx_source.html#l00233">al_context.cxx:233</a></div></div>
+<div class="ttc" id="aclasscgv_1_1audio_1_1OALContext_html_a10276711305b3c51ae10022fa64f180c"><div class="ttname"><a href="classcgv_1_1audio_1_1OALContext.html#a10276711305b3c51ae10022fa64f180c">cgv::audio::OALContext::make_current</a></div><div class="ttdeci">void make_current()</div><div class="ttdoc">in case of multiple contexts, this makes this context current</div><div class="ttdef"><b>Definition</b> <a href="al__context_8cxx_source.html#l00049">al_context.cxx:49</a></div></div>
+<div class="ttc" id="aclasscgv_1_1audio_1_1OALContext_html_a249991bf87b10be729c2cf8c6e1a52c4"><div class="ttname"><a href="classcgv_1_1audio_1_1OALContext.html#a249991bf87b10be729c2cf8c6e1a52c4">cgv::audio::OALContext::get_device_name</a></div><div class="ttdeci">std::string get_device_name() const</div><div class="ttdoc">return device name of contexts device</div><div class="ttdef"><b>Definition</b> <a href="al__context_8cxx_source.html#l00053">al_context.cxx:53</a></div></div>
+<div class="ttc" id="aclasscgv_1_1audio_1_1OALContext_html_a441f37204792899d81bded2236b7637a"><div class="ttname"><a href="classcgv_1_1audio_1_1OALContext.html#a441f37204792899d81bded2236b7637a">cgv::audio::OALContext::enumerate_devices</a></div><div class="ttdeci">static std::vector&lt; std::string &gt; enumerate_devices()</div><div class="ttdoc">Enumerate audio output devices available on system.</div><div class="ttdef"><b>Definition</b> <a href="al__context_8cxx_source.html#l00025">al_context.cxx:25</a></div></div>
+<div class="ttc" id="aclasscgv_1_1audio_1_1OALContext_html_a4793753a40efc6732903cdf70aef115e"><div class="ttname"><a href="classcgv_1_1audio_1_1OALContext.html#a4793753a40efc6732903cdf70aef115e">cgv::audio::OALContext::get_error_string</a></div><div class="ttdeci">std::string get_error_string()</div><div class="ttdoc">Returns the last error from the OpenAL context.</div><div class="ttdef"><b>Definition</b> <a href="al__context_8cxx_source.html#l00220">al_context.cxx:220</a></div></div>
+<div class="ttc" id="aclasscgv_1_1audio_1_1OALContext_html_a4cf127a20671e7fa3b1fa1fe333fe169"><div class="ttname"><a href="classcgv_1_1audio_1_1OALContext.html#a4cf127a20671e7fa3b1fa1fe333fe169">cgv::audio::OALContext::get_default_device_name</a></div><div class="ttdeci">static std::string get_default_device_name()</div><div class="ttdoc">returns name of system's default device</div><div class="ttdef"><b>Definition</b> <a href="al__context_8cxx_source.html#l00019">al_context.cxx:19</a></div></div>
+<div class="ttc" id="aclasscgv_1_1audio_1_1OALContext_html_a608d61e794cafd11bb605df7c2eecebf"><div class="ttname"><a href="classcgv_1_1audio_1_1OALContext.html#a608d61e794cafd11bb605df7c2eecebf">cgv::audio::OALContext::decode_sound_file</a></div><div class="ttdeci">static bool decode_sound_file(const void *data, size_t data_length, OALSoundFormat &amp;format, std::vector&lt; int16_t &gt; &amp;memory_buffer)</div><div class="ttdoc">decode sound file that is already in memory data with data_length bytes to a newly constructed memory...</div><div class="ttdef"><b>Definition</b> <a href="al__context_8cxx_source.html#l00092">al_context.cxx:92</a></div></div>
+<div class="ttc" id="aclasscgv_1_1audio_1_1OALContext_html_a65dc424fc4be728d2fc20f64d9f3a509"><div class="ttname"><a href="classcgv_1_1audio_1_1OALContext.html#a65dc424fc4be728d2fc20f64d9f3a509">cgv::audio::OALContext::~OALContext</a></div><div class="ttdeci">~OALContext()</div><div class="ttdoc">detach context from output device and destruct</div><div class="ttdef"><b>Definition</b> <a href="al__context_8cxx_source.html#l00058">al_context.cxx:58</a></div></div>
+<div class="ttc" id="aclasscgv_1_1audio_1_1OALContext_html_a7bf35c7aca67ddf98a6787e15a8c2569"><div class="ttname"><a href="classcgv_1_1audio_1_1OALContext.html#a7bf35c7aca67ddf98a6787e15a8c2569">cgv::audio::OALContext::create_buffer</a></div><div class="ttdeci">void create_buffer(const std::string &amp;symbolic_name, const OALSoundFormat &amp;format, const void *data, size_t data_length)</div><div class="ttdoc">create a named sound buffer from a format descriptor and a data buffer of given length in bytes</div><div class="ttdef"><b>Definition</b> <a href="al__context_8cxx_source.html#l00149">al_context.cxx:149</a></div></div>
+<div class="ttc" id="aclasscgv_1_1audio_1_1OALContext_html_aa758f6d2532ceeb769a0ab931c2361a3"><div class="ttname"><a href="classcgv_1_1audio_1_1OALContext.html#aa758f6d2532ceeb769a0ab931c2361a3">cgv::audio::OALContext::load_sample</a></div><div class="ttdeci">void load_sample(std::string filepath, std::string symbolic_name=&quot;&quot;)</div><div class="ttdoc">Loads a sound into the internal buffer list.</div><div class="ttdef"><b>Definition</b> <a href="al__context_8cxx_source.html#l00169">al_context.cxx:169</a></div></div>
+<div class="ttc" id="aclasscgv_1_1audio_1_1OALContext_html_aae313d90f1c7d7bb7f968f90bef8bf20"><div class="ttname"><a href="classcgv_1_1audio_1_1OALContext.html#aae313d90f1c7d7bb7f968f90bef8bf20">cgv::audio::OALContext::load_sound_file</a></div><div class="ttdeci">static bool load_sound_file(const std::string &amp;filepath, OALSoundFormat &amp;format, std::vector&lt; int16_t &gt; &amp;memory_buffer)</div><div class="ttdoc">load and decode sound file to newly constructed memory buffer</div><div class="ttdef"><b>Definition</b> <a href="al__context_8cxx_source.html#l00137">al_context.cxx:137</a></div></div>
+<div class="ttc" id="aclasscgv_1_1audio_1_1OALContext_html_abcbc203beb11e2a70a8383de59cfbbb3"><div class="ttname"><a href="classcgv_1_1audio_1_1OALContext.html#abcbc203beb11e2a70a8383de59cfbbb3">cgv::audio::OALContext::is_no_error</a></div><div class="ttdeci">bool is_no_error()</div><div class="ttdoc">Determines if there were any errors since last call.</div><div class="ttdef"><b>Definition</b> <a href="al__context_8cxx_source.html#l00221">al_context.cxx:221</a></div></div>
+<div class="ttc" id="aclasscgv_1_1audio_1_1OALContext_html_ae65efe87004dcbb3d8ac45e73146ef5f"><div class="ttname"><a href="classcgv_1_1audio_1_1OALContext.html#ae65efe87004dcbb3d8ac45e73146ef5f">cgv::audio::OALContext::set_HRTF</a></div><div class="ttdeci">void set_HRTF(bool active)</div><div class="ttdoc">Toggles the OpenAL output mode to use HRTF.</div><div class="ttdef"><b>Definition</b> <a href="al__context_8cxx_source.html#l00222">al_context.cxx:222</a></div></div>
+<div class="ttc" id="aclasscgv_1_1audio_1_1OALContext_html_af9ee9ae71be6f500207173ee3b2d22f8"><div class="ttname"><a href="classcgv_1_1audio_1_1OALContext.html#af9ee9ae71be6f500207173ee3b2d22f8">cgv::audio::OALContext::OALContext</a></div><div class="ttdeci">OALContext(const std::string &amp;device_name)</div><div class="ttdoc">Construct context, connect to output device and make context current.</div><div class="ttdef"><b>Definition</b> <a href="al__context_8cxx_source.html#l00041">al_context.cxx:41</a></div></div>
+<div class="ttc" id="aclasscgv_1_1audio_1_1OALContext_html_afe0cd13fe5d25010696ad63c6cd22b66"><div class="ttname"><a href="classcgv_1_1audio_1_1OALContext.html#afe0cd13fe5d25010696ad63c6cd22b66">cgv::audio::OALContext::get_buffer_id</a></div><div class="ttdeci">ALuint get_buffer_id(std::string sound_name) const</div><div class="ttdoc">Gets the buffer identifier for the symbolic name.</div><div class="ttdef"><b>Definition</b> <a href="al__context_8cxx_source.html#l00215">al_context.cxx:215</a></div></div>
+<div class="ttc" id="aclasscgv_1_1audio_1_1OALContext_html_aff820da73611357c412f78f5166a3373"><div class="ttname"><a href="classcgv_1_1audio_1_1OALContext.html#aff820da73611357c412f78f5166a3373">cgv::audio::OALContext::get_native_context</a></div><div class="ttdeci">ALCcontext * get_native_context()</div><div class="ttdoc">Gets the native context handle for direct OpenAL calls.</div><div class="ttdef"><b>Definition</b> <a href="al__context_8cxx_source.html#l00235">al_context.cxx:235</a></div></div>
+<div class="ttc" id="aclasscgv_1_1audio_1_1OALListener_html_a0f8db8a0f1a6aa285931c29e76d6f7a4"><div class="ttname"><a href="classcgv_1_1audio_1_1OALListener.html#a0f8db8a0f1a6aa285931c29e76d6f7a4">cgv::audio::OALListener::get_position</a></div><div class="ttdeci">static cgv::math::fvec&lt; float, 3 &gt; get_position()</div><div class="ttdoc">Gets the listener position.</div><div class="ttdef"><b>Definition</b> <a href="al__context_8cxx_source.html#l00365">al_context.cxx:365</a></div></div>
+<div class="ttc" id="aclasscgv_1_1audio_1_1OALListener_html_a497512e9f21ba4e05049fc25a52451bc"><div class="ttname"><a href="classcgv_1_1audio_1_1OALListener.html#a497512e9f21ba4e05049fc25a52451bc">cgv::audio::OALListener::get_velocity</a></div><div class="ttdeci">static cgv::math::fvec&lt; float, 3 &gt; get_velocity()</div><div class="ttdoc">Gets the listener velocity.</div><div class="ttdef"><b>Definition</b> <a href="al__context_8cxx_source.html#l00372">al_context.cxx:372</a></div></div>
+<div class="ttc" id="aclasscgv_1_1audio_1_1OALListener_html_a592a571841f089e1e70d2757aa09fa5b"><div class="ttname"><a href="classcgv_1_1audio_1_1OALListener.html#a592a571841f089e1e70d2757aa09fa5b">cgv::audio::OALListener::set_position</a></div><div class="ttdeci">static void set_position(cgv::math::fvec&lt; float, 3 &gt; pos)</div><div class="ttdoc">Sets the listener position.</div><div class="ttdef"><b>Definition</b> <a href="al__context_8cxx_source.html#l00386">al_context.cxx:386</a></div></div>
+<div class="ttc" id="aclasscgv_1_1audio_1_1OALListener_html_a5eefffecb06b0cf897d3b9213757eb0f"><div class="ttname"><a href="classcgv_1_1audio_1_1OALListener.html#a5eefffecb06b0cf897d3b9213757eb0f">cgv::audio::OALListener::set_orientation</a></div><div class="ttdeci">static void set_orientation(cgv::math::fvec&lt; float, 3 &gt; at, cgv::math::fvec&lt; float, 3 &gt; up)</div><div class="ttdoc">Sets the listener orientation.</div><div class="ttdef"><b>Definition</b> <a href="al__context_8cxx_source.html#l00390">al_context.cxx:390</a></div></div>
+<div class="ttc" id="aclasscgv_1_1audio_1_1OALListener_html_a65116bf7d99fbd440ca8e33c3cb8d9a7"><div class="ttname"><a href="classcgv_1_1audio_1_1OALListener.html#a65116bf7d99fbd440ca8e33c3cb8d9a7">cgv::audio::OALListener::get_orientation</a></div><div class="ttdeci">static cgv::math::fmat&lt; float, 3, 2 &gt; get_orientation()</div><div class="ttdoc">Gets the listener orientation.</div><div class="ttdef"><b>Definition</b> <a href="al__context_8cxx_source.html#l00379">al_context.cxx:379</a></div></div>
+<div class="ttc" id="aclasscgv_1_1audio_1_1OALListener_html_aafc3928073037345a8ad2391c0949b98"><div class="ttname"><a href="classcgv_1_1audio_1_1OALListener.html#aafc3928073037345a8ad2391c0949b98">cgv::audio::OALListener::set_velocity</a></div><div class="ttdeci">static void set_velocity(cgv::math::fvec&lt; float, 3 &gt; vel)</div><div class="ttdoc">Sets the listener velocity.</div><div class="ttdef"><b>Definition</b> <a href="al__context_8cxx_source.html#l00388">al_context.cxx:388</a></div></div>
+<div class="ttc" id="aclasscgv_1_1audio_1_1OALSource_html_a08e86d0b99116740a2bed30629d73390"><div class="ttname"><a href="classcgv_1_1audio_1_1OALSource.html#a08e86d0b99116740a2bed30629d73390">cgv::audio::OALSource::clear</a></div><div class="ttdeci">void clear()</div><div class="ttdoc">destruct source and restore uninitialized state</div><div class="ttdef"><b>Definition</b> <a href="al__context_8cxx_source.html#l00237">al_context.cxx:237</a></div></div>
+<div class="ttc" id="aclasscgv_1_1audio_1_1OALSource_html_a1bf073758e20425c6385d7736717c4c7"><div class="ttname"><a href="classcgv_1_1audio_1_1OALSource.html#a1bf073758e20425c6385d7736717c4c7">cgv::audio::OALSource::append_sound</a></div><div class="ttdeci">bool append_sound(std::string sound_name)</div><div class="ttdoc">Append buffer of named sound to source's playback list.</div><div class="ttdef"><b>Definition</b> <a href="al__context_8cxx_source.html#l00263">al_context.cxx:263</a></div></div>
+<div class="ttc" id="aclasscgv_1_1audio_1_1OALSource_html_a30153266030e6c12187e4155fb53b120"><div class="ttname"><a href="classcgv_1_1audio_1_1OALSource.html#a30153266030e6c12187e4155fb53b120">cgv::audio::OALSource::stop</a></div><div class="ttdeci">void stop()</div><div class="ttdoc">Stops the playback of the sound buffer and moves the playhead to the beginning.</div><div class="ttdef"><b>Definition</b> <a href="al__context_8cxx_source.html#l00361">al_context.cxx:361</a></div></div>
+<div class="ttc" id="aclasscgv_1_1audio_1_1OALSource_html_a303dbbf93f9f73dcf7d5b492253e0144"><div class="ttname"><a href="classcgv_1_1audio_1_1OALSource.html#a303dbbf93f9f73dcf7d5b492253e0144">cgv::audio::OALSource::set_looping</a></div><div class="ttdeci">void set_looping(bool should_loop)</div><div class="ttdoc">Sets the looping property of the source.</div><div class="ttdef"><b>Definition</b> <a href="al__context_8cxx_source.html#l00293">al_context.cxx:293</a></div></div>
+<div class="ttc" id="aclasscgv_1_1audio_1_1OALSource_html_a3ca31cf1c407eb7fcf7bef3c33c49627"><div class="ttname"><a href="classcgv_1_1audio_1_1OALSource.html#a3ca31cf1c407eb7fcf7bef3c33c49627">cgv::audio::OALSource::set_position</a></div><div class="ttdeci">void set_position(cgv::math::fvec&lt; float, 3 &gt; pos)</div><div class="ttdoc">Sets the source position.</div><div class="ttdef"><b>Definition</b> <a href="al__context_8cxx_source.html#l00285">al_context.cxx:285</a></div></div>
+<div class="ttc" id="aclasscgv_1_1audio_1_1OALSource_html_a428ff3a8a4c6aac1788eefcaba5a860d"><div class="ttname"><a href="classcgv_1_1audio_1_1OALSource.html#a428ff3a8a4c6aac1788eefcaba5a860d">cgv::audio::OALSource::play_pause</a></div><div class="ttdeci">void play_pause(bool should_play)</div><div class="ttdoc">Explicitly toggles between pausing and playing the sound buffer.</div><div class="ttdef"><b>Definition</b> <a href="al__context_8cxx_source.html#l00351">al_context.cxx:351</a></div></div>
+<div class="ttc" id="aclasscgv_1_1audio_1_1OALSource_html_a67f7dcc5b4e733c0229eea5a42c13ca5"><div class="ttname"><a href="classcgv_1_1audio_1_1OALSource.html#a67f7dcc5b4e733c0229eea5a42c13ca5">cgv::audio::OALSource::init</a></div><div class="ttdeci">bool init(OALContext &amp;ctx, std::string sound_name=&quot;&quot;)</div><div class="ttdoc">This function links a source to a context.</div><div class="ttdef"><b>Definition</b> <a href="al__context_8cxx_source.html#l00252">al_context.cxx:252</a></div></div>
+<div class="ttc" id="aclasscgv_1_1audio_1_1OALSource_html_a71547f8492425b75bf784791e2509cf1"><div class="ttname"><a href="classcgv_1_1audio_1_1OALSource.html#a71547f8492425b75bf784791e2509cf1">cgv::audio::OALSource::set_velocity</a></div><div class="ttdeci">void set_velocity(cgv::math::fvec&lt; float, 3 &gt; vel)</div><div class="ttdoc">Sets the source velocity.</div><div class="ttdef"><b>Definition</b> <a href="al__context_8cxx_source.html#l00287">al_context.cxx:287</a></div></div>
+<div class="ttc" id="aclasscgv_1_1audio_1_1OALSource_html_a894f6d10519178265c507ff86c5b2b3c"><div class="ttname"><a href="classcgv_1_1audio_1_1OALSource.html#a894f6d10519178265c507ff86c5b2b3c">cgv::audio::OALSource::play</a></div><div class="ttdeci">void play()</div><div class="ttdoc">Commences the playback of the sound buffer.</div><div class="ttdef"><b>Definition</b> <a href="al__context_8cxx_source.html#l00347">al_context.cxx:347</a></div></div>
+<div class="ttc" id="aclasscgv_1_1audio_1_1OALSource_html_a8bdf8f4837446c4a4de79f5f8c972ed6"><div class="ttname"><a href="classcgv_1_1audio_1_1OALSource.html#a8bdf8f4837446c4a4de79f5f8c972ed6">cgv::audio::OALSource::rewind</a></div><div class="ttdeci">void rewind()</div><div class="ttdoc">Moves the playhead to the beginning of the buffer.</div><div class="ttdef"><b>Definition</b> <a href="al__context_8cxx_source.html#l00363">al_context.cxx:363</a></div></div>
+<div class="ttc" id="aclasscgv_1_1audio_1_1OALSource_html_a9c2afad2e0b8924a7ae03e3b64706c5b"><div class="ttname"><a href="classcgv_1_1audio_1_1OALSource.html#a9c2afad2e0b8924a7ae03e3b64706c5b">cgv::audio::OALSource::pause</a></div><div class="ttdeci">void pause()</div><div class="ttdoc">Pauses the playback of the sound buffer without moving the playhead.</div><div class="ttdef"><b>Definition</b> <a href="al__context_8cxx_source.html#l00349">al_context.cxx:349</a></div></div>
+<div class="ttc" id="aclasscgv_1_1audio_1_1OALSource_html_aa3a5bcaa763096de556c011c3ea004f5"><div class="ttname"><a href="classcgv_1_1audio_1_1OALSource.html#aa3a5bcaa763096de556c011c3ea004f5">cgv::audio::OALSource::get_velocity</a></div><div class="ttdeci">cgv::math::fvec&lt; float, 3 &gt; get_velocity() const</div><div class="ttdoc">Gets the source velocity.</div><div class="ttdef"><b>Definition</b> <a href="al__context_8cxx_source.html#l00305">al_context.cxx:305</a></div></div>
+<div class="ttc" id="aclasscgv_1_1audio_1_1OALSource_html_aa9debb814f016e26618bfca1979cb011"><div class="ttname"><a href="classcgv_1_1audio_1_1OALSource.html#aa9debb814f016e26618bfca1979cb011">cgv::audio::OALSource::is_looping</a></div><div class="ttdeci">bool is_looping() const</div><div class="ttdoc">Determines if the source has the looping property.</div><div class="ttdef"><b>Definition</b> <a href="al__context_8cxx_source.html#l00326">al_context.cxx:326</a></div></div>
+<div class="ttc" id="aclasscgv_1_1audio_1_1OALSource_html_aab2f07045cab91ffac966925d8ce113f"><div class="ttname"><a href="classcgv_1_1audio_1_1OALSource.html#aab2f07045cab91ffac966925d8ce113f">cgv::audio::OALSource::is_playing</a></div><div class="ttdeci">bool is_playing() const</div><div class="ttdoc">Determines if the source is playing.</div><div class="ttdef"><b>Definition</b> <a href="al__context_8cxx_source.html#l00333">al_context.cxx:333</a></div></div>
+<div class="ttc" id="aclasscgv_1_1audio_1_1OALSource_html_ab41ee6e117281144e3301891279b0aae"><div class="ttname"><a href="classcgv_1_1audio_1_1OALSource.html#ab41ee6e117281144e3301891279b0aae">cgv::audio::OALSource::get_state</a></div><div class="ttdeci">OALSourceState get_state() const</div><div class="ttdoc">returns state of this source</div><div class="ttdef"><b>Definition</b> <a href="al__context_8cxx_source.html#l00340">al_context.cxx:340</a></div></div>
+<div class="ttc" id="aclasscgv_1_1audio_1_1OALSource_html_aded347ef9cbc0d79b8b427a0b5976056"><div class="ttname"><a href="classcgv_1_1audio_1_1OALSource.html#aded347ef9cbc0d79b8b427a0b5976056">cgv::audio::OALSource::get_gain</a></div><div class="ttdeci">float get_gain() const</div><div class="ttdoc">Gets the source gain.</div><div class="ttdef"><b>Definition</b> <a href="al__context_8cxx_source.html#l00319">al_context.cxx:319</a></div></div>
+<div class="ttc" id="aclasscgv_1_1audio_1_1OALSource_html_ae33c89245513382c3ea9f84b7c3f2c4f"><div class="ttname"><a href="classcgv_1_1audio_1_1OALSource.html#ae33c89245513382c3ea9f84b7c3f2c4f">cgv::audio::OALSource::get_pitch</a></div><div class="ttdeci">float get_pitch() const</div><div class="ttdoc">Gets the source pitch.</div><div class="ttdef"><b>Definition</b> <a href="al__context_8cxx_source.html#l00312">al_context.cxx:312</a></div></div>
+<div class="ttc" id="aclasscgv_1_1audio_1_1OALSource_html_ae4620553f331940ce977487487dae294"><div class="ttname"><a href="classcgv_1_1audio_1_1OALSource.html#ae4620553f331940ce977487487dae294">cgv::audio::OALSource::get_position</a></div><div class="ttdeci">cgv::math::fvec&lt; float, 3 &gt; get_position() const</div><div class="ttdoc">Gets the source position.</div><div class="ttdef"><b>Definition</b> <a href="al__context_8cxx_source.html#l00298">al_context.cxx:298</a></div></div>
+<div class="ttc" id="aclasscgv_1_1audio_1_1OALSource_html_afb58f9df1d5b20daf6625ee32c66e339"><div class="ttname"><a href="classcgv_1_1audio_1_1OALSource.html#afb58f9df1d5b20daf6625ee32c66e339">cgv::audio::OALSource::set_gain</a></div><div class="ttdeci">void set_gain(float gain)</div><div class="ttdoc">Sets the source gain.</div><div class="ttdef"><b>Definition</b> <a href="al__context_8cxx_source.html#l00291">al_context.cxx:291</a></div></div>
+<div class="ttc" id="aclasscgv_1_1audio_1_1OALSource_html_afec38e8c7c6602cc604421092dc6425b"><div class="ttname"><a href="classcgv_1_1audio_1_1OALSource.html#afec38e8c7c6602cc604421092dc6425b">cgv::audio::OALSource::set_pitch</a></div><div class="ttdeci">void set_pitch(float pitch)</div><div class="ttdoc">Sets the source pitch.</div><div class="ttdef"><b>Definition</b> <a href="al__context_8cxx_source.html#l00289">al_context.cxx:289</a></div></div>
 <div class="ttc" id="aclasscgv_1_1math_1_1fmat_html"><div class="ttname"><a href="classcgv_1_1math_1_1fmat.html">cgv::math::fmat</a></div><div class="ttdoc">matrix of fixed size dimensions</div><div class="ttdef"><b>Definition</b> <a href="fmat_8h_source.html#l00022">fmat.h:23</a></div></div>
 <div class="ttc" id="aclasscgv_1_1math_1_1fvec_html"><div class="ttname"><a href="classcgv_1_1math_1_1fvec.html">cgv::math::fvec</a></div><div class="ttdoc">A vector with zero based index.</div><div class="ttdef"><b>Definition</b> <a href="fvec_8h_source.html#l00025">fvec.h:26</a></div></div>
 <div class="ttc" id="aclasscgv_1_1math_1_1fvec_html_a57442f3e304ed4d7879cae42cb774167"><div class="ttname"><a href="classcgv_1_1math_1_1fvec.html#a57442f3e304ed4d7879cae42cb774167">cgv::math::fvec::data</a></div><div class="ttdeci">T * data()</div><div class="ttdoc">cast into array. This allows calls like glVertex&lt;N&gt;&lt;T&gt;v(p.data()) instead of glVertex&lt;N&gt;&lt;T,...</div><div class="ttdef"><b>Definition</b> <a href="fvec_8h_source.html#l00181">fvec.h:181</a></div></div>
 <div class="ttc" id="anamespacecgv_html"><div class="ttname"><a href="namespacecgv.html">cgv</a></div><div class="ttdoc">the cgv namespace</div><div class="ttdef"><b>Definition</b> <a href="print_8h_source.html#l00011">print.h:11</a></div></div>
+<div class="ttc" id="astructcgv_1_1audio_1_1OALSoundFormat_html"><div class="ttname"><a href="structcgv_1_1audio_1_1OALSoundFormat.html">cgv::audio::OALSoundFormat</a></div><div class="ttdoc">simple descriptor for sounds that can be played back in OAL</div><div class="ttdef"><b>Definition</b> <a href="al__context_8h_source.html#l00021">al_context.h:22</a></div></div>
 </div><!-- fragment --></div><!-- contents -->
 </div><!-- doc-content -->
 <!-- start footer part -->
