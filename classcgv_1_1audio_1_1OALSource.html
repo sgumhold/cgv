@@ -91,6 +91,7 @@ $(document).ready(function(){initNavTree('classcgv_1_1audio_1_1OALSource.html','
 <div class="header">
   <div class="summary">
 <a href="#pub-methods">Public Member Functions</a> &#124;
+<a href="#pro-methods">Protected Member Functions</a> &#124;
 <a href="classcgv_1_1audio_1_1OALSource-members.html">List of all members</a>  </div>
   <div class="headertitle"><div class="title">cgv::audio::OALSource Class Reference</div></div>
 </div><!--header-->
@@ -115,9 +116,15 @@ Public Member Functions</h2></td></tr>
 <tr class="memitem:a1e78daddc19cabf129cabb304ecdf839" id="r_a1e78daddc19cabf129cabb304ecdf839"><td class="memItemLeft" align="right" valign="top"><a id="a1e78daddc19cabf129cabb304ecdf839" name="a1e78daddc19cabf129cabb304ecdf839"></a>
 <a class="el" href="classcgv_1_1audio_1_1OALSource.html">OALSource</a> &amp;&#160;</td><td class="memItemRight" valign="bottom"><b>operator=</b> (<a class="el" href="classcgv_1_1audio_1_1OALSource.html">OALSource</a> &amp;&amp;)=default</td></tr>
 <tr class="separator:a1e78daddc19cabf129cabb304ecdf839"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a17bb054cc95d83cd46ad7ee4acfcf58e" id="r_a17bb054cc95d83cd46ad7ee4acfcf58e"><td class="memItemLeft" align="right" valign="top">bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcgv_1_1audio_1_1OALSource.html#a17bb054cc95d83cd46ad7ee4acfcf58e">init</a> (<a class="el" href="classcgv_1_1audio_1_1OALContext.html">OALContext</a> &amp;ctx, std::string sound_name)</td></tr>
-<tr class="memdesc:a17bb054cc95d83cd46ad7ee4acfcf58e"><td class="mdescLeft">&#160;</td><td class="mdescRight">This function links a source to a context.  <br /></td></tr>
-<tr class="separator:a17bb054cc95d83cd46ad7ee4acfcf58e"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a67f7dcc5b4e733c0229eea5a42c13ca5" id="r_a67f7dcc5b4e733c0229eea5a42c13ca5"><td class="memItemLeft" align="right" valign="top">bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcgv_1_1audio_1_1OALSource.html#a67f7dcc5b4e733c0229eea5a42c13ca5">init</a> (<a class="el" href="classcgv_1_1audio_1_1OALContext.html">OALContext</a> &amp;ctx, std::string sound_name=&quot;&quot;)</td></tr>
+<tr class="memdesc:a67f7dcc5b4e733c0229eea5a42c13ca5"><td class="mdescLeft">&#160;</td><td class="mdescRight">This function links a source to a context.  <br /></td></tr>
+<tr class="separator:a67f7dcc5b4e733c0229eea5a42c13ca5"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a08e86d0b99116740a2bed30629d73390" id="r_a08e86d0b99116740a2bed30629d73390"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcgv_1_1audio_1_1OALSource.html#a08e86d0b99116740a2bed30629d73390">clear</a> ()</td></tr>
+<tr class="memdesc:a08e86d0b99116740a2bed30629d73390"><td class="mdescLeft">&#160;</td><td class="mdescRight">destruct source and restore uninitialized state  <br /></td></tr>
+<tr class="separator:a08e86d0b99116740a2bed30629d73390"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a1bf073758e20425c6385d7736717c4c7" id="r_a1bf073758e20425c6385d7736717c4c7"><td class="memItemLeft" align="right" valign="top">bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcgv_1_1audio_1_1OALSource.html#a1bf073758e20425c6385d7736717c4c7">append_sound</a> (std::string sound_name)</td></tr>
+<tr class="memdesc:a1bf073758e20425c6385d7736717c4c7"><td class="mdescLeft">&#160;</td><td class="mdescRight">Append buffer of named sound to source's playback list.  <br /></td></tr>
+<tr class="separator:a1bf073758e20425c6385d7736717c4c7"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a3ca31cf1c407eb7fcf7bef3c33c49627" id="r_a3ca31cf1c407eb7fcf7bef3c33c49627"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcgv_1_1audio_1_1OALSource.html#a3ca31cf1c407eb7fcf7bef3c33c49627">set_position</a> (<a class="el" href="classcgv_1_1math_1_1fvec.html">cgv::math::fvec</a>&lt; float, 3 &gt; pos)</td></tr>
 <tr class="memdesc:a3ca31cf1c407eb7fcf7bef3c33c49627"><td class="mdescLeft">&#160;</td><td class="mdescRight">Sets the source position.  <br /></td></tr>
 <tr class="separator:a3ca31cf1c407eb7fcf7bef3c33c49627"><td class="memSeparator" colspan="2">&#160;</td></tr>
@@ -151,6 +158,9 @@ Public Member Functions</h2></td></tr>
 <tr class="memitem:aab2f07045cab91ffac966925d8ce113f" id="r_aab2f07045cab91ffac966925d8ce113f"><td class="memItemLeft" align="right" valign="top">bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcgv_1_1audio_1_1OALSource.html#aab2f07045cab91ffac966925d8ce113f">is_playing</a> () const</td></tr>
 <tr class="memdesc:aab2f07045cab91ffac966925d8ce113f"><td class="mdescLeft">&#160;</td><td class="mdescRight">Determines if the source is playing.  <br /></td></tr>
 <tr class="separator:aab2f07045cab91ffac966925d8ce113f"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ab41ee6e117281144e3301891279b0aae" id="r_ab41ee6e117281144e3301891279b0aae"><td class="memItemLeft" align="right" valign="top">OALSourceState&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcgv_1_1audio_1_1OALSource.html#ab41ee6e117281144e3301891279b0aae">get_state</a> () const</td></tr>
+<tr class="memdesc:ab41ee6e117281144e3301891279b0aae"><td class="mdescLeft">&#160;</td><td class="mdescRight">returns state of this source  <br /></td></tr>
+<tr class="separator:ab41ee6e117281144e3301891279b0aae"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a894f6d10519178265c507ff86c5b2b3c" id="r_a894f6d10519178265c507ff86c5b2b3c"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcgv_1_1audio_1_1OALSource.html#a894f6d10519178265c507ff86c5b2b3c">play</a> ()</td></tr>
 <tr class="memdesc:a894f6d10519178265c507ff86c5b2b3c"><td class="mdescLeft">&#160;</td><td class="mdescRight">Commences the playback of the sound buffer.  <br /></td></tr>
 <tr class="separator:a894f6d10519178265c507ff86c5b2b3c"><td class="memSeparator" colspan="2">&#160;</td></tr>
@@ -166,11 +176,16 @@ Public Member Functions</h2></td></tr>
 <tr class="memitem:a8bdf8f4837446c4a4de79f5f8c972ed6" id="r_a8bdf8f4837446c4a4de79f5f8c972ed6"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcgv_1_1audio_1_1OALSource.html#a8bdf8f4837446c4a4de79f5f8c972ed6">rewind</a> ()</td></tr>
 <tr class="memdesc:a8bdf8f4837446c4a4de79f5f8c972ed6"><td class="mdescLeft">&#160;</td><td class="mdescRight">Moves the playhead to the beginning of the buffer.  <br /></td></tr>
 <tr class="separator:a8bdf8f4837446c4a4de79f5f8c972ed6"><td class="memSeparator" colspan="2">&#160;</td></tr>
+</table><table class="memberdecls">
+<tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="pro-methods" name="pro-methods"></a>
+Protected Member Functions</h2></td></tr>
+<tr class="memitem:aeb89ba005f8232be1be5522812d86959" id="r_aeb89ba005f8232be1be5522812d86959"><td class="memItemLeft" align="right" valign="top">bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcgv_1_1audio_1_1OALSource.html#aeb89ba005f8232be1be5522812d86959">append_sound_impl</a> (std::string sound_name)</td></tr>
+<tr class="separator:aeb89ba005f8232be1be5522812d86959"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
 <a name="details" id="details"></a><h2 class="groupheader">Detailed Description</h2>
 <div class="textblock"><p>This class describes a sound source in the scene. </p>
 
-<p class="definition">Definition at line <a class="el" href="al__context_8h_source.html#l00229">229</a> of file <a class="el" href="al__context_8h_source.html">al_context.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="al__context_8h_source.html#l00254">254</a> of file <a class="el" href="al__context_8h_source.html">al_context.h</a>.</p>
 </div><h2 class="groupheader">Constructor &amp; Destructor Documentation</h2>
 <a id="a1e31e3a6d69ee2829122fb1bd4a49261" name="a1e31e3a6d69ee2829122fb1bd4a49261"></a>
 <h2 class="memtitle"><span class="permalink"><a href="#a1e31e3a6d69ee2829122fb1bd4a49261">&#9670;&#160;</a></span>~OALSource()</h2>
@@ -187,11 +202,97 @@ Public Member Functions</h2></td></tr>
       </table>
 </div><div class="memdoc">
 
-<p class="definition">Definition at line <a class="el" href="al__context_8cxx_source.html#l00230">230</a> of file <a class="el" href="al__context_8cxx_source.html">al_context.cxx</a>.</p>
+<p class="definition">Definition at line <a class="el" href="al__context_8cxx_source.html#l00247">247</a> of file <a class="el" href="al__context_8cxx_source.html">al_context.cxx</a>.</p>
 
 </div>
 </div>
 <h2 class="groupheader">Member Function Documentation</h2>
+<a id="a1bf073758e20425c6385d7736717c4c7" name="a1bf073758e20425c6385d7736717c4c7"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a1bf073758e20425c6385d7736717c4c7">&#9670;&#160;</a></span>append_sound()</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">bool cgv::audio::OALSource::append_sound </td>
+          <td>(</td>
+          <td class="paramtype">std::string&#160;</td>
+          <td class="paramname"><em>sound_name</em></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>Append buffer of named sound to source's playback list. </p>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramdir">[in]</td><td class="paramname">sound_name</td><td>The sounds symbolic name</td></tr>
+  </table>
+  </dd>
+</dl>
+<dl class="section return"><dt>Returns</dt><dd>True if attachment was successful, False otherwise.</dd></dl>
+<dl class="section warning"><dt>Warning</dt><dd>Failes if source is playing or paused and not stopped.</dd></dl>
+<dl class="section see"><dt>See also</dt><dd><a class="el" href="classcgv_1_1audio_1_1OALContext.html#aa758f6d2532ceeb769a0ab931c2361a3" title="Loads a sound into the internal buffer list.">OALContext::load_sample()</a> </dd>
+<dd>
+<a class="el" href="classcgv_1_1audio_1_1OALContext.html#a040d8f4f4325096f6d03e236bc83544f" title="Loads all audio files in a folder into the internal buffer list.">OALContext::load_samples()</a> </dd></dl>
+
+<p class="definition">Definition at line <a class="el" href="al__context_8cxx_source.html#l00263">263</a> of file <a class="el" href="al__context_8cxx_source.html">al_context.cxx</a>.</p>
+
+<p class="reference">References <a class="el" href="al__context_8cxx_source.html#l00235">cgv::audio::OALContext::get_native_context()</a>.</p>
+
+</div>
+</div>
+<a id="aeb89ba005f8232be1be5522812d86959" name="aeb89ba005f8232be1be5522812d86959"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#aeb89ba005f8232be1be5522812d86959">&#9670;&#160;</a></span>append_sound_impl()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">bool cgv::audio::OALSource::append_sound_impl </td>
+          <td>(</td>
+          <td class="paramtype">std::string&#160;</td>
+          <td class="paramname"><em>sound_name</em></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">protected</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p class="definition">Definition at line <a class="el" href="al__context_8cxx_source.html#l00269">269</a> of file <a class="el" href="al__context_8cxx_source.html">al_context.cxx</a>.</p>
+
+</div>
+</div>
+<a id="a08e86d0b99116740a2bed30629d73390" name="a08e86d0b99116740a2bed30629d73390"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a08e86d0b99116740a2bed30629d73390">&#9670;&#160;</a></span>clear()</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">void cgv::audio::OALSource::clear </td>
+          <td>(</td>
+          <td class="paramname"></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>destruct source and restore uninitialized state </p>
+
+<p class="definition">Definition at line <a class="el" href="al__context_8cxx_source.html#l00237">237</a> of file <a class="el" href="al__context_8cxx_source.html">al_context.cxx</a>.</p>
+
+<p class="reference">References <a class="el" href="al__context_8cxx_source.html#l00340">get_state()</a>, and <a class="el" href="al__context_8cxx_source.html#l00361">stop()</a>.</p>
+
+</div>
+</div>
 <a id="aded347ef9cbc0d79b8b427a0b5976056" name="aded347ef9cbc0d79b8b427a0b5976056"></a>
 <h2 class="memtitle"><span class="permalink"><a href="#aded347ef9cbc0d79b8b427a0b5976056">&#9670;&#160;</a></span>get_gain()</h2>
 
@@ -210,7 +311,7 @@ Public Member Functions</h2></td></tr>
 <p>Gets the source gain. </p>
 <dl class="section return"><dt>Returns</dt><dd>The current gain of the source. </dd></dl>
 
-<p class="definition">Definition at line <a class="el" href="al__context_8cxx_source.html#l00278">278</a> of file <a class="el" href="al__context_8cxx_source.html">al_context.cxx</a>.</p>
+<p class="definition">Definition at line <a class="el" href="al__context_8cxx_source.html#l00319">319</a> of file <a class="el" href="al__context_8cxx_source.html">al_context.cxx</a>.</p>
 
 </div>
 </div>
@@ -232,7 +333,7 @@ Public Member Functions</h2></td></tr>
 <p>Gets the source pitch. </p>
 <dl class="section return"><dt>Returns</dt><dd>The current pitch of the source. </dd></dl>
 
-<p class="definition">Definition at line <a class="el" href="al__context_8cxx_source.html#l00271">271</a> of file <a class="el" href="al__context_8cxx_source.html">al_context.cxx</a>.</p>
+<p class="definition">Definition at line <a class="el" href="al__context_8cxx_source.html#l00312">312</a> of file <a class="el" href="al__context_8cxx_source.html">al_context.cxx</a>.</p>
 
 </div>
 </div>
@@ -254,9 +355,32 @@ Public Member Functions</h2></td></tr>
 <p>Gets the source position. </p>
 <dl class="section return"><dt>Returns</dt><dd>The current position of the source. </dd></dl>
 
-<p class="definition">Definition at line <a class="el" href="al__context_8cxx_source.html#l00257">257</a> of file <a class="el" href="al__context_8cxx_source.html">al_context.cxx</a>.</p>
+<p class="definition">Definition at line <a class="el" href="al__context_8cxx_source.html#l00298">298</a> of file <a class="el" href="al__context_8cxx_source.html">al_context.cxx</a>.</p>
 
 <p class="reference">References <a class="el" href="fvec_8h_source.html#l00181">cgv::math::fvec&lt; T, N &gt;::data()</a>.</p>
+
+</div>
+</div>
+<a id="ab41ee6e117281144e3301891279b0aae" name="ab41ee6e117281144e3301891279b0aae"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#ab41ee6e117281144e3301891279b0aae">&#9670;&#160;</a></span>get_state()</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">OALSourceState cgv::audio::OALSource::get_state </td>
+          <td>(</td>
+          <td class="paramname"></td><td>)</td>
+          <td> const</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>returns state of this source </p>
+
+<p class="definition">Definition at line <a class="el" href="al__context_8cxx_source.html#l00340">340</a> of file <a class="el" href="al__context_8cxx_source.html">al_context.cxx</a>.</p>
+
+<p class="reference">Referenced by <a class="el" href="al__context_8cxx_source.html#l00237">clear()</a>.</p>
 
 </div>
 </div>
@@ -278,14 +402,14 @@ Public Member Functions</h2></td></tr>
 <p>Gets the source velocity. </p>
 <dl class="section return"><dt>Returns</dt><dd>The current velocity of the source. </dd></dl>
 
-<p class="definition">Definition at line <a class="el" href="al__context_8cxx_source.html#l00264">264</a> of file <a class="el" href="al__context_8cxx_source.html">al_context.cxx</a>.</p>
+<p class="definition">Definition at line <a class="el" href="al__context_8cxx_source.html#l00305">305</a> of file <a class="el" href="al__context_8cxx_source.html">al_context.cxx</a>.</p>
 
 <p class="reference">References <a class="el" href="fvec_8h_source.html#l00181">cgv::math::fvec&lt; T, N &gt;::data()</a>.</p>
 
 </div>
 </div>
-<a id="a17bb054cc95d83cd46ad7ee4acfcf58e" name="a17bb054cc95d83cd46ad7ee4acfcf58e"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a17bb054cc95d83cd46ad7ee4acfcf58e">&#9670;&#160;</a></span>init()</h2>
+<a id="a67f7dcc5b4e733c0229eea5a42c13ca5" name="a67f7dcc5b4e733c0229eea5a42c13ca5"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a67f7dcc5b4e733c0229eea5a42c13ca5">&#9670;&#160;</a></span>init()</h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -300,7 +424,7 @@ Public Member Functions</h2></td></tr>
           <td class="paramkey"></td>
           <td></td>
           <td class="paramtype">std::string&#160;</td>
-          <td class="paramname"><em>sound_name</em>&#160;</td>
+          <td class="paramname"><em>sound_name</em> = <code>&quot;&quot;</code>&#160;</td>
         </tr>
         <tr>
           <td></td>
@@ -313,20 +437,20 @@ Public Member Functions</h2></td></tr>
 <p>This function links a source to a context. </p>
 <dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
-    <tr><td class="paramdir"></td><td class="paramname">ctx</td><td>The OpenAL context </td></tr>
-    <tr><td class="paramdir">[in]</td><td class="paramname">sound_name</td><td>The sounds symbolic name</td></tr>
+    <tr><td class="paramdir"></td><td class="paramname">ctx_ptr</td><td>The OpenAL context </td></tr>
+    <tr><td class="paramdir">[in]</td><td class="paramname">sound_name</td><td>Optionally a named sound whose buffer to append</td></tr>
   </table>
   </dd>
 </dl>
 <dl class="section return"><dt>Returns</dt><dd>True if initialization was successful, False otherwise.</dd></dl>
 <dl class="section warning"><dt>Warning</dt><dd>An internal reference to the given context is made. You need to make sure, that this object does not outlive the context. </dd></dl>
-<dl class="section see"><dt>See also</dt><dd><a class="el" href="classcgv_1_1audio_1_1OALContext.html#a6f73bd05ef149d0a8af6e9faa9b9f5db" title="Loads a sound into the internal buffer list.">OALContext::load_sample()</a> </dd>
+<dl class="section see"><dt>See also</dt><dd><a class="el" href="classcgv_1_1audio_1_1OALContext.html#aa758f6d2532ceeb769a0ab931c2361a3" title="Loads a sound into the internal buffer list.">OALContext::load_sample()</a> </dd>
 <dd>
 <a class="el" href="classcgv_1_1audio_1_1OALContext.html#a040d8f4f4325096f6d03e236bc83544f" title="Loads all audio files in a folder into the internal buffer list.">OALContext::load_samples()</a> </dd></dl>
 
-<p class="definition">Definition at line <a class="el" href="al__context_8cxx_source.html#l00232">232</a> of file <a class="el" href="al__context_8cxx_source.html">al_context.cxx</a>.</p>
+<p class="definition">Definition at line <a class="el" href="al__context_8cxx_source.html#l00252">252</a> of file <a class="el" href="al__context_8cxx_source.html">al_context.cxx</a>.</p>
 
-<p class="reference">References <a class="el" href="al__context_8cxx_source.html#l00188">cgv::audio::OALContext::get_buffer_id()</a>, <a class="el" href="al__context_8cxx_source.html#l00228">cgv::audio::OALContext::get_native_context()</a>, and <a class="el" href="al__context_8cxx_source.html#l00213">cgv::audio::OALContext::is_no_error()</a>.</p>
+<p class="reference">References <a class="el" href="al__context_8cxx_source.html#l00235">cgv::audio::OALContext::get_native_context()</a>, and <a class="el" href="al__context_8cxx_source.html#l00221">cgv::audio::OALContext::is_no_error()</a>.</p>
 
 </div>
 </div>
@@ -348,7 +472,7 @@ Public Member Functions</h2></td></tr>
 <p>Determines if the source has the looping property. </p>
 <dl class="section return"><dt>Returns</dt><dd>True if the source is looping its buffer, False otherwise. </dd></dl>
 
-<p class="definition">Definition at line <a class="el" href="al__context_8cxx_source.html#l00285">285</a> of file <a class="el" href="al__context_8cxx_source.html">al_context.cxx</a>.</p>
+<p class="definition">Definition at line <a class="el" href="al__context_8cxx_source.html#l00326">326</a> of file <a class="el" href="al__context_8cxx_source.html">al_context.cxx</a>.</p>
 
 </div>
 </div>
@@ -370,7 +494,7 @@ Public Member Functions</h2></td></tr>
 <p>Determines if the source is playing. </p>
 <dl class="section return"><dt>Returns</dt><dd>True if the source is currently playing, False otherwise. </dd></dl>
 
-<p class="definition">Definition at line <a class="el" href="al__context_8cxx_source.html#l00292">292</a> of file <a class="el" href="al__context_8cxx_source.html">al_context.cxx</a>.</p>
+<p class="definition">Definition at line <a class="el" href="al__context_8cxx_source.html#l00333">333</a> of file <a class="el" href="al__context_8cxx_source.html">al_context.cxx</a>.</p>
 
 </div>
 </div>
@@ -391,9 +515,9 @@ Public Member Functions</h2></td></tr>
 
 <p>Pauses the playback of the sound buffer without moving the playhead. </p>
 
-<p class="definition">Definition at line <a class="el" href="al__context_8cxx_source.html#l00301">301</a> of file <a class="el" href="al__context_8cxx_source.html">al_context.cxx</a>.</p>
+<p class="definition">Definition at line <a class="el" href="al__context_8cxx_source.html#l00349">349</a> of file <a class="el" href="al__context_8cxx_source.html">al_context.cxx</a>.</p>
 
-<p class="reference">Referenced by <a class="el" href="al__context_8cxx_source.html#l00303">play_pause()</a>.</p>
+<p class="reference">Referenced by <a class="el" href="al__context_8cxx_source.html#l00351">play_pause()</a>.</p>
 
 </div>
 </div>
@@ -414,9 +538,9 @@ Public Member Functions</h2></td></tr>
 
 <p>Commences the playback of the sound buffer. </p>
 
-<p class="definition">Definition at line <a class="el" href="al__context_8cxx_source.html#l00299">299</a> of file <a class="el" href="al__context_8cxx_source.html">al_context.cxx</a>.</p>
+<p class="definition">Definition at line <a class="el" href="al__context_8cxx_source.html#l00347">347</a> of file <a class="el" href="al__context_8cxx_source.html">al_context.cxx</a>.</p>
 
-<p class="reference">Referenced by <a class="el" href="al__context_8cxx_source.html#l00303">play_pause()</a>.</p>
+<p class="reference">Referenced by <a class="el" href="al__context_8cxx_source.html#l00351">play_pause()</a>.</p>
 
 </div>
 </div>
@@ -445,9 +569,9 @@ Public Member Functions</h2></td></tr>
 </dl>
 <dl class="section remark"><dt>Remarks</dt><dd>This function is provided as convenience to directly control the source with a boolean argument. </dd></dl>
 
-<p class="definition">Definition at line <a class="el" href="al__context_8cxx_source.html#l00303">303</a> of file <a class="el" href="al__context_8cxx_source.html">al_context.cxx</a>.</p>
+<p class="definition">Definition at line <a class="el" href="al__context_8cxx_source.html#l00351">351</a> of file <a class="el" href="al__context_8cxx_source.html">al_context.cxx</a>.</p>
 
-<p class="reference">References <a class="el" href="al__context_8cxx_source.html#l00301">pause()</a>, and <a class="el" href="al__context_8cxx_source.html#l00299">play()</a>.</p>
+<p class="reference">References <a class="el" href="al__context_8cxx_source.html#l00349">pause()</a>, and <a class="el" href="al__context_8cxx_source.html#l00347">play()</a>.</p>
 
 </div>
 </div>
@@ -468,7 +592,7 @@ Public Member Functions</h2></td></tr>
 
 <p>Moves the playhead to the beginning of the buffer. </p>
 
-<p class="definition">Definition at line <a class="el" href="al__context_8cxx_source.html#l00315">315</a> of file <a class="el" href="al__context_8cxx_source.html">al_context.cxx</a>.</p>
+<p class="definition">Definition at line <a class="el" href="al__context_8cxx_source.html#l00363">363</a> of file <a class="el" href="al__context_8cxx_source.html">al_context.cxx</a>.</p>
 
 </div>
 </div>
@@ -496,7 +620,7 @@ Public Member Functions</h2></td></tr>
   </dd>
 </dl>
 
-<p class="definition">Definition at line <a class="el" href="al__context_8cxx_source.html#l00250">250</a> of file <a class="el" href="al__context_8cxx_source.html">al_context.cxx</a>.</p>
+<p class="definition">Definition at line <a class="el" href="al__context_8cxx_source.html#l00291">291</a> of file <a class="el" href="al__context_8cxx_source.html">al_context.cxx</a>.</p>
 
 </div>
 </div>
@@ -524,7 +648,7 @@ Public Member Functions</h2></td></tr>
   </dd>
 </dl>
 
-<p class="definition">Definition at line <a class="el" href="al__context_8cxx_source.html#l00252">252</a> of file <a class="el" href="al__context_8cxx_source.html">al_context.cxx</a>.</p>
+<p class="definition">Definition at line <a class="el" href="al__context_8cxx_source.html#l00293">293</a> of file <a class="el" href="al__context_8cxx_source.html">al_context.cxx</a>.</p>
 
 </div>
 </div>
@@ -552,7 +676,7 @@ Public Member Functions</h2></td></tr>
   </dd>
 </dl>
 
-<p class="definition">Definition at line <a class="el" href="al__context_8cxx_source.html#l00248">248</a> of file <a class="el" href="al__context_8cxx_source.html">al_context.cxx</a>.</p>
+<p class="definition">Definition at line <a class="el" href="al__context_8cxx_source.html#l00289">289</a> of file <a class="el" href="al__context_8cxx_source.html">al_context.cxx</a>.</p>
 
 </div>
 </div>
@@ -580,7 +704,7 @@ Public Member Functions</h2></td></tr>
   </dd>
 </dl>
 
-<p class="definition">Definition at line <a class="el" href="al__context_8cxx_source.html#l00244">244</a> of file <a class="el" href="al__context_8cxx_source.html">al_context.cxx</a>.</p>
+<p class="definition">Definition at line <a class="el" href="al__context_8cxx_source.html#l00285">285</a> of file <a class="el" href="al__context_8cxx_source.html">al_context.cxx</a>.</p>
 
 <p class="reference">References <a class="el" href="fvec_8h_source.html#l00181">cgv::math::fvec&lt; T, N &gt;::data()</a>.</p>
 
@@ -610,7 +734,7 @@ Public Member Functions</h2></td></tr>
   </dd>
 </dl>
 
-<p class="definition">Definition at line <a class="el" href="al__context_8cxx_source.html#l00246">246</a> of file <a class="el" href="al__context_8cxx_source.html">al_context.cxx</a>.</p>
+<p class="definition">Definition at line <a class="el" href="al__context_8cxx_source.html#l00287">287</a> of file <a class="el" href="al__context_8cxx_source.html">al_context.cxx</a>.</p>
 
 <p class="reference">References <a class="el" href="fvec_8h_source.html#l00181">cgv::math::fvec&lt; T, N &gt;::data()</a>.</p>
 
@@ -633,7 +757,9 @@ Public Member Functions</h2></td></tr>
 
 <p>Stops the playback of the sound buffer and moves the playhead to the beginning. </p>
 
-<p class="definition">Definition at line <a class="el" href="al__context_8cxx_source.html#l00313">313</a> of file <a class="el" href="al__context_8cxx_source.html">al_context.cxx</a>.</p>
+<p class="definition">Definition at line <a class="el" href="al__context_8cxx_source.html#l00361">361</a> of file <a class="el" href="al__context_8cxx_source.html">al_context.cxx</a>.</p>
+
+<p class="reference">Referenced by <a class="el" href="al__context_8cxx_source.html#l00237">clear()</a>.</p>
 
 </div>
 </div>

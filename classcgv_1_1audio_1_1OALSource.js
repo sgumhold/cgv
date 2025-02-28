@@ -1,10 +1,13 @@
 var classcgv_1_1audio_1_1OALSource =
 [
+    [ "append_sound", "classcgv_1_1audio_1_1OALSource.html#a1bf073758e20425c6385d7736717c4c7", null ],
+    [ "clear", "classcgv_1_1audio_1_1OALSource.html#a08e86d0b99116740a2bed30629d73390", null ],
     [ "get_gain", "classcgv_1_1audio_1_1OALSource.html#aded347ef9cbc0d79b8b427a0b5976056", null ],
     [ "get_pitch", "classcgv_1_1audio_1_1OALSource.html#ae33c89245513382c3ea9f84b7c3f2c4f", null ],
     [ "get_position", "classcgv_1_1audio_1_1OALSource.html#ae4620553f331940ce977487487dae294", null ],
+    [ "get_state", "classcgv_1_1audio_1_1OALSource.html#ab41ee6e117281144e3301891279b0aae", null ],
     [ "get_velocity", "classcgv_1_1audio_1_1OALSource.html#aa3a5bcaa763096de556c011c3ea004f5", null ],
-    [ "init", "classcgv_1_1audio_1_1OALSource.html#a17bb054cc95d83cd46ad7ee4acfcf58e", null ],
+    [ "init", "classcgv_1_1audio_1_1OALSource.html#a67f7dcc5b4e733c0229eea5a42c13ca5", null ],
     [ "is_looping", "classcgv_1_1audio_1_1OALSource.html#aa9debb814f016e26618bfca1979cb011", null ],
     [ "is_playing", "classcgv_1_1audio_1_1OALSource.html#aab2f07045cab91ffac966925d8ce113f", null ],
     [ "pause", "classcgv_1_1audio_1_1OALSource.html#a9c2afad2e0b8924a7ae03e3b64706c5b", null ],

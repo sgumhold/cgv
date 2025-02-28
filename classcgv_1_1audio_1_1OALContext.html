@@ -104,9 +104,9 @@ $(document).ready(function(){initNavTree('classcgv_1_1audio_1_1OALContext.html',
 <table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="pub-methods" name="pub-methods"></a>
 Public Member Functions</h2></td></tr>
-<tr class="memitem:aa24c338882c4cded6ce349ad19050a56" id="r_aa24c338882c4cded6ce349ad19050a56"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcgv_1_1audio_1_1OALContext.html#aa24c338882c4cded6ce349ad19050a56">OALContext</a> (const std::string &amp;device)</td></tr>
-<tr class="memdesc:aa24c338882c4cded6ce349ad19050a56"><td class="mdescLeft">&#160;</td><td class="mdescRight">This constructor to choose a specific output device.  <br /></td></tr>
-<tr class="separator:aa24c338882c4cded6ce349ad19050a56"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:af9ee9ae71be6f500207173ee3b2d22f8" id="r_af9ee9ae71be6f500207173ee3b2d22f8"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcgv_1_1audio_1_1OALContext.html#af9ee9ae71be6f500207173ee3b2d22f8">OALContext</a> (const std::string &amp;device_name)</td></tr>
+<tr class="memdesc:af9ee9ae71be6f500207173ee3b2d22f8"><td class="mdescLeft">&#160;</td><td class="mdescRight">Construct context, connect to output device and make context current.  <br /></td></tr>
+<tr class="separator:af9ee9ae71be6f500207173ee3b2d22f8"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:aba206b5e63eeda71ced86d9ea5adfc27" id="r_aba206b5e63eeda71ced86d9ea5adfc27"><td class="memItemLeft" align="right" valign="top"><a id="aba206b5e63eeda71ced86d9ea5adfc27" name="aba206b5e63eeda71ced86d9ea5adfc27"></a>
 &#160;</td><td class="memItemRight" valign="bottom"><b>OALContext</b> (const <a class="el" href="classcgv_1_1audio_1_1OALContext.html">OALContext</a> &amp;other)=delete</td></tr>
 <tr class="separator:aba206b5e63eeda71ced86d9ea5adfc27"><td class="memSeparator" colspan="2">&#160;</td></tr>
@@ -119,12 +119,24 @@ Public Member Functions</h2></td></tr>
 <tr class="memitem:ad08ed253a4a93410b0155d1e7354edac" id="r_ad08ed253a4a93410b0155d1e7354edac"><td class="memItemLeft" align="right" valign="top"><a id="ad08ed253a4a93410b0155d1e7354edac" name="ad08ed253a4a93410b0155d1e7354edac"></a>
 <a class="el" href="classcgv_1_1audio_1_1OALContext.html">OALContext</a> &amp;&#160;</td><td class="memItemRight" valign="bottom"><b>operator=</b> (<a class="el" href="classcgv_1_1audio_1_1OALContext.html">OALContext</a> &amp;&amp;other)=default</td></tr>
 <tr class="separator:ad08ed253a4a93410b0155d1e7354edac"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a6f73bd05ef149d0a8af6e9faa9b9f5db" id="r_a6f73bd05ef149d0a8af6e9faa9b9f5db"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcgv_1_1audio_1_1OALContext.html#a6f73bd05ef149d0a8af6e9faa9b9f5db">load_sample</a> (std::string filepath)</td></tr>
-<tr class="memdesc:a6f73bd05ef149d0a8af6e9faa9b9f5db"><td class="mdescLeft">&#160;</td><td class="mdescRight">Loads a sound into the internal buffer list.  <br /></td></tr>
-<tr class="separator:a6f73bd05ef149d0a8af6e9faa9b9f5db"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a8c2aae410cf79943d2d211b5dcee22eb" id="r_a8c2aae410cf79943d2d211b5dcee22eb"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcgv_1_1audio_1_1OALContext.html#a8c2aae410cf79943d2d211b5dcee22eb">load_sample</a> (std::string symbolic_name, const char *data, size_t data_length)</td></tr>
-<tr class="memdesc:a8c2aae410cf79943d2d211b5dcee22eb"><td class="mdescLeft">&#160;</td><td class="mdescRight">Loads a sound into the internal buffer list.  <br /></td></tr>
-<tr class="separator:a8c2aae410cf79943d2d211b5dcee22eb"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a65dc424fc4be728d2fc20f64d9f3a509" id="r_a65dc424fc4be728d2fc20f64d9f3a509"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcgv_1_1audio_1_1OALContext.html#a65dc424fc4be728d2fc20f64d9f3a509">~OALContext</a> ()</td></tr>
+<tr class="memdesc:a65dc424fc4be728d2fc20f64d9f3a509"><td class="mdescLeft">&#160;</td><td class="mdescRight">detach context from output device and destruct  <br /></td></tr>
+<tr class="separator:a65dc424fc4be728d2fc20f64d9f3a509"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a249991bf87b10be729c2cf8c6e1a52c4" id="r_a249991bf87b10be729c2cf8c6e1a52c4"><td class="memItemLeft" align="right" valign="top">std::string&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcgv_1_1audio_1_1OALContext.html#a249991bf87b10be729c2cf8c6e1a52c4">get_device_name</a> () const</td></tr>
+<tr class="memdesc:a249991bf87b10be729c2cf8c6e1a52c4"><td class="mdescLeft">&#160;</td><td class="mdescRight">return device name of contexts device  <br /></td></tr>
+<tr class="separator:a249991bf87b10be729c2cf8c6e1a52c4"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a10276711305b3c51ae10022fa64f180c" id="r_a10276711305b3c51ae10022fa64f180c"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcgv_1_1audio_1_1OALContext.html#a10276711305b3c51ae10022fa64f180c">make_current</a> ()</td></tr>
+<tr class="memdesc:a10276711305b3c51ae10022fa64f180c"><td class="mdescLeft">&#160;</td><td class="mdescRight">in case of multiple contexts, this makes this context current  <br /></td></tr>
+<tr class="separator:a10276711305b3c51ae10022fa64f180c"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a7bf35c7aca67ddf98a6787e15a8c2569" id="r_a7bf35c7aca67ddf98a6787e15a8c2569"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcgv_1_1audio_1_1OALContext.html#a7bf35c7aca67ddf98a6787e15a8c2569">create_buffer</a> (const std::string &amp;symbolic_name, const <a class="el" href="structcgv_1_1audio_1_1OALSoundFormat.html">OALSoundFormat</a> &amp;format, const void *data, size_t data_length)</td></tr>
+<tr class="memdesc:a7bf35c7aca67ddf98a6787e15a8c2569"><td class="mdescLeft">&#160;</td><td class="mdescRight">create a named sound buffer from a format descriptor and a data buffer of given length in bytes  <br /></td></tr>
+<tr class="separator:a7bf35c7aca67ddf98a6787e15a8c2569"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:aa758f6d2532ceeb769a0ab931c2361a3" id="r_aa758f6d2532ceeb769a0ab931c2361a3"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcgv_1_1audio_1_1OALContext.html#aa758f6d2532ceeb769a0ab931c2361a3">load_sample</a> (std::string filepath, std::string symbolic_name=&quot;&quot;)</td></tr>
+<tr class="memdesc:aa758f6d2532ceeb769a0ab931c2361a3"><td class="mdescLeft">&#160;</td><td class="mdescRight">Loads a sound into the internal buffer list.  <br /></td></tr>
+<tr class="separator:aa758f6d2532ceeb769a0ab931c2361a3"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:aa82fb501954869afc024c39e1b420153" id="r_aa82fb501954869afc024c39e1b420153"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcgv_1_1audio_1_1OALContext.html#aa82fb501954869afc024c39e1b420153">load_sample</a> (std::string symbolic_name, const void *data, size_t data_length)</td></tr>
+<tr class="memdesc:aa82fb501954869afc024c39e1b420153"><td class="mdescLeft">&#160;</td><td class="mdescRight">Loads a sound into the internal buffer list.  <br /></td></tr>
+<tr class="separator:aa82fb501954869afc024c39e1b420153"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a040d8f4f4325096f6d03e236bc83544f" id="r_a040d8f4f4325096f6d03e236bc83544f"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcgv_1_1audio_1_1OALContext.html#a040d8f4f4325096f6d03e236bc83544f">load_samples</a> (std::string folder, bool recursive=false)</td></tr>
 <tr class="memdesc:a040d8f4f4325096f6d03e236bc83544f"><td class="mdescLeft">&#160;</td><td class="mdescRight">Loads all audio files in a folder into the internal buffer list.  <br /></td></tr>
 <tr class="separator:a040d8f4f4325096f6d03e236bc83544f"><td class="memSeparator" colspan="2">&#160;</td></tr>
@@ -149,36 +161,26 @@ Public Member Functions</h2></td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="pub-static-methods" name="pub-static-methods"></a>
 Static Public Member Functions</h2></td></tr>
-<tr class="memitem:a1428a16474ca49303a63484ec74bd56b" id="r_a1428a16474ca49303a63484ec74bd56b"><td class="memItemLeft" align="right" valign="top">static std::list&lt; std::string &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcgv_1_1audio_1_1OALContext.html#a1428a16474ca49303a63484ec74bd56b">enumerate_devices</a> ()</td></tr>
-<tr class="memdesc:a1428a16474ca49303a63484ec74bd56b"><td class="mdescLeft">&#160;</td><td class="mdescRight">Enumerates all devices which are output targets for the OpenAL context.  <br /></td></tr>
-<tr class="separator:a1428a16474ca49303a63484ec74bd56b"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a441f37204792899d81bded2236b7637a" id="r_a441f37204792899d81bded2236b7637a"><td class="memItemLeft" align="right" valign="top">static std::vector&lt; std::string &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcgv_1_1audio_1_1OALContext.html#a441f37204792899d81bded2236b7637a">enumerate_devices</a> ()</td></tr>
+<tr class="memdesc:a441f37204792899d81bded2236b7637a"><td class="mdescLeft">&#160;</td><td class="mdescRight">Enumerate audio output devices available on system.  <br /></td></tr>
+<tr class="separator:a441f37204792899d81bded2236b7637a"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a4cf127a20671e7fa3b1fa1fe333fe169" id="r_a4cf127a20671e7fa3b1fa1fe333fe169"><td class="memItemLeft" align="right" valign="top">static std::string&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcgv_1_1audio_1_1OALContext.html#a4cf127a20671e7fa3b1fa1fe333fe169">get_default_device_name</a> ()</td></tr>
+<tr class="memdesc:a4cf127a20671e7fa3b1fa1fe333fe169"><td class="mdescLeft">&#160;</td><td class="mdescRight">returns name of system's default device  <br /></td></tr>
+<tr class="separator:a4cf127a20671e7fa3b1fa1fe333fe169"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a608d61e794cafd11bb605df7c2eecebf" id="r_a608d61e794cafd11bb605df7c2eecebf"><td class="memItemLeft" align="right" valign="top">static bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcgv_1_1audio_1_1OALContext.html#a608d61e794cafd11bb605df7c2eecebf">decode_sound_file</a> (const void *data, size_t data_length, <a class="el" href="structcgv_1_1audio_1_1OALSoundFormat.html">OALSoundFormat</a> &amp;format, std::vector&lt; int16_t &gt; &amp;memory_buffer)</td></tr>
+<tr class="memdesc:a608d61e794cafd11bb605df7c2eecebf"><td class="mdescLeft">&#160;</td><td class="mdescRight">decode sound file that is already in memory data with data_length bytes to a newly constructed memory buffer  <br /></td></tr>
+<tr class="separator:a608d61e794cafd11bb605df7c2eecebf"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:aae313d90f1c7d7bb7f968f90bef8bf20" id="r_aae313d90f1c7d7bb7f968f90bef8bf20"><td class="memItemLeft" align="right" valign="top">static bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcgv_1_1audio_1_1OALContext.html#aae313d90f1c7d7bb7f968f90bef8bf20">load_sound_file</a> (const std::string &amp;filepath, <a class="el" href="structcgv_1_1audio_1_1OALSoundFormat.html">OALSoundFormat</a> &amp;format, std::vector&lt; int16_t &gt; &amp;memory_buffer)</td></tr>
+<tr class="memdesc:aae313d90f1c7d7bb7f968f90bef8bf20"><td class="mdescLeft">&#160;</td><td class="mdescRight">load and decode sound file to newly constructed memory buffer  <br /></td></tr>
+<tr class="separator:aae313d90f1c7d7bb7f968f90bef8bf20"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
 <a name="details" id="details"></a><h2 class="groupheader">Detailed Description</h2>
 <div class="textblock"><p>This class provides easy sample loading, device enumeration and error retrieval. </p>
 
-<p class="definition">Definition at line <a class="el" href="al__context_8h_source.html#l00021">21</a> of file <a class="el" href="al__context_8h_source.html">al_context.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="al__context_8h_source.html#l00039">39</a> of file <a class="el" href="al__context_8h_source.html">al_context.h</a>.</p>
 </div><h2 class="groupheader">Constructor &amp; Destructor Documentation</h2>
-<a id="a6886669efe831f66bce597805d96701e" name="a6886669efe831f66bce597805d96701e"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a6886669efe831f66bce597805d96701e">&#9670;&#160;</a></span>OALContext() <span class="overload">[1/2]</span></h2>
-
-<div class="memitem">
-<div class="memproto">
-      <table class="memname">
-        <tr>
-          <td class="memname">cgv::audio::OALContext::OALContext </td>
-          <td>(</td>
-          <td class="paramname"></td><td>)</td>
-          <td></td>
-        </tr>
-      </table>
-</div><div class="memdoc">
-
-<p class="definition">Definition at line <a class="el" href="al__context_8cxx_source.html#l00019">19</a> of file <a class="el" href="al__context_8cxx_source.html">al_context.cxx</a>.</p>
-
-</div>
-</div>
-<a id="aa24c338882c4cded6ce349ad19050a56" name="aa24c338882c4cded6ce349ad19050a56"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#aa24c338882c4cded6ce349ad19050a56">&#9670;&#160;</a></span>OALContext() <span class="overload">[2/2]</span></h2>
+<a id="af9ee9ae71be6f500207173ee3b2d22f8" name="af9ee9ae71be6f500207173ee3b2d22f8"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#af9ee9ae71be6f500207173ee3b2d22f8">&#9670;&#160;</a></span>OALContext()</h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -190,7 +192,7 @@ Static Public Member Functions</h2></td></tr>
           <td class="memname">cgv::audio::OALContext::OALContext </td>
           <td>(</td>
           <td class="paramtype">const std::string &amp;&#160;</td>
-          <td class="paramname"><em>device</em></td><td>)</td>
+          <td class="paramname"><em>device_name</em></td><td>)</td>
           <td></td>
         </tr>
       </table>
@@ -201,16 +203,16 @@ Static Public Member Functions</h2></td></tr>
 </table>
 </div><div class="memdoc">
 
-<p>This constructor to choose a specific output device. </p>
+<p>Construct context, connect to output device and make context current. </p>
 <dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
-    <tr><td class="paramdir">[in]</td><td class="paramname">device</td><td>The OpenAL device string identifier</td></tr>
+    <tr><td class="paramdir">[in]</td><td class="paramname">device</td><td>The OpenAL device string identifier </td></tr>
   </table>
   </dd>
 </dl>
-<dl class="section see"><dt>See also</dt><dd><a class="el" href="classcgv_1_1audio_1_1OALContext.html#a1428a16474ca49303a63484ec74bd56b" title="Enumerates all devices which are output targets for the OpenAL context.">enumerate_devices()</a> </dd></dl>
+<dl class="section see"><dt>See also</dt><dd><a class="el" href="classcgv_1_1audio_1_1OALContext.html#a441f37204792899d81bded2236b7637a" title="Enumerate audio output devices available on system.">enumerate_devices()</a> </dd></dl>
 
-<p class="definition">Definition at line <a class="el" href="al__context_8cxx_source.html#l00021">21</a> of file <a class="el" href="al__context_8cxx_source.html">al_context.cxx</a>.</p>
+<p class="definition">Definition at line <a class="el" href="al__context_8cxx_source.html#l00041">41</a> of file <a class="el" href="al__context_8cxx_source.html">al_context.cxx</a>.</p>
 
 </div>
 </div>
@@ -229,13 +231,61 @@ Static Public Member Functions</h2></td></tr>
       </table>
 </div><div class="memdoc">
 
-<p class="definition">Definition at line <a class="el" href="al__context_8cxx_source.html#l00030">30</a> of file <a class="el" href="al__context_8cxx_source.html">al_context.cxx</a>.</p>
+<p>detach context from output device and destruct </p>
+
+<p class="definition">Definition at line <a class="el" href="al__context_8cxx_source.html#l00058">58</a> of file <a class="el" href="al__context_8cxx_source.html">al_context.cxx</a>.</p>
 
 </div>
 </div>
 <h2 class="groupheader">Member Function Documentation</h2>
-<a id="a1428a16474ca49303a63484ec74bd56b" name="a1428a16474ca49303a63484ec74bd56b"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a1428a16474ca49303a63484ec74bd56b">&#9670;&#160;</a></span>enumerate_devices()</h2>
+<a id="a7bf35c7aca67ddf98a6787e15a8c2569" name="a7bf35c7aca67ddf98a6787e15a8c2569"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a7bf35c7aca67ddf98a6787e15a8c2569">&#9670;&#160;</a></span>create_buffer()</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">void cgv::audio::OALContext::create_buffer </td>
+          <td>(</td>
+          <td class="paramtype">const std::string &amp;&#160;</td>
+          <td class="paramname"><em>symbolic_name</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">const <a class="el" href="structcgv_1_1audio_1_1OALSoundFormat.html">OALSoundFormat</a> &amp;&#160;</td>
+          <td class="paramname"><em>format</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">const void *&#160;</td>
+          <td class="paramname"><em>data</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">size_t&#160;</td>
+          <td class="paramname"><em>data_length</em>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>create a named sound buffer from a format descriptor and a data buffer of given length in bytes </p>
+
+<p class="definition">Definition at line <a class="el" href="al__context_8cxx_source.html#l00149">149</a> of file <a class="el" href="al__context_8cxx_source.html">al_context.cxx</a>.</p>
+
+<p class="reference">Referenced by <a class="el" href="al__context_8cxx_source.html#l00169">load_sample()</a>, and <a class="el" href="al__context_8cxx_source.html#l00184">load_sample()</a>.</p>
+
+</div>
+</div>
+<a id="a608d61e794cafd11bb605df7c2eecebf" name="a608d61e794cafd11bb605df7c2eecebf"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a608d61e794cafd11bb605df7c2eecebf">&#9670;&#160;</a></span>decode_sound_file()</h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -244,7 +294,61 @@ Static Public Member Functions</h2></td></tr>
   <td class="mlabels-left">
       <table class="memname">
         <tr>
-          <td class="memname">std::list&lt; std::string &gt; cgv::audio::OALContext::enumerate_devices </td>
+          <td class="memname">bool cgv::audio::OALContext::decode_sound_file </td>
+          <td>(</td>
+          <td class="paramtype">const void *&#160;</td>
+          <td class="paramname"><em>data</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">size_t&#160;</td>
+          <td class="paramname"><em>data_length</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype"><a class="el" href="structcgv_1_1audio_1_1OALSoundFormat.html">OALSoundFormat</a> &amp;&#160;</td>
+          <td class="paramname"><em>format</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">std::vector&lt; int16_t &gt; &amp;&#160;</td>
+          <td class="paramname"><em>memory_buffer</em>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">static</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p>decode sound file that is already in memory data with data_length bytes to a newly constructed memory buffer </p>
+
+<p class="definition">Definition at line <a class="el" href="al__context_8cxx_source.html#l00092">92</a> of file <a class="el" href="al__context_8cxx_source.html">al_context.cxx</a>.</p>
+
+<p class="reference">Referenced by <a class="el" href="al__context_8cxx_source.html#l00184">load_sample()</a>.</p>
+
+</div>
+</div>
+<a id="a441f37204792899d81bded2236b7637a" name="a441f37204792899d81bded2236b7637a"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a441f37204792899d81bded2236b7637a">&#9670;&#160;</a></span>enumerate_devices()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">std::vector&lt; std::string &gt; cgv::audio::OALContext::enumerate_devices </td>
           <td>(</td>
           <td class="paramname"></td><td>)</td>
           <td></td>
@@ -257,12 +361,11 @@ Static Public Member Functions</h2></td></tr>
 </table>
 </div><div class="memdoc">
 
-<p>Enumerates all devices which are output targets for the OpenAL context. </p>
-<dl class="section return"><dt>Returns</dt><dd>A list containing all device names as reported from OpenAL.</dd></dl>
-<dl class="section remark"><dt>Remarks</dt><dd>This function can be used to choose a specific OpenAL device for the context creation.</dd></dl>
+<p>Enumerate audio output devices available on system. </p>
+<dl class="section return"><dt>Returns</dt><dd>vector of device names which can be passed to constructor </dd></dl>
 <dl class="section see"><dt>See also</dt><dd>explicit OALContext(std::string) </dd></dl>
 
-<p class="definition">Definition at line <a class="el" href="al__context_8cxx_source.html#l00194">194</a> of file <a class="el" href="al__context_8cxx_source.html">al_context.cxx</a>.</p>
+<p class="definition">Definition at line <a class="el" href="al__context_8cxx_source.html#l00025">25</a> of file <a class="el" href="al__context_8cxx_source.html">al_context.cxx</a>.</p>
 
 </div>
 </div>
@@ -290,13 +393,61 @@ Static Public Member Functions</h2></td></tr>
   </dd>
 </dl>
 <dl class="section return"><dt>Returns</dt><dd>The buffer ID as used by OpenAL.</dd></dl>
-<dl class="section see"><dt>See also</dt><dd><a class="el" href="classcgv_1_1audio_1_1OALContext.html#a6f73bd05ef149d0a8af6e9faa9b9f5db" title="Loads a sound into the internal buffer list.">load_sample()</a> </dd>
+<dl class="section see"><dt>See also</dt><dd><a class="el" href="classcgv_1_1audio_1_1OALContext.html#aa758f6d2532ceeb769a0ab931c2361a3" title="Loads a sound into the internal buffer list.">load_sample()</a> </dd>
 <dd>
 <a class="el" href="classcgv_1_1audio_1_1OALContext.html#a040d8f4f4325096f6d03e236bc83544f" title="Loads all audio files in a folder into the internal buffer list.">load_samples()</a> </dd></dl>
 
-<p class="definition">Definition at line <a class="el" href="al__context_8cxx_source.html#l00188">188</a> of file <a class="el" href="al__context_8cxx_source.html">al_context.cxx</a>.</p>
+<p class="definition">Definition at line <a class="el" href="al__context_8cxx_source.html#l00215">215</a> of file <a class="el" href="al__context_8cxx_source.html">al_context.cxx</a>.</p>
 
-<p class="reference">Referenced by <a class="el" href="al__context_8cxx_source.html#l00232">cgv::audio::OALSource::init()</a>.</p>
+</div>
+</div>
+<a id="a4cf127a20671e7fa3b1fa1fe333fe169" name="a4cf127a20671e7fa3b1fa1fe333fe169"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a4cf127a20671e7fa3b1fa1fe333fe169">&#9670;&#160;</a></span>get_default_device_name()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">std::string cgv::audio::OALContext::get_default_device_name </td>
+          <td>(</td>
+          <td class="paramname"></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">static</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p>returns name of system's default device </p>
+
+<p class="definition">Definition at line <a class="el" href="al__context_8cxx_source.html#l00019">19</a> of file <a class="el" href="al__context_8cxx_source.html">al_context.cxx</a>.</p>
+
+</div>
+</div>
+<a id="a249991bf87b10be729c2cf8c6e1a52c4" name="a249991bf87b10be729c2cf8c6e1a52c4"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a249991bf87b10be729c2cf8c6e1a52c4">&#9670;&#160;</a></span>get_device_name()</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">std::string cgv::audio::OALContext::get_device_name </td>
+          <td>(</td>
+          <td class="paramname"></td><td>)</td>
+          <td> const</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>return device name of contexts device </p>
+
+<p class="definition">Definition at line <a class="el" href="al__context_8cxx_source.html#l00053">53</a> of file <a class="el" href="al__context_8cxx_source.html">al_context.cxx</a>.</p>
 
 </div>
 </div>
@@ -320,7 +471,7 @@ Static Public Member Functions</h2></td></tr>
 <dl class="section warning"><dt>Warning</dt><dd>This function call clears the last error in the OpenAL context. </dd></dl>
 <dl class="section see"><dt>See also</dt><dd><a class="el" href="classcgv_1_1audio_1_1OALContext.html#abcbc203beb11e2a70a8383de59cfbbb3" title="Determines if there were any errors since last call.">is_no_error()</a> </dd></dl>
 
-<p class="definition">Definition at line <a class="el" href="al__context_8cxx_source.html#l00211">211</a> of file <a class="el" href="al__context_8cxx_source.html">al_context.cxx</a>.</p>
+<p class="definition">Definition at line <a class="el" href="al__context_8cxx_source.html#l00220">220</a> of file <a class="el" href="al__context_8cxx_source.html">al_context.cxx</a>.</p>
 
 </div>
 </div>
@@ -342,9 +493,9 @@ Static Public Member Functions</h2></td></tr>
 <p>Gets the native context handle for direct OpenAL calls. </p>
 <dl class="section return"><dt>Returns</dt><dd>The native OpenAL context handle. </dd></dl>
 
-<p class="definition">Definition at line <a class="el" href="al__context_8cxx_source.html#l00228">228</a> of file <a class="el" href="al__context_8cxx_source.html">al_context.cxx</a>.</p>
+<p class="definition">Definition at line <a class="el" href="al__context_8cxx_source.html#l00235">235</a> of file <a class="el" href="al__context_8cxx_source.html">al_context.cxx</a>.</p>
 
-<p class="reference">Referenced by <a class="el" href="al__context_8cxx_source.html#l00232">cgv::audio::OALSource::init()</a>.</p>
+<p class="reference">Referenced by <a class="el" href="al__context_8cxx_source.html#l00263">cgv::audio::OALSource::append_sound()</a>, and <a class="el" href="al__context_8cxx_source.html#l00252">cgv::audio::OALSource::init()</a>.</p>
 
 </div>
 </div>
@@ -366,9 +517,9 @@ Static Public Member Functions</h2></td></tr>
 <p>Gets the native device handle for direct OpenAL calls. </p>
 <dl class="section return"><dt>Returns</dt><dd>The native OpenAL device handle. </dd></dl>
 
-<p class="definition">Definition at line <a class="el" href="al__context_8cxx_source.html#l00226">226</a> of file <a class="el" href="al__context_8cxx_source.html">al_context.cxx</a>.</p>
+<p class="definition">Definition at line <a class="el" href="al__context_8cxx_source.html#l00233">233</a> of file <a class="el" href="al__context_8cxx_source.html">al_context.cxx</a>.</p>
 
-<p class="reference">Referenced by <a class="el" href="al__context_8cxx_source.html#l00215">set_HRTF()</a>.</p>
+<p class="reference">Referenced by <a class="el" href="al__context_8cxx_source.html#l00222">set_HRTF()</a>.</p>
 
 </div>
 </div>
@@ -392,14 +543,14 @@ Static Public Member Functions</h2></td></tr>
 <dl class="section warning"><dt>Warning</dt><dd>This function call clears the last error in the OpenAL context. </dd></dl>
 <dl class="section see"><dt>See also</dt><dd><a class="el" href="classcgv_1_1audio_1_1OALContext.html#a4793753a40efc6732903cdf70aef115e" title="Returns the last error from the OpenAL context.">get_error_string()</a> </dd></dl>
 
-<p class="definition">Definition at line <a class="el" href="al__context_8cxx_source.html#l00213">213</a> of file <a class="el" href="al__context_8cxx_source.html">al_context.cxx</a>.</p>
+<p class="definition">Definition at line <a class="el" href="al__context_8cxx_source.html#l00221">221</a> of file <a class="el" href="al__context_8cxx_source.html">al_context.cxx</a>.</p>
 
-<p class="reference">Referenced by <a class="el" href="al__context_8cxx_source.html#l00232">cgv::audio::OALSource::init()</a>.</p>
+<p class="reference">Referenced by <a class="el" href="al__context_8cxx_source.html#l00252">cgv::audio::OALSource::init()</a>.</p>
 
 </div>
 </div>
-<a id="a6f73bd05ef149d0a8af6e9faa9b9f5db" name="a6f73bd05ef149d0a8af6e9faa9b9f5db"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a6f73bd05ef149d0a8af6e9faa9b9f5db">&#9670;&#160;</a></span>load_sample() <span class="overload">[1/2]</span></h2>
+<a id="aa758f6d2532ceeb769a0ab931c2361a3" name="aa758f6d2532ceeb769a0ab931c2361a3"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#aa758f6d2532ceeb769a0ab931c2361a3">&#9670;&#160;</a></span>load_sample() <span class="overload">[1/2]</span></h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -408,8 +559,18 @@ Static Public Member Functions</h2></td></tr>
           <td class="memname">void cgv::audio::OALContext::load_sample </td>
           <td>(</td>
           <td class="paramtype">std::string&#160;</td>
-          <td class="paramname"><em>filepath</em></td><td>)</td>
+          <td class="paramname"><em>filepath</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
           <td></td>
+          <td class="paramtype">std::string&#160;</td>
+          <td class="paramname"><em>symbolic_name</em> = <code>&quot;&quot;</code>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
         </tr>
       </table>
 </div><div class="memdoc">
@@ -417,20 +578,23 @@ Static Public Member Functions</h2></td></tr>
 <p>Loads a sound into the internal buffer list. </p>
 <dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
-    <tr><td class="paramdir">[in]</td><td class="paramname">filepath</td><td>The filepath to the sample file</td></tr>
+    <tr><td class="paramdir">[in]</td><td class="paramname">filepath</td><td>The filepath to the sample file </td></tr>
+    <tr><td class="paramdir">[in]</td><td class="paramname">symbolic_name</td><td>Sound is named by file stem or if given this parameter</td></tr>
   </table>
   </dd>
 </dl>
 <dl class="section remark"><dt>Remarks</dt><dd>The supported filetypes are .WAV, .AIFF, .FLAC, etc. For detailed information visit <a href="http://www.mega-nerd.com/libsndfile/">http://www.mega-nerd.com/libsndfile/</a> </dd></dl>
 
-<p class="definition">Definition at line <a class="el" href="al__context_8cxx_source.html#l00045">45</a> of file <a class="el" href="al__context_8cxx_source.html">al_context.cxx</a>.</p>
+<p class="definition">Definition at line <a class="el" href="al__context_8cxx_source.html#l00169">169</a> of file <a class="el" href="al__context_8cxx_source.html">al_context.cxx</a>.</p>
 
-<p class="reference">Referenced by <a class="el" href="al__context_8cxx_source.html#l00163">load_samples()</a>.</p>
+<p class="reference">References <a class="el" href="al__context_8cxx_source.html#l00149">create_buffer()</a>, and <a class="el" href="al__context_8cxx_source.html#l00137">load_sound_file()</a>.</p>
+
+<p class="reference">Referenced by <a class="el" href="al__context_8cxx_source.html#l00192">load_samples()</a>.</p>
 
 </div>
 </div>
-<a id="a8c2aae410cf79943d2d211b5dcee22eb" name="a8c2aae410cf79943d2d211b5dcee22eb"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a8c2aae410cf79943d2d211b5dcee22eb">&#9670;&#160;</a></span>load_sample() <span class="overload">[2/2]</span></h2>
+<a id="aa82fb501954869afc024c39e1b420153" name="aa82fb501954869afc024c39e1b420153"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#aa82fb501954869afc024c39e1b420153">&#9670;&#160;</a></span>load_sample() <span class="overload">[2/2]</span></h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -444,7 +608,7 @@ Static Public Member Functions</h2></td></tr>
         <tr>
           <td class="paramkey"></td>
           <td></td>
-          <td class="paramtype">const char *&#160;</td>
+          <td class="paramtype">const void *&#160;</td>
           <td class="paramname"><em>data</em>, </td>
         </tr>
         <tr>
@@ -466,7 +630,7 @@ Static Public Member Functions</h2></td></tr>
   <table class="params">
     <tr><td class="paramdir">[in]</td><td class="paramname">symbolic_name</td><td>The symbolic name used as key for later retrieval </td></tr>
     <tr><td class="paramdir">[in]</td><td class="paramname">data</td><td>A pointer to the first sample of the audio data </td></tr>
-    <tr><td class="paramdir">[in]</td><td class="paramname">data_length</td><td>The length of the audio data buffer</td></tr>
+    <tr><td class="paramdir">[in]</td><td class="paramname">data_length</td><td>The length of the audio data buffer in bytes</td></tr>
   </table>
   </dd>
 </dl>
@@ -474,7 +638,9 @@ Static Public Member Functions</h2></td></tr>
 <dd>
 Each file will be transformed into a buffer ID with the filename stem as symbolic key. For example: ./sounds/Wind.wav will have the key "Wind". </dd></dl>
 
-<p class="definition">Definition at line <a class="el" href="al__context_8cxx_source.html#l00083">83</a> of file <a class="el" href="al__context_8cxx_source.html">al_context.cxx</a>.</p>
+<p class="definition">Definition at line <a class="el" href="al__context_8cxx_source.html#l00184">184</a> of file <a class="el" href="al__context_8cxx_source.html">al_context.cxx</a>.</p>
+
+<p class="reference">References <a class="el" href="al__context_8cxx_source.html#l00149">create_buffer()</a>, and <a class="el" href="al__context_8cxx_source.html#l00092">decode_sound_file()</a>.</p>
 
 </div>
 </div>
@@ -513,11 +679,80 @@ Each file will be transformed into a buffer ID with the filename stem as symboli
   </dd>
 </dl>
 <dl class="section remark"><dt>Remarks</dt><dd>This function is a convenience wrapper around the tedious process of reading all files in a folder and uploading each to a buffer.</dd></dl>
-<dl class="section see"><dt>See also</dt><dd><a class="el" href="classcgv_1_1audio_1_1OALContext.html#a6f73bd05ef149d0a8af6e9faa9b9f5db" title="Loads a sound into the internal buffer list.">load_sample(std::string)</a> </dd></dl>
+<dl class="section see"><dt>See also</dt><dd>load_sample(std::string) </dd></dl>
 
-<p class="definition">Definition at line <a class="el" href="al__context_8cxx_source.html#l00163">163</a> of file <a class="el" href="al__context_8cxx_source.html">al_context.cxx</a>.</p>
+<p class="definition">Definition at line <a class="el" href="al__context_8cxx_source.html#l00192">192</a> of file <a class="el" href="al__context_8cxx_source.html">al_context.cxx</a>.</p>
 
-<p class="reference">References <a class="el" href="al__context_8cxx_source.html#l00045">load_sample()</a>.</p>
+<p class="reference">References <a class="el" href="al__context_8cxx_source.html#l00169">load_sample()</a>.</p>
+
+</div>
+</div>
+<a id="aae313d90f1c7d7bb7f968f90bef8bf20" name="aae313d90f1c7d7bb7f968f90bef8bf20"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#aae313d90f1c7d7bb7f968f90bef8bf20">&#9670;&#160;</a></span>load_sound_file()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">bool cgv::audio::OALContext::load_sound_file </td>
+          <td>(</td>
+          <td class="paramtype">const std::string &amp;&#160;</td>
+          <td class="paramname"><em>filepath</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype"><a class="el" href="structcgv_1_1audio_1_1OALSoundFormat.html">OALSoundFormat</a> &amp;&#160;</td>
+          <td class="paramname"><em>format</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">std::vector&lt; int16_t &gt; &amp;&#160;</td>
+          <td class="paramname"><em>memory_buffer</em>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">static</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p>load and decode sound file to newly constructed memory buffer </p>
+
+<p class="definition">Definition at line <a class="el" href="al__context_8cxx_source.html#l00137">137</a> of file <a class="el" href="al__context_8cxx_source.html">al_context.cxx</a>.</p>
+
+<p class="reference">Referenced by <a class="el" href="al__context_8cxx_source.html#l00169">load_sample()</a>.</p>
+
+</div>
+</div>
+<a id="a10276711305b3c51ae10022fa64f180c" name="a10276711305b3c51ae10022fa64f180c"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a10276711305b3c51ae10022fa64f180c">&#9670;&#160;</a></span>make_current()</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">void cgv::audio::OALContext::make_current </td>
+          <td>(</td>
+          <td class="paramname"></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>in case of multiple contexts, this makes this context current </p>
+
+<p class="definition">Definition at line <a class="el" href="al__context_8cxx_source.html#l00049">49</a> of file <a class="el" href="al__context_8cxx_source.html">al_context.cxx</a>.</p>
 
 </div>
 </div>
@@ -546,9 +781,9 @@ Each file will be transformed into a buffer ID with the filename stem as symboli
 </dl>
 <dl class="section remark"><dt>Remarks</dt><dd>HRTFs improve the perceived localization of sounds in the scene. Therefore it is advisable to enable HRTF output with headphones. For loudspeakers however this should be disabled as the users head already has a specific HRTF. </dd></dl>
 
-<p class="definition">Definition at line <a class="el" href="al__context_8cxx_source.html#l00215">215</a> of file <a class="el" href="al__context_8cxx_source.html">al_context.cxx</a>.</p>
+<p class="definition">Definition at line <a class="el" href="al__context_8cxx_source.html#l00222">222</a> of file <a class="el" href="al__context_8cxx_source.html">al_context.cxx</a>.</p>
 
-<p class="reference">References <a class="el" href="al__context_8cxx_source.html#l00226">get_native_device()</a>.</p>
+<p class="reference">References <a class="el" href="al__context_8cxx_source.html#l00233">get_native_device()</a>.</p>
 
 </div>
 </div>

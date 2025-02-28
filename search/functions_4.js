@@ -54,7 +54,7 @@ var searchData=
   ['ensure_5fvertex_5flocation_5fconsistency_51',['ensure_vertex_location_consistency',['../classcgv_1_1media_1_1mesh_1_1convex__polyhedron.html#a240a7f062edfba16de9eba101adcfc40',1,'cgv::media::mesh::convex_polyhedron']]],
   ['ensure_5fviewport_52',['ensure_viewport',['../classcgv_1_1app_1_1overlay.html#a4c13e3b1cd78c998a8c7d8155c346fc6',1,'cgv::app::overlay']]],
   ['enum_5freflection_5ftraits_53',['enum_reflection_traits',['../structcgv_1_1reflect_1_1enum__reflection__traits.html#a4fecec9d1e271e48ce3ea965f700cfba',1,'cgv::reflect::enum_reflection_traits']]],
-  ['enumerate_5fdevices_54',['enumerate_devices',['../classcgv_1_1audio_1_1OALContext.html#a1428a16474ca49303a63484ec74bd56b',1,'cgv::audio::OALContext']]],
+  ['enumerate_5fdevices_54',['enumerate_devices',['../classcgv_1_1audio_1_1OALContext.html#a441f37204792899d81bded2236b7637a',1,'cgv::audio::OALContext']]],
   ['enumerate_5fdisplay_5fmodes_55',['enumerate_display_modes',['../classcgv_1_1os_1_1display.html#a78e22cf74b6cf29b4e7cb304f42779c0',1,'cgv::os::display']]],
   ['enumerate_5ffont_5fnames_56',['enumerate_font_names',['../namespacecgv_1_1media_1_1font.html#ae6cdd43d498d8b69c54fad78396afb0c',1,'cgv::media::font::enumerate_font_names()'],['../classcgv_1_1media_1_1font_1_1font__server.html#a7aa7ca5bacd7952fedc913ad2d755e4b',1,'cgv::media::font::font_server::enumerate_font_names()']]],
   ['enumerate_5fmonitors_57',['enumerate_monitors',['../classcgv_1_1gui_1_1application.html#a8998a8b8d5a15c571a4a46aebc5a6646',1,'cgv::gui::application::enumerate_monitors()'],['../classcgv_1_1gui_1_1gui__driver.html#accf7dd239119a4c80491bd6649337bdd',1,'cgv::gui::gui_driver::enumerate_monitors()']]],

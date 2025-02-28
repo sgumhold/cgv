@@ -105,7 +105,7 @@ var searchData=
   ['enum_5faware_5ftype_5fname_3c_20t_2c_20true_20_3e_102',['enum_aware_type_name&lt; T, true &gt;',['../structenum__aware__type__name_3_01T_00_01true_01_4.html',1,'']]],
   ['enum_5fconfig_5fview_103',['enum_config_view',['../classenum__config__view.html',1,'']]],
   ['enum_5freflection_5ftraits_104',['enum_reflection_traits',['../structcgv_1_1reflect_1_1enum__reflection__traits.html',1,'cgv::reflect::enum_reflection_traits&lt; T &gt;'],['../structcgv_1_1reflect_1_1enum__reflection__traits.html#a4fecec9d1e271e48ce3ea965f700cfba',1,'cgv::reflect::enum_reflection_traits::enum_reflection_traits()']]],
-  ['enumerate_5fdevices_105',['enumerate_devices',['../classcgv_1_1audio_1_1OALContext.html#a1428a16474ca49303a63484ec74bd56b',1,'cgv::audio::OALContext']]],
+  ['enumerate_5fdevices_105',['enumerate_devices',['../classcgv_1_1audio_1_1OALContext.html#a441f37204792899d81bded2236b7637a',1,'cgv::audio::OALContext']]],
   ['enumerate_5fdisplay_5fmodes_106',['enumerate_display_modes',['../classcgv_1_1os_1_1display.html#a78e22cf74b6cf29b4e7cb304f42779c0',1,'cgv::os::display']]],
   ['enumerate_5ffont_5fnames_107',['enumerate_font_names',['../classcgv_1_1media_1_1font_1_1font__server.html#a7aa7ca5bacd7952fedc913ad2d755e4b',1,'cgv::media::font::font_server::enumerate_font_names()'],['../namespacecgv_1_1media_1_1font.html#ae6cdd43d498d8b69c54fad78396afb0c',1,'cgv::media::font::enumerate_font_names()']]],
   ['enumerate_5fmonitors_108',['enumerate_monitors',['../classcgv_1_1gui_1_1application.html#a8998a8b8d5a15c571a4a46aebc5a6646',1,'cgv::gui::application::enumerate_monitors()'],['../classcgv_1_1gui_1_1gui__driver.html#accf7dd239119a4c80491bd6649337bdd',1,'cgv::gui::gui_driver::enumerate_monitors()']]],
