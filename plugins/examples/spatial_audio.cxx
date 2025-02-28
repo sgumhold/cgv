@@ -40,7 +40,7 @@ class SpatialAudio : public cgv::base::node,
 	cgv::render::sphere_render_style sphere_style;
 
   public:
-	SpatialAudio() {
+	SpatialAudio() : oal_ctx(cgv::audio::OALContext::get_default_device_name()) {
 		set_name("SpatialAudio");
 		cgv::signal::connect(cgv::gui::get_animation_trigger().shoot, this, &SpatialAudio::timer_event);
 	}
