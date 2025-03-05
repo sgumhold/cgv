@@ -197,18 +197,23 @@ $(document).ready(function(){initNavTree('theme__info_8h_source.html',''); initR
 <div class="line"><a id="l00097" name="l00097"></a><span class="lineno">   97</span>        cgv::signal::connect(theme.on_change, <span class="keyword">this</span>, &amp;theme_observer::handle_theme_change);</div>
 <div class="line"><a id="l00098" name="l00098"></a><span class="lineno">   98</span>    }</div>
 <div class="line"><a id="l00099" name="l00099"></a><span class="lineno">   99</span> </div>
-<div class="line"><a id="l00101" name="l00101"></a><span class="lineno"><a class="line" href="classcgv_1_1gui_1_1theme__observer.html#a074b39cf1e83ee67cf323f307b848d84">  101</a></span>    <span class="keyword">virtual</span> <span class="keywordtype">void</span> <a class="code hl_function" href="classcgv_1_1gui_1_1theme__observer.html#a074b39cf1e83ee67cf323f307b848d84">handle_theme_change</a>(<span class="keyword">const</span> <a class="code hl_class" href="classcgv_1_1gui_1_1theme__info.html">cgv::gui::theme_info</a>&amp; theme) {}</div>
-<div class="line"><a id="l00102" name="l00102"></a><span class="lineno">  102</span>};</div>
+<div class="line"><a id="l00100" name="l00100"></a><span class="lineno">  100</span>    <a class="code hl_class" href="classcgv_1_1gui_1_1theme__observer.html">~theme_observer</a>() {</div>
+<div class="line"><a id="l00101" name="l00101"></a><span class="lineno">  101</span>        <a class="code hl_class" href="classcgv_1_1gui_1_1theme__info.html">cgv::gui::theme_info</a>&amp; theme = cgv::gui::theme_info::instance();</div>
+<div class="line"><a id="l00102" name="l00102"></a><span class="lineno">  102</span>        cgv::signal::disconnect(theme.on_change, <span class="keyword">this</span>, &amp;theme_observer::handle_theme_change);</div>
+<div class="line"><a id="l00103" name="l00103"></a><span class="lineno">  103</span>    }</div>
+<div class="line"><a id="l00104" name="l00104"></a><span class="lineno">  104</span> </div>
+<div class="line"><a id="l00106" name="l00106"></a><span class="lineno"><a class="line" href="classcgv_1_1gui_1_1theme__observer.html#a074b39cf1e83ee67cf323f307b848d84">  106</a></span>    <span class="keyword">virtual</span> <span class="keywordtype">void</span> <a class="code hl_function" href="classcgv_1_1gui_1_1theme__observer.html#a074b39cf1e83ee67cf323f307b848d84">handle_theme_change</a>(<span class="keyword">const</span> <a class="code hl_class" href="classcgv_1_1gui_1_1theme__info.html">cgv::gui::theme_info</a>&amp; theme) {}</div>
+<div class="line"><a id="l00107" name="l00107"></a><span class="lineno">  107</span>};</div>
 </div>
-<div class="line"><a id="l00103" name="l00103"></a><span class="lineno">  103</span> </div>
-<div class="line"><a id="l00104" name="l00104"></a><span class="lineno">  104</span>}</div>
-<div class="line"><a id="l00105" name="l00105"></a><span class="lineno">  105</span>}</div>
-<div class="line"><a id="l00106" name="l00106"></a><span class="lineno">  106</span> </div>
-<div class="line"><a id="l00107" name="l00107"></a><span class="lineno">  107</span><span class="preprocessor">#include &lt;cgv/config/lib_end.h&gt;</span></div>
+<div class="line"><a id="l00108" name="l00108"></a><span class="lineno">  108</span> </div>
+<div class="line"><a id="l00109" name="l00109"></a><span class="lineno">  109</span>}</div>
+<div class="line"><a id="l00110" name="l00110"></a><span class="lineno">  110</span>}</div>
+<div class="line"><a id="l00111" name="l00111"></a><span class="lineno">  111</span> </div>
+<div class="line"><a id="l00112" name="l00112"></a><span class="lineno">  112</span><span class="preprocessor">#include &lt;cgv/config/lib_end.h&gt;</span></div>
 <div class="ttc" id="aclasscgv_1_1gui_1_1theme__info_html"><div class="ttname"><a href="classcgv_1_1gui_1_1theme__info.html">cgv::gui::theme_info</a></div><div class="ttdef"><b>Definition</b> <a href="theme__info_8h_source.html#l00026">theme_info.h:26</a></div></div>
 <div class="ttc" id="aclasscgv_1_1gui_1_1theme__info_html_a841cb50235fe0b5a49717202a1f08a24"><div class="ttname"><a href="classcgv_1_1gui_1_1theme__info.html#a841cb50235fe0b5a49717202a1f08a24">cgv::gui::theme_info::~theme_info</a></div><div class="ttdeci">~theme_info()</div><div class="ttdoc">destruct</div><div class="ttdef"><b>Definition</b> <a href="theme__info_8h_source.html#l00068">theme_info.h:68</a></div></div>
 <div class="ttc" id="aclasscgv_1_1gui_1_1theme__observer_html"><div class="ttname"><a href="classcgv_1_1gui_1_1theme__observer.html">cgv::gui::theme_observer</a></div><div class="ttdef"><b>Definition</b> <a href="theme__info_8h_source.html#l00093">theme_info.h:93</a></div></div>
-<div class="ttc" id="aclasscgv_1_1gui_1_1theme__observer_html_a074b39cf1e83ee67cf323f307b848d84"><div class="ttname"><a href="classcgv_1_1gui_1_1theme__observer.html#a074b39cf1e83ee67cf323f307b848d84">cgv::gui::theme_observer::handle_theme_change</a></div><div class="ttdeci">virtual void handle_theme_change(const cgv::gui::theme_info &amp;theme)</div><div class="ttdoc">override in your class to handle theme changes</div><div class="ttdef"><b>Definition</b> <a href="theme__info_8h_source.html#l00101">theme_info.h:101</a></div></div>
+<div class="ttc" id="aclasscgv_1_1gui_1_1theme__observer_html_a074b39cf1e83ee67cf323f307b848d84"><div class="ttname"><a href="classcgv_1_1gui_1_1theme__observer.html#a074b39cf1e83ee67cf323f307b848d84">cgv::gui::theme_observer::handle_theme_change</a></div><div class="ttdeci">virtual void handle_theme_change(const cgv::gui::theme_info &amp;theme)</div><div class="ttdoc">override in your class to handle theme changes</div><div class="ttdef"><b>Definition</b> <a href="theme__info_8h_source.html#l00106">theme_info.h:106</a></div></div>
 <div class="ttc" id="aclasscgv_1_1media_1_1color_html"><div class="ttname"><a href="classcgv_1_1media_1_1color.html">cgv::media::color&lt; float, cgv::media::RGB &gt;</a></div></div>
 <div class="ttc" id="anamespacecgv_html"><div class="ttname"><a href="namespacecgv.html">cgv</a></div><div class="ttdoc">the cgv namespace</div><div class="ttdef"><b>Definition</b> <a href="print_8h_source.html#l00011">print.h:11</a></div></div>
 </div><!-- fragment --></div><!-- contents -->
