@@ -1,9 +1,3 @@
-
-#ifndef _WIN32
-	#include <unistd.h>
-	#define Sleep sleep
-#endif
-
 #include "OSMDataLoader.h"
 
 OSMDataLoader::OSMDataLoader(double latMin, double lonMin, double latMax, double lonMax)
@@ -42,10 +36,10 @@ void OSMDataLoader::FetchOSMWays()
 	int attempts = 0;
 
 	// sometimes the API request results in an error 
-	while ((int)m_result.error() || GetHTTPStatus() != 200 && attempts < 4)
+	while (((int)m_result.error() || GetHTTPStatus() != 200) && attempts < 4)
 	{
 		// Avoid making too many requests at the same time
-		Sleep(250);
+		std::this_thread::sleep_for(std::chrono::milliseconds(150));
 		m_result = client.Get(m_query);
 		attempts++;
 	}
