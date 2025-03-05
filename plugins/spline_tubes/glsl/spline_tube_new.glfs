@@ -1,9 +1,7 @@
 #version 420
 
-uniform float f0;
-uniform float df0;
-uniform float f1;
-uniform float df1;
+#define f1 1.0
+#define df1 0.7
 
 #define POS_INF 3e+37
 #define N0 3
@@ -18,7 +16,7 @@ uniform float df1;
 #define ROOT_SEARCH_METHOD_F 0
 
 #define ITERATION_COUNT_BISECTION 10
-#define ITERATION_COUNT_NEWTON 10
+#define ITERATION_COUNT_NEWTON 8
 
 //***** begin interface of view.glsl ***********************************
 mat4 get_modelview_matrix();
@@ -180,7 +178,8 @@ Hit EvalSplineISect(vec3 dir, vec3 s, vec3 h, vec3 t, float rs, float rh, float 
 		#if ROOT_SEARCH_METHOD_POLY == 0
 			FindRootsPolyBisectionD0(polyB_C, x3, m3, x4, m4, ITERATION_COUNT_BISECTION);
 		#elif ROOT_SEARCH_METHOD_POLY == 1
-			FindRootsPolyNewtonD0(polyB_C, x3, m3, x4, m4, ITERATION_COUNT_NEWTON, f0, df0);
+			//FindRootsPolyNewtonD0(polyB_C, x3, m3, x4, m4, ITERATION_COUNT_NEWTON, 1.0, 1.0);
+			FindRootsPolyNewtonD0(polyB_C, x3, m3, x4, m4, ITERATION_COUNT_NEWTON);
 		#endif
 
 		// let t0 = 0, t[1,2,3,4] = x4[1,2,3,4] and t5 = 1.0

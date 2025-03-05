@@ -122,10 +122,10 @@ public:
 
 		auto& prog = renderer.ref_prog();
 		
-		prog.set_uniform(ctx, prog.get_uniform_location(ctx, "f0"),		f0);
-		prog.set_uniform(ctx, prog.get_uniform_location(ctx, "df0"),	df0);
-		prog.set_uniform(ctx, prog.get_uniform_location(ctx, "f1"),		f1);
-		prog.set_uniform(ctx, prog.get_uniform_location(ctx, "df1"),	df1);
+		//prog.set_uniform(ctx, prog.get_uniform_location(ctx, "f0"),		f0);
+		//prog.set_uniform(ctx, prog.get_uniform_location(ctx, "df0"),	df0);
+		//prog.set_uniform(ctx, prog.get_uniform_location(ctx, "f1"),		f1);
+		//prog.set_uniform(ctx, prog.get_uniform_location(ctx, "df1"),	df1);
 		//prog.set_uniform(ctx, prog.get_uniform_location(ctx, "iteration_count"), iteration);
         
 		renderer.render(ctx, 0, indices.size());
@@ -142,6 +142,7 @@ public:
     {
         add_decorator("Spline Tubes GUI", "heading");
 		add_member_control(this, "iterations", iteration, "value", "min=0;max=20");
+		/*
 		add_decorator("Newtons Method Tuning", "heading");
 		add_decorator("RootFindD1", "heading", "level=2");
 		add_member_control(this, "f", f1, "value", "min=0.0001;max=100");
@@ -149,6 +150,7 @@ public:
 		add_decorator("RootFindD0", "heading", "level=2");
 		add_member_control(this, "f", f0, "value", "min=0.0001;max=100");
 		add_member_control(this, "df", df0, "value", "min=0.0001;max=100");
+		*/
     }
 };
 
