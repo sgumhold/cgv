@@ -766,7 +766,7 @@ bool stereo_view_interactor::handle(event& e)
 				get_context()->get_width(), get_context()->get_height(),
 				&MPW_ptr, 0, 0, 0, &vp_col_idx, &vp_row_idx, &width, &height, &center_x, &center_y);
 			unsigned view_index = get_viewport_index(vp_col_idx, vp_row_idx);
-			if (view_index != -1 && use_individual_view[view_index]) {
+			if (view_index != -1 && is_viewport_splitting_enabled() && use_individual_view[view_index]) {
 				view_ptr = &views[view_index];
 			}
 		}
