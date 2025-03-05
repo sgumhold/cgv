@@ -97,6 +97,11 @@ public:
 		cgv::signal::connect(theme.on_change, this, &theme_observer::handle_theme_change);
 	}
 
+	~theme_observer() {
+		cgv::gui::theme_info& theme = cgv::gui::theme_info::instance();
+		cgv::signal::disconnect(theme.on_change, this, &theme_observer::handle_theme_change);
+	}
+
 	/// override in your class to handle theme changes
 	virtual void handle_theme_change(const cgv::gui::theme_info& theme) {}
 };
