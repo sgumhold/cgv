@@ -350,7 +350,7 @@ var searchData=
   ['resource_5fstring_5fregistration_347',['resource_string_registration',['../structcgv_1_1base_1_1resource__string__registration.html',1,'cgv::base::resource_string_registration'],['../structcgv_1_1base_1_1resource__string__registration.html#a53704e97e8814932e19b2ca8461fa765',1,'cgv::base::resource_string_registration::resource_string_registration()']]],
   ['restart_348',['restart',['../classcgv_1_1utils_1_1stopwatch.html#aaa5315b7fb02ea374190c3650915d0eb',1,'cgv::utils::stopwatch']]],
   ['restore_5fattribute_5frange_349',['restore_attribute_range',['../classcgv_1_1plot_1_1axis__config.html#a31500f0cea21bc1a835f4c7c21ac04f0',1,'cgv::plot::axis_config']]],
-  ['result_350',['result',['../classcgv_1_1os_1_1pipe__output__thread.html#a6c05d1d6d5dd94a33336b4c82f2b2b27',1,'cgv::os::pipe_output_thread::result'],['../classcgv_1_1xml_1_1FindElementByNameVisitor.html#afba0d2e8165882648a320369ab3faaa1',1,'cgv::xml::FindElementByNameVisitor::Result()']]],
+  ['result_350',['result',['../classcgv_1_1xml_1_1FindElementByNameVisitor.html#afba0d2e8165882648a320369ab3faaa1',1,'cgv::xml::FindElementByNameVisitor::Result()'],['../classcgv_1_1os_1_1pipe__output__thread.html#a6c05d1d6d5dd94a33336b4c82f2b2b27',1,'cgv::os::pipe_output_thread::result']]],
   ['retrieve_5fcode_351',['retrieve_code',['../classcgv_1_1render_1_1shader__code.html#aa2bf52fcc6a50e7d03806f7b7d7ac74b',1,'cgv::render::shader_code']]],
   ['reverse_5fbite_352',['reverse_bite',['../classcgv_1_1utils_1_1tokenizer.html#af25223c944612a421b243bf621de6c12',1,'cgv::utils::tokenizer']]],
   ['reverse_5fskip_353',['reverse_skip',['../structcgv_1_1utils_1_1token.html#ab31c4e3c695ed4ad2ce0b69d09c2cf45',1,'cgv::utils::token']]],
