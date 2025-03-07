@@ -7,7 +7,7 @@
 /// factory used to register decorators
 struct CGV_API abst_decorator_factory
 {
-	virtual base_ptr create(const std::string& label, 
+	virtual cgv::base::base_ptr create(const std::string& label,
 		const std::string& gui_type, int x, int y, int w, int h) = 0;
 };
 
@@ -35,7 +35,7 @@ extern CGV_API void register_decorator_factory(abst_decorator_factory* fac);
 extern CGV_API void register_view_factory(abst_view_factory* fac);
 extern CGV_API void register_control_factory(abst_control_factory* fac);
 
-extern CGV_API base_ptr create_decorator(const std::string& label, 
+extern CGV_API cgv::base::base_ptr create_decorator(const std::string& label,
 						const std::string& gui_type, int x, int y, int w, int h);
 
 extern CGV_API cgv::gui::view_ptr create_view(const std::string& label,

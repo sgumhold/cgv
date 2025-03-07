@@ -69,7 +69,7 @@ bool gl_delaunay_mesh_draw::init(context& ctx)
 {
 
 	std::vector<cgv::render::view*> views;
-	cgv::base::find_interface(base_ptr(this),views);
+	cgv::base::find_interface(cgv::base::base_ptr(this),views);
 	for (unsigned i = 0; i < views.size(); ++i) {
 		views[i]->set_eye_keep_extent(cgv::dvec3(0.0, 0.0, 10.0));
 		views[i]->set_y_extent_at_focus(2);

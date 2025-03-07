@@ -21,9 +21,9 @@ public:
 	// prepare adding a new element
 	void prepare_new_element(cgv::gui::gui_group_ptr ggp, int& x, int& y, int& w, int& h);
 	/// called by the driver after a new element has been constructed
-	void finalize_new_element(cgv::gui::gui_group_ptr ggp, const std::string& align, base_ptr child);
+	void finalize_new_element(cgv::gui::gui_group_ptr ggp, const std::string& align, cgv::base::base_ptr child);
 	/// remove the given child, if it appears several times, remove al instances. Return the number of removed children
-	unsigned int remove_child(cgv::gui::gui_group_ptr ggp, base_ptr child);
+	unsigned int remove_child(cgv::gui::gui_group_ptr ggp, cgv::base::base_ptr child);
 	/// remove all children
 	void remove_all_children(cgv::gui::gui_group_ptr ggp);
 

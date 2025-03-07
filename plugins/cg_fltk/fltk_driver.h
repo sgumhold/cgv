@@ -96,7 +96,7 @@ public:
 	/// add a new gui group to the given parent group
 	virtual cgv::gui::gui_group_ptr add_group(cgv::gui::gui_group_ptr parent, const std::string& label, const std::string& group_type, const std::string& options, const std::string& align);
 	/// add a newly created decorator to the parent group
-	virtual base_ptr add_decorator(cgv::gui::gui_group_ptr parent, const std::string& label, const std::string& decorator_type, const std::string& options, const std::string& align);
+	virtual cgv::base::base_ptr add_decorator(cgv::gui::gui_group_ptr parent, const std::string& label, const std::string& decorator_type, const std::string& options, const std::string& align);
 	/// add new button to the parent group
 	virtual cgv::gui::button_ptr add_button(cgv::gui::gui_group_ptr parent, const std::string& label, const std::string& options, const std::string& align);
 	/// add new view to the parent group
@@ -114,15 +114,15 @@ public:
 	/// analyze a menu path description, search for the menu that will contain the path and split path in path and item name
 	fltk::Menu* resolve_menu_path(const std::string& menu_path, std::string& path, std::string& name, bool ensure_created) const;
 	/// add a newly created decorator to the menu
-	base_ptr add_menu_separator(const std::string& menu_path);
+	cgv::base::base_ptr add_menu_separator(const std::string& menu_path);
 	/// use the current gui driver to append a new button in the menu, where menu path is a '/' separated path
 	cgv::gui::button_ptr add_menu_button(const std::string& menu_path, const std::string& options);
 	/// use this to add a new control to the gui with a given value type, gui type and init options
 	cgv::data::ref_ptr<cgv::gui::control<bool> > add_menu_bool_control(const std::string& menu_path, bool& value, const std::string& options);
 	/// return the element of the given menu path
-	base_ptr find_menu_element(const std::string& menu_path) const;
+	cgv::base::base_ptr find_menu_element(const std::string& menu_path) const;
 	/// remove a single element from the gui
-	void remove_menu_element(base_ptr);
+	void remove_menu_element(cgv::base::base_ptr);
 	//@}
 };
 
