@@ -89,7 +89,7 @@ public:
 	/// add a new gui group to the given parent group
 	virtual gui_group_ptr add_group(gui_group_ptr parent, const std::string& label, const std::string& group_type, const std::string& options, const std::string& align) = 0;
 	/// add a newly created decorator to the parent group
-	virtual base_ptr add_decorator(gui_group_ptr parent, const std::string& label, const std::string& decorator_type, const std::string& options, const std::string& align) = 0;
+	virtual cgv::base::base_ptr add_decorator(gui_group_ptr parent, const std::string& label, const std::string& decorator_type, const std::string& options, const std::string& align) = 0;
 	/// add new button to the parent group
 	virtual button_ptr add_button(gui_group_ptr parent, const std::string& label, const std::string& options, const std::string& align) = 0;
 	/// add new view to the parent group
@@ -105,15 +105,15 @@ public:
 	/**@name menu elements */
 	//@{
 	/// add a newly created decorator to the menu
-	virtual base_ptr add_menu_separator(const std::string& menu_path) = 0;
+	virtual cgv::base::base_ptr add_menu_separator(const std::string& menu_path) = 0;
 	/// use the current gui driver to append a new button in the menu, where menu path is a '/' separated path
 	virtual button_ptr add_menu_button(const std::string& menu_path, const std::string& options) = 0;
 	/// use this to add a new control to the gui with a given value type, gui type and init options
 	virtual data::ref_ptr<control<bool> > add_menu_bool_control(const std::string& menu_path, bool& value, const std::string& options) = 0;
 	/// return the element of the given menu path
-	virtual base_ptr find_menu_element(const std::string& menu_path) const = 0;
+	virtual cgv::base::base_ptr find_menu_element(const std::string& menu_path) const = 0;
 	/// remove a single element from the gui
-	virtual void remove_menu_element(base_ptr) = 0;
+	virtual void remove_menu_element(cgv::base::base_ptr) = 0;
 	//@}
 };
 

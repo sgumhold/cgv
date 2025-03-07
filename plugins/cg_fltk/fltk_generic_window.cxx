@@ -58,7 +58,7 @@ void fltk_generic_window::prepare_new_element(cgv::gui::gui_group_ptr ggp, int& 
 
 
 /// called by the driver after a new element has been constructed
-void fltk_generic_window::finalize_new_element(cgv::gui::gui_group_ptr ggp, const std::string& align, base_ptr child)
+void fltk_generic_window::finalize_new_element(cgv::gui::gui_group_ptr ggp, const std::string& align, cgv::base::base_ptr child)
 {
 	if (inner_group)
 		inner_group->get_interface<fltk_gui_group>()->finalize_new_element(ggp, align, child);
@@ -66,7 +66,7 @@ void fltk_generic_window::finalize_new_element(cgv::gui::gui_group_ptr ggp, cons
 
 
 /// remove the given child, if it appears several times, remove al instances. Return the number of removed children
-unsigned int fltk_generic_window::remove_child(cgv::gui::gui_group_ptr ggp, base_ptr child)
+unsigned int fltk_generic_window::remove_child(cgv::gui::gui_group_ptr ggp, cgv::base::base_ptr child)
 {
 	return 0;
 }

@@ -19,16 +19,16 @@ void register_decorator_factory(abst_decorator_factory* fac)
 	ref_decorator_factories().push_back(fac);
 }
 
-base_ptr create_decorator(const std::string& label,
+cgv::base::base_ptr create_decorator(const std::string& label,
 						  const std::string& gui_type, int x, int y, int w, int h)
 {
 	for (unsigned int i=0; i<ref_decorator_factories().size(); ++i) {
-		base_ptr d = ref_decorator_factories()[i]->create(label, 
+		cgv::base::base_ptr d = ref_decorator_factories()[i]->create(label,
 									gui_type, x, y, w, h);
 		if (!d.empty())
 			return d;
 	}
-	return base_ptr();
+	return cgv::base::base_ptr();
 }
 
 

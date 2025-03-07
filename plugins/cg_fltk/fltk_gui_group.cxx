@@ -10,8 +10,6 @@
 #pragma warning(default:4311)
 #endif
 
-using namespace cgv::type;
-
 /** called by the driver before adding a new element to the group.  
     The group generates dimensions which are passed over to the 
 	 constructor of the newly created element. */
@@ -24,12 +22,12 @@ void fltk_gui_group::prepare_new_element(cgv::gui::gui_group_ptr ggp, int& x, in
 }
 
 /// called by the driver after a new element has been constructed
-void fltk_gui_group::finalize_new_element(cgv::gui::gui_group_ptr ggp, const std::string& , base_ptr )
+void fltk_gui_group::finalize_new_element(cgv::gui::gui_group_ptr ggp, const std::string& , cgv::base::base_ptr )
 {
 }
 
 /// remove the given child, if it appears several times, remove al instances. Return the number of removed children
-unsigned int fltk_gui_group::remove_child(cgv::gui::gui_group_ptr ggp, base_ptr child)
+unsigned int fltk_gui_group::remove_child(cgv::gui::gui_group_ptr ggp, cgv::base::base_ptr child)
 {
 	fltk::Group* g = static_cast<fltk::Group*>(
 		static_cast<fltk::Widget*>(ggp->get_user_data()));
@@ -37,7 +35,7 @@ unsigned int fltk_gui_group::remove_child(cgv::gui::gui_group_ptr ggp, base_ptr 
 	unsigned int n = g->children();
 	unsigned int count = 0;
 	for (unsigned int i=0; i<n; ++i) {
-		base_ptr c(static_cast<cgv::base::base*>(g->child(i)->user_data()));
+		cgv::base::base_ptr c(static_cast<cgv::base::base*>(g->child(i)->user_data()));
 		if (child == c) {
 			g->remove(i);
 			--n;

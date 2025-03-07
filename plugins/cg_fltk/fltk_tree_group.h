@@ -39,11 +39,11 @@ public:
 	/// return whether several children of the group can be selected at the same time
 	bool multiple_selection() const;
 	/// same as version with child index
-	void select_child(base_ptr ci, bool exclusive = false);
+	void select_child(cgv::base::base_ptr ci, bool exclusive = false);
 	/// same as version with child index
-	bool unselect_child(base_ptr ci);
+	bool unselect_child(cgv::base::base_ptr ci);
 	/// return whether the given child is selected
-	bool is_selected(base_ptr c) const;
+	bool is_selected(cgv::base::base_ptr c) const;
 	/// returns whether open and close of sub groups is allowed
 	bool can_open_and_close() const;
 	/// try to open given child group and return whether this was successful
@@ -57,7 +57,7 @@ public:
 	/// align last element and add element to group
 	void finalize_new_element(cgv::gui::gui_group_ptr ggp, const std::string& align, cgv::base::base_ptr element);
 	/// remove all elements of the vector that point to child, return the number of removed children
-	unsigned int remove_child(base_ptr child) { return static_cast<fltk_gui_group*>(this)->remove_child(cgv::gui::gui_group_ptr(this), child); }
+	unsigned int remove_child(cgv::base::base_ptr child) { return static_cast<fltk_gui_group*>(this)->remove_child(cgv::gui::gui_group_ptr(this), child); }
 	/// remove all children
 	void remove_all_children() { return static_cast<fltk_gui_group*>(this)->remove_all_children(cgv::gui::gui_group_ptr(this)); }
 	/// overload to trigger initialization of alignment
@@ -65,7 +65,7 @@ public:
 	/// add a new group to the given parent group
 	cgv::gui::gui_group_ptr add_group(const std::string& label, const std::string& group_type, const std::string& options, const std::string& align);
 	/// add a newly created decorator to the group
-	base_ptr add_decorator(const std::string& label, const std::string& decorator_type, const std::string& options, const std::string& align);
+	cgv::base::base_ptr add_decorator(const std::string& label, const std::string& decorator_type, const std::string& options, const std::string& align);
 	/// add a newly created button to the group
 	cgv::gui::button_ptr add_button(const std::string& label, const std::string& options, const std::string& align);
 	/// add a newly created view to the group

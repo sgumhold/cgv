@@ -99,6 +99,8 @@ namespace cgv {
 
 		class CGV_API ph_processor
 		{
+			using token = cgv::utils::token;
+
 		protected:
 			friend class expression_processor;
 			bool found_error;
