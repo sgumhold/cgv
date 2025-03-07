@@ -720,7 +720,7 @@ public:
 		if(jitter_tex.is_created())
 			jitter_tex.destruct(ctx);
 
-		cgv::data::data_view jitter_dv = cgv::data::data_view(new cgv::data::data_format(size, size, samples_u * samples_v / 2, TI_INT8, cgv::data::CF_RGBA), jitter_data.data());
+		cgv::data::data_view jitter_dv = cgv::data::data_view(new cgv::data::data_format(size, size, samples_u * samples_v / 2, cgv::type::info::TI_INT8, cgv::data::CF_RGBA), jitter_data.data());
 		success &= jitter_tex.create(ctx, jitter_dv, 0);
 		jitter_tex.set_wrap_s(TW_REPEAT);
 		jitter_tex.set_wrap_t(TW_REPEAT);

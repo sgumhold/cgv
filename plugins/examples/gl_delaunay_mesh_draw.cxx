@@ -6,6 +6,7 @@
 #include <cgv/render/view.h>
 #include <iostream>
 
+using namespace cgv::render;
 using namespace cgv::render::gl;
 using namespace cgv::signal;
 
@@ -634,5 +635,5 @@ gl_delaunay_mesh_draw::Result gl_delaunay_mesh_draw::handle_event(int event)
 
 #include <cgv/base/register.h>
 
-factory_registration<gl_delaunay_mesh_draw> del_fac("New/Algorithms/Delaunay", 'D', true);
+cgv::base::factory_registration<gl_delaunay_mesh_draw> del_fac("New/Algorithms/Delaunay", 'D', true);
 

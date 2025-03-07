@@ -7,10 +7,6 @@
 #include <fltk/Browser.h>
 #include <cgv/type/variant.h>
 
-using namespace cgv::base;
-using namespace cgv::gui;
-using namespace cgv::type;
-
 #include "lib_begin.h"
 
 // This class is entirely inline.  If that changes, add FL_API to its declaration
@@ -51,11 +47,11 @@ public:
 	/// returns whether open and close of sub groups is allowed
 	bool can_open_and_close() const;
 	/// try to open given child group and return whether this was successful
-	bool open_child_group(gui_group_ptr g);
+	bool open_child_group(cgv::gui::gui_group_ptr g);
 	/// try to close given child group and return whether this was successful
-	bool close_child_group(gui_group_ptr g);
+	bool close_child_group(cgv::gui::gui_group_ptr g);
 	/// return whether the given child is open
-	bool is_open_child_group(gui_group_ptr g) const;
+	bool is_open_child_group(cgv::gui::gui_group_ptr g) const;
 	/// put default sizes into dimension fields and set inner_group to be active
 	void prepare_new_element(cgv::gui::gui_group_ptr ggp, int& x, int& y, int& w, int& h);
 	/// align last element and add element to group
@@ -67,15 +63,15 @@ public:
 	/// overload to trigger initialization of alignment
 	void remove_all_children(cgv::gui::gui_group_ptr ggp);
 	/// add a new group to the given parent group
-	gui_group_ptr add_group(const std::string& label, const std::string& group_type, const std::string& options, const std::string& align);
+	cgv::gui::gui_group_ptr add_group(const std::string& label, const std::string& group_type, const std::string& options, const std::string& align);
 	/// add a newly created decorator to the group
 	base_ptr add_decorator(const std::string& label, const std::string& decorator_type, const std::string& options, const std::string& align);
 	/// add a newly created button to the group
-	button_ptr add_button(const std::string& label, const std::string& options, const std::string& align);
+	cgv::gui::button_ptr add_button(const std::string& label, const std::string& options, const std::string& align);
 	/// add a newly created view to the group
-	view_ptr add_view_void(const std::string& label, const void* value_ptr, const std::string& value_type, const std::string& gui_type, const std::string& options, const std::string& align);
+	cgv::gui::view_ptr add_view_void(const std::string& label, const void* value_ptr, const std::string& value_type, const std::string& gui_type, const std::string& options, const std::string& align);
 	/// add a newly created control to the group
-	control_ptr add_control_void(const std::string& label, void* value_ptr, abst_control_provider* acp, const std::string& value_type, const std::string& gui_type, const std::string& options, const std::string& align, void* user_data);
+	cgv::gui::control_ptr add_control_void(const std::string& label, void* value_ptr, cgv::gui::abst_control_provider* acp, const std::string& value_type, const std::string& gui_type, const std::string& options, const std::string& align, void* user_data);
 	/// interface of adding an object
 	void register_object(cgv::base::base_ptr object, const std::string& options);
 	/// unregister an object
