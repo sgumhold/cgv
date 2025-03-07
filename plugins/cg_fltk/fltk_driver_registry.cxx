@@ -1,5 +1,6 @@
 #include "fltk_driver_registry.h"
 
+using namespace cgv::gui;
 
 control_ptr abst_control_factory::create_with_options(const std::string& label, void* value_ptr, abst_control_provider* acp, const std::string& value_type, const std::string& gui_type, const std::string& options, int x, int y, int w, int h)
 {

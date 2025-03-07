@@ -5,9 +5,6 @@
 #include <cgv/math/fvec.h>
 #include "rectangle.h"
 
-using namespace cgv::math;
-using namespace cgv::data;
-
 namespace trajectory {
 namespace util {
 	template <typename T> class ray_rect_intersection {

@@ -2,8 +2,6 @@
 
 #include <cgv/gui/gui_driver.h>
 
-using namespace cgv::gui;
-
 #include "lib_begin.h"
 
 /// factory used to register decorators
@@ -16,7 +14,7 @@ struct CGV_API abst_decorator_factory
 /// factory used to register views
 struct CGV_API abst_view_factory
 {
-	virtual view_ptr create(const std::string& label, 
+	virtual cgv::gui::view_ptr create(const std::string& label,
 		const void* value_ptr, const std::string& value_type, 
 		const std::string& gui_type, int x, int y, int w, int h) = 0;
 };
@@ -24,12 +22,12 @@ struct CGV_API abst_view_factory
 /// factory used to register controls
 struct CGV_API abst_control_factory
 {
-	virtual control_ptr create(const std::string& label, 
-		void* value_ptr, abst_control_provider* acp, const std::string& value_type, 
+	virtual cgv::gui::control_ptr create(const std::string& label,
+		void* value_ptr, cgv::gui::abst_control_provider* acp, const std::string& value_type,
 		const std::string& gui_type, int x, int y, int w, int h) = 0;
 		
-	virtual control_ptr create_with_options(const std::string& label, 
-		void* value_ptr, abst_control_provider* acp, const std::string& value_type, 
+	virtual cgv::gui::control_ptr create_with_options(const std::string& label,
+		void* value_ptr, cgv::gui::abst_control_provider* acp, const std::string& value_type,
 		const std::string& gui_type, const std::string &options, int x, int y, int w, int h);
 };
 
@@ -40,12 +38,12 @@ extern CGV_API void register_control_factory(abst_control_factory* fac);
 extern CGV_API base_ptr create_decorator(const std::string& label, 
 						const std::string& gui_type, int x, int y, int w, int h);
 
-extern CGV_API view_ptr create_view(const std::string& label, 
+extern CGV_API cgv::gui::view_ptr create_view(const std::string& label,
 						const void* value_ptr, const std::string& value_type, 
 						const std::string& gui_type, int x, int y, int w, int h);
 
-extern CGV_API control_ptr create_control(const std::string& label, 
-						void* value_ptr, abst_control_provider* acp, const std::string& value_type, 
+extern CGV_API cgv::gui::control_ptr create_control(const std::string& label,
+						void* value_ptr, cgv::gui::abst_control_provider* acp, const std::string& value_type,
 						const std::string& gui_type, const std::string& options, int x, int y, int w, int h);
 
 template <class T>

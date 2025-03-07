@@ -6,26 +6,24 @@
 
 #include "lib_begin.h"
 
-using namespace cgv::gui;
-
 namespace fltk {
 	class Menu;
 }
 
 /// implementation of the gui driver for fltk
-class CGV_API fltk_driver : public gui_driver
+class CGV_API fltk_driver : public cgv::gui::gui_driver
 {
 protected:
 	friend class fltk_gl_view;
 	/// keep track of the created windows
-	std::vector<window_ptr> windows;
+	std::vector<cgv::gui::window_ptr> windows;
 	/// store the last wakeup message
 	std::string wakeup_message;
 	///
 	static void set_context_creation_attrib_list(cgv::render::context_config& cc);
 public:
 	/// remove a window that has been destroyed
-	void remove_window(window_ptr w);
+	void remove_window(cgv::gui::window_ptr w);
 	/// destroy every window, releasing all their resources.
 	virtual void destroy_all_windows();
 	/// register driver in cgv frame work
@@ -35,15 +33,15 @@ public:
 	/**@name application management*/
 	//@{
 	/// fill list of monitor descriptions
-	bool enumerate_monitors(std::vector<monitor_description>& monitor_descriptions);
+	bool enumerate_monitors(std::vector<cgv::gui::monitor_description>& monitor_descriptions);
 	/// create a window of the given type. Currently only the types "viewer with gui", "viewer" and "gui" are supported
-	window_ptr create_window(int w, int h, const std::string& title, const std::string& window_type);
+	cgv::gui::window_ptr create_window(int w, int h, const std::string& title, const std::string& window_type);
 	/// set the input focus to the given window
-	bool set_focus(const_window_ptr);
+	bool set_focus(cgv::gui::const_window_ptr);
 	/// return the number of created windows
 	unsigned int get_nr_windows();
 	/// return the i-th created window
-	window_ptr get_window(unsigned int i);
+	cgv::gui::window_ptr get_window(unsigned int i);
 	/// run the main loop of the window system
 	bool run();
 	/// quit the application by closing all windows
@@ -57,7 +55,7 @@ public:
 	/**@name some basic functionality */
 	//@{
 	/// create a text editor
-	text_editor_ptr create_text_editor(unsigned int w, unsigned int h, const std::string& title, int x, int y);
+	cgv::gui::text_editor_ptr create_text_editor(unsigned int w, unsigned int h, const std::string& title, int x, int y);
 	/// show the user a \c _message that can be dismissed with the \c answer
 	void message(const std::string& _question);
 	/// ask the user with \c _question to select one of the \c answers, where \c default_answer specifies index of default answer
@@ -96,19 +94,19 @@ public:
 	/// process the gui declarations in the given gui file
 	bool process_gui_file(const std::string& file_name);
 	/// add a new gui group to the given parent group
-	virtual gui_group_ptr add_group(gui_group_ptr parent, const std::string& label, const std::string& group_type, const std::string& options, const std::string& align);
+	virtual cgv::gui::gui_group_ptr add_group(cgv::gui::gui_group_ptr parent, const std::string& label, const std::string& group_type, const std::string& options, const std::string& align);
 	/// add a newly created decorator to the parent group
-	virtual base_ptr add_decorator(gui_group_ptr parent, const std::string& label, const std::string& decorator_type, const std::string& options, const std::string& align);
+	virtual base_ptr add_decorator(cgv::gui::gui_group_ptr parent, const std::string& label, const std::string& decorator_type, const std::string& options, const std::string& align);
 	/// add new button to the parent group
-	virtual button_ptr add_button(gui_group_ptr parent, const std::string& label, const std::string& options, const std::string& align);
+	virtual cgv::gui::button_ptr add_button(cgv::gui::gui_group_ptr parent, const std::string& label, const std::string& options, const std::string& align);
 	/// add new view to the parent group
-	virtual view_ptr add_view(gui_group_ptr parent, const std::string& label, const void* value_ptr, const std::string& value_type, const std::string& gui_type, const std::string& options, const std::string& align);
+	virtual cgv::gui::view_ptr add_view(cgv::gui::gui_group_ptr parent, const std::string& label, const void* value_ptr, const std::string& value_type, const std::string& gui_type, const std::string& options, const std::string& align);
 	/// find a view in the group
-	virtual view_ptr find_view(gui_group_ptr parent, const void* value_ptr, int* idx_ptr);
+	virtual cgv::gui::view_ptr find_view(cgv::gui::gui_group_ptr parent, const void* value_ptr, int* idx_ptr);
 	/// add new control to the parent group
-	virtual control_ptr add_control(gui_group_ptr parent, const std::string& label, void* value_ptr, abst_control_provider* acp, const std::string& value_type, const std::string& gui_type, const std::string& options, const std::string& align);
+	virtual cgv::gui::control_ptr add_control(cgv::gui::gui_group_ptr parent, const std::string& label, void* value_ptr, cgv::gui::abst_control_provider* acp, const std::string& value_type, const std::string& gui_type, const std::string& options, const std::string& align);
 	/// find a control in a group
-	virtual control_ptr find_control(gui_group_ptr parent, void* value_ptr, int* idx_ptr);
+	virtual cgv::gui::control_ptr find_control(cgv::gui::gui_group_ptr parent, void* value_ptr, int* idx_ptr);
 	//@}
 
 	/**@name menu elements */
@@ -118,9 +116,9 @@ public:
 	/// add a newly created decorator to the menu
 	base_ptr add_menu_separator(const std::string& menu_path);
 	/// use the current gui driver to append a new button in the menu, where menu path is a '/' separated path
-	button_ptr add_menu_button(const std::string& menu_path, const std::string& options);
+	cgv::gui::button_ptr add_menu_button(const std::string& menu_path, const std::string& options);
 	/// use this to add a new control to the gui with a given value type, gui type and init options
-	cgv::data::ref_ptr<control<bool> > add_menu_bool_control(const std::string& menu_path, bool& value, const std::string& options);
+	cgv::data::ref_ptr<cgv::gui::control<bool> > add_menu_bool_control(const std::string& menu_path, bool& value, const std::string& options);
 	/// return the element of the given menu path
 	base_ptr find_menu_element(const std::string& menu_path) const;
 	/// remove a single element from the gui

@@ -367,7 +367,7 @@ void color_selector::init_textures(cgv::render::context& ctx) {
 	data[9] = 255u;
 	
 	color_tex.destruct(ctx);
-	cgv::data::data_view color_dv = cgv::data::data_view(new cgv::data::data_format(2, 2, TI_UINT8, cgv::data::CF_RGB), data.data());
+	cgv::data::data_view color_dv = cgv::data::data_view(new cgv::data::data_format(2, 2, cgv::type::info::TI_UINT8, cgv::data::CF_RGB), data.data());
 	color_tex = cgv::render::texture("uint8[R,G,B]", cgv::render::TF_LINEAR, cgv::render::TF_LINEAR);
 	color_tex.create(ctx, color_dv, 0);
 
@@ -391,7 +391,7 @@ void color_selector::init_textures(cgv::render::context& ctx) {
 	}
 
 	hue_tex.destruct(ctx);
-	cgv::data::data_view hue_dv = cgv::data::data_view(new cgv::data::data_format(2, 256, TI_UINT8, cgv::data::CF_RGB), hue_data.data());
+	cgv::data::data_view hue_dv = cgv::data::data_view(new cgv::data::data_format(2, 256, cgv::type::info::TI_UINT8, cgv::data::CF_RGB), hue_data.data());
 	hue_tex = cgv::render::texture("uint8[R,G,B]", cgv::render::TF_LINEAR, cgv::render::TF_LINEAR);
 	hue_tex.create(ctx, hue_dv, 0);
 }
@@ -413,7 +413,7 @@ void color_selector::update_color_texture() {
 	data[10] = static_cast<uint8_t>(round(color.G() * 255.0f));
 	data[11] = static_cast<uint8_t>(round(color.B() * 255.0f));
 
-	cgv::data::data_view color_dv = cgv::data::data_view(new cgv::data::data_format(2, 2, TI_UINT8, cgv::data::CF_RGB), data.data());
+	cgv::data::data_view color_dv = cgv::data::data_view(new cgv::data::data_format(2, 2, cgv::type::info::TI_UINT8, cgv::data::CF_RGB), data.data());
 
 	if(auto* ctx_ptr = get_context())
 		color_tex.replace(*ctx_ptr, 0, 0, color_dv);

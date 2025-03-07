@@ -3,6 +3,8 @@
 #include <cgv/base/import.h>
 #include <iostream>
 
+using namespace cgv::data;
+
 /// default constructor
 png_reader::png_reader() : fp(0)
 {
@@ -28,7 +30,7 @@ const std::string& png_reader::get_last_error() const
 }
 
 /// construct a copy of the reader
-abst_image_reader* png_reader::clone() const
+cgv::media::image::abst_image_reader* png_reader::clone() const
 {
 	return new png_reader();
 }
@@ -105,7 +107,7 @@ bool png_reader::open(const std::string& file_name, data_format& df, std::vector
    interlacing = interlace_type != PNG_INTERLACE_NONE;
 
 	std::string components;
-	TypeId component_type = bit_depth == 16 ? TI_UINT16 : TI_UINT8;
+	cgv::type::info::TypeId component_type = bit_depth == 16 ? cgv::type::info::TI_UINT16 : cgv::type::info::TI_UINT8;
 	bool has_rgb = color_type == PNG_COLOR_TYPE_RGB || color_type == PNG_COLOR_TYPE_RGBA;
 	if (color_type == PNG_COLOR_TYPE_PALETTE) {
         png_set_palette_to_rgb(png_ptr);

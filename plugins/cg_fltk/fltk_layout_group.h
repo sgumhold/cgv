@@ -13,8 +13,6 @@
 
 #include <cgv/type/variant.h>
 
-using namespace cgv::type;
-
 #include "lib_begin.h"
 
 class CGV_API fltk_layout_group: public cgv::gui::gui_group, public fltk_gui_group, public CG<fltk::Group>

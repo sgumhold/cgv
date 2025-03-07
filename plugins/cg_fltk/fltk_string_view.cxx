@@ -10,6 +10,8 @@
 #endif
 #include <iostream>
 
+using namespace cgv::gui;
+
 /// construct from label, value reference and dimensions
 fltk_string_view::fltk_string_view(const std::string& _label, const std::string& value, int x, int y, int w, int h)
 	: view<std::string>(_label, value)
