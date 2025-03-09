@@ -658,9 +658,9 @@ Protected Attributes</h2></td></tr>
 
 <p>sleep till the signal from the given <a class="el" href="structcgv_1_1os_1_1condition__mutex.html" title="A mutex that can wake up other threads by signals sent when a condition is fulfilled.">condition_mutex</a> is sent or the timeout is reached, lock the mutex first and unlock after waiting </p>
 
-<p class="definition">Definition at line <a class="el" href="thread__std__thread_8h_source.html#l00039">39</a> of file <a class="el" href="thread__std__thread_8h_source.html">thread_std_thread.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="thread__std__thread_8h_source.html#l00037">37</a> of file <a class="el" href="thread__std__thread_8h_source.html">thread_std_thread.h</a>.</p>
 
-<p class="reference">Referenced by <a class="el" href="thread__std__thread_8h_source.html#l00055">wait_for_signal_or_timeout_with_lock()</a>.</p>
+<p class="reference">Referenced by <a class="el" href="thread__std__thread_8h_source.html#l00053">wait_for_signal_or_timeout_with_lock()</a>.</p>
 
 </div>
 </div>
@@ -700,9 +700,9 @@ Protected Attributes</h2></td></tr>
 
 <p>prefered approach to wait for signal or the timeout is reached and implemented as { cm.lock(); wait_for_signal_or_timeout(cm,millisec); cm.unlock(); } </p>
 
-<p class="definition">Definition at line <a class="el" href="thread__std__thread_8h_source.html#l00055">55</a> of file <a class="el" href="thread__std__thread_8h_source.html">thread_std_thread.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="thread__std__thread_8h_source.html#l00053">53</a> of file <a class="el" href="thread__std__thread_8h_source.html">thread_std_thread.h</a>.</p>
 
-<p class="reference">References <a class="el" href="mutex__pthread_8h_source.html#l00040">cgv::os::mutex::lock()</a>, <a class="el" href="mutex__pthread_8h_source.html#l00046">cgv::os::mutex::unlock()</a>, and <a class="el" href="thread__std__thread_8h_source.html#l00039">wait_for_signal_or_timeout()</a>.</p>
+<p class="reference">References <a class="el" href="mutex__pthread_8h_source.html#l00040">cgv::os::mutex::lock()</a>, <a class="el" href="mutex__pthread_8h_source.html#l00046">cgv::os::mutex::unlock()</a>, and <a class="el" href="thread__std__thread_8h_source.html#l00037">wait_for_signal_or_timeout()</a>.</p>
 
 </div>
 </div>
