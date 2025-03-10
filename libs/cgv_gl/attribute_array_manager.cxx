@@ -41,7 +41,7 @@ void attribute_array_manager::remove_attribute_array(const context& ctx, int loc
 		ctx.enable_attribute_array(&aab, loc, false);
 	}
 }
-bool attribute_array_manager::is_created() {
+bool attribute_array_manager::is_created() const {
 	return aab.is_created();
 }
 bool attribute_array_manager::init(context& ctx) {
