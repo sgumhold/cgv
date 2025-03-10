@@ -10,13 +10,13 @@
     widgets. The fltk_bool_control is therefore parameterized over
 	 the fltk Button type FB. */
 template <typename FB>
-struct fltk_bool_control : public control<bool>, public fltk_base
+struct fltk_bool_control : public cgv::gui::control<bool>, public fltk_base
 {
 	std::string true_label, false_label, true_image, false_image;
 	/// pointer to the fltk button	
 	FB* fB;
 	/// construct from label, value reference and dimensions
-	fltk_bool_control(const std::string& _label, bool& value, abst_control_provider* acp, int x, int y, int w, int h);
+	fltk_bool_control(const std::string& _label, bool& value, cgv::gui::abst_control_provider* acp, int x, int y, int w, int h);
 	/// destruct fltk control
 	~fltk_bool_control();
 	/// give access to the protected value ptr to allow changing the value
@@ -42,7 +42,7 @@ struct CGV_API bool_control_factory : public abst_control_factory
 {
 	/// creation method
 	cgv::gui::control_ptr create(const std::string& label, 
-		void* value_ptr, abst_control_provider* acp, const std::string& value_type, 
+		void* value_ptr, cgv::gui::abst_control_provider* acp, const std::string& value_type,
 		const std::string& gui_type, int x, int y, int w, int h);
 };
 

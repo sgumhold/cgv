@@ -45,7 +45,7 @@ namespace cgv {
 
 
 		// get a child from the container. make sure that the child can be resized
-		base_ptr layout::get_child(unsigned int i)
+		cgv::base::base_ptr layout::get_child(unsigned int i)
 		{
 			if (!container) {
 				std::cerr<<"Layout is not connected to any container"<<std::endl;
@@ -113,7 +113,7 @@ namespace cgv {
 
 
 		// get the size of a child
-		void layout::get_child_size(const base_ptr child, int &width, int &height)
+		void layout::get_child_size(const cgv::base::base_ptr child, int &width, int &height)
 		{
 			width = height = 0;
 
@@ -126,7 +126,7 @@ namespace cgv {
 
 
 		// set the size of a child
-		void layout::set_child_size(const base_ptr child, int width, int height)
+		void layout::set_child_size(const cgv::base::base_ptr child, int width, int height)
 		{
 			if (!child)
 				return;
@@ -138,7 +138,7 @@ namespace cgv {
 
 
 		// get the default size of a child
-		void layout::get_child_default_size(const base_ptr child, int &width, int &height)
+		void layout::get_child_default_size(const cgv::base::base_ptr child, int &width, int &height)
 		{
 			width = height = 0;
 			if (!child)
@@ -151,7 +151,7 @@ namespace cgv {
 		}
 
 
-		void layout::get_child_minimum_size(const base_ptr child, int &width, int &height)
+		void layout::get_child_minimum_size(const cgv::base::base_ptr child, int &width, int &height)
 		{
 			width = height = 0;
 			if (!child)
@@ -166,7 +166,7 @@ namespace cgv {
 
 
 		// get the position of a child
-		void layout::get_child_position(const base_ptr child, int &x, int &y)
+		void layout::get_child_position(const cgv::base::base_ptr child, int &x, int &y)
 		{
 			x = y = 0;
 
@@ -179,7 +179,7 @@ namespace cgv {
 
 
 		// set the position of a child
-		void layout::set_child_position(const base_ptr child, int x, int y)
+		void layout::set_child_position(const cgv::base::base_ptr child, int x, int y)
 		{
 			if (!child)
 				return;

@@ -255,7 +255,7 @@ public:
 			std::vector<cgv::rgb> bg_data = { a, b, b, a };
 
 			background_tex.destruct(ctx);
-			cgv::data::data_view bg_dv = cgv::data::data_view(new cgv::data::data_format(2, 2, TI_FLT32, cgv::data::CF_RGB), bg_data.data());
+			cgv::data::data_view bg_dv = cgv::data::data_view(new cgv::data::data_format(2, 2, cgv::type::info::TI_FLT32, cgv::data::CF_RGB), bg_data.data());
 			background_tex = texture("flt32[R,G,B]", TF_NEAREST, TF_NEAREST, TW_REPEAT, TW_REPEAT);
 			background_tex.create(ctx, bg_dv, 0);
 		}

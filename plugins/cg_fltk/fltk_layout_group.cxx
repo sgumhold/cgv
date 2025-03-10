@@ -6,6 +6,7 @@
 
 using namespace cgv::base;
 using namespace cgv::gui;
+using namespace cgv::type;
 
 #ifdef WIN32
 #pragma warning (disable:4311)

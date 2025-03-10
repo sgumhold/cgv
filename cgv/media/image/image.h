@@ -76,7 +76,7 @@ namespace cgv {
 					set_height(h);
 
 					// allocate data
-					new(&dv) data_view(this);
+					new(&dv) cgv::data::data_view(this);
 
 					const cgv::type::uint8_type* src_ptr = I.get_ptr<cgv::type::uint8_type>();
 					cgv::type::uint8_type* dst_ptr = get_ptr<cgv::type::uint8_type>();
@@ -103,7 +103,7 @@ namespace cgv {
 					set_height(size_y);
 
 					// allocate data
-					new(&dv) data_view(this);
+					new(&dv) cgv::data::data_view(this);
 
 					const cgv::type::uint8_type* src_ptr = I.get_ptr<cgv::type::uint8_type>();
 					cgv::type::uint8_type* dst_ptr = get_ptr<cgv::type::uint8_type>();
@@ -168,7 +168,7 @@ namespace cgv {
 					set_height(size_y);
 
 					// allocate data
-					new(&dv) data_view(this);
+					new(&dv) cgv::data::data_view(this);
 
 					const cgv::type::uint8_type* src_ptr = I.get_ptr<cgv::type::uint8_type>();
 					cgv::type::uint8_type* dst_ptr = get_ptr<cgv::type::uint8_type>();

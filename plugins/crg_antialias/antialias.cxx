@@ -97,7 +97,7 @@ void antialias::init_frame(context& ctx)
 	GLint vp[4];
 	glGetIntegerv(GL_VIEWPORT, vp);
 	std::vector<cgv::render::view*> views;
-	cgv::base::find_interface(base_ptr(this),views);
+	cgv::base::find_interface(cgv::base::base_ptr(this),views);
 	if (views.size() > 0) {
 		pixel_scale_y = 2*tan(.8726646262e-2*views[0]->get_y_view_angle())/vp[3];
 		pixel_scale_x = pixel_scale_y*vp[2]/vp[3];

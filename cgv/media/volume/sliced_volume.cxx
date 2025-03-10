@@ -131,7 +131,7 @@ namespace cgv {
 					}
 					size_t offset = file_size - data_size;
 					if (dv.empty())
-						new(&dv) data_view(&df);
+						new(&dv) cgv::data::data_view(&df);
 					std::copy(content + offset, content + file_size, dv.get_ptr<char>());
 					delete[] content;
 					return true;

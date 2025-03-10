@@ -3,6 +3,8 @@
 #include <cgv/base/import.h>
 #include <iostream>
 
+using namespace cgv::data;
+
 METHODDEF(void) my_error_exit (j_common_ptr cinfo)
 {
 	/* cinfo->err really points to a my_error_mgr struct, so coerce pointer */
@@ -42,7 +44,7 @@ const std::string& jpg_reader::get_last_error() const
 }
 
 /// construct a copy of the reader
-abst_image_reader* jpg_reader::clone() const
+cgv::media::image::abst_image_reader* jpg_reader::clone() const
 {
 	return new jpg_reader();
 }
@@ -119,7 +121,7 @@ bool jpg_reader::open(const std::string& file_name, data_format& df, std::vector
 	case JCS_CMYK :      components = "C,M,Y,K"; break;
 	case JCS_YCCK :      components = "Y,Cb,Cr,K"; break;
 	}
-	df = data_format(cinfo.output_width, cinfo.output_height, TI_UINT8, components);
+	df = data_format(cinfo.output_width, cinfo.output_height, cgv::type::info::TI_UINT8, components);
 	return true;
 }
 

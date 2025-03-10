@@ -150,9 +150,9 @@ protected:
 	void construct_hit_geometry();
 public:
 	/// overload to handle registration events
-	void register_object(base_ptr object, const std::string& options);
+	void register_object(cgv::base::base_ptr object, const std::string& options);
 	/// overload to handle unregistration events
-	void unregister_object(base_ptr object, const std::string& options);
+	void unregister_object(cgv::base::base_ptr object, const std::string& options);
 public:
 	/// standard constructor for scene
 	vr_scene();

@@ -11,14 +11,10 @@
 #include "rectangle.h"
 #include "placeable.h"
 
-using namespace cgv::data;
-using namespace cgv::math;
-using namespace cgv::render;
-
 namespace trajectory {
 
 
-class rectangle_renderer : public drawable
+class rectangle_renderer : public cgv::render::drawable
 {
   public:
 	enum draw_mode : uint8_t {
@@ -30,73 +26,73 @@ class rectangle_renderer : public drawable
 	};
 
   private:
-	rectangle rect;
+	cgv::data::rectangle rect;
 	draw_mode mode = draw_mode::NORMAL;
 	bool mode_changed = false;
 	bool flipped = false;
 
-	vec2 zoom = vec2(0.0f, 0.0f);
-	vec2 offset = vec2(0.0f, 0.0f);
+	cgv::vec2 zoom = { 0.0f };
+	cgv::vec2 offset = { 0.0f };
 
 	// does not own texture
-	std::shared_ptr<texture> tex;
+	std::shared_ptr<cgv::render::texture> tex;
 
-	attribute_array_binding vao;
-	vertex_buffer v_buf{VertexBufferType::VBT_VERTICES,
-	                    VertexBufferUsage::VBU_DYNAMIC_DRAW};
+	cgv::render::attribute_array_binding vao;
+	cgv::render::vertex_buffer v_buf{ cgv::render::VertexBufferType::VBT_VERTICES,
+						cgv::render::VertexBufferUsage::VBU_DYNAMIC_DRAW};
 
-	shader_program prog;
+	cgv::render::shader_program prog;
 
   public:
 	rectangle_renderer();
-	rectangle_renderer(const rectangle &rect);
-	rectangle_renderer(std::shared_ptr<texture> tex);
-	rectangle_renderer(const rectangle &rect, std::shared_ptr<texture> tex);
+	rectangle_renderer(const cgv::data::rectangle &rect);
+	rectangle_renderer(std::shared_ptr<cgv::render::texture> tex);
+	rectangle_renderer(const cgv::data::rectangle &rect, std::shared_ptr<cgv::render::texture> tex);
 	~rectangle_renderer();
 
-	bool init(context &ctx);
-	void init_frame(context &ctx);
+	bool init(cgv::render::context &ctx);
+	void init_frame(cgv::render::context &ctx);
 
 	// draw rectangle at position/orientation given by placeable
 	// draw with member texture
-	void draw(context &ctx);
+	void draw(cgv::render::context &ctx);
 	// draw with given texture
-	void draw(context &ctx, const rectangle &rectangle, texture &texture);
+	void draw(cgv::render::context &ctx, const cgv::data::rectangle &rectangle, cgv::render::texture &texture);
 	// draw with given handle
-	void draw(context &ctx, const rectangle &rectangle, GLuint texture_handle);
+	void draw(cgv::render::context &ctx, const cgv::data::rectangle &rectangle, GLuint texture_handle);
 
 	// draw fullscreen, ignores placeable attributes
 	// draw with member texture
-	void draw_fullscreen(context &ctx);
+	void draw_fullscreen(cgv::render::context &ctx);
 	// draw with given texture
-	void draw_fullscreen(context &ctx, texture &texture);
+	void draw_fullscreen(cgv::render::context &ctx, cgv::render::texture &texture);
 	// draw with given handle
-	void draw_fullscreen(context &ctx, GLuint texture_handle);
+	void draw_fullscreen(cgv::render::context &ctx, GLuint texture_handle);
 
-	void clear(context &ctx);
+	void clear(cgv::render::context &ctx);
 
 	// mainly used for left/right eye
 	void set_draw_mode(draw_mode mode);
 
 	void set_flipped(bool flipped);
 
-	std::shared_ptr<texture> get_texture() const;
-	void set_texture(std::shared_ptr<texture> t);
+	std::shared_ptr<cgv::render::texture> get_texture() const;
+	void set_texture(std::shared_ptr<cgv::render::texture> t);
 
-	rectangle get_rectangle() const;
-	void set_rectangle(const rectangle &rectangle);
+	cgv::data::rectangle get_rectangle() const;
+	void set_rectangle(const cgv::data::rectangle &rectangle);
 
-	vec2 get_zoom() const;
-	void set_zoom(const vec2 zoom);
+	cgv::vec2 get_zoom() const;
+	void set_zoom(const cgv::vec2 zoom);
 
-	vec2 get_offset() const;
-	void set_offset(const vec2 offset);
+	cgv::vec2 get_offset() const;
+	void set_offset(const cgv::vec2 offset);
 
   private:
-	void draw_impl(context &ctx, const rectangle &rectangle, texture &texture);
-	void draw_fullscreen_impl(context &ctx, texture &texture);
+	void draw_impl(cgv::render::context &ctx, const cgv::data::rectangle &rectangle, cgv::render::texture &texture);
+	void draw_fullscreen_impl(cgv::render::context &ctx, cgv::render::texture &texture);
 
-	void set_draw_mode_uniforms(context &ctx);
+	void set_draw_mode_uniforms(cgv::render::context &ctx);
 
 };
 
