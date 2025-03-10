@@ -8,21 +8,21 @@ namespace room {
 	virtual_display::virtual_display() : display(plane{})
 	{
 		blitter = std::make_shared<trajectory::rectangle_renderer>();
-		set_position(vec3(0, 1, 0));
-		set_orientation(quat(0.0f, 0.0f, -1.0f, 0.0f));
+		set_position(cgv::vec3(0, 1, 0));
+		set_orientation(cgv::quat(0.0f, 0.0f, -1.0f, 0.0f));
 	}
 	virtual_display::virtual_display(const plane &display) : display(display)
 	{
 		blitter = std::make_shared<trajectory::rectangle_renderer>();
 	}
 
-	virtual_display::intersection virtual_display::intersect(const vec3 &origin,
-	                                                         const vec3 &dir)
+	virtual_display::intersection virtual_display::intersect(const cgv::vec3 &origin,
+	                                                         const cgv::vec3 &dir)
 	{
 		auto geom_now = display.get_geometry();
 		for (auto &v : geom_now) {
-			auto vm = get_model_matrix() * vec4(v, 1.0);
-			v = vec3(vm.x(), vm.y(), vm.z());
+			auto vm = get_model_matrix() * cgv::vec4(v, 1.0);
+			v = cgv::vec3(vm.x(), vm.y(), vm.z());
 		}
 
 		auto rits = trajectory::util::ray_rect_intersection<float>::intersect_rect(
@@ -30,7 +30,7 @@ namespace room {
 
 		auto ret = intersection{};
 		ret.hit = rits.hit;
-		ret.pos_rel = vec2(rits.px, rits.py);
+		ret.pos_rel = cgv::vec2(rits.px, rits.py);
 		ret.pos_world = rits.pos;
 		ret.pos_pixel = cgv::math::fvec<uint32_t, 2>(
 		    static_cast<uint32_t>(static_cast<float>(resolution_x) * rits.px),
@@ -39,7 +39,7 @@ namespace room {
 		return ret;
 	}
 
-	bool virtual_display::init(context &ctx)
+	bool virtual_display::init(cgv::render::context &ctx)
 	{
 		bool success = true;
 
@@ -48,12 +48,12 @@ namespace room {
 		return success;
 	}
 
-	void virtual_display::init_frame(context &ctx) 
+	void virtual_display::init_frame(cgv::render::context &ctx)
 	{
 		blitter->init_frame(ctx); 
 	}
 
-	void virtual_display::draw(context &ctx)
+	void virtual_display::draw(cgv::render::context &ctx)
 	{
 		ctx.push_modelview_matrix();
 		{
@@ -62,7 +62,7 @@ namespace room {
 				glDisable(GL_CULL_FACE);
 				trajectory::util::debug::rect_t rect;
 				rect.rect = display.get_geometry();
-				rect.col = vec4(0.9f);
+				rect.col = cgv::vec4(0.9f);
 				trajectory::util::debug::draw_quad(rect);
 				glEnable(GL_CULL_FACE);
 			}
@@ -75,7 +75,7 @@ namespace room {
 		}
 	}
 
-	void virtual_display::clear(context &ctx) 
+	void virtual_display::clear(cgv::render::context &ctx)
 	{ 
 		blitter->clear(ctx); 
 	}

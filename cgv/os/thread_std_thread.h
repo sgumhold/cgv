@@ -21,10 +21,8 @@ void thread::start(bool _delete_after_termination)
 		delete_after_termination = _delete_after_termination;
 		stop_request=false;
 		std::thread*& std_thread_ptr = reinterpret_cast<std::thread*&>(thread_ptr);
-		//if (std_thread_ptr)
-			//delete std_thread_ptr;
+		running = true;
 		std_thread_ptr = new std::thread(&cgv::os::thread::execute_s, this);
-		running=true;
 	}
 }
 
@@ -64,8 +62,12 @@ void* thread::execute_s(void* args)
 {
 	thread* t = (thread*)args;
 	t->execute(); 
-	if (t->delete_after_termination)
+	if (t->delete_after_termination) {
+		std::thread*& std_thread_ptr = reinterpret_cast<std::thread*&>(t->thread_ptr);
+		std_thread_ptr->detach();
+		std_thread_ptr = 0;
 		delete t;
+	}
 	return NULL; 
 }
 
@@ -121,7 +123,9 @@ thread::~thread()
 	if(running)
 		kill();
 	if (thread_ptr) {
-		std::thread* std_thread_ptr = reinterpret_cast<std::thread*>(thread_ptr);
+		std::thread*& std_thread_ptr = reinterpret_cast<std::thread*&>(thread_ptr);
+		if (std_thread_ptr->joinable())
+			std_thread_ptr->detach();
 		delete std_thread_ptr;
 		std_thread_ptr = 0;
 	}

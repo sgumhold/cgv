@@ -5,8 +5,6 @@
 
 #include "lib_begin.h"
 
-using namespace cgv::type::info;
-
 namespace cgv {
 	namespace data {
 
@@ -71,28 +69,28 @@ Some examples of valid data format description strings:
 */
 	bool set_data_format(const std::string& description);
 	/// construct a 1d data format from width and the information needed to construct a component info
-	data_format(size_t _width, TypeId _component_type, const std::string& _component_name_list, 
+	data_format(size_t _width, cgv::type::info::TypeId _component_type, const std::string& _component_name_list,
 				unsigned align = 1, unsigned d0 = 0, unsigned d1 = 0, unsigned d2 = 0, unsigned d3 = 0);
 	/// construct a 1d data format from width and the information needed to construct a component info
-	data_format(size_t _width, TypeId _component_type, ComponentFormat _cf, 
+	data_format(size_t _width, cgv::type::info::TypeId _component_type, ComponentFormat _cf,
 		        unsigned align = 1, unsigned d0 = 0, unsigned d1 = 0, unsigned d2 = 0, unsigned d3 = 0);
 	/// construct a 2d data format from width and height
-	data_format(size_t _width, size_t _height, TypeId _component_type, const std::string& _component_name_list,
+	data_format(size_t _width, size_t _height, cgv::type::info::TypeId _component_type, const std::string& _component_name_list,
 				unsigned align = 1, unsigned d0 = 0, unsigned d1 = 0, unsigned d2 = 0, unsigned d3 = 0);
 	/// construct a 2d data format from width and height
-	data_format(size_t _width, size_t _height, TypeId _component_type, ComponentFormat _cf, 
+	data_format(size_t _width, size_t _height, cgv::type::info::TypeId _component_type, ComponentFormat _cf,
 				unsigned align = 1, unsigned d0 = 0, unsigned d1 = 0, unsigned d2 = 0, unsigned d3 = 0);
 	/// construct a 3d data format from width, height and depth
-	data_format(size_t _width, size_t _height, size_t _depth, TypeId _component_type, const std::string& _component_name_list,
+	data_format(size_t _width, size_t _height, size_t _depth, cgv::type::info::TypeId _component_type, const std::string& _component_name_list,
 				unsigned align = 1, unsigned d0 = 0, unsigned d1 = 0, unsigned d2 = 0, unsigned d3 = 0);
 	/// construct a 3d data format from width, height and depth
-	data_format(size_t _width, size_t _height, size_t _depth, TypeId _component_type, ComponentFormat _cf, 
+	data_format(size_t _width, size_t _height, size_t _depth, cgv::type::info::TypeId _component_type, ComponentFormat _cf,
 				unsigned align = 1, unsigned d0 = 0, unsigned d1 = 0, unsigned d2 = 0, unsigned d3 = 0);
 	/// construct a 4d data format from width, height, depth and count
-	data_format(size_t _width, size_t _height, size_t _depth, size_t _count, TypeId _component_type, const std::string& _component_name_list,
+	data_format(size_t _width, size_t _height, size_t _depth, size_t _count, cgv::type::info::TypeId _component_type, const std::string& _component_name_list,
 				unsigned align = 1, unsigned d0 = 0, unsigned d1 = 0, unsigned d2 = 0, unsigned d3 = 0);
 	/// construct a 4d data format from width, height, depth and count
-	data_format(size_t _width, size_t _height, size_t _depth, size_t _count, TypeId _component_type, ComponentFormat _cf, 
+	data_format(size_t _width, size_t _height, size_t _depth, size_t _count, cgv::type::info::TypeId _component_type, ComponentFormat _cf,
 				unsigned align = 1, unsigned d0 = 0, unsigned d1 = 0, unsigned d2 = 0, unsigned d3 = 0);
 	/// define stream out operator
 	friend FRIEND_MEMBER_API std::ostream& operator << (std::ostream& os, const data_format& df);

@@ -4,6 +4,7 @@
 #include <cgv/utils/scan.h>
 
 using namespace cgv::utils;
+using namespace cgv::type::info;
 
 namespace cgv {
 	namespace data {

@@ -76,7 +76,7 @@ unsigned map_to_gl(cgv::data::ComponentFormat cf, cgv::data::ComponentIntegerInt
 	return cf_to_gl[cf];
 }
 
-unsigned map_to_gl(TypeId ti)
+unsigned map_to_gl(cgv::type::info::TypeId ti)
 {
 	static unsigned ti_to_gl[] = {
 		0, /// used for undefined type

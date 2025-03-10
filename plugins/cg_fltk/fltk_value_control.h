@@ -23,7 +23,7 @@ struct CGV_API fltk_value_control : public cgv::gui::control<T>, public abst_flt
 	/// pointer to the fltk Widget that controls the value
 	FC* fC;
 	/// construct from label, value reference and dimensions
-	fltk_value_control(const std::string& _label, T& value, abst_control_provider* acp, int x, int y, int w, int h);
+	fltk_value_control(const std::string& _label, T& value, cgv::gui::abst_control_provider* acp, int x, int y, int w, int h);
 	/// destruct fltk value control
 	~fltk_value_control();
 	/// returns "fltk_value_control"

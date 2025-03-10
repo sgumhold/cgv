@@ -201,7 +201,7 @@ void color_map_legend::set_color_map(cgv::render::context& ctx, const cgv::rende
 
 	std::copy(data_8.begin(), data_8.begin() + 4 * resolution, data_8.begin() + 4 * resolution);
 
-	cgv::data::data_view dv = cgv::data::data_view(new cgv::data::data_format(resolution, 2u, TI_UINT8, cgv::data::CF_RGBA), data_8.data());
+	cgv::data::data_view dv = cgv::data::data_view(new cgv::data::data_format(resolution, 2u, cgv::type::info::TI_UINT8, cgv::data::CF_RGBA), data_8.data());
 
 	unsigned width = (unsigned)tex.get_width();
 

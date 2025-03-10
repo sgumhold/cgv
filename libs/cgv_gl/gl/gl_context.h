@@ -223,7 +223,7 @@ public:
 		data::data_view& dv, 
 		unsigned int x = 0, unsigned int y = 0, 
 		FrameBufferType buffer_type = FB_BACK,
-		TypeId type = type::info::TI_UINT8,
+		cgv::type::info::TypeId type = type::info::TI_UINT8,
 		data::ComponentFormat cf = data::CF_RGB,
 		int w = -1, int h = -1) override;
 	//@}

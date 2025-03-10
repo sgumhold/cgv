@@ -9,8 +9,8 @@
 #include <fltk/events.h>
 
 using namespace cgv::base;
-using namespace cgv::utils;
 using namespace cgv::gui;
+using namespace cgv::type;
 
 #ifdef WIN32
 #pragma warning (disable:4311)
@@ -250,9 +250,9 @@ std::string fltk_tree_group::get_property_declarations()
 	for (unsigned ci=0; ci<column_infos.size(); ++ci) {
 		decl += ";";
 		decl += "column_heading_";
-		decl += to_string(ci);
+		decl += cgv::utils::to_string(ci);
 		decl += ":string;column_width_";
-		decl += to_string(ci);
+		decl += cgv::utils::to_string(ci);
 		decl += ":uint32";
 	}
 	return decl;
