@@ -495,10 +495,10 @@ void TileManager::AddTilesToQueue(index_type index, std::set<index_type>& reques
 	if (tileData->valid) {
 		std::lock_guard<std::mutex> lockQueue(queue_lock);
 		queue_tiles.emplace(index, *tileData);
-
-		// Send the signal that the tile was downloaded
-		tile_downloaded();
 	}
+
+	// Send the signal that the tile was downloaded
+	tile_downloaded();
 	
 	std::lock_guard<std::mutex> lockRequest(request_lock);
 	requested_tiles.erase(index);
