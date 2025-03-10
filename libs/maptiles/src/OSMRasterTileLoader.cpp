@@ -46,7 +46,7 @@ void OSMRasterTileLoader::FetchTile()
 	while (((int)m_result.error() || GetHTTPStatus() != 200) && attempts < 4)
 	{
 		// Avoid making too many requests at the same time
-		std::this_thread::sleep_for(std::chrono::milliseconds(250));
+		std::this_thread::sleep_for(std::chrono::milliseconds(200));
 		m_result = client.Get(m_query);
 		attempts++;
 	}
