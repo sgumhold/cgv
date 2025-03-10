@@ -74,8 +74,8 @@ class MAPTILES_API TileManager
 
 	template <typename index_type, typename data_type, typename render_type>
 	void AddTiles(cgv::render::context& ctx, std::map<index_type, data_type>& queue_tiles,
-				  std::map<index_type, render_type>& cache_tiles,
-				  std::map<index_type, render_type>& active_tiles, std::mutex& queue_lock);
+				  std::map<index_type, render_type>& cache_tiles, std::map<index_type, render_type>& active_tiles,
+				  std::mutex& queue_lock, std::mutex& cache_lock);
 	void AddRasterTiles(cgv::render::context& ctx);
 	void AddTile3D(cgv::render::context& ctx);
 
@@ -109,6 +109,9 @@ class MAPTILES_API TileManager
 
 	mutable std::mutex m_MutexQueueRasterTiles;
 	mutable std::mutex m_MutexQueueTile3Ds;
+
+	mutable std::mutex mutex_cache_raster_tile;
+	mutable std::mutex mutex_cache_tile3D;
 
 	std::array<cgv::math::fvec<double, 4>, 6> frustum_planes;
 	cgv::math::fvec<double, 3> frustum_bbox_min, frustum_bbox_max;
