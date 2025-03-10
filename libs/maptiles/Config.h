@@ -44,7 +44,7 @@ struct GlobalConfig
 	bool FrustumBasedTileGeneration = false;
 
 	int MaxRasterTileRequestThreads = 10;
-	int MaxTile3DRequestThreads = 10;
+	int MaxTile3DRequestThreads = 4;
 
 	// The maximum distance in degrees at which a Render Tile will not be removed when the Render Cache is trimmed
 	double RasterTileRenderCacheTrimDistance = 0.04;
