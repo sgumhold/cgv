@@ -519,13 +519,14 @@ void TileManager::AddTile3DToQueue(Tile3DIndex index)
 template <typename index_type, typename data_type, typename render_type>
 void TileManager::AddTiles(cgv::render::context& ctx, std::map<index_type, data_type>& queue_tiles,
 						   std::map<index_type, render_type>& cache_tiles,
-						   std::map<index_type, render_type>& active_tiles, std::mutex& queue_lock)
+						   std::map<index_type, render_type>& active_tiles, std::mutex& queue_lock, std::mutex& cache_lock)
 {
 	std::lock_guard<std::mutex> lockQueue(queue_lock);
 	if (queue_tiles.empty()) {
 		return;
 	}
 
+	std::lock_guard<std::mutex> lock_cache(cache_lock);
 	while (!queue_tiles.empty()) {
 		auto& element = *(queue_tiles.begin());
 		render_type tile(ctx, element.second, config->ReferencePoint.lat, config->ReferencePoint.lon);
@@ -539,12 +540,12 @@ void TileManager::AddTiles(cgv::render::context& ctx, std::map<index_type, data_
 
 void TileManager::AddRasterTiles(cgv::render::context& ctx)
 {
-	AddTiles(ctx, queue_raster_tiles, raster_tile_cache, active_raster_tile, m_MutexQueueRasterTiles);
+	AddTiles(ctx, queue_raster_tiles, raster_tile_cache, active_raster_tile, m_MutexQueueRasterTiles, mutex_cache_raster_tile);
 }
 
 void TileManager::AddTile3D(cgv::render::context& ctx)
 {
-	AddTiles(ctx, queue_tile3Ds, tile3D_cache, active_tile3D, m_MutexQueueTile3Ds);
+	AddTiles(ctx, queue_tile3Ds, tile3D_cache, active_tile3D, m_MutexQueueTile3Ds, mutex_cache_tile3D);
 }
 
 void TileManager::TrimRenderCache() 
@@ -572,6 +573,9 @@ void TileManager::TrimRenderCache()
 			to_be_removed_tile3D.insert(element.first);
 	}
 
+	std::lock_guard<std::mutex> lock_raster_cache(mutex_cache_raster_tile);
+	std::lock_guard<std::mutex> lock_tile3D_cache(mutex_cache_tile3D);
+	
 	for (const auto& index : to_be_removed_raster_tile)
 		raster_tile_cache.erase(index);
 
@@ -607,6 +611,9 @@ void TileManager::ClearRenderCache()
 	std::cout << "Clearing Render Cache\n";
 	std::cout << "Raster Tile Cache Size: " << raster_tile_cache.size() << std::endl;
 	std::cout << "Tile3D Cache Size: " << tile3D_cache.size() << std::endl;
+
+	std::lock_guard<std::mutex> lock_raster_cache(mutex_cache_raster_tile);
+	std::lock_guard<std::mutex> lock_tile3D_cache(mutex_cache_tile3D);
 	raster_tile_cache.clear();
 	tile3D_cache.clear();
 }
