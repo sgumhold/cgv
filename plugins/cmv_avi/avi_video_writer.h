@@ -14,12 +14,10 @@
 #include <wingdi.h>
 #endif
 
-using namespace cgv::media::video;
-
 #include "lib_begin.h"
 
 /// abstract interface for video writers
-class CGV_API avi_video_writer : public abst_video_writer
+class CGV_API avi_video_writer : public cgv::media::video::abst_video_writer
 {
 protected:
 	PAVIFILE pfile;
@@ -47,7 +45,7 @@ public:
 	/// returns the type name of the chosen video writer implementation
 	std::string get_type_name() const;
 	/// construct a copy of the video writer
-	abst_video_writer* clone() const;
+	cgv::media::video::abst_video_writer* clone() const;
 	/// return a string containing a colon separated list of extensions that can be read with this video writer
 	const char* get_supported_extensions() const;
 	/// return a reference to the last error message

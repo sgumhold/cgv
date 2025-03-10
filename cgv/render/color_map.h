@@ -236,7 +236,7 @@ protected:
 			data_8[3 * i + 2] = static_cast<uint8_t>(255.0f * col.B());
 		}
 
-		cgv::data::data_view dv = cgv::data::data_view(new cgv::data::data_format(resolution, TI_UINT8, cgv::data::CF_RGB), data_8.data());
+		cgv::data::data_view dv = cgv::data::data_view(new cgv::data::data_format(resolution, cgv::type::info::TI_UINT8, cgv::data::CF_RGB), data_8.data());
 
 		unsigned width = (unsigned)tex.get_width();
 
@@ -267,7 +267,7 @@ protected:
 			data_8[4 * i + 3] = static_cast<uint8_t>(255.0f * col.alpha());
 		}
 
-		cgv::data::data_view dv = cgv::data::data_view(new cgv::data::data_format(resolution, TI_UINT8, cgv::data::CF_RGBA), data_8.data());
+		cgv::data::data_view dv = cgv::data::data_view(new cgv::data::data_format(resolution, cgv::type::info::TI_UINT8, cgv::data::CF_RGBA), data_8.data());
 
 		unsigned width = (unsigned)tex.get_width();
 
@@ -334,7 +334,7 @@ public:
 		std::vector<uint8_t> data(3 * resolution);
 
 		tex.destruct(ctx);
-		cgv::data::data_view dv = cgv::data::data_view(new cgv::data::data_format(resolution, TI_UINT8, cgv::data::CF_RGB), data.data());
+		cgv::data::data_view dv = cgv::data::data_view(new cgv::data::data_format(resolution, cgv::type::info::TI_UINT8, cgv::data::CF_RGB), data.data());
 		setup_texture(false);
 		return tex.create(ctx, dv, 0);
 	}

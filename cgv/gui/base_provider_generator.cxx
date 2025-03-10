@@ -181,7 +181,7 @@ bool base_provider_generator::parse_gui_file(const std::string& file_name)
 }
 
 /// check whether gui description is available for object and if yes generate a base_provider
-bool base_provider_generator::generate_object_gui(base_ptr object)
+bool base_provider_generator::generate_object_gui(cgv::base::base_ptr object)
 {
 	if (object->get_named()) {
 		const std::string& name = object->get_named()->get_name();
@@ -208,7 +208,7 @@ bool base_provider_generator::generate_object_gui(base_ptr object)
 }
 
 /// if object is registered that does not provide its own gui but matches type or name of a parsed gui definition, register a newly created base_provider for the object
-void base_provider_generator::register_object(base_ptr object, const std::string& options)
+void base_provider_generator::register_object(cgv::base::base_ptr object, const std::string& options)
 {
 	if (object->get_interface<provider>())
 		return;
@@ -218,7 +218,7 @@ void base_provider_generator::register_object(base_ptr object, const std::string
 
 
 /// remove also the base_provider of an object if created
-void base_provider_generator::unregister_object(base_ptr object, const std::string& options)
+void base_provider_generator::unregister_object(cgv::base::base_ptr object, const std::string& options)
 {
 	pvd_map_iter iter = providers.find(object);
 	if (iter == providers.end())
