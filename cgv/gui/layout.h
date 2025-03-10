@@ -12,8 +12,6 @@
 
 #include "lib_begin.h"
 
-using namespace cgv::base;
-
 namespace cgv {
 	namespace gui {
 
@@ -91,23 +89,23 @@ namespace cgv {
 			cgv::base::group_ptr get_container();
 	
 			// get a child from the container.
-			base_ptr get_child(unsigned int i);
+			cgv::base::base_ptr get_child(unsigned int i);
 
 			// get the size of a child
-			void get_child_size(const base_ptr child, int &width, int &height);
+			void get_child_size(const cgv::base::base_ptr child, int &width, int &height);
 			// set the size of a child
-			void set_child_size(const base_ptr child, int width, int height);
+			void set_child_size(const cgv::base::base_ptr child, int width, int height);
 
 			// get the default size of a child
-			void get_child_default_size(const base_ptr child, int &width, int &height);
+			void get_child_default_size(const cgv::base::base_ptr child, int &width, int &height);
 
 			// get the position of a child
-			void get_child_position(const base_ptr child, int &x, int &y);
+			void get_child_position(const cgv::base::base_ptr child, int &x, int &y);
 			// set the position of a child
-			void set_child_position(const base_ptr child, int x, int y);
+			void set_child_position(const cgv::base::base_ptr child, int x, int y);
 
 			// get the mimimum size of a child
-			void get_child_minimum_size(const base_ptr child, int &width, int &height);
+			void get_child_minimum_size(const cgv::base::base_ptr child, int &width, int &height);
 		};
 
 	/// ref counted pointer to layout

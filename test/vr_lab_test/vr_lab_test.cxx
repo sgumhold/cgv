@@ -24,7 +24,7 @@ class vr_lab_test :
 {
 	using vec3 = cgv::vec3;
 	using vec4 = cgv::vec4;
-	using mat34 = cgv::mat34;
+	using mat3x4 = cgv::mat3x4;
 	using mat4 = cgv::mat4;
 	using quat = cgv::quat;
 	using rgb = cgv::rgb;
@@ -62,7 +62,7 @@ public:
 	/// transform point with pose to lab coordinate system 
 	vec3 compute_lab_draw_position(const float* pose, const vec3& p)
 	{
-		return mat34(3, 4, pose) * vec4(p, 1.0f);
+		return mat3x4(3, 4, pose) * vec4(p, 1.0f);
 	}
 	std::vector<simple_object_ptr> objects;
 	simple_primitive_container_ptr container;

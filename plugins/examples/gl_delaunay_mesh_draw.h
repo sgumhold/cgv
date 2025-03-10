@@ -5,14 +5,10 @@
 #include <cgv/render/drawable.h>
 #include <cgv/gui/provider.h>
 
-using namespace cgv::base;
-using namespace cgv::gui;
-using namespace cgv::render;
-
 class gl_delaunay_mesh_draw :
-	public node,
-	public drawable,
-	public provider
+	public cgv::base::node,
+	public cgv::render::drawable,
+	public cgv::gui::provider
 {
 public:
 	/// the used coordinate type
@@ -101,11 +97,11 @@ public:
 	void draw_edge(unsigned int ci) const;	
 	void draw_triangle(unsigned int ci) const;
 	void compute_draw_data();
-	void draw_text_elements(context& ctx) const;
+	void draw_text_elements(cgv::render::context& ctx) const;
 	void draw_point_elements() const;
 	void draw_line_elements() const;
 	void clear_draw_data();
-	bool init(context& ctx);
-	void draw(context& ctx);
+	bool init(cgv::render::context& ctx);
+	void draw(cgv::render::context& ctx);
 	void create_gui();
 };

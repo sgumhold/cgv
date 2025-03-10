@@ -929,7 +929,7 @@ struct register_driver_and_object
 	{
 		vr_emulator* vr_emu_ptr = new vr_emulator();
 		vr::register_driver(vr_emu_ptr);
-		register_object(base_ptr(vr_emu_ptr), options);
+		register_object(cgv::base::base_ptr(vr_emu_ptr), options);
 	}
 };
 

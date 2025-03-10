@@ -2,9 +2,6 @@
 #include <memory.h>
 #include <cgv/type/variant.h>
 
-using namespace cgv::type;
-
-
 /**
 Outline of the algorithm:
 Input parameters: 
@@ -54,7 +51,6 @@ Method "update":
 	       - Method "repair_default_values":
 		       - Set the new minimum and default width for the table
 */
-
 
 namespace cgv {
 	namespace gui {
@@ -120,7 +116,7 @@ namespace cgv {
 			for (int r=0; r<nr_rows; r++) 
 				for (int c=0; c<nr_cols; c++) {
 
-					base_ptr cur_child = get_child(c+r*nr_cols);
+					cgv::base::base_ptr cur_child = get_child(c+r*nr_cols);
 
 					get_child_default_size(cur_child, opt_width, opt_height);
 					get_child_minimum_size(cur_child, min_width, min_height);
@@ -196,7 +192,7 @@ namespace cgv {
 				
 				for (int r=0; r<nr_rows; r++) {
 					for (int c=0; c<nr_cols; c++) {
-						base_ptr cur_child = get_child(c+r*nr_cols);
+						cgv::base::base_ptr cur_child = get_child(c+r*nr_cols);
 
 						get_child_default_size(cur_child, opt_cwidth, opt_cheight);
 						get_child_minimum_size(cur_child, min_cwidth, min_cheight);
@@ -255,7 +251,7 @@ namespace cgv {
 			for (int r=0; r<nr_rows; r++) {
 				pos_x = spacings.horizontal.border;
 				for (int c=0; c<nr_cols; c++) {
-					base_ptr cur_child = get_child(c+r*nr_cols);
+					cgv::base::base_ptr cur_child = get_child(c+r*nr_cols);
 
 					get_child_size(cur_child, opt_cwidth, opt_cheight);
 					chints = get_child_layout_hints(cur_child);
@@ -515,9 +511,9 @@ namespace cgv {
 				return true;
 
 			if (property == "cols")
-				nr_cols = variant<int32_type>::get(value_type, value_ptr);
+				nr_cols = cgv::type::variant<cgv::type::int32_type>::get(value_type, value_ptr);
 			else if (property == "rows") 
-				nr_rows = variant<int32_type>::get(value_type, value_ptr);
+				nr_rows = cgv::type::variant<cgv::type::int32_type>::get(value_type, value_ptr);
 			else
 				return false;
 
@@ -531,9 +527,9 @@ namespace cgv {
 				return true;
 
 			if (property == "cols") 
-				set_variant(nr_cols, value_type, value_ptr);
+				cgv::type::set_variant(nr_cols, value_type, value_ptr);
 			else if (property == "rows")
-				set_variant(nr_rows, value_type, value_ptr);
+				cgv::type::set_variant(nr_rows, value_type, value_ptr);
 			else
 				return false;
 

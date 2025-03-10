@@ -4,6 +4,7 @@
 #include <vector>
 
 using namespace cgv::base;
+using namespace cgv::data;
 using namespace cgv::utils;
 
 namespace cgv {
