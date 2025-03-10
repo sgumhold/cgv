@@ -14,7 +14,7 @@ void OSMDataLoader::FetchOSMWays()
 	m_query.append("/api/interpreter?data=");
 
 	// Construct the query
-	m_query.append("(way(");
+	m_query.append("(way[\"building\"](");
 	m_query.append(std::to_string(m_latMin));
 	m_query.append(",");
 	m_query.append(std::to_string(m_lonMin));
