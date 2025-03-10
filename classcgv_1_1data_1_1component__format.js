@@ -1,8 +1,8 @@
 var classcgv_1_1data_1_1component__format =
 [
     [ "component_format", "classcgv_1_1data_1_1component__format.html#a1594bbea3458a0a3f492a2daaff0fb1f", null ],
-    [ "component_format", "classcgv_1_1data_1_1component__format.html#ab627143ae801d4f45e1a1369c19a47e3", null ],
-    [ "component_format", "classcgv_1_1data_1_1component__format.html#a4a5f59e30f98fc0a1394c53955f5a22f", null ],
+    [ "component_format", "classcgv_1_1data_1_1component__format.html#a47d97540e26c7183845259b423c34fdf", null ],
+    [ "component_format", "classcgv_1_1data_1_1component__format.html#a129e1d3dff4624bc0b173a77f2cad80e", null ],
     [ "clear", "classcgv_1_1data_1_1component__format.html#a345a9bf6cbaf387c68dfe9375bea1268", null ],
     [ "empty", "classcgv_1_1data_1_1component__format.html#aff01411f7836bbb0136a844e889ba29f", null ],
     [ "extract_components", "classcgv_1_1data_1_1component__format.html#ab1bf535d236a38f0619cfe7dfa35ef9d", null ],
@@ -22,7 +22,7 @@ var classcgv_1_1data_1_1component__format =
     [ "set_component_format", "classcgv_1_1data_1_1component__format.html#aeeb352777bc7221d4b1ac4438c3cea43", null ],
     [ "set_component_format", "classcgv_1_1data_1_1component__format.html#a0f378a1f73f5a195fafcaa4382110cef", null ],
     [ "set_component_names", "classcgv_1_1data_1_1component__format.html#ae03a022b91e7dac24120479976803859", null ],
-    [ "set_component_type", "classcgv_1_1data_1_1component__format.html#a46f60c64ec253e9d188f4cd0dae20845", null ],
+    [ "set_component_type", "classcgv_1_1data_1_1component__format.html#a646a646275d5fda783a783c17ce3172e", null ],
     [ "set_components", "classcgv_1_1data_1_1component__format.html#ab6c76c071b0951591bc930b4a34f8db3", null ],
     [ "set_integer_interpretation", "classcgv_1_1data_1_1component__format.html#ab160e080f8db93e55bbb81e6fa46fd12", null ],
     [ "set_packing_info", "classcgv_1_1data_1_1component__format.html#ab6c6a7065549455b3bde094a37f9272b", null ],
@@ -30,6 +30,6 @@ var classcgv_1_1data_1_1component__format =
     [ "component_interpretation", "classcgv_1_1data_1_1component__format.html#af78d928aa7f866359efe0b29433923ee", null ],
     [ "component_positions", "classcgv_1_1data_1_1component__format.html#ad204d48451fc78dc33f1e619bf3d1fc1", null ],
     [ "component_string", "classcgv_1_1data_1_1component__format.html#a0836c9eabb76ca398584f7e686c2e6e9", null ],
-    [ "component_type", "classcgv_1_1data_1_1component__format.html#a1f2575b72320e2a189e82a0e77813758", null ],
+    [ "component_type", "classcgv_1_1data_1_1component__format.html#a31b5c0db2ca7f2a4744eca9822e6f909", null ],
     [ "last_error", "classcgv_1_1data_1_1component__format.html#a56f36f4a029ffc8de66cf3b014307117", null ]
 ];

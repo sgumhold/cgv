@@ -146,7 +146,7 @@ var classcgv_1_1render_1_1context =
     [ "put_bg_accum_color", "classcgv_1_1render_1_1context.html#acc13a514866104a12f075532101da5a8", null ],
     [ "put_bg_color", "classcgv_1_1render_1_1context.html#a3b4d3d1b055ec366434c03679d612968", null ],
     [ "put_cursor_coords", "classcgv_1_1render_1_1context.html#ac3bfc3b1ee68f7a06e06ddd8e7406368", null ],
-    [ "read_frame_buffer", "classcgv_1_1render_1_1context.html#a88aa49f624a197b3af2e79c0e8a8c8d4", null ],
+    [ "read_frame_buffer", "classcgv_1_1render_1_1context.html#a06f5134e5143835c274983662110b763", null ],
     [ "recover_from_external_frame_buffer_change", "classcgv_1_1render_1_1context.html#a8ba8202ab4c6663715df645dcf2fa1e1", null ],
     [ "recover_from_external_viewport_change", "classcgv_1_1render_1_1context.html#a1898d599a15fa7ddb4a154884161188f", null ],
     [ "recreate_context", "classcgv_1_1render_1_1context.html#a673dc13787eeb70f1e96d7cd1aa6b2f5", null ],

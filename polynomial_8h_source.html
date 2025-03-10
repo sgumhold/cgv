@@ -319,111 +319,102 @@ $(document).ready(function(){initNavTree('polynomial_8h_source.html',''); initRe
 <div class="line"><a id="l00238" name="l00238"></a><span class="lineno">  238</span><span class="keyword">template</span> &lt;<span class="keyword">typename</span> T&gt;</div>
 <div class="line"><a id="l00239" name="l00239"></a><span class="lineno">  239</span>vec&lt;T&gt; bernstein_polynomial(<span class="keywordtype">unsigned</span> j, <span class="keywordtype">unsigned</span> g)</div>
 <div class="line"><a id="l00240" name="l00240"></a><span class="lineno">  240</span>{</div>
-<div class="line"><a id="l00241" name="l00241"></a><span class="lineno">  241</span>    <span class="keyword">using namespace </span>cgv::math;</div>
-<div class="line"><a id="l00242" name="l00242"></a><span class="lineno">  242</span>    </div>
-<div class="line"><a id="l00243" name="l00243"></a><span class="lineno">  243</span>    <a class="code hl_class" href="classcgv_1_1math_1_1vec.html">vec&lt;T&gt;</a> p;</div>
-<div class="line"><a id="l00244" name="l00244"></a><span class="lineno">  244</span>    p.<a class="code hl_function" href="classcgv_1_1math_1_1vec.html#a773ce76abac576757dfd3122d5cdb565">zeros</a>(j+1);</div>
-<div class="line"><a id="l00245" name="l00245"></a><span class="lineno">  245</span>    p(0)=1.0;<span class="comment">// p = t^j </span></div>
-<div class="line"><a id="l00246" name="l00246"></a><span class="lineno">  246</span> </div>
-<div class="line"><a id="l00247" name="l00247"></a><span class="lineno">  247</span>    </div>
-<div class="line"><a id="l00248" name="l00248"></a><span class="lineno">  248</span>    <span class="keywordflow">for</span>(<span class="keywordtype">unsigned</span> i = 0; i &lt; g-j; i++)   </div>
-<div class="line"><a id="l00249" name="l00249"></a><span class="lineno">  249</span>        p = poly_mult(p, <a class="code hl_class" href="classcgv_1_1math_1_1vec.html">vec&lt;T&gt;</a>(-1.0,1));   <span class="comment">//p=p*(1-t) </span></div>
-<div class="line"><a id="l00250" name="l00250"></a><span class="lineno">  250</span>    </div>
-<div class="line"><a id="l00251" name="l00251"></a><span class="lineno">  251</span>    <span class="keywordflow">return</span> nchoosek(g,j)*p;</div>
-<div class="line"><a id="l00252" name="l00252"></a><span class="lineno">  252</span>}</div>
-<div class="line"><a id="l00253" name="l00253"></a><span class="lineno">  253</span> </div>
-<div class="line"><a id="l00254" name="l00254"></a><span class="lineno">  254</span> </div>
-<div class="line"><a id="l00255" name="l00255"></a><span class="lineno">  255</span><span class="comment">//returns lagrange basis polynomial</span></div>
-<div class="line"><a id="l00256" name="l00256"></a><span class="lineno">  256</span><span class="keyword">template</span> &lt;<span class="keyword">typename</span> T&gt;</div>
-<div class="line"><a id="l00257" name="l00257"></a><span class="lineno">  257</span><a class="code hl_class" href="classcgv_1_1math_1_1vec.html">vec&lt;T&gt;</a> lagrange_basis_polynomial(<span class="keywordtype">unsigned</span> i, <span class="keyword">const</span> <a class="code hl_class" href="classcgv_1_1math_1_1vec.html">vec&lt;T&gt;</a>&amp; u)</div>
-<div class="line"><a id="l00258" name="l00258"></a><span class="lineno">  258</span>{</div>
-<div class="line"><a id="l00259" name="l00259"></a><span class="lineno">  259</span>    <span class="keyword">using namespace </span>cgv::math;</div>
-<div class="line"><a id="l00260" name="l00260"></a><span class="lineno">  260</span>    </div>
-<div class="line"><a id="l00261" name="l00261"></a><span class="lineno">  261</span>    <span class="comment">//polynomial p = 1</span></div>
-<div class="line"><a id="l00262" name="l00262"></a><span class="lineno">  262</span>    <a class="code hl_class" href="classcgv_1_1math_1_1vec.html">vec&lt;T&gt;</a> p(1);</div>
-<div class="line"><a id="l00263" name="l00263"></a><span class="lineno">  263</span>    p(0)=1.0;   </div>
-<div class="line"><a id="l00264" name="l00264"></a><span class="lineno">  264</span> </div>
-<div class="line"><a id="l00265" name="l00265"></a><span class="lineno">  265</span>    <span class="keywordtype">unsigned</span> g = u.<a class="code hl_function" href="classcgv_1_1math_1_1vec.html#a5d6a97e9f2e2fa0d3ab722da1be2e8cc">size</a>()-1;</div>
-<div class="line"><a id="l00266" name="l00266"></a><span class="lineno">  266</span> </div>
-<div class="line"><a id="l00267" name="l00267"></a><span class="lineno">  267</span>    <span class="keywordflow">for</span>(<span class="keywordtype">unsigned</span> j = 0; j &lt;= g; j++)</div>
-<div class="line"><a id="l00268" name="l00268"></a><span class="lineno">  268</span>    {</div>
-<div class="line"><a id="l00269" name="l00269"></a><span class="lineno">  269</span>        <span class="keywordflow">if</span>(i == j) <span class="keywordflow">continue</span>;    </div>
-<div class="line"><a id="l00270" name="l00270"></a><span class="lineno">  270</span>        p = poly_mult(p, <a class="code hl_class" href="classcgv_1_1math_1_1vec.html">vec&lt;T&gt;</a>(1.0,-u(j))) / (u(i)-u(j));      </div>
-<div class="line"><a id="l00271" name="l00271"></a><span class="lineno">  271</span>    }</div>
-<div class="line"><a id="l00272" name="l00272"></a><span class="lineno">  272</span>    <span class="keywordflow">return</span> p;</div>
-<div class="line"><a id="l00273" name="l00273"></a><span class="lineno">  273</span>}</div>
-<div class="line"><a id="l00274" name="l00274"></a><span class="lineno">  274</span> </div>
-<div class="line"><a id="l00275" name="l00275"></a><span class="lineno">  275</span> </div>
-<div class="line"><a id="l00276" name="l00276"></a><span class="lineno">  276</span><span class="keyword">template</span> &lt;<span class="keyword">typename</span> T&gt;</div>
-<div class="line"><a id="l00277" name="l00277"></a><span class="lineno">  277</span><a class="code hl_class" href="classcgv_1_1math_1_1vec.html">vec&lt;T&gt;</a> newton_basis_polynomial(<span class="keywordtype">unsigned</span> i, <span class="keyword">const</span> <a class="code hl_class" href="classcgv_1_1math_1_1vec.html">vec&lt;T&gt;</a>&amp; u)</div>
-<div class="line"><a id="l00278" name="l00278"></a><span class="lineno">  278</span>{</div>
-<div class="line"><a id="l00279" name="l00279"></a><span class="lineno">  279</span>    <span class="keyword">using namespace </span>cgv::math;</div>
-<div class="line"><a id="l00280" name="l00280"></a><span class="lineno">  280</span>    </div>
-<div class="line"><a id="l00281" name="l00281"></a><span class="lineno">  281</span>    <span class="comment">//polynomial p = 1</span></div>
-<div class="line"><a id="l00282" name="l00282"></a><span class="lineno">  282</span>    <a class="code hl_class" href="classcgv_1_1math_1_1vec.html">vec&lt;T&gt;</a> p(1);</div>
-<div class="line"><a id="l00283" name="l00283"></a><span class="lineno">  283</span>    p(0)=1.0;   </div>
-<div class="line"><a id="l00284" name="l00284"></a><span class="lineno">  284</span> </div>
-<div class="line"><a id="l00285" name="l00285"></a><span class="lineno">  285</span>    <span class="keywordtype">unsigned</span> g = u.<a class="code hl_function" href="classcgv_1_1math_1_1vec.html#a5d6a97e9f2e2fa0d3ab722da1be2e8cc">size</a>()-1;</div>
-<div class="line"><a id="l00286" name="l00286"></a><span class="lineno">  286</span> </div>
-<div class="line"><a id="l00287" name="l00287"></a><span class="lineno">  287</span>    <span class="keywordflow">for</span>(<span class="keywordtype">unsigned</span> j = 0; j &lt;= g; j++)</div>
-<div class="line"><a id="l00288" name="l00288"></a><span class="lineno">  288</span>    {</div>
-<div class="line"><a id="l00289" name="l00289"></a><span class="lineno">  289</span>        </div>
-<div class="line"><a id="l00290" name="l00290"></a><span class="lineno">  290</span>        p = poly_mult(p, <a class="code hl_class" href="classcgv_1_1math_1_1vec.html">vec&lt;T&gt;</a>(1.0,-u(j)));        </div>
-<div class="line"><a id="l00291" name="l00291"></a><span class="lineno">  291</span>    }</div>
-<div class="line"><a id="l00292" name="l00292"></a><span class="lineno">  292</span>    <span class="keywordflow">return</span> p;</div>
-<div class="line"><a id="l00293" name="l00293"></a><span class="lineno">  293</span>}</div>
-<div class="line"><a id="l00294" name="l00294"></a><span class="lineno">  294</span> </div>
-<div class="line"><a id="l00295" name="l00295"></a><span class="lineno">  295</span> </div>
-<div class="line"><a id="l00296" name="l00296"></a><span class="lineno">  296</span><span class="comment">//returns the vandermonde matrix which can be used for fitting </span></div>
-<div class="line"><a id="l00297" name="l00297"></a><span class="lineno">  297</span><span class="comment">//polynomials (for large order polynomials use orthogonal basis instead)</span></div>
-<div class="line"><a id="l00298" name="l00298"></a><span class="lineno">  298</span><span class="comment">//x = [ 1 2 3 4] -&gt; V(i,j) x(i)^(n-j) V is n x n with n = x.size()</span></div>
+<div class="line"><a id="l00241" name="l00241"></a><span class="lineno">  241</span>    vec&lt;T&gt; p;</div>
+<div class="line"><a id="l00242" name="l00242"></a><span class="lineno">  242</span>    p.zeros(j+1);</div>
+<div class="line"><a id="l00243" name="l00243"></a><span class="lineno">  243</span>    p(0)=1.0;<span class="comment">// p = t^j </span></div>
+<div class="line"><a id="l00244" name="l00244"></a><span class="lineno">  244</span> </div>
+<div class="line"><a id="l00245" name="l00245"></a><span class="lineno">  245</span>    </div>
+<div class="line"><a id="l00246" name="l00246"></a><span class="lineno">  246</span>    <span class="keywordflow">for</span>(<span class="keywordtype">unsigned</span> i = 0; i &lt; g-j; i++)   </div>
+<div class="line"><a id="l00247" name="l00247"></a><span class="lineno">  247</span>        p = poly_mult(p, vec&lt;T&gt;(-1.0,1));   <span class="comment">//p=p*(1-t) </span></div>
+<div class="line"><a id="l00248" name="l00248"></a><span class="lineno">  248</span>    </div>
+<div class="line"><a id="l00249" name="l00249"></a><span class="lineno">  249</span>    <span class="keywordflow">return</span> nchoosek(g,j)*p;</div>
+<div class="line"><a id="l00250" name="l00250"></a><span class="lineno">  250</span>}</div>
+<div class="line"><a id="l00251" name="l00251"></a><span class="lineno">  251</span> </div>
+<div class="line"><a id="l00252" name="l00252"></a><span class="lineno">  252</span> </div>
+<div class="line"><a id="l00253" name="l00253"></a><span class="lineno">  253</span><span class="comment">//returns lagrange basis polynomial</span></div>
+<div class="line"><a id="l00254" name="l00254"></a><span class="lineno">  254</span><span class="keyword">template</span> &lt;<span class="keyword">typename</span> T&gt;</div>
+<div class="line"><a id="l00255" name="l00255"></a><span class="lineno">  255</span>vec&lt;T&gt; lagrange_basis_polynomial(<span class="keywordtype">unsigned</span> i, <span class="keyword">const</span> vec&lt;T&gt;&amp; u)</div>
+<div class="line"><a id="l00256" name="l00256"></a><span class="lineno">  256</span>{</div>
+<div class="line"><a id="l00257" name="l00257"></a><span class="lineno">  257</span>    <span class="comment">//polynomial p = 1</span></div>
+<div class="line"><a id="l00258" name="l00258"></a><span class="lineno">  258</span>    vec&lt;T&gt; p(1);</div>
+<div class="line"><a id="l00259" name="l00259"></a><span class="lineno">  259</span>    p(0)=1.0;   </div>
+<div class="line"><a id="l00260" name="l00260"></a><span class="lineno">  260</span> </div>
+<div class="line"><a id="l00261" name="l00261"></a><span class="lineno">  261</span>    <span class="keywordtype">unsigned</span> g = u.size()-1;</div>
+<div class="line"><a id="l00262" name="l00262"></a><span class="lineno">  262</span> </div>
+<div class="line"><a id="l00263" name="l00263"></a><span class="lineno">  263</span>    <span class="keywordflow">for</span>(<span class="keywordtype">unsigned</span> j = 0; j &lt;= g; j++)</div>
+<div class="line"><a id="l00264" name="l00264"></a><span class="lineno">  264</span>    {</div>
+<div class="line"><a id="l00265" name="l00265"></a><span class="lineno">  265</span>        <span class="keywordflow">if</span>(i == j) <span class="keywordflow">continue</span>;    </div>
+<div class="line"><a id="l00266" name="l00266"></a><span class="lineno">  266</span>        p = poly_mult(p, vec&lt;T&gt;(1.0,-u(j))) / (u(i)-u(j));      </div>
+<div class="line"><a id="l00267" name="l00267"></a><span class="lineno">  267</span>    }</div>
+<div class="line"><a id="l00268" name="l00268"></a><span class="lineno">  268</span>    <span class="keywordflow">return</span> p;</div>
+<div class="line"><a id="l00269" name="l00269"></a><span class="lineno">  269</span>}</div>
+<div class="line"><a id="l00270" name="l00270"></a><span class="lineno">  270</span> </div>
+<div class="line"><a id="l00271" name="l00271"></a><span class="lineno">  271</span> </div>
+<div class="line"><a id="l00272" name="l00272"></a><span class="lineno">  272</span><span class="keyword">template</span> &lt;<span class="keyword">typename</span> T&gt;</div>
+<div class="line"><a id="l00273" name="l00273"></a><span class="lineno">  273</span>vec&lt;T&gt; newton_basis_polynomial(<span class="keywordtype">unsigned</span> i, <span class="keyword">const</span> vec&lt;T&gt;&amp; u)</div>
+<div class="line"><a id="l00274" name="l00274"></a><span class="lineno">  274</span>{</div>
+<div class="line"><a id="l00275" name="l00275"></a><span class="lineno">  275</span>    <span class="comment">//polynomial p = 1</span></div>
+<div class="line"><a id="l00276" name="l00276"></a><span class="lineno">  276</span>    vec&lt;T&gt; p(1);</div>
+<div class="line"><a id="l00277" name="l00277"></a><span class="lineno">  277</span>    p(0)=1.0;   </div>
+<div class="line"><a id="l00278" name="l00278"></a><span class="lineno">  278</span> </div>
+<div class="line"><a id="l00279" name="l00279"></a><span class="lineno">  279</span>    <span class="keywordtype">unsigned</span> g = u.size()-1;</div>
+<div class="line"><a id="l00280" name="l00280"></a><span class="lineno">  280</span> </div>
+<div class="line"><a id="l00281" name="l00281"></a><span class="lineno">  281</span>    <span class="keywordflow">for</span>(<span class="keywordtype">unsigned</span> j = 0; j &lt;= g; j++)</div>
+<div class="line"><a id="l00282" name="l00282"></a><span class="lineno">  282</span>    {</div>
+<div class="line"><a id="l00283" name="l00283"></a><span class="lineno">  283</span>        </div>
+<div class="line"><a id="l00284" name="l00284"></a><span class="lineno">  284</span>        p = poly_mult(p, vec&lt;T&gt;(1.0,-u(j)));        </div>
+<div class="line"><a id="l00285" name="l00285"></a><span class="lineno">  285</span>    }</div>
+<div class="line"><a id="l00286" name="l00286"></a><span class="lineno">  286</span>    <span class="keywordflow">return</span> p;</div>
+<div class="line"><a id="l00287" name="l00287"></a><span class="lineno">  287</span>}</div>
+<div class="line"><a id="l00288" name="l00288"></a><span class="lineno">  288</span> </div>
+<div class="line"><a id="l00289" name="l00289"></a><span class="lineno">  289</span> </div>
+<div class="line"><a id="l00290" name="l00290"></a><span class="lineno">  290</span><span class="comment">//returns the vandermonde matrix which can be used for fitting </span></div>
+<div class="line"><a id="l00291" name="l00291"></a><span class="lineno">  291</span><span class="comment">//polynomials (for large order polynomials use orthogonal basis instead)</span></div>
+<div class="line"><a id="l00292" name="l00292"></a><span class="lineno">  292</span><span class="comment">//x = [ 1 2 3 4] -&gt; V(i,j) x(i)^(n-j) V is n x n with n = x.size()</span></div>
+<div class="line"><a id="l00293" name="l00293"></a><span class="lineno">  293</span> </div>
+<div class="line"><a id="l00294" name="l00294"></a><span class="lineno">  294</span><span class="keyword">template</span> &lt;<span class="keyword">typename</span> T&gt;</div>
+<div class="line"><a id="l00295" name="l00295"></a><span class="lineno">  295</span>mat&lt;T&gt; vander(<span class="keyword">const</span> vec&lt;T&gt;&amp; x)</div>
+<div class="line"><a id="l00296" name="l00296"></a><span class="lineno">  296</span>{</div>
+<div class="line"><a id="l00297" name="l00297"></a><span class="lineno">  297</span>    <span class="keywordflow">return</span> vander(x.size()-1,x);</div>
+<div class="line"><a id="l00298" name="l00298"></a><span class="lineno">  298</span>}</div>
 <div class="line"><a id="l00299" name="l00299"></a><span class="lineno">  299</span> </div>
-<div class="line"><a id="l00300" name="l00300"></a><span class="lineno">  300</span><span class="keyword">template</span> &lt;<span class="keyword">typename</span> T&gt;</div>
-<div class="line"><a id="l00301" name="l00301"></a><span class="lineno">  301</span><a class="code hl_class" href="classcgv_1_1math_1_1mat.html">mat&lt;T&gt;</a> vander(<span class="keyword">const</span> <a class="code hl_class" href="classcgv_1_1math_1_1vec.html">vec&lt;T&gt;</a>&amp; x)</div>
-<div class="line"><a id="l00302" name="l00302"></a><span class="lineno">  302</span>{</div>
-<div class="line"><a id="l00303" name="l00303"></a><span class="lineno">  303</span>    <span class="keywordflow">return</span> vander(x.<a class="code hl_function" href="classcgv_1_1math_1_1vec.html#a5d6a97e9f2e2fa0d3ab722da1be2e8cc">size</a>()-1,x);</div>
-<div class="line"><a id="l00304" name="l00304"></a><span class="lineno">  304</span>}</div>
-<div class="line"><a id="l00305" name="l00305"></a><span class="lineno">  305</span> </div>
-<div class="line"><a id="l00306" name="l00306"></a><span class="lineno">  306</span><span class="comment">//returns vandermonde matrix </span></div>
-<div class="line"><a id="l00307" name="l00307"></a><span class="lineno">  307</span><span class="keyword">template</span> &lt;<span class="keyword">typename</span> T&gt;</div>
-<div class="line"><a id="l00308" name="l00308"></a><span class="lineno">  308</span><a class="code hl_class" href="classcgv_1_1math_1_1mat.html">mat&lt;T&gt;</a> vander(<span class="keywordtype">unsigned</span> degree,<span class="keyword">const</span> <a class="code hl_class" href="classcgv_1_1math_1_1vec.html">vec&lt;T&gt;</a>&amp; x)</div>
-<div class="line"><a id="l00309" name="l00309"></a><span class="lineno">  309</span>{</div>
-<div class="line"><a id="l00310" name="l00310"></a><span class="lineno">  310</span>    assert(x.<a class="code hl_function" href="classcgv_1_1math_1_1vec.html#a5d6a97e9f2e2fa0d3ab722da1be2e8cc">size</a>() &gt;= 1);</div>
-<div class="line"><a id="l00311" name="l00311"></a><span class="lineno">  311</span>    <span class="keywordtype">unsigned</span> n = x.<a class="code hl_function" href="classcgv_1_1math_1_1vec.html#a5d6a97e9f2e2fa0d3ab722da1be2e8cc">size</a>();</div>
-<div class="line"><a id="l00312" name="l00312"></a><span class="lineno">  312</span>    <a class="code hl_class" href="classcgv_1_1math_1_1mat.html">cgv::math::mat&lt;T&gt;</a> V(n,degree+1);</div>
-<div class="line"><a id="l00313" name="l00313"></a><span class="lineno">  313</span>    </div>
-<div class="line"><a id="l00314" name="l00314"></a><span class="lineno">  314</span>    <span class="keywordflow">for</span>(<span class="keywordtype">unsigned</span> i = 0; i &lt; n; i++)</div>
-<div class="line"><a id="l00315" name="l00315"></a><span class="lineno">  315</span>    {</div>
-<div class="line"><a id="l00316" name="l00316"></a><span class="lineno">  316</span>        V(i,degree) = (T)1;</div>
-<div class="line"><a id="l00317" name="l00317"></a><span class="lineno">  317</span>        <span class="keywordflow">for</span>(<span class="keywordtype">int</span> j = (<span class="keywordtype">int</span>)degree-1; j&gt;= 0; j--)</div>
-<div class="line"><a id="l00318" name="l00318"></a><span class="lineno">  318</span>            V(i,j)=V(i,j+1)*x(i);</div>
-<div class="line"><a id="l00319" name="l00319"></a><span class="lineno">  319</span>    }</div>
-<div class="line"><a id="l00320" name="l00320"></a><span class="lineno">  320</span> </div>
-<div class="line"><a id="l00321" name="l00321"></a><span class="lineno">  321</span>    <span class="keywordflow">return</span>  V;</div>
-<div class="line"><a id="l00322" name="l00322"></a><span class="lineno">  322</span>}</div>
-<div class="line"><a id="l00323" name="l00323"></a><span class="lineno">  323</span> </div>
-<div class="line"><a id="l00324" name="l00324"></a><span class="lineno">  324</span><span class="comment">//fit a polynomial of degree n into data such that E = sum_i ||p(X(i)) - Y(i)||² is minimized</span></div>
-<div class="line"><a id="l00325" name="l00325"></a><span class="lineno">  325</span><span class="comment">//uses vandermonde matrix and svd solver </span></div>
-<div class="line"><a id="l00326" name="l00326"></a><span class="lineno">  326</span><span class="comment">//large degrees can be numerically instable keep n &lt; 10</span></div>
-<div class="line"><a id="l00327" name="l00327"></a><span class="lineno">  327</span><span class="comment">//otherwise use orthogonal basis for fitting</span></div>
-<div class="line"><a id="l00328" name="l00328"></a><span class="lineno">  328</span><span class="keyword">template</span> &lt;<span class="keyword">typename</span> T&gt;</div>
-<div class="line"><a id="l00329" name="l00329"></a><span class="lineno">  329</span><a class="code hl_class" href="classcgv_1_1math_1_1vec.html">vec&lt;T&gt;</a> poly_fit(<span class="keywordtype">unsigned</span> n,<span class="keyword">const</span> <a class="code hl_class" href="classcgv_1_1math_1_1vec.html">vec&lt;T&gt;</a>&amp;X, <span class="keyword">const</span> <a class="code hl_class" href="classcgv_1_1math_1_1vec.html">vec&lt;T&gt;</a>&amp;Y)</div>
-<div class="line"><a id="l00330" name="l00330"></a><span class="lineno">  330</span>{</div>
-<div class="line"><a id="l00331" name="l00331"></a><span class="lineno">  331</span>    <a class="code hl_class" href="classcgv_1_1math_1_1mat.html">mat&lt;T&gt;</a> V = cgv::math::vander(n,X);</div>
-<div class="line"><a id="l00332" name="l00332"></a><span class="lineno">  332</span>    <a class="code hl_class" href="classcgv_1_1math_1_1mat.html">mat&lt;T&gt;</a> A;</div>
-<div class="line"><a id="l00333" name="l00333"></a><span class="lineno">  333</span>    <a class="code hl_class" href="classcgv_1_1math_1_1vec.html">vec&lt;T&gt;</a> b,p;</div>
-<div class="line"><a id="l00334" name="l00334"></a><span class="lineno">  334</span>    AtA(V,A);</div>
-<div class="line"><a id="l00335" name="l00335"></a><span class="lineno">  335</span>    Atx(V,Y,b);</div>
-<div class="line"><a id="l00336" name="l00336"></a><span class="lineno">  336</span>    svd_solve(A,b,p);</div>
-<div class="line"><a id="l00337" name="l00337"></a><span class="lineno">  337</span>    <span class="keywordflow">return</span> p;</div>
-<div class="line"><a id="l00338" name="l00338"></a><span class="lineno">  338</span>}</div>
-<div class="line"><a id="l00339" name="l00339"></a><span class="lineno">  339</span> </div>
-<div class="line"><a id="l00340" name="l00340"></a><span class="lineno">  340</span>}</div>
-<div class="line"><a id="l00341" name="l00341"></a><span class="lineno">  341</span>}</div>
+<div class="line"><a id="l00300" name="l00300"></a><span class="lineno">  300</span><span class="comment">//returns vandermonde matrix </span></div>
+<div class="line"><a id="l00301" name="l00301"></a><span class="lineno">  301</span><span class="keyword">template</span> &lt;<span class="keyword">typename</span> T&gt;</div>
+<div class="line"><a id="l00302" name="l00302"></a><span class="lineno">  302</span>mat&lt;T&gt; vander(<span class="keywordtype">unsigned</span> degree,<span class="keyword">const</span> vec&lt;T&gt;&amp; x)</div>
+<div class="line"><a id="l00303" name="l00303"></a><span class="lineno">  303</span>{</div>
+<div class="line"><a id="l00304" name="l00304"></a><span class="lineno">  304</span>    assert(x.size() &gt;= 1);</div>
+<div class="line"><a id="l00305" name="l00305"></a><span class="lineno">  305</span>    <span class="keywordtype">unsigned</span> n = x.size();</div>
+<div class="line"><a id="l00306" name="l00306"></a><span class="lineno">  306</span>    <a class="code hl_class" href="classcgv_1_1math_1_1mat.html">cgv::math::mat&lt;T&gt;</a> V(n,degree+1);</div>
+<div class="line"><a id="l00307" name="l00307"></a><span class="lineno">  307</span>    </div>
+<div class="line"><a id="l00308" name="l00308"></a><span class="lineno">  308</span>    <span class="keywordflow">for</span>(<span class="keywordtype">unsigned</span> i = 0; i &lt; n; i++)</div>
+<div class="line"><a id="l00309" name="l00309"></a><span class="lineno">  309</span>    {</div>
+<div class="line"><a id="l00310" name="l00310"></a><span class="lineno">  310</span>        V(i,degree) = (T)1;</div>
+<div class="line"><a id="l00311" name="l00311"></a><span class="lineno">  311</span>        <span class="keywordflow">for</span>(<span class="keywordtype">int</span> j = (<span class="keywordtype">int</span>)degree-1; j&gt;= 0; j--)</div>
+<div class="line"><a id="l00312" name="l00312"></a><span class="lineno">  312</span>            V(i,j)=V(i,j+1)*x(i);</div>
+<div class="line"><a id="l00313" name="l00313"></a><span class="lineno">  313</span>    }</div>
+<div class="line"><a id="l00314" name="l00314"></a><span class="lineno">  314</span> </div>
+<div class="line"><a id="l00315" name="l00315"></a><span class="lineno">  315</span>    <span class="keywordflow">return</span>  V;</div>
+<div class="line"><a id="l00316" name="l00316"></a><span class="lineno">  316</span>}</div>
+<div class="line"><a id="l00317" name="l00317"></a><span class="lineno">  317</span> </div>
+<div class="line"><a id="l00318" name="l00318"></a><span class="lineno">  318</span><span class="comment">//fit a polynomial of degree n into data such that E = sum_i ||p(X(i)) - Y(i)||² is minimized</span></div>
+<div class="line"><a id="l00319" name="l00319"></a><span class="lineno">  319</span><span class="comment">//uses vandermonde matrix and svd solver </span></div>
+<div class="line"><a id="l00320" name="l00320"></a><span class="lineno">  320</span><span class="comment">//large degrees can be numerically instable keep n &lt; 10</span></div>
+<div class="line"><a id="l00321" name="l00321"></a><span class="lineno">  321</span><span class="comment">//otherwise use orthogonal basis for fitting</span></div>
+<div class="line"><a id="l00322" name="l00322"></a><span class="lineno">  322</span><span class="keyword">template</span> &lt;<span class="keyword">typename</span> T&gt;</div>
+<div class="line"><a id="l00323" name="l00323"></a><span class="lineno">  323</span>vec&lt;T&gt; poly_fit(<span class="keywordtype">unsigned</span> n,<span class="keyword">const</span> vec&lt;T&gt;&amp;X, <span class="keyword">const</span> vec&lt;T&gt;&amp;Y)</div>
+<div class="line"><a id="l00324" name="l00324"></a><span class="lineno">  324</span>{</div>
+<div class="line"><a id="l00325" name="l00325"></a><span class="lineno">  325</span>    mat&lt;T&gt; V = cgv::math::vander(n,X);</div>
+<div class="line"><a id="l00326" name="l00326"></a><span class="lineno">  326</span>    mat&lt;T&gt; A;</div>
+<div class="line"><a id="l00327" name="l00327"></a><span class="lineno">  327</span>    vec&lt;T&gt; b,p;</div>
+<div class="line"><a id="l00328" name="l00328"></a><span class="lineno">  328</span>    AtA(V,A);</div>
+<div class="line"><a id="l00329" name="l00329"></a><span class="lineno">  329</span>    Atx(V,Y,b);</div>
+<div class="line"><a id="l00330" name="l00330"></a><span class="lineno">  330</span>    svd_solve(A,b,p);</div>
+<div class="line"><a id="l00331" name="l00331"></a><span class="lineno">  331</span>    <span class="keywordflow">return</span> p;</div>
+<div class="line"><a id="l00332" name="l00332"></a><span class="lineno">  332</span>}</div>
+<div class="line"><a id="l00333" name="l00333"></a><span class="lineno">  333</span> </div>
+<div class="line"><a id="l00334" name="l00334"></a><span class="lineno">  334</span>}</div>
+<div class="line"><a id="l00335" name="l00335"></a><span class="lineno">  335</span>}</div>
 <div class="ttc" id="aclasscgv_1_1math_1_1mat_html"><div class="ttname"><a href="classcgv_1_1math_1_1mat.html">cgv::math::mat</a></div><div class="ttdoc">A matrix type (full column major storage) The matrix can be loaded directly into OpenGL without need ...</div><div class="ttdef"><b>Definition</b> <a href="mat_8h_source.html#l00207">mat.h:208</a></div></div>
-<div class="ttc" id="aclasscgv_1_1math_1_1vec_html"><div class="ttname"><a href="classcgv_1_1math_1_1vec.html">cgv::math::vec</a></div><div class="ttdoc">A column vector class.</div><div class="ttdef"><b>Definition</b> <a href="vec_8h_source.html#l00027">vec.h:28</a></div></div>
-<div class="ttc" id="aclasscgv_1_1math_1_1vec_html_a5d6a97e9f2e2fa0d3ab722da1be2e8cc"><div class="ttname"><a href="classcgv_1_1math_1_1vec.html#a5d6a97e9f2e2fa0d3ab722da1be2e8cc">cgv::math::vec::size</a></div><div class="ttdeci">unsigned size() const</div><div class="ttdoc">number of elements</div><div class="ttdef"><b>Definition</b> <a href="vec_8h_source.html#l00059">vec.h:59</a></div></div>
-<div class="ttc" id="aclasscgv_1_1math_1_1vec_html_a773ce76abac576757dfd3122d5cdb565"><div class="ttname"><a href="classcgv_1_1math_1_1vec.html#a773ce76abac576757dfd3122d5cdb565">cgv::math::vec::zeros</a></div><div class="ttdeci">void zeros()</div><div class="ttdoc">fill the vector with zeros</div><div class="ttdef"><b>Definition</b> <a href="vec_8h_source.html#l00470">vec.h:470</a></div></div>
 <div class="ttc" id="anamespacecgv_html"><div class="ttname"><a href="namespacecgv.html">cgv</a></div><div class="ttdoc">the cgv namespace</div><div class="ttdef"><b>Definition</b> <a href="print_8h_source.html#l00011">print.h:11</a></div></div>
 </div><!-- fragment --></div><!-- contents -->
 </div><!-- doc-content -->

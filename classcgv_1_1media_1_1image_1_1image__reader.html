@@ -117,9 +117,9 @@ Inheritance diagram for cgv::media::image::image_reader:</div>
 <table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="pub-methods" name="pub-methods"></a>
 Public Member Functions</h2></td></tr>
-<tr class="memitem:abe89ffd5db0943e20d19bc3494e25e88" id="r_abe89ffd5db0943e20d19bc3494e25e88"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcgv_1_1media_1_1image_1_1image__reader.html#abe89ffd5db0943e20d19bc3494e25e88">image_reader</a> (<a class="el" href="classcgv_1_1data_1_1data__format.html">data_format</a> &amp;file_format, std::vector&lt; <a class="el" href="classcgv_1_1data_1_1data__format.html">data_format</a> &gt; *<a class="el" href="classcgv_1_1media_1_1image_1_1image__reader.html#aa4b99d1b652a7329368dc5c5f81fb367">palette_formats</a>=0)</td></tr>
-<tr class="memdesc:abe89ffd5db0943e20d19bc3494e25e88"><td class="mdescLeft">&#160;</td><td class="mdescRight">construct an image reader from a reference to a data format instance in which the format of the image file will be stored after a call to the open method.  <br /></td></tr>
-<tr class="separator:abe89ffd5db0943e20d19bc3494e25e88"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a734918da06230878556784d65e3857f7" id="r_a734918da06230878556784d65e3857f7"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcgv_1_1media_1_1image_1_1image__reader.html#a734918da06230878556784d65e3857f7">image_reader</a> (<a class="el" href="classcgv_1_1data_1_1data__format.html">cgv::data::data_format</a> &amp;file_format, std::vector&lt; <a class="el" href="classcgv_1_1data_1_1data__format.html">cgv::data::data_format</a> &gt; *<a class="el" href="classcgv_1_1media_1_1image_1_1image__reader.html#a055dc9e984b63c9dc0d62da078abb378">palette_formats</a>=0)</td></tr>
+<tr class="memdesc:a734918da06230878556784d65e3857f7"><td class="mdescLeft">&#160;</td><td class="mdescRight">construct an image reader from a reference to a data format instance in which the format of the image file will be stored after a call to the open method.  <br /></td></tr>
+<tr class="separator:a734918da06230878556784d65e3857f7"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ab06b7ffbf23bf2af4914da0b8db85ce6" id="r_ab06b7ffbf23bf2af4914da0b8db85ce6"><td class="memItemLeft" align="right" valign="top">std::string&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcgv_1_1media_1_1image_1_1image__reader.html#ab06b7ffbf23bf2af4914da0b8db85ce6">get_type_name</a> () <a class="el" href="classcgv_1_1base_1_1single__method__action.html">const</a></td></tr>
 <tr class="memdesc:ab06b7ffbf23bf2af4914da0b8db85ce6"><td class="mdescLeft">&#160;</td><td class="mdescRight">overload to return the type name of this object  <br /></td></tr>
 <tr class="separator:ab06b7ffbf23bf2af4914da0b8db85ce6"><td class="memSeparator" colspan="2">&#160;</td></tr>
@@ -129,16 +129,16 @@ Public Member Functions</h2></td></tr>
 <tr class="memitem:a2e38c3c10b14f18522b7052416422cc5" id="r_a2e38c3c10b14f18522b7052416422cc5"><td class="memItemLeft" align="right" valign="top"><a class="el" href="classcgv_1_1base_1_1single__method__action.html">const</a> std::string &amp;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcgv_1_1media_1_1image_1_1image__reader.html#a2e38c3c10b14f18522b7052416422cc5">get_last_error</a> () <a class="el" href="classcgv_1_1base_1_1single__method__action.html">const</a></td></tr>
 <tr class="memdesc:a2e38c3c10b14f18522b7052416422cc5"><td class="mdescLeft">&#160;</td><td class="mdescRight">return a reference to the last error message  <br /></td></tr>
 <tr class="separator:a2e38c3c10b14f18522b7052416422cc5"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:ac871d242183818bcacb62613a6907611" id="r_ac871d242183818bcacb62613a6907611"><td class="memItemLeft" align="right" valign="top"><a class="el" href="classcgv_1_1base_1_1single__method__action.html">bool</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcgv_1_1media_1_1image_1_1image__reader.html#ac871d242183818bcacb62613a6907611">read_image</a> (<a class="el" href="classcgv_1_1base_1_1single__method__action.html">const</a> std::string &amp;file_name, <a class="el" href="classcgv_1_1data_1_1data__view.html">data_view</a> &amp;dv, std::vector&lt; <a class="el" href="classcgv_1_1data_1_1data__view.html">data_view</a> &gt; *<a class="el" href="classcgv_1_1base_1_1single__method__action.html">palettes</a>=0)</td></tr>
-<tr class="memdesc:ac871d242183818bcacb62613a6907611"><td class="mdescLeft">&#160;</td><td class="mdescRight">read the whole image into the given data view.  <br /></td></tr>
-<tr class="separator:ac871d242183818bcacb62613a6907611"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a46a96f9ca692b4ce82e776aabdce3351" id="r_a46a96f9ca692b4ce82e776aabdce3351"><td class="memItemLeft" align="right" valign="top"><a class="el" href="classcgv_1_1base_1_1single__method__action.html">bool</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcgv_1_1media_1_1image_1_1image__reader.html#a46a96f9ca692b4ce82e776aabdce3351">read_image</a> (<a class="el" href="classcgv_1_1base_1_1single__method__action.html">const</a> std::string &amp;file_name, <a class="el" href="classcgv_1_1base_1_1single__method__action.html">const</a> <a class="el" href="classcgv_1_1data_1_1data__view.html">data_view</a> &amp;dv, <a class="el" href="classcgv_1_1base_1_1single__method__action.html">const</a> std::vector&lt; <a class="el" href="classcgv_1_1data_1_1data__view.html">data_view</a> &gt; *<a class="el" href="classcgv_1_1base_1_1single__method__action.html">palettes</a>=0)</td></tr>
-<tr class="memdesc:a46a96f9ca692b4ce82e776aabdce3351"><td class="mdescLeft">&#160;</td><td class="mdescRight">read the image into the given data view that must have the correct format and an allocated data pointer.  <br /></td></tr>
-<tr class="separator:a46a96f9ca692b4ce82e776aabdce3351"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a3d07c14186dd39b2baa9e136d24ca796" id="r_a3d07c14186dd39b2baa9e136d24ca796"><td class="memItemLeft" align="right" valign="top"><a class="el" href="classcgv_1_1base_1_1single__method__action.html">bool</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcgv_1_1media_1_1image_1_1image__reader.html#a3d07c14186dd39b2baa9e136d24ca796">read_image</a> (<a class="el" href="classcgv_1_1base_1_1single__method__action.html">const</a> std::string &amp;file_name, <a class="el" href="classcgv_1_1data_1_1data__view.html">cgv::data::data_view</a> &amp;dv, std::vector&lt; <a class="el" href="classcgv_1_1data_1_1data__view.html">cgv::data::data_view</a> &gt; *<a class="el" href="classcgv_1_1base_1_1single__method__action.html">palettes</a>=0)</td></tr>
+<tr class="memdesc:a3d07c14186dd39b2baa9e136d24ca796"><td class="mdescLeft">&#160;</td><td class="mdescRight">read the whole image into the given data view.  <br /></td></tr>
+<tr class="separator:a3d07c14186dd39b2baa9e136d24ca796"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a5c2d6f6d13107498d40c8806c63bc440" id="r_a5c2d6f6d13107498d40c8806c63bc440"><td class="memItemLeft" align="right" valign="top"><a class="el" href="classcgv_1_1base_1_1single__method__action.html">bool</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcgv_1_1media_1_1image_1_1image__reader.html#a5c2d6f6d13107498d40c8806c63bc440">read_image</a> (<a class="el" href="classcgv_1_1base_1_1single__method__action.html">const</a> std::string &amp;file_name, <a class="el" href="classcgv_1_1base_1_1single__method__action.html">const</a> <a class="el" href="classcgv_1_1data_1_1data__view.html">cgv::data::data_view</a> &amp;dv, <a class="el" href="classcgv_1_1base_1_1single__method__action.html">const</a> std::vector&lt; <a class="el" href="classcgv_1_1data_1_1data__view.html">cgv::data::data_view</a> &gt; *<a class="el" href="classcgv_1_1base_1_1single__method__action.html">palettes</a>=0)</td></tr>
+<tr class="memdesc:a5c2d6f6d13107498d40c8806c63bc440"><td class="mdescLeft">&#160;</td><td class="mdescRight">read the image into the given data view that must have the correct format and an allocated data pointer.  <br /></td></tr>
+<tr class="separator:a5c2d6f6d13107498d40c8806c63bc440"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:aa7e432a1d23297e019079b5dbd83e8db" id="r_aa7e432a1d23297e019079b5dbd83e8db"><td class="memItemLeft" align="right" valign="top"><a class="el" href="classcgv_1_1base_1_1single__method__action.html">bool</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcgv_1_1media_1_1image_1_1image__reader.html#aa7e432a1d23297e019079b5dbd83e8db">open</a> (<a class="el" href="classcgv_1_1base_1_1single__method__action.html">const</a> std::string &amp;file_name)</td></tr>
 <tr class="memdesc:aa7e432a1d23297e019079b5dbd83e8db"><td class="mdescLeft">&#160;</td><td class="mdescRight">open the file and read the image header in order to determine the data format of the file, which is stored in the data format specified in the constructor  <br /></td></tr>
 <tr class="separator:aa7e432a1d23297e019079b5dbd83e8db"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a97b29aba3062357f7a1c8315f428b559" id="r_a97b29aba3062357f7a1c8315f428b559"><td class="memItemLeft" align="right" valign="top"><a class="el" href="classcgv_1_1data_1_1data__format.html">data_format</a> *&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcgv_1_1media_1_1image_1_1image__reader.html#a97b29aba3062357f7a1c8315f428b559">get_file_format</a> () <a class="el" href="classcgv_1_1base_1_1single__method__action.html">const</a></td></tr>
+<tr class="memitem:a97b29aba3062357f7a1c8315f428b559" id="r_a97b29aba3062357f7a1c8315f428b559"><td class="memItemLeft" align="right" valign="top"><a class="el" href="classcgv_1_1data_1_1data__format.html">cgv::data::data_format</a> *&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcgv_1_1media_1_1image_1_1image__reader.html#a97b29aba3062357f7a1c8315f428b559">get_file_format</a> () <a class="el" href="classcgv_1_1base_1_1single__method__action.html">const</a></td></tr>
 <tr class="memdesc:a97b29aba3062357f7a1c8315f428b559"><td class="mdescLeft">&#160;</td><td class="mdescRight">return the data format of the image file  <br /></td></tr>
 <tr class="separator:a97b29aba3062357f7a1c8315f428b559"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a297ce1fc2f75d1328e0ddd1be2d8917b" id="r_a297ce1fc2f75d1328e0ddd1be2d8917b"><td class="memItemLeft" align="right" valign="top"><a class="el" href="classcgv_1_1base_1_1single__method__action.html">bool</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcgv_1_1media_1_1image_1_1image__reader.html#a297ce1fc2f75d1328e0ddd1be2d8917b">supports_multiple_images</a> () <a class="el" href="classcgv_1_1base_1_1single__method__action.html">const</a></td></tr>
@@ -156,27 +156,27 @@ Public Member Functions</h2></td></tr>
 <tr class="memitem:ac0be98c3744dfdaf12936e1f2cba9292" id="r_ac0be98c3744dfdaf12936e1f2cba9292"><td class="memItemLeft" align="right" valign="top"><a class="el" href="classcgv_1_1base_1_1single__method__action.html">bool</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcgv_1_1media_1_1image_1_1image__reader.html#ac0be98c3744dfdaf12936e1f2cba9292">seek_image</a> (<a class="el" href="classcgv_1_1base_1_1single__method__action.html">unsigned</a> idx)</td></tr>
 <tr class="memdesc:ac0be98c3744dfdaf12936e1f2cba9292"><td class="mdescLeft">&#160;</td><td class="mdescRight">jump to a specific image and return whether this was successful  <br /></td></tr>
 <tr class="separator:ac0be98c3744dfdaf12936e1f2cba9292"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a5f47f588ac70c2c9f7fb733d6bd9cff0" id="r_a5f47f588ac70c2c9f7fb733d6bd9cff0"><td class="memItemLeft" align="right" valign="top"><a class="el" href="classcgv_1_1base_1_1single__method__action.html">bool</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcgv_1_1media_1_1image_1_1image__reader.html#a5f47f588ac70c2c9f7fb733d6bd9cff0">read_palette</a> (<a class="el" href="classcgv_1_1base_1_1single__method__action.html">unsigned</a> <a class="el" href="classcgv_1_1base_1_1single__method__action.html">int</a> <a class="el" href="classcgv_1_1base_1_1single__method__action.html">i</a>, <a class="el" href="classcgv_1_1data_1_1data__view.html">data_view</a> &amp;dv)</td></tr>
-<tr class="memdesc:a5f47f588ac70c2c9f7fb733d6bd9cff0"><td class="mdescLeft">&#160;</td><td class="mdescRight">read the i-th palette in case of a paletted file format, and handle the data view as in the read_image method the standard implementation returns false  <br /></td></tr>
-<tr class="separator:a5f47f588ac70c2c9f7fb733d6bd9cff0"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a601be4379303d149dc43d3c382e92dcf" id="r_a601be4379303d149dc43d3c382e92dcf"><td class="memItemLeft" align="right" valign="top"><a class="el" href="classcgv_1_1base_1_1single__method__action.html">bool</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcgv_1_1media_1_1image_1_1image__reader.html#a601be4379303d149dc43d3c382e92dcf">read_palette</a> (<a class="el" href="classcgv_1_1base_1_1single__method__action.html">unsigned</a> <a class="el" href="classcgv_1_1base_1_1single__method__action.html">int</a> <a class="el" href="classcgv_1_1base_1_1single__method__action.html">i</a>, <a class="el" href="classcgv_1_1base_1_1single__method__action.html">const</a> <a class="el" href="classcgv_1_1data_1_1data__view.html">data_view</a> &amp;dv)</td></tr>
-<tr class="memdesc:a601be4379303d149dc43d3c382e92dcf"><td class="mdescLeft">&#160;</td><td class="mdescRight">read the i-th palette in case of a paletted file format, and handle the data view as in the read_image method the standard implementation returns false  <br /></td></tr>
-<tr class="separator:a601be4379303d149dc43d3c382e92dcf"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a89556aba40d089a57393ff09d0c24450" id="r_a89556aba40d089a57393ff09d0c24450"><td class="memItemLeft" align="right" valign="top"><a class="el" href="classcgv_1_1base_1_1single__method__action.html">bool</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcgv_1_1media_1_1image_1_1image__reader.html#a89556aba40d089a57393ff09d0c24450">read_palette</a> (<a class="el" href="classcgv_1_1base_1_1single__method__action.html">unsigned</a> <a class="el" href="classcgv_1_1base_1_1single__method__action.html">int</a> <a class="el" href="classcgv_1_1base_1_1single__method__action.html">i</a>, <a class="el" href="classcgv_1_1data_1_1data__view.html">cgv::data::data_view</a> &amp;dv)</td></tr>
+<tr class="memdesc:a89556aba40d089a57393ff09d0c24450"><td class="mdescLeft">&#160;</td><td class="mdescRight">read the i-th palette in case of a paletted file format, and handle the data view as in the read_image method the standard implementation returns false  <br /></td></tr>
+<tr class="separator:a89556aba40d089a57393ff09d0c24450"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a2436cf67cfb6de2ef201881b7a8770c1" id="r_a2436cf67cfb6de2ef201881b7a8770c1"><td class="memItemLeft" align="right" valign="top"><a class="el" href="classcgv_1_1base_1_1single__method__action.html">bool</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcgv_1_1media_1_1image_1_1image__reader.html#a2436cf67cfb6de2ef201881b7a8770c1">read_palette</a> (<a class="el" href="classcgv_1_1base_1_1single__method__action.html">unsigned</a> <a class="el" href="classcgv_1_1base_1_1single__method__action.html">int</a> <a class="el" href="classcgv_1_1base_1_1single__method__action.html">i</a>, <a class="el" href="classcgv_1_1base_1_1single__method__action.html">const</a> <a class="el" href="classcgv_1_1data_1_1data__view.html">cgv::data::data_view</a> &amp;dv)</td></tr>
+<tr class="memdesc:a2436cf67cfb6de2ef201881b7a8770c1"><td class="mdescLeft">&#160;</td><td class="mdescRight">read the i-th palette in case of a paletted file format, and handle the data view as in the read_image method the standard implementation returns false  <br /></td></tr>
+<tr class="separator:a2436cf67cfb6de2ef201881b7a8770c1"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:af29e189b8a2da2409e9b9ba119108f7b" id="r_af29e189b8a2da2409e9b9ba119108f7b"><td class="memItemLeft" align="right" valign="top"><a class="el" href="classcgv_1_1base_1_1single__method__action.html">bool</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcgv_1_1media_1_1image_1_1image__reader.html#af29e189b8a2da2409e9b9ba119108f7b">supports_per_line_read</a> () <a class="el" href="classcgv_1_1base_1_1single__method__action.html">const</a></td></tr>
 <tr class="memdesc:af29e189b8a2da2409e9b9ba119108f7b"><td class="mdescLeft">&#160;</td><td class="mdescRight">return whether the reader supports per line reading (only valid after successfully opening an image file)  <br /></td></tr>
 <tr class="separator:af29e189b8a2da2409e9b9ba119108f7b"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:af4ba97597b2df4857888b006b695ea92" id="r_af4ba97597b2df4857888b006b695ea92"><td class="memItemLeft" align="right" valign="top"><a class="el" href="classcgv_1_1base_1_1single__method__action.html">bool</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcgv_1_1media_1_1image_1_1image__reader.html#af4ba97597b2df4857888b006b695ea92">read_line</a> (<a class="el" href="classcgv_1_1data_1_1data__view.html">data_view</a> &amp;dv)</td></tr>
-<tr class="memdesc:af4ba97597b2df4857888b006b695ea92"><td class="mdescLeft">&#160;</td><td class="mdescRight">read the next line into the given data view.  <br /></td></tr>
-<tr class="separator:af4ba97597b2df4857888b006b695ea92"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a265b84b8171b89cba0747f99e9e50058" id="r_a265b84b8171b89cba0747f99e9e50058"><td class="memItemLeft" align="right" valign="top"><a class="el" href="classcgv_1_1base_1_1single__method__action.html">bool</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcgv_1_1media_1_1image_1_1image__reader.html#a265b84b8171b89cba0747f99e9e50058">read_line</a> (<a class="el" href="classcgv_1_1base_1_1single__method__action.html">const</a> <a class="el" href="classcgv_1_1data_1_1data__view.html">data_view</a> &amp;dv)</td></tr>
-<tr class="memdesc:a265b84b8171b89cba0747f99e9e50058"><td class="mdescLeft">&#160;</td><td class="mdescRight">read line into a preallocated data view of the correct format  <br /></td></tr>
-<tr class="separator:a265b84b8171b89cba0747f99e9e50058"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:abadd93d051939e353e40d674718ebf1b" id="r_abadd93d051939e353e40d674718ebf1b"><td class="memItemLeft" align="right" valign="top"><a class="el" href="classcgv_1_1base_1_1single__method__action.html">bool</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcgv_1_1media_1_1image_1_1image__reader.html#abadd93d051939e353e40d674718ebf1b">read_image</a> (<a class="el" href="classcgv_1_1data_1_1data__view.html">data_view</a> &amp;dv, std::vector&lt; <a class="el" href="classcgv_1_1data_1_1data__view.html">data_view</a> &gt; *<a class="el" href="classcgv_1_1base_1_1single__method__action.html">palettes</a>=0)</td></tr>
-<tr class="memdesc:abadd93d051939e353e40d674718ebf1b"><td class="mdescLeft">&#160;</td><td class="mdescRight">read an opened image data and palettes into a data views that are optionally allocated.  <br /></td></tr>
-<tr class="separator:abadd93d051939e353e40d674718ebf1b"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a2c76b7a71ad26a1f621ad209d980fc57" id="r_a2c76b7a71ad26a1f621ad209d980fc57"><td class="memItemLeft" align="right" valign="top"><a class="el" href="classcgv_1_1base_1_1single__method__action.html">bool</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcgv_1_1media_1_1image_1_1image__reader.html#a2c76b7a71ad26a1f621ad209d980fc57">read_image</a> (<a class="el" href="classcgv_1_1base_1_1single__method__action.html">const</a> <a class="el" href="classcgv_1_1data_1_1data__view.html">data_view</a> &amp;dv, <a class="el" href="classcgv_1_1base_1_1single__method__action.html">const</a> std::vector&lt; <a class="el" href="classcgv_1_1data_1_1data__view.html">data_view</a> &gt; *<a class="el" href="classcgv_1_1base_1_1single__method__action.html">palettes</a>=0)</td></tr>
-<tr class="memdesc:a2c76b7a71ad26a1f621ad209d980fc57"><td class="mdescLeft">&#160;</td><td class="mdescRight">read image to a data_view with the correct format and an allocated pointer  <br /></td></tr>
-<tr class="separator:a2c76b7a71ad26a1f621ad209d980fc57"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a6872e915694654476a43ccbba7c4227c" id="r_a6872e915694654476a43ccbba7c4227c"><td class="memItemLeft" align="right" valign="top"><a class="el" href="classcgv_1_1base_1_1single__method__action.html">bool</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcgv_1_1media_1_1image_1_1image__reader.html#a6872e915694654476a43ccbba7c4227c">read_line</a> (<a class="el" href="classcgv_1_1data_1_1data__view.html">cgv::data::data_view</a> &amp;dv)</td></tr>
+<tr class="memdesc:a6872e915694654476a43ccbba7c4227c"><td class="mdescLeft">&#160;</td><td class="mdescRight">read the next line into the given data view.  <br /></td></tr>
+<tr class="separator:a6872e915694654476a43ccbba7c4227c"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:af96549ce258cc44fd520897cc27ec14c" id="r_af96549ce258cc44fd520897cc27ec14c"><td class="memItemLeft" align="right" valign="top"><a class="el" href="classcgv_1_1base_1_1single__method__action.html">bool</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcgv_1_1media_1_1image_1_1image__reader.html#af96549ce258cc44fd520897cc27ec14c">read_line</a> (<a class="el" href="classcgv_1_1base_1_1single__method__action.html">const</a> <a class="el" href="classcgv_1_1data_1_1data__view.html">cgv::data::data_view</a> &amp;dv)</td></tr>
+<tr class="memdesc:af96549ce258cc44fd520897cc27ec14c"><td class="mdescLeft">&#160;</td><td class="mdescRight">read line into a preallocated data view of the correct format  <br /></td></tr>
+<tr class="separator:af96549ce258cc44fd520897cc27ec14c"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a0691ed26841d365aa6742f80c1122e64" id="r_a0691ed26841d365aa6742f80c1122e64"><td class="memItemLeft" align="right" valign="top"><a class="el" href="classcgv_1_1base_1_1single__method__action.html">bool</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcgv_1_1media_1_1image_1_1image__reader.html#a0691ed26841d365aa6742f80c1122e64">read_image</a> (<a class="el" href="classcgv_1_1data_1_1data__view.html">cgv::data::data_view</a> &amp;dv, std::vector&lt; <a class="el" href="classcgv_1_1data_1_1data__view.html">cgv::data::data_view</a> &gt; *<a class="el" href="classcgv_1_1base_1_1single__method__action.html">palettes</a>=0)</td></tr>
+<tr class="memdesc:a0691ed26841d365aa6742f80c1122e64"><td class="mdescLeft">&#160;</td><td class="mdescRight">read an opened image data and palettes into a data views that are optionally allocated.  <br /></td></tr>
+<tr class="separator:a0691ed26841d365aa6742f80c1122e64"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a503aa6da682fdd2626a30b2b634e56d2" id="r_a503aa6da682fdd2626a30b2b634e56d2"><td class="memItemLeft" align="right" valign="top"><a class="el" href="classcgv_1_1base_1_1single__method__action.html">bool</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcgv_1_1media_1_1image_1_1image__reader.html#a503aa6da682fdd2626a30b2b634e56d2">read_image</a> (<a class="el" href="classcgv_1_1base_1_1single__method__action.html">const</a> <a class="el" href="classcgv_1_1data_1_1data__view.html">cgv::data::data_view</a> &amp;dv, <a class="el" href="classcgv_1_1base_1_1single__method__action.html">const</a> std::vector&lt; <a class="el" href="classcgv_1_1data_1_1data__view.html">cgv::data::data_view</a> &gt; *<a class="el" href="classcgv_1_1base_1_1single__method__action.html">palettes</a>=0)</td></tr>
+<tr class="memdesc:a503aa6da682fdd2626a30b2b634e56d2"><td class="mdescLeft">&#160;</td><td class="mdescRight">read image to a data_view with the correct format and an allocated pointer  <br /></td></tr>
+<tr class="separator:a503aa6da682fdd2626a30b2b634e56d2"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a6dcb64349ead610304e739e09997099e" id="r_a6dcb64349ead610304e739e09997099e"><td class="memItemLeft" align="right" valign="top"><a class="el" href="classcgv_1_1base_1_1single__method__action.html">bool</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcgv_1_1media_1_1image_1_1image__reader.html#a6dcb64349ead610304e739e09997099e">close</a> ()</td></tr>
 <tr class="memdesc:a6dcb64349ead610304e739e09997099e"><td class="mdescLeft">&#160;</td><td class="mdescRight">close the image file  <br /></td></tr>
 <tr class="separator:a6dcb64349ead610304e739e09997099e"><td class="memSeparator" colspan="2">&#160;</td></tr>
@@ -304,12 +304,12 @@ Protected Member Functions</h2></td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="pro-attribs" name="pro-attribs"></a>
 Protected Attributes</h2></td></tr>
-<tr class="memitem:a9ddc1db8060bc3db63e484d33d6d92d7" id="r_a9ddc1db8060bc3db63e484d33d6d92d7"><td class="memItemLeft" align="right" valign="top"><a class="el" href="classcgv_1_1data_1_1data__format.html">data_format</a> *&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcgv_1_1media_1_1image_1_1image__reader.html#a9ddc1db8060bc3db63e484d33d6d92d7">file_format_ptr</a></td></tr>
-<tr class="memdesc:a9ddc1db8060bc3db63e484d33d6d92d7"><td class="mdescLeft">&#160;</td><td class="mdescRight">store the data format  <br /></td></tr>
-<tr class="separator:a9ddc1db8060bc3db63e484d33d6d92d7"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:aa4b99d1b652a7329368dc5c5f81fb367" id="r_aa4b99d1b652a7329368dc5c5f81fb367"><td class="memItemLeft" align="right" valign="top">std::vector&lt; <a class="el" href="classcgv_1_1data_1_1data__format.html">data_format</a> &gt; *&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcgv_1_1media_1_1image_1_1image__reader.html#aa4b99d1b652a7329368dc5c5f81fb367">palette_formats</a></td></tr>
-<tr class="memdesc:aa4b99d1b652a7329368dc5c5f81fb367"><td class="mdescLeft">&#160;</td><td class="mdescRight">store a pointer to the palette format vector  <br /></td></tr>
-<tr class="separator:aa4b99d1b652a7329368dc5c5f81fb367"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a1966343fd08e27eb973ea2d37508547b" id="r_a1966343fd08e27eb973ea2d37508547b"><td class="memItemLeft" align="right" valign="top"><a class="el" href="classcgv_1_1data_1_1data__format.html">cgv::data::data_format</a> *&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcgv_1_1media_1_1image_1_1image__reader.html#a1966343fd08e27eb973ea2d37508547b">file_format_ptr</a></td></tr>
+<tr class="memdesc:a1966343fd08e27eb973ea2d37508547b"><td class="mdescLeft">&#160;</td><td class="mdescRight">store the data format  <br /></td></tr>
+<tr class="separator:a1966343fd08e27eb973ea2d37508547b"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a055dc9e984b63c9dc0d62da078abb378" id="r_a055dc9e984b63c9dc0d62da078abb378"><td class="memItemLeft" align="right" valign="top">std::vector&lt; <a class="el" href="classcgv_1_1data_1_1data__format.html">cgv::data::data_format</a> &gt; *&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcgv_1_1media_1_1image_1_1image__reader.html#a055dc9e984b63c9dc0d62da078abb378">palette_formats</a></td></tr>
+<tr class="memdesc:a055dc9e984b63c9dc0d62da078abb378"><td class="mdescLeft">&#160;</td><td class="mdescRight">store a pointer to the palette format vector  <br /></td></tr>
+<tr class="separator:a055dc9e984b63c9dc0d62da078abb378"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ab041be814b1f7e6b1320809bf9b189e1" id="r_ab041be814b1f7e6b1320809bf9b189e1"><td class="memItemLeft" align="right" valign="top"><a class="el" href="classcgv_1_1media_1_1image_1_1abst__image__reader.html">abst_image_reader</a> *&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcgv_1_1media_1_1image_1_1image__reader.html#ab041be814b1f7e6b1320809bf9b189e1">rd</a></td></tr>
 <tr class="memdesc:ab041be814b1f7e6b1320809bf9b189e1"><td class="mdescLeft">&#160;</td><td class="mdescRight">store a pointer to the chosen reader  <br /></td></tr>
 <tr class="separator:ab041be814b1f7e6b1320809bf9b189e1"><td class="memSeparator" colspan="2">&#160;</td></tr>
@@ -329,10 +329,10 @@ Additional Inherited Members</h2></td></tr>
 <div class="textblock"><p>the image reader chooses a specific reader automatically based on the extension of the given file name. </p>
 <p>In the open method it sets the format passed by reference to the reader in the constructor. </p>
 
-<p class="definition">Definition at line <a class="el" href="image__reader_8h_source.html#l00063">63</a> of file <a class="el" href="image__reader_8h_source.html">image_reader.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="image__reader_8h_source.html#l00061">61</a> of file <a class="el" href="image__reader_8h_source.html">image_reader.h</a>.</p>
 </div><h2 class="groupheader">Constructor &amp; Destructor Documentation</h2>
-<a id="abe89ffd5db0943e20d19bc3494e25e88" name="abe89ffd5db0943e20d19bc3494e25e88"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#abe89ffd5db0943e20d19bc3494e25e88">&#9670;&#160;</a></span>image_reader()</h2>
+<a id="a734918da06230878556784d65e3857f7" name="a734918da06230878556784d65e3857f7"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a734918da06230878556784d65e3857f7">&#9670;&#160;</a></span>image_reader()</h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -340,13 +340,13 @@ Additional Inherited Members</h2></td></tr>
         <tr>
           <td class="memname">cgv::media::image::image_reader::image_reader </td>
           <td>(</td>
-          <td class="paramtype"><a class="el" href="classcgv_1_1data_1_1data__format.html">data_format</a> &amp;&#160;</td>
+          <td class="paramtype"><a class="el" href="classcgv_1_1data_1_1data__format.html">cgv::data::data_format</a> &amp;&#160;</td>
           <td class="paramname"><em>file_format</em>, </td>
         </tr>
         <tr>
           <td class="paramkey"></td>
           <td></td>
-          <td class="paramtype">std::vector&lt; <a class="el" href="classcgv_1_1data_1_1data__format.html">data_format</a> &gt; *&#160;</td>
+          <td class="paramtype">std::vector&lt; <a class="el" href="classcgv_1_1data_1_1data__format.html">cgv::data::data_format</a> &gt; *&#160;</td>
           <td class="paramname"><em>palette_formats</em> = <code>0</code>&#160;</td>
         </tr>
         <tr>
@@ -361,7 +361,7 @@ Additional Inherited Members</h2></td></tr>
 <p>construct an image <a class="el" href="classcgv_1_1media_1_1image_1_1image__reader.html" title="the image reader chooses a specific reader automatically based on the extension of the given file nam...">image_reader</a> from a file name</p>
 <p>If also images with palettes should be handled, provide also a vector of data formats for the palettes. By default no vector is provided such that the reader converts paletted image formats to non paletted ones. In case palettes are used, the components in the file_format will be '0', '1', ... for the components that reference the i-th palette. </p>
 
-<p class="definition">Definition at line <a class="el" href="image__reader_8cxx_source.html#l00078">78</a> of file <a class="el" href="image__reader_8cxx_source.html">image_reader.cxx</a>.</p>
+<p class="definition">Definition at line <a class="el" href="image__reader_8cxx_source.html#l00079">79</a> of file <a class="el" href="image__reader_8cxx_source.html">image_reader.cxx</a>.</p>
 
 </div>
 </div>
@@ -388,7 +388,7 @@ Additional Inherited Members</h2></td></tr>
 </table>
 </div><div class="memdoc">
 
-<p class="definition">Definition at line <a class="el" href="image__reader_8h_source.html#l00085">85</a> of file <a class="el" href="image__reader_8h_source.html">image_reader.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="image__reader_8h_source.html#l00083">83</a> of file <a class="el" href="image__reader_8h_source.html">image_reader.h</a>.</p>
 
 </div>
 </div>
@@ -410,11 +410,11 @@ Additional Inherited Members</h2></td></tr>
 
 <p>close the image file </p>
 
-<p class="definition">Definition at line <a class="el" href="image__reader_8cxx_source.html#l00295">295</a> of file <a class="el" href="image__reader_8cxx_source.html">image_reader.cxx</a>.</p>
+<p class="definition">Definition at line <a class="el" href="image__reader_8cxx_source.html#l00296">296</a> of file <a class="el" href="image__reader_8cxx_source.html">image_reader.cxx</a>.</p>
 
-<p class="reference">References <a class="el" href="classcgv_1_1media_1_1image_1_1abst__image__reader.html#aecaaabb840c707876734a1fad58ce1cb">cgv::media::image::abst_image_reader::close()</a>, and <a class="el" href="image__reader_8h_source.html#l00071">rd</a>.</p>
+<p class="reference">References <a class="el" href="classcgv_1_1media_1_1image_1_1abst__image__reader.html#aecaaabb840c707876734a1fad58ce1cb">cgv::media::image::abst_image_reader::close()</a>, and <a class="el" href="image__reader_8h_source.html#l00069">rd</a>.</p>
 
-<p class="reference">Referenced by <a class="el" href="gltf__support_8cxx_source.html#l00134">cgv::render::build_render_info()</a>, <a class="el" href="image__reader_8cxx_source.html#l00130">read_image()</a>, and <a class="el" href="image__reader_8cxx_source.html#l00120">read_image()</a>.</p>
+<p class="reference">Referenced by <a class="el" href="gltf__support_8cxx_source.html#l00134">cgv::render::build_render_info()</a>, <a class="el" href="image__reader_8cxx_source.html#l00121">read_image()</a>, and <a class="el" href="image__reader_8cxx_source.html#l00131">read_image()</a>.</p>
 
 </div>
 </div>
@@ -443,9 +443,9 @@ Additional Inherited Members</h2></td></tr>
 
 <p>use this to generate a file_open_dialog or file_save_dialog </p>
 
-<p class="definition">Definition at line <a class="el" href="image__reader_8cxx_source.html#l00100">100</a> of file <a class="el" href="image__reader_8cxx_source.html">image_reader.cxx</a>.</p>
+<p class="definition">Definition at line <a class="el" href="image__reader_8cxx_source.html#l00101">101</a> of file <a class="el" href="image__reader_8cxx_source.html">image_reader.cxx</a>.</p>
 
-<p class="reference">References <a class="el" href="image__reader_8cxx_source.html#l00084">get_supported_extensions()</a>, and <a class="el" href="scan_8cxx_source.html#l00159">cgv::utils::replace()</a>.</p>
+<p class="reference">References <a class="el" href="image__reader_8cxx_source.html#l00085">get_supported_extensions()</a>, and <a class="el" href="scan_8cxx_source.html#l00159">cgv::utils::replace()</a>.</p>
 
 </div>
 </div>
@@ -466,9 +466,9 @@ Additional Inherited Members</h2></td></tr>
 
 <p>return the index of the current image </p>
 
-<p class="definition">Definition at line <a class="el" href="image__reader_8cxx_source.html#l00195">195</a> of file <a class="el" href="image__reader_8cxx_source.html">image_reader.cxx</a>.</p>
+<p class="definition">Definition at line <a class="el" href="image__reader_8cxx_source.html#l00196">196</a> of file <a class="el" href="image__reader_8cxx_source.html">image_reader.cxx</a>.</p>
 
-<p class="reference">References <a class="el" href="image__reader_8cxx_source.html#l00034">cgv::media::image::abst_image_reader::get_current_image()</a>, and <a class="el" href="image__reader_8h_source.html#l00071">rd</a>.</p>
+<p class="reference">References <a class="el" href="image__reader_8cxx_source.html#l00035">cgv::media::image::abst_image_reader::get_current_image()</a>, and <a class="el" href="image__reader_8h_source.html#l00069">rd</a>.</p>
 
 </div>
 </div>
@@ -490,9 +490,9 @@ Additional Inherited Members</h2></td></tr>
 <p>return the data format of the image file </p>
 <p>return the image info </p>
 
-<p class="definition">Definition at line <a class="el" href="image__reader_8cxx_source.html#l00167">167</a> of file <a class="el" href="image__reader_8cxx_source.html">image_reader.cxx</a>.</p>
+<p class="definition">Definition at line <a class="el" href="image__reader_8cxx_source.html#l00168">168</a> of file <a class="el" href="image__reader_8cxx_source.html">image_reader.cxx</a>.</p>
 
-<p class="reference">References <a class="el" href="image__reader_8h_source.html#l00067">file_format_ptr</a>.</p>
+<p class="reference">References <a class="el" href="image__reader_8h_source.html#l00065">file_format_ptr</a>.</p>
 
 </div>
 </div>
@@ -514,9 +514,9 @@ Additional Inherited Members</h2></td></tr>
 <p>return the duration of the current image in seconds, if returned value is 0, no duration is available </p>
 <p>return the duration of the current image in seconds </p>
 
-<p class="definition">Definition at line <a class="el" href="image__reader_8cxx_source.html#l00187">187</a> of file <a class="el" href="image__reader_8cxx_source.html">image_reader.cxx</a>.</p>
+<p class="definition">Definition at line <a class="el" href="image__reader_8cxx_source.html#l00188">188</a> of file <a class="el" href="image__reader_8cxx_source.html">image_reader.cxx</a>.</p>
 
-<p class="reference">References <a class="el" href="image__reader_8cxx_source.html#l00028">cgv::media::image::abst_image_reader::get_image_duration()</a>, and <a class="el" href="image__reader_8h_source.html#l00071">rd</a>.</p>
+<p class="reference">References <a class="el" href="image__reader_8cxx_source.html#l00029">cgv::media::image::abst_image_reader::get_image_duration()</a>, and <a class="el" href="image__reader_8h_source.html#l00069">rd</a>.</p>
 
 <p class="reference">Referenced by <a class="el" href="gl__tools_8cxx_source.html#l00049">cgv::render::gl::read_image_to_textures()</a>.</p>
 
@@ -539,11 +539,11 @@ Additional Inherited Members</h2></td></tr>
 
 <p>return a reference to the last error message </p>
 
-<p class="definition">Definition at line <a class="el" href="image__reader_8cxx_source.html#l00112">112</a> of file <a class="el" href="image__reader_8cxx_source.html">image_reader.cxx</a>.</p>
+<p class="definition">Definition at line <a class="el" href="image__reader_8cxx_source.html#l00113">113</a> of file <a class="el" href="image__reader_8cxx_source.html">image_reader.cxx</a>.</p>
 
-<p class="reference">References <a class="el" href="classcgv_1_1media_1_1image_1_1abst__image__reader.html#aa44555f0efe4a3bc2cd4cb3336f497ce">cgv::media::image::abst_image_reader::get_last_error()</a>, <a class="el" href="image__reader_8h_source.html#l00073">last_error</a>, and <a class="el" href="image__reader_8h_source.html#l00071">rd</a>.</p>
+<p class="reference">References <a class="el" href="classcgv_1_1media_1_1image_1_1abst__image__reader.html#aa44555f0efe4a3bc2cd4cb3336f497ce">cgv::media::image::abst_image_reader::get_last_error()</a>, <a class="el" href="image__reader_8h_source.html#l00071">last_error</a>, and <a class="el" href="image__reader_8h_source.html#l00069">rd</a>.</p>
 
-<p class="reference">Referenced by <a class="el" href="texture_8cxx_source.html#l00257">cgv::render::texture::create_from_image()</a>, <a class="el" href="gl__tools_8cxx_source.html#l00027">cgv::render::gl::read_image_to_texture()</a>, and <a class="el" href="gl__tools_8cxx_source.html#l00049">cgv::render::gl::read_image_to_textures()</a>.</p>
+<p class="reference">Referenced by <a class="el" href="texture_8cxx_source.html#l00258">cgv::render::texture::create_from_image()</a>, <a class="el" href="gl__tools_8cxx_source.html#l00027">cgv::render::gl::read_image_to_texture()</a>, and <a class="el" href="gl__tools_8cxx_source.html#l00049">cgv::render::gl::read_image_to_textures()</a>.</p>
 
 </div>
 </div>
@@ -564,9 +564,9 @@ Additional Inherited Members</h2></td></tr>
 
 <p>return the number of images in the file, what can cause the whole file to be scanned </p>
 
-<p class="definition">Definition at line <a class="el" href="image__reader_8cxx_source.html#l00179">179</a> of file <a class="el" href="image__reader_8cxx_source.html">image_reader.cxx</a>.</p>
+<p class="definition">Definition at line <a class="el" href="image__reader_8cxx_source.html#l00180">180</a> of file <a class="el" href="image__reader_8cxx_source.html">image_reader.cxx</a>.</p>
 
-<p class="reference">References <a class="el" href="image__reader_8cxx_source.html#l00021">cgv::media::image::abst_image_reader::get_nr_images()</a>, and <a class="el" href="image__reader_8h_source.html#l00071">rd</a>.</p>
+<p class="reference">References <a class="el" href="image__reader_8cxx_source.html#l00022">cgv::media::image::abst_image_reader::get_nr_images()</a>, and <a class="el" href="image__reader_8h_source.html#l00069">rd</a>.</p>
 
 <p class="reference">Referenced by <a class="el" href="gl__tools_8cxx_source.html#l00049">cgv::render::gl::read_image_to_textures()</a>.</p>
 
@@ -599,9 +599,9 @@ Additional Inherited Members</h2></td></tr>
 
 <p>Reimplemented from <a class="el" href="classcgv_1_1base_1_1base.html#a4d67c8d339fe06f17396aaa8625292f8">cgv::base::base</a>.</p>
 
-<p class="definition">Definition at line <a class="el" href="image__reader_8cxx_source.html#l00310">310</a> of file <a class="el" href="image__reader_8cxx_source.html">image_reader.cxx</a>.</p>
+<p class="definition">Definition at line <a class="el" href="image__reader_8cxx_source.html#l00311">311</a> of file <a class="el" href="image__reader_8cxx_source.html">image_reader.cxx</a>.</p>
 
-<p class="reference">References <a class="el" href="base_8cxx_source.html#l00264">cgv::base::base::get_property_declarations()</a>, and <a class="el" href="image__reader_8h_source.html#l00071">rd</a>.</p>
+<p class="reference">References <a class="el" href="base_8cxx_source.html#l00264">cgv::base::base::get_property_declarations()</a>, and <a class="el" href="image__reader_8h_source.html#l00069">rd</a>.</p>
 
 </div>
 </div>
@@ -631,11 +631,11 @@ Additional Inherited Members</h2></td></tr>
 
 <p>return a string with a list of supported extensions, where the list entries are separated with the passed character that defaults to a semicolon </p>
 
-<p class="definition">Definition at line <a class="el" href="image__reader_8cxx_source.html#l00084">84</a> of file <a class="el" href="image__reader_8cxx_source.html">image_reader.cxx</a>.</p>
+<p class="definition">Definition at line <a class="el" href="image__reader_8cxx_source.html#l00085">85</a> of file <a class="el" href="image__reader_8cxx_source.html">image_reader.cxx</a>.</p>
 
-<p class="reference">References <a class="el" href="image__reader_8cxx_source.html#l00084">get_supported_extensions()</a>, and <a class="el" href="scan_8cxx_source.html#l00159">cgv::utils::replace()</a>.</p>
+<p class="reference">References <a class="el" href="image__reader_8cxx_source.html#l00085">get_supported_extensions()</a>, and <a class="el" href="scan_8cxx_source.html#l00159">cgv::utils::replace()</a>.</p>
 
-<p class="reference">Referenced by <a class="el" href="image__reader_8cxx_source.html#l00100">construct_filter_string()</a>, <a class="el" href="image__reader_8cxx_source.html#l00084">get_supported_extensions()</a>, and <a class="el" href="image__reader_8cxx_source.html#l00140">open()</a>.</p>
+<p class="reference">Referenced by <a class="el" href="image__reader_8cxx_source.html#l00101">construct_filter_string()</a>, <a class="el" href="image__reader_8cxx_source.html#l00085">get_supported_extensions()</a>, and <a class="el" href="image__reader_8cxx_source.html#l00141">open()</a>.</p>
 
 </div>
 </div>
@@ -666,9 +666,9 @@ Additional Inherited Members</h2></td></tr>
 
 <p>Reimplemented from <a class="el" href="classcgv_1_1base_1_1base.html#a6e64a898476591f7246e522652abfa4c">cgv::base::base</a>.</p>
 
-<p class="definition">Definition at line <a class="el" href="image__reader_8cxx_source.html#l00303">303</a> of file <a class="el" href="image__reader_8cxx_source.html">image_reader.cxx</a>.</p>
+<p class="definition">Definition at line <a class="el" href="image__reader_8cxx_source.html#l00304">304</a> of file <a class="el" href="image__reader_8cxx_source.html">image_reader.cxx</a>.</p>
 
-<p class="reference">References <a class="el" href="base_8cxx_source.html#l00241">cgv::base::base::get_type_name()</a>, and <a class="el" href="image__reader_8h_source.html#l00071">rd</a>.</p>
+<p class="reference">References <a class="el" href="base_8cxx_source.html#l00241">cgv::base::base::get_type_name()</a>, and <a class="el" href="image__reader_8h_source.html#l00069">rd</a>.</p>
 
 </div>
 </div>
@@ -716,9 +716,9 @@ Additional Inherited Members</h2></td></tr>
 
 <p>Reimplemented from <a class="el" href="classcgv_1_1base_1_1base.html#aec0cf2e6e9275472854996435e25fe17">cgv::base::base</a>.</p>
 
-<p class="definition">Definition at line <a class="el" href="image__reader_8cxx_source.html#l00325">325</a> of file <a class="el" href="image__reader_8cxx_source.html">image_reader.cxx</a>.</p>
+<p class="definition">Definition at line <a class="el" href="image__reader_8cxx_source.html#l00326">326</a> of file <a class="el" href="image__reader_8cxx_source.html">image_reader.cxx</a>.</p>
 
-<p class="reference">References <a class="el" href="base_8cxx_source.html#l00215">cgv::base::base::get_void()</a>, and <a class="el" href="image__reader_8h_source.html#l00071">rd</a>.</p>
+<p class="reference">References <a class="el" href="base_8cxx_source.html#l00215">cgv::base::base::get_void()</a>, and <a class="el" href="image__reader_8h_source.html#l00069">rd</a>.</p>
 
 </div>
 </div>
@@ -741,16 +741,16 @@ Additional Inherited Members</h2></td></tr>
 <p>open the file and read the image header in order to determine the data format of the file, which is stored in the data format specified in the constructor </p>
 <p>open the file and read the image header in order to determine the data format </p>
 
-<p class="definition">Definition at line <a class="el" href="image__reader_8cxx_source.html#l00140">140</a> of file <a class="el" href="image__reader_8cxx_source.html">image_reader.cxx</a>.</p>
+<p class="definition">Definition at line <a class="el" href="image__reader_8cxx_source.html#l00141">141</a> of file <a class="el" href="image__reader_8cxx_source.html">image_reader.cxx</a>.</p>
 
-<p class="reference">References <a class="el" href="image__reader_8h_source.html#l00067">file_format_ptr</a>, <a class="el" href="image__reader_8cxx_source.html#l00084">get_supported_extensions()</a>, <a class="el" href="scan_8cxx_source.html#l00291">cgv::utils::is_element()</a>, <a class="el" href="image__reader_8h_source.html#l00073">last_error</a>, <a class="el" href="classcgv_1_1media_1_1image_1_1abst__image__reader.html#a21741f88130baa3224809472f69df8b5">cgv::media::image::abst_image_reader::open()</a>, <a class="el" href="image__reader_8h_source.html#l00069">palette_formats</a>, <a class="el" href="image__reader_8h_source.html#l00071">rd</a>, and <a class="el" href="scan_8cxx_source.html#l00039">cgv::utils::to_lower()</a>.</p>
+<p class="reference">References <a class="el" href="image__reader_8h_source.html#l00065">file_format_ptr</a>, <a class="el" href="image__reader_8cxx_source.html#l00085">get_supported_extensions()</a>, <a class="el" href="scan_8cxx_source.html#l00291">cgv::utils::is_element()</a>, <a class="el" href="image__reader_8h_source.html#l00071">last_error</a>, <a class="el" href="classcgv_1_1media_1_1image_1_1abst__image__reader.html#a3fa565ef9e50203e404b35f26f3f1c90">cgv::media::image::abst_image_reader::open()</a>, <a class="el" href="image__reader_8h_source.html#l00067">palette_formats</a>, <a class="el" href="image__reader_8h_source.html#l00069">rd</a>, and <a class="el" href="scan_8cxx_source.html#l00039">cgv::utils::to_lower()</a>.</p>
 
-<p class="reference">Referenced by <a class="el" href="gltf__support_8cxx_source.html#l00134">cgv::render::build_render_info()</a>, <a class="el" href="image__reader_8cxx_source.html#l00130">read_image()</a>, <a class="el" href="image__reader_8cxx_source.html#l00120">read_image()</a>, and <a class="el" href="gl__tools_8cxx_source.html#l00049">cgv::render::gl::read_image_to_textures()</a>.</p>
+<p class="reference">Referenced by <a class="el" href="gltf__support_8cxx_source.html#l00134">cgv::render::build_render_info()</a>, <a class="el" href="image__reader_8cxx_source.html#l00121">read_image()</a>, <a class="el" href="image__reader_8cxx_source.html#l00131">read_image()</a>, and <a class="el" href="gl__tools_8cxx_source.html#l00049">cgv::render::gl::read_image_to_textures()</a>.</p>
 
 </div>
 </div>
-<a id="a2c76b7a71ad26a1f621ad209d980fc57" name="a2c76b7a71ad26a1f621ad209d980fc57"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a2c76b7a71ad26a1f621ad209d980fc57">&#9670;&#160;</a></span>read_image() <span class="overload">[1/4]</span></h2>
+<a id="a0691ed26841d365aa6742f80c1122e64" name="a0691ed26841d365aa6742f80c1122e64"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a0691ed26841d365aa6742f80c1122e64">&#9670;&#160;</a></span>read_image() <span class="overload">[1/4]</span></h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -758,133 +758,13 @@ Additional Inherited Members</h2></td></tr>
         <tr>
           <td class="memname"><a class="el" href="classcgv_1_1base_1_1single__method__action.html">bool</a> cgv::media::image::image_reader::read_image </td>
           <td>(</td>
-          <td class="paramtype"><a class="el" href="classcgv_1_1base_1_1single__method__action.html">const</a> <a class="el" href="classcgv_1_1data_1_1data__view.html">data_view</a> &amp;&#160;</td>
+          <td class="paramtype"><a class="el" href="classcgv_1_1data_1_1data__view.html">cgv::data::data_view</a> &amp;&#160;</td>
           <td class="paramname"><em>dv</em>, </td>
         </tr>
         <tr>
           <td class="paramkey"></td>
           <td></td>
-          <td class="paramtype"><a class="el" href="classcgv_1_1base_1_1single__method__action.html">const</a> std::vector&lt; <a class="el" href="classcgv_1_1data_1_1data__view.html">data_view</a> &gt; *&#160;</td>
-          <td class="paramname"><em>palettes</em> = <code>0</code>&#160;</td>
-        </tr>
-        <tr>
-          <td></td>
-          <td>)</td>
-          <td></td><td></td>
-        </tr>
-      </table>
-</div><div class="memdoc">
-
-<p>read image to a data_view with the correct format and an allocated pointer </p>
-<p>read the whole image into the given data pointer, set data format if not yet specified and allocate the data ptr if not yet done. If image file has not been opened yet, open it and close it after reading </p>
-
-<p class="definition">Definition at line <a class="el" href="image__reader_8cxx_source.html#l00276">276</a> of file <a class="el" href="image__reader_8cxx_source.html">image_reader.cxx</a>.</p>
-
-<p class="reference">References <a class="el" href="data__view_8cxx_source.html#l00106">cgv::data::data_view_impl&lt; D, P &gt;::empty()</a>, <a class="el" href="image__reader_8h_source.html#l00067">file_format_ptr</a>, <a class="el" href="image__reader_8h_source.html#l00069">palette_formats</a>, <a class="el" href="image__reader_8h_source.html#l00071">rd</a>, <a class="el" href="classcgv_1_1media_1_1image_1_1abst__image__reader.html#af3811feeb4f9c0c1b50e6985764af9bf">cgv::media::image::abst_image_reader::read_image()</a>, and <a class="el" href="image__reader_8cxx_source.html#l00211">read_palette()</a>.</p>
-
-</div>
-</div>
-<a id="a46a96f9ca692b4ce82e776aabdce3351" name="a46a96f9ca692b4ce82e776aabdce3351"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a46a96f9ca692b4ce82e776aabdce3351">&#9670;&#160;</a></span>read_image() <span class="overload">[2/4]</span></h2>
-
-<div class="memitem">
-<div class="memproto">
-      <table class="memname">
-        <tr>
-          <td class="memname"><a class="el" href="classcgv_1_1base_1_1single__method__action.html">bool</a> cgv::media::image::image_reader::read_image </td>
-          <td>(</td>
-          <td class="paramtype"><a class="el" href="classcgv_1_1base_1_1single__method__action.html">const</a> std::string &amp;&#160;</td>
-          <td class="paramname"><em>file_name</em>, </td>
-        </tr>
-        <tr>
-          <td class="paramkey"></td>
-          <td></td>
-          <td class="paramtype"><a class="el" href="classcgv_1_1base_1_1single__method__action.html">const</a> <a class="el" href="classcgv_1_1data_1_1data__view.html">data_view</a> &amp;&#160;</td>
-          <td class="paramname"><em>dv</em>, </td>
-        </tr>
-        <tr>
-          <td class="paramkey"></td>
-          <td></td>
-          <td class="paramtype"><a class="el" href="classcgv_1_1base_1_1single__method__action.html">const</a> std::vector&lt; <a class="el" href="classcgv_1_1data_1_1data__view.html">data_view</a> &gt; *&#160;</td>
-          <td class="paramname"><em>palettes</em> = <code>0</code>&#160;</td>
-        </tr>
-        <tr>
-          <td></td>
-          <td>)</td>
-          <td></td><td></td>
-        </tr>
-      </table>
-</div><div class="memdoc">
-
-<p>read the image into the given data view that must have the correct format and an allocated data pointer. </p>
-<p>read the whole image into the given data pointer, set data format if not yet specified and allocate the data ptr if not yet done. If image file has not been opened yet, open it and close it after reading </p>
-
-<p class="definition">Definition at line <a class="el" href="image__reader_8cxx_source.html#l00130">130</a> of file <a class="el" href="image__reader_8cxx_source.html">image_reader.cxx</a>.</p>
-
-<p class="reference">References <a class="el" href="image__reader_8cxx_source.html#l00295">close()</a>, <a class="el" href="component__format_8cxx_source.html#l00316">cgv::data::component_format::empty()</a>, <a class="el" href="data__view_8cxx_source.html#l00106">cgv::data::data_view_impl&lt; D, P &gt;::empty()</a>, <a class="el" href="image__reader_8h_source.html#l00067">file_format_ptr</a>, <a class="el" href="image__reader_8cxx_source.html#l00140">open()</a>, and <a class="el" href="image__reader_8cxx_source.html#l00120">read_image()</a>.</p>
-
-</div>
-</div>
-<a id="ac871d242183818bcacb62613a6907611" name="ac871d242183818bcacb62613a6907611"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#ac871d242183818bcacb62613a6907611">&#9670;&#160;</a></span>read_image() <span class="overload">[3/4]</span></h2>
-
-<div class="memitem">
-<div class="memproto">
-      <table class="memname">
-        <tr>
-          <td class="memname"><a class="el" href="classcgv_1_1base_1_1single__method__action.html">bool</a> cgv::media::image::image_reader::read_image </td>
-          <td>(</td>
-          <td class="paramtype"><a class="el" href="classcgv_1_1base_1_1single__method__action.html">const</a> std::string &amp;&#160;</td>
-          <td class="paramname"><em>file_name</em>, </td>
-        </tr>
-        <tr>
-          <td class="paramkey"></td>
-          <td></td>
-          <td class="paramtype"><a class="el" href="classcgv_1_1data_1_1data__view.html">data_view</a> &amp;&#160;</td>
-          <td class="paramname"><em>dv</em>, </td>
-        </tr>
-        <tr>
-          <td class="paramkey"></td>
-          <td></td>
-          <td class="paramtype">std::vector&lt; <a class="el" href="classcgv_1_1data_1_1data__view.html">data_view</a> &gt; *&#160;</td>
-          <td class="paramname"><em>palettes</em> = <code>0</code>&#160;</td>
-        </tr>
-        <tr>
-          <td></td>
-          <td>)</td>
-          <td></td><td></td>
-        </tr>
-      </table>
-</div><div class="memdoc">
-
-<p>read the whole image into the given data view. </p>
-<p>read the whole image into the given data pointer, set data format if not yet specified and allocate the data ptr if not yet done. If image file has not been opened yet, open it and close it after reading</p>
-<p>If the data view is empty, set the format and allocate memory to hold the image data. The newly allocate data pointer will belong to the data view afterwards. If the data pointer of the data view is already allocated, use this in the same way as the alternate version of read_image with the const data_view argument does. </p>
-
-<p class="definition">Definition at line <a class="el" href="image__reader_8cxx_source.html#l00120">120</a> of file <a class="el" href="image__reader_8cxx_source.html">image_reader.cxx</a>.</p>
-
-<p class="reference">References <a class="el" href="image__reader_8cxx_source.html#l00295">close()</a>, <a class="el" href="component__format_8cxx_source.html#l00316">cgv::data::component_format::empty()</a>, <a class="el" href="image__reader_8h_source.html#l00067">file_format_ptr</a>, <a class="el" href="image__reader_8cxx_source.html#l00140">open()</a>, and <a class="el" href="image__reader_8cxx_source.html#l00120">read_image()</a>.</p>
-
-<p class="reference">Referenced by <a class="el" href="gltf__support_8cxx_source.html#l00134">cgv::render::build_render_info()</a>, <a class="el" href="texture_8cxx_source.html#l00257">cgv::render::texture::create_from_image()</a>, <a class="el" href="image__reader_8cxx_source.html#l00130">read_image()</a>, <a class="el" href="image__reader_8cxx_source.html#l00120">read_image()</a>, <a class="el" href="gl__tools_8cxx_source.html#l00027">cgv::render::gl::read_image_to_texture()</a>, <a class="el" href="gl__tools_8cxx_source.html#l00049">cgv::render::gl::read_image_to_textures()</a>, and <a class="el" href="texture_8cxx_source.html#l00705">cgv::render::texture::replace_from_image()</a>.</p>
-
-</div>
-</div>
-<a id="abadd93d051939e353e40d674718ebf1b" name="abadd93d051939e353e40d674718ebf1b"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#abadd93d051939e353e40d674718ebf1b">&#9670;&#160;</a></span>read_image() <span class="overload">[4/4]</span></h2>
-
-<div class="memitem">
-<div class="memproto">
-      <table class="memname">
-        <tr>
-          <td class="memname"><a class="el" href="classcgv_1_1base_1_1single__method__action.html">bool</a> cgv::media::image::image_reader::read_image </td>
-          <td>(</td>
-          <td class="paramtype"><a class="el" href="classcgv_1_1data_1_1data__view.html">data_view</a> &amp;&#160;</td>
-          <td class="paramname"><em>dv</em>, </td>
-        </tr>
-        <tr>
-          <td class="paramkey"></td>
-          <td></td>
-          <td class="paramtype">std::vector&lt; <a class="el" href="classcgv_1_1data_1_1data__view.html">data_view</a> &gt; *&#160;</td>
+          <td class="paramtype">std::vector&lt; <a class="el" href="classcgv_1_1data_1_1data__view.html">cgv::data::data_view</a> &gt; *&#160;</td>
           <td class="paramname"><em>palettes</em> = <code>0</code>&#160;</td>
         </tr>
         <tr>
@@ -899,39 +779,134 @@ Additional Inherited Members</h2></td></tr>
 <p>read the whole image into the given data pointer, set data format if not yet specified and allocate the data ptr if not yet done. If image file has not been opened yet, open it and close it after reading</p>
 <p>read an image from an opened image file into the given data view. If the data format of the view has not been specified, set it to the data format of the file. If the data pointer is empty, allocate enough memory to hold the image. The pointer is then owned by the view. </p>
 
-<p class="definition">Definition at line <a class="el" href="image__reader_8cxx_source.html#l00258">258</a> of file <a class="el" href="image__reader_8cxx_source.html">image_reader.cxx</a>.</p>
+<p class="definition">Definition at line <a class="el" href="image__reader_8cxx_source.html#l00259">259</a> of file <a class="el" href="image__reader_8cxx_source.html">image_reader.cxx</a>.</p>
 
-<p class="reference">References <a class="el" href="data__view_8cxx_source.html#l00106">cgv::data::data_view_impl&lt; D, P &gt;::empty()</a>, <a class="el" href="image__reader_8h_source.html#l00067">file_format_ptr</a>, <a class="el" href="image__reader_8h_source.html#l00069">palette_formats</a>, <a class="el" href="image__reader_8h_source.html#l00071">rd</a>, <a class="el" href="classcgv_1_1media_1_1image_1_1abst__image__reader.html#af3811feeb4f9c0c1b50e6985764af9bf">cgv::media::image::abst_image_reader::read_image()</a>, and <a class="el" href="image__reader_8cxx_source.html#l00211">read_palette()</a>.</p>
+<p class="reference">References <a class="el" href="data__view_8cxx_source.html#l00106">cgv::data::data_view_impl&lt; D, P &gt;::empty()</a>, <a class="el" href="image__reader_8h_source.html#l00065">file_format_ptr</a>, <a class="el" href="image__reader_8h_source.html#l00067">palette_formats</a>, <a class="el" href="image__reader_8h_source.html#l00069">rd</a>, <a class="el" href="classcgv_1_1media_1_1image_1_1abst__image__reader.html#a0bc7f869995f65f98ef25c79b96d9b3d">cgv::media::image::abst_image_reader::read_image()</a>, and <a class="el" href="image__reader_8cxx_source.html#l00212">read_palette()</a>.</p>
 
 </div>
 </div>
-<a id="a265b84b8171b89cba0747f99e9e50058" name="a265b84b8171b89cba0747f99e9e50058"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a265b84b8171b89cba0747f99e9e50058">&#9670;&#160;</a></span>read_line() <span class="overload">[1/2]</span></h2>
+<a id="a503aa6da682fdd2626a30b2b634e56d2" name="a503aa6da682fdd2626a30b2b634e56d2"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a503aa6da682fdd2626a30b2b634e56d2">&#9670;&#160;</a></span>read_image() <span class="overload">[2/4]</span></h2>
 
 <div class="memitem">
 <div class="memproto">
       <table class="memname">
         <tr>
-          <td class="memname"><a class="el" href="classcgv_1_1base_1_1single__method__action.html">bool</a> cgv::media::image::image_reader::read_line </td>
+          <td class="memname"><a class="el" href="classcgv_1_1base_1_1single__method__action.html">bool</a> cgv::media::image::image_reader::read_image </td>
           <td>(</td>
-          <td class="paramtype"><a class="el" href="classcgv_1_1base_1_1single__method__action.html">const</a> <a class="el" href="classcgv_1_1data_1_1data__view.html">data_view</a> &amp;&#160;</td>
-          <td class="paramname"><em>dv</em></td><td>)</td>
+          <td class="paramtype"><a class="el" href="classcgv_1_1base_1_1single__method__action.html">const</a> <a class="el" href="classcgv_1_1data_1_1data__view.html">cgv::data::data_view</a> &amp;&#160;</td>
+          <td class="paramname"><em>dv</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
           <td></td>
+          <td class="paramtype"><a class="el" href="classcgv_1_1base_1_1single__method__action.html">const</a> std::vector&lt; <a class="el" href="classcgv_1_1data_1_1data__view.html">cgv::data::data_view</a> &gt; *&#160;</td>
+          <td class="paramname"><em>palettes</em> = <code>0</code>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
         </tr>
       </table>
 </div><div class="memdoc">
 
-<p>read line into a preallocated data view of the correct format </p>
-<p>read the next line into the given data pointer, set data format if not yet specified and allocate the data ptr if not yet done </p>
+<p>read image to a data_view with the correct format and an allocated pointer </p>
+<p>read the whole image into the given data pointer, set data format if not yet specified and allocate the data ptr if not yet done. If image file has not been opened yet, open it and close it after reading </p>
 
-<p class="definition">Definition at line <a class="el" href="image__reader_8cxx_source.html#l00250">250</a> of file <a class="el" href="image__reader_8cxx_source.html">image_reader.cxx</a>.</p>
+<p class="definition">Definition at line <a class="el" href="image__reader_8cxx_source.html#l00277">277</a> of file <a class="el" href="image__reader_8cxx_source.html">image_reader.cxx</a>.</p>
 
-<p class="reference">References <a class="el" href="data__view_8cxx_source.html#l00106">cgv::data::data_view_impl&lt; D, P &gt;::empty()</a>, <a class="el" href="image__reader_8h_source.html#l00067">file_format_ptr</a>, <a class="el" href="image__reader_8h_source.html#l00071">rd</a>, and <a class="el" href="classcgv_1_1media_1_1image_1_1abst__image__reader.html#afd444e1f0903a178c082d69fa8145099">cgv::media::image::abst_image_reader::read_line()</a>.</p>
+<p class="reference">References <a class="el" href="data__view_8cxx_source.html#l00106">cgv::data::data_view_impl&lt; D, P &gt;::empty()</a>, <a class="el" href="image__reader_8h_source.html#l00065">file_format_ptr</a>, <a class="el" href="image__reader_8h_source.html#l00067">palette_formats</a>, <a class="el" href="image__reader_8h_source.html#l00069">rd</a>, <a class="el" href="classcgv_1_1media_1_1image_1_1abst__image__reader.html#a0bc7f869995f65f98ef25c79b96d9b3d">cgv::media::image::abst_image_reader::read_image()</a>, and <a class="el" href="image__reader_8cxx_source.html#l00212">read_palette()</a>.</p>
 
 </div>
 </div>
-<a id="af4ba97597b2df4857888b006b695ea92" name="af4ba97597b2df4857888b006b695ea92"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#af4ba97597b2df4857888b006b695ea92">&#9670;&#160;</a></span>read_line() <span class="overload">[2/2]</span></h2>
+<a id="a3d07c14186dd39b2baa9e136d24ca796" name="a3d07c14186dd39b2baa9e136d24ca796"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a3d07c14186dd39b2baa9e136d24ca796">&#9670;&#160;</a></span>read_image() <span class="overload">[3/4]</span></h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname"><a class="el" href="classcgv_1_1base_1_1single__method__action.html">bool</a> cgv::media::image::image_reader::read_image </td>
+          <td>(</td>
+          <td class="paramtype"><a class="el" href="classcgv_1_1base_1_1single__method__action.html">const</a> std::string &amp;&#160;</td>
+          <td class="paramname"><em>file_name</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype"><a class="el" href="classcgv_1_1data_1_1data__view.html">cgv::data::data_view</a> &amp;&#160;</td>
+          <td class="paramname"><em>dv</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">std::vector&lt; <a class="el" href="classcgv_1_1data_1_1data__view.html">cgv::data::data_view</a> &gt; *&#160;</td>
+          <td class="paramname"><em>palettes</em> = <code>0</code>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>read the whole image into the given data view. </p>
+<p>read the whole image into the given data pointer, set data format if not yet specified and allocate the data ptr if not yet done. If image file has not been opened yet, open it and close it after reading</p>
+<p>If the data view is empty, set the format and allocate memory to hold the image data. The newly allocate data pointer will belong to the data view afterwards. If the data pointer of the data view is already allocated, use this in the same way as the alternate version of read_image with the const data_view argument does. </p>
+
+<p class="definition">Definition at line <a class="el" href="image__reader_8cxx_source.html#l00121">121</a> of file <a class="el" href="image__reader_8cxx_source.html">image_reader.cxx</a>.</p>
+
+<p class="reference">References <a class="el" href="image__reader_8cxx_source.html#l00296">close()</a>, <a class="el" href="component__format_8cxx_source.html#l00316">cgv::data::component_format::empty()</a>, <a class="el" href="image__reader_8h_source.html#l00065">file_format_ptr</a>, <a class="el" href="image__reader_8cxx_source.html#l00141">open()</a>, and <a class="el" href="image__reader_8cxx_source.html#l00121">read_image()</a>.</p>
+
+<p class="reference">Referenced by <a class="el" href="gltf__support_8cxx_source.html#l00134">cgv::render::build_render_info()</a>, <a class="el" href="texture_8cxx_source.html#l00258">cgv::render::texture::create_from_image()</a>, <a class="el" href="image__reader_8cxx_source.html#l00121">read_image()</a>, <a class="el" href="image__reader_8cxx_source.html#l00131">read_image()</a>, <a class="el" href="gl__tools_8cxx_source.html#l00027">cgv::render::gl::read_image_to_texture()</a>, <a class="el" href="gl__tools_8cxx_source.html#l00049">cgv::render::gl::read_image_to_textures()</a>, and <a class="el" href="texture_8cxx_source.html#l00706">cgv::render::texture::replace_from_image()</a>.</p>
+
+</div>
+</div>
+<a id="a5c2d6f6d13107498d40c8806c63bc440" name="a5c2d6f6d13107498d40c8806c63bc440"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a5c2d6f6d13107498d40c8806c63bc440">&#9670;&#160;</a></span>read_image() <span class="overload">[4/4]</span></h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname"><a class="el" href="classcgv_1_1base_1_1single__method__action.html">bool</a> cgv::media::image::image_reader::read_image </td>
+          <td>(</td>
+          <td class="paramtype"><a class="el" href="classcgv_1_1base_1_1single__method__action.html">const</a> std::string &amp;&#160;</td>
+          <td class="paramname"><em>file_name</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype"><a class="el" href="classcgv_1_1base_1_1single__method__action.html">const</a> <a class="el" href="classcgv_1_1data_1_1data__view.html">cgv::data::data_view</a> &amp;&#160;</td>
+          <td class="paramname"><em>dv</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype"><a class="el" href="classcgv_1_1base_1_1single__method__action.html">const</a> std::vector&lt; <a class="el" href="classcgv_1_1data_1_1data__view.html">cgv::data::data_view</a> &gt; *&#160;</td>
+          <td class="paramname"><em>palettes</em> = <code>0</code>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>read the image into the given data view that must have the correct format and an allocated data pointer. </p>
+<p>read the whole image into the given data pointer, set data format if not yet specified and allocate the data ptr if not yet done. If image file has not been opened yet, open it and close it after reading </p>
+
+<p class="definition">Definition at line <a class="el" href="image__reader_8cxx_source.html#l00131">131</a> of file <a class="el" href="image__reader_8cxx_source.html">image_reader.cxx</a>.</p>
+
+<p class="reference">References <a class="el" href="image__reader_8cxx_source.html#l00296">close()</a>, <a class="el" href="component__format_8cxx_source.html#l00316">cgv::data::component_format::empty()</a>, <a class="el" href="data__view_8cxx_source.html#l00106">cgv::data::data_view_impl&lt; D, P &gt;::empty()</a>, <a class="el" href="image__reader_8h_source.html#l00065">file_format_ptr</a>, <a class="el" href="image__reader_8cxx_source.html#l00141">open()</a>, and <a class="el" href="image__reader_8cxx_source.html#l00121">read_image()</a>.</p>
+
+</div>
+</div>
+<a id="a6872e915694654476a43ccbba7c4227c" name="a6872e915694654476a43ccbba7c4227c"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a6872e915694654476a43ccbba7c4227c">&#9670;&#160;</a></span>read_line() <span class="overload">[1/2]</span></h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -939,7 +914,7 @@ Additional Inherited Members</h2></td></tr>
         <tr>
           <td class="memname"><a class="el" href="classcgv_1_1base_1_1single__method__action.html">bool</a> cgv::media::image::image_reader::read_line </td>
           <td>(</td>
-          <td class="paramtype"><a class="el" href="classcgv_1_1data_1_1data__view.html">data_view</a> &amp;&#160;</td>
+          <td class="paramtype"><a class="el" href="classcgv_1_1data_1_1data__view.html">cgv::data::data_view</a> &amp;&#160;</td>
           <td class="paramname"><em>dv</em></td><td>)</td>
           <td></td>
         </tr>
@@ -950,14 +925,39 @@ Additional Inherited Members</h2></td></tr>
 <p>read the next line into the given data pointer, set data format if not yet specified and allocate the data ptr if not yet done</p>
 <p>If the data format of the view has not been specified, set it to the data format of the file, construct a 1d subview and allocate memory for a line only. The data pointer is then owned by the view. </p>
 
-<p class="definition">Definition at line <a class="el" href="image__reader_8cxx_source.html#l00237">237</a> of file <a class="el" href="image__reader_8cxx_source.html">image_reader.cxx</a>.</p>
+<p class="definition">Definition at line <a class="el" href="image__reader_8cxx_source.html#l00238">238</a> of file <a class="el" href="image__reader_8cxx_source.html">image_reader.cxx</a>.</p>
 
-<p class="reference">References <a class="el" href="data__view_8cxx_source.html#l00106">cgv::data::data_view_impl&lt; D, P &gt;::empty()</a>, <a class="el" href="image__reader_8h_source.html#l00067">file_format_ptr</a>, <a class="el" href="component__format_8cxx_source.html#l00391">cgv::data::component_format::get_entry_size()</a>, <a class="el" href="data__format_8cxx_source.html#l00214">cgv::data::data_format::get_width()</a>, <a class="el" href="image__reader_8h_source.html#l00071">rd</a>, <a class="el" href="classcgv_1_1media_1_1image_1_1abst__image__reader.html#afd444e1f0903a178c082d69fa8145099">cgv::media::image::abst_image_reader::read_line()</a>, and <a class="el" href="data__view_8cxx_source.html#l00242">cgv::data::data_view::set_ptr()</a>.</p>
+<p class="reference">References <a class="el" href="data__view_8cxx_source.html#l00106">cgv::data::data_view_impl&lt; D, P &gt;::empty()</a>, <a class="el" href="image__reader_8h_source.html#l00065">file_format_ptr</a>, <a class="el" href="component__format_8cxx_source.html#l00391">cgv::data::component_format::get_entry_size()</a>, <a class="el" href="data__format_8cxx_source.html#l00215">cgv::data::data_format::get_width()</a>, <a class="el" href="image__reader_8h_source.html#l00069">rd</a>, <a class="el" href="classcgv_1_1media_1_1image_1_1abst__image__reader.html#ab91847c745189e4320b7f24b0589388e">cgv::media::image::abst_image_reader::read_line()</a>, and <a class="el" href="data__view_8cxx_source.html#l00242">cgv::data::data_view::set_ptr()</a>.</p>
 
 </div>
 </div>
-<a id="a601be4379303d149dc43d3c382e92dcf" name="a601be4379303d149dc43d3c382e92dcf"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a601be4379303d149dc43d3c382e92dcf">&#9670;&#160;</a></span>read_palette() <span class="overload">[1/2]</span></h2>
+<a id="af96549ce258cc44fd520897cc27ec14c" name="af96549ce258cc44fd520897cc27ec14c"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#af96549ce258cc44fd520897cc27ec14c">&#9670;&#160;</a></span>read_line() <span class="overload">[2/2]</span></h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname"><a class="el" href="classcgv_1_1base_1_1single__method__action.html">bool</a> cgv::media::image::image_reader::read_line </td>
+          <td>(</td>
+          <td class="paramtype"><a class="el" href="classcgv_1_1base_1_1single__method__action.html">const</a> <a class="el" href="classcgv_1_1data_1_1data__view.html">cgv::data::data_view</a> &amp;&#160;</td>
+          <td class="paramname"><em>dv</em></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>read line into a preallocated data view of the correct format </p>
+<p>read the next line into the given data pointer, set data format if not yet specified and allocate the data ptr if not yet done </p>
+
+<p class="definition">Definition at line <a class="el" href="image__reader_8cxx_source.html#l00251">251</a> of file <a class="el" href="image__reader_8cxx_source.html">image_reader.cxx</a>.</p>
+
+<p class="reference">References <a class="el" href="data__view_8cxx_source.html#l00106">cgv::data::data_view_impl&lt; D, P &gt;::empty()</a>, <a class="el" href="image__reader_8h_source.html#l00065">file_format_ptr</a>, <a class="el" href="image__reader_8h_source.html#l00069">rd</a>, and <a class="el" href="classcgv_1_1media_1_1image_1_1abst__image__reader.html#ab91847c745189e4320b7f24b0589388e">cgv::media::image::abst_image_reader::read_line()</a>.</p>
+
+</div>
+</div>
+<a id="a89556aba40d089a57393ff09d0c24450" name="a89556aba40d089a57393ff09d0c24450"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a89556aba40d089a57393ff09d0c24450">&#9670;&#160;</a></span>read_palette() <span class="overload">[1/2]</span></h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -971,7 +971,7 @@ Additional Inherited Members</h2></td></tr>
         <tr>
           <td class="paramkey"></td>
           <td></td>
-          <td class="paramtype"><a class="el" href="classcgv_1_1base_1_1single__method__action.html">const</a> <a class="el" href="classcgv_1_1data_1_1data__view.html">data_view</a> &amp;&#160;</td>
+          <td class="paramtype"><a class="el" href="classcgv_1_1data_1_1data__view.html">cgv::data::data_view</a> &amp;&#160;</td>
           <td class="paramname"><em>dv</em>&#160;</td>
         </tr>
         <tr>
@@ -984,16 +984,18 @@ Additional Inherited Members</h2></td></tr>
 
 <p>read the i-th palette in case of a paletted file format, and handle the data view as in the read_image method the standard implementation returns false </p>
 <p>read the i-th palette in case of a paletted file format, the standard implementation returns false</p>
-<p>In case of files with animated images, the palette can change for each image. Therefore call this method before each call to <code><a class="el" href="classcgv_1_1media_1_1image_1_1image__reader.html#ac871d242183818bcacb62613a6907611" title="read the whole image into the given data view.">read_image()</a></code>. </p>
+<p>In case of files with animated images, the palette can change for each image. Therefore call this method before each call to <code><a class="el" href="classcgv_1_1media_1_1image_1_1image__reader.html#a3d07c14186dd39b2baa9e136d24ca796" title="read the whole image into the given data view.">read_image()</a></code>. </p>
 
-<p class="definition">Definition at line <a class="el" href="image__reader_8cxx_source.html#l00221">221</a> of file <a class="el" href="image__reader_8cxx_source.html">image_reader.cxx</a>.</p>
+<p class="definition">Definition at line <a class="el" href="image__reader_8cxx_source.html#l00212">212</a> of file <a class="el" href="image__reader_8cxx_source.html">image_reader.cxx</a>.</p>
 
-<p class="reference">References <a class="el" href="data__view_8cxx_source.html#l00106">cgv::data::data_view_impl&lt; D, P &gt;::empty()</a>, <a class="el" href="image__reader_8h_source.html#l00069">palette_formats</a>, <a class="el" href="image__reader_8h_source.html#l00071">rd</a>, and <a class="el" href="image__reader_8cxx_source.html#l00046">cgv::media::image::abst_image_reader::read_palette()</a>.</p>
+<p class="reference">References <a class="el" href="data__view_8cxx_source.html#l00106">cgv::data::data_view_impl&lt; D, P &gt;::empty()</a>, <a class="el" href="image__reader_8h_source.html#l00067">palette_formats</a>, <a class="el" href="image__reader_8h_source.html#l00069">rd</a>, and <a class="el" href="image__reader_8cxx_source.html#l00047">cgv::media::image::abst_image_reader::read_palette()</a>.</p>
+
+<p class="reference">Referenced by <a class="el" href="texture_8cxx_source.html#l00258">cgv::render::texture::create_from_image()</a>, <a class="el" href="image__reader_8cxx_source.html#l00259">read_image()</a>, <a class="el" href="image__reader_8cxx_source.html#l00277">read_image()</a>, <a class="el" href="gl__tools_8cxx_source.html#l00049">cgv::render::gl::read_image_to_textures()</a>, and <a class="el" href="texture_8cxx_source.html#l00706">cgv::render::texture::replace_from_image()</a>.</p>
 
 </div>
 </div>
-<a id="a5f47f588ac70c2c9f7fb733d6bd9cff0" name="a5f47f588ac70c2c9f7fb733d6bd9cff0"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a5f47f588ac70c2c9f7fb733d6bd9cff0">&#9670;&#160;</a></span>read_palette() <span class="overload">[2/2]</span></h2>
+<a id="a2436cf67cfb6de2ef201881b7a8770c1" name="a2436cf67cfb6de2ef201881b7a8770c1"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a2436cf67cfb6de2ef201881b7a8770c1">&#9670;&#160;</a></span>read_palette() <span class="overload">[2/2]</span></h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -1007,7 +1009,7 @@ Additional Inherited Members</h2></td></tr>
         <tr>
           <td class="paramkey"></td>
           <td></td>
-          <td class="paramtype"><a class="el" href="classcgv_1_1data_1_1data__view.html">data_view</a> &amp;&#160;</td>
+          <td class="paramtype"><a class="el" href="classcgv_1_1base_1_1single__method__action.html">const</a> <a class="el" href="classcgv_1_1data_1_1data__view.html">cgv::data::data_view</a> &amp;&#160;</td>
           <td class="paramname"><em>dv</em>&#160;</td>
         </tr>
         <tr>
@@ -1020,13 +1022,11 @@ Additional Inherited Members</h2></td></tr>
 
 <p>read the i-th palette in case of a paletted file format, and handle the data view as in the read_image method the standard implementation returns false </p>
 <p>read the i-th palette in case of a paletted file format, the standard implementation returns false</p>
-<p>In case of files with animated images, the palette can change for each image. Therefore call this method before each call to <code><a class="el" href="classcgv_1_1media_1_1image_1_1image__reader.html#ac871d242183818bcacb62613a6907611" title="read the whole image into the given data view.">read_image()</a></code>. </p>
+<p>In case of files with animated images, the palette can change for each image. Therefore call this method before each call to <code><a class="el" href="classcgv_1_1media_1_1image_1_1image__reader.html#a3d07c14186dd39b2baa9e136d24ca796" title="read the whole image into the given data view.">read_image()</a></code>. </p>
 
-<p class="definition">Definition at line <a class="el" href="image__reader_8cxx_source.html#l00211">211</a> of file <a class="el" href="image__reader_8cxx_source.html">image_reader.cxx</a>.</p>
+<p class="definition">Definition at line <a class="el" href="image__reader_8cxx_source.html#l00222">222</a> of file <a class="el" href="image__reader_8cxx_source.html">image_reader.cxx</a>.</p>
 
-<p class="reference">References <a class="el" href="data__view_8cxx_source.html#l00106">cgv::data::data_view_impl&lt; D, P &gt;::empty()</a>, <a class="el" href="image__reader_8h_source.html#l00069">palette_formats</a>, <a class="el" href="image__reader_8h_source.html#l00071">rd</a>, and <a class="el" href="image__reader_8cxx_source.html#l00046">cgv::media::image::abst_image_reader::read_palette()</a>.</p>
-
-<p class="reference">Referenced by <a class="el" href="texture_8cxx_source.html#l00257">cgv::render::texture::create_from_image()</a>, <a class="el" href="image__reader_8cxx_source.html#l00276">read_image()</a>, <a class="el" href="image__reader_8cxx_source.html#l00258">read_image()</a>, <a class="el" href="gl__tools_8cxx_source.html#l00049">cgv::render::gl::read_image_to_textures()</a>, and <a class="el" href="texture_8cxx_source.html#l00705">cgv::render::texture::replace_from_image()</a>.</p>
+<p class="reference">References <a class="el" href="data__view_8cxx_source.html#l00106">cgv::data::data_view_impl&lt; D, P &gt;::empty()</a>, <a class="el" href="image__reader_8h_source.html#l00067">palette_formats</a>, <a class="el" href="image__reader_8h_source.html#l00069">rd</a>, and <a class="el" href="image__reader_8cxx_source.html#l00047">cgv::media::image::abst_image_reader::read_palette()</a>.</p>
 
 </div>
 </div>
@@ -1048,9 +1048,9 @@ Additional Inherited Members</h2></td></tr>
 
 <p>jump to a specific image and return whether this was successful </p>
 
-<p class="definition">Definition at line <a class="el" href="image__reader_8cxx_source.html#l00203">203</a> of file <a class="el" href="image__reader_8cxx_source.html">image_reader.cxx</a>.</p>
+<p class="definition">Definition at line <a class="el" href="image__reader_8cxx_source.html#l00204">204</a> of file <a class="el" href="image__reader_8cxx_source.html">image_reader.cxx</a>.</p>
 
-<p class="reference">References <a class="el" href="image__reader_8h_source.html#l00071">rd</a>, and <a class="el" href="image__reader_8cxx_source.html#l00040">cgv::media::image::abst_image_reader::seek_image()</a>.</p>
+<p class="reference">References <a class="el" href="image__reader_8h_source.html#l00069">rd</a>, and <a class="el" href="image__reader_8cxx_source.html#l00041">cgv::media::image::abst_image_reader::seek_image()</a>.</p>
 
 </div>
 </div>
@@ -1098,9 +1098,9 @@ Additional Inherited Members</h2></td></tr>
 
 <p>Reimplemented from <a class="el" href="classcgv_1_1base_1_1base.html#a62d3cd5ae49c3e261f5c0e52bc59bd4f">cgv::base::base</a>.</p>
 
-<p class="definition">Definition at line <a class="el" href="image__reader_8cxx_source.html#l00318">318</a> of file <a class="el" href="image__reader_8cxx_source.html">image_reader.cxx</a>.</p>
+<p class="definition">Definition at line <a class="el" href="image__reader_8cxx_source.html#l00319">319</a> of file <a class="el" href="image__reader_8cxx_source.html">image_reader.cxx</a>.</p>
 
-<p class="reference">References <a class="el" href="image__reader_8h_source.html#l00071">rd</a>, and <a class="el" href="base_8cxx_source.html#l00181">cgv::base::base::set_void()</a>.</p>
+<p class="reference">References <a class="el" href="image__reader_8h_source.html#l00069">rd</a>, and <a class="el" href="base_8cxx_source.html#l00181">cgv::base::base::set_void()</a>.</p>
 
 </div>
 </div>
@@ -1121,7 +1121,7 @@ Additional Inherited Members</h2></td></tr>
 
 <p>whether the file can contain several images </p>
 
-<p class="definition">Definition at line <a class="el" href="image__reader_8cxx_source.html#l00173">173</a> of file <a class="el" href="image__reader_8cxx_source.html">image_reader.cxx</a>.</p>
+<p class="definition">Definition at line <a class="el" href="image__reader_8cxx_source.html#l00174">174</a> of file <a class="el" href="image__reader_8cxx_source.html">image_reader.cxx</a>.</p>
 
 </div>
 </div>
@@ -1143,15 +1143,15 @@ Additional Inherited Members</h2></td></tr>
 <p>return whether the reader supports per line reading (only valid after successfully opening an image file) </p>
 <p>whether the <a class="el" href="classcgv_1_1media_1_1image_1_1image__reader.html" title="the image reader chooses a specific reader automatically based on the extension of the given file nam...">image_reader</a> supports per line reading (only valid after successful opening an image file </p>
 
-<p class="definition">Definition at line <a class="el" href="image__reader_8cxx_source.html#l00229">229</a> of file <a class="el" href="image__reader_8cxx_source.html">image_reader.cxx</a>.</p>
+<p class="definition">Definition at line <a class="el" href="image__reader_8cxx_source.html#l00230">230</a> of file <a class="el" href="image__reader_8cxx_source.html">image_reader.cxx</a>.</p>
 
-<p class="reference">References <a class="el" href="image__reader_8h_source.html#l00071">rd</a>, and <a class="el" href="classcgv_1_1media_1_1image_1_1abst__image__reader.html#a5ada7393c90cdec16d2ca107872eb7aa">cgv::media::image::abst_image_reader::supports_per_line_read()</a>.</p>
+<p class="reference">References <a class="el" href="image__reader_8h_source.html#l00069">rd</a>, and <a class="el" href="classcgv_1_1media_1_1image_1_1abst__image__reader.html#a5ada7393c90cdec16d2ca107872eb7aa">cgv::media::image::abst_image_reader::supports_per_line_read()</a>.</p>
 
 </div>
 </div>
 <h2 class="groupheader">Member Data Documentation</h2>
-<a id="a9ddc1db8060bc3db63e484d33d6d92d7" name="a9ddc1db8060bc3db63e484d33d6d92d7"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a9ddc1db8060bc3db63e484d33d6d92d7">&#9670;&#160;</a></span>file_format_ptr</h2>
+<a id="a1966343fd08e27eb973ea2d37508547b" name="a1966343fd08e27eb973ea2d37508547b"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a1966343fd08e27eb973ea2d37508547b">&#9670;&#160;</a></span>file_format_ptr</h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -1160,7 +1160,7 @@ Additional Inherited Members</h2></td></tr>
   <td class="mlabels-left">
       <table class="memname">
         <tr>
-          <td class="memname"><a class="el" href="classcgv_1_1data_1_1data__format.html">data_format</a>* cgv::media::image::image_reader::file_format_ptr</td>
+          <td class="memname"><a class="el" href="classcgv_1_1data_1_1data__format.html">cgv::data::data_format</a>* cgv::media::image::image_reader::file_format_ptr</td>
         </tr>
       </table>
   </td>
@@ -1172,9 +1172,9 @@ Additional Inherited Members</h2></td></tr>
 
 <p>store the data format </p>
 
-<p class="definition">Definition at line <a class="el" href="image__reader_8h_source.html#l00067">67</a> of file <a class="el" href="image__reader_8h_source.html">image_reader.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="image__reader_8h_source.html#l00065">65</a> of file <a class="el" href="image__reader_8h_source.html">image_reader.h</a>.</p>
 
-<p class="reference">Referenced by <a class="el" href="image__reader_8cxx_source.html#l00167">get_file_format()</a>, <a class="el" href="image__reader_8cxx_source.html#l00140">open()</a>, <a class="el" href="image__reader_8cxx_source.html#l00276">read_image()</a>, <a class="el" href="image__reader_8cxx_source.html#l00130">read_image()</a>, <a class="el" href="image__reader_8cxx_source.html#l00120">read_image()</a>, <a class="el" href="image__reader_8cxx_source.html#l00258">read_image()</a>, <a class="el" href="image__reader_8cxx_source.html#l00250">read_line()</a>, and <a class="el" href="image__reader_8cxx_source.html#l00237">read_line()</a>.</p>
+<p class="reference">Referenced by <a class="el" href="image__reader_8cxx_source.html#l00168">get_file_format()</a>, <a class="el" href="image__reader_8cxx_source.html#l00141">open()</a>, <a class="el" href="image__reader_8cxx_source.html#l00259">read_image()</a>, <a class="el" href="image__reader_8cxx_source.html#l00277">read_image()</a>, <a class="el" href="image__reader_8cxx_source.html#l00121">read_image()</a>, <a class="el" href="image__reader_8cxx_source.html#l00131">read_image()</a>, <a class="el" href="image__reader_8cxx_source.html#l00238">read_line()</a>, and <a class="el" href="image__reader_8cxx_source.html#l00251">read_line()</a>.</p>
 
 </div>
 </div>
@@ -1200,14 +1200,14 @@ Additional Inherited Members</h2></td></tr>
 
 <p>last error message in case no reader is available </p>
 
-<p class="definition">Definition at line <a class="el" href="image__reader_8h_source.html#l00073">73</a> of file <a class="el" href="image__reader_8h_source.html">image_reader.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="image__reader_8h_source.html#l00071">71</a> of file <a class="el" href="image__reader_8h_source.html">image_reader.h</a>.</p>
 
-<p class="reference">Referenced by <a class="el" href="image__reader_8cxx_source.html#l00112">get_last_error()</a>, and <a class="el" href="image__reader_8cxx_source.html#l00140">open()</a>.</p>
+<p class="reference">Referenced by <a class="el" href="image__reader_8cxx_source.html#l00113">get_last_error()</a>, and <a class="el" href="image__reader_8cxx_source.html#l00141">open()</a>.</p>
 
 </div>
 </div>
-<a id="aa4b99d1b652a7329368dc5c5f81fb367" name="aa4b99d1b652a7329368dc5c5f81fb367"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#aa4b99d1b652a7329368dc5c5f81fb367">&#9670;&#160;</a></span>palette_formats</h2>
+<a id="a055dc9e984b63c9dc0d62da078abb378" name="a055dc9e984b63c9dc0d62da078abb378"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a055dc9e984b63c9dc0d62da078abb378">&#9670;&#160;</a></span>palette_formats</h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -1216,7 +1216,7 @@ Additional Inherited Members</h2></td></tr>
   <td class="mlabels-left">
       <table class="memname">
         <tr>
-          <td class="memname">std::vector&lt;<a class="el" href="classcgv_1_1data_1_1data__format.html">data_format</a>&gt;* cgv::media::image::image_reader::palette_formats</td>
+          <td class="memname">std::vector&lt;<a class="el" href="classcgv_1_1data_1_1data__format.html">cgv::data::data_format</a>&gt;* cgv::media::image::image_reader::palette_formats</td>
         </tr>
       </table>
   </td>
@@ -1228,9 +1228,9 @@ Additional Inherited Members</h2></td></tr>
 
 <p>store a pointer to the palette format vector </p>
 
-<p class="definition">Definition at line <a class="el" href="image__reader_8h_source.html#l00069">69</a> of file <a class="el" href="image__reader_8h_source.html">image_reader.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="image__reader_8h_source.html#l00067">67</a> of file <a class="el" href="image__reader_8h_source.html">image_reader.h</a>.</p>
 
-<p class="reference">Referenced by <a class="el" href="image__reader_8cxx_source.html#l00140">open()</a>, <a class="el" href="image__reader_8cxx_source.html#l00276">read_image()</a>, <a class="el" href="image__reader_8cxx_source.html#l00258">read_image()</a>, <a class="el" href="image__reader_8cxx_source.html#l00221">read_palette()</a>, and <a class="el" href="image__reader_8cxx_source.html#l00211">read_palette()</a>.</p>
+<p class="reference">Referenced by <a class="el" href="image__reader_8cxx_source.html#l00141">open()</a>, <a class="el" href="image__reader_8cxx_source.html#l00259">read_image()</a>, <a class="el" href="image__reader_8cxx_source.html#l00277">read_image()</a>, <a class="el" href="image__reader_8cxx_source.html#l00212">read_palette()</a>, and <a class="el" href="image__reader_8cxx_source.html#l00222">read_palette()</a>.</p>
 
 </div>
 </div>
@@ -1256,9 +1256,9 @@ Additional Inherited Members</h2></td></tr>
 
 <p>store a pointer to the chosen reader </p>
 
-<p class="definition">Definition at line <a class="el" href="image__reader_8h_source.html#l00071">71</a> of file <a class="el" href="image__reader_8h_source.html">image_reader.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="image__reader_8h_source.html#l00069">69</a> of file <a class="el" href="image__reader_8h_source.html">image_reader.h</a>.</p>
 
-<p class="reference">Referenced by <a class="el" href="image__reader_8cxx_source.html#l00295">close()</a>, <a class="el" href="image__reader_8cxx_source.html#l00195">get_current_image()</a>, <a class="el" href="image__reader_8cxx_source.html#l00187">get_image_duration()</a>, <a class="el" href="image__reader_8cxx_source.html#l00112">get_last_error()</a>, <a class="el" href="image__reader_8cxx_source.html#l00179">get_nr_images()</a>, <a class="el" href="image__reader_8cxx_source.html#l00310">get_property_declarations()</a>, <a class="el" href="image__reader_8cxx_source.html#l00303">get_type_name()</a>, <a class="el" href="image__reader_8cxx_source.html#l00325">get_void()</a>, <a class="el" href="image__reader_8cxx_source.html#l00140">open()</a>, <a class="el" href="image__reader_8cxx_source.html#l00276">read_image()</a>, <a class="el" href="image__reader_8cxx_source.html#l00258">read_image()</a>, <a class="el" href="image__reader_8cxx_source.html#l00250">read_line()</a>, <a class="el" href="image__reader_8cxx_source.html#l00237">read_line()</a>, <a class="el" href="image__reader_8cxx_source.html#l00221">read_palette()</a>, <a class="el" href="image__reader_8cxx_source.html#l00211">read_palette()</a>, <a class="el" href="image__reader_8cxx_source.html#l00203">seek_image()</a>, <a class="el" href="image__reader_8cxx_source.html#l00318">set_void()</a>, and <a class="el" href="image__reader_8cxx_source.html#l00229">supports_per_line_read()</a>.</p>
+<p class="reference">Referenced by <a class="el" href="image__reader_8cxx_source.html#l00296">close()</a>, <a class="el" href="image__reader_8cxx_source.html#l00196">get_current_image()</a>, <a class="el" href="image__reader_8cxx_source.html#l00188">get_image_duration()</a>, <a class="el" href="image__reader_8cxx_source.html#l00113">get_last_error()</a>, <a class="el" href="image__reader_8cxx_source.html#l00180">get_nr_images()</a>, <a class="el" href="image__reader_8cxx_source.html#l00311">get_property_declarations()</a>, <a class="el" href="image__reader_8cxx_source.html#l00304">get_type_name()</a>, <a class="el" href="image__reader_8cxx_source.html#l00326">get_void()</a>, <a class="el" href="image__reader_8cxx_source.html#l00141">open()</a>, <a class="el" href="image__reader_8cxx_source.html#l00259">read_image()</a>, <a class="el" href="image__reader_8cxx_source.html#l00277">read_image()</a>, <a class="el" href="image__reader_8cxx_source.html#l00238">read_line()</a>, <a class="el" href="image__reader_8cxx_source.html#l00251">read_line()</a>, <a class="el" href="image__reader_8cxx_source.html#l00212">read_palette()</a>, <a class="el" href="image__reader_8cxx_source.html#l00222">read_palette()</a>, <a class="el" href="image__reader_8cxx_source.html#l00204">seek_image()</a>, <a class="el" href="image__reader_8cxx_source.html#l00319">set_void()</a>, and <a class="el" href="image__reader_8cxx_source.html#l00230">supports_per_line_read()</a>.</p>
 
 </div>
 </div>

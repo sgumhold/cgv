@@ -52,38 +52,38 @@ var hierarchy =
       [ "cgv::base::standard_type_property_access< bool >", "structcgv_1_1base_1_1standard__type__property__access.html", [
         [ "cgv::base::property_access< bool >", "structcgv_1_1base_1_1property__access_3_01bool_01_4.html", null ]
       ] ],
+      [ "cgv::base::standard_type_property_access< cgv::type::int16_type >", "structcgv_1_1base_1_1standard__type__property__access.html", [
+        [ "cgv::base::property_access< cgv::type::int16_type >", "structcgv_1_1base_1_1property__access_3_01cgv_1_1type_1_1int16__type_01_4.html", null ]
+      ] ],
+      [ "cgv::base::standard_type_property_access< cgv::type::int32_type >", "structcgv_1_1base_1_1standard__type__property__access.html", [
+        [ "cgv::base::property_access< cgv::type::int32_type >", "structcgv_1_1base_1_1property__access_3_01cgv_1_1type_1_1int32__type_01_4.html", null ]
+      ] ],
+      [ "cgv::base::standard_type_property_access< cgv::type::int64_type >", "structcgv_1_1base_1_1standard__type__property__access.html", [
+        [ "cgv::base::property_access< cgv::type::int64_type >", "structcgv_1_1base_1_1property__access_3_01cgv_1_1type_1_1int64__type_01_4.html", null ]
+      ] ],
+      [ "cgv::base::standard_type_property_access< cgv::type::int8_type >", "structcgv_1_1base_1_1standard__type__property__access.html", [
+        [ "cgv::base::property_access< cgv::type::int8_type >", "structcgv_1_1base_1_1property__access_3_01cgv_1_1type_1_1int8__type_01_4.html", null ]
+      ] ],
+      [ "cgv::base::standard_type_property_access< cgv::type::uint16_type >", "structcgv_1_1base_1_1standard__type__property__access.html", [
+        [ "cgv::base::property_access< cgv::type::uint16_type >", "structcgv_1_1base_1_1property__access_3_01cgv_1_1type_1_1uint16__type_01_4.html", null ]
+      ] ],
+      [ "cgv::base::standard_type_property_access< cgv::type::uint32_type >", "structcgv_1_1base_1_1standard__type__property__access.html", [
+        [ "cgv::base::property_access< cgv::type::uint32_type >", "structcgv_1_1base_1_1property__access_3_01cgv_1_1type_1_1uint32__type_01_4.html", null ]
+      ] ],
+      [ "cgv::base::standard_type_property_access< cgv::type::uint64_type >", "structcgv_1_1base_1_1standard__type__property__access.html", [
+        [ "cgv::base::property_access< cgv::type::uint64_type >", "structcgv_1_1base_1_1property__access_3_01cgv_1_1type_1_1uint64__type_01_4.html", null ]
+      ] ],
+      [ "cgv::base::standard_type_property_access< cgv::type::uint8_type >", "structcgv_1_1base_1_1standard__type__property__access.html", [
+        [ "cgv::base::property_access< cgv::type::uint8_type >", "structcgv_1_1base_1_1property__access_3_01cgv_1_1type_1_1uint8__type_01_4.html", null ]
+      ] ],
       [ "cgv::base::standard_type_property_access< double >", "structcgv_1_1base_1_1standard__type__property__access.html", [
         [ "cgv::base::property_access< double >", "structcgv_1_1base_1_1property__access_3_01double_01_4.html", null ]
       ] ],
       [ "cgv::base::standard_type_property_access< float >", "structcgv_1_1base_1_1standard__type__property__access.html", [
         [ "cgv::base::property_access< float >", "structcgv_1_1base_1_1property__access_3_01float_01_4.html", null ]
       ] ],
-      [ "cgv::base::standard_type_property_access< int16_type >", "structcgv_1_1base_1_1standard__type__property__access.html", [
-        [ "cgv::base::property_access< int16_type >", "structcgv_1_1base_1_1property__access_3_01int16__type_01_4.html", null ]
-      ] ],
-      [ "cgv::base::standard_type_property_access< int32_type >", "structcgv_1_1base_1_1standard__type__property__access.html", [
-        [ "cgv::base::property_access< int32_type >", "structcgv_1_1base_1_1property__access_3_01int32__type_01_4.html", null ]
-      ] ],
-      [ "cgv::base::standard_type_property_access< int64_type >", "structcgv_1_1base_1_1standard__type__property__access.html", [
-        [ "cgv::base::property_access< int64_type >", "structcgv_1_1base_1_1property__access_3_01int64__type_01_4.html", null ]
-      ] ],
-      [ "cgv::base::standard_type_property_access< int8_type >", "structcgv_1_1base_1_1standard__type__property__access.html", [
-        [ "cgv::base::property_access< int8_type >", "structcgv_1_1base_1_1property__access_3_01int8__type_01_4.html", null ]
-      ] ],
       [ "cgv::base::standard_type_property_access< std::string >", "structcgv_1_1base_1_1standard__type__property__access.html", [
         [ "cgv::base::property_access< std::string >", "structcgv_1_1base_1_1property__access_3_01std_1_1string_01_4.html", null ]
-      ] ],
-      [ "cgv::base::standard_type_property_access< uint16_type >", "structcgv_1_1base_1_1standard__type__property__access.html", [
-        [ "cgv::base::property_access< uint16_type >", "structcgv_1_1base_1_1property__access_3_01uint16__type_01_4.html", null ]
-      ] ],
-      [ "cgv::base::standard_type_property_access< uint32_type >", "structcgv_1_1base_1_1standard__type__property__access.html", [
-        [ "cgv::base::property_access< uint32_type >", "structcgv_1_1base_1_1property__access_3_01uint32__type_01_4.html", null ]
-      ] ],
-      [ "cgv::base::standard_type_property_access< uint64_type >", "structcgv_1_1base_1_1standard__type__property__access.html", [
-        [ "cgv::base::property_access< uint64_type >", "structcgv_1_1base_1_1property__access_3_01uint64__type_01_4.html", null ]
-      ] ],
-      [ "cgv::base::standard_type_property_access< uint8_type >", "structcgv_1_1base_1_1standard__type__property__access.html", [
-        [ "cgv::base::property_access< uint8_type >", "structcgv_1_1base_1_1property__access_3_01uint8__type_01_4.html", null ]
       ] ],
       [ "cgv::base::emulated_property_access< T >", "structcgv_1_1base_1_1emulated__property__access.html", [
         [ "cgv::base::property_access< T >", "structcgv_1_1base_1_1property__access.html", null ]
@@ -1053,6 +1053,8 @@ var hierarchy =
       [ "cgv::utils::date_time", "structcgv_1_1utils_1_1date__time.html", null ]
     ] ],
     [ "cgv::utils::token", "structcgv_1_1utils_1_1token.html", [
+      [ "cgv::ppp::command_token", "structcgv_1_1ppp_1_1command__token.html", null ],
+      [ "cgv::ppp::expression_token", "structcgv_1_1ppp_1_1expression__token.html", null ],
       [ "cgv::utils::line", "structcgv_1_1utils_1_1line.html", null ],
       [ "cgv::utils::tokenizer", "classcgv_1_1utils_1_1tokenizer.html", null ],
       [ "cgv::utils::typed_token", "structcgv_1_1utils_1_1typed__token.html", null ]
@@ -1224,10 +1226,7 @@ var hierarchy =
     [ "tinyxml2::XMLVisitor", null, [
       [ "cgv::xml::FindElementByNameVisitor", "classcgv_1_1xml_1_1FindElementByNameVisitor.html", null ]
     ] ],
-    [ "token", "structtoken.html", [
-      [ "cgv::ppp::command_token", "structcgv_1_1ppp_1_1command__token.html", null ],
-      [ "cgv::ppp::expression_token", "structcgv_1_1ppp_1_1expression__token.html", null ]
-    ] ],
+    [ "token", "structtoken.html", null ],
     [ "cgv::media::transparency_alpha_interface< color< T, cm, EXTINCTION > >", "structcgv_1_1media_1_1transparency__alpha__interface.html", [
       [ "cgv::media::extinction_alpha_interface< color< T, cm, EXTINCTION > >", "structcgv_1_1media_1_1extinction__alpha__interface_3_01color_3_01T_00_01cm_00_01EXTINCTION_01_4_01_4.html", null ]
     ] ],
