@@ -123,9 +123,9 @@ Public Member Functions</h2></td></tr>
 <tr class="memitem:a2db5b2dda40f025a9762cd913826ec81" id="r_a2db5b2dda40f025a9762cd913826ec81"><td class="memItemLeft" align="right" valign="top">virtual const char *&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcgv_1_1media_1_1image_1_1abst__image__writer.html#a2db5b2dda40f025a9762cd913826ec81">get_supported_extensions</a> () const =0</td></tr>
 <tr class="memdesc:a2db5b2dda40f025a9762cd913826ec81"><td class="mdescLeft">&#160;</td><td class="mdescRight">return a string containing a colon separated list of extensions that can be read with this reader  <br /></td></tr>
 <tr class="separator:a2db5b2dda40f025a9762cd913826ec81"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:aae515b596ac954571c18c99e6ca1b211" id="r_aae515b596ac954571c18c99e6ca1b211"><td class="memItemLeft" align="right" valign="top">virtual bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcgv_1_1media_1_1image_1_1abst__image__writer.html#aae515b596ac954571c18c99e6ca1b211">is_format_supported</a> (const <a class="el" href="classcgv_1_1data_1_1component__format.html">component_format</a> &amp;cf, const std::vector&lt; <a class="el" href="classcgv_1_1data_1_1component__format.html">component_format</a> &gt; *palette_formats) const =0</td></tr>
-<tr class="memdesc:aae515b596ac954571c18c99e6ca1b211"><td class="mdescLeft">&#160;</td><td class="mdescRight">check if the chosen writer supports the given component format  <br /></td></tr>
-<tr class="separator:aae515b596ac954571c18c99e6ca1b211"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a7fd1c71b0db0af71e079f219abe35b49" id="r_a7fd1c71b0db0af71e079f219abe35b49"><td class="memItemLeft" align="right" valign="top">virtual bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcgv_1_1media_1_1image_1_1abst__image__writer.html#a7fd1c71b0db0af71e079f219abe35b49">is_format_supported</a> (const <a class="el" href="classcgv_1_1data_1_1component__format.html">cgv::data::component_format</a> &amp;cf, const std::vector&lt; <a class="el" href="classcgv_1_1data_1_1component__format.html">cgv::data::component_format</a> &gt; *palette_formats) const =0</td></tr>
+<tr class="memdesc:a7fd1c71b0db0af71e079f219abe35b49"><td class="mdescLeft">&#160;</td><td class="mdescRight">check if the chosen writer supports the given component format  <br /></td></tr>
+<tr class="separator:a7fd1c71b0db0af71e079f219abe35b49"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a1f6853b40fe068219c3aaf276982a92a" id="r_a1f6853b40fe068219c3aaf276982a92a"><td class="memItemLeft" align="right" valign="top">virtual const std::string &amp;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcgv_1_1media_1_1image_1_1abst__image__writer.html#a1f6853b40fe068219c3aaf276982a92a">get_last_error</a> () const =0</td></tr>
 <tr class="memdesc:a1f6853b40fe068219c3aaf276982a92a"><td class="mdescLeft">&#160;</td><td class="mdescRight">return a reference to the last error message  <br /></td></tr>
 <tr class="separator:a1f6853b40fe068219c3aaf276982a92a"><td class="memSeparator" colspan="2">&#160;</td></tr>
@@ -135,9 +135,9 @@ Public Member Functions</h2></td></tr>
 <tr class="memitem:a275771aa26008695649dd6002602f7b8" id="r_a275771aa26008695649dd6002602f7b8"><td class="memItemLeft" align="right" valign="top">virtual bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcgv_1_1media_1_1image_1_1abst__image__writer.html#a275771aa26008695649dd6002602f7b8">open</a> (const std::string &amp;file_name)=0</td></tr>
 <tr class="memdesc:a275771aa26008695649dd6002602f7b8"><td class="mdescLeft">&#160;</td><td class="mdescRight">open image file to write  <br /></td></tr>
 <tr class="separator:a275771aa26008695649dd6002602f7b8"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a717fa9ea631d35825fd0538fe7dba83b" id="r_a717fa9ea631d35825fd0538fe7dba83b"><td class="memItemLeft" align="right" valign="top">virtual bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcgv_1_1media_1_1image_1_1abst__image__writer.html#a717fa9ea631d35825fd0538fe7dba83b">write_image</a> (const <a class="el" href="classcgv_1_1data_1_1const__data__view.html">const_data_view</a> &amp;dv, const std::vector&lt; <a class="el" href="classcgv_1_1data_1_1const__data__view.html">const_data_view</a> &gt; *palettes, double duration)=0</td></tr>
-<tr class="memdesc:a717fa9ea631d35825fd0538fe7dba83b"><td class="mdescLeft">&#160;</td><td class="mdescRight">write one image  <br /></td></tr>
-<tr class="separator:a717fa9ea631d35825fd0538fe7dba83b"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:abc77c96a24a3e7eacd8f1a07fa9c81ca" id="r_abc77c96a24a3e7eacd8f1a07fa9c81ca"><td class="memItemLeft" align="right" valign="top">virtual bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcgv_1_1media_1_1image_1_1abst__image__writer.html#abc77c96a24a3e7eacd8f1a07fa9c81ca">write_image</a> (const <a class="el" href="classcgv_1_1data_1_1const__data__view.html">cgv::data::const_data_view</a> &amp;dv, const std::vector&lt; <a class="el" href="classcgv_1_1data_1_1const__data__view.html">cgv::data::const_data_view</a> &gt; *palettes, double duration)=0</td></tr>
+<tr class="memdesc:abc77c96a24a3e7eacd8f1a07fa9c81ca"><td class="mdescLeft">&#160;</td><td class="mdescRight">write one image  <br /></td></tr>
+<tr class="separator:abc77c96a24a3e7eacd8f1a07fa9c81ca"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a01f564d948d0c626a93d8be5de67915b" id="r_a01f564d948d0c626a93d8be5de67915b"><td class="memItemLeft" align="right" valign="top">virtual bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcgv_1_1media_1_1image_1_1abst__image__writer.html#a01f564d948d0c626a93d8be5de67915b">close</a> ()=0</td></tr>
 <tr class="memdesc:a01f564d948d0c626a93d8be5de67915b"><td class="mdescLeft">&#160;</td><td class="mdescRight">close image [stream]  <br /></td></tr>
 <tr class="separator:a01f564d948d0c626a93d8be5de67915b"><td class="memSeparator" colspan="2">&#160;</td></tr>
@@ -273,7 +273,7 @@ Additional Inherited Members</h2></td></tr>
 <a name="details" id="details"></a><h2 class="groupheader">Detailed Description</h2>
 <div class="textblock"><p>abstract interface for image readers </p>
 
-<p class="definition">Definition at line <a class="el" href="image__writer_8h_source.html#l00018">18</a> of file <a class="el" href="image__writer_8h_source.html">image_writer.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="image__writer_8h_source.html#l00016">16</a> of file <a class="el" href="image__writer_8h_source.html">image_writer.h</a>.</p>
 </div><h2 class="groupheader">Member Function Documentation</h2>
 <a id="a46b4092bed1f1c79a58d93eae7f38170" name="a46b4092bed1f1c79a58d93eae7f38170"></a>
 <h2 class="memtitle"><span class="permalink"><a href="#a46b4092bed1f1c79a58d93eae7f38170">&#9670;&#160;</a></span>clone()</h2>
@@ -331,7 +331,7 @@ Additional Inherited Members</h2></td></tr>
 
 <p>Implemented in <a class="el" href="classcgv_1_1media_1_1image_1_1bmp__writer.html#abeda18bd84d698b1653c6954f08816aa">cgv::media::image::bmp_writer</a>.</p>
 
-<p class="reference">Referenced by <a class="el" href="image__writer_8cxx_source.html#l00121">cgv::media::image::image_writer::close()</a>.</p>
+<p class="reference">Referenced by <a class="el" href="image__writer_8cxx_source.html#l00122">cgv::media::image::image_writer::close()</a>.</p>
 
 </div>
 </div>
@@ -362,7 +362,7 @@ Additional Inherited Members</h2></td></tr>
 
 <p>Implemented in <a class="el" href="classcgv_1_1media_1_1image_1_1bmp__writer.html#a84b3e85a3756c163f5971c4ebb883d03">cgv::media::image::bmp_writer</a>.</p>
 
-<p class="reference">Referenced by <a class="el" href="image__writer_8cxx_source.html#l00107">cgv::media::image::image_writer::get_last_error()</a>.</p>
+<p class="reference">Referenced by <a class="el" href="image__writer_8cxx_source.html#l00108">cgv::media::image::image_writer::get_last_error()</a>.</p>
 
 </div>
 </div>
@@ -395,8 +395,8 @@ Additional Inherited Members</h2></td></tr>
 
 </div>
 </div>
-<a id="aae515b596ac954571c18c99e6ca1b211" name="aae515b596ac954571c18c99e6ca1b211"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#aae515b596ac954571c18c99e6ca1b211">&#9670;&#160;</a></span>is_format_supported()</h2>
+<a id="a7fd1c71b0db0af71e079f219abe35b49" name="a7fd1c71b0db0af71e079f219abe35b49"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a7fd1c71b0db0af71e079f219abe35b49">&#9670;&#160;</a></span>is_format_supported()</h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -407,13 +407,13 @@ Additional Inherited Members</h2></td></tr>
         <tr>
           <td class="memname">virtual bool cgv::media::image::abst_image_writer::is_format_supported </td>
           <td>(</td>
-          <td class="paramtype">const <a class="el" href="classcgv_1_1data_1_1component__format.html">component_format</a> &amp;&#160;</td>
+          <td class="paramtype">const <a class="el" href="classcgv_1_1data_1_1component__format.html">cgv::data::component_format</a> &amp;&#160;</td>
           <td class="paramname"><em>cf</em>, </td>
         </tr>
         <tr>
           <td class="paramkey"></td>
           <td></td>
-          <td class="paramtype">const std::vector&lt; <a class="el" href="classcgv_1_1data_1_1component__format.html">component_format</a> &gt; *&#160;</td>
+          <td class="paramtype">const std::vector&lt; <a class="el" href="classcgv_1_1data_1_1component__format.html">cgv::data::component_format</a> &gt; *&#160;</td>
           <td class="paramname"><em>palette_formats</em>&#160;</td>
         </tr>
         <tr>
@@ -431,9 +431,9 @@ Additional Inherited Members</h2></td></tr>
 
 <p>check if the chosen writer supports the given component format </p>
 
-<p>Implemented in <a class="el" href="classcgv_1_1media_1_1image_1_1bmp__writer.html#a7b1bd22bbddd119dfe68d70435747a46">cgv::media::image::bmp_writer</a>.</p>
+<p>Implemented in <a class="el" href="classcgv_1_1media_1_1image_1_1bmp__writer.html#a74200657e783a8f68d4feb120a9b33d0">cgv::media::image::bmp_writer</a>.</p>
 
-<p class="reference">Referenced by <a class="el" href="image__writer_8cxx_source.html#l00099">cgv::media::image::image_writer::is_format_supported()</a>.</p>
+<p class="reference">Referenced by <a class="el" href="image__writer_8cxx_source.html#l00100">cgv::media::image::image_writer::is_format_supported()</a>.</p>
 
 </div>
 </div>
@@ -465,7 +465,7 @@ Additional Inherited Members</h2></td></tr>
 
 <p>Implemented in <a class="el" href="classcgv_1_1media_1_1image_1_1bmp__writer.html#ab2e0b97c92b93f52ddf401af3b6e038b">cgv::media::image::bmp_writer</a>.</p>
 
-<p class="reference">Referenced by <a class="el" href="image__writer_8cxx_source.html#l00131">cgv::media::image::image_writer::write_image()</a>.</p>
+<p class="reference">Referenced by <a class="el" href="image__writer_8cxx_source.html#l00132">cgv::media::image::image_writer::write_image()</a>.</p>
 
 </div>
 </div>
@@ -494,14 +494,14 @@ Additional Inherited Members</h2></td></tr>
 
 <p>return whether multiple images are supported, default implementation returns false </p>
 
-<p class="definition">Definition at line <a class="el" href="image__writer_8cxx_source.html#l00042">42</a> of file <a class="el" href="image__writer_8cxx_source.html">image_writer.cxx</a>.</p>
+<p class="definition">Definition at line <a class="el" href="image__writer_8cxx_source.html#l00043">43</a> of file <a class="el" href="image__writer_8cxx_source.html">image_writer.cxx</a>.</p>
 
-<p class="reference">Referenced by <a class="el" href="image__writer_8cxx_source.html#l00146">cgv::media::image::image_writer::supports_multiple_images()</a>.</p>
+<p class="reference">Referenced by <a class="el" href="image__writer_8cxx_source.html#l00147">cgv::media::image::image_writer::supports_multiple_images()</a>.</p>
 
 </div>
 </div>
-<a id="a717fa9ea631d35825fd0538fe7dba83b" name="a717fa9ea631d35825fd0538fe7dba83b"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a717fa9ea631d35825fd0538fe7dba83b">&#9670;&#160;</a></span>write_image()</h2>
+<a id="abc77c96a24a3e7eacd8f1a07fa9c81ca" name="abc77c96a24a3e7eacd8f1a07fa9c81ca"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#abc77c96a24a3e7eacd8f1a07fa9c81ca">&#9670;&#160;</a></span>write_image()</h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -512,13 +512,13 @@ Additional Inherited Members</h2></td></tr>
         <tr>
           <td class="memname">virtual bool cgv::media::image::abst_image_writer::write_image </td>
           <td>(</td>
-          <td class="paramtype">const <a class="el" href="classcgv_1_1data_1_1const__data__view.html">const_data_view</a> &amp;&#160;</td>
+          <td class="paramtype">const <a class="el" href="classcgv_1_1data_1_1const__data__view.html">cgv::data::const_data_view</a> &amp;&#160;</td>
           <td class="paramname"><em>dv</em>, </td>
         </tr>
         <tr>
           <td class="paramkey"></td>
           <td></td>
-          <td class="paramtype">const std::vector&lt; <a class="el" href="classcgv_1_1data_1_1const__data__view.html">const_data_view</a> &gt; *&#160;</td>
+          <td class="paramtype">const std::vector&lt; <a class="el" href="classcgv_1_1data_1_1const__data__view.html">cgv::data::const_data_view</a> &gt; *&#160;</td>
           <td class="paramname"><em>palettes</em>, </td>
         </tr>
         <tr>
@@ -542,9 +542,9 @@ Additional Inherited Members</h2></td></tr>
 
 <p>write one image </p>
 
-<p>Implemented in <a class="el" href="classcgv_1_1media_1_1image_1_1bmp__writer.html#a434a43edb1218f01f2b3c054d6bd1f55">cgv::media::image::bmp_writer</a>.</p>
+<p>Implemented in <a class="el" href="classcgv_1_1media_1_1image_1_1bmp__writer.html#aeeee2dce16cd469230e5251a608a51b5">cgv::media::image::bmp_writer</a>.</p>
 
-<p class="reference">Referenced by <a class="el" href="image__writer_8cxx_source.html#l00131">cgv::media::image::image_writer::write_image()</a>.</p>
+<p class="reference">Referenced by <a class="el" href="image__writer_8cxx_source.html#l00132">cgv::media::image::image_writer::write_image()</a>.</p>
 
 </div>
 </div>
@@ -569,7 +569,7 @@ Additional Inherited Members</h2></td></tr>
 </table>
 </div><div class="memdoc">
 
-<p class="definition">Definition at line <a class="el" href="image__writer_8h_source.html#l00021">21</a> of file <a class="el" href="image__writer_8h_source.html">image_writer.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="image__writer_8h_source.html#l00019">19</a> of file <a class="el" href="image__writer_8h_source.html">image_writer.h</a>.</p>
 
 </div>
 </div>

@@ -4,7 +4,7 @@ var searchData=
   ['package_5fsize_1',['package_size',['../classcgv_1_1os_1_1queued__input__thread.html#a1194608605933ccc4b3cb10031dd2332',1,'cgv::os::queued_input_thread']]],
   ['packages_2',['packages',['../classcgv_1_1os_1_1queued__input__thread.html#a3b540ca8eeb2b63d70a2d9d948c7c71e',1,'cgv::os::queued_input_thread']]],
   ['packages_5fper_5fblock_3',['packages_per_block',['../classcgv_1_1os_1_1queued__input__thread.html#a2e2679eadd5fd4cf501d26d475bed2f5',1,'cgv::os::queued_input_thread']]],
-  ['palette_5fformats_4',['palette_formats',['../classcgv_1_1media_1_1image_1_1image__reader.html#aa4b99d1b652a7329368dc5c5f81fb367',1,'cgv::media::image::image_reader']]],
+  ['palette_5fformats_4',['palette_formats',['../classcgv_1_1media_1_1image_1_1image__reader.html#a055dc9e984b63c9dc0d62da078abb378',1,'cgv::media::image::image_reader']]],
   ['parallax_5fzero_5fscale_5',['parallax_zero_scale',['../classcgv_1_1render_1_1stereo__view.html#a901c9a7fa596c6b0485a3f2f7f9fb284',1,'cgv::render::stereo_view']]],
   ['parameters_6',['parameters',['../structcgv_1_1base_1_1command__info.html#acd2e669aa904729e803c62dd5aff5dbd',1,'cgv::base::command_info::parameters'],['../structcgv_1_1media_1_1mesh_1_1group__info.html#a22e30b8c9e6cbaf597ecbf6cf9bc41d4',1,'cgv::media::mesh::group_info::parameters']]],
   ['parent_7',['parent',['../classcgv_1_1base_1_1node.html#a28286049d6db60c75aedf4c6358dfc12',1,'cgv::base::node']]],

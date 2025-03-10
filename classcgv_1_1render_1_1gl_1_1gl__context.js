@@ -35,7 +35,7 @@ var classcgv_1_1render_1_1gl_1_1gl__context =
     [ "pop_window_transformation_array", "classcgv_1_1render_1_1gl_1_1gl__context.html#a39e8bdd03f3f7da889ba34d278da7f4a", null ],
     [ "prepare_attributes", "classcgv_1_1render_1_1gl_1_1gl__context.html#a3d355d69a65090c37c89b14f0b0b497a", null ],
     [ "push_pixel_coords", "classcgv_1_1render_1_1gl_1_1gl__context.html#a079bce723e97cdca2dd84e50268e4519", null ],
-    [ "read_frame_buffer", "classcgv_1_1render_1_1gl_1_1gl__context.html#affd80cb544f48c550eb40effb9e764d2", null ],
+    [ "read_frame_buffer", "classcgv_1_1render_1_1gl_1_1gl__context.html#a6a7344bc83ce0b5221c4099b0481b55e", null ],
     [ "recover_from_external_frame_buffer_change", "classcgv_1_1render_1_1gl_1_1gl__context.html#a481ab612b2c30840de6b9646e3a6558a", null ],
     [ "recover_from_external_viewport_change", "classcgv_1_1render_1_1gl_1_1gl__context.html#a600ef83bbadf8a0257266cca1565c330", null ],
     [ "ref_default_shader_program", "classcgv_1_1render_1_1gl_1_1gl__context.html#a3a2796c75efe81c34caf6b9a34a33841", null ],

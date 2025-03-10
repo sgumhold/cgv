@@ -5,7 +5,7 @@ var searchData=
   ['on_5fdevice_5fchange_2',['on_device_change',['../classcgv_1_1gui_1_1vr__server.html#abb09269c3ebb01fc090013c51c6e1df5',1,'cgv::gui::vr_server::on_device_change'],['../classcgv_1_1gui_1_1gamepad__server.html#a9eddd5b44d2d832003813b5b3463b1f0',1,'cgv::gui::gamepad_server::on_device_change']]],
   ['on_5fevent_3',['on_event',['../classcgv_1_1gui_1_1vr__server.html#aff611e8278a6f1ee7eec1843366b9fbe',1,'cgv::gui::vr_server::on_event'],['../classcgv_1_1gui_1_1gamepad__server.html#a31d009c2d543dbb3b82994efb68611f2',1,'cgv::gui::gamepad_server::on_event']]],
   ['on_5fopen_5fstate_5fchange_4',['on_open_state_change',['../classcgv_1_1gui_1_1gui__group.html#ae49db61be58698d719d94433fef7c2e4',1,'cgv::gui::gui_group']]],
-  ['on_5fselection_5fchange_5',['on_selection_change',['../classcgv_1_1gui_1_1gui__group.html#a9db3a0df5ed34ce1d7e98c9117010afb',1,'cgv::gui::gui_group']]],
+  ['on_5fselection_5fchange_5',['on_selection_change',['../classcgv_1_1gui_1_1gui__group.html#a1835e03c44c02c9da2cad9f0c1c44cb1',1,'cgv::gui::gui_group']]],
   ['on_5fstatus_5fchange_6',['on_status_change',['../classcgv_1_1gui_1_1vr__server.html#a2179af42e2bf04ef58bdc2d5318d5b77',1,'cgv::gui::vr_server']]],
   ['opacity_7',['opacity',['../classcgv_1_1media_1_1illum_1_1obj__material.html#a3b5acf84794654bf04bfa607594b0e6b',1,'cgv::media::illum::obj_material::opacity'],['../structcgv_1_1render_1_1slab__render__style.html#a5bca25bd679a6e5e9e76e9098bb4ee13',1,'cgv::render::slab_render_style::opacity']]],
   ['opacity_5fgamma_8',['opacity_gamma',['../classcgv_1_1plot_1_1plot__base.html#a4431601882036ea98bc165ee05df45af',1,'cgv::plot::plot_base']]],

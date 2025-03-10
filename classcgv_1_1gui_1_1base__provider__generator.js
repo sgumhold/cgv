@@ -6,7 +6,7 @@ var classcgv_1_1gui_1_1base__provider__generator =
     [ "pvd_map_iter", "classcgv_1_1gui_1_1base__provider__generator.html#ad6d714cdeba0af0aa283106d27832f4b", null ],
     [ "pvd_map_type", "classcgv_1_1gui_1_1base__provider__generator.html#a4d833b2c49133d5563bbd7c7f02ce060", null ],
     [ "base_provider_generator", "classcgv_1_1gui_1_1base__provider__generator.html#aa7af40d8553c9f0687f3e033ffb98af3", null ],
-    [ "generate_object_gui", "classcgv_1_1gui_1_1base__provider__generator.html#a61497f2b7b9e30e7ad5f3a07e276ce4b", null ],
+    [ "generate_object_gui", "classcgv_1_1gui_1_1base__provider__generator.html#a098de2b2f78ae6f2669de517bbd0e57a", null ],
     [ "get_type_name", "classcgv_1_1gui_1_1base__provider__generator.html#ab72d5d46391c07b2c4f73ae63ecfd266", null ],
     [ "on_set", "classcgv_1_1gui_1_1base__provider__generator.html#a8635a7085fa1b33b96abf9f7d7b4e85f", null ],
     [ "parse_gui_file", "classcgv_1_1gui_1_1base__provider__generator.html#a19160706d72650eeefe5861a4f880937", null ],
