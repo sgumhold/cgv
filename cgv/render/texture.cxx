@@ -7,20 +7,21 @@
 #include <cgv/utils/file.h>
 #include <cgv/utils/statistics.h>
 
+using namespace cgv::data;
+using namespace cgv::media::image;
 using namespace cgv::utils;
 using namespace cgv::utils::file;
-using namespace cgv::media::image;
 
 namespace cgv {
 	namespace render {
 
 /** construct from description string and most commonly used
-    texture parameters. The description can define a component
+	texture parameters. The description can define a component
 	 format as described in \c cgv::data::component_format::set_component_format()
 	 or a data format as described in \c cgv::data::data_format::set_data_format(). */
 texture::texture(const std::string& description, 
 		  TextureFilter _mag_filter, 
-	     TextureFilter _min_filter, 
+		 TextureFilter _min_filter, 
 		  TextureWrap   _wrap_s,
 		  TextureWrap   _wrap_t,
 		  TextureWrap   _wrap_r) : data::data_format(description)
@@ -36,7 +37,7 @@ texture::texture(const std::string& description,
 }
 
 /** destruct texture, the destructor can be called without context 
-    if the destruct method has been called or no creation has 
+	if the destruct method has been called or no creation has 
 	 taken place */
 texture::~texture()
 {
@@ -115,7 +116,7 @@ void texture::set_border_color(float r, float g, float b, float a)
 	state_out_of_date = true;
 }
 /** set the minification filters, if minification is set to TF_ANISOTROP, 
-    the second floating point parameter specifies the degree of anisotropy */
+	the second floating point parameter specifies the degree of anisotropy */
 void texture::set_min_filter(TextureFilter _min_filter, float _anisotropy)
 {
 	min_filter = _min_filter;
@@ -203,7 +204,7 @@ void texture::ensure_state(const context& ctx) const
 }
 
 /** create the texture of dimension and resolution specified in 
-    the data format base class */
+	the data format base class */
 bool texture::create(const context& ctx, TextureType _tt, unsigned width, unsigned height, unsigned depth)
 {
 	if (is_created())
@@ -513,7 +514,7 @@ bool texture::create_mipmaps(const context& ctx)
 }
 
 /** generate mipmaps automatically, only supported if 
-    framebuffer objects are supported by the GPU */
+	framebuffer objects are supported by the GPU */
 bool texture::generate_mipmaps(const context& ctx)
 {
 	return ctx.texture_generate_mipmaps(*this, get_nr_dimensions());
@@ -530,7 +531,7 @@ bool texture::complete_create(const context& ctx, bool created)
 
 
 /** create texture from the currently set read buffer, where
-    x, y, width and height define the to be used rectangle of 
+	x, y, width and height define the to be used rectangle of 
 	 the read buffer. The dimension and resolution of the texture
 	 format are updated automatically. If level is not specified 
 	 or set to -1 mipmaps are generated. */
@@ -551,7 +552,7 @@ bool texture::create_from_buffer(const context& ctx, int x, int y, int width, in
 }
 
 /** create texture from data view. Use dimension and resolution
-    of data view but the component format of the texture.
+	of data view but the component format of the texture.
 	If level is not specified or set to -1 mipmaps are generated. 
 	If cube_side is specified, and data view is 2D, create one of
 	the six sides of a cubemap.
@@ -615,7 +616,7 @@ bool texture::create(const context& ctx, const cgv::data::const_data_view& data,
 }
 
 /** replace a block within a 1d texture with the given data. 
-    If level is not specified, level 0 is set and if a mipmap 
+	If level is not specified, level 0 is set and if a mipmap 
 	 has been created before, coarser levels are updated also. */
 bool texture::replace(const context& ctx, int x, const cgv::data::const_data_view& data, int level, const std::vector<data_view>* palettes)
 {
@@ -631,7 +632,7 @@ bool texture::replace(const context& ctx, int x, const cgv::data::const_data_vie
 }
 
 /** replace a block within a 2d texture with the given data. 
-    If level is not specified, level 0 is set and if a mipmap 
+	If level is not specified, level 0 is set and if a mipmap 
 	 has been created before, coarser levels are updated also. */
 bool texture::replace(const context& ctx, int x, int y, const cgv::data::const_data_view& data, int level, const std::vector<data_view>* palettes)
 {
@@ -647,8 +648,8 @@ bool texture::replace(const context& ctx, int x, int y, const cgv::data::const_d
 }
 
 /** replace a block within a 3d texture or a side of a cube map
-    with the given data. 
-    If level is not specified, level 0 is set and if a mipmap 
+	with the given data. 
+	If level is not specified, level 0 is set and if a mipmap 
 	 has been created before, coarser levels are updated also. */
 bool texture::replace(const context& ctx, int x, int y, int z_or_cube_side, const cgv::data::const_data_view& data, int level, const std::vector<data_view>* palettes)
 {
@@ -701,7 +702,7 @@ bool texture::replace_from_image(const context& ctx, const std::string& file_nam
 }
 
 /** same as previous method but use the passed data format and data view to
-    store the content of the image. */
+	store the content of the image. */
 bool texture::replace_from_image(cgv::data::data_format& df, cgv::data::data_view& dv, const context& ctx,
 								 const std::string& file_name, int x, int y, int z_or_cube_side, 
 								 int level)
@@ -740,7 +741,7 @@ bool texture::destruct(const context& ctx)
 /**@name methods that change the current gpu context */
 //@{
 /** enable this texture in the given texture unit, -1 corresponds to 
-    the current unit. */
+	the current unit. */
 bool texture::enable(const context& ctx, int _tex_unit)
 {
 	if (!handle) {

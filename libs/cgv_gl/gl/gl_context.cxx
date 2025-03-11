@@ -26,6 +26,7 @@
 
 using namespace cgv::base;
 using namespace cgv::type;
+using namespace cgv::type::info;
 using namespace cgv::gui;
 using namespace cgv::os;
 using namespace cgv::math;

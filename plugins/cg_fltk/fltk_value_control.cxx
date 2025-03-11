@@ -20,7 +20,7 @@
 #endif
 #include <iostream>
 
-
+using namespace cgv::gui;
 using namespace cgv::type;
 
 /** implement property management of standard valuator properties

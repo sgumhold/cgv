@@ -16,8 +16,6 @@
 #define debug_assert(x)
 #endif
 
-//using namespace std;
-
 namespace rbp {
 
 struct RectSize

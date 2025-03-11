@@ -93,7 +93,7 @@ namespace cgv {
 			for(size_t i = 0; i < noise_data.size(); ++i)
 				noise_data[i] = static_cast<uint8_t>(dist(rng));
 
-			cgv::data::data_view dv = cgv::data::data_view(new cgv::data::data_format(size, size, TI_UINT8, cgv::data::CF_R), noise_data.data());
+			cgv::data::data_view dv = cgv::data::data_view(new cgv::data::data_format(size, size, cgv::type::info::TI_UINT8, cgv::data::CF_R), noise_data.data());
 			noise_texture.create(ctx, dv, 0);
 		}
 

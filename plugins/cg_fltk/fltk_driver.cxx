@@ -315,6 +315,7 @@ std::string fltk_driver::file_save_dialog(const std::string& title, const std::s
 #include <cgv/gui/base_provider_generator.h>*/
 
 using namespace cgv::base;
+using namespace cgv::gui;
 
 void ensure_lock()
 {
