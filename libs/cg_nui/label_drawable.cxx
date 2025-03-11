@@ -15,6 +15,16 @@ uint32_t label_drawable::add_label(const std::string& text, const rgba& bg_clr, 
 	label_visibilities.push_back(1);
 	return li;
 }
+void label_drawable::remove_all_labels()
+{
+	lm.remove_all_labels();
+	label_positions.clear();
+	label_orientations.clear();
+	label_extents.clear();
+	label_texture_ranges.clear();
+	label_coord_systems.clear();
+	label_visibilities.clear();
+}
 void label_drawable::update_label_text(uint32_t li, const std::string& text) 
 {
 	lm.update_label_text(li, text); 
