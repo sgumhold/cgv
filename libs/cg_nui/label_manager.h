@@ -12,7 +12,10 @@
 namespace cgv {
 	namespace nui {
 
-		/// data stored in the label_manager per label
+		/// collection of attributes stored per label, where width and height
+		/// are protected as their sign specifies whether label width and or
+		/// height is automatically recomputed on text updates from text and border
+		/// extents.
 		struct label
 		{
 		protected:
@@ -31,7 +34,7 @@ namespace cgv {
 			/// use this to query height
 			int get_height() const { return std::abs(height); }
 		};
-
+		/// different states of a label
 		enum LabelState
 		{
 			LS_CURRENT = 0,
@@ -40,7 +43,9 @@ namespace cgv {
 			LS_NEW_COLOR = 4
 		};
 
-		/// use label manager to organize an atlas texture for drawing text labeled rectangles
+		/// manages a set of rectangular shaped labels, that are packed into a rectangle
+		/// and rastered into a texture. It supports updates of size, text, background color 
+		/// and border width with automatic repacking and rasterization of texture atlas.
 		class CGV_API label_manager
 		{
 		public:
@@ -110,6 +115,8 @@ namespace cgv {
 			uint32_t add_label(const std::string& text,
 				const rgba& bg_clr, int _border_x = 4, int _border_y = 4,
 				int _width = -1, int height = -1);
+			/// remove all labels
+			void remove_all_labels();
 			/// fix the label size of a previously unfixed label. Call after compute_label_sizes()
 			void fix_label_size(uint32_t li);
 			/// return whether labels need to be packed
@@ -128,9 +135,17 @@ namespace cgv {
 			/*! if label is not a fixed label set packing out of date otherwise
 				only texture computation is set out of date */
 			void update_label_text(uint32_t i, const std::string& new_text);
-			/// update label size, what always sets packing out of date
+			/// <summary>
+			/// Explicitly set label size in texels. If width and or height are negative values
+			/// the label size is automatically computed from its text size and border setting and
+			/// recomputed if the text is updated. If positive values are set, these are fixed and 
+			/// no automatic recomputation happens if the label text is updated.
+			/// </summary>
+			/// <param name="li">index of label</param>
+			/// <param name="w">new width in texel</param>
+			/// <param name="h">new height in texel</param>
 			void update_label_size(uint32_t i, int w, int h);
-			/// update label color, what always sets packing out of date
+			/// update label color, what sets texture out of date
 			void update_label_background_color(uint32_t i, const rgba& background_color);
 			/// you can enforce texture recomputation in ensure_texture_uptodate() by calling this function (typically you do not need this function)
 			void set_texture_outofdate() { texture_outofdate = true; }
