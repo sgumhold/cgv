@@ -120,7 +120,7 @@ public:
 	/// set all components of vector to constant value a
 	fvec & operator = (const T &a) { std::fill(v, v+N, a); return *this; }
 	/// set to the contents of the given std::array with same size
-	fvec & operator = (const std::array<T, N>& arr) { std::copy(arr.cbegin(), arr.cend(), v); return *this; }
+	void assign(const std::array<T, N>& arr) { std::copy(arr.cbegin(), arr.cend(), v); }
 	/// set the first two components
 	void set(const T &x, const T &y) { v[0] = x; v[1] = y; }
 	/// set the first three components

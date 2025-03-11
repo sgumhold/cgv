@@ -6,6 +6,7 @@
 #include <cgv/render/view.h>
 #include <iostream>
 
+using namespace cgv::render;
 using namespace cgv::render::gl;
 using namespace cgv::signal;
 
@@ -68,7 +69,7 @@ bool gl_delaunay_mesh_draw::init(context& ctx)
 {
 
 	std::vector<cgv::render::view*> views;
-	cgv::base::find_interface(base_ptr(this),views);
+	cgv::base::find_interface(cgv::base::base_ptr(this),views);
 	for (unsigned i = 0; i < views.size(); ++i) {
 		views[i]->set_eye_keep_extent(cgv::dvec3(0.0, 0.0, 10.0));
 		views[i]->set_y_extent_at_focus(2);
@@ -634,5 +635,5 @@ gl_delaunay_mesh_draw::Result gl_delaunay_mesh_draw::handle_event(int event)
 
 #include <cgv/base/register.h>
 
-factory_registration<gl_delaunay_mesh_draw> del_fac("New/Algorithms/Delaunay", 'D', true);
+cgv::base::factory_registration<gl_delaunay_mesh_draw> del_fac("New/Algorithms/Delaunay", 'D', true);
 

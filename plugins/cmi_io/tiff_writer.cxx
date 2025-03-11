@@ -6,6 +6,8 @@
 
 #pragma warning (disable:4996)
 
+using namespace cgv::data;
+
 namespace cgv {
 	namespace reflect {
 
@@ -56,7 +58,7 @@ const std::string& tiff_writer::get_last_error() const
 }
 
 /// construct a copy of the reader
-abst_image_writer* tiff_writer::clone() const
+cgv::media::image::abst_image_writer* tiff_writer::clone() const
 {
 	return new tiff_writer();
 }
@@ -73,13 +75,13 @@ bool tiff_writer::is_format_supported(const component_format& cf, const std::vec
 		return false;
 
 	switch (cf.get_component_type()) {
-	case TI_UINT8 :
-	case TI_UINT16 :
-	case TI_UINT32 :
-	case TI_INT8 :
-	case TI_INT16 :
-	case TI_INT32 :
-	case TI_FLT32 :
+	case cgv::type::info::TI_UINT8 :
+	case cgv::type::info::TI_UINT16 :
+	case cgv::type::info::TI_UINT32 :
+	case cgv::type::info::TI_INT8 :
+	case cgv::type::info::TI_INT16 :
+	case cgv::type::info::TI_INT32 :
+	case cgv::type::info::TI_FLT32 :
 		break;
 	default:
 		return false;
@@ -135,13 +137,13 @@ bool tiff_writer::write_image(const const_data_view& dv, const std::vector<const
 	}
 	uint32 format;
 	switch (dv.get_format()->get_component_type()) {
-	case TI_UINT8 :
-	case TI_UINT16 :
-	case TI_UINT32 : format = SAMPLEFORMAT_UINT; break;
-	case TI_INT8 :
-	case TI_INT16 :
-	case TI_INT32 : format = SAMPLEFORMAT_INT; break;
-	case TI_FLT32 : format = SAMPLEFORMAT_IEEEFP; break;
+	case cgv::type::info::TI_UINT8 :
+	case cgv::type::info::TI_UINT16 :
+	case cgv::type::info::TI_UINT32 : format = SAMPLEFORMAT_UINT; break;
+	case cgv::type::info::TI_INT8 :
+	case cgv::type::info::TI_INT16 :
+	case cgv::type::info::TI_INT32 : format = SAMPLEFORMAT_INT; break;
+	case cgv::type::info::TI_FLT32 : format = SAMPLEFORMAT_IEEEFP; break;
 	}
 	TIFFSetField(fp, TIFFTAG_SAMPLEFORMAT, format);
 	switch (dv.get_format()->get_standard_component_format()) {

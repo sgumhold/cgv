@@ -44,7 +44,7 @@ std::string fltk_tab_group::get_property_declarations()
 bool fltk_tab_group::set_void(const std::string& property, const std::string& value_type, const void* value_ptr)
 {
 	if (property == "selected") {
-		std::string name = variant<std::string>::get(value_type, value_ptr);
+		std::string name = cgv::type::variant<std::string>::get(value_type, value_ptr);
 		base_ptr b = find_element(name);
 		if (b)
 			select_child(b, true);
@@ -64,7 +64,7 @@ bool fltk_tab_group::get_void(const std::string& property, const std::string& va
 			else
 				name = b->get_type_name();
 		}
-		variant<std::string>::set(name, value_type, value_ptr);
+		cgv::type::variant<std::string>::set(name, value_type, value_ptr);
 		return true;
 	}
 	return fltk_base::get_void(tab_group, this, property, value_type, value_ptr);

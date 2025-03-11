@@ -265,7 +265,7 @@ bool color_map_editor::init(cgv::render::context& ctx) {
 	std::vector<rgb> bg_data = { a, b, b, a };
 	
 	bg_tex.destruct(ctx);
-	cgv::data::data_view bg_dv = cgv::data::data_view(new cgv::data::data_format(2, 2, TI_FLT32, cgv::data::CF_RGB), bg_data.data());
+	cgv::data::data_view bg_dv = cgv::data::data_view(new cgv::data::data_format(2, 2, cgv::type::info::TI_FLT32, cgv::data::CF_RGB), bg_data.data());
 	bg_tex = cgv::render::texture("flt32[R,G,B]", cgv::render::TF_NEAREST, cgv::render::TF_NEAREST, cgv::render::TW_REPEAT, cgv::render::TW_REPEAT);
 	success &= bg_tex.create(ctx, bg_dv, 0);
 
@@ -531,7 +531,7 @@ void color_map_editor::set_histogram_data(const std::vector<unsigned> data) {
 		auto& ctx = *ctx_ptr;
 		hist_tex.destruct(ctx);
 
-		cgv::data::data_view dv = cgv::data::data_view(new cgv::data::data_format(unsigned(histogram.size()), TI_FLT32, cgv::data::CF_R), float_data.data());
+		cgv::data::data_view dv = cgv::data::data_view(new cgv::data::data_format(unsigned(histogram.size()), cgv::type::info::TI_FLT32, cgv::data::CF_R), float_data.data());
 		hist_tex = cgv::render::texture("flt32[R]");
 		hist_tex.create(ctx, dv, 0);
 
@@ -633,7 +633,7 @@ void color_map_editor::init_preview_texture(cgv::render::context& ctx) {
 	std::vector<uint8_t> data(resolution * 4 * 2, 0u);
 
 	setup_preview_texture(ctx);
-	cgv::data::data_view tf_dv = cgv::data::data_view(new cgv::data::data_format(resolution, 2, TI_UINT8, cgv::data::CF_RGBA), data.data());
+	cgv::data::data_view tf_dv = cgv::data::data_view(new cgv::data::data_format(resolution, 2, cgv::type::info::TI_UINT8, cgv::data::CF_RGBA), data.data());
 	preview_tex.create(ctx, tf_dv, 0);
 }
 
@@ -963,7 +963,7 @@ void color_map_editor::update_color_map(bool is_data_change) {
 	}
 
 	setup_preview_texture(ctx);
-	cgv::data::data_view dv = cgv::data::data_view(new cgv::data::data_format(unsigned(size), 2, TI_UINT8, cgv::data::CF_RGBA), data.data());
+	cgv::data::data_view dv = cgv::data::data_view(new cgv::data::data_format(unsigned(size), 2, cgv::type::info::TI_UINT8, cgv::data::CF_RGBA), data.data());
 	preview_tex.create(ctx, dv, 0);
 
 	if(!supports_opacity)

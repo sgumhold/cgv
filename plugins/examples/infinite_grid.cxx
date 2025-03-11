@@ -34,7 +34,7 @@ public:
 	{
 		if (recreate_texture) {
 			int n = (int)pow(2.0,exponent);
-			data_format df(n,n,TI_UINT8,CF_RGBA);
+			data_format df(n, n, cgv::type::info::TI_UINT8, CF_RGBA);
 			data_view dv(&df);
 			int i,j;
 			unsigned char* ptr = dv.get_ptr<unsigned char>();

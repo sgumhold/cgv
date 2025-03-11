@@ -10,6 +10,8 @@
 #pragma warning (default:4311)
 #endif
 #include <iostream>
+
+using namespace cgv::gui;
 using namespace cgv::type;
 
 void bool_button_cb(fltk::Widget* w, void* button_ptr)
@@ -155,18 +157,18 @@ void* fltk_bool_control<FB>::get_user_data() const
 	return static_cast<fltk::Widget*>(fB);
 }
 
-cgv::gui::control_ptr bool_control_factory::create(const std::string& label, 
-			void* value_ptr, abst_control_provider* acp, const std::string& value_type, 
+control_ptr bool_control_factory::create(const std::string& label, 
+			void* value_ptr, abst_control_provider* acp, const std::string& value_type,
 			const std::string& gui_type, int x, int y, int w, int h)
 {
 	if (value_type != "bool")
-		return cgv::gui::control_ptr();
+		return control_ptr();
 	if (gui_type == "check" || gui_type.empty()) {
 		fltk_bool_control<CW<fltk::CheckButton> >* c = 
 			new fltk_bool_control<CW<fltk::CheckButton> >(
 						label, *static_cast<bool*>(value_ptr), acp, x, y, w, h);
 		c->fB->flags(c->fB->flags()|fltk::ALIGN_LEFT);
-		return cgv::gui::control_ptr(c);
+		return control_ptr(c);
 	}
 	else if (gui_type == "toggle")
 		return control_ptr(new fltk_bool_control<CW<fltk::ToggleButton> >(

@@ -1,15 +1,13 @@
 #include "rgbd_device.h"
 #include <chrono>
 
-using namespace std;
-
 namespace rgbd {
 
 /// The rgdb device emulator uses protocols created by rgbd_input for replay
 class rgbd_emulation : public rgbd_device
 {
 public:
-	string path_name;
+	std::string path_name;
 	mutable string next_warped_file_name;
 	unsigned idx;
 	unsigned flags;

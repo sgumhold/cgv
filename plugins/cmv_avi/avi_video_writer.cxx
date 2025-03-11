@@ -159,7 +159,7 @@ std::string avi_video_writer::get_type_name() const
 }
 
 /// construct a copy of the video writer
-abst_video_writer* avi_video_writer::clone() const
+cgv::media::video::abst_video_writer* avi_video_writer::clone() const
 {
 	return new avi_video_writer();
 }
