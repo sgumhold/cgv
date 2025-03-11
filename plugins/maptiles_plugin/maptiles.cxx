@@ -113,6 +113,7 @@ public:
 		success = rh.reflect_member("latitude", latitude) && success;
 		success = rh.reflect_member("longitude", longitude) && success;
 		success = rh.reflect_member("frustum_raster_tiles_count", config.FrustumRasterTilesCount) && success;
+		success = rh.reflect_member("frustum_raster_tiles_distance", config.FrustumRasterTilesDistance) && success;
 		success = rh.reflect_member("frustum_3d_tiles_distance", config.FrustumTile3DMaxDistance) && success;
 		success = rh.reflect_member("frustum_based_tiles", config.FrustumBasedTileGeneration) && success;
 		success = rh.reflect_member("auto_recenter", auto_recenter) && success;
