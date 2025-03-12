@@ -440,8 +440,6 @@ void TileManager::GetRasterTileNeighbours()
 		else if (requested_raster_tile.size() < config->MaxRasterTileRequestThreads) {
 			std::thread t(&TileManager::AddRasterTileToQueue, this, index);
 			t.detach();
-			std::lock_guard<std::mutex> lock(mutex_request_raster_tile);
-			requested_raster_tile.insert(index);
 			to_be_removed.insert(index);
 		}
 	}
@@ -466,8 +464,6 @@ void TileManager::GetTile3DNeighbours()
 		else if (requested_tile3D.size() < config->MaxTile3DRequestThreads) {
 			std::thread t(&TileManager::AddTile3DToQueue, this, index);
 			t.detach();
-			std::lock_guard<std::mutex> lock(mutex_request_tile3D);
-			requested_tile3D.insert(index);
 			to_be_removed.insert(index);
 		}
 	}
@@ -483,6 +479,11 @@ void TileManager::AddTilesToQueue(index_type index, std::set<index_type>& reques
 								  std::map<index_type, data_type&>& queue_tiles, std::mutex& queue_lock,
 								  std::mutex& request_lock)
 {
+	{
+		std::lock_guard<std::mutex> lockRequest(request_lock);
+		requested_tiles.insert(index);
+	}
+
 	data_type* tileData = nullptr;
 
 	if constexpr (std::is_same_v<index_type, RasterTileIndex>) {
@@ -497,12 +498,11 @@ void TileManager::AddTilesToQueue(index_type index, std::set<index_type>& reques
 		queue_tiles.emplace(index, *tileData);
 	}
 
-	// Send the signal that the tile was downloaded
-	tile_downloaded();
-	
 	std::lock_guard<std::mutex> lockRequest(request_lock);
 	requested_tiles.erase(index);
-
+	
+	// Send the signal that the tile was downloaded
+	tile_downloaded();
 }
 
 void TileManager::AddRasterTileToQueue(RasterTileIndex index)
