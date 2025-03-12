@@ -112,7 +112,7 @@ void depth_halos::generate_noise_texture(cgv::render::context& ctx) {
 		));
 	}
 
-	cgv::data::data_view dv = cgv::data::data_view(new cgv::data::data_format(8, 8, TI_FLT32, cgv::data::CF_RGB), offsets.data());
+	cgv::data::data_view dv = cgv::data::data_view(new cgv::data::data_format(8, 8, cgv::type::info::TI_FLT32, cgv::data::CF_RGB), offsets.data());
 	noise_tex.create(ctx, dv, 0);
 	noise_tex.set_min_filter(cgv::render::TF_NEAREST);
 	noise_tex.set_mag_filter(cgv::render::TF_NEAREST);

@@ -1,5 +1,8 @@
 #include "rectangle_renderer.h"
 
+using namespace cgv::data;
+using namespace cgv::render;
+
 namespace trajectory {
 	rectangle_renderer::rectangle_renderer() : rect(null_rectangle) {}
 
@@ -29,7 +32,7 @@ namespace trajectory {
 		prog.set_uniform(ctx, "zoom", zoom);
 		prog.set_uniform(ctx, "offset", offset);
 
-		std::vector<vec3> v = { rect[0], rect[1], rect[2], rect[3] };
+		std::vector<cgv::vec3> v = { rect[0], rect[1], rect[2], rect[3] };
 		v_buf.create(ctx, v.data(), v.size());
 
 		if (!success) {
@@ -70,7 +73,7 @@ namespace trajectory {
 	{
 		vao.enable(ctx);
 
-		std::vector<vec3> v = { rect[0], rect[1], rect[2], rect[3] };
+		std::vector<cgv::vec3> v = { rect[0], rect[1], rect[2], rect[3] };
 		v_buf.replace(ctx, 0, v.data(), v.size());
 		type_descriptor v_type(cgv::type::info::TI_FLT32, 3u, false);
 		vao.set_attribute_array(ctx, 0, v_type, v_buf, 0u, 0u, 0u);
@@ -98,8 +101,8 @@ namespace trajectory {
 		glDisable(GL_CULL_FACE);
 		vao.enable(ctx);
 
-		std::vector<vec3> v = { vec3(-1.0, 1.0, 0.0), vec3(1.0, 1.0, 0.0),
-							   vec3(-1.0, -1.0, 0.0), vec3(1.0, -1.0, 0.0) };
+		std::vector<cgv::vec3> v = {cgv::vec3(-1.0, 1.0, 0.0), cgv::vec3(1.0, 1.0, 0.0),
+							   cgv::vec3(-1.0, -1.0, 0.0), cgv::vec3(1.0, -1.0, 0.0) };
 		v_buf.replace(ctx, 0, v.data(), v.size());
 		type_descriptor v_type(cgv::type::info::TI_FLT32, 3u, false);
 		vao.set_attribute_array(ctx, 0, v_type, v_buf, 0u, 0u, 0u);
@@ -127,7 +130,7 @@ void rectangle_renderer::draw(context &ctx, const rectangle &rect,
 {
 	vao.enable(ctx);
 
-	std::vector<vec3> v = {rect[0], rect[1], rect[2], rect[3]};
+	std::vector<cgv::vec3> v = {rect[0], rect[1], rect[2], rect[3]};
 	v_buf.replace(ctx, 0, v.data(), v.size());
 	type_descriptor v_type(cgv::type::info::TI_FLT32, 3u, false);
 	vao.set_attribute_array(ctx, 0, v_type, v_buf, 0u, 0u, 0u);
@@ -156,8 +159,8 @@ void rectangle_renderer::draw_fullscreen(context &ctx, GLuint texture_handle)
 	glDisable(GL_CULL_FACE);
 	vao.enable(ctx);
 
-	std::vector<vec3> v = {vec3(-1.0, 1.0, 0.0), vec3(1.0, 1.0, 0.0),
-	                       vec3(-1.0, -1.0, 0.0), vec3(1.0, -1.0, 0.0)};
+	std::vector<cgv::vec3> v = {cgv::vec3(-1.0, 1.0, 0.0), cgv::vec3(1.0, 1.0, 0.0),
+	                       cgv::vec3(-1.0, -1.0, 0.0), cgv::vec3(1.0, -1.0, 0.0)};
 	v_buf.replace(ctx, 0, v.data(), v.size());
 	type_descriptor v_type(cgv::type::info::TI_FLT32, 3u, false);
 	vao.set_attribute_array(ctx, 0, v_type, v_buf, 0u, 0u, 0u);
@@ -204,17 +207,17 @@ void rectangle_renderer::set_flipped(bool f)
 	mode_changed = true;
 }
 
-rectangle_renderer::vec2 rectangle_renderer::get_zoom() const { return zoom; }
+cgv::vec2 rectangle_renderer::get_zoom() const { return zoom; }
 
-void rectangle_renderer::set_zoom(const vec2 zoom)
+void rectangle_renderer::set_zoom(const cgv::vec2 zoom)
 {
 	this->zoom = zoom;
 	mode_changed = true;
 }
 
-rectangle_renderer::vec2 rectangle_renderer::get_offset() const { return offset; }
+cgv::vec2 rectangle_renderer::get_offset() const { return offset; }
 
-void rectangle_renderer::set_offset(const vec2 offset)
+void rectangle_renderer::set_offset(const cgv::vec2 offset)
 {
 	this->offset = offset;
 	mode_changed = true;

@@ -31,7 +31,7 @@ namespace render {
 	{
 	}
 
-	placeable::mat4 placeable::get_model_matrix() const
+	mat4 placeable::get_model_matrix() const
 	{
 		mat4 O;
 		orientation.put_homogeneous_matrix(O);

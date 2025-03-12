@@ -50,7 +50,7 @@ class CGV_API fltk_viewer_window :
 	public cgv::gui::provider
 {
 protected:
-	void on_tab_group_selection_change(base_ptr, bool);
+	void on_tab_group_selection_change(cgv::base::base_ptr, bool);
 	void set_fullscreen(MonitorSelection ms);
 public:
 	/// construct application
@@ -78,7 +78,7 @@ public:
 	/// abstract interface for the getter 
 	bool get_void(const std::string& property, const std::string& value_type, void* value_ptr);
 	/// overload and use the fltk_gui_group implementation
-	unsigned int remove_child(base_ptr child);
+	unsigned int remove_child(cgv::base::base_ptr child);
 	/// overload and use the fltk_gui_group implementation
 	void remove_all_children();
 	/// dispatch a cgv event to the gl view
@@ -151,7 +151,7 @@ protected:
 	/// the selected theme index
 	cgv::type::DummyEnum theme_idx;
 	/// store the factories
-	std::vector<base_ptr> factories;
+	std::vector<cgv::base::base_ptr> factories;
 	/// 
 	::fltk::ItemGroup* create_item_group;
 	/** the main_group is used to split the space between menu bar

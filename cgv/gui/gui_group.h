@@ -10,8 +10,6 @@
 
 #include "lib_begin.h"
 
-using cgv::base::base_ptr;
-
 template <typename T, bool is_enum = cgv::type::cond::is_enum<T>::value>
 struct enum_aware_type_name : public cgv::type::info::type_name<T>
 {
@@ -83,13 +81,13 @@ public:
 		one. Typically, an exclusively selected child will gain input focus. */
 	virtual void select_child(unsigned ci, bool exclusive = false);
 	/// same as version with child index
-	virtual void select_child(base_ptr ci, bool exclusive = false);
+	virtual void select_child(cgv::base::base_ptr ci, bool exclusive = false);
 	//! unselect the ci-th child.
 	/*! If no multiple_selection is allowed, unselection can fail if the group does
 	    not support an empty selection.*/
 	virtual bool unselect_child(unsigned ci);
 	/// same as version with child index
-	virtual bool unselect_child(base_ptr ci);
+	virtual bool unselect_child(cgv::base::base_ptr ci);
 	//! return the index of the currently selected child.
 	/*! In case of multiple_selection, this function returns the index of the first selected child.
 	    In this case it can also happen that the returned index is -1 if no child is selected. */
@@ -98,16 +96,16 @@ public:
 	/*! In case of multiple_selection, this function returns the first selected child.
 	    In this case it can also happen that the returned base_ptr is empty if no child
 		is selected. */
-	virtual base_ptr get_selected_child() const;
+	virtual cgv::base::base_ptr get_selected_child() const;
 	/// return whether the given child is selected
-	virtual bool is_selected(base_ptr c) const;
+	virtual bool is_selected(cgv::base::base_ptr c) const;
 	//! return whether the given child is selected.
 	/*! the implementation simply calls the virtual variant with get_child(ci). */
 	bool is_selected(unsigned ci) const;
 	//! This signal is emitted for every change of the selection of a child.
 	/*! The first argument is simply the pointer to the child whose selection state
 	    has been changed. The second argument is the new selection state. */
-	cgv::signal::signal<base_ptr, bool> on_selection_change;
+	cgv::signal::signal<cgv::base::base_ptr, bool> on_selection_change;
 	//@}
 
 	/**@name opening and closing of child groups*/
@@ -135,7 +133,7 @@ public:
 	/// add a new group to the given parent group
 	virtual gui_group_ptr add_group(const std::string& label, const std::string& group_type, const std::string& options, const std::string& align);
 	/// add a newly created decorator to the group
-	virtual base_ptr add_decorator(const std::string& label, const std::string& decorator_type, const std::string& options, const std::string& align);
+	virtual cgv::base::base_ptr add_decorator(const std::string& label, const std::string& decorator_type, const std::string& options, const std::string& align);
 	/// add a newly created button to the group
 	virtual button_ptr add_button(const std::string& label, const std::string& options, const std::string& align);
 	/// add a newly created view to the group
@@ -173,7 +171,7 @@ public:
 	/**@name finding elements in the group*/
 	//@{
 	/// find a gui element by name, return empty pointer if not found
-	base_ptr find_element(const std::string& name);
+	cgv::base::base_ptr find_element(const std::string& name);
 	/// find a view in the group based on a const void pointer
 	view_ptr find_view_void(const void* value_ptr, int* idx_ptr);
 	/// find a control in the group based on a const void pointer
