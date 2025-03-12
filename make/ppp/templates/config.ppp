@@ -192,7 +192,7 @@ elif (CGV_COMPILER == "vs143") {
 
 rules = [
 	MAP.[ 
-		["extensions",["bmp","jpg","jpeg","png","tif","tiff","avi","gif","ani","wav"]],
+		["extensions",["bmp","jpg","jpeg","png","tif","tiff","avi","gif","ani","wav","ogg"]],
 		["folder","resources"],
 		["tool","res_prep"],
 		["rules", 

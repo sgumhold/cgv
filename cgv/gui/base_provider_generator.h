@@ -36,7 +36,7 @@ protected:
 	/// store map to base_providers
 	pvd_map_type providers;
 	/// check whether gui description is available for object and if yes generate a base_provider
-	bool generate_object_gui(base_ptr object);
+	bool generate_object_gui(cgv::base::base_ptr object);
 	/// store read gui files with last write times
 	std::map<std::string,long long> gui_files;
 	/// whether to check files

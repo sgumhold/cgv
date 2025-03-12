@@ -7,6 +7,7 @@
 #include <cgv/base/import.h>
 #include <cgv/base/register.h>
 
+using namespace cgv::data;
 
 namespace cgv {
 	namespace media {
@@ -142,11 +143,11 @@ bool bmp_reader::open(const std::string& file_name, data_format& df, std::vector
 		fgetc(fp);
 	}
 	if (bits_per_pixel == 8 && palette_formats) {
-		df = data_format(width, height, TI_UINT8, "0");
-		palette_formats->push_back(data_format(256, TI_UINT8, CF_RGB));
+		df = data_format(width, height, cgv::type::info::TI_UINT8, "0");
+		palette_formats->push_back(data_format(256, cgv::type::info::TI_UINT8, CF_RGB));
 	}
 	else
-		df = data_format(width, height, TI_UINT8, CF_RGB);
+		df = data_format(width, height, cgv::type::info::TI_UINT8, CF_RGB);
 	return true;
 }
 

@@ -6,8 +6,6 @@
 
 #include "lib_begin.h"
 
-using namespace cgv::data;
-
 namespace cgv {
 	namespace media {
 		namespace image {
@@ -24,7 +22,7 @@ public:
 	/// return a string containing a colon separated list of extensions that can be read with this reader
 	virtual const char* get_supported_extensions() const = 0;
 	/// check if the chosen writer supports the given component format
-	virtual bool is_format_supported(const component_format& cf, const std::vector<component_format>* palette_formats) const = 0;
+	virtual bool is_format_supported(const cgv::data::component_format& cf, const std::vector<cgv::data::component_format>* palette_formats) const = 0;
 	/// return a reference to the last error message
 	virtual const std::string& get_last_error() const = 0;
 	/// return whether multiple images are supported, default implementation returns false
@@ -32,7 +30,7 @@ public:
 	/// open image file to write
 	virtual bool open(const std::string& file_name) = 0;
 	/// write one image
-	virtual bool write_image(const const_data_view& dv, const std::vector<const_data_view>* palettes, double duration) = 0;
+	virtual bool write_image(const cgv::data::const_data_view& dv, const std::vector<cgv::data::const_data_view>* palettes, double duration) = 0;
 	/// close image [stream]
 	virtual bool close() = 0;
 };
@@ -67,14 +65,14 @@ public:
 	/// return a semicolon separated list of property declarations of the form "name:type", by default an empty list is returned
 	std::string get_property_declarations();
 	/// check if the chosen writer supports the given component format
-	bool is_format_supported(const component_format& cf, const std::vector<component_format>* palette_formats = 0) const;
+	bool is_format_supported(const cgv::data::component_format& cf, const std::vector<cgv::data::component_format>* palette_formats = 0) const;
 	/// return a colon separated list of supported options
 	std::string get_options() const;
 	/// return a reference to the last error message
 	const std::string& get_last_error() const;
 	/** write the data stored in the data view to a file with the file name given in the constructor. 
 	    In case a vector of data views for palettes is given, write the image in paletted format. */
-	bool write_image(const const_data_view& dv, const std::vector<const_data_view>* palettes = 0, double duration = 0);
+	bool write_image(const cgv::data::const_data_view& dv, const std::vector<cgv::data::const_data_view>* palettes = 0, double duration = 0);
 	/// close image file;
 	bool close();
 	/// return whether multiple images are supported, default implementation returns false

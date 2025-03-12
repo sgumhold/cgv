@@ -119,7 +119,7 @@ cgv::reflect::enum_reflection_traits<Skybox> get_reflection_traits(const Skybox&
 		",forest-brudslojan,forest-langholmen2,forest-langholmen3,forest-mountainpath,forest-plants");
 }
 
-void vr_scene::register_object(base_ptr object, const std::string& options)
+void vr_scene::register_object(cgv::base::base_ptr object, const std::string& options)
 {
 	if (object->get_interface<cgv::nui::vr_table>())
 		table = object->cast<cgv::nui::vr_table>();
@@ -129,7 +129,7 @@ void vr_scene::register_object(base_ptr object, const std::string& options)
 	std::cout << "register focusable: " << object->get_name_or_type_name() << std::endl;
 	add_object(object);
 }
-void vr_scene::unregister_object(base_ptr object, const std::string& options)
+void vr_scene::unregister_object(cgv::base::base_ptr object, const std::string& options)
 {
 	auto* foc_ptr = object->get_interface<cgv::nui::focusable>();
 	if (!foc_ptr)

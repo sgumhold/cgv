@@ -12,6 +12,8 @@
 #endif
 #include <iostream>
 
+using namespace cgv::gui;
+
 template <typename T>
 fltk_value_view<T>::fltk_value_view(const std::string& _label, 
 	const T& value, int x, int y, int w, int h)

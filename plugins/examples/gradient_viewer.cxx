@@ -263,7 +263,7 @@ bool gradient_viewer::init(cgv::render::context& ctx)
 		tf_data[4 * i + 3] = static_cast<unsigned char>(255.0f * alpha);
 	}
 
-	cgv::data::data_view tf_data_view = cgv::data::data_view(new cgv::data::data_format(w, 1, TI_UINT8, cgv::data::CF_RGBA), tf_data.data());
+	cgv::data::data_view tf_data_view = cgv::data::data_view(new cgv::data::data_format(w, 1, cgv::type::info::TI_UINT8, cgv::data::CF_RGBA), tf_data.data());
 	tf_tex.create(ctx, tf_data_view, 0);
 
 	create_test_volume(ctx);

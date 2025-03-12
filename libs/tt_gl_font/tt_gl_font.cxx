@@ -400,6 +400,9 @@ namespace cgv {
 	/// return the width of a text printed in the given size, which is measured in pixels
 	float tt_gl_font_face::measure_text_width(const std::string& text, float font_size) const
 	{
+		if (font_size != this->font_size) {
+			set_font_size(font_size);
+		}
 		return compute_box(text).get_extent().x();
 	}
 	/// enables font face of given size and should be called once before calling draw_text functions
@@ -465,7 +468,7 @@ namespace cgv {
 			}
 		}
 	}
-	void tt_gl_font_face::set_font_size(float _font_size)
+	void tt_gl_font_face::set_font_size(float _font_size) const
 	{
 		if (font_size != _font_size) {
 			font_size = _font_size;

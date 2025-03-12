@@ -6,6 +6,8 @@
 #pragma warning (disable:4996)
 #endif
 
+using namespace cgv::data;
+
 namespace cgv {
 	namespace media {
 		namespace image {
@@ -36,7 +38,7 @@ bool bmp_writer::is_format_supported(const component_format& cf, const std::vect
 {
 	ComponentFormat _cf = cf.get_standard_component_format();
 	if (!( (_cf == CF_RGB || _cf == CF_BGR || _cf == CF_L) && 
-		    cf.get_component_type() == TI_UINT8))
+		    cf.get_component_type() == cgv::type::info::TI_UINT8))
 		return false;
 	if (palette_formats) {
 		if (palette_formats->size() > 1)
@@ -44,7 +46,7 @@ bool bmp_writer::is_format_supported(const component_format& cf, const std::vect
 		const component_format& cfp = palette_formats->at(0);
 		ComponentFormat _cfp = cfp.get_standard_component_format();
 		if (!( (_cfp == CF_RGB || _cfp == CF_BGR) && 
-			    cfp.get_component_type() == TI_UINT8))
+			    cfp.get_component_type() == cgv::type::info::TI_UINT8))
 			return false;
 		if (cf.get_nr_components() != 1)
 			return false;
