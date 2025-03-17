@@ -40,15 +40,9 @@ color_map_editor::color_map_editor() {
 	show_value_label = false;
 
 	cmc.color_points.set_constraint(layout.color_handles_rect);
-	//cmc.color_points.set_drag_callback(std::bind(&color_map_editor::handle_color_point_drag, this));
-	//cmc.color_points.set_drag_end_callback(std::bind(&color_map_editor::handle_drag_end, this));
-	//cmc.color_points.set_selection_change_callback(std::bind(&color_map_editor::handle_drag_end, this));
 	cmc.color_points.callback = std::bind(&color_map_editor::handle_color_drag, this, std::placeholders::_1);
 
 	cmc.opacity_points.set_constraint(layout.opacity_editor_rect);
-	//cmc.opacity_points.set_drag_callback(std::bind(&color_map_editor::handle_opacity_point_drag, this));
-	//cmc.opacity_points.set_drag_end_callback(std::bind(&color_map_editor::handle_drag_end, this));
-	//cmc.opacity_points.set_selection_change_callback(std::bind(&color_map_editor::handle_drag_end, this));
 	cmc.opacity_points.callback = std::bind(&color_map_editor::handle_opacity_drag, this, std::placeholders::_1);
 
 	color_handle_renderer = cgv::g2d::generic_2d_renderer(cgv::g2d::shaders::arrow);
@@ -736,28 +730,30 @@ void color_map_editor::update_value_label_rectangle(vec2 position, const cgv::g2
 	value_label_rectangle.position.x() = cgv::math::clamp(value_label_rectangle.position.x(), min_x, max_x);
 }
 
-void color_map_editor::handle_color_drag(cgv::g2d::DragActionType action) {
+void color_map_editor::handle_color_drag(cgv::g2d::DragAction action) {
 
 	switch(action) {
-	case cgv::g2d::DragActionType::kDrag:
+	case cgv::g2d::DragAction::kDrag:
 	{
-		auto dragged_point = cmc.color_points.get_dragged();
-		dragged_point->update_val(layout);
-		update_color_map(true);
+		color_point* dragged_point = cmc.color_points.get_dragged();
+		if(dragged_point) {
+			dragged_point->update_val(layout);
+			update_color_map(true);
 
-		show_value_label = true;
-		value_label = value_to_string(dragged_point->val);
-		update_value_label_rectangle(dragged_point->position, layout.color_editor_rect);
-		value_label_rectangle.position.y() += 25.0f;
+			show_value_label = true;
+			value_label = value_to_string(dragged_point->val);
+			update_value_label_rectangle(dragged_point->position, layout.color_editor_rect);
+			value_label_rectangle.position.y() += 25.0f;
 
-		if(dragged_point && on_color_point_select_callback)
-			on_color_point_select_callback(dragged_point->col);
+			if(dragged_point && on_color_point_select_callback)
+				on_color_point_select_callback(dragged_point->col);
 
-		post_damage();
+			post_damage();
+		}
 		break;
 	}
-	case cgv::g2d::DragActionType::kDragEnd:
-	case cgv::g2d::DragActionType::kSelect:
+	case cgv::g2d::DragAction::kDragEnd:
+	case cgv::g2d::DragAction::kSelect:
 		handle_drag_end();
 		break;
 	default:
@@ -765,28 +761,30 @@ void color_map_editor::handle_color_drag(cgv::g2d::DragActionType action) {
 	}
 }
 
-void color_map_editor::handle_opacity_drag(cgv::g2d::DragActionType action) {
+void color_map_editor::handle_opacity_drag(cgv::g2d::DragAction action) {
 
 	switch(action) {
-	case cgv::g2d::DragActionType::kDrag:
+	case cgv::g2d::DragAction::kDrag:
 	{
-		auto dragged_point = cmc.opacity_points.get_dragged();
-		dragged_point->update_val(layout, opacity_scale_exponent);
-		update_color_map(true);
+		opacity_point* dragged_point = cmc.opacity_points.get_dragged();
+		if(dragged_point) {
+			dragged_point->update_val(layout, opacity_scale_exponent);
+			update_color_map(true);
 
-		show_value_label = true;
-		std::string x_label = value_to_string(dragged_point->val.x());
-		std::string y_label = cgv::utils::to_string(dragged_point->val.y(), -1, 3u);
-		value_label = x_label + ", " + y_label;
+			show_value_label = true;
+			std::string x_label = value_to_string(dragged_point->val.x());
+			std::string y_label = cgv::utils::to_string(dragged_point->val.y(), -1, 3u);
+			value_label = x_label + ", " + y_label;
 
-		update_value_label_rectangle(dragged_point->position, layout.opacity_editor_rect);
-		value_label_rectangle.position.y() = std::min(value_label_rectangle.position.y() + 10.0f, static_cast<float>(layout.opacity_editor_rect.y1() - 6));
+			update_value_label_rectangle(dragged_point->position, layout.opacity_editor_rect);
+			value_label_rectangle.position.y() = std::min(value_label_rectangle.position.y() + 10.0f, static_cast<float>(layout.opacity_editor_rect.y1() - 6));
 
-		post_damage();
+			post_damage();
+		}
 		break;
 	}
-	case cgv::g2d::DragActionType::kDragEnd:
-	case cgv::g2d::DragActionType::kSelect:
+	case cgv::g2d::DragAction::kDragEnd:
+	case cgv::g2d::DragAction::kSelect:
 		handle_drag_end();
 		break;
 	default:
@@ -794,6 +792,7 @@ void color_map_editor::handle_opacity_drag(cgv::g2d::DragActionType action) {
 	}
 }
 
+/*
 void color_map_editor::handle_color_point_drag() {
 
 	auto dragged_point = cmc.color_points.get_dragged();
@@ -827,6 +826,7 @@ void color_map_editor::handle_opacity_point_drag() {
 
 	post_damage();
 }
+*/
 
 void color_map_editor::handle_drag_end() {
 
