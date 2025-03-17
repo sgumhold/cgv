@@ -44,12 +44,12 @@ bool application_plugin_base::handle(cgv::gui::event& e)
 				if(last_blocking_overlay_ptr) {
 					// The mouse pointer leaves the active overlay. Handle it as an additional MA_LEAVE event.
 					me.set_action(cgv::gui::MA_LEAVE);
-					last_blocking_overlay_ptr->handle_event(e);
+					last_blocking_overlay_ptr->handle(e);
 				}
 				if(blocking_overlay_ptr) {
 					// The mouse pointer enters the active overlay. Handle it as an additional MA_ENTER event.
 					me.set_action(cgv::gui::MA_ENTER);
-					if(!blocking_overlay_ptr->handle_event(e))
+					if(!blocking_overlay_ptr->handle(e))
 						blocking_overlay_ptr = nullptr;
 				}
 				// Revert the event action to MA_MOVE.
@@ -64,7 +64,7 @@ bool application_plugin_base::handle(cgv::gui::event& e)
 		// will block the event from further processing.
 		if(blocking_overlay_ptr) {
 			was_blocked = blocking_overlay_ptr->blocks_events();
-			was_handled = blocking_overlay_ptr->handle_event(e);
+			was_handled = blocking_overlay_ptr->handle(e);
 		}
 
 		// An MA_RELASE action will reset the active overlay.
@@ -88,7 +88,7 @@ bool application_plugin_base::handle(cgv::gui::event& e)
 		for(auto it = overlays.rbegin(); it != overlays.rend(); ++it) {
 			overlay_ptr op = (*it);
 			if(op->is_visible())
-				op->handle_event(e);
+				op->handle(e);
 		}
 		return handle_event(e);
 	}

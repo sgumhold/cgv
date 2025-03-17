@@ -110,8 +110,10 @@ public:
 
 	/// handle incomming events; calls handle_key_events or handle_mouse_events depending on the event type; mouse events will only be handled if the mouse is over the overlay rectangle
 	virtual bool handle(cgv::gui::event& e);
+
 	/// overload this method to handle key events
 	virtual bool handle_key_event(cgv::gui::key_event& e) { return false; };
+
 	/// overload this method to handle mouse events; local_mouse_pos is the mouse position in the local coordinate space of the overlay rectangle
 	virtual bool handle_mouse_event(cgv::gui::mouse_event& e, cgv::ivec2 local_mouse_pos) { return false; };
 
