@@ -72,94 +72,94 @@ void color_map_editor::clear(cgv::render::context& ctx) {
 	hist_tex.destruct(ctx);
 }
 
-bool color_map_editor::handle_event(cgv::gui::event& e) {
-
-	// return true if the event gets handled and stopped here or false if you want to pass it to the next plugin
-	unsigned et = e.get_kind();
-	unsigned char modifiers = e.get_modifiers();
-
-	if (et == cgv::gui::EID_KEY) {
-		cgv::gui::key_event& ke = (cgv::gui::key_event&)e;
-
-		if (ke.get_action() == cgv::gui::KA_PRESS) {
-			switch (ke.get_key()) {
-			case cgv::gui::KEY_Left_Ctrl:
-				cursor_label = "+";
-				post_damage();
-				break;
-			case cgv::gui::KEY_Left_Alt:
-				cursor_label = "-";
-				post_damage();
-				break;
-			}
-		}
-		else if (ke.get_action() == cgv::gui::KA_RELEASE) {
-			switch (ke.get_key()) {
-			case cgv::gui::KEY_Left_Ctrl:
-			case cgv::gui::KEY_Left_Alt:
-				cursor_label = "";
-				post_damage();
-				break;
-			}
-		}
-	}
-	else if (et == cgv::gui::EID_MOUSE) {
-		cgv::gui::mouse_event& me = (cgv::gui::mouse_event&)e;
-		cgv::gui::MouseAction ma = me.get_action();
-
-		switch (ma) {
-		case cgv::gui::MA_ENTER:
-			mouse_is_on_overlay = true;
-			return true;
-		case cgv::gui::MA_LEAVE:
-			mouse_is_on_overlay = false;
+bool color_map_editor::handle_key_event(cgv::gui::key_event& e) {
+	
+	switch(e.get_action()) {
+	case cgv::gui::KA_PRESS:
+		switch(e.get_key()) {
+		case cgv::gui::KEY_Left_Ctrl:
+			cursor_label = "+";
 			post_damage();
-			return true;
-		case cgv::gui::MA_MOVE:
-		case cgv::gui::MA_DRAG:
-			if(get_context())
-				cursor_position = ivec2(me.get_x(), get_context()->get_height() - 1 - me.get_y());
-			if(!cursor_label.empty())
-				post_damage();
+			break;
+		case cgv::gui::KEY_Left_Alt:
+			cursor_label = "-";
+			post_damage();
+			break;
+		default:
 			break;
 		}
+		break;
+	case cgv::gui::KA_RELEASE:
+		switch(e.get_key()) {
+		case cgv::gui::KEY_Left_Ctrl:
+		case cgv::gui::KEY_Left_Alt:
+			cursor_label = "";
+			post_damage();
+			break;
+		default:
+			break;
+		}
+		break;
+	default:
+		break;
+	}
+	return false;
+}
 
-		bool request_clear_selection = false;
+bool color_map_editor::handle_mouse_event(cgv::gui::mouse_event& e, cgv::ivec2 local_mouse_pos) {
 
-		if (me.get_button_state() & cgv::gui::MB_LEFT_BUTTON) {
-			if (ma == cgv::gui::MA_PRESS) {
-				ivec2 mpos = get_local_mouse_pos(ivec2(me.get_x(), me.get_y()));
-				
-				request_clear_selection = is_hit(mpos);
+	switch(e.get_action()) {
+	case cgv::gui::MA_ENTER:
+		mouse_is_on_overlay = true;
+		return true;
+	case cgv::gui::MA_LEAVE:
+		mouse_is_on_overlay = false;
+		post_damage();
+		return true;
+	case cgv::gui::MA_MOVE:
+	case cgv::gui::MA_DRAG:
+		if(get_context())
+			cursor_position = local_mouse_pos;// ivec2(me.get_x(), get_context()->get_height() - 1 - me.get_y());
+		if(!cursor_label.empty())
+			post_damage();
+		break;
+	}
 
-				switch (modifiers) {
-				case cgv::gui::EM_CTRL:
-					if(!get_hit_point(mpos))
-						add_point(mpos);
-					break;
-				case cgv::gui::EM_ALT:
-				{
-					cgv::g2d::draggable* hit_point = get_hit_point(mpos);
-					if(hit_point)
-						remove_point(hit_point);
-				}
+	bool request_clear_selection = false;
+
+	if(e.get_button_state() & cgv::gui::MB_LEFT_BUTTON) {
+		if(e.get_action() == cgv::gui::MA_PRESS) {
+			request_clear_selection = is_hit(local_mouse_pos);
+
+			switch(e.get_modifiers()) {
+			case cgv::gui::EM_CTRL:
+				if(!get_hit_point(local_mouse_pos))
+					add_point(local_mouse_pos);
 				break;
-				default: break;
-				}
+			case cgv::gui::EM_ALT:
+			{
+				cgv::g2d::draggable* hit_point = get_hit_point(local_mouse_pos);
+				if(hit_point)
+					remove_point(hit_point);
+				break;
+			}
+			default:
+				break;
 			}
 		}
-
-		if(cmc.color_points.handle(e, get_viewport_size(), get_rectangle()))
-			return true;
-		if(cmc.opacity_points.handle(e, get_viewport_size(), get_rectangle()))
-			return true;
-
-		if(request_clear_selection) {
-			cmc.color_points.clear_selected();
-			cmc.opacity_points.clear_selected();
-			handle_drag_end();
-		}
 	}
+
+	if(cmc.color_points.handle(e, get_viewport_size(), get_rectangle()))
+		return true;
+	if(cmc.opacity_points.handle(e, get_viewport_size(), get_rectangle()))
+		return true;
+
+	if(request_clear_selection) {
+		cmc.color_points.clear_selected();
+		cmc.opacity_points.clear_selected();
+		handle_drag_end();
+	}
+
 	return false;
 }
 
