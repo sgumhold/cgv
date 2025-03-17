@@ -13,7 +13,7 @@
 namespace cgv {
 namespace g2d {
 
-enum class DragActionType {
+enum class DragAction {
 	kDragStart,
 	kDrag,
 	kDragEnd,
@@ -44,11 +44,6 @@ protected:
 	ptr_type selected;
 
 	ivec2 offset;
-
-	std::function<void(void)> drag_start_callback;
-	std::function<void(void)> drag_callback;
-	std::function<void(void)> drag_end_callback;
-	std::function<void(void)> selection_change_callback;
 
 	ptr_type get_hit_draggable(const ivec2& pos) {
 		ptr_type hit = nullptr;
@@ -151,22 +146,6 @@ public:
 		use_individual_constraints = true;
 	}
 
-	void set_drag_start_callback(std::function<void(void)> func) {
-		drag_start_callback = func;
-	}
-
-	void set_drag_callback(std::function<void(void)> func) {
-		drag_callback = func;
-	}
-
-	void set_drag_end_callback(std::function<void(void)> func) {
-		drag_end_callback = func;
-	}
-	
-	void set_selection_change_callback(std::function<void(void)> func) {
-		selection_change_callback = func;
-	}
-
 	void set_transformation(const mat3& matrix) {
 		inv_transformation = cgv::math::inv(matrix);
 	}
@@ -185,23 +164,20 @@ public:
 					selected = dragged;
 					if(dragged) {
 						offset = dragged->position - mouse_position;
-						//if(drag_start_callback) drag_start_callback();
 						if(callback)
-							callback(DragActionType::kDragStart);
+							callback(DragAction::kDragStart);
 						return true;
 					}
 				}
 			} else if(me.get_action() == cgv::gui::MA_RELEASE) {
 				if(dragged) {
 					dragged = nullptr;
-					//if(drag_end_callback) drag_end_callback();
 					if(callback)
-						callback(DragActionType::kDragEnd);
+						callback(DragAction::kDragEnd);
 				} else if(press_inside) {
 					selected = get_hit_draggable(mouse_position);
-					//if(selection_change_callback) selection_change_callback();
 					if(callback)
-						callback(DragActionType::kSelect);
+						callback(DragAction::kSelect);
 				}
 			}
 		}
@@ -215,9 +191,8 @@ public:
 				else if(has_constraint)
 					dragged->apply_constraint(constraint_area);
 
-				//if(drag_callback) drag_callback();
 				if(callback)
-					callback(DragActionType::kDrag);
+					callback(DragAction::kDrag);
 				return true;
 			}
 		}
@@ -241,7 +216,7 @@ public:
 		return handle_void(e, viewport_size, container, cnvs.get_origin_setting());
 	}
 
-	std::function<void(DragActionType)> callback;
+	std::function<void(DragAction)> callback;
 };
 
 }

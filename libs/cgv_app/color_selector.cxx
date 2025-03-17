@@ -17,7 +17,7 @@ color_selector::color_selector() {
 
 	set_size(ivec2(layout.size));
 	
-	selector_handles.set_drag_callback(std::bind(&color_selector::handle_selector_drag, this));
+	selector_handles.callback = std::bind(&color_selector::handle_selector_drag, this, std::placeholders::_1);
 	selector_handles.set_use_individual_constraints(true);
 }
 
@@ -456,16 +456,18 @@ void color_selector::update_texts() {
 		text_geometry.set_text_array(*ctx_ptr, texts);
 }
 
-void color_selector::handle_selector_drag() {
+void color_selector::handle_selector_drag(cgv::g2d::DragAction action) {
 
-	auto* p = selector_handles.get_dragged();
-	p->update_val();
+	if(action == cgv::g2d::DragAction::kDrag) {
+		auto* p = selector_handles.get_dragged();
+		p->update_val();
 
-	update_color();
-	if(p == &selector_handles[1])
-		update_color_texture();
+		update_color();
+		if(p == &selector_handles[1])
+			update_color_texture();
 
-	post_damage();
+		post_damage();
+	}
 }
 
 void color_selector::set_color(rgba color, bool opacity, bool init) {

@@ -94,7 +94,7 @@ protected:
 	void update_color();
 	void update_texts();
 
-	void handle_selector_drag();
+	void handle_selector_drag(cgv::g2d::DragAction action);
 
 	void set_color(rgba color, bool opacity, bool init = false);
 
