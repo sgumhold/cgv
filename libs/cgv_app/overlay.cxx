@@ -39,12 +39,7 @@ bool overlay::handle(cgv::gui::event& e) {
 
 			bool handled = handle_mouse_event(me, local_mouse_pos);
 			me.set_action(action);
-			if(handled)
-				return true;
 		}
-
-		if(handle_mouse_event(me, local_mouse_pos))
-			return true;
 
 		switch(action) {
 		case cgv::gui::MA_PRESS:
@@ -58,6 +53,9 @@ bool overlay::handle(cgv::gui::event& e) {
 		default:
 			break;
 		}
+
+		if((mouse_is_over_overlay || captured_mouse_) && handle_mouse_event(me, local_mouse_pos))
+			return true;
 
 		if(captured_mouse_ && blocks_events_)
 			return true;
