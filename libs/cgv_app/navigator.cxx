@@ -43,7 +43,7 @@ navigator::navigator() {
 	box_data.style.material.set_emission(rgb(0.05f));
 	box_data.style.surface_opacity = 0.35f;
 
-	box_wire_data.style.default_color = rgb(0.75f);
+	box_wire_data.style.default_color = rgb(0.5f);
 	
 	sphere_data.style.illumination_mode = IM_OFF;
 	sphere_data.style.radius = 0.04f;

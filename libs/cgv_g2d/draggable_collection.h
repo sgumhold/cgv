@@ -13,6 +13,13 @@
 namespace cgv {
 namespace g2d {
 
+enum class DragActionType {
+	kDragStart,
+	kDrag,
+	kDragEnd,
+	kSelect
+};
+
 template<class T>
 class draggable_collection {
 protected:
@@ -178,17 +185,23 @@ public:
 					selected = dragged;
 					if(dragged) {
 						offset = dragged->position - mouse_position;
-						if(drag_start_callback) drag_start_callback();
+						//if(drag_start_callback) drag_start_callback();
+						if(callback)
+							callback(DragActionType::kDragStart);
 						return true;
 					}
 				}
 			} else if(me.get_action() == cgv::gui::MA_RELEASE) {
 				if(dragged) {
 					dragged = nullptr;
-					if(drag_end_callback) drag_end_callback();
+					//if(drag_end_callback) drag_end_callback();
+					if(callback)
+						callback(DragActionType::kDragEnd);
 				} else if(press_inside) {
 					selected = get_hit_draggable(mouse_position);
-					if(selection_change_callback) selection_change_callback();
+					//if(selection_change_callback) selection_change_callback();
+					if(callback)
+						callback(DragActionType::kSelect);
 				}
 			}
 		}
@@ -202,7 +215,9 @@ public:
 				else if(has_constraint)
 					dragged->apply_constraint(constraint_area);
 
-				if(drag_callback) drag_callback();
+				//if(drag_callback) drag_callback();
+				if(callback)
+					callback(DragActionType::kDrag);
 				return true;
 			}
 		}
@@ -225,6 +240,8 @@ public:
 	bool handle(cgv::gui::event& e, const ivec2& viewport_size, const canvas& cnvs, const irect& container) {
 		return handle_void(e, viewport_size, container, cnvs.get_origin_setting());
 	}
+
+	std::function<void(DragActionType)> callback;
 };
 
 }
