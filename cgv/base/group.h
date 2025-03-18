@@ -34,6 +34,17 @@ public:
 	unsigned int get_nr_children() const;
 	/// return the i-th child
 	base_ptr get_child(unsigned int i) const;
+	/// create and append an instance of a child node and return pointer to appended child; optionally set name and get index
+	template<typename T>
+	data::ref_ptr<T> create_and_append_child(const std::string& name = "", unsigned int* index = nullptr) {
+		static_assert(std::is_base_of<node, T>::value, "T must inherit from node");
+		data::ref_ptr<T> ptr(new T());
+		ptr->set_name(name);
+		unsigned int i = append_child(ptr);
+		if(index)
+			*index = i;
+		return ptr;
+	}
 	/// append child and return index of appended child
 	virtual unsigned int append_child(base_ptr child);
 	/// remove all elements of the vector that point to child, return the number of removed children
