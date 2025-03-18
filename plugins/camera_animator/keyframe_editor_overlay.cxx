@@ -18,12 +18,10 @@ keyframe_editor_overlay::keyframe_editor_overlay() {
 	set_stretch(SO_HORIZONTAL);
 	set_size(ivec2(100, layout.total_height(padding())));
 
-	scrollbar.set_drag_callback(std::bind(&keyframe_editor_overlay::handle_scrollbar_drag, this));
-	marker.set_drag_callback(std::bind(&keyframe_editor_overlay::handle_marker_drag, this));
-	keyframes.set_drag_callback(std::bind(&keyframe_editor_overlay::handle_keyframe_drag, this));
-	keyframes.set_drag_end_callback(std::bind(&keyframe_editor_overlay::handle_keyframe_drag_end, this));
-	keyframes.set_selection_change_callback(std::bind(&keyframe_editor_overlay::handle_keyframe_selection_change, this));
-
+	scrollbar.callback = std::bind(&keyframe_editor_overlay::handle_scrollbar_drag, this, std::placeholders::_1);
+	marker.callback = std::bind(&keyframe_editor_overlay::handle_marker_drag, this, std::placeholders::_1);
+	keyframes.callback = std::bind(&keyframe_editor_overlay::handle_keyframe_drag, this, std::placeholders::_1);
+	
 	help.add_bullet_point("Click on a keyframe to select it.");
 	help.add_bullet_point("Drag a keyframe to change its time. Dragging onto another keyframe will revert the drag.");
 	help.add_bullet_point("Click \"Set\" to add a new keyframe or change the existing keyframe at the current time.");
@@ -42,10 +40,25 @@ void keyframe_editor_overlay::clear(context& ctx) {
 	labels.destruct(ctx);
 }
 
-bool keyframe_editor_overlay::handle_event(cgv::gui::event& e) {
+bool keyframe_editor_overlay::handle_key_event(cgv::gui::key_event& e) {
+	
+	switch(e.get_key()) {
+	case cgv::gui::KEY_Delete:
+		if(e.get_action() == cgv::gui::KA_PRESS) {
+			if(selected_frame != -1) {
+				erase_selected_keyframe();
+				post_damage();
+				return true;
+			}
+		}
+		break;
+	default: break;
+	}
+	
+	return false;
+}
 
-	// return true if the event gets handled and stopped here or false if you want to pass it to the next plugin
-	unsigned et = e.get_kind();
+bool keyframe_editor_overlay::handle_mouse_event(cgv::gui::mouse_event& e, cgv::ivec2 local_mouse_pos) {
 
 	cgv::g2d::irect container = get_rectangle();
 	container.x() -= layout.timeline_offset;
@@ -53,67 +66,46 @@ bool keyframe_editor_overlay::handle_event(cgv::gui::event& e) {
 	if(keyframes.handle(e, get_viewport_size(), container))
 		return true;
 
-	if(et == cgv::gui::EID_KEY) {
-		cgv::gui::key_event& ke = (cgv::gui::key_event&) e;
-		cgv::gui::KeyAction ka = ke.get_action();
+	if(e.get_button() == cgv::gui::MB_LEFT_BUTTON && e.get_action() == cgv::gui::MA_PRESS) {
+		//ivec2 local_mouse_position = get_local_mouse_pos(ivec2(me.get_x(), me.get_y()));
 
-		switch(ke.get_key()) {
-		case cgv::gui::KEY_Delete:
-			if(ka == cgv::gui::KA_PRESS) {
-				if(selected_frame != -1) {
-					erase_selected_keyframe();
-					post_damage();
-					return true;
-				}
-			}
-			break;
-		default: break;
-		}
-	} else if(et == cgv::gui::EID_MOUSE) {
-		cgv::gui::mouse_event& me = (cgv::gui::mouse_event&) e;
-		cgv::gui::MouseAction ma = me.get_action();
-
-		if(me.get_button() == cgv::gui::MB_LEFT_BUTTON && ma == cgv::gui::MA_PRESS) {
-			ivec2 local_mouse_position = get_local_mouse_pos(ivec2(me.get_x(), me.get_y()));
-
-			if(layout.marker_constraint.contains(local_mouse_position))
-				set_frame(position_to_frame(local_mouse_position.x() + layout.timeline_offset));
+		if(layout.marker_constraint.contains(local_mouse_pos))
+			set_frame(position_to_frame(local_mouse_pos.x() + layout.timeline_offset));
 			
-			if(!scrollbar.empty()) {
-				auto& handle = scrollbar[0];
+		if(!scrollbar.empty()) {
+			auto& handle = scrollbar[0];
 
-				if(layout.scrollbar_constraint.contains(local_mouse_position) && !handle.contains(local_mouse_position)) {
-					handle.position = local_mouse_position.x() - 0.5f * handle.w();
-					handle.apply_constraint(layout.scrollbar_constraint);
-
-					set_timeline_offset();
-				}
-			}
-
-			post_damage();
-		}
-
-		if(ma == cgv::gui::MA_WHEEL) {
-			if(!scrollbar.empty()) {
-				auto& handle = scrollbar[0];
-
-				float frames_per_pixel = static_cast<float>(layout.timeline_frames) / layout.scrollbar_constraint.w();
-
-				handle.position += 5.0f * me.get_dy() / frames_per_pixel;
+			if(layout.scrollbar_constraint.contains(local_mouse_pos) && !handle.contains(local_mouse_pos)) {
+				handle.position = local_mouse_pos.x() - 0.5f * handle.w();
 				handle.apply_constraint(layout.scrollbar_constraint);
 
 				set_timeline_offset();
-				post_damage();
-				return true;
 			}
 		}
 
-		if(scrollbar.handle(e, get_viewport_size(), get_rectangle()))
-			return true;
-		
-		if(marker.handle(e, get_viewport_size(), container))
-			return true;
+		post_damage();
 	}
+
+	if(e.get_action() == cgv::gui::MA_WHEEL) {
+		if(!scrollbar.empty()) {
+			auto& handle = scrollbar[0];
+
+			float frames_per_pixel = static_cast<float>(layout.timeline_frames) / layout.scrollbar_constraint.w();
+
+			handle.position += 5.0f * e.get_dy() / frames_per_pixel;
+			handle.apply_constraint(layout.scrollbar_constraint);
+
+			set_timeline_offset();
+			post_damage();
+			return true;
+		}
+	}
+
+	if(scrollbar.handle(e, get_viewport_size(), get_rectangle()))
+		return true;
+		
+	if(marker.handle(e, get_viewport_size(), container))
+		return true;
 	
 	return false;
 }
@@ -434,72 +426,78 @@ void keyframe_editor_overlay::create_keyframe_draggables() {
 	}
 }
 
-void keyframe_editor_overlay::handle_scrollbar_drag() {
+void keyframe_editor_overlay::handle_scrollbar_drag(cgv::g2d::DragAction action) {
 
-	if(scrollbar.get_dragged())
-		set_timeline_offset();
+	if(action == cgv::g2d::DragAction::kDrag) {
+		if(scrollbar.get_dragged())
+			set_timeline_offset();
 
-	post_damage();
-}
-
-void keyframe_editor_overlay::handle_marker_drag() {
-
-	const auto dragged = marker.get_dragged();
-	if(dragged)
-		set_frame(position_to_frame(static_cast<int>(round(dragged->x()) + padding() / 2)));
-
-	post_damage();
-}
-
-void keyframe_editor_overlay::handle_keyframe_drag() {
-
-	const auto dragged = keyframes.get_dragged();
-
-	if(dragged) {
-		size_t frame = position_to_frame(static_cast<int>(round(dragged->x() + 0.5f * dragged->size.x())));
-		dragged->x() = static_cast<float>(frame_to_position(frame));
+		post_damage();
 	}
-
-	post_damage();
 }
 
-void keyframe_editor_overlay::handle_keyframe_drag_end() {
+void keyframe_editor_overlay::handle_marker_drag(cgv::g2d::DragAction action) {
 
-	const auto selected = keyframes.get_selected();
+	if(action == cgv::g2d::DragAction::kDrag) {
+		const auto dragged = marker.get_dragged();
+		if(dragged)
+			set_frame(position_to_frame(static_cast<int>(round(dragged->x()) + padding() / 2)));
 
-	if(selected) {
-		size_t frame = position_to_frame(static_cast<int>(round(selected->x() + 0.5f * selected->size.x())));
-		selected->x() = static_cast<float>(frame_to_position(selected->frame));
+		post_damage();
+	}
+}
 
-		bool was_selected = selected->frame == selected_frame;
+void keyframe_editor_overlay::handle_keyframe_drag(cgv::g2d::DragAction action) {
 
-		if(selected->frame != frame && data) {
-
-			if(data->move_keyframe(selected->frame, frame)) {
-				selected->x() = static_cast<float>(frame_to_position(frame));
-
-				post_recreate_layout();
-
-				invoke_callback(Event::kKeyMove);
-			}
-		} else {
-			set_selected_frame(frame);
+	switch(action) {
+	case cgv::g2d::DragAction::kDrag:
+	{
+		const auto dragged = keyframes.get_dragged();
+		if(dragged) {
+			size_t frame = position_to_frame(static_cast<int>(round(dragged->x() + 0.5f * dragged->size.x())));
+			dragged->x() = static_cast<float>(frame_to_position(frame));
 		}
 
-		if(was_selected)
-			set_selected_frame(frame);
-	} else {
-		set_selected_frame(-1);
+		break;
 	}
+	case cgv::g2d::DragAction::kDragEnd:
+	{
+		const auto selected = keyframes.get_selected();
+		if(selected) {
+			size_t frame = position_to_frame(static_cast<int>(round(selected->x() + 0.5f * selected->size.x())));
+			selected->x() = static_cast<float>(frame_to_position(selected->frame));
 
-	post_damage();
-}
+			bool was_selected = selected->frame == selected_frame;
 
-void keyframe_editor_overlay::handle_keyframe_selection_change() {
+			if(selected->frame != frame && data) {
+				if(data->move_keyframe(selected->frame, frame)) {
+					selected->x() = static_cast<float>(frame_to_position(frame));
 
-	const auto selected = keyframes.get_selected();
+					post_recreate_layout();
 
-	set_selected_frame(selected ? selected->frame : -1);
+					invoke_callback(Event::kKeyMove);
+				}
+			} else {
+				set_selected_frame(frame);
+			}
+
+			if(was_selected)
+				set_selected_frame(frame);
+		} else {
+			set_selected_frame(-1);
+		}
+
+		break;
+	}
+	case cgv::g2d::DragAction::kSelect:
+	{
+		const auto selected = keyframes.get_selected();
+		set_selected_frame(selected ? selected->frame : -1);
+		break;
+	}
+	default:
+		break;
+	}
 
 	post_damage();
 }
