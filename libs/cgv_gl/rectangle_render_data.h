@@ -140,11 +140,11 @@ public:
 		add_rotation(rotation);
 	}
 
-	void fill_secondary_colors(const vec2& color) {
+	void fill_secondary_colors(const ColorType& color) {
 		super::fill(secondary_colors, color);
 	}
 
-	void fill_border_colors(const vec2& color) {
+	void fill_border_colors(const ColorType& color) {
 		super::fill(border_colors, color);
 	}
 
