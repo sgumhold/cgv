@@ -736,6 +736,9 @@ public:
 	const T& operator [] (unsigned int i) const { return this->at(i); 	}
 };
 
+/// This symbol is defined when @ref cgv::media::color exists in the current compilation unit
+#define CGV_MEDIA_COLOR_DECLARED
+
 /*********************************************************************
 **
 ** operators

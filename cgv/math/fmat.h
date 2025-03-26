@@ -245,6 +245,9 @@ public:
 	}
 };
 
+/// This symbol is defined when @ref cgv::math::fmat exists in the current compilation unit
+#define CGV_MATH_FMAT_DECLARED
+
 /// return the transposed of a square matrix
 template <typename T, cgv::type::uint32_type N>
 fmat<T,N,N> transpose(const fmat<T,N,N>& m)
