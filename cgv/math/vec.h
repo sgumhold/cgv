@@ -25,7 +25,7 @@ namespace math {
 /// A column vector class.
 template <typename T>
 class vec
-{	
+{
 
 protected:
 	///pointer to _data storage
@@ -637,6 +637,9 @@ public:
 
 
 };
+
+/// This symbol is defined when @ref cgv::math::vec exists in the current compilation unit
+#define CGV_MATH_VEC_DECLARED
 
 ///returns a normalized version of v
 template<typename T>
