@@ -13,7 +13,7 @@ extern CGV_API bool copy_rgb_image_to_clipboard(int w, int h, const unsigned cha
 /// if clipboard contains text (return true), copy text to \c text and optionally clear clipboard
 extern CGV_API bool get_text_from_clipboard(std::string& text, bool clear_clipboard = false);
 /// if clipboard contains image (return true), copy image dims to \c w, \c h and pixel data in rgb24 format to \c data; optionally clear clipboard
-extern CGV_API bool get_rgb_image_from_clipboard(int& w, int& h, std::vector<uint8_t>& data, bool clear_clipboard = false);
+extern CGV_API bool get_rgb_image_from_clipboard(int& w, int& h, std::vector<char>& data, bool clear_clipboard = false);
 
 	}
 }
