@@ -1051,6 +1051,9 @@ public:
 
 };
 
+/// This symbol is defined when @ref cgv::math::mat exists in the current compilation unit
+#define CGV_MATH_MAT_DECLARED
+
 template <typename T>
 mat<T> zeros(unsigned rows, unsigned cols)
 {

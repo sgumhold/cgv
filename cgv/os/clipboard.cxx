@@ -54,7 +54,6 @@ bool copy_text_to_clipboard(const char* clipboard_text)
 	CloseClipboard();
 	return true;
 }
-
 bool copy_rgb_image_to_clipboard(int w, int h, const unsigned char* image_buffer)
 {
 	if ( !OpenClipboard(NULL) )
@@ -124,6 +123,70 @@ bool copy_rgb_image_to_clipboard(int w, int h, const unsigned char* image_buffer
 	CloseClipboard();
 	return true;
 }
+bool get_text_from_clipboard(std::string& text, bool clear_clipboard)
+{
+	if (!IsClipboardFormatAvailable(CF_TEXT))
+		return false;
+	bool result = false;
+	if (OpenClipboard(nullptr)) {
+		// Get handle of clipboard object for ANSI text
+		HANDLE hData = GetClipboardData(CF_TEXT);
+		if (hData != nullptr) {
+			// Lock the handle to get the actual text pointer
+			char* pszText = static_cast<char*>(GlobalLock(hData));
+			if (pszText != nullptr) {
+				// Save text in a string class instance
+				text = std::string(pszText);
+				result = true;
+			}
+			// Release the lock
+			GlobalUnlock(hData);
+		}
+		// if requested, clear the clipboard
+		if (clear_clipboard)
+			EmptyClipboard();
+		// Release the clipboard
+		CloseClipboard();
+	}
+	return result;
+}
+bool get_rgb_image_from_clipboard(int& w, int& h, std::vector<char>& data, bool clear_clipboard)
+{
+	if (!IsClipboardFormatAvailable(CF_BITMAP))
+		return false;
+	bool result = false;
+	// Try opening the clipboard
+	if (OpenClipboard(nullptr)) {
+		// Get handle of clipboard object for ANSI text
+		HANDLE hData = GetClipboardData(CF_BITMAP);
+		if (hData != nullptr) {
+			HBITMAP hBitmap = (HBITMAP)hData;
+			BITMAP bmp;
+			// Retrieve the bitmap color format, width, and height.
+			if (GetObject(hBitmap, sizeof(BITMAP), (LPSTR)&bmp)) {
+				BITMAPINFO bmi;
+				std::fill((uint8_t*)&bmi, (uint8_t*)(&bmi + 1), 0);
+				bmi.bmiHeader.biSize = sizeof(BITMAPINFOHEADER);
+				w = bmi.bmiHeader.biWidth = bmp.bmWidth;
+				h = bmi.bmiHeader.biHeight = bmp.bmHeight;
+				bmi.bmiHeader.biPlanes = 1;
+				bmi.bmiHeader.biBitCount = 24;
+				bmi.bmiHeader.biCompression = BI_RGB;
+				data.resize(3 * bmp.bmHeight * bmp.bmWidth);
+				if (GetDIBits(GetDC(0), hBitmap, 0, (WORD)bmp.bmHeight, data.data(), &bmi, DIB_RGB_COLORS)) {
+					result = true;
+				}
+			}
+		}
+		// if requested, clear the clipboard
+		if (clear_clipboard)
+			EmptyClipboard();
+		// Release the clipboard
+		CloseClipboard();
+	}
+	return true;
+}
+
 #else
 
 bool copy_text_to_clipboard(const char* text) {
@@ -134,6 +197,18 @@ bool copy_text_to_clipboard(const char* text) {
 bool copy_rgb_image_to_clipboard(int w, int h, const unsigned char* image_buffer) {
     // FIXME implement this (for now this is a no-op on non-windows systems)
     return false;
+}
+bool get_text_from_clipboard(std::string& text, bool clear_clipboard)
+{
+	// FIXME implement this (for now this is a no-op on non-windows systems)
+	return false;
+}
+
+/// if clipboard contains image (return true), copy image dims to \c w, \c h and pixel data in rgb24 format to \c data; optionally clear clipboard
+bool get_rgb_image_from_clipboard(int& w, int& h, std::vector<char>& data, bool clear_clipboard)
+{
+	// FIXME implement this (for now this is a no-op on non-windows systems)
+	return false;
 }
 
 #endif
