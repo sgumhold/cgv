@@ -150,7 +150,7 @@ bool get_text_from_clipboard(std::string& text, bool clear_clipboard)
 	}
 	return result;
 }
-bool get_rgb_image_from_clipboard(int& w, int& h, std::vector<uint8_t>& data, bool clear_clipboard)
+bool get_rgb_image_from_clipboard(int& w, int& h, std::vector<char>& data, bool clear_clipboard)
 {
 	if (!IsClipboardFormatAvailable(CF_BITMAP))
 		return false;
@@ -205,7 +205,7 @@ bool get_text_from_clipboard(std::string& text, bool clear_clipboard)
 }
 
 /// if clipboard contains image (return true), copy image dims to \c w, \c h and pixel data in rgb24 format to \c data; optionally clear clipboard
-bool get_rgb_image_from_clipboard(int& w, int& h, std::vector<uint8_t>& data, bool clear_clipboard)
+bool get_rgb_image_from_clipboard(int& w, int& h, std::vector<char>& data, bool clear_clipboard)
 {
 	// FIXME implement this (for now this is a no-op on non-windows systems)
 	return false;
