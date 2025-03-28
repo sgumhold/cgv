@@ -249,7 +249,7 @@ $(document).ready(function(){initNavTree('clipboard_8cxx_source.html',''); initR
 <div class="line"><a id="l00150" name="l00150"></a><span class="lineno">  150</span>    }</div>
 <div class="line"><a id="l00151" name="l00151"></a><span class="lineno">  151</span>    <span class="keywordflow">return</span> result;</div>
 <div class="line"><a id="l00152" name="l00152"></a><span class="lineno">  152</span>}</div>
-<div class="line"><a id="l00153" name="l00153"></a><span class="lineno">  153</span><span class="keywordtype">bool</span> get_rgb_image_from_clipboard(<span class="keywordtype">int</span>&amp; w, <span class="keywordtype">int</span>&amp; h, std::vector&lt;uint8_t&gt;&amp; data, <span class="keywordtype">bool</span> clear_clipboard)</div>
+<div class="line"><a id="l00153" name="l00153"></a><span class="lineno">  153</span><span class="keywordtype">bool</span> get_rgb_image_from_clipboard(<span class="keywordtype">int</span>&amp; w, <span class="keywordtype">int</span>&amp; h, std::vector&lt;char&gt;&amp; data, <span class="keywordtype">bool</span> clear_clipboard)</div>
 <div class="line"><a id="l00154" name="l00154"></a><span class="lineno">  154</span>{</div>
 <div class="line"><a id="l00155" name="l00155"></a><span class="lineno">  155</span>    <span class="keywordflow">if</span> (!IsClipboardFormatAvailable(CF_BITMAP))</div>
 <div class="line"><a id="l00156" name="l00156"></a><span class="lineno">  156</span>        <span class="keywordflow">return</span> <span class="keyword">false</span>;</div>
@@ -303,7 +303,7 @@ $(document).ready(function(){initNavTree('clipboard_8cxx_source.html',''); initR
 <div class="line"><a id="l00204" name="l00204"></a><span class="lineno">  204</span>    <span class="keywordflow">return</span> <span class="keyword">false</span>;</div>
 <div class="line"><a id="l00205" name="l00205"></a><span class="lineno">  205</span>}</div>
 <div class="line"><a id="l00206" name="l00206"></a><span class="lineno">  206</span> </div>
-<div class="line"><a id="l00208" name="l00208"></a><span class="lineno">  208</span><span class="keywordtype">bool</span> get_rgb_image_from_clipboard(<span class="keywordtype">int</span>&amp; w, <span class="keywordtype">int</span>&amp; h, std::vector&lt;uint8_t&gt;&amp; data, <span class="keywordtype">bool</span> clear_clipboard)</div>
+<div class="line"><a id="l00208" name="l00208"></a><span class="lineno">  208</span><span class="keywordtype">bool</span> get_rgb_image_from_clipboard(<span class="keywordtype">int</span>&amp; w, <span class="keywordtype">int</span>&amp; h, std::vector&lt;char&gt;&amp; data, <span class="keywordtype">bool</span> clear_clipboard)</div>
 <div class="line"><a id="l00209" name="l00209"></a><span class="lineno">  209</span>{</div>
 <div class="line"><a id="l00210" name="l00210"></a><span class="lineno">  210</span>    <span class="comment">// FIXME implement this (for now this is a no-op on non-windows systems)</span></div>
 <div class="line"><a id="l00211" name="l00211"></a><span class="lineno">  211</span>    <span class="keywordflow">return</span> <span class="keyword">false</span>;</div>
