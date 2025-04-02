@@ -163,7 +163,7 @@ namespace stream_vis {
 		// check for vec4 and interpret as axis and angle in degree
 		cgv::vec4 v;
 		if (parse_vec4(name, v)) {
-			quat = cgv::quat((cgv::vec3&)v, float(M_PI / 180 * v[3]));
+			quat = cgv::quat(*(cgv::vec3*)&v, float(M_PI / 180 * v[3]));
 			return true;
 		}
 		return false;
