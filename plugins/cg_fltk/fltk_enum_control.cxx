@@ -17,6 +17,7 @@
 
 #include <iostream>
 
+using namespace cgv::gui;
 using namespace cgv::utils;
 
 
@@ -123,7 +124,7 @@ bool fltk_enum_control::set_void(const std::string& property, const std::string&
 		from_string(i, property.substr(6));
 		fltk::Group *g = static_cast<fltk::Group*>(container);
 		if (g->children() > i) {
-			g->child(i)->activate(variant<bool>::get(value_type, value_ptr));
+			g->child(i)->activate(cgv::type::variant<bool>::get(value_type, value_ptr));
 			return true;
 		}
 		return false;
@@ -131,7 +132,7 @@ bool fltk_enum_control::set_void(const std::string& property, const std::string&
 	if (property == "enums") {
 		enum_values.clear();
 		enum_strings.clear();
-		parse_enum_declarations(variant<std::string>::get(value_type, value_ptr));
+		parse_enum_declarations(cgv::type::variant<std::string>::get(value_type, value_ptr));
 		update_enums();
 	}
 	return fltk_base::set_void(container, this, property, value_type, value_ptr);

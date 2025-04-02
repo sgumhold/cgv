@@ -18,7 +18,7 @@ public:
 protected:
 	SortOrder sort_order = SO_ASCENDING;
 	bool value_init_override = true;
-	cgv::type::info::TypeId value_type = TI_UINT32;
+	cgv::type::info::TypeId value_type = cgv::type::info::TI_UINT32;
 	unsigned value_component_count = 1;
 	std::string value_type_def = "uint";
 	std::string data_type_def = "";

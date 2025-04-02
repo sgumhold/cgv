@@ -2,6 +2,9 @@
 
 #include "screen_texture_manager.h"
 
+using namespace cgv::data;
+using namespace cgv::render;
+
 namespace trajectory {
 namespace util {
 

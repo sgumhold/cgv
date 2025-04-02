@@ -5,11 +5,11 @@ namespace cgv {
 	namespace gui {
 
 /// add a newly created decorator to the group
-base_ptr menu_provider::add_menu_separator(const std::string& menu_path)
+cgv::base::base_ptr menu_provider::add_menu_separator(const std::string& menu_path)
 {
 	if (get_gui_driver())
 		return get_gui_driver()->add_menu_separator(menu_path);
-	return base_ptr();
+	return cgv::base::base_ptr();
 }
 
 /// use the current gui driver to append a new button in the menu, where menu path is a '/' separated path

@@ -16,7 +16,7 @@ void gui_group::set_provider_parent(provider* p, gui_group_ptr g)
 	p->set_parent(g);
 }
 
-void gui_group::register_object(base_ptr object, const std::string& options)
+void gui_group::register_object(cgv::base::base_ptr object, const std::string& options)
 {
 }
 
@@ -41,7 +41,7 @@ void gui_group::select_child(unsigned ci, bool exclusive)
 }
 
 /// same as version with child index
-void gui_group::select_child(base_ptr c, bool exclusive)
+void gui_group::select_child(cgv::base::base_ptr c, bool exclusive)
 {
 	if (!is_selected(c)) {
 		if (!multiple_selection())
@@ -55,7 +55,7 @@ bool gui_group::unselect_child(unsigned ci)
 	return unselect_child(get_child(ci));
 }
 
-bool gui_group::unselect_child(base_ptr c)
+bool gui_group::unselect_child(cgv::base::base_ptr c)
 {
 	if (is_selected(c)) {
 		on_selection_change(c, false);
@@ -69,15 +69,15 @@ int gui_group::get_selected_child_index() const
 	return -1;
 }
 
-base_ptr gui_group::get_selected_child() const
+cgv::base::base_ptr gui_group::get_selected_child() const
 {
 	int ci = get_selected_child_index();
 	if (ci == -1)
-		return base_ptr();
+		return cgv::base::base_ptr();
 	return get_child(ci);
 }
 
-bool gui_group::is_selected(base_ptr c) const
+bool gui_group::is_selected(cgv::base::base_ptr c) const
 {
 	return get_selected_child() == c;
 }
@@ -138,18 +138,18 @@ control_ptr gui_group::add_control_void(const std::string& label,
 		label, value_ptr ? value_ptr : user_data, acp, value_type, gui_type, options, align);
 }
 /// find a gui element by name, return empty pointer if not found
-base_ptr gui_group::find_element(const std::string& name)
+cgv::base::base_ptr gui_group::find_element(const std::string& name)
 {
 	unsigned n = get_nr_children();
 	for (unsigned i=0; i<n; ++i) {
-		base_ptr bp = get_child(i);
+		cgv::base::base_ptr bp = get_child(i);
 		cgv::base::named_ptr np = bp->get_named();
 		if (np) {
 			if (np->get_name() == name)
 				return bp;
 		}
 	}
-	return base_ptr();
+	return cgv::base::base_ptr();
 }
 
 // find a view in the group based on a const void pointer
@@ -190,7 +190,7 @@ void gui_group::release_all_managed_objects()
 /// release a specific managed object
 void gui_group::release_managed_objects(cgv::base::base_ptr object)
 {
-	std::vector<base_ptr>::iterator iter = std::find(managed_objects.begin(), managed_objects.end(), object);
+	std::vector<cgv::base::base_ptr>::iterator iter = std::find(managed_objects.begin(), managed_objects.end(), object);
 	if (iter == managed_objects.end())
 		return;
 	managed_objects.erase(iter);
@@ -199,7 +199,7 @@ void gui_group::release_managed_objects(cgv::base::base_ptr object)
 /// check whether an object is managed by this gui group
 bool gui_group::is_managed_object(cgv::base::base_ptr object)
 {
-	std::vector<base_ptr>::iterator iter = std::find(managed_objects.begin(), managed_objects.end(), object);
+	std::vector<cgv::base::base_ptr>::iterator iter = std::find(managed_objects.begin(), managed_objects.end(), object);
 	return iter != managed_objects.end();
 }
 
@@ -217,10 +217,10 @@ gui_group_ptr gui_group::add_group(const std::string& label, const std::string& 
 		label, group_type, options, align);
 }
 // add a newly created decorator to the group
-base_ptr gui_group::add_decorator(const std::string& label, const std::string& decorator_type, const std::string& options, const std::string& align)
+cgv::base::base_ptr gui_group::add_decorator(const std::string& label, const std::string& decorator_type, const std::string& options, const std::string& align)
 {
 	if (get_gui_driver().empty())
-		return base_ptr();
+		return cgv::base::base_ptr();
 	return get_gui_driver()->add_decorator(gui_group_ptr(this), 
 		label, decorator_type, options, align);
 }

@@ -1,5 +1,6 @@
 #include "fltk_driver_registry.h"
 
+using namespace cgv::gui;
 
 control_ptr abst_control_factory::create_with_options(const std::string& label, void* value_ptr, abst_control_provider* acp, const std::string& value_type, const std::string& gui_type, const std::string& options, int x, int y, int w, int h)
 {
@@ -18,16 +19,16 @@ void register_decorator_factory(abst_decorator_factory* fac)
 	ref_decorator_factories().push_back(fac);
 }
 
-base_ptr create_decorator(const std::string& label,
+cgv::base::base_ptr create_decorator(const std::string& label,
 						  const std::string& gui_type, int x, int y, int w, int h)
 {
 	for (unsigned int i=0; i<ref_decorator_factories().size(); ++i) {
-		base_ptr d = ref_decorator_factories()[i]->create(label, 
+		cgv::base::base_ptr d = ref_decorator_factories()[i]->create(label,
 									gui_type, x, y, w, h);
 		if (!d.empty())
 			return d;
 	}
-	return base_ptr();
+	return cgv::base::base_ptr();
 }
 
 

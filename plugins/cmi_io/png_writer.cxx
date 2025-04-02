@@ -2,6 +2,7 @@
 #include <cgv/base/register.h>
 #include <iostream>
 
+using namespace cgv::data;
 
 /// default constructor
 png_writer::png_writer() : fp(0)
@@ -30,7 +31,7 @@ bool png_writer::self_reflect(cgv::reflect::reflection_handler& rh)
 }
 
 /// construct a copy of the reader
-abst_image_writer* png_writer::clone() const
+cgv::media::image::abst_image_writer* png_writer::clone() const
 {
 	return new png_writer();
 }
@@ -81,8 +82,8 @@ bool png_writer::determine_params(const component_format& cf, int& color_type, i
 	}
 	else {
 		switch (cf.get_component_type()) {
-		case TI_UINT8 : bit_depth = 8; break;
-		case TI_UINT16 : bit_depth = 16; break;
+		case cgv::type::info::TI_UINT8 : bit_depth = 8; break;
+		case cgv::type::info::TI_UINT16 : bit_depth = 16; break;
 		default : return false;
 		}
 	}

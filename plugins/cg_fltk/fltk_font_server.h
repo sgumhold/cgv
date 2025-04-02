@@ -6,8 +6,6 @@ namespace fltk {
 	struct Font;
 }
 
-//using namespace cgv::media::font;
-
 #include "lib_begin.h"
 
 class fltk_font_face : public cgv::media::font::font_face

@@ -30,7 +30,7 @@ namespace cgv {
 			CT_UNDEF
 		};
 
-		struct CGV_API command_token : public token
+		struct CGV_API command_token : public cgv::utils::token
 		{
 		protected:
 			static std::string last_error;

@@ -65,7 +65,7 @@ void bump_mapper::init_frame(context& ctx)
 		return;
 	}
 	
-	data_format df(texture_resolution,texture_resolution,TI_FLT32,CF_L);
+	data_format df(texture_resolution,texture_resolution, cgv::type::info::TI_FLT32, CF_L);
 	data_view dv(&df);
 	unsigned i,j;
 	float* ptr = (float*)dv.get_ptr<unsigned char>();
