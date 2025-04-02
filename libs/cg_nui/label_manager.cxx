@@ -67,6 +67,14 @@ namespace cgv {
 			texture_content_outofdate = true;
 			return (uint32_t)(labels.size() - 1);
 		}
+		void label_manager::remove_all_labels()
+		{
+			labels.clear();
+			label_states.clear();
+			packing_outofdate = true;
+			texture_outofdate = true;
+			texture_content_outofdate = true;
+		}
 		void label_manager::compute_label_size(label& l)
 		{
 			int nr_lines = -1;

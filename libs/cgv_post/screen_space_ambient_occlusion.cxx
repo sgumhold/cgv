@@ -162,7 +162,7 @@ void screen_space_ambient_occlusion::generate_samples_and_noise_texture(cgv::ren
 		random_noise.push_back(noise);
 	}
 
-	cgv::data::data_view dv = cgv::data::data_view(new cgv::data::data_format(4, 4, TI_FLT32, cgv::data::CF_RGB), random_noise.data());
+	cgv::data::data_view dv = cgv::data::data_view(new cgv::data::data_format(4, 4, cgv::type::info::TI_FLT32, cgv::data::CF_RGB), random_noise.data());
 	noise_tex.create(ctx, dv, 0);
 	noise_tex.set_min_filter(cgv::render::TF_NEAREST);
 	noise_tex.set_mag_filter(cgv::render::TF_NEAREST);

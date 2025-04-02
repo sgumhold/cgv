@@ -41,7 +41,7 @@ public:
 		auto& ti = cgv::gui::theme_info::instance();
 	}
 	void destruct() {
-		unregister_object(base_ptr(this));
+		unregister_object(cgv::base::base_ptr(this));
 	}
 	/// overload to return the type name of this object
 	std::string get_type_name() const {

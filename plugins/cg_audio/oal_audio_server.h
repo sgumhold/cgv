@@ -15,5 +15,5 @@ class OALAudioServer :
 	virtual bool on_exit_request() override;
 
   private:
-	cgv::audio::OALContext c;
+	cgv::audio::OALContext* ctx_ptr = 0;
 };

@@ -33,15 +33,15 @@ protected:
 
 	// triangle geometry
 	struct Vertex {
-		vec3 p;
-		rgba c;
-		vec3 n;
+		cgv::vec3 p;
+		cgv::rgba c;
+		cgv::vec3 n;
 	};
 	std::vector<Vertex> V;
 
 	// sphere geometry
-	std::vector<vec4> S;
-	std::vector<rgba> C;
+	std::vector<cgv::vec4> S;
+	std::vector<cgv::rgba> C;
 
 	// render objects
 	shader_define_map triangle_defines;
@@ -65,14 +65,14 @@ protected:
 		std::default_random_engine e;
 		std::uniform_real_distribution<float> d(-1.0f, 1.0f);
 		for (size_t i = 0; i < count; ++i) {
-			vec3 p0(d(e), d(e), d(e));
-			vec3 e1(d(e), d(e), d(e));
-			vec3 e2(d(e), d(e), d(e));
-			vec3 p1 = p0 + delta * e1;
-			vec3 p2 = p0 + delta * e2;
-			vec3 n = cross(e1, e2);
+			cgv::vec3 p0(d(e), d(e), d(e));
+			cgv::vec3 e1(d(e), d(e), d(e));
+			cgv::vec3 e2(d(e), d(e), d(e));
+			cgv::vec3 p1 = p0 + delta * e1;
+			cgv::vec3 p2 = p0 + delta * e2;
+			cgv::vec3 n = cross(e1, e2);
 			n.normalize();
-			rgba c(0.5f * d(e) + 0.5f, 0.25f * d(e) + 0.5f, 0.25f * d(e) + 0.5f, 0.25f * d(e) + 0.65f);
+			cgv::rgba c(0.5f * d(e) + 0.5f, 0.25f * d(e) + 0.5f, 0.25f * d(e) + 0.5f, 0.25f * d(e) + 0.65f);
 			V.push_back({ p0, c, n });
 			V.push_back({ p1, c, n });
 			V.push_back({ p2, c, n });
@@ -83,8 +83,8 @@ protected:
 		std::default_random_engine e;
 		std::uniform_real_distribution<float> d(-1.0f, 1.0f);
 		for (size_t i = 0; i < count; ++i) {
-			vec4 s(d(e), d(e), d(e), radius * (d(e) + 1.5f));
-			rgba c(0.5f * d(e) + 0.5f, 0.25f * d(e) + 0.5f, 0.25f * d(e) + 0.5f, 0.25f * d(e) + 0.65f);
+			cgv::vec4 s(d(e), d(e), d(e), radius * (d(e) + 1.5f));
+			cgv::rgba c(0.5f * d(e) + 0.5f, 0.25f * d(e) + 0.5f, 0.25f * d(e) + 0.5f, 0.25f * d(e) + 0.65f);
 			S.push_back(s);
 			C.push_back(c);
 		}
