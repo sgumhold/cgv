@@ -19,7 +19,7 @@ add_subdirectory(crg_light)
 add_subdirectory(crg_bg)
 add_subdirectory(crg_stereo_view)
 add_subdirectory(crg_holo_view)
-
+#add_subdirectory(rgbd_control)
 add_subdirectory(crg_vr_wall)
 add_subdirectory(crg_vr_view)
 add_subdirectory(maptiles_plugin)

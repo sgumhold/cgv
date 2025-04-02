@@ -28,6 +28,12 @@ extern CGV_API GLuint map_to_gl(MaterialSide ms);
 
 extern CGV_API GLuint map_to_gl(BlendFunction blend_function);
 
+extern CGV_API GLboolean map_to_gl(bool flag);
+
+extern CGV_API GLuint get_gl_id(const void* handle);
+
+extern CGV_API void* get_handle(GLuint id);
+
 /// set material in opengl state to given material
 extern CGV_API void set_material(const cgv::media::illum::phong_material& mat, MaterialSide ms, float alpha);
 
