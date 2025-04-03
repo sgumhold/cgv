@@ -351,6 +351,9 @@ public:
 	//@}
 };
 
+/// This symbol is defined when @ref cgv::math::quaternion exists in the current compilation unit
+#define CGV_MATH_QUATERNION_DECLARED
+
 ///returns the product of a scalar s and vector v
 template <typename T>
 quaternion<T> operator * (const T& s, const quaternion<T>& v)
