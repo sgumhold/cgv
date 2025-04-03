@@ -320,6 +320,9 @@ public:
 	//@}
 };
 
+/// This symbol is defined when @ref cgv::math::fvec exists in the current compilation unit
+#define CGV_MATH_FVEC_DECLARED
+
 /// return normalized vector
 template<typename T, cgv::type::uint32_type N>
 fvec<T,N> normalize(const fvec<T,N>& v) { fvec<T,N> w(v); w.normalize(); return w; }
