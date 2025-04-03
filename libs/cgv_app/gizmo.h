@@ -1,132 +1,135 @@
 #pragma once
 
-#include <cgv/gui/event.h>
-#include <cgv/gui/key_event.h>
-#include <cgv/gui/mouse_event.h>
+#include <cgv/base/node.h>
+#include <cgv/gui/event_handler.h>
+#include <cgv/math/fvec.h>
+#include <cgv/math/quaternion.h>
 #include <cgv/math/ray.h>
+#include <cgv/render/drawable.h>
 #include <cgv/render/view.h>
-#include <cgv_gl/arrow_render_data.h>
-#include <cgv_gl/rectangle_render_data.h>
-#include <cgv_gl/sphere_render_data.h>
 
 #include "lib_begin.h"
 
 namespace cgv {
 namespace app {
 
-class CGV_API gizmo {
-protected:
+struct plane {
+	vec3 origin = { 0.0f };
+	vec3 normal = { 0.0f };
 
+	bool valid() const {
+		return length(normal) > std::numeric_limits<float>::epsilon();
+	}
+};
+
+enum class GizmoAction {
+	kDragStart,
+	kDrag,
+	kDragEnd
+};
+
+enum class GizmoOrientation {
+	kGlobal,
+	kLocal
+};
+
+class CGV_API gizmo :
+	public cgv::base::node,
+	public cgv::gui::event_handler,
+	public cgv::render::drawable {
+public:
+	std::string get_type_name() const override { return "gizmo"; }
+
+	bool init(cgv::render::context&) override = 0;
+
+	void clear(cgv::render::context&) override = 0;
+
+	void finish_frame(cgv::render::context&) override;
+
+	bool handle(cgv::gui::event& e) override;
+
+	void stream_help(std::ostream& os) override {};
+
+	GizmoOrientation get_orientation() const;
+
+	void set_orientation(GizmoOrientation orientation);
+
+	vec3 get_position() const;
+
+	void set_position(const vec3& position);
+
+	quat get_rotation() const;
+
+	void set_rotation(const quat& rotation);
+
+	float size_scale = 1.0f;
+	bool keep_screen_size_constant = true;
+	bool lock_size_during_interaction = false;
+
+protected:
 	enum class InteractionFeature {
 		kNone = 0,
-		kXAxis = 1,
-		kYAxis = 2,
-		kZAxis = 3,
-		kYZPlane = 4,
-		kXZPlane = 5,
-		kXYPlane = 6,
-		kCenter = 7
-	} feature = InteractionFeature::kNone;
+		kAxis,
+		kPlane,
+		kCenter
+	};
 
-	cgv::render::view* view_ptr = nullptr;
+	enum class AxisId {
+		kX = 0,
+		kY = 1,
+		kZ = 2
+	};
 
-	bool align_to_view;
-	bool hover;
-	bool active;
-	float scale;
-	float scale_coefficient;
+	InteractionFeature _interaction_feature = InteractionFeature::kNone;
+	AxisId _interaction_axis_id = AxisId::kX;
+	plane _interaction_plane;
+	cgv::math::ray3 _drag_start_ray;
+	float _drag_start_t = 0.0f;
 
-	vec3 position;
-	vec3 last_position;
-	vec3 offset;
-	vec3 flip_factors;
+	float get_size() const;
 
-	std::function<void(void)> move_callback;
+	const cgv::render::view* get_view() const;
 
-	struct {
-		cgv::render::arrow_renderer arrow;
-		cgv::render::rectangle_renderer rectangle;
-		cgv::render::sphere_renderer sphere;
-	} renderers;
+	void set_geometry_out_of_date();
 
-	cgv::render::arrow_render_data<> arrows;
-	cgv::render::rectangle_render_data<> rectangles;
-	cgv::render::sphere_render_data<> sphere;
+	bool captured_mouse() const;
 
-	bool geometry_out_of_date;
+	bool is_hovered() const;
 
-	void create_geometry();
+	int axis_id_to_index(AxisId axis) const;
 
-	bool is_axis(InteractionFeature feature) {
-		return feature == InteractionFeature::kXAxis || feature == InteractionFeature::kYAxis || feature == InteractionFeature::kZAxis;
-	}
+	AxisId index_to_axis_id(int idx) const;
 
-	bool is_plane(InteractionFeature feature) {
-		return feature == InteractionFeature::kXYPlane || feature == InteractionFeature::kXZPlane || feature == InteractionFeature::kYZPlane;
-	}
+	vec3 get_axis(int index) const;
 
-	bool is_center(InteractionFeature feature) {
-		return feature == InteractionFeature::kCenter;
-	}
+	vec3 get_axis_mask(InteractionFeature feature, AxisId axis_id) const;
 
-	int get_axis_idx(InteractionFeature feature) {
-		if(!is_center(feature)) {
-			int feature_id = static_cast<int>(feature);
-			return (feature_id - 1) % 3;
-		}
-		return -1;
-	}
+private:
+	virtual void create_geometry() = 0;
 
-	vec3 get_axis(InteractionFeature feature) {
-		vec3 axis(0.0f);
-		int idx = get_axis_idx(feature);
-		if(idx > -1)
-			axis[idx] = 1.0f;
-		return axis;
-	}
+	virtual void draw_geometry(cgv::render::context& ctx) = 0;
 
-	bool intersect_axis_aligned_rectangle(const cgv::math::ray3& r, int axis, const vec3& p, float scale, float& t) const;
+	virtual bool intersect_bounding_box(const cgv::math::ray3& ray) { return true; }
 
-	bool intersect(const cgv::math::ray3& r);
+	virtual bool intersect(const cgv::math::ray3& ray) { return false; }
 
-	bool handle_drag(const cgv::math::ray3& r, const vec3& view_dir, bool drag_start);
+	virtual bool start_drag(const cgv::math::ray3& ray) { return false; }
 
-	vec3 get_flip_factors();
+	virtual bool drag(const cgv::math::ray3& ray) { return false; }
 
-public:
-	gizmo();
+	virtual void end_drag(const cgv::math::ray3& ray) {}
 
-	void destruct(cgv::render::context& ctx);
+	cgv::render::view* _view = nullptr;
 
-	bool handle(cgv::gui::event& e, cgv::render::context& ctx);
+	bool _geometry_out_of_date = true;
+	float _size = -1.0f;
 
-	bool init(cgv::render::context& ctx);
-	void draw(cgv::render::context& ctx);
+	bool _captured_mouse = false;
+	bool _hovered = false;
 
-	void set_view_ptr(cgv::render::view* view_ptr);
-
-	void enable_view_alignment(bool enable) { align_to_view = enable; }
-
-	void set_scale(float scale) {
-
-		scale_coefficient = scale;
-	}
-
-	void set_move_callback(std::function<void(void)> func) {
-		move_callback = func;
-	}
-
-	void set_position(const vec3& p, bool invoke_callback = false) {
-
-		position = p;
-		if(invoke_callback && move_callback)
-			move_callback();
-	}
-
-	vec3 get_position() const {
-
-		return position;
-	}
+	vec3 _position = { 0.0f };
+	quat _rotation = {};
+	GizmoOrientation _orientation = GizmoOrientation::kGlobal;
 };
 
 }
