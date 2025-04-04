@@ -28,9 +28,6 @@ var hierarchy =
       ] ],
       [ "cgv::reflect::reflection_traits_impl< T, B, true >", "structcgv_1_1reflect_1_1reflection__traits__impl_3_01T_00_01B_00_01true_01_4.html", null ]
     ] ],
-    [ "base_drawable", null, [
-      [ "cgv::app::generic_application_plugin< base_drawable >", "classcgv_1_1app_1_1generic__application__plugin.html", null ]
-    ] ],
     [ "nes::basic_pipe_istream< char, std::char_traits< char > >", "classnes_1_1basic__pipe__istream.html", null ],
     [ "nes::basic_pipe_ostream< char, std::char_traits< char > >", "classnes_1_1basic__pipe__ostream.html", null ],
     [ "cfg_reg_type", "structcfg__reg__type.html", null ],
@@ -170,12 +167,6 @@ var hierarchy =
     ] ],
     [ "cgv::base::traverse_policy", "classcgv_1_1base_1_1traverse__policy.html", [
       [ "cgv::gui::event_handler", "classcgv_1_1gui_1_1event__handler.html", [
-        [ "cgv::app::application_plugin_base", "classcgv_1_1app_1_1application__plugin__base.html", [
-          [ "cgv::app::generic_application_plugin< cgv::render::drawable >", "classcgv_1_1app_1_1generic__application__plugin.html", [
-            [ "cgv::app::application_plugin", "classcgv_1_1app_1_1application__plugin.html", null ]
-          ] ],
-          [ "cgv::app::generic_application_plugin< base_drawable >", "classcgv_1_1app_1_1generic__application__plugin.html", null ]
-        ] ],
         [ "cgv::app::gizmo", "classcgv_1_1app_1_1gizmo.html", [
           [ "cgv::app::transformation_gizmo", "classcgv_1_1app_1_1transformation__gizmo.html", null ]
         ] ],
@@ -196,7 +187,6 @@ var hierarchy =
         [ "vr_test", "classvr__test.html", null ]
       ] ],
       [ "cgv::render::drawable", "classcgv_1_1render_1_1drawable.html", [
-        [ "cgv::app::generic_application_plugin< cgv::render::drawable >", "classcgv_1_1app_1_1generic__application__plugin.html", null ],
         [ "cgv::app::gizmo", "classcgv_1_1app_1_1gizmo.html", null ],
         [ "cgv::app::overlay", "classcgv_1_1app_1_1overlay.html", null ],
         [ "cgv::plot::plot_base", "classcgv_1_1plot_1_1plot__base.html", [
@@ -257,7 +247,6 @@ var hierarchy =
             [ "cgv::app::gizmo", "classcgv_1_1app_1_1gizmo.html", null ],
             [ "cgv::app::overlay", "classcgv_1_1app_1_1overlay.html", null ],
             [ "cgv::base::group", "classcgv_1_1base_1_1group.html", [
-              [ "cgv::app::application_plugin_base", "classcgv_1_1app_1_1application__plugin__base.html", null ],
               [ "cgv::gui::gui_group", "classcgv_1_1gui_1_1gui__group.html", null ]
             ] ],
             [ "cgv::gui::abst_view", "classcgv_1_1gui_1_1abst__view.html", [
@@ -343,7 +332,6 @@ var hierarchy =
       [ "vr::vr_log", "classvr_1_1vr__log.html", null ]
     ] ],
     [ "cgv::data::ref_ptr_impl< T, is_ref_counted >", "classcgv_1_1data_1_1ref__ptr__impl.html", [
-      [ "cgv::data::ref_ptr< overlay >", "classcgv_1_1data_1_1ref__ptr.html", null ],
       [ "cgv::data::ref_ptr< base, true >", "classcgv_1_1data_1_1ref__ptr.html", null ],
       [ "cgv::data::ref_ptr< node, true >", "classcgv_1_1data_1_1ref__ptr.html", null ],
       [ "cgv::data::ref_ptr< window >", "classcgv_1_1data_1_1ref__ptr.html", null ],
@@ -898,7 +886,6 @@ var hierarchy =
       [ "cgv::gui::base_provider_generator", "classcgv_1_1gui_1_1base__provider__generator.html", null ],
       [ "cgv::gui::key_control< T >", "classcgv_1_1gui_1_1key__control.html", null ],
       [ "cgv::gui::provider", "classcgv_1_1gui_1_1provider.html", [
-        [ "cgv::app::application_plugin_base", "classcgv_1_1app_1_1application__plugin__base.html", null ],
         [ "cgv::app::overlay", "classcgv_1_1app_1_1overlay.html", null ],
         [ "cgv::gui::base_provider", "classcgv_1_1gui_1_1base__provider.html", null ],
         [ "vr_emulator", "classvr__emulator.html", null ],
@@ -1183,7 +1170,6 @@ var hierarchy =
     [ "cgv::data::ref_ptr_impl< group, is_ref_counted >", "classcgv_1_1data_1_1ref__ptr__impl.html", null ],
     [ "cgv::data::ref_ptr_impl< gui_group, is_ref_counted >", "classcgv_1_1data_1_1ref__ptr__impl.html", null ],
     [ "cgv::data::ref_ptr_impl< node, is_ref_counted >", "classcgv_1_1data_1_1ref__ptr__impl.html", null ],
-    [ "cgv::data::ref_ptr_impl< overlay, type::cond::is_base_of< ref_counted, overlay >::value >", "classcgv_1_1data_1_1ref__ptr__impl.html", null ],
     [ "cgv::data::ref_ptr_impl< T, type::cond::is_base_of< ref_counted, T >::value >", "classcgv_1_1data_1_1ref__ptr__impl.html", null ],
     [ "cgv::data::ref_ptr_impl< window, type::cond::is_base_of< ref_counted, window >::value >", "classcgv_1_1data_1_1ref__ptr__impl.html", null ],
     [ "cgv::reflect::reflection_traits_info_self< cgv::type::cond::is_base_of< self_reflection_tag, T >::value, T >", "structcgv_1_1reflect_1_1reflection__traits__info__self.html", [

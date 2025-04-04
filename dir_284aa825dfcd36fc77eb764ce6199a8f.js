@@ -1,8 +1,6 @@
 var dir_284aa825dfcd36fc77eb764ce6199a8f =
 [
     [ "app.cxx", "app_8cxx_source.html", null ],
-    [ "application_plugin.cxx", "application__plugin_8cxx_source.html", null ],
-    [ "application_plugin.h", "application__plugin_8h_source.html", null ],
     [ "canvas_overlay.cxx", "canvas__overlay_8cxx_source.html", null ],
     [ "canvas_overlay.h", "canvas__overlay_8h_source.html", null ],
     [ "cgv_app.pj", "cgv__app_8pj_source.html", null ],

@@ -21,7 +21,6 @@ var searchData=
   ['out_5fof_5frange_5fmode_18',['out_of_range_mode',['../classcgv_1_1plot_1_1plot__base.html#a79b083c7be943db712595d7f80973b46',1,'cgv::plot::plot_base']]],
   ['out_5fstream_19',['out_stream',['../classcgv_1_1render_1_1context.html#afd2384f196ed5c318c3979a798c9a48b',1,'cgv::render::context']]],
   ['output_20',['output',['../classcgv_1_1reflect_1_1debug__reflection__handler.html#a2a61cf142c064887cf7ddae21a310bcf',1,'cgv::reflect::debug_reflection_handler']]],
-  ['overlays_21',['overlays',['../classcgv_1_1app_1_1application__plugin__base.html#a87d94e00268c0abac8f96e94cfda30e4',1,'cgv::app::application_plugin_base']]],
-  ['owns_5fformat_22',['owns_format',['../classcgv_1_1data_1_1data__view__base.html#afce821532fa741853508ceb4fce0bc10',1,'cgv::data::data_view_base']]],
-  ['owns_5fptr_23',['owns_ptr',['../classcgv_1_1data_1_1data__view.html#a1c131a7d6d20c8c1eb35a92210196093',1,'cgv::data::data_view']]]
+  ['owns_5fformat_21',['owns_format',['../classcgv_1_1data_1_1data__view__base.html#afce821532fa741853508ceb4fce0bc10',1,'cgv::data::data_view_base']]],
+  ['owns_5fptr_22',['owns_ptr',['../classcgv_1_1data_1_1data__view.html#a1c131a7d6d20c8c1eb35a92210196093',1,'cgv::data::data_view']]]
 ];

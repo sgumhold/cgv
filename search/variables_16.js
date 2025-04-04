@@ -13,12 +13,11 @@ var searchData=
   ['vertices_10',['vertices',['../classcgv_1_1math_1_1adjacency__list.html#a72b26efa6fe617182141e8fd02fb404e',1,'cgv::math::adjacency_list::vertices'],['../classcgv_1_1media_1_1mesh_1_1convex__polyhedron.html#afe44313dd21e4ef9a791b2c13241e9c5',1,'cgv::media::mesh::convex_polyhedron::vertices']]],
   ['vibration_11',['vibration',['../structvr_1_1vr__controller__state.html#a2049e60e70d799088e50a514e8db44f0',1,'vr::vr_controller_state']]],
   ['vibration_5fstrength_12',['vibration_strength',['../structgamepad_1_1device__info.html#a3661dad12c7fedbc4072cc015e760be1',1,'gamepad::device_info']]],
-  ['view_5fptr_13',['view_ptr',['../classcgv_1_1app_1_1application__plugin__base.html#a8335fb38baab1499d22bede7d582a4ed',1,'cgv::app::application_plugin_base']]],
-  ['viewport_14',['viewport',['../structcgv_1_1render_1_1window__transformation.html#adb98777ac74ebf96d4ffb9b690b089a0',1,'cgv::render::window_transformation']]],
-  ['volume_5ftexture_15',['volume_texture',['../classcgv_1_1render_1_1volume__renderer.html#ad1c939fab9bfd4c78c17e1e84db52425',1,'cgv::render::volume_renderer']]],
-  ['voxel_5fcounts_16',['voxel_counts',['../structcgv_1_1media_1_1volume_1_1voxel__file__info.html#a9090c7234dc8b6ec1b2e0b27f2df829b',1,'cgv::media::volume::voxel_file_info']]],
-  ['voxel_5fformat_17',['voxel_format',['../structcgv_1_1media_1_1volume_1_1voxel__file__info.html#a42c955b90fbcbe4a83acd60d4a51d643',1,'cgv::media::volume::voxel_file_info']]],
-  ['voxel_5fscaling_18',['voxel_scaling',['../structcgv_1_1media_1_1volume_1_1voxel__file__info.html#a8d83c267f173f7ab7185b379854cb761',1,'cgv::media::volume::voxel_file_info']]],
-  ['vr_5fdriver_19',['vr_driver',['../namespacevr.html#ad99996e738d108251465649bee84c178',1,'vr']]],
-  ['vt_20',['vt',['../classcgv_1_1ppp_1_1variant.html#a54b970d70120b4290fd7f702b3142c6c',1,'cgv::ppp::variant']]]
+  ['viewport_13',['viewport',['../structcgv_1_1render_1_1window__transformation.html#adb98777ac74ebf96d4ffb9b690b089a0',1,'cgv::render::window_transformation']]],
+  ['volume_5ftexture_14',['volume_texture',['../classcgv_1_1render_1_1volume__renderer.html#ad1c939fab9bfd4c78c17e1e84db52425',1,'cgv::render::volume_renderer']]],
+  ['voxel_5fcounts_15',['voxel_counts',['../structcgv_1_1media_1_1volume_1_1voxel__file__info.html#a9090c7234dc8b6ec1b2e0b27f2df829b',1,'cgv::media::volume::voxel_file_info']]],
+  ['voxel_5fformat_16',['voxel_format',['../structcgv_1_1media_1_1volume_1_1voxel__file__info.html#a42c955b90fbcbe4a83acd60d4a51d643',1,'cgv::media::volume::voxel_file_info']]],
+  ['voxel_5fscaling_17',['voxel_scaling',['../structcgv_1_1media_1_1volume_1_1voxel__file__info.html#a8d83c267f173f7ab7185b379854cb761',1,'cgv::media::volume::voxel_file_info']]],
+  ['vr_5fdriver_18',['vr_driver',['../namespacevr.html#ad99996e738d108251465649bee84c178',1,'vr']]],
+  ['vt_19',['vt',['../classcgv_1_1ppp_1_1variant.html#a54b970d70120b4290fd7f702b3142c6c',1,'cgv::ppp::variant']]]
 ];

@@ -2,15 +2,12 @@ var annotated_dup =
 [
     [ "cgv", "namespacecgv.html", [
       [ "app", null, [
-        [ "application_plugin", "classcgv_1_1app_1_1application__plugin.html", "classcgv_1_1app_1_1application__plugin" ],
-        [ "application_plugin_base", "classcgv_1_1app_1_1application__plugin__base.html", "classcgv_1_1app_1_1application__plugin__base" ],
         [ "canvas_overlay", "classcgv_1_1app_1_1canvas__overlay.html", "classcgv_1_1app_1_1canvas__overlay" ],
         [ "color_map_editor", "classcgv_1_1app_1_1color__map__editor.html", "classcgv_1_1app_1_1color__map__editor" ],
         [ "color_map_legend", "classcgv_1_1app_1_1color__map__legend.html", "classcgv_1_1app_1_1color__map__legend" ],
         [ "color_map_reader", "classcgv_1_1app_1_1color__map__reader.html", "classcgv_1_1app_1_1color__map__reader" ],
         [ "color_map_writer", "classcgv_1_1app_1_1color__map__writer.html", null ],
         [ "color_selector", "classcgv_1_1app_1_1color__selector.html", "classcgv_1_1app_1_1color__selector" ],
-        [ "generic_application_plugin", "classcgv_1_1app_1_1generic__application__plugin.html", "classcgv_1_1app_1_1generic__application__plugin" ],
         [ "gizmo", "classcgv_1_1app_1_1gizmo.html", "classcgv_1_1app_1_1gizmo" ],
         [ "navigator", "classcgv_1_1app_1_1navigator.html", "classcgv_1_1app_1_1navigator" ],
         [ "overlay", "classcgv_1_1app_1_1overlay.html", "classcgv_1_1app_1_1overlay" ],
