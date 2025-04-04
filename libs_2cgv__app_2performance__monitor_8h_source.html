@@ -116,8 +116,8 @@ $(document).ready(function(){initNavTree('libs_2cgv__app_2performance__monitor_8
 <div class="line"><a id="l00016" name="l00016"></a><span class="lineno">   16</span><span class="keyword">protected</span>:</div>
 <div class="foldopen" id="foldopen00017" data-start="{" data-end="};">
 <div class="line"><a id="l00017" name="l00017"></a><span class="lineno"><a class="line" href="structcgv_1_1app_1_1performance__monitor_1_1layout__attributes.html">   17</a></span>    <span class="keyword">struct </span><a class="code hl_struct" href="structcgv_1_1app_1_1performance__monitor_1_1layout__attributes.html">layout_attributes</a> {</div>
-<div class="line"><a id="l00018" name="l00018"></a><span class="lineno">   18</span>        <span class="keywordtype">int</span> padding;</div>
-<div class="line"><a id="l00019" name="l00019"></a><span class="lineno">   19</span>        <a class="code hl_class" href="classcgv_1_1math_1_1fvec.html">ivec2</a> total_size;</div>
+<div class="line"><a id="l00018" name="l00018"></a><span class="lineno">   18</span>        <span class="keywordtype">int</span> padding = 0;</div>
+<div class="line"><a id="l00019" name="l00019"></a><span class="lineno">   19</span>        <a class="code hl_class" href="classcgv_1_1math_1_1fvec.html">ivec2</a> total_size = { 0 };</div>
 <div class="line"><a id="l00020" name="l00020"></a><span class="lineno">   20</span> </div>
 <div class="line"><a id="l00021" name="l00021"></a><span class="lineno">   21</span>        <span class="comment">// dependent members</span></div>
 <div class="line"><a id="l00022" name="l00022"></a><span class="lineno">   22</span>        cgv::g2d::irect content_rect;</div>
@@ -153,7 +153,7 @@ $(document).ready(function(){initNavTree('libs_2cgv__app_2performance__monitor_8
 <div class="line"><a id="l00062" name="l00062"></a><span class="lineno">   62</span>            last_seconds_since_start = 0.0;</div>
 <div class="line"><a id="l00063" name="l00063"></a><span class="lineno">   63</span>            running_time = 0.0;</div>
 <div class="line"><a id="l00064" name="l00064"></a><span class="lineno">   64</span>        }</div>
-<div class="line"><a id="l00065" name="l00065"></a><span class="lineno"><a class="line" href="classcgv_1_1app_1_1performance__monitor.html#a5f208001ef64ce57a17c81050570d367">   65</a></span>    } monitor;</div>
+<div class="line"><a id="l00065" name="l00065"></a><span class="lineno"><a class="line" href="classcgv_1_1app_1_1performance__monitor.html#a57a1991c12f61f8896ccbf51499ade28">   65</a></span>    } monitor;</div>
 <div class="line"><a id="l00066" name="l00066"></a><span class="lineno">   66</span> </div>
 <div class="line"><a id="l00067" name="l00067"></a><span class="lineno">   67</span>    <span class="keywordtype">bool</span> invert_color = <span class="keyword">false</span>;</div>
 <div class="line"><a id="l00068" name="l00068"></a><span class="lineno">   68</span>    <span class="keywordtype">bool</span> show_plot = <span class="keyword">true</span>;</div>
@@ -168,14 +168,14 @@ $(document).ready(function(){initNavTree('libs_2cgv__app_2performance__monitor_8
 <div class="line"><a id="l00077" name="l00077"></a><span class="lineno">   77</span>    <a class="code hl_class" href="classcgv_1_1render_1_1color__map.html">cgv::render::color_map</a> plot_color_map;</div>
 <div class="line"><a id="l00078" name="l00078"></a><span class="lineno">   78</span> </div>
 <div class="line"><a id="l00079" name="l00079"></a><span class="lineno">   79</span>    <span class="comment">// text appearance</span></div>
-<div class="line"><a id="l00080" name="l00080"></a><span class="lineno">   80</span>    std::vector&lt;std::string&gt; labels;</div>
-<div class="line"><a id="l00081" name="l00081"></a><span class="lineno">   81</span>    cgv::g2d::text2d_style text_style, tick_text_style;</div>
-<div class="line"><a id="l00082" name="l00082"></a><span class="lineno">   82</span>    cgv::g2d::msdf_text_geometry text_geometry;</div>
+<div class="line"><a id="l00080" name="l00080"></a><span class="lineno">   80</span>    cgv::g2d::text2d_style text_style, tick_text_style;</div>
+<div class="line"><a id="l00081" name="l00081"></a><span class="lineno">   81</span>    cgv::g2d::msdf_text_geometry static_text_geometry;</div>
+<div class="line"><a id="l00082" name="l00082"></a><span class="lineno">   82</span>    cgv::g2d::msdf_text_geometry dynamic_text_geometry;</div>
 <div class="line"><a id="l00083" name="l00083"></a><span class="lineno">   83</span> </div>
 <div class="line"><a id="l00084" name="l00084"></a><span class="lineno">   84</span>    <span class="keywordtype">void</span> init_styles() <span class="keyword">override</span>;</div>
-<div class="line"><a id="l00085" name="l00085"></a><span class="lineno">   85</span>    <span class="keywordtype">void</span> create_texts(<span class="keyword">const</span> <a class="code hl_class" href="classcgv_1_1render_1_1context.html">cgv::render::context</a>&amp; ctx);</div>
-<div class="line"><a id="l00086" name="l00086"></a><span class="lineno">   86</span>    <span class="keywordtype">void</span> update_texts(<span class="keyword">const</span> <a class="code hl_class" href="classcgv_1_1render_1_1context.html">cgv::render::context</a>&amp; ctx);</div>
-<div class="line"><a id="l00087" name="l00087"></a><span class="lineno">   87</span>    <span class="comment">//void create_labels(const cgv::render::context&amp; ctx);</span></div>
+<div class="line"><a id="l00085" name="l00085"></a><span class="lineno">   85</span>    <span class="keywordtype">void</span> create_static_texts(<span class="keyword">const</span> <a class="code hl_class" href="classcgv_1_1render_1_1context.html">cgv::render::context</a>&amp; ctx);</div>
+<div class="line"><a id="l00086" name="l00086"></a><span class="lineno">   86</span>    <span class="keywordtype">void</span> create_dynamic_texts(<span class="keyword">const</span> <a class="code hl_class" href="classcgv_1_1render_1_1context.html">cgv::render::context</a>&amp; ctx);</div>
+<div class="line"><a id="l00087" name="l00087"></a><span class="lineno">   87</span>    <span class="keywordtype">void</span> update_dynamic_texts(<span class="keyword">const</span> <a class="code hl_class" href="classcgv_1_1render_1_1context.html">cgv::render::context</a>&amp; ctx);</div>
 <div class="line"><a id="l00088" name="l00088"></a><span class="lineno">   88</span>    <span class="keywordtype">void</span> update_plot();</div>
 <div class="line"><a id="l00089" name="l00089"></a><span class="lineno">   89</span> </div>
 <div class="line"><a id="l00090" name="l00090"></a><span class="lineno">   90</span>    <span class="keywordtype">void</span> on_visibility_change() <span class="keyword">override</span>;</div>

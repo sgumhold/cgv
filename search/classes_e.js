@@ -14,7 +14,7 @@ var searchData=
   ['pinhole_11',['pinhole',['../classcgv_1_1math_1_1pinhole.html',1,'cgv::math']]],
   ['pipe_5finput_5fthread_12',['pipe_input_thread',['../classcgv_1_1os_1_1pipe__input__thread.html',1,'cgv::os']]],
   ['pipe_5foutput_5fthread_13',['pipe_output_thread',['../classcgv_1_1os_1_1pipe__output__thread.html',1,'cgv::os']]],
-  ['plane_14',['plane',['../classcgv_1_1media_1_1plane.html',1,'cgv::media']]],
+  ['plane_14',['plane',['../classcgv_1_1media_1_1plane.html',1,'cgv::media::plane&lt; T &gt;'],['../structcgv_1_1app_1_1plane.html',1,'cgv::app::plane']]],
   ['plot2d_15',['plot2d',['../classcgv_1_1plot_1_1plot2d.html',1,'cgv::plot']]],
   ['plot2d_5fconfig_16',['plot2d_config',['../structcgv_1_1plot_1_1plot2d__config.html',1,'cgv::plot']]],
   ['plot3d_17',['plot3d',['../classcgv_1_1plot_1_1plot3d.html',1,'cgv::plot']]],

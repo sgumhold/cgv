@@ -134,6 +134,10 @@ Public Member Functions</h2></td></tr>
 <tr class="memitem:ad16a6b052779cddc52fcf90a8e211690" id="r_ad16a6b052779cddc52fcf90a8e211690"><td class="memItemLeft" align="right" valign="top"><a class="el" href="namespacecgv_1_1base.html#a580333ed27888f5e8c61452a44545f51">base_ptr</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcgv_1_1base_1_1group.html#ad16a6b052779cddc52fcf90a8e211690">get_child</a> (<a class="el" href="classcgv_1_1base_1_1single__method__action.html">unsigned</a> <a class="el" href="classcgv_1_1base_1_1single__method__action.html">int</a> <a class="el" href="classcgv_1_1base_1_1single__method__action.html">i</a>) <a class="el" href="classcgv_1_1base_1_1single__method__action.html">const</a></td></tr>
 <tr class="memdesc:ad16a6b052779cddc52fcf90a8e211690"><td class="mdescLeft">&#160;</td><td class="mdescRight">return the i-th child  <br /></td></tr>
 <tr class="separator:ad16a6b052779cddc52fcf90a8e211690"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a136ead2820529baae58ac6d75019a296" id="r_a136ead2820529baae58ac6d75019a296"><td class="memTemplParams" colspan="2">template&lt;<a class="el" href="classcgv_1_1base_1_1single__method__action.html">typename</a> <a class="el" href="classcgv_1_1base_1_1single__method__action.html">T</a> &gt; </td></tr>
+<tr class="memitem:a136ead2820529baae58ac6d75019a296"><td class="memTemplItemLeft" align="right" valign="top"><a class="el" href="classcgv_1_1data_1_1ref__ptr.html">data::ref_ptr</a>&lt; <a class="el" href="classcgv_1_1base_1_1single__method__action.html">T</a> &gt;&#160;</td><td class="memTemplItemRight" valign="bottom"><a class="el" href="classcgv_1_1base_1_1group.html#a136ead2820529baae58ac6d75019a296">create_and_append_child</a> (<a class="el" href="classcgv_1_1base_1_1single__method__action.html">const</a> std::string &amp;<a class="el" href="classcgv_1_1base_1_1named.html#aeacb85dab71b803971f8611644898371">name</a>=&quot;&quot;, <a class="el" href="classcgv_1_1base_1_1single__method__action.html">unsigned</a> <a class="el" href="classcgv_1_1base_1_1single__method__action.html">int</a> *index=<a class="el" href="classcgv_1_1base_1_1single__method__action.html">nullptr</a>)</td></tr>
+<tr class="memdesc:a136ead2820529baae58ac6d75019a296"><td class="mdescLeft">&#160;</td><td class="mdescRight">create and append an instance of a child node and return pointer to appended child; optionally set name and get index  <br /></td></tr>
+<tr class="separator:a136ead2820529baae58ac6d75019a296"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:afd58f5c3d894ec711d531ff32143ff98" id="r_afd58f5c3d894ec711d531ff32143ff98"><td class="memItemLeft" align="right" valign="top"><a class="el" href="classcgv_1_1base_1_1single__method__action.html">virtual</a> <a class="el" href="classcgv_1_1base_1_1single__method__action.html">unsigned</a> <a class="el" href="classcgv_1_1base_1_1single__method__action.html">int</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcgv_1_1base_1_1group.html#afd58f5c3d894ec711d531ff32143ff98">append_child</a> (<a class="el" href="namespacecgv_1_1base.html#a580333ed27888f5e8c61452a44545f51">base_ptr</a> <a class="el" href="classcgv_1_1base_1_1single__method__action.html">child</a>)</td></tr>
 <tr class="memdesc:afd58f5c3d894ec711d531ff32143ff98"><td class="mdescLeft">&#160;</td><td class="mdescRight">append child and return index of appended child  <br /></td></tr>
 <tr class="separator:afd58f5c3d894ec711d531ff32143ff98"><td class="memSeparator" colspan="2">&#160;</td></tr>
@@ -393,6 +397,48 @@ Additional Inherited Members</h2></td></tr>
 <p class="reference">References <a class="el" href="group_8h_source.html#l00025">children</a>, <a class="el" href="group_8cxx_source.html#l00029">get_nr_children()</a>, and <a class="el" href="group_8cxx_source.html#l00010">link()</a>.</p>
 
 <p class="reference">Referenced by <a class="el" href="event__handler_8cxx_source.html#l00022">cgv::gui::event_handler::add_key_control()</a>, and <a class="el" href="application__plugin_8h_source.html#l00057">cgv::app::application_plugin_base::register_overlay()</a>.</p>
+
+</div>
+</div>
+<a id="a136ead2820529baae58ac6d75019a296" name="a136ead2820529baae58ac6d75019a296"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a136ead2820529baae58ac6d75019a296">&#9670;&#160;</a></span>create_and_append_child()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<div class="memtemplate">
+template&lt;<a class="el" href="classcgv_1_1base_1_1single__method__action.html">typename</a> <a class="el" href="classcgv_1_1base_1_1single__method__action.html">T</a> &gt; </div>
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname"><a class="el" href="classcgv_1_1data_1_1ref__ptr.html">data::ref_ptr</a>&lt; <a class="el" href="classcgv_1_1base_1_1single__method__action.html">T</a> &gt; cgv::base::group::create_and_append_child </td>
+          <td>(</td>
+          <td class="paramtype"><a class="el" href="classcgv_1_1base_1_1single__method__action.html">const</a> std::string &amp;&#160;</td>
+          <td class="paramname"><em>name</em> = <code>&quot;&quot;</code>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype"><a class="el" href="classcgv_1_1base_1_1single__method__action.html">unsigned</a> <a class="el" href="classcgv_1_1base_1_1single__method__action.html">int</a> *&#160;</td>
+          <td class="paramname"><em>index</em> = <code><a class="el" href="classcgv_1_1base_1_1single__method__action.html">nullptr</a></code>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">inline</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p>create and append an instance of a child node and return pointer to appended child; optionally set name and get index </p>
+
+<p class="definition">Definition at line <a class="el" href="group_8h_source.html#l00039">39</a> of file <a class="el" href="group_8h_source.html">group.h</a>.</p>
 
 </div>
 </div>

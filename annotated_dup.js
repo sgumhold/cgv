@@ -11,11 +11,13 @@ var annotated_dup =
         [ "color_map_writer", "classcgv_1_1app_1_1color__map__writer.html", null ],
         [ "color_selector", "classcgv_1_1app_1_1color__selector.html", "classcgv_1_1app_1_1color__selector" ],
         [ "generic_application_plugin", "classcgv_1_1app_1_1generic__application__plugin.html", "classcgv_1_1app_1_1generic__application__plugin" ],
-        [ "gizmo", "classcgv_1_1app_1_1gizmo.html", null ],
+        [ "gizmo", "classcgv_1_1app_1_1gizmo.html", "classcgv_1_1app_1_1gizmo" ],
         [ "navigator", "classcgv_1_1app_1_1navigator.html", "classcgv_1_1app_1_1navigator" ],
         [ "overlay", "classcgv_1_1app_1_1overlay.html", "classcgv_1_1app_1_1overlay" ],
         [ "performance_monitor", "classcgv_1_1app_1_1performance__monitor.html", "classcgv_1_1app_1_1performance__monitor" ],
-        [ "themed_canvas_overlay", "classcgv_1_1app_1_1themed__canvas__overlay.html", "classcgv_1_1app_1_1themed__canvas__overlay" ]
+        [ "plane", "structcgv_1_1app_1_1plane.html", null ],
+        [ "themed_canvas_overlay", "classcgv_1_1app_1_1themed__canvas__overlay.html", "classcgv_1_1app_1_1themed__canvas__overlay" ],
+        [ "transformation_gizmo", "classcgv_1_1app_1_1transformation__gizmo.html", "classcgv_1_1app_1_1transformation__gizmo" ]
       ] ],
       [ "audio", null, [
         [ "OALContext", "classcgv_1_1audio_1_1OALContext.html", "classcgv_1_1audio_1_1OALContext" ],

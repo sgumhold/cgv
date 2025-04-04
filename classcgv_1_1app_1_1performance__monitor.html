@@ -190,12 +190,15 @@ Public Member Functions</h2></td></tr>
 <tr class="memitem:a08d13d1c1a4410111c067294c6ebdac6 inherit pub_methods_classcgv_1_1app_1_1overlay" id="r_a08d13d1c1a4410111c067294c6ebdac6"><td class="memItemLeft" align="right" valign="top">virtual void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcgv_1_1app_1_1overlay.html#a08d13d1c1a4410111c067294c6ebdac6">stream_help</a> (std::ostream &amp;os)</td></tr>
 <tr class="memdesc:a08d13d1c1a4410111c067294c6ebdac6 inherit pub_methods_classcgv_1_1app_1_1overlay"><td class="mdescLeft">&#160;</td><td class="mdescRight">overload to stream help information to the given output stream  <br /></td></tr>
 <tr class="separator:a08d13d1c1a4410111c067294c6ebdac6 inherit pub_methods_classcgv_1_1app_1_1overlay"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a7ea4bf0e5dea6dea376c428e07059703 inherit pub_methods_classcgv_1_1app_1_1overlay" id="r_a7ea4bf0e5dea6dea376c428e07059703"><td class="memItemLeft" align="right" valign="top">virtual bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcgv_1_1app_1_1overlay.html#a7ea4bf0e5dea6dea376c428e07059703">handle</a> (<a class="el" href="classcgv_1_1gui_1_1event.html">cgv::gui::event</a> &amp;e)</td></tr>
-<tr class="memdesc:a7ea4bf0e5dea6dea376c428e07059703 inherit pub_methods_classcgv_1_1app_1_1overlay"><td class="mdescLeft">&#160;</td><td class="mdescRight">default implementation of handle method returns false, use handle_events instead  <br /></td></tr>
-<tr class="separator:a7ea4bf0e5dea6dea376c428e07059703 inherit pub_methods_classcgv_1_1app_1_1overlay"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a7552b945924864a2ec9d43c70865e997 inherit pub_methods_classcgv_1_1app_1_1overlay" id="r_a7552b945924864a2ec9d43c70865e997"><td class="memItemLeft" align="right" valign="top">virtual bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcgv_1_1app_1_1overlay.html#a7552b945924864a2ec9d43c70865e997">handle_event</a> (<a class="el" href="classcgv_1_1gui_1_1event.html">cgv::gui::event</a> &amp;e)</td></tr>
-<tr class="memdesc:a7552b945924864a2ec9d43c70865e997 inherit pub_methods_classcgv_1_1app_1_1overlay"><td class="mdescLeft">&#160;</td><td class="mdescRight">overload this method to handle events  <br /></td></tr>
-<tr class="separator:a7552b945924864a2ec9d43c70865e997 inherit pub_methods_classcgv_1_1app_1_1overlay"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:adc4d567b28d223fcdad91cf4ddf056f7 inherit pub_methods_classcgv_1_1app_1_1overlay" id="r_adc4d567b28d223fcdad91cf4ddf056f7"><td class="memItemLeft" align="right" valign="top">virtual bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcgv_1_1app_1_1overlay.html#adc4d567b28d223fcdad91cf4ddf056f7">handle</a> (<a class="el" href="classcgv_1_1gui_1_1event.html">cgv::gui::event</a> &amp;e)</td></tr>
+<tr class="memdesc:adc4d567b28d223fcdad91cf4ddf056f7 inherit pub_methods_classcgv_1_1app_1_1overlay"><td class="mdescLeft">&#160;</td><td class="mdescRight">handle incomming events; calls handle_key_events or handle_mouse_events depending on the event type; mouse events will only be handled if the mouse is over the overlay rectangle  <br /></td></tr>
+<tr class="separator:adc4d567b28d223fcdad91cf4ddf056f7 inherit pub_methods_classcgv_1_1app_1_1overlay"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a687f8db4810f02889bcc5c8bd376f8fe inherit pub_methods_classcgv_1_1app_1_1overlay" id="r_a687f8db4810f02889bcc5c8bd376f8fe"><td class="memItemLeft" align="right" valign="top">virtual bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcgv_1_1app_1_1overlay.html#a687f8db4810f02889bcc5c8bd376f8fe">handle_key_event</a> (<a class="el" href="classcgv_1_1gui_1_1key__event.html">cgv::gui::key_event</a> &amp;e)</td></tr>
+<tr class="memdesc:a687f8db4810f02889bcc5c8bd376f8fe inherit pub_methods_classcgv_1_1app_1_1overlay"><td class="mdescLeft">&#160;</td><td class="mdescRight">overload this method to handle key events  <br /></td></tr>
+<tr class="separator:a687f8db4810f02889bcc5c8bd376f8fe inherit pub_methods_classcgv_1_1app_1_1overlay"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:acce21aefb755c8c4dd4a7aebc1289fd2 inherit pub_methods_classcgv_1_1app_1_1overlay" id="r_acce21aefb755c8c4dd4a7aebc1289fd2"><td class="memItemLeft" align="right" valign="top">virtual bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcgv_1_1app_1_1overlay.html#acce21aefb755c8c4dd4a7aebc1289fd2">handle_mouse_event</a> (<a class="el" href="classcgv_1_1gui_1_1mouse__event.html">cgv::gui::mouse_event</a> &amp;e, <a class="el" href="namespacecgv.html#a4fc9abee97018a017bb3a14b531a8f06">cgv::ivec2</a> local_mouse_pos)</td></tr>
+<tr class="memdesc:acce21aefb755c8c4dd4a7aebc1289fd2 inherit pub_methods_classcgv_1_1app_1_1overlay"><td class="mdescLeft">&#160;</td><td class="mdescRight">overload this method to handle mouse events; local_mouse_pos is the mouse position in the local coordinate space of the overlay rectangle  <br /></td></tr>
+<tr class="separator:acce21aefb755c8c4dd4a7aebc1289fd2 inherit pub_methods_classcgv_1_1app_1_1overlay"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a6500203c06ee7f7fb9094fefafdb2371 inherit pub_methods_classcgv_1_1app_1_1overlay" id="r_a6500203c06ee7f7fb9094fefafdb2371"><td class="memItemLeft" align="right" valign="top">bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcgv_1_1app_1_1overlay.html#a6500203c06ee7f7fb9094fefafdb2371">blocks_events</a> () const</td></tr>
 <tr class="memdesc:a6500203c06ee7f7fb9094fefafdb2371 inherit pub_methods_classcgv_1_1app_1_1overlay"><td class="mdescLeft">&#160;</td><td class="mdescRight">return whether this overlay blocks events, i.e. does not pass them to the next event handler  <br /></td></tr>
 <tr class="separator:a6500203c06ee7f7fb9094fefafdb2371 inherit pub_methods_classcgv_1_1app_1_1overlay"><td class="memSeparator" colspan="2">&#160;</td></tr>
@@ -622,10 +625,12 @@ Protected Member Functions</h2></td></tr>
 <tr class="separator:aadbe942fb4f90756f56ee958381287c5"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a21b3ebacc8848dbdc08138beb3a4dc05" id="r_a21b3ebacc8848dbdc08138beb3a4dc05"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcgv_1_1app_1_1performance__monitor.html#a21b3ebacc8848dbdc08138beb3a4dc05">init_styles</a> () override</td></tr>
 <tr class="separator:a21b3ebacc8848dbdc08138beb3a4dc05"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:aa33055d0de0251a564487e62fdc4c14c" id="r_aa33055d0de0251a564487e62fdc4c14c"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcgv_1_1app_1_1performance__monitor.html#aa33055d0de0251a564487e62fdc4c14c">create_texts</a> (const <a class="el" href="classcgv_1_1render_1_1context.html">cgv::render::context</a> &amp;ctx)</td></tr>
-<tr class="separator:aa33055d0de0251a564487e62fdc4c14c"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a441af153c0675980080b0c5536c13d88" id="r_a441af153c0675980080b0c5536c13d88"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcgv_1_1app_1_1performance__monitor.html#a441af153c0675980080b0c5536c13d88">update_texts</a> (const <a class="el" href="classcgv_1_1render_1_1context.html">cgv::render::context</a> &amp;ctx)</td></tr>
-<tr class="separator:a441af153c0675980080b0c5536c13d88"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a1af60318aca6e29af0be33153a177cb2" id="r_a1af60318aca6e29af0be33153a177cb2"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcgv_1_1app_1_1performance__monitor.html#a1af60318aca6e29af0be33153a177cb2">create_static_texts</a> (const <a class="el" href="classcgv_1_1render_1_1context.html">cgv::render::context</a> &amp;ctx)</td></tr>
+<tr class="separator:a1af60318aca6e29af0be33153a177cb2"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a219cd3aff50f09cc374ccf0e12aee1de" id="r_a219cd3aff50f09cc374ccf0e12aee1de"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcgv_1_1app_1_1performance__monitor.html#a219cd3aff50f09cc374ccf0e12aee1de">create_dynamic_texts</a> (const <a class="el" href="classcgv_1_1render_1_1context.html">cgv::render::context</a> &amp;ctx)</td></tr>
+<tr class="separator:a219cd3aff50f09cc374ccf0e12aee1de"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a8180846d528faa92dc0bb6eac3768494" id="r_a8180846d528faa92dc0bb6eac3768494"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcgv_1_1app_1_1performance__monitor.html#a8180846d528faa92dc0bb6eac3768494">update_dynamic_texts</a> (const <a class="el" href="classcgv_1_1render_1_1context.html">cgv::render::context</a> &amp;ctx)</td></tr>
+<tr class="separator:a8180846d528faa92dc0bb6eac3768494"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:af953789ef8fc8920538faa228cefcb43" id="r_af953789ef8fc8920538faa228cefcb43"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcgv_1_1app_1_1performance__monitor.html#af953789ef8fc8920538faa228cefcb43">update_plot</a> ()</td></tr>
 <tr class="separator:af953789ef8fc8920538faa228cefcb43"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a3a0ef000060c0134a336491b53730ded" id="r_a3a0ef000060c0134a336491b53730ded"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcgv_1_1app_1_1performance__monitor.html#a3a0ef000060c0134a336491b53730ded">on_visibility_change</a> () override</td></tr>
@@ -701,42 +706,42 @@ Protected Attributes</h2></td></tr>
 <tr class="memitem:ae7e7650e536fdd3ac657a38d154eb69c" id="r_ae7e7650e536fdd3ac657a38d154eb69c"><td class="memItemLeft" align="right" valign="top"><a id="ae7e7650e536fdd3ac657a38d154eb69c" name="ae7e7650e536fdd3ac657a38d154eb69c"></a>
 struct <a class="el" href="structcgv_1_1app_1_1performance__monitor_1_1layout__attributes.html">cgv::app::performance_monitor::layout_attributes</a>&#160;</td><td class="memItemRight" valign="bottom"><b>layout</b></td></tr>
 <tr class="separator:ae7e7650e536fdd3ac657a38d154eb69c"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a5f208001ef64ce57a17c81050570d367" id="r_a5f208001ef64ce57a17c81050570d367"><td class="memItemLeft" ><a id="a5f208001ef64ce57a17c81050570d367" name="a5f208001ef64ce57a17c81050570d367"></a>
+<tr class="memitem:a57a1991c12f61f8896ccbf51499ade28" id="r_a57a1991c12f61f8896ccbf51499ade28"><td class="memItemLeft" ><a id="a57a1991c12f61f8896ccbf51499ade28" name="a57a1991c12f61f8896ccbf51499ade28"></a>
 struct {&#160;</td><td class="memItemRight" valign="bottom"></td></tr>
 <tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a2139fe229756521ca8dad292c53ad692" id="r_a2139fe229756521ca8dad292c53ad692"><td class="memItemLeft" >&#160;&#160;&#160;bool&#160;&#160;&#160;<a class="el" href="classcgv_1_1app_1_1performance__monitor.html#aa03afecc897d8e285008bd15f1d0d7f5">enabled</a> = true&#160;</td><td class="memItemRight" valign="bottom"></td></tr>
-<tr class="memdesc:a2139fe229756521ca8dad292c53ad692"><td class="mdescLeft">&#160;</td><td class="mdescRight">whether measuring is enabled  <a href="classcgv_1_1app_1_1performance__monitor.html#aa03afecc897d8e285008bd15f1d0d7f5">More...</a><br /></td></tr>
-<tr class="separator:a2139fe229756521ca8dad292c53ad692"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a170b89336ea806a35edeb99a6160545d" id="r_a170b89336ea806a35edeb99a6160545d"><td class="memItemLeft" >&#160;&#160;&#160;bool&#160;&#160;&#160;<a class="el" href="classcgv_1_1app_1_1performance__monitor.html#a25d65e60572b97abcd5544c89158fe6a">enabled_only_when_visible</a> = false&#160;</td><td class="memItemRight" valign="bottom"></td></tr>
-<tr class="memdesc:a170b89336ea806a35edeb99a6160545d"><td class="mdescLeft">&#160;</td><td class="mdescRight">whether to enable monitoring only if the overlay is visible (uses state of enabled)  <a href="classcgv_1_1app_1_1performance__monitor.html#a25d65e60572b97abcd5544c89158fe6a">More...</a><br /></td></tr>
-<tr class="separator:a170b89336ea806a35edeb99a6160545d"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a0efb51353e351c847ffbf81e7e5d2a69" id="r_a0efb51353e351c847ffbf81e7e5d2a69"><td class="memItemLeft" >&#160;&#160;&#160;<a class="el" href="classcgv_1_1utils_1_1stopwatch.html">cgv::utils::stopwatch</a>&#160;&#160;&#160;<a class="el" href="classcgv_1_1app_1_1performance__monitor.html#a3e189f5b35af44b44cfbcdba52a738e3">timer</a>&#160;</td><td class="memItemRight" valign="bottom"></td></tr>
-<tr class="memdesc:a0efb51353e351c847ffbf81e7e5d2a69"><td class="mdescLeft">&#160;</td><td class="mdescRight">timer to count elapsed time  <a href="classcgv_1_1app_1_1performance__monitor.html#a3e189f5b35af44b44cfbcdba52a738e3">More...</a><br /></td></tr>
-<tr class="separator:a0efb51353e351c847ffbf81e7e5d2a69"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:acabed6b82a8b0c3fd62ab6758f700fb2" id="r_acabed6b82a8b0c3fd62ab6758f700fb2"><td class="memItemLeft" >&#160;&#160;&#160;unsigned&#160;&#160;&#160;<a class="el" href="classcgv_1_1app_1_1performance__monitor.html#a2a8fc43fc2f226268f344607a9b5d012">total_frame_count</a> = 0u&#160;</td><td class="memItemRight" valign="bottom"></td></tr>
-<tr class="memdesc:acabed6b82a8b0c3fd62ab6758f700fb2"><td class="mdescLeft">&#160;</td><td class="mdescRight">counter for rendered frames since start of measurements  <a href="classcgv_1_1app_1_1performance__monitor.html#a2a8fc43fc2f226268f344607a9b5d012">More...</a><br /></td></tr>
-<tr class="separator:acabed6b82a8b0c3fd62ab6758f700fb2"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:af87e953068df4ca2d63eb8b2476cc96e" id="r_af87e953068df4ca2d63eb8b2476cc96e"><td class="memItemLeft" >&#160;&#160;&#160;unsigned&#160;&#160;&#160;<a class="el" href="classcgv_1_1app_1_1performance__monitor.html#aadffb2b8e47b36e82765529df7542c88">interval_frame_count</a> = 0u&#160;</td><td class="memItemRight" valign="bottom"></td></tr>
-<tr class="memdesc:af87e953068df4ca2d63eb8b2476cc96e"><td class="mdescLeft">&#160;</td><td class="mdescRight">counter for rendered frames incurrent interval  <a href="classcgv_1_1app_1_1performance__monitor.html#aadffb2b8e47b36e82765529df7542c88">More...</a><br /></td></tr>
-<tr class="separator:af87e953068df4ca2d63eb8b2476cc96e"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:af563689d4885004fb2361df1d0bb55cd" id="r_af563689d4885004fb2361df1d0bb55cd"><td class="memItemLeft" >&#160;&#160;&#160;double&#160;&#160;&#160;<a class="el" href="classcgv_1_1app_1_1performance__monitor.html#a7a651c08a48b338a3db819acd1329773">interval</a> = 0.25&#160;</td><td class="memItemRight" valign="bottom"></td></tr>
-<tr class="memdesc:af563689d4885004fb2361df1d0bb55cd"><td class="mdescLeft">&#160;</td><td class="mdescRight">time interval for measurement averaging  <a href="classcgv_1_1app_1_1performance__monitor.html#a7a651c08a48b338a3db819acd1329773">More...</a><br /></td></tr>
-<tr class="separator:af563689d4885004fb2361df1d0bb55cd"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a861f0ce06962b83d58d9137822fc4e3b" id="r_a861f0ce06962b83d58d9137822fc4e3b"><td class="memItemLeft" >&#160;&#160;&#160;double&#160;&#160;&#160;<a class="el" href="classcgv_1_1app_1_1performance__monitor.html#af9b9c9f6d81ab985481750e03df28f5e">last_seconds_since_start</a> = 0.0&#160;</td><td class="memItemRight" valign="bottom"></td></tr>
-<tr class="memdesc:a861f0ce06962b83d58d9137822fc4e3b"><td class="mdescLeft">&#160;</td><td class="mdescRight">store total seconds since the last measuring  <a href="classcgv_1_1app_1_1performance__monitor.html#af9b9c9f6d81ab985481750e03df28f5e">More...</a><br /></td></tr>
-<tr class="separator:a861f0ce06962b83d58d9137822fc4e3b"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a2bfbcff6eaee94b49ccda6cc270038d4" id="r_a2bfbcff6eaee94b49ccda6cc270038d4"><td class="memItemLeft" >&#160;&#160;&#160;double&#160;&#160;&#160;<a class="el" href="classcgv_1_1app_1_1performance__monitor.html#a46a2af804638cd9777c3c62979ee5130">delta_time</a> = 0.0&#160;</td><td class="memItemRight" valign="bottom"></td></tr>
-<tr class="memdesc:a2bfbcff6eaee94b49ccda6cc270038d4"><td class="mdescLeft">&#160;</td><td class="mdescRight">store time of the last rendered frame in seconds  <a href="classcgv_1_1app_1_1performance__monitor.html#a46a2af804638cd9777c3c62979ee5130">More...</a><br /></td></tr>
-<tr class="separator:a2bfbcff6eaee94b49ccda6cc270038d4"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a32c46d22e0c7c2ae14763c215aae573b" id="r_a32c46d22e0c7c2ae14763c215aae573b"><td class="memItemLeft" >&#160;&#160;&#160;double&#160;&#160;&#160;<a class="el" href="classcgv_1_1app_1_1performance__monitor.html#a8f604e624947512390e3734e7d02f5d8">running_time</a> = 0.0&#160;</td><td class="memItemRight" valign="bottom"></td></tr>
-<tr class="memdesc:a32c46d22e0c7c2ae14763c215aae573b"><td class="mdescLeft">&#160;</td><td class="mdescRight">store time of current running interval in seconds  <a href="classcgv_1_1app_1_1performance__monitor.html#a8f604e624947512390e3734e7d02f5d8">More...</a><br /></td></tr>
-<tr class="separator:a32c46d22e0c7c2ae14763c215aae573b"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a2e5ef6d9b016c03d2cf9dca17b36a123" id="r_a2e5ef6d9b016c03d2cf9dca17b36a123"><td class="memItemLeft" >&#160;&#160;&#160;double&#160;&#160;&#160;<a class="el" href="classcgv_1_1app_1_1performance__monitor.html#a26aebc872677c2b7e348395c1aaac069">avg_fps</a> = 0.0&#160;</td><td class="memItemRight" valign="bottom"></td></tr>
-<tr class="memdesc:a2e5ef6d9b016c03d2cf9dca17b36a123"><td class="mdescLeft">&#160;</td><td class="mdescRight">store the average frames per second  <a href="classcgv_1_1app_1_1performance__monitor.html#a26aebc872677c2b7e348395c1aaac069">More...</a><br /></td></tr>
-<tr class="separator:a2e5ef6d9b016c03d2cf9dca17b36a123"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a5f208001ef64ce57a17c81050570d367" id="r_a5f208001ef64ce57a17c81050570d367"><td class="memItemLeft" valign="top">}&#160;</td><td class="memItemRight" valign="bottom"><b>monitor</b>&#160;</td><td class="memItemRight" valign="bottom"></td></tr>
-<tr class="memdesc:a5f208001ef64ce57a17c81050570d367"><td class="mdescLeft">&#160;</td><td class="mdescRight">measuring state fields <br /></td></tr>
-<tr class="separator:a5f208001ef64ce57a17c81050570d367"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a93ab31e17b4c4c66b5bb719b5ff630f4" id="r_a93ab31e17b4c4c66b5bb719b5ff630f4"><td class="memItemLeft" >&#160;&#160;&#160;bool&#160;&#160;&#160;<a class="el" href="classcgv_1_1app_1_1performance__monitor.html#aa03afecc897d8e285008bd15f1d0d7f5">enabled</a> = true&#160;</td><td class="memItemRight" valign="bottom"></td></tr>
+<tr class="memdesc:a93ab31e17b4c4c66b5bb719b5ff630f4"><td class="mdescLeft">&#160;</td><td class="mdescRight">whether measuring is enabled  <a href="classcgv_1_1app_1_1performance__monitor.html#aa03afecc897d8e285008bd15f1d0d7f5">More...</a><br /></td></tr>
+<tr class="separator:a93ab31e17b4c4c66b5bb719b5ff630f4"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a5ba8ac5bd94d2283ae7dcd323c3185fb" id="r_a5ba8ac5bd94d2283ae7dcd323c3185fb"><td class="memItemLeft" >&#160;&#160;&#160;bool&#160;&#160;&#160;<a class="el" href="classcgv_1_1app_1_1performance__monitor.html#a25d65e60572b97abcd5544c89158fe6a">enabled_only_when_visible</a> = false&#160;</td><td class="memItemRight" valign="bottom"></td></tr>
+<tr class="memdesc:a5ba8ac5bd94d2283ae7dcd323c3185fb"><td class="mdescLeft">&#160;</td><td class="mdescRight">whether to enable monitoring only if the overlay is visible (uses state of enabled)  <a href="classcgv_1_1app_1_1performance__monitor.html#a25d65e60572b97abcd5544c89158fe6a">More...</a><br /></td></tr>
+<tr class="separator:a5ba8ac5bd94d2283ae7dcd323c3185fb"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ab2caa1563795a82968df2cbb56424b94" id="r_ab2caa1563795a82968df2cbb56424b94"><td class="memItemLeft" >&#160;&#160;&#160;<a class="el" href="classcgv_1_1utils_1_1stopwatch.html">cgv::utils::stopwatch</a>&#160;&#160;&#160;<a class="el" href="classcgv_1_1app_1_1performance__monitor.html#a3e189f5b35af44b44cfbcdba52a738e3">timer</a>&#160;</td><td class="memItemRight" valign="bottom"></td></tr>
+<tr class="memdesc:ab2caa1563795a82968df2cbb56424b94"><td class="mdescLeft">&#160;</td><td class="mdescRight">timer to count elapsed time  <a href="classcgv_1_1app_1_1performance__monitor.html#a3e189f5b35af44b44cfbcdba52a738e3">More...</a><br /></td></tr>
+<tr class="separator:ab2caa1563795a82968df2cbb56424b94"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a96c7340f2c75be350bbd288dd2c7c4c3" id="r_a96c7340f2c75be350bbd288dd2c7c4c3"><td class="memItemLeft" >&#160;&#160;&#160;unsigned&#160;&#160;&#160;<a class="el" href="classcgv_1_1app_1_1performance__monitor.html#a2a8fc43fc2f226268f344607a9b5d012">total_frame_count</a> = 0u&#160;</td><td class="memItemRight" valign="bottom"></td></tr>
+<tr class="memdesc:a96c7340f2c75be350bbd288dd2c7c4c3"><td class="mdescLeft">&#160;</td><td class="mdescRight">counter for rendered frames since start of measurements  <a href="classcgv_1_1app_1_1performance__monitor.html#a2a8fc43fc2f226268f344607a9b5d012">More...</a><br /></td></tr>
+<tr class="separator:a96c7340f2c75be350bbd288dd2c7c4c3"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:af4ac0935372e52fbf989036f60ab868b" id="r_af4ac0935372e52fbf989036f60ab868b"><td class="memItemLeft" >&#160;&#160;&#160;unsigned&#160;&#160;&#160;<a class="el" href="classcgv_1_1app_1_1performance__monitor.html#aadffb2b8e47b36e82765529df7542c88">interval_frame_count</a> = 0u&#160;</td><td class="memItemRight" valign="bottom"></td></tr>
+<tr class="memdesc:af4ac0935372e52fbf989036f60ab868b"><td class="mdescLeft">&#160;</td><td class="mdescRight">counter for rendered frames incurrent interval  <a href="classcgv_1_1app_1_1performance__monitor.html#aadffb2b8e47b36e82765529df7542c88">More...</a><br /></td></tr>
+<tr class="separator:af4ac0935372e52fbf989036f60ab868b"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a8c9d3faba2417a377163e5d0a17f55ad" id="r_a8c9d3faba2417a377163e5d0a17f55ad"><td class="memItemLeft" >&#160;&#160;&#160;double&#160;&#160;&#160;<a class="el" href="classcgv_1_1app_1_1performance__monitor.html#a7a651c08a48b338a3db819acd1329773">interval</a> = 0.25&#160;</td><td class="memItemRight" valign="bottom"></td></tr>
+<tr class="memdesc:a8c9d3faba2417a377163e5d0a17f55ad"><td class="mdescLeft">&#160;</td><td class="mdescRight">time interval for measurement averaging  <a href="classcgv_1_1app_1_1performance__monitor.html#a7a651c08a48b338a3db819acd1329773">More...</a><br /></td></tr>
+<tr class="separator:a8c9d3faba2417a377163e5d0a17f55ad"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a8667eccf02e03aaac892c545f29991df" id="r_a8667eccf02e03aaac892c545f29991df"><td class="memItemLeft" >&#160;&#160;&#160;double&#160;&#160;&#160;<a class="el" href="classcgv_1_1app_1_1performance__monitor.html#af9b9c9f6d81ab985481750e03df28f5e">last_seconds_since_start</a> = 0.0&#160;</td><td class="memItemRight" valign="bottom"></td></tr>
+<tr class="memdesc:a8667eccf02e03aaac892c545f29991df"><td class="mdescLeft">&#160;</td><td class="mdescRight">store total seconds since the last measuring  <a href="classcgv_1_1app_1_1performance__monitor.html#af9b9c9f6d81ab985481750e03df28f5e">More...</a><br /></td></tr>
+<tr class="separator:a8667eccf02e03aaac892c545f29991df"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a795bda7dca422ccbd579e8b016f1dea9" id="r_a795bda7dca422ccbd579e8b016f1dea9"><td class="memItemLeft" >&#160;&#160;&#160;double&#160;&#160;&#160;<a class="el" href="classcgv_1_1app_1_1performance__monitor.html#a46a2af804638cd9777c3c62979ee5130">delta_time</a> = 0.0&#160;</td><td class="memItemRight" valign="bottom"></td></tr>
+<tr class="memdesc:a795bda7dca422ccbd579e8b016f1dea9"><td class="mdescLeft">&#160;</td><td class="mdescRight">store time of the last rendered frame in seconds  <a href="classcgv_1_1app_1_1performance__monitor.html#a46a2af804638cd9777c3c62979ee5130">More...</a><br /></td></tr>
+<tr class="separator:a795bda7dca422ccbd579e8b016f1dea9"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a88954c0a5d4dcfe9313d53b1db6891dc" id="r_a88954c0a5d4dcfe9313d53b1db6891dc"><td class="memItemLeft" >&#160;&#160;&#160;double&#160;&#160;&#160;<a class="el" href="classcgv_1_1app_1_1performance__monitor.html#a8f604e624947512390e3734e7d02f5d8">running_time</a> = 0.0&#160;</td><td class="memItemRight" valign="bottom"></td></tr>
+<tr class="memdesc:a88954c0a5d4dcfe9313d53b1db6891dc"><td class="mdescLeft">&#160;</td><td class="mdescRight">store time of current running interval in seconds  <a href="classcgv_1_1app_1_1performance__monitor.html#a8f604e624947512390e3734e7d02f5d8">More...</a><br /></td></tr>
+<tr class="separator:a88954c0a5d4dcfe9313d53b1db6891dc"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a3a90d612817476070235e0dd8487d44c" id="r_a3a90d612817476070235e0dd8487d44c"><td class="memItemLeft" >&#160;&#160;&#160;double&#160;&#160;&#160;<a class="el" href="classcgv_1_1app_1_1performance__monitor.html#a26aebc872677c2b7e348395c1aaac069">avg_fps</a> = 0.0&#160;</td><td class="memItemRight" valign="bottom"></td></tr>
+<tr class="memdesc:a3a90d612817476070235e0dd8487d44c"><td class="mdescLeft">&#160;</td><td class="mdescRight">store the average frames per second  <a href="classcgv_1_1app_1_1performance__monitor.html#a26aebc872677c2b7e348395c1aaac069">More...</a><br /></td></tr>
+<tr class="separator:a3a90d612817476070235e0dd8487d44c"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a57a1991c12f61f8896ccbf51499ade28" id="r_a57a1991c12f61f8896ccbf51499ade28"><td class="memItemLeft" valign="top">}&#160;</td><td class="memItemRight" valign="bottom"><b>monitor</b>&#160;</td><td class="memItemRight" valign="bottom"></td></tr>
+<tr class="memdesc:a57a1991c12f61f8896ccbf51499ade28"><td class="mdescLeft">&#160;</td><td class="mdescRight">measuring state fields <br /></td></tr>
+<tr class="separator:a57a1991c12f61f8896ccbf51499ade28"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a5423e5de7f7a973187c1337b860a2f1e" id="r_a5423e5de7f7a973187c1337b860a2f1e"><td class="memItemLeft" align="right" valign="top">bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcgv_1_1app_1_1performance__monitor.html#a5423e5de7f7a973187c1337b860a2f1e">invert_color</a> = false</td></tr>
 <tr class="separator:a5423e5de7f7a973187c1337b860a2f1e"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a25bc98d03963635b7263eb2106908974" id="r_a25bc98d03963635b7263eb2106908974"><td class="memItemLeft" align="right" valign="top">bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcgv_1_1app_1_1performance__monitor.html#a25bc98d03963635b7263eb2106908974">show_plot</a> = true</td></tr>
@@ -753,14 +758,14 @@ struct {&#160;</td><td class="memItemRight" valign="bottom"></td></tr>
 <tr class="separator:a847fb3bda8f904352fe1bf29521470a5"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a653d87ec486752f802d37579ffce4d9c" id="r_a653d87ec486752f802d37579ffce4d9c"><td class="memItemLeft" align="right" valign="top"><a class="el" href="classcgv_1_1render_1_1color__map.html">cgv::render::color_map</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcgv_1_1app_1_1performance__monitor.html#a653d87ec486752f802d37579ffce4d9c">plot_color_map</a></td></tr>
 <tr class="separator:a653d87ec486752f802d37579ffce4d9c"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:aab31bf16231e1531de21520895f52f64" id="r_aab31bf16231e1531de21520895f52f64"><td class="memItemLeft" align="right" valign="top">std::vector&lt; std::string &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcgv_1_1app_1_1performance__monitor.html#aab31bf16231e1531de21520895f52f64">labels</a></td></tr>
-<tr class="separator:aab31bf16231e1531de21520895f52f64"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:aa2203e2f3996b301833c0e941a27fff3" id="r_aa2203e2f3996b301833c0e941a27fff3"><td class="memItemLeft" align="right" valign="top">cgv::g2d::text2d_style&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcgv_1_1app_1_1performance__monitor.html#aa2203e2f3996b301833c0e941a27fff3">text_style</a></td></tr>
 <tr class="separator:aa2203e2f3996b301833c0e941a27fff3"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ae3393b3c16bd9d6529f4ac2f8048bfb7" id="r_ae3393b3c16bd9d6529f4ac2f8048bfb7"><td class="memItemLeft" align="right" valign="top">cgv::g2d::text2d_style&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcgv_1_1app_1_1performance__monitor.html#ae3393b3c16bd9d6529f4ac2f8048bfb7">tick_text_style</a></td></tr>
 <tr class="separator:ae3393b3c16bd9d6529f4ac2f8048bfb7"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a717d51054454db7d8c632c4fca574907" id="r_a717d51054454db7d8c632c4fca574907"><td class="memItemLeft" align="right" valign="top">cgv::g2d::msdf_text_geometry&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcgv_1_1app_1_1performance__monitor.html#a717d51054454db7d8c632c4fca574907">text_geometry</a></td></tr>
-<tr class="separator:a717d51054454db7d8c632c4fca574907"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ae1228d78580b7c3502d6c0e44bbe332c" id="r_ae1228d78580b7c3502d6c0e44bbe332c"><td class="memItemLeft" align="right" valign="top">cgv::g2d::msdf_text_geometry&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcgv_1_1app_1_1performance__monitor.html#ae1228d78580b7c3502d6c0e44bbe332c">static_text_geometry</a></td></tr>
+<tr class="separator:ae1228d78580b7c3502d6c0e44bbe332c"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ab43c8995c85666d180fa08c7c309f58b" id="r_ab43c8995c85666d180fa08c7c309f58b"><td class="memItemLeft" align="right" valign="top">cgv::g2d::msdf_text_geometry&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcgv_1_1app_1_1performance__monitor.html#ab43c8995c85666d180fa08c7c309f58b">dynamic_text_geometry</a></td></tr>
+<tr class="separator:ab43c8995c85666d180fa08c7c309f58b"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="inherit_header pro_attribs_classcgv_1_1app_1_1themed__canvas__overlay"><td colspan="2" onclick="javascript:toggleInherit('pro_attribs_classcgv_1_1app_1_1themed__canvas__overlay')"><img src="closed.png" alt="-"/>&#160;Protected Attributes inherited from <a class="el" href="classcgv_1_1app_1_1themed__canvas__overlay.html">cgv::app::themed_canvas_overlay</a></td></tr>
 <tr class="memitem:a92159dc158ff2460805e8459b3421c34 inherit pro_attribs_classcgv_1_1app_1_1themed__canvas__overlay" id="r_a92159dc158ff2460805e8459b3421c34"><td class="memItemLeft" align="right" valign="top">bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcgv_1_1app_1_1themed__canvas__overlay.html#a92159dc158ff2460805e8459b3421c34">background_visible_</a> = true</td></tr>
 <tr class="memdesc:a92159dc158ff2460805e8459b3421c34 inherit pro_attribs_classcgv_1_1app_1_1themed__canvas__overlay"><td class="mdescLeft">&#160;</td><td class="mdescRight">whether the background is visible (true by default)  <br /></td></tr>
@@ -884,9 +889,9 @@ Additional Inherited Members</h2></td></tr>
 
 <p>Reimplemented from <a class="el" href="classcgv_1_1app_1_1canvas__overlay.html#ab23bc89a838a15e24c68a59836424cdd">cgv::app::canvas_overlay</a>.</p>
 
-<p class="definition">Definition at line <a class="el" href="libs_2cgv__app_2performance__monitor_8cxx_source.html#l00134">134</a> of file <a class="el" href="libs_2cgv__app_2performance__monitor_8cxx_source.html">performance_monitor.cxx</a>.</p>
+<p class="definition">Definition at line <a class="el" href="libs_2cgv__app_2performance__monitor_8cxx_source.html#l00126">126</a> of file <a class="el" href="libs_2cgv__app_2performance__monitor_8cxx_source.html">performance_monitor.cxx</a>.</p>
 
-<p class="reference">References <a class="el" href="drawable_8cxx_source.html#l00125">cgv::render::drawable::after_finish()</a>, <a class="el" href="libs_2cgv__app_2performance__monitor_8h_source.html#l00038">enabled</a>, <a class="el" href="drawable_8cxx_source.html#l00031">cgv::render::drawable::is_visible()</a>, and <a class="el" href="classcgv_1_1app_1_1performance__monitor.html#a5f208001ef64ce57a17c81050570d367">monitor</a>.</p>
+<p class="reference">References <a class="el" href="drawable_8cxx_source.html#l00125">cgv::render::drawable::after_finish()</a>, <a class="el" href="libs_2cgv__app_2performance__monitor_8h_source.html#l00038">enabled</a>, <a class="el" href="drawable_8cxx_source.html#l00031">cgv::render::drawable::is_visible()</a>, and <a class="el" href="classcgv_1_1app_1_1performance__monitor.html#a57a1991c12f61f8896ccbf51499ade28">monitor</a>.</p>
 
 </div>
 </div>
@@ -918,9 +923,37 @@ Additional Inherited Members</h2></td></tr>
 
 <p>Reimplemented from <a class="el" href="classcgv_1_1app_1_1canvas__overlay.html#a5e2434f8ff34547c6ddfc43384f964fb">cgv::app::canvas_overlay</a>.</p>
 
-<p class="definition">Definition at line <a class="el" href="libs_2cgv__app_2performance__monitor_8cxx_source.html#l00033">33</a> of file <a class="el" href="libs_2cgv__app_2performance__monitor_8cxx_source.html">performance_monitor.cxx</a>.</p>
+<p class="definition">Definition at line <a class="el" href="libs_2cgv__app_2performance__monitor_8cxx_source.html#l00023">23</a> of file <a class="el" href="libs_2cgv__app_2performance__monitor_8cxx_source.html">performance_monitor.cxx</a>.</p>
 
 <p class="reference">References <a class="el" href="canvas__overlay_8cxx_source.html#l00034">cgv::app::canvas_overlay::clear()</a>.</p>
+
+</div>
+</div>
+<a id="a219cd3aff50f09cc374ccf0e12aee1de" name="a219cd3aff50f09cc374ccf0e12aee1de"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a219cd3aff50f09cc374ccf0e12aee1de">&#9670;&#160;</a></span>create_dynamic_texts()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">void cgv::app::performance_monitor::create_dynamic_texts </td>
+          <td>(</td>
+          <td class="paramtype">const <a class="el" href="classcgv_1_1render_1_1context.html">cgv::render::context</a> &amp;&#160;</td>
+          <td class="paramname"><em>ctx</em></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">protected</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p class="definition">Definition at line <a class="el" href="libs_2cgv__app_2performance__monitor_8cxx_source.html#l00261">261</a> of file <a class="el" href="libs_2cgv__app_2performance__monitor_8cxx_source.html">performance_monitor.cxx</a>.</p>
 
 </div>
 </div>
@@ -951,14 +984,14 @@ Additional Inherited Members</h2></td></tr>
 
 <p>Reimplemented from <a class="el" href="classcgv_1_1app_1_1overlay.html#af8938207c2973fc91a25e6dd9add2be7">cgv::app::overlay</a>.</p>
 
-<p class="definition">Definition at line <a class="el" href="libs_2cgv__app_2performance__monitor_8cxx_source.html#l00184">184</a> of file <a class="el" href="libs_2cgv__app_2performance__monitor_8cxx_source.html">performance_monitor.cxx</a>.</p>
+<p class="definition">Definition at line <a class="el" href="libs_2cgv__app_2performance__monitor_8cxx_source.html#l00176">176</a> of file <a class="el" href="libs_2cgv__app_2performance__monitor_8cxx_source.html">performance_monitor.cxx</a>.</p>
 
-<p class="reference">References <a class="el" href="provider_8h_source.html#l00137">cgv::gui::provider::add_member_control()</a>, <a class="el" href="themed__canvas__overlay_8h_source.html#l00019">cgv::app::themed_canvas_overlay::background_visible_</a>, and <a class="el" href="classcgv_1_1app_1_1performance__monitor.html#a5f208001ef64ce57a17c81050570d367">monitor</a>.</p>
+<p class="reference">References <a class="el" href="provider_8h_source.html#l00137">cgv::gui::provider::add_member_control()</a>, <a class="el" href="themed__canvas__overlay_8h_source.html#l00019">cgv::app::themed_canvas_overlay::background_visible_</a>, and <a class="el" href="classcgv_1_1app_1_1performance__monitor.html#a57a1991c12f61f8896ccbf51499ade28">monitor</a>.</p>
 
 </div>
 </div>
-<a id="aa33055d0de0251a564487e62fdc4c14c" name="aa33055d0de0251a564487e62fdc4c14c"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#aa33055d0de0251a564487e62fdc4c14c">&#9670;&#160;</a></span>create_texts()</h2>
+<a id="a1af60318aca6e29af0be33153a177cb2" name="a1af60318aca6e29af0be33153a177cb2"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a1af60318aca6e29af0be33153a177cb2">&#9670;&#160;</a></span>create_static_texts()</h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -967,7 +1000,7 @@ Additional Inherited Members</h2></td></tr>
   <td class="mlabels-left">
       <table class="memname">
         <tr>
-          <td class="memname">void cgv::app::performance_monitor::create_texts </td>
+          <td class="memname">void cgv::app::performance_monitor::create_static_texts </td>
           <td>(</td>
           <td class="paramtype">const <a class="el" href="classcgv_1_1render_1_1context.html">cgv::render::context</a> &amp;&#160;</td>
           <td class="paramname"><em>ctx</em></td><td>)</td>
@@ -981,7 +1014,7 @@ Additional Inherited Members</h2></td></tr>
 </table>
 </div><div class="memdoc">
 
-<p class="definition">Definition at line <a class="el" href="libs_2cgv__app_2performance__monitor_8cxx_source.html#l00224">224</a> of file <a class="el" href="libs_2cgv__app_2performance__monitor_8cxx_source.html">performance_monitor.cxx</a>.</p>
+<p class="definition">Definition at line <a class="el" href="libs_2cgv__app_2performance__monitor_8cxx_source.html#l00216">216</a> of file <a class="el" href="libs_2cgv__app_2performance__monitor_8cxx_source.html">performance_monitor.cxx</a>.</p>
 
 </div>
 </div>
@@ -1011,7 +1044,7 @@ Additional Inherited Members</h2></td></tr>
 
 <p>Implements <a class="el" href="classcgv_1_1app_1_1canvas__overlay.html">cgv::app::canvas_overlay</a>.</p>
 
-<p class="definition">Definition at line <a class="el" href="libs_2cgv__app_2performance__monitor_8cxx_source.html#l00099">99</a> of file <a class="el" href="libs_2cgv__app_2performance__monitor_8cxx_source.html">performance_monitor.cxx</a>.</p>
+<p class="definition">Definition at line <a class="el" href="libs_2cgv__app_2performance__monitor_8cxx_source.html#l00093">93</a> of file <a class="el" href="libs_2cgv__app_2performance__monitor_8cxx_source.html">performance_monitor.cxx</a>.</p>
 
 </div>
 </div>
@@ -1031,7 +1064,7 @@ Additional Inherited Members</h2></td></tr>
       </table>
 </div><div class="memdoc">
 
-<p class="definition">Definition at line <a class="el" href="libs_2cgv__app_2performance__monitor_8cxx_source.html#l00167">167</a> of file <a class="el" href="libs_2cgv__app_2performance__monitor_8cxx_source.html">performance_monitor.cxx</a>.</p>
+<p class="definition">Definition at line <a class="el" href="libs_2cgv__app_2performance__monitor_8cxx_source.html#l00159">159</a> of file <a class="el" href="libs_2cgv__app_2performance__monitor_8cxx_source.html">performance_monitor.cxx</a>.</p>
 
 </div>
 </div>
@@ -1051,7 +1084,7 @@ Additional Inherited Members</h2></td></tr>
       </table>
 </div><div class="memdoc">
 
-<p class="definition">Definition at line <a class="el" href="libs_2cgv__app_2performance__monitor_8cxx_source.html#l00172">172</a> of file <a class="el" href="libs_2cgv__app_2performance__monitor_8cxx_source.html">performance_monitor.cxx</a>.</p>
+<p class="definition">Definition at line <a class="el" href="libs_2cgv__app_2performance__monitor_8cxx_source.html#l00164">164</a> of file <a class="el" href="libs_2cgv__app_2performance__monitor_8cxx_source.html">performance_monitor.cxx</a>.</p>
 
 </div>
 </div>
@@ -1115,9 +1148,9 @@ Additional Inherited Members</h2></td></tr>
 
 <p>Reimplemented from <a class="el" href="classcgv_1_1app_1_1canvas__overlay.html#ab070bcac249ae8e87ad369a4d60e61b3">cgv::app::canvas_overlay</a>.</p>
 
-<p class="definition">Definition at line <a class="el" href="libs_2cgv__app_2performance__monitor_8cxx_source.html#l00044">44</a> of file <a class="el" href="libs_2cgv__app_2performance__monitor_8cxx_source.html">performance_monitor.cxx</a>.</p>
+<p class="definition">Definition at line <a class="el" href="libs_2cgv__app_2performance__monitor_8cxx_source.html#l00035">35</a> of file <a class="el" href="libs_2cgv__app_2performance__monitor_8cxx_source.html">performance_monitor.cxx</a>.</p>
 
-<p class="reference">References <a class="el" href="themed__canvas__overlay_8h_source.html#l00019">cgv::app::themed_canvas_overlay::background_visible_</a>, <a class="el" href="pointer__test_8h_source.html#l00024">cgv::utils::pointer_test::is()</a>, <a class="el" href="classcgv_1_1app_1_1performance__monitor.html#a5f208001ef64ce57a17c81050570d367">monitor</a>, <a class="el" href="overlay_8cxx_source.html#l00055">cgv::app::overlay::set_size()</a>, and <a class="el" href="fvec_8h_source.html#l00159">cgv::math::fvec&lt; T, N &gt;::y()</a>.</p>
+<p class="reference">References <a class="el" href="themed__canvas__overlay_8h_source.html#l00019">cgv::app::themed_canvas_overlay::background_visible_</a>, <a class="el" href="drawable_8cxx_source.html#l00037">cgv::render::drawable::get_context()</a>, <a class="el" href="pointer__test_8h_source.html#l00024">cgv::utils::pointer_test::is()</a>, <a class="el" href="classcgv_1_1app_1_1performance__monitor.html#a57a1991c12f61f8896ccbf51499ade28">monitor</a>, <a class="el" href="overlay_8cxx_source.html#l00108">cgv::app::overlay::set_size()</a>, and <a class="el" href="fvec_8h_source.html#l00159">cgv::math::fvec&lt; T, N &gt;::y()</a>.</p>
 
 </div>
 </div>
@@ -1149,7 +1182,7 @@ Additional Inherited Members</h2></td></tr>
 
 <p>Reimplemented from <a class="el" href="classcgv_1_1app_1_1canvas__overlay.html#abd1719a9c1db8345049378c5055d3de7">cgv::app::canvas_overlay</a>.</p>
 
-<p class="definition">Definition at line <a class="el" href="libs_2cgv__app_2performance__monitor_8cxx_source.html#l00060">60</a> of file <a class="el" href="libs_2cgv__app_2performance__monitor_8cxx_source.html">performance_monitor.cxx</a>.</p>
+<p class="definition">Definition at line <a class="el" href="libs_2cgv__app_2performance__monitor_8cxx_source.html#l00053">53</a> of file <a class="el" href="libs_2cgv__app_2performance__monitor_8cxx_source.html">performance_monitor.cxx</a>.</p>
 
 <p class="reference">References <a class="el" href="canvas__overlay_8cxx_source.html#l00015">cgv::app::canvas_overlay::init()</a>.</p>
 
@@ -1183,9 +1216,9 @@ Additional Inherited Members</h2></td></tr>
 
 <p>Reimplemented from <a class="el" href="classcgv_1_1render_1_1drawable.html#a14e47d48f2cad26d15377e9cbc32d1f1">cgv::render::drawable</a>.</p>
 
-<p class="definition">Definition at line <a class="el" href="libs_2cgv__app_2performance__monitor_8cxx_source.html#l00080">80</a> of file <a class="el" href="libs_2cgv__app_2performance__monitor_8cxx_source.html">performance_monitor.cxx</a>.</p>
+<p class="definition">Definition at line <a class="el" href="libs_2cgv__app_2performance__monitor_8cxx_source.html#l00074">74</a> of file <a class="el" href="libs_2cgv__app_2performance__monitor_8cxx_source.html">performance_monitor.cxx</a>.</p>
 
-<p class="reference">References <a class="el" href="libs_2cgv__app_2performance__monitor_8h_source.html#l00038">enabled</a>, <a class="el" href="overlay_8h_source.html#l00129">cgv::app::overlay::get_rectangle()</a>, <a class="el" href="drawable_8cxx_source.html#l00031">cgv::render::drawable::is_visible()</a>, and <a class="el" href="classcgv_1_1app_1_1performance__monitor.html#a5f208001ef64ce57a17c81050570d367">monitor</a>.</p>
+<p class="reference">References <a class="el" href="libs_2cgv__app_2performance__monitor_8h_source.html#l00038">enabled</a>, <a class="el" href="overlay_8h_source.html#l00139">cgv::app::overlay::get_rectangle()</a>, <a class="el" href="drawable_8cxx_source.html#l00031">cgv::render::drawable::is_visible()</a>, and <a class="el" href="classcgv_1_1app_1_1performance__monitor.html#a57a1991c12f61f8896ccbf51499ade28">monitor</a>.</p>
 
 </div>
 </div>
@@ -1214,7 +1247,7 @@ Additional Inherited Members</h2></td></tr>
 
 <p>Reimplemented from <a class="el" href="classcgv_1_1app_1_1themed__canvas__overlay.html">cgv::app::themed_canvas_overlay</a>.</p>
 
-<p class="definition">Definition at line <a class="el" href="libs_2cgv__app_2performance__monitor_8cxx_source.html#l00194">194</a> of file <a class="el" href="libs_2cgv__app_2performance__monitor_8cxx_source.html">performance_monitor.cxx</a>.</p>
+<p class="definition">Definition at line <a class="el" href="libs_2cgv__app_2performance__monitor_8cxx_source.html#l00186">186</a> of file <a class="el" href="libs_2cgv__app_2performance__monitor_8cxx_source.html">performance_monitor.cxx</a>.</p>
 
 </div>
 </div>
@@ -1245,9 +1278,9 @@ Additional Inherited Members</h2></td></tr>
 
 <p>Reimplemented from <a class="el" href="classcgv_1_1app_1_1overlay.html#a5e2abff37419448bff57a15b8461fd38">cgv::app::overlay</a>.</p>
 
-<p class="definition">Definition at line <a class="el" href="libs_2cgv__app_2performance__monitor_8cxx_source.html#l00176">176</a> of file <a class="el" href="libs_2cgv__app_2performance__monitor_8cxx_source.html">performance_monitor.cxx</a>.</p>
+<p class="definition">Definition at line <a class="el" href="libs_2cgv__app_2performance__monitor_8cxx_source.html#l00168">168</a> of file <a class="el" href="libs_2cgv__app_2performance__monitor_8cxx_source.html">performance_monitor.cxx</a>.</p>
 
-<p class="reference">References <a class="el" href="drawable_8cxx_source.html#l00031">cgv::render::drawable::is_visible()</a>, and <a class="el" href="classcgv_1_1app_1_1performance__monitor.html#a5f208001ef64ce57a17c81050570d367">monitor</a>.</p>
+<p class="reference">References <a class="el" href="drawable_8cxx_source.html#l00031">cgv::render::drawable::is_visible()</a>, and <a class="el" href="classcgv_1_1app_1_1performance__monitor.html#a57a1991c12f61f8896ccbf51499ade28">monitor</a>.</p>
 
 </div>
 </div>
@@ -1267,7 +1300,35 @@ Additional Inherited Members</h2></td></tr>
       </table>
 </div><div class="memdoc">
 
-<p class="definition">Definition at line <a class="el" href="libs_2cgv__app_2performance__monitor_8cxx_source.html#l00161">161</a> of file <a class="el" href="libs_2cgv__app_2performance__monitor_8cxx_source.html">performance_monitor.cxx</a>.</p>
+<p class="definition">Definition at line <a class="el" href="libs_2cgv__app_2performance__monitor_8cxx_source.html#l00153">153</a> of file <a class="el" href="libs_2cgv__app_2performance__monitor_8cxx_source.html">performance_monitor.cxx</a>.</p>
+
+</div>
+</div>
+<a id="a8180846d528faa92dc0bb6eac3768494" name="a8180846d528faa92dc0bb6eac3768494"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a8180846d528faa92dc0bb6eac3768494">&#9670;&#160;</a></span>update_dynamic_texts()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">void cgv::app::performance_monitor::update_dynamic_texts </td>
+          <td>(</td>
+          <td class="paramtype">const <a class="el" href="classcgv_1_1render_1_1context.html">cgv::render::context</a> &amp;&#160;</td>
+          <td class="paramname"><em>ctx</em></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">protected</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p class="definition">Definition at line <a class="el" href="libs_2cgv__app_2performance__monitor_8cxx_source.html#l00281">281</a> of file <a class="el" href="libs_2cgv__app_2performance__monitor_8cxx_source.html">performance_monitor.cxx</a>.</p>
 
 </div>
 </div>
@@ -1294,35 +1355,7 @@ Additional Inherited Members</h2></td></tr>
 </table>
 </div><div class="memdoc">
 
-<p class="definition">Definition at line <a class="el" href="libs_2cgv__app_2performance__monitor_8cxx_source.html#l00309">309</a> of file <a class="el" href="libs_2cgv__app_2performance__monitor_8cxx_source.html">performance_monitor.cxx</a>.</p>
-
-</div>
-</div>
-<a id="a441af153c0675980080b0c5536c13d88" name="a441af153c0675980080b0c5536c13d88"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a441af153c0675980080b0c5536c13d88">&#9670;&#160;</a></span>update_texts()</h2>
-
-<div class="memitem">
-<div class="memproto">
-<table class="mlabels">
-  <tr>
-  <td class="mlabels-left">
-      <table class="memname">
-        <tr>
-          <td class="memname">void cgv::app::performance_monitor::update_texts </td>
-          <td>(</td>
-          <td class="paramtype">const <a class="el" href="classcgv_1_1render_1_1context.html">cgv::render::context</a> &amp;&#160;</td>
-          <td class="paramname"><em>ctx</em></td><td>)</td>
-          <td></td>
-        </tr>
-      </table>
-  </td>
-  <td class="mlabels-right">
-<span class="mlabels"><span class="mlabel">protected</span></span>  </td>
-  </tr>
-</table>
-</div><div class="memdoc">
-
-<p class="definition">Definition at line <a class="el" href="libs_2cgv__app_2performance__monitor_8cxx_source.html#l00273">273</a> of file <a class="el" href="libs_2cgv__app_2performance__monitor_8cxx_source.html">performance_monitor.cxx</a>.</p>
+<p class="definition">Definition at line <a class="el" href="libs_2cgv__app_2performance__monitor_8cxx_source.html#l00306">306</a> of file <a class="el" href="libs_2cgv__app_2performance__monitor_8cxx_source.html">performance_monitor.cxx</a>.</p>
 
 </div>
 </div>
@@ -1459,6 +1492,30 @@ Additional Inherited Members</h2></td></tr>
 
 </div>
 </div>
+<a id="ab43c8995c85666d180fa08c7c309f58b" name="ab43c8995c85666d180fa08c7c309f58b"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#ab43c8995c85666d180fa08c7c309f58b">&#9670;&#160;</a></span>dynamic_text_geometry</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">cgv::g2d::msdf_text_geometry cgv::app::performance_monitor::dynamic_text_geometry</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">protected</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p class="definition">Definition at line <a class="el" href="libs_2cgv__app_2performance__monitor_8h_source.html#l00082">82</a> of file <a class="el" href="libs_2cgv__app_2performance__monitor_8h_source.html">performance_monitor.h</a>.</p>
+
+</div>
+</div>
 <a id="aa03afecc897d8e285008bd15f1d0d7f5" name="aa03afecc897d8e285008bd15f1d0d7f5"></a>
 <h2 class="memtitle"><span class="permalink"><a href="#aa03afecc897d8e285008bd15f1d0d7f5">&#9670;&#160;</a></span>enabled</h2>
 
@@ -1475,7 +1532,7 @@ Additional Inherited Members</h2></td></tr>
 
 <p class="definition">Definition at line <a class="el" href="libs_2cgv__app_2performance__monitor_8h_source.html#l00038">38</a> of file <a class="el" href="libs_2cgv__app_2performance__monitor_8h_source.html">performance_monitor.h</a>.</p>
 
-<p class="reference">Referenced by <a class="el" href="libs_2cgv__app_2performance__monitor_8cxx_source.html#l00134">after_finish()</a>, and <a class="el" href="libs_2cgv__app_2performance__monitor_8cxx_source.html#l00080">init_frame()</a>.</p>
+<p class="reference">Referenced by <a class="el" href="libs_2cgv__app_2performance__monitor_8cxx_source.html#l00126">after_finish()</a>, and <a class="el" href="libs_2cgv__app_2performance__monitor_8cxx_source.html#l00074">init_frame()</a>.</p>
 
 </div>
 </div>
@@ -1554,30 +1611,6 @@ Additional Inherited Members</h2></td></tr>
 </div><div class="memdoc">
 
 <p class="definition">Definition at line <a class="el" href="libs_2cgv__app_2performance__monitor_8h_source.html#l00067">67</a> of file <a class="el" href="libs_2cgv__app_2performance__monitor_8h_source.html">performance_monitor.h</a>.</p>
-
-</div>
-</div>
-<a id="aab31bf16231e1531de21520895f52f64" name="aab31bf16231e1531de21520895f52f64"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#aab31bf16231e1531de21520895f52f64">&#9670;&#160;</a></span>labels</h2>
-
-<div class="memitem">
-<div class="memproto">
-<table class="mlabels">
-  <tr>
-  <td class="mlabels-left">
-      <table class="memname">
-        <tr>
-          <td class="memname">std::vector&lt;std::string&gt; cgv::app::performance_monitor::labels</td>
-        </tr>
-      </table>
-  </td>
-  <td class="mlabels-right">
-<span class="mlabels"><span class="mlabel">protected</span></span>  </td>
-  </tr>
-</table>
-</div><div class="memdoc">
-
-<p class="definition">Definition at line <a class="el" href="libs_2cgv__app_2performance__monitor_8h_source.html#l00080">80</a> of file <a class="el" href="libs_2cgv__app_2performance__monitor_8h_source.html">performance_monitor.h</a>.</p>
 
 </div>
 </div>
@@ -1689,8 +1722,8 @@ Additional Inherited Members</h2></td></tr>
 
 </div>
 </div>
-<a id="a717d51054454db7d8c632c4fca574907" name="a717d51054454db7d8c632c4fca574907"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a717d51054454db7d8c632c4fca574907">&#9670;&#160;</a></span>text_geometry</h2>
+<a id="ae1228d78580b7c3502d6c0e44bbe332c" name="ae1228d78580b7c3502d6c0e44bbe332c"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#ae1228d78580b7c3502d6c0e44bbe332c">&#9670;&#160;</a></span>static_text_geometry</h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -1699,7 +1732,7 @@ Additional Inherited Members</h2></td></tr>
   <td class="mlabels-left">
       <table class="memname">
         <tr>
-          <td class="memname">cgv::g2d::msdf_text_geometry cgv::app::performance_monitor::text_geometry</td>
+          <td class="memname">cgv::g2d::msdf_text_geometry cgv::app::performance_monitor::static_text_geometry</td>
         </tr>
       </table>
   </td>
@@ -1709,7 +1742,7 @@ Additional Inherited Members</h2></td></tr>
 </table>
 </div><div class="memdoc">
 
-<p class="definition">Definition at line <a class="el" href="libs_2cgv__app_2performance__monitor_8h_source.html#l00082">82</a> of file <a class="el" href="libs_2cgv__app_2performance__monitor_8h_source.html">performance_monitor.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="libs_2cgv__app_2performance__monitor_8h_source.html#l00081">81</a> of file <a class="el" href="libs_2cgv__app_2performance__monitor_8h_source.html">performance_monitor.h</a>.</p>
 
 </div>
 </div>
@@ -1733,7 +1766,7 @@ Additional Inherited Members</h2></td></tr>
 </table>
 </div><div class="memdoc">
 
-<p class="definition">Definition at line <a class="el" href="libs_2cgv__app_2performance__monitor_8h_source.html#l00081">81</a> of file <a class="el" href="libs_2cgv__app_2performance__monitor_8h_source.html">performance_monitor.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="libs_2cgv__app_2performance__monitor_8h_source.html#l00080">80</a> of file <a class="el" href="libs_2cgv__app_2performance__monitor_8h_source.html">performance_monitor.h</a>.</p>
 
 </div>
 </div>
@@ -1757,7 +1790,7 @@ Additional Inherited Members</h2></td></tr>
 </table>
 </div><div class="memdoc">
 
-<p class="definition">Definition at line <a class="el" href="libs_2cgv__app_2performance__monitor_8h_source.html#l00081">81</a> of file <a class="el" href="libs_2cgv__app_2performance__monitor_8h_source.html">performance_monitor.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="libs_2cgv__app_2performance__monitor_8h_source.html#l00080">80</a> of file <a class="el" href="libs_2cgv__app_2performance__monitor_8h_source.html">performance_monitor.h</a>.</p>
 
 </div>
 </div>

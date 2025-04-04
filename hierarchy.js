@@ -41,9 +41,9 @@ var hierarchy =
     [ "cgv::app::color_map_reader::identifier_config", "structcgv_1_1app_1_1color__map__reader_1_1identifier__config.html", null ],
     [ "cgv::app::color_map_writer", "classcgv_1_1app_1_1color__map__writer.html", null ],
     [ "cgv::app::color_selector::layout_attributes", "structcgv_1_1app_1_1color__selector_1_1layout__attributes.html", null ],
-    [ "cgv::app::gizmo", "classcgv_1_1app_1_1gizmo.html", null ],
     [ "cgv::app::overlay::gui_options_t", "structcgv_1_1app_1_1overlay_1_1gui__options__t.html", null ],
     [ "cgv::app::performance_monitor::layout_attributes", "structcgv_1_1app_1_1performance__monitor_1_1layout__attributes.html", null ],
+    [ "cgv::app::plane", "structcgv_1_1app_1_1plane.html", null ],
     [ "cgv::audio::OALContext", "classcgv_1_1audio_1_1OALContext.html", null ],
     [ "cgv::audio::OALListener", "classcgv_1_1audio_1_1OALListener.html", null ],
     [ "cgv::audio::OALSoundFormat", "structcgv_1_1audio_1_1OALSoundFormat.html", null ],
@@ -176,6 +176,9 @@ var hierarchy =
           ] ],
           [ "cgv::app::generic_application_plugin< base_drawable >", "classcgv_1_1app_1_1generic__application__plugin.html", null ]
         ] ],
+        [ "cgv::app::gizmo", "classcgv_1_1app_1_1gizmo.html", [
+          [ "cgv::app::transformation_gizmo", "classcgv_1_1app_1_1transformation__gizmo.html", null ]
+        ] ],
         [ "cgv::app::overlay", "classcgv_1_1app_1_1overlay.html", [
           [ "cgv::app::canvas_overlay", "classcgv_1_1app_1_1canvas__overlay.html", [
             [ "cgv::app::themed_canvas_overlay", "classcgv_1_1app_1_1themed__canvas__overlay.html", [
@@ -194,6 +197,7 @@ var hierarchy =
       ] ],
       [ "cgv::render::drawable", "classcgv_1_1render_1_1drawable.html", [
         [ "cgv::app::generic_application_plugin< cgv::render::drawable >", "classcgv_1_1app_1_1generic__application__plugin.html", null ],
+        [ "cgv::app::gizmo", "classcgv_1_1app_1_1gizmo.html", null ],
         [ "cgv::app::overlay", "classcgv_1_1app_1_1overlay.html", null ],
         [ "cgv::plot::plot_base", "classcgv_1_1plot_1_1plot__base.html", [
           [ "cgv::plot::plot2d", "classcgv_1_1plot_1_1plot2d.html", null ],
@@ -250,6 +254,7 @@ var hierarchy =
         ] ],
         [ "cgv::base::named", "classcgv_1_1base_1_1named.html", [
           [ "cgv::base::node", "classcgv_1_1base_1_1node.html", [
+            [ "cgv::app::gizmo", "classcgv_1_1app_1_1gizmo.html", null ],
             [ "cgv::app::overlay", "classcgv_1_1app_1_1overlay.html", null ],
             [ "cgv::base::group", "classcgv_1_1base_1_1group.html", [
               [ "cgv::app::application_plugin_base", "classcgv_1_1app_1_1application__plugin__base.html", null ],
@@ -780,8 +785,13 @@ var hierarchy =
     [ "cgv::render::render_data_base< RendererType, RenderStyleType, ColorType >", "classcgv_1_1render_1_1render__data__base.html", [
       [ "cgv::render::box_render_data_base< box_renderer, box_render_style, rgb >", "classcgv_1_1render_1_1box__render__data__base.html", null ],
       [ "cgv::render::box_render_data_base< box_wire_renderer, box_wire_render_style, rgb >", "classcgv_1_1render_1_1box__render__data__base.html", null ],
+      [ "cgv::render::box_render_data_base< box_renderer, box_render_style, color< float, cgv::media::RGB, cgv::media::OPACITY > >", "classcgv_1_1render_1_1box__render__data__base.html", null ],
+      [ "cgv::render::cone_render_data< color< float, cgv::media::RGB, cgv::media::OPACITY > >", "classcgv_1_1render_1_1cone__render__data.html", null ],
+      [ "cgv::render::rectangle_render_data< color< float, cgv::media::RGB, cgv::media::OPACITY > >", "classcgv_1_1render_1_1rectangle__render__data.html", null ],
+      [ "cgv::render::sphere_render_data< color< float, cgv::media::RGB, cgv::media::OPACITY > >", "classcgv_1_1render_1_1sphere__render__data.html", null ],
       [ "cgv::render::arrow_render_data< ColorType >", "classcgv_1_1render_1_1arrow__render__data.html", null ],
       [ "cgv::render::box_render_data_base< RendererType, RenderStyleType, ColorType >", "classcgv_1_1render_1_1box__render__data__base.html", [
+        [ "cgv::render::box_render_data< color< float, cgv::media::RGB, cgv::media::OPACITY > >", "classcgv_1_1render_1_1box__render__data.html", null ],
         [ "cgv::render::box_render_data< ColorType >", "classcgv_1_1render_1_1box__render__data.html", null ],
         [ "cgv::render::box_wire_render_data< ColorType >", "classcgv_1_1render_1_1box__wire__render__data.html", null ]
       ] ],
@@ -1165,6 +1175,7 @@ var hierarchy =
     ] ],
     [ "cgv::data::optional< cgv::math::fvec >", "classcgv_1_1data_1_1optional.html", null ],
     [ "cgv::data::optional< cgv::math::quaternion >", "classcgv_1_1data_1_1optional.html", null ],
+    [ "cgv::data::optional< color< float, cgv::media::RGB, cgv::media::OPACITY > >", "classcgv_1_1data_1_1optional.html", null ],
     [ "cgv::data::optional< rgb >", "classcgv_1_1data_1_1optional.html", null ],
     [ "cgv::data::ref_ptr_impl< base, is_ref_counted >", "classcgv_1_1data_1_1ref__ptr__impl.html", null ],
     [ "cgv::data::ref_ptr_impl< font, type::cond::is_base_of< ref_counted, font >::value >", "classcgv_1_1data_1_1ref__ptr__impl.html", null ],
@@ -1184,14 +1195,18 @@ var hierarchy =
     [ "register_driver_and_object", "structregister__driver__and__object.html", null ],
     [ "render_config_registration", "structrender__config__registration.html", null ],
     [ "cgv::render::render_data_base< arrow_renderer, arrow_render_style, rgb >", "classcgv_1_1render_1_1render__data__base.html", null ],
+    [ "cgv::render::render_data_base< box_renderer, box_render_style, color< float, cgv::media::RGB, cgv::media::OPACITY > >", "classcgv_1_1render_1_1render__data__base.html", null ],
     [ "cgv::render::render_data_base< box_renderer, box_render_style, rgb >", "classcgv_1_1render_1_1render__data__base.html", null ],
     [ "cgv::render::render_data_base< box_wire_renderer, box_wire_render_style, rgb >", "classcgv_1_1render_1_1render__data__base.html", null ],
+    [ "cgv::render::render_data_base< cone_renderer, cone_render_style, color< float, cgv::media::RGB, cgv::media::OPACITY > >", "classcgv_1_1render_1_1render__data__base.html", null ],
     [ "cgv::render::render_data_base< cone_renderer, cone_render_style, rgb >", "classcgv_1_1render_1_1render__data__base.html", null ],
     [ "cgv::render::render_data_base< ellipsoid_renderer, ellipsoid_render_style, rgb >", "classcgv_1_1render_1_1render__data__base.html", null ],
     [ "cgv::render::render_data_base< line_renderer, line_render_style, rgb >", "classcgv_1_1render_1_1render__data__base.html", null ],
     [ "cgv::render::render_data_base< point_renderer, point_render_style, rgb >", "classcgv_1_1render_1_1render__data__base.html", null ],
+    [ "cgv::render::render_data_base< rectangle_renderer, rectangle_render_style, color< float, cgv::media::RGB, cgv::media::OPACITY > >", "classcgv_1_1render_1_1render__data__base.html", null ],
     [ "cgv::render::render_data_base< rectangle_renderer, rectangle_render_style, rgb >", "classcgv_1_1render_1_1render__data__base.html", null ],
     [ "cgv::render::render_data_base< RendererType, RenderStyleType, rgb >", "classcgv_1_1render_1_1render__data__base.html", null ],
+    [ "cgv::render::render_data_base< sphere_renderer, sphere_render_style, color< float, cgv::media::RGB, cgv::media::OPACITY > >", "classcgv_1_1render_1_1render__data__base.html", null ],
     [ "cgv::render::render_data_base< sphere_renderer, sphere_render_style, rgb >", "classcgv_1_1render_1_1render__data__base.html", null ],
     [ "cgv::render::render_data_base< surfel_renderer, surfel_render_style, rgb >", "classcgv_1_1render_1_1render__data__base.html", null ],
     [ "cgv::media::rgb_color_interface< color< T, HLS, am > >", "structcgv_1_1media_1_1rgb__color__interface.html", [

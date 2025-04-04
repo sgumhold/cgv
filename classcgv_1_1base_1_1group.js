@@ -2,6 +2,7 @@ var classcgv_1_1base_1_1group =
 [
     [ "group", "classcgv_1_1base_1_1group.html#a03ff3b7324183b4ecf260f834d618d27", null ],
     [ "append_child", "classcgv_1_1base_1_1group.html#afd58f5c3d894ec711d531ff32143ff98", null ],
+    [ "create_and_append_child", "classcgv_1_1base_1_1group.html#a136ead2820529baae58ac6d75019a296", null ],
     [ "get_child", "classcgv_1_1base_1_1group.html#ad16a6b052779cddc52fcf90a8e211690", null ],
     [ "get_group", "classcgv_1_1base_1_1group.html#aaec823eac02e6e54794cdcc94e328b56", null ],
     [ "get_group_const", "classcgv_1_1base_1_1group.html#ae340ce8bfe07e8967e3852fc53c49f80", null ],
