@@ -17,7 +17,7 @@ color_selector::color_selector() {
 
 	set_size(ivec2(layout.size));
 	
-	selector_handles.set_drag_callback(std::bind(&color_selector::handle_selector_drag, this));
+	selector_handles.callback = std::bind(&color_selector::handle_selector_drag, this, std::placeholders::_1);
 	selector_handles.set_use_individual_constraints(true);
 }
 
@@ -32,59 +32,49 @@ void color_selector::clear(cgv::render::context& ctx) {
 	text_geometry.destruct(ctx);
 }
 
-bool color_selector::handle_event(cgv::gui::event& e) {
+bool color_selector::handle_mouse_event(cgv::gui::mouse_event& e, cgv::ivec2 local_mouse_pos) {
 
-	// return true if the event gets handled and stopped here or false if you want to pass it to the next plugin
-	unsigned et = e.get_kind();
-	unsigned char modifiers = e.get_modifiers();
+	if (e.get_button_state() & cgv::gui::MB_LEFT_BUTTON) {
+		if (e.get_action() == cgv::gui::MA_PRESS) {
+			int hit_index = -1;
+			cgv::g2d::irect hit_rect;
 
-	if (et == cgv::gui::EID_MOUSE) {
-		cgv::gui::mouse_event& me = (cgv::gui::mouse_event&)e;
-		cgv::gui::MouseAction ma = me.get_action();
+			if(layout.color_rect.contains(local_mouse_pos)) {
+				hit_index = 0;
+				hit_rect = layout.color_rect;
+			}
 
-		if (me.get_button_state() & cgv::gui::MB_LEFT_BUTTON) {
-			if (ma == cgv::gui::MA_PRESS) {
-				ivec2 mpos = get_local_mouse_pos(ivec2(me.get_x(), me.get_y()));
+			if(layout.hue_rect.contains(local_mouse_pos)) {
+				hit_index = 1;
+				hit_rect = layout.hue_rect;
+			}
 
-				int hit_index = -1;
-				cgv::g2d::irect hit_rect;
+			if(layout.opacity_rect.contains(local_mouse_pos)) {
+				hit_index = 2;
+				hit_rect = layout.opacity_rect;
+			}
 
-				if(layout.color_rect.contains(mpos)) {
-					hit_index = 0;
-					hit_rect = layout.color_rect;
-				}
+			if(hit_index > -1 && hit_index < 4) {
+				vec2 hit_rect_realtive_pos = static_cast<vec2>(local_mouse_pos - hit_rect.position);
+				vec2 val = hit_rect_realtive_pos / static_cast<vec2>(hit_rect.size);
+				if(hit_index > 0)
+					val.x() = 0.0f;
+				selector_handles[hit_index].val = val;
+				selector_handles[hit_index].update_pos();
 
-				if(layout.hue_rect.contains(mpos)) {
-					hit_index = 1;
-					hit_rect = layout.hue_rect;
-				}
+				update_color();
 
-				if(layout.opacity_rect.contains(mpos)) {
-					hit_index = 2;
-					hit_rect = layout.opacity_rect;
-				}
+				if(hit_index == 1)
+					update_color_texture();
 
-				if(hit_index > -1 && hit_index < 4) {
-					vec2 local_mpos = static_cast<vec2>(mpos - hit_rect.position);
-					vec2 val = local_mpos / static_cast<vec2>(hit_rect.size);
-					if(hit_index > 0)
-						val.x() = 0.0f;
-					selector_handles[hit_index].val = val;
-					selector_handles[hit_index].update_pos();
-
-					update_color();
-
-					if(hit_index == 1)
-						update_color_texture();
-
-					post_damage();
-				}
+				post_damage();
 			}
 		}
-
-		if(selector_handles.handle(e, get_viewport_size(), get_rectangle()))
-			return true;
 	}
+
+	if(selector_handles.handle(e, get_viewport_size(), get_rectangle()))
+		return true;
+	
 	return false;
 }
 
@@ -466,16 +456,18 @@ void color_selector::update_texts() {
 		text_geometry.set_text_array(*ctx_ptr, texts);
 }
 
-void color_selector::handle_selector_drag() {
+void color_selector::handle_selector_drag(cgv::g2d::DragAction action) {
 
-	auto* p = selector_handles.get_dragged();
-	p->update_val();
+	if(action == cgv::g2d::DragAction::kDrag) {
+		auto* p = selector_handles.get_dragged();
+		p->update_val();
 
-	update_color();
-	if(p == &selector_handles[1])
-		update_color_texture();
+		update_color();
+		if(p == &selector_handles[1])
+			update_color_texture();
 
-	post_damage();
+		post_damage();
+	}
 }
 
 void color_selector::set_color(rgba color, bool opacity, bool init) {
