@@ -32,7 +32,8 @@ var searchData=
   ['optional_29',['optional',['../classcgv_1_1data_1_1optional.html',1,'cgv::data']]],
   ['optional_3c_20cgv_3a_3amath_3a_3afvec_20_3e_30',['optional&lt; cgv::math::fvec &gt;',['../classcgv_1_1data_1_1optional.html',1,'cgv::data']]],
   ['optional_3c_20cgv_3a_3amath_3a_3aquaternion_20_3e_31',['optional&lt; cgv::math::quaternion &gt;',['../classcgv_1_1data_1_1optional.html',1,'cgv::data']]],
-  ['optional_3c_20rgb_20_3e_32',['optional&lt; rgb &gt;',['../classcgv_1_1data_1_1optional.html',1,'cgv::data']]],
-  ['orthographic_33',['Orthographic',['../structfx_1_1gltf_1_1Camera_1_1Orthographic.html',1,'fx::gltf::Camera']]],
-  ['overlay_34',['overlay',['../classcgv_1_1app_1_1overlay.html',1,'cgv::app']]]
+  ['optional_3c_20color_3c_20float_2c_20cgv_3a_3amedia_3a_3argb_2c_20cgv_3a_3amedia_3a_3aopacity_20_3e_20_3e_32',['optional&lt; color&lt; float, cgv::media::RGB, cgv::media::OPACITY &gt; &gt;',['../classcgv_1_1data_1_1optional.html',1,'cgv::data']]],
+  ['optional_3c_20rgb_20_3e_33',['optional&lt; rgb &gt;',['../classcgv_1_1data_1_1optional.html',1,'cgv::data']]],
+  ['orthographic_34',['Orthographic',['../structfx_1_1gltf_1_1Camera_1_1Orthographic.html',1,'fx::gltf::Camera']]],
+  ['overlay_35',['overlay',['../classcgv_1_1app_1_1overlay.html',1,'cgv::app']]]
 ];

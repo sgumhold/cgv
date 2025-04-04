@@ -16,7 +16,7 @@ var classcgv_1_1app_1_1performance__monitor =
     [ "interval", "classcgv_1_1app_1_1performance__monitor.html#a7a651c08a48b338a3db819acd1329773", null ],
     [ "interval_frame_count", "classcgv_1_1app_1_1performance__monitor.html#aadffb2b8e47b36e82765529df7542c88", null ],
     [ "last_seconds_since_start", "classcgv_1_1app_1_1performance__monitor.html#af9b9c9f6d81ab985481750e03df28f5e", null ],
-    [ "monitor", "classcgv_1_1app_1_1performance__monitor.html#a5f208001ef64ce57a17c81050570d367", null ],
+    [ "monitor", "classcgv_1_1app_1_1performance__monitor.html#a57a1991c12f61f8896ccbf51499ade28", null ],
     [ "running_time", "classcgv_1_1app_1_1performance__monitor.html#a8f604e624947512390e3734e7d02f5d8", null ],
     [ "timer", "classcgv_1_1app_1_1performance__monitor.html#a3e189f5b35af44b44cfbcdba52a738e3", null ],
     [ "total_frame_count", "classcgv_1_1app_1_1performance__monitor.html#a2a8fc43fc2f226268f344607a9b5d012", null ]

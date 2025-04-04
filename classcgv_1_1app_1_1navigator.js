@@ -4,7 +4,7 @@ var classcgv_1_1app_1_1navigator =
     [ "create_gui_impl", "classcgv_1_1app_1_1navigator.html#a1d846b41a0caeef9e43d6ea86d19ed1c", null ],
     [ "finish_draw", "classcgv_1_1app_1_1navigator.html#a15bff59df72a9b8981ec3cd666873409", null ],
     [ "get_type_name", "classcgv_1_1app_1_1navigator.html#ac1bbe756cf1df3e34654fdda2d24cdb2", null ],
-    [ "handle_event", "classcgv_1_1app_1_1navigator.html#a47ca183f5c73936a26a6a8823754be0f", null ],
+    [ "handle_mouse_event", "classcgv_1_1app_1_1navigator.html#a007c476125143a39b894581e5b669431", null ],
     [ "init", "classcgv_1_1app_1_1navigator.html#a2e3ae3d25308a6e6103e25594a8d348f", null ],
     [ "init_frame", "classcgv_1_1app_1_1navigator.html#ae1d92ab1a42bd79ab4c9530dd24d5def", null ],
     [ "on_set", "classcgv_1_1app_1_1navigator.html#a3bcaa36444b237d375ec2e05aaa903a5", null ],

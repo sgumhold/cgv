@@ -24,5 +24,7 @@ var dir_284aa825dfcd36fc77eb764ce6199a8f =
     [ "performance_monitor.cxx", "libs_2cgv__app_2performance__monitor_8cxx_source.html", null ],
     [ "performance_monitor.h", "libs_2cgv__app_2performance__monitor_8h_source.html", null ],
     [ "themed_canvas_overlay.cxx", "themed__canvas__overlay_8cxx_source.html", null ],
-    [ "themed_canvas_overlay.h", "themed__canvas__overlay_8h_source.html", null ]
+    [ "themed_canvas_overlay.h", "themed__canvas__overlay_8h_source.html", null ],
+    [ "transformation_gizmo.cxx", "transformation__gizmo_8cxx_source.html", null ],
+    [ "transformation_gizmo.h", "transformation__gizmo_8h_source.html", null ]
 ];

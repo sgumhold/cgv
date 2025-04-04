@@ -131,9 +131,9 @@ Public Member Functions</h2></td></tr>
 <tr class="memitem:a811ce39cc582e94fb2892e36d0e7cf55" id="r_a811ce39cc582e94fb2892e36d0e7cf55"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcgv_1_1app_1_1navigator.html#a811ce39cc582e94fb2892e36d0e7cf55">stream_help</a> (std::ostream &amp;os)</td></tr>
 <tr class="memdesc:a811ce39cc582e94fb2892e36d0e7cf55"><td class="mdescLeft">&#160;</td><td class="mdescRight">overload to stream help information to the given output stream  <br /></td></tr>
 <tr class="separator:a811ce39cc582e94fb2892e36d0e7cf55"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a47ca183f5c73936a26a6a8823754be0f" id="r_a47ca183f5c73936a26a6a8823754be0f"><td class="memItemLeft" align="right" valign="top">bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcgv_1_1app_1_1navigator.html#a47ca183f5c73936a26a6a8823754be0f">handle_event</a> (<a class="el" href="classcgv_1_1gui_1_1event.html">cgv::gui::event</a> &amp;e)</td></tr>
-<tr class="memdesc:a47ca183f5c73936a26a6a8823754be0f"><td class="mdescLeft">&#160;</td><td class="mdescRight">overload this method to handle events  <br /></td></tr>
-<tr class="separator:a47ca183f5c73936a26a6a8823754be0f"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a007c476125143a39b894581e5b669431" id="r_a007c476125143a39b894581e5b669431"><td class="memItemLeft" align="right" valign="top">bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcgv_1_1app_1_1navigator.html#a007c476125143a39b894581e5b669431">handle_mouse_event</a> (<a class="el" href="classcgv_1_1gui_1_1mouse__event.html">cgv::gui::mouse_event</a> &amp;e, <a class="el" href="namespacecgv.html#a4fc9abee97018a017bb3a14b531a8f06">cgv::ivec2</a> local_mouse_pos)</td></tr>
+<tr class="memdesc:a007c476125143a39b894581e5b669431"><td class="mdescLeft">&#160;</td><td class="mdescRight">overload this method to handle mouse events; local_mouse_pos is the mouse position in the local coordinate space of the overlay rectangle  <br /></td></tr>
+<tr class="separator:a007c476125143a39b894581e5b669431"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a3bcaa36444b237d375ec2e05aaa903a5" id="r_a3bcaa36444b237d375ec2e05aaa903a5"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcgv_1_1app_1_1navigator.html#a3bcaa36444b237d375ec2e05aaa903a5">on_set</a> (void *member_ptr)</td></tr>
 <tr class="memdesc:a3bcaa36444b237d375ec2e05aaa903a5"><td class="mdescLeft">&#160;</td><td class="mdescRight">default implementation of that calls handle_member_change and afterwards updates the member in the gui and post a redraw  <br /></td></tr>
 <tr class="separator:a3bcaa36444b237d375ec2e05aaa903a5"><td class="memSeparator" colspan="2">&#160;</td></tr>
@@ -149,9 +149,12 @@ Public Member Functions</h2></td></tr>
 <tr class="memitem:a688980503704f37c4112105d3394526f" id="r_a688980503704f37c4112105d3394526f"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcgv_1_1app_1_1navigator.html#a688980503704f37c4112105d3394526f">set_size</a> (int size)</td></tr>
 <tr class="separator:a688980503704f37c4112105d3394526f"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="inherit_header pub_methods_classcgv_1_1app_1_1overlay"><td colspan="2" onclick="javascript:toggleInherit('pub_methods_classcgv_1_1app_1_1overlay')"><img src="closed.png" alt="-"/>&#160;Public Member Functions inherited from <a class="el" href="classcgv_1_1app_1_1overlay.html">cgv::app::overlay</a></td></tr>
-<tr class="memitem:a7ea4bf0e5dea6dea376c428e07059703 inherit pub_methods_classcgv_1_1app_1_1overlay" id="r_a7ea4bf0e5dea6dea376c428e07059703"><td class="memItemLeft" align="right" valign="top">virtual bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcgv_1_1app_1_1overlay.html#a7ea4bf0e5dea6dea376c428e07059703">handle</a> (<a class="el" href="classcgv_1_1gui_1_1event.html">cgv::gui::event</a> &amp;e)</td></tr>
-<tr class="memdesc:a7ea4bf0e5dea6dea376c428e07059703 inherit pub_methods_classcgv_1_1app_1_1overlay"><td class="mdescLeft">&#160;</td><td class="mdescRight">default implementation of handle method returns false, use handle_events instead  <br /></td></tr>
-<tr class="separator:a7ea4bf0e5dea6dea376c428e07059703 inherit pub_methods_classcgv_1_1app_1_1overlay"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:adc4d567b28d223fcdad91cf4ddf056f7 inherit pub_methods_classcgv_1_1app_1_1overlay" id="r_adc4d567b28d223fcdad91cf4ddf056f7"><td class="memItemLeft" align="right" valign="top">virtual bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcgv_1_1app_1_1overlay.html#adc4d567b28d223fcdad91cf4ddf056f7">handle</a> (<a class="el" href="classcgv_1_1gui_1_1event.html">cgv::gui::event</a> &amp;e)</td></tr>
+<tr class="memdesc:adc4d567b28d223fcdad91cf4ddf056f7 inherit pub_methods_classcgv_1_1app_1_1overlay"><td class="mdescLeft">&#160;</td><td class="mdescRight">handle incomming events; calls handle_key_events or handle_mouse_events depending on the event type; mouse events will only be handled if the mouse is over the overlay rectangle  <br /></td></tr>
+<tr class="separator:adc4d567b28d223fcdad91cf4ddf056f7 inherit pub_methods_classcgv_1_1app_1_1overlay"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a687f8db4810f02889bcc5c8bd376f8fe inherit pub_methods_classcgv_1_1app_1_1overlay" id="r_a687f8db4810f02889bcc5c8bd376f8fe"><td class="memItemLeft" align="right" valign="top">virtual bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcgv_1_1app_1_1overlay.html#a687f8db4810f02889bcc5c8bd376f8fe">handle_key_event</a> (<a class="el" href="classcgv_1_1gui_1_1key__event.html">cgv::gui::key_event</a> &amp;e)</td></tr>
+<tr class="memdesc:a687f8db4810f02889bcc5c8bd376f8fe inherit pub_methods_classcgv_1_1app_1_1overlay"><td class="mdescLeft">&#160;</td><td class="mdescRight">overload this method to handle key events  <br /></td></tr>
+<tr class="separator:a687f8db4810f02889bcc5c8bd376f8fe inherit pub_methods_classcgv_1_1app_1_1overlay"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a1a077cac019ca0511428df0d3c72f434 inherit pub_methods_classcgv_1_1app_1_1overlay" id="r_a1a077cac019ca0511428df0d3c72f434"><td class="memItemLeft" align="right" valign="top">virtual void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcgv_1_1app_1_1overlay.html#a1a077cac019ca0511428df0d3c72f434">handle_member_change</a> (const <a class="el" href="classcgv_1_1utils_1_1pointer__test.html">cgv::utils::pointer_test</a> &amp;m)</td></tr>
 <tr class="memdesc:a1a077cac019ca0511428df0d3c72f434 inherit pub_methods_classcgv_1_1app_1_1overlay"><td class="mdescLeft">&#160;</td><td class="mdescRight">implement to handle member changes  <br /></td></tr>
 <tr class="separator:a1a077cac019ca0511428df0d3c72f434 inherit pub_methods_classcgv_1_1app_1_1overlay"><td class="memSeparator" colspan="2">&#160;</td></tr>
@@ -814,7 +817,7 @@ Additional Inherited Members</h2></td></tr>
 
 <p>Reimplemented from <a class="el" href="classcgv_1_1app_1_1overlay.html#af8938207c2973fc91a25e6dd9add2be7">cgv::app::overlay</a>.</p>
 
-<p class="definition">Definition at line <a class="el" href="navigator_8cxx_source.html#l00343">343</a> of file <a class="el" href="navigator_8cxx_source.html">navigator.cxx</a>.</p>
+<p class="definition">Definition at line <a class="el" href="navigator_8cxx_source.html#l00329">329</a> of file <a class="el" href="navigator_8cxx_source.html">navigator.cxx</a>.</p>
 
 <p class="reference">References <a class="el" href="provider_8h_source.html#l00137">cgv::gui::provider::add_member_control()</a>.</p>
 
@@ -848,9 +851,9 @@ Additional Inherited Members</h2></td></tr>
 
 <p>Reimplemented from <a class="el" href="classcgv_1_1render_1_1drawable.html#a3a917f5d2bdb637d9dfce7c6b4351144">cgv::render::drawable</a>.</p>
 
-<p class="definition">Definition at line <a class="el" href="navigator_8cxx_source.html#l00265">265</a> of file <a class="el" href="navigator_8cxx_source.html">navigator.cxx</a>.</p>
+<p class="definition">Definition at line <a class="el" href="navigator_8cxx_source.html#l00251">251</a> of file <a class="el" href="navigator_8cxx_source.html">navigator.cxx</a>.</p>
 
-<p class="reference">References <a class="el" href="classcgv_1_1render_1_1context.html#a5840e8d32da5192aec98353b45817052">cgv::render::context::clear_background()</a>, <a class="el" href="rectangle__render__data_8h_source.html#l00072">cgv::render::rectangle_render_data&lt; ColorType &gt;::const_extent</a>, <a class="el" href="context_8cxx_source.html#l01695">cgv::render::context::disable_depth_test()</a>, <a class="el" href="context_8cxx_source.html#l01756">cgv::render::context::enable_blending()</a>, <a class="el" href="overlay_8h_source.html#l00129">cgv::app::overlay::get_rectangle()</a>, <a class="el" href="context_8cxx_source.html#l00288">cgv::render::context::pop_bg_color()</a>, <a class="el" href="context_8cxx_source.html#l01720">cgv::render::context::pop_blend_state()</a>, <a class="el" href="context_8cxx_source.html#l01673">cgv::render::context::pop_depth_test_state()</a>, <a class="el" href="context_8cxx_source.html#l01814">cgv::render::context::pop_modelview_matrix()</a>, <a class="el" href="context_8cxx_source.html#l01825">cgv::render::context::pop_projection_matrix()</a>, <a class="el" href="context_8cxx_source.html#l00284">cgv::render::context::push_bg_color()</a>, <a class="el" href="context_8cxx_source.html#l01716">cgv::render::context::push_blend_state()</a>, <a class="el" href="context_8cxx_source.html#l01669">cgv::render::context::push_depth_test_state()</a>, <a class="el" href="context_8cxx_source.html#l01802">cgv::render::context::push_modelview_matrix()</a>, <a class="el" href="context_8cxx_source.html#l01820">cgv::render::context::push_projection_matrix()</a>, <a class="el" href="render__data__base_8h_source.html#l00306">cgv::render::render_data_base&lt; RendererType, RenderStyleType, ColorType &gt;::render()</a>, <a class="el" href="context_8cxx_source.html#l00293">cgv::render::context::set_bg_color()</a>, <a class="el" href="context_8cxx_source.html#l01733">cgv::render::context::set_blend_func()</a>, <a class="el" href="context_8cxx_source.html#l01741">cgv::render::context::set_blend_func_separate()</a>, <a class="el" href="context_8cxx_source.html#l01836">cgv::render::context::set_modelview_matrix()</a>, and <a class="el" href="context_8cxx_source.html#l01853">cgv::render::context::set_projection_matrix()</a>.</p>
+<p class="reference">References <a class="el" href="classcgv_1_1render_1_1context.html#a5840e8d32da5192aec98353b45817052">cgv::render::context::clear_background()</a>, <a class="el" href="rectangle__render__data_8h_source.html#l00072">cgv::render::rectangle_render_data&lt; ColorType &gt;::const_extent</a>, <a class="el" href="context_8cxx_source.html#l01695">cgv::render::context::disable_depth_test()</a>, <a class="el" href="context_8cxx_source.html#l01756">cgv::render::context::enable_blending()</a>, <a class="el" href="overlay_8h_source.html#l00139">cgv::app::overlay::get_rectangle()</a>, <a class="el" href="context_8cxx_source.html#l00288">cgv::render::context::pop_bg_color()</a>, <a class="el" href="context_8cxx_source.html#l01720">cgv::render::context::pop_blend_state()</a>, <a class="el" href="context_8cxx_source.html#l01673">cgv::render::context::pop_depth_test_state()</a>, <a class="el" href="context_8cxx_source.html#l01814">cgv::render::context::pop_modelview_matrix()</a>, <a class="el" href="context_8cxx_source.html#l01825">cgv::render::context::pop_projection_matrix()</a>, <a class="el" href="context_8cxx_source.html#l00284">cgv::render::context::push_bg_color()</a>, <a class="el" href="context_8cxx_source.html#l01716">cgv::render::context::push_blend_state()</a>, <a class="el" href="context_8cxx_source.html#l01669">cgv::render::context::push_depth_test_state()</a>, <a class="el" href="context_8cxx_source.html#l01802">cgv::render::context::push_modelview_matrix()</a>, <a class="el" href="context_8cxx_source.html#l01820">cgv::render::context::push_projection_matrix()</a>, <a class="el" href="render__data__base_8h_source.html#l00306">cgv::render::render_data_base&lt; RendererType, RenderStyleType, ColorType &gt;::render()</a>, <a class="el" href="context_8cxx_source.html#l00293">cgv::render::context::set_bg_color()</a>, <a class="el" href="context_8cxx_source.html#l01733">cgv::render::context::set_blend_func()</a>, <a class="el" href="context_8cxx_source.html#l01741">cgv::render::context::set_blend_func_separate()</a>, <a class="el" href="context_8cxx_source.html#l01836">cgv::render::context::set_modelview_matrix()</a>, and <a class="el" href="context_8cxx_source.html#l01853">cgv::render::context::set_projection_matrix()</a>.</p>
 
 </div>
 </div>
@@ -878,7 +881,7 @@ Additional Inherited Members</h2></td></tr>
 </table>
 </div><div class="memdoc">
 
-<p class="definition">Definition at line <a class="el" href="navigator_8cxx_source.html#l00351">351</a> of file <a class="el" href="navigator_8cxx_source.html">navigator.cxx</a>.</p>
+<p class="definition">Definition at line <a class="el" href="navigator_8cxx_source.html#l00337">337</a> of file <a class="el" href="navigator_8cxx_source.html">navigator.cxx</a>.</p>
 
 </div>
 </div>
@@ -905,7 +908,7 @@ Additional Inherited Members</h2></td></tr>
 </table>
 </div><div class="memdoc">
 
-<p class="definition">Definition at line <a class="el" href="navigator_8cxx_source.html#l00368">368</a> of file <a class="el" href="navigator_8cxx_source.html">navigator.cxx</a>.</p>
+<p class="definition">Definition at line <a class="el" href="navigator_8cxx_source.html#l00354">354</a> of file <a class="el" href="navigator_8cxx_source.html">navigator.cxx</a>.</p>
 
 </div>
 </div>
@@ -965,12 +968,12 @@ Additional Inherited Members</h2></td></tr>
 </table>
 </div><div class="memdoc">
 
-<p class="definition">Definition at line <a class="el" href="navigator_8cxx_source.html#l00363">363</a> of file <a class="el" href="navigator_8cxx_source.html">navigator.cxx</a>.</p>
+<p class="definition">Definition at line <a class="el" href="navigator_8cxx_source.html#l00349">349</a> of file <a class="el" href="navigator_8cxx_source.html">navigator.cxx</a>.</p>
 
 </div>
 </div>
-<a id="a47ca183f5c73936a26a6a8823754be0f" name="a47ca183f5c73936a26a6a8823754be0f"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a47ca183f5c73936a26a6a8823754be0f">&#9670;&#160;</a></span>handle_event()</h2>
+<a id="a007c476125143a39b894581e5b669431" name="a007c476125143a39b894581e5b669431"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a007c476125143a39b894581e5b669431">&#9670;&#160;</a></span>handle_mouse_event()</h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -979,11 +982,21 @@ Additional Inherited Members</h2></td></tr>
   <td class="mlabels-left">
       <table class="memname">
         <tr>
-          <td class="memname">bool cgv::app::navigator::handle_event </td>
+          <td class="memname">bool cgv::app::navigator::handle_mouse_event </td>
           <td>(</td>
-          <td class="paramtype"><a class="el" href="classcgv_1_1gui_1_1event.html">cgv::gui::event</a> &amp;&#160;</td>
-          <td class="paramname"><em>e</em></td><td>)</td>
+          <td class="paramtype"><a class="el" href="classcgv_1_1gui_1_1mouse__event.html">cgv::gui::mouse_event</a> &amp;&#160;</td>
+          <td class="paramname"><em>e</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
           <td></td>
+          <td class="paramtype"><a class="el" href="namespacecgv.html#a4fc9abee97018a017bb3a14b531a8f06">cgv::ivec2</a>&#160;</td>
+          <td class="paramname"><em>local_mouse_pos</em>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
         </tr>
       </table>
   </td>
@@ -993,13 +1006,13 @@ Additional Inherited Members</h2></td></tr>
 </table>
 </div><div class="memdoc">
 
-<p>overload this method to handle events </p>
+<p>overload this method to handle mouse events; local_mouse_pos is the mouse position in the local coordinate space of the overlay rectangle </p>
 
-<p>Reimplemented from <a class="el" href="classcgv_1_1app_1_1overlay.html#a7552b945924864a2ec9d43c70865e997">cgv::app::overlay</a>.</p>
+<p>Reimplemented from <a class="el" href="classcgv_1_1app_1_1overlay.html#acce21aefb755c8c4dd4a7aebc1289fd2">cgv::app::overlay</a>.</p>
 
 <p class="definition">Definition at line <a class="el" href="navigator_8cxx_source.html#l00085">85</a> of file <a class="el" href="navigator_8cxx_source.html">navigator.cxx</a>.</p>
 
-<p class="reference">References <a class="el" href="view_8cxx_source.html#l00027">cgv::render::view::compute_axis_and_angle()</a>, <a class="el" href="event_8h_source.html#l00018">cgv::gui::EID_MOUSE</a>, <a class="el" href="mouse__event_8cxx_source.html#l00065">cgv::gui::mouse_event::get_action()</a>, <a class="el" href="mouse__event_8cxx_source.html#l00075">cgv::gui::mouse_event::get_button()</a>, <a class="el" href="drawable_8cxx_source.html#l00037">cgv::render::drawable::get_context()</a>, <a class="el" href="view_8cxx_source.html#l00123">cgv::render::view::get_eye()</a>, <a class="el" href="view_8cxx_source.html#l00048">cgv::render::view::get_focus()</a>, <a class="el" href="event_8cxx_source.html#l00202">cgv::gui::event::get_kind()</a>, <a class="el" href="overlay_8cxx_source.html#l00023">cgv::app::overlay::get_local_mouse_pos()</a>, <a class="el" href="event_8cxx_source.html#l00237">cgv::gui::event::get_modifiers()</a>, <a class="el" href="overlay_8h_source.html#l00129">cgv::app::overlay::get_rectangle()</a>, <a class="el" href="event_8cxx_source.html#l00247">cgv::gui::event::get_time()</a>, <a class="el" href="mouse__event_8cxx_source.html#l00045">cgv::gui::mouse_event::get_x()</a>, <a class="el" href="mouse__event_8cxx_source.html#l00050">cgv::gui::mouse_event::get_y()</a>, <a class="el" href="mouse__event_8h_source.html#l00019">cgv::gui::MA_LEAVE</a>, <a class="el" href="mouse__event_8h_source.html#l00013">cgv::gui::MA_PRESS</a>, <a class="el" href="mouse__event_8h_source.html#l00014">cgv::gui::MA_RELEASE</a>, <a class="el" href="mouse__event_8h_source.html#l00026">cgv::gui::MB_LEFT_BUTTON</a>, <a class="el" href="drawable_8cxx_source.html#l00043">cgv::render::drawable::post_redraw()</a>, <a class="el" href="view_8cxx_source.html#l00020">cgv::render::view::ref_view_dir()</a>, <a class="el" href="view_8cxx_source.html#l00018">cgv::render::view::ref_view_up_dir()</a>, <a class="el" href="fvec_8h_source.html#l00179">cgv::math::fvec&lt; T, N &gt;::size()</a>, <a class="el" href="fvec_8h_source.html#l00167">cgv::math::fvec&lt; T, N &gt;::w()</a>, <a class="el" href="fvec_8h_source.html#l00155">cgv::math::fvec&lt; T, N &gt;::x()</a>, <a class="el" href="fvec_8h_source.html#l00159">cgv::math::fvec&lt; T, N &gt;::y()</a>, and <a class="el" href="fvec_8h_source.html#l00163">cgv::math::fvec&lt; T, N &gt;::z()</a>.</p>
+<p class="reference">References <a class="el" href="view_8cxx_source.html#l00027">cgv::render::view::compute_axis_and_angle()</a>, <a class="el" href="mouse__event_8cxx_source.html#l00065">cgv::gui::mouse_event::get_action()</a>, <a class="el" href="mouse__event_8cxx_source.html#l00075">cgv::gui::mouse_event::get_button()</a>, <a class="el" href="drawable_8cxx_source.html#l00037">cgv::render::drawable::get_context()</a>, <a class="el" href="view_8cxx_source.html#l00123">cgv::render::view::get_eye()</a>, <a class="el" href="view_8cxx_source.html#l00048">cgv::render::view::get_focus()</a>, <a class="el" href="overlay_8h_source.html#l00139">cgv::app::overlay::get_rectangle()</a>, <a class="el" href="event_8cxx_source.html#l00247">cgv::gui::event::get_time()</a>, <a class="el" href="mouse__event_8h_source.html#l00019">cgv::gui::MA_LEAVE</a>, <a class="el" href="mouse__event_8h_source.html#l00013">cgv::gui::MA_PRESS</a>, <a class="el" href="mouse__event_8h_source.html#l00014">cgv::gui::MA_RELEASE</a>, <a class="el" href="mouse__event_8h_source.html#l00026">cgv::gui::MB_LEFT_BUTTON</a>, <a class="el" href="drawable_8cxx_source.html#l00043">cgv::render::drawable::post_redraw()</a>, <a class="el" href="view_8cxx_source.html#l00020">cgv::render::view::ref_view_dir()</a>, <a class="el" href="view_8cxx_source.html#l00018">cgv::render::view::ref_view_up_dir()</a>, <a class="el" href="fvec_8h_source.html#l00179">cgv::math::fvec&lt; T, N &gt;::size()</a>, <a class="el" href="fvec_8h_source.html#l00167">cgv::math::fvec&lt; T, N &gt;::w()</a>, <a class="el" href="fvec_8h_source.html#l00155">cgv::math::fvec&lt; T, N &gt;::x()</a>, <a class="el" href="fvec_8h_source.html#l00159">cgv::math::fvec&lt; T, N &gt;::y()</a>, and <a class="el" href="fvec_8h_source.html#l00163">cgv::math::fvec&lt; T, N &gt;::z()</a>.</p>
 
 </div>
 </div>
@@ -1031,9 +1044,9 @@ Additional Inherited Members</h2></td></tr>
 
 <p>Reimplemented from <a class="el" href="classcgv_1_1render_1_1drawable.html#acc29110926fa9e045b972b9ce4a303ba">cgv::render::drawable</a>.</p>
 
-<p class="definition">Definition at line <a class="el" href="navigator_8cxx_source.html#l00203">203</a> of file <a class="el" href="navigator_8cxx_source.html">navigator.cxx</a>.</p>
+<p class="definition">Definition at line <a class="el" href="navigator_8cxx_source.html#l00189">189</a> of file <a class="el" href="navigator_8cxx_source.html">navigator.cxx</a>.</p>
 
-<p class="reference">References <a class="el" href="overlay_8h_source.html#l00129">cgv::app::overlay::get_rectangle()</a>, <a class="el" href="render__data__base_8h_source.html#l00214">cgv::render::render_data_base&lt; RendererType, RenderStyleType, ColorType &gt;::init()</a>, <a class="el" href="renderer_8cxx_source.html#l00173">cgv::render::renderer::init()</a>, and <a class="el" href="managed__frame__buffer_8cxx_source.html#l00033">cgv::render::managed_frame_buffer::set_size()</a>.</p>
+<p class="reference">References <a class="el" href="overlay_8h_source.html#l00139">cgv::app::overlay::get_rectangle()</a>, <a class="el" href="render__data__base_8h_source.html#l00214">cgv::render::render_data_base&lt; RendererType, RenderStyleType, ColorType &gt;::init()</a>, <a class="el" href="renderer_8cxx_source.html#l00173">cgv::render::renderer::init()</a>, and <a class="el" href="managed__frame__buffer_8cxx_source.html#l00033">cgv::render::managed_frame_buffer::set_size()</a>.</p>
 
 </div>
 </div>
@@ -1065,9 +1078,9 @@ Additional Inherited Members</h2></td></tr>
 
 <p>Reimplemented from <a class="el" href="classcgv_1_1render_1_1drawable.html#a14e47d48f2cad26d15377e9cbc32d1f1">cgv::render::drawable</a>.</p>
 
-<p class="definition">Definition at line <a class="el" href="navigator_8cxx_source.html#l00252">252</a> of file <a class="el" href="navigator_8cxx_source.html">navigator.cxx</a>.</p>
+<p class="definition">Definition at line <a class="el" href="navigator_8cxx_source.html#l00238">238</a> of file <a class="el" href="navigator_8cxx_source.html">navigator.cxx</a>.</p>
 
-<p class="reference">References <a class="el" href="drawable_8cxx_source.html#l00049">cgv::render::drawable::find_view_as_node()</a>, <a class="el" href="overlay_8h_source.html#l00129">cgv::app::overlay::get_rectangle()</a>, <a class="el" href="overlay_8h_source.html#l00123">cgv::app::overlay::get_viewport_size()</a>, and <a class="el" href="managed__frame__buffer_8cxx_source.html#l00033">cgv::render::managed_frame_buffer::set_size()</a>.</p>
+<p class="reference">References <a class="el" href="drawable_8cxx_source.html#l00049">cgv::render::drawable::find_view_as_node()</a>, <a class="el" href="overlay_8h_source.html#l00139">cgv::app::overlay::get_rectangle()</a>, <a class="el" href="overlay_8h_source.html#l00133">cgv::app::overlay::get_viewport_size()</a>, and <a class="el" href="managed__frame__buffer_8cxx_source.html#l00033">cgv::render::managed_frame_buffer::set_size()</a>.</p>
 
 </div>
 </div>
@@ -1111,7 +1124,7 @@ Additional Inherited Members</h2></td></tr>
 </table>
 </div><div class="memdoc">
 
-<p class="definition">Definition at line <a class="el" href="navigator_8cxx_source.html#l00379">379</a> of file <a class="el" href="navigator_8cxx_source.html">navigator.cxx</a>.</p>
+<p class="definition">Definition at line <a class="el" href="navigator_8cxx_source.html#l00365">365</a> of file <a class="el" href="navigator_8cxx_source.html">navigator.cxx</a>.</p>
 
 </div>
 </div>
@@ -1143,9 +1156,9 @@ Additional Inherited Members</h2></td></tr>
 
 <p>Reimplemented from <a class="el" href="classcgv_1_1app_1_1overlay.html#a624662321697148bd78950b54e782c91">cgv::app::overlay</a>.</p>
 
-<p class="definition">Definition at line <a class="el" href="navigator_8cxx_source.html#l00192">192</a> of file <a class="el" href="navigator_8cxx_source.html">navigator.cxx</a>.</p>
+<p class="definition">Definition at line <a class="el" href="navigator_8cxx_source.html#l00178">178</a> of file <a class="el" href="navigator_8cxx_source.html">navigator.cxx</a>.</p>
 
-<p class="reference">References <a class="el" href="drawable_8cxx_source.html#l00043">cgv::render::drawable::post_redraw()</a>, <a class="el" href="overlay_8cxx_source.html#l00055">cgv::app::overlay::set_size()</a>, and <a class="el" href="provider_8cxx_source.html#l00072">cgv::gui::provider::update_member()</a>.</p>
+<p class="reference">References <a class="el" href="drawable_8cxx_source.html#l00043">cgv::render::drawable::post_redraw()</a>, <a class="el" href="overlay_8cxx_source.html#l00108">cgv::app::overlay::set_size()</a>, and <a class="el" href="provider_8cxx_source.html#l00072">cgv::gui::provider::update_member()</a>.</p>
 
 </div>
 </div>
@@ -1199,7 +1212,7 @@ Additional Inherited Members</h2></td></tr>
       </table>
 </div><div class="memdoc">
 
-<p class="definition">Definition at line <a class="el" href="navigator_8cxx_source.html#l00337">337</a> of file <a class="el" href="navigator_8cxx_source.html">navigator.cxx</a>.</p>
+<p class="definition">Definition at line <a class="el" href="navigator_8cxx_source.html#l00323">323</a> of file <a class="el" href="navigator_8cxx_source.html">navigator.cxx</a>.</p>
 
 </div>
 </div>

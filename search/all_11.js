@@ -124,7 +124,7 @@ var searchData=
   ['model_5fpath_121',['model_path',['../classcgv_1_1render_1_1gl_1_1mesh__drawable.html#aef7141b88a9661b9682261f36c4077ed',1,'cgv::render::gl::mesh_drawable']]],
   ['modelview_5fmatrix_5fstack_122',['modelview_matrix_stack',['../classcgv_1_1render_1_1context.html#a77c4c4d8db1cc97b1c52baf92d7f3021',1,'cgv::render::context']]],
   ['modifiers_123',['modifiers',['../classcgv_1_1gui_1_1event.html#aa0c88b35dd8859e3d913f342b6db87a6',1,'cgv::gui::event']]],
-  ['monitor_124',['monitor',['../classcgv_1_1app_1_1performance__monitor.html#a5f208001ef64ce57a17c81050570d367',1,'cgv::app::performance_monitor']]],
+  ['monitor_124',['monitor',['../classcgv_1_1app_1_1performance__monitor.html#a57a1991c12f61f8896ccbf51499ade28',1,'cgv::app::performance_monitor']]],
   ['monitor_5fdescription_125',['monitor_description',['../structcgv_1_1gui_1_1monitor__description.html',1,'cgv::gui']]],
   ['motivation_20for_20usage_20of_20another_20preprocessor_126',['Motivation for usage of another preprocessor',['../ppp.html#motivation',1,'']]],
   ['mouse_5fevent_127',['mouse_event',['../classcgv_1_1gui_1_1mouse__event.html',1,'cgv::gui::mouse_event'],['../classcgv_1_1gui_1_1mouse__event.html#ab7001ea835bb163e8b9a503c844be55a',1,'cgv::gui::mouse_event::mouse_event()']]],
