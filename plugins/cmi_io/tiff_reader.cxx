@@ -5,6 +5,7 @@
 
 #pragma warning (disable:4996)
 
+using namespace cgv::data;
 
 void myErrorHandler(const char*, const char*, va_list)
 {
@@ -45,7 +46,7 @@ const std::string& tiff_reader::get_last_error() const
 }
 
 /// construct a copy of the reader
-abst_image_reader* tiff_reader::clone() const
+cgv::media::image::abst_image_reader* tiff_reader::clone() const
 {
 	return new tiff_reader();
 }
@@ -116,32 +117,32 @@ bool tiff_reader::open(const std::string& file_name, data_format& df, std::vecto
 
 	TIFFSetField(fp, TIFFTAG_ORIENTATION, ORIENTATION_TOPLEFT);
 
-	TypeId tid = TI_UINT8;
+	cgv::type::info::TypeId tid = cgv::type::info::TI_UINT8;
 	switch (bps) {
 	case  8 : 
 		switch (format) {
-		case SAMPLEFORMAT_INT : tid = TI_INT8; break;
-		case SAMPLEFORMAT_UINT : tid = TI_UINT8; break;
+		case SAMPLEFORMAT_INT : tid = cgv::type::info::TI_INT8; break;
+		case SAMPLEFORMAT_UINT : tid = cgv::type::info::TI_UINT8; break;
 		default: std::cerr << "float, void and complex types not supported by tiff reader for 8 bit" << std::endl;
 			return false;
 		}
 		break;
 	case 16 : 
 		switch (format) {
-		case SAMPLEFORMAT_INT : tid = TI_INT16; break;
-		case SAMPLEFORMAT_UINT : tid = TI_UINT16; break;
+		case SAMPLEFORMAT_INT : tid = cgv::type::info::TI_INT16; break;
+		case SAMPLEFORMAT_UINT : tid = cgv::type::info::TI_UINT16; break;
 		default: std::cerr << "float, void and complex types not supported by tiff reader for 16 bit" << std::endl;
-			tid = TI_UINT16;
+			tid = cgv::type::info::TI_UINT16;
 			return false;
 		}
 		break;
 	case 32 : 
 		switch (format) {
-		case SAMPLEFORMAT_INT : tid = TI_INT32; break;
-		case SAMPLEFORMAT_UINT : tid = TI_UINT32; break;
-		case SAMPLEFORMAT_IEEEFP : tid = TI_FLT32; break;
+		case SAMPLEFORMAT_INT : tid = cgv::type::info::TI_INT32; break;
+		case SAMPLEFORMAT_UINT : tid = cgv::type::info::TI_UINT32; break;
+		case SAMPLEFORMAT_IEEEFP : tid = cgv::type::info::TI_FLT32; break;
 		default: std::cerr << "void and complex types not supported by tiff reader" << std::endl;
-			tid = TI_UINT32;
+			tid = cgv::type::info::TI_UINT32;
 			return false;
 		}
 	default: std::cerr << "only bit depths 8, 16, and 32 supported by tiff reader" << std::endl;

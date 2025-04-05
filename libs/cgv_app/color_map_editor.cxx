@@ -40,14 +40,10 @@ color_map_editor::color_map_editor() {
 	show_value_label = false;
 
 	cmc.color_points.set_constraint(layout.color_handles_rect);
-	cmc.color_points.set_drag_callback(std::bind(&color_map_editor::handle_color_point_drag, this));
-	cmc.color_points.set_drag_end_callback(std::bind(&color_map_editor::handle_drag_end, this));
-	cmc.color_points.set_selection_change_callback(std::bind(&color_map_editor::handle_drag_end, this));
+	cmc.color_points.callback = std::bind(&color_map_editor::handle_color_drag, this, std::placeholders::_1);
 
 	cmc.opacity_points.set_constraint(layout.opacity_editor_rect);
-	cmc.opacity_points.set_drag_callback(std::bind(&color_map_editor::handle_opacity_point_drag, this));
-	cmc.opacity_points.set_drag_end_callback(std::bind(&color_map_editor::handle_drag_end, this));
-	cmc.opacity_points.set_selection_change_callback(std::bind(&color_map_editor::handle_drag_end, this));
+	cmc.opacity_points.callback = std::bind(&color_map_editor::handle_opacity_drag, this, std::placeholders::_1);
 
 	color_handle_renderer = cgv::g2d::generic_2d_renderer(cgv::g2d::shaders::arrow);
 	opacity_handle_renderer = cgv::g2d::generic_2d_renderer(cgv::g2d::shaders::rectangle);
@@ -72,94 +68,94 @@ void color_map_editor::clear(cgv::render::context& ctx) {
 	hist_tex.destruct(ctx);
 }
 
-bool color_map_editor::handle_event(cgv::gui::event& e) {
-
-	// return true if the event gets handled and stopped here or false if you want to pass it to the next plugin
-	unsigned et = e.get_kind();
-	unsigned char modifiers = e.get_modifiers();
-
-	if (et == cgv::gui::EID_KEY) {
-		cgv::gui::key_event& ke = (cgv::gui::key_event&)e;
-
-		if (ke.get_action() == cgv::gui::KA_PRESS) {
-			switch (ke.get_key()) {
-			case cgv::gui::KEY_Left_Ctrl:
-				cursor_label = "+";
-				post_damage();
-				break;
-			case cgv::gui::KEY_Left_Alt:
-				cursor_label = "-";
-				post_damage();
-				break;
-			}
-		}
-		else if (ke.get_action() == cgv::gui::KA_RELEASE) {
-			switch (ke.get_key()) {
-			case cgv::gui::KEY_Left_Ctrl:
-			case cgv::gui::KEY_Left_Alt:
-				cursor_label = "";
-				post_damage();
-				break;
-			}
-		}
-	}
-	else if (et == cgv::gui::EID_MOUSE) {
-		cgv::gui::mouse_event& me = (cgv::gui::mouse_event&)e;
-		cgv::gui::MouseAction ma = me.get_action();
-
-		switch (ma) {
-		case cgv::gui::MA_ENTER:
-			mouse_is_on_overlay = true;
-			return true;
-		case cgv::gui::MA_LEAVE:
-			mouse_is_on_overlay = false;
+bool color_map_editor::handle_key_event(cgv::gui::key_event& e) {
+	
+	switch(e.get_action()) {
+	case cgv::gui::KA_PRESS:
+		switch(e.get_key()) {
+		case cgv::gui::KEY_Left_Ctrl:
+			cursor_label = "+";
 			post_damage();
-			return true;
-		case cgv::gui::MA_MOVE:
-		case cgv::gui::MA_DRAG:
-			if(get_context())
-				cursor_position = ivec2(me.get_x(), get_context()->get_height() - 1 - me.get_y());
-			if(!cursor_label.empty())
-				post_damage();
+			break;
+		case cgv::gui::KEY_Left_Alt:
+			cursor_label = "-";
+			post_damage();
+			break;
+		default:
 			break;
 		}
+		break;
+	case cgv::gui::KA_RELEASE:
+		switch(e.get_key()) {
+		case cgv::gui::KEY_Left_Ctrl:
+		case cgv::gui::KEY_Left_Alt:
+			cursor_label = "";
+			post_damage();
+			break;
+		default:
+			break;
+		}
+		break;
+	default:
+		break;
+	}
+	return false;
+}
 
-		bool request_clear_selection = false;
+bool color_map_editor::handle_mouse_event(cgv::gui::mouse_event& e, cgv::ivec2 local_mouse_pos) {
 
-		if (me.get_button_state() & cgv::gui::MB_LEFT_BUTTON) {
-			if (ma == cgv::gui::MA_PRESS) {
-				ivec2 mpos = get_local_mouse_pos(ivec2(me.get_x(), me.get_y()));
-				
-				request_clear_selection = is_hit(mpos);
+	switch(e.get_action()) {
+	case cgv::gui::MA_ENTER:
+		mouse_is_on_overlay = true;
+		return true;
+	case cgv::gui::MA_LEAVE:
+		mouse_is_on_overlay = false;
+		post_damage();
+		return true;
+	case cgv::gui::MA_MOVE:
+	case cgv::gui::MA_DRAG:
+		if(get_context())
+			cursor_position = local_mouse_pos;// ivec2(me.get_x(), get_context()->get_height() - 1 - me.get_y());
+		if(!cursor_label.empty())
+			post_damage();
+		break;
+	}
 
-				switch (modifiers) {
-				case cgv::gui::EM_CTRL:
-					if(!get_hit_point(mpos))
-						add_point(mpos);
-					break;
-				case cgv::gui::EM_ALT:
-				{
-					cgv::g2d::draggable* hit_point = get_hit_point(mpos);
-					if(hit_point)
-						remove_point(hit_point);
-				}
+	bool request_clear_selection = false;
+
+	if(e.get_button_state() & cgv::gui::MB_LEFT_BUTTON) {
+		if(e.get_action() == cgv::gui::MA_PRESS) {
+			request_clear_selection = is_hit(local_mouse_pos);
+
+			switch(e.get_modifiers()) {
+			case cgv::gui::EM_CTRL:
+				if(!get_hit_point(local_mouse_pos))
+					add_point(local_mouse_pos);
 				break;
-				default: break;
-				}
+			case cgv::gui::EM_ALT:
+			{
+				cgv::g2d::draggable* hit_point = get_hit_point(local_mouse_pos);
+				if(hit_point)
+					remove_point(hit_point);
+				break;
+			}
+			default:
+				break;
 			}
 		}
-
-		if(cmc.color_points.handle(e, get_viewport_size(), get_rectangle()))
-			return true;
-		if(cmc.opacity_points.handle(e, get_viewport_size(), get_rectangle()))
-			return true;
-
-		if(request_clear_selection) {
-			cmc.color_points.clear_selected();
-			cmc.opacity_points.clear_selected();
-			handle_drag_end();
-		}
 	}
+
+	if(cmc.color_points.handle(e, get_viewport_size(), get_rectangle()))
+		return true;
+	if(cmc.opacity_points.handle(e, get_viewport_size(), get_rectangle()))
+		return true;
+
+	if(request_clear_selection) {
+		cmc.color_points.clear_selected();
+		cmc.opacity_points.clear_selected();
+		handle_drag_end();
+	}
+
 	return false;
 }
 
@@ -265,7 +261,7 @@ bool color_map_editor::init(cgv::render::context& ctx) {
 	std::vector<rgb> bg_data = { a, b, b, a };
 	
 	bg_tex.destruct(ctx);
-	cgv::data::data_view bg_dv = cgv::data::data_view(new cgv::data::data_format(2, 2, TI_FLT32, cgv::data::CF_RGB), bg_data.data());
+	cgv::data::data_view bg_dv = cgv::data::data_view(new cgv::data::data_format(2, 2, cgv::type::info::TI_FLT32, cgv::data::CF_RGB), bg_data.data());
 	bg_tex = cgv::render::texture("flt32[R,G,B]", cgv::render::TF_NEAREST, cgv::render::TF_NEAREST, cgv::render::TW_REPEAT, cgv::render::TW_REPEAT);
 	success &= bg_tex.create(ctx, bg_dv, 0);
 
@@ -531,7 +527,7 @@ void color_map_editor::set_histogram_data(const std::vector<unsigned> data) {
 		auto& ctx = *ctx_ptr;
 		hist_tex.destruct(ctx);
 
-		cgv::data::data_view dv = cgv::data::data_view(new cgv::data::data_format(unsigned(histogram.size()), TI_FLT32, cgv::data::CF_R), float_data.data());
+		cgv::data::data_view dv = cgv::data::data_view(new cgv::data::data_format(unsigned(histogram.size()), cgv::type::info::TI_FLT32, cgv::data::CF_R), float_data.data());
 		hist_tex = cgv::render::texture("flt32[R]");
 		hist_tex.create(ctx, dv, 0);
 
@@ -633,7 +629,7 @@ void color_map_editor::init_preview_texture(cgv::render::context& ctx) {
 	std::vector<uint8_t> data(resolution * 4 * 2, 0u);
 
 	setup_preview_texture(ctx);
-	cgv::data::data_view tf_dv = cgv::data::data_view(new cgv::data::data_format(resolution, 2, TI_UINT8, cgv::data::CF_RGBA), data.data());
+	cgv::data::data_view tf_dv = cgv::data::data_view(new cgv::data::data_format(resolution, 2, cgv::type::info::TI_UINT8, cgv::data::CF_RGBA), data.data());
 	preview_tex.create(ctx, tf_dv, 0);
 }
 
@@ -734,6 +730,69 @@ void color_map_editor::update_value_label_rectangle(vec2 position, const cgv::g2
 	value_label_rectangle.position.x() = cgv::math::clamp(value_label_rectangle.position.x(), min_x, max_x);
 }
 
+void color_map_editor::handle_color_drag(cgv::g2d::DragAction action) {
+
+	switch(action) {
+	case cgv::g2d::DragAction::kDrag:
+	{
+		color_point* dragged_point = cmc.color_points.get_dragged();
+		if(dragged_point) {
+			dragged_point->update_val(layout);
+			update_color_map(true);
+
+			show_value_label = true;
+			value_label = value_to_string(dragged_point->val);
+			update_value_label_rectangle(dragged_point->position, layout.color_editor_rect);
+			value_label_rectangle.position.y() += 25.0f;
+
+			if(dragged_point && on_color_point_select_callback)
+				on_color_point_select_callback(dragged_point->col);
+
+			post_damage();
+		}
+		break;
+	}
+	case cgv::g2d::DragAction::kDragEnd:
+	case cgv::g2d::DragAction::kSelect:
+		handle_drag_end();
+		break;
+	default:
+		break;
+	}
+}
+
+void color_map_editor::handle_opacity_drag(cgv::g2d::DragAction action) {
+
+	switch(action) {
+	case cgv::g2d::DragAction::kDrag:
+	{
+		opacity_point* dragged_point = cmc.opacity_points.get_dragged();
+		if(dragged_point) {
+			dragged_point->update_val(layout, opacity_scale_exponent);
+			update_color_map(true);
+
+			show_value_label = true;
+			std::string x_label = value_to_string(dragged_point->val.x());
+			std::string y_label = cgv::utils::to_string(dragged_point->val.y(), -1, 3u);
+			value_label = x_label + ", " + y_label;
+
+			update_value_label_rectangle(dragged_point->position, layout.opacity_editor_rect);
+			value_label_rectangle.position.y() = std::min(value_label_rectangle.position.y() + 10.0f, static_cast<float>(layout.opacity_editor_rect.y1() - 6));
+
+			post_damage();
+		}
+		break;
+	}
+	case cgv::g2d::DragAction::kDragEnd:
+	case cgv::g2d::DragAction::kSelect:
+		handle_drag_end();
+		break;
+	default:
+		break;
+	}
+}
+
+/*
 void color_map_editor::handle_color_point_drag() {
 
 	auto dragged_point = cmc.color_points.get_dragged();
@@ -767,6 +826,7 @@ void color_map_editor::handle_opacity_point_drag() {
 
 	post_damage();
 }
+*/
 
 void color_map_editor::handle_drag_end() {
 
@@ -963,7 +1023,7 @@ void color_map_editor::update_color_map(bool is_data_change) {
 	}
 
 	setup_preview_texture(ctx);
-	cgv::data::data_view dv = cgv::data::data_view(new cgv::data::data_format(unsigned(size), 2, TI_UINT8, cgv::data::CF_RGBA), data.data());
+	cgv::data::data_view dv = cgv::data::data_view(new cgv::data::data_format(unsigned(size), 2, cgv::type::info::TI_UINT8, cgv::data::CF_RGBA), data.data());
 	preview_tex.create(ctx, dv, 0);
 
 	if(!supports_opacity)

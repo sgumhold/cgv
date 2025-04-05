@@ -120,7 +120,7 @@ public:
 	/// set all components of vector to constant value a
 	fvec & operator = (const T &a) { std::fill(v, v+N, a); return *this; }
 	/// set to the contents of the given std::array with same size
-	fvec & operator = (const std::array<T, N>& arr) { std::copy(arr.cbegin(), arr.cend(), v); return *this; }
+	void assign(const std::array<T, N>& arr) { std::copy(arr.cbegin(), arr.cend(), v); }
 	/// set the first two components
 	void set(const T &x, const T &y) { v[0] = x; v[1] = y; }
 	/// set the first three components
@@ -171,12 +171,16 @@ public:
 	T& operator()(const int i) { return v[i]; }
 	///access i'th element of const vector
 	const T & operator()(const int i) const { return v[i]; }
+	///access i'th element
+	T& operator[](const int i) { return v[i]; }
+	///access i'th element of const vector
+	const T & operator[](const int i) const { return v[i]; }
 	///return number of elements
 	static cgv::type::uint32_type size() { return N; }
-	///cast into array. This allows calls like glVertex<N><T>v(p) instead of glVertex<N><T,N>(p.x(),p.y(),....)
-	operator T*() { return v; }
+	/// cast into array. This allows calls like glVertex<N><T>v(p.data()) instead of glVertex<N><T,N>(p.x(),p.y(),....)
+	T* data() { return v; }
 	///cast into const array
-	operator const T*() const { return v; }
+	const T* data() const { return v; }
 	//@}
 
 	//@name operators
@@ -315,6 +319,9 @@ public:
 	}
 	//@}
 };
+
+/// This symbol is defined when @ref cgv::math::fvec exists in the current compilation unit
+#define CGV_MATH_FVEC_DECLARED
 
 /// return normalized vector
 template<typename T, cgv::type::uint32_type N>

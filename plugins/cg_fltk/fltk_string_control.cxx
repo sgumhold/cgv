@@ -11,6 +11,7 @@
 
 #include <iostream>
 
+using namespace cgv::gui;
 
 void input_cb(fltk::Widget* w, void* input_ptr)
 {

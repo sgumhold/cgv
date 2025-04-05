@@ -400,6 +400,9 @@ namespace cgv {
 	/// return the width of a text printed in the given size, which is measured in pixels
 	float tt_gl_font_face::measure_text_width(const std::string& text, float font_size) const
 	{
+		if (font_size != this->font_size) {
+			set_font_size(font_size);
+		}
 		return compute_box(text).get_extent().x();
 	}
 	/// enables font face of given size and should be called once before calling draw_text functions
@@ -465,7 +468,7 @@ namespace cgv {
 			}
 		}
 	}
-	void tt_gl_font_face::set_font_size(float _font_size)
+	void tt_gl_font_face::set_font_size(float _font_size) const
 	{
 		if (font_size != _font_size) {
 			font_size = _font_size;
@@ -529,6 +532,7 @@ namespace cgv {
 	}
 	box2 tt_gl_font_face::compute_box(const std::string& text, float scale, bool flip_y) const
 	{
+		const_cast<tt_gl_font_face*>(this)->ensure_bitmap();
 		box2 extent;
 		vec2 p(0.0f);
 		float y_scale = !flip_y ? -1.0f : 1.0f;
@@ -543,8 +547,7 @@ namespace cgv {
 		extent.scale(scale);
 		return extent;
 	}
-	vec2 tt_gl_font_face::align_text(const vec2& p, const std::string& text, cgv::render::TextAlignment ta, float scale, bool flip_y) const
-	{
+	vec2 tt_gl_font_face::align_text(const vec2& p, const std::string& text, cgv::render::TextAlignment ta, float scale, bool flip_y) const	{
 		box2 B = compute_box(text, scale, flip_y);
 		vec2 a = B.get_center();
 		vec2 hE = 0.5f * B.get_extent();
@@ -618,6 +621,27 @@ namespace cgv {
 		if (ref_font_table().find(font_name) == ref_font_table().end())
 			return tt_gl_font_ptr();
 		f_ptr = new tt_gl_font(font_name, 24, ref_font_table()[font_name]);
+		return f_ptr;
+	}
+
+	tt_gl_font_ptr find_font_by_prefix(const std::string& font_name_prefix)
+	{
+		ensure_font_table();
+		// Will return an iterator to the next smallest font whose name is lexicographically
+		// greater or equal to the given name, i.e, either an exact match or possibly one with
+		// the closest matching prefix.
+		auto it = ref_font_table().lower_bound(font_name_prefix);
+		// Return null if the result does not exists or does not have the given prefix.
+		if(it == ref_font_table().end() || it->first.compare(0, font_name_prefix.size(), font_name_prefix) != 0)
+			return tt_gl_font_ptr();
+
+		// Use the full name to add it to the cache.
+		std::string font_name = it->first;
+		tt_gl_font_ptr& f_ptr = ref_font_cache()[font_name];
+		if(f_ptr)
+			return f_ptr;
+
+		f_ptr = new tt_gl_font(font_name, 24, it->second);
 		return f_ptr;
 	}
 

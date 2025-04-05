@@ -22,8 +22,6 @@
 
 #include "lib_begin.h"
 
-using namespace std;
-
 class rgbd_control : 
 	public cgv::base::node,
 	public cgv::render::drawable,

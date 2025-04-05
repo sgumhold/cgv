@@ -178,7 +178,7 @@ struct my_obj_reader : public cgv::media::mesh::obj_reader, public point_cloud_t
 		nr_clrs = 0;
 	}
 	///overide this function to process a vertex
-	void process_vertex(const v3d_type& p)
+	void process_vertex(const vec3_type& p)
 	{
 		if (pc->get_nr_points() == nr_pnts)
 			pc->add_point(p);
@@ -187,7 +187,7 @@ struct my_obj_reader : public cgv::media::mesh::obj_reader, public point_cloud_t
 		++nr_pnts;
 	}
 	///overide this function to process a normal
-	void process_normal(const v3d_type& n)
+	void process_normal(const vec3_type& n)
 	{
 		if (pc->get_nr_points() == nr_nmls)
 			pc->add_point(Pnt(0,0,0));

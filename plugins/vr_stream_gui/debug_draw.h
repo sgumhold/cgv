@@ -5,9 +5,6 @@
 #include <cgv/math/fvec.h>
 #include "rectangle.h"
 
-using namespace cgv::data;
-using namespace cgv::math;
-
 namespace trajectory {
 namespace util {
 	namespace debug {
@@ -21,7 +18,7 @@ namespace util {
 			cgv::vec4 col;
 		};
 		struct rect_t {
-			rectangle rect;
+			cgv::data::rectangle rect;
 			cgv::vec4 col;
 		};
 

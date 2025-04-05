@@ -7,7 +7,7 @@
 #include <cgv/type/func/promote_const.h>
 #include <cgv/type/traits/max.h>
 #include <cgv/type/info/type_name.h>
-#include "color_model.hh"
+#include "color_model.h"
 #include <math.h>
 
 namespace cgv {
@@ -735,6 +735,9 @@ public:
 	/// const access to components
 	const T& operator [] (unsigned int i) const { return this->at(i); 	}
 };
+
+/// This symbol is defined when @ref cgv::media::color exists in the current compilation unit
+#define CGV_MEDIA_COLOR_DECLARED
 
 /*********************************************************************
 **

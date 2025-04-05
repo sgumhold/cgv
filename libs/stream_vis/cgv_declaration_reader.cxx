@@ -163,7 +163,7 @@ namespace stream_vis {
 		// check for vec4 and interpret as axis and angle in degree
 		cgv::vec4 v;
 		if (parse_vec4(name, v)) {
-			quat = cgv::quat((cgv::vec3&)v, float(M_PI / 180 * v[3]));
+			quat = cgv::quat(*(cgv::vec3*)&v, float(M_PI / 180 * v[3]));
 			return true;
 		}
 		return false;
@@ -191,7 +191,7 @@ namespace stream_vis {
 	bool cgv_declaration_reader::parse_vecn(const std::string& name, float* v, uint32_t dim)
 	{
 		cgv::dvecn V(dim);
-		if (!parse_dvecn(name, V, dim))
+		if (!parse_dvecn(name, V.data(), dim))
 			return false;
 		for (unsigned i = 0; i < dim; ++i)
 			v[i] = float(V[i]);

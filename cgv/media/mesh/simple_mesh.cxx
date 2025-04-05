@@ -3,6 +3,7 @@
 #include "obj_loader.h"
 #include <cgv/math/inv.h>
 #include <cgv/utils/scan.h>
+#include <cgv/utils/advanced_scan.h>
 #include <cgv/media/mesh/obj_reader.h>
 #include <cgv/math/bucket_sort.h>
 #include <fstream>
@@ -123,7 +124,7 @@ void simple_mesh_base::sort_faces(std::vector<idx_type>& perm, bool by_group, bo
 	else
 		cgv::math::bucket_sort(material_indices, get_nr_materials(), perm);
 }
-void simple_mesh_base::merge_indices(std::vector<idx_type>& indices, std::vector<vec4i>& unique_quadruples, bool* include_tex_coords_ptr, bool* include_normals_ptr, bool* include_tangents_ptr) const
+void simple_mesh_base::merge_indices(std::vector<idx_type>& indices, std::vector<idx4_type>& unique_quadruples, bool* include_tex_coords_ptr, bool* include_normals_ptr, bool* include_tangents_ptr) const
 {
 	bool include_tex_coords = false;
 	if (include_tex_coords_ptr)
@@ -140,7 +141,7 @@ void simple_mesh_base::merge_indices(std::vector<idx_type>& indices, std::vector
 	std::map<std::tuple<idx_type, idx_type, idx_type, idx_type>, idx_type> corner_to_index;
 	for (idx_type ci = 0; ci < position_indices.size(); ++ci) {
 		// construct corner
-		vec4i c(position_indices[ci], 
+		idx4_type c(position_indices[ci], 
 			    (include_tex_coords && ci < tex_coord_indices.size()) ? tex_coord_indices[ci] : 0, 
 			    (include_normals && ci < normal_indices.size()) ? normal_indices[ci] : 0,
 			    (include_tangents && ci < tangent_indices.size()) ? tangent_indices[ci] : 0);
@@ -162,7 +163,7 @@ void simple_mesh_base::merge_indices(std::vector<idx_type>& indices, std::vector
 }
 void simple_mesh_base::extract_triangle_element_buffer(
 	const std::vector<idx_type>& vertex_indices, std::vector<idx_type>& triangle_element_buffer, 
-	const std::vector<idx_type>* face_permutation_ptr, std::vector<vec3i>* material_group_start_ptr) const
+	const std::vector<idx_type>* face_permutation_ptr, std::vector<idx3_type>* material_group_start_ptr) const
 {
 	idx_type mi = idx_type(-1);
 	idx_type gi = idx_type(-1);
@@ -173,7 +174,7 @@ void simple_mesh_base::extract_triangle_element_buffer(
 			if (mi != material_indices[fj] || gi != group_indices[fj]) {
 				mi = material_indices[fj];
 				gi = group_indices[fj];
-				material_group_start_ptr->push_back(vec3i(mi, gi, idx_type(triangle_element_buffer.size())));
+				material_group_start_ptr->push_back(idx3_type(mi, gi, idx_type(triangle_element_buffer.size())));
 			}
 		}
 		if (face_degree(fj) == 3) {
@@ -218,7 +219,7 @@ void simple_mesh_base::extract_wireframe_element_buffer(const std::vector<idx_ty
 		}
 	}
 }
-uint32_t simple_mesh_base::extract_vertex_attribute_buffer_base(const std::vector<vec4i>& unique_quadruples, AttributeFlags& flags, std::vector<uint8_t>& attrib_buffer) const
+simple_mesh_base::idx_type simple_mesh_base::extract_vertex_attribute_buffer_base(const std::vector<idx4_type>& unique_quadruples, AttributeFlags& flags, std::vector<uint8_t>& attrib_buffer) const
 {
 	// update flags of to be used attributes
 	if (position_indices.empty() && (flags & AF_position))
@@ -261,8 +262,16 @@ uint32_t simple_mesh_base::extract_vertex_attribute_buffer_base(const std::vecto
 	}
 	return vs;
 }
-
-void simple_mesh_base::compute_inv(std::vector<uint32_t>& inv, std::vector<uint32_t>* p2c_ptr, std::vector<uint32_t>* next_ptr, std::vector<uint32_t>* prev_ptr) const
+simple_mesh_base::idx_type simple_mesh_base::compute_inv(
+	std::vector<idx_type>& inv,
+	bool link_non_manifold_edges,
+	std::vector<idx_type>* p2c_ptr,
+	std::vector<idx_type>* next_ptr,
+	std::vector<idx_type>* prev_ptr,
+	std::vector<idx_type>* unmatched,
+	std::vector<idx_type>* non_manifold,
+	std::vector<idx_type>* unmatched_elements,
+	std::vector<idx_type>* non_manifold_elements) const
 {
 	uint32_t fi, e = 0;
 	if (p2c_ptr)
@@ -272,6 +281,101 @@ void simple_mesh_base::compute_inv(std::vector<uint32_t>& inv, std::vector<uint3
 	if (prev_ptr)
 		prev_ptr->resize(get_nr_corners());
 	inv.resize(get_nr_corners(), uint32_t(-1));
+	std::vector<idx_type> pis(get_nr_corners()), perm0, perm;
+	// extract min position indices per corner
+	//idx_type a = 0;
+	//std::cout << "before sort" << std::endl;
+	for (fi = 0; fi < get_nr_faces(); ++fi) {
+		idx_type cb = begin_corner(fi), ce = end_corner(fi), cp = ce - 1, pp = c2p(cp);
+		for (idx_type ci = cb; ci < ce; ++ci) {
+			idx_type pi = c2p(ci);
+			if (p2c_ptr)
+				p2c_ptr->at(pi) = ci;
+			if (next_ptr)
+				next_ptr->at(cp) = ci;
+			if (prev_ptr)
+				prev_ptr->at(ci) = cp;
+			pis[cp] = std::min(pp, pi);
+			//if (++a < 20)
+			//	std::cout << "   " << a - 1 << " : " << pp << "," << pi << std::endl;
+			cp = ci;
+			pp = pi;
+		}
+	}
+	// sort corners by min position indices
+	cgv::math::bucket_sort(pis, get_nr_positions(), perm0);
+	//std::cout << "after min sort" << std::endl;
+	//for (a=0; a < 20; ++a)
+	//	std::cout << "   " << a << " : " << c2p(perm0[a]) << "," << c2p(next_ptr->at(perm0[a])) << " (" << pis[perm0[a]] << ")" << std::endl;
+	// extract max position indices per corner and fill p2c, next and prev vectors
+	for (fi = 0; fi < get_nr_faces(); ++fi) {
+		idx_type cb = begin_corner(fi), ce = end_corner(fi), cp = ce - 1;
+		for (idx_type ci = cb; ci < ce; ++ci) {
+			idx_type pi = c2p(ci);
+			pis[cp] = std::max(c2p(cp), pi);
+			cp = ci;
+		}
+	}
+	// sort corners by max position indices
+	cgv::math::bucket_sort(pis, get_nr_positions(), perm, &perm0);
+	//std::cout << "after max sort" << std::endl;
+	//for (a = 0; a < 20; ++a)
+	//	std::cout << "   " << a << " : " << c2p(perm[a]) << "," << c2p(next_ptr->at(perm[a])) << " (" << pis[perm[a]] << ")" << std::endl;
+	// store target in pis
+	for (fi = 0; fi < get_nr_faces(); ++fi) {
+		idx_type cb = begin_corner(fi), ce = end_corner(fi), cp = ce - 1;
+		for (idx_type ci = cb; ci < ce; ++ci) {
+			pis[cp] = c2p(ci);
+			cp = ci;
+		}
+	}
+	perm0.clear();
+	// finally perform matching
+	idx_type i = 0;
+	while (i < perm.size()) {
+		idx_type ci = perm[i], pi0 = c2p(ci), pi1 = pis[ci];
+		idx_type cnt = 1;
+		while (i + cnt < perm.size()) {
+			idx_type cj = perm[i + cnt], pj0 = c2p(cj), pj1 = pis[cj];
+			if (std::min(pi0, pi1) == std::min(pj0, pj1) && std::max(pi0, pi1) == std::max(pj0, pj1)) {
+				++cnt;
+			}
+			else
+				break;
+		}
+		if (cnt == 1) {
+			if (unmatched)
+				unmatched->push_back(ci);
+			if (unmatched_elements) {
+				unmatched_elements->push_back(pi0);
+				unmatched_elements->push_back(pi1);
+			}
+		}
+		else if (cnt == 2) {
+			inv[perm[i]] = perm[i + 1];
+			inv[perm[i + 1]] = perm[i];
+			++e;
+		}
+		else {
+			if (link_non_manifold_edges) {
+				idx_type cl = perm[i + cnt - 1];
+				for (idx_type k = 0; k < cnt; ++k) {
+					idx_type ck = perm[i + k];
+					inv[cl] = ck;
+					cl = ck;
+				}
+			}
+			if (non_manifold)
+				non_manifold->push_back(ci);
+			if (non_manifold_elements) {
+				non_manifold_elements->push_back(pi0);
+				non_manifold_elements->push_back(pi1);
+			}
+		}
+		i += cnt;
+	}
+	return e;
+	/*
 	std::map<std::pair<uint32_t, uint32_t>, uint32_t> pipj2ci;
 	for (fi = 0; fi < get_nr_faces(); ++fi) {
 		uint32_t prev_ci = end_corner(fi) - 1;
@@ -297,9 +401,9 @@ void simple_mesh_base::compute_inv(std::vector<uint32_t>& inv, std::vector<uint3
 			}
 		}
 	}
+	*/
 }
-/// given the inv corners compute index vector per corner its edge index and optionally per edge its corner index (implementation assumes closed manifold connectivity)
-uint32_t simple_mesh_base::compute_c2e(const std::vector<uint32_t>& inv, std::vector<uint32_t>& c2e, std::vector<uint32_t>* e2c_ptr) const
+simple_mesh_base::idx_type simple_mesh_base::compute_c2e(const std::vector<uint32_t>& inv, std::vector<uint32_t>& c2e, std::vector<uint32_t>* e2c_ptr) const
 {
 	uint32_t e = 0;
 	c2e.resize(get_nr_corners(), -1);
@@ -317,7 +421,6 @@ uint32_t simple_mesh_base::compute_c2e(const std::vector<uint32_t>& inv, std::ve
 	}
 	return e;
 }
-/// compute index vector with per corner its face index
 void simple_mesh_base::compute_c2f(std::vector<uint32_t>& c2f) const
 {
 	c2f.resize(get_nr_corners(), -1);
@@ -326,8 +429,6 @@ void simple_mesh_base::compute_c2f(std::vector<uint32_t>& c2f) const
 			c2f[ci] = fi;
 	}
 }
-
-/// construct from obj loader
 template <typename T>
 void simple_mesh<T>::construct(const obj_loader_generic<T>& loader, bool copy_grp_info, bool copy_material_info)
 {
@@ -365,11 +466,11 @@ class simple_mesh_obj_reader : public obj_reader_generic<T>
 {
 public:
 	/// type of coordinates
-	typedef T crd_type;
+	typedef T coord_type;
 	/// type used to store texture coordinates
-	typedef cgv::math::fvec<T,2> v2d_type;
+	typedef cgv::math::fvec<T,2> vec2_type;
 	/// type used to store positions and normal vectors
-	typedef cgv::math::fvec<T,3> v3d_type;
+	typedef cgv::math::fvec<T,3> vec3_type;
 	/// type used for rgba colors
 	typedef illum::obj_material::color_type color_type;
 
@@ -379,13 +480,13 @@ protected:
 public:
 	simple_mesh_obj_reader(simple_mesh<T>& _mesh) : mesh(_mesh) {}
 	/// overide this function to process a vertex
-	void process_vertex(const v3d_type& p) { mesh.positions.push_back(p); }
+	void process_vertex(const vec3_type& p) { mesh.positions.push_back(p); }
 	/// overide this function to process a texcoord
-	void process_texcoord(const v2d_type& t) { mesh.tex_coords.push_back(v2d_type(t(0),t(1))); }
+	void process_texcoord(const vec2_type& t) { mesh.tex_coords.push_back(vec2_type(t(0),t(1))); }
 	/// overide this function to process a color (this called for vc prefixes which is is not in the standard but for example used in pobj-files)
 	void process_color(const color_type& c) { mesh.resize_colors(mesh.get_nr_colors() + 1); mesh.set_color(mesh.get_nr_colors()-1, c); }
 	/// overide this function to process a normal
-	void process_normal(const v3d_type& n) { mesh.normals.push_back(n); }
+	void process_normal(const vec3_type& n) { mesh.normals.push_back(n); }
 	/// overide this function to process a face, the indices start with 0
 	void process_face(unsigned vcount, int *vertices, int *texcoords, int *normals)
 	{
@@ -484,6 +585,110 @@ void simple_mesh<T>::clear()
 	destruct_colors();
 }
 
+template <typename T>
+bool read_off(const std::string& file_name, 
+	std::vector<cgv::math::fvec<T,3>>& positions, std::vector<cgv::rgba>& vertex_colors, 
+	std::vector<std::vector<uint32_t>>& faces, std::vector<cgv::rgba>& face_colors)
+{
+	std::string content;
+	if (!cgv::utils::file::read(file_name, content, true))
+		return false;
+	std::vector<cgv::utils::line> lines;
+	cgv::utils::split_to_lines(content, lines);
+	if (!(lines[0] == "OFF")) {
+		std::cerr << "WARNING: first line in OFF file " << file_name << " does not contain 'OFF'" << std::endl;
+		return false;
+	}
+	unsigned real_li = 1;
+	int v, f, e;
+	for (unsigned li = 1; li < lines.size(); ++li) {
+		if (lines[li].empty())
+			continue;
+		if (lines[li].begin[0] == '#')
+			continue;
+		++real_li;
+		std::vector<cgv::utils::token> toks;
+		cgv::utils::split_to_tokens(lines[li], toks, "");
+		if (real_li == 2) {
+			if (toks.size() != 3) {
+				std::cerr << "WARNING: second line in OFF file " << file_name << " does provide 3 tokens" << std::endl;
+				return false;
+			}
+			int I[3];
+			for (int i = 0; i < 3; ++i) {
+				if (!cgv::utils::is_integer(toks[i].begin, toks[i].end, I[i])) {
+					std::cerr << "WARNING: token " << i << " on second line in OFF file " << file_name << " is not an integer value" << std::endl;
+					return false;
+				}
+			}
+			v = I[0]; f = I[1]; e = I[2];
+			std::cout << "OFF file " << file_name << " found " << v << " vertices, " << f << " faces, and " << e << " edges." << std::endl;
+			continue;
+		}
+		if (int(real_li) < v+3) {
+			if (!(toks.size() == 3 || toks.size() == 6 || toks.size() == 7)) {
+				std::cerr << "WARNING: line of vertex " << real_li - 3 << " contains " << toks.size() << " tokens instead of 3 or 7." << std::endl;
+				return false;
+			}
+			double x[3];
+			for (unsigned i = 0; i < 3; ++i) {
+				if (!cgv::utils::is_double(toks[i].begin, toks[i].end, x[i])) {
+					std::cerr << "WARNING: line of vertex " << real_li - 3 << " no double in XYZ component " << i << " but <" << toks[i] << ">." << std::endl;
+					return false;
+				}
+			}
+			positions.push_back(cgv::math::fvec<T, 3>(T(x[0]), T(x[1]), T(x[2])));
+			if (toks.size() >= 6) {
+				double c[4] = { 0,0,0,1 };
+				for (unsigned i = 0; i+3 < toks.size(); ++i) {
+					if (!cgv::utils::is_double(toks[i+3].begin, toks[i+3].end, c[i])) {
+						std::cerr << "WARNING: line of vertex " << real_li - 3 << " no double in RGB[A] component " << i << " but <" << toks[i+3] << ">." << std::endl;
+						return false;
+					}
+				}
+				while (vertex_colors.size() + 1 < positions.size())
+					vertex_colors.push_back(vertex_colors.empty() ? cgv::rgba(0.5, 0.5, 0.5, 1.0f) : vertex_colors.back());
+				vertex_colors.push_back(cgv::rgba(float(c[0]), float(c[1]), float(c[2]), float(1.0-c[3])));
+			}
+		}
+		else {
+			int n;
+			if (!cgv::utils::is_integer(toks[0].begin, toks[0].end, n)) {
+				std::cerr << "WARNING: first token on face " << faces.size() << " is not of type integer " << std::endl;
+				return false;
+			}
+			if (!(toks.size() == n + 1 || toks.size() == n + 4 || toks.size() == n + 5)) {
+				std::cerr << "WARNING: line of face " << faces.size() << " contains " << toks.size() << " tokens instead of " << n+1 << " or " << n+5 << std::endl;
+				return false;
+			}
+			faces.push_back({});
+			auto& face = faces.back();
+			for (int i = 0; i<n; ++i) {
+				int pi;
+				if (!cgv::utils::is_integer(toks[i+1].begin, toks[i + 1].end, pi)) {
+					std::cerr << "WARNING: token " << i+1 << " on face " << faces.size()-1 << " is not of type integer " << std::endl;
+					return false;
+				}
+				face.push_back(uint32_t(pi));
+			}
+			if (toks.size() >= n + 4) {
+				double c[4] = { 0,0,0,1 };
+				for (unsigned i = 0; i < toks.size()-n-1; ++i) {
+					if (!cgv::utils::is_double(toks[i + n + 1].begin, toks[i + n + 1].end, c[i])) {
+						std::cerr << "WARNING: line of vertex " << real_li - 3 << " no double in RGBA component " << i << " but <" << toks[i + n + 1] << ">." << std::endl;
+						return false;
+					}
+				}
+				while (face_colors.size()+1 < faces.size())
+					face_colors.push_back(face_colors.empty() ? cgv::rgba(0.5, 0.5, 0.5, 1.0f) : face_colors.back());
+				face_colors.push_back(cgv::rgba(float(c[0]), float(c[1]), float(c[2]), float(1.0 - c[3])));
+			}
+		}
+	}
+	return true;
+}
+
+
 /// read simple mesh from file
 template <typename T>
 bool simple_mesh<T>::read(const std::string& file_name)
@@ -516,6 +721,20 @@ bool simple_mesh<T>::read(const std::string& file_name)
 			std::cout << e.what() << std::endl;
 			return false;
 		}
+	}
+	if (ext == "off") {
+		ensure_colors(cgv::media::ColorType::CT_RGBA);
+		auto& vertex_colors = *reinterpret_cast<std::vector<cgv::rgba>*>(ref_color_data_vector_ptr());
+		std::vector<cgv::rgba> face_colors;
+		std::vector<std::vector<idx_type>> faces;
+		if (!read_off(file_name, ref_positions(), vertex_colors, faces, face_colors))
+			return false;
+		for (const auto& f : faces) {
+			start_face();
+			for (auto pi : f)
+				new_corner(pi);
+		}
+		return true;
 	}
 	std::cerr << "unknown mesh file extension '*." << ext << "'" << std::endl;
 	return false;
@@ -574,11 +793,11 @@ void simple_mesh<T>::compute_vertex_normals(bool use_parallel_implementation)
 	// copy position indices to normals
 	normal_indices = position_indices;
 	// initialize normals to null vectors
-	normals.resize(positions.size(), vec3(T(0)));
+	normals.resize(positions.size(), vec3_type(T(0)));
 	if (use_parallel_implementation) {
 #pragma omp parallel for
 		for (int fi = 0; fi < int(get_nr_faces()); ++fi) {
-			vec3 nml;
+			vec3_type nml;
 			if (compute_face_normal(fi, nml))
 				for (idx_type ci = begin_corner(fi); ci < end_corner(fi); ++ci)
 					normal(normal_indices[ci]) += nml;
@@ -588,7 +807,7 @@ void simple_mesh<T>::compute_vertex_normals(bool use_parallel_implementation)
 			normals[ni].normalize();
 	}
 	else {
-		vec3 nml;
+		vec3_type nml;
 		for (idx_type fi = 0; fi < get_nr_faces(); ++fi)
 			if (compute_face_normal(fi, nml))
 				for (idx_type ci = begin_corner(fi); ci < end_corner(fi); ++ci)
@@ -599,7 +818,7 @@ void simple_mesh<T>::compute_vertex_normals(bool use_parallel_implementation)
 }
 
 template <typename T>
-unsigned simple_mesh<T>::extract_vertex_attribute_buffer(const std::vector<vec4i>& unique_quadruples,
+unsigned simple_mesh<T>::extract_vertex_attribute_buffer(const std::vector<idx4_type>& unique_quadruples,
 														 bool include_tex_coords, bool include_normals,
 														 bool include_tangents, std::vector<T>& attrib_buffer,
 														 bool* include_colors_ptr, int* num_floats_in_vertex) const
@@ -629,18 +848,18 @@ unsigned simple_mesh<T>::extract_vertex_attribute_buffer(const std::vector<vec4i
 	attrib_buffer.resize(nr_floats * unique_quadruples.size());
 	T* data_ptr = &attrib_buffer.front();
 	for (auto t : unique_quadruples) {
-		*reinterpret_cast<vec3*>(data_ptr) = positions[t[0]];
+		*reinterpret_cast<vec3_type*>(data_ptr) = positions[t[0]];
 		data_ptr += 3;
 		if (include_tex_coords) {
-			*reinterpret_cast<vec2*>(data_ptr) = tex_coords[t[1]];
+			*reinterpret_cast<vec2_type*>(data_ptr) = tex_coords[t[1]];
 			data_ptr += 2;
 		}
 		if (include_normals) {
-			*reinterpret_cast<vec3*>(data_ptr) = normals[t[2]];
+			*reinterpret_cast<vec3_type*>(data_ptr) = normals[t[2]];
 			data_ptr += 3;
 		}
 		if (include_tangents) {
-			*reinterpret_cast<vec3*>(data_ptr) = tangents[t[3]];
+			*reinterpret_cast<vec3_type*>(data_ptr) = tangents[t[3]];
 			data_ptr += 3;
 		}
 		if (include_colors) {
@@ -651,12 +870,12 @@ unsigned simple_mesh<T>::extract_vertex_attribute_buffer(const std::vector<vec4i
 	return color_increment;
 }
 
-template <typename T> void simple_mesh<T>::transform(const mat3& linear_transformation, const vec3& translation)
+template <typename T> void simple_mesh<T>::transform(const mat3_type& linear_transformation, const vec3_type& translation)
 {
-	mat3 inverse_linear_transform = inv(linear_transformation);
+	mat3_type inverse_linear_transform = inv(linear_transformation);
 	transform(linear_transformation, translation, inverse_linear_transform);
 }
-template <typename T> void simple_mesh<T>::transform(const mat3& linear_transform, const vec3& translation, const mat3& inverse_linear_transform)
+template <typename T> void simple_mesh<T>::transform(const mat3_type& linear_transform, const vec3_type& translation, const mat3_type& inverse_linear_transform)
 {
 	for (auto& p : positions)
 		p = linear_transform * p + translation;
@@ -666,9 +885,9 @@ template <typename T> void simple_mesh<T>::transform(const mat3& linear_transfor
 		t = t * inverse_linear_transform;
 }
 
-template <typename T> typename simple_mesh<T>::vec3 simple_mesh<T>::compute_face_center(idx_type fi) const
+template <typename T> typename simple_mesh<T>::vec3_type simple_mesh<T>::compute_face_center(idx_type fi) const
 {
-	vec3 ctr = vec3(0.0f);
+	vec3_type ctr = vec3_type(0.0f);
 	uint32_t nr = 0;
 	for (uint32_t ci = begin_corner(fi); ci < end_corner(fi); ++ci) {
 		ctr += position(c2p(ci));
@@ -677,17 +896,21 @@ template <typename T> typename simple_mesh<T>::vec3 simple_mesh<T>::compute_face
 	ctr /= float(nr);
 	return ctr;
 }
-template <typename T> bool simple_mesh<T>::compute_face_normal(idx_type fi, vec3& nml_out) const
+template <typename T> bool simple_mesh<T>::compute_face_normal(idx_type fi, vec3_type& nml_out, bool normalize) const
 {
 	idx_type c0 = begin_corner(fi);
 	idx_type ce = end_corner(fi);
-	vec3 p0 = position(position_indices[c0]);
-	vec3 dj = position(position_indices[c0 + 1]) - p0;
-	vec3 nml(0.0f);
+	vec3_type p0 = position(position_indices[c0]);
+	vec3_type dj = position(position_indices[c0 + 1]) - p0;
+	vec3_type nml(0.0f);
 	for (idx_type ci = c0 + 2; ci < ce; ++ci) {
-		vec3 di = position(position_indices[ci]) - p0;
+		vec3_type di = position(position_indices[ci]) - p0;
 		nml += cross(dj, di);
 		dj = di;
+	}
+	if (!normalize) {
+		nml_out = nml;
+		return true;
 	}
 	T nl = nml.length();
 	if (nl > T(1e-8f)) {
@@ -699,9 +922,12 @@ template <typename T> bool simple_mesh<T>::compute_face_normal(idx_type fi, vec3
 }
 template <typename T> void simple_mesh<T>::compute_face_normals(bool construct_normal_indices)
 {
+	if (construct_normal_indices)
+		normal_indices.clear();
+	normals.clear();
 	// compute per face normals
 	for (uint32_t fi = 0; fi < get_nr_faces(); ++fi) {
-		vec3 nml = vec3(T(1),0,0);
+		vec3_type nml = vec3_type(T(1),0,0);
 		compute_face_normal(fi, nml);
 		uint32_t ni = new_normal(nml);
 		if (construct_normal_indices) {
@@ -711,7 +937,7 @@ template <typename T> void simple_mesh<T>::compute_face_normals(bool construct_n
 		}
 	}
 }
-template <typename T> typename simple_mesh<T>::vec3 simple_mesh<T>::compute_normal(const vec3& p0, const vec3& p1, const vec3& p2)
+template <typename T> typename simple_mesh<T>::vec3_type simple_mesh<T>::compute_normal(const vec3_type& p0, const vec3_type& p1, const vec3_type& p2)
 {
 	return normalize(cross(p1 - p0, p2 - p0));
 }
@@ -721,9 +947,9 @@ template <typename T> void simple_mesh<T>::compute_face_tangents(bool construct_
 		return;
 
 	for(uint32_t fi = 0; fi < get_nr_faces(); ++fi) {
-		std::vector<vec3> _P;
-		std::vector<vec2> _T;
-		vec3 ctr(0.0f);
+		std::vector<vec3_type> _P;
+		std::vector<vec2_type> _T;
+		vec3_type ctr(0.0f);
 		uint32_t ci, nr = 0;
 		for(ci = begin_corner(fi); ci < end_corner(fi); ++ci) {
 			_P.push_back(position(c2p(ci)));
@@ -731,14 +957,14 @@ template <typename T> void simple_mesh<T>::compute_face_tangents(bool construct_
 			ctr += _P.back();
 			++nr;
 		}
-		vec3 tng(1.0f, 0.0f, 0.0f);
+		vec3_type tng(1.0f, 0.0f, 0.0f);
 		// calculate tangents for faces with at least three corners
 		// for more than 3 corners only use the first two edges and assume the face to be planar
 		if(_P.size() > 2) {
-			vec3 edge0 = _P[1] - _P[0];
-			vec3 edge1 = _P[2] - _P[0];
-			vec2 delta_uv0 = _T[1] - _T[0];
-			vec2 delta_uv1 = _T[2] - _T[0];
+			vec3_type edge0 = _P[1] - _P[0];
+			vec3_type edge1 = _P[2] - _P[0];
+			vec2_type delta_uv0 = _T[1] - _T[0];
+			vec2_type delta_uv1 = _T[2] - _T[0];
 
 			float dir_correction = (delta_uv1.x() * delta_uv0.y() - delta_uv1.y() * delta_uv0.x()) < 0.0f ? -1.0f : 1.0f;
 
@@ -780,7 +1006,7 @@ template <typename T> void simple_mesh<T>::ambo()
 	std::vector<uint32_t> inv;
 	std::vector<uint32_t> prev;
 	std::vector<uint32_t> p2c;
-	compute_inv(inv, &p2c, 0, &prev);
+	compute_inv(inv, /*link_non_manifold_edges*/false, &p2c, 0, &prev);
 	uint32_t e = compute_c2e(inv, c2e, &e2c);
 	mesh_type new_M;
 	// create one vertex per edge
@@ -814,7 +1040,7 @@ template <typename T> void simple_mesh<T>::truncate(T lambda)
 	std::vector<uint32_t> inv;
 	std::vector<uint32_t> prev;
 	std::vector<uint32_t> p2c;
-	compute_inv(inv, &p2c, 0, &prev);
+	compute_inv(inv, /*link_non_manifold_edges*/false, &p2c, 0, &prev);
 	uint32_t c = get_nr_corners();
 	mesh_type new_M;
 	// create one vertex per corner
@@ -850,7 +1076,7 @@ template <typename T> void simple_mesh<T>::snub(T lambda)
 	std::vector<uint32_t> inv;
 	std::vector<uint32_t> prev;
 	std::vector<uint32_t> p2c;
-	compute_inv(inv, &p2c, 0, &prev);
+	compute_inv(inv, /*link_non_manifold_edges*/false, &p2c, 0, &prev);
 	uint32_t c = get_nr_corners();
 	mesh_type new_M;
 	// create one vertex per corner
@@ -896,13 +1122,13 @@ template <typename T> void simple_mesh<T>::dual()
 	std::vector<uint32_t> p2c;
 	std::vector<uint32_t> inv;
 	std::vector<uint32_t> prev;
-	compute_inv(inv, &p2c, 0, &prev);
+	compute_inv(inv, /*link_non_manifold_edges*/false, &p2c, 0, &prev);
 	compute_c2f(c2f);
 	uint32_t f = get_nr_faces();
 	mesh_type new_M;
 	// create one vertex per face
 	for (uint32_t fi = 0; fi < f; ++fi) {
-		vec3 ctr = vec3(0.0f);
+		vec3_type ctr = vec3_type(0.0f);
 		for (uint32_t ci = begin_corner(fi); ci < end_corner(fi); ++ci)
 			ctr += position(c2p(ci));
 		ctr.normalize();
@@ -928,7 +1154,7 @@ template <typename T> void simple_mesh<T>::gyro(T lambda)
 	std::vector<uint32_t> p2c;
 	std::vector<uint32_t> inv;
 	std::vector<uint32_t> prev;
-	compute_inv(inv, &p2c, 0, &prev);
+	compute_inv(inv, /*link_non_manifold_edges*/false, &p2c, 0, &prev);
 	compute_c2f(c2f);
 	uint32_t v = get_nr_positions();
 	uint32_t f = get_nr_faces();
@@ -939,7 +1165,7 @@ template <typename T> void simple_mesh<T>::gyro(T lambda)
 		new_M.new_position(position(pi));
 	// create one vertex per face
 	for (uint32_t fi = 0; fi < f; ++fi) {
-		vec3 ctr = vec3(0.0f);
+		vec3_type ctr = vec3_type(0.0f);
 		for (uint32_t ci = begin_corner(fi); ci < end_corner(fi); ++ci)
 			ctr += position(c2p(ci));
 		ctr.normalize();
@@ -975,7 +1201,7 @@ template <typename T> void simple_mesh<T>::join()
 	std::vector<uint32_t> inv;
 	std::vector<uint32_t> prev;
 	std::vector<uint32_t> p2c;
-	compute_inv(inv, &p2c, 0, &prev);
+	compute_inv(inv, /*link_non_manifold_edges*/false, &p2c, 0, &prev);
 	uint32_t e = compute_c2e(inv, c2e, &e2c);
 	std::vector<uint32_t> c2f;
 	compute_c2f(c2f);
@@ -989,7 +1215,7 @@ template <typename T> void simple_mesh<T>::join()
 
 	// append one vertex per face
 	for (uint32_t fi = 0; fi < f; ++fi) {
-		vec3 ctr = vec3(0.0f);
+		vec3_type ctr = vec3_type(0.0f);
 		for (uint32_t ci = begin_corner(fi); ci < end_corner(fi); ++ci)
 			ctr += position(c2p(ci));
 		ctr.normalize();
@@ -1026,9 +1252,9 @@ template <typename T> void simple_mesh<T>::construct_conway_polyhedron(const std
 		static float N[6 * 3] = { -1,0,0, +1,0,0, 0,-1,0, 0,+1,0, 0,0,-1, 0,0,+1 };
 		static int F[6 * 4] = { 0,2,6,4, 1,5,7,3, 0,4,5,1, 2,3,7,6, 4,6,7,5, 0,1,3,2 };
 		for (int vi = 0; vi < 8; ++vi)
-			new_position(normalize(vec3(3, &V[3 * vi])));
+			new_position(normalize(vec3_type(3, &V[3 * vi])));
 		for (int ni = 0; ni < 6; ++ni)
-			new_normal(vec3(3, &N[3 * ni]));
+			new_normal(vec3_type(3, &N[3 * ni]));
 		for (int fi = 0; fi < 6; ++fi) {
 			start_face();
 			for (int ci = 0; ci < 4; ++ci)
@@ -1043,7 +1269,7 @@ template <typename T> void simple_mesh<T>::construct_conway_polyhedron(const std
 		static const float V[4 * 3] = { -0.5f, -a, -b,  0.5f, -a, -b,  0,2 * a, -b,  0,  0,2 * b };
 		static const int F[4 * 3] = { 0,2,1,3,2,0,3,0,1,3,1,2 };
 		for (int vi = 0; vi < 4; ++vi)
-			new_position(normalize(vec3(3, &V[3 * vi])));
+			new_position(normalize(vec3_type(3, &V[3 * vi])));
 		for (int fi = 0; fi < 4; ++fi) {
 			start_face();
 			new_normal(compute_normal(position(F[3 * fi]), position(F[3 * fi + 1]), position(F[3 * fi + 2])));

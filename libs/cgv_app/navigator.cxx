@@ -43,7 +43,7 @@ navigator::navigator() {
 	box_data.style.material.set_emission(rgb(0.05f));
 	box_data.style.surface_opacity = 0.35f;
 
-	box_wire_data.style.default_color = rgb(0.75f);
+	box_wire_data.style.default_color = rgb(0.5f);
 	
 	sphere_data.style.illumination_mode = IM_OFF;
 	sphere_data.style.radius = 0.04f;
@@ -82,111 +82,97 @@ bool navigator::self_reflect(cgv::reflect::reflection_handler& _rh) {
 	return _rh.reflect_member("layout_size", layout_size);
 }
 
-bool navigator::handle_event(cgv::gui::event& e) {
+bool navigator::handle_mouse_event(cgv::gui::mouse_event& e, cgv::ivec2 local_mouse_pos) {
 
-	// return true if the event gets handled and stopped here or false if you want to pass it to the next plugin
-	unsigned et = e.get_kind();
-	unsigned char modifiers = e.get_modifiers();
+	int last_hit_axis = hit_axis;
+	hit_axis = 0;
 
-	if(et == cgv::gui::EID_MOUSE) {
-		cgv::gui::mouse_event& me = (cgv::gui::mouse_event&) e;
-		cgv::gui::MouseAction ma = me.get_action();
+	if(get_context()) {
+		context& ctx = *get_context();
 
-		int last_hit_axis = hit_axis;
-		hit_axis = 0;
+		if(e.get_action() == cgv::gui::MA_LEAVE) {
+			hit_axis = 0;
+		} else {
+			vec2 window_coord = vec2(local_mouse_pos) * vec2(2.0f) / get_rectangle().size - vec2(1.0f);
+			vec3 origin = vec3(window_coord, navigator_eye_pos.z());
+			vec3 direction = vec3(0.0f, 0.0f, -1.0f);
 
-		if(get_context()) {
-			context& ctx = *get_context();
+			if(use_perspective) {
+				mat4 MVP = get_projection_matrix() * get_view_matrix(ctx);
 
-			if(ma == cgv::gui::MA_LEAVE) {
-				hit_axis = 0;
-			} else {
-				ivec2 mpos(static_cast<int>(me.get_x()), static_cast<int>(me.get_y()));
+				vec4 world_coord(window_coord.x(), window_coord.y(), 1.0f, 1.0f);
+				world_coord = inv(MVP) * world_coord;
+				world_coord /= world_coord.w();
 
-				mpos = get_local_mouse_pos(mpos);
-				vec2 window_coord = vec2(mpos) * vec2(2.0f) / get_rectangle().size - vec2(1.0f);
-
-				vec3 origin = vec3(window_coord, navigator_eye_pos.z());
-				vec3 direction = vec3(0.0f, 0.0f, -1.0f);
-
-				if(use_perspective) {
-					mat4 MVP = get_projection_matrix() * get_view_matrix(ctx);
-
-					vec4 world_coord(window_coord.x(), window_coord.y(), 1.0f, 1.0f);
-					world_coord = inv(MVP) * world_coord;
-					world_coord /= world_coord.w();
-
-					vec3 origin = navigator_eye_pos;
-					vec3 direction = normalize(vec3(world_coord) - origin);
-				}
-
-				mat4 IM = inv(get_model_matrix(ctx));
-
-				origin = vec3(IM * vec4(origin, 1.0f));
-				direction = vec3(IM * vec4(direction, 0.0f));
-
-				float t = std::numeric_limits<float>::max();
-				if(intersect_box(origin, direction, t)) {
-					vec3 hit_pos = origin + t * direction;
-
-					unsigned mi = cgv::math::max_index(cgv::math::abs(hit_pos));
-
-					hit_axis = static_cast<int>(mi) + 1;
-					if(hit_pos[mi] < 0.0f)
-						hit_axis = -hit_axis;
-				}
+				vec3 origin = navigator_eye_pos;
+				vec3 direction = normalize(vec3(world_coord) - origin);
 			}
-		
-			if(last_hit_axis != hit_axis)
-				post_redraw();
+
+			mat4 IM = inv(get_model_matrix(ctx));
+
+			origin = vec3(IM * vec4(origin, 1.0f));
+			direction = vec3(IM * vec4(direction, 0.0f));
+
+			float t = std::numeric_limits<float>::max();
+			if(intersect_box(origin, direction, t)) {
+				vec3 hit_pos = origin + t * direction;
+
+				unsigned mi = cgv::math::max_index(cgv::math::abs(hit_pos));
+
+				hit_axis = static_cast<int>(mi) + 1;
+				if(hit_pos[mi] < 0.0f)
+					hit_axis = -hit_axis;
+			}
 		}
+		
+		if(last_hit_axis != hit_axis)
+			post_redraw();
+	}
 
-		switch(ma) {
-		case cgv::gui::MA_PRESS:
-			if(me.get_button() == cgv::gui::MB_LEFT_BUTTON) {
-				check_for_click = me.get_time();
-				return true;
-			}
-			break;
-		case cgv::gui::MA_RELEASE:
-			if(check_for_click != -1) {
-				double dt = me.get_time() - check_for_click;
-				if(dt < 0.2) {
-					if(hit_axis != 0) {
-						int axis_idx = abs(hit_axis) - 1;
+	switch(e.get_action()) {
+	case cgv::gui::MA_PRESS:
+		if(e.get_button() == cgv::gui::MB_LEFT_BUTTON) {
+			check_for_click = e.get_time();
+			return true;
+		}
+		break;
+	case cgv::gui::MA_RELEASE:
+		if(check_for_click != -1) {
+			double dt = e.get_time() - check_for_click;
+			if(dt < 0.2) {
+				if(hit_axis != 0) {
+					int axis_idx = abs(hit_axis) - 1;
 
-						vec3 view_dir(0.0f);
-						view_dir[axis_idx] = hit_axis < 0.0f ? -1.0f : 1.0f;
+					vec3 view_dir(0.0f);
+					view_dir[axis_idx] = hit_axis < 0.0f ? -1.0f : 1.0f;
 
-						if(view_ptr) {
-							vec3 focus = view_ptr->get_focus();
-							float dist = (focus - view_ptr->get_eye()).length();
+					if(view_ptr) {
+						vec3 focus = view_ptr->get_focus();
+						float dist = (focus - view_ptr->get_eye()).length();
 							
-							vec3 view_up_dir(0.0f, 1.0f, 0.0f);
-							if(axis_idx == 1)
-								view_up_dir = vec3(0.0f, 0.0f, hit_axis < 0 ? 1.0f : -1.0f);
+						vec3 view_up_dir(0.0f, 1.0f, 0.0f);
+						if(axis_idx == 1)
+							view_up_dir = vec3(0.0f, 0.0f, hit_axis < 0 ? 1.0f : -1.0f);
 							
-							dvec3 axis;
-							double angle;
-							view_ptr->compute_axis_and_angle(-view_dir, view_up_dir, axis, angle);
+						dvec3 axis;
+						double angle;
+						view_ptr->compute_axis_and_angle(-view_dir, view_up_dir, axis, angle);
 							
-							cgv::gui::animate_with_axis_rotation(view_ptr->ref_view_dir(), axis, angle, 0.5)->set_base_ptr(this);
-							cgv::gui::animate_with_axis_rotation(view_ptr->ref_view_up_dir(), axis, angle, 0.5)->set_base_ptr(this);
+						cgv::gui::animate_with_axis_rotation(view_ptr->ref_view_dir(), axis, angle, 0.5)->set_base_ptr(this);
+						cgv::gui::animate_with_axis_rotation(view_ptr->ref_view_up_dir(), axis, angle, 0.5)->set_base_ptr(this);
 
-							post_redraw();
-							return true;
-						}
+						post_redraw();
+						return true;
 					}
 				}
 			}
-			return true;
-			break;
 		}
-
-		return false;
-	} else {
-		return false;
+		break;
+	default:
+		break;
 	}
+
+	return false;
 }
 
 void navigator::on_set(void* member_ptr) {
@@ -202,15 +188,9 @@ void navigator::on_set(void* member_ptr) {
 
 bool navigator::init(context& ctx) {
 	
-	// get a bold font face to use for the cursor
-	auto font = cgv::media::font::find_font("Arial");
-	if(!font.empty()) {
-		cursor_font_face = font->get_font_face(cgv::media::font::FFA_BOLD);
-	}
-
 	fbc.add_attachment("depth", "[D]");
 	fbc.add_attachment("color", "flt32[R,G,B,A]", TF_LINEAR);
-	fbc.set_size(2 * get_rectangle().size);
+	fbc.set_size(get_rectangle().size);
 	
 	bool success = true;
 
@@ -261,7 +241,7 @@ void navigator::init_frame(context& ctx) {
 		view_ptr = find_view_as_node();
 
 	if(ensure_layout(ctx)) {
-		fbc.set_size(2 * get_rectangle().size);
+		fbc.set_size(get_rectangle().size);
 		fbc.ensure(ctx);
 
 		blit_canvas.set_resolution(ctx, get_viewport_size());

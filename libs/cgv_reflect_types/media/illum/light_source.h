@@ -1,6 +1,6 @@
 #pragma once
 
-#include <cgv/media/illum/light_source.hh>
+#include <cgv/media/illum/light_source.h>
 #include <cgv_reflect_types/media/color.h>
 #include <cgv_reflect_types/math/fvec.h>
 #include <cgv/reflect/reflect_extern.h>

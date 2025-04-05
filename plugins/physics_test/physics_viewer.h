@@ -47,7 +47,7 @@ protected:
 	const float position_deviation = 5.0f;
 	const float spawn_height = 4.0f;
 
-	// This is used to hold temporary references to shapes that are manually created instead of using the convenience construtors.
+	// This is used to hold temporary references to shapes that are manually created instead of using the convenience constructors.
 	// Since the shape instance is created in the scope of a method it would be invalidated on return and before the physics systems
 	// body interface can take over ownership. TODO: Check if this produces memory leaks! Find a a better solution!
 	JPH::Ref<JPH::Shape> temp_shape_ref;
@@ -88,7 +88,7 @@ protected:
 	body_creation_info create_cylinder(float height, float radius);
 	body_creation_info create_sphere(float radius);
 
-	void add_body(body_creation_info creation_info, JPH::EMotionType motion_type, JPH::ObjectLayer layer, bool activate = true);
+	JPH::BodyID add_body(body_creation_info creation_info, JPH::EMotionType motion_type, JPH::ObjectLayer layer, bool activate = true);
 
 	void clear_scene();
 	void remove_moving_bodies();

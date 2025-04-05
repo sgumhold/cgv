@@ -15,6 +15,16 @@ uint32_t label_drawable::add_label(const std::string& text, const rgba& bg_clr, 
 	label_visibilities.push_back(1);
 	return li;
 }
+void label_drawable::remove_all_labels()
+{
+	lm.remove_all_labels();
+	label_positions.clear();
+	label_orientations.clear();
+	label_extents.clear();
+	label_texture_ranges.clear();
+	label_coord_systems.clear();
+	label_visibilities.clear();
+}
 void label_drawable::update_label_text(uint32_t li, const std::string& text) 
 {
 	lm.update_label_text(li, text); 
@@ -76,9 +86,9 @@ bool label_drawable::init(cgv::render::context& ctx)
 	lm.set_text_color(rgba(0, 0, 0, 1));
 	return true;
 }
-void label_drawable::set_coordinate_systems(const vr::vr_kit_state* state_ptr, const mat34* table_pose_ptr)
+void label_drawable::set_coordinate_systems(const vr::vr_kit_state* state_ptr, const mat3x4* table_pose_ptr)
 {
-	mat34 ID; ID.identity();
+	mat3x4 ID; ID.identity();
 	pose[0] = pose[1] = ID;
 	valid[0] = valid[1] = true;
 	valid[2] = valid[3] = valid[4] = false;
@@ -93,11 +103,11 @@ void label_drawable::set_coordinate_systems(const vr::vr_kit_state* state_ptr, c
 		valid[static_cast<int>(coordinate_system::left_controller)] = state_ptr->controller[0].status == vr::VRS_TRACKED;
 		valid[static_cast<int>(coordinate_system::right_controller)] = state_ptr->controller[1].status == vr::VRS_TRACKED;
 		if (valid[static_cast<int>(coordinate_system::head)])
-			pose[static_cast<int>(coordinate_system::head)] = reinterpret_cast<const mat34&>(state_ptr->hmd.pose[0]);
+			pose[static_cast<int>(coordinate_system::head)] = reinterpret_cast<const mat3x4&>(state_ptr->hmd.pose[0]);
 		if (valid[static_cast<int>(coordinate_system::left_controller)])
-			pose[static_cast<int>(coordinate_system::left_controller)] = reinterpret_cast<const mat34&>(state_ptr->controller[0].pose[0]);
+			pose[static_cast<int>(coordinate_system::left_controller)] = reinterpret_cast<const mat3x4&>(state_ptr->controller[0].pose[0]);
 		if (valid[static_cast<int>(coordinate_system::right_controller)])
-			pose[static_cast<int>(coordinate_system::right_controller)] = reinterpret_cast<const mat34&>(state_ptr->controller[1].pose[0]);
+			pose[static_cast<int>(coordinate_system::right_controller)] = reinterpret_cast<const mat3x4&>(state_ptr->controller[1].pose[0]);
 	}
 }
 void label_drawable::init_frame(cgv::render::context& ctx)
@@ -130,7 +140,7 @@ void label_drawable::finish_frame(cgv::render::context& ctx)
 	for (uint32_t li = 0; li < label_coord_systems.size(); ++li) {
 		if (label_visibilities[li] == 0 || !valid[static_cast<int>(label_coord_systems[li])])
 			continue;
-		mat34 label_pose = cgv::math::pose_construct(label_orientations[li], label_positions[li]);
+		mat3x4 label_pose = cgv::math::pose_construct(label_orientations[li], label_positions[li]);
 		cgv::math::pose_transform(pose[static_cast<int>(label_coord_systems[li])], label_pose);
 		P.push_back(cgv::math::pose_position(label_pose));
 		mat3 L = cgv::math::pose_orientation(label_pose);
@@ -173,7 +183,7 @@ bool label_drawable::is_coordsystem_valid(coordinate_system cs) const
 { 
 	return valid[static_cast<int>(cs)];
 }
-const mat34& label_drawable::get_coordsystem(coordinate_system cs) const 
+const mat3x4& label_drawable::get_coordsystem(coordinate_system cs) const 
 {
 	return pose[static_cast<int>(cs)]; 
 }

@@ -5,22 +5,19 @@
 
 #include "ray_rect_intersection.h"
 
-using namespace cgv::data;
-using namespace cgv::render;
-
 namespace vr {
 namespace room {
 
-	class plane : public placeable {
+	class plane : public cgv::render::placeable {
 	  protected:
-		rectangle geometry;
+		  cgv::data::rectangle geometry;
 
 	  public:
 		plane();
-		plane(const rectangle &geometry);
+		plane(const cgv::data::rectangle &geometry);
 
-		rectangle get_geometry() const;
-		void plane::set_geometry(const rectangle &geometry);
+		cgv::data::rectangle get_geometry() const;
+		void plane::set_geometry(const cgv::data::rectangle &geometry);
 
 		// e.g. front, back
 		void generate_geometry_xy(float width, float height, bool reverse = false);

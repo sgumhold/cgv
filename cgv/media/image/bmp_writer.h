@@ -24,7 +24,7 @@ public:
 	/// return a string containing a colon separated list of extensions that can be read with this reader
 	const char* get_supported_extensions() const;
 	/// check if the chosen writer supports the given component format
-	bool is_format_supported(const component_format& cf, const std::vector<component_format>* palette_formats) const;
+	bool is_format_supported(const cgv::data::component_format& cf, const std::vector<cgv::data::component_format>* palette_formats) const;
 	/// return a colon separated list of supported options
 	std::string get_options() const;
 	/// return a reference to the last error message
@@ -32,7 +32,7 @@ public:
 	/// open image file to write
 	bool open(const std::string& file_name);
 	/** write the data stored in the data view to a file with the file name given in the constructor. */
-	bool write_image(const const_data_view& dv, const std::vector<const_data_view>* palettes, double duration);
+	bool write_image(const cgv::data::const_data_view& dv, const std::vector<cgv::data::const_data_view>* palettes, double duration);
 	/// close image [stream]
 	bool close();
 };

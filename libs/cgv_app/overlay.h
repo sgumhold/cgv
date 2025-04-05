@@ -9,6 +9,9 @@
 #include <cgv_g2d/trect.h>
 #include <cgv_g2d/utils2d.h>
 
+#include <cgv/gui/key_event.h>
+#include <cgv/gui/mouse_event.h>
+
 #include "lib_begin.h"
 
 namespace cgv {
@@ -42,6 +45,10 @@ private:
 	ivec2 last_viewport_size_ = ivec2(-1);
 	/// the last recorded size of this overlay
 	ivec2 last_size_ = ivec2(-1);
+	/// the last local mouse position used to detect mouse enter and leave events
+	ivec2 last_local_mouse_pos_ = ivec2(-1);
+	/// is true if the overlay has captured the mouse for further events; will block events from propagating if blocks_events_ is also true
+	bool captured_mouse_ = false;
 	/// rectangle area this overlay is fully contained whithin
 	cgv::g2d::irect container_;
 	/// whether the overlay blocks events or lets them pass through to other handlers
@@ -101,11 +108,14 @@ public:
 	/// overload to stream help information to the given output stream
 	virtual void stream_help(std::ostream& os) {};
 
-	/// default implementation of handle method returns false, use handle_events instead
-	virtual bool handle(cgv::gui::event& e) { return false; };
+	/// handle incomming events; calls handle_key_events or handle_mouse_events depending on the event type; mouse events will only be handled if the mouse is over the overlay rectangle
+	virtual bool handle(cgv::gui::event& e);
 
-	/// overload this method to handle events
-	virtual bool handle_event(cgv::gui::event& e) { return false; };
+	/// overload this method to handle key events
+	virtual bool handle_key_event(cgv::gui::key_event& e) { return false; };
+
+	/// overload this method to handle mouse events; local_mouse_pos is the mouse position in the local coordinate space of the overlay rectangle
+	virtual bool handle_mouse_event(cgv::gui::mouse_event& e, cgv::ivec2 local_mouse_pos) { return false; };
 
 	/// implement to handle member changes
 	virtual void handle_member_change(const cgv::utils::pointer_test& m) {}

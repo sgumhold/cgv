@@ -14,15 +14,6 @@ namespace cgv {
 /// class to represent all pose events from tracking systems with the EID_POSE
 class CGV_API pose_event : public event
 {
-public:
-	/// declare 3d vector type 
-	typedef cgv::math::fvec<float, 3> vec3;
-	/// declare 3d matrix type 
-	typedef cgv::math::fmat<float, 3, 3> mat3;
-	/// declare 3x4 matrix type 
-	typedef cgv::math::fmat<float, 3, 4> mat3x4;
-	/// declare quaternion type
-	typedef cgv::math::quaternion<float> quat;
 protected:
 	// store different indices to uniquely define trackable
 	short player_index, trackable_index;

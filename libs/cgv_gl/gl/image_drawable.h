@@ -14,11 +14,6 @@ namespace cgv {
 //! base class of drawables that show static or animated images
 class CGV_API image_drawable : public drawable
 {
-public:
-	/// type of pixel coordinates
-	typedef cgv::math::fvec<cgv::type::int32_type, 2> vec2i;
-	/// type of a pixel box
-	typedef cgv::media::axis_aligned_box<cgv::type::int32_type, 2> box2i;
 protected:
 	std::vector<unsigned> tex_ids;
 	std::vector<float> durations;
@@ -39,7 +34,7 @@ protected:
 	float tess_level;
 
 	/// extent selection box
-	box2i selection;
+	ibox2 selection;
 
 	/// whether to show the selection rectangle
 	bool show_selection;

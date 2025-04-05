@@ -31,7 +31,7 @@ std::string avi_video_reader::get_type_name() const
 }
 
 /// construct a copy of the video reader
-abst_video_reader* avi_video_reader::clone() const
+cgv::media::video::abst_video_reader* avi_video_reader::clone() const
 {
 	return new avi_video_reader();
 }

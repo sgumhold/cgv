@@ -8,7 +8,7 @@
 namespace cgv {
 	namespace media {
 		/** coordinate type independent base class of simple mesh data structure that handles indices and colors. */
-		class CGV_API colored_model : public color_storage_types
+		class CGV_API colored_model
 		{
 		protected:
 			/// pointer to color storage
@@ -61,6 +61,8 @@ namespace cgv {
 
 			const void* get_color_data_ptr() const;
 			const void* get_color_data_vector_ptr() const;
+			void* ref_color_data_ptr();
+			void* ref_color_data_vector_ptr();
 
 			//! ensure that colors are allocated and of given storage type
 			/*! Only in case of new allocation, the second parameter is used to define the number of colors */

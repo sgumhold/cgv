@@ -9,9 +9,9 @@
 #include <cgv/data/data_view.h>
 #include <cgv/media/font/font.h>
 #include <cgv/media/axis_aligned_box.h>
-#include <cgv/media/illum/phong_material.hh>
+#include <cgv/media/illum/phong_material.h>
 #include <cgv/media/illum/textured_surface_material.h>
-#include <cgv/media/illum/light_source.hh>
+#include <cgv/media/illum/light_source.h>
 #include <cgv/signal/callback_stream.h>
 #include <cgv/math/vec.h>
 #include <cgv/math/inv.h>
@@ -300,7 +300,7 @@ class CGV_API context;
 class CGV_API render_component
 {
 public:
-    void* handle;
+	void* handle;
 	void* internal_format;
 	void* user_data;
 	/// keep pointer to my context
@@ -556,13 +556,15 @@ struct CGV_API context_config
 	bool forward_compatible;
 	/// default: false in release and true in debug version
 	bool debug;
-	/// default: false
+	/// default: true
 	bool core_profile;
 	//@}
 	/// construct config with default parameters
 	context_config();
 	/// reflect the shader_path member
 	bool self_reflect(cgv::reflect::reflection_handler& srh);
+	/// provide integer vector to store context creation attribute list
+	std::vector<int> context_creation_attrib_list;
 };
 
 /// type of ref counted pointer to context creation configuration
@@ -952,7 +954,7 @@ public:
 
 
 	/** read the current frame buffer or a rectangular region of it into the given
-	    data view.
+		data view.
 		 If no format is associated with the data view, a new format is created
 		 and assigned to the data view. 
 		 
@@ -970,11 +972,11 @@ public:
 		data::data_view& dv, 
 		unsigned int x = 0, unsigned int y = 0, 
 		FrameBufferType buffer_type = FB_BACK,
-		TypeId type = type::info::TI_UINT8,
+		cgv::type::info::TypeId type = cgv::type::info::TI_UINT8,
 		data::ComponentFormat cf = data::CF_RGB,
 		int w = -1, int h = -1) = 0;
 	/** write the content of the frame buffer to an image file. In case of writing a depth buffer
-       a the depth offset is subtracted from the value and scaled by the depth scale before conversion
+	   a the depth offset is subtracted from the value and scaled by the depth scale before conversion
 		 to an unsigned int of bit depth 8 is performed. */
 	bool write_frame_buffer_to_image(
 		const std::string& file_name, 
@@ -1163,7 +1165,7 @@ public:
 	/**@name text output*/
 	//@{
 	/** returns an output stream whose output is printed at the current cursor 
-	    location, which is managed by the context. The coordinate system of the
+		location, which is managed by the context. The coordinate system of the
 		 cursor location corresponds to opengl coordinates with (0,0) in lower left corner.
 		 The cursor position is
 		 updated during text drawing also by special characters like tab or new line and
@@ -1238,7 +1240,7 @@ public:
 	void tesselate_unit_torus(float minor_radius = 0.2f, int resolution = 25, bool flip_normals = false, bool edges = false);
 	//! tesselate an arrow from the origin in z-direction
 	/*! An arrow of length L is composed of a cylinder of radius R and a cone of radius r.
-	    The parameters are
+		The parameters are
 		@param[in] length the total length of the radius
 		@param[in] aspect is defined as R/L
 		@param[in] rel_tip_radius is defined as r/R
@@ -1249,7 +1251,7 @@ public:
 	virtual void tesselate_arrow(const dvec3& start, const dvec3& end, double aspect = 0.1f, double rel_tip_radius = 2.0f, double tip_aspect = 0.3f, int res = 25, bool edges = false);
 	//! draw a light source with an emissive material 
 	/*! @param[in] l to be rendered light source
-	    @param[in] intensity_scale used to multiply with the light source values
+		@param[in] intensity_scale used to multiply with the light source values
 	*/
 	virtual void draw_light_source(const cgv::media::illum::light_source& l, float intensity_scale, float light_scale); 
 	//@}
@@ -1338,7 +1340,7 @@ public:
 	DEPRECATED("deprecated: use get_device_matrix() instead.") 	dmatn get_D() const { return dmatn(4, 4, &get_window_matrix()(0, 0)); }
 	DEPRECATED("deprecated: use get_modelview_projection_device_matrix() instead.")	dmatn get_DPV() const { return dmatn(4, 4, &get_modelview_projection_window_matrix()(0, 0)); }
 	/** use this to push new modelview and new projection matrices onto the transformation stacks such that
-	    x and y coordinates correspond to opengl coordinates with (0,0) in lower left corner.
+		x and y coordinates correspond to opengl coordinates with (0,0) in lower left corner.
 		To transform mouse pointer coordinates to opengl coordinates use get_context()->get_height()-1-mouse_y. */
 	virtual void push_pixel_coords() = 0;
 	/// pop previously pushed transformation matrices from modelview and projection stacks
@@ -1351,7 +1353,7 @@ public:
 	virtual void mul_modelview_matrix(const dmat4& MV);
 	//! push the current viewing matrix onto a matrix stack for viewing matrices.
 	/*! A software implementation is used for the matrix stack as some hardware 
-	    stacks - i.e. in opengl - have strong limitations on their maximum size. 
+		stacks - i.e. in opengl - have strong limitations on their maximum size. 
 		The push_V method does not change the current viewing matrix similarly to
 		the glPushMatrix function. Use pop_V() to restore the pushed viewing matrix
 		into the current viewing matrix. Don't intermix these methods with the 
@@ -1373,7 +1375,7 @@ public:
 	void push_window_transformation_array();
 	//! restore previous viewport and depth range arrays defining the window transformations
 	/*! An error is emitted when the method fails because the stack of window 
-	    transformations would become empty, which is not allowed. */
+		transformations would become empty, which is not allowed. */
 	virtual void pop_window_transformation_array();
 	/// announce an external viewport change performed with rendering API to the cgv framework providing space to temporarily store viewport of cgv framework
 	virtual void announce_external_viewport_change(ivec4& cgv_viewport_storage) = 0;
@@ -1388,7 +1390,7 @@ protected:
 public:
 	//! set the current viewport or one of the viewports in the window transformation array
 	/*! If the parameter \c array_index is -1 (for example by not specifying it),
-	    the current window transformation array is resized to a single viewport and
+		the current window transformation array is resized to a single viewport and
 		the viewport is set to the integer vector of pixel values 
 		in the \c viewport parameter: [x0,y0,width,height]. If an \c array_index >= 0
 		is specified, the window transformation array is resized such that the 
@@ -1400,13 +1402,13 @@ public:
 	virtual void set_viewport(const ivec4& viewport, int array_index = -1);
 	//! set the current depth range or one of the depth ranges in the window transformation array
 	/*! The behaviour with respect to parameters \c array_index is the same as
-	    in the set_viewport() method.*/
+		in the set_viewport() method.*/
 	virtual void set_depth_range(const dvec2& depth_range = dvec2(0, 1), int array_index = -1);
 	/// return the current window transformation array
 	const std::vector<window_transformation>& get_window_transformation_array() const;
 	//! return a homogeneous 4x4 matrix to transform clip to window coordinates
 	/*! In window coordinates x- and y-coordinates correspond to opengl pixel coordinates
-	    with (0,0) in lower left corner and z corresponds to depth value stored in the depth buffer. 
+		with (0,0) in lower left corner and z corresponds to depth value stored in the depth buffer. 
 		This is the same convention as in gl_FragCoord and gl_FragDepth of GLSL. 
 		Optionally one can specify a window transformation index with the parameter \c array_index
 		for the case when an array of window transformations is used.*/
@@ -1471,8 +1473,8 @@ public:
 };
 
 /** construct a context of the given size. This is primarily used to create
-    a context without a window for console applications that render into a frame
-    buffer object only. The newly created context will be current right after
+	a context without a window for console applications that render into a frame
+	buffer object only. The newly created context will be current right after
 	 creation. After usage you need to delete the context by hand. */
 extern CGV_API context* create_context(RenderAPI api = RA_OPENGL, 
 		unsigned int w = 800, unsigned int h = 600, 

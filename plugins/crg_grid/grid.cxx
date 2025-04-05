@@ -101,7 +101,7 @@ void grid::render_grid_lines(float alpha)
 	
 	
 	cgv::math::vec<float> v(4);
-	glGetFloatv(GL_COLOR_CLEAR_VALUE,v);
+	glGetFloatv(GL_COLOR_CLEAR_VALUE,v.data());
 	
 	if(v.sub_vec(0,3).length() > 0.7)
 		glColor4f(0.3f,0.3f,0.3f,alpha);

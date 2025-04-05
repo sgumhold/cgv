@@ -182,16 +182,16 @@ struct fltk_separator_decorator : public cgv::base::named, public fltk_base
 
 struct decorator_factory : public abst_decorator_factory
 {
-	base_ptr create(const std::string& label, 
+	cgv::base::base_ptr create(const std::string& label,
 			const std::string& gui_type, int x, int y, int w, int h)
 	{
 		if (gui_type == "heading")
-			return base_ptr(new fltk_heading_decorator(label,x,y,w,h));
+			return cgv::base::base_ptr(new fltk_heading_decorator(label,x,y,w,h));
 		if (gui_type == "text")
-			return base_ptr(new fltk_text_decorator(label, x, y, w, h));
+			return cgv::base::base_ptr(new fltk_text_decorator(label, x, y, w, h));
 		if (gui_type == "separator")
-			return base_ptr(new fltk_separator_decorator(label,x,y,w,h));
-		return base_ptr();
+			return cgv::base::base_ptr(new fltk_separator_decorator(label,x,y,w,h));
+		return cgv::base::base_ptr();
 	}
 };
 

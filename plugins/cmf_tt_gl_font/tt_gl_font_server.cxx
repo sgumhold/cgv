@@ -1,22 +1,19 @@
 #include "tt_gl_font_server.h"
 
+using namespace cgv::media::font;
+
 namespace cgv {
-	cgv::media::font::font_ptr tt_gl_font_server::find_font(const std::string& font_name)
+	font_ptr tt_gl_font_server::find_font(const std::string& font_name)
 	{
 		return cgv::find_font(font_name);
 	}
-	cgv::media::font::font_ptr tt_gl_font_server::default_font(bool mono_space)
+	font_ptr tt_gl_font_server::find_font_by_prefix(const std::string& font_name_prefix)
 	{
-		cgv::media::font::font_ptr f;
-		if ((f = font_server::default_font(mono_space)))
-			return f;
-		f = find_font(get_font_names().front());
-		return f;
+		return cgv::find_font_by_prefix(font_name_prefix);
 	}
-	///
 	void tt_gl_font_server::on_register()
 	{
-		cgv::media::font::register_font_server(this);
+		register_font_server(this);
 	}
 	/// enumerate the names of all installed fonts
 	void tt_gl_font_server::enumerate_font_names(std::vector<const char*>& font_names)

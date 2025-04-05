@@ -176,18 +176,58 @@ std::ostream& operator<<(std::ostream& out, const axis_aligned_box<T, N>& box)
 /// @name Predefined Types
 /// @{
 
-/// declare type of 2d boxes
+/// declare type of 2d single precision floating point axis-aligned boxes
 typedef cgv::media::axis_aligned_box<float, 2> box2;
-/// declare type of 3d boxes
+/// declare type of 3d single precision floating point axis-aligned boxes
 typedef cgv::media::axis_aligned_box<float, 3> box3;
-/// declare type of 4d boxes
+/// declare type of 4d single precision floating point axis-aligned boxes
 typedef cgv::media::axis_aligned_box<float, 4> box4;
-/// declare type of 2d boxes
+
+/// declare type of 2d double precision floating point axis-aligned boxes
 typedef cgv::media::axis_aligned_box<double, 2> dbox2;
-/// declare type of 3d boxes
+/// declare type of 3d double precision floating point axis-aligned boxes
 typedef cgv::media::axis_aligned_box<double, 3> dbox3;
-/// declare type of 4d boxes
+/// declare type of 4d double precision floating point axis-aligned boxes
 typedef cgv::media::axis_aligned_box<double, 4> dbox4;
+
+/// declare type of 2d 16 bit integer axis-aligned boxes
+typedef cgv::media::axis_aligned_box<int16_t, 2> sbox2;
+/// declare type of 3d 16 bit integer axis-aligned boxes
+typedef cgv::media::axis_aligned_box<int16_t, 3> sbox3;
+/// declare type of 4d 16 bit integer axis-aligned boxes
+typedef cgv::media::axis_aligned_box<int16_t, 4> sbox4;
+/// declare type of 2d 16 bit unsigned integer axis-aligned boxes
+typedef cgv::media::axis_aligned_box<uint16_t, 2> usbox2;
+/// declare type of 3d 16 bit unsigned integer axis-aligned boxes
+typedef cgv::media::axis_aligned_box<uint16_t, 3> usbox3;
+/// declare type of 4d 16 bit unsigned integer axis-aligned boxes
+typedef cgv::media::axis_aligned_box<uint16_t, 4> usbox4;
+
+/// declare type of 2d 32 bit integer axis-aligned boxes
+typedef cgv::media::axis_aligned_box<int32_t, 2> ibox2;
+/// declare type of 3d 32 bit integer axis-aligned boxes
+typedef cgv::media::axis_aligned_box<int32_t, 3> ibox3;
+/// declare type of 4d 32 bit integer axis-aligned boxes
+typedef cgv::media::axis_aligned_box<int32_t, 4> ibox4;
+/// declare type of 2d 32 bit unsigned integer axis-aligned boxes
+typedef cgv::media::axis_aligned_box<uint32_t, 2> ubox2;
+/// declare type of 3d 32 bit unsigned integer axis-aligned boxes
+typedef cgv::media::axis_aligned_box<uint32_t, 3> ubox3;
+/// declare type of 4d 32 bit unsigned integer axis-aligned boxes
+typedef cgv::media::axis_aligned_box<uint32_t, 4> ubox4;
+
+/// declare type of 2d 64 bit integer axis-aligned boxes
+typedef cgv::media::axis_aligned_box<int64_t, 2> lbox2;
+/// declare type of 3d 64 bit integer axis-aligned boxes
+typedef cgv::media::axis_aligned_box<int64_t, 3> lbox3;
+/// declare type of 4d 64 bit integer axis-aligned boxes
+typedef cgv::media::axis_aligned_box<int64_t, 4> lbox4;
+/// declare type of 2d 64 bit unsigned integer axis-aligned boxes
+typedef cgv::media::axis_aligned_box<uint64_t, 2> ulbox2;
+/// declare type of 3d 64 bit unsigned integer axis-aligned boxes
+typedef cgv::media::axis_aligned_box<uint64_t, 3> ulbox3;
+/// declare type of 4d 64 bit unsigned integer axis-aligned boxes
+typedef cgv::media::axis_aligned_box<uint64_t, 4> ulbox4;
 
 /// @}
 

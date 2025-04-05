@@ -176,21 +176,21 @@ void visibility_sort::set_value_format(cgv::type::info::TypeId type, unsigned co
 	std::string vec_type = "uvec";
 
 	switch (type) {
-	case TI_UINT32:
+	case cgv::type::info::TI_UINT32:
 		scalar_type = "uint";
 		vec_type = "uvec";
 		break;
-	case TI_INT32:
+	case cgv::type::info::TI_INT32:
 		scalar_type = "int";
 		vec_type = "ivec";
 		break;
-	case TI_FLT32:
+	case cgv::type::info::TI_FLT32:
 		scalar_type = "float";
 		vec_type = "vec";
 		break;
 	default:
 		std::cout << "gpu_sorter::set_value_format() ... value type not supported, using unsigned int (uint or uvec)" << std::endl;
-		type = TI_UINT32;
+		type = cgv::type::info::TI_UINT32;
 		break;
 	}
 
