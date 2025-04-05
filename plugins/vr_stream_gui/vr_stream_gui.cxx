@@ -21,6 +21,8 @@
 
 #include "intersection.h"
 
+using namespace trajectory;
+
 void vr_stream_gui::set_stream_screen()
 {
 
@@ -40,7 +42,7 @@ void vr_stream_gui::set_draw_debug()
 	post_redraw();
 }
 
-void vr_stream_gui::reconfigure_virtual_display(vec3 pos)
+void vr_stream_gui::reconfigure_virtual_display(cgv::vec3 pos)
 {
 	switch (vt_display_reconfigure_state) {
 	case 0: {
@@ -53,16 +55,16 @@ void vr_stream_gui::reconfigure_virtual_display(vec3 pos)
 		auto ul = vt_display_reconfigure_first_pos;
 		auto dr = vt_display_reconfigure_second_pos;
 
-		auto ur = vec3(dr.x(), ul.y(), dr.z());
-		auto dl = vec3(ul.x(), dr.y(), ul.z());
+		auto ur = cgv::vec3(dr.x(), ul.y(), dr.z());
+		auto dl = cgv::vec3(ul.x(), dr.y(), ul.z());
 
 		cgv::data::rectangle rect = { ul, ur, dl, dr };
 		vr::room::plane plane(rect);
 
 		vt_display->set_display(plane);
 		// reset config values to zero, as not needed for dynamic positioning
-		vt_display->set_position(vec3(0.0f));
-		vt_display->set_orientation(quat(1.0f, 0.0f, 0.0f, 0.0f));
+		vt_display->set_position(cgv::vec3(0.0f));
+		vt_display->set_orientation(cgv::quat(1.0f, 0.0f, 0.0f, 0.0f));
 
 		break;
 	}
@@ -160,16 +162,16 @@ void vr_stream_gui::construct_movable_boxes(cgv::nui::nui_primitive_node_ptr nod
 	for(size_t i = 0; i < nr; ++i) {
 		float x = distribution(generator);
 		float y = distribution(generator);
-		vec3 extent(distribution(generator), distribution(generator), distribution(generator));
+		cgv::vec3 extent(distribution(generator), distribution(generator), distribution(generator));
 		extent += 0.1f;
 		extent *= std::min(tw, td)*0.1f;
 
-		vec3 center(-0.5f*tw + x * tw, th + tW, -0.5f*td + y * td);
-		quat rot(signed_distribution(generator), signed_distribution(generator), signed_distribution(generator), signed_distribution(generator));
+		cgv::vec3 center(-0.5f*tw + x * tw, th + tW, -0.5f*td + y * td);
+		cgv::quat rot(signed_distribution(generator), signed_distribution(generator), signed_distribution(generator), signed_distribution(generator));
 		rot.normalize();
 		node->ref_boxes()->add_box(
-			box3(center - 0.5f * extent, center + 0.5f * extent), rot,
-			rgba(distribution(generator), distribution(generator), distribution(generator), 1.0f));
+			cgv::box3(center - 0.5f * extent, center + 0.5f * extent), rot,
+			cgv::rgba(distribution(generator), distribution(generator), distribution(generator), 1.0f));
 	}
 }
 
@@ -178,13 +180,13 @@ vr_stream_gui::vr_stream_gui()
 
 	screen_tex_manager = std::make_shared<util::screen_texture_manager>();
 	intersection = {};
-	ray_origin = vec3(0.0f);
-	ray_dir = vec3(0.0f);
+	ray_origin = cgv::vec3(0.0f);
+	ray_dir = cgv::vec3(0.0f);
 
 	frame_split = 0;
-	extent_texcrd = vec2(0.5f, 0.5f);
-	center_left = vec2(0.5f, 0.25f);
-	center_right = vec2(0.5f, 0.25f);
+	extent_texcrd = cgv::vec2(0.5f, 0.5f);
+	center_left = cgv::vec2(0.5f, 0.25f);
+	center_right = cgv::vec2(0.5f, 0.25f);
 	seethrough_gamma = 0.33f;
 	frame_width = frame_height = 0;
 	background_distance = 2;
@@ -231,11 +233,11 @@ void vr_stream_gui::construct_scene()
 	node->create_sphere_container(true, true);
 	construct_movable_boxes(node, 1.6f, 0.8f, 0.7f, 0.03f, 20);
 	construct_labels(node);
-	node->ref_spheres()->add_sphere(vec3(-1, 0.5f, 0), rgba(1, 1, 0, 1), 0.1f);
-	node->ref_spheres()->add_sphere(vec3(1, 0.5f, 0), rgba(1, 0, 1, 1), 0.15f);
+	node->ref_spheres()->add_sphere(cgv::vec3(-1, 0.5f, 0), cgv::rgba(1, 1, 0, 1), 0.1f);
+	node->ref_spheres()->add_sphere(cgv::vec3(1, 0.5f, 0), cgv::rgba(1, 0, 1, 1), 0.15f);
 	mesh_node = new cgv::nui::nui_mesh_node("mesh", cgv::nui::SM_UNIFORM);
-	mesh_node->set_scale(vec3(0.001f));
-	mesh_node->set_translation(vec3(-0.5f,0.9f,0.0f));
+	mesh_node->set_scale(cgv::vec3(0.001f));
+	mesh_node->set_translation(cgv::vec3(-0.5f,0.9f,0.0f));
 #ifdef _DEBUG
 	mesh_node->set_file_name("D:/data/surface/meshes/obj/Max-Planck_lowres.obj");
 #else
@@ -266,7 +268,7 @@ void vr_stream_gui::construct_labels(cgv::nui::nui_primitive_node_ptr node)
 		cgv::utils::split_to_lines(content, lines);
 		for (auto& l : lines) {
 			std::string line = to_string(l);			
-			lm.add_label(line, rgba(cgv::media::color<float, cgv::media::HLS, cgv::media::OPACITY>(d(r), 0.5f, 1.0f)));
+			lm.add_label(line, cgv::rgba(cgv::media::color<float, cgv::media::HLS, cgv::media::OPACITY>(d(r), 0.5f, 1.0f)));
 		}
 	}
 	lm.compute_label_sizes();
@@ -275,13 +277,13 @@ void vr_stream_gui::construct_labels(cgv::nui::nui_primitive_node_ptr node)
 	float scale = 0.002f;
 	for (uint32_t i = 0; i < lm.get_nr_labels(); ++i) {
 		const auto& l = lm.get_label(i);
-		box2 b = reinterpret_cast<const box2&>(lm.get_texcoord_range(i));
+		cgv::box2 b = reinterpret_cast<const cgv::box2&>(lm.get_texcoord_range(i));
 		int j = i % 6;
 		int k = i / 6;
 		node->ref_rectangles()->add_rectangle(
-			vec3(0.4f*(j-2.5f), 1 + 0.1f * k, 0.5f-0.2f*std::abs(j - 2.5f)),
-			vec2(scale * l.get_width(), scale * l.get_height()), b,
-			quat(vec3(0,1,0),0.2f*(j-2.5f)+3.14f), 
+			cgv::vec3(0.4f*(j-2.5f), 1 + 0.1f * k, 0.5f-0.2f*std::abs(j - 2.5f)),
+			cgv::vec2(scale * l.get_width(), scale * l.get_height()), b,
+			cgv::quat(cgv::vec3(0,1,0),0.2f*(j-2.5f)+3.14f), 
 			l.background_color);
 	}
 	auto& srs = node->ref_rectangles()->ref_render_style();
@@ -375,7 +377,7 @@ bool vr_stream_gui::handle(cgv::gui::event& e)
 
 				// right controller
 				{
-					vec3 r_o, r_d;
+					cgv::vec3 r_o, r_d;
 					state_ptr->controller[switch_left_and_right_hand ? 0 : 1].put_ray(
 						&r_o(0), &r_d(0));
 					r_d.normalize();
@@ -428,9 +430,9 @@ bool vr_stream_gui::init(cgv::render::context& ctx)
 
 		vt_display = std::make_shared<vr::room::virtual_display>();
 		vt_display->set_display(
-			{ {dvec3(-0.525 / 2.0, 0.295 / 2.0, 0.0), dvec3(0.525 / 2.0, 0.295 / 2.0, 0.0),
-			  dvec3(-0.525 / 2.0, -0.295 / 2.0, 0.0),
-			  dvec3(0.525 / 2.0, -0.295 / 2.0, 0.0)} });
+			{ {cgv::dvec3(-0.525 / 2.0, 0.295 / 2.0, 0.0), cgv::dvec3(0.525 / 2.0, 0.295 / 2.0, 0.0),
+			  cgv::dvec3(-0.525 / 2.0, -0.295 / 2.0, 0.0),
+			  cgv::dvec3(0.525 / 2.0, -0.295 / 2.0, 0.0)} });
 		vt_display->set_resolution(1920u, 1080u);
 		vt_display->init(ctx);
 
@@ -439,7 +441,7 @@ bool vr_stream_gui::init(cgv::render::context& ctx)
 			blt_ptr->set_texture(screen_tex_manager->get_texture());
 		}
 
-		view_ptr->set_eye_keep_view_angle(dvec3(0, 4, -4));
+		view_ptr->set_eye_keep_view_angle(cgv::dvec3(0, 4, -4));
 		// if the view points to a vr_view_interactor
 		vr_view_ptr = dynamic_cast<vr_view_interactor*>(view_ptr);
 		if (vr_view_ptr) {
@@ -500,7 +502,7 @@ void vr_stream_gui::init_frame(cgv::render::context& ctx)
 			if (camera_ptr && camera_ptr->get_state() == vr::CS_STARTED) {
 				uint32_t width = frame_width, height = frame_height, split = frame_split;
 				if (shared_texture) {
-					box2 tex_range;
+					cgv::box2 tex_range;
 					if (camera_ptr->get_gl_texture_id(camera_tex_id, width, height, undistorted, &tex_range.ref_min_pnt()(0))) {
 						camera_aspect = (float)width / height;
 						split = camera_ptr->get_frame_split();
@@ -575,11 +577,11 @@ void vr_stream_gui::draw(cgv::render::context& ctx)
 		util::debug::line_t line;
 		line.a = ray_origin;
 		line.b = intersection.pos_world;
-		line.col = vec4(0.0f, 1.0f, 0.0f, 1.0f);
+		line.col = cgv::vec4(0.0f, 1.0f, 0.0f, 1.0f);
 		util::debug::draw_line(line);
 		util::debug::point_t pnt;
 		pnt.p = intersection.pos_world - ri * 0.01f;
-		pnt.col = vec4(0.0f, 0.0f, 1.0f, 1.0f);
+		pnt.col = cgv::vec4(0.0f, 0.0f, 1.0f, 1.0f);
 		util::debug::draw_point(pnt, 10.0f);
 	}
 	/*
@@ -587,7 +589,7 @@ void vr_stream_gui::draw(cgv::render::context& ctx)
 		util::debug::line_t line;
 		line.a = ray_origin;
 		line.b = ray_origin + normalize(ray_dir) * 10.0f;
-		line.col = vec4(1.0f, 0.0f, 0.0f, 1.0f);
+		line.col = cgv::vec4(1.0f, 0.0f, 0.0f, 1.0f);
 		util::debug::draw_line(line);
 	}*/
 
@@ -599,16 +601,16 @@ void vr_stream_gui::draw(cgv::render::context& ctx)
 				int eye = vr_view_ptr->get_rendered_eye();
 
 				// compute billboard
-				dvec3 vd = vr_view_ptr->get_view_dir_of_kit();
-				dvec3 y = vr_view_ptr->get_view_up_dir_of_kit();
-				dvec3 x = normalize(cross(vd, y));
+				cgv::dvec3 vd = vr_view_ptr->get_view_dir_of_kit();
+				cgv::dvec3 y = vr_view_ptr->get_view_up_dir_of_kit();
+				cgv::dvec3 x = normalize(cross(vd, y));
 				y = normalize(cross(x, vd));
 				x *= camera_aspect * background_extent * background_distance;
 				y *= background_extent * background_distance;
 				vd *= background_distance;
-				dvec3 eye_pos = vr_view_ptr->get_eye_of_kit(eye);
-				std::vector<vec3> P;
-				std::vector<vec2> T;
+				cgv::dvec3 eye_pos = vr_view_ptr->get_eye_of_kit(eye);
+				std::vector<cgv::vec3> P;
+				std::vector<cgv::vec2> T;
 				P.push_back(eye_pos + vd - x - y);
 				P.push_back(eye_pos + vd + x - y);
 				P.push_back(eye_pos + vd - x + y);
@@ -654,7 +656,7 @@ void vr_stream_gui::draw(cgv::render::context& ctx)
 				prog.set_uniform(ctx, "eye", eye);
 				*/
 				prog.enable(ctx);
-				ctx.set_color(rgba(1, 1, 1, 1));
+				ctx.set_color(cgv::rgba(1, 1, 1, 1));
 
 				glDrawArrays(GL_TRIANGLE_STRIP, 0, 4);
 
@@ -696,7 +698,7 @@ void vr_stream_gui::finish_draw(cgv::render::context& ctx)
 		ctx.push_modelview_matrix();
 		ctx.mul_modelview_matrix(cgv::math::translate4<double>(0, 3, 0));
 		prog.enable(ctx);
-		ctx.set_color(rgba(1, 1, 1, 0.8f));
+		ctx.set_color(cgv::rgba(1, 1, 1, 0.8f));
 		ctx.tesselate_unit_square();
 		prog.disable(ctx);
 		if (shared_texture) {
@@ -716,7 +718,7 @@ void vr_stream_gui::create_gui()
 	
 	if (begin_tree_node("virtual display", stream_screen, false)) {
 		align("\a");
-		add_gui("screen orientation", reinterpret_cast<vec4&>(vt_display->ref_orientation()), "direction", "options='min=-1;max=1;ticks=true'");
+		add_gui("screen orientation", reinterpret_cast<cgv::vec4&>(vt_display->ref_orientation()), "direction", "options='min=-1;max=1;ticks=true'");
 		add_gui("screen position", vt_display->ref_position(), "", "options='min=-2;max=2;ticks=true'");
 		add_gui("screen scale", vt_display->ref_scale(), "", "options='min=0.1;max=100;log=true;ticks=true'");
 		connect_copy(add_control("stream screen", stream_screen, "toggle")->value_change, rebind(this, &vr_stream_gui::set_stream_screen));

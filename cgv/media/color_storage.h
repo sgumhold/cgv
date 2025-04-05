@@ -22,19 +22,8 @@ namespace cgv {
 		template <> struct color_storage_traits<color<unsigned char, RGB> > { static const ColorType color_type = CT_RGB8; };
 		template <> struct color_storage_traits<color<unsigned char, RGB, OPACITY> > { static const ColorType color_type = CT_RGBA8; };
 
-		/// declaration of types for color storage  
-		struct color_storage_types
-		{
-		public:			
-			/// define supported color types
-			typedef color<float, RGB> rgb;
-			typedef color<float, RGB, OPACITY> rgba;
-			typedef color<unsigned char, RGB> rgb8;
-			typedef color<unsigned char, RGB, OPACITY> rgba8;
-		};
-
 		/// interface for color storage of different internal types
-		class abst_color_storage : public color_storage_types
+		class abst_color_storage
 		{
 		protected:
 			// type of color stored in storage
@@ -54,10 +43,15 @@ namespace cgv {
 			virtual size_t get_nr_colors() const = 0;
 			/// resize to the given number of colors
 			virtual void resize(size_t nr_colors) = 0;
-			/// return a void pointer to the color data
+			/// return a const void pointer to the color data
 			virtual const void* get_data_ptr() const = 0;
-			/// return a void pointer to the color data vector
+			/// return a const void pointer to the color data vector
 			virtual const void* get_data_vector_ptr() const = 0;
+			/// return a void pointer to the color data
+			virtual void* ref_data_ptr() = 0;
+			/// return a void pointer to the color data vector
+			virtual void* ref_data_vector_ptr() = 0;
+
 			/// set i-th color to color of type stored in storage
 			virtual void set_color(size_t i, const void* col_ptr) = 0;
 			/// set i-th color from color of type rgb
@@ -115,6 +109,8 @@ namespace cgv {
 			void resize(size_t nr_colors) { colors.resize(nr_colors); }
 			const void* get_data_ptr() const { return &colors.front(); }
 			const void* get_data_vector_ptr() const { return &colors; }
+			void* ref_data_ptr() { return &colors.front(); }
+			void* ref_data_vector_ptr() { return &colors; }
 			// implementation of color access uses type conversion operators implemented for color class
 			void set_color(size_t i, const void* col_ptr) { colors[i] = *reinterpret_cast<const C*>(col_ptr); }
 			void set_color(size_t i, const rgb& col) { colors[i] = col; }

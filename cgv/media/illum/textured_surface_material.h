@@ -2,7 +2,7 @@
 
 #include <vector>
 #include "surface_material.h"
-#include "obj_material.hh"
+#include "obj_material.h"
 
 #include "lib_begin.h"
 

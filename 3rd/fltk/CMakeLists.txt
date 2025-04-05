@@ -2,6 +2,20 @@ cmake_minimum_required(VERSION 3.15)
 
 project(fltk)
 
+# Decide whether to use Xft
+if(UNIX)
+    find_package(X11 REQUIRED COMPONENTS Xext)
+    find_package(X11 COMPONENTS Xft)
+    set(X11_DEPENDENCIES X11::X11 X11::Xext)
+    if (X11_Xft_FOUND)
+        option(FLTK_USE_XFT "Use the XFreeType library for all X11 font rendering initiated by FLTK" ON)
+        if(FLTK_USE_XFT)
+            list(APPEND X11_DEPENDENCIES X11::Xft)
+            list(APPEND X11_DEFINES USE_XFT)
+        endif()
+    endif()
+endif()
+
 set(SOURCES
         # Image
         images/FileIcon2.cxx
@@ -170,18 +184,20 @@ install(DIRECTORY include/. DESTINATION ${CGV_3RD_INCLUDE_DEST} FILES_MATCHING P
 
 # Shared Library
 add_library(fltk SHARED ${SOURCES})
-target_link_libraries(fltk
-        jpeg
-        png
+target_link_libraries(fltk PUBLIC
+        OpenGL::GL
         glew
-        ${OPENGL_LIBRARIES}
-        ${X11_LIBRARIES})
+        jpeg
+        png)
 
 if (WIN32)
     set(ADD_DEFINITIONS "_WIN32" "WIN32_LEAN_AND_MEAN" "VC_EXTRA_LEAN" "WIN32_EXTRA_LEAN")
-    target_link_libraries(fltk ws2_32)
-else ()
-    target_link_libraries(fltk Xext)
+    target_link_libraries(fltk PUBLIC ws2_32)
+else()
+    #target_include_directories(fltk PUBLIC ${FREETYPE_INCLUDE_DIRS})
+    #target_link_libraries(fltk PUBLIC ${FREETYPE_LIBRARIES} Xft)
+    target_link_libraries(fltk PUBLIC ${X11_DEPENDENCIES})
+    target_compile_definitions(fltk PUBLIC ${X11_DEFINES})
 endif ()
 
 if (MSVC)
@@ -200,6 +216,7 @@ target_compile_definitions(fltk PRIVATE
 target_compile_definitions(fltk PUBLIC FL_SHARED)
 
 target_include_directories(fltk PUBLIC
+        ${FREETYPE_INCLUDE_DIRS}       
         $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/include>
         $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/visualc>
         $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/compat>
@@ -209,18 +226,20 @@ install(TARGETS fltk EXPORT cgv_3rd DESTINATION ${CGV_BIN_DEST})
 
 # Static Library
 add_library(fltk_static STATIC ${SOURCES})
-target_link_libraries(fltk_static
-        jpeg_static
-        png_static
+target_link_libraries(fltk_static PUBLIC
+        OpenGL::GL
         glew_static
-        ${OPENGL_LIBRARIES}
-        ${X11_LIBRARIES})
+        jpeg_static
+        png_static)
 
 if (WIN32)
     set(ADD_DEFINITIONS "_WIN32" "WIN32_LEAN_AND_MEAN" "VC_EXTRA_LEAN" "WIN32_EXTRA_LEAN")
-    target_link_libraries(fltk_static ws2_32)
+    target_link_libraries(fltk_static PUBLIC ws2_32)
 else ()
-    target_link_libraries(fltk_static Xext)
+    #target_include_directories(fltk_static PUBLIC ${FREETYPE_INCLUDE_DIRS})
+    #target_link_libraries(fltk_static PUBLIC ${FREETYPE_LIBRARIES} Xft)
+    target_link_libraries(fltk_static PUBLIC ${X11_DEPENDENCIES})
+    target_compile_definitions(fltk_static PUBLIC ${X11_DEFINES})
 endif ()
 
 if (MSVC)

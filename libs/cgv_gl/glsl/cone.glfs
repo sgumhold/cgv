@@ -1,7 +1,11 @@
 #version 430
 
 #define CAPS 1
+
+// 0 - Flat
+// 1 - Rounded
 #define CAP_TYPE 0
+
 #define ENABLE_TEXTURING 0
 #define TEXTURE_BLEND_MODE 0
 #define TEXTURE_TILE_FROM_CENTER 0
@@ -239,17 +243,13 @@ vec2 get_tex_coords(vec3 pos) {
 
 void main()
 {
-	// Original
-	//vec3 org = vec3(0.0);
-	//vec3 dir = normalize(position);
-	//vec3 org = (get_inverse_modelview_matrix() * vec4(vec3(0.0), 1.0)).xyz;
+	vec3 eye_pos = (get_inverse_modelview_matrix() * vec4(0.0, 0.0, 0.0, 1.0)).xyz;
 	
-	// Intersection is performed in object space.
-	// The eye position is at the origin and this fragment is located at "position"
-	// By moving the eye position closer to the fragment position we can improve the numeric accuracy of the resulting
-	// transformed vectors and directions.
-	vec3 org = (get_inverse_modelview_matrix() * vec4(0.98*position, 1.0)).xyz;
-	vec3 dir = normalize((get_inverse_modelview_matrix() * vec4(normalize(position), 0.0)).xyz);
+	// compute ray direction and origin in object-space
+	vec3 dir = normalize(position - eye_pos);
+	// set ray origin to fragment position to improve numerical precision of intersection
+	// add a slight offset from the surface to circumvent numerical inaccuracies
+	vec3 org = position - 0.001 * dir;
 	
 	vec3 normal;
 	float l;

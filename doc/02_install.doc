@@ -7,11 +7,11 @@ using namespace cgv;
 \section prereq Prerequisits
 
 -# GPU and GPU drivers supporting OpenGL 3.3 minimum but better 4.3 or higher
--# install windows or linux (manual was tested on ubuntu 20.4)
+-# install windows or linux (manual was tested on ubuntu 20.04)
 -# install git
 -# install cmake (optional on Windows when using Visual Studio as internal build system can be used instead)
 -# install compiler (gcc, clang, visual studio)
--# on linux install \c libXi-devel by, for example with \code sudo apt-get install libxi-dev\endcode
+-# on linux, several development packages for system libraries are needed. For Debian-based distributions (e.g. Ubuntu), these are \code libglx-dev libglew-dev libxft-dev libxinerama-dev libxi-dev \endcode On distributions by OpenSUSE (Leap, Tumbleweed, MicroOS/Aeon etc.) the required packages are \code Mesa-libGL-devel glew-devel libXft-devel libXinerama-devel libXi-devel \endcode
 -# choose parent of source directory and open shell/cmd prompt (**avoid paths with spaces such as windows desktop, home or library paths**)
 -# clone current version with git \code git clone https://github.com/sgumhold/cgv.git \endcode
 -# switch to \b develop branch \code git checkout develop \endcode

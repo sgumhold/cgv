@@ -26,12 +26,6 @@ protected:
 
 	double check_for_click;
 
-	bool mouse_is_on_overlay;
-	bool show_cursor;
-	ivec2 cursor_pos;
-	std::string cursor_drawtext;
-	cgv::media::font::font_face_ptr cursor_font_face;
-
 	cgv::render::managed_frame_buffer fbc;
 
 	cgv::g2d::canvas blit_canvas;
@@ -68,7 +62,7 @@ public:
 	bool self_reflect(cgv::reflect::reflection_handler& _rh);
 	void stream_help(std::ostream& os) {}
 
-	bool handle_event(cgv::gui::event& e);
+	bool handle_mouse_event(cgv::gui::mouse_event& e, cgv::ivec2 local_mouse_pos);
 	void on_set(void* member_ptr);
 
 	bool init(cgv::render::context& ctx);

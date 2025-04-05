@@ -55,7 +55,7 @@ public:
 	/// align last element and add element to group
 	void finalize_new_element(cgv::gui::gui_group_ptr ggp, const std::string& align, cgv::base::base_ptr element);
 	/// remove all elements of the vector that point to child, return the number of removed children
-	unsigned int remove_child(base_ptr child) { return static_cast<fltk_gui_group*>(this)->remove_child(cgv::gui::gui_group_ptr(this), child); }
+	unsigned int remove_child(cgv::base::base_ptr child) { return static_cast<fltk_gui_group*>(this)->remove_child(cgv::gui::gui_group_ptr(this), child); }
 	/// remove all children
 	void remove_all_children() { return static_cast<fltk_gui_group*>(this)->remove_all_children(cgv::gui::gui_group_ptr(this)); }
 	/// overload to trigger initialization of alignment
@@ -71,13 +71,13 @@ public:
 	/// return whether several children of the group can be selected at the same time
 	bool multiple_selection() const { return false; }
 	/// sets focus on the given child
-	void select_child(base_ptr ci, bool exclusive = false);
+	void select_child(cgv::base::base_ptr ci, bool exclusive = false);
 	/// defocus child 
-	bool unselect_child(base_ptr ci);
+	bool unselect_child(cgv::base::base_ptr ci);
 	/// returns index of focused child
 	int get_selected_child_index() const;
 	/// return whether the given child is selected
-	bool is_selected(base_ptr c) const;
+	bool is_selected(cgv::base::base_ptr c) const;
 	//@}
 };
 

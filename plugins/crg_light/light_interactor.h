@@ -2,30 +2,21 @@
 
 #include <cgv/render/drawable.h>
 #include <cgv/render/shader_program.h>
-#include <cgv/media/illum/light_source.hh>
+#include <cgv/media/illum/light_source.h>
 #include <cgv/gui/event_handler.h>
 #include <cgv/gui/provider.h>
 #include <random>
 
 #include "lib_begin.h"
 
-using namespace cgv::reflect;
-using namespace cgv::base;
-using namespace cgv::gui;
-using namespace cgv::render;
-using namespace cgv::media::illum;
-
 /// interaction class for light sources
-class CGV_API light_interactor : public node, public event_handler, public provider, public drawable
+class CGV_API light_interactor : public cgv::base::node, public cgv::gui::event_handler, public cgv::gui::provider, public cgv::render::drawable
 {
-public:
-	typedef cgv::media::color<float> color_type;
-	typedef std::pair<cgv::vec3, cgv::vec3> ray;
 private:
 	int current_light_index;
 	std::default_random_engine RE;
 protected:
-	std::vector<light_source> lights;
+	std::vector<cgv::media::illum::light_source> lights;
 	std::vector<void*> handles;
 	std::vector<void*> new_handles;
 	std::vector<float> intensities;
@@ -52,8 +43,8 @@ protected:
 	float min_opacity, max_opacity;
 	cgv::render::shader_program prog;
 
-	void sample_light_rays(context& ctx, unsigned decrease_count = 0);
-	void draw_light_rays(context& ctx, size_t i);
+	void sample_light_rays(cgv::render::context& ctx, unsigned decrease_count = 0);
+	void draw_light_rays(cgv::render::context& ctx, size_t i);
 	void timer_event(double t, double dt);
 public:
 	/// construct default light interactor
@@ -69,7 +60,7 @@ public:
 	/// generate callbacks
 	void on_set(void* member_ptr);
 	/// do self reflection
-	bool self_reflect(reflection_handler& rh);
+	bool self_reflect(cgv::reflect::reflection_handler& rh);
 	/// save light_interactor to file
 	bool save(const std::string& file_name)  const;
 	/// read light_interactor from file
@@ -79,20 +70,20 @@ public:
 	/**@name rendering*/
 	//@{
 	///
-	bool init(context&);
+	bool init(cgv::render::context&);
 	/// activate light sources
-	void init_frame(context&);
+	void init_frame(cgv::render::context&);
 	/// draw light sources
-	void draw(context&);
+	void draw(cgv::render::context&);
 	/// deactivate light sources
-	void finish_frame(context&);
+	void finish_frame(cgv::render::context&);
 	/// correct default render flags
-	void clear(context&);
+	void clear(cgv::render::context&);
 	//@}
 
 	/// gui 
 	void create_gui();
-	bool handle(event& e);
+	bool handle(cgv::gui::event& e);
 	void stream_help(std::ostream& os);
 };
 

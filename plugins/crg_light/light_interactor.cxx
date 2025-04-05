@@ -12,9 +12,8 @@
 #include <stdio.h>
 
 using namespace cgv::gui;
-using namespace cgv::utils;
 using namespace cgv::render;
-using namespace cgv::signal;
+using namespace cgv::media::illum;
 
 light_interactor::light_interactor() : node("Light Interactor")
 {
@@ -30,7 +29,7 @@ light_interactor::light_interactor() : node("Light Interactor")
 	light_scale = 0.2f;
 	speed = 0.05f;
 	current_light_index = -1;
-	connect(get_animation_trigger().shoot, this, &light_interactor::timer_event);
+	cgv::signal::connect(get_animation_trigger().shoot, this, &light_interactor::timer_event);
 }
 
 void light_interactor::timer_event(double t, double dt)
@@ -68,7 +67,7 @@ void light_interactor::on_set(void* member_ptr)
 {
 	size_t n = lights.size();
 	if (get_context()) {
-		cgv::render::context& ctx = *get_context();
+		context& ctx = *get_context();
 		for (size_t i = 0; i < n; ++i) {
 			if (member_ptr == &lights[i].ref_local_to_eye()) {
 				bool is_dir = lights[i].get_type() == cgv::media::illum::LT_DIRECTIONAL;
@@ -119,7 +118,7 @@ void light_interactor::on_set(void* member_ptr)
 	post_redraw();
 }
 
-bool light_interactor::self_reflect(reflection_handler& rh)
+bool light_interactor::self_reflect(cgv::reflect::reflection_handler& rh)
 {
 	if (! (rh.reflect_member("file_name", file_name) &&
 		   rh.reflect_member("light_scale", light_scale) ) )
@@ -127,10 +126,10 @@ bool light_interactor::self_reflect(reflection_handler& rh)
 
 	size_t n = lights.size();
 	for (size_t i = 0; i < n; ++i) {
-		if (! (rh.reflect_member(std::string("enabled_")+to_string(i), (bool&)(enabled[i])) &&
-			   rh.reflect_member(std::string("show_")+to_string(i), (bool&)(show[i])) &&
-			   rh.reflect_member(std::string("toggle_")+to_string(i), (bool&)(toggles[7*i])) &&
-			   rh.reflect_member(std::string("intensity_")+to_string(i), intensities[i]) ) )
+		if (! (rh.reflect_member(std::string("enabled_") + std::to_string(i), (bool&)(enabled[i])) &&
+			   rh.reflect_member(std::string("show_") + std::to_string(i), (bool&)(show[i])) &&
+			   rh.reflect_member(std::string("toggle_") + std::to_string(i), (bool&)(toggles[7*i])) &&
+			   rh.reflect_member(std::string("intensity_") + std::to_string(i), intensities[i]) ) )
 			   return false;
 	}
 	return true;
@@ -410,13 +409,13 @@ void light_interactor::create_gui()
 			
 	add_decorator("Light Parameters", "heading");
 	for (i = 0; i < n; ++i) {
-		if (!add_tree_node(std::string("light ")+to_string(i), (bool&)(toggles[7*i]),2))
+		if (!add_tree_node(std::string("light ")+std::to_string(i), (bool&)(toggles[7*i]),2))
 			continue;
 		align("\a");
 		add_member_control(this, "on", (bool&)enabled[i], "check");
 		add_member_control(this, "intensity", intensities[i], "value_slider", "min=0;max=1");
 
-		add_gui(std::string("light ")+to_string(i), lights[i], "", "");
+		add_gui(std::string("light ")+std::to_string(i), lights[i], "", "");
 		align("\b");
 	}
 	add_member_control(this, "interaction speed", speed, "value_slider", "min=0.001;max=10;ticks=true;log=true");

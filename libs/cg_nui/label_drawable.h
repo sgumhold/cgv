@@ -9,7 +9,8 @@
 
 namespace cgv {
 	namespace nui {
-/// class manages static and dynamic parts of scene
+/// extends cgv::nui::label_manager with functionality to place labels in different
+/// coordinate systems and draw them with a cgv::render::rectangle_renderer
 class CGV_API label_drawable : public cgv::render::drawable
 {
 public:
@@ -36,7 +37,7 @@ protected:
 	///
 	cgv::nui::label_manager lm;
 	/// store poses of different coordinate systems. These are computed in init_frame() function
-	mat34 pose[static_cast<int>(coordinate_system::TOTAL)];
+	mat3x4 pose[static_cast<int>(coordinate_system::TOTAL)];
 	/// store whether poses are valid
 	bool valid[static_cast<int>(coordinate_system::TOTAL)];
 	/// store label placements for rectangle renderer
@@ -57,9 +58,23 @@ protected:
 public:
 	/// add a new label without placement information and return its index
 	uint32_t add_label(const std::string& text, const rgba& bg_clr, int _border_x = 4, int _border_y = 4, int _width = -1, int _height = -1);
-	/// update label text
+	/// removes all currently added labels 
+	void remove_all_labels();
+	/// <summary>
+	/// Change text of label and recompute its size if size has not explicitly been fixed
+	/// </summary>
+	/// <param name="li">index of label</param>
+	/// <param name="text">new text</param>
 	void update_label_text(uint32_t li, const std::string& text);
-	/// update label size in texel
+	/// <summary>
+	/// Explicitly set label size in texels. If width and or height are negative values
+	/// the label size is automatically computed from its text size and border setting and
+	/// recomputed if the text is updated. If positive values are set, these are fixed and 
+	/// no automatic recomputation happens if the label text is updated.
+	/// </summary>
+	/// <param name="li">index of label</param>
+	/// <param name="w">new width in texel</param>
+	/// <param name="h">new height in texel</param>
 	void update_label_size(uint32_t li, int w, int h);
 	/// update label background color
 	void update_label_background_color(uint32_t li, const rgba& bgclr);
@@ -83,7 +98,7 @@ public:
 	/// standard constructor for scene
 	label_drawable();
 	/// set coordinate systems from optional vr state and optional table pose
-	void set_coordinate_systems(const vr::vr_kit_state* state_ptr = 0, const mat34* table_pose_ptr = 0);
+	void set_coordinate_systems(const vr::vr_kit_state* state_ptr = 0, const mat3x4* table_pose_ptr = 0);
 	/// initialization called once per context creation
 	bool init(cgv::render::context& ctx);
 	/// initialization called once per frame
@@ -97,7 +112,7 @@ public:
 	/// check whether coordinate system is available
 	bool is_coordsystem_valid(coordinate_system cs) const;
 	/// provide access to coordinate system - check validity with is_coordsystem_valid() before
-	const mat34& get_coordsystem(coordinate_system cs) const;
+	const mat3x4& get_coordsystem(coordinate_system cs) const;
 };
 
 	}

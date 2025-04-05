@@ -33,8 +33,8 @@ extern CGV_API cgv::render::rectangle_render_style& ref_rectangle_render_style()
 class CGV_API tt_gl_font_face : public cgv::media::font::font_face
 {
 private:
-	bool bitmap_out_of_date;
-	bool tex_out_of_date;
+	mutable bool bitmap_out_of_date;
+	mutable bool tex_out_of_date;
 protected:
 	unsigned char* ttf_buffer;
 	std::vector<unsigned char> internal_ttf_buffer;
@@ -42,15 +42,15 @@ protected:
 	std::string font_name;
 	stbtt_fontinfo f;
 
-	float font_size;
+	mutable float font_size;
 	unsigned fst_char, nr_chars;
-	std::vector<stbtt_bakedchar> baked_chars;
+	mutable std::vector<stbtt_bakedchar> baked_chars;
 
-	unsigned bitmap_width, bitmap_height;
+	mutable unsigned bitmap_width, bitmap_height;
 	std::vector<unsigned char> bitmap;
 	bool build_mipmap;
 
-	cgv::render::texture* tex_ptr;
+	mutable cgv::render::texture* tex_ptr;
 	cgv::render::context* ctx_ptr;
 
 	void bake_characters();
@@ -79,7 +79,7 @@ public:
 	unsigned get_nr_glyphs() const;
 	std::string get_font_name() const;
 	void set_character_range(int _fst_char, unsigned _nr_chars);
-	void set_font_size(float _font_size);
+	void set_font_size(float _font_size) const;
 	bool write_atlas(const std::string& file_name);
 	cgv::render::texture& ref_texture(cgv::render::context& ctx) const;
 	cgv::render::texture& ref_texture(cgv::render::context& ctx);
@@ -150,6 +150,8 @@ extern CGV_API size_t get_tt_gl_fonts_timestamp();
 void ensure_font_table();
 /// looks for a specific font after having ensured that font table is built with ensure_font_table()
 extern CGV_API tt_gl_font_ptr find_font(const std::string& font_name);
+/// looks for a specific font by its name prefix after having ensured that font table is built with ensure_font_table()
+extern CGV_API tt_gl_font_ptr find_font_by_prefix(const std::string& font_name_prefix);
 /// return reference to cached list of all scanned font names after having ensured that font table is built with ensure_font_table()
 extern CGV_API const std::vector<std::string>& get_font_names();
 /// return a string "enums='Arial,...'" with all scanned fonts that can be used to define a dropdown menu on an int variable i which provides font name via get_font_names()[i]

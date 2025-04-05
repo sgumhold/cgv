@@ -1,4 +1,11 @@
-#version 150 compatibility
+#version 330
+
+/*
+The following interface is implemented in this shader:
+//***** begin interface of ellipsoid_base.glfs ****************************
+bool compute_ellipsoid_intersection(out float depth, out vec3 p_eye, out vec3 n_eye, bool show_backside);
+//***** end interface of ellipsoid_base.glfs ******************************
+*/
 
 in EllipsoidData {
 	vec2  q_tilde;
@@ -16,7 +23,6 @@ bool compute_ellipsoid_intersection(out float depth, out vec3 p_eye, out vec3 n_
 	float q_tilde_squared_length = dot(Fin.q_tilde, Fin.q_tilde);
 	if (q_tilde_squared_length > 1.0)
 		return false;
-
 	// compute ray parameter
 	float beta = Fin.inv_e*sqrt(1.0 - q_tilde_squared_length);
 	float lambda = show_backside ? 1.0 / (1.0 - beta) : 1.0 / (1.0 + beta);

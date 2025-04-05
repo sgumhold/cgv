@@ -26,6 +26,7 @@
 
 using namespace cgv::base;
 using namespace cgv::type;
+using namespace cgv::type::info;
 using namespace cgv::gui;
 using namespace cgv::os;
 using namespace cgv::math;
@@ -35,7 +36,57 @@ using namespace cgv::media::illum;
 namespace cgv {
 	namespace render {
 		namespace gl {
-			
+
+std::vector<int> get_context_creation_attrib_list(cgv::render::context_config& cc)
+{
+#ifdef _WIN32
+	const int CONTEXT_FLAGS = WGL_CONTEXT_FLAGS_ARB;
+	const int CONTEXT_FORWARD_COMPATIBLE_BIT = WGL_CONTEXT_FORWARD_COMPATIBLE_BIT_ARB;
+	const int CONTEXT_DEBUG_BIT = WGL_CONTEXT_DEBUG_BIT_ARB;
+	const int CONTEXT_MAJOR_VERSION = WGL_CONTEXT_MAJOR_VERSION_ARB;
+	const int CONTEXT_MINOR_VERSION = WGL_CONTEXT_MINOR_VERSION_ARB;
+	const int CONTEXT_PROFILE_MASK = WGL_CONTEXT_PROFILE_MASK_ARB;
+	const int CONTEXT_CORE_PROFILE_BIT = WGL_CONTEXT_CORE_PROFILE_BIT_ARB;
+	const int CONTEXT_COMPATIBILITY_PROFILE_BIT = WGL_CONTEXT_COMPATIBILITY_PROFILE_BIT_ARB;
+#else
+	const int CONTEXT_FLAGS = GLX_CONTEXT_FLAGS_ARB;
+	const int CONTEXT_FORWARD_COMPATIBLE_BIT = GLX_CONTEXT_FORWARD_COMPATIBLE_BIT_ARB;
+	const int CONTEXT_DEBUG_BIT = GLX_CONTEXT_DEBUG_BIT_ARB;
+	const int CONTEXT_MAJOR_VERSION = GLX_CONTEXT_MAJOR_VERSION_ARB;
+	const int CONTEXT_MINOR_VERSION = GLX_CONTEXT_MINOR_VERSION_ARB;
+	const int CONTEXT_PROFILE_MASK = GLX_CONTEXT_PROFILE_MASK_ARB;
+	const int CONTEXT_CORE_PROFILE_BIT = GLX_CONTEXT_CORE_PROFILE_BIT_ARB;
+	const int CONTEXT_COMPATIBILITY_PROFILE_BIT = GLX_CONTEXT_COMPATIBILITY_PROFILE_BIT_ARB;
+#endif
+	std::vector<int> attrib_list;
+	int version = 0;
+	if (cc.version_major < 1)
+		version = 46;
+	else
+		version = 10 * cc.version_major + (cc.version_minor >= 0 ? cc.version_minor : 0);
+	if ((version > 30 && cc.forward_compatible) || cc.debug) {
+		attrib_list.push_back(CONTEXT_FLAGS);
+		attrib_list.push_back(
+			(cc.forward_compatible ? CONTEXT_FORWARD_COMPATIBLE_BIT : 0) +
+			(cc.debug ? CONTEXT_DEBUG_BIT : 0));
+	}
+	if (cc.version_major > 0) {
+		attrib_list.push_back(CONTEXT_MAJOR_VERSION);
+		attrib_list.push_back(cc.version_major);
+	}
+	if (cc.version_minor >= 0) {
+		attrib_list.push_back(CONTEXT_MINOR_VERSION);
+		attrib_list.push_back(cc.version_minor);
+	}
+	if (version > 31) {
+		attrib_list.push_back(CONTEXT_PROFILE_MASK);
+		attrib_list.push_back(
+			cc.core_profile ? CONTEXT_CORE_PROFILE_BIT : CONTEXT_COMPATIBILITY_PROFILE_BIT);
+	}
+	attrib_list.push_back(0);
+	return attrib_list;
+}
+
 GLenum map_to_gl(PrimitiveType primitive_type)
 {
 	static const GLenum gl_primitive_type[] = {
@@ -271,6 +322,22 @@ void gl_set_material(const cgv::media::illum::phong_material& mat, MaterialSide 
 	glMaterialf(side, GL_SHININESS, mat.get_shininess());
 }
 
+/// return info font size
+float gl_context::get_info_font_size() const
+{
+	return info_font_size;
+}
+/// return info font face and ensure that it is created
+cgv::media::font::font_face_ptr gl_context::get_info_font_face() const
+{
+	if (info_font_face.empty()) {
+		font_ptr info_font = default_font(true);
+		if (!info_font.empty())
+			info_font_face = info_font->get_font_face(FFA_REGULAR);
+	}
+	return info_font_face;
+}
+
 /// construct gl_context and attach signals
 gl_context::gl_context()
 {
@@ -364,14 +431,9 @@ bool gl_context::configure_gl()
 	if (version_major >= 3) {
 		GLint context_flags;
 		glGetIntegerv(GL_CONTEXT_FLAGS, &context_flags);
-#ifdef WIN32
 		// weird behavior under windows or just nvidia or just my laptop (Stefan)??
-		debug = (context_flags & WGL_CONTEXT_FORWARD_COMPATIBLE_BIT_ARB) != 0;
-		forward_compatible = (context_flags & WGL_CONTEXT_DEBUG_BIT_ARB) != 0;
-#else
-		debug = (context_flags & GLX_CONTEXT_DEBUG_BIT_ARB) != 0;
-		forward_compatible = (context_flags & GLX_CONTEXT_FORWARD_COMPATIBLE_BIT_ARB) != 0;
-#endif
+		debug = (context_flags & GL_CONTEXT_FLAG_DEBUG_BIT) != 0;
+		forward_compatible = (context_flags & GL_CONTEXT_FLAG_FORWARD_COMPATIBLE_BIT) != 0;
 	}
 	else {
 		debug = false;
@@ -381,15 +443,22 @@ bool gl_context::configure_gl()
 	if (version >= 32) {
 		GLint context_profile;
 		glGetIntegerv(GL_CONTEXT_PROFILE_MASK, &context_profile);
-#ifdef WIN32
-		core_profile = (context_profile & WGL_CONTEXT_CORE_PROFILE_BIT_ARB) != 0;
-#else
-		core_profile = (context_profile & GLX_CONTEXT_CORE_PROFILE_BIT_ARB) != 0;
+#ifdef _DEBUG
+		if (context_profile != 0) {
+			if (core_profile != ((context_profile & GL_CONTEXT_COMPATIBILITY_PROFILE_BIT) == 0)) {
+				if (core_profile)
+					std::cerr << "WARNING: Ignoring that GL_CONTEXT_PROFILE_MASK yields compatibility profile for context created as core." << std::endl;
+				else
+					std::cerr << "WARNING: Ignoring that GL_CONTEXT_PROFILE_MASK does not yield compatibility profile for context created as such." << std::endl;
+			}
+		}
+		else {
+			std::cerr << "WARNING: Ignoring that GL_CONTEXT_PROFILE_MASK yields zero." << std::endl;
+		}
 #endif
 	}
 	else
 		core_profile = false;
-
 	const GLubyte* vendor_c_string = glGetString(GL_VENDOR);
 	std::string vendor_string(reinterpret_cast<const char*>(vendor_c_string));
 	vendor_string = cgv::utils::to_upper(vendor_string);
@@ -402,7 +471,7 @@ bool gl_context::configure_gl()
 		gpu_vendor = GPU_VENDOR_AMD;
 	
 #ifdef _DEBUG
-	std::cout << "OpenGL version " << version_major << "." << version_minor << (core_profile?" (core)":"") << (debug?" (debug)":"") << (forward_compatible?" (forward_compatible)":"") << std::endl;
+	std::cout << "OpenGL version " << version_major << "." << version_minor << (core_profile?" (core)":" (compatibility)") << (debug?" (debug)":"") << (forward_compatible?" (forward_compatible)":"") << std::endl;
 	const GLubyte* renderer_c_string = glGetString(GL_RENDERER);
 	const GLubyte* glslversion_c_string = glGetString(GL_SHADING_LANGUAGE_VERSION);
 	if (vendor_c_string)
@@ -420,7 +489,6 @@ bool gl_context::configure_gl()
 				glDebugMessageCallback(debug_callback, this);
 		}
 	}
-	//enable_font_face(info_font_face, info_font_size);
 	// use the eye location to compute the specular lighting
 	if (!core_profile) {
 		glLightModelf(GL_LIGHT_MODEL_LOCAL_VIEWER, 0);
@@ -495,28 +563,19 @@ void gl_context::clear_background(bool color_flag, bool depth_flag, bool stencil
 float gl_context::get_current_font_size() const
 {
 	if (current_font_size == 0)
-		return info_font_size;
+		return get_info_font_size();
 	return current_font_size;
 }
 /// overwrite function to return info font face in case no font is currently selected
 media::font::font_face_ptr gl_context::get_current_font_face() const
 {
 	if (current_font_face.empty())
-		return info_font_face;
+		return get_info_font_face();
 	return current_font_face;
 }
 
 void gl_context::init_render_pass()
 {
-	if (info_font_face.empty()) {
-		font_ptr info_font = default_font(true);
-		if (!info_font.empty()) {
-			info_font_face = info_font->get_font_face(FFA_REGULAR);
-			info_font_face->enable(this, info_font_size);
-			if (current_font_face.empty())
-				enable_font_face(info_font_face, info_font_size);
-		}
-	}
 #ifdef WIN32
 	wglSwapIntervalEXT(enable_vsync ? 1 : 0);
 #else
@@ -632,7 +691,7 @@ void gl_context::draw_textual_info()
 		disable_depth_test();
 
 		push_pixel_coords();
-		enable_font_face(info_font_face, info_font_size);
+		enable_font_face(get_info_font_face(), get_info_font_size());
 
 		set_cursor(20, get_height()-1-20);
 
@@ -856,15 +915,15 @@ void gl_context::on_lights_changed()
 			}
 			GLfloat col[4] = { 1,1,1,1 };
 			const cgv::media::illum::light_source& light = get_light_source(get_enabled_light_source_handle(light_idx));
-			(rgb&)(col[0]) = light.get_emission()*light.get_ambient_scale();
+			*(rgb*)col = light.get_emission()*light.get_ambient_scale();
 			glLightfv(GL_LIGHT0 + light_idx, GL_AMBIENT, col);
-			(rgb&)(col[0]) = light.get_emission();
+			*(rgb*)col = light.get_emission();
 			glLightfv(GL_LIGHT0 + light_idx, GL_DIFFUSE, col);
-			(rgb&)(col[0]) = light.get_emission();
+			*(rgb*)col = light.get_emission();
 			glLightfv(GL_LIGHT0 + light_idx, GL_SPECULAR, col);
 
 			GLfloat pos[4] = { 0,0,0,light.get_type() == cgv::media::illum::LT_DIRECTIONAL ? 0.0f : 1.0f };
-			(vec3&)(pos[0]) = light.get_position();
+			*(vec3*)pos = light.get_position();
 			glLightfv(GL_LIGHT0 + light_idx, GL_POSITION, pos);
 			if (light.get_type() != cgv::media::illum::LT_DIRECTIONAL) {
 				glLightf(GL_LIGHT0 + light_idx, GL_CONSTANT_ATTENUATION, light.get_constant_attenuation());
@@ -879,7 +938,7 @@ void gl_context::on_lights_changed()
 			if (light.get_type() == cgv::media::illum::LT_SPOT) {
 				glLightf(GL_LIGHT0 + light_idx, GL_SPOT_CUTOFF, light.get_spot_cutoff());
 				glLightf(GL_LIGHT0 + light_idx, GL_SPOT_EXPONENT, light.get_spot_exponent());
-				glLightfv(GL_LIGHT0 + light_idx, GL_SPOT_DIRECTION, light.get_spot_direction());
+				glLightfv(GL_LIGHT0 + light_idx, GL_SPOT_DIRECTION, light.get_spot_direction().data());
 			}
 			else {
 				glLightf(GL_LIGHT0 + light_idx, GL_SPOT_CUTOFF, 180.0f);
@@ -1673,7 +1732,7 @@ void gl_context::set_modelview_matrix(const dmat4& V)
 		GLint mm;
 		glGetIntegerv(GL_MATRIX_MODE, &mm);
 		glMatrixMode(GL_MODELVIEW);
-		glLoadMatrixd(V);
+		glLoadMatrixd(V.data());
 		glMatrixMode(mm);
 	}
 	context::set_modelview_matrix(V);
@@ -1685,7 +1744,7 @@ void gl_context::set_projection_matrix(const dmat4& P)
 		GLint mm;
 		glGetIntegerv(GL_MATRIX_MODE, &mm);
 		glMatrixMode(GL_PROJECTION);
-		glLoadMatrixd(P);
+		glLoadMatrixd(P.data());
 		glMatrixMode(mm);
 	}
 	context::set_projection_matrix(P);
@@ -2793,9 +2852,9 @@ bool gl_context::shader_program_set_state(shader_program_base& spb) const
 		return false;
 	}
 	GLuint p_id = get_gl_id(spb.handle);
-	glProgramParameteriARB(p_id, GL_GEOMETRY_VERTICES_OUT_ARB, spb.geometry_shader_output_count);
-	glProgramParameteriARB(p_id, GL_GEOMETRY_INPUT_TYPE_ARB, map_to_gl(spb.geometry_shader_input_type));
-	glProgramParameteriARB(p_id, GL_GEOMETRY_OUTPUT_TYPE_ARB, map_to_gl(spb.geometry_shader_output_type));
+	glProgramParameteri(p_id, GL_GEOMETRY_VERTICES_OUT_ARB, spb.geometry_shader_output_count);
+	glProgramParameteri(p_id, GL_GEOMETRY_INPUT_TYPE_ARB, map_to_gl(spb.geometry_shader_input_type));
+	glProgramParameteri(p_id, GL_GEOMETRY_OUTPUT_TYPE_ARB, map_to_gl(spb.geometry_shader_output_type));
 	return true;
 }
 

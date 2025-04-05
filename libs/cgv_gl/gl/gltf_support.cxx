@@ -400,21 +400,21 @@ void extract_mesh(const std::string& file_name, const fx::gltf::Document& doc,
 				const float* float_ptr = reinterpret_cast<const float*>(data_ptr);
 				if (a.first == "POSITION") {
 					for (size_t i = 0; i < accessor.count; ++i) {
-						mesh.new_position(cgv::media::mesh::simple_mesh<float>::vec3(3, float_ptr));
+						mesh.new_position(cgv::media::mesh::simple_mesh<float>::vec3_type(3, float_ptr));
 						float_ptr += 3;
 					}
 				}
 				else if (a.first == "NORMAL") {
 					has_nmls = true;
 					for (size_t i = 0; i < accessor.count; ++i) {
-						mesh.new_normal(cgv::media::mesh::simple_mesh<float>::vec3(3, float_ptr));
+						mesh.new_normal(cgv::media::mesh::simple_mesh<float>::vec3_type(3, float_ptr));
 						float_ptr += 3;
 					}
 				}
 				else if (a.first == "TEXCOORD_0") {
 					has_tcs = true;
 					for (size_t i = 0; i < accessor.count; ++i) {
-						mesh.new_tex_coord(cgv::media::mesh::simple_mesh<float>::vec2(2, float_ptr));
+						mesh.new_tex_coord(cgv::media::mesh::simple_mesh<float>::vec2_type(2, float_ptr));
 						float_ptr += 2;
 					}
 				}

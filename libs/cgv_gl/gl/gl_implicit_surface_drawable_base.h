@@ -32,10 +32,6 @@ class CGV_API gl_implicit_surface_drawable_base :
 public: //@<
 	/// type of the function describing the implicit surface
 	typedef cgv::math::v3_func<double,double> F;
-	/// type of axis aligned box used to define the tesselation domain
-	typedef cgv::media::axis_aligned_box<double,3> dbox3;
-	///
-	typedef cgv::math::vec<double> vec_type;
 private:
 	bool outofdate;
 	cgv::media::mesh::streaming_mesh<double>* sm_ptr;

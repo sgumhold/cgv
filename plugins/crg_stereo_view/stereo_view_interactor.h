@@ -32,12 +32,6 @@ class CGV_API stereo_view_interactor :
 	public cgv::gui::provider,
 	public cgv::render::stereo_view
 {
-public:
-	typedef cgv::math::fvec<float, 3>      vec3;
-	typedef cgv::math::fvec<double, 3>    dvec3;
-	typedef cgv::math::fmat<double, 3, 3> dmat3;
-	typedef cgv::math::fmat<double, 4, 4> dmat4;
-	typedef cgv::media::axis_aligned_box<double, 3> dbox3;
 protected:
 	GlsuStereoMode stereo_mode;
 	GlsuEye mono_mode;
@@ -90,18 +84,18 @@ protected:
 		for (unsigned int i=0; i<N; ++i)
 			update_member(&v(i));
 	}
-	void dir_gui_cb(dvec3& dir, int i);
-	void add_dir_control(const std::string& name, dvec3& dir);
+	void dir_gui_cb(cgv::dvec3& dir, int i);
+	void add_dir_control(const std::string& name, cgv::dvec3& dir);
 	void check_write_image(cgv::render::context& ctx, const char* post_fix = "", bool done = true);
 
 	///
 	StereoMousePointer stereo_mouse_pointer;
 	///
-	void draw_mouse_pointer_as_bitmap(cgv::render::context& ctx, int x, int y, int center_x, int center_y, int vp_width, int vp_height, bool visible, const dmat4 &MPW);
+	void draw_mouse_pointer_as_bitmap(cgv::render::context& ctx, int x, int y, int center_x, int center_y, int vp_width, int vp_height, bool visible, const cgv::dmat4 &MPW);
 	///
-	void draw_mouse_pointer_as_pixels(cgv::render::context& ctx, int x, int y, int center_x, int center_y, int vp_width, int vp_height, bool visible, const dmat4 &MPW);
+	void draw_mouse_pointer_as_pixels(cgv::render::context& ctx, int x, int y, int center_x, int center_y, int vp_width, int vp_height, bool visible, const cgv::dmat4 &MPW);
 	///
-	void draw_mouse_pointer_as_arrow(cgv::render::context& ctx, int x, int y, int center_x, int center_y, int vp_width, int vp_height, bool visible, const dmat4 &MPW);
+	void draw_mouse_pointer_as_arrow(cgv::render::context& ctx, int x, int y, int center_x, int center_y, int vp_width, int vp_height, bool visible, const cgv::dmat4 &MPW);
 	///
 	void draw_mouse_pointer(cgv::render::context& ctx, bool visible);
 	///
@@ -172,8 +166,8 @@ public:
 	//@}
 	//! given a mouse location and the pixel extent of the context, return the MPW matrix for unprojection
 	int get_modelview_projection_window_matrices(int x, int y, int width, int height,
-		const dmat4** MPW_pptr,
-		const dmat4** MPW_other_pptr = 0, int* x_other_ptr = 0, int* y_other_ptr = 0,
+		const cgv::dmat4** MPW_pptr,
+		const cgv::dmat4** MPW_other_pptr = 0, int* x_other_ptr = 0, int* y_other_ptr = 0,
 		int* vp_col_idx_ptr = 0, int* vp_row_idx_ptr = 0,
 		int* vp_width_ptr = 0, int *vp_height_ptr = 0,
 		int* vp_center_x_ptr = 0, int* vp_center_y_ptr = 0,
@@ -182,10 +176,10 @@ public:
 	/*! in case of stereo rendering two z-values exist that can be unprojected to two points in world
 	    coordinates. In this case the possibility with smaller z value is selected. */
 	void get_vp_col_and_row_indices(cgv::render::context& ctx, int x, int y, int& vp_col_idx, int& vp_row_idx);
-	double get_z_and_unproject(cgv::render::context& ctx, int x, int y, dvec3& p);
-	void set_focus(const dvec3& foc) { stereo_view::set_focus(foc); update_vec_member(view::focus); }
-	void set_view_up_dir(const dvec3& vud) { stereo_view::set_view_up_dir(vud); update_vec_member(view_up_dir); }
-	void set_view_dir(const dvec3& vd) { stereo_view::set_view_dir(vd); update_vec_member(view_dir); }
+	double get_z_and_unproject(cgv::render::context& ctx, int x, int y, cgv::dvec3& p);
+	void set_focus(const cgv::dvec3& foc) { stereo_view::set_focus(foc); update_vec_member(view::focus); }
+	void set_view_up_dir(const cgv::dvec3& vud) { stereo_view::set_view_up_dir(vud); update_vec_member(view_up_dir); }
+	void set_view_dir(const cgv::dvec3& vd) { stereo_view::set_view_dir(vd); update_vec_member(view_dir); }
 	void set_y_extent_at_focus(double ext) { stereo_view::set_y_extent_at_focus(ext); on_set(&y_extent_at_focus); }
 	void set_y_view_angle(double angle) { stereo_view::set_y_view_angle(angle); on_set(&y_view_angle); }
 	void set_eye_distance(double e) { stereo_view::set_eye_distance(e); on_set(&eye_distance); }
@@ -219,8 +213,8 @@ public:
 private:
 	double check_for_click;
 	
-	dmat4 MPW, MPW_right;
-	dmat4 V, P;
+	cgv::dmat4 MPW, MPW_right;
+	cgv::dmat4 V, P;
 
 	GlsuEye current_e;
 	//int current_vp[4], current_sb[4];
@@ -229,7 +223,7 @@ private:
 	unsigned nr_viewport_columns;
 	unsigned nr_viewport_rows;
 	unsigned viewport_shrinkage;
-	std::vector<dmat4> MPWs, MPWs_right;
+	std::vector<cgv::dmat4> MPWs, MPWs_right;
 	std::vector<cgv::render::view> views;
 	std::vector<bool> use_individual_view;
 

@@ -7,8 +7,6 @@
 #include "operators.h"
 #include <cgv/utils/token.h>
 
-using cgv::utils::token;
-
 #include "lib_begin.h"
 
 namespace cgv {
@@ -18,7 +16,7 @@ namespace cgv {
 
 		enum ExpressionPart { EP_VALUE, EP_OPERATOR, EP_OPEN, EP_FUNC, EP_CLOSE, EP_LIST_OPEN, EP_LIST_CLOSE, EP_LIST_ACCESS, EP_COMMA };
 
-		struct expression_token : public token
+		struct expression_token : public cgv::utils::token
 		{
 			variant value;
 			OperatorType ot;
@@ -30,6 +28,8 @@ namespace cgv {
 
 		class CGV_API expression_processor
 		{
+			using token = cgv::utils::token;
+
 		protected:
 			bool debug_parse;
 			bool debug_evaluate;

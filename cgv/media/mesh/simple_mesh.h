@@ -29,11 +29,11 @@ public:
 	/// define index type
 	typedef cgv::type::uint32_type idx_type;
 	/// define index pair type
-	typedef cgv::math::fvec<idx_type, 2> vec2i;
+	typedef cgv::math::fvec<idx_type,2> idx2_type;
 	/// define index triple type
-	typedef cgv::math::fvec<idx_type, 3> vec3i;
+	typedef cgv::math::fvec<idx_type,3> idx3_type;
 	/// define index quadruple type
-	typedef cgv::math::fvec<idx_type, 4> vec4i;
+	typedef cgv::math::fvec<idx_type,4> idx4_type;
 	/// define material type
 	typedef illum::textured_surface_material mat_type;
 	/// different mesh attributes
@@ -182,7 +182,7 @@ public:
 	 * \see simple_mesh::extract_triangle_element_buffer()
 	 * \see simple_mesh::extract_wireframe_element_buffer()
 	 */
-	void merge_indices(std::vector<idx_type>& vertex_indices, std::vector<vec4i>& unique_tuples,
+	void merge_indices(std::vector<idx_type>& vertex_indices, std::vector<idx4_type>& unique_tuples,
 					   bool* include_tex_coords_ptr = 0, bool* include_normals_ptr = 0, bool* include_tangents_ptr = 0) const;
 	/**
 	 * Extract element array buffers for triangulation.
@@ -198,7 +198,7 @@ public:
 	void extract_triangle_element_buffer(const std::vector<idx_type>& vertex_indices,
 										 std::vector<idx_type>& triangle_element_buffer,
 										 const std::vector<idx_type>* face_permutation_ptr = 0,
-										 std::vector<vec3i>* material_group_start_ptr = 0) const;
+										 std::vector<idx3_type>* material_group_start_ptr = 0) const;
 	/**
 	 * Extract element array buffers for edges in wireframe.
 	 * 
@@ -210,13 +210,37 @@ public:
 	void extract_wireframe_element_buffer(const std::vector<idx_type>& vertex_indices,
 										  std::vector<idx_type>& edge_element_buffer) const;
 	/// extract vertex attribute buffer for the given flags and return size of vertex in bytes
-	uint32_t extract_vertex_attribute_buffer_base(const std::vector<vec4i>& unique_quadruples, AttributeFlags& flags, std::vector<uint8_t>& attrib_buffer) const;
-	/// compute a index vector storing the inv corners per corner and optionally index vectors with per position corner index, per corner next and or prev corner index (implementation assumes closed manifold connectivity)
-	void compute_inv(std::vector<uint32_t>& inv, std::vector<uint32_t>* p2c_ptr = 0, std::vector<uint32_t>* next_ptr = 0, std::vector<uint32_t>* prev_ptr = 0) const;
-	/// given the inv corners compute index vector per corner its edge index and optionally per edge its corner index and return edge count (implementation assumes closed manifold connectivity)
-	uint32_t compute_c2e(const std::vector<uint32_t>& inv, std::vector<uint32_t>& c2e, std::vector<uint32_t>* e2c_ptr = 0) const;
+	idx_type extract_vertex_attribute_buffer_base(const std::vector<idx4_type>& unique_quadruples, AttributeFlags& flags, std::vector<uint8_t>& attrib_buffer) const;
+	//! Do inverse matching of half-edges.
+	/*! For this corners are converted to the half - edges that point in winding order
+		away from the corner. The inverse matching result is stored in the vector \c inv
+		with one index per corner. This index is -1 for unmatched half-edges and the 
+		index of the corner corresponding to matched half-edges. For non-manifold edges
+		two strategies are supported: cyclic linking (\c link_non_manifold_edges = true)
+		or cutting into unmatched half-edges (\c link_non_manifold_edges = false).
+		The function fills the optionally provided vectors
+		- \c p2c ... per position the index of one incident corner
+		- \c next ... per corner the index of the next corner in the face
+		- \c prev ... per corner the index of the prev corner in the face
+		- \c unmatched ... corners with unmatched half-edges 
+		- \c non_manifold ... one corner index per non-manifold edge
+		- \c unmatched_elements ... position indices of unmatched half-edges
+		- \c non_manifold_elements ... position indices of non-manifold edges 
+		The function returns the number of interior manifold edges */
+	idx_type compute_inv(
+		std::vector<idx_type>& inv,
+		bool link_non_manifold_edges = false,
+		std::vector<idx_type>* p2c_ptr = 0, 
+		std::vector<idx_type>* next_ptr = 0, 
+		std::vector<idx_type>* prev_ptr = 0,
+		std::vector<idx_type>* unmatched = 0,
+		std::vector<idx_type>* non_manifold = 0,
+		std::vector<idx_type>* unmatched_elements = 0,
+		std::vector<idx_type>* non_manifold_elements = 0) const;
+	/// given the inv corners compute vector storing per corner the edge index and optionally per edge one corner index and return edge count (implementation assumes closed manifold connectivity)
+	idx_type compute_c2e(const std::vector<idx_type>& inv, std::vector<idx_type>& c2e, std::vector<idx_type>* e2c_ptr = 0) const;
 	/// compute index vector with per corner its face index
-	void compute_c2f(std::vector<uint32_t>& c2f) const;
+	void compute_c2f(std::vector<idx_type>& c2f) const;
 };
 
 /// the simple_mesh class is templated over the coordinate type that defaults to float
@@ -230,24 +254,18 @@ public:
 	typedef simple_mesh<T> mesh_type;
 	/// type of axis aligned 3d box
 	typedef typename cgv::media::axis_aligned_box<T, 3> box_type;
-	/// type of 4d vector
-	typedef typename cgv::math::fvec<T, 4> vec4;
-	/// type of 3d vector
-	typedef typename cgv::math::fvec<T, 3> vec3;
 	/// type of 2d vector
-	typedef typename cgv::math::fvec<T, 2> vec2;
+	typedef typename cgv::math::fvec<T, 2> vec2_type;
+	/// type of 3d vector
+	typedef typename cgv::math::fvec<T, 3> vec3_type;
 	/// linear transformation 
-	typedef typename cgv::math::fmat<T, 3, 3> mat3;
-	/// linear transformation 
-	typedef typename cgv::math::fmat<T, 4, 4> mat4;
-	/// color type used in surface materials
-	typedef typename illum::surface_material::color_type clr_type;
+	typedef typename cgv::math::fmat<T, 3, 3> mat3_type;
 protected:
 	friend class simple_mesh_obj_reader<T>;
-	std::vector<vec3>  positions;
-	std::vector<vec3>  normals;
-	std::vector<vec3>  tangents;
-	std::vector<vec2>  tex_coords;
+	std::vector<vec3_type>  positions;
+	std::vector<vec3_type>  normals;
+	std::vector<vec3_type>  tangents;
+	std::vector<vec2_type>  tex_coords;
 	bool  has_attribute(attribute_type attr) const {
 		switch (attr) {
 		case attribute_type::position:  return true;
@@ -255,6 +273,7 @@ protected:
 		case attribute_type::normal:    return has_normals() && has_normal_indices();
 		case attribute_type::tangent:   return has_tangents();
 		case attribute_type::color:     return has_colors();
+		default: /* see below */;
 		}
 		return false;
 	}
@@ -265,16 +284,18 @@ protected:
 		case attribute_type::normal:    return reinterpret_cast<const uint8_t*>(   &normals[ai]);
 		case attribute_type::tangent:   return reinterpret_cast<const uint8_t*>(  &tangents[ai]);
 		case attribute_type::color:     return reinterpret_cast<const uint8_t*>(get_color_data_ptr()) + ai * get_color_size();
+		default: /* see below */;
 		}
 		return nullptr;
 	}
 	size_t get_attribute_size(attribute_type attr) const {
 		switch (attr) {
-		case attribute_type::position:  return sizeof(vec3);
-		case attribute_type::texcoords: return sizeof(vec2);
-		case attribute_type::normal:    return sizeof(vec3);
-		case attribute_type::tangent:   return sizeof(vec3);
+		case attribute_type::position:  return sizeof(vec3_type);
+		case attribute_type::texcoords: return sizeof(vec2_type);
+		case attribute_type::normal:    return sizeof(vec3_type);
+		case attribute_type::tangent:   return sizeof(vec3_type);
 		case attribute_type::color:     return get_color_size();
+		default: /* see below */;
 		}
 		return 0;
 	}
@@ -285,7 +306,7 @@ protected:
 			s = sizeof(T);
 		return s;
 	}
-	vec3 compute_normal(const vec3& p0, const vec3& p1, const vec3& p2);
+	vec3_type compute_normal(const vec3_type& p0, const vec3_type& p1, const vec3_type& p2);
 public:
 	/// copy constructor
 	simple_mesh(const simple_mesh<T>& sm);
@@ -303,43 +324,43 @@ public:
 	void clear();
 
 	/// add a new position and return position index
-	idx_type new_position(const vec3& p) { positions.push_back(p); return idx_type(positions.size()-1); }
+	idx_type new_position(const vec3_type& p) { positions.push_back(p); return idx_type(positions.size()-1); }
 	/// access to positions
 	idx_type get_nr_positions() const { return idx_type(positions.size()); }
-	vec3& position(idx_type pi) { return positions[pi]; }
-	const vec3& position(idx_type pi) const { return positions[pi]; }
-	const std::vector<vec3>& get_positions() const { return positions; }
-	std::vector<vec3>& ref_positions() { return positions; }
+	vec3_type& position(idx_type pi) { return positions[pi]; }
+	const vec3_type& position(idx_type pi) const { return positions[pi]; }
+	const std::vector<vec3_type>& get_positions() const { return positions; }
+	std::vector<vec3_type>& ref_positions() { return positions; }
 
 	/// add a new normal and return normal index
-	idx_type new_normal(const vec3& n) { normals.push_back(n); return idx_type(normals.size()-1); }
+	idx_type new_normal(const vec3_type& n) { normals.push_back(n); return idx_type(normals.size()-1); }
 	/// access to normals
 	bool has_normals() const { return get_nr_normals() > 0; }
 	idx_type get_nr_normals() const { return idx_type(normals.size()); }
-	vec3& normal(idx_type ni) { return normals[ni]; }
-	const vec3& normal(idx_type ni) const { return normals[ni]; }
-	const std::vector<vec3>& get_normals() const { return normals; }
+	vec3_type& normal(idx_type ni) { return normals[ni]; }
+	const vec3_type& normal(idx_type ni) const { return normals[ni]; }
+	const std::vector<vec3_type>& get_normals() const { return normals; }
 
 	/// add a new tangent and return tangent index
-	idx_type new_tangent(const vec3& tc) { tangents.push_back(tc); return idx_type(tangents.size() - 1); }
+	idx_type new_tangent(const vec3_type& tc) { tangents.push_back(tc); return idx_type(tangents.size() - 1); }
 	/// access to tangents
 	bool has_tangents() const { return get_nr_tangents() > 0; }
 	idx_type get_nr_tangents() const { return idx_type(tangents.size()); }
-	vec3& tangent(idx_type ti) { return tangents[ti]; }
-	const vec3& tangent(idx_type ti) const { return tangents[ti]; }
+	vec3_type& tangent(idx_type ti) { return tangents[ti]; }
+	const vec3_type& tangent(idx_type ti) const { return tangents[ti]; }
 
 	/// add a new texture coordinate and return texture coordinate index
-	idx_type new_tex_coord(const vec2& tc) { tex_coords.push_back(tc); return idx_type(tex_coords.size() - 1); }
+	idx_type new_tex_coord(const vec2_type& tc) { tex_coords.push_back(tc); return idx_type(tex_coords.size() - 1); }
 	/// access to texture coordinates
 	bool has_tex_coords() const { return get_nr_tex_coords() > 0; }
 	idx_type get_nr_tex_coords() const { return idx_type(tex_coords.size()); }
-	vec2& tex_coord(idx_type ti) { return tex_coords[ti]; }
-	const vec2& tex_coord(idx_type ti) const { return tex_coords[ti]; }
+	vec2_type& tex_coord(idx_type ti) { return tex_coords[ti]; }
+	const vec2_type& tex_coord(idx_type ti) const { return tex_coords[ti]; }
 
 	/// compute the normal nml of a face and return whether this was possible
-	bool compute_face_normal(idx_type fi, vec3& nml) const;
+	bool compute_face_normal(idx_type fi, vec3_type& nml, bool normalize = true) const;
 	/// compute face center
-	vec3 compute_face_center(idx_type fi) const;
+	vec3_type compute_face_center(idx_type fi) const;
 	/// compute per face normals (ensure that per corner normal indices are set correspondingly)
 	void compute_face_normals(bool construct_normal_indices = true);
 	/// compute per face tangents (ensure that per corner tangent indices are set correspondingly)
@@ -383,13 +404,13 @@ public:
 	 * \param num_floats_in_vertex If not nullptr will be set to the number of floats which make up one vertex with all its attributes.
 	 * \return The size of one color in bytes.
 	 */
-	unsigned extract_vertex_attribute_buffer(const std::vector<vec4i>& unique_quadruples, bool include_tex_coords,
+	unsigned extract_vertex_attribute_buffer(const std::vector<idx4_type>& unique_quadruples, bool include_tex_coords,
 											 bool include_normals, bool include_tangents, std::vector<T>& attrib_buffer,
 											 bool* include_colors_ptr = 0, int* num_floats_in_vertex = nullptr) const;
 	/// apply transformation to mesh
-	void transform(const mat3& linear_transformation, const vec3& translation);
+	void transform(const mat3_type& linear_transformation, const vec3_type& translation);
 	/// apply transformation to mesh with given inverse linear transformation
-	void transform(const mat3& linear_transform, const vec3& translation, const mat3& inverse_linear_transform);
+	void transform(const mat3_type& linear_transform, const vec3_type& translation, const mat3_type& inverse_linear_transform);
 };
 
 		}

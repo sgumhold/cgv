@@ -13,8 +13,61 @@ void overlay::on_layout_change() {
 	post_redraw();
 }
 
-void overlay::on_set(void* member_ptr) {
+bool overlay::handle(cgv::gui::event& e) {
+	switch(e.get_kind()) {
+	case cgv::gui::EID_KEY:
+		return handle_key_event(dynamic_cast<cgv::gui::key_event&>(e));
+	case cgv::gui::EID_MOUSE:
+	{
+		cgv::gui::mouse_event& me = dynamic_cast<cgv::gui::mouse_event&>(e);
+		ivec2 local_mouse_pos = get_local_mouse_pos({ me.get_x(), me.get_y() });
 
+		cgv::g2d::irect local_rect = get_local_rectangle();
+		bool mouse_is_over_overlay = local_rect.contains(local_mouse_pos);
+
+		cgv::gui::MouseAction action = me.get_action();
+
+		if(action == cgv::gui::MA_MOVE && local_mouse_pos != last_local_mouse_pos_) {
+			bool mouse_was_over_overlay = local_rect.contains(last_local_mouse_pos_);
+
+			last_local_mouse_pos_ = local_mouse_pos;
+
+			if(!mouse_was_over_overlay && mouse_is_over_overlay)
+				me.set_action(cgv::gui::MA_ENTER);
+			else if(mouse_was_over_overlay && !mouse_is_over_overlay)
+				me.set_action(cgv::gui::MA_LEAVE);
+
+			bool handled = handle_mouse_event(me, local_mouse_pos);
+			me.set_action(action);
+		}
+
+		switch(action) {
+		case cgv::gui::MA_PRESS:
+			captured_mouse_ = mouse_is_over_overlay;
+			break;
+		case cgv::gui::MA_RELEASE:
+			captured_mouse_ = false;
+			break;
+		case cgv::gui::MA_WHEEL:
+			return mouse_is_over_overlay;
+		default:
+			break;
+		}
+
+		if((mouse_is_over_overlay || captured_mouse_) && handle_mouse_event(me, local_mouse_pos))
+			return true;
+
+		if(captured_mouse_ && blocks_events_)
+			return true;
+	}
+	default:
+		break;
+	}
+
+	return false;
+}
+
+void overlay::on_set(void* member_ptr) {
 	handle_member_change(cgv::utils::pointer_test(member_ptr));
 	update_member(member_ptr);
 	post_redraw();

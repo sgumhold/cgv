@@ -2,6 +2,7 @@
 #include <cgv/gui/menu_provider.h>
 #include <cgv/gui/control.h>
 #include <cgv/gui/shortcut.h>
+#include <cgv/gui/dialog.h>
 #include <cgv/utils/convert.h>
 #include <cgv/signal/signal.h>
 #include <cgv/signal/rebind.h>
@@ -106,7 +107,7 @@ public:
 	///
 	void destruct()
 	{
-		unregister_object(base_ptr(this));
+		unregister_object(cgv::base::base_ptr(this));
 	}
 	void menu_cb()
 	{
@@ -123,10 +124,42 @@ public:
 	{
 		remove_menu_element(find_menu_element("view/gui_test_cb"));
 	}
-
+	void show_message()
+	{
+		cgv::gui::message("Hello Message!");
+	}
+	void ask_question2()
+	{
+		const char* answers[] = { "No", "Yes" };
+		int answer = cgv::gui::question("Do you like to dance?", "No thanks,Yes Please!", 1);
+		cgv::gui::message(std::string("You answered ") + answers[answer]);
+	}
+	void ask_question3()
+	{
+		const char* answers[] = { "Banana","Apple","Pineapple" };
+		int answer = cgv::gui::question("What is your prefered fruit?", "Apple=1,Banana=0,Pineapple=2,straw", 0);
+		cgv::gui::message(std::string("You answered ") + answers[answer]);
+	}
+	void query_text()
+	{
+		std::string text;
+		cgv::gui::query("enter your password here:", text);
+		cgv::gui::message(std::string("Your wrote <") + text + ">.");
+	}
+	void query_password()
+	{
+		std::string pwd;
+		cgv::gui::query("enter your password here:", pwd, true);
+		cgv::gui::message(std::string("Your password is <") + pwd + "> - please keep it secret!");
+	}
 	/// you must overload this for gui creation
 	void create_gui()
 	{
+		connect_copy(add_button("show message")->click, rebind(this, &gui_test::show_message));
+		connect_copy(add_button("ask question2")->click, rebind(this, &gui_test::ask_question2));
+		connect_copy(add_button("ask question3")->click, rebind(this, &gui_test::ask_question3));
+		connect_copy(add_button("query text")->click, rebind(this, &gui_test::query_text));
+		connect_copy(add_button("query password")->click, rebind(this, &gui_test::query_password));
 		add_member_control(this, "show_first", show_first,"toggle");
 		connect_copy(add_control("show_second", show_second,"toggle")->value_change,
 			         rebind(static_cast<provider*>(this),&provider::post_recreate_gui));

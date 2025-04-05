@@ -162,7 +162,6 @@ void fltk_gl_view::change_mode(int m)
 	in_recreate_context = true;
 	if (mode() == m)
 		mode_ = -1;
-	fltk_driver::set_context_creation_attrib_list(*this);
 	if (!mode(m))
 		std::cerr << "could not change mode to " << m << std::endl;
 	current_font_face.clear();
@@ -767,12 +766,21 @@ void fltk_gl_view::force_redraw()
 }
 
 /// select a font given by a font handle
-void fltk_gl_view::enable_font_face(font_face_ptr font_face, float font_size)
+void fltk_gl_view::enable_font_face(cgv::media::font::font_face_ptr font_face, float font_size)
 {
 	fltk_font_face_ptr fff = dynamic_cast<fltk_font_face*>(&*font_face);
 	if (fff.empty())
 		gl_context::enable_font_face(font_face, font_size);
 	else {
+		static bool asked_user = false;
+		if (core_profile && !asked_user) {
+			asked_user = true;
+			if (cgv::gui::question("FLTK fonts that are only supported in compatibility profile have been enabled in core compatibility. Switch to compatibility profile?\nTo avoid this message use cmf_tt_gl_font plugin or add 'name(Main):core_profile=true' to your config file.", 
+				"Yes=1,No=0", 0)) {
+				core_profile = false;
+				on_set(&core_profile);
+			}
+		}
 		// avoid fltk fonts in core profile
 		if (!core_profile)
 			fff->enable(static_cast<cgv::render::context*>(this), font_size);
@@ -781,10 +789,9 @@ void fltk_gl_view::enable_font_face(font_face_ptr font_face, float font_size)
 	}
 }
 
-bool fltk_gl_view::dispatch_event(const event& e)
+bool fltk_gl_view::dispatch_event(event& e)
 {
-	// FIXME: cast from (const event&) to (event&) is dirty
-	single_method_action<event_handler,bool,event&> sma((event&)e,&event_handler::handle);
+	single_method_action<event_handler,bool,event&> sma(e,&event_handler::handle);
 	return traverser(sma).traverse(group_ptr(this));
 }
 
@@ -801,32 +808,43 @@ int fltk_gl_view::handle(int ei)
 	case fltk::FOCUS:
 	case fltk::UNFOCUS: 
 		return 1;
-	case fltk::KEY :
-		if (dispatch_event(cgv_key_event(fltk::event_key_repeated() ? KA_REPEAT : KA_PRESS)))
+	case fltk::KEY: {
+		auto ke = cgv_key_event(fltk::event_key_repeated() ? KA_REPEAT : KA_PRESS);
+		if (dispatch_event(ke))
 			return 1;
 		if (fltk::event_key() >= fltk::HomeKey &&
 			fltk::event_key() <= fltk::EndKey)
 			return 1;
+		}
 		break;
-	case fltk::KEYUP :
-		if (dispatch_event(cgv_key_event(KA_RELEASE)))
+	case fltk::KEYUP: {
+		auto ke = cgv_key_event(KA_RELEASE);
+		if (dispatch_event(ke))
 			return 1;
+		}
 		break;
-	case fltk::PUSH:
-		if (dispatch_event(cgv_mouse_event(MA_PRESS)))
+	case fltk::PUSH: {
+		auto  me = cgv_mouse_event(MA_PRESS);
+		if (dispatch_event(me))
 			return 1;
+		}
 		break;
-	case fltk::RELEASE:
-		if (dispatch_event(cgv_mouse_event(MA_RELEASE)))
+	case fltk::RELEASE: {
+		auto me = cgv_mouse_event(MA_RELEASE);
+		if (dispatch_event(me))
 			return 1;
+		}
 		break;
-	case fltk::MOUSEWHEEL:
-		if (dispatch_event(cgv_mouse_event(MA_WHEEL)))
+	case fltk::MOUSEWHEEL: {
+		auto me = cgv_mouse_event(MA_WHEEL);
+		if (dispatch_event(me))
 			return 1;
+		}
 		break;
 	case fltk::MOVE:
 		if (!dnd_release_event_queued) {
-			if ( (dx != 0 || dy != 0) && dispatch_event(cgv_mouse_event(MA_MOVE,dx,dy)))
+			auto me = cgv_mouse_event(MA_MOVE, dx, dy);
+			if ( (dx != 0 || dy != 0) && dispatch_event(me))
 				return 1;
 		}
 		else 
@@ -834,19 +852,24 @@ int fltk_gl_view::handle(int ei)
 		break;
 	case fltk::DRAG:
 		if (dx != 0 || dy != 0) {
-			if (dispatch_event(cgv_mouse_event(MA_DRAG,dx,dy)))
+			auto me = cgv_mouse_event(MA_DRAG, dx, dy);
+			if (dispatch_event(me))
 				return 1;
 		}
 		else
 			return 1;
 		break;
-	case fltk::ENTER:
+	case fltk::ENTER: {
 		take_focus();
-		dispatch_event(cgv_mouse_event(MA_ENTER));
+		auto me = cgv_mouse_event(MA_ENTER);
+		dispatch_event(me);
+		}
 		return 1;
-	case fltk::LEAVE:
-		if (dispatch_event(cgv_mouse_event(MA_LEAVE)))
+	case fltk::LEAVE: {
+		auto me = cgv_mouse_event(MA_LEAVE);
+		if (dispatch_event(me))
 			return 1;
+		}
 		break;
 	case fltk::DND_ENTER:
 	{
@@ -858,15 +881,18 @@ int fltk_gl_view::handle(int ei)
 	}
 	case fltk::DND_DRAG :
 		if (dx != 0 || dy != 0) {
-			if (dispatch_event(cgv_mouse_event(MA_DRAG,EF_DND,dx,dy)))
+			auto me = cgv_mouse_event(MA_DRAG, EF_DND, dx, dy);
+			if (dispatch_event(me))
 				return 1;
 		}
 		else
 			return 1;
 		break;
-	case fltk::DND_LEAVE:
-		if (dispatch_event(cgv_mouse_event(MA_LEAVE, EF_DND)))
+	case fltk::DND_LEAVE: {
+		auto me = cgv_mouse_event(MA_LEAVE, EF_DND);
+		if (dispatch_event(me))
 			return 1;
+		}
 		break;
 	case fltk::DND_RELEASE :
 		dnd_release_event = cgv_mouse_event(MA_RELEASE, EF_DND);

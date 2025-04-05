@@ -10,13 +10,13 @@ namespace cgv {
 template <typename T>
 uint32_t dynamic_mesh<T>::add_blend_shape(blend_shape_mode mode, idx_type nr_data, idx_type nr_indices)
 {
-	blend_shape bs = { mode, vec2i(idx_type(blend_shape_data.size()),idx_type(blend_shape_data.size()+nr_data)),
-		vec2i(idx_type(blend_shape_indices.size()), idx_type(blend_shape_indices.size()+nr_indices)) };
+	blend_shape bs = { mode, idx2_type(idx_type(blend_shape_data.size()),idx_type(blend_shape_data.size()+nr_data)),
+		idx2_type(idx_type(blend_shape_indices.size()), idx_type(blend_shape_indices.size()+nr_indices)) };
 	blend_shapes.push_back(bs);
 	return uint32_t(blend_shapes.size() - 1);
 }
 template <typename T>
-void dynamic_mesh<T>::add_blend_shape_data(const vec3& d)
+void dynamic_mesh<T>::add_blend_shape_data(const vec3_type& d)
 {
 	blend_shape_data.push_back(d);
 }
@@ -48,7 +48,7 @@ bool dynamic_mesh<T>::has_blend_shape_vector(idx_type bi, idx_type vi) const
 	return false;
 }
 template <typename T>
-typename dynamic_mesh<T>::vec3 dynamic_mesh<T>::get_blend_shape_vector(idx_type bi, idx_type vi) const
+typename dynamic_mesh<T>::vec3_type dynamic_mesh<T>::get_blend_shape_vector(idx_type bi, idx_type vi) const
 {
 	const auto& bs = blend_shapes[bi];
 	switch (bs.mode) {
@@ -66,7 +66,7 @@ typename dynamic_mesh<T>::vec3 dynamic_mesh<T>::get_blend_shape_vector(idx_type 
 				return blend_shape_data[off + vi- blend_shape_indices[i]];
 		break;
 	}
-	return vec3(T(0));
+	return vec3_type(T(0));
 }
 template <typename T>
 size_t dynamic_mesh<T>::get_nr_blend_shapes() const
@@ -150,22 +150,22 @@ typename dynamic_mesh<T>::idx_type dynamic_mesh<T>::get_nr_joints() const
 	return idx_type(joint_parents.size());
 }
 template <typename T>
-std::vector<typename dynamic_mesh<T>::mat4> dynamic_mesh<T>::compute_joint_transformations(const std::vector<vec3>& reference_joint_locations,
-	const vec3& translation, const std::vector<vec3>& target_spin_vectors) const
+std::vector<typename dynamic_mesh<T>::mat4_type> dynamic_mesh<T>::compute_joint_transformations(const std::vector<vec3_type>& reference_joint_locations,
+	const vec3_type& translation, const std::vector<vec3_type>& target_spin_vectors) const
 {
-	std::vector<mat3> target_rotations;
+	std::vector<mat3_type> target_rotations;
 	for (const auto& sv : target_spin_vectors)
 		target_rotations.push_back(cgv::math::rotate3s<T>(sv));
 	return compute_joint_transformations(reference_joint_locations, translation, target_rotations);
 }
 template <typename T>
-std::vector<typename dynamic_mesh<T>::mat4> dynamic_mesh<T>::compute_joint_transformations(const std::vector<vec3>& reference_joint_locations,
-	const vec3& translation, const std::vector<mat3>& target_rotations) const
+std::vector<typename dynamic_mesh<T>::mat4_type> dynamic_mesh<T>::compute_joint_transformations(const std::vector<vec3_type>& reference_joint_locations,
+	const vec3_type& translation, const std::vector<mat3_type>& target_rotations) const
 {
 	// compute joint transformations in rest pose and in target pose
-	std::vector<mat4> Is, Ts;
-	mat4 I = cgv::math::identity4<float>();
-	vec3& t = reinterpret_cast<vec3&>(I.col(3));
+	std::vector<mat4_type> Is, Ts;
+	mat4_type I = cgv::math::identity4<float>();
+	vec3_type& t = reinterpret_cast<vec3_type&>(I.col(3));
 	t = reference_joint_locations.front();
 	Is.push_back(I);
 	Ts.push_back(pose4(target_rotations.front(), t + translation));
@@ -197,7 +197,7 @@ void dynamic_mesh<T>::apply_blend_shapes(const std::vector<T>& weights, idx_type
 		// here we assume that all blend shapes have mode direct and address whole mesh
 
 		// first extract per blend shape pointers to the blend shape data start
-		std::vector<const vec3*> bs_ptrs;
+		std::vector<const vec3_type*> bs_ptrs;
 		int n = this->get_nr_positions();
 		for (size_t bi = blend_shape_offset; bi < weights.size() + blend_shape_offset; ++bi) {
 			const auto& bs = blend_shapes[bi];
@@ -208,7 +208,7 @@ void dynamic_mesh<T>::apply_blend_shapes(const std::vector<T>& weights, idx_type
 		// next apply them to mesh positions
 #pragma omp parallel for
 		for (int vi = 0; vi < n; ++vi) {
-			vec3 p(T(0));
+			vec3_type p(T(0));
 			for (int wi = 0; wi < weights.size(); ++wi)
 				p += weights[wi]*bs_ptrs[wi][vi];
 			this->position(vi) += p;
@@ -236,7 +236,7 @@ void dynamic_mesh<T>::apply_blend_shapes(const std::vector<T>& weights, idx_type
 	}
 }
 template <typename T>
-const std::vector<typename dynamic_mesh<T>::vec3>& dynamic_mesh<T>::get_intermediate_positions() const
+const std::vector<typename dynamic_mesh<T>::vec3_type>& dynamic_mesh<T>::get_intermediate_positions() const
 {
 	return intermediate_positions;
 }
@@ -268,18 +268,18 @@ void dynamic_mesh<T>::recover_intermediate_positions()
 }
 
 template <typename T>
-void dynamic_mesh<T>::lbs(const std::vector<mat4>& joint_matrices, lbs_source_mode mode)
+void dynamic_mesh<T>::lbs(const std::vector<mat4_type>& joint_matrices, lbs_source_mode mode)
 {
-	std::vector<vec3> tmp;
+	std::vector<vec3_type> tmp;
 	if (mode == lbs_source_mode::position)
 		tmp = this->positions;
-	const std::vector<vec3>& P = mode == lbs_source_mode::position ? tmp : (
+	const std::vector<vec3_type>& P = mode == lbs_source_mode::position ? tmp : (
 		mode == lbs_source_mode::intermediate ? intermediate_positions : reference_positions);
 	switch (weight_mode) {
 	case vertex_weight_mode::dense:
 		for (size_t pi = 0, wi = 0; pi < P.size(); ++pi) {
-			vec4 p = vec4(P[pi],1.0f);
-			vec4 q = vec4(0.0f);
+			vec4_type p = vec4_type(P[pi], 1.0f);
+			vec4_type q = vec4_type(0.0f);
 			for (unsigned ji = 0; ji < joint_parents.size(); ++ji, ++wi)
 				q += vertex_weight_data[wi] * (joint_matrices[ji] * p);
 			this->position(idx_type(pi)) = q;
@@ -287,8 +287,8 @@ void dynamic_mesh<T>::lbs(const std::vector<mat4>& joint_matrices, lbs_source_mo
 		break;
 	case vertex_weight_mode::sparse:
 		for (size_t pi = 0; pi < P.size(); ++pi) {
-			vec4 p = vec4(P[pi], 1.0f);
-			vec4 q = vec4(0.0f);
+			vec4_type p = vec4_type(P[pi], 1.0f);
+			vec4_type q = vec4_type(0.0f);
 			size_t beg = vertex_weight_index_begins[pi];
 			size_t end = pi+1 < P.size() ? vertex_weight_index_begins[pi+1] : vertex_weight_indices.size();
 			for (size_t wi = beg; wi < end; ++wi)
@@ -298,8 +298,8 @@ void dynamic_mesh<T>::lbs(const std::vector<mat4>& joint_matrices, lbs_source_mo
 		break;
 	case vertex_weight_mode::fixed:
 		for (size_t pi = 0; pi < P.size(); ++pi) {
-			vec4 p = vec4(P[pi], 1.0f);
-			vec4 q = vec4(0.0f);
+			vec4_type p = vec4_type(P[pi], 1.0f);
+			vec4_type q = vec4_type(0.0f);
 			size_t beg = vertex_weight_index_begins[pi];
 			size_t end = pi + 1 < P.size() ? vertex_weight_index_begins[pi + 1] : vertex_weight_indices.size();
 			for (size_t wi = beg; wi < end; ++wi)

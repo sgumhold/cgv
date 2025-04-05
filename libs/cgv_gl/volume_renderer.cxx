@@ -10,7 +10,12 @@ namespace cgv {
 		{
 			static int ref_count = 0;
 			static volume_renderer r;
+			/*if (ref_count == 0) {
+				r.init(ctx);
+			}*/
 			r.manage_singleton(ctx, "volume_renderer", ref_count, ref_count_change);
+			/*if (ref_count < 1)
+				r.clear(ctx);*/
 			return r;
 		}
 
@@ -88,7 +93,7 @@ namespace cgv {
 			for(size_t i = 0; i < noise_data.size(); ++i)
 				noise_data[i] = static_cast<uint8_t>(dist(rng));
 
-			cgv::data::data_view dv = cgv::data::data_view(new cgv::data::data_format(size, size, TI_UINT8, cgv::data::CF_R), noise_data.data());
+			cgv::data::data_view dv = cgv::data::data_view(new cgv::data::data_format(size, size, cgv::type::info::TI_UINT8, cgv::data::CF_R), noise_data.data());
 			noise_texture.create(ctx, dv, 0);
 		}
 
@@ -154,6 +159,12 @@ namespace cgv {
 				init_noise_texture(ctx);
 
 			return res;
+		}
+		void volume_renderer::clear (const context& ctx) {
+			disable_attribute_array_manager(ctx, position_aam);
+			position_aam.destruct(ctx);
+			noise_texture.destruct(ctx);
+			renderer::clear(ctx); // perform upstream actions
 		}
 
 		bool volume_renderer::set_volume_texture(texture* tex) {
@@ -268,8 +279,13 @@ namespace cgv {
 			ctx.push_modelview_matrix();
 
 			if(apply_bounding_box_transformation) {
-				ctx.mul_modelview_matrix(cgv::math::translate4(bounding_box.get_center()));
-				ctx.mul_modelview_matrix(cgv::math::scale4(bounding_box.get_extent()));
+				const volume_render_style& vrs = get_style<volume_render_style>();
+				cgv::box3 clipped_box(
+					bounding_box.get_min_pnt() + bounding_box.get_extent() * vrs.clip_box.get_min_pnt(),
+					bounding_box.get_min_pnt() + bounding_box.get_extent() * vrs.clip_box.get_max_pnt()
+				);
+				ctx.mul_modelview_matrix(cgv::math::translate4(clipped_box.get_center()));
+				ctx.mul_modelview_matrix(cgv::math::scale4(clipped_box.get_extent()));
 			}
 
 			glDrawArrays(GL_TRIANGLE_STRIP, 0, (GLsizei)14);
@@ -356,19 +372,8 @@ namespace cgv {
 				
 				if(p->begin_tree_node("Clip Box", vrs_ptr->clip_box, false)) {
 					p->align("\a");
-					p->add_member_control(b, "Box Min", vrs_ptr->clip_box.ref_min_pnt()[0], "value", "w=58;min=0;max=1", " ");
-					p->add_member_control(b, "", vrs_ptr->clip_box.ref_min_pnt()[1], "value", "w=58;min=0;max=1", " ");
-					p->add_member_control(b, "", vrs_ptr->clip_box.ref_min_pnt()[2], "value", "w=58;min=0;max=1");
-					p->add_member_control(b, "", vrs_ptr->clip_box.ref_min_pnt()[0], "slider", "w=58;min=0;max=1;step=0.0001;ticks=true", " ");
-					p->add_member_control(b, "", vrs_ptr->clip_box.ref_min_pnt()[1], "slider", "w=58;min=0;max=1;step=0.0001;ticks=true", " ");
-					p->add_member_control(b, "", vrs_ptr->clip_box.ref_min_pnt()[2], "slider", "w=58;min=0;max=1;step=0.0001;ticks=true");
-
-					p->add_member_control(b, "Box Max", vrs_ptr->clip_box.ref_max_pnt()[0], "value", "w=58;max=0;max=1", " ");
-					p->add_member_control(b, "", vrs_ptr->clip_box.ref_max_pnt()[1], "value", "w=58;max=0;max=1", " ");
-					p->add_member_control(b, "", vrs_ptr->clip_box.ref_max_pnt()[2], "value", "w=58;max=0;max=1");
-					p->add_member_control(b, "", vrs_ptr->clip_box.ref_max_pnt()[0], "slider", "w=58;max=0;max=1;step=0.0001;ticks=true", " ");
-					p->add_member_control(b, "", vrs_ptr->clip_box.ref_max_pnt()[1], "slider", "w=58;max=0;max=1;step=0.0001;ticks=true", " ");
-					p->add_member_control(b, "", vrs_ptr->clip_box.ref_max_pnt()[2], "slider", "w=58;max=0;max=1;step=0.0001;ticks=true");
+					p->add_gui("Clipping Box", vrs_ptr->clip_box, "",
+						"options='w=100;min=0;max=1;step=0.01;ticks=true;align=\"BL\"';align_col=' '");
 					p->align("\b");
 					p->end_tree_node(vrs_ptr->clip_box);
 				}

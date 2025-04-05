@@ -75,7 +75,7 @@ namespace stream_vis {
 				for (int pj = 0; pj < plots.size(); ++pj) {
 					const auto& pp = plots[pj];
 					cgv::vec2 e = cgv::vec2::from_vec(pp.second->get_extent());
-					cgv::vec2 c = (cgv::vec2&)pp.second->get_center();
+					cgv::vec2 c = *(cgv::vec2*)&pp.second->get_center();
 					cgv::box2 b(c - 0.5f * e, c + 0.5f * e);
 					//std::cout << pi << " | " << pp.second->get_domain().get_min_pnt() << " -> " << pp.second->get_domain().get_max_pnt() << std::endl;
 					if (b.inside((const cgv::vec2&)(p)))

@@ -13,6 +13,9 @@ namespace cgv {
 		/// namespace for opengl specific GPU programming
 		namespace gl {
 
+/// construct a 0 terminated list of context creation attribute definitions
+extern CGV_API std::vector<int> get_context_creation_attrib_list(cgv::render::context_config& cc);
+
 /// set a very specific texture format from a gl-constant and a component_format description. This should be called after the texture is constructed and before it is created.
 extern CGV_API void set_gl_format(texture& tex, GLuint gl_format, const std::string& component_format_description);
 
@@ -24,6 +27,12 @@ extern CGV_API GLuint map_to_gl(PrimitiveType pt);
 extern CGV_API GLuint map_to_gl(MaterialSide ms);
 
 extern CGV_API GLuint map_to_gl(BlendFunction blend_function);
+
+extern CGV_API GLboolean map_to_gl(bool flag);
+
+extern CGV_API GLuint get_gl_id(const void* handle);
+
+extern CGV_API void* get_handle(GLuint id);
 
 /// set material in opengl state to given material
 extern CGV_API void set_material(const cgv::media::illum::phong_material& mat, MaterialSide ms, float alpha);
@@ -129,7 +138,7 @@ protected:
 	bool check_shader_support(ShaderType st, const std::string& where, const cgv::render::render_component* rc = 0) const;
 	bool check_fbo_support(const std::string& where, const cgv::render::render_component* rc = 0) const;
 	/// font used to draw textual info
-	cgv::media::font::font_face_ptr info_font_face;
+	mutable cgv::media::font::font_face_ptr info_font_face;
 	/// font size to draw textual info
 	float info_font_size;
 	/// 
@@ -157,6 +166,10 @@ public:
 	/// clear the buffer contents of the flagged buffers to the set background colors
 	void clear_background(bool color_flag, bool depth_flag, bool stencil_flag = false, bool accum_flag = false) override;
 
+	/// return info font size
+	float get_info_font_size() const;
+	/// return info font face and ensure that it is created
+	cgv::media::font::font_face_ptr get_info_font_face() const;
 	/// overwrite function to return info font size in case no font is currently selected
 	float get_current_font_size() const override;
 	/// overwrite function to return info font face in case no font is currently selected
@@ -216,7 +229,7 @@ public:
 		data::data_view& dv, 
 		unsigned int x = 0, unsigned int y = 0, 
 		FrameBufferType buffer_type = FB_BACK,
-		TypeId type = type::info::TI_UINT8,
+		cgv::type::info::TypeId type = type::info::TI_UINT8,
 		data::ComponentFormat cf = data::CF_RGB,
 		int w = -1, int h = -1) override;
 	//@}

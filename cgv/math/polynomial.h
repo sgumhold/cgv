@@ -238,8 +238,6 @@ vec<T> poly_int(const vec<T>& p, const T& k=0)
 template <typename T>
 vec<T> bernstein_polynomial(unsigned j, unsigned g)
 {
-	using namespace cgv::math;
-	
 	vec<T> p;
 	p.zeros(j+1);
 	p(0)=1.0;// p = t^j	
@@ -256,8 +254,6 @@ vec<T> bernstein_polynomial(unsigned j, unsigned g)
 template <typename T>
 vec<T> lagrange_basis_polynomial(unsigned i, const vec<T>& u)
 {
-	using namespace cgv::math;
-	
 	//polynomial p = 1
 	vec<T> p(1);
 	p(0)=1.0;	
@@ -276,8 +272,6 @@ vec<T> lagrange_basis_polynomial(unsigned i, const vec<T>& u)
 template <typename T>
 vec<T> newton_basis_polynomial(unsigned i, const vec<T>& u)
 {
-	using namespace cgv::math;
-	
 	//polynomial p = 1
 	vec<T> p(1);
 	p(0)=1.0;	

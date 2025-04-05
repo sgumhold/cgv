@@ -1,5 +1,5 @@
 
-add_executable(service_host main.c)
+add_executable(service_host main.cxx)
 
 if (CGV_LTO_ON_RELEASE)
 	cgv_set_ltoflags(service_host)

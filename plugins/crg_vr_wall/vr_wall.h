@@ -61,14 +61,6 @@ namespace vr {
 		/// enum definition to make vr_kit selection possible
 		std::string kit_enum_definition;
 	protected:
-		using vec2 = cgv::vec2;
-		using vec3 = cgv::vec3;
-		using vec4 = cgv::vec4;
-		using quat = cgv::quat;
-		using mat34 = cgv::mat34;
-		using rgb = cgv::rgb;
-		using rgba = cgv::rgba;
-
 		/**@name management of window and secondary context*/
 		//@{
 		/// helper member that allows to configure width of the window before creation
@@ -108,15 +100,15 @@ namespace vr {
 		///
 		uint32_t blit_fbo, blit_tex[2];
 		/// screen information during screen calibration
-		vec3 screen_center;
-		vec3 screen_x;
-		vec3 screen_y;
+		cgv::vec3 screen_center;
+		cgv::vec3 screen_x;
+		cgv::vec3 screen_y;
 		/// helper member to allow to adjust orientation of the virtual screen
-		quat screen_orientation;
+		cgv::quat screen_orientation;
 		/// screen calibration points
-		std::vector<vec3> calib_points_screen;
+		std::vector<cgv::vec3> calib_points_screen;
 		/// screen calibration points
-		std::vector<vec3> calib_points_world;
+		std::vector<cgv::vec3> calib_points_world;
 		/// helper function to fill the point 
 		void generate_screen_calib_points();
 		/// update screen calibration
@@ -134,17 +126,17 @@ namespace vr {
 		/// index of to be calibrated point or eye
 		int calib_index;
 		/// position of peek point in controller coordinate system that is used to define 3d calibration points
-		vec3 peek_point;
+		cgv::vec3 peek_point;
 		/// direction in controller coordinates along which to displace eye positions
-		vec3 ctrl_down_dir;
+		cgv::vec3 ctrl_down_dir;
 		/// direction in controller coordinates pointing downwards to check for eye calibration mode
-		vec3 ctrl_forward_dir;
+		cgv::vec3 ctrl_forward_dir;
 		/// interpupilar distance
 		float IPD;
 		///
 		int ctrl_upside_down_index;
 		///
-		vec3 eye_position_tracker[2];
+		cgv::vec3 eye_position_tracker[2];
 		///
 		bool eye_calibrated[2];
 
@@ -153,7 +145,7 @@ namespace vr {
 		///
 		StereoShaderMode stereo_shader_mode;
 		/// current pose matrices of controllers need to render peek point
-		mat34 controller_pose[2], hmd_pose;
+		cgv::mat3x4 controller_pose[2], hmd_pose;
 		/// 
 		std::string screen_calibration_file_name;
 		///

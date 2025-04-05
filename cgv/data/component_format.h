@@ -8,8 +8,6 @@
 
 #include "lib_begin.h"
 
-using namespace cgv::type::info;
-
 namespace cgv {
 	namespace data {
 
@@ -58,7 +56,7 @@ class CGV_API component_format : public packing_info
 { 
 protected:
 	/// store the type id of the component type
-	TypeId component_type;
+	cgv::type::info::TypeId component_type;
 	/// interpretation of integer typed components
 	ComponentIntegerInterpretation component_interpretation;
 	/// store all component names in one string separated with 0-chars
@@ -120,10 +118,10 @@ Some examples of valid component format description strings:
 	/** construct component format from component type, comma or colon 
 		 separated list of component names, component alignment and bit 
 		 depths for packed formats*/
-	component_format(TypeId _component_type = TI_UNDEF, const std::string& _component_name_list = "", 
+	component_format(cgv::type::info::TypeId _component_type = cgv::type::info::TypeId::TI_UNDEF, const std::string& _component_name_list = "",
 		unsigned align = 1, unsigned d0 = 0, unsigned d1 = 0, unsigned d2 = 0, unsigned d3 = 0);
 	/// construct component format from component type, standard component format, component alignment and bit depths for packed formats
-	component_format(TypeId _component_type, ComponentFormat cf, 
+	component_format(cgv::type::info::TypeId _component_type, ComponentFormat cf,
 		unsigned align = 1, unsigned d0 = 0, unsigned d1 = 0, unsigned d2 = 0, unsigned d3 = 0);
 	/// set the integer interpretation
 	void set_integer_interpretation(ComponentIntegerInterpretation cii);
@@ -135,33 +133,33 @@ Some examples of valid component format description strings:
 	template <typename T>
 	T get(int ci, const void* ptr) const {
 		if (is_packing()) {
-			if (get_component_type() <= TI_INT64) {
+			if (get_component_type() <= cgv::type::info::TI_INT64) {
 				int i = packing_info::get_signed(ci, ptr);
-				return type_access<T>::get(&i, get_component_type());
+				return cgv::type::info::type_access<T>::get(&i, get_component_type());
 			}
 			else {
 				unsigned int i = packing_info::get_unsigned(ci, ptr);
-				return type_access<T>::get(&i, get_component_type());
+				return cgv::type::info::type_access<T>::get(&i, get_component_type());
 			}
 		}
 		else
-			return type_access<T>::get(static_cast<const unsigned char*>(ptr)+ci*align(get_type_size(get_component_type()),get_component_alignment()), get_component_type());
+			return cgv::type::info::type_access<T>::get(static_cast<const unsigned char*>(ptr)+ci*align(get_type_size(get_component_type()),get_component_alignment()), get_component_type());
 	}
 	/// write access to the i-th component, return whether write was successful
 	template <typename T>
 	bool set(int ci, void* ptr, const T& v) const { 
 		if (is_packing()) {
-			if (get_component_type() <= TI_INT64) {
+			if (get_component_type() <= cgv::type::info::TI_INT64) {
 				int i = 0;
-				return type_access<T>::set(&i, get_component_type(), v) && packing_info::set_signed(ci, ptr, i);
+				return cgv::type::info::type_access<T>::set(&i, get_component_type(), v) && packing_info::set_signed(ci, ptr, i);
 			}
 			else {
 				unsigned int i = 0;
-				return type_access<T>::set(&i, get_component_type(), v) && packing_info::set_unsigned(ci, ptr, i);
+				return cgv::type::info::type_access<T>::set(&i, get_component_type(), v) && packing_info::set_unsigned(ci, ptr, i);
 			}
 		}
 		else
-			return type_access<T>::set(static_cast<unsigned char*>(ptr)+ci*align(get_type_size(get_component_type()),get_component_alignment()), get_component_type(), v);
+			return cgv::type::info::type_access<T>::set(static_cast<unsigned char*>(ptr)+ci*align(get_type_size(get_component_type()),get_component_alignment()), get_component_type(), v);
 	}
 	/// return whether the component format is defined
 	bool empty() const;
@@ -184,9 +182,9 @@ Some examples of valid component format description strings:
 	/// set the component names from a standard component format
 	void set_component_format(ComponentFormat _cf);
 	/// return the component type
-	TypeId get_component_type() const;
+	cgv::type::info::TypeId get_component_type() const;
 	/// set the component type
-	void set_component_type(TypeId _type_id);
+	void set_component_type(cgv::type::info::TypeId _type_id);
 	/// return the size of one entry of components in bytes
 	unsigned int get_entry_size() const;
 	/// comparison between component formats

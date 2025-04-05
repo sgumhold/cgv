@@ -1,6 +1,6 @@
 #include <cgv/gui/provider.h>
 
-#include <cgv/media/illum/obj_material.hh>
+#include <cgv/media/illum/obj_material.h>
 #include <cgv/media/illum/textured_surface_material.h>
 
 using namespace cgv::media::illum;

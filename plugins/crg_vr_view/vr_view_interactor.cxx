@@ -28,9 +28,9 @@ vr_view_interactor::vr_view_interactor(const char* name) : stereo_view_interacto
 	blit_aspect_scale = 1;
 	none_separate_view = 3;
 	head_tracker_orientation.identity();
-	head_tracker_position = vec3(0.0f);
-	tracking_origin = vec3(0.0f);
-	tracking_rotation_origin = vec3(0.0f);
+	head_tracker_position = cgv::vec3(0.0f);
+	tracking_origin = cgv::vec3(0.0f);
+	tracking_rotation_origin = cgv::vec3(0.0f);
 	tracking_rotation = 0;
 	head_tracker = -1;
 	debug_vr_events = false;
@@ -139,16 +139,16 @@ vr::vr_kit* vr_view_interactor::get_current_vr_kit() const
 	return 0;
 }
 
-vr_view_interactor::dvec3 vr_view_interactor::get_view_dir_of_kit(int vr_kit_idx) const
+cgv::dvec3 vr_view_interactor::get_view_dir_of_kit(int vr_kit_idx) const
 {
 	if (vr_kit_idx == -1)
 		vr_kit_idx = current_vr_handle_index;
 	if (vr_kit_idx < 0 || vr_kit_idx >= (int) kit_states.size())
 		return get_view_dir();
-	return -reinterpret_cast<const vec3&>(kit_states[vr_kit_idx].hmd.pose[6]);
+	return -reinterpret_cast<const cgv::vec3&>(kit_states[vr_kit_idx].hmd.pose[6]);
 }
 
-vr_view_interactor::dvec3 vr_view_interactor::get_view_up_dir_of_kit(int vr_kit_idx) const
+cgv::dvec3 vr_view_interactor::get_view_up_dir_of_kit(int vr_kit_idx) const
 {
 	if (vr_kit_idx == -1)
 		vr_kit_idx = current_vr_handle_index;
@@ -156,16 +156,16 @@ vr_view_interactor::dvec3 vr_view_interactor::get_view_up_dir_of_kit(int vr_kit_
 		// ensure that view up is orthogonal to view dir
 		return cross(get_view_dir(), cross(get_view_up_dir(), get_view_dir()));
 	}
-	return reinterpret_cast<const vec3&>(kit_states[vr_kit_idx].hmd.pose[3]);
+	return reinterpret_cast<const cgv::vec3&>(kit_states[vr_kit_idx].hmd.pose[3]);
 }
 
-vr_view_interactor::dvec3 vr_view_interactor::get_eye_of_kit(int eye, int vr_kit_idx) const
+cgv::dvec3 vr_view_interactor::get_eye_of_kit(int eye, int vr_kit_idx) const
 {
 	if (vr_kit_idx == -1)
 		vr_kit_idx = current_vr_handle_index;
 	if (vr_kit_idx < 0 || vr_kit_idx >= (int) kit_states.size())
 		return get_eye();
-	return reinterpret_cast<const vec3&>(kit_states[vr_kit_idx].hmd.pose[9]);
+	return reinterpret_cast<const cgv::vec3&>(kit_states[vr_kit_idx].hmd.pose[9]);
 }
 
 /// query the currently set event type flags
@@ -211,8 +211,8 @@ void vr_view_interactor::calibrate_driver()
 		return;
 	const vr::vr_driver* driver_ptr = kit_ptr->get_driver();
 	float calibration_matrix[12];
-	mat34& C = reinterpret_cast<mat34&>(calibration_matrix[0]);
-	pose_orientation(C) = cgv::math::rotate3<float>(tracking_rotation, vec3(0, 1, 0));
+	cgv::mat3x4& C = reinterpret_cast<cgv::mat3x4&>(calibration_matrix[0]);
+	pose_orientation(C) = cgv::math::rotate3<float>(tracking_rotation, cgv::vec3(0, 1, 0));
 	pose_position(C) = tracking_origin - pose_orientation(C)*tracking_rotation_origin;
 	set_driver_calibration_matrix(const_cast<vr::vr_driver*>(driver_ptr), calibration_matrix);
 	const_cast<vr::vr_driver*>(driver_ptr)->enable_calibration_transformation();
@@ -274,13 +274,13 @@ void vr_view_interactor::on_set(void* member_ptr)
 		if (current_vr_handle_index >= 0) {
 			const auto& cs = kit_states[current_vr_handle_index].controller[head_tracker];
 			if (cs.status == vr::VRS_TRACKED) {
-				const mat3& O = reinterpret_cast<const mat3&>(cs.pose[0]);
-				const vec3& p = reinterpret_cast<const vec3&>(cs.pose[9]);
-				mat3 V;
-				vec3& x = reinterpret_cast<vec3&>(V[0]);
-				vec3& y = reinterpret_cast<vec3&>(V[3]);
-				vec3& z = reinterpret_cast<vec3&>(V[6]);
-				vec3  e = get_eye();
+				const cgv::mat3& O = reinterpret_cast<const cgv::mat3&>(cs.pose[0]);
+				const cgv::vec3& p = reinterpret_cast<const cgv::vec3&>(cs.pose[9]);
+				cgv::mat3 V;
+				cgv::vec3& x = reinterpret_cast<cgv::vec3&>(V[0]);
+				cgv::vec3& y = reinterpret_cast<cgv::vec3&>(V[3]);
+				cgv::vec3& z = reinterpret_cast<cgv::vec3&>(V[6]);
+				cgv::vec3  e = get_eye();
 				put_coordinate_system(x, y, z);
 				head_tracker_orientation = V * transpose(O);
 				head_tracker_position = e - head_tracker_orientation * p;
@@ -337,10 +337,10 @@ bool vr_view_interactor::handle_vr_events(cgv::gui::event& e)
 		auto& vrke = reinterpret_cast<cgv::gui::vr_key_event&>(e);
 		if (vrke.get_key() == vr::VR_INPUT0 && vrke.get_controller_index() == 1) {
 			if (vrke.get_action() == cgv::gui::KA_PRESS) {
-				start_pose = reinterpret_cast<const mat34&>(*vrke.get_state().controller[1].pose);
+				start_pose = reinterpret_cast<const cgv::mat3x4&>(*vrke.get_state().controller[1].pose);
 			}
 			else if (vrke.get_action() == cgv::gui::KA_RELEASE) {
-				mat34 end_pose = reinterpret_cast<const mat34&>(*vrke.get_state().controller[1].pose);
+				cgv::mat3x4 end_pose = reinterpret_cast<const cgv::mat3x4&>(*vrke.get_state().controller[1].pose);
 				tracking_origin += pose_position(end_pose) - pose_position(start_pose);
 			}
 			return true;
@@ -363,14 +363,14 @@ bool vr_view_interactor::handle(cgv::gui::event& e)
 		if ( ((e.get_flags() & cgv::gui::EF_VR) != 0) && (e.get_kind() == cgv::gui::EID_POSE) ) {
 			cgv::gui::vr_pose_event& vrpe = dynamic_cast<cgv::gui::vr_pose_event&>(e);
 			if (vrpe.get_trackable_index() == head_tracker) {
-				const mat3& O = reinterpret_cast<const mat3&>(vrpe.get_orientation());
-				const vec3& p = reinterpret_cast<const vec3&>(vrpe.get_position());
-				mat3 V = head_tracker_orientation * O;
+				const cgv::mat3& O = reinterpret_cast<const cgv::mat3&>(vrpe.get_orientation());
+				const cgv::vec3& p = reinterpret_cast<const cgv::vec3&>(vrpe.get_position());
+				cgv::mat3 V = head_tracker_orientation * O;
 				set_view_up_dir(V.col(1));
 				set_view_dir(-V.col(2));
 
-				vec3 dv = get_focus() - get_eye();
-				vec3 e = head_tracker_orientation * p + head_tracker_position;
+				cgv::vec3 dv = get_focus() - get_eye();
+				cgv::vec3 e = head_tracker_orientation * p + head_tracker_position;
 				set_focus(e+dv);
 			}
 		}
@@ -408,8 +408,8 @@ bool vr_view_interactor::handle(cgv::gui::event& e)
 							// t' = f
 							// p - f = R*(r'-r)+t-f
 							// r' = r = R^*(p - t) 
-							vec3& p = reinterpret_cast<vec3&>(state.controller[ci].pose[9]);
-							mat3 invR = cgv::math::rotate3<float>(-tracking_rotation, vec3(0, 1, 0));
+							cgv::vec3& p = reinterpret_cast<cgv::vec3&>(state.controller[ci].pose[9]);
+							cgv::mat3 invR = cgv::math::rotate3<float>(-tracking_rotation, cgv::vec3(0, 1, 0));
 							tracking_rotation_origin += invR* (p - tracking_origin);
 							tracking_origin = get_focus();
 							p = get_focus();
@@ -611,7 +611,7 @@ void vr_view_interactor::render_vr_kits(cgv::render::context& ctx)
 		if (kit_states[rendered_display_index].hmd.status == vr::VRS_DETACHED)
 			continue;
 		void* fbo_handle;
-		ivec4 cgv_viewport;
+		cgv::ivec4 cgv_viewport;
 		for (rendered_eye = 0; rendered_eye < 2; ++rendered_eye) {
 			rendered_display_ptr->enable_fbo(rendered_eye);
 			ctx.announce_external_frame_buffer_change(fbo_handle);
@@ -627,7 +627,7 @@ void vr_view_interactor::render_vr_kits(cgv::render::context& ctx)
 	rendered_display_ptr = get_vr_kit_from_index(rendered_display_index);
 	if (rendered_display_ptr && kit_states[rendered_display_index].hmd.status != vr::VRS_DETACHED) {
 		void* fbo_handle;
-		ivec4 cgv_viewport;
+		cgv::ivec4 cgv_viewport;
 		//rendered_eye: 0...monitor,1...left eye,2...right eye
 		for (rendered_eye = 0; rendered_eye < 2; ++rendered_eye) {
 			rendered_display_ptr->enable_fbo(rendered_eye);
@@ -684,30 +684,30 @@ void vr_view_interactor::init_frame(cgv::render::context& ctx)
 	}
 }
 
-void vr_view_interactor::add_trackable_spheres(const float* pose, int i, std::vector<vec4>& spheres, std::vector<rgb>& sphere_colors)
+void vr_view_interactor::add_trackable_spheres(const float* pose, int i, std::vector<cgv::vec4>& spheres, std::vector<cgv::rgb>& sphere_colors)
 {
-	const mat3& R_ci = reinterpret_cast<const mat3&>(pose[0]);
-	const vec3& p_ci = reinterpret_cast<const vec3&>(pose[9]);
-	spheres.push_back(vec4(p_ci, 0.04f));
-	spheres.push_back(vec4(p_ci + 0.05f*R_ci.col(0), 0.01f));
-	spheres.push_back(vec4(p_ci - 0.05f*R_ci.col(0), 0.01f));
-	spheres.push_back(vec4(p_ci + 0.05f*R_ci.col(1), 0.01f));
-	spheres.push_back(vec4(p_ci - 0.05f*R_ci.col(1), 0.01f));
-	spheres.push_back(vec4(p_ci + 0.05f*R_ci.col(2), 0.01f));
-	spheres.push_back(vec4(p_ci - 0.05f*R_ci.col(2), 0.01f));
-	sphere_colors.push_back(rgb(0.5f + (1 - i)*0.5f, 0.5f, 0.5f + 0.5f*i));
-	sphere_colors.push_back(rgb(1, 0, 0));
-	sphere_colors.push_back(rgb(1, 0.5f, 0.5f));
-	sphere_colors.push_back(rgb(0, 1, 0));
-	sphere_colors.push_back(rgb(0.5f, 1, 0.5f));
-	sphere_colors.push_back(rgb(0, 0, 1));
-	sphere_colors.push_back(rgb(0.5f, 0.5f, 1));
+	const cgv::mat3& R_ci = reinterpret_cast<const cgv::mat3&>(pose[0]);
+	const cgv::vec3& p_ci = reinterpret_cast<const cgv::vec3&>(pose[9]);
+	spheres.push_back(cgv::vec4(p_ci, 0.04f));
+	spheres.push_back(cgv::vec4(p_ci + 0.05f*R_ci.col(0), 0.01f));
+	spheres.push_back(cgv::vec4(p_ci - 0.05f*R_ci.col(0), 0.01f));
+	spheres.push_back(cgv::vec4(p_ci + 0.05f*R_ci.col(1), 0.01f));
+	spheres.push_back(cgv::vec4(p_ci - 0.05f*R_ci.col(1), 0.01f));
+	spheres.push_back(cgv::vec4(p_ci + 0.05f*R_ci.col(2), 0.01f));
+	spheres.push_back(cgv::vec4(p_ci - 0.05f*R_ci.col(2), 0.01f));
+	sphere_colors.push_back(cgv::rgb(0.5f + (1 - i)*0.5f, 0.5f, 0.5f + 0.5f*i));
+	sphere_colors.push_back(cgv::rgb(1, 0, 0));
+	sphere_colors.push_back(cgv::rgb(1, 0.5f, 0.5f));
+	sphere_colors.push_back(cgv::rgb(0, 1, 0));
+	sphere_colors.push_back(cgv::rgb(0.5f, 1, 0.5f));
+	sphere_colors.push_back(cgv::rgb(0, 0, 1));
+	sphere_colors.push_back(cgv::rgb(0.5f, 0.5f, 1));
 }
 /// 
 void vr_view_interactor::draw_vr_kits(cgv::render::context& ctx)
 {
-	std::vector<vec4> spheres;
-	std::vector<rgb> sphere_colors;
+	std::vector<cgv::vec4> spheres;
+	std::vector<cgv::rgb> sphere_colors;
 	cgv::render::mesh_render_info* MI_hmd_ptr = 0;
 	cgv::render::mesh_render_info* MI_controller_ptr = 0;
 	cgv::render::mesh_render_info* MI_tracker_ptr = 0;
@@ -751,9 +751,9 @@ void vr_view_interactor::draw_vr_kits(cgv::render::context& ctx)
 				if (MI_hmd_ptr != 0) {
 					ctx.push_modelview_matrix();
 					ctx.mul_modelview_matrix(
-						cgv::math::pose4<float>(reinterpret_cast<const mat34&>(state_ptr->hmd.pose[0]))*
+						cgv::math::pose4<float>(reinterpret_cast<const cgv::mat3x4&>(state_ptr->hmd.pose[0]))*
 						cgv::math::translate4<float>(0, 0.1f, -0.1f)*
-						cgv::math::scale4<float>(vec3(mesh_scales[vr::VRM_HMD]))
+						cgv::math::scale4<float>(cgv::vec3(mesh_scales[vr::VRM_HMD]))
 					);
 					MI_hmd_ptr->draw_all(ctx);
 					ctx.pop_modelview_matrix();
@@ -765,20 +765,20 @@ void vr_view_interactor::draw_vr_kits(cgv::render::context& ctx)
 				float right_eye_to_head[12];
 				kit_ptr->put_eye_to_head_matrix(0, left_eye_to_head);
 				kit_ptr->put_eye_to_head_matrix(1, right_eye_to_head);
-				const mat3& R_w_h = reinterpret_cast<const mat3&>(state_ptr->hmd.pose[0]);
-				const vec3& p_w_h = reinterpret_cast<const vec3&>(state_ptr->hmd.pose[9]);
-				const mat3& R_h_l = reinterpret_cast<const mat3&>(left_eye_to_head[0]);
-				const vec3& p_h_l = reinterpret_cast<const vec3&>(left_eye_to_head[9]);
-				const mat3& R_h_r = reinterpret_cast<const mat3&>(right_eye_to_head[0]);
-				const vec3& p_h_r = reinterpret_cast<const vec3&>(right_eye_to_head[9]);
-				vec4 s_l(0, 0, 0, 0.012f);
-				vec4 s_r = s_l;
-				reinterpret_cast<vec3&>(s_l) = R_w_h * p_h_l + p_w_h;
-				reinterpret_cast<vec3&>(s_r) = R_w_h * p_h_r + p_w_h;
+				const cgv::mat3& R_w_h = reinterpret_cast<const cgv::mat3&>(state_ptr->hmd.pose[0]);
+				const cgv::vec3& p_w_h = reinterpret_cast<const cgv::vec3&>(state_ptr->hmd.pose[9]);
+				const cgv::mat3& R_h_l = reinterpret_cast<const cgv::mat3&>(left_eye_to_head[0]);
+				const cgv::vec3& p_h_l = reinterpret_cast<const cgv::vec3&>(left_eye_to_head[9]);
+				const cgv::mat3& R_h_r = reinterpret_cast<const cgv::mat3&>(right_eye_to_head[0]);
+				const cgv::vec3& p_h_r = reinterpret_cast<const cgv::vec3&>(right_eye_to_head[9]);
+				cgv::vec4 s_l(0, 0, 0, 0.012f);
+				cgv::vec4 s_r = s_l;
+				reinterpret_cast<cgv::vec3&>(s_l) = R_w_h * p_h_l + p_w_h;
+				reinterpret_cast<cgv::vec3&>(s_r) = R_w_h * p_h_r + p_w_h;
 				spheres.push_back(s_l);
-				sphere_colors.push_back(rgb(1, 0, 0));
+				sphere_colors.push_back(cgv::rgb(1, 0, 0));
 				spheres.push_back(s_r);
-				sphere_colors.push_back(rgb(0, 0, 1));
+				sphere_colors.push_back(cgv::rgb(0, 0, 1));
 			}
 		}
 		for (unsigned ci = 0; ci < vr::max_nr_controllers; ++ci) {
@@ -831,8 +831,8 @@ void vr_view_interactor::draw_vr_kits(cgv::render::context& ctx)
 				add_trackable_spheres(state_ptr->controller[ci].pose, i, spheres, sphere_colors);
 			if (M_info) {
 				ctx.push_modelview_matrix();
-				ctx.mul_modelview_matrix(cgv::math::pose4<float>(reinterpret_cast<const mat34&>(state_ptr->controller[ci].pose[0])));
-				ctx.mul_modelview_matrix(cgv::math::scale4<float>(vec3(mesh_scale)));
+				ctx.mul_modelview_matrix(cgv::math::pose4<float>(reinterpret_cast<const cgv::mat3x4&>(state_ptr->controller[ci].pose[0])));
+				ctx.mul_modelview_matrix(cgv::math::scale4<float>(cgv::vec3(mesh_scale)));
 				M_info->draw_all(ctx);
 				ctx.pop_modelview_matrix();
 			}
@@ -858,8 +858,8 @@ void vr_view_interactor::draw_vr_kits(cgv::render::context& ctx)
 					}
 					if (MI_base_ptr) {
 						ctx.push_modelview_matrix();
-						ctx.mul_modelview_matrix(cgv::math::pose4<float>(reinterpret_cast<const mat34&>(s.second.pose[0])));
-						ctx.mul_modelview_matrix(cgv::math::scale4<float>(vec3(mesh_scales[vr::VRM_BASE])));
+						ctx.mul_modelview_matrix(cgv::math::pose4<float>(reinterpret_cast<const cgv::mat3x4&>(s.second.pose[0])));
+						ctx.mul_modelview_matrix(cgv::math::scale4<float>(cgv::vec3(mesh_scales[vr::VRM_BASE])));
 						MI_base_ptr->draw_all(ctx);
 						ctx.pop_modelview_matrix();
 					}
@@ -887,17 +887,17 @@ void vr_view_interactor::draw_action_zone(cgv::render::context& ctx)
 			const vr::vr_driver* driver_ptr = kit_ptr->get_driver();
 			if (driver_ptr) {
 				float h = driver_ptr->get_action_zone_height();
-				vec3 up_dir;
+				cgv::vec3 up_dir;
 				driver_ptr->put_up_direction(&up_dir[0]);
 				std::vector<float> boundary;
 				driver_ptr->put_action_zone_bounary(boundary);
 				size_t n = boundary.size() / 3;
-				std::vector<vec3> G;
+				std::vector<cgv::vec3> G;
 				G.resize(5 * n);
 				unsigned i;
 				for (i = 0; i < 5; ++i) {
 					for (size_t j = 0; j < n; ++j) {
-						vec3 p = reinterpret_cast<const vec3&>(boundary[3 * j]);
+						cgv::vec3 p = reinterpret_cast<const cgv::vec3&>(boundary[3 * j]);
 						p += 0.25f*i*h*up_dir;
 						G[i*n + j] = p;
 					}

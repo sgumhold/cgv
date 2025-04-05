@@ -13,11 +13,11 @@ view::view()
 }
 
 /// write access to focus point
-view::dvec3& view::ref_focus() { return focus; }
+dvec3& view::ref_focus() { return focus; }
 /// write access to view up direction
-view::dvec3& view::ref_view_up_dir() { return view_up_dir; }
+dvec3& view::ref_view_up_dir() { return view_up_dir; }
 /// write access to view dir
-view::dvec3& view::ref_view_dir() { return view_dir; }
+dvec3& view::ref_view_dir() { return view_dir; }
 /// write access to view angle
 double& view::ref_y_view_angle() { return y_view_angle; }
 /// write access to extent at focus
@@ -45,17 +45,17 @@ double view::get_tan_of_half_of_fovy(bool ensure_non_zero) const
 }
 
 ///
-const view::dvec3& view::get_focus() const
+const dvec3& view::get_focus() const
 {
 	return focus;
 }
 ///
-const view::dvec3& view::get_view_up_dir() const
+const dvec3& view::get_view_up_dir() const
 {
 	return view_up_dir;
 }
 ///
-const view::dvec3& view::get_view_dir() const
+const dvec3& view::get_view_dir() const
 {
 	return view_dir;
 }
@@ -120,7 +120,7 @@ bool view::is_parallel() const
 //! query the eye point, which is computed from focus, view dir, y extent at focus and y view angle
 /*! With the y view angle approaching 0, the eye point moves infinitely far away. To avoid
 numerical problems, the eye point is computed with an y view angle no less than 0.1.*/
-const view::dvec3 view::get_eye() const
+const dvec3 view::get_eye() const
 {
 	return focus - (0.5f*y_extent_at_focus / get_tan_of_half_of_fovy(true))*view_dir;
 }

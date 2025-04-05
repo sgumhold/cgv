@@ -1,5 +1,12 @@
 #include "fltk_driver.h"
 
+#ifndef _WIN32
+#include <fltk/file_chooser.h>
+#define USE_GLEW 1
+#define USE_FLTK
+#include <fltk/../../OpenGL/GlChoice.h>
+#endif
+
 #include "fltk_button.h"
 #include "fltk_viewer_window.h"
 #include "fltk_generic_window.h"
@@ -24,9 +31,6 @@
 #include <windows.h>
 #include <fltk/../../OpenGL/GlChoice.h>
 #define USE_WIN32
-#else
-#include <fltk/file_chooser.h>
-#define USE_FLTK
 #endif
 
 #ifdef USE_WIN32
@@ -311,6 +315,7 @@ std::string fltk_driver::file_save_dialog(const std::string& title, const std::s
 #include <cgv/gui/base_provider_generator.h>*/
 
 using namespace cgv::base;
+using namespace cgv::gui;
 
 void ensure_lock()
 {
@@ -334,6 +339,21 @@ void fltk_driver::remove_window(window_ptr w)
 			windows.erase(windows.begin() + i);
 			--i;
 		}
+	}
+}
+
+void fltk_driver::destroy_all_windows()
+{
+	for (auto &wnd : windows) {
+		auto generic_wnd = wnd->get_interface<CI<fltk::Window>>();
+		if (generic_wnd) {
+			generic_wnd->destroy();
+		}
+		else {
+			auto generic_wnd = wnd->get_interface<fltk::Window>();
+			generic_wnd->destroy();
+		}
+		remove_window(wnd);
 	}
 }
 
@@ -362,48 +382,8 @@ bool fltk_driver::enumerate_monitors(std::vector<monitor_description>& monitor_d
 
 void fltk_driver::set_context_creation_attrib_list(cgv::render::context_config& cc)
 {
-	static std::vector<int> context_creation_attrib_list;
-	context_creation_attrib_list.clear();
-#ifdef _WIN32
-	if (cc.forward_compatible || cc.debug) {
-		context_creation_attrib_list.push_back(WGL_CONTEXT_FLAGS_ARB);
-		context_creation_attrib_list.push_back((cc.forward_compatible ? WGL_CONTEXT_FORWARD_COMPATIBLE_BIT_ARB : 0) +
-											   (cc.debug ? WGL_CONTEXT_DEBUG_BIT_ARB : 0));
-	}
-	if (cc.version_major > 0) {
-		context_creation_attrib_list.push_back(WGL_CONTEXT_MAJOR_VERSION_ARB);
-		context_creation_attrib_list.push_back(cc.version_major);
-	}
-	if (cc.version_minor > 0) {
-		context_creation_attrib_list.push_back(WGL_CONTEXT_MINOR_VERSION_ARB);
-		context_creation_attrib_list.push_back(cc.version_minor);
-	}
-	context_creation_attrib_list.push_back(WGL_CONTEXT_PROFILE_MASK_ARB);
-	context_creation_attrib_list.push_back(cc.core_profile ? WGL_CONTEXT_CORE_PROFILE_BIT_ARB
-														   : WGL_CONTEXT_COMPATIBILITY_PROFILE_BIT_ARB);
-#else
-	if (cc.forward_compatible || cc.debug) {
-		context_creation_attrib_list.push_back(GLX_CONTEXT_FLAGS_ARB);
-		context_creation_attrib_list.push_back((cc.forward_compatible ? GLX_CONTEXT_FORWARD_COMPATIBLE_BIT_ARB : 0) +
-											   (cc.debug ? GLX_CONTEXT_DEBUG_BIT_ARB : 0));
-	}
-	if (cc.version_major > 0) {
-		context_creation_attrib_list.push_back(GLX_CONTEXT_MAJOR_VERSION_ARB);
-		context_creation_attrib_list.push_back(cc.version_major);
-	}
-	if (cc.version_minor > 0) {
-		context_creation_attrib_list.push_back(GLX_CONTEXT_MINOR_VERSION_ARB);
-		context_creation_attrib_list.push_back(cc.version_minor);
-	}
-	context_creation_attrib_list.push_back(GLX_CONTEXT_PROFILE_MASK_ARB);
-	context_creation_attrib_list.push_back(cc.core_profile ? GLX_CONTEXT_CORE_PROFILE_BIT_ARB
-														   : GLX_CONTEXT_COMPATIBILITY_PROFILE_BIT_ARB);
-#endif
-	context_creation_attrib_list.push_back(0);
-#ifdef _WIN32
-	// FIXME find a way to do this on Unix systems as well
-	fltk::GlChoice::ref_attrib_list() = &context_creation_attrib_list.front();
-#endif
+	const fltk::GlWindow* window = static_cast<const fltk::GlWindow*>(static_cast<const fltk_gl_view*>(&cc));
+	fltk::GlChoice::ref_gl_context_attrib_list(window) = cgv::render::gl::get_context_creation_attrib_list(cc);
 }
 
 /// create a window of the given type. Currently only the types "viewer with gui", "viewer" and "gui" are supported
@@ -452,11 +432,6 @@ void fltk_driver::quit(int exit_code)
 	for (unsigned int i = 0; i < windows.size(); ++i) {
 		static_cast<fltk::Window*>(static_cast<fltk::Widget*>(windows[i]->get_user_data()))->hide();
 	}
-#ifdef _WIN32
-	TerminateProcess(GetCurrentProcess(), exit_code);
-#else
-	exit(exit_code);
-#endif
 }
 
 /// copy text to the clipboard
@@ -519,14 +494,16 @@ int fltk_driver::question(const std::string& _question, const std::vector<std::s
 	switch(answers.size()) {
 	case 0: return fltk::ask(_question.c_str());
 	case 1: return fltk::ask(_question.c_str());
-	case 2: return fltk::ask(_question.c_str(), answer_ptrs[0], answer_ptrs[1]);
-	case 3: return fltk::choice(_question.c_str(), answer_ptrs[0], answer_ptrs[1], answer_ptrs[2]);
-	case 4: return fltk::choice(_question.c_str(), answer_ptrs[0], answer_ptrs[1], answer_ptrs[2], answer_ptrs[3]);
-	case 5: return fltk::choice(_question.c_str(), answer_ptrs[0], answer_ptrs[1], answer_ptrs[2], answer_ptrs[3], answer_ptrs[4]);
-	case 6: return fltk::choice(_question.c_str(), answer_ptrs[0], answer_ptrs[1], answer_ptrs[2], answer_ptrs[3], answer_ptrs[4], answer_ptrs[5]);
-	default: break;
+	case 2: return fltk::ask(_question.c_str(),    answer_ptrs[1], answer_ptrs[0]);
+	case 3: return 2-fltk::choice(_question.c_str(), answer_ptrs[2], answer_ptrs[1], answer_ptrs[0]);
+	//case 4: return 3-fltk::choice(_question.c_str(), answer_ptrs[3], answer_ptrs[2], answer_ptrs[1], answer_ptrs[0]);
+	//case 5: return 4-fltk::choice(_question.c_str(), answer_ptrs[4], answer_ptrs[3], answer_ptrs[2], answer_ptrs[1], answer_ptrs[0]);
+	//case 6: return 5-fltk::choice(_question.c_str(), answer_ptrs[5], answer_ptrs[4], answer_ptrs[3], answer_ptrs[2], answer_ptrs[1], answer_ptrs[0]);
+	default: 
+		std::cerr << "cgv::gui::question() only supports maximum of three answers!" << std::endl;
+		break;
 	}
-	return -1;
+	return 0;
 }
 
 bool fltk_driver::query(const std::string& question, std::string& text, bool password)

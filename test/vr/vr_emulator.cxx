@@ -24,11 +24,11 @@ const float Hand_height = 755.0f;
 const float Reach_Upwards = 2060.0f;
 const float Pupillary_distance = 63.0f;
 
-vr_emulated_kit::mat34 vr_emulated_kit::construct_pos_matrix(const quat& orientation, const vec3& position)
+cgv::mat3x4 vr_emulated_kit::construct_pos_matrix(const quat& orientation, const cgv::vec3& position)
 {
-	mat3 R;
+	cgv::mat3 R;
 	orientation.put_matrix(R);
-	mat34 P;
+	cgv::mat3x4 P;
 	P.set_col(0, R.col(0));
 	P.set_col(1, R.col(1));
 	P.set_col(2, R.col(2));
@@ -36,22 +36,22 @@ vr_emulated_kit::mat34 vr_emulated_kit::construct_pos_matrix(const quat& orienta
 	return P;
 }
 
-vr_emulated_kit::mat4 vr_emulated_kit::construct_homogeneous_matrix(const quat& orientation, const vec3& position)
+cgv::mat4 vr_emulated_kit::construct_homogeneous_matrix(const quat& orientation, const cgv::vec3& position)
 {
-	mat3 R;
+	cgv::mat3 R;
 	orientation.put_matrix(R);
-	mat4 H;
-	H.set_col(0, vec4(R(0, 0), R(1, 0), R(2, 0), 0));
-	H.set_col(1, vec4(R(0, 1), R(1, 1), R(2, 1), 0));
-	H.set_col(2, vec4(R(0, 2), R(1, 2), R(2, 2), 0));
-	H.set_col(3, vec4(position(0), position(1), position(2), 1.0f));
+	cgv::mat4 H;
+	H.set_col(0, cgv::vec4(R(0, 0), R(1, 0), R(2, 0), 0));
+	H.set_col(1, cgv::vec4(R(0, 1), R(1, 1), R(2, 1), 0));
+	H.set_col(2, cgv::vec4(R(0, 2), R(1, 2), R(2, 2), 0));
+	H.set_col(3, cgv::vec4(position(0), position(1), position(2), 1.0f));
 	return H;
 }
 
-vr_emulated_kit::vec3 vr_emulated_kit::get_body_direction() const
+cgv::vec3 vr_emulated_kit::get_body_direction() const
 {
-	vec3 up_dir;
-	vec3 x_dir, z_dir;
+	cgv::vec3 up_dir;
+	cgv::vec3 x_dir, z_dir;
 	driver->put_x_direction(&x_dir(0));
 	driver->put_up_direction(&up_dir(0));
 	z_dir = cross(x_dir, up_dir);
@@ -61,33 +61,33 @@ vr_emulated_kit::vec3 vr_emulated_kit::get_body_direction() const
 void vr_emulated_kit::compute_state_poses()
 {
 	float scale = body_height / Body_height;
-	vec3 up_dir;
-	vec3 x_dir, z_dir;
+	cgv::vec3 up_dir;
+	cgv::vec3 x_dir, z_dir;
 	driver->put_x_direction(&x_dir(0));
 	driver->put_up_direction(&up_dir(0));
 	z_dir = cross(x_dir, up_dir);
-	mat4 T_body;
-	T_body.set_col(0, vec4(cos(body_direction)*x_dir + sin(body_direction)*z_dir, 0));
-	T_body.set_col(1, vec4(up_dir, 0));
-	T_body.set_col(2, vec4(-sin(body_direction)*x_dir + cos(body_direction)*z_dir,0));
-	T_body.set_col(3, vec4(body_position, 1));
-	mat4 T_hip = 
-		cgv::math::translate4<float>(vec3(0,scale*Hip_height,0))*
-		cgv::math::rotate4<float>(-60*hip_parameter, vec3(1, 0, 0));
-	mat4 T_head =
-		cgv::math::translate4<float>(vec3(0, scale*(Chin_height - Hip_height), 0))*
-		cgv::math::rotate4<float>(-90*yaw_parameter, vec3(0, 1, 0));
-	mat4 R;
+	cgv::mat4 T_body;
+	T_body.set_col(0, cgv::vec4(cos(body_direction)*x_dir + sin(body_direction)*z_dir, 0));
+	T_body.set_col(1, cgv::vec4(up_dir, 0));
+	T_body.set_col(2, cgv::vec4(-sin(body_direction)*x_dir + cos(body_direction)*z_dir,0));
+	T_body.set_col(3, cgv::vec4(body_position, 1));
+	cgv::mat4 T_hip =
+		cgv::math::translate4<float>(cgv::vec3(0,scale*Hip_height,0))*
+		cgv::math::rotate4<float>(-60*hip_parameter, cgv::vec3(1, 0, 0));
+	cgv::mat4 T_head =
+		cgv::math::translate4<float>(cgv::vec3(0, scale*(Chin_height - Hip_height), 0))*
+		cgv::math::rotate4<float>(-90*yaw_parameter, cgv::vec3(0, 1, 0));
+	cgv::mat4 R;
 	hand_orientation[0].put_homogeneous_matrix(R);
-	mat4 T_left =
+	cgv::mat4 T_left =
 		cgv::math::translate4<float>(
-			scale*vec3((-Shoulder_breadth + Arm_length * hand_position[0](0)),
+			scale* cgv::vec3((-Shoulder_breadth + Arm_length * hand_position[0](0)),
 				Shoulder_height - Hip_height + Arm_length * hand_position[0](1),
 				Arm_length*hand_position[0](2)))*R;
 	hand_orientation[1].put_homogeneous_matrix(R);
-	mat4 T_right =
+	cgv::mat4 T_right =
 		cgv::math::translate4<float>(
-			scale*vec3(+(Shoulder_breadth + Arm_length * hand_position[1](0)),
+			scale*cgv::vec3(+(Shoulder_breadth + Arm_length * hand_position[1](0)),
 				Shoulder_height - Hip_height + Arm_length * hand_position[1](1),
 				Arm_length*hand_position[1](2)))*R;
 
@@ -103,7 +103,7 @@ void vr_emulated_kit::compute_state_poses()
 			state.controller[2 + i].status = vr::VRS_DETACHED;
 			continue;
 		}
-		mat4 T = construct_homogeneous_matrix(tracker_orientations[i], tracker_positions[i]);
+		cgv::mat4 T = construct_homogeneous_matrix(tracker_orientations[i], tracker_positions[i]);
 		switch (tracker_attachments[i]) {
 		case TA_HEAD: T = T_body * T_hip*T_head*T; break;
 		case TA_LEFT_HAND: T = T_body * T_hip*T_left*T; break;
@@ -115,7 +115,7 @@ void vr_emulated_kit::compute_state_poses()
 	}
 }
 
-vr_emulated_kit::vr_emulated_kit(float _body_direction, const vec3& _body_position, float _body_height, unsigned _width, unsigned _height, vr::vr_driver* _driver, void* _handle, const std::string& _name, int _nr_trackers)
+vr_emulated_kit::vr_emulated_kit(float _body_direction, const cgv::vec3& _body_position, float _body_height, unsigned _width, unsigned _height, vr::vr_driver* _driver, void* _handle, const std::string& _name, int _nr_trackers)
 	: vr_kit(_driver, _handle, _name, _width, _height)
 {
 	body_position = _body_position;
@@ -124,8 +124,8 @@ vr_emulated_kit::vr_emulated_kit(float _body_direction, const vec3& _body_positi
 	hip_parameter= 0;
 	yaw_parameter = 0;
 	fovy = 90;
-	hand_position[0] = vec3(0, -0.5f, -0.2f);
-	hand_position[1] = vec3(0, -0.5f, -0.2f);
+	hand_position[0] = cgv::vec3(0, -0.5f, -0.2f);
+	hand_position[1] = cgv::vec3(0, -0.5f, -0.2f);
 	hand_orientation[0] = quat(1, 0, 0, 0);
 	hand_orientation[1] = quat(1, 0, 0, 0);
 	state.hmd.status = vr::VRS_TRACKED;
@@ -135,10 +135,10 @@ vr_emulated_kit::vr_emulated_kit(float _body_direction, const vec3& _body_positi
 	for (int i=0; i<4; ++i)
 		tracker_enabled[i] = i < _nr_trackers;
 
-	tracker_positions[0] = vec3(0.2f, 1.2f, 0.0f);
-	tracker_positions[1] = vec3(-0.2f, 1.2f, 0.0f);
-	tracker_positions[2] = vec3(-0.6f, 1.2f, 0.0f);
-	tracker_positions[3] = vec3(0.6f, 1.2f, 0.0f);
+	tracker_positions[0] = cgv::vec3(0.2f, 1.2f, 0.0f);
+	tracker_positions[1] = cgv::vec3(-0.2f, 1.2f, 0.0f);
+	tracker_positions[2] = cgv::vec3(-0.6f, 1.2f, 0.0f);
+	tracker_positions[3] = cgv::vec3(0.6f, 1.2f, 0.0f);
 	tracker_orientations[0] = tracker_orientations[1] = tracker_orientations[2] = tracker_orientations[3] = quat(0.71f,-0.71f,0,0);
 	tracker_attachments[0] = tracker_attachments[1] = tracker_attachments[2] = tracker_attachments[3] = TA_WORLD;
 	info.force_feedback_support = true;
@@ -199,7 +199,7 @@ const std::vector<std::pair<float, float> >& vr_emulated_kit::get_controller_thr
 }
 
 
-void vr_emulated_kit::set_pose_matrix(const mat4& H, float* pose) const
+void vr_emulated_kit::set_pose_matrix(const cgv::mat4& H, float* pose) const
 {
 	pose[0]  = H(0, 0);
 	pose[1]  = H(1, 0);
@@ -222,12 +222,12 @@ bool vr_emulated_kit::query_state_impl(vr::vr_kit_state& state, int pose_query)
 	const vr_emulator* vr_em_ptr = dynamic_cast<const vr_emulator*>(get_driver());
 	if (vr_em_ptr) {
 		// transform state with coordinate transformation
-		mat34 coordinate_transform;
-		vr_em_ptr->coordinate_rotation.put_matrix(reinterpret_cast<mat3&>(coordinate_transform));
-		reinterpret_cast<vec3&>(coordinate_transform(0, 3)) = vr_em_ptr->coordinate_displacement;
-		cgv::math::pose_transform(coordinate_transform, reinterpret_cast<mat34&>(state.hmd.pose[0]));
+		cgv::mat3x4 coordinate_transform;
+		vr_em_ptr->coordinate_rotation.put_matrix(reinterpret_cast<cgv::mat3&>(coordinate_transform));
+		reinterpret_cast<cgv::vec3&>(coordinate_transform(0, 3)) = vr_em_ptr->coordinate_displacement;
+		cgv::math::pose_transform(coordinate_transform, reinterpret_cast<cgv::mat3x4&>(state.hmd.pose[0]));
 		for (int ci = 0; ci < 6; ++ci)
-			cgv::math::pose_transform(coordinate_transform, reinterpret_cast<mat34&>(state.controller[ci].pose[0]));
+			cgv::math::pose_transform(coordinate_transform, reinterpret_cast<cgv::mat3x4&>(state.controller[ci].pose[0]));
 	}
 	return true;
 }
@@ -244,14 +244,14 @@ void vr_emulated_kit::put_eye_to_head_matrix(int eye, float* pose_matrix) const
 	float scale = body_height / Body_height;
 	set_pose_matrix(
 		cgv::math::translate4<float>(
-			scale*vec3(float(eye - 0.5f)*Pupillary_distance, Eye_height - Chin_height, -Pupillary_distance)
+			scale*cgv::vec3(float(eye - 0.5f)*Pupillary_distance, Eye_height - Chin_height, -Pupillary_distance)
 		), pose_matrix
 	);
 }
 
 void vr_emulated_kit::put_projection_matrix(int eye, float z_near, float z_far, float* projection_matrix, const float*) const
 {
-	reinterpret_cast<mat4&>(*projection_matrix) = 
+	reinterpret_cast<cgv::mat4&>(*projection_matrix) =
 		cgv::math::perspective4<float>(fovy, float(width)/height, z_near, z_far);
 }
 
@@ -270,25 +270,25 @@ vr_emulator::vr_emulator() : cgv::base::node("vr_emulator")
 	home_ctrl = end_ctrl = pgup_ctrl = pgdn_ctrl = false;
 	installed = true;
 	body_speed = 1.0f;
-	body_position = vec3(0, 0, 1);
+	body_position = cgv::vec3(0, 0, 1);
 	body_height = 1.75f;
 	body_direction = 0;
 	screen_width = 640;
 	screen_height = 480;
 	counter = 0;
 
-	coordinate_rotation = quat(1,0,0,0);
-	coordinate_displacement = vec3(0.0f);
+	coordinate_rotation = cgv::quat(1,0,0,0);
+	coordinate_displacement = cgv::vec3(0.0f);
 
 	ref_tracking_reference_state("vr_emulator_base_01").status = vr::VRS_TRACKED;
-	mat3& ref_ori_1 = reinterpret_cast<mat3&>(*ref_tracking_reference_state("vr_emulator_base_01").pose);
+	cgv::mat3& ref_ori_1 = reinterpret_cast<cgv::mat3&>(*ref_tracking_reference_state("vr_emulator_base_01").pose);
 
-	base_orientations.push_back(quat(cgv::math::rotate3<float>(vec3(-20.0f, 45.0f, 0))));
-	base_positions.push_back(vec3(1.0f, 2.0f, 1.0f));
+	base_orientations.push_back(cgv::quat(cgv::math::rotate3<float>(cgv::vec3(-20.0f, 45.0f, 0))));
+	base_positions.push_back(cgv::vec3(1.0f, 2.0f, 1.0f));
 	base_serials.push_back("vr_emulator_base_01");
 
-	base_orientations.push_back(quat(cgv::math::rotate3<float>(vec3(-20.0f, -45.0f, 0))));
-	base_positions.push_back(vec3(-1.0f, 2.0f, 1.0f));
+	base_orientations.push_back(cgv::quat(cgv::math::rotate3<float>(cgv::vec3(-20.0f, -45.0f, 0))));
+	base_positions.push_back(cgv::vec3(-1.0f, 2.0f, 1.0f));
 	base_serials.push_back("vr_emulator_base_02");
 
 	update_reference_states();
@@ -304,9 +304,9 @@ void vr_emulator::update_reference_states(int i)
 		ib = 0;
 		ie = (int)base_serials.size();
 	}
-	mat34 coordinate_transform = pose_construct(coordinate_rotation, coordinate_displacement);
+	cgv::mat3x4 coordinate_transform = pose_construct(coordinate_rotation, coordinate_displacement);
 	for (int k = ib; k < ie; ++k) {
-		auto& pose = reinterpret_cast<mat34&>(ref_tracking_reference_state(base_serials[k]).pose[0]);
+		auto& pose = reinterpret_cast<cgv::mat3x4&>(ref_tracking_reference_state(base_serials[k]).pose[0]);
 		ref_tracking_reference_state(base_serials[k]).status = vr::VRS_TRACKED;
 		base_orientations[k].put_matrix(pose_orientation(pose));
 		pose_position(pose) = base_positions[k];
@@ -322,7 +322,7 @@ void vr_emulator::timer_event(double t, double dt)
 		case IM_BODY:
 			if (left_ctrl || right_ctrl) {
 				if (is_alt)
-					kits[current_kit_index]->body_position -= (float)(left_ctrl ? -dt : dt) * cross(kits[current_kit_index]->get_body_direction(), vec3(0, 1, 0));
+					kits[current_kit_index]->body_position -= (float)(left_ctrl ? -dt : dt) * cross(kits[current_kit_index]->get_body_direction(), cgv::vec3(0, 1, 0));
 				else 
 					kits[current_kit_index]->body_direction += 3 * (float)(left_ctrl ? -dt : dt);
 				update_all_members();
@@ -371,8 +371,8 @@ void vr_emulator::timer_event(double t, double dt)
 		case IM_BASE_3:
 		case IM_BASE_4:
 		{
-			quat* orientation_ptr = 0;
-			vec3* position_ptr = 0;
+			cgv::quat* orientation_ptr = 0;
+			cgv::vec3* position_ptr = 0;
 			if (interaction_mode < IM_TRACKER_1) {
 				orientation_ptr = &kits[current_kit_index]->hand_orientation[interaction_mode - IM_LEFT_HAND];
 				position_ptr = &kits[current_kit_index]->hand_position[interaction_mode - IM_LEFT_HAND];
@@ -389,7 +389,7 @@ void vr_emulator::timer_event(double t, double dt)
 				if (is_alt)
 					(*position_ptr)[0] += 0.3f * (float)(left_ctrl ? -dt : dt);
 				else
-					*orientation_ptr = quat(vec3(0, 1, 0), (float)(right_ctrl ? -dt : dt))*(*orientation_ptr);
+					*orientation_ptr = cgv::quat(cgv::vec3(0, 1, 0), (float)(right_ctrl ? -dt : dt))*(*orientation_ptr);
 				update_all_members();
 				post_redraw();
 			}
@@ -397,7 +397,7 @@ void vr_emulator::timer_event(double t, double dt)
 				if (is_alt)
 					(*position_ptr)[1] += 0.3f * (float)(down_ctrl ? -dt : dt);
 				else
-					*orientation_ptr = quat(vec3(1, 0, 0), (float)(up_ctrl ? -dt : dt))*(*orientation_ptr);
+					*orientation_ptr = cgv::quat(cgv::vec3(1, 0, 0), (float)(up_ctrl ? -dt : dt))*(*orientation_ptr);
 				update_all_members();
 				post_redraw();
 			}
@@ -405,7 +405,7 @@ void vr_emulator::timer_event(double t, double dt)
 				if (is_alt)
 					(*position_ptr)[2] += 0.3f * (float)(pgup_ctrl ? -dt : dt);
 				else
-					*orientation_ptr = quat(vec3(0, 0, 1), (float)(pgup_ctrl ? -dt : dt))*(*orientation_ptr);
+					*orientation_ptr = cgv::quat(cgv::vec3(0, 0, 1), (float)(pgup_ctrl ? -dt : dt))*(*orientation_ptr);
 				update_all_members();
 				post_redraw();
 			}
@@ -518,7 +518,7 @@ bool vr_emulator::replace_by_pointer(vr::vr_kit* old_kit_ptr, vr::vr_kit* new_ki
 /// put a 3d up direction into passed array
 void vr_emulator::put_up_direction(float* up_dir) const
 {
-	reinterpret_cast<vec3&>(*up_dir) = vec3(0, 1, 0);
+	reinterpret_cast<cgv::vec3&>(*up_dir) = cgv::vec3(0, 1, 0);
 }
 
 /// return the floor level relativ to the world origin
@@ -539,8 +539,8 @@ void vr_emulator::put_action_zone_bounary(std::vector<float>& boundary) const
 	boundary.resize(18);
 	for (unsigned i = 0; i < 6; ++i) {
 		float angle = float(2 * M_PI*i / 6);
-		vec3 pi(1.5f*cos(angle), 0, 2.5f*sin(angle));
-		reinterpret_cast<vec3&>(boundary[3 * i]) = pi;
+		cgv::vec3 pi(1.5f*cos(angle), 0, 2.5f*sin(angle));
+		reinterpret_cast<cgv::vec3&>(boundary[3 * i]) = pi;
 	}
 }
 bool vr_emulator::check_for_button_toggle(cgv::gui::key_event& ke, int controller_index, vr::VRButtonStateFlags button, float touch_x, float touch_y)
@@ -801,7 +801,7 @@ void vr_emulator::create_tracker_gui(vr_emulated_kit* kit, int i)
 		add_decorator("position", "heading", "level=3");
 		add_gui("position", kit->tracker_positions[i], "vector", "gui_type='value_slider';options='min=-3;max=3;step=0.0001;ticks=true'");
 		add_decorator("orientation", "heading", "level=3");
-		add_gui("orientation", reinterpret_cast<vec4&>(kit->tracker_orientations[i]), "direction", "gui_type='value_slider';options='min=-1;max=1;step=0.0001;ticks=true'");
+		add_gui("orientation", reinterpret_cast<cgv::vec4&>(kit->tracker_orientations[i]), "direction", "gui_type='value_slider';options='min=-1;max=1;step=0.0001;ticks=true'");
 		end_tree_node(kit->tracker_enabled[i]);
 	}
 }
@@ -812,12 +812,12 @@ void vr_emulator::create_gui()
 	if (begin_tree_node("base and calib", coordinate_rotation, false, "level=2")) {
 		align("\a");
 		add_decorator("coordinate transform", "heading", "level=3");
-		add_gui("coordinate_rotation", reinterpret_cast<vec4&>(coordinate_rotation), "direction", "options='min=-1;max=1;step=0.0001;ticks=true'");
+		add_gui("coordinate_rotation", reinterpret_cast<cgv::vec4&>(coordinate_rotation), "direction", "options='min=-1;max=1;step=0.0001;ticks=true'");
 		add_gui("coordinate_displacement", coordinate_displacement, "", "options='min=-2;max=2;step=0.0001;ticks=true'");
 		add_decorator("base stations", "heading", "level=3");
 		for (uint32_t i = 0; i < base_serials.size(); ++i) {
 			add_member_control(this, "serial", base_serials[i]);
-			add_gui("orientation", reinterpret_cast<vec4&>(base_orientations[i]), "direction", "options='min=-1;max=1;step=0.0001;ticks=true'");
+			add_gui("orientation", reinterpret_cast<cgv::vec4&>(base_orientations[i]), "direction", "options='min=-1;max=1;step=0.0001;ticks=true'");
 			add_gui("position", base_positions[i], "", "options='min=-2;max=2;step=0.0001;ticks=true'");
 		}
 		align("\b");
@@ -886,7 +886,7 @@ void vr_emulator::create_gui()
 						add_decorator("position", "heading", "level=3");
 						add_gui("position", kits[i]->hand_position[j], "vector", "gui_type='value_slider';options='min=-3;max=3;step=0.0001;ticks=true'");
 						add_decorator("orientation", "heading", "level=3");
-						add_gui("orientation", reinterpret_cast<vec4&>(kits[i]->hand_orientation[j]), "direction", "gui_type='value_slider';options='min=-1;max=1;step=0.0001;ticks=true'");
+						add_gui("orientation", reinterpret_cast<cgv::vec4&>(kits[i]->hand_orientation[j]), "direction", "gui_type='value_slider';options='min=-1;max=1;step=0.0001;ticks=true'");
 						align("\b");
 						end_tree_node(kits[i]->hand_position[j]);
 					}
@@ -929,7 +929,7 @@ struct register_driver_and_object
 	{
 		vr_emulator* vr_emu_ptr = new vr_emulator();
 		vr::register_driver(vr_emu_ptr);
-		register_object(base_ptr(vr_emu_ptr), options);
+		register_object(cgv::base::base_ptr(vr_emu_ptr), options);
 	}
 };
 

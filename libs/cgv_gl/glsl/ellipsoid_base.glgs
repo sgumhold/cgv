@@ -1,4 +1,23 @@
-#version 150 compatibility
+#version 330
+
+/*
+The following interface is implemented in this shader:
+//***** begin interface of ellipsoid_base.glgs ****************************
+void cover_ellipsoid_with_quad(in vec3 center, in mat3 T);
+void cover_ellipsoid_with_quad_enc(in vec3 center, in vec3 enc_T0, in vec3 enc_T1);
+//***** end interface of ellipsoid_base.glgs ******************************
+*/
+
+//***** begin interface of view.glsl ***********************************
+mat4 get_modelview_matrix();
+mat4 get_projection_matrix();
+mat4 get_modelview_projection_matrix();
+mat4 get_inverse_modelview_matrix();
+mat4 get_inverse_modelview_projection_matrix();
+mat3 get_normal_matrix();
+mat3 get_inverse_normal_matrix();
+//***** end interface of view.glsl ***********************************
+
 
 out EllipsoidData {
 	vec2  q_tilde;
@@ -10,7 +29,6 @@ out EllipsoidData {
 	vec3  v_eye;
 } Vout;
 
-
 void generate_vertex(in vec3 center, in mat3 T, in mat3 inv_T, in vec2 t, in vec3 m_tilde, in vec3 x_tilde, in vec3 y_tilde, in vec3 e_tilde)
 {
 	// set q coordinates of corner
@@ -19,29 +37,18 @@ void generate_vertex(in vec3 center, in mat3 T, in mat3 inv_T, in vec2 t, in vec
 	// compute the corner point in homogeneous object coordinates
 	vec3 V_tilde = m_tilde + t.x*x_tilde + t.y*y_tilde;
 	vec4 V = vec4(T*V_tilde + center, 1.0);
-
 	// compute vector from eye to vertex in eye space
-	Vout.v_eye = (gl_ModelViewMatrix*V).xyz;
-	
+	Vout.v_eye = (get_modelview_matrix()*V).xyz;
 	// compute components to compute normal in eye space
-	Vout.nml_v_eye = gl_NormalMatrix*(inv_T*(V_tilde - e_tilde));
+	Vout.nml_v_eye = get_normal_matrix()*(inv_T*(V_tilde - e_tilde));
 
-	gl_Position = gl_ModelViewProjectionMatrix * V;
+	gl_Position = get_modelview_projection_matrix() * V;
 	Vout.zw_v_clip = gl_Position.zw - Vout.zw_e_clip;
-
 	EmitVertex();
 }
 
-void cover_ellipsoid_with_quad(in vec3 center, in vec3 enc_T0, in vec3 enc_T1)
+void cover_ellipsoid_with_quad(in vec3 center, in mat3 T)
 {
-	// decompress the matrix T
-	mat3 T;
-	T[0] = enc_T0;
-	T[1].x = enc_T0.y;
-	T[1].yz = enc_T1.xy;
-	T[2].x = enc_T0.z;
-	T[2].yz = enc_T1.yz;
-
 	// invert the matrix T
 	mat3 inv_T;
 	float inv_denom = 1.0 / dot(T[0], cross(T[1], T[2]));
@@ -50,7 +57,7 @@ void cover_ellipsoid_with_quad(in vec3 center, in vec3 enc_T0, in vec3 enc_T1)
 	inv_T[2] = inv_denom*cross(T[0], T[1]);
 
 	// determine eye point in parameter space
-	vec3 e = gl_ModelViewMatrixInverse[3].xyz;
+	vec3 e = get_inverse_modelview_matrix()[3].xyz;
 	vec3 e_tilde = inv_T*(e - center);
 
 	// compute helper
@@ -74,11 +81,23 @@ void cover_ellipsoid_with_quad(in vec3 center, in vec3 enc_T0, in vec3 enc_T1)
 	vec3 y_tilde = r*normalize(cross(e_tilde, x_tilde));
 
 	Vout.inv_e = sqrt(inv_e_square);
-	Vout.zw_e_clip = (gl_ModelViewProjectionMatrix * gl_ModelViewMatrixInverse[3]).zw;
-	Vout.nml_e_eye = gl_NormalMatrix*(inv_T*e_tilde);
+	Vout.zw_e_clip = (get_modelview_projection_matrix() * get_inverse_modelview_matrix()[3]).zw;
+	Vout.nml_e_eye = get_normal_matrix()*(inv_T*e_tilde);
 
 	generate_vertex(center, T, inv_T, vec2(-1.0, -1.0), m_tilde, x_tilde, y_tilde, e_tilde);
 	generate_vertex(center, T, inv_T, vec2( 1.0, -1.0), m_tilde, x_tilde, y_tilde, e_tilde);
 	generate_vertex(center, T, inv_T, vec2(-1.0,  1.0), m_tilde, x_tilde, y_tilde, e_tilde);
 	generate_vertex(center, T, inv_T, vec2( 1.0,  1.0), m_tilde, x_tilde, y_tilde, e_tilde);
+}
+
+void cover_ellipsoid_with_quad_enc(in vec3 center, in vec3 enc_T0, in vec3 enc_T1)
+{
+	// decompress the matrix T
+	mat3 T;
+	T[0] = enc_T0;
+	T[1].x = enc_T0.y;
+	T[1].yz = enc_T1.xy;
+	T[2].x = enc_T0.z;
+	T[2].yz = enc_T1.yz;
+	cover_ellipsoid_with_quad(center, T);
 }

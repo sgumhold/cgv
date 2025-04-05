@@ -6,17 +6,15 @@
 #include "placeable.h"
 #include "plane.h"
 
-using namespace cgv::render;
-
 namespace vr {
 namespace room {
 	// simple wrapper for drawable and placable
-	class virtual_display : public drawable, public placeable 
+	class virtual_display : public cgv::render::drawable, public cgv::render::placeable
 	{
 	  public:
 		struct intersection {
-			vec3 pos_world;
-			vec2 pos_rel;
+			cgv::vec3 pos_world;
+			cgv::vec2 pos_rel;
 			cgv::math::fvec<uint32_t, 2> pos_pixel;
 			bool hit;
 		};
@@ -34,14 +32,14 @@ namespace room {
 		virtual_display();
 		virtual_display(const plane &display);
 
-		intersection intersect(const vec3 &origin, const vec3 &dir);
+		intersection intersect(const cgv::vec3 &origin, const cgv::vec3 &dir);
 
-		bool init(context &ctx);
-		void init_frame(context &ctx);
+		bool init(cgv::render::context &ctx);
+		void init_frame(cgv::render::context &ctx);
 
-		void draw(context &ctx);
+		void draw(cgv::render::context &ctx);
 
-		void clear(context &ctx);
+		void clear(cgv::render::context &ctx);
 
 		plane get_display() const;
 		void set_display(const plane &display);

@@ -1,7 +1,7 @@
 #pragma once
 
 #include <cgv/render/drawable.h>
-#include <cgv/media/illum/phong_material.hh>
+#include <cgv/media/illum/phong_material.h>
 
 #include "surface_reconstructor.h"
 

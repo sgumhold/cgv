@@ -27,9 +27,6 @@ extern CGV_API std::string get_stick_action_string(StickAction action);
 /// class to represent stick events with the EID_STICK
 class CGV_API stick_event : public event
 {
-public:
-	/// declare 2d vector type 
-	typedef cgv::math::fvec<float, 2> vec2;
 protected:
 	// store different indices to uniquely define stick
 	unsigned char player_index, controller_index, stick_index;

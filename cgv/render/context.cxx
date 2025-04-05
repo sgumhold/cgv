@@ -48,7 +48,7 @@ context_config::context_config()
 #else
 	debug = false;
 #endif
-	core_profile = false;
+	core_profile = true;
 	accumulation_bits = 0;
 	version_major = -1;
 	version_minor = -1;
@@ -926,17 +926,17 @@ cgv::media::font::font_face_ptr context::get_current_font_face() const
 
 
 /// write the content of a buffer to an image file
-bool context::write_frame_buffer_to_image(const std::string& file_name, data::ComponentFormat cf,
+bool context::write_frame_buffer_to_image(const std::string& file_name, cgv::data::ComponentFormat cf,
 														FrameBufferType buffer_type, unsigned int x, unsigned int y, int w, int h,
 														float depth_offset, float depth_scale)
 {
-	data::data_view dv;
-	if (cf == CF_D) {
-		if (read_frame_buffer(dv, x, y, buffer_type, type::info::TI_FLT32, cf, w, h)) {
-			data::data_format df("uint8[L]");
+	cgv::data::data_view dv;
+	if (cf == cgv::data::CF_D) {
+		if (read_frame_buffer(dv, x, y, buffer_type, cgv::type::info::TI_FLT32, cf, w, h)) {
+			cgv::data::data_format df("uint8[L]");
 			df.set_width(dv.get_format()->get_width());
 			df.set_height(dv.get_format()->get_height());
-			data::data_view dv1(&df);
+			cgv::data::data_view dv1(&df);
 			size_t n = df.get_width()*df.get_height();
 			const float* src = dv.get_ptr<float>();
 			unsigned char* dst = dv1.get_ptr<unsigned char>();
@@ -948,9 +948,9 @@ bool context::write_frame_buffer_to_image(const std::string& file_name, data::Co
 			}
 		}
 	}
-	else if (read_frame_buffer(dv, x, y, buffer_type, type::info::TI_UINT8, cf, w, h)) {
-		if (cf == CF_S) {
-			const_cast<data::data_format*>(dv.get_format())->set_component_names("L");
+	else if (read_frame_buffer(dv, x, y, buffer_type, cgv::type::info::TI_UINT8, cf, w, h)) {
+		if (cf == cgv::data::CF_S) {
+			const_cast<cgv::data::data_format*>(dv.get_format())->set_component_names("L");
 			size_t n = dv.get_format()->get_width()*dv.get_format()->get_height();
 			unsigned char* dst = dv.get_ptr<unsigned char>();
 			unsigned char s = (int)depth_scale;

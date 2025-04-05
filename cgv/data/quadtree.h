@@ -11,11 +11,11 @@ namespace cgv {
 		class quadtree
 		{
 		public:
-			typedef cgv::math::fvec<T, 2> vec2;
-			typedef cgv::media::axis_aligned_box<T, 2> box2;
+			typedef cgv::math::fvec<T, 2> vec2_type;
+			typedef cgv::media::axis_aligned_box<T, 2> box2_type;
 			struct point_provider
 			{
-				virtual const vec2& get_point(int i) const = 0;
+				virtual const vec2_type& get_point(int i) const = 0;
 			};
 		protected:
 			struct node
@@ -26,7 +26,7 @@ namespace cgv {
 				/// in case of leaf, return the number of contained points
 				unsigned size() const { unsigned s = 0; while (s < 4 && children[s] != -1) ++s; return s; }
 			};
-			box2 box;
+			box2_type box;
 			const point_provider& provider;
 			int root_idx;
 			std::vector<node> nodes;
@@ -40,7 +40,7 @@ namespace cgv {
 				assert(n.is_leaf && n.size() < 4);
 				n.children[n.size()] = pi;
 			}
-			bool split_leaf(int ni, const vec2& x) {
+			bool split_leaf(int ni, const vec2_type& x) {
 				if (!is_leaf(ni))
 					return false;
 				int c0 = (int)nodes.size();
@@ -49,7 +49,7 @@ namespace cgv {
 				for (unsigned j = 0; j < 4; ++j) {
 					int pi = n.children[j];
 					if (pi != -1) {
-						const vec2& p = provider.get_point(pi);
+						const vec2_type& p = provider.get_point(pi);
 						unsigned k = 0;
 						if (p(0) > x(0))
 							k += 1;
@@ -63,10 +63,10 @@ namespace cgv {
 				return true;
 			}
 		public:
-			quadtree(const point_provider& _provider, const box2& _box) : provider(_provider), box(_box) { nodes.push_back(node()); root_idx = 0; }
+			quadtree(const point_provider& _provider, const box2_type& _box) : provider(_provider), box(_box) { nodes.push_back(node()); root_idx = 0; }
 			bool empty() const { return is_leaf(get_root_index()) && get_node(get_root_index()).size() == 0; }
 			int get_root_index() const { return root_idx; }
-			bool collides(const vec2& x, T d, int ni = -1, box2 b = box2()) const {
+			bool collides(const vec2_type& x, T d, int ni = -1, box2_type b = box2_type()) const {
 				if (ni == -1) {
 					ni = get_root_index();
 					b = box;
@@ -86,21 +86,21 @@ namespace cgv {
 						return false;
 					}
 					else {
-						vec2 c = b.get_center();
+						vec2_type c = b.get_center();
 						const node& n = get_node(ni);
 						return
-							collides(x, d, n.children[0], box2(b.get_min_pnt(), c)) ||
-							collides(x, d, n.children[1], box2(vec2(c(0), b.get_min_pnt()(1)), vec2(b.get_max_pnt()(0), c(1)))) ||
-							collides(x, d, n.children[2], box2(vec2(b.get_min_pnt()(0), c(1)), vec2(c(0), b.get_max_pnt()(1)))) ||
-							collides(x, d, n.children[3], box2(c, b.get_max_pnt()));
+							collides(x, d, n.children[0], box2_type(b.get_min_pnt(), c)) ||
+							collides(x, d, n.children[1], box2_type(vec2_type(c(0), b.get_min_pnt()(1)), vec2_type(b.get_max_pnt()(0), c(1)))) ||
+							collides(x, d, n.children[2], box2_type(vec2_type(b.get_min_pnt()(0), c(1)), vec2_type(c(0), b.get_max_pnt()(1)))) ||
+							collides(x, d, n.children[3], box2_type(c, b.get_max_pnt()));
 					}
 				}
 				else
 					return false;
 			}
-			void insert(const vec2& p, int pi) {
+			void insert(const vec2_type& p, int pi) {
 				int ni = get_root_index();
-				box2 b = box;
+				box2_type b = box;
 				while (true) {
 					if (is_leaf(ni)) {
 						const node& n = get_node(ni);
@@ -110,7 +110,7 @@ namespace cgv {
 						}
 						split_leaf(ni, b.get_center());
 					}
-					vec2 x = b.get_center();
+					vec2_type x = b.get_center();
 					int k = 0;
 					if (p(0) > x(0)) {
 						k += 1;
