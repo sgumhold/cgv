@@ -10,14 +10,14 @@ void visibility_sort::destruct(const cgv::render::context& ctx) {
 	scan_global_prog.destruct(ctx);
 	scatter_prog.destruct(ctx);
 
-	delete_buffer(ctx, keys_in_buffer);
-	delete_buffer(ctx, keys_out_buffer);
-	delete_buffer(ctx, values_out_buffer);
-	delete_buffer(ctx, prefix_sums_buffer);
-	delete_buffer(ctx, block_sums_buffer);
-	delete_buffer(ctx, last_sum_buffer);
+	keys_in_buffer.destruct(ctx);
+	keys_out_buffer.destruct(ctx);
+	values_out_buffer.destruct(ctx);
+	prefix_sums_buffer.destruct(ctx);
+	block_sums_buffer.destruct(ctx);
+	last_sum_buffer.destruct(ctx);
 
-	is_initialized_ = false;
+	_is_initialized = false;
 }
 
 bool visibility_sort::load_shader_programs(cgv::render::context& ctx) {
@@ -48,7 +48,7 @@ bool visibility_sort::load_shader_programs(cgv::render::context& ctx) {
 
 bool visibility_sort::init(cgv::render::context& ctx, size_t count) {
 
-	is_initialized_ = false;
+	_is_initialized = false;
 
 	if(!load_shader_programs(ctx) || count == 0)
 		return false;
@@ -104,7 +104,7 @@ bool visibility_sort::init(cgv::render::context& ctx, size_t count) {
 	scatter_prog.set_uniform(ctx, "last_block_sum_idx", ((n + n_pad) >> block_sum_offset_shift) - 1);
 	scatter_prog.disable(ctx);
 
-	is_initialized_ = true;
+	_is_initialized = true;
 	return true;
 }
 
@@ -124,7 +124,7 @@ void visibility_sort::execute(cgv::render::context& ctx, const cgv::render::vert
 	key_prog.enable(ctx);
 	key_prog.set_uniform(ctx, "eye_pos", eye_pos);
 	key_prog.set_uniform(ctx, "view_dir", view_dir);
-	dispatch_compute1d(num_scan_groups);
+	dispatch_compute(num_scan_groups, 1, 1);
 	glMemoryBarrier(GL_SHADER_STORAGE_BARRIER_BIT);
 	key_prog.disable(ctx);
 
@@ -139,17 +139,17 @@ void visibility_sort::execute(cgv::render::context& ctx, const cgv::render::vert
 		values_out_buffer_ptr->bind(ctx, cgv::render::VertexBufferType::VBT_STORAGE, 3);
 
 		scan_local_prog.enable(ctx);
-		dispatch_compute1d(num_scan_groups);
+		dispatch_compute(num_scan_groups, 1, 1);
 		glMemoryBarrier(GL_SHADER_STORAGE_BARRIER_BIT);
 		scan_local_prog.disable(ctx);
 
 		scan_global_prog.enable(ctx);
-		dispatch_compute1d(4);
+		dispatch_compute(4, 1, 1);
 		glMemoryBarrier(GL_SHADER_STORAGE_BARRIER_BIT);
 		scan_global_prog.disable(ctx);
 
 		scatter_prog.enable(ctx);
-		dispatch_compute1d(num_scan_groups);
+		dispatch_compute(num_scan_groups, 1, 1);
 		glMemoryBarrier(GL_SHADER_STORAGE_BARRIER_BIT);
 		scatter_prog.disable(ctx);
 

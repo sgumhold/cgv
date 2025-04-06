@@ -9,7 +9,7 @@ void clamp_texture::destruct(const cgv::render::context& ctx) {
 	clamp_texture2d_prog.destruct(ctx);
 	clamp_texture3d_prog.destruct(ctx);
 	
-	is_initialized_ = false;
+	_is_initialized = false;
 }
 
 bool clamp_texture::load_shader_programs(cgv::render::context& ctx) {
@@ -29,14 +29,14 @@ bool clamp_texture::load_shader_programs(cgv::render::context& ctx) {
 
 bool clamp_texture::init(cgv::render::context& ctx) {
 
-	is_initialized_ = false;
+	_is_initialized = false;
 
 	if(!load_shader_programs(ctx))
 		return false;
 
 	group_size = 4;
 
-	is_initialized_ = true;
+	_is_initialized = true;
 	return true;
 }
 
@@ -76,13 +76,13 @@ bool clamp_texture::execute(cgv::render::context& ctx, cgv::render::texture& tex
 
 	if(num_dimensions == 1) {
 		prog->set_uniform(ctx, "size", size.x());
-		dispatch_compute1d(num_groups.x());
+		dispatch_compute(num_groups.x(), 1, 1);
 	} else if(num_dimensions == 2) {
 		prog->set_uniform(ctx, "size", uvec2(size));
-		dispatch_compute2d(uvec2(num_groups));
+		dispatch_compute(num_groups.x(), num_groups.y(), 1);
 	} else if(num_dimensions == 3) {
 		prog->set_uniform(ctx, "size", size);
-		dispatch_compute3d(num_groups);
+		dispatch_compute(num_groups.x(), num_groups.y(), num_groups.z());
 	}
 	
 	glMemoryBarrier(GL_SHADER_IMAGE_ACCESS_BARRIER_BIT);

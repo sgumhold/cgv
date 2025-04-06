@@ -9,7 +9,7 @@ void mipmap::destruct(const cgv::render::context& ctx) {
 	mipmap2d_prog.destruct(ctx);
 	mipmap3d_prog.destruct(ctx);
 	
-	is_initialized_ = false;
+	_is_initialized = false;
 }
 
 bool mipmap::load_shader_programs(cgv::render::context& ctx) {
@@ -26,14 +26,14 @@ bool mipmap::load_shader_programs(cgv::render::context& ctx) {
 
 bool mipmap::init(cgv::render::context& ctx) {
 
-	is_initialized_ = false;
+	_is_initialized = false;
 
 	if(!load_shader_programs(ctx))
 		return false;
 
 	group_size = 4;
 
-	is_initialized_ = true;
+	_is_initialized = true;
 	return true;
 }
 
@@ -100,7 +100,7 @@ bool mipmap::execute(cgv::render::context& ctx, cgv::render::texture& source_tex
 			prog->set_uniform(ctx, "output_size", output_size);
 		}
 
-		dispatch_compute3d(num_groups);
+		dispatch_compute(num_groups.x(), num_groups.y(), num_groups.z());
 		glMemoryBarrier(GL_SHADER_IMAGE_ACCESS_BARRIER_BIT);
 
 		input_size = output_size;

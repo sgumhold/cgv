@@ -10,11 +10,11 @@ void scan_and_compact::destruct(const cgv::render::context& ctx) {
 	scan_global_prog.destruct(ctx);
 	compact_prog.destruct(ctx);
 
-	delete_buffer(ctx, votes_buffer);
-	delete_buffer(ctx, prefix_sums_buffer);
-	delete_buffer(ctx, block_sums_buffer);
+	votes_buffer.destruct(ctx);
+	prefix_sums_buffer.destruct(ctx);
+	block_sums_buffer.destruct(ctx);
 
-	is_initialized_ = false;
+	_is_initialized = false;
 }
 
 bool scan_and_compact::load_shader_programs(cgv::render::context& ctx) {
@@ -41,7 +41,7 @@ bool scan_and_compact::load_shader_programs(cgv::render::context& ctx) {
 
 bool scan_and_compact::init(cgv::render::context& ctx, size_t count) {
 
-	is_initialized_ = false;
+	_is_initialized = false;
 
 	if(!load_shader_programs(ctx))
 		return false;
@@ -95,7 +95,7 @@ bool scan_and_compact::init(cgv::render::context& ctx, size_t count) {
 	compact_prog.set_uniform(ctx, "n", n + n_pad);
 	compact_prog.disable(ctx);
 
-	is_initialized_ = true;
+	_is_initialized = true;
 	return true;
 }
 
@@ -106,7 +106,7 @@ unsigned scan_and_compact::execute(cgv::render::context& ctx, const cgv::render:
 	votes_buffer.bind(ctx, 2);
 	
 	if(!vote_prog.is_enabled()) vote_prog.enable(ctx);
-	dispatch_compute1d(num_scan_groups);
+	dispatch_compute(num_scan_groups, 1, 1);
 	glMemoryBarrier(GL_SHADER_STORAGE_BARRIER_BIT);
 	vote_prog.disable(ctx);
 
@@ -114,17 +114,17 @@ unsigned scan_and_compact::execute(cgv::render::context& ctx, const cgv::render:
 	block_sums_buffer.bind(ctx, 4);
 
 	scan_local_prog.enable(ctx);
-	dispatch_compute1d(num_scan_groups);
+	dispatch_compute(num_scan_groups, 1, 1);
 	glMemoryBarrier(GL_SHADER_STORAGE_BARRIER_BIT);
 	scan_local_prog.disable(ctx);
 
 	scan_global_prog.enable(ctx);
-	dispatch_compute1d(1);
+	dispatch_compute(1, 1, 1);
 	glMemoryBarrier(GL_SHADER_STORAGE_BARRIER_BIT);
 	scan_global_prog.disable(ctx);
 
 	compact_prog.enable(ctx);
-	dispatch_compute1d(num_scan_groups);
+	dispatch_compute(num_scan_groups, 1, 1);
 	glMemoryBarrier(GL_SHADER_STORAGE_BARRIER_BIT);
 	compact_prog.disable(ctx);
 
