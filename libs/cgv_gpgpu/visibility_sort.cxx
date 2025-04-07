@@ -1,5 +1,9 @@
 #include "visibility_sort.h"
 
+#include <cgv_gpgpu/utils.h>
+
+using namespace cgv::gpgpu;
+
 namespace cgv {
 namespace gpgpu {
 
@@ -59,10 +63,12 @@ bool visibility_sort::init(cgv::render::context& ctx, size_t count) {
 	unsigned int block_size = 4 * group_size;
 
 	// Calculate padding for n to next multiple of blocksize.
-	n_pad = calculate_padding(n, block_size);
+	//n_pad = calculate_padding(n, block_size);
+	uint32_t n_padded = next_multiple_greater_than(n, block_size);
+	n_pad = n_padded - n;
 
-	num_groups = calculate_num_groups(n + n_pad, group_size);
-	num_scan_groups = calculate_num_groups(n + n_pad, block_size);
+	num_groups = div_round_up(n_padded, group_size);
+	num_scan_groups = div_round_up(n_padded, block_size);
 
 	unsigned int block_sum_offset_shift = static_cast<unsigned int>(log2f(float(block_size)));
 
@@ -73,7 +79,7 @@ bool visibility_sort::init(cgv::render::context& ctx, size_t count) {
 		num <<= 1;
 	num_block_sums = num;
 
-	size_t data_size = (n + n_pad) * sizeof(unsigned int);
+	size_t data_size = n_padded * sizeof(unsigned int);
 	size_t blocksums_size = 4 * num_block_sums * sizeof(unsigned int);
 
 	ensure_buffer(ctx, keys_in_buffer, data_size);
@@ -85,11 +91,11 @@ bool visibility_sort::init(cgv::render::context& ctx, size_t count) {
 
 	key_prog.enable(ctx);
 	key_prog.set_uniform(ctx, "n", n);
-	key_prog.set_uniform(ctx, "n_padded", n + n_pad);
+	key_prog.set_uniform(ctx, "n_padded", n_padded);
 	key_prog.disable(ctx);
 
 	scan_local_prog.enable(ctx);
-	scan_local_prog.set_uniform(ctx, "n", n + n_pad);
+	scan_local_prog.set_uniform(ctx, "n", n_padded);
 	scan_local_prog.set_uniform(ctx, "n_scan_groups", num_scan_groups);
 	scan_local_prog.set_uniform(ctx, "n_block_sums", num_block_sums);
 	scan_local_prog.disable(ctx);
@@ -99,9 +105,9 @@ bool visibility_sort::init(cgv::render::context& ctx, size_t count) {
 	scan_global_prog.disable(ctx);
 
 	scatter_prog.enable(ctx);
-	scatter_prog.set_uniform(ctx, "n", n + n_pad);
+	scatter_prog.set_uniform(ctx, "n", n_padded);
 	scatter_prog.set_uniform(ctx, "n_block_sums", num_block_sums);
-	scatter_prog.set_uniform(ctx, "last_block_sum_idx", ((n + n_pad) >> block_sum_offset_shift) - 1);
+	scatter_prog.set_uniform(ctx, "last_block_sum_idx", (n_padded >> block_sum_offset_shift) - 1);
 	scatter_prog.disable(ctx);
 
 	_is_initialized = true;
