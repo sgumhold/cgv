@@ -1,5 +1,9 @@
 #include "scan_and_compact.h"
 
+#include <cgv_gpgpu/utils.h>
+
+using namespace cgv::gpgpu;
+
 namespace cgv {
 namespace gpgpu {
 
@@ -52,10 +56,11 @@ bool scan_and_compact::init(cgv::render::context& ctx, size_t count) {
 	unsigned int block_size = 4 * group_size;
 
 	// Calculate padding for n to next multiple of blocksize.
-	n_pad = calculate_padding(n, block_size);
+	uint32_t n_padded = next_multiple_greater_than(n, block_size);
+	//n_pad = calculate_padding(n, block_size);
 
-	num_groups = calculate_num_groups(n + n_pad, group_size);
-	num_scan_groups = calculate_num_groups(n + n_pad, block_size);
+	num_groups = div_round_up(n_padded, group_size);
+	num_scan_groups = div_round_up(n_padded, block_size);
 
 	unsigned int block_sum_offset_shift = static_cast<unsigned int>(log2f(float(block_size)));
 
@@ -66,10 +71,10 @@ bool scan_and_compact::init(cgv::render::context& ctx, size_t count) {
 		num <<= 1;
 	num_block_sums = num;
 
-	unsigned num_vote_ballots = calculate_num_groups(n + n_pad, 32u);
+	unsigned num_vote_ballots = div_round_up(n_padded, 32u);
 
 	size_t votes_size = num_vote_ballots * 4;
-	size_t data_size = (n + n_pad) * sizeof(unsigned int);
+	size_t data_size = (n_padded) * sizeof(unsigned int);
 	size_t blocksums_size = num_block_sums * sizeof(unsigned int);
 
 	ensure_buffer(ctx, votes_buffer, data_size);
@@ -78,21 +83,21 @@ bool scan_and_compact::init(cgv::render::context& ctx, size_t count) {
 
 	vote_prog.enable(ctx);
 	vote_prog.set_uniform(ctx, "n", n);
-	vote_prog.set_uniform(ctx, "n_padded", n + n_pad);
+	vote_prog.set_uniform(ctx, "n_padded", n_padded);
 	vote_prog.disable(ctx);
 
 	scan_local_prog.enable(ctx);
-	scan_local_prog.set_uniform(ctx, "n", n + n_pad);
+	scan_local_prog.set_uniform(ctx, "n", n_padded);
 	scan_local_prog.set_uniform(ctx, "n_scan_groups", num_scan_groups);
 	scan_local_prog.disable(ctx);
 
 	scan_global_prog.enable(ctx);
 	scan_global_prog.set_uniform(ctx, "n_block_sums", num_block_sums);
-	scan_global_prog.set_uniform(ctx, "last_block_sum_idx", ((n + n_pad) >> block_sum_offset_shift) - 1);
+	scan_global_prog.set_uniform(ctx, "last_block_sum_idx", (n_padded >> block_sum_offset_shift) - 1);
 	scan_global_prog.disable(ctx);
 
 	compact_prog.enable(ctx);
-	compact_prog.set_uniform(ctx, "n", n + n_pad);
+	compact_prog.set_uniform(ctx, "n", n_padded);
 	compact_prog.disable(ctx);
 
 	_is_initialized = true;

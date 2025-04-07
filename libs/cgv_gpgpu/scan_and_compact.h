@@ -23,7 +23,7 @@ protected:
 	std::string vote_definition = "";
 
 	unsigned n = 0;
-	unsigned n_pad = 0;
+	//unsigned n_pad = 0;
 	unsigned group_size = 0;
 	unsigned num_groups = 0;
 	unsigned num_scan_groups = 0;
