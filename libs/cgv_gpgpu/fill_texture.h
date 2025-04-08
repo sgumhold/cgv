@@ -1,6 +1,6 @@
 #pragma once
 
-#include "gpu_algorithm.h"
+#include "algorithm.h"
 
 #include <cgv/render/texture.h>
 
@@ -10,7 +10,7 @@ namespace cgv {
 namespace gpgpu {
 
 /** GPU compute shader implementation for filling a texture with a constant value. */
-class CGV_API fill_texture : public gpu_algorithm {
+class CGV_API fill_texture : public algorithm {
 protected:
 	unsigned group_size = 0;
 
@@ -25,8 +25,6 @@ protected:
 	bool load_shader_programs(cgv::render::context& ctx);
 
 public:
-	fill_texture() : gpu_algorithm() {}
-
 	void destruct(const cgv::render::context& ctx);
 
 	bool init(cgv::render::context& ctx, size_t count) { return init(ctx); }

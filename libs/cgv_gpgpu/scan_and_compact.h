@@ -1,6 +1,6 @@
 #pragma once
 
-#include "gpu_algorithm.h"
+#include "algorithm.h"
 
 #include "lib_begin.h"
 
@@ -8,7 +8,7 @@ namespace cgv {
 namespace gpgpu {
 
 /** GPU filter routine implemented using prefix-sum based counting. */
-class CGV_API scan_and_compact : public gpu_algorithm {
+class CGV_API scan_and_compact : public algorithm {
 public:
 	enum Mode {
 		M_COPY_DATA,
@@ -43,8 +43,6 @@ protected:
 	bool load_shader_programs(cgv::render::context& ctx);
 
 public:
-	scan_and_compact() : gpu_algorithm() {}
-
 	void destruct(const cgv::render::context& ctx);
 
 	bool init(cgv::render::context& ctx, size_t count);

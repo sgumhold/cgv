@@ -13,14 +13,10 @@ namespace cgv {
 namespace gpgpu {
 
 /** Definition of base functionality for highly parallel gpu algorithms. */
-class CGV_API gpu_algorithm {
+class CGV_API algorithm {
 public:
-	gpu_algorithm() {}
-	~gpu_algorithm() {}
-
-	//virtual bool init(cgv::render::context& ctx, size_t count) = 0;
-
-	//virtual void destruct(const cgv::render::context& ctx) = 0;
+	algorithm() {}
+	~algorithm() {}
 
 	bool is_initialized() const { return _is_initialized; }
 
