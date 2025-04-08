@@ -1,6 +1,6 @@
 #pragma once
 
-#include "gpu_algorithm.h"
+#include "algorithm.h"
 
 #include <cgv/render/texture.h>
 
@@ -10,7 +10,7 @@ namespace cgv {
 namespace gpgpu {
 
 /** GPU compute shader implementation for clamping texture values. */
-class CGV_API clamp_texture : public gpu_algorithm {
+class CGV_API clamp_texture : public algorithm {
 protected:
 	unsigned group_size = 0;
 	
@@ -26,8 +26,6 @@ protected:
 	bool load_shader_programs(cgv::render::context& ctx);
 
 public:
-	clamp_texture() : gpu_algorithm() {}
-
 	void destruct(const cgv::render::context& ctx);
 
 	bool init(cgv::render::context& ctx, size_t count) { return init(ctx); }

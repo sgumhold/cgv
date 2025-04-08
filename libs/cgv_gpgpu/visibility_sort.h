@@ -1,6 +1,6 @@
 #pragma once
 
-#include "gpu_algorithm.h"
+#include "algorithm.h"
 
 #include "lib_begin.h"
 
@@ -8,7 +8,7 @@ namespace cgv {
 namespace gpgpu {
 
 /** GPU sorting routine specialization for distance based sorting implemented using a prefix-sum based radix sort. */
-class CGV_API visibility_sort : public gpu_algorithm {
+class CGV_API visibility_sort : public algorithm {
 public:
 	enum SortOrder {
 		SO_ASCENDING = 0,
@@ -50,8 +50,6 @@ protected:
 	bool load_shader_programs(cgv::render::context& ctx);
 
 public:
-	visibility_sort() : gpu_algorithm() {}
-
 	void destruct(const cgv::render::context& ctx);
 
 	bool init(cgv::render::context& ctx, size_t count);
