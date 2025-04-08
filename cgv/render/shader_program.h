@@ -164,7 +164,7 @@ public:
 		}
 		return ctx.set_uniform_array_void(*this, loc, type_descriptor(element_descriptor_traits<T>::get_type_descriptor(array[0]), true), array, nr_elements);
 	}
-	/** Set the value of a uniform by name, where the type can be any of int, unsigned, float, vec<int>, vec<unsigned>,
+	/** Set the value of a uniform by location, where the type can be any of int, unsigned, float, vec<int>, vec<unsigned>,
 	vec<float>, mat<float> and the vectors are of dimension 2,
 	3 or 4 and the matrices of dimensions 2, 3 or 4. */
 	template <typename T>
@@ -180,6 +180,12 @@ public:
 	template <typename T>
 	bool set_uniform_array(const context& ctx, int loc, const T* array, size_t nr_elements) {
 		return ctx.set_uniform_array_void(*this, loc, type_descriptor(element_descriptor_traits<T>::get_type_descriptor(array), true), array, nr_elements);
+	}
+	/** Set the value of a uniform by location, where the value is defined by a type descriptor and address. The value type descriptor can be equivalent to any of int, unsigned, float, vec<int>, vec<unsigned>,
+	vec<float>, mat<float> and the vectors are of dimension 2,
+	3 or 4 and the matrices of dimensions 2, 3 or 4. */
+	bool set_uniform(const context& ctx, int loc, type_descriptor value_type, const void* value_ptr) {
+		return ctx.set_uniform_void(*this, loc, value_type, value_ptr);
 	}
 	/// query location index of an attribute
 	int get_attribute_location(const context& ctx, const std::string& name) const;
