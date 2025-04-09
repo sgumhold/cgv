@@ -83,7 +83,7 @@ public:
 		This effectively defines the contents of a struct used to represent one array element.
 		The default value is "float x, y, z;" to map the buffer contents to an array of vec3, e.g.
 		positions.
-		Careful: vec3 max not be used directly with a shader storage buffer (due to a bug on some older drivers), hence the three
+		Careful: vec3 may not be used directly with a shader storage buffer (due to a bug on some older drivers), hence the three
 		separate coordinates! However, vec4 works as expected. */
 	void set_data_type_override(const std::string& def) { data_type_def = def; }
 
