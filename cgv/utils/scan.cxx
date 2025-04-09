@@ -730,6 +730,18 @@ std::string trim(const std::string& str, const std::string& chars)
 	return ltrim(rtrim(str, chars), chars);
 }
 
+std::string condense_to_line(std::string str)
+{
+	std::replace_if(str.begin(), str.end(), is_space, ' ');
+	cgv::utils::trim(str);
+	// replace all consecutive spaces with a single space
+	std::string::iterator new_end = std::unique(str.begin(), str.end(), [](char lhs, char rhs) {
+		return (lhs == rhs) && lhs == ' ';
+	});
+	str.erase(new_end, str.end());
+	return str;
+}
+
 std::string join(const std::vector<std::string>::const_iterator first, const std::vector<std::string>::const_iterator last, const std::string& sep, bool trailing_sep)
 {
 	if(last < first)
