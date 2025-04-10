@@ -134,15 +134,11 @@ protected:
 
 	void create_keyframe_draggables();
 
-	void handle_scrollbar_drag();
+	void handle_scrollbar_drag(cgv::g2d::DragAction action);
 
-	void handle_marker_drag();
+	void handle_marker_drag(cgv::g2d::DragAction action);
 
-	void handle_keyframe_drag();
-
-	void handle_keyframe_drag_end();
-
-	void handle_keyframe_selection_change();
+	void handle_keyframe_drag(cgv::g2d::DragAction action);
 
 	void invoke_callback(Event e);
 
@@ -162,7 +158,8 @@ public:
 
 	void clear(cgv::render::context& ctx) override;
 
-	bool handle_event(cgv::gui::event& e) override;
+	bool handle_key_event(cgv::gui::key_event& e) override;
+	bool handle_mouse_event(cgv::gui::mouse_event& e, cgv::ivec2 local_mouse_pos) override;
 	void handle_member_change(const cgv::utils::pointer_test& m) override;
 
 	bool init(cgv::render::context& ctx) override;
