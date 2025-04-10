@@ -3,7 +3,7 @@
 namespace cgv {
 namespace gpgpu {
 
-std::map<std::string, int> algorithm::get_program_uniforms(cgv::render::context& ctx, cgv::render::shader_program& prog) const {
+std::map<std::string, int> get_program_uniforms(cgv::render::context& ctx, cgv::render::shader_program& prog) {
 	GLuint id = reinterpret_cast<GLuint>(prog.handle) - 1;
 
 	std::map<std::string, int> map;
