@@ -18,9 +18,6 @@
 // CGV OpenGL library
 #include <cgv_gl/sphere_renderer.h>
 
-// CGV application library
-#include <cgv_app/application_plugin.h>
-
 // Maptiles library
 #include <maptiles/TileManager.h>
 #include <maptiles/TileRenderer.h>

@@ -6,7 +6,7 @@
 #include <cgv/utils/file.h>
 #include <cgv/utils/dir.h>
 #include <cgv_app/application_plugin.h>
-#include <cgv_app/gizmo.h>
+#include <cgv_app/transformation_gizmo.h>
 #include <cgv_gl/line_render_data.h>
 #include <cgv_gl/point_render_data.h>
 #include <cgv/os/pipe_thread.h>
@@ -40,7 +40,7 @@ protected:
 
 	/// store a pointer to the view
 	cgv::render::view* view_ptr = nullptr;
-	cgv::app::gizmo eye_gizmo, focus_gizmo;
+	cgv::data::ref_ptr<cgv::app::transformation_gizmo> eye_gizmo, focus_gizmo;
 	keyframe_editor_overlay_ptr timeline_ptr;
 	keyframe* selected_keyframe = nullptr;
 
@@ -91,9 +91,9 @@ protected:
 
 	void create_path_render_data();
 
-	void handle_eye_gizmo_move();
+	void handle_eye_gizmo_move(cgv::app::GizmoAction action, cgv::app::transformation_gizmo::Mode mode);
 
-	void handle_focus_gizmo_move();
+	void handle_focus_gizmo_move(cgv::app::GizmoAction action, cgv::app::transformation_gizmo::Mode mode);
 
 	void handle_editor_change(keyframe_editor_overlay::Event e);
 
