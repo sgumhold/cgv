@@ -53,9 +53,9 @@ namespace cgv {
 			has_orientations = false;
 			remove_attribute_array(ctx, "orientation");
 		}
-		bool ellipsoid_renderer::build_shader_program(context& ctx, shader_program& prog, const shader_define_map& defines)
+		bool ellipsoid_renderer::build_shader_program(context& ctx, shader_program& prog, const shader_compile_options& options)
 		{
-			return prog.build_program(ctx, "ellipsoid.glpr", true, defines);
+			return prog.build_program(ctx, "ellipsoid.glpr", options, true);
 		}
 		bool ellipsoid_renderer::validate_attributes(const context& ctx) const
 		{
