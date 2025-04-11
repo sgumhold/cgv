@@ -15,8 +15,8 @@ namespace app {
 class CGV_API performance_monitor : public themed_canvas_overlay {
 protected:
 	struct layout_attributes {
-		int padding;
-		ivec2 total_size;
+		int padding = 0;
+		ivec2 total_size = { 0 };
 
 		// dependent members
 		cgv::g2d::irect content_rect;
@@ -77,14 +77,14 @@ protected:
 	cgv::render::color_map plot_color_map;
 
 	// text appearance
-	std::vector<std::string> labels;
 	cgv::g2d::text2d_style text_style, tick_text_style;
-	cgv::g2d::msdf_text_geometry text_geometry;
+	cgv::g2d::msdf_text_geometry static_text_geometry;
+	cgv::g2d::msdf_text_geometry dynamic_text_geometry;
 
 	void init_styles() override;
-	void create_texts(const cgv::render::context& ctx);
-	void update_texts(const cgv::render::context& ctx);
-	//void create_labels(const cgv::render::context& ctx);
+	void create_static_texts(const cgv::render::context& ctx);
+	void create_dynamic_texts(const cgv::render::context& ctx);
+	void update_dynamic_texts(const cgv::render::context& ctx);
 	void update_plot();
 
 	void on_visibility_change() override;

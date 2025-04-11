@@ -915,15 +915,15 @@ void gl_context::on_lights_changed()
 			}
 			GLfloat col[4] = { 1,1,1,1 };
 			const cgv::media::illum::light_source& light = get_light_source(get_enabled_light_source_handle(light_idx));
-			(rgb&)(col[0]) = light.get_emission()*light.get_ambient_scale();
+			*(rgb*)col = light.get_emission()*light.get_ambient_scale();
 			glLightfv(GL_LIGHT0 + light_idx, GL_AMBIENT, col);
-			(rgb&)(col[0]) = light.get_emission();
+			*(rgb*)col = light.get_emission();
 			glLightfv(GL_LIGHT0 + light_idx, GL_DIFFUSE, col);
-			(rgb&)(col[0]) = light.get_emission();
+			*(rgb*)col = light.get_emission();
 			glLightfv(GL_LIGHT0 + light_idx, GL_SPECULAR, col);
 
 			GLfloat pos[4] = { 0,0,0,light.get_type() == cgv::media::illum::LT_DIRECTIONAL ? 0.0f : 1.0f };
-			(vec3&)(pos[0]) = light.get_position();
+			*(vec3*)pos = light.get_position();
 			glLightfv(GL_LIGHT0 + light_idx, GL_POSITION, pos);
 			if (light.get_type() != cgv::media::illum::LT_DIRECTIONAL) {
 				glLightf(GL_LIGHT0 + light_idx, GL_CONSTANT_ATTENUATION, light.get_constant_attenuation());

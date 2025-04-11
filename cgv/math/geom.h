@@ -77,9 +77,9 @@ namespace cgv {
 		{
 			cgv::math::fmat<T, 3, 3> O;
 
-			cgv::math::fvec<T, 3>& x = (cgv::math::fvec<T, 3>&)O(0, 0);
-			cgv::math::fvec<T, 3>& y = (cgv::math::fvec<T, 3>&)O(0, 1);
-			cgv::math::fvec<T, 3>& z = (cgv::math::fvec<T, 3>&)O(0, 2);
+			auto &x = /*(cgv::math::fvec<T, 3>&)O(0, 0)*/O.col(0);
+			auto &y = /*(cgv::math::fvec<T, 3>&)O(0, 1)*/O.col(1);
+			auto &z = /*(cgv::math::fvec<T, 3>&)O(0, 2)*/O.col(2);
 
 			x = v0;
 			x.normalize();
