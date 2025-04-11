@@ -60,10 +60,10 @@ namespace cgv {
 			position_is_center = false;
 			direction_is_end_point = false;
 		}
-		bool arrow_renderer::build_shader_program(context& ctx, shader_program& prog, const shader_define_map& defines)
+		bool arrow_renderer::build_shader_program(context& ctx, shader_program& prog, const shader_compile_options& options)
 		{
 			prog.allow_context_to_set_color(false);
-			return prog.build_program(ctx, "arrow.glpr", true, defines);
+			return prog.build_program(ctx, "arrow.glpr", options, true);
 		}
 
 		bool arrow_renderer::validate_attributes(const context& ctx) const

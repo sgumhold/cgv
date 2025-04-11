@@ -8,129 +8,47 @@
 namespace cgv {
 namespace render {
 
-/// provides a shader library that handles shader loading
+/// provides a shader library that handles shader loading and stores shaders
 class CGV_API shader_library {
-protected:
 	struct shader_info {
-		std::string filename = "";
+		std::string filename;
 		shader_program prog;
-		// TODO: remove defines
-		shader_define_map defines = {};
-		shader_compile_options options = {};
+		shader_compile_options options;
 	};
 
-	typedef std::map<std::string, shader_info> shader_lib_map;
-	shader_lib_map shaders;
-
-	shader_info& get_shader_info(const std::string& name) {
-
-		if(shaders.find(name) != shaders.end()) {
-			return shaders.at(name);
-		} else {
-			std::cerr << "Error: shader_library::get shader with name " << name << " not found!" << std::endl;
-			abort();
-		}
-	}
+	using shader_lib_map = std::map<std::string, shader_info>;
 
 public:
-	shader_library();
-	~shader_library();
-
 	void clear(context& ctx);
 
-	bool add(const std::string& name, const std::string& file, const shader_define_map& defines = {});
 	bool add(const std::string& name, const std::string& file, const shader_compile_options& options = {});
 
-	shader_program& get(const std::string& name) {
-		
-		return get_shader_info(name).prog;
-	}
+	bool contains(const std::string& name) const;
 
-	shader_define_map& get_defines(const std::string& name) {
-		
-		return get_shader_info(name).options.defines;
-	}
+	shader_program& get(const std::string& name);
 
-	shader_compile_options& get_compile_options(const std::string& name) {
+	shader_define_map& get_defines(const std::string& name);
 
-		return get_shader_info(name).options;
-	}
-
-	bool contains(const std::string& name) const {
-
-		return shaders.find(name) != shaders.end();
-	}
+	shader_compile_options& get_compile_options(const std::string& name);
 
 	shader_lib_map::iterator begin() { return shaders.begin(); }
 	shader_lib_map::iterator end() { return shaders.end(); }
 	
+	static bool load(context& ctx, shader_program& prog, const std::string& name, const shader_compile_options& options, const std::string& where = "");
+
+	static bool load(context& ctx, shader_program& prog, const std::string& name, const std::string& where = "");
+
 	bool load_all(context& ctx, const std::string& where = "");
 
-	bool reload(context& ctx, const std::string& name, const shader_define_map& defines = {}, const std::string& where = "");
+	bool reload(context& ctx, const std::string& name, const shader_compile_options& defines = {}, const std::string& where = "");
 
-	static bool load(context& ctx, shader_program& prog, const std::string& name, const bool reload = false, const std::string& where = "") {
+private:
+	shader_info& get_shader_info(const std::string& name);
 
-		return load(ctx, prog, name, shader_define_map(), reload, where);
-		//return load(ctx, prog, name, {}, reload, where);
-	}
-
-	static bool load(context& ctx, shader_program& prog, const std::string& name, const shader_define_map& defines, const bool reload = false, const std::string& where = "") {
-
-		if(prog.is_created()) {
-			if(reload) prog.destruct(ctx);
-			else return true;
-		}
-
-		std::string function_context = where == "" ? "shader_library::load_shader()" : where;
-
-		if(!prog.is_created()) {
-			bool from_program_file = name.length() > 4 && name.substr(name.length() - 5) == ".glpr";
-
-			if(from_program_file) {
-				if(!prog.build_program(ctx, name, true, defines)) {
-					std::cerr << "ERROR in " << function_context << " ... could not build shader program " << name << std::endl;
-					return false;
-				}
-			} else {
-				if(!prog.build_files(ctx, name, true, defines)) {
-					std::cerr << "ERROR in " << function_context << " ... could not build shader files " << name << std::endl;
-					return false;
-				}
-			}
-		}
-		return true;
-	}
-
-	static bool load(context& ctx, shader_program& prog, const std::string& name, const shader_compile_options& options, const bool reload = false, const std::string& where = "") {
-
-		if(prog.is_created()) {
-			if(reload) prog.destruct(ctx);
-			else return true;
-		}
-
-		std::string function_context = where == "" ? "shader_library::load_shader()" : where;
-
-		if(!prog.is_created()) {
-			bool from_program_file = name.length() > 4 && name.substr(name.length() - 5) == ".glpr";
-
-			if(from_program_file) {
-				if(!prog.build_program(ctx, name, options, true)) {
-					std::cerr << "ERROR in " << function_context << " ... could not build shader program " << name << std::endl;
-					return false;
-				}
-			} else {
-				if(!prog.build_files(ctx, name, options, true)) {
-					std::cerr << "ERROR in " << function_context << " ... could not build shader files " << name << std::endl;
-					return false;
-				}
-			}
-		}
-		return true;
-	}
-
-	bool reload_all(context& ctx, const std::string& where = "");
+	shader_lib_map shaders;
 };
-}
-}
+
+} // namespace render
+} // namespace cgv
 
 #include <cgv/config/lib_end.h>

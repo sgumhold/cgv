@@ -84,9 +84,9 @@ namespace cgv {
 		{
 			y_view_angle = _y_view_angle;
 		}
-		bool point_renderer::build_shader_program(context& ctx, shader_program& prog, const shader_define_map& defines)
+		bool point_renderer::build_shader_program(context& ctx, shader_program& prog, const shader_compile_options& options)
 		{
-			return prog.build_program(ctx, "point.glpr", true, defines);
+			return prog.build_program(ctx, "point.glpr", options, true);
 		}
 		bool point_renderer::validate_attributes(const context& ctx) const
 		{

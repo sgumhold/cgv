@@ -105,9 +105,9 @@ namespace cgv {
 			res = res && (volume_texture != nullptr);
 			return res;
 		}
-		bool volume_renderer::build_shader_program(context& ctx, shader_program& prog, const shader_define_map& defines)
+		bool volume_renderer::build_shader_program(context& ctx, shader_program& prog, const shader_compile_options& options)
 		{
-			return prog.build_program(ctx, "volume.glpr", true, defines);
+			return prog.build_program(ctx, "volume.glpr", options, true);
 		}
 		void volume_renderer::update_defines(shader_define_map& defines)
 		{
