@@ -16,6 +16,11 @@ namespace gpgpu {
 extern CGV_API std::map<std::string, int> get_program_uniforms(cgv::render::context& ctx, cgv::render::shader_program& prog);
 
 
+
+
+
+
+
 struct uniform_argument {
 	std::string name;
 	cgv::render::type_descriptor desc;
@@ -37,7 +42,7 @@ using uniform_argument_list = std::vector<uniform_argument>;
 
 
 struct compute_kernel {
-	bool init(cgv::render::context& ctx, const std::string& name, const cgv::render::shader_define_map& config, const std::string& where) {
+	bool init(cgv::render::context& ctx, const std::string& name, const cgv::render::shader_compile_options& config, const std::string& where) {
 		bool res = cgv::render::shader_library::load(ctx, prog, name, config, true, where);
 		if(res)
 			uniforms = get_program_uniforms(ctx, prog);
@@ -114,7 +119,7 @@ protected:
 		_kernel_registrations.push_back({ &kernel, name });
 	};
 	
-	bool init_kernels(cgv::render::context& ctx, const cgv::render::shader_define_map& config) {
+	bool init_kernels(cgv::render::context& ctx, const cgv::render::shader_compile_options& config) {
 		const std::string debug_context = get_debug_context();
 		bool success = true;
 		for(const auto& info : _kernel_registrations)

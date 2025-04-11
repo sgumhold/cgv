@@ -51,6 +51,36 @@ extern CGV_API shader_config_ptr get_shader_config();
 /// typedef for shader define map data structure
 typedef std::map<std::string, std::string> shader_define_map;
 
+
+
+
+
+
+
+
+
+
+// TODO: document
+struct shader_code_snippet {
+	std::string id;
+	std::string content;
+};
+
+struct shader_compile_options {
+	shader_define_map defines;
+	std::vector<shader_code_snippet> snippets;
+};
+
+
+
+
+
+
+
+
+
+
+
 /** a shader code object holds a code fragment of a geometry
     vertex or fragment shader and can be added to a shader 
 	 program. */
@@ -134,25 +164,15 @@ public:
 		 - glcs ... ST_COMPUTE
 	*/
 	static ShaderType detect_shader_type(const std::string& file_name);
-	/// search for include directives in the given source code, replace them by the included file contents and return the full source code as well as the set of all included files
-	static std::string resolve_includes(const std::string& source, bool use_cache, std::set<std::string>& included_file_names, std::string* _last_error = 0);
-	/// search for include directives in the given source code, replace them by the included file contents and return the full source code
-	inline static std::string resolve_includes(const std::string& source, bool use_cache, std::string* _last_error = 0) {
-		std::set<std::string> dummy;
-		return resolve_includes(source, use_cache, dummy, _last_error);
-	}
 	/// destruct shader code
 	void destruct(const context& ctx);
 	/** read shader code from file that is searched for with find_file.
 	    If the shader type defaults to ST_DETECT, the detect_shader_type()
 		 method is applied to the file name.*/
-	bool read_code(const context& ctx, const std::string &file_name, ShaderType st = ST_DETECT, const shader_define_map& defines = shader_define_map());
+	//bool read_code(const context& ctx, const std::string &file_name, ShaderType st = ST_DETECT, const shader_define_map& defines = shader_define_map());
+	bool read_code(const context& ctx, const std::string &file_name, ShaderType st = ST_DETECT, const shader_compile_options& options = {});
 	/// set shader code from string
 	bool set_code(const context& ctx, const std::string &source, ShaderType st);
-	/// set shader code defines
-	void set_defines(std::string& source, const shader_define_map& defines);
-	/// set shader code vertex attribute locations (a hotfix for AMD driver behaviour on vertex shaders)
-	void set_vertex_attrib_locations(std::string& source);
 	/// return the shader type of this code
 	ShaderType get_shader_type() const;
 	///compile attached source; returns true if successful
@@ -160,9 +180,20 @@ public:
 	/** read shader code with read_code and compile. If show_error is true
 	    print error messages formated with the get_last_error method in case
 		 an error arose. */
-	bool read_and_compile(const context& ctx, const std::string &file_name, ShaderType st = ST_DETECT, bool show_error = true, const shader_define_map& defines = shader_define_map());
+	//bool read_and_compile(const context& ctx, const std::string &file_name, ShaderType st = ST_DETECT, bool show_error = true, const shader_define_map& defines = shader_define_map());
+	bool read_and_compile(const context& ctx, const std::string& file_name, ShaderType st = ST_DETECT, const shader_compile_options& options = {}, bool show_error = true);
 	/// return whether shader has been compiled successfully
 	bool is_compiled() const;
+
+private:
+	/// search for include directives in the given source code, replace them by the included file contents and return the full source code as well as the set of all included files
+	static std::string resolve_includes(const std::string& source, bool use_cache, std::set<std::string>& included_file_names, std::string* _last_error = 0);
+	/// search for include directives in the given source code, replace them by the included file contents and return the full source code
+	static std::string resolve_includes(const std::string& source, bool use_cache, std::string* _last_error = 0);
+	/// set shader code defines and snippets
+	static void set_defines_and_snippets(std::string& source, const shader_compile_options& options);
+	/// set shader code vertex attribute locations (a hotfix for AMD driver behaviour on vertex shaders)
+	static void set_vertex_attrib_locations(std::string& source);
 };
 
 

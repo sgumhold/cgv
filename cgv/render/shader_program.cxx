@@ -259,7 +259,11 @@ bool shader_program::attach_code(const context& ctx, const std::string& source, 
 /// read shader code from file, compile and attach to program
 bool shader_program::attach_file(const context& ctx, const std::string& file_name, ShaderType st, const shader_define_map& defines) {
 	shader_code* code_ptr = new shader_code;
-	if(!code_ptr->read_and_compile(ctx, file_name, st, show_code_errors, defines)) {
+
+	
+
+	//if(!code_ptr->read_and_compile(ctx, file_name, st, show_code_errors, defines)) {
+	if(!code_ptr->read_and_compile(ctx, file_name, st, compile_options, show_code_errors)) {
 		last_error = code_ptr->last_error;
 		delete code_ptr;
 		return false;
@@ -505,6 +509,81 @@ bool shader_program::build_program(const context& ctx, const std::string& file_n
 
 	return true;
 }
+
+
+/*
+/// successively calls create, attach_files and link.
+bool shader_program::build_files(const context& ctx, const std::string& base_name, bool show_error) {
+	return build_files(ctx, base_name, {}, show_error);
+}
+/// successively calls create, attach_dir and link.
+bool shader_program::build_dir(const context& ctx, const std::string& dir_name, bool recursive, bool show_error) {
+	return build_dir(ctx, dir_name, {}, recursive, show_error);
+}
+
+/// successively calls create, attach_program and link.
+bool shader_program::build_program(const context& ctx, const std::string& file_name, bool show_error) {
+	return build_program(ctx, file_name, {}, show_error);
+}
+*/
+
+
+
+
+/// successively calls create, attach_files and link.
+bool shader_program::build_files(const context& ctx, const std::string& base_name, const shader_compile_options& options, bool show_error) {
+	compile_options = options;
+	return (is_created() || create(ctx)) &&
+		attach_files(ctx, base_name) && link(ctx, show_error);
+}
+/// successively calls create, attach_dir and link.
+bool shader_program::build_dir(const context& ctx, const std::string& dir_name, const shader_compile_options& options, bool recursive, bool show_error) {
+	compile_options = options;
+	return (is_created() || create(ctx)) &&
+		attach_dir(ctx, dir_name, recursive) && link(ctx, show_error);
+}
+
+/// successively calls create, attach_program and link.
+bool shader_program::build_program(const context& ctx, const std::string& file_name, const shader_compile_options& options, bool show_error) {
+	if(!(is_created() || create(ctx)))
+		return false;
+
+	compile_options = options;
+	if(!attach_program(ctx, file_name, show_error))
+		return false;
+
+	if(!link(ctx, show_error)) {
+		if(show_error) {
+			std::string fn = shader_code::find_file(file_name);
+			std::vector<line> lines;
+			split_to_lines(last_error, lines);
+			std::string formated_error;
+			for(unsigned int i = 0; i < lines.size(); ++i) {
+				formated_error += fn + "(1) : error G0002: " + to_string(lines[i]) + "\n";
+			}
+			std::cerr << formated_error.c_str() << std::endl;
+		}
+		return false;
+	}
+
+	return true;
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 /// return the maximum number of output vertices of a geometry shader
 unsigned int shader_program::get_max_nr_geometry_shader_output_vertices(const context& ctx)

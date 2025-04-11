@@ -30,6 +30,19 @@ bool shader_library::add(const std::string& name, const std::string& file, const
 	return false;
 }
 
+bool shader_library::add(const std::string& name, const std::string& file, const shader_compile_options& options) {
+
+	if(shaders.find(name) == shaders.end()) {
+		shader_info elem;
+		elem.filename = file;
+		elem.defines = options.defines;
+		elem.options = options;
+		shaders.insert({ name, elem });
+		return true;
+	}
+	return false;
+}
+
 bool shader_library::load_all(context& ctx, const std::string& where) {
 
 	bool success = true;

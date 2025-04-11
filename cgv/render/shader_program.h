@@ -36,6 +36,7 @@ protected:
 	bool state_out_of_date : 1;
 	int  nr_attached_geometry_shaders : 13;
 
+	shader_compile_options compile_options;
 	std::vector<shader_code*> managed_codes;
 	/// attach a list of files
 	bool attach_files(const context& ctx, const std::vector<std::string>& file_names, const shader_define_map& defines = shader_define_map());
@@ -45,10 +46,8 @@ protected:
 	static bool open_program_file(std::string& file_name, bool use_cache, std::string& content, std::vector<cgv::utils::line>& lines, std::string* last_error_ptr = 0);
 public:
 	
-	
 	/// resolve file name with shader_code::find_file and add file to list if found
 	static bool collect_files_from_cache(const std::string& name, std::vector<std::string>& file_names, bool& added_files);
-
 
 	/// resolve file name with shader_code::find_file and add file to list if found
 	static bool collect_file(const std::string& file_name, bool use_cache, std::vector<std::string>& file_names);
@@ -110,12 +109,31 @@ public:
 	bool link(const context& ctx, bool show_error = false);
 	/// return whether program is linked
 	bool is_linked() const;
+
+	// TODO: remove later...
 	/// successively calls create, attach_files and link.
 	bool build_files(const context& ctx, const std::string& base_name, bool show_error = false, const shader_define_map& defines = shader_define_map());
 	/// successively calls create, attach_dir and link.
 	bool build_dir(const context& ctx, const std::string& dir_name, bool recursive = false, bool show_error = false);
 	/// successively calls create, attach_program and link.
 	bool build_program(const context& ctx, const std::string& file_name, bool show_error = false, const shader_define_map& defines = shader_define_map());
+
+
+	/// successively calls create, attach_files and link.
+	//bool build_files(const context& ctx, const std::string& base_name, bool show_error = false);
+	/// successively calls create, attach_dir and link.
+	//bool build_dir(const context& ctx, const std::string& dir_name, bool recursive = false, bool show_error = false);
+	/// successively calls create, attach_program and link.
+	//bool build_program(const context& ctx, const std::string& file_name, bool show_error = false);
+
+	/// successively calls create, attach_files and link.
+	bool build_files(const context& ctx, const std::string& base_name, const shader_compile_options& options, bool show_error = false);
+	/// successively calls create, attach_dir and link.
+	bool build_dir(const context& ctx, const std::string& dir_name, const shader_compile_options& options, bool recursive = false, bool show_error = false);
+	/// successively calls create, attach_program and link.
+	bool build_program(const context& ctx, const std::string& file_name, const shader_compile_options& options, bool show_error = false);
+
+
 	/// configure the geometry shader, if count < 1 set it to get_max_nr_geometry_shader_output_vertices
 	void set_geometry_shader_info(PrimitiveType input_type, PrimitiveType output_type, int max_output_count = 0);
 	/// enable the shader program
