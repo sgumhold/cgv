@@ -14,7 +14,9 @@ protected:
 	struct shader_info {
 		std::string filename = "";
 		shader_program prog;
+		// TODO: remove defines
 		shader_define_map defines = {};
+		shader_compile_options options = {};
 	};
 
 	typedef std::map<std::string, shader_info> shader_lib_map;
@@ -37,6 +39,7 @@ public:
 	void clear(context& ctx);
 
 	bool add(const std::string& name, const std::string& file, const shader_define_map& defines = {});
+	bool add(const std::string& name, const std::string& file, const shader_compile_options& options = {});
 
 	shader_program& get(const std::string& name) {
 		
@@ -45,7 +48,12 @@ public:
 
 	shader_define_map& get_defines(const std::string& name) {
 		
-		return get_shader_info(name).defines;
+		return get_shader_info(name).options.defines;
+	}
+
+	shader_compile_options& get_compile_options(const std::string& name) {
+
+		return get_shader_info(name).options;
 	}
 
 	bool contains(const std::string& name) const {
@@ -63,6 +71,7 @@ public:
 	static bool load(context& ctx, shader_program& prog, const std::string& name, const bool reload = false, const std::string& where = "") {
 
 		return load(ctx, prog, name, shader_define_map(), reload, where);
+		//return load(ctx, prog, name, {}, reload, where);
 	}
 
 	static bool load(context& ctx, shader_program& prog, const std::string& name, const shader_define_map& defines, const bool reload = false, const std::string& where = "") {
@@ -84,6 +93,33 @@ public:
 				}
 			} else {
 				if(!prog.build_files(ctx, name, true, defines)) {
+					std::cerr << "ERROR in " << function_context << " ... could not build shader files " << name << std::endl;
+					return false;
+				}
+			}
+		}
+		return true;
+	}
+
+	static bool load(context& ctx, shader_program& prog, const std::string& name, const shader_compile_options& options, const bool reload = false, const std::string& where = "") {
+
+		if(prog.is_created()) {
+			if(reload) prog.destruct(ctx);
+			else return true;
+		}
+
+		std::string function_context = where == "" ? "shader_library::load_shader()" : where;
+
+		if(!prog.is_created()) {
+			bool from_program_file = name.length() > 4 && name.substr(name.length() - 5) == ".glpr";
+
+			if(from_program_file) {
+				if(!prog.build_program(ctx, name, options, true)) {
+					std::cerr << "ERROR in " << function_context << " ... could not build shader program " << name << std::endl;
+					return false;
+				}
+			} else {
+				if(!prog.build_files(ctx, name, options, true)) {
 					std::cerr << "ERROR in " << function_context << " ... could not build shader files " << name << std::endl;
 					return false;
 				}

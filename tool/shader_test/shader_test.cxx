@@ -295,7 +295,7 @@ int perform_test()
 	}
 	else {
 		shader_code code;
-		if (code.read_and_compile(*g_ctx_ptr, g_argv[1], cgv::render::ST_DETECT, g_shader_developer)) {
+		if (code.read_and_compile(*g_ctx_ptr, g_argv[1], cgv::render::ST_DETECT, {}, g_shader_developer)) {
 			// convert the input file to a string declaration with the string
 			convert_to_string(g_argv[1], g_argv[2]);
 			// write(g_argv[2], "ok", 2, true);
