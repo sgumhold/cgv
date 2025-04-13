@@ -21,9 +21,9 @@ bool mipmap::load_shader_programs(cgv::render::context& ctx) {
 	bool res = true;
 	std::string where = "cgv::gpgpu::mipmap::load_shader_programs()";
 
-	res = res && cgv::render::shader_library::load(ctx, mipmap1d_prog, "gpgpu_mipmap1d", true, where);
-	res = res && cgv::render::shader_library::load(ctx, mipmap2d_prog, "gpgpu_mipmap2d", true, where);
-	res = res && cgv::render::shader_library::load(ctx, mipmap3d_prog, "gpgpu_mipmap3d", true, where);
+	//res = res && cgv::render::shader_library::load(ctx, mipmap1d_prog, "gpgpu_mipmap1d", true, where);
+	//res = res && cgv::render::shader_library::load(ctx, mipmap2d_prog, "gpgpu_mipmap2d", true, where);
+	//res = res && cgv::render::shader_library::load(ctx, mipmap3d_prog, "gpgpu_mipmap3d", true, where);
 
 	return res;
 }

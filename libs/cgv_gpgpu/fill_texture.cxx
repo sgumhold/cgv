@@ -21,9 +21,9 @@ bool fill_texture::load_shader_programs(cgv::render::context& ctx) {
 	bool res = true;
 	std::string where = "cgv::gpgpu::fill_texture::load_shader_programs()";
 
-	res = res && cgv::render::shader_library::load(ctx, fill_texture1d_prog, "gpgpu_fill_texture1d", true, where);
-	res = res && cgv::render::shader_library::load(ctx, fill_texture2d_prog, "gpgpu_fill_texture2d", true, where);
-	res = res && cgv::render::shader_library::load(ctx, fill_texture3d_prog, "gpgpu_fill_texture3d", true, where);
+	//res = res && cgv::render::shader_library::load(ctx, fill_texture1d_prog, "gpgpu_fill_texture1d", true, where);
+	//res = res && cgv::render::shader_library::load(ctx, fill_texture2d_prog, "gpgpu_fill_texture2d", true, where);
+	//res = res && cgv::render::shader_library::load(ctx, fill_texture3d_prog, "gpgpu_fill_texture3d", true, where);
 
 	return res;
 }

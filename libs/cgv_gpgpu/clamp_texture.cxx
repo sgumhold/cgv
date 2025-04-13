@@ -24,9 +24,9 @@ bool clamp_texture::load_shader_programs(cgv::render::context& ctx) {
 	cgv::render::shader_define_map defines;
 	cgv::render::shader_code::set_define(defines, "TEXTURE_FORMAT", texture_format, "r32f");
 
-	res = res && cgv::render::shader_library::load(ctx, clamp_texture1d_prog, "gpgpu_clamp_texture1d", defines, true, where);
-	res = res && cgv::render::shader_library::load(ctx, clamp_texture2d_prog, "gpgpu_clamp_texture2d", defines, true, where);
-	res = res && cgv::render::shader_library::load(ctx, clamp_texture3d_prog, "gpgpu_clamp_texture3d", defines, true, where);
+	//res = res && cgv::render::shader_library::load(ctx, clamp_texture1d_prog, "gpgpu_clamp_texture1d", defines, true, where);
+	//res = res && cgv::render::shader_library::load(ctx, clamp_texture2d_prog, "gpgpu_clamp_texture2d", defines, true, where);
+	//res = res && cgv::render::shader_library::load(ctx, clamp_texture3d_prog, "gpgpu_clamp_texture3d", defines, true, where);
 
 	return res;
 }
