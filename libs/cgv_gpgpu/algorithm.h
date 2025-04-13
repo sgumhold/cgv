@@ -1,25 +1,18 @@
 #pragma once
 
 #include <cgv/render/context.h>
-#include <cgv/render/shader_library.h>
-#include <cgv/render/vertex_buffer.h>
 #include <cgv_gl/gl/gl.h>
+
+#include "sl.h"
+#include "compute_kernel.h"
 
 #include "lib_begin.h"
 
 namespace cgv {
 namespace gpgpu {
 
-
-
 // TODO: Move this functionality to the shader_program class?
 extern CGV_API std::map<std::string, int> get_program_uniforms(cgv::render::context& ctx, cgv::render::shader_program& prog);
-
-
-
-
-
-
 
 struct uniform_argument {
 	std::string name;
@@ -36,68 +29,6 @@ struct uniform_argument {
 };
 
 using uniform_argument_list = std::vector<uniform_argument>;
-
-
-
-
-
-struct compute_kernel {
-	bool init(cgv::render::context& ctx, const std::string& name, const cgv::render::shader_compile_options& config, const std::string& where) {
-		bool res = cgv::render::shader_library::load(ctx, prog, name, config, true, where);
-		if(res)
-			uniforms = get_program_uniforms(ctx, prog);
-		return res;
-	}
-
-	void destruct(const cgv::render::context& ctx) {
-		prog.destruct(ctx);
-		uniforms.clear();
-	}
-
-	bool enable(cgv::render::context& ctx) {
-		return prog.enable(ctx);
-	}
-
-	bool disable(cgv::render::context& ctx) {
-		return prog.disable(ctx);
-	}
-
-	template<typename T>
-	bool set_argument(const cgv::render::context& ctx, const std::string& name, const T& value) {
-		return prog.set_uniform(ctx, uniforms[name], value);
-	}
-
-	void set_arguments(cgv::render::context& ctx, const uniform_argument_list& arguments) {
-		bool was_enabled = prog.is_enabled();
-		if(!was_enabled)
-			prog.enable(ctx);
-
-		for(const uniform_argument& arg : arguments) {
-			auto it = uniforms.find(arg.name);
-			if(it != uniforms.end()) {
-				int loc = it->second;
-				prog.set_uniform(ctx, loc, arg.desc, arg.addr);
-			}
-		}
-
-		if(!was_enabled)
-			prog.disable(ctx);
-	}
-
-	cgv::render::shader_program prog;
-	std::map<std::string, int> uniforms;
-};
-
-
-
-
-
-
-
-
-
-
-
 
 /** Definition of base functionality for highly parallel gpu algorithms. */
 class CGV_API algorithm {
