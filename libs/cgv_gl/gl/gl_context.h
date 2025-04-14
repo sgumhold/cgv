@@ -109,6 +109,7 @@ protected:
 	void shader_program_detach(shader_program_base& spb, const render_component& sc) const override;
 	bool shader_program_destruct(shader_program_base& spb) const override;
 
+	bool shader_program_get_active_uniforms(shader_program_base& spb, std::vector<std::string>& names) const override;
 	int  get_uniform_location(const shader_program_base& spb, const std::string& name) const override;
 	bool set_uniform_void(shader_program_base& spb, int loc, type_descriptor value_type, const void* value_ptr) const override;
 	bool set_uniform_array_void(shader_program_base& spb, int loc, type_descriptor value_type, const void* value_ptr, size_t nr_elements) const override;

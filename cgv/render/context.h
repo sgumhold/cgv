@@ -365,6 +365,8 @@ protected:
 	bool uses_material;
 	bool uses_lights;
 	bool uses_gamma;
+	// maps uniform names to their locations in the shader program
+	std::map<std::string, int> uniform_locations;
 	
 	// vertex attribute names
 	int position_index;
@@ -846,6 +848,8 @@ protected:
 	virtual bool shader_program_enable   (shader_program_base& spb);
 	virtual bool shader_program_disable(shader_program_base& spb);
 	virtual bool shader_program_destruct(shader_program_base& spb) const;
+	virtual void shader_program_set_uniform_locations(shader_program_base& spb) const;
+	virtual bool shader_program_get_active_uniforms(shader_program_base& spb, std::vector<std::string>& names) const = 0;
 	virtual int  get_uniform_location(const shader_program_base& spb, const std::string& name) const = 0;
 	virtual bool set_uniform_void(shader_program_base& spb, int loc, type_descriptor value_type, const void* value_ptr) const = 0;
 	virtual bool set_uniform_array_void(shader_program_base& spb, int loc, type_descriptor value_type, const void* value_ptr, size_t nr_elements) const = 0;

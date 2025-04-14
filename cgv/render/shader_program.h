@@ -37,6 +37,7 @@ protected:
 	int  nr_attached_geometry_shaders : 13;
 
 	std::vector<shader_code*> managed_codes;
+
 	/// attach a list of files
 	bool attach_files(const context& ctx, const std::vector<std::string>& file_names, const shader_compile_options& options = {});
 	/// ensure that the state has been set in the context
@@ -128,6 +129,8 @@ public:
 	bool disable(context& ctx);
 	/// check whether program is currently enabled
 	bool is_enabled() const { return shader_program_base::is_enabled; }
+	/// return uniform name and location pairs
+	const std::map<std::string, int>& get_uniform_locations() const;
 	/// query location index of an uniform
 	int get_uniform_location(const context& ctx, const std::string& name) const;
 	/// set a uniform of type material
@@ -141,7 +144,7 @@ public:
 	3 or 4 and the matrices of dimensions 2, 3 or 4. */
 	template <typename T>
 	bool set_uniform(const context& ctx, const std::string& name, const T& value, bool generate_error = false) {
-		int loc = ctx.get_uniform_location(*this, name);
+		int loc = get_uniform_location(ctx, name);
 		if (loc == -1 && generate_error) {
 			ctx.error(std::string("shader_program::set_uniform() uniform <") + name + "> not found", this);
 			return false;
@@ -151,7 +154,7 @@ public:
 	/// set uniform array from array \c array where number elements can be derived from array through \c array_descriptor_traits; supported array types include cgv::math::vec and std::vector
 	template <typename T>
 	bool set_uniform_array(const context& ctx, const std::string& name, const T& array) {
-		int loc = ctx.get_uniform_location(*this, name);
+		int loc = get_uniform_location(ctx, name);
 		if (loc == -1) {
 			ctx.error(std::string("shader_program::set_uniform_array() uniform <") + name + "> not found", this);
 			return false;
@@ -161,7 +164,7 @@ public:
 	/// set uniform array from an array with \c nr_elements elements of type T pointed to by \c array
 	template <typename T>
 	bool set_uniform_array(const context& ctx, const std::string& name, const T* array, size_t nr_elements, bool generate_error = false) {
-		int loc = ctx.get_uniform_location(*this, name);
+		int loc = get_uniform_location(ctx, name);
 		if (loc == -1 && generate_error) {
 			ctx.error(std::string("shader_program::set_uniform_array() uniform <") + name + "> not found", this);
 			return false;
