@@ -138,13 +138,22 @@ func(collect_sources; :>projectName = "", :>return = 1)
 		:>T =& pj::sourceTree;
 		// go through all source directories
 		for(:>dir=0;dir<(!pj::sourceDirs);++dir) {
-			:>D = pj::sourceDirs[dir];
-			:>P = D - "/\\:";
-			if (P != D) {
-				D = D + (!P+1);
+			if (pj::sourceDirs[dir] ~~ LIST) {
+				:>D = pj::sourceDirs[dir][0];
+				:>N = pj::sourceDirs[dir][1];
+			}
+			else {
+				:>D = pj::sourceDirs[dir];
+				:>P = D - "/\\:";
+				if (P != D) {
+					:>N = D + (!P+1);
+				}
+				else {
+					:>N = D;
+				}
 			}
 			if (is_forest) {
-				T[D] = collect_source_files(pj::sourceDirs[dir], projectName);
+				T[N] = collect_source_files(D, projectName);
 			}
 			else {
 				T = collect_source_files(pj::sourceDirs[dir], projectName);
