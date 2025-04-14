@@ -26,12 +26,14 @@ public:
 
 	bool is_initialized() const;
 
+	void destruct(const cgv::render::context& ctx);
+
 protected:
 	void register_kernel(compute_kernel& kernel, const std::string& name);
 	
 	bool init_kernels(cgv::render::context& ctx, const cgv::render::shader_compile_options& config);
 
-	void destruct_kernels(const cgv::render::context& ctx);
+	//void destruct_kernels(const cgv::render::context& ctx);
 
 	void dispatch_compute(unsigned num_groups_x, unsigned num_groups_y, unsigned num_groups_z);
 
@@ -46,7 +48,7 @@ private:
 	std::vector<compute_kernel_info> _kernel_registrations;
 };
 
-}
-}
+} // namespace gpgpu
+} // namespace cgv
 
 #include <cgv/config/lib_end.h>
