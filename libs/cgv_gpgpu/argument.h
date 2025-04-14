@@ -8,12 +8,12 @@ namespace gpgpu {
 struct uniform_argument {
 	std::string name;
 	cgv::render::type_descriptor desc;
-	void* addr = nullptr;
+	const void* addr = nullptr;
 
 	uniform_argument() {}
 
 	template<typename T>
-	uniform_argument(const std::string& name, T value) : name(name) {
+	uniform_argument(const std::string& name, const T& value) : name(name) {
 		desc = cgv::render::element_descriptor_traits<T>::get_type_descriptor(value);
 		addr = cgv::render::element_descriptor_traits<T>::get_address(value);
 	}
