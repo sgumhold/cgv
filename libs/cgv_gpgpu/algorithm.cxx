@@ -3,31 +3,35 @@
 namespace cgv {
 namespace gpgpu {
 
-std::map<std::string, int> get_program_uniforms(cgv::render::context& ctx, cgv::render::shader_program& prog) {
-	GLuint id = reinterpret_cast<GLuint>(prog.handle) - 1;
+bool algorithm::is_initialized() const {
+	return _is_initialized;
+}
 
-	std::map<std::string, int> map;
+std::string algorithm::get_type_name() const {
+	return _type_name;
+}
 
-	if(id == 0)
-		return map;
-	
-	GLint num_active_uniforms = 0;
-	glGetProgramiv(id, GL_ACTIVE_UNIFORMS, &num_active_uniforms);
-	
-	std::vector<GLchar> buffer(256);
-	for(int i = 0; i < num_active_uniforms; ++i) {
-		GLint array_size = 0;
-		GLenum type = 0;
-		GLsizei actual_length = 0;
-		glGetActiveUniform(id, i, buffer.size(), &actual_length, &array_size, &type, buffer.data());
-		std::string name(static_cast<char*>(buffer.data()), actual_length);
+void algorithm::register_kernel(compute_kernel& kernel, const std::string& name) {
+	_kernel_registrations.push_back({ &kernel, name });
+};
 
-		int location = prog.get_uniform_location(ctx, name);
-		if(location > -1)
-			map[name] = location;
-	}
+bool algorithm::init_kernels(cgv::render::context& ctx, const cgv::render::shader_compile_options& config) {
+	const std::string debug_context = "cgv::gpgpu::" + get_type_name();
+	bool success = true;
+	for(const auto& info : _kernel_registrations)
+		success &= info.kernel->init(ctx, info.name, config, debug_context);
+	_is_initialized = success;
+	return success;
+}
 
-	return map;
+void algorithm::destruct_kernels(const cgv::render::context& ctx) {
+	for(const auto& info : _kernel_registrations)
+		info.kernel->destruct(ctx);
+	_is_initialized = false;
+}
+
+void algorithm::dispatch_compute(unsigned num_groups_x, unsigned num_groups_y, unsigned num_groups_z) {
+	glDispatchCompute(num_groups_x, num_groups_y, num_groups_z);
 }
 
 }

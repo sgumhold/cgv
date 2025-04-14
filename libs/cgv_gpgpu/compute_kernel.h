@@ -3,6 +3,8 @@
 #include <cgv/render/context.h>
 #include <cgv/render/shader_program.h>
 
+#include "argument.h"
+
 #include "lib_begin.h"
 
 namespace cgv {
@@ -20,7 +22,7 @@ public:
 
 	template<typename T>
 	bool set_argument(const cgv::render::context& ctx, const std::string& name, const T& value) {
-		return prog.set_uniform(ctx, _uniforms[name], value);
+		return _prog.set_uniform(ctx, _uniforms[name], value);
 	}
 
 	void set_arguments(cgv::render::context& ctx, const uniform_argument_list& arguments);
