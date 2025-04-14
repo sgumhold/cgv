@@ -74,7 +74,12 @@ func(check_project_info; :>pj = MAP, :>return=1)
 		pj::sourceDirs = [pj::INPUT_DIR];
 	}
 	for (i=0;i<!pj::sourceDirs;++i) {
-		pj::sourceDirs[i] = pj::sourceDirs[i]*clean_path;
+		if (pj::sourceDirs[i] ~~ LIST) {
+			pj::sourceDirs[i][0] = pj::sourceDirs[i][0]*clean_path;
+		}
+		else {
+			pj::sourceDirs[i] = pj::sourceDirs[i]*clean_path;
+		}
 	}
 	for (i=0;i<!pj::addLibDirs;++i) {
 		if (pj::addLibDirs[i] ~~ LIST) {

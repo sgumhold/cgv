@@ -7,14 +7,16 @@
 #include <cgv/gui/provider.h>
 #include <cgv/render/drawable.h>
 #include <cgv_gl/volume_renderer.h>
-#include <cgv_app/application_plugin.h>
 #include <cgv_gl/box_wire_render_data.h>
 #include <cgv/render/color_map.h>
 #include <cgv_app/color_map_editor.h>
 #include <cgv_app/color_map_legend.h>
 
 class volume_viewer :
-	public cgv::app::application_plugin // inherit from application plugin to enable overlay support
+	public cgv::base::group,			// derive from group to support child nodes (needed for overlays)
+	public cgv::gui::event_handler,		// derive from event handler to receive input events
+	public cgv::gui::provider,			// derive from gui provider to have gui controls
+	public cgv::render::drawable		// derive from drawable to allow drawing in the GL context
 {
 private:
 	bool do_calculate_gradients;
@@ -81,7 +83,7 @@ public:
 
 	// interface of cgv::gui::event_handler
 	void stream_help(std::ostream& os);
-	bool handle_event(cgv::gui::event& e);
+	bool handle(cgv::gui::event& e);
 
 	// interface of cgv::render::drawable
 	void clear(cgv::render::context& ctx);
