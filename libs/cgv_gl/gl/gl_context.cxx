@@ -2896,6 +2896,30 @@ bool gl_context::shader_program_destruct(shader_program_base& spb) const
 	return true;
 }
 
+bool gl_context::shader_program_get_active_uniforms(shader_program_base& spb, std::vector<std::string>& names) const
+{
+	if (spb.handle == 0)
+		return false;
+
+	GLuint p_id = get_gl_id(spb.handle);
+
+	GLint num_active_uniforms = 0;
+	glGetProgramiv(p_id, GL_ACTIVE_UNIFORMS, &num_active_uniforms);
+
+	names.reserve(num_active_uniforms);
+
+	std::vector<GLchar> buffer(256);
+	for (int i = 0; i < num_active_uniforms; ++i) {
+		GLint array_size = 0;
+		GLenum type = 0;
+		GLsizei actual_length = 0;
+		glGetActiveUniform(p_id, i, buffer.size(), &actual_length, &array_size, &type, buffer.data());
+		std::string name(static_cast<char*>(buffer.data()), actual_length);
+		if(!name.empty())
+			names.push_back(name);
+	}
+}
+
 int  gl_context::get_uniform_location(const shader_program_base& spb, const std::string& name) const
 {
 	return glGetUniformLocation(get_gl_id(spb.handle), name.c_str());

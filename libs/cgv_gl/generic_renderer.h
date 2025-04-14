@@ -13,11 +13,13 @@ protected:
 	std::string prog_name = "";
 	shader_program prog;
 	shader_define_map defines;
-
+	
 	bool has_indices = false;
 
 	bool build_shader_program(const context& ctx, const shader_define_map& defines) {
-		bool success = prog.build_program(ctx, prog_name, true, defines);
+		shader_compile_options options;
+		options.defines = defines;
+		bool success = prog.build_program(ctx, prog_name, options, true);
 		prog.allow_context_to_set_color(false);
 		return success;
 	}

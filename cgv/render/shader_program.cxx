@@ -536,11 +536,13 @@ void shader_program::update_state(const context& ctx)
 		state_out_of_date = false;
 	}
 }
+
 ///link shaders to an executable program
 bool shader_program::link(const context& ctx, bool show_error)
 {
 	update_state(ctx);
 	if (ctx.shader_program_link(*this)) {
+		ctx.shader_program_set_uniform_locations(*this);
 		linked = true;
 		return true;
 	}
@@ -600,10 +602,18 @@ bool shader_program::disable(context& ctx)
 	return res;
 }
 
+/// return uniform name and location pairs
+const std::map<std::string, int>& shader_program::get_uniform_locations() const
+{
+	return uniform_locations;
+}
+
 /// query location index of an uniform
 int shader_program::get_uniform_location(const context& ctx, const std::string& name) const
 {
-	return ctx.get_uniform_location(*this, name);
+	//return ctx.get_uniform_location(*this, name);
+	auto it = uniform_locations.find(name);
+	return it != uniform_locations.end() ? it->second : -1;
 }
 /// set a uniform of type material
 bool shader_program::set_material_uniform(const context& ctx, const std::string& name, const cgv::media::illum::surface_material& material, bool generate_error)
