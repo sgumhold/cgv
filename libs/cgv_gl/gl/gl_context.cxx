@@ -2913,8 +2913,18 @@ bool gl_context::shader_program_get_active_uniforms(shader_program_base& spb, st
 		GLint array_size = 0;
 		GLenum type = 0;
 		GLsizei actual_length = 0;
+		
 		glGetActiveUniform(p_id, i, buffer.size(), &actual_length, &array_size, &type, buffer.data());
 		std::string name(static_cast<char*>(buffer.data()), actual_length);
+
+		// uniforms for arrays are listed once with a "[0]" suffix and a given array size greater than 1
+		// we remove the brackets to allow setting arrays using just the uniform name
+		if(array_size > 1) {
+			size_t bracket_pos = name.find('[');
+			if(bracket_pos != std::string::npos)
+				name.resize(bracket_pos);
+		}
+
 		if(!name.empty())
 			names.push_back(name);
 	}
