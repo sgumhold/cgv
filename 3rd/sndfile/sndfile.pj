@@ -1,16 +1,34 @@
 @=
+if (SYSTEM=="windows") {
+	system(INPUT_DIR."/sparse_checkout.bat"; result)
+}
 projectType="library";
 projectName="sndfile";
 projectGUID="23779AAA-52DD-41A6-A5B8-B6933CBABD51";
 addProjectDirs=[INPUT_DIR];
 addIncDirs=[
-	INPUT_DIR, INPUT_DIR."/libsndfile/src",
+	INPUT_DIR, 
+	INPUT_DIR."/libsndfile/src",
 	[INPUT_DIR."/include", "all"],
-	[INPUT_DIR."/libsndfile/include", "all"]
+	[INPUT_DIR."/libsndfile/include", "all"],
+	[INPUT_DIR."/flac/include", "all"],
+	[INPUT_DIR."/ogg/include", "all"],
+	[INPUT_DIR."/vorbis/include", "all"]
 ];
 addDefines=["_USE_MATH_DEFINES"];
-sourceDirs       =[INPUT_DIR, INPUT_DIR."/libsndfile/src"];
-excludeSourceDirs=[INPUT_DIR."/libsndfile"];
+excludeSourceDirs=[
+	INPUT_DIR."/libsndfile", 
+	INPUT_DIR."/flac", 
+	INPUT_DIR."/ogg", 
+	INPUT_DIR."/opus", 
+	INPUT_DIR."/vorbis"
+];
+sourceDirs       =[
+	INPUT_DIR, 
+	[INPUT_DIR."/libsndfile/src","libsndfile"],
+	[INPUT_DIR."/ogg/src","ogg"],
+	[INPUT_DIR."/vorbis/lib", "vorbis"]
+];
 excludeSourceFiles=[
 	INPUT_DIR."/libsndfile/src/test_audio_detect.c",
 	INPUT_DIR."/libsndfile/src/test_cart_var.c",
@@ -25,10 +43,17 @@ excludeSourceFiles=[
 	INPUT_DIR."/libsndfile/src/test_float.c",
 	INPUT_DIR."/libsndfile/src/test_main.c",
 	INPUT_DIR."/libsndfile/src/test_strncpy_crlf.c",
-	INPUT_DIR."/libsndfile/src/G72x/g72x_test.c"
+	INPUT_DIR."/libsndfile/src/G72x/g72x_test.c",
+	INPUT_DIR."/libsndfile/src/ogg_opus.c",
+	INPUT_DIR."/vorbis/lib/barkmel.c",
+	INPUT_DIR."/vorbis/lib/misc.c",
+	INPUT_DIR."/vorbis/lib/tone.c",
+	INPUT_DIR."/vorbis/lib/psytune.c"
 ];
 renameObjectFiles=[
-	[ INPUT_DIR."/libsndfile/src/G72x/g72x.c", "G72x_g72x" ]
+	[ INPUT_DIR."/libsndfile/src/G72x/g72x.c", "G72x_g72x" ],
+	[ INPUT_DIR."/vorbis/lib/analysis.c", "vorbis_analysis" ],
+	[ INPUT_DIR."/vorbis/lib/lpc.c", "vorbis_lpc" ]
 ];
 
 defFile=INPUT_DIR."/sndfile.def";

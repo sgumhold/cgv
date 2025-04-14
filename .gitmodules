@@ -1,6 +1,24 @@
 [submodule "3rd/openal-soft/openal-soft"]
 	path = 3rd/openal-soft/openal-soft
 	url = https://github.com/kcat/openal-soft.git
+	shallow = true
 [submodule "3rd/sndfile/libsndfile"]
 	path = 3rd/sndfile/libsndfile
 	url = https://github.com/libsndfile/libsndfile.git
+	shallow = true
+[submodule "3rd/sndfile/ogg"]
+	path = 3rd/sndfile/ogg
+	url = https://github.com/xiph/ogg.git
+	shallow = true
+[submodule "3rd/sndfile/flac"]
+	path = 3rd/sndfile/flac
+	url = https://github.com/xiph/flac.git
+	shallow = true
+[submodule "3rd/sndfile/vorbis"]
+	path = 3rd/sndfile/vorbis
+	url = https://github.com/xiph/vorbis.git
+	shallow = true
+[submodule "3rd/sndfile/opus"]
+	path = 3rd/sndfile/opus
+	url = https://github.com/xiph/opus.git
+	shallow = true
