@@ -59,7 +59,12 @@ namespace cgv {
 		}
 		bool sphere_renderer::build_shader_program(context& ctx, shader_program& prog, const shader_compile_options& options)
 		{
-			return prog.build_program(ctx, "sphere.glpr", options, true);
+			bool suc = prog.build_program(ctx, "sphere.glpr", options, true);
+
+			int l0 = prog.get_uniform_location(ctx, "group_colors");
+			int l1 = prog.get_uniform_location(ctx, "group_colors[0]");
+
+			return suc;
 		}
 		bool sphere_renderer::validate_attributes(const context& ctx) const
 		{
