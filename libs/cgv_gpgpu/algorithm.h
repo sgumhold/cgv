@@ -33,7 +33,7 @@ protected:
 	
 	bool init_kernels(cgv::render::context& ctx, const cgv::render::shader_compile_options& config);
 
-	//void destruct_kernels(const cgv::render::context& ctx);
+	void destruct_kernels(const cgv::render::context& ctx);
 
 	void dispatch_compute(unsigned num_groups_x, unsigned num_groups_y, unsigned num_groups_z);
 

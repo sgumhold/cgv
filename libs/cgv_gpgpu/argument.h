@@ -5,21 +5,54 @@
 namespace cgv {
 namespace gpgpu {
 
-struct uniform_argument {
-	std::string name;
-	cgv::render::type_descriptor desc;
-	const void* addr = nullptr;
+class uniform_binding {
+public:
+	uniform_binding() {}
 
-	uniform_argument() {}
+	uniform_binding(const std::string& name) : _name(name) {}
 
 	template<typename T>
-	uniform_argument(const std::string& name, const T& value) : name(name) {
-		desc = cgv::render::element_descriptor_traits<T>::get_type_descriptor(value);
-		addr = cgv::render::element_descriptor_traits<T>::get_address(value);
+	uniform_binding(const std::string& name, const T& value) : _name(name) {
+		set(value);
 	}
+
+	template<typename T>
+	void operator=(const T& value) {
+		set(value);
+	}
+
+private:
+	friend class uniform_arguments;
+	friend class compute_kernel;
+
+	template<typename T>
+	void set(const T& value) {
+		_desc = cgv::render::element_descriptor_traits<T>::get_type_descriptor({});
+		_addr = cgv::render::element_descriptor_traits<T>::get_address(value);
+	}
+
+	int _loc = -1;
+	std::string _name;
+	cgv::render::type_descriptor _desc;
+	const void* _addr = nullptr;
 };
 
-using uniform_argument_list = std::vector<uniform_argument>;
+using uniform_binding_list = std::vector<uniform_binding>;
+
+class uniform_arguments {
+protected:
+	void connect(std::initializer_list<uniform_binding*> arguments) {
+		_bindings.clear();
+		_bindings.reserve(arguments.size());
+		for(uniform_binding* argument : arguments)
+			_bindings.push_back(argument);
+	}
+
+private:
+	friend class compute_kernel;
+
+	std::vector<uniform_binding*> _bindings;
+};
 
 } // namespace gpgpu
 } // namespace cgv
