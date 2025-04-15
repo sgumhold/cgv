@@ -1,79 +1,51 @@
 #include "mipmap.h"
 
-#include <cgv_gpgpu/utils.h>
-
-using namespace cgv::gpgpu;
-
 namespace cgv {
 namespace gpgpu {
 
-void mipmap::destruct(const cgv::render::context& ctx) {
-
-	mipmap1d_prog.destruct(ctx);
-	mipmap2d_prog.destruct(ctx);
-	mipmap3d_prog.destruct(ctx);
-	
-	_is_initialized = false;
-}
-
-bool mipmap::load_shader_programs(cgv::render::context& ctx) {
-
-	bool res = true;
-	std::string where = "cgv::gpgpu::mipmap::load_shader_programs()";
-
-	//res = res && cgv::render::shader_library::load(ctx, mipmap1d_prog, "gpgpu_mipmap1d", true, where);
-	//res = res && cgv::render::shader_library::load(ctx, mipmap2d_prog, "gpgpu_mipmap2d", true, where);
-	//res = res && cgv::render::shader_library::load(ctx, mipmap3d_prog, "gpgpu_mipmap3d", true, where);
-
-	return res;
+mipmap::mipmap() : algorithm("mipmap") {
+	register_kernel(kernel_1d, "gpgpu_mipmap1d");
+	register_kernel(kernel_2d, "gpgpu_mipmap2d");
+	register_kernel(kernel_3d, "gpgpu_mipmap3d");
 }
 
 bool mipmap::init(cgv::render::context& ctx) {
-
-	_is_initialized = false;
-
-	if(!load_shader_programs(ctx))
-		return false;
-
-	group_size = 4;
-
-	_is_initialized = true;
-	return true;
+	cgv::render::shader_compile_options config;
+	return init_kernels(ctx, config);
 }
 
-bool mipmap::execute(cgv::render::context& ctx, cgv::render::texture& source_texture) {
-
-	if(!(source_texture.tt == cgv::render::TextureType::TT_1D ||
-	   source_texture.tt == cgv::render::TextureType::TT_2D ||
-	   source_texture.tt == cgv::render::TextureType::TT_3D))
+bool mipmap::dispatch(cgv::render::context& ctx, cgv::render::texture& texture) {
+	if(!(texture.tt == cgv::render::TextureType::TT_1D ||
+		texture.tt == cgv::render::TextureType::TT_2D ||
+		texture.tt == cgv::render::TextureType::TT_3D))
 		return false;
 
-	if(!source_texture.have_mipmaps)
-		source_texture.create_mipmaps(ctx);
+	if(!texture.have_mipmaps)
+		texture.create_mipmaps(ctx);
 
-	unsigned num_dimensions = source_texture.get_nr_dimensions();
+	unsigned num_dimensions = texture.get_nr_dimensions();
 
-	cgv::render::shader_program* prog = nullptr;
+	compute_kernel* kernel = nullptr;
 
 	switch(num_dimensions) {
 	case 1:
-		prog = &mipmap1d_prog;
+		kernel = &kernel_1d;
 		break;
 	case 2:
-		prog = &mipmap2d_prog;
+		kernel = &kernel_2d;
 		break;
 	case 3:
-		prog = &mipmap3d_prog;
+		kernel = &kernel_3d;
 		break;
 	default: break;
 	}
 
 	glActiveTexture(GL_TEXTURE0);
-	source_texture.enable(ctx, 0);
+	texture.enable(ctx, 0);
 
-	prog->enable(ctx);
+	kernel->enable(ctx);
 
-	uvec3 size(source_texture.get_width(), source_texture.get_height(), source_texture.get_depth());
+	uvec3 size(texture.get_width(), texture.get_height(), texture.get_depth());
 
 	unsigned max_size = cgv::math::max_value(size);
 	unsigned num_levels = 1 + static_cast<unsigned>(log2(static_cast<float>(max_size)));
@@ -81,27 +53,29 @@ bool mipmap::execute(cgv::render::context& ctx, cgv::render::texture& source_tex
 	uvec3 input_size = size;
 
 	for(unsigned level = 0; level < num_levels - 1; ++level) {
-		source_texture.bind_as_image(ctx, 1, level + 1);
-		
+		texture.bind_as_image(ctx, 1, level + 1);
+
 		uvec3 output_size = size;
 		float divisor = static_cast<float>(pow(2, level + 1));
 
 		output_size = static_cast<uvec3>(static_cast<vec3>(output_size) / divisor);
 		output_size = cgv::math::max(output_size, uvec3(1u));
-		
-		prog->set_uniform(ctx, "level", level);
 
+		// TODO: add u_suffix to uniforms
+		kernel->set_argument(ctx, "level", level);
+
+		const uint32_t group_size = 4;
 		uvec3 num_groups = div_round_up(output_size, uvec3(group_size));
 
 		if(num_dimensions == 1) {
-			prog->set_uniform(ctx, "output_size", output_size.x());
+			kernel->set_argument(ctx, "output_size", output_size.x());
 			num_groups[1] = 1;
 			num_groups[2] = 1;
 		} else if(num_dimensions == 2) {
-			prog->set_uniform(ctx, "output_size", uvec2(output_size));
+			kernel->set_argument(ctx, "output_size", uvec2(output_size));
 			num_groups[2] = 1;
 		} else if(num_dimensions == 3) {
-			prog->set_uniform(ctx, "output_size", output_size);
+			kernel->set_argument(ctx, "output_size", output_size);
 		}
 
 		dispatch_compute(num_groups.x(), num_groups.y(), num_groups.z());
@@ -110,10 +84,9 @@ bool mipmap::execute(cgv::render::context& ctx, cgv::render::texture& source_tex
 		input_size = output_size;
 	}
 
-	prog->disable(ctx);
+	kernel->disable(ctx);
 
-	source_texture.disable(ctx);
-	return true;
+	texture.disable(ctx);
 }
 
 } // namespace gpgpu
