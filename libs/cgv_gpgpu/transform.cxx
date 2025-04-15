@@ -3,7 +3,7 @@
 namespace cgv {
 namespace gpgpu {
 
-transform::transform() : cgv::gpgpu::algorithm("transform") {
+transform::transform() : algorithm("transform") {
 	register_kernel(kernel, "gpgpu_transform");
 }
 
@@ -18,11 +18,7 @@ bool transform::init(cgv::render::context& ctx, const sl::data_type& input_type,
 	return init_kernels(ctx, config);
 }
 
-//void transform::destruct(const cgv::render::context& ctx) {
-//	destruct_kernels(ctx);
-//}
-
-void transform::dispatch(cgv::render::context& ctx, const cgv::render::vertex_buffer* input_buffer, const cgv::render::vertex_buffer* output_buffer, size_t count, const uniform_argument_list& arguments) {
+bool transform::dispatch(cgv::render::context& ctx, const cgv::render::vertex_buffer* input_buffer, const cgv::render::vertex_buffer* output_buffer, size_t count, const uniform_binding_list& arguments) {
 	input_buffer->bind(ctx, cgv::render::VertexBufferType::VBT_STORAGE, 0);
 	output_buffer->bind(ctx, cgv::render::VertexBufferType::VBT_STORAGE, 1);
 
@@ -39,6 +35,8 @@ void transform::dispatch(cgv::render::context& ctx, const cgv::render::vertex_bu
 
 	input_buffer->unbind(ctx, cgv::render::VertexBufferType::VBT_STORAGE, 0);
 	output_buffer->unbind(ctx, cgv::render::VertexBufferType::VBT_STORAGE, 1);
+
+	return true;
 }
 
 cgv::render::shader_compile_options transform::get_configuration(const sl::data_type& input_type, const sl::data_type& output_type, const sl::named_variable_list& arguments, const const std::string& unary_operation) const {

@@ -12,11 +12,7 @@ bool algorithm::is_initialized() const {
 }
 
 void algorithm::destruct(const cgv::render::context& ctx) {
-	//destruct_kernels(ctx);
-
-	for(const auto& info : _kernel_registrations)
-		info.kernel->destruct(ctx);
-	_is_initialized = false;
+	destruct_kernels(ctx);
 }
 
 void algorithm::register_kernel(compute_kernel& kernel, const std::string& name) {
@@ -32,11 +28,11 @@ bool algorithm::init_kernels(cgv::render::context& ctx, const cgv::render::shade
 	return success;
 }
 
-//void algorithm::destruct_kernels(const cgv::render::context& ctx) {
-//	for(const auto& info : _kernel_registrations)
-//		info.kernel->destruct(ctx);
-//	_is_initialized = false;
-//}
+void algorithm::destruct_kernels(const cgv::render::context& ctx) {
+	for(const auto& info : _kernel_registrations)
+		info.kernel->destruct(ctx);
+	_is_initialized = false;
+}
 
 void algorithm::dispatch_compute(unsigned num_groups_x, unsigned num_groups_y, unsigned num_groups_z) {
 	glDispatchCompute(num_groups_x, num_groups_y, num_groups_z);

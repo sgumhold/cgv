@@ -3,7 +3,7 @@
 namespace cgv {
 namespace gpgpu {
 
-fill::fill() : cgv::gpgpu::algorithm("fill") {
+fill::fill() : algorithm("fill") {
 	register_kernel(kernel, "gpgpu_fill");
 }
 
@@ -14,17 +14,22 @@ bool fill::init(cgv::render::context& ctx, const sl::data_type& value_type) {
 	return init_kernels(ctx, config);
 }
 
-// TODO: maybe use default implementation in cgv_algorithm?
-//void fill::destruct(const cgv::render::context& ctx) {
-//	destruct_kernels(ctx);
-//}
+bool fill::init(cgv::render::context& ctx, const sl::data_type& value_type, uniform_arguments& arguments) {
+	if(!value_type.is_valid())
+		return false;
+	cgv::render::shader_compile_options config = get_configuration(value_type);
+	bool res = init_kernels(ctx, config);
+	if(res)
+		kernel.set_argument_locations(ctx, "u_value", arguments);
+	return res;
+}
 
-void fill::dispatch(cgv::render::context& ctx, const cgv::render::vertex_buffer* value_buffer, size_t count, const uniform_argument_list& value) {
+bool fill::dispatch(cgv::render::context& ctx, const cgv::render::vertex_buffer* value_buffer, size_t count, const uniform_binding_list& value) {
 	value_buffer->bind(ctx, cgv::render::VertexBufferType::VBT_STORAGE, 0);
 
 	kernel.enable(ctx);
 	kernel.set_argument(ctx, "u_count", static_cast<uint32_t>(count));
-	kernel.set_arguments(ctx, value);
+	kernel.set_arguments(ctx, value, "u_value");
 
 	// TODO: Make configurable.
 	const uint32_t group_size = 512;
@@ -34,6 +39,27 @@ void fill::dispatch(cgv::render::context& ctx, const cgv::render::vertex_buffer*
 	kernel.disable(ctx);
 
 	value_buffer->unbind(ctx, cgv::render::VertexBufferType::VBT_STORAGE, 0);
+
+	return true;
+}
+
+bool fill::dispatch(cgv::render::context& ctx, const cgv::render::vertex_buffer* value_buffer, size_t count, const uniform_arguments& arguments) {
+	value_buffer->bind(ctx, cgv::render::VertexBufferType::VBT_STORAGE, 0);
+
+	kernel.enable(ctx);
+	kernel.set_argument(ctx, "u_count", static_cast<uint32_t>(count));
+	kernel.set_arguments(ctx, arguments);
+
+	// TODO: Make configurable.
+	const uint32_t group_size = 512;
+	uint32_t num_groups = div_round_up(static_cast<uint32_t>(count), group_size);
+	dispatch_compute(num_groups, 1, 1);
+	glMemoryBarrier(GL_SHADER_STORAGE_BARRIER_BIT);
+	kernel.disable(ctx);
+
+	value_buffer->unbind(ctx, cgv::render::VertexBufferType::VBT_STORAGE, 0);
+
+	return true;
 }
 
 cgv::render::shader_compile_options fill::get_configuration(const sl::data_type& value_type) const {

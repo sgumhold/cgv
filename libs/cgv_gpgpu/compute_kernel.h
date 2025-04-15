@@ -25,9 +25,21 @@ public:
 		return _prog.set_uniform(ctx, _uniforms[name], value);
 	}
 
-	void set_arguments(cgv::render::context& ctx, const uniform_argument_list& arguments);
+	void set_argument_locations(cgv::render::context& ctx, const std::string& prefix, uniform_arguments& arguments) const;
+
+	void set_arguments(cgv::render::context& ctx, const uniform_arguments& arguments);
+	void set_arguments(cgv::render::context& ctx, const uniform_binding_list& arguments, const std::string& prefix = "");
 
 private:
+	struct enable_guard {
+		cgv::render::context& ctx;
+		cgv::render::shader_program& prog;
+		bool was_enabled = false;
+
+		enable_guard(cgv::render::context& ctx, cgv::render::shader_program& prog);
+		~enable_guard();
+	};
+
 	cgv::render::shader_program _prog;
 	std::map<std::string, int> _uniforms;
 };

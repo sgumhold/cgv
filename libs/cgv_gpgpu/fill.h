@@ -7,19 +7,20 @@
 namespace cgv {
 namespace gpgpu {
 
-class CGV_API fill : public cgv::gpgpu::algorithm {
+class CGV_API fill : public algorithm {
 public:
 	fill();
 
 	bool init(cgv::render::context& ctx, const sl::data_type& value_type);
-	//void destruct(const cgv::render::context& ctx);
+	bool init(cgv::render::context& ctx, const sl::data_type& value_type, uniform_arguments& arguments);
 
-	void dispatch(cgv::render::context& ctx, const cgv::render::vertex_buffer* value_buffer, size_t count, const cgv::gpgpu::uniform_argument_list& value);
+	bool dispatch(cgv::render::context& ctx, const cgv::render::vertex_buffer* value_buffer, size_t count, const uniform_binding_list& value);
+	bool dispatch(cgv::render::context& ctx, const cgv::render::vertex_buffer* value_buffer, size_t count, const uniform_arguments& arguments);
 
 private:
 	cgv::render::shader_compile_options get_configuration(const sl::data_type& value_type) const;
 
-	cgv::gpgpu::compute_kernel kernel;
+	compute_kernel kernel;
 };
 
 } // namespace gpgpu
