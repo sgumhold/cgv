@@ -611,9 +611,9 @@ const std::map<std::string, int>& shader_program::get_uniform_locations() const
 /// query location index of an uniform
 int shader_program::get_uniform_location(const context& ctx, const std::string& name) const
 {
-	return ctx.get_uniform_location(*this, name);
-	//auto it = uniform_locations.find(name);
-	//return it != uniform_locations.end() ? it->second : -1;
+	//return ctx.get_uniform_location(*this, name);
+	auto it = uniform_locations.find(name);
+	return it != uniform_locations.end() ? it->second : -1;
 }
 /// set a uniform of type material
 bool shader_program::set_material_uniform(const context& ctx, const std::string& name, const cgv::media::illum::surface_material& material, bool generate_error)
