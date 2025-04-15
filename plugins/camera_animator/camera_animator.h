@@ -1,15 +1,19 @@
 #pragma once
 
+
+#include <cgv/base/group.h>
 #include <cgv/gui/directory_helper.h>
+#include <cgv/gui/event_handler.h>
 #include <cgv/gui/file_helper.h>
 #include <cgv/gui/help_message.h>
+#include <cgv/gui/provider.h>
+#include <cgv/os/pipe_thread.h>
+#include <cgv/render/drawable.h>
 #include <cgv/utils/file.h>
 #include <cgv/utils/dir.h>
-#include <cgv_app/application_plugin.h>
 #include <cgv_app/transformation_gizmo.h>
 #include <cgv_gl/line_render_data.h>
 #include <cgv_gl/point_render_data.h>
-#include <cgv/os/pipe_thread.h>
 
 #include "easing_functions.h"
 #include "animation_data.h"
@@ -17,14 +21,12 @@
 
 #include "lib_begin.h"
 
-class CGV_API camera_animator : public cgv::app::application_plugin {
+class CGV_API camera_animator :
+	public cgv::base::group,
+	public cgv::render::drawable,
+	public cgv::gui::provider,
+	public cgv::gui::event_handler {
 protected:
-	using vec2 = cgv::vec2;
-	using vec3 = cgv::vec3;
-	using vec4 = cgv::vec4;
-	using ivec2 = cgv::ivec2;
-	using rgb = cgv::rgb;
-
 	FILE* fp = 0;
 	int fps = 30;
 	bool video_open = false;
@@ -44,8 +46,8 @@ protected:
 	keyframe_editor_overlay_ptr timeline_ptr;
 	keyframe* selected_keyframe = nullptr;
 
-	rgb eye_color;
-	rgb focus_color;
+	cgv::rgb eye_color;
+	cgv::rgb focus_color;
 
 	cgv::render::point_renderer local_point_renderer;
 	cgv::render::line_renderer local_line_renderer;
@@ -115,9 +117,9 @@ public:
 	void stream_help(std::ostream& os) {}
 	void stream_stats(std::ostream& os) {}
 
-	bool handle_event(cgv::gui::event& e);
+	bool handle(cgv::gui::event& e);
 	void handle_timer_event(double t, double dt);
-	void handle_member_change(const cgv::utils::pointer_test& m);
+	void on_set(void* member_ptr);
 	bool on_exit_request();
 
 	void on_select();
