@@ -31,7 +31,6 @@ private:
 		_addr = cgv::render::element_descriptor_traits<T>::get_address(value);
 	}
 
-	int _loc = -1;
 	std::string _name;
 	cgv::render::type_descriptor _desc;
 	const void* _addr = nullptr;

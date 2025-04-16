@@ -10,8 +10,7 @@ mipmap::mipmap() : algorithm("mipmap") {
 }
 
 bool mipmap::init(cgv::render::context& ctx) {
-	cgv::render::shader_compile_options config;
-	return init_kernels(ctx, config);
+	return init_kernels(ctx, {});
 }
 
 bool mipmap::dispatch(cgv::render::context& ctx, cgv::render::texture& texture) {

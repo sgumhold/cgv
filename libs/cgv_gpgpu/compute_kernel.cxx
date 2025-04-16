@@ -21,21 +21,22 @@ bool compute_kernel::disable(cgv::render::context& ctx) {
 	return _prog.disable(ctx);
 }
 
-void compute_kernel::set_argument_locations(cgv::render::context& ctx, const std::string& prefix, uniform_arguments& arguments) const {
-	for(uniform_binding* binding : arguments._bindings)
-		binding->_loc = _prog.get_uniform_location(ctx, prefix + binding->_name);
-}
-
-void compute_kernel::set_arguments(cgv::render::context& ctx, const uniform_arguments& arguments) {
+void compute_kernel::set_arguments(cgv::render::context& ctx, const uniform_arguments& arguments, const std::string& prefix) {
 	enable_guard guard(ctx, _prog);
-	for(const uniform_binding* binding : arguments._bindings)
-		_prog.set_uniform(ctx, binding->_loc, binding->_desc, binding->_addr);
+	for(const uniform_binding* binding : arguments._bindings) {
+		int loc = _prog.get_uniform_location(ctx, prefix + binding->_name);
+		if(loc > -1)
+			_prog.set_uniform(ctx, loc, binding->_desc, binding->_addr);
+	}
 }
 
 void compute_kernel::set_arguments(cgv::render::context& ctx, const uniform_binding_list& arguments, const std::string& prefix) {
 	enable_guard guard(ctx, _prog);
-	for(const uniform_binding& binding : arguments)
-		_prog.set_uniform(ctx, _prog.get_uniform_location(ctx, prefix + binding._name), binding._desc, binding._addr);
+	for(const uniform_binding& binding : arguments) {
+		int loc = _prog.get_uniform_location(ctx, prefix + binding._name);
+		if(loc > -1)
+			_prog.set_uniform(ctx, loc, binding._desc, binding._addr);
+	}
 }
 
 compute_kernel::enable_guard::enable_guard(cgv::render::context& ctx, cgv::render::shader_program& prog) : ctx(ctx), prog(prog) {

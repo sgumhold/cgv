@@ -25,9 +25,7 @@ public:
 		return _prog.set_uniform(ctx, _uniforms[name], value);
 	}
 
-	void set_argument_locations(cgv::render::context& ctx, const std::string& prefix, uniform_arguments& arguments) const;
-
-	void set_arguments(cgv::render::context& ctx, const uniform_arguments& arguments);
+	void set_arguments(cgv::render::context& ctx, const uniform_arguments& arguments, const std::string& prefix = "");
 	void set_arguments(cgv::render::context& ctx, const uniform_binding_list& arguments, const std::string& prefix = "");
 
 private:
