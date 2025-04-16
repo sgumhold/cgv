@@ -18,10 +18,7 @@ bool fill::init(cgv::render::context& ctx, const sl::data_type& value_type, unif
 	if(!value_type.is_valid())
 		return false;
 	cgv::render::shader_compile_options config = get_configuration(value_type);
-	bool res = init_kernels(ctx, config);
-	if(res)
-		kernel.set_argument_locations(ctx, "u_value", arguments);
-	return res;
+	return init_kernels(ctx, config);
 }
 
 bool fill::dispatch(cgv::render::context& ctx, const cgv::render::vertex_buffer* value_buffer, size_t count, const uniform_binding_list& value) {
@@ -48,7 +45,7 @@ bool fill::dispatch(cgv::render::context& ctx, const cgv::render::vertex_buffer*
 
 	kernel.enable(ctx);
 	kernel.set_argument(ctx, "u_count", static_cast<uint32_t>(count));
-	kernel.set_arguments(ctx, arguments);
+	kernel.set_arguments(ctx, arguments, "u_value");
 
 	// TODO: Make configurable.
 	const uint32_t group_size = 512;
