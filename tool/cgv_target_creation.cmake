@@ -311,7 +311,7 @@ function(cgv_do_deferred_ops TARGET_NAME CONFIGURING_CGV)
 			list(APPEND AUTOGEN_CMD_LINE_ARGS ${CMD_LINE_ARGS_STRING})
 			if (SHADER_PATHS)
 				set(CMD_LINE_ARGS_STRING "${CMD_LINE_ARGS_STRING} \"type(shader_config):shader_path='${SHADER_PATHS}'\"")
-				list(APPEND AUTOGEN_CMD_LINE_ARGS "type(shader_config):shader_path='${SHADER_PATHS_NOSC}'")
+				list(APPEND AUTOGEN_CMD_LINE_ARGS "\"type(shader_config):shader_path='${SHADER_PATHS_NOSC}'\"")
 			endif()
 		endif()
 		# --- append remaining plugins
