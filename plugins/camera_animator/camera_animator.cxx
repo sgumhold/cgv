@@ -98,7 +98,7 @@ bool camera_animator::close_ffmpeg_pipe()
 	return true;
 }
 
-camera_animator::camera_animator() : application_plugin("Camera Animator") {
+camera_animator::camera_animator() : group("Camera Animator") {
 
 	eye_rd.style.measure_point_size_in_pixel = true;
 	eye_rd.style.percentual_halo_width = 33.3f;
@@ -131,7 +131,7 @@ camera_animator::camera_animator() : application_plugin("Camera Animator") {
 	focus_gizmo->set_mode(cgv::app::transformation_gizmo::Mode::kTranslation);
 	focus_gizmo->hide();
 
-	timeline_ptr = register_overlay<keyframe_editor_overlay>("Keyframe Editor");
+	timeline_ptr = create_and_append_child<keyframe_editor_overlay>("Keyframe Editor");
 	timeline_ptr->set_on_change_callback(std::bind(&camera_animator::handle_editor_change, this, std::placeholders::_1));
 	timeline_ptr->gui_options.create_default_tree_node = false;
 	timeline_ptr->gui_options.show_layout_options = false;
@@ -179,7 +179,7 @@ bool camera_animator::self_reflect(cgv::reflect::reflection_handler& rh) {
 		rh.reflect_member("video_file", video_file_helper.file_name);
 }
 
-bool camera_animator::handle_event(cgv::gui::event& e) {
+bool camera_animator::handle(cgv::gui::event& e) {
 
 	// return true if the event gets handled and stopped here or false if you want to pass it to the next plugin
 	unsigned et = e.get_kind();
@@ -278,7 +278,9 @@ void camera_animator::handle_timer_event(double t, double dt) {
 	}
 }
 
-void camera_animator::handle_member_change(const cgv::utils::pointer_test& m) {
+void camera_animator::on_set (void *member_ptr)
+{
+	const cgv::utils::pointer_test& m(member_ptr);
 	if(m.is(video_open)) {
 		if(video_open) {
 			if(video_file_helper.file_name.empty()) {
