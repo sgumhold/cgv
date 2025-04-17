@@ -12,7 +12,7 @@
 namespace cgv {
 namespace gpgpu {
 
-/** Definition of base functionality for highly parallel gpu algorithms. */
+/// The base class for compute shader based highly parallel GPU algorithms.
 class CGV_API algorithm {
 public:
 	// TODO: Remove default constructor.

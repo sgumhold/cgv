@@ -22,7 +22,10 @@ public:
 
 	template<typename T>
 	bool set_argument(const cgv::render::context& ctx, const std::string& name, const T& value) {
-		return _prog.set_uniform(ctx, _uniforms[name], value);
+		int loc = _prog.get_uniform_location(ctx, name);
+		if(loc > -1)
+			return _prog.set_uniform(ctx, loc, value);
+		return false;
 	}
 
 	void set_arguments(cgv::render::context& ctx, const uniform_arguments& arguments, const std::string& prefix = "");
@@ -39,7 +42,6 @@ private:
 	};
 
 	cgv::render::shader_program _prog;
-	std::map<std::string, int> _uniforms;
 };
 
 }

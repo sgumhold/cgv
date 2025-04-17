@@ -1,21 +1,21 @@
 #pragma once
 
-#include <cgv_gpgpu/algorithm.h>
+#include "algorithm.h"
 
 #include "lib_begin.h"
 
 namespace cgv {
 namespace gpgpu {
 
+/// GPU compute shader implementation for filling a buffer with a constant value.
 class CGV_API fill : public algorithm {
 public:
 	fill();
 
 	bool init(cgv::render::context& ctx, const sl::data_type& value_type);
-	bool init(cgv::render::context& ctx, const sl::data_type& value_type, uniform_arguments& arguments);
 
-	bool dispatch(cgv::render::context& ctx, const cgv::render::vertex_buffer* value_buffer, size_t count, const uniform_binding_list& value);
-	bool dispatch(cgv::render::context& ctx, const cgv::render::vertex_buffer* value_buffer, size_t count, const uniform_arguments& arguments);
+	bool dispatch(cgv::render::context& ctx, const cgv::render::vertex_buffer* buffer, size_t count, const uniform_binding_list& value);
+	bool dispatch(cgv::render::context& ctx, const cgv::render::vertex_buffer* buffer, size_t count, const uniform_arguments& arguments);
 
 private:
 	cgv::render::shader_compile_options get_configuration(const sl::data_type& value_type) const;
