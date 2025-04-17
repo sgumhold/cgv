@@ -38,5 +38,5 @@ void algorithm::dispatch_compute(unsigned num_groups_x, unsigned num_groups_y, u
 	glDispatchCompute(num_groups_x, num_groups_y, num_groups_z);
 }
 
-}
-}
+} // namespace gpgpu
+} // namespace cgv
