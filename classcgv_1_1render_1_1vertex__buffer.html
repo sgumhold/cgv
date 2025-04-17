@@ -91,6 +91,7 @@ $(document).ready(function(){initNavTree('classcgv_1_1render_1_1vertex__buffer.h
 <div class="header">
   <div class="summary">
 <a href="#pub-methods">Public Member Functions</a> &#124;
+<a href="#pro-attribs">Protected Attributes</a> &#124;
 <a href="classcgv_1_1render_1_1vertex__buffer-members.html">List of all members</a>  </div>
   <div class="headertitle"><div class="title">cgv::render::vertex_buffer Class Reference</div></div>
 </div><!--header-->
@@ -209,6 +210,11 @@ Public Member Functions</h2></td></tr>
 <tr class="memitem:a06ff3003af849b32a76ec5be29bd89dc inherit pub_methods_classcgv_1_1render_1_1render__component"><td class="memTemplItemLeft" align="right" valign="top">void&#160;</td><td class="memTemplItemRight" valign="bottom"><a class="el" href="classcgv_1_1render_1_1render__component.html#a06ff3003af849b32a76ec5be29bd89dc">put_id</a> (T &amp;id) const</td></tr>
 <tr class="memdesc:a06ff3003af849b32a76ec5be29bd89dc inherit pub_methods_classcgv_1_1render_1_1render__component"><td class="mdescLeft">&#160;</td><td class="mdescRight">cast the refence to rendering api specific representation of component id to the specified type  <br /></td></tr>
 <tr class="separator:a06ff3003af849b32a76ec5be29bd89dc inherit pub_methods_classcgv_1_1render_1_1render__component"><td class="memSeparator" colspan="2">&#160;</td></tr>
+</table><table class="memberdecls">
+<tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="pro-attribs" name="pro-attribs"></a>
+Protected Attributes</h2></td></tr>
+<tr class="memitem:a987fa7752a0bd8b06ba933d2a5638489" id="r_a987fa7752a0bd8b06ba933d2a5638489"><td class="memItemLeft" align="right" valign="top">size_t&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcgv_1_1render_1_1vertex__buffer.html#a987fa7752a0bd8b06ba933d2a5638489">size_in_bytes</a></td></tr>
+<tr class="separator:a987fa7752a0bd8b06ba933d2a5638489"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="inherited" name="inherited"></a>
 Additional Inherited Members</h2></td></tr>
@@ -555,7 +561,7 @@ template&lt;typename T &gt; </div>
 </dl>
 <dl class="section return"><dt>Returns</dt><dd>False if the <a class="el" href="classcgv_1_1render_1_1vertex__buffer.html" title="a vertex buffer is an unstructured memory block on the GPU.">vertex_buffer</a> has no valid handle or if there was a rendering API error, true otherwise. </dd></dl>
 
-<p class="definition">Definition at line <a class="el" href="vertex__buffer_8h_source.html#l00180">180</a> of file <a class="el" href="vertex__buffer_8h_source.html">vertex_buffer.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="vertex__buffer_8h_source.html#l00182">182</a> of file <a class="el" href="vertex__buffer_8h_source.html">vertex_buffer.h</a>.</p>
 
 </div>
 </div>
@@ -619,7 +625,7 @@ template&lt;typename T , typename  = std::enable_if_t&lt;std::is_class&lt;T&gt;:
 <dl class="section return"><dt>Returns</dt><dd>False if the <a class="el" href="classcgv_1_1render_1_1vertex__buffer.html" title="a vertex buffer is an unstructured memory block on the GPU.">vertex_buffer</a> has no valid handle or if there was a rendering API error, true otherwise.</dd></dl>
 <p>This function will implicity infer how many bytes to copy from the dimensions of the generic array. Therefore you need to make sure, that your std::vector or <a class="el" href="classcgv_1_1math_1_1vec.html" title="A column vector class.">cgv::math::vec</a> is appropriately sized beforehand! Otherwise the underlying copy command might cross the boundaries of the GPU buffer and or read unrelated data. </p>
 
-<p class="definition">Definition at line <a class="el" href="vertex__buffer_8h_source.html#l00197">197</a> of file <a class="el" href="vertex__buffer_8h_source.html">vertex_buffer.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="vertex__buffer_8h_source.html#l00199">199</a> of file <a class="el" href="vertex__buffer_8h_source.html">vertex_buffer.h</a>.</p>
 
 </div>
 </div>
@@ -661,7 +667,7 @@ template&lt;typename T &gt; </div>
 
 <p>create vertex buffer and copy data from CPU array <code>array</code> into buffer memory </p>
 
-<p class="definition">Definition at line <a class="el" href="vertex__buffer_8h_source.html#l00081">81</a> of file <a class="el" href="vertex__buffer_8h_source.html">vertex_buffer.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="vertex__buffer_8h_source.html#l00083">83</a> of file <a class="el" href="vertex__buffer_8h_source.html">vertex_buffer.h</a>.</p>
 
 </div>
 </div>
@@ -709,7 +715,7 @@ template&lt;typename T &gt; </div>
 
 <p>create vertex buffer and copy data from CPU array <code>array_ptr</code> into buffer memory </p>
 
-<p class="definition">Definition at line <a class="el" href="vertex__buffer_8h_source.html#l00088">88</a> of file <a class="el" href="vertex__buffer_8h_source.html">vertex_buffer.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="vertex__buffer_8h_source.html#l00090">90</a> of file <a class="el" href="vertex__buffer_8h_source.html">vertex_buffer.h</a>.</p>
 
 </div>
 </div>
@@ -799,7 +805,7 @@ template&lt;typename T , typename  = std::enable_if_t&lt;std::is_class&lt;T&gt;:
 </dl>
 <dl class="section return"><dt>Returns</dt><dd>False if there was a rendering API error, true otherwise. </dd></dl>
 
-<p class="definition">Definition at line <a class="el" href="vertex__buffer_8h_source.html#l00136">136</a> of file <a class="el" href="vertex__buffer_8h_source.html">vertex_buffer.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="vertex__buffer_8h_source.html#l00138">138</a> of file <a class="el" href="vertex__buffer_8h_source.html">vertex_buffer.h</a>.</p>
 
 </div>
 </div>
@@ -862,7 +868,7 @@ template&lt;typename T &gt; </div>
 </dl>
 <dl class="section return"><dt>Returns</dt><dd>False if there was a rendering API error, true otherwise. </dd></dl>
 
-<p class="definition">Definition at line <a class="el" href="vertex__buffer_8h_source.html#l00149">149</a> of file <a class="el" href="vertex__buffer_8h_source.html">vertex_buffer.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="vertex__buffer_8h_source.html#l00151">151</a> of file <a class="el" href="vertex__buffer_8h_source.html">vertex_buffer.h</a>.</p>
 
 </div>
 </div>
@@ -1038,7 +1044,7 @@ template&lt;typename T &gt; </div>
 
 <p>replace part (starting at byte offset <code>buffer_offset_in_bytes</code>) or whole vertex buffer content from <code>nr_elements</code> of CPU array <code>array_ptr</code> </p>
 
-<p class="definition">Definition at line <a class="el" href="vertex__buffer_8h_source.html#l00155">155</a> of file <a class="el" href="vertex__buffer_8h_source.html">vertex_buffer.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="vertex__buffer_8h_source.html#l00157">157</a> of file <a class="el" href="vertex__buffer_8h_source.html">vertex_buffer.h</a>.</p>
 
 <p class="reference">Referenced by <a class="el" href="mesh__render__info_8cxx_source.html#l00054">cgv::render::mesh_render_info::construct_element_vbo()</a>, and <a class="el" href="gl__context_8cxx_source.html#l01247">cgv::render::gl::gl_context::prepare_attributes()</a>.</p>
 
@@ -1082,7 +1088,7 @@ template&lt;typename T , typename  = std::enable_if_t&lt;std::is_class&lt;T&gt;:
 
 <p>resize vertex buffer and copy data from CPU array <code>array</code> into buffer memory </p>
 
-<p class="definition">Definition at line <a class="el" href="vertex__buffer_8h_source.html#l00108">108</a> of file <a class="el" href="vertex__buffer_8h_source.html">vertex_buffer.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="vertex__buffer_8h_source.html#l00110">110</a> of file <a class="el" href="vertex__buffer_8h_source.html">vertex_buffer.h</a>.</p>
 
 </div>
 </div>
@@ -1130,7 +1136,7 @@ template&lt;typename T &gt; </div>
 
 <p>resize vertex buffer and copy data from CPU array <code>array_ptr</code> into buffer memory </p>
 
-<p class="definition">Definition at line <a class="el" href="vertex__buffer_8h_source.html#l00115">115</a> of file <a class="el" href="vertex__buffer_8h_source.html">vertex_buffer.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="vertex__buffer_8h_source.html#l00117">117</a> of file <a class="el" href="vertex__buffer_8h_source.html">vertex_buffer.h</a>.</p>
 
 </div>
 </div>
@@ -1298,6 +1304,31 @@ template&lt;typename T &gt; </div>
 <p class="definition">Definition at line <a class="el" href="vertex__buffer_8cxx_source.html#l00035">35</a> of file <a class="el" href="vertex__buffer_8cxx_source.html">vertex_buffer.cxx</a>.</p>
 
 <p class="reference">References <a class="el" href="context_8h_source.html#l00453">cgv::render::vertex_buffer_base::type</a>, and <a class="el" href="context_8h_source.html#l00415">cgv::render::VBT_UNDEF</a>.</p>
+
+</div>
+</div>
+<h2 class="groupheader">Member Data Documentation</h2>
+<a id="a987fa7752a0bd8b06ba933d2a5638489" name="a987fa7752a0bd8b06ba933d2a5638489"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a987fa7752a0bd8b06ba933d2a5638489">&#9670;&#160;</a></span>size_in_bytes</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">size_t cgv::render::vertex_buffer::size_in_bytes</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">protected</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p class="definition">Definition at line <a class="el" href="vertex__buffer_8h_source.html#l00015">15</a> of file <a class="el" href="vertex__buffer_8h_source.html">vertex_buffer.h</a>.</p>
 
 </div>
 </div>
