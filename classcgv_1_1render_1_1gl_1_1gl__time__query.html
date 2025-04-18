@@ -119,12 +119,24 @@ Public Member Functions</h2></td></tr>
 <tr class="memitem:a7c24a321833ef135fb25883749c22fd5" id="r_a7c24a321833ef135fb25883749c22fd5"><td class="memItemLeft" align="right" valign="top">bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcgv_1_1render_1_1gl_1_1gl__time__query.html#a7c24a321833ef135fb25883749c22fd5">is_initialized</a> () const</td></tr>
 <tr class="memdesc:a7c24a321833ef135fb25883749c22fd5"><td class="mdescLeft">&#160;</td><td class="mdescRight">check whether the time query has been initialized, i.e. the init method has been called successfully before  <br /></td></tr>
 <tr class="separator:a7c24a321833ef135fb25883749c22fd5"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:af5e74ea486c554412d584ca057aaaae1" id="r_af5e74ea486c554412d584ca057aaaae1"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcgv_1_1render_1_1gl_1_1gl__time__query.html#af5e74ea486c554412d584ca057aaaae1">begin</a> ()</td></tr>
-<tr class="memdesc:af5e74ea486c554412d584ca057aaaae1"><td class="mdescLeft">&#160;</td><td class="mdescRight">begin the time measurement  <br /></td></tr>
-<tr class="separator:af5e74ea486c554412d584ca057aaaae1"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a9f6dd8bcfecb0169531ec4a1547dda02" id="r_a9f6dd8bcfecb0169531ec4a1547dda02"><td class="memItemLeft" align="right" valign="top">double&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcgv_1_1render_1_1gl_1_1gl__time__query.html#a9f6dd8bcfecb0169531ec4a1547dda02">end</a> ()</td></tr>
-<tr class="memdesc:a9f6dd8bcfecb0169531ec4a1547dda02"><td class="mdescLeft">&#160;</td><td class="mdescRight">end the time measurement and return elapsed time in nanoseconds (1 second = 10^9 nanoseconds)  <br /></td></tr>
-<tr class="separator:a9f6dd8bcfecb0169531ec4a1547dda02"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a6b4075d93252566a64250913f8fda5a2" id="r_a6b4075d93252566a64250913f8fda5a2"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcgv_1_1render_1_1gl_1_1gl__time__query.html#a6b4075d93252566a64250913f8fda5a2">begin_scope</a> () const</td></tr>
+<tr class="memdesc:a6b4075d93252566a64250913f8fda5a2"><td class="mdescLeft">&#160;</td><td class="mdescRight">start scoping OpenGL commands for time measurement  <br /></td></tr>
+<tr class="separator:a6b4075d93252566a64250913f8fda5a2"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a3859cab31e4ccce156b04e7a667bb83c" id="r_a3859cab31e4ccce156b04e7a667bb83c"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcgv_1_1render_1_1gl_1_1gl__time__query.html#a3859cab31e4ccce156b04e7a667bb83c">end_scope</a> () const</td></tr>
+<tr class="memdesc:a3859cab31e4ccce156b04e7a667bb83c"><td class="mdescLeft">&#160;</td><td class="mdescRight">close the scope of OpenGL commands included in the time measurement  <br /></td></tr>
+<tr class="separator:a3859cab31e4ccce156b04e7a667bb83c"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a03d9f8d5c88cc12d44de9066ee566810" id="r_a03d9f8d5c88cc12d44de9066ee566810"><td class="memItemLeft" align="right" valign="top">double&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcgv_1_1render_1_1gl_1_1gl__time__query.html#a03d9f8d5c88cc12d44de9066ee566810">collect</a> () const</td></tr>
+<tr class="memdesc:a03d9f8d5c88cc12d44de9066ee566810"><td class="mdescLeft">&#160;</td><td class="mdescRight">collect the measured time, blocking until the query object is ready and the time can be retrieved  <br /></td></tr>
+<tr class="separator:a03d9f8d5c88cc12d44de9066ee566810"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a0462ee305cdc219f68e5c149fe95ca4f" id="r_a0462ee305cdc219f68e5c149fe95ca4f"><td class="memItemLeft" align="right" valign="top">double&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcgv_1_1render_1_1gl_1_1gl__time__query.html#a0462ee305cdc219f68e5c149fe95ca4f">end_scope_and_collect</a> () const</td></tr>
+<tr class="memdesc:a0462ee305cdc219f68e5c149fe95ca4f"><td class="mdescLeft">&#160;</td><td class="mdescRight">close the scope of OpenGL commands included in the time measurement and retrieve the duration immediately, blocking until the query object is ready and the time can be retrieved  <br /></td></tr>
+<tr class="separator:a0462ee305cdc219f68e5c149fe95ca4f"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a04442e9429e66f966821f1efb81ad890" id="r_a04442e9429e66f966821f1efb81ad890"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcgv_1_1render_1_1gl_1_1gl__time__query.html#a04442e9429e66f966821f1efb81ad890">begin</a> () const</td></tr>
+<tr class="memdesc:a04442e9429e66f966821f1efb81ad890"><td class="mdescLeft">&#160;</td><td class="mdescRight">begin the time measurement  <br /></td></tr>
+<tr class="separator:a04442e9429e66f966821f1efb81ad890"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a44fd40d459a94601ace07fe6137163fc" id="r_a44fd40d459a94601ace07fe6137163fc"><td class="memItemLeft" align="right" valign="top">double&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcgv_1_1render_1_1gl_1_1gl__time__query.html#a44fd40d459a94601ace07fe6137163fc">end</a> () const</td></tr>
+<tr class="memdesc:a44fd40d459a94601ace07fe6137163fc"><td class="mdescLeft">&#160;</td><td class="mdescRight">end the time measurement and return elapsed time in nanoseconds (1 second = 10^9 nanoseconds)  <br /></td></tr>
+<tr class="separator:a44fd40d459a94601ace07fe6137163fc"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="pub-attribs" name="pub-attribs"></a>
 Public Attributes</h2></td></tr>
@@ -182,8 +194,8 @@ Public Attributes</h2></td></tr>
 </div>
 </div>
 <h2 class="groupheader">Member Function Documentation</h2>
-<a id="af5e74ea486c554412d584ca057aaaae1" name="af5e74ea486c554412d584ca057aaaae1"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#af5e74ea486c554412d584ca057aaaae1">&#9670;&#160;</a></span>begin()</h2>
+<a id="a04442e9429e66f966821f1efb81ad890" name="a04442e9429e66f966821f1efb81ad890"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a04442e9429e66f966821f1efb81ad890">&#9670;&#160;</a></span>begin()</h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -192,14 +204,56 @@ Public Attributes</h2></td></tr>
           <td class="memname">void cgv::render::gl::gl_time_query::begin </td>
           <td>(</td>
           <td class="paramname"></td><td>)</td>
-          <td></td>
+          <td> const</td>
         </tr>
       </table>
 </div><div class="memdoc">
 
 <p>begin the time measurement </p>
 
+<p class="definition">Definition at line <a class="el" href="gl__time__query_8cxx_source.html#l00071">71</a> of file <a class="el" href="gl__time__query_8cxx_source.html">gl_time_query.cxx</a>.</p>
+
+</div>
+</div>
+<a id="a6b4075d93252566a64250913f8fda5a2" name="a6b4075d93252566a64250913f8fda5a2"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a6b4075d93252566a64250913f8fda5a2">&#9670;&#160;</a></span>begin_scope()</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">void cgv::render::gl::gl_time_query::begin_scope </td>
+          <td>(</td>
+          <td class="paramname"></td><td>)</td>
+          <td> const</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>start scoping OpenGL commands for time measurement </p>
+
 <p class="definition">Definition at line <a class="el" href="gl__time__query_8cxx_source.html#l00049">49</a> of file <a class="el" href="gl__time__query_8cxx_source.html">gl_time_query.cxx</a>.</p>
+
+</div>
+</div>
+<a id="a03d9f8d5c88cc12d44de9066ee566810" name="a03d9f8d5c88cc12d44de9066ee566810"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a03d9f8d5c88cc12d44de9066ee566810">&#9670;&#160;</a></span>collect()</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">double cgv::render::gl::gl_time_query::collect </td>
+          <td>(</td>
+          <td class="paramname"></td><td>)</td>
+          <td> const</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>collect the measured time, blocking until the query object is ready and the time can be retrieved </p>
+
+<p class="definition">Definition at line <a class="el" href="gl__time__query_8cxx_source.html#l00059">59</a> of file <a class="el" href="gl__time__query_8cxx_source.html">gl_time_query.cxx</a>.</p>
 
 </div>
 </div>
@@ -227,8 +281,8 @@ Public Attributes</h2></td></tr>
 
 </div>
 </div>
-<a id="a9f6dd8bcfecb0169531ec4a1547dda02" name="a9f6dd8bcfecb0169531ec4a1547dda02"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a9f6dd8bcfecb0169531ec4a1547dda02">&#9670;&#160;</a></span>end()</h2>
+<a id="a44fd40d459a94601ace07fe6137163fc" name="a44fd40d459a94601ace07fe6137163fc"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a44fd40d459a94601ace07fe6137163fc">&#9670;&#160;</a></span>end()</h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -237,14 +291,64 @@ Public Attributes</h2></td></tr>
           <td class="memname">double cgv::render::gl::gl_time_query::end </td>
           <td>(</td>
           <td class="paramname"></td><td>)</td>
-          <td></td>
+          <td> const</td>
         </tr>
       </table>
 </div><div class="memdoc">
 
 <p>end the time measurement and return elapsed time in nanoseconds (1 second = 10^9 nanoseconds) </p>
 
+<p class="definition">Definition at line <a class="el" href="gl__time__query_8cxx_source.html#l00076">76</a> of file <a class="el" href="gl__time__query_8cxx_source.html">gl_time_query.cxx</a>.</p>
+
+</div>
+</div>
+<a id="a3859cab31e4ccce156b04e7a667bb83c" name="a3859cab31e4ccce156b04e7a667bb83c"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a3859cab31e4ccce156b04e7a667bb83c">&#9670;&#160;</a></span>end_scope()</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">void cgv::render::gl::gl_time_query::end_scope </td>
+          <td>(</td>
+          <td class="paramname"></td><td>)</td>
+          <td> const</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>close the scope of OpenGL commands included in the time measurement </p>
+
 <p class="definition">Definition at line <a class="el" href="gl__time__query_8cxx_source.html#l00054">54</a> of file <a class="el" href="gl__time__query_8cxx_source.html">gl_time_query.cxx</a>.</p>
+
+</div>
+</div>
+<a id="a0462ee305cdc219f68e5c149fe95ca4f" name="a0462ee305cdc219f68e5c149fe95ca4f"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a0462ee305cdc219f68e5c149fe95ca4f">&#9670;&#160;</a></span>end_scope_and_collect()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">double cgv::render::gl::gl_time_query::end_scope_and_collect </td>
+          <td>(</td>
+          <td class="paramname"></td><td>)</td>
+          <td> const</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">inline</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p>close the scope of OpenGL commands included in the time measurement and retrieve the duration immediately, blocking until the query object is ready and the time can be retrieved </p>
+
+<p class="definition">Definition at line <a class="el" href="gl__time__query_8h_source.html#l00043">43</a> of file <a class="el" href="gl__time__query_8h_source.html">gl_time_query.h</a>.</p>
 
 </div>
 </div>
