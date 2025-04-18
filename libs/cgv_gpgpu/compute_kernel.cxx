@@ -21,18 +21,10 @@ bool compute_kernel::disable(cgv::render::context& ctx) {
 	return _prog.disable(ctx);
 }
 
-void compute_kernel::set_arguments(cgv::render::context& ctx, const uniform_arguments& arguments, const std::string& prefix) {
+void compute_kernel::set_arguments(cgv::render::context& ctx, const compute_kernel_arguments& arguments, const std::string& prefix) {
 	enable_guard guard(ctx, _prog);
-	for(const uniform_binding* binding : arguments._bindings) {
-		int loc = _prog.get_uniform_location(ctx, prefix + binding->_name);
-		if(loc > -1)
-			_prog.set_uniform(ctx, loc, binding->_desc, binding->_addr);
-	}
-}
-
-void compute_kernel::set_arguments(cgv::render::context& ctx, const uniform_binding_list& arguments, const std::string& prefix) {
-	enable_guard guard(ctx, _prog);
-	for(const uniform_binding& binding : arguments) {
+	for(size_t i = 0; i < arguments.size(); ++i) {
+		const uniform_binding& binding = arguments[i];
 		int loc = _prog.get_uniform_location(ctx, prefix + binding._name);
 		if(loc > -1)
 			_prog.set_uniform(ctx, loc, binding._desc, binding._addr);

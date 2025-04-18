@@ -38,19 +38,57 @@ private:
 
 using uniform_binding_list = std::vector<uniform_binding>;
 
-class uniform_arguments {
-protected:
-	void connect(std::initializer_list<uniform_binding*> arguments) {
-		_bindings.clear();
-		_bindings.reserve(arguments.size());
-		for(uniform_binding* argument : arguments)
-			_bindings.push_back(argument);
+class compute_kernel_arguments {
+public:
+	virtual bool emtpy() const = 0;
+	virtual size_t size() const = 0;
+	virtual const uniform_binding& operator[](size_t index) const = 0;
+};
+
+class compute_kernel_argument_binding_list : public compute_kernel_arguments {
+public:
+	compute_kernel_argument_binding_list(std::initializer_list<uniform_binding> bindings) : _bindings(bindings) {}
+	
+	bool emtpy() const override {
+		return _bindings.empty();
+	}
+
+	size_t size() const override {
+		return _bindings.size();
+	}
+
+	const uniform_binding& operator[](size_t index) const override {
+		return _bindings[index];
 	}
 
 private:
-	friend class compute_kernel;
+	uniform_binding_list _bindings;
+};
 
-	std::vector<uniform_binding*> _bindings;
+class compute_kernel_argument_struct : public compute_kernel_arguments {
+public:
+	bool emtpy() const override {
+		return _member_bindings.empty();
+	}
+
+	size_t size() const override {
+		return _member_bindings.size();
+	}
+
+	const uniform_binding& operator[](size_t index) const override {
+		return *_member_bindings[index];
+	}
+
+protected:
+	void connect_members(std::initializer_list<uniform_binding*> members) {
+		_member_bindings.clear();
+		_member_bindings.reserve(members.size());
+		for(uniform_binding* member : members)
+			_member_bindings.push_back(member);
+	}
+
+private:
+	std::vector<uniform_binding*> _member_bindings;
 };
 
 } // namespace gpgpu

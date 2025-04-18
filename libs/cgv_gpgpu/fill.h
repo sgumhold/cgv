@@ -14,8 +14,7 @@ public:
 
 	bool init(cgv::render::context& ctx, const sl::data_type& value_type);
 
-	bool dispatch(cgv::render::context& ctx, const cgv::render::vertex_buffer* buffer, size_t count, const uniform_binding_list& value);
-	bool dispatch(cgv::render::context& ctx, const cgv::render::vertex_buffer* buffer, size_t count, const uniform_arguments& arguments);
+	bool dispatch(cgv::render::context& ctx, const cgv::render::vertex_buffer* buffer, size_t count, const compute_kernel_arguments& arguments);
 
 private:
 	cgv::render::shader_compile_options get_configuration(const sl::data_type& value_type) const;

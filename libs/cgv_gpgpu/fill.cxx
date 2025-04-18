@@ -14,26 +14,7 @@ bool fill::init(cgv::render::context& ctx, const sl::data_type& value_type) {
 	return init_kernels(ctx, config);
 }
 
-bool fill::dispatch(cgv::render::context& ctx, const cgv::render::vertex_buffer* buffer, size_t count, const uniform_binding_list& value) {
-	buffer->bind(ctx, cgv::render::VertexBufferType::VBT_STORAGE, 0);
-
-	kernel.enable(ctx);
-	kernel.set_argument(ctx, "u_count", static_cast<uint32_t>(count));
-	kernel.set_arguments(ctx, value, "u_value");
-
-	// TODO: Make configurable.
-	const uint32_t group_size = 512;
-	uint32_t num_groups = div_round_up(static_cast<uint32_t>(count), group_size);
-	dispatch_compute(num_groups, 1, 1);
-	glMemoryBarrier(GL_SHADER_STORAGE_BARRIER_BIT);
-	kernel.disable(ctx);
-
-	buffer->unbind(ctx, cgv::render::VertexBufferType::VBT_STORAGE, 0);
-
-	return true;
-}
-
-bool fill::dispatch(cgv::render::context& ctx, const cgv::render::vertex_buffer* buffer, size_t count, const uniform_arguments& arguments) {
+bool fill::dispatch(cgv::render::context& ctx, const cgv::render::vertex_buffer* buffer, size_t count, const compute_kernel_arguments& arguments) {
 	buffer->bind(ctx, cgv::render::VertexBufferType::VBT_STORAGE, 0);
 
 	kernel.enable(ctx);

@@ -1,25 +1,22 @@
 #version 430
 
-#define LOCAL_SIZE_X 4
-#define LOCAL_SIZE_Y 4
-#define LOCAL_SIZE_Z 4
-
-layout(r32f, binding = 0) uniform image3D tex;
+layout(r32f, binding = 0) uniform IMAGE_TYPE tex;
 
 uniform uvec3 u_size;
 //$cgv::arguments
 
-vec4 operation(vec4 element, ivec3 index) {
+void operation(inout vec4 element, INDEX_TYPE index) {
 	//$cgv::operation
 }
 
 layout(local_size_x = LOCAL_SIZE_X, local_size_y = LOCAL_SIZE_Y, local_size_z = LOCAL_SIZE_Z) in;
 void main() {
 	// the texel coordinates of this thread
-    ivec3 gid = ivec3(gl_GlobalInvocationID);
+    INDEX_TYPE gid = INDEX_TYPE(gl_GlobalInvocationID);
     
-	if(gid.x < u_size.x && gid.y < u_size.y && gid.z < u_size.z) {
+	if(SIZE_GUARD(gid, u_size)) {
 		vec4 element = imageLoad(tex, gid);
-        imageStore(tex, gid, operation(element, gid));
+		operation(element, gid);
+        imageStore(tex, gid, element);
 	}
 }
