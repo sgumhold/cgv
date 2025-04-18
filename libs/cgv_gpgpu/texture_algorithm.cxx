@@ -20,54 +20,67 @@ bool texture_algorithm::is_initialized_for_texture(const cgv::render::texture& t
 }
 
 cgv::render::shader_compile_options texture_algorithm::get_configuration(TextureType texture_type) const {
+	uint32_t dims = 0;
+	sl::data_type index_type = sl::Type::kVoid;
+	sl::data_type coord_type = sl::Type::kVoid;
 	uvec3 local_size = { 1, 1, 1 };
+	std::string size_guard;
 
 	switch(texture_type) {
 	case TextureType::TT_1D:
+		dims = 1;
+		index_type = sl::Type::kInt;
+		coord_type = sl::Type::kFloat;
 		local_size = { 4, 1, 1 };
+		size_guard = "((IDX) < (SIZE).x)";
 		break;
 	case TextureType::TT_2D:
+		dims = 2;
+		index_type = sl::Type::kIVec2;
+		coord_type = sl::Type::kVec2;
 		local_size = { 4, 4, 1 };
+		size_guard = "((IDX).x < (SIZE).x && (IDX).y < (SIZE).y)";
 		break;
 	case TextureType::TT_3D:
+		dims = 3;
+		index_type = sl::Type::kIVec3;
+		coord_type = sl::Type::kVec3;
 		local_size = { 4, 4, 4 };
+		size_guard = "((IDX).x < (SIZE).x && (IDX).y < (SIZE).y && (IDX).z < (SIZE).z)";
 		break;
 	default:
 		break;
 	}
 
+	// TODO: use larger group size for lower dimensional textures (try to aim for total occupancy of Streaming multiprocessor, e.g. 64 for RTX 2080)
 	cgv::render::shader_compile_options config;
 	config.defines["LOCAL_SIZE_X"] = std::to_string(local_size.x());
 	config.defines["LOCAL_SIZE_Y"] = std::to_string(local_size.y());
 	config.defines["LOCAL_SIZE_Z"] = std::to_string(local_size.z());
+	config.defines["DIMS"] = std::to_string(dims);
+	config.defines["INDEX_TYPE"] = index_type.type_name();
+	config.defines["COORD_TYPE"] = coord_type.type_name();
+	std::string dims_suffix = std::to_string(dims) + "D";
+	config.defines["SAMPLER_TYPE"] = "sampler" + dims_suffix;
+	config.defines["IMAGE_TYPE"] = "image" + dims_suffix;
+	config.defines["SIZE_GUARD(IDX, SIZE)"] = size_guard;
+
 	return config;
 }
 
-texture_algorithm::kernel_parameters_t texture_algorithm::get_kernel_launch_parameters(const cgv::render::texture& texture, uint32_t base_group_size) const {
-	uvec3 texture_size = {
+uvec3 texture_algorithm::get_texture_size(const cgv::render::texture& texture) const {
+	return {
 		static_cast<uint32_t>(texture.get_width()),
 		static_cast<uint32_t>(texture.get_height()),
 		static_cast<uint32_t>(texture.get_depth())
 	};
+}
 
-	// TODO: use larger group size for lower dimensional textures (try to aim for total occupancy of Streaming multiprocessor, e.g. 64 for RTX 2080)
+uvec3 texture_algorithm::get_num_groups(const uvec3& texture_size, uint32_t base_group_size) const {
 	uvec3 num_groups = div_round_up(texture_size, uvec3(base_group_size));
 	// ensure at least one group is launched per dimension
-	num_groups = max(num_groups, uvec3(1));
-
-	const uint32_t max_size = std::numeric_limits<uint32_t>::max();
-
-	switch(_texture_type) {
-	case TextureType::TT_1D:
-		texture_size.y() = max_size;
-		texture_size.z() = max_size;
-		break;
-	case TextureType::TT_2D:
-		texture_size.z() = max_size;
-		break;
-	}
-
-	return { texture_size, num_groups };
+	// TODO: Ensure num_groups is 1 for unused dimensions.
+	return max(num_groups, uvec3(1));
 }
 
 } // namespace gpgpu

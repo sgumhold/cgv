@@ -11,11 +11,6 @@ namespace gpgpu {
 class CGV_API texture_algorithm : public algorithm {
 	using TextureType = cgv::render::TextureType;
 	
-	struct kernel_parameters_t {
-		uvec3 texture_size;
-		uvec3 num_groups;
-	};
-
 public:
 	texture_algorithm(const std::string& type_name, std::initializer_list<TextureType> supported_texture_types) : algorithm(type_name) {
 		_supported_texture_types = supported_texture_types;
@@ -30,7 +25,8 @@ protected:
 
 	cgv::render::shader_compile_options get_configuration(TextureType texture_type) const;
 
-	kernel_parameters_t get_kernel_launch_parameters(const cgv::render::texture& texture, uint32_t base_group_size) const;
+	uvec3 get_texture_size(const cgv::render::texture& texture) const;
+	uvec3 get_num_groups(const uvec3& texture_size, uint32_t base_group_size) const;
 
 private:
 	std::vector<TextureType> _supported_texture_types;

@@ -28,8 +28,7 @@ public:
 		return false;
 	}
 
-	void set_arguments(cgv::render::context& ctx, const uniform_arguments& arguments, const std::string& prefix = "");
-	void set_arguments(cgv::render::context& ctx, const uniform_binding_list& arguments, const std::string& prefix = "");
+	void set_arguments(cgv::render::context& ctx, const compute_kernel_arguments& arguments, const std::string& prefix = "");
 
 private:
 	struct enable_guard {

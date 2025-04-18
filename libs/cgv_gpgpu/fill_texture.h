@@ -22,7 +22,7 @@ private:
 	compute_kernel kernel;
 };
 
-}
-}
+} // namespace gpgpu
+} // namespace cgv
 
 #include <cgv/config/lib_end.h>

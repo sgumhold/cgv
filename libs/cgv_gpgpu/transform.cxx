@@ -18,7 +18,7 @@ bool transform::init(cgv::render::context& ctx, const sl::data_type& input_type,
 	return init_kernels(ctx, config);
 }
 
-bool transform::dispatch(cgv::render::context& ctx, const cgv::render::vertex_buffer* input_buffer, const cgv::render::vertex_buffer* output_buffer, size_t count, const uniform_binding_list& arguments) {
+bool transform::dispatch(cgv::render::context& ctx, const cgv::render::vertex_buffer* input_buffer, const cgv::render::vertex_buffer* output_buffer, size_t count, const compute_kernel_arguments& arguments) {
 	input_buffer->bind(ctx, cgv::render::VertexBufferType::VBT_STORAGE, 0);
 	output_buffer->bind(ctx, cgv::render::VertexBufferType::VBT_STORAGE, 1);
 

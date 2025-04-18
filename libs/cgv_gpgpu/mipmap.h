@@ -1,6 +1,6 @@
 #pragma once
 
-#include "algorithm.h"
+#include "texture_algorithm.h"
 
 #include <cgv/render/texture.h>
 
@@ -10,18 +10,16 @@ namespace cgv {
 namespace gpgpu {
 
 /// GPU compute shader implementation for computing texture mipmaps.
-class CGV_API mipmap : public algorithm {
+class CGV_API mipmap : public texture_algorithm {
 public:
 	mipmap();
 
-	bool init(cgv::render::context& ctx);
+	bool init(cgv::render::context& ctx, cgv::render::TextureType texture_type);
 
 	bool dispatch(cgv::render::context& ctx, cgv::render::texture& texture);
 
 private:
-	compute_kernel kernel_1d;
-	compute_kernel kernel_2d;
-	compute_kernel kernel_3d;
+	compute_kernel kernel;
 };
 
 } // namespace gpgpu
