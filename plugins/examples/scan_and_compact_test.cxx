@@ -93,9 +93,9 @@ public:
 				vote_prog.set_uniform(ctx, "threshold_min", threshold_min);
 				vote_prog.set_uniform(ctx, "threshold_max", threshold_max);
 
-				time_query.begin();
+				time_query.begin_scope();
 				unsigned count = sac.execute(ctx, *radius_buffer_ptr, *index_buffer_ptr);
-				double time = time_query.end();
+				double time = time_query.end_scope_and_collect();
 				std::cout << "Filtering done in " << (time / 1'000'000.0f) << " ms. Drawing " << count << " of " << spheres.size() << " spheres." << std::endl;
 
 				if(count > 0)
