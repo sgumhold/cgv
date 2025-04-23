@@ -2,6 +2,8 @@
 
 #include <cgv/render/context.h>
 
+#include "sl.h"
+
 namespace cgv {
 namespace gpgpu {
 
@@ -37,6 +39,11 @@ private:
 };
 
 using uniform_binding_list = std::vector<uniform_binding>;
+
+struct compute_kernel_argument_declaration {
+	sl::named_variable_list uniforms;
+	sl::named_buffer_list buffers;
+};
 
 class compute_kernel_arguments {
 public:
