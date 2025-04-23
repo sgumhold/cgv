@@ -31,15 +31,6 @@ public:
 	void set_arguments(cgv::render::context& ctx, const compute_kernel_arguments& arguments, const std::string& prefix = "");
 
 private:
-	struct enable_guard {
-		cgv::render::context& ctx;
-		cgv::render::shader_program& prog;
-		bool was_enabled = false;
-
-		enable_guard(cgv::render::context& ctx, cgv::render::shader_program& prog);
-		~enable_guard();
-	};
-
 	cgv::render::shader_program _prog;
 };
 
