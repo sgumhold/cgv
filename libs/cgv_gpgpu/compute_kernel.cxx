@@ -22,25 +22,21 @@ bool compute_kernel::disable(cgv::render::context& ctx) {
 }
 
 void compute_kernel::set_arguments(cgv::render::context& ctx, const compute_kernel_arguments& arguments, const std::string& prefix) {
-	enable_guard guard(ctx, _prog);
+	bool was_enabled = false;
+	if(_prog.is_enabled())
+		was_enabled = true;
+	else
+		_prog.enable(ctx);
+
 	for(size_t i = 0; i < arguments.size(); ++i) {
 		const uniform_binding& binding = arguments[i];
 		int loc = _prog.get_uniform_location(ctx, prefix + binding._name);
 		if(loc > -1)
 			_prog.set_uniform(ctx, loc, binding._desc, binding._addr);
 	}
-}
 
-compute_kernel::enable_guard::enable_guard(cgv::render::context& ctx, cgv::render::shader_program& prog) : ctx(ctx), prog(prog) {
-	if(prog.is_enabled())
-		was_enabled = true;
-	else
-		prog.enable(ctx);
-}
-
-compute_kernel::enable_guard::~enable_guard() {
 	if(!was_enabled)
-		prog.disable(ctx);
+		_prog.disable(ctx);	
 }
 
 }
