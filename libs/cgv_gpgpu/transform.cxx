@@ -8,7 +8,8 @@ transform::transform() : algorithm("transform") {
 }
 
 bool transform::init(cgv::render::context& ctx, const sl::data_type& input_type, const sl::data_type& output_type, const std::string& unary_operation) {
-	return init(ctx, input_type, output_type, {}, unary_operation);
+	// TODO: remove explicit type
+	return init(ctx, input_type, output_type, sl::named_variable_list{}, unary_operation);
 }
 
 bool transform::init(cgv::render::context& ctx, const sl::data_type& input_type, const sl::data_type& output_type, const sl::named_variable_list& arguments, const std::string& unary_operation) {
@@ -17,6 +18,30 @@ bool transform::init(cgv::render::context& ctx, const sl::data_type& input_type,
 	cgv::render::shader_compile_options config = get_configuration(input_type, output_type, arguments, unary_operation);
 	return init_kernels(ctx, config);
 }
+
+
+
+
+
+bool transform::init(cgv::render::context& ctx, const sl::data_type& input_type, const sl::data_type& output_type, const compute_kernel_argument_declaration& arguments, const std::string& unary_operation) {
+	if(!input_type.is_valid() || !output_type.is_valid())
+		return false;
+	//cgv::render::shader_compile_options config = get_configuration(input_type, output_type, arguments, unary_operation);
+
+
+	cgv::render::shader_compile_options config;
+	config.snippets.push_back({ "input_type_def", sl::get_typedef_str("input_type", input_type) });
+	config.snippets.push_back({ "output_type_def", sl::get_typedef_str("output_type", output_type) });
+	config.snippets.push_back({ "operation", unary_operation });
+	config.snippets.push_back({ "arguments", arguments.get_string(2) });
+	
+
+
+	return init_kernels(ctx, config);
+}
+
+
+
 
 bool transform::dispatch(cgv::render::context& ctx, const cgv::render::vertex_buffer* input_buffer, const cgv::render::vertex_buffer* output_buffer, size_t count, const compute_kernel_arguments& arguments) {
 	input_buffer->bind(ctx, cgv::render::VertexBufferType::VBT_STORAGE, 0);
@@ -41,6 +66,10 @@ bool transform::dispatch(cgv::render::context& ctx, const cgv::render::vertex_bu
 
 cgv::render::shader_compile_options transform::get_configuration(const sl::data_type& input_type, const sl::data_type& output_type, const sl::named_variable_list& arguments, const std::string& unary_operation) const {
 	cgv::render::shader_compile_options config;
+
+	// TODO: Ensure type definition order and definition of nested struct types.
+	// Ensure data types are only defined once (e.g. when input type uses the same data type as one of the buffers or uniforms). Must be sorted out on algorithm level.
+
 	config.snippets.push_back({ "input_type_def", sl::get_typedef_str("input_type", input_type) });
 	config.snippets.push_back({ "output_type_def", sl::get_typedef_str("output_type", output_type) });
 	config.snippets.push_back({ "operation", unary_operation });

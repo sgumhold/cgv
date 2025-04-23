@@ -45,41 +45,38 @@ std::string to_string(Type type) {
 		"dmat3x4",
 		"dmat4x2",
 		"dmat4x3",
-		"array",
 		"struct"
 	};
 	return strs[static_cast<int>(type)];
 }
 
 std::string to_string(const named_variable& variable) {
-	return variable.type()->type_name() + " " + variable.name();
+	std::string res;
+	res = variable.type()->type_name() + " " + variable.name();
+	if(variable.array_size() != 0)
+		res += "[" + (variable.array_size() == sl::varsize ? "" : std::to_string(variable.array_size())) + "]";
+	return res;
 }
 
-std::string to_string(const named_variable_list& list) {
-	return cgv::utils::join(list.begin(), list.end(), "; ", true);
+std::string to_string(const named_variable_list& variables) {
+	return cgv::utils::join(variables.begin(), variables.end(), "; ", true);
 }
 
-std::string to_string(const named_variable_list& list, const std::string& prefix) {
-	return cgv::utils::transform_join(list.begin(), list.end(), [&prefix](const named_variable& var) {
+std::string to_string(const named_variable_list& variables, const std::string& prefix) {
+	return cgv::utils::transform_join(variables.begin(), variables.end(), [&prefix](const named_variable& var) {
 		return prefix + " " + to_string(var);
 	}, "; ", true);
 }
 
 data_type::data_type(Type type) : _basic_type(type) {}
 
-data_type::data_type(Type type, size_t size) : _basic_type(Type::kArray) {
-	_definition = std::make_shared<type_definition>(type_definition{ "", {}, size });
-}
 
 data_type::data_type(const std::string& name, const named_variable_list& members) : _basic_type(Type::kStruct) {
-	_definition = std::make_shared<type_definition>(type_definition{ name, members, members.size() });
+	_definition = std::make_shared<type_definition>(type_definition{ name, members });
 }
 
 bool data_type::is_valid() const {
 	switch(_basic_type) {
-	case sl::Type::kArray:
-		// array types are only valid if they have a non-zero length
-		return array_length() > 0;
 	case sl::Type::kStruct:
 		// struct types are only valid if they have a non-empty name
 		return !type_name().empty();
@@ -90,7 +87,7 @@ bool data_type::is_valid() const {
 }
 
 bool data_type::is_basic_type() const {
-	return _basic_type != Type::kArray && _basic_type != Type::kStruct;
+	return _basic_type != Type::kStruct;
 }
 
 Type data_type::type() const {
@@ -110,18 +107,9 @@ std::string data_type::type_name() const {
 		return to_string(_basic_type);
 }
 
-size_t data_type::array_length() const {
-	if(_basic_type == Type::kArray)
-		return _definition->size;
-	return 0;
-}
-
 std::string get_typedef_str(const std::string& name, sl::data_type type) {
 	std::string type_name = type.type_name();
-
 	switch(type.type()) {
-	case sl::Type::kArray:
-		return "#define " + name + " " + type_name + "[" + std::to_string(type.array_length()) + "]";
 	case sl::Type::kStruct:
 	{
 		std::string def = "struct " + type_name + " { " + to_string(type.members()) + "};";
@@ -133,5 +121,69 @@ std::string get_typedef_str(const std::string& name, sl::data_type type) {
 		return "#define " + name + " " + type_name;
 	}
 };
+
+std::string to_string(MemoryQualifier qualifier) {
+	switch(qualifier) {
+	case sl::MemoryQualifier::kCoherent:
+		return "coherent";
+	case sl::MemoryQualifier::kVolatile:
+		return "volatile";
+	case sl::MemoryQualifier::kRestrict:
+		return "restrict";
+	case sl::MemoryQualifier::kReadOnly:
+		return "readonly";
+	case sl::MemoryQualifier::kWriteOnly:
+		return "writeonly";
+	default:
+		return "";
+	}
+}
+
+std::string to_string(const memory_qualifier_list& qualifiers) {
+	return cgv::utils::join(qualifiers.begin(), qualifiers.end(), " ", true);
+}
+
+memory_qualifier_storage::memory_qualifier_storage(std::initializer_list<MemoryQualifier> qualifiers) {
+	_mask = 0;
+	for(MemoryQualifier qualifier : qualifiers)
+		_mask |= static_cast<int32_t>(qualifier);
+}
+
+memory_qualifier_list memory_qualifier_storage::list() const {
+	const sl::memory_qualifier_list all_qualifiers = {
+		MemoryQualifier::kCoherent,
+		MemoryQualifier::kVolatile,
+		MemoryQualifier::kRestrict,
+		MemoryQualifier::kReadOnly,
+		MemoryQualifier::kWriteOnly
+	};
+
+	memory_qualifier_list qualifiers;
+	for(MemoryQualifier qualifier : all_qualifiers) {
+		if(_mask & static_cast<int32_t>(qualifier))
+			qualifiers.push_back(qualifier);
+	}
+
+	return qualifiers;
+}
+
+std::string to_string(const named_buffer& buffer, size_t location) {
+	std::string location_str = std::to_string(location);
+	std::string name = buffer.name().empty() ? "buffer" + location : buffer.name();
+
+	std::string res = "layout(std430, binding=" + location_str + ") ";
+	res += to_string(buffer.memory_qualifiers());
+	res += "buffer " + name + " {\n";
+	res += to_string(buffer.variables());
+	res += "\n};";
+
+	return res;
+}
+
+std::string to_string(const named_buffer_list& buffers, size_t base_location) {
+	return cgv::utils::transform_join(buffers.begin(), buffers.end(), [&base_location](const named_buffer& buffer) {
+		return to_string(buffer, base_location++);
+	}, "\n", true);
+}
 
 } // namespace sl
