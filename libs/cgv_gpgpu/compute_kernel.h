@@ -29,6 +29,7 @@ public:
 	}
 
 	void set_arguments(cgv::render::context& ctx, const compute_kernel_arguments& arguments, const std::string& prefix = "");
+	void set_arguments(cgv::render::context& ctx, const compute_kernel_arguments2& arguments, const std::string& prefix = "");
 
 private:
 	cgv::render::shader_program _prog;

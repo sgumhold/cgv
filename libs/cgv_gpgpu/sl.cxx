@@ -180,9 +180,9 @@ std::string to_string(const named_buffer& buffer, size_t location) {
 	return res;
 }
 
-std::string to_string(const named_buffer_list& buffers, size_t base_location) {
-	return cgv::utils::transform_join(buffers.begin(), buffers.end(), [&base_location](const named_buffer& buffer) {
-		return to_string(buffer, base_location++);
+std::string to_string(const named_buffer_list& buffers, size_t base_index) {
+	return cgv::utils::transform_join(buffers.begin(), buffers.end(), [&base_index](const named_buffer& buffer) {
+		return to_string(buffer, base_index++);
 	}, "\n", true);
 }
 

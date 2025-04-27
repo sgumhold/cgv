@@ -3,6 +3,8 @@
 //$cgv::input_type_def
 //$cgv::output_type_def
 
+//$cgv::typedefs
+
 layout(std430, binding = 0) readonly buffer input_buffer {
 	input_type data_in[];
 };
@@ -12,6 +14,7 @@ layout(std430, binding = 1) writeonly buffer output_buffer {
 };
 
 uniform uint u_count;
+
 //$cgv::arguments
 
 output_type operation(input_type element, uint index) {
