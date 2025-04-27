@@ -161,7 +161,7 @@ private:
 class named_buffer {
 public:
 	named_buffer(const named_variable& variable, const std::string& name, std::initializer_list<sl::MemoryQualifier> memory_qualifiers = {}) : _variables({ variable }), _name(name), _memory_qualifiers(memory_qualifiers) {}
-
+	
 	named_buffer(const named_variable_list& variables, const std::string& name, std::initializer_list<sl::MemoryQualifier> memory_qualifiers = {}) : _variables(variables), _name(name), _memory_qualifiers(memory_qualifiers) {}
 
 	const sl::named_variable_list& variables() const {
