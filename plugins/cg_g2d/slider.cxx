@@ -8,12 +8,14 @@ using namespace cgv::render;
 namespace cg {
 namespace g2d {
 
-void slider::update_value() {
-	cgv::dvec2 in_range(rectangle.x(), rectangle.x1() - handle.w());
-	double next_value = cgv::math::map(static_cast<double>(handle.x()), in_range[0], in_range[1], get_range()[0], get_range()[1]);
-	next_value = cgv::math::clamp(next_value, get_range()[0], get_range()[1]);
+void slider::update_value(cgv::g2d::DragAction action) {
+	if(action == cgv::g2d::DragAction::kDrag) {
+		cgv::dvec2 in_range(rectangle.x(), rectangle.x1() - handle.w());
+		double next_value = cgv::math::map(static_cast<double>(handle.x()), in_range[0], in_range[1], get_range()[0], get_range()[1]);
+		next_value = cgv::math::clamp(next_value, get_range()[0], get_range()[1]);
 
-	handle_value_change(next_value);
+		handle_value_change(next_value);
+	}
 }
 
 void slider::update_handle() {
@@ -29,7 +31,7 @@ slider::slider(const std::string& label, cgv::g2d::irect rectangle) : valuator(l
 	};
 	draggables.add(&handle);
 	draggables.set_constraint(rectangle);
-	draggables.set_drag_callback(std::bind(&slider::update_value, this));
+	draggables.callback = [this](auto action) { update_value(action); };
 
 	handle_view_position = rectangle.x();
 }
@@ -45,7 +47,7 @@ bool slider::handle_mouse_event(cgv::gui::mouse_event& e, cgv::ivec2 mouse_posit
 			handle.position = mouse_position.x() - 0.5f * handle.w();
 			handle.apply_constraint(rectangle);
 
-			update_value();
+			update_value(cgv::g2d::DragAction::kDrag);
 		}
 	}
 
