@@ -1209,6 +1209,12 @@ bool holo_view_interactor::init(cgv::render::context& ctx)
 		return false;
 	return true;
 }
+void holo_view_interactor::clear(cgv::render::context& ctx)
+{
+	quilt_prog.destruct(ctx);
+	volume_prog.destruct(ctx);
+}
+
 float holo_view_interactor::compute_eye_base(int view_index) const
 {
 	return eye_separation_factor*((2.0f * view_index) / (nr_views - 1) - 1.0f);
