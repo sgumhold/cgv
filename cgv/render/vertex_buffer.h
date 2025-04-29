@@ -11,7 +11,9 @@ namespace cgv {
 /** a vertex buffer is an unstructured memory block on the GPU. */
 class CGV_API vertex_buffer : public vertex_buffer_base
 {
+protected:
 	size_t size_in_bytes;
+
 public:
 	/// construct from description of component format, where the default format specifies a color buffer with alpha channel
 	vertex_buffer(VertexBufferType _type = VBT_VERTICES, VertexBufferUsage _usage = VBU_STATIC_DRAW);
@@ -208,4 +210,3 @@ public:
 }
 
 #include <cgv/config/lib_end.h>
-
