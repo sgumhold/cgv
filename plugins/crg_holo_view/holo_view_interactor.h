@@ -278,6 +278,8 @@ public:
 	void stream_help(std::ostream& os);
 	/// build shader programs
 	bool init(cgv::render::context&);
+	/// destruct shader programs
+	void clear(cgv::render::context&);
 	/// this method is called in one pass over all drawables before the draw method
 	void init_frame(cgv::render::context&);
 	/// 
