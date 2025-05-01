@@ -6,12 +6,11 @@
 #include "view_overlay.h"
 #include "streaming_time_series.h"
 #include "streaming_aabb.h"
-#include <cgv/base/node.h>
+#include <cgv/base/group.h>
 #include <cgv/os/thread.h>
 #include <cgv/os/mutex.h>
 #include <cgv/render/drawable.h>
 #include <cgv/render/vertex_buffer.h>
-#include <cgv_app/application_plugin.h>
 #include <cgv/gui/event_handler.h>
 #include <cgv/gui/provider.h>
 #include <plot/plot2d.h>
@@ -43,7 +42,10 @@ namespace stream_vis {
 	};
 
 	class CGV_API stream_vis_context : 
-		public cgv::app::application_plugin,
+		public cgv::base::group,
+		public cgv::render::drawable,
+		public cgv::gui::event_handler,
+		public cgv::gui::provider,
 		public view_update_handler
 	{
 	protected:
@@ -100,7 +102,7 @@ namespace stream_vis {
 		void show_plots() const;
 		void show_ringbuffers() const;
 		bool is_outofdate() const { return outofdate; }
-		bool handle_event(cgv::gui::event& e);
+		bool handle(cgv::gui::event& e);
 		void stream_help(std::ostream& os);
 		bool init(cgv::render::context& ctx);
 		void clear(cgv::render::context& ctx);
