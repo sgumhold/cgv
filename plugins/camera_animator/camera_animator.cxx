@@ -99,7 +99,7 @@ bool camera_animator::close_ffmpeg_pipe()
 }
 
 camera_animator::camera_animator() : cgv::base::group("Camera Animator") {
-
+	
 	eye_rd.style.measure_point_size_in_pixel = true;
 	eye_rd.style.percentual_halo_width = 33.3f;
 

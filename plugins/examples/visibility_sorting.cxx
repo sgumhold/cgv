@@ -87,9 +87,9 @@ public:
 		
 		if(visibility_sorter.is_initialized()) {
 			if(position_buffer_ptr && index_buffer_ptr && do_sort) {
-				time_query.begin();
+				time_query.begin_scope();
 				visibility_sorter.execute(ctx, *position_buffer_ptr, *index_buffer_ptr, view_ptr->get_eye(), view_ptr->get_view_dir());
-				double time = time_query.end();
+				double time = time_query.end_scope_and_collect();
 				std::cout << "Sorting done in " << (time / 1'000'000.0f) << " ms -> " << static_cast<float>(n) / (time / 1000.0f) << " M/s" << std::endl;
 			}
 		} else {
