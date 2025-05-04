@@ -68,6 +68,8 @@ std::string to_string(const named_variable_list& variables, const std::string& p
 	}, "; ", true);
 }
 
+data_type::data_type() {}
+
 data_type::data_type(Type type) : _basic_type(type) {}
 
 
@@ -143,7 +145,7 @@ std::string to_string(const memory_qualifier_list& qualifiers) {
 	return cgv::utils::join(qualifiers.begin(), qualifiers.end(), " ", true);
 }
 
-memory_qualifier_storage::memory_qualifier_storage(std::initializer_list<MemoryQualifier> qualifiers) {
+memory_qualifier_storage::memory_qualifier_storage(const memory_qualifier_list& qualifiers) {
 	_mask = 0;
 	for(MemoryQualifier qualifier : qualifiers)
 		_mask |= static_cast<int32_t>(qualifier);

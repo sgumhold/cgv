@@ -150,13 +150,65 @@ private:
 
 
 
+struct resource_declaration_storage {
+	std::string name;
 
+	virtual bool is_buffer() const = 0;
+};
 
+struct uniform_declaration_storage : public resource_declaration_storage {
+	sl::data_type type;
+	size_t array_size = 0;
 
+	virtual bool is_buffer() const { return false; };
+};
 
+struct buffer_declaration_storage : public resource_declaration_storage {
+	sl::named_variable_list variables;
+	sl::memory_qualifier_storage memory_qualifiers;
 
+	virtual bool is_buffer() const { return true; };
+};
 
+class generic_arg_decl {
+public:
+	generic_arg_decl(const sl::data_type& type, const std::string& name) : _variable(type, name) {}
 
+	generic_arg_decl(const sl::data_type& type, const std::string& name, size_t array_size) : _variable(type, name, array_size) {}
+
+	generic_arg_decl(sl::tag::buffer, const sl::named_variable& variable, const std::string& name, const sl::memory_qualifier_list& memory_qualifiers = {}) :
+		_variable({ "", { variable } }, name), _memory_qualifiers(memory_qualifiers), _is_buffer(true) {}
+
+	generic_arg_decl(sl::tag::buffer, const sl::named_variable_list& variables, const std::string& name, const sl::memory_qualifier_list& memory_qualifiers = {}) :
+		_variable({ "", variables }, name), _memory_qualifiers(memory_qualifiers), _is_buffer(true) {}
+
+private:
+	friend class ckadl;
+
+	sl::named_variable _variable;
+	sl::memory_qualifier_storage _memory_qualifiers;
+	bool _is_buffer = false;
+};
+
+// TODO: provide iterator (or vector) initializers in all constructors with initializer lists
+// TODO: do not use initializer list in sl::named buffer init but rather use const memory_qualifier_list&
+
+// TODO: use this or list of generic_argument_declaration...?
+struct ckadl {
+	ckadl(std::initializer_list<generic_arg_decl> args) {
+		for(auto& arg : args) {
+			if(arg._is_buffer)
+				//buffers.push_back(sl::named_buffer(arg._variables, arg._name, arg._memory_qualifiers.list()));
+				buffers.push_back(sl::named_buffer(arg._variable.type()->members(), arg._variable.name(), arg._memory_qualifiers.list()));
+			else
+				//uniforms.push_back(sl::named_variable(arg._type, arg._name, arg._array_size));
+				uniforms.push_back(arg._variable);
+		}
+	}
+
+	sl::named_variable_list uniforms;
+	sl::named_buffer_list buffers;
+};
 
 
 
