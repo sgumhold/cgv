@@ -71,14 +71,16 @@ class CGV_API data_type;
 
 class named_variable {
 public:
-	named_variable(const data_type& type, const std::string& name) : _type(std::make_shared<data_type>(type)), _name(name) {}
+	//named_variable(const data_type& type, const std::string& name) : _type(std::make_shared<data_type>(type)), _name(name) {}
+	named_variable(const data_type& type, const std::string& name) : _type(type), _name(name) {}
 
 	named_variable(const data_type& type, const std::string& name, size_t array_size) : named_variable(type, name) {
 		_array_size = array_size;
 	}
 
+	// TODO: Return reference
 	const data_type* type() const {
-		return _type.get();
+		return &_type;// .get();
 	}
 
 	const std::string& name() const {
@@ -90,7 +92,8 @@ public:
 	}
 
 private:
-	std::shared_ptr<data_type> _type;
+	//std::shared_ptr<data_type> _type;
+	data_type _type;
 	std::string _name;
 	size_t _array_size = 0;
 };
@@ -110,6 +113,8 @@ struct type_definition {
 
 class CGV_API data_type {
 public:
+	data_type();
+
 	data_type(Type type);
 
 	data_type(const std::string& name, const named_variable_list& members);
@@ -150,7 +155,7 @@ class CGV_API memory_qualifier_storage {
 public:
 	memory_qualifier_storage() {}
 
-	memory_qualifier_storage(std::initializer_list<MemoryQualifier> qualifiers);
+	memory_qualifier_storage(const memory_qualifier_list& qualifiers);
 
 	memory_qualifier_list list() const;
 
@@ -160,9 +165,9 @@ private:
 
 class named_buffer {
 public:
-	named_buffer(const named_variable& variable, const std::string& name, std::initializer_list<sl::MemoryQualifier> memory_qualifiers = {}) : _variables({ variable }), _name(name), _memory_qualifiers(memory_qualifiers) {}
+	named_buffer(const named_variable& variable, const std::string& name, const memory_qualifier_list& memory_qualifiers = {}) : _variables({ variable }), _name(name), _memory_qualifiers(memory_qualifiers) {}
 	
-	named_buffer(const named_variable_list& variables, const std::string& name, std::initializer_list<sl::MemoryQualifier> memory_qualifiers = {}) : _variables(variables), _name(name), _memory_qualifiers(memory_qualifiers) {}
+	named_buffer(const named_variable_list& variables, const std::string& name, const memory_qualifier_list& memory_qualifiers = {}) : _variables(variables), _name(name), _memory_qualifiers(memory_qualifiers) {}
 
 	const sl::named_variable_list& variables() const {
 		return _variables;
@@ -187,6 +192,13 @@ extern CGV_API std::string to_string(const named_buffer& buffer, size_t location
 using named_buffer_list = std::vector<named_buffer>;
 
 extern CGV_API std::string to_string(const named_buffer_list& buffers, size_t base_location);
+
+namespace tag {
+
+struct uniform {};
+struct buffer {};
+
+} // namespace tag
 
 } // namespace sl
 
