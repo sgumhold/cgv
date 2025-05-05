@@ -16,7 +16,7 @@ private:
 	cgv::g2d::draggable_collection<cgv::g2d::draggable*> draggables;
 	int handle_view_position = 0;
 
-	void update_value();
+	void update_value(cgv::g2d::DragAction action);
 
 	void update_handle();
 
