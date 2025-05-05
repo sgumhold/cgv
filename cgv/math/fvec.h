@@ -9,6 +9,7 @@
 #include <array>
 #include <cmath>
 #include <cstdint>
+#include <cstring>
 #include <iostream>
 #include <limits>
 #include <sstream>
@@ -92,7 +93,7 @@ public:
 	///creates a vector from a n-element array a, if n < N remaining N-n elements are set to zero
 	fvec(cgv::type::uint32_type n, const T *a) {
 		cgv::type::uint32_type i, min_n = n < N ? n : N;
-		std::copy(a, a+min_n, v);
+		memmove(v, a, min_n*sizeof(T)); //std::copy(a, a+min_n, v);
 		for (i = min_n; i < N; ++i) v[i] = T(0);
 	}
 	///creates a column vector initialized to array of a different type with zeros filled to not copied components
@@ -742,6 +743,7 @@ fvec<T, N> fvec<T, N>::from_vec(const vec<T>& v)
 
 } // namespace math
 } // namespace cgv
+
 
 /*
 #include <cgv/utils/convert_string.h>
