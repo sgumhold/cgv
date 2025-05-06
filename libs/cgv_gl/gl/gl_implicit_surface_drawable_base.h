@@ -33,6 +33,7 @@ public: //@<
 	/// type of the function describing the implicit surface
 	typedef cgv::math::v3_func<double,double> F;
 private:
+	bool renderers_reffed = false;
 	bool outofdate;
 	cgv::media::mesh::streaming_mesh<double>* sm_ptr;
 

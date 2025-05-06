@@ -428,15 +428,18 @@ bool gl_implicit_surface_drawable_base::init(context& ctx)
 	ref_sphere_renderer(ctx, 1);
 	ref_cone_renderer(ctx, 1);
 	ref_arrow_renderer(ctx, 1);
-	return true;
+	return renderers_reffed=true;
 }
 
 void gl_implicit_surface_drawable_base::clear(context& ctx)
 {
-	ref_box_renderer(ctx, -1);
-	ref_cone_renderer(ctx, -1);
-	ref_sphere_renderer(ctx, -1);
-	ref_arrow_renderer(ctx, -1);
+	if (renderers_reffed) {
+		ref_box_renderer(ctx, -1);
+		ref_cone_renderer(ctx, -1);
+		ref_sphere_renderer(ctx, -1);
+		ref_arrow_renderer(ctx, -1);
+		renderers_reffed = false;
+	}
 }
 
 /// overload to draw the content of this drawable
