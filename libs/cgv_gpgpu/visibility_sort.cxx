@@ -21,7 +21,7 @@ void visibility_sort::destruct(const cgv::render::context& ctx) {
 	block_sums_buffer.destruct(ctx);
 	last_sum_buffer.destruct(ctx);
 
-	_is_initialized = false;
+	//_is_initialized = false;
 }
 
 bool visibility_sort::load_shader_programs(cgv::render::context& ctx) {
@@ -52,7 +52,7 @@ bool visibility_sort::load_shader_programs(cgv::render::context& ctx) {
 
 bool visibility_sort::init(cgv::render::context& ctx, size_t count) {
 
-	_is_initialized = false;
+	//_is_initialized = false;
 
 	if(!load_shader_programs(ctx) || count == 0)
 		return false;
@@ -110,7 +110,7 @@ bool visibility_sort::init(cgv::render::context& ctx, size_t count) {
 	scatter_prog.set_uniform(ctx, "last_block_sum_idx", (n_padded >> block_sum_offset_shift) - 1);
 	scatter_prog.disable(ctx);
 
-	_is_initialized = true;
+	//_is_initialized = true;
 	return true;
 }
 

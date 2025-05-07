@@ -67,49 +67,10 @@ extern CGV_API std::string to_string(Type type);
 /// Indicator for variable size arrays that are typically used in buffers.
 static constexpr auto varsize{ static_cast<size_t>(-1) };
 
-class CGV_API data_type;
-
-class named_variable {
-public:
-	//named_variable(const data_type& type, const std::string& name) : _type(std::make_shared<data_type>(type)), _name(name) {}
-	named_variable(const data_type& type, const std::string& name) : _type(type), _name(name) {}
-
-	named_variable(const data_type& type, const std::string& name, size_t array_size) : named_variable(type, name) {
-		_array_size = array_size;
-	}
-
-	// TODO: Return reference
-	const data_type* type() const {
-		return &_type;// .get();
-	}
-
-	const std::string& name() const {
-		return _name;
-	}
-
-	size_t array_size() const {
-		return _array_size;
-	}
-
-private:
-	//std::shared_ptr<data_type> _type;
-	data_type _type;
-	std::string _name;
-	size_t _array_size = 0;
-};
-
-extern CGV_API std::string to_string(const named_variable& variable);
-
+// Forward declarations of types used in data_type.
+struct type_definition;
+class named_variable;
 using named_variable_list = std::vector<named_variable>;
-
-extern CGV_API std::string to_string(const named_variable_list& variables);
-
-extern CGV_API std::string to_string(const named_variable_list& variables, const std::string& prefix);
-
-struct type_definition {
-	std::string type_name;
-	named_variable_list members;
-};
 
 class CGV_API data_type {
 public:
@@ -134,7 +95,46 @@ private:
 	std::shared_ptr<type_definition> _definition;
 };
 
-extern CGV_API std::string get_typedef_str(const std::string& name, sl::data_type type);
+extern CGV_API std::string get_type_definition_string(sl::data_type type);
+
+extern CGV_API std::string get_type_alias_string(const std::string& alias, sl::data_type type);
+
+struct type_definition {
+	std::string type_name;
+	named_variable_list members;
+};
+
+class named_variable {
+public:
+	named_variable(const data_type& type, const std::string& name) : _type(type), _name(name) {}
+
+	named_variable(const data_type& type, const std::string& name, size_t array_size) : named_variable(type, name) {
+		_array_size = array_size;
+	}
+
+	const data_type& type() const {
+		return _type;
+	}
+
+	const std::string& name() const {
+		return _name;
+	}
+
+	size_t array_size() const {
+		return _array_size;
+	}
+
+private:
+	data_type _type;
+	std::string _name;
+	size_t _array_size = 0;
+};
+
+extern CGV_API std::string to_string(const named_variable& variable);
+
+extern CGV_API std::string to_string(const named_variable_list& variables);
+
+extern CGV_API std::string to_string(const named_variable_list& variables, const std::string& prefix);
 
 enum class MemoryQualifier : int32_t {
 	kNone = 0,

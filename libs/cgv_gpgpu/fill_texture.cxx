@@ -12,7 +12,7 @@ fill_texture::fill_texture() : texture_algorithm("fill_texture", { TextureType::
 }
 
 bool fill_texture::init(cgv::render::context& ctx, cgv::render::TextureType texture_type) {
-	cgv::render::shader_compile_options config = get_configuration(texture_type);
+	cgv::render::shader_compile_options config = get_configuration(texture_type, {});
 	return texture_algorithm::init(ctx, texture_type, config);
 }
 

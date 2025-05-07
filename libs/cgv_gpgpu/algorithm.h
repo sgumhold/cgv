@@ -15,13 +15,8 @@ namespace gpgpu {
 /// The base class for compute shader based highly parallel GPU algorithms.
 class CGV_API algorithm {
 public:
-	// TODO: Remove default constructor.
-	algorithm() {}
 	algorithm(const std::string& type_name) : _type_name(type_name) {}
 	
-	// TODO: Move to private access after refactoring all algorithms.
-	bool _is_initialized = false;
-
 	std::string get_type_name() const;
 
 	bool is_initialized() const;
@@ -35,6 +30,14 @@ protected:
 
 	void destruct_kernels(const cgv::render::context& ctx);
 
+	void set_buffer_binding_indices(const sl::named_buffer_list& buffers, size_t base_index);
+
+	cgv::render::shader_compile_options get_configuration(const argument_definitions& arguments, const std::vector<sl::data_type> types = {}) const;
+
+	void bind_buffer_arguments(cgv::render::context& ctx, const argument_bindings& arguments);
+	
+	void unbind_buffer_arguments(cgv::render::context& ctx, const argument_bindings& arguments);
+
 	void dispatch_compute(unsigned num_groups_x, unsigned num_groups_y, unsigned num_groups_z);
 
 private:
@@ -43,9 +46,11 @@ private:
 		std::string name;
 	};
 
-	std::string _type_name;
-	
+	const std::string _type_name;
+	bool _is_initialized = false;
 	std::vector<compute_kernel_info> _kernel_registrations;
+	std::map<std::string, size_t> _buffer_binding_indices;
+	size_t _base_buffer_binding_index = 0;
 };
 
 } // namespace gpgpu

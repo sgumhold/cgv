@@ -1,9 +1,10 @@
 #version 430
 
+#include "gpgpu_args.glcs"
+
 layout(r32f, binding = 0) uniform IMAGE_TYPE tex;
 
 uniform uvec3 u_size;
-//$cgv::arguments
 
 void operation(inout vec4 element, INDEX_TYPE index) {
 	//$cgv::operation

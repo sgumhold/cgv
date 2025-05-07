@@ -43,6 +43,8 @@ protected:
 	bool load_shader_programs(cgv::render::context& ctx);
 
 public:
+	scan_and_compact() : algorithm("scan_and_compact") {}
+
 	void destruct(const cgv::render::context& ctx);
 
 	bool init(cgv::render::context& ctx, size_t count);

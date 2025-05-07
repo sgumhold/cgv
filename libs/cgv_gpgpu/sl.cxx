@@ -50,28 +50,9 @@ std::string to_string(Type type) {
 	return strs[static_cast<int>(type)];
 }
 
-std::string to_string(const named_variable& variable) {
-	std::string res;
-	res = variable.type()->type_name() + " " + variable.name();
-	if(variable.array_size() != 0)
-		res += "[" + (variable.array_size() == sl::varsize ? "" : std::to_string(variable.array_size())) + "]";
-	return res;
-}
-
-std::string to_string(const named_variable_list& variables) {
-	return cgv::utils::join(variables.begin(), variables.end(), "; ", true);
-}
-
-std::string to_string(const named_variable_list& variables, const std::string& prefix) {
-	return cgv::utils::transform_join(variables.begin(), variables.end(), [&prefix](const named_variable& var) {
-		return prefix + " " + to_string(var);
-	}, "; ", true);
-}
-
 data_type::data_type() {}
 
 data_type::data_type(Type type) : _basic_type(type) {}
-
 
 data_type::data_type(const std::string& name, const named_variable_list& members) : _basic_type(Type::kStruct) {
 	_definition = std::make_shared<type_definition>(type_definition{ name, members });
@@ -109,20 +90,37 @@ std::string data_type::type_name() const {
 		return to_string(_basic_type);
 }
 
-std::string get_typedef_str(const std::string& name, sl::data_type type) {
+std::string get_type_definition_string(sl::data_type type) {
 	std::string type_name = type.type_name();
 	switch(type.type()) {
 	case sl::Type::kStruct:
-	{
-		std::string def = "struct " + type_name + " { " + to_string(type.members()) + "};";
-		if(type_name != name)
-			def += "\n#define " + name + " " + type_name;
-		return def;
-	}
+		return "struct " + type_name + " { " + to_string(type.members()) + "};";
 	default:
-		return "#define " + name + " " + type_name;
+		return type_name;
 	}
-};
+}
+
+std::string get_type_alias_string(const std::string& alias, sl::data_type type) {
+	return "#define " + alias + " " + type.type_name();
+}
+
+std::string to_string(const named_variable& variable) {
+	std::string res;
+	res = variable.type().type_name() + " " + variable.name();
+	if(variable.array_size() != 0)
+		res += "[" + (variable.array_size() == sl::varsize ? "" : std::to_string(variable.array_size())) + "]";
+	return res;
+}
+
+std::string to_string(const named_variable_list& variables) {
+	return cgv::utils::join(variables.begin(), variables.end(), "; ", true);
+}
+
+std::string to_string(const named_variable_list& variables, const std::string& prefix) {
+	return cgv::utils::transform_join(variables.begin(), variables.end(), [&prefix](const named_variable& var) {
+		return prefix + " " + to_string(var);
+	}, "; ", true);
+}
 
 std::string to_string(MemoryQualifier qualifier) {
 	switch(qualifier) {
