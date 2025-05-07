@@ -50,6 +50,8 @@ protected:
 	bool load_shader_programs(cgv::render::context& ctx);
 
 public:
+	visibility_sort() : algorithm("visibility_sort") {}
+
 	void destruct(const cgv::render::context& ctx);
 
 	bool init(cgv::render::context& ctx, size_t count);

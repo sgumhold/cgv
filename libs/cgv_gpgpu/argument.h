@@ -8,9 +8,9 @@
 namespace cgv {
 namespace gpgpu {
 
-
-
 class uniform_binding {
+	friend class compute_kernel;
+
 public:
 	uniform_binding() {}
 
@@ -21,15 +21,14 @@ public:
 		set(value);
 	}
 
+	uniform_binding(const std::string& name, cgv::render::type_descriptor descriptor, const void* address) : _name(name), _desc(descriptor), _addr(address) {}
+
 	template<typename T>
 	void operator=(const T& value) {
 		set(value);
 	}
 
 private:
-	friend class uniform_arguments;
-	friend class compute_kernel;
-
 	template<typename T>
 	void set(const T& value) {
 		_desc = cgv::render::element_descriptor_traits<T>::get_type_descriptor({});
@@ -43,10 +42,19 @@ private:
 
 using uniform_binding_list = std::vector<uniform_binding>;
 
+template<typename T>
+class typed_uniform_binding : public uniform_binding {
+public:
+	typed_uniform_binding() {}
 
+	typed_uniform_binding(const std::string& name) : uniform_binding(name) {}
 
+	typed_uniform_binding(const std::string& name, const T& value) : uniform_binding(name, value) {}
 
-
+	void operator=(const T& value) {
+		uniform_binding::operator=(value);
+	}
+};
 
 class buffer_binding {
 public:
@@ -62,22 +70,13 @@ public:
 		_buffer = &buffer;
 	}
 
-	// TODO: Remove?
 	const std::string& name() const {
 		return _name;
 	}
 
-	// TODO: Remove?
 	const cgv::render::vertex_buffer* buffer() const {
 		return _buffer;
 	};
-
-private:
-	friend class uniform_arguments;
-	friend class compute_kernel;
-
-	// TODO: remove
-	friend class transform;
 
 	void bind(cgv::render::context& ctx, uint32_t index) const {
 		_binding_index = index;
@@ -88,6 +87,7 @@ private:
 		_buffer->unbind(ctx, cgv::render::VBT_STORAGE, _binding_index);
 	}
 
+private:
 	std::string _name;
 	mutable uint32_t _binding_index = 0;
 	const cgv::render::vertex_buffer* _buffer = nullptr;
@@ -95,114 +95,37 @@ private:
 
 using buffer_binding_list = std::vector<buffer_binding>;
 
+// TODO: provide iterator (or vector) initializers in all constructors with initializer lists.
 
+class argument_definition {
+	friend class argument_definitions;
 
-
-
-
-
-
-
-
-
-class resource_binding {
 public:
-	resource_binding() {}
+	argument_definition(const sl::data_type& type, const std::string& name) : _variable(type, name) {}
 
-	resource_binding(const std::string& name) : _name(name) {}
+	argument_definition(const sl::data_type& type, const std::string& name, size_t array_size) : _variable(type, name, array_size) {}
 
-	template<typename T>
-	resource_binding(const std::string& name, const T& value) : _name(name) {
-		set(value);
-	}
-
-	resource_binding(const std::string& name, const cgv::render::vertex_buffer& buffer) : _name(name) {
-		_desc.coordinate_type = cgv::type::info::TypeId::TI_LAST; // TODO: use a new type for buffers
-		_addr = &buffer;
-	}
-
-	template<typename T>
-	void operator=(const T& value) {
-		set(value);
-	}
-
-	void operator=(const cgv::render::vertex_buffer& buffer) {
-		_desc.coordinate_type = cgv::type::info::TypeId::TI_LAST; // TODO: use a new type for buffers
-		_addr = &buffer;
-	}
-
-private:
-	friend class uniform_arguments;
-	friend class compute_kernel;
-	// TODO: remove?
-	friend class compute_kernel_argument_binding_list3;
-
-	template<typename T>
-	void set(const T& value) {
-		_desc = cgv::render::element_descriptor_traits<T>::get_type_descriptor({});
-		_addr = cgv::render::element_descriptor_traits<T>::get_address(value);
-	}
-
-	std::string _name;
-	cgv::render::type_descriptor _desc;
-	const void* _addr = nullptr;
-};
-
-
-
-struct resource_declaration_storage {
-	std::string name;
-
-	virtual bool is_buffer() const = 0;
-};
-
-struct uniform_declaration_storage : public resource_declaration_storage {
-	sl::data_type type;
-	size_t array_size = 0;
-
-	virtual bool is_buffer() const { return false; };
-};
-
-struct buffer_declaration_storage : public resource_declaration_storage {
-	sl::named_variable_list variables;
-	sl::memory_qualifier_storage memory_qualifiers;
-
-	virtual bool is_buffer() const { return true; };
-};
-
-class generic_arg_decl {
-public:
-	generic_arg_decl(const sl::data_type& type, const std::string& name) : _variable(type, name) {}
-
-	generic_arg_decl(const sl::data_type& type, const std::string& name, size_t array_size) : _variable(type, name, array_size) {}
-
-	generic_arg_decl(sl::tag::buffer, const sl::named_variable& variable, const std::string& name, const sl::memory_qualifier_list& memory_qualifiers = {}) :
+	argument_definition(sl::tag::buffer, const sl::named_variable& variable, const std::string& name, const sl::memory_qualifier_list& memory_qualifiers = {}) :
 		_variable({ "", { variable } }, name), _memory_qualifiers(memory_qualifiers), _is_buffer(true) {}
 
-	generic_arg_decl(sl::tag::buffer, const sl::named_variable_list& variables, const std::string& name, const sl::memory_qualifier_list& memory_qualifiers = {}) :
+	argument_definition(sl::tag::buffer, const sl::named_variable_list& variables, const std::string& name, const sl::memory_qualifier_list& memory_qualifiers = {}) :
 		_variable({ "", variables }, name), _memory_qualifiers(memory_qualifiers), _is_buffer(true) {}
 
 private:
-	friend class ckadl;
-
 	sl::named_variable _variable;
 	sl::memory_qualifier_storage _memory_qualifiers;
 	bool _is_buffer = false;
 };
 
-// TODO: provide iterator (or vector) initializers in all constructors with initializer lists
-// TODO: do not use initializer list in sl::named buffer init but rather use const memory_qualifier_list&
+struct argument_definitions {
+	argument_definitions() {}
 
-// TODO: use this or list of generic_argument_declaration...?
-struct ckadl {
-	ckadl(std::initializer_list<generic_arg_decl> args) {
-		for(auto& arg : args) {
-			if(arg._is_buffer)
-				//buffers.push_back(sl::named_buffer(arg._variables, arg._name, arg._memory_qualifiers.list()));
-				buffers.push_back(sl::named_buffer(arg._variable.type()->members(), arg._variable.name(), arg._memory_qualifiers.list()));
+	argument_definitions(std::initializer_list<argument_definition> arguments) {
+		for(const argument_definition& argument : arguments) {
+			if(argument._is_buffer)
+				buffers.push_back(sl::named_buffer(argument._variable.type().members(), argument._variable.name(), argument._memory_qualifiers.list()));
 			else
-				//uniforms.push_back(sl::named_variable(arg._type, arg._name, arg._array_size));
-				uniforms.push_back(arg._variable);
+				uniforms.push_back(argument._variable);
 		}
 	}
 
@@ -213,81 +136,42 @@ struct ckadl {
 
 
 
-struct compute_kernel_arguments_declaration {
-	sl::named_variable_list uniforms;
-	sl::named_buffer_list buffers;
-};
+class argument_binding {
+	friend class argument_binding_list;
 
+	/*
+	enum ArgumentTypeId : std::underlying_type<cgv::type::info::TypeId>::type {
+		RTI_BUFFER = cgv::type::info::TypeId::TI_LAST,
+		RTI_TEXTURE
+	};
+	*/
 
+	// A bit dirty, but use class TypeId in the descriptor to mark this as a buffer resource binding.
+	static const cgv::type::info::TypeId buffer_type_id = cgv::type::info::TypeId::TI_CLASS;
 
-
-
-class compute_kernel_arguments {
 public:
-	virtual bool emtpy() const = 0;
-	virtual size_t size() const = 0;
-	virtual const uniform_binding& operator[](size_t index) const = 0;
-};
-
-class compute_kernel_argument_binding_list : public compute_kernel_arguments {
-public:
-	compute_kernel_argument_binding_list(std::initializer_list<uniform_binding> bindings) : _bindings(bindings) {}
-	
-	bool emtpy() const override {
-		return _bindings.empty();
+	template<typename T>
+	argument_binding(const std::string& name, const T& value) : _name(name) {
+		_desc = cgv::render::element_descriptor_traits<T>::get_type_descriptor({});
+		_addr = cgv::render::element_descriptor_traits<T>::get_address(value);
 	}
 
-	size_t size() const override {
-		return _bindings.size();
+	argument_binding(const std::string& name, const cgv::render::vertex_buffer& buffer) : _name(name) {
+		_desc.coordinate_type = buffer_type_id;
+		_addr = &buffer;
 	}
 
-	const uniform_binding& operator[](size_t index) const override {
-		return _bindings[index];
+	bool is_buffer() const {
+		return _desc.coordinate_type == buffer_type_id;
 	}
 
 private:
-	uniform_binding_list _bindings;
+	std::string _name;
+	cgv::render::type_descriptor _desc;
+	const void* _addr = nullptr;
 };
 
-class compute_kernel_argument_struct : public compute_kernel_arguments {
-public:
-	bool emtpy() const override {
-		return _member_bindings.empty();
-	}
-
-	size_t size() const override {
-		return _member_bindings.size();
-	}
-
-	const uniform_binding& operator[](size_t index) const override {
-		return *_member_bindings[index];
-	}
-
-protected:
-	void connect_members(std::initializer_list<uniform_binding*> members) {
-		_member_bindings.clear();
-		_member_bindings.reserve(members.size());
-		for(uniform_binding* member : members)
-			_member_bindings.push_back(member);
-	}
-
-private:
-	std::vector<uniform_binding*> _member_bindings;
-};
-
-
-
-
-
-
-
-
-
-
-
-
-
-class compute_kernel_arguments2 {
+class argument_bindings {
 public:
 	virtual size_t get_uniform_count() const = 0;
 	virtual const uniform_binding& get_uniform(size_t index) const = 0;
@@ -296,9 +180,16 @@ public:
 	virtual const buffer_binding& get_buffer(size_t index) const = 0;
 };
 
-class compute_kernel_argument_binding_list2 : public compute_kernel_arguments2 {
+class argument_binding_list : public argument_bindings {
 public:
-	compute_kernel_argument_binding_list2() {}
+	argument_binding_list(std::initializer_list<argument_binding> bindings) {
+		for(const argument_binding& binding : bindings) {
+			if(binding.is_buffer())
+				_buffer_bindings.push_back({ binding._name, *reinterpret_cast<const cgv::render::vertex_buffer*>(binding._addr) });
+			else
+				_uniform_bindings.push_back({ binding._name, binding._desc, binding._addr });
+		}
+	}
 
 	size_t get_uniform_count() const override {
 		return _uniform_bindings.size();
@@ -306,10 +197,6 @@ public:
 
 	const uniform_binding& get_uniform(size_t index) const override {
 		return _uniform_bindings[index];
-	}
-
-	void set_uniforms(std::initializer_list<uniform_binding> bindings) {
-		_uniform_bindings = bindings;
 	}
 
 	size_t get_buffer_count() const override {
@@ -320,16 +207,12 @@ public:
 		return _buffer_bindings[index];
 	}
 
-	void set_buffers(std::initializer_list<buffer_binding> bindings) {
-		_buffer_bindings = bindings;
-	}
-
 private:
 	uniform_binding_list _uniform_bindings;
 	buffer_binding_list _buffer_bindings;
 };
 
-class compute_kernel_argument_struct2 : public compute_kernel_arguments2 {
+class argument_binding_struct : public argument_bindings {
 public:
 	size_t get_uniform_count() const override {
 		return _uniform_bindings.size();

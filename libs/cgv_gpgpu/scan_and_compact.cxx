@@ -18,7 +18,7 @@ void scan_and_compact::destruct(const cgv::render::context& ctx) {
 	prefix_sums_buffer.destruct(ctx);
 	block_sums_buffer.destruct(ctx);
 
-	_is_initialized = false;
+	//_is_initialized = false;
 }
 
 bool scan_and_compact::load_shader_programs(cgv::render::context& ctx) {
@@ -45,7 +45,7 @@ bool scan_and_compact::load_shader_programs(cgv::render::context& ctx) {
 
 bool scan_and_compact::init(cgv::render::context& ctx, size_t count) {
 
-	_is_initialized = false;
+	//_is_initialized = false;
 
 	if(!load_shader_programs(ctx))
 		return false;
@@ -100,7 +100,7 @@ bool scan_and_compact::init(cgv::render::context& ctx, size_t count) {
 	compact_prog.set_uniform(ctx, "n", n_padded);
 	compact_prog.disable(ctx);
 
-	_is_initialized = true;
+	//_is_initialized = true;
 	return true;
 }
 

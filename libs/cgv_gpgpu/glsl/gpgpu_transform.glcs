@@ -1,9 +1,9 @@
 #version 430
 
-//$cgv::input_type_def
-//$cgv::output_type_def
+#include "gpgpu_args.glcs"
 
-//$cgv::typedefs
+//$cgv::input_typedef
+//$cgv::output_typedef
 
 layout(std430, binding = 0) readonly buffer input_buffer {
 	input_type data_in[];
@@ -14,8 +14,6 @@ layout(std430, binding = 1) writeonly buffer output_buffer {
 };
 
 uniform uint u_count;
-
-//$cgv::arguments
 
 output_type operation(input_type element, uint index) {
 	//$cgv::operation

@@ -8,7 +8,7 @@ mipmap::mipmap() : texture_algorithm("mipmap", { TextureType::TT_1D, TextureType
 }
 
 bool mipmap::init(cgv::render::context& ctx, cgv::render::TextureType texture_type) {
-	cgv::render::shader_compile_options config = get_configuration(texture_type);
+	cgv::render::shader_compile_options config = get_configuration(texture_type, {});
 	return texture_algorithm::init(ctx, texture_type, config);
 }
 

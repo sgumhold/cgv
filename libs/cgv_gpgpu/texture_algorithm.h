@@ -16,14 +16,14 @@ public:
 		_supported_texture_types = supported_texture_types;
 	}
 
-	bool init(cgv::render::context& ctx, TextureType texture_type, const cgv::render::shader_compile_options& config);
-
 	bool is_texture_type_supported(TextureType texture_type) const;
 
 protected:
+	bool init(cgv::render::context& ctx, TextureType texture_type, const cgv::render::shader_compile_options& config);
+
 	bool is_initialized_for_texture(const cgv::render::texture& texture) const;
 
-	cgv::render::shader_compile_options get_configuration(TextureType texture_type) const;
+	cgv::render::shader_compile_options get_configuration(TextureType texture_type, const argument_definitions& arguments) const;
 
 	uvec3 get_texture_size(const cgv::render::texture& texture) const;
 	uvec3 get_num_groups(const uvec3& texture_size, uint32_t base_group_size) const;

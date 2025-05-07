@@ -3,6 +3,10 @@
 namespace cgv {
 namespace gpgpu {
 
+bool texture_algorithm::is_texture_type_supported(TextureType texture_type) const {
+	return std::find(_supported_texture_types.begin(), _supported_texture_types.end(), texture_type) != _supported_texture_types.end();
+}
+
 bool texture_algorithm::init(cgv::render::context& ctx, TextureType texture_type, const cgv::render::shader_compile_options& config) {
 	if(is_texture_type_supported(texture_type)) {
 		_texture_type = texture_type;
@@ -11,15 +15,11 @@ bool texture_algorithm::init(cgv::render::context& ctx, TextureType texture_type
 	return false;
 }
 
-bool texture_algorithm::is_texture_type_supported(TextureType texture_type) const {
-	return std::find(_supported_texture_types.begin(), _supported_texture_types.end(), texture_type) != _supported_texture_types.end();
-}
-
 bool texture_algorithm::is_initialized_for_texture(const cgv::render::texture& texture) const {
 	return texture.tt == _texture_type;
 }
 
-cgv::render::shader_compile_options texture_algorithm::get_configuration(TextureType texture_type) const {
+cgv::render::shader_compile_options texture_algorithm::get_configuration(TextureType texture_type, const argument_definitions& arguments) const {
 	uint32_t dims = 0;
 	sl::data_type index_type = sl::Type::kVoid;
 	sl::data_type coord_type = sl::Type::kVoid;
@@ -53,7 +53,7 @@ cgv::render::shader_compile_options texture_algorithm::get_configuration(Texture
 	}
 
 	// TODO: use larger group size for lower dimensional textures (try to aim for total occupancy of Streaming multiprocessor, e.g. 64 for RTX 2080)
-	cgv::render::shader_compile_options config;
+	cgv::render::shader_compile_options config = algorithm::get_configuration(arguments);
 	config.defines["LOCAL_SIZE_X"] = std::to_string(local_size.x());
 	config.defines["LOCAL_SIZE_Y"] = std::to_string(local_size.y());
 	config.defines["LOCAL_SIZE_Z"] = std::to_string(local_size.z());
@@ -79,7 +79,6 @@ uvec3 texture_algorithm::get_texture_size(const cgv::render::texture& texture) c
 uvec3 texture_algorithm::get_num_groups(const uvec3& texture_size, uint32_t base_group_size) const {
 	uvec3 num_groups = div_round_up(texture_size, uvec3(base_group_size));
 	// ensure at least one group is launched per dimension
-	// TODO: Ensure num_groups is 1 for unused dimensions.
 	return max(num_groups, uvec3(1));
 }
 
