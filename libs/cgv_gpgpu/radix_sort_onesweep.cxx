@@ -16,25 +16,10 @@ radix_sort_onesweep::radix_sort_onesweep() : sort("radix_sort_onesweep") {
 
 bool radix_sort_onesweep::v_init(cgv::render::context& ctx) {
 	cgv::render::shader_compile_options config;
-
 	config.defines["KEY_TYPE"] = "KEY_" + cgv::utils::to_upper(to_string(_key_type.type()));
 	config.defines["SORT_ASCENDING"] = _order == Order::kAscending ? "1" : "0";
 	config.defines["SORT_PAIRS"] = _value_type.is_void() ? "0" : "1";
 	config.defines["PAYLOAD_TYPE"] = "PAYLOAD_" + cgv::utils::to_upper(to_string(_value_type.type()));
-
-
-
-
-	//cgv::render::shader_code::set_define(defines, "VALUE_TYPEDEF", value_typedef, "uint");
-
-	//res = res && cgv::render::shader_library::load(ctx, init_prog, "radix_sort_onesweep_init", defines, true, where);
-	//res = res && cgv::render::shader_library::load(ctx, global_hist_prog, "radix_sort_onesweep_global_histogram", defines, true, where);
-	//res = res && cgv::render::shader_library::load(ctx, scan_prog, "radix_sort_onesweep_scan", defines, true, where);
-	//res = res && cgv::render::shader_library::load(ctx, digit_bin_pass_prog, "radix_sort_onesweep_digit_bin_pass", defines, true, where);
-
-	//global_hist_uniforms = get_program_uniforms(ctx, global_hist_prog);
-	//scan_uniforms = get_program_uniforms(ctx, scan_prog);
-	//digit_bin_pass_uniforms = get_program_uniforms(ctx, digit_bin_pass_prog);
 
 	if(init_kernels(ctx, config)) {
 		// TODO: Set dynamically based on GPU specs.
