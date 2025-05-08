@@ -52,14 +52,14 @@ std::string to_string(Type type) {
 
 data_type::data_type() {}
 
-data_type::data_type(Type type) : _basic_type(type) {}
+data_type::data_type(Type type) : _base_type(type) {}
 
-data_type::data_type(const std::string& name, const named_variable_list& members) : _basic_type(Type::kStruct) {
+data_type::data_type(const std::string& name, const named_variable_list& members) : _base_type(Type::kStruct) {
 	_definition = std::make_shared<type_definition>(type_definition{ name, members });
 }
 
 bool data_type::is_valid() const {
-	switch(_basic_type) {
+	switch(_base_type) {
 	case sl::Type::kStruct:
 		// struct types are only valid if they have a non-empty name
 		return !type_name().empty();
@@ -69,25 +69,25 @@ bool data_type::is_valid() const {
 	}
 }
 
-bool data_type::is_basic_type() const {
-	return _basic_type != Type::kStruct;
+bool data_type::is_compound() const {
+	return _base_type == Type::kStruct;
 }
 
 Type data_type::type() const {
-	return _basic_type;
+	return _base_type;
 }
 
 named_variable_list data_type::members() const {
-	if(_basic_type == Type::kStruct)
+	if(_base_type == Type::kStruct)
 		return { _definition->members };
 	return {};
 }
 
 std::string data_type::type_name() const {
-	if(_basic_type == Type::kStruct)
+	if(_base_type == Type::kStruct)
 		return _definition->type_name;
 	else
-		return to_string(_basic_type);
+		return to_string(_base_type);
 }
 
 std::string get_type_definition_string(sl::data_type type) {

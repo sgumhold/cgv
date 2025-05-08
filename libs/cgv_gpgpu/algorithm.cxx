@@ -10,7 +10,7 @@ namespace detail {
 class type_compiler {
 public:
 	void add(const sl::data_type& type) {
-		if(!type.is_basic_type())
+		if(type.is_compound())
 			_types.push_back(type);
 	}
 
@@ -42,7 +42,7 @@ public:
 				ordered_types.push_back(type);
 					
 				for(const sl::named_variable& member : type.members()) {
-					if(!member.type().is_basic_type())
+					if(member.type().is_compound())
 						types_queue.push(member.type());
 				}
 			} else {
