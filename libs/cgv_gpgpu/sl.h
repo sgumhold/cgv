@@ -13,7 +13,7 @@ enum class Type {
 
 	kBool,
 	kInt,
-	kUint,
+	kUInt,
 	kFloat,
 	kDouble,
 
@@ -81,6 +81,8 @@ public:
 	data_type(const std::string& name, const named_variable_list& members);
 
 	bool is_valid() const;
+
+	bool is_void() const;
 
 	bool is_compound() const;
 

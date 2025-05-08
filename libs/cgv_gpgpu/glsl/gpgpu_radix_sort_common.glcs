@@ -1,0 +1,25 @@
+//?#version 430
+
+#define KEY_TYPE_FLOATING_POINT 0
+
+uniform uint u_key_mask;
+
+uint float_bits_to_bit_ordered(uint u) {
+	int mask = -int(u >> 31) | 0x80000000;
+	return u ^ mask;
+}
+
+uint float_to_bit_ordered(float f) {
+	return float_bits_to_bit_ordered(floatBitsToUint(f));
+}
+
+uint extract_digit(uint key, uint bit) {
+#if KEY_TYPE_FLOATING_POINT
+	key = float_bits_to_bit_ordered(key);
+#endif
+
+	// The key mask is used to selectively invert key bits in order to support negative values or enable descending key order
+	key = key ^ u_key_mask;
+
+	return (key >> bit) & 3;
+}

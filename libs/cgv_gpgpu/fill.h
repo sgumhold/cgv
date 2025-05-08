@@ -14,10 +14,10 @@ public:
 
 	bool init(cgv::render::context& ctx, const sl::data_type& value_type);
 
-	bool dispatch(cgv::render::context& ctx, const cgv::render::vertex_buffer* buffer, size_t count, const argument_bindings& arguments);
+	bool dispatch(cgv::render::context& ctx, const cgv::render::vertex_buffer& buffer, size_t count, const argument_bindings& arguments);
 
 private:
-	compute_kernel kernel;
+	compute_kernel _kernel;
 };
 
 } // namespace gpgpu

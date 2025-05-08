@@ -19,7 +19,7 @@ public:
 	bool dispatch(cgv::render::context& ctx, cgv::render::texture& texture, const vec4& value);
 
 private:
-	compute_kernel kernel;
+	compute_kernel _kernel;
 };
 
 } // namespace gpgpu
