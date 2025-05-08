@@ -9,6 +9,7 @@ namespace gpgpu {
 
 /// Extension of the default GPU algorithm that defines common helper functions used for texture targets
 class CGV_API texture_algorithm : public algorithm {
+protected:
 	using TextureType = cgv::render::TextureType;
 	
 public:
