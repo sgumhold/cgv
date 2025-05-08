@@ -82,7 +82,7 @@ public:
 
 	bool is_valid() const;
 
-	bool is_basic_type() const;
+	bool is_compound() const;
 
 	Type type() const;
 
@@ -91,7 +91,7 @@ public:
 	std::string type_name() const;
 
 private:
-	Type _basic_type = Type::kVoid;
+	Type _base_type = Type::kVoid;
 	std::shared_ptr<type_definition> _definition;
 };
 
