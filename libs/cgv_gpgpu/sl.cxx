@@ -169,7 +169,7 @@ memory_qualifier_list memory_qualifier_storage::list() const {
 
 std::string to_string(const named_buffer& buffer, size_t location) {
 	std::string location_str = std::to_string(location);
-	std::string name = buffer.name().empty() ? "buffer" + location : buffer.name();
+	std::string name = buffer.name().empty() ? "buffer" + location_str : buffer.name();
 
 	std::string res = "layout(std430, binding=" + location_str + ") ";
 	res += to_string(buffer.memory_qualifiers());
