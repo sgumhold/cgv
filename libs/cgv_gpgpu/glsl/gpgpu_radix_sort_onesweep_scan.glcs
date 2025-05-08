@@ -1,0 +1,41 @@
+#version 430
+
+#extension GL_KHR_shader_subgroup_basic : enable
+#extension GL_KHR_shader_subgroup_ballot : enable
+#extension GL_KHR_shader_subgroup_arithmetic : enable
+
+#include "gpgpu_radix_sort_onesweep_common.glcs"
+
+layout(local_size_x = RADIX) in;
+
+shared uint s_scan[RADIX];
+
+void load_inclusive_scan(uint gtid, uint gid) {
+	const uint t = b_global_hist[gtid + gid * RADIX];
+	s_scan[gtid] = t + subgroupExclusiveAdd(t);
+}
+
+void global_hist_exclusive_scan(uint gtid, uint gid) {
+	groupMemoryBarrier();
+	barrier();
+
+	if(gtid < (RADIX / gl_SubgroupSize))
+		s_scan[(gtid + 1) * gl_SubgroupSize - 1] += subgroupExclusiveAdd(s_scan[(gtid + 1) * gl_SubgroupSize - 1]);
+
+	groupMemoryBarrier();
+	barrier();
+		
+	const uint lane_mask = gl_SubgroupSize - 1;
+	const uint index = (gl_SubgroupInvocationID + 1 & lane_mask) + (gtid & ~lane_mask);
+	b_pass_hist[index + gid * RADIX * u_thread_blocks] =
+		((gl_SubgroupInvocationID != lane_mask ? s_scan[gtid] : 0) +
+		(gtid >= gl_SubgroupSize ? subgroupBroadcast(s_scan[gtid - 1], 0) : 0)) << 2 | FLAG_INCLUSIVE;
+}
+
+void main() {
+	uvec3 gtid = gl_LocalInvocationID;
+	uvec3 gid = gl_WorkGroupID;
+
+	load_inclusive_scan(gtid.x, gid.x);
+	global_hist_exclusive_scan(gtid.x, gid.x);
+}

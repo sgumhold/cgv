@@ -1,0 +1,164 @@
+#version 430
+
+#include "gpgpu_radix_sort_onesweep_common.glcs"
+
+layout(local_size_x = GLOBAL_HIST_DIM) in;
+
+shared uvec4 s_global_hist[RADIX * 2];
+
+void histogram_digit_counts(uint gtid, uint gid) {
+	const uint hist_offset = gtid / 64 * RADIX;
+	const uint partition_end = gid == u_thread_blocks - 1 ? u_num_keys : (gid + 1) * GLOBAL_HIST_PART_SIZE;
+	
+	uint t;
+	for(uint i = gtid + gid * GLOBAL_HIST_PART_SIZE; i < partition_end; i += GLOBAL_HIST_DIM) {
+#if KEY_TYPE == KEY_UINT
+		t = b_keys_in[i];
+#elif KEY_TYPE == KEY_INT
+		t = IntToUint(b_keys_in[i]);
+#elif KEY_TYPE == KEY_FLOAT
+		t = FloatToUint(b_keys_in[i]);
+#endif
+		atomicAdd(s_global_hist[ExtractDigit(t, 0) + hist_offset].x, 1);
+		atomicAdd(s_global_hist[ExtractDigit(t, 8) + hist_offset].y, 1);
+		atomicAdd(s_global_hist[ExtractDigit(t, 16) + hist_offset].z, 1);
+		atomicAdd(s_global_hist[ExtractDigit(t, 24) + hist_offset].w, 1);
+	}
+}
+
+//reduce counts and atomically add to device
+void reduce_write_digit_counts(uint gtid) {
+	for(uint i = gtid; i < RADIX; i += GLOBAL_HIST_DIM) {
+		atomicAdd(b_global_hist[i], s_global_hist[i].x + s_global_hist[i + RADIX].x);
+		atomicAdd(b_global_hist[i + SEC_RADIX_START], s_global_hist[i].y + s_global_hist[i + RADIX].y);
+		atomicAdd(b_global_hist[i + THIRD_RADIX_START], s_global_hist[i].z + s_global_hist[i + RADIX].z);
+		atomicAdd(b_global_hist[i + FOURTH_RADIX_START], s_global_hist[i].w + s_global_hist[i + RADIX].w);
+	}
+}
+
+// histogram, 64 threads to a histogram
+void main() {
+	uvec3 gtid = gl_LocalInvocationID;
+	uvec3 gid = gl_WorkGroupID;
+
+	//clear shared memory
+	const uint hists_end = RADIX * 2;
+	for(uint i = gtid.x; i < hists_end; i += GLOBAL_HIST_DIM)
+		s_global_hist[i] = uvec4(0);
+
+	groupMemoryBarrier();
+	barrier();
+	
+	histogram_digit_counts(gtid.x, flatten_gid(gid));
+	
+	groupMemoryBarrier();
+	barrier();
+	
+	reduce_write_digit_counts(gtid.x);
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+/*
+
+
+#define PART_SIZE           3840U   // Size of a partition tile
+#define PASS_DIM            256U    // The number of threads int digit binning pass
+#define G_HIST_DIM          128U    // The number of threads in a global hist threadblock
+
+#define RADIX               256U    // Number of digit bins
+#define RADIX_MASK          255U    // Mask of digit bins
+#define RADIX_LOG           8U      // log2(RADIX)
+#define RADIX_PASSES        4U      // (Key width) / RADIX_LOG
+
+#define SEC_RADIX_START     256U    // Offset for retrieving value from global histogram buffer
+#define THIRD_RADIX_START   512U    // Offset for retrieving value from global histogram buffer
+#define FOURTH_RADIX_START  768U    // Offset for retrieving value from global histogram buffer
+
+layout(local_size_x = G_HIST_DIM) in;
+
+//Buffer to sort
+layout(std430, binding = 0) readonly buffer b_sort_buffer {
+	uint b_sort[];
+};
+
+//Buffer to hold global digit counts for each pass
+layout(std430, binding = 1) writeonly buffer b_globalHist_buffer { // TODO: needs to be coherent for atomic operations?
+	uint b_globalHist[];
+};
+
+//uniform uint max_key;
+//uniform uint key_mask;
+
+//uniform uint n; // the total number of items to sort
+//uniform uint n_scan_groups; // the total number of local scan groups
+//uniform uint n_block_sums; // the total number of blocksums
+//uniform uint bit; // the bit index of the current pass
+
+//shared uint scan_values[LOCAL_SIZE + 16]; // make room for all values plus some space for offset addresses
+
+shared uvec4 g_gHist[RADIX * 2];
+
+uint ExtractDigit(uint key, uint shift) {
+	return key >> shift & RADIX_MASK;
+}
+
+uniform uint num_keys;
+
+// e_thread_blocks = number of used thread blocks
+// private const int k_radixPasses = 4;
+// private const int k_radix = 256;
+// private const int k_partitionSize = 3840;
+// RADIX = 
+// k_partition_size = 3840
+uniform uint thread_blocks;
+
+void main() {
+	const uint hists_end = RADIX * 2;
+	for(uint i = gl_LocalInvocationID.x; i < hists_end; i += G_HIST_DIM)
+		g_gHist[i] = uvec4(0);
+
+	groupMemoryBarrier();
+	barrier();
+	
+	const uint hist_offset = gl_LocalInvocationID.x / 64 * RADIX;
+	const uint partition_end = gl_WorkGroupID.x == thread_blocks - 1 ? num_keys : (gl_WorkGroupID.x + 1) * PART_SIZE;
+	
+	for(uint i = gl_LocalInvocationID.x + gl_WorkGroupID.x * PART_SIZE; i < partition_end; i += G_HIST_DIM) {
+		const uint t = b_sort[i];
+		atomicAdd(g_gHist[ExtractDigit(t, 0) + hist_offset].x, 1);
+		atomicAdd(g_gHist[ExtractDigit(t, 8) + hist_offset].y, 1);
+		atomicAdd(g_gHist[ExtractDigit(t, 16) + hist_offset].z, 1);
+		atomicAdd(g_gHist[ExtractDigit(t, 24) + hist_offset].w, 1);
+	}
+
+	groupMemoryBarrier();
+	barrier();
+	
+	for(uint i = gl_LocalInvocationID.x; i < RADIX; i += G_HIST_DIM) {
+		atomicAdd(b_globalHist[i], g_gHist[i].x + g_gHist[i + RADIX].x);
+		atomicAdd(b_globalHist[i + SEC_RADIX_START], g_gHist[i].y + g_gHist[i + RADIX].y);
+		atomicAdd(b_globalHist[i + THIRD_RADIX_START], g_gHist[i].z + g_gHist[i + RADIX].z);
+		atomicAdd(b_globalHist[i + FOURTH_RADIX_START], g_gHist[i].w + g_gHist[i + RADIX].w);
+	}
+}
+*/

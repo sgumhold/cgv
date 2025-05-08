@@ -4,7 +4,7 @@ namespace cgv {
 namespace gpgpu {
 
 mipmap::mipmap() : texture_algorithm("mipmap", { TextureType::TT_1D, TextureType::TT_2D, TextureType::TT_3D }) {
-	register_kernel(kernel, "gpgpu_mipmap");
+	register_kernel(_kernel, "gpgpu_mipmap");
 }
 
 bool mipmap::init(cgv::render::context& ctx, cgv::render::TextureType texture_type) {
@@ -22,7 +22,7 @@ bool mipmap::dispatch(cgv::render::context& ctx, cgv::render::texture& texture) 
 	glActiveTexture(GL_TEXTURE0);
 	texture.enable(ctx, 0);
 
-	kernel.enable(ctx);
+	_kernel.enable(ctx);
 
 	uvec3 size = get_texture_size(texture);
 	unsigned max_size = cgv::math::max_value(size);
@@ -39,12 +39,12 @@ bool mipmap::dispatch(cgv::render::context& ctx, cgv::render::texture& texture) 
 		output_size = uvec3(vec3(output_size) / divisor);
 		output_size = cgv::math::max(output_size, uvec3(1));
 
-		kernel.set_argument(ctx, "u_level", level);
+		_kernel.set_argument(ctx, "u_level", level);
 
 		const uint32_t group_size = 4;
 		uvec3 num_groups = get_num_groups(output_size, group_size);
 
-		kernel.set_argument(ctx, "u_output_size", output_size);
+		_kernel.set_argument(ctx, "u_output_size", output_size);
 
 		dispatch_compute(num_groups.x(), num_groups.y(), num_groups.z());
 		glMemoryBarrier(GL_SHADER_IMAGE_ACCESS_BARRIER_BIT);
@@ -52,7 +52,7 @@ bool mipmap::dispatch(cgv::render::context& ctx, cgv::render::texture& texture) 
 		input_size = output_size;
 	}
 
-	kernel.disable(ctx);
+	_kernel.disable(ctx);
 
 	texture.disable(ctx);
 	return true;

@@ -8,7 +8,7 @@ namespace cgv {
 namespace gpgpu {
 
 fill_texture::fill_texture() : texture_algorithm("fill_texture", { TextureType::TT_1D, TextureType::TT_2D, TextureType::TT_3D }) {
-	register_kernel(kernel, "gpgpu_fill_texture");
+	register_kernel(_kernel, "gpgpu_fill_texture");
 }
 
 bool fill_texture::init(cgv::render::context& ctx, cgv::render::TextureType texture_type) {
@@ -27,14 +27,14 @@ bool fill_texture::dispatch(cgv::render::context& ctx, cgv::render::texture& tex
 	const uint32_t group_size = 4;
 	uvec3 num_groups = get_num_groups(size, group_size);
 	
-	kernel.enable(ctx);
-	kernel.set_argument(ctx, "u_size", size);
-	kernel.set_argument(ctx, "u_value", value);
+	_kernel.enable(ctx);
+	_kernel.set_argument(ctx, "u_size", size);
+	_kernel.set_argument(ctx, "u_value", value);
 
 	dispatch_compute(num_groups.x(), num_groups.y(), num_groups.z());
 	glMemoryBarrier(GL_SHADER_IMAGE_ACCESS_BARRIER_BIT);
 
-	kernel.disable(ctx);
+	_kernel.disable(ctx);
 
 	texture.disable(ctx);
 	return true;

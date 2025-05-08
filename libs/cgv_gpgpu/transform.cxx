@@ -4,7 +4,7 @@ namespace cgv {
 namespace gpgpu {
 
 transform::transform() : algorithm("transform") {
-	register_kernel(kernel, "gpgpu_transform");
+	register_kernel(_kernel, "gpgpu_transform");
 }
 
 bool transform::init(cgv::render::context& ctx, const sl::data_type& input_type, const sl::data_type& output_type, const std::string& unary_operation) {
@@ -24,13 +24,13 @@ bool transform::init(cgv::render::context& ctx, const sl::data_type& input_type,
 	return init_kernels(ctx, config);
 }
 
-bool transform::dispatch(cgv::render::context& ctx, const cgv::render::vertex_buffer* input_buffer, const cgv::render::vertex_buffer* output_buffer, size_t count, const argument_bindings& arguments) {
-	input_buffer->bind(ctx, cgv::render::VertexBufferType::VBT_STORAGE, 0);
-	output_buffer->bind(ctx, cgv::render::VertexBufferType::VBT_STORAGE, 1);
+bool transform::dispatch(cgv::render::context& ctx, const cgv::render::vertex_buffer& input_buffer, const cgv::render::vertex_buffer& output_buffer, size_t count, const argument_bindings& arguments) {
+	input_buffer.bind(ctx, cgv::render::VertexBufferType::VBT_STORAGE, 0);
+	output_buffer.bind(ctx, cgv::render::VertexBufferType::VBT_STORAGE, 1);
 
-	kernel.enable(ctx);
-	kernel.set_argument(ctx, "u_count", static_cast<uint32_t>(count));
-	kernel.set_arguments(ctx, arguments);
+	_kernel.enable(ctx);
+	_kernel.set_argument(ctx, "u_count", static_cast<uint32_t>(count));
+	_kernel.set_arguments(ctx, arguments);
 	bind_buffer_arguments(ctx, arguments);
 
 	// TODO: Make configurable.
@@ -40,10 +40,10 @@ bool transform::dispatch(cgv::render::context& ctx, const cgv::render::vertex_bu
 	glMemoryBarrier(GL_SHADER_STORAGE_BARRIER_BIT);
 
 	unbind_buffer_arguments(ctx, arguments);
-	kernel.disable(ctx);
+	_kernel.disable(ctx);
 
-	input_buffer->unbind(ctx, cgv::render::VertexBufferType::VBT_STORAGE, 0);
-	output_buffer->unbind(ctx, cgv::render::VertexBufferType::VBT_STORAGE, 1);
+	input_buffer.unbind(ctx, cgv::render::VertexBufferType::VBT_STORAGE, 0);
+	output_buffer.unbind(ctx, cgv::render::VertexBufferType::VBT_STORAGE, 1);
 
 	return true;
 }

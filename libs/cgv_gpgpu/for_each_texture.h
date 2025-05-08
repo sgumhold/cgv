@@ -21,7 +21,7 @@ public:
 private:
 	cgv::render::shader_compile_options get_configuration(cgv::render::TextureType texture_type, const argument_definitions& arguments, const std::string& unary_operation) const;
 
-	compute_kernel kernel;
+	compute_kernel _kernel;
 };
 
 } // namespace gpgpu

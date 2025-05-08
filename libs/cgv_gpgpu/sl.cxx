@@ -69,6 +69,10 @@ bool data_type::is_valid() const {
 	}
 }
 
+bool data_type::is_void() const {
+	return _base_type == Type::kVoid;
+}
+
 bool data_type::is_compound() const {
 	return _base_type == Type::kStruct;
 }

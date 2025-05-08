@@ -2,13 +2,11 @@
 
 #include <cgv_gpgpu/utils.h>
 
-using namespace cgv::gpgpu;
-
 namespace cgv {
 namespace gpgpu {
 
 for_each_texture::for_each_texture() : texture_algorithm("for_each_texture", { TextureType::TT_1D, TextureType::TT_2D, TextureType::TT_3D }) {
-	register_kernel(kernel, "gpgpu_for_each_texture");
+	register_kernel(_kernel, "gpgpu_for_each_texture");
 }
 
 bool for_each_texture::init(cgv::render::context& ctx, cgv::render::TextureType texture_type, const argument_definitions& arguments, const std::string& unary_operation) {
@@ -27,16 +25,16 @@ bool for_each_texture::dispatch(cgv::render::context& ctx, cgv::render::texture&
 	const uint32_t group_size = 4;
 	uvec3 num_groups = get_num_groups(size, group_size);
 
-	kernel.enable(ctx);
-	kernel.set_argument(ctx, "u_size", size);
-	kernel.set_arguments(ctx, arguments);
+	_kernel.enable(ctx);
+	_kernel.set_argument(ctx, "u_size", size);
+	_kernel.set_arguments(ctx, arguments);
 	bind_buffer_arguments(ctx, arguments);
 
 	dispatch_compute(num_groups.x(), num_groups.y(), num_groups.z());
 	glMemoryBarrier(GL_SHADER_IMAGE_ACCESS_BARRIER_BIT);
 
 	unbind_buffer_arguments(ctx, arguments);
-	kernel.disable(ctx);
+	_kernel.disable(ctx);
 
 	texture.disable(ctx);
 	return true;
