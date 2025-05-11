@@ -135,7 +135,7 @@ OffsetStruct rank_keys(uint gtid, KeyStruct keys) {
 		uvec4 wave_flags = uvec4(get_wave_flags());
 		warp_level_multi_split(keys.k[i], wave_parts, wave_flags);
 		
-		const uint index = ExtractDigit(keys.k[i]) + (get_wave_index(gtid.x) * RADIX);
+		const uint index = extract_digit(keys.k[i]) + (get_wave_index(gtid.x) * RADIX);
 		const uint lowest_rank_peer = find_lowest_rank_peer(wave_flags, wave_parts);
 		
 		uint peer_bits = 0;
@@ -156,13 +156,13 @@ void update_offsets(uint gtid, inout OffsetStruct offsets, KeyStruct keys) {
 		const uint t = get_wave_index(gtid) * RADIX;
 		//[unroll]
 		for(uint i = 0; i < KEYS_PER_THREAD; ++i) {
-			const uint t2 = ExtractDigit(keys.k[i]);
+			const uint t2 = extract_digit(keys.k[i]);
 			offsets.o[i] += s_d[t2 + t] + s_d[t2];
 		}
 	} else {
 		//[unroll]
 		for(uint i = 0; i < KEYS_PER_THREAD; ++i)
-			offsets.o[i] += s_d[ExtractDigit(keys.k[i])];
+			offsets.o[i] += s_d[extract_digit(keys.k[i])];
 	}
 }
 
@@ -193,27 +193,11 @@ void lookback(uint gtid, uint part_index, uint exclusive_hist_reduction) {
 	}
 }
 
-
-
-void load_key(inout uint key, uint index) {
-#if KEY_TYPE == KEY_UINT
-	key = b_keys_in[index];
-#elif KEY_TYPE == KEY_INT
-	key = IntToUint(b_keys_in[index]);
-#elif KEY_TYPE == KEY_FLOAT
-	key = FloatToUint(b_keys_in[index]);
-#endif
-}
-
-void load_dummy_key(inout uint key) {
-	key = 0xFFFFFFFF;
-}
-
 KeyStruct load_keys(uint gtid, uint part_index) {
 	KeyStruct keys;
 	//[unroll]
 	for(uint i = 0, t = device_offset(gtid, part_index); i < KEYS_PER_THREAD; ++i, t += gl_SubgroupSize)
-		load_key(keys.k[i], t);
+		keys.k[i] = load_key(t);
 	
 	return keys;
 }
@@ -223,22 +207,16 @@ KeyStruct load_keys_partial(uint gtid, uint part_index) {
 	//[unroll]
 	for(uint i = 0, t = device_offset(gtid, part_index); i < KEYS_PER_THREAD; ++i, t += gl_SubgroupSize) {
 		if(t < u_num_keys)
-			load_key(keys.k[i], t);
+			keys.k[i] = load_key(t);
 		else
-			load_dummy_key(keys.k[i]);
+			keys.k[i] = load_dummy_key();
 	}
 
 	return keys;
 }
 
-void write_key(uint device_index, uint group_shared_index) {
-#if KEY_TYPE == KEY_UINT
-	b_keys_out[device_index] = s_d[group_shared_index];
-#elif KEY_TYPE == KEY_INT
-	b_keys_out[device_index] = UintToInt(s_d[group_shared_index]);
-#elif KEY_TYPE == KEY_FLOAT
-	b_keys_out[device_index] = UintToFloat(s_d[group_shared_index]);
-#endif
+void write_shared_key(uint device_index, uint group_shared_index) {
+	write_key(s_d[group_shared_index], device_index);
 }
 
 void scatter_keys_shared(OffsetStruct offsets, KeyStruct keys) {
@@ -249,57 +227,34 @@ void scatter_keys_shared(OffsetStruct offsets, KeyStruct keys) {
 
 void scatter_keys_only_device_ascending(uint gtid) {
 	for(uint i = gtid; i < PART_SIZE; i += D_DIM)
-		write_key(s_d[ExtractDigit(s_d[i]) + PART_SIZE] + i, i);
-}
-
-uint descending_index(uint device_index) {
-	return u_num_keys - device_index - 1;
+		write_shared_key(s_d[extract_digit(s_d[i]) + PART_SIZE] + i, i);
 }
 
 void scatter_keys_only_device_descending(uint gtid) {
 	if(u_radix_shift == 24) {
 		for(uint i = gtid; i < PART_SIZE; i += D_DIM)
-			write_key(descending_index(s_d[ExtractDigit(s_d[i]) + PART_SIZE] + i), i);
+			write_shared_key(descending_index(s_d[extract_digit(s_d[i]) + PART_SIZE] + i), i);
 	} else {
 		scatter_keys_only_device_ascending(gtid);
 	}
 }
 
-
-
-
-
-void scatter_pairs_key_phase_ascending(uint gtid, inout DigitStruct digits) {
-	//[unroll]
-	for(uint i = 0, t = gtid; i < KEYS_PER_THREAD; ++i, t += D_DIM) {
-		digits.d[i] = ExtractDigit(s_d[t]);
-		write_key(s_d[digits.d[i] + PART_SIZE] + t, t);
-	}
+void scatter_keys_only_device(uint gtid) {
+#if SORT_ASCENDING == 1
+	scatter_keys_only_device_ascending(gtid);
+#else
+	scatter_keys_only_device_descending(gtid);
+#endif
 }
 
-void scatter_pairs_key_phase_descending(uint gtid, inout DigitStruct digits) {
-	if(u_radix_shift == 24) {
-		//[unroll]
-		for (uint i = 0, t = gtid; i < KEYS_PER_THREAD; ++i, t += D_DIM) {
-			digits.d[i] = ExtractDigit(s_d[t]);
-			write_key(descending_index(s_d[digits.d[i] + PART_SIZE] + t), t);
-		}
-	} else {
-		scatter_pairs_key_phase_ascending(gtid, digits);
-	}
-}
-
-
-
-
-
+#if SORT_PAIRS == 1
 
 void load_payload(inout uint payload, uint device_index) {
-#if PAYLOAD_TYPE == PAYLOAD_UINT
+#if VALUE_TYPE == VALUE_UINT
 	payload = b_values_in[device_index];
-#elif PAYLOAD_TYPE == PAYLOAD_INT
+#elif VALUE_TYPE== VALUE_INT
 	payload = uint(b_values_in[device_index]);
-#elif PAYLOAD_TYPE == PAYLOAD_FLOAT
+#elif VALUE_TYPE == VALUE_FLOAT
 	payload = floatBitsToUint(b_values_in[device_index]);
 #endif
 }
@@ -315,24 +270,12 @@ void scatter_payloads_shared(OffsetStruct offsets, KeyStruct payloads) {
 }
 
 void write_payload(uint device_index, uint group_shared_index) {
-#if PAYLOAD_TYPE == PAYLOAD_UINT
+#if VALUE_TYPE == VALUE_UINT
 	b_values_out[device_index] = s_d[group_shared_index];
-#elif PAYLOAD_TYPE == PAYLOAD_INT
+#elif VALUE_TYPE == VALUE_INT
 	b_values_out[device_index] = int(s_d[group_shared_index]);
-#elif PAYLOAD_TYPE == PAYLOAD_FLOAT
+#elif VALUE_TYPE == VALUE_FLOAT
 	b_values_out[device_index] = uintBitsToFloat(s_d[group_shared_index]);
-#endif
-}
-
-
-
-
-
-void scatter_keys_only_device(uint gtid) {
-#if SORT_ASCENDING == 1
-	scatter_keys_only_device_ascending(gtid);
-#else
-	scatter_keys_only_device_descending(gtid);
 #endif
 }
 
@@ -375,6 +318,28 @@ void scatter_pairs_device(uint gtid, uint part_index, OffsetStruct offsets) {
 #endif
 }
 
+void scatter_pairs_key_phase_ascending(uint gtid, inout DigitStruct digits) {
+	//[unroll]
+	for(uint i = 0, t = gtid; i < KEYS_PER_THREAD; ++i, t += D_DIM) {
+		digits.d[i] = extract_digit(s_d[t]);
+		write_shared_key(s_d[digits.d[i] + PART_SIZE] + t, t);
+	}
+}
+
+void scatter_pairs_key_phase_descending(uint gtid, inout DigitStruct digits) {
+	if(u_radix_shift == 24) {
+		//[unroll]
+		for (uint i = 0, t = gtid; i < KEYS_PER_THREAD; ++i, t += D_DIM) {
+			digits.d[i] = extract_digit(s_d[t]);
+			write_shared_key(descending_index(s_d[digits.d[i] + PART_SIZE] + t), t);
+		}
+	} else {
+		scatter_pairs_key_phase_ascending(gtid, digits);
+	}
+}
+
+#endif
+
 void scatter_device(uint gtid, uint part_index, OffsetStruct offsets) {
 #if SORT_PAIRS == 1
 	scatter_pairs_device(gtid, part_index, offsets);
@@ -383,16 +348,10 @@ void scatter_device(uint gtid, uint part_index, OffsetStruct offsets) {
 #endif
 }
 
-
-
-
-
-
-
 void scatter_keys_only_device_partial_ascending(uint gtid, uint final_part_size) {
 	for(uint i = gtid; i < PART_SIZE; i += D_DIM) {
 		if(i < final_part_size)
-			write_key(s_d[ExtractDigit(s_d[i]) + PART_SIZE] + i, i);
+			write_shared_key(s_d[extract_digit(s_d[i]) + PART_SIZE] + i, i);
 	}
 }
 
@@ -400,7 +359,7 @@ void scatter_keys_only_device_partial_descending(uint gtid, uint final_part_size
 	if(u_radix_shift == 24) {
 		for(uint i = gtid; i < PART_SIZE; i += D_DIM) {
 			if(i < final_part_size)
-				write_key(descending_index(s_d[ExtractDigit(s_d[i]) + PART_SIZE] + i), i);
+				write_shared_key(descending_index(s_d[extract_digit(s_d[i]) + PART_SIZE] + i), i);
 		}
 	} else {
 		scatter_keys_only_device_partial_ascending(gtid, final_part_size);
@@ -416,13 +375,15 @@ void scatter_keys_only_device_partial(uint gtid, uint part_index) {
 #endif
 }
 
+#if SORT_PAIRS == 1
+
 //KEY VALUE PAIRS
 void scatter_pairs_key_phase_ascending_partial(uint gtid, uint final_part_size, inout DigitStruct digits) {
 	//[unroll]
 	for(uint i = 0, t = gtid; i < KEYS_PER_THREAD; ++i, t += D_DIM) {
 		if(t < final_part_size) {
-			digits.d[i] = ExtractDigit(s_d[t]);
-			write_key(s_d[digits.d[i] + PART_SIZE] + t, t);
+			digits.d[i] = extract_digit(s_d[t]);
+			write_shared_key(s_d[digits.d[i] + PART_SIZE] + t, t);
 		}
 	}
 }
@@ -432,8 +393,8 @@ void scatter_pairs_key_phase_descending_partial(uint gtid, uint final_part_size,
 		//[unroll]
 		for(uint i = 0, t = gtid; i < KEYS_PER_THREAD; ++i, t += D_DIM) {
 			if(t < final_part_size) {
-				digits.d[i] = ExtractDigit(s_d[t]);
-				write_key(descending_index(s_d[digits.d[i] + PART_SIZE] + t), t);
+				digits.d[i] = extract_digit(s_d[t]);
+				write_shared_key(descending_index(s_d[digits.d[i] + PART_SIZE] + t), t);
 			}
 		}
 	} else {
@@ -493,6 +454,8 @@ void scatter_pairs_device_partial(uint gtid, uint part_index, OffsetStruct offse
 #endif
 }
 
+#endif
+
 void scatter_device_partial(uint gtid, uint part_index, OffsetStruct offsets) {
 #if SORT_PAIRS == 1
     scatter_pairs_device_partial(gtid, part_index, offsets);
@@ -500,22 +463,6 @@ void scatter_device_partial(uint gtid, uint part_index, OffsetStruct offsets) {
 	scatter_keys_only_device_partial(gtid, part_index);
 #endif
 }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 void main() {
 	uvec3 gtid = gl_LocalInvocationID;

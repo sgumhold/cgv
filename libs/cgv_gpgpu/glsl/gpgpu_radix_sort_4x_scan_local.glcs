@@ -11,31 +11,54 @@ uint addr(uint i) {
 	return i + (i >> 5);
 }
 
-//uint load_key(uint idx) {
-//	return idx < u_num_keys ? keys_in[idx] : u_max_key;
-//}
+void load_keys(inout uint b[4], inout uint k[3], uint start_index) {
+	b[0] = extract_digit(load_key(start_index + 0));
+    k[0] = 1 << (b[0] << 3);
+    
+	b[1] = extract_digit(load_key(start_index + 1));
+    k[1] = (1 << (b[1] << 3)) + k[0];
+    
+	b[2] = extract_digit(load_key(start_index + 2));
+    k[2] = (1 << (b[2] << 3)) + k[1];
+    
+	b[3] = extract_digit(load_key(start_index + 3));
+}
+
+uint load_key_partial(uint index) {
+	if(index < u_num_keys)
+		return load_key(index);
+	return load_dummy_key();
+}
+
+void load_keys_partial(inout uint b[4], inout uint k[3], uint start_index) {
+	b[0] = extract_digit(load_key_partial(start_index + 0));
+    k[0] = 1 << (b[0] << 3);
+    
+	b[1] = extract_digit(load_key_partial(start_index + 1));
+    k[1] = (1 << (b[1] << 3)) + k[0];
+    
+	b[2] = extract_digit(load_key_partial(start_index + 2));
+    k[2] = (1 << (b[2] << 3)) + k[1];
+    
+	b[3] = extract_digit(load_key_partial(start_index + 3));
+}
 
 void main() {
     uint tid = gl_LocalInvocationID.x;
 	uint block_offset = LOCAL_HIST_GROUP_SIZE * gl_WorkGroupID.x;
     uint thread_offset = tid + block_offset; // thread offset in global memory
 	
-	uint b0, b1, b2, b3; // bit values
-    uint k0, k1, k2; // pre scanned keys
+	uint b[4]; // bit values
+    uint k[3]; // pre scanned keys
 
 	// Each thread loads and scans 4 values
-	b0 = extract_digit(load_key(4 * thread_offset + 0));
-    k0 = 1 << (b0 << 3);
-    
-	b1 = extract_digit(load_key(4 * thread_offset + 1));
-    k1 = (1 << (b1 << 3)) + k0;
-    
-	b2 = extract_digit(load_key(4 * thread_offset + 2));
-    k2 = (1 << (b2 << 3)) + k1;
-    
-	b3 = extract_digit(load_key(4 * thread_offset + 3));
+	if(gl_WorkGroupID.x < gl_NumWorkGroups.x - 1)
+		load_keys(b, k, 4 * thread_offset);
+
+	if(gl_WorkGroupID.x == gl_NumWorkGroups.x - 1)
+		load_keys_partial(b, k, 4 * thread_offset);
 	
-    s_scan[addr(tid)] = (1 << (b3 << 3)) + k2;
+    s_scan[addr(tid)] = (1 << (b[3] << 3)) + k[2];
 
 	uint offset = 1; // start offset for prefix sum calculation
 
@@ -58,7 +81,7 @@ void main() {
         uint shift = tid << 3;
 		uint val = ((s_scan[addr(31)] >> shift) & 0x000000FF) + ((s_scan[addr(63)] >> shift) & 0x000000FF);
 
-        block_sums[u_num_block_sums * tid + gl_WorkGroupID.x] = val;
+        b_block_sums[u_num_block_sums * tid + gl_WorkGroupID.x] = val;
     }
 
     if(tid < 1) {
@@ -88,15 +111,15 @@ void main() {
 
     uint scan_value = s_scan[addr(tid)];
 
-	uint val = (scan_value>>(b0 << 3)) & 0x000000FF;
-	val |= (((scan_value + k0)>>(b1 << 3)) & 0x000000FF) << 8;
-	val |= (((scan_value + k1)>>(b2 << 3)) & 0x000000FF) << 16;
-	val |= (((scan_value + k2)>>(b3 << 3)) & 0x000000FF) << 24;
+	uint val = (scan_value>>(b[0] << 3)) & 0x000000FF;
+	val |= (((scan_value + k[0])>>(b[1] << 3)) & 0x000000FF) << 8;
+	val |= (((scan_value + k[1])>>(b[2] << 3)) & 0x000000FF) << 16;
+	val |= (((scan_value + k[2])>>(b[3] << 3)) & 0x000000FF) << 24;
 	
-	prefix_sums[thread_offset] = val;
+	b_prefix_sums[thread_offset] = val;
     
     if(tid == 63 && gl_WorkGroupID.x == u_num_scan_groups - 1) {
-		last_sum[0] = scan_value + k2;
-		last_sum[1] = b3;
+		b_last_sum[0] = scan_value + k[2];
+		b_last_sum[1] = b[3];
 	}
 }
