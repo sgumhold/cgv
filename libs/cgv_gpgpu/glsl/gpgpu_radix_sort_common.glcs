@@ -1,25 +1,111 @@
 //?#version 430
 
-#define KEY_TYPE_FLOATING_POINT 0
+#define KEY_UINT 0
+#define KEY_INT 1
+#define KEY_FLOAT 2
+#define KEY_TYPE KEY_UINT
 
-uniform uint u_key_mask;
+#if KEY_TYPE == KEY_UINT
+	#define KEY_TYPEDEF uint
+#elif KEY_TYPE == KEY_INT
+	#define KEY_TYPEDEF int
+#elif KEY_TYPE == KEY_FLOAT
+	#define KEY_TYPEDEF float
+#endif
 
+#define VALUE_UINT 0
+#define VALUE_INT 1
+#define VALUE_FLOAT 2
+#define VALUE_CUSTOM 3
+#define VALUE_TYPE VALUE_UINT
+
+#define VALUE_TYPEDEF uint
+
+#define SORT_ASCENDING 1
+#define SORT_PAIRS 0
+
+#define RADIX					256U    // Number of digit bins
+#define RADIX_MASK				255U    // Mask of digit bins
+#define RADIX_LOG				8U      // log2(RADIX)
+#define RADIX_PASSES			4U      // (Key width) / RADIX_LOG
+
+layout(std430, binding = 0) readonly buffer keys_in_buffer { // Buffer storing the input keys
+	KEY_TYPEDEF b_keys_in[];
+};
+
+layout(std430, binding = 1) writeonly buffer keys_out_buffer { // Buffer storing the output keys
+	KEY_TYPEDEF b_keys_out[];
+};
+
+#if SORT_PAIRS == 1
+layout(std430, binding = 2) readonly buffer values_in_buffer { // Buffer storing the input values
+	VALUE_TYPEDEF b_values_in[];
+};
+
+layout(std430, binding = 3) writeonly buffer values_out_buffer { // Buffer storing the output values
+	VALUE_TYPEDEF b_values_out[];
+};
+#endif
+
+uniform uint u_num_keys; // The number of keys to sort
+uniform uint u_radix_shift; // The radix shift (bit index) of the current pass
+
+//Radix Tricks by Michael Herf
+//http://stereopsis.com/radix.html
 uint float_bits_to_bit_ordered(uint u) {
-	int mask = -int(u >> 31) | 0x80000000;
+	int mask = (-int(u >> 31)) | 0x80000000;
 	return u ^ mask;
 }
 
-uint float_to_bit_ordered(float f) {
+uint float_to_uint(float f) {
 	return float_bits_to_bit_ordered(floatBitsToUint(f));
 }
 
-uint extract_digit(uint key, uint bit) {
-#if KEY_TYPE_FLOATING_POINT
-	key = float_bits_to_bit_ordered(key);
+float uint_to_float(uint u) {
+	uint mask = ((u >> 31) - 1) | 0x80000000;
+	return uintBitsToFloat(u ^ mask);
+}
+
+uint int_to_uint(int i) {
+	return uint(i ^ 0x80000000);
+}
+
+int uint_to_int(uint u) {
+	return int(u ^ 0x80000000);
+}
+
+uint load_dummy_key() {
+	return 0xFFFFFFFF;
+}
+
+uint load_key(uint index) {
+#if KEY_TYPE == KEY_UINT
+	return b_keys_in[index];
+#elif KEY_TYPE == KEY_INT
+	return int_to_uint(b_keys_in[index]);
+#elif KEY_TYPE == KEY_FLOAT
+	return float_to_uint(b_keys_in[index]);
 #endif
+}
 
-	// The key mask is used to selectively invert key bits in order to support negative values or enable descending key order
-	key = key ^ u_key_mask;
+uint extract_digit(uint key) {
+	return key >> u_radix_shift & RADIX_MASK;
+}
 
-	return (key >> bit) & 3;
+uint extract_digit(uint key, uint shift) {
+	return key >> shift & RADIX_MASK;
+}
+
+void write_key(uint key, uint device_index) {
+#if KEY_TYPE == KEY_UINT
+	b_keys_out[device_index] = key;
+#elif KEY_TYPE == KEY_INT
+	b_keys_out[device_index] = uint_to_int(key);
+#elif KEY_TYPE == KEY_FLOAT
+	b_keys_out[device_index] = uint_to_float(key);
+#endif
+}
+
+uint descending_index(uint index) {
+	return u_num_keys - index - 1;
 }

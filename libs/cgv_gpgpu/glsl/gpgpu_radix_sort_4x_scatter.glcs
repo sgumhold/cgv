@@ -8,15 +8,15 @@ void main() {
 	uint count[4];
 	uint bucket_sums[4];
 
-	uint last_prefix_sum = last_sum[0];
+	uint last_prefix_sum = b_last_sum[0];
         
-	count[0] = (last_prefix_sum & 0x000000FF) + block_sums[u_last_block_sum_idx];
+	count[0] = (last_prefix_sum & 0x000000FF) + b_block_sums[u_last_block_sum_idx];
 	last_prefix_sum = last_prefix_sum >> 8;
-	count[1] = (last_prefix_sum & 0x000000FF) + block_sums[u_last_block_sum_idx + u_num_block_sums];
+	count[1] = (last_prefix_sum & 0x000000FF) + b_block_sums[u_last_block_sum_idx + u_num_block_sums];
 	last_prefix_sum = last_prefix_sum >> 8;
-	count[2] = (last_prefix_sum & 0x000000FF) + block_sums[u_last_block_sum_idx + u_num_block_sums + u_num_block_sums];
+	count[2] = (last_prefix_sum & 0x000000FF) + b_block_sums[u_last_block_sum_idx + u_num_block_sums + u_num_block_sums];
 	
-	count[last_sum[1]] += 1;
+	count[b_last_sum[1]] += 1;
 
 	bucket_sums[0] = 0;
 	bucket_sums[1] = count[0];
@@ -29,17 +29,23 @@ void main() {
 	uint bid = wid;
 
 	for(uint idx = wid * gl_WorkGroupSize.x + tid; idx < u_num_keys; idx += grid_stride, bid += grid_stride) {
-		uint key = keys_in[idx];
+		uint key = load_key(idx);
         uint bucket = extract_digit(key);
         
-        uint prefix_sum_value = bitfieldExtract(prefix_sums[idx >> 2], int(idx & RADIX_MASK) << 3, 8);
-		uint block_sum_value = block_sums[bucket * u_num_block_sums + bid];
-        uint scatter_addr = prefix_sum_value + block_sum_value + bucket_sums[bucket];
+        uint prefix_sum_value = bitfieldExtract(b_prefix_sums[idx >> 2], int(idx & RADIX_MASK) << 3, 8);
+		uint block_sum_value = b_block_sums[bucket * u_num_block_sums + bid];
 
-		keys_out[scatter_addr] = key;
+        uint scatter_addr = prefix_sum_value + block_sum_value + bucket_sums[bucket];
+		
+		#if SORT_ASCENDING == 0
+		if(u_radix_shift == 30)
+			scatter_addr = descending_index(scatter_addr);
+		#endif
+
+		write_key(key, scatter_addr);
 
 		#if SORT_PAIRS == 1
-		values_out[scatter_addr] = values_in[idx];
+		b_values_out[scatter_addr] = values_in[idx];
 		#endif
     }
 }

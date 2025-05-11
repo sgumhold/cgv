@@ -1,26 +1,19 @@
 #include "radix_sort_onesweep.h"
 
-#include <cgv/utils/scan.h>
-
 #include "utils.h"
 
 namespace cgv {
 namespace gpgpu {
 
-radix_sort_onesweep::radix_sort_onesweep() : sort("radix_sort_onesweep") {
+radix_sort_onesweep::radix_sort_onesweep() : radix_sort("radix_sort_onesweep", 256) {
+	_radix = 256;
 	register_kernel(_init_kernel, "gpgpu_radix_sort_onesweep_init");
 	register_kernel(_global_hist_kernel, "gpgpu_radix_sort_onesweep_global_histogram");
 	register_kernel(_scan_kernel, "gpgpu_radix_sort_onesweep_scan");
 	register_kernel(_digit_bin_pass_kernel, "gpgpu_radix_sort_onesweep_digit_bin_pass");
 }
 
-bool radix_sort_onesweep::v_init(cgv::render::context& ctx) {
-	cgv::render::shader_compile_options config;
-	config.defines["KEY_TYPE"] = "KEY_" + cgv::utils::to_upper(to_string(_key_type.type()));
-	config.defines["SORT_ASCENDING"] = _order == Order::kAscending ? "1" : "0";
-	config.defines["SORT_PAIRS"] = _value_type.is_void() ? "0" : "1";
-	config.defines["PAYLOAD_TYPE"] = "PAYLOAD_" + cgv::utils::to_upper(to_string(_value_type.type()));
-
+bool radix_sort_onesweep::v_init(cgv::render::context& ctx, cgv::render::shader_compile_options& config) {
 	if(init_kernels(ctx, config)) {
 		// TODO: Set dynamically based on GPU specs.
 		_partition_size = 3840;

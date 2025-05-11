@@ -1,20 +1,20 @@
 #pragma once
 
-#include "sort.h"
+#include "radix_sort.h"
 
 #include "lib_begin.h"
 
 namespace cgv {
 namespace gpgpu {
 
-class CGV_API radix_sort_onesweep : public sort {
+class CGV_API radix_sort_onesweep : public radix_sort {
 public:
 	radix_sort_onesweep();
 
 	void destruct(const cgv::render::context& ctx);
 
 private:
-	bool v_init(cgv::render::context& ctx) override;
+	bool v_init(cgv::render::context& ctx, cgv::render::shader_compile_options& config) override;
 
 	void v_dispatch(cgv::render::context& ctx, const cgv::render::vertex_buffer* keys_buffer, const cgv::render::vertex_buffer* values_buffer) override;
 
@@ -28,8 +28,8 @@ private:
 	};
 	*/
 
-	const uint32_t _radix = 256;
-	const uint32_t _radix_passes = 4;
+	//const uint32_t _radix = 256;
+	//const uint32_t _radix_passes = 4;
 	const uint32_t _global_histogram_partition_size = 32768;
 	const uint32_t _max_dispatch_dimension = 65535;
 
