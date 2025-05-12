@@ -173,11 +173,21 @@ private:
 
 class argument_bindings {
 public:
-	virtual size_t get_uniform_count() const = 0;
-	virtual const uniform_binding& get_uniform(size_t index) const = 0;
+	virtual size_t get_uniform_count() const {
+		return 0;
+	}
 
-	virtual size_t get_buffer_count() const = 0;
-	virtual const buffer_binding& get_buffer(size_t index) const = 0;
+	virtual const uniform_binding& get_uniform(size_t index) const {
+		return {};
+	}
+
+	virtual size_t get_buffer_count() const {
+		return 0;
+	}
+
+	virtual const buffer_binding& get_buffer(size_t index) const {
+		return {};
+	}
 };
 
 class argument_binding_list : public argument_bindings {
