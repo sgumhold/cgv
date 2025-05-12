@@ -97,9 +97,9 @@ private:
 	std::shared_ptr<type_definition> _definition;
 };
 
-extern CGV_API std::string get_type_definition_string(sl::data_type type);
+extern CGV_API std::string get_type_definition_string(data_type type);
 
-extern CGV_API std::string get_type_alias_string(const std::string& alias, sl::data_type type);
+extern CGV_API std::string get_type_alias_string(const std::string& alias, data_type type);
 
 struct type_definition {
 	std::string type_name;
@@ -171,7 +171,7 @@ public:
 	
 	named_buffer(const named_variable_list& variables, const std::string& name, const memory_qualifier_list& memory_qualifiers = {}) : _variables(variables), _name(name), _memory_qualifiers(memory_qualifiers) {}
 
-	const sl::named_variable_list& variables() const {
+	const named_variable_list& variables() const {
 		return _variables;
 	}
 
@@ -179,14 +179,14 @@ public:
 		return _name;
 	}
 
-	sl::memory_qualifier_list memory_qualifiers() const {
+	memory_qualifier_list memory_qualifiers() const {
 		return _memory_qualifiers.list();
 	}
 
 private:
 	named_variable_list _variables;
 	std::string _name;
-	sl::memory_qualifier_storage _memory_qualifiers;
+	memory_qualifier_storage _memory_qualifiers;
 };
 
 extern CGV_API std::string to_string(const named_buffer& buffer, size_t location);
