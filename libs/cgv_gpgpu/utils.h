@@ -9,7 +9,7 @@ namespace cgv {
 namespace gpgpu {
 
 /// ensure the buffer is created and has the specified properties
-extern CGV_API void ensure_buffer(const cgv::render::context& ctx, cgv::render::vertex_buffer& buffer, size_t size, cgv::render::VertexBufferType type = cgv::render::VertexBufferType::VBT_STORAGE, cgv::render::VertexBufferUsage usage = cgv::render::VertexBufferUsage::VBU_STREAM_COPY);
+extern CGV_API bool ensure_buffer(const cgv::render::context& ctx, cgv::render::vertex_buffer& buffer, size_t size, cgv::render::VertexBufferType type = cgv::render::VertexBufferType::VBT_STORAGE, cgv::render::VertexBufferUsage usage = cgv::render::VertexBufferUsage::VBU_STREAM_COPY);
 
 /// return the lowest power of two greater than x
 extern CGV_API uint32_t next_power_of_two(uint32_t x);
