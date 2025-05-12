@@ -133,9 +133,6 @@ struct argument_definitions {
 	sl::named_buffer_list buffers;
 };
 
-
-
-
 class argument_binding {
 	friend class argument_binding_list;
 
