@@ -20,7 +20,7 @@ bool fill::dispatch(cgv::render::context& ctx, const cgv::render::vertex_buffer&
 
 	_kernel.enable(ctx);
 	_kernel.set_argument(ctx, "u_count", static_cast<uint32_t>(count));
-	_kernel.set_arguments(ctx, arguments, "u_value");
+	_kernel.set_arguments(ctx, arguments);
 
 	// TODO: Make configurable.
 	const uint32_t group_size = 512;
