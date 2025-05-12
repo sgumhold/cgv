@@ -11,7 +11,7 @@ class CGV_API radix_sort_4x : public radix_sort {
 public:
 	radix_sort_4x();
 
-	void destruct(const cgv::render::context& ctx);
+	void destruct(const cgv::render::context& ctx) override;
 
 private:
 	bool v_init(cgv::render::context& ctx, cgv::render::shader_compile_options& config) override;

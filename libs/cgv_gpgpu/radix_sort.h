@@ -19,6 +19,8 @@ public:
 	bool init(cgv::render::context& ctx, const sl::data_type& key_type, Order order, size_t size);
 	bool init(cgv::render::context& ctx, const sl::data_type& key_type, const sl::data_type& value_type, Order order, size_t size);
 	
+	virtual void destruct(const cgv::render::context& ctx) = 0;
+
 	void dispatch(cgv::render::context& ctx, const cgv::render::vertex_buffer& keys_buffer);
 	void dispatch(cgv::render::context& ctx, const cgv::render::vertex_buffer& keys_buffer, const cgv::render::vertex_buffer& values_buffer);
 
