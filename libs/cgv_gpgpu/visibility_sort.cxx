@@ -2,6 +2,8 @@
 
 #include <cgv_gpgpu/utils.h>
 
+#include <cgv/render/shader_library.h>
+
 using namespace cgv::gpgpu;
 
 namespace cgv {
@@ -42,10 +44,14 @@ bool visibility_sort::load_shader_programs(cgv::render::context& ctx) {
 	cgv::render::shader_define_map scatter_defines;
 	cgv::render::shader_code::set_define(scatter_defines, "VALUE_TYPE_DEFINITION", value_type_def, "uint");
 	
-	//res = res && cgv::render::shader_library::load(ctx, key_prog, "gpgpu_rs4x_keys", key_defines, true, where);
-	//res = res && cgv::render::shader_library::load(ctx, scan_local_prog, "gpgpu_rs4x_scan_local", true, where);
-	//res = res && cgv::render::shader_library::load(ctx, scan_global_prog, "gpgpu_rs4x_scan_global", true, where);
-	//res = res && cgv::render::shader_library::load(ctx, scatter_prog, "gpgpu_rs4x_scatter", scatter_defines, true, where);
+	cgv::render::shader_compile_options options;
+	options.defines = key_defines;
+
+	res = res && cgv::render::shader_library::load(ctx, key_prog, "gpgpu_rs4x_keys", options, where);
+	res = res && cgv::render::shader_library::load(ctx, scan_local_prog, "gpgpu_rs4x_scan_local", where);
+	res = res && cgv::render::shader_library::load(ctx, scan_global_prog, "gpgpu_rs4x_scan_global", where);
+	options.defines = scatter_defines;
+	res = res && cgv::render::shader_library::load(ctx, scatter_prog, "gpgpu_rs4x_scatter", options, where);
 
 	return res;
 }
@@ -111,6 +117,7 @@ bool visibility_sort::init(cgv::render::context& ctx, size_t count) {
 	scatter_prog.disable(ctx);
 
 	//_is_initialized = true;
+	init_kernels(ctx, {});
 	return true;
 }
 

@@ -62,11 +62,11 @@ void radix_sort_onesweep::v_dispatch(cgv::render::context& ctx, const cgv::rende
 	cgv::gpgpu::double_buffer_wrapper<const cgv::render::vertex_buffer> keys(keys_buffer, &_keys_out_buffer);
 	cgv::gpgpu::double_buffer_wrapper<const cgv::render::vertex_buffer> values(values_buffer, &_values_out_buffer);
 
-	keys.first()->bind(ctx, 0);
-	keys.second()->bind(ctx, 1);
+	keys.first()->bind(ctx, cgv::render::VertexBufferType::VBT_STORAGE, 0);
+	keys.second()->bind(ctx, cgv::render::VertexBufferType::VBT_STORAGE, 1);
 	if(!_value_type.is_void()) {
-		values.first()->bind(ctx, 2);
-		values.second()->bind(ctx, 3);
+		values.first()->bind(ctx, cgv::render::VertexBufferType::VBT_STORAGE, 2);
+		values.second()->bind(ctx, cgv::render::VertexBufferType::VBT_STORAGE, 3);
 	}
 
 	_global_hist_buffer.bind(ctx, 4);
