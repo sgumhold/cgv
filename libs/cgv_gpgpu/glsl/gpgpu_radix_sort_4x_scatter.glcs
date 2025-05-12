@@ -45,7 +45,7 @@ void main() {
 		write_key(key, scatter_addr);
 
 		#if SORT_PAIRS == 1
-		b_values_out[scatter_addr] = values_in[idx];
+		b_values_out[scatter_addr] = b_values_in[idx];
 		#endif
     }
 }
