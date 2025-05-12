@@ -26,9 +26,11 @@ bool radix_sort::init(cgv::render::context& ctx, const sl::data_type& key_type, 
 
 	cgv::render::shader_compile_options config;
 	config.defines["KEY_TYPE"] = "KEY_" + cgv::utils::to_upper(to_string(_key_type.type()));
-	config.defines["VALUE_TYPE"] = "VALUE_" + (_value_type.is_void() /* || _value_type.component_count() > 1 */) ?
+
+	std::string value_typename = (_value_type.is_void() /* || _value_type.component_count() > 1 */) ?
 		"CUSTOM" :
 		cgv::utils::to_upper(to_string(_value_type.type()));
+	config.defines["VALUE_TYPE"] = "VALUE_" + value_typename;
 
 	config.defines["VALUE_TYPEDEF"] = to_string(_value_type.type());
 

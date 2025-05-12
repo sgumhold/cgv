@@ -295,6 +295,26 @@ void scatter_payloads_descending(uint gtid, DigitStruct digits) {
     }
 }
 
+void scatter_pairs_key_phase_ascending(uint gtid, inout DigitStruct digits) {
+	//[unroll]
+	for(uint i = 0, t = gtid; i < KEYS_PER_THREAD; ++i, t += D_DIM) {
+		digits.d[i] = extract_digit(s_d[t]);
+		write_shared_key(s_d[digits.d[i] + PART_SIZE] + t, t);
+	}
+}
+
+void scatter_pairs_key_phase_descending(uint gtid, inout DigitStruct digits) {
+	if(u_radix_shift == 24) {
+		//[unroll]
+		for (uint i = 0, t = gtid; i < KEYS_PER_THREAD; ++i, t += D_DIM) {
+			digits.d[i] = extract_digit(s_d[t]);
+			write_shared_key(descending_index(s_d[digits.d[i] + PART_SIZE] + t), t);
+		}
+	} else {
+		scatter_pairs_key_phase_ascending(gtid, digits);
+	}
+}
+
 void scatter_pairs_device(uint gtid, uint part_index, OffsetStruct offsets) {
 	DigitStruct digits;
 #if SORT_ASCENDING == 1
@@ -316,26 +336,6 @@ void scatter_pairs_device(uint gtid, uint part_index, OffsetStruct offsets) {
 #else
 	scatter_payloads_descending(gtid, digits);
 #endif
-}
-
-void scatter_pairs_key_phase_ascending(uint gtid, inout DigitStruct digits) {
-	//[unroll]
-	for(uint i = 0, t = gtid; i < KEYS_PER_THREAD; ++i, t += D_DIM) {
-		digits.d[i] = extract_digit(s_d[t]);
-		write_shared_key(s_d[digits.d[i] + PART_SIZE] + t, t);
-	}
-}
-
-void scatter_pairs_key_phase_descending(uint gtid, inout DigitStruct digits) {
-	if(u_radix_shift == 24) {
-		//[unroll]
-		for (uint i = 0, t = gtid; i < KEYS_PER_THREAD; ++i, t += D_DIM) {
-			digits.d[i] = extract_digit(s_d[t]);
-			write_shared_key(descending_index(s_d[digits.d[i] + PART_SIZE] + t), t);
-		}
-	} else {
-		scatter_pairs_key_phase_ascending(gtid, digits);
-	}
 }
 
 #endif
