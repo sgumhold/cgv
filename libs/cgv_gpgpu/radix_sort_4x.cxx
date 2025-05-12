@@ -1,7 +1,5 @@
 #include "radix_sort_4x.h"
 
-//#include <cgv/utils/scan.h>
-
 #include "utils.h"
 
 namespace cgv {

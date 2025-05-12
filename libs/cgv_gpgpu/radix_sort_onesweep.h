@@ -11,7 +11,7 @@ class CGV_API radix_sort_onesweep : public radix_sort {
 public:
 	radix_sort_onesweep();
 
-	void destruct(const cgv::render::context& ctx);
+	void destruct(const cgv::render::context& ctx) override;
 
 private:
 	bool v_init(cgv::render::context& ctx, cgv::render::shader_compile_options& config) override;
