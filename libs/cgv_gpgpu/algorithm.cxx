@@ -91,10 +91,10 @@ bool algorithm::init_kernels(cgv::render::context& ctx, const cgv::render::shade
 	return success;
 }
 
-void algorithm::set_buffer_binding_indices(const sl::named_buffer_list& buffers, size_t base_index) {
+void algorithm::set_buffer_binding_indices(const sl::named_buffer_list& buffers, uint32_t base_index) {
 	_base_buffer_binding_index = base_index;
 	_buffer_binding_indices.clear();
-	size_t buffer_binding_index = _base_buffer_binding_index;
+	uint32_t buffer_binding_index = _base_buffer_binding_index;
 	for(const sl::named_buffer& buffer : buffers)
 		_buffer_binding_indices[buffer.name()] = buffer_binding_index++;
 }
@@ -125,17 +125,17 @@ void algorithm::destruct_kernels(const cgv::render::context& ctx) {
 
 void algorithm::bind_buffer_arguments(cgv::render::context& ctx, const argument_bindings& arguments) {
 	for(size_t i = 0; i < arguments.get_buffer_count(); ++i) {
-		const buffer_binding& binding = arguments.get_buffer(i);
-		auto it = _buffer_binding_indices.find(binding.name());
+		const buffer_binding* binding = arguments.get_buffer(i);
+		auto it = _buffer_binding_indices.find(binding->name());
 		if(it != _buffer_binding_indices.end())
-			binding.bind(ctx, it->second);
+			binding->bind(ctx, it->second);
 	}
 }
 
 void algorithm::unbind_buffer_arguments(cgv::render::context& ctx, const argument_bindings& arguments) {
 	for(size_t i = 0; i < arguments.get_buffer_count(); ++i) {
-		const buffer_binding& binding = arguments.get_buffer(i);
-		binding.unbind(ctx);
+		const buffer_binding* binding = arguments.get_buffer(i);
+		binding->unbind(ctx);
 	}
 }
 

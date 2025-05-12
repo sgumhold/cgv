@@ -29,10 +29,10 @@ void compute_kernel::set_arguments(cgv::render::context& ctx, const argument_bin
 		_prog.enable(ctx);
 
 	for(size_t i = 0; i < arguments.get_uniform_count(); ++i) {
-		const uniform_binding& binding = arguments.get_uniform(i);
-		int loc = _prog.get_uniform_location(ctx, binding._name);
+		const uniform_binding* binding = arguments.get_uniform(i);
+		int loc = _prog.get_uniform_location(ctx, binding->_name);
 		if(loc > -1)
-			_prog.set_uniform(ctx, loc, binding._desc, binding._addr);
+			_prog.set_uniform(ctx, loc, binding->_desc, binding->_addr);
 	}
 
 	if(!was_enabled)

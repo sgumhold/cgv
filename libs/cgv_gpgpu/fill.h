@@ -14,6 +14,14 @@ public:
 
 	bool init(cgv::render::context& ctx, const sl::data_type& value_type);
 
+	template<typename T>
+	bool dispatch(cgv::render::context& ctx, const cgv::render::vertex_buffer& buffer, size_t count, T value) {
+		argument_binding_list arguments = {
+			{ "u_value", value }
+		};
+		return dispatch(ctx, buffer, count, arguments);
+	}
+
 	bool dispatch(cgv::render::context& ctx, const cgv::render::vertex_buffer& buffer, size_t count, const argument_bindings& arguments);
 
 private:
