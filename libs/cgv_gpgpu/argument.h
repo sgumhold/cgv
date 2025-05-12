@@ -98,7 +98,7 @@ using buffer_binding_list = std::vector<buffer_binding>;
 // TODO: provide iterator (or vector) initializers in all constructors with initializer lists.
 
 class argument_definition {
-	friend class argument_definitions;
+	friend struct argument_definitions;
 
 public:
 	argument_definition(const sl::data_type& type, const std::string& name) : _variable(type, name) {}
@@ -174,16 +174,16 @@ public:
 		return 0;
 	}
 
-	virtual const uniform_binding& get_uniform(size_t index) const {
-		return {};
+	virtual const uniform_binding* get_uniform(size_t index) const {
+		return nullptr;
 	}
 
 	virtual size_t get_buffer_count() const {
 		return 0;
 	}
 
-	virtual const buffer_binding& get_buffer(size_t index) const {
-		return {};
+	virtual const buffer_binding* get_buffer(size_t index) const {
+		return nullptr;
 	}
 };
 
@@ -202,16 +202,16 @@ public:
 		return _uniform_bindings.size();
 	}
 
-	const uniform_binding& get_uniform(size_t index) const override {
-		return _uniform_bindings[index];
+	const uniform_binding* get_uniform(size_t index) const override {
+		return &_uniform_bindings[index];
 	}
 
 	size_t get_buffer_count() const override {
 		return _buffer_bindings.size();
 	}
 
-	const buffer_binding& get_buffer(size_t index) const override {
-		return _buffer_bindings[index];
+	const buffer_binding* get_buffer(size_t index) const override {
+		return &_buffer_bindings[index];
 	}
 
 private:
@@ -225,16 +225,16 @@ public:
 		return _uniform_bindings.size();
 	}
 
-	const uniform_binding& get_uniform(size_t index) const override {
-		return *_uniform_bindings[index];
+	const uniform_binding* get_uniform(size_t index) const override {
+		return _uniform_bindings[index];
 	}
 
 	size_t get_buffer_count() const override {
 		return _buffer_bindings.size();
 	}
 
-	const buffer_binding& get_buffer(size_t index) const override {
-		return *_buffer_bindings[index];
+	const buffer_binding* get_buffer(size_t index) const override {
+		return _buffer_bindings[index];
 	}
 
 protected:

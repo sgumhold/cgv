@@ -30,7 +30,7 @@ protected:
 
 	void destruct_kernels(const cgv::render::context& ctx);
 
-	void set_buffer_binding_indices(const sl::named_buffer_list& buffers, size_t base_index);
+	void set_buffer_binding_indices(const sl::named_buffer_list& buffers, uint32_t base_index);
 
 	cgv::render::shader_compile_options get_configuration(const argument_definitions& arguments, const std::vector<sl::data_type> types = {}) const;
 
@@ -49,8 +49,8 @@ private:
 	const std::string _type_name;
 	bool _is_initialized = false;
 	std::vector<compute_kernel_info> _kernel_registrations;
-	std::map<std::string, size_t> _buffer_binding_indices;
-	size_t _base_buffer_binding_index = 0;
+	std::map<std::string, uint32_t> _buffer_binding_indices;
+	uint32_t _base_buffer_binding_index = 0;
 };
 
 } // namespace gpgpu

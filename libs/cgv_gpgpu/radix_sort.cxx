@@ -5,7 +5,7 @@
 namespace cgv {
 namespace gpgpu {
 
-radix_sort::radix_sort(const std::string& type_name, size_t radix) : algorithm(type_name), _radix(radix) {
+radix_sort::radix_sort(const std::string& type_name, uint32_t radix) : algorithm(type_name), _radix(radix) {
 	_radix_mask = _radix - 1;
 	_radix_log = static_cast<uint32_t>(std::log2(static_cast<double>(_radix)));
 	_radix_passes = _key_width / _radix_log;

@@ -14,7 +14,7 @@ public:
 		kDescending
 	};
 
-	radix_sort(const std::string& type_name, size_t radix);
+	radix_sort(const std::string& type_name, uint32_t radix);
 
 	bool init(cgv::render::context& ctx, const sl::data_type& key_type, Order order, size_t size);
 	bool init(cgv::render::context& ctx, const sl::data_type& key_type, const sl::data_type& value_type, Order order, size_t size);
