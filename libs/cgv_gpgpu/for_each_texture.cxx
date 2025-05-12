@@ -9,6 +9,10 @@ for_each_texture::for_each_texture() : texture_algorithm("for_each_texture", { T
 	register_kernel(_kernel, "gpgpu_for_each_texture");
 }
 
+bool for_each_texture::init(cgv::render::context& ctx, cgv::render::TextureType texture_type, const std::string& unary_operation) {
+	return init(ctx, texture_type, {}, unary_operation);
+}
+
 bool for_each_texture::init(cgv::render::context& ctx, cgv::render::TextureType texture_type, const argument_definitions& arguments, const std::string& unary_operation) {
 	cgv::render::shader_compile_options config = get_configuration(texture_type, arguments, unary_operation);
 	return texture_algorithm::init(ctx, texture_type, config);
