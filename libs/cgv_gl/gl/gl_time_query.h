@@ -36,6 +36,7 @@ public:
 	/// close the scope of OpenGL commands included in the time measurement
 	void end_scope() const;
 	/// collect the measured time, blocking until the query object is ready and the time can be retrieved
+	/// elapsed time is given in nanoseconds (1 second = 10^9 nanoseconds)
 	double collect() const;
 
 	/// close the scope of OpenGL commands included in the time measurement and retrieve the duration immediately,
