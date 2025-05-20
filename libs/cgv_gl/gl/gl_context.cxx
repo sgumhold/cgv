@@ -1895,16 +1895,34 @@ GLuint gl_context::texture_generate(texture_base& tb) const
 	return tex_id;
 }
 
-int gl_context::query_integer_constant(ContextIntegerConstant cic) const
+int gl_context::query_integer_constant(ContextIntegerConstant cic, int index) const
 {
-	GLint gl_const;
-	switch (cic) {
-		case MAX_NR_GEOMETRY_SHADER_OUTPUT_VERTICES :
-			gl_const = GL_MAX_GEOMETRY_OUTPUT_VERTICES;
-			break;
+	GLint gl_const = -1;
+	switch(cic) {
+	case MAX_NR_GEOMETRY_SHADER_OUTPUT_VERTICES:
+		gl_const = GL_MAX_GEOMETRY_OUTPUT_VERTICES;
+		break;
+	case MAX_COMPUTE_SHARED_MEMORY_SIZE:
+		gl_const = GL_MAX_COMPUTE_SHARED_MEMORY_SIZE;
+		break;
+	case MAX_COMPUTE_WORK_GROUP_INVOCATIONS:
+		gl_const = GL_MAX_COMPUTE_WORK_GROUP_INVOCATIONS;
+		break;
+	case MAX_COMPUTE_WORK_GROUP_COUNT_OF_DIM:
+		gl_const = GL_MAX_COMPUTE_WORK_GROUP_COUNT;
+		break;
+	case MAX_COMPUTE_WORK_GROUP_SIZE_OF_DIM:
+		gl_const = GL_MAX_COMPUTE_WORK_GROUP_SIZE;
+		break;
+	default: break;
 	}
-	GLint value;
-	glGetIntegerv(gl_const, &value);
+	GLint value = -1;
+	if(gl_const > -1) {
+		if(index > -1)
+			glGetIntegeri_v(gl_const, static_cast<GLuint>(index), &value);
+		else
+			glGetIntegerv(gl_const, &value);
+	}
 	return value;
 }
 

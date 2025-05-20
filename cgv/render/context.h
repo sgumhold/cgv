@@ -443,8 +443,8 @@ enum VertexBufferUsage {
 					  ///< for GL drawing and image specification commands.
 	VBU_DYNAMIC_READ, ///< Modified repeatedly and used many times; Modified by reading data from the GL, and used to
 					  ///< return that data when queried by the application.
-	VBU_DYNAMIC_COPY ///< Modified repeatedly and used many times; Modified by reading data from the GL, and used as the
-					 ///< source for GL drawing and image specification commands.
+	VBU_DYNAMIC_COPY  ///< Modified repeatedly and used many times; Modified by reading data from the GL, and used as the
+					  ///< source for GL drawing and image specification commands.
 };
 
 /// base interface for a vertex buffer
@@ -508,7 +508,11 @@ enum FrameBufferType {
 
 /// integer constants that can be queried from context
 enum ContextIntegerConstant { 
-	MAX_NR_GEOMETRY_SHADER_OUTPUT_VERTICES 
+	MAX_NR_GEOMETRY_SHADER_OUTPUT_VERTICES, /// the maximum number that can be provided to the max_vertices output layout qualifier in a geometry shader
+	MAX_COMPUTE_SHARED_MEMORY_SIZE,			/// total available storage size in bytes for all shared variables in a compute shader
+	MAX_COMPUTE_WORK_GROUP_INVOCATIONS,		/// the number of invocations in a single local work group (i.e., the product of the three dimensions) that may be dispatched to a compute shader
+	MAX_COMPUTE_WORK_GROUP_COUNT_OF_DIM,	/// the maximum number of work groups that may be dispatched to a compute shader; dimension index 0, 1, and 2 correspond to the X, Y and Z dimensions, respectively
+	MAX_COMPUTE_WORK_GROUP_SIZE_OF_DIM		/// the maximum size of a work groups that may be used during compilation of a compute shader; dimension index 0, 1, and 2 correspond to the X, Y and Z dimensions, respectively
 };
 
 // forward declaration of all render components
@@ -803,7 +807,8 @@ protected:
 	/// draw some text at cursor position and update cursor position
 	virtual void draw_text(const std::string& text);
 
-	virtual int query_integer_constant(ContextIntegerConstant cic) const = 0;
+	/// query a context integer constant from the graphics device; use index for querying multi-dimensional constants
+	virtual int query_integer_constant(ContextIntegerConstant cic, int index = -1) const = 0;
 	virtual void destruct_render_objects();
 	virtual void put_id(void* handle, void* ptr) const = 0;
 
