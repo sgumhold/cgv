@@ -62,7 +62,17 @@ enum class Type {
 	kStruct
 };
 
+struct type_info {
+	Type component_type;	// the base data type of vector or matrix components
+	uint8_t column_count;	// the number of columns (1 for scalars and vectors)
+	uint8_t row_count;		// the number of rows (1 for scalars)
+	uint8_t base_size;		// according to layout std430, internal use only
+	uint8_t base_alignment;	// according to layout std430
+};
+
 extern CGV_API std::string to_string(Type type);
+
+extern CGV_API type_info get_type_info(Type type);
 
 /// Indicator for variable size arrays that are typically used in buffers.
 static constexpr auto varsize{ static_cast<size_t>(-1) };
@@ -80,17 +90,29 @@ public:
 
 	data_type(const std::string& name, const named_variable_list& members);
 
-	bool is_valid() const;
-
-	bool is_void() const;
-
-	bool is_compound() const;
-
 	Type type() const;
 
 	named_variable_list members() const;
 
 	std::string type_name() const;
+
+	bool is_valid() const;
+
+	bool is_void() const;
+
+	bool is_scalar() const;
+
+	bool is_vector() const;
+
+	bool is_matrix() const;
+
+	bool is_compound() const;
+
+	/// @brief Return the size of one instance of this data_type in bytes without padding for alignment.
+	size_t size_in_bytes() const;
+
+	/// @brief Return the memory alignment of this data_type in bytes according to GLSL layout std430.
+	size_t alignment_in_bytes() const;
 
 private:
 	Type _base_type = Type::kVoid;

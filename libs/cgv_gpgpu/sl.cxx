@@ -1,11 +1,15 @@
 #include "sl.h"
 
+#include <array>
+
 #include <cgv/utils/algorithm.h>
+
+#include "utils.h"
 
 namespace sl {
 
 std::string to_string(Type type) {
-	static std::vector<std::string> strs = {
+	static const std::array<std::string, 40> strs = {
 		"void",
 		"bool",
 		"int",
@@ -50,31 +54,58 @@ std::string to_string(Type type) {
 	return strs[static_cast<int>(type)];
 }
 
+type_info get_type_info(Type type) {
+	static const std::vector<type_info> infos = {{
+		{ Type::kVoid, 0, 0, 0, 0 },		// kVoid
+		{ Type::kBool, 1, 1, 4, 4 },		// kBool
+		{ Type::kInt, 1, 1, 4, 4 },			// kInt
+		{ Type::kUInt, 1, 1, 4, 4 },		// kUInt
+		{ Type::kFloat, 1, 1, 4, 4 },		// kFloat
+		{ Type::kDouble, 1, 1, 8, 8 },		// kDouble
+		{ Type::kBool, 1, 2, 8, 8 },		// kBVec2
+		{ Type::kBool, 1, 3, 12, 16 },		// kBVec3
+		{ Type::kBool, 1, 4, 16, 16 },		// kBVec4
+		{ Type::kInt, 1, 2, 8, 8 },			// kIVec2
+		{ Type::kInt, 1, 3, 12, 16 },		// kIVec3
+		{ Type::kInt, 1, 4, 16, 16 },		// kIVec4
+		{ Type::kUInt, 1, 2, 8, 8 },		// kUVec2
+		{ Type::kUInt, 1, 3, 12, 16 },		// kUVec3
+		{ Type::kUInt, 1, 4, 16, 16 },		// kUVec4
+		{ Type::kFloat, 1, 2, 8, 8 },		// kVec2
+		{ Type::kFloat, 1, 3, 12, 16 },		// kVec3
+		{ Type::kFloat, 1, 4, 16, 16 },		// kVec4
+		{ Type::kDouble, 1, 2, 16, 16 },	// kDVec2
+		{ Type::kDouble, 1, 3, 24, 32 },	// kDVec3
+		{ Type::kDouble, 1, 4, 32, 32 },	// kDVec4
+		{ Type::kFloat, 2, 2, 16, 8 },		// kMat2
+		{ Type::kFloat, 3, 3, 36, 16 },		// kMat3
+		{ Type::kFloat, 4, 4, 64, 16 },		// kMat4
+		{ Type::kFloat, 2, 3, 24, 16 },		// kMat2x3
+		{ Type::kFloat, 2, 4, 32, 16 },		// kMat2x4
+		{ Type::kFloat, 3, 2, 24, 8 },		// kMat3x2
+		{ Type::kFloat, 3, 4, 48, 16 },		// kMat3x4
+		{ Type::kFloat, 4, 2, 32, 8 },		// kMat4x2
+		{ Type::kFloat, 4, 3, 48, 16 },		// kMat4x3
+		{ Type::kDouble, 2, 2, 32, 16 },	// kDMat2
+		{ Type::kDouble, 3, 3, 72, 32 },	// kDMat3
+		{ Type::kDouble, 4, 4, 128, 32 },	// kDMat4
+		{ Type::kDouble, 2, 3, 48, 32 },	// kDMat2x3
+		{ Type::kDouble, 2, 4, 64, 32 },	// kDMat2x4
+		{ Type::kDouble, 3, 2, 48, 16 },	// kDMat3x2
+		{ Type::kDouble, 3, 4, 96, 32 },	// kDMat3x4
+		{ Type::kDouble, 4, 2, 64, 16 },	// kDMat4x2
+		{ Type::kDouble, 4, 3, 96, 32 },	// kDMat4x3
+		{ Type::kStruct, 0, 0, 0, 0 },		// kStruct
+	}};
+	return infos[static_cast<int>(type)];
+}
+
 data_type::data_type() {}
 
 data_type::data_type(Type type) : _base_type(type) {}
 
 data_type::data_type(const std::string& name, const named_variable_list& members) : _base_type(Type::kStruct) {
 	_definition = std::make_shared<type_definition>(type_definition{ name, members });
-}
-
-bool data_type::is_valid() const {
-	switch(_base_type) {
-	case sl::Type::kStruct:
-		// struct types are only valid if they have a non-empty name
-		return !type_name().empty();
-	default:
-		// basic types are always valid
-		return true;
-	}
-}
-
-bool data_type::is_void() const {
-	return _base_type == Type::kVoid;
-}
-
-bool data_type::is_compound() const {
-	return _base_type == Type::kStruct;
 }
 
 Type data_type::type() const {
@@ -92,6 +123,83 @@ std::string data_type::type_name() const {
 		return _definition->type_name;
 	else
 		return to_string(_base_type);
+}
+
+bool data_type::is_valid() const {
+	switch(_base_type) {
+	case sl::Type::kStruct:
+		// Struct types are only valid if they have a non-empty name.
+		return !type_name().empty();
+	default:
+		// Basic types are always valid.
+		return true;
+	}
+}
+
+bool data_type::is_void() const {
+	return _base_type == Type::kVoid;
+}
+
+bool data_type::is_scalar() const {
+	int index = static_cast<int>(_base_type);
+	return index >= static_cast<int>(Type::kBool) && index <= static_cast<int>(Type::kDouble);
+}
+
+bool data_type::is_vector() const {
+	int index = static_cast<int>(_base_type);
+	return index >= static_cast<int>(Type::kBVec2) && index <= static_cast<int>(Type::kDVec4);
+}
+
+bool data_type::is_matrix() const {
+	int index = static_cast<int>(_base_type);
+	return index >= static_cast<int>(Type::kMat2) && index <= static_cast<int>(Type::kDMat4x3);
+}
+
+bool data_type::is_compound() const {
+	return _base_type == Type::kStruct;
+}
+
+size_t data_type::size_in_bytes() const {
+	if(is_compound()) {
+		size_t size = 0;
+		size_t max_alignment = 0;
+		for(const named_variable& member : _definition->members) {
+			size_t member_alignment = member.type().alignment_in_bytes();
+			max_alignment = std::max(member_alignment, max_alignment);
+
+			if(size > 0)
+				// TODO: put this and next_power of two in math lib and namespace
+				size = cgv::gpgpu::next_multiple_greater_than(size, member_alignment);
+
+			size_t member_size = member.type().size_in_bytes();
+
+			// Compound and matrix types behave like arrays, in that they have padding at the end.
+			if(member.type().is_compound() || member.type().is_matrix())
+				member_size = cgv::gpgpu::next_multiple_greater_than(member_size, member_alignment);
+
+			if(member.array_size() > 0)
+				// The size of the whole array is the number of elements times their alignment.
+				// Arrays possibly have padding at the end which cannot be used for the next member.
+				member_size = member.array_size() * member_alignment;
+
+			size += member_size;
+		}
+
+		return size;
+	}
+
+	return get_type_info(_base_type).base_size;
+}
+
+size_t data_type::alignment_in_bytes() const {
+	if(is_compound()) {
+		size_t max_alignment = 0;
+		for(const named_variable& member : _definition->members)
+			max_alignment = std::max(member.type().alignment_in_bytes(), max_alignment);
+		return max_alignment;
+	}
+
+	return get_type_info(_base_type).base_alignment;
 }
 
 std::string get_type_definition_string(sl::data_type type) {
