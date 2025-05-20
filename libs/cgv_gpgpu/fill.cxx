@@ -3,6 +3,8 @@
 namespace cgv {
 namespace gpgpu {
 
+const std::string fill::value_argument_name = "u_value";
+
 fill::fill() : algorithm("fill") {
 	register_kernel(_kernel, "gpgpu_fill");
 }

@@ -3,6 +3,9 @@
 namespace cgv {
 namespace gpgpu {
 
+const std::string sequence::init_argument_name = "u_init";
+const std::string sequence::step_argument_name = "u_step";
+
 sequence::sequence() : algorithm("sequence") {
 	register_kernel(_kernel, "gpgpu_sequence");
 }
