@@ -11,12 +11,12 @@ namespace gpgpu {
 /// ensure the buffer is created and has the specified properties
 extern CGV_API bool ensure_buffer(const cgv::render::context& ctx, cgv::render::vertex_buffer& buffer, size_t size, cgv::render::VertexBufferType type = cgv::render::VertexBufferType::VBT_STORAGE, cgv::render::VertexBufferUsage usage = cgv::render::VertexBufferUsage::VBU_STREAM_COPY);
 
-/// return the lowest power of two greater than x
+/// return the lowest power of two greater than or equal to x
 extern CGV_API uint32_t next_power_of_two(uint32_t x);
-/// return the lowest multiple of y greater than x
+/// return the lowest multiple of y greater than or equal to x
 extern CGV_API uint32_t next_multiple_greater_than(uint32_t x, uint32_t y);
 
-/// return ceil(a/b)
+/// return ceil(a/b) for integers
 template<typename T>
 T div_round_up(T a, T b) {
 	assert(a != T(0));
