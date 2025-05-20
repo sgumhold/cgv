@@ -43,7 +43,7 @@ extern CGV_API void set_material(const cgv::media::illum::phong_material& mat, M
 class CGV_API gl_context : public render::context
 {
 private:
-	int query_integer_constant(ContextIntegerConstant cic) const override;
+	int query_integer_constant(ContextIntegerConstant cic, int index = -1) const override;
 	GLuint texture_bind(TextureType tt, GLuint tex_id) const;
 	void texture_unbind(TextureType tt, GLuint tmp_id) const;
 	GLuint texture_generate(texture_base& tb) const;
