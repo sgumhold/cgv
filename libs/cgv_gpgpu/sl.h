@@ -224,6 +224,52 @@ struct buffer {};
 
 } // namespace tag
 
+namespace operation {
+
+struct plus {
+	std::string operator()(const std::string& lhs, const std::string& rhs) {
+		return lhs + " + " + rhs;
+	}
+};
+
+struct minus {
+	std::string operator()(const std::string& lhs, const std::string& rhs) {
+		return lhs + " - " + rhs;
+	}
+};
+
+struct min {
+	std::string operator()(const std::string& lhs, const std::string& rhs) {
+		return "min(" + lhs + ", " + rhs + ")";
+	}
+};
+
+struct max {
+	std::string operator()(const std::string& lhs, const std::string& rhs) {
+		return "max(" + lhs + ", " + rhs + ")";
+	}
+};
+
+struct multiplies {
+	std::string operator()(const std::string& lhs, const std::string& rhs) {
+		return lhs + " * " + rhs;
+	}
+};
+
+struct divides {
+	std::string operator()(const std::string& lhs, const std::string& rhs) {
+		return lhs + " / " + rhs;
+	}
+};
+
+struct modulus {
+	std::string operator()(const std::string& lhs, const std::string& rhs) {
+		return lhs + " % " + rhs;
+	}
+};
+
+} // namespace operation
+
 } // namespace sl
 
 #include <cgv/config/lib_end.h>
