@@ -25,6 +25,7 @@ public:
 
 protected:
 	void register_kernel(compute_kernel& kernel, const std::string& name);
+	void register_kernel(compute_kernel& kernel, const std::string& name, const cgv::render::shader_define_map& defines);
 	
 	bool init_kernels(cgv::render::context& ctx, const cgv::render::shader_compile_options& config);
 
@@ -44,6 +45,7 @@ private:
 	struct compute_kernel_info {
 		compute_kernel* kernel = nullptr;
 		std::string name;
+		cgv::render::shader_define_map defines;
 	};
 
 	const std::string _type_name;

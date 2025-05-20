@@ -82,11 +82,23 @@ void algorithm::register_kernel(compute_kernel& kernel, const std::string& name)
 	_kernel_registrations.push_back({ &kernel, name });
 };
 
+void algorithm::register_kernel(compute_kernel& kernel, const std::string& name, const cgv::render::shader_define_map& defines) {
+	_kernel_registrations.push_back({ &kernel, name, defines });
+};
+
 bool algorithm::init_kernels(cgv::render::context& ctx, const cgv::render::shader_compile_options& config) {
 	const std::string debug_context = "cgv::gpgpu::" + get_type_name();
 	bool success = true;
-	for(const auto& info : _kernel_registrations)
-		success &= info.kernel->init(ctx, info.name, config, debug_context);
+	for(const auto& info : _kernel_registrations) {
+		if(info.defines.empty()) {
+			success &= info.kernel->init(ctx, info.name, config, debug_context);
+		} else {
+			cgv::render::shader_compile_options extended_config = config;
+			for(const auto& define : info.defines)
+				extended_config.defines[define.first] = define.second;
+			success &= info.kernel->init(ctx, info.name, extended_config, debug_context);
+		}
+	}
 	_is_initialized = success;
 	return success;
 }
