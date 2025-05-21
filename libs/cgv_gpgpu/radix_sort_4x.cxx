@@ -71,8 +71,10 @@ void radix_sort_4x::destruct(const cgv::render::context& ctx) {
 }
 
 void radix_sort_4x::v_dispatch(cgv::render::context& ctx, const cgv::render::vertex_buffer* keys_buffer, const cgv::render::vertex_buffer* values_buffer) {
-	cgv::gpgpu::double_buffer_wrapper<const cgv::render::vertex_buffer> keys(keys_buffer, &_keys_out_buffer);
-	cgv::gpgpu::double_buffer_wrapper<const cgv::render::vertex_buffer> values(values_buffer, &_values_out_buffer);
+	vertex_double_buffer_wrapper keys(keys_buffer, &_keys_out_buffer);
+	keys.binding_type_override = cgv::render::VertexBufferType::VBT_STORAGE;
+	vertex_double_buffer_wrapper values(values_buffer, &_values_out_buffer);
+	values.binding_type_override = cgv::render::VertexBufferType::VBT_STORAGE;
 
 	_prefix_sums_buffer.bind(ctx, 4);
 	_block_sums_buffer.bind(ctx, 5);
@@ -83,12 +85,9 @@ void radix_sort_4x::v_dispatch(cgv::render::context& ctx, const cgv::render::ver
 	constexpr GLbitfield barrier = GL_SHADER_STORAGE_BARRIER_BIT;
 
 	for(uint32_t i = 0; i < 32; i += 2) {
-		keys.first()->bind(ctx, cgv::render::VertexBufferType::VBT_STORAGE, 0);
-		keys.second()->bind(ctx, cgv::render::VertexBufferType::VBT_STORAGE, 1);
-		if(!_value_type.is_void()) {
-			values.first()->bind(ctx, cgv::render::VertexBufferType::VBT_STORAGE, 2);
-			values.second()->bind(ctx, cgv::render::VertexBufferType::VBT_STORAGE, 3);
-		}
+		keys.bind_all(ctx, 0, 1);
+		if(!_value_type.is_void())
+			values.bind_all(ctx, 2, 3);
 
 		_scan_local_kernel.enable(ctx);
 		_scan_local_kernel.set_argument(ctx, "u_radix_shift", i);
@@ -111,12 +110,9 @@ void radix_sort_4x::v_dispatch(cgv::render::context& ctx, const cgv::render::ver
 		values.swap();
 	}
 
-	keys.first()->unbind(ctx, cgv::render::VertexBufferType::VBT_STORAGE, 0);
-	keys.second()->unbind(ctx, cgv::render::VertexBufferType::VBT_STORAGE, 1);
-	if(!_value_type.is_void()) {
-		values.first()->unbind(ctx, cgv::render::VertexBufferType::VBT_STORAGE, 2);
-		values.second()->unbind(ctx, cgv::render::VertexBufferType::VBT_STORAGE, 3);
-	}
+	keys.unbind_all(ctx, 0, 1);
+	if(!_value_type.is_void())
+		values.unbind_all(ctx, 2, 3);
 	_prefix_sums_buffer.unbind(ctx, 4);
 	_block_sums_buffer.unbind(ctx, 5);
 	_last_sum_buffer.unbind(ctx, 6);
