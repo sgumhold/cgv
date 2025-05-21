@@ -2,6 +2,7 @@
 
 #include "algorithm.h"
 #include "storage_buffer.h"
+#include "device_buffer_iterator.h"
 
 #include "lib_begin.h"
 
@@ -28,7 +29,21 @@ public:
 	// TODO: have option to put reduced value in first place of buffer or in _group_reduction_buffer.
 	// TODO: compute approx elements per thread and define num_groups based on that and group_size
 	// TODO: aim for 4 to 8 elements per thread? Or even more?
+	// 
+	// TODO: Remove this first overload and only use iterators versions.
 	bool dispatch(cgv::render::context& ctx, const cgv::render::vertex_buffer& buffer, size_t count, const argument_bindings& arguments = {});
+	bool dispatch(cgv::render::context& ctx, device_buffer_iterator first, device_buffer_iterator last, const argument_bindings& arguments = {});
+	bool dispatch(cgv::render::context& ctx, device_buffer_iterator input_first, device_buffer_iterator input_last, device_buffer_iterator output, const argument_bindings& arguments = {});
+
+	template<typename T>
+	bool read_result(cgv::render::context& ctx, T& out) {
+		std::vector<T> res(1);
+		if(_group_reduction_buffer.copy(ctx, res)) {
+			out = res.front();
+			return true;
+		}
+		return false;
+	}
 
 	static const std::string init_argument_name;
 
