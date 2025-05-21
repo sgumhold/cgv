@@ -201,6 +201,10 @@ size_t data_type::alignment_in_bytes() const {
 	return get_type_info(_base_type).base_alignment;
 }
 
+size_t get_aligned_size(data_type type) {
+	return cgv::math::next_multiple_k_greater_than_n(type.alignment_in_bytes(), type.size_in_bytes());
+}
+
 std::string get_type_definition_string(sl::data_type type) {
 	std::string type_name = type.type_name();
 	switch(type.type()) {

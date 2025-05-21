@@ -119,6 +119,8 @@ private:
 	std::shared_ptr<type_definition> _definition;
 };
 
+extern CGV_API size_t get_aligned_size(data_type type);
+
 extern CGV_API std::string get_type_definition_string(data_type type);
 
 extern CGV_API std::string get_type_alias_string(const std::string& alias, data_type type);
