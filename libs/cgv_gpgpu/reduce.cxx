@@ -36,13 +36,14 @@ bool reduce::init(cgv::render::context& ctx, const sl::data_type& value_type, co
 
 	// TODO: Streamline process. (use group_size and value_type_size (with alignment) to determine if value type fits in shared memory.)
 	size_t aligned_size = cgv::math::next_multiple_k_greater_than_n(value_type.alignment_in_bytes(), value_type.size_in_bytes());
-	GLint maximum_shared_mem_size = 0;
-	glGetIntegerv(GL_MAX_COMPUTE_SHARED_MEMORY_SIZE, &maximum_shared_mem_size);
+	//GLint maximum_shared_mem_size = 0;
+	//glGetIntegerv(GL_MAX_COMPUTE_SHARED_MEMORY_SIZE, &maximum_shared_mem_size);
+	
 	// TODO: Get this information from the context. Decide on making the query method public or
 	// using some other way of providing the information, like a "device_capabilities" struct.
 	//ctx.query_integer_constant(cgv::render::MAX_COMPUTE_SHARED_MEMORY_SIZE);
 
-	size_t available_size = static_cast<size_t>(maximum_shared_mem_size);
+	size_t available_size = static_cast<size_t>(ctx.get_device_capabilities().max_compute_shared_memory_size);
 
 	size_t available_element_count = available_size / aligned_size;
 
