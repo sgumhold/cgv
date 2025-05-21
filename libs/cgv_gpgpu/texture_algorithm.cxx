@@ -1,5 +1,7 @@
 #include "texture_algorithm.h"
 
+#include <cgv/math/integer.h>
+
 namespace cgv {
 namespace gpgpu {
 
@@ -77,7 +79,7 @@ uvec3 texture_algorithm::get_texture_size(const cgv::render::texture& texture) c
 }
 
 uvec3 texture_algorithm::get_num_groups(const uvec3& texture_size, uint32_t base_group_size) const {
-	uvec3 num_groups = div_round_up(texture_size, uvec3(base_group_size));
+	uvec3 num_groups = cgv::math::div_round_up(texture_size, uvec3(base_group_size));
 	// ensure at least one group is launched per dimension
 	return max(num_groups, uvec3(1));
 }

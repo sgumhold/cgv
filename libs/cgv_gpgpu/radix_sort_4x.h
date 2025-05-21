@@ -1,6 +1,7 @@
 #pragma once
 
 #include "radix_sort.h"
+#include "storage_buffer.h"
 
 #include "lib_begin.h"
 
@@ -18,8 +19,6 @@ private:
 
 	void v_dispatch(cgv::render::context& ctx, const cgv::render::vertex_buffer* keys_buffer, const cgv::render::vertex_buffer* values_buffer) override;
 
-	//const uint32_t _radix = 4;
-	//const uint32_t _radix_passes = 16;
 	const uint32_t _group_size = 64;
 	const uint32_t _block_size = 4 * _group_size;
 
@@ -32,11 +31,11 @@ private:
 	compute_kernel _scatter_kernel;
 
 	/// GPU buffers
-	cgv::render::vertex_buffer _keys_out_buffer;
-	cgv::render::vertex_buffer _values_out_buffer;
-	cgv::render::vertex_buffer _prefix_sums_buffer;
-	cgv::render::vertex_buffer _block_sums_buffer;
-	cgv::render::vertex_buffer _last_sum_buffer;
+	storage_buffer _keys_out_buffer;
+	storage_buffer _values_out_buffer;
+	storage_buffer _prefix_sums_buffer;
+	storage_buffer _block_sums_buffer;
+	storage_buffer _last_sum_buffer;
 };
 
 } // namespace gpgpu

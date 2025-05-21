@@ -1,7 +1,5 @@
 #include "for_each_texture.h"
 
-#include <cgv_gpgpu/utils.h>
-
 namespace cgv {
 namespace gpgpu {
 

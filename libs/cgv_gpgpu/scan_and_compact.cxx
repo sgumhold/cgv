@@ -1,8 +1,6 @@
 #include "scan_and_compact.h"
 
-#include <cgv_gpgpu/utils.h>
-
-using namespace cgv::gpgpu;
+#include <cgv/math/integer.h>
 
 namespace cgv {
 namespace gpgpu {
@@ -56,11 +54,11 @@ bool scan_and_compact::init(cgv::render::context& ctx, size_t count) {
 	unsigned int block_size = 4 * group_size;
 
 	// Calculate padding for n to next multiple of blocksize.
-	uint32_t n_padded = next_multiple_greater_than(n, block_size);
+	uint32_t n_padded = cgv::math::next_multiple_k_greater_than_n(block_size, n);
 	//n_pad = calculate_padding(n, block_size);
 
-	num_groups = div_round_up(n_padded, group_size);
-	num_scan_groups = div_round_up(n_padded, block_size);
+	num_groups = cgv::math::div_round_up(n_padded, group_size);
+	num_scan_groups = cgv::math::div_round_up(n_padded, block_size);
 
 	unsigned int block_sum_offset_shift = static_cast<unsigned int>(log2f(float(block_size)));
 
@@ -71,15 +69,15 @@ bool scan_and_compact::init(cgv::render::context& ctx, size_t count) {
 		num <<= 1;
 	num_block_sums = num;
 
-	unsigned num_vote_ballots = div_round_up(n_padded, 32u);
+	unsigned num_vote_ballots = cgv::math::div_round_up(n_padded, 32u);
 
-	size_t votes_size = num_vote_ballots * 4;
-	size_t data_size = (n_padded) * sizeof(unsigned int);
-	size_t blocksums_size = num_block_sums * sizeof(unsigned int);
+	//size_t votes_size = num_vote_ballots * 4;
+	//size_t data_size = (n_padded) * sizeof(unsigned int);
+	//size_t blocksums_size = num_block_sums * sizeof(unsigned int);
 
-	ensure_buffer(ctx, votes_buffer, data_size);
-	ensure_buffer(ctx, prefix_sums_buffer, 4 * sizeof(unsigned int) + data_size / 4);
-	ensure_buffer(ctx, block_sums_buffer, blocksums_size);
+	votes_buffer.create_or_resize<uint32_t>(ctx, n_padded);
+	prefix_sums_buffer.create_or_resize<uint32_t>(ctx, 4 + (n_padded / 4));
+	block_sums_buffer.create_or_resize<uint32_t>(ctx, num_block_sums);
 
 	vote_prog.enable(ctx);
 	vote_prog.set_uniform(ctx, "n", n);

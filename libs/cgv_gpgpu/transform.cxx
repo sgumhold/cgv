@@ -1,5 +1,7 @@
 #include "transform.h"
 
+#include <cgv/math/integer.h>
+
 namespace cgv {
 namespace gpgpu {
 
@@ -35,7 +37,7 @@ bool transform::dispatch(cgv::render::context& ctx, const cgv::render::vertex_bu
 
 	// TODO: Make configurable.
 	const uint32_t group_size = 512;
-	uint32_t num_groups = div_round_up(static_cast<uint32_t>(count), group_size);
+	uint32_t num_groups = cgv::math::div_round_up(static_cast<uint32_t>(count), group_size);
 	dispatch_compute(num_groups, 1, 1);
 	glMemoryBarrier(GL_SHADER_STORAGE_BARRIER_BIT);
 

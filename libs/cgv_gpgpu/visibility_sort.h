@@ -1,6 +1,7 @@
 #pragma once
 
 #include "algorithm.h"
+#include "storage_buffer.h"
 
 #include "lib_begin.h"
 
@@ -34,12 +35,12 @@ protected:
 	unsigned num_scan_groups = 0;
 
 	/// buffer objects
-	cgv::render::vertex_buffer keys_in_buffer;
-	cgv::render::vertex_buffer keys_out_buffer;
-	cgv::render::vertex_buffer values_out_buffer;
-	cgv::render::vertex_buffer prefix_sums_buffer;
-	cgv::render::vertex_buffer block_sums_buffer;
-	cgv::render::vertex_buffer last_sum_buffer;
+	storage_buffer keys_in_buffer;
+	storage_buffer keys_out_buffer;
+	storage_buffer values_out_buffer;
+	storage_buffer prefix_sums_buffer;
+	storage_buffer block_sums_buffer;
+	storage_buffer last_sum_buffer;
 
 	/// shader programs
 	cgv::render::shader_program key_prog;

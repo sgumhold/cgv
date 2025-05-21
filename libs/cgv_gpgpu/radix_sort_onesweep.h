@@ -1,6 +1,7 @@
 #pragma once
 
 #include "radix_sort.h"
+#include "storage_buffer.h"
 
 #include "lib_begin.h"
 
@@ -43,11 +44,11 @@ private:
 	compute_kernel _digit_bin_pass_kernel;
 
 	/// GPU buffers
-	cgv::render::vertex_buffer _keys_out_buffer;
-	cgv::render::vertex_buffer _values_out_buffer;
-	cgv::render::vertex_buffer _pass_hist_buffer;
-	cgv::render::vertex_buffer _global_hist_buffer;
-	cgv::render::vertex_buffer _index_buffer;
+	storage_buffer _keys_out_buffer;
+	storage_buffer _values_out_buffer;
+	storage_buffer _pass_hist_buffer;
+	storage_buffer _global_hist_buffer;
+	storage_buffer _index_buffer;
 };
 
 } // namespace gpgpu

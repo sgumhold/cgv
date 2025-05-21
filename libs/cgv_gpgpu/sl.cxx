@@ -2,9 +2,8 @@
 
 #include <array>
 
+#include <cgv/math/integer.h>
 #include <cgv/utils/algorithm.h>
-
-#include "utils.h"
 
 namespace sl {
 
@@ -55,7 +54,7 @@ std::string to_string(Type type) {
 }
 
 type_info get_type_info(Type type) {
-	static const std::vector<type_info> infos = {{
+	static const std::array<type_info, 40> infos = {{
 		{ Type::kVoid, 0, 0, 0, 0 },		// kVoid
 		{ Type::kBool, 1, 1, 4, 4 },		// kBool
 		{ Type::kInt, 1, 1, 4, 4 },			// kInt
@@ -169,13 +168,13 @@ size_t data_type::size_in_bytes() const {
 
 			if(size > 0)
 				// TODO: put this and next_power of two in math lib and namespace
-				size = cgv::gpgpu::next_multiple_greater_than(size, member_alignment);
+				size = cgv::math::next_multiple_k_greater_than_n(member_alignment, size);
 
 			size_t member_size = member.type().size_in_bytes();
 
 			// Compound and matrix types behave like arrays, in that they have padding at the end.
 			if(member.type().is_compound() || member.type().is_matrix())
-				member_size = cgv::gpgpu::next_multiple_greater_than(member_size, member_alignment);
+				member_size = cgv::math::next_multiple_k_greater_than_n(member_alignment, member_size);
 
 			if(member.array_size() > 0)
 				// The size of the whole array is the number of elements times their alignment.
