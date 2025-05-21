@@ -20,8 +20,7 @@ public:
 	}
 
 	bool create_or_resize(const cgv::render::context& ctx, sl::data_type element_type, size_t element_count) {
-		size_t aligned_element_size = cgv::math::next_multiple_k_greater_than_n(element_type.alignment_in_bytes(), element_type.size_in_bytes());
-		return cgv::render::vertex_buffer::create_or_resize(ctx, element_count * aligned_element_size);
+		return cgv::render::vertex_buffer::create_or_resize(ctx, element_count * sl::get_aligned_size(element_type));
 	}
 };
 
