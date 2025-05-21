@@ -61,15 +61,14 @@ void radix_sort_onesweep::destruct(const cgv::render::context& ctx) {
 }
 
 void radix_sort_onesweep::v_dispatch(cgv::render::context& ctx, const cgv::render::vertex_buffer* keys_buffer, const cgv::render::vertex_buffer* values_buffer) {
-	cgv::gpgpu::double_buffer_wrapper<const cgv::render::vertex_buffer> keys(keys_buffer, &_keys_out_buffer);
-	cgv::gpgpu::double_buffer_wrapper<const cgv::render::vertex_buffer> values(values_buffer, &_values_out_buffer);
+	vertex_double_buffer_wrapper keys(keys_buffer, &_keys_out_buffer);
+	keys.binding_type_override = cgv::render::VertexBufferType::VBT_STORAGE;
+	vertex_double_buffer_wrapper values(values_buffer, &_values_out_buffer);
+	values.binding_type_override = cgv::render::VertexBufferType::VBT_STORAGE;
 
-	keys.first()->bind(ctx, cgv::render::VertexBufferType::VBT_STORAGE, 0);
-	keys.second()->bind(ctx, cgv::render::VertexBufferType::VBT_STORAGE, 1);
-	if(!_value_type.is_void()) {
-		values.first()->bind(ctx, cgv::render::VertexBufferType::VBT_STORAGE, 2);
-		values.second()->bind(ctx, cgv::render::VertexBufferType::VBT_STORAGE, 3);
-	}
+	keys.bind_all(ctx, 0, 1);
+	if(!_value_type.is_void())
+		values.bind_all(ctx, 2, 3);
 
 	_global_hist_buffer.bind(ctx, 4);
 	_pass_hist_buffer.bind(ctx, 5);
@@ -119,12 +118,9 @@ void radix_sort_onesweep::v_dispatch(cgv::render::context& ctx, const cgv::rende
 
 		// TODO: Support keys smaller than 32-bit?
 		for(uint32_t i = 0; i < 32; i += 8) {
-			keys.first()->bind(ctx, cgv::render::VertexBufferType::VBT_STORAGE, 0);
-			keys.second()->bind(ctx, cgv::render::VertexBufferType::VBT_STORAGE, 1);
-			if(!_value_type.is_void()) {
-				values.first()->bind(ctx, cgv::render::VertexBufferType::VBT_STORAGE, 2);
-				values.second()->bind(ctx, cgv::render::VertexBufferType::VBT_STORAGE, 3);
-			}
+			keys.bind_all(ctx, 0, 1);
+			if(!_value_type.is_void())
+				values.bind_all(ctx, 2, 3);
 			_digit_bin_pass_kernel.set_argument(ctx, "u_radix_shift", i);
 			dispatch_compute(partialBlocks, 1, 1);
 			glMemoryBarrier(GL_SHADER_STORAGE_BARRIER_BIT);
@@ -135,11 +131,9 @@ void radix_sort_onesweep::v_dispatch(cgv::render::context& ctx, const cgv::rende
 		_digit_bin_pass_kernel.disable(ctx);
 	}
 
-	keys.first()->unbind(ctx, cgv::render::VertexBufferType::VBT_STORAGE, 0);
-	keys.second()->unbind(ctx, cgv::render::VertexBufferType::VBT_STORAGE, 1);
+	keys.unbind_all(ctx, 0, 1);
 	if(!_value_type.is_void()) {
-		values.first()->unbind(ctx, cgv::render::VertexBufferType::VBT_STORAGE, 2);
-		values.second()->unbind(ctx, cgv::render::VertexBufferType::VBT_STORAGE, 3);
+		values.unbind_all(ctx, 2, 3);
 	}
 	_pass_hist_buffer.unbind(ctx, 4);
 	_global_hist_buffer.unbind(ctx, 5);
