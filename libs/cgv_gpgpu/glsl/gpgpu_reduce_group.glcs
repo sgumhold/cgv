@@ -14,6 +14,8 @@ layout(std430, binding = 1) buffer output_buffer {
 	value_type data_out[];
 };
 
+uniform uint u_input_buffer_first = 0;
+uniform uint u_output_buffer_first = 0;
 uniform uint u_count;
 
 shared value_type s_data[gl_WorkGroupSize.x];
@@ -75,7 +77,7 @@ void main() {
 #endif
 
 	while(gid < u_count) {
-		s_data[tid] = operation(s_data[tid], data_in[gid]);
+		s_data[tid] = operation(s_data[tid], data_in[u_input_buffer_first + gid]);
 		gid += grid_size;
 	}
 
@@ -99,5 +101,5 @@ void main() {
 	
 	// Write the result of this group to global memory.
 	if(tid == 0)
-		data_out[gl_WorkGroupID.x] = s_data[0];
+		data_out[u_output_buffer_first + gl_WorkGroupID.x] = s_data[0];
 }

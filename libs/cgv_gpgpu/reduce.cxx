@@ -33,19 +33,9 @@ bool reduce::init(cgv::render::context& ctx, const sl::data_type& value_type, co
 	
 
 
-
 	// TODO: Streamline process. (use group_size and value_type_size (with alignment) to determine if value type fits in shared memory.)
-	size_t aligned_size = cgv::math::next_multiple_k_greater_than_n(value_type.alignment_in_bytes(), value_type.size_in_bytes());
-	//GLint maximum_shared_mem_size = 0;
-	//glGetIntegerv(GL_MAX_COMPUTE_SHARED_MEMORY_SIZE, &maximum_shared_mem_size);
-	
-	// TODO: Get this information from the context. Decide on making the query method public or
-	// using some other way of providing the information, like a "device_capabilities" struct.
-	//ctx.query_integer_constant(cgv::render::MAX_COMPUTE_SHARED_MEMORY_SIZE);
-
 	size_t available_size = static_cast<size_t>(ctx.get_device_capabilities().max_compute_shared_memory_size);
-
-	size_t available_element_count = available_size / aligned_size;
+	size_t available_element_count = available_size / sl::get_aligned_size(value_type);
 
 	if(available_element_count < _group_size)
 		return false;
@@ -65,14 +55,17 @@ bool reduce::dispatch(cgv::render::context& ctx, const cgv::render::vertex_buffe
 	_group_reduction_buffer.bind(ctx, 1);
 
 	_kernel.enable(ctx);
+	_kernel.set_argument(ctx, "u_input_buffer_first", static_cast<uint32_t>(0));
+	_kernel.set_argument(ctx, "u_ouput_buffer_first", static_cast<uint32_t>(0));
 	_kernel.set_argument(ctx, "u_count", static_cast<uint32_t>(count));
 	_kernel.set_arguments(ctx, arguments);
 
 	dispatch_compute(_num_groups, 1, 1);
 	glMemoryBarrier(GL_SHADER_STORAGE_BARRIER_BIT);
 
-	buffer.bind(ctx, cgv::render::VertexBufferType::VBT_STORAGE, 1);
+	buffer.unbind(ctx, cgv::render::VertexBufferType::VBT_STORAGE, 0);
 	_group_reduction_buffer.bind(ctx, 0);
+	_group_reduction_buffer.bind(ctx, 1);
 
 	_kernel.set_argument(ctx, "u_count", _num_groups);
 
@@ -81,19 +74,80 @@ bool reduce::dispatch(cgv::render::context& ctx, const cgv::render::vertex_buffe
 
 	_kernel.disable(ctx);
 
-	buffer.unbind(ctx, cgv::render::VertexBufferType::VBT_STORAGE, 1);
 	_group_reduction_buffer.unbind(ctx, 0);
+	_group_reduction_buffer.unbind(ctx, 1);
 
-	/*
-	std::vector<int32_t> group_sums(_num_groups);
-	_group_reduction_buffer.copy(ctx, group_sums);
+	return true;
+}
 
-	int32_t sum = 0;
-	for(int gs : group_sums)
-		sum += gs;
+bool reduce::dispatch(cgv::render::context& ctx, device_buffer_iterator first, device_buffer_iterator last, const argument_bindings& arguments) {;
+	int32_t count = cgv::gpgpu::distance(first, last);
+	if(!cgv::gpgpu::compatible(first, last) || count < 1)
+		return false;
 
-	std::cout << "Sum from group sums " << sum << std::endl;
-	*/
+	first.buffer().bind(ctx, cgv::render::VertexBufferType::VBT_STORAGE, 0);
+	_group_reduction_buffer.bind(ctx, 1);
+
+	_kernel.enable(ctx);
+	_kernel.set_argument(ctx, "u_input_buffer_first", static_cast<uint32_t>(first.index()));
+	_kernel.set_argument(ctx, "u_output_buffer_first", static_cast<uint32_t>(0));
+	_kernel.set_argument(ctx, "u_count", static_cast<uint32_t>(count));
+	_kernel.set_arguments(ctx, arguments);
+
+	dispatch_compute(_num_groups, 1, 1);
+	glMemoryBarrier(GL_SHADER_STORAGE_BARRIER_BIT);
+
+	first.buffer().unbind(ctx, cgv::render::VertexBufferType::VBT_STORAGE, 0);
+	_group_reduction_buffer.bind(ctx, 0);
+	_group_reduction_buffer.bind(ctx, 1);
+
+	_kernel.set_argument(ctx, "u_input_buffer_first", static_cast<uint32_t>(0));
+	_kernel.set_argument(ctx, "u_count", _num_groups);
+
+	dispatch_compute(1, 1, 1);
+	glMemoryBarrier(GL_SHADER_STORAGE_BARRIER_BIT);
+
+	_kernel.disable(ctx);
+
+	_group_reduction_buffer.unbind(ctx, 0);
+	_group_reduction_buffer.unbind(ctx, 1);
+	
+	return true;
+}
+
+bool reduce::dispatch(cgv::render::context& ctx, device_buffer_iterator input_first, device_buffer_iterator input_last, device_buffer_iterator output, const argument_bindings& arguments) {
+	int32_t count = cgv::gpgpu::distance(input_first, input_last);
+	if(!cgv::gpgpu::compatible(input_first, input_last) || count < 1)
+		return false;
+
+	input_first.buffer().bind(ctx, cgv::render::VertexBufferType::VBT_STORAGE, 0);
+	_group_reduction_buffer.bind(ctx, 1);
+
+	_kernel.enable(ctx);
+	_kernel.set_argument(ctx, "u_input_buffer_first", static_cast<uint32_t>(input_first.index()));
+	_kernel.set_argument(ctx, "u_ouput_buffer_first", static_cast<uint32_t>(0));
+	_kernel.set_argument(ctx, "u_count", static_cast<uint32_t>(count));
+	_kernel.set_arguments(ctx, arguments);
+
+	dispatch_compute(_num_groups, 1, 1);
+	glMemoryBarrier(GL_SHADER_STORAGE_BARRIER_BIT);
+
+	input_first.buffer().unbind(ctx, cgv::render::VertexBufferType::VBT_STORAGE, 0);
+	_group_reduction_buffer.bind(ctx, 0);
+	_group_reduction_buffer.unbind(ctx, 1);
+	output.buffer().bind(ctx, 1);
+
+	_kernel.set_argument(ctx, "u_input_buffer_first", static_cast<uint32_t>(0));
+	_kernel.set_argument(ctx, "u_output_buffer_first", static_cast<uint32_t>(output.index()));
+	_kernel.set_argument(ctx, "u_count", _num_groups);
+
+	dispatch_compute(1, 1, 1);
+	glMemoryBarrier(GL_SHADER_STORAGE_BARRIER_BIT);
+
+	_kernel.disable(ctx);
+
+	_group_reduction_buffer.unbind(ctx, 0);
+	output.buffer().unbind(ctx, 1);
 
 	return true;
 }
