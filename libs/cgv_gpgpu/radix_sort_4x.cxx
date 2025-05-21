@@ -1,6 +1,8 @@
 #include "radix_sort_4x.h"
 
-#include "utils.h"
+#include <cgv/math/integer.h>
+
+#include "double_buffer_wrapper.h"
 
 namespace cgv {
 namespace gpgpu {
@@ -14,25 +16,25 @@ radix_sort_4x::radix_sort_4x() : radix_sort("radix_sort_4x", 4) {
 bool radix_sort_4x::v_init(cgv::render::context& ctx, cgv::render::shader_compile_options& config) {
 	if(init_kernels(ctx, config)) {
 		// Pad numer of keys to the next multiple of blocksize.
-		uint32_t num_keys_padded = next_multiple_greater_than(_num_keys, _block_size);
+		uint32_t num_keys_padded = cgv::math::next_multiple_k_greater_than_n(_block_size, _num_keys);
 
-		_num_groups = div_round_up(num_keys_padded, _group_size);
-		_num_scan_groups = div_round_up(num_keys_padded, _block_size);
-		_num_block_sums = next_power_of_two(_num_scan_groups);
+		_num_groups = cgv::math::div_round_up(num_keys_padded, _group_size);
+		_num_scan_groups = cgv::math::div_round_up(num_keys_padded, _block_size);
+		_num_block_sums = cgv::math::next_power_of_two(_num_scan_groups);
 		uint32_t block_sum_offset_shift = static_cast<uint32_t>(std::log2(_block_size));
 
 		// TODO: Can we ignore padding in both "out" buffers?
-		ensure_buffer(ctx, _keys_out_buffer, num_keys_padded * sizeof(uint32_t));
+		_keys_out_buffer.create_or_resize<uint32_t>(ctx, num_keys_padded);
 
 		if(!_value_type.is_void()) {
 			// TODO: Remove temporary and use actual component count.
 			uint32_t temp_value_component_count = 1;
-			ensure_buffer(ctx, _values_out_buffer, static_cast<size_t>(temp_value_component_count * num_keys_padded * sizeof(uint32_t)));
+			_values_out_buffer.create_or_resize<uint32_t>(ctx, static_cast<size_t>(temp_value_component_count) * num_keys_padded);
 		}
 
-		ensure_buffer(ctx, _prefix_sums_buffer, num_keys_padded * sizeof(uint32_t) / 4);
-		ensure_buffer(ctx, _block_sums_buffer, 4 * _num_block_sums * sizeof(uint32_t));
-		ensure_buffer(ctx, _last_sum_buffer, 4 * sizeof(uint32_t));
+		_prefix_sums_buffer.create_or_resize<uint32_t>(ctx, num_keys_padded);
+		_block_sums_buffer.create_or_resize<uint32_t>(ctx, 4ull * _num_block_sums);
+		_last_sum_buffer.create_or_resize<uint32_t>(ctx, 4);
 
 		uint32_t last_block_sum_idx = (num_keys_padded >> block_sum_offset_shift) - 1;
 

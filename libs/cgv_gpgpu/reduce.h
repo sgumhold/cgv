@@ -1,6 +1,7 @@
 #pragma once
 
 #include "algorithm.h"
+#include "storage_buffer.h"
 
 #include "lib_begin.h"
 
@@ -37,7 +38,7 @@ private:
 
 	compute_kernel _kernel;
 
-	cgv::render::vertex_buffer _group_reduction_buffer;
+	storage_buffer _group_reduction_buffer;
 };
 
 } // namespace gpgpu

@@ -1,6 +1,7 @@
 #pragma once
 
 #include "algorithm.h"
+#include "storage_buffer.h"
 
 #include "lib_begin.h"
 
@@ -30,9 +31,9 @@ protected:
 	unsigned num_block_sums = 0;
 
 	/// buffer objects
-	cgv::render::vertex_buffer votes_buffer;
-	cgv::render::vertex_buffer prefix_sums_buffer;
-	cgv::render::vertex_buffer block_sums_buffer;
+	storage_buffer votes_buffer;
+	storage_buffer prefix_sums_buffer;
+	storage_buffer block_sums_buffer;
 
 	/// shader programs
 	cgv::render::shader_program vote_prog;

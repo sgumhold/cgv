@@ -1,5 +1,7 @@
 #include "reduce.h"
 
+#include <cgv/math/integer.h>
+
 namespace cgv {
 namespace gpgpu {
 
@@ -33,7 +35,7 @@ bool reduce::init(cgv::render::context& ctx, const sl::data_type& value_type, co
 
 
 	// TODO: Streamline process. (use group_size and value_type_size (with alignment) to determine if value type fits in shared memory.)
-	size_t aligned_size = next_multiple_greater_than(value_type.size_in_bytes(), value_type.alignment_in_bytes());
+	size_t aligned_size = cgv::math::next_multiple_k_greater_than_n(value_type.alignment_in_bytes(), value_type.size_in_bytes());
 	GLint maximum_shared_mem_size = 0;
 	glGetIntegerv(GL_MAX_COMPUTE_SHARED_MEMORY_SIZE, &maximum_shared_mem_size);
 	// TODO: Get this information from the context. Decide on making the query method public or
@@ -50,8 +52,7 @@ bool reduce::init(cgv::render::context& ctx, const sl::data_type& value_type, co
 
 
 	if(init_kernels(ctx, config)) {
-		// TODO: Determine size if value_type is padded?
-		ensure_buffer(ctx, _group_reduction_buffer, _num_groups * aligned_size);
+		_group_reduction_buffer.create_or_resize(ctx, value_type, _num_groups);
 		return true;
 	}
 

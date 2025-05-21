@@ -1,7 +1,6 @@
 #include "visibility_sort.h"
 
-#include <cgv_gpgpu/utils.h>
-
+#include <cgv/math/integer.h>
 #include <cgv/render/shader_library.h>
 
 using namespace cgv::gpgpu;
@@ -70,11 +69,11 @@ bool visibility_sort::init(cgv::render::context& ctx, size_t count) {
 
 	// Calculate padding for n to next multiple of blocksize.
 	//n_pad = calculate_padding(n, block_size);
-	uint32_t n_padded = next_multiple_greater_than(n, block_size);
+	uint32_t n_padded = cgv::math::next_multiple_k_greater_than_n(block_size, n);
 	n_pad = n_padded - n;
 
-	num_groups = div_round_up(n_padded, group_size);
-	num_scan_groups = div_round_up(n_padded, block_size);
+	num_groups = cgv::math::div_round_up(n_padded, group_size);
+	num_scan_groups = cgv::math::div_round_up(n_padded, block_size);
 
 	unsigned int block_sum_offset_shift = static_cast<unsigned int>(log2f(float(block_size)));
 
@@ -85,15 +84,15 @@ bool visibility_sort::init(cgv::render::context& ctx, size_t count) {
 		num <<= 1;
 	num_block_sums = num;
 
-	size_t data_size = n_padded * sizeof(unsigned int);
-	size_t blocksums_size = 4 * num_block_sums * sizeof(unsigned int);
+	//size_t data_size = n_padded * sizeof(unsigned int);
+	//size_t blocksums_size = 4 * num_block_sums * sizeof(unsigned int);
 
-	ensure_buffer(ctx, keys_in_buffer, data_size);
-	ensure_buffer(ctx, keys_out_buffer, data_size);
-	ensure_buffer(ctx, values_out_buffer, value_component_count * data_size);
-	ensure_buffer(ctx, prefix_sums_buffer, data_size / 4);
-	ensure_buffer(ctx, block_sums_buffer, blocksums_size);
-	ensure_buffer(ctx, last_sum_buffer, 4 * sizeof(unsigned int));
+	keys_in_buffer.create_or_resize<uint32_t>(ctx, n_padded);
+	keys_out_buffer.create_or_resize<uint32_t>(ctx, n_padded);
+	values_out_buffer.create_or_resize<uint32_t>(ctx, value_component_count * n_padded);
+	prefix_sums_buffer.create_or_resize<uint32_t>(ctx, n_padded / 4);
+	block_sums_buffer.create_or_resize<uint32_t>(ctx, 4 * num_block_sums);
+	last_sum_buffer.create_or_resize<uint32_t>(ctx, 4);
 
 	key_prog.enable(ctx);
 	key_prog.set_uniform(ctx, "n", n);

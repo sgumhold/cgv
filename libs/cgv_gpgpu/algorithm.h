@@ -4,7 +4,6 @@
 #include <cgv_gl/gl/gl.h>
 
 #include "sl.h"
-#include "utils.h"
 #include "compute_kernel.h"
 
 #include "lib_begin.h"

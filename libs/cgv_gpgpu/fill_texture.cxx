@@ -1,9 +1,5 @@
 #include "fill_texture.h"
 
-#include <cgv_gpgpu/utils.h>
-
-using namespace cgv::gpgpu;
-
 namespace cgv {
 namespace gpgpu {
 
