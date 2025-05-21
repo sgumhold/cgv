@@ -232,6 +232,10 @@ GPUVendorID context::get_gpu_vendor_id() const
 	return gpu_vendor;
 }
 
+const device_capabilities& context::get_device_capabilities() const {
+	return gpu_capabilities;
+}
+
 /// virtual destructor
 context::~context()
 {

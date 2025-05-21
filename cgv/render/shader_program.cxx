@@ -521,7 +521,7 @@ bool shader_program::build_program(const context& ctx, const std::string& file_n
 /// return the maximum number of output vertices of a geometry shader
 unsigned int shader_program::get_max_nr_geometry_shader_output_vertices(const context& ctx)
 {
-	return ctx.query_integer_constant(MAX_NR_GEOMETRY_SHADER_OUTPUT_VERTICES);
+	return ctx.get_device_capabilities().max_geometry_shader_output_vertex_count;
 }
 
 /// ensure that the state has been set in the context

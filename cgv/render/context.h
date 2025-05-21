@@ -35,6 +35,14 @@ enum GPUVendorID {
 	GPU_VENDOR_NVIDIA
 };
 
+struct device_capabilities {
+	int max_geometry_shader_output_vertex_count = -1;	/// the maximum number that can be provided to the max_vertices output layout qualifier in a geometry shader
+	int max_compute_shared_memory_size = -1;			/// total available storage size in bytes for all shared variables in a compute shader
+	int max_compute_work_group_invocations = -1;		/// the number of invocations in a single local work group (i.e., the product of the three dimensions) that may be dispatched to a compute shader
+	ivec3 max_compute_work_group_count = -1;			/// the maximum number of work groups that may be dispatched to a compute shader; dimension index 0, 1, and 2 correspond to the X, Y and Z dimensions, respectively
+	ivec3 max_compute_work_group_size = -1;				/// the maximum size of a work groups that may be used during compilation of a compute shader; dimension index 0, 1, and 2 correspond to the X, Y and Z dimensions, respectively
+};
+
 /// different compond types for data elements
 enum ElementType {
 	ET_VALUE,
@@ -506,15 +514,6 @@ enum FrameBufferType {
 	FB_FRONT_RIGHT =  FB_FRONT+FB_RIGHT
 };
 
-/// integer constants that can be queried from context
-enum ContextIntegerConstant { 
-	MAX_NR_GEOMETRY_SHADER_OUTPUT_VERTICES, /// the maximum number that can be provided to the max_vertices output layout qualifier in a geometry shader
-	MAX_COMPUTE_SHARED_MEMORY_SIZE,			/// total available storage size in bytes for all shared variables in a compute shader
-	MAX_COMPUTE_WORK_GROUP_INVOCATIONS,		/// the number of invocations in a single local work group (i.e., the product of the three dimensions) that may be dispatched to a compute shader
-	MAX_COMPUTE_WORK_GROUP_COUNT_OF_DIM,	/// the maximum number of work groups that may be dispatched to a compute shader; dimension index 0, 1, and 2 correspond to the X, Y and Z dimensions, respectively
-	MAX_COMPUTE_WORK_GROUP_SIZE_OF_DIM		/// the maximum size of a work groups that may be used during compilation of a compute shader; dimension index 0, 1, and 2 correspond to the X, Y and Z dimensions, respectively
-};
-
 // forward declaration of all render components
 class CGV_API texture;
 class CGV_API render_buffer;
@@ -628,6 +627,8 @@ class CGV_API context : public context_config
 protected:
 	// store the GPU vendor id
 	GPUVendorID gpu_vendor;
+	// store the GPU device capabilities
+	device_capabilities gpu_capabilities;
 public:
 	friend class CGV_API attribute_array_manager;
 	friend class CGV_API render_component;
@@ -807,8 +808,6 @@ protected:
 	/// draw some text at cursor position and update cursor position
 	virtual void draw_text(const std::string& text);
 
-	/// query a context integer constant from the graphics device; use index for querying multi-dimensional constants
-	virtual int query_integer_constant(ContextIntegerConstant cic, int index = -1) const = 0;
 	virtual void destruct_render_objects();
 	virtual void put_id(void* handle, void* ptr) const = 0;
 
@@ -887,6 +886,7 @@ public:
 	virtual void error(const std::string& message, const render_component* rc = 0) const;
 	/// device information
 	virtual GPUVendorID get_gpu_vendor_id() const;
+	const device_capabilities& get_device_capabilities() const;
 
 	/**@name interface for implementation of specific contexts*/
 	//@{
