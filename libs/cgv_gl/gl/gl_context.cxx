@@ -470,6 +470,15 @@ bool gl_context::configure_gl()
 	else if (vendor_string.find("AMD") != std::string::npos || vendor_string.find("ATI") != std::string::npos)
 		gpu_vendor = GPU_VENDOR_AMD;
 	
+	// query device capabilities
+	glGetIntegerv(GL_MAX_GEOMETRY_OUTPUT_VERTICES, &gpu_capabilities.max_geometry_shader_output_vertex_count);
+	glGetIntegerv(GL_MAX_COMPUTE_SHARED_MEMORY_SIZE, &gpu_capabilities.max_compute_shared_memory_size);
+	glGetIntegerv(GL_MAX_COMPUTE_WORK_GROUP_INVOCATIONS, &gpu_capabilities.max_compute_work_group_invocations);
+	for(unsigned i = 0; i < 3; ++i)
+		glGetIntegeri_v(GL_MAX_COMPUTE_WORK_GROUP_COUNT, static_cast<GLuint>(i), &gpu_capabilities.max_compute_work_group_count[i]);
+	for(unsigned i = 0; i < 3; ++i)
+		glGetIntegeri_v(GL_MAX_COMPUTE_WORK_GROUP_SIZE, static_cast<GLuint>(i), &gpu_capabilities.max_compute_work_group_size[i]);
+	
 #ifdef _DEBUG
 	std::cout << "OpenGL version " << version_major << "." << version_minor << (core_profile?" (core)":" (compatibility)") << (debug?" (debug)":"") << (forward_compatible?" (forward_compatible)":"") << std::endl;
 	const GLubyte* renderer_c_string = glGetString(GL_RENDERER);
@@ -1893,37 +1902,6 @@ GLuint gl_context::texture_generate(texture_base& tb) const
 	if (glGetError() == GL_INVALID_OPERATION)
 		error("gl_context::texture_generate: attempt to create texture inside glBegin-glEnd-block", &tb);
 	return tex_id;
-}
-
-int gl_context::query_integer_constant(ContextIntegerConstant cic, int index) const
-{
-	GLint gl_const = -1;
-	switch(cic) {
-	case MAX_NR_GEOMETRY_SHADER_OUTPUT_VERTICES:
-		gl_const = GL_MAX_GEOMETRY_OUTPUT_VERTICES;
-		break;
-	case MAX_COMPUTE_SHARED_MEMORY_SIZE:
-		gl_const = GL_MAX_COMPUTE_SHARED_MEMORY_SIZE;
-		break;
-	case MAX_COMPUTE_WORK_GROUP_INVOCATIONS:
-		gl_const = GL_MAX_COMPUTE_WORK_GROUP_INVOCATIONS;
-		break;
-	case MAX_COMPUTE_WORK_GROUP_COUNT_OF_DIM:
-		gl_const = GL_MAX_COMPUTE_WORK_GROUP_COUNT;
-		break;
-	case MAX_COMPUTE_WORK_GROUP_SIZE_OF_DIM:
-		gl_const = GL_MAX_COMPUTE_WORK_GROUP_SIZE;
-		break;
-	default: break;
-	}
-	GLint value = -1;
-	if(gl_const > -1) {
-		if(index > -1)
-			glGetIntegeri_v(gl_const, static_cast<GLuint>(index), &value);
-		else
-			glGetIntegerv(gl_const, &value);
-	}
-	return value;
 }
 
 GLuint gl_context::texture_bind(TextureType tt, GLuint tex_id) const
