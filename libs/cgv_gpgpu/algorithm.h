@@ -3,8 +3,9 @@
 #include <cgv/render/context.h>
 #include <cgv_gl/gl/gl.h>
 
-#include "sl.h"
+#include "device_buffer_iterator.h"
 #include "compute_kernel.h"
+#include "sl.h"
 
 #include "lib_begin.h"
 
@@ -33,6 +34,8 @@ protected:
 	void set_buffer_binding_indices(const sl::named_buffer_list& buffers, uint32_t base_index);
 
 	cgv::render::shader_compile_options get_configuration(const argument_definitions& arguments, const std::vector<sl::data_type> types = {}) const;
+
+	bool is_valid_range(device_buffer_iterator first, device_buffer_iterator last);
 
 	void bind_buffer_arguments(cgv::render::context& ctx, const argument_bindings& arguments);
 	

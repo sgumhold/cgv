@@ -103,6 +103,12 @@ bool algorithm::init_kernels(cgv::render::context& ctx, const cgv::render::shade
 	return success;
 }
 
+void algorithm::destruct_kernels(const cgv::render::context& ctx) {
+	for(const auto& info : _kernel_registrations)
+		info.kernel->destruct(ctx);
+	_is_initialized = false;
+}
+
 void algorithm::set_buffer_binding_indices(const sl::named_buffer_list& buffers, uint32_t base_index) {
 	_base_buffer_binding_index = base_index;
 	_buffer_binding_indices.clear();
@@ -129,10 +135,8 @@ cgv::render::shader_compile_options algorithm::get_configuration(const argument_
 	return config;
 }
 
-void algorithm::destruct_kernels(const cgv::render::context& ctx) {
-	for(const auto& info : _kernel_registrations)
-		info.kernel->destruct(ctx);
-	_is_initialized = false;
+bool algorithm::is_valid_range(device_buffer_iterator first, device_buffer_iterator last) {
+	return compatible(first, last) && distance(first, last) > 0;
 }
 
 void algorithm::bind_buffer_arguments(cgv::render::context& ctx, const argument_bindings& arguments) {

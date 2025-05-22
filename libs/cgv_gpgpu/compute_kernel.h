@@ -28,6 +28,14 @@ public:
 		return false;
 	}
 
+	template<typename T, typename S, typename std::enable_if<!std::is_same<T, S>::value, bool>::type = true>
+	bool set_argument(const cgv::render::context& ctx, const std::string& name, const S& value) {
+		int loc = _prog.get_uniform_location(ctx, name);
+		if(loc > -1)
+			return _prog.set_uniform(ctx, loc, static_cast<T>(value));
+		return false;
+	}
+
 	void set_arguments(cgv::render::context& ctx, const argument_bindings& arguments);
 
 private:
