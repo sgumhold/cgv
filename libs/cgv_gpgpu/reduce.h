@@ -25,6 +25,8 @@ public:
 
 	bool init(cgv::render::context& ctx, const sl::data_type& value_type, const std::string& binary_operation);
 
+	void destruct(const cgv::render::context& ctx);
+
 	bool dispatch(cgv::render::context& ctx, const cgv::render::vertex_buffer& buffer, size_t count, const argument_bindings& arguments = {});
 	bool dispatch(cgv::render::context& ctx, device_buffer_iterator first, device_buffer_iterator last, const argument_bindings& arguments = {});
 	bool dispatch(cgv::render::context& ctx, device_buffer_iterator input_first, device_buffer_iterator input_last, device_buffer_iterator output, const argument_bindings& arguments = {});
