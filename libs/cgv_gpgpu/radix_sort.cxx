@@ -57,6 +57,18 @@ bool radix_sort::init(cgv::render::context& ctx, const sl::data_type& key_type, 
 	return init(ctx, key_type, order, size);
 }
 
+bool radix_sort::resize(cgv::render::context& ctx, size_t size) {
+	if(static_cast<size_t>(_num_keys) == size)
+		return true;
+
+	const size_t max_size = 0xFFFFFFFF;
+	if(size == 0 || size > max_size)
+		return false;
+
+	_num_keys = static_cast<uint32_t>(size);
+	return v_resize(ctx);
+}
+
 void radix_sort::dispatch(cgv::render::context& ctx, const cgv::render::vertex_buffer& keys_buffer) {
 	v_dispatch(ctx, &keys_buffer, nullptr);
 }

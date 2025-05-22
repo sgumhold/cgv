@@ -21,11 +21,15 @@ public:
 	
 	virtual void destruct(const cgv::render::context& ctx) = 0;
 
+	bool resize(cgv::render::context& ctx, size_t size);
+
 	void dispatch(cgv::render::context& ctx, const cgv::render::vertex_buffer& keys_buffer);
 	void dispatch(cgv::render::context& ctx, const cgv::render::vertex_buffer& keys_buffer, const cgv::render::vertex_buffer& values_buffer);
 
 protected:
 	virtual bool v_init(cgv::render::context& ctx, cgv::render::shader_compile_options& config) = 0;
+
+	virtual bool v_resize(cgv::render::context& ctx) = 0;
 
 	virtual void v_dispatch(cgv::render::context& ctx, const cgv::render::vertex_buffer* keys_buffer, const cgv::render::vertex_buffer* values_buffer) = 0;
 
