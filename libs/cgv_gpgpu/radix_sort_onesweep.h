@@ -17,6 +17,8 @@ public:
 private:
 	bool v_init(cgv::render::context& ctx, cgv::render::shader_compile_options& config) override;
 
+	bool v_resize(cgv::render::context& ctx) override;
+
 	void v_dispatch(cgv::render::context& ctx, const cgv::render::vertex_buffer* keys_buffer, const cgv::render::vertex_buffer* values_buffer) override;
 
 	/*

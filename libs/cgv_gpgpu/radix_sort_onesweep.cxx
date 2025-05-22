@@ -23,37 +23,7 @@ bool radix_sort_onesweep::v_init(cgv::render::context& ctx, cgv::render::shader_
 		// TODO: Set dynamically based on GPU specs.
 		_partition_size = 3840;
 
-		_num_partitions = cgv::math::div_round_up(_num_keys, _partition_size);
-		_num_global_histogram_partitions = cgv::math::div_round_up(_num_keys, _global_histogram_partition_size);
-
-		_keys_out_buffer.create_or_resize<uint32_t>(ctx, _num_keys);
-
-		if(!_value_type.is_void())
-			_values_out_buffer.create_or_resize<uint32_t>(ctx, _num_keys);
-
-		_global_hist_buffer.create_or_resize<uint32_t>(ctx, _radix * _radix_passes);
-		_index_buffer.create_or_resize<uint32_t>(ctx, _radix_passes);
-		_pass_hist_buffer.create_or_resize<uint32_t>(ctx, _radix * _radix_passes * _num_partitions);
-
-		_init_kernel.enable(ctx);
-		_init_kernel.set_argument(ctx, "u_thread_blocks", _num_partitions);
-		_init_kernel.disable(ctx);
-
-		_global_hist_kernel.enable(ctx);
-		_global_hist_kernel.set_argument(ctx, "u_num_keys", _num_keys);
-		_global_hist_kernel.set_argument(ctx, "u_thread_blocks", _num_global_histogram_partitions);
-		_global_hist_kernel.disable(ctx);
-
-		_scan_kernel.enable(ctx);
-		_scan_kernel.set_argument(ctx, "u_thread_blocks", _num_partitions);
-		_scan_kernel.disable(ctx);
-
-		_digit_bin_pass_kernel.enable(ctx);
-		_digit_bin_pass_kernel.set_argument(ctx, "u_num_keys", _num_keys);
-		_digit_bin_pass_kernel.set_argument(ctx, "u_thread_blocks", _num_partitions);
-		_digit_bin_pass_kernel.disable(ctx);
-
-		return true;
+		return v_resize(ctx);
 	}
 
 	return false;
@@ -67,6 +37,40 @@ void radix_sort_onesweep::destruct(const cgv::render::context& ctx) {
 	_index_buffer.destruct(ctx);
 	
 	algorithm::destruct(ctx);
+}
+
+bool radix_sort_onesweep::v_resize(cgv::render::context& ctx) {
+	_num_partitions = cgv::math::div_round_up(_num_keys, _partition_size);
+	_num_global_histogram_partitions = cgv::math::div_round_up(_num_keys, _global_histogram_partition_size);
+
+	_keys_out_buffer.create_or_resize<uint32_t>(ctx, _num_keys);
+
+	if(!_value_type.is_void())
+		_values_out_buffer.create_or_resize<uint32_t>(ctx, _num_keys);
+
+	_global_hist_buffer.create_or_resize<uint32_t>(ctx, _radix * _radix_passes);
+	_index_buffer.create_or_resize<uint32_t>(ctx, _radix_passes);
+	_pass_hist_buffer.create_or_resize<uint32_t>(ctx, _radix * _radix_passes * _num_partitions);
+
+	_init_kernel.enable(ctx);
+	_init_kernel.set_argument(ctx, "u_thread_blocks", _num_partitions);
+	_init_kernel.disable(ctx);
+
+	_global_hist_kernel.enable(ctx);
+	_global_hist_kernel.set_argument(ctx, "u_num_keys", _num_keys);
+	_global_hist_kernel.set_argument(ctx, "u_thread_blocks", _num_global_histogram_partitions);
+	_global_hist_kernel.disable(ctx);
+
+	_scan_kernel.enable(ctx);
+	_scan_kernel.set_argument(ctx, "u_thread_blocks", _num_partitions);
+	_scan_kernel.disable(ctx);
+
+	_digit_bin_pass_kernel.enable(ctx);
+	_digit_bin_pass_kernel.set_argument(ctx, "u_num_keys", _num_keys);
+	_digit_bin_pass_kernel.set_argument(ctx, "u_thread_blocks", _num_partitions);
+	_digit_bin_pass_kernel.disable(ctx);
+
+	return true;
 }
 
 void radix_sort_onesweep::v_dispatch(cgv::render::context& ctx, const cgv::render::vertex_buffer* keys_buffer, const cgv::render::vertex_buffer* values_buffer) {
