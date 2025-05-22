@@ -17,19 +17,18 @@ bool radix_sort_4x::v_init(cgv::render::context& ctx, cgv::render::shader_compil
 	if(init_kernels(ctx, config)) {
 		// Pad numer of keys to the next multiple of blocksize.
 		uint32_t num_keys_padded = cgv::math::next_multiple_k_greater_than_n(_block_size, _num_keys);
-
 		_num_groups = cgv::math::div_round_up(num_keys_padded, _group_size);
 		_num_scan_groups = cgv::math::div_round_up(num_keys_padded, _block_size);
 		_num_block_sums = cgv::math::next_power_of_two(_num_scan_groups);
 		uint32_t block_sum_offset_shift = static_cast<uint32_t>(std::log2(_block_size));
 
-		// TODO: Can we ignore padding in both "out" buffers?
-		_keys_out_buffer.create_or_resize<uint32_t>(ctx, num_keys_padded);
-
+		// The keys and values output buffer do not need to be padded because no writes will happen beyond the actual key count.
+		_keys_out_buffer.create_or_resize<uint32_t>(ctx, _num_keys);
+		
 		if(!_value_type.is_void()) {
 			// TODO: Remove temporary and use actual component count.
 			uint32_t temp_value_component_count = 1;
-			_values_out_buffer.create_or_resize<uint32_t>(ctx, static_cast<size_t>(temp_value_component_count) * num_keys_padded);
+			_values_out_buffer.create_or_resize<uint32_t>(ctx, static_cast<size_t>(temp_value_component_count) * _num_keys);
 		}
 
 		_prefix_sums_buffer.create_or_resize<uint32_t>(ctx, num_keys_padded);
@@ -53,7 +52,7 @@ bool radix_sort_4x::v_init(cgv::render::context& ctx, cgv::render::shader_compil
 		_scatter_kernel.set_argument(ctx, "u_num_block_sums", _num_block_sums);
 		_scatter_kernel.set_argument(ctx, "u_last_block_sum_idx", last_block_sum_idx);
 		_scatter_kernel.disable(ctx);
-
+		
 		return true;
 	}
 
@@ -79,8 +78,6 @@ void radix_sort_4x::v_dispatch(cgv::render::context& ctx, const cgv::render::ver
 	_prefix_sums_buffer.bind(ctx, 4);
 	_block_sums_buffer.bind(ctx, 5);
 	_last_sum_buffer.bind(ctx, 6);
-
-	// TODO: Check scatter address if padding > 0!
 
 	constexpr GLbitfield barrier = GL_SHADER_STORAGE_BARRIER_BIT;
 
