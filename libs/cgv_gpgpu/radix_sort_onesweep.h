@@ -29,10 +29,8 @@ private:
 	};
 	*/
 
-	//const uint32_t _radix = 256;
-	//const uint32_t _radix_passes = 4;
 	const uint32_t _global_histogram_partition_size = 32768;
-	const uint32_t _max_dispatch_dimension = 65535;
+	uint32_t _max_dispatch_dimension = 65535;
 
 	uint32_t _partition_size = 0;
 	uint32_t _num_partitions = 0;
