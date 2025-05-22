@@ -2,6 +2,8 @@
 
 #include <cgv/render/vertex_buffer.h>
 
+#include "sl.h"
+
 namespace cgv {
 namespace gpgpu {
 

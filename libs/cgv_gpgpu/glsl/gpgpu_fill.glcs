@@ -8,13 +8,14 @@ layout(std430, binding = 0) writeonly buffer value_buffer {
 	value_type data[];
 };
 
-uniform uint u_count;
+uniform uint u_begin;
+uniform uint u_end;
 uniform value_type u_value;
 
 layout(local_size_x = 512) in;
 void main() {
-	uint gid = gl_GlobalInvocationID.x;
+	uint gid = u_begin + gl_GlobalInvocationID.x;
 
-	if(gid < u_count)
+	if(gid < u_end)
 		data[gid] = u_value;
 }

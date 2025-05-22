@@ -1,8 +1,8 @@
 #pragma once
 
 #include "algorithm.h"
-#include "storage_buffer.h"
 #include "device_buffer_iterator.h"
+#include "storage_buffer.h"
 
 #include "lib_begin.h"
 
@@ -13,7 +13,7 @@ namespace gpgpu {
 class CGV_API reduce : public algorithm {
 public:
 	reduce();
-	reduce(uint32_t group_size);
+	reduce(uint32_t group_count, uint32_t group_size);
 
 	bool init(cgv::render::context& ctx, const sl::data_type& value_type);
 
@@ -25,12 +25,6 @@ public:
 
 	bool init(cgv::render::context& ctx, const sl::data_type& value_type, const std::string& binary_operation);
 
-	// TODO: choose thread count based on shared memory availability.
-	// TODO: have option to put reduced value in first place of buffer or in _group_reduction_buffer.
-	// TODO: compute approx elements per thread and define num_groups based on that and group_size
-	// TODO: aim for 4 to 8 elements per thread? Or even more?
-	// 
-	// TODO: Remove this first overload and only use iterators versions.
 	bool dispatch(cgv::render::context& ctx, const cgv::render::vertex_buffer& buffer, size_t count, const argument_bindings& arguments = {});
 	bool dispatch(cgv::render::context& ctx, device_buffer_iterator first, device_buffer_iterator last, const argument_bindings& arguments = {});
 	bool dispatch(cgv::render::context& ctx, device_buffer_iterator input_first, device_buffer_iterator input_last, device_buffer_iterator output, const argument_bindings& arguments = {});
