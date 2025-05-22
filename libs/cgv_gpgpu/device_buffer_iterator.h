@@ -80,28 +80,28 @@ private:
 	size_t _index = 0;
 };
 
-bool compatible(device_buffer_iterator first, device_buffer_iterator second) {
+static bool compatible(device_buffer_iterator first, device_buffer_iterator second) {
 	return &first.buffer() == &second.buffer();
 }
 
-device_buffer_iterator begin(const cgv::render::vertex_buffer& buffer) {
+static device_buffer_iterator begin(const cgv::render::vertex_buffer& buffer) {
 	return { buffer, 0 };
 }
 
 template<typename T>
-device_buffer_iterator end(const cgv::render::vertex_buffer& buffer) {
+static device_buffer_iterator end(const cgv::render::vertex_buffer& buffer) {
 	size_t size_in_bytes = buffer.get_size_in_bytes();
 	size_t element_count = size_in_bytes / sizeof(T);
 	return { buffer, element_count };
 }
 
-device_buffer_iterator end(const cgv::render::vertex_buffer& buffer, sl::data_type element_type) {
+static device_buffer_iterator end(const cgv::render::vertex_buffer& buffer, sl::data_type element_type) {
 	size_t size_in_bytes = buffer.get_size_in_bytes();
 	size_t element_count = size_in_bytes / sl::get_aligned_size(element_type);
 	return { buffer, element_count };
 }
 
-idxdiff_t distance(device_buffer_iterator first, device_buffer_iterator last) {
+static idxdiff_t distance(device_buffer_iterator first, device_buffer_iterator last) {
 	if(last.index() > first.index())
 		return last - first;
 	return 0;
