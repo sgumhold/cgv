@@ -25,7 +25,7 @@ public:
 	using double_buffer_wrapper::double_buffer_wrapper;
 
 	void bind_all(cgv::render::context& ctx, uint32_t first_index, uint32_t second_index) {
-		if(binding_type_override != cgv::render::VertexBufferType::VBT_UNDEF) {
+		if(binding_type_override == cgv::render::VertexBufferType::VBT_UNDEF) {
 			first()->bind(ctx, first_index);
 			second()->bind(ctx, second_index);
 		} else {
@@ -35,7 +35,7 @@ public:
 	}
 
 	void unbind_all(cgv::render::context& ctx, uint32_t first_index, uint32_t second_index) {
-		if(binding_type_override != cgv::render::VertexBufferType::VBT_UNDEF) {
+		if(binding_type_override == cgv::render::VertexBufferType::VBT_UNDEF) {
 			first()->unbind(ctx, first_index);
 			second()->unbind(ctx, second_index);
 		} else {
