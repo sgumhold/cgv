@@ -14,6 +14,8 @@
 #include <cgv_gpgpu/sequence.h>
 #include <cgv_gpgpu/transform.h>
 
+#include <cgv_gpgpu/visibility_sort2.h>
+
 class visibility_sorting : public cgv::base::node, public cgv::render::drawable, public cgv::gui::provider {
 protected:
 	cgv::render::view* view_ptr = nullptr;
@@ -33,6 +35,8 @@ protected:
 	cgv::gpgpu::sequence generate_indices;
 	cgv::gpgpu::radix_sort* sort = nullptr;
 	cgv::render::vertex_buffer distance_buffer;
+
+	cgv::gpgpu::visibility_sort2 vsort;
 
 	bool measure_time = false;
 	cgv::render::gl::gl_time_query time_query;
@@ -68,6 +72,8 @@ public:
 		sort->destruct(ctx);
 		delete sort;
 
+		vsort.destruct(ctx);
+
 		time_query.destruct(ctx);
 	}
 	bool init(cgv::render::context& ctx)
@@ -97,6 +103,8 @@ public:
 		distance_transform.init(ctx, vec3_t, { sl::Type::kFloat }, arguments, operation);
 
 		generate_indices.init(ctx, sl::Type::kUInt);
+
+		vsort.init(ctx, vec3_t, sl::Type::kUInt, 1, operation, cgv::gpgpu::radix_sort::Order::kDescending);
 
 		create_data();
 
@@ -150,6 +158,7 @@ public:
 
 		if(position_buffer_ptr && index_buffer_ptr) {
 			if(use_new_algorithms) {
+				/*
 				if(distance_transform.is_initialized()) {
 					cgv::gpgpu::argument_binding_list arguments = {
 						{ "u_eye_pos", cgv::vec3(view_ptr->get_eye()) }
@@ -169,6 +178,14 @@ public:
 					sort->dispatch(ctx, distance_buffer, *index_buffer_ptr);
 				else
 					std::cout << "Warning: GPU sort is not initialized." << std::endl;
+				*/
+
+				if(!vsort.is_initialized())
+					std::cout << "Warning: GPU visibility sort routine is not initialized." << std::endl;
+				else
+					vsort.execute(ctx, cgv::gpgpu::begin(*position_buffer_ptr), cgv::gpgpu::end<cgv::vec3>(*position_buffer_ptr), cgv::gpgpu::begin(*index_buffer_ptr), view_ptr->get_eye());
+					//vsort.init(ctx, vec3_t, sl::Type::kUInt, 1, operation, cgv::gpgpu::radix_sort::Order::kAscending);
+
 			} else {
 				if(visibility_sorter.is_initialized())
 					visibility_sorter.execute(ctx, *position_buffer_ptr, *index_buffer_ptr, view_ptr->get_eye(), view_ptr->get_view_dir());
@@ -242,6 +259,9 @@ public:
 
 		if(!sort->init(ctx, sl::Type::kFloat, sl::Type::kUInt, cgv::gpgpu::radix_sort::Order::kDescending, spheres.indices.size()))
 			std::cout << "Error: Could not initialize GPU sort!" << std::endl;
+
+		if(!vsort.resize(ctx, spheres.indices.size()))
+			std::cout << "Error: Could not resize GPU visibility sort!" << std::endl;
 
 		distance_buffer.create_or_resize(ctx, sizeof(uint32_t) * spheres.indices.size());
 

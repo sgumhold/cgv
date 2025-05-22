@@ -44,6 +44,10 @@ bool reduce::init(cgv::render::context& ctx, const sl::data_type& value_type, co
 	return false;
 }
 
+void reduce::destruct(const cgv::render::context& ctx) {
+	_group_reduction_buffer.destruct(ctx);
+}
+
 bool reduce::dispatch(cgv::render::context& ctx, const cgv::render::vertex_buffer& buffer, size_t count, const argument_bindings& arguments) {
 	return dispatch(ctx, begin(buffer), begin(buffer) + count, arguments);
 }
