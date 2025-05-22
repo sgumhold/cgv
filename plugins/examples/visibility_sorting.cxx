@@ -243,7 +243,7 @@ public:
 		if(!sort->init(ctx, sl::Type::kFloat, sl::Type::kUInt, cgv::gpgpu::radix_sort::Order::kDescending, spheres.indices.size()))
 			std::cout << "Error: Could not initialize GPU sort!" << std::endl;
 
-		cgv::gpgpu::ensure_buffer(ctx, distance_buffer, sizeof(uint32_t) * spheres.indices.size());
+		distance_buffer.create_or_resize(ctx, sizeof(uint32_t) * spheres.indices.size());
 
 		spheres.set_out_of_date();
 		post_redraw();
