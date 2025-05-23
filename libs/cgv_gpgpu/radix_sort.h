@@ -7,17 +7,17 @@
 namespace cgv {
 namespace gpgpu {
 
+enum class SortOrder {
+	kAscending,
+	kDescending
+};
+
 class CGV_API radix_sort : public algorithm {
 public:
-	enum class Order {
-		kAscending,
-		kDescending
-	};
-
 	radix_sort(const std::string& type_name, uint32_t radix);
 
-	bool init(cgv::render::context& ctx, const sl::data_type& key_type, Order order, size_t size);
-	bool init(cgv::render::context& ctx, const sl::data_type& key_type, const sl::data_type& value_type, Order order, size_t size);
+	bool init(cgv::render::context& ctx, const sl::data_type& key_type, SortOrder order, size_t size);
+	bool init(cgv::render::context& ctx, const sl::data_type& key_type, const sl::data_type& value_type, SortOrder order, size_t size);
 	
 	virtual void destruct(const cgv::render::context& ctx) = 0;
 
@@ -42,7 +42,7 @@ protected:
 
 	sl::data_type _key_type;
 	sl::data_type _value_type;
-	Order _order = Order::kAscending;
+	SortOrder _order = SortOrder::kAscending;
 	uint32_t _num_keys = 0;
 
 private:
