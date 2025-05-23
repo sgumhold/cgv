@@ -9,8 +9,6 @@ namespace cgv {
 namespace gpgpu {
 
 class uniform_binding {
-	friend class compute_kernel;
-
 public:
 	uniform_binding() {}
 
@@ -27,6 +25,18 @@ public:
 	void operator=(const T& value) {
 		set(value);
 	}
+
+	const std::string& name() const {
+		return _name;
+	}
+
+	cgv::render::type_descriptor descriptor() const {
+		return _desc;
+	};
+
+	const void* address() const {
+		return _addr;
+	};
 
 private:
 	template<typename T>

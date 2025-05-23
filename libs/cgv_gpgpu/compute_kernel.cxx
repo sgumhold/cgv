@@ -24,9 +24,9 @@ bool compute_kernel::disable(cgv::render::context& ctx) {
 void compute_kernel::set_arguments(cgv::render::context& ctx, const argument_bindings& arguments) {
 	for(size_t i = 0; i < arguments.get_uniform_count(); ++i) {
 		const uniform_binding* binding = arguments.get_uniform(i);
-		int loc = _prog.get_uniform_location(ctx, binding->_name);
+		int loc = _prog.get_uniform_location(ctx, binding->name());
 		if(loc > -1)
-			_prog.set_uniform(ctx, loc, binding->_desc, binding->_addr);
+			_prog.set_uniform(ctx, loc, binding->descriptor(), binding->address());
 	}
 }
 
