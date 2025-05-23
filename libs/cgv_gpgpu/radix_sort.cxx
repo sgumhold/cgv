@@ -11,7 +11,7 @@ radix_sort::radix_sort(const std::string& type_name, uint32_t radix) : algorithm
 	_radix_passes = _key_width / _radix_log;
 }
 
-bool radix_sort::init(cgv::render::context& ctx, const sl::data_type& key_type, Order order, size_t size) {
+bool radix_sort::init(cgv::render::context& ctx, const sl::data_type& key_type, SortOrder order, size_t size) {
 	if(!is_type_supported(key_type))
 		return false;
 
@@ -34,7 +34,7 @@ bool radix_sort::init(cgv::render::context& ctx, const sl::data_type& key_type, 
 
 	config.defines["VALUE_TYPEDEF"] = to_string(_value_type.type());
 
-	config.defines["SORT_ASCENDING"] = _order == Order::kAscending ? "1" : "0";
+	config.defines["SORT_ASCENDING"] = _order == SortOrder::kAscending ? "1" : "0";
 	config.defines["SORT_PAIRS"] = _value_type.is_void() ? "0" : "1";
 
 	config.defines["RADIX"] = std::to_string(_radix);
@@ -45,7 +45,7 @@ bool radix_sort::init(cgv::render::context& ctx, const sl::data_type& key_type, 
 	return v_init(ctx, config);
 }
 
-bool radix_sort::init(cgv::render::context& ctx, const sl::data_type& key_type, const sl::data_type& value_type, Order order, size_t size) {
+bool radix_sort::init(cgv::render::context& ctx, const sl::data_type& key_type, const sl::data_type& value_type, SortOrder order, size_t size) {
 	// TODO: Add support for up to 4-component vector value types. (Check one-sweep compatibility).
 	// Maybe check key and value type support per sort implementation.
 	if(!is_type_supported(value_type))// || value_component_count == 0 || value_component_count > 4)
