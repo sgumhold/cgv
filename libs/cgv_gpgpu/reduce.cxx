@@ -60,7 +60,7 @@ bool reduce::dispatch(cgv::render::context& ctx, device_buffer_iterator input_fi
 	if(!is_valid_range(input_first, input_last))
 		return false;
 
-	int32_t count = cgv::gpgpu::distance(input_first, input_last);
+	uint32_t count = static_cast<uint32_t>(cgv::gpgpu::distance(input_first, input_last));
 	
 	input_first.buffer().bind(ctx, cgv::render::VertexBufferType::VBT_STORAGE, 0);
 	_group_reduction_buffer.bind(ctx, 1);
