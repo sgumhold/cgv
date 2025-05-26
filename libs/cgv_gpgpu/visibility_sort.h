@@ -42,9 +42,8 @@ public:
 	bool execute(cgv::render::context& ctx, device_buffer_iterator elements_first, device_buffer_iterator elements_last, device_buffer_iterator indices_output, const cgv::vec3& eye_position) {
 		bool success = true;
 		_distance_transform_arguments.eye_pos = eye_position;
-		const size_t count = static_cast<size_t>(distance(elements_first, elements_last));
-		success &= _distance_transform.dispatch(ctx, elements_first.buffer(), _distance_buffer, count, _distance_transform_arguments);
-		success &= _generate_indices.dispatch(ctx, indices_output.buffer(), count, 0u, 1u);
+		success &= _distance_transform.dispatch(ctx, elements_first, elements_last, begin(_distance_buffer), _distance_transform_arguments);
+		success &= _generate_indices.dispatch(ctx, indices_output, indices_output + static_cast<size_t>(distance(elements_first, elements_last)), 0u, 1u);
 		_sort.dispatch(ctx, _distance_buffer, indices_output.buffer());
 		return success;
 	}
