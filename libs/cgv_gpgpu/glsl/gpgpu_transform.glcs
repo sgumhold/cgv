@@ -13,7 +13,9 @@ layout(std430, binding = 1) writeonly buffer output_buffer {
 	output_type data_out[];
 };
 
-uniform uint u_count;
+uniform uint u_input_begin;
+uniform uint u_input_end;
+uniform uint u_output_begin;
 
 output_type operation(input_type element, uint index) {
 	//$cgv::operation
@@ -22,7 +24,8 @@ output_type operation(input_type element, uint index) {
 layout(local_size_x = 512) in;
 void main() {
 	uint gid = gl_GlobalInvocationID.x;
+	uint id = u_input_begin + gid;
 
-	if(gid < u_count)
-		data_out[gid] = operation(data_in[gid], gid);
+	if(id < u_input_end)
+		data_out[u_output_begin + gid] = operation(data_in[id], gid);
 }
