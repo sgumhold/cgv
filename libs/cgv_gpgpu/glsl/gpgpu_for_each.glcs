@@ -8,7 +8,8 @@ layout(std430, binding = 0) buffer value_buffer {
 	value_type data[];
 };
 
-uniform uint u_count;
+uniform uint u_begin;
+uniform uint u_end;
 
 void operation(inout value_type element, uint index) {
 	//$cgv::operation
@@ -17,10 +18,11 @@ void operation(inout value_type element, uint index) {
 layout(local_size_x = 512) in;
 void main() {
 	uint gid = gl_GlobalInvocationID.x;
+	uint id = u_begin + gid;
 
-	if(gid < u_count) {
-		value_type element = data[gid];
+	if(gid < u_end) {
+		value_type element = data[id];
 		operation(element, gid);
-		data[gid] = element;
+		data[id] = element;
 	}
 }

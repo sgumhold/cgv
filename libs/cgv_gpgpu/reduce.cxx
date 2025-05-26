@@ -60,23 +60,22 @@ bool reduce::dispatch(cgv::render::context& ctx, device_buffer_iterator input_fi
 	if(!is_valid_range(input_first, input_last))
 		return false;
 
-	uint32_t count = static_cast<uint32_t>(cgv::gpgpu::distance(input_first, input_last));
-	
 	input_first.buffer().bind(ctx, cgv::render::VertexBufferType::VBT_STORAGE, 0);
 	_group_reduction_buffer.bind(ctx, 1);
 
 	_kernel.enable(ctx);
 	_kernel.set_argument<uint32_t>(ctx, "u_input_begin", input_first.index());
 	_kernel.set_argument<uint32_t>(ctx, "u_output_begin", 0);
-	_kernel.set_argument<uint32_t>(ctx, "u_count", count);
+	_kernel.set_argument<uint32_t>(ctx, "u_count", cgv::gpgpu::distance(input_first, input_last));
 	_kernel.set_arguments(ctx, arguments);
 
 	dispatch_compute(_num_groups, 1, 1);
 	glMemoryBarrier(GL_SHADER_STORAGE_BARRIER_BIT);
 
 	input_first.buffer().unbind(ctx, cgv::render::VertexBufferType::VBT_STORAGE, 0);
-	_group_reduction_buffer.bind(ctx, 0);
 	_group_reduction_buffer.unbind(ctx, 1);
+
+	_group_reduction_buffer.bind(ctx, 0);
 	output.buffer().bind(ctx, 1);
 
 	_kernel.set_argument<uint32_t>(ctx, "u_input_begin", 0);
