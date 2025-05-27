@@ -10,7 +10,6 @@
 #include <cgv_gpgpu/visibility_sort.h>
 
 #include <cgv_gpgpu/radix_sort_4x.h>
-#include <cgv_gpgpu/radix_sort_onesweep.h>
 #include <cgv_gpgpu/visibility_sort.h>
 
 class visibility_sorting : public cgv::base::node, public cgv::render::drawable, public cgv::gui::provider {
@@ -24,7 +23,7 @@ protected:
 
 	bool do_sort = true;
 
-	cgv::gpgpu::visibility_sort<cgv::gpgpu::radix_sort_4x> sort;
+	cgv::gpgpu::visibility_sort sort = cgv::gpgpu::visibility_sort::construct_with<cgv::gpgpu::radix_sort_4x>();
 
 	bool measure_time = false;
 	cgv::render::gl::gl_time_query time_query;
