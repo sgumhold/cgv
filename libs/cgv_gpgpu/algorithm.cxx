@@ -103,6 +103,23 @@ bool algorithm::init_kernels(cgv::render::context& ctx, const cgv::render::shade
 	return success;
 }
 
+bool algorithm::init_kernels(cgv::render::context& ctx, const std::vector<compute_kernel_info>& kernel_infos, const cgv::render::shader_compile_options& config) {
+	const std::string debug_context = "cgv::gpgpu::" + get_type_name();
+	bool success = true;
+	for(const auto& info : kernel_infos) {
+		if(info.defines.empty()) {
+			success &= info.kernel->init(ctx, info.name, config, debug_context);
+		} else {
+			cgv::render::shader_compile_options extended_config = config;
+			for(const auto& define : info.defines)
+				extended_config.defines[define.first] = define.second;
+			success &= info.kernel->init(ctx, info.name, extended_config, debug_context);
+		}
+	}
+	_is_initialized = success;
+	return success;
+}
+
 void algorithm::destruct_kernels(const cgv::render::context& ctx) {
 	for(const auto& info : _kernel_registrations)
 		info.kernel->destruct(ctx);

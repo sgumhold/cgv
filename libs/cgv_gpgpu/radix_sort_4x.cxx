@@ -8,13 +8,20 @@ namespace cgv {
 namespace gpgpu {
 
 radix_sort_4x::radix_sort_4x() : radix_sort("radix_sort_4x", 4) {
-	register_kernel(_scan_local_kernel, "gpgpu_radix_sort_4x_scan_local");
-	register_kernel(_scan_global_kernel, "gpgpu_radix_sort_4x_scan_global");
-	register_kernel(_scatter_kernel, "gpgpu_radix_sort_4x_scatter");
+	//register_kernel(_scan_local_kernel, "gpgpu_radix_sort_4x_scan_local");
+	//register_kernel(_scan_global_kernel, "gpgpu_radix_sort_4x_scan_global");
+	//register_kernel(_scatter_kernel, "gpgpu_radix_sort_4x_scatter");
 }
 
 bool radix_sort_4x::v_init(cgv::render::context& ctx, cgv::render::shader_compile_options& config) {
-	if(init_kernels(ctx, config))
+
+	std::vector<compute_kernel_info> kernels = {
+		{ &_scan_local_kernel, "gpgpu_radix_sort_4x_scan_local" },
+		{ &_scan_global_kernel, "gpgpu_radix_sort_4x_scan_global" },
+		{ &_scatter_kernel, "gpgpu_radix_sort_4x_scatter" }
+	};
+
+	if(init_kernels(ctx, kernels, config))
 		return v_resize(ctx);
 
 	return false;

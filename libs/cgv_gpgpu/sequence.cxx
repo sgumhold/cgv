@@ -9,7 +9,7 @@ const std::string sequence::init_argument_name = "u_init";
 const std::string sequence::step_argument_name = "u_step";
 
 sequence::sequence() : algorithm("sequence") {
-	register_kernel(_kernel, "gpgpu_sequence");
+	//register_kernel(_kernel, "gpgpu_sequence");
 }
 
 bool sequence::init(cgv::render::context& ctx, const sl::data_type& value_type) {
@@ -17,7 +17,12 @@ bool sequence::init(cgv::render::context& ctx, const sl::data_type& value_type) 
 		return false;
 	cgv::render::shader_compile_options config = get_configuration({}, { value_type });
 	config.snippets.push_back({ "value_typedef", sl::get_type_alias_string("value_type", value_type) });
-	return init_kernels(ctx, config);
+
+	std::vector<compute_kernel_info> kernels = {
+		{ &_kernel, "gpgpu_sequence" }
+	};
+
+	return init_kernels(ctx, kernels, config);
 }
 
 bool sequence::dispatch(cgv::render::context& ctx, const cgv::render::vertex_buffer& buffer, size_t count, const argument_bindings& arguments) {
