@@ -8,9 +8,7 @@ namespace gpgpu {
 const std::string sequence::init_argument_name = "u_init";
 const std::string sequence::step_argument_name = "u_step";
 
-sequence::sequence() : algorithm("sequence") {
-	//register_kernel(_kernel, "gpgpu_sequence");
-}
+sequence::sequence() : algorithm("sequence") {}
 
 bool sequence::init(cgv::render::context& ctx, const sl::data_type& value_type) {
 	if(!value_type.is_valid() || value_type.is_compound())
@@ -18,11 +16,12 @@ bool sequence::init(cgv::render::context& ctx, const sl::data_type& value_type) 
 	cgv::render::shader_compile_options config = get_configuration({}, { value_type });
 	config.snippets.push_back({ "value_typedef", sl::get_type_alias_string("value_type", value_type) });
 
-	std::vector<compute_kernel_info> kernels = {
-		{ &_kernel, "gpgpu_sequence" }
-	};
+	return algorithm::init(ctx, { { &_kernel, "gpgpu_sequence" } }, config);
+}
 
-	return init_kernels(ctx, kernels, config);
+void sequence::destruct(cgv::render::context& ctx) {
+	_kernel.destruct(ctx);
+	algorithm::destruct(ctx);
 }
 
 bool sequence::dispatch(cgv::render::context& ctx, const cgv::render::vertex_buffer& buffer, size_t count, const argument_bindings& arguments) {

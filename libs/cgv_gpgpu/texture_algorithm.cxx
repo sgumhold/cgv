@@ -9,10 +9,10 @@ bool texture_algorithm::is_texture_type_supported(TextureType texture_type) cons
 	return std::find(_supported_texture_types.begin(), _supported_texture_types.end(), texture_type) != _supported_texture_types.end();
 }
 
-bool texture_algorithm::init(cgv::render::context& ctx, TextureType texture_type, const cgv::render::shader_compile_options& config) {
+bool texture_algorithm::init(cgv::render::context& ctx, TextureType texture_type, const std::vector<compute_kernel_info>& kernel_infos, const cgv::render::shader_compile_options& config) {
 	if(is_texture_type_supported(texture_type)) {
 		_texture_type = texture_type;
-		return init_kernels(ctx, config);
+		return algorithm::init(ctx, kernel_infos, config);
 	}
 	return false;
 }

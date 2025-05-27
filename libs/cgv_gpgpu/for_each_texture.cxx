@@ -3,9 +3,7 @@
 namespace cgv {
 namespace gpgpu {
 
-for_each_texture::for_each_texture() : texture_algorithm("for_each_texture", { TextureType::TT_1D, TextureType::TT_2D, TextureType::TT_3D }) {
-	register_kernel(_kernel, "gpgpu_for_each_texture");
-}
+for_each_texture::for_each_texture() : texture_algorithm("for_each_texture", { TextureType::TT_1D, TextureType::TT_2D, TextureType::TT_3D }) {}
 
 bool for_each_texture::init(cgv::render::context& ctx, cgv::render::TextureType texture_type, const std::string& unary_operation) {
 	return init(ctx, texture_type, {}, unary_operation);
@@ -13,7 +11,12 @@ bool for_each_texture::init(cgv::render::context& ctx, cgv::render::TextureType 
 
 bool for_each_texture::init(cgv::render::context& ctx, cgv::render::TextureType texture_type, const argument_definitions& arguments, const std::string& unary_operation) {
 	cgv::render::shader_compile_options config = get_configuration(texture_type, arguments, unary_operation);
-	return texture_algorithm::init(ctx, texture_type, config);
+	return texture_algorithm::init(ctx, texture_type, { { &_kernel, "gpgpu_for_each_texture"} }, config);
+}
+
+void for_each_texture::destruct(cgv::render::context& ctx) {
+	_kernel.destruct(ctx);
+	algorithm::destruct(ctx);
 }
 
 bool for_each_texture::dispatch(cgv::render::context& ctx, cgv::render::texture& texture, const argument_bindings& arguments) {

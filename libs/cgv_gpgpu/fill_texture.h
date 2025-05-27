@@ -16,6 +16,8 @@ public:
 
 	bool init(cgv::render::context& ctx, cgv::render::TextureType texture_type);
 
+	void destruct(cgv::render::context& ctx);
+
 	bool dispatch(cgv::render::context& ctx, cgv::render::texture& texture, const vec4& value);
 
 private:

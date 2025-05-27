@@ -7,33 +7,30 @@
 namespace cgv {
 namespace gpgpu {
 
-radix_sort_4x::radix_sort_4x() : radix_sort("radix_sort_4x", 4) {
-	//register_kernel(_scan_local_kernel, "gpgpu_radix_sort_4x_scan_local");
-	//register_kernel(_scan_global_kernel, "gpgpu_radix_sort_4x_scan_global");
-	//register_kernel(_scatter_kernel, "gpgpu_radix_sort_4x_scatter");
-}
+radix_sort_4x::radix_sort_4x() : radix_sort("radix_sort_4x", 4) {}
 
 bool radix_sort_4x::v_init(cgv::render::context& ctx, cgv::render::shader_compile_options& config) {
-
 	std::vector<compute_kernel_info> kernels = {
 		{ &_scan_local_kernel, "gpgpu_radix_sort_4x_scan_local" },
 		{ &_scan_global_kernel, "gpgpu_radix_sort_4x_scan_global" },
 		{ &_scatter_kernel, "gpgpu_radix_sort_4x_scatter" }
 	};
 
-	if(init_kernels(ctx, kernels, config))
+	if(algorithm::init(ctx, kernels, config))
 		return v_resize(ctx);
 
 	return false;
 }
 
 void radix_sort_4x::destruct(const cgv::render::context& ctx) {
+	_scan_local_kernel.destruct(ctx);
+	_scan_global_kernel.destruct(ctx);
+	_scatter_kernel.destruct(ctx);
 	_keys_out_buffer.destruct(ctx);
 	_values_out_buffer.destruct(ctx);
 	_prefix_sums_buffer.destruct(ctx);
 	_block_sums_buffer.destruct(ctx);
 	_last_sum_buffer.destruct(ctx);
-	
 	algorithm::destruct(ctx);
 }
 
