@@ -20,7 +20,7 @@ public:
 	bool is_texture_type_supported(TextureType texture_type) const;
 
 protected:
-	bool init(cgv::render::context& ctx, TextureType texture_type, const cgv::render::shader_compile_options& config);
+	bool init(cgv::render::context& ctx, TextureType texture_type, const std::vector<compute_kernel_info>& kernel_infos, const cgv::render::shader_compile_options& config);
 
 	bool is_initialized_for_texture(const cgv::render::texture& texture) const;
 

@@ -74,36 +74,7 @@ bool algorithm::is_initialized() const {
 	return _is_initialized;
 }
 
-void algorithm::destruct(const cgv::render::context& ctx) {
-	destruct_kernels(ctx);
-}
-
-void algorithm::register_kernel(compute_kernel& kernel, const std::string& name) {
-	_kernel_registrations.push_back({ &kernel, name });
-};
-
-void algorithm::register_kernel(compute_kernel& kernel, const std::string& name, const cgv::render::shader_define_map& defines) {
-	_kernel_registrations.push_back({ &kernel, name, defines });
-};
-
-bool algorithm::init_kernels(cgv::render::context& ctx, const cgv::render::shader_compile_options& config) {
-	const std::string debug_context = "cgv::gpgpu::" + get_type_name();
-	bool success = true;
-	for(const auto& info : _kernel_registrations) {
-		if(info.defines.empty()) {
-			success &= info.kernel->init(ctx, info.name, config, debug_context);
-		} else {
-			cgv::render::shader_compile_options extended_config = config;
-			for(const auto& define : info.defines)
-				extended_config.defines[define.first] = define.second;
-			success &= info.kernel->init(ctx, info.name, extended_config, debug_context);
-		}
-	}
-	_is_initialized = success;
-	return success;
-}
-
-bool algorithm::init_kernels(cgv::render::context& ctx, const std::vector<compute_kernel_info>& kernel_infos, const cgv::render::shader_compile_options& config) {
+bool algorithm::init(cgv::render::context& ctx, const std::vector<compute_kernel_info>& kernel_infos, const cgv::render::shader_compile_options& config) {
 	const std::string debug_context = "cgv::gpgpu::" + get_type_name();
 	bool success = true;
 	for(const auto& info : kernel_infos) {
@@ -120,9 +91,7 @@ bool algorithm::init_kernels(cgv::render::context& ctx, const std::vector<comput
 	return success;
 }
 
-void algorithm::destruct_kernels(const cgv::render::context& ctx) {
-	for(const auto& info : _kernel_registrations)
-		info.kernel->destruct(ctx);
+void algorithm::destruct(const cgv::render::context& ctx) {
 	_is_initialized = false;
 }
 

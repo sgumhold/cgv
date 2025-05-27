@@ -9,10 +9,6 @@ namespace gpgpu {
 
 radix_sort_onesweep::radix_sort_onesweep() : radix_sort("radix_sort_onesweep", 256) {
 	_radix = 256;
-	//register_kernel(_init_kernel, "gpgpu_radix_sort_onesweep_init");
-	//register_kernel(_global_hist_kernel, "gpgpu_radix_sort_onesweep_global_histogram");
-	//register_kernel(_scan_kernel, "gpgpu_radix_sort_onesweep_scan");
-	//register_kernel(_digit_bin_pass_kernel, "gpgpu_radix_sort_onesweep_digit_bin_pass");
 }
 
 bool radix_sort_onesweep::v_init(cgv::render::context& ctx, cgv::render::shader_compile_options& config) {
@@ -23,7 +19,7 @@ bool radix_sort_onesweep::v_init(cgv::render::context& ctx, cgv::render::shader_
 		{ &_digit_bin_pass_kernel, "gpgpu_radix_sort_onesweep_digit_bin_pass" }
 	};
 
-	if(init_kernels(ctx, kernels, config)) {
+	if(algorithm::init(ctx, kernels, config)) {
 		// Get the maximum number of work groups that can be dispatched in dimension 0.
 		_max_dispatch_dimension = ctx.get_device_capabilities().max_compute_work_group_count[0];
 
@@ -37,12 +33,15 @@ bool radix_sort_onesweep::v_init(cgv::render::context& ctx, cgv::render::shader_
 }
 
 void radix_sort_onesweep::destruct(const cgv::render::context& ctx) {
+	_init_kernel.destruct(ctx);
+	_global_hist_kernel.destruct(ctx);
+	_scan_kernel.destruct(ctx);
+	_digit_bin_pass_kernel.destruct(ctx);
 	_keys_out_buffer.destruct(ctx);
 	_values_out_buffer.destruct(ctx);
 	_pass_hist_buffer.destruct(ctx);
 	_global_hist_buffer.destruct(ctx);
 	_index_buffer.destruct(ctx);
-	
 	algorithm::destruct(ctx);
 }
 

@@ -12,7 +12,6 @@ reduce::reduce() : reduce(256, 128) {}
 reduce::reduce(uint32_t group_count, uint32_t group_size) : algorithm("reduce") {
 	_num_groups = group_count;
 	_group_size = group_size;
-	register_kernel(_kernel, "gpgpu_reduce_group", { { "LOCAL_SIZE_X", std::to_string(group_size) } });
 }
 
 bool reduce::init(cgv::render::context& ctx, const sl::data_type& value_type) {
@@ -36,7 +35,11 @@ bool reduce::init(cgv::render::context& ctx, const sl::data_type& value_type, co
 	if(available_element_count < _group_size)
 		return false;
 
-	if(init_kernels(ctx, config)) {
+	std::vector<compute_kernel_info> kernel_infos = {
+		{ &_kernel, "gpgpu_reduce_group", { { "LOCAL_SIZE_X", std::to_string(_group_size) } } }
+	};
+
+	if(algorithm::init(ctx, kernel_infos, config)) {
 		_group_reduction_buffer.create_or_resize(ctx, value_type, _num_groups);
 		return true;
 	}
@@ -45,7 +48,9 @@ bool reduce::init(cgv::render::context& ctx, const sl::data_type& value_type, co
 }
 
 void reduce::destruct(const cgv::render::context& ctx) {
+	_kernel.destruct(ctx);
 	_group_reduction_buffer.destruct(ctx);
+	algorithm::destruct(ctx);
 }
 
 bool reduce::dispatch(cgv::render::context& ctx, const cgv::render::vertex_buffer& buffer, size_t count, const argument_bindings& arguments) {
