@@ -24,7 +24,7 @@ protected:
 
 	bool do_sort = true;
 
-	cgv::gpgpu::process::visibility_sort<cgv::gpgpu::radix_sort_4x> sort;
+	cgv::gpgpu::visibility_sort<cgv::gpgpu::radix_sort_4x> sort;
 
 	bool measure_time = false;
 	cgv::render::gl::gl_time_query time_query;
