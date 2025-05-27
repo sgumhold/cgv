@@ -17,6 +17,10 @@ class CGV_API algorithm {
 public:
 	algorithm(const std::string& type_name) : _type_name(type_name) {}
 	
+	//algorithm(const algorithm& other) = delete;
+	//
+	//algorithm& operator=(const algorithm& other) = delete;
+
 	std::string get_type_name() const;
 
 	bool is_initialized() const;
@@ -24,10 +28,18 @@ public:
 	void destruct(const cgv::render::context& ctx);
 
 protected:
+	struct compute_kernel_info {
+		compute_kernel* kernel = nullptr;
+		std::string name;
+		cgv::render::shader_define_map defines;
+	};
+
 	void register_kernel(compute_kernel& kernel, const std::string& name);
 	void register_kernel(compute_kernel& kernel, const std::string& name, const cgv::render::shader_define_map& defines);
 	
 	bool init_kernels(cgv::render::context& ctx, const cgv::render::shader_compile_options& config);
+
+	bool init_kernels(cgv::render::context& ctx, const std::vector<compute_kernel_info>& kernel_infos, const cgv::render::shader_compile_options& config);
 
 	void destruct_kernels(const cgv::render::context& ctx);
 
@@ -44,11 +56,11 @@ protected:
 	void dispatch_compute(unsigned num_groups_x, unsigned num_groups_y, unsigned num_groups_z);
 
 private:
-	struct compute_kernel_info {
-		compute_kernel* kernel = nullptr;
-		std::string name;
-		cgv::render::shader_define_map defines;
-	};
+	//struct compute_kernel_info {
+	//	compute_kernel* kernel = nullptr;
+	//	std::string name;
+	//	cgv::render::shader_define_map defines;
+	//};
 
 	const std::string _type_name;
 	bool _is_initialized = false;

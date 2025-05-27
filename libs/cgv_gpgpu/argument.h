@@ -231,6 +231,12 @@ private:
 
 class argument_binding_struct : public argument_bindings {
 public:
+	argument_binding_struct() {}
+
+	argument_binding_struct(const argument_binding_struct& other) = delete;
+	
+	argument_binding_struct& operator=(const argument_binding_struct& other) = delete;
+
 	size_t get_uniform_count() const override {
 		return _uniform_bindings.size();
 	}
