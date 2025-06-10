@@ -75,7 +75,7 @@ void shader_code::decode_if_base64(std::string& content) {
 	}
 /*#else
 	if (content.size() > 1) {
-		if ((uint8_t&)content[0]==0xC2 && (uint8_t&)content[1]==0xA7) // UTF-8 for '§'
+		if ((uint8_t&)content[0]==0xC2 && (uint8_t&)content[1]==0xA7) // UTF-8 for 'ï¿½'
 			content = decode_base64(content.substr(2));
 		else if (
 			content.size() > 2 &&
@@ -459,7 +459,7 @@ void shader_code::set_defines_and_snippets(std::string& source, const shader_com
 
 		// Pre-processor directives and snippet markers must appear on separate lines. Only whitespace characters are allowed to appear before them.
 		const char* ptr = line.begin;
-		for(ptr; ptr < line.end; ++ptr) {
+		for(; ptr < line.end; ++ptr) {
 			char c = *ptr;
 
 			if(c == '#') {
