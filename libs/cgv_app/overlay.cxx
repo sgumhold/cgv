@@ -14,6 +14,9 @@ void overlay::on_layout_change() {
 }
 
 bool overlay::handle(cgv::gui::event& e) {
+	if(!cgv::render::drawable::active)
+		return false;
+
 	switch(e.get_kind()) {
 	case cgv::gui::EID_KEY:
 		return handle_key_event(dynamic_cast<cgv::gui::key_event&>(e));

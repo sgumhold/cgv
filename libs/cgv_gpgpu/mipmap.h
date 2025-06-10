@@ -1,6 +1,6 @@
 #pragma once
 
-#include "gpu_algorithm.h"
+#include "texture_algorithm.h"
 
 #include <cgv/render/texture.h>
 
@@ -9,31 +9,22 @@
 namespace cgv {
 namespace gpgpu {
 
-/** GPU compute shader implementation for computing texture mipmaps. */
-class CGV_API mipmap : public gpu_algorithm {
-protected:
-	unsigned group_size = 0;
-	
-	/// shader programs
-	cgv::render::shader_program mipmap1d_prog;
-	cgv::render::shader_program mipmap2d_prog;
-	cgv::render::shader_program mipmap3d_prog;
-	
-	bool load_shader_programs(cgv::render::context& ctx);
-
+/// GPU compute shader implementation for computing texture mipmaps.
+class CGV_API mipmap : public texture_algorithm {
 public:
-	mipmap() : gpu_algorithm() {}
+	mipmap();
 
-	void destruct(const cgv::render::context& ctx);
+	bool init(cgv::render::context& ctx, cgv::render::TextureType texture_type);
 
-	bool init(cgv::render::context& ctx, size_t count) { return init(ctx); }
+	void destruct(cgv::render::context& ctx);
 
-	bool init(cgv::render::context& ctx);
+	bool dispatch(cgv::render::context& ctx, cgv::render::texture& texture);
 
-	bool execute(cgv::render::context& ctx, cgv::render::texture& source_texture);
+private:
+	compute_kernel _kernel;
 };
 
-}
-}
+} // namespace gpgpu
+} // namespace cgv
 
 #include <cgv/config/lib_end.h>

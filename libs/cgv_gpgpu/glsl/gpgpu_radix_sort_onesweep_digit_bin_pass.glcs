@@ -1,0 +1,529 @@
+#version 430
+
+#extension GL_KHR_shader_subgroup_basic : enable
+#extension GL_KHR_shader_subgroup_ballot : enable
+#extension GL_KHR_shader_subgroup_arithmetic : enable
+
+#pragma optionNV(inline all)
+#pragma optionNV(unroll all)
+
+#include "gpgpu_radix_sort_onesweep_common.glcs"
+
+layout(local_size_x = D_DIM) in;
+
+shared uint s_d[D_TOTAL_SMEM];
+
+uint current_pass() {
+	return u_radix_shift >> 3;
+}
+
+uint pass_hist_offset(uint index) {
+	return ((current_pass() * u_thread_blocks) + index) << RADIX_LOG;
+}
+
+void assign_partition_tile(uint gtid, inout uint partition_index) {
+	if(gtid == 0)
+		s_d[D_TOTAL_SMEM - 1] = atomicAdd(b_index[current_pass()], 1);
+
+	groupMemoryBarrier();
+	barrier();
+
+	partition_index = s_d[D_TOTAL_SMEM - 1];
+}
+
+uint get_wave_index(uint gtid) {
+	return gtid / gl_SubgroupSize;
+}
+
+uint sub_part_size() {
+	return KEYS_PER_THREAD * gl_SubgroupSize;
+}
+
+uint shared_offset(uint gtid) {
+	return gl_SubgroupInvocationID + get_wave_index(gtid) * sub_part_size();
+}
+
+uint device_offset(uint gtid, uint part_index) {
+	return shared_offset(gtid) + part_index * PART_SIZE;
+}
+
+uint GlobalHistOffset()
+{
+	return u_radix_shift << 5;
+}
+
+uint wave_hists_size()
+{
+	return D_DIM / gl_SubgroupSize * RADIX;
+}
+
+void clear_wave_hists(uint gtid) {
+	const uint hists_end = wave_hists_size();
+	for(uint i = gtid; i < hists_end; i += D_DIM)
+		s_d[i] = 0;
+}
+
+uint wave_hist_inclusive_scan_circular_shift(uint gtid) {
+	uint hist_reduction = s_d[gtid];
+	for(uint i = gtid + RADIX; i < wave_hists_size(); i += RADIX) {
+		hist_reduction += s_d[i];
+		s_d[i] = hist_reduction - s_d[i];
+	}
+	return hist_reduction;
+}
+
+void wave_hist_reduction_exclusive_scan(uint gtid, uint hist_reduction) {
+	if(gtid < RADIX) {
+		const uint lane_mask = gl_SubgroupSize - 1;
+		s_d[((gl_SubgroupInvocationID + 1) & lane_mask) + (gtid & ~lane_mask)] = hist_reduction;
+	}
+	groupMemoryBarrier();
+	barrier();
+
+	if(gtid < RADIX / gl_SubgroupSize) {
+		s_d[gtid * gl_SubgroupSize] = subgroupExclusiveAdd(s_d[gtid * gl_SubgroupSize]);
+	}
+	groupMemoryBarrier();
+	barrier();
+	
+	if(gtid < RADIX && gl_SubgroupInvocationID != 0)
+		s_d[gtid] += subgroupBroadcast(s_d[gtid - 1], 1);
+}
+
+uint get_wave_flags() {
+	return (gl_SubgroupSize & 31) != 0 ? (1U << gl_SubgroupSize) - 1 : 0xFFFFFFFF;
+}
+
+void warp_level_multi_split(uint key, uint wave_parts, inout uvec4 wave_flags) {
+	//[unroll]
+	for(uint k = 0; k < RADIX_LOG; ++k) {
+		const bool t = (key >> (k + u_radix_shift) & 1) != 0;
+		const uvec4 ballot = subgroupBallot(t);
+		for(uint wave_part = 0; wave_part < wave_parts; ++wave_part)
+			wave_flags[wave_part] &= (t ? 0 : 0xFFFFFFFF) ^ ballot[wave_part];
+	}
+}
+
+void count_peer_bits(inout uint peer_bits, inout uint total_bits, uvec4 wave_flags, uint wave_parts) {
+	for(uint wave_part = 0; wave_part < wave_parts; ++wave_part) {
+		if(gl_SubgroupInvocationID >= wave_part * 32) {
+			const uint lt_mask = gl_SubgroupInvocationID >= (wave_part + 1) * 32 ?
+				0xFFFFFFFF : (1U << (gl_SubgroupInvocationID & 31)) - 1;
+			peer_bits += bitCount(wave_flags[wave_part] & lt_mask);
+		}
+		total_bits += bitCount(wave_flags[wave_part]);
+	}
+}
+
+uint find_lowest_rank_peer(uvec4 wave_flags, uint wave_parts) {
+	uint lowest_rank_peer = 0;
+	for(uint wave_part = 0; wave_part < wave_parts; ++wave_part) {
+		uint fbl = findLSB(wave_flags[wave_part]);
+		if(fbl == 0xFFFFFFFF)
+			lowest_rank_peer += 32;
+		else
+			return lowest_rank_peer + fbl;
+	}
+	return 0; //will never happen
+}
+
+OffsetStruct rank_keys(uint gtid, KeyStruct keys) {
+	OffsetStruct offsets;
+	const uint wave_parts = (gl_SubgroupSize + 31) / 32;
+	//[unroll]
+	for(uint i = 0; i < KEYS_PER_THREAD; ++i) {
+		uvec4 wave_flags = uvec4(get_wave_flags());
+		warp_level_multi_split(keys.k[i], wave_parts, wave_flags);
+		
+		const uint index = extract_digit(keys.k[i]) + (get_wave_index(gtid.x) * RADIX);
+		const uint lowest_rank_peer = find_lowest_rank_peer(wave_flags, wave_parts);
+		
+		uint peer_bits = 0;
+		uint total_bits = 0;
+		count_peer_bits(peer_bits, total_bits, wave_flags, wave_parts);
+		
+		uint pre_increment_value;
+		if(peer_bits == 0)
+			pre_increment_value = atomicAdd(s_d[index], total_bits);
+		offsets.o[i] = subgroupBroadcast(pre_increment_value, lowest_rank_peer) + peer_bits;
+	}
+	
+	return offsets;
+}
+
+void update_offsets(uint gtid, inout OffsetStruct offsets, KeyStruct keys) {
+	if(gtid >= gl_SubgroupSize) {
+		const uint t = get_wave_index(gtid) * RADIX;
+		//[unroll]
+		for(uint i = 0; i < KEYS_PER_THREAD; ++i) {
+			const uint t2 = extract_digit(keys.k[i]);
+			offsets.o[i] += s_d[t2 + t] + s_d[t2];
+		}
+	} else {
+		//[unroll]
+		for(uint i = 0; i < KEYS_PER_THREAD; ++i)
+			offsets.o[i] += s_d[extract_digit(keys.k[i])];
+	}
+}
+
+void device_broadcast_reductions(uint gtid, uint part_index, uint hist_reduction) {
+	if(part_index < u_thread_blocks - 1)
+		atomicAdd(b_pass_hist[gtid + pass_hist_offset(part_index + 1)], FLAG_REDUCTION | hist_reduction << 2);
+}
+
+void lookback(uint gtid, uint part_index, uint exclusive_hist_reduction) {
+	if(gtid < RADIX) {
+		uint lookback_reduction = 0;
+		for(uint k = part_index; k >= 0;) {
+			const uint flag_payload = b_pass_hist[gtid + pass_hist_offset(k)];
+			if((flag_payload & FLAG_MASK) == FLAG_INCLUSIVE) {
+				lookback_reduction += flag_payload >> 2;
+				if(part_index < u_thread_blocks - 1) {
+					atomicAdd(b_pass_hist[gtid + pass_hist_offset(part_index + 1)], 1 | lookback_reduction << 2);
+				}
+				s_d[gtid + PART_SIZE] = lookback_reduction - exclusive_hist_reduction;
+				break;
+			}
+					
+			if((flag_payload & FLAG_MASK) == FLAG_REDUCTION) {
+				lookback_reduction += flag_payload >> 2;
+				k--;
+			}
+		}
+	}
+}
+
+KeyStruct load_keys(uint gtid, uint part_index) {
+	KeyStruct keys;
+	//[unroll]
+	for(uint i = 0, t = device_offset(gtid, part_index); i < KEYS_PER_THREAD; ++i, t += gl_SubgroupSize)
+		keys.k[i] = load_key(t);
+	
+	return keys;
+}
+
+KeyStruct load_keys_partial(uint gtid, uint part_index) {
+	KeyStruct keys;
+	//[unroll]
+	for(uint i = 0, t = device_offset(gtid, part_index); i < KEYS_PER_THREAD; ++i, t += gl_SubgroupSize) {
+		if(t < u_num_keys)
+			keys.k[i] = load_key(t);
+		else
+			keys.k[i] = load_dummy_key();
+	}
+
+	return keys;
+}
+
+void write_shared_key(uint device_index, uint group_shared_index) {
+	write_key(s_d[group_shared_index], device_index);
+}
+
+void scatter_keys_shared(OffsetStruct offsets, KeyStruct keys) {
+	//[unroll]
+	for(uint i = 0; i < KEYS_PER_THREAD; ++i)
+		s_d[offsets.o[i]] = keys.k[i];
+}
+
+void scatter_keys_only_device_ascending(uint gtid) {
+	for(uint i = gtid; i < PART_SIZE; i += D_DIM)
+		write_shared_key(s_d[extract_digit(s_d[i]) + PART_SIZE] + i, i);
+}
+
+void scatter_keys_only_device_descending(uint gtid) {
+	if(u_radix_shift == 24) {
+		for(uint i = gtid; i < PART_SIZE; i += D_DIM)
+			write_shared_key(descending_index(s_d[extract_digit(s_d[i]) + PART_SIZE] + i), i);
+	} else {
+		scatter_keys_only_device_ascending(gtid);
+	}
+}
+
+void scatter_keys_only_device(uint gtid) {
+#if SORT_ASCENDING == 1
+	scatter_keys_only_device_ascending(gtid);
+#else
+	scatter_keys_only_device_descending(gtid);
+#endif
+}
+
+#if SORT_PAIRS == 1
+
+void load_payload(inout uint payload, uint device_index) {
+#if VALUE_TYPE == VALUE_UINT
+	payload = b_values_in[device_index];
+#elif VALUE_TYPE== VALUE_INT
+	payload = uint(b_values_in[device_index]);
+#elif VALUE_TYPE == VALUE_FLOAT
+	payload = floatBitsToUint(b_values_in[device_index]);
+#endif
+}
+
+void load_payloads(uint gtid, uint part_index, inout KeyStruct payloads) {
+    //[unroll]
+	for(uint i = 0, t = device_offset(gtid, part_index); i < KEYS_PER_THREAD; ++i, t += gl_SubgroupSize)
+        load_payload(payloads.k[i], t);
+}
+
+void scatter_payloads_shared(OffsetStruct offsets, KeyStruct payloads) {
+    scatter_keys_shared(offsets, payloads);
+}
+
+void write_payload(uint device_index, uint group_shared_index) {
+#if VALUE_TYPE == VALUE_UINT
+	b_values_out[device_index] = s_d[group_shared_index];
+#elif VALUE_TYPE == VALUE_INT
+	b_values_out[device_index] = int(s_d[group_shared_index]);
+#elif VALUE_TYPE == VALUE_FLOAT
+	b_values_out[device_index] = uintBitsToFloat(s_d[group_shared_index]);
+#endif
+}
+
+void scatter_payloads_ascending(uint gtid, DigitStruct digits) {
+    //[unroll]
+    for(uint i = 0, t = gtid; i < KEYS_PER_THREAD; ++i, t += D_DIM)
+        write_payload(s_d[digits.d[i] + PART_SIZE] + t, t);
+}
+
+void scatter_payloads_descending(uint gtid, DigitStruct digits) {
+    if(u_radix_shift == 24) {
+        //[unroll]
+        for(uint i = 0, t = gtid; i < KEYS_PER_THREAD; ++i, t += D_DIM)
+			write_payload(descending_index(s_d[digits.d[i] + PART_SIZE] + t), t);
+    } else {
+        scatter_payloads_ascending(gtid, digits);
+    }
+}
+
+void scatter_pairs_key_phase_ascending(uint gtid, inout DigitStruct digits) {
+	//[unroll]
+	for(uint i = 0, t = gtid; i < KEYS_PER_THREAD; ++i, t += D_DIM) {
+		digits.d[i] = extract_digit(s_d[t]);
+		write_shared_key(s_d[digits.d[i] + PART_SIZE] + t, t);
+	}
+}
+
+void scatter_pairs_key_phase_descending(uint gtid, inout DigitStruct digits) {
+	if(u_radix_shift == 24) {
+		//[unroll]
+		for (uint i = 0, t = gtid; i < KEYS_PER_THREAD; ++i, t += D_DIM) {
+			digits.d[i] = extract_digit(s_d[t]);
+			write_shared_key(descending_index(s_d[digits.d[i] + PART_SIZE] + t), t);
+		}
+	} else {
+		scatter_pairs_key_phase_ascending(gtid, digits);
+	}
+}
+
+void scatter_pairs_device(uint gtid, uint part_index, OffsetStruct offsets) {
+	DigitStruct digits;
+#if SORT_ASCENDING == 1
+	scatter_pairs_key_phase_ascending(gtid, digits);
+#else
+	scatter_pairs_key_phase_descending(gtid, digits);
+#endif
+	groupMemoryBarrier();
+	barrier();
+	
+	KeyStruct payloads;
+	load_payloads(gtid, part_index, payloads);
+	scatter_payloads_shared(offsets, payloads);
+	groupMemoryBarrier();
+	barrier();
+	
+#if SORT_ASCENDING == 1
+	scatter_payloads_ascending(gtid, digits);
+#else
+	scatter_payloads_descending(gtid, digits);
+#endif
+}
+
+#endif
+
+void scatter_device(uint gtid, uint part_index, OffsetStruct offsets) {
+#if SORT_PAIRS == 1
+	scatter_pairs_device(gtid, part_index, offsets);
+#else
+	scatter_keys_only_device(gtid);
+#endif
+}
+
+void scatter_keys_only_device_partial_ascending(uint gtid, uint final_part_size) {
+	for(uint i = gtid; i < PART_SIZE; i += D_DIM) {
+		if(i < final_part_size)
+			write_shared_key(s_d[extract_digit(s_d[i]) + PART_SIZE] + i, i);
+	}
+}
+
+void scatter_keys_only_device_partial_descending(uint gtid, uint final_part_size) {
+	if(u_radix_shift == 24) {
+		for(uint i = gtid; i < PART_SIZE; i += D_DIM) {
+			if(i < final_part_size)
+				write_shared_key(descending_index(s_d[extract_digit(s_d[i]) + PART_SIZE] + i), i);
+		}
+	} else {
+		scatter_keys_only_device_partial_ascending(gtid, final_part_size);
+	}
+}
+
+void scatter_keys_only_device_partial(uint gtid, uint part_index) {
+	const uint final_part_size = u_num_keys - part_index * PART_SIZE;
+#if SORT_ASCENDING == 1
+	scatter_keys_only_device_partial_ascending(gtid, final_part_size);
+#else
+	scatter_keys_only_device_partial_descending(gtid, final_part_size);
+#endif
+}
+
+#if SORT_PAIRS == 1
+
+//KEY VALUE PAIRS
+void scatter_pairs_key_phase_ascending_partial(uint gtid, uint final_part_size, inout DigitStruct digits) {
+	//[unroll]
+	for(uint i = 0, t = gtid; i < KEYS_PER_THREAD; ++i, t += D_DIM) {
+		if(t < final_part_size) {
+			digits.d[i] = extract_digit(s_d[t]);
+			write_shared_key(s_d[digits.d[i] + PART_SIZE] + t, t);
+		}
+	}
+}
+
+void scatter_pairs_key_phase_descending_partial(uint gtid, uint final_part_size, inout DigitStruct digits) {
+	if(u_radix_shift == 24) {
+		//[unroll]
+		for(uint i = 0, t = gtid; i < KEYS_PER_THREAD; ++i, t += D_DIM) {
+			if(t < final_part_size) {
+				digits.d[i] = extract_digit(s_d[t]);
+				write_shared_key(descending_index(s_d[digits.d[i] + PART_SIZE] + t), t);
+			}
+		}
+	} else {
+		scatter_pairs_key_phase_ascending_partial(gtid, final_part_size, digits);
+	}
+}
+
+void load_payloads_partial(uint gtid, uint part_index, inout KeyStruct payloads) {
+	//[unroll]
+	for(uint i = 0, t = device_offset(gtid, part_index); i < KEYS_PER_THREAD; ++i, t += 32) {
+		if(t < u_num_keys)
+			load_payload(payloads.k[i], t);
+	}
+}
+
+void scatter_payloads_ascending_partial(uint gtid, uint final_part_size, DigitStruct digits) {
+	//[unroll]
+	for(uint i = 0, t = gtid; i < KEYS_PER_THREAD; ++i, t += D_DIM) {
+		if (t < final_part_size)
+			write_payload(s_d[digits.d[i] + PART_SIZE] + t, t);
+	}
+}
+
+void scatter_payloads_descending_partial(uint gtid, uint final_part_size, DigitStruct digits) {
+	if(u_radix_shift == 24) {
+		//[unroll]
+		for(uint i = 0, t = gtid; i < KEYS_PER_THREAD; ++i, t += D_DIM) {
+			if (t < final_part_size)
+				write_payload(descending_index(s_d[digits.d[i] + PART_SIZE] + t), t);
+		}
+	} else {
+		scatter_payloads_ascending_partial(gtid, final_part_size, digits);
+	}
+}
+
+void scatter_pairs_device_partial(uint gtid, uint part_index, OffsetStruct offsets) {
+	DigitStruct digits;
+	const uint final_part_size = u_num_keys - part_index * PART_SIZE;
+#if SORT_ASCENDING == 1
+	scatter_pairs_key_phase_ascending_partial(gtid, final_part_size, digits);
+#else
+	scatter_pairs_key_phase_descending_partial(gtid, final_part_size, digits);
+#endif
+	groupMemoryBarrier();
+	barrier();
+	
+	KeyStruct payloads;
+	load_payloads_partial(gtid, part_index, payloads);
+	scatter_payloads_shared(offsets, payloads);
+	groupMemoryBarrier();
+	barrier();
+	
+#if SORT_ASCENDING == 1
+	scatter_payloads_ascending_partial(gtid, final_part_size, digits);
+#else
+	scatter_payloads_descending_partial(gtid, final_part_size, digits);
+#endif
+}
+
+#endif
+
+void scatter_device_partial(uint gtid, uint part_index, OffsetStruct offsets) {
+#if SORT_PAIRS == 1
+    scatter_pairs_device_partial(gtid, part_index, offsets);
+#else
+	scatter_keys_only_device_partial(gtid, part_index);
+#endif
+}
+
+void main() {
+	uvec3 gtid = gl_LocalInvocationID;
+
+	uint partition_index;
+	KeyStruct keys;
+	OffsetStruct offsets;
+	
+	if(wave_hists_size() < PART_SIZE)
+		clear_wave_hists(gtid.x);
+
+	assign_partition_tile(gtid.x, partition_index);
+	if(wave_hists_size() >= PART_SIZE) {
+		groupMemoryBarrier();
+		barrier();
+
+		clear_wave_hists(gtid.x);
+			
+		groupMemoryBarrier();
+		barrier();
+	}
+	
+	if(partition_index < u_thread_blocks - 1)
+		keys = load_keys(gtid.x, partition_index);
+		
+	if(partition_index == u_thread_blocks - 1)
+		keys = load_keys_partial(gtid.x, partition_index);
+	
+	uint exclusive_hist_reduction;
+	
+	offsets = rank_keys(gtid.x, keys);
+	groupMemoryBarrier();
+	barrier();
+		
+	uint hist_reduction;
+	if(gtid.x < RADIX) {
+		hist_reduction = wave_hist_inclusive_scan_circular_shift(gtid.x);
+		device_broadcast_reductions(gtid.x, partition_index, hist_reduction);
+		hist_reduction += subgroupExclusiveAdd(hist_reduction); // take advantage of barrier to begin scan
+	}
+	groupMemoryBarrier();
+	barrier();
+
+	wave_hist_reduction_exclusive_scan(gtid.x, hist_reduction);
+	groupMemoryBarrier();
+	barrier();
+			
+	update_offsets(gtid.x, offsets, keys);
+	if(gtid.x < RADIX)
+		exclusive_hist_reduction = s_d[gtid.x]; // take advantage of barrier to grab value
+	groupMemoryBarrier();
+	barrier();
+	
+	scatter_keys_shared(offsets, keys);
+	lookback(gtid.x, partition_index, exclusive_hist_reduction);
+	groupMemoryBarrier();
+	barrier();
+	
+	if(partition_index < u_thread_blocks - 1)
+		scatter_device(gtid.x, partition_index, offsets);
+		
+	if(partition_index == u_thread_blocks - 1)
+		scatter_device_partial(gtid.x, partition_index, offsets);
+}
