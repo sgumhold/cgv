@@ -58,9 +58,9 @@ namespace cgv {
 			bool res = surface_renderer::validate_attributes(ctx);
 			return res;
 		}
-		bool spline_tube_renderer::build_shader_program(context& ctx, shader_program& prog, const shader_define_map& defines)
+		bool spline_tube_renderer::build_shader_program(context& ctx, shader_program& prog, const shader_compile_options& options)
 		{
-			return prog.build_program(ctx, "spline_tube.glpr", true, defines);
+			return prog.build_program(ctx, "spline_tube.glpr", options, true);
 		}
 		bool spline_tube_renderer::enable(context& ctx)
 		{

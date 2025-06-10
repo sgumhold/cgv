@@ -27,7 +27,9 @@ bool screen_space_ambient_occlusion::init(cgv::render::context& ctx) {
 
 	shaders.add("ssao", "ssao.glpr");
 	shaders.add("ssao_resolve", "ssao_resolve.glpr");
-	shaders.add("blur", "box_blur.glpr", { { "CHANNELS", "1" } });
+	cgv::render::shader_compile_options options;
+	options.defines["CHANNELS"] = "1";
+	shaders.add("blur", "box_blur.glpr", options);
 
 	generate_samples_and_noise_texture(ctx);
 	

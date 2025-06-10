@@ -98,8 +98,8 @@ bool camera_animator::close_ffmpeg_pipe()
 	return true;
 }
 
-camera_animator::camera_animator() : group("Camera Animator") {
-
+camera_animator::camera_animator() : cgv::base::group("Camera Animator") {
+	
 	eye_rd.style.measure_point_size_in_pixel = true;
 	eye_rd.style.percentual_halo_width = 33.3f;
 
@@ -107,7 +107,7 @@ camera_animator::camera_animator() : group("Camera Animator") {
 	
 	paths_rd.style.measure_line_width_in_pixel = true;
 	paths_rd.style.default_line_width = 2.0f;
-	paths_rd.style.halo_color = rgb(1.0f);
+	paths_rd.style.halo_color = cgv::rgb(1.0f);
 	paths_rd.style.halo_color_strength = 0.5f;
 	paths_rd.style.percentual_halo_width = -100.0f;
 	paths_rd.style.blend_width_in_pixel = 1.0f;
@@ -187,20 +187,20 @@ bool camera_animator::handle(cgv::gui::event& e) {
 	auto& ctx = *get_context();
 
 	if(et == cgv::gui::EID_MOUSE) {
-		cgv::gui::mouse_event& me = (cgv::gui::mouse_event&) e;
+		cgv::gui::mouse_event& me = dynamic_cast<cgv::gui::mouse_event&>(e);
 		cgv::gui::MouseAction ma = me.get_action();
 
 		if(me.get_button() == cgv::gui::MB_LEFT_BUTTON && ma == cgv::gui::MA_PRESS) {
 			if(view_ptr) {
-				ivec2 viewport_size(ctx.get_width(), ctx.get_height());
-				ivec2 mpos(
+				cgv::ivec2 viewport_size(ctx.get_width(), ctx.get_height());
+				cgv::ivec2 mpos(
 					static_cast<int>(me.get_x()),
 					viewport_size.y() - static_cast<int>(me.get_y()) - 1
 				);
 
 				cgv::math::ray3 ray(
-					static_cast<vec2>(mpos),
-					static_cast<vec2>(viewport_size),
+					static_cast<cgv::vec2>(mpos),
+					static_cast<cgv::vec2>(viewport_size),
 					view_ptr->get_eye(),
 					ctx.get_projection_matrix() * ctx.get_modelview_matrix()
 				);
@@ -210,7 +210,7 @@ bool camera_animator::handle(cgv::gui::event& e) {
 		}
 
 	} else if(et == cgv::gui::EID_KEY) {
-		cgv::gui::key_event& ke = (cgv::gui::key_event&)e;
+		cgv::gui::key_event& ke = dynamic_cast<cgv::gui::key_event&>(e);
 		cgv::gui::KeyAction ka = ke.get_action();
 
 		if(ka == cgv::gui::KA_PRESS) {
@@ -278,9 +278,9 @@ void camera_animator::handle_timer_event(double t, double dt) {
 	}
 }
 
-void camera_animator::on_set (void *member_ptr)
-{
+void camera_animator::on_set(void* member_ptr) {
 	const cgv::utils::pointer_test& m(member_ptr);
+
 	if(m.is(video_open)) {
 		if(video_open) {
 			if(video_file_helper.file_name.empty()) {
@@ -337,6 +337,9 @@ void camera_animator::on_set (void *member_ptr)
 
 	if(m.is(apply))
 		set_animation_state(false);
+
+	update_member(member_ptr);
+	post_redraw();
 }
 
 bool camera_animator::on_exit_request() {
@@ -585,21 +588,21 @@ void camera_animator::create_camera_render_data(const view_parameters& view) {
 
 	if(!view_rd.render_count()) {
 		view_rd.clear();
-		const vec3 org(0.0f);
-		const vec3 x_axis(1.0f, 0.0f, 0.0f);
-		const vec3 y_axis(0.0f, 1.0f, 0.0f);
-		const vec3 z_axis(0.0f, 0.0f, 1.0f);
+		const cgv::vec3 org(0.0f);
+		const cgv::vec3 x_axis(1.0f, 0.0f, 0.0f);
+		const cgv::vec3 y_axis(0.0f, 1.0f, 0.0f);
+		const cgv::vec3 z_axis(0.0f, 0.0f, 1.0f);
 
 		view_rd.add(org, x_axis);
 		view_rd.add(org, y_axis);
 		view_rd.add(org, z_axis);
-		view_rd.add_segment_color(rgb(1.0f, 0.0f, 0.0f));
-		view_rd.add_segment_color(rgb(0.0f, 1.0f, 0.0f));
-		view_rd.add_segment_color(rgb(0.0f, 0.0f, 1.0f));
+		view_rd.add_segment_color(cgv::rgb(1.0f, 0.0f, 0.0f));
+		view_rd.add_segment_color(cgv::rgb(0.0f, 1.0f, 0.0f));
+		view_rd.add_segment_color(cgv::rgb(0.0f, 0.0f, 1.0f));
 
 		float a = static_cast<float>(view_ptr->get_tan_of_half_of_fovy(true));
 
-		vec3 corner[4];
+		cgv::vec3 corner[4];
 		corner[0] = z_axis - a * x_axis - a * y_axis;
 		corner[1] = z_axis - a * x_axis + a * y_axis;
 		corner[2] = z_axis + a * x_axis - a * y_axis;
@@ -615,16 +618,16 @@ void camera_animator::create_camera_render_data(const view_parameters& view) {
 		view_rd.add(corner[3], corner[2]);
 		view_rd.add(corner[2], corner[0]);
 
-		view_rd.fill_colors(rgb(0.5f));
+		view_rd.fill_colors(cgv::rgb(0.5f));
 	}
 
 	const float scale = 0.1f;
 
 	view_transformation.identity();
-	view_transformation.set_col(0, scale * vec4(view.side_direction(), 0.0f));
-	view_transformation.set_col(1, scale * vec4(view.up_direction, 0.0f));
-	view_transformation.set_col(2, scale * vec4(view.view_direction(), 0.0f));
-	view_transformation.set_col(3, vec4(view.eye_position, 1.0f));
+	view_transformation.set_col(0, scale * cgv::vec4(view.side_direction(), 0.0f));
+	view_transformation.set_col(1, scale * cgv::vec4(view.up_direction, 0.0f));
+	view_transformation.set_col(2, scale * cgv::vec4(view.view_direction(), 0.0f));
+	view_transformation.set_col(3, cgv::vec4(view.eye_position, 1.0f));
 }
 
 void camera_animator::create_path_render_data() {
@@ -719,14 +722,14 @@ void camera_animator::handle_editor_change(keyframe_editor_overlay::Event e) {
 
 bool camera_animator::load_animation(const std::string& file_name) {
 
-	auto str2vec3 = [](const std::string& str, vec3& val) {
+	auto str2vec3 = [](const std::string& str, cgv::vec3& val) {
 		std::vector<cgv::utils::token> tokens;
 		cgv::utils::split_to_tokens(str, tokens, "", true, "", "", ",");
 
 		if(tokens.size() != 3)
 			return false;
 
-		vec3 v(0.0f);
+		cgv::vec3 v(0.0f);
 
 		if(!cgv::utils::from_string(v[0], to_string(tokens[0])))
 			return false;
@@ -810,7 +813,7 @@ bool camera_animator::load_animation(const std::string& file_name) {
 
 bool camera_animator::save_animation(const std::string& file_name) {
 
-	auto vec32str = [](vec3& val) {
+	auto vec32str = [](cgv::vec3& val) {
 		return std::to_string(val[0]) + ", " + std::to_string(val[1]) + ", " + std::to_string(val[2]);
 	};
 

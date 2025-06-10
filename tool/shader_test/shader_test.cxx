@@ -271,10 +271,12 @@ int perform_test()
 		std::vector<shader_define_map> define_maps = shader_program::extract_instances(g_argv[1]);
 		if (define_maps.empty())
 			define_maps.push_back({});
-		for (auto defines : define_maps) {
+		for (const auto& defines : define_maps) {
 			// in case of shader program, build it from the file
 			shader_program prog(true);
-			if (prog.build_program(*g_ctx_ptr, g_argv[1], g_shader_developer, defines)) {
+			shader_compile_options compile_options;
+			compile_options.defines = defines;
+			if (prog.build_program(*g_ctx_ptr, g_argv[1], compile_options, g_shader_developer)) {
 				convert_to_string(g_argv[1], g_argv[2]);
 				//write(g_argv[2], "ok", 2, true);
 				std::cout << "shader program ok (";
@@ -295,7 +297,7 @@ int perform_test()
 	}
 	else {
 		shader_code code;
-		if (code.read_and_compile(*g_ctx_ptr, g_argv[1], cgv::render::ST_DETECT, g_shader_developer)) {
+		if (code.read_and_compile(*g_ctx_ptr, g_argv[1], cgv::render::ST_DETECT, {}, g_shader_developer)) {
 			// convert the input file to a string declaration with the string
 			convert_to_string(g_argv[1], g_argv[2]);
 			// write(g_argv[2], "ok", 2, true);

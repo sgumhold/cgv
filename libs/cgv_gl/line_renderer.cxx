@@ -71,9 +71,9 @@ namespace cgv {
 			has_line_widths = false;
 			has_depth_offsets = false;
 		}
-		bool line_renderer::build_shader_program(context& ctx, shader_program& prog, const shader_define_map& defines)
+		bool line_renderer::build_shader_program(context& ctx, shader_program& prog, const shader_compile_options& options)
 		{
-			return prog.build_program(ctx, "line.glpr", true, defines);
+			return prog.build_program(ctx, "line.glpr", options, true);
 		}
 
 		bool line_renderer::init(context& ctx)
