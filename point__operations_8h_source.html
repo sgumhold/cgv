@@ -498,7 +498,7 @@ $(document).ready(function(){initNavTree('point__operations_8h_source.html','');
 <div class="line"><a id="l00410" name="l00410"></a><span class="lineno">  410</span>        vec&lt;T&gt; maxv =maximum(points);</div>
 <div class="line"><a id="l00411" name="l00411"></a><span class="lineno">  411</span>        vec&lt;T&gt; t = vec&lt;T&gt;((maxv(0)+minv(0))/2.0,minv(1),(maxv(2)+minv(2))/2.0);</div>
 <div class="line"><a id="l00412" name="l00412"></a><span class="lineno">  412</span>        points = points - dyad(t,ones&lt;T&gt;(points.ncols()));</div>
-<div class="line"><a id="l00413" name="l00413"></a><span class="lineno">  413</span>        T s = max_value(maxv-minv);</div>
+<div class="line"><a id="l00413" name="l00413"></a><span class="lineno">  413</span>        T s = <a class="code hl_function" href="namespacecgv_1_1utils.html#afc6235cd77c60d13d10815313be3b52d">max_value</a>(maxv-minv);</div>
 <div class="line"><a id="l00414" name="l00414"></a><span class="lineno">  414</span>        points=scale_33&lt;T&gt;(sf/s,</div>
 <div class="line"><a id="l00415" name="l00415"></a><span class="lineno">  415</span>            sf/s,</div>
 <div class="line"><a id="l00416" name="l00416"></a><span class="lineno">  416</span>            sf/s)*points;</div>
@@ -514,7 +514,7 @@ $(document).ready(function(){initNavTree('point__operations_8h_source.html','');
 <div class="line"><a id="l00426" name="l00426"></a><span class="lineno">  426</span>        vec&lt;T&gt; minv =minimum(points);</div>
 <div class="line"><a id="l00427" name="l00427"></a><span class="lineno">  427</span>        vec&lt;T&gt; maxv =maximum(points);</div>
 <div class="line"><a id="l00428" name="l00428"></a><span class="lineno">  428</span>        vec&lt;T&gt; t = vec&lt;T&gt;((maxv(0)+minv(0))/2.0,minv(1),(maxv(2)+minv(2))/2.0);</div>
-<div class="line"><a id="l00429" name="l00429"></a><span class="lineno">  429</span>        T s = max_value(maxv-minv);</div>
+<div class="line"><a id="l00429" name="l00429"></a><span class="lineno">  429</span>        T s = <a class="code hl_function" href="namespacecgv_1_1utils.html#afc6235cd77c60d13d10815313be3b52d">max_value</a>(maxv-minv);</div>
 <div class="line"><a id="l00430" name="l00430"></a><span class="lineno">  430</span>        <span class="keywordflow">return</span> scale_44&lt;T&gt;(sf/s,</div>
 <div class="line"><a id="l00431" name="l00431"></a><span class="lineno">  431</span>            sf/s,</div>
 <div class="line"><a id="l00432" name="l00432"></a><span class="lineno">  432</span>            sf/s)*translate_44(-t);</div>
@@ -533,6 +533,7 @@ $(document).ready(function(){initNavTree('point__operations_8h_source.html','');
 <div class="ttc" id="aclasscgv_1_1math_1_1mat_html"><div class="ttname"><a href="classcgv_1_1math_1_1mat.html">cgv::math::mat</a></div><div class="ttdoc">A matrix type (full column major storage) The matrix can be loaded directly into OpenGL without need ...</div><div class="ttdef"><b>Definition</b> <a href="mat_8h_source.html#l00207">mat.h:208</a></div></div>
 <div class="ttc" id="aclasscgv_1_1math_1_1mat_html_aa543f17cfd5bed4420524e8800e4f121"><div class="ttname"><a href="classcgv_1_1math_1_1mat.html#aa543f17cfd5bed4420524e8800e4f121">cgv::math::mat::col</a></div><div class="ttdeci">const vec&lt; T &gt; col(unsigned j) const</div><div class="ttdoc">extract a column of the matrix as a vector</div><div class="ttdef"><b>Definition</b> <a href="mat_8h_source.html#l00833">mat.h:833</a></div></div>
 <div class="ttc" id="aclasscgv_1_1math_1_1vec_html"><div class="ttname"><a href="classcgv_1_1math_1_1vec.html">cgv::math::vec</a></div><div class="ttdoc">A column vector class.</div><div class="ttdef"><b>Definition</b> <a href="vec_8h_source.html#l00027">vec.h:28</a></div></div>
+<div class="ttc" id="anamespacecgv_1_1utils_html_afc6235cd77c60d13d10815313be3b52d"><div class="ttname"><a href="namespacecgv_1_1utils.html#afc6235cd77c60d13d10815313be3b52d">cgv::utils::max_value</a></div><div class="ttdeci">T max_value(ForwardIt first, ForwardIt last, T fallback)</div><div class="ttdoc">Find the maximum value in the range [first, last) or return fallback if the range is empty.</div><div class="ttdef"><b>Definition</b> <a href="algorithm_8h_source.html#l00091">algorithm.h:91</a></div></div>
 <div class="ttc" id="anamespacecgv_html"><div class="ttname"><a href="namespacecgv.html">cgv</a></div><div class="ttdoc">the cgv namespace</div><div class="ttdef"><b>Definition</b> <a href="print_8h_source.html#l00011">print.h:11</a></div></div>
 </div><!-- fragment --></div><!-- contents -->
 </div><!-- doc-content -->

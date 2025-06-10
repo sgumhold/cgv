@@ -1,5 +1,6 @@
 var scan_8h =
 [
+    [ "condense_to_line", "scan_8h.html#a273839f63e9ac0d638c982028577a6b9", null ],
     [ "cutoff_spaces", "scan_8h.html#ad395e58106935ab83b2d1e08438c5455", null ],
     [ "escape_special", "scan_8h.html#a30fa77c0e7120e34b287dee015c9be51", null ],
     [ "find_name", "scan_8h.html#a8a31d2792f8f93b046c38aa6f387fd5f", null ],
@@ -30,8 +31,6 @@ var scan_8h =
     [ "is_year", "scan_8h.html#a5e16eed75c4f654d7295f4505ad7e697", null ],
     [ "is_year", "scan_8h.html#a2923901da5517a748563914debe34838", null ],
     [ "join", "scan_8h.html#a07474e4aecaf06a8ecca7aba033d5475", null ],
-    [ "join", "scan_8h.html#a8c7e4e48bd1834e5558fc9d5461457d9", null ],
-    [ "join", "scan_8h.html#ab965cca354619eefb296b13d8a9e87d4", null ],
     [ "levenshtein_distance", "scan_8h.html#af5d2ef4e3e59ecb0d7545a7c8bc65364", null ],
     [ "ltrim", "scan_8h.html#a612b9004a640fd424d7ed20ba2104e74", null ],
     [ "ltrim", "scan_8h.html#a6111552f6d6592cb0a9bec7939f4e236", null ],

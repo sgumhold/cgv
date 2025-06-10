@@ -276,9 +276,9 @@ Protected Member Functions</h2></td></tr>
 <tr class="memitem:afd80a4ee698f6e40194f849aacaa225f" id="r_afd80a4ee698f6e40194f849aacaa225f"><td class="memItemLeft" align="right" valign="top">virtual void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcgv_1_1render_1_1renderer.html#afd80a4ee698f6e40194f849aacaa225f">update_defines</a> (<a class="el" href="namespacecgv_1_1render.html#a0e875e06326ba0599a1289f0bacdb116">shader_define_map</a> &amp;defines)</td></tr>
 <tr class="memdesc:afd80a4ee698f6e40194f849aacaa225f"><td class="mdescLeft">&#160;</td><td class="mdescRight">overload to update the shader defines based on the current render style; only called if internal shader program is used  <br /></td></tr>
 <tr class="separator:afd80a4ee698f6e40194f849aacaa225f"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:af013e9b4c5e3731618d1f23df15a1fce" id="r_af013e9b4c5e3731618d1f23df15a1fce"><td class="memItemLeft" align="right" valign="top">virtual bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcgv_1_1render_1_1renderer.html#af013e9b4c5e3731618d1f23df15a1fce">build_shader_program</a> (<a class="el" href="classcgv_1_1render_1_1context.html">context</a> &amp;ctx, <a class="el" href="classcgv_1_1render_1_1shader__program.html">shader_program</a> &amp;prog, const <a class="el" href="namespacecgv_1_1render.html#a0e875e06326ba0599a1289f0bacdb116">shader_define_map</a> &amp;defines)</td></tr>
-<tr class="memdesc:af013e9b4c5e3731618d1f23df15a1fce"><td class="mdescLeft">&#160;</td><td class="mdescRight">overload to build shader program based on the passed defines  <br /></td></tr>
-<tr class="separator:af013e9b4c5e3731618d1f23df15a1fce"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ab0e309c78ca1a9eab1f952800c000d27" id="r_ab0e309c78ca1a9eab1f952800c000d27"><td class="memItemLeft" align="right" valign="top">virtual bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcgv_1_1render_1_1renderer.html#ab0e309c78ca1a9eab1f952800c000d27">build_shader_program</a> (<a class="el" href="classcgv_1_1render_1_1context.html">context</a> &amp;ctx, <a class="el" href="classcgv_1_1render_1_1shader__program.html">shader_program</a> &amp;prog, const <a class="el" href="structcgv_1_1render_1_1shader__compile__options.html">shader_compile_options</a> &amp;options)</td></tr>
+<tr class="memdesc:ab0e309c78ca1a9eab1f952800c000d27"><td class="mdescLeft">&#160;</td><td class="mdescRight">overload to build shader program based on the passed defines  <br /></td></tr>
+<tr class="separator:ab0e309c78ca1a9eab1f952800c000d27"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:adb6814b6aa5111fdd9b9a6b3ac8bff68" id="r_adb6814b6aa5111fdd9b9a6b3ac8bff68"><td class="memTemplParams" colspan="2">template&lt;typename T &gt; </td></tr>
 <tr class="memitem:adb6814b6aa5111fdd9b9a6b3ac8bff68"><td class="memTemplItemLeft" align="right" valign="top">const T &amp;&#160;</td><td class="memTemplItemRight" valign="bottom"><a class="el" href="classcgv_1_1render_1_1renderer.html#adb6814b6aa5111fdd9b9a6b3ac8bff68">get_style</a> () const</td></tr>
 <tr class="memdesc:adb6814b6aa5111fdd9b9a6b3ac8bff68"><td class="mdescLeft">&#160;</td><td class="mdescRight">access to style  <br /></td></tr>
@@ -445,8 +445,8 @@ Protected Attributes</h2></td></tr>
 
 </div>
 </div>
-<a id="af013e9b4c5e3731618d1f23df15a1fce" name="af013e9b4c5e3731618d1f23df15a1fce"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#af013e9b4c5e3731618d1f23df15a1fce">&#9670;&#160;</a></span>build_shader_program()</h2>
+<a id="ab0e309c78ca1a9eab1f952800c000d27" name="ab0e309c78ca1a9eab1f952800c000d27"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#ab0e309c78ca1a9eab1f952800c000d27">&#9670;&#160;</a></span>build_shader_program()</h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -469,8 +469,8 @@ Protected Attributes</h2></td></tr>
         <tr>
           <td class="paramkey"></td>
           <td></td>
-          <td class="paramtype">const <a class="el" href="namespacecgv_1_1render.html#a0e875e06326ba0599a1289f0bacdb116">shader_define_map</a> &amp;&#160;</td>
-          <td class="paramname"><em>defines</em>&#160;</td>
+          <td class="paramtype">const <a class="el" href="structcgv_1_1render_1_1shader__compile__options.html">shader_compile_options</a> &amp;&#160;</td>
+          <td class="paramname"><em>options</em>&#160;</td>
         </tr>
         <tr>
           <td></td>
@@ -487,11 +487,11 @@ Protected Attributes</h2></td></tr>
 
 <p>overload to build shader program based on the passed defines </p>
 
-<p>Reimplemented in <a class="el" href="classcgv_1_1render_1_1arrow__renderer.html#ad8dc58a22ab5c12539ce7050a4955e3a">cgv::render::arrow_renderer</a>, <a class="el" href="classcgv_1_1render_1_1box__renderer.html#a87801b14a6fc28e426800ec71b529668">cgv::render::box_renderer</a>, <a class="el" href="classcgv_1_1render_1_1box__wire__renderer.html#a88fff15e3e80e3e1f4b01bca43540a14">cgv::render::box_wire_renderer</a>, <a class="el" href="classcgv_1_1render_1_1cone__renderer.html#a95f1e59f505ca36b77175d6ac15d6b08">cgv::render::cone_renderer</a>, <a class="el" href="classcgv_1_1render_1_1ellipsoid__renderer.html#ad73322c0d02459b30b6f70625bed8853">cgv::render::ellipsoid_renderer</a>, <a class="el" href="classcgv_1_1render_1_1line__renderer.html#a436a9b3d2c5e2bfeec9990823c16c7d9">cgv::render::line_renderer</a>, <a class="el" href="classcgv_1_1render_1_1normal__renderer.html#aac9263a9f7b638dbe5e2393025e74e31">cgv::render::normal_renderer</a>, <a class="el" href="classcgv_1_1render_1_1point__renderer.html#a25328a4ef284933c555b374afc6d66db">cgv::render::point_renderer</a>, <a class="el" href="classcgv_1_1render_1_1rectangle__renderer.html#a0e24d0c14419ef2688518b3e0fcc88fb">cgv::render::rectangle_renderer</a>, <a class="el" href="classcgv_1_1render_1_1slab__renderer.html#ae271583d0a340af40b9e564ed0b60b2a">cgv::render::slab_renderer</a>, <a class="el" href="classcgv_1_1render_1_1sphere__renderer.html#a3375af3f9d5365f429fcf72f9d45327e">cgv::render::sphere_renderer</a>, <a class="el" href="classcgv_1_1render_1_1spline__tube__renderer.html#a23e66cdbd6a89e2aac1288f8af840c61">cgv::render::spline_tube_renderer</a>, <a class="el" href="classcgv_1_1render_1_1surfel__renderer.html#ac033ec578c7faa2ef42cdc353224213e">cgv::render::surfel_renderer</a>, and <a class="el" href="classcgv_1_1render_1_1volume__renderer.html#a0a09a99aebeee5a8f731c1645bcaf2e2">cgv::render::volume_renderer</a>.</p>
+<p>Reimplemented in <a class="el" href="classcgv_1_1render_1_1arrow__renderer.html#af9c1afe81eeeca30899a9dce0f737ea9">cgv::render::arrow_renderer</a>, <a class="el" href="classcgv_1_1render_1_1box__renderer.html#af14dfdc9cbcb2dbeee5e63602df6a606">cgv::render::box_renderer</a>, <a class="el" href="classcgv_1_1render_1_1box__wire__renderer.html#a8f0dfd49358523061c4d92bb51ba59d7">cgv::render::box_wire_renderer</a>, <a class="el" href="classcgv_1_1render_1_1cone__renderer.html#a99543f653f3db57ce52172740adaff35">cgv::render::cone_renderer</a>, <a class="el" href="classcgv_1_1render_1_1ellipsoid__renderer.html#aa9cc43038a8762660afb61c62dd47d2d">cgv::render::ellipsoid_renderer</a>, <a class="el" href="classcgv_1_1render_1_1line__renderer.html#a33a14890ccf127e915304dbf9d913a2f">cgv::render::line_renderer</a>, <a class="el" href="classcgv_1_1render_1_1normal__renderer.html#abce18ae250623588cc1c2229441bbe51">cgv::render::normal_renderer</a>, <a class="el" href="classcgv_1_1render_1_1point__renderer.html#abe933361346c8436c950af509d854257">cgv::render::point_renderer</a>, <a class="el" href="classcgv_1_1render_1_1rectangle__renderer.html#afed6af7df8f87629d80eced743d80e1f">cgv::render::rectangle_renderer</a>, <a class="el" href="classcgv_1_1render_1_1slab__renderer.html#a2865b5ddd1ed9f7c6ea5423226cf7789">cgv::render::slab_renderer</a>, <a class="el" href="classcgv_1_1render_1_1sphere__renderer.html#aa1a35dea8cd15e24e3093ed0f03a791c">cgv::render::sphere_renderer</a>, <a class="el" href="classcgv_1_1render_1_1spline__tube__renderer.html#aa6fc72b9b6fed849a94f688eb695a826">cgv::render::spline_tube_renderer</a>, <a class="el" href="classcgv_1_1render_1_1surfel__renderer.html#a03df668a86697c7ac5e87779c07f6700">cgv::render::surfel_renderer</a>, and <a class="el" href="classcgv_1_1render_1_1volume__renderer.html#a6a28e3414dfb692c2ed990fa80240803">cgv::render::volume_renderer</a>.</p>
 
 <p class="definition">Definition at line <a class="el" href="renderer_8h_source.html#l00070">70</a> of file <a class="el" href="renderer_8h_source.html">renderer.h</a>.</p>
 
-<p class="reference">Referenced by <a class="el" href="renderer_8cxx_source.html#l00146">build_program()</a>, <a class="el" href="renderer_8cxx_source.html#l00203">enable()</a>, and <a class="el" href="renderer_8cxx_source.html#l00173">init()</a>.</p>
+<p class="reference">Referenced by <a class="el" href="renderer_8cxx_source.html#l00146">build_program()</a>, <a class="el" href="renderer_8cxx_source.html#l00205">enable()</a>, and <a class="el" href="renderer_8cxx_source.html#l00173">init()</a>.</p>
 
 </div>
 </div>
@@ -523,7 +523,7 @@ Protected Attributes</h2></td></tr>
 
 <p>Reimplemented in <a class="el" href="classcgv_1_1render_1_1cone__renderer.html#a39dc868428e27fb3052cdaafba40c3b0">cgv::render::cone_renderer</a>, and <a class="el" href="classcgv_1_1render_1_1volume__renderer.html#a863b2124209d3021f4ad1566b6451de2">cgv::render::volume_renderer</a>.</p>
 
-<p class="definition">Definition at line <a class="el" href="renderer_8cxx_source.html#l00349">349</a> of file <a class="el" href="renderer_8cxx_source.html">renderer.cxx</a>.</p>
+<p class="definition">Definition at line <a class="el" href="renderer_8cxx_source.html#l00353">353</a> of file <a class="el" href="renderer_8cxx_source.html">renderer.cxx</a>.</p>
 
 <p class="reference">Referenced by <a class="el" href="transformation__gizmo_8cxx_source.html#l00051">cgv::app::transformation_gizmo::clear()</a>, <a class="el" href="navigator_8cxx_source.html#l00067">cgv::app::navigator::clear()</a>, <a class="el" href="cone__renderer_8cxx_source.html#l00182">cgv::render::cone_renderer::clear()</a>, <a class="el" href="volume__renderer_8cxx_source.html#l00163">cgv::render::volume_renderer::clear()</a>, and <a class="el" href="renderer_8cxx_source.html#l00023">manage_singleton()</a>.</p>
 
@@ -588,9 +588,9 @@ Protected Attributes</h2></td></tr>
 
 <p>Reimplemented in <a class="el" href="classcgv_1_1render_1_1arrow__renderer.html#a81a3ce2bd0007afaf87baa7ea812338e">cgv::render::arrow_renderer</a>, <a class="el" href="classcgv_1_1render_1_1box__renderer.html#a06228bda95a639f52a49e560115f8250">cgv::render::box_renderer</a>, <a class="el" href="classcgv_1_1render_1_1box__wire__renderer.html#a546adbcfe84431e11661bb30142fa9e2">cgv::render::box_wire_renderer</a>, <a class="el" href="classcgv_1_1render_1_1cone__renderer.html#a514ced468c418de975634982e01a04d6">cgv::render::cone_renderer</a>, <a class="el" href="classcgv_1_1render_1_1ellipsoid__renderer.html#a677130fd3a85ad2d659e79d7368b699e">cgv::render::ellipsoid_renderer</a>, <a class="el" href="classcgv_1_1render_1_1group__renderer.html#a32025096a541c45311e2337a0f91f214">cgv::render::group_renderer</a>, <a class="el" href="classcgv_1_1render_1_1line__renderer.html#ab14a6c18fc0f525c3e9721be9cdff9a9">cgv::render::line_renderer</a>, <a class="el" href="classcgv_1_1render_1_1point__renderer.html#ab8489b2357438d32a0d2f6aca567ce7d">cgv::render::point_renderer</a>, <a class="el" href="classcgv_1_1render_1_1rectangle__renderer.html#a91487d9245c6b3efcea028ccc72b6385">cgv::render::rectangle_renderer</a>, <a class="el" href="classcgv_1_1render_1_1slab__renderer.html#a613c4d6a535cf891abc60b5fb294975c">cgv::render::slab_renderer</a>, <a class="el" href="classcgv_1_1render_1_1sphere__renderer.html#a97673b9b5d2fff1411ad7806ef536d2d">cgv::render::sphere_renderer</a>, <a class="el" href="classcgv_1_1render_1_1spline__tube__renderer.html#aec572d3c3dd68e0d9038f09dee269f6d">cgv::render::spline_tube_renderer</a>, <a class="el" href="classcgv_1_1render_1_1surface__renderer.html#a8fd086df40c9d5fbd1357183db2d2826">cgv::render::surface_renderer</a>, <a class="el" href="classcgv_1_1render_1_1surfel__renderer.html#a9dd16d62d530208c6c94cfe48e5f6a5e">cgv::render::surfel_renderer</a>, and <a class="el" href="classcgv_1_1render_1_1volume__renderer.html#ae0f0237cd210fe939bd429ee6ae0fb7f">cgv::render::volume_renderer</a>.</p>
 
-<p class="definition">Definition at line <a class="el" href="renderer_8cxx_source.html#l00229">229</a> of file <a class="el" href="renderer_8cxx_source.html">renderer.cxx</a>.</p>
+<p class="definition">Definition at line <a class="el" href="renderer_8cxx_source.html#l00233">233</a> of file <a class="el" href="renderer_8cxx_source.html">renderer.cxx</a>.</p>
 
-<p class="reference">References <a class="el" href="context_8h_source.html#l00560">cgv::render::context_config::core_profile</a>.</p>
+<p class="reference">References <a class="el" href="context_8h_source.html#l00565">cgv::render::context_config::core_profile</a>.</p>
 
 <p class="reference">Referenced by <a class="el" href="group__renderer_8cxx_source.html#l00097">cgv::render::group_renderer::disable()</a>, and <a class="el" href="volume__renderer_8cxx_source.html#l00262">cgv::render::volume_renderer::disable()</a>.</p>
 
@@ -636,7 +636,7 @@ Protected Attributes</h2></td></tr>
 
 <p class="definition">Definition at line <a class="el" href="renderer_8cxx_source.html#l00063">63</a> of file <a class="el" href="renderer_8cxx_source.html">renderer.cxx</a>.</p>
 
-<p class="reference">References <a class="el" href="context_8h_source.html#l00560">cgv::render::context_config::core_profile</a>, <a class="el" href="renderer_8h_source.html#l00083">has_colors</a>, and <a class="el" href="renderer_8h_source.html#l00085">has_positions</a>.</p>
+<p class="reference">References <a class="el" href="context_8h_source.html#l00565">cgv::render::context_config::core_profile</a>, <a class="el" href="renderer_8h_source.html#l00083">has_colors</a>, and <a class="el" href="renderer_8h_source.html#l00085">has_positions</a>.</p>
 
 <p class="reference">Referenced by <a class="el" href="volume__renderer_8cxx_source.html#l00163">cgv::render::volume_renderer::clear()</a>, <a class="el" href="group__renderer_8cxx_source.html#l00030">cgv::render::group_renderer::disable_attribute_array_manager()</a>, and <a class="el" href="renderer_8cxx_source.html#l00072">set_attribute_array_manager()</a>.</p>
 
@@ -715,7 +715,7 @@ Protected Attributes</h2></td></tr>
 
 <p>Reimplemented in <a class="el" href="classcgv_1_1render_1_1arrow__renderer.html#aeb6e83b835fa2e0f790be61489f008d1">cgv::render::arrow_renderer</a>, <a class="el" href="classcgv_1_1render_1_1box__renderer.html#aaee5dbdecdeedfabbd9a02fc483de0c0">cgv::render::box_renderer</a>, <a class="el" href="classcgv_1_1render_1_1box__wire__renderer.html#a53a247123dd1639feb6e565a1df79188">cgv::render::box_wire_renderer</a>, <a class="el" href="classcgv_1_1render_1_1cone__renderer.html#a667fabd0a3f0af62061b5d134bd6280a">cgv::render::cone_renderer</a>, <a class="el" href="classcgv_1_1render_1_1ellipsoid__renderer.html#ab5189e0c48749b46cd144c8d04ea6429">cgv::render::ellipsoid_renderer</a>, <a class="el" href="classcgv_1_1render_1_1line__renderer.html#af82b8c5419bf61f434bd6a31d0fe29eb">cgv::render::line_renderer</a>, <a class="el" href="classcgv_1_1render_1_1normal__renderer.html#abcf3472e5a90b1d78ad3cf28cf145ce3">cgv::render::normal_renderer</a>, <a class="el" href="classcgv_1_1render_1_1point__renderer.html#a809de82054660da9f4068ea513e9d981">cgv::render::point_renderer</a>, <a class="el" href="classcgv_1_1render_1_1rectangle__renderer.html#a0248dc3fe84e13cd4ad2dcd10d2cce50">cgv::render::rectangle_renderer</a>, <a class="el" href="classcgv_1_1render_1_1slab__renderer.html#adc0c6e1d84b9e0226c098b6c081286ee">cgv::render::slab_renderer</a>, <a class="el" href="classcgv_1_1render_1_1sphere__renderer.html#a204c1eea71cdaa4af9386ea87e092bb5">cgv::render::sphere_renderer</a>, <a class="el" href="classcgv_1_1render_1_1spline__tube__renderer.html#a51710b648170afef8fbb4e06ef64a67c">cgv::render::spline_tube_renderer</a>, <a class="el" href="classcgv_1_1render_1_1surfel__renderer.html#a575b88d8b31b712bfebe2c94af24bab2">cgv::render::surfel_renderer</a>, and <a class="el" href="classcgv_1_1render_1_1volume__renderer.html#a175f46fd989db3cec776068af11b05bf">cgv::render::volume_renderer</a>.</p>
 
-<p class="definition">Definition at line <a class="el" href="renderer_8cxx_source.html#l00337">337</a> of file <a class="el" href="renderer_8cxx_source.html">renderer.cxx</a>.</p>
+<p class="definition">Definition at line <a class="el" href="renderer_8cxx_source.html#l00341">341</a> of file <a class="el" href="renderer_8cxx_source.html">renderer.cxx</a>.</p>
 
 <p class="reference">Referenced by <a class="el" href="render__data__base_8h_source.html#l00291">cgv::render::render_data_base&lt; RendererType, RenderStyleType, ColorType &gt;::draw()</a>.</p>
 
@@ -779,9 +779,9 @@ Protected Attributes</h2></td></tr>
 
 <p>default implementation of draw method with support for indexed rendering and different primitive types </p>
 
-<p class="definition">Definition at line <a class="el" href="renderer_8cxx_source.html#l00253">253</a> of file <a class="el" href="renderer_8cxx_source.html">renderer.cxx</a>.</p>
+<p class="definition">Definition at line <a class="el" href="renderer_8cxx_source.html#l00257">257</a> of file <a class="el" href="renderer_8cxx_source.html">renderer.cxx</a>.</p>
 
-<p class="reference">References <a class="el" href="type__id_8cxx_source.html#l00018">cgv::type::info::get_type_size()</a>, and <a class="el" href="context_8h_source.html#l00417">cgv::render::VBT_INDICES</a>.</p>
+<p class="reference">References <a class="el" href="type__id_8cxx_source.html#l00018">cgv::type::info::get_type_size()</a>, and <a class="el" href="context_8h_source.html#l00427">cgv::render::VBT_INDICES</a>.</p>
 
 <p class="reference">Referenced by <a class="el" href="arrow__renderer_8cxx_source.html#l00113">cgv::render::arrow_renderer::draw()</a>, <a class="el" href="box__renderer_8cxx_source.html#l00124">cgv::render::box_renderer::draw()</a>, <a class="el" href="box__wire__renderer_8cxx_source.html#l00104">cgv::render::box_wire_renderer::draw()</a>, <a class="el" href="cone__renderer_8cxx_source.html#l00177">cgv::render::cone_renderer::draw()</a>, <a class="el" href="ellipsoid__renderer_8cxx_source.html#l00094">cgv::render::ellipsoid_renderer::draw()</a>, <a class="el" href="line__renderer_8cxx_source.html#l00156">cgv::render::line_renderer::draw()</a>, <a class="el" href="normal__renderer_8cxx_source.html#l00058">cgv::render::normal_renderer::draw()</a>, <a class="el" href="point__renderer_8cxx_source.html#l00168">cgv::render::point_renderer::draw()</a>, <a class="el" href="rectangle__renderer_8cxx_source.html#l00236">cgv::render::rectangle_renderer::draw()</a>, <a class="el" href="slab__renderer_8cxx_source.html#l00133">cgv::render::slab_renderer::draw()</a>, <a class="el" href="sphere__renderer_8cxx_source.html#l00110">cgv::render::sphere_renderer::draw()</a>, <a class="el" href="spline__tube__renderer_8cxx_source.html#l00104">cgv::render::spline_tube_renderer::draw()</a>, and <a class="el" href="surfel__renderer_8cxx_source.html#l00159">cgv::render::surfel_renderer::draw()</a>.</p>
 
@@ -851,9 +851,9 @@ Protected Attributes</h2></td></tr>
 
 <p>default implementation of instanced draw method with support for indexed rendering and different primitive types </p>
 
-<p class="definition">Definition at line <a class="el" href="renderer_8cxx_source.html#l00295">295</a> of file <a class="el" href="renderer_8cxx_source.html">renderer.cxx</a>.</p>
+<p class="definition">Definition at line <a class="el" href="renderer_8cxx_source.html#l00299">299</a> of file <a class="el" href="renderer_8cxx_source.html">renderer.cxx</a>.</p>
 
-<p class="reference">References <a class="el" href="type__id_8cxx_source.html#l00018">cgv::type::info::get_type_size()</a>, and <a class="el" href="context_8h_source.html#l00417">cgv::render::VBT_INDICES</a>.</p>
+<p class="reference">References <a class="el" href="type__id_8cxx_source.html#l00018">cgv::type::info::get_type_size()</a>, and <a class="el" href="context_8h_source.html#l00427">cgv::render::VBT_INDICES</a>.</p>
 
 </div>
 </div>
@@ -886,11 +886,11 @@ Protected Attributes</h2></td></tr>
 
 <p>Reimplemented in <a class="el" href="classcgv_1_1render_1_1arrow__renderer.html#abe6aed778f434a18573948c66549429a">cgv::render::arrow_renderer</a>, <a class="el" href="classcgv_1_1render_1_1box__renderer.html#ad2a38c3fb07a940dccafac8277b29b5b">cgv::render::box_renderer</a>, <a class="el" href="classcgv_1_1render_1_1box__wire__renderer.html#a2109e5951841bd52a3dcf2f90527cc85">cgv::render::box_wire_renderer</a>, <a class="el" href="classcgv_1_1render_1_1cone__renderer.html#afe641c31a568cdfb098e589d8c85da32">cgv::render::cone_renderer</a>, <a class="el" href="classcgv_1_1render_1_1ellipsoid__renderer.html#abebf977d756c9b63443e4ea7ad15addc">cgv::render::ellipsoid_renderer</a>, <a class="el" href="classcgv_1_1render_1_1group__renderer.html#af44ec3345ceb1fb2e09ce4181e4e26ac">cgv::render::group_renderer</a>, <a class="el" href="classcgv_1_1render_1_1line__renderer.html#aae5ec306c6b17f7047dbb9c09874b4aa">cgv::render::line_renderer</a>, <a class="el" href="classcgv_1_1render_1_1normal__renderer.html#a4a3dc356e1f88e8d2be295c2bf3e6bf3">cgv::render::normal_renderer</a>, <a class="el" href="classcgv_1_1render_1_1point__renderer.html#ade7abb22a31dc750507b5081d5b9826a">cgv::render::point_renderer</a>, <a class="el" href="classcgv_1_1render_1_1rectangle__renderer.html#a86c2cedc085819656c99b2f2a144ce96">cgv::render::rectangle_renderer</a>, <a class="el" href="classcgv_1_1render_1_1slab__renderer.html#a5741831df18b2851a1d727c764a3fd57">cgv::render::slab_renderer</a>, <a class="el" href="classcgv_1_1render_1_1sphere__renderer.html#a16999b4e345d954c099616f430e8020d">cgv::render::sphere_renderer</a>, <a class="el" href="classcgv_1_1render_1_1spline__tube__renderer.html#a65d4edf4a659af6332e4317d7dbcbd97">cgv::render::spline_tube_renderer</a>, <a class="el" href="classcgv_1_1render_1_1surface__renderer.html#a97cc97633428aac33c5d8856600adef9">cgv::render::surface_renderer</a>, <a class="el" href="classcgv_1_1render_1_1surfel__renderer.html#a721896846fecb8500533c1048c1b1632">cgv::render::surfel_renderer</a>, and <a class="el" href="classcgv_1_1render_1_1volume__renderer.html#a383df61b6daba9143d6fec3aa7f089e4">cgv::render::volume_renderer</a>.</p>
 
-<p class="definition">Definition at line <a class="el" href="renderer_8cxx_source.html#l00203">203</a> of file <a class="el" href="renderer_8cxx_source.html">renderer.cxx</a>.</p>
+<p class="definition">Definition at line <a class="el" href="renderer_8cxx_source.html#l00205">205</a> of file <a class="el" href="renderer_8cxx_source.html">renderer.cxx</a>.</p>
 
-<p class="reference">References <a class="el" href="renderer_8h_source.html#l00070">build_shader_program()</a>, <a class="el" href="shader__program_8cxx_source.html#l00670">cgv::render::shader_program::destruct()</a>, <a class="el" href="context_8cxx_source.html#l02046">cgv::render::render_component::is_created()</a>, and <a class="el" href="renderer_8h_source.html#l00068">update_defines()</a>.</p>
+<p class="reference">References <a class="el" href="renderer_8h_source.html#l00070">build_shader_program()</a>, <a class="el" href="shader__program_8cxx_source.html#l00692">cgv::render::shader_program::destruct()</a>, <a class="el" href="context_8cxx_source.html#l02050">cgv::render::render_component::is_created()</a>, and <a class="el" href="renderer_8h_source.html#l00068">update_defines()</a>.</p>
 
-<p class="reference">Referenced by <a class="el" href="group__renderer_8cxx_source.html#l00085">cgv::render::group_renderer::enable()</a>, <a class="el" href="volume__renderer_8cxx_source.html#l00213">cgv::render::volume_renderer::enable()</a>, and <a class="el" href="renderer_8cxx_source.html#l00196">validate_and_enable()</a>.</p>
+<p class="reference">Referenced by <a class="el" href="group__renderer_8cxx_source.html#l00085">cgv::render::group_renderer::enable()</a>, <a class="el" href="volume__renderer_8cxx_source.html#l00213">cgv::render::volume_renderer::enable()</a>, and <a class="el" href="renderer_8cxx_source.html#l00198">validate_and_enable()</a>.</p>
 
 </div>
 </div>
@@ -1263,7 +1263,7 @@ template&lt;typename T &gt; </div>
 
 <p class="definition">Definition at line <a class="el" href="renderer_8cxx_source.html#l00173">173</a> of file <a class="el" href="renderer_8cxx_source.html">renderer.cxx</a>.</p>
 
-<p class="reference">References <a class="el" href="renderer_8h_source.html#l00070">build_shader_program()</a>, <a class="el" href="context_8h_source.html#l00560">cgv::render::context_config::core_profile</a>, <a class="el" href="classcgv_1_1render_1_1renderer.html#aa4fbb988c7709081b326c66ee2cb846e">create_render_style()</a>, and <a class="el" href="renderer_8h_source.html#l00068">update_defines()</a>.</p>
+<p class="reference">References <a class="el" href="renderer_8h_source.html#l00070">build_shader_program()</a>, <a class="el" href="context_8h_source.html#l00565">cgv::render::context_config::core_profile</a>, <a class="el" href="classcgv_1_1render_1_1renderer.html#aa4fbb988c7709081b326c66ee2cb846e">create_render_style()</a>, and <a class="el" href="renderer_8h_source.html#l00068">update_defines()</a>.</p>
 
 <p class="reference">Referenced by <a class="el" href="transformation__gizmo_8cxx_source.html#l00035">cgv::app::transformation_gizmo::init()</a>, <a class="el" href="navigator_8cxx_source.html#l00189">cgv::app::navigator::init()</a>, <a class="el" href="line__renderer_8cxx_source.html#l00079">cgv::render::line_renderer::init()</a>, <a class="el" href="rectangle__renderer_8cxx_source.html#l00169">cgv::render::rectangle_renderer::init()</a>, <a class="el" href="volume__renderer_8cxx_source.html#l00133">cgv::render::volume_renderer::init()</a>, and <a class="el" href="renderer_8cxx_source.html#l00023">manage_singleton()</a>.</p>
 
@@ -1311,7 +1311,7 @@ template&lt;typename T &gt; </div>
 
 <p class="definition">Definition at line <a class="el" href="renderer_8cxx_source.html#l00023">23</a> of file <a class="el" href="renderer_8cxx_source.html">renderer.cxx</a>.</p>
 
-<p class="reference">References <a class="el" href="renderer_8cxx_source.html#l00349">clear()</a>, <a class="el" href="context_8cxx_source.html#l00219">cgv::render::context::error()</a>, and <a class="el" href="renderer_8cxx_source.html#l00173">init()</a>.</p>
+<p class="reference">References <a class="el" href="renderer_8cxx_source.html#l00353">clear()</a>, <a class="el" href="context_8cxx_source.html#l00219">cgv::render::context::error()</a>, and <a class="el" href="renderer_8cxx_source.html#l00173">init()</a>.</p>
 
 <p class="reference">Referenced by <a class="el" href="arrow__renderer_8cxx_source.html#l00007">cgv::render::ref_arrow_renderer()</a>, <a class="el" href="box__renderer_8cxx_source.html#l00014">cgv::render::ref_box_renderer()</a>, <a class="el" href="box__wire__renderer_8cxx_source.html#l00014">cgv::render::ref_box_wire_renderer()</a>, <a class="el" href="cone__renderer_8cxx_source.html#l00007">cgv::render::ref_cone_renderer()</a>, <a class="el" href="ellipsoid__renderer_8cxx_source.html#l00007">cgv::render::ref_ellipsoid_renderer()</a>, <a class="el" href="normal__renderer_8cxx_source.html#l00007">cgv::render::ref_normal_renderer()</a>, <a class="el" href="point__renderer_8cxx_source.html#l00008">cgv::render::ref_point_renderer()</a>, <a class="el" href="rectangle__renderer_8cxx_source.html#l00036">cgv::render::ref_rectangle_renderer()</a>, <a class="el" href="slab__renderer_8cxx_source.html#l00007">cgv::render::ref_slab_renderer()</a>, <a class="el" href="sphere__renderer_8cxx_source.html#l00007">cgv::render::ref_sphere_renderer()</a>, <a class="el" href="spline__tube__renderer_8cxx_source.html#l00007">cgv::render::ref_spline_tube_renderer()</a>, <a class="el" href="surfel__renderer_8cxx_source.html#l00007">cgv::render::ref_surfel_renderer()</a>, and <a class="el" href="volume__renderer_8cxx_source.html#l00009">cgv::render::ref_volume_renderer()</a>.</p>
 
@@ -1616,7 +1616,7 @@ template&lt;typename C , typename T &gt; </div>
 <dd>
 <a class="el" href="classcgv_1_1render_1_1renderer.html#a2c0837f4a22a9dfec615f9865f8142de" title="validate attributes and if successful, enable renderer">validate_and_enable()</a> </dd></dl>
 
-<p class="definition">Definition at line <a class="el" href="renderer_8cxx_source.html#l00342">342</a> of file <a class="el" href="renderer_8cxx_source.html">renderer.cxx</a>.</p>
+<p class="definition">Definition at line <a class="el" href="renderer_8cxx_source.html#l00346">346</a> of file <a class="el" href="renderer_8cxx_source.html">renderer.cxx</a>.</p>
 
 <p class="reference">Referenced by <a class="el" href="vr__test_8cxx_source.html#l00652">vr_test::draw()</a>, <a class="el" href="gl__implicit__surface__drawable__base_8cxx_source.html#l00571">cgv::render::gl::gl_implicit_surface_drawable_base::draw_implicit_surface()</a>, and <a class="el" href="vr__view__interactor_8cxx_source.html#l00707">vr_view_interactor::draw_vr_kits()</a>.</p>
 
@@ -2696,7 +2696,7 @@ template&lt;typename T &gt; </div>
 
 <p class="definition">Definition at line <a class="el" href="renderer_8h_source.html#l00068">68</a> of file <a class="el" href="renderer_8h_source.html">renderer.h</a>.</p>
 
-<p class="reference">Referenced by <a class="el" href="renderer_8cxx_source.html#l00146">build_program()</a>, <a class="el" href="renderer_8cxx_source.html#l00203">enable()</a>, and <a class="el" href="renderer_8cxx_source.html#l00173">init()</a>.</p>
+<p class="reference">Referenced by <a class="el" href="renderer_8cxx_source.html#l00146">build_program()</a>, <a class="el" href="renderer_8cxx_source.html#l00205">enable()</a>, and <a class="el" href="renderer_8cxx_source.html#l00173">init()</a>.</p>
 
 </div>
 </div>
@@ -2718,9 +2718,9 @@ template&lt;typename T &gt; </div>
 
 <p>validate attributes and if successful, enable renderer </p>
 
-<p class="definition">Definition at line <a class="el" href="renderer_8cxx_source.html#l00196">196</a> of file <a class="el" href="renderer_8cxx_source.html">renderer.cxx</a>.</p>
+<p class="definition">Definition at line <a class="el" href="renderer_8cxx_source.html#l00198">198</a> of file <a class="el" href="renderer_8cxx_source.html">renderer.cxx</a>.</p>
 
-<p class="reference">References <a class="el" href="renderer_8cxx_source.html#l00203">enable()</a>, and <a class="el" href="renderer_8cxx_source.html#l00130">validate_attributes()</a>.</p>
+<p class="reference">References <a class="el" href="renderer_8cxx_source.html#l00205">enable()</a>, and <a class="el" href="renderer_8cxx_source.html#l00130">validate_attributes()</a>.</p>
 
 <p class="reference">Referenced by <a class="el" href="vr__test_8cxx_source.html#l00652">vr_test::draw()</a>.</p>
 
@@ -2758,7 +2758,7 @@ template&lt;typename T &gt; </div>
 
 <p class="reference">References <a class="el" href="context_8cxx_source.html#l00219">cgv::render::context::error()</a>, and <a class="el" href="renderer_8h_source.html#l00085">has_positions</a>.</p>
 
-<p class="reference">Referenced by <a class="el" href="renderer_8cxx_source.html#l00196">validate_and_enable()</a>, <a class="el" href="group__renderer_8cxx_source.html#l00057">cgv::render::group_renderer::validate_attributes()</a>, and <a class="el" href="volume__renderer_8cxx_source.html#l00100">cgv::render::volume_renderer::validate_attributes()</a>.</p>
+<p class="reference">Referenced by <a class="el" href="renderer_8cxx_source.html#l00198">validate_and_enable()</a>, <a class="el" href="group__renderer_8cxx_source.html#l00057">cgv::render::group_renderer::validate_attributes()</a>, and <a class="el" href="volume__renderer_8cxx_source.html#l00100">cgv::render::volume_renderer::validate_attributes()</a>.</p>
 
 </div>
 </div>

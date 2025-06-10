@@ -1,5 +1,6 @@
 var NAVTREEINDEX10 =
 {
+"classcgv_1_1math_1_1fmat.html#ab1d4d9fd7ce1b58f263f2d2d668efa9b":[11,0,0,6,9,43],
 "classcgv_1_1math_1_1fmat.html#ab21bbc460d6dc1913fdd8691151015e7":[11,0,0,6,9,28],
 "classcgv_1_1math_1_1fmat.html#abdc53b0a897d54c8423732a838310a0d":[11,0,0,6,9,38],
 "classcgv_1_1math_1_1fmat.html#ac030ec653f6315e7b42dc24c97bdec97":[11,0,0,6,9,6],
@@ -248,6 +249,5 @@ var NAVTREEINDEX10 =
 "classcgv_1_1math_1_1quaternion.html#a6bd02bf4a62afe0bec08173f0fb65e1b":[11,0,0,6,21,34],
 "classcgv_1_1math_1_1quaternion.html#a6c36c84a3cd26dafb07dd18423eafef0":[11,0,0,6,21,20],
 "classcgv_1_1math_1_1quaternion.html#a6c5676dd325f7902c4c8e0ba98343ff7":[11,0,0,6,21,18],
-"classcgv_1_1math_1_1quaternion.html#a7a1df892937f2df84b6275dc7b37e3a3":[11,0,0,6,21,13],
-"classcgv_1_1math_1_1quaternion.html#a7c38a5d8d9cb598aba16c8294daf1024":[11,0,0,6,21,48]
+"classcgv_1_1math_1_1quaternion.html#a7a1df892937f2df84b6275dc7b37e3a3":[11,0,0,6,21,13]
 };

@@ -1,7 +1,7 @@
 var classcgv_1_1render_1_1volume__renderer =
 [
     [ "volume_renderer", "classcgv_1_1render_1_1volume__renderer.html#afa0959e6d8954ff6b59cc997f56c82b3", null ],
-    [ "build_shader_program", "classcgv_1_1render_1_1volume__renderer.html#a0a09a99aebeee5a8f731c1645bcaf2e2", null ],
+    [ "build_shader_program", "classcgv_1_1render_1_1volume__renderer.html#a6a28e3414dfb692c2ed990fa80240803", null ],
     [ "clear", "classcgv_1_1render_1_1volume__renderer.html#a863b2124209d3021f4ad1566b6451de2", null ],
     [ "create_render_style", "classcgv_1_1render_1_1volume__renderer.html#acad4f08e3dc03099aab07d244cbded5a", null ],
     [ "disable", "classcgv_1_1render_1_1volume__renderer.html#ae0f0237cd210fe939bd429ee6ae0fb7f", null ],

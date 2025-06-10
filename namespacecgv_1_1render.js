@@ -37,6 +37,7 @@ var namespacecgv_1_1render =
     [ "context", "classcgv_1_1render_1_1context.html", "classcgv_1_1render_1_1context" ],
     [ "context_config", "structcgv_1_1render_1_1context__config.html", "structcgv_1_1render_1_1context__config" ],
     [ "context_factory_registration", "structcgv_1_1render_1_1context__factory__registration.html", null ],
+    [ "device_capabilities", "structcgv_1_1render_1_1device__capabilities.html", "structcgv_1_1render_1_1device__capabilities" ],
     [ "draw_call", "structcgv_1_1render_1_1draw__call.html", null ],
     [ "drawable", "classcgv_1_1render_1_1drawable.html", "classcgv_1_1render_1_1drawable" ],
     [ "element_descriptor_traits", "structcgv_1_1render_1_1element__descriptor__traits.html", null ],
@@ -88,8 +89,10 @@ var namespacecgv_1_1render =
     [ "render_style", "structcgv_1_1render_1_1render__style.html", null ],
     [ "renderer", "classcgv_1_1render_1_1renderer.html", "classcgv_1_1render_1_1renderer" ],
     [ "shader_code", "classcgv_1_1render_1_1shader__code.html", "classcgv_1_1render_1_1shader__code" ],
+    [ "shader_code_snippet", "structcgv_1_1render_1_1shader__code__snippet.html", null ],
+    [ "shader_compile_options", "structcgv_1_1render_1_1shader__compile__options.html", null ],
     [ "shader_config", "structcgv_1_1render_1_1shader__config.html", "structcgv_1_1render_1_1shader__config" ],
-    [ "shader_library", "classcgv_1_1render_1_1shader__library.html", "classcgv_1_1render_1_1shader__library" ],
+    [ "shader_library", "classcgv_1_1render_1_1shader__library.html", null ],
     [ "shader_program", "classcgv_1_1render_1_1shader__program.html", "classcgv_1_1render_1_1shader__program" ],
     [ "shader_program_base", "classcgv_1_1render_1_1shader__program__base.html", "classcgv_1_1render_1_1shader__program__base" ],
     [ "slab_render_style", "structcgv_1_1render_1_1slab__render__style.html", "structcgv_1_1render_1_1slab__render__style" ],
@@ -183,9 +186,6 @@ var namespacecgv_1_1render =
       [ "CF_NOTEQUAL", "namespacecgv_1_1render.html#af1b1b5ee6ada2ce3649637247799b929a8d15f879b125e90ef125933b3efb1479", null ],
       [ "CF_ALWAYS", "namespacecgv_1_1render.html#af1b1b5ee6ada2ce3649637247799b929aa0a9b49cfb66cc1a2323319abada52a9", null ],
       [ "CF_NEVER", "namespacecgv_1_1render.html#af1b1b5ee6ada2ce3649637247799b929a6037af3b93b679e85bc8c86e1187f4aa", null ]
-    ] ],
-    [ "ContextIntegerConstant", "namespacecgv_1_1render.html#aa73a722ecf766e22ec05e85f8a35b9b9", [
-      [ "MAX_NR_GEOMETRY_SHADER_OUTPUT_VERTICES", "namespacecgv_1_1render.html#aa73a722ecf766e22ec05e85f8a35b9b9a905d9773ec3a62be9bcfe9372a2b92ec", null ]
     ] ],
     [ "CullingMode", "namespacecgv_1_1render.html#a0b2ec1d0f6ff0852f53654cb8e6fab57", [
       [ "CM_OFF", "namespacecgv_1_1render.html#a0b2ec1d0f6ff0852f53654cb8e6fab57a46b943667304a38cd74c39c0dd14dabc", null ],

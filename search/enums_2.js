@@ -10,7 +10,6 @@ var searchData=
   ['componentformat_7',['ComponentFormat',['../namespacecgv_1_1data.html#a04ff4cdaed048a306aed8dd5a8c5c979',1,'cgv::data']]],
   ['componentintegerinterpretation_8',['ComponentIntegerInterpretation',['../namespacecgv_1_1data.html#a7b03b31810d6f81c766bde1f7638cd61',1,'cgv::data']]],
   ['compositingmode_9',['CompositingMode',['../structcgv_1_1render_1_1volume__render__style.html#a13cc6cb79a6ba92f65c5de6685b87ec4',1,'cgv::render::volume_render_style']]],
-  ['contextintegerconstant_10',['ContextIntegerConstant',['../namespacecgv_1_1render.html#aa73a722ecf766e22ec05e85f8a35b9b9',1,'cgv::render']]],
-  ['contouringtype_11',['ContouringType',['../namespacecgv_1_1render_1_1gl.html#a204006555111729bae3f163428c329d8',1,'cgv::render::gl']]],
-  ['cullingmode_12',['CullingMode',['../namespacecgv_1_1render.html#a0b2ec1d0f6ff0852f53654cb8e6fab57',1,'cgv::render']]]
+  ['contouringtype_10',['ContouringType',['../namespacecgv_1_1render_1_1gl.html#a204006555111729bae3f163428c329d8',1,'cgv::render::gl']]],
+  ['cullingmode_11',['CullingMode',['../namespacecgv_1_1render.html#a0b2ec1d0f6ff0852f53654cb8e6fab57',1,'cgv::render']]]
 ];
