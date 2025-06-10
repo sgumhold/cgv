@@ -163,10 +163,12 @@ public:
 		_addr = cgv::render::element_descriptor_traits<T>::get_address(value);
 	}
 
-	argument_binding(const std::string& name, const cgv::render::vertex_buffer& buffer) : _name(name) {
+	argument_binding(const std::string& name, const cgv::render::vertex_buffer* buffer) : _name(name) {
 		_desc.coordinate_type = buffer_type_id;
-		_addr = &buffer;
+		_addr = buffer;
 	}
+
+	argument_binding(const std::string& name, const cgv::render::vertex_buffer& buffer) : argument_binding(name, &buffer) {}
 
 	bool is_buffer() const {
 		return _desc.coordinate_type == buffer_type_id;
