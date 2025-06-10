@@ -84,9 +84,9 @@ namespace cgv {
 			position_is_center = _position_is_center;
 		}
 		/// build box program
-		bool box_renderer::build_shader_program(context& ctx, shader_program& prog, const shader_define_map& defines)
+		bool box_renderer::build_shader_program(context& ctx, shader_program& prog, const shader_compile_options& options)
 		{
-			return prog.build_program(ctx, "box.glpr", true, defines);
+			return prog.build_program(ctx, "box.glpr", options, true);
 		}
 		/// 
 		bool box_renderer::enable(context& ctx)

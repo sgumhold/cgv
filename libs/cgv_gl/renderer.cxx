@@ -145,11 +145,11 @@ namespace cgv {
 		/// build shader program for specific render style
 		bool renderer::build_program(context& ctx, shader_program& prog, const render_style& _rs)
 		{
-			shader_define_map defines;
+			shader_compile_options options;
 			auto* tmp = rs;
 			rs = &_rs;
-			update_defines(defines);
-			bool res = build_shader_program(ctx, prog, defines);
+			update_defines(options.defines);
+			bool res = build_shader_program(ctx, prog, options);
 			rs = tmp;
 			return res;
 		}
@@ -185,7 +185,9 @@ namespace cgv {
 
 			if (prog_ptr == &prog) {
 				update_defines(defines);
-				if (!build_shader_program(ctx, prog, defines))
+				shader_compile_options options;
+				options.defines = defines;
+				if (!build_shader_program(ctx, prog, options))
 					return false;
 				last_defines = defines;
 			}
@@ -207,7 +209,9 @@ namespace cgv {
 				if(defines != last_defines) {
 					if(prog.is_created())
 						prog.destruct(ctx);
-					if(!build_shader_program(ctx, prog, defines))
+					shader_compile_options options;
+					options.defines = defines;
+					if(!build_shader_program(ctx, prog, options))
 						return false;
 #ifndef _DEBUG
 				}

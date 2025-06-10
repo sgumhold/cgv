@@ -203,11 +203,11 @@ public:
 		shaders.add("brdf_lut_gen", "brdf_lut_gen.glpr");
 		shaders.add("screen", "screen.glpr");
 
-		shader_define_map defines;
-		shader_code::set_define(defines, "ENABLE_TEXTURES", true, false);
+		shader_compile_options options;
+		shader_code::set_define(options.defines, "ENABLE_TEXTURES", true, false);
 
 		shaders.add("pbr_surface", "pbr_surface.glpr");
-		shaders.add("pbr_surface_textured", "pbr_surface.glpr", defines);
+		shaders.add("pbr_surface_textured", "pbr_surface.glpr", options);
 		shaders.add("surface_depth", "surface_depth.glpr");
 
 		sun_position = cgv::vec2(0.0f, 0.6f);

@@ -339,6 +339,11 @@ std::string shader_code::resolve_includes(const std::string& source, bool use_ca
 	return resolved_source;
 }
 
+std::string shader_code::resolve_includes(const std::string& source, bool use_cache, std::string* _last_error) {
+	std::set<std::string> included_file_names;
+	return resolve_includes(source, use_cache, included_file_names, _last_error);
+}
+
 /// return the shader type of this code
 ShaderType shader_code::get_shader_type() const
 {
@@ -389,7 +394,8 @@ std::string shader_code::read_code_file(const std::string &file_name, std::strin
 }
 
 /// read shader code from file
-bool shader_code::read_code(const context& ctx, const std::string &file_name, ShaderType st, const shader_define_map& defines)
+//bool shader_code::read_code(const context& ctx, const std::string &file_name, ShaderType st, const shader_define_map& defines)
+bool shader_code::read_code(const context& ctx, const std::string &file_name, ShaderType st, const shader_compile_options& options)
 {
 	if (st == ST_DETECT)
 		st = detect_shader_type(file_name);
@@ -399,8 +405,7 @@ bool shader_code::read_code(const context& ctx, const std::string &file_name, Sh
 
 	source = resolve_includes(source, ctx.is_shader_file_cache_enabled());
 
-	if(!defines.empty())
-		set_defines(source, defines);
+	set_defines_and_snippets(source, options);
 	
 	if (st == ST_VERTEX && ctx.get_gpu_vendor_id() == GPUVendorID::GPU_VENDOR_AMD)
 		set_vertex_attrib_locations(source);
@@ -421,32 +426,163 @@ bool shader_code::set_code(const context& ctx, const std::string &source, Shader
 }
 
 /// set shader code defines
-void shader_code::set_defines(std::string& source, const shader_define_map& defines)
+void shader_code::set_defines_and_snippets(std::string& source, const shader_compile_options& options)
 {
-	for (const auto &entry : defines) {
-		std::string name = entry.first;
-		std::string value = entry.second;
-		
-		if(name.empty())
+	enum class DirectiveType {
+		kUndefined,
+		kDefine,
+		kSnippet
+	};
+
+	struct directive_t {
+		DirectiveType type = DirectiveType::kUndefined;
+		std::string identifier;
+		std::string value;
+	};
+	
+	if(options.defines.empty() && options.snippets.empty())
+		return;
+
+	std::map<std::string, directive_t*> directives;
+	std::map<size_t, directive_t*> directives_per_line;
+	size_t version_line_index = std::numeric_limits<size_t>::max();
+
+	std::vector<cgv::utils::line> lines;
+	split_to_lines(source, lines);
+	for(size_t i = 0; i < lines.size(); ++i) {
+		const cgv::utils::line& line = lines[i];
+
+		if(line.empty())
 			continue;
 
-		size_t define_pos = source.find("#define " + name);
-		if(define_pos == std::string::npos)
-			continue;
+		DirectiveType directive_type = DirectiveType::kUndefined;
 
-		size_t offset = 1;
-		if(source[define_pos + 8 + name.length()] == '\n')
-			offset = 0; // set search offset to zero if define has empty string as default value
+		// Pre-processor directives and snippet markers must appear on separate lines. Only whitespace characters are allowed to appear before them.
+		const char* ptr = line.begin;
+		for(ptr; ptr < line.end; ++ptr) {
+			char c = *ptr;
 
-		size_t overwrite_pos = define_pos + 8 + name.length() + offset; // length of: #define <NAME><SINGLE_SPACE/NO-SPACE0>
-		std::string first_part = source.substr(0, overwrite_pos);
-		size_t new_line_pos = source.find_first_of('\n', overwrite_pos);
-		if(new_line_pos != std::string::npos) {
-			std::string second_part = source.substr(new_line_pos);
-			source = first_part + (offset == 0 ? " " : "") + value + second_part;
-			source += "";
+			if(c == '#') {
+				directive_type = DirectiveType::kDefine;
+				break;
+			} else if(c == '/') {
+				if(line.end - ptr > 7) {
+					if(cgv::utils::token(ptr, ptr + 8) == "//$cgv::") {
+						directive_type = DirectiveType::kSnippet;
+						break;
+					}
+				}
+			}
+
+			if(!is_space(c))
+				break;
+		}
+
+		if(directive_type != DirectiveType::kUndefined) {
+			std::vector<cgv::utils::token> tokens;
+			split_to_tokens(cgv::utils::token(ptr, line.end), tokens, "");
+
+			directive_t* directive = nullptr;
+
+			switch(directive_type) {
+			case DirectiveType::kDefine:
+				// A valid define directive will have at least two tokens (directive and name)
+				if(tokens.size() > 1) {
+					std::string first_token_str = to_string(tokens.front());
+
+					if(first_token_str == "#version") {
+						version_line_index = i;
+					} else if(first_token_str == "#define" && !tokens[1].empty()) {
+						directive = new directive_t{ directive_type };
+						directive->identifier = to_string(tokens[1]);
+
+						// Any following tokens are considered to be the value of the define.
+						if(tokens.size() > 2) {
+							cgv::utils::token value_token(tokens[2].begin, tokens.back().end);
+							directive->value = to_string(value_token);
+						}
+					}
+				}
+				break;
+			case DirectiveType::kSnippet:
+				// A valid snippet directive will have one token (identifier).
+				if(tokens.size() == 1) {
+					tokens.front().begin += 3;
+					if(!tokens.front().empty())
+						directive = new directive_t{ directive_type, to_string(tokens.front()), "" };
+				}
+				break;
+			default:
+				break;
+			}
+
+			if(directive) {
+				directives[directive->identifier] = directive;
+				directives_per_line[i] = directive;
+			}
 		}
 	}
+
+	std::vector<std::pair<std::string, std::string>> additional_defines;
+
+	for(const auto& define : options.defines) {
+		auto it = directives.find(define.first);
+		if(it != directives.end() && it->second->type == DirectiveType::kDefine)
+			it->second->value = define.second;
+		else
+			additional_defines.push_back(define);
+	}
+
+	std::string out;
+	// The output string is going to have a similar length as the input.
+	out.reserve(source.length());
+
+	for(size_t i = 0; i < lines.size(); ++i) {
+		const cgv::utils::line& line = lines[i];
+
+		auto it = directives_per_line.find(i);
+		if(it != directives_per_line.end()) {
+			const directive_t* directive = it->second;
+
+			switch(directive->type) {
+			case DirectiveType::kDefine:
+				out += "#define " + directive->identifier + " " + directive->value;
+				break;
+			case DirectiveType::kSnippet:
+			{
+				auto it = std::find_if(options.snippets.begin(), options.snippets.end(), [directive](const shader_code_snippet& snippet) {
+					return directive->identifier == "cgv::" + snippet.id;
+				});
+				if(it != options.snippets.end())
+					out += it->content;
+				else
+					out += to_string(line);
+				break;
+			}
+			default:
+				break;
+			}
+		} else {
+			out += to_string(line);
+		}
+
+		out += '\n';
+
+		// Put additional defines after version directive.
+		if(version_line_index == i) {
+			out += '\n';
+			for(const auto& define : additional_defines)
+				out += "#define " + define.first + " " + define.second + '\n';
+		}
+	}
+
+	for(const auto& pair : directives)
+		delete pair.second;
+
+	directives.clear();
+	directives_per_line.clear();
+
+	source = std::move(out);
 }
 
 /// set shader code vertex attribute locations (a hotfix for AMD driver behaviour on vertex shaders)
@@ -652,9 +788,10 @@ bool shader_code::compile(const context& ctx)
 }
 
 /// read shader code from file, compile and print error message if necessary
-bool shader_code::read_and_compile(const context& ctx, const std::string &file_name, ShaderType st, bool show_error, const shader_define_map& defines)
+//bool shader_code::read_and_compile(const context& ctx, const std::string &file_name, ShaderType st, bool show_error, const shader_define_map& defines)
+bool shader_code::read_and_compile(const context& ctx, const std::string &file_name, ShaderType st, const shader_compile_options& options, bool show_error)
 {
-	if (!read_code(ctx,file_name,st,defines))
+	if (!read_code(ctx, file_name, st, options))
 		return false;
 
 	if (!compile(ctx)) {

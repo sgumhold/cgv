@@ -17,16 +17,16 @@ void canvas::destruct(cgv::render::context& ctx) {
 }
 
 void canvas::register_shader(const std::string& name, const std::string& filename, bool multi_primitive_mode) {
-	cgv::render::shader_define_map defines;
+	cgv::render::shader_compile_options options;
 	
 	if(!multi_primitive_mode)
-		defines["MODE"] = "0";
+		options.defines["MODE"] = "0";
 
-	shaders.add(name, filename, defines);
+	shaders.add(name, filename, options);
 }
 
 void canvas::reload_shaders(cgv::render::context& ctx) {
-	shaders.reload_all(ctx);
+	shaders.load_all(ctx);
 }
 
 bool canvas::init(cgv::render::context& ctx) {

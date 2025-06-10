@@ -232,6 +232,10 @@ GPUVendorID context::get_gpu_vendor_id() const
 	return gpu_vendor;
 }
 
+const device_capabilities& context::get_device_capabilities() const {
+	return gpu_capabilities;
+}
+
 /// virtual destructor
 context::~context()
 {
@@ -2222,6 +2226,19 @@ bool context::shader_program_destruct(shader_program_base& spb) const
 		return false;
 	}
 	return true;
+}
+
+void context::shader_program_set_uniform_locations(shader_program_base& spb) const
+{
+	spb.uniform_locations.clear();
+	std::vector<std::string> uniform_names;
+	if(shader_program_get_active_uniforms(spb, uniform_names)) {
+		for(size_t i = 0; i < uniform_names.size(); ++i) {
+			int location = get_uniform_location(spb, uniform_names[i]);
+			if(location > -1)
+				spb.uniform_locations[uniform_names[i]] = location;
+		}
+	}
 }
 
 attribute_array_binding_base::attribute_array_binding_base()

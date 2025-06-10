@@ -37,18 +37,17 @@ protected:
 	int  nr_attached_geometry_shaders : 13;
 
 	std::vector<shader_code*> managed_codes;
+
 	/// attach a list of files
-	bool attach_files(const context& ctx, const std::vector<std::string>& file_names, const shader_define_map& defines = shader_define_map());
+	bool attach_files(const context& ctx, const std::vector<std::string>& file_names, const shader_compile_options& options = {});
 	/// ensure that the state has been set in the context
 	void update_state(const context& ctx);
 	/// common code necessary to open file
 	static bool open_program_file(std::string& file_name, bool use_cache, std::string& content, std::vector<cgv::utils::line>& lines, std::string* last_error_ptr = 0);
 public:
 	
-	
 	/// resolve file name with shader_code::find_file and add file to list if found
 	static bool collect_files_from_cache(const std::string& name, std::vector<std::string>& file_names, bool& added_files);
-
 
 	/// resolve file name with shader_code::find_file and add file to list if found
 	static bool collect_file(const std::string& file_name, bool use_cache, std::vector<std::string>& file_names);
@@ -97,13 +96,13 @@ public:
 	/// attach a shader code given as string and managed the created shader code object
 	bool attach_code(const context& ctx, const std::string& source, ShaderType st);
 	/// read shader code from file, compile and attach to program
-	bool attach_file(const context& ctx, const std::string& file_name, ShaderType st = ST_DETECT, const shader_define_map& defines = shader_define_map());
+	bool attach_file(const context& ctx, const std::string& file_name, ShaderType st = ST_DETECT, const shader_compile_options& options = {});
 	/// read shader code from files with the given base name, compile and attach them
-	bool attach_files(const context& ctx, const std::string& base_name, const shader_define_map& defines = shader_define_map());
+	bool attach_files(const context& ctx, const std::string& base_name, const shader_compile_options& options = {});
 	/// collect shader code files from directory, compile and attach.
-	bool attach_dir(const context& ctx, const std::string& dir_name, bool recursive);
+	bool attach_dir(const context& ctx, const std::string& dir_name, bool recursive, const shader_compile_options& options = {});
 	/// collect shader code files declared in shader program file, compile and attach them
-	bool attach_program(const context& ctx, std::string file_name, bool show_error = false, const shader_define_map& defines = shader_define_map());
+	bool attach_program(const context& ctx, std::string file_name, bool show_error = false, const shader_compile_options& options = {});
 	/// find and parse all instance definitions in a shader program file
 	static std::vector<shader_define_map> extract_instances(std::string file_name);
 	/// link shaders to an executable program
@@ -111,11 +110,17 @@ public:
 	/// return whether program is linked
 	bool is_linked() const;
 	/// successively calls create, attach_files and link.
-	bool build_files(const context& ctx, const std::string& base_name, bool show_error = false, const shader_define_map& defines = shader_define_map());
+	bool build_files(const context& ctx, const std::string& base_name, bool show_error = false);
 	/// successively calls create, attach_dir and link.
 	bool build_dir(const context& ctx, const std::string& dir_name, bool recursive = false, bool show_error = false);
 	/// successively calls create, attach_program and link.
-	bool build_program(const context& ctx, const std::string& file_name, bool show_error = false, const shader_define_map& defines = shader_define_map());
+	bool build_program(const context& ctx, const std::string& file_name, bool show_error = false);
+	/// successively calls create, attach_files and link.
+	bool build_files(const context& ctx, const std::string& base_name, const shader_compile_options& options, bool show_error = false);
+	/// successively calls create, attach_dir and link.
+	bool build_dir(const context& ctx, const std::string& dir_name, const shader_compile_options& options, bool recursive = false, bool show_error = false);
+	/// successively calls create, attach_program and link.
+	bool build_program(const context& ctx, const std::string& file_name, const shader_compile_options& options, bool show_error = false);
 	/// configure the geometry shader, if count < 1 set it to get_max_nr_geometry_shader_output_vertices
 	void set_geometry_shader_info(PrimitiveType input_type, PrimitiveType output_type, int max_output_count = 0);
 	/// enable the shader program
@@ -124,6 +129,8 @@ public:
 	bool disable(context& ctx);
 	/// check whether program is currently enabled
 	bool is_enabled() const { return shader_program_base::is_enabled; }
+	/// return uniform name and location pairs
+	const std::map<std::string, int>& get_uniform_locations() const;
 	/// query location index of an uniform
 	int get_uniform_location(const context& ctx, const std::string& name) const;
 	/// set a uniform of type material
@@ -137,7 +144,7 @@ public:
 	3 or 4 and the matrices of dimensions 2, 3 or 4. */
 	template <typename T>
 	bool set_uniform(const context& ctx, const std::string& name, const T& value, bool generate_error = false) {
-		int loc = ctx.get_uniform_location(*this, name);
+		int loc = get_uniform_location(ctx, name);
 		if (loc == -1 && generate_error) {
 			ctx.error(std::string("shader_program::set_uniform() uniform <") + name + "> not found", this);
 			return false;
@@ -147,7 +154,7 @@ public:
 	/// set uniform array from array \c array where number elements can be derived from array through \c array_descriptor_traits; supported array types include cgv::math::vec and std::vector
 	template <typename T>
 	bool set_uniform_array(const context& ctx, const std::string& name, const T& array) {
-		int loc = ctx.get_uniform_location(*this, name);
+		int loc = get_uniform_location(ctx, name);
 		if (loc == -1) {
 			ctx.error(std::string("shader_program::set_uniform_array() uniform <") + name + "> not found", this);
 			return false;
@@ -157,14 +164,14 @@ public:
 	/// set uniform array from an array with \c nr_elements elements of type T pointed to by \c array
 	template <typename T>
 	bool set_uniform_array(const context& ctx, const std::string& name, const T* array, size_t nr_elements, bool generate_error = false) {
-		int loc = ctx.get_uniform_location(*this, name);
+		int loc = get_uniform_location(ctx, name);
 		if (loc == -1 && generate_error) {
 			ctx.error(std::string("shader_program::set_uniform_array() uniform <") + name + "> not found", this);
 			return false;
 		}
 		return ctx.set_uniform_array_void(*this, loc, type_descriptor(element_descriptor_traits<T>::get_type_descriptor(array[0]), true), array, nr_elements);
 	}
-	/** Set the value of a uniform by name, where the type can be any of int, unsigned, float, vec<int>, vec<unsigned>,
+	/** Set the value of a uniform by location, where the type can be any of int, unsigned, float, vec<int>, vec<unsigned>,
 	vec<float>, mat<float> and the vectors are of dimension 2,
 	3 or 4 and the matrices of dimensions 2, 3 or 4. */
 	template <typename T>
@@ -180,6 +187,12 @@ public:
 	template <typename T>
 	bool set_uniform_array(const context& ctx, int loc, const T* array, size_t nr_elements) {
 		return ctx.set_uniform_array_void(*this, loc, type_descriptor(element_descriptor_traits<T>::get_type_descriptor(array), true), array, nr_elements);
+	}
+	/** Set the value of a uniform by location, where the value is defined by a type descriptor and address. The value type descriptor can be equivalent to any of int, unsigned, float, vec<int>, vec<unsigned>,
+	vec<float>, mat<float> and the vectors are of dimension 2,
+	3 or 4 and the matrices of dimensions 2, 3 or 4. */
+	bool set_uniform(const context& ctx, int loc, type_descriptor value_type, const void* value_ptr) {
+		return ctx.set_uniform_void(*this, loc, value_type, value_ptr);
 	}
 	/// query location index of an attribute
 	int get_attribute_location(const context& ctx, const std::string& name) const;

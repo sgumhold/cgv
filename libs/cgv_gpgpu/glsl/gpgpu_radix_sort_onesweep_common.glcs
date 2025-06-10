@@ -1,0 +1,89 @@
+//?#version 430
+
+//?#include "gpgpu_radix_sort_common.glcs"
+
+#define MAX_DISPATCH_DIM		65535U	// The maximum value of any given dispatch dimension
+
+#define GLOBAL_HIST_PART_SIZE	32768U	// The size of a global histogram partition tile
+#define GLOBAL_HIST_DIM			128U	// The number of threads in a global histogram threadblock
+
+#define SEC_RADIX_START			256U    // Offset for retrieving value from global histogram buffer
+#define THIRD_RADIX_START		512U    // Offset for retrieving value from global histogram buffer
+#define FOURTH_RADIX_START		768U    // Offset for retrieving value from global histogram buffer
+
+//#if defined(D_DIM_256)
+#define D_DIM 256U
+//#else
+//#define D_DIM 512U
+//#endif
+
+//#if defined(KEYS_PER_THREAD_5)
+//#define KEYS_PER_THREAD     5U
+//#elif defined(KEYS_PER_THREAD_7)
+//#define KEYS_PER_THREAD     7U
+//#else
+#define KEYS_PER_THREAD     15U 
+//#endif
+
+/*#if defined(PART_SIZE_1792)
+#define PART_SIZE           1792U
+#elif defined(PART_SIZE_2560)
+#define PART_SIZE           2560U
+#elif defined(PART_SIZE_3584)
+#define PART_SIZE           3584U
+#elif defined(PART_SIZE_3840)
+#define PART_SIZE           3840U
+#else
+#define PART_SIZE           7680U
+#endif
+*/
+
+#define PART_SIZE				3840U	// The size of a partition tile
+
+//#if defined(D_TOTAL_SMEM_4096)
+#define D_TOTAL_SMEM			4096U	// The size of the shared memory for the digit binning pass
+//#else
+//#define D_TOTAL_SMEM        7936U
+//#endif
+
+#define FLAG_NOT_READY			0U		// Flag value inidicating neither inclusive sum, nor reduction of a partition tile is ready
+#define FLAG_REDUCTION			1U		// Flag value indicating reduction of a partition tile is ready
+#define FLAG_INCLUSIVE			2U		// Flag value indicating inclusive sum of a partition tile is ready
+#define FLAG_MASK				3U		// Mask used to retrieve flag values
+
+struct KeyStruct {
+	uint k[KEYS_PER_THREAD];
+};
+
+struct OffsetStruct {
+	uint o[KEYS_PER_THREAD];
+};
+
+struct DigitStruct {
+	uint d[KEYS_PER_THREAD];
+};
+
+layout(std430, binding = 4) buffer global_hist_buffer { // Buffer holding device level offsets for each binning pass
+	uint b_global_hist[];
+};
+
+layout(std430, binding = 5) coherent buffer pass_hist_buffer { // Buffer used to store reduced sums of partition tiles
+	uint b_pass_hist[];
+};
+
+layout(std430, binding = 6) coherent buffer index_buffer { // Buffer used to atomically assign partition tile indexes
+	uint b_index[];
+};
+
+uniform uint u_thread_blocks; // The number of launched thread blocks (work groups)
+uniform uint u_is_partial;
+
+bool is_partial_dispatch() {
+	return (u_is_partial & 1) != 0;
+}
+
+uint flatten_gid(uvec3 gid) {
+	return is_partial_dispatch() ?
+		gid.x + (u_is_partial >> 1) * MAX_DISPATCH_DIM :
+		gid.x + gid.y * MAX_DISPATCH_DIM;
+}
