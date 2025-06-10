@@ -2924,6 +2924,7 @@ bool gl_context::shader_program_get_active_uniforms(shader_program_base& spb, st
 		if(!name.empty())
 			names.push_back(name);
 	}
+	return true;
 }
 
 int  gl_context::get_uniform_location(const shader_program_base& spb, const std::string& name) const
