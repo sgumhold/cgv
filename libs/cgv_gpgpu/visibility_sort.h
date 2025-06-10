@@ -25,9 +25,13 @@ public:
 	}
 
 	bool init(cgv::render::context& ctx, const sl::data_type& element_type, const sl::data_type& index_type, size_t element_count, const std::string& key_transform_operation, SortOrder order = SortOrder::kAscending) {
-		bool success = true;
 		cgv::gpgpu::argument_definitions arguments = { { sl::Type::kVec3, _distance_transform_arguments.eye_pos.name() } };
-		success &= _distance_transform.init(ctx, element_type, { sl::Type::kFloat }, arguments, key_transform_operation);
+		return init(ctx, element_type, index_type, element_count, arguments, key_transform_operation, order);
+	}
+
+	bool init(cgv::render::context& ctx, const sl::data_type& element_type, const sl::data_type& index_type, size_t element_count, const argument_definitions& key_transform_arguments, const std::string& key_transform_operation, SortOrder order = SortOrder::kAscending) {
+		bool success = true;
+		success &= _distance_transform.init(ctx, element_type, { sl::Type::kFloat }, key_transform_arguments, key_transform_operation);
 		success &= _generate_indices.init(ctx, index_type);
 		if(!_sort)
 			_sort = get_default_sort_implementation(ctx);
@@ -39,7 +43,8 @@ public:
 	void destruct(cgv::render::context& ctx) {
 		_distance_transform.destruct(ctx);
 		_generate_indices.destruct(ctx);
-		_sort->destruct(ctx);
+		if(_sort)
+			_sort->destruct(ctx);
 		_distance_buffer.destruct(ctx);
 	}
 
@@ -51,13 +56,25 @@ public:
 		return _distance_transform.is_initialized() && _generate_indices.is_initialized() && _sort && _sort->is_initialized();
 	}
 
-	bool execute(cgv::render::context& ctx, device_buffer_iterator elements_first, device_buffer_iterator elements_last, device_buffer_iterator indices_output, const cgv::vec3& eye_position) {
+	bool execute(cgv::render::context& ctx, device_buffer_iterator elements_first, device_buffer_iterator elements_last, device_buffer_iterator output_indices, const argument_bindings& arguments) {
 		bool success = true;
-		_distance_transform_arguments.eye_pos = eye_position;
-		success &= _distance_transform.dispatch(ctx, elements_first, elements_last, begin(_distance_buffer), _distance_transform_arguments);
-		success &= _generate_indices.dispatch(ctx, indices_output, indices_output + static_cast<size_t>(distance(elements_first, elements_last)), 0u, 1u);
-		_sort->dispatch(ctx, _distance_buffer, indices_output.buffer());
+		success &= _distance_transform.dispatch(ctx, elements_first, elements_last, begin(_distance_buffer), arguments);
+		success &= _generate_indices.dispatch(ctx, output_indices, output_indices + static_cast<size_t>(distance(elements_first, elements_last)), 0u, 1u);
+		_sort->dispatch(ctx, _distance_buffer, output_indices.buffer());
 		return success;
+	}
+
+	bool execute(cgv::render::context& ctx, const cgv::render::vertex_buffer& elements, size_t count, const cgv::render::vertex_buffer& output_indices, const argument_bindings& arguments) {
+		return execute(ctx, begin(elements), begin(elements) + count, begin(output_indices), arguments);
+	}
+
+	bool execute(cgv::render::context& ctx, device_buffer_iterator elements_first, device_buffer_iterator elements_last, device_buffer_iterator output_indices, const cgv::vec3& eye_position) {
+		_distance_transform_arguments.eye_pos = eye_position;
+		return execute(ctx, elements_first, elements_last, output_indices, _distance_transform_arguments);
+	}
+
+	bool execute(cgv::render::context& ctx, const cgv::render::vertex_buffer& elements, size_t count, const cgv::render::vertex_buffer& output_indices, const cgv::vec3& eye_position) {
+		return execute(ctx, begin(elements), begin(elements) + count, begin(output_indices), eye_position);
 	}
 
 private:
