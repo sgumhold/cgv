@@ -140,7 +140,7 @@ namespace cgv { // @<
 			/// update shader defines based on render style
 			void update_defines(shader_define_map& defines);
 			/// build volume program
-			bool build_shader_program(context& ctx, shader_program& prog, const shader_define_map& defines);
+			bool build_shader_program(context& ctx, shader_program& prog, const shader_compile_options& options);
 			/// initializes the noise texture with random values
 			void init_noise_texture(context& ctx);
 		public:

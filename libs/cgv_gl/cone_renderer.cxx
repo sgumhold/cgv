@@ -93,9 +93,9 @@ namespace cgv {
 			shader_code::set_define(defines, "TEXTURE_USE_REFERENCE_LENGTH", crs.texture_use_reference_length, false);
 			shader_code::set_define(defines, "ENABLE_AMBIENT_OCCLUSION", crs.enable_ambient_occlusion, false);
 		}
-		bool cone_renderer::build_shader_program(context& ctx, shader_program& prog, const shader_define_map& defines)
+		bool cone_renderer::build_shader_program(context& ctx, shader_program& prog, const shader_compile_options& options)
 		{
-			return prog.build_program(ctx, "cone.glpr", true, defines);
+			return prog.build_program(ctx, "cone.glpr", options, true);
 		}
 		bool cone_renderer::set_albedo_texture(texture* tex)
 		{

@@ -1,0 +1,51 @@
+#version 430
+
+#include "gpgpu_radix_sort_4x_common.glcs"
+
+layout(local_size_x = 256) in;
+
+void main() {
+	uint count[4];
+	uint bucket_sums[4];
+
+	uint last_prefix_sum = b_last_sum[0];
+        
+	count[0] = (last_prefix_sum & 0x000000FF) + b_block_sums[u_last_block_sum_idx];
+	last_prefix_sum = last_prefix_sum >> 8;
+	count[1] = (last_prefix_sum & 0x000000FF) + b_block_sums[u_last_block_sum_idx + u_num_block_sums];
+	last_prefix_sum = last_prefix_sum >> 8;
+	count[2] = (last_prefix_sum & 0x000000FF) + b_block_sums[u_last_block_sum_idx + u_num_block_sums + u_num_block_sums];
+	
+	count[b_last_sum[1]] += 1;
+
+	bucket_sums[0] = 0;
+	bucket_sums[1] = count[0];
+	bucket_sums[2] = count[0] + count[1];
+	bucket_sums[3] = count[0] + count[1] + count[2];
+	
+	uint tid = gl_LocalInvocationID.x;
+	uint wid = gl_WorkGroupID.x;
+	uint grid_stride = gl_WorkGroupSize.x*gl_NumWorkGroups.x;
+	uint bid = wid;
+
+	for(uint idx = wid * gl_WorkGroupSize.x + tid; idx < u_num_keys; idx += grid_stride, bid += grid_stride) {
+		uint key = load_key(idx);
+        uint bucket = extract_digit(key);
+        
+        uint prefix_sum_value = bitfieldExtract(b_prefix_sums[idx >> 2], int(idx & RADIX_MASK) << 3, 8);
+		uint block_sum_value = b_block_sums[bucket * u_num_block_sums + bid];
+
+        uint scatter_addr = prefix_sum_value + block_sum_value + bucket_sums[bucket];
+		
+		#if SORT_ASCENDING == 0
+		if(u_radix_shift == 30)
+			scatter_addr = descending_index(scatter_addr);
+		#endif
+
+		write_key(key, scatter_addr);
+
+		#if SORT_PAIRS == 1
+		b_values_out[scatter_addr] = b_values_in[idx];
+		#endif
+    }
+}

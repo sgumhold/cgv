@@ -470,6 +470,15 @@ bool gl_context::configure_gl()
 	else if (vendor_string.find("AMD") != std::string::npos || vendor_string.find("ATI") != std::string::npos)
 		gpu_vendor = GPU_VENDOR_AMD;
 	
+	// query device capabilities
+	glGetIntegerv(GL_MAX_GEOMETRY_OUTPUT_VERTICES, &gpu_capabilities.max_geometry_shader_output_vertex_count);
+	glGetIntegerv(GL_MAX_COMPUTE_SHARED_MEMORY_SIZE, &gpu_capabilities.max_compute_shared_memory_size);
+	glGetIntegerv(GL_MAX_COMPUTE_WORK_GROUP_INVOCATIONS, &gpu_capabilities.max_compute_work_group_invocations);
+	for(unsigned i = 0; i < 3; ++i)
+		glGetIntegeri_v(GL_MAX_COMPUTE_WORK_GROUP_COUNT, static_cast<GLuint>(i), &gpu_capabilities.max_compute_work_group_count[i]);
+	for(unsigned i = 0; i < 3; ++i)
+		glGetIntegeri_v(GL_MAX_COMPUTE_WORK_GROUP_SIZE, static_cast<GLuint>(i), &gpu_capabilities.max_compute_work_group_size[i]);
+	
 #ifdef _DEBUG
 	std::cout << "OpenGL version " << version_major << "." << version_minor << (core_profile?" (core)":" (compatibility)") << (debug?" (debug)":"") << (forward_compatible?" (forward_compatible)":"") << std::endl;
 	const GLubyte* renderer_c_string = glGetString(GL_RENDERER);
@@ -1895,19 +1904,6 @@ GLuint gl_context::texture_generate(texture_base& tb) const
 	return tex_id;
 }
 
-int gl_context::query_integer_constant(ContextIntegerConstant cic) const
-{
-	GLint gl_const;
-	switch (cic) {
-		case MAX_NR_GEOMETRY_SHADER_OUTPUT_VERTICES :
-			gl_const = GL_MAX_GEOMETRY_OUTPUT_VERTICES;
-			break;
-	}
-	GLint value;
-	glGetIntegerv(gl_const, &value);
-	return value;
-}
-
 GLuint gl_context::texture_bind(TextureType tt, GLuint tex_id) const
 {
 	GLint tmp_id;
@@ -2894,6 +2890,40 @@ bool gl_context::shader_program_destruct(shader_program_base& spb) const
 		return false;
 	glDeleteProgram(get_gl_id(spb.handle));
 	return true;
+}
+
+bool gl_context::shader_program_get_active_uniforms(shader_program_base& spb, std::vector<std::string>& names) const
+{
+	if (spb.handle == 0)
+		return false;
+
+	GLuint p_id = get_gl_id(spb.handle);
+
+	GLint num_active_uniforms = 0;
+	glGetProgramiv(p_id, GL_ACTIVE_UNIFORMS, &num_active_uniforms);
+
+	names.reserve(num_active_uniforms);
+
+	std::vector<GLchar> buffer(256);
+	for (int i = 0; i < num_active_uniforms; ++i) {
+		GLint array_size = 0;
+		GLenum type = 0;
+		GLsizei actual_length = 0;
+		
+		glGetActiveUniform(p_id, i, buffer.size(), &actual_length, &array_size, &type, buffer.data());
+		std::string name(static_cast<char*>(buffer.data()), actual_length);
+
+		// uniforms for arrays are listed once with a "[0]" suffix and a given array size greater than 1
+		// we remove the brackets to allow setting arrays using just the uniform name
+		if(array_size > 1) {
+			size_t bracket_pos = name.find('[');
+			if(bracket_pos != std::string::npos)
+				name.resize(bracket_pos);
+		}
+
+		if(!name.empty())
+			names.push_back(name);
+	}
 }
 
 int  gl_context::get_uniform_location(const shader_program_base& spb, const std::string& name) const

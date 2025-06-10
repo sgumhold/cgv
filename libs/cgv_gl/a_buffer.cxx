@@ -89,7 +89,9 @@ namespace cgv {
 			if (!clear_ssbo_prog.build_files(ctx, "a_buffer_clear", true))
 				return false;
 			update_defines(defines, false);
-			if (!a_buffer_prog.build_program(ctx, "a_buffer.glpr", true, defines))
+			shader_compile_options options;
+			options.defines = defines;
+			if (!a_buffer_prog.build_program(ctx, "a_buffer.glpr", options, true))
 				return false;
 			last_defines = defines;
 			return true;
@@ -136,7 +138,9 @@ namespace cgv {
 			if (defines != last_defines) {
 				if (a_buffer_prog.is_created())
 					a_buffer_prog.destruct(ctx);
-				if (a_buffer_prog.build_program(ctx, "a_buffer.glpr", true, defines)) {
+				shader_compile_options options;
+				options.defines = defines;
+				if (a_buffer_prog.build_program(ctx, "a_buffer.glpr", options, true)) {
 					last_defines = defines;
 					std::cout << "a_buffer: rebuilt shader program" << std::endl;
 				}

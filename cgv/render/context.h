@@ -35,6 +35,14 @@ enum GPUVendorID {
 	GPU_VENDOR_NVIDIA
 };
 
+struct device_capabilities {
+	int max_geometry_shader_output_vertex_count = -1;	/// the maximum number that can be provided to the max_vertices output layout qualifier in a geometry shader
+	int max_compute_shared_memory_size = -1;			/// total available storage size in bytes for all shared variables in a compute shader
+	int max_compute_work_group_invocations = -1;		/// the number of invocations in a single local work group (i.e., the product of the three dimensions) that may be dispatched to a compute shader
+	ivec3 max_compute_work_group_count = -1;			/// the maximum number of work groups that may be dispatched to a compute shader; dimension index 0, 1, and 2 correspond to the X, Y and Z dimensions, respectively
+	ivec3 max_compute_work_group_size = -1;				/// the maximum size of a work groups that may be used during compilation of a compute shader; dimension index 0, 1, and 2 correspond to the X, Y and Z dimensions, respectively
+};
+
 /// different compond types for data elements
 enum ElementType {
 	ET_VALUE,
@@ -365,6 +373,8 @@ protected:
 	bool uses_material;
 	bool uses_lights;
 	bool uses_gamma;
+	// maps uniform names to their locations in the shader program
+	std::map<std::string, int> uniform_locations;
 	
 	// vertex attribute names
 	int position_index;
@@ -441,8 +451,8 @@ enum VertexBufferUsage {
 					  ///< for GL drawing and image specification commands.
 	VBU_DYNAMIC_READ, ///< Modified repeatedly and used many times; Modified by reading data from the GL, and used to
 					  ///< return that data when queried by the application.
-	VBU_DYNAMIC_COPY ///< Modified repeatedly and used many times; Modified by reading data from the GL, and used as the
-					 ///< source for GL drawing and image specification commands.
+	VBU_DYNAMIC_COPY  ///< Modified repeatedly and used many times; Modified by reading data from the GL, and used as the
+					  ///< source for GL drawing and image specification commands.
 };
 
 /// base interface for a vertex buffer
@@ -502,11 +512,6 @@ enum FrameBufferType {
 	FB_BACK_RIGHT =  FB_BACK+FB_RIGHT, 
 	FB_FRONT_LEFT  =  FB_FRONT+FB_LEFT, 
 	FB_FRONT_RIGHT =  FB_FRONT+FB_RIGHT
-};
-
-/// integer constants that can be queried from context
-enum ContextIntegerConstant { 
-	MAX_NR_GEOMETRY_SHADER_OUTPUT_VERTICES 
 };
 
 // forward declaration of all render components
@@ -622,6 +627,8 @@ class CGV_API context : public context_config
 protected:
 	// store the GPU vendor id
 	GPUVendorID gpu_vendor;
+	// store the GPU device capabilities
+	device_capabilities gpu_capabilities;
 public:
 	friend class CGV_API attribute_array_manager;
 	friend class CGV_API render_component;
@@ -801,7 +808,6 @@ protected:
 	/// draw some text at cursor position and update cursor position
 	virtual void draw_text(const std::string& text);
 
-	virtual int query_integer_constant(ContextIntegerConstant cic) const = 0;
 	virtual void destruct_render_objects();
 	virtual void put_id(void* handle, void* ptr) const = 0;
 
@@ -846,6 +852,8 @@ protected:
 	virtual bool shader_program_enable   (shader_program_base& spb);
 	virtual bool shader_program_disable(shader_program_base& spb);
 	virtual bool shader_program_destruct(shader_program_base& spb) const;
+	virtual void shader_program_set_uniform_locations(shader_program_base& spb) const;
+	virtual bool shader_program_get_active_uniforms(shader_program_base& spb, std::vector<std::string>& names) const = 0;
 	virtual int  get_uniform_location(const shader_program_base& spb, const std::string& name) const = 0;
 	virtual bool set_uniform_void(shader_program_base& spb, int loc, type_descriptor value_type, const void* value_ptr) const = 0;
 	virtual bool set_uniform_array_void(shader_program_base& spb, int loc, type_descriptor value_type, const void* value_ptr, size_t nr_elements) const = 0;
@@ -878,6 +886,7 @@ public:
 	virtual void error(const std::string& message, const render_component* rc = 0) const;
 	/// device information
 	virtual GPUVendorID get_gpu_vendor_id() const;
+	const device_capabilities& get_device_capabilities() const;
 
 	/**@name interface for implementation of specific contexts*/
 	//@{

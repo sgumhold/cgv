@@ -16,11 +16,11 @@ std::map<std::string, std::string> shader_program::program_file_cache;
 std::map<std::string, std::vector<std::string>> shader_program::files_cache;
 
 /// attach a list of files
-bool shader_program::attach_files(const context& ctx, const std::vector<std::string>& file_names, const shader_define_map& defines)
+bool shader_program::attach_files(const context& ctx, const std::vector<std::string>& file_names, const shader_compile_options& options)
 {
 	bool no_error = true;
 	for(unsigned int i = 0; i < file_names.size(); ++i) {
-		no_error = attach_file(ctx, file_names[i], ST_DETECT, defines) && no_error;
+		no_error = attach_file(ctx, file_names[i], ST_DETECT, options) && no_error;
 		if(!no_error)
 			std::cout << last_error << std::endl;
 	}
@@ -257,9 +257,9 @@ bool shader_program::attach_code(const context& ctx, const std::string& source, 
 
 
 /// read shader code from file, compile and attach to program
-bool shader_program::attach_file(const context& ctx, const std::string& file_name, ShaderType st, const shader_define_map& defines) {
+bool shader_program::attach_file(const context& ctx, const std::string& file_name, ShaderType st, const shader_compile_options& options) {
 	shader_code* code_ptr = new shader_code;
-	if(!code_ptr->read_and_compile(ctx, file_name, st, show_code_errors, defines)) {
+	if(!code_ptr->read_and_compile(ctx, file_name, st, options, show_code_errors)) {
 		last_error = code_ptr->last_error;
 		delete code_ptr;
 		return false;
@@ -269,18 +269,18 @@ bool shader_program::attach_file(const context& ctx, const std::string& file_nam
 }
 
 /// read shader code from files with the given base name, compile and attach them
-bool shader_program::attach_files(const context& ctx, const std::string& base_name, const shader_define_map& defines) {
+bool shader_program::attach_files(const context& ctx, const std::string& base_name, const shader_compile_options& options) {
 	std::vector<std::string> file_names;
 	if(!collect_files(base_name, ctx.is_shader_file_cache_enabled(), file_names))
 		return false;
-	return attach_files(ctx, file_names, defines);
+	return attach_files(ctx, file_names, options);
 }
 /// collect shader code files from directory, compile and attach.
-bool shader_program::attach_dir(const context& ctx, const std::string& dir_name, bool recursive) {
+bool shader_program::attach_dir(const context& ctx, const std::string& dir_name, bool recursive, const shader_compile_options& options) {
 	std::vector<std::string> file_names;
 	if(!collect_dir(dir_name, recursive, file_names))
 		return false;
-	return attach_files(ctx, file_names);
+	return attach_files(ctx, file_names, options);
 }
 bool shader_program::open_program_file(std::string& file_name, bool use_cache, std::string& content, std::vector<line>& lines, std::string* last_error_ptr)
 {
@@ -354,7 +354,7 @@ std::vector<shader_define_map> shader_program::extract_instances(std::string fil
 	return result;
 }
 
-bool shader_program::attach_program(const context& ctx, std::string file_name, bool show_error, const shader_define_map& defines) 
+bool shader_program::attach_program(const context& ctx, std::string file_name, bool show_error, const shader_compile_options& options)
 {
 	std::string content;
 	std::vector<line> lines;
@@ -385,21 +385,21 @@ bool shader_program::attach_program(const context& ctx, std::string file_name, b
 		if (l[0] == '/')
 			continue;
 		if (l.substr(0,5) == "file:")
-			success = attach_file(ctx, l.substr(5), ST_DETECT, defines);
+			success = attach_file(ctx, l.substr(5), ST_DETECT, options);
 		else if (l.substr(0,12) == "vertex_file:")
-			success = attach_file(ctx, l.substr(12), ST_VERTEX, defines);
+			success = attach_file(ctx, l.substr(12), ST_VERTEX, options);
 		else if (l.substr(0,14) == "geometry_file:")
-			success = attach_file(ctx, l.substr(14), ST_GEOMETRY, defines);
+			success = attach_file(ctx, l.substr(14), ST_GEOMETRY, options);
 		else if (l.substr(0, 26) == "tessellation_control_file:")
-			success = attach_file(ctx, l.substr(26), ST_TESS_CONTROL, defines);
+			success = attach_file(ctx, l.substr(26), ST_TESS_CONTROL, options);
 		else if (l.substr(0, 29) == "tessellation_evaluation_file:")
-			success = attach_file(ctx, l.substr(29), ST_TESS_EVALUATION, defines);
+			success = attach_file(ctx, l.substr(29), ST_TESS_EVALUATION, options);
 		else if (l.substr(0,14) == "fragment_file:")
-			success = attach_file(ctx, l.substr(14), ST_FRAGMENT, defines);
+			success = attach_file(ctx, l.substr(14), ST_FRAGMENT, options);
 		else if(l.substr(0, 13) == "compute_file:")
-			success = attach_file(ctx, l.substr(13), ST_COMPUTE, defines);
+			success = attach_file(ctx, l.substr(13), ST_COMPUTE, options);
 		else if (l.substr(0,6) == "files:")
-			success = attach_files(ctx, l.substr(6), defines);
+			success = attach_files(ctx, l.substr(6), options);
 		else if (l.substr(0,4) == "dir:")
 			success = attach_dir(ctx, l.substr(4), false);
 		else if (l.substr(0,8) == "rec_dir:")
@@ -468,34 +468,46 @@ bool shader_program::attach_program(const context& ctx, std::string file_name, b
 }
 
 /// successively calls create, attach_files and link.
-bool shader_program::build_files(const context& ctx, const std::string& base_name, bool show_error, const shader_define_map& defines)
-{
-	return (is_created() || create(ctx)) &&
-		    attach_files(ctx, base_name, defines) && link(ctx, show_error);
+bool shader_program::build_files(const context& ctx, const std::string& base_name, bool show_error) {
+	return build_files(ctx, base_name, {}, show_error);
 }
+
 /// successively calls create, attach_dir and link.
-bool shader_program::build_dir(const context& ctx, const std::string& dir_name, bool recursive, bool show_error)
-{
-	return (is_created() || create(ctx)) &&
-			 attach_dir(ctx, dir_name, recursive) && link(ctx, show_error);
+bool shader_program::build_dir(const context& ctx, const std::string& dir_name, bool recursive, bool show_error) {
+	return build_dir(ctx, dir_name, {}, recursive, show_error);
 }
 
 /// successively calls create, attach_program and link.
-bool shader_program::build_program(const context& ctx, const std::string& file_name, bool show_error, const shader_define_map& defines)
-{
-	if (!(is_created() || create(ctx)))
+bool shader_program::build_program(const context& ctx, const std::string& file_name, bool show_error) {
+	return build_program(ctx, file_name, {}, show_error);
+}
+
+/// successively calls create, attach_files and link.
+bool shader_program::build_files(const context& ctx, const std::string& base_name, const shader_compile_options& options, bool show_error) {
+	return (is_created() || create(ctx)) &&
+		attach_files(ctx, base_name, options) && link(ctx, show_error);
+}
+/// successively calls create, attach_dir and link.
+bool shader_program::build_dir(const context& ctx, const std::string& dir_name, const shader_compile_options& options, bool recursive, bool show_error) {
+	return (is_created() || create(ctx)) &&
+		attach_dir(ctx, dir_name, recursive, options) && link(ctx, show_error);
+}
+
+/// successively calls create, attach_program and link.
+bool shader_program::build_program(const context& ctx, const std::string& file_name, const shader_compile_options& options, bool show_error) {
+	if(!(is_created() || create(ctx)))
 		return false;
 
-	if (!attach_program(ctx, file_name, show_error, defines))
+	if(!attach_program(ctx, file_name, show_error, options))
 		return false;
 
-	if (!link(ctx, show_error)) {
-		if (show_error) {
+	if(!link(ctx, show_error)) {
+		if(show_error) {
 			std::string fn = shader_code::find_file(file_name);
 			std::vector<line> lines;
 			split_to_lines(last_error, lines);
 			std::string formated_error;
-			for (unsigned int i = 0; i < lines.size(); ++i) {
+			for(unsigned int i = 0; i < lines.size(); ++i) {
 				formated_error += fn + "(1) : error G0002: " + to_string(lines[i]) + "\n";
 			}
 			std::cerr << formated_error.c_str() << std::endl;
@@ -509,7 +521,7 @@ bool shader_program::build_program(const context& ctx, const std::string& file_n
 /// return the maximum number of output vertices of a geometry shader
 unsigned int shader_program::get_max_nr_geometry_shader_output_vertices(const context& ctx)
 {
-	return ctx.query_integer_constant(MAX_NR_GEOMETRY_SHADER_OUTPUT_VERTICES);
+	return ctx.get_device_capabilities().max_geometry_shader_output_vertex_count;
 }
 
 /// ensure that the state has been set in the context
@@ -524,11 +536,13 @@ void shader_program::update_state(const context& ctx)
 		state_out_of_date = false;
 	}
 }
+
 ///link shaders to an executable program
 bool shader_program::link(const context& ctx, bool show_error)
 {
 	update_state(ctx);
 	if (ctx.shader_program_link(*this)) {
+		ctx.shader_program_set_uniform_locations(*this);
 		linked = true;
 		return true;
 	}
@@ -588,10 +602,18 @@ bool shader_program::disable(context& ctx)
 	return res;
 }
 
+/// return uniform name and location pairs
+const std::map<std::string, int>& shader_program::get_uniform_locations() const
+{
+	return uniform_locations;
+}
+
 /// query location index of an uniform
 int shader_program::get_uniform_location(const context& ctx, const std::string& name) const
 {
-	return ctx.get_uniform_location(*this, name);
+	//return ctx.get_uniform_location(*this, name);
+	auto it = uniform_locations.find(name);
+	return it != uniform_locations.end() ? it->second : -1;
 }
 /// set a uniform of type material
 bool shader_program::set_material_uniform(const context& ctx, const std::string& name, const cgv::media::illum::surface_material& material, bool generate_error)

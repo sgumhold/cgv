@@ -51,7 +51,7 @@ namespace cgv { // @<
 			/// overload to allow instantiation of point_renderer
 			render_style* create_render_style() const;
 			/// build sphere program
-			bool build_shader_program(context& ctx, shader_program& prog, const shader_define_map& defines);
+			bool build_shader_program(context& ctx, shader_program& prog, const shader_compile_options& options);
 		public:
 			///
 			sphere_renderer();

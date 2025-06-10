@@ -82,9 +82,9 @@ namespace cgv {
 			return res;
 		}
 		/// build slab program
-		bool slab_renderer::build_shader_program(context& ctx, shader_program& prog, const shader_define_map& defines)
+		bool slab_renderer::build_shader_program(context& ctx, shader_program& prog, const shader_compile_options& options)
 		{
-			return prog.build_program(ctx, "slab.glpr", true, defines);
+			return prog.build_program(ctx, "slab.glpr", options, true);
 		}
 		/// 
 		bool slab_renderer::enable(context& ctx)

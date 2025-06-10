@@ -67,7 +67,7 @@ namespace cgv { // @<
 			/// overload to update the shader defines based on the current render style; only called if internal shader program is used
 			virtual void update_defines(shader_define_map& defines) {}
 			/// overload to build shader program based on the passed defines
-			virtual bool build_shader_program(context& ctx, shader_program& prog, const shader_define_map& defines) { return false; }
+			virtual bool build_shader_program(context& ctx, shader_program& prog, const shader_compile_options& options) { return false; }
 		public:
 			/// access to shader define map to update defines not handled by render style
 			shader_define_map& ref_defines() { return defines; }

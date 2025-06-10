@@ -70,9 +70,9 @@ namespace cgv {
 		}
 
 		/// build box wire program
-		bool box_wire_renderer::build_shader_program(context& ctx, shader_program& prog, const shader_define_map& defines)
+		bool box_wire_renderer::build_shader_program(context& ctx, shader_program& prog, const shader_compile_options& options)
 		{
-			return prog.build_program(ctx, "box_wire.glpr", true, defines);
+			return prog.build_program(ctx, "box_wire.glpr", options, true);
 		}
 		/// 
 		bool box_wire_renderer::enable(context& ctx)

@@ -15,7 +15,7 @@ bool depth_halos::init(cgv::render::context& ctx) {
 	fbc_draw.add_attachment("depth", "[D]");
 	fbc_draw.add_attachment("color", "flt32[R,G,B,A]");
 
-	shaders.add("depth_halo", "depth_halo.glpr", get_shader_defines());
+	shaders.add("depth_halo", "depth_halo.glpr", get_shader_compile_options());
 
 	generate_noise_texture(ctx);
 
@@ -26,7 +26,7 @@ bool depth_halos::ensure(cgv::render::context& ctx) {
 
 	if(do_reload_shader) {
 		do_reload_shader = false;
-		shaders.reload(ctx, "depth_halo", get_shader_defines());
+		shaders.reload(ctx, "depth_halo", get_shader_compile_options());
 	}
 
 	return post_process_effect::ensure(ctx);
@@ -86,11 +86,11 @@ void depth_halos::create_gui_impl(cgv::base::base* b, cgv::gui::provider* p) {
 	p->add_member_control(b, "Depth Scale", depth_scale, "value_slider", "min=0.1;step=0.001;max=100;log=true;ticks=true");
 }
 
-cgv::render::shader_define_map depth_halos::get_shader_defines() {
+cgv::render::shader_compile_options depth_halos::get_shader_compile_options() {
 
-	cgv::render::shader_define_map defines;
-	cgv::render::shader_code::set_define(defines, "MODE", mode, Mode::Outside);
-	return defines;
+	cgv::render::shader_compile_options options;
+	cgv::render::shader_code::set_define(options.defines, "MODE", mode, Mode::Outside);
+	return options;
 }
 
 void depth_halos::on_change_mode() {
