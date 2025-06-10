@@ -716,6 +716,7 @@ var hierarchy =
       [ "cgv::render::render_config", "structcgv_1_1render_1_1render__config.html", null ]
     ] ],
     [ "cgv::render::context_factory_registration", "structcgv_1_1render_1_1context__factory__registration.html", null ],
+    [ "cgv::render::device_capabilities", "structcgv_1_1render_1_1device__capabilities.html", null ],
     [ "cgv::render::draw_call", "structcgv_1_1render_1_1draw__call.html", null ],
     [ "cgv::render::element_descriptor_traits< T >", "structcgv_1_1render_1_1element__descriptor__traits.html", null ],
     [ "cgv::render::element_descriptor_traits< cgv::math::fmat< T, N, M > >", "structcgv_1_1render_1_1element__descriptor__traits_3_01cgv_1_1math_1_1fmat_3_01T_00_01N_00_01M_01_4_01_4.html", null ],
@@ -866,8 +867,9 @@ var hierarchy =
       ] ],
       [ "cgv::render::volume_renderer", "classcgv_1_1render_1_1volume__renderer.html", null ]
     ] ],
+    [ "cgv::render::shader_code_snippet", "structcgv_1_1render_1_1shader__code__snippet.html", null ],
+    [ "cgv::render::shader_compile_options", "structcgv_1_1render_1_1shader__compile__options.html", null ],
     [ "cgv::render::shader_library", "classcgv_1_1render_1_1shader__library.html", null ],
-    [ "cgv::render::shader_library::shader_info", "structcgv_1_1render_1_1shader__library_1_1shader__info.html", null ],
     [ "cgv::render::textured_rectangle", "structcgv_1_1render_1_1textured__rectangle.html", null ],
     [ "cgv::render::type_descriptor", "structcgv_1_1render_1_1type__descriptor.html", null ],
     [ "cgv::render::vertex_attribute", "structcgv_1_1render_1_1vertex__attribute.html", null ],
@@ -1036,11 +1038,21 @@ var hierarchy =
     [ "cgv::type::variant< std::string >", "structcgv_1_1type_1_1variant_3_01std_1_1string_01_4.html", null ],
     [ "cgv::type::variant< std::wstring >", "structcgv_1_1type_1_1variant_3_01std_1_1wstring_01_4.html", null ],
     [ "cgv::utils::big_binary_file", "classcgv_1_1utils_1_1big__binary__file.html", null ],
+    [ "cgv::utils::count_range< iterator_type >", "classcgv_1_1utils_1_1count__range.html", null ],
     [ "cgv::utils::date", "structcgv_1_1utils_1_1date.html", [
       [ "cgv::utils::date_time", "structcgv_1_1utils_1_1date__time.html", null ]
     ] ],
+    [ "cgv::utils::enumerate_range< iterator_type >", "classcgv_1_1utils_1_1enumerate__range.html", null ],
     [ "cgv::utils::file::FileInfo", "structcgv_1_1utils_1_1file_1_1FileInfo.html", null ],
+    [ "cgv::utils::get_first< T1, T2 >", "structcgv_1_1utils_1_1get__first.html", null ],
+    [ "cgv::utils::get_first< void, void >", "structcgv_1_1utils_1_1get__first_3_01void_00_01void_01_4.html", null ],
+    [ "cgv::utils::get_second< T1, T2 >", "structcgv_1_1utils_1_1get__second.html", null ],
+    [ "cgv::utils::get_second< void, void >", "structcgv_1_1utils_1_1get__second_3_01void_00_01void_01_4.html", null ],
     [ "cgv::utils::guid", "structcgv_1_1utils_1_1guid.html", null ],
+    [ "cgv::utils::indexed_iterator< iterator_type >", "classcgv_1_1utils_1_1indexed__iterator.html", [
+      [ "cgv::utils::count_iterator< iterator_type >", "classcgv_1_1utils_1_1count__iterator.html", null ],
+      [ "cgv::utils::enumerate_iterator< iterator_type >", "classcgv_1_1utils_1_1enumerate__iterator.html", null ]
+    ] ],
     [ "cgv::utils::pointer_test", "classcgv_1_1utils_1_1pointer__test.html", null ],
     [ "cgv::utils::Profiler< T >", "classcgv_1_1utils_1_1Profiler.html", null ],
     [ "cgv::utils::progression", "structcgv_1_1utils_1_1progression.html", null ],
@@ -1094,6 +1106,7 @@ var hierarchy =
     [ "cgv::math::fvec< int, 2 >", "classcgv_1_1math_1_1fvec.html", null ],
     [ "cgv::math::fvec< int, 3 >", "classcgv_1_1math_1_1fvec.html", null ],
     [ "cgv::math::fvec< int32_t, 2 >", "classcgv_1_1math_1_1fvec.html", null ],
+    [ "cgv::math::fvec< int32_t, 3 >", "classcgv_1_1math_1_1fvec.html", null ],
     [ "cgv::math::fvec< int32_t, 4 >", "classcgv_1_1math_1_1fvec.html", null ],
     [ "cgv::math::fvec< int32_t, N >", "classcgv_1_1math_1_1fvec.html", null ],
     [ "cgv::math::fvec< T, 2 >", "classcgv_1_1math_1_1fvec.html", null ],

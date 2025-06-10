@@ -93,140 +93,53 @@ $(document).ready(function(){initNavTree('classcgv_1_1render_1_1shader__library.
 <a href="#nested-classes">Classes</a> &#124;
 <a href="#pub-methods">Public Member Functions</a> &#124;
 <a href="#pub-static-methods">Static Public Member Functions</a> &#124;
-<a href="#pro-types">Protected Types</a> &#124;
-<a href="#pro-methods">Protected Member Functions</a> &#124;
-<a href="#pro-attribs">Protected Attributes</a> &#124;
 <a href="classcgv_1_1render_1_1shader__library-members.html">List of all members</a>  </div>
   <div class="headertitle"><div class="title">cgv::render::shader_library Class Reference</div></div>
 </div><!--header-->
 <div class="contents">
 
-<p>provides a shader library that handles shader loading  
+<p>provides a shader library that handles shader loading and stores shaders  
  <a href="classcgv_1_1render_1_1shader__library.html#details">More...</a></p>
 
 <p><code>#include &lt;<a class="el" href="shader__library_8h_source.html">shader_library.h</a>&gt;</code></p>
 <table class="memberdecls">
-<tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="nested-classes" name="nested-classes"></a>
-Classes</h2></td></tr>
-<tr class="memitem:"><td class="memItemLeft" align="right" valign="top">struct &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structcgv_1_1render_1_1shader__library_1_1shader__info.html">shader_info</a></td></tr>
-<tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
-</table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="pub-methods" name="pub-methods"></a>
 Public Member Functions</h2></td></tr>
 <tr class="memitem:abb0347c087c6c654d03ebb0662d5968e" id="r_abb0347c087c6c654d03ebb0662d5968e"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcgv_1_1render_1_1shader__library.html#abb0347c087c6c654d03ebb0662d5968e">clear</a> (<a class="el" href="classcgv_1_1render_1_1context.html">context</a> &amp;ctx)</td></tr>
 <tr class="separator:abb0347c087c6c654d03ebb0662d5968e"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a77a936cc9109353fe8efeaad8e4cc3e3" id="r_a77a936cc9109353fe8efeaad8e4cc3e3"><td class="memItemLeft" align="right" valign="top">bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcgv_1_1render_1_1shader__library.html#a77a936cc9109353fe8efeaad8e4cc3e3">add</a> (const std::string &amp;name, const std::string &amp;file, const <a class="el" href="namespacecgv_1_1render.html#a0e875e06326ba0599a1289f0bacdb116">shader_define_map</a> &amp;defines={})</td></tr>
-<tr class="separator:a77a936cc9109353fe8efeaad8e4cc3e3"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a8de410f4b7e0e320e27832b15a857514" id="r_a8de410f4b7e0e320e27832b15a857514"><td class="memItemLeft" align="right" valign="top">bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcgv_1_1render_1_1shader__library.html#a8de410f4b7e0e320e27832b15a857514">add</a> (const std::string &amp;name, const std::string &amp;file, const <a class="el" href="structcgv_1_1render_1_1shader__compile__options.html">shader_compile_options</a> &amp;options={})</td></tr>
+<tr class="separator:a8de410f4b7e0e320e27832b15a857514"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a136d1ba80cbac748af91fc5dd349e1e6" id="r_a136d1ba80cbac748af91fc5dd349e1e6"><td class="memItemLeft" align="right" valign="top">bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcgv_1_1render_1_1shader__library.html#a136d1ba80cbac748af91fc5dd349e1e6">contains</a> (const std::string &amp;name) const</td></tr>
+<tr class="separator:a136d1ba80cbac748af91fc5dd349e1e6"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a7170da561dfab12ec7a1f15365b78daf" id="r_a7170da561dfab12ec7a1f15365b78daf"><td class="memItemLeft" align="right" valign="top"><a class="el" href="classcgv_1_1render_1_1shader__program.html">shader_program</a> &amp;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcgv_1_1render_1_1shader__library.html#a7170da561dfab12ec7a1f15365b78daf">get</a> (const std::string &amp;name)</td></tr>
 <tr class="separator:a7170da561dfab12ec7a1f15365b78daf"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:acc47e53ca9c909f1ffa55e82ca8cf7c7" id="r_acc47e53ca9c909f1ffa55e82ca8cf7c7"><td class="memItemLeft" align="right" valign="top"><a class="el" href="namespacecgv_1_1render.html#a0e875e06326ba0599a1289f0bacdb116">shader_define_map</a> &amp;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcgv_1_1render_1_1shader__library.html#acc47e53ca9c909f1ffa55e82ca8cf7c7">get_defines</a> (const std::string &amp;name)</td></tr>
 <tr class="separator:acc47e53ca9c909f1ffa55e82ca8cf7c7"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a136d1ba80cbac748af91fc5dd349e1e6" id="r_a136d1ba80cbac748af91fc5dd349e1e6"><td class="memItemLeft" align="right" valign="top">bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcgv_1_1render_1_1shader__library.html#a136d1ba80cbac748af91fc5dd349e1e6">contains</a> (const std::string &amp;name) const</td></tr>
-<tr class="separator:a136d1ba80cbac748af91fc5dd349e1e6"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:aca932987065cffad9bcb3d20b156d525" id="r_aca932987065cffad9bcb3d20b156d525"><td class="memItemLeft" align="right" valign="top"><a class="el" href="structcgv_1_1render_1_1shader__compile__options.html">shader_compile_options</a> &amp;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcgv_1_1render_1_1shader__library.html#aca932987065cffad9bcb3d20b156d525">get_compile_options</a> (const std::string &amp;name)</td></tr>
+<tr class="separator:aca932987065cffad9bcb3d20b156d525"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ad25706261640e5e83b3a7c6f48514e26" id="r_ad25706261640e5e83b3a7c6f48514e26"><td class="memItemLeft" align="right" valign="top">shader_lib_map::iterator&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcgv_1_1render_1_1shader__library.html#ad25706261640e5e83b3a7c6f48514e26">begin</a> ()</td></tr>
 <tr class="separator:ad25706261640e5e83b3a7c6f48514e26"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a92b09d7cf9a6e18cfbdb38d654fd0f36" id="r_a92b09d7cf9a6e18cfbdb38d654fd0f36"><td class="memItemLeft" align="right" valign="top">shader_lib_map::iterator&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcgv_1_1render_1_1shader__library.html#a92b09d7cf9a6e18cfbdb38d654fd0f36">end</a> ()</td></tr>
 <tr class="separator:a92b09d7cf9a6e18cfbdb38d654fd0f36"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:afaf626f58e71e588942a310e9f57079c" id="r_afaf626f58e71e588942a310e9f57079c"><td class="memItemLeft" align="right" valign="top">bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcgv_1_1render_1_1shader__library.html#afaf626f58e71e588942a310e9f57079c">load_all</a> (<a class="el" href="classcgv_1_1render_1_1context.html">context</a> &amp;ctx, const std::string &amp;where=&quot;&quot;)</td></tr>
 <tr class="separator:afaf626f58e71e588942a310e9f57079c"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:aaeec5c20d9915e11c8cdfc98568f8907" id="r_aaeec5c20d9915e11c8cdfc98568f8907"><td class="memItemLeft" align="right" valign="top">bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcgv_1_1render_1_1shader__library.html#aaeec5c20d9915e11c8cdfc98568f8907">reload</a> (<a class="el" href="classcgv_1_1render_1_1context.html">context</a> &amp;ctx, const std::string &amp;name, const <a class="el" href="namespacecgv_1_1render.html#a0e875e06326ba0599a1289f0bacdb116">shader_define_map</a> &amp;defines={}, const std::string &amp;where=&quot;&quot;)</td></tr>
-<tr class="separator:aaeec5c20d9915e11c8cdfc98568f8907"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a7a0427c0ebcf96d8b30cc44519c2b3cb" id="r_a7a0427c0ebcf96d8b30cc44519c2b3cb"><td class="memItemLeft" align="right" valign="top">bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcgv_1_1render_1_1shader__library.html#a7a0427c0ebcf96d8b30cc44519c2b3cb">reload_all</a> (<a class="el" href="classcgv_1_1render_1_1context.html">context</a> &amp;ctx, const std::string &amp;where=&quot;&quot;)</td></tr>
-<tr class="separator:a7a0427c0ebcf96d8b30cc44519c2b3cb"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:afca4da0d6c8c40b15dff59e23d2b3dc7" id="r_afca4da0d6c8c40b15dff59e23d2b3dc7"><td class="memItemLeft" align="right" valign="top">bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcgv_1_1render_1_1shader__library.html#afca4da0d6c8c40b15dff59e23d2b3dc7">reload</a> (<a class="el" href="classcgv_1_1render_1_1context.html">context</a> &amp;ctx, const std::string &amp;name, const <a class="el" href="structcgv_1_1render_1_1shader__compile__options.html">shader_compile_options</a> &amp;defines={}, const std::string &amp;where=&quot;&quot;)</td></tr>
+<tr class="separator:afca4da0d6c8c40b15dff59e23d2b3dc7"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="pub-static-methods" name="pub-static-methods"></a>
 Static Public Member Functions</h2></td></tr>
-<tr class="memitem:a7ddb1a746ec9f7a416300f5b3ec68bd0" id="r_a7ddb1a746ec9f7a416300f5b3ec68bd0"><td class="memItemLeft" align="right" valign="top">static bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcgv_1_1render_1_1shader__library.html#a7ddb1a746ec9f7a416300f5b3ec68bd0">load</a> (<a class="el" href="classcgv_1_1render_1_1context.html">context</a> &amp;ctx, <a class="el" href="classcgv_1_1render_1_1shader__program.html">shader_program</a> &amp;prog, const std::string &amp;name, const bool reload=false, const std::string &amp;where=&quot;&quot;)</td></tr>
-<tr class="separator:a7ddb1a746ec9f7a416300f5b3ec68bd0"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a8f2d8ab36fdc9fcaba3008b7d5769bd3" id="r_a8f2d8ab36fdc9fcaba3008b7d5769bd3"><td class="memItemLeft" align="right" valign="top">static bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcgv_1_1render_1_1shader__library.html#a8f2d8ab36fdc9fcaba3008b7d5769bd3">load</a> (<a class="el" href="classcgv_1_1render_1_1context.html">context</a> &amp;ctx, <a class="el" href="classcgv_1_1render_1_1shader__program.html">shader_program</a> &amp;prog, const std::string &amp;name, const <a class="el" href="namespacecgv_1_1render.html#a0e875e06326ba0599a1289f0bacdb116">shader_define_map</a> &amp;defines, const bool reload=false, const std::string &amp;where=&quot;&quot;)</td></tr>
-<tr class="separator:a8f2d8ab36fdc9fcaba3008b7d5769bd3"><td class="memSeparator" colspan="2">&#160;</td></tr>
-</table><table class="memberdecls">
-<tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="pro-types" name="pro-types"></a>
-Protected Types</h2></td></tr>
-<tr class="memitem:a6736be3aa341ac9a74fd3ddfbf5ebbd7" id="r_a6736be3aa341ac9a74fd3ddfbf5ebbd7"><td class="memItemLeft" align="right" valign="top">typedef std::map&lt; std::string, <a class="el" href="structcgv_1_1render_1_1shader__library_1_1shader__info.html">shader_info</a> &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcgv_1_1render_1_1shader__library.html#a6736be3aa341ac9a74fd3ddfbf5ebbd7">shader_lib_map</a></td></tr>
-<tr class="separator:a6736be3aa341ac9a74fd3ddfbf5ebbd7"><td class="memSeparator" colspan="2">&#160;</td></tr>
-</table><table class="memberdecls">
-<tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="pro-methods" name="pro-methods"></a>
-Protected Member Functions</h2></td></tr>
-<tr class="memitem:ace9ba33d3fb85fa44001beee45c7275a" id="r_ace9ba33d3fb85fa44001beee45c7275a"><td class="memItemLeft" align="right" valign="top"><a class="el" href="structcgv_1_1render_1_1shader__library_1_1shader__info.html">shader_info</a> &amp;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcgv_1_1render_1_1shader__library.html#ace9ba33d3fb85fa44001beee45c7275a">get_shader_info</a> (const std::string &amp;name)</td></tr>
-<tr class="separator:ace9ba33d3fb85fa44001beee45c7275a"><td class="memSeparator" colspan="2">&#160;</td></tr>
-</table><table class="memberdecls">
-<tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="pro-attribs" name="pro-attribs"></a>
-Protected Attributes</h2></td></tr>
-<tr class="memitem:abbb136396b7419636920169060fc4612" id="r_abbb136396b7419636920169060fc4612"><td class="memItemLeft" align="right" valign="top">shader_lib_map&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcgv_1_1render_1_1shader__library.html#abbb136396b7419636920169060fc4612">shaders</a></td></tr>
-<tr class="separator:abbb136396b7419636920169060fc4612"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a7c5b81d3d26107471e2a78620748fe9d" id="r_a7c5b81d3d26107471e2a78620748fe9d"><td class="memItemLeft" align="right" valign="top">static bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcgv_1_1render_1_1shader__library.html#a7c5b81d3d26107471e2a78620748fe9d">load</a> (<a class="el" href="classcgv_1_1render_1_1context.html">context</a> &amp;ctx, <a class="el" href="classcgv_1_1render_1_1shader__program.html">shader_program</a> &amp;prog, const std::string &amp;name, const <a class="el" href="structcgv_1_1render_1_1shader__compile__options.html">shader_compile_options</a> &amp;options, const std::string &amp;where=&quot;&quot;)</td></tr>
+<tr class="separator:a7c5b81d3d26107471e2a78620748fe9d"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:aca78c82e890a48ea88b51c07d0c2a60d" id="r_aca78c82e890a48ea88b51c07d0c2a60d"><td class="memItemLeft" align="right" valign="top">static bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcgv_1_1render_1_1shader__library.html#aca78c82e890a48ea88b51c07d0c2a60d">load</a> (<a class="el" href="classcgv_1_1render_1_1context.html">context</a> &amp;ctx, <a class="el" href="classcgv_1_1render_1_1shader__program.html">shader_program</a> &amp;prog, const std::string &amp;name, const std::string &amp;where=&quot;&quot;)</td></tr>
+<tr class="separator:aca78c82e890a48ea88b51c07d0c2a60d"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
 <a name="details" id="details"></a><h2 class="groupheader">Detailed Description</h2>
-<div class="textblock"><p>provides a shader library that handles shader loading </p>
+<div class="textblock"><p>provides a shader library that handles shader loading and stores shaders </p>
 
 <p class="definition">Definition at line <a class="el" href="shader__library_8h_source.html#l00012">12</a> of file <a class="el" href="shader__library_8h_source.html">shader_library.h</a>.</p>
-</div><h2 class="groupheader">Member Typedef Documentation</h2>
-<a id="a6736be3aa341ac9a74fd3ddfbf5ebbd7" name="a6736be3aa341ac9a74fd3ddfbf5ebbd7"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a6736be3aa341ac9a74fd3ddfbf5ebbd7">&#9670;&#160;</a></span>shader_lib_map</h2>
-
-<div class="memitem">
-<div class="memproto">
-<table class="mlabels">
-  <tr>
-  <td class="mlabels-left">
-      <table class="memname">
-        <tr>
-          <td class="memname">typedef std::map&lt;std::string, <a class="el" href="structcgv_1_1render_1_1shader__library_1_1shader__info.html">shader_info</a>&gt; cgv::render::shader_library::shader_lib_map</td>
-        </tr>
-      </table>
-  </td>
-  <td class="mlabels-right">
-<span class="mlabels"><span class="mlabel">protected</span></span>  </td>
-  </tr>
-</table>
-</div><div class="memdoc">
-
-<p class="definition">Definition at line <a class="el" href="shader__library_8h_source.html#l00020">20</a> of file <a class="el" href="shader__library_8h_source.html">shader_library.h</a>.</p>
-
-</div>
-</div>
-<h2 class="groupheader">Constructor &amp; Destructor Documentation</h2>
-<a id="ad8daad1368055976c3305bddaec41cf2" name="ad8daad1368055976c3305bddaec41cf2"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#ad8daad1368055976c3305bddaec41cf2">&#9670;&#160;</a></span>shader_library()</h2>
-
-<div class="memitem">
-<div class="memproto">
-      <table class="memname">
-        <tr>
-          <td class="memname">cgv::render::shader_library::shader_library </td>
-          <td>(</td>
-          <td class="paramname"></td><td>)</td>
-          <td></td>
-        </tr>
-      </table>
-</div><div class="memdoc">
-
-<p class="definition">Definition at line <a class="el" href="shader__library_8cxx_source.html#l00006">6</a> of file <a class="el" href="shader__library_8cxx_source.html">shader_library.cxx</a>.</p>
-
-</div>
-</div>
-<a id="a80c83064cb2bd3fd8e47b058cf1fe551" name="a80c83064cb2bd3fd8e47b058cf1fe551"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a80c83064cb2bd3fd8e47b058cf1fe551">&#9670;&#160;</a></span>~shader_library()</h2>
-
-<div class="memitem">
-<div class="memproto">
-      <table class="memname">
-        <tr>
-          <td class="memname">cgv::render::shader_library::~shader_library </td>
-          <td>(</td>
-          <td class="paramname"></td><td>)</td>
-          <td></td>
-        </tr>
-      </table>
-</div><div class="memdoc">
-
-<p class="definition">Definition at line <a class="el" href="shader__library_8cxx_source.html#l00011">11</a> of file <a class="el" href="shader__library_8cxx_source.html">shader_library.cxx</a>.</p>
-
-</div>
-</div>
-<h2 class="groupheader">Member Function Documentation</h2>
-<a id="a77a936cc9109353fe8efeaad8e4cc3e3" name="a77a936cc9109353fe8efeaad8e4cc3e3"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a77a936cc9109353fe8efeaad8e4cc3e3">&#9670;&#160;</a></span>add()</h2>
+</div><h2 class="groupheader">Member Function Documentation</h2>
+<a id="a8de410f4b7e0e320e27832b15a857514" name="a8de410f4b7e0e320e27832b15a857514"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a8de410f4b7e0e320e27832b15a857514">&#9670;&#160;</a></span>add()</h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -246,8 +159,8 @@ Protected Attributes</h2></td></tr>
         <tr>
           <td class="paramkey"></td>
           <td></td>
-          <td class="paramtype">const <a class="el" href="namespacecgv_1_1render.html#a0e875e06326ba0599a1289f0bacdb116">shader_define_map</a> &amp;&#160;</td>
-          <td class="paramname"><em>defines</em> = <code>{}</code>&#160;</td>
+          <td class="paramtype">const <a class="el" href="structcgv_1_1render_1_1shader__compile__options.html">shader_compile_options</a> &amp;&#160;</td>
+          <td class="paramname"><em>options</em> = <code>{}</code>&#160;</td>
         </tr>
         <tr>
           <td></td>
@@ -257,7 +170,7 @@ Protected Attributes</h2></td></tr>
       </table>
 </div><div class="memdoc">
 
-<p class="definition">Definition at line <a class="el" href="shader__library_8cxx_source.html#l00021">21</a> of file <a class="el" href="shader__library_8cxx_source.html">shader_library.cxx</a>.</p>
+<p class="definition">Definition at line <a class="el" href="shader__library_8cxx_source.html#l00013">13</a> of file <a class="el" href="shader__library_8cxx_source.html">shader_library.cxx</a>.</p>
 
 </div>
 </div>
@@ -284,7 +197,7 @@ Protected Attributes</h2></td></tr>
 </table>
 </div><div class="memdoc">
 
-<p class="definition">Definition at line <a class="el" href="shader__library_8h_source.html#l00056">56</a> of file <a class="el" href="shader__library_8h_source.html">shader_library.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="shader__library_8h_source.html#l00034">34</a> of file <a class="el" href="shader__library_8h_source.html">shader_library.h</a>.</p>
 
 </div>
 </div>
@@ -304,7 +217,7 @@ Protected Attributes</h2></td></tr>
       </table>
 </div><div class="memdoc">
 
-<p class="definition">Definition at line <a class="el" href="shader__library_8cxx_source.html#l00016">16</a> of file <a class="el" href="shader__library_8cxx_source.html">shader_library.cxx</a>.</p>
+<p class="definition">Definition at line <a class="el" href="shader__library_8cxx_source.html#l00006">6</a> of file <a class="el" href="shader__library_8cxx_source.html">shader_library.cxx</a>.</p>
 
 </div>
 </div>
@@ -313,9 +226,6 @@ Protected Attributes</h2></td></tr>
 
 <div class="memitem">
 <div class="memproto">
-<table class="mlabels">
-  <tr>
-  <td class="mlabels-left">
       <table class="memname">
         <tr>
           <td class="memname">bool cgv::render::shader_library::contains </td>
@@ -325,14 +235,9 @@ Protected Attributes</h2></td></tr>
           <td> const</td>
         </tr>
       </table>
-  </td>
-  <td class="mlabels-right">
-<span class="mlabels"><span class="mlabel">inline</span></span>  </td>
-  </tr>
-</table>
 </div><div class="memdoc">
 
-<p class="definition">Definition at line <a class="el" href="shader__library_8h_source.html#l00051">51</a> of file <a class="el" href="shader__library_8h_source.html">shader_library.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="shader__library_8cxx_source.html#l00024">24</a> of file <a class="el" href="shader__library_8cxx_source.html">shader_library.cxx</a>.</p>
 
 </div>
 </div>
@@ -359,7 +264,7 @@ Protected Attributes</h2></td></tr>
 </table>
 </div><div class="memdoc">
 
-<p class="definition">Definition at line <a class="el" href="shader__library_8h_source.html#l00057">57</a> of file <a class="el" href="shader__library_8h_source.html">shader_library.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="shader__library_8h_source.html#l00035">35</a> of file <a class="el" href="shader__library_8h_source.html">shader_library.h</a>.</p>
 
 </div>
 </div>
@@ -368,9 +273,6 @@ Protected Attributes</h2></td></tr>
 
 <div class="memitem">
 <div class="memproto">
-<table class="mlabels">
-  <tr>
-  <td class="mlabels-left">
       <table class="memname">
         <tr>
           <td class="memname"><a class="el" href="classcgv_1_1render_1_1shader__program.html">shader_program</a> &amp; cgv::render::shader_library::get </td>
@@ -380,14 +282,29 @@ Protected Attributes</h2></td></tr>
           <td></td>
         </tr>
       </table>
-  </td>
-  <td class="mlabels-right">
-<span class="mlabels"><span class="mlabel">inline</span></span>  </td>
-  </tr>
-</table>
 </div><div class="memdoc">
 
-<p class="definition">Definition at line <a class="el" href="shader__library_8h_source.html#l00041">41</a> of file <a class="el" href="shader__library_8h_source.html">shader_library.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="shader__library_8cxx_source.html#l00028">28</a> of file <a class="el" href="shader__library_8cxx_source.html">shader_library.cxx</a>.</p>
+
+</div>
+</div>
+<a id="aca932987065cffad9bcb3d20b156d525" name="aca932987065cffad9bcb3d20b156d525"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#aca932987065cffad9bcb3d20b156d525">&#9670;&#160;</a></span>get_compile_options()</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname"><a class="el" href="structcgv_1_1render_1_1shader__compile__options.html">shader_compile_options</a> &amp; cgv::render::shader_library::get_compile_options </td>
+          <td>(</td>
+          <td class="paramtype">const std::string &amp;&#160;</td>
+          <td class="paramname"><em>name</em></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p class="definition">Definition at line <a class="el" href="shader__library_8cxx_source.html#l00036">36</a> of file <a class="el" href="shader__library_8cxx_source.html">shader_library.cxx</a>.</p>
 
 </div>
 </div>
@@ -396,9 +313,6 @@ Protected Attributes</h2></td></tr>
 
 <div class="memitem">
 <div class="memproto">
-<table class="mlabels">
-  <tr>
-  <td class="mlabels-left">
       <table class="memname">
         <tr>
           <td class="memname"><a class="el" href="namespacecgv_1_1render.html#a0e875e06326ba0599a1289f0bacdb116">shader_define_map</a> &amp; cgv::render::shader_library::get_defines </td>
@@ -408,19 +322,14 @@ Protected Attributes</h2></td></tr>
           <td></td>
         </tr>
       </table>
-  </td>
-  <td class="mlabels-right">
-<span class="mlabels"><span class="mlabel">inline</span></span>  </td>
-  </tr>
-</table>
 </div><div class="memdoc">
 
-<p class="definition">Definition at line <a class="el" href="shader__library_8h_source.html#l00046">46</a> of file <a class="el" href="shader__library_8h_source.html">shader_library.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="shader__library_8cxx_source.html#l00032">32</a> of file <a class="el" href="shader__library_8cxx_source.html">shader_library.cxx</a>.</p>
 
 </div>
 </div>
-<a id="ace9ba33d3fb85fa44001beee45c7275a" name="ace9ba33d3fb85fa44001beee45c7275a"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#ace9ba33d3fb85fa44001beee45c7275a">&#9670;&#160;</a></span>get_shader_info()</h2>
+<a id="a7c5b81d3d26107471e2a78620748fe9d" name="a7c5b81d3d26107471e2a78620748fe9d"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a7c5b81d3d26107471e2a78620748fe9d">&#9670;&#160;</a></span>load() <span class="overload">[1/2]</span></h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -429,35 +338,7 @@ Protected Attributes</h2></td></tr>
   <td class="mlabels-left">
       <table class="memname">
         <tr>
-          <td class="memname"><a class="el" href="structcgv_1_1render_1_1shader__library_1_1shader__info.html">shader_info</a> &amp; cgv::render::shader_library::get_shader_info </td>
-          <td>(</td>
-          <td class="paramtype">const std::string &amp;&#160;</td>
-          <td class="paramname"><em>name</em></td><td>)</td>
-          <td></td>
-        </tr>
-      </table>
-  </td>
-  <td class="mlabels-right">
-<span class="mlabels"><span class="mlabel">inline</span><span class="mlabel">protected</span></span>  </td>
-  </tr>
-</table>
-</div><div class="memdoc">
-
-<p class="definition">Definition at line <a class="el" href="shader__library_8h_source.html#l00023">23</a> of file <a class="el" href="shader__library_8h_source.html">shader_library.h</a>.</p>
-
-</div>
-</div>
-<a id="a7ddb1a746ec9f7a416300f5b3ec68bd0" name="a7ddb1a746ec9f7a416300f5b3ec68bd0"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a7ddb1a746ec9f7a416300f5b3ec68bd0">&#9670;&#160;</a></span>load() <span class="overload">[1/2]</span></h2>
-
-<div class="memitem">
-<div class="memproto">
-<table class="mlabels">
-  <tr>
-  <td class="mlabels-left">
-      <table class="memname">
-        <tr>
-          <td class="memname">static bool cgv::render::shader_library::load </td>
+          <td class="memname">bool cgv::render::shader_library::load </td>
           <td>(</td>
           <td class="paramtype"><a class="el" href="classcgv_1_1render_1_1context.html">context</a> &amp;&#160;</td>
           <td class="paramname"><em>ctx</em>, </td>
@@ -477,8 +358,8 @@ Protected Attributes</h2></td></tr>
         <tr>
           <td class="paramkey"></td>
           <td></td>
-          <td class="paramtype">const bool&#160;</td>
-          <td class="paramname"><em>reload</em> = <code>false</code>, </td>
+          <td class="paramtype">const <a class="el" href="structcgv_1_1render_1_1shader__compile__options.html">shader_compile_options</a> &amp;&#160;</td>
+          <td class="paramname"><em>options</em>, </td>
         </tr>
         <tr>
           <td class="paramkey"></td>
@@ -494,17 +375,17 @@ Protected Attributes</h2></td></tr>
       </table>
   </td>
   <td class="mlabels-right">
-<span class="mlabels"><span class="mlabel">inline</span><span class="mlabel">static</span></span>  </td>
+<span class="mlabels"><span class="mlabel">static</span></span>  </td>
   </tr>
 </table>
 </div><div class="memdoc">
 
-<p class="definition">Definition at line <a class="el" href="shader__library_8h_source.html#l00063">63</a> of file <a class="el" href="shader__library_8h_source.html">shader_library.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="shader__library_8cxx_source.html#l00040">40</a> of file <a class="el" href="shader__library_8cxx_source.html">shader_library.cxx</a>.</p>
 
 </div>
 </div>
-<a id="a8f2d8ab36fdc9fcaba3008b7d5769bd3" name="a8f2d8ab36fdc9fcaba3008b7d5769bd3"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a8f2d8ab36fdc9fcaba3008b7d5769bd3">&#9670;&#160;</a></span>load() <span class="overload">[2/2]</span></h2>
+<a id="aca78c82e890a48ea88b51c07d0c2a60d" name="aca78c82e890a48ea88b51c07d0c2a60d"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#aca78c82e890a48ea88b51c07d0c2a60d">&#9670;&#160;</a></span>load() <span class="overload">[2/2]</span></h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -513,7 +394,7 @@ Protected Attributes</h2></td></tr>
   <td class="mlabels-left">
       <table class="memname">
         <tr>
-          <td class="memname">static bool cgv::render::shader_library::load </td>
+          <td class="memname">bool cgv::render::shader_library::load </td>
           <td>(</td>
           <td class="paramtype"><a class="el" href="classcgv_1_1render_1_1context.html">context</a> &amp;&#160;</td>
           <td class="paramname"><em>ctx</em>, </td>
@@ -533,18 +414,6 @@ Protected Attributes</h2></td></tr>
         <tr>
           <td class="paramkey"></td>
           <td></td>
-          <td class="paramtype">const <a class="el" href="namespacecgv_1_1render.html#a0e875e06326ba0599a1289f0bacdb116">shader_define_map</a> &amp;&#160;</td>
-          <td class="paramname"><em>defines</em>, </td>
-        </tr>
-        <tr>
-          <td class="paramkey"></td>
-          <td></td>
-          <td class="paramtype">const bool&#160;</td>
-          <td class="paramname"><em>reload</em> = <code>false</code>, </td>
-        </tr>
-        <tr>
-          <td class="paramkey"></td>
-          <td></td>
           <td class="paramtype">const std::string &amp;&#160;</td>
           <td class="paramname"><em>where</em> = <code>&quot;&quot;</code>&#160;</td>
         </tr>
@@ -556,12 +425,12 @@ Protected Attributes</h2></td></tr>
       </table>
   </td>
   <td class="mlabels-right">
-<span class="mlabels"><span class="mlabel">inline</span><span class="mlabel">static</span></span>  </td>
+<span class="mlabels"><span class="mlabel">static</span></span>  </td>
   </tr>
 </table>
 </div><div class="memdoc">
 
-<p class="definition">Definition at line <a class="el" href="shader__library_8h_source.html#l00068">68</a> of file <a class="el" href="shader__library_8h_source.html">shader_library.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="shader__library_8cxx_source.html#l00064">64</a> of file <a class="el" href="shader__library_8cxx_source.html">shader_library.cxx</a>.</p>
 
 </div>
 </div>
@@ -591,12 +460,12 @@ Protected Attributes</h2></td></tr>
       </table>
 </div><div class="memdoc">
 
-<p class="definition">Definition at line <a class="el" href="shader__library_8cxx_source.html#l00033">33</a> of file <a class="el" href="shader__library_8cxx_source.html">shader_library.cxx</a>.</p>
+<p class="definition">Definition at line <a class="el" href="shader__library_8cxx_source.html#l00068">68</a> of file <a class="el" href="shader__library_8cxx_source.html">shader_library.cxx</a>.</p>
 
 </div>
 </div>
-<a id="aaeec5c20d9915e11c8cdfc98568f8907" name="aaeec5c20d9915e11c8cdfc98568f8907"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#aaeec5c20d9915e11c8cdfc98568f8907">&#9670;&#160;</a></span>reload()</h2>
+<a id="afca4da0d6c8c40b15dff59e23d2b3dc7" name="afca4da0d6c8c40b15dff59e23d2b3dc7"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#afca4da0d6c8c40b15dff59e23d2b3dc7">&#9670;&#160;</a></span>reload()</h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -616,7 +485,7 @@ Protected Attributes</h2></td></tr>
         <tr>
           <td class="paramkey"></td>
           <td></td>
-          <td class="paramtype">const <a class="el" href="namespacecgv_1_1render.html#a0e875e06326ba0599a1289f0bacdb116">shader_define_map</a> &amp;&#160;</td>
+          <td class="paramtype">const <a class="el" href="structcgv_1_1render_1_1shader__compile__options.html">shader_compile_options</a> &amp;&#160;</td>
           <td class="paramname"><em>defines</em> = <code>{}</code>, </td>
         </tr>
         <tr>
@@ -633,62 +502,7 @@ Protected Attributes</h2></td></tr>
       </table>
 </div><div class="memdoc">
 
-<p class="definition">Definition at line <a class="el" href="shader__library_8cxx_source.html#l00044">44</a> of file <a class="el" href="shader__library_8cxx_source.html">shader_library.cxx</a>.</p>
-
-</div>
-</div>
-<a id="a7a0427c0ebcf96d8b30cc44519c2b3cb" name="a7a0427c0ebcf96d8b30cc44519c2b3cb"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a7a0427c0ebcf96d8b30cc44519c2b3cb">&#9670;&#160;</a></span>reload_all()</h2>
-
-<div class="memitem">
-<div class="memproto">
-      <table class="memname">
-        <tr>
-          <td class="memname">bool cgv::render::shader_library::reload_all </td>
-          <td>(</td>
-          <td class="paramtype"><a class="el" href="classcgv_1_1render_1_1context.html">context</a> &amp;&#160;</td>
-          <td class="paramname"><em>ctx</em>, </td>
-        </tr>
-        <tr>
-          <td class="paramkey"></td>
-          <td></td>
-          <td class="paramtype">const std::string &amp;&#160;</td>
-          <td class="paramname"><em>where</em> = <code>&quot;&quot;</code>&#160;</td>
-        </tr>
-        <tr>
-          <td></td>
-          <td>)</td>
-          <td></td><td></td>
-        </tr>
-      </table>
-</div><div class="memdoc">
-
-<p class="definition">Definition at line <a class="el" href="shader__library_8cxx_source.html#l00055">55</a> of file <a class="el" href="shader__library_8cxx_source.html">shader_library.cxx</a>.</p>
-
-</div>
-</div>
-<h2 class="groupheader">Member Data Documentation</h2>
-<a id="abbb136396b7419636920169060fc4612" name="abbb136396b7419636920169060fc4612"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#abbb136396b7419636920169060fc4612">&#9670;&#160;</a></span>shaders</h2>
-
-<div class="memitem">
-<div class="memproto">
-<table class="mlabels">
-  <tr>
-  <td class="mlabels-left">
-      <table class="memname">
-        <tr>
-          <td class="memname">shader_lib_map cgv::render::shader_library::shaders</td>
-        </tr>
-      </table>
-  </td>
-  <td class="mlabels-right">
-<span class="mlabels"><span class="mlabel">protected</span></span>  </td>
-  </tr>
-</table>
-</div><div class="memdoc">
-
-<p class="definition">Definition at line <a class="el" href="shader__library_8h_source.html#l00021">21</a> of file <a class="el" href="shader__library_8h_source.html">shader_library.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="shader__library_8cxx_source.html#l00077">77</a> of file <a class="el" href="shader__library_8cxx_source.html">shader_library.cxx</a>.</p>
 
 </div>
 </div>

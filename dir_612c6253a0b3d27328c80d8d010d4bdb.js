@@ -2,6 +2,7 @@ var dir_612c6253a0b3d27328c80d8d010d4bdb =
 [
     [ "advanced_scan.cxx", "advanced__scan_8cxx_source.html", null ],
     [ "advanced_scan.h", "advanced__scan_8h.html", "advanced__scan_8h" ],
+    [ "algorithm.h", "algorithm_8h_source.html", null ],
     [ "big_binary_file.cxx", "big__binary__file_8cxx_source.html", null ],
     [ "big_binary_file.h", "big__binary__file_8h_source.html", null ],
     [ "bit_operations.cxx", "bit__operations_8cxx_source.html", null ],
@@ -15,6 +16,7 @@ var dir_612c6253a0b3d27328c80d8d010d4bdb =
     [ "date_time.h", "date__time_8h_source.html", null ],
     [ "dir.cxx", "dir_8cxx_source.html", null ],
     [ "dir.h", "dir_8h_source.html", null ],
+    [ "enumerate.h", "enumerate_8h_source.html", null ],
     [ "file.cxx", "file_8cxx_source.html", null ],
     [ "file.h", "file_8h_source.html", null ],
     [ "guid.cxx", "guid_8cxx_source.html", null ],

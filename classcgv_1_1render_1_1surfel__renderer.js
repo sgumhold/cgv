@@ -1,6 +1,6 @@
 var classcgv_1_1render_1_1surfel__renderer =
 [
-    [ "build_shader_program", "classcgv_1_1render_1_1surfel__renderer.html#ac033ec578c7faa2ef42cdc353224213e", null ],
+    [ "build_shader_program", "classcgv_1_1render_1_1surfel__renderer.html#a03df668a86697c7ac5e87779c07f6700", null ],
     [ "create_render_style", "classcgv_1_1render_1_1surfel__renderer.html#a3d8d65b3f09b3ddd3a7e6b295ebe7354", null ],
     [ "disable", "classcgv_1_1render_1_1surfel__renderer.html#a9dd16d62d530208c6c94cfe48e5f6a5e", null ],
     [ "disable_attribute_array_manager", "classcgv_1_1render_1_1surfel__renderer.html#a833ac9b3d6db813a49425067c317402b", null ],

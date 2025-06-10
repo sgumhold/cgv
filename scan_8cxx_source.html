@@ -920,89 +920,86 @@ $(document).ready(function(){initNavTree('scan_8cxx_source.html',''); initResiza
 </div>
 <div class="line"><a id="l00732" name="l00732"></a><span class="lineno">  732</span> </div>
 <div class="foldopen" id="foldopen00733" data-start="{" data-end="}">
-<div class="line"><a id="l00733" name="l00733"></a><span class="lineno"><a class="line" href="namespacecgv_1_1utils.html#a8c7e4e48bd1834e5558fc9d5461457d9">  733</a></span>std::string <a class="code hl_function" href="namespacecgv_1_1utils.html#a8c7e4e48bd1834e5558fc9d5461457d9">join</a>(<span class="keyword">const</span> std::vector&lt;std::string&gt;::const_iterator first, <span class="keyword">const</span> std::vector&lt;std::string&gt;::const_iterator last, <span class="keyword">const</span> std::string&amp; sep, <span class="keywordtype">bool</span> trailing_sep)</div>
+<div class="line"><a id="l00733" name="l00733"></a><span class="lineno"><a class="line" href="namespacecgv_1_1utils.html#a273839f63e9ac0d638c982028577a6b9">  733</a></span>std::string <a class="code hl_function" href="namespacecgv_1_1utils.html#a273839f63e9ac0d638c982028577a6b9">condense_to_line</a>(std::string str)</div>
 <div class="line"><a id="l00734" name="l00734"></a><span class="lineno">  734</span>{</div>
-<div class="line"><a id="l00735" name="l00735"></a><span class="lineno">  735</span>    <span class="keywordflow">if</span>(last &lt; first)</div>
-<div class="line"><a id="l00736" name="l00736"></a><span class="lineno">  736</span>        <span class="keywordflow">return</span> <span class="stringliteral">&quot;&quot;</span>;</div>
-<div class="line"><a id="l00737" name="l00737"></a><span class="lineno">  737</span> </div>
-<div class="line"><a id="l00738" name="l00738"></a><span class="lineno">  738</span>    std::string res = <span class="stringliteral">&quot;&quot;</span>;</div>
-<div class="line"><a id="l00739" name="l00739"></a><span class="lineno">  739</span> </div>
-<div class="line"><a id="l00740" name="l00740"></a><span class="lineno">  740</span>    <span class="keywordflow">for</span>(<span class="keyword">auto</span> curr = first; curr != last; ++curr) {</div>
-<div class="line"><a id="l00741" name="l00741"></a><span class="lineno">  741</span>        res += *curr;</div>
-<div class="line"><a id="l00742" name="l00742"></a><span class="lineno">  742</span>        <span class="keywordflow">if</span>(last - curr &gt; 1 || trailing_sep)</div>
-<div class="line"><a id="l00743" name="l00743"></a><span class="lineno">  743</span>            res += sep;</div>
-<div class="line"><a id="l00744" name="l00744"></a><span class="lineno">  744</span>    }</div>
-<div class="line"><a id="l00745" name="l00745"></a><span class="lineno">  745</span>    <span class="keywordflow">return</span> res;</div>
-<div class="line"><a id="l00746" name="l00746"></a><span class="lineno">  746</span>}</div>
+<div class="line"><a id="l00735" name="l00735"></a><span class="lineno">  735</span>    std::replace_if(str.begin(), str.end(), <a class="code hl_function" href="namespacecgv_1_1utils.html#a81d51336fe7248cc852738af2b6adf85">is_space</a>, <span class="charliteral">&#39; &#39;</span>);</div>
+<div class="line"><a id="l00736" name="l00736"></a><span class="lineno">  736</span>    <a class="code hl_function" href="namespacecgv_1_1utils.html#a3eec00ae2b52df54329967f6ae7526d4">cgv::utils::trim</a>(str);</div>
+<div class="line"><a id="l00737" name="l00737"></a><span class="lineno">  737</span>    <span class="comment">// replace all consecutive spaces with a single space</span></div>
+<div class="line"><a id="l00738" name="l00738"></a><span class="lineno">  738</span>    std::string::iterator new_end = std::unique(str.begin(), str.end(), [](<span class="keywordtype">char</span> lhs, <span class="keywordtype">char</span> rhs) {</div>
+<div class="line"><a id="l00739" name="l00739"></a><span class="lineno">  739</span>        return (lhs == rhs) &amp;&amp; lhs == <span class="stringliteral">&#39; &#39;</span>;</div>
+<div class="line"><a id="l00740" name="l00740"></a><span class="lineno">  740</span>    });</div>
+<div class="line"><a id="l00741" name="l00741"></a><span class="lineno">  741</span>    str.erase(new_end, str.end());</div>
+<div class="line"><a id="l00742" name="l00742"></a><span class="lineno">  742</span>    <span class="keywordflow">return</span> str;</div>
+<div class="line"><a id="l00743" name="l00743"></a><span class="lineno">  743</span>}</div>
 </div>
-<div class="line"><a id="l00747" name="l00747"></a><span class="lineno">  747</span> </div>
-<div class="foldopen" id="foldopen00748" data-start="{" data-end="}">
-<div class="line"><a id="l00748" name="l00748"></a><span class="lineno"><a class="line" href="namespacecgv_1_1utils.html#a07474e4aecaf06a8ecca7aba033d5475">  748</a></span>std::string <a class="code hl_function" href="namespacecgv_1_1utils.html#a8c7e4e48bd1834e5558fc9d5461457d9">join</a>(<span class="keyword">const</span> std::vector&lt;std::string&gt;&amp; strs, <span class="keyword">const</span> std::string&amp; sep, <span class="keywordtype">bool</span> trailing_sep)</div>
-<div class="line"><a id="l00749" name="l00749"></a><span class="lineno">  749</span>{</div>
-<div class="line"><a id="l00750" name="l00750"></a><span class="lineno">  750</span>    <span class="keywordflow">return</span> <a class="code hl_function" href="namespacecgv_1_1utils.html#a8c7e4e48bd1834e5558fc9d5461457d9">join</a>(strs.begin(), strs.end(), sep, trailing_sep);</div>
-<div class="line"><a id="l00751" name="l00751"></a><span class="lineno">  751</span>}</div>
+<div class="line"><a id="l00744" name="l00744"></a><span class="lineno">  744</span> </div>
+<div class="foldopen" id="foldopen00745" data-start="{" data-end="}">
+<div class="line"><a id="l00745" name="l00745"></a><span class="lineno"><a class="line" href="namespacecgv_1_1utils.html#a07474e4aecaf06a8ecca7aba033d5475">  745</a></span>std::string <a class="code hl_function" href="namespacecgv_1_1utils.html#a10d24dbeb7dc677d2ca115f1c104bc62">join</a>(<span class="keyword">const</span> std::vector&lt;std::string&gt;&amp; strs, <span class="keyword">const</span> std::string&amp; sep, <span class="keywordtype">bool</span> trailing_sep)</div>
+<div class="line"><a id="l00746" name="l00746"></a><span class="lineno">  746</span>{</div>
+<div class="line"><a id="l00747" name="l00747"></a><span class="lineno">  747</span>    std::string res = <span class="stringliteral">&quot;&quot;</span>;</div>
+<div class="line"><a id="l00748" name="l00748"></a><span class="lineno">  748</span>    <span class="keywordflow">for</span>(<span class="keywordtype">size_t</span> i = 0; i &lt; strs.size(); ++i) {</div>
+<div class="line"><a id="l00749" name="l00749"></a><span class="lineno">  749</span>        <span class="keyword">const</span> std::string&amp; str = strs[i];</div>
+<div class="line"><a id="l00750" name="l00750"></a><span class="lineno">  750</span>        res += str;</div>
+<div class="line"><a id="l00751" name="l00751"></a><span class="lineno">  751</span>        <span class="keywordflow">if</span>((i + 1) &lt; strs.size() || trailing_sep)</div>
+<div class="line"><a id="l00752" name="l00752"></a><span class="lineno">  752</span>            res += sep;</div>
+<div class="line"><a id="l00753" name="l00753"></a><span class="lineno">  753</span>    }</div>
+<div class="line"><a id="l00754" name="l00754"></a><span class="lineno">  754</span>    <span class="keywordflow">return</span> res;</div>
+<div class="line"><a id="l00755" name="l00755"></a><span class="lineno">  755</span>}</div>
 </div>
-<div class="line"><a id="l00752" name="l00752"></a><span class="lineno">  752</span> </div>
-<div class="foldopen" id="foldopen00753" data-start="{" data-end="}">
-<div class="line"><a id="l00753" name="l00753"></a><span class="lineno"><a class="line" href="namespacecgv_1_1utils.html#ac8138265d1f9a13183438d4fecd57644">  753</a></span>std::string <a class="code hl_function" href="namespacecgv_1_1utils.html#a8c7e4e48bd1834e5558fc9d5461457d9">join</a>(<span class="keyword">const</span> std::vector&lt;cgv::utils::token&gt;::const_iterator first, <span class="keyword">const</span> std::vector&lt;cgv::utils::token&gt;::const_iterator last, <span class="keyword">const</span> std::string&amp; sep, <span class="keywordtype">bool</span> trailing_sep)</div>
-<div class="line"><a id="l00754" name="l00754"></a><span class="lineno">  754</span>{</div>
-<div class="line"><a id="l00755" name="l00755"></a><span class="lineno">  755</span>    std::vector&lt;std::string&gt; strs = <a class="code hl_function" href="namespacecgv_1_1utils.html#a09d7152f028700b529a6c3a27d5bc07b">to_strings</a>(first, last);</div>
-<div class="line"><a id="l00756" name="l00756"></a><span class="lineno">  756</span>    <span class="keywordflow">return</span> <a class="code hl_function" href="namespacecgv_1_1utils.html#a8c7e4e48bd1834e5558fc9d5461457d9">join</a>(strs.begin(), strs.end(), sep, trailing_sep);</div>
-<div class="line"><a id="l00757" name="l00757"></a><span class="lineno">  757</span>}</div>
+<div class="line"><a id="l00756" name="l00756"></a><span class="lineno">  756</span> </div>
+<div class="foldopen" id="foldopen00757" data-start="{" data-end="}">
+<div class="line"><a id="l00757" name="l00757"></a><span class="lineno"><a class="line" href="namespacecgv_1_1utils.html#af5d2ef4e3e59ecb0d7545a7c8bc65364">  757</a></span><span class="keywordtype">unsigned</span> <span class="keywordtype">int</span> <a class="code hl_function" href="namespacecgv_1_1utils.html#af5d2ef4e3e59ecb0d7545a7c8bc65364">levenshtein_distance</a>(<span class="keyword">const</span> std::string&amp; s1, <span class="keyword">const</span> std::string&amp; s2)</div>
+<div class="line"><a id="l00758" name="l00758"></a><span class="lineno">  758</span>{</div>
+<div class="line"><a id="l00759" name="l00759"></a><span class="lineno">  759</span>    <span class="comment">// create two work vectors of integer distances</span></div>
+<div class="line"><a id="l00760" name="l00760"></a><span class="lineno">  760</span>    std::vector&lt;int&gt; v0(s2.length() + 1);</div>
+<div class="line"><a id="l00761" name="l00761"></a><span class="lineno">  761</span>    std::vector&lt;int&gt; v1(s2.length() + 1);</div>
+<div class="line"><a id="l00762" name="l00762"></a><span class="lineno">  762</span> </div>
+<div class="line"><a id="l00763" name="l00763"></a><span class="lineno">  763</span>    <span class="comment">// initialize v0 (the previous row of distances)</span></div>
+<div class="line"><a id="l00764" name="l00764"></a><span class="lineno">  764</span>    <span class="comment">// this row is A[0][i]: edit distance from an empty s to t;</span></div>
+<div class="line"><a id="l00765" name="l00765"></a><span class="lineno">  765</span>    <span class="comment">// that distance is the number of characters to append to  s to make t.</span></div>
+<div class="line"><a id="l00766" name="l00766"></a><span class="lineno">  766</span>    <span class="keywordflow">for</span> (<span class="keywordtype">size_t</span> i = 0; i &lt;= s2.length(); ++i) {</div>
+<div class="line"><a id="l00767" name="l00767"></a><span class="lineno">  767</span>        v0[i] = int(i);</div>
+<div class="line"><a id="l00768" name="l00768"></a><span class="lineno">  768</span>    }</div>
+<div class="line"><a id="l00769" name="l00769"></a><span class="lineno">  769</span> </div>
+<div class="line"><a id="l00770" name="l00770"></a><span class="lineno">  770</span>    <span class="keywordflow">for</span> (<span class="keywordtype">size_t</span> i = 0; i &lt; s1.length(); ++i) {</div>
+<div class="line"><a id="l00771" name="l00771"></a><span class="lineno">  771</span>        <span class="comment">// calculate v1 (current row distances) from the previous row v0</span></div>
+<div class="line"><a id="l00772" name="l00772"></a><span class="lineno">  772</span> </div>
+<div class="line"><a id="l00773" name="l00773"></a><span class="lineno">  773</span>        <span class="comment">// first element of v1 is A[i + 1][0]</span></div>
+<div class="line"><a id="l00774" name="l00774"></a><span class="lineno">  774</span>        <span class="comment">//   edit distance is delete (i + 1) chars from s to match empty t</span></div>
+<div class="line"><a id="l00775" name="l00775"></a><span class="lineno">  775</span>        v1[0] = int(i + 1);</div>
+<div class="line"><a id="l00776" name="l00776"></a><span class="lineno">  776</span> </div>
+<div class="line"><a id="l00777" name="l00777"></a><span class="lineno">  777</span>        <span class="comment">// use formula to fill in the rest of the row</span></div>
+<div class="line"><a id="l00778" name="l00778"></a><span class="lineno">  778</span>        <span class="keywordflow">for</span> (<span class="keywordtype">size_t</span> j = 0; j &lt; s2.length(); ++j) {</div>
+<div class="line"><a id="l00779" name="l00779"></a><span class="lineno">  779</span>            <span class="comment">// calculating costs for A[i + 1][j + 1]</span></div>
+<div class="line"><a id="l00780" name="l00780"></a><span class="lineno">  780</span>            <span class="keywordtype">int</span> deletion_cost = v0[j + 1] + 1;</div>
+<div class="line"><a id="l00781" name="l00781"></a><span class="lineno">  781</span>            <span class="keywordtype">int</span> insertion_cost = v1[j] + 1;</div>
+<div class="line"><a id="l00782" name="l00782"></a><span class="lineno">  782</span>            <span class="keywordtype">int</span> substitution_cost = 0;</div>
+<div class="line"><a id="l00783" name="l00783"></a><span class="lineno">  783</span>            <span class="keywordflow">if</span> (s1[i] == s2[j])</div>
+<div class="line"><a id="l00784" name="l00784"></a><span class="lineno">  784</span>                substitution_cost = v0[j];</div>
+<div class="line"><a id="l00785" name="l00785"></a><span class="lineno">  785</span>            <span class="keywordflow">else</span></div>
+<div class="line"><a id="l00786" name="l00786"></a><span class="lineno">  786</span>                substitution_cost = v0[j] + 1;</div>
+<div class="line"><a id="l00787" name="l00787"></a><span class="lineno">  787</span> </div>
+<div class="line"><a id="l00788" name="l00788"></a><span class="lineno">  788</span>            v1[j + 1] = std::min(std::min(deletion_cost, insertion_cost), substitution_cost);</div>
+<div class="line"><a id="l00789" name="l00789"></a><span class="lineno">  789</span>        }</div>
+<div class="line"><a id="l00790" name="l00790"></a><span class="lineno">  790</span> </div>
+<div class="line"><a id="l00791" name="l00791"></a><span class="lineno">  791</span>        <span class="comment">// copy v1 (current row) to v0 (previous row) for next iteration</span></div>
+<div class="line"><a id="l00792" name="l00792"></a><span class="lineno">  792</span>        <span class="comment">// since data in v1 is always invalidated, a swap without copy could be more efficient</span></div>
+<div class="line"><a id="l00793" name="l00793"></a><span class="lineno">  793</span>        std::swap(v0, v1);</div>
+<div class="line"><a id="l00794" name="l00794"></a><span class="lineno">  794</span>    }</div>
+<div class="line"><a id="l00795" name="l00795"></a><span class="lineno">  795</span>    <span class="comment">// after the last swap, the results of v1 are now in v0</span></div>
+<div class="line"><a id="l00796" name="l00796"></a><span class="lineno">  796</span>    <span class="keywordflow">return</span> v0[s2.length()];</div>
+<div class="line"><a id="l00797" name="l00797"></a><span class="lineno">  797</span>}</div>
 </div>
-<div class="line"><a id="l00758" name="l00758"></a><span class="lineno">  758</span> </div>
-<div class="foldopen" id="foldopen00759" data-start="{" data-end="}">
-<div class="line"><a id="l00759" name="l00759"></a><span class="lineno"><a class="line" href="namespacecgv_1_1utils.html#af5d2ef4e3e59ecb0d7545a7c8bc65364">  759</a></span><span class="keywordtype">unsigned</span> <span class="keywordtype">int</span> <a class="code hl_function" href="namespacecgv_1_1utils.html#af5d2ef4e3e59ecb0d7545a7c8bc65364">levenshtein_distance</a>(<span class="keyword">const</span> std::string&amp; s1, <span class="keyword">const</span> std::string&amp; s2)</div>
-<div class="line"><a id="l00760" name="l00760"></a><span class="lineno">  760</span>{</div>
-<div class="line"><a id="l00761" name="l00761"></a><span class="lineno">  761</span>    <span class="comment">// create two work vectors of integer distances</span></div>
-<div class="line"><a id="l00762" name="l00762"></a><span class="lineno">  762</span>    std::vector&lt;int&gt; v0(s2.length() + 1);</div>
-<div class="line"><a id="l00763" name="l00763"></a><span class="lineno">  763</span>    std::vector&lt;int&gt; v1(s2.length() + 1);</div>
-<div class="line"><a id="l00764" name="l00764"></a><span class="lineno">  764</span> </div>
-<div class="line"><a id="l00765" name="l00765"></a><span class="lineno">  765</span>    <span class="comment">// initialize v0 (the previous row of distances)</span></div>
-<div class="line"><a id="l00766" name="l00766"></a><span class="lineno">  766</span>    <span class="comment">// this row is A[0][i]: edit distance from an empty s to t;</span></div>
-<div class="line"><a id="l00767" name="l00767"></a><span class="lineno">  767</span>    <span class="comment">// that distance is the number of characters to append to  s to make t.</span></div>
-<div class="line"><a id="l00768" name="l00768"></a><span class="lineno">  768</span>    <span class="keywordflow">for</span> (<span class="keywordtype">size_t</span> i = 0; i &lt;= s2.length(); ++i) {</div>
-<div class="line"><a id="l00769" name="l00769"></a><span class="lineno">  769</span>        v0[i] = int(i);</div>
-<div class="line"><a id="l00770" name="l00770"></a><span class="lineno">  770</span>    }</div>
-<div class="line"><a id="l00771" name="l00771"></a><span class="lineno">  771</span> </div>
-<div class="line"><a id="l00772" name="l00772"></a><span class="lineno">  772</span>    <span class="keywordflow">for</span> (<span class="keywordtype">size_t</span> i = 0; i &lt; s1.length(); ++i) {</div>
-<div class="line"><a id="l00773" name="l00773"></a><span class="lineno">  773</span>        <span class="comment">// calculate v1 (current row distances) from the previous row v0</span></div>
-<div class="line"><a id="l00774" name="l00774"></a><span class="lineno">  774</span> </div>
-<div class="line"><a id="l00775" name="l00775"></a><span class="lineno">  775</span>        <span class="comment">// first element of v1 is A[i + 1][0]</span></div>
-<div class="line"><a id="l00776" name="l00776"></a><span class="lineno">  776</span>        <span class="comment">//   edit distance is delete (i + 1) chars from s to match empty t</span></div>
-<div class="line"><a id="l00777" name="l00777"></a><span class="lineno">  777</span>        v1[0] = int(i + 1);</div>
-<div class="line"><a id="l00778" name="l00778"></a><span class="lineno">  778</span> </div>
-<div class="line"><a id="l00779" name="l00779"></a><span class="lineno">  779</span>        <span class="comment">// use formula to fill in the rest of the row</span></div>
-<div class="line"><a id="l00780" name="l00780"></a><span class="lineno">  780</span>        <span class="keywordflow">for</span> (<span class="keywordtype">size_t</span> j = 0; j &lt; s2.length(); ++j) {</div>
-<div class="line"><a id="l00781" name="l00781"></a><span class="lineno">  781</span>            <span class="comment">// calculating costs for A[i + 1][j + 1]</span></div>
-<div class="line"><a id="l00782" name="l00782"></a><span class="lineno">  782</span>            <span class="keywordtype">int</span> deletion_cost = v0[j + 1] + 1;</div>
-<div class="line"><a id="l00783" name="l00783"></a><span class="lineno">  783</span>            <span class="keywordtype">int</span> insertion_cost = v1[j] + 1;</div>
-<div class="line"><a id="l00784" name="l00784"></a><span class="lineno">  784</span>            <span class="keywordtype">int</span> substitution_cost = 0;</div>
-<div class="line"><a id="l00785" name="l00785"></a><span class="lineno">  785</span>            <span class="keywordflow">if</span> (s1[i] == s2[j])</div>
-<div class="line"><a id="l00786" name="l00786"></a><span class="lineno">  786</span>                substitution_cost = v0[j];</div>
-<div class="line"><a id="l00787" name="l00787"></a><span class="lineno">  787</span>            <span class="keywordflow">else</span></div>
-<div class="line"><a id="l00788" name="l00788"></a><span class="lineno">  788</span>                substitution_cost = v0[j] + 1;</div>
-<div class="line"><a id="l00789" name="l00789"></a><span class="lineno">  789</span> </div>
-<div class="line"><a id="l00790" name="l00790"></a><span class="lineno">  790</span>            v1[j + 1] = std::min(std::min(deletion_cost, insertion_cost), substitution_cost);</div>
-<div class="line"><a id="l00791" name="l00791"></a><span class="lineno">  791</span>        }</div>
-<div class="line"><a id="l00792" name="l00792"></a><span class="lineno">  792</span> </div>
-<div class="line"><a id="l00793" name="l00793"></a><span class="lineno">  793</span>        <span class="comment">// copy v1 (current row) to v0 (previous row) for next iteration</span></div>
-<div class="line"><a id="l00794" name="l00794"></a><span class="lineno">  794</span>        <span class="comment">// since data in v1 is always invalidated, a swap without copy could be more efficient</span></div>
-<div class="line"><a id="l00795" name="l00795"></a><span class="lineno">  795</span>        std::swap(v0, v1);</div>
-<div class="line"><a id="l00796" name="l00796"></a><span class="lineno">  796</span>    }</div>
-<div class="line"><a id="l00797" name="l00797"></a><span class="lineno">  797</span>    <span class="comment">// after the last swap, the results of v1 are now in v0</span></div>
-<div class="line"><a id="l00798" name="l00798"></a><span class="lineno">  798</span>    <span class="keywordflow">return</span> v0[s2.length()];</div>
-<div class="line"><a id="l00799" name="l00799"></a><span class="lineno">  799</span>}</div>
-</div>
-<div class="line"><a id="l00800" name="l00800"></a><span class="lineno">  800</span> </div>
-<div class="line"><a id="l00801" name="l00801"></a><span class="lineno">  801</span>    }</div>
-<div class="line"><a id="l00802" name="l00802"></a><span class="lineno">  802</span>}</div>
+<div class="line"><a id="l00798" name="l00798"></a><span class="lineno">  798</span> </div>
+<div class="line"><a id="l00799" name="l00799"></a><span class="lineno">  799</span>    }</div>
+<div class="line"><a id="l00800" name="l00800"></a><span class="lineno">  800</span>}</div>
 <div class="ttc" id="anamespacecgv_1_1utils_html_a04502bf86fbb71464368f9710a2a084c"><div class="ttname"><a href="namespacecgv_1_1utils.html#a04502bf86fbb71464368f9710a2a084c">cgv::utils::is_digit</a></div><div class="ttdeci">bool is_digit(char c)</div><div class="ttdoc">check if char is a digit</div><div class="ttdef"><b>Definition</b> <a href="scan_8cxx_source.html#l00020">scan.cxx:20</a></div></div>
-<div class="ttc" id="anamespacecgv_1_1utils_html_a09d7152f028700b529a6c3a27d5bc07b"><div class="ttname"><a href="namespacecgv_1_1utils.html#a09d7152f028700b529a6c3a27d5bc07b">cgv::utils::to_strings</a></div><div class="ttdeci">std::vector&lt; std::string &gt; to_strings(const std::vector&lt; token &gt;::const_iterator first, const std::vector&lt; token &gt;::const_iterator last)</div><div class="ttdoc">convert to strings</div><div class="ttdef"><b>Definition</b> <a href="token_8h_source.html#l00062">token.h:62</a></div></div>
+<div class="ttc" id="anamespacecgv_1_1utils_html_a10d24dbeb7dc677d2ca115f1c104bc62"><div class="ttname"><a href="namespacecgv_1_1utils.html#a10d24dbeb7dc677d2ca115f1c104bc62">cgv::utils::join</a></div><div class="ttdeci">std::string join(const InputIt first, const InputIt last, const std::string &amp;separator, bool trailing_separator=false)</div><div class="ttdoc">Concatenate elements in the range [first, last) to a std::string.</div><div class="ttdef"><b>Definition</b> <a href="algorithm_8h_source.html#l00148">algorithm.h:148</a></div></div>
 <div class="ttc" id="anamespacecgv_1_1utils_html_a145360669d325a1f530539c8aff35990"><div class="ttname"><a href="namespacecgv_1_1utils.html#a145360669d325a1f530539c8aff35990">cgv::utils::replace</a></div><div class="ttdeci">unsigned int replace(std::string &amp;s, char c1, char c2)</div><div class="ttdoc">replace char c1 with c2 in the given string _s and return number of replacements</div><div class="ttdef"><b>Definition</b> <a href="scan_8cxx_source.html#l00159">scan.cxx:159</a></div></div>
 <div class="ttc" id="anamespacecgv_1_1utils_html_a155b5e0a440b5d442d41187cc8d41695"><div class="ttname"><a href="namespacecgv_1_1utils.html#a155b5e0a440b5d442d41187cc8d41695">cgv::utils::to_hex</a></div><div class="ttdeci">std::string to_hex(uint8_t v, bool use_upper_case)</div><div class="ttdoc">convert to hex</div><div class="ttdef"><b>Definition</b> <a href="scan_8cxx_source.html#l00052">scan.cxx:52</a></div></div>
 <div class="ttc" id="anamespacecgv_1_1utils_html_a18e2419852e04a69d36223b9da5af74f"><div class="ttname"><a href="namespacecgv_1_1utils.html#a18e2419852e04a69d36223b9da5af74f">cgv::utils::get_element</a></div><div class="ttdeci">std::string get_element(const std::string &amp;s, int element_index, char sep)</div><div class="ttdoc">interpret s as a list separated by sep and return the element with the given element index.</div><div class="ttdef"><b>Definition</b> <a href="scan_8cxx_source.html#l00301">scan.cxx:301</a></div></div>
 <div class="ttc" id="anamespacecgv_1_1utils_html_a1e73543d632d26465fb41b3901f2a338"><div class="ttname"><a href="namespacecgv_1_1utils.html#a1e73543d632d26465fb41b3901f2a338">cgv::utils::is_url</a></div><div class="ttdeci">bool is_url(const std::string &amp;s, const char **end)</div><div class="ttdoc">check and extract end of valid url from string s</div><div class="ttdef"><b>Definition</b> <a href="scan_8cxx_source.html#l00653">scan.cxx:653</a></div></div>
+<div class="ttc" id="anamespacecgv_1_1utils_html_a273839f63e9ac0d638c982028577a6b9"><div class="ttname"><a href="namespacecgv_1_1utils.html#a273839f63e9ac0d638c982028577a6b9">cgv::utils::condense_to_line</a></div><div class="ttdeci">std::string condense_to_line(std::string str)</div><div class="ttdoc">replace all newlines and white spaces with single spaces</div><div class="ttdef"><b>Definition</b> <a href="scan_8cxx_source.html#l00733">scan.cxx:733</a></div></div>
 <div class="ttc" id="anamespacecgv_1_1utils_html_a275e5d68df06a511c2f9b41c1f9f4c28"><div class="ttname"><a href="namespacecgv_1_1utils.html#a275e5d68df06a511c2f9b41c1f9f4c28">cgv::utils::rtrim</a></div><div class="ttdeci">std::string &amp; rtrim(std::string &amp;str, const std::string &amp;chars)</div><div class="ttdoc">trim white space or other characters from end of string</div><div class="ttdef"><b>Definition</b> <a href="scan_8cxx_source.html#l00703">scan.cxx:703</a></div></div>
 <div class="ttc" id="anamespacecgv_1_1utils_html_a2c4c8257827554cb1b6e31932661493f"><div class="ttname"><a href="namespacecgv_1_1utils.html#a2c4c8257827554cb1b6e31932661493f">cgv::utils::interpret_special</a></div><div class="ttdeci">std::string interpret_special(const std::string &amp;s)</div><div class="ttdoc">interprets the C++ special characters \a, \b, \f, \n, \r, \t, \v, \\', \&quot;, \\, \?,...</div><div class="ttdef"><b>Definition</b> <a href="scan_8cxx_source.html#l00227">scan.cxx:227</a></div></div>
 <div class="ttc" id="anamespacecgv_1_1utils_html_a2f21c3f652cfb7b2358bb19c515daa19"><div class="ttname"><a href="namespacecgv_1_1utils.html#a2f21c3f652cfb7b2358bb19c515daa19">cgv::utils::is_integer</a></div><div class="ttdeci">bool is_integer(const char *begin, const char *end, int &amp;value)</div><div class="ttdoc">check if the text range (begin,end( defines an integer value. If yes, store the value in the passed r...</div><div class="ttdef"><b>Definition</b> <a href="scan_8cxx_source.html#l00367">scan.cxx:367</a></div></div>
@@ -1018,7 +1015,6 @@ $(document).ready(function(){initNavTree('scan_8cxx_source.html',''); initResiza
 <div class="ttc" id="anamespacecgv_1_1utils_html_a812fedad9007ec86f4e2e4003d88ab1e"><div class="ttname"><a href="namespacecgv_1_1utils.html#a812fedad9007ec86f4e2e4003d88ab1e">cgv::utils::remove_copy</a></div><div class="ttdeci">std::string remove_copy(const std::string &amp;s, char c)</div><div class="ttdoc">return a copy of the given string s with all occurences of char removed</div><div class="ttdef"><b>Definition</b> <a href="scan_8cxx_source.html#l00134">scan.cxx:134</a></div></div>
 <div class="ttc" id="anamespacecgv_1_1utils_html_a81d51336fe7248cc852738af2b6adf85"><div class="ttname"><a href="namespacecgv_1_1utils.html#a81d51336fe7248cc852738af2b6adf85">cgv::utils::is_space</a></div><div class="ttdeci">bool is_space(char c)</div><div class="ttdoc">check if char is a whitespace</div><div class="ttdef"><b>Definition</b> <a href="scan_8cxx_source.html#l00012">scan.cxx:12</a></div></div>
 <div class="ttc" id="anamespacecgv_1_1utils_html_a8a31d2792f8f93b046c38aa6f387fd5f"><div class="ttname"><a href="namespacecgv_1_1utils.html#a8a31d2792f8f93b046c38aa6f387fd5f">cgv::utils::find_name</a></div><div class="ttdeci">bool find_name(const std::string &amp;s, const char *names[], int &amp;idx)</div><div class="ttdoc">check if string s is contained in the given array of names and in case of success store name index in...</div><div class="ttdef"><b>Definition</b> <a href="scan_8cxx_source.html#l00507">scan.cxx:507</a></div></div>
-<div class="ttc" id="anamespacecgv_1_1utils_html_a8c7e4e48bd1834e5558fc9d5461457d9"><div class="ttname"><a href="namespacecgv_1_1utils.html#a8c7e4e48bd1834e5558fc9d5461457d9">cgv::utils::join</a></div><div class="ttdeci">std::string join(const std::vector&lt; std::string &gt;::const_iterator first, const std::vector&lt; std::string &gt;::const_iterator last, const std::string &amp;sep, bool trailing_sep)</div><div class="ttdoc">joins a given range of strings, separating them by the given separator; if trailing_sep is true,...</div><div class="ttdef"><b>Definition</b> <a href="scan_8cxx_source.html#l00733">scan.cxx:733</a></div></div>
 <div class="ttc" id="anamespacecgv_1_1utils_html_a97032f8b8a5544a118c84ff2346b5bfe"><div class="ttname"><a href="namespacecgv_1_1utils.html#a97032f8b8a5544a118c84ff2346b5bfe">cgv::utils::replace_special</a></div><div class="ttdeci">std::string replace_special(const std::string &amp;_s)</div><div class="ttdoc">replaces the german special characters ä,ö,ü,ß,Ä,Ö,Ü</div><div class="ttdef"><b>Definition</b> <a href="scan_8cxx_source.html#l00141">scan.cxx:141</a></div></div>
 <div class="ttc" id="anamespacecgv_1_1utils_html_aaa01fd4bc8e1420979b731f995b679cb"><div class="ttname"><a href="namespacecgv_1_1utils.html#aaa01fd4bc8e1420979b731f995b679cb">cgv::utils::is_letter</a></div><div class="ttdeci">bool is_letter(char c)</div><div class="ttdoc">check if char is a letter</div><div class="ttdef"><b>Definition</b> <a href="scan_8cxx_source.html#l00024">scan.cxx:24</a></div></div>
 <div class="ttc" id="anamespacecgv_1_1utils_html_ab946aefefb94207956db27970b35227d"><div class="ttname"><a href="namespacecgv_1_1utils.html#ab946aefefb94207956db27970b35227d">cgv::utils::is_double</a></div><div class="ttdeci">bool is_double(const char *begin, const char *end, double &amp;value)</div><div class="ttdoc">check if the text range (begin,end( defines a double value. If yes, store the value in the passed ref...</div><div class="ttdef"><b>Definition</b> <a href="scan_8cxx_source.html#l00426">scan.cxx:426</a></div></div>
@@ -1030,7 +1026,7 @@ $(document).ready(function(){initNavTree('scan_8cxx_source.html',''); initResiza
 <div class="ttc" id="anamespacecgv_1_1utils_html_aeef200941450ccc1c5fb7be3334ead16"><div class="ttname"><a href="namespacecgv_1_1utils.html#aeef200941450ccc1c5fb7be3334ead16">cgv::utils::get_element_index</a></div><div class="ttdeci">int get_element_index(const std::string &amp;e, const std::string &amp;s, char sep)</div><div class="ttdoc">check if the string e is contained as element in the string s, which is a list separated by sep and r...</div><div class="ttdef"><b>Definition</b> <a href="scan_8cxx_source.html#l00323">scan.cxx:323</a></div></div>
 <div class="ttc" id="anamespacecgv_1_1utils_html_aef60ecad72389715873e5b998f037aa8"><div class="ttname"><a href="namespacecgv_1_1utils.html#aef60ecad72389715873e5b998f037aa8">cgv::utils::skip_spaces</a></div><div class="ttdeci">const char * skip_spaces(const char *begin, const char *end)</div><div class="ttdoc">return new start pointer by skipping spaces at begin</div><div class="ttdef"><b>Definition</b> <a href="scan_8cxx_source.html#l00683">scan.cxx:683</a></div></div>
 <div class="ttc" id="anamespacecgv_1_1utils_html_af218cd40bc285058a5168f28bfaf277a"><div class="ttname"><a href="namespacecgv_1_1utils.html#af218cd40bc285058a5168f28bfaf277a">cgv::utils::parse_hex_bytes</a></div><div class="ttdeci">std::vector&lt; uint8_t &gt; parse_hex_bytes(const std::string &amp;byte_str)</div><div class="ttdoc">parse bytes hex coded bytes</div><div class="ttdef"><b>Definition</b> <a href="scan_8cxx_source.html#l00091">scan.cxx:91</a></div></div>
-<div class="ttc" id="anamespacecgv_1_1utils_html_af5d2ef4e3e59ecb0d7545a7c8bc65364"><div class="ttname"><a href="namespacecgv_1_1utils.html#af5d2ef4e3e59ecb0d7545a7c8bc65364">cgv::utils::levenshtein_distance</a></div><div class="ttdeci">unsigned int levenshtein_distance(const std::string &amp;s1, const std::string &amp;s2)</div><div class="ttdoc">compute the levenshtein distance between two strings s1 and s2</div><div class="ttdef"><b>Definition</b> <a href="scan_8cxx_source.html#l00759">scan.cxx:759</a></div></div>
+<div class="ttc" id="anamespacecgv_1_1utils_html_af5d2ef4e3e59ecb0d7545a7c8bc65364"><div class="ttname"><a href="namespacecgv_1_1utils.html#af5d2ef4e3e59ecb0d7545a7c8bc65364">cgv::utils::levenshtein_distance</a></div><div class="ttdeci">unsigned int levenshtein_distance(const std::string &amp;s1, const std::string &amp;s2)</div><div class="ttdoc">compute the levenshtein distance between two strings s1 and s2</div><div class="ttdef"><b>Definition</b> <a href="scan_8cxx_source.html#l00757">scan.cxx:757</a></div></div>
 <div class="ttc" id="anamespacecgv_html"><div class="ttname"><a href="namespacecgv.html">cgv</a></div><div class="ttdoc">the cgv namespace</div><div class="ttdef"><b>Definition</b> <a href="print_8h_source.html#l00011">print.h:11</a></div></div>
 <div class="ttc" id="ascan_8h_html"><div class="ttname"><a href="scan_8h.html">scan.h</a></div><div class="ttdoc">Helper functions to process strings.</div></div>
 <div class="ttc" id="astructcgv_1_1utils_1_1date_html"><div class="ttname"><a href="structcgv_1_1utils_1_1date.html">cgv::utils::date</a></div><div class="ttdef"><b>Definition</b> <a href="date__time_8h_source.html#l00018">date_time.h:19</a></div></div>

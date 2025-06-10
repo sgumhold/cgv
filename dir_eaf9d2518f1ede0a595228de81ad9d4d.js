@@ -24,6 +24,7 @@ var dir_eaf9d2518f1ede0a595228de81ad9d4d =
     [ "geo_transform.cxx", "geo__transform_8cxx_source.html", null ],
     [ "geo_transform.h", "geo__transform_8h_source.html", null ],
     [ "geom.h", "geom_8h_source.html", null ],
+    [ "integer.h", "integer_8h_source.html", null ],
     [ "interpolator.h", "interpolator_8h_source.html", null ],
     [ "intersection.h", "cgv_2math_2intersection_8h_source.html", null ],
     [ "intersections.h", "intersections_8h_source.html", null ],

@@ -373,9 +373,9 @@ Protected Member Functions</h2></td></tr>
 <tr class="memitem:af7fe6b4564cb6119f7fcaa6423ec65a0" id="r_af7fe6b4564cb6119f7fcaa6423ec65a0"><td class="memItemLeft" align="right" valign="top"><a class="el" href="structcgv_1_1render_1_1render__style.html">render_style</a> *&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcgv_1_1render_1_1spline__tube__renderer.html#af7fe6b4564cb6119f7fcaa6423ec65a0">create_render_style</a> () const</td></tr>
 <tr class="memdesc:af7fe6b4564cb6119f7fcaa6423ec65a0"><td class="mdescLeft">&#160;</td><td class="mdescRight">overload to allow instantiation of <a class="el" href="classcgv_1_1render_1_1spline__tube__renderer.html" title="renderer that supports point splatting">spline_tube_renderer</a>  <br /></td></tr>
 <tr class="separator:af7fe6b4564cb6119f7fcaa6423ec65a0"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a23e66cdbd6a89e2aac1288f8af840c61" id="r_a23e66cdbd6a89e2aac1288f8af840c61"><td class="memItemLeft" align="right" valign="top">bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcgv_1_1render_1_1spline__tube__renderer.html#a23e66cdbd6a89e2aac1288f8af840c61">build_shader_program</a> (<a class="el" href="classcgv_1_1render_1_1context.html">context</a> &amp;ctx, <a class="el" href="classcgv_1_1render_1_1shader__program.html">shader_program</a> &amp;prog, const <a class="el" href="namespacecgv_1_1render.html#a0e875e06326ba0599a1289f0bacdb116">shader_define_map</a> &amp;defines)</td></tr>
-<tr class="memdesc:a23e66cdbd6a89e2aac1288f8af840c61"><td class="mdescLeft">&#160;</td><td class="mdescRight">build spline tube program  <br /></td></tr>
-<tr class="separator:a23e66cdbd6a89e2aac1288f8af840c61"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:aa6fc72b9b6fed849a94f688eb695a826" id="r_aa6fc72b9b6fed849a94f688eb695a826"><td class="memItemLeft" align="right" valign="top">bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcgv_1_1render_1_1spline__tube__renderer.html#aa6fc72b9b6fed849a94f688eb695a826">build_shader_program</a> (<a class="el" href="classcgv_1_1render_1_1context.html">context</a> &amp;ctx, <a class="el" href="classcgv_1_1render_1_1shader__program.html">shader_program</a> &amp;prog, const <a class="el" href="structcgv_1_1render_1_1shader__compile__options.html">shader_compile_options</a> &amp;options)</td></tr>
+<tr class="memdesc:aa6fc72b9b6fed849a94f688eb695a826"><td class="mdescLeft">&#160;</td><td class="mdescRight">build spline tube program  <br /></td></tr>
+<tr class="separator:aa6fc72b9b6fed849a94f688eb695a826"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="inherit_header pro_methods_classcgv_1_1render_1_1renderer"><td colspan="2" onclick="javascript:toggleInherit('pro_methods_classcgv_1_1render_1_1renderer')"><img src="closed.png" alt="-"/>&#160;Protected Member Functions inherited from <a class="el" href="classcgv_1_1render_1_1renderer.html">cgv::render::renderer</a></td></tr>
 <tr class="memitem:a7264fd5effbc1beb4cc03be79c501b3c inherit pro_methods_classcgv_1_1render_1_1renderer" id="r_a7264fd5effbc1beb4cc03be79c501b3c"><td class="memItemLeft" align="right" valign="top">bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcgv_1_1render_1_1renderer.html#a7264fd5effbc1beb4cc03be79c501b3c">has_aam</a> () const</td></tr>
 <tr class="memdesc:a7264fd5effbc1beb4cc03be79c501b3c inherit pro_methods_classcgv_1_1render_1_1renderer"><td class="mdescLeft">&#160;</td><td class="mdescRight">check for attribute array manager  <br /></td></tr>
@@ -480,8 +480,8 @@ Protected Attributes</h2></td></tr>
 </div>
 </div>
 <h2 class="groupheader">Member Function Documentation</h2>
-<a id="a23e66cdbd6a89e2aac1288f8af840c61" name="a23e66cdbd6a89e2aac1288f8af840c61"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a23e66cdbd6a89e2aac1288f8af840c61">&#9670;&#160;</a></span>build_shader_program()</h2>
+<a id="aa6fc72b9b6fed849a94f688eb695a826" name="aa6fc72b9b6fed849a94f688eb695a826"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#aa6fc72b9b6fed849a94f688eb695a826">&#9670;&#160;</a></span>build_shader_program()</h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -504,8 +504,8 @@ Protected Attributes</h2></td></tr>
         <tr>
           <td class="paramkey"></td>
           <td></td>
-          <td class="paramtype">const <a class="el" href="namespacecgv_1_1render.html#a0e875e06326ba0599a1289f0bacdb116">shader_define_map</a> &amp;&#160;</td>
-          <td class="paramname"><em>defines</em>&#160;</td>
+          <td class="paramtype">const <a class="el" href="structcgv_1_1render_1_1shader__compile__options.html">shader_compile_options</a> &amp;&#160;</td>
+          <td class="paramname"><em>options</em>&#160;</td>
         </tr>
         <tr>
           <td></td>
@@ -522,11 +522,11 @@ Protected Attributes</h2></td></tr>
 
 <p>build spline tube program </p>
 
-<p>Reimplemented from <a class="el" href="classcgv_1_1render_1_1renderer.html#af013e9b4c5e3731618d1f23df15a1fce">cgv::render::renderer</a>.</p>
+<p>Reimplemented from <a class="el" href="classcgv_1_1render_1_1renderer.html#ab0e309c78ca1a9eab1f952800c000d27">cgv::render::renderer</a>.</p>
 
 <p class="definition">Definition at line <a class="el" href="spline__tube__renderer_8cxx_source.html#l00061">61</a> of file <a class="el" href="spline__tube__renderer_8cxx_source.html">spline_tube_renderer.cxx</a>.</p>
 
-<p class="reference">References <a class="el" href="shader__program_8cxx_source.html#l00484">cgv::render::shader_program::build_program()</a>.</p>
+<p class="reference">References <a class="el" href="shader__program_8cxx_source.html#l00481">cgv::render::shader_program::build_program()</a>.</p>
 
 </div>
 </div>
@@ -703,7 +703,7 @@ Protected Attributes</h2></td></tr>
 
 <p class="definition">Definition at line <a class="el" href="spline__tube__renderer_8cxx_source.html#l00104">104</a> of file <a class="el" href="spline__tube__renderer_8cxx_source.html">spline_tube_renderer.cxx</a>.</p>
 
-<p class="reference">References <a class="el" href="renderer_8cxx_source.html#l00253">cgv::render::renderer::draw_impl()</a>.</p>
+<p class="reference">References <a class="el" href="renderer_8cxx_source.html#l00257">cgv::render::renderer::draw_impl()</a>.</p>
 
 </div>
 </div>
@@ -737,7 +737,7 @@ Protected Attributes</h2></td></tr>
 
 <p class="definition">Definition at line <a class="el" href="spline__tube__renderer_8cxx_source.html#l00065">65</a> of file <a class="el" href="spline__tube__renderer_8cxx_source.html">spline_tube_renderer.cxx</a>.</p>
 
-<p class="reference">References <a class="el" href="surface__renderer_8cxx_source.html#l00097">cgv::render::surface_renderer::enable()</a>, <a class="el" href="spline__tube__renderer_8h_source.html#l00032">has_radii</a>, <a class="el" href="spline__tube__renderer_8h_source.html#l00034">has_tangents</a>, <a class="el" href="spline__tube__renderer_8h_source.html#l00022">cgv::render::spline_tube_render_style::radius</a>, <a class="el" href="spline__tube__renderer_8h_source.html#l00020">cgv::render::spline_tube_render_style::radius_scale</a>, <a class="el" href="renderer_8h_source.html#l00075">cgv::render::renderer::ref_prog()</a>, <a class="el" href="shader__program_8h_source.html#l00188">cgv::render::shader_program::set_attribute()</a>, and <a class="el" href="shader__program_8h_source.html#l00139">cgv::render::shader_program::set_uniform()</a>.</p>
+<p class="reference">References <a class="el" href="surface__renderer_8cxx_source.html#l00097">cgv::render::surface_renderer::enable()</a>, <a class="el" href="spline__tube__renderer_8h_source.html#l00032">has_radii</a>, <a class="el" href="spline__tube__renderer_8h_source.html#l00034">has_tangents</a>, <a class="el" href="spline__tube__renderer_8h_source.html#l00022">cgv::render::spline_tube_render_style::radius</a>, <a class="el" href="spline__tube__renderer_8h_source.html#l00020">cgv::render::spline_tube_render_style::radius_scale</a>, <a class="el" href="renderer_8h_source.html#l00075">cgv::render::renderer::ref_prog()</a>, <a class="el" href="shader__program_8h_source.html#l00201">cgv::render::shader_program::set_attribute()</a>, and <a class="el" href="shader__program_8h_source.html#l00146">cgv::render::shader_program::set_uniform()</a>.</p>
 
 </div>
 </div>

@@ -60,7 +60,7 @@ var searchData=
   ['color_5fstorage_5ftraits_3c_20color_3c_20unsigned_20char_2c_20rgb_20_3e_20_3e_57',['color_storage_traits&lt; color&lt; unsigned char, RGB &gt; &gt;',['../structcgv_1_1media_1_1color__storage__traits_3_01color_3_01unsigned_01char_00_01RGB_01_4_01_4.html',1,'cgv::media']]],
   ['color_5fstorage_5ftraits_3c_20color_3c_20unsigned_20char_2c_20rgb_2c_20opacity_20_3e_20_3e_58',['color_storage_traits&lt; color&lt; unsigned char, RGB, OPACITY &gt; &gt;',['../structcgv_1_1media_1_1color__storage__traits_3_01color_3_01unsigned_01char_00_01RGB_00_01OPACITY_01_4_01_4.html',1,'cgv::media']]],
   ['colored_5fmodel_59',['colored_model',['../classcgv_1_1media_1_1colored__model.html',1,'cgv::media']]],
-  ['command_5finfo_60',['command_info',['../structcgv_1_1base_1_1command__info.html',1,'cgv::base::command_info'],['../structcgv_1_1ppp_1_1command__info.html',1,'cgv::ppp::command_info'],['../structcgv_1_1gui_1_1command__info.html',1,'cgv::gui::command_info']]],
+  ['command_5finfo_60',['command_info',['../structcgv_1_1ppp_1_1command__info.html',1,'cgv::ppp::command_info'],['../structcgv_1_1gui_1_1command__info.html',1,'cgv::gui::command_info'],['../structcgv_1_1base_1_1command__info.html',1,'cgv::base::command_info']]],
   ['command_5ftoken_61',['command_token',['../structcgv_1_1ppp_1_1command__token.html',1,'cgv::ppp']]],
   ['component_5fformat_62',['component_format',['../classcgv_1_1data_1_1component__format.html',1,'cgv::data']]],
   ['condition_63',['Condition',['../structCondition.html',1,'']]],
@@ -94,6 +94,8 @@ var searchData=
   ['controller_5finput_5fconfig_91',['controller_input_config',['../structvr_1_1controller__input__config.html',1,'vr']]],
   ['convex_5fpolyhedron_92',['convex_polyhedron',['../classcgv_1_1media_1_1mesh_1_1convex__polyhedron.html',1,'cgv::media::mesh']]],
   ['convex_5fpolyhedron_5fbase_93',['convex_polyhedron_base',['../classcgv_1_1media_1_1mesh_1_1convex__polyhedron__base.html',1,'cgv::media::mesh']]],
-  ['counter_5ftype_94',['counter_type',['../structcgv_1_1data_1_1ref__ptr__impl_1_1counter__type.html',1,'cgv::data::ref_ptr_impl']]],
-  ['cuberille_95',['cuberille',['../classcgv_1_1media_1_1mesh_1_1cuberille.html',1,'cgv::media::mesh']]]
+  ['count_5fiterator_94',['count_iterator',['../classcgv_1_1utils_1_1count__iterator.html',1,'cgv::utils']]],
+  ['count_5frange_95',['count_range',['../classcgv_1_1utils_1_1count__range.html',1,'cgv::utils']]],
+  ['counter_5ftype_96',['counter_type',['../structcgv_1_1data_1_1ref__ptr__impl_1_1counter__type.html',1,'cgv::data::ref_ptr_impl']]],
+  ['cuberille_97',['cuberille',['../classcgv_1_1media_1_1mesh_1_1cuberille.html',1,'cgv::media::mesh']]]
 ];
