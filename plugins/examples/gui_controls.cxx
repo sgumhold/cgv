@@ -14,6 +14,7 @@ protected:
 	
 	float dial_value = 0.0f;
 	float wheel_value = 0.0f;
+	float last_wheel_value = 0.0f;
 
 	enum DemoEnum {
 		DE_A,
@@ -50,7 +51,14 @@ public:
 	void on_set(void* member_ptr) {
 		if(member_ptr == &inactive || member_ptr == &colored)
 			post_recreate_gui();
-
+		if (member_ptr == &wheel_value) {
+			if (cgv::gui::abst_control::on_release(&wheel_value)) {
+				std::cout << "on release wheel value change from " 
+					<< last_wheel_value  << " to " 
+					<< wheel_value << std::endl;
+				last_wheel_value = wheel_value;
+			}
+		}
 		//post_redraw();
 		update_member(member_ptr);
 	}

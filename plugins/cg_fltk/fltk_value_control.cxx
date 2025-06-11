@@ -176,6 +176,7 @@ fltk_value_control<T,FC>::fltk_value_control(const std::string& _label, T& value
 	fC->flags((fC->flags()&~fltk::ALIGN_MASK)|fltk::ALIGN_LEFT);
 	configure(value, fC);
 	fC->callback(valuator_cb,static_cast<cgv::base::base*>(this));
+	fC->when(fC->when() | fltk::WHEN_RELEASE_ALWAYS);
 	update();
 }
 
@@ -242,9 +243,16 @@ void* fltk_value_control<T,FC>::get_user_data() const
 template <typename T, typename FC>
 void fltk_value_control<T,FC>::update_value_if_valid(double v)
 {
+	bool on_release = fC->damage() == 0xff;
+	if (on_release) {
+		this->access_on_release(this->get_value_ptr(), 's');
+	}
 	if (this->check_and_set_value((T)v) && fC->value() != this->get_value())
 		update();
+	if (on_release)
+		this->access_on_release(this->get_value_ptr(), 'u');
 }
+
 
 
 template <class B>
