@@ -89,7 +89,7 @@ public:
 		add_member_control(this, "Value", value, "value", "min=-10;max=10;step=1" + opt);
 		add_member_control(this, "Dial", dial_value, "dial", "min=-1.0;max=1.0;step=0.01;w=40;h=40" + opt);
 		add_view("Value View", wheel_value, "", opt);
-		add_member_control(this, "Wheel", wheel_value, "wheel", "min=-1.0;max=1.0;step=0.01" + opt);
+		add_member_control(this, "Wheel", wheel_value, "wheel", "on_release_callback=true;min=-1.0;max=1.0;step=0.01" + opt);
 		add_member_control(this, "Dropdown", demo_enum, "dropdown", "enums='Option 1,Option 2, Option 3'" + opt);
 		add_member_control(this, "RGB Color", rgb_color, "", opt);
 		add_member_control(this, "RGBA Color", rgba_color, "", opt);

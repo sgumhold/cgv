@@ -30,7 +30,7 @@ struct valuator_property_interface_base
 	/// returns declarations for the reflected properties of a fltk Valuator
 	static std::string get_property_declarations(fltk_base& fb)
 	{
-		return fb.get_property_declarations()+";min:flt64;max:flt64;step:flt64";
+		return fb.get_property_declarations()+";min:flt64;max:flt64;step:flt64;on_release_callback:bool";
 	}
 	/// set a property of a fltk Valuator
 	static bool set_void(fltk_base& fb, cgv::base::named* nam, fltk::Valuator* fv, 
@@ -45,6 +45,8 @@ struct valuator_property_interface_base
 			fv->maximum(variant<double>::get(value_type,value_ptr));
 		else if (property == "step")
 			fv->step(variant<double>::get(value_type,value_ptr));
+		else if (property == "on_release_callback")
+			fv->when(fv->when() | fltk::WHEN_RELEASE_ALWAYS);
 		else 
 			return false;
 		fv->redraw();
@@ -65,6 +67,8 @@ struct valuator_property_interface_base
 			set_variant(fv->maximum(), value_type,value_ptr);
 		else if (property == "step")
 			set_variant(fv->step(), value_type,value_ptr);
+		else if (property == "on_release_callback")
+			set_variant((fv->when()&fltk::WHEN_RELEASE_ALWAYS)== fltk::WHEN_RELEASE_ALWAYS, value_type,value_ptr);
 		else 
 			return false;
 		return true;
@@ -176,7 +180,6 @@ fltk_value_control<T,FC>::fltk_value_control(const std::string& _label, T& value
 	fC->flags((fC->flags()&~fltk::ALIGN_MASK)|fltk::ALIGN_LEFT);
 	configure(value, fC);
 	fC->callback(valuator_cb,static_cast<cgv::base::base*>(this));
-	fC->when(fC->when() | fltk::WHEN_RELEASE_ALWAYS);
 	update();
 }
 
