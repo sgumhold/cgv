@@ -91,6 +91,8 @@ $(document).ready(function(){initNavTree('classcgv_1_1gui_1_1abst__control.html'
 <div class="header">
   <div class="summary">
 <a href="#pub-methods">Public Member Functions</a> &#124;
+<a href="#pub-static-methods">Static Public Member Functions</a> &#124;
+<a href="#pro-static-methods">Static Protected Member Functions</a> &#124;
 <a href="classcgv_1_1gui_1_1abst__control-members.html">List of all members</a>  </div>
   <div class="headertitle"><div class="title">cgv::gui::abst_control Class Reference<span class="mlabels"><span class="mlabel">abstract</span></span></div></div>
 </div><!--header-->
@@ -286,6 +288,23 @@ Public Member Functions</h2></td></tr>
 <tr class="memdesc:a67b5dba890a068acef62d9c026c05320 inherit pub_methods_classcgv_1_1data_1_1ref__counted"><td class="mdescLeft">&#160;</td><td class="mdescRight">read access to current count  <br /></td></tr>
 <tr class="separator:a67b5dba890a068acef62d9c026c05320 inherit pub_methods_classcgv_1_1data_1_1ref__counted"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table><table class="memberdecls">
+<tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="pub-static-methods" name="pub-static-methods"></a>
+Static Public Member Functions</h2></td></tr>
+<tr class="memitem:ab8de2bd48fd72f1f471f757412adc37e" id="r_ab8de2bd48fd72f1f471f757412adc37e"><td class="memItemLeft" align="right" valign="top">static bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcgv_1_1gui_1_1abst__control.html#ab8de2bd48fd72f1f471f757412adc37e">on_release</a> (const void *value_ptr)</td></tr>
+<tr class="memdesc:ab8de2bd48fd72f1f471f757412adc37e"><td class="mdescLeft">&#160;</td><td class="mdescRight">return whether value_change signal was sent due to a release event  <br /></td></tr>
+<tr class="separator:ab8de2bd48fd72f1f471f757412adc37e"><td class="memSeparator" colspan="2">&#160;</td></tr>
+</table><table class="memberdecls">
+<tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="pro-static-methods" name="pro-static-methods"></a>
+Static Protected Member Functions</h2></td></tr>
+<tr class="memitem:a649782b4046a9c16071123cca328322d" id="r_a649782b4046a9c16071123cca328322d"><td class="memItemLeft" align="right" valign="top">static bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcgv_1_1gui_1_1abst__control.html#a649782b4046a9c16071123cca328322d">access_on_release</a> (const void *value_ptr, char access_mode)</td></tr>
+<tr class="memdesc:a649782b4046a9c16071123cca328322d"><td class="mdescLeft">&#160;</td><td class="mdescRight">access on_release value for given value ptr to 'q'uery, 's'et or 'u'nset  <br /></td></tr>
+<tr class="separator:a649782b4046a9c16071123cca328322d"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="inherit_header pro_static_methods_classcgv_1_1base_1_1base"><td colspan="2" onclick="javascript:toggleInherit('pro_static_methods_classcgv_1_1base_1_1base')"><img src="closed.png" alt="-"/>&#160;Static Protected Member Functions inherited from <a class="el" href="classcgv_1_1base_1_1base.html">cgv::base::base</a></td></tr>
+<tr class="memitem:a908ec9751a2bdbf3dc0484d389a8aa64 inherit pro_static_methods_classcgv_1_1base_1_1base" id="r_a908ec9751a2bdbf3dc0484d389a8aa64"><td class="memTemplParams" colspan="2">template&lt;<a class="el" href="classcgv_1_1base_1_1single__method__action.html">class</a> <a class="el" href="classcgv_1_1base_1_1single__method__action.html">T</a> &gt; </td></tr>
+<tr class="memitem:a908ec9751a2bdbf3dc0484d389a8aa64 inherit pro_static_methods_classcgv_1_1base_1_1base"><td class="memTemplItemLeft" align="right" valign="top"><a class="el" href="classcgv_1_1base_1_1single__method__action.html">static</a> <a class="el" href="classcgv_1_1data_1_1ref__ptr.html">data::ref_ptr</a>&lt; <a class="el" href="classcgv_1_1base_1_1single__method__action.html">T</a>, <a class="el" href="classcgv_1_1base_1_1single__method__action.html">true</a> &gt;&#160;</td><td class="memTemplItemRight" valign="bottom"><a class="el" href="classcgv_1_1base_1_1base.html#a908ec9751a2bdbf3dc0484d389a8aa64">cast_dynamic</a> (<a class="el" href="classcgv_1_1base_1_1base.html">base</a> *b)</td></tr>
+<tr class="memdesc:a908ec9751a2bdbf3dc0484d389a8aa64 inherit pro_static_methods_classcgv_1_1base_1_1base"><td class="mdescLeft">&#160;</td><td class="mdescRight">use dynamic cast for upcast to given class  <br /></td></tr>
+<tr class="separator:a908ec9751a2bdbf3dc0484d389a8aa64 inherit pro_static_methods_classcgv_1_1base_1_1base"><td class="memSeparator" colspan="2">&#160;</td></tr>
+</table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="inherited" name="inherited"></a>
 Additional Inherited Members</h2></td></tr>
 <tr class="inherit_header pro_methods_classcgv_1_1base_1_1base"><td colspan="2" onclick="javascript:toggleInherit('pro_methods_classcgv_1_1base_1_1base')"><img src="closed.png" alt="-"/>&#160;Protected Member Functions inherited from <a class="el" href="classcgv_1_1base_1_1base.html">cgv::base::base</a></td></tr>
@@ -299,11 +318,6 @@ Additional Inherited Members</h2></td></tr>
 <tr class="memitem:abceffe95f08d3fc13cf9286cf360e705 inherit pro_methods_classcgv_1_1data_1_1ref__counted" id="r_abceffe95f08d3fc13cf9286cf360e705"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcgv_1_1data_1_1ref__counted.html#abceffe95f08d3fc13cf9286cf360e705">set_ref_count</a> (int c) const</td></tr>
 <tr class="memdesc:abceffe95f08d3fc13cf9286cf360e705 inherit pro_methods_classcgv_1_1data_1_1ref__counted"><td class="mdescLeft">&#160;</td><td class="mdescRight">write access is also const to allow ref counted pointers to const instances  <br /></td></tr>
 <tr class="separator:abceffe95f08d3fc13cf9286cf360e705 inherit pro_methods_classcgv_1_1data_1_1ref__counted"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="inherit_header pro_static_methods_classcgv_1_1base_1_1base"><td colspan="2" onclick="javascript:toggleInherit('pro_static_methods_classcgv_1_1base_1_1base')"><img src="closed.png" alt="-"/>&#160;Static Protected Member Functions inherited from <a class="el" href="classcgv_1_1base_1_1base.html">cgv::base::base</a></td></tr>
-<tr class="memitem:a908ec9751a2bdbf3dc0484d389a8aa64 inherit pro_static_methods_classcgv_1_1base_1_1base" id="r_a908ec9751a2bdbf3dc0484d389a8aa64"><td class="memTemplParams" colspan="2">template&lt;<a class="el" href="classcgv_1_1base_1_1single__method__action.html">class</a> <a class="el" href="classcgv_1_1base_1_1single__method__action.html">T</a> &gt; </td></tr>
-<tr class="memitem:a908ec9751a2bdbf3dc0484d389a8aa64 inherit pro_static_methods_classcgv_1_1base_1_1base"><td class="memTemplItemLeft" align="right" valign="top"><a class="el" href="classcgv_1_1base_1_1single__method__action.html">static</a> <a class="el" href="classcgv_1_1data_1_1ref__ptr.html">data::ref_ptr</a>&lt; <a class="el" href="classcgv_1_1base_1_1single__method__action.html">T</a>, <a class="el" href="classcgv_1_1base_1_1single__method__action.html">true</a> &gt;&#160;</td><td class="memTemplItemRight" valign="bottom"><a class="el" href="classcgv_1_1base_1_1base.html#a908ec9751a2bdbf3dc0484d389a8aa64">cast_dynamic</a> (<a class="el" href="classcgv_1_1base_1_1base.html">base</a> *b)</td></tr>
-<tr class="memdesc:a908ec9751a2bdbf3dc0484d389a8aa64 inherit pro_static_methods_classcgv_1_1base_1_1base"><td class="mdescLeft">&#160;</td><td class="mdescRight">use dynamic cast for upcast to given class  <br /></td></tr>
-<tr class="separator:a908ec9751a2bdbf3dc0484d389a8aa64 inherit pro_static_methods_classcgv_1_1base_1_1base"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="inherit_header pro_attribs_classcgv_1_1gui_1_1abst__view"><td colspan="2" onclick="javascript:toggleInherit('pro_attribs_classcgv_1_1gui_1_1abst__view')"><img src="closed.png" alt="-"/>&#160;Protected Attributes inherited from <a class="el" href="classcgv_1_1gui_1_1abst__view.html">cgv::gui::abst_view</a></td></tr>
 <tr class="memitem:a0bf3439ed0fcae1beeaf0d1bb11ca0a1 inherit pro_attribs_classcgv_1_1gui_1_1abst__view" id="r_a0bf3439ed0fcae1beeaf0d1bb11ca0a1"><td class="memItemLeft" align="right" valign="top"><a class="el" href="classcgv_1_1gui_1_1abst__view.html">abst_view</a> *&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcgv_1_1gui_1_1abst__view.html#a0bf3439ed0fcae1beeaf0d1bb11ca0a1">next_in_list</a></td></tr>
 <tr class="separator:a0bf3439ed0fcae1beeaf0d1bb11ca0a1 inherit pro_attribs_classcgv_1_1gui_1_1abst__view"><td class="memSeparator" colspan="2">&#160;</td></tr>
@@ -343,11 +357,53 @@ Additional Inherited Members</h2></td></tr>
 
 <p>construct from name </p>
 
-<p class="definition">Definition at line <a class="el" href="control_8cxx_source.html#l00016">16</a> of file <a class="el" href="control_8cxx_source.html">control.cxx</a>.</p>
+<p class="definition">Definition at line <a class="el" href="control_8cxx_source.html#l00039">39</a> of file <a class="el" href="control_8cxx_source.html">control.cxx</a>.</p>
 
 </div>
 </div>
 <h2 class="groupheader">Member Function Documentation</h2>
+<a id="a649782b4046a9c16071123cca328322d" name="a649782b4046a9c16071123cca328322d"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a649782b4046a9c16071123cca328322d">&#9670;&#160;</a></span>access_on_release()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">bool cgv::gui::abst_control::access_on_release </td>
+          <td>(</td>
+          <td class="paramtype">const void *&#160;</td>
+          <td class="paramname"><em>value_ptr</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">char&#160;</td>
+          <td class="paramname"><em>access_mode</em>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">static</span><span class="mlabel">protected</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p>access on_release value for given value ptr to 'q'uery, 's'et or 'u'nset </p>
+
+<p class="definition">Definition at line <a class="el" href="control_8cxx_source.html#l00015">15</a> of file <a class="el" href="control_8cxx_source.html">control.cxx</a>.</p>
+
+<p class="reference">Referenced by <a class="el" href="control_8cxx_source.html#l00033">on_release()</a>.</p>
+
+</div>
+</div>
 <a id="afa662c5529841af9926625a04b8e2bc6" name="afa662c5529841af9926625a04b8e2bc6"></a>
 <h2 class="memtitle"><span class="permalink"><a href="#afa662c5529841af9926625a04b8e2bc6">&#9670;&#160;</a></span>attach_to_check_value()</h2>
 
@@ -436,7 +492,39 @@ Additional Inherited Members</h2></td></tr>
 
 <p>Implemented in <a class="el" href="classcgv_1_1gui_1_1control.html#ab7d32c65b473ebaad16397000eea6d49">cgv::gui::control&lt; T &gt;</a>, and <a class="el" href="classcgv_1_1gui_1_1control.html#ab7d32c65b473ebaad16397000eea6d49">cgv::gui::control&lt; bool &gt;</a>.</p>
 
-<p class="reference">Referenced by <a class="el" href="control_8cxx_source.html#l00027">shows()</a>.</p>
+<p class="reference">Referenced by <a class="el" href="control_8cxx_source.html#l00050">shows()</a>.</p>
+
+</div>
+</div>
+<a id="ab8de2bd48fd72f1f471f757412adc37e" name="ab8de2bd48fd72f1f471f757412adc37e"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#ab8de2bd48fd72f1f471f757412adc37e">&#9670;&#160;</a></span>on_release()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">bool cgv::gui::abst_control::on_release </td>
+          <td>(</td>
+          <td class="paramtype">const void *&#160;</td>
+          <td class="paramname"><em>value_ptr</em></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">static</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p>return whether value_change signal was sent due to a release event </p>
+
+<p class="definition">Definition at line <a class="el" href="control_8cxx_source.html#l00033">33</a> of file <a class="el" href="control_8cxx_source.html">control.cxx</a>.</p>
+
+<p class="reference">References <a class="el" href="control_8cxx_source.html#l00015">access_on_release()</a>.</p>
 
 </div>
 </div>
@@ -468,7 +556,7 @@ Additional Inherited Members</h2></td></tr>
 
 <p>Implements <a class="el" href="classcgv_1_1gui_1_1abst__view.html#ab3b1dbfb1fa071285c0c7e541fb17728">cgv::gui::abst_view</a>.</p>
 
-<p class="definition">Definition at line <a class="el" href="control_8cxx_source.html#l00027">27</a> of file <a class="el" href="control_8cxx_source.html">control.cxx</a>.</p>
+<p class="definition">Definition at line <a class="el" href="control_8cxx_source.html#l00050">50</a> of file <a class="el" href="control_8cxx_source.html">control.cxx</a>.</p>
 
 <p class="reference">References <a class="el" href="classcgv_1_1gui_1_1abst__control.html#a1c5ca2e5257ad86420b2719887dc1d64">controls()</a>.</p>
 

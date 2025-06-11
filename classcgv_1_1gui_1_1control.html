@@ -347,6 +347,14 @@ Protected Member Functions</h2></td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="inherited" name="inherited"></a>
 Additional Inherited Members</h2></td></tr>
+<tr class="inherit_header pub_static_methods_classcgv_1_1gui_1_1abst__control"><td colspan="2" onclick="javascript:toggleInherit('pub_static_methods_classcgv_1_1gui_1_1abst__control')"><img src="closed.png" alt="-"/>&#160;Static Public Member Functions inherited from <a class="el" href="classcgv_1_1gui_1_1abst__control.html">cgv::gui::abst_control</a></td></tr>
+<tr class="memitem:ab8de2bd48fd72f1f471f757412adc37e inherit pub_static_methods_classcgv_1_1gui_1_1abst__control" id="r_ab8de2bd48fd72f1f471f757412adc37e"><td class="memItemLeft" align="right" valign="top">static bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcgv_1_1gui_1_1abst__control.html#ab8de2bd48fd72f1f471f757412adc37e">on_release</a> (const void *value_ptr)</td></tr>
+<tr class="memdesc:ab8de2bd48fd72f1f471f757412adc37e inherit pub_static_methods_classcgv_1_1gui_1_1abst__control"><td class="mdescLeft">&#160;</td><td class="mdescRight">return whether value_change signal was sent due to a release event  <br /></td></tr>
+<tr class="separator:ab8de2bd48fd72f1f471f757412adc37e inherit pub_static_methods_classcgv_1_1gui_1_1abst__control"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="inherit_header pro_static_methods_classcgv_1_1gui_1_1abst__control"><td colspan="2" onclick="javascript:toggleInherit('pro_static_methods_classcgv_1_1gui_1_1abst__control')"><img src="closed.png" alt="-"/>&#160;Static Protected Member Functions inherited from <a class="el" href="classcgv_1_1gui_1_1abst__control.html">cgv::gui::abst_control</a></td></tr>
+<tr class="memitem:a649782b4046a9c16071123cca328322d inherit pro_static_methods_classcgv_1_1gui_1_1abst__control" id="r_a649782b4046a9c16071123cca328322d"><td class="memItemLeft" align="right" valign="top">static bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcgv_1_1gui_1_1abst__control.html#a649782b4046a9c16071123cca328322d">access_on_release</a> (const void *value_ptr, char access_mode)</td></tr>
+<tr class="memdesc:a649782b4046a9c16071123cca328322d inherit pro_static_methods_classcgv_1_1gui_1_1abst__control"><td class="mdescLeft">&#160;</td><td class="mdescRight">access on_release value for given value ptr to 'q'uery, 's'et or 'u'nset  <br /></td></tr>
+<tr class="separator:a649782b4046a9c16071123cca328322d inherit pro_static_methods_classcgv_1_1gui_1_1abst__control"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="inherit_header pro_static_methods_classcgv_1_1base_1_1base"><td colspan="2" onclick="javascript:toggleInherit('pro_static_methods_classcgv_1_1base_1_1base')"><img src="closed.png" alt="-"/>&#160;Static Protected Member Functions inherited from <a class="el" href="classcgv_1_1base_1_1base.html">cgv::base::base</a></td></tr>
 <tr class="memitem:a908ec9751a2bdbf3dc0484d389a8aa64 inherit pro_static_methods_classcgv_1_1base_1_1base" id="r_a908ec9751a2bdbf3dc0484d389a8aa64"><td class="memTemplParams" colspan="2">template&lt;<a class="el" href="classcgv_1_1base_1_1single__method__action.html">class</a> <a class="el" href="classcgv_1_1base_1_1single__method__action.html">T</a> &gt; </td></tr>
 <tr class="memitem:a908ec9751a2bdbf3dc0484d389a8aa64 inherit pro_static_methods_classcgv_1_1base_1_1base"><td class="memTemplItemLeft" align="right" valign="top"><a class="el" href="classcgv_1_1base_1_1single__method__action.html">static</a> <a class="el" href="classcgv_1_1data_1_1ref__ptr.html">data::ref_ptr</a>&lt; <a class="el" href="classcgv_1_1base_1_1single__method__action.html">T</a>, <a class="el" href="classcgv_1_1base_1_1single__method__action.html">true</a> &gt;&#160;</td><td class="memTemplItemRight" valign="bottom"><a class="el" href="classcgv_1_1base_1_1base.html#a908ec9751a2bdbf3dc0484d389a8aa64">cast_dynamic</a> (<a class="el" href="classcgv_1_1base_1_1base.html">base</a> *b)</td></tr>
@@ -374,7 +382,7 @@ class cgv::gui::control&lt; T &gt;</div><p>gui independent control of a value th
 <p>Before the control changes a value, it emits the signal check_value to test if the new value is valid. The check_value signal has a boolean return value. All attached callbacks must return true in order for the check to be successful. The attached callbacks can also change the new value to a valid value. The check_value callbacks should use the <a class="el" href="classcgv_1_1gui_1_1control.html#a41a46982cd2b00bed3610d9c2dd33388" title="return the new value to the callbacks attached to the check_value signal">get_new_value()</a>, <a class="el" href="classcgv_1_1gui_1_1control.html#a60118d7dd880b3df325f0b4b6da98cfd" title="return a reference to the current value">get_value()</a> and <a class="el" href="classcgv_1_1gui_1_1control.html#a4735f33dd4214fae002e7de35b73aaeb" title="set a different new value from the callbacks attached to the check_value signal">set_new_value()</a> methods of the control to update the new value and to access the current value that has not been changed yet.</p>
 <p>If the validity check is successful, the value is changed to the new value and the value_change signal is emitted. The callbacks attached to this signal can not only query the current value with <a class="el" href="classcgv_1_1gui_1_1control.html#a60118d7dd880b3df325f0b4b6da98cfd" title="return a reference to the current value">get_value()</a> but also the old value with <a class="el" href="classcgv_1_1gui_1_1control.html#a930a57546523656e3641059a38752759" title="return the old value to the callbacks attached to the change_value signal">get_old_value()</a>. Take care that the <a class="el" href="classcgv_1_1gui_1_1control.html#a930a57546523656e3641059a38752759" title="return the old value to the callbacks attached to the change_value signal">get_old_value()</a> cannot be used in the callbacks attached to check_value and the <a class="el" href="classcgv_1_1gui_1_1control.html#a41a46982cd2b00bed3610d9c2dd33388" title="return the new value to the callbacks attached to the check_value signal">get_new_value()</a> method cannot be used in the callbacks attached to the value_change signal. </p>
 
-<p class="definition">Definition at line <a class="el" href="control_8h_source.html#l00081">81</a> of file <a class="el" href="control_8h_source.html">control.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="control_8h_source.html#l00086">86</a> of file <a class="el" href="control_8h_source.html">control.h</a>.</p>
 </div><h2 class="groupheader">Member Typedef Documentation</h2>
 <a id="aec85174ecd793bf807ccaf0796adf20d" name="aec85174ecd793bf807ccaf0796adf20d"></a>
 <h2 class="memtitle"><span class="permalink"><a href="#aec85174ecd793bf807ccaf0796adf20d">&#9670;&#160;</a></span>value_change_signal_type</h2>
@@ -392,7 +400,7 @@ template&lt;typename T &gt; </div>
 
 <p>type of the value change signal </p>
 
-<p class="definition">Definition at line <a class="el" href="control_8h_source.html#l00103">103</a> of file <a class="el" href="control_8h_source.html">control.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="control_8h_source.html#l00108">108</a> of file <a class="el" href="control_8h_source.html">control.h</a>.</p>
 
 </div>
 </div>
@@ -412,7 +420,7 @@ template&lt;typename T &gt; </div>
 
 <p>type of the value check signal </p>
 
-<p class="definition">Definition at line <a class="el" href="control_8h_source.html#l00101">101</a> of file <a class="el" href="control_8h_source.html">control.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="control_8h_source.html#l00106">106</a> of file <a class="el" href="control_8h_source.html">control.h</a>.</p>
 
 </div>
 </div>
@@ -455,7 +463,7 @@ template&lt;typename T &gt; </div>
 
 <p>construct abstract element from reference to value </p>
 
-<p class="definition">Definition at line <a class="el" href="control_8h_source.html#l00105">105</a> of file <a class="el" href="control_8h_source.html">control.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="control_8h_source.html#l00110">110</a> of file <a class="el" href="control_8h_source.html">control.h</a>.</p>
 
 </div>
 </div>
@@ -497,7 +505,7 @@ template&lt;typename T &gt; </div>
 
 <p>construct abstract element from <a class="el" href="structcgv_1_1gui_1_1control__provider.html">control_provider</a> </p>
 
-<p class="definition">Definition at line <a class="el" href="control_8h_source.html#l00109">109</a> of file <a class="el" href="control_8h_source.html">control.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="control_8h_source.html#l00114">114</a> of file <a class="el" href="control_8h_source.html">control.h</a>.</p>
 
 </div>
 </div>
@@ -545,7 +553,7 @@ template&lt;typename T &gt; </div>
 
 <p>this constructor allows contruction from <a class="el" href="structcgv_1_1gui_1_1control__provider.html">control_provider</a> with user data or if the pointer to the <a class="el" href="structcgv_1_1gui_1_1control__provider.html">control_provider</a> is null, interpret the pointer to the user data as the value pointer and act as the previous constructor. </p>
 
-<p class="definition">Definition at line <a class="el" href="control_8h_source.html#l00118">118</a> of file <a class="el" href="control_8h_source.html">control.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="control_8h_source.html#l00123">123</a> of file <a class="el" href="control_8h_source.html">control.h</a>.</p>
 
 <p class="reference">References <a class="el" href="structcgv_1_1gui_1_1control__provider.html#afb380b9d79e3b74ecd85f821874d81d1">cgv::gui::control_provider&lt; T &gt;::get_value()</a>.</p>
 
@@ -582,7 +590,7 @@ template&lt;typename T &gt; </div>
 
 <p>Implements <a class="el" href="classcgv_1_1gui_1_1abst__control.html#afa662c5529841af9926625a04b8e2bc6">cgv::gui::abst_control</a>.</p>
 
-<p class="definition">Definition at line <a class="el" href="control_8h_source.html#l00164">164</a> of file <a class="el" href="control_8h_source.html">control.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="control_8h_source.html#l00169">169</a> of file <a class="el" href="control_8h_source.html">control.h</a>.</p>
 
 </div>
 </div>
@@ -616,7 +624,7 @@ template&lt;typename T &gt; </div>
 
 <p>Implements <a class="el" href="classcgv_1_1gui_1_1abst__control.html#ad176a4058e3ff1c59d32afb0109ffc27">cgv::gui::abst_control</a>.</p>
 
-<p class="definition">Definition at line <a class="el" href="control_8h_source.html#l00160">160</a> of file <a class="el" href="control_8h_source.html">control.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="control_8h_source.html#l00165">165</a> of file <a class="el" href="control_8h_source.html">control.h</a>.</p>
 
 </div>
 </div>
@@ -648,7 +656,7 @@ template&lt;typename T &gt; </div>
 
 <p>set new value only if check_value signal succeeds and send value_change signal. Return true if value has been changed. </p>
 
-<p class="definition">Definition at line <a class="el" href="control_8h_source.html#l00146">146</a> of file <a class="el" href="control_8h_source.html">control.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="control_8h_source.html#l00151">151</a> of file <a class="el" href="control_8h_source.html">control.h</a>.</p>
 
 </div>
 </div>
@@ -682,9 +690,9 @@ template&lt;typename T &gt; </div>
 
 <p>Implements <a class="el" href="classcgv_1_1gui_1_1abst__control.html#a1c5ca2e5257ad86420b2719887dc1d64">cgv::gui::abst_control</a>.</p>
 
-<p class="definition">Definition at line <a class="el" href="control_8h_source.html#l00158">158</a> of file <a class="el" href="control_8h_source.html">control.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="control_8h_source.html#l00163">163</a> of file <a class="el" href="control_8h_source.html">control.h</a>.</p>
 
-<p class="reference">References <a class="el" href="control_8h_source.html#l00058">cgv::gui::control_provider&lt; T &gt;::controls()</a>.</p>
+<p class="reference">References <a class="el" href="control_8h_source.html#l00063">cgv::gui::control_provider&lt; T &gt;::controls()</a>.</p>
 
 </div>
 </div>
@@ -715,7 +723,7 @@ template&lt;typename T &gt; </div>
 
 <p>return the new value to the callbacks attached to the check_value signal </p>
 
-<p class="definition">Definition at line <a class="el" href="control_8h_source.html#l00140">140</a> of file <a class="el" href="control_8h_source.html">control.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="control_8h_source.html#l00145">145</a> of file <a class="el" href="control_8h_source.html">control.h</a>.</p>
 
 </div>
 </div>
@@ -746,7 +754,7 @@ template&lt;typename T &gt; </div>
 
 <p>return the old value to the callbacks attached to the change_value signal </p>
 
-<p class="definition">Definition at line <a class="el" href="control_8h_source.html#l00144">144</a> of file <a class="el" href="control_8h_source.html">control.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="control_8h_source.html#l00149">149</a> of file <a class="el" href="control_8h_source.html">control.h</a>.</p>
 
 </div>
 </div>
@@ -777,7 +785,7 @@ template&lt;typename T &gt; </div>
 
 <p>return a reference to the current value </p>
 
-<p class="definition">Definition at line <a class="el" href="control_8h_source.html#l00138">138</a> of file <a class="el" href="control_8h_source.html">control.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="control_8h_source.html#l00143">143</a> of file <a class="el" href="control_8h_source.html">control.h</a>.</p>
 
 <p class="reference">References <a class="el" href="structcgv_1_1gui_1_1control__provider.html#afb380b9d79e3b74ecd85f821874d81d1">cgv::gui::control_provider&lt; T &gt;::get_value()</a>.</p>
 
@@ -808,7 +816,7 @@ template&lt;typename T &gt; </div>
 </table>
 </div><div class="memdoc">
 
-<p class="definition">Definition at line <a class="el" href="control_8h_source.html#l00098">98</a> of file <a class="el" href="control_8h_source.html">control.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="control_8h_source.html#l00103">103</a> of file <a class="el" href="control_8h_source.html">control.h</a>.</p>
 
 </div>
 </div>
@@ -840,7 +848,7 @@ template&lt;typename T &gt; </div>
 
 <p>set a different new value from the callbacks attached to the check_value signal </p>
 
-<p class="definition">Definition at line <a class="el" href="control_8h_source.html#l00142">142</a> of file <a class="el" href="control_8h_source.html">control.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="control_8h_source.html#l00147">147</a> of file <a class="el" href="control_8h_source.html">control.h</a>.</p>
 
 </div>
 </div>
@@ -870,7 +878,7 @@ template&lt;typename T &gt; </div>
 </table>
 </div><div class="memdoc">
 
-<p class="definition">Definition at line <a class="el" href="control_8h_source.html#l00089">89</a> of file <a class="el" href="control_8h_source.html">control.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="control_8h_source.html#l00094">94</a> of file <a class="el" href="control_8h_source.html">control.h</a>.</p>
 
 </div>
 </div>
@@ -892,7 +900,7 @@ template&lt;typename T &gt; </div>
 <p>this signal is sent when the user triggered a change of value in order to check whether the new value is valid. </p>
 <p>Use <a class="el" href="classcgv_1_1gui_1_1control.html#a41a46982cd2b00bed3610d9c2dd33388" title="return the new value to the callbacks attached to the check_value signal">get_new_value()</a> and <a class="el" href="classcgv_1_1gui_1_1control.html#a4735f33dd4214fae002e7de35b73aaeb" title="set a different new value from the callbacks attached to the check_value signal">set_new_value()</a> to get and correct the new value. Return true if the new value is ok or could be corrected, false otherwise. </p>
 
-<p class="definition">Definition at line <a class="el" href="control_8h_source.html#l00133">133</a> of file <a class="el" href="control_8h_source.html">control.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="control_8h_source.html#l00138">138</a> of file <a class="el" href="control_8h_source.html">control.h</a>.</p>
 
 </div>
 </div>
@@ -913,7 +921,7 @@ template&lt;typename T &gt; </div>
 <p>this signal is sent after the user triggered a change of value and the check_value succeeded. </p>
 <p>You can access the old value with <a class="el" href="classcgv_1_1gui_1_1control.html#a930a57546523656e3641059a38752759" title="return the old value to the callbacks attached to the change_value signal">get_old_value()</a> method. </p>
 
-<p class="definition">Definition at line <a class="el" href="control_8h_source.html#l00136">136</a> of file <a class="el" href="control_8h_source.html">control.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="control_8h_source.html#l00141">141</a> of file <a class="el" href="control_8h_source.html">control.h</a>.</p>
 
 </div>
 </div>
