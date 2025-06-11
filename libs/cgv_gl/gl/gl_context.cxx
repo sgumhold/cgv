@@ -2913,16 +2913,24 @@ bool gl_context::shader_program_get_active_uniforms(shader_program_base& spb, st
 		glGetActiveUniform(p_id, i, buffer.size(), &actual_length, &array_size, &type, buffer.data());
 		std::string name(static_cast<char*>(buffer.data()), actual_length);
 
-		// uniforms for arrays are listed once with a "[0]" suffix and a given array size greater than 1
-		// we remove the brackets to allow setting arrays using just the uniform name
+		// Uniforms for arrays of non-compound (non-struct) types are listed once with a "[0]" suffix and a given array size greater than 1.
 		if(array_size > 1) {
+			// Remove the brackets to get the base name of the uniform
 			size_t bracket_pos = name.find('[');
 			if(bracket_pos != std::string::npos)
 				name.resize(bracket_pos);
-		}
 
-		if(!name.empty())
-			names.push_back(name);
+			if(!name.empty()) {
+				// Store the name without the brackets to allow setting complete arrays using just the uniform name.
+				names.push_back(name);
+				// Additionally store an entry for every possible indexed name to allow setting elements individually.
+				for(GLint i = 0; i < array_size; ++i)
+					names.push_back(name + "[" + std::to_string(i) + "]");
+			}
+		} else {
+			if(!name.empty())
+				names.push_back(name);
+		}
 	}
 	return true;
 }

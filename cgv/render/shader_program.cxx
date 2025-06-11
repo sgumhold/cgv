@@ -611,7 +611,10 @@ const std::map<std::string, int>& shader_program::get_uniform_locations() const
 /// query location index of an uniform
 int shader_program::get_uniform_location(const context& ctx, const std::string& name) const
 {
+	// debug fallback: get uniform location from context through GL call
 	//return ctx.get_uniform_location(*this, name);
+	
+	// get from cache
 	auto it = uniform_locations.find(name);
 	return it != uniform_locations.end() ? it->second : -1;
 }
