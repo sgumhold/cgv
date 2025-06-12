@@ -1,5 +1,6 @@
 #version 430
 
+#ifdef CGV_USE_SNIPPETS
 layout(r32f, binding = 0) uniform writeonly IMAGE_TYPE tex;
 
 uniform uvec3 u_size;
@@ -13,3 +14,4 @@ void main() {
 	if(SIZE_GUARD(gid, u_size))
         imageStore(tex, gid, u_value);
 }
+#endif
