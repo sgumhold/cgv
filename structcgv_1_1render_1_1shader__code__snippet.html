@@ -95,17 +95,36 @@ $(document).ready(function(){initNavTree('structcgv_1_1render_1_1shader__code__s
   <div class="headertitle"><div class="title">cgv::render::shader_code_snippet Struct Reference</div></div>
 </div><!--header-->
 <div class="contents">
+
+<p>a snippet of shader code in raw text form.  
+ <a href="structcgv_1_1render_1_1shader__code__snippet.html#details">More...</a></p>
+
+<p><code>#include &lt;<a class="el" href="shader__code_8h_source.html">shader_code.h</a>&gt;</code></p>
 <table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="pub-attribs" name="pub-attribs"></a>
 Public Attributes</h2></td></tr>
 <tr class="memitem:adba6d534bb508c31502bb4b7f658ce76" id="r_adba6d534bb508c31502bb4b7f658ce76"><td class="memItemLeft" align="right" valign="top">std::string&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structcgv_1_1render_1_1shader__code__snippet.html#adba6d534bb508c31502bb4b7f658ce76">id</a></td></tr>
+<tr class="memdesc:adba6d534bb508c31502bb4b7f658ce76"><td class="mdescLeft">&#160;</td><td class="mdescRight">the snippet id used for matching snippet markers in shader code  <br /></td></tr>
 <tr class="separator:adba6d534bb508c31502bb4b7f658ce76"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a2a3118c2b8e59cf8124be6fc4d7c25f4" id="r_a2a3118c2b8e59cf8124be6fc4d7c25f4"><td class="memItemLeft" align="right" valign="top">std::string&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structcgv_1_1render_1_1shader__code__snippet.html#a2a3118c2b8e59cf8124be6fc4d7c25f4">content</a></td></tr>
+<tr class="memdesc:a2a3118c2b8e59cf8124be6fc4d7c25f4"><td class="mdescLeft">&#160;</td><td class="mdescRight">the snippet content; can be any valid piece of shader code  <br /></td></tr>
 <tr class="separator:a2a3118c2b8e59cf8124be6fc4d7c25f4"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
 <a name="details" id="details"></a><h2 class="groupheader">Detailed Description</h2>
-<div class="textblock">
-<p class="definition">Definition at line <a class="el" href="shader__code_8h_source.html#l00064">64</a> of file <a class="el" href="shader__code_8h_source.html">shader_code.h</a>.</p>
+<div class="textblock"><p>a snippet of shader code in raw text form. </p>
+<p>Used in <a class="el" href="structcgv_1_1render_1_1shader__compile__options.html" title="holds options applied before and during shader compilation, such as preprocessor defines and code sni...">shader_compile_options</a> to replace special comments with user-defined code. Comments identifying snippet replacement locations must be of form</p>
+<p>$cgv::&lt;id&gt; </p><pre class="fragment">where &lt;id&gt; is a user-defined name.
+
+The comment is replaced with the content of a snippet whose id matches the given id.
+
+To prevent ill-formed shader code due to potential missing definitions before snippet replacement, i.e. before pre-processing,
+affected parts of code can be disabled by enclosing them in a define guard like so:
+
+#ifdef CGV_USE_SNIPPETS
+...code relying on snippet content
+#endif
+</pre> 
+<p class="definition">Definition at line <a class="el" href="shader__code_8h_source.html#l00071">71</a> of file <a class="el" href="shader__code_8h_source.html">shader_code.h</a>.</p>
 </div><h2 class="groupheader">Member Data Documentation</h2>
 <a id="a2a3118c2b8e59cf8124be6fc4d7c25f4" name="a2a3118c2b8e59cf8124be6fc4d7c25f4"></a>
 <h2 class="memtitle"><span class="permalink"><a href="#a2a3118c2b8e59cf8124be6fc4d7c25f4">&#9670;&#160;</a></span>content</h2>
@@ -119,7 +138,9 @@ Public Attributes</h2></td></tr>
       </table>
 </div><div class="memdoc">
 
-<p class="definition">Definition at line <a class="el" href="shader__code_8h_source.html#l00066">66</a> of file <a class="el" href="shader__code_8h_source.html">shader_code.h</a>.</p>
+<p>the snippet content; can be any valid piece of shader code </p>
+
+<p class="definition">Definition at line <a class="el" href="shader__code_8h_source.html#l00075">75</a> of file <a class="el" href="shader__code_8h_source.html">shader_code.h</a>.</p>
 
 </div>
 </div>
@@ -135,7 +156,9 @@ Public Attributes</h2></td></tr>
       </table>
 </div><div class="memdoc">
 
-<p class="definition">Definition at line <a class="el" href="shader__code_8h_source.html#l00065">65</a> of file <a class="el" href="shader__code_8h_source.html">shader_code.h</a>.</p>
+<p>the snippet id used for matching snippet markers in shader code </p>
+
+<p class="definition">Definition at line <a class="el" href="shader__code_8h_source.html#l00073">73</a> of file <a class="el" href="shader__code_8h_source.html">shader_code.h</a>.</p>
 
 </div>
 </div>
