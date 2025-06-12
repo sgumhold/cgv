@@ -1,5 +1,6 @@
 #version 430
 
+#ifdef CGV_USE_SNIPPETS
 layout(binding = 0) uniform SAMPLER_TYPE input_tex;
 layout(binding = 1) uniform writeonly IMAGE_TYPE output_tex;
 
@@ -56,3 +57,4 @@ void main() {
 		imageStore(output_tex, gid, result);
 	}
 }
+#endif

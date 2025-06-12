@@ -5,6 +5,7 @@
 //$cgv::input_typedef
 //$cgv::output_typedef
 
+#ifdef CGV_USE_SNIPPETS
 layout(std430, binding = 0) readonly buffer input_buffer {
 	input_type data_in[];
 };
@@ -29,3 +30,4 @@ void main() {
 	if(id < u_input_end)
 		data_out[u_output_begin + gid] = operation(data_in[id], gid);
 }
+#endif
