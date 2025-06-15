@@ -33,29 +33,45 @@ private:
 	/// @brief Convert value type to std::string using std::to_string.
 	/// 
 	/// @tparam T The value type.
-	/// @param value Teh value to convert.
+	/// @param value The value to convert.
 	/// @return The resulting string.
 	template<typename T>
 	std::string convert_to_string(T value) const {
 		return std::to_string(value);
 	}
 
-	/// @brief Convert value type to std::string using std::to_string.
+	/// @brief Convert std::string to std::string.
+	/// Overload for handling values of type std::string that need no conversion.
 	/// 
-	/// @tparam T The value type.
-	/// @param value Teh value to convert.
-	/// @return The resulting string.
-	std::string convert_to_string(bool value) const {
-		return value ? "true" : "false";
-	}
-
-	/// @brief Convert value type to std::string using std::to_string.
-	/// 
-	/// @tparam T The value type.
-	/// @param value Teh value to convert.
+	/// @param value The value to convert.
 	/// @return The resulting string.
 	std::string convert_to_string(const std::string& value) const {
 		return value;
+	}
+
+	/// @brief Convert c-style string to std::string.
+	/// 
+	/// @param value The value to convert.
+	/// @return The resulting string.
+	std::string convert_to_string(const char* value) const {
+		return std::string(value);
+	}
+
+	/// @brief Convert char to std::string.
+	/// Overload for handling values of type char.
+	/// 
+	/// @param value The value to convert.
+	/// @return The resulting string.
+	std::string convert_to_string(char value) const {
+		return { value };
+	}
+
+	/// @brief Convert boolean value to std::string.
+	/// 
+	/// @param value The value to convert.
+	/// @return The resulting string. Outputs "true" if value == true, "false" otherwise.
+	std::string convert_to_string(bool value) const {
+		return value ? "true" : "false";
 	}
 
 	/// @brief Add a key-value pair to the end of the content
