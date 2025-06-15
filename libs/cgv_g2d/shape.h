@@ -12,7 +12,7 @@ struct shape_base : public rect {
 	bool position_is_center = false;
 
 	using rect::rect;
-
+	
 	vec2 center() const { return position_is_center ? position : rect::center(); }
 
 	virtual bool contains(const vec2& query_pos) const {
