@@ -18,7 +18,7 @@ color_selector::color_selector() {
 	set_size(ivec2(layout.size));
 	
 	selector_handles.callback = std::bind(&color_selector::handle_selector_drag, this, std::placeholders::_1);
-	selector_handles.set_use_individual_constraints(true);
+	selector_handles.use_individual_constraints = true;
 }
 
 void color_selector::clear(cgv::render::context& ctx) {
