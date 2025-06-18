@@ -7,7 +7,7 @@
 #include <cgv/render/drawable.h>
 #include <cgv/utils/pointer_test.h>
 #include <cgv_g2d/trect.h>
-#include <cgv_g2d/utils2d.h>
+#include <cgv_g2d/utils.h>
 
 #include <cgv/gui/key_event.h>
 #include <cgv/gui/mouse_event.h>

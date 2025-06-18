@@ -6,7 +6,7 @@
 #include "canvas.h"
 #include "draggable.h"
 #include "trect.h"
-#include "utils2d.h"
+#include "utils.h"
 
 #include "lib_begin.h"
 
@@ -33,7 +33,6 @@ protected:
 	ptr_type get_ptr(ptr_type obj) { return obj; }
 
 	bool has_constraint = false;
-	bool use_individual_constraints = false;
 	irect constraint_area;
 	mat3 inv_transformation;
 
@@ -142,10 +141,6 @@ public:
 		has_constraint = false;
 	}
 
-	void set_use_individual_constraints(bool flag) {
-		use_individual_constraints = true;
-	}
-
 	void set_transformation(const mat3& matrix) {
 		inv_transformation = cgv::math::inv(matrix);
 	}
@@ -216,6 +211,7 @@ public:
 		return handle_void(e, viewport_size, container, cnvs.get_origin_setting());
 	}
 
+	bool use_individual_constraints = false;
 	std::function<void(DragAction)> callback;
 };
 

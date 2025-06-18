@@ -344,6 +344,101 @@ std::string shader_code::resolve_includes(const std::string& source, bool use_ca
 	return resolve_includes(source, use_cache, included_file_names, _last_error);
 }
 
+void shader_code::resolve_version(std::string& source) {
+	struct version_directive_t {
+		size_t position = 0;
+		size_t version_number = 0;
+		bool has_profile = false;
+		bool is_core_profile = false;
+		bool is_special_comment = false;
+	};
+
+	const std::string version_identifier = "#version";
+
+	std::vector<version_directive_t> version_directives;
+
+	// collect all version directives in source
+	size_t offset = 0;
+	while(true) {
+		offset = source.find(version_identifier, offset);
+		if(offset == std::string::npos) {
+			break;
+		} else {
+			version_directives.push_back({ offset });
+			offset += version_identifier.length();
+		}
+	}
+
+	// extract and set properties of each version directive
+	for(version_directive_t& directive : version_directives) {
+		if(directive.position > 2) {
+			std::string prefix = source.substr(directive.position - 3, 3);
+			if(prefix == "//?" || prefix == "//!")
+				directive.is_special_comment = true;
+		}
+
+		size_t search_offset = directive.position + version_identifier.length();
+		size_t newline_pos = source.find('\n', search_offset);
+
+		std::string properties = cgv::utils::trim(source.substr(search_offset, newline_pos - search_offset));
+
+		std::vector<cgv::utils::token> tokens;
+		cgv::utils::split_to_tokens(properties, tokens, "", true, "", "", " \t");
+
+		if(!tokens.empty()) {
+			std::string number = to_string(tokens[0]);
+
+			if(!cgv::utils::from_string(directive.version_number, number))
+				directive.version_number = 0;
+		}
+
+		if(tokens.size() > 1) {
+			std::string profile = to_string(tokens[1]);
+			if(profile == "core") {
+				directive.has_profile = true;
+				directive.is_core_profile = true;
+			} else if(profile == "compatibility") {
+				directive.has_profile = true;
+				directive.is_core_profile = false;
+			}
+		}
+	}
+
+	// collect the highest version number and profile priority
+	version_directive_t highest_version_directive;
+	for(const version_directive_t& directive : version_directives) {
+		if(directive.version_number > highest_version_directive.version_number) {
+			highest_version_directive.version_number = directive.version_number;
+		}
+
+		if(directive.has_profile) {
+			if(highest_version_directive.has_profile) {
+				if(directive.is_core_profile)
+					highest_version_directive.is_core_profile = true;
+			} else {
+				highest_version_directive.has_profile = true;
+				highest_version_directive.is_core_profile = directive.is_core_profile;
+			}
+		}
+	}
+
+	// disable all non-commented version directives by changing them to comments
+	for(auto it = version_directives.rbegin(); it != version_directives.rend(); ++it) {
+		const version_directive_t& directive = *it;
+		if(!directive.is_special_comment)
+			source.insert(directive.position, "//");
+	}
+
+	// create and insert the new version directive as the first statement in the source
+	std::string version_str = "#version " + std::to_string(highest_version_directive.version_number);
+	if(highest_version_directive.has_profile) {
+		version_str += ' ';
+		version_str += highest_version_directive.is_core_profile ? "core" : "compatibility";
+		version_str += '\n';
+	}
+	source.insert(0, version_str);
+}
+
 /// return the shader type of this code
 ShaderType shader_code::get_shader_type() const
 {
@@ -394,7 +489,6 @@ std::string shader_code::read_code_file(const std::string &file_name, std::strin
 }
 
 /// read shader code from file
-//bool shader_code::read_code(const context& ctx, const std::string &file_name, ShaderType st, const shader_define_map& defines)
 bool shader_code::read_code(const context& ctx, const std::string &file_name, ShaderType st, const shader_compile_options& options)
 {
 	if (st == ST_DETECT)
@@ -405,8 +499,10 @@ bool shader_code::read_code(const context& ctx, const std::string &file_name, Sh
 
 	source = resolve_includes(source, ctx.is_shader_file_cache_enabled());
 
+	resolve_version(source);
+
 	set_defines_and_snippets(source, options);
-	
+
 	if (st == ST_VERTEX && ctx.get_gpu_vendor_id() == GPUVendorID::GPU_VENDOR_AMD)
 		set_vertex_attrib_locations(source);
 
@@ -533,6 +629,12 @@ void shader_code::set_defines_and_snippets(std::string& source, const shader_com
 			additional_defines.push_back(define);
 	}
 
+	bool use_snippets = false;
+	if(!options.snippets.empty()) {
+		additional_defines.push_back({ "CGV_USE_SNIPPETS", "" });
+		use_snippets = true;
+	}
+
 	std::string out;
 	// The output string is going to have a similar length as the input.
 	out.reserve(source.length());
@@ -549,16 +651,16 @@ void shader_code::set_defines_and_snippets(std::string& source, const shader_com
 				out += "#define " + directive->identifier + " " + directive->value;
 				break;
 			case DirectiveType::kSnippet:
-			{
-				auto it = std::find_if(options.snippets.begin(), options.snippets.end(), [directive](const shader_code_snippet& snippet) {
-					return directive->identifier == "cgv::" + snippet.id;
-				});
-				if(it != options.snippets.end())
-					out += it->content;
-				else
-					out += to_string(line);
+				if(use_snippets) {
+					auto it = std::find_if(options.snippets.begin(), options.snippets.end(), [directive](const shader_code_snippet& snippet) {
+						return directive->identifier == "cgv::" + snippet.id;
+					});
+					if(it != options.snippets.end())
+						out += it->content;
+					else
+						out += to_string(line);
+				}
 				break;
-			}
 			default:
 				break;
 			}
@@ -788,7 +890,6 @@ bool shader_code::compile(const context& ctx)
 }
 
 /// read shader code from file, compile and print error message if necessary
-//bool shader_code::read_and_compile(const context& ctx, const std::string &file_name, ShaderType st, bool show_error, const shader_define_map& defines)
 bool shader_code::read_and_compile(const context& ctx, const std::string &file_name, ShaderType st, const shader_compile_options& options, bool show_error)
 {
 	if (!read_code(ctx, file_name, st, options))

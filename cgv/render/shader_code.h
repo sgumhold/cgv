@@ -10,17 +10,17 @@ namespace cgv {
 
 /** a globally unique shader config is registered by default when the cgv library
     is used. Currently it has one member only defining the search path for shader
-	 files. The shader path is initialized to the environment variable CGV_SHADER_PATH
-	 or empty otherwise. It can also be set with a command line argument of the form
-	 
-	 type(shader_config):shader_path='@(INPUT_PATH)'
+	files. The shader path is initialized to the environment variable CGV_SHADER_PATH
+	or empty otherwise. It can also be set with a command line argument of the form
+	
+	type(shader_config):shader_path='@(INPUT_PATH)'
 
-	 or in a config file as
+	or in a config file as
 
-	 type(shader_config):shader_path='D:/my_shaders'
+	type(shader_config):shader_path='D:/my_shaders'
 
-	 To set the shader path at runtime, query the shader_config with the
-	 get_shader_config() function.
+	To set the shader path at runtime, query the shader_config with the
+	get_shader_config() function.
 */
 struct CGV_API shader_config : public cgv::base::base
 {
@@ -51,39 +51,55 @@ extern CGV_API shader_config_ptr get_shader_config();
 /// typedef for shader define map data structure
 typedef std::map<std::string, std::string> shader_define_map;
 
+/** a snippet of shader code in raw text form.
+	Used in shader_compile_options to replace special comments with user-defined code.
+	Comments identifying snippet replacement locations must be of form
+	 
+	//$cgv::<id>
+	
+	where <id> is a user-defined name.
 
+	The comment is replaced with the content of a snippet whose id matches the given id.
 
-
-
-
-
-
-
-
-// TODO: document
+	To prevent ill-formed shader code due to potential missing definitions before snippet replacement, i.e. before pre-processing,
+	affected parts of code can be disabled by enclosing them in a define guard like so:
+	
+	#ifdef CGV_USE_SNIPPETS
+	...code relying on snippet content
+	#endif
+	*/
 struct shader_code_snippet {
+	/// the snippet id used for matching snippet markers in shader code
 	std::string id;
+	/// the snippet content; can be any valid piece of shader code
 	std::string content;
 };
 
+/** holds options applied before and during shader compilation, such as preprocessor defines and code snippets.
+	Pre-processor defines will be handled as follows:
+	- Existing macros in the source file that are stated in defines will have their values replaced
+	- Existing macros in the source file that are not stated in defines will be left untouched
+	- Macros not present in the source file but stated in defines will be added to the source before compilation
+
+	Snippets are handled as follows (also see shader_code_snippets):
+	- If at least one snippet is given, the additional define <CGV_USE_SNIPPETS> is set internally before compilation.
+	*/
 struct shader_compile_options {
+	/// map of pre-processor define names to values
 	shader_define_map defines;
+	/// shader code snippets
 	std::vector<shader_code_snippet> snippets;
+
+	// Add constructors to allow implicit cast from defines and enable backwards compatibility.
+	shader_compile_options() {}
+	shader_compile_options(const shader_define_map& defines) : defines(defines) {}
+	shader_compile_options(const std::vector<shader_code_snippet>& snippets) : snippets(snippets) {}
+	shader_compile_options(const shader_define_map& defines, const std::vector<shader_code_snippet>& snippets) : defines(defines), snippets(snippets) {}
 };
-
-
-
-
-
-
-
-
-
-
 
 /** a shader code object holds a code fragment of a geometry
     vertex or fragment shader and can be added to a shader 
-	 program. */
+	program. */
 class CGV_API shader_code : public render_component
 {
 public:
@@ -169,7 +185,6 @@ public:
 	/** read shader code from file that is searched for with find_file.
 	    If the shader type defaults to ST_DETECT, the detect_shader_type()
 		 method is applied to the file name.*/
-	//bool read_code(const context& ctx, const std::string &file_name, ShaderType st = ST_DETECT, const shader_define_map& defines = shader_define_map());
 	bool read_code(const context& ctx, const std::string &file_name, ShaderType st = ST_DETECT, const shader_compile_options& options = {});
 	/// set shader code from string
 	bool set_code(const context& ctx, const std::string &source, ShaderType st);
@@ -180,7 +195,6 @@ public:
 	/** read shader code with read_code and compile. If show_error is true
 	    print error messages formated with the get_last_error method in case
 		 an error arose. */
-	//bool read_and_compile(const context& ctx, const std::string &file_name, ShaderType st = ST_DETECT, bool show_error = true, const shader_define_map& defines = shader_define_map());
 	bool read_and_compile(const context& ctx, const std::string& file_name, ShaderType st = ST_DETECT, const shader_compile_options& options = {}, bool show_error = true);
 	/// return whether shader has been compiled successfully
 	bool is_compiled() const;
@@ -190,6 +204,8 @@ private:
 	static std::string resolve_includes(const std::string& source, bool use_cache, std::set<std::string>& included_file_names, std::string* _last_error = 0);
 	/// search for include directives in the given source code, replace them by the included file contents and return the full source code
 	static std::string resolve_includes(const std::string& source, bool use_cache, std::string* _last_error = 0);
+	/// search for version directives (including those in special comments, starting with //? or //!) and replace them with a single statement of the maximum required version
+	static void resolve_version(std::string& source);
 	/// set shader code defines and snippets
 	static void set_defines_and_snippets(std::string& source, const shader_compile_options& options);
 	/// set shader code vertex attribute locations (a hotfix for AMD driver behaviour on vertex shaders)

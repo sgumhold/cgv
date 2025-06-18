@@ -12,7 +12,12 @@ namespace cgv {
 /// %gui and %type independent %base class of all controls
 class CGV_API abst_control : public abst_view
 {
+protected:
+	/// access on_release value for given value ptr to 'q'uery, 's'et or 'u'nset
+	static bool access_on_release(const void* value_ptr, char access_mode);
 public:
+	/// return whether value_change signal was sent due to a release event
+	static bool on_release(const void* value_ptr);
 	/// construct from name
 	abst_control(const std::string& name);
 	/// add default implementation passing the query to the controls() method

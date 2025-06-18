@@ -2,6 +2,7 @@
 
 #include "gpgpu_args.glcs"
 
+#ifdef CGV_USE_SNIPPETS
 layout(local_size_x = LOCAL_SIZE_X) in;
 
 //$cgv::value_typedef
@@ -103,3 +104,4 @@ void main() {
 	if(tid == 0)
 		data_out[u_output_begin + gl_WorkGroupID.x] = s_data[0];
 }
+#endif

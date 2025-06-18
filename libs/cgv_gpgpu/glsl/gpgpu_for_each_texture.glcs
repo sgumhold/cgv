@@ -2,6 +2,7 @@
 
 #include "gpgpu_args.glcs"
 
+#ifdef CGV_USE_SNIPPETS
 layout(r32f, binding = 0) uniform IMAGE_TYPE tex;
 
 uniform uvec3 u_size;
@@ -21,3 +22,4 @@ void main() {
         imageStore(tex, gid, element);
 	}
 }
+#endif

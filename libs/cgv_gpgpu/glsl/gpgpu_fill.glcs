@@ -4,6 +4,7 @@
 
 //$cgv::value_typedef
 
+#ifdef CGV_USE_SNIPPETS
 layout(std430, binding = 0) writeonly buffer value_buffer {
 	value_type data[];
 };
@@ -19,3 +20,4 @@ void main() {
 	if(gid < u_end)
 		data[gid] = u_value;
 }
+#endif
