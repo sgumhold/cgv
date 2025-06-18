@@ -77,14 +77,14 @@ uint8_t from_hex(char c)
 	case 'D':
 	case 'E':
 	case 'F':
-		return c - 'A';
+		return 10 + (c - 'A');
 	case 'a':
 	case 'b':
 	case 'c':
 	case 'd':
 	case 'e':
 	case 'f':
-		return c - 'a';
+		return 10 + (c - 'a');
 	}
 	return 0;
 }

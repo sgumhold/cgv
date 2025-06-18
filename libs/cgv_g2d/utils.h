@@ -1,9 +1,19 @@
 #pragma once
 
-#include "trect.h"
-
 namespace cgv {
 namespace g2d {
+
+enum class Alignment {
+	kCenter = 0,					// align to center
+	kLeft = 1,						// align to center of left edge
+	kRight = 2,						// align to center of right edge
+	kTop = 4,						// align to center of top edge
+	kBottom = 8,					// align to center of bottom edge
+	kTopLeft = kLeft + kTop,		// align to top left corner
+	kTopRight = kRight + kTop,		// align to top right corner
+	kBottomLeft = kLeft + kBottom,	// align to bottom left corner
+	kBottomRight = kRight + kBottom	// align to bottom right corner
+};
 
 enum class OriginSetting {
 	kUpperLeft,

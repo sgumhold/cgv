@@ -12,6 +12,29 @@ abst_view::abst_view(const std::string& name) : cgv::base::node(name)
 	ptr = 0;
 }
 
+bool abst_control::access_on_release(const void* value_ptr, char access_mode)
+{
+	static std::map<const void*, bool> on_release_map;
+	auto iter = on_release_map.find(value_ptr);
+	if (access_mode == 'q')
+		return iter == on_release_map.end() ? false : iter->second;
+	if (access_mode == 's') {
+		if (iter == on_release_map.end())
+			on_release_map[value_ptr] = true;
+		else
+			iter->second = true;
+		return true;
+	}
+	if (iter != on_release_map.end())
+		iter->second = false;
+	return false;
+}
+
+bool abst_control::on_release(const void* value_ptr)
+{
+	return access_on_release(value_ptr, 'q');
+}
+
 /// construct from name
 abst_control::abst_control(const std::string& name) : abst_view(name)
 {

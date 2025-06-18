@@ -51,8 +51,8 @@ bool overlay::handle(cgv::gui::event& e) {
 		case cgv::gui::MA_RELEASE:
 			captured_mouse_ = false;
 			break;
-		case cgv::gui::MA_WHEEL:
-			return mouse_is_over_overlay;
+		//case cgv::gui::MA_WHEEL:
+		//	return mouse_is_over_overlay && blocks_events_;
 		default:
 			break;
 		}

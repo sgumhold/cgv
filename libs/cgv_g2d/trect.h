@@ -1,6 +1,7 @@
 #pragma once
 
 #include <cgv/math/fvec.h>
+#include "utils.h"
 
 namespace cgv {
 namespace g2d {
@@ -105,6 +106,50 @@ struct trect {
 			static_cast<typename trect<coord_type2>::point_type>(position),
 			static_cast<typename trect<coord_type2>::point_type>(size)
 		);
+	}
+
+	// TODO: Currently the alignment assumes the drawing origin is in the lower-left (as is default in OpenGL)
+	// Alignment relative to an upper-left origin is necessary for GUI drawing with flipped y-coordinates.
+	// Possible fix: Introduce an origin-agnostic alignment with "start" and "end" notation together with a
+	// conversion function that takes the alignment and origin setting to produce this agnostic alignment.
+	// Applies to all three align methods.
+
+	// align outside the bounds of the reference rectangle
+	void align_inside(const trect<coord_type>& reference, Alignment alignment) {
+		align_with_percentual_offset(reference, alignment, coord_type(0), coord_type(0));
+	}
+
+	// align center to the bounds of the reference rectangle
+	void align_middle(const trect<coord_type>& reference, Alignment alignment) {
+		align_with_percentual_offset(reference, alignment, coord_type(0.5), coord_type(0.5));
+	}
+
+	// align outside the bounds of the reference rectangle
+	void align_outside(const trect<coord_type>& reference, Alignment alignment) {
+		align_with_percentual_offset(reference, alignment, coord_type(1), coord_type(1));
+	}
+
+	// align to the bounds of the reference rectangle and apply percentual offsets relative to this size
+	void align_with_percentual_offset(const trect<coord_type>& reference, Alignment alignment, coord_type horizontal_offset, coord_type vertical_offset) {
+		// first center this in reference rectangle
+		position = reference.center() - coord_type(0.5) * size;
+
+		// then apply alignments using percentual offsets as necessary
+		int mask = static_cast<int>(alignment);
+
+		point_type start_offset = cgv::math::clamp(point_type(horizontal_offset, vertical_offset), coord_type(0), coord_type(1));
+		start_offset.y() = coord_type(1) - start_offset.y();
+		point_type end_offset = point_type(1) - start_offset;
+
+		if(mask & static_cast<int>(Alignment::kLeft))
+			x() = reference.x() - start_offset.x() * w();
+		else if(mask & static_cast<int>(Alignment::kRight))
+			x() = reference.x1() - end_offset.x() * w();
+
+		if(mask & static_cast<int>(Alignment::kTop))
+			y() = reference.y1() - start_offset.y() * h();
+		else if(mask & static_cast<int>(Alignment::kBottom))
+			y() = reference.y() - end_offset.y() * h();
 	}
 };
 
