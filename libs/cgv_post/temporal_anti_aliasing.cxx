@@ -46,13 +46,27 @@ bool temporal_anti_aliasing::init(cgv::render::context& ctx) {
 	return is_initialized;
 }
 
-bool temporal_anti_aliasing::ensure(cgv::render::context& ctx) {
-
+bool temporal_anti_aliasing::ensure(cgv::render::context& ctx)
+{
 	fbc_post.ensure(ctx);
 	fbc_hist.ensure(ctx);
 	fbc_resolve.ensure(ctx);
 
 	if(post_process_effect::ensure(ctx) || jitter_sample_count != jitter_offsets.size()) {
+		generate_jitter_offsets();
+		return true;
+	}
+
+	return false;
+}
+
+bool temporal_anti_aliasing::ensure_fb_size(cgv::render::context& ctx, const ivec2 &fb_size)
+{
+	fbc_post.ensure_size(ctx, fb_size);
+	fbc_hist.ensure_size(ctx, fb_size);
+	fbc_resolve.ensure_size(ctx, fb_size);
+
+	if(post_process_effect::ensure_fb_size(ctx, fb_size) || jitter_sample_count != jitter_offsets.size()) {
 		generate_jitter_offsets();
 		return true;
 	}

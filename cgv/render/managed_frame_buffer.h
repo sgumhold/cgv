@@ -65,10 +65,11 @@ public:
 	texture* attachment_texture_ptr(const std::string& name);
 
 	bool ensure(context& ctx);
+	bool ensure_size(context& ctx, const ivec2 &size);
 
-	bool enable(context& ctx);
+	bool enable(context& ctx, bool push_viewport=true);
 	
-	bool disable(context& ctx);
+	bool disable(context& ctx, bool pop_viewport=true);
 	
 	frame_buffer& ref_frame_buffer() { return fb; }
 };

@@ -43,6 +43,7 @@ public:
 	virtual bool init(cgv::render::context& ctx);
 
 	virtual bool ensure(cgv::render::context& ctx);
+	virtual bool ensure_fb_size(cgv::render::context& ctx, const ivec2& fb_size);
 
 	virtual void reset() {}
 
