@@ -112,7 +112,6 @@ bool managed_frame_buffer::ensure(context& ctx)
 		}
 		return true;
 	}
-
 	return false;
 }
 
@@ -130,17 +129,18 @@ bool managed_frame_buffer::ensure_size(context& ctx, const ivec2 &size)
 	return false;
 }
 
-bool managed_frame_buffer::enable(context& ctx) {
-
+bool managed_frame_buffer::enable(context& ctx, bool push_viewport) {
+	if (push_viewport)
+		fb.push_viewport(ctx);
 	bool success = fb.enable(ctx);
-	fb.push_viewport(ctx);
 	return success;
 }
 
-bool managed_frame_buffer::disable(context& ctx) {
-
-	fb.pop_viewport(ctx);
-	return fb.disable(ctx);
+bool managed_frame_buffer::disable(context& ctx, bool pop_viewport) {
+	auto result = fb.disable(ctx);
+	if (pop_viewport)
+		fb.pop_viewport(ctx);
+	return result;
 }
 
 bool managed_frame_buffer::create_and_validate(context& ctx, const ivec2& size) {
