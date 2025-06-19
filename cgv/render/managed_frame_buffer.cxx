@@ -100,11 +100,11 @@ texture* managed_frame_buffer::attachment_texture_ptr(const std::string& name) {
 	return nullptr;
 }
 
-bool managed_frame_buffer::ensure(context& ctx) {
-
+bool managed_frame_buffer::ensure(context& ctx)
+{
 	ivec2 actual_size = get_actual_size(ctx);
-
-	if(!fb.is_created() || fb.get_width() != actual_size.x() || fb.get_height() != actual_size.y()) {
+	if (!fb.is_created() || fb.get_width() != actual_size.x() || fb.get_height() != actual_size.y())
+	{
 		destruct(ctx);
 		if(!create_and_validate(ctx, actual_size)) {
 			std::cerr << "Error: fbo not complete" << std::endl;
@@ -112,21 +112,35 @@ bool managed_frame_buffer::ensure(context& ctx) {
 		}
 		return true;
 	}
-
 	return false;
 }
 
-bool managed_frame_buffer::enable(context& ctx) {
+bool managed_frame_buffer::ensure_size(context& ctx, const ivec2 &size)
+{
+	if (!fb.is_created() || fb.get_width() != size.x() || fb.get_height() != size.y())
+	{
+		destruct(ctx);
+		if(!create_and_validate(ctx, size)) {
+			std::cerr << "Error: fbo not complete" << std::endl;
+			abort();
+		}
+		return true;
+	}
+	return false;
+}
 
+bool managed_frame_buffer::enable(context& ctx, bool push_viewport) {
+	if (push_viewport)
+		fb.push_viewport(ctx);
 	bool success = fb.enable(ctx);
-	fb.push_viewport(ctx);
 	return success;
 }
 
-bool managed_frame_buffer::disable(context& ctx) {
-
-	fb.pop_viewport(ctx);
-	return fb.disable(ctx);
+bool managed_frame_buffer::disable(context& ctx, bool pop_viewport) {
+	auto result = fb.disable(ctx);
+	if (pop_viewport)
+		fb.pop_viewport(ctx);
+	return result;
 }
 
 bool managed_frame_buffer::create_and_validate(context& ctx, const ivec2& size) {

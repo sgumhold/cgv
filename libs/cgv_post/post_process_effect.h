@@ -43,12 +43,13 @@ public:
 	virtual bool init(cgv::render::context& ctx);
 
 	virtual bool ensure(cgv::render::context& ctx);
+	virtual bool ensure_fb_size(cgv::render::context& ctx, const ivec2& fb_size);
 
 	virtual void reset() {}
 
-	virtual void begin(cgv::render::context& ctx) = 0;
+	virtual void begin(cgv::render::context& ctx, bool push_viewport=true) = 0;
 
-	virtual void end(cgv::render::context& ctx) = 0;
+	virtual void end(cgv::render::context& ctx, bool pop_viewport=true) = 0;
 
 	vec2 get_viewport_size() const { return viewport_size; }
 
