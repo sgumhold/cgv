@@ -47,9 +47,9 @@ public:
 
 	virtual void reset() {}
 
-	virtual void begin(cgv::render::context& ctx) = 0;
+	virtual void begin(cgv::render::context& ctx, bool push_viewport=true) = 0;
 
-	virtual void end(cgv::render::context& ctx) = 0;
+	virtual void end(cgv::render::context& ctx, bool pop_viewport=true) = 0;
 
 	vec2 get_viewport_size() const { return viewport_size; }
 

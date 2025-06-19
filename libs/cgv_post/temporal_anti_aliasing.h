@@ -74,9 +74,9 @@ public:
 
 	void reset_static_frame_count();
 
-	void begin(cgv::render::context& ctx);
+	void begin(cgv::render::context& ctx, bool push_viewport=true);
 
-	void end(cgv::render::context& ctx);
+	void end(cgv::render::context& ctx, bool pop_viewport=true);
 
 	void set_view(cgv::render::view* view) { view_ptr = view; }
 
