@@ -16,8 +16,8 @@ bool post_process_effect::init(cgv::render::context& ctx) {
 	return is_initialized;
 }
 
-bool post_process_effect::ensure(cgv::render::context& ctx) {
-
+bool post_process_effect::ensure(cgv::render::context& ctx)
+{
 	assert_init();
 
 	bool update = false;
@@ -28,6 +28,21 @@ bool post_process_effect::ensure(cgv::render::context& ctx) {
 		return true;
 	}
 	
+	return false;
+}
+
+bool post_process_effect::ensure_fb_size(cgv::render::context& ctx, const ivec2& fb_size)
+{
+	assert_init();
+
+	bool update = false;
+	if(fbc_draw.ensure_size(ctx, fb_size)) {
+		viewport_size.x() = static_cast<float>(fbc_draw.ref_frame_buffer().get_width());
+		viewport_size.y() = static_cast<float>(fbc_draw.ref_frame_buffer().get_height());
+		reset();
+		return true;
+	}
+
 	return false;
 }
 
