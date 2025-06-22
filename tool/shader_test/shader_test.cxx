@@ -339,6 +339,8 @@ int main(int argc, char** argv)
 		convert_to_string(argv[1], argv[2]);
 		return exit_code;
 	}
+	// extract path of input file and add it to the shader path in order to correctly resolve local includes
+	get_shader_config()->shader_path += ";" + cgv::utils::file::get_path(argv[1]);
 	g_argc = argc;
 	g_argv = argv;
 	g_ctx_ptr = ctx_ptr;

@@ -344,99 +344,197 @@ std::string shader_code::resolve_includes(const std::string& source, bool use_ca
 	return resolve_includes(source, use_cache, included_file_names, _last_error);
 }
 
-void shader_code::resolve_version(std::string& source) {
-	struct version_directive_t {
-		size_t position = 0;
-		size_t version_number = 0;
-		bool has_profile = false;
-		bool is_core_profile = false;
+void shader_code::resolve_version_and_extensions(std::string& source) {
+	struct index_range {
+		size_t begin = 0;
+		size_t end = 0;
+
+		bool empty() const {
+			return begin >= end;
+		}
+
+		size_t length() const {
+			return end - begin;
+		}
+	};
+
+	struct preprocessor_directive_t {
+		enum Type {
+			kUndefined,
+			kVersion,
+			kExtension
+		};
+
+		Type type = kUndefined;
+		index_range type_range;
+		index_range content_range;
+		// TODO: Replace with semantics for replace comment //! and conditional expansion //?
 		bool is_special_comment = false;
 	};
 
-	const std::string version_identifier = "#version";
+	static const std::map<std::string, preprocessor_directive_t::Type> identifier_to_type = {
+		{ "#version", preprocessor_directive_t::Type::kVersion },
+		{ "#extension", preprocessor_directive_t::Type::kExtension },
+	};
 
-	std::vector<version_directive_t> version_directives;
+	enum class CommentType {
+		kNone,
+		kLine,
+		kBlock,
+		kSpecial
+	};
 
-	// collect all version directives in source
-	size_t offset = 0;
-	while(true) {
-		offset = source.find(version_identifier, offset);
-		if(offset == std::string::npos) {
+	std::vector<preprocessor_directive_t> directives;
+
+	// read source string and collect all known directives in source
+	size_t i = 0;
+	
+	CommentType comment = CommentType::kNone;
+	while(i < source.length()) {
+		char c = source[i];
+
+		switch(c) {
+		case '#':
+			if(comment == CommentType::kNone || comment == CommentType::kSpecial) {
+				// search for the next non-escaped newline which is not preceded by a backslash
+				size_t end = i;
+				do {
+					end = source.find('\n', end + 1);
+				} while(end != std::string::npos && source[end - 1] == '\\');
+
+				if(end == std::string::npos)
+					end = source.length();
+
+				// There must be at least one space that separates the directive type and its value/content between indices i and end.
+				// A valid directive also must have a value/content.
+
+				// TODO: support space between # and directive type
+
+				size_t space = source.find(' ', i + 1);
+				if(space < end) {
+					index_range type_range = { i, space };
+					std::string type_string = source.substr(type_range.begin, type_range.length());
+					auto it = identifier_to_type.find(type_string);
+					if(it != identifier_to_type.end()) {
+						preprocessor_directive_t directive;
+						directive.type = it->second;
+						directive.type_range = { i, space };
+						directive.content_range = { space + 1, end };
+						directive.is_special_comment = comment == CommentType::kSpecial;
+						directives.push_back(directive);
+					}
+				}
+				comment = CommentType::kNone;
+				i = end;
+			}
 			break;
-		} else {
-			version_directives.push_back({ offset });
-			offset += version_identifier.length();
+		case '/':
+			if(comment == CommentType::kNone && (i + 1) < source.length()) {
+				if(source[i + 1] == '/')
+					comment = CommentType::kLine;
+				else if(source[i + 1] == '*')
+					comment = CommentType::kBlock;
+				++i;
+			}
+			break;
+		case '*':
+			if(comment == CommentType::kBlock && (i + 1) < source.length()) {
+				if(source[i + 1] == '/')
+					comment = CommentType::kNone;
+				++i;
+			}
+			break;
+		case '!':
+		case '?':
+			if(comment == CommentType::kLine)
+				comment = CommentType::kSpecial;
+			break;
+		case '\n':
+			if(comment != CommentType::kBlock)
+				comment = CommentType::kNone;
+			break;
+		default:
+			break;
 		}
+
+		++i;
 	}
 
-	// extract and set properties of each version directive
-	for(version_directive_t& directive : version_directives) {
-		if(directive.position > 2) {
-			std::string prefix = source.substr(directive.position - 3, 3);
-			if(prefix == "//?" || prefix == "//!")
-				directive.is_special_comment = true;
-		}
+	struct version_t {
+		size_t number = 0;
+		bool has_profile = false;
+		bool is_core_profile = false;
+	};
 
-		size_t search_offset = directive.position + version_identifier.length();
-		size_t newline_pos = source.find('\n', search_offset);
+	// find the highest version number and profile
+	version_t highest_version;
+	for(const preprocessor_directive_t& directive : directives) {
+		if(directive.type != preprocessor_directive_t::Type::kVersion)
+			continue;
 
-		std::string properties = cgv::utils::trim(source.substr(search_offset, newline_pos - search_offset));
+		std::string content = cgv::utils::trim(source.substr(directive.content_range.begin, directive.content_range.length()));
 
 		std::vector<cgv::utils::token> tokens;
-		cgv::utils::split_to_tokens(properties, tokens, "", true, "", "", " \t");
+		cgv::utils::split_to_tokens(content, tokens, "", true, "", "", " \t");
+
+		version_t version;
 
 		if(!tokens.empty()) {
-			std::string number = to_string(tokens[0]);
-
-			if(!cgv::utils::from_string(directive.version_number, number))
-				directive.version_number = 0;
+			if(!cgv::utils::from_string(version.number, to_string(tokens[0])))
+				version.number = 0;
 		}
 
 		if(tokens.size() > 1) {
 			std::string profile = to_string(tokens[1]);
 			if(profile == "core") {
-				directive.has_profile = true;
-				directive.is_core_profile = true;
+				version.has_profile = true;
+				version.is_core_profile = true;
 			} else if(profile == "compatibility") {
-				directive.has_profile = true;
-				directive.is_core_profile = false;
+				version.has_profile = true;
+				version.is_core_profile = false;
 			}
 		}
-	}
 
-	// collect the highest version number and profile priority
-	version_directive_t highest_version_directive;
-	for(const version_directive_t& directive : version_directives) {
-		if(directive.version_number > highest_version_directive.version_number) {
-			highest_version_directive.version_number = directive.version_number;
-		}
+		if(version.number > highest_version.number)
+			highest_version.number = version.number;
 
-		if(directive.has_profile) {
-			if(highest_version_directive.has_profile) {
-				if(directive.is_core_profile)
-					highest_version_directive.is_core_profile = true;
+		if(version.has_profile) {
+			if(highest_version.has_profile) {
+				if(version.is_core_profile)
+					highest_version.is_core_profile = true;
 			} else {
-				highest_version_directive.has_profile = true;
-				highest_version_directive.is_core_profile = directive.is_core_profile;
+				highest_version.has_profile = true;
+				highest_version.is_core_profile = version.is_core_profile;
 			}
 		}
 	}
 
-	// disable all non-commented version directives by changing them to comments
-	for(auto it = version_directives.rbegin(); it != version_directives.rend(); ++it) {
-		const version_directive_t& directive = *it;
-		if(!directive.is_special_comment)
-			source.insert(directive.position, "//");
+	// disable all non-commented version and extension directives by changing them to comments
+	for(const preprocessor_directive_t& directive : directives) {
+		if(!directive.is_special_comment && (directive.type == preprocessor_directive_t::Type::kVersion || directive.type == preprocessor_directive_t::Type::kExtension)) {
+			// Prevent expensive insertion operatons by simply overwriting the first two characters of the directive, since it is no longer needed anyway.
+			// This also has the advantage that the indices stay valid.
+			source[directive.type_range.begin] = '/';
+			source[directive.type_range.begin + 1] = '/';
+		}
 	}
 
-	// create and insert the new version directive as the first statement in the source
-	std::string version_str = "#version " + std::to_string(highest_version_directive.version_number);
-	if(highest_version_directive.has_profile) {
-		version_str += ' ';
-		version_str += highest_version_directive.is_core_profile ? "core" : "compatibility";
-		version_str += '\n';
+	// build a new header for the shader by first adding the version directive using the highest version
+	std::string header = "#version " + std::to_string(highest_version.number);
+	if(highest_version.has_profile) {
+		header += " ";
+		header += highest_version.is_core_profile ? "core" : "compatibility";
 	}
-	source.insert(0, version_str);
+	header += "\n";
+
+	// next add all extensions directly after the version to comply with the specification of some newer shader versions
+	for(const preprocessor_directive_t& directive : directives) {
+		if(directive.type == preprocessor_directive_t::Type::kExtension)
+			header += "#extension " + source.substr(directive.content_range.begin, directive.content_range.length()) + "\n";
+	}
+	header += '\n';
+
+	source.insert(0, header);
 }
 
 /// return the shader type of this code
@@ -498,8 +596,8 @@ bool shader_code::read_code(const context& ctx, const std::string &file_name, Sh
 	std::string source = retrieve_code(file_name, ctx.is_shader_file_cache_enabled(), &last_error);
 
 	source = resolve_includes(source, ctx.is_shader_file_cache_enabled());
-
-	resolve_version(source);
+	
+	resolve_version_and_extensions(source);
 
 	set_defines_and_snippets(source, options);
 
