@@ -204,8 +204,8 @@ private:
 	static std::string resolve_includes(const std::string& source, bool use_cache, std::set<std::string>& included_file_names, std::string* _last_error = 0);
 	/// search for include directives in the given source code, replace them by the included file contents and return the full source code
 	static std::string resolve_includes(const std::string& source, bool use_cache, std::string* _last_error = 0);
-	/// search for version directives (including those in special comments, starting with //? or //!) and replace them with a single statement of the maximum required version
-	static void resolve_version(std::string& source);
+	/// search for version directives (including those in special comments, starting with //? or //!) and replace them with a single statement of the maximum required version; extension directives are moved after the top-most version directive
+	static void resolve_version_and_extensions(std::string& source);
 	/// set shader code defines and snippets
 	static void set_defines_and_snippets(std::string& source, const shader_compile_options& options);
 	/// set shader code vertex attribute locations (a hotfix for AMD driver behaviour on vertex shaders)
