@@ -1,0 +1,90 @@
+@=
+projectType="library";
+projectName="cesium_tiles";
+projectGUID="29595BAC-31AC-4A1B-2B07-A4024BC7BD22";
+cppLanguageStandard = "stdcpp20";
+addProjectDirs=[CGV_DIR."/libs", CGV_DIR."/3rd"];
+addIncDirs=addIncDirs.[
+	INPUT_DIR, 
+    env::CESIUM_DIR."/Cesium3DTiles/include/",
+    env::CESIUM_DIR."/Cesium3DTiles/generated/include/",
+    env::CESIUM_DIR."/Cesium3DTilesContent/include/",
+    env::CESIUM_DIR."/Cesium3DTilesReader/include/", 
+    env::CESIUM_DIR."/Cesium3DTilesReader/generated/include/", 
+    env::CESIUM_DIR."/Cesium3DTilesSelection/include/",
+    env::CESIUM_DIR."/Cesium3DTilesWriter/include/",
+    env::CESIUM_DIR."/Cesium3DTilesWriter/generated/include/",
+    env::CESIUM_DIR."/CesiumAsync/include/",
+    env::CESIUM_DIR."/CesiumClientCommon/include/",
+    env::CESIUM_DIR."/CesiumCurl/include/",
+    env::CESIUM_DIR."/CesiumGeometry/include/",
+    env::CESIUM_DIR."/CesiumGeospatial/include/",
+    env::CESIUM_DIR."/CesiumGltf/include/",
+    env::CESIUM_DIR."/CesiumGltf/generated/include/",
+    env::CESIUM_DIR."/CesiumGltfContent/include/",
+    env::CESIUM_DIR."/CesiumGltfReader/include/",
+    env::CESIUM_DIR."/CesiumGltfReaderGenerated/include/",
+    env::CESIUM_DIR."/CesiumGltfWriter/include/",
+    env::CESIUM_DIR."/CesiumGltfWriter/generated/include/",
+    env::CESIUM_DIR."/CesiumIonClient/include/",
+    env::CESIUM_DIR."/CesiumITwinClient/include/",
+    env::CESIUM_DIR."/CesiumJsonReader/include/",
+    env::CESIUM_DIR."/CesiumJsonWriter/include/",
+    env::CESIUM_DIR."/CesiumQuantizedMeshTerrain/include/",
+    env::CESIUM_DIR."/CesiumQuantizedMeshTerrain/generated/include/",
+    env::CESIUM_DIR."/CesiumRasterOverlays/include/",
+    env::CESIUM_DIR."/CesiumUtility/include/",
+    env::CESIUM_DIR."/CesiumVectorData/include/",
+    env::CESIUM_DEP_DIR
+];
+addLibDirs = [
+    env::CESIUM_INSTALL."/Cesium3DTiles/Debug/",
+    env::CESIUM_INSTALL."/Cesium3DTilesContent/Debug/",
+    env::CESIUM_INSTALL."/Cesium3DTilesReader/Debug/", 
+    env::CESIUM_INSTALL."/Cesium3DTilesSelection/Debug/",
+    env::CESIUM_INSTALL."/Cesium3DTilesWriter/Debug/",
+    env::CESIUM_INSTALL."/CesiumAsync/Debug/",
+    env::CESIUM_INSTALL."/CesiumClientCommon/Debug/",
+    env::CESIUM_INSTALL."/CesiumCurl/Debug/",
+    env::CESIUM_INSTALL."/CesiumGeometry/Debug/",
+    env::CESIUM_INSTALL."/CesiumGeospatial/Debug/",
+    env::CESIUM_INSTALL."/CesiumGltf/Debug/",
+    env::CESIUM_INSTALL."/CesiumGltfContent/Debug/",
+    env::CESIUM_INSTALL."/CesiumGltfReader/Debug/",
+    env::CESIUM_INSTALL."/CesiumGltfWriter/Debug/",
+    env::CESIUM_INSTALL."/CesiumIonClient/Debug/",
+    env::CESIUM_INSTALL."/CesiumITwinClient/Debug/",
+    env::CESIUM_INSTALL."/CesiumJsonReader/Debug/",
+    env::CESIUM_INSTALL."/CesiumJsonWriter/Debug/",
+    env::CESIUM_INSTALL."/CesiumQuantizedMeshTerrain/Debug/",
+    env::CESIUM_INSTALL."/CesiumRasterOverlays/Debug/",
+    env::CESIUM_INSTALL."/CesiumUtility/Debug/",
+    env::CESIUM_INSTALL."/CesiumVectorData/Debug/"
+];
+addDependencies=[
+    "Cesium3DTiles",
+    "Cesium3DTilesContent",
+    "Cesium3DTilesReader", 
+    "Cesium3DTilesSelection",
+    "Cesium3DTilesWriter",
+    "CesiumAsync",
+    "CesiumClientCommon",
+    "CesiumCurl",
+    "CesiumGeometry",
+    "CesiumGeospatial",
+    "CesiumGltf",
+    "CesiumGltfContent",
+    "CesiumGltfReader",
+    "CesiumGltfWriter",
+    "CesiumIonClient",
+    "CesiumITwinClient",
+    "CesiumJsonReader",
+    "CesiumJsonWriter",
+    "CesiumQuantizedMeshTerrain",
+    "CesiumRasterOverlays",
+    "CesiumUtility",
+    "CesiumVectorData"
+];
+addProjectDeps=["cgv_gl"];
+addSharedDefines=["CESIUM_TILES_BUILDING"];
+addStaticDefines=["CESIUM_TILES_STATIC"];
