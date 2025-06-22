@@ -1,0 +1,53 @@
+@=
+projectType="application_plugin";
+projectName="cesium_tiles_plugin";
+projectGUID="1b6a1912-ccb2-14da-81ac-9119201d9c33";
+cppLanguageStandard = "stdcpp20";
+addProjectDirs=[CGV_DIR."/libs", CGV_DIR."/plugins", CGV_DIR."/3rd"];
+addIncDirs=[
+    INPUT_DIR, 
+    CGV_DIR."/libs", 
+    CGV_DIR."/build/vs143/cesium_tiles_plugin",
+    env::CESIUM_DIR."/Cesium3DTiles/include/",
+    env::CESIUM_DIR."/Cesium3DTiles/generated/include/",
+    env::CESIUM_DIR."/Cesium3DTilesContent/include/",
+    env::CESIUM_DIR."/Cesium3DTilesReader/include/", 
+    env::CESIUM_DIR."/Cesium3DTilesReader/generated/include/", 
+    env::CESIUM_DIR."/Cesium3DTilesSelection/include/",
+    env::CESIUM_DIR."/Cesium3DTilesWriter/include/",
+    env::CESIUM_DIR."/Cesium3DTilesWriter/generated/include/",
+    env::CESIUM_DIR."/CesiumAsync/include/",
+    env::CESIUM_DIR."/CesiumClientCommon/include/",
+    env::CESIUM_DIR."/CesiumCurl/include/",
+    env::CESIUM_DIR."/CesiumGeometry/include/",
+    env::CESIUM_DIR."/CesiumGeospatial/include/",
+    env::CESIUM_DIR."/CesiumGltf/include/",
+    env::CESIUM_DIR."/CesiumGltf/generated/include/",
+    env::CESIUM_DIR."/CesiumGltfContent/include/",
+    env::CESIUM_DIR."/CesiumGltfReader/include/",
+    env::CESIUM_DIR."/CesiumGltfReaderGenerated/include/",
+    env::CESIUM_DIR."/CesiumGltfWriter/include/",
+    env::CESIUM_DIR."/CesiumGltfWriter/generated/include/",
+    env::CESIUM_DIR."/CesiumIonClient/include/",
+    env::CESIUM_DIR."/CesiumITwinClient/include/",
+    env::CESIUM_DIR."/CesiumJsonReader/include/",
+    env::CESIUM_DIR."/CesiumJsonWriter/include/",
+    env::CESIUM_DIR."/CesiumQuantizedMeshTerrain/include/",
+    env::CESIUM_DIR."/CesiumQuantizedMeshTerrain/generated/include/",
+    env::CESIUM_DIR."/CesiumRasterOverlays/include/",
+    env::CESIUM_DIR."/CesiumUtility/include/",
+    env::CESIUM_DIR."/CesiumVectorData/include/",
+    env::CESIUM_DEP_DIR
+    ];
+addProjectDeps=[
+		"cgv_utils", "cgv_type", "cgv_reflect", "cgv_data", "cgv_signal", "cgv_base", "cgv_media", 
+		"cgv_gui", "cgv_render","cgv_os", "fltk", "cgv_gl", "cgv_proc", "plot", "glew", 
+		"cgv_viewer",
+		"cg_fltk", "cg_ext", "crg_stereo_view", "crg_antialias", "crg_depth_of_field", "holo_disp",
+		"crg_light", "crg_bg", "cg_meta", "cmi_io","cmv_avi", "crg_grid", "co_web", "cg_gamepad",
+		"cmf_tt_gl_font", "cgv_g2d", "cgv_gpgpu", "cgv_app", "cgv_post", "cesium_tiles"
+	];
+addShaderPaths=[INPUT_DIR];
+addCommandLineArguments=[
+	after("SHADER_PATHS", "cg_fltk")
+];
