@@ -1,0 +1,21 @@
+#version 430
+
+//***** begin interface of view.glsl ***********************************
+mat4 get_modelview_projection_matrix();
+vec3 get_eye_world();
+//***** end interface of view.glsl ***********************************
+
+layout(location = 0) in vec3 position;
+layout(location = 1) in vec3 normal;
+layout(location = 2) in vec2 texcoord;
+
+out vec3 normal_fs;
+out vec2 texcoord_fs;
+
+void main()
+{
+    normal_fs = normal;
+    texcoord_fs = texcoord;
+
+    gl_Position = get_modelview_projection_matrix() * vec4(position, 1.0f);
+}

@@ -1,6 +1,6 @@
 #pragma once
 
-#ifdef _WIN32
+#ifndef _WIN32
 	#ifdef MAPTILES_PLUGIN_EXPORTS
 		#define MAPTILES_PLUGIN_API __declspec(dllexport)
 	#elif !defined(MAPTILES_PLUGIN_FORCE_STATIC)
