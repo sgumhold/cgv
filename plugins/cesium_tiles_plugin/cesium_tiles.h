@@ -11,8 +11,10 @@
 #include <cgv/math/ftransform.h>
 #include <cgv/render/drawable.h>
 #include <cgv/render/stereo_view.h>
+#include <cgv/render/shader_program.h>
 
 #include "cesium_tiles/TileManager.h"
+#include "cesium_tiles/TileRenderer.h"
 
 class cesium_tiles : public cgv::base::node,
 					 public cgv::render::drawable,
@@ -21,6 +23,10 @@ class cesium_tiles : public cgv::base::node,
 {
 protected:
 	TileManager tileManager;
+	TileRenderer tileRenderer;
+	cgv::render::shader_program _elevationShader;
+	cgv::render::stereo_view* _camera = nullptr;
+
 
 public:
 	cesium_tiles();
