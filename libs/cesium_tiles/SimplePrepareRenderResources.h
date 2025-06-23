@@ -17,7 +17,7 @@ class CESIUM_TILES_API SimplePrepareRenderResources : public Cesium3DTilesSelect
 		_elevationShader = &elevationShader;
 	}
 
-
+	
 	virtual CesiumAsync::Future<Cesium3DTilesSelection::TileLoadResultAndRenderResources>
 		prepareInLoadThread(
 			const CesiumAsync::AsyncSystem& asyncSystem,
@@ -145,7 +145,7 @@ class CESIUM_TILES_API SimplePrepareRenderResources : public Cesium3DTilesSelect
 	
 		// TODO: DO we need to transform the positions with the 'transform' matrix?
 
-		// Return the result, passing ownership of tile3DRender as a void*
+		// Return the result, passing ownership of ElevationTileData as a void*
 		return asyncSystem.createResolvedFuture<Cesium3DTilesSelection::TileLoadResultAndRenderResources>(
 			Cesium3DTilesSelection::TileLoadResultAndRenderResources{
 				std::move(tileLoadResult), static_cast<void*>(elevationTileData.release())
@@ -156,6 +156,7 @@ class CESIUM_TILES_API SimplePrepareRenderResources : public Cesium3DTilesSelect
 	virtual void* prepareInMainThread(Cesium3DTilesSelection::Tile& tile, void* pLoadThreadResult) override {
 		//std::cout << "Prepare in Main Thread called.\n";
 		
+		// retrieve the loaded data from the prepareInLoadThread method
 		CesiumElevationTileData* elevationTileData = static_cast<CesiumElevationTileData*>(pLoadThreadResult);
 		if (!elevationTileData) {
 			std::cerr << "Error: CesiumElavationTileData is null in prepareInMainThread.\n";
