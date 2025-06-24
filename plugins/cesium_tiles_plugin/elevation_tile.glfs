@@ -10,7 +10,7 @@ out vec4 frag_color;
 void main()
 {
     // TODO: replace random calculations with proper lighting calculations
-    float intensity = min(1.0, max(max(texcoords_fs.x, texcoords_fs.y), dot(normal_fs, vec3(0, 1, 0))));
+    //float intensity = min(1.0, max(max(texcoords_fs.x, texcoords_fs.y), dot(normal_fs, vec3(0, 1, 0))));
 
     //frag_color = vec4(1.0, 0.0, 0.0, 1.0) * intensity;
 
