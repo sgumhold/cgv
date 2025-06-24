@@ -115,20 +115,6 @@ bool managed_frame_buffer::ensure(context& ctx)
 	return false;
 }
 
-bool managed_frame_buffer::ensure_size(context& ctx, const ivec2 &size)
-{
-	if (!fb.is_created() || fb.get_width() != size.x() || fb.get_height() != size.y())
-	{
-		destruct(ctx);
-		if(!create_and_validate(ctx, size)) {
-			std::cerr << "Error: fbo not complete" << std::endl;
-			abort();
-		}
-		return true;
-	}
-	return false;
-}
-
 bool managed_frame_buffer::enable(context& ctx, bool push_viewport) {
 	if (push_viewport)
 		fb.push_viewport(ctx);
