@@ -20,14 +20,17 @@ rgb FIELD() const { \
 	return FIELD##_col; \
 }\
 std::string FIELD##_hex() const { \
-	return rgb_to_hex(FIELD##_col); \
+	return cgv::media::to_hex(FIELD##_col); \
 }
 
 class CGV_API theme_info {
 protected:
-	int theme_idx;
+	int index_ = -1;
 
+	// the spacing between user interface groups (usually a 1px wide border)
 	int spacing_ = 1;
+	// the scaling of user interface elements (used for DPI-adjustment); currently not supported by fltk controls
+	float scaling_ = 1.0f;
 
 	rgb background_col;
 	rgb group_col;
@@ -40,22 +43,6 @@ protected:
 	rgb warning_col;
 	rgb shadow_col;
 
-	static std::string char_to_hex(unsigned char c) {
-		static const char hex_chars[16] = { '0', '1', '2', '3', '4', '5', '6', '7', '8', '9', 'A', 'B', 'C', 'D', 'E', 'F' };
-		std::string s = "00";
-		s[0] = hex_chars[(c & 0xF0) >> 4];
-		s[1] = hex_chars[(c & 0x0F) >> 0];
-		return s;
-	}
-
-	static std::string rgb_to_hex(const rgb& c) {
-		unsigned char r = static_cast<unsigned char>(255.0f * c.R());
-		unsigned char g = static_cast<unsigned char>(255.0f * c.G());
-		unsigned char b = static_cast<unsigned char>(255.0f * c.B());
-		std::string s = "0x" + char_to_hex(r) + char_to_hex(g) + char_to_hex(b);
-		return s;
-	}
-
 public:
 	static theme_info& instance();
 
@@ -67,29 +54,39 @@ public:
 	/// destruct
 	~theme_info() {}
 
-	void set_index(int idx);
-	int get_index() const;
+	// general info
+	void index(int index) { index_ = index; }
+	int index() const { return index_; }
 	bool is_dark() const;
 
+	// layout variables
 	int spacing() const { return spacing_; }
 	void spacing(int i) { spacing_ = i; }
 
-	DEF_COLOR_MEMBER_METHODS(background)
-	DEF_COLOR_MEMBER_METHODS(group)
-	DEF_COLOR_MEMBER_METHODS(control)
-	DEF_COLOR_MEMBER_METHODS(border)
-	DEF_COLOR_MEMBER_METHODS(text)
-	DEF_COLOR_MEMBER_METHODS(text_background)
-	DEF_COLOR_MEMBER_METHODS(selection)
-	DEF_COLOR_MEMBER_METHODS(highlight)
-	DEF_COLOR_MEMBER_METHODS(warning)
-	DEF_COLOR_MEMBER_METHODS(shadow)
+	float scaling() const { return scaling_; }
+	void scaling(float f) { scaling_ = f; }
+
+	// theme colors
+	DEF_COLOR_MEMBER_METHODS(background);
+	DEF_COLOR_MEMBER_METHODS(group);
+	DEF_COLOR_MEMBER_METHODS(control);
+	DEF_COLOR_MEMBER_METHODS(border);
+	DEF_COLOR_MEMBER_METHODS(text);
+	DEF_COLOR_MEMBER_METHODS(text_background);
+	DEF_COLOR_MEMBER_METHODS(selection);
+	DEF_COLOR_MEMBER_METHODS(highlight);
+	DEF_COLOR_MEMBER_METHODS(warning);
+	DEF_COLOR_MEMBER_METHODS(shadow);
+
+	// calls the on_change signal to notify theme_observers upon theme changes
+	void notify_observers() const;
 
 	cgv::signal::signal<const theme_info&> on_change;
 };
 
 #undef DEF_COLOR_MEMBER_METHODS
 
+// derive from this class to handle theme changes whenever theme_info::notify_changes is called
 class CGV_API theme_observer : virtual public cgv::signal::tacker {
 public:
 	theme_observer() {
