@@ -50,9 +50,9 @@ public:
 
 	bool ensure(cgv::render::context& ctx);
 
-	void begin(cgv::render::context& ctx);
+	void begin(cgv::render::context& ctx, bool push_viewport=true);
 
-	void end(cgv::render::context& ctx);
+	void end(cgv::render::context& ctx, bool push_viewport=true);
 
 	/// accessors
 	Mode get_mode() const { return mode; }
