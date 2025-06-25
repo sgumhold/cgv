@@ -150,6 +150,8 @@ protected:
 	std::string theme_name;
 	/// the selected theme index
 	cgv::type::DummyEnum theme_idx;
+	/// the theme user interface element scaling percentage
+	float theme_scaling;
 	/// store the factories
 	std::vector<cgv::base::base_ptr> factories;
 	/// 
