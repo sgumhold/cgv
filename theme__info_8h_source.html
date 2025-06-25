@@ -119,101 +119,98 @@ $(document).ready(function(){initNavTree('theme__info_8h_source.html',''); initR
 <div class="line"><a id="l00020" name="l00020"></a><span class="lineno">   20</span><span class="preprocessor">    return FIELD##_col; \</span></div>
 <div class="line"><a id="l00021" name="l00021"></a><span class="lineno">   21</span><span class="preprocessor">}\</span></div>
 <div class="line"><a id="l00022" name="l00022"></a><span class="lineno">   22</span><span class="preprocessor">std::string FIELD##_hex() const { \</span></div>
-<div class="line"><a id="l00023" name="l00023"></a><span class="lineno">   23</span><span class="preprocessor">    return rgb_to_hex(FIELD##_col); \</span></div>
+<div class="line"><a id="l00023" name="l00023"></a><span class="lineno">   23</span><span class="preprocessor">    return cgv::media::to_hex(FIELD##_col); \</span></div>
 <div class="line"><a id="l00024" name="l00024"></a><span class="lineno">   24</span><span class="preprocessor">}</span></div>
 <div class="line"><a id="l00025" name="l00025"></a><span class="lineno">   25</span> </div>
 <div class="foldopen" id="foldopen00026" data-start="{" data-end="};">
 <div class="line"><a id="l00026" name="l00026"></a><span class="lineno"><a class="line" href="classcgv_1_1gui_1_1theme__info.html">   26</a></span><span class="keyword">class </span>CGV_API <a class="code hl_class" href="classcgv_1_1gui_1_1theme__info.html">theme_info</a> {</div>
 <div class="line"><a id="l00027" name="l00027"></a><span class="lineno">   27</span><span class="keyword">protected</span>:</div>
-<div class="line"><a id="l00028" name="l00028"></a><span class="lineno">   28</span>    <span class="keywordtype">int</span> theme_idx;</div>
+<div class="line"><a id="l00028" name="l00028"></a><span class="lineno">   28</span>    <span class="keywordtype">int</span> index_ = -1;</div>
 <div class="line"><a id="l00029" name="l00029"></a><span class="lineno">   29</span> </div>
-<div class="line"><a id="l00030" name="l00030"></a><span class="lineno">   30</span>    <span class="keywordtype">int</span> spacing_ = 1;</div>
-<div class="line"><a id="l00031" name="l00031"></a><span class="lineno">   31</span> </div>
-<div class="line"><a id="l00032" name="l00032"></a><span class="lineno">   32</span>    <a class="code hl_class" href="classcgv_1_1media_1_1color.html">rgb</a> background_col;</div>
-<div class="line"><a id="l00033" name="l00033"></a><span class="lineno">   33</span>    <a class="code hl_class" href="classcgv_1_1media_1_1color.html">rgb</a> group_col;</div>
-<div class="line"><a id="l00034" name="l00034"></a><span class="lineno">   34</span>    <a class="code hl_class" href="classcgv_1_1media_1_1color.html">rgb</a> control_col;</div>
-<div class="line"><a id="l00035" name="l00035"></a><span class="lineno">   35</span>    <a class="code hl_class" href="classcgv_1_1media_1_1color.html">rgb</a> border_col;</div>
-<div class="line"><a id="l00036" name="l00036"></a><span class="lineno">   36</span>    <a class="code hl_class" href="classcgv_1_1media_1_1color.html">rgb</a> text_col;</div>
-<div class="line"><a id="l00037" name="l00037"></a><span class="lineno">   37</span>    <a class="code hl_class" href="classcgv_1_1media_1_1color.html">rgb</a> text_background_col;</div>
-<div class="line"><a id="l00038" name="l00038"></a><span class="lineno">   38</span>    <a class="code hl_class" href="classcgv_1_1media_1_1color.html">rgb</a> selection_col;</div>
-<div class="line"><a id="l00039" name="l00039"></a><span class="lineno">   39</span>    <a class="code hl_class" href="classcgv_1_1media_1_1color.html">rgb</a> highlight_col;</div>
-<div class="line"><a id="l00040" name="l00040"></a><span class="lineno">   40</span>    <a class="code hl_class" href="classcgv_1_1media_1_1color.html">rgb</a> warning_col;</div>
-<div class="line"><a id="l00041" name="l00041"></a><span class="lineno">   41</span>    <a class="code hl_class" href="classcgv_1_1media_1_1color.html">rgb</a> shadow_col;</div>
-<div class="line"><a id="l00042" name="l00042"></a><span class="lineno">   42</span> </div>
-<div class="line"><a id="l00043" name="l00043"></a><span class="lineno">   43</span>    <span class="keyword">static</span> std::string char_to_hex(<span class="keywordtype">unsigned</span> <span class="keywordtype">char</span> c) {</div>
-<div class="line"><a id="l00044" name="l00044"></a><span class="lineno">   44</span>        <span class="keyword">static</span> <span class="keyword">const</span> <span class="keywordtype">char</span> hex_chars[16] = { <span class="charliteral">&#39;0&#39;</span>, <span class="charliteral">&#39;1&#39;</span>, <span class="charliteral">&#39;2&#39;</span>, <span class="charliteral">&#39;3&#39;</span>, <span class="charliteral">&#39;4&#39;</span>, <span class="charliteral">&#39;5&#39;</span>, <span class="charliteral">&#39;6&#39;</span>, <span class="charliteral">&#39;7&#39;</span>, <span class="charliteral">&#39;8&#39;</span>, <span class="charliteral">&#39;9&#39;</span>, <span class="charliteral">&#39;A&#39;</span>, <span class="charliteral">&#39;B&#39;</span>, <span class="charliteral">&#39;C&#39;</span>, <span class="charliteral">&#39;D&#39;</span>, <span class="charliteral">&#39;E&#39;</span>, <span class="charliteral">&#39;F&#39;</span> };</div>
-<div class="line"><a id="l00045" name="l00045"></a><span class="lineno">   45</span>        std::string s = <span class="stringliteral">&quot;00&quot;</span>;</div>
-<div class="line"><a id="l00046" name="l00046"></a><span class="lineno">   46</span>        s[0] = hex_chars[(c &amp; 0xF0) &gt;&gt; 4];</div>
-<div class="line"><a id="l00047" name="l00047"></a><span class="lineno">   47</span>        s[1] = hex_chars[(c &amp; 0x0F) &gt;&gt; 0];</div>
-<div class="line"><a id="l00048" name="l00048"></a><span class="lineno">   48</span>        <span class="keywordflow">return</span> s;</div>
-<div class="line"><a id="l00049" name="l00049"></a><span class="lineno">   49</span>    }</div>
-<div class="line"><a id="l00050" name="l00050"></a><span class="lineno">   50</span> </div>
-<div class="line"><a id="l00051" name="l00051"></a><span class="lineno">   51</span>    <span class="keyword">static</span> std::string rgb_to_hex(<span class="keyword">const</span> <a class="code hl_class" href="classcgv_1_1media_1_1color.html">rgb</a>&amp; c) {</div>
-<div class="line"><a id="l00052" name="l00052"></a><span class="lineno">   52</span>        <span class="keywordtype">unsigned</span> <span class="keywordtype">char</span> r = <span class="keyword">static_cast&lt;</span><span class="keywordtype">unsigned</span> <span class="keywordtype">char</span><span class="keyword">&gt;</span>(255.0f * c.R());</div>
-<div class="line"><a id="l00053" name="l00053"></a><span class="lineno">   53</span>        <span class="keywordtype">unsigned</span> <span class="keywordtype">char</span> g = <span class="keyword">static_cast&lt;</span><span class="keywordtype">unsigned</span> <span class="keywordtype">char</span><span class="keyword">&gt;</span>(255.0f * c.G());</div>
-<div class="line"><a id="l00054" name="l00054"></a><span class="lineno">   54</span>        <span class="keywordtype">unsigned</span> <span class="keywordtype">char</span> b = <span class="keyword">static_cast&lt;</span><span class="keywordtype">unsigned</span> <span class="keywordtype">char</span><span class="keyword">&gt;</span>(255.0f * c.B());</div>
-<div class="line"><a id="l00055" name="l00055"></a><span class="lineno">   55</span>        std::string s = <span class="stringliteral">&quot;0x&quot;</span> + char_to_hex(r) + char_to_hex(g) + char_to_hex(b);</div>
-<div class="line"><a id="l00056" name="l00056"></a><span class="lineno">   56</span>        <span class="keywordflow">return</span> s;</div>
-<div class="line"><a id="l00057" name="l00057"></a><span class="lineno">   57</span>    }</div>
-<div class="line"><a id="l00058" name="l00058"></a><span class="lineno">   58</span> </div>
-<div class="line"><a id="l00059" name="l00059"></a><span class="lineno">   59</span><span class="keyword">public</span>:</div>
-<div class="line"><a id="l00060" name="l00060"></a><span class="lineno">   60</span>    <span class="keyword">static</span> <a class="code hl_class" href="classcgv_1_1gui_1_1theme__info.html">theme_info</a>&amp; instance();</div>
+<div class="line"><a id="l00030" name="l00030"></a><span class="lineno">   30</span>    <span class="comment">// the spacing between user interface groups (usually a 1px wide border)</span></div>
+<div class="line"><a id="l00031" name="l00031"></a><span class="lineno">   31</span>    <span class="keywordtype">int</span> spacing_ = 1;</div>
+<div class="line"><a id="l00032" name="l00032"></a><span class="lineno">   32</span>    <span class="comment">// the scaling of user interface elements (used for DPI-adjustment); currently not supported by fltk controls</span></div>
+<div class="line"><a id="l00033" name="l00033"></a><span class="lineno">   33</span>    <span class="keywordtype">float</span> scaling_ = 1.0f;</div>
+<div class="line"><a id="l00034" name="l00034"></a><span class="lineno">   34</span> </div>
+<div class="line"><a id="l00035" name="l00035"></a><span class="lineno">   35</span>    <a class="code hl_class" href="classcgv_1_1media_1_1color.html">rgb</a> background_col;</div>
+<div class="line"><a id="l00036" name="l00036"></a><span class="lineno">   36</span>    <a class="code hl_class" href="classcgv_1_1media_1_1color.html">rgb</a> group_col;</div>
+<div class="line"><a id="l00037" name="l00037"></a><span class="lineno">   37</span>    <a class="code hl_class" href="classcgv_1_1media_1_1color.html">rgb</a> control_col;</div>
+<div class="line"><a id="l00038" name="l00038"></a><span class="lineno">   38</span>    <a class="code hl_class" href="classcgv_1_1media_1_1color.html">rgb</a> border_col;</div>
+<div class="line"><a id="l00039" name="l00039"></a><span class="lineno">   39</span>    <a class="code hl_class" href="classcgv_1_1media_1_1color.html">rgb</a> text_col;</div>
+<div class="line"><a id="l00040" name="l00040"></a><span class="lineno">   40</span>    <a class="code hl_class" href="classcgv_1_1media_1_1color.html">rgb</a> text_background_col;</div>
+<div class="line"><a id="l00041" name="l00041"></a><span class="lineno">   41</span>    <a class="code hl_class" href="classcgv_1_1media_1_1color.html">rgb</a> selection_col;</div>
+<div class="line"><a id="l00042" name="l00042"></a><span class="lineno">   42</span>    <a class="code hl_class" href="classcgv_1_1media_1_1color.html">rgb</a> highlight_col;</div>
+<div class="line"><a id="l00043" name="l00043"></a><span class="lineno">   43</span>    <a class="code hl_class" href="classcgv_1_1media_1_1color.html">rgb</a> warning_col;</div>
+<div class="line"><a id="l00044" name="l00044"></a><span class="lineno">   44</span>    <a class="code hl_class" href="classcgv_1_1media_1_1color.html">rgb</a> shadow_col;</div>
+<div class="line"><a id="l00045" name="l00045"></a><span class="lineno">   45</span> </div>
+<div class="line"><a id="l00046" name="l00046"></a><span class="lineno">   46</span><span class="keyword">public</span>:</div>
+<div class="line"><a id="l00047" name="l00047"></a><span class="lineno">   47</span>    <span class="keyword">static</span> <a class="code hl_class" href="classcgv_1_1gui_1_1theme__info.html">theme_info</a>&amp; instance();</div>
+<div class="line"><a id="l00048" name="l00048"></a><span class="lineno">   48</span> </div>
+<div class="line"><a id="l00049" name="l00049"></a><span class="lineno">   49</span>    <a class="code hl_class" href="classcgv_1_1gui_1_1theme__info.html">theme_info</a>(<span class="keyword">const</span> <a class="code hl_class" href="classcgv_1_1gui_1_1theme__info.html">theme_info</a>&amp;) = <span class="keyword">delete</span>;</div>
+<div class="line"><a id="l00050" name="l00050"></a><span class="lineno">   50</span>    <span class="keywordtype">void</span> operator=(<span class="keyword">const</span> <a class="code hl_class" href="classcgv_1_1gui_1_1theme__info.html">theme_info</a>&amp;) = <span class="keyword">delete</span>;</div>
+<div class="line"><a id="l00051" name="l00051"></a><span class="lineno">   51</span> </div>
+<div class="line"><a id="l00053" name="l00053"></a><span class="lineno">   53</span>    <a class="code hl_class" href="classcgv_1_1gui_1_1theme__info.html">theme_info</a>();</div>
+<div class="line"><a id="l00055" name="l00055"></a><span class="lineno"><a class="line" href="classcgv_1_1gui_1_1theme__info.html#a841cb50235fe0b5a49717202a1f08a24">   55</a></span>    <a class="code hl_function" href="classcgv_1_1gui_1_1theme__info.html#a841cb50235fe0b5a49717202a1f08a24">~theme_info</a>() {}</div>
+<div class="line"><a id="l00056" name="l00056"></a><span class="lineno">   56</span> </div>
+<div class="line"><a id="l00057" name="l00057"></a><span class="lineno">   57</span>    <span class="comment">// general info</span></div>
+<div class="line"><a id="l00058" name="l00058"></a><span class="lineno">   58</span>    <span class="keywordtype">void</span> index(<span class="keywordtype">int</span> index) { index_ = index; }</div>
+<div class="line"><a id="l00059" name="l00059"></a><span class="lineno">   59</span>    <span class="keywordtype">int</span> index()<span class="keyword"> const </span>{ <span class="keywordflow">return</span> index_; }</div>
+<div class="line"><a id="l00060" name="l00060"></a><span class="lineno">   60</span>    <span class="keywordtype">bool</span> is_dark() <span class="keyword">const</span>;</div>
 <div class="line"><a id="l00061" name="l00061"></a><span class="lineno">   61</span> </div>
-<div class="line"><a id="l00062" name="l00062"></a><span class="lineno">   62</span>    <a class="code hl_class" href="classcgv_1_1gui_1_1theme__info.html">theme_info</a>(<span class="keyword">const</span> <a class="code hl_class" href="classcgv_1_1gui_1_1theme__info.html">theme_info</a>&amp;) = <span class="keyword">delete</span>;</div>
-<div class="line"><a id="l00063" name="l00063"></a><span class="lineno">   63</span>    <span class="keywordtype">void</span> operator=(<span class="keyword">const</span> <a class="code hl_class" href="classcgv_1_1gui_1_1theme__info.html">theme_info</a>&amp;) = <span class="keyword">delete</span>;</div>
-<div class="line"><a id="l00064" name="l00064"></a><span class="lineno">   64</span> </div>
-<div class="line"><a id="l00066" name="l00066"></a><span class="lineno">   66</span>    <a class="code hl_class" href="classcgv_1_1gui_1_1theme__info.html">theme_info</a>();</div>
-<div class="line"><a id="l00068" name="l00068"></a><span class="lineno"><a class="line" href="classcgv_1_1gui_1_1theme__info.html#a841cb50235fe0b5a49717202a1f08a24">   68</a></span>    <a class="code hl_function" href="classcgv_1_1gui_1_1theme__info.html#a841cb50235fe0b5a49717202a1f08a24">~theme_info</a>() {}</div>
-<div class="line"><a id="l00069" name="l00069"></a><span class="lineno">   69</span> </div>
-<div class="line"><a id="l00070" name="l00070"></a><span class="lineno">   70</span>    <span class="keywordtype">void</span> set_index(<span class="keywordtype">int</span> idx);</div>
-<div class="line"><a id="l00071" name="l00071"></a><span class="lineno">   71</span>    <span class="keywordtype">int</span> get_index() <span class="keyword">const</span>;</div>
-<div class="line"><a id="l00072" name="l00072"></a><span class="lineno">   72</span>    <span class="keywordtype">bool</span> is_dark() <span class="keyword">const</span>;</div>
-<div class="line"><a id="l00073" name="l00073"></a><span class="lineno">   73</span> </div>
-<div class="line"><a id="l00074" name="l00074"></a><span class="lineno">   74</span>    <span class="keywordtype">int</span> spacing()<span class="keyword"> const </span>{ <span class="keywordflow">return</span> spacing_; }</div>
-<div class="line"><a id="l00075" name="l00075"></a><span class="lineno">   75</span>    <span class="keywordtype">void</span> spacing(<span class="keywordtype">int</span> i) { spacing_ = i; }</div>
-<div class="line"><a id="l00076" name="l00076"></a><span class="lineno">   76</span> </div>
-<div class="line"><a id="l00077" name="l00077"></a><span class="lineno">   77</span>    DEF_COLOR_MEMBER_METHODS(background)</div>
-<div class="line"><a id="l00078" name="l00078"></a><span class="lineno">   78</span>    DEF_COLOR_MEMBER_METHODS(group)</div>
-<div class="line"><a id="l00079" name="l00079"></a><span class="lineno">   79</span>    DEF_COLOR_MEMBER_METHODS(control)</div>
-<div class="line"><a id="l00080" name="l00080"></a><span class="lineno">   80</span>    DEF_COLOR_MEMBER_METHODS(border)</div>
-<div class="line"><a id="l00081" name="l00081"></a><span class="lineno">   81</span>    DEF_COLOR_MEMBER_METHODS(text)</div>
-<div class="line"><a id="l00082" name="l00082"></a><span class="lineno">   82</span>    DEF_COLOR_MEMBER_METHODS(text_background)</div>
-<div class="line"><a id="l00083" name="l00083"></a><span class="lineno">   83</span>    DEF_COLOR_MEMBER_METHODS(selection)</div>
-<div class="line"><a id="l00084" name="l00084"></a><span class="lineno">   84</span>    DEF_COLOR_MEMBER_METHODS(highlight)</div>
-<div class="line"><a id="l00085" name="l00085"></a><span class="lineno">   85</span>    DEF_COLOR_MEMBER_METHODS(warning)</div>
-<div class="line"><a id="l00086" name="l00086"></a><span class="lineno">   86</span>    DEF_COLOR_MEMBER_METHODS(shadow)</div>
-<div class="line"><a id="l00087" name="l00087"></a><span class="lineno">   87</span> </div>
-<div class="line"><a id="l00088" name="l00088"></a><span class="lineno">   88</span>    cgv::signal::signal&lt;const theme_info&amp;&gt; on_change;</div>
-<div class="line"><a id="l00089" name="l00089"></a><span class="lineno">   89</span>};</div>
+<div class="line"><a id="l00062" name="l00062"></a><span class="lineno">   62</span>    <span class="comment">// layout variables</span></div>
+<div class="line"><a id="l00063" name="l00063"></a><span class="lineno">   63</span>    <span class="keywordtype">int</span> spacing()<span class="keyword"> const </span>{ <span class="keywordflow">return</span> spacing_; }</div>
+<div class="line"><a id="l00064" name="l00064"></a><span class="lineno">   64</span>    <span class="keywordtype">void</span> spacing(<span class="keywordtype">int</span> i) { spacing_ = i; }</div>
+<div class="line"><a id="l00065" name="l00065"></a><span class="lineno">   65</span> </div>
+<div class="line"><a id="l00066" name="l00066"></a><span class="lineno">   66</span>    <span class="keywordtype">float</span> scaling()<span class="keyword"> const </span>{ <span class="keywordflow">return</span> scaling_; }</div>
+<div class="line"><a id="l00067" name="l00067"></a><span class="lineno">   67</span>    <span class="keywordtype">void</span> scaling(<span class="keywordtype">float</span> f) { scaling_ = f; }</div>
+<div class="line"><a id="l00068" name="l00068"></a><span class="lineno">   68</span> </div>
+<div class="line"><a id="l00069" name="l00069"></a><span class="lineno">   69</span>    <span class="comment">// theme colors</span></div>
+<div class="line"><a id="l00070" name="l00070"></a><span class="lineno">   70</span>    DEF_COLOR_MEMBER_METHODS(background);</div>
+<div class="line"><a id="l00071" name="l00071"></a><span class="lineno">   71</span>    DEF_COLOR_MEMBER_METHODS(group);</div>
+<div class="line"><a id="l00072" name="l00072"></a><span class="lineno">   72</span>    DEF_COLOR_MEMBER_METHODS(control);</div>
+<div class="line"><a id="l00073" name="l00073"></a><span class="lineno">   73</span>    DEF_COLOR_MEMBER_METHODS(border);</div>
+<div class="line"><a id="l00074" name="l00074"></a><span class="lineno">   74</span>    DEF_COLOR_MEMBER_METHODS(text);</div>
+<div class="line"><a id="l00075" name="l00075"></a><span class="lineno">   75</span>    DEF_COLOR_MEMBER_METHODS(text_background);</div>
+<div class="line"><a id="l00076" name="l00076"></a><span class="lineno">   76</span>    DEF_COLOR_MEMBER_METHODS(selection);</div>
+<div class="line"><a id="l00077" name="l00077"></a><span class="lineno">   77</span>    DEF_COLOR_MEMBER_METHODS(highlight);</div>
+<div class="line"><a id="l00078" name="l00078"></a><span class="lineno">   78</span>    DEF_COLOR_MEMBER_METHODS(warning);</div>
+<div class="line"><a id="l00079" name="l00079"></a><span class="lineno">   79</span>    DEF_COLOR_MEMBER_METHODS(shadow);</div>
+<div class="line"><a id="l00080" name="l00080"></a><span class="lineno">   80</span> </div>
+<div class="line"><a id="l00081" name="l00081"></a><span class="lineno">   81</span>    <span class="comment">// calls the on_change signal to notify theme_observers upon theme changes</span></div>
+<div class="line"><a id="l00082" name="l00082"></a><span class="lineno">   82</span>    <span class="keywordtype">void</span> notify_observers() <span class="keyword">const</span>;</div>
+<div class="line"><a id="l00083" name="l00083"></a><span class="lineno">   83</span> </div>
+<div class="line"><a id="l00084" name="l00084"></a><span class="lineno">   84</span>    cgv::signal::signal&lt;const theme_info&amp;&gt; on_change;</div>
+<div class="line"><a id="l00085" name="l00085"></a><span class="lineno">   85</span>};</div>
 </div>
-<div class="line"><a id="l00090" name="l00090"></a><span class="lineno">   90</span> </div>
-<div class="line"><a id="l00091" name="l00091"></a><span class="lineno">   91</span><span class="preprocessor">#undef DEF_COLOR_MEMBER_METHODS</span></div>
-<div class="line"><a id="l00092" name="l00092"></a><span class="lineno">   92</span> </div>
-<div class="foldopen" id="foldopen00093" data-start="{" data-end="};">
-<div class="line"><a id="l00093" name="l00093"></a><span class="lineno"><a class="line" href="classcgv_1_1gui_1_1theme__observer.html">   93</a></span><span class="keyword">class </span>CGV_API <a class="code hl_class" href="classcgv_1_1gui_1_1theme__observer.html">theme_observer</a> : <span class="keyword">virtual</span> <span class="keyword">public</span> cgv::signal::tacker {</div>
-<div class="line"><a id="l00094" name="l00094"></a><span class="lineno">   94</span><span class="keyword">public</span>:</div>
-<div class="line"><a id="l00095" name="l00095"></a><span class="lineno">   95</span>    <a class="code hl_class" href="classcgv_1_1gui_1_1theme__observer.html">theme_observer</a>() {</div>
-<div class="line"><a id="l00096" name="l00096"></a><span class="lineno">   96</span>        <a class="code hl_class" href="classcgv_1_1gui_1_1theme__info.html">cgv::gui::theme_info</a>&amp; theme = cgv::gui::theme_info::instance();</div>
-<div class="line"><a id="l00097" name="l00097"></a><span class="lineno">   97</span>        cgv::signal::connect(theme.on_change, <span class="keyword">this</span>, &amp;theme_observer::handle_theme_change);</div>
-<div class="line"><a id="l00098" name="l00098"></a><span class="lineno">   98</span>    }</div>
-<div class="line"><a id="l00099" name="l00099"></a><span class="lineno">   99</span> </div>
-<div class="line"><a id="l00100" name="l00100"></a><span class="lineno">  100</span>    <a class="code hl_class" href="classcgv_1_1gui_1_1theme__observer.html">~theme_observer</a>() {</div>
-<div class="line"><a id="l00101" name="l00101"></a><span class="lineno">  101</span>        <a class="code hl_class" href="classcgv_1_1gui_1_1theme__info.html">cgv::gui::theme_info</a>&amp; theme = cgv::gui::theme_info::instance();</div>
-<div class="line"><a id="l00102" name="l00102"></a><span class="lineno">  102</span>        cgv::signal::disconnect(theme.on_change, <span class="keyword">this</span>, &amp;theme_observer::handle_theme_change);</div>
-<div class="line"><a id="l00103" name="l00103"></a><span class="lineno">  103</span>    }</div>
-<div class="line"><a id="l00104" name="l00104"></a><span class="lineno">  104</span> </div>
-<div class="line"><a id="l00106" name="l00106"></a><span class="lineno"><a class="line" href="classcgv_1_1gui_1_1theme__observer.html#a074b39cf1e83ee67cf323f307b848d84">  106</a></span>    <span class="keyword">virtual</span> <span class="keywordtype">void</span> <a class="code hl_function" href="classcgv_1_1gui_1_1theme__observer.html#a074b39cf1e83ee67cf323f307b848d84">handle_theme_change</a>(<span class="keyword">const</span> <a class="code hl_class" href="classcgv_1_1gui_1_1theme__info.html">cgv::gui::theme_info</a>&amp; theme) {}</div>
-<div class="line"><a id="l00107" name="l00107"></a><span class="lineno">  107</span>};</div>
+<div class="line"><a id="l00086" name="l00086"></a><span class="lineno">   86</span> </div>
+<div class="line"><a id="l00087" name="l00087"></a><span class="lineno">   87</span><span class="preprocessor">#undef DEF_COLOR_MEMBER_METHODS</span></div>
+<div class="line"><a id="l00088" name="l00088"></a><span class="lineno">   88</span> </div>
+<div class="line"><a id="l00089" name="l00089"></a><span class="lineno">   89</span><span class="comment">// derive from this class to handle theme changes whenever theme_info::notify_changes is called</span></div>
+<div class="foldopen" id="foldopen00090" data-start="{" data-end="};">
+<div class="line"><a id="l00090" name="l00090"></a><span class="lineno"><a class="line" href="classcgv_1_1gui_1_1theme__observer.html">   90</a></span><span class="keyword">class </span>CGV_API <a class="code hl_class" href="classcgv_1_1gui_1_1theme__observer.html">theme_observer</a> : <span class="keyword">virtual</span> <span class="keyword">public</span> cgv::signal::tacker {</div>
+<div class="line"><a id="l00091" name="l00091"></a><span class="lineno">   91</span><span class="keyword">public</span>:</div>
+<div class="line"><a id="l00092" name="l00092"></a><span class="lineno">   92</span>    <a class="code hl_class" href="classcgv_1_1gui_1_1theme__observer.html">theme_observer</a>() {</div>
+<div class="line"><a id="l00093" name="l00093"></a><span class="lineno">   93</span>        <a class="code hl_class" href="classcgv_1_1gui_1_1theme__info.html">cgv::gui::theme_info</a>&amp; theme = cgv::gui::theme_info::instance();</div>
+<div class="line"><a id="l00094" name="l00094"></a><span class="lineno">   94</span>        cgv::signal::connect(theme.on_change, <span class="keyword">this</span>, &amp;theme_observer::handle_theme_change);</div>
+<div class="line"><a id="l00095" name="l00095"></a><span class="lineno">   95</span>    }</div>
+<div class="line"><a id="l00096" name="l00096"></a><span class="lineno">   96</span> </div>
+<div class="line"><a id="l00097" name="l00097"></a><span class="lineno">   97</span>    <a class="code hl_class" href="classcgv_1_1gui_1_1theme__observer.html">~theme_observer</a>() {</div>
+<div class="line"><a id="l00098" name="l00098"></a><span class="lineno">   98</span>        <a class="code hl_class" href="classcgv_1_1gui_1_1theme__info.html">cgv::gui::theme_info</a>&amp; theme = cgv::gui::theme_info::instance();</div>
+<div class="line"><a id="l00099" name="l00099"></a><span class="lineno">   99</span>        cgv::signal::disconnect(theme.on_change, <span class="keyword">this</span>, &amp;theme_observer::handle_theme_change);</div>
+<div class="line"><a id="l00100" name="l00100"></a><span class="lineno">  100</span>    }</div>
+<div class="line"><a id="l00101" name="l00101"></a><span class="lineno">  101</span> </div>
+<div class="line"><a id="l00103" name="l00103"></a><span class="lineno"><a class="line" href="classcgv_1_1gui_1_1theme__observer.html#a074b39cf1e83ee67cf323f307b848d84">  103</a></span>    <span class="keyword">virtual</span> <span class="keywordtype">void</span> <a class="code hl_function" href="classcgv_1_1gui_1_1theme__observer.html#a074b39cf1e83ee67cf323f307b848d84">handle_theme_change</a>(<span class="keyword">const</span> <a class="code hl_class" href="classcgv_1_1gui_1_1theme__info.html">cgv::gui::theme_info</a>&amp; theme) {}</div>
+<div class="line"><a id="l00104" name="l00104"></a><span class="lineno">  104</span>};</div>
 </div>
+<div class="line"><a id="l00105" name="l00105"></a><span class="lineno">  105</span> </div>
+<div class="line"><a id="l00106" name="l00106"></a><span class="lineno">  106</span>}</div>
+<div class="line"><a id="l00107" name="l00107"></a><span class="lineno">  107</span>}</div>
 <div class="line"><a id="l00108" name="l00108"></a><span class="lineno">  108</span> </div>
-<div class="line"><a id="l00109" name="l00109"></a><span class="lineno">  109</span>}</div>
-<div class="line"><a id="l00110" name="l00110"></a><span class="lineno">  110</span>}</div>
-<div class="line"><a id="l00111" name="l00111"></a><span class="lineno">  111</span> </div>
-<div class="line"><a id="l00112" name="l00112"></a><span class="lineno">  112</span><span class="preprocessor">#include &lt;cgv/config/lib_end.h&gt;</span></div>
+<div class="line"><a id="l00109" name="l00109"></a><span class="lineno">  109</span><span class="preprocessor">#include &lt;cgv/config/lib_end.h&gt;</span></div>
 <div class="ttc" id="aclasscgv_1_1gui_1_1theme__info_html"><div class="ttname"><a href="classcgv_1_1gui_1_1theme__info.html">cgv::gui::theme_info</a></div><div class="ttdef"><b>Definition</b> <a href="theme__info_8h_source.html#l00026">theme_info.h:26</a></div></div>
-<div class="ttc" id="aclasscgv_1_1gui_1_1theme__info_html_a841cb50235fe0b5a49717202a1f08a24"><div class="ttname"><a href="classcgv_1_1gui_1_1theme__info.html#a841cb50235fe0b5a49717202a1f08a24">cgv::gui::theme_info::~theme_info</a></div><div class="ttdeci">~theme_info()</div><div class="ttdoc">destruct</div><div class="ttdef"><b>Definition</b> <a href="theme__info_8h_source.html#l00068">theme_info.h:68</a></div></div>
-<div class="ttc" id="aclasscgv_1_1gui_1_1theme__observer_html"><div class="ttname"><a href="classcgv_1_1gui_1_1theme__observer.html">cgv::gui::theme_observer</a></div><div class="ttdef"><b>Definition</b> <a href="theme__info_8h_source.html#l00093">theme_info.h:93</a></div></div>
-<div class="ttc" id="aclasscgv_1_1gui_1_1theme__observer_html_a074b39cf1e83ee67cf323f307b848d84"><div class="ttname"><a href="classcgv_1_1gui_1_1theme__observer.html#a074b39cf1e83ee67cf323f307b848d84">cgv::gui::theme_observer::handle_theme_change</a></div><div class="ttdeci">virtual void handle_theme_change(const cgv::gui::theme_info &amp;theme)</div><div class="ttdoc">override in your class to handle theme changes</div><div class="ttdef"><b>Definition</b> <a href="theme__info_8h_source.html#l00106">theme_info.h:106</a></div></div>
+<div class="ttc" id="aclasscgv_1_1gui_1_1theme__info_html_a841cb50235fe0b5a49717202a1f08a24"><div class="ttname"><a href="classcgv_1_1gui_1_1theme__info.html#a841cb50235fe0b5a49717202a1f08a24">cgv::gui::theme_info::~theme_info</a></div><div class="ttdeci">~theme_info()</div><div class="ttdoc">destruct</div><div class="ttdef"><b>Definition</b> <a href="theme__info_8h_source.html#l00055">theme_info.h:55</a></div></div>
+<div class="ttc" id="aclasscgv_1_1gui_1_1theme__observer_html"><div class="ttname"><a href="classcgv_1_1gui_1_1theme__observer.html">cgv::gui::theme_observer</a></div><div class="ttdef"><b>Definition</b> <a href="theme__info_8h_source.html#l00090">theme_info.h:90</a></div></div>
+<div class="ttc" id="aclasscgv_1_1gui_1_1theme__observer_html_a074b39cf1e83ee67cf323f307b848d84"><div class="ttname"><a href="classcgv_1_1gui_1_1theme__observer.html#a074b39cf1e83ee67cf323f307b848d84">cgv::gui::theme_observer::handle_theme_change</a></div><div class="ttdeci">virtual void handle_theme_change(const cgv::gui::theme_info &amp;theme)</div><div class="ttdoc">override in your class to handle theme changes</div><div class="ttdef"><b>Definition</b> <a href="theme__info_8h_source.html#l00103">theme_info.h:103</a></div></div>
 <div class="ttc" id="aclasscgv_1_1media_1_1color_html"><div class="ttname"><a href="classcgv_1_1media_1_1color.html">cgv::media::color&lt; float, cgv::media::RGB &gt;</a></div></div>
 <div class="ttc" id="anamespacecgv_html"><div class="ttname"><a href="namespacecgv.html">cgv</a></div><div class="ttdoc">the cgv namespace</div><div class="ttdef"><b>Definition</b> <a href="print_8h_source.html#l00011">print.h:11</a></div></div>
 </div><!-- fragment --></div><!-- contents -->
