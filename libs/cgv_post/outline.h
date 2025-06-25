@@ -27,9 +27,9 @@ public:
 
 	bool ensure(cgv::render::context& ctx);
 
-	void begin(cgv::render::context& ctx);
+	void begin(cgv::render::context& ctx, bool push_viewport=true);
 
-	void end(cgv::render::context& ctx);
+	void end(cgv::render::context& ctx, bool push_viewport=true);
 
 	/// accessors
 	rgb get_color() const { return color; }

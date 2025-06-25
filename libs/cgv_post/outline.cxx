@@ -25,25 +25,25 @@ bool outline::ensure(cgv::render::context& ctx) {
 	return post_process_effect::ensure(ctx);
 }
 
-void outline::begin(cgv::render::context& ctx) {
+void outline::begin(cgv::render::context& ctx, bool push_viewport) {
 
 	assert_init();
 
 	if(!enable)
 		return;
 
-	fbc_draw.enable(ctx);
+	fbc_draw.enable(ctx, push_viewport);
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 }
 
-void outline::end(cgv::render::context& ctx) {
+void outline::end(cgv::render::context& ctx, bool push_viewport) {
 
 	assert_init();
 
 	if(!enable)
 		return;
 
-	fbc_draw.disable(ctx);
+	fbc_draw.disable(ctx, push_viewport);
 
 	fbc_draw.enable_attachment(ctx, "depth", 0);
 	fbc_draw.enable_attachment(ctx, "color", 1);
