@@ -93,7 +93,8 @@ void screenshot::on_set(void* member_ptr) {
 				has_unsaved_changes = false;
 				on_set(&has_unsaved_changes);
 				update_gui_state();
-				on_change(event(EventType::kSaveShots));
+				auto e = event(EventType::kSaveShots);
+				on_change(e);
 			} else {
 				std::cout << "Error: Could not write shots to " << file_name << std::endl;
 			}
@@ -111,7 +112,8 @@ void screenshot::on_set(void* member_ptr) {
 					if(!directory.empty())
 						output_directory.set_directory_name(directory + "/screenshots");
 					update_gui_state();
-					on_change(event(EventType::kLoadShots));
+					auto e = event(EventType::kLoadShots);
+					on_change(e);
 				} else {
 					std::cout << "Error: Could not load shots from " << file_name << std::endl;
 				}
@@ -526,7 +528,8 @@ void screenshot::set_active_shot(shot_config_ptr shot, bool apply_properties, bo
 		}
 
 		// pass shot to callback to allow attached handlers to read user properties
-		on_change(event(EventType::kSelectShot, active_shot));
+		auto e = event(EventType::kSelectShot, active_shot);
+		on_change(e);
 	}
 
 	update_framing_overlay();
@@ -560,7 +563,8 @@ void screenshot::create_shot() {
 	set_view_properties(shot);
 	shots.push_back(shot);
 
-	on_change(event(EventType::kCreateShot, shot));
+	auto e = event(EventType::kCreateShot, shot);
+	on_change(e);
 
 	new_shot_name.clear();
 	update_member(&new_shot_name);
@@ -581,7 +585,8 @@ void screenshot::rename_shot(shot_config_ptr shot) {
 			shot->name = rename_shot_name;
 			has_unsaved_changes = true;
 			// TODO: Notify handlers that only the name has been updated.
-			on_change(event(EventType::kUpdateShot, shot));
+			auto e = event(EventType::kUpdateShot, shot);
+			on_change(e);
 			rename_shot_name.clear();
 			post_recreate_gui();
 		}
@@ -714,7 +719,8 @@ void screenshot::begin_capture() {
 		capture_single = false;
 		capture_shot_iterator = shots.begin();
 
-		on_change(event(EventType::kBeginCapture));
+		auto e = event(EventType::kBeginCapture);
+		on_change(e);
 		set_active_shot(*capture_shot_iterator, true);
 	}
 }
@@ -733,7 +739,8 @@ void screenshot::end_capture() {
 	if(framing_ptr)
 		framing_ptr->set_visibility(true);
 
-	on_change(event(EventType::kEndCapture));
+	auto e = event(EventType::kEndCapture);
+	on_change(e);
 }
 
 void screenshot::handle_frame_change() {

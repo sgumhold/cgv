@@ -1,5 +1,7 @@
 #pragma once
 
+#include <memory>
+#include <list>
 #include <cgv/base/group.h>
 #include <cgv/gui/directory_helper.h>
 #include <cgv/gui/event_handler.h>
