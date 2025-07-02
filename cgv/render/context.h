@@ -776,6 +776,7 @@ protected:
 		RenderPass pass;
 		RenderPassFlags flags;
 		void* user_data;
+		int pass_index;
 	};
 	/// store the current render pass
 	std::stack<render_info> render_pass_stack;
@@ -918,10 +919,13 @@ public:
 	virtual RenderPassFlags get_default_render_pass_flags() const;
 	/// return the default render pass flags
 	virtual void set_default_render_pass_flags(RenderPassFlags);
+	/// write out render pass debug info, if activated
+	void render_pass_debug_output(const render_info& ri, const std::string& info = "");
 	/// perform the given render task
 	virtual void render_pass(RenderPass render_pass = RP_MAIN, 
 							 RenderPassFlags render_pass_flags = RPF_ALL,
-							 void* user_data = 0);
+							 void* user_data = 0,
+							 int rp_idx = -1);
 	/// set flag whether to debug render passes
 	void set_debug_render_passes(bool _debug);
 	/// check whether render passes are debugged

@@ -109,8 +109,8 @@ protected:
 
 	void set_view_orientation(const std::string& axes);
 	/// set the current projection matrix
-	void gl_set_projection_matrix(cgv::render::context& ctx, GlsuEye e, double aspect);
-	void gl_set_modelview_matrix(cgv::render::context& ctx, GlsuEye e, double aspect, const cgv::render::view& view);
+	void set_projection_matrix(cgv::render::context& ctx, GlsuEye e, double aspect);
+	void set_modelview_matrix(cgv::render::context& ctx, GlsuEye e, double aspect, const cgv::render::view& view);
 	/// ensure sufficient number of viewport views
 	unsigned get_viewport_index(unsigned col_index, unsigned row_index) const;
 	void ensure_viewport_view_number(unsigned nr);

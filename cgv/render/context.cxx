@@ -791,8 +791,21 @@ void context::set_debug_render_passes(bool _debug)
 	debug_render_passes = _debug;
 }
 
+void context::render_pass_debug_output(const render_info& ri, const std::string& info)
+{
+	if (!debug_render_passes)
+		return;
+	std::cout 
+		<< std::string(2 * (render_pass_stack.size()-1), ' ')
+		<< get_render_pass_name(ri.pass) << " <"
+		<< ri.user_data;
+	if (ri.pass_index != -1)
+		std::cout << ":" << ri.pass_index;
+	std::cout << "> " << info << std::endl;
+}
+
 /// perform the given render task
-void context::render_pass(RenderPass rp, RenderPassFlags rpf, void* user_data)
+void context::render_pass(RenderPass rp, RenderPassFlags rpf, void* user_data, int rp_idx)
 {
 	// ensure that default light sources are created
 	if (default_light_source_handles[0] == 0) {
@@ -803,13 +816,10 @@ void context::render_pass(RenderPass rp, RenderPassFlags rpf, void* user_data)
 	ri.pass  = rp;
 	ri.flags = rpf;
 	ri.user_data = user_data;
-	if (debug_render_passes) {
-		std::cout << std::string(2 * render_pass_stack.size(), ' ') << get_render_pass_name(rp) << " <" << user_data << ">" << std::endl;
-	}
+	ri.pass_index = rp_idx;
 	render_pass_stack.push(ri);
-
+	render_pass_debug_output(ri, "init");
 	init_render_pass();
-
 	if (get_render_pass_flags()&RPF_SET_LIGHTS) {
 		for (unsigned i = 0; i < nr_default_light_sources; ++i)
 			place_light_source(default_light_source_handles[i]);
@@ -817,29 +827,34 @@ void context::render_pass(RenderPass rp, RenderPassFlags rpf, void* user_data)
 
 	group* grp = dynamic_cast<group*>(this);
 	if (grp && (rpf&RPF_DRAWABLES_DRAW)) {
-		matched_method_action<drawable,void,void,context&> 
+		render_pass_debug_output(ri, "draw+finish_draw");
+		matched_method_action<drawable,void,void,context&>
 			mma(*this, &drawable::draw, &drawable::finish_draw, true, true);
 		traverser(mma).traverse(group_ptr(grp));
 	}
-	if (rpf&RPF_DRAW_TEXTUAL_INFO)
+	if (rpf & RPF_DRAW_TEXTUAL_INFO) {
+		render_pass_debug_output(ri, "textual_info");
 		draw_textual_info();
+	}
 	if (grp && (rpf&RPF_DRAWABLES_FINISH_FRAME)) {
-		single_method_action<drawable,void,context&> 
+		render_pass_debug_output(ri, "finish_frame");
+		single_method_action<drawable,void,context&>
 			sma(*this, &drawable::finish_frame, true, true);
 		traverser(sma).traverse(group_ptr(grp));
 	}
 	if (grp && (rpf&RPF_DRAWABLES_AFTER_FINISH)) {
-		single_method_action<drawable,void,context&> 
+		render_pass_debug_output(ri, "after_finish");
+		single_method_action<drawable,void,context&>
 			sma(*this, &drawable::after_finish, true, true);
 		traverser(sma).traverse(group_ptr(grp));
 	}
 	if ((rpf&RPF_HANDLE_SCREEN_SHOT) && do_screen_shot) {
+		render_pass_debug_output(ri, "screenshot");
 		perform_screen_shot();
 		do_screen_shot = false;
 	}
-
+	render_pass_debug_output(ri, "finish render pass");
 	finish_render_pass();
-
 	render_pass_stack.pop();
 }
 
