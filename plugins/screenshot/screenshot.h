@@ -50,6 +50,8 @@ public:
 	struct capture_info {
 		/// whether the capture process is active
 		bool is_capturing = false;
+		/// if true, only a single screenshot of the current view will be captured
+		bool capture_current_view = false;
 		/// the used base resolution
 		cgv::uvec2 base_resolution = { 0 };
 		/// the used capture resolution (base_resolution * resolution multiplier)
@@ -163,7 +165,6 @@ private:
 	cgv::uvec2 resolution_backup;
 
 	capture_info capture_state;
-	bool capture_single = false;
 	bool init_capture = true;
 	const int await_frame_count = 3;
 	int await_frame_counter = await_frame_count;

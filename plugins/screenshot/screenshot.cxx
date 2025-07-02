@@ -141,7 +141,7 @@ void screenshot::on_set(void* member_ptr) {
 		}
 		
 		if(properties_out_of_date) {
-			if(auto shot = active_shot.lock())
+			if(shot_config_ptr shot = active_shot.lock())
 				update_shot(shot);
 			post_recreate_gui();
 		}
@@ -190,7 +190,7 @@ void screenshot::on_select() {
 void screenshot::on_deselect() {
 	set_active_shot(nullptr, false);
 
-	/*if(auto shot = active_shot.lock()) {
+	/*if(shot_config_ptr shot = active_shot.lock()) {
 		update_shot(shot);
 		set_active_shot(nullptr, false);
 	}*/
@@ -241,7 +241,7 @@ void screenshot::after_finish(context& ctx) {
 				cgv::ivec2(capture_state.capture_resolution)
 			};
 
-			if(!capture_single) {
+			if(!capture_state.capture_current_view) {
 				if(shot_config_ptr shot = active_shot.lock()) {
 					shot_name = (*capture_shot_iterator)->name;
 					absolute_frame = {
@@ -260,7 +260,7 @@ void screenshot::after_finish(context& ctx) {
 				write_image(output_directory.directory_name + "/" + shot_name + (capture_state.store_transparency ? ".png" : ".bmp"), absolute_frame);
 			}
 
-			if(capture_single) {
+			if(capture_state.capture_current_view) {
 				end_capture();
 			} else {
 				++capture_shot_iterator;
@@ -504,7 +504,7 @@ void screenshot::set_active_shot(shot_config_ptr shot, bool apply_properties, bo
 
 	// update view and user properties on previous active shot if view editing is still enabled
 	if(edit_view) {
-		if(auto shot = active_shot.lock())
+		if(shot_config_ptr shot = active_shot.lock())
 			update_shot(shot);
 	}
 
@@ -664,7 +664,7 @@ bool screenshot::set_resolution(cgv::uvec2 resolution) const {
 
 bool screenshot::update_capture_resolution() {
 	cgv::uvec2 new_resolution = capture_state.base_resolution;
-	if(!capture_single && use_shot_resolution_for_capture && capture_shot_iterator != shots.end())
+	if(!capture_state.capture_current_view && use_shot_resolution_for_capture && capture_shot_iterator != shots.end())
 		new_resolution = (*capture_shot_iterator)->last_update_resolution;
 
 	if(capture_state.resolution_multiplier > 1)
@@ -706,7 +706,10 @@ bool screenshot::setup_capture() {
 
 void screenshot::capture_view() {
 	if(setup_capture()) {
-		capture_single = true;
+		capture_state.capture_current_view = true;
+
+		auto e = event(EventType::kBeginCapture);
+		on_change(e);
 		post_redraw();
 	}
 }
@@ -716,7 +719,7 @@ void screenshot::begin_capture() {
 		return;
 
 	if(setup_capture()) {
-		capture_single = false;
+		capture_state.capture_current_view = false;
 		capture_shot_iterator = shots.begin();
 
 		auto e = event(EventType::kBeginCapture);
@@ -757,7 +760,7 @@ void screenshot::update_framing_overlay() {
 	if(!framing_ptr)
 		return;
 
-	if(auto shot = active_shot.lock())
+	if(shot_config_ptr shot = active_shot.lock())
 		framing_ptr->set_frame(shot->frame);
 	else
 		framing_ptr->clear_frame();
