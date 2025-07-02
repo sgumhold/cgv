@@ -1,5 +1,6 @@
 EXPORTS
 glsuConfigureStereo
+glsuConfigureStereoViewport
 glsuStereoPerspective
 glsuStereoPerspectiveScreen
 glsuStereoRenderProcess

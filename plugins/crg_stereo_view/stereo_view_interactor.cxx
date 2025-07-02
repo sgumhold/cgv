@@ -226,7 +226,7 @@ stereo_view_interactor::stereo_view_interactor(const char* name) : node(name)
 
 	fix_view_up_dir = false;
 	write_images = false;
-	stereo_translate_in_model_view = false;
+	stereo_translate_in_model_view = true;
 	depth_offset = 0.99f;
 	depth_scale = 100;
 	auto_view_images = true;
@@ -370,10 +370,10 @@ void stereo_view_interactor::activate_split_viewport(cgv::render::context& ctx, 
 	ensure_viewport_view_number(view_index + 1);
 	if (use_individual_view[view_index])
 		compute_clipping_planes(views[view_index], z_near_derived, z_far_derived, clip_relative_to_extent);
-	gl_set_projection_matrix(ctx, current_e, aspect);
+	set_projection_matrix(ctx, current_e, aspect);
 	if (use_individual_view[view_index]) {
 		compute_clipping_planes(z_near_derived, z_far_derived, clip_relative_to_extent);
-		gl_set_modelview_matrix(ctx, current_e, aspect, views[view_index]);
+		set_modelview_matrix(ctx, current_e, aspect, views[view_index]);
 	}
 	((current_e == GLSU_RIGHT) ? MPWs_right : MPWs)[view_index] = ctx.get_modelview_projection_window_matrix();
 }
@@ -386,8 +386,8 @@ void stereo_view_interactor::deactivate_split_viewport(cgv::render::context& ctx
 	ctx.pop_window_transformation_array();
 	const cgv::ivec4& current_vp = ctx.get_window_transformation_array().front().viewport;
 	double aspect = (double)current_vp[2] / current_vp[3];
-	gl_set_projection_matrix(ctx, current_e, aspect);
-	gl_set_modelview_matrix(ctx, current_e, aspect, *this);
+	set_projection_matrix(ctx, current_e, aspect);
+	set_modelview_matrix(ctx, current_e, aspect, *this);
 }
 
 /// make a viewport manage its own view
@@ -1181,8 +1181,19 @@ void stereo_view_interactor::draw_mouse_pointer(cgv::render::context& ctx, bool 
 /// this method is called in one pass over all drawables after finish frame
 void stereo_view_interactor::after_finish(cgv::render::context& ctx)
 {
-	if (is_stereo_enabled() && !multi_pass_ignore_finish(ctx) && multi_pass_terminate(ctx))
-		glsuConfigureStereo(current_e = GLSU_CENTER, stereo_mode, anaglyph_config);
+	if (is_stereo_enabled()) {
+		if (!multi_pass_ignore_finish(ctx) && multi_pass_terminate(ctx)) {
+			int vp[4];
+			if (glsuConfigureStereoViewport(current_e = GLSU_CENTER, stereo_mode, anaglyph_config, vp)) {
+				ctx.pop_window_transformation_array();
+			}
+		}
+		else {
+			if (stereo_mode == GLSU_SPLIT_VERTICALLY || stereo_mode == GLSU_SPLIT_HORIZONTALLY) {
+				ctx.pop_window_transformation_array();
+			}
+		}
+	}
 	if (ctx.get_render_pass() == RP_MAIN)
 		check_write_image(ctx, (is_stereo_enabled() && stereo_mode == GLSU_QUAD_BUFFER) ? "_r" : "");
 }
@@ -1223,14 +1234,14 @@ void stereo_view_interactor::on_stereo_change()
 }
 
 /// set the current projection matrix
-void stereo_view_interactor::gl_set_projection_matrix(cgv::render::context& ctx, GlsuEye e, double aspect)
+void stereo_view_interactor::set_projection_matrix(cgv::render::context& ctx, GlsuEye e, double aspect)
 {
 	if (swap_eyes)
 		e = GlsuEye(int(-e));
 	bool flip_vert = ((e == GLSU_LEFT) ? flip_x[0] : ((e == GLSU_RIGHT) ? flip_x[1] : false));
 	bool flip_hori = ((e == GLSU_LEFT) ? flip_y[0] : ((e == GLSU_RIGHT) ? flip_y[1] : false));
 
-	if (adapt_aspect_ratio_to_stereo_mode) {
+	if (stereo_enabled && adapt_aspect_ratio_to_stereo_mode) {
 		if (stereo_mode == GLSU_SPLIT_HORIZONTALLY)
 			aspect *= 0.5;
 		if (stereo_mode == GLSU_SPLIT_VERTICALLY)
@@ -1257,11 +1268,11 @@ void stereo_view_interactor::gl_set_projection_matrix(cgv::render::context& ctx,
 	ctx.set_projection_matrix(P);
 }
 
-void stereo_view_interactor::gl_set_modelview_matrix(cgv::render::context& ctx, GlsuEye e, double aspect, const cgv::render::view& view)
+void stereo_view_interactor::set_modelview_matrix(cgv::render::context& ctx, GlsuEye e, double aspect, const cgv::render::view& view)
 {
 	if (swap_eyes)
 		e = GlsuEye(int(-e));
-	if (adapt_aspect_ratio_to_stereo_mode) {
+	if (stereo_enabled && adapt_aspect_ratio_to_stereo_mode) {
 		if (stereo_mode == GLSU_SPLIT_HORIZONTALLY)
 			aspect *= 0.5;
 		if (stereo_mode == GLSU_SPLIT_VERTICALLY)
@@ -1312,7 +1323,12 @@ void stereo_view_interactor::init_frame(context& ctx)
 		}
 		if (!multi_pass_ignore_finish(ctx)) {
 			current_e = current_render_pass == 0 ? GLSU_LEFT : GLSU_RIGHT;
-			glsuConfigureStereo(current_e, stereo_mode, anaglyph_config);
+			cgv::ivec4 viewport = ctx.get_window_transformation_array()[0].viewport;
+			int vp[4] = { viewport[0],viewport[1],viewport[2],viewport[3] };
+			if (glsuConfigureStereoViewport(current_e, stereo_mode, anaglyph_config, vp)) {
+				ctx.push_window_transformation_array();
+				ctx.set_viewport(cgv::ivec4(vp[0],vp[1],vp[2],vp[3]));
+			}
 		}
 	}
 
@@ -1324,10 +1340,10 @@ void stereo_view_interactor::init_frame(context& ctx)
 	// compute the clipping planes based on the eye and scene extent
 	compute_clipping_planes(z_near_derived, z_far_derived, clip_relative_to_extent);
 	if (rpf & RPF_SET_PROJECTION)
-		gl_set_projection_matrix(ctx, current_e, aspect);
+		set_projection_matrix(ctx, current_e, aspect);
 
 	if (rpf & RPF_SET_MODELVIEW)
-		gl_set_modelview_matrix(ctx, current_e, aspect, *this);
+		set_modelview_matrix(ctx, current_e, aspect, *this);
 
 	if (current_e == GLSU_RIGHT) {
 		MPW_right = ctx.get_modelview_projection_window_matrix();
