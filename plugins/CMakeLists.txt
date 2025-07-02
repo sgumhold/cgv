@@ -27,6 +27,7 @@ add_subdirectory(openvr_driver)
 add_subdirectory(crg_vr_view)
 add_subdirectory(vr_lab)
 add_subdirectory(vr_test)
+add_subdirectory(screenshot)
 set_target_properties(vr_test PROPERTIES CGVPROP_TYPE "plugin")
 
 if (WIN32)

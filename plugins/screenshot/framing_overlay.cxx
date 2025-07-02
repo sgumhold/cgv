@@ -33,7 +33,7 @@ bool framing_overlay::init(context& ctx) {
 	bool success = themed_canvas_overlay::init(ctx);
 	success &= labels.init(ctx);
 
-	handles.set_constraint({ 0.0f, get_viewport_size() });
+	handles.set_constraint({ 0, get_viewport_size() });
 	set_frame({ 0.0f, 0.0f });
 
 	return success;
@@ -62,7 +62,7 @@ bool framing_overlay::handle_mouse_event(cgv::gui::mouse_event& e, cgv::ivec2 lo
 void framing_overlay::init_frame(context& ctx) {
 	if(ensure_layout(ctx)) {
 		frame_absolute = to_absolute_frame(frame_relative, get_viewport_size());
-		handles.set_constraint({ 0.0f, get_viewport_size() });
+		handles.set_constraint({ 0, get_viewport_size() });
 		update_handles();
 	}
 }
