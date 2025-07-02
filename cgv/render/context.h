@@ -36,6 +36,7 @@ enum GPUVendorID {
 };
 
 struct device_capabilities {
+	int max_render_buffer_size = -1;					/// the maximum supported size for renderbuffers in any dimension
 	int max_geometry_shader_output_vertex_count = -1;	/// the maximum number that can be provided to the max_vertices output layout qualifier in a geometry shader
 	int max_compute_shared_memory_size = -1;			/// total available storage size in bytes for all shared variables in a compute shader
 	int max_compute_work_group_invocations = -1;		/// the number of invocations in a single local work group (i.e., the product of the three dimensions) that may be dispatched to a compute shader
