@@ -98,7 +98,10 @@ $(document).ready(function(){initNavTree('structcgv_1_1render_1_1device__capabil
 <table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="pub-attribs" name="pub-attribs"></a>
 Public Attributes</h2></td></tr>
+<tr class="memitem:a974da0e87da5333100b8189d7c54b88b" id="r_a974da0e87da5333100b8189d7c54b88b"><td class="memItemLeft" align="right" valign="top">int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structcgv_1_1render_1_1device__capabilities.html#a974da0e87da5333100b8189d7c54b88b">max_render_buffer_size</a> = -1</td></tr>
+<tr class="separator:a974da0e87da5333100b8189d7c54b88b"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:aca285c27b41dadb6c2f48d5f9531873c" id="r_aca285c27b41dadb6c2f48d5f9531873c"><td class="memItemLeft" align="right" valign="top">int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structcgv_1_1render_1_1device__capabilities.html#aca285c27b41dadb6c2f48d5f9531873c">max_geometry_shader_output_vertex_count</a> = -1</td></tr>
+<tr class="memdesc:aca285c27b41dadb6c2f48d5f9531873c"><td class="mdescLeft">&#160;</td><td class="mdescRight">the maximum supported size for renderbuffers in any dimension  <br /></td></tr>
 <tr class="separator:aca285c27b41dadb6c2f48d5f9531873c"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a2825917b45c779cb5657f9d1bafea8c9" id="r_a2825917b45c779cb5657f9d1bafea8c9"><td class="memItemLeft" align="right" valign="top">int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structcgv_1_1render_1_1device__capabilities.html#a2825917b45c779cb5657f9d1bafea8c9">max_compute_shared_memory_size</a> = -1</td></tr>
 <tr class="memdesc:a2825917b45c779cb5657f9d1bafea8c9"><td class="mdescLeft">&#160;</td><td class="mdescRight">the maximum number that can be provided to the max_vertices output layout qualifier in a geometry shader  <br /></td></tr>
@@ -131,7 +134,7 @@ Public Attributes</h2></td></tr>
 
 <p>the maximum number that can be provided to the max_vertices output layout qualifier in a geometry shader </p>
 
-<p class="definition">Definition at line <a class="el" href="context_8h_source.html#l00040">40</a> of file <a class="el" href="context_8h_source.html">context.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="context_8h_source.html#l00041">41</a> of file <a class="el" href="context_8h_source.html">context.h</a>.</p>
 
 <p class="reference">Referenced by <a class="el" href="gl__context_8cxx_source.html#l00422">cgv::render::gl::gl_context::configure_gl()</a>.</p>
 
@@ -151,7 +154,7 @@ Public Attributes</h2></td></tr>
 
 <p>the number of invocations in a single local work group (i.e., the product of the three dimensions) that may be dispatched to a compute shader </p>
 
-<p class="definition">Definition at line <a class="el" href="context_8h_source.html#l00042">42</a> of file <a class="el" href="context_8h_source.html">context.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="context_8h_source.html#l00043">43</a> of file <a class="el" href="context_8h_source.html">context.h</a>.</p>
 
 <p class="reference">Referenced by <a class="el" href="gl__context_8cxx_source.html#l00422">cgv::render::gl::gl_context::configure_gl()</a>.</p>
 
@@ -171,7 +174,7 @@ Public Attributes</h2></td></tr>
 
 <p>total available storage size in bytes for all shared variables in a compute shader </p>
 
-<p class="definition">Definition at line <a class="el" href="context_8h_source.html#l00041">41</a> of file <a class="el" href="context_8h_source.html">context.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="context_8h_source.html#l00042">42</a> of file <a class="el" href="context_8h_source.html">context.h</a>.</p>
 
 <p class="reference">Referenced by <a class="el" href="gl__context_8cxx_source.html#l00422">cgv::render::gl::gl_context::configure_gl()</a>.</p>
 
@@ -191,7 +194,7 @@ Public Attributes</h2></td></tr>
 
 <p>the maximum number of work groups that may be dispatched to a compute shader; dimension index 0, 1, and 2 correspond to the X, Y and Z dimensions, respectively </p>
 
-<p class="definition">Definition at line <a class="el" href="context_8h_source.html#l00043">43</a> of file <a class="el" href="context_8h_source.html">context.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="context_8h_source.html#l00044">44</a> of file <a class="el" href="context_8h_source.html">context.h</a>.</p>
 
 <p class="reference">Referenced by <a class="el" href="gl__context_8cxx_source.html#l00422">cgv::render::gl::gl_context::configure_gl()</a>.</p>
 
@@ -205,6 +208,26 @@ Public Attributes</h2></td></tr>
       <table class="memname">
         <tr>
           <td class="memname">int cgv::render::device_capabilities::max_geometry_shader_output_vertex_count = -1</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>the maximum supported size for renderbuffers in any dimension </p>
+
+<p class="definition">Definition at line <a class="el" href="context_8h_source.html#l00040">40</a> of file <a class="el" href="context_8h_source.html">context.h</a>.</p>
+
+<p class="reference">Referenced by <a class="el" href="gl__context_8cxx_source.html#l00422">cgv::render::gl::gl_context::configure_gl()</a>, and <a class="el" href="shader__program_8cxx_source.html#l00522">cgv::render::shader_program::get_max_nr_geometry_shader_output_vertices()</a>.</p>
+
+</div>
+</div>
+<a id="a974da0e87da5333100b8189d7c54b88b" name="a974da0e87da5333100b8189d7c54b88b"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a974da0e87da5333100b8189d7c54b88b">&#9670;&#160;</a></span>max_render_buffer_size</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">int cgv::render::device_capabilities::max_render_buffer_size = -1</td>
         </tr>
       </table>
 </div><div class="memdoc">
