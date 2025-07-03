@@ -125,7 +125,7 @@ public:
 	/// return whether the context is currently in process of rendering
 	bool in_render_process() const;
 	/// overload render pass to perform measurements
-	void render_pass(cgv::render::RenderPass render_pass, cgv::render::RenderPassFlags render_pass_flags, void* user_data = 0);
+	void render_pass(cgv::render::RenderPass render_pass, cgv::render::RenderPassFlags render_pass_flags, void* user_data = 0, int rp_idx = -1);
 	/// return whether the context is created
 	bool is_created() const;
 	/// return whether the context is current

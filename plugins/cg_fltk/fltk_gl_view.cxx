@@ -479,10 +479,10 @@ void fltk_gl_view::idle_callback(void* ptr)
 }
 
 /// overload render pass to perform measurements
-void fltk_gl_view::render_pass(cgv::render::RenderPass rp, cgv::render::RenderPassFlags rpf, void* ud)
+void fltk_gl_view::render_pass(cgv::render::RenderPass rp, cgv::render::RenderPassFlags rpf, void* ud, int rp_idx)
 {
 	start_task((int)rp);
-	cgv::render::gl::gl_context::render_pass(rp, rpf, ud);
+	cgv::render::gl::gl_context::render_pass(rp, rpf, ud, rp_idx);
 	if (enabled)
 		glFinish();
 	else

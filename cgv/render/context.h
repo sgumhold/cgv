@@ -36,6 +36,7 @@ enum GPUVendorID {
 };
 
 struct device_capabilities {
+	int max_render_buffer_size = -1;					/// the maximum supported size for renderbuffers in any dimension
 	int max_geometry_shader_output_vertex_count = -1;	/// the maximum number that can be provided to the max_vertices output layout qualifier in a geometry shader
 	int max_compute_shared_memory_size = -1;			/// total available storage size in bytes for all shared variables in a compute shader
 	int max_compute_work_group_invocations = -1;		/// the number of invocations in a single local work group (i.e., the product of the three dimensions) that may be dispatched to a compute shader
@@ -776,6 +777,7 @@ protected:
 		RenderPass pass;
 		RenderPassFlags flags;
 		void* user_data;
+		int pass_index;
 	};
 	/// store the current render pass
 	std::stack<render_info> render_pass_stack;
@@ -918,10 +920,13 @@ public:
 	virtual RenderPassFlags get_default_render_pass_flags() const;
 	/// return the default render pass flags
 	virtual void set_default_render_pass_flags(RenderPassFlags);
+	/// write out render pass debug info, if activated
+	void render_pass_debug_output(const render_info& ri, const std::string& info = "");
 	/// perform the given render task
 	virtual void render_pass(RenderPass render_pass = RP_MAIN, 
 							 RenderPassFlags render_pass_flags = RPF_ALL,
-							 void* user_data = 0);
+							 void* user_data = 0,
+							 int rp_idx = -1);
 	/// set flag whether to debug render passes
 	void set_debug_render_passes(bool _debug);
 	/// check whether render passes are debugged

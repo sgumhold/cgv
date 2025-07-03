@@ -26,6 +26,7 @@ add_subdirectory(maptiles_plugin)
 add_subdirectory(openvr_driver)
 add_subdirectory(vr_lab)
 add_subdirectory(vr_test)
+add_subdirectory(screenshot)
 set_target_properties(vr_test PROPERTIES CGVPROP_TYPE "plugin")
 
 if (WIN32)
