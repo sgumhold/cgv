@@ -48,28 +48,28 @@ bool depth_masking::ensure(cgv::render::context& ctx) {
 	return post_process_effect::ensure(ctx);
 }
 
-void depth_masking::begin(cgv::render::context& ctx) {
+void depth_masking::begin(cgv::render::context& ctx, bool push_viewport) {
 
 	assert_init();
 
 	if(!enable)
 		return;
 
-	fbc_draw.enable(ctx);
+	fbc_draw.enable(ctx, push_viewport);
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 }
 
-void depth_masking::end(cgv::render::context& ctx) {
+void depth_masking::end(cgv::render::context& ctx, bool push_viewport) {
 
 	assert_init();
 
 	if(!enable || !view)
 		return;
 
-	fbc_draw.disable(ctx);
+	fbc_draw.disable(ctx, push_viewport);
 
 	// extract linear depth and depth mask
-	fbc_depth_info.enable(ctx);
+	fbc_depth_info.enable(ctx, push_viewport);
 
 	fbc_draw.enable_attachment(ctx, "depth", 0);
 	
@@ -84,7 +84,7 @@ void depth_masking::end(cgv::render::context& ctx) {
 
 	fbc_draw.disable_attachment(ctx, "depth");
 
-	fbc_depth_info.disable(ctx);
+	fbc_depth_info.disable(ctx, push_viewport);
 
 	// blur depth values to create depth mask
 	const auto gauss_boxes = [](unsigned n, unsigned r) {
@@ -134,7 +134,7 @@ void depth_masking::end(cgv::render::context& ctx) {
 		int radius = static_cast<int>(box_radii[i]);
 
 		// filter along x-axis
-		fbc_blurred_depth_ping.enable(ctx);
+		fbc_blurred_depth_ping.enable(ctx, push_viewport);
 
 		if(i == 0)
 			// use given input texture
@@ -155,10 +155,10 @@ void depth_masking::end(cgv::render::context& ctx) {
 		else
 			fbc_blurred_depth_pong.disable_attachment(ctx, "blurred_depth");
 
-		fbc_blurred_depth_ping.disable(ctx);
+		fbc_blurred_depth_ping.disable(ctx, push_viewport);
 
 		// filter along y-axis
-		fbc_blurred_depth_pong.enable(ctx);
+		fbc_blurred_depth_pong.enable(ctx, push_viewport);
 
 		fbc_blurred_depth_ping.enable_attachment(ctx, "blurred_depth", 0);
 
@@ -171,7 +171,7 @@ void depth_masking::end(cgv::render::context& ctx) {
 
 		fbc_blurred_depth_ping.disable_attachment(ctx, "blurred_depth");
 
-		fbc_blurred_depth_pong.disable(ctx);
+		fbc_blurred_depth_pong.disable(ctx, push_viewport);
 	}
 
 	fbc_depth_info.disable_attachment(ctx, "mask");

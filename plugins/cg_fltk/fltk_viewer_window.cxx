@@ -94,6 +94,8 @@ fltk_viewer_window::fltk_viewer_window(int w, int h, const std::string& _title)
 	menu_visible = true;
 	gui_visible = true;
 	theme_name = "light";
+	theme_idx = static_cast<cgv::type::DummyEnum>(0);
+	theme_scaling = 1.0f;
 	menu = 0;
 	callback(destroy_callback);
 
@@ -195,15 +197,17 @@ void fltk_viewer_window::theme_change_cb() {
 	} break;
 	}
 
-	fltk::theme_idx_ = idx;
-	fltk::reload_theme();
+	auto& theme = cgv::gui::theme_info::instance();
 
-	{ // TODO: maybe move this to some other place
-		auto& theme = cgv::gui::theme_info::instance();
+	// update all dependent variables if the theme itself changed and request recreating the gui
+	bool recreate_gui = false;
+	if(fltk::theme_idx_ != idx || theme.index() != idx) {
+		recreate_gui = true;
 
-		// to change menu position:
-		//menu_right = false;
-		//ensure_dock_state();
+		fltk::theme_idx_ = idx;
+		fltk::reload_theme();
+
+		theme.index(idx);
 
 		if(fltk::theme_idx_ < 0)
 			main_group->spacing(3);
@@ -233,11 +237,21 @@ void fltk_viewer_window::theme_change_cb() {
 		theme.warning(r, g, b);
 		fltk::split_color(fltk::get_theme_color(fltk::THEME_SHADOW_COLOR), r, g, b);
 		theme.shadow(r, g, b);
-		// set theme index only after all colors have been updated
-		theme.set_index(idx);
 	}
 
-	if(tab_group) {
+	theme_scaling = cgv::math::clamp(theme_scaling, 0.5f, 5.0f);
+	update_member(&theme_scaling);
+
+	// to change menu position:
+	//menu_right = false;
+	//ensure_dock_state();
+
+	// update all theme index independent variables
+	theme.scaling(theme_scaling);
+
+	theme.notify_observers();
+
+	if(recreate_gui && tab_group) {
 		tab_group->update();
 		post_recreate_gui();
 	}
@@ -294,6 +308,8 @@ void fltk_viewer_window::create_gui()
 	connect_copy(provider::add_control("Gui", gui_visible, "check")->value_change,
 		rebind(this, &fltk_viewer_window::gui_change_cb));
 	connect_copy(provider::add_control("Theme", theme_idx, "dropdown", "enums='Legacy,Light,Mid,Dark,Darkest'")->value_change,
+		rebind(this, &fltk_viewer_window::theme_change_cb));
+	connect_copy(provider::add_control("UI scaling", theme_scaling, "value_slider", "min=0.5;max=5.0;step=0.5")->value_change,
 		rebind(this, &fltk_viewer_window::theme_change_cb));
 	connect(provider::add_control("State", window_state, "dropdown", "enums='regular;minimized;maximized;fullscreen'")->check_value,
 		this, &fltk_viewer_window::ws_change_cb);
