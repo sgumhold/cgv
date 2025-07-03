@@ -534,18 +534,21 @@ bool camera_animator::set_animation_state(bool use_continuous_time) {
 	animation->use_continuous_time = use_continuous_time;
 
 	if(use_continuous_time)
-		animation->frame = static_cast<size_t>(animation->timecode * animation->time);
+		animation->frame = animation->time_to_frame(animation->time);
 	else
-		animation->time = static_cast<float>(animation->frame) / static_cast<float>(animation->timecode);
+		animation->time = animation->frame_to_time(animation->frame);
 
 	update_member(&animation->frame);
 	update_member(&animation->time);
 
 	view_parameters view;
-	bool run = animation->current_view(view) && animation->frame < animation->frame_count();
+	bool run = animation->current_view(view) && animation->frame <= animation->frame_count();
 
 	if(run && apply || record)
 		view.apply(view_ptr);
+
+	if(animation->frame == animation->frame_count())
+		run = false;
 
 	create_camera_render_data(view);
 
