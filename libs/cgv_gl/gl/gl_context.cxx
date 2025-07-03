@@ -471,6 +471,7 @@ bool gl_context::configure_gl()
 		gpu_vendor = GPU_VENDOR_AMD;
 	
 	// query device capabilities
+	glGetIntegerv(GL_MAX_RENDERBUFFER_SIZE, &gpu_capabilities.max_render_buffer_size);
 	glGetIntegerv(GL_MAX_GEOMETRY_OUTPUT_VERTICES, &gpu_capabilities.max_geometry_shader_output_vertex_count);
 	glGetIntegerv(GL_MAX_COMPUTE_SHARED_MEMORY_SIZE, &gpu_capabilities.max_compute_shared_memory_size);
 	glGetIntegerv(GL_MAX_COMPUTE_WORK_GROUP_INVOCATIONS, &gpu_capabilities.max_compute_work_group_invocations);
