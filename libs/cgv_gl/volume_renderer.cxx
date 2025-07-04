@@ -244,7 +244,7 @@ namespace cgv {
 			ref_prog().set_uniform(ctx, "clip_box_max", vrs.clip_box.get_max_pnt());
 
 			ctx.push_depth_test_state();
-			ctx.disable_depth_test();
+			ctx.set_depth_func(CF_ALWAYS);
 			ctx.push_blend_state();
 			ctx.enable_blending();
 			ctx.set_blend_func_back_to_front();

@@ -143,13 +143,12 @@ void volume_viewer::on_set(void* member_ptr)
 void volume_viewer::clear(cgv::render::context& ctx)
 {
 	cgv::render::ref_volume_renderer(ctx, -1);
-	cgv::render::ref_box_wire_renderer(ctx, -1);
+	box_rd.destruct(ctx);
 }
 
 bool volume_viewer::init(cgv::render::context& ctx)
 {
 	cgv::render::ref_volume_renderer(ctx, 1);
-	cgv::render::ref_box_wire_renderer(ctx, 1);
 
 	// init the box wire render data object
 	box_rd.init(ctx);
@@ -192,7 +191,6 @@ void volume_viewer::draw(cgv::render::context& ctx)
 	// render the wireframe bounding box if enabled
 	if (show_box)
 		box_rd.render(ctx, cgv::render::ref_box_wire_renderer(ctx), box_rs);
-
 }
 
 void volume_viewer::after_finish(cgv::render::context & ctx)
