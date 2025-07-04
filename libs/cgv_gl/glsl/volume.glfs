@@ -84,6 +84,7 @@ layout (binding = 4) uniform sampler2D depth_tex;
 
 uniform vec2  viewport_dims;
 uniform vec2  noise_offset;
+uniform float picking_opacity_threshold;
 uniform float scale_adjustment_factor;
 
 uniform bool  light_local_to_eye;
@@ -394,7 +395,6 @@ void main() {
 #if SLICE_MODE > 0
 	bool initial_side_slice = mix(clip_box_min, clip_box_max, ray.origin)[slice_axis] > slice_coordinate;
 #endif
-	const float opacity_threshold = 0.03;
 	float max_opacity = 0.0;
 	float t_at_max_opacity = -1.0;
 	int istep = 0;
@@ -425,7 +425,7 @@ void main() {
 		// red channel stores the accumulated density
 		color.r += density;
 
-		if(color.r > opacity_threshold && max_opacity == 0.0) {
+		if(color.r > picking_opacity_threshold && max_opacity == 0.0) {
 			max_opacity = color.r;
 			t_at_max_opacity = t;
 		}
@@ -557,7 +557,7 @@ void main() {
 	finish_fragment(color);
 
 	float depth = 1.0;
-	if(t_at_max_opacity >= 0.0 && max_opacity > opacity_threshold) {
+	if(t_at_max_opacity >= 0.0 && max_opacity > picking_opacity_threshold) {
 		// get world space position of ray at t_at_max_opacity
 		vec3 pos_world = ray.origin + t_at_max_opacity * ray.direction;
 		// transform from texture coordinates into world space

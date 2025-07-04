@@ -43,6 +43,8 @@ namespace cgv { // @<
 			} interpolation_mode;
 			/// whether to enable depth testing by reading depth from a texture to allow geometry intersecting the volume (depth texture must be supplied)
 			bool enable_depth_test;
+			// the opacity threshold needed to pass before the volume is considered a solid surface (needed for defining depth and supporting focus picking)
+			float picking_opacity_threshold;
 
 			/// the compositing mode used
 			enum CompositingMode {
