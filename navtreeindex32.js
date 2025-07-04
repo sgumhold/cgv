@@ -1,5 +1,7 @@
 var NAVTREEINDEX32 =
 {
+"menu__provider_8cxx_source.html":[12,0,1,4,48],
+"menu__provider_8h_source.html":[12,0,1,4,49],
 "mesh__drawable_8cxx_source.html":[12,0,3,3,0,27],
 "mesh__drawable_8h_source.html":[12,0,3,3,0,28],
 "mesh__render__info_8cxx_source.html":[12,0,3,3,0,29],
@@ -247,7 +249,5 @@ var NAVTREEINDEX32 =
 "namespacecgv_1_1gui.html#a2d141a100cefe8623e55dfbd3be72a3ca6c10613fa031a98b3f76acfad1dbbbc9":[10,0,1,3,105,1],
 "namespacecgv_1_1gui.html#a2d141a100cefe8623e55dfbd3be72a3ca8e36ec49419f25cbdfa9a11895890a17":[10,0,1,3,105,0],
 "namespacecgv_1_1gui.html#a2d141a100cefe8623e55dfbd3be72a3cab60a48675f467d082360c5ec15dfb05d":[10,0,1,3,105,2],
-"namespacecgv_1_1gui.html#a2d141a100cefe8623e55dfbd3be72a3cab8b1cdd1d559bd99627821280c7b6550":[10,0,1,3,105,3],
-"namespacecgv_1_1gui.html#a3698234f662a091b7af00eb0e763d809":[10,0,1,3,125],
-"namespacecgv_1_1gui.html#a3ab13fd264eaf4d4dbb46c04fb3b3785":[10,0,1,3,130]
+"namespacecgv_1_1gui.html#a2d141a100cefe8623e55dfbd3be72a3cab8b1cdd1d559bd99627821280c7b6550":[10,0,1,3,105,3]
 };
