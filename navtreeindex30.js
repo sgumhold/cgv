@@ -1,5 +1,7 @@
 var NAVTREEINDEX30 =
 {
+"classvr__emulator.html#a7cbda38438c6763dacb724c8e10be8bf":[11,0,22,2],
+"classvr__emulator.html#ab105a3d9e02758d583ad55f2638e1045":[11,0,22,19],
 "classvr__emulator.html#abaed01fff91d78f9b17ddb94c15b630e":[11,0,22,12],
 "classvr__emulator.html#acf0036f80bc4693055fc186dbfcbd1e8":[11,0,22,6],
 "classvr__emulator.html#ad16bde33c0ec309f57a7353e9781131d":[11,0,22,13],
@@ -247,7 +249,5 @@ var NAVTREEINDEX30 =
 "functions_a.html":[11,3,0,1],
 "functions_b.html":[11,3,0,2],
 "functions_c.html":[11,3,0,3],
-"functions_d.html":[11,3,0,4],
-"functions_e.html":[11,3,0,5],
-"functions_enum.html":[11,3,4]
+"functions_d.html":[11,3,0,4]
 };

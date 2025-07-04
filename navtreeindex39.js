@@ -1,5 +1,7 @@
 var NAVTREEINDEX39 =
 {
+"structcgv_1_1gui_1_1layout__dir__spacing.html":[11,0,0,5,42],
+"structcgv_1_1gui_1_1layout__dir__spacing.html":[10,0,1,3,42],
 "structcgv_1_1gui_1_1layout__spacings.html":[10,0,1,3,44],
 "structcgv_1_1gui_1_1layout__spacings.html":[11,0,0,5,44],
 "structcgv_1_1gui_1_1layout__table__cell.html":[10,0,1,3,46],
@@ -247,7 +249,5 @@ var NAVTREEINDEX39 =
 "structcgv_1_1media_1_1hls__color__interface_3_01color_3_01T_00_01cm_00_01am_01_4_01_4.html#a4d6c2dca4ed607fac123b6a83269db6a":[11,0,0,7,33,2],
 "structcgv_1_1media_1_1hls__color__interface_3_01color_3_01T_00_01cm_00_01am_01_4_01_4.html#a4fbe1a91e5d90fae8a91ff16846247c9":[11,0,0,7,33,1],
 "structcgv_1_1media_1_1image_1_1reader__listener.html":[11,0,0,7,2,7],
-"structcgv_1_1media_1_1image_1_1reader__listener.html#aa0f43edbbea52853cd5cdfbd31778e85":[11,0,0,7,2,7,0],
-"structcgv_1_1media_1_1image_1_1reader__listener.html#af0b820c0fbd2cbe5ba182e9336f8ad25":[11,0,0,7,2,7,2],
-"structcgv_1_1media_1_1image_1_1reader__listener.html#af2bbefc74b0be0c8bae584be6aa14385":[11,0,0,7,2,7,1]
+"structcgv_1_1media_1_1image_1_1reader__listener.html#aa0f43edbbea52853cd5cdfbd31778e85":[11,0,0,7,2,7,0]
 };

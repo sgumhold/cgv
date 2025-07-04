@@ -1,5 +1,7 @@
 var NAVTREEINDEX37 =
 {
+"ppp.html#Command":[6,2,0],
+"ppp.html#Example":[6,2,1],
 "ppp.html#intro":[6,0],
 "ppp.html#motivation":[6,1],
 "ppp.html#user_guide":[6,2],
@@ -247,7 +249,5 @@ var NAVTREEINDEX37 =
 "structcgv_1_1base_1_1factory.html#a03229b698d12d0da2cae1b769f0ee40e":[10,0,1,0,26,10],
 "structcgv_1_1base_1_1factory.html#a091de6a8db8fdd3235975606dc50735b":[10,0,1,0,26,14],
 "structcgv_1_1base_1_1factory.html#a091de6a8db8fdd3235975606dc50735b":[11,0,0,2,26,14],
-"structcgv_1_1base_1_1factory.html#a0c603bd79a0180ecd47ea0e6e318e924":[11,0,0,2,26,12],
-"structcgv_1_1base_1_1factory.html#a0c603bd79a0180ecd47ea0e6e318e924":[10,0,1,0,26,12],
-"structcgv_1_1base_1_1factory.html#a13fba2d51c6d80777189202cee4dd63a":[10,0,1,0,26,13]
+"structcgv_1_1base_1_1factory.html#a0c603bd79a0180ecd47ea0e6e318e924":[11,0,0,2,26,12]
 };

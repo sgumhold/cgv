@@ -114,9 +114,9 @@ Public Member Functions</h2></td></tr>
 <tr class="separator:ab6f9694964bb4f6fbc9795beea0cc86a"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a6f135bafc9a916f8f03a20f500972d63" id="r_a6f135bafc9a916f8f03a20f500972d63"><td class="memItemLeft" align="right" valign="top"><a class="el" href="namespacecgv.html#a4fc9abee97018a017bb3a14b531a8f06">ivec2</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcgv_1_1render_1_1managed__frame__buffer.html#a6f135bafc9a916f8f03a20f500972d63">get_size</a> ()</td></tr>
 <tr class="separator:a6f135bafc9a916f8f03a20f500972d63"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a7c62f01155fb5d5815e3f4c6895d8774" id="r_a7c62f01155fb5d5815e3f4c6895d8774"><td class="memItemLeft" align="right" valign="top">bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcgv_1_1render_1_1managed__frame__buffer.html#a7c62f01155fb5d5815e3f4c6895d8774">set_size</a> (const <a class="el" href="namespacecgv.html#a4fc9abee97018a017bb3a14b531a8f06">ivec2</a> &amp;size)</td></tr>
-<tr class="memdesc:a7c62f01155fb5d5815e3f4c6895d8774"><td class="mdescLeft">&#160;</td><td class="mdescRight">Sets the size of the framebuffer renderbuffers.  <br /></td></tr>
-<tr class="separator:a7c62f01155fb5d5815e3f4c6895d8774"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a62b2a598133b48f4f387786cfdfb2ce9" id="r_a62b2a598133b48f4f387786cfdfb2ce9"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcgv_1_1render_1_1managed__frame__buffer.html#a62b2a598133b48f4f387786cfdfb2ce9">set_size</a> (const <a class="el" href="namespacecgv.html#a4fc9abee97018a017bb3a14b531a8f06">ivec2</a> &amp;size)</td></tr>
+<tr class="memdesc:a62b2a598133b48f4f387786cfdfb2ce9"><td class="mdescLeft">&#160;</td><td class="mdescRight">Set the size of the framebuffer attachments.  <br /></td></tr>
+<tr class="separator:a62b2a598133b48f4f387786cfdfb2ce9"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a399ce8a90d64bc3dc5dd812c757feb2d" id="r_a399ce8a90d64bc3dc5dd812c757feb2d"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcgv_1_1render_1_1managed__frame__buffer.html#a399ce8a90d64bc3dc5dd812c757feb2d">add_attachment</a> (const std::string &amp;name, const std::string &amp;format=&quot;uint8[R,G,B]&quot;, TextureFilter tf=TF_NEAREST, <a class="el" href="namespacecgv_1_1render.html#a4b3eb5abd80954194b0b60848fad0f2a">TextureWrap</a> tw=TW_CLAMP_TO_EDGE, bool attach=true)</td></tr>
 <tr class="separator:a399ce8a90d64bc3dc5dd812c757feb2d"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a81eb40cfd4a61026e52ac7f925840fd1" id="r_a81eb40cfd4a61026e52ac7f925840fd1"><td class="memItemLeft" align="right" valign="top">bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcgv_1_1render_1_1managed__frame__buffer.html#a81eb40cfd4a61026e52ac7f925840fd1">enable_attachment</a> (<a class="el" href="classcgv_1_1render_1_1context.html">context</a> &amp;ctx, const std::string &amp;name, int tex_unit=-1)</td></tr>
@@ -126,6 +126,7 @@ Public Member Functions</h2></td></tr>
 <tr class="memitem:a93a7627264354f20f1b85d2abfc71f18" id="r_a93a7627264354f20f1b85d2abfc71f18"><td class="memItemLeft" align="right" valign="top"><a class="el" href="classcgv_1_1render_1_1texture.html">texture</a> *&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcgv_1_1render_1_1managed__frame__buffer.html#a93a7627264354f20f1b85d2abfc71f18">attachment_texture_ptr</a> (const std::string &amp;name)</td></tr>
 <tr class="separator:a93a7627264354f20f1b85d2abfc71f18"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a5f1b07da53b5591cf845735de04c5e35" id="r_a5f1b07da53b5591cf845735de04c5e35"><td class="memItemLeft" align="right" valign="top">bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcgv_1_1render_1_1managed__frame__buffer.html#a5f1b07da53b5591cf845735de04c5e35">ensure</a> (<a class="el" href="classcgv_1_1render_1_1context.html">context</a> &amp;ctx)</td></tr>
+<tr class="memdesc:a5f1b07da53b5591cf845735de04c5e35"><td class="mdescLeft">&#160;</td><td class="mdescRight">Ensure the framebuffer is constructed with the specified size.  <br /></td></tr>
 <tr class="separator:a5f1b07da53b5591cf845735de04c5e35"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a034e7b0930cce13935033c3c213abd22" id="r_a034e7b0930cce13935033c3c213abd22"><td class="memItemLeft" align="right" valign="top">bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcgv_1_1render_1_1managed__frame__buffer.html#a034e7b0930cce13935033c3c213abd22">enable</a> (<a class="el" href="classcgv_1_1render_1_1context.html">context</a> &amp;ctx, bool push_viewport=true)</td></tr>
 <tr class="separator:a034e7b0930cce13935033c3c213abd22"><td class="memSeparator" colspan="2">&#160;</td></tr>
@@ -166,25 +167,6 @@ Protected Attributes</h2></td></tr>
 </div><div class="memdoc">
 
 <p class="definition">Definition at line <a class="el" href="managed__frame__buffer_8cxx_source.html#l00006">6</a> of file <a class="el" href="managed__frame__buffer_8cxx_source.html">managed_frame_buffer.cxx</a>.</p>
-
-</div>
-</div>
-<a id="a95cc5396f1c99fb347ca7fa89c69ae92" name="a95cc5396f1c99fb347ca7fa89c69ae92"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a95cc5396f1c99fb347ca7fa89c69ae92">&#9670;&#160;</a></span>~managed_frame_buffer()</h2>
-
-<div class="memitem">
-<div class="memproto">
-      <table class="memname">
-        <tr>
-          <td class="memname">cgv::render::managed_frame_buffer::~managed_frame_buffer </td>
-          <td>(</td>
-          <td class="paramname"></td><td>)</td>
-          <td></td>
-        </tr>
-      </table>
-</div><div class="memdoc">
-
-<p class="definition">Definition at line <a class="el" href="managed__frame__buffer_8cxx_source.html#l00012">12</a> of file <a class="el" href="managed__frame__buffer_8cxx_source.html">managed_frame_buffer.cxx</a>.</p>
 
 </div>
 </div>
@@ -233,7 +215,7 @@ Protected Attributes</h2></td></tr>
       </table>
 </div><div class="memdoc">
 
-<p class="definition">Definition at line <a class="el" href="managed__frame__buffer_8cxx_source.html#l00052">52</a> of file <a class="el" href="managed__frame__buffer_8cxx_source.html">managed_frame_buffer.cxx</a>.</p>
+<p class="definition">Definition at line <a class="el" href="managed__frame__buffer_8cxx_source.html#l00033">33</a> of file <a class="el" href="managed__frame__buffer_8cxx_source.html">managed_frame_buffer.cxx</a>.</p>
 
 </div>
 </div>
@@ -253,7 +235,7 @@ Protected Attributes</h2></td></tr>
       </table>
 </div><div class="memdoc">
 
-<p class="definition">Definition at line <a class="el" href="managed__frame__buffer_8cxx_source.html#l00092">92</a> of file <a class="el" href="managed__frame__buffer_8cxx_source.html">managed_frame_buffer.cxx</a>.</p>
+<p class="definition">Definition at line <a class="el" href="managed__frame__buffer_8cxx_source.html#l00073">73</a> of file <a class="el" href="managed__frame__buffer_8cxx_source.html">managed_frame_buffer.cxx</a>.</p>
 
 </div>
 </div>
@@ -273,7 +255,7 @@ Protected Attributes</h2></td></tr>
       </table>
 </div><div class="memdoc">
 
-<p class="definition">Definition at line <a class="el" href="managed__frame__buffer_8cxx_source.html#l00017">17</a> of file <a class="el" href="managed__frame__buffer_8cxx_source.html">managed_frame_buffer.cxx</a>.</p>
+<p class="definition">Definition at line <a class="el" href="managed__frame__buffer_8cxx_source.html#l00012">12</a> of file <a class="el" href="managed__frame__buffer_8cxx_source.html">managed_frame_buffer.cxx</a>.</p>
 
 </div>
 </div>
@@ -303,7 +285,7 @@ Protected Attributes</h2></td></tr>
       </table>
 </div><div class="memdoc">
 
-<p class="definition">Definition at line <a class="el" href="managed__frame__buffer_8cxx_source.html#l00125">125</a> of file <a class="el" href="managed__frame__buffer_8cxx_source.html">managed_frame_buffer.cxx</a>.</p>
+<p class="definition">Definition at line <a class="el" href="managed__frame__buffer_8cxx_source.html#l00110">110</a> of file <a class="el" href="managed__frame__buffer_8cxx_source.html">managed_frame_buffer.cxx</a>.</p>
 
 </div>
 </div>
@@ -333,7 +315,7 @@ Protected Attributes</h2></td></tr>
       </table>
 </div><div class="memdoc">
 
-<p class="definition">Definition at line <a class="el" href="managed__frame__buffer_8cxx_source.html#l00081">81</a> of file <a class="el" href="managed__frame__buffer_8cxx_source.html">managed_frame_buffer.cxx</a>.</p>
+<p class="definition">Definition at line <a class="el" href="managed__frame__buffer_8cxx_source.html#l00062">62</a> of file <a class="el" href="managed__frame__buffer_8cxx_source.html">managed_frame_buffer.cxx</a>.</p>
 
 </div>
 </div>
@@ -363,7 +345,7 @@ Protected Attributes</h2></td></tr>
       </table>
 </div><div class="memdoc">
 
-<p class="definition">Definition at line <a class="el" href="managed__frame__buffer_8cxx_source.html#l00118">118</a> of file <a class="el" href="managed__frame__buffer_8cxx_source.html">managed_frame_buffer.cxx</a>.</p>
+<p class="definition">Definition at line <a class="el" href="managed__frame__buffer_8cxx_source.html#l00103">103</a> of file <a class="el" href="managed__frame__buffer_8cxx_source.html">managed_frame_buffer.cxx</a>.</p>
 
 </div>
 </div>
@@ -399,7 +381,7 @@ Protected Attributes</h2></td></tr>
       </table>
 </div><div class="memdoc">
 
-<p class="definition">Definition at line <a class="el" href="managed__frame__buffer_8cxx_source.html#l00070">70</a> of file <a class="el" href="managed__frame__buffer_8cxx_source.html">managed_frame_buffer.cxx</a>.</p>
+<p class="definition">Definition at line <a class="el" href="managed__frame__buffer_8cxx_source.html#l00051">51</a> of file <a class="el" href="managed__frame__buffer_8cxx_source.html">managed_frame_buffer.cxx</a>.</p>
 
 </div>
 </div>
@@ -419,7 +401,20 @@ Protected Attributes</h2></td></tr>
       </table>
 </div><div class="memdoc">
 
-<p class="definition">Definition at line <a class="el" href="managed__frame__buffer_8cxx_source.html#l00103">103</a> of file <a class="el" href="managed__frame__buffer_8cxx_source.html">managed_frame_buffer.cxx</a>.</p>
+<p>Ensure the framebuffer is constructed with the specified size. </p>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">ctx</td><td>The graphics context. </td></tr>
+  </table>
+  </dd>
+</dl>
+<dl class="section return"><dt>Returns</dt><dd>True if the framebuffer could be constructed wit the specified attachments and size, false otherwise. </dd></dl>
+
+<p class="definition">Definition at line <a class="el" href="managed__frame__buffer_8cxx_source.html#l00084">84</a> of file <a class="el" href="managed__frame__buffer_8cxx_source.html">managed_frame_buffer.cxx</a>.</p>
+
+<p class="reference">References <a class="el" href="frame__buffer_8h_source.html#l00044">cgv::render::frame_buffer::get_height()</a>, <a class="el" href="frame__buffer_8h_source.html#l00042">cgv::render::frame_buffer::get_width()</a>, <a class="el" href="context_8cxx_source.html#l02065">cgv::render::render_component::is_created()</a>, <a class="el" href="fvec_8h_source.html#l00156">cgv::math::fvec&lt; T, N &gt;::x()</a>, and <a class="el" href="fvec_8h_source.html#l00160">cgv::math::fvec&lt; T, N &gt;::y()</a>.</p>
+
+<p class="reference">Referenced by <a class="el" href="navigator_8cxx_source.html#l00189">cgv::app::navigator::init()</a>, <a class="el" href="canvas__overlay_8cxx_source.html#l00015">cgv::app::canvas_overlay::init()</a>, and <a class="el" href="navigator_8cxx_source.html#l00238">cgv::app::navigator::init_frame()</a>.</p>
 
 </div>
 </div>
@@ -438,7 +433,7 @@ Protected Attributes</h2></td></tr>
       </table>
 </div><div class="memdoc">
 
-<p class="definition">Definition at line <a class="el" href="managed__frame__buffer_8cxx_source.html#l00028">28</a> of file <a class="el" href="managed__frame__buffer_8cxx_source.html">managed_frame_buffer.cxx</a>.</p>
+<p class="definition">Definition at line <a class="el" href="managed__frame__buffer_8cxx_source.html#l00023">23</a> of file <a class="el" href="managed__frame__buffer_8cxx_source.html">managed_frame_buffer.cxx</a>.</p>
 
 </div>
 </div>
@@ -465,18 +460,18 @@ Protected Attributes</h2></td></tr>
 </table>
 </div><div class="memdoc">
 
-<p class="definition">Definition at line <a class="el" href="managed__frame__buffer_8h_source.html#l00073">73</a> of file <a class="el" href="managed__frame__buffer_8h_source.html">managed_frame_buffer.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="managed__frame__buffer_8h_source.html#l00075">75</a> of file <a class="el" href="managed__frame__buffer_8h_source.html">managed_frame_buffer.h</a>.</p>
 
 </div>
 </div>
-<a id="a7c62f01155fb5d5815e3f4c6895d8774" name="a7c62f01155fb5d5815e3f4c6895d8774"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a7c62f01155fb5d5815e3f4c6895d8774">&#9670;&#160;</a></span>set_size()</h2>
+<a id="a62b2a598133b48f4f387786cfdfb2ce9" name="a62b2a598133b48f4f387786cfdfb2ce9"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a62b2a598133b48f4f387786cfdfb2ce9">&#9670;&#160;</a></span>set_size()</h2>
 
 <div class="memitem">
 <div class="memproto">
       <table class="memname">
         <tr>
-          <td class="memname">bool cgv::render::managed_frame_buffer::set_size </td>
+          <td class="memname">void cgv::render::managed_frame_buffer::set_size </td>
           <td>(</td>
           <td class="paramtype">const <a class="el" href="namespacecgv.html#a4fc9abee97018a017bb3a14b531a8f06">ivec2</a> &amp;&#160;</td>
           <td class="paramname"><em>size</em></td><td>)</td>
@@ -485,10 +480,17 @@ Protected Attributes</h2></td></tr>
       </table>
 </div><div class="memdoc">
 
-<p>Sets the size of the framebuffer renderbuffers. </p>
-<p>Set the x and/or y-component to &lt;= 0 to use the width/height from the context. Returns false if the size is larger than the maximum allowed render buffer size, as given by the OpenGL API. </p>
+<p>Set the size of the framebuffer attachments. </p>
+<p>Requires to call ensure afterwards to actually construct the framebuffer.</p>
+<p>If the given width or height is &lt;= 0, the attachment widths or heights will be set to the context width or height respectively.</p>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">size</td><td>The requested size. </td></tr>
+  </table>
+  </dd>
+</dl>
 
-<p class="definition">Definition at line <a class="el" href="managed__frame__buffer_8cxx_source.html#l00033">33</a> of file <a class="el" href="managed__frame__buffer_8cxx_source.html">managed_frame_buffer.cxx</a>.</p>
+<p class="definition">Definition at line <a class="el" href="managed__frame__buffer_8cxx_source.html#l00028">28</a> of file <a class="el" href="managed__frame__buffer_8cxx_source.html">managed_frame_buffer.cxx</a>.</p>
 
 <p class="reference">Referenced by <a class="el" href="navigator_8cxx_source.html#l00189">cgv::app::navigator::init()</a>, <a class="el" href="canvas__overlay_8cxx_source.html#l00015">cgv::app::canvas_overlay::init()</a>, and <a class="el" href="navigator_8cxx_source.html#l00238">cgv::app::navigator::init_frame()</a>.</p>
 

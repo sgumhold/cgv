@@ -1,9 +1,11 @@
 var NAVTREEINDEX31 =
 {
+"functions_e.html":[11,3,0,5],
+"functions_enum.html":[11,3,4],
 "functions_eval.html":[11,3,5],
 "functions_f.html":[11,3,0,6],
-"functions_func.html":[11,3,1,0],
 "functions_func.html":[11,3,1],
+"functions_func.html":[11,3,1,0],
 "functions_func_b.html":[11,3,1,1],
 "functions_func_c.html":[11,3,1,2],
 "functions_func_d.html":[11,3,1,3],
@@ -247,7 +249,5 @@ var NAVTREEINDEX31 =
 "media_2plane_8h_source.html":[12,0,1,6,17],
 "media_2ray_8h_source.html":[12,0,1,6,18],
 "media_2sphere_8h_source.html":[12,0,1,6,21],
-"member__pointer_8h_source.html":[12,0,1,12,4,1],
-"menu__provider_8cxx_source.html":[12,0,1,4,48],
-"menu__provider_8h_source.html":[12,0,1,4,49]
+"member__pointer_8h_source.html":[12,0,1,12,4,1]
 };
