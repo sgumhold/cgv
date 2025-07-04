@@ -40,7 +40,7 @@ public:
 
 	bool load_all(context& ctx, const std::string& where = "");
 
-	bool reload(context& ctx, const std::string& name, const shader_compile_options& defines = {}, const std::string& where = "");
+	bool reload(context& ctx, const std::string& name, const shader_compile_options& options = {}, const std::string& where = "");
 
 private:
 	shader_info& get_shader_info(const std::string& name);

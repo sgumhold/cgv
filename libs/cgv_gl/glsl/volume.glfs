@@ -394,6 +394,9 @@ void main() {
 #if SLICE_MODE > 0
 	bool initial_side_slice = mix(clip_box_min, clip_box_max, ray.origin)[slice_axis] > slice_coordinate;
 #endif
+	const float opacity_threshold = 0.03;
+	float max_opacity = 0.0;
+	float t_at_max_opacity = -1.0;
 	int istep = 0;
 	for(istep; istep < NUM_STEPS; ++istep) {
 		float t = istep * step_size;
@@ -412,12 +415,20 @@ void main() {
 #if COMPOSITING_MODE == 0
 
 		// red channel stores the maximum density
-		color.r = max(color.r, density);
+		if(density > color.r) {
+			color.r = density;
+			t_at_max_opacity = t;
+		}
 
 #elif COMPOSITING_MODE == 1
 
 		// red channel stores the accumulated density
 		color.r += density;
+
+		if(color.r > opacity_threshold && max_opacity == 0.0) {
+			max_opacity = color.r;
+			t_at_max_opacity = t;
+		}
 
 #else
 
@@ -503,6 +514,11 @@ void main() {
 		color.rgb += color.a*color_in.rgb;
 		color.a *= (1.0 - color_in.a);
 
+		if(color_in.a > max_opacity) {
+			max_opacity = color_in.a;
+			t_at_max_opacity = t;
+		}
+
 		// early termination when transparency threshold is reached
 	#if ENABLE_ISOSURFACE == 0
 		if(color.a < TRANSPARENCY_THRESHOLD) {
@@ -520,6 +536,7 @@ void main() {
 
 #if COMPOSITING_MODE == 0
 
+	max_opacity = color.r;
 	color = vec4(color.r);
 
 #elif COMPOSITING_MODE == 1
@@ -538,6 +555,22 @@ void main() {
 #endif
 
 	finish_fragment(color);
+
+	float depth = 1.0;
+	if(t_at_max_opacity >= 0.0 && max_opacity > opacity_threshold) {
+		// get world space position of ray at t_at_max_opacity
+		vec3 pos_world = ray.origin + t_at_max_opacity * ray.direction;
+		// transform from texture coordinates into world space
+		pos_world -= 0.5;
+
+		vec3 hit_pos_eye = (get_modelview_matrix() * vec4(pos_world, 1.0)).xyz;
+		
+		// compute new depth value
+		vec4 v_eye = vec4(hit_pos_eye, 1.0);
+		vec4 v_depth = get_projection_matrix() * v_eye;
+		depth = 0.5*(v_depth.z / v_depth.w) + 0.5;
+	}
+	gl_FragDepth = depth;
 }
 
 /*void main()
