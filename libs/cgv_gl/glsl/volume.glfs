@@ -481,6 +481,8 @@ void main() {
 			color.rgb = color.a*color_in.rgb + color.rgb;
 			color.a = 0.0;
 
+			max_opacity = 1.0;
+			t_at_max_opacity = t;
 			break;
 		}
 	#endif
