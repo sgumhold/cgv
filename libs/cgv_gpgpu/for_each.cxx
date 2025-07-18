@@ -22,7 +22,7 @@ bool for_each::init(cgv::render::context& ctx, const sl::data_type& value_type, 
 	return algorithm::init(ctx, { { &_kernel, "gpgpu_for_each" } }, config);
 }
 
-void for_each::destruct(cgv::render::context& ctx) {
+void for_each::destruct(const cgv::render::context& ctx) {
 	_kernel.destruct(ctx);
 	algorithm::destruct(ctx);
 }

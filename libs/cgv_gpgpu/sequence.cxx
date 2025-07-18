@@ -19,7 +19,7 @@ bool sequence::init(cgv::render::context& ctx, const sl::data_type& value_type) 
 	return algorithm::init(ctx, { { &_kernel, "gpgpu_sequence" } }, config);
 }
 
-void sequence::destruct(cgv::render::context& ctx) {
+void sequence::destruct(const cgv::render::context& ctx) {
 	_kernel.destruct(ctx);
 	algorithm::destruct(ctx);
 }

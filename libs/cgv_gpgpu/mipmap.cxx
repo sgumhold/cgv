@@ -10,7 +10,7 @@ bool mipmap::init(cgv::render::context& ctx, cgv::render::TextureType texture_ty
 	return texture_algorithm::init(ctx, texture_type, { { &_kernel, "gpgpu_mipmap" } }, config);
 }
 
-void mipmap::destruct(cgv::render::context& ctx) {
+void mipmap::destruct(const cgv::render::context& ctx) {
 	_kernel.destruct(ctx);
 	algorithm::destruct(ctx);
 }

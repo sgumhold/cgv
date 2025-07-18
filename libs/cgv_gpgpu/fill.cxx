@@ -17,7 +17,7 @@ bool fill::init(cgv::render::context& ctx, const sl::data_type& value_type) {
 	return algorithm::init(ctx, { { &_kernel, "gpgpu_fill" } }, config);
 }
 
-void fill::destruct(cgv::render::context& ctx) {
+void fill::destruct(const cgv::render::context& ctx) {
 	_kernel.destruct(ctx);
 	algorithm::destruct(ctx);
 }
