@@ -433,6 +433,8 @@ var hierarchy =
     [ "cgv::math::adjacency_list< v_type >", "classcgv_1_1math_1_1adjacency__list.html", null ],
     [ "cgv::math::bresenham_traverser", "classcgv_1_1math_1_1bresenham__traverser.html", null ],
     [ "cgv::math::control_point_container< T >", "classcgv_1_1math_1_1control__point__container.html", null ],
+    [ "cgv::math::cubic_hermite_curve< point_type >", "structcgv_1_1math_1_1cubic__hermite__curve.html", null ],
+    [ "cgv::math::cubic_hermite_interpolation< point_type, param_type >", "classcgv_1_1math_1_1cubic__hermite__interpolation.html", null ],
     [ "cgv::math::diag_mat< T >", "structcgv_1_1math_1_1diag__mat.html", null ],
     [ "cgv::math::distorted_pinhole_types", "classcgv_1_1math_1_1distorted__pinhole__types.html", [
       [ "cgv::math::distorted_pinhole< T >", "classcgv_1_1math_1_1distorted__pinhole.html", [
@@ -465,6 +467,8 @@ var hierarchy =
     [ "cgv::math::pinhole< T >", "classcgv_1_1math_1_1pinhole.html", [
       [ "cgv::math::distorted_pinhole< T >", "classcgv_1_1math_1_1distorted__pinhole.html", null ]
     ] ],
+    [ "cgv::math::quadratic_bezier_curve< point_type >", "structcgv_1_1math_1_1quadratic__bezier__curve.html", null ],
+    [ "cgv::math::quadratic_bezier_interpolation< point_type, param_type >", "classcgv_1_1math_1_1quadratic__bezier__interpolation.html", null ],
     [ "cgv::math::random", "structcgv_1_1math_1_1random.html", null ],
     [ "cgv::math::ray< T, N >", "classcgv_1_1math_1_1ray.html", null ],
     [ "cgv::math::ray< T, 3 >", "classcgv_1_1math_1_1ray_3_01T_00_013_01_4.html", null ],
