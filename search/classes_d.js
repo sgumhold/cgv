@@ -34,6 +34,8 @@ var searchData=
   ['optional_3c_20cgv_3a_3amath_3a_3aquaternion_20_3e_31',['optional&lt; cgv::math::quaternion &gt;',['../classcgv_1_1data_1_1optional.html',1,'cgv::data']]],
   ['optional_3c_20color_3c_20float_2c_20cgv_3a_3amedia_3a_3argb_2c_20cgv_3a_3amedia_3a_3aopacity_20_3e_20_3e_32',['optional&lt; color&lt; float, cgv::media::RGB, cgv::media::OPACITY &gt; &gt;',['../classcgv_1_1data_1_1optional.html',1,'cgv::data']]],
   ['optional_3c_20rgb_20_3e_33',['optional&lt; rgb &gt;',['../classcgv_1_1data_1_1optional.html',1,'cgv::data']]],
-  ['orthographic_34',['Orthographic',['../structfx_1_1gltf_1_1Camera_1_1Orthographic.html',1,'fx::gltf::Camera']]],
-  ['overlay_35',['overlay',['../classcgv_1_1app_1_1overlay.html',1,'cgv::app']]]
+  ['oriented_5fbox2_34',['oriented_box2',['../structcgv_1_1math_1_1oriented__box2.html',1,'cgv::math']]],
+  ['oriented_5fbox3_35',['oriented_box3',['../structcgv_1_1math_1_1oriented__box3.html',1,'cgv::math']]],
+  ['orthographic_36',['Orthographic',['../structfx_1_1gltf_1_1Camera_1_1Orthographic.html',1,'fx::gltf::Camera']]],
+  ['overlay_37',['overlay',['../classcgv_1_1app_1_1overlay.html',1,'cgv::app']]]
 ];

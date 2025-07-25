@@ -5,7 +5,7 @@
 <meta http-equiv="X-UA-Compatible" content="IE=11"/>
 <meta name="generator" content="Doxygen 1.9.8"/>
 <meta name="viewport" content="width=device-width, initial-scale=1"/>
-<title>cgv: cgv::math::quadratic_bezier_interpolation&lt; point_type, param_type &gt; Class Template Reference</title>
+<title>cgv: cgv::math::cubic_bezier&lt; point_type, param_type &gt; Class Template Reference</title>
 <link href="tabs.css" rel="stylesheet" type="text/css"/>
 <script type="text/javascript" src="jquery.js"></script>
 <script type="text/javascript" src="dynsections.js"></script>
@@ -63,7 +63,7 @@ $(function() {
 </div>
 <script type="text/javascript">
 /* @license magnet:?xt=urn:btih:d3d9a9a6595521f9666a5e94cc830dab83b65699&amp;dn=expat.txt MIT */
-$(document).ready(function(){initNavTree('classcgv_1_1math_1_1quadratic__bezier__interpolation.html',''); initResizable(); });
+$(document).ready(function(){initNavTree('classcgv_1_1math_1_1cubic__bezier.html',''); initResizable(); });
 /* @license-end */
 </script>
 <div id="doc-content">
@@ -92,35 +92,35 @@ $(document).ready(function(){initNavTree('classcgv_1_1math_1_1quadratic__bezier_
   <div class="summary">
 <a href="#pub-types">Public Types</a> &#124;
 <a href="#pub-static-methods">Static Public Member Functions</a> &#124;
-<a href="classcgv_1_1math_1_1quadratic__bezier__interpolation-members.html">List of all members</a>  </div>
-  <div class="headertitle"><div class="title">cgv::math::quadratic_bezier_interpolation&lt; point_type, param_type &gt; Class Template Reference</div></div>
+<a href="classcgv_1_1math_1_1cubic__bezier-members.html">List of all members</a>  </div>
+  <div class="headertitle"><div class="title">cgv::math::cubic_bezier&lt; point_type, param_type &gt; Class Template Reference</div></div>
 </div><!--header-->
 <div class="contents">
 <table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="pub-types" name="pub-types"></a>
 Public Types</h2></td></tr>
-<tr class="memitem:a8148070cf2e52183c9871c1d4a392d98" id="r_a8148070cf2e52183c9871c1d4a392d98"><td class="memItemLeft" align="right" valign="top">using&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcgv_1_1math_1_1quadratic__bezier__interpolation.html#a8148070cf2e52183c9871c1d4a392d98">matrix_type</a> = <a class="el" href="classcgv_1_1math_1_1fmat.html">cgv::math::fmat</a>&lt; param_type, 3, 3 &gt;</td></tr>
-<tr class="separator:a8148070cf2e52183c9871c1d4a392d98"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a2aefca0f9233ae912f5567694b643b6a" id="r_a2aefca0f9233ae912f5567694b643b6a"><td class="memItemLeft" align="right" valign="top">using&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcgv_1_1math_1_1cubic__bezier.html#a2aefca0f9233ae912f5567694b643b6a">matrix_type</a> = <a class="el" href="classcgv_1_1math_1_1fmat.html">fmat</a>&lt; param_type, 4, 4 &gt;</td></tr>
+<tr class="separator:a2aefca0f9233ae912f5567694b643b6a"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="pub-static-methods" name="pub-static-methods"></a>
 Static Public Member Functions</h2></td></tr>
-<tr class="memitem:ae626fe099775ce215cab8e43ebd1e9e4" id="r_ae626fe099775ce215cab8e43ebd1e9e4"><td class="memItemLeft" align="right" valign="top">static const <a class="el" href="classcgv_1_1math_1_1fmat.html">matrix_type</a> &amp;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcgv_1_1math_1_1quadratic__bezier__interpolation.html#ae626fe099775ce215cab8e43ebd1e9e4">characteristic_matrix</a> ()</td></tr>
-<tr class="separator:ae626fe099775ce215cab8e43ebd1e9e4"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a88f4e4574ea651565d5af8277237baed" id="r_a88f4e4574ea651565d5af8277237baed"><td class="memItemLeft" align="right" valign="top">static point_type&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcgv_1_1math_1_1quadratic__bezier__interpolation.html#a88f4e4574ea651565d5af8277237baed">interpolate</a> (const point_type &amp;p0, const point_type &amp;p1, const point_type &amp;p2, param_type t)</td></tr>
-<tr class="separator:a88f4e4574ea651565d5af8277237baed"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a5bd99a0df070aadde03e5494a747f4cc" id="r_a5bd99a0df070aadde03e5494a747f4cc"><td class="memTemplParams" colspan="2">template&lt;typename OutputIt &gt; </td></tr>
-<tr class="memitem:a5bd99a0df070aadde03e5494a747f4cc"><td class="memTemplItemLeft" align="right" valign="top">static void&#160;</td><td class="memTemplItemRight" valign="bottom"><a class="el" href="classcgv_1_1math_1_1quadratic__bezier__interpolation.html#a5bd99a0df070aadde03e5494a747f4cc">sample</a> (const point_type &amp;p0, const point_type &amp;p1, const point_type &amp;p2, size_t num_segments, OutputIt output_first)</td></tr>
-<tr class="separator:a5bd99a0df070aadde03e5494a747f4cc"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:aa04702a6270ccc2dba6028b7b7326111" id="r_aa04702a6270ccc2dba6028b7b7326111"><td class="memItemLeft" align="right" valign="top">static std::vector&lt; point_type &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcgv_1_1math_1_1quadratic__bezier__interpolation.html#aa04702a6270ccc2dba6028b7b7326111">sample</a> (const point_type &amp;p0, const point_type &amp;p1, const point_type &amp;p2, size_t num_segments)</td></tr>
-<tr class="separator:aa04702a6270ccc2dba6028b7b7326111"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:aa4c0c54a3d3f9b4256bba12d5fb331de" id="r_aa4c0c54a3d3f9b4256bba12d5fb331de"><td class="memItemLeft" align="right" valign="top">static const <a class="el" href="classcgv_1_1math_1_1fmat.html">matrix_type</a> &amp;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcgv_1_1math_1_1cubic__bezier.html#aa4c0c54a3d3f9b4256bba12d5fb331de">characteristic_matrix</a> ()</td></tr>
+<tr class="separator:aa4c0c54a3d3f9b4256bba12d5fb331de"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:aad40249a4b3b124bd8aae9af78248d71" id="r_aad40249a4b3b124bd8aae9af78248d71"><td class="memItemLeft" align="right" valign="top">static point_type&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcgv_1_1math_1_1cubic__bezier.html#aad40249a4b3b124bd8aae9af78248d71">interpolate</a> (const point_type &amp;p0, const point_type &amp;p1, const point_type &amp;p2, const point_type &amp;p3, param_type t)</td></tr>
+<tr class="separator:aad40249a4b3b124bd8aae9af78248d71"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:aafbfda64d2781f07c4c611b8df9c81e6" id="r_aafbfda64d2781f07c4c611b8df9c81e6"><td class="memTemplParams" colspan="2">template&lt;typename OutputIt &gt; </td></tr>
+<tr class="memitem:aafbfda64d2781f07c4c611b8df9c81e6"><td class="memTemplItemLeft" align="right" valign="top">static void&#160;</td><td class="memTemplItemRight" valign="bottom"><a class="el" href="classcgv_1_1math_1_1cubic__bezier.html#aafbfda64d2781f07c4c611b8df9c81e6">sample</a> (const point_type &amp;p0, const point_type &amp;p1, const point_type &amp;p2, const point_type &amp;p3, size_t num_segments, OutputIt output_first)</td></tr>
+<tr class="separator:aafbfda64d2781f07c4c611b8df9c81e6"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a2ecc10adc478dc1fee7c66faca446fc7" id="r_a2ecc10adc478dc1fee7c66faca446fc7"><td class="memItemLeft" align="right" valign="top">static std::vector&lt; point_type &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcgv_1_1math_1_1cubic__bezier.html#a2ecc10adc478dc1fee7c66faca446fc7">sample</a> (const point_type &amp;p0, const point_type &amp;p1, const point_type &amp;p2, const point_type &amp;p3, size_t num_segments)</td></tr>
+<tr class="separator:a2ecc10adc478dc1fee7c66faca446fc7"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
 <a name="details" id="details"></a><h2 class="groupheader">Detailed Description</h2>
 <div class="textblock"><div class="compoundTemplParams">template&lt;typename point_type, typename param_type = float&gt;<br />
-class cgv::math::quadratic_bezier_interpolation&lt; point_type, param_type &gt;</div>
-<p class="definition">Definition at line <a class="el" href="quadratic__bezier_8h_source.html#l00010">10</a> of file <a class="el" href="quadratic__bezier_8h_source.html">quadratic_bezier.h</a>.</p>
+class cgv::math::cubic_bezier&lt; point_type, param_type &gt;</div>
+<p class="definition">Definition at line <a class="el" href="cubic__bezier_8h_source.html#l00010">10</a> of file <a class="el" href="cubic__bezier_8h_source.html">cubic_bezier.h</a>.</p>
 </div><h2 class="groupheader">Member Typedef Documentation</h2>
-<a id="a8148070cf2e52183c9871c1d4a392d98" name="a8148070cf2e52183c9871c1d4a392d98"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a8148070cf2e52183c9871c1d4a392d98">&#9670;&#160;</a></span>matrix_type</h2>
+<a id="a2aefca0f9233ae912f5567694b643b6a" name="a2aefca0f9233ae912f5567694b643b6a"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a2aefca0f9233ae912f5567694b643b6a">&#9670;&#160;</a></span>matrix_type</h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -128,18 +128,18 @@ class cgv::math::quadratic_bezier_interpolation&lt; point_type, param_type &gt;<
 template&lt;typename point_type , typename param_type  = float&gt; </div>
       <table class="memname">
         <tr>
-          <td class="memname">using <a class="el" href="classcgv_1_1math_1_1quadratic__bezier__interpolation.html">cgv::math::quadratic_bezier_interpolation</a>&lt; point_type, param_type &gt;::matrix_type =  <a class="el" href="classcgv_1_1math_1_1fmat.html">cgv::math::fmat</a>&lt;param_type, 3, 3&gt;</td>
+          <td class="memname">using <a class="el" href="classcgv_1_1math_1_1cubic__bezier.html">cgv::math::cubic_bezier</a>&lt; point_type, param_type &gt;::matrix_type =  <a class="el" href="classcgv_1_1math_1_1fmat.html">fmat</a>&lt;param_type, 4, 4&gt;</td>
         </tr>
       </table>
 </div><div class="memdoc">
 
-<p class="definition">Definition at line <a class="el" href="quadratic__bezier_8h_source.html#l00012">12</a> of file <a class="el" href="quadratic__bezier_8h_source.html">quadratic_bezier.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="cubic__bezier_8h_source.html#l00012">12</a> of file <a class="el" href="cubic__bezier_8h_source.html">cubic_bezier.h</a>.</p>
 
 </div>
 </div>
 <h2 class="groupheader">Member Function Documentation</h2>
-<a id="ae626fe099775ce215cab8e43ebd1e9e4" name="ae626fe099775ce215cab8e43ebd1e9e4"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#ae626fe099775ce215cab8e43ebd1e9e4">&#9670;&#160;</a></span>characteristic_matrix()</h2>
+<a id="aa4c0c54a3d3f9b4256bba12d5fb331de" name="aa4c0c54a3d3f9b4256bba12d5fb331de"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#aa4c0c54a3d3f9b4256bba12d5fb331de">&#9670;&#160;</a></span>characteristic_matrix()</h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -150,7 +150,7 @@ template&lt;typename point_type , typename param_type  = float&gt; </div>
   <td class="mlabels-left">
       <table class="memname">
         <tr>
-          <td class="memname">static const <a class="el" href="classcgv_1_1math_1_1fmat.html">matrix_type</a> &amp; <a class="el" href="classcgv_1_1math_1_1quadratic__bezier__interpolation.html">cgv::math::quadratic_bezier_interpolation</a>&lt; point_type, param_type &gt;::characteristic_matrix </td>
+          <td class="memname">static const <a class="el" href="classcgv_1_1math_1_1fmat.html">matrix_type</a> &amp; <a class="el" href="classcgv_1_1math_1_1cubic__bezier.html">cgv::math::cubic_bezier</a>&lt; point_type, param_type &gt;::characteristic_matrix </td>
           <td>(</td>
           <td class="paramname"></td><td>)</td>
           <td></td>
@@ -163,12 +163,12 @@ template&lt;typename point_type , typename param_type  = float&gt; </div>
 </table>
 </div><div class="memdoc">
 
-<p class="definition">Definition at line <a class="el" href="quadratic__bezier_8h_source.html#l00014">14</a> of file <a class="el" href="quadratic__bezier_8h_source.html">quadratic_bezier.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="cubic__bezier_8h_source.html#l00014">14</a> of file <a class="el" href="cubic__bezier_8h_source.html">cubic_bezier.h</a>.</p>
 
 </div>
 </div>
-<a id="a88f4e4574ea651565d5af8277237baed" name="a88f4e4574ea651565d5af8277237baed"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a88f4e4574ea651565d5af8277237baed">&#9670;&#160;</a></span>interpolate()</h2>
+<a id="aad40249a4b3b124bd8aae9af78248d71" name="aad40249a4b3b124bd8aae9af78248d71"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#aad40249a4b3b124bd8aae9af78248d71">&#9670;&#160;</a></span>interpolate()</h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -179,7 +179,7 @@ template&lt;typename point_type , typename param_type  = float&gt; </div>
   <td class="mlabels-left">
       <table class="memname">
         <tr>
-          <td class="memname">static point_type <a class="el" href="classcgv_1_1math_1_1quadratic__bezier__interpolation.html">cgv::math::quadratic_bezier_interpolation</a>&lt; point_type, param_type &gt;::interpolate </td>
+          <td class="memname">static point_type <a class="el" href="classcgv_1_1math_1_1cubic__bezier.html">cgv::math::cubic_bezier</a>&lt; point_type, param_type &gt;::interpolate </td>
           <td>(</td>
           <td class="paramtype">const point_type &amp;&#160;</td>
           <td class="paramname"><em>p0</em>, </td>
@@ -195,6 +195,12 @@ template&lt;typename point_type , typename param_type  = float&gt; </div>
           <td></td>
           <td class="paramtype">const point_type &amp;&#160;</td>
           <td class="paramname"><em>p2</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">const point_type &amp;&#160;</td>
+          <td class="paramname"><em>p3</em>, </td>
         </tr>
         <tr>
           <td class="paramkey"></td>
@@ -215,12 +221,12 @@ template&lt;typename point_type , typename param_type  = float&gt; </div>
 </table>
 </div><div class="memdoc">
 
-<p class="definition">Definition at line <a class="el" href="quadratic__bezier_8h_source.html#l00018">18</a> of file <a class="el" href="quadratic__bezier_8h_source.html">quadratic_bezier.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="cubic__bezier_8h_source.html#l00018">18</a> of file <a class="el" href="cubic__bezier_8h_source.html">cubic_bezier.h</a>.</p>
 
 </div>
 </div>
-<a id="aa04702a6270ccc2dba6028b7b7326111" name="aa04702a6270ccc2dba6028b7b7326111"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#aa04702a6270ccc2dba6028b7b7326111">&#9670;&#160;</a></span>sample() <span class="overload">[1/2]</span></h2>
+<a id="a2ecc10adc478dc1fee7c66faca446fc7" name="a2ecc10adc478dc1fee7c66faca446fc7"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a2ecc10adc478dc1fee7c66faca446fc7">&#9670;&#160;</a></span>sample() <span class="overload">[1/2]</span></h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -231,7 +237,7 @@ template&lt;typename point_type , typename param_type  = float&gt; </div>
   <td class="mlabels-left">
       <table class="memname">
         <tr>
-          <td class="memname">static std::vector&lt; point_type &gt; <a class="el" href="classcgv_1_1math_1_1quadratic__bezier__interpolation.html">cgv::math::quadratic_bezier_interpolation</a>&lt; point_type, param_type &gt;::sample </td>
+          <td class="memname">static std::vector&lt; point_type &gt; <a class="el" href="classcgv_1_1math_1_1cubic__bezier.html">cgv::math::cubic_bezier</a>&lt; point_type, param_type &gt;::sample </td>
           <td>(</td>
           <td class="paramtype">const point_type &amp;&#160;</td>
           <td class="paramname"><em>p0</em>, </td>
@@ -247,6 +253,12 @@ template&lt;typename point_type , typename param_type  = float&gt; </div>
           <td></td>
           <td class="paramtype">const point_type &amp;&#160;</td>
           <td class="paramname"><em>p2</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">const point_type &amp;&#160;</td>
+          <td class="paramname"><em>p3</em>, </td>
         </tr>
         <tr>
           <td class="paramkey"></td>
@@ -267,12 +279,12 @@ template&lt;typename point_type , typename param_type  = float&gt; </div>
 </table>
 </div><div class="memdoc">
 
-<p class="definition">Definition at line <a class="el" href="quadratic__bezier_8h_source.html#l00035">35</a> of file <a class="el" href="quadratic__bezier_8h_source.html">quadratic_bezier.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="cubic__bezier_8h_source.html#l00035">35</a> of file <a class="el" href="cubic__bezier_8h_source.html">cubic_bezier.h</a>.</p>
 
 </div>
 </div>
-<a id="a5bd99a0df070aadde03e5494a747f4cc" name="a5bd99a0df070aadde03e5494a747f4cc"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a5bd99a0df070aadde03e5494a747f4cc">&#9670;&#160;</a></span>sample() <span class="overload">[2/2]</span></h2>
+<a id="aafbfda64d2781f07c4c611b8df9c81e6" name="aafbfda64d2781f07c4c611b8df9c81e6"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#aafbfda64d2781f07c4c611b8df9c81e6">&#9670;&#160;</a></span>sample() <span class="overload">[2/2]</span></h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -285,7 +297,7 @@ template&lt;typename OutputIt &gt; </div>
   <td class="mlabels-left">
       <table class="memname">
         <tr>
-          <td class="memname">static void <a class="el" href="classcgv_1_1math_1_1quadratic__bezier__interpolation.html">cgv::math::quadratic_bezier_interpolation</a>&lt; point_type, param_type &gt;::sample </td>
+          <td class="memname">static void <a class="el" href="classcgv_1_1math_1_1cubic__bezier.html">cgv::math::cubic_bezier</a>&lt; point_type, param_type &gt;::sample </td>
           <td>(</td>
           <td class="paramtype">const point_type &amp;&#160;</td>
           <td class="paramname"><em>p0</em>, </td>
@@ -301,6 +313,12 @@ template&lt;typename OutputIt &gt; </div>
           <td></td>
           <td class="paramtype">const point_type &amp;&#160;</td>
           <td class="paramname"><em>p2</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">const point_type &amp;&#160;</td>
+          <td class="paramname"><em>p3</em>, </td>
         </tr>
         <tr>
           <td class="paramkey"></td>
@@ -327,19 +345,19 @@ template&lt;typename OutputIt &gt; </div>
 </table>
 </div><div class="memdoc">
 
-<p class="definition">Definition at line <a class="el" href="quadratic__bezier_8h_source.html#l00025">25</a> of file <a class="el" href="quadratic__bezier_8h_source.html">quadratic_bezier.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="cubic__bezier_8h_source.html#l00025">25</a> of file <a class="el" href="cubic__bezier_8h_source.html">cubic_bezier.h</a>.</p>
 
 </div>
 </div>
 <hr/>The documentation for this class was generated from the following file:<ul>
-<li>cgv/math/<a class="el" href="quadratic__bezier_8h_source.html">quadratic_bezier.h</a></li>
+<li>cgv/math/<a class="el" href="cubic__bezier_8h_source.html">cubic_bezier.h</a></li>
 </ul>
 </div><!-- contents -->
 </div><!-- doc-content -->
 <!-- start footer part -->
 <div id="nav-path" class="navpath"><!-- id is needed for treeview function! -->
   <ul>
-    <li class="navelem"><a class="el" href="namespacecgv.html">cgv</a></li><li class="navelem"><b>math</b></li><li class="navelem"><a class="el" href="classcgv_1_1math_1_1quadratic__bezier__interpolation.html">quadratic_bezier_interpolation</a></li>
+    <li class="navelem"><a class="el" href="namespacecgv.html">cgv</a></li><li class="navelem"><b>math</b></li><li class="navelem"><a class="el" href="classcgv_1_1math_1_1cubic__bezier.html">cubic_bezier</a></li>
     <li class="footer">Generated by <a href="https://www.doxygen.org/index.html"><img class="footer" src="doxygen.svg" width="104" height="31" alt="doxygen"/></a> 1.9.8 </li>
   </ul>
 </div>
