@@ -1,22 +1,22 @@
 #pragma once
 
-#include <cgv/math/fvec.h>
-#include <cgv/math/fmat.h>
+#include "fvec.h"
+#include "fmat.h"
 
 namespace cgv {
 namespace math {
 
 template<typename point_type, typename param_type = float>
-class cubic_hermite_interpolation {
+class cubic_hermite {
 public:
-	using matrix_type = cgv::math::fmat<param_type, 4, 4>;
+	using matrix_type = fmat<param_type, 4, 4>;
 
 	static const matrix_type& characteristic_matrix() {
 		return M;
 	}
 
 	static point_type interpolate(const point_type& p0, const point_type& m0, const point_type& p1, const point_type& m1, param_type t) {
-		cgv::math::fvec<param_type, 4> w = { param_type(1), t, t * t, t * t * t };
+		fvec<param_type, 4> w = { param_type(1), t, t * t, t * t * t };
 		w = w * M;
 		return w[0] * p0 + w[1] * m0 + w[2] * p1 + w[3] * m1;
 	}
@@ -24,7 +24,7 @@ public:
 	template<typename OutputIt>
 	static void sample(const point_type& p0, const point_type& m0, const point_type& p1, const point_type& m1, size_t num_segments, OutputIt output_first) {
 		num_segments = std::max(num_segments, size_t(1));
-		param_type step = 1.0f / static_cast<param_type>(num_segments);
+		param_type step = param_type(1) / static_cast<param_type>(num_segments);
 		for(size_t i = 0; i <= num_segments; ++i) {
 			param_type t = step * static_cast<param_type>(i);
 			*output_first = interpolate(p0, m0, p1, m1, t);
@@ -49,26 +49,31 @@ private:
 	};
 };
 
+template<typename T>
+struct hermite_node {
+	T val; // the point value (e.g. position)
+	T tan; // the tangent
+};
+
 template<typename point_type>
 struct cubic_hermite_curve {
-public:
-	/// the start point
-	point_type p0 = { 0 };
-	/// the start tangent
-	point_type m0 = { 0 };
-	/// the end point
-	point_type p1 = { 0 };
-	/// the end tangent
-	point_type m1 = { 0 };
+	/// the start node
+	hermite_node<point_type> n0;
+	/// the end node
+	hermite_node<point_type> n1;
+
+	cubic_hermite_curve() {}
+	cubic_hermite_curve(const point_type& p0, const point_type& m0, const point_type& p1, const point_type& m1) : n0{ p1, m0 }, n1{ p1, m1 } {}
+	cubic_hermite_curve(const hermite_node<point_type>& n0, const hermite_node<point_type>& n1) : n0(n0), n1(n1) {}
 
 	template<typename param_type = float>
 	point_type interpolate(param_type t) const {
-		return cubic_hermite_interpolation<point_type, param_type>::interpolate(p0, m0, p1, m1, t);
+		return cubic_hermite<point_type, param_type>::interpolate(n0.val, n0.tan, n1.val, n1.tan, t);
 	}
 
 	template<typename param_type = float>
 	std::vector<point_type> sample(size_t num_segments) const {
-		return cubic_hermite_interpolation<point_type, param_type>:sample(p0, m0, p1, m1, num_segments);
+		return cubic_hermite<point_type, param_type>::sample(n0.val, n0.tan, n1.val, n1.tan, num_segments);
 	}
 };
 
