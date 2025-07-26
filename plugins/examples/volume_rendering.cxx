@@ -303,7 +303,6 @@ void volume_viewer::load_transfer_function_preset() {
 		transfer_function.add_opacity_point(0.1f, 0.1f);
 		transfer_function.add_opacity_point(0.3f, 0.1f);
 		transfer_function.add_opacity_point(0.35f, 0.0f);
-		transfer_function.add_opacity_point(0.35f, 0.0f);
 		transfer_function.add_opacity_point(0.45f, 0.0f);
 		transfer_function.add_opacity_point(0.5f, 0.15f);
 		transfer_function.add_opacity_point(0.55f, 0.15f);
