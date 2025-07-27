@@ -27,7 +27,14 @@ void main() {
 	uint gid = gl_GlobalInvocationID.x;
 	uint id = u_input_begin + gid;
 
-	if(id < u_input_end)
-		data_out[u_output_begin + gid] = operation(data_in[id], gid);
+	if(id < u_input_end) {
+		value_type value = data_in[id];
+
+		// transform to bin
+		// TODO: replace this dummy with a range and use bin count
+		value = clamp(value, 0, 255);
+
+		atomicAdd(u_output_begin + value, 1);
+	}
 }
 #endif
