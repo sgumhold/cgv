@@ -31,7 +31,7 @@ bool histogram::dispatch(cgv::render::context & ctx, device_buffer_iterator inpu
 	if(!is_valid_range(input_first, input_last))
 		return false;
 
-	if(same(input_first, output_first))
+	if(compatible(input_first, output_first))
 		return false;
 
 	input_first.buffer().bind(ctx, cgv::render::VertexBufferType::VBT_STORAGE, 0);

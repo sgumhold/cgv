@@ -5,11 +5,11 @@
 //$cgv::value_typedef
 
 #ifdef CGV_USE_SNIPPETS
-layout(std430, binding = 0) writeonly buffer input_buffer {
+layout(std430, binding = 0) readonly buffer input_buffer {
 	value_type data[];
 };
 
-layout(std430, binding = 0) writeonly buffer output_buffer {
+layout(std430, binding = 1) writeonly coherent buffer output_buffer {
 	uint bins[];
 };
 
@@ -20,9 +20,16 @@ uniform uint u_output_begin;
 
 layout(local_size_x = 512) in;
 void main() {
-	uint gid = u_begin + gl_GlobalInvocationID.x;
+	uint id = u_input_begin + gl_GlobalInvocationID.x;
 
-	if(gid < u_end)
-		data[gid] = u_value;
+	if(id < u_input_end) {
+		value_type value = data[id];
+
+		// transform to bin
+		// TODO: replace this dummy with a range and use bin count
+		value = clamp(value, uint(0), uint(255));
+
+		atomicAdd(bins[u_output_begin + value], 1);
+	}
 }
 #endif
