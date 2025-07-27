@@ -82,7 +82,7 @@ private:
 	size_t _index = 0;
 };
 
-static bool same(device_buffer_iterator first, device_buffer_iterator second) {
+static bool compatible(device_buffer_iterator first, device_buffer_iterator second) {
 	return &first.buffer() == &second.buffer();
 }
 
