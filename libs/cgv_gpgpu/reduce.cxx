@@ -68,13 +68,16 @@ bool reduce::dispatch(cgv::render::context& ctx, device_buffer_iterator input_fi
 	input_first.buffer().bind(ctx, cgv::render::VertexBufferType::VBT_STORAGE, 0);
 	_group_reduction_buffer.bind(ctx, 1);
 
+	uint32_t count = cgv::gpgpu::distance(input_first, input_last);
+	uint32_t num_groups = std::min(_num_groups, cgv::math::div_round_up(count, _group_size));
+
 	_kernel.enable(ctx);
 	_kernel.set_argument<uint32_t>(ctx, "u_input_begin", input_first.index());
 	_kernel.set_argument<uint32_t>(ctx, "u_output_begin", 0);
-	_kernel.set_argument<uint32_t>(ctx, "u_count", cgv::gpgpu::distance(input_first, input_last));
+	_kernel.set_argument<uint32_t>(ctx, "u_count", count);
 	_kernel.set_arguments(ctx, arguments);
 
-	dispatch_compute(_num_groups, 1, 1);
+	dispatch_compute(num_groups, 1, 1);
 	glMemoryBarrier(GL_SHADER_STORAGE_BARRIER_BIT);
 
 	input_first.buffer().unbind(ctx, cgv::render::VertexBufferType::VBT_STORAGE, 0);
@@ -85,7 +88,7 @@ bool reduce::dispatch(cgv::render::context& ctx, device_buffer_iterator input_fi
 
 	_kernel.set_argument<uint32_t>(ctx, "u_input_begin", 0);
 	_kernel.set_argument<uint32_t>(ctx, "u_output_begin", output.index());
-	_kernel.set_argument<uint32_t>(ctx, "u_count", _num_groups);
+	_kernel.set_argument<uint32_t>(ctx, "u_count", num_groups);
 
 	dispatch_compute(1, 1, 1);
 	glMemoryBarrier(GL_SHADER_STORAGE_BARRIER_BIT);
