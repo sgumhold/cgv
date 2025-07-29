@@ -5,16 +5,26 @@
 namespace cgv {
 namespace gpgpu {
 
-//const std::string histogram::value_argument_name = "u_value";
+const std::string histogram::lower_limit_argument_name = "u_lower_limit";
+const std::string histogram::upper_limit_argument_name = "u_upper_limit";
 
-histogram::histogram() : algorithm("histogram") {}
+histogram::histogram(uint32_t num_bins) : algorithm("histogram"), _num_bins(num_bins) {}
 
 bool histogram::init(cgv::render::context& ctx, const sl::data_type& value_type) {
-	// TODO: accept only scalar types
-	if(!value_type.is_valid())
+	if(!value_type.is_valid() || !value_type.is_scalar() || value_type.type() == sl::Type::kBool)
 		return false;
+
+	_value_type = value_type;
+
 	cgv::render::shader_compile_options config = get_configuration({}, { value_type });
 	config.snippets.push_back({ "value_typedef", sl::get_type_alias_string("value_type", value_type) });
+
+	config.defines.insert({ "NUM_BINS", std::to_string(_num_bins) });
+
+	sl::Type base_type = value_type.type();
+	if(base_type == sl::Type::kFloat || base_type == sl::Type::kDouble)
+		config.defines.insert({ "VALUE_TYPE_IS_FLOATING_POINT", "" });
+	
 	return algorithm::init(ctx, { { &_kernel, "gpgpu_histogram" } }, config);
 }
 
@@ -23,11 +33,7 @@ void histogram::destruct(const cgv::render::context& ctx) {
 	algorithm::destruct(ctx);
 }
 
-bool histogram::dispatch(cgv::render::context& ctx, const cgv::render::vertex_buffer& input_buffer, const cgv::render::vertex_buffer& output_buffer, size_t count) {//}, const argument_bindings& arguments) {
-	return dispatch(ctx, begin(input_buffer), begin(input_buffer) + count, begin(output_buffer));//, arguments);
-}
-
-bool histogram::dispatch(cgv::render::context & ctx, device_buffer_iterator input_first, device_buffer_iterator input_last, device_buffer_iterator output_first) {//,const argument_bindings& arguments) {
+bool histogram::dispatch(cgv::render::context & ctx, device_buffer_iterator input_first, device_buffer_iterator input_last, device_buffer_iterator output_first, const argument_bindings& arguments, bool use_remapping) {
 	if(!is_valid_range(input_first, input_last))
 		return false;
 
@@ -41,12 +47,17 @@ bool histogram::dispatch(cgv::render::context & ctx, device_buffer_iterator inpu
 	_kernel.set_argument<uint32_t>(ctx, "u_input_begin", input_first.index());
 	_kernel.set_argument<uint32_t>(ctx, "u_input_end", input_last.index());
 	_kernel.set_argument<uint32_t>(ctx, "u_output_begin", output_first.index());
-	//_kernel.set_arguments(ctx, arguments);
+	_kernel.set_argument<uint32_t>(ctx, "u_use_remapping", use_remapping);
+	_kernel.set_arguments(ctx, arguments);
 
-	// TODO: Make configurable.
-	const uint32_t group_size = 512;
-	uint32_t num_groups = cgv::math::div_round_up(static_cast<uint32_t>(distance(input_first, input_last)), group_size);
+	// TODO: Expose num groups and group size as setup parameters
+	const uint32_t _num_groups = 256;
+	const uint32_t _group_size = 512;
+
+	uint32_t count = cgv::gpgpu::distance(input_first, input_last);
+	uint32_t num_groups = std::min(_num_groups, cgv::math::div_round_up(count, _group_size));	
 	dispatch_compute(num_groups, 1, 1);
+
 	glMemoryBarrier(GL_SHADER_STORAGE_BARRIER_BIT);
 	_kernel.disable(ctx);
 
