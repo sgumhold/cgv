@@ -8,6 +8,8 @@
 namespace cgv {
 namespace gpgpu {
 
+// TODO: See https://ajdillhoff.github.io/notes/gpu_pattern_parallel_histogram/
+
 /// GPU compute shader implementation for computing a histogram from a range of values.
 class CGV_API histogram : public algorithm {
 public:
