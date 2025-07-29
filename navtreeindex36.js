@@ -1,6 +1,5 @@
 var NAVTREEINDEX36 =
 {
-"namespacemembers_e.html":[10,1,0,4],
 "namespacemembers_enum.html":[10,1,4],
 "namespacemembers_eval.html":[10,1,5],
 "namespacemembers_eval.html":[10,1,5,0],
@@ -249,5 +248,6 @@ var NAVTREEINDEX36 =
 "point__renderer_8h_source.html":[12,0,3,3,35],
 "pointer__test_8h_source.html":[12,0,1,13,25],
 "polar_8h_source.html":[12,0,1,5,51],
-"polynomial_8h_source.html":[12,0,1,5,52]
+"polynomial_8h_source.html":[12,0,1,5,52],
+"pose_8h.html":[12,0,1,5,53]
 };
