@@ -8,40 +8,55 @@
 namespace cgv {
 namespace gpgpu {
 
-// TODO: See https://ajdillhoff.github.io/notes/gpu_pattern_parallel_histogram/
-
 /// GPU compute shader implementation for computing a histogram from a range of values.
 class CGV_API histogram : public algorithm {
 public:
-	histogram();
+	histogram(uint32_t num_bins);
 
 	bool init(cgv::render::context& ctx, const sl::data_type& value_type);
 
 	void destruct(const cgv::render::context& ctx);
 
-	/*
 	template<typename T, typename std::enable_if<!std::is_base_of<argument_bindings, T>::value, bool>::type = true>
-	bool dispatch(cgv::render::context& ctx, const cgv::render::vertex_buffer& buffer, size_t count, T value) {
+	bool dispatch(cgv::render::context& ctx, const cgv::render::vertex_buffer& input_buffer, const cgv::render::vertex_buffer& output_buffer, size_t count, T lower_limit, T upper_limit) {
 		argument_binding_list arguments = {
-			{ value_argument_name, value }
+			{ _value_type, lower_limit_argument_name, lower_limit },
+			{ _value_type, upper_limit_argument_name, upper_limit }
 		};
-		return dispatch(ctx, buffer, count, arguments);
+		bool use_remapping = !range_fits_bin_count(lower_limit, upper_limit);
+		return dispatch(ctx, begin(input_buffer), begin(input_buffer) + count, begin(output_buffer), arguments, use_remapping);
 	}
 
 	template<typename T, typename std::enable_if<!std::is_base_of<argument_bindings, T>::value, bool>::type = true>
-	bool dispatch(cgv::render::context& ctx, device_buffer_iterator first, device_buffer_iterator last, T value) {
+	bool dispatch(cgv::render::context& ctx, device_buffer_iterator input_first, device_buffer_iterator input_last, device_buffer_iterator output_first, T lower_limit, T upper_limit) {
 		argument_binding_list arguments = {
-			{ value_argument_name, value }
+			{ _value_type, lower_limit_argument_name, lower_limit },
+			{ _value_type, upper_limit_argument_name, upper_limit }
 		};
-		return dispatch(ctx, first, last, arguments);
-	}*/
+		bool use_remapping = !range_fits_bin_count(lower_limit, upper_limit);
+		return dispatch(ctx, input_first, input_last, output_first, arguments, use_remapping);
+	}
 
-	bool dispatch(cgv::render::context& ctx, const cgv::render::vertex_buffer& input_buffer, const cgv::render::vertex_buffer& output_buffer, size_t count); //, const argument_bindings& arguments);
-	bool dispatch(cgv::render::context& ctx, device_buffer_iterator input_first, device_buffer_iterator input_last, device_buffer_iterator output_first);//, const argument_bindings& arguments);
-
-	//static const std::string value_argument_name;
+	static const std::string lower_limit_argument_name;
+	static const std::string upper_limit_argument_name;
 
 private:
+	template<typename T, typename std::enable_if<std::is_integral_v<T>, bool>::type = true>
+	bool range_fits_bin_count(T lower_limit, T upper_limit) const {
+		T length = upper_limit - lower_limit;
+		return _num_bins == length + 1;
+	}
+
+	template<typename T, typename std::enable_if<std::is_floating_point_v<T>, bool>::type = true>
+	bool range_fits_bin_count(T lower_limit, T upper_limit) const {
+		return true;
+	}
+
+	bool dispatch(cgv::render::context& ctx, device_buffer_iterator input_first, device_buffer_iterator input_last, device_buffer_iterator output_first, const argument_bindings& arguments, bool use_remapping);
+
+	uint32_t _num_bins = 256;
+	sl::data_type _value_type;
+
 	compute_kernel _kernel;
 };
 
