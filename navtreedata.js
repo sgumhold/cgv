@@ -154,21 +154,20 @@ var NAVTREEINDEX =
 "classvr__emulator.html#a2ab49be366a9c99d0747f66a1e088b6d",
 "find__reflection__handler_8cxx_source.html",
 "make__return_8h_source.html",
-"namespacecgv_1_1g2d.html",
-"namespacecgv_1_1render.html#a2e4474a2c2cbe3c2f8ac57a264b5f457a46d05c3099580d129e869af51a6707d8",
-"namespacecgv_1_1render.html#af2167f067ad328f6b3ee33215c888ecb",
-"namespacemembers_e.html",
-"pose_8h.html",
+"namespacecgv_1_1gui.html",
+"namespacecgv_1_1render.html#a2e4474a2c2cbe3c2f8ac57a264b5f457a78800510540253aa38fc4a90a45914ac",
+"namespacecgv_1_1render.html#af832c0efcb92dc65a54ccce773869086",
+"namespacemembers_enum.html",
+"pose_8h.html#a0d1ee220319e926fb25c0821a7262f77",
 "structcgv_1_1base_1_1config__file__driver.html#a9b4284d57517c2b49b9100bf4089bbb8",
-"structcgv_1_1gui_1_1control__provider.html#a161d55666be9921d8b8c26489f3219c9",
-"structcgv_1_1media_1_1const__alpha__reference.html",
-"structcgv_1_1plot_1_1plot__base__config.html#aaa8c6c7a1d7d6bf1e70c4392fbca6b15",
+"structcgv_1_1gui_1_1control__provider.html#ad10eeb6479c8d0b149fa29f585bfddcf",
+"structcgv_1_1media_1_1const__alpha__reference_3_01T_00_01NO__ALPHA_01_4.html",
+"structcgv_1_1plot_1_1plot__base__config.html#aafbecb3302851fe88872045e0cc1ffe2",
 "structcgv_1_1render_1_1arrow__render__style.html#a6f8eb543c0ee98f2334fef06a44d7ad7",
 "structcgv_1_1render_1_1line__render__style__reflect.html",
 "structcgv_1_1render_1_1volume__render__style.html#a1086664ce53ea03d65e8c2889fb8aedf",
-"structcgv_1_1type_1_1info_1_1type__id_3_01int32__type_01_4.html",
-"structvr_1_1controller__input__config.html#ad2af02d92ee50b37d8c0a62b82263600",
-"zero_8h_source.html"
+"structcgv_1_1type_1_1info_1_1type__id_3_01int64__type_01_4.html",
+"structvr_1_1driver__registry.html"
 ];
 
 var SYNCONMSG = 'click to disable panel synchronisation';

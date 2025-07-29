@@ -40,7 +40,6 @@ var namespacecgv =
     [ "lvec3", "namespacecgv.html#a95f1f4d36e505255b6091a6af16927c4", null ],
     [ "lvec4", "namespacecgv.html#ad43d929aa97380af48cb8616e6f5c75a", null ],
     [ "mat2", "namespacecgv.html#a75ae53b8118b8e0eeb673fbb67666794", null ],
-    [ "mat23", "namespacecgv.html#a2ed0996dd1c442c5caebceac4a7e298e", null ],
     [ "mat3", "namespacecgv.html#a4e88ab68744702f9b7aa559de4f31521", null ],
     [ "mat3x4", "namespacecgv.html#ae9c770be4fdd39551fc36516ba1ffc35", null ],
     [ "mat4", "namespacecgv.html#aac1220367b5c60325f351a680dcc2689", null ],
