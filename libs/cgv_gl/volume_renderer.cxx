@@ -30,6 +30,7 @@ namespace cgv {
 			enable_noise_offset = true;
 			interpolation_mode = IP_LINEAR;
 			enable_depth_test = true;
+			picking_opacity_threshold = 0.03f;
 
 			compositing_mode = CM_BLEND;
 
@@ -219,6 +220,7 @@ namespace cgv {
 			ref_prog().set_uniform(ctx, "viewport_dims", vec2(float(vp[2] - vp[0]), float(vp[3] - vp[1])));
 			ref_prog().set_uniform(ctx, "noise_offset", noise_offset);
 
+			ref_prog().set_uniform(ctx, "picking_opacity_threshold", vrs.picking_opacity_threshold);
 			ref_prog().set_uniform(ctx, "scale_adjustment_factor", vrs.scale_adjustment_factor);
 
 			ref_prog().set_uniform(ctx, "light_local_to_eye", vrs.light_local_to_eye);
@@ -315,6 +317,7 @@ namespace cgv {
 				p->add_member_control(b, "Interpolation", vrs_ptr->interpolation_mode, "dropdown", "enums=Nearest,Smoothed,Linear,Cubic");
 
 				p->add_member_control(b, "Depth Test", vrs_ptr->enable_depth_test, "check");
+				p->add_member_control(b, "Opacity Threshold", vrs_ptr->picking_opacity_threshold, "value_slider", "min=0.0;max=1.0;step=0.001;tooltip='Opacity threshold used for focus picking'");
 
 				p->add_member_control(b, "Compositing Mode", vrs_ptr->compositing_mode, "dropdown", "enums='Maximum Intensity Projection, Average, Blend'");
 

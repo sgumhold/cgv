@@ -14,7 +14,7 @@ bool for_each_texture::init(cgv::render::context& ctx, cgv::render::TextureType 
 	return texture_algorithm::init(ctx, texture_type, { { &_kernel, "gpgpu_for_each_texture"} }, config);
 }
 
-void for_each_texture::destruct(cgv::render::context& ctx) {
+void for_each_texture::destruct(const cgv::render::context& ctx) {
 	_kernel.destruct(ctx);
 	algorithm::destruct(ctx);
 }

@@ -24,7 +24,7 @@ bool transform::init(cgv::render::context& ctx, const sl::data_type& input_type,
 	return algorithm::init(ctx, { { &_kernel, "gpgpu_transform" } }, config);
 }
 
-void transform::destruct(cgv::render::context& ctx) {
+void transform::destruct(const cgv::render::context& ctx) {
 	_kernel.destruct(ctx);
 	algorithm::destruct(ctx);
 }

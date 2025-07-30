@@ -9,11 +9,6 @@ managed_frame_buffer::managed_frame_buffer() {
 	size = ivec2(0);
 }
 
-managed_frame_buffer::~managed_frame_buffer() {
-
-	attachments.clear();
-}
-
 void managed_frame_buffer::destruct(const context& ctx) {
 
 	fb.destruct(ctx);
@@ -30,23 +25,9 @@ ivec2 managed_frame_buffer::get_size() {
 	return ivec2(fb.get_width(), fb.get_height());
 }
 
-bool managed_frame_buffer::set_size(const ivec2& size) {
+void managed_frame_buffer::set_size(const ivec2& size) {
 
-	// TODO: need gl_context for that but cannot include it in this lib
-	//GLint max_render_buffer_size;
-	//glGetIntegerv(GL_MAX_RENDERBUFFER_SIZE, &max_render_buffer_size);
-
-	int max_render_buffer_size = 12288;
-
-	// TODO: in static builds (exe) the max render buffer size does not return useful values when this method is called in a drawable constructor
-	if(max_render_buffer_size > 0) {
-		if(size.x() > max_render_buffer_size || size.y() > max_render_buffer_size) {
-			this->size = ivec2(-1);
-			return false;
-		}
-	}
 	this->size = size;
-	return true;
 }
 
 void managed_frame_buffer::add_attachment(const std::string& name, const std::string& format, TextureFilter tf, TextureWrap tw, bool attach) {
@@ -102,14 +83,18 @@ texture* managed_frame_buffer::attachment_texture_ptr(const std::string& name) {
 
 bool managed_frame_buffer::ensure(context& ctx)
 {
+	int max_size = ctx.get_device_capabilities().max_render_buffer_size;
+	if(max_size > 0 && size.x() > max_size || size.y() > max_size) {
+		std::cerr << "Error: managed_framebuffer::ensure: requested size exceeds maximum supported size" << std::endl;
+		return false;
+	}
+
 	ivec2 actual_size = get_actual_size(ctx);
 	if (!fb.is_created() || fb.get_width() != actual_size.x() || fb.get_height() != actual_size.y())
 	{
 		destruct(ctx);
-		if(!create_and_validate(ctx, actual_size)) {
-			std::cerr << "Error: fbo not complete" << std::endl;
-			abort();
-		}
+		if(!create_and_validate(ctx, actual_size))
+			std::cerr << "Error: managed_framebuffer::ensure: framebuffer not complete" << std::endl;
 		return true;
 	}
 	return false;
