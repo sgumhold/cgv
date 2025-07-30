@@ -68,7 +68,7 @@ void warp_reduce(uint tid) {
 
 void main() {
 	uint tid = gl_LocalInvocationID.x;
-	uint gid = gl_WorkGroupID.x * gl_WorkGroupSize.x + gl_LocalInvocationID.x;
+	uint gid = gl_GlobalInvocationID.x;
 	uint grid_size = gl_WorkGroupSize.x * gl_NumWorkGroups.x;
 
 #ifdef USE_CUSTOM_OPERATION

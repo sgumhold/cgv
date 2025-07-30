@@ -10,7 +10,7 @@ bool fill_texture::init(cgv::render::context& ctx, cgv::render::TextureType text
 	return texture_algorithm::init(ctx, texture_type, { { &_kernel, "gpgpu_fill_texture" } }, config);
 }
 
-void fill_texture::destruct(cgv::render::context& ctx) {
+void fill_texture::destruct(const cgv::render::context& ctx) {
 	texture_algorithm::destruct(ctx);
 }
 

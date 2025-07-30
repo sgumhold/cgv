@@ -4,6 +4,7 @@
 #include <cgv/render/vertex_buffer.h>
 
 #include "sl.h"
+#include "storage_buffer.h"
 
 namespace cgv {
 namespace gpgpu {
@@ -143,6 +144,52 @@ struct argument_definitions {
 	sl::named_buffer_list buffers;
 };
 
+static cgv::render::type_descriptor get_type_descriptor(sl::data_type type) {
+	using namespace cgv::render;
+	using namespace cgv::type;
+	switch(type.type()) {
+	case sl::Type::kBool: return element_descriptor_traits<bool>::get_type_descriptor({});
+	case sl::Type::kInt: return element_descriptor_traits<int32_type>::get_type_descriptor({});
+	case sl::Type::kUInt: return element_descriptor_traits<uint32_type>::get_type_descriptor({});
+	case sl::Type::kFloat: return element_descriptor_traits<flt32_type>::get_type_descriptor({});
+	case sl::Type::kDouble: return element_descriptor_traits<flt64_type>::get_type_descriptor({});
+	case sl::Type::kBVec2: return element_descriptor_traits<bvec2>::get_type_descriptor({});
+	case sl::Type::kBVec3: return element_descriptor_traits<bvec3>::get_type_descriptor({});
+	case sl::Type::kBVec4: return element_descriptor_traits<bvec4>::get_type_descriptor({});
+	case sl::Type::kIVec2: return element_descriptor_traits<ivec2>::get_type_descriptor({});
+	case sl::Type::kIVec3: return element_descriptor_traits<ivec3>::get_type_descriptor({});
+	case sl::Type::kIVec4: return element_descriptor_traits<ivec4>::get_type_descriptor({});
+	case sl::Type::kUVec2: return element_descriptor_traits<uvec2>::get_type_descriptor({});
+	case sl::Type::kUVec3: return element_descriptor_traits<uvec3>::get_type_descriptor({});
+	case sl::Type::kUVec4: return element_descriptor_traits<uvec4>::get_type_descriptor({});
+	case sl::Type::kVec2: return element_descriptor_traits<vec2>::get_type_descriptor({});
+	case sl::Type::kVec3: return element_descriptor_traits<vec3>::get_type_descriptor({});
+	case sl::Type::kVec4: return element_descriptor_traits<vec4>::get_type_descriptor({});
+	case sl::Type::kDVec2: return element_descriptor_traits<dvec2>::get_type_descriptor({});
+	case sl::Type::kDVec3: return element_descriptor_traits<dvec3>::get_type_descriptor({});
+	case sl::Type::kDVec4: return element_descriptor_traits<dvec4>::get_type_descriptor({});
+	case sl::Type::kMat2: return element_descriptor_traits<mat2>::get_type_descriptor({});
+	case sl::Type::kMat3: return element_descriptor_traits<mat3>::get_type_descriptor({});
+	case sl::Type::kMat4: return element_descriptor_traits<mat4>::get_type_descriptor({});
+	case sl::Type::kMat2x3: return element_descriptor_traits<cgv::math::fmat<float, 2u, 3u>>::get_type_descriptor({});
+	case sl::Type::kMat2x4: return element_descriptor_traits<cgv::math::fmat<float, 2u, 4u>>::get_type_descriptor({});
+	case sl::Type::kMat3x2: return element_descriptor_traits<cgv::math::fmat<float, 3u, 2u>>::get_type_descriptor({});
+	case sl::Type::kMat3x4: return element_descriptor_traits<cgv::math::fmat<float, 3u, 4u>>::get_type_descriptor({});
+	case sl::Type::kMat4x2: return element_descriptor_traits<cgv::math::fmat<float, 4u, 2u>>::get_type_descriptor({});
+	case sl::Type::kMat4x3: return element_descriptor_traits<cgv::math::fmat<float, 4u, 3u>>::get_type_descriptor({});
+	case sl::Type::kDMat2: return element_descriptor_traits<dmat2>::get_type_descriptor({});
+	case sl::Type::kDMat3: return element_descriptor_traits<dmat3>::get_type_descriptor({});
+	case sl::Type::kDMat4: return element_descriptor_traits<dmat4>::get_type_descriptor({});
+	case sl::Type::kDMat2x3: return element_descriptor_traits<cgv::math::fmat<double, 2u, 3u>>::get_type_descriptor({});
+	case sl::Type::kDMat2x4: return element_descriptor_traits<cgv::math::fmat<double, 2u, 4u>>::get_type_descriptor({});
+	case sl::Type::kDMat3x2: return element_descriptor_traits<cgv::math::fmat<double, 3u, 2u>>::get_type_descriptor({});
+	case sl::Type::kDMat3x4: return element_descriptor_traits<cgv::math::fmat<double, 3u, 4u>>::get_type_descriptor({});
+	case sl::Type::kDMat4x2: return element_descriptor_traits<cgv::math::fmat<double, 4u, 2u>>::get_type_descriptor({});
+	case sl::Type::kDMat4x3: return element_descriptor_traits<cgv::math::fmat<double, 4u, 3u>>::get_type_descriptor({});
+	default: return type_descriptor(cgv::type::info::type_id<void>::get_id());
+	}
+}
+
 class argument_binding {
 	friend class argument_binding_list;
 
@@ -163,12 +210,25 @@ public:
 		_addr = cgv::render::element_descriptor_traits<T>::get_address(value);
 	}
 
+	template<typename T>
+	argument_binding(sl::data_type type, const std::string& name, const T& value) : _name(name) {
+		_desc = get_type_descriptor(type);
+		_addr = &value;
+	}
+
 	argument_binding(const std::string& name, const cgv::render::vertex_buffer* buffer) : _name(name) {
 		_desc.coordinate_type = buffer_type_id;
 		_addr = buffer;
 	}
 
 	argument_binding(const std::string& name, const cgv::render::vertex_buffer& buffer) : argument_binding(name, &buffer) {}
+
+	argument_binding(const std::string& name, const storage_buffer* buffer) : _name(name) {
+		_desc.coordinate_type = buffer_type_id;
+		_addr = buffer;
+	}
+
+	argument_binding(const std::string& name, const storage_buffer& buffer) : argument_binding(name, &buffer) {}
 
 	bool is_buffer() const {
 		return _desc.coordinate_type == buffer_type_id;

@@ -15,13 +15,13 @@ public:
 
 	bool init(cgv::render::context& ctx, const sl::data_type& value_type);
 
-	void destruct(cgv::render::context& ctx);
+	void destruct(const cgv::render::context& ctx);
 
 	template<typename T, typename std::enable_if<!std::is_base_of<argument_bindings, T>::value, bool>::type = true>
 	bool dispatch(cgv::render::context& ctx, const cgv::render::vertex_buffer& buffer, size_t count, T init, T step) {
 		argument_binding_list arguments = {
-			{ init_argument_name, init },
-			{ step_argument_name, step }
+			{ _value_type, init_argument_name, init },
+			{ _value_type, step_argument_name, step }
 		};
 		return dispatch(ctx, buffer, count, arguments);
 	}
@@ -29,8 +29,8 @@ public:
 	template<typename T, typename std::enable_if<!std::is_base_of<argument_bindings, T>::value, bool>::type = true>
 	bool dispatch(cgv::render::context& ctx, device_buffer_iterator first, device_buffer_iterator last, T init, T step) {
 		argument_binding_list arguments = {
-			{ init_argument_name, init },
-			{ step_argument_name, step }
+			{ _value_type, init_argument_name, init },
+			{ _value_type, step_argument_name, step }
 		};
 		return dispatch(ctx, first, last, arguments);
 	}
@@ -42,6 +42,7 @@ public:
 	static const std::string step_argument_name;
 
 private:
+	sl::data_type _value_type;
 	compute_kernel _kernel;
 };
 

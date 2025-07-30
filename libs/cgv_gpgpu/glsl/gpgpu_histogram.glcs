@@ -1,0 +1,80 @@
+#version 430
+
+#define NUM_BINS 256
+
+#include "gpgpu_args.glcs"
+
+//$cgv::value_typedef
+
+#ifdef CGV_USE_SNIPPETS
+layout(std430, binding = 0) readonly buffer input_buffer {
+	value_type data[];
+};
+
+layout(std430, binding = 1) writeonly coherent buffer output_buffer {
+	uint bins[];
+};
+
+uniform uint u_input_begin;
+uniform uint u_input_end;
+uniform uint u_output_begin;
+uniform bool u_use_remapping;
+uniform value_type u_lower_limit;
+uniform value_type u_upper_limit;
+
+shared uint s_bins[NUM_BINS];
+
+uint get_bin_remap(float value) {
+	value = (value - float(u_lower_limit)) / float(u_upper_limit - u_lower_limit);
+	return uint(value * float(NUM_BINS));
+}
+
+uint get_bin_remap(double value) {
+	value = (value - double(u_lower_limit)) / double(u_upper_limit - u_lower_limit);
+	return uint(value * double(NUM_BINS));
+}
+
+// TODO: move guard to loop body after testing
+int get_bin(value_type value) {
+	if(value >= u_lower_limit && value <= u_upper_limit) {
+#ifdef VALUE_TYPE_IS_FLOATING_POINT
+		uint bin = get_bin_remap(value);
+#else
+		uint bin = uint(value);
+		if(u_use_remapping)
+			bin = get_bin_remap(float(value));
+#endif
+		return int(clamp(bin, uint(0), uint(NUM_BINS - 1)));
+	}
+	
+	//invalid bin
+	return -1;
+}
+
+layout(local_size_x = 512) in;
+void main() {
+	uint tid = gl_LocalInvocationID.x;
+	uint id = u_input_begin + gl_GlobalInvocationID.x;
+	uint grid_size = gl_WorkGroupSize.x * gl_NumWorkGroups.x;
+
+	for(uint i = tid; i < NUM_BINS; i += gl_WorkGroupSize.x)
+		s_bins[i] = uint(0);
+
+	barrier();
+
+	for(uint i = id; i < u_input_end; i += grid_size) {
+		value_type value = data[i];
+		int bin = get_bin(value);
+		atomicAdd(s_bins[uint(bin)], 1);
+    }
+
+	memoryBarrierShared();
+	barrier();
+
+	for(uint i = tid; i < NUM_BINS; i += gl_WorkGroupSize.x) {
+		uint local_count = s_bins[i];
+		if(local_count > 0)
+			atomicAdd(bins[u_output_begin + i], local_count);
+	}
+}
+#endif

@@ -13,13 +13,13 @@ sequence::sequence() : algorithm("sequence") {}
 bool sequence::init(cgv::render::context& ctx, const sl::data_type& value_type) {
 	if(!value_type.is_valid() || value_type.is_compound())
 		return false;
+	_value_type = value_type;
 	cgv::render::shader_compile_options config = get_configuration({}, { value_type });
 	config.snippets.push_back({ "value_typedef", sl::get_type_alias_string("value_type", value_type) });
-
 	return algorithm::init(ctx, { { &_kernel, "gpgpu_sequence" } }, config);
 }
 
-void sequence::destruct(cgv::render::context& ctx) {
+void sequence::destruct(const cgv::render::context& ctx) {
 	_kernel.destruct(ctx);
 	algorithm::destruct(ctx);
 }
