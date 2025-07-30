@@ -709,6 +709,7 @@ var hierarchy =
     [ "cgv::render::array_descriptor_traits< T >", "structcgv_1_1render_1_1array__descriptor__traits.html", null ],
     [ "cgv::render::array_descriptor_traits< cgv::math::vec< T > >", "structcgv_1_1render_1_1array__descriptor__traits_3_01cgv_1_1math_1_1vec_3_01T_01_4_01_4.html", null ],
     [ "cgv::render::array_descriptor_traits< std::vector< T > >", "structcgv_1_1render_1_1array__descriptor__traits_3_01std_1_1vector_3_01T_01_4_01_4.html", null ],
+    [ "cgv::render::array_descriptor_traits< T[N] >", "structcgv_1_1render_1_1array__descriptor__traits_3_01T_0fN_0e_01_4.html", null ],
     [ "cgv::render::attribute_array", "structcgv_1_1render_1_1attribute__array.html", null ],
     [ "cgv::render::attribute_array_manager", "classcgv_1_1render_1_1attribute__array__manager.html", null ],
     [ "cgv::render::clod_point_buffer_manager", "classcgv_1_1render_1_1clod__point__buffer__manager.html", null ],
