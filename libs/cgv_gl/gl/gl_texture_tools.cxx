@@ -453,9 +453,6 @@ static const GLenum gl_rg_texture_format_ids[] =
 	GL_RG16F,
 	GL_RG32F,
 
-	GL_R8,
-	GL_R16,
-
 	GL_R8I,
 	GL_R8UI,
 	GL_R16I,
@@ -463,15 +460,18 @@ static const GLenum gl_rg_texture_format_ids[] =
 	GL_R32I,
 	GL_R32UI,
 
-	GL_RG8,
-	GL_RG16,
+	GL_R8,
+	GL_R16,
 
 	GL_RG8I,
 	GL_RG8UI,
 	GL_RG16I,
 	GL_RG16UI,
 	GL_RG32I,
-	GL_RG32UI
+	GL_RG32UI,
+
+	GL_RG8,
+	GL_RG16
 };
 
 
@@ -485,9 +485,6 @@ static const char* rg_texture_formats[] = {
 	"flt16[R,G]",
 	"flt32[R,G]",
 
-	"uint8[R]",
-	"uint16[R]",
-
 	"_int8[R]",
 	"_uint8[R]",
 	"_int16[R]",
@@ -495,8 +492,8 @@ static const char* rg_texture_formats[] = {
 	"_int32[R]",
 	"_uint32[R]",
 
-	"uint8[R,G]",
-	"uint16[R,G]",
+	"int8[R]",
+	"int16[R]",
 
 	"_int8[R,G]",
 	"_uint8[R,G]",
@@ -504,6 +501,9 @@ static const char* rg_texture_formats[] = {
 	"_uint16[R,G]",
 	"_int32[R,G]",
 	"_uint32[R,G]",
+
+	"int8[R,G]",
+	"int16[R,G]",
 	0
 };
 

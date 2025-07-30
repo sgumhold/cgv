@@ -35,16 +35,17 @@ void configure_color_scale(
 			nr_color_scale_samples[idx] = (int)scs_ptrs[idx]->size();
 		}
 	}
-	prog.set_uniform_array(ctx, "nr_color_scale_samples", nr_color_scale_samples, 2);
+	prog.set_uniform_array(ctx, "nr_color_scale_samples", nr_color_scale_samples);
 	std::vector<rgb> colors(32 + nr_color_scale_samples[1]);
 	if (scs_ptrs[0])
 		std::copy(scs_ptrs[0]->begin(), scs_ptrs[0]->end(), colors.begin());
 	if (scs_ptrs[1])
 		std::copy(scs_ptrs[1]->begin(), scs_ptrs[1]->end(), colors.begin()+32);
 	prog.set_uniform_array(ctx, "color_scale_samples", colors);
-	prog.set_uniform_array(ctx, "color_scale_index", color_scale_index, 2);
-	prog.set_uniform_array(ctx, "color_scale_is_bipolar", color_scale_is_bipolar, 2);
-	prog.set_uniform_array(ctx, "window_zero_position", window_zero_position, 2);
+	prog.set_uniform_array(ctx, "color_scale_index", color_scale_index);
+	prog.set_uniform_array(ctx, "color_scale_is_bipolar", color_scale_is_bipolar);
+	float wp[2] = { window_zero_position[0],window_zero_position[1] };
+	prog.set_uniform_array(ctx, "window_zero_position", wp);
 }
 
 
