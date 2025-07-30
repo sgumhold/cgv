@@ -6,6 +6,7 @@ var namespacecgv_1_1render =
     [ "array_descriptor_traits", "structcgv_1_1render_1_1array__descriptor__traits.html", null ],
     [ "array_descriptor_traits< cgv::math::vec< T > >", "structcgv_1_1render_1_1array__descriptor__traits_3_01cgv_1_1math_1_1vec_3_01T_01_4_01_4.html", "structcgv_1_1render_1_1array__descriptor__traits_3_01cgv_1_1math_1_1vec_3_01T_01_4_01_4" ],
     [ "array_descriptor_traits< std::vector< T > >", "structcgv_1_1render_1_1array__descriptor__traits_3_01std_1_1vector_3_01T_01_4_01_4.html", "structcgv_1_1render_1_1array__descriptor__traits_3_01std_1_1vector_3_01T_01_4_01_4" ],
+    [ "array_descriptor_traits< T[N] >", "structcgv_1_1render_1_1array__descriptor__traits_3_01T_0fN_0e_01_4.html", "structcgv_1_1render_1_1array__descriptor__traits_3_01T_0fN_0e_01_4" ],
     [ "arrow_render_data", "classcgv_1_1render_1_1arrow__render__data.html", "classcgv_1_1render_1_1arrow__render__data" ],
     [ "arrow_render_style", "structcgv_1_1render_1_1arrow__render__style.html", "structcgv_1_1render_1_1arrow__render__style" ],
     [ "arrow_render_style_reflect", "structcgv_1_1render_1_1arrow__render__style__reflect.html", null ],
