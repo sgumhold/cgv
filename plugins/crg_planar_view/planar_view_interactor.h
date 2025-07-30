@@ -43,9 +43,9 @@ public:
 	///set default values
 	void set_default_values();
 	///return projection matrix (like glu perspective)
-	const dmat4 get_projection() const;
+	const cgv::dmat4 get_projection() const;
 	/// return modelview matrix V=T((0,0,-distance)^T)* R_x(elevation) * R_y(azimut)* T(-target)
-	const dmat4 get_modelview() const;
+	const cgv::dmat4 get_modelview() const;
 
 	/// describe members
 	bool self_reflect(cgv::reflect::reflection_handler& rh);
@@ -64,9 +64,9 @@ private:
 	float aspect;
 	bool pressed;
 	/// target point of camera
-	vec2 target;
-	vec2 pos_down;
-	dmat4 MPW;
+	cgv::vec2 target;
+	cgv::vec2 pos_down;
+	cgv::dmat4 MPW;
 
 	/// zoom 
 	float magnification;

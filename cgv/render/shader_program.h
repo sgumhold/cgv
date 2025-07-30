@@ -145,8 +145,9 @@ public:
 	template <typename T>
 	bool set_uniform(const context& ctx, const std::string& name, const T& value, bool generate_error = false) {
 		int loc = get_uniform_location(ctx, name);
-		if (loc == -1 && generate_error) {
-			ctx.error(std::string("shader_program::set_uniform() uniform <") + name + "> not found", this);
+		if (loc == -1) {
+			if (generate_error)
+				ctx.error(std::string("shader_program::set_uniform() uniform <") + name + "> not found", this);
 			return false;
 		}
 		return ctx.set_uniform_void(*this, loc, element_descriptor_traits<T>::get_type_descriptor(value), element_descriptor_traits<T>::get_address(value));
@@ -165,8 +166,9 @@ public:
 	template <typename T>
 	bool set_uniform_array(const context& ctx, const std::string& name, const T* array, size_t nr_elements, bool generate_error = false) {
 		int loc = get_uniform_location(ctx, name);
-		if (loc == -1 && generate_error) {
-			ctx.error(std::string("shader_program::set_uniform_array() uniform <") + name + "> not found", this);
+		if (loc == -1) {
+			if (generate_error)
+				ctx.error(std::string("shader_program::set_uniform_array() uniform <") + name + "> not found", this);
 			return false;
 		}
 		return ctx.set_uniform_array_void(*this, loc, type_descriptor(element_descriptor_traits<T>::get_type_descriptor(array[0]), true), array, nr_elements);

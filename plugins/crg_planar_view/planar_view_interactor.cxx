@@ -2,7 +2,9 @@
 #include <cgv/utils/ostream_printf.h>
 #include <cgv/gui/key_event.h>
 #include <cgv/gui/mouse_event.h>
+#ifndef _USE_MATH_DEFINES
 #define _USE_MATH_DEFINES
+#endif
 #include <cmath>
 #include <cgv/math/ftransform.h>
 #include <cgv_gl/gl/gl.h>
@@ -22,7 +24,7 @@ planar_view_interactor::planar_view_interactor(const char* name) : node(name)
 
 void planar_view_interactor::set_default_values()
 {
-	target = vec2(0.0f);
+	target = cgv::vec2(0.0f);
 	magnification=1;
 	angle = 0;
 
@@ -65,16 +67,16 @@ void planar_view_interactor::create_gui()
 	find_control(angle)->set("active", !lock_rotation);
 }
 
-const planar_view_interactor::dmat4 planar_view_interactor::get_projection() const
+const cgv::dmat4 planar_view_interactor::get_projection() const
 {
 	return cgv::math::ortho4<double>(-aspect,aspect,-1,1,0.1f,10.0f);
 }
 
-const planar_view_interactor::dmat4 planar_view_interactor::get_modelview() const
+const cgv::dmat4 planar_view_interactor::get_modelview() const
 {
 	return 
 		cgv::math::scale4<double>(magnification, magnification, magnification)*
-		cgv::math::rotate4<double>(angle,dvec3(0,0,1))*
+		cgv::math::rotate4<double>(angle, cgv::dvec3(0,0,1))*
 		cgv::math::translate4<double>(-target(0), -target(1), 0.0f);
 	
 }
@@ -84,7 +86,7 @@ void planar_view_interactor::move(int x, int y)
 {
 
 	auto p = get_context()->get_model_point(x, y, 0.0, MPW);
-	target += (pos_down - vec2(p(0),p(1)));
+	target += (pos_down - cgv::vec2(p(0),p(1)));
 
 	on_set(&target(0));
 	on_set(&target(1));
@@ -93,9 +95,9 @@ void planar_view_interactor::move(int x, int y)
 void planar_view_interactor::rotate(int x, int y)
 {
 	auto p = get_context()->get_model_point(x, y, 0.0, MPW);
-	vec2 dp = vec2(p(0),p(1)) - target;
+	cgv::vec2 dp = cgv::vec2(p(0),p(1)) - target;
 	float ap = float(180 * atan2(dp(1), dp(0)) / M_PI);
-	vec2 dd = pos_down - target;
+	cgv::vec2 dd = pos_down - target;
 	float ad = float(180 * atan2(dd(1), dd(0)) / M_PI);
 	angle += ap - ad;
 
@@ -114,7 +116,7 @@ void planar_view_interactor::zoom(int x, int y, float ds)
 		magnification*=1.1f;
 	float s2 = magnification;
 
-	target -= (s1-s2)*(vec2(p(0), p(1))-target)/s2;
+	target -= (s1-s2)*(cgv::vec2(p(0), p(1))-target)/s2;
 
 
 	on_set(&magnification);
@@ -169,7 +171,7 @@ bool planar_view_interactor::handle(event& e)
 					{
 				pressed=true;
 				auto p = get_context()->get_model_point(me.get_x(), y_gl, 0.0, MPW);
-				pos_down = vec2(p(0), p(1));
+				pos_down = cgv::vec2(p(0), p(1));
 				return true;
 			}
 			

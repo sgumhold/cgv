@@ -2911,7 +2911,7 @@ bool gl_context::shader_program_get_active_uniforms(shader_program_base& spb, st
 		GLenum type = 0;
 		GLsizei actual_length = 0;
 		
-		glGetActiveUniform(p_id, i, buffer.size(), &actual_length, &array_size, &type, buffer.data());
+		glGetActiveUniform(p_id, i, GLsizei(buffer.size()), &actual_length, &array_size, &type, buffer.data());
 		std::string name(static_cast<char*>(buffer.data()), actual_length);
 
 		// Uniforms for arrays of non-compound (non-struct) types are listed once with a "[0]" suffix and a given array size greater than 1.
@@ -3678,9 +3678,13 @@ bool gl_context::vertex_buffer_copy_back(vertex_buffer_base& vbb, size_t offset,
 		return false;
 	}
 	GLuint b_id = get_gl_id(vbb.handle);
-	glBindBuffer(GL_COPY_READ_BUFFER, b_id);
-	glGetBufferSubData(GL_COPY_READ_BUFFER, offset, size_in_bytes, array_ptr);
-	glBindBuffer(GL_COPY_READ_BUFFER, 0);
+	GLuint bind_point = GL_COPY_READ_BUFFER;
+	//if (vbb.type == cgv::render::VBT_STORAGE) {
+	//	bind_point = GL_SHADER_STORAGE_BUFFER;
+	//}
+	glBindBuffer(bind_point, b_id);
+	glGetBufferSubData(bind_point, offset, size_in_bytes, array_ptr);
+	glBindBuffer(bind_point, 0);
 	return !check_gl_error("gl_context::vertex_buffer_copy_back", &vbb);
 }
 
