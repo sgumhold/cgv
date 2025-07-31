@@ -41,7 +41,7 @@ bool overlay::handle(cgv::gui::event& e) {
 
 			bool handled = handle_mouse_event(me, local_mouse_pos);
 			me.set_action(action);
-			return handled;
+			//return handled;
 		}
 
 		switch(action) {

@@ -277,7 +277,7 @@ bool traverser::traverse_tmp_1(base_ptr dest, base_ptr src, bool& force_terminat
 						if (i != focus) {
 							bool child_success = traverse_tmp_2(g->get_child(i), dest, src, tp, force_termination, tch);
 							success |= child_success;
-							if (child_success && tp && tp->get_policy() == TP_AUTO_FOCUS)
+							if (child_success && tp && tp->get_focused_child() == TP_AUTO_FOCUS)
 								tp->set_focused_child(i);
 							if (force_termination)
 								break;
