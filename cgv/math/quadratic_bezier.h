@@ -49,6 +49,9 @@ private:
 	};
 };
 
+// TODO: Rename interpolate to evaluate/eval.
+// TODO: Check signed distance for tube.
+
 template<typename point_type>
 class quadratic_bezier_curve {
 public:
@@ -176,6 +179,239 @@ static std::pair<T, T> quadratic_bezier_signed_distance(const quadratic_bezier_c
 
 	return { dist, t };
 }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+template<typename T, cgv::type::uint32_type N>
+T quadratic_bezier_arc_length_even_subdivision(const quadratic_bezier_curve<fvec<T, N>>& curve, T t = T(1), size_t num_segments = 100) {
+	T step = T(1) / static_cast<T>(num_segments);
+	T result = T(0);
+
+	fvec<T, N> prev_point = curve.p0;
+	for(size_t i = 0; i < num_segments; ++i) {
+		T t_ = static_cast<T>(i + 1) * step;
+		if(t_ >= t) {
+			fvec<T, N> next_point = curve.interpolate(t);
+			result += length(next_point - prev_point);
+			break;
+		}
+
+		fvec<T, N> next_point = curve.interpolate(t_);
+		result += length(next_point - prev_point);
+		prev_point = next_point;
+	}
+
+	return result;
+}
+
+// TODO: change template type name
+template <typename FLOAT_TYPE> struct ArcLengthBezierApproximation {
+	std::vector<FLOAT_TYPE> y1 = {};
+	std::vector<FLOAT_TYPE> y2 = {};
+	std::vector<FLOAT_TYPE> lengths = {};
+	FLOAT_TYPE totalLength = 0.0;
+
+	FLOAT_TYPE evaluate(FLOAT_TYPE t) const {
+		if(t <= 0) {
+			return 0;
+		}
+		if(t >= 1) {
+			return totalLength;
+		}
+
+		size_t segmentCount = y1.size();
+		size_t index = size_t(FLOAT_TYPE(segmentCount) * t);
+		auto tStep = 1.0 / static_cast<FLOAT_TYPE>(segmentCount);
+		auto tPrev = static_cast<FLOAT_TYPE>(index) * tStep;
+		auto tCur = static_cast<FLOAT_TYPE>(index + 1) * tStep;
+		auto tDiff = tCur - tPrev;
+
+		auto x = (t - tPrev) / tDiff;
+		auto t1 = 3.0 * (1.0 - x) * (1.0 - x) * x * y1[index];
+		auto t2 = 3.0 * (1.0 - x) * x * x * y2[index];
+		auto t3 = x * x * x;
+		auto y = t1 + t2 + t3;
+
+		auto dPrev = lengths[index];
+		auto dCur = lengths[index + 1];
+		auto dDiff = dCur - dPrev;
+		return (FLOAT_TYPE)(y * dDiff + dPrev);
+	}
+};
+
+template<typename T, cgv::type::uint32_type N>
+ArcLengthBezierApproximation<T> quadratic_bezier_arc_length_bezier_approximation(const quadratic_bezier_curve<fvec<T, N>>& curve, size_t num_segments, size_t num_samples = 100) {
+	if(num_segments < 1)
+		return {};
+
+	auto result = ArcLengthBezierApproximation<T>();
+	result.totalLength = quadratic_bezier_arc_length_even_subdivision(curve, T(1), num_samples);// arc_length_legendre_gauss(1.0, numSamples);
+	result.lengths.push_back(T(0));
+
+	auto dStep = T(1) / static_cast<T>(num_segments);
+	for(size_t i = 0; i < num_segments; i++) {
+		auto tPrev = static_cast<T>(i) * dStep;
+		auto tCur = static_cast<T>(i + 1) * dStep;
+		auto tDiff = tCur - tPrev;
+
+		auto dPrev = result.lengths.back();
+		auto dCur = quadratic_bezier_arc_length_even_subdivision(curve, tCur, num_samples);// arc_length_legendre_gauss(tCur, numSamples);
+		auto dDiff = dCur - dPrev;
+
+		if(std::abs(dDiff) < std::numeric_limits<T>::epsilon()) {
+			result.y1.push_back(T(0));
+			result.y2.push_back(T(0));
+		} else {
+			T sample1 = (tPrev + tDiff * (T(1) / T(3)));
+			auto s1over3 = quadratic_bezier_arc_length_even_subdivision(curve, sample1, num_samples); //arc_length_legendre_gauss(sample1);
+			auto s1over3Scaled = (s1over3 - dPrev) / dDiff;
+
+			T sample2 = (tPrev + tDiff * (T(2) / T(3)));
+			auto s2over3 = quadratic_bezier_arc_length_even_subdivision(curve, sample2, num_samples); //arc_length_legendre_gauss(sample2);
+			auto s2over3Scaled = (s2over3 - dPrev) / dDiff;
+
+			auto y1 = (T(18) * s1over3Scaled - T(9) * s2over3Scaled + T(2)) / T(6);
+			auto y2 = (T(-9) * s1over3Scaled + T(18) * s2over3Scaled - T(5)) / T(6);
+
+			result.y1.push_back(y1);
+			result.y2.push_back(y2);
+		}
+		result.lengths.push_back(dCur);
+	}
+
+	return result;
+}
+
+template <typename FLOAT_TYPE> struct Parameterization {
+	virtual FLOAT_TYPE evaluate(FLOAT_TYPE d) const = 0;
+	virtual FLOAT_TYPE length() const = 0;
+};
+
+template <typename FLOAT_TYPE> struct ParameterizationBezierApproximation : public Parameterization<FLOAT_TYPE> {
+	std::vector<FLOAT_TYPE> y1 = {};
+	std::vector<FLOAT_TYPE> y2 = {};
+	std::vector<FLOAT_TYPE> t = {};
+	FLOAT_TYPE totalLength = 0.0;
+
+	FLOAT_TYPE evaluate(FLOAT_TYPE d) const override {
+		if(d <= 0) {
+			return 0;
+		}
+		if(d >= totalLength) {
+			return 1;
+		}
+
+		auto dNormalized = d / totalLength;
+		size_t segmentCount = y1.size();
+		size_t index = size_t(FLOAT_TYPE(segmentCount) * dNormalized);
+		auto dStep = 1.0 / static_cast<FLOAT_TYPE>(segmentCount);
+		auto dPrev = static_cast<FLOAT_TYPE>(index) * dStep;
+		auto dCur = static_cast<FLOAT_TYPE>(index + 1) * dStep;
+		auto dDiff = dCur - dPrev;
+
+		auto x = (dNormalized - dPrev) / dDiff;
+		auto t1 = 3.0 * (1.0 - x) * (1.0 - x) * x * y1[index];
+		auto t2 = 3.0 * (1.0 - x) * x * x * y2[index];
+		auto t3 = x * x * x;
+		auto y = t1 + t2 + t3;
+
+		auto tPrev = t[index];
+		auto tCur = t[index + 1];
+		auto tDiff = tCur - tPrev;
+		return (FLOAT_TYPE)(y * tDiff + tPrev);
+	}
+	FLOAT_TYPE length() const override {
+		return totalLength;
+	}
+};
+
+template <typename FLOAT_TYPE>
+struct ParameterizationSubdivisionBezierApproximation : public Parameterization<FLOAT_TYPE> {
+	ArcLengthBezierApproximation<FLOAT_TYPE> arcLength;
+	int depth;
+	FLOAT_TYPE evaluate(FLOAT_TYPE d) const override {
+		FLOAT_TYPE t0 = 0.0;
+		FLOAT_TYPE t1 = 1.0;
+		for(int i = 0; i < depth; i++) {
+			FLOAT_TYPE t = (t0 + t1) / FLOAT_TYPE(2);
+			auto l = arcLength.evaluate(t);
+			if(d < l) {
+				t1 = t;
+			} else if(d > l) {
+				t0 = t;
+			} else {
+				break;
+			}
+		}
+		return (t0 + t1) / FLOAT_TYPE(2);
+	}
+	FLOAT_TYPE length() const override {
+		return arcLength.totalLength;
+	}
+};
+
+template<typename FLOAT_TYPE>
+ParameterizationSubdivisionBezierApproximation<FLOAT_TYPE> parameterization_subdivision_bezier_approximation(const ArcLengthBezierApproximation<FLOAT_TYPE>& arcLength, int depth = 100) {
+	ParameterizationSubdivisionBezierApproximation<FLOAT_TYPE> result;
+	result.depth = depth;
+	result.arcLength = arcLength;
+	return result;
+}
+
+template<typename FLOAT_TYPE>
+ParameterizationBezierApproximation<FLOAT_TYPE> parameterization_bezier_approximation(const ArcLengthBezierApproximation<FLOAT_TYPE>& arcLength, int numSamples = 100) {
+	ParameterizationBezierApproximation<FLOAT_TYPE> result;
+	result.totalLength = arcLength.totalLength;
+	result.t.push_back(0.0);
+
+	auto approx = parameterization_subdivision_bezier_approximation(arcLength, numSamples);
+
+	const int numSegments = (unsigned)arcLength.y1.size();
+	auto dStep = FLOAT_TYPE(1) / static_cast<FLOAT_TYPE>(numSegments);
+	for(int i = 0; i < numSegments; i++) {
+		auto dPrev = static_cast<FLOAT_TYPE>(i) * dStep;
+		auto dCur = static_cast<FLOAT_TYPE>(i + 1) * dStep;
+		auto dDiff = dCur - dPrev;
+
+		auto tPrev = result.t.back();
+		auto tCur = approx.evaluate(dCur * result.totalLength);
+		auto tDiff = tCur - tPrev;
+
+		FLOAT_TYPE sample1 = (dPrev + dDiff * (FLOAT_TYPE(1) / FLOAT_TYPE(3))) * result.totalLength;
+		auto s1over3 = approx.evaluate(sample1);
+		auto s1over3Scaled = (s1over3 - tPrev) / tDiff;
+
+		FLOAT_TYPE sample2 = (dPrev + dDiff * (FLOAT_TYPE(2) / FLOAT_TYPE(3))) * result.totalLength;
+		auto s2over3 = approx.evaluate(sample2);
+		auto s2over3Scaled = (s2over3 - tPrev) / tDiff;
+
+		auto y1 = (18.0 * s1over3Scaled - 9.0 * s2over3Scaled + 2.0) / 6.0;
+		auto y2 = (-9.0 * s1over3Scaled + 18.0 * s2over3Scaled - 5.0) / 6.0;
+
+		result.y1.push_back((FLOAT_TYPE)y1);
+		result.y2.push_back((FLOAT_TYPE)y2);
+		result.t.push_back((FLOAT_TYPE)tCur);
+	}
+
+	return result;
+}
+
+
+
+
+
 
 } // namespace math
 } // namespace cgv
