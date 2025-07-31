@@ -131,7 +131,7 @@ protected:
 	bool vertex_buffer_clear(vertex_buffer_base& vbb, size_t offset, size_t size_in_bytes) const override;
 	bool vertex_buffer_replace(vertex_buffer_base& vbb, size_t offset, size_t size_in_bytes, const void* array_ptr) const override;
 	bool vertex_buffer_copy(const vertex_buffer_base& src, size_t src_offset, vertex_buffer_base& target, size_t target_offset, size_t size_in_bytes) const override;
-	bool vertex_buffer_copy_back(vertex_buffer_base& vbb, size_t offset, size_t size_in_bytes, void* array_ptr) const override;
+	bool vertex_buffer_copy_back(const vertex_buffer_base& vbb, size_t offset, size_t size_in_bytes, void* array_ptr) const override;
 	bool vertex_buffer_destruct(vertex_buffer_base& vbb) const override;
 
 	bool check_gl_error(const std::string& where, const cgv::render::render_component* rc = 0) const;
