@@ -114,7 +114,8 @@ public:
 	}
 	/// resize vertex buffer and copy data from CPU array \c array_ptr into buffer memory
 	template <typename T>
-	bool resize(const context& ctx, const T* array_ptr, size_t nr_elements) {
+	bool resize(const context& ctx, const T* array_ptr, size_t nr_elements)
+	{
 		size_in_bytes = nr_elements * sizeof(T);
 		return ctx.vertex_buffer_resize(*this, array_ptr, size_in_bytes);
 	}
@@ -152,9 +153,19 @@ public:
 	{
 		return !is_created() ? create(ctx, array_ptr, nr_elements) : resize(ctx, array_ptr, nr_elements);
 	}
+	/**
+	 * Clear the entire buffer to zeros.
+	 *
+	 * \param ctx The CGV rendering context.
+	 * \return False if there was a rendering API error, true otherwise.
+	 */
+	bool clear(const context& ctx) {
+		return ctx.vertex_buffer_clear(*this, 0, size_in_bytes);
+	}
 	/// replace part (starting at byte offset \c buffer_offset_in_bytes) or whole vertex buffer content from \c nr_elements of CPU array \c array_ptr
 	template <typename T>
-	bool replace(const context& ctx, size_t buffer_offset_in_bytes, const T* array_ptr, size_t nr_elements) {
+	bool replace(const context& ctx, size_t buffer_offset_in_bytes, const T* array_ptr, size_t nr_elements)
+	{
 		return ctx.vertex_buffer_replace(*this, buffer_offset_in_bytes, nr_elements* sizeof(T), array_ptr);
 	}
 	/**
@@ -179,7 +190,8 @@ public:
 	 * \return False if the vertex_buffer has no valid handle or if there was a rendering API error, true otherwise.
 	 */
 	template <typename T>
-	bool copy(const context& ctx, size_t src_offset_in_bytes, T* array_ptr, size_t nr_elements) {
+	bool copy(const context& ctx, size_t src_offset_in_bytes, T* array_ptr, size_t nr_elements) const
+	{
 		return ctx.vertex_buffer_copy_back(*this, src_offset_in_bytes, sizeof(T)*nr_elements, array_ptr);
 	}
 	/**
@@ -196,7 +208,7 @@ public:
 	 * Otherwise the underlying copy command might cross the boundaries of the GPU buffer and or read unrelated data.
 	 */
 	template <typename T, typename = std::enable_if_t<std::is_class<T>::value, bool>>
-	bool copy(const context& ctx, T& array, size_t src_offset_in_bytes = 0)
+	bool copy(const context& ctx, T& array, size_t src_offset_in_bytes = 0) const
 	{
 		const auto size_in_bytes = array_descriptor_traits<T>::get_size(array);
 		return ctx.vertex_buffer_copy_back(*this, src_offset_in_bytes, size_in_bytes,

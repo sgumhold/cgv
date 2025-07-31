@@ -60,6 +60,7 @@ void main() {
 	for(uint i = tid; i < NUM_BINS; i += gl_WorkGroupSize.x)
 		s_bins[i] = uint(0);
 
+	memoryBarrierShared();
 	barrier();
 
 	for(uint i = id; i < u_input_end; i += grid_size) {

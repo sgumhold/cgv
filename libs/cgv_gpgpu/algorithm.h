@@ -9,6 +9,8 @@
 
 #include "lib_begin.h"
 
+#define CGV_GPGPU_DISABLE_DERIVED_TYPES(TYPE) typename std::enable_if<!std::is_base_of<TYPE, T>::value, bool>::type = true
+
 namespace cgv {
 namespace gpgpu {
 
