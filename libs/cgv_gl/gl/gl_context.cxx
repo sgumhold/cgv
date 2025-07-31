@@ -3684,7 +3684,7 @@ bool gl_context::vertex_buffer_copy(const vertex_buffer_base& src, size_t src_of
 
 }
 
-bool gl_context::vertex_buffer_copy_back(vertex_buffer_base& vbb, size_t offset, size_t size_in_bytes, void* array_ptr) const
+bool gl_context::vertex_buffer_copy_back(const vertex_buffer_base& vbb, size_t offset, size_t size_in_bytes, void* array_ptr) const
 {
 	if (!vbb.handle) {
 		error("gl_context::vertex_buffer_copy_back() vertex buffer object must be created", &vbb);
