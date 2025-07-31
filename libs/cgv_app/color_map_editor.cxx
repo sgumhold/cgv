@@ -102,8 +102,9 @@ bool color_map_editor::handle_key_event(cgv::gui::key_event& e) {
 	return false;
 }
 
-bool color_map_editor::handle_mouse_event(cgv::gui::mouse_event& e, cgv::ivec2 local_mouse_pos) {
-
+bool color_map_editor::handle_mouse_event(cgv::gui::mouse_event& e, cgv::ivec2 local_mouse_pos) 
+{
+	bool capture_event = false;
 	switch(e.get_action()) {
 	case cgv::gui::MA_ENTER:
 		mouse_is_on_overlay = true;
@@ -112,17 +113,16 @@ bool color_map_editor::handle_mouse_event(cgv::gui::mouse_event& e, cgv::ivec2 l
 		mouse_is_on_overlay = false;
 		post_damage();
 		return true;
-	case cgv::gui::MA_MOVE:
 	case cgv::gui::MA_DRAG:
+		capture_event = true;
+	case cgv::gui::MA_MOVE:
 		if(get_context())
 			cursor_position = local_mouse_pos;// ivec2(me.get_x(), get_context()->get_height() - 1 - me.get_y());
 		if(!cursor_label.empty())
 			post_damage();
 		break;
 	}
-
 	bool request_clear_selection = false;
-
 	if(e.get_button_state() & cgv::gui::MB_LEFT_BUTTON) {
 		if(e.get_action() == cgv::gui::MA_PRESS) {
 			request_clear_selection = is_hit(local_mouse_pos);
@@ -142,6 +142,7 @@ bool color_map_editor::handle_mouse_event(cgv::gui::mouse_event& e, cgv::ivec2 l
 			default:
 				break;
 			}
+			capture_event = true;
 		}
 	}
 
@@ -155,7 +156,8 @@ bool color_map_editor::handle_mouse_event(cgv::gui::mouse_event& e, cgv::ivec2 l
 		cmc.opacity_points.clear_selected();
 		handle_drag_end();
 	}
-
+	if (capture_event)
+		return true;
 	return false;
 }
 
