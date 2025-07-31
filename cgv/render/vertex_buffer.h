@@ -152,6 +152,15 @@ public:
 	{
 		return !is_created() ? create(ctx, array_ptr, nr_elements) : resize(ctx, array_ptr, nr_elements);
 	}
+	/**
+	 * Clear the entire buffer to zeros.
+	 *
+	 * \param ctx The CGV rendering context.
+	 * \return False if there was a rendering API error, true otherwise.
+	 */
+	bool clear(const context& ctx) {
+		return ctx.vertex_buffer_clear(*this, 0, size_in_bytes);
+	}
 	/// replace part (starting at byte offset \c buffer_offset_in_bytes) or whole vertex buffer content from \c nr_elements of CPU array \c array_ptr
 	template <typename T>
 	bool replace(const context& ctx, size_t buffer_offset_in_bytes, const T* array_ptr, size_t nr_elements) {
