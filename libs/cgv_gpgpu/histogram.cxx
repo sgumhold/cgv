@@ -25,20 +25,34 @@ bool histogram::init(cgv::render::context& ctx, const sl::data_type& value_type)
 	if(base_type == sl::Type::kFloat || base_type == sl::Type::kDouble)
 		config.defines.insert({ "VALUE_TYPE_IS_FLOATING_POINT", "" });
 	
-	return algorithm::init(ctx, { { &_kernel, "gpgpu_histogram" } }, config);
+	if(algorithm::init(ctx, { { &_kernel, "gpgpu_histogram" } }, config)) {
+		_bins_buffer.create_or_resize<uint32_t>(ctx, _num_bins);
+		return _fill.init(ctx, sl::Type::kUInt);
+	}
+
+	return false;
 }
 
 void histogram::destruct(const cgv::render::context& ctx) {
 	_kernel.destruct(ctx);
+	_bins_buffer.destruct(ctx);
+	_fill.destruct(ctx);
 	algorithm::destruct(ctx);
 }
 
-bool histogram::dispatch(cgv::render::context & ctx, device_buffer_iterator input_first, device_buffer_iterator input_last, device_buffer_iterator output_first, const argument_bindings& arguments, bool use_remapping) {
+const storage_buffer& histogram::bins_buffer() const {
+	return _bins_buffer;
+}
+
+bool histogram::dispatch(cgv::render::context & ctx, device_buffer_iterator input_first, device_buffer_iterator input_last, device_buffer_iterator output_first, const argument_bindings& arguments, bool use_remapping, bool clear_bins) {
 	if(!is_valid_range(input_first, input_last))
 		return false;
 
 	if(compatible(input_first, output_first))
 		return false;
+
+	if(clear_bins)
+		_fill.dispatch(ctx, output_first, output_first + _num_bins, 0);
 
 	input_first.buffer().bind(ctx, cgv::render::VertexBufferType::VBT_STORAGE, 0);
 	output_first.buffer().bind(ctx, cgv::render::VertexBufferType::VBT_STORAGE, 1);
