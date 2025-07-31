@@ -3642,6 +3642,19 @@ bool gl_context::vertex_buffer_resize(vertex_buffer_base& vbb, const void* array
 	return !check_gl_error("gl_context::vertex_buffer_resize", &vbb);
 }
 
+bool gl_context::vertex_buffer_clear(vertex_buffer_base& vbb, size_t offset, size_t size_in_bytes) const
+{
+	if (!vbb.handle) {
+		error("gl_context::vertex_buffer_clear() vertex buffer object must be created before", &vbb);
+		return false;
+	}
+	GLuint b_id = get_gl_id(vbb.handle);
+	glBindBuffer(buffer_target(vbb.type), b_id);
+	glClearBufferSubData(buffer_target(vbb.type), GL_R8, offset, size_in_bytes, GL_RED, GL_UNSIGNED_BYTE, NULL);
+	glBindBuffer(buffer_target(vbb.type), 0);
+	return !check_gl_error("gl_context::vertex_buffer_clear", &vbb);
+}
+
 bool gl_context::vertex_buffer_replace(vertex_buffer_base& vbb, size_t offset, size_t size_in_bytes, const void* array_ptr) const
 {
 	if (!vbb.handle) {
@@ -3671,7 +3684,7 @@ bool gl_context::vertex_buffer_copy(const vertex_buffer_base& src, size_t src_of
 
 }
 
-bool gl_context::vertex_buffer_copy_back(vertex_buffer_base& vbb, size_t offset, size_t size_in_bytes, void* array_ptr) const
+bool gl_context::vertex_buffer_copy_back(const vertex_buffer_base& vbb, size_t offset, size_t size_in_bytes, void* array_ptr) const
 {
 	if (!vbb.handle) {
 		error("gl_context::vertex_buffer_copy_back() vertex buffer object must be created", &vbb);
