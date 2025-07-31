@@ -5,6 +5,7 @@ var classcgv_1_1render_1_1vertex__buffer =
     [ "bind", "classcgv_1_1render_1_1vertex__buffer.html#aa29d9ed4925992d02bcc6c4e6af798ee", null ],
     [ "bind", "classcgv_1_1render_1_1vertex__buffer.html#aed3f86662e011a1f6a14d20b4ea72450", null ],
     [ "bind", "classcgv_1_1render_1_1vertex__buffer.html#a066e6fb16701c6b6e831d20fe3183487", null ],
+    [ "clear", "classcgv_1_1render_1_1vertex__buffer.html#a5ea04b0e92926943c7dca3696ab003d9", null ],
     [ "copy", "classcgv_1_1render_1_1vertex__buffer.html#aa7f8028feae37954dd4b5d11d6de3a93", null ],
     [ "copy", "classcgv_1_1render_1_1vertex__buffer.html#a6e1b82910e71abc8553cfe90e5e81965", null ],
     [ "copy", "classcgv_1_1render_1_1vertex__buffer.html#a48a3857f1425bd65a2dde405be1fa160", null ],
