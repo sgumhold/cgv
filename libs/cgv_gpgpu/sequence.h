@@ -17,16 +17,12 @@ public:
 
 	void destruct(const cgv::render::context& ctx);
 
-	template<typename T, typename std::enable_if<!std::is_base_of<argument_bindings, T>::value, bool>::type = true>
+	template<typename T, CGV_GPGPU_DISABLE_DERIVED_TYPES(argument_bindings)>
 	bool dispatch(cgv::render::context& ctx, const cgv::render::vertex_buffer& buffer, size_t count, T init, T step) {
-		argument_binding_list arguments = {
-			{ _value_type, init_argument_name, init },
-			{ _value_type, step_argument_name, step }
-		};
-		return dispatch(ctx, buffer, count, arguments);
+		return dispatch(ctx, begin(buffer), begin(buffer) + count, init, step);
 	}
 
-	template<typename T, typename std::enable_if<!std::is_base_of<argument_bindings, T>::value, bool>::type = true>
+	template<typename T, CGV_GPGPU_DISABLE_DERIVED_TYPES(argument_bindings)>
 	bool dispatch(cgv::render::context& ctx, device_buffer_iterator first, device_buffer_iterator last, T init, T step) {
 		argument_binding_list arguments = {
 			{ _value_type, init_argument_name, init },
