@@ -177,6 +177,9 @@ Public Member Functions</h2></td></tr>
 <tr class="memitem:a572ad1c7863cf8e7bd76d0002556c8ce"><td class="memTemplItemLeft" align="right" valign="top">bool&#160;</td><td class="memTemplItemRight" valign="bottom"><a class="el" href="classcgv_1_1render_1_1vertex__buffer.html#a572ad1c7863cf8e7bd76d0002556c8ce">create_or_resize</a> (const <a class="el" href="classcgv_1_1render_1_1context.html">context</a> &amp;ctx, const T *array_ptr, size_t nr_elements)</td></tr>
 <tr class="memdesc:a572ad1c7863cf8e7bd76d0002556c8ce"><td class="mdescLeft">&#160;</td><td class="mdescRight">Convenience wrapper to either <a class="el" href="classcgv_1_1render_1_1vertex__buffer.html#a7f244cbaab438c459a07454d2ce08df6" title="create empty vertex buffer of size size given in bytes">create()</a> or <a class="el" href="classcgv_1_1render_1_1vertex__buffer.html#a6a3bc1ae0fe7436a4020e79aa4ca269a" title="resize vertex buffer to size size given in bytes clearing all data">resize()</a> the buffer.  <br /></td></tr>
 <tr class="separator:a572ad1c7863cf8e7bd76d0002556c8ce"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a5ea04b0e92926943c7dca3696ab003d9" id="r_a5ea04b0e92926943c7dca3696ab003d9"><td class="memItemLeft" align="right" valign="top">bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcgv_1_1render_1_1vertex__buffer.html#a5ea04b0e92926943c7dca3696ab003d9">clear</a> (const <a class="el" href="classcgv_1_1render_1_1context.html">context</a> &amp;ctx)</td></tr>
+<tr class="memdesc:a5ea04b0e92926943c7dca3696ab003d9"><td class="mdescLeft">&#160;</td><td class="mdescRight">Clear the entire buffer to zeros.  <br /></td></tr>
+<tr class="separator:a5ea04b0e92926943c7dca3696ab003d9"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:aed2e0d3382fd3600847e3fe42aa4c8f0" id="r_aed2e0d3382fd3600847e3fe42aa4c8f0"><td class="memTemplParams" colspan="2">template&lt;typename T &gt; </td></tr>
 <tr class="memitem:aed2e0d3382fd3600847e3fe42aa4c8f0"><td class="memTemplItemLeft" align="right" valign="top">bool&#160;</td><td class="memTemplItemRight" valign="bottom"><a class="el" href="classcgv_1_1render_1_1vertex__buffer.html#aed2e0d3382fd3600847e3fe42aa4c8f0">replace</a> (const <a class="el" href="classcgv_1_1render_1_1context.html">context</a> &amp;ctx, size_t buffer_offset_in_bytes, const T *array_ptr, size_t nr_elements)</td></tr>
 <tr class="memdesc:aed2e0d3382fd3600847e3fe42aa4c8f0"><td class="mdescLeft">&#160;</td><td class="mdescRight">replace part (starting at byte offset <code>buffer_offset_in_bytes</code>) or whole vertex buffer content from <code>nr_elements</code> of CPU array <code>array_ptr</code>  <br /></td></tr>
@@ -434,6 +437,43 @@ Additional Inherited Members</h2></td></tr>
 
 </div>
 </div>
+<a id="a5ea04b0e92926943c7dca3696ab003d9" name="a5ea04b0e92926943c7dca3696ab003d9"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a5ea04b0e92926943c7dca3696ab003d9">&#9670;&#160;</a></span>clear()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">bool cgv::render::vertex_buffer::clear </td>
+          <td>(</td>
+          <td class="paramtype">const <a class="el" href="classcgv_1_1render_1_1context.html">context</a> &amp;&#160;</td>
+          <td class="paramname"><em>ctx</em></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">inline</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p>Clear the entire buffer to zeros. </p>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">ctx</td><td>The CGV rendering context. </td></tr>
+  </table>
+  </dd>
+</dl>
+<dl class="section return"><dt>Returns</dt><dd>False if there was a rendering API error, true otherwise. </dd></dl>
+
+<p class="definition">Definition at line <a class="el" href="vertex__buffer_8h_source.html#l00161">161</a> of file <a class="el" href="vertex__buffer_8h_source.html">vertex_buffer.h</a>.</p>
+
+</div>
+</div>
 <a id="aa7f8028feae37954dd4b5d11d6de3a93" name="aa7f8028feae37954dd4b5d11d6de3a93"></a>
 <h2 class="memtitle"><span class="permalink"><a href="#aa7f8028feae37954dd4b5d11d6de3a93">&#9670;&#160;</a></span>copy() <span class="overload">[1/3]</span></h2>
 
@@ -561,7 +601,7 @@ template&lt;typename T &gt; </div>
 </dl>
 <dl class="section return"><dt>Returns</dt><dd>False if the <a class="el" href="classcgv_1_1render_1_1vertex__buffer.html" title="a vertex buffer is an unstructured memory block on the GPU.">vertex_buffer</a> has no valid handle or if there was a rendering API error, true otherwise. </dd></dl>
 
-<p class="definition">Definition at line <a class="el" href="vertex__buffer_8h_source.html#l00182">182</a> of file <a class="el" href="vertex__buffer_8h_source.html">vertex_buffer.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="vertex__buffer_8h_source.html#l00191">191</a> of file <a class="el" href="vertex__buffer_8h_source.html">vertex_buffer.h</a>.</p>
 
 </div>
 </div>
@@ -625,7 +665,7 @@ template&lt;typename T , typename  = std::enable_if_t&lt;std::is_class&lt;T&gt;:
 <dl class="section return"><dt>Returns</dt><dd>False if the <a class="el" href="classcgv_1_1render_1_1vertex__buffer.html" title="a vertex buffer is an unstructured memory block on the GPU.">vertex_buffer</a> has no valid handle or if there was a rendering API error, true otherwise.</dd></dl>
 <p>This function will implicity infer how many bytes to copy from the dimensions of the generic array. Therefore you need to make sure, that your std::vector or <a class="el" href="classcgv_1_1math_1_1vec.html" title="A column vector class.">cgv::math::vec</a> is appropriately sized beforehand! Otherwise the underlying copy command might cross the boundaries of the GPU buffer and or read unrelated data. </p>
 
-<p class="definition">Definition at line <a class="el" href="vertex__buffer_8h_source.html#l00199">199</a> of file <a class="el" href="vertex__buffer_8h_source.html">vertex_buffer.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="vertex__buffer_8h_source.html#l00208">208</a> of file <a class="el" href="vertex__buffer_8h_source.html">vertex_buffer.h</a>.</p>
 
 </div>
 </div>
@@ -1044,7 +1084,7 @@ template&lt;typename T &gt; </div>
 
 <p>replace part (starting at byte offset <code>buffer_offset_in_bytes</code>) or whole vertex buffer content from <code>nr_elements</code> of CPU array <code>array_ptr</code> </p>
 
-<p class="definition">Definition at line <a class="el" href="vertex__buffer_8h_source.html#l00157">157</a> of file <a class="el" href="vertex__buffer_8h_source.html">vertex_buffer.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="vertex__buffer_8h_source.html#l00166">166</a> of file <a class="el" href="vertex__buffer_8h_source.html">vertex_buffer.h</a>.</p>
 
 <p class="reference">Referenced by <a class="el" href="mesh__render__info_8cxx_source.html#l00054">cgv::render::mesh_render_info::construct_element_vbo()</a>, and <a class="el" href="gl__context_8cxx_source.html#l01257">cgv::render::gl::gl_context::prepare_attributes()</a>.</p>
 
