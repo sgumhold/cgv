@@ -811,9 +811,9 @@ bool stereo_view_interactor::handle(event& e)
 				}
 				check_for_click = -1;
 			}
-			if ((me.get_button() == MB_LEFT_BUTTON && (me.get_modifiers() == 0 || me.get_modifiers() == EM_SHIFT)) ||
-				me.get_button() == MB_RIGHT_BUTTON && me.get_modifiers() == 0)
-				return true;
+			//if ((me.get_button() == MB_LEFT_BUTTON && (me.get_modifiers() == 0 || me.get_modifiers() == EM_SHIFT)) ||
+			//	me.get_button() == MB_RIGHT_BUTTON && me.get_modifiers() == 0)
+			//	return true;
 			break;
 		case MA_MOVE:
 			if (stereo_enabled && ((stereo_mode == GLSU_SPLIT_HORIZONTALLY) || (stereo_mode == GLSU_SPLIT_VERTICALLY))) {
@@ -831,7 +831,7 @@ bool stereo_view_interactor::handle(event& e)
 				}
 				*/
 				post_redraw();
-				return true;
+				//return true;
 			}
 			break;
 		case MA_DRAG:
