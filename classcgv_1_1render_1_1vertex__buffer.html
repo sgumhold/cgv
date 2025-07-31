@@ -187,14 +187,14 @@ Public Member Functions</h2></td></tr>
 <tr class="memitem:aa7f8028feae37954dd4b5d11d6de3a93" id="r_aa7f8028feae37954dd4b5d11d6de3a93"><td class="memItemLeft" align="right" valign="top">bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcgv_1_1render_1_1vertex__buffer.html#aa7f8028feae37954dd4b5d11d6de3a93">copy</a> (const <a class="el" href="classcgv_1_1render_1_1context.html">context</a> &amp;ctx, size_t src_offset_in_bytes, size_t size_in_bytes, <a class="el" href="classcgv_1_1render_1_1vertex__buffer.html">vertex_buffer</a> &amp;dst, size_t dst_offset_in_bytes) const</td></tr>
 <tr class="memdesc:aa7f8028feae37954dd4b5d11d6de3a93"><td class="mdescLeft">&#160;</td><td class="mdescRight">Copy bytes between different <a class="el" href="classcgv_1_1render_1_1vertex__buffer.html" title="a vertex buffer is an unstructured memory block on the GPU.">vertex_buffer</a> instances.  <br /></td></tr>
 <tr class="separator:aa7f8028feae37954dd4b5d11d6de3a93"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a6e1b82910e71abc8553cfe90e5e81965" id="r_a6e1b82910e71abc8553cfe90e5e81965"><td class="memTemplParams" colspan="2">template&lt;typename T &gt; </td></tr>
-<tr class="memitem:a6e1b82910e71abc8553cfe90e5e81965"><td class="memTemplItemLeft" align="right" valign="top">bool&#160;</td><td class="memTemplItemRight" valign="bottom"><a class="el" href="classcgv_1_1render_1_1vertex__buffer.html#a6e1b82910e71abc8553cfe90e5e81965">copy</a> (const <a class="el" href="classcgv_1_1render_1_1context.html">context</a> &amp;ctx, size_t src_offset_in_bytes, T *array_ptr, size_t nr_elements)</td></tr>
-<tr class="memdesc:a6e1b82910e71abc8553cfe90e5e81965"><td class="mdescLeft">&#160;</td><td class="mdescRight">Copy elements from the buffer into the CPU array.  <br /></td></tr>
-<tr class="separator:a6e1b82910e71abc8553cfe90e5e81965"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a48a3857f1425bd65a2dde405be1fa160" id="r_a48a3857f1425bd65a2dde405be1fa160"><td class="memTemplParams" colspan="2">template&lt;typename T , typename  = std::enable_if_t&lt;std::is_class&lt;T&gt;::value, bool&gt;&gt; </td></tr>
-<tr class="memitem:a48a3857f1425bd65a2dde405be1fa160"><td class="memTemplItemLeft" align="right" valign="top">bool&#160;</td><td class="memTemplItemRight" valign="bottom"><a class="el" href="classcgv_1_1render_1_1vertex__buffer.html#a48a3857f1425bd65a2dde405be1fa160">copy</a> (const <a class="el" href="classcgv_1_1render_1_1context.html">context</a> &amp;ctx, T &amp;array, size_t src_offset_in_bytes=0)</td></tr>
-<tr class="memdesc:a48a3857f1425bd65a2dde405be1fa160"><td class="mdescLeft">&#160;</td><td class="mdescRight">Copy elements from the buffer into the CPU array.  <br /></td></tr>
-<tr class="separator:a48a3857f1425bd65a2dde405be1fa160"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a6deefbadb9c929e03871d43d668e8446" id="r_a6deefbadb9c929e03871d43d668e8446"><td class="memTemplParams" colspan="2">template&lt;typename T &gt; </td></tr>
+<tr class="memitem:a6deefbadb9c929e03871d43d668e8446"><td class="memTemplItemLeft" align="right" valign="top">bool&#160;</td><td class="memTemplItemRight" valign="bottom"><a class="el" href="classcgv_1_1render_1_1vertex__buffer.html#a6deefbadb9c929e03871d43d668e8446">copy</a> (const <a class="el" href="classcgv_1_1render_1_1context.html">context</a> &amp;ctx, size_t src_offset_in_bytes, T *array_ptr, size_t nr_elements) const</td></tr>
+<tr class="memdesc:a6deefbadb9c929e03871d43d668e8446"><td class="mdescLeft">&#160;</td><td class="mdescRight">Copy elements from the buffer into the CPU array.  <br /></td></tr>
+<tr class="separator:a6deefbadb9c929e03871d43d668e8446"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a4b3ce65200be3b52a09736e3cc900412" id="r_a4b3ce65200be3b52a09736e3cc900412"><td class="memTemplParams" colspan="2">template&lt;typename T , typename  = std::enable_if_t&lt;std::is_class&lt;T&gt;::value, bool&gt;&gt; </td></tr>
+<tr class="memitem:a4b3ce65200be3b52a09736e3cc900412"><td class="memTemplItemLeft" align="right" valign="top">bool&#160;</td><td class="memTemplItemRight" valign="bottom"><a class="el" href="classcgv_1_1render_1_1vertex__buffer.html#a4b3ce65200be3b52a09736e3cc900412">copy</a> (const <a class="el" href="classcgv_1_1render_1_1context.html">context</a> &amp;ctx, T &amp;array, size_t src_offset_in_bytes=0) const</td></tr>
+<tr class="memdesc:a4b3ce65200be3b52a09736e3cc900412"><td class="mdescLeft">&#160;</td><td class="mdescRight">Copy elements from the buffer into the CPU array.  <br /></td></tr>
+<tr class="separator:a4b3ce65200be3b52a09736e3cc900412"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ad1740efa4b262d12e26b4747267e4996" id="r_ad1740efa4b262d12e26b4747267e4996"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcgv_1_1render_1_1vertex__buffer.html#ad1740efa4b262d12e26b4747267e4996">destruct</a> (const <a class="el" href="classcgv_1_1render_1_1context.html">context</a> &amp;ctx)</td></tr>
 <tr class="memdesc:ad1740efa4b262d12e26b4747267e4996"><td class="mdescLeft">&#160;</td><td class="mdescRight">destruct the render buffer  <br /></td></tr>
 <tr class="separator:ad1740efa4b262d12e26b4747267e4996"><td class="memSeparator" colspan="2">&#160;</td></tr>
@@ -470,7 +470,7 @@ Additional Inherited Members</h2></td></tr>
 </dl>
 <dl class="section return"><dt>Returns</dt><dd>False if there was a rendering API error, true otherwise. </dd></dl>
 
-<p class="definition">Definition at line <a class="el" href="vertex__buffer_8h_source.html#l00161">161</a> of file <a class="el" href="vertex__buffer_8h_source.html">vertex_buffer.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="vertex__buffer_8h_source.html#l00162">162</a> of file <a class="el" href="vertex__buffer_8h_source.html">vertex_buffer.h</a>.</p>
 
 </div>
 </div>
@@ -535,8 +535,8 @@ Additional Inherited Members</h2></td></tr>
 
 </div>
 </div>
-<a id="a6e1b82910e71abc8553cfe90e5e81965" name="a6e1b82910e71abc8553cfe90e5e81965"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a6e1b82910e71abc8553cfe90e5e81965">&#9670;&#160;</a></span>copy() <span class="overload">[2/3]</span></h2>
+<a id="a6deefbadb9c929e03871d43d668e8446" name="a6deefbadb9c929e03871d43d668e8446"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a6deefbadb9c929e03871d43d668e8446">&#9670;&#160;</a></span>copy() <span class="overload">[2/3]</span></h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -573,7 +573,7 @@ template&lt;typename T &gt; </div>
         <tr>
           <td></td>
           <td>)</td>
-          <td></td><td></td>
+          <td></td><td> const</td>
         </tr>
       </table>
   </td>
@@ -601,12 +601,12 @@ template&lt;typename T &gt; </div>
 </dl>
 <dl class="section return"><dt>Returns</dt><dd>False if the <a class="el" href="classcgv_1_1render_1_1vertex__buffer.html" title="a vertex buffer is an unstructured memory block on the GPU.">vertex_buffer</a> has no valid handle or if there was a rendering API error, true otherwise. </dd></dl>
 
-<p class="definition">Definition at line <a class="el" href="vertex__buffer_8h_source.html#l00191">191</a> of file <a class="el" href="vertex__buffer_8h_source.html">vertex_buffer.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="vertex__buffer_8h_source.html#l00193">193</a> of file <a class="el" href="vertex__buffer_8h_source.html">vertex_buffer.h</a>.</p>
 
 </div>
 </div>
-<a id="a48a3857f1425bd65a2dde405be1fa160" name="a48a3857f1425bd65a2dde405be1fa160"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a48a3857f1425bd65a2dde405be1fa160">&#9670;&#160;</a></span>copy() <span class="overload">[3/3]</span></h2>
+<a id="a4b3ce65200be3b52a09736e3cc900412" name="a4b3ce65200be3b52a09736e3cc900412"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a4b3ce65200be3b52a09736e3cc900412">&#9670;&#160;</a></span>copy() <span class="overload">[3/3]</span></h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -637,7 +637,7 @@ template&lt;typename T , typename  = std::enable_if_t&lt;std::is_class&lt;T&gt;:
         <tr>
           <td></td>
           <td>)</td>
-          <td></td><td></td>
+          <td></td><td> const</td>
         </tr>
       </table>
   </td>
@@ -665,7 +665,7 @@ template&lt;typename T , typename  = std::enable_if_t&lt;std::is_class&lt;T&gt;:
 <dl class="section return"><dt>Returns</dt><dd>False if the <a class="el" href="classcgv_1_1render_1_1vertex__buffer.html" title="a vertex buffer is an unstructured memory block on the GPU.">vertex_buffer</a> has no valid handle or if there was a rendering API error, true otherwise.</dd></dl>
 <p>This function will implicity infer how many bytes to copy from the dimensions of the generic array. Therefore you need to make sure, that your std::vector or <a class="el" href="classcgv_1_1math_1_1vec.html" title="A column vector class.">cgv::math::vec</a> is appropriately sized beforehand! Otherwise the underlying copy command might cross the boundaries of the GPU buffer and or read unrelated data. </p>
 
-<p class="definition">Definition at line <a class="el" href="vertex__buffer_8h_source.html#l00208">208</a> of file <a class="el" href="vertex__buffer_8h_source.html">vertex_buffer.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="vertex__buffer_8h_source.html#l00211">211</a> of file <a class="el" href="vertex__buffer_8h_source.html">vertex_buffer.h</a>.</p>
 
 </div>
 </div>
@@ -845,7 +845,7 @@ template&lt;typename T , typename  = std::enable_if_t&lt;std::is_class&lt;T&gt;:
 </dl>
 <dl class="section return"><dt>Returns</dt><dd>False if there was a rendering API error, true otherwise. </dd></dl>
 
-<p class="definition">Definition at line <a class="el" href="vertex__buffer_8h_source.html#l00138">138</a> of file <a class="el" href="vertex__buffer_8h_source.html">vertex_buffer.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="vertex__buffer_8h_source.html#l00139">139</a> of file <a class="el" href="vertex__buffer_8h_source.html">vertex_buffer.h</a>.</p>
 
 </div>
 </div>
@@ -908,7 +908,7 @@ template&lt;typename T &gt; </div>
 </dl>
 <dl class="section return"><dt>Returns</dt><dd>False if there was a rendering API error, true otherwise. </dd></dl>
 
-<p class="definition">Definition at line <a class="el" href="vertex__buffer_8h_source.html#l00151">151</a> of file <a class="el" href="vertex__buffer_8h_source.html">vertex_buffer.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="vertex__buffer_8h_source.html#l00152">152</a> of file <a class="el" href="vertex__buffer_8h_source.html">vertex_buffer.h</a>.</p>
 
 </div>
 </div>
@@ -1084,7 +1084,7 @@ template&lt;typename T &gt; </div>
 
 <p>replace part (starting at byte offset <code>buffer_offset_in_bytes</code>) or whole vertex buffer content from <code>nr_elements</code> of CPU array <code>array_ptr</code> </p>
 
-<p class="definition">Definition at line <a class="el" href="vertex__buffer_8h_source.html#l00166">166</a> of file <a class="el" href="vertex__buffer_8h_source.html">vertex_buffer.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="vertex__buffer_8h_source.html#l00167">167</a> of file <a class="el" href="vertex__buffer_8h_source.html">vertex_buffer.h</a>.</p>
 
 <p class="reference">Referenced by <a class="el" href="mesh__render__info_8cxx_source.html#l00054">cgv::render::mesh_render_info::construct_element_vbo()</a>, and <a class="el" href="gl__context_8cxx_source.html#l01257">cgv::render::gl::gl_context::prepare_attributes()</a>.</p>
 
