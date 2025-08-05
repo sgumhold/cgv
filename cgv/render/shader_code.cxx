@@ -598,7 +598,7 @@ bool shader_code::read_code(const context& ctx, const std::string &file_name, Sh
 	source = resolve_includes(source, ctx.is_shader_file_cache_enabled());
 	
 	resolve_version_and_extensions(source);
-
+	
 	set_defines_and_snippets(source, options);
 
 	if (st == ST_VERTEX && ctx.get_gpu_vendor_id() == GPUVendorID::GPU_VENDOR_AMD)

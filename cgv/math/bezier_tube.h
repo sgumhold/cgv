@@ -1,6 +1,6 @@
 #pragma once
 
-#include "quadratic_bezier.h"
+#include "bezier.h"
 #include "oriented_box.h"
 
 namespace cgv {
@@ -28,6 +28,30 @@ public:
 	node_type n1;
 	// the end node
 	node_type n2;
+
+	template<typename ParamT = float>
+	node_type evaluate(ParamT t) const {
+		node_type n;
+		n.pos = interpolate_quadratic_bezier(n0.pos, n1.pos, n2.pos, t);
+		n.rad = interpolate_quadratic_bezier(n0.rad, n1.rad, n2.rad, t);
+		return n;
+	}
+
+	template<typename ParamT = float>
+	node_type derivative(ParamT t) const {
+		node_type n;
+		n.pos = interpolate_linear(point_type(2) * (n1.pos - n0.pos), point_type(2) * (n2.pos - n1.pos), t);
+		n.rad = interpolate_linear(point_type(2) * (n1.rad - n0.rad), point_type(2) * (n2.rad - n1.rad), t);
+		return n;
+	}
+
+	template<typename ParamT = float>
+	std::vector<node_type> sample(size_t num_segments) const {
+		std::vector<node_type> points;
+		points.reserve(num_segments + 1);
+		sample_steps_transform<ParamT>(std::back_inserter(points), [this](ParamT t) { return evaluate(t); }, num_segments);
+		return points;
+	}
 
 	std::pair<vec_type, vec_type> axis_aligned_bounding_box() const {
 		quadratic_bezier_curve<vec_type> curve;
