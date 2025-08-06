@@ -621,18 +621,18 @@ int shader_program::get_uniform_location(const context& ctx, const std::string& 
 /// set a uniform of type material
 bool shader_program::set_material_uniform(const context& ctx, const std::string& name, const cgv::media::illum::surface_material& material, bool generate_error)
 {
-	return
-		set_uniform(ctx, name + ".brdf_type", (int)material.get_brdf_type(), generate_error) &&
-		set_uniform(ctx, name + ".diffuse_reflectance", material.get_diffuse_reflectance(), generate_error) &&
-		set_uniform(ctx, name + ".roughness", material.get_roughness(), generate_error) &&
-		set_uniform(ctx, name + ".ambient_occlusion", material.get_ambient_occlusion(), generate_error) &&
-		set_uniform(ctx, name + ".emission", material.get_emission(), generate_error) &&
-		set_uniform(ctx, name + ".specular_reflectance", material.get_specular_reflectance(), generate_error) &&
-		set_uniform(ctx, name + ".roughness_anisotropy", material.get_roughness_anisotropy(), generate_error) &&
-		set_uniform(ctx, name + ".roughness_orientation", material.get_roughness_orientation(), generate_error) &&
-		set_uniform(ctx, name + ".propagation_slow_down", cgv::math::fvec<float, 2>(material.get_propagation_slow_down().real(), material.get_propagation_slow_down().imag()), generate_error) &&
-		set_uniform(ctx, name + ".transparency", material.get_transparency(), generate_error) &&
-		set_uniform(ctx, name + ".metalness", material.get_metalness(), generate_error);
+	bool res = set_uniform(ctx, name + ".brdf_type", (int)material.get_brdf_type(), generate_error);
+	res = set_uniform(ctx, name + ".diffuse_reflectance", material.get_diffuse_reflectance(), generate_error) && res;
+	res = set_uniform(ctx, name + ".roughness", material.get_roughness(), generate_error) && res;
+	res = set_uniform(ctx, name + ".ambient_occlusion", material.get_ambient_occlusion(), generate_error) && res;
+	res = set_uniform(ctx, name + ".emission", material.get_emission(), generate_error) && res;
+	res = set_uniform(ctx, name + ".specular_reflectance", material.get_specular_reflectance(), generate_error) && res;
+	res = set_uniform(ctx, name + ".roughness_anisotropy", material.get_roughness_anisotropy(), generate_error) && res;
+	res = set_uniform(ctx, name + ".roughness_orientation", material.get_roughness_orientation(), generate_error) && res;
+	res = set_uniform(ctx, name + ".propagation_slow_down", cgv::math::fvec<float, 2>(material.get_propagation_slow_down().real(), material.get_propagation_slow_down().imag()), generate_error) && res;
+	res = set_uniform(ctx, name + ".transparency", material.get_transparency(), generate_error) && res;
+	res = set_uniform(ctx, name + ".metalness", material.get_metalness(), generate_error) && res;
+	return res;
 }
 
 /// set a uniform of type textured_material
@@ -644,17 +644,17 @@ bool shader_program::set_textured_material_uniform(const context& ctx, const std
 	for (int i = 0; i < (int)material.get_nr_textures(); ++i)
 		if (!set_uniform(ctx, texture_names[i], i, generate_error))
 			return false;
-	return
-		set_material_uniform(ctx, name, material, generate_error) &&
-		set_uniform(ctx, "sRGBA_textures", material.get_sRGBA_textures(), generate_error) &&
-		set_uniform(ctx, "diffuse_index", material.get_diffuse_index(), generate_error) &&
-		set_uniform(ctx, "roughness_index", material.get_roughness_index(), generate_error) &&
-		set_uniform(ctx, "metalness_index", material.get_metalness_index(), generate_error) &&
-		set_uniform(ctx, "ambient_index", material.get_ambient_index(), generate_error) &&
-		set_uniform(ctx, "emission_index", material.get_emission_index(), generate_error) &&
-		set_uniform(ctx, "transparency_index", material.get_transparency_index(), generate_error) &&
-		set_uniform(ctx, "bump_index", material.get_bump_index(), generate_error) &&
-		set_uniform(ctx, "specular_index", material.get_specular_index(), generate_error);
+	bool res = set_material_uniform(ctx, name, material, generate_error);
+	res = set_uniform(ctx, "sRGBA_textures", material.get_sRGBA_textures(), generate_error) && res;
+	res = set_uniform(ctx, "diffuse_index", material.get_diffuse_index(), generate_error) && res;
+	res = set_uniform(ctx, "roughness_index", material.get_roughness_index(), generate_error) && res;
+	res = set_uniform(ctx, "metalness_index", material.get_metalness_index(), generate_error) && res;
+	res = set_uniform(ctx, "ambient_index", material.get_ambient_index(), generate_error) && res;
+	res = set_uniform(ctx, "emission_index", material.get_emission_index(), generate_error) && res;
+	res = set_uniform(ctx, "transparency_index", material.get_transparency_index(), generate_error) && res;
+	res = set_uniform(ctx, "bump_index", material.get_bump_index(), generate_error) && res;
+	res = set_uniform(ctx, "specular_index", material.get_specular_index(), generate_error) && res;
+	return res;
 }
 
 
