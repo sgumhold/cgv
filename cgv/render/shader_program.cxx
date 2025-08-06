@@ -641,7 +641,7 @@ bool shader_program::set_textured_material_uniform(const context& ctx, const std
 	const char* texture_names[] = {
 		"tex0", "tex1", "tex2", "tex3"
 	};
-	for (int i = 0; i < (int)material.get_nr_image_files(); ++i)
+	for (int i = 0; i < (int)material.get_nr_textures(); ++i)
 		if (!set_uniform(ctx, texture_names[i], i, generate_error))
 			return false;
 	return
