@@ -1312,15 +1312,15 @@ bool gl_context::prepare_attributes(std::vector<vec3>& P, std::vector<vec3>& N, 
 		else
 			vbo_ptr->destruct(*this);
 		vbo_ptr->create(*this, P.size() * sizeof(vec3) + N.size() * sizeof(vec3) + T.size() * sizeof(vec2));
-		vbo_ptr->replace(const_cast<gl_context&>(*this), 0, &P.front(), P.size());
+		vbo_ptr->replace(const_cast<gl_context&>(*this), 0, P.data(), P.size());
 		size_t nml_off = P.size() * sizeof(vec3);
 		size_t tex_off = nml_off;
 		if (!N.empty()) {
-			vbo_ptr->replace(const_cast<gl_context&>(*this), nml_off, &N.front(), N.size());
-			tex_off += N.size() * sizeof(vec2);
+			vbo_ptr->replace(const_cast<gl_context&>(*this), nml_off, N.data(), N.size());
+			tex_off += N.size() * sizeof(vec3);
 		}
 		if (!T.empty())
-			vbo_ptr->replace(const_cast<gl_context&>(*this), tex_off, &T.front(), T.size());
+			vbo_ptr->replace(const_cast<gl_context&>(*this), tex_off, T.data(), T.size());
 
 		type_descriptor td3 = element_descriptor_traits<vec3>::get_type_descriptor(P.front());
 		aab_ptr->set_attribute_array(*this, prog_ptr->get_position_index(), td3, *vbo_ptr, 0, P.size());
