@@ -1789,13 +1789,18 @@ double gl_context::get_window_z(int x_window, int y_window) const
 	return z_window;
 }
 
+#include <iomanip>
 cgv::data::component_format gl_context::texture_find_best_format(
 				const cgv::data::component_format& cf, 
 				render_component& rc, const std::vector<cgv::data::data_view>* palettes) const
 {
 	GLuint& gl_format = (GLuint&)rc.internal_format;
 	cgv::data::component_format best_cf;
-	gl_format = find_best_texture_format(cf, &best_cf, palettes);
+	if (debug_texture_format_matching)
+		std::cout << "Texture Format Search for '" << cf << "':" << std::endl;
+	gl_format = find_best_texture_format(cf, &best_cf, palettes, debug_texture_format_matching);
+	if (debug_texture_format_matching)
+		std::cout << "found: '" << best_cf << "' = " << std::hex << gl_format << std::endl;
 	return best_cf;
 }
 

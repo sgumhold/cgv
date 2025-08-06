@@ -55,6 +55,7 @@ private:
 protected:
 	shader_program progs[4];
 	mutable cgv::type::uint64_type max_nr_indices, max_nr_vertices;
+	bool debug_texture_format_matching = false;
 	void ensure_configured() const;
 	void destruct_render_objects() override;
 	void put_id(void* handle, void* ptr) const override;

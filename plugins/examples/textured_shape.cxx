@@ -24,7 +24,7 @@ public:
 
 	// shape selection
 	enum Object { 
-		CUBE, SPHERE, SQUARE, LAST_OBJECT 
+		CUBE, SPHERE, SQUARE, TORUS, LAST_OBJECT 
 	} object;
 	
 	// texture generation
@@ -165,6 +165,8 @@ public:
 			ctx.tesselate_unit_square(false, wireframe); break;
 			glEnable(GL_CULL_FACE);
 			break;
+		case TORUS:
+			ctx.tesselate_unit_torus(0.2f, 25, false, wireframe); break;
 		default: break;
 		}
 	}
@@ -221,7 +223,7 @@ public:
 	void create_gui() 
 	{	
 		add_member_control(this, "boost_animation", boost_animation, "check");
-		add_member_control(this, "shape", object, "dropdown", "enums='cube,sphere,square'");
+		add_member_control(this, "shape", object, "dropdown", "enums='cube,sphere,square,torus'");
 		add_member_control(this, "mag filter", t_ptr->mag_filter, "dropdown", "enums='nearest,linear'");
 		add_member_control(this, "min filter", t_ptr->min_filter, "dropdown", "enums='nearest,linear,nearest mp nearest,linear mp nearest,nearest mp linear,linear mp linear,anisotropy'");
 		add_member_control(this, "anisotropy", t_ptr->anisotropy, "value_slider", "min=1;max=16;ticks=true;log=true");
