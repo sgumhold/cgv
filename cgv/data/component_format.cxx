@@ -540,7 +540,7 @@ unsigned find_best_match(
 				bool (*fmt1_better_match)(
 				   const component_format& fmt,
 					const component_format& fmt1,
-					const component_format& fmt2))
+					const component_format& fmt2), bool show_debug_info)
 {
 	component_format best_match;
 	unsigned int best_i = -1;
@@ -554,11 +554,17 @@ unsigned find_best_match(
 		++i;
 	}
 	while (*format_descriptions) {
+		if (show_debug_info)
+			std::cout << "check '" << *format_descriptions << "'";
 		component_format fmt1(*format_descriptions);
 		if (!fmt1_better_match(fmt, best_match, fmt1)) {
+			if (show_debug_info)
+				std::cout << " better";
 			best_match = fmt1;
 			best_i     = i;
 		}
+		if (show_debug_info)
+			std::cout << std::endl;
 		++format_descriptions;
 		++i;
 	}

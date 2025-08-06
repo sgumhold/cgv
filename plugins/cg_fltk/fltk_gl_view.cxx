@@ -102,6 +102,7 @@ bool fltk_gl_view::self_reflect(cgv::reflect::reflection_handler& srh)
 		srh.reflect_member("debug_after_dispatch", debug_after_dispatch) &&
 		srh.reflect_member("debug_before_dispatch", debug_before_dispatch) &&
 		srh.reflect_member("debug_dispatch_no_mouse_move", debug_dispatch_no_mouse_move) &&
+		srh.reflect_member("debug_texture_format_matching", debug_texture_format_matching) &&
 		srh.reflect_member("performance_monitoring", enabled) &&
 		// TODO: test
 		srh.reflect_member("bg_r", bg_color_stack.top()[0]) &&
@@ -1020,6 +1021,7 @@ void fltk_gl_view::create_gui()
 		add_member_control(this, "Debug Before Dispatch", debug_before_dispatch, "check");
 		add_member_control(this, "Debug After Dispatch", debug_after_dispatch, "check");
 		add_member_control(this, "Debug Dispatch No Mouse Move", debug_dispatch_no_mouse_move, "check");
+		add_member_control(this, "Debug Texture Format Matching", debug_texture_format_matching, "check");
 		add_member_control(this, "Debug Render Passes", debug_render_passes, "check");
 		add_member_control(this, "Performance Monitoring", enabled, "check");
 		add_member_control(this, "Time Scale", time_scale, "value_slider", "min=1;max=90;ticks=true;log=true");
