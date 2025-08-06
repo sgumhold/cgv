@@ -395,33 +395,33 @@ static const char* int_texture_formats[] = {
 	"_uint16[L]",
 	"_uint16[L,A]",
 
-	"uint8[R,G,B,A]",
-	"uint8[R,G,B]",
-	"uint8[A]",
-	"uint8[I]",
-	"uint8[L]",
-	"uint8[L,A]",
+	"_uint8[R,G,B,A]",
+	"_uint8[R,G,B]",
+	"_uint8[A]",
+	"_uint8[I]",
+	"_uint8[L]",
+	"_uint8[L,A]",
 
-	"int32[R,G,B,A]",
-	"int32[R,G,B]",
-	"int32[A]",
-	"int32[I]",
-	"int32[L]",
-	"int32[L,A]",
+	"_int32[R,G,B,A]",
+	"_int32[R,G,B]",
+	"_int32[A]",
+	"_int32[I]",
+	"_int32[L]",
+	"_int32[L,A]",
 
-	"int16[R,G,B,A]",
-	"int16[R,G,B]",
-	"int16[A]",
-	"int16[I]",
-	"int16[L]",
-	"int16[L,A]",
+	"_int16[R,G,B,A]",
+	"_int16[R,G,B]",
+	"_int16[A]",
+	"_int16[I]",
+	"_int16[L]",
+	"_int16[L,A]",
 
-	"int8[R,G,B,A]",
-	"int8[R,G,B]",
-	"int8[A]",
-	"int8[I]",
-	"int8[L]",
-	"int8[L,A]",
+	"_int8[R,G,B,A]",
+	"_int8[R,G,B]",
+	"_int8[A]",
+	"_int8[I]",
+	"_int8[L]",
+	"_int8[L,A]",
 	0
 };
 
@@ -447,6 +447,12 @@ static const GLenum gl_rg_texture_format_ids[] =
 	GL_RED,
 	GL_RG,
 
+	GL_R8,
+	GL_R16,
+
+	GL_R8,
+	GL_R16,
+
 	GL_R16F,
 	GL_R32F,
 
@@ -459,9 +465,6 @@ static const GLenum gl_rg_texture_format_ids[] =
 	GL_R16UI,
 	GL_R32I,
 	GL_R32UI,
-
-	GL_R8,
-	GL_R16,
 
 	GL_RG8I,
 	GL_RG8UI,
@@ -479,6 +482,12 @@ static const char* rg_texture_formats[] = {
 	"[R]",
 	"[R,G]",
 
+	"int8[R]",
+	"int16[R]",
+
+	"uint8[R]",
+	"uint16[R]",
+
 	"flt16[R]",
 	"flt32[R]",
 
@@ -491,9 +500,6 @@ static const char* rg_texture_formats[] = {
 	"_uint16[R]",
 	"_int32[R]",
 	"_uint32[R]",
-
-	"int8[R]",
-	"int16[R]",
 
 	"_int8[R,G]",
 	"_uint8[R,G]",
@@ -508,7 +514,7 @@ static const char* rg_texture_formats[] = {
 };
 
 
-unsigned find_best_texture_format(const cgv::data::component_format& _cf, cgv::data::component_format* best_cf, const std::vector<data_view>* palettes)
+unsigned find_best_texture_format(const cgv::data::component_format& _cf, cgv::data::component_format* best_cf, const std::vector<data_view>* palettes, bool show_debug_info)
 {
 	cgv::data::component_format cf = _cf;
 	if (cf.get_nr_components() == 1 && (cf.get_component_name(0) == "L" || cf.get_component_name(0) == "I"))
@@ -518,13 +524,17 @@ unsigned find_best_texture_format(const cgv::data::component_format& _cf, cgv::d
 		best_cf = &best_cf_;
 	if (palettes && palettes->size() > 0 && cf.get_nr_components() == 1 && cf.get_component_name(0) == "0")
 		cf = *palettes->at(0).get_format();
-	unsigned int i = find_best_match(cf, std_texture_formats);
+	if (show_debug_info)
+		std::cout << "find best match in std_texture_formats:" << std::endl;
+	unsigned int i = find_best_match(cf, std_texture_formats, 0, cgv::data::fmt1_compares_better, show_debug_info);
 	if (best_cf)
 		*best_cf = cgv::data::component_format(std_texture_formats[i]);
 	unsigned gl_format = gl_std_texture_format_ids[i];
 
 	if (ensure_glew_initialized() && GLEW_ARB_depth_texture) {
-		i = find_best_match(cf,depth_formats, best_cf);
+		if (show_debug_info)
+			std::cout << "find best match in depth_formats:" << std::endl;
+		i = find_best_match(cf,depth_formats, best_cf, cgv::data::fmt1_compares_better, show_debug_info);
 		if (i != -1) {
 			if (best_cf)
 				*best_cf = cgv::data::component_format(depth_formats[i]);
@@ -532,7 +542,9 @@ unsigned find_best_texture_format(const cgv::data::component_format& _cf, cgv::d
 		}
 	}
 	if (true){//ensure_glew_initialized() && GLEW_EXT_texture_snorm) {
-		i = find_best_match(cf, snorm_texture_formats, best_cf);
+		if (show_debug_info)
+			std::cout << "find best match in snorm_texture_formats:" << std::endl;
+		i = find_best_match(cf, snorm_texture_formats, best_cf, cgv::data::fmt1_compares_better, show_debug_info);
 		if (i != -1) {
 			if (best_cf)
 				*best_cf = cgv::data::component_format(snorm_texture_formats[i]);
@@ -540,7 +552,9 @@ unsigned find_best_texture_format(const cgv::data::component_format& _cf, cgv::d
 		}
 	}
 	if (ensure_glew_initialized() && GLEW_EXT_texture_integer) {
-		i = find_best_match(cf,int_texture_formats, best_cf);
+		if (show_debug_info)
+			std::cout << "find best match in int_texture_formats:" << std::endl;
+		i = find_best_match(cf,int_texture_formats, best_cf, cgv::data::fmt1_compares_better, show_debug_info);
 		if (i != -1) {
 			if (best_cf)
 				*best_cf = cgv::data::component_format(int_texture_formats[i]);
@@ -548,7 +562,9 @@ unsigned find_best_texture_format(const cgv::data::component_format& _cf, cgv::d
 		}
 	}
 	if (ensure_glew_initialized() && GLEW_ARB_texture_float) {
-		i = find_best_match(cf, float_texture_formats, best_cf);
+		if (show_debug_info)
+			std::cout << "find best match in float_texture_formats:" << std::endl;
+		i = find_best_match(cf, float_texture_formats, best_cf, cgv::data::fmt1_compares_better, show_debug_info);
 		if (i != -1) {
 			if (best_cf)
 				*best_cf = cgv::data::component_format(float_texture_formats[i]);
@@ -556,7 +572,9 @@ unsigned find_best_texture_format(const cgv::data::component_format& _cf, cgv::d
 		}
 	}
 	if (ensure_glew_initialized() && GLEW_ARB_texture_rg) {
-		i = find_best_match(cf, rg_texture_formats, best_cf);
+		if (show_debug_info)
+			std::cout << "find best match in rg_texture_formats:" << std::endl;
+		i = find_best_match(cf, rg_texture_formats, best_cf, cgv::data::fmt1_compares_better, show_debug_info);
 		if (i != -1) {
 			if (best_cf)
 				*best_cf = cgv::data::component_format(rg_texture_formats[i]);
