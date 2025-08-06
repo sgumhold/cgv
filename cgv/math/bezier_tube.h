@@ -1,13 +1,11 @@
 #pragma once
 
 #include "bezier.h"
+#include "distance.h"
 #include "oriented_box.h"
 
 namespace cgv {
 namespace math {
-
-// TODO: Implement 2d version of quadratic_bezier tube.
-//class quadratic_bezier_stroke {};
 
 template<typename T>
 struct bezier_tube_node {
@@ -103,7 +101,7 @@ public:
 
 	std::pair<T, T> signed_distance(const vec_type& pos) const {
 		quadratic_bezier_curve<vec_type> curve = { n0.pos, n1.pos, n2.pos };
-		std::pair<T, T> res = quadratic_bezier_signed_distance<T>(curve, pos);
+		std::pair<T, T> res = point_quadratic_bezier_distance(pos, n0.pos, n1.pos, n2.pos);
 
 		T rc[3];
 		control_points_to_poly_coeffs(n0.rad, n1.rad, n2.rad, rc);
