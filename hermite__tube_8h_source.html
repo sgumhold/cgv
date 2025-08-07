@@ -5,7 +5,7 @@
 <meta http-equiv="X-UA-Compatible" content="IE=11"/>
 <meta name="generator" content="Doxygen 1.9.8"/>
 <meta name="viewport" content="width=device-width, initial-scale=1"/>
-<title>cgv: cgv/math/cubic_hermite_tube.h Source File</title>
+<title>cgv: cgv/math/hermite_tube.h Source File</title>
 <link href="tabs.css" rel="stylesheet" type="text/css"/>
 <script type="text/javascript" src="jquery.js"></script>
 <script type="text/javascript" src="dynsections.js"></script>
@@ -68,7 +68,7 @@ $(document).ready(function() { init_codefold(0); });
 </div>
 <script type="text/javascript">
 /* @license magnet:?xt=urn:btih:d3d9a9a6595521f9666a5e94cc830dab83b65699&amp;dn=expat.txt MIT */
-$(document).ready(function(){initNavTree('cubic__hermite__tube_8h_source.html',''); initResizable(); });
+$(document).ready(function(){initNavTree('hermite__tube_8h_source.html',''); initResizable(); });
 /* @license-end */
 </script>
 <div id="doc-content">
@@ -94,16 +94,16 @@ $(document).ready(function(){initNavTree('cubic__hermite__tube_8h_source.html','
 </div>
 
 <div class="header">
-  <div class="headertitle"><div class="title">cubic_hermite_tube.h</div></div>
+  <div class="headertitle"><div class="title">hermite_tube.h</div></div>
 </div><!--header-->
 <div class="contents">
 <div class="fragment"><div class="line"><a id="l00001" name="l00001"></a><span class="lineno">    1</span><span class="preprocessor">#pragma once</span></div>
 <div class="line"><a id="l00002" name="l00002"></a><span class="lineno">    2</span> </div>
 <div class="line"><a id="l00003" name="l00003"></a><span class="lineno">    3</span><span class="preprocessor">#include &lt;array&gt;</span></div>
 <div class="line"><a id="l00004" name="l00004"></a><span class="lineno">    4</span> </div>
-<div class="line"><a id="l00005" name="l00005"></a><span class="lineno">    5</span><span class="preprocessor">#include &quot;cubic_hermite.h&quot;</span></div>
+<div class="line"><a id="l00005" name="l00005"></a><span class="lineno">    5</span><span class="preprocessor">#include &quot;bezier_tube.h&quot;</span></div>
 <div class="line"><a id="l00006" name="l00006"></a><span class="lineno">    6</span><span class="preprocessor">#include &quot;convert_curve.h&quot;</span></div>
-<div class="line"><a id="l00007" name="l00007"></a><span class="lineno">    7</span><span class="preprocessor">#include &quot;quadratic_bezier_tube.h&quot;</span></div>
+<div class="line"><a id="l00007" name="l00007"></a><span class="lineno">    7</span><span class="preprocessor">#include &quot;hermite.h&quot;</span></div>
 <div class="line"><a id="l00008" name="l00008"></a><span class="lineno">    8</span> </div>
 <div class="line"><a id="l00009" name="l00009"></a><span class="lineno">    9</span><span class="keyword">namespace </span><a class="code hl_namespace" href="namespacecgv.html">cgv</a> {</div>
 <div class="line"><a id="l00010" name="l00010"></a><span class="lineno">   10</span><span class="keyword">namespace </span>math {</div>
@@ -129,52 +129,68 @@ $(document).ready(function(){initNavTree('cubic__hermite__tube_8h_source.html','
 <div class="line"><a id="l00027" name="l00027"></a><span class="lineno">   27</span>    <span class="comment">// the end node</span></div>
 <div class="line"><a id="l00028" name="l00028"></a><span class="lineno">   28</span>    <a class="code hl_struct" href="structcgv_1_1math_1_1hermite__tube__node.html">node_type</a> n1;</div>
 <div class="line"><a id="l00029" name="l00029"></a><span class="lineno">   29</span> </div>
-<div class="line"><a id="l00030" name="l00030"></a><span class="lineno">   30</span>    std::pair&lt;vec_type, vec_type&gt; approximate_axis_aligned_bounding_box()<span class="keyword"> const </span>{</div>
-<div class="line"><a id="l00031" name="l00031"></a><span class="lineno">   31</span>        std::pair&lt;vec_type, vec_type&gt; box;</div>
-<div class="line"><a id="l00032" name="l00032"></a><span class="lineno">   32</span>        std::array&lt;quadratic_bezier_tube&lt;T&gt;, 2&gt; qtubes = split_to_quadratic_bezier_tubes();</div>
-<div class="line"><a id="l00033" name="l00033"></a><span class="lineno">   33</span> </div>
-<div class="line"><a id="l00034" name="l00034"></a><span class="lineno">   34</span>        std::pair&lt;vec_type, vec_type&gt; qbox = qtubes[0].axis_aligned_bounding_box();</div>
-<div class="line"><a id="l00035" name="l00035"></a><span class="lineno">   35</span>        box.first = qbox.first;</div>
-<div class="line"><a id="l00036" name="l00036"></a><span class="lineno">   36</span>        box.second = qbox.second;</div>
+<div class="line"><a id="l00030" name="l00030"></a><span class="lineno">   30</span>    <span class="keyword">template</span>&lt;<span class="keyword">typename</span> ParamT = <span class="keywordtype">float</span>&gt;</div>
+<div class="line"><a id="l00031" name="l00031"></a><span class="lineno">   31</span>    <a class="code hl_struct" href="structcgv_1_1math_1_1hermite__tube__node.html">node_type</a> evaluate(ParamT t)<span class="keyword"> const </span>{</div>
+<div class="line"><a id="l00032" name="l00032"></a><span class="lineno">   32</span>        <a class="code hl_struct" href="structcgv_1_1math_1_1hermite__tube__node.html">node_type</a> n;</div>
+<div class="line"><a id="l00033" name="l00033"></a><span class="lineno">   33</span>        n.pos = interpolate_cubic_hermite(n0.val, n0.tan, n1.val, n1.tan, t);</div>
+<div class="line"><a id="l00034" name="l00034"></a><span class="lineno">   34</span>        n.rad = interpolate_cubic_hermite(n0.val, n0.tan, n1.val, n1.tan, t);</div>
+<div class="line"><a id="l00035" name="l00035"></a><span class="lineno">   35</span>        <span class="keywordflow">return</span> n;</div>
+<div class="line"><a id="l00036" name="l00036"></a><span class="lineno">   36</span>    }</div>
 <div class="line"><a id="l00037" name="l00037"></a><span class="lineno">   37</span> </div>
-<div class="line"><a id="l00038" name="l00038"></a><span class="lineno">   38</span>        qbox = qtubes[1].axis_aligned_bounding_box();</div>
-<div class="line"><a id="l00039" name="l00039"></a><span class="lineno">   39</span>        box.first = min(box.first, qbox.first);</div>
-<div class="line"><a id="l00040" name="l00040"></a><span class="lineno">   40</span>        box.second = max(box.second, qbox.second);</div>
-<div class="line"><a id="l00041" name="l00041"></a><span class="lineno">   41</span> </div>
-<div class="line"><a id="l00042" name="l00042"></a><span class="lineno">   42</span>        <span class="keywordflow">return</span> box;</div>
-<div class="line"><a id="l00043" name="l00043"></a><span class="lineno">   43</span>    }</div>
-<div class="line"><a id="l00044" name="l00044"></a><span class="lineno">   44</span> </div>
-<div class="line"><a id="l00045" name="l00045"></a><span class="lineno">   45</span>    std::array&lt;quadratic_bezier_tube&lt;T&gt;, 2&gt; split_to_quadratic_bezier_tubes()<span class="keyword"> const </span>{</div>
-<div class="line"><a id="l00046" name="l00046"></a><span class="lineno">   46</span>        std::array&lt;vec_type, 5&gt; ps = cubic_hermite_to_quadratic_beziers(n0.pos, n1.pos);</div>
-<div class="line"><a id="l00047" name="l00047"></a><span class="lineno">   47</span>        std::array&lt;T, 5&gt; rs = cubic_hermite_to_quadratic_beziers(n0.rad, n1.rad);</div>
-<div class="line"><a id="l00048" name="l00048"></a><span class="lineno">   48</span> </div>
-<div class="line"><a id="l00049" name="l00049"></a><span class="lineno">   49</span>        std::array&lt;quadratic_bezier_tube&lt;T&gt;, 2&gt; qtubes;</div>
-<div class="line"><a id="l00050" name="l00050"></a><span class="lineno">   50</span>        qtubes[0].n0 = { ps[0], rs[0] };</div>
-<div class="line"><a id="l00051" name="l00051"></a><span class="lineno">   51</span>        qtubes[0].n1 = { ps[1], rs[1] };</div>
-<div class="line"><a id="l00052" name="l00052"></a><span class="lineno">   52</span>        qtubes[0].n2 = { ps[2], rs[2] };</div>
-<div class="line"><a id="l00053" name="l00053"></a><span class="lineno">   53</span>        qtubes[1].n0 = { ps[2], rs[2] };</div>
-<div class="line"><a id="l00054" name="l00054"></a><span class="lineno">   54</span>        qtubes[1].n1 = { ps[3], rs[3] };</div>
-<div class="line"><a id="l00055" name="l00055"></a><span class="lineno">   55</span>        qtubes[1].n2 = { ps[4], rs[4] };</div>
-<div class="line"><a id="l00056" name="l00056"></a><span class="lineno">   56</span>        <span class="keywordflow">return</span> qtubes;</div>
-<div class="line"><a id="l00057" name="l00057"></a><span class="lineno">   57</span>    }</div>
-<div class="line"><a id="l00058" name="l00058"></a><span class="lineno">   58</span>};</div>
-</div>
-<div class="line"><a id="l00059" name="l00059"></a><span class="lineno">   59</span> </div>
+<div class="line"><a id="l00038" name="l00038"></a><span class="lineno">   38</span>    <span class="keyword">template</span>&lt;<span class="keyword">typename</span> ParamT = <span class="keywordtype">float</span>&gt;</div>
+<div class="line"><a id="l00039" name="l00039"></a><span class="lineno">   39</span>    std::vector&lt;node_type&gt; sample(<span class="keywordtype">size_t</span> num_segments)<span class="keyword"> const </span>{</div>
+<div class="line"><a id="l00040" name="l00040"></a><span class="lineno">   40</span>        std::vector&lt;node_type&gt; points;</div>
+<div class="line"><a id="l00041" name="l00041"></a><span class="lineno">   41</span>        points.reserve(num_segments + 1);</div>
+<div class="line"><a id="l00042" name="l00042"></a><span class="lineno">   42</span>        sample_steps_transform&lt;ParamT&gt;(std::back_inserter(points), [<span class="keyword">this</span>](ParamT t) { <span class="keywordflow">return</span> evaluate(t); }, num_segments);</div>
+<div class="line"><a id="l00043" name="l00043"></a><span class="lineno">   43</span>        <span class="keywordflow">return</span> points;</div>
+<div class="line"><a id="l00044" name="l00044"></a><span class="lineno">   44</span>    }</div>
+<div class="line"><a id="l00045" name="l00045"></a><span class="lineno">   45</span> </div>
+<div class="line"><a id="l00046" name="l00046"></a><span class="lineno">   46</span>    std::pair&lt;vec_type, vec_type&gt; approximate_axis_aligned_bounding_box()<span class="keyword"> const </span>{</div>
+<div class="line"><a id="l00047" name="l00047"></a><span class="lineno">   47</span>        std::pair&lt;vec_type, vec_type&gt; box;</div>
+<div class="line"><a id="l00048" name="l00048"></a><span class="lineno">   48</span>        std::array&lt;quadratic_bezier_tube&lt;T&gt;, 2&gt; qtubes = split_to_quadratic_bezier_tubes();</div>
+<div class="line"><a id="l00049" name="l00049"></a><span class="lineno">   49</span> </div>
+<div class="line"><a id="l00050" name="l00050"></a><span class="lineno">   50</span>        std::pair&lt;vec_type, vec_type&gt; qbox = qtubes[0].axis_aligned_bounding_box();</div>
+<div class="line"><a id="l00051" name="l00051"></a><span class="lineno">   51</span>        box.first = qbox.first;</div>
+<div class="line"><a id="l00052" name="l00052"></a><span class="lineno">   52</span>        box.second = qbox.second;</div>
+<div class="line"><a id="l00053" name="l00053"></a><span class="lineno">   53</span> </div>
+<div class="line"><a id="l00054" name="l00054"></a><span class="lineno">   54</span>        qbox = qtubes[1].axis_aligned_bounding_box();</div>
+<div class="line"><a id="l00055" name="l00055"></a><span class="lineno">   55</span>        box.first = min(box.first, qbox.first);</div>
+<div class="line"><a id="l00056" name="l00056"></a><span class="lineno">   56</span>        box.second = max(box.second, qbox.second);</div>
+<div class="line"><a id="l00057" name="l00057"></a><span class="lineno">   57</span> </div>
+<div class="line"><a id="l00058" name="l00058"></a><span class="lineno">   58</span>        <span class="keywordflow">return</span> box;</div>
+<div class="line"><a id="l00059" name="l00059"></a><span class="lineno">   59</span>    }</div>
 <div class="line"><a id="l00060" name="l00060"></a><span class="lineno">   60</span> </div>
-<div class="line"><a id="l00061" name="l00061"></a><span class="lineno">   61</span>} <span class="comment">// namespace math</span></div>
-<div class="line"><a id="l00062" name="l00062"></a><span class="lineno">   62</span>} <span class="comment">// namespace cgv</span></div>
-<div class="ttc" id="aclasscgv_1_1math_1_1cubic__hermite__tube_html"><div class="ttname"><a href="classcgv_1_1math_1_1cubic__hermite__tube.html">cgv::math::cubic_hermite_tube</a></div><div class="ttdef"><b>Definition</b> <a href="cubic__hermite__tube_8h_source.html#l00019">cubic_hermite_tube.h:19</a></div></div>
+<div class="line"><a id="l00061" name="l00061"></a><span class="lineno">   61</span>    std::array&lt;quadratic_bezier_tube&lt;T&gt;, 2&gt; split_to_quadratic_bezier_tubes()<span class="keyword"> const </span>{</div>
+<div class="line"><a id="l00062" name="l00062"></a><span class="lineno">   62</span>        std::array&lt;vec_type, 5&gt; ps = split_hermite_to_quadratic_beziers(n0.pos, n1.pos);</div>
+<div class="line"><a id="l00063" name="l00063"></a><span class="lineno">   63</span>        std::array&lt;T, 5&gt; rs = split_hermite_to_quadratic_beziers(n0.rad, n1.rad);</div>
+<div class="line"><a id="l00064" name="l00064"></a><span class="lineno">   64</span> </div>
+<div class="line"><a id="l00065" name="l00065"></a><span class="lineno">   65</span>        std::array&lt;quadratic_bezier_tube&lt;T&gt;, 2&gt; qtubes;</div>
+<div class="line"><a id="l00066" name="l00066"></a><span class="lineno">   66</span>        qtubes[0].n0 = { ps[0], rs[0] };</div>
+<div class="line"><a id="l00067" name="l00067"></a><span class="lineno">   67</span>        qtubes[0].n1 = { ps[1], rs[1] };</div>
+<div class="line"><a id="l00068" name="l00068"></a><span class="lineno">   68</span>        qtubes[0].n2 = { ps[2], rs[2] };</div>
+<div class="line"><a id="l00069" name="l00069"></a><span class="lineno">   69</span>        qtubes[1].n0 = { ps[2], rs[2] };</div>
+<div class="line"><a id="l00070" name="l00070"></a><span class="lineno">   70</span>        qtubes[1].n1 = { ps[3], rs[3] };</div>
+<div class="line"><a id="l00071" name="l00071"></a><span class="lineno">   71</span>        qtubes[1].n2 = { ps[4], rs[4] };</div>
+<div class="line"><a id="l00072" name="l00072"></a><span class="lineno">   72</span>        <span class="keywordflow">return</span> qtubes;</div>
+<div class="line"><a id="l00073" name="l00073"></a><span class="lineno">   73</span>    }</div>
+<div class="line"><a id="l00074" name="l00074"></a><span class="lineno">   74</span>};</div>
+</div>
+<div class="line"><a id="l00075" name="l00075"></a><span class="lineno">   75</span> </div>
+<div class="line"><a id="l00076" name="l00076"></a><span class="lineno">   76</span> </div>
+<div class="line"><a id="l00077" name="l00077"></a><span class="lineno">   77</span>} <span class="comment">// namespace math</span></div>
+<div class="line"><a id="l00078" name="l00078"></a><span class="lineno">   78</span>} <span class="comment">// namespace cgv</span></div>
+<div class="ttc" id="aclasscgv_1_1math_1_1cubic__hermite__tube_html"><div class="ttname"><a href="classcgv_1_1math_1_1cubic__hermite__tube.html">cgv::math::cubic_hermite_tube</a></div><div class="ttdef"><b>Definition</b> <a href="hermite__tube_8h_source.html#l00019">hermite_tube.h:19</a></div></div>
 <div class="ttc" id="aclasscgv_1_1math_1_1fmat_html"><div class="ttname"><a href="classcgv_1_1math_1_1fmat.html">cgv::math::fmat</a></div><div class="ttdoc">matrix of fixed size dimensions</div><div class="ttdef"><b>Definition</b> <a href="fmat_8h_source.html#l00022">fmat.h:23</a></div></div>
 <div class="ttc" id="aclasscgv_1_1math_1_1fvec_html"><div class="ttname"><a href="classcgv_1_1math_1_1fvec.html">cgv::math::fvec&lt; T, 3 &gt;</a></div></div>
 <div class="ttc" id="anamespacecgv_html"><div class="ttname"><a href="namespacecgv.html">cgv</a></div><div class="ttdoc">the cgv namespace</div><div class="ttdef"><b>Definition</b> <a href="print_8h_source.html#l00011">print.h:11</a></div></div>
-<div class="ttc" id="astructcgv_1_1math_1_1hermite__node_html"><div class="ttname"><a href="structcgv_1_1math_1_1hermite__node.html">cgv::math::hermite_node</a></div><div class="ttdef"><b>Definition</b> <a href="cubic__hermite_8h_source.html#l00053">cubic_hermite.h:53</a></div></div>
-<div class="ttc" id="astructcgv_1_1math_1_1hermite__tube__node_html"><div class="ttname"><a href="structcgv_1_1math_1_1hermite__tube__node.html">cgv::math::hermite_tube_node</a></div><div class="ttdef"><b>Definition</b> <a href="cubic__hermite__tube_8h_source.html#l00013">cubic_hermite_tube.h:13</a></div></div>
+<div class="ttc" id="astructcgv_1_1math_1_1hermite__node_html"><div class="ttname"><a href="structcgv_1_1math_1_1hermite__node.html">cgv::math::hermite_node</a></div><div class="ttdef"><b>Definition</b> <a href="hermite_8h_source.html#l00056">hermite.h:56</a></div></div>
+<div class="ttc" id="astructcgv_1_1math_1_1hermite__tube__node_html"><div class="ttname"><a href="structcgv_1_1math_1_1hermite__tube__node.html">cgv::math::hermite_tube_node</a></div><div class="ttdef"><b>Definition</b> <a href="hermite__tube_8h_source.html#l00013">hermite_tube.h:13</a></div></div>
 </div><!-- fragment --></div><!-- contents -->
 </div><!-- doc-content -->
 <!-- start footer part -->
 <div id="nav-path" class="navpath"><!-- id is needed for treeview function! -->
   <ul>
-    <li class="navelem"><a class="el" href="dir_b2f69a17ffe82a31358822b647cc4326.html">cgv</a></li><li class="navelem"><a class="el" href="dir_eaf9d2518f1ede0a595228de81ad9d4d.html">math</a></li><li class="navelem"><b>cubic_hermite_tube.h</b></li>
+    <li class="navelem"><a class="el" href="dir_b2f69a17ffe82a31358822b647cc4326.html">cgv</a></li><li class="navelem"><a class="el" href="dir_eaf9d2518f1ede0a595228de81ad9d4d.html">math</a></li><li class="navelem"><b>hermite_tube.h</b></li>
     <li class="footer">Generated by <a href="https://www.doxygen.org/index.html"><img class="footer" src="doxygen.svg" width="104" height="31" alt="doxygen"/></a> 1.9.8 </li>
   </ul>
 </div>

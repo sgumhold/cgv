@@ -101,14 +101,14 @@ $(document).ready(function(){initNavTree('convert__curve_8h_source.html',''); in
 <div class="line"><a id="l00002" name="l00002"></a><span class="lineno">    2</span> </div>
 <div class="line"><a id="l00003" name="l00003"></a><span class="lineno">    3</span><span class="preprocessor">#include &lt;array&gt;</span></div>
 <div class="line"><a id="l00004" name="l00004"></a><span class="lineno">    4</span> </div>
-<div class="line"><a id="l00005" name="l00005"></a><span class="lineno">    5</span><span class="preprocessor">#include &quot;quadratic_bezier.h&quot;</span></div>
-<div class="line"><a id="l00006" name="l00006"></a><span class="lineno">    6</span><span class="preprocessor">#include &quot;cubic_hermite.h&quot;</span></div>
+<div class="line"><a id="l00005" name="l00005"></a><span class="lineno">    5</span><span class="preprocessor">#include &quot;bezier.h&quot;</span></div>
+<div class="line"><a id="l00006" name="l00006"></a><span class="lineno">    6</span><span class="preprocessor">#include &quot;hermite.h&quot;</span></div>
 <div class="line"><a id="l00007" name="l00007"></a><span class="lineno">    7</span> </div>
 <div class="line"><a id="l00008" name="l00008"></a><span class="lineno">    8</span><span class="keyword">namespace </span><a class="code hl_namespace" href="namespacecgv.html">cgv</a> {</div>
 <div class="line"><a id="l00009" name="l00009"></a><span class="lineno">    9</span><span class="keyword">namespace </span>math {</div>
 <div class="line"><a id="l00010" name="l00010"></a><span class="lineno">   10</span> </div>
 <div class="line"><a id="l00017" name="l00017"></a><span class="lineno">   17</span><span class="keyword">template</span>&lt;<span class="keyword">typename</span> T&gt;</div>
-<div class="line"><a id="l00018" name="l00018"></a><span class="lineno">   18</span><span class="keyword">static</span> std::array&lt;T, 5&gt; cubic_hermite_to_quadratic_beziers(<span class="keyword">const</span> hermite_node&lt;T&gt;&amp; n0, <span class="keyword">const</span> hermite_node&lt;T&gt;&amp; n1) {</div>
+<div class="line"><a id="l00018" name="l00018"></a><span class="lineno">   18</span><span class="keyword">static</span> std::array&lt;T, 5&gt; split_hermite_to_quadratic_beziers(<span class="keyword">const</span> hermite_node&lt;T&gt;&amp; n0, <span class="keyword">const</span> hermite_node&lt;T&gt;&amp; n1) {</div>
 <div class="line"><a id="l00019" name="l00019"></a><span class="lineno">   19</span>    std::array&lt;T, 5&gt; bez;</div>
 <div class="line"><a id="l00020" name="l00020"></a><span class="lineno">   20</span>    bez[0] = n0.val;</div>
 <div class="line"><a id="l00021" name="l00021"></a><span class="lineno">   21</span>    bez[1] = n0.val + n0.tan * T(0.2667);</div>
@@ -120,7 +120,7 @@ $(document).ready(function(){initNavTree('convert__curve_8h_source.html',''); in
 <div class="line"><a id="l00027" name="l00027"></a><span class="lineno">   27</span>}</div>
 <div class="line"><a id="l00028" name="l00028"></a><span class="lineno">   28</span> </div>
 <div class="line"><a id="l00029" name="l00029"></a><span class="lineno">   29</span><span class="keyword">template</span>&lt;<span class="keyword">typename</span> T&gt;</div>
-<div class="line"><a id="l00030" name="l00030"></a><span class="lineno">   30</span><span class="keyword">static</span> std::array&lt;T, 4&gt; cubic_hermite_to_cubic_bezier(<span class="keyword">const</span> hermite_node&lt;T&gt;&amp; n0, <span class="keyword">const</span> hermite_node&lt;T&gt;&amp; n1) {</div>
+<div class="line"><a id="l00030" name="l00030"></a><span class="lineno">   30</span><span class="keyword">static</span> std::array&lt;T, 4&gt; hermite_to_cubic_bezier(<span class="keyword">const</span> hermite_node&lt;T&gt;&amp; n0, <span class="keyword">const</span> hermite_node&lt;T&gt;&amp; n1) {</div>
 <div class="line"><a id="l00031" name="l00031"></a><span class="lineno">   31</span>    <span class="keywordflow">return</span> {</div>
 <div class="line"><a id="l00032" name="l00032"></a><span class="lineno">   32</span>        n0.val,</div>
 <div class="line"><a id="l00033" name="l00033"></a><span class="lineno">   33</span>        n0.val + n0.tan / T(3),</div>
@@ -130,7 +130,7 @@ $(document).ready(function(){initNavTree('convert__curve_8h_source.html',''); in
 <div class="line"><a id="l00037" name="l00037"></a><span class="lineno">   37</span>}</div>
 <div class="line"><a id="l00038" name="l00038"></a><span class="lineno">   38</span> </div>
 <div class="line"><a id="l00039" name="l00039"></a><span class="lineno">   39</span><span class="keyword">template</span>&lt;<span class="keyword">typename</span> T&gt;</div>
-<div class="line"><a id="l00040" name="l00040"></a><span class="lineno">   40</span><span class="keyword">static</span> std::pair&lt;hermite_node&lt;T&gt;, hermite_node&lt;T&gt;&gt; cubic_bezier_to_cubic_hermite(<span class="keyword">const</span> T&amp; p0, <span class="keyword">const</span> T&amp; p1, <span class="keyword">const</span> T&amp; p2, <span class="keyword">const</span> T&amp; p3) {</div>
+<div class="line"><a id="l00040" name="l00040"></a><span class="lineno">   40</span><span class="keyword">static</span> std::pair&lt;hermite_node&lt;T&gt;, hermite_node&lt;T&gt;&gt; cubic_bezier_to_hermite(<span class="keyword">const</span> T&amp; p0, <span class="keyword">const</span> T&amp; p1, <span class="keyword">const</span> T&amp; p2, <span class="keyword">const</span> T&amp; p3) {</div>
 <div class="line"><a id="l00041" name="l00041"></a><span class="lineno">   41</span>    T t0 = T(3) * (p1 - p0);</div>
 <div class="line"><a id="l00042" name="l00042"></a><span class="lineno">   42</span>    T t1 = T(3) * (p3 - p2);</div>
 <div class="line"><a id="l00043" name="l00043"></a><span class="lineno">   43</span>    <span class="keywordflow">return</span> { { p0, t0 }, { p3, t1 } };</div>
