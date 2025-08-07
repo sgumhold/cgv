@@ -62,7 +62,7 @@ var searchData=
   ['help_5fmessage_59',['help_message',['../classcgv_1_1gui_1_1help__message.html',1,'cgv::gui']]],
   ['hermite_5fnode_60',['hermite_node',['../structcgv_1_1math_1_1hermite__node.html',1,'cgv::math']]],
   ['hermite_5fnode_3c_20cgv_3a_3amath_3a_3afvec_3c_20t_2c_203_20_3e_20_3e_61',['hermite_node&lt; cgv::math::fvec&lt; T, 3 &gt; &gt;',['../structcgv_1_1math_1_1hermite__node.html',1,'cgv::math']]],
-  ['hermite_5fnode_3c_20point_5ftype_20_3e_62',['hermite_node&lt; point_type &gt;',['../structcgv_1_1math_1_1hermite__node.html',1,'cgv::math']]],
+  ['hermite_5fnode_3c_20pointt_20_3e_62',['hermite_node&lt; PointT &gt;',['../structcgv_1_1math_1_1hermite__node.html',1,'cgv::math']]],
   ['hermite_5ftube_5fnode_63',['hermite_tube_node',['../structcgv_1_1math_1_1hermite__tube__node.html',1,'cgv::math']]],
   ['hide_64',['hide',['../classcgv_1_1render_1_1drawable.html#a98393d93b5d15bd89a5970f7a8c6903b',1,'cgv::render::drawable::hide()'],['../classcgv_1_1gui_1_1text__editor.html#a4537b5f2090ac93952b0eed9113e9d0a',1,'cgv::gui::text_editor::hide()'],['../classcgv_1_1gui_1_1window.html#afc09eb44bdf5ad4b15163f914d0dfc3a',1,'cgv::gui::window::hide()']]],
   ['hierarchy_65',['Base Hierarchy',['../baseNS.html#baseSEC',1,'']]],

@@ -1,7 +1,5 @@
 var NAVTREEINDEX40 =
 {
-"structcgv_1_1media_1_1color__storage__traits_3_01color_3_01unsigned_01char_00_01RGB_01_4_01_4.html":[11,0,0,7,23],
-"structcgv_1_1media_1_1const__alpha__reference.html":[11,0,0,7,26],
 "structcgv_1_1media_1_1const__alpha__reference_3_01T_00_01NO__ALPHA_01_4.html":[11,0,0,7,27],
 "structcgv_1_1media_1_1extinction__alpha__interface.html":[11,0,0,7,28],
 "structcgv_1_1media_1_1extinction__alpha__interface_3_01color_3_01T_00_01cm_00_01EXTINCTION_01_4_01_4.html":[11,0,0,7,30],
@@ -249,5 +247,7 @@ var NAVTREEINDEX40 =
 "structcgv_1_1plot_1_1plot__base__config.html#a718ec7738ea565d6e1742cdd9f47a3ce":[11,0,0,9,13,6],
 "structcgv_1_1plot_1_1plot__base__config.html#a77bb92d4ad9e8419998a8f32a5c7b172":[11,0,0,9,13,34],
 "structcgv_1_1plot_1_1plot__base__config.html#a88f2134c8c5ada0f129be062ca1021d2":[11,0,0,9,13,14],
-"structcgv_1_1plot_1_1plot__base__config.html#a959405bbca84dbaa7053759c6cfe3381":[11,0,0,9,13,18]
+"structcgv_1_1plot_1_1plot__base__config.html#a959405bbca84dbaa7053759c6cfe3381":[11,0,0,9,13,18],
+"structcgv_1_1plot_1_1plot__base__config.html#a9e9fa6f5b0278adc4943d4c3abc63e4b":[11,0,0,9,13,24],
+"structcgv_1_1plot_1_1plot__base__config.html#aaa8c6c7a1d7d6bf1e70c4392fbca6b15":[11,0,0,9,13,11]
 };

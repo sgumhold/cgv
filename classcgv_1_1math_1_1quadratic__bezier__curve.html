@@ -5,7 +5,7 @@
 <meta http-equiv="X-UA-Compatible" content="IE=11"/>
 <meta name="generator" content="Doxygen 1.9.8"/>
 <meta name="viewport" content="width=device-width, initial-scale=1"/>
-<title>cgv: cgv::math::quadratic_bezier_curve&lt; point_type &gt; Class Template Reference</title>
+<title>cgv: cgv::math::quadratic_bezier_curve&lt; PointT &gt; Class Template Reference</title>
 <link href="tabs.css" rel="stylesheet" type="text/css"/>
 <script type="text/javascript" src="jquery.js"></script>
 <script type="text/javascript" src="dynsections.js"></script>
@@ -90,56 +90,84 @@ $(document).ready(function(){initNavTree('classcgv_1_1math_1_1quadratic__bezier_
 
 <div class="header">
   <div class="summary">
+<a href="#pub-types">Public Types</a> &#124;
 <a href="#pub-methods">Public Member Functions</a> &#124;
 <a href="#pub-attribs">Public Attributes</a> &#124;
 <a href="classcgv_1_1math_1_1quadratic__bezier__curve-members.html">List of all members</a>  </div>
-  <div class="headertitle"><div class="title">cgv::math::quadratic_bezier_curve&lt; point_type &gt; Class Template Reference</div></div>
+  <div class="headertitle"><div class="title">cgv::math::quadratic_bezier_curve&lt; PointT &gt; Class Template Reference</div></div>
 </div><!--header-->
 <div class="contents">
 <table class="memberdecls">
+<tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="pub-types" name="pub-types"></a>
+Public Types</h2></td></tr>
+<tr class="memitem:ae50b52edb7f86b931e72a79c2d7df129" id="r_ae50b52edb7f86b931e72a79c2d7df129"><td class="memItemLeft" align="right" valign="top">using&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcgv_1_1math_1_1quadratic__bezier__curve.html#ae50b52edb7f86b931e72a79c2d7df129">point_type</a> = PointT</td></tr>
+<tr class="separator:ae50b52edb7f86b931e72a79c2d7df129"><td class="memSeparator" colspan="2">&#160;</td></tr>
+</table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="pub-methods" name="pub-methods"></a>
 Public Member Functions</h2></td></tr>
-<tr class="memitem:afd149f50be2398d255f4aff9e6e6459f" id="r_afd149f50be2398d255f4aff9e6e6459f"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcgv_1_1math_1_1quadratic__bezier__curve.html#afd149f50be2398d255f4aff9e6e6459f">quadratic_bezier_curve</a> (const point_type &amp;<a class="el" href="classcgv_1_1math_1_1quadratic__bezier__curve.html#ab12608e1535d0d7079908f3f711e80d2">p0</a>, const point_type &amp;<a class="el" href="classcgv_1_1math_1_1quadratic__bezier__curve.html#a18d79921ec24a325bec4cdfd644b70c9">p1</a>, const point_type &amp;<a class="el" href="classcgv_1_1math_1_1quadratic__bezier__curve.html#af400c81a181512705494ec83ae5b9065">p2</a>)</td></tr>
-<tr class="separator:afd149f50be2398d255f4aff9e6e6459f"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a4b305cf7ff1ef5ada29bf8fe61e4a7fa" id="r_a4b305cf7ff1ef5ada29bf8fe61e4a7fa"><td class="memTemplParams" colspan="2">template&lt;typename param_type  = float&gt; </td></tr>
-<tr class="memitem:a4b305cf7ff1ef5ada29bf8fe61e4a7fa"><td class="memTemplItemLeft" align="right" valign="top">point_type&#160;</td><td class="memTemplItemRight" valign="bottom"><a class="el" href="classcgv_1_1math_1_1quadratic__bezier__curve.html#a4b305cf7ff1ef5ada29bf8fe61e4a7fa">interpolate</a> (param_type t) const</td></tr>
-<tr class="separator:a4b305cf7ff1ef5ada29bf8fe61e4a7fa"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a997cb5f88bc25beb16fbd52dc2f1fa6b" id="r_a997cb5f88bc25beb16fbd52dc2f1fa6b"><td class="memTemplParams" colspan="2">template&lt;typename param_type  = float&gt; </td></tr>
-<tr class="memitem:a997cb5f88bc25beb16fbd52dc2f1fa6b"><td class="memTemplItemLeft" align="right" valign="top">std::vector&lt; point_type &gt;&#160;</td><td class="memTemplItemRight" valign="bottom"><a class="el" href="classcgv_1_1math_1_1quadratic__bezier__curve.html#a997cb5f88bc25beb16fbd52dc2f1fa6b">sample</a> (size_t num_segments) const</td></tr>
-<tr class="separator:a997cb5f88bc25beb16fbd52dc2f1fa6b"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a18bc9a8a6f311f0896979862454c58a4" id="r_a18bc9a8a6f311f0896979862454c58a4"><td class="memItemLeft" align="right" valign="top">std::pair&lt; point_type, point_type &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcgv_1_1math_1_1quadratic__bezier__curve.html#a18bc9a8a6f311f0896979862454c58a4">axis_aligned_bounding_box</a> () const</td></tr>
-<tr class="separator:a18bc9a8a6f311f0896979862454c58a4"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:adc33eb9e1791b7a7a78547d09c0a490b" id="r_adc33eb9e1791b7a7a78547d09c0a490b"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcgv_1_1math_1_1quadratic__bezier__curve.html#adc33eb9e1791b7a7a78547d09c0a490b">quadratic_bezier_curve</a> (const PointT &amp;<a class="el" href="classcgv_1_1math_1_1quadratic__bezier__curve.html#ad38bc9a72d78d34bbd23fa570a611413">p0</a>, const PointT &amp;<a class="el" href="classcgv_1_1math_1_1quadratic__bezier__curve.html#adb772dcd2f7e9ee959a8a9ed56124486">p1</a>, const PointT &amp;<a class="el" href="classcgv_1_1math_1_1quadratic__bezier__curve.html#a497f612ad38fd9674cd5298dc5e6420c">p2</a>)</td></tr>
+<tr class="separator:adc33eb9e1791b7a7a78547d09c0a490b"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a6c37b2a0b274ebb806246c3dc66df8b7" id="r_a6c37b2a0b274ebb806246c3dc66df8b7"><td class="memTemplParams" colspan="2">template&lt;typename ParamT  = float&gt; </td></tr>
+<tr class="memitem:a6c37b2a0b274ebb806246c3dc66df8b7"><td class="memTemplItemLeft" align="right" valign="top">PointT&#160;</td><td class="memTemplItemRight" valign="bottom"><a class="el" href="classcgv_1_1math_1_1quadratic__bezier__curve.html#a6c37b2a0b274ebb806246c3dc66df8b7">evaluate</a> (ParamT t) const</td></tr>
+<tr class="separator:a6c37b2a0b274ebb806246c3dc66df8b7"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a6ef738d7606af9b776b97f778bd572fc" id="r_a6ef738d7606af9b776b97f778bd572fc"><td class="memTemplParams" colspan="2">template&lt;typename ParamT  = float&gt; </td></tr>
+<tr class="memitem:a6ef738d7606af9b776b97f778bd572fc"><td class="memTemplItemLeft" align="right" valign="top">PointT&#160;</td><td class="memTemplItemRight" valign="bottom"><a class="el" href="classcgv_1_1math_1_1quadratic__bezier__curve.html#a6ef738d7606af9b776b97f778bd572fc">derivative</a> (ParamT t) const</td></tr>
+<tr class="separator:a6ef738d7606af9b776b97f778bd572fc"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a6e19607d100057902617311257e7d974" id="r_a6e19607d100057902617311257e7d974"><td class="memTemplParams" colspan="2">template&lt;typename ParamT  = float&gt; </td></tr>
+<tr class="memitem:a6e19607d100057902617311257e7d974"><td class="memTemplItemLeft" align="right" valign="top">std::vector&lt; PointT &gt;&#160;</td><td class="memTemplItemRight" valign="bottom"><a class="el" href="classcgv_1_1math_1_1quadratic__bezier__curve.html#a6e19607d100057902617311257e7d974">sample</a> (size_t num_segments) const</td></tr>
+<tr class="separator:a6e19607d100057902617311257e7d974"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a1cb883f3f4bbf05a706cd498c2c842bd" id="r_a1cb883f3f4bbf05a706cd498c2c842bd"><td class="memItemLeft" align="right" valign="top">std::pair&lt; PointT, PointT &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcgv_1_1math_1_1quadratic__bezier__curve.html#a1cb883f3f4bbf05a706cd498c2c842bd">axis_aligned_bounding_box</a> () const</td></tr>
+<tr class="separator:a1cb883f3f4bbf05a706cd498c2c842bd"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="pub-attribs" name="pub-attribs"></a>
 Public Attributes</h2></td></tr>
-<tr class="memitem:ab12608e1535d0d7079908f3f711e80d2" id="r_ab12608e1535d0d7079908f3f711e80d2"><td class="memItemLeft" align="right" valign="top">point_type&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcgv_1_1math_1_1quadratic__bezier__curve.html#ab12608e1535d0d7079908f3f711e80d2">p0</a> = { 0 }</td></tr>
-<tr class="memdesc:ab12608e1535d0d7079908f3f711e80d2"><td class="mdescLeft">&#160;</td><td class="mdescRight">the start point  <br /></td></tr>
-<tr class="separator:ab12608e1535d0d7079908f3f711e80d2"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a18d79921ec24a325bec4cdfd644b70c9" id="r_a18d79921ec24a325bec4cdfd644b70c9"><td class="memItemLeft" align="right" valign="top">point_type&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcgv_1_1math_1_1quadratic__bezier__curve.html#a18d79921ec24a325bec4cdfd644b70c9">p1</a> = { 0 }</td></tr>
-<tr class="memdesc:a18d79921ec24a325bec4cdfd644b70c9"><td class="mdescLeft">&#160;</td><td class="mdescRight">the middle point  <br /></td></tr>
-<tr class="separator:a18d79921ec24a325bec4cdfd644b70c9"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:af400c81a181512705494ec83ae5b9065" id="r_af400c81a181512705494ec83ae5b9065"><td class="memItemLeft" align="right" valign="top">point_type&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcgv_1_1math_1_1quadratic__bezier__curve.html#af400c81a181512705494ec83ae5b9065">p2</a> = { 0 }</td></tr>
-<tr class="memdesc:af400c81a181512705494ec83ae5b9065"><td class="mdescLeft">&#160;</td><td class="mdescRight">the end point  <br /></td></tr>
-<tr class="separator:af400c81a181512705494ec83ae5b9065"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ad38bc9a72d78d34bbd23fa570a611413" id="r_ad38bc9a72d78d34bbd23fa570a611413"><td class="memItemLeft" align="right" valign="top">PointT&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcgv_1_1math_1_1quadratic__bezier__curve.html#ad38bc9a72d78d34bbd23fa570a611413">p0</a> = { 0 }</td></tr>
+<tr class="memdesc:ad38bc9a72d78d34bbd23fa570a611413"><td class="mdescLeft">&#160;</td><td class="mdescRight">the start control point  <br /></td></tr>
+<tr class="separator:ad38bc9a72d78d34bbd23fa570a611413"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:adb772dcd2f7e9ee959a8a9ed56124486" id="r_adb772dcd2f7e9ee959a8a9ed56124486"><td class="memItemLeft" align="right" valign="top">PointT&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcgv_1_1math_1_1quadratic__bezier__curve.html#adb772dcd2f7e9ee959a8a9ed56124486">p1</a> = { 0 }</td></tr>
+<tr class="memdesc:adb772dcd2f7e9ee959a8a9ed56124486"><td class="mdescLeft">&#160;</td><td class="mdescRight">the middle control point  <br /></td></tr>
+<tr class="separator:adb772dcd2f7e9ee959a8a9ed56124486"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a497f612ad38fd9674cd5298dc5e6420c" id="r_a497f612ad38fd9674cd5298dc5e6420c"><td class="memItemLeft" align="right" valign="top">PointT&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcgv_1_1math_1_1quadratic__bezier__curve.html#a497f612ad38fd9674cd5298dc5e6420c">p2</a> = { 0 }</td></tr>
+<tr class="memdesc:a497f612ad38fd9674cd5298dc5e6420c"><td class="mdescLeft">&#160;</td><td class="mdescRight">the end control point  <br /></td></tr>
+<tr class="separator:a497f612ad38fd9674cd5298dc5e6420c"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
 <a name="details" id="details"></a><h2 class="groupheader">Detailed Description</h2>
-<div class="textblock"><div class="compoundTemplParams">template&lt;typename point_type&gt;<br />
-class cgv::math::quadratic_bezier_curve&lt; point_type &gt;</div>
-<p class="definition">Definition at line <a class="el" href="quadratic__bezier_8h_source.html#l00053">53</a> of file <a class="el" href="quadratic__bezier_8h_source.html">quadratic_bezier.h</a>.</p>
-</div><h2 class="groupheader">Constructor &amp; Destructor Documentation</h2>
-<a id="afb4c34b6499f9078a98c3e4c4a2ee510" name="afb4c34b6499f9078a98c3e4c4a2ee510"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#afb4c34b6499f9078a98c3e4c4a2ee510">&#9670;&#160;</a></span>quadratic_bezier_curve() <span class="overload">[1/2]</span></h2>
+<div class="textblock"><div class="compoundTemplParams">template&lt;typename PointT&gt;<br />
+class cgv::math::quadratic_bezier_curve&lt; PointT &gt;</div>
+<p class="definition">Definition at line <a class="el" href="bezier_8h_source.html#l00011">11</a> of file <a class="el" href="bezier_8h_source.html">bezier.h</a>.</p>
+</div><h2 class="groupheader">Member Typedef Documentation</h2>
+<a id="ae50b52edb7f86b931e72a79c2d7df129" name="ae50b52edb7f86b931e72a79c2d7df129"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#ae50b52edb7f86b931e72a79c2d7df129">&#9670;&#160;</a></span>point_type</h2>
 
 <div class="memitem">
 <div class="memproto">
 <div class="memtemplate">
-template&lt;typename point_type &gt; </div>
+template&lt;typename PointT &gt; </div>
+      <table class="memname">
+        <tr>
+          <td class="memname">using <a class="el" href="classcgv_1_1math_1_1quadratic__bezier__curve.html">cgv::math::quadratic_bezier_curve</a>&lt; PointT &gt;::point_type =  PointT</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p class="definition">Definition at line <a class="el" href="bezier_8h_source.html#l00013">13</a> of file <a class="el" href="bezier_8h_source.html">bezier.h</a>.</p>
+
+</div>
+</div>
+<h2 class="groupheader">Constructor &amp; Destructor Documentation</h2>
+<a id="a5394efd843bfd7bd39aa6fa80b13c538" name="a5394efd843bfd7bd39aa6fa80b13c538"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a5394efd843bfd7bd39aa6fa80b13c538">&#9670;&#160;</a></span>quadratic_bezier_curve() <span class="overload">[1/2]</span></h2>
+
+<div class="memitem">
+<div class="memproto">
+<div class="memtemplate">
+template&lt;typename PointT &gt; </div>
 <table class="mlabels">
   <tr>
   <td class="mlabels-left">
       <table class="memname">
         <tr>
-          <td class="memname"><a class="el" href="classcgv_1_1math_1_1quadratic__bezier__curve.html">cgv::math::quadratic_bezier_curve</a>&lt; point_type &gt;::quadratic_bezier_curve </td>
+          <td class="memname"><a class="el" href="classcgv_1_1math_1_1quadratic__bezier__curve.html">cgv::math::quadratic_bezier_curve</a>&lt; PointT &gt;::quadratic_bezier_curve </td>
           <td>(</td>
           <td class="paramname"></td><td>)</td>
           <td></td>
@@ -152,37 +180,37 @@ template&lt;typename point_type &gt; </div>
 </table>
 </div><div class="memdoc">
 
-<p class="definition">Definition at line <a class="el" href="quadratic__bezier_8h_source.html#l00062">62</a> of file <a class="el" href="quadratic__bezier_8h_source.html">quadratic_bezier.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="bezier_8h_source.html#l00022">22</a> of file <a class="el" href="bezier_8h_source.html">bezier.h</a>.</p>
 
 </div>
 </div>
-<a id="afd149f50be2398d255f4aff9e6e6459f" name="afd149f50be2398d255f4aff9e6e6459f"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#afd149f50be2398d255f4aff9e6e6459f">&#9670;&#160;</a></span>quadratic_bezier_curve() <span class="overload">[2/2]</span></h2>
+<a id="adc33eb9e1791b7a7a78547d09c0a490b" name="adc33eb9e1791b7a7a78547d09c0a490b"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#adc33eb9e1791b7a7a78547d09c0a490b">&#9670;&#160;</a></span>quadratic_bezier_curve() <span class="overload">[2/2]</span></h2>
 
 <div class="memitem">
 <div class="memproto">
 <div class="memtemplate">
-template&lt;typename point_type &gt; </div>
+template&lt;typename PointT &gt; </div>
 <table class="mlabels">
   <tr>
   <td class="mlabels-left">
       <table class="memname">
         <tr>
-          <td class="memname"><a class="el" href="classcgv_1_1math_1_1quadratic__bezier__curve.html">cgv::math::quadratic_bezier_curve</a>&lt; point_type &gt;::quadratic_bezier_curve </td>
+          <td class="memname"><a class="el" href="classcgv_1_1math_1_1quadratic__bezier__curve.html">cgv::math::quadratic_bezier_curve</a>&lt; PointT &gt;::quadratic_bezier_curve </td>
           <td>(</td>
-          <td class="paramtype">const point_type &amp;&#160;</td>
+          <td class="paramtype">const PointT &amp;&#160;</td>
           <td class="paramname"><em>p0</em>, </td>
         </tr>
         <tr>
           <td class="paramkey"></td>
           <td></td>
-          <td class="paramtype">const point_type &amp;&#160;</td>
+          <td class="paramtype">const PointT &amp;&#160;</td>
           <td class="paramname"><em>p1</em>, </td>
         </tr>
         <tr>
           <td class="paramkey"></td>
           <td></td>
-          <td class="paramtype">const point_type &amp;&#160;</td>
+          <td class="paramtype">const PointT &amp;&#160;</td>
           <td class="paramname"><em>p2</em>&#160;</td>
         </tr>
         <tr>
@@ -198,24 +226,24 @@ template&lt;typename point_type &gt; </div>
 </table>
 </div><div class="memdoc">
 
-<p class="definition">Definition at line <a class="el" href="quadratic__bezier_8h_source.html#l00063">63</a> of file <a class="el" href="quadratic__bezier_8h_source.html">quadratic_bezier.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="bezier_8h_source.html#l00023">23</a> of file <a class="el" href="bezier_8h_source.html">bezier.h</a>.</p>
 
 </div>
 </div>
 <h2 class="groupheader">Member Function Documentation</h2>
-<a id="a18bc9a8a6f311f0896979862454c58a4" name="a18bc9a8a6f311f0896979862454c58a4"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a18bc9a8a6f311f0896979862454c58a4">&#9670;&#160;</a></span>axis_aligned_bounding_box()</h2>
+<a id="a1cb883f3f4bbf05a706cd498c2c842bd" name="a1cb883f3f4bbf05a706cd498c2c842bd"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a1cb883f3f4bbf05a706cd498c2c842bd">&#9670;&#160;</a></span>axis_aligned_bounding_box()</h2>
 
 <div class="memitem">
 <div class="memproto">
 <div class="memtemplate">
-template&lt;typename point_type &gt; </div>
+template&lt;typename PointT &gt; </div>
 <table class="mlabels">
   <tr>
   <td class="mlabels-left">
       <table class="memname">
         <tr>
-          <td class="memname">std::pair&lt; point_type, point_type &gt; <a class="el" href="classcgv_1_1math_1_1quadratic__bezier__curve.html">cgv::math::quadratic_bezier_curve</a>&lt; point_type &gt;::axis_aligned_bounding_box </td>
+          <td class="memname">std::pair&lt; PointT, PointT &gt; <a class="el" href="classcgv_1_1math_1_1quadratic__bezier__curve.html">cgv::math::quadratic_bezier_curve</a>&lt; PointT &gt;::axis_aligned_bounding_box </td>
           <td>(</td>
           <td class="paramname"></td><td>)</td>
           <td> const</td>
@@ -228,27 +256,27 @@ template&lt;typename point_type &gt; </div>
 </table>
 </div><div class="memdoc">
 
-<p class="definition">Definition at line <a class="el" href="quadratic__bezier_8h_source.html#l00075">75</a> of file <a class="el" href="quadratic__bezier_8h_source.html">quadratic_bezier.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="bezier_8h_source.html#l00043">43</a> of file <a class="el" href="bezier_8h_source.html">bezier.h</a>.</p>
 
 </div>
 </div>
-<a id="a4b305cf7ff1ef5ada29bf8fe61e4a7fa" name="a4b305cf7ff1ef5ada29bf8fe61e4a7fa"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a4b305cf7ff1ef5ada29bf8fe61e4a7fa">&#9670;&#160;</a></span>interpolate()</h2>
+<a id="a6ef738d7606af9b776b97f778bd572fc" name="a6ef738d7606af9b776b97f778bd572fc"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a6ef738d7606af9b776b97f778bd572fc">&#9670;&#160;</a></span>derivative()</h2>
 
 <div class="memitem">
 <div class="memproto">
 <div class="memtemplate">
-template&lt;typename point_type &gt; </div>
+template&lt;typename PointT &gt; </div>
 <div class="memtemplate">
-template&lt;typename param_type  = float&gt; </div>
+template&lt;typename ParamT  = float&gt; </div>
 <table class="mlabels">
   <tr>
   <td class="mlabels-left">
       <table class="memname">
         <tr>
-          <td class="memname">point_type <a class="el" href="classcgv_1_1math_1_1quadratic__bezier__curve.html">cgv::math::quadratic_bezier_curve</a>&lt; point_type &gt;::interpolate </td>
+          <td class="memname">PointT <a class="el" href="classcgv_1_1math_1_1quadratic__bezier__curve.html">cgv::math::quadratic_bezier_curve</a>&lt; PointT &gt;::derivative </td>
           <td>(</td>
-          <td class="paramtype">param_type&#160;</td>
+          <td class="paramtype">ParamT&#160;</td>
           <td class="paramname"><em>t</em></td><td>)</td>
           <td> const</td>
         </tr>
@@ -260,25 +288,57 @@ template&lt;typename param_type  = float&gt; </div>
 </table>
 </div><div class="memdoc">
 
-<p class="definition">Definition at line <a class="el" href="quadratic__bezier_8h_source.html#l00066">66</a> of file <a class="el" href="quadratic__bezier_8h_source.html">quadratic_bezier.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="bezier_8h_source.html#l00031">31</a> of file <a class="el" href="bezier_8h_source.html">bezier.h</a>.</p>
 
 </div>
 </div>
-<a id="a997cb5f88bc25beb16fbd52dc2f1fa6b" name="a997cb5f88bc25beb16fbd52dc2f1fa6b"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a997cb5f88bc25beb16fbd52dc2f1fa6b">&#9670;&#160;</a></span>sample()</h2>
+<a id="a6c37b2a0b274ebb806246c3dc66df8b7" name="a6c37b2a0b274ebb806246c3dc66df8b7"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a6c37b2a0b274ebb806246c3dc66df8b7">&#9670;&#160;</a></span>evaluate()</h2>
 
 <div class="memitem">
 <div class="memproto">
 <div class="memtemplate">
-template&lt;typename point_type &gt; </div>
+template&lt;typename PointT &gt; </div>
 <div class="memtemplate">
-template&lt;typename param_type  = float&gt; </div>
+template&lt;typename ParamT  = float&gt; </div>
 <table class="mlabels">
   <tr>
   <td class="mlabels-left">
       <table class="memname">
         <tr>
-          <td class="memname">std::vector&lt; point_type &gt; <a class="el" href="classcgv_1_1math_1_1quadratic__bezier__curve.html">cgv::math::quadratic_bezier_curve</a>&lt; point_type &gt;::sample </td>
+          <td class="memname">PointT <a class="el" href="classcgv_1_1math_1_1quadratic__bezier__curve.html">cgv::math::quadratic_bezier_curve</a>&lt; PointT &gt;::evaluate </td>
+          <td>(</td>
+          <td class="paramtype">ParamT&#160;</td>
+          <td class="paramname"><em>t</em></td><td>)</td>
+          <td> const</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">inline</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p class="definition">Definition at line <a class="el" href="bezier_8h_source.html#l00026">26</a> of file <a class="el" href="bezier_8h_source.html">bezier.h</a>.</p>
+
+</div>
+</div>
+<a id="a6e19607d100057902617311257e7d974" name="a6e19607d100057902617311257e7d974"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a6e19607d100057902617311257e7d974">&#9670;&#160;</a></span>sample()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<div class="memtemplate">
+template&lt;typename PointT &gt; </div>
+<div class="memtemplate">
+template&lt;typename ParamT  = float&gt; </div>
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">std::vector&lt; PointT &gt; <a class="el" href="classcgv_1_1math_1_1quadratic__bezier__curve.html">cgv::math::quadratic_bezier_curve</a>&lt; PointT &gt;::sample </td>
           <td>(</td>
           <td class="paramtype">size_t&#160;</td>
           <td class="paramname"><em>num_segments</em></td><td>)</td>
@@ -292,73 +352,73 @@ template&lt;typename param_type  = float&gt; </div>
 </table>
 </div><div class="memdoc">
 
-<p class="definition">Definition at line <a class="el" href="quadratic__bezier_8h_source.html#l00071">71</a> of file <a class="el" href="quadratic__bezier_8h_source.html">quadratic_bezier.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="bezier_8h_source.html#l00036">36</a> of file <a class="el" href="bezier_8h_source.html">bezier.h</a>.</p>
 
 </div>
 </div>
 <h2 class="groupheader">Member Data Documentation</h2>
-<a id="ab12608e1535d0d7079908f3f711e80d2" name="ab12608e1535d0d7079908f3f711e80d2"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#ab12608e1535d0d7079908f3f711e80d2">&#9670;&#160;</a></span>p0</h2>
+<a id="ad38bc9a72d78d34bbd23fa570a611413" name="ad38bc9a72d78d34bbd23fa570a611413"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#ad38bc9a72d78d34bbd23fa570a611413">&#9670;&#160;</a></span>p0</h2>
 
 <div class="memitem">
 <div class="memproto">
 <div class="memtemplate">
-template&lt;typename point_type &gt; </div>
+template&lt;typename PointT &gt; </div>
       <table class="memname">
         <tr>
-          <td class="memname">point_type <a class="el" href="classcgv_1_1math_1_1quadratic__bezier__curve.html">cgv::math::quadratic_bezier_curve</a>&lt; point_type &gt;::p0 = { 0 }</td>
+          <td class="memname">PointT <a class="el" href="classcgv_1_1math_1_1quadratic__bezier__curve.html">cgv::math::quadratic_bezier_curve</a>&lt; PointT &gt;::p0 = { 0 }</td>
         </tr>
       </table>
 </div><div class="memdoc">
 
-<p>the start point </p>
+<p>the start control point </p>
 
-<p class="definition">Definition at line <a class="el" href="quadratic__bezier_8h_source.html#l00056">56</a> of file <a class="el" href="quadratic__bezier_8h_source.html">quadratic_bezier.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="bezier_8h_source.html#l00016">16</a> of file <a class="el" href="bezier_8h_source.html">bezier.h</a>.</p>
 
 </div>
 </div>
-<a id="a18d79921ec24a325bec4cdfd644b70c9" name="a18d79921ec24a325bec4cdfd644b70c9"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a18d79921ec24a325bec4cdfd644b70c9">&#9670;&#160;</a></span>p1</h2>
+<a id="adb772dcd2f7e9ee959a8a9ed56124486" name="adb772dcd2f7e9ee959a8a9ed56124486"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#adb772dcd2f7e9ee959a8a9ed56124486">&#9670;&#160;</a></span>p1</h2>
 
 <div class="memitem">
 <div class="memproto">
 <div class="memtemplate">
-template&lt;typename point_type &gt; </div>
+template&lt;typename PointT &gt; </div>
       <table class="memname">
         <tr>
-          <td class="memname">point_type <a class="el" href="classcgv_1_1math_1_1quadratic__bezier__curve.html">cgv::math::quadratic_bezier_curve</a>&lt; point_type &gt;::p1 = { 0 }</td>
+          <td class="memname">PointT <a class="el" href="classcgv_1_1math_1_1quadratic__bezier__curve.html">cgv::math::quadratic_bezier_curve</a>&lt; PointT &gt;::p1 = { 0 }</td>
         </tr>
       </table>
 </div><div class="memdoc">
 
-<p>the middle point </p>
+<p>the middle control point </p>
 
-<p class="definition">Definition at line <a class="el" href="quadratic__bezier_8h_source.html#l00058">58</a> of file <a class="el" href="quadratic__bezier_8h_source.html">quadratic_bezier.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="bezier_8h_source.html#l00018">18</a> of file <a class="el" href="bezier_8h_source.html">bezier.h</a>.</p>
 
 </div>
 </div>
-<a id="af400c81a181512705494ec83ae5b9065" name="af400c81a181512705494ec83ae5b9065"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#af400c81a181512705494ec83ae5b9065">&#9670;&#160;</a></span>p2</h2>
+<a id="a497f612ad38fd9674cd5298dc5e6420c" name="a497f612ad38fd9674cd5298dc5e6420c"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a497f612ad38fd9674cd5298dc5e6420c">&#9670;&#160;</a></span>p2</h2>
 
 <div class="memitem">
 <div class="memproto">
 <div class="memtemplate">
-template&lt;typename point_type &gt; </div>
+template&lt;typename PointT &gt; </div>
       <table class="memname">
         <tr>
-          <td class="memname">point_type <a class="el" href="classcgv_1_1math_1_1quadratic__bezier__curve.html">cgv::math::quadratic_bezier_curve</a>&lt; point_type &gt;::p2 = { 0 }</td>
+          <td class="memname">PointT <a class="el" href="classcgv_1_1math_1_1quadratic__bezier__curve.html">cgv::math::quadratic_bezier_curve</a>&lt; PointT &gt;::p2 = { 0 }</td>
         </tr>
       </table>
 </div><div class="memdoc">
 
-<p>the end point </p>
+<p>the end control point </p>
 
-<p class="definition">Definition at line <a class="el" href="quadratic__bezier_8h_source.html#l00060">60</a> of file <a class="el" href="quadratic__bezier_8h_source.html">quadratic_bezier.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="bezier_8h_source.html#l00020">20</a> of file <a class="el" href="bezier_8h_source.html">bezier.h</a>.</p>
 
 </div>
 </div>
 <hr/>The documentation for this class was generated from the following file:<ul>
-<li>cgv/math/<a class="el" href="quadratic__bezier_8h_source.html">quadratic_bezier.h</a></li>
+<li>cgv/math/<a class="el" href="bezier_8h_source.html">bezier.h</a></li>
 </ul>
 </div><!-- contents -->
 </div><!-- doc-content -->

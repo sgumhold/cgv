@@ -434,10 +434,8 @@ var hierarchy =
     [ "cgv::math::bezier_tube_node< T >", "structcgv_1_1math_1_1bezier__tube__node.html", null ],
     [ "cgv::math::bresenham_traverser", "classcgv_1_1math_1_1bresenham__traverser.html", null ],
     [ "cgv::math::control_point_container< T >", "classcgv_1_1math_1_1control__point__container.html", null ],
-    [ "cgv::math::cubic_bezier< point_type, param_type >", "classcgv_1_1math_1_1cubic__bezier.html", null ],
-    [ "cgv::math::cubic_bezier_curve< point_type >", "classcgv_1_1math_1_1cubic__bezier__curve.html", null ],
-    [ "cgv::math::cubic_hermite< point_type, param_type >", "classcgv_1_1math_1_1cubic__hermite.html", null ],
-    [ "cgv::math::cubic_hermite_curve< point_type >", "structcgv_1_1math_1_1cubic__hermite__curve.html", null ],
+    [ "cgv::math::cubic_bezier_curve< PointT >", "classcgv_1_1math_1_1cubic__bezier__curve.html", null ],
+    [ "cgv::math::cubic_hermite_curve< PointT >", "structcgv_1_1math_1_1cubic__hermite__curve.html", null ],
     [ "cgv::math::cubic_hermite_tube< T >", "classcgv_1_1math_1_1cubic__hermite__tube.html", null ],
     [ "cgv::math::diag_mat< T >", "structcgv_1_1math_1_1diag__mat.html", null ],
     [ "cgv::math::distorted_pinhole_types", "classcgv_1_1math_1_1distorted__pinhole__types.html", [
@@ -475,8 +473,7 @@ var hierarchy =
     [ "cgv::math::pinhole< T >", "classcgv_1_1math_1_1pinhole.html", [
       [ "cgv::math::distorted_pinhole< T >", "classcgv_1_1math_1_1distorted__pinhole.html", null ]
     ] ],
-    [ "cgv::math::quadratic_bezier< point_type, param_type >", "classcgv_1_1math_1_1quadratic__bezier.html", null ],
-    [ "cgv::math::quadratic_bezier_curve< point_type >", "classcgv_1_1math_1_1quadratic__bezier__curve.html", null ],
+    [ "cgv::math::quadratic_bezier_curve< PointT >", "classcgv_1_1math_1_1quadratic__bezier__curve.html", null ],
     [ "cgv::math::quadratic_bezier_tube< T >", "classcgv_1_1math_1_1quadratic__bezier__tube.html", null ],
     [ "cgv::math::random", "structcgv_1_1math_1_1random.html", null ],
     [ "cgv::math::ray< T, N >", "classcgv_1_1math_1_1ray.html", null ],
@@ -1174,7 +1171,7 @@ var hierarchy =
     [ "gamepad::gamepad_driver", "structgamepad_1_1gamepad__driver.html", null ],
     [ "gamepad::gamepad_state", "structgamepad_1_1gamepad__state.html", null ],
     [ "cgv::math::hermite_node< cgv::math::fvec< T, 3 > >", "structcgv_1_1math_1_1hermite__node.html", null ],
-    [ "cgv::math::hermite_node< point_type >", "structcgv_1_1math_1_1hermite__node.html", null ],
+    [ "cgv::math::hermite_node< PointT >", "structcgv_1_1math_1_1hermite__node.html", null ],
     [ "cgv::media::hls_color_interface< color< T, XYZ, am > >", "structcgv_1_1media_1_1hls__color__interface.html", [
       [ "cgv::media::xyz_color_interface< color< T, XYZ, am > >", "structcgv_1_1media_1_1xyz__color__interface_3_01color_3_01T_00_01XYZ_00_01am_01_4_01_4.html", null ]
     ] ],
