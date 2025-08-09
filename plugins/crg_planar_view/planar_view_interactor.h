@@ -72,7 +72,6 @@ public:
 	float get_angle() const { return angle; }
 	/// set the rotation angle
 	void set_angle(float angle);
-
 	/// return true if the view rotation is locked
 	bool is_rotation_locked() const { return lock_rotation; }
 	/// set whether the rotation should be locked
