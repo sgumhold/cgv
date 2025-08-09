@@ -60,6 +60,24 @@ public:
 
 	void zoom(int x, int y, float ds);
 
+	/// return the center of the view
+	cgv::vec2 get_center() const { return target; }
+	/// set the center of the view
+	void set_center(const cgv::vec2& center);
+	/// return the magnification
+	float get_magnification() const { return magnification; }
+	/// set the magnification
+	void set_magnification(float magnification);
+	/// return the rotation angle
+	float get_angle() const { return angle; }
+	/// set the rotation angle
+	void set_angle(float angle);
+
+	/// return true if the view rotation is locked
+	bool is_rotation_locked() const { return lock_rotation; }
+	/// set whether the rotation should be locked
+	void keep_rotation_locked(bool lock);
+
 private:
 	float aspect;
 	bool pressed;
