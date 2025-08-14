@@ -7,12 +7,30 @@
 #include <cgv/gui/provider.h>
 
 
+class planar_view
+{
+	cgv::dvec2 focus;
+	cgv::dvec2 center;
+	double y_extent;
+	double rotation;
+	planar_view();
+	void set_default_values();
+	/// return model view transformation matrix
+	cgv::dmat4 get_modelview_matrix() const;
+	/// return orthogonal projection matrix based on the given aspect ratio
+	cgv::dmat4 get_projection_matrix(double aspect) const;
+	/// rotate view around focus by angle given in radians
+	void rotate(double angle);
+	/// move in screen x and screen y directions by given step lengths in world coordinates
+	void pan(double step_x, double step_y);
+	/// zoom by given factor
+	void zoom(double factor);
+};
+
+
 /**
 * A view interactor to control the opengl camera in 2d via mouse and keyboard.
 */
-
-
-
 class planar_view_interactor : 
 	public cgv::base::node, 
 	public cgv::gui::event_handler, 
@@ -27,6 +45,8 @@ public:
 	std::string get_type_name() const;
 	/// overload to show the content of this object
 	void stream_stats(std::ostream&);
+	/// overload to set aspect ratio
+	void resize(unsigned w, unsigned h);
 	/// initialize
 	bool init(cgv::render::context& ctx);
 	///
