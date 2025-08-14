@@ -13,6 +13,18 @@ using namespace cgv::math;
 using namespace cgv::gui;
 using namespace cgv::render;
 
+planar_view::planar_view()
+{
+	set_default_values();
+}
+void planar_view::set_default_values()
+{
+	focus  = cgv::dvec2(0.0);
+	center = cgv::dvec2(0.0);
+	y_extent = 2.0;
+	rotation = 0.0;
+}
+
 
 
 planar_view_interactor::planar_view_interactor(const char* name) : node(name)
@@ -20,6 +32,11 @@ planar_view_interactor::planar_view_interactor(const char* name) : node(name)
 	lock_rotation = false;
 	set_default_values();
 	pressed = false;
+}
+
+void planar_view_interactor::resize(unsigned w, unsigned h)
+{
+	aspect = float(w) / h;
 }
 
 void planar_view_interactor::set_default_values()
@@ -41,8 +58,8 @@ bool planar_view_interactor::self_reflect(cgv::reflect::reflection_handler& rh)
 		rh.reflect_member("lock_rotation", lock_rotation) &&
 		rh.reflect_member("angle", angle) &&
 		rh.reflect_member("magnification", magnification) &&
-		rh.reflect_member("center.x", target(0)) &&
-		rh.reflect_member("center.y", target(1));
+		rh.reflect_member("center_x", target(0)) &&
+		rh.reflect_member("center_y", target(1));
 }
 
 /// default callback
