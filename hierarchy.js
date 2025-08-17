@@ -434,9 +434,9 @@ var hierarchy =
     [ "cgv::math::bezier_tube_node< T >", "structcgv_1_1math_1_1bezier__tube__node.html", null ],
     [ "cgv::math::bresenham_traverser", "classcgv_1_1math_1_1bresenham__traverser.html", null ],
     [ "cgv::math::control_point_container< T >", "classcgv_1_1math_1_1control__point__container.html", null ],
-    [ "cgv::math::cubic_bezier_curve< PointT >", "classcgv_1_1math_1_1cubic__bezier__curve.html", null ],
-    [ "cgv::math::cubic_hermite_curve< PointT >", "structcgv_1_1math_1_1cubic__hermite__curve.html", null ],
     [ "cgv::math::cubic_hermite_tube< T >", "classcgv_1_1math_1_1cubic__hermite__tube.html", null ],
+    [ "cgv::math::curve_arc_length< DerivedT, ParamT >", "structcgv_1_1math_1_1curve__arc__length.html", null ],
+    [ "cgv::math::curve_parameterization< DerivedT, ParamT >", "structcgv_1_1math_1_1curve__parameterization.html", null ],
     [ "cgv::math::diag_mat< T >", "structcgv_1_1math_1_1diag__mat.html", null ],
     [ "cgv::math::distorted_pinhole_types", "classcgv_1_1math_1_1distorted__pinhole__types.html", [
       [ "cgv::math::distorted_pinhole< T >", "classcgv_1_1math_1_1distorted__pinhole.html", [
@@ -469,11 +469,12 @@ var hierarchy =
     ] ],
     [ "cgv::math::oriented_box2< T >", "structcgv_1_1math_1_1oriented__box2.html", null ],
     [ "cgv::math::oriented_box3< T >", "structcgv_1_1math_1_1oriented__box3.html", null ],
+    [ "cgv::math::parametric_curve< Ts >", "classcgv_1_1math_1_1parametric__curve.html", null ],
+    [ "cgv::math::parametric_curve< DerivedT< PointT > >", "classcgv_1_1math_1_1parametric__curve_3_01DerivedT_3_01PointT_01_4_01_4.html", null ],
     [ "cgv::math::perm_mat", "structcgv_1_1math_1_1perm__mat.html", null ],
     [ "cgv::math::pinhole< T >", "classcgv_1_1math_1_1pinhole.html", [
       [ "cgv::math::distorted_pinhole< T >", "classcgv_1_1math_1_1distorted__pinhole.html", null ]
     ] ],
-    [ "cgv::math::quadratic_bezier_curve< PointT >", "classcgv_1_1math_1_1quadratic__bezier__curve.html", null ],
     [ "cgv::math::quadratic_bezier_tube< T >", "classcgv_1_1math_1_1quadratic__bezier__tube.html", null ],
     [ "cgv::math::random", "structcgv_1_1math_1_1random.html", null ],
     [ "cgv::math::ray< T, N >", "classcgv_1_1math_1_1ray.html", null ],
@@ -1190,6 +1191,18 @@ var hierarchy =
     [ "cgv::data::optional< cgv::math::quaternion >", "classcgv_1_1data_1_1optional.html", null ],
     [ "cgv::data::optional< color< float, cgv::media::RGB, cgv::media::OPACITY > >", "classcgv_1_1data_1_1optional.html", null ],
     [ "cgv::data::optional< rgb >", "classcgv_1_1data_1_1optional.html", null ],
+    [ "cgv::math::parametric_curve< bezier_curve< PointT > >", "classcgv_1_1math_1_1parametric__curve.html", [
+      [ "cgv::math::bezier_curve< PointT >", "classcgv_1_1math_1_1bezier__curve.html", null ]
+    ] ],
+    [ "cgv::math::parametric_curve< cubic_bezier_curve< PointT > >", "classcgv_1_1math_1_1parametric__curve.html", [
+      [ "cgv::math::cubic_bezier_curve< PointT >", "classcgv_1_1math_1_1cubic__bezier__curve.html", null ]
+    ] ],
+    [ "cgv::math::parametric_curve< cubic_hermite_curve< PointT > >", "classcgv_1_1math_1_1parametric__curve.html", [
+      [ "cgv::math::cubic_hermite_curve< PointT >", "structcgv_1_1math_1_1cubic__hermite__curve.html", null ]
+    ] ],
+    [ "cgv::math::parametric_curve< quadratic_bezier_curve< PointT > >", "classcgv_1_1math_1_1parametric__curve.html", [
+      [ "cgv::math::quadratic_bezier_curve< PointT >", "classcgv_1_1math_1_1quadratic__bezier__curve.html", null ]
+    ] ],
     [ "cgv::data::ref_ptr_impl< base, is_ref_counted >", "classcgv_1_1data_1_1ref__ptr__impl.html", null ],
     [ "cgv::data::ref_ptr_impl< font, type::cond::is_base_of< ref_counted, font >::value >", "classcgv_1_1data_1_1ref__ptr__impl.html", null ],
     [ "cgv::data::ref_ptr_impl< font_face, type::cond::is_base_of< ref_counted, font_face >::value >", "classcgv_1_1data_1_1ref__ptr__impl.html", null ],

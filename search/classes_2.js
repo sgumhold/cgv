@@ -60,7 +60,7 @@ var searchData=
   ['color_5fstorage_5ftraits_3c_20color_3c_20unsigned_20char_2c_20rgb_20_3e_20_3e_57',['color_storage_traits&lt; color&lt; unsigned char, RGB &gt; &gt;',['../structcgv_1_1media_1_1color__storage__traits_3_01color_3_01unsigned_01char_00_01RGB_01_4_01_4.html',1,'cgv::media']]],
   ['color_5fstorage_5ftraits_3c_20color_3c_20unsigned_20char_2c_20rgb_2c_20opacity_20_3e_20_3e_58',['color_storage_traits&lt; color&lt; unsigned char, RGB, OPACITY &gt; &gt;',['../structcgv_1_1media_1_1color__storage__traits_3_01color_3_01unsigned_01char_00_01RGB_00_01OPACITY_01_4_01_4.html',1,'cgv::media']]],
   ['colored_5fmodel_59',['colored_model',['../classcgv_1_1media_1_1colored__model.html',1,'cgv::media']]],
-  ['command_5finfo_60',['command_info',['../structcgv_1_1gui_1_1command__info.html',1,'cgv::gui::command_info'],['../structcgv_1_1ppp_1_1command__info.html',1,'cgv::ppp::command_info'],['../structcgv_1_1base_1_1command__info.html',1,'cgv::base::command_info']]],
+  ['command_5finfo_60',['command_info',['../structcgv_1_1ppp_1_1command__info.html',1,'cgv::ppp::command_info'],['../structcgv_1_1base_1_1command__info.html',1,'cgv::base::command_info'],['../structcgv_1_1gui_1_1command__info.html',1,'cgv::gui::command_info']]],
   ['command_5ftoken_61',['command_token',['../structcgv_1_1ppp_1_1command__token.html',1,'cgv::ppp']]],
   ['component_5fformat_62',['component_format',['../classcgv_1_1data_1_1component__format.html',1,'cgv::data']]],
   ['condition_63',['Condition',['../structCondition.html',1,'']]],
@@ -100,5 +100,7 @@ var searchData=
   ['cuberille_97',['cuberille',['../classcgv_1_1media_1_1mesh_1_1cuberille.html',1,'cgv::media::mesh']]],
   ['cubic_5fbezier_5fcurve_98',['cubic_bezier_curve',['../classcgv_1_1math_1_1cubic__bezier__curve.html',1,'cgv::math']]],
   ['cubic_5fhermite_5fcurve_99',['cubic_hermite_curve',['../structcgv_1_1math_1_1cubic__hermite__curve.html',1,'cgv::math']]],
-  ['cubic_5fhermite_5ftube_100',['cubic_hermite_tube',['../classcgv_1_1math_1_1cubic__hermite__tube.html',1,'cgv::math']]]
+  ['cubic_5fhermite_5ftube_100',['cubic_hermite_tube',['../classcgv_1_1math_1_1cubic__hermite__tube.html',1,'cgv::math']]],
+  ['curve_5farc_5flength_101',['curve_arc_length',['../structcgv_1_1math_1_1curve__arc__length.html',1,'cgv::math']]],
+  ['curve_5fparameterization_102',['curve_parameterization',['../structcgv_1_1math_1_1curve__parameterization.html',1,'cgv::math']]]
 ];

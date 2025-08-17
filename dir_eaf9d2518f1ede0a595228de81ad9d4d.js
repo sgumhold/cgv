@@ -48,6 +48,7 @@ var dir_eaf9d2518f1ede0a595228de81ad9d4d =
     [ "normal_estimation.cxx", "normal__estimation_8cxx_source.html", null ],
     [ "normal_estimation.h", "normal__estimation_8h_source.html", null ],
     [ "oriented_box.h", "oriented__box_8h_source.html", null ],
+    [ "parametric_curve.h", "parametric__curve_8h_source.html", null ],
     [ "perm_mat.h", "perm__mat_8h_source.html", null ],
     [ "permute.h", "permute_8h_source.html", null ],
     [ "piecewise_linear_interpolator.h", "piecewise__linear__interpolator_8h_source.html", null ],
