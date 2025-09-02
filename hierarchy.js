@@ -480,6 +480,7 @@ var hierarchy =
     [ "cgv::math::ray< T, N >", "classcgv_1_1math_1_1ray.html", null ],
     [ "cgv::math::ray< T, 3 >", "classcgv_1_1math_1_1ray_3_01T_00_013_01_4.html", null ],
     [ "cgv::math::register_sparse_les_factory< T >", "structcgv_1_1math_1_1register__sparse__les__factory.html", null ],
+    [ "cgv::math::regular_piecewise_linear_function< T >", "structcgv_1_1math_1_1regular__piecewise__linear__function.html", null ],
     [ "cgv::math::rigid_transform< T >", "classcgv_1_1math_1_1rigid__transform.html", null ],
     [ "cgv::math::sparse_mat< T >", "classcgv_1_1math_1_1sparse__mat.html", null ],
     [ "cgv::math::step_iterator< RandomAccessIterator >", "structcgv_1_1math_1_1step__iterator.html", null ],
@@ -1102,6 +1103,21 @@ var hierarchy =
     [ "config_file_view", "structconfig__file__view.html", null ],
     [ "cgv::math::control_point_container< cgv::media::color >", "classcgv_1_1math_1_1control__point__container.html", null ],
     [ "cgv::math::control_point_container< float >", "classcgv_1_1math_1_1control__point__container.html", null ],
+    [ "cgv::math::curve_arc_length< arc_length_bezier_approximation< T >, T >", "structcgv_1_1math_1_1curve__arc__length.html", [
+      [ "cgv::math::arc_length_bezier_approximation< T >", "classcgv_1_1math_1_1arc__length__bezier__approximation.html", null ]
+    ] ],
+    [ "cgv::math::curve_arc_length< arc_length_linear_approximation< T >, T >", "structcgv_1_1math_1_1curve__arc__length.html", [
+      [ "cgv::math::arc_length_linear_approximation< T >", "classcgv_1_1math_1_1arc__length__linear__approximation.html", null ]
+    ] ],
+    [ "cgv::math::curve_parameterization< arc_length_parameterization_bezier_approximation< T >, T >", "structcgv_1_1math_1_1curve__parameterization.html", [
+      [ "cgv::math::arc_length_parameterization_bezier_approximation< T >", "structcgv_1_1math_1_1arc__length__parameterization__bezier__approximation.html", null ]
+    ] ],
+    [ "cgv::math::curve_parameterization< arc_length_parameterization_fast_linear_approximation< T >, T >", "structcgv_1_1math_1_1curve__parameterization.html", [
+      [ "cgv::math::arc_length_parameterization_fast_linear_approximation< T >", "classcgv_1_1math_1_1arc__length__parameterization__fast__linear__approximation.html", null ]
+    ] ],
+    [ "cgv::math::curve_parameterization< arc_length_parameterization_linear_approximation< T >, T >", "structcgv_1_1math_1_1curve__parameterization.html", [
+      [ "cgv::math::arc_length_parameterization_linear_approximation< T >", "classcgv_1_1math_1_1arc__length__parameterization__linear__approximation.html", null ]
+    ] ],
     [ "cgv::math::diag_mat< std::complex< T > >", "structcgv_1_1math_1_1diag__mat.html", null ],
     [ "enum_aware_type_name< T, true >", "structenum__aware__type__name_3_01T_00_01true_01_4.html", null ],
     [ "cgv::media::extinction_alpha_interface< color< cgv::type::uint8_type, cm, am > >", "structcgv_1_1media_1_1extinction__alpha__interface.html", null ],

@@ -1,5 +1,9 @@
 var NAVTREEINDEX31 =
 {
+"expression__processor_8cxx_source.html":[12,0,1,8,3],
+"expression__processor_8h_source.html":[12,0,1,8,4],
+"fibo__heap_8h_source.html":[12,0,1,5,18],
+"file_8cxx_source.html":[12,0,1,13,17],
 "file_8h_source.html":[12,0,1,13,18],
 "file__dialog_8cxx_source.html":[12,0,1,4,23],
 "file__dialog_8h_source.html":[12,0,1,4,24],
@@ -16,8 +20,8 @@ var NAVTREEINDEX31 =
 "frame__buffer_8cxx_source.html":[12,0,1,10,15],
 "frame__buffer_8h_source.html":[12,0,1,10,16],
 "ftransform_8h_source.html":[12,0,1,5,20],
-"functions.html":[11,3,0,0],
 "functions.html":[11,3,0],
+"functions.html":[11,3,0,0],
 "functions_8cxx_source.html":[12,0,1,5,21],
 "functions_8h_source.html":[12,0,1,5,22],
 "functions_a.html":[11,3,0,1],
@@ -28,8 +32,8 @@ var NAVTREEINDEX31 =
 "functions_enum.html":[11,3,4],
 "functions_eval.html":[11,3,5],
 "functions_f.html":[11,3,0,6],
-"functions_func.html":[11,3,1,0],
 "functions_func.html":[11,3,1],
+"functions_func.html":[11,3,1,0],
 "functions_func_b.html":[11,3,1,1],
 "functions_func_c.html":[11,3,1,2],
 "functions_func_d.html":[11,3,1,3],
@@ -245,9 +249,5 @@ var NAVTREEINDEX31 =
 "libs_2plot_2lib__begin_8h_source.html":[12,0,3,6,2],
 "libs_2vr_2lib__begin_8h_source.html":[12,0,3,7,2],
 "light__source_8cxx_source.html":[12,0,1,6,1,1],
-"light__source_8h_source.html":[12,0,1,6,1,2],
-"lin__solve_8h_source.html":[12,0,1,5,38],
-"line__break_8cxx_source.html":[12,0,1,7,10],
-"line__break_8h_source.html":[12,0,1,7,11],
-"line__render__data_8h_source.html":[12,0,3,3,28]
+"light__source_8h_source.html":[12,0,1,6,1,2]
 };
