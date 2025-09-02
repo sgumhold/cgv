@@ -1,5 +1,15 @@
 var NAVTREEINDEX40 =
 {
+"structcgv_1_1math_1_1union__find.html#a4a080afa75bff54784844333553827e5":[11,0,0,6,56,0],
+"structcgv_1_1math_1_1union__find.html#a9646d9693767c3d99eaa1c3e9533a36f":[11,0,0,6,56,3],
+"structcgv_1_1math_1_1union__find.html#aa32529c4381e2af91f93a3e57e8081be":[11,0,0,6,56,2],
+"structcgv_1_1math_1_1union__find.html#ab2f21dd48851dd4495bdfd35edae39b6":[11,0,0,6,56,5],
+"structcgv_1_1math_1_1union__find.html#af34748cfca3e07c7cb7b265646151814":[11,0,0,6,56,4],
+"structcgv_1_1math_1_1vertex.html":[11,0,0,6,62],
+"structcgv_1_1math_1_1weighted__edge.html":[11,0,0,6,63],
+"structcgv_1_1math_1_1weighted__edge.html#a355fed594ee2c26503fd084dd43da1c1":[11,0,0,6,63,0],
+"structcgv_1_1math_1_1weighted__edge.html#a77d777f3a618c86e4109a40dd58148db":[11,0,0,6,63,1],
+"structcgv_1_1media_1_1alpha__model__traits.html":[11,0,0,7,7],
 "structcgv_1_1media_1_1alpha__model__traits_3_01NO__ALPHA_01_4.html":[11,0,0,7,8],
 "structcgv_1_1media_1_1alpha__reference.html":[11,0,0,7,9],
 "structcgv_1_1media_1_1alpha__reference_3_01T_00_01NO__ALPHA_01_4.html":[11,0,0,7,10],
@@ -239,15 +249,5 @@ var NAVTREEINDEX40 =
 "structcgv_1_1plot_1_1plot__base_1_1label__info.html":[11,0,0,9,12,0],
 "structcgv_1_1plot_1_1plot__base_1_1tick__batch__info.html":[11,0,0,9,12,1],
 "structcgv_1_1plot_1_1plot__base_1_1tick__batch__info.html#a4a62ff77aa7e0d32bbbf30fae1411815":[11,0,0,9,12,1,1],
-"structcgv_1_1plot_1_1plot__base_1_1tick__batch__info.html#afc48450c9abf52cf24f57b2d32157257":[11,0,0,9,12,1,0],
-"structcgv_1_1plot_1_1plot__base__config.html":[11,0,0,9,13],
-"structcgv_1_1plot_1_1plot__base__config.html#a0677b9747fc4a7651ae79ad91ee43ea8":[11,0,0,9,13,15],
-"structcgv_1_1plot_1_1plot__base__config.html#a090ec2ac79911f82acd606bfe901bfa6":[11,0,0,9,13,5],
-"structcgv_1_1plot_1_1plot__base__config.html#a0d7bce16384c99c2f530fe483e4e910e":[11,0,0,9,13,7],
-"structcgv_1_1plot_1_1plot__base__config.html#a0ff6265448ff5cf01f637ccd63b87f6e":[11,0,0,9,13,3],
-"structcgv_1_1plot_1_1plot__base__config.html#a10744f61185783e6879372cf58022e79":[11,0,0,9,13,16],
-"structcgv_1_1plot_1_1plot__base__config.html#a1e62517ca0f100a6be4aba3974eb5986":[11,0,0,9,13,10],
-"structcgv_1_1plot_1_1plot__base__config.html#a1e9d2050633cd60046a0a649fcba303c":[11,0,0,9,13,2],
-"structcgv_1_1plot_1_1plot__base__config.html#a2f0ebb384c7f9b553c46d744e2641861":[11,0,0,9,13,17],
-"structcgv_1_1plot_1_1plot__base__config.html#a37c538a349876023f9f5e0dfc56d7f2e":[11,0,0,9,13,30]
+"structcgv_1_1plot_1_1plot__base_1_1tick__batch__info.html#afc48450c9abf52cf24f57b2d32157257":[11,0,0,9,12,1,0]
 };

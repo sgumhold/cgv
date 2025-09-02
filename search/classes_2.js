@@ -5,7 +5,7 @@ var searchData=
   ['callback_5fdrawable_2',['callback_drawable',['../structcgv_1_1render_1_1callback__drawable.html',1,'cgv::render']]],
   ['callback_5fstream_3',['callback_stream',['../classcgv_1_1signal_1_1callback__stream.html',1,'cgv::signal']]],
   ['callback_5fstreambuf_4',['callback_streambuf',['../structcgv_1_1signal_1_1callback__streambuf.html',1,'cgv::signal']]],
-  ['camera_5',['camera',['../classcgv_1_1math_1_1camera.html',1,'cgv::math::camera&lt; T &gt;'],['../structfx_1_1gltf_1_1Camera.html',1,'fx::gltf::Camera']]],
+  ['camera_5',['camera',['../structfx_1_1gltf_1_1Camera.html',1,'fx::gltf::Camera'],['../classcgv_1_1math_1_1camera.html',1,'cgv::math::camera&lt; T &gt;']]],
   ['canvas_5foverlay_6',['canvas_overlay',['../classcgv_1_1app_1_1canvas__overlay.html',1,'cgv::app']]],
   ['cast_5fconst_5fhelper_7',['cast_const_helper',['../structcgv_1_1base_1_1cast__const__helper.html',1,'cgv::base']]],
   ['cast_5fconst_5fhelper_3c_20group_20_3e_8',['cast_const_helper&lt; group &gt;',['../structcgv_1_1base_1_1cast__const__helper_3_01group_01_4.html',1,'cgv::base']]],
@@ -60,7 +60,7 @@ var searchData=
   ['color_5fstorage_5ftraits_3c_20color_3c_20unsigned_20char_2c_20rgb_20_3e_20_3e_57',['color_storage_traits&lt; color&lt; unsigned char, RGB &gt; &gt;',['../structcgv_1_1media_1_1color__storage__traits_3_01color_3_01unsigned_01char_00_01RGB_01_4_01_4.html',1,'cgv::media']]],
   ['color_5fstorage_5ftraits_3c_20color_3c_20unsigned_20char_2c_20rgb_2c_20opacity_20_3e_20_3e_58',['color_storage_traits&lt; color&lt; unsigned char, RGB, OPACITY &gt; &gt;',['../structcgv_1_1media_1_1color__storage__traits_3_01color_3_01unsigned_01char_00_01RGB_00_01OPACITY_01_4_01_4.html',1,'cgv::media']]],
   ['colored_5fmodel_59',['colored_model',['../classcgv_1_1media_1_1colored__model.html',1,'cgv::media']]],
-  ['command_5finfo_60',['command_info',['../structcgv_1_1ppp_1_1command__info.html',1,'cgv::ppp::command_info'],['../structcgv_1_1base_1_1command__info.html',1,'cgv::base::command_info'],['../structcgv_1_1gui_1_1command__info.html',1,'cgv::gui::command_info']]],
+  ['command_5finfo_60',['command_info',['../structcgv_1_1ppp_1_1command__info.html',1,'cgv::ppp::command_info'],['../structcgv_1_1gui_1_1command__info.html',1,'cgv::gui::command_info'],['../structcgv_1_1base_1_1command__info.html',1,'cgv::base::command_info']]],
   ['command_5ftoken_61',['command_token',['../structcgv_1_1ppp_1_1command__token.html',1,'cgv::ppp']]],
   ['component_5fformat_62',['component_format',['../classcgv_1_1data_1_1component__format.html',1,'cgv::data']]],
   ['condition_63',['Condition',['../structCondition.html',1,'']]],
@@ -102,5 +102,10 @@ var searchData=
   ['cubic_5fhermite_5fcurve_99',['cubic_hermite_curve',['../structcgv_1_1math_1_1cubic__hermite__curve.html',1,'cgv::math']]],
   ['cubic_5fhermite_5ftube_100',['cubic_hermite_tube',['../classcgv_1_1math_1_1cubic__hermite__tube.html',1,'cgv::math']]],
   ['curve_5farc_5flength_101',['curve_arc_length',['../structcgv_1_1math_1_1curve__arc__length.html',1,'cgv::math']]],
-  ['curve_5fparameterization_102',['curve_parameterization',['../structcgv_1_1math_1_1curve__parameterization.html',1,'cgv::math']]]
+  ['curve_5farc_5flength_3c_20arc_5flength_5fbezier_5fapproximation_3c_20t_20_3e_2c_20t_20_3e_102',['curve_arc_length&lt; arc_length_bezier_approximation&lt; T &gt;, T &gt;',['../structcgv_1_1math_1_1curve__arc__length.html',1,'cgv::math']]],
+  ['curve_5farc_5flength_3c_20arc_5flength_5flinear_5fapproximation_3c_20t_20_3e_2c_20t_20_3e_103',['curve_arc_length&lt; arc_length_linear_approximation&lt; T &gt;, T &gt;',['../structcgv_1_1math_1_1curve__arc__length.html',1,'cgv::math']]],
+  ['curve_5fparameterization_104',['curve_parameterization',['../structcgv_1_1math_1_1curve__parameterization.html',1,'cgv::math']]],
+  ['curve_5fparameterization_3c_20arc_5flength_5fparameterization_5fbezier_5fapproximation_3c_20t_20_3e_2c_20t_20_3e_105',['curve_parameterization&lt; arc_length_parameterization_bezier_approximation&lt; T &gt;, T &gt;',['../structcgv_1_1math_1_1curve__parameterization.html',1,'cgv::math']]],
+  ['curve_5fparameterization_3c_20arc_5flength_5fparameterization_5ffast_5flinear_5fapproximation_3c_20t_20_3e_2c_20t_20_3e_106',['curve_parameterization&lt; arc_length_parameterization_fast_linear_approximation&lt; T &gt;, T &gt;',['../structcgv_1_1math_1_1curve__parameterization.html',1,'cgv::math']]],
+  ['curve_5fparameterization_3c_20arc_5flength_5fparameterization_5flinear_5fapproximation_3c_20t_20_3e_2c_20t_20_3e_107',['curve_parameterization&lt; arc_length_parameterization_linear_approximation&lt; T &gt;, T &gt;',['../structcgv_1_1math_1_1curve__parameterization.html',1,'cgv::math']]]
 ];
