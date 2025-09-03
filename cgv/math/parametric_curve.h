@@ -295,7 +295,7 @@ public:
 	}
 
 private:
-	regular_piecewise_linear_function<T> _lengths;
+	std::vector<T> _lengths;
 };
 
 /// @brief Provide arc length parameterization of a parametric curve using a piecewise linear approximation of the parameterization computed from arc length information.
