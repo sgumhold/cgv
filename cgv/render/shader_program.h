@@ -183,7 +183,7 @@ public:
 	/// set uniform array from array \c array where number elements can be derived from array through \c array_descriptor_traits; supported array types include cgv::math::vec and std::vector
 	template <typename T>
 	bool set_uniform_array(const context& ctx, int loc, const T& array) {
-		return ctx.set_uniform_array_void(*this, loc, array_descriptor_traits<T>::get_type_descriptor(), array_descriptor_traits<T>::get_address(array), array_descriptor_traits<T>::get_nr_elements(array));
+		return ctx.set_uniform_array_void(*this, loc, array_descriptor_traits<T>::get_type_descriptor(array), array_descriptor_traits<T>::get_address(array), array_descriptor_traits<T>::get_nr_elements(array));
 	}
 	/// set uniform array from an array with \c nr_elements elements of type T pointed to by \c array
 	template <typename T>
