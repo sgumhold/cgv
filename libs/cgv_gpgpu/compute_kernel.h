@@ -36,6 +36,14 @@ public:
 		return false;
 	}
 
+	template<typename T>
+	bool set_argument_array(const cgv::render::context& ctx, const std::string& name, const T& array) {
+		int loc = _prog.get_uniform_location(ctx, name);
+		if(loc > -1)
+			return _prog.set_uniform_array(ctx, loc, array);
+		return false;
+	}
+
 	void set_arguments(cgv::render::context& ctx, const argument_bindings& arguments);
 
 private:

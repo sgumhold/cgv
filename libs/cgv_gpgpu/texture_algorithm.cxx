@@ -21,7 +21,58 @@ bool texture_algorithm::is_initialized_for_texture(const cgv::render::texture& t
 	return texture.tt == _texture_type;
 }
 
-cgv::render::shader_compile_options texture_algorithm::get_configuration(TextureType texture_type, const argument_definitions& arguments) const {
+cgv::render::shader_compile_options texture_algorithm::configure(const texture_algorithm_configuration_info& info) {
+	uint32_t dims = 0;
+	sl::data_type index_type = sl::Type::kVoid;
+	sl::data_type coord_type = sl::Type::kVoid;
+	uvec3 local_size = { 1, 1, 1 };
+	std::string size_guard;
+
+	switch(info.texture_type) {
+	case TextureType::TT_1D:
+		dims = 1;
+		index_type = sl::Type::kInt;
+		coord_type = sl::Type::kFloat;
+		local_size = { 4, 1, 1 };
+		size_guard = "((IDX) < (SIZE).x)";
+		break;
+	case TextureType::TT_2D:
+		dims = 2;
+		index_type = sl::Type::kIVec2;
+		coord_type = sl::Type::kVec2;
+		local_size = { 4, 4, 1 };
+		size_guard = "((IDX).x < (SIZE).x && (IDX).y < (SIZE).y)";
+		break;
+	case TextureType::TT_3D:
+		dims = 3;
+		index_type = sl::Type::kIVec3;
+		coord_type = sl::Type::kVec3;
+		local_size = { 4, 4, 4 };
+		size_guard = "((IDX).x < (SIZE).x && (IDX).y < (SIZE).y && (IDX).z < (SIZE).z)";
+		break;
+	default:
+		break;
+	}
+
+	std::string dims_suffix = std::to_string(dims) + "D";
+
+	// TODO: use larger group size for lower dimensional textures (try to aim for total occupancy of Streaming multiprocessor, e.g. 64 for RTX 2080)
+	cgv::render::shader_compile_options config = algorithm::configure(info);// algorithm::get_configuration(info);
+	config.defines["LOCAL_SIZE_X"] = std::to_string(local_size.x());
+	config.defines["LOCAL_SIZE_Y"] = std::to_string(local_size.y());
+	config.defines["LOCAL_SIZE_Z"] = std::to_string(local_size.z());
+	config.defines["DIMS"] = std::to_string(dims);
+	config.defines["INDEX_TYPE"] = index_type.type_name();
+	config.defines["COORD_TYPE"] = coord_type.type_name();
+	config.defines["SAMPLER_TYPE"] = "sampler" + dims_suffix;
+	config.defines["IMAGE_TYPE"] = get_type_prefix(info.image_format) + "image" + dims_suffix;
+	config.defines["IMAGE_FORMAT"] = to_string(info.image_format);
+	config.defines["SIZE_GUARD(IDX, SIZE)"] = size_guard;
+
+	return config;
+}
+
+cgv::render::shader_compile_options texture_algorithm::get_configuration(TextureType texture_type, sl::ImageFormatLayoutQualifier image_format, const argument_definitions& arguments) const {
 	uint32_t dims = 0;
 	sl::data_type index_type = sl::Type::kVoid;
 	sl::data_type coord_type = sl::Type::kVoid;
@@ -54,6 +105,8 @@ cgv::render::shader_compile_options texture_algorithm::get_configuration(Texture
 		break;
 	}
 
+	std::string dims_suffix = std::to_string(dims) + "D";
+
 	// TODO: use larger group size for lower dimensional textures (try to aim for total occupancy of Streaming multiprocessor, e.g. 64 for RTX 2080)
 	cgv::render::shader_compile_options config = algorithm::get_configuration(arguments);
 	config.defines["LOCAL_SIZE_X"] = std::to_string(local_size.x());
@@ -62,9 +115,9 @@ cgv::render::shader_compile_options texture_algorithm::get_configuration(Texture
 	config.defines["DIMS"] = std::to_string(dims);
 	config.defines["INDEX_TYPE"] = index_type.type_name();
 	config.defines["COORD_TYPE"] = coord_type.type_name();
-	std::string dims_suffix = std::to_string(dims) + "D";
 	config.defines["SAMPLER_TYPE"] = "sampler" + dims_suffix;
-	config.defines["IMAGE_TYPE"] = "image" + dims_suffix;
+	config.defines["IMAGE_TYPE"] = get_type_prefix(image_format) + "image" + dims_suffix;
+	config.defines["IMAGE_FORMAT"] = to_string(image_format);
 	config.defines["SIZE_GUARD(IDX, SIZE)"] = size_guard;
 
 	return config;
@@ -79,6 +132,7 @@ uvec3 texture_algorithm::get_texture_size(const cgv::render::texture& texture) c
 }
 
 uvec3 texture_algorithm::get_num_groups(const uvec3& texture_size, uint32_t base_group_size) const {
+	// TODO: Ensure base_group_size is equal to the local_size set in init
 	uvec3 num_groups = cgv::math::div_round_up(texture_size, uvec3(base_group_size));
 	// ensure at least one group is launched per dimension
 	return max(num_groups, uvec3(1));
