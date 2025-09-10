@@ -5,8 +5,8 @@ namespace gpgpu {
 
 fill_texture::fill_texture() : texture_algorithm("fill_texture", { TextureType::TT_1D, TextureType::TT_2D, TextureType::TT_3D }) {}
 
-bool fill_texture::init(cgv::render::context& ctx, cgv::render::TextureType texture_type) {
-	cgv::render::shader_compile_options config = get_configuration(texture_type, {});
+bool fill_texture::init(cgv::render::context& ctx, cgv::render::TextureType texture_type, sl::ImageFormatLayoutQualifier image_format) {
+	cgv::render::shader_compile_options config = get_configuration(texture_type, image_format, {});
 	return texture_algorithm::init(ctx, texture_type, { { &_kernel, "gpgpu_fill_texture" } }, config);
 }
 

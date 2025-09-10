@@ -14,7 +14,8 @@ bool for_each::init(cgv::render::context& ctx, const sl::data_type& value_type, 
 bool for_each::init(cgv::render::context& ctx, const sl::data_type& value_type, const argument_definitions& arguments, const std::string& unary_operation) {
 	if(!value_type.is_valid())
 		return false;
-	set_buffer_binding_indices(arguments.buffers, 2);
+	set_buffer_binding_indices(arguments.buffers, 1);
+	set_image_binding_indices(arguments.images, 0);
 	cgv::render::shader_compile_options config = get_configuration(arguments, { value_type });
 	config.snippets.push_back({ "value_typedef", sl::get_type_alias_string("value_type", value_type) });
 	config.snippets.push_back({ "operation", unary_operation });

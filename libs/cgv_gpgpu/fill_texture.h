@@ -14,7 +14,7 @@ class CGV_API fill_texture : public texture_algorithm {
 public:
 	fill_texture();
 
-	bool init(cgv::render::context& ctx, cgv::render::TextureType texture_type);
+	bool init(cgv::render::context& ctx, cgv::render::TextureType texture_type, sl::ImageFormatLayoutQualifier image_format);
 
 	void destruct(const cgv::render::context& ctx);
 

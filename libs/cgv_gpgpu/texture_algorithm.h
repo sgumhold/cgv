@@ -24,7 +24,14 @@ protected:
 
 	bool is_initialized_for_texture(const cgv::render::texture& texture) const;
 
-	cgv::render::shader_compile_options get_configuration(TextureType texture_type, const argument_definitions& arguments) const;
+	struct texture_algorithm_configuration_info : public algorithm_configuration_info {
+		TextureType texture_type = TextureType::TT_UNDEF;
+		sl::ImageFormatLayoutQualifier image_format = sl::ImageFormatLayoutQualifier::k_rgba8;
+	};
+
+	cgv::render::shader_compile_options configure(const texture_algorithm_configuration_info& info);
+
+	cgv::render::shader_compile_options get_configuration(TextureType texture_type, sl::ImageFormatLayoutQualifier image_format, const argument_definitions& arguments) const;
 
 	uvec3 get_texture_size(const cgv::render::texture& texture) const;
 	uvec3 get_num_groups(const uvec3& texture_size, uint32_t base_group_size) const;

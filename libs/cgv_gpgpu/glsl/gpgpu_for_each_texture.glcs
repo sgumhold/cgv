@@ -2,12 +2,14 @@
 
 #include "gpgpu_args.glcs"
 
+//$cgv::value_typedef
+
 #ifdef CGV_USE_SNIPPETS
-layout(r32f, binding = 0) uniform IMAGE_TYPE tex;
+layout(IMAGE_FORMAT, binding = 0) uniform IMAGE_TYPE tex;
 
 uniform uvec3 u_size;
 
-void operation(inout vec4 element, INDEX_TYPE index) {
+void operation(inout value_type element, INDEX_TYPE index) {
 	//$cgv::operation
 }
 
@@ -17,7 +19,7 @@ void main() {
     INDEX_TYPE gid = INDEX_TYPE(gl_GlobalInvocationID);
     
 	if(SIZE_GUARD(gid, u_size)) {
-		vec4 element = imageLoad(tex, gid);
+		value_type element = imageLoad(tex, gid);
 		operation(element, gid);
         imageStore(tex, gid, element);
 	}

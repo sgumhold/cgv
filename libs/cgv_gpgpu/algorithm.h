@@ -1,5 +1,7 @@
 #pragma once
 
+#include <limits>
+
 #include <cgv/render/context.h>
 #include <cgv_gl/gl/gl.h>
 
@@ -35,14 +37,36 @@ protected:
 	void destruct(const cgv::render::context& ctx);
 
 	void set_buffer_binding_indices(const sl::named_buffer_list& buffers, uint32_t base_index);
+	
+	void set_image_binding_indices(const sl::named_image_list& images, uint32_t base_index);
+	
+	void set_texture_binding_indices(const sl::named_texture_list& textures, uint32_t base_index);
+
+	struct algorithm_configuration_info {
+		const argument_definitions* arguments = nullptr;
+		std::vector<sl::data_type> types;
+		uint32_t default_buffer_count = 0;
+		uint32_t default_image_count = 0;
+		uint32_t default_texture_count = 0;
+	};
+
+	cgv::render::shader_compile_options configure(const algorithm_configuration_info& info);
 
 	cgv::render::shader_compile_options get_configuration(const argument_definitions& arguments, const std::vector<sl::data_type> types = {}) const;
 
 	bool is_valid_range(device_buffer_iterator first, device_buffer_iterator last);
 
+	void bind_buffer_like_arguments(cgv::render::context& ctx, const argument_bindings& arguments);
+
+	void unbind_buffer_like_arguments(cgv::render::context& ctx, const argument_bindings& arguments);
+
 	void bind_buffer_arguments(cgv::render::context& ctx, const argument_bindings& arguments);
 	
 	void unbind_buffer_arguments(cgv::render::context& ctx, const argument_bindings& arguments);
+
+	//void bind_image_arguments(cgv::render::context& ctx, const argument_bindings& arguments);
+	//
+	//void unbind_image_arguments(cgv::render::context& ctx, const argument_bindings& arguments);
 
 	void dispatch_compute(unsigned num_groups_x, unsigned num_groups_y, unsigned num_groups_z);
 
@@ -52,6 +76,10 @@ private:
 	bool _is_initialized = false;
 	std::map<std::string, uint32_t> _buffer_binding_indices;
 	uint32_t _base_buffer_binding_index = 0;
+	std::map<std::string, uint32_t> _image_binding_indices;
+	uint32_t _base_image_binding_index = 0;
+	std::map<std::string, uint32_t> _texture_binding_indices;
+	uint32_t _base_texture_binding_index = 0;
 };
 
 } // namespace gpgpu

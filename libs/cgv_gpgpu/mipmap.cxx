@@ -6,7 +6,7 @@ namespace gpgpu {
 mipmap::mipmap() : texture_algorithm("mipmap", { TextureType::TT_1D, TextureType::TT_2D, TextureType::TT_3D }) {}
 
 bool mipmap::init(cgv::render::context& ctx, cgv::render::TextureType texture_type) {
-	cgv::render::shader_compile_options config = get_configuration(texture_type, {});
+	cgv::render::shader_compile_options config = get_configuration(texture_type, sl::ImageFormatLayoutQualifier::k_rgba32f, {});
 	return texture_algorithm::init(ctx, texture_type, { { &_kernel, "gpgpu_mipmap" } }, config);
 }
 
@@ -22,7 +22,6 @@ bool mipmap::dispatch(cgv::render::context& ctx, cgv::render::texture& texture) 
 	if(!texture.have_mipmaps)
 		texture.create_mipmaps(ctx);
 
-	glActiveTexture(GL_TEXTURE0);
 	texture.enable(ctx, 0);
 
 	_kernel.enable(ctx);
