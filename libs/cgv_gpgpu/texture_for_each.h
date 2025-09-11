@@ -10,9 +10,9 @@ namespace cgv {
 namespace gpgpu {
 
 /// GPU compute shader implementation for applying a function to each texture texel.
-class CGV_API for_each_texture : public texture_algorithm {
+class CGV_API texture_for_each : public texture_algorithm {
 public:
-	for_each_texture();
+	texture_for_each();
 
 	bool init(cgv::render::context& ctx, cgv::render::TextureType texture_type, sl::ImageFormatLayoutQualifier image_format, const std::string& unary_operation);
 	bool init(cgv::render::context& ctx, cgv::render::TextureType texture_type, sl::ImageFormatLayoutQualifier image_format, const argument_definitions& arguments, const std::string& unary_operation);

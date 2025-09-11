@@ -10,9 +10,9 @@ namespace cgv {
 namespace gpgpu {
 
 /// GPU compute shader implementation for filling a texture with a constant value.
-class CGV_API fill_texture : public texture_algorithm {
+class CGV_API texture_fill : public texture_algorithm {
 public:
-	fill_texture();
+	texture_fill();
 
 	bool init(cgv::render::context& ctx, cgv::render::TextureType texture_type, sl::ImageFormatLayoutQualifier image_format);
 

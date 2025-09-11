@@ -1,15 +1,15 @@
-#include "for_each_texture.h"
+#include "texture_for_each.h"
 
 namespace cgv {
 namespace gpgpu {
 
-for_each_texture::for_each_texture() : texture_algorithm("for_each_texture", { TextureType::TT_1D, TextureType::TT_2D, TextureType::TT_3D }) {}
+texture_for_each::texture_for_each() : texture_algorithm("texture_for_each", { TextureType::TT_1D, TextureType::TT_2D, TextureType::TT_3D }) {}
 
-bool for_each_texture::init(cgv::render::context& ctx, cgv::render::TextureType texture_type, sl::ImageFormatLayoutQualifier image_format, const std::string& unary_operation) {
+bool texture_for_each::init(cgv::render::context& ctx, cgv::render::TextureType texture_type, sl::ImageFormatLayoutQualifier image_format, const std::string& unary_operation) {
 	return init(ctx, texture_type, image_format, {}, unary_operation);
 }
 
-bool for_each_texture::init(cgv::render::context& ctx, cgv::render::TextureType texture_type, sl::ImageFormatLayoutQualifier image_format, const argument_definitions& arguments, const std::string& unary_operation) {
+bool texture_for_each::init(cgv::render::context& ctx, cgv::render::TextureType texture_type, sl::ImageFormatLayoutQualifier image_format, const argument_definitions& arguments, const std::string& unary_operation) {
 	texture_algorithm_create_info info;
 	info.arguments = &arguments;
 	info.typedefs.push_back({ "value_type", sl::get_data_type(image_format) });
@@ -17,15 +17,15 @@ bool for_each_texture::init(cgv::render::context& ctx, cgv::render::TextureType 
 	info.options.snippets.push_back({ "operation", unary_operation });
 	info.texture_type = texture_type;
 	info.image_format = image_format;
-	return texture_algorithm::init(ctx, info, { { &_kernel, "gpgpu_for_each_texture"} });
+	return texture_algorithm::init(ctx, info, { { &_kernel, "gpgpu_texture_for_each"} });
 }
 
-void for_each_texture::destruct(const cgv::render::context& ctx) {
+void texture_for_each::destruct(const cgv::render::context& ctx) {
 	_kernel.destruct(ctx);
 	algorithm::destruct(ctx);
 }
 
-bool for_each_texture::dispatch(cgv::render::context& ctx, cgv::render::texture& texture, const argument_bindings& arguments) {
+bool texture_for_each::dispatch(cgv::render::context& ctx, cgv::render::texture& texture, const argument_bindings& arguments) {
 	if(!is_initialized_for_texture(texture))
 		return false;
 
