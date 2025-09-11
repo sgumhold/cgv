@@ -20,18 +20,16 @@ public:
 	bool is_texture_type_supported(TextureType texture_type) const;
 
 protected:
-	bool init(cgv::render::context& ctx, TextureType texture_type, const std::vector<compute_kernel_info>& kernel_infos, const cgv::render::shader_compile_options& config);
-
-	bool is_initialized_for_texture(const cgv::render::texture& texture) const;
-
-	struct texture_algorithm_configuration_info : public algorithm_configuration_info {
+	struct texture_algorithm_create_info : public algorithm_create_info {
 		TextureType texture_type = TextureType::TT_UNDEF;
 		sl::ImageFormatLayoutQualifier image_format = sl::ImageFormatLayoutQualifier::k_rgba8;
 	};
 
-	cgv::render::shader_compile_options configure(const texture_algorithm_configuration_info& info);
+	cgv::render::shader_compile_options get_compile_options(const texture_algorithm_create_info& create_info);
 
-	cgv::render::shader_compile_options get_configuration(TextureType texture_type, sl::ImageFormatLayoutQualifier image_format, const argument_definitions& arguments) const;
+	bool init(cgv::render::context& ctx, const texture_algorithm_create_info& create_info, const std::vector<compute_kernel_info>& kernel_infos);
+
+	bool is_initialized_for_texture(const cgv::render::texture& texture) const;
 
 	uvec3 get_texture_size(const cgv::render::texture& texture) const;
 	uvec3 get_num_groups(const uvec3& texture_size, uint32_t base_group_size) const;

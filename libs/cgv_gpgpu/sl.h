@@ -277,10 +277,7 @@ extern CGV_API std::string to_string(ImageFormatLayoutQualifier qualifier);
 
 extern CGV_API std::string get_type_prefix(ImageFormatLayoutQualifier qualifier);
 
-
-
-
-
+extern CGV_API data_type get_data_type(ImageFormatLayoutQualifier qualifier);
 
 class named_image {
 public:
@@ -315,20 +312,22 @@ using named_image_list = std::vector<named_image>;
 
 extern CGV_API std::string to_string(const named_image_list& images, size_t base_location);
 
+enum class SamplerBaseFormat {
+	kFloatingPoint,
+	kSignedInteger,
+	kUnsignedInteger
+};
 
-
-
-
-
-
-
-// TODO: Support unsigned and signed integer samplers (update to_string methods!).
 class named_texture {
 public:
-	named_texture(cgv::render::TextureType texture_type, const std::string& name) : _texture_type(texture_type), _name(name) {}
+	named_texture(cgv::render::TextureType texture_type, SamplerBaseFormat sampler_base_format, const std::string& name) : _texture_type(texture_type), _sampler_base_format(sampler_base_format), _name(name) {}
 
 	cgv::render::TextureType texture_type() const {
 		return _texture_type;
+	}
+
+	SamplerBaseFormat sampler_base_format() const {
+		return _sampler_base_format;
 	}
 
 	const std::string& name() const {
@@ -337,23 +336,17 @@ public:
 
 private:
 	cgv::render::TextureType _texture_type;
+	SamplerBaseFormat _sampler_base_format;
 	std::string _name;
 };
 
-extern CGV_API std::string get_sampler_string(const cgv::render::TextureType& texture_type);
+extern CGV_API std::string get_sampler_string(const cgv::render::TextureType& texture_type, SamplerBaseFormat sampler_base_format);
 
 extern CGV_API std::string to_string(const named_texture& texture, size_t location);
 
 using named_texture_list = std::vector<named_texture>;
 
 extern CGV_API std::string to_string(const named_texture_list& textures, size_t base_location);
-
-
-
-
-
-
-
 
 namespace tag {
 

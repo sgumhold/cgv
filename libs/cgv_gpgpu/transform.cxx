@@ -15,13 +15,14 @@ bool transform::init(cgv::render::context& ctx, const sl::data_type& input_type,
 	if(!input_type.is_valid() || !output_type.is_valid())
 		return false;
 
-	set_buffer_binding_indices(arguments.buffers, 2);
-	cgv::render::shader_compile_options config = get_configuration(arguments, { input_type, output_type });
-	config.snippets.push_back({ "input_typedef", sl::get_type_alias_string("input_type", input_type) });
-	config.snippets.push_back({ "output_typedef", sl::get_type_alias_string("output_type", output_type) });
-	config.snippets.push_back({ "operation", unary_operation });
-
-	return algorithm::init(ctx, { { &_kernel, "gpgpu_transform" } }, config);
+	algorithm_create_info info;
+	info.arguments = &arguments;
+	info.types = { input_type, output_type };
+	info.typedefs.push_back({ "input_type", input_type });
+	info.typedefs.push_back({ "output_type", output_type });
+	info.default_buffer_count = 2;
+	info.options.snippets.push_back({ "operation", unary_operation });
+	return algorithm::init(ctx, info, { { &_kernel, "gpgpu_transform" } });
 }
 
 void transform::destruct(const cgv::render::context& ctx) {
@@ -48,7 +49,7 @@ bool transform::dispatch(cgv::render::context& ctx, device_buffer_iterator input
 	_kernel.set_argument<uint32_t>(ctx, "u_input_end", input_last.index());
 	_kernel.set_argument<uint32_t>(ctx, "u_output_begin", output_first.index());
 	_kernel.set_arguments(ctx, arguments);
-	bind_buffer_arguments(ctx, arguments);
+	bind_buffer_like_arguments(ctx, arguments);
 
 	// TODO: Make configurable.
 	const uint32_t group_size = 512;
@@ -56,7 +57,7 @@ bool transform::dispatch(cgv::render::context& ctx, device_buffer_iterator input
 	dispatch_compute(num_groups, 1, 1);
 	glMemoryBarrier(GL_SHADER_STORAGE_BARRIER_BIT);
 
-	unbind_buffer_arguments(ctx, arguments);
+	unbind_buffer_like_arguments(ctx, arguments);
 	_kernel.disable(ctx);
 
 	input_first.buffer().unbind(ctx, cgv::render::VertexBufferType::VBT_STORAGE, 0);
