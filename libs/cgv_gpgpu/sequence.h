@@ -24,10 +24,9 @@ public:
 
 	template<typename T, CGV_GPGPU_DISABLE_DERIVED_TYPES(argument_bindings)>
 	bool dispatch(cgv::render::context& ctx, device_buffer_iterator first, device_buffer_iterator last, T init, T step) {
-		argument_binding_list arguments = {
-			{ _value_type, init_argument_name, init },
-			{ _value_type, step_argument_name, step }
-		};
+		argument_binding_list arguments;
+		arguments.bind_uniform(_value_type, init_argument_name, init);
+		arguments.bind_uniform(_value_type, step_argument_name, step);
 		return dispatch(ctx, first, last, arguments);
 	}
 

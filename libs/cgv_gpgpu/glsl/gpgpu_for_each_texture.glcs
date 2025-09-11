@@ -2,8 +2,6 @@
 
 #include "gpgpu_args.glcs"
 
-//$cgv::value_typedef
-
 #ifdef CGV_USE_SNIPPETS
 layout(IMAGE_FORMAT, binding = 0) uniform IMAGE_TYPE tex;
 

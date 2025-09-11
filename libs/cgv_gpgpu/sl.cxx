@@ -126,7 +126,7 @@ std::string data_type::type_name() const {
 
 bool data_type::is_valid() const {
 	switch(_base_type) {
-	case sl::Type::kStruct:
+	case Type::kStruct:
 		// Struct types are only valid if they have a non-empty name.
 		return !type_name().empty();
 	default:
@@ -205,10 +205,10 @@ size_t get_aligned_size(data_type type) {
 	return cgv::math::next_multiple_k_greater_than_n(type.alignment_in_bytes(), type.size_in_bytes());
 }
 
-std::string get_type_definition_string(sl::data_type type) {
+std::string get_type_definition_string(data_type type) {
 	std::string type_name = type.type_name();
 	switch(type.type()) {
-	case sl::Type::kStruct:
+	case Type::kStruct:
 		return "struct " + type_name + " { " + to_string(type.members()) + "};";
 	default:
 		return type_name;
@@ -219,7 +219,7 @@ std::string get_alias_string(const std::string& alias, const std::string& name) 
 	return "#define " + alias + " " + name;
 }
 
-std::string get_type_alias_string(const std::string& alias, sl::data_type type) {
+std::string get_type_alias_string(const std::string& alias, data_type type) {
 	return get_alias_string(alias, type.type_name());
 }
 
@@ -227,7 +227,7 @@ std::string to_string(const named_variable& variable) {
 	std::string res;
 	res = variable.type().type_name() + " " + variable.name();
 	if(variable.array_size() != 0)
-		res += "[" + (variable.array_size() == sl::varsize ? "" : std::to_string(variable.array_size())) + "]";
+		res += "[" + (variable.array_size() == varsize ? "" : std::to_string(variable.array_size())) + "]";
 	return res;
 }
 
@@ -243,15 +243,15 @@ std::string to_string(const named_variable_list& variables, const std::string& p
 
 std::string to_string(MemoryQualifier qualifier) {
 	switch(qualifier) {
-	case sl::MemoryQualifier::kCoherent:
+	case MemoryQualifier::kCoherent:
 		return "coherent";
-	case sl::MemoryQualifier::kVolatile:
+	case MemoryQualifier::kVolatile:
 		return "volatile";
-	case sl::MemoryQualifier::kRestrict:
+	case MemoryQualifier::kRestrict:
 		return "restrict";
-	case sl::MemoryQualifier::kReadOnly:
+	case MemoryQualifier::kReadOnly:
 		return "readonly";
-	case sl::MemoryQualifier::kWriteOnly:
+	case MemoryQualifier::kWriteOnly:
 		return "writeonly";
 	default:
 		return "";
@@ -269,7 +269,7 @@ memory_qualifier_storage::memory_qualifier_storage(const memory_qualifier_list& 
 }
 
 memory_qualifier_list memory_qualifier_storage::list() const {
-	const sl::memory_qualifier_list all_qualifiers = {
+	const memory_qualifier_list all_qualifiers = {
 		MemoryQualifier::kCoherent,
 		MemoryQualifier::kVolatile,
 		MemoryQualifier::kRestrict,
@@ -360,6 +360,16 @@ std::string get_type_prefix(ImageFormatLayoutQualifier qualifier) {
 		return "";
 }
 
+data_type get_data_type(ImageFormatLayoutQualifier qualifier) {
+	int32_t index = static_cast<int32_t>(qualifier);
+	if(index >= static_cast<int32_t>(ImageFormatLayoutQualifier::k_rgba32ui))
+		return Type::kUVec4;
+	else if(index >= static_cast<int32_t>(ImageFormatLayoutQualifier::k_rgba32i))
+		return Type::kIVec4;
+	else
+		return Type::kVec4;
+}
+
 std::string to_string(const named_image& image, size_t location) {
 	std::string location_str = std::to_string(location);
 	std::string name = image.name().empty() ? "image" + location_str : image.name();
@@ -394,25 +404,34 @@ std::string to_string(const named_image_list& images, size_t base_location) {
 	}, "\n", true);
 }
 
-std::string get_sampler_string(const cgv::render::TextureType& texture_type) {
+std::string get_sampler_string(const cgv::render::TextureType& texture_type, SamplerBaseFormat sampler_base_format) {
+	std::string str = "sampler2D";
+
 	switch(texture_type) {
-	case cgv::render::TextureType::TT_1D: return "sampler1D";
-	case cgv::render::TextureType::TT_2D: return "sampler2D";
-	case cgv::render::TextureType::TT_3D: return "sampler3D";
-	case cgv::render::TextureType::TT_1D_ARRAY: return "sampler1DArray";
-	case cgv::render::TextureType::TT_2D_ARRAY: return "sampler2DArray";
-	case cgv::render::TextureType::TT_CUBEMAP: return "samplerCube";
-	case cgv::render::TextureType::TT_MULTISAMPLE_2D: return "sampler2DMS";
-	case cgv::render::TextureType::TT_MULTISAMPLE_2D_ARRAY: return "sampler2DMSArray";
-	case cgv::render::TextureType::TT_BUFFER: return "samplerBuffer";
-	default: return "sampler2D";
+	case cgv::render::TextureType::TT_1D: str = "sampler1D"; break;
+	case cgv::render::TextureType::TT_2D: str = "sampler2D"; break;
+	case cgv::render::TextureType::TT_3D: str = "sampler3D"; break;
+	case cgv::render::TextureType::TT_1D_ARRAY: str = "sampler1DArray"; break;
+	case cgv::render::TextureType::TT_2D_ARRAY: str = "sampler2DArray"; break;
+	case cgv::render::TextureType::TT_CUBEMAP: str = "samplerCube"; break;
+	case cgv::render::TextureType::TT_MULTISAMPLE_2D: str = "sampler2DMS"; break;
+	case cgv::render::TextureType::TT_MULTISAMPLE_2D_ARRAY: str = "sampler2DMSArray"; break;
+	case cgv::render::TextureType::TT_BUFFER: str = "samplerBuffer"; break;
+	default: break;
 	}
+
+	if(sampler_base_format == SamplerBaseFormat::kSignedInteger)
+		return "i" + str;
+	else if(sampler_base_format == SamplerBaseFormat::kUnsignedInteger)
+		return "u" + str;
+	else
+		return str;
 }
 
 std::string to_string(const named_texture& texture, size_t location) {
 	std::string location_str = std::to_string(location);
 	std::string name = texture.name().empty() ? "texture" + location_str : texture.name();
-	std::string sampler_type = get_sampler_string(texture.texture_type());
+	std::string sampler_type = get_sampler_string(texture.texture_type(), texture.sampler_base_format());
 	return "layout(binding=" + location_str + ") uniform " + sampler_type + " " + name + ";";
 }
 

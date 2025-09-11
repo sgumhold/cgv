@@ -6,8 +6,11 @@ namespace gpgpu {
 mipmap::mipmap() : texture_algorithm("mipmap", { TextureType::TT_1D, TextureType::TT_2D, TextureType::TT_3D }) {}
 
 bool mipmap::init(cgv::render::context& ctx, cgv::render::TextureType texture_type) {
-	cgv::render::shader_compile_options config = get_configuration(texture_type, sl::ImageFormatLayoutQualifier::k_rgba32f, {});
-	return texture_algorithm::init(ctx, texture_type, { { &_kernel, "gpgpu_mipmap" } }, config);
+	texture_algorithm_create_info info;
+	info.default_image_count = 1;
+	info.default_texture_count = 1;
+	info.texture_type = texture_type;
+	return texture_algorithm::init(ctx, info, { { &_kernel, "gpgpu_mipmap" } });
 }
 
 void mipmap::destruct(const cgv::render::context& ctx) {

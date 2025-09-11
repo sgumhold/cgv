@@ -8,7 +8,7 @@ namespace gpgpu {
 const std::string histogram::lower_limit_argument_name = "u_lower_limit";
 const std::string histogram::upper_limit_argument_name = "u_upper_limit";
 
-histogram::histogram(uint32_t num_bins) : algorithm("histogram"), _num_bins(num_bins) {}
+histogram::histogram(uint32_t num_bins, uint32_t group_size) : algorithm("histogram", group_size), _num_bins(num_bins) {}
 
 bool histogram::init(cgv::render::context& ctx, const sl::data_type& value_type) {
 	if(!value_type.is_valid() || !value_type.is_scalar() || value_type.type() == sl::Type::kBool)
@@ -16,16 +16,17 @@ bool histogram::init(cgv::render::context& ctx, const sl::data_type& value_type)
 
 	_value_type = value_type;
 
-	cgv::render::shader_compile_options config = get_configuration({}, { value_type });
-	config.snippets.push_back({ "value_typedef", sl::get_type_alias_string("value_type", value_type) });
-
-	config.defines.insert({ "NUM_BINS", std::to_string(_num_bins) });
+	algorithm_create_info info;
+	info.types.push_back(value_type);
+	info.typedefs.push_back({ "value_type", value_type });
+	info.default_buffer_count = 2;
+	info.options.defines["NUM_BINS"] = std::to_string(_num_bins);
 
 	sl::Type base_type = value_type.type();
 	if(base_type == sl::Type::kFloat || base_type == sl::Type::kDouble)
-		config.defines.insert({ "VALUE_TYPE_IS_FLOATING_POINT", "" });
-	
-	if(algorithm::init(ctx, { { &_kernel, "gpgpu_histogram" } }, config)) {
+		info.options.defines["VALUE_TYPE_IS_FLOATING_POINT"] = "";
+
+	if(algorithm::init(ctx, info, { { &_kernel, "gpgpu_histogram" } })) {
 		_bins_buffer.create_or_resize<uint32_t>(ctx, _num_bins);
 		return _fill.init(ctx, sl::Type::kUInt);
 	}

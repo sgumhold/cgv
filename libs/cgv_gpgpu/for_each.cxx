@@ -5,7 +5,7 @@
 namespace cgv {
 namespace gpgpu {
 
-for_each::for_each() : algorithm("for_each") {}
+for_each::for_each(uint32_t group_size) : algorithm("for_each", group_size) {}
 
 bool for_each::init(cgv::render::context& ctx, const sl::data_type& value_type, const std::string& unary_operation) {
 	return init(ctx, value_type, {}, unary_operation);
@@ -14,13 +14,14 @@ bool for_each::init(cgv::render::context& ctx, const sl::data_type& value_type, 
 bool for_each::init(cgv::render::context& ctx, const sl::data_type& value_type, const argument_definitions& arguments, const std::string& unary_operation) {
 	if(!value_type.is_valid())
 		return false;
-	set_buffer_binding_indices(arguments.buffers, 1);
-	set_image_binding_indices(arguments.images, 0);
-	cgv::render::shader_compile_options config = get_configuration(arguments, { value_type });
-	config.snippets.push_back({ "value_typedef", sl::get_type_alias_string("value_type", value_type) });
-	config.snippets.push_back({ "operation", unary_operation });
 
-	return algorithm::init(ctx, { { &_kernel, "gpgpu_for_each" } }, config);
+	algorithm_create_info info;
+	info.arguments = &arguments;
+	info.types.push_back(value_type);
+	info.typedefs.push_back({ "value_type", value_type });
+	info.default_buffer_count = 1;
+	info.options.snippets.push_back({ "operation", unary_operation });
+	return algorithm::init(ctx, info, { { &_kernel, "gpgpu_for_each" } });
 }
 
 void for_each::destruct(const cgv::render::context& ctx) {
@@ -42,15 +43,16 @@ bool for_each::dispatch(cgv::render::context& ctx, device_buffer_iterator first,
 	_kernel.set_argument<uint32_t>(ctx, "u_begin", first.index());
 	_kernel.set_argument<uint32_t>(ctx, "u_end", last.index());
 	_kernel.set_arguments(ctx, arguments);
-	bind_buffer_arguments(ctx, arguments);
+	bind_buffer_like_arguments(ctx, arguments);
 
-	// TODO: Make configurable.
-	const uint32_t group_size = 512;
-	uint32_t num_groups = cgv::math::div_round_up(static_cast<uint32_t>(cgv::gpgpu::distance(first, last)), group_size);
+	// TODO: make configurable
+	_group_size = 512;
+
+	uint32_t num_groups = cgv::math::div_round_up(static_cast<uint32_t>(cgv::gpgpu::distance(first, last)), _group_size);
 	dispatch_compute(num_groups, 1, 1);
 	glMemoryBarrier(GL_SHADER_STORAGE_BARRIER_BIT);
 
-	unbind_buffer_arguments(ctx, arguments);
+	unbind_buffer_like_arguments(ctx, arguments);
 	_kernel.disable(ctx);
 
 	first.buffer().unbind(ctx, cgv::render::VertexBufferType::VBT_STORAGE, 0);
