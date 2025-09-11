@@ -1,23 +1,23 @@
-#include "fill_texture.h"
+#include "texture_fill.h"
 
 namespace cgv {
 namespace gpgpu {
 
-fill_texture::fill_texture() : texture_algorithm("fill_texture", { TextureType::TT_1D, TextureType::TT_2D, TextureType::TT_3D }) {}
+texture_fill::texture_fill() : texture_algorithm("texture_fill", { TextureType::TT_1D, TextureType::TT_2D, TextureType::TT_3D }) {}
 
-bool fill_texture::init(cgv::render::context& ctx, cgv::render::TextureType texture_type, sl::ImageFormatLayoutQualifier image_format) {
+bool texture_fill::init(cgv::render::context& ctx, cgv::render::TextureType texture_type, sl::ImageFormatLayoutQualifier image_format) {
 	texture_algorithm_create_info info;
 	info.default_image_count = 1;
 	info.texture_type = texture_type;
 	info.image_format = image_format;
-	return texture_algorithm::init(ctx, info, { { &_kernel, "gpgpu_fill_texture" } });
+	return texture_algorithm::init(ctx, info, { { &_kernel, "gpgpu_texture_fill" } });
 }
 
-void fill_texture::destruct(const cgv::render::context& ctx) {
+void texture_fill::destruct(const cgv::render::context& ctx) {
 	texture_algorithm::destruct(ctx);
 }
 
-bool fill_texture::dispatch(cgv::render::context& ctx, cgv::render::texture& texture, const vec4& value) {
+bool texture_fill::dispatch(cgv::render::context& ctx, cgv::render::texture& texture, const vec4& value) {
 	if(!is_initialized_for_texture(texture))
 		return false;
 
