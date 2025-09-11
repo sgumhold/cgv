@@ -137,9 +137,21 @@ struct type_definition {
 	named_variable_list members;
 };
 
-class named_variable {
+class named_object {
 public:
-	named_variable(const data_type& type, const std::string& name) : _type(type), _name(name) {}
+	named_object(const std::string& name) : _name(name) {}
+
+	const std::string& name() const {
+		return _name;
+	}
+
+private:
+	std::string _name;
+};
+
+class named_variable : public named_object {
+public:
+	named_variable(const data_type& type, const std::string& name) : named_object(name), _type(type) {}
 
 	named_variable(const data_type& type, const std::string& name, size_t array_size) : named_variable(type, name) {
 		_array_size = array_size;
@@ -149,17 +161,12 @@ public:
 		return _type;
 	}
 
-	const std::string& name() const {
-		return _name;
-	}
-
 	size_t array_size() const {
 		return _array_size;
 	}
 
 private:
 	data_type _type;
-	std::string _name;
 	size_t _array_size = 0;
 };
 
@@ -196,18 +203,14 @@ private:
 	int32_t _mask = 0;
 };
 
-class named_buffer {
+class named_buffer : public named_object {
 public:
-	named_buffer(const named_variable& variable, const std::string& name, const memory_qualifier_list& memory_qualifiers = {}) : _variables({ variable }), _name(name), _memory_qualifiers(memory_qualifiers) {}
-	
-	named_buffer(const named_variable_list& variables, const std::string& name, const memory_qualifier_list& memory_qualifiers = {}) : _variables(variables), _name(name), _memory_qualifiers(memory_qualifiers) {}
+	named_buffer(const named_variable_list& variables, const std::string& name, const memory_qualifier_list& memory_qualifiers = {}) : named_object(name), _variables(variables), _memory_qualifiers(memory_qualifiers) {}
+
+	named_buffer(const named_variable& variable, const std::string& name, const memory_qualifier_list& memory_qualifiers = {}) : named_buffer(named_variable_list{ variable }, name, memory_qualifiers) {}
 
 	const named_variable_list& variables() const {
 		return _variables;
-	}
-
-	const std::string& name() const {
-		return _name;
 	}
 
 	memory_qualifier_list memory_qualifiers() const {
@@ -216,7 +219,6 @@ public:
 
 private:
 	named_variable_list _variables;
-	std::string _name;
 	memory_qualifier_storage _memory_qualifiers;
 };
 
@@ -279,9 +281,9 @@ extern CGV_API std::string get_type_prefix(ImageFormatLayoutQualifier qualifier)
 
 extern CGV_API data_type get_data_type(ImageFormatLayoutQualifier qualifier);
 
-class named_image {
+class named_image : public named_object {
 public:
-	named_image(cgv::render::TextureType texture_type, ImageFormatLayoutQualifier image_format, const std::string& name, const memory_qualifier_list& memory_qualifiers = {}) : _texture_type(texture_type), _image_format(image_format), _name(name), _memory_qualifiers(memory_qualifiers) {}
+	named_image(cgv::render::TextureType texture_type, ImageFormatLayoutQualifier image_format, const std::string& name, const memory_qualifier_list& memory_qualifiers = {}) : named_object(name), _texture_type(texture_type), _image_format(image_format), _memory_qualifiers(memory_qualifiers) {}
 
 	cgv::render::TextureType texture_type() const {
 		return _texture_type;
@@ -291,10 +293,6 @@ public:
 		return _image_format;
 	}
 
-	const std::string& name() const {
-		return _name;
-	}
-
 	memory_qualifier_list memory_qualifiers() const {
 		return _memory_qualifiers.list();
 	}
@@ -302,7 +300,6 @@ public:
 private:
 	cgv::render::TextureType _texture_type;
 	ImageFormatLayoutQualifier _image_format;
-	std::string _name;
 	memory_qualifier_storage _memory_qualifiers;
 };
 
@@ -318,9 +315,9 @@ enum class SamplerBaseFormat {
 	kUnsignedInteger
 };
 
-class named_texture {
+class named_texture : public named_object {
 public:
-	named_texture(cgv::render::TextureType texture_type, SamplerBaseFormat sampler_base_format, const std::string& name) : _texture_type(texture_type), _sampler_base_format(sampler_base_format), _name(name) {}
+	named_texture(cgv::render::TextureType texture_type, SamplerBaseFormat sampler_base_format, const std::string& name) : named_object(name), _texture_type(texture_type), _sampler_base_format(sampler_base_format) {}
 
 	cgv::render::TextureType texture_type() const {
 		return _texture_type;
@@ -330,14 +327,9 @@ public:
 		return _sampler_base_format;
 	}
 
-	const std::string& name() const {
-		return _name;
-	}
-
 private:
 	cgv::render::TextureType _texture_type;
 	SamplerBaseFormat _sampler_base_format;
-	std::string _name;
 };
 
 extern CGV_API std::string get_sampler_string(const cgv::render::TextureType& texture_type, SamplerBaseFormat sampler_base_format);
