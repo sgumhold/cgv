@@ -3,29 +3,27 @@
 #include <cgv/render/context.h>
 #include <cgv/render/vertex_buffer.h>
 
+#include "sl.h"
+
 namespace cgv {
 namespace gpgpu {
 
-class uniform_binding {
+class uniform_binding : public sl::named_object {
 public:
-	uniform_binding() {}
+	uniform_binding() : sl::named_object("") {}
 
-	uniform_binding(const std::string& name) : _name(name) {}
+	uniform_binding(const std::string& name) : sl::named_object(name) {}
 
 	template<typename T>
-	uniform_binding(const std::string& name, const T& value) : _name(name) {
+	uniform_binding(const std::string& name, const T& value) : sl::named_object(name) {
 		set(value);
 	}
 
-	uniform_binding(const std::string& name, cgv::render::type_descriptor descriptor, const void* address) : _name(name), _desc(descriptor), _addr(address) {}
+	uniform_binding(const std::string& name, cgv::render::type_descriptor descriptor, const void* address) : sl::named_object(name), _desc(descriptor), _addr(address) {}
 
 	template<typename T>
 	void operator=(const T& value) {
 		set(value);
-	}
-
-	const std::string& name() const {
-		return _name;
 	}
 
 	cgv::render::type_descriptor descriptor() const {
@@ -43,7 +41,6 @@ private:
 		_addr = cgv::render::element_descriptor_traits<T>::get_address(value);
 	}
 
-	std::string _name;
 	cgv::render::type_descriptor _desc;
 	const void* _addr = nullptr;
 };
@@ -64,22 +61,18 @@ public:
 	}
 };
 
-class buffer_binding {
+class buffer_binding : public sl::named_object {
 public:
-	buffer_binding() {}
+	buffer_binding() : sl::named_object("") {}
 
-	buffer_binding(const std::string& name) : _name(name) {}
+	buffer_binding(const std::string& name) : sl::named_object(name) {}
 
-	buffer_binding(const std::string& name, const cgv::render::vertex_buffer& buffer) : _name(name) {
+	buffer_binding(const std::string& name, const cgv::render::vertex_buffer& buffer) : sl::named_object(name) {
 		_buffer = &buffer;
 	}
 
 	void operator=(const cgv::render::vertex_buffer& buffer) {
 		_buffer = &buffer;
-	}
-
-	const std::string& name() const {
-		return _name;
 	}
 
 	const cgv::render::vertex_buffer* buffer() const {
@@ -96,29 +89,24 @@ public:
 	}
 
 private:
-	std::string _name;
 	mutable uint32_t _binding_index = 0;
 	const cgv::render::vertex_buffer* _buffer = nullptr;
 };
 
 using buffer_binding_list = std::vector<buffer_binding>;
 
-class image_binding {
+class image_binding : public sl::named_object {
 public:
-	image_binding() {}
+	image_binding() : sl::named_object("") {}
 
-	image_binding(const std::string& name) : _name(name) {}
+	image_binding(const std::string& name) : sl::named_object(name) {}
 
-	image_binding(const std::string& name, cgv::render::texture& texture) : _name(name) {
+	image_binding(const std::string& name, cgv::render::texture& texture) : sl::named_object(name) {
 		_texture = &texture;
 	}
 
 	void operator=(cgv::render::texture& texture) {
 		_texture = &texture;
-	}
-
-	const std::string& name() const {
-		return _name;
 	}
 
 	const cgv::render::texture* buffer() const {
@@ -137,29 +125,24 @@ public:
 	}
 
 private:
-	std::string _name;
 	mutable uint32_t _binding_index = 0;
 	cgv::render::texture* _texture = nullptr;
 };
 
 using image_binding_list = std::vector<image_binding>;
 
-class texture_binding {
+class texture_binding : public sl::named_object {
 public:
-	texture_binding() {}
+	texture_binding() : sl::named_object("") {}
 
-	texture_binding(const std::string& name) : _name(name) {}
+	texture_binding(const std::string& name) : sl::named_object(name) {}
 
-	texture_binding(const std::string& name, cgv::render::texture& texture) : _name(name) {
+	texture_binding(const std::string& name, cgv::render::texture& texture) : sl::named_object(name) {
 		_texture = &texture;
 	}
 
 	void operator=(cgv::render::texture& texture) {
 		_texture = &texture;
-	}
-
-	const std::string& name() const {
-		return _name;
 	}
 
 	const cgv::render::texture* buffer() const {
@@ -176,7 +159,6 @@ public:
 	}
 
 private:
-	std::string _name;
 	//mutable uint32_t _binding_index = 0;
 	cgv::render::texture* _texture = nullptr;
 };
