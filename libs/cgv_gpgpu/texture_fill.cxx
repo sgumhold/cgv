@@ -7,6 +7,7 @@ texture_fill::texture_fill() : texture_algorithm("texture_fill", { TextureType::
 
 bool texture_fill::init(cgv::render::context& ctx, cgv::render::TextureType texture_type, sl::ImageFormatLayoutQualifier image_format) {
 	texture_algorithm_create_info info;
+	info.typedefs.push_back({ "value_type", sl::get_data_type(image_format) });
 	info.default_image_count = 1;
 	info.texture_type = texture_type;
 	info.image_format = image_format;
