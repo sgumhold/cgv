@@ -43,7 +43,7 @@ namespace cgv {
 			rgba halo_color;
 			/// strength in [0,1] of halo color with respect to color of primitive
 			float halo_color_strength;
-			/// set to true in constructor
+			/// whether to enable blending while rendering (needed for smooth edges; true by default)
 			bool blend_points;
 			/// construct with default values
 			point_render_style();
