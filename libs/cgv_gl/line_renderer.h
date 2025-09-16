@@ -22,17 +22,13 @@ namespace cgv { // @<
 			/// default line width for case when "line_width" attribute is not set
 			float default_line_width;
 
-			// influence on opengl state
+			/// whether to enable blending while rendering (needed for smooth edges; true by default)
 			bool blend_lines;
-		protected:
-			friend class line_renderer;
-			mutable GLboolean is_blend;
-			mutable GLint blend_src, blend_dst;
-		public:
+
 			// vertex shader uniforms
 
 			/// halo color
-			rgba  halo_color;
+			rgba halo_color;
 			/// halo width in pixel
 			float halo_width_in_pixel;
 			/// halo width in percent of line width
