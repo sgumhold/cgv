@@ -165,10 +165,10 @@ var NAVTREEINDEX =
 "structcgv_1_1plot_1_1plot__base__config.html",
 "structcgv_1_1render_1_1array__descriptor__traits_3_01T_0fN_0e_01_4.html#a85f021eff1ed81ede2d5628b387142d3",
 "structcgv_1_1render_1_1group__render__style.html#a075164f0f6095aa0dd20e939f69a97dd",
-"structcgv_1_1render_1_1surfel__render__style.html#a875b44fdbea4348dd6b1dfd8525bd95d",
-"structcgv_1_1type_1_1func_1_1promote_3_01long_00_01float_01_4.html",
-"structgamepad_1_1device__info.html#af59c79d83101a11ca432b13d70924679",
-"vr__driver_8h.html#a715b77ea48336bbd440f9e297a6a8b47"
+"structcgv_1_1render_1_1surfel__render__style.html#a81ea3aa6a95e9bcf90718528c5253516",
+"structcgv_1_1type_1_1func_1_1promote_3_01int_00_01float_01_4.html",
+"structgamepad_1_1device__info.html#a7aaf963df8817b232178ae927d849b63",
+"vr__driver_8h.html#a3420569d66aab89ad53aa8ee86f76733"
 ];
 
 var SYNCONMSG = 'click to disable panel synchronisation';
