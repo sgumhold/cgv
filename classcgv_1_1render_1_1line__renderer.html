@@ -414,7 +414,7 @@ Protected Attributes</h2></td></tr>
 <a name="details" id="details"></a><h2 class="groupheader">Detailed Description</h2>
 <div class="textblock"><p>renderer that supports point splatting </p>
 
-<p class="definition">Definition at line <a class="el" href="line__renderer_8h_source.html#l00061">61</a> of file <a class="el" href="line__renderer_8h_source.html">line_renderer.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="line__renderer_8h_source.html#l00057">57</a> of file <a class="el" href="line__renderer_8h_source.html">line_renderer.h</a>.</p>
 </div><h2 class="groupheader">Constructor &amp; Destructor Documentation</h2>
 <a id="a5d219e60151a749bdc8346b1267e8e4b" name="a5d219e60151a749bdc8346b1267e8e4b"></a>
 <h2 class="memtitle"><span class="permalink"><a href="#a5d219e60151a749bdc8346b1267e8e4b">&#9670;&#160;</a></span>line_renderer()</h2>
@@ -551,9 +551,9 @@ Protected Attributes</h2></td></tr>
 
 <p>Reimplemented from <a class="el" href="classcgv_1_1render_1_1group__renderer.html#a32025096a541c45311e2337a0f91f214">cgv::render::group_renderer</a>.</p>
 
-<p class="definition">Definition at line <a class="el" href="line__renderer_8cxx_source.html#l00140">140</a> of file <a class="el" href="line__renderer_8cxx_source.html">line_renderer.cxx</a>.</p>
+<p class="definition">Definition at line <a class="el" href="line__renderer_8cxx_source.html#l00143">143</a> of file <a class="el" href="line__renderer_8cxx_source.html">line_renderer.cxx</a>.</p>
 
-<p class="reference">References <a class="el" href="renderer_8h_source.html#l00066">cgv::render::renderer::attributes_persist()</a>, and <a class="el" href="group__renderer_8cxx_source.html#l00097">cgv::render::group_renderer::disable()</a>.</p>
+<p class="reference">References <a class="el" href="renderer_8h_source.html#l00066">cgv::render::renderer::attributes_persist()</a>, <a class="el" href="line__renderer_8h_source.html#l00026">cgv::render::line_render_style::blend_lines</a>, <a class="el" href="group__renderer_8cxx_source.html#l00097">cgv::render::group_renderer::disable()</a>, and <a class="el" href="context_8cxx_source.html#l01739">cgv::render::context::pop_blend_state()</a>.</p>
 
 <p class="reference">Referenced by <a class="el" href="box__wire__renderer_8cxx_source.html#l00092">cgv::render::box_wire_renderer::disable()</a>.</p>
 
@@ -705,9 +705,9 @@ Protected Attributes</h2></td></tr>
 
 <p>Reimplemented in <a class="el" href="classcgv_1_1render_1_1normal__renderer.html#a4a3dc356e1f88e8d2be295c2bf3e6bf3">cgv::render::normal_renderer</a>.</p>
 
-<p class="definition">Definition at line <a class="el" href="line__renderer_8cxx_source.html#l00095">95</a> of file <a class="el" href="line__renderer_8cxx_source.html">line_renderer.cxx</a>.</p>
+<p class="definition">Definition at line <a class="el" href="line__renderer_8cxx_source.html#l00099">99</a> of file <a class="el" href="line__renderer_8cxx_source.html">line_renderer.cxx</a>.</p>
 
-<p class="reference">References <a class="el" href="line__renderer_8h_source.html#l00050">cgv::render::line_render_style::blend_width_in_pixel</a>, <a class="el" href="line__renderer_8h_source.html#l00019">cgv::render::line_render_style::default_color</a>, <a class="el" href="line__renderer_8h_source.html#l00021">cgv::render::line_render_style::default_depth_offset</a>, <a class="el" href="line__renderer_8h_source.html#l00023">cgv::render::line_render_style::default_line_width</a>, <a class="el" href="line__renderer_8h_source.html#l00017">cgv::render::line_render_style::default_normal</a>, <a class="el" href="group__renderer_8cxx_source.html#l00085">cgv::render::group_renderer::enable()</a>, <a class="el" href="classcgv_1_1render_1_1context.html#a6dde896fc37726e3ec39e7d450f1e168">cgv::render::context::get_height()</a>, <a class="el" href="line__renderer_8h_source.html#l00035">cgv::render::line_render_style::halo_color</a>, <a class="el" href="line__renderer_8h_source.html#l00055">cgv::render::line_render_style::halo_color_strength</a>, <a class="el" href="line__renderer_8h_source.html#l00037">cgv::render::line_render_style::halo_width_in_pixel</a>, <a class="el" href="renderer_8h_source.html#l00083">cgv::render::renderer::has_colors</a>, <a class="el" href="line__renderer_8h_source.html#l00046">cgv::render::line_render_style::measure_line_width_in_pixel</a>, <a class="el" href="line__renderer_8h_source.html#l00039">cgv::render::line_render_style::percentual_halo_width</a>, <a class="el" href="renderer_8h_source.html#l00075">cgv::render::renderer::ref_prog()</a>, <a class="el" href="line__renderer_8h_source.html#l00048">cgv::render::line_render_style::reference_line_width</a>, <a class="el" href="line__renderer_8h_source.html#l00041">cgv::render::line_render_style::screen_aligned</a>, <a class="el" href="shader__program_8h_source.html#l00203">cgv::render::shader_program::set_attribute()</a>, <a class="el" href="context_8cxx_source.html#l01636">cgv::render::context::set_color()</a>, and <a class="el" href="shader__program_8h_source.html#l00146">cgv::render::shader_program::set_uniform()</a>.</p>
+<p class="reference">References <a class="el" href="line__renderer_8h_source.html#l00026">cgv::render::line_render_style::blend_lines</a>, <a class="el" href="line__renderer_8h_source.html#l00046">cgv::render::line_render_style::blend_width_in_pixel</a>, <a class="el" href="line__renderer_8h_source.html#l00019">cgv::render::line_render_style::default_color</a>, <a class="el" href="line__renderer_8h_source.html#l00021">cgv::render::line_render_style::default_depth_offset</a>, <a class="el" href="line__renderer_8h_source.html#l00023">cgv::render::line_render_style::default_line_width</a>, <a class="el" href="line__renderer_8h_source.html#l00017">cgv::render::line_render_style::default_normal</a>, <a class="el" href="group__renderer_8cxx_source.html#l00085">cgv::render::group_renderer::enable()</a>, <a class="el" href="context_8cxx_source.html#l01775">cgv::render::context::enable_blending()</a>, <a class="el" href="context_8cxx_source.html#l01744">cgv::render::context::get_blend_state()</a>, <a class="el" href="classcgv_1_1render_1_1context.html#a6dde896fc37726e3ec39e7d450f1e168">cgv::render::context::get_height()</a>, <a class="el" href="line__renderer_8h_source.html#l00031">cgv::render::line_render_style::halo_color</a>, <a class="el" href="line__renderer_8h_source.html#l00051">cgv::render::line_render_style::halo_color_strength</a>, <a class="el" href="line__renderer_8h_source.html#l00033">cgv::render::line_render_style::halo_width_in_pixel</a>, <a class="el" href="renderer_8h_source.html#l00083">cgv::render::renderer::has_colors</a>, <a class="el" href="line__renderer_8h_source.html#l00042">cgv::render::line_render_style::measure_line_width_in_pixel</a>, <a class="el" href="line__renderer_8h_source.html#l00035">cgv::render::line_render_style::percentual_halo_width</a>, <a class="el" href="context_8cxx_source.html#l01735">cgv::render::context::push_blend_state()</a>, <a class="el" href="renderer_8h_source.html#l00075">cgv::render::renderer::ref_prog()</a>, <a class="el" href="line__renderer_8h_source.html#l00044">cgv::render::line_render_style::reference_line_width</a>, <a class="el" href="line__renderer_8h_source.html#l00037">cgv::render::line_render_style::screen_aligned</a>, <a class="el" href="shader__program_8h_source.html#l00203">cgv::render::shader_program::set_attribute()</a>, <a class="el" href="context_8cxx_source.html#l01752">cgv::render::context::set_blend_func()</a>, <a class="el" href="context_8cxx_source.html#l01636">cgv::render::context::set_color()</a>, and <a class="el" href="shader__program_8h_source.html#l00146">cgv::render::shader_program::set_uniform()</a>.</p>
 
 <p class="reference">Referenced by <a class="el" href="box__wire__renderer_8cxx_source.html#l00078">cgv::render::box_wire_renderer::enable()</a>, and <a class="el" href="normal__renderer_8cxx_source.html#l00049">cgv::render::normal_renderer::enable()</a>.</p>
 
@@ -898,7 +898,7 @@ template&lt;typename T &gt; </div>
 
 <p>specify a single depth_offset for all lines </p>
 
-<p class="definition">Definition at line <a class="el" href="line__renderer_8h_source.html#l00108">108</a> of file <a class="el" href="line__renderer_8h_source.html">line_renderer.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="line__renderer_8h_source.html#l00104">104</a> of file <a class="el" href="line__renderer_8h_source.html">line_renderer.h</a>.</p>
 
 </div>
 </div>
@@ -940,7 +940,7 @@ template&lt;typename T &gt; </div>
 
 <p>depth_offset array specifies box extends in case of position_is_center=true, otherwise the maximum point of each box </p>
 
-<p class="definition">Definition at line <a class="el" href="line__renderer_8h_source.html#l00111">111</a> of file <a class="el" href="line__renderer_8h_source.html">line_renderer.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="line__renderer_8h_source.html#l00107">107</a> of file <a class="el" href="line__renderer_8h_source.html">line_renderer.h</a>.</p>
 
 </div>
 </div>
@@ -994,7 +994,7 @@ template&lt;typename T &gt; </div>
 
 <p>depth_offset array specifies box extends in case of position_is_center=true, otherwise the maximum point of each box </p>
 
-<p class="definition">Definition at line <a class="el" href="line__renderer_8h_source.html#l00114">114</a> of file <a class="el" href="line__renderer_8h_source.html">line_renderer.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="line__renderer_8h_source.html#l00110">110</a> of file <a class="el" href="line__renderer_8h_source.html">line_renderer.h</a>.</p>
 
 </div>
 </div>
@@ -1036,7 +1036,7 @@ template&lt;typename T &gt; </div>
 
 <p>specify a single line_width for all lines </p>
 
-<p class="definition">Definition at line <a class="el" href="line__renderer_8h_source.html#l00097">97</a> of file <a class="el" href="line__renderer_8h_source.html">line_renderer.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="line__renderer_8h_source.html#l00093">93</a> of file <a class="el" href="line__renderer_8h_source.html">line_renderer.h</a>.</p>
 
 </div>
 </div>
@@ -1078,7 +1078,7 @@ template&lt;typename T &gt; </div>
 
 <p>line_width array specifies box extends in case of position_is_center=true, otherwise the maximum point of each box </p>
 
-<p class="definition">Definition at line <a class="el" href="line__renderer_8h_source.html#l00100">100</a> of file <a class="el" href="line__renderer_8h_source.html">line_renderer.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="line__renderer_8h_source.html#l00096">96</a> of file <a class="el" href="line__renderer_8h_source.html">line_renderer.h</a>.</p>
 
 </div>
 </div>
@@ -1132,7 +1132,7 @@ template&lt;typename T &gt; </div>
 
 <p>line_width array specifies box extends in case of position_is_center=true, otherwise the maximum point of each box </p>
 
-<p class="definition">Definition at line <a class="el" href="line__renderer_8h_source.html#l00103">103</a> of file <a class="el" href="line__renderer_8h_source.html">line_renderer.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="line__renderer_8h_source.html#l00099">99</a> of file <a class="el" href="line__renderer_8h_source.html">line_renderer.h</a>.</p>
 
 </div>
 </div>
@@ -1174,7 +1174,7 @@ template&lt;typename T &gt; </div>
 
 <p>specify a single normal for all lines </p>
 
-<p class="definition">Definition at line <a class="el" href="line__renderer_8h_source.html#l00086">86</a> of file <a class="el" href="line__renderer_8h_source.html">line_renderer.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="line__renderer_8h_source.html#l00082">82</a> of file <a class="el" href="line__renderer_8h_source.html">line_renderer.h</a>.</p>
 
 </div>
 </div>
@@ -1216,7 +1216,7 @@ template&lt;typename T &gt; </div>
 
 <p>templated method to set the normal attribute from a vector of normals of type T, which should have 3 components </p>
 
-<p class="definition">Definition at line <a class="el" href="line__renderer_8h_source.html#l00089">89</a> of file <a class="el" href="line__renderer_8h_source.html">line_renderer.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="line__renderer_8h_source.html#l00085">85</a> of file <a class="el" href="line__renderer_8h_source.html">line_renderer.h</a>.</p>
 
 </div>
 </div>
@@ -1270,7 +1270,7 @@ template&lt;typename T &gt; </div>
 
 <p>templated method to set the normal attribute from an array of normals of type T, which should have 3 components </p>
 
-<p class="definition">Definition at line <a class="el" href="line__renderer_8h_source.html#l00092">92</a> of file <a class="el" href="line__renderer_8h_source.html">line_renderer.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="line__renderer_8h_source.html#l00088">88</a> of file <a class="el" href="line__renderer_8h_source.html">line_renderer.h</a>.</p>
 
 </div>
 </div>
@@ -1295,7 +1295,7 @@ template&lt;typename T &gt; </div>
 </table>
 </div><div class="memdoc">
 
-<p class="definition">Definition at line <a class="el" href="line__renderer_8h_source.html#l00066">66</a> of file <a class="el" href="line__renderer_8h_source.html">line_renderer.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="line__renderer_8h_source.html#l00062">62</a> of file <a class="el" href="line__renderer_8h_source.html">line_renderer.h</a>.</p>
 
 </div>
 </div>
@@ -1319,7 +1319,7 @@ template&lt;typename T &gt; </div>
 </table>
 </div><div class="memdoc">
 
-<p class="definition">Definition at line <a class="el" href="line__renderer_8h_source.html#l00065">65</a> of file <a class="el" href="line__renderer_8h_source.html">line_renderer.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="line__renderer_8h_source.html#l00061">61</a> of file <a class="el" href="line__renderer_8h_source.html">line_renderer.h</a>.</p>
 
 </div>
 </div>
@@ -1343,7 +1343,7 @@ template&lt;typename T &gt; </div>
 </table>
 </div><div class="memdoc">
 
-<p class="definition">Definition at line <a class="el" href="line__renderer_8h_source.html#l00064">64</a> of file <a class="el" href="line__renderer_8h_source.html">line_renderer.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="line__renderer_8h_source.html#l00060">60</a> of file <a class="el" href="line__renderer_8h_source.html">line_renderer.h</a>.</p>
 
 </div>
 </div>

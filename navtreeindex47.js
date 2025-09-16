@@ -1,5 +1,7 @@
 var NAVTREEINDEX47 =
 {
+"vr__driver_8h.html#a3420569d66aab89ad53aa8ee86f76733":[12,0,3,7,7,4],
+"vr__driver_8h.html#a47b17f79c10c7253e14cefa9de1e018e":[12,0,3,7,7,9],
 "vr__driver_8h.html#a715b77ea48336bbd440f9e297a6a8b47":[12,0,3,7,7,3],
 "vr__driver_8h.html#a79801f1f8d60a2fa8b4c57f057035d0f":[12,0,3,7,7,5],
 "vr__driver_8h.html#a848c5ddba64a8edf61f153c9660ef1ad":[12,0,3,7,7,8],
