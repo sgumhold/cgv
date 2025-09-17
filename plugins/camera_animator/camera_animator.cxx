@@ -109,7 +109,7 @@ camera_animator::camera_animator() : cgv::base::group("Camera Animator") {
 	paths_rd.style.default_line_width = 2.0f;
 	paths_rd.style.halo_color = cgv::rgb(1.0f);
 	paths_rd.style.halo_color_strength = 0.5f;
-	paths_rd.style.percentual_halo_width = 0.0f;// -100.0f;
+	paths_rd.style.percentual_halo_width = 0.0f;
 	paths_rd.style.blend_width_in_pixel = 1.0f;
 	paths_rd.style.blend_lines = true;
 
@@ -182,33 +182,44 @@ bool camera_animator::self_reflect(cgv::reflect::reflection_handler& rh) {
 bool camera_animator::handle(cgv::gui::event& e) {
 
 	// return true if the event gets handled and stopped here or false if you want to pass it to the next plugin
-	unsigned et = e.get_kind();
+	if(!get_context() || !view_ptr)
+		return false;
 
 	auto& ctx = *get_context();
 
+	unsigned et = e.get_kind();
 	if(et == cgv::gui::EID_MOUSE) {
 		cgv::gui::mouse_event& me = dynamic_cast<cgv::gui::mouse_event&>(e);
 		cgv::gui::MouseAction ma = me.get_action();
 
-		if(me.get_button() == cgv::gui::MB_LEFT_BUTTON && ma == cgv::gui::MA_PRESS) {
-			if(view_ptr) {
-				cgv::ivec2 viewport_size(ctx.get_width(), ctx.get_height());
-				cgv::ivec2 mpos(
-					static_cast<int>(me.get_x()),
-					viewport_size.y() - static_cast<int>(me.get_y()) - 1
-				);
+		cgv::ivec2 mpos(
+			static_cast<int>(me.get_x()),
+			static_cast<int>(ctx.get_height()) - static_cast<int>(me.get_y()) - 1
+		);
 
-				cgv::math::ray3 ray(
-					static_cast<cgv::vec2>(mpos),
-					static_cast<cgv::vec2>(viewport_size),
-					view_ptr->get_eye(),
-					ctx.get_projection_matrix() * ctx.get_modelview_matrix()
-				);
-
-				// TODO: implement picking
+		switch(me.get_action()) {
+		case cgv::gui::MA_PRESS:
+			if(me.get_button() == cgv::gui::MB_LEFT_BUTTON && me.get_modifiers() == 0) {
+				check_for_click = me.get_time();
+				mouse_down_position = mpos;
 			}
+			break;
+		case cgv::gui::MA_RELEASE:
+			if(check_for_click != -1) {
+				check_for_click = -1.0;
+				cgv::ivec2 mouse_delta = abs(mouse_down_position - mpos);
+				if(mouse_delta.x() + mouse_delta.y() <= 2) {
+					if(pick_keyframe(ctx, mouse_down_position))
+						return true;
+				}
+			}
+			break;
+		case cgv::gui::MA_DRAG:
+			check_for_click = -1.0;
+			break;
+		default:
+			break;
 		}
-
 	} else if(et == cgv::gui::EID_KEY) {
 		cgv::gui::key_event& ke = dynamic_cast<cgv::gui::key_event&>(e);
 		cgv::gui::KeyAction ka = ke.get_action();
@@ -444,6 +455,8 @@ void camera_animator::after_finish(context& ctx) {
 
 void camera_animator::create_gui() {
 
+	add_gui("", keyframes_rd.style);
+
 	add_decorator("Camera Animator", "heading", "level=2");
 	help.create_gui(this);
 
@@ -573,6 +586,39 @@ std::pair<size_t, float> camera_animator::get_max_frame_and_time() {
 	return { 0ull, 0.0f };
 }
 
+bool camera_animator::pick_keyframe(context& ctx, cgv::ivec2 mouse_position) {
+
+	if(!timeline_ptr)
+		return false;
+
+	const cgv::mat4 MVPW = ctx.get_modelview_projection_window_matrix();
+	const float halo_grow_factor = 1.0f + (keyframes_rd.style.percentual_halo_width / 100.0f);
+	float eye_keyframe_radius = 0.5f * eye_keyframe_diameter * halo_grow_factor + 1.0f;
+	float focus_keyframe_radius = 0.5f * focus_keyframe_diameter * halo_grow_factor + 1.0f;
+
+	const auto calculate_distance = [&MVPW](const cgv::vec3& position3d, cgv::vec2 query_position) {
+		cgv::vec4 p = MVPW.mul_pos(position3d);
+		p /= p.w();
+		cgv::vec2 position2d = { p.x(), p.y() };
+		return length(query_position - position2d);
+	};
+
+	cgv::vec2 pick_position(mouse_down_position);
+
+	for(const auto& keyframe : animation->ref_keyframes()) {
+		const view_parameters& camera_state = keyframe.second.camera_state;
+
+		bool hit_eye_keyframe = calculate_distance(camera_state.eye_position, pick_position) <= eye_keyframe_radius;
+		bool hit_focus_keyframe = calculate_distance(camera_state.focus_position, pick_position) <= focus_keyframe_radius;
+		if(hit_eye_keyframe || hit_focus_keyframe) {
+			timeline_ptr->set_selected_frame(keyframe.first);
+			return true;
+		}
+	}
+
+	return false;
+}
+
 void camera_animator::udpate_animation_member_limits() {
 
 	auto limits = get_max_frame_and_time();
@@ -633,12 +679,12 @@ void camera_animator::create_camera_render_data(const view_parameters& view) {
 		view_rd.fill_colors({ 0.5f });
 	}
 
+	const float scale = 0.1f;
+
 	size_t last_index = view_rd.positions.size() - 1;
-	view_rd.positions[last_index - 1] = view.eye_position;
+	view_rd.positions[last_index - 1] = view.eye_position + scale * view.view_direction();
 	view_rd.positions[last_index] = view.focus_position;
 	view_rd.set_out_of_date();
-
-	const float scale = 0.1f;
 
 	// TODO: The transformation is not a pure rotation because the view up direction is not consistently orthogonal to the view direction.
 	// This problem originates in the cgv::render::view itself.
@@ -660,10 +706,10 @@ void camera_animator::create_path_render_data() {
 		return;
 
 	for(const auto& pair : animation->ref_keyframes())
-		keyframes_rd.add(pair.second.camera_state.eye_position, theme.highlight(), 12.0f);
+		keyframes_rd.add(pair.second.camera_state.eye_position, theme.highlight(), eye_keyframe_diameter);
 	
 	for(const auto& pair : animation->ref_keyframes())
-		keyframes_rd.add(pair.second.camera_state.focus_position, theme.warning(), 8.0f);
+		keyframes_rd.add(pair.second.camera_state.focus_position, theme.warning(), focus_keyframe_diameter);
 	
 	const cgv::rgb white = { 1.0f };
 	const cgv::rgb camera_path_color = cgv::media::lerp(theme.highlight(), white, 0.333f);
