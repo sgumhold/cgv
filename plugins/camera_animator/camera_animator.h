@@ -27,6 +27,30 @@ class CGV_API camera_animator :
 	public cgv::gui::provider,
 	public cgv::gui::event_handler {
 protected:
+
+
+
+
+
+
+
+
+
+	cgv::ivec2 mouse_down_position = { -1 };
+	double check_for_click = -1.0;
+
+	const float eye_keyframe_diameter = 12.0f;
+	const float focus_keyframe_diameter = 8.0f;
+
+
+
+
+
+
+
+
+
+
 	FILE* fp = 0;
 	int fps = 30;
 	bool video_open = false;
@@ -86,6 +110,8 @@ protected:
 	bool set_animation_state(bool use_continuous_time);
 
 	std::pair<size_t, float> get_max_frame_and_time();
+
+	bool pick_keyframe(cgv::render::context& ctx, cgv::ivec2 mouse_position);
 
 	void udpate_animation_member_limits();
 

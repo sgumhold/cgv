@@ -67,8 +67,6 @@ bool keyframe_editor_overlay::handle_mouse_event(cgv::gui::mouse_event& e, cgv::
 		return true;
 
 	if(e.get_button() == cgv::gui::MB_LEFT_BUTTON && e.get_action() == cgv::gui::MA_PRESS) {
-		//ivec2 local_mouse_position = get_local_mouse_pos(ivec2(me.get_x(), me.get_y()));
-
 		if(layout.marker_constraint.contains(local_mouse_pos))
 			set_frame(position_to_frame(local_mouse_pos.x() + layout.timeline_offset));
 			
@@ -285,6 +283,25 @@ void keyframe_editor_overlay::update() {
 	post_damage();
 }
 
+void keyframe_editor_overlay::set_selected_frame(size_t frame) {
+
+	selected_frame = frame;
+
+	if(data) {
+		if(keyframe* k = data->keyframe_at(selected_frame)) {
+			easing_function_id = k->easing_id();
+
+			invoke_callback(Event::kKeySelect);
+		}
+	}
+
+	if(selected_frame == -1)
+		invoke_callback(Event::kKeyDeselect);
+
+	post_recreate_gui();
+	post_damage();
+}
+
 void keyframe_editor_overlay::add_keyframe() {
 
 	if(view_ptr && data) {
@@ -356,24 +373,6 @@ void keyframe_editor_overlay::set_frame(size_t frame) {
 
 		post_damage();
 	}
-}
-
-void keyframe_editor_overlay::set_selected_frame(size_t frame) {
-
-	selected_frame = frame;
-
-	if(data) {
-		if(keyframe* k = data->keyframe_at(selected_frame)) {
-			easing_function_id = k->easing_id();
-
-			invoke_callback(Event::kKeySelect);
-		}
-	}
-
-	if(selected_frame == -1)
-		invoke_callback(Event::kKeyDeselect);
-
-	post_recreate_gui();
 }
 
 void keyframe_editor_overlay::change_duration(bool before) {
