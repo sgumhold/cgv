@@ -45,7 +45,7 @@ cgv::render::shader_compile_options texture_algorithm::get_compile_options(const
 	std::string dims_suffix = std::to_string(dims) + "D";
 
 	// TODO: use larger group size for lower dimensional textures (try to aim for total occupancy of Streaming multiprocessor, e.g. 64 for RTX 2080)
-	cgv::render::shader_compile_options compile_options;// = algorithm::configure(info);// algorithm::get_configuration(info);
+	cgv::render::shader_compile_options compile_options;
 	compile_options.defines["LOCAL_SIZE_X"] = std::to_string(local_size.x());
 	compile_options.defines["LOCAL_SIZE_Y"] = std::to_string(local_size.y());
 	compile_options.defines["LOCAL_SIZE_Z"] = std::to_string(local_size.z());
@@ -68,11 +68,18 @@ bool texture_algorithm::init(cgv::render::context& ctx, const texture_algorithm_
 
 	cgv::render::shader_compile_options compile_options = get_compile_options(create_info);
 
-	// TODO: write append_and_overwrite methjod for compile options and use it here and in algorithm.
-	compile_options.snippets.insert(compile_options.snippets.end(), create_info.options.snippets.begin(), create_info.options.snippets.end());
+
+
+	
 
 	for(const auto& define : create_info.options.defines)
 		compile_options.defines[define.first] = define.second;
+
+	// TODO: write append_and_overwrite methjod for compile options and use it here and in algorithm.
+	compile_options.snippets.insert(compile_options.snippets.end(), create_info.options.snippets.begin(), create_info.options.snippets.end());
+
+
+
 
 	algorithm_create_info create_info2 = create_info;
 	create_info2.options = compile_options;
