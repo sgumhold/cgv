@@ -9,26 +9,14 @@ bool texture_algorithm::is_texture_type_supported(TextureType texture_type) cons
 	return std::find(_supported_texture_types.begin(), _supported_texture_types.end(), texture_type) != _supported_texture_types.end();
 }
 
-bool texture_algorithm::init(cgv::render::context& ctx, TextureType texture_type, const std::vector<compute_kernel_info>& kernel_infos, const cgv::render::shader_compile_options& config) {
-	if(is_texture_type_supported(texture_type)) {
-		_texture_type = texture_type;
-		return algorithm::init(ctx, kernel_infos, config);
-	}
-	return false;
-}
-
-bool texture_algorithm::is_initialized_for_texture(const cgv::render::texture& texture) const {
-	return texture.tt == _texture_type;
-}
-
-cgv::render::shader_compile_options texture_algorithm::get_configuration(TextureType texture_type, const argument_definitions& arguments) const {
+cgv::render::shader_compile_options texture_algorithm::get_compile_options(const texture_algorithm_create_info& create_info) {
 	uint32_t dims = 0;
 	sl::data_type index_type = sl::Type::kVoid;
 	sl::data_type coord_type = sl::Type::kVoid;
 	uvec3 local_size = { 1, 1, 1 };
 	std::string size_guard;
 
-	switch(texture_type) {
+	switch(create_info.texture_type) {
 	case TextureType::TT_1D:
 		dims = 1;
 		index_type = sl::Type::kInt;
@@ -54,20 +42,53 @@ cgv::render::shader_compile_options texture_algorithm::get_configuration(Texture
 		break;
 	}
 
-	// TODO: use larger group size for lower dimensional textures (try to aim for total occupancy of Streaming multiprocessor, e.g. 64 for RTX 2080)
-	cgv::render::shader_compile_options config = algorithm::get_configuration(arguments);
-	config.defines["LOCAL_SIZE_X"] = std::to_string(local_size.x());
-	config.defines["LOCAL_SIZE_Y"] = std::to_string(local_size.y());
-	config.defines["LOCAL_SIZE_Z"] = std::to_string(local_size.z());
-	config.defines["DIMS"] = std::to_string(dims);
-	config.defines["INDEX_TYPE"] = index_type.type_name();
-	config.defines["COORD_TYPE"] = coord_type.type_name();
 	std::string dims_suffix = std::to_string(dims) + "D";
-	config.defines["SAMPLER_TYPE"] = "sampler" + dims_suffix;
-	config.defines["IMAGE_TYPE"] = "image" + dims_suffix;
-	config.defines["SIZE_GUARD(IDX, SIZE)"] = size_guard;
 
-	return config;
+	// TODO: use larger group size for lower dimensional textures (try to aim for total occupancy of Streaming multiprocessor, e.g. 64 for RTX 2080)
+	cgv::render::shader_compile_options compile_options;
+	compile_options.defines["LOCAL_SIZE_X"] = std::to_string(local_size.x());
+	compile_options.defines["LOCAL_SIZE_Y"] = std::to_string(local_size.y());
+	compile_options.defines["LOCAL_SIZE_Z"] = std::to_string(local_size.z());
+	compile_options.defines["DIMS"] = std::to_string(dims);
+	compile_options.defines["INDEX_TYPE"] = index_type.type_name();
+	compile_options.defines["COORD_TYPE"] = coord_type.type_name();
+	compile_options.defines["SAMPLER_TYPE"] = "sampler" + dims_suffix;
+	compile_options.defines["IMAGE_TYPE"] = get_type_prefix(create_info.image_format) + "image" + dims_suffix;
+	compile_options.defines["IMAGE_FORMAT"] = to_string(create_info.image_format);
+	compile_options.defines["SIZE_GUARD(IDX, SIZE)"] = size_guard;
+
+	return compile_options;
+}
+
+bool texture_algorithm::init(cgv::render::context& ctx, const texture_algorithm_create_info& create_info, const std::vector<compute_kernel_info>& kernel_infos) {
+	if(!is_texture_type_supported(create_info.texture_type))
+		return false;
+	
+	_texture_type = create_info.texture_type;
+
+	cgv::render::shader_compile_options compile_options = get_compile_options(create_info);
+
+
+
+	
+
+	for(const auto& define : create_info.options.defines)
+		compile_options.defines[define.first] = define.second;
+
+	// TODO: write append_and_overwrite methjod for compile options and use it here and in algorithm.
+	compile_options.snippets.insert(compile_options.snippets.end(), create_info.options.snippets.begin(), create_info.options.snippets.end());
+
+
+
+
+	algorithm_create_info create_info2 = create_info;
+	create_info2.options = compile_options;
+		
+	return algorithm::init(ctx, create_info2, kernel_infos);
+}
+
+bool texture_algorithm::is_initialized_for_texture(const cgv::render::texture& texture) const {
+	return texture.tt == _texture_type;
 }
 
 uvec3 texture_algorithm::get_texture_size(const cgv::render::texture& texture) const {
@@ -79,6 +100,7 @@ uvec3 texture_algorithm::get_texture_size(const cgv::render::texture& texture) c
 }
 
 uvec3 texture_algorithm::get_num_groups(const uvec3& texture_size, uint32_t base_group_size) const {
+	// TODO: Ensure base_group_size is equal to the local_size set in init (add second method that only takes the texture size and uses the local_size)
 	uvec3 num_groups = cgv::math::div_round_up(texture_size, uvec3(base_group_size));
 	// ensure at least one group is launched per dimension
 	return max(num_groups, uvec3(1));

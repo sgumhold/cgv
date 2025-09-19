@@ -74,17 +74,73 @@ bool algorithm::is_initialized() const {
 	return _is_initialized;
 }
 
-bool algorithm::init(cgv::render::context& ctx, const std::vector<compute_kernel_info>& kernel_infos, const cgv::render::shader_compile_options& config) {
+cgv::render::shader_compile_options algorithm::get_compile_options(const algorithm_create_info& create_info) {
+	detail::type_compiler compiler;
+	compiler.add(create_info.types);
+
+	std::string arguments_str = "";
+
+	if(create_info.arguments) {
+		const argument_definitions* arguments = create_info.arguments;
+
+		compiler.add(arguments->uniforms);
+		for(const sl::named_buffer& buffer : arguments->buffers)
+			compiler.add(buffer.variables());
+
+		arguments_str += to_string(arguments->uniforms, "uniform") + "\n";
+		arguments_str += to_string(arguments->buffers, create_info.default_buffer_count) + "\n";
+		arguments_str += to_string(arguments->images, create_info.default_image_count) + "\n";
+		arguments_str += to_string(arguments->textures, create_info.default_texture_count) + "\n";
+
+		_buffer_binding_indices.clear();
+		uint32_t buffer_binding_index = create_info.default_buffer_count;
+		for(const sl::named_buffer& buffer : arguments->buffers)
+			_buffer_binding_indices[buffer.name()] = buffer_binding_index++;
+
+		_image_binding_indices.clear();
+		uint32_t image_binding_index = create_info.default_image_count;
+		for(const sl::named_image& image : arguments->images)
+			_image_binding_indices[image.name()] = image_binding_index++;
+
+		_texture_binding_indices.clear();
+		uint32_t texture_binding_index = create_info.default_texture_count;
+		for(const sl::named_texture& texture : arguments->textures)
+			_texture_binding_indices[texture.name()] = texture_binding_index++;
+	}
+
+	std::string typedefs_str = compiler.compile();
+
+	for(const auto& def : create_info.typedefs)
+		typedefs_str += sl::get_type_alias_string(def.first, def.second) + "\n";
+
+	cgv::render::shader_compile_options compile_options;
+	compile_options.defines["LOCAL_SIZE_X"] = std::to_string(_group_size);
+	compile_options.defines["LOCAL_SIZE_Y"] = "1";
+	compile_options.defines["LOCAL_SIZE_Z"] = "1";
+	compile_options.snippets.push_back({ "typedefs", typedefs_str });
+	compile_options.snippets.push_back({ "arguments", arguments_str });
+
+	for(const auto& define: create_info.options.defines)
+		compile_options.defines[define.first] = define.second;
+
+	compile_options.snippets.insert(compile_options.snippets.end(), create_info.options.snippets.begin(), create_info.options.snippets.end());
+
+	return compile_options;
+}
+
+bool algorithm::init(cgv::render::context& ctx, const algorithm_create_info& create_info, const std::vector<compute_kernel_info>& kernel_infos) {
+	cgv::render::shader_compile_options compile_options = get_compile_options(create_info);
+
 	const std::string debug_context = "cgv::gpgpu::" + get_type_name();
 	bool success = true;
 	for(const auto& info : kernel_infos) {
 		if(info.defines.empty()) {
-			success &= info.kernel->init(ctx, info.name, config, debug_context);
+			success &= info.kernel->init(ctx, info.name, compile_options, debug_context);
 		} else {
-			cgv::render::shader_compile_options extended_config = config;
+			cgv::render::shader_compile_options extended_compile_options = compile_options;
 			for(const auto& define : info.defines)
-				extended_config.defines[define.first] = define.second;
-			success &= info.kernel->init(ctx, info.name, extended_config, debug_context);
+				extended_compile_options.defines[define.first] = define.second;
+			success &= info.kernel->init(ctx, info.name, extended_compile_options, debug_context);
 		}
 	}
 	_is_initialized = success;
@@ -95,50 +151,42 @@ void algorithm::destruct(const cgv::render::context& ctx) {
 	_is_initialized = false;
 }
 
-void algorithm::set_buffer_binding_indices(const sl::named_buffer_list& buffers, uint32_t base_index) {
-	_base_buffer_binding_index = base_index;
-	_buffer_binding_indices.clear();
-	uint32_t buffer_binding_index = _base_buffer_binding_index;
-	for(const sl::named_buffer& buffer : buffers)
-		_buffer_binding_indices[buffer.name()] = buffer_binding_index++;
-}
-
-cgv::render::shader_compile_options algorithm::get_configuration(const argument_definitions& arguments, const std::vector<sl::data_type> types) const {
-	detail::type_compiler compiler;
-	compiler.add(types);
-	compiler.add(arguments.uniforms);
-	for(const sl::named_buffer& buffer : arguments.buffers)
-		compiler.add(buffer.variables());
-
-	std::string typedefs = compiler.compile();
-
-	std::string uniforms = to_string(arguments.uniforms, "uniform");
-	std::string buffers = to_string(arguments.buffers, _base_buffer_binding_index);
-
-	cgv::render::shader_compile_options config;
-	config.snippets.push_back({ "typedefs", typedefs });
-	config.snippets.push_back({ "arguments", uniforms + "\n" + buffers });
-	return config;
-}
-
 bool algorithm::is_valid_range(device_buffer_iterator first, device_buffer_iterator last) {
 	return compatible(first, last) && distance(first, last) > 0;
 }
 
-void algorithm::bind_buffer_arguments(cgv::render::context& ctx, const argument_bindings& arguments) {
+void algorithm::bind_buffer_like_arguments(cgv::render::context& ctx, const argument_bindings& arguments) {
 	for(size_t i = 0; i < arguments.get_buffer_count(); ++i) {
 		const buffer_binding* binding = arguments.get_buffer(i);
 		auto it = _buffer_binding_indices.find(binding->name());
 		if(it != _buffer_binding_indices.end())
 			binding->bind(ctx, it->second);
 	}
+
+	for(size_t i = 0; i < arguments.get_image_count(); ++i) {
+		const image_binding* binding = arguments.get_image(i);
+		auto it = _image_binding_indices.find(binding->name());
+		if(it != _image_binding_indices.end())
+			binding->bind(ctx, it->second);
+	}
+
+	for(size_t i = 0; i < arguments.get_texture_count(); ++i) {
+		const texture_binding* binding = arguments.get_texture(i);
+		auto it = _texture_binding_indices.find(binding->name());
+		if(it != _texture_binding_indices.end())
+			binding->bind(ctx, it->second);
+	}
 }
 
-void algorithm::unbind_buffer_arguments(cgv::render::context& ctx, const argument_bindings& arguments) {
-	for(size_t i = 0; i < arguments.get_buffer_count(); ++i) {
-		const buffer_binding* binding = arguments.get_buffer(i);
-		binding->unbind(ctx);
-	}
+void algorithm::unbind_buffer_like_arguments(cgv::render::context& ctx, const argument_bindings& arguments) {
+	for(size_t i = 0; i < arguments.get_buffer_count(); ++i)
+		arguments.get_buffer(i)->unbind(ctx);
+
+	for(size_t i = 0; i < arguments.get_image_count(); ++i)
+		arguments.get_image(i)->unbind(ctx);
+
+	for(size_t i = 0; i < arguments.get_texture_count(); ++i)
+		arguments.get_texture(i)->unbind(ctx);
 }
 
 void algorithm::dispatch_compute(unsigned num_groups_x, unsigned num_groups_y, unsigned num_groups_z) {
