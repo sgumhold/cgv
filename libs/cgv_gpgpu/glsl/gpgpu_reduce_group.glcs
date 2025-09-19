@@ -5,8 +5,6 @@
 #ifdef CGV_USE_SNIPPETS
 layout(local_size_x = LOCAL_SIZE_X) in;
 
-//$cgv::value_typedef
-
 layout(std430, binding = 0) buffer input_buffer {
 	value_type data_in[];
 };

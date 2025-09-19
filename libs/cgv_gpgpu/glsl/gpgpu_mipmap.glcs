@@ -1,5 +1,7 @@
 #version 430
 
+#include "gpgpu_args.glcs"
+
 #ifdef CGV_USE_SNIPPETS
 layout(binding = 0) uniform SAMPLER_TYPE input_tex;
 layout(binding = 1) uniform writeonly IMAGE_TYPE output_tex;

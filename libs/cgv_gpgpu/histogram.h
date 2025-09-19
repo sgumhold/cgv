@@ -2,6 +2,7 @@
 
 #include "algorithm.h"
 #include "device_buffer_iterator.h"
+#include "storage_buffer.h"
 #include "fill.h"
 
 #include "lib_begin.h"
@@ -12,7 +13,7 @@ namespace gpgpu {
 /// GPU compute shader implementation for computing a histogram from a range of values.
 class CGV_API histogram : public algorithm {
 public:
-	histogram(uint32_t num_bins);
+	histogram(uint32_t num_bins, uint32_t group_size = CGV_GPGPU_DEFAULT_GROUP_SIZE);
 
 	bool init(cgv::render::context& ctx, const sl::data_type& value_type);
 
@@ -35,10 +36,9 @@ public:
 
 	template<typename T, CGV_GPGPU_DISABLE_DERIVED_TYPES(argument_bindings)>
 	bool dispatch(cgv::render::context& ctx, device_buffer_iterator input_first, device_buffer_iterator input_last, device_buffer_iterator output_first, T lower_limit, T upper_limit, bool clear_bins = true) {
-		argument_binding_list arguments = {
-			{ _value_type, lower_limit_argument_name, lower_limit },
-			{ _value_type, upper_limit_argument_name, upper_limit }
-		};
+		argument_binding_list arguments;
+		arguments.bind_uniform(_value_type, lower_limit_argument_name, lower_limit);
+		arguments.bind_uniform(_value_type, upper_limit_argument_name, upper_limit);
 		bool use_remapping = !range_fits_bin_count(lower_limit, upper_limit);
 		return dispatch(ctx, input_first, input_last, output_first, arguments, use_remapping, clear_bins);
 	}
