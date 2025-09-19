@@ -114,6 +114,9 @@ cgv::render::shader_compile_options algorithm::get_compile_options(const algorit
 		typedefs_str += sl::get_type_alias_string(def.first, def.second) + "\n";
 
 	cgv::render::shader_compile_options compile_options;
+	compile_options.defines["LOCAL_SIZE_X"] = std::to_string(_group_size);
+	compile_options.defines["LOCAL_SIZE_Y"] = "1";
+	compile_options.defines["LOCAL_SIZE_Z"] = "1";
 	compile_options.snippets.push_back({ "typedefs", typedefs_str });
 	compile_options.snippets.push_back({ "arguments", arguments_str });
 
