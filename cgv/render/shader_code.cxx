@@ -625,16 +625,19 @@ void shader_code::set_defines_and_snippets(std::string& source, const shader_com
 	enum class DirectiveType {
 		kUndefined,
 		kDefine,
+		//kUndef,
 		kSnippet
 	};
 
 	struct directive_t {
 		DirectiveType type = DirectiveType::kUndefined;
 		std::string identifier;
-		std::string value;
+		std::string replacement_list;
 	};
 	
-	if(options.defines.empty() && options.snippets.empty())
+	//if(options.defines.empty() && options.snippets.empty())
+	//	return;
+	if(options.empty())
 		return;
 
 	std::map<std::string, directive_t*> directives;
@@ -680,7 +683,7 @@ void shader_code::set_defines_and_snippets(std::string& source, const shader_com
 
 			switch(directive_type) {
 			case DirectiveType::kDefine:
-				// A valid define directive will have at least two tokens (directive and name)
+				// A valid preprocessor directive will have at least two tokens (directive type and identifier)
 				if(tokens.size() > 1) {
 					std::string first_token_str = to_string(tokens.front());
 
@@ -690,10 +693,10 @@ void shader_code::set_defines_and_snippets(std::string& source, const shader_com
 						directive = new directive_t{ directive_type };
 						directive->identifier = to_string(tokens[1]);
 
-						// Any following tokens are considered to be the value of the define.
+						// Any following tokens are considered to be the value (replacement_list) of the define.
 						if(tokens.size() > 2) {
 							cgv::utils::token value_token(tokens[2].begin, tokens.back().end);
-							directive->value = to_string(value_token);
+							directive->replacement_list = to_string(value_token);
 						}
 					}
 				}
@@ -719,19 +722,25 @@ void shader_code::set_defines_and_snippets(std::string& source, const shader_com
 
 	std::vector<std::pair<std::string, std::string>> additional_defines;
 
-	for(const auto& define : options.defines) {
+	//for(const auto& define : options.defines) {
+	for(const auto& define : options.get_defines()) {
 		auto it = directives.find(define.first);
-		if(it != directives.end() && it->second->type == DirectiveType::kDefine)
-			it->second->value = define.second;
-		else
-			additional_defines.push_back(define);
+		if(it != directives.end() && it->second->type == DirectiveType::kDefine) {
+			it->second->replacement_list = define.second;
+			//if(define.second.is_undef)
+			//	it->second->type = DirectiveType::kUndef;
+			//else
+			//	it->second->replacement_list = define.second.replacement_list;
+		} else {
+			additional_defines.push_back({ define.first, define.second });
+			//additional_defines.push_back({ define.first, define.second.replacement_list });
+		}
 	}
 
-	bool use_snippets = false;
-	if(!options.snippets.empty()) {
+	const shader_compile_options::string_map& snippets = options.get_snippets();
+	//if(!options.snippets.empty())
+	if(!snippets.empty())
 		additional_defines.push_back({ "CGV_USE_SNIPPETS", "" });
-		use_snippets = true;
-	}
 
 	std::string out;
 	// The output string is going to have a similar length as the input.
@@ -746,15 +755,23 @@ void shader_code::set_defines_and_snippets(std::string& source, const shader_com
 
 			switch(directive->type) {
 			case DirectiveType::kDefine:
-				out += "#define " + directive->identifier + " " + directive->value;
+				out += "#define " + directive->identifier + " " + directive->replacement_list;
 				break;
+			//case DirectiveType::kUndef:
+			//	// skip the line in case of undef directive, effectively removing it
+			//	break;
 			case DirectiveType::kSnippet:
-				if(use_snippets) {
-					auto it = std::find_if(options.snippets.begin(), options.snippets.end(), [directive](const shader_code_snippet& snippet) {
-						return directive->identifier == "cgv::" + snippet.id;
+				//if(options.snippets.empty()) {
+				if(snippets.empty()) {
+					//auto it = std::find_if(options.snippets.begin(), options.snippets.end(), [directive](const shader_code_snippet& snippet) {
+					auto it = std::find_if(snippets.begin(), snippets.end(), [directive](const std::pair<std::string, std::string>& snippet) {
+						//return directive->identifier == "cgv::" + snippet.id;
+						return directive->identifier == "cgv::" + snippet.first;
 					});
-					if(it != options.snippets.end())
-						out += it->content;
+					//if(it != options.snippets.end())
+					if(it != snippets.end())
+						//out += it->content;
+						out += it->second;
 					else
 						out += to_string(line);
 				}
