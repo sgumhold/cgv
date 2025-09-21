@@ -6,7 +6,6 @@
 namespace cgv {
 	namespace render {
 
-
 		void set_material_uniform(cgv::render::shader_program& prog, cgv::render::context& ctx, const std::string& name, const cgv::media::illum::surface_material& material)
 		{
 			prog.set_uniform(ctx, name + ".brdf_type", (int)material.get_brdf_type());
@@ -22,22 +21,6 @@ namespace cgv {
 			prog.set_uniform(ctx, name + ".metalness", material.get_metalness());
 		}
 
-		surface_render_style::surface_render_style() : material("default")
-		{
-			surface_color = cgv::media::illum::surface_material::color_type(0.4f, 0.1f, 0.7f);
-			surface_opacity = 1.0f;
-			culling_mode = CM_OFF;
-			illumination_mode = IM_ONE_SIDED;
-			map_color_to_material = CM_COLOR;
-			material.ref_brdf_type() = cgv::media::illum::BrdfType(cgv::media::illum::BT_STRAUSS_DIFFUSE + cgv::media::illum::BT_STRAUSS);
-		}
-
-		surface_renderer::surface_renderer()
-		{
-			cull_per_primitive = true;
-			has_normals = false;
-			has_texcoords = false;
-		}
 		/// call this before setting attribute arrays to manage attribute array in given manager
 		void surface_renderer::enable_attribute_array_manager(const context& ctx, attribute_array_manager& aam)
 		{

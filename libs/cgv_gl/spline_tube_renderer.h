@@ -17,11 +17,9 @@ namespace cgv { // @<
 		struct CGV_API spline_tube_render_style : public surface_render_style
 		{	
 			/// multiplied to the tube radius, initialized to 1
-			float radius_scale;
+			float radius_scale = 1.0f;
 			/// default tube radius, initialized to 1
-			float radius;
-			/// construct with default values
-			spline_tube_render_style();
+			float radius = 1.0f;
 		};
 
 		/// renderer that supports point splatting
@@ -29,24 +27,18 @@ namespace cgv { // @<
 		{
 		protected:
 			/// whether radii are specified
-			bool has_radii;
+			bool has_radii = false;
 			/// whether tangents are specified
-			bool has_tangents;
-
-			vec3 eye_pos;
-
-			/// overload to allow instantiation of spline_tube_renderer
-			render_style* create_render_style() const;
-			/// build spline tube program
-			bool build_shader_program(context& ctx, shader_program& prog, const shader_compile_options& options);
+			bool has_tangents = false;
+			/// the view eye position
+			vec3 eye_pos = { 0.0f };
+			/// return the default shader program name
+			std::string get_default_prog_name() const override { return "spline_tube.glpr"; }
+			/// create and return the default render style
+			render_style* create_render_style() const override { return new spline_tube_render_style(); }
 		public:
-
-
+			/// set the eye position needed for rendering
 			void set_eye_pos(vec3 ep) { eye_pos = ep; }
-
-
-			/// initializes position_is_center to true 
-			spline_tube_renderer();
 			/// call this before setting attribute arrays to manage attribute array in given manager
 			void enable_attribute_array_manager(const context& ctx, attribute_array_manager& aam);
 			/// call this after last render/draw call to ensure that no other users of renderer change attribute arrays of given manager

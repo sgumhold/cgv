@@ -275,7 +275,8 @@ int perform_test()
 			// in case of shader program, build it from the file
 			shader_program prog(true);
 			shader_compile_options compile_options;
-			compile_options.defines = defines;
+			for(const auto& define : defines)
+				compile_options.set_define(define.first, define.second);
 			if (prog.build_program(*g_ctx_ptr, g_argv[1], compile_options, g_shader_developer)) {
 				convert_to_string(g_argv[1], g_argv[2]);
 				//write(g_argv[2], "ok", 2, true);

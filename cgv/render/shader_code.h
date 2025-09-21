@@ -48,8 +48,44 @@ typedef cgv::data::ref_ptr<shader_config> shader_config_ptr;
 /// return a pointer to the current shader configuration
 extern CGV_API shader_config_ptr get_shader_config();
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 /// typedef for shader define map data structure
 typedef std::map<std::string, std::string> shader_define_map;
+
+
 
 /** a snippet of shader code in raw text form.
 	Used in shader_compile_options to replace special comments with user-defined code.
@@ -68,12 +104,12 @@ typedef std::map<std::string, std::string> shader_define_map;
 	...code relying on snippet content
 	#endif
 	*/
-struct shader_code_snippet {
-	/// the snippet id used for matching snippet markers in shader code
-	std::string id;
-	/// the snippet content; can be any valid piece of shader code
-	std::string content;
-};
+//struct shader_code_snippet {
+//	/// the snippet id used for matching snippet markers in shader code
+//	std::string id;
+//	/// the snippet content; can be any valid piece of shader code
+//	std::string content;
+//};
 
 /** holds options applied before and during shader compilation, such as preprocessor defines and code snippets.
 	Pre-processor defines will be handled as follows:
@@ -84,18 +120,156 @@ struct shader_code_snippet {
 	Snippets are handled as follows (also see shader_code_snippets):
 	- If at least one snippet is given, the additional define <CGV_USE_SNIPPETS> is set internally before compilation.
 	*/
-struct shader_compile_options {
-	/// map of pre-processor define names to values
-	shader_define_map defines;
-	/// shader code snippets
-	std::vector<shader_code_snippet> snippets;
 
-	// Add constructors to allow implicit cast from defines and enable backwards compatibility.
-	shader_compile_options() {}
-	shader_compile_options(const shader_define_map& defines) : defines(defines) {}
-	shader_compile_options(const std::vector<shader_code_snippet>& snippets) : snippets(snippets) {}
-	shader_compile_options(const shader_define_map& defines, const std::vector<shader_code_snippet>& snippets) : defines(defines), snippets(snippets) {}
+
+//struct shader_compile_options {
+//	shader_define_map defines;
+//	std::vector<shader_code_snippet> snippets;
+//};
+
+class shader_compile_options {
+public:
+	using string_map = std::map<std::string, std::string>;
+	
+	bool empty() const {
+		return defines.empty() && snippets.empty();
+	}
+
+	const string_map& get_defines() const {
+		return defines;
+	}
+
+	const string_map& get_snippets() const {
+		return snippets;
+	}
+
+	void set_define(const std::string& identifier) {
+		defines[identifier] = "";
+	}
+
+	void set_define(const std::string& identifier, const std::string& value) {
+		defines[identifier] = value;
+	}
+
+	template<typename T, typename std::enable_if<!std::is_enum<T>::value, bool>::type = true>
+	void set_define(const std::string& identifier, const T& value) {
+		defines[identifier] = std::to_string(value);
+	}
+
+	template<typename T, typename std::enable_if<std::is_enum<T>::value, bool>::type = true>
+	void set_define(const std::string& identifier, const T& value) {
+		defines[identifier] = std::to_string(static_cast<unsigned>(value));
+	}
+
+	void set_define(const std::string& identifier, bool value) {
+		defines[identifier] = value ? "1" : "0";
+	}
+
+	void set_define_if_not_default(const std::string& identifier, const std::string& value, const std::string& default) {
+		if(value != default)
+			defines[identifier] = value;
+		else
+			defines.erase(identifier);
+	}
+
+	template<typename T, typename std::enable_if<!std::is_enum<T>::value, bool>::type = true>
+	void set_define_if_not_default(const std::string& identifier, const T& value, const T& default) {
+		if(value != default)
+			defines[identifier] = std::to_string(value);
+		else
+			defines.erase(identifier);
+	}
+
+	template<typename T, typename std::enable_if<std::is_enum<T>::value, bool>::type = true>
+	void set_define_if_not_default(const std::string& identifier, const T& value, const T& defualt) {
+		if(value != default)
+			defines[identifier] = std::to_string(static_cast<unsigned>(value));
+		else
+			defines.erase(identifier);
+	}
+
+	void set_define_if_not_default(const std::string& identifier, bool value, bool default) {
+		if(value != default)
+			defines[identifier] = value ? "1" : "0";
+		else
+			defines.erase(identifier);
+	}
+
+	void set_defined_if_true(bool predicate, const std::string& identifier) {
+		if(predicate)
+			set_define(identifier);
+		else
+			remove_define(identifier);
+	}
+
+	void remove_define(const std::string& identifier) {
+		defines.erase(identifier);
+	}
+
+	void set_snippet(const std::string& identifier, const std::string& content) {
+		snippets[identifier] = content;
+	}
+
+	void remove_snippet(const std::string& identifier) {
+		snippets.erase(identifier);
+	}
+
+	/// Extend by content of other shader_compile_options. If overwrite is true, existing defines and snippets are overwritten with the content from other.
+	/// If overwrite is false, existing content is not altered.
+	void extend(const shader_compile_options& other, bool overwrite) {
+		if(overwrite) {
+			for(const auto& define : other.defines)
+				defines[define.first] = define.second;
+
+			for(const auto& snippet : other.snippets)
+				snippets[snippet.first] = snippet.second;
+		} else {
+			defines.insert(other.defines.begin(), other.defines.end());
+			snippets.insert(other.snippets.begin(), other.snippets.end());
+		}
+	}
+
+	bool operator==(const shader_compile_options& other) const {
+		return defines == other.defines && snippets == other.snippets;
+	}
+
+	bool operator!=(const shader_compile_options& other) const {
+		return !(*this == other);
+	}
+
+private:
+	/// maps pre-processor define identifiers to replacement text
+	string_map defines;
+	/// maps snippet identifiers to repalcement content
+	string_map snippets;
 };
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 /** a shader code object holds a code fragment of a geometry
     vertex or fragment shader and can be added to a shader 
@@ -132,17 +306,6 @@ public:
 		else
 			defines.erase(name);
 	}
-
-protected:
-	/// map that caches full shader file paths indexed by the shader file name
-	static std::map<std::string, std::string> shader_file_name_map;
-	/// whether the shader file name map is initialized
-	static bool shader_file_name_map_initialized;
-	/// map that caches shader file contents indexed by their file name
-	static std::map<std::string, std::string> code_cache;
-
-	/// store the shader type
-	ShaderType st;
 
 public:
 	///create shader a shader code object
@@ -198,6 +361,17 @@ public:
 	bool read_and_compile(const context& ctx, const std::string& file_name, ShaderType st = ST_DETECT, const shader_compile_options& options = {}, bool show_error = true);
 	/// return whether shader has been compiled successfully
 	bool is_compiled() const;
+
+protected:
+	/// map that caches full shader file paths indexed by the shader file name
+	static std::map<std::string, std::string> shader_file_name_map;
+	/// whether the shader file name map is initialized
+	static bool shader_file_name_map_initialized;
+	/// map that caches shader file contents indexed by their file name
+	static std::map<std::string, std::string> code_cache;
+
+	/// store the shader type
+	ShaderType st;
 
 private:
 	/// search for include directives in the given source code, replace them by the included file contents and return the full source code as well as the set of all included files

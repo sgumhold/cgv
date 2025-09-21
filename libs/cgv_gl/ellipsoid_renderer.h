@@ -20,25 +20,22 @@ namespace cgv { // @<
 			/*@name ellipsoid rendering attributes*/
 			//@{
 			/// multiplied to the ellipsoid sizes, initialized to 1
-			float size_scale;
+			float size_scale = 1.0f;
 			/// default value assigned to size attribute in \c enable method of ellipsoid renderer, set to 1 in constructor
-			cgv::vec3 size;
+			cgv::vec3 size = { 1.0f };
 			//@}
-
-			/// construct with default values
-			ellipsoid_render_style();
 		};
 
 		/// renderer that supports splatting of ellipsoids
 		class CGV_API ellipsoid_renderer : public surface_renderer
 		{
 		protected:
-			bool has_sizes;
-			bool has_orientations;
-			/// overload to allow instantiation of point_renderer
-			render_style* create_render_style() const;
-			/// build ellipsoid program
-			bool build_shader_program(context& ctx, shader_program& prog, const shader_compile_options& options);
+			bool has_sizes = false;
+			bool has_orientations = false;
+			/// return the default shader program name
+			std::string get_default_prog_name() const override { return "ellispoid.glpr"; }
+			/// create and return the default render style
+			render_style* create_render_style() const override { return new ellipsoid_render_style(); }
 		public:
 			///
 			ellipsoid_renderer();

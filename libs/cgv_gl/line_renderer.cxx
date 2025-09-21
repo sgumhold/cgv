@@ -13,27 +13,6 @@ namespace cgv {
 			r.manage_singleton(ctx, "line_renderer", ref_count, ref_count_change);
 			return r;
 		}
-		render_style* line_renderer::create_render_style() const
-		{
-			return new line_render_style();
-		}
-
-		line_render_style::line_render_style() : default_color(0, 1, 1, 1)
-		{
-			default_normal = vec3(0.0f,0.0f,1.0f);
-			default_color = rgba(1.0f);
-			default_depth_offset = 0.0f;
-			default_line_width = 1.0f;
-			blend_lines = false;
-			halo_color = rgba(0.0f,0.0f,0.0f,1.0);
-			halo_width_in_pixel = 0.0f;
-			percentual_halo_width = 0.0f;
-			screen_aligned = true;
-			measure_line_width_in_pixel = true;
-			reference_line_width = 0.001f;
-			blend_width_in_pixel = 0.0f;
-			halo_color_strength = 1.0f;
-		}
 		/// call this before setting attribute arrays to manage attribute array in given manager
 		void line_renderer::enable_attribute_array_manager(const context& ctx, attribute_array_manager& aam)
 		{
@@ -65,17 +44,6 @@ namespace cgv {
 			has_depth_offsets = false;
 			remove_attribute_array(ctx, "depth_offset");
 		}
-		line_renderer::line_renderer()
-		{
-			has_normals = false;
-			has_line_widths = false;
-			has_depth_offsets = false;
-		}
-		bool line_renderer::build_shader_program(context& ctx, shader_program& prog, const shader_compile_options& options)
-		{
-			return prog.build_program(ctx, "line.glpr", options, true);
-		}
-
 		bool line_renderer::init(context& ctx)
 		{
 			bool res = renderer::init(ctx);

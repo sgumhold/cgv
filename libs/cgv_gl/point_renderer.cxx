@@ -13,36 +13,6 @@ namespace cgv {
 			return r;
 		}
 
-		render_style* point_renderer::create_render_style() const
-		{
-			return new point_render_style();
-		}
-
-		point_render_style::point_render_style() : halo_color(1, 1, 1, 1)
-		{
-			point_size = 1.0f;
-			use_group_point_size = false;
-			measure_point_size_in_pixel = true;
-			screen_aligned = true;
-
-			blend_points = true;
-			blend_width_in_pixel = 1.0f;
-			halo_width_in_pixel = 0.0f;
-			percentual_halo_width = 0.0f;
-			halo_color_strength = 0.5f;
-			default_depth_offset = 0.0f;
-		}
-
-		point_renderer::point_renderer()
-		{
-			has_point_sizes = false;
-			has_group_point_sizes = false;
-			has_indexed_colors = false;
-			has_depth_offsets = false;
-			///
-			reference_point_size = 0.01f;
-			y_view_angle = 45;
-		}
 		/// call this before setting attribute arrays to manage attribute array in given manager
 		void point_renderer::enable_attribute_array_manager(const context& ctx, attribute_array_manager& aam)
 		{
@@ -83,10 +53,6 @@ namespace cgv {
 		void point_renderer::set_y_view_angle(float _y_view_angle)
 		{
 			y_view_angle = _y_view_angle;
-		}
-		bool point_renderer::build_shader_program(context& ctx, shader_program& prog, const shader_compile_options& options)
-		{
-			return prog.build_program(ctx, "point.glpr", options, true);
 		}
 		bool point_renderer::validate_attributes(const context& ctx) const
 		{
