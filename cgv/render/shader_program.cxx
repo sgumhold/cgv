@@ -314,11 +314,11 @@ bool shader_program::open_program_file(std::string& file_name, bool use_cache, s
 	file_name = fn;
 	return true;
 }
-std::vector<shader_define_map> shader_program::extract_instances(std::string file_name)
+std::vector<shader_compile_options> shader_program::extract_instances(std::string file_name)
 {
 	std::string content;
 	std::vector<line> lines;
-	std::vector<shader_define_map> result;
+	std::vector<shader_compile_options> result;
 	if (!open_program_file(file_name, false, content, lines))
 		return result;
 	for (unsigned int i = 0; i < lines.size(); ++i) {
@@ -333,7 +333,7 @@ std::vector<shader_define_map> shader_program::extract_instances(std::string fil
 		std::string defs=l.substr(9);
 		std::vector<token> toks;
 		split_to_tokens(defs, toks, "", false, "", "", ";");
-		shader_define_map defines;
+		shader_compile_options options;
 		for (const auto& t : toks) {
 			std::vector<token> sides;
 			split_to_tokens(t, sides, "", false, "", "", "=");
@@ -346,10 +346,10 @@ std::vector<shader_define_map> shader_program::extract_instances(std::string fil
 				if (s.begin < s.end)
 					S.push_back(to_string(s));
 			}
-			if (S.size() == 2)
-				defines[S[0]] = S[1];
+			if(S.size() == 2)
+				options.define_macro(S[0], S[1]);
 		}
-		result.push_back(defines);
+		result.push_back(options);
 	}
 	return result;
 }

@@ -20,12 +20,11 @@ bool histogram::init(cgv::render::context& ctx, const sl::data_type& value_type)
 	info.types.push_back(value_type);
 	info.typedefs.push_back({ "value_type", value_type });
 	info.default_buffer_count = 2;
-	info.options.defines["NUM_BINS"] = std::to_string(_num_bins);
+	info.options.define_macro("NUM_BINS", _num_bins);
 
 	sl::Type base_type = value_type.type();
-	if(base_type == sl::Type::kFloat || base_type == sl::Type::kDouble)
-		info.options.defines["VALUE_TYPE_IS_FLOATING_POINT"] = "";
-
+	info.options.define_macro_if_true(base_type == sl::Type::kFloat || base_type == sl::Type::kDouble, "VALUE_TYPE_IS_FLOATING_POINT");
+	
 	if(algorithm::init(ctx, info, { { &_kernel, "gpgpu_histogram" } })) {
 		_bins_buffer.create_or_resize<uint32_t>(ctx, _num_bins);
 		return _fill.init(ctx, sl::Type::kUInt);

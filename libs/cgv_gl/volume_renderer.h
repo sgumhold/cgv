@@ -15,41 +15,59 @@ namespace cgv { // @<
 			counter decreases to 0, singleton renderer is destructed. */
 		extern CGV_API volume_renderer& ref_volume_renderer(context& ctx, int ref_count_change = 0);
 
+		enum class VolumeIntegrationQuality {
+			k8 = 8,
+			k16 = 16,
+			k32 = 32,
+			k64 = 64,
+			k128 = 128,
+			k256 = 256,
+			k512 = 512,
+			k1024 = 1024,
+			k2048 = 2048,
+			k4096 = 4096
+		};
+
+		enum class VolumeInterpolationMode {
+			kNearest = 0,		/// only the closest voxel is sampled
+			kSmoothed = 1,		/// modification of the built-in trilinear interpolation to prevent triangular artifacts (results look blockier in the volume, mid way between nearest and linear)
+			kLinear = 2,		/// default built-in trilinear interpolation
+			kCubic = 3			/// tricubic interpolation using 8 modified trlinear samples
+		};
+
+		enum class VolumeCompositingMode {
+			kMaximumIntensityProjection = 0,
+			kAverage = 1,
+			kBlend = 2 // using transfer function
+		};
+
+		enum class VolumeIsosurfaceMode {
+			kNone = 0,			/// not enabled
+			kIsovalue = 1,		/// based on volume value (volume >= isovalue)
+			kAlphaThreshold = 2	/// based on opacity value from transfer function (tf(volume).a >= isovalue)
+		};
+
+		enum class VolumeSliceMode {
+			kNone = 0,			/// not enabled
+			kOpaque = 1,		/// opaque slice; volume integration will stop when hit
+			kTransparent = 2	/// transparent slice; volume integration will continue when hit
+		};
+
 		/** style of a volume */
 		struct CGV_API volume_render_style : public render_style {
 			/// quality measure for the number of steps used during ray marching
-			enum IntegrationQuality {
-				IQ_8 = 8,
-				IQ_16 = 16,
-				IQ_32 = 32,
-				IQ_64 = 64,
-				IQ_128 = 128,
-				IQ_256 = 256,
-				IQ_512 = 512,
-				IQ_1024 = 1024,
-				IQ_2048 = 2048,
-				IQ_4096 = 4096
-			} integration_quality = IQ_128;
+			VolumeIntegrationQuality integration_quality = VolumeIntegrationQuality::k128;
 			/// whether to use the noise texture to offset ray start positions in order to reduce sampling artifacts
 			bool enable_noise_offset = true;
 			/// the interpolation method used (supplied volume texture should be set to GL_LINEAR)
-			enum InterpolationMode {
-				IP_NEAREST = 0,		/// only the closest voxel is sampled
-				IP_SMOOTHED = 1,	/// modification of the built-in trilinear interpolation to prevent triangular artifacts (results look blockier in the volume, mid way between nearest and linear)
-				IP_LINEAR = 2,		/// default built-in trilinear interpolation
-				IP_CUBIC = 3		/// tricubic interpolation using 8 modified trlinear samples
-			} interpolation_mode = IP_LINEAR;
+			VolumeInterpolationMode interpolation_mode = VolumeInterpolationMode::kLinear;
 			/// whether to enable depth testing by reading depth from a texture to allow geometry intersecting the volume (depth texture must be supplied)
 			bool enable_depth_test = true;
 			// the opacity threshold needed to pass before the volume is considered a solid surface (needed for defining depth and supporting focus picking)
 			float picking_opacity_threshold = 0.03f;
 
 			/// the compositing mode used
-			enum CompositingMode {
-				CM_MAXIMUM_INTENSITY_PROJECTION = 0,
-				CM_AVERAGE = 1,
-				CM_BLEND = 2 // using transfer function
-			} compositing_mode = CM_BLEND;
+			VolumeCompositingMode compositing_mode = VolumeCompositingMode::kBlend;
 			
 			/// the coefficient used to adjust sample opacity based on volume scaling (useful range between 50 and 500)
 			float scale_adjustment_factor = 100.0f;
@@ -79,11 +97,7 @@ namespace cgv { // @<
 			float gradient_lambda = 0.0f;
 
 			/// mode of a single supported isosurface
-			enum IsosurfaceMode{
-				IM_NONE = 0,			/// not enabled
-				IM_ISOVALUE = 1,		/// based on volume value (volume >= isovalue)
-				IM_ALPHA_THRESHOLD = 2	/// based on opacity value from transfer function (tf(volume).a >= isovalue)
-			} isosurface_mode = IM_NONE;
+			VolumeIsosurfaceMode isosurface_mode = VolumeIsosurfaceMode::kNone;
 			/// the value used to check for an isosurface
 			float isovalue = 0.5f;
 			/// the default constant isosurface color
@@ -92,11 +106,7 @@ namespace cgv { // @<
 			bool isosurface_color_from_transfer_function = false;
 
 			/// mode of slice rendering
-			enum SliceMode {
-				SM_DISABLED = 0,   // no slice
-				SM_OPAQUE = 1,     // opaque slice rendering
-				SM_TRANSPARENT = 2 // transparent slice rendering 
-			} slice_mode = SM_DISABLED;
+			VolumeSliceMode slice_mode = VolumeSliceMode::kNone;
 			/// coordinate axis orthogonal to which slice is rendered
 			int slice_axis = 2;
 			/// coordinate value along axis defining slice in range [0,1]

@@ -32,13 +32,15 @@ bool reduce::init(cgv::render::context& ctx, const sl::data_type& value_type, co
 	info.default_buffer_count = 2;
 
 	if(!binary_operation.empty()) {
-		info.options.snippets.push_back({ "operation", binary_operation });
-		info.options.defines["USE_CUSTOM_OPERATION"] = "";
+		info.options.define_snippet("operation", binary_operation);
+		info.options.define_macro("USE_CUSTOM_OPERATION");
 	}
 
 	// TODO: Check if LOCAL_SIZE_X overwrites the define set by algorithm::init.
+	cgv::render::shader_compile_options kernel_options;
+	kernel_options.define_macro("LOCAL_SIZE_X", _group_size);
 	std::vector<compute_kernel_info> kernel_infos = {
-		{ &_kernel, "gpgpu_reduce_group", { { "LOCAL_SIZE_X", std::to_string(_group_size) } } }
+		{ &_kernel, "gpgpu_reduce_group", kernel_options }
 	};
 
 	if(algorithm::init(ctx, info, kernel_infos)) {

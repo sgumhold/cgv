@@ -113,34 +113,30 @@ cgv::render::shader_compile_options algorithm::get_compile_options(const algorit
 	for(const auto& def : create_info.typedefs)
 		typedefs_str += sl::get_type_alias_string(def.first, def.second) + "\n";
 
-	cgv::render::shader_compile_options compile_options;
-	compile_options.defines["LOCAL_SIZE_X"] = std::to_string(_group_size);
-	compile_options.defines["LOCAL_SIZE_Y"] = "1";
-	compile_options.defines["LOCAL_SIZE_Z"] = "1";
-	compile_options.snippets.push_back({ "typedefs", typedefs_str });
-	compile_options.snippets.push_back({ "arguments", arguments_str });
+	cgv::render::shader_compile_options options;
+	options.define_macro("LOCAL_SIZE_X", _group_size);
+	options.define_macro("LOCAL_SIZE_Y", 1);
+	options.define_macro("LOCAL_SIZE_Z", 1);
+	options.define_snippet("typedefs", typedefs_str);
+	options.define_snippet("arguments", arguments_str);
 
-	for(const auto& define: create_info.options.defines)
-		compile_options.defines[define.first] = define.second;
-
-	compile_options.snippets.insert(compile_options.snippets.end(), create_info.options.snippets.begin(), create_info.options.snippets.end());
-
-	return compile_options;
+	options.extend(create_info.options, true);
+	
+	return options;
 }
 
 bool algorithm::init(cgv::render::context& ctx, const algorithm_create_info& create_info, const std::vector<compute_kernel_info>& kernel_infos) {
-	cgv::render::shader_compile_options compile_options = get_compile_options(create_info);
+	cgv::render::shader_compile_options options = get_compile_options(create_info);
 
 	const std::string debug_context = "cgv::gpgpu::" + get_type_name();
 	bool success = true;
 	for(const auto& info : kernel_infos) {
-		if(info.defines.empty()) {
-			success &= info.kernel->init(ctx, info.name, compile_options, debug_context);
+		if(info.options.empty()) {
+			success &= info.kernel->init(ctx, info.name, options, debug_context);
 		} else {
-			cgv::render::shader_compile_options extended_compile_options = compile_options;
-			for(const auto& define : info.defines)
-				extended_compile_options.defines[define.first] = define.second;
-			success &= info.kernel->init(ctx, info.name, extended_compile_options, debug_context);
+			cgv::render::shader_compile_options extended_options = options;
+			extended_options.extend(options, true);
+			success &= info.kernel->init(ctx, info.name, extended_options, debug_context);
 		}
 	}
 	_is_initialized = success;

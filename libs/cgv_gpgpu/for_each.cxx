@@ -20,7 +20,7 @@ bool for_each::init(cgv::render::context& ctx, const sl::data_type& value_type, 
 	info.types.push_back(value_type);
 	info.typedefs.push_back({ "value_type", value_type });
 	info.default_buffer_count = 1;
-	info.options.snippets.push_back({ "operation", unary_operation });
+	info.options.define_snippet("operation", unary_operation);
 	return algorithm::init(ctx, info, { { &_kernel, "gpgpu_for_each" } });
 }
 

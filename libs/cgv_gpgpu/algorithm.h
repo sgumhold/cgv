@@ -43,7 +43,7 @@ protected:
 	struct compute_kernel_info {
 		compute_kernel* kernel = nullptr;
 		std::string name;
-		cgv::render::shader_define_map defines;
+		cgv::render::shader_compile_options options;
 	};
 
 	cgv::render::shader_compile_options get_compile_options(const algorithm_create_info& create_info);
