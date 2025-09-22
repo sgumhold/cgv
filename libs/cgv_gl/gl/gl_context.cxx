@@ -315,11 +315,11 @@ void gl_set_material(const cgv::media::illum::phong_material& mat, MaterialSide 
 	if (ms == MS_NONE)
 		return;
 	unsigned side = map_to_gl(ms);
-	gl_set_material_color(side, mat.get_ambient(), alpha, GL_AMBIENT);
-	gl_set_material_color(side, mat.get_diffuse(), alpha, GL_DIFFUSE);
-	gl_set_material_color(side, mat.get_specular(), alpha, GL_SPECULAR);
-	gl_set_material_color(side, mat.get_emission(), alpha, GL_EMISSION);
-	glMaterialf(side, GL_SHININESS, mat.get_shininess());
+	gl_set_material_color(side, mat.ambient, alpha, GL_AMBIENT);
+	gl_set_material_color(side, mat.diffuse, alpha, GL_DIFFUSE);
+	gl_set_material_color(side, mat.specular, alpha, GL_SPECULAR);
+	gl_set_material_color(side, mat.emission, alpha, GL_EMISSION);
+	glMaterialf(side, GL_SHININESS, mat.shininess);
 }
 
 /// return info font size
@@ -827,12 +827,12 @@ void gl_context::set_material(const cgv::media::illum::surface_material& materia
 {
 	if (support_compatibility_mode && !core_profile) {
 		unsigned side = map_to_gl(MS_FRONT_AND_BACK);
-		float alpha = 1.0f - material.get_transparency();
-		gl_set_material_color(side, material.get_ambient_occlusion()*material.get_diffuse_reflectance(), alpha, GL_AMBIENT);
-		gl_set_material_color(side, material.get_diffuse_reflectance(), alpha, GL_DIFFUSE);
-		gl_set_material_color(side, material.get_specular_reflectance(), alpha, GL_SPECULAR);
-		gl_set_material_color(side, material.get_emission(), alpha, GL_EMISSION);
-		glMaterialf(side, GL_SHININESS, 1.0f/(material.get_roughness()+1.0f/128.0f));
+		float alpha = 1.0f - material.transparency;
+		gl_set_material_color(side, material.ambient_occlusion * material.diffuse_reflectance, alpha, GL_AMBIENT);
+		gl_set_material_color(side, material.diffuse_reflectance, alpha, GL_DIFFUSE);
+		gl_set_material_color(side, material.specular_reflectance, alpha, GL_SPECULAR);
+		gl_set_material_color(side, material.emission, alpha, GL_EMISSION);
+		glMaterialf(side, GL_SHININESS, 1.0f / (material.roughness + 1.0f / 128.0f));
 	}
 	context::set_material(material);
 }

@@ -8,7 +8,7 @@
 namespace cgv {
 	namespace media {
 		namespace illum {
-			class surface_material;
+			struct surface_material;
 			class light_source;
 		}
 	}
