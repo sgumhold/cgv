@@ -125,8 +125,8 @@ public:
 
 	/// @brief Conditionally define identifier as a macro with value as replacement text.
 	/// 
-	/// The macro is only defined if value != default. If value is default and the macro
-	/// is already defined it will be removed (undefined).
+	/// The macro is only defined if value is not equal to default_value (tested using operator !=).
+	/// If value is equal to default_value and the macro is already defined it will be removed (undefined).
 	/// 
 	/// If value is of arithmetic type, it is converted to a string.
 	/// If value is of boolean type, it is converted to 1 if true and 0 if false.
@@ -139,30 +139,30 @@ public:
 	/// @param value The macro replacement value.
 	/// @param default The default value used for comparison.
 	template<typename T, typename std::enable_if<std::is_arithmetic_v<T>, bool>::type = true>
-	void define_macro_if_not_default(const std::string& identifier, const T& value, const T& default) {
-		if(value != default)
+	void define_macro_if_not_default(const std::string& identifier, const T& value, const T& default_value) {
+		if(value != default_value)
 			defines[identifier] = std::to_string(value);
 		else
 			defines.erase(identifier);
 	}
 
 	template<typename T, typename std::enable_if<std::is_enum_v<T>, bool>::type = true>
-	void define_macro_if_not_default(const std::string& identifier, const T& value, const T& default) {
-		if(value != default)
+	void define_macro_if_not_default(const std::string& identifier, const T& value, const T& default_value) {
+		if(value != default_value)
 			defines[identifier] = std::to_string(static_cast<std::underlying_type_t<T>>(value));
 		else
 			defines.erase(identifier);
 	}
 
-	void define_macro_if_not_default(const std::string& identifier, bool value, bool default) {
-		if(value != default)
+	void define_macro_if_not_default(const std::string& identifier, bool value, bool default_value) {
+		if(value != default_value)
 			defines[identifier] = value ? "1" : "0";
 		else
 			defines.erase(identifier);
 	}
 
-	void define_macro_if_not_default(const std::string& identifier, const std::string& value, const std::string& default) {
-		if(value != default)
+	void define_macro_if_not_default(const std::string& identifier, const std::string& value, const std::string& default_value) {
+		if(value != default_value)
 			defines[identifier] = value;
 		else
 			defines.erase(identifier);
