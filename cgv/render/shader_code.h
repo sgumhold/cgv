@@ -48,174 +48,165 @@ typedef cgv::data::ref_ptr<shader_config> shader_config_ptr;
 /// return a pointer to the current shader configuration
 extern CGV_API shader_config_ptr get_shader_config();
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-/// typedef for shader define map data structure
-typedef std::map<std::string, std::string> shader_define_map;
-
-
-
-/** a snippet of shader code in raw text form.
-	Used in shader_compile_options to replace special comments with user-defined code.
-	Comments identifying snippet replacement locations must be of form
-	 
-	//$cgv::<id>
-	
-	where <id> is a user-defined name.
-
-	The comment is replaced with the content of a snippet whose id matches the given id.
-
-	To prevent ill-formed shader code due to potential missing definitions before snippet replacement, i.e. before pre-processing,
-	affected parts of code can be disabled by enclosing them in a define guard like so:
-	
-	#ifdef CGV_USE_SNIPPETS
-	...code relying on snippet content
-	#endif
-	*/
-//struct shader_code_snippet {
-//	/// the snippet id used for matching snippet markers in shader code
-//	std::string id;
-//	/// the snippet content; can be any valid piece of shader code
-//	std::string content;
-//};
-
-/** holds options applied before and during shader compilation, such as preprocessor defines and code snippets.
-	Pre-processor defines will be handled as follows:
-	- Existing macros in the source file that are stated in defines will have their values replaced
-	- Existing macros in the source file that are not stated in defines will be left untouched
-	- Macros not present in the source file but stated in defines will be added to the source before compilation
-
-	Snippets are handled as follows (also see shader_code_snippets):
-	- If at least one snippet is given, the additional define <CGV_USE_SNIPPETS> is set internally before compilation.
-	*/
-
-
-//struct shader_compile_options {
-//	shader_define_map defines;
-//	std::vector<shader_code_snippet> snippets;
-//};
-
+/// @brief Stores preprocessor options used for conditionally compiling shader programs.
+/// 
+/// Options include standard preprocessor defines and text replacement snippets.
+/// 
+/// Preprocessor macros will be handled as follows:
+///		- Existing macros in the source file that are defined in this class will have their values replaced.
+///		- Existing macros in the source file that are not defined in this class will be left untouched.
+///		- Macros not present in the source file but defined in this class will be added to the source before compilation.
+/// 
+/// Snippets will be handled as follows:
+///		- Snippets are text replacements similar to macros but offer more flexibility. A snippet replacement text supports
+///		  multi-line strings without the need to escape newlines.
+///		- Snippet replacement locations in shader code are marked using special comments of form:
+///			//$cgv::<identifier>
+///		  where <identifier> is a user-defined name.
+///		- The comment marking a snippet location is replaced with the content of a snippet whose id matches the given id.
+///		- If at least one snippet is given, the additional define <CGV_USE_SNIPPETS> is set internally before compilation.
+///		  To prevent ill-formed shader code due to potential missing definitions before snippet replacement, i.e.before pre-processing,
+///		  affected parts of code can be disabled by enclosing them in a define guard like so:
+///			#ifdef CGV_USE_SNIPPETS
+///			...code relying on snippet content
+///			#endif
 class shader_compile_options {
 public:
 	using string_map = std::map<std::string, std::string>;
 	
+	/// Return true if no options are set.
 	bool empty() const {
 		return defines.empty() && snippets.empty();
 	}
 
-	const string_map& get_defines() const {
+	/// Return const reference to defined macros.
+	const string_map& get_macros() const {
 		return defines;
 	}
 
+	/// Return const reference to defined snippets.
 	const string_map& get_snippets() const {
 		return snippets;
 	}
 
-	void set_define(const std::string& identifier) {
+	/// Define a macro as identifier and no replacement text.
+	void define_macro(const std::string& identifier) {
 		defines[identifier] = "";
 	}
 
-	void set_define(const std::string& identifier, const std::string& value) {
-		defines[identifier] = value;
-	}
-
-	template<typename T, typename std::enable_if<!std::is_enum<T>::value, bool>::type = true>
-	void set_define(const std::string& identifier, const T& value) {
+	/// @brief Define identifier as a macro with value as replacement text.
+	/// 
+	/// If value is of arithmetic type, it is converted to a string.
+	/// If value is of boolean type, it is converted to 1 if true and 0 if false.
+	/// If value is of enum type, it is first converted into its underlying arithmetic type.
+	/// 
+	/// An existing macro with the same identifier is overwritten with the new value.
+	/// 
+	/// @tparam T The value type.
+	/// @param identifier The macro name.
+	/// @param value The macro replacement value.
+	template<typename T, typename std::enable_if<std::is_arithmetic_v<T>, bool>::type = true>
+	void define_macro(const std::string& identifier, const T& value) {
 		defines[identifier] = std::to_string(value);
 	}
 
-	template<typename T, typename std::enable_if<std::is_enum<T>::value, bool>::type = true>
-	void set_define(const std::string& identifier, const T& value) {
-		defines[identifier] = std::to_string(static_cast<unsigned>(value));
+	template<typename T, typename std::enable_if<std::is_enum_v<T>, bool>::type = true>
+	void define_macro(const std::string& identifier, const T& value) {
+		defines[identifier] = std::to_string(static_cast<std::underlying_type_t<T>>(value));
 	}
 
-	void set_define(const std::string& identifier, bool value) {
+	void define_macro(const std::string& identifier, bool value) {
 		defines[identifier] = value ? "1" : "0";
 	}
 
-	void set_define_if_not_default(const std::string& identifier, const std::string& value, const std::string& default) {
-		if(value != default)
-			defines[identifier] = value;
-		else
-			defines.erase(identifier);
+	void define_macro(const std::string& identifier, const std::string& value) {
+		defines[identifier] = value;
 	}
 
-	template<typename T, typename std::enable_if<!std::is_enum<T>::value, bool>::type = true>
-	void set_define_if_not_default(const std::string& identifier, const T& value, const T& default) {
+	/// @brief Conditionally define identifier as a macro with value as replacement text.
+	/// 
+	/// The macro is only defined if value != default. If value is default and the macro
+	/// is already defined it will be removed (undefined).
+	/// 
+	/// If value is of arithmetic type, it is converted to a string.
+	/// If value is of boolean type, it is converted to 1 if true and 0 if false.
+	/// If value is of enum type, it is first converted into its underlying arithmetic type.
+	/// 
+	/// An existing macro with the same identifier is overwritten with the new value.
+	/// 
+	/// @tparam T the value type.
+	/// @param identifier The macro name.
+	/// @param value The macro replacement value.
+	/// @param default The default value used for comparison.
+	template<typename T, typename std::enable_if<std::is_arithmetic_v<T>, bool>::type = true>
+	void define_macro_if_not_default(const std::string& identifier, const T& value, const T& default) {
 		if(value != default)
 			defines[identifier] = std::to_string(value);
 		else
 			defines.erase(identifier);
 	}
 
-	template<typename T, typename std::enable_if<std::is_enum<T>::value, bool>::type = true>
-	void set_define_if_not_default(const std::string& identifier, const T& value, const T& defualt) {
+	template<typename T, typename std::enable_if<std::is_enum_v<T>, bool>::type = true>
+	void define_macro_if_not_default(const std::string& identifier, const T& value, const T& default) {
 		if(value != default)
-			defines[identifier] = std::to_string(static_cast<unsigned>(value));
+			defines[identifier] = std::to_string(static_cast<std::underlying_type_t<T>>(value));
 		else
 			defines.erase(identifier);
 	}
 
-	void set_define_if_not_default(const std::string& identifier, bool value, bool default) {
+	void define_macro_if_not_default(const std::string& identifier, bool value, bool default) {
 		if(value != default)
 			defines[identifier] = value ? "1" : "0";
 		else
 			defines.erase(identifier);
 	}
 
-	void set_defined_if_true(bool predicate, const std::string& identifier) {
-		if(predicate)
-			set_define(identifier);
+	void define_macro_if_not_default(const std::string& identifier, const std::string& value, const std::string& default) {
+		if(value != default)
+			defines[identifier] = value;
 		else
-			remove_define(identifier);
+			defines.erase(identifier);
 	}
 
-	void remove_define(const std::string& identifier) {
+	/// @brief Conditionally define identifier as a macro with replacement text 1.
+	/// 
+	/// Will only define the macro if predicate is true. If predicate is false and
+	/// the macro is already defined it will be removed (undefined).
+	/// 
+	/// @param predicate The condition.
+	/// @param identifier The macro name.
+	void define_macro_if_true(bool predicate, const std::string& identifier) {
+		if(predicate)
+			define_macro(identifier, "1");
+		else
+			undefine_macro(identifier);
+	}
+
+	/// @brief Remove (undefine) the macro with the given identifier.
+	/// @param identifier The macro name.
+	void undefine_macro(const std::string& identifier) {
 		defines.erase(identifier);
 	}
 
-	void set_snippet(const std::string& identifier, const std::string& content) {
-		snippets[identifier] = content;
+	/// @brief Define a text replacement snippet.
+	/// @param identifier The snippet name.
+	/// @param replacement_text The snippet content.
+	void define_snippet(const std::string& identifier, const std::string& replacement_text) {
+		snippets[identifier] = replacement_text;
 	}
 
-	void remove_snippet(const std::string& identifier) {
+	/// @brief Remove (undefine) the snippet with the given identifier.
+	/// @param identifier The snippet name.
+	void undefine_snippet(const std::string& identifier) {
 		snippets.erase(identifier);
 	}
 
-	/// Extend by content of other shader_compile_options. If overwrite is true, existing defines and snippets are overwritten with the content from other.
-	/// If overwrite is false, existing content is not altered.
+	/// @brief Extend options by content of other shader_compile_options via merging.
+	/// 
+	/// If overwrite is true, existing defines and snippets are overwritten with the content from other.
+	/// 
+	/// @param other The other options.
+	/// @param overwrite If true, existing options are overwritten with other.
 	void extend(const shader_compile_options& other, bool overwrite) {
 		if(overwrite) {
 			for(const auto& define : other.defines)
@@ -229,84 +220,28 @@ public:
 		}
 	}
 
+	/// Compare two shader_compile_options for equality.
 	bool operator==(const shader_compile_options& other) const {
 		return defines == other.defines && snippets == other.snippets;
 	}
 
+	/// Compare two shader_compile_options for inequality.
 	bool operator!=(const shader_compile_options& other) const {
 		return !(*this == other);
 	}
 
 private:
-	/// maps pre-processor define identifiers to replacement text
+	/// Maps pre-processor define identifiers to replacement texts
 	string_map defines;
-	/// maps snippet identifiers to repalcement content
+	/// Maps snippet identifiers to replacement texts
 	string_map snippets;
 };
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 /** a shader code object holds a code fragment of a geometry
     vertex or fragment shader and can be added to a shader 
 	program. */
 class CGV_API shader_code : public render_component
 {
-public:
-	template<typename T, typename std::enable_if<!std::is_enum<T>::value, bool>::type = true>
-	static void set_define(shader_define_map& defines, const std::string& name, const T& value, const T& default_value) {
-		if(value != default_value)
-			defines[name] = std::to_string(value);
-		else
-			defines.erase(name);
-	}
-	
-	template<typename T, typename std::enable_if<std::is_enum<T>::value, bool>::type = true>
-	static void set_define(shader_define_map& defines, const std::string& name, const T& value, const T& default_value) {
-		if(value != default_value)
-			defines[name] = std::to_string((unsigned)value);
-		else
-			defines.erase(name);
-	}
-
-	static void set_define(shader_define_map& defines, const std::string& name, const std::string& value, const std::string& default_value) {
-		if(value != default_value)
-			defines[name] = value;
-		else
-			defines.erase(name);
-	}
-
-	static void set_define(shader_define_map& defines, const std::string& name, bool value, bool default_value) {
-		if(value != default_value)
-			defines[name] = value ? "1" : "0";
-		else
-			defines.erase(name);
-	}
-
 public:
 	///create shader a shader code object
 	shader_code();

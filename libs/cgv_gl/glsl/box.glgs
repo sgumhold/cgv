@@ -8,7 +8,7 @@ in mat3 NM[];
 in mat4 PM[];
 in vec4 color_gs[];
 
-#ifdef ENABLE_ROUNDING
+#if ENABLE_ROUNDING
 in vec3 extent_gs[];
 in vec4 secondary_color_gs[];
 in mat4 iPM[];
@@ -21,7 +21,7 @@ out vec4 color_fs;
 out vec3 position;
 flat out int side;
 
-#ifdef ENABLE_ROUNDING
+#if ENABLE_ROUNDING
 out vec3 pos_box;
 out vec3 eye_box;
 out mat3 NM_fs;
@@ -58,25 +58,25 @@ void emit_face(in vec3 normal_in, in vec4 c0, in vec4 c1, in vec4 c2, in vec4 c3
 		return;
 
 	// emit face
-#ifdef ENABLE_ROUNDING
+#if ENABLE_ROUNDING
 	pos_box = (iPM[0]*c0).xyz;
 #endif
 	position = c0.xyz;
 	gl_Position = get_projection_matrix() * c0;
 	EmitVertex();
-#ifdef ENABLE_ROUNDING
+#if ENABLE_ROUNDING
 	pos_box = (iPM[0]*c1).xyz;
 #endif
 	position = c1.xyz;
 	gl_Position = get_projection_matrix() * c1;
 	EmitVertex();
-#ifdef ENABLE_ROUNDING
+#if ENABLE_ROUNDING
 	pos_box = (iPM[0]*c2).xyz;
 #endif
 	position = c2.xyz;
 	gl_Position = get_projection_matrix() * c2;
 	EmitVertex();
-#ifdef ENABLE_ROUNDING
+#if ENABLE_ROUNDING
 	pos_box = (iPM[0]*c3).xyz;
 #endif
 	position = c3.xyz;
@@ -87,10 +87,10 @@ void emit_face(in vec3 normal_in, in vec4 c0, in vec4 c1, in vec4 c2, in vec4 c3
 
 void main()
 {
-#ifdef ENABLE_ROUNDING
+#if ENABLE_ROUNDING
 	NM_fs = NM[0];
 	extent = extent_gs[0];
-	eye_box = (iPM[0]*vec4(0.0,0.0,0.0, 1.0)).xyz;
+	eye_box = (iPM[0] * vec4(0.0, 0.0, 0.0, 1.0)).xyz;
 	radius = radius_gs[0];
 	secondary_color = secondary_color_gs[0];
 #endif

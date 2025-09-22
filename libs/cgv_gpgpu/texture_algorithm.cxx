@@ -45,19 +45,19 @@ cgv::render::shader_compile_options texture_algorithm::get_compile_options(const
 	std::string dims_suffix = std::to_string(dims) + "D";
 
 	// TODO: use larger group size for lower dimensional textures (try to aim for total occupancy of Streaming multiprocessor, e.g. 64 for RTX 2080)
-	cgv::render::shader_compile_options compile_options;
-	compile_options.defines["LOCAL_SIZE_X"] = std::to_string(local_size.x());
-	compile_options.defines["LOCAL_SIZE_Y"] = std::to_string(local_size.y());
-	compile_options.defines["LOCAL_SIZE_Z"] = std::to_string(local_size.z());
-	compile_options.defines["DIMS"] = std::to_string(dims);
-	compile_options.defines["INDEX_TYPE"] = index_type.type_name();
-	compile_options.defines["COORD_TYPE"] = coord_type.type_name();
-	compile_options.defines["SAMPLER_TYPE"] = "sampler" + dims_suffix;
-	compile_options.defines["IMAGE_TYPE"] = get_type_prefix(create_info.image_format) + "image" + dims_suffix;
-	compile_options.defines["IMAGE_FORMAT"] = to_string(create_info.image_format);
-	compile_options.defines["SIZE_GUARD(IDX, SIZE)"] = size_guard;
+	cgv::render::shader_compile_options options;
+	options.define_macro("LOCAL_SIZE_X", local_size.x());
+	options.define_macro("LOCAL_SIZE_Y", local_size.y());
+	options.define_macro("LOCAL_SIZE_Z", local_size.z());
+	options.define_macro("DIMS", dims);
+	options.define_macro("INDEX_TYPE", index_type.type_name());
+	options.define_macro("COORD_TYPE", coord_type.type_name());
+	options.define_macro("SAMPLER_TYPE", "sampler" + dims_suffix);
+	options.define_macro("IMAGE_TYPE", get_type_prefix(create_info.image_format) + "image" + dims_suffix);
+	options.define_macro("IMAGE_FORMAT", to_string(create_info.image_format));
+	options.define_macro("SIZE_GUARD(IDX, SIZE)", size_guard);
 
-	return compile_options;
+	return options;
 }
 
 bool texture_algorithm::init(cgv::render::context& ctx, const texture_algorithm_create_info& create_info, const std::vector<compute_kernel_info>& kernel_infos) {
@@ -67,19 +67,7 @@ bool texture_algorithm::init(cgv::render::context& ctx, const texture_algorithm_
 	_texture_type = create_info.texture_type;
 
 	cgv::render::shader_compile_options compile_options = get_compile_options(create_info);
-
-
-
-	
-
-	for(const auto& define : create_info.options.defines)
-		compile_options.defines[define.first] = define.second;
-
-	// TODO: write append_and_overwrite methjod for compile options and use it here and in algorithm.
-	compile_options.snippets.insert(compile_options.snippets.end(), create_info.options.snippets.begin(), create_info.options.snippets.end());
-
-
-
+	compile_options.extend(create_info.options, true);
 
 	algorithm_create_info create_info2 = create_info;
 	create_info2.options = compile_options;

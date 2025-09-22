@@ -104,7 +104,7 @@ public:
 	/// collect shader code files declared in shader program file, compile and attach them
 	bool attach_program(const context& ctx, std::string file_name, bool show_error = false, const shader_compile_options& options = {});
 	/// find and parse all instance definitions in a shader program file
-	static std::vector<shader_define_map> extract_instances(std::string file_name);
+	static std::vector<shader_compile_options> extract_instances(std::string file_name);
 	/// link shaders to an executable program
 	bool link(const context& ctx, bool show_error = false);
 	/// return whether program is linked

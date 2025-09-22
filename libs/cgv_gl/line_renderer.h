@@ -16,7 +16,7 @@ namespace cgv { // @<
 			/// default normal for case when "normal" attribute is not set
 			vec3 default_normal = { 0.0f, 0.0f, 1.0f };
 			/// default color for case when "color" attribute is not set
-			rgba default_color = { 0.0f, 1.0f, 1.0f, 1.0f };
+			rgba default_color = { 1.0f };
 			/// default depth offset for case when "depth_offset" attribute is not set
 			float default_depth_offset = 0.0f;
 			/// default line width for case when "line_width" attribute is not set

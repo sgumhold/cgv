@@ -39,11 +39,11 @@ namespace cgv {
 		}
 		void a_buffer::update_shader_program_options(shader_compile_options& options, bool include_binding_points)
 		{
-			options.set_define_if_not_default("MAX_FRAGMENTS", fragments_per_pixel, 32u);
+			options.define_macro_if_not_default("MAX_FRAGMENTS", fragments_per_pixel, 32u);
 			if(include_binding_points) {
-				options.set_define_if_not_default("NODE_COUNTER_BINDING_POINT", node_counter_binding_point, 0);
-				options.set_define_if_not_default("HEAD_POINTERS_BINDING_POINT", head_pointers_binding_point, 0);
-				options.set_define_if_not_default("NODES_BINDING_POINT", nodes_binding_point, 1);
+				options.define_macro_if_not_default("NODE_COUNTER_BINDING_POINT", node_counter_binding_point, 0);
+				options.define_macro_if_not_default("HEAD_POINTERS_BINDING_POINT", head_pointers_binding_point, 0);
+				options.define_macro_if_not_default("NODES_BINDING_POINT", nodes_binding_point, 1);
 			}
 		}
 		void a_buffer::update_shader_program_options(shader_compile_options& options)

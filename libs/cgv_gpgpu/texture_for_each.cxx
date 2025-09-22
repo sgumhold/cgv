@@ -14,7 +14,7 @@ bool texture_for_each::init(cgv::render::context& ctx, cgv::render::TextureType 
 	info.arguments = &arguments;
 	info.typedefs.push_back({ "value_type", sl::get_data_type(image_format) });
 	info.default_image_count = 1;
-	info.options.snippets.push_back({ "operation", unary_operation });
+	info.options.define_snippet("operation", unary_operation);
 	info.texture_type = texture_type;
 	info.image_format = image_format;
 	return texture_algorithm::init(ctx, info, { { &_kernel, "gpgpu_texture_for_each"} });

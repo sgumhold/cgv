@@ -33,7 +33,7 @@ namespace cgv { // @<
 			bool has_sizes = false;
 			bool has_orientations = false;
 			/// return the default shader program name
-			std::string get_default_prog_name() const override { return "ellispoid.glpr"; }
+			std::string get_default_prog_name() const override { return "ellipsoid.glpr"; }
 			/// create and return the default render style
 			render_style* create_render_style() const override { return new ellipsoid_render_style(); }
 		public:

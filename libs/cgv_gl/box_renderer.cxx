@@ -112,7 +112,7 @@ namespace cgv {
 		void box_renderer::update_shader_program_options(shader_compile_options& options) const
 		{
 			const box_render_style& brs = get_style<box_render_style>();
-			options.set_defined_if_true(brs.rounding, "ENABLE_ROUNDING");
+			options.define_macro_if_true(brs.rounding, "ENABLE_ROUNDING");
 		}
 		cgv::reflect::extern_reflection_traits<box_render_style, box_render_style_reflect> get_reflection_traits(const box_render_style&)
 		{

@@ -26,11 +26,11 @@ mat3 get_inverse_normal_matrix();
 // 2 - Linear
 // 3 - Cubic
 #define INTERPOLATION_MODE 2
-#define ENABLE_NOISE_OFFSET 1
-#define ENABLE_LIGHTING 0
-#define USE_GRADIENT_TEXTURE 0
-#define ENABLE_GRADIENT_MODULATION 0
-#define ENABLE_DEPTH_TEST 0
+//#define ENABLE_NOISE_OFFSET 1
+//#define ENABLE_LIGHTING 0
+//#define USE_GRADIENT_TEXTURE 0
+//#define ENABLE_GRADIENT_MODULATION 0
+//#define ENABLE_DEPTH_TEST 0
 
 // 0 - Maximum intensity projection
 // 1 - Average
@@ -52,11 +52,11 @@ mat3 get_inverse_normal_matrix();
 #define TRANSFER_FUNCTION_SAMPLER_DIMENSIONS 1
 
 // dependent defines
-#if ENABLE_LIGHTING == 1 || ENABLE_GRADIENT_MODULATION == 1
+#if ENABLE_LIGHTING || ENABLE_GRADIENT_MODULATION
 	#define USES_GRADIENT
 #endif
 
-#if ENABLE_LIGHTING == 1
+#if ENABLE_LIGHTING
 	#define USES_NORMAL
 #endif
 
@@ -75,10 +75,10 @@ layout (binding = 1) uniform sampler1D transfer_function_tex;
 layout (binding = 1) uniform sampler2D transfer_function_tex;
 #endif
 layout (binding = 2) uniform sampler2D noise_tex;
-#if ENABLE_LIGHTING == 1 || ENABLE_GRADIENT_MODULATION == 1
+#if ENABLE_LIGHTING || ENABLE_GRADIENT_MODULATION
 layout (binding = 3) uniform sampler3D gradient_tex;
 #endif
-#if ENABLE_DEPTH_TEST == 1
+#if ENABLE_DEPTH_TEST
 layout (binding = 4) uniform sampler2D depth_tex;
 #endif
 
@@ -265,17 +265,17 @@ vec4 apply_transfer_function(in float density) {
 
 #ifdef USES_GRADIENT
 vec3 get_gradient(in vec3 uvw) {
-	// calculate the gradient on-the-fly via central differences
-	#if USE_GRADIENT_TEXTURE == 0
-	return central_difference(uvw);
-	#else
+	#if USE_GRADIENT_TEXTURE
 	// get the gradient from a precomputed gradient texture
 	return texture(gradient_tex, uvw).xyz;
+	#else
+	// calculate the gradient on-the-fly via central differences
+	return central_difference(uvw);
 	#endif
 }
 #endif
 
-#if ENABLE_LIGHTING == 1
+#if ENABLE_LIGHTING
 vec3 calculate_lighting(vec3 view_dir, vec3 normal, vec3 light_dir) {
 
     float diffuse = max(dot(normal, light_dir), 0.0);
@@ -334,7 +334,7 @@ bool get_ray(in vec3 bbox_min, in vec3 bbox_max, in float step_size, out ray3 ra
 	// make sure the ray origin is not moved behind the eye position
 	ray.tn = max(ray.tn, 0.0);
 
-#if ENABLE_DEPTH_TEST == 1
+#if ENABLE_DEPTH_TEST
 	float depth = texture(depth_tex, frag_tex_coords).r;
 	
 	vec4 clip_space_pos = vec4(2.0 * frag_tex_coords - 1.0, 2.0 * depth - 1.0, 1.0);
@@ -356,7 +356,7 @@ bool get_ray(in vec3 bbox_min, in vec3 bbox_max, in float step_size, out ray3 ra
 	// transform position to texture coordinates: [-0.5,0.5] -> [0.0,1.0]
 	ray.origin += 0.5;
 
-#if ENABLE_NOISE_OFFSET == 1
+#if ENABLE_NOISE_OFFSET
 	// add a small offset noise to the ray start position to prevent ring artifacts
 	vec2 noise_uv = (frag_tex_coords + noise_offset) * textureSize(noise_tex, 0);
 	ray.origin += (2.0 * ray.direction * step_size) * (texture(noise_tex, noise_uv).r + (noise_offset.x * noise_offset.y));
@@ -380,7 +380,7 @@ void main() {
 		return;
 	}
 
-#if ENABLE_LIGHTING == 1
+#if ENABLE_LIGHTING
 	// TODO: make this use the framework lighting system?	
 	vec3 light_dir = light_local_to_eye ?
 		normalize((get_inverse_modelview_matrix() * vec4(light_direction, 0.0)).xyz) : // light is local to eye position/static to window
@@ -454,7 +454,7 @@ void main() {
 		vec3 normal = -safe_divide(gradient, gradient_length);
 	#endif
 
-	#if ENABLE_LIGHTING == 1
+	#if ENABLE_LIGHTING
 		// only compute lighting if the sample passes the opacity threshold or is on an isosurface
 		vec3 illumination =
 			#if ISOSURFACE_MODE > 0
@@ -465,7 +465,7 @@ void main() {
 			calculate_lighting(-ray.direction, normal, light_dir) : vec3(0.0);
 	#endif
 
-	#if ENABLE_GRADIENT_MODULATION == 1
+	#if ENABLE_GRADIENT_MODULATION
 		opacity_modulation = pow(gradient_length, gradient_lambda);
 	#endif
 	#if ISOSURFACE_MODE > 0
@@ -474,7 +474,7 @@ void main() {
 				color_in = vec4(isosurface_color, 1.0);
 			#endif
 			
-			#if ENABLE_LIGHTING == 1
+			#if ENABLE_LIGHTING
 				color_in.rgb = apply_lighting(color_in.rgb, illumination);
 			#endif
 
@@ -498,7 +498,7 @@ void main() {
 		}
 		else {
 	#endif
-	#if ENABLE_LIGHTING == 1
+	#if ENABLE_LIGHTING
 			color_in.rgb = apply_lighting(color_in.rgb, illumination);
 	#endif
 
@@ -522,7 +522,7 @@ void main() {
 		}
 
 		// early termination when transparency threshold is reached
-	#if ENABLE_ISOSURFACE == 0
+	#if !ENABLE_ISOSURFACE
 		if(color.a < TRANSPARENCY_THRESHOLD) {
 			color.a = 0.0;
 			break;

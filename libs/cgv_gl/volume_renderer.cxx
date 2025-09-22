@@ -44,22 +44,22 @@ namespace cgv {
 		{
 			const volume_render_style& vrs = get_style<volume_render_style>();
 
-			options.set_define("NUM_STEPS", vrs.integration_quality);
-			options.set_define("INTERPOLATION_MODE", vrs.interpolation_mode);
-			options.set_define("ENABLE_NOISE_OFFSET", vrs.enable_noise_offset);
-			options.set_define("ENABLE_LIGHTING", vrs.enable_lighting);
-			options.set_define("USE_GRADIENT_TEXTURE", vrs.use_gradient_texture);
-			options.set_define("ENABLE_GRADIENT_MODULATION", vrs.enable_gradient_modulation);
-			options.set_define("ENABLE_DEPTH_TEST", vrs.enable_depth_test);
+			options.define_macro_if_not_default("NUM_STEPS", vrs.integration_quality, VolumeIntegrationQuality::k128);
+			options.define_macro_if_not_default("INTERPOLATION_MODE", vrs.interpolation_mode, VolumeInterpolationMode::kLinear);
+			options.define_macro_if_true(vrs.enable_noise_offset, "ENABLE_NOISE_OFFSET");
+			options.define_macro_if_true(vrs.enable_lighting, "ENABLE_LIGHTING");
+			options.define_macro_if_true(vrs.use_gradient_texture, "USE_GRADIENT_TEXTURE");
+			options.define_macro_if_true(vrs.enable_gradient_modulation, "ENABLE_GRADIENT_MODULATION");
+			options.define_macro_if_true(vrs.enable_depth_test, "ENABLE_DEPTH_TEST");
+			
+			options.define_macro_if_not_default("ISOSURFACE_MODE", vrs.isosurface_mode, VolumeIsosurfaceMode::kNone);
+			options.define_macro_if_not_default("ISOSURFACE_COLOR_MODE", vrs.isosurface_color_from_transfer_function, false);
 
-			options.set_define("ISOSURFACE_MODE", vrs.isosurface_mode);
-			options.set_define("ISOSURFACE_COLOR_MODE", vrs.isosurface_color_from_transfer_function);
+			options.define_macro_if_not_default("SLICE_MODE", vrs.slice_mode, VolumeSliceMode::kNone);
 
-			options.set_define("SLICE_MODE", vrs.slice_mode);
-
-			options.set_define("COMPOSITING_MODE", vrs.compositing_mode);
+			options.define_macro_if_not_default("COMPOSITING_MODE", vrs.compositing_mode, VolumeCompositingMode::kBlend);
 			if(transfer_function_texture)
-				options.set_define("TRANSFER_FUNCTION_SAMPLER_DIMENSIONS", transfer_function_texture->get_nr_dimensions());
+				options.define_macro_if_not_default("TRANSFER_FUNCTION_SAMPLER_DIMENSIONS", transfer_function_texture->get_nr_dimensions(), 1u);
 		}
 		bool volume_renderer::init(cgv::render::context& ctx)
 		{

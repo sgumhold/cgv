@@ -32,10 +32,10 @@ namespace cgv {
 		}
 		void cone_renderer::update_shader_program_options(shader_compile_options& options) const {
 			const cone_render_style& crs = get_style<cone_render_style>();
-			options.set_defined_if_true(crs.enable_texturing, "ENABLE_TEXTURE");
-			options.set_defined_if_true(crs.show_caps, "ENABLE_CAPS");
-			options.set_defined_if_true(crs.rounded_caps, "USE_ROUNDED_CONE");
-			options.set_defined_if_true(crs.enable_ambient_occlusion, "ENABLE_AMBIENT_OCCLUSION");
+			options.define_macro_if_true(crs.enable_texturing, "ENABLE_TEXTURE");
+			options.define_macro_if_true(crs.show_caps, "ENABLE_CAPS");
+			options.define_macro_if_true(crs.rounded_caps, "USE_ROUNDED_CONE");
+			options.define_macro_if_true(crs.enable_ambient_occlusion, "ENABLE_AMBIENT_OCCLUSION");
 		}
 		bool cone_renderer::set_albedo_texture(texture* tex) {
 			if(!tex || tex->get_nr_dimensions() != 2)

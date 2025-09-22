@@ -625,7 +625,6 @@ void shader_code::set_defines_and_snippets(std::string& source, const shader_com
 	enum class DirectiveType {
 		kUndefined,
 		kDefine,
-		//kUndef,
 		kSnippet
 	};
 
@@ -635,8 +634,6 @@ void shader_code::set_defines_and_snippets(std::string& source, const shader_com
 		std::string replacement_list;
 	};
 	
-	//if(options.defines.empty() && options.snippets.empty())
-	//	return;
 	if(options.empty())
 		return;
 
@@ -654,7 +651,7 @@ void shader_code::set_defines_and_snippets(std::string& source, const shader_com
 
 		DirectiveType directive_type = DirectiveType::kUndefined;
 
-		// Pre-processor directives and snippet markers must appear on separate lines. Only whitespace characters are allowed to appear before them.
+		// Preprocessor directives and snippet markers must appear on separate lines. Only whitespace characters are allowed to appear before them.
 		const char* ptr = line.begin;
 		for(; ptr < line.end; ++ptr) {
 			char c = *ptr;
@@ -722,23 +719,16 @@ void shader_code::set_defines_and_snippets(std::string& source, const shader_com
 
 	std::vector<std::pair<std::string, std::string>> additional_defines;
 
-	//for(const auto& define : options.defines) {
-	for(const auto& define : options.get_defines()) {
+	for(const auto& define : options.get_macros()) {
 		auto it = directives.find(define.first);
 		if(it != directives.end() && it->second->type == DirectiveType::kDefine) {
 			it->second->replacement_list = define.second;
-			//if(define.second.is_undef)
-			//	it->second->type = DirectiveType::kUndef;
-			//else
-			//	it->second->replacement_list = define.second.replacement_list;
 		} else {
 			additional_defines.push_back({ define.first, define.second });
-			//additional_defines.push_back({ define.first, define.second.replacement_list });
 		}
 	}
 
 	const shader_compile_options::string_map& snippets = options.get_snippets();
-	//if(!options.snippets.empty())
 	if(!snippets.empty())
 		additional_defines.push_back({ "CGV_USE_SNIPPETS", "" });
 
@@ -757,20 +747,12 @@ void shader_code::set_defines_and_snippets(std::string& source, const shader_com
 			case DirectiveType::kDefine:
 				out += "#define " + directive->identifier + " " + directive->replacement_list;
 				break;
-			//case DirectiveType::kUndef:
-			//	// skip the line in case of undef directive, effectively removing it
-			//	break;
 			case DirectiveType::kSnippet:
-				//if(options.snippets.empty()) {
 				if(snippets.empty()) {
-					//auto it = std::find_if(options.snippets.begin(), options.snippets.end(), [directive](const shader_code_snippet& snippet) {
 					auto it = std::find_if(snippets.begin(), snippets.end(), [directive](const std::pair<std::string, std::string>& snippet) {
-						//return directive->identifier == "cgv::" + snippet.id;
 						return directive->identifier == "cgv::" + snippet.first;
 					});
-					//if(it != options.snippets.end())
 					if(it != snippets.end())
-						//out += it->content;
 						out += it->second;
 					else
 						out += to_string(line);

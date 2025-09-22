@@ -5,7 +5,7 @@ in vec4 color_fs;
 in vec3 position;
 flat in int side;
 
-#ifdef ENABLE_ROUNDING
+#if ENABLE_ROUNDING
 in vec3 extent;
 in vec3 pos_box;
 in vec3 eye_box;
@@ -26,7 +26,7 @@ void finish_fragment(vec4 color);
 vec4 compute_reflected_appearance(vec3 position_eye, vec3 normal_eye, vec4 color, int side);
 //***** end interface of surface.glsl ***********************************
 
-#ifdef ENABLE_ROUNDING
+#if ENABLE_ROUNDING
 bool roundedboxIntersect(in vec3 ro, in vec3 rd, in vec3 size, in float rad, out float t, out bool rounded)
 {
     rounded = false;
@@ -132,7 +132,7 @@ vec3 roundedboxNormal( in vec3 pos, in vec3 siz, in float rad )
 #endif
 void main()
 {
-#ifdef ENABLE_ROUNDING
+#if ENABLE_ROUNDING
     if (radius == 0.0)
         finish_fragment(compute_reflected_appearance(position, normalize(normal), color_fs, side));
     else {
