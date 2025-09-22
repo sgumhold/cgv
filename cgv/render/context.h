@@ -1083,8 +1083,8 @@ public:
 	//@{
 	DEPRECATED("deprecated and ignored.") virtual void enable_phong_shading();
 	DEPRECATED("deprecated and ignored.") virtual void disable_phong_shading();
-	DEPRECATED("deprecated, use set_material instead.") virtual void enable_material(const cgv::media::illum::phong_material& mat = cgv::media::illum::default_material(), MaterialSide ms = MS_FRONT_AND_BACK, float alpha = 1);
-	DEPRECATED("deprecated and ignored.") virtual void disable_material(const cgv::media::illum::phong_material& mat = cgv::media::illum::default_material());
+	DEPRECATED("deprecated, use set_material instead.") virtual void enable_material(const cgv::media::illum::phong_material& mat = cgv::media::illum::phong_material::get_default(), MaterialSide ms = MS_FRONT_AND_BACK, float alpha = 1);
+	DEPRECATED("deprecated and ignored.") virtual void disable_material(const cgv::media::illum::phong_material& mat = cgv::media::illum::phong_material::get_default());
 	DEPRECATED("deprecated, use enable_material(textured_surface_material) instead.") virtual void enable_material(const textured_material& mat, MaterialSide ms = MS_FRONT_AND_BACK, float alpha = 1);
 	//DEPRECATED("deprecated, use disable_material(textured_surface_material) instead.") virtual void disable_material(const textured_material& mat) = 0;
 	/// set the current per channel gamma values to single value

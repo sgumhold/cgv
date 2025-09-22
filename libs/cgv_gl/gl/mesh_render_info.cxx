@@ -181,8 +181,8 @@ void mesh_render_info::construct_draw_calls(cgv::render::context& ctx)
 			dc.material_index = mps[0];
 			if (dc.material_index != -1) {
 				const auto& mat = *ref_materials()[dc.material_index];
-				if ((mat.get_transparency_index() != -1) ||
-					(mat.get_transparency() > 0.01f)) {
+				if ((mat.transparency_index != -1) ||
+					(mat.transparency > 0.01f)) {
 					dc.alpha_mode = AM_MASK_AND_BLEND;
 					dc.alpha_cutoff = 0.02f;
 				}
