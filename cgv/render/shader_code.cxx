@@ -748,7 +748,7 @@ void shader_code::set_defines_and_snippets(std::string& source, const shader_com
 				out += "#define " + directive->identifier + " " + directive->replacement_list;
 				break;
 			case DirectiveType::kSnippet:
-				if(snippets.empty()) {
+				if(!snippets.empty()) {
 					auto it = std::find_if(snippets.begin(), snippets.end(), [directive](const std::pair<std::string, std::string>& snippet) {
 						return directive->identifier == "cgv::" + snippet.first;
 					});
