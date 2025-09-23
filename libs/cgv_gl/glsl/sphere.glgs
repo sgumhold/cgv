@@ -4,7 +4,6 @@ layout(points) in;
 layout(triangle_strip, max_vertices = 4) out;
 
 uniform float halo_width_in_pixel = 0.0;
-uniform float percentual_halo_width = 0.0;
 uniform float blend_width_in_pixel = 1.0;
 uniform float pixel_extent_per_depth = 0.001;
 
@@ -13,6 +12,8 @@ in SPHERE_GS {
 	flat mat4 model_view_matrix;
 	flat mat4 model_view_projection_matrix;
 	flat vec4 color;
+	flat vec4 halo_color;
+	flat float percentual_halo_width;
 } gi[];
 
 //***** begin interface of sphere_lib.glgs ***********************************
@@ -34,7 +35,7 @@ in sphere_parameter_space sps[];
 
 out SPHERE_FS {
 	flat vec4  color;
-	//vec4  halo_color;
+	flat vec4  halo_color;
 	flat float percentual_blend_width;
 	flat float percentual_point_size;
 	flat float percentual_core_size;
@@ -52,13 +53,14 @@ void prepare_splat(
 void main()
 {
 	fo.color = gi[0].color;
+	fo.halo_color = gi[0].halo_color;
 	// compute depth of sphere center
 	float depth = abs((gi[0].model_view_matrix * vec4(gl_in[0].gl_Position.xyz, 1.0)).z);
 	// compute extent of a pixel at sphere center depth 
 	float pixel_extent = pixel_extent_per_depth * depth;
 	// compute splat parameters for fragment shader
 	prepare_splat(gl_in[0].gl_Position.w, pixel_extent,
-		blend_width_in_pixel, halo_width_in_pixel, percentual_halo_width,
+		blend_width_in_pixel, halo_width_in_pixel, gi[0].percentual_halo_width,
 		fo.percentual_core_size, fo.percentual_point_size,
 		fo.percentual_blend_width, fo.percentual_splat_size);
 

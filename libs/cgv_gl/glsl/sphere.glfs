@@ -1,10 +1,10 @@
 #version 330
 
-uniform vec4 halo_color;
 uniform float halo_color_strength = 0.5;
 
 in SPHERE_FS {
 	flat vec4  color;
+	flat vec4  halo_color;
 	flat float percentual_blend_width;
 	flat float percentual_point_size;
 	flat float percentual_core_size;
@@ -65,7 +65,7 @@ void main()
 		discard;
 
 	vec4 color = compute_reflected_appearance(p_eye, n_eye, fi.color, side);
-	vec4 final_halo_color = vec4(mix(fi.color.rgb, halo_color.rgb, halo_color_strength), halo_color.a);
+	vec4 final_halo_color = vec4(mix(fi.color.rgb, fi.halo_color.rgb, halo_color_strength), fi.halo_color.a);
 	vec4 blend_color = compute_blended_color_with_halo(percentual_radial_position, color, fi.percentual_core_size, final_halo_color, fi.percentual_point_size, fi.percentual_blend_width);
 	finish_fragment(blend_color, depth);
 	frag_position = vec4(p_eye, 1.0);
