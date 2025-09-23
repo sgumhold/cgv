@@ -14,7 +14,7 @@ var searchData=
   ['perm_5fmat_11',['perm_mat',['../structcgv_1_1math_1_1perm__mat.html',1,'cgv::math']]],
   ['perspective_12',['Perspective',['../structfx_1_1gltf_1_1Camera_1_1Perspective.html',1,'fx::gltf::Camera']]],
   ['ph_5fprocessor_13',['ph_processor',['../classcgv_1_1ppp_1_1ph__processor.html',1,'cgv::ppp']]],
-  ['phong_5fmaterial_14',['phong_material',['../classcgv_1_1media_1_1illum_1_1phong__material.html',1,'cgv::media::illum']]],
+  ['phong_5fmaterial_14',['phong_material',['../structcgv_1_1media_1_1illum_1_1phong__material.html',1,'cgv::media::illum']]],
   ['piecewise_5flinear_5finterpolator_15',['piecewise_linear_interpolator',['../classcgv_1_1math_1_1piecewise__linear__interpolator.html',1,'cgv::math']]],
   ['piecewise_5fnearest_5finterpolator_16',['piecewise_nearest_interpolator',['../classcgv_1_1math_1_1piecewise__nearest__interpolator.html',1,'cgv::math']]],
   ['pinhole_17',['pinhole',['../classcgv_1_1math_1_1pinhole.html',1,'cgv::math']]],

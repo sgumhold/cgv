@@ -26,10 +26,10 @@ var searchData=
   ['right_5fstick_5fposition_23',['right_stick_position',['../structgamepad_1_1gamepad__state.html#a085176ecd68c889a3f508dacf9018795',1,'gamepad::gamepad_state']]],
   ['role_24',['role',['../structvr_1_1vr__controller__info.html#aac03869f0da14d6ff1bfc445e2daf8e9',1,'vr::vr_controller_info']]],
   ['rotations_25',['rotations',['../classcgv_1_1render_1_1box__render__data__base.html#a69801a6dc377ebbd6869703b65fd6894',1,'cgv::render::box_render_data_base::rotations'],['../classcgv_1_1render_1_1rectangle__render__data.html#abbf20564e2538476c62a3388c040d247',1,'cgv::render::rectangle_render_data::rotations']]],
-  ['roughness_26',['roughness',['../classcgv_1_1media_1_1illum_1_1surface__material.html#abeea888e6dbdf16241235a08f82cdc2e',1,'cgv::media::illum::surface_material::roughness'],['../structcgv_1_1render_1_1volume__render__style.html#ab3a1c304c9c6709b0c4f5ec534502a22',1,'cgv::render::volume_render_style::roughness']]],
-  ['roughness_5fanisotropy_27',['roughness_anisotropy',['../classcgv_1_1media_1_1illum_1_1surface__material.html#a865250cb2d26cf61c9769cbeb6bf4a44',1,'cgv::media::illum::surface_material']]],
+  ['roughness_26',['roughness',['../structcgv_1_1media_1_1illum_1_1surface__material.html#abeea888e6dbdf16241235a08f82cdc2e',1,'cgv::media::illum::surface_material::roughness'],['../structcgv_1_1render_1_1volume__render__style.html#ab3a1c304c9c6709b0c4f5ec534502a22',1,'cgv::render::volume_render_style::roughness']]],
+  ['roughness_5fanisotropy_27',['roughness_anisotropy',['../structcgv_1_1media_1_1illum_1_1surface__material.html#a865250cb2d26cf61c9769cbeb6bf4a44',1,'cgv::media::illum::surface_material']]],
   ['roughness_5findex_28',['roughness_index',['../classcgv_1_1media_1_1illum_1_1textured__surface__material.html#a60489a57762d4f098cdda01f362bd2ae',1,'cgv::media::illum::textured_surface_material']]],
-  ['roughness_5forientation_29',['roughness_orientation',['../classcgv_1_1media_1_1illum_1_1surface__material.html#a612bd2956c621fa487d9ddc4e37ec686',1,'cgv::media::illum::surface_material']]],
+  ['roughness_5forientation_29',['roughness_orientation',['../structcgv_1_1media_1_1illum_1_1surface__material.html#a612bd2956c621fa487d9ddc4e37ec686',1,'cgv::media::illum::surface_material']]],
   ['rounding_30',['rounding',['../structcgv_1_1render_1_1box__render__style.html#a92e0131be883f48e6877a29641e502ed',1,'cgv::render::box_render_style']]],
   ['rrs_31',['rrs',['../classcgv_1_1plot_1_1plot__base.html#a05166adb7d1175f04a0e2dc8607cf2d5',1,'cgv::plot::plot_base']]],
   ['running_5ftime_32',['running_time',['../classcgv_1_1app_1_1performance__monitor.html#a8f604e624947512390e3734e7d02f5d8',1,'cgv::app::performance_monitor']]]

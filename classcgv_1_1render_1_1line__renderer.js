@@ -1,13 +1,12 @@
 var classcgv_1_1render_1_1line__renderer =
 [
-    [ "line_renderer", "classcgv_1_1render_1_1line__renderer.html#a5d219e60151a749bdc8346b1267e8e4b", null ],
-    [ "build_shader_program", "classcgv_1_1render_1_1line__renderer.html#a33a14890ccf127e915304dbf9d913a2f", null ],
-    [ "create_render_style", "classcgv_1_1render_1_1line__renderer.html#a331c9c0cb6b633798a98585d8eb10f7a", null ],
+    [ "create_render_style", "classcgv_1_1render_1_1line__renderer.html#abe39a35fce3289596d16691034215d2e", null ],
     [ "disable", "classcgv_1_1render_1_1line__renderer.html#ab14a6c18fc0f525c3e9721be9cdff9a9", null ],
     [ "disable_attribute_array_manager", "classcgv_1_1render_1_1line__renderer.html#a8d5572d8248544cf4a2864bffdbd7574", null ],
     [ "draw", "classcgv_1_1render_1_1line__renderer.html#af82b8c5419bf61f434bd6a31d0fe29eb", null ],
     [ "enable", "classcgv_1_1render_1_1line__renderer.html#aae5ec306c6b17f7047dbb9c09874b4aa", null ],
     [ "enable_attribute_array_manager", "classcgv_1_1render_1_1line__renderer.html#a0b6c9d3ab21e3dcfc0886874bdcf77df", null ],
+    [ "get_default_prog_name", "classcgv_1_1render_1_1line__renderer.html#a94300012948350f36dd7dedfcc26614a", null ],
     [ "init", "classcgv_1_1render_1_1line__renderer.html#a09617d0d9b29219f05d2020a4bd2bc2f", null ],
     [ "remove_depth_offset_array", "classcgv_1_1render_1_1line__renderer.html#a9fa7de1d2fbbff37af33d9f654e1f6fd", null ],
     [ "remove_line_width_array", "classcgv_1_1render_1_1line__renderer.html#ad86ae2057c76639d4f4ef1fa9cb6d7ac", null ],

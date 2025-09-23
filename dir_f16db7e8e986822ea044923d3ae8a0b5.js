@@ -42,8 +42,6 @@ var dir_f16db7e8e986822ea044923d3ae8a0b5 =
     [ "render_data_base.h", "render__data__base_8h_source.html", null ],
     [ "renderer.cxx", "renderer_8cxx_source.html", null ],
     [ "renderer.h", "renderer_8h_source.html", null ],
-    [ "slab_renderer.cxx", "slab__renderer_8cxx_source.html", null ],
-    [ "slab_renderer.h", "slab__renderer_8h_source.html", null ],
     [ "sphere_render_data.h", "sphere__render__data_8h_source.html", null ],
     [ "sphere_renderer.cxx", "sphere__renderer_8cxx_source.html", null ],
     [ "sphere_renderer.h", "sphere__renderer_8h_source.html", null ],

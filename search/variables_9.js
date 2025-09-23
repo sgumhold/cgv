@@ -1,6 +1,6 @@
 var searchData=
 [
-  ['id_0',['id',['../structcgv_1_1render_1_1shader__code__snippet.html#adba6d534bb508c31502bb4b7f658ce76',1,'cgv::render::shader_code_snippet::id'],['../structcgv_1_1media_1_1fourcc.html#a3ce14c8ee55789e6176501ef5c44ec02',1,'cgv::media::fourcc::id']]],
+  ['id_0',['id',['../structcgv_1_1media_1_1fourcc.html#a3ce14c8ee55789e6176501ef5c44ec02',1,'cgv::media::fourcc']]],
   ['idx_1',['idx',['../structcgv_1_1reflect_1_1reflection__handler_1_1nesting__info.html#a97c9d2291ddb47d514cf5cca14bb06b7',1,'cgv::reflect::reflection_handler::nesting_info']]],
   ['idx_5foff_2',['idx_off',['../classcgv_1_1media_1_1mesh_1_1streaming__mesh.html#ac05eb1094dc7799ceb76b07642f95656',1,'cgv::media::mesh::streaming_mesh']]],
   ['ignore_5factivation_5fstate_3',['ignore_activation_state',['../classcgv_1_1base_1_1traverser.html#a0d309709f594e12576815d5ecc288d5b',1,'cgv::base::traverser']]],
@@ -18,15 +18,18 @@ var searchData=
   ['input_5fconfigs_15',['input_configs',['../classvr_1_1vr__kit.html#a26b82a9636615d5df8cc725be1e4f5ee',1,'vr::vr_kit']]],
   ['input_5ftype_16',['input_type',['../structvr_1_1vr__controller__info.html#abd01eed0005449a0a51e5b1ed2f0c1f8',1,'vr::vr_controller_info']]],
   ['inserted_5fshader_5ffile_5fnames_17',['inserted_shader_file_names',['../structcgv_1_1render_1_1shader__config.html#add9cd25961c2c07b2914254fbcf5b762',1,'cgv::render::shader_config']]],
-  ['intermediate_5fpositions_18',['intermediate_positions',['../classcgv_1_1media_1_1mesh_1_1dynamic__mesh.html#a1a9e324094b6978a47a025172864776f',1,'cgv::media::mesh::dynamic_mesh']]],
-  ['interval_19',['interval',['../classcgv_1_1app_1_1performance__monitor.html#a7a651c08a48b338a3db819acd1329773',1,'cgv::app::performance_monitor']]],
-  ['interval_5fframe_5fcount_20',['interval_frame_count',['../classcgv_1_1app_1_1performance__monitor.html#aadffb2b8e47b36e82765529df7542c88',1,'cgv::app::performance_monitor']]],
-  ['ipd_21',['ipd',['../structvr_1_1vr__hmd__info.html#a53bc67b7b2ad2dc4a728e9c64f35256e',1,'vr::vr_hmd_info']]],
-  ['is_5fbinary_22',['is_binary',['../classcgv_1_1os_1_1queued__output__thread.html#aaa938ea35a45454cff05aea2f9ee2216',1,'cgv::os::queued_output_thread::is_binary'],['../classcgv_1_1os_1_1queued__input__thread.html#ac3f928c6c36249f779d28779bb0e69d0',1,'cgv::os::queued_input_thread::is_binary']]],
-  ['is_5fopened_23',['is_opened',['../classcgv_1_1media_1_1image_1_1image__writer.html#a3daf992be87cbfc41514f98a82c88c3d',1,'cgv::media::image::image_writer']]],
-  ['is_5fsingleton_24',['is_singleton',['../structcgv_1_1base_1_1factory.html#a0c603bd79a0180ecd47ea0e6e318e924',1,'cgv::base::factory']]],
-  ['is_5fwireless_25',['is_wireless',['../structvr_1_1vr__trackable__info.html#a9bb447518f6a90171e85687e22c6f1c9',1,'vr::vr_trackable_info::is_wireless'],['../structgamepad_1_1device__info.html#a146899103026a05bb5c12c2d6c61bb1c',1,'gamepad::device_info::is_wireless']]],
-  ['isosurface_5fcolor_26',['isosurface_color',['../structcgv_1_1render_1_1volume__render__style.html#a31ece20e4d115e7541a3ce2cbfb9a230',1,'cgv::render::volume_render_style']]],
-  ['isosurface_5fcolor_5ffrom_5ftransfer_5ffunction_27',['isosurface_color_from_transfer_function',['../structcgv_1_1render_1_1volume__render__style.html#a61e23537b6d0702534cfbf945cc6dfd9',1,'cgv::render::volume_render_style']]],
-  ['isovalue_28',['isovalue',['../structcgv_1_1render_1_1volume__render__style.html#a4e3b47297fe84828605dd9034b52b730',1,'cgv::render::volume_render_style']]]
+  ['integration_5fquality_18',['integration_quality',['../structcgv_1_1render_1_1volume__render__style.html#a946cbf3ae1806463ecaee71c046d1be4',1,'cgv::render::volume_render_style']]],
+  ['intermediate_5fpositions_19',['intermediate_positions',['../classcgv_1_1media_1_1mesh_1_1dynamic__mesh.html#a1a9e324094b6978a47a025172864776f',1,'cgv::media::mesh::dynamic_mesh']]],
+  ['interpolation_5fmode_20',['interpolation_mode',['../structcgv_1_1render_1_1volume__render__style.html#a82636d490952274f8ed663446e782dd9',1,'cgv::render::volume_render_style']]],
+  ['interval_21',['interval',['../classcgv_1_1app_1_1performance__monitor.html#a7a651c08a48b338a3db819acd1329773',1,'cgv::app::performance_monitor']]],
+  ['interval_5fframe_5fcount_22',['interval_frame_count',['../classcgv_1_1app_1_1performance__monitor.html#aadffb2b8e47b36e82765529df7542c88',1,'cgv::app::performance_monitor']]],
+  ['ipd_23',['ipd',['../structvr_1_1vr__hmd__info.html#a53bc67b7b2ad2dc4a728e9c64f35256e',1,'vr::vr_hmd_info']]],
+  ['is_5fbinary_24',['is_binary',['../classcgv_1_1os_1_1queued__output__thread.html#aaa938ea35a45454cff05aea2f9ee2216',1,'cgv::os::queued_output_thread::is_binary'],['../classcgv_1_1os_1_1queued__input__thread.html#ac3f928c6c36249f779d28779bb0e69d0',1,'cgv::os::queued_input_thread::is_binary']]],
+  ['is_5fopened_25',['is_opened',['../classcgv_1_1media_1_1image_1_1image__writer.html#a3daf992be87cbfc41514f98a82c88c3d',1,'cgv::media::image::image_writer']]],
+  ['is_5fsingleton_26',['is_singleton',['../structcgv_1_1base_1_1factory.html#a0c603bd79a0180ecd47ea0e6e318e924',1,'cgv::base::factory']]],
+  ['is_5fwireless_27',['is_wireless',['../structvr_1_1vr__trackable__info.html#a9bb447518f6a90171e85687e22c6f1c9',1,'vr::vr_trackable_info::is_wireless'],['../structgamepad_1_1device__info.html#a146899103026a05bb5c12c2d6c61bb1c',1,'gamepad::device_info::is_wireless']]],
+  ['isosurface_5fcolor_28',['isosurface_color',['../structcgv_1_1render_1_1volume__render__style.html#a31ece20e4d115e7541a3ce2cbfb9a230',1,'cgv::render::volume_render_style']]],
+  ['isosurface_5fcolor_5ffrom_5ftransfer_5ffunction_29',['isosurface_color_from_transfer_function',['../structcgv_1_1render_1_1volume__render__style.html#a61e23537b6d0702534cfbf945cc6dfd9',1,'cgv::render::volume_render_style']]],
+  ['isosurface_5fmode_30',['isosurface_mode',['../structcgv_1_1render_1_1volume__render__style.html#a22c6742c53c6653ec73378da90937e0b',1,'cgv::render::volume_render_style']]],
+  ['isovalue_31',['isovalue',['../structcgv_1_1render_1_1volume__render__style.html#a4e3b47297fe84828605dd9034b52b730',1,'cgv::render::volume_render_style']]]
 ];

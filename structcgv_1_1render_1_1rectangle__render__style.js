@@ -1,6 +1,5 @@
 var structcgv_1_1render_1_1rectangle__render__style =
 [
-    [ "rectangle_render_style", "structcgv_1_1render_1_1rectangle__render__style.html#a9c4f96e386c6b5c9ae01d79a7d6711da", null ],
     [ "blend_rectangles", "structcgv_1_1render_1_1rectangle__render__style.html#a3a05a970969f9c9ee7ebaf3b1bae58a9", null ],
     [ "border_mode", "structcgv_1_1render_1_1rectangle__render__style.html#a43fd3557f1f44c04ad3df7549129af1d", null ],
     [ "border_width_in_pixel", "structcgv_1_1render_1_1rectangle__render__style.html#a86925726c0835d91d1c7c3ca9dca5b1a", null ],

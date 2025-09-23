@@ -1,12 +1,12 @@
 var classcgv_1_1render_1_1rectangle__renderer =
 [
-    [ "build_shader_program", "classcgv_1_1render_1_1rectangle__renderer.html#afed6af7df8f87629d80eced743d80e1f", null ],
-    [ "create_render_style", "classcgv_1_1render_1_1rectangle__renderer.html#a3b260c8a459e1e12cfd25ebf85890993", null ],
+    [ "create_render_style", "classcgv_1_1render_1_1rectangle__renderer.html#a2efa62f380b8ebbdd94dfa5e1f82d76d", null ],
     [ "disable", "classcgv_1_1render_1_1rectangle__renderer.html#a91487d9245c6b3efcea028ccc72b6385", null ],
     [ "disable_attribute_array_manager", "classcgv_1_1render_1_1rectangle__renderer.html#a4e13d252c6a45d68e30c66e5105c8634", null ],
     [ "draw", "classcgv_1_1render_1_1rectangle__renderer.html#a0248dc3fe84e13cd4ad2dcd10d2cce50", null ],
     [ "enable", "classcgv_1_1render_1_1rectangle__renderer.html#a86c2cedc085819656c99b2f2a144ce96", null ],
     [ "enable_attribute_array_manager", "classcgv_1_1render_1_1rectangle__renderer.html#a7649b8ac76427f91bb9b81ff0845b85f", null ],
+    [ "get_default_prog_name", "classcgv_1_1render_1_1rectangle__renderer.html#afcdfbb9460409feba6e016c064573b95", null ],
     [ "init", "classcgv_1_1render_1_1rectangle__renderer.html#a859d3dcafedba0bdbddc447a66e7e2e3", null ],
     [ "remove_border_color_array", "classcgv_1_1render_1_1rectangle__renderer.html#aaabbb8932e0e5f0f8fae38e3f1c3a2c1", null ],
     [ "remove_border_info_array", "classcgv_1_1render_1_1rectangle__renderer.html#a7eda514988681dbe6d1cbdf5b54fd76b", null ],

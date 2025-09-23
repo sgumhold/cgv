@@ -1,6 +1,5 @@
 var structcgv_1_1render_1_1surfel__render__style =
 [
-    [ "surfel_render_style", "structcgv_1_1render_1_1surfel__render__style.html#ac54923e99000713f6aea7fe30c768d88", null ],
     [ "blend_points", "structcgv_1_1render_1_1surfel__render__style.html#a882784fc1c18d636d3f3760aa026f656", null ],
     [ "blend_width_in_pixel", "structcgv_1_1render_1_1surfel__render__style.html#a875b44fdbea4348dd6b1dfd8525bd95d", null ],
     [ "halo_color", "structcgv_1_1render_1_1surfel__render__style.html#ad04411b84a81cd8bfee16bdabbc5f46b", null ],

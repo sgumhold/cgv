@@ -62,7 +62,6 @@ var namespacecgv_1_1gui =
     [ "resizable", "classcgv_1_1gui_1_1resizable.html", null ],
     [ "rotation_animation", "classcgv_1_1gui_1_1rotation__animation.html", null ],
     [ "shortcut", "classcgv_1_1gui_1_1shortcut.html", "classcgv_1_1gui_1_1shortcut" ],
-    [ "slab_render_style_gui_creator", "structcgv_1_1gui_1_1slab__render__style__gui__creator.html", "structcgv_1_1gui_1_1slab__render__style__gui__creator" ],
     [ "slerp_animation", "classcgv_1_1gui_1_1slerp__animation.html", null ],
     [ "sphere_render_style_gui_creator", "structcgv_1_1gui_1_1sphere__render__style__gui__creator.html", "structcgv_1_1gui_1_1sphere__render__style__gui__creator" ],
     [ "spline_tube_render_style_gui_creator", "structcgv_1_1gui_1_1spline__tube__render__style__gui__creator.html", "structcgv_1_1gui_1_1spline__tube__render__style__gui__creator" ],

@@ -5,7 +5,7 @@ var searchData=
   ['oalsoundformat_2',['OALSoundFormat',['../structcgv_1_1audio_1_1OALSoundFormat.html',1,'cgv::audio']]],
   ['oalsource_3',['OALSource',['../classcgv_1_1audio_1_1OALSource.html',1,'cgv::audio']]],
   ['obj_5floader_5fgeneric_4',['obj_loader_generic',['../classcgv_1_1media_1_1mesh_1_1obj__loader__generic.html',1,'cgv::media::mesh']]],
-  ['obj_5fmaterial_5',['obj_material',['../classcgv_1_1media_1_1illum_1_1obj__material.html',1,'cgv::media::illum']]],
+  ['obj_5fmaterial_5',['obj_material',['../structcgv_1_1media_1_1illum_1_1obj__material.html',1,'cgv::media::illum']]],
   ['obj_5freader_5fbase_6',['obj_reader_base',['../classcgv_1_1media_1_1mesh_1_1obj__reader__base.html',1,'cgv::media::mesh']]],
   ['obj_5freader_5fgeneric_7',['obj_reader_generic',['../classcgv_1_1media_1_1mesh_1_1obj__reader__generic.html',1,'cgv::media::mesh']]],
   ['object_5fcollection_8',['object_collection',['../structcgv_1_1base_1_1object__collection.html',1,'cgv::base']]],

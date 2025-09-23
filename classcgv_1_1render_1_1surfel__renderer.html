@@ -243,9 +243,9 @@ Public Member Functions</h2></td></tr>
 <tr class="memdesc:a05278277d5068970525f0b7b79f0ea11 inherit pub_methods_classcgv_1_1render_1_1group__renderer"><td class="mdescLeft">&#160;</td><td class="mdescRight">template method to set the group rotation from a vector of quaternions of type T, which should have 4 components  <br /></td></tr>
 <tr class="separator:a05278277d5068970525f0b7b79f0ea11 inherit pub_methods_classcgv_1_1render_1_1group__renderer"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="inherit_header pub_methods_classcgv_1_1render_1_1renderer"><td colspan="2" onclick="javascript:toggleInherit('pub_methods_classcgv_1_1render_1_1renderer')"><img src="closed.png" alt="-"/>&#160;Public Member Functions inherited from <a class="el" href="classcgv_1_1render_1_1renderer.html">cgv::render::renderer</a></td></tr>
-<tr class="memitem:a4aec609cc41b320b396258a100722d86 inherit pub_methods_classcgv_1_1render_1_1renderer" id="r_a4aec609cc41b320b396258a100722d86"><td class="memItemLeft" align="right" valign="top"><a class="el" href="namespacecgv_1_1render.html#a0e875e06326ba0599a1289f0bacdb116">shader_define_map</a> &amp;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcgv_1_1render_1_1renderer.html#a4aec609cc41b320b396258a100722d86">ref_defines</a> ()</td></tr>
-<tr class="memdesc:a4aec609cc41b320b396258a100722d86 inherit pub_methods_classcgv_1_1render_1_1renderer"><td class="mdescLeft">&#160;</td><td class="mdescRight">access to shader define map to update defines not handled by render style  <br /></td></tr>
-<tr class="separator:a4aec609cc41b320b396258a100722d86 inherit pub_methods_classcgv_1_1render_1_1renderer"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a05492f9b3f4080d9997c58124e2adc33 inherit pub_methods_classcgv_1_1render_1_1renderer" id="r_a05492f9b3f4080d9997c58124e2adc33"><td class="memItemLeft" align="right" valign="top"><a class="el" href="classcgv_1_1render_1_1shader__compile__options.html">shader_compile_options</a> &amp;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcgv_1_1render_1_1renderer.html#a05492f9b3f4080d9997c58124e2adc33">ref_shader_options</a> ()</td></tr>
+<tr class="memdesc:a05492f9b3f4080d9997c58124e2adc33 inherit pub_methods_classcgv_1_1render_1_1renderer"><td class="mdescLeft">&#160;</td><td class="mdescRight">access to shader program compile options to update settings not handled by render style  <br /></td></tr>
+<tr class="separator:a05492f9b3f4080d9997c58124e2adc33 inherit pub_methods_classcgv_1_1render_1_1renderer"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a421e3dd214af8e42dfebc4e902cb0af3 inherit pub_methods_classcgv_1_1render_1_1renderer" id="r_a421e3dd214af8e42dfebc4e902cb0af3"><td class="memItemLeft" align="right" valign="top"><a class="el" href="classcgv_1_1render_1_1shader__program.html">shader_program</a> &amp;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcgv_1_1render_1_1renderer.html#a421e3dd214af8e42dfebc4e902cb0af3">ref_prog</a> ()</td></tr>
 <tr class="memdesc:a421e3dd214af8e42dfebc4e902cb0af3 inherit pub_methods_classcgv_1_1render_1_1renderer"><td class="mdescLeft">&#160;</td><td class="mdescRight">derived renderer classes have access to shader program  <br /></td></tr>
 <tr class="separator:a421e3dd214af8e42dfebc4e902cb0af3 inherit pub_methods_classcgv_1_1render_1_1renderer"><td class="memSeparator" colspan="2">&#160;</td></tr>
@@ -357,12 +357,12 @@ Public Member Functions</h2></td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="pro-methods" name="pro-methods"></a>
 Protected Member Functions</h2></td></tr>
-<tr class="memitem:a3d8d65b3f09b3ddd3a7e6b295ebe7354" id="r_a3d8d65b3f09b3ddd3a7e6b295ebe7354"><td class="memItemLeft" align="right" valign="top"><a class="el" href="structcgv_1_1render_1_1render__style.html">render_style</a> *&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcgv_1_1render_1_1surfel__renderer.html#a3d8d65b3f09b3ddd3a7e6b295ebe7354">create_render_style</a> () const</td></tr>
-<tr class="memdesc:a3d8d65b3f09b3ddd3a7e6b295ebe7354"><td class="mdescLeft">&#160;</td><td class="mdescRight">overload to allow instantiation of <a class="el" href="classcgv_1_1render_1_1surfel__renderer.html" title="renderer that supports point splatting">surfel_renderer</a>  <br /></td></tr>
-<tr class="separator:a3d8d65b3f09b3ddd3a7e6b295ebe7354"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a03df668a86697c7ac5e87779c07f6700" id="r_a03df668a86697c7ac5e87779c07f6700"><td class="memItemLeft" align="right" valign="top">bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcgv_1_1render_1_1surfel__renderer.html#a03df668a86697c7ac5e87779c07f6700">build_shader_program</a> (<a class="el" href="classcgv_1_1render_1_1context.html">context</a> &amp;ctx, <a class="el" href="classcgv_1_1render_1_1shader__program.html">shader_program</a> &amp;prog, const <a class="el" href="structcgv_1_1render_1_1shader__compile__options.html">shader_compile_options</a> &amp;options)</td></tr>
-<tr class="memdesc:a03df668a86697c7ac5e87779c07f6700"><td class="mdescLeft">&#160;</td><td class="mdescRight">build surfel program  <br /></td></tr>
-<tr class="separator:a03df668a86697c7ac5e87779c07f6700"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a2b8ba0e9a9aeffe271c87d579acb533c" id="r_a2b8ba0e9a9aeffe271c87d579acb533c"><td class="memItemLeft" align="right" valign="top">std::string&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcgv_1_1render_1_1surfel__renderer.html#a2b8ba0e9a9aeffe271c87d579acb533c">get_default_prog_name</a> () const override</td></tr>
+<tr class="memdesc:a2b8ba0e9a9aeffe271c87d579acb533c"><td class="mdescLeft">&#160;</td><td class="mdescRight">return the default shader program name  <br /></td></tr>
+<tr class="separator:a2b8ba0e9a9aeffe271c87d579acb533c"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a0ca36fc4157695323be84f92bfc78ea5" id="r_a0ca36fc4157695323be84f92bfc78ea5"><td class="memItemLeft" align="right" valign="top"><a class="el" href="structcgv_1_1render_1_1render__style.html">render_style</a> *&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcgv_1_1render_1_1surfel__renderer.html#a0ca36fc4157695323be84f92bfc78ea5">create_render_style</a> () const override</td></tr>
+<tr class="memdesc:a0ca36fc4157695323be84f92bfc78ea5"><td class="mdescLeft">&#160;</td><td class="mdescRight">create and return the default render style  <br /></td></tr>
+<tr class="separator:a0ca36fc4157695323be84f92bfc78ea5"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="inherit_header pro_methods_classcgv_1_1render_1_1renderer"><td colspan="2" onclick="javascript:toggleInherit('pro_methods_classcgv_1_1render_1_1renderer')"><img src="closed.png" alt="-"/>&#160;Protected Member Functions inherited from <a class="el" href="classcgv_1_1render_1_1renderer.html">cgv::render::renderer</a></td></tr>
 <tr class="memitem:a7264fd5effbc1beb4cc03be79c501b3c inherit pro_methods_classcgv_1_1render_1_1renderer" id="r_a7264fd5effbc1beb4cc03be79c501b3c"><td class="memItemLeft" align="right" valign="top">bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcgv_1_1render_1_1renderer.html#a7264fd5effbc1beb4cc03be79c501b3c">has_aam</a> () const</td></tr>
 <tr class="memdesc:a7264fd5effbc1beb4cc03be79c501b3c inherit pro_methods_classcgv_1_1render_1_1renderer"><td class="mdescLeft">&#160;</td><td class="mdescRight">check for attribute array manager  <br /></td></tr>
@@ -376,9 +376,12 @@ Protected Member Functions</h2></td></tr>
 <tr class="memitem:acf98eb4a64e230a55861683dee4b31ef inherit pro_methods_classcgv_1_1render_1_1renderer" id="r_acf98eb4a64e230a55861683dee4b31ef"><td class="memItemLeft" align="right" valign="top">bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcgv_1_1render_1_1renderer.html#acf98eb4a64e230a55861683dee4b31ef">attributes_persist</a> () const</td></tr>
 <tr class="memdesc:acf98eb4a64e230a55861683dee4b31ef inherit pro_methods_classcgv_1_1render_1_1renderer"><td class="mdescLeft">&#160;</td><td class="mdescRight">return whether attributes persist after a call to disable  <br /></td></tr>
 <tr class="separator:acf98eb4a64e230a55861683dee4b31ef inherit pro_methods_classcgv_1_1render_1_1renderer"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:afd80a4ee698f6e40194f849aacaa225f inherit pro_methods_classcgv_1_1render_1_1renderer" id="r_afd80a4ee698f6e40194f849aacaa225f"><td class="memItemLeft" align="right" valign="top">virtual void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcgv_1_1render_1_1renderer.html#afd80a4ee698f6e40194f849aacaa225f">update_defines</a> (<a class="el" href="namespacecgv_1_1render.html#a0e875e06326ba0599a1289f0bacdb116">shader_define_map</a> &amp;defines)</td></tr>
-<tr class="memdesc:afd80a4ee698f6e40194f849aacaa225f inherit pro_methods_classcgv_1_1render_1_1renderer"><td class="mdescLeft">&#160;</td><td class="mdescRight">overload to update the shader defines based on the current render style; only called if internal shader program is used  <br /></td></tr>
-<tr class="separator:afd80a4ee698f6e40194f849aacaa225f inherit pro_methods_classcgv_1_1render_1_1renderer"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a324e5774ae106c0be2a72714fbc520d3 inherit pro_methods_classcgv_1_1render_1_1renderer" id="r_a324e5774ae106c0be2a72714fbc520d3"><td class="memItemLeft" align="right" valign="top">virtual void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcgv_1_1render_1_1renderer.html#a324e5774ae106c0be2a72714fbc520d3">update_shader_program_options</a> (<a class="el" href="classcgv_1_1render_1_1shader__compile__options.html">shader_compile_options</a> &amp;options) const</td></tr>
+<tr class="memdesc:a324e5774ae106c0be2a72714fbc520d3 inherit pro_methods_classcgv_1_1render_1_1renderer"><td class="mdescLeft">&#160;</td><td class="mdescRight">overload to update the shader program compile options based on the current render style; only called if internal shader program is used  <br /></td></tr>
+<tr class="separator:a324e5774ae106c0be2a72714fbc520d3 inherit pro_methods_classcgv_1_1render_1_1renderer"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a591df90cf13667da55593699d7ce3403 inherit pro_methods_classcgv_1_1render_1_1renderer" id="r_a591df90cf13667da55593699d7ce3403"><td class="memItemLeft" align="right" valign="top">virtual bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcgv_1_1render_1_1renderer.html#a591df90cf13667da55593699d7ce3403">build_shader_program</a> (<a class="el" href="classcgv_1_1render_1_1context.html">context</a> &amp;ctx, <a class="el" href="classcgv_1_1render_1_1shader__program.html">shader_program</a> &amp;prog, const <a class="el" href="classcgv_1_1render_1_1shader__compile__options.html">shader_compile_options</a> &amp;options) const</td></tr>
+<tr class="memdesc:a591df90cf13667da55593699d7ce3403 inherit pro_methods_classcgv_1_1render_1_1renderer"><td class="mdescLeft">&#160;</td><td class="mdescRight">overload to change default behaviour and build a custom shader program based on the passed options  <br /></td></tr>
+<tr class="separator:a591df90cf13667da55593699d7ce3403 inherit pro_methods_classcgv_1_1render_1_1renderer"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:adb6814b6aa5111fdd9b9a6b3ac8bff68 inherit pro_methods_classcgv_1_1render_1_1renderer" id="r_adb6814b6aa5111fdd9b9a6b3ac8bff68"><td class="memTemplParams" colspan="2">template&lt;typename T &gt; </td></tr>
 <tr class="memitem:adb6814b6aa5111fdd9b9a6b3ac8bff68 inherit pro_methods_classcgv_1_1render_1_1renderer"><td class="memTemplItemLeft" align="right" valign="top">const T &amp;&#160;</td><td class="memTemplItemRight" valign="bottom"><a class="el" href="classcgv_1_1render_1_1renderer.html#adb6814b6aa5111fdd9b9a6b3ac8bff68">get_style</a> () const</td></tr>
 <tr class="memdesc:adb6814b6aa5111fdd9b9a6b3ac8bff68 inherit pro_methods_classcgv_1_1render_1_1renderer"><td class="mdescLeft">&#160;</td><td class="mdescRight">access to style  <br /></td></tr>
@@ -406,117 +409,47 @@ Protected Member Functions</h2></td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="pro-attribs" name="pro-attribs"></a>
 Protected Attributes</h2></td></tr>
-<tr class="memitem:a30fa74d9b67dec175993b8737a1c6a03" id="r_a30fa74d9b67dec175993b8737a1c6a03"><td class="memItemLeft" align="right" valign="top">bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcgv_1_1render_1_1surfel__renderer.html#a30fa74d9b67dec175993b8737a1c6a03">has_point_sizes</a></td></tr>
+<tr class="memitem:a30fa74d9b67dec175993b8737a1c6a03" id="r_a30fa74d9b67dec175993b8737a1c6a03"><td class="memItemLeft" align="right" valign="top">bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcgv_1_1render_1_1surfel__renderer.html#a30fa74d9b67dec175993b8737a1c6a03">has_point_sizes</a> = false</td></tr>
 <tr class="separator:a30fa74d9b67dec175993b8737a1c6a03"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:ad9006e47e0d785b80d9b113e107aeb4d" id="r_ad9006e47e0d785b80d9b113e107aeb4d"><td class="memItemLeft" align="right" valign="top">bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcgv_1_1render_1_1surfel__renderer.html#ad9006e47e0d785b80d9b113e107aeb4d">has_group_point_sizes</a></td></tr>
+<tr class="memitem:ad9006e47e0d785b80d9b113e107aeb4d" id="r_ad9006e47e0d785b80d9b113e107aeb4d"><td class="memItemLeft" align="right" valign="top">bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcgv_1_1render_1_1surfel__renderer.html#ad9006e47e0d785b80d9b113e107aeb4d">has_group_point_sizes</a> = false</td></tr>
 <tr class="separator:ad9006e47e0d785b80d9b113e107aeb4d"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a7917019c0a3a900de16517ae1aac0ffa" id="r_a7917019c0a3a900de16517ae1aac0ffa"><td class="memItemLeft" align="right" valign="top">bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcgv_1_1render_1_1surfel__renderer.html#a7917019c0a3a900de16517ae1aac0ffa">has_indexed_colors</a></td></tr>
+<tr class="memitem:a7917019c0a3a900de16517ae1aac0ffa" id="r_a7917019c0a3a900de16517ae1aac0ffa"><td class="memItemLeft" align="right" valign="top">bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcgv_1_1render_1_1surfel__renderer.html#a7917019c0a3a900de16517ae1aac0ffa">has_indexed_colors</a> = false</td></tr>
 <tr class="separator:a7917019c0a3a900de16517ae1aac0ffa"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a19eafcc8446daef47c9acbd0c09ca960" id="r_a19eafcc8446daef47c9acbd0c09ca960"><td class="memItemLeft" align="right" valign="top">float&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcgv_1_1render_1_1surfel__renderer.html#a19eafcc8446daef47c9acbd0c09ca960">reference_point_size</a></td></tr>
+<tr class="memitem:a19eafcc8446daef47c9acbd0c09ca960" id="r_a19eafcc8446daef47c9acbd0c09ca960"><td class="memItemLeft" align="right" valign="top">float&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcgv_1_1render_1_1surfel__renderer.html#a19eafcc8446daef47c9acbd0c09ca960">reference_point_size</a> = 0.01f</td></tr>
 <tr class="separator:a19eafcc8446daef47c9acbd0c09ca960"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a16557d9dd3eb5a7dceace4b46bc688a1" id="r_a16557d9dd3eb5a7dceace4b46bc688a1"><td class="memItemLeft" align="right" valign="top">float&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcgv_1_1render_1_1surfel__renderer.html#a16557d9dd3eb5a7dceace4b46bc688a1">y_view_angle</a></td></tr>
+<tr class="memitem:a16557d9dd3eb5a7dceace4b46bc688a1" id="r_a16557d9dd3eb5a7dceace4b46bc688a1"><td class="memItemLeft" align="right" valign="top">float&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcgv_1_1render_1_1surfel__renderer.html#a16557d9dd3eb5a7dceace4b46bc688a1">y_view_angle</a> = 45.0f</td></tr>
 <tr class="separator:a16557d9dd3eb5a7dceace4b46bc688a1"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="inherit_header pro_attribs_classcgv_1_1render_1_1surface__renderer"><td colspan="2" onclick="javascript:toggleInherit('pro_attribs_classcgv_1_1render_1_1surface__renderer')"><img src="closed.png" alt="-"/>&#160;Protected Attributes inherited from <a class="el" href="classcgv_1_1render_1_1surface__renderer.html">cgv::render::surface_renderer</a></td></tr>
-<tr class="memitem:aa819c5a8dd84badad3d37f9ed0ce56ca inherit pro_attribs_classcgv_1_1render_1_1surface__renderer" id="r_aa819c5a8dd84badad3d37f9ed0ce56ca"><td class="memItemLeft" align="right" valign="top">bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcgv_1_1render_1_1surface__renderer.html#aa819c5a8dd84badad3d37f9ed0ce56ca">has_normals</a></td></tr>
+<tr class="memitem:aa819c5a8dd84badad3d37f9ed0ce56ca inherit pro_attribs_classcgv_1_1render_1_1surface__renderer" id="r_aa819c5a8dd84badad3d37f9ed0ce56ca"><td class="memItemLeft" align="right" valign="top">bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcgv_1_1render_1_1surface__renderer.html#aa819c5a8dd84badad3d37f9ed0ce56ca">has_normals</a> = false</td></tr>
 <tr class="separator:aa819c5a8dd84badad3d37f9ed0ce56ca inherit pro_attribs_classcgv_1_1render_1_1surface__renderer"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:ad3a907c6b7a802394df0a6b7eb918053 inherit pro_attribs_classcgv_1_1render_1_1surface__renderer" id="r_ad3a907c6b7a802394df0a6b7eb918053"><td class="memItemLeft" align="right" valign="top">bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcgv_1_1render_1_1surface__renderer.html#ad3a907c6b7a802394df0a6b7eb918053">has_texcoords</a></td></tr>
+<tr class="memitem:ad3a907c6b7a802394df0a6b7eb918053 inherit pro_attribs_classcgv_1_1render_1_1surface__renderer" id="r_ad3a907c6b7a802394df0a6b7eb918053"><td class="memItemLeft" align="right" valign="top">bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcgv_1_1render_1_1surface__renderer.html#ad3a907c6b7a802394df0a6b7eb918053">has_texcoords</a> = false</td></tr>
 <tr class="separator:ad3a907c6b7a802394df0a6b7eb918053 inherit pro_attribs_classcgv_1_1render_1_1surface__renderer"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a622394b0e22017034246728ed58726fe inherit pro_attribs_classcgv_1_1render_1_1surface__renderer" id="r_a622394b0e22017034246728ed58726fe"><td class="memItemLeft" align="right" valign="top">bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcgv_1_1render_1_1surface__renderer.html#a622394b0e22017034246728ed58726fe">cull_per_primitive</a></td></tr>
+<tr class="memitem:a622394b0e22017034246728ed58726fe inherit pro_attribs_classcgv_1_1render_1_1surface__renderer" id="r_a622394b0e22017034246728ed58726fe"><td class="memItemLeft" align="right" valign="top">bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcgv_1_1render_1_1surface__renderer.html#a622394b0e22017034246728ed58726fe">cull_per_primitive</a> = true</td></tr>
 <tr class="separator:a622394b0e22017034246728ed58726fe inherit pro_attribs_classcgv_1_1render_1_1surface__renderer"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="inherit_header pro_attribs_classcgv_1_1render_1_1group__renderer"><td colspan="2" onclick="javascript:toggleInherit('pro_attribs_classcgv_1_1render_1_1group__renderer')"><img src="closed.png" alt="-"/>&#160;Protected Attributes inherited from <a class="el" href="classcgv_1_1render_1_1group__renderer.html">cgv::render::group_renderer</a></td></tr>
-<tr class="memitem:a185c096ff88580e89c5ff451c315c808 inherit pro_attribs_classcgv_1_1render_1_1group__renderer" id="r_a185c096ff88580e89c5ff451c315c808"><td class="memItemLeft" align="right" valign="top">bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcgv_1_1render_1_1group__renderer.html#a185c096ff88580e89c5ff451c315c808">has_group_indices</a></td></tr>
+<tr class="memitem:a185c096ff88580e89c5ff451c315c808 inherit pro_attribs_classcgv_1_1render_1_1group__renderer" id="r_a185c096ff88580e89c5ff451c315c808"><td class="memItemLeft" align="right" valign="top">bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcgv_1_1render_1_1group__renderer.html#a185c096ff88580e89c5ff451c315c808">has_group_indices</a> = false</td></tr>
 <tr class="separator:a185c096ff88580e89c5ff451c315c808 inherit pro_attribs_classcgv_1_1render_1_1group__renderer"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a0dcbdc09bd46259d2aa3dd38e860aebe inherit pro_attribs_classcgv_1_1render_1_1group__renderer" id="r_a0dcbdc09bd46259d2aa3dd38e860aebe"><td class="memItemLeft" align="right" valign="top">bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcgv_1_1render_1_1group__renderer.html#a0dcbdc09bd46259d2aa3dd38e860aebe">has_group_colors</a></td></tr>
+<tr class="memitem:a0dcbdc09bd46259d2aa3dd38e860aebe inherit pro_attribs_classcgv_1_1render_1_1group__renderer" id="r_a0dcbdc09bd46259d2aa3dd38e860aebe"><td class="memItemLeft" align="right" valign="top">bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcgv_1_1render_1_1group__renderer.html#a0dcbdc09bd46259d2aa3dd38e860aebe">has_group_colors</a> = false</td></tr>
 <tr class="separator:a0dcbdc09bd46259d2aa3dd38e860aebe inherit pro_attribs_classcgv_1_1render_1_1group__renderer"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:abfa99a5cad6fbaeda85a8986639ce392 inherit pro_attribs_classcgv_1_1render_1_1group__renderer" id="r_abfa99a5cad6fbaeda85a8986639ce392"><td class="memItemLeft" align="right" valign="top">bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcgv_1_1render_1_1group__renderer.html#abfa99a5cad6fbaeda85a8986639ce392">has_group_translations</a></td></tr>
+<tr class="memitem:abfa99a5cad6fbaeda85a8986639ce392 inherit pro_attribs_classcgv_1_1render_1_1group__renderer" id="r_abfa99a5cad6fbaeda85a8986639ce392"><td class="memItemLeft" align="right" valign="top">bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcgv_1_1render_1_1group__renderer.html#abfa99a5cad6fbaeda85a8986639ce392">has_group_translations</a> = false</td></tr>
 <tr class="separator:abfa99a5cad6fbaeda85a8986639ce392 inherit pro_attribs_classcgv_1_1render_1_1group__renderer"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a776fe586080650b4257112e656fa7da5 inherit pro_attribs_classcgv_1_1render_1_1group__renderer" id="r_a776fe586080650b4257112e656fa7da5"><td class="memItemLeft" align="right" valign="top">bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcgv_1_1render_1_1group__renderer.html#a776fe586080650b4257112e656fa7da5">has_group_rotations</a></td></tr>
+<tr class="memitem:a776fe586080650b4257112e656fa7da5 inherit pro_attribs_classcgv_1_1render_1_1group__renderer" id="r_a776fe586080650b4257112e656fa7da5"><td class="memItemLeft" align="right" valign="top">bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcgv_1_1render_1_1group__renderer.html#a776fe586080650b4257112e656fa7da5">has_group_rotations</a> = false</td></tr>
 <tr class="separator:a776fe586080650b4257112e656fa7da5 inherit pro_attribs_classcgv_1_1render_1_1group__renderer"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="inherit_header pro_attribs_classcgv_1_1render_1_1renderer"><td colspan="2" onclick="javascript:toggleInherit('pro_attribs_classcgv_1_1render_1_1renderer')"><img src="closed.png" alt="-"/>&#160;Protected Attributes inherited from <a class="el" href="classcgv_1_1render_1_1renderer.html">cgv::render::renderer</a></td></tr>
-<tr class="memitem:a89daadf6757c440ad97b20f3f5e00ad8 inherit pro_attribs_classcgv_1_1render_1_1renderer" id="r_a89daadf6757c440ad97b20f3f5e00ad8"><td class="memItemLeft" align="right" valign="top">bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcgv_1_1render_1_1renderer.html#a89daadf6757c440ad97b20f3f5e00ad8">has_colors</a></td></tr>
+<tr class="memitem:a89daadf6757c440ad97b20f3f5e00ad8 inherit pro_attribs_classcgv_1_1render_1_1renderer" id="r_a89daadf6757c440ad97b20f3f5e00ad8"><td class="memItemLeft" align="right" valign="top">bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcgv_1_1render_1_1renderer.html#a89daadf6757c440ad97b20f3f5e00ad8">has_colors</a> = false</td></tr>
 <tr class="memdesc:a89daadf6757c440ad97b20f3f5e00ad8 inherit pro_attribs_classcgv_1_1render_1_1renderer"><td class="mdescLeft">&#160;</td><td class="mdescRight">track whether color attribute is defined  <br /></td></tr>
 <tr class="separator:a89daadf6757c440ad97b20f3f5e00ad8 inherit pro_attribs_classcgv_1_1render_1_1renderer"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a8dc91474133a744cfe2667c9cc517cbe inherit pro_attribs_classcgv_1_1render_1_1renderer" id="r_a8dc91474133a744cfe2667c9cc517cbe"><td class="memItemLeft" align="right" valign="top">bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcgv_1_1render_1_1renderer.html#a8dc91474133a744cfe2667c9cc517cbe">has_positions</a></td></tr>
+<tr class="memitem:a8dc91474133a744cfe2667c9cc517cbe inherit pro_attribs_classcgv_1_1render_1_1renderer" id="r_a8dc91474133a744cfe2667c9cc517cbe"><td class="memItemLeft" align="right" valign="top">bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcgv_1_1render_1_1renderer.html#a8dc91474133a744cfe2667c9cc517cbe">has_positions</a> = false</td></tr>
 <tr class="memdesc:a8dc91474133a744cfe2667c9cc517cbe inherit pro_attribs_classcgv_1_1render_1_1renderer"><td class="mdescLeft">&#160;</td><td class="mdescRight">track whether position attribute is defined  <br /></td></tr>
 <tr class="separator:a8dc91474133a744cfe2667c9cc517cbe inherit pro_attribs_classcgv_1_1render_1_1renderer"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
 <a name="details" id="details"></a><h2 class="groupheader">Detailed Description</h2>
 <div class="textblock"><p>renderer that supports point splatting </p>
 
-<p class="definition">Definition at line <a class="el" href="surfel__renderer_8h_source.html#l00057">57</a> of file <a class="el" href="surfel__renderer_8h_source.html">surfel_renderer.h</a>.</p>
-</div><h2 class="groupheader">Constructor &amp; Destructor Documentation</h2>
-<a id="a624c22cb4d0d0bee26a16e6101ee64e4" name="a624c22cb4d0d0bee26a16e6101ee64e4"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a624c22cb4d0d0bee26a16e6101ee64e4">&#9670;&#160;</a></span>surfel_renderer()</h2>
-
-<div class="memitem">
-<div class="memproto">
-      <table class="memname">
-        <tr>
-          <td class="memname">cgv::render::surfel_renderer::surfel_renderer </td>
-          <td>(</td>
-          <td class="paramname"></td><td>)</td>
-          <td></td>
-        </tr>
-      </table>
-</div><div class="memdoc">
-
-<p class="definition">Definition at line <a class="el" href="surfel__renderer_8cxx_source.html#l00057">57</a> of file <a class="el" href="surfel__renderer_8cxx_source.html">surfel_renderer.cxx</a>.</p>
-
-</div>
-</div>
-<h2 class="groupheader">Member Function Documentation</h2>
-<a id="a03df668a86697c7ac5e87779c07f6700" name="a03df668a86697c7ac5e87779c07f6700"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a03df668a86697c7ac5e87779c07f6700">&#9670;&#160;</a></span>build_shader_program()</h2>
-
-<div class="memitem">
-<div class="memproto">
-<table class="mlabels">
-  <tr>
-  <td class="mlabels-left">
-      <table class="memname">
-        <tr>
-          <td class="memname">bool cgv::render::surfel_renderer::build_shader_program </td>
-          <td>(</td>
-          <td class="paramtype"><a class="el" href="classcgv_1_1render_1_1context.html">context</a> &amp;&#160;</td>
-          <td class="paramname"><em>ctx</em>, </td>
-        </tr>
-        <tr>
-          <td class="paramkey"></td>
-          <td></td>
-          <td class="paramtype"><a class="el" href="classcgv_1_1render_1_1shader__program.html">shader_program</a> &amp;&#160;</td>
-          <td class="paramname"><em>prog</em>, </td>
-        </tr>
-        <tr>
-          <td class="paramkey"></td>
-          <td></td>
-          <td class="paramtype">const <a class="el" href="structcgv_1_1render_1_1shader__compile__options.html">shader_compile_options</a> &amp;&#160;</td>
-          <td class="paramname"><em>options</em>&#160;</td>
-        </tr>
-        <tr>
-          <td></td>
-          <td>)</td>
-          <td></td><td></td>
-        </tr>
-      </table>
-  </td>
-  <td class="mlabels-right">
-<span class="mlabels"><span class="mlabel">protected</span><span class="mlabel">virtual</span></span>  </td>
-  </tr>
-</table>
-</div><div class="memdoc">
-
-<p>build surfel program </p>
-
-<p>Reimplemented from <a class="el" href="classcgv_1_1render_1_1renderer.html#ab0e309c78ca1a9eab1f952800c000d27">cgv::render::renderer</a>.</p>
-
-<p class="definition">Definition at line <a class="el" href="surfel__renderer_8cxx_source.html#l00074">74</a> of file <a class="el" href="surfel__renderer_8cxx_source.html">surfel_renderer.cxx</a>.</p>
-
-<p class="reference">References <a class="el" href="shader__program_8cxx_source.html#l00481">cgv::render::shader_program::build_program()</a>.</p>
-
-</div>
-</div>
-<a id="a3d8d65b3f09b3ddd3a7e6b295ebe7354" name="a3d8d65b3f09b3ddd3a7e6b295ebe7354"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a3d8d65b3f09b3ddd3a7e6b295ebe7354">&#9670;&#160;</a></span>create_render_style()</h2>
+<p class="definition">Definition at line <a class="el" href="surfel__renderer_8h_source.html#l00055">55</a> of file <a class="el" href="surfel__renderer_8h_source.html">surfel_renderer.h</a>.</p>
+</div><h2 class="groupheader">Member Function Documentation</h2>
+<a id="a0ca36fc4157695323be84f92bfc78ea5" name="a0ca36fc4157695323be84f92bfc78ea5"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a0ca36fc4157695323be84f92bfc78ea5">&#9670;&#160;</a></span>create_render_style()</h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -533,16 +466,16 @@ Protected Attributes</h2></td></tr>
       </table>
   </td>
   <td class="mlabels-right">
-<span class="mlabels"><span class="mlabel">protected</span><span class="mlabel">virtual</span></span>  </td>
+<span class="mlabels"><span class="mlabel">inline</span><span class="mlabel">override</span><span class="mlabel">protected</span><span class="mlabel">virtual</span></span>  </td>
   </tr>
 </table>
 </div><div class="memdoc">
 
-<p>overload to allow instantiation of <a class="el" href="classcgv_1_1render_1_1surfel__renderer.html" title="renderer that supports point splatting">surfel_renderer</a> </p>
+<p>create and return the default render style </p>
 
 <p>Implements <a class="el" href="classcgv_1_1render_1_1renderer.html#aa4fbb988c7709081b326c66ee2cb846e">cgv::render::renderer</a>.</p>
 
-<p class="definition">Definition at line <a class="el" href="surfel__renderer_8cxx_source.html#l00015">15</a> of file <a class="el" href="surfel__renderer_8cxx_source.html">surfel_renderer.cxx</a>.</p>
+<p class="definition">Definition at line <a class="el" href="surfel__renderer_8h_source.html#l00066">66</a> of file <a class="el" href="surfel__renderer_8h_source.html">surfel_renderer.h</a>.</p>
 
 </div>
 </div>
@@ -574,9 +507,9 @@ Protected Attributes</h2></td></tr>
 
 <p>Reimplemented from <a class="el" href="classcgv_1_1render_1_1surface__renderer.html#a8fd086df40c9d5fbd1357183db2d2826">cgv::render::surface_renderer</a>.</p>
 
-<p class="definition">Definition at line <a class="el" href="surfel__renderer_8cxx_source.html#l00143">143</a> of file <a class="el" href="surfel__renderer_8cxx_source.html">surfel_renderer.cxx</a>.</p>
+<p class="definition">Definition at line <a class="el" href="surfel__renderer_8cxx_source.html#l00112">112</a> of file <a class="el" href="surfel__renderer_8cxx_source.html">surfel_renderer.cxx</a>.</p>
 
-<p class="reference">References <a class="el" href="renderer_8h_source.html#l00066">cgv::render::renderer::attributes_persist()</a>, <a class="el" href="surfel__renderer_8h_source.html#l00051">cgv::render::surfel_render_style::blend_points</a>, <a class="el" href="surface__renderer_8h_source.html#l00032">cgv::render::surface_render_style::culling_mode</a>, and <a class="el" href="surface__renderer_8cxx_source.html#l00123">cgv::render::surface_renderer::disable()</a>.</p>
+<p class="reference">References <a class="el" href="renderer_8h_source.html#l00070">cgv::render::renderer::attributes_persist()</a>, <a class="el" href="surfel__renderer_8h_source.html#l00051">cgv::render::surfel_render_style::blend_points</a>, <a class="el" href="surface__renderer_8h_source.html#l00032">cgv::render::surface_render_style::culling_mode</a>, and <a class="el" href="surface__renderer_8cxx_source.html#l00073">cgv::render::surface_renderer::disable()</a>.</p>
 
 </div>
 </div>
@@ -618,9 +551,9 @@ Protected Attributes</h2></td></tr>
 
 <p>Reimplemented from <a class="el" href="classcgv_1_1render_1_1surface__renderer.html#a4b54bec7e7eee2da8f770f7562243bc3">cgv::render::surface_renderer</a>.</p>
 
-<p class="definition">Definition at line <a class="el" href="surfel__renderer_8cxx_source.html#l00043">43</a> of file <a class="el" href="surfel__renderer_8cxx_source.html">surfel_renderer.cxx</a>.</p>
+<p class="definition">Definition at line <a class="el" href="surfel__renderer_8cxx_source.html#l00025">25</a> of file <a class="el" href="surfel__renderer_8cxx_source.html">surfel_renderer.cxx</a>.</p>
 
-<p class="reference">References <a class="el" href="surface__renderer_8cxx_source.html#l00051">cgv::render::surface_renderer::disable_attribute_array_manager()</a>.</p>
+<p class="reference">References <a class="el" href="surface__renderer_8cxx_source.html#l00019">cgv::render::surface_renderer::disable_attribute_array_manager()</a>.</p>
 
 </div>
 </div>
@@ -686,9 +619,9 @@ Protected Attributes</h2></td></tr>
 
 <p>Reimplemented from <a class="el" href="classcgv_1_1render_1_1renderer.html#a578f6e55cc442d2dde7ee083e808688a">cgv::render::renderer</a>.</p>
 
-<p class="definition">Definition at line <a class="el" href="surfel__renderer_8cxx_source.html#l00159">159</a> of file <a class="el" href="surfel__renderer_8cxx_source.html">surfel_renderer.cxx</a>.</p>
+<p class="definition">Definition at line <a class="el" href="surfel__renderer_8cxx_source.html#l00128">128</a> of file <a class="el" href="surfel__renderer_8cxx_source.html">surfel_renderer.cxx</a>.</p>
 
-<p class="reference">References <a class="el" href="renderer_8cxx_source.html#l00257">cgv::render::renderer::draw_impl()</a>.</p>
+<p class="reference">References <a class="el" href="renderer_8cxx_source.html#l00248">cgv::render::renderer::draw_impl()</a>.</p>
 
 </div>
 </div>
@@ -720,9 +653,9 @@ Protected Attributes</h2></td></tr>
 
 <p>Reimplemented from <a class="el" href="classcgv_1_1render_1_1surface__renderer.html#a97cc97633428aac33c5d8856600adef9">cgv::render::surface_renderer</a>.</p>
 
-<p class="definition">Definition at line <a class="el" href="surfel__renderer_8cxx_source.html#l00102">102</a> of file <a class="el" href="surfel__renderer_8cxx_source.html">surfel_renderer.cxx</a>.</p>
+<p class="definition">Definition at line <a class="el" href="surfel__renderer_8cxx_source.html#l00071">71</a> of file <a class="el" href="surfel__renderer_8cxx_source.html">surfel_renderer.cxx</a>.</p>
 
-<p class="reference">References <a class="el" href="surfel__renderer_8h_source.html#l00051">cgv::render::surfel_render_style::blend_points</a>, <a class="el" href="surfel__renderer_8h_source.html#l00039">cgv::render::surfel_render_style::blend_width_in_pixel</a>, <a class="el" href="surface__renderer_8cxx_source.html#l00097">cgv::render::surface_renderer::enable()</a>, <a class="el" href="classcgv_1_1render_1_1context.html#a6dde896fc37726e3ec39e7d450f1e168">cgv::render::context::get_height()</a>, <a class="el" href="surfel__renderer_8h_source.html#l00045">cgv::render::surfel_render_style::halo_color</a>, <a class="el" href="surfel__renderer_8h_source.html#l00047">cgv::render::surfel_render_style::halo_color_strength</a>, <a class="el" href="surfel__renderer_8h_source.html#l00041">cgv::render::surfel_render_style::halo_width_in_pixel</a>, <a class="el" href="renderer_8h_source.html#l00083">cgv::render::renderer::has_colors</a>, <a class="el" href="surfel__renderer_8h_source.html#l00033">cgv::render::surfel_render_style::measure_point_size_in_pixel</a>, <a class="el" href="surfel__renderer_8h_source.html#l00049">cgv::render::surfel_render_style::orient_splats</a>, <a class="el" href="surfel__renderer_8h_source.html#l00043">cgv::render::surfel_render_style::percentual_halo_width</a>, <a class="el" href="surfel__renderer_8h_source.html#l00029">cgv::render::surfel_render_style::point_size</a>, <a class="el" href="renderer_8h_source.html#l00075">cgv::render::renderer::ref_prog()</a>, <a class="el" href="shader__program_8h_source.html#l00203">cgv::render::shader_program::set_attribute()</a>, <a class="el" href="shader__program_8h_source.html#l00146">cgv::render::shader_program::set_uniform()</a>, <a class="el" href="surfel__renderer_8h_source.html#l00023">cgv::render::surfel_render_style::surface_offset</a>, <a class="el" href="group__renderer_8h_source.html#l00017">cgv::render::group_render_style::use_group_color</a>, and <a class="el" href="surfel__renderer_8h_source.html#l00031">cgv::render::surfel_render_style::use_group_point_size</a>.</p>
+<p class="reference">References <a class="el" href="surfel__renderer_8h_source.html#l00051">cgv::render::surfel_render_style::blend_points</a>, <a class="el" href="surfel__renderer_8h_source.html#l00039">cgv::render::surfel_render_style::blend_width_in_pixel</a>, <a class="el" href="surface__renderer_8cxx_source.html#l00047">cgv::render::surface_renderer::enable()</a>, <a class="el" href="classcgv_1_1render_1_1context.html#a6dde896fc37726e3ec39e7d450f1e168">cgv::render::context::get_height()</a>, <a class="el" href="surfel__renderer_8h_source.html#l00045">cgv::render::surfel_render_style::halo_color</a>, <a class="el" href="surfel__renderer_8h_source.html#l00047">cgv::render::surfel_render_style::halo_color_strength</a>, <a class="el" href="surfel__renderer_8h_source.html#l00041">cgv::render::surfel_render_style::halo_width_in_pixel</a>, <a class="el" href="renderer_8h_source.html#l00090">cgv::render::renderer::has_colors</a>, <a class="el" href="surfel__renderer_8h_source.html#l00033">cgv::render::surfel_render_style::measure_point_size_in_pixel</a>, <a class="el" href="surfel__renderer_8h_source.html#l00049">cgv::render::surfel_render_style::orient_splats</a>, <a class="el" href="surfel__renderer_8h_source.html#l00043">cgv::render::surfel_render_style::percentual_halo_width</a>, <a class="el" href="surfel__renderer_8h_source.html#l00029">cgv::render::surfel_render_style::point_size</a>, <a class="el" href="renderer_8h_source.html#l00079">cgv::render::renderer::ref_prog()</a>, <a class="el" href="shader__program_8h_source.html#l00203">cgv::render::shader_program::set_attribute()</a>, <a class="el" href="shader__program_8h_source.html#l00146">cgv::render::shader_program::set_uniform()</a>, <a class="el" href="surfel__renderer_8h_source.html#l00023">cgv::render::surfel_render_style::surface_offset</a>, <a class="el" href="group__renderer_8h_source.html#l00017">cgv::render::group_render_style::use_group_color</a>, and <a class="el" href="surfel__renderer_8h_source.html#l00031">cgv::render::surfel_render_style::use_group_point_size</a>.</p>
 
 </div>
 </div>
@@ -764,9 +697,40 @@ Protected Attributes</h2></td></tr>
 
 <p>Reimplemented from <a class="el" href="classcgv_1_1render_1_1surface__renderer.html#a70f2835e792aa01529445b06d3c5ec79">cgv::render::surface_renderer</a>.</p>
 
-<p class="definition">Definition at line <a class="el" href="surfel__renderer_8cxx_source.html#l00034">34</a> of file <a class="el" href="surfel__renderer_8cxx_source.html">surfel_renderer.cxx</a>.</p>
+<p class="definition">Definition at line <a class="el" href="surfel__renderer_8cxx_source.html#l00016">16</a> of file <a class="el" href="surfel__renderer_8cxx_source.html">surfel_renderer.cxx</a>.</p>
 
-<p class="reference">References <a class="el" href="surface__renderer_8cxx_source.html#l00042">cgv::render::surface_renderer::enable_attribute_array_manager()</a>, and <a class="el" href="renderer_8h_source.html#l00060">cgv::render::renderer::has_attribute()</a>.</p>
+<p class="reference">References <a class="el" href="surface__renderer_8cxx_source.html#l00010">cgv::render::surface_renderer::enable_attribute_array_manager()</a>, and <a class="el" href="renderer_8h_source.html#l00062">cgv::render::renderer::has_attribute()</a>.</p>
+
+</div>
+</div>
+<a id="a2b8ba0e9a9aeffe271c87d579acb533c" name="a2b8ba0e9a9aeffe271c87d579acb533c"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a2b8ba0e9a9aeffe271c87d579acb533c">&#9670;&#160;</a></span>get_default_prog_name()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">std::string cgv::render::surfel_renderer::get_default_prog_name </td>
+          <td>(</td>
+          <td class="paramname"></td><td>)</td>
+          <td> const</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">inline</span><span class="mlabel">override</span><span class="mlabel">protected</span><span class="mlabel">virtual</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p>return the default shader program name </p>
+
+<p>Implements <a class="el" href="classcgv_1_1render_1_1renderer.html#ab693bc1813d9d3b4ac6bd45afb2af219">cgv::render::renderer</a>.</p>
+
+<p class="definition">Definition at line <a class="el" href="surfel__renderer_8h_source.html#l00064">64</a> of file <a class="el" href="surfel__renderer_8h_source.html">surfel_renderer.h</a>.</p>
 
 </div>
 </div>
@@ -788,7 +752,7 @@ Protected Attributes</h2></td></tr>
 
 <p>remove the indexed color attribute </p>
 
-<p class="definition">Definition at line <a class="el" href="surfel__renderer_8cxx_source.html#l00053">53</a> of file <a class="el" href="surfel__renderer_8cxx_source.html">surfel_renderer.cxx</a>.</p>
+<p class="definition">Definition at line <a class="el" href="surfel__renderer_8cxx_source.html#l00035">35</a> of file <a class="el" href="surfel__renderer_8cxx_source.html">surfel_renderer.cxx</a>.</p>
 
 </div>
 </div>
@@ -810,7 +774,7 @@ Protected Attributes</h2></td></tr>
 
 <p>remove the point size attribute </p>
 
-<p class="definition">Definition at line <a class="el" href="surfel__renderer_8cxx_source.html#l00049">49</a> of file <a class="el" href="surfel__renderer_8cxx_source.html">surfel_renderer.cxx</a>.</p>
+<p class="definition">Definition at line <a class="el" href="surfel__renderer_8cxx_source.html#l00031">31</a> of file <a class="el" href="surfel__renderer_8cxx_source.html">surfel_renderer.cxx</a>.</p>
 
 </div>
 </div>
@@ -850,7 +814,7 @@ template&lt;typename T  = float&gt; </div>
 </table>
 </div><div class="memdoc">
 
-<p class="definition">Definition at line <a class="el" href="surfel__renderer_8h_source.html#l00103">103</a> of file <a class="el" href="surfel__renderer_8h_source.html">surfel_renderer.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="surfel__renderer_8h_source.html#l00099">99</a> of file <a class="el" href="surfel__renderer_8h_source.html">surfel_renderer.h</a>.</p>
 
 </div>
 </div>
@@ -896,7 +860,7 @@ template&lt;typename T  = unsigned, typename C  = cgv::media::color&lt;float, cg
 </table>
 </div><div class="memdoc">
 
-<p class="definition">Definition at line <a class="el" href="surfel__renderer_8h_source.html#l00087">87</a> of file <a class="el" href="surfel__renderer_8h_source.html">surfel_renderer.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="surfel__renderer_8h_source.html#l00083">83</a> of file <a class="el" href="surfel__renderer_8h_source.html">surfel_renderer.h</a>.</p>
 
 </div>
 </div>
@@ -954,7 +918,7 @@ template&lt;typename T  = unsigned, typename C  = cgv::media::color&lt;float, cg
 </table>
 </div><div class="memdoc">
 
-<p class="definition">Definition at line <a class="el" href="surfel__renderer_8h_source.html#l00094">94</a> of file <a class="el" href="surfel__renderer_8h_source.html">surfel_renderer.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="surfel__renderer_8h_source.html#l00090">90</a> of file <a class="el" href="surfel__renderer_8h_source.html">surfel_renderer.h</a>.</p>
 
 </div>
 </div>
@@ -994,7 +958,7 @@ template&lt;typename T  = float&gt; </div>
 </table>
 </div><div class="memdoc">
 
-<p class="definition">Definition at line <a class="el" href="surfel__renderer_8h_source.html#l00082">82</a> of file <a class="el" href="surfel__renderer_8h_source.html">surfel_renderer.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="surfel__renderer_8h_source.html#l00078">78</a> of file <a class="el" href="surfel__renderer_8h_source.html">surfel_renderer.h</a>.</p>
 
 </div>
 </div>
@@ -1014,7 +978,7 @@ template&lt;typename T  = float&gt; </div>
       </table>
 </div><div class="memdoc">
 
-<p class="definition">Definition at line <a class="el" href="surfel__renderer_8cxx_source.html#l00066">66</a> of file <a class="el" href="surfel__renderer_8cxx_source.html">surfel_renderer.cxx</a>.</p>
+<p class="definition">Definition at line <a class="el" href="surfel__renderer_8cxx_source.html#l00039">39</a> of file <a class="el" href="surfel__renderer_8cxx_source.html">surfel_renderer.cxx</a>.</p>
 
 </div>
 </div>
@@ -1034,7 +998,7 @@ template&lt;typename T  = float&gt; </div>
       </table>
 </div><div class="memdoc">
 
-<p class="definition">Definition at line <a class="el" href="surfel__renderer_8cxx_source.html#l00070">70</a> of file <a class="el" href="surfel__renderer_8cxx_source.html">surfel_renderer.cxx</a>.</p>
+<p class="definition">Definition at line <a class="el" href="surfel__renderer_8cxx_source.html#l00043">43</a> of file <a class="el" href="surfel__renderer_8cxx_source.html">surfel_renderer.cxx</a>.</p>
 
 </div>
 </div>
@@ -1066,9 +1030,9 @@ template&lt;typename T  = float&gt; </div>
 
 <p>Reimplemented from <a class="el" href="classcgv_1_1render_1_1group__renderer.html#aa869609e0e452758bc32b2e3e83fa0b5">cgv::render::group_renderer</a>.</p>
 
-<p class="definition">Definition at line <a class="el" href="surfel__renderer_8cxx_source.html#l00078">78</a> of file <a class="el" href="surfel__renderer_8cxx_source.html">surfel_renderer.cxx</a>.</p>
+<p class="definition">Definition at line <a class="el" href="surfel__renderer_8cxx_source.html#l00047">47</a> of file <a class="el" href="surfel__renderer_8cxx_source.html">surfel_renderer.cxx</a>.</p>
 
-<p class="reference">References <a class="el" href="context_8cxx_source.html#l00219">cgv::render::context::error()</a>, <a class="el" href="renderer_8h_source.html#l00083">cgv::render::renderer::has_colors</a>, <a class="el" href="group__renderer_8h_source.html#l00017">cgv::render::group_render_style::use_group_color</a>, <a class="el" href="surfel__renderer_8h_source.html#l00031">cgv::render::surfel_render_style::use_group_point_size</a>, and <a class="el" href="group__renderer_8cxx_source.html#l00057">cgv::render::group_renderer::validate_attributes()</a>.</p>
+<p class="reference">References <a class="el" href="context_8cxx_source.html#l00219">cgv::render::context::error()</a>, <a class="el" href="renderer_8h_source.html#l00090">cgv::render::renderer::has_colors</a>, <a class="el" href="group__renderer_8h_source.html#l00017">cgv::render::group_render_style::use_group_color</a>, <a class="el" href="surfel__renderer_8h_source.html#l00031">cgv::render::surfel_render_style::use_group_point_size</a>, and <a class="el" href="group__renderer_8cxx_source.html#l00043">cgv::render::group_renderer::validate_attributes()</a>.</p>
 
 </div>
 </div>
@@ -1083,7 +1047,7 @@ template&lt;typename T  = float&gt; </div>
   <td class="mlabels-left">
       <table class="memname">
         <tr>
-          <td class="memname">bool cgv::render::surfel_renderer::has_group_point_sizes</td>
+          <td class="memname">bool cgv::render::surfel_renderer::has_group_point_sizes = false</td>
         </tr>
       </table>
   </td>
@@ -1093,7 +1057,7 @@ template&lt;typename T  = float&gt; </div>
 </table>
 </div><div class="memdoc">
 
-<p class="definition">Definition at line <a class="el" href="surfel__renderer_8h_source.html#l00061">61</a> of file <a class="el" href="surfel__renderer_8h_source.html">surfel_renderer.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="surfel__renderer_8h_source.html#l00059">59</a> of file <a class="el" href="surfel__renderer_8h_source.html">surfel_renderer.h</a>.</p>
 
 </div>
 </div>
@@ -1107,31 +1071,7 @@ template&lt;typename T  = float&gt; </div>
   <td class="mlabels-left">
       <table class="memname">
         <tr>
-          <td class="memname">bool cgv::render::surfel_renderer::has_indexed_colors</td>
-        </tr>
-      </table>
-  </td>
-  <td class="mlabels-right">
-<span class="mlabels"><span class="mlabel">protected</span></span>  </td>
-  </tr>
-</table>
-</div><div class="memdoc">
-
-<p class="definition">Definition at line <a class="el" href="surfel__renderer_8h_source.html#l00062">62</a> of file <a class="el" href="surfel__renderer_8h_source.html">surfel_renderer.h</a>.</p>
-
-</div>
-</div>
-<a id="a30fa74d9b67dec175993b8737a1c6a03" name="a30fa74d9b67dec175993b8737a1c6a03"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a30fa74d9b67dec175993b8737a1c6a03">&#9670;&#160;</a></span>has_point_sizes</h2>
-
-<div class="memitem">
-<div class="memproto">
-<table class="mlabels">
-  <tr>
-  <td class="mlabels-left">
-      <table class="memname">
-        <tr>
-          <td class="memname">bool cgv::render::surfel_renderer::has_point_sizes</td>
+          <td class="memname">bool cgv::render::surfel_renderer::has_indexed_colors = false</td>
         </tr>
       </table>
   </td>
@@ -1145,6 +1085,30 @@ template&lt;typename T  = float&gt; </div>
 
 </div>
 </div>
+<a id="a30fa74d9b67dec175993b8737a1c6a03" name="a30fa74d9b67dec175993b8737a1c6a03"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a30fa74d9b67dec175993b8737a1c6a03">&#9670;&#160;</a></span>has_point_sizes</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">bool cgv::render::surfel_renderer::has_point_sizes = false</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">protected</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p class="definition">Definition at line <a class="el" href="surfel__renderer_8h_source.html#l00058">58</a> of file <a class="el" href="surfel__renderer_8h_source.html">surfel_renderer.h</a>.</p>
+
+</div>
+</div>
 <a id="a19eafcc8446daef47c9acbd0c09ca960" name="a19eafcc8446daef47c9acbd0c09ca960"></a>
 <h2 class="memtitle"><span class="permalink"><a href="#a19eafcc8446daef47c9acbd0c09ca960">&#9670;&#160;</a></span>reference_point_size</h2>
 
@@ -1155,7 +1119,7 @@ template&lt;typename T  = float&gt; </div>
   <td class="mlabels-left">
       <table class="memname">
         <tr>
-          <td class="memname">float cgv::render::surfel_renderer::reference_point_size</td>
+          <td class="memname">float cgv::render::surfel_renderer::reference_point_size = 0.01f</td>
         </tr>
       </table>
   </td>
@@ -1165,7 +1129,7 @@ template&lt;typename T  = float&gt; </div>
 </table>
 </div><div class="memdoc">
 
-<p class="definition">Definition at line <a class="el" href="surfel__renderer_8h_source.html#l00063">63</a> of file <a class="el" href="surfel__renderer_8h_source.html">surfel_renderer.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="surfel__renderer_8h_source.html#l00061">61</a> of file <a class="el" href="surfel__renderer_8h_source.html">surfel_renderer.h</a>.</p>
 
 </div>
 </div>
@@ -1179,7 +1143,7 @@ template&lt;typename T  = float&gt; </div>
   <td class="mlabels-left">
       <table class="memname">
         <tr>
-          <td class="memname">float cgv::render::surfel_renderer::y_view_angle</td>
+          <td class="memname">float cgv::render::surfel_renderer::y_view_angle = 45.0f</td>
         </tr>
       </table>
   </td>
@@ -1189,7 +1153,7 @@ template&lt;typename T  = float&gt; </div>
 </table>
 </div><div class="memdoc">
 
-<p class="definition">Definition at line <a class="el" href="surfel__renderer_8h_source.html#l00064">64</a> of file <a class="el" href="surfel__renderer_8h_source.html">surfel_renderer.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="surfel__renderer_8h_source.html#l00062">62</a> of file <a class="el" href="surfel__renderer_8h_source.html">surfel_renderer.h</a>.</p>
 
 </div>
 </div>

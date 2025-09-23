@@ -11,7 +11,6 @@ var searchData=
   ['use_5finterpolation_8',['use_interpolation',['../classcgv_1_1render_1_1color__map.html#a1c4498564651cf32a6811e303e262eb2',1,'cgv::render::color_map']]],
   ['use_5flinear_5ffiltering_9',['use_linear_filtering',['../classcgv_1_1render_1_1gl__color__map.html#a25b70823ebf6e0bd5e0bae82404b9bad',1,'cgv::render::gl_color_map']]],
   ['use_5fshader_5ffile_5fcache_10',['use_shader_file_cache',['../classcgv_1_1render_1_1context.html#a80306fb1d08f59cdb7d540ae13a88e22',1,'cgv::render::context']]],
-  ['use_5ftransfer_5ffunction_11',['use_transfer_function',['../structcgv_1_1render_1_1slab__render__style.html#ad4929d9df6c5cfc69215c4abefc53bc7',1,'cgv::render::slab_render_style']]],
-  ['user_5fdata_12',['user_data',['../classcgv_1_1os_1_1socket.html#ac8c9d9da08fbb231343c4bf334c5ac97',1,'cgv::os::socket']]],
-  ['username_13',['username',['../structcgv_1_1os_1_1http__request.html#adb8c354e4a3f3a1f0a50b96ac2e077b2',1,'cgv::os::http_request']]]
+  ['user_5fdata_11',['user_data',['../classcgv_1_1os_1_1socket.html#ac8c9d9da08fbb231343c4bf334c5ac97',1,'cgv::os::socket']]],
+  ['username_12',['username',['../structcgv_1_1os_1_1http__request.html#adb8c354e4a3f3a1f0a50b96ac2e077b2',1,'cgv::os::http_request']]]
 ];
