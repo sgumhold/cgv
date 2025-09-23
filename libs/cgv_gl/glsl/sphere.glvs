@@ -1,6 +1,7 @@
 #version 330 core
 
 uniform float radius_scale = 1.0;
+uniform float percentual_halo_width = 0.0;
 
 in vec4  position;
 in float radius;
@@ -12,6 +13,8 @@ out SPHERE_GS {
 	flat mat4 model_view_matrix;
 	flat mat4 model_view_projection_matrix;
 	flat vec4 color;
+	flat vec4 halo_color;
+	flat float percentual_halo_width;
 } vo;
 
 //***** begin interface of view.glsl ***********************************
@@ -50,6 +53,7 @@ void main()
 	right_multiply_group_position_matrix(vo.model_view_projection_matrix, group_index);
 	// compute sphere color
 	vo.color = group_color(color, group_index);
+	vo.percentual_halo_width = percentual_halo_width;
 	// output sphere parameter space for geometry shader
 	gl_Position = position;
 	gl_Position.xyz = gl_Position.xyz / gl_Position.w;

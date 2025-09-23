@@ -4,7 +4,6 @@ layout(lines) in;
 layout(triangle_strip, max_vertices = 4) out;
 
 uniform float halo_width_in_pixel   = 0.0;
-uniform float percentual_halo_width = 0.0;
 uniform bool  measure_line_width_in_pixel = true;
 uniform float reference_line_width = 1.0;
 uniform float blend_width_in_pixel = 1.0;
@@ -14,6 +13,8 @@ in LINE_GS {
 	vec3  normal_eye;
 	float line_width;
 	vec4  color;
+	vec4  halo_color;
+	float percentual_halo_width;
 	float depth_offset;
 } gi[];
 
@@ -26,6 +27,7 @@ out LINE_FS {
 	float percentual_core_size;
 	float percentual_point_size;
 	float percentual_splat_size;
+	vec4  halo_color;
 	float depth_offset;
 } fo;
 
@@ -57,13 +59,14 @@ void emit_corner(in vec3 pos_eye, in float param)
 void emit_edge(in vec3 dir_eye, int i)
 {
 	fo.color = gi[i].color;
+	fo.halo_color = gi[i].halo_color;
 	fo.depth_offset = gi[i].depth_offset;
 	vec3 side_dir_eye = normalize(cross(gi[i].normal_eye, dir_eye));
 	float pixel_extent = 2.0*abs(gl_in[i].gl_Position.z/(viewport_height*get_projection_matrix()[1][1]));
 	float reference_width = 0.5*gi[i].line_width*(measure_line_width_in_pixel ? pixel_extent : reference_line_width);
 	
-	prepare_splat(reference_width, pixel_extent, blend_width_in_pixel, halo_width_in_pixel, percentual_halo_width,
-				  fo.percentual_core_size, fo.percentual_point_size,fo.percentual_blend_width, fo.percentual_splat_size);
+	prepare_splat(reference_width, pixel_extent, blend_width_in_pixel, halo_width_in_pixel, gi[i].percentual_halo_width,
+				  fo.percentual_core_size, fo.percentual_point_size, fo.percentual_blend_width, fo.percentual_splat_size);
 
 	fo.side_vector_eye = reference_width*side_dir_eye;
 	vec3 d_eye = fo.percentual_splat_size*reference_width*side_dir_eye;

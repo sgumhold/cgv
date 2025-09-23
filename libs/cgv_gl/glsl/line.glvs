@@ -1,6 +1,8 @@
 #version 330 core
 
 uniform bool screen_aligned = true;
+uniform vec4  halo_color = vec4(0.0,0.0,0.0,1.0);
+uniform float percentual_halo_width = 0.0;
 
 in vec4  position;
 in vec3  normal;
@@ -12,6 +14,8 @@ out LINE_GS {
 	vec3  normal_eye;
 	float line_width;
 	vec4  color;
+	vec4  halo_color;
+	float percentual_halo_width;
 	float depth_offset;
 } vo;
 
@@ -27,9 +31,12 @@ mat3 get_inverse_normal_matrix();
 
 void main()
 {
+	vo.position_eye = 
 	vo.normal_eye = screen_aligned ? vec3(0.0,0.0,1.0) : get_normal_matrix() * normal;
 	vo.line_width = line_width;
 	vo.color = color;
+	vo.halo_color = halo_color;
+	vo.percentual_halo_width = percentual_halo_width;
 	vo.depth_offset = depth_offset;
 	gl_Position = get_modelview_matrix() * position;
 }
