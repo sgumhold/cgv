@@ -91,66 +91,6 @@ namespace cgv { // @<
 			/// track whether position attribute is defined
 			mutable bool has_positions = false;
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-			///// virtual method that creates a default render style
-			//virtual render_style* create_render_style() const = 0;
-			
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 			int get_prog_attribute_location(const context& ctx, const std::string & name, bool error_check = true) {
 				int loc = ref_prog().get_attribute_location(ctx, name);
 #ifdef _DEBUG
