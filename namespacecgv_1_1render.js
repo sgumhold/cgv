@@ -90,15 +90,11 @@ var namespacecgv_1_1render =
     [ "render_style", "structcgv_1_1render_1_1render__style.html", null ],
     [ "renderer", "classcgv_1_1render_1_1renderer.html", "classcgv_1_1render_1_1renderer" ],
     [ "shader_code", "classcgv_1_1render_1_1shader__code.html", "classcgv_1_1render_1_1shader__code" ],
-    [ "shader_code_snippet", "structcgv_1_1render_1_1shader__code__snippet.html", "structcgv_1_1render_1_1shader__code__snippet" ],
-    [ "shader_compile_options", "structcgv_1_1render_1_1shader__compile__options.html", "structcgv_1_1render_1_1shader__compile__options" ],
+    [ "shader_compile_options", "classcgv_1_1render_1_1shader__compile__options.html", "classcgv_1_1render_1_1shader__compile__options" ],
     [ "shader_config", "structcgv_1_1render_1_1shader__config.html", "structcgv_1_1render_1_1shader__config" ],
     [ "shader_library", "classcgv_1_1render_1_1shader__library.html", null ],
     [ "shader_program", "classcgv_1_1render_1_1shader__program.html", "classcgv_1_1render_1_1shader__program" ],
     [ "shader_program_base", "classcgv_1_1render_1_1shader__program__base.html", "classcgv_1_1render_1_1shader__program__base" ],
-    [ "slab_render_style", "structcgv_1_1render_1_1slab__render__style.html", "structcgv_1_1render_1_1slab__render__style" ],
-    [ "slab_render_style_reflect", "structcgv_1_1render_1_1slab__render__style__reflect.html", null ],
-    [ "slab_renderer", "classcgv_1_1render_1_1slab__renderer.html", "classcgv_1_1render_1_1slab__renderer" ],
     [ "sphere_render_data", "classcgv_1_1render_1_1sphere__render__data.html", "classcgv_1_1render_1_1sphere__render__data" ],
     [ "sphere_render_style", "structcgv_1_1render_1_1sphere__render__style.html", "structcgv_1_1render_1_1sphere__render__style" ],
     [ "sphere_render_style_reflect", "structcgv_1_1render_1_1sphere__render__style__reflect.html", null ],
@@ -129,7 +125,6 @@ var namespacecgv_1_1render =
     [ "context_config_ptr", "namespacecgv_1_1render.html#a1ea56414acb0792666e74ea8d67aef53", null ],
     [ "render_config_ptr", "namespacecgv_1_1render.html#a140190d5ae0854d5f6d150f58221b640", null ],
     [ "shader_config_ptr", "namespacecgv_1_1render.html#aa37e7abafc356dc57179bc80e61b77c4", null ],
-    [ "shader_define_map", "namespacecgv_1_1render.html#a0e875e06326ba0599a1289f0bacdb116", null ],
     [ "AccessType", "namespacecgv_1_1render.html#a32ea24c43b283680338ab99e53de6530", [
       [ "AT_READ_ONLY", "namespacecgv_1_1render.html#a32ea24c43b283680338ab99e53de6530abe03adb16ac234581a2e2c1719b430f4", null ],
       [ "AT_WRITE_ONLY", "namespacecgv_1_1render.html#a32ea24c43b283680338ab99e53de6530ad60712a271b948471f95e8a3fe9c7da4", null ],
@@ -410,6 +405,22 @@ var namespacecgv_1_1render =
       [ "VBU_DYNAMIC_READ", "namespacecgv_1_1render.html#a7ca439553e212967238e29e838343eb9aab769b892e1be0a3f7f23c5d27bfbda5", null ],
       [ "VBU_DYNAMIC_COPY", "namespacecgv_1_1render.html#a7ca439553e212967238e29e838343eb9a7e154acae890ba95a1338a7cb2d8d0e6", null ]
     ] ],
+    [ "VolumeInterpolationMode", "namespacecgv_1_1render.html#a52a5dd37521c739870b2c4da7b9ce5bf", [
+      [ "kNearest", "namespacecgv_1_1render.html#a52a5dd37521c739870b2c4da7b9ce5bfae52c2066ca63eef7fada2eefb5c7f31c", null ],
+      [ "kSmoothed", "namespacecgv_1_1render.html#a52a5dd37521c739870b2c4da7b9ce5bfa799e63dde1beb6b453892dc85159ca8d", null ],
+      [ "kLinear", "namespacecgv_1_1render.html#a52a5dd37521c739870b2c4da7b9ce5bfaac97f0008bcf7c7fe4f2ff94160e1385", null ],
+      [ "kCubic", "namespacecgv_1_1render.html#a52a5dd37521c739870b2c4da7b9ce5bfa619f9f4e8a88cbb914ba5abbcc356d79", null ]
+    ] ],
+    [ "VolumeIsosurfaceMode", "namespacecgv_1_1render.html#a4547d038c61af9a04e89c94173a874a3", [
+      [ "kNone", "namespacecgv_1_1render.html#a4547d038c61af9a04e89c94173a874a3a35c3ace1970663a16e5c65baa5941b13", null ],
+      [ "kIsovalue", "namespacecgv_1_1render.html#a4547d038c61af9a04e89c94173a874a3a46f502c554f48f800d90f1c18a3070b1", null ],
+      [ "kAlphaThreshold", "namespacecgv_1_1render.html#a4547d038c61af9a04e89c94173a874a3a10fbc711e2565e2e6d045915b0419f13", null ]
+    ] ],
+    [ "VolumeSliceMode", "namespacecgv_1_1render.html#aa1699bcd3dddc398a7035e39d133d24f", [
+      [ "kNone", "namespacecgv_1_1render.html#aa1699bcd3dddc398a7035e39d133d24fa35c3ace1970663a16e5c65baa5941b13", null ],
+      [ "kOpaque", "namespacecgv_1_1render.html#aa1699bcd3dddc398a7035e39d133d24fa338caebfc6f31586a1bdd09e3a67c9b5", null ],
+      [ "kTransparent", "namespacecgv_1_1render.html#aa1699bcd3dddc398a7035e39d133d24fad0b1155630ed06710cbda709b8aa11fc", null ]
+    ] ],
     [ "build_render_info", "namespacecgv_1_1render.html#a7b675d0a601181144b6ce95371ad087d", null ],
     [ "configure_color_scale", "namespacecgv_1_1render.html#a59dab50ff09426084782ca221f1452ed", null ],
     [ "configure_color_scale", "namespacecgv_1_1render.html#a30147ad00afa94d5133a66836282a047", null ],
@@ -432,7 +443,6 @@ var namespacecgv_1_1render =
     [ "ref_normal_renderer", "namespacecgv_1_1render.html#a2ac436989b3edb8b08ebf49363187414", null ],
     [ "ref_point_renderer", "namespacecgv_1_1render.html#af2167f067ad328f6b3ee33215c888ecb", null ],
     [ "ref_rectangle_renderer", "namespacecgv_1_1render.html#a3511c2e6386806c6b4d7dbedd83bcbf0", null ],
-    [ "ref_slab_renderer", "namespacecgv_1_1render.html#a357b2c7107ff872aa762543c1d2efdaa", null ],
     [ "ref_sphere_renderer", "namespacecgv_1_1render.html#ae7e2df188a1f8547b6bfea0c775a29b7", null ],
     [ "ref_spline_tube_renderer", "namespacecgv_1_1render.html#a78e11768aff9997a87ccb9c6a275b85d", null ],
     [ "ref_surfel_renderer", "namespacecgv_1_1render.html#ad3af6ff95e60082b36ea3b3ebd634f02", null ],

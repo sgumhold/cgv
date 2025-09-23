@@ -1,6 +1,5 @@
 var structcgv_1_1render_1_1point__render__style =
 [
-    [ "point_render_style", "structcgv_1_1render_1_1point__render__style.html#af07350667f5de28de5c6acb6102febc0", null ],
     [ "blend_points", "structcgv_1_1render_1_1point__render__style.html#ad6b10a10d21e2a28cca96926e70f264e", null ],
     [ "blend_width_in_pixel", "structcgv_1_1render_1_1point__render__style.html#a2b021089963944fc9b05af6b6cefc590", null ],
     [ "default_depth_offset", "structcgv_1_1render_1_1point__render__style.html#a57f8e5c80b9e643ae507ed61f6a07824", null ],

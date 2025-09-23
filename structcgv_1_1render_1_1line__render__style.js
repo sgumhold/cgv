@@ -1,6 +1,5 @@
 var structcgv_1_1render_1_1line__render__style =
 [
-    [ "line_render_style", "structcgv_1_1render_1_1line__render__style.html#aeef341a00b27d132ea013b1dfa0fa84c", null ],
     [ "blend_lines", "structcgv_1_1render_1_1line__render__style.html#af2e8a728af5a8d0486268f6b8313b4c7", null ],
     [ "blend_width_in_pixel", "structcgv_1_1render_1_1line__render__style.html#a36cc97e56a656ef5f835aa2c6ff35dd1", null ],
     [ "default_color", "structcgv_1_1render_1_1line__render__style.html#ae258474beb4324bce84ec0c866f430eb", null ],

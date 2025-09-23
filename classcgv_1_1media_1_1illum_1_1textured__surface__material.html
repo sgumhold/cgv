@@ -91,13 +91,14 @@ $(document).ready(function(){initNavTree('classcgv_1_1media_1_1illum_1_1textured
 <div class="header">
   <div class="summary">
 <a href="#pub-methods">Public Member Functions</a> &#124;
+<a href="#pub-attribs">Public Attributes</a> &#124;
 <a href="#pro-attribs">Protected Attributes</a> &#124;
 <a href="classcgv_1_1media_1_1illum_1_1textured__surface__material-members.html">List of all members</a>  </div>
   <div class="headertitle"><div class="title">cgv::media::illum::textured_surface_material Class Reference</div></div>
 </div><!--header-->
 <div class="contents">
 
-<p>simple class to hold the material properties of a phong material  
+<p>Stores properties of a surface material with support for texturing.  
  <a href="classcgv_1_1media_1_1illum_1_1textured__surface__material.html#details">More...</a></p>
 
 <p><code>#include &lt;<a class="el" href="textured__surface__material_8h_source.html">textured_surface_material.h</a>&gt;</code></p>
@@ -107,37 +108,19 @@ Inheritance diagram for cgv::media::illum::textured_surface_material:</div>
  <div class="center">
   <img src="classcgv_1_1media_1_1illum_1_1textured__surface__material.png" usemap="#cgv::media::illum::textured_5Fsurface_5Fmaterial_map" alt=""/>
   <map id="cgv::media::illum::textured_5Fsurface_5Fmaterial_map" name="cgv::media::illum::textured_5Fsurface_5Fmaterial_map">
-<area href="classcgv_1_1media_1_1illum_1_1surface__material.html" title="simple class to hold the material properties of a phong material" alt="cgv::media::illum::surface_material" shape="rect" coords="0,0,255,24"/>
+<area href="structcgv_1_1media_1_1illum_1_1surface__material.html" title="Stores properties of a surface material." alt="cgv::media::illum::surface_material" shape="rect" coords="0,0,255,24"/>
 <area href="classcgv_1_1render_1_1textured__material.html" title="class that extends obj_material with the management of textures" alt="cgv::render::textured_material" shape="rect" coords="0,112,255,136"/>
   </map>
 </div></div>
 <table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="pub-methods" name="pub-methods"></a>
 Public Member Functions</h2></td></tr>
-<tr class="memitem:a1e42393c56fa175158b2f2a98fa538cd" id="r_a1e42393c56fa175158b2f2a98fa538cd"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcgv_1_1media_1_1illum_1_1textured__surface__material.html#a1e42393c56fa175158b2f2a98fa538cd">textured_surface_material</a> (const std::string &amp;_name=&quot;default&quot;, BrdfType _brdf_type=BrdfType(BT_STRAUSS_DIFFUSE+BT_STRAUSS), <a class="el" href="classcgv_1_1media_1_1illum_1_1surface__material.html#a3c67316dfc8d7a3f18d1e6802b1a5a34">color_type</a> _diffuse_reflectance=0.5f, float _roughness=0.5f, float _metalness=0.0f, float _ambient_occlusion=1.0f, <a class="el" href="classcgv_1_1media_1_1illum_1_1surface__material.html#a3c67316dfc8d7a3f18d1e6802b1a5a34">color_type</a> _emission=<a class="el" href="classcgv_1_1media_1_1illum_1_1surface__material.html#a3c67316dfc8d7a3f18d1e6802b1a5a34">color_type</a>(0, 0, 0), float _transparency=0.0f, const std::complex&lt; float &gt; &amp;_propagation_slow_down=std::complex&lt; float &gt;(1.5f, 0.0f), float _roughness_anisotropy=0.0f, float _roughness_orientation=0.0f, <a class="el" href="classcgv_1_1media_1_1illum_1_1surface__material.html#a3c67316dfc8d7a3f18d1e6802b1a5a34">color_type</a> _specular_reflectance=<a class="el" href="classcgv_1_1media_1_1illum_1_1surface__material.html#a3c67316dfc8d7a3f18d1e6802b1a5a34">color_type</a>(1, 1, 1), float _bump_scale=0.1f)</td></tr>
-<tr class="memdesc:a1e42393c56fa175158b2f2a98fa538cd"><td class="mdescLeft">&#160;</td><td class="mdescRight">define default material  <br /></td></tr>
-<tr class="separator:a1e42393c56fa175158b2f2a98fa538cd"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:af79a8316310cdb6d6e0d075906c19ec2" id="r_af79a8316310cdb6d6e0d075906c19ec2"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcgv_1_1media_1_1illum_1_1textured__surface__material.html#af79a8316310cdb6d6e0d075906c19ec2">textured_surface_material</a> (const <a class="el" href="classcgv_1_1media_1_1illum_1_1obj__material.html">obj_material</a> &amp;obj_mat)</td></tr>
-<tr class="memdesc:af79a8316310cdb6d6e0d075906c19ec2"><td class="mdescLeft">&#160;</td><td class="mdescRight">convert obj material  <br /></td></tr>
+<tr class="memitem:ac1ad32a36f1ff7f2e1973ae1936c5d1d" id="r_ac1ad32a36f1ff7f2e1973ae1936c5d1d"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcgv_1_1media_1_1illum_1_1textured__surface__material.html#ac1ad32a36f1ff7f2e1973ae1936c5d1d">textured_surface_material</a> ()</td></tr>
+<tr class="memdesc:ac1ad32a36f1ff7f2e1973ae1936c5d1d"><td class="mdescLeft">&#160;</td><td class="mdescRight">construct using default values  <br /></td></tr>
+<tr class="separator:ac1ad32a36f1ff7f2e1973ae1936c5d1d"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:af79a8316310cdb6d6e0d075906c19ec2" id="r_af79a8316310cdb6d6e0d075906c19ec2"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcgv_1_1media_1_1illum_1_1textured__surface__material.html#af79a8316310cdb6d6e0d075906c19ec2">textured_surface_material</a> (const <a class="el" href="structcgv_1_1media_1_1illum_1_1obj__material.html">obj_material</a> &amp;obj_mat)</td></tr>
+<tr class="memdesc:af79a8316310cdb6d6e0d075906c19ec2"><td class="mdescLeft">&#160;</td><td class="mdescRight">construct from obj material  <br /></td></tr>
 <tr class="separator:af79a8316310cdb6d6e0d075906c19ec2"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a1f5057bf2e336d3da16338fb80331d6f" id="r_a1f5057bf2e336d3da16338fb80331d6f"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcgv_1_1media_1_1illum_1_1textured__surface__material.html#a1f5057bf2e336d3da16338fb80331d6f">set_name</a> (std::string o)</td></tr>
-<tr class="memdesc:a1f5057bf2e336d3da16338fb80331d6f"><td class="mdescLeft">&#160;</td><td class="mdescRight">set the name of the material  <br /></td></tr>
-<tr class="separator:a1f5057bf2e336d3da16338fb80331d6f"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a0c7cb8d0c5b51497629e97b7680daf13" id="r_a0c7cb8d0c5b51497629e97b7680daf13"><td class="memItemLeft" align="right" valign="top">const std::string &amp;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcgv_1_1media_1_1illum_1_1textured__surface__material.html#a0c7cb8d0c5b51497629e97b7680daf13">get_name</a> () const</td></tr>
-<tr class="memdesc:a0c7cb8d0c5b51497629e97b7680daf13"><td class="mdescLeft">&#160;</td><td class="mdescRight">return name value  <br /></td></tr>
-<tr class="separator:a0c7cb8d0c5b51497629e97b7680daf13"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a66222854a68078185fd6f5f135e11d91" id="r_a66222854a68078185fd6f5f135e11d91"><td class="memItemLeft" align="right" valign="top">std::string &amp;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcgv_1_1media_1_1illum_1_1textured__surface__material.html#a66222854a68078185fd6f5f135e11d91">ref_name</a> ()</td></tr>
-<tr class="memdesc:a66222854a68078185fd6f5f135e11d91"><td class="mdescLeft">&#160;</td><td class="mdescRight">return reference to name value  <br /></td></tr>
-<tr class="separator:a66222854a68078185fd6f5f135e11d91"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a31f78c66ad7ab0ac8f0f523c404bf882" id="r_a31f78c66ad7ab0ac8f0f523c404bf882"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcgv_1_1media_1_1illum_1_1textured__surface__material.html#a31f78c66ad7ab0ac8f0f523c404bf882">set_sRGBA_textures</a> (bool do_set=true)</td></tr>
-<tr class="memdesc:a31f78c66ad7ab0ac8f0f523c404bf882"><td class="mdescLeft">&#160;</td><td class="mdescRight">set whether textures are interpreted in sRGB format  <br /></td></tr>
-<tr class="separator:a31f78c66ad7ab0ac8f0f523c404bf882"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a763ebbd83472ac0999bc3888ae43327e" id="r_a763ebbd83472ac0999bc3888ae43327e"><td class="memItemLeft" align="right" valign="top">bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcgv_1_1media_1_1illum_1_1textured__surface__material.html#a763ebbd83472ac0999bc3888ae43327e">get_sRGBA_textures</a> () const</td></tr>
-<tr class="memdesc:a763ebbd83472ac0999bc3888ae43327e"><td class="mdescLeft">&#160;</td><td class="mdescRight">return whether textures are interpreted in sRGB format  <br /></td></tr>
-<tr class="separator:a763ebbd83472ac0999bc3888ae43327e"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a658a112444fa4ad3fcd1ac45821ab5e7" id="r_a658a112444fa4ad3fcd1ac45821ab5e7"><td class="memItemLeft" align="right" valign="top">bool &amp;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcgv_1_1media_1_1illum_1_1textured__surface__material.html#a658a112444fa4ad3fcd1ac45821ab5e7">ref_sRGBA_textures</a> ()</td></tr>
-<tr class="memdesc:a658a112444fa4ad3fcd1ac45821ab5e7"><td class="mdescLeft">&#160;</td><td class="mdescRight">return reference to whether textures are interpreted in sRGB format  <br /></td></tr>
-<tr class="separator:a658a112444fa4ad3fcd1ac45821ab5e7"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a7529be0d530eb882e8fa37bd30dfd578" id="r_a7529be0d530eb882e8fa37bd30dfd578"><td class="memItemLeft" align="right" valign="top">unsigned&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcgv_1_1media_1_1illum_1_1textured__surface__material.html#a7529be0d530eb882e8fa37bd30dfd578">get_nr_image_files</a> () const</td></tr>
 <tr class="memdesc:a7529be0d530eb882e8fa37bd30dfd578"><td class="mdescLeft">&#160;</td><td class="mdescRight">return number of image files  <br /></td></tr>
 <tr class="separator:a7529be0d530eb882e8fa37bd30dfd578"><td class="memSeparator" colspan="2">&#160;</td></tr>
@@ -156,328 +139,126 @@ Public Member Functions</h2></td></tr>
 <tr class="memitem:a4ddcc0f360e656cbc09592b2f638514a" id="r_a4ddcc0f360e656cbc09592b2f638514a"><td class="memItemLeft" align="right" valign="top">virtual size_t&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcgv_1_1media_1_1illum_1_1textured__surface__material.html#a4ddcc0f360e656cbc09592b2f638514a">get_nr_textures</a> () const</td></tr>
 <tr class="memdesc:a4ddcc0f360e656cbc09592b2f638514a"><td class="mdescLeft">&#160;</td><td class="mdescRight">virtual method to query number of textures  <br /></td></tr>
 <tr class="separator:a4ddcc0f360e656cbc09592b2f638514a"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:ad8f4c679bfb63a311dd4ce88f6a25965" id="r_ad8f4c679bfb63a311dd4ce88f6a25965"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcgv_1_1media_1_1illum_1_1textured__surface__material.html#ad8f4c679bfb63a311dd4ce88f6a25965">set_diffuse_index</a> (int i)</td></tr>
-<tr class="separator:ad8f4c679bfb63a311dd4ce88f6a25965"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a46b9593ac885dd22e90b5e5d1a11b81e" id="r_a46b9593ac885dd22e90b5e5d1a11b81e"><td class="memItemLeft" align="right" valign="top">int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcgv_1_1media_1_1illum_1_1textured__surface__material.html#a46b9593ac885dd22e90b5e5d1a11b81e">get_diffuse_index</a> () const</td></tr>
-<tr class="separator:a46b9593ac885dd22e90b5e5d1a11b81e"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a464cc9f19bbb172d3b0b4d172415ea96" id="r_a464cc9f19bbb172d3b0b4d172415ea96"><td class="memItemLeft" align="right" valign="top">int &amp;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcgv_1_1media_1_1illum_1_1textured__surface__material.html#a464cc9f19bbb172d3b0b4d172415ea96">ref_diffuse_index</a> ()</td></tr>
-<tr class="separator:a464cc9f19bbb172d3b0b4d172415ea96"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a71ffe7b7fb1445881013c401b08038aa" id="r_a71ffe7b7fb1445881013c401b08038aa"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcgv_1_1media_1_1illum_1_1textured__surface__material.html#a71ffe7b7fb1445881013c401b08038aa">set_roughness_index</a> (int i)</td></tr>
-<tr class="separator:a71ffe7b7fb1445881013c401b08038aa"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a40db956195ebcb4a1ef6a9faabf3f6a3" id="r_a40db956195ebcb4a1ef6a9faabf3f6a3"><td class="memItemLeft" align="right" valign="top">int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcgv_1_1media_1_1illum_1_1textured__surface__material.html#a40db956195ebcb4a1ef6a9faabf3f6a3">get_roughness_index</a> () const</td></tr>
-<tr class="separator:a40db956195ebcb4a1ef6a9faabf3f6a3"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:adbfe8ccfa8776b9981ea72fc19458828" id="r_adbfe8ccfa8776b9981ea72fc19458828"><td class="memItemLeft" align="right" valign="top">int &amp;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcgv_1_1media_1_1illum_1_1textured__surface__material.html#adbfe8ccfa8776b9981ea72fc19458828">ref_roughness_index</a> ()</td></tr>
-<tr class="separator:adbfe8ccfa8776b9981ea72fc19458828"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:ab848653cc177b08d2c35ae6ed0f54edb" id="r_ab848653cc177b08d2c35ae6ed0f54edb"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcgv_1_1media_1_1illum_1_1textured__surface__material.html#ab848653cc177b08d2c35ae6ed0f54edb">set_metalness_index</a> (int i)</td></tr>
-<tr class="separator:ab848653cc177b08d2c35ae6ed0f54edb"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:af6c62c49757876c98d87e264ccd7065e" id="r_af6c62c49757876c98d87e264ccd7065e"><td class="memItemLeft" align="right" valign="top">int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcgv_1_1media_1_1illum_1_1textured__surface__material.html#af6c62c49757876c98d87e264ccd7065e">get_metalness_index</a> () const</td></tr>
-<tr class="separator:af6c62c49757876c98d87e264ccd7065e"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:ad0ae2cf34b5de4f15b6fc76c18affeaf" id="r_ad0ae2cf34b5de4f15b6fc76c18affeaf"><td class="memItemLeft" align="right" valign="top">int &amp;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcgv_1_1media_1_1illum_1_1textured__surface__material.html#ad0ae2cf34b5de4f15b6fc76c18affeaf">ref_metalness_index</a> ()</td></tr>
-<tr class="separator:ad0ae2cf34b5de4f15b6fc76c18affeaf"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:af8c7e8a79ec007a8edf8a90531702c62" id="r_af8c7e8a79ec007a8edf8a90531702c62"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcgv_1_1media_1_1illum_1_1textured__surface__material.html#af8c7e8a79ec007a8edf8a90531702c62">set_ambient_index</a> (int i)</td></tr>
-<tr class="separator:af8c7e8a79ec007a8edf8a90531702c62"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:adbd106d9965fcb6544baa0fe18bfcc37" id="r_adbd106d9965fcb6544baa0fe18bfcc37"><td class="memItemLeft" align="right" valign="top">int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcgv_1_1media_1_1illum_1_1textured__surface__material.html#adbd106d9965fcb6544baa0fe18bfcc37">get_ambient_index</a> () const</td></tr>
-<tr class="separator:adbd106d9965fcb6544baa0fe18bfcc37"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a8ab694ae32d4e73c60d5ad634135c956" id="r_a8ab694ae32d4e73c60d5ad634135c956"><td class="memItemLeft" align="right" valign="top">int &amp;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcgv_1_1media_1_1illum_1_1textured__surface__material.html#a8ab694ae32d4e73c60d5ad634135c956">ref_ambient_index</a> ()</td></tr>
-<tr class="separator:a8ab694ae32d4e73c60d5ad634135c956"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:afa492e829254155426061003819d5c88" id="r_afa492e829254155426061003819d5c88"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcgv_1_1media_1_1illum_1_1textured__surface__material.html#afa492e829254155426061003819d5c88">set_emission_index</a> (int i)</td></tr>
-<tr class="separator:afa492e829254155426061003819d5c88"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:adf6c636a3f23407b5be28defd51ce58f" id="r_adf6c636a3f23407b5be28defd51ce58f"><td class="memItemLeft" align="right" valign="top">int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcgv_1_1media_1_1illum_1_1textured__surface__material.html#adf6c636a3f23407b5be28defd51ce58f">get_emission_index</a> () const</td></tr>
-<tr class="separator:adf6c636a3f23407b5be28defd51ce58f"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:acb21740a3600ad8bc6b118b2b7023031" id="r_acb21740a3600ad8bc6b118b2b7023031"><td class="memItemLeft" align="right" valign="top">int &amp;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcgv_1_1media_1_1illum_1_1textured__surface__material.html#acb21740a3600ad8bc6b118b2b7023031">ref_emission_index</a> ()</td></tr>
-<tr class="separator:acb21740a3600ad8bc6b118b2b7023031"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a7d11d4f5294127b26ffe6c42c8364747" id="r_a7d11d4f5294127b26ffe6c42c8364747"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcgv_1_1media_1_1illum_1_1textured__surface__material.html#a7d11d4f5294127b26ffe6c42c8364747">set_transparency_index</a> (int i)</td></tr>
-<tr class="separator:a7d11d4f5294127b26ffe6c42c8364747"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a4d9b43dbbdaceceb4be2afeb7fa1d10f" id="r_a4d9b43dbbdaceceb4be2afeb7fa1d10f"><td class="memItemLeft" align="right" valign="top">int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcgv_1_1media_1_1illum_1_1textured__surface__material.html#a4d9b43dbbdaceceb4be2afeb7fa1d10f">get_transparency_index</a> () const</td></tr>
-<tr class="separator:a4d9b43dbbdaceceb4be2afeb7fa1d10f"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a19baf620189ef41885bf05360dd237fc" id="r_a19baf620189ef41885bf05360dd237fc"><td class="memItemLeft" align="right" valign="top">int &amp;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcgv_1_1media_1_1illum_1_1textured__surface__material.html#a19baf620189ef41885bf05360dd237fc">ref_transparency_index</a> ()</td></tr>
-<tr class="separator:a19baf620189ef41885bf05360dd237fc"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:ab242fac39321d79e40af8c224f40066f" id="r_ab242fac39321d79e40af8c224f40066f"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcgv_1_1media_1_1illum_1_1textured__surface__material.html#ab242fac39321d79e40af8c224f40066f">set_specular_index</a> (int i)</td></tr>
-<tr class="separator:ab242fac39321d79e40af8c224f40066f"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:aea01b05c32275490814b25e66add29fa" id="r_aea01b05c32275490814b25e66add29fa"><td class="memItemLeft" align="right" valign="top">int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcgv_1_1media_1_1illum_1_1textured__surface__material.html#aea01b05c32275490814b25e66add29fa">get_specular_index</a> () const</td></tr>
-<tr class="separator:aea01b05c32275490814b25e66add29fa"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:af2922ab4109845ae0c692aa004d9c460" id="r_af2922ab4109845ae0c692aa004d9c460"><td class="memItemLeft" align="right" valign="top">int &amp;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcgv_1_1media_1_1illum_1_1textured__surface__material.html#af2922ab4109845ae0c692aa004d9c460">ref_specular_index</a> ()</td></tr>
-<tr class="separator:af2922ab4109845ae0c692aa004d9c460"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a3c6141c0bffea5c8d3972282ce515ade" id="r_a3c6141c0bffea5c8d3972282ce515ade"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcgv_1_1media_1_1illum_1_1textured__surface__material.html#a3c6141c0bffea5c8d3972282ce515ade">set_normal_index</a> (int i)</td></tr>
-<tr class="separator:a3c6141c0bffea5c8d3972282ce515ade"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a036144a59f3489e0ab2b3a9c5c1a9d6b" id="r_a036144a59f3489e0ab2b3a9c5c1a9d6b"><td class="memItemLeft" align="right" valign="top">int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcgv_1_1media_1_1illum_1_1textured__surface__material.html#a036144a59f3489e0ab2b3a9c5c1a9d6b">get_normal_index</a> () const</td></tr>
-<tr class="separator:a036144a59f3489e0ab2b3a9c5c1a9d6b"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a7febc12116d74e718f888e87698bcdba" id="r_a7febc12116d74e718f888e87698bcdba"><td class="memItemLeft" align="right" valign="top">int &amp;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcgv_1_1media_1_1illum_1_1textured__surface__material.html#a7febc12116d74e718f888e87698bcdba">ref_normal_index</a> ()</td></tr>
-<tr class="separator:a7febc12116d74e718f888e87698bcdba"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a24f14514278e270030c3309049a67c3d" id="r_a24f14514278e270030c3309049a67c3d"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcgv_1_1media_1_1illum_1_1textured__surface__material.html#a24f14514278e270030c3309049a67c3d">set_bump_index</a> (int i)</td></tr>
-<tr class="separator:a24f14514278e270030c3309049a67c3d"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a448234efd66d60d7672599debda33942" id="r_a448234efd66d60d7672599debda33942"><td class="memItemLeft" align="right" valign="top">int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcgv_1_1media_1_1illum_1_1textured__surface__material.html#a448234efd66d60d7672599debda33942">get_bump_index</a> () const</td></tr>
-<tr class="separator:a448234efd66d60d7672599debda33942"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a0508df802c5f138a7c37e6a66b4a0f14" id="r_a0508df802c5f138a7c37e6a66b4a0f14"><td class="memItemLeft" align="right" valign="top">int &amp;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcgv_1_1media_1_1illum_1_1textured__surface__material.html#a0508df802c5f138a7c37e6a66b4a0f14">ref_bump_index</a> ()</td></tr>
-<tr class="separator:a0508df802c5f138a7c37e6a66b4a0f14"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a4f7b04553dd6d9de85a45246f21357e0" id="r_a4f7b04553dd6d9de85a45246f21357e0"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcgv_1_1media_1_1illum_1_1textured__surface__material.html#a4f7b04553dd6d9de85a45246f21357e0">set_bump_scale</a> (float bs)</td></tr>
-<tr class="memdesc:a4f7b04553dd6d9de85a45246f21357e0"><td class="mdescLeft">&#160;</td><td class="mdescRight">set scale of bumps  <br /></td></tr>
-<tr class="separator:a4f7b04553dd6d9de85a45246f21357e0"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a33f54806787d73a492f802e57dbaf23d" id="r_a33f54806787d73a492f802e57dbaf23d"><td class="memItemLeft" align="right" valign="top">float&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcgv_1_1media_1_1illum_1_1textured__surface__material.html#a33f54806787d73a492f802e57dbaf23d">get_bump_scale</a> () const</td></tr>
-<tr class="memdesc:a33f54806787d73a492f802e57dbaf23d"><td class="mdescLeft">&#160;</td><td class="mdescRight">return bump scale  <br /></td></tr>
-<tr class="separator:a33f54806787d73a492f802e57dbaf23d"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:ab2b596dc2e9333edbd1a5739db383dba" id="r_ab2b596dc2e9333edbd1a5739db383dba"><td class="memItemLeft" align="right" valign="top">float &amp;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcgv_1_1media_1_1illum_1_1textured__surface__material.html#ab2b596dc2e9333edbd1a5739db383dba">ref_bump_scale</a> ()</td></tr>
-<tr class="memdesc:ab2b596dc2e9333edbd1a5739db383dba"><td class="mdescLeft">&#160;</td><td class="mdescRight">return reference to bump scale  <br /></td></tr>
-<tr class="separator:ab2b596dc2e9333edbd1a5739db383dba"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="inherit_header pub_methods_classcgv_1_1media_1_1illum_1_1surface__material"><td colspan="2" onclick="javascript:toggleInherit('pub_methods_classcgv_1_1media_1_1illum_1_1surface__material')"><img src="closed.png" alt="-"/>&#160;Public Member Functions inherited from <a class="el" href="classcgv_1_1media_1_1illum_1_1surface__material.html">cgv::media::illum::surface_material</a></td></tr>
-<tr class="memitem:a1732ff7c51d2569e1702267ea2f5d079 inherit pub_methods_classcgv_1_1media_1_1illum_1_1surface__material" id="r_a1732ff7c51d2569e1702267ea2f5d079"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcgv_1_1media_1_1illum_1_1surface__material.html#a1732ff7c51d2569e1702267ea2f5d079">surface_material</a> (BrdfType _brdf_type=BrdfType(BT_STRAUSS_DIFFUSE+BT_STRAUSS), <a class="el" href="classcgv_1_1media_1_1illum_1_1surface__material.html#a3c67316dfc8d7a3f18d1e6802b1a5a34">color_type</a> _diffuse_reflectance=<a class="el" href="classcgv_1_1media_1_1illum_1_1surface__material.html#a3c67316dfc8d7a3f18d1e6802b1a5a34">color_type</a>(0.5f, 0.5f, 0.5f), float _roughness=0.5f, float _metalness=0.0f, float _ambient_occlusion=1.0f, <a class="el" href="classcgv_1_1media_1_1illum_1_1surface__material.html#a3c67316dfc8d7a3f18d1e6802b1a5a34">color_type</a> _emission=<a class="el" href="classcgv_1_1media_1_1illum_1_1surface__material.html#a3c67316dfc8d7a3f18d1e6802b1a5a34">color_type</a>(0, 0, 0), float _transparency=0.0f, const std::complex&lt; float &gt; &amp;_propagation_slow_down=std::complex&lt; float &gt;(1.5f, 0.0f), float _roughness_anisotropy=0.0f, float _roughness_orientation=0.0f, <a class="el" href="classcgv_1_1media_1_1illum_1_1surface__material.html#a3c67316dfc8d7a3f18d1e6802b1a5a34">color_type</a> _specular_reflectance=<a class="el" href="classcgv_1_1media_1_1illum_1_1surface__material.html#a3c67316dfc8d7a3f18d1e6802b1a5a34">color_type</a>(1, 1, 1))</td></tr>
-<tr class="memdesc:a1732ff7c51d2569e1702267ea2f5d079 inherit pub_methods_classcgv_1_1media_1_1illum_1_1surface__material"><td class="mdescLeft">&#160;</td><td class="mdescRight">construct default material  <br /></td></tr>
-<tr class="separator:a1732ff7c51d2569e1702267ea2f5d079 inherit pub_methods_classcgv_1_1media_1_1illum_1_1surface__material"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a683da9aeaa4e146fa107ac5a3d45b5fc inherit pub_methods_classcgv_1_1media_1_1illum_1_1surface__material" id="r_a683da9aeaa4e146fa107ac5a3d45b5fc"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcgv_1_1media_1_1illum_1_1surface__material.html#a683da9aeaa4e146fa107ac5a3d45b5fc">set_brdf_type</a> (BrdfType <a class="el" href="classcgv_1_1media_1_1illum_1_1surface__material.html#a51fca4161b935253a23af6e2e420d9b7">brdf_type</a>)</td></tr>
-<tr class="separator:a683da9aeaa4e146fa107ac5a3d45b5fc inherit pub_methods_classcgv_1_1media_1_1illum_1_1surface__material"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a84843d9859a4b614c9b9caccb2082545 inherit pub_methods_classcgv_1_1media_1_1illum_1_1surface__material" id="r_a84843d9859a4b614c9b9caccb2082545"><td class="memItemLeft" align="right" valign="top">BrdfType&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcgv_1_1media_1_1illum_1_1surface__material.html#a84843d9859a4b614c9b9caccb2082545">get_brdf_type</a> () const</td></tr>
-<tr class="separator:a84843d9859a4b614c9b9caccb2082545 inherit pub_methods_classcgv_1_1media_1_1illum_1_1surface__material"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:ae639b90de851e81ab7ef2c7d3b22243a inherit pub_methods_classcgv_1_1media_1_1illum_1_1surface__material" id="r_ae639b90de851e81ab7ef2c7d3b22243a"><td class="memItemLeft" align="right" valign="top">BrdfType &amp;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcgv_1_1media_1_1illum_1_1surface__material.html#ae639b90de851e81ab7ef2c7d3b22243a">ref_brdf_type</a> ()</td></tr>
-<tr class="separator:ae639b90de851e81ab7ef2c7d3b22243a inherit pub_methods_classcgv_1_1media_1_1illum_1_1surface__material"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a93ebe733fd7ad6f73267111ed6e6b578 inherit pub_methods_classcgv_1_1media_1_1illum_1_1surface__material" id="r_a93ebe733fd7ad6f73267111ed6e6b578"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcgv_1_1media_1_1illum_1_1surface__material.html#a93ebe733fd7ad6f73267111ed6e6b578">set_ambient_occlusion</a> (float <a class="el" href="classcgv_1_1media_1_1illum_1_1surface__material.html#ae99c554bb5e900406ea22a44641a04b9">ambient_occlusion</a>)</td></tr>
-<tr class="separator:a93ebe733fd7ad6f73267111ed6e6b578 inherit pub_methods_classcgv_1_1media_1_1illum_1_1surface__material"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:abe69e859639ad9c963321720452b98d4 inherit pub_methods_classcgv_1_1media_1_1illum_1_1surface__material" id="r_abe69e859639ad9c963321720452b98d4"><td class="memItemLeft" align="right" valign="top">float&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcgv_1_1media_1_1illum_1_1surface__material.html#abe69e859639ad9c963321720452b98d4">get_ambient_occlusion</a> () const</td></tr>
-<tr class="separator:abe69e859639ad9c963321720452b98d4 inherit pub_methods_classcgv_1_1media_1_1illum_1_1surface__material"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a272d97bef38c9bfe705cac9e2c8f4fe4 inherit pub_methods_classcgv_1_1media_1_1illum_1_1surface__material" id="r_a272d97bef38c9bfe705cac9e2c8f4fe4"><td class="memItemLeft" align="right" valign="top">float &amp;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcgv_1_1media_1_1illum_1_1surface__material.html#a272d97bef38c9bfe705cac9e2c8f4fe4">ref_ambient_occlusion</a> ()</td></tr>
-<tr class="separator:a272d97bef38c9bfe705cac9e2c8f4fe4 inherit pub_methods_classcgv_1_1media_1_1illum_1_1surface__material"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a05d79d327071cb3dede4d9ebb1ca5604 inherit pub_methods_classcgv_1_1media_1_1illum_1_1surface__material" id="r_a05d79d327071cb3dede4d9ebb1ca5604"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcgv_1_1media_1_1illum_1_1surface__material.html#a05d79d327071cb3dede4d9ebb1ca5604">set_diffuse_reflectance</a> (<a class="el" href="classcgv_1_1media_1_1illum_1_1surface__material.html#a3c67316dfc8d7a3f18d1e6802b1a5a34">color_type</a> <a class="el" href="classcgv_1_1media_1_1illum_1_1surface__material.html#a3ca6ccb522fcfb870792f5c338eb2e43">diffuse_reflectance</a>)</td></tr>
-<tr class="separator:a05d79d327071cb3dede4d9ebb1ca5604 inherit pub_methods_classcgv_1_1media_1_1illum_1_1surface__material"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:ad20dc957dd5388eda305eabd9316a512 inherit pub_methods_classcgv_1_1media_1_1illum_1_1surface__material" id="r_ad20dc957dd5388eda305eabd9316a512"><td class="memItemLeft" align="right" valign="top"><a class="el" href="classcgv_1_1media_1_1illum_1_1surface__material.html#a3c67316dfc8d7a3f18d1e6802b1a5a34">color_type</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcgv_1_1media_1_1illum_1_1surface__material.html#ad20dc957dd5388eda305eabd9316a512">get_diffuse_reflectance</a> () const</td></tr>
-<tr class="separator:ad20dc957dd5388eda305eabd9316a512 inherit pub_methods_classcgv_1_1media_1_1illum_1_1surface__material"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:abeea31180a550485ec1f7d0477852413 inherit pub_methods_classcgv_1_1media_1_1illum_1_1surface__material" id="r_abeea31180a550485ec1f7d0477852413"><td class="memItemLeft" align="right" valign="top"><a class="el" href="classcgv_1_1media_1_1illum_1_1surface__material.html#a3c67316dfc8d7a3f18d1e6802b1a5a34">color_type</a> &amp;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcgv_1_1media_1_1illum_1_1surface__material.html#abeea31180a550485ec1f7d0477852413">ref_diffuse_reflectance</a> ()</td></tr>
-<tr class="separator:abeea31180a550485ec1f7d0477852413 inherit pub_methods_classcgv_1_1media_1_1illum_1_1surface__material"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a5a668cb2dcf0eaa4251a8c3c00935bd9 inherit pub_methods_classcgv_1_1media_1_1illum_1_1surface__material" id="r_a5a668cb2dcf0eaa4251a8c3c00935bd9"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcgv_1_1media_1_1illum_1_1surface__material.html#a5a668cb2dcf0eaa4251a8c3c00935bd9">set_specular_reflectance</a> (<a class="el" href="classcgv_1_1media_1_1illum_1_1surface__material.html#a3c67316dfc8d7a3f18d1e6802b1a5a34">color_type</a> <a class="el" href="classcgv_1_1media_1_1illum_1_1surface__material.html#a6e8b7cc53c9d7b817569f1ac68fefeaa">specular_reflectance</a>)</td></tr>
-<tr class="separator:a5a668cb2dcf0eaa4251a8c3c00935bd9 inherit pub_methods_classcgv_1_1media_1_1illum_1_1surface__material"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a6ef6397f2b7c3085da8700aeebb3a7a8 inherit pub_methods_classcgv_1_1media_1_1illum_1_1surface__material" id="r_a6ef6397f2b7c3085da8700aeebb3a7a8"><td class="memItemLeft" align="right" valign="top"><a class="el" href="classcgv_1_1media_1_1illum_1_1surface__material.html#a3c67316dfc8d7a3f18d1e6802b1a5a34">color_type</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcgv_1_1media_1_1illum_1_1surface__material.html#a6ef6397f2b7c3085da8700aeebb3a7a8">get_specular_reflectance</a> () const</td></tr>
-<tr class="separator:a6ef6397f2b7c3085da8700aeebb3a7a8 inherit pub_methods_classcgv_1_1media_1_1illum_1_1surface__material"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a0b1fd7dbf6fa624518563b43c2f0a9a7 inherit pub_methods_classcgv_1_1media_1_1illum_1_1surface__material" id="r_a0b1fd7dbf6fa624518563b43c2f0a9a7"><td class="memItemLeft" align="right" valign="top"><a class="el" href="classcgv_1_1media_1_1illum_1_1surface__material.html#a3c67316dfc8d7a3f18d1e6802b1a5a34">color_type</a> &amp;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcgv_1_1media_1_1illum_1_1surface__material.html#a0b1fd7dbf6fa624518563b43c2f0a9a7">ref_specular_reflectance</a> ()</td></tr>
-<tr class="separator:a0b1fd7dbf6fa624518563b43c2f0a9a7 inherit pub_methods_classcgv_1_1media_1_1illum_1_1surface__material"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a4254eedf7537c1768b4b03a0ac42a7ad inherit pub_methods_classcgv_1_1media_1_1illum_1_1surface__material" id="r_a4254eedf7537c1768b4b03a0ac42a7ad"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcgv_1_1media_1_1illum_1_1surface__material.html#a4254eedf7537c1768b4b03a0ac42a7ad">set_emission</a> (<a class="el" href="classcgv_1_1media_1_1illum_1_1surface__material.html#a3c67316dfc8d7a3f18d1e6802b1a5a34">color_type</a> <a class="el" href="classcgv_1_1media_1_1illum_1_1surface__material.html#a603d26b3eb0ff6c65273a333b638822d">emission</a>)</td></tr>
-<tr class="separator:a4254eedf7537c1768b4b03a0ac42a7ad inherit pub_methods_classcgv_1_1media_1_1illum_1_1surface__material"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a6d047e56998b2ab1590f379660ac33c9 inherit pub_methods_classcgv_1_1media_1_1illum_1_1surface__material" id="r_a6d047e56998b2ab1590f379660ac33c9"><td class="memItemLeft" align="right" valign="top"><a class="el" href="classcgv_1_1media_1_1illum_1_1surface__material.html#a3c67316dfc8d7a3f18d1e6802b1a5a34">color_type</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcgv_1_1media_1_1illum_1_1surface__material.html#a6d047e56998b2ab1590f379660ac33c9">get_emission</a> () const</td></tr>
-<tr class="separator:a6d047e56998b2ab1590f379660ac33c9 inherit pub_methods_classcgv_1_1media_1_1illum_1_1surface__material"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a8abf4bccfcbdfd4e2bf9266bdceb23c9 inherit pub_methods_classcgv_1_1media_1_1illum_1_1surface__material" id="r_a8abf4bccfcbdfd4e2bf9266bdceb23c9"><td class="memItemLeft" align="right" valign="top"><a class="el" href="classcgv_1_1media_1_1illum_1_1surface__material.html#a3c67316dfc8d7a3f18d1e6802b1a5a34">color_type</a> &amp;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcgv_1_1media_1_1illum_1_1surface__material.html#a8abf4bccfcbdfd4e2bf9266bdceb23c9">ref_emission</a> ()</td></tr>
-<tr class="separator:a8abf4bccfcbdfd4e2bf9266bdceb23c9 inherit pub_methods_classcgv_1_1media_1_1illum_1_1surface__material"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a19c4e112277cf68e7489ab540ca80dc0 inherit pub_methods_classcgv_1_1media_1_1illum_1_1surface__material" id="r_a19c4e112277cf68e7489ab540ca80dc0"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcgv_1_1media_1_1illum_1_1surface__material.html#a19c4e112277cf68e7489ab540ca80dc0">set_transparency</a> (float <a class="el" href="classcgv_1_1media_1_1illum_1_1surface__material.html#ab3c0e8e96379fbda089c1f30de223498">transparency</a>)</td></tr>
-<tr class="separator:a19c4e112277cf68e7489ab540ca80dc0 inherit pub_methods_classcgv_1_1media_1_1illum_1_1surface__material"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a066976872e6983c728979de8ab7d2e3c inherit pub_methods_classcgv_1_1media_1_1illum_1_1surface__material" id="r_a066976872e6983c728979de8ab7d2e3c"><td class="memItemLeft" align="right" valign="top">float&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcgv_1_1media_1_1illum_1_1surface__material.html#a066976872e6983c728979de8ab7d2e3c">get_transparency</a> () const</td></tr>
-<tr class="separator:a066976872e6983c728979de8ab7d2e3c inherit pub_methods_classcgv_1_1media_1_1illum_1_1surface__material"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a6ccd892f96f462ad99618b770dcf8e0b inherit pub_methods_classcgv_1_1media_1_1illum_1_1surface__material" id="r_a6ccd892f96f462ad99618b770dcf8e0b"><td class="memItemLeft" align="right" valign="top">float &amp;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcgv_1_1media_1_1illum_1_1surface__material.html#a6ccd892f96f462ad99618b770dcf8e0b">ref_transparency</a> ()</td></tr>
-<tr class="separator:a6ccd892f96f462ad99618b770dcf8e0b inherit pub_methods_classcgv_1_1media_1_1illum_1_1surface__material"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a8991eb1c6848cc865b581d60e88ba8bf inherit pub_methods_classcgv_1_1media_1_1illum_1_1surface__material" id="r_a8991eb1c6848cc865b581d60e88ba8bf"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcgv_1_1media_1_1illum_1_1surface__material.html#a8991eb1c6848cc865b581d60e88ba8bf">set_roughness</a> (float <a class="el" href="classcgv_1_1media_1_1illum_1_1surface__material.html#abeea888e6dbdf16241235a08f82cdc2e">roughness</a>)</td></tr>
-<tr class="separator:a8991eb1c6848cc865b581d60e88ba8bf inherit pub_methods_classcgv_1_1media_1_1illum_1_1surface__material"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a6111f725d14ae0e149a6cbb94875a3e8 inherit pub_methods_classcgv_1_1media_1_1illum_1_1surface__material" id="r_a6111f725d14ae0e149a6cbb94875a3e8"><td class="memItemLeft" align="right" valign="top">float&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcgv_1_1media_1_1illum_1_1surface__material.html#a6111f725d14ae0e149a6cbb94875a3e8">get_roughness</a> () const</td></tr>
-<tr class="separator:a6111f725d14ae0e149a6cbb94875a3e8 inherit pub_methods_classcgv_1_1media_1_1illum_1_1surface__material"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a927a3a45a12a83ecfd1557f6c027580f inherit pub_methods_classcgv_1_1media_1_1illum_1_1surface__material" id="r_a927a3a45a12a83ecfd1557f6c027580f"><td class="memItemLeft" align="right" valign="top">float &amp;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcgv_1_1media_1_1illum_1_1surface__material.html#a927a3a45a12a83ecfd1557f6c027580f">ref_roughness</a> ()</td></tr>
-<tr class="separator:a927a3a45a12a83ecfd1557f6c027580f inherit pub_methods_classcgv_1_1media_1_1illum_1_1surface__material"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:abe5e67fbf7c832fea36764ae7bc47956 inherit pub_methods_classcgv_1_1media_1_1illum_1_1surface__material" id="r_abe5e67fbf7c832fea36764ae7bc47956"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcgv_1_1media_1_1illum_1_1surface__material.html#abe5e67fbf7c832fea36764ae7bc47956">set_metalness</a> (float <a class="el" href="classcgv_1_1media_1_1illum_1_1surface__material.html#aa21afe6045ae017791c89530ce3b7e6d">metalness</a>)</td></tr>
-<tr class="separator:abe5e67fbf7c832fea36764ae7bc47956 inherit pub_methods_classcgv_1_1media_1_1illum_1_1surface__material"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:acc09fa5e2d22a860166a54b159817e15 inherit pub_methods_classcgv_1_1media_1_1illum_1_1surface__material" id="r_acc09fa5e2d22a860166a54b159817e15"><td class="memItemLeft" align="right" valign="top">float&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcgv_1_1media_1_1illum_1_1surface__material.html#acc09fa5e2d22a860166a54b159817e15">get_metalness</a> () const</td></tr>
-<tr class="separator:acc09fa5e2d22a860166a54b159817e15 inherit pub_methods_classcgv_1_1media_1_1illum_1_1surface__material"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:afefee131977c4ef06ff53ae6082fc18a inherit pub_methods_classcgv_1_1media_1_1illum_1_1surface__material" id="r_afefee131977c4ef06ff53ae6082fc18a"><td class="memItemLeft" align="right" valign="top">float &amp;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcgv_1_1media_1_1illum_1_1surface__material.html#afefee131977c4ef06ff53ae6082fc18a">ref_metalness</a> ()</td></tr>
-<tr class="separator:afefee131977c4ef06ff53ae6082fc18a inherit pub_methods_classcgv_1_1media_1_1illum_1_1surface__material"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:af77dea726f83304f4e743646f3cacc95 inherit pub_methods_classcgv_1_1media_1_1illum_1_1surface__material" id="r_af77dea726f83304f4e743646f3cacc95"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcgv_1_1media_1_1illum_1_1surface__material.html#af77dea726f83304f4e743646f3cacc95">set_roughness_anisotropy</a> (float <a class="el" href="classcgv_1_1media_1_1illum_1_1surface__material.html#a865250cb2d26cf61c9769cbeb6bf4a44">roughness_anisotropy</a>)</td></tr>
-<tr class="separator:af77dea726f83304f4e743646f3cacc95 inherit pub_methods_classcgv_1_1media_1_1illum_1_1surface__material"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:aa3f295a1f74771c1da5194dd9794ade5 inherit pub_methods_classcgv_1_1media_1_1illum_1_1surface__material" id="r_aa3f295a1f74771c1da5194dd9794ade5"><td class="memItemLeft" align="right" valign="top">float&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcgv_1_1media_1_1illum_1_1surface__material.html#aa3f295a1f74771c1da5194dd9794ade5">get_roughness_anisotropy</a> () const</td></tr>
-<tr class="separator:aa3f295a1f74771c1da5194dd9794ade5 inherit pub_methods_classcgv_1_1media_1_1illum_1_1surface__material"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a04ab84ccc9b481859f859aa84756344d inherit pub_methods_classcgv_1_1media_1_1illum_1_1surface__material" id="r_a04ab84ccc9b481859f859aa84756344d"><td class="memItemLeft" align="right" valign="top">float &amp;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcgv_1_1media_1_1illum_1_1surface__material.html#a04ab84ccc9b481859f859aa84756344d">ref_roughness_anisotropy</a> ()</td></tr>
-<tr class="separator:a04ab84ccc9b481859f859aa84756344d inherit pub_methods_classcgv_1_1media_1_1illum_1_1surface__material"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a0a0f0bc788824c1e3fc60a1819e97671 inherit pub_methods_classcgv_1_1media_1_1illum_1_1surface__material" id="r_a0a0f0bc788824c1e3fc60a1819e97671"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcgv_1_1media_1_1illum_1_1surface__material.html#a0a0f0bc788824c1e3fc60a1819e97671">set_roughness_orientation</a> (float <a class="el" href="classcgv_1_1media_1_1illum_1_1surface__material.html#a612bd2956c621fa487d9ddc4e37ec686">roughness_orientation</a>)</td></tr>
-<tr class="separator:a0a0f0bc788824c1e3fc60a1819e97671 inherit pub_methods_classcgv_1_1media_1_1illum_1_1surface__material"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a6029b3cc91b2c0a82b0311935055e756 inherit pub_methods_classcgv_1_1media_1_1illum_1_1surface__material" id="r_a6029b3cc91b2c0a82b0311935055e756"><td class="memItemLeft" align="right" valign="top">float&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcgv_1_1media_1_1illum_1_1surface__material.html#a6029b3cc91b2c0a82b0311935055e756">get_roughness_orientation</a> () const</td></tr>
-<tr class="separator:a6029b3cc91b2c0a82b0311935055e756 inherit pub_methods_classcgv_1_1media_1_1illum_1_1surface__material"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a46d87f21b87d6c8c4321230bb177cd24 inherit pub_methods_classcgv_1_1media_1_1illum_1_1surface__material" id="r_a46d87f21b87d6c8c4321230bb177cd24"><td class="memItemLeft" align="right" valign="top">float &amp;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcgv_1_1media_1_1illum_1_1surface__material.html#a46d87f21b87d6c8c4321230bb177cd24">ref_roughness_orientation</a> ()</td></tr>
-<tr class="separator:a46d87f21b87d6c8c4321230bb177cd24 inherit pub_methods_classcgv_1_1media_1_1illum_1_1surface__material"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:aadd4b1a6b36e4fee5f63797788473864 inherit pub_methods_classcgv_1_1media_1_1illum_1_1surface__material" id="r_aadd4b1a6b36e4fee5f63797788473864"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcgv_1_1media_1_1illum_1_1surface__material.html#aadd4b1a6b36e4fee5f63797788473864">set_propagation_slow_down</a> (std::complex&lt; float &gt; <a class="el" href="classcgv_1_1media_1_1illum_1_1surface__material.html#a91dd38994fcab38d3b9b974af5f888da">propagation_slow_down</a>)</td></tr>
-<tr class="separator:aadd4b1a6b36e4fee5f63797788473864 inherit pub_methods_classcgv_1_1media_1_1illum_1_1surface__material"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:ad1ee1ba5fb06b73658b5782025c8429f inherit pub_methods_classcgv_1_1media_1_1illum_1_1surface__material" id="r_ad1ee1ba5fb06b73658b5782025c8429f"><td class="memItemLeft" align="right" valign="top">std::complex&lt; float &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcgv_1_1media_1_1illum_1_1surface__material.html#ad1ee1ba5fb06b73658b5782025c8429f">get_propagation_slow_down</a> () const</td></tr>
-<tr class="separator:ad1ee1ba5fb06b73658b5782025c8429f inherit pub_methods_classcgv_1_1media_1_1illum_1_1surface__material"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a4770caa1047202a3cd7e02b4eb969b57 inherit pub_methods_classcgv_1_1media_1_1illum_1_1surface__material" id="r_a4770caa1047202a3cd7e02b4eb969b57"><td class="memItemLeft" align="right" valign="top">std::complex&lt; float &gt; &amp;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcgv_1_1media_1_1illum_1_1surface__material.html#a4770caa1047202a3cd7e02b4eb969b57">ref_propagation_slow_down</a> ()</td></tr>
-<tr class="separator:a4770caa1047202a3cd7e02b4eb969b57 inherit pub_methods_classcgv_1_1media_1_1illum_1_1surface__material"><td class="memSeparator" colspan="2">&#160;</td></tr>
+</table><table class="memberdecls">
+<tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="pub-attribs" name="pub-attribs"></a>
+Public Attributes</h2></td></tr>
+<tr class="memitem:a25f95d7367a5ec090a69a0b6047d6b00" id="r_a25f95d7367a5ec090a69a0b6047d6b00"><td class="memItemLeft" align="right" valign="top">std::string&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcgv_1_1media_1_1illum_1_1textured__surface__material.html#a25f95d7367a5ec090a69a0b6047d6b00">name</a> = &quot;default&quot;</td></tr>
+<tr class="memdesc:a25f95d7367a5ec090a69a0b6047d6b00"><td class="mdescLeft">&#160;</td><td class="mdescRight">name of material  <br /></td></tr>
+<tr class="separator:a25f95d7367a5ec090a69a0b6047d6b00"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a4ab85431a239e37924a126f481f14fda" id="r_a4ab85431a239e37924a126f481f14fda"><td class="memItemLeft" align="right" valign="top">bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcgv_1_1media_1_1illum_1_1textured__surface__material.html#a4ab85431a239e37924a126f481f14fda">sRGBA_textures</a> = false</td></tr>
+<tr class="memdesc:a4ab85431a239e37924a126f481f14fda"><td class="mdescLeft">&#160;</td><td class="mdescRight">whether textures are in sRGB format  <br /></td></tr>
+<tr class="separator:a4ab85431a239e37924a126f481f14fda"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ae5ef1a5bb16f232c61829e6dde15fabe" id="r_ae5ef1a5bb16f232c61829e6dde15fabe"><td class="memItemLeft" align="right" valign="top">int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcgv_1_1media_1_1illum_1_1textured__surface__material.html#ae5ef1a5bb16f232c61829e6dde15fabe">diffuse_index</a> = -1</td></tr>
+<tr class="memdesc:ae5ef1a5bb16f232c61829e6dde15fabe"><td class="mdescLeft">&#160;</td><td class="mdescRight">index of image from which diffuse_reflectance should be mapped, -1 corresponds to no mapping  <br /></td></tr>
+<tr class="separator:ae5ef1a5bb16f232c61829e6dde15fabe"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a60489a57762d4f098cdda01f362bd2ae" id="r_a60489a57762d4f098cdda01f362bd2ae"><td class="memItemLeft" align="right" valign="top">int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcgv_1_1media_1_1illum_1_1textured__surface__material.html#a60489a57762d4f098cdda01f362bd2ae">roughness_index</a> = -1</td></tr>
+<tr class="memdesc:a60489a57762d4f098cdda01f362bd2ae"><td class="mdescLeft">&#160;</td><td class="mdescRight">index of image from which roughness should be mapped, -1 corresponds to no mapping  <br /></td></tr>
+<tr class="separator:a60489a57762d4f098cdda01f362bd2ae"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a002fedb701c6cc7b55e54139a9da57a7" id="r_a002fedb701c6cc7b55e54139a9da57a7"><td class="memItemLeft" align="right" valign="top">int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcgv_1_1media_1_1illum_1_1textured__surface__material.html#a002fedb701c6cc7b55e54139a9da57a7">metalness_index</a> = -1</td></tr>
+<tr class="memdesc:a002fedb701c6cc7b55e54139a9da57a7"><td class="mdescLeft">&#160;</td><td class="mdescRight">index of image from which metalness should be mapped, -1 corresponds to no mapping  <br /></td></tr>
+<tr class="separator:a002fedb701c6cc7b55e54139a9da57a7"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:aba25cf261c1c0aac3bfab7b0b58d63af" id="r_aba25cf261c1c0aac3bfab7b0b58d63af"><td class="memItemLeft" align="right" valign="top">int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcgv_1_1media_1_1illum_1_1textured__surface__material.html#aba25cf261c1c0aac3bfab7b0b58d63af">ambient_index</a> = -1</td></tr>
+<tr class="memdesc:aba25cf261c1c0aac3bfab7b0b58d63af"><td class="mdescLeft">&#160;</td><td class="mdescRight">index of image from which ambient_occlusion should be mapped, -1 corresponds to no mapping  <br /></td></tr>
+<tr class="separator:aba25cf261c1c0aac3bfab7b0b58d63af"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ae0e0cc0efca7b7a982f2be3fb4c9cf25" id="r_ae0e0cc0efca7b7a982f2be3fb4c9cf25"><td class="memItemLeft" align="right" valign="top">int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcgv_1_1media_1_1illum_1_1textured__surface__material.html#ae0e0cc0efca7b7a982f2be3fb4c9cf25">emission_index</a> = -1</td></tr>
+<tr class="memdesc:ae0e0cc0efca7b7a982f2be3fb4c9cf25"><td class="mdescLeft">&#160;</td><td class="mdescRight">index of image from which emission should be mapped, -1 corresponds to no mapping  <br /></td></tr>
+<tr class="separator:ae0e0cc0efca7b7a982f2be3fb4c9cf25"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a31e6466d3cb3c6b6d0fb47f3586c9b20" id="r_a31e6466d3cb3c6b6d0fb47f3586c9b20"><td class="memItemLeft" align="right" valign="top">int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcgv_1_1media_1_1illum_1_1textured__surface__material.html#a31e6466d3cb3c6b6d0fb47f3586c9b20">transparency_index</a> = -1</td></tr>
+<tr class="memdesc:a31e6466d3cb3c6b6d0fb47f3586c9b20"><td class="mdescLeft">&#160;</td><td class="mdescRight">index of image from which transparency should be mapped, -1 corresponds to no mapping  <br /></td></tr>
+<tr class="separator:a31e6466d3cb3c6b6d0fb47f3586c9b20"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a1b1369127af64f7a53cb05f0e774fee0" id="r_a1b1369127af64f7a53cb05f0e774fee0"><td class="memItemLeft" align="right" valign="top">int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcgv_1_1media_1_1illum_1_1textured__surface__material.html#a1b1369127af64f7a53cb05f0e774fee0">propagation_slow_down_index</a> = -1</td></tr>
+<tr class="memdesc:a1b1369127af64f7a53cb05f0e774fee0"><td class="mdescLeft">&#160;</td><td class="mdescRight">index of image from which diffuse_reflectance should be mapped, -1 corresponds to no mapping  <br /></td></tr>
+<tr class="separator:a1b1369127af64f7a53cb05f0e774fee0"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a9c267163a03d2572e7e1d32c2feb646e" id="r_a9c267163a03d2572e7e1d32c2feb646e"><td class="memItemLeft" align="right" valign="top">int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcgv_1_1media_1_1illum_1_1textured__surface__material.html#a9c267163a03d2572e7e1d32c2feb646e">specular_index</a> = -1</td></tr>
+<tr class="memdesc:a9c267163a03d2572e7e1d32c2feb646e"><td class="mdescLeft">&#160;</td><td class="mdescRight">index of image from which specular_reflectance should be mapped, -1 corresponds to no mapping  <br /></td></tr>
+<tr class="separator:a9c267163a03d2572e7e1d32c2feb646e"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:aeed533b68c10172086d70578e025ba3f" id="r_aeed533b68c10172086d70578e025ba3f"><td class="memItemLeft" align="right" valign="top">int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcgv_1_1media_1_1illum_1_1textured__surface__material.html#aeed533b68c10172086d70578e025ba3f">normal_index</a> = -1</td></tr>
+<tr class="memdesc:aeed533b68c10172086d70578e025ba3f"><td class="mdescLeft">&#160;</td><td class="mdescRight">index of image from which normals should be mapped, -1 corresponds to no mapping  <br /></td></tr>
+<tr class="separator:aeed533b68c10172086d70578e025ba3f"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ae3be22efb242773e5612b1908fb4995f" id="r_ae3be22efb242773e5612b1908fb4995f"><td class="memItemLeft" align="right" valign="top">int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcgv_1_1media_1_1illum_1_1textured__surface__material.html#ae3be22efb242773e5612b1908fb4995f">bump_index</a> = -1</td></tr>
+<tr class="memdesc:ae3be22efb242773e5612b1908fb4995f"><td class="mdescLeft">&#160;</td><td class="mdescRight">index of image from which bumps should be mapped, -1 corresponds to no mapping  <br /></td></tr>
+<tr class="separator:ae3be22efb242773e5612b1908fb4995f"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:af7808bf0a16619b4c2ca2e0591dee43a" id="r_af7808bf0a16619b4c2ca2e0591dee43a"><td class="memItemLeft" align="right" valign="top">float&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcgv_1_1media_1_1illum_1_1textured__surface__material.html#af7808bf0a16619b4c2ca2e0591dee43a">bump_scale</a> = 0.1f</td></tr>
+<tr class="memdesc:af7808bf0a16619b4c2ca2e0591dee43a"><td class="mdescLeft">&#160;</td><td class="mdescRight">scaling factor for bump map  <br /></td></tr>
+<tr class="separator:af7808bf0a16619b4c2ca2e0591dee43a"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="inherit_header pub_attribs_structcgv_1_1media_1_1illum_1_1surface__material"><td colspan="2" onclick="javascript:toggleInherit('pub_attribs_structcgv_1_1media_1_1illum_1_1surface__material')"><img src="closed.png" alt="-"/>&#160;Public Attributes inherited from <a class="el" href="structcgv_1_1media_1_1illum_1_1surface__material.html">cgv::media::illum::surface_material</a></td></tr>
+<tr class="memitem:a51fca4161b935253a23af6e2e420d9b7 inherit pub_attribs_structcgv_1_1media_1_1illum_1_1surface__material" id="r_a51fca4161b935253a23af6e2e420d9b7"><td class="memItemLeft" align="right" valign="top">BrdfType&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structcgv_1_1media_1_1illum_1_1surface__material.html#a51fca4161b935253a23af6e2e420d9b7">brdf_type</a> = BrdfType(BT_STRAUSS_DIFFUSE + BT_STRAUSS)</td></tr>
+<tr class="memdesc:a51fca4161b935253a23af6e2e420d9b7 inherit pub_attribs_structcgv_1_1media_1_1illum_1_1surface__material"><td class="mdescLeft">&#160;</td><td class="mdescRight">store brdf type, defaults to BT_STRAUSS_DIFFUSE + BT_STRAUSS  <br /></td></tr>
+<tr class="separator:a51fca4161b935253a23af6e2e420d9b7 inherit pub_attribs_structcgv_1_1media_1_1illum_1_1surface__material"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a3ca6ccb522fcfb870792f5c338eb2e43 inherit pub_attribs_structcgv_1_1media_1_1illum_1_1surface__material" id="r_a3ca6ccb522fcfb870792f5c338eb2e43"><td class="memItemLeft" align="right" valign="top"><a class="el" href="classcgv_1_1media_1_1color.html">color_type</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structcgv_1_1media_1_1illum_1_1surface__material.html#a3ca6ccb522fcfb870792f5c338eb2e43">diffuse_reflectance</a> = { 0.5f }</td></tr>
+<tr class="memdesc:a3ca6ccb522fcfb870792f5c338eb2e43 inherit pub_attribs_structcgv_1_1media_1_1illum_1_1surface__material"><td class="mdescLeft">&#160;</td><td class="mdescRight">diffuse reflectance of surface, defaults to 0.5,0.5,0.5  <br /></td></tr>
+<tr class="separator:a3ca6ccb522fcfb870792f5c338eb2e43 inherit pub_attribs_structcgv_1_1media_1_1illum_1_1surface__material"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:abeea888e6dbdf16241235a08f82cdc2e inherit pub_attribs_structcgv_1_1media_1_1illum_1_1surface__material" id="r_abeea888e6dbdf16241235a08f82cdc2e"><td class="memItemLeft" align="right" valign="top">float&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structcgv_1_1media_1_1illum_1_1surface__material.html#abeea888e6dbdf16241235a08f82cdc2e">roughness</a> = 0.5f</td></tr>
+<tr class="memdesc:abeea888e6dbdf16241235a08f82cdc2e inherit pub_attribs_structcgv_1_1media_1_1illum_1_1surface__material"><td class="mdescLeft">&#160;</td><td class="mdescRight">surface roughness in the range [0,1] (1/2 trace of symmetric 2x2 matrix for anisotropic case where directional roughness is represented in the uv-coordinate system of texcoords), defaults to 0.5  <br /></td></tr>
+<tr class="separator:abeea888e6dbdf16241235a08f82cdc2e inherit pub_attribs_structcgv_1_1media_1_1illum_1_1surface__material"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:aa21afe6045ae017791c89530ce3b7e6d inherit pub_attribs_structcgv_1_1media_1_1illum_1_1surface__material" id="r_aa21afe6045ae017791c89530ce3b7e6d"><td class="memItemLeft" align="right" valign="top">float&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structcgv_1_1media_1_1illum_1_1surface__material.html#aa21afe6045ae017791c89530ce3b7e6d">metalness</a> = 0.0f</td></tr>
+<tr class="memdesc:aa21afe6045ae017791c89530ce3b7e6d inherit pub_attribs_structcgv_1_1media_1_1illum_1_1surface__material"><td class="mdescLeft">&#160;</td><td class="mdescRight">metalness of surface, defaults to 0  <br /></td></tr>
+<tr class="separator:aa21afe6045ae017791c89530ce3b7e6d inherit pub_attribs_structcgv_1_1media_1_1illum_1_1surface__material"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ae99c554bb5e900406ea22a44641a04b9 inherit pub_attribs_structcgv_1_1media_1_1illum_1_1surface__material" id="r_ae99c554bb5e900406ea22a44641a04b9"><td class="memItemLeft" align="right" valign="top">float&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structcgv_1_1media_1_1illum_1_1surface__material.html#ae99c554bb5e900406ea22a44641a04b9">ambient_occlusion</a> = 1.0f</td></tr>
+<tr class="memdesc:ae99c554bb5e900406ea22a44641a04b9 inherit pub_attribs_structcgv_1_1media_1_1illum_1_1surface__material"><td class="mdescLeft">&#160;</td><td class="mdescRight">scalar factor to down scale ambient light, defaults to 1  <br /></td></tr>
+<tr class="separator:ae99c554bb5e900406ea22a44641a04b9 inherit pub_attribs_structcgv_1_1media_1_1illum_1_1surface__material"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a603d26b3eb0ff6c65273a333b638822d inherit pub_attribs_structcgv_1_1media_1_1illum_1_1surface__material" id="r_a603d26b3eb0ff6c65273a333b638822d"><td class="memItemLeft" align="right" valign="top"><a class="el" href="classcgv_1_1media_1_1color.html">color_type</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structcgv_1_1media_1_1illum_1_1surface__material.html#a603d26b3eb0ff6c65273a333b638822d">emission</a> = { 0.0f }</td></tr>
+<tr class="memdesc:a603d26b3eb0ff6c65273a333b638822d inherit pub_attribs_structcgv_1_1media_1_1illum_1_1surface__material"><td class="mdescLeft">&#160;</td><td class="mdescRight">emissive color component, defaults to 0,0,0  <br /></td></tr>
+<tr class="separator:a603d26b3eb0ff6c65273a333b638822d inherit pub_attribs_structcgv_1_1media_1_1illum_1_1surface__material"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ab3c0e8e96379fbda089c1f30de223498 inherit pub_attribs_structcgv_1_1media_1_1illum_1_1surface__material" id="r_ab3c0e8e96379fbda089c1f30de223498"><td class="memItemLeft" align="right" valign="top">float&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structcgv_1_1media_1_1illum_1_1surface__material.html#ab3c0e8e96379fbda089c1f30de223498">transparency</a> = 0.0f</td></tr>
+<tr class="memdesc:ab3c0e8e96379fbda089c1f30de223498 inherit pub_attribs_structcgv_1_1media_1_1illum_1_1surface__material"><td class="mdescLeft">&#160;</td><td class="mdescRight">modulation for transparency, defaults to 0  <br /></td></tr>
+<tr class="separator:ab3c0e8e96379fbda089c1f30de223498 inherit pub_attribs_structcgv_1_1media_1_1illum_1_1surface__material"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a91dd38994fcab38d3b9b974af5f888da inherit pub_attribs_structcgv_1_1media_1_1illum_1_1surface__material" id="r_a91dd38994fcab38d3b9b974af5f888da"><td class="memItemLeft" align="right" valign="top">std::complex&lt; float &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structcgv_1_1media_1_1illum_1_1surface__material.html#a91dd38994fcab38d3b9b974af5f888da">propagation_slow_down</a> = { 1.5f, 0.0f }</td></tr>
+<tr class="memdesc:a91dd38994fcab38d3b9b974af5f888da inherit pub_attribs_structcgv_1_1media_1_1illum_1_1surface__material"><td class="mdescLeft">&#160;</td><td class="mdescRight">complex fraction of complex interior over real exterior index of refraction, defaults to 1.5,0  <br /></td></tr>
+<tr class="separator:a91dd38994fcab38d3b9b974af5f888da inherit pub_attribs_structcgv_1_1media_1_1illum_1_1surface__material"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a865250cb2d26cf61c9769cbeb6bf4a44 inherit pub_attribs_structcgv_1_1media_1_1illum_1_1surface__material" id="r_a865250cb2d26cf61c9769cbeb6bf4a44"><td class="memItemLeft" align="right" valign="top">float&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structcgv_1_1media_1_1illum_1_1surface__material.html#a865250cb2d26cf61c9769cbeb6bf4a44">roughness_anisotropy</a> = 0.0f</td></tr>
+<tr class="memdesc:a865250cb2d26cf61c9769cbeb6bf4a44 inherit pub_attribs_structcgv_1_1media_1_1illum_1_1surface__material"><td class="mdescLeft">&#160;</td><td class="mdescRight">difference of roughness matrix eigenvalues in range [0,1] relative to <code>roughness</code>, i.e. lambda_1 - lambda_2 = roughness_anisotropy*roughness, defaults to 0  <br /></td></tr>
+<tr class="separator:a865250cb2d26cf61c9769cbeb6bf4a44 inherit pub_attribs_structcgv_1_1media_1_1illum_1_1surface__material"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a612bd2956c621fa487d9ddc4e37ec686 inherit pub_attribs_structcgv_1_1media_1_1illum_1_1surface__material" id="r_a612bd2956c621fa487d9ddc4e37ec686"><td class="memItemLeft" align="right" valign="top">float&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structcgv_1_1media_1_1illum_1_1surface__material.html#a612bd2956c621fa487d9ddc4e37ec686">roughness_orientation</a> = 0.0f</td></tr>
+<tr class="memdesc:a612bd2956c621fa487d9ddc4e37ec686 inherit pub_attribs_structcgv_1_1media_1_1illum_1_1surface__material"><td class="mdescLeft">&#160;</td><td class="mdescRight">orientation of roughness in range [0,1], where 0 corresponds to u-direction and 0.5 to v direction, defaults to 0  <br /></td></tr>
+<tr class="separator:a612bd2956c621fa487d9ddc4e37ec686 inherit pub_attribs_structcgv_1_1media_1_1illum_1_1surface__material"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a6e8b7cc53c9d7b817569f1ac68fefeaa inherit pub_attribs_structcgv_1_1media_1_1illum_1_1surface__material" id="r_a6e8b7cc53c9d7b817569f1ac68fefeaa"><td class="memItemLeft" align="right" valign="top"><a class="el" href="classcgv_1_1media_1_1color.html">color_type</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structcgv_1_1media_1_1illum_1_1surface__material.html#a6e8b7cc53c9d7b817569f1ac68fefeaa">specular_reflectance</a> = { 1.0f }</td></tr>
+<tr class="memdesc:a6e8b7cc53c9d7b817569f1ac68fefeaa inherit pub_attribs_structcgv_1_1media_1_1illum_1_1surface__material"><td class="mdescLeft">&#160;</td><td class="mdescRight">specular color used to modulate specular reflection component, should be 1,1,1  <br /></td></tr>
+<tr class="separator:a6e8b7cc53c9d7b817569f1ac68fefeaa inherit pub_attribs_structcgv_1_1media_1_1illum_1_1surface__material"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="pro-attribs" name="pro-attribs"></a>
 Protected Attributes</h2></td></tr>
-<tr class="memitem:a25f95d7367a5ec090a69a0b6047d6b00" id="r_a25f95d7367a5ec090a69a0b6047d6b00"><td class="memItemLeft" align="right" valign="top">std::string&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcgv_1_1media_1_1illum_1_1textured__surface__material.html#a25f95d7367a5ec090a69a0b6047d6b00">name</a></td></tr>
-<tr class="memdesc:a25f95d7367a5ec090a69a0b6047d6b00"><td class="mdescLeft">&#160;</td><td class="mdescRight">name of material  <br /></td></tr>
-<tr class="separator:a25f95d7367a5ec090a69a0b6047d6b00"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a4ab85431a239e37924a126f481f14fda" id="r_a4ab85431a239e37924a126f481f14fda"><td class="memItemLeft" align="right" valign="top">bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcgv_1_1media_1_1illum_1_1textured__surface__material.html#a4ab85431a239e37924a126f481f14fda">sRGBA_textures</a></td></tr>
-<tr class="memdesc:a4ab85431a239e37924a126f481f14fda"><td class="mdescLeft">&#160;</td><td class="mdescRight">whether textures are in sRGB format  <br /></td></tr>
-<tr class="separator:a4ab85431a239e37924a126f481f14fda"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a1878908010344fd8c9388b89b73e7479" id="r_a1878908010344fd8c9388b89b73e7479"><td class="memItemLeft" align="right" valign="top">std::vector&lt; std::string &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcgv_1_1media_1_1illum_1_1textured__surface__material.html#a1878908010344fd8c9388b89b73e7479">image_file_names</a></td></tr>
 <tr class="memdesc:a1878908010344fd8c9388b89b73e7479"><td class="mdescLeft">&#160;</td><td class="mdescRight">vector of image file names  <br /></td></tr>
 <tr class="separator:a1878908010344fd8c9388b89b73e7479"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:ae5ef1a5bb16f232c61829e6dde15fabe" id="r_ae5ef1a5bb16f232c61829e6dde15fabe"><td class="memItemLeft" align="right" valign="top">int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcgv_1_1media_1_1illum_1_1textured__surface__material.html#ae5ef1a5bb16f232c61829e6dde15fabe">diffuse_index</a></td></tr>
-<tr class="memdesc:ae5ef1a5bb16f232c61829e6dde15fabe"><td class="mdescLeft">&#160;</td><td class="mdescRight">index of image from which diffuse_reflectance should be mapped, -1 corresponds to no mapping  <br /></td></tr>
-<tr class="separator:ae5ef1a5bb16f232c61829e6dde15fabe"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a60489a57762d4f098cdda01f362bd2ae" id="r_a60489a57762d4f098cdda01f362bd2ae"><td class="memItemLeft" align="right" valign="top">int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcgv_1_1media_1_1illum_1_1textured__surface__material.html#a60489a57762d4f098cdda01f362bd2ae">roughness_index</a></td></tr>
-<tr class="memdesc:a60489a57762d4f098cdda01f362bd2ae"><td class="mdescLeft">&#160;</td><td class="mdescRight">index of image from which roughness should be mapped, -1 corresponds to no mapping  <br /></td></tr>
-<tr class="separator:a60489a57762d4f098cdda01f362bd2ae"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a002fedb701c6cc7b55e54139a9da57a7" id="r_a002fedb701c6cc7b55e54139a9da57a7"><td class="memItemLeft" align="right" valign="top">int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcgv_1_1media_1_1illum_1_1textured__surface__material.html#a002fedb701c6cc7b55e54139a9da57a7">metalness_index</a></td></tr>
-<tr class="memdesc:a002fedb701c6cc7b55e54139a9da57a7"><td class="mdescLeft">&#160;</td><td class="mdescRight">index of image from which metalness should be mapped, -1 corresponds to no mapping  <br /></td></tr>
-<tr class="separator:a002fedb701c6cc7b55e54139a9da57a7"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:aba25cf261c1c0aac3bfab7b0b58d63af" id="r_aba25cf261c1c0aac3bfab7b0b58d63af"><td class="memItemLeft" align="right" valign="top">int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcgv_1_1media_1_1illum_1_1textured__surface__material.html#aba25cf261c1c0aac3bfab7b0b58d63af">ambient_index</a></td></tr>
-<tr class="memdesc:aba25cf261c1c0aac3bfab7b0b58d63af"><td class="mdescLeft">&#160;</td><td class="mdescRight">index of image from which ambient_occlusion should be mapped, -1 corresponds to no mapping  <br /></td></tr>
-<tr class="separator:aba25cf261c1c0aac3bfab7b0b58d63af"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:ae0e0cc0efca7b7a982f2be3fb4c9cf25" id="r_ae0e0cc0efca7b7a982f2be3fb4c9cf25"><td class="memItemLeft" align="right" valign="top">int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcgv_1_1media_1_1illum_1_1textured__surface__material.html#ae0e0cc0efca7b7a982f2be3fb4c9cf25">emission_index</a></td></tr>
-<tr class="memdesc:ae0e0cc0efca7b7a982f2be3fb4c9cf25"><td class="mdescLeft">&#160;</td><td class="mdescRight">index of image from which emission should be mapped, -1 corresponds to no mapping  <br /></td></tr>
-<tr class="separator:ae0e0cc0efca7b7a982f2be3fb4c9cf25"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a31e6466d3cb3c6b6d0fb47f3586c9b20" id="r_a31e6466d3cb3c6b6d0fb47f3586c9b20"><td class="memItemLeft" align="right" valign="top">int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcgv_1_1media_1_1illum_1_1textured__surface__material.html#a31e6466d3cb3c6b6d0fb47f3586c9b20">transparency_index</a></td></tr>
-<tr class="memdesc:a31e6466d3cb3c6b6d0fb47f3586c9b20"><td class="mdescLeft">&#160;</td><td class="mdescRight">index of image from which transparency should be mapped, -1 corresponds to no mapping  <br /></td></tr>
-<tr class="separator:a31e6466d3cb3c6b6d0fb47f3586c9b20"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a1b1369127af64f7a53cb05f0e774fee0" id="r_a1b1369127af64f7a53cb05f0e774fee0"><td class="memItemLeft" align="right" valign="top">int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcgv_1_1media_1_1illum_1_1textured__surface__material.html#a1b1369127af64f7a53cb05f0e774fee0">propagation_slow_down_index</a></td></tr>
-<tr class="memdesc:a1b1369127af64f7a53cb05f0e774fee0"><td class="mdescLeft">&#160;</td><td class="mdescRight">index of image from which diffuse_reflectance should be mapped, -1 corresponds to no mapping  <br /></td></tr>
-<tr class="separator:a1b1369127af64f7a53cb05f0e774fee0"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a9c267163a03d2572e7e1d32c2feb646e" id="r_a9c267163a03d2572e7e1d32c2feb646e"><td class="memItemLeft" align="right" valign="top">int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcgv_1_1media_1_1illum_1_1textured__surface__material.html#a9c267163a03d2572e7e1d32c2feb646e">specular_index</a></td></tr>
-<tr class="memdesc:a9c267163a03d2572e7e1d32c2feb646e"><td class="mdescLeft">&#160;</td><td class="mdescRight">index of image from which specular_reflectance should be mapped, -1 corresponds to no mapping  <br /></td></tr>
-<tr class="separator:a9c267163a03d2572e7e1d32c2feb646e"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:aeed533b68c10172086d70578e025ba3f" id="r_aeed533b68c10172086d70578e025ba3f"><td class="memItemLeft" align="right" valign="top">int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcgv_1_1media_1_1illum_1_1textured__surface__material.html#aeed533b68c10172086d70578e025ba3f">normal_index</a></td></tr>
-<tr class="memdesc:aeed533b68c10172086d70578e025ba3f"><td class="mdescLeft">&#160;</td><td class="mdescRight">index of image from which normals should be mapped, -1 corresponds to no mapping  <br /></td></tr>
-<tr class="separator:aeed533b68c10172086d70578e025ba3f"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:ae3be22efb242773e5612b1908fb4995f" id="r_ae3be22efb242773e5612b1908fb4995f"><td class="memItemLeft" align="right" valign="top">int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcgv_1_1media_1_1illum_1_1textured__surface__material.html#ae3be22efb242773e5612b1908fb4995f">bump_index</a></td></tr>
-<tr class="memdesc:ae3be22efb242773e5612b1908fb4995f"><td class="mdescLeft">&#160;</td><td class="mdescRight">index of image from which bumps should be mapped, -1 corresponds to no mapping  <br /></td></tr>
-<tr class="separator:ae3be22efb242773e5612b1908fb4995f"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:af7808bf0a16619b4c2ca2e0591dee43a" id="r_af7808bf0a16619b4c2ca2e0591dee43a"><td class="memItemLeft" align="right" valign="top">float&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcgv_1_1media_1_1illum_1_1textured__surface__material.html#af7808bf0a16619b4c2ca2e0591dee43a">bump_scale</a></td></tr>
-<tr class="memdesc:af7808bf0a16619b4c2ca2e0591dee43a"><td class="mdescLeft">&#160;</td><td class="mdescRight">scaling factor for bump map  <br /></td></tr>
-<tr class="separator:af7808bf0a16619b4c2ca2e0591dee43a"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="inherit_header pro_attribs_classcgv_1_1media_1_1illum_1_1surface__material"><td colspan="2" onclick="javascript:toggleInherit('pro_attribs_classcgv_1_1media_1_1illum_1_1surface__material')"><img src="closed.png" alt="-"/>&#160;Protected Attributes inherited from <a class="el" href="classcgv_1_1media_1_1illum_1_1surface__material.html">cgv::media::illum::surface_material</a></td></tr>
-<tr class="memitem:a51fca4161b935253a23af6e2e420d9b7 inherit pro_attribs_classcgv_1_1media_1_1illum_1_1surface__material" id="r_a51fca4161b935253a23af6e2e420d9b7"><td class="memItemLeft" align="right" valign="top">BrdfType&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcgv_1_1media_1_1illum_1_1surface__material.html#a51fca4161b935253a23af6e2e420d9b7">brdf_type</a></td></tr>
-<tr class="memdesc:a51fca4161b935253a23af6e2e420d9b7 inherit pro_attribs_classcgv_1_1media_1_1illum_1_1surface__material"><td class="mdescLeft">&#160;</td><td class="mdescRight">store brdf type, defaults to BT_COOK_TORRANCE  <br /></td></tr>
-<tr class="separator:a51fca4161b935253a23af6e2e420d9b7 inherit pro_attribs_classcgv_1_1media_1_1illum_1_1surface__material"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a3ca6ccb522fcfb870792f5c338eb2e43 inherit pro_attribs_classcgv_1_1media_1_1illum_1_1surface__material" id="r_a3ca6ccb522fcfb870792f5c338eb2e43"><td class="memItemLeft" align="right" valign="top"><a class="el" href="classcgv_1_1media_1_1illum_1_1surface__material.html#a3c67316dfc8d7a3f18d1e6802b1a5a34">color_type</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcgv_1_1media_1_1illum_1_1surface__material.html#a3ca6ccb522fcfb870792f5c338eb2e43">diffuse_reflectance</a></td></tr>
-<tr class="memdesc:a3ca6ccb522fcfb870792f5c338eb2e43 inherit pro_attribs_classcgv_1_1media_1_1illum_1_1surface__material"><td class="mdescLeft">&#160;</td><td class="mdescRight">diffuse reflectance of surface, defaults to 0.5,0.5,0.5  <br /></td></tr>
-<tr class="separator:a3ca6ccb522fcfb870792f5c338eb2e43 inherit pro_attribs_classcgv_1_1media_1_1illum_1_1surface__material"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:abeea888e6dbdf16241235a08f82cdc2e inherit pro_attribs_classcgv_1_1media_1_1illum_1_1surface__material" id="r_abeea888e6dbdf16241235a08f82cdc2e"><td class="memItemLeft" align="right" valign="top">float&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcgv_1_1media_1_1illum_1_1surface__material.html#abeea888e6dbdf16241235a08f82cdc2e">roughness</a></td></tr>
-<tr class="memdesc:abeea888e6dbdf16241235a08f82cdc2e inherit pro_attribs_classcgv_1_1media_1_1illum_1_1surface__material"><td class="mdescLeft">&#160;</td><td class="mdescRight">surface roughness in the range [0,1] (1/2 trace of symmetric 2x2 matrix for anisotropic case where directional roughness is represented in the uv-coordinate system of texcoords), defaults to 0.5  <br /></td></tr>
-<tr class="separator:abeea888e6dbdf16241235a08f82cdc2e inherit pro_attribs_classcgv_1_1media_1_1illum_1_1surface__material"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:aa21afe6045ae017791c89530ce3b7e6d inherit pro_attribs_classcgv_1_1media_1_1illum_1_1surface__material" id="r_aa21afe6045ae017791c89530ce3b7e6d"><td class="memItemLeft" align="right" valign="top">float&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcgv_1_1media_1_1illum_1_1surface__material.html#aa21afe6045ae017791c89530ce3b7e6d">metalness</a></td></tr>
-<tr class="memdesc:aa21afe6045ae017791c89530ce3b7e6d inherit pro_attribs_classcgv_1_1media_1_1illum_1_1surface__material"><td class="mdescLeft">&#160;</td><td class="mdescRight">metalness of surface  <br /></td></tr>
-<tr class="separator:aa21afe6045ae017791c89530ce3b7e6d inherit pro_attribs_classcgv_1_1media_1_1illum_1_1surface__material"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:ae99c554bb5e900406ea22a44641a04b9 inherit pro_attribs_classcgv_1_1media_1_1illum_1_1surface__material" id="r_ae99c554bb5e900406ea22a44641a04b9"><td class="memItemLeft" align="right" valign="top">float&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcgv_1_1media_1_1illum_1_1surface__material.html#ae99c554bb5e900406ea22a44641a04b9">ambient_occlusion</a></td></tr>
-<tr class="memdesc:ae99c554bb5e900406ea22a44641a04b9 inherit pro_attribs_classcgv_1_1media_1_1illum_1_1surface__material"><td class="mdescLeft">&#160;</td><td class="mdescRight">scalar factor to down scale ambient light, defaults to 1  <br /></td></tr>
-<tr class="separator:ae99c554bb5e900406ea22a44641a04b9 inherit pro_attribs_classcgv_1_1media_1_1illum_1_1surface__material"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a603d26b3eb0ff6c65273a333b638822d inherit pro_attribs_classcgv_1_1media_1_1illum_1_1surface__material" id="r_a603d26b3eb0ff6c65273a333b638822d"><td class="memItemLeft" align="right" valign="top"><a class="el" href="classcgv_1_1media_1_1illum_1_1surface__material.html#a3c67316dfc8d7a3f18d1e6802b1a5a34">color_type</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcgv_1_1media_1_1illum_1_1surface__material.html#a603d26b3eb0ff6c65273a333b638822d">emission</a></td></tr>
-<tr class="memdesc:a603d26b3eb0ff6c65273a333b638822d inherit pro_attribs_classcgv_1_1media_1_1illum_1_1surface__material"><td class="mdescLeft">&#160;</td><td class="mdescRight">emissive color component, defaults to 0,0,0  <br /></td></tr>
-<tr class="separator:a603d26b3eb0ff6c65273a333b638822d inherit pro_attribs_classcgv_1_1media_1_1illum_1_1surface__material"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:ab3c0e8e96379fbda089c1f30de223498 inherit pro_attribs_classcgv_1_1media_1_1illum_1_1surface__material" id="r_ab3c0e8e96379fbda089c1f30de223498"><td class="memItemLeft" align="right" valign="top">float&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcgv_1_1media_1_1illum_1_1surface__material.html#ab3c0e8e96379fbda089c1f30de223498">transparency</a></td></tr>
-<tr class="memdesc:ab3c0e8e96379fbda089c1f30de223498 inherit pro_attribs_classcgv_1_1media_1_1illum_1_1surface__material"><td class="mdescLeft">&#160;</td><td class="mdescRight">modulation for transparency, defaults to 0  <br /></td></tr>
-<tr class="separator:ab3c0e8e96379fbda089c1f30de223498 inherit pro_attribs_classcgv_1_1media_1_1illum_1_1surface__material"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a91dd38994fcab38d3b9b974af5f888da inherit pro_attribs_classcgv_1_1media_1_1illum_1_1surface__material" id="r_a91dd38994fcab38d3b9b974af5f888da"><td class="memItemLeft" align="right" valign="top">std::complex&lt; float &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcgv_1_1media_1_1illum_1_1surface__material.html#a91dd38994fcab38d3b9b974af5f888da">propagation_slow_down</a></td></tr>
-<tr class="memdesc:a91dd38994fcab38d3b9b974af5f888da inherit pro_attribs_classcgv_1_1media_1_1illum_1_1surface__material"><td class="mdescLeft">&#160;</td><td class="mdescRight">complex fraction of complex interior over real exterior index of refraction, defaults to 1.5,0  <br /></td></tr>
-<tr class="separator:a91dd38994fcab38d3b9b974af5f888da inherit pro_attribs_classcgv_1_1media_1_1illum_1_1surface__material"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a865250cb2d26cf61c9769cbeb6bf4a44 inherit pro_attribs_classcgv_1_1media_1_1illum_1_1surface__material" id="r_a865250cb2d26cf61c9769cbeb6bf4a44"><td class="memItemLeft" align="right" valign="top">float&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcgv_1_1media_1_1illum_1_1surface__material.html#a865250cb2d26cf61c9769cbeb6bf4a44">roughness_anisotropy</a></td></tr>
-<tr class="memdesc:a865250cb2d26cf61c9769cbeb6bf4a44 inherit pro_attribs_classcgv_1_1media_1_1illum_1_1surface__material"><td class="mdescLeft">&#160;</td><td class="mdescRight">difference of roughness matrix eigenvalues in range [0,1] relative to <code>roughness</code>, i.e. lambda_1 - lambda_2 = roughness_anisotropy*roughness, defaults to 0  <br /></td></tr>
-<tr class="separator:a865250cb2d26cf61c9769cbeb6bf4a44 inherit pro_attribs_classcgv_1_1media_1_1illum_1_1surface__material"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a612bd2956c621fa487d9ddc4e37ec686 inherit pro_attribs_classcgv_1_1media_1_1illum_1_1surface__material" id="r_a612bd2956c621fa487d9ddc4e37ec686"><td class="memItemLeft" align="right" valign="top">float&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcgv_1_1media_1_1illum_1_1surface__material.html#a612bd2956c621fa487d9ddc4e37ec686">roughness_orientation</a></td></tr>
-<tr class="memdesc:a612bd2956c621fa487d9ddc4e37ec686 inherit pro_attribs_classcgv_1_1media_1_1illum_1_1surface__material"><td class="mdescLeft">&#160;</td><td class="mdescRight">orientation of roughness in range [0,1], where 0 corresponds to u-direction and 0.5 to v direction, defaults to 0  <br /></td></tr>
-<tr class="separator:a612bd2956c621fa487d9ddc4e37ec686 inherit pro_attribs_classcgv_1_1media_1_1illum_1_1surface__material"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a6e8b7cc53c9d7b817569f1ac68fefeaa inherit pro_attribs_classcgv_1_1media_1_1illum_1_1surface__material" id="r_a6e8b7cc53c9d7b817569f1ac68fefeaa"><td class="memItemLeft" align="right" valign="top"><a class="el" href="classcgv_1_1media_1_1illum_1_1surface__material.html#a3c67316dfc8d7a3f18d1e6802b1a5a34">color_type</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcgv_1_1media_1_1illum_1_1surface__material.html#a6e8b7cc53c9d7b817569f1ac68fefeaa">specular_reflectance</a></td></tr>
-<tr class="memdesc:a6e8b7cc53c9d7b817569f1ac68fefeaa inherit pro_attribs_classcgv_1_1media_1_1illum_1_1surface__material"><td class="mdescLeft">&#160;</td><td class="mdescRight">specular color used to modulate specular reflection component, should be 1,1,1  <br /></td></tr>
-<tr class="separator:a6e8b7cc53c9d7b817569f1ac68fefeaa inherit pro_attribs_classcgv_1_1media_1_1illum_1_1surface__material"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="inherited" name="inherited"></a>
 Additional Inherited Members</h2></td></tr>
-<tr class="inherit_header pub_types_classcgv_1_1media_1_1illum_1_1surface__material"><td colspan="2" onclick="javascript:toggleInherit('pub_types_classcgv_1_1media_1_1illum_1_1surface__material')"><img src="closed.png" alt="-"/>&#160;Public Types inherited from <a class="el" href="classcgv_1_1media_1_1illum_1_1surface__material.html">cgv::media::illum::surface_material</a></td></tr>
-<tr class="memitem:a3c67316dfc8d7a3f18d1e6802b1a5a34 inherit pub_types_classcgv_1_1media_1_1illum_1_1surface__material" id="r_a3c67316dfc8d7a3f18d1e6802b1a5a34"><td class="memItemLeft" align="right" valign="top">typedef <a class="el" href="classcgv_1_1media_1_1color.html">color</a>&lt; float, RGB &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcgv_1_1media_1_1illum_1_1surface__material.html#a3c67316dfc8d7a3f18d1e6802b1a5a34">color_type</a></td></tr>
-<tr class="memdesc:a3c67316dfc8d7a3f18d1e6802b1a5a34 inherit pub_types_classcgv_1_1media_1_1illum_1_1surface__material"><td class="mdescLeft">&#160;</td><td class="mdescRight">used color type  <br /></td></tr>
-<tr class="separator:a3c67316dfc8d7a3f18d1e6802b1a5a34 inherit pub_types_classcgv_1_1media_1_1illum_1_1surface__material"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="inherit_header pub_types_structcgv_1_1media_1_1illum_1_1surface__material"><td colspan="2" onclick="javascript:toggleInherit('pub_types_structcgv_1_1media_1_1illum_1_1surface__material')"><img src="closed.png" alt="-"/>&#160;Public Types inherited from <a class="el" href="structcgv_1_1media_1_1illum_1_1surface__material.html">cgv::media::illum::surface_material</a></td></tr>
+<tr class="memitem:a5d2fc91af919a31226664c7d7421e562 inherit pub_types_structcgv_1_1media_1_1illum_1_1surface__material" id="r_a5d2fc91af919a31226664c7d7421e562"><td class="memItemLeft" align="right" valign="top">using&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structcgv_1_1media_1_1illum_1_1surface__material.html#a5d2fc91af919a31226664c7d7421e562">color_type</a> = <a class="el" href="namespacecgv.html#a465f589beeb5e4e76eb2db8d1f6057c1">cgv::rgb</a></td></tr>
+<tr class="separator:a5d2fc91af919a31226664c7d7421e562 inherit pub_types_structcgv_1_1media_1_1illum_1_1surface__material"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
 <a name="details" id="details"></a><h2 class="groupheader">Detailed Description</h2>
-<div class="textblock"><p>simple class to hold the material properties of a phong material </p>
+<div class="textblock"><p>Stores properties of a surface material with support for texturing. </p>
 
 <p class="definition">Definition at line <a class="el" href="textured__surface__material_8h_source.html#l00014">14</a> of file <a class="el" href="textured__surface__material_8h_source.html">textured_surface_material.h</a>.</p>
 </div><h2 class="groupheader">Constructor &amp; Destructor Documentation</h2>
-<a id="a1e42393c56fa175158b2f2a98fa538cd" name="a1e42393c56fa175158b2f2a98fa538cd"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a1e42393c56fa175158b2f2a98fa538cd">&#9670;&#160;</a></span>textured_surface_material() <span class="overload">[1/2]</span></h2>
+<a id="ac1ad32a36f1ff7f2e1973ae1936c5d1d" name="ac1ad32a36f1ff7f2e1973ae1936c5d1d"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#ac1ad32a36f1ff7f2e1973ae1936c5d1d">&#9670;&#160;</a></span>textured_surface_material() <span class="overload">[1/2]</span></h2>
 
 <div class="memitem">
 <div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
       <table class="memname">
         <tr>
           <td class="memname">cgv::media::illum::textured_surface_material::textured_surface_material </td>
           <td>(</td>
-          <td class="paramtype">const std::string &amp;&#160;</td>
-          <td class="paramname"><em>_name</em> = <code>&quot;default&quot;</code>, </td>
-        </tr>
-        <tr>
-          <td class="paramkey"></td>
+          <td class="paramname"></td><td>)</td>
           <td></td>
-          <td class="paramtype">BrdfType&#160;</td>
-          <td class="paramname"><em>_brdf_type</em> = <code>BrdfType(BT_STRAUSS_DIFFUSE&#160;+&#160;BT_STRAUSS)</code>, </td>
-        </tr>
-        <tr>
-          <td class="paramkey"></td>
-          <td></td>
-          <td class="paramtype"><a class="el" href="classcgv_1_1media_1_1illum_1_1surface__material.html#a3c67316dfc8d7a3f18d1e6802b1a5a34">color_type</a>&#160;</td>
-          <td class="paramname"><em>_diffuse_reflectance</em> = <code>0.5f</code>, </td>
-        </tr>
-        <tr>
-          <td class="paramkey"></td>
-          <td></td>
-          <td class="paramtype">float&#160;</td>
-          <td class="paramname"><em>_roughness</em> = <code>0.5f</code>, </td>
-        </tr>
-        <tr>
-          <td class="paramkey"></td>
-          <td></td>
-          <td class="paramtype">float&#160;</td>
-          <td class="paramname"><em>_metalness</em> = <code>0.0f</code>, </td>
-        </tr>
-        <tr>
-          <td class="paramkey"></td>
-          <td></td>
-          <td class="paramtype">float&#160;</td>
-          <td class="paramname"><em>_ambient_occlusion</em> = <code>1.0f</code>, </td>
-        </tr>
-        <tr>
-          <td class="paramkey"></td>
-          <td></td>
-          <td class="paramtype"><a class="el" href="classcgv_1_1media_1_1illum_1_1surface__material.html#a3c67316dfc8d7a3f18d1e6802b1a5a34">color_type</a>&#160;</td>
-          <td class="paramname"><em>_emission</em> = <code><a class="el" href="classcgv_1_1media_1_1illum_1_1surface__material.html#a3c67316dfc8d7a3f18d1e6802b1a5a34">color_type</a>(0,&#160;0,&#160;0)</code>, </td>
-        </tr>
-        <tr>
-          <td class="paramkey"></td>
-          <td></td>
-          <td class="paramtype">float&#160;</td>
-          <td class="paramname"><em>_transparency</em> = <code>0.0f</code>, </td>
-        </tr>
-        <tr>
-          <td class="paramkey"></td>
-          <td></td>
-          <td class="paramtype">const std::complex&lt; float &gt; &amp;&#160;</td>
-          <td class="paramname"><em>_propagation_slow_down</em> = <code>std::complex&lt;float&gt;(1.5f,&#160;0.0f)</code>, </td>
-        </tr>
-        <tr>
-          <td class="paramkey"></td>
-          <td></td>
-          <td class="paramtype">float&#160;</td>
-          <td class="paramname"><em>_roughness_anisotropy</em> = <code>0.0f</code>, </td>
-        </tr>
-        <tr>
-          <td class="paramkey"></td>
-          <td></td>
-          <td class="paramtype">float&#160;</td>
-          <td class="paramname"><em>_roughness_orientation</em> = <code>0.0f</code>, </td>
-        </tr>
-        <tr>
-          <td class="paramkey"></td>
-          <td></td>
-          <td class="paramtype"><a class="el" href="classcgv_1_1media_1_1illum_1_1surface__material.html#a3c67316dfc8d7a3f18d1e6802b1a5a34">color_type</a>&#160;</td>
-          <td class="paramname"><em>_specular_reflectance</em> = <code><a class="el" href="classcgv_1_1media_1_1illum_1_1surface__material.html#a3c67316dfc8d7a3f18d1e6802b1a5a34">color_type</a>(1,&#160;1,&#160;1)</code>, </td>
-        </tr>
-        <tr>
-          <td class="paramkey"></td>
-          <td></td>
-          <td class="paramtype">float&#160;</td>
-          <td class="paramname"><em>_bump_scale</em> = <code>0.1f</code>&#160;</td>
-        </tr>
-        <tr>
-          <td></td>
-          <td>)</td>
-          <td></td><td></td>
         </tr>
       </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">inline</span></span>  </td>
+  </tr>
+</table>
 </div><div class="memdoc">
 
-<p>define default material </p>
+<p>construct using default values </p>
 
-<p class="definition">Definition at line <a class="el" href="textured__surface__material_8cxx_source.html#l00010">10</a> of file <a class="el" href="textured__surface__material_8cxx_source.html">textured_surface_material.cxx</a>.</p>
-
-<p class="reference">References <a class="el" href="textured__surface__material_8h_source.html#l00035">ambient_index</a>, <a class="el" href="textured__surface__material_8h_source.html#l00049">bump_index</a>, <a class="el" href="textured__surface__material_8h_source.html#l00024">diffuse_index</a>, <a class="el" href="textured__surface__material_8h_source.html#l00037">emission_index</a>, <a class="el" href="textured__surface__material_8h_source.html#l00032">metalness_index</a>, <a class="el" href="textured__surface__material_8h_source.html#l00046">normal_index</a>, <a class="el" href="textured__surface__material_8h_source.html#l00042">propagation_slow_down_index</a>, <a class="el" href="textured__surface__material_8h_source.html#l00028">roughness_index</a>, <a class="el" href="textured__surface__material_8h_source.html#l00044">specular_index</a>, <a class="el" href="textured__surface__material_8h_source.html#l00020">sRGBA_textures</a>, and <a class="el" href="textured__surface__material_8h_source.html#l00040">transparency_index</a>.</p>
+<p class="definition">Definition at line <a class="el" href="textured__surface__material_8h_source.html#l00052">52</a> of file <a class="el" href="textured__surface__material_8h_source.html">textured_surface_material.h</a>.</p>
 
 </div>
 </div>
@@ -490,18 +271,18 @@ Additional Inherited Members</h2></td></tr>
         <tr>
           <td class="memname">cgv::media::illum::textured_surface_material::textured_surface_material </td>
           <td>(</td>
-          <td class="paramtype">const <a class="el" href="classcgv_1_1media_1_1illum_1_1obj__material.html">obj_material</a> &amp;&#160;</td>
+          <td class="paramtype">const <a class="el" href="structcgv_1_1media_1_1illum_1_1obj__material.html">obj_material</a> &amp;&#160;</td>
           <td class="paramname"><em>obj_mat</em></td><td>)</td>
           <td></td>
         </tr>
       </table>
 </div><div class="memdoc">
 
-<p>convert obj material </p>
+<p>construct from obj material </p>
 
-<p class="definition">Definition at line <a class="el" href="textured__surface__material_8cxx_source.html#l00045">45</a> of file <a class="el" href="textured__surface__material_8cxx_source.html">textured_surface_material.cxx</a>.</p>
+<p class="definition">Definition at line <a class="el" href="textured__surface__material_8cxx_source.html#l00009">9</a> of file <a class="el" href="textured__surface__material_8cxx_source.html">textured_surface_material.cxx</a>.</p>
 
-<p class="reference">References <a class="el" href="textured__surface__material_8cxx_source.html#l00104">add_image_file()</a>, <a class="el" href="textured__surface__material_8h_source.html#l00035">ambient_index</a>, <a class="el" href="textured__surface__material_8h_source.html#l00049">bump_index</a>, <a class="el" href="textured__surface__material_8h_source.html#l00024">diffuse_index</a>, <a class="el" href="textured__surface__material_8h_source.html#l00037">emission_index</a>, <a class="el" href="obj__material_8h_source.html#l00060">cgv::media::illum::obj_material::get_ambient_texture_name()</a>, <a class="el" href="obj__material_8h_source.html#l00096">cgv::media::illum::obj_material::get_bump_scale()</a>, <a class="el" href="obj__material_8h_source.html#l00090">cgv::media::illum::obj_material::get_bump_texture_name()</a>, <a class="el" href="obj__material_8h_source.html#l00066">cgv::media::illum::obj_material::get_diffuse_texture_name()</a>, <a class="el" href="obj__material_8h_source.html#l00084">cgv::media::illum::obj_material::get_emission_texture_name()</a>, <a class="el" href="obj__material_8h_source.html#l00054">cgv::media::illum::obj_material::get_name()</a>, <a class="el" href="obj__material_8h_source.html#l00048">cgv::media::illum::obj_material::get_opacity()</a>, <a class="el" href="obj__material_8h_source.html#l00072">cgv::media::illum::obj_material::get_opacity_texture_name()</a>, <a class="el" href="obj__material_8h_source.html#l00078">cgv::media::illum::obj_material::get_specular_texture_name()</a>, <a class="el" href="textured__surface__material_8h_source.html#l00032">metalness_index</a>, <a class="el" href="textured__surface__material_8h_source.html#l00046">normal_index</a>, <a class="el" href="textured__surface__material_8h_source.html#l00042">propagation_slow_down_index</a>, <a class="el" href="textured__surface__material_8h_source.html#l00028">roughness_index</a>, <a class="el" href="textured__surface__material_8h_source.html#l00133">set_bump_scale()</a>, <a class="el" href="textured__surface__material_8h_source.html#l00072">set_name()</a>, <a class="el" href="textured__surface__material_8h_source.html#l00044">specular_index</a>, <a class="el" href="textured__surface__material_8h_source.html#l00020">sRGBA_textures</a>, and <a class="el" href="textured__surface__material_8h_source.html#l00040">transparency_index</a>.</p>
+<p class="reference">References <a class="el" href="textured__surface__material_8cxx_source.html#l00044">add_image_file()</a>, <a class="el" href="phong__material_8h_source.html#l00016">cgv::media::illum::phong_material::ambient</a>, <a class="el" href="textured__surface__material_8h_source.html#l00033">ambient_index</a>, <a class="el" href="surface__material_8h_source.html#l00036">cgv::media::illum::surface_material::ambient_occlusion</a>, <a class="el" href="obj__material_8h_source.html#l00029">cgv::media::illum::obj_material::ambient_texture_name</a>, <a class="el" href="surface__material_8h_source.html#l00028">cgv::media::illum::surface_material::brdf_type</a>, <a class="el" href="textured__surface__material_8h_source.html#l00047">bump_index</a>, <a class="el" href="obj__material_8h_source.html#l00039">cgv::media::illum::obj_material::bump_scale</a>, <a class="el" href="textured__surface__material_8h_source.html#l00049">bump_scale</a>, <a class="el" href="obj__material_8h_source.html#l00041">cgv::media::illum::obj_material::bump_texture_name</a>, <a class="el" href="phong__material_8h_source.html#l00018">cgv::media::illum::phong_material::diffuse</a>, <a class="el" href="textured__surface__material_8h_source.html#l00022">diffuse_index</a>, <a class="el" href="surface__material_8h_source.html#l00030">cgv::media::illum::surface_material::diffuse_reflectance</a>, <a class="el" href="obj__material_8h_source.html#l00031">cgv::media::illum::obj_material::diffuse_texture_name</a>, <a class="el" href="phong__material_8h_source.html#l00022">cgv::media::illum::phong_material::emission</a>, <a class="el" href="surface__material_8h_source.html#l00038">cgv::media::illum::surface_material::emission</a>, <a class="el" href="textured__surface__material_8h_source.html#l00035">emission_index</a>, <a class="el" href="obj__material_8h_source.html#l00037">cgv::media::illum::obj_material::emission_texture_name</a>, <a class="el" href="obj__material_8h_source.html#l00025">cgv::media::illum::obj_material::name</a>, <a class="el" href="textured__surface__material_8h_source.html#l00018">name</a>, <a class="el" href="obj__material_8h_source.html#l00027">cgv::media::illum::obj_material::opacity</a>, <a class="el" href="obj__material_8h_source.html#l00033">cgv::media::illum::obj_material::opacity_texture_name</a>, <a class="el" href="surface__material_8h_source.html#l00032">cgv::media::illum::surface_material::roughness</a>, <a class="el" href="phong__material_8h_source.html#l00024">cgv::media::illum::phong_material::shininess</a>, <a class="el" href="phong__material_8h_source.html#l00020">cgv::media::illum::phong_material::specular</a>, <a class="el" href="textured__surface__material_8h_source.html#l00042">specular_index</a>, <a class="el" href="surface__material_8h_source.html#l00048">cgv::media::illum::surface_material::specular_reflectance</a>, <a class="el" href="obj__material_8h_source.html#l00035">cgv::media::illum::obj_material::specular_texture_name</a>, <a class="el" href="surface__material_8h_source.html#l00040">cgv::media::illum::surface_material::transparency</a>, and <a class="el" href="textured__surface__material_8h_source.html#l00038">transparency_index</a>.</p>
 
 </div>
 </div>
@@ -524,148 +305,11 @@ Additional Inherited Members</h2></td></tr>
 
 <p>add a new image and return its index </p>
 
-<p class="definition">Definition at line <a class="el" href="textured__surface__material_8cxx_source.html#l00104">104</a> of file <a class="el" href="textured__surface__material_8cxx_source.html">textured_surface_material.cxx</a>.</p>
+<p class="definition">Definition at line <a class="el" href="textured__surface__material_8cxx_source.html#l00044">44</a> of file <a class="el" href="textured__surface__material_8cxx_source.html">textured_surface_material.cxx</a>.</p>
 
-<p class="reference">References <a class="el" href="textured__surface__material_8h_source.html#l00022">image_file_names</a>.</p>
+<p class="reference">References <a class="el" href="textured__surface__material_8h_source.html#l00071">image_file_names</a>.</p>
 
-<p class="reference">Referenced by <a class="el" href="textured__surface__material_8cxx_source.html#l00045">textured_surface_material()</a>.</p>
-
-</div>
-</div>
-<a id="adbd106d9965fcb6544baa0fe18bfcc37" name="adbd106d9965fcb6544baa0fe18bfcc37"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#adbd106d9965fcb6544baa0fe18bfcc37">&#9670;&#160;</a></span>get_ambient_index()</h2>
-
-<div class="memitem">
-<div class="memproto">
-<table class="mlabels">
-  <tr>
-  <td class="mlabels-left">
-      <table class="memname">
-        <tr>
-          <td class="memname">int cgv::media::illum::textured_surface_material::get_ambient_index </td>
-          <td>(</td>
-          <td class="paramname"></td><td>)</td>
-          <td> const</td>
-        </tr>
-      </table>
-  </td>
-  <td class="mlabels-right">
-<span class="mlabels"><span class="mlabel">inline</span></span>  </td>
-  </tr>
-</table>
-</div><div class="memdoc">
-
-<p class="definition">Definition at line <a class="el" href="textured__surface__material_8h_source.html#l00109">109</a> of file <a class="el" href="textured__surface__material_8h_source.html">textured_surface_material.h</a>.</p>
-
-</div>
-</div>
-<a id="a448234efd66d60d7672599debda33942" name="a448234efd66d60d7672599debda33942"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a448234efd66d60d7672599debda33942">&#9670;&#160;</a></span>get_bump_index()</h2>
-
-<div class="memitem">
-<div class="memproto">
-<table class="mlabels">
-  <tr>
-  <td class="mlabels-left">
-      <table class="memname">
-        <tr>
-          <td class="memname">int cgv::media::illum::textured_surface_material::get_bump_index </td>
-          <td>(</td>
-          <td class="paramname"></td><td>)</td>
-          <td> const</td>
-        </tr>
-      </table>
-  </td>
-  <td class="mlabels-right">
-<span class="mlabels"><span class="mlabel">inline</span></span>  </td>
-  </tr>
-</table>
-</div><div class="memdoc">
-
-<p class="definition">Definition at line <a class="el" href="textured__surface__material_8h_source.html#l00129">129</a> of file <a class="el" href="textured__surface__material_8h_source.html">textured_surface_material.h</a>.</p>
-
-</div>
-</div>
-<a id="a33f54806787d73a492f802e57dbaf23d" name="a33f54806787d73a492f802e57dbaf23d"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a33f54806787d73a492f802e57dbaf23d">&#9670;&#160;</a></span>get_bump_scale()</h2>
-
-<div class="memitem">
-<div class="memproto">
-<table class="mlabels">
-  <tr>
-  <td class="mlabels-left">
-      <table class="memname">
-        <tr>
-          <td class="memname">float cgv::media::illum::textured_surface_material::get_bump_scale </td>
-          <td>(</td>
-          <td class="paramname"></td><td>)</td>
-          <td> const</td>
-        </tr>
-      </table>
-  </td>
-  <td class="mlabels-right">
-<span class="mlabels"><span class="mlabel">inline</span></span>  </td>
-  </tr>
-</table>
-</div><div class="memdoc">
-
-<p>return bump scale </p>
-
-<p class="definition">Definition at line <a class="el" href="textured__surface__material_8h_source.html#l00135">135</a> of file <a class="el" href="textured__surface__material_8h_source.html">textured_surface_material.h</a>.</p>
-
-</div>
-</div>
-<a id="a46b9593ac885dd22e90b5e5d1a11b81e" name="a46b9593ac885dd22e90b5e5d1a11b81e"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a46b9593ac885dd22e90b5e5d1a11b81e">&#9670;&#160;</a></span>get_diffuse_index()</h2>
-
-<div class="memitem">
-<div class="memproto">
-<table class="mlabels">
-  <tr>
-  <td class="mlabels-left">
-      <table class="memname">
-        <tr>
-          <td class="memname">int cgv::media::illum::textured_surface_material::get_diffuse_index </td>
-          <td>(</td>
-          <td class="paramname"></td><td>)</td>
-          <td> const</td>
-        </tr>
-      </table>
-  </td>
-  <td class="mlabels-right">
-<span class="mlabels"><span class="mlabel">inline</span></span>  </td>
-  </tr>
-</table>
-</div><div class="memdoc">
-
-<p class="definition">Definition at line <a class="el" href="textured__surface__material_8h_source.html#l00097">97</a> of file <a class="el" href="textured__surface__material_8h_source.html">textured_surface_material.h</a>.</p>
-
-</div>
-</div>
-<a id="adf6c636a3f23407b5be28defd51ce58f" name="adf6c636a3f23407b5be28defd51ce58f"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#adf6c636a3f23407b5be28defd51ce58f">&#9670;&#160;</a></span>get_emission_index()</h2>
-
-<div class="memitem">
-<div class="memproto">
-<table class="mlabels">
-  <tr>
-  <td class="mlabels-left">
-      <table class="memname">
-        <tr>
-          <td class="memname">int cgv::media::illum::textured_surface_material::get_emission_index </td>
-          <td>(</td>
-          <td class="paramname"></td><td>)</td>
-          <td> const</td>
-        </tr>
-      </table>
-  </td>
-  <td class="mlabels-right">
-<span class="mlabels"><span class="mlabel">inline</span></span>  </td>
-  </tr>
-</table>
-</div><div class="memdoc">
-
-<p class="definition">Definition at line <a class="el" href="textured__surface__material_8h_source.html#l00113">113</a> of file <a class="el" href="textured__surface__material_8h_source.html">textured_surface_material.h</a>.</p>
+<p class="reference">Referenced by <a class="el" href="textured__surface__material_8cxx_source.html#l00009">textured_surface_material()</a>.</p>
 
 </div>
 </div>
@@ -695,90 +339,7 @@ Additional Inherited Members</h2></td></tr>
 
 <p>return the name of the i-th image file </p>
 
-<p class="definition">Definition at line <a class="el" href="textured__surface__material_8h_source.html#l00088">88</a> of file <a class="el" href="textured__surface__material_8h_source.html">textured_surface_material.h</a>.</p>
-
-</div>
-</div>
-<a id="af6c62c49757876c98d87e264ccd7065e" name="af6c62c49757876c98d87e264ccd7065e"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#af6c62c49757876c98d87e264ccd7065e">&#9670;&#160;</a></span>get_metalness_index()</h2>
-
-<div class="memitem">
-<div class="memproto">
-<table class="mlabels">
-  <tr>
-  <td class="mlabels-left">
-      <table class="memname">
-        <tr>
-          <td class="memname">int cgv::media::illum::textured_surface_material::get_metalness_index </td>
-          <td>(</td>
-          <td class="paramname"></td><td>)</td>
-          <td> const</td>
-        </tr>
-      </table>
-  </td>
-  <td class="mlabels-right">
-<span class="mlabels"><span class="mlabel">inline</span></span>  </td>
-  </tr>
-</table>
-</div><div class="memdoc">
-
-<p class="definition">Definition at line <a class="el" href="textured__surface__material_8h_source.html#l00105">105</a> of file <a class="el" href="textured__surface__material_8h_source.html">textured_surface_material.h</a>.</p>
-
-</div>
-</div>
-<a id="a0c7cb8d0c5b51497629e97b7680daf13" name="a0c7cb8d0c5b51497629e97b7680daf13"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a0c7cb8d0c5b51497629e97b7680daf13">&#9670;&#160;</a></span>get_name()</h2>
-
-<div class="memitem">
-<div class="memproto">
-<table class="mlabels">
-  <tr>
-  <td class="mlabels-left">
-      <table class="memname">
-        <tr>
-          <td class="memname">const std::string &amp; cgv::media::illum::textured_surface_material::get_name </td>
-          <td>(</td>
-          <td class="paramname"></td><td>)</td>
-          <td> const</td>
-        </tr>
-      </table>
-  </td>
-  <td class="mlabels-right">
-<span class="mlabels"><span class="mlabel">inline</span></span>  </td>
-  </tr>
-</table>
-</div><div class="memdoc">
-
-<p>return name value </p>
-
-<p class="definition">Definition at line <a class="el" href="textured__surface__material_8h_source.html#l00074">74</a> of file <a class="el" href="textured__surface__material_8h_source.html">textured_surface_material.h</a>.</p>
-
-</div>
-</div>
-<a id="a036144a59f3489e0ab2b3a9c5c1a9d6b" name="a036144a59f3489e0ab2b3a9c5c1a9d6b"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a036144a59f3489e0ab2b3a9c5c1a9d6b">&#9670;&#160;</a></span>get_normal_index()</h2>
-
-<div class="memitem">
-<div class="memproto">
-<table class="mlabels">
-  <tr>
-  <td class="mlabels-left">
-      <table class="memname">
-        <tr>
-          <td class="memname">int cgv::media::illum::textured_surface_material::get_normal_index </td>
-          <td>(</td>
-          <td class="paramname"></td><td>)</td>
-          <td> const</td>
-        </tr>
-      </table>
-  </td>
-  <td class="mlabels-right">
-<span class="mlabels"><span class="mlabel">inline</span></span>  </td>
-  </tr>
-</table>
-</div><div class="memdoc">
-
-<p class="definition">Definition at line <a class="el" href="textured__surface__material_8h_source.html#l00125">125</a> of file <a class="el" href="textured__surface__material_8h_source.html">textured_surface_material.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="textured__surface__material_8h_source.html#l00061">61</a> of file <a class="el" href="textured__surface__material_8h_source.html">textured_surface_material.h</a>.</p>
 
 </div>
 </div>
@@ -807,7 +368,7 @@ Additional Inherited Members</h2></td></tr>
 
 <p>return number of image files </p>
 
-<p class="definition">Definition at line <a class="el" href="textured__surface__material_8h_source.html#l00084">84</a> of file <a class="el" href="textured__surface__material_8h_source.html">textured_surface_material.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="textured__surface__material_8h_source.html#l00057">57</a> of file <a class="el" href="textured__surface__material_8h_source.html">textured_surface_material.h</a>.</p>
 
 </div>
 </div>
@@ -838,256 +399,7 @@ Additional Inherited Members</h2></td></tr>
 
 <p>Reimplemented in <a class="el" href="classcgv_1_1render_1_1textured__material.html#a5d7ac1c6c837207dae2a1f815fa93a62">cgv::render::textured_material</a>.</p>
 
-<p class="definition">Definition at line <a class="el" href="textured__surface__material_8h_source.html#l00094">94</a> of file <a class="el" href="textured__surface__material_8h_source.html">textured_surface_material.h</a>.</p>
-
-</div>
-</div>
-<a id="a40db956195ebcb4a1ef6a9faabf3f6a3" name="a40db956195ebcb4a1ef6a9faabf3f6a3"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a40db956195ebcb4a1ef6a9faabf3f6a3">&#9670;&#160;</a></span>get_roughness_index()</h2>
-
-<div class="memitem">
-<div class="memproto">
-<table class="mlabels">
-  <tr>
-  <td class="mlabels-left">
-      <table class="memname">
-        <tr>
-          <td class="memname">int cgv::media::illum::textured_surface_material::get_roughness_index </td>
-          <td>(</td>
-          <td class="paramname"></td><td>)</td>
-          <td> const</td>
-        </tr>
-      </table>
-  </td>
-  <td class="mlabels-right">
-<span class="mlabels"><span class="mlabel">inline</span></span>  </td>
-  </tr>
-</table>
-</div><div class="memdoc">
-
-<p class="definition">Definition at line <a class="el" href="textured__surface__material_8h_source.html#l00101">101</a> of file <a class="el" href="textured__surface__material_8h_source.html">textured_surface_material.h</a>.</p>
-
-</div>
-</div>
-<a id="aea01b05c32275490814b25e66add29fa" name="aea01b05c32275490814b25e66add29fa"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#aea01b05c32275490814b25e66add29fa">&#9670;&#160;</a></span>get_specular_index()</h2>
-
-<div class="memitem">
-<div class="memproto">
-<table class="mlabels">
-  <tr>
-  <td class="mlabels-left">
-      <table class="memname">
-        <tr>
-          <td class="memname">int cgv::media::illum::textured_surface_material::get_specular_index </td>
-          <td>(</td>
-          <td class="paramname"></td><td>)</td>
-          <td> const</td>
-        </tr>
-      </table>
-  </td>
-  <td class="mlabels-right">
-<span class="mlabels"><span class="mlabel">inline</span></span>  </td>
-  </tr>
-</table>
-</div><div class="memdoc">
-
-<p class="definition">Definition at line <a class="el" href="textured__surface__material_8h_source.html#l00121">121</a> of file <a class="el" href="textured__surface__material_8h_source.html">textured_surface_material.h</a>.</p>
-
-</div>
-</div>
-<a id="a763ebbd83472ac0999bc3888ae43327e" name="a763ebbd83472ac0999bc3888ae43327e"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a763ebbd83472ac0999bc3888ae43327e">&#9670;&#160;</a></span>get_sRGBA_textures()</h2>
-
-<div class="memitem">
-<div class="memproto">
-<table class="mlabels">
-  <tr>
-  <td class="mlabels-left">
-      <table class="memname">
-        <tr>
-          <td class="memname">bool cgv::media::illum::textured_surface_material::get_sRGBA_textures </td>
-          <td>(</td>
-          <td class="paramname"></td><td>)</td>
-          <td> const</td>
-        </tr>
-      </table>
-  </td>
-  <td class="mlabels-right">
-<span class="mlabels"><span class="mlabel">inline</span></span>  </td>
-  </tr>
-</table>
-</div><div class="memdoc">
-
-<p>return whether textures are interpreted in sRGB format </p>
-
-<p class="definition">Definition at line <a class="el" href="textured__surface__material_8h_source.html#l00080">80</a> of file <a class="el" href="textured__surface__material_8h_source.html">textured_surface_material.h</a>.</p>
-
-<p class="reference">Referenced by <a class="el" href="shader__program_8cxx_source.html#l00639">cgv::render::shader_program::set_textured_material_uniform()</a>.</p>
-
-</div>
-</div>
-<a id="a4d9b43dbbdaceceb4be2afeb7fa1d10f" name="a4d9b43dbbdaceceb4be2afeb7fa1d10f"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a4d9b43dbbdaceceb4be2afeb7fa1d10f">&#9670;&#160;</a></span>get_transparency_index()</h2>
-
-<div class="memitem">
-<div class="memproto">
-<table class="mlabels">
-  <tr>
-  <td class="mlabels-left">
-      <table class="memname">
-        <tr>
-          <td class="memname">int cgv::media::illum::textured_surface_material::get_transparency_index </td>
-          <td>(</td>
-          <td class="paramname"></td><td>)</td>
-          <td> const</td>
-        </tr>
-      </table>
-  </td>
-  <td class="mlabels-right">
-<span class="mlabels"><span class="mlabel">inline</span></span>  </td>
-  </tr>
-</table>
-</div><div class="memdoc">
-
-<p class="definition">Definition at line <a class="el" href="textured__surface__material_8h_source.html#l00117">117</a> of file <a class="el" href="textured__surface__material_8h_source.html">textured_surface_material.h</a>.</p>
-
-</div>
-</div>
-<a id="a8ab694ae32d4e73c60d5ad634135c956" name="a8ab694ae32d4e73c60d5ad634135c956"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a8ab694ae32d4e73c60d5ad634135c956">&#9670;&#160;</a></span>ref_ambient_index()</h2>
-
-<div class="memitem">
-<div class="memproto">
-<table class="mlabels">
-  <tr>
-  <td class="mlabels-left">
-      <table class="memname">
-        <tr>
-          <td class="memname">int &amp; cgv::media::illum::textured_surface_material::ref_ambient_index </td>
-          <td>(</td>
-          <td class="paramname"></td><td>)</td>
-          <td></td>
-        </tr>
-      </table>
-  </td>
-  <td class="mlabels-right">
-<span class="mlabels"><span class="mlabel">inline</span></span>  </td>
-  </tr>
-</table>
-</div><div class="memdoc">
-
-<p class="definition">Definition at line <a class="el" href="textured__surface__material_8h_source.html#l00110">110</a> of file <a class="el" href="textured__surface__material_8h_source.html">textured_surface_material.h</a>.</p>
-
-</div>
-</div>
-<a id="a0508df802c5f138a7c37e6a66b4a0f14" name="a0508df802c5f138a7c37e6a66b4a0f14"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a0508df802c5f138a7c37e6a66b4a0f14">&#9670;&#160;</a></span>ref_bump_index()</h2>
-
-<div class="memitem">
-<div class="memproto">
-<table class="mlabels">
-  <tr>
-  <td class="mlabels-left">
-      <table class="memname">
-        <tr>
-          <td class="memname">int &amp; cgv::media::illum::textured_surface_material::ref_bump_index </td>
-          <td>(</td>
-          <td class="paramname"></td><td>)</td>
-          <td></td>
-        </tr>
-      </table>
-  </td>
-  <td class="mlabels-right">
-<span class="mlabels"><span class="mlabel">inline</span></span>  </td>
-  </tr>
-</table>
-</div><div class="memdoc">
-
-<p class="definition">Definition at line <a class="el" href="textured__surface__material_8h_source.html#l00130">130</a> of file <a class="el" href="textured__surface__material_8h_source.html">textured_surface_material.h</a>.</p>
-
-</div>
-</div>
-<a id="ab2b596dc2e9333edbd1a5739db383dba" name="ab2b596dc2e9333edbd1a5739db383dba"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#ab2b596dc2e9333edbd1a5739db383dba">&#9670;&#160;</a></span>ref_bump_scale()</h2>
-
-<div class="memitem">
-<div class="memproto">
-<table class="mlabels">
-  <tr>
-  <td class="mlabels-left">
-      <table class="memname">
-        <tr>
-          <td class="memname">float &amp; cgv::media::illum::textured_surface_material::ref_bump_scale </td>
-          <td>(</td>
-          <td class="paramname"></td><td>)</td>
-          <td></td>
-        </tr>
-      </table>
-  </td>
-  <td class="mlabels-right">
-<span class="mlabels"><span class="mlabel">inline</span></span>  </td>
-  </tr>
-</table>
-</div><div class="memdoc">
-
-<p>return reference to bump scale </p>
-
-<p class="definition">Definition at line <a class="el" href="textured__surface__material_8h_source.html#l00137">137</a> of file <a class="el" href="textured__surface__material_8h_source.html">textured_surface_material.h</a>.</p>
-
-</div>
-</div>
-<a id="a464cc9f19bbb172d3b0b4d172415ea96" name="a464cc9f19bbb172d3b0b4d172415ea96"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a464cc9f19bbb172d3b0b4d172415ea96">&#9670;&#160;</a></span>ref_diffuse_index()</h2>
-
-<div class="memitem">
-<div class="memproto">
-<table class="mlabels">
-  <tr>
-  <td class="mlabels-left">
-      <table class="memname">
-        <tr>
-          <td class="memname">int &amp; cgv::media::illum::textured_surface_material::ref_diffuse_index </td>
-          <td>(</td>
-          <td class="paramname"></td><td>)</td>
-          <td></td>
-        </tr>
-      </table>
-  </td>
-  <td class="mlabels-right">
-<span class="mlabels"><span class="mlabel">inline</span></span>  </td>
-  </tr>
-</table>
-</div><div class="memdoc">
-
-<p class="definition">Definition at line <a class="el" href="textured__surface__material_8h_source.html#l00098">98</a> of file <a class="el" href="textured__surface__material_8h_source.html">textured_surface_material.h</a>.</p>
-
-</div>
-</div>
-<a id="acb21740a3600ad8bc6b118b2b7023031" name="acb21740a3600ad8bc6b118b2b7023031"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#acb21740a3600ad8bc6b118b2b7023031">&#9670;&#160;</a></span>ref_emission_index()</h2>
-
-<div class="memitem">
-<div class="memproto">
-<table class="mlabels">
-  <tr>
-  <td class="mlabels-left">
-      <table class="memname">
-        <tr>
-          <td class="memname">int &amp; cgv::media::illum::textured_surface_material::ref_emission_index </td>
-          <td>(</td>
-          <td class="paramname"></td><td>)</td>
-          <td></td>
-        </tr>
-      </table>
-  </td>
-  <td class="mlabels-right">
-<span class="mlabels"><span class="mlabel">inline</span></span>  </td>
-  </tr>
-</table>
-</div><div class="memdoc">
-
-<p class="definition">Definition at line <a class="el" href="textured__surface__material_8h_source.html#l00114">114</a> of file <a class="el" href="textured__surface__material_8h_source.html">textured_surface_material.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="textured__surface__material_8h_source.html#l00067">67</a> of file <a class="el" href="textured__surface__material_8h_source.html">textured_surface_material.h</a>.</p>
 
 </div>
 </div>
@@ -1117,344 +429,7 @@ Additional Inherited Members</h2></td></tr>
 
 <p>return reference to image file name of i-th image file </p>
 
-<p class="definition">Definition at line <a class="el" href="textured__surface__material_8h_source.html#l00092">92</a> of file <a class="el" href="textured__surface__material_8h_source.html">textured_surface_material.h</a>.</p>
-
-</div>
-</div>
-<a id="ad0ae2cf34b5de4f15b6fc76c18affeaf" name="ad0ae2cf34b5de4f15b6fc76c18affeaf"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#ad0ae2cf34b5de4f15b6fc76c18affeaf">&#9670;&#160;</a></span>ref_metalness_index()</h2>
-
-<div class="memitem">
-<div class="memproto">
-<table class="mlabels">
-  <tr>
-  <td class="mlabels-left">
-      <table class="memname">
-        <tr>
-          <td class="memname">int &amp; cgv::media::illum::textured_surface_material::ref_metalness_index </td>
-          <td>(</td>
-          <td class="paramname"></td><td>)</td>
-          <td></td>
-        </tr>
-      </table>
-  </td>
-  <td class="mlabels-right">
-<span class="mlabels"><span class="mlabel">inline</span></span>  </td>
-  </tr>
-</table>
-</div><div class="memdoc">
-
-<p class="definition">Definition at line <a class="el" href="textured__surface__material_8h_source.html#l00106">106</a> of file <a class="el" href="textured__surface__material_8h_source.html">textured_surface_material.h</a>.</p>
-
-</div>
-</div>
-<a id="a66222854a68078185fd6f5f135e11d91" name="a66222854a68078185fd6f5f135e11d91"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a66222854a68078185fd6f5f135e11d91">&#9670;&#160;</a></span>ref_name()</h2>
-
-<div class="memitem">
-<div class="memproto">
-<table class="mlabels">
-  <tr>
-  <td class="mlabels-left">
-      <table class="memname">
-        <tr>
-          <td class="memname">std::string &amp; cgv::media::illum::textured_surface_material::ref_name </td>
-          <td>(</td>
-          <td class="paramname"></td><td>)</td>
-          <td></td>
-        </tr>
-      </table>
-  </td>
-  <td class="mlabels-right">
-<span class="mlabels"><span class="mlabel">inline</span></span>  </td>
-  </tr>
-</table>
-</div><div class="memdoc">
-
-<p>return reference to name value </p>
-
-<p class="definition">Definition at line <a class="el" href="textured__surface__material_8h_source.html#l00076">76</a> of file <a class="el" href="textured__surface__material_8h_source.html">textured_surface_material.h</a>.</p>
-
-</div>
-</div>
-<a id="a7febc12116d74e718f888e87698bcdba" name="a7febc12116d74e718f888e87698bcdba"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a7febc12116d74e718f888e87698bcdba">&#9670;&#160;</a></span>ref_normal_index()</h2>
-
-<div class="memitem">
-<div class="memproto">
-<table class="mlabels">
-  <tr>
-  <td class="mlabels-left">
-      <table class="memname">
-        <tr>
-          <td class="memname">int &amp; cgv::media::illum::textured_surface_material::ref_normal_index </td>
-          <td>(</td>
-          <td class="paramname"></td><td>)</td>
-          <td></td>
-        </tr>
-      </table>
-  </td>
-  <td class="mlabels-right">
-<span class="mlabels"><span class="mlabel">inline</span></span>  </td>
-  </tr>
-</table>
-</div><div class="memdoc">
-
-<p class="definition">Definition at line <a class="el" href="textured__surface__material_8h_source.html#l00126">126</a> of file <a class="el" href="textured__surface__material_8h_source.html">textured_surface_material.h</a>.</p>
-
-</div>
-</div>
-<a id="adbfe8ccfa8776b9981ea72fc19458828" name="adbfe8ccfa8776b9981ea72fc19458828"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#adbfe8ccfa8776b9981ea72fc19458828">&#9670;&#160;</a></span>ref_roughness_index()</h2>
-
-<div class="memitem">
-<div class="memproto">
-<table class="mlabels">
-  <tr>
-  <td class="mlabels-left">
-      <table class="memname">
-        <tr>
-          <td class="memname">int &amp; cgv::media::illum::textured_surface_material::ref_roughness_index </td>
-          <td>(</td>
-          <td class="paramname"></td><td>)</td>
-          <td></td>
-        </tr>
-      </table>
-  </td>
-  <td class="mlabels-right">
-<span class="mlabels"><span class="mlabel">inline</span></span>  </td>
-  </tr>
-</table>
-</div><div class="memdoc">
-
-<p class="definition">Definition at line <a class="el" href="textured__surface__material_8h_source.html#l00102">102</a> of file <a class="el" href="textured__surface__material_8h_source.html">textured_surface_material.h</a>.</p>
-
-</div>
-</div>
-<a id="af2922ab4109845ae0c692aa004d9c460" name="af2922ab4109845ae0c692aa004d9c460"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#af2922ab4109845ae0c692aa004d9c460">&#9670;&#160;</a></span>ref_specular_index()</h2>
-
-<div class="memitem">
-<div class="memproto">
-<table class="mlabels">
-  <tr>
-  <td class="mlabels-left">
-      <table class="memname">
-        <tr>
-          <td class="memname">int &amp; cgv::media::illum::textured_surface_material::ref_specular_index </td>
-          <td>(</td>
-          <td class="paramname"></td><td>)</td>
-          <td></td>
-        </tr>
-      </table>
-  </td>
-  <td class="mlabels-right">
-<span class="mlabels"><span class="mlabel">inline</span></span>  </td>
-  </tr>
-</table>
-</div><div class="memdoc">
-
-<p class="definition">Definition at line <a class="el" href="textured__surface__material_8h_source.html#l00122">122</a> of file <a class="el" href="textured__surface__material_8h_source.html">textured_surface_material.h</a>.</p>
-
-</div>
-</div>
-<a id="a658a112444fa4ad3fcd1ac45821ab5e7" name="a658a112444fa4ad3fcd1ac45821ab5e7"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a658a112444fa4ad3fcd1ac45821ab5e7">&#9670;&#160;</a></span>ref_sRGBA_textures()</h2>
-
-<div class="memitem">
-<div class="memproto">
-<table class="mlabels">
-  <tr>
-  <td class="mlabels-left">
-      <table class="memname">
-        <tr>
-          <td class="memname">bool &amp; cgv::media::illum::textured_surface_material::ref_sRGBA_textures </td>
-          <td>(</td>
-          <td class="paramname"></td><td>)</td>
-          <td></td>
-        </tr>
-      </table>
-  </td>
-  <td class="mlabels-right">
-<span class="mlabels"><span class="mlabel">inline</span></span>  </td>
-  </tr>
-</table>
-</div><div class="memdoc">
-
-<p>return reference to whether textures are interpreted in sRGB format </p>
-
-<p class="definition">Definition at line <a class="el" href="textured__surface__material_8h_source.html#l00082">82</a> of file <a class="el" href="textured__surface__material_8h_source.html">textured_surface_material.h</a>.</p>
-
-</div>
-</div>
-<a id="a19baf620189ef41885bf05360dd237fc" name="a19baf620189ef41885bf05360dd237fc"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a19baf620189ef41885bf05360dd237fc">&#9670;&#160;</a></span>ref_transparency_index()</h2>
-
-<div class="memitem">
-<div class="memproto">
-<table class="mlabels">
-  <tr>
-  <td class="mlabels-left">
-      <table class="memname">
-        <tr>
-          <td class="memname">int &amp; cgv::media::illum::textured_surface_material::ref_transparency_index </td>
-          <td>(</td>
-          <td class="paramname"></td><td>)</td>
-          <td></td>
-        </tr>
-      </table>
-  </td>
-  <td class="mlabels-right">
-<span class="mlabels"><span class="mlabel">inline</span></span>  </td>
-  </tr>
-</table>
-</div><div class="memdoc">
-
-<p class="definition">Definition at line <a class="el" href="textured__surface__material_8h_source.html#l00118">118</a> of file <a class="el" href="textured__surface__material_8h_source.html">textured_surface_material.h</a>.</p>
-
-</div>
-</div>
-<a id="af8c7e8a79ec007a8edf8a90531702c62" name="af8c7e8a79ec007a8edf8a90531702c62"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#af8c7e8a79ec007a8edf8a90531702c62">&#9670;&#160;</a></span>set_ambient_index()</h2>
-
-<div class="memitem">
-<div class="memproto">
-<table class="mlabels">
-  <tr>
-  <td class="mlabels-left">
-      <table class="memname">
-        <tr>
-          <td class="memname">void cgv::media::illum::textured_surface_material::set_ambient_index </td>
-          <td>(</td>
-          <td class="paramtype">int&#160;</td>
-          <td class="paramname"><em>i</em></td><td>)</td>
-          <td></td>
-        </tr>
-      </table>
-  </td>
-  <td class="mlabels-right">
-<span class="mlabels"><span class="mlabel">inline</span></span>  </td>
-  </tr>
-</table>
-</div><div class="memdoc">
-
-<p class="definition">Definition at line <a class="el" href="textured__surface__material_8h_source.html#l00108">108</a> of file <a class="el" href="textured__surface__material_8h_source.html">textured_surface_material.h</a>.</p>
-
-</div>
-</div>
-<a id="a24f14514278e270030c3309049a67c3d" name="a24f14514278e270030c3309049a67c3d"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a24f14514278e270030c3309049a67c3d">&#9670;&#160;</a></span>set_bump_index()</h2>
-
-<div class="memitem">
-<div class="memproto">
-<table class="mlabels">
-  <tr>
-  <td class="mlabels-left">
-      <table class="memname">
-        <tr>
-          <td class="memname">void cgv::media::illum::textured_surface_material::set_bump_index </td>
-          <td>(</td>
-          <td class="paramtype">int&#160;</td>
-          <td class="paramname"><em>i</em></td><td>)</td>
-          <td></td>
-        </tr>
-      </table>
-  </td>
-  <td class="mlabels-right">
-<span class="mlabels"><span class="mlabel">inline</span></span>  </td>
-  </tr>
-</table>
-</div><div class="memdoc">
-
-<p class="definition">Definition at line <a class="el" href="textured__surface__material_8h_source.html#l00128">128</a> of file <a class="el" href="textured__surface__material_8h_source.html">textured_surface_material.h</a>.</p>
-
-</div>
-</div>
-<a id="a4f7b04553dd6d9de85a45246f21357e0" name="a4f7b04553dd6d9de85a45246f21357e0"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a4f7b04553dd6d9de85a45246f21357e0">&#9670;&#160;</a></span>set_bump_scale()</h2>
-
-<div class="memitem">
-<div class="memproto">
-<table class="mlabels">
-  <tr>
-  <td class="mlabels-left">
-      <table class="memname">
-        <tr>
-          <td class="memname">void cgv::media::illum::textured_surface_material::set_bump_scale </td>
-          <td>(</td>
-          <td class="paramtype">float&#160;</td>
-          <td class="paramname"><em>bs</em></td><td>)</td>
-          <td></td>
-        </tr>
-      </table>
-  </td>
-  <td class="mlabels-right">
-<span class="mlabels"><span class="mlabel">inline</span></span>  </td>
-  </tr>
-</table>
-</div><div class="memdoc">
-
-<p>set scale of bumps </p>
-
-<p class="definition">Definition at line <a class="el" href="textured__surface__material_8h_source.html#l00133">133</a> of file <a class="el" href="textured__surface__material_8h_source.html">textured_surface_material.h</a>.</p>
-
-<p class="reference">Referenced by <a class="el" href="textured__surface__material_8cxx_source.html#l00045">textured_surface_material()</a>.</p>
-
-</div>
-</div>
-<a id="ad8f4c679bfb63a311dd4ce88f6a25965" name="ad8f4c679bfb63a311dd4ce88f6a25965"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#ad8f4c679bfb63a311dd4ce88f6a25965">&#9670;&#160;</a></span>set_diffuse_index()</h2>
-
-<div class="memitem">
-<div class="memproto">
-<table class="mlabels">
-  <tr>
-  <td class="mlabels-left">
-      <table class="memname">
-        <tr>
-          <td class="memname">void cgv::media::illum::textured_surface_material::set_diffuse_index </td>
-          <td>(</td>
-          <td class="paramtype">int&#160;</td>
-          <td class="paramname"><em>i</em></td><td>)</td>
-          <td></td>
-        </tr>
-      </table>
-  </td>
-  <td class="mlabels-right">
-<span class="mlabels"><span class="mlabel">inline</span></span>  </td>
-  </tr>
-</table>
-</div><div class="memdoc">
-
-<p class="definition">Definition at line <a class="el" href="textured__surface__material_8h_source.html#l00096">96</a> of file <a class="el" href="textured__surface__material_8h_source.html">textured_surface_material.h</a>.</p>
-
-</div>
-</div>
-<a id="afa492e829254155426061003819d5c88" name="afa492e829254155426061003819d5c88"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#afa492e829254155426061003819d5c88">&#9670;&#160;</a></span>set_emission_index()</h2>
-
-<div class="memitem">
-<div class="memproto">
-<table class="mlabels">
-  <tr>
-  <td class="mlabels-left">
-      <table class="memname">
-        <tr>
-          <td class="memname">void cgv::media::illum::textured_surface_material::set_emission_index </td>
-          <td>(</td>
-          <td class="paramtype">int&#160;</td>
-          <td class="paramname"><em>i</em></td><td>)</td>
-          <td></td>
-        </tr>
-      </table>
-  </td>
-  <td class="mlabels-right">
-<span class="mlabels"><span class="mlabel">inline</span></span>  </td>
-  </tr>
-</table>
-</div><div class="memdoc">
-
-<p class="definition">Definition at line <a class="el" href="textured__surface__material_8h_source.html#l00112">112</a> of file <a class="el" href="textured__surface__material_8h_source.html">textured_surface_material.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="textured__surface__material_8h_source.html#l00065">65</a> of file <a class="el" href="textured__surface__material_8h_source.html">textured_surface_material.h</a>.</p>
 
 </div>
 </div>
@@ -1494,203 +469,7 @@ Additional Inherited Members</h2></td></tr>
 
 <p>set the image file name of i-th image file </p>
 
-<p class="definition">Definition at line <a class="el" href="textured__surface__material_8h_source.html#l00090">90</a> of file <a class="el" href="textured__surface__material_8h_source.html">textured_surface_material.h</a>.</p>
-
-</div>
-</div>
-<a id="ab848653cc177b08d2c35ae6ed0f54edb" name="ab848653cc177b08d2c35ae6ed0f54edb"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#ab848653cc177b08d2c35ae6ed0f54edb">&#9670;&#160;</a></span>set_metalness_index()</h2>
-
-<div class="memitem">
-<div class="memproto">
-<table class="mlabels">
-  <tr>
-  <td class="mlabels-left">
-      <table class="memname">
-        <tr>
-          <td class="memname">void cgv::media::illum::textured_surface_material::set_metalness_index </td>
-          <td>(</td>
-          <td class="paramtype">int&#160;</td>
-          <td class="paramname"><em>i</em></td><td>)</td>
-          <td></td>
-        </tr>
-      </table>
-  </td>
-  <td class="mlabels-right">
-<span class="mlabels"><span class="mlabel">inline</span></span>  </td>
-  </tr>
-</table>
-</div><div class="memdoc">
-
-<p class="definition">Definition at line <a class="el" href="textured__surface__material_8h_source.html#l00104">104</a> of file <a class="el" href="textured__surface__material_8h_source.html">textured_surface_material.h</a>.</p>
-
-</div>
-</div>
-<a id="a1f5057bf2e336d3da16338fb80331d6f" name="a1f5057bf2e336d3da16338fb80331d6f"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a1f5057bf2e336d3da16338fb80331d6f">&#9670;&#160;</a></span>set_name()</h2>
-
-<div class="memitem">
-<div class="memproto">
-<table class="mlabels">
-  <tr>
-  <td class="mlabels-left">
-      <table class="memname">
-        <tr>
-          <td class="memname">void cgv::media::illum::textured_surface_material::set_name </td>
-          <td>(</td>
-          <td class="paramtype">std::string&#160;</td>
-          <td class="paramname"><em>o</em></td><td>)</td>
-          <td></td>
-        </tr>
-      </table>
-  </td>
-  <td class="mlabels-right">
-<span class="mlabels"><span class="mlabel">inline</span></span>  </td>
-  </tr>
-</table>
-</div><div class="memdoc">
-
-<p>set the name of the material </p>
-
-<p class="definition">Definition at line <a class="el" href="textured__surface__material_8h_source.html#l00072">72</a> of file <a class="el" href="textured__surface__material_8h_source.html">textured_surface_material.h</a>.</p>
-
-<p class="reference">Referenced by <a class="el" href="gltf__support_8cxx_source.html#l00134">cgv::render::build_render_info()</a>, <a class="el" href="gltf__support_8cxx_source.html#l00328">cgv::render::extract_mesh()</a>, and <a class="el" href="textured__surface__material_8cxx_source.html#l00045">textured_surface_material()</a>.</p>
-
-</div>
-</div>
-<a id="a3c6141c0bffea5c8d3972282ce515ade" name="a3c6141c0bffea5c8d3972282ce515ade"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a3c6141c0bffea5c8d3972282ce515ade">&#9670;&#160;</a></span>set_normal_index()</h2>
-
-<div class="memitem">
-<div class="memproto">
-<table class="mlabels">
-  <tr>
-  <td class="mlabels-left">
-      <table class="memname">
-        <tr>
-          <td class="memname">void cgv::media::illum::textured_surface_material::set_normal_index </td>
-          <td>(</td>
-          <td class="paramtype">int&#160;</td>
-          <td class="paramname"><em>i</em></td><td>)</td>
-          <td></td>
-        </tr>
-      </table>
-  </td>
-  <td class="mlabels-right">
-<span class="mlabels"><span class="mlabel">inline</span></span>  </td>
-  </tr>
-</table>
-</div><div class="memdoc">
-
-<p class="definition">Definition at line <a class="el" href="textured__surface__material_8h_source.html#l00124">124</a> of file <a class="el" href="textured__surface__material_8h_source.html">textured_surface_material.h</a>.</p>
-
-</div>
-</div>
-<a id="a71ffe7b7fb1445881013c401b08038aa" name="a71ffe7b7fb1445881013c401b08038aa"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a71ffe7b7fb1445881013c401b08038aa">&#9670;&#160;</a></span>set_roughness_index()</h2>
-
-<div class="memitem">
-<div class="memproto">
-<table class="mlabels">
-  <tr>
-  <td class="mlabels-left">
-      <table class="memname">
-        <tr>
-          <td class="memname">void cgv::media::illum::textured_surface_material::set_roughness_index </td>
-          <td>(</td>
-          <td class="paramtype">int&#160;</td>
-          <td class="paramname"><em>i</em></td><td>)</td>
-          <td></td>
-        </tr>
-      </table>
-  </td>
-  <td class="mlabels-right">
-<span class="mlabels"><span class="mlabel">inline</span></span>  </td>
-  </tr>
-</table>
-</div><div class="memdoc">
-
-<p class="definition">Definition at line <a class="el" href="textured__surface__material_8h_source.html#l00100">100</a> of file <a class="el" href="textured__surface__material_8h_source.html">textured_surface_material.h</a>.</p>
-
-</div>
-</div>
-<a id="ab242fac39321d79e40af8c224f40066f" name="ab242fac39321d79e40af8c224f40066f"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#ab242fac39321d79e40af8c224f40066f">&#9670;&#160;</a></span>set_specular_index()</h2>
-
-<div class="memitem">
-<div class="memproto">
-<table class="mlabels">
-  <tr>
-  <td class="mlabels-left">
-      <table class="memname">
-        <tr>
-          <td class="memname">void cgv::media::illum::textured_surface_material::set_specular_index </td>
-          <td>(</td>
-          <td class="paramtype">int&#160;</td>
-          <td class="paramname"><em>i</em></td><td>)</td>
-          <td></td>
-        </tr>
-      </table>
-  </td>
-  <td class="mlabels-right">
-<span class="mlabels"><span class="mlabel">inline</span></span>  </td>
-  </tr>
-</table>
-</div><div class="memdoc">
-
-<p class="definition">Definition at line <a class="el" href="textured__surface__material_8h_source.html#l00120">120</a> of file <a class="el" href="textured__surface__material_8h_source.html">textured_surface_material.h</a>.</p>
-
-</div>
-</div>
-<a id="a31f78c66ad7ab0ac8f0f523c404bf882" name="a31f78c66ad7ab0ac8f0f523c404bf882"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a31f78c66ad7ab0ac8f0f523c404bf882">&#9670;&#160;</a></span>set_sRGBA_textures()</h2>
-
-<div class="memitem">
-<div class="memproto">
-      <table class="memname">
-        <tr>
-          <td class="memname">void cgv::media::illum::textured_surface_material::set_sRGBA_textures </td>
-          <td>(</td>
-          <td class="paramtype">bool&#160;</td>
-          <td class="paramname"><em>do_set</em> = <code>true</code></td><td>)</td>
-          <td></td>
-        </tr>
-      </table>
-</div><div class="memdoc">
-
-<p>set whether textures are interpreted in sRGB format </p>
-
-<p class="definition">Definition at line <a class="el" href="textured__surface__material_8cxx_source.html#l00039">39</a> of file <a class="el" href="textured__surface__material_8cxx_source.html">textured_surface_material.cxx</a>.</p>
-
-<p class="reference">References <a class="el" href="textured__surface__material_8h_source.html#l00020">sRGBA_textures</a>.</p>
-
-</div>
-</div>
-<a id="a7d11d4f5294127b26ffe6c42c8364747" name="a7d11d4f5294127b26ffe6c42c8364747"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a7d11d4f5294127b26ffe6c42c8364747">&#9670;&#160;</a></span>set_transparency_index()</h2>
-
-<div class="memitem">
-<div class="memproto">
-<table class="mlabels">
-  <tr>
-  <td class="mlabels-left">
-      <table class="memname">
-        <tr>
-          <td class="memname">void cgv::media::illum::textured_surface_material::set_transparency_index </td>
-          <td>(</td>
-          <td class="paramtype">int&#160;</td>
-          <td class="paramname"><em>i</em></td><td>)</td>
-          <td></td>
-        </tr>
-      </table>
-  </td>
-  <td class="mlabels-right">
-<span class="mlabels"><span class="mlabel">inline</span></span>  </td>
-  </tr>
-</table>
-</div><div class="memdoc">
-
-<p class="definition">Definition at line <a class="el" href="textured__surface__material_8h_source.html#l00116">116</a> of file <a class="el" href="textured__surface__material_8h_source.html">textured_surface_material.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="textured__surface__material_8h_source.html#l00063">63</a> of file <a class="el" href="textured__surface__material_8h_source.html">textured_surface_material.h</a>.</p>
 
 </div>
 </div>
@@ -1700,27 +479,19 @@ Additional Inherited Members</h2></td></tr>
 
 <div class="memitem">
 <div class="memproto">
-<table class="mlabels">
-  <tr>
-  <td class="mlabels-left">
       <table class="memname">
         <tr>
-          <td class="memname">int cgv::media::illum::textured_surface_material::ambient_index</td>
+          <td class="memname">int cgv::media::illum::textured_surface_material::ambient_index = -1</td>
         </tr>
       </table>
-  </td>
-  <td class="mlabels-right">
-<span class="mlabels"><span class="mlabel">protected</span></span>  </td>
-  </tr>
-</table>
 </div><div class="memdoc">
 
 <p>index of image from which ambient_occlusion should be mapped, -1 corresponds to no mapping </p>
 <p>In case of 4 component textures ambient_occlusion is mapped from the w component. </p>
 
-<p class="definition">Definition at line <a class="el" href="textured__surface__material_8h_source.html#l00035">35</a> of file <a class="el" href="textured__surface__material_8h_source.html">textured_surface_material.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="textured__surface__material_8h_source.html#l00033">33</a> of file <a class="el" href="textured__surface__material_8h_source.html">textured_surface_material.h</a>.</p>
 
-<p class="reference">Referenced by <a class="el" href="textured__surface__material_8cxx_source.html#l00045">textured_surface_material()</a>, and <a class="el" href="textured__surface__material_8cxx_source.html#l00010">textured_surface_material()</a>.</p>
+<p class="reference">Referenced by <a class="el" href="shader__program_8cxx_source.html#l00639">cgv::render::shader_program::set_textured_material_uniform()</a>, and <a class="el" href="textured__surface__material_8cxx_source.html#l00009">textured_surface_material()</a>.</p>
 
 </div>
 </div>
@@ -1729,27 +500,19 @@ Additional Inherited Members</h2></td></tr>
 
 <div class="memitem">
 <div class="memproto">
-<table class="mlabels">
-  <tr>
-  <td class="mlabels-left">
       <table class="memname">
         <tr>
-          <td class="memname">int cgv::media::illum::textured_surface_material::bump_index</td>
+          <td class="memname">int cgv::media::illum::textured_surface_material::bump_index = -1</td>
         </tr>
       </table>
-  </td>
-  <td class="mlabels-right">
-<span class="mlabels"><span class="mlabel">protected</span></span>  </td>
-  </tr>
-</table>
 </div><div class="memdoc">
 
 <p>index of image from which bumps should be mapped, -1 corresponds to no mapping </p>
 <p>If no normal mapping is applies, bump map is also used for normal mapping. </p>
 
-<p class="definition">Definition at line <a class="el" href="textured__surface__material_8h_source.html#l00049">49</a> of file <a class="el" href="textured__surface__material_8h_source.html">textured_surface_material.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="textured__surface__material_8h_source.html#l00047">47</a> of file <a class="el" href="textured__surface__material_8h_source.html">textured_surface_material.h</a>.</p>
 
-<p class="reference">Referenced by <a class="el" href="textured__surface__material_8cxx_source.html#l00045">textured_surface_material()</a>, and <a class="el" href="textured__surface__material_8cxx_source.html#l00010">textured_surface_material()</a>.</p>
+<p class="reference">Referenced by <a class="el" href="shader__program_8cxx_source.html#l00639">cgv::render::shader_program::set_textured_material_uniform()</a>, and <a class="el" href="textured__surface__material_8cxx_source.html#l00009">textured_surface_material()</a>.</p>
 
 </div>
 </div>
@@ -1758,24 +521,18 @@ Additional Inherited Members</h2></td></tr>
 
 <div class="memitem">
 <div class="memproto">
-<table class="mlabels">
-  <tr>
-  <td class="mlabels-left">
       <table class="memname">
         <tr>
-          <td class="memname">float cgv::media::illum::textured_surface_material::bump_scale</td>
+          <td class="memname">float cgv::media::illum::textured_surface_material::bump_scale = 0.1f</td>
         </tr>
       </table>
-  </td>
-  <td class="mlabels-right">
-<span class="mlabels"><span class="mlabel">protected</span></span>  </td>
-  </tr>
-</table>
 </div><div class="memdoc">
 
 <p>scaling factor for bump map </p>
 
-<p class="definition">Definition at line <a class="el" href="textured__surface__material_8h_source.html#l00051">51</a> of file <a class="el" href="textured__surface__material_8h_source.html">textured_surface_material.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="textured__surface__material_8h_source.html#l00049">49</a> of file <a class="el" href="textured__surface__material_8h_source.html">textured_surface_material.h</a>.</p>
+
+<p class="reference">Referenced by <a class="el" href="textured__surface__material_8cxx_source.html#l00009">textured_surface_material()</a>.</p>
 
 </div>
 </div>
@@ -1784,26 +541,18 @@ Additional Inherited Members</h2></td></tr>
 
 <div class="memitem">
 <div class="memproto">
-<table class="mlabels">
-  <tr>
-  <td class="mlabels-left">
       <table class="memname">
         <tr>
-          <td class="memname">int cgv::media::illum::textured_surface_material::diffuse_index</td>
+          <td class="memname">int cgv::media::illum::textured_surface_material::diffuse_index = -1</td>
         </tr>
       </table>
-  </td>
-  <td class="mlabels-right">
-<span class="mlabels"><span class="mlabel">protected</span></span>  </td>
-  </tr>
-</table>
 </div><div class="memdoc">
 
 <p>index of image from which diffuse_reflectance should be mapped, -1 corresponds to no mapping </p>
 
-<p class="definition">Definition at line <a class="el" href="textured__surface__material_8h_source.html#l00024">24</a> of file <a class="el" href="textured__surface__material_8h_source.html">textured_surface_material.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="textured__surface__material_8h_source.html#l00022">22</a> of file <a class="el" href="textured__surface__material_8h_source.html">textured_surface_material.h</a>.</p>
 
-<p class="reference">Referenced by <a class="el" href="textured__surface__material_8cxx_source.html#l00045">textured_surface_material()</a>, and <a class="el" href="textured__surface__material_8cxx_source.html#l00010">textured_surface_material()</a>.</p>
+<p class="reference">Referenced by <a class="el" href="gltf__support_8cxx_source.html#l00134">cgv::render::build_render_info()</a>, <a class="el" href="shader__program_8cxx_source.html#l00639">cgv::render::shader_program::set_textured_material_uniform()</a>, and <a class="el" href="textured__surface__material_8cxx_source.html#l00009">textured_surface_material()</a>.</p>
 
 </div>
 </div>
@@ -1812,26 +561,18 @@ Additional Inherited Members</h2></td></tr>
 
 <div class="memitem">
 <div class="memproto">
-<table class="mlabels">
-  <tr>
-  <td class="mlabels-left">
       <table class="memname">
         <tr>
-          <td class="memname">int cgv::media::illum::textured_surface_material::emission_index</td>
+          <td class="memname">int cgv::media::illum::textured_surface_material::emission_index = -1</td>
         </tr>
       </table>
-  </td>
-  <td class="mlabels-right">
-<span class="mlabels"><span class="mlabel">protected</span></span>  </td>
-  </tr>
-</table>
 </div><div class="memdoc">
 
 <p>index of image from which emission should be mapped, -1 corresponds to no mapping </p>
 
-<p class="definition">Definition at line <a class="el" href="textured__surface__material_8h_source.html#l00037">37</a> of file <a class="el" href="textured__surface__material_8h_source.html">textured_surface_material.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="textured__surface__material_8h_source.html#l00035">35</a> of file <a class="el" href="textured__surface__material_8h_source.html">textured_surface_material.h</a>.</p>
 
-<p class="reference">Referenced by <a class="el" href="textured__surface__material_8cxx_source.html#l00045">textured_surface_material()</a>, and <a class="el" href="textured__surface__material_8cxx_source.html#l00010">textured_surface_material()</a>.</p>
+<p class="reference">Referenced by <a class="el" href="gltf__support_8cxx_source.html#l00134">cgv::render::build_render_info()</a>, <a class="el" href="shader__program_8cxx_source.html#l00639">cgv::render::shader_program::set_textured_material_uniform()</a>, and <a class="el" href="textured__surface__material_8cxx_source.html#l00009">textured_surface_material()</a>.</p>
 
 </div>
 </div>
@@ -1857,9 +598,9 @@ Additional Inherited Members</h2></td></tr>
 
 <p>vector of image file names </p>
 
-<p class="definition">Definition at line <a class="el" href="textured__surface__material_8h_source.html#l00022">22</a> of file <a class="el" href="textured__surface__material_8h_source.html">textured_surface_material.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="textured__surface__material_8h_source.html#l00071">71</a> of file <a class="el" href="textured__surface__material_8h_source.html">textured_surface_material.h</a>.</p>
 
-<p class="reference">Referenced by <a class="el" href="textured__surface__material_8cxx_source.html#l00104">add_image_file()</a>, <a class="el" href="textured__material_8cxx_source.html#l00033">cgv::render::textured_material::add_texture_reference()</a>, and <a class="el" href="textured__material_8cxx_source.html#l00042">cgv::render::textured_material::ensure_textures()</a>.</p>
+<p class="reference">Referenced by <a class="el" href="textured__surface__material_8cxx_source.html#l00044">add_image_file()</a>, <a class="el" href="textured__material_8cxx_source.html#l00033">cgv::render::textured_material::add_texture_reference()</a>, and <a class="el" href="textured__material_8cxx_source.html#l00042">cgv::render::textured_material::ensure_textures()</a>.</p>
 
 </div>
 </div>
@@ -1868,27 +609,19 @@ Additional Inherited Members</h2></td></tr>
 
 <div class="memitem">
 <div class="memproto">
-<table class="mlabels">
-  <tr>
-  <td class="mlabels-left">
       <table class="memname">
         <tr>
-          <td class="memname">int cgv::media::illum::textured_surface_material::metalness_index</td>
+          <td class="memname">int cgv::media::illum::textured_surface_material::metalness_index = -1</td>
         </tr>
       </table>
-  </td>
-  <td class="mlabels-right">
-<span class="mlabels"><span class="mlabel">protected</span></span>  </td>
-  </tr>
-</table>
 </div><div class="memdoc">
 
 <p>index of image from which metalness should be mapped, -1 corresponds to no mapping </p>
 <p>In case of 4 component textures metalness is mapped from the w component. For 2 component textures, metalness is mapped from the x-component. </p>
 
-<p class="definition">Definition at line <a class="el" href="textured__surface__material_8h_source.html#l00032">32</a> of file <a class="el" href="textured__surface__material_8h_source.html">textured_surface_material.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="textured__surface__material_8h_source.html#l00030">30</a> of file <a class="el" href="textured__surface__material_8h_source.html">textured_surface_material.h</a>.</p>
 
-<p class="reference">Referenced by <a class="el" href="textured__surface__material_8cxx_source.html#l00045">textured_surface_material()</a>, and <a class="el" href="textured__surface__material_8cxx_source.html#l00010">textured_surface_material()</a>.</p>
+<p class="reference">Referenced by <a class="el" href="gltf__support_8cxx_source.html#l00134">cgv::render::build_render_info()</a>, and <a class="el" href="shader__program_8cxx_source.html#l00639">cgv::render::shader_program::set_textured_material_uniform()</a>.</p>
 
 </div>
 </div>
@@ -1897,24 +630,18 @@ Additional Inherited Members</h2></td></tr>
 
 <div class="memitem">
 <div class="memproto">
-<table class="mlabels">
-  <tr>
-  <td class="mlabels-left">
       <table class="memname">
         <tr>
-          <td class="memname">std::string cgv::media::illum::textured_surface_material::name</td>
+          <td class="memname">std::string cgv::media::illum::textured_surface_material::name = &quot;default&quot;</td>
         </tr>
       </table>
-  </td>
-  <td class="mlabels-right">
-<span class="mlabels"><span class="mlabel">protected</span></span>  </td>
-  </tr>
-</table>
 </div><div class="memdoc">
 
 <p>name of material </p>
 
 <p class="definition">Definition at line <a class="el" href="textured__surface__material_8h_source.html#l00018">18</a> of file <a class="el" href="textured__surface__material_8h_source.html">textured_surface_material.h</a>.</p>
+
+<p class="reference">Referenced by <a class="el" href="gltf__support_8cxx_source.html#l00134">cgv::render::build_render_info()</a>, <a class="el" href="gltf__support_8cxx_source.html#l00328">cgv::render::extract_mesh()</a>, and <a class="el" href="textured__surface__material_8cxx_source.html#l00009">textured_surface_material()</a>.</p>
 
 </div>
 </div>
@@ -1923,26 +650,16 @@ Additional Inherited Members</h2></td></tr>
 
 <div class="memitem">
 <div class="memproto">
-<table class="mlabels">
-  <tr>
-  <td class="mlabels-left">
       <table class="memname">
         <tr>
-          <td class="memname">int cgv::media::illum::textured_surface_material::normal_index</td>
+          <td class="memname">int cgv::media::illum::textured_surface_material::normal_index = -1</td>
         </tr>
       </table>
-  </td>
-  <td class="mlabels-right">
-<span class="mlabels"><span class="mlabel">protected</span></span>  </td>
-  </tr>
-</table>
 </div><div class="memdoc">
 
 <p>index of image from which normals should be mapped, -1 corresponds to no mapping </p>
 
-<p class="definition">Definition at line <a class="el" href="textured__surface__material_8h_source.html#l00046">46</a> of file <a class="el" href="textured__surface__material_8h_source.html">textured_surface_material.h</a>.</p>
-
-<p class="reference">Referenced by <a class="el" href="textured__surface__material_8cxx_source.html#l00045">textured_surface_material()</a>, and <a class="el" href="textured__surface__material_8cxx_source.html#l00010">textured_surface_material()</a>.</p>
+<p class="definition">Definition at line <a class="el" href="textured__surface__material_8h_source.html#l00044">44</a> of file <a class="el" href="textured__surface__material_8h_source.html">textured_surface_material.h</a>.</p>
 
 </div>
 </div>
@@ -1951,26 +668,16 @@ Additional Inherited Members</h2></td></tr>
 
 <div class="memitem">
 <div class="memproto">
-<table class="mlabels">
-  <tr>
-  <td class="mlabels-left">
       <table class="memname">
         <tr>
-          <td class="memname">int cgv::media::illum::textured_surface_material::propagation_slow_down_index</td>
+          <td class="memname">int cgv::media::illum::textured_surface_material::propagation_slow_down_index = -1</td>
         </tr>
       </table>
-  </td>
-  <td class="mlabels-right">
-<span class="mlabels"><span class="mlabel">protected</span></span>  </td>
-  </tr>
-</table>
 </div><div class="memdoc">
 
 <p>index of image from which diffuse_reflectance should be mapped, -1 corresponds to no mapping </p>
 
-<p class="definition">Definition at line <a class="el" href="textured__surface__material_8h_source.html#l00042">42</a> of file <a class="el" href="textured__surface__material_8h_source.html">textured_surface_material.h</a>.</p>
-
-<p class="reference">Referenced by <a class="el" href="textured__surface__material_8cxx_source.html#l00045">textured_surface_material()</a>, and <a class="el" href="textured__surface__material_8cxx_source.html#l00010">textured_surface_material()</a>.</p>
+<p class="definition">Definition at line <a class="el" href="textured__surface__material_8h_source.html#l00040">40</a> of file <a class="el" href="textured__surface__material_8h_source.html">textured_surface_material.h</a>.</p>
 
 </div>
 </div>
@@ -1979,27 +686,19 @@ Additional Inherited Members</h2></td></tr>
 
 <div class="memitem">
 <div class="memproto">
-<table class="mlabels">
-  <tr>
-  <td class="mlabels-left">
       <table class="memname">
         <tr>
-          <td class="memname">int cgv::media::illum::textured_surface_material::roughness_index</td>
+          <td class="memname">int cgv::media::illum::textured_surface_material::roughness_index = -1</td>
         </tr>
       </table>
-  </td>
-  <td class="mlabels-right">
-<span class="mlabels"><span class="mlabel">protected</span></span>  </td>
-  </tr>
-</table>
 </div><div class="memdoc">
 
 <p>index of image from which roughness should be mapped, -1 corresponds to no mapping </p>
 <p>In case of 3 or 4 component textures roughness is mapped anisotropically from the xyz components. For 2 component textures, roughness is mapped from the y-component. </p>
 
-<p class="definition">Definition at line <a class="el" href="textured__surface__material_8h_source.html#l00028">28</a> of file <a class="el" href="textured__surface__material_8h_source.html">textured_surface_material.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="textured__surface__material_8h_source.html#l00026">26</a> of file <a class="el" href="textured__surface__material_8h_source.html">textured_surface_material.h</a>.</p>
 
-<p class="reference">Referenced by <a class="el" href="textured__surface__material_8cxx_source.html#l00045">textured_surface_material()</a>, and <a class="el" href="textured__surface__material_8cxx_source.html#l00010">textured_surface_material()</a>.</p>
+<p class="reference">Referenced by <a class="el" href="gltf__support_8cxx_source.html#l00134">cgv::render::build_render_info()</a>, and <a class="el" href="shader__program_8cxx_source.html#l00639">cgv::render::shader_program::set_textured_material_uniform()</a>.</p>
 
 </div>
 </div>
@@ -2008,26 +707,18 @@ Additional Inherited Members</h2></td></tr>
 
 <div class="memitem">
 <div class="memproto">
-<table class="mlabels">
-  <tr>
-  <td class="mlabels-left">
       <table class="memname">
         <tr>
-          <td class="memname">int cgv::media::illum::textured_surface_material::specular_index</td>
+          <td class="memname">int cgv::media::illum::textured_surface_material::specular_index = -1</td>
         </tr>
       </table>
-  </td>
-  <td class="mlabels-right">
-<span class="mlabels"><span class="mlabel">protected</span></span>  </td>
-  </tr>
-</table>
 </div><div class="memdoc">
 
 <p>index of image from which specular_reflectance should be mapped, -1 corresponds to no mapping </p>
 
-<p class="definition">Definition at line <a class="el" href="textured__surface__material_8h_source.html#l00044">44</a> of file <a class="el" href="textured__surface__material_8h_source.html">textured_surface_material.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="textured__surface__material_8h_source.html#l00042">42</a> of file <a class="el" href="textured__surface__material_8h_source.html">textured_surface_material.h</a>.</p>
 
-<p class="reference">Referenced by <a class="el" href="textured__surface__material_8cxx_source.html#l00045">textured_surface_material()</a>, and <a class="el" href="textured__surface__material_8cxx_source.html#l00010">textured_surface_material()</a>.</p>
+<p class="reference">Referenced by <a class="el" href="gltf__support_8cxx_source.html#l00134">cgv::render::build_render_info()</a>, <a class="el" href="shader__program_8cxx_source.html#l00639">cgv::render::shader_program::set_textured_material_uniform()</a>, and <a class="el" href="textured__surface__material_8cxx_source.html#l00009">textured_surface_material()</a>.</p>
 
 </div>
 </div>
@@ -2036,26 +727,18 @@ Additional Inherited Members</h2></td></tr>
 
 <div class="memitem">
 <div class="memproto">
-<table class="mlabels">
-  <tr>
-  <td class="mlabels-left">
       <table class="memname">
         <tr>
-          <td class="memname">bool cgv::media::illum::textured_surface_material::sRGBA_textures</td>
+          <td class="memname">bool cgv::media::illum::textured_surface_material::sRGBA_textures = false</td>
         </tr>
       </table>
-  </td>
-  <td class="mlabels-right">
-<span class="mlabels"><span class="mlabel">protected</span></span>  </td>
-  </tr>
-</table>
 </div><div class="memdoc">
 
 <p>whether textures are in sRGB format </p>
 
 <p class="definition">Definition at line <a class="el" href="textured__surface__material_8h_source.html#l00020">20</a> of file <a class="el" href="textured__surface__material_8h_source.html">textured_surface_material.h</a>.</p>
 
-<p class="reference">Referenced by <a class="el" href="textured__surface__material_8cxx_source.html#l00039">set_sRGBA_textures()</a>, <a class="el" href="textured__surface__material_8cxx_source.html#l00045">textured_surface_material()</a>, and <a class="el" href="textured__surface__material_8cxx_source.html#l00010">textured_surface_material()</a>.</p>
+<p class="reference">Referenced by <a class="el" href="shader__program_8cxx_source.html#l00639">cgv::render::shader_program::set_textured_material_uniform()</a>.</p>
 
 </div>
 </div>
@@ -2064,27 +747,19 @@ Additional Inherited Members</h2></td></tr>
 
 <div class="memitem">
 <div class="memproto">
-<table class="mlabels">
-  <tr>
-  <td class="mlabels-left">
       <table class="memname">
         <tr>
-          <td class="memname">int cgv::media::illum::textured_surface_material::transparency_index</td>
+          <td class="memname">int cgv::media::illum::textured_surface_material::transparency_index = -1</td>
         </tr>
       </table>
-  </td>
-  <td class="mlabels-right">
-<span class="mlabels"><span class="mlabel">protected</span></span>  </td>
-  </tr>
-</table>
 </div><div class="memdoc">
 
 <p>index of image from which transparency should be mapped, -1 corresponds to no mapping </p>
 <p>In case of 4 component textures transparency is mapped from the w component. </p>
 
-<p class="definition">Definition at line <a class="el" href="textured__surface__material_8h_source.html#l00040">40</a> of file <a class="el" href="textured__surface__material_8h_source.html">textured_surface_material.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="textured__surface__material_8h_source.html#l00038">38</a> of file <a class="el" href="textured__surface__material_8h_source.html">textured_surface_material.h</a>.</p>
 
-<p class="reference">Referenced by <a class="el" href="textured__surface__material_8cxx_source.html#l00045">textured_surface_material()</a>, and <a class="el" href="textured__surface__material_8cxx_source.html#l00010">textured_surface_material()</a>.</p>
+<p class="reference">Referenced by <a class="el" href="shader__program_8cxx_source.html#l00639">cgv::render::shader_program::set_textured_material_uniform()</a>, and <a class="el" href="textured__surface__material_8cxx_source.html#l00009">textured_surface_material()</a>.</p>
 
 </div>
 </div>
