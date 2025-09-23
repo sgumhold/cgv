@@ -57,10 +57,10 @@ public:
 		use_colors = true;
 		use_illumination = true;
 
-		boxes.style.material.set_diffuse_reflectance(cgv::rgb(1.0f));
+		boxes.style.material.diffuse_reflectance = cgv::rgb(1.0f);
 		wire_boxes.style.default_color = cgv::rgb(1.0f);
-		cones.style.material.set_diffuse_reflectance(cgv::rgb(1.0f));
-		spheres.style.material.set_diffuse_reflectance(cgv::rgb(1.0f));
+		cones.style.material.diffuse_reflectance = cgv::rgb(1.0f);
+		spheres.style.material.diffuse_reflectance = cgv::rgb(1.0f);
 
 		cones.style.radius_scale = 0.05f;
 		spheres.style.radius_scale = 0.1f;

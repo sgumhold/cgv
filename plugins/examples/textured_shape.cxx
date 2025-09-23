@@ -98,7 +98,7 @@ public:
 	bool init(cgv::render::context& ctx)
 	{
 		int di = mat.add_image_file("res://alhambra.png");
-		mat.set_diffuse_index(di);
+		mat.diffuse_index = di;
 		if (mat.ensure_textures(ctx))
 			t_ptr = mat.get_texture(di);
 		else
