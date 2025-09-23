@@ -31,7 +31,6 @@ mat3 get_inverse_normal_matrix();
 
 void main()
 {
-	vo.position_eye = 
 	vo.normal_eye = screen_aligned ? vec3(0.0,0.0,1.0) : get_normal_matrix() * normal;
 	vo.line_width = line_width;
 	vo.color = color;
