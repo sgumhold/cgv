@@ -30,8 +30,8 @@ class cube_demo : public node, public drawable, public provider
 	surface_material axes_mat, cube_mat;
 public:
 	cube_demo() :
-		axes_mat(BT_OREN_NAYAR, surface_material::color_type(0, 0, 0), 0.2f),
-		cube_mat(BT_OREN_NAYAR, surface_material::color_type(0.6f, 0.5f, 0.4f), 0.5f),
+		axes_mat({ BT_OREN_NAYAR, surface_material::color_type(0, 0, 0), 0.2f }),
+		cube_mat({ BT_OREN_NAYAR, surface_material::color_type(0.6f, 0.5f, 0.4f), 0.5f }),
 		axis(1, 0, 0)
 	{
 		set_name("cube_demo");
