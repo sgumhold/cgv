@@ -1,0 +1,64 @@
+#version 430
+
+#include "gpgpu_args.glcs"
+#ifdef CGV_USE_SNIPPETS
+
+layout(IMAGE_FORMAT, binding = 0) uniform readonly IMAGE_TYPE input_image;
+layout(binding = 1) uniform writeonly IMAGE_TYPE output_image;
+
+uniform uvec3 u_size;
+uniform int u_channel = 0;
+
+#ifdef USE_TRANSFORM
+	scalar_type operation(value_type element) {
+		//$cgv::operation
+	}
+
+	#define GET_VALUE_FUNC(IDX) operation(imageLoad(input_image, IDX))
+
+#else
+	#define GET_VALUE_FUNC(IDX) imageLoad(input_image, IDX)[u_channel]
+#endif
+
+#define IMAGE_NAME input_image
+// The difference library must be included after all used identifiers have been declared.
+#include "gpgpu_discrete_difference_lib.glcs"
+
+vec4 safe_normalize(vec4 v) {
+	float l = length(v);
+	return l > 0.0 ? v / l : vec4(0.0);
+}
+
+layout(local_size_x = LOCAL_SIZE_X, local_size_y = LOCAL_SIZE_Y, local_size_z = LOCAL_SIZE_Z) in;
+void main() {
+    // the texel coordinates of this thread
+    INDEX_TYPE gid = INDEX_TYPE(gl_GlobalInvocationID);
+    
+	if(SIZE_GUARD(gid, u_size)) {
+		#if DIMS == 1
+		vec4 result = vec4(DIFF_OPERATOR_FUNC(gid), 0.0, 0.0, 0.0);
+		#elif DIMS == 2
+		vec4 result = vec4(DIFF_OPERATOR_FUNC(gid), 0.0, 0.0);
+		#else // DIMS == 3
+		vec4 result = vec4(DIFF_OPERATOR_FUNC(gid), 0.0);
+		#endif
+		
+		#ifdef OUTPUT_MAGNITUDE
+			result = vec4(length(result));
+		#else
+			#ifdef DIFF_SCALING_FUNC
+			// if requested, scale to range [-1,1]
+			result = DIFF_SCALING_FUNC() * result;
+
+				#ifdef MAP_TO_UNORM
+				// map to [0,1]
+				result = 0.5 * result + 0.5;
+				#endif
+
+			#endif
+		#endif
+
+        imageStore(output_image, gid, result);
+	}
+}
+#endif
