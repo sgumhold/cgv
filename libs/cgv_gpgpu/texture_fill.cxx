@@ -22,8 +22,7 @@ bool texture_fill::dispatch(cgv::render::context& ctx, cgv::render::texture& tex
 	if(!is_initialized_for_texture(texture))
 		return false;
 
-	glActiveTexture(GL_TEXTURE0);
-	texture.bind_as_image(ctx, 0);
+	bind_image_texture(ctx, texture, 0);
 
 	uvec3 size = get_texture_size(texture);
 	const uint32_t group_size = 4;
