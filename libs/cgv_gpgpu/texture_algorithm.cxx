@@ -79,7 +79,16 @@ bool texture_algorithm::is_initialized_for_texture(const cgv::render::texture& t
 	return texture.tt == _texture_type;
 }
 
-uvec3 texture_algorithm::get_texture_size(const cgv::render::texture& texture) const {
+uint32_t texture_algorithm::get_texture_type_dimensionality(TextureType texture_type) {
+	switch(texture_type) {
+	case TextureType::TT_1D: return 1;
+	case TextureType::TT_2D: return 2;
+	case TextureType::TT_3D: return 3;
+	default: return 0;
+	}
+}
+
+uvec3 texture_algorithm::get_texture_size(const cgv::render::texture& texture) {
 	return {
 		static_cast<uint32_t>(texture.get_width()),
 		static_cast<uint32_t>(texture.get_height()),
@@ -87,11 +96,16 @@ uvec3 texture_algorithm::get_texture_size(const cgv::render::texture& texture) c
 	};
 }
 
-uvec3 texture_algorithm::get_num_groups(const uvec3& texture_size, uint32_t base_group_size) const {
+uvec3 texture_algorithm::get_num_groups(const uvec3& texture_size, uint32_t base_group_size) {
 	// TODO: Ensure base_group_size is equal to the local_size set in init (add second method that only takes the texture size and uses the local_size)
 	uvec3 num_groups = cgv::math::div_round_up(texture_size, uvec3(base_group_size));
 	// ensure at least one group is launched per dimension
 	return max(num_groups, uvec3(1));
+}
+
+bool texture_algorithm::bind_image_texture(cgv::render::context& ctx, cgv::render::texture& texture, int unit, int level, cgv::render::AccessType access_type) const {
+	// 3d image textures must be bound as layered image textures
+	return texture.bind_as_image(ctx, unit, level, _texture_type == TextureType::TT_3D, 0, access_type);
 }
 
 } // namespace gpgpu

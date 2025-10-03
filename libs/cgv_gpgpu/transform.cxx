@@ -21,7 +21,7 @@ bool transform::init(cgv::render::context& ctx, const sl::data_type& input_type,
 	info.typedefs.push_back({ "input_type", input_type });
 	info.typedefs.push_back({ "output_type", output_type });
 	info.default_buffer_count = 2;
-	info.options.define_snippet( "operation", unary_operation);
+	info.options.define_snippet("operation", unary_operation);
 	return algorithm::init(ctx, info, { { &_kernel, "gpgpu_transform" } });
 }
 

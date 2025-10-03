@@ -31,12 +31,12 @@ bool mipmap::dispatch(cgv::render::context& ctx, cgv::render::texture& texture) 
 
 	uvec3 size = get_texture_size(texture);
 	unsigned max_size = cgv::math::max_value(size);
-	unsigned num_levels = 1 + static_cast<unsigned>(log2(static_cast<float>(max_size)));
+	int num_levels = 1 + static_cast<int>(log2(static_cast<float>(max_size)));
 	
 	uvec3 input_size = size;
 
-	for(unsigned level = 0; level < num_levels - 1; ++level) {
-		texture.bind_as_image(ctx, 1, level + 1);
+	for(int level = 0; level < num_levels - 1; ++level) {
+		bind_image_texture(ctx, texture, 1, level + 1);
 
 		uvec3 output_size = size;
 		float divisor = static_cast<float>(pow(2, level + 1));

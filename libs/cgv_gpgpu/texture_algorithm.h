@@ -1,5 +1,7 @@
 #pragma once
 
+#include <cgv/render/texture.h>
+
 #include "algorithm.h"
 
 #include "lib_begin.h"
@@ -15,6 +17,8 @@ protected:
 public:
 	texture_algorithm(const std::string& type_name, std::initializer_list<TextureType> supported_texture_types) : algorithm(type_name) {
 		_supported_texture_types = supported_texture_types;
+		// Overwrite default value of group size from algorithm to ensure correct group count.
+		_group_size = 4u;
 	}
 
 	bool is_texture_type_supported(TextureType texture_type) const;
@@ -31,8 +35,11 @@ protected:
 
 	bool is_initialized_for_texture(const cgv::render::texture& texture) const;
 
-	uvec3 get_texture_size(const cgv::render::texture& texture) const;
-	uvec3 get_num_groups(const uvec3& texture_size, uint32_t base_group_size) const;
+	static uint32_t get_texture_type_dimensionality(TextureType texture_type);
+	static uvec3 get_texture_size(const cgv::render::texture& texture);
+	static uvec3 get_num_groups(const uvec3& texture_size, uint32_t base_group_size);
+
+	bool bind_image_texture(cgv::render::context& ctx, cgv::render::texture& texture, int unit, int level = 0, cgv::render::AccessType access_type = cgv::render::AccessType::AT_WRITE_ONLY) const;
 
 private:
 	std::vector<TextureType> _supported_texture_types;

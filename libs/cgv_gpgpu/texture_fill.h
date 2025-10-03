@@ -2,8 +2,6 @@
 
 #include "texture_algorithm.h"
 
-#include <cgv/render/texture.h>
-
 #include "lib_begin.h"
 
 namespace cgv {
