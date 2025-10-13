@@ -89,7 +89,7 @@ void depth_halos::create_gui_impl(cgv::base::base* b, cgv::gui::provider* p) {
 cgv::render::shader_compile_options depth_halos::get_shader_compile_options() {
 
 	cgv::render::shader_compile_options options;
-	cgv::render::shader_code::set_define(options.defines, "MODE", mode, Mode::Outside);
+	options.define_macro_if_not_default("MODE", mode, Mode::Outside);
 	return options;
 }
 

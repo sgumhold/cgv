@@ -16,7 +16,10 @@ bool radix_sort_4x::v_init(cgv::render::context& ctx, cgv::render::shader_compil
 		{ &_scatter_kernel, "gpgpu_radix_sort_4x_scatter" }
 	};
 
-	if(algorithm::init(ctx, kernels, config))
+	algorithm_create_info info;
+	info.options = config;
+
+	if(algorithm::init(ctx, info, kernels))
 		return v_resize(ctx);
 
 	return false;

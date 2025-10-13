@@ -19,7 +19,7 @@ using namespace cgv::utils;
 using namespace cgv::media::illum;
 
 shape::shape(const char* name) : group(name), node_flag(true), ax(0), ay(0),
-		mat(BT_OREN_NAYAR, surface_material::color_type(0, 0.1f, 1)), col(0.4f, 0.1f, 0.5f, 1)
+	mat({ BT_OREN_NAYAR, surface_material::color_type(0, 0.1f, 1) }), col(0.4f, 0.1f, 0.5f, 1)
 {
 	show_edges = true;
 	show_faces = false;

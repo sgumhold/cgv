@@ -20,55 +20,51 @@ namespace cgv {
 			/*@name surfel rendering attributes*/
 			//@{
 			/// position offset in normal direction to prevent z-figthing if surfels are placed directly on flat surfaces
-			float surface_offset;
+			float surface_offset = 0.0f;
 			//@}
 
 			/*@name point rendering attributes*/
 			//@{
 			/// default value assigned to point size attribute in \c enable method of point renderer, set to 1 in constructor
-			float point_size;
+			float point_size = 1.0f;
 			/// whether to use the 
-			bool use_group_point_size;
+			bool use_group_point_size = false;
 			/// whether to measure point size in pixels or in world space relative to reference_pixel_size passed to enable method, defaults to true
-			bool measure_point_size_in_pixel;
+			bool measure_point_size_in_pixel = true;
 			//@}
 
 			/*@name global point rendering options*/
 			//@{
 			/// set to 1 in constructor 
-			float blend_width_in_pixel;
+			float blend_width_in_pixel = 1.0f;
 			/// set to 0 in constructor
-			float halo_width_in_pixel;
+			float halo_width_in_pixel = 0.0f;
 			/// set to 0 in constructor
-			float percentual_halo_width;
+			float percentual_halo_width = 0.0f;
 			/// color of halo with opacity channel
-			rgba halo_color;
+			rgba halo_color = { 1.0f };
 			/// strength in [0,1] of halo color with respect to color of primitive
-			float halo_color_strength;
+			float halo_color_strength = 0.5f;
 			/// set to true in constructor
-			bool orient_splats;
+			bool orient_splats = true;
 			/// set to false in constructor
-			bool blend_points;
-			/// construct with default values
-			surfel_render_style();
+			bool blend_points = true;
 		};
 
 		/// renderer that supports point splatting
 		class CGV_API surfel_renderer : public surface_renderer
 		{
 		protected:
-			bool has_point_sizes;
-			bool has_group_point_sizes;
-			bool has_indexed_colors;
-			float reference_point_size;
-			float y_view_angle;
-			/// overload to allow instantiation of surfel_renderer
-			render_style* create_render_style() const;
-			/// build surfel program
-			bool build_shader_program(context& ctx, shader_program& prog, const shader_compile_options& options);
+			bool has_point_sizes = false;
+			bool has_group_point_sizes = false;
+			bool has_indexed_colors = false;
+			float reference_point_size = 0.01f;
+			float y_view_angle = 45.0f;
+			/// return the default shader program name
+			std::string get_default_prog_name() const override { return "surfel.glpr"; }
+			/// create and return the default render style
+			render_style* create_render_style() const override { return new surfel_render_style(); }
 		public:
-			///
-			surfel_renderer();
 			/// call this before setting attribute arrays to manage attribute array in given manager
 			void enable_attribute_array_manager(const context& ctx, attribute_array_manager& aam);
 			/// call this after last render/draw call to ensure that no other users of renderer change attribute arrays of given manager

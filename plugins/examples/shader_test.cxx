@@ -131,15 +131,15 @@ public:
 	{	
 		connect_copy(add_control("resolution", resolution, "value_slider", "min=3;max=200;ticks=true;log=true")
 			->value_change,rebind(static_cast<drawable*>(this),&drawable::post_redraw));
-		connect_copy(add_control("ambient", mat.ref_ambient())
+		connect_copy(add_control("ambient", mat.ambient)
 			->value_change,rebind(static_cast<drawable*>(this),&drawable::post_redraw));
-		connect_copy(add_control("diffuse", mat.ref_diffuse())
+		connect_copy(add_control("diffuse", mat.diffuse)
 			->value_change,rebind(static_cast<drawable*>(this),&drawable::post_redraw));
-		connect_copy(add_control("specular", mat.ref_specular())
+		connect_copy(add_control("specular", mat.specular)
 			->value_change,rebind(static_cast<drawable*>(this),&drawable::post_redraw));
-		connect_copy(add_control("emission", mat.ref_emission())
+		connect_copy(add_control("emission", mat.emission)
 			->value_change,rebind(static_cast<drawable*>(this),&drawable::post_redraw));
-		connect_copy(add_control("shininess", mat.ref_shininess(), "value_slider", "min=0;max=128;ticks=true;log=true")
+		connect_copy(add_control("shininess", mat.shininess, "value_slider", "min=0;max=128;ticks=true;log=true")
 			->value_change,rebind(static_cast<drawable*>(this),&drawable::post_redraw));
 		connect_copy(add_control("shading", shading_type, "Gouraud,Blinn-Phong")
 			->value_change,rebind(static_cast<drawable*>(this),&drawable::post_redraw));

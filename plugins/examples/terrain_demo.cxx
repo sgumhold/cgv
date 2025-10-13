@@ -47,9 +47,9 @@ class terrain_demo : public base,		   // base class of all to be registered clas
 		terrain_style.noise_layers.emplace_back(30.0F, 2.0F);
 		terrain_style.noise_layers.emplace_back(7.5F, 0.75F);
 
-		terrain_style.material.set_brdf_type(cgv::media::illum::BT_OREN_NAYAR);
-		terrain_style.material.set_roughness(1.0f);
-		terrain_style.material.set_ambient_occlusion(0.5f);
+		terrain_style.material.brdf_type = cgv::media::illum::BT_OREN_NAYAR;
+		terrain_style.material.roughness = 1.0f;
+		terrain_style.material.ambient_occlusion = 0.5f;
 	}
 
 	bool handle(event& e) override
