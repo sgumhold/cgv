@@ -639,7 +639,7 @@ bool shader_program::set_material_uniform(const context& ctx, const std::string&
 bool shader_program::set_textured_material_uniform(const context& ctx, const std::string& name, const textured_material& material, bool generate_error)
 {
 	const char* texture_names[] = {
-		"tex0", "tex1", "tex2", "tex3"
+		"tex0", "tex1", "tex2", "tex3", "tex4", "tex5"
 	};
 	for (int i = 0; i < (int)material.get_nr_textures(); ++i)
 		if (!set_uniform(ctx, texture_names[i], i, generate_error))
