@@ -5,12 +5,6 @@
 
 namespace cgv {
 	namespace render {
-		box_wire_render_style::box_wire_render_style()
-		{
-			default_extent = vec3(1.0f);
-			relative_anchor = vec3(0.0f);
-		}
-
 		box_wire_renderer& ref_box_wire_renderer(context& ctx, int ref_count_change)
 		{
 			static int ref_count = 0;
@@ -19,19 +13,6 @@ namespace cgv {
 			return r;
 		}
 
-		/// overload to allow instantiation of box_wire_renderer
-		render_style* box_wire_renderer::create_render_style() const
-		{
-			return new line_render_style();
-		}
-
-		box_wire_renderer::box_wire_renderer()
-		{
-			has_extents = false;
-			position_is_center = true;
-			has_translations = false;
-			has_rotations = false;
-		}
 		/// call this before setting attribute arrays to manage attribute array in given manager
 		void box_wire_renderer::enable_attribute_array_manager(const context& ctx, attribute_array_manager& aam)
 		{
@@ -67,12 +48,6 @@ namespace cgv {
 		void box_wire_renderer::set_position_is_center(bool _position_is_center)
 		{
 			position_is_center = _position_is_center;
-		}
-
-		/// build box wire program
-		bool box_wire_renderer::build_shader_program(context& ctx, shader_program& prog, const shader_compile_options& options)
-		{
-			return prog.build_program(ctx, "box_wire.glpr", options, true);
 		}
 		/// 
 		bool box_wire_renderer::enable(context& ctx)

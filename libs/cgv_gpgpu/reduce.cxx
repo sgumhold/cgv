@@ -7,11 +7,9 @@ namespace gpgpu {
 
 const std::string reduce::init_argument_name = "u_init";
 
-reduce::reduce() : reduce(256, 128) {}
-
-reduce::reduce(uint32_t group_count, uint32_t group_size) : algorithm("reduce") {
+reduce::reduce(uint32_t group_count, uint32_t group_size) : algorithm("reduce", group_size) {
 	_num_groups = group_count;
-	_group_size = group_size;
+	//_group_size = group_size;
 }
 
 bool reduce::init(cgv::render::context& ctx, const sl::data_type& value_type) {
@@ -21,13 +19,6 @@ bool reduce::init(cgv::render::context& ctx, const sl::data_type& value_type) {
 bool reduce::init(cgv::render::context& ctx, const sl::data_type& value_type, const std::string& binary_operation) {
 	if(!value_type.is_valid())
 		return false;
-	cgv::render::shader_compile_options config = get_configuration({}, { value_type });
-	config.snippets.push_back({ "value_typedef", sl::get_type_alias_string("value_type", value_type) });
-
-	if(!binary_operation.empty()) {
-		config.snippets.push_back({ "operation", binary_operation });
-		config.defines["USE_CUSTOM_OPERATION"] = "";
-	}
 
 	size_t available_size = static_cast<size_t>(ctx.get_device_capabilities().max_compute_shared_memory_size);
 	size_t available_element_count = available_size / sl::get_aligned_size(value_type);
@@ -35,11 +26,24 @@ bool reduce::init(cgv::render::context& ctx, const sl::data_type& value_type, co
 	if(available_element_count < _group_size)
 		return false;
 
+	algorithm_create_info info;
+	info.types.push_back(value_type);
+	info.typedefs.push_back({ "value_type", value_type });
+	info.default_buffer_count = 2;
+
+	if(!binary_operation.empty()) {
+		info.options.define_snippet("operation", binary_operation);
+		info.options.define_macro("USE_CUSTOM_OPERATION");
+	}
+
+	// TODO: Check if LOCAL_SIZE_X overwrites the define set by algorithm::init.
+	cgv::render::shader_compile_options kernel_options;
+	kernel_options.define_macro("LOCAL_SIZE_X", _group_size);
 	std::vector<compute_kernel_info> kernel_infos = {
-		{ &_kernel, "gpgpu_reduce_group", { { "LOCAL_SIZE_X", std::to_string(_group_size) } } }
+		{ &_kernel, "gpgpu_reduce_group", kernel_options }
 	};
 
-	if(algorithm::init(ctx, kernel_infos, config)) {
+	if(algorithm::init(ctx, info, kernel_infos)) {
 		_group_reduction_buffer.create_or_resize(ctx, value_type, _num_groups);
 		return true;
 	}

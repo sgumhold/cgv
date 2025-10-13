@@ -27,8 +27,6 @@ public:
 
 	shader_program& get(const std::string& name);
 
-	shader_define_map& get_defines(const std::string& name);
-
 	shader_compile_options& get_compile_options(const std::string& name);
 
 	shader_lib_map::iterator begin() { return shaders.begin(); }

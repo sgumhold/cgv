@@ -38,8 +38,8 @@ bump_mapper::bump_mapper(unsigned _texture_resolution) :
 bool bump_mapper::init(cgv::render::context& ctx)
 {
 	tex_index = material.add_texture_reference(bump_map);
-	material.set_diffuse_index(tex_index);
-	material.set_bump_index(tex_index);
+	material.diffuse_index = tex_index;
+	material.bump_index = tex_index;
 	return true;
 }
 

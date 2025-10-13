@@ -3,15 +3,44 @@
 #include "fvec.h"
 #include "fmat.h"
 #include "interpolate.h"
+#include "parametric_curve.h"
 
 namespace cgv {
 namespace math {
 
 template<typename PointT>
-class quadratic_bezier_curve {
+class bezier_curve : public parametric_curve<bezier_curve<PointT>> {
 public:
-	using point_type = PointT;
+	/// the control points
+	std::vector<PointT> points;
 
+	bezier_curve() {}
+	bezier_curve(std::initializer_list<PointT> points) : points(points) {}
+
+	template<typename ParamT = float>
+	PointT evaluate(ParamT t) const {
+		// TODO: throw an exception
+		if(points.empty())
+			return {};
+
+		if(points.size() == 1)
+			return points.front();
+
+		size_t degree = points.size() - 1;
+		std::vector<PointT> d = points;
+
+		for(size_t i = 1; i <= degree; ++i) {
+			for(size_t j = degree; j > i - 1; --j)
+				d[j] = interpolate_linear(d[j - 1], d[j], t);
+		}
+
+		return d[degree];
+	}
+};
+
+template<typename PointT>
+class quadratic_bezier_curve : public parametric_curve<quadratic_bezier_curve<PointT>> {
+public:
 	/// the start control point
 	PointT p0 = { 0 };
 	/// the middle control point
@@ -30,14 +59,6 @@ public:
 	template<typename ParamT = float>
 	PointT derivative(ParamT t) const {
 		return interpolate_linear(PointT(2) * (p1 - p0), PointT(2) * (p2 - p1), t);
-	}
-
-	template<typename ParamT = float>
-	std::vector<PointT> sample(size_t num_segments) const {
-		std::vector<PointT> points;
-		points.reserve(num_segments + 1);
-		sample_steps_transform<ParamT>(std::back_inserter(points), [this](ParamT t) { return evaluate(t); }, num_segments);
-		return points;
 	}
 
 	std::pair<PointT, PointT> axis_aligned_bounding_box() const {
@@ -92,7 +113,7 @@ private:
 };
 
 template<typename PointT>
-class cubic_bezier_curve {
+class cubic_bezier_curve : public parametric_curve<cubic_bezier_curve<PointT>> {
 public:
 	/// the first control point
 	PointT p0 = { 0 };
@@ -115,15 +136,6 @@ public:
 	PointT derivative(ParamT t) const {
 		return interpolate_quadratic_bezier(PointT(3) * (p1 - p0), PointT(3) * (p2 - p1), PointT(3) * (p3 - p2), t);
 	}
-
-	template<typename ParamT = float>
-	std::vector<PointT> sample(size_t num_segments) const {
-		std::vector<PointT> points;
-		points.reserve(num_segments + 1);
-		sample_steps_transform<ParamT>(std::back_inserter(points), [this](ParamT t) { return evaluate(t); }, num_segments);
-		return points;
-	}
-
 
 	std::pair<PointT, PointT> axis_aligned_bounding_box() const {
 		return compute_bounds(p0, p1, p2, p3);

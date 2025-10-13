@@ -8,7 +8,7 @@
 namespace cgv {
 	namespace media {
 		namespace illum {
-			class surface_material;
+			struct surface_material;
 			class light_source;
 		}
 	}
@@ -104,7 +104,7 @@ public:
 	/// collect shader code files declared in shader program file, compile and attach them
 	bool attach_program(const context& ctx, std::string file_name, bool show_error = false, const shader_compile_options& options = {});
 	/// find and parse all instance definitions in a shader program file
-	static std::vector<shader_define_map> extract_instances(std::string file_name);
+	static std::vector<shader_compile_options> extract_instances(std::string file_name);
 	/// link shaders to an executable program
 	bool link(const context& ctx, bool show_error = false);
 	/// return whether program is linked
@@ -183,7 +183,7 @@ public:
 	/// set uniform array from array \c array where number elements can be derived from array through \c array_descriptor_traits; supported array types include cgv::math::vec and std::vector
 	template <typename T>
 	bool set_uniform_array(const context& ctx, int loc, const T& array) {
-		return ctx.set_uniform_array_void(*this, loc, array_descriptor_traits<T>::get_type_descriptor(), array_descriptor_traits<T>::get_address(array), array_descriptor_traits<T>::get_nr_elements(array));
+		return ctx.set_uniform_array_void(*this, loc, array_descriptor_traits<T>::get_type_descriptor(array), array_descriptor_traits<T>::get_address(array), array_descriptor_traits<T>::get_nr_elements(array));
 	}
 	/// set uniform array from an array with \c nr_elements elements of type T pointed to by \c array
 	template <typename T>

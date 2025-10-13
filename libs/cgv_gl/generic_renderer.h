@@ -12,16 +12,13 @@ class generic_renderer {
 protected:
 	std::string prog_name = "";
 	shader_program prog;
-	shader_define_map defines;
+	shader_compile_options prog_options;
 	
 	bool has_indices = false;
 
-	bool build_shader_program(const context& ctx, const shader_define_map& defines) {
-		shader_compile_options options;
-		options.defines = defines;
-		bool success = prog.build_program(ctx, prog_name, options, true);
+	bool build_shader_program(const context& ctx) {
 		prog.allow_context_to_set_color(false);
-		return success;
+		return prog.build_program(ctx, prog_name, prog_options, true);
 	}
 
 public:
@@ -33,13 +30,14 @@ public:
 	}
 
 	bool init(context& ctx) {
-		return build_shader_program(ctx, defines);
+		return build_shader_program(ctx);
 	}
 
-	bool set_shader_defines(const context& ctx, const shader_define_map& defines) {
+	bool set_shader_options(const context& ctx, const shader_compile_options& options) {
+		prog_options = options;
 		if(prog.is_created())
 			prog.destruct(ctx);
-		return build_shader_program(ctx, defines);
+		return build_shader_program(ctx);
 	}
 
 	shader_program& ref_prog() {
