@@ -1,0 +1,35 @@
+//?#version 430
+
+//?#include "gpgpu_args.glcs"
+
+#define LOCAL_HIST_GROUP_SIZE 64U // The size of a local histogram group
+
+#ifdef CGV_USE_SNIPPETS
+layout(std430, binding = 0) readonly buffer input_buffer {
+    value_type b_data_in[];
+};
+
+layout(std430, binding = 1) writeonly buffer output_buffer {
+    value_type b_data_out[];
+};
+
+layout(std430, binding = 2) buffer votes_buffer {
+    uint b_votes[];
+};
+
+layout(std430, binding = 3) buffer prefix_sums_buffer {
+	uint b_last_sum;
+    uint b_pad[3]; // padding (unused)
+	uint b_prefix_sums[];
+};
+
+layout(std430, binding = 4) buffer block_sums_buffer {
+	uint b_block_sums[];
+};
+
+uniform uint u_num_values;
+uniform uint u_num_values_padded;
+uniform uint u_num_scan_groups; // the number of local scan groups
+uniform uint u_num_block_sums; // the number of blocksums
+uniform uint u_last_block_sum_idx; // the index of the last valid block sum
+#endif
