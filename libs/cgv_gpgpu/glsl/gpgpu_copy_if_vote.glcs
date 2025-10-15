@@ -1,0 +1,31 @@
+#version 430
+
+#extension GL_KHR_shader_subgroup_basic: enable
+#extension GL_KHR_shader_subgroup_ballot: enable
+
+#include "gpgpu_copy_if_common.glcs"
+
+#ifdef CGV_USE_SNIPPETS
+bool predicate(value_type element, uint index) {
+	//$cgv::predicate
+}
+
+layout(local_size_x = 256) in;
+void main() {
+    for(uint idx = gl_WorkGroupID.x*gl_WorkGroupSize.x + gl_LocalInvocationID.x; idx < u_num_values_padded; idx += gl_WorkGroupSize.x*gl_NumWorkGroups.x) {
+        bool vote = idx < u_num_values ? predicate(b_data_in[idx], idx) : false;
+
+        uint ballot = subgroupBallot(vote).x;
+
+        if(subgroupElect())
+            b_votes[gl_SubgroupID + 8*gl_WorkGroupID.x] = ballot;
+
+		// old version (may be needed for back compatibility), needs to be rewritten to support 32 bit vote ballots
+        /*if(idx < n) {
+            votes[idx] = get_vote(data[idx]) ? 1 : 0;
+        } else {
+            votes[idx] = uint(0);
+        }*/
+    }
+}
+#endif
