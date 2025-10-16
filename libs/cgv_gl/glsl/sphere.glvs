@@ -1,6 +1,7 @@
 #version 330 core
 
 uniform float radius_scale = 1.0;
+uniform vec4 halo_color;
 uniform float percentual_halo_width = 0.0;
 
 in vec4  position;
@@ -53,6 +54,7 @@ void main()
 	right_multiply_group_position_matrix(vo.model_view_projection_matrix, group_index);
 	// compute sphere color
 	vo.color = group_color(color, group_index);
+	vo.halo_color = halo_color;
 	vo.percentual_halo_width = percentual_halo_width;
 	// output sphere parameter space for geometry shader
 	gl_Position = position;
