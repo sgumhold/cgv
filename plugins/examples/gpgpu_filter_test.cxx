@@ -220,5 +220,5 @@ private:
 
 #include <cgv/base/register.h>
 
-/// register a factory to create new visibility sorting tests
-cgv::base::factory_registration<gpgpu_filter_test> test_visibility_sorting_fac("New/GPGPU/Filter test");
+/// register a factory to create new gpgpu filter tests
+cgv::base::factory_registration<gpgpu_filter_test> gpgpu_filter_test_fac("New/GPGPU/Filter test");
