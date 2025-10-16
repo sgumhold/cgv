@@ -15,8 +15,8 @@ public:
 	gpgpu_filter_test() : cgv::base::node("GPGPU Filter Test")
 	{
 		random_engine.seed(42);
-		sphere_style.surface_color = cgv::rgb(0.5f);
-		sphere_style.map_color_to_material = cgv::render::CM_COLOR;
+		spheres.style.surface_color = cgv::rgb(0.5f);
+		spheres.style.map_color_to_material = cgv::render::CM_COLOR;
 	}
 
 	std::string get_type_name() const {
@@ -108,11 +108,11 @@ public:
 		add_member_control(this, "Max", threshold_max, "value_slider", options);
 		*/
 
-		if(begin_tree_node("Sphere style", sphere_style, false)) {
+		if(begin_tree_node("Sphere style", spheres.style, false)) {
 			align("\a");
-			add_gui("", sphere_style);
+			add_gui("", spheres.style);
 			align("\b");
-			end_tree_node(sphere_style);
+			end_tree_node(spheres.style);
 		}
 	}
 
@@ -151,7 +151,7 @@ public:
 			size_t filtered_count = 0;
 			filter.read_count(ctx, filtered_count);
 			double time = time_query.end_scope_and_collect();
-			std::cout << "Filtering done in " << (time / 1'000'000.0f) << " ms. Copied" << filtered_count << " elements." << std::endl;
+			std::cout << "Filtering done in " << (time / 1'000'000.0f) << " ms. Copied " << filtered_count << " elements." << std::endl;
 
 			// Copy the filtered positions back to the sphere render data positions buffer.
 			copy_helper.dispatch(ctx, cgv::gpgpu::begin(filtered_positions_buffer), cgv::gpgpu::begin(filtered_positions_buffer) + filtered_count, cgv::gpgpu::begin(*positions_buffer));
@@ -204,7 +204,6 @@ private:
 	int primitive_count = 10000;
 	const float radius_min = 0.005f;
 	const float radius_max = 0.05f;
-	cgv::render::sphere_render_style sphere_style;
 	cgv::render::sphere_render_data<> spheres;
 	cgv::render::vertex_buffer filtered_positions_buffer;
 	int sphere_render_count = -1;
