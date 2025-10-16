@@ -55,20 +55,7 @@ void copy_if::resize(cgv::render::context& ctx, uint32_t size) {
 	_block_sums_buffer.create_or_resize<uint32_t>(ctx, _num_block_sums);
 
 	uint32_t block_sum_offset_shift = static_cast<uint32_t>(std::log2(_block_size));
-	uint32_t last_block_sum_idx = (num_values_padded >> block_sum_offset_shift) - 1;
-
-	_vote_kernel.enable(ctx);
-	_vote_kernel.set_argument(ctx, "u_num_values", size);
-	_vote_kernel.disable(ctx);
-
-	_scan_global_kernel.enable(ctx);
-	_scan_global_kernel.set_argument(ctx, "u_num_block_sums", _num_block_sums);
-	_scan_global_kernel.set_argument(ctx, "u_last_block_sum_idx", last_block_sum_idx);
-	_scan_global_kernel.disable(ctx);
-
-	_scatter_kernel.enable(ctx);
-	_scatter_kernel.set_argument(ctx, "u_num_values", size);
-	_scatter_kernel.disable(ctx);
+	_last_block_sum_idx = (num_values_padded >> block_sum_offset_shift) - 1;
 }
 
 bool copy_if::dispatch(cgv::render::context& ctx, const cgv::render::vertex_buffer& input_buffer, const cgv::render::vertex_buffer& output_buffer, size_t count, const argument_bindings& arguments) {
@@ -97,6 +84,7 @@ bool copy_if::dispatch(cgv::render::context& ctx, device_buffer_iterator input_f
 	_votes_buffer.bind(ctx, 2);
 	
 	_vote_kernel.enable(ctx);
+	_vote_kernel.set_argument(ctx, "u_num_values", count);
 	_vote_kernel.set_argument<uint32_t>(ctx, "u_input_begin", input_first.index());
 	_vote_kernel.set_argument<uint32_t>(ctx, "u_input_end", input_last.index());
 	_vote_kernel.set_arguments(ctx, arguments);
@@ -117,11 +105,14 @@ bool copy_if::dispatch(cgv::render::context& ctx, device_buffer_iterator input_f
 	_scan_local_kernel.disable(ctx);
 
 	_scan_global_kernel.enable(ctx);
+	_scan_global_kernel.set_argument(ctx, "u_num_block_sums", _num_block_sums);
+	_scan_global_kernel.set_argument(ctx, "u_last_block_sum_idx", _last_block_sum_idx);
 	dispatch_compute(1, 1, 1);
 	glMemoryBarrier(GL_SHADER_STORAGE_BARRIER_BIT);
 	_scan_global_kernel.disable(ctx);
 
 	_scatter_kernel.enable(ctx);
+	_scatter_kernel.set_argument(ctx, "u_num_values", count);
 	_scatter_kernel.set_argument<uint32_t>(ctx, "u_input_begin", input_first.index());
 	_scatter_kernel.set_argument<uint32_t>(ctx, "u_input_end", input_last.index());
 	_scatter_kernel.set_argument<uint32_t>(ctx, "u_output_begin", output_first.index());
