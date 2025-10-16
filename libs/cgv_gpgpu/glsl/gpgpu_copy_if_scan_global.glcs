@@ -42,6 +42,6 @@ void main() {
     memoryBarrier();
 
     if(tid == 0)
-        b_last_sum = b_last_sum + b_block_sums[u_last_block_sum_idx];
+        b_last_sum += b_block_sums[u_last_block_sum_idx];
 }
 #endif

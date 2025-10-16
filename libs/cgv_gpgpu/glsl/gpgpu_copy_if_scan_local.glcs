@@ -52,7 +52,7 @@ void main() {
         offset += offset;
     }
 
-    if(tid < 1) {
+    if(tid == 0) {
 		uint val = (s_scan[addr(31)]&0x0000FFFF) + (s_scan[addr(63)]&0x0000FFFF);
 		
 		b_block_sums[gl_WorkGroupID.x] = val;
@@ -90,7 +90,7 @@ void main() {
 	
 	b_prefix_sums[thread_offset] = sums;
     
-    if(tid == 63 && gl_WorkGroupID.x == u_num_scan_groups - 1)
+    if(tid == 63 && gl_WorkGroupID.x == gl_NumWorkGroups.x - 1)
 		b_last_sum = scan_value + ((value_pack>>3)&1) + v2;
 }
 #endif

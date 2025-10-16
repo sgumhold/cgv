@@ -16,6 +16,9 @@ layout(std430, binding = 2) buffer atomic_counter_buffer {
 };
 
 uniform uint u_num_values;
+uniform uint u_input_begin;
+uniform uint u_input_end;
+uniform uint u_output_begin;
 
 bool predicate(value_type element, uint index) {
 	//$cgv::predicate
@@ -24,12 +27,12 @@ bool predicate(value_type element, uint index) {
 layout(local_size_x = LOCAL_SIZE_X) in;
 void main() {
 	for(uint idx = gl_WorkGroupID.x*gl_WorkGroupSize.x + gl_LocalInvocationID.x; idx < u_num_values; idx += gl_WorkGroupSize.x*gl_NumWorkGroups.x) {
-		value_type value = b_data_in[idx];
-        bool vote = idx < u_num_values ? predicate(value, idx) : false;
+		value_type value = b_data_in[u_input_begin + idx];
+        bool vote = predicate(value, idx);
 
         if(vote) {
 			int destination_idx = atomicAdd(b_count, 1);
-			b_data_out[destination_idx] = value;
+			b_data_out[u_output_begin + destination_idx] = value;
 		}
     }
 }
