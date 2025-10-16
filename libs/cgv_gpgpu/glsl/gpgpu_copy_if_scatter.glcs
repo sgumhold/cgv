@@ -3,31 +3,28 @@
 #include "gpgpu_copy_if_common.glcs"
 
 #ifdef CGV_USE_SNIPPETS
+
+uniform uint u_output_begin;
+
 layout(local_size_x = 256) in;
 void main() {
-	uint tid = gl_LocalInvocationID.x;
-	uint wid = gl_WorkGroupID.x;
-
-	uint bid = wid;
-
-    for(uint idx = wid*gl_WorkGroupSize.x + tid; idx < u_num_values; idx += gl_WorkGroupSize.x*gl_NumWorkGroups.x) {
+    uint idx = gl_GlobalInvocationID.x;
+	if(idx < u_num_values) {
 		uint vote_ballot_idx = idx>>5;
 		uint vote_ballot = b_votes[vote_ballot_idx];
 		uint vote_idx = idx&31;
 
 		if(((vote_ballot>>vote_idx)&1) == 1) {
 			uint prefix_sum = (b_prefix_sums[idx>>2]>>((idx&3)<<3)) & 0x000000FF;
-			uint block_sum = b_block_sums[bid];
+			uint block_sum = b_block_sums[gl_WorkGroupID.x];
 			uint addr = prefix_sum + block_sum;
         
 			//#if MODE == 0
-			b_data_out[addr] = b_data_in[idx];
+			b_data_out[u_output_begin + addr] = b_data_in[u_input_begin + idx];
 			//#else
 			//b_data_out[addr] = idx;
 			//#endif
 		}
-
-		bid += gl_WorkGroupSize.x*gl_NumWorkGroups.x;
     }
 }
 #endif

@@ -43,7 +43,6 @@ public:
 	static const std::string init_argument_name;
 
 private:
-	//uint32_t _group_size = 128;
 	uint32_t _num_groups = 256;
 
 	compute_kernel _kernel;
