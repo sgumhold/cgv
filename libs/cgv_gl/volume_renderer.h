@@ -115,7 +115,7 @@ namespace cgv { // @<
 			float slice_opacity = 0.5f;
 
 			/// a bounding box used to define a subspace of the volume to be visualized
-			box3 clip_box = { { 0.0f }, { 1.0f } };
+			box3 clip_box = { vec3{0.0f}, vec3{1.0f} };
 		};
 
 		/// renderer that supports point splatting
@@ -136,7 +136,7 @@ namespace cgv { // @<
 			/// a 2D texture from a frame buffer depth buffer used to combine volume rendering with opaque geometry
 			texture* depth_texture = nullptr;
 			/// the bounding box of the volume in scene units
-			box3 bounding_box = { { 0.0f }, { 1.0f } };
+			box3 bounding_box = { vec3{0.0f}, vec3{1.0f} };
 			/// whether to translate and scale the volume to the given bounding box during rendering
 			bool apply_bounding_box_transformation = false;
 			/// offset applied to the noise texture (can be used in conjunction with temporal anti aliasing)
@@ -152,9 +152,9 @@ namespace cgv { // @<
 			void init_noise_texture(context& ctx);
 		public:
 			/// construct shader programs and return whether this was successful, call inside of init method of drawable
-			bool init(context& ctx);
+			bool init(context& ctx) override;
 			/// clean up
-			virtual void clear (const context& ctx);
+			void clear (const context& ctx) override;
 			/// sets the 3D volume texture containing scalar values (density or other measured quantities)
 			bool set_volume_texture(texture* tex);
 			/// sets the transfer function used for classification; must be 1D or 2D (as loaded from an image)
@@ -170,14 +170,14 @@ namespace cgv { // @<
 			///
 			void set_noise_offset(const vec2& offset);
 			///
-			bool enable(context& ctx);
+			bool enable(context& ctx) override;
 			///
-			bool validate_attributes(const context& ctx) const;
+			bool validate_attributes(const context& ctx) const override;
 			///
-			bool disable(context& ctx);
+			bool disable(context& ctx) override;
 			///
 			void draw(context& ctx, size_t start, size_t count,
-				bool use_strips = false, bool use_adjacency = false, uint32_t strip_restart_index = -1);
+				bool use_strips = false, bool use_adjacency = false, uint32_t strip_restart_index = -1) override;
 		};
 	}
 }
