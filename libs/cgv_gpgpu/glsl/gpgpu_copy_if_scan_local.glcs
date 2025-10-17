@@ -6,7 +6,7 @@
 shared uint s_scan[LOCAL_HIST_GROUP_SIZE + 16]; // make room for all values plus some space for offset addresses
 
 bool predicate(value_type element, uint index) {
-	if(index >= u_num_values)
+	if(index >= u_args.num_values)
 		return false;
 
 	//$cgv::predicate

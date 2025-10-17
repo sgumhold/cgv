@@ -1,6 +1,5 @@
 #pragma once
 
-#include <cgv/math/integer.h>
 #include <cgv/render/context.h>
 #include <cgv/render/vertex_buffer.h>
 

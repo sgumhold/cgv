@@ -27,9 +27,12 @@ layout(std430, binding = 4) buffer block_sums_buffer {
 	uint b_block_sums[];
 };
 
-uniform uint u_input_begin;
-uniform uint u_input_end;
-uniform uint u_num_values; // the number of values in the input buffer
-uniform uint u_num_block_sums; // the number of blocksums
-uniform uint u_last_block_sum_idx; // the index of the last valid block sum
+layout(std140, binding = 0) uniform argument_buffer {
+	uint input_begin;
+	uint input_end;
+	uint output_begin;
+	uint num_values; // the number of values in the input buffer
+	uint num_block_sums; // the number of blocksums
+	uint last_block_sum_idx; // the index of the last valid block sum
+} u_args;
 #endif
