@@ -105,7 +105,7 @@ public:
 	};
 
 	screenshot();
-	std::string get_type_name() const { return "screenshot"; }
+	std::string get_type_name() const override { return "screenshot"; }
 
 	bool self_reflect(cgv::reflect::reflection_handler& rh) override;
 	void stream_help(std::ostream& os) override {}
