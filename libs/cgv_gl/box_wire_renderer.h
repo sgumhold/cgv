@@ -40,13 +40,13 @@ namespace cgv { // @<
 			render_style* create_render_style() const override { return new box_wire_render_style(); }
 		public:
 			/// call this before setting attribute arrays to manage attribute array in given manager
-			void enable_attribute_array_manager(const context& ctx, attribute_array_manager& aam);
+			void enable_attribute_array_manager(const context& ctx, attribute_array_manager& aam) override;
 			/// call this after last render/draw call to ensure that no other users of renderer change attribute arrays of given manager
-			void disable_attribute_array_manager(const context& ctx, attribute_array_manager& aam);
+			void disable_attribute_array_manager(const context& ctx, attribute_array_manager& aam) override;
 			/// set the flag, whether the position is interpreted as the box center
 			void set_position_is_center(bool _position_is_center);
 			/// enable box wire renderer
-			bool enable(context& ctx);
+			bool enable(context& ctx) override;
 			/// specify a single extent for all boxes
 			template <typename T>
 			void set_extent(const context& ctx, const T& extent) { has_extents = true; ref_prog().set_attribute(ctx, get_prog_attribute_location(ctx, "extent"), extent); }
@@ -100,10 +100,10 @@ namespace cgv { // @<
 			/// remove the rotation attribute
 			void remove_rotation_array(const context& ctx);
 			///
-			bool disable(context& ctx);
+			bool disable(context& ctx) override;
 			///
 			void draw(context& ctx, size_t start, size_t count,
-				bool use_strips = false, bool use_adjacency = false, uint32_t strip_restart_index = -1);
+				bool use_strips = false, bool use_adjacency = false, uint32_t strip_restart_index = -1) override;
 		};
 		struct CGV_API box_wire_render_style_reflect : public box_wire_render_style
 		{
