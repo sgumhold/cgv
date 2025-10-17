@@ -135,6 +135,8 @@ int ray_cylinder_intersection(const ray<T, 3>& ray, const fvec<T, 3>& position, 
 
 /// @brief Computes the intersection between a ray and oriented cylinder defined by start and end position and returns the number of intersections.
 /// Differentiates between 0 or 1 intersections.
+/// 
+/// @tparam T the numeric type.
 /// @param [in] ray the incomming ray.
 /// @param [in] start_position the cylinder base center position.
 /// @param [in] end_position the cylinder top center position.
@@ -150,9 +152,11 @@ int ray_cylinder_intersection2(const ray<T, 3>& ray, const fvec<T, 3>& start_pos
 
 /// @brief Computes the intersection between a ray and infinite plane and returns the number of intersections.
 /// Differentiates between 0 or 1 intersections.
+/// 
+/// @tparam T the numeric type.
 /// @param [in] ray the incomming ray.
 /// @param [in] origin the plane origin position.
-/// @param [in] normal the plane surface normal.
+/// @param [in] normal the plane surface normal (must be normalized).
 /// @param [out] out_t the distance to the intersection point.
 /// @return the number of intersections.
 template <typename T>
@@ -168,6 +172,8 @@ int ray_plane_intersection(const ray<T, 3>& ray, const fvec<T, 3>& origin, const
 
 /// @brief Computes the intersection between a ray and axis aligned rectangle and returns the number of intersections.
 /// Differentiates between 0 or 1 intersections.
+/// 
+/// @tparam T the numeric type.
 /// @param [in] ray the incomming ray.
 /// @param [in] position the rectangle center position.
 /// @param [in] extent the total rectangle size.
@@ -221,6 +227,8 @@ int ray_axis_aligned_rectangle_intersection(const ray<T, 3>& ray, const fvec<T, 
 
 /// @brief Computes the intersection between a ray and oriented parallelogram defined by a pivot corner and two outgoing edges and returns the number of intersections.
 /// Differentiates between 0 or 1 intersections.
+/// 
+/// @tparam T the numeric type.
 /// @param [in] ray the incomming ray.
 /// @param [in] origin the pivot corner position.
 /// @param [in] edge_u the direction and length of the first side pair.
@@ -326,6 +334,8 @@ int ray_parallelogram_intersection(const ray<T, 3>& ray, const fvec<T, 3>& origi
 
 /// @brief Computes the intersection between a ray and oriented rectangle and returns the number of intersections.
 /// Differentiates between 0 or 1 intersections.
+/// 
+/// @tparam T the numeric type.
 /// @param [in] ray the incomming ray.
 /// @param [in] position the rectangle center position.
 /// @param [in] extent the total rectangle size.
@@ -354,6 +364,8 @@ int ray_rectangle_intersection(const ray<T, 3>& ray, const fvec<T, 3>& position,
 
 /// @brief Computes the intersection between a ray and sphere and returns the number of intersections.
 /// Differentiates between 0, 1 or 2 intersections.
+/// 
+/// @tparam T the numeric type.
 /// @param [in] ray the incomming ray.
 /// @param [in] center the sphere center position.
 /// @param [in] radius the sphere radius.
@@ -385,6 +397,8 @@ int ray_sphere_intersection(const ray<T, 3>& ray, const fvec<T, 3>& center, T ra
 
 /// @brief Computes the first intersection between a ray and sphere and returns the number of intersections.
 /// Differentiates between 0 or 1 intersections.
+/// 
+/// @tparam T the numeric type.
 /// @param [in] ray the incomming ray.
 /// @param [in] center the sphere center position.
 /// @param [in] radius the sphere radius.
@@ -412,6 +426,8 @@ int first_ray_sphere_intersection(const ray<T, 3>& ray, const fvec<T, 3>& center
 
 /// @brief Computes the intersection between a ray and axis aligned torus with medial axis equal to the y-axis and returns the number of intersections.
 /// Differentiates between 0 or 1 intersections.
+/// 
+/// @tparam T the numeric type.
 /// @param [in] ray the incomming ray.
 /// @param [in] large_radius the torus ring radius (R).
 /// @param [in] small_radius the radial torus tube radius (r).
@@ -505,6 +521,8 @@ int ray_torus_intersection(const ray<T, 3>& ray, T large_radius, T small_radius,
 
 /// @brief Computes the intersection between a ray and oriented torus defined by origin and medial axis and returns the number of intersections.
 /// Differentiates between 0 or 1 intersections.
+/// 
+/// @tparam T the numeric type.
 /// @param [in] ray the incomming ray.
 /// @param [in] center the torus center position.
 /// @param [in] normal the torus medial axis direction.

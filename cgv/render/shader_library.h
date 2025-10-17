@@ -27,8 +27,6 @@ public:
 
 	shader_program& get(const std::string& name);
 
-	shader_define_map& get_defines(const std::string& name);
-
 	shader_compile_options& get_compile_options(const std::string& name);
 
 	shader_lib_map::iterator begin() { return shaders.begin(); }
@@ -40,7 +38,7 @@ public:
 
 	bool load_all(context& ctx, const std::string& where = "");
 
-	bool reload(context& ctx, const std::string& name, const shader_compile_options& defines = {}, const std::string& where = "");
+	bool reload(context& ctx, const std::string& name, const shader_compile_options& options = {}, const std::string& where = "");
 
 private:
 	shader_info& get_shader_info(const std::string& name);

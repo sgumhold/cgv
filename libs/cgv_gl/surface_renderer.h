@@ -25,30 +25,27 @@ namespace cgv { // @<
 		struct CGV_API surface_render_style : public group_render_style
 		{
 			/// default value for color when map color to material is used
-			cgv::media::illum::surface_material::color_type surface_color;
+			cgv::media::illum::surface_material::color_type surface_color = cgv::media::illum::surface_material::color_type(0.4f, 0.1f, 0.7f);
 			/// default value for the surface opacity when map color to material is used
-			float surface_opacity;
+			float surface_opacity = 1.0f;
 			/// culling mode for point splats, set to CM_OFF in constructor
-			CullingMode culling_mode;
+			CullingMode culling_mode = CM_OFF;
 			/// illumination mode defaults to \c IM_ONE_SIDED
-			IlluminationMode illumination_mode;
-			/// material side[s] where color is to be mapped to the diffuse material component, defaults to MS_FRONT_AND_BACK
-			ColorMapping map_color_to_material;
+			IlluminationMode illumination_mode = IM_ONE_SIDED;
+			/// material side[s] where color is to be mapped to the diffuse material component, defaults to CM_COLOR for front and back color mapping
+			ColorMapping map_color_to_material = CM_COLOR;
 			/// material of surface
 			cgv::media::illum::textured_surface_material material;
-			///
-			surface_render_style();
 		};
 
 		/// base classes for renderers that support surface rendering
 		class CGV_API surface_renderer : public group_renderer
 		{
 		protected:
-			bool has_normals;
-			bool has_texcoords;
-			bool cull_per_primitive;
+			bool has_normals = false;
+			bool has_texcoords = false;
+			bool cull_per_primitive = true;
 		public:
-			surface_renderer();
 			/// call this before setting attribute arrays to manage attribute array in given manager
 			void enable_attribute_array_manager(const context& ctx, attribute_array_manager& aam);
 			/// call this after last render/draw call to ensure that no other users of renderer change attribute arrays of given manager

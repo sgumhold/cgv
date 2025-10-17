@@ -11,8 +11,8 @@ namespace render {
 struct NoiseLayer
 {
 	bool enabled = true;
-	float frequency = 1.0F;
-	float amplitude = 1.0F;
+	float frequency = 1.0f;
+	float amplitude = 1.0f;
 
 	NoiseLayer() = default;
 	NoiseLayer(float frequency, float amplitude) : frequency(frequency), amplitude(amplitude) {}
@@ -21,29 +21,26 @@ struct NoiseLayer
 /// determines at which relative height the different terrain types transition
 struct TerrainLevels
 {
-	float grassLevel = 0.4F;
-	float rockLevel = 0.6F;
-	float blur = 0.05F;
+	float grassLevel = 0.4f;
+	float rockLevel = 0.6f;
+	float blur = 0.05f;
 };
 
 struct CGV_API terrain_render_style : public cgv::render::surface_render_style
 {
-	/// construct with default values
-	terrain_render_style() = default;
-
 	int seed = 1337;
 	bool should_apply_power = true;
-	float power = 1.1F;
+	float power = 1.1f;
 	bool should_apply_bowl = true;
-	float bowl_strength = 20.0F;
+	float bowl_strength = 20.0f;
 	bool should_apply_platform = true;
-	float platform_height = 0.15F;
+	float platform_height = 0.15f;
 
 	std::vector<NoiseLayer> noise_layers;
-	TerrainLevels levels = {};
+	TerrainLevels levels;
 
 	bool  wireframe = false;
-	float tessellation = 60.0F;
+	float tessellation = 60.0f;
 	float uv_scale_factor_grass = 20.0f;
 	float uv_scale_factor_dirt  = 20.0f;
 	float uv_scale_factor_rock  = 20.0f;
@@ -71,15 +68,12 @@ struct CGV_API terrain_render_style : public cgv::render::surface_render_style
 class CGV_API terrain_renderer : public cgv::render::surface_renderer
 {
   protected:
-	/// overload to allow instantiation of terrain_renderer
-	cgv::render::render_style* create_render_style() const override;
+	/// return the default shader program name
+	std::string get_default_prog_name() const override { return "terrain.glpr"; }
+	/// create and return the default render style
+	render_style* create_render_style() const override { return new terrain_render_style(); }
 
   public:
-	/// initializes position_is_center to true
-	terrain_renderer() = default;
-
-	/// construct shader programs and return whether this was successful, call inside of init method of drawable
-	bool init(cgv::render::context& ctx) override;
 	bool validate_attributes(const cgv::render::context& ctx) const override;
 	bool enable(cgv::render::context& ctx) override;
 	bool disable(cgv::render::context& ctx) override;

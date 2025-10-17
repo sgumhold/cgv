@@ -12,8 +12,7 @@ namespace gpgpu {
 /// GPU compute shader implementation of parallel reduction.
 class CGV_API reduce : public algorithm {
 public:
-	reduce();
-	reduce(uint32_t group_count, uint32_t group_size);
+	reduce(uint32_t group_count = 256, uint32_t group_size = 128);
 
 	bool init(cgv::render::context& ctx, const sl::data_type& value_type);
 
@@ -44,7 +43,6 @@ public:
 	static const std::string init_argument_name;
 
 private:
-	uint32_t _group_size = 128;
 	uint32_t _num_groups = 256;
 
 	compute_kernel _kernel;

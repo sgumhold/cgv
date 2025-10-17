@@ -204,7 +204,7 @@ public:
 		shaders.add("screen", "screen.glpr");
 
 		shader_compile_options options;
-		shader_code::set_define(options.defines, "ENABLE_TEXTURES", true, false);
+		options.define_macro("ENABLE_TEXTURES", true);
 
 		shaders.add("pbr_surface", "pbr_surface.glpr");
 		shaders.add("pbr_surface_textured", "pbr_surface.glpr", options);

@@ -99,6 +99,10 @@ bool fltk_gl_view::self_reflect(cgv::reflect::reflection_handler& srh)
 		srh.reflect_member("show_stats", show_stats) &&
 		srh.reflect_member("font_size", info_font_size) &&
 		srh.reflect_member("tab_size", tab_size) &&
+		srh.reflect_member("debug_after_dispatch", debug_after_dispatch) &&
+		srh.reflect_member("debug_before_dispatch", debug_before_dispatch) &&
+		srh.reflect_member("debug_dispatch_no_mouse_move", debug_dispatch_no_mouse_move) &&
+		srh.reflect_member("debug_texture_format_matching", debug_texture_format_matching) &&
 		srh.reflect_member("performance_monitoring", enabled) &&
 		// TODO: test
 		srh.reflect_member("bg_r", bg_color_stack.top()[0]) &&
@@ -789,10 +793,67 @@ void fltk_gl_view::enable_font_face(cgv::media::font::font_face_ptr font_face, f
 	}
 }
 
+void fltk_gl_view::debug_dispatch(cgv::gui::event& e, bool before)
+{
+	if (debug_dispatch_no_mouse_move) {
+		if (e.get_kind() == cgv::gui::EID_MOUSE && dynamic_cast<const cgv::gui::mouse_event*>(&e)->get_action() == cgv::gui::MA_MOVE)
+			return;
+	}
+	std::cout << (before ? "before" : "after") << " dispatch of ";
+	e.stream_out(std::cout);
+	std::cout << ":" << std::endl;
+	group_ptr gp(this);
+	base_ptr bp = gp;
+	do {
+		std::string policy;
+		const cgv::base::traverse_policy* tp = gp->get_interface<event_handler>();
+		int ci = -1;
+		if (tp) {
+			bool a = tp->get_active();
+			ci = tp->get_focused_child();
+			int pol = tp->get_policy();
+			bool stop_on_success = tp->stop_on_success();
+			bool stop_on_failure = (pol & cgv::base::TP_STOP_ON_FAILURE) != 0;
+			policy += "(";
+			char sep = ':';
+			policy += "focus:";
+			switch (pol) {
+			case cgv::base::TP_ALL: "all"; break;
+			case cgv::base::TP_FIRST_FOCUS: "fst"; break;
+			case cgv::base::TP_ONLY_FOCUS: "only"; break;
+			case cgv::base::TP_AUTO_FOCUS: "auto"; break;
+			}
+			std::string seps = ";stop:";
+			if (stop_on_failure) {
+				policy += seps;
+				policy += "fail";
+				seps = "+";
+			}
+			if (stop_on_success) {
+				policy += seps;
+				policy += "success";
+			}
+			policy += ")";
+		}
+		std::cout << "->" << bp->get_name_or_type_name() << policy;
+		if (gp) {
+			bp = gp->get_child(ci == -1 ? 0 : ci);
+			gp = bp->cast<cgv::base::group>();
+		}
+		else
+			break;
+	} while (true);
+	std::cout << std::endl;
+}
 bool fltk_gl_view::dispatch_event(event& e)
 {
+	if (debug_before_dispatch)
+		debug_dispatch(e, true);
 	single_method_action<event_handler,bool,event&> sma(e,&event_handler::handle);
-	return traverser(sma).traverse(group_ptr(this));
+	bool result = traverser(sma).traverse(group_ptr(this));
+	if (debug_after_dispatch)
+		debug_dispatch(e, false);
+	return result;
 }
 
 /// process focus and key press and release events here
@@ -957,6 +1018,10 @@ void fltk_gl_view::create_gui()
 		provider::align("\a");
 		add_member_control(this, "Show Help", show_help, "check");
 		add_member_control(this, "Show Stats", show_stats, "check");
+		add_member_control(this, "Debug Before Dispatch", debug_before_dispatch, "check");
+		add_member_control(this, "Debug After Dispatch", debug_after_dispatch, "check");
+		add_member_control(this, "Debug Dispatch No Mouse Move", debug_dispatch_no_mouse_move, "check");
+		add_member_control(this, "Debug Texture Format Matching", debug_texture_format_matching, "check");
 		add_member_control(this, "Debug Render Passes", debug_render_passes, "check");
 		add_member_control(this, "Performance Monitoring", enabled, "check");
 		add_member_control(this, "Time Scale", time_scale, "value_slider", "min=1;max=90;ticks=true;log=true");

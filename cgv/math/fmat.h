@@ -352,8 +352,6 @@ const fmat<T, N, M> lerp(const fmat<T, N, M>& m1, const fmat<T, N, M>& m2, fmat<
 
 /// declare type of 2x2 matrices
 typedef cgv::math::fmat<float, 2, 2> mat2;
-/// declare type of 2x3 matrices used to store camera matrix
-typedef cgv::math::fmat<float, 2, 3> mat23;
 /// declare type of 3x3 matrices
 typedef cgv::math::fmat<float, 3, 3> mat3;
 /// declare type of 4x4 matrices

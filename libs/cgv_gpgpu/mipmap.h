@@ -2,8 +2,6 @@
 
 #include "texture_algorithm.h"
 
-#include <cgv/render/texture.h>
-
 #include "lib_begin.h"
 
 namespace cgv {
@@ -16,7 +14,7 @@ public:
 
 	bool init(cgv::render::context& ctx, cgv::render::TextureType texture_type);
 
-	void destruct(cgv::render::context& ctx);
+	void destruct(const cgv::render::context& ctx);
 
 	bool dispatch(cgv::render::context& ctx, cgv::render::texture& texture);
 

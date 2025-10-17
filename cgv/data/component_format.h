@@ -211,7 +211,7 @@ extern CGV_API unsigned int find_best_match(
 				bool (*fmt1_better_match)(
 				   const component_format& fmt,
 					const component_format& fmt1,
-					const component_format& fmt2) = fmt1_compares_better);
+					const component_format& fmt2) = fmt1_compares_better, bool show_debug_info = false);
 
 	}
 }

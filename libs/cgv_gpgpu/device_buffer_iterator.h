@@ -82,6 +82,7 @@ private:
 	size_t _index = 0;
 };
 
+/// Return true if iterators first and second point to the same range.
 static bool compatible(device_buffer_iterator first, device_buffer_iterator second) {
 	return &first.buffer() == &second.buffer();
 }
@@ -103,6 +104,7 @@ static device_buffer_iterator end(const cgv::render::vertex_buffer& buffer, sl::
 	return { buffer, element_count };
 }
 
+/// Return the number of elements/indices between first and last.
 static idxdiff_t distance(device_buffer_iterator first, device_buffer_iterator last) {
 	if(last.index() > first.index())
 		return last - first;

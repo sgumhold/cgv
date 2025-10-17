@@ -25,22 +25,22 @@ bool radix_sort::init(cgv::render::context& ctx, const sl::data_type& key_type, 
 	_num_keys = static_cast<uint32_t>(size);
 
 	cgv::render::shader_compile_options config;
-	config.defines["KEY_TYPE"] = "KEY_" + cgv::utils::to_upper(to_string(_key_type.type()));
+	config.define_macro("KEY_TYPE", "KEY_" + cgv::utils::to_upper(to_string(_key_type.type())));
 
 	std::string value_typename = (_value_type.is_void() /* || _value_type.component_count() > 1 */) ?
 		"CUSTOM" :
 		cgv::utils::to_upper(to_string(_value_type.type()));
-	config.defines["VALUE_TYPE"] = "VALUE_" + value_typename;
+	config.define_macro("VALUE_TYPE", "VALUE_" + value_typename);
 
-	config.defines["VALUE_TYPEDEF"] = to_string(_value_type.type());
+	config.define_macro("VALUE_TYPEDEF", to_string(_value_type.type()));
 
-	config.defines["SORT_ASCENDING"] = _order == SortOrder::kAscending ? "1" : "0";
-	config.defines["SORT_PAIRS"] = _value_type.is_void() ? "0" : "1";
+	config.define_macro("SORT_ASCENDING", _order == SortOrder::kAscending);
+	config.define_macro("SORT_PAIRS", !_value_type.is_void());
 
-	config.defines["RADIX"] = std::to_string(_radix);
-	config.defines["RADIX_MASK"] = std::to_string(_radix - 1);
-	config.defines["RADIX_LOG"] = std::to_string(_radix_log);
-	config.defines["RADIX_PASSES"] = std::to_string(_radix_passes);
+	config.define_macro("RADIX", _radix);
+	config.define_macro("RADIX_MASK", _radix - 1);
+	config.define_macro("RADIX_LOG", _radix_log);
+	config.define_macro("RADIX_PASSES", _radix_passes);
 
 	return v_init(ctx, config);
 }

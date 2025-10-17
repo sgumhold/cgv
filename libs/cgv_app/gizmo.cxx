@@ -78,16 +78,37 @@ bool gizmo::handle(cgv::gui::event& e) {
 
 	cgv::math::ray3 ray(vec2(mouse_pos), viewport_size, _view->get_eye(), ctx->get_projection_matrix() * ctx->get_modelview_matrix());
 
+	bool evaluate_hover_state = false;
+
 	switch(me.get_action()) {
 	case cgv::gui::MA_MOVE:
-	{
-		if(_captured_mouse)
-			break;
+		evaluate_hover_state = !_captured_mouse;
+		break;
+	case cgv::gui::MA_PRESS:
+		if(_hovered && _interaction_feature != InteractionFeature::kNone) {
+			if(start_drag(ray)) {
+				_drag_start_ray = ray;
+				_captured_mouse = true;
+				return true;
+			}
+		}
+		break;
+	case cgv::gui::MA_RELEASE:
+		if(_captured_mouse) {
+			end_drag(ray);
+			_captured_mouse = false;
+			evaluate_hover_state = true;
+		}
+		break;
+	case cgv::gui::MA_DRAG:
+		if(_captured_mouse && drag(ray))
+			return true;
+		break;
+	default:
+		break;
+	}
 
-		bool was_hovered = _hovered;
-		InteractionFeature last_feature = _interaction_feature;
-		AxisId last_axis_id = _interaction_axis_id;
-
+	if(evaluate_hover_state) {
 		// transform ray to gizmo object space
 		cgv::math::ray3 ray_object = ray;
 		ray_object.origin -= _position;
@@ -98,40 +119,16 @@ bool gizmo::handle(cgv::gui::event& e) {
 			_rotation.inverse_rotate(ray_object.direction);
 		}
 
+		bool was_hovered = _hovered;
+		InteractionFeature last_feature = _interaction_feature;
+		AxisId last_axis_id = _interaction_axis_id;
+
 		_hovered = intersect_bounding_box(ray_object) && intersect(ray_object);
-		
+
 		if(was_hovered != _hovered || last_feature != _interaction_feature || last_axis_id != _interaction_axis_id) {
 			set_geometry_out_of_date();
 			post_redraw();
 		}
-		break;
-	}
-	case cgv::gui::MA_PRESS:
-	{
-		if(_hovered && _interaction_feature != InteractionFeature::kNone) {
-			if(start_drag(ray)) {
-				_drag_start_ray = ray;
-				_captured_mouse = true;
-				return true;
-			}
-		}
-		break;
-	}
-	case cgv::gui::MA_RELEASE:
-		if(_captured_mouse) {
-			end_drag(ray);
-			_captured_mouse = false;
-			_interaction_feature = InteractionFeature::kNone;
-			set_geometry_out_of_date();
-			return true;
-		}
-		break;
-	case cgv::gui::MA_DRAG:
-		if(_captured_mouse && drag(ray))
-			return true;
-		break;
-	default:
-		break;
 	}
 
 	return false;
