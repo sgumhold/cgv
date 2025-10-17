@@ -2,7 +2,6 @@
 
 uniform float radius_scale = 1.0;
 uniform vec4 halo_color;
-uniform float halo_width_in_pixel = 0.0;
 uniform float percentual_halo_width = 0.0;
 
 in vec4  position;
@@ -11,13 +10,12 @@ in vec4  color;
 in int   group_index;
 
 out SPHERE_GS {
-	mat3 normal_matrix;
-	mat4 model_view_matrix;
-	mat4 model_view_projection_matrix;
-	vec4 color;
-	vec4 halo_color;
-	float halo_width_in_pixel;
-	float percentual_halo_width;
+	flat mat3 normal_matrix;
+	flat mat4 model_view_matrix;
+	flat mat4 model_view_projection_matrix;
+	flat vec4 color;
+	flat vec4 halo_color;
+	flat float percentual_halo_width;
 } vo;
 
 //***** begin interface of view.glsl ***********************************
@@ -56,12 +54,11 @@ void main()
 	right_multiply_group_position_matrix(vo.model_view_projection_matrix, group_index);
 	// compute sphere color
 	vo.color = group_color(color, group_index);
+	vo.halo_color = halo_color;
+	vo.percentual_halo_width = percentual_halo_width;
 	// output sphere parameter space for geometry shader
 	gl_Position = position;
 	gl_Position.xyz = gl_Position.xyz / gl_Position.w;
 	gl_Position.w = radius_scale * radius;
-	vo.halo_width_in_pixel = halo_width_in_pixel;
-	vo.percentual_halo_width = percentual_halo_width;
-	vo.halo_color = halo_color;
 	output_sphere_parameter_space(gl_Position, vo.model_view_matrix, vo.model_view_projection_matrix, vo.normal_matrix);
 }

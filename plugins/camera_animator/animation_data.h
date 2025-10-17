@@ -15,7 +15,7 @@ struct view_parameters {
 
 		eye_position = view_ptr->get_eye();
 		focus_position = view_ptr->get_focus();
-		up_direction = view_ptr->get_view_up_dir();
+		up_direction = normalize(view_ptr->get_view_up_dir());
 	}
 
 	void apply(cgv::render::view* view_ptr) const {

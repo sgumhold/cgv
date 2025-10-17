@@ -8,7 +8,7 @@ class rgbd_emulation : public rgbd_device
 {
 public:
 	std::string path_name;
-	mutable string next_warped_file_name;
+	mutable std::string next_warped_file_name;
 	unsigned idx;
 	unsigned flags;
 

@@ -10,73 +10,8 @@ namespace cgv {
 		{
 			static int ref_count = 0;
 			static volume_renderer r;
-			/*if (ref_count == 0) {
-				r.init(ctx);
-			}*/
 			r.manage_singleton(ctx, "volume_renderer", ref_count, ref_count_change);
-			/*if (ref_count < 1)
-				r.clear(ctx);*/
 			return r;
-		}
-
-		render_style* volume_renderer::create_render_style() const
-		{
-			return new volume_render_style();
-		}
-
-		volume_render_style::volume_render_style()
-		{
-			integration_quality = IQ_128;
-			enable_noise_offset = true;
-			interpolation_mode = IP_LINEAR;
-			enable_depth_test = true;
-
-			compositing_mode = CM_BLEND;
-
-			scale_adjustment_factor = 100.0f;
-
-			enable_lighting = false;
-			light_local_to_eye = true;
-			use_gradient_texture = false;
-			light_direction = normalize(vec3(-1.0f, 1.0f, 1.0f));
-			ambient_strength = 0.3f;
-			diffuse_strength = 0.8f;
-			specular_strength = 0.4f;
-			roughness = 0.3f;
-			specular_color_mix = 0.0f;
-
-			enable_gradient_modulation = false;
-			gradient_lambda = 0.0f;
-
-			isosurface_mode = IM_NONE;
-			isovalue = 0.5f;
-			isosurface_color = rgb(0.7f);
-			isosurface_color_from_transfer_function = false;
-
-			slice_mode = SM_DISABLED;
-			slice_axis = 2;
-			slice_coordinate = 0.5f;
-			slice_opacity = 0.5f;
-
-			clip_box = box3(vec3(0.0f), vec3(1.0f));
-		}
-
-		volume_renderer::volume_renderer() : noise_texture("uint8[R]")
-		{
-			volume_texture = nullptr;
-			transfer_function_texture = nullptr;
-			gradient_texture = nullptr;
-			depth_texture = nullptr;
-
-			noise_texture.set_min_filter(TF_LINEAR);
-			noise_texture.set_mag_filter(TF_LINEAR);
-			noise_texture.set_wrap_s(TW_REPEAT);
-			noise_texture.set_wrap_t(TW_REPEAT);
-
-			bounding_box = box3(vec3(0.0f), vec3(1.0f));
-			apply_bounding_box_transformation = false;
-
-			noise_offset = vec2(0.0f);
 		}
 
 		void volume_renderer::init_noise_texture(context& ctx)
@@ -105,30 +40,26 @@ namespace cgv {
 			res = res && (volume_texture != nullptr);
 			return res;
 		}
-		bool volume_renderer::build_shader_program(context& ctx, shader_program& prog, const shader_compile_options& options)
-		{
-			return prog.build_program(ctx, "volume.glpr", options, true);
-		}
-		void volume_renderer::update_defines(shader_define_map& defines)
+		void volume_renderer::update_shader_program_options(shader_compile_options& options) const
 		{
 			const volume_render_style& vrs = get_style<volume_render_style>();
 
-			shader_code::set_define(defines, "NUM_STEPS", vrs.integration_quality, volume_render_style::IQ_128);
-			shader_code::set_define(defines, "INTERPOLATION_MODE", vrs.interpolation_mode, volume_render_style::IP_LINEAR);
-			shader_code::set_define(defines, "ENABLE_NOISE_OFFSET", vrs.enable_noise_offset, true);
-			shader_code::set_define(defines, "ENABLE_LIGHTING", vrs.enable_lighting, false);
-			shader_code::set_define(defines, "USE_GRADIENT_TEXTURE", vrs.use_gradient_texture, false);
-			shader_code::set_define(defines, "ENABLE_GRADIENT_MODULATION", vrs.enable_gradient_modulation, false);
-			shader_code::set_define(defines, "ENABLE_DEPTH_TEST", vrs.enable_depth_test, false);
+			options.define_macro_if_not_default("NUM_STEPS", vrs.integration_quality, VolumeIntegrationQuality::k128);
+			options.define_macro_if_not_default("INTERPOLATION_MODE", vrs.interpolation_mode, VolumeInterpolationMode::kLinear);
+			options.define_macro_if_true(vrs.enable_noise_offset, "ENABLE_NOISE_OFFSET");
+			options.define_macro_if_true(vrs.enable_lighting, "ENABLE_LIGHTING");
+			options.define_macro_if_true(vrs.use_gradient_texture, "USE_GRADIENT_TEXTURE");
+			options.define_macro_if_true(vrs.enable_gradient_modulation, "ENABLE_GRADIENT_MODULATION");
+			options.define_macro_if_true(vrs.enable_depth_test, "ENABLE_DEPTH_TEST");
 			
-			shader_code::set_define(defines, "ISOSURFACE_MODE", vrs.isosurface_mode, volume_render_style::IM_NONE);
-			shader_code::set_define(defines, "ISOSURFACE_COLOR_MODE", vrs.isosurface_color_from_transfer_function, false);
+			options.define_macro_if_not_default("ISOSURFACE_MODE", vrs.isosurface_mode, VolumeIsosurfaceMode::kNone);
+			options.define_macro_if_not_default("ISOSURFACE_COLOR_MODE", vrs.isosurface_color_from_transfer_function, false);
 
-			shader_code::set_define(defines, "SLICE_MODE", vrs.slice_mode, volume_render_style::SM_DISABLED);
+			options.define_macro_if_not_default("SLICE_MODE", vrs.slice_mode, VolumeSliceMode::kNone);
 
-			shader_code::set_define(defines, "COMPOSITING_MODE", vrs.compositing_mode, volume_render_style::CM_BLEND);
+			options.define_macro_if_not_default("COMPOSITING_MODE", vrs.compositing_mode, VolumeCompositingMode::kBlend);
 			if(transfer_function_texture)
-				shader_code::set_define(defines, "TRANSFER_FUNCTION_SAMPLER_DIMENSIONS", transfer_function_texture->get_nr_dimensions(), 1u);
+				options.define_macro_if_not_default("TRANSFER_FUNCTION_SAMPLER_DIMENSIONS", transfer_function_texture->get_nr_dimensions(), 1u);
 		}
 		bool volume_renderer::init(cgv::render::context& ctx)
 		{
@@ -138,20 +69,20 @@ namespace cgv {
 
 			// use a single optimized triangle strip to define a cube
 			std::vector<vec3> positions = {
-				vec3(-0.5f, +0.5f, -0.5f),
-				vec3(+0.5f, +0.5f, -0.5f),
-				vec3(-0.5f, -0.5f, -0.5f),
-				vec3(+0.5f, -0.5f, -0.5f),
-				vec3(+0.5f, -0.5f, +0.5f),
-				vec3(+0.5f, +0.5f, -0.5f),
-				vec3(+0.5f, +0.5f, +0.5f),
-				vec3(-0.5f, +0.5f, -0.5f),
-				vec3(-0.5f, +0.5f, +0.5f),
-				vec3(-0.5f, -0.5f, -0.5f),
-				vec3(-0.5f, -0.5f, +0.5f),
-				vec3(+0.5f, -0.5f, +0.5f),
-				vec3(-0.5f, +0.5f, +0.5f),
-				vec3(+0.5f, +0.5f, +0.5f)
+				{ -0.5f, +0.5f, -0.5f },
+				{ +0.5f, +0.5f, -0.5f },
+				{ -0.5f, -0.5f, -0.5f },
+				{ +0.5f, -0.5f, -0.5f },
+				{ +0.5f, -0.5f, +0.5f },
+				{ +0.5f, +0.5f, -0.5f },
+				{ +0.5f, +0.5f, +0.5f },
+				{ -0.5f, +0.5f, -0.5f },
+				{ -0.5f, +0.5f, +0.5f },
+				{ -0.5f, -0.5f, -0.5f },
+				{ -0.5f, -0.5f, +0.5f },
+				{ +0.5f, -0.5f, +0.5f },
+				{ -0.5f, +0.5f, +0.5f },
+				{ +0.5f, +0.5f, +0.5 }
 			};
 			set_position_array(ctx, positions);
 			
@@ -219,6 +150,7 @@ namespace cgv {
 			ref_prog().set_uniform(ctx, "viewport_dims", vec2(float(vp[2] - vp[0]), float(vp[3] - vp[1])));
 			ref_prog().set_uniform(ctx, "noise_offset", noise_offset);
 
+			ref_prog().set_uniform(ctx, "picking_opacity_threshold", vrs.picking_opacity_threshold);
 			ref_prog().set_uniform(ctx, "scale_adjustment_factor", vrs.scale_adjustment_factor);
 
 			ref_prog().set_uniform(ctx, "light_local_to_eye", vrs.light_local_to_eye);
@@ -244,7 +176,7 @@ namespace cgv {
 			ref_prog().set_uniform(ctx, "clip_box_max", vrs.clip_box.get_max_pnt());
 
 			ctx.push_depth_test_state();
-			ctx.disable_depth_test();
+			ctx.set_depth_func(CF_ALWAYS);
 			ctx.push_blend_state();
 			ctx.enable_blending();
 			ctx.set_blend_func_back_to_front();
@@ -315,6 +247,7 @@ namespace cgv {
 				p->add_member_control(b, "Interpolation", vrs_ptr->interpolation_mode, "dropdown", "enums=Nearest,Smoothed,Linear,Cubic");
 
 				p->add_member_control(b, "Depth Test", vrs_ptr->enable_depth_test, "check");
+				p->add_member_control(b, "Opacity Threshold", vrs_ptr->picking_opacity_threshold, "value_slider", "min=0.0;max=1.0;step=0.001;tooltip='Opacity threshold used for focus picking'");
 
 				p->add_member_control(b, "Compositing Mode", vrs_ptr->compositing_mode, "dropdown", "enums='Maximum Intensity Projection, Average, Blend'");
 

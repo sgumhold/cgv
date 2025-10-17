@@ -8,7 +8,7 @@
 namespace cgv {
 	namespace media {
 		namespace illum {
-			class surface_material;
+			struct surface_material;
 			class light_source;
 		}
 	}
@@ -104,7 +104,7 @@ public:
 	/// collect shader code files declared in shader program file, compile and attach them
 	bool attach_program(const context& ctx, std::string file_name, bool show_error = false, const shader_compile_options& options = {});
 	/// find and parse all instance definitions in a shader program file
-	static std::vector<shader_define_map> extract_instances(std::string file_name);
+	static std::vector<shader_compile_options> extract_instances(std::string file_name);
 	/// link shaders to an executable program
 	bool link(const context& ctx, bool show_error = false);
 	/// return whether program is linked
@@ -145,8 +145,9 @@ public:
 	template <typename T>
 	bool set_uniform(const context& ctx, const std::string& name, const T& value, bool generate_error = false) {
 		int loc = get_uniform_location(ctx, name);
-		if (loc == -1 && generate_error) {
-			ctx.error(std::string("shader_program::set_uniform() uniform <") + name + "> not found", this);
+		if (loc == -1) {
+			if (generate_error)
+				ctx.error(std::string("shader_program::set_uniform() uniform <") + name + "> not found", this);
 			return false;
 		}
 		return ctx.set_uniform_void(*this, loc, element_descriptor_traits<T>::get_type_descriptor(value), element_descriptor_traits<T>::get_address(value));
@@ -165,8 +166,9 @@ public:
 	template <typename T>
 	bool set_uniform_array(const context& ctx, const std::string& name, const T* array, size_t nr_elements, bool generate_error = false) {
 		int loc = get_uniform_location(ctx, name);
-		if (loc == -1 && generate_error) {
-			ctx.error(std::string("shader_program::set_uniform_array() uniform <") + name + "> not found", this);
+		if (loc == -1) {
+			if (generate_error)
+				ctx.error(std::string("shader_program::set_uniform_array() uniform <") + name + "> not found", this);
 			return false;
 		}
 		return ctx.set_uniform_array_void(*this, loc, type_descriptor(element_descriptor_traits<T>::get_type_descriptor(array[0]), true), array, nr_elements);
@@ -181,7 +183,7 @@ public:
 	/// set uniform array from array \c array where number elements can be derived from array through \c array_descriptor_traits; supported array types include cgv::math::vec and std::vector
 	template <typename T>
 	bool set_uniform_array(const context& ctx, int loc, const T& array) {
-		return ctx.set_uniform_array_void(*this, loc, array_descriptor_traits<T>::get_type_descriptor(), array_descriptor_traits<T>::get_address(array), array_descriptor_traits<T>::get_nr_elements(array));
+		return ctx.set_uniform_array_void(*this, loc, array_descriptor_traits<T>::get_type_descriptor(array), array_descriptor_traits<T>::get_address(array), array_descriptor_traits<T>::get_nr_elements(array));
 	}
 	/// set uniform array from an array with \c nr_elements elements of type T pointed to by \c array
 	template <typename T>

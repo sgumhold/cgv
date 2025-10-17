@@ -12,25 +12,6 @@ namespace cgv {
 			return r;
 		}
 
-		render_style* arrow_renderer::create_render_style() const
-		{
-			return new arrow_render_style();
-		}
-
-		arrow_render_style::arrow_render_style() 
-		{
-			radius_lower_bound = 0.00001f;
-			radius_relative_to_length = 0.1f;
-			head_radius_scale = 2.0f;
-			head_length_mode = AHLM_MINIMUM_OF_RADIUS_AND_LENGTH;
-			head_length_relative_to_radius = 2.0f;
-			head_length_relative_to_length = 0.3f;
-			length_scale = 1.0f;
-			color_scale = 1.0f;
-			normalize_length = false;
-			relative_location_of_position = 0.0f;
-			length_eps = 0.000001f;
-		}
 		/// call this before setting attribute arrays to manage attribute array in given manager
 		void arrow_renderer::enable_attribute_array_manager(const context& ctx, attribute_array_manager& aam)
 		{
@@ -54,16 +35,10 @@ namespace cgv {
 			direction_is_end_point = true;
 			remove_attribute_array(ctx, "direction");
 		}
-		arrow_renderer::arrow_renderer()
-		{
-			has_directions = false;
-			position_is_center = false;
-			direction_is_end_point = false;
-		}
-		bool arrow_renderer::build_shader_program(context& ctx, shader_program& prog, const shader_compile_options& options)
+		bool arrow_renderer::build_shader_program(context& ctx, shader_program& prog, const shader_compile_options& options) const
 		{
 			prog.allow_context_to_set_color(false);
-			return prog.build_program(ctx, "arrow.glpr", options, true);
+			return renderer::build_shader_program(ctx, prog, options);
 		}
 
 		bool arrow_renderer::validate_attributes(const context& ctx) const

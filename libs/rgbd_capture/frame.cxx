@@ -101,6 +101,7 @@ namespace rgbd {
 		case PF_RGBA: os << "RGB32"; break;
 		case PF_BGRA: os << "BGR32"; break;
 		case PF_BAYER:os << "Bayer"; break;
+		case PF_JPG:os << "JPG"; break;
 		}
 		return os;
 	}

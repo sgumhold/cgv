@@ -4,11 +4,16 @@
 #include <string>
 #include <vector>
 
+#include <cgv/math/fvec.h>
+#include <cgv/math/fmat.h>
+#include <cgv/math/interval.h>
+#include <cgv/render/context.h>
+
 #include "lib_begin.h"
 
 namespace sl {
 
-enum class Type {
+enum class Type : int32_t {
 	kVoid = 0,
 
 	kBool,
@@ -123,6 +128,8 @@ extern CGV_API size_t get_aligned_size(data_type type);
 
 extern CGV_API std::string get_type_definition_string(data_type type);
 
+extern CGV_API std::string get_alias_string(const std::string& alias, const std::string& type);
+
 extern CGV_API std::string get_type_alias_string(const std::string& alias, data_type type);
 
 struct type_definition {
@@ -130,9 +137,21 @@ struct type_definition {
 	named_variable_list members;
 };
 
-class named_variable {
+class named_object {
 public:
-	named_variable(const data_type& type, const std::string& name) : _type(type), _name(name) {}
+	named_object(const std::string& name) : _name(name) {}
+
+	const std::string& name() const {
+		return _name;
+	}
+
+private:
+	std::string _name;
+};
+
+class named_variable : public named_object {
+public:
+	named_variable(const data_type& type, const std::string& name) : named_object(name), _type(type) {}
 
 	named_variable(const data_type& type, const std::string& name, size_t array_size) : named_variable(type, name) {
 		_array_size = array_size;
@@ -142,17 +161,12 @@ public:
 		return _type;
 	}
 
-	const std::string& name() const {
-		return _name;
-	}
-
 	size_t array_size() const {
 		return _array_size;
 	}
 
 private:
 	data_type _type;
-	std::string _name;
 	size_t _array_size = 0;
 };
 
@@ -189,18 +203,14 @@ private:
 	int32_t _mask = 0;
 };
 
-class named_buffer {
+class named_buffer : public named_object {
 public:
-	named_buffer(const named_variable& variable, const std::string& name, const memory_qualifier_list& memory_qualifiers = {}) : _variables({ variable }), _name(name), _memory_qualifiers(memory_qualifiers) {}
-	
-	named_buffer(const named_variable_list& variables, const std::string& name, const memory_qualifier_list& memory_qualifiers = {}) : _variables(variables), _name(name), _memory_qualifiers(memory_qualifiers) {}
+	named_buffer(const named_variable_list& variables, const std::string& name, const memory_qualifier_list& memory_qualifiers = {}) : named_object(name), _variables(variables), _memory_qualifiers(memory_qualifiers) {}
+
+	named_buffer(const named_variable& variable, const std::string& name, const memory_qualifier_list& memory_qualifiers = {}) : named_buffer(named_variable_list{ variable }, name, memory_qualifiers) {}
 
 	const named_variable_list& variables() const {
 		return _variables;
-	}
-
-	const std::string& name() const {
-		return _name;
 	}
 
 	memory_qualifier_list memory_qualifiers() const {
@@ -209,7 +219,6 @@ public:
 
 private:
 	named_variable_list _variables;
-	std::string _name;
 	memory_qualifier_storage _memory_qualifiers;
 };
 
@@ -219,12 +228,158 @@ using named_buffer_list = std::vector<named_buffer>;
 
 extern CGV_API std::string to_string(const named_buffer_list& buffers, size_t base_location);
 
+enum class ImageFormatLayoutQualifier : int32_t {
+	// floating-point layout image formats
+	k_rgba32f = 0,
+	k_rgba16f,
+	k_rg32f,
+	k_rg16f,
+	k_r11f_g11f_b10f,
+	k_r32f,
+	k_r16f,
+	k_rgba16,
+	k_rgb10_a2,
+	k_rgba8,
+	k_rg16,
+	k_rg8,
+	k_r16,
+	k_r8,
+	k_rgba16_snorm,
+	k_rgba8_snorm,
+	k_rg16_snorm,
+	k_rg8_snorm,
+	k_r16_snorm,
+	k_r8_snorm,
+
+	// signed integer layout image formats
+	k_rgba32i,
+	k_rgba16i,
+	k_rgba8i,
+	k_rg32i,
+	k_rg16i,
+	k_rg8i,
+	k_r32i,
+	k_r16i,
+	k_r8i,
+
+	// unsigned integer layout image formats
+	k_rgba32ui,
+	k_rgba16ui,
+	k_rgb10_a2ui,
+	k_rgba8ui,
+	k_rg32ui,
+	k_rg16ui,
+	k_rg8ui,
+	k_r32ui,
+	k_r16ui,
+	k_r8ui,
+};
+
+extern CGV_API std::string to_string(ImageFormatLayoutQualifier qualifier);
+
+extern CGV_API std::string get_type_prefix(ImageFormatLayoutQualifier qualifier);
+
+extern CGV_API data_type get_data_type(ImageFormatLayoutQualifier qualifier);
+
+class named_image : public named_object {
+public:
+	named_image(cgv::render::TextureType texture_type, ImageFormatLayoutQualifier image_format, const std::string& name, const memory_qualifier_list& memory_qualifiers = {}) : named_object(name), _texture_type(texture_type), _image_format(image_format), _memory_qualifiers(memory_qualifiers) {}
+
+	cgv::render::TextureType texture_type() const {
+		return _texture_type;
+	}
+
+	ImageFormatLayoutQualifier image_format() const {
+		return _image_format;
+	}
+
+	memory_qualifier_list memory_qualifiers() const {
+		return _memory_qualifiers.list();
+	}
+
+private:
+	cgv::render::TextureType _texture_type;
+	ImageFormatLayoutQualifier _image_format;
+	memory_qualifier_storage _memory_qualifiers;
+};
+
+extern CGV_API std::string to_string(const named_image& image, size_t location);
+
+using named_image_list = std::vector<named_image>;
+
+extern CGV_API std::string to_string(const named_image_list& images, size_t base_location);
+
+enum class SamplerBaseFormat {
+	kFloatingPoint,
+	kSignedInteger,
+	kUnsignedInteger
+};
+
+class named_texture : public named_object {
+public:
+	named_texture(cgv::render::TextureType texture_type, SamplerBaseFormat sampler_base_format, const std::string& name) : named_object(name), _texture_type(texture_type), _sampler_base_format(sampler_base_format) {}
+
+	cgv::render::TextureType texture_type() const {
+		return _texture_type;
+	}
+
+	SamplerBaseFormat sampler_base_format() const {
+		return _sampler_base_format;
+	}
+
+private:
+	cgv::render::TextureType _texture_type;
+	SamplerBaseFormat _sampler_base_format;
+};
+
+extern CGV_API std::string get_sampler_string(const cgv::render::TextureType& texture_type, SamplerBaseFormat sampler_base_format);
+
+extern CGV_API std::string to_string(const named_texture& texture, size_t location);
+
+using named_texture_list = std::vector<named_texture>;
+
+extern CGV_API std::string to_string(const named_texture_list& textures, size_t base_location);
+
 namespace tag {
 
 struct uniform {};
 struct buffer {};
+struct image {};
+struct texture {};
 
 } // namespace tag
+
+namespace traits {
+
+template<class T>
+/*inline*/ constexpr bool is_instance_of_fvec_v = std::false_type{};
+
+template<class T, cgv::type::uint32_type N>
+/*inline*/ constexpr bool is_instance_of_fvec_v<cgv::math::fvec<T, N>> = std::true_type{};
+
+template<class T>
+/*inline*/ constexpr bool is_instance_of_fmat_v = std::false_type{};
+
+template<class T, cgv::type::uint32_type N, cgv::type::uint32_type M>
+/*inline*/ constexpr bool is_instance_of_fmat_v<cgv::math::fmat<T, N, M>> = std::true_type{};
+
+// TODO: Move is_instance_of(_v) to cgv/type/traits (can use inline if _HAS_CXX17 is defined)
+template<class T, template<class...> class U>
+/*inline*/ constexpr bool is_instance_of_v = std::false_type{};
+
+template<template<class...> class U, class ...Vs>
+/*inline*/ constexpr bool is_instance_of_v<U<Vs...>, U> = std::true_type{};
+
+template<class T>
+/*inline*/ constexpr bool is_fundamental_sl_type_v =
+	std::is_arithmetic_v<std::remove_cv_t<T>> ||
+	is_instance_of_fvec_v<T> ||
+	is_instance_of_fmat_v<T>;
+
+template<class T>
+struct is_fundamental_sl_type : std::bool_constant<is_fundamental_sl_type_v<T>> {};
+
+} // namespace traits
 
 namespace operation {
 

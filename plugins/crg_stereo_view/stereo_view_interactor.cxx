@@ -811,9 +811,9 @@ bool stereo_view_interactor::handle(event& e)
 				}
 				check_for_click = -1;
 			}
-			if ((me.get_button() == MB_LEFT_BUTTON && (me.get_modifiers() == 0 || me.get_modifiers() == EM_SHIFT)) ||
-				me.get_button() == MB_RIGHT_BUTTON && me.get_modifiers() == 0)
-				return true;
+			//if ((me.get_button() == MB_LEFT_BUTTON && (me.get_modifiers() == 0 || me.get_modifiers() == EM_SHIFT)) ||
+			//	me.get_button() == MB_RIGHT_BUTTON && me.get_modifiers() == 0)
+			//	return true;
 			break;
 		case MA_MOVE:
 			if (stereo_enabled && ((stereo_mode == GLSU_SPLIT_HORIZONTALLY) || (stereo_mode == GLSU_SPLIT_VERTICALLY))) {
@@ -831,7 +831,7 @@ bool stereo_view_interactor::handle(event& e)
 				}
 				*/
 				post_redraw();
-				return true;
+				//return true;
 			}
 			break;
 		case MA_DRAG:
@@ -1063,9 +1063,9 @@ void stereo_view_interactor::draw_mouse_pointer_as_arrow(cgv::render::context& c
 {
 	static cgv::media::illum::surface_material smp_mat_visible;
 	static cgv::media::illum::surface_material smp_mat_hidden;
-	smp_mat_visible.set_diffuse_reflectance(cgv::rgb(1, 1, 1));
-	smp_mat_hidden.set_diffuse_reflectance(cgv::rgb(0.3f, 0.3f, 0.3f));
-	smp_mat_hidden.set_emission(cgv::rgb(0.3f, 0.3f, 0.3f));
+	smp_mat_visible.diffuse_reflectance = cgv::rgb(1, 1, 1);
+	smp_mat_hidden.diffuse_reflectance = cgv::rgb(0.3f, 0.3f, 0.3f);
+	smp_mat_hidden.emission = cgv::rgb(0.3f, 0.3f, 0.3f);
 
 	double z0_D = get_z_D(-get_parallax_zero_depth(), z_near_derived, z_far_derived);
 

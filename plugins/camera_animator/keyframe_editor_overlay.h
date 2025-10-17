@@ -128,8 +128,6 @@ protected:
 
 	void set_frame(size_t frame);
 
-	void set_selected_frame(size_t frame);
-
 	void change_duration(bool before);
 
 	void create_keyframe_draggables();
@@ -171,6 +169,7 @@ public:
 
 	void update() override;
 
+	void set_selected_frame(size_t frame);
 	size_t get_selected_frame() { return selected_frame; }
 
 	void set_on_change_callback(std::function<void(Event)> cb) { on_change_callback = cb; }

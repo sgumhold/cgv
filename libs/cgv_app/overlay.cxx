@@ -32,16 +32,16 @@ bool overlay::handle(cgv::gui::event& e) {
 
 		if(action == cgv::gui::MA_MOVE && local_mouse_pos != last_local_mouse_pos_) {
 			bool mouse_was_over_overlay = local_rect.contains(last_local_mouse_pos_);
-
 			last_local_mouse_pos_ = local_mouse_pos;
 
-			if(!mouse_was_over_overlay && mouse_is_over_overlay)
+			if (!mouse_was_over_overlay && mouse_is_over_overlay)
 				me.set_action(cgv::gui::MA_ENTER);
 			else if(mouse_was_over_overlay && !mouse_is_over_overlay)
 				me.set_action(cgv::gui::MA_LEAVE);
 
 			bool handled = handle_mouse_event(me, local_mouse_pos);
 			me.set_action(action);
+			//return handled;
 		}
 
 		switch(action) {

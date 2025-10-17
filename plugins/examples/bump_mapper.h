@@ -23,7 +23,7 @@ protected:
 	bool use_diffuse_map;
 	bool wire_frame;
 	float bump_scale;
-
+	int illumination_mode = 1;
 	TextureSelection texture_selection;
 	float texture_frequency, texture_frequency_aspect;
 	unsigned texture_resolution;

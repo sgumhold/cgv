@@ -66,6 +66,7 @@ transformation_gizmo::Mode transformation_gizmo::get_mode() const {
 
 void transformation_gizmo::set_mode(Mode mode) {
 	_mode = mode;
+	_interaction_feature = InteractionFeature::kNone;
 	set_geometry_out_of_date();
 	post_redraw();
 }
