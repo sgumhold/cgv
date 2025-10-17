@@ -112,6 +112,9 @@ Public Member Functions</h2></td></tr>
 <tr class="memitem:ad8da4f18e1da79f570a72ed28ea6fad1" id="r_ad8da4f18e1da79f570a72ed28ea6fad1"><td class="memItemLeft" align="right" valign="top">bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcgv_1_1render_1_1shader__compile__options.html#ad8da4f18e1da79f570a72ed28ea6fad1">empty</a> () const</td></tr>
 <tr class="memdesc:ad8da4f18e1da79f570a72ed28ea6fad1"><td class="mdescLeft">&#160;</td><td class="mdescRight">Return true if no options are set.  <br /></td></tr>
 <tr class="separator:ad8da4f18e1da79f570a72ed28ea6fad1"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a6b4789b2cc32ec4295c5dadb43683315" id="r_a6b4789b2cc32ec4295c5dadb43683315"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcgv_1_1render_1_1shader__compile__options.html#a6b4789b2cc32ec4295c5dadb43683315">clear</a> ()</td></tr>
+<tr class="memdesc:a6b4789b2cc32ec4295c5dadb43683315"><td class="mdescLeft">&#160;</td><td class="mdescRight">Clear everything, i.e. remove all defines and snippets.  <br /></td></tr>
+<tr class="separator:a6b4789b2cc32ec4295c5dadb43683315"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a9e282d55ffc6cf8872ad240027190208" id="r_a9e282d55ffc6cf8872ad240027190208"><td class="memItemLeft" align="right" valign="top">const string_map &amp;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcgv_1_1render_1_1shader__compile__options.html#a9e282d55ffc6cf8872ad240027190208">get_macros</a> () const</td></tr>
 <tr class="memdesc:a9e282d55ffc6cf8872ad240027190208"><td class="mdescLeft">&#160;</td><td class="mdescRight">Return const reference to defined macros.  <br /></td></tr>
 <tr class="separator:a9e282d55ffc6cf8872ad240027190208"><td class="memSeparator" colspan="2">&#160;</td></tr>
@@ -199,6 +202,37 @@ Public Member Functions</h2></td></tr>
 </div>
 </div>
 <h2 class="groupheader">Member Function Documentation</h2>
+<a id="a6b4789b2cc32ec4295c5dadb43683315" name="a6b4789b2cc32ec4295c5dadb43683315"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a6b4789b2cc32ec4295c5dadb43683315">&#9670;&#160;</a></span>clear()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">void cgv::render::shader_compile_options::clear </td>
+          <td>(</td>
+          <td class="paramname"></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">inline</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p>Clear everything, i.e. remove all defines and snippets. </p>
+
+<p class="definition">Definition at line <a class="el" href="shader__code_8h_source.html#l00083">83</a> of file <a class="el" href="shader__code_8h_source.html">shader_code.h</a>.</p>
+
+<p class="reference">Referenced by <a class="el" href="renderer_8cxx_source.html#l00224">cgv::render::renderer::disable()</a>.</p>
+
+</div>
+</div>
 <a id="a5fb44be6c224ba6f15f02bdcc756ab33" name="a5fb44be6c224ba6f15f02bdcc756ab33"></a>
 <h2 class="memtitle"><span class="permalink"><a href="#a5fb44be6c224ba6f15f02bdcc756ab33">&#9670;&#160;</a></span>define_macro() <span class="overload">[1/5]</span></h2>
 
@@ -225,9 +259,9 @@ Public Member Functions</h2></td></tr>
 
 <p>Define a macro as identifier and no replacement text. </p>
 
-<p class="definition">Definition at line <a class="el" href="shader__code_8h_source.html#l00093">93</a> of file <a class="el" href="shader__code_8h_source.html">shader_code.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="shader__code_8h_source.html#l00099">99</a> of file <a class="el" href="shader__code_8h_source.html">shader_code.h</a>.</p>
 
-<p class="reference">Referenced by <a class="el" href="shader__code_8h_source.html#l00178">define_macro_if_true()</a>, <a class="el" href="shader__program_8cxx_source.html#l00317">cgv::render::shader_program::extract_instances()</a>, and <a class="el" href="plot2d_8cxx_source.html#l00117">cgv::plot::plot2d::init()</a>.</p>
+<p class="reference">Referenced by <a class="el" href="shader__code_8h_source.html#l00184">define_macro_if_true()</a>, <a class="el" href="shader__program_8cxx_source.html#l00317">cgv::render::shader_program::extract_instances()</a>, and <a class="el" href="plot2d_8cxx_source.html#l00117">cgv::plot::plot2d::init()</a>.</p>
 
 </div>
 </div>
@@ -265,7 +299,7 @@ Public Member Functions</h2></td></tr>
 </table>
 </div><div class="memdoc">
 
-<p class="definition">Definition at line <a class="el" href="shader__code_8h_source.html#l00118">118</a> of file <a class="el" href="shader__code_8h_source.html">shader_code.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="shader__code_8h_source.html#l00124">124</a> of file <a class="el" href="shader__code_8h_source.html">shader_code.h</a>.</p>
 
 </div>
 </div>
@@ -303,7 +337,7 @@ Public Member Functions</h2></td></tr>
 </table>
 </div><div class="memdoc">
 
-<p class="definition">Definition at line <a class="el" href="shader__code_8h_source.html#l00122">122</a> of file <a class="el" href="shader__code_8h_source.html">shader_code.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="shader__code_8h_source.html#l00128">128</a> of file <a class="el" href="shader__code_8h_source.html">shader_code.h</a>.</p>
 
 </div>
 </div>
@@ -360,7 +394,7 @@ template&lt;typename T , typename std::enable_if&lt; std::is_arithmetic_v&lt; T 
   </dd>
 </dl>
 
-<p class="definition">Definition at line <a class="el" href="shader__code_8h_source.html#l00109">109</a> of file <a class="el" href="shader__code_8h_source.html">shader_code.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="shader__code_8h_source.html#l00115">115</a> of file <a class="el" href="shader__code_8h_source.html">shader_code.h</a>.</p>
 
 </div>
 </div>
@@ -400,7 +434,7 @@ template&lt;typename T , typename std::enable_if&lt; std::is_enum_v&lt; T &gt;, 
 </table>
 </div><div class="memdoc">
 
-<p class="definition">Definition at line <a class="el" href="shader__code_8h_source.html#l00114">114</a> of file <a class="el" href="shader__code_8h_source.html">shader_code.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="shader__code_8h_source.html#l00120">120</a> of file <a class="el" href="shader__code_8h_source.html">shader_code.h</a>.</p>
 
 </div>
 </div>
@@ -444,7 +478,7 @@ template&lt;typename T , typename std::enable_if&lt; std::is_enum_v&lt; T &gt;, 
 </table>
 </div><div class="memdoc">
 
-<p class="definition">Definition at line <a class="el" href="shader__code_8h_source.html#l00157">157</a> of file <a class="el" href="shader__code_8h_source.html">shader_code.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="shader__code_8h_source.html#l00163">163</a> of file <a class="el" href="shader__code_8h_source.html">shader_code.h</a>.</p>
 
 </div>
 </div>
@@ -488,7 +522,7 @@ template&lt;typename T , typename std::enable_if&lt; std::is_enum_v&lt; T &gt;, 
 </table>
 </div><div class="memdoc">
 
-<p class="definition">Definition at line <a class="el" href="shader__code_8h_source.html#l00164">164</a> of file <a class="el" href="shader__code_8h_source.html">shader_code.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="shader__code_8h_source.html#l00170">170</a> of file <a class="el" href="shader__code_8h_source.html">shader_code.h</a>.</p>
 
 </div>
 </div>
@@ -553,7 +587,7 @@ template&lt;typename T , typename std::enable_if&lt; std::is_arithmetic_v&lt; T 
   </dd>
 </dl>
 
-<p class="definition">Definition at line <a class="el" href="shader__code_8h_source.html#l00142">142</a> of file <a class="el" href="shader__code_8h_source.html">shader_code.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="shader__code_8h_source.html#l00148">148</a> of file <a class="el" href="shader__code_8h_source.html">shader_code.h</a>.</p>
 
 <p class="reference">Referenced by <a class="el" href="volume__renderer_8cxx_source.html#l00043">cgv::render::volume_renderer::update_shader_program_options()</a>.</p>
 
@@ -601,7 +635,7 @@ template&lt;typename T , typename std::enable_if&lt; std::is_enum_v&lt; T &gt;, 
 </table>
 </div><div class="memdoc">
 
-<p class="definition">Definition at line <a class="el" href="shader__code_8h_source.html#l00150">150</a> of file <a class="el" href="shader__code_8h_source.html">shader_code.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="shader__code_8h_source.html#l00156">156</a> of file <a class="el" href="shader__code_8h_source.html">shader_code.h</a>.</p>
 
 </div>
 </div>
@@ -649,9 +683,9 @@ template&lt;typename T , typename std::enable_if&lt; std::is_enum_v&lt; T &gt;, 
   </dd>
 </dl>
 
-<p class="definition">Definition at line <a class="el" href="shader__code_8h_source.html#l00178">178</a> of file <a class="el" href="shader__code_8h_source.html">shader_code.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="shader__code_8h_source.html#l00184">184</a> of file <a class="el" href="shader__code_8h_source.html">shader_code.h</a>.</p>
 
-<p class="reference">References <a class="el" href="shader__code_8h_source.html#l00093">define_macro()</a>, and <a class="el" href="shader__code_8h_source.html#l00187">undefine_macro()</a>.</p>
+<p class="reference">References <a class="el" href="shader__code_8h_source.html#l00099">define_macro()</a>, and <a class="el" href="shader__code_8h_source.html#l00193">undefine_macro()</a>.</p>
 
 <p class="reference">Referenced by <a class="el" href="box__renderer_8cxx_source.html#l00112">cgv::render::box_renderer::update_shader_program_options()</a>, <a class="el" href="cone__renderer_8cxx_source.html#l00033">cgv::render::cone_renderer::update_shader_program_options()</a>, and <a class="el" href="volume__renderer_8cxx_source.html#l00043">cgv::render::volume_renderer::update_shader_program_options()</a>.</p>
 
@@ -700,7 +734,7 @@ template&lt;typename T , typename std::enable_if&lt; std::is_enum_v&lt; T &gt;, 
   </dd>
 </dl>
 
-<p class="definition">Definition at line <a class="el" href="shader__code_8h_source.html#l00194">194</a> of file <a class="el" href="shader__code_8h_source.html">shader_code.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="shader__code_8h_source.html#l00200">200</a> of file <a class="el" href="shader__code_8h_source.html">shader_code.h</a>.</p>
 
 </div>
 </div>
@@ -777,7 +811,7 @@ template&lt;typename T , typename std::enable_if&lt; std::is_enum_v&lt; T &gt;, 
   </dd>
 </dl>
 
-<p class="definition">Definition at line <a class="el" href="shader__code_8h_source.html#l00210">210</a> of file <a class="el" href="shader__code_8h_source.html">shader_code.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="shader__code_8h_source.html#l00216">216</a> of file <a class="el" href="shader__code_8h_source.html">shader_code.h</a>.</p>
 
 </div>
 </div>
@@ -806,7 +840,7 @@ template&lt;typename T , typename std::enable_if&lt; std::is_enum_v&lt; T &gt;, 
 
 <p>Return const reference to defined macros. </p>
 
-<p class="definition">Definition at line <a class="el" href="shader__code_8h_source.html#l00083">83</a> of file <a class="el" href="shader__code_8h_source.html">shader_code.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="shader__code_8h_source.html#l00089">89</a> of file <a class="el" href="shader__code_8h_source.html">shader_code.h</a>.</p>
 
 </div>
 </div>
@@ -835,7 +869,7 @@ template&lt;typename T , typename std::enable_if&lt; std::is_enum_v&lt; T &gt;, 
 
 <p>Return const reference to defined snippets. </p>
 
-<p class="definition">Definition at line <a class="el" href="shader__code_8h_source.html#l00088">88</a> of file <a class="el" href="shader__code_8h_source.html">shader_code.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="shader__code_8h_source.html#l00094">94</a> of file <a class="el" href="shader__code_8h_source.html">shader_code.h</a>.</p>
 
 </div>
 </div>
@@ -865,7 +899,7 @@ template&lt;typename T , typename std::enable_if&lt; std::is_enum_v&lt; T &gt;, 
 
 <p>Compare two <a class="el" href="classcgv_1_1render_1_1shader__compile__options.html" title="Stores preprocessor options used for conditionally compiling shader programs.">shader_compile_options</a> for inequality. </p>
 
-<p class="definition">Definition at line <a class="el" href="shader__code_8h_source.html#l00229">229</a> of file <a class="el" href="shader__code_8h_source.html">shader_code.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="shader__code_8h_source.html#l00235">235</a> of file <a class="el" href="shader__code_8h_source.html">shader_code.h</a>.</p>
 
 </div>
 </div>
@@ -895,7 +929,7 @@ template&lt;typename T , typename std::enable_if&lt; std::is_enum_v&lt; T &gt;, 
 
 <p>Compare two <a class="el" href="classcgv_1_1render_1_1shader__compile__options.html" title="Stores preprocessor options used for conditionally compiling shader programs.">shader_compile_options</a> for equality. </p>
 
-<p class="definition">Definition at line <a class="el" href="shader__code_8h_source.html#l00224">224</a> of file <a class="el" href="shader__code_8h_source.html">shader_code.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="shader__code_8h_source.html#l00230">230</a> of file <a class="el" href="shader__code_8h_source.html">shader_code.h</a>.</p>
 
 </div>
 </div>
@@ -931,9 +965,9 @@ template&lt;typename T , typename std::enable_if&lt; std::is_enum_v&lt; T &gt;, 
   </dd>
 </dl>
 
-<p class="definition">Definition at line <a class="el" href="shader__code_8h_source.html#l00187">187</a> of file <a class="el" href="shader__code_8h_source.html">shader_code.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="shader__code_8h_source.html#l00193">193</a> of file <a class="el" href="shader__code_8h_source.html">shader_code.h</a>.</p>
 
-<p class="reference">Referenced by <a class="el" href="shader__code_8h_source.html#l00178">define_macro_if_true()</a>.</p>
+<p class="reference">Referenced by <a class="el" href="shader__code_8h_source.html#l00184">define_macro_if_true()</a>.</p>
 
 </div>
 </div>
@@ -969,7 +1003,7 @@ template&lt;typename T , typename std::enable_if&lt; std::is_enum_v&lt; T &gt;, 
   </dd>
 </dl>
 
-<p class="definition">Definition at line <a class="el" href="shader__code_8h_source.html#l00200">200</a> of file <a class="el" href="shader__code_8h_source.html">shader_code.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="shader__code_8h_source.html#l00206">206</a> of file <a class="el" href="shader__code_8h_source.html">shader_code.h</a>.</p>
 
 </div>
 </div>

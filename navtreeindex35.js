@@ -1,5 +1,7 @@
 var NAVTREEINDEX35 =
 {
+"namespacecgv_1_1type_1_1func.html":[10,0,1,6,1],
+"namespacecgv_1_1type_1_1info.html":[10,0,1,6,2],
 "namespacecgv_1_1type_1_1info.html#a1bf8da0d985c50bcba04f896f49795ed":[10,0,1,6,2,38],
 "namespacecgv_1_1type_1_1info.html#a332bb394e8a85aedd5d5f9c79fc6d917":[10,0,1,6,2,35],
 "namespacecgv_1_1type_1_1info.html#a4f22895e46a8ab812b5936b1d78494a6":[10,0,1,6,2,40],
@@ -247,7 +249,5 @@ var NAVTREEINDEX35 =
 "namespacevr.html#a2dd9724fa8c1880e426b5e3b2431e657acb049d41401c5357b5b1540013181de6":[10,0,2,24,13],
 "namespacevr.html#a2dd9724fa8c1880e426b5e3b2431e657ad4a02f876e8749836cc7d54a07e6b698":[10,0,2,24,12],
 "namespacevr.html#a2dd9724fa8c1880e426b5e3b2431e657ae5d075ebaecabce063b83995a4da9e44":[10,0,2,24,17],
-"namespacevr.html#a2dd9724fa8c1880e426b5e3b2431e657aebfc3592b4ffc3d89bda9a67d04c4fab":[10,0,2,24,5],
-"namespacevr.html#a2dd9724fa8c1880e426b5e3b2431e657af43a14dd7f746039aaecafd73486961b":[10,0,2,24,15],
-"namespacevr.html#a3420569d66aab89ad53aa8ee86f76733":[10,0,2,40]
+"namespacevr.html#a2dd9724fa8c1880e426b5e3b2431e657aebfc3592b4ffc3d89bda9a67d04c4fab":[10,0,2,24,5]
 };
