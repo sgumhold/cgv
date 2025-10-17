@@ -4,12 +4,10 @@
 
 #ifdef CGV_USE_SNIPPETS
 
-uniform uint u_output_begin;
-
 layout(local_size_x = 256) in;
 void main() {
     uint idx = gl_GlobalInvocationID.x;
-	if(idx < u_num_values) {
+	if(idx < u_args.num_values) {
 		uint vote_ballot_idx = idx>>5;
 		uint vote_ballot = b_votes[vote_ballot_idx];
 		uint vote_idx = idx&31;
@@ -20,7 +18,7 @@ void main() {
 			uint addr = prefix_sum + block_sum;
         
 			//#if MODE == 0
-			b_data_out[u_output_begin + addr] = b_data_in[u_input_begin + idx];
+			b_data_out[u_args.output_begin + addr] = b_data_in[u_args.input_begin + idx];
 			//#else
 			//b_data_out[addr] = idx;
 			//#endif
