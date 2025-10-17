@@ -29,10 +29,13 @@ bool copy_if::init(cgv::render::context& ctx, const sl::data_type& value_type, c
 		{ &_scatter_kernel, "gpgpu_copy_if_scatter" }
 	};
 
+	_uniform_buffer.create(ctx);
+
 	return algorithm::init(ctx, info, kernels);
 }
 
 void copy_if::destruct(const cgv::render::context& ctx) {
+	_uniform_buffer.destruct(ctx);
 	_vote_kernel.destruct(ctx);
 	_scan_local_kernel.destruct(ctx);
 	_scan_global_kernel.destruct(ctx);
@@ -79,14 +82,21 @@ bool copy_if::dispatch(cgv::render::context& ctx, device_buffer_iterator input_f
 		_last_size = count;
 	}
 
+	uniform_data uniforms;
+	uniforms.input_begin = static_cast<uint32_t>(input_first.index());
+	uniforms.input_end = static_cast<uint32_t>(input_last.index());
+	uniforms.output_begin = static_cast<uint32_t>(output_first.index());
+	uniforms.num_values = count;
+	uniforms.num_block_sums = _num_block_sums;
+	uniforms.last_block_sum_idx = _last_block_sum_idx;
+	_uniform_buffer.replace(ctx, uniforms);
+	_uniform_buffer.bind(ctx, 0);
+
 	input_first.buffer().bind(ctx, cgv::render::VertexBufferType::VBT_STORAGE, 0);
 	output_first.buffer().bind(ctx, cgv::render::VertexBufferType::VBT_STORAGE, 1);
 	_votes_buffer.bind(ctx, 2);
 	
 	_vote_kernel.enable(ctx);
-	_vote_kernel.set_argument(ctx, "u_num_values", count);
-	_vote_kernel.set_argument<uint32_t>(ctx, "u_input_begin", input_first.index());
-	_vote_kernel.set_argument<uint32_t>(ctx, "u_input_end", input_last.index());
 	_vote_kernel.set_arguments(ctx, arguments);
 	bind_buffer_like_arguments(ctx, arguments);
 
@@ -105,17 +115,11 @@ bool copy_if::dispatch(cgv::render::context& ctx, device_buffer_iterator input_f
 	_scan_local_kernel.disable(ctx);
 
 	_scan_global_kernel.enable(ctx);
-	_scan_global_kernel.set_argument(ctx, "u_num_block_sums", _num_block_sums);
-	_scan_global_kernel.set_argument(ctx, "u_last_block_sum_idx", _last_block_sum_idx);
 	dispatch_compute(1, 1, 1);
 	glMemoryBarrier(GL_SHADER_STORAGE_BARRIER_BIT);
 	_scan_global_kernel.disable(ctx);
 
 	_scatter_kernel.enable(ctx);
-	_scatter_kernel.set_argument(ctx, "u_num_values", count);
-	_scatter_kernel.set_argument<uint32_t>(ctx, "u_input_begin", input_first.index());
-	_scatter_kernel.set_argument<uint32_t>(ctx, "u_input_end", input_last.index());
-	_scatter_kernel.set_argument<uint32_t>(ctx, "u_output_begin", output_first.index());
 	dispatch_compute(_num_groups, 1, 1);
 	glMemoryBarrier(GL_SHADER_STORAGE_BARRIER_BIT);
 	_scatter_kernel.disable(ctx);
@@ -125,6 +129,8 @@ bool copy_if::dispatch(cgv::render::context& ctx, device_buffer_iterator input_f
 	_votes_buffer.unbind(ctx, 2);
 	_prefix_sums_buffer.unbind(ctx, 3);
 	_block_sums_buffer.unbind(ctx, 4);
+
+	_uniform_buffer.unbind(ctx, 0);
 
 	return true;
 }
