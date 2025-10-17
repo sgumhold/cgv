@@ -1,5 +1,7 @@
 var NAVTREEINDEX31 =
 {
+"functions_vars_z.html":[11,3,2,26],
+"functions_w.html":[11,3,0,23],
 "functions_x.html":[11,3,0,24],
 "functions_y.html":[11,3,0,25],
 "functions_z.html":[11,3,0,26],
@@ -247,7 +249,5 @@ var NAVTREEINDEX31 =
 "namespacecgv.html#aac1220367b5c60325f351a680dcc2689":[10,0,1,42],
 "namespacecgv.html#ab09b27ab44994d0acc3d489cd2e9bc5d":[10,0,1,56],
 "namespacecgv.html#ab58abb7dccae2c0ae3af0dcf0eafe848":[10,0,1,34],
-"namespacecgv.html#ab7ca2e0c9d53afa46e9cdc3a470e64ca":[10,0,1,70],
-"namespacecgv.html#ab814cc087d72035cba2798d1f0f83708":[10,0,1,51],
-"namespacecgv.html#aba618cfd391238101d1376e3b096ad16":[10,0,1,52]
+"namespacecgv.html#ab7ca2e0c9d53afa46e9cdc3a470e64ca":[10,0,1,70]
 };

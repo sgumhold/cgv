@@ -1,5 +1,6 @@
 var classcgv_1_1render_1_1shader__compile__options =
 [
+    [ "clear", "classcgv_1_1render_1_1shader__compile__options.html#a6b4789b2cc32ec4295c5dadb43683315", null ],
     [ "define_macro", "classcgv_1_1render_1_1shader__compile__options.html#a5fb44be6c224ba6f15f02bdcc756ab33", null ],
     [ "define_macro", "classcgv_1_1render_1_1shader__compile__options.html#aaf5c8a0ca2e0b3251dafe93004035b3f", null ],
     [ "define_macro_if_not_default", "classcgv_1_1render_1_1shader__compile__options.html#aba208e04007a8b7417f63f108f0cb423", null ],
