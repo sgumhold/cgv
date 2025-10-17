@@ -40,7 +40,7 @@ public:
 		return success;
 	}
 
-	void destruct(cgv::render::context& ctx) {
+	void destruct(const cgv::render::context& ctx) {
 		_distance_transform.destruct(ctx);
 		_generate_indices.destruct(ctx);
 		if(_sort)

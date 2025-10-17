@@ -11,22 +11,8 @@ namespace cgv {
 			r.manage_singleton(ctx, "ellipsoid_renderer", ref_count, ref_count_change);
 			return r;
 		}
-
-		render_style* ellipsoid_renderer::create_render_style() const
-		{
-			return new ellipsoid_render_style();
-		}
-
-		ellipsoid_render_style::ellipsoid_render_style()
-		{
-			size_scale = 1;
-			size = 1;
-		}
-
 		ellipsoid_renderer::ellipsoid_renderer()
 		{
-			has_sizes = false;
-			has_orientations = false;
 			cull_per_primitive = false;
 		}
 		/// call this before setting attribute arrays to manage attribute array in given manager
@@ -53,10 +39,6 @@ namespace cgv {
 			has_orientations = false;
 			remove_attribute_array(ctx, "orientation");
 		}
-		bool ellipsoid_renderer::build_shader_program(context& ctx, shader_program& prog, const shader_compile_options& options)
-		{
-			return prog.build_program(ctx, "ellipsoid.glpr", options, true);
-		}
 		bool ellipsoid_renderer::validate_attributes(const context& ctx) const
 		{
 			const ellipsoid_render_style& rs = get_style<ellipsoid_render_style>();
@@ -76,7 +58,7 @@ namespace cgv {
 				ref_prog().set_attribute(ctx, "size", rs.size);
 
 			if (!has_orientations)
-				ref_prog().set_attribute(ctx, "orientation", cgv::math::quaternion<float>());
+				ref_prog().set_attribute(ctx, "orientation", cgv::quat());
 
 			ref_prog().set_uniform(ctx, "size_scale", rs.size_scale);
 			return true;

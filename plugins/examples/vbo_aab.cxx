@@ -806,7 +806,7 @@ public:
 			glLineWidth(old_line_width);
 		}
 		// render opaque surfaces here without blending
-		if (show_surface && material.get_transparency() < 0.01f)
+		if (show_surface && material.transparency < 0.01f)
 			draw_surface(ctx);
 		// recover restart settings
 		glPrimitiveRestartIndex(restart_index);
@@ -825,7 +825,7 @@ public:
 		glEnable(GL_PRIMITIVE_RESTART);
 
 		// render surfaces with transparency here with blending enabled
-		if (show_surface && !(ctx.get_current_material()->get_transparency() < 0.01f)) {				
+		if (show_surface && !(ctx.get_current_material()->transparency < 0.01f)) {				
 			glEnable(GL_BLEND);
 			glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 			draw_surface(ctx);

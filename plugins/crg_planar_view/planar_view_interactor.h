@@ -43,9 +43,9 @@ public:
 	///set default values
 	void set_default_values();
 	///return projection matrix (like glu perspective)
-	const dmat4 get_projection() const;
+	const cgv::dmat4 get_projection() const;
 	/// return modelview matrix V=T((0,0,-distance)^T)* R_x(elevation) * R_y(azimut)* T(-target)
-	const dmat4 get_modelview() const;
+	const cgv::dmat4 get_modelview() const;
 
 	/// describe members
 	bool self_reflect(cgv::reflect::reflection_handler& rh);
@@ -60,13 +60,30 @@ public:
 
 	void zoom(int x, int y, float ds);
 
+	/// return the center of the view
+	cgv::vec2 get_center() const { return target; }
+	/// set the center of the view
+	void set_center(const cgv::vec2& center);
+	/// return the magnification
+	float get_magnification() const { return magnification; }
+	/// set the magnification
+	void set_magnification(float magnification);
+	/// return the rotation angle
+	float get_angle() const { return angle; }
+	/// set the rotation angle
+	void set_angle(float angle);
+	/// return true if the view rotation is locked
+	bool is_rotation_locked() const { return lock_rotation; }
+	/// set whether the rotation should be locked
+	void keep_rotation_locked(bool lock);
+
 private:
 	float aspect;
 	bool pressed;
 	/// target point of camera
-	vec2 target;
-	vec2 pos_down;
-	dmat4 MPW;
+	cgv::vec2 target;
+	cgv::vec2 pos_down;
+	cgv::dmat4 MPW;
 
 	/// zoom 
 	float magnification;

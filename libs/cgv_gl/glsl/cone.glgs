@@ -1,12 +1,6 @@
 #version 430
 #extension GL_EXT_geometry_shader4 : enable
 
-#define CAPS 1
-
-// 0 - Flat
-// 1 - Rounded
-#define CAP_TYPE 0
-
 //***** begin interface of view.glsl ***********************************
 mat4 get_modelview_matrix();
 mat4 get_projection_matrix();
@@ -56,7 +50,7 @@ void main()
 
 	vec3 center = start.xyz + end.xyz;
 
-#if CAP_TYPE == 1
+#ifdef USE_ROUNDED_CONE
 	// offset center depending on cap radii
 	center += delta*(re - rs);
 #endif
@@ -76,7 +70,7 @@ void main()
 	binormal_fs = T[2].xyz;
 
 	// scale part
-#if CAP_TYPE == 1
+#ifdef USE_ROUNDED_CONE
 	T[0] *= l + rs + re;
 	T[1] *= max_d;
 	T[2] *= max_d;
@@ -86,33 +80,34 @@ void main()
 #endif
 
 	// generate transformed base vector corners of the box in object-space
-#if CAP_TYPE == 0
-	// for flat caps the start and end radius is used here to determine the scale
-	vec4 C0 = T * vec4(-0.5, -rs, -rs, 1.0);
-	vec4 C1 = T * vec4(-0.5, -rs, +rs, 1.0);
-	vec4 C2 = T * vec4(-0.5, +rs, -rs, 1.0);
-	
-	vec4 C4 = T * vec4(+0.5, -re, -re, 1.0);
-	vec4 C5 = T * vec4(+0.5, -re, +re, 1.0);
-	vec4 C6 = T * vec4(+0.5, +re, -re, 1.0);
-	
-	// calculate remaining corners
-	vec4 C3 = C1 + C2 - C0;
-	vec4 C7 = C5 + C6 - C4;
-#else
+	vec4 C0, C1, C2, C3, C4, C5, C6, C7;
+#ifdef USE_ROUNDED_CONE
 	// for rounded caps we use unit coordinates as the full scaling is given in T
-	vec4 C0 = T * vec4(-0.5, -0.5, -0.5, 1.0);
-	vec4 C1 = T * vec4(0.5, -0.5, -0.5, 1.0);
-	vec4 C2 = T * vec4(-0.5, 0.5, -0.5, 1.0);
-	vec4 C4 = T * vec4(-0.5, -0.5, 0.5, 1.0);
+	C0 = T * vec4(-0.5, -0.5, -0.5, 1.0);
+	C1 = T * vec4(0.5, -0.5, -0.5, 1.0);
+	C2 = T * vec4(-0.5, 0.5, -0.5, 1.0);
+	C4 = T * vec4(-0.5, -0.5, 0.5, 1.0);
 
 	// calculate remaining corners
 	vec4 D20 = C2 - C0;
 
-	vec4 C3 = C1 + D20;
-	vec4 C5 = C1 + C4-C0;
-	vec4 C6 = C4 + D20;
-	vec4 C7 = C5 + D20;
+	C3 = C1 + D20;
+	C5 = C1 + C4-C0;
+	C6 = C4 + D20;
+	C7 = C5 + D20;
+#else
+// for flat caps the start and end radius is used here to determine the scale
+	C0 = T * vec4(-0.5, -rs, -rs, 1.0);
+	C1 = T * vec4(-0.5, -rs, +rs, 1.0);
+	C2 = T * vec4(-0.5, +rs, -rs, 1.0);
+
+	C4 = T * vec4(+0.5, -re, -re, 1.0);
+	C5 = T * vec4(+0.5, -re, +re, 1.0);
+	C6 = T * vec4(+0.5, +re, -re, 1.0);
+	
+	// calculate remaining corners
+	C3 = C1 + C2 - C0;
+	C7 = C5 + C6 - C4;
 #endif
 	
 	mat4 M = get_modelview_projection_matrix();

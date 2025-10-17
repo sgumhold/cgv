@@ -8,7 +8,6 @@ uniform int   size_index = -1;
 uniform int   secondary_size_index = -1;
 
 uniform float radius_scale = 1.0;
-uniform float halo_width_in_pixel = 0.0;
 uniform float percentual_halo_width = 0.0;
 
 layout(location = 0) in float attribute0;
@@ -25,13 +24,12 @@ in vec4 secondary_color;
 in float size;
 
 out SPHERE_GS {
-	mat3 normal_matrix;
-	mat4 model_view_matrix;
-	mat4 model_view_projection_matrix;
-	vec4 color;
-	vec4 halo_color;
-	float halo_width_in_pixel;
-	float percentual_halo_width;
+	flat mat3 normal_matrix;
+	flat mat4 model_view_matrix;
+	flat mat4 model_view_projection_matrix;
+	flat vec4 color;
+	flat vec4 halo_color;
+	flat float percentual_halo_width;
 } vo;
 
 //***** begin interface of view.glsl ***********************************
@@ -111,7 +109,6 @@ void main()
 	vec3 position_plot = plot_space_from_window_space(position_window);
 
 	gl_Position = vec4(position_plot, radius*radius_scale);
-	vo.halo_width_in_pixel = halo_width_in_pixel;
 	vo.normal_matrix = get_normal_matrix();
 	vo.model_view_matrix = get_modelview_matrix();
 	vo.model_view_projection_matrix = get_modelview_projection_matrix();

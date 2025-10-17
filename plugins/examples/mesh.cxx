@@ -268,7 +268,7 @@ public:
 			add_member_control(this, "illumination", illumination_mode, "dropdown", "enums='none,one sided,two sided'");
 			// this is how to add a ui for the materials read from an obj material file
 			for (unsigned mi = 0; mi < mesh_info.ref_materials().size(); ++mi) {
-				if (begin_tree_node(mesh_info.ref_materials()[mi]->get_name(), *mesh_info.ref_materials()[mi])) {
+				if (begin_tree_node(mesh_info.ref_materials()[mi]->name, *mesh_info.ref_materials()[mi])) {
 					align("\a");
 					add_gui("mat", static_cast<cgv::media::illum::textured_surface_material&>(*mesh_info.ref_materials()[mi]));
 					align("\b");

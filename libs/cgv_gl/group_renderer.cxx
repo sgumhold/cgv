@@ -5,20 +5,6 @@
 namespace cgv {
 	namespace render {
 
-
-		group_render_style::group_render_style()
-		{
-			use_group_color = false;
-			use_group_transformation = false;
-		}
-
-		group_renderer::group_renderer()
-		{
-			has_group_indices = false;
-			has_group_colors = false;
-			has_group_translations = false;
-			has_group_rotations = false;
-		}
 		/// call this before setting attribute arrays to manage attribute array in given manager
 		void group_renderer::enable_attribute_array_manager(const context& ctx, attribute_array_manager& aam)
 		{

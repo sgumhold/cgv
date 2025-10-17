@@ -19,7 +19,10 @@ bool radix_sort_onesweep::v_init(cgv::render::context& ctx, cgv::render::shader_
 		{ &_digit_bin_pass_kernel, "gpgpu_radix_sort_onesweep_digit_bin_pass" }
 	};
 
-	if(algorithm::init(ctx, kernels, config)) {
+	algorithm_create_info info;
+	info.options = config;
+
+	if(algorithm::init(ctx, info, kernels)) {
 		// Get the maximum number of work groups that can be dispatched in dimension 0.
 		_max_dispatch_dimension = ctx.get_device_capabilities().max_compute_work_group_count[0];
 

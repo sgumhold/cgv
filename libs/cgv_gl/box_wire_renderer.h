@@ -17,31 +17,28 @@ namespace cgv { // @<
 		/// box wires extend line render styles
 		struct CGV_API box_wire_render_style : public line_render_style
 		{
-			/// extent used in case extent array is not specified
-			vec3 default_extent;
-			/// box anchor position relative to center that corresponds to the position attribute
-			vec3 relative_anchor;
-			/// default constructor sets default extent to (1,1,1) and relative anchor to (0,0,0)
-			box_wire_render_style();
+			/// extent used in case extent array is not specified; defaults to (1,1,1)
+			vec3 default_extent = { 1.0f };
+			/// box anchor position relative to center that corresponds to the position attribute; defaults to (0,0,0)
+			vec3 relative_anchor = { 0.0f };
 		};
 
 		/// renderer that supports point splatting
 		class CGV_API box_wire_renderer : public line_renderer
 		{
 		protected:
-			bool has_extents;
+			bool has_extents = false;
 			/// whether array with per box translations has been specified
-			bool has_translations;
+			bool has_translations = false;
 			/// whether array with per box rotations has been specified
-			bool has_rotations;
+			bool has_rotations = false;
 			/// whether position is box center, if not it is lower left bottom corner
-			bool position_is_center;
-			/// overload to allow instantiation of box_wire_renderer
-			render_style* create_render_style() const;
-			/// build box wire program
-			bool build_shader_program(context& ctx, shader_program& prog, const shader_compile_options& options);
+			bool position_is_center = true;
+			/// return the default shader program name
+			std::string get_default_prog_name() const override { return "box_wire.glpr"; }
+			/// create and return the default render style
+			render_style* create_render_style() const override { return new box_wire_render_style(); }
 		public:
-			box_wire_renderer();
 			/// call this before setting attribute arrays to manage attribute array in given manager
 			void enable_attribute_array_manager(const context& ctx, attribute_array_manager& aam);
 			/// call this after last render/draw call to ensure that no other users of renderer change attribute arrays of given manager

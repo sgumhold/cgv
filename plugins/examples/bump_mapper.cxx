@@ -38,8 +38,8 @@ bump_mapper::bump_mapper(unsigned _texture_resolution) :
 bool bump_mapper::init(cgv::render::context& ctx)
 {
 	tex_index = material.add_texture_reference(bump_map);
-	material.set_diffuse_index(tex_index);
-	material.set_bump_index(tex_index);
+	material.diffuse_index = tex_index;
+	material.bump_index = tex_index;
 	return true;
 }
 
@@ -90,6 +90,7 @@ void bump_mapper::draw(context& ctx)
 			if (!use_diffuse_map)
 				prog.set_uniform(ctx, "diffuse_index", -1);
 			prog.set_uniform(ctx, "bump_scale", bump_scale);
+			prog.set_uniform(ctx, "illumination_mode", illumination_mode);
 
 			if (wire_frame) {
 				glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
@@ -142,6 +143,7 @@ void bump_mapper::create_gui()
 
 	add_decorator("Bump Map Properties", "heading");
 	add_member_control(this, "wire_frame", wire_frame, "check");
+	add_member_control(this, "illumination_mode", (cgv::type::DummyEnum&) illumination_mode, "dropdown", "enums='off,one,two'");
 	add_member_control(this, "use_diffuse_map", use_diffuse_map, "check");
 	add_member_control(this, "use_bump_map", use_bump_map, "check");
 	add_member_control(this, "bump_scale", bump_scale, "value_slider", "min=0.0001;max=1;log=true;ticks=true");

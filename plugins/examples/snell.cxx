@@ -51,16 +51,16 @@ public:
 		return;
 	}
 	snell_demo() : 
-		axes_mat(
+		axes_mat({
 			cgv::media::illum::BrdfType(cgv::media::illum::BT_OREN_NAYAR + cgv::media::illum::BT_COOK_TORRANCE),
-		cgv::rgb(0.1f, 0.1f, 0.1f),
+			cgv::rgb(0.1f, 0.1f, 0.1f),
 			0.1f, 0.5f, 0.2f
-		),
-		surface_mat(
+		}),
+		surface_mat({
 			cgv::media::illum::BT_OREN_NAYAR,
-		cgv::rgb(0.3f, 0.6f, 0.3f),
+			cgv::rgb(0.3f, 0.6f, 0.3f),
 			0.1f, 0.0f, 0.2f
-		)
+		})
 	{
 		set_name("snell_demo");
 

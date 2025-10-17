@@ -33,7 +33,10 @@ protected:
 	float gamma = 2.2f;
 	void process_text_1(const std::string& text);
 	void configure_opengl_controls();
-
+	bool debug_before_dispatch = false;
+	bool debug_after_dispatch = false;
+	bool debug_dispatch_no_mouse_move = true;
+	void debug_dispatch(cgv::gui::event& e, bool before);
 	/**@name fltk interface*/
 	//@{
 private:

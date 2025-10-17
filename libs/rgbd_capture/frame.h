@@ -27,6 +27,8 @@ namespace rgbd {
 		PF_BGRA,  // 32 bit brga format
 		PF_BAYER, // 8 bit per pixel, raw bayer pattern values
 
+		PF_JPG, // technically not a pixel format, but necessary for azure kinect config
+
 		PF_DEPTH,
 		PF_DEPTH_AND_PLAYER,
 		PF_POINTS_AND_TRIANGLES,
