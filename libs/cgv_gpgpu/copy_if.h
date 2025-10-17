@@ -2,6 +2,7 @@
 
 #include "algorithm.h"
 #include "device_buffer_iterator.h"
+#include "uniform_buffer.h"
 #include "storage_buffer.h"
 
 #include "lib_begin.h"
@@ -73,6 +74,15 @@ public:
 	}
 
 private:
+	struct uniform_data {
+		uint32_t input_begin = 0;
+		uint32_t input_end = 0;
+		uint32_t output_begin = 0;
+		uint32_t num_values = 0; // the number of values in the input buffer
+		uint32_t num_block_sums = 0; // the number of blocksums
+		uint32_t last_block_sum_idx = 0; // the index of the last valid block sum
+	};
+
 	void resize(cgv::render::context& ctx, uint32_t size);
 
 	//CopyMode mode = CopyMode::kCopy;
@@ -84,6 +94,8 @@ private:
 	uint32_t _num_groups = 0;
 	uint32_t _num_block_sums = 0;
 	uint32_t _last_block_sum_idx = 0;
+	
+	uniform_buffer<uniform_data> _uniform_buffer;
 
 	compute_kernel _vote_kernel;
 	compute_kernel _scan_local_kernel;
