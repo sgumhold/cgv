@@ -14,6 +14,7 @@ namespace cgv { // @<
 		/// base class for all render styles
 		struct CGV_API render_style
 		{
+			// Make destructor virtual to allow deletion of inherited class instances through pointer to this base class.
 			virtual ~render_style();
 		};
 		
@@ -24,31 +25,32 @@ namespace cgv { // @<
 			/// shader program
 			shader_program prog;
 			/// shader program
-			shader_program* prog_ptr;
-			/// shader define maps
-			shader_define_map defines;
-			/// last shader define maps
-			shader_define_map last_defines;
+			shader_program* prog_ptr = &prog;
+			/// current and modifyable shader program compile options
+			shader_compile_options prog_options;
+			/// last shader program compile options used to build the current program
+			shader_compile_options last_prog_options;
 //#ifdef _DEBUG
 			/* TODO: FIXME: Find out why _DEBUG is sometimes not set in CMake Ninja builds under Linux, causing crashes
 			                due to inconsistent object layout in memory between different modules using the renderers */
-			/// count of render calls with current program configuration (used to detect frequent rebuilds)
-			int current_prog_render_count;
+			/// count of render calls with current program configuration (used to detect frequent rebuilds);
+			/// initialized to the threshold count of 10 to prevent outputting warnings for the very first render procedure
+			int current_prog_render_count = 10;
 //#endif
 			/// otherwise keep track of enabled arrays
 			std::set<int> enabled_attribute_arrays;
 			/// default render style
-			mutable render_style* default_render_style;
+			mutable render_style* default_render_style = nullptr;
 			/// current render style, can be set by user
-			const render_style* rs;
+			const render_style* rs = nullptr;
 			/// pointer to indices in CPU memory
-			const void* indices;
+			const void* indices = nullptr;
 			/// pointer to index buffer
-			const vertex_buffer* index_buffer_ptr;
+			const vertex_buffer* index_buffer_ptr = nullptr;
 			/// type of indices
-			cgv::type::info::TypeId index_type;
+			cgv::type::info::TypeId index_type = cgv::type::info::TI_UNDEF;
 			/// count of indices
-			size_t index_count;
+			size_t index_count = 0;
 			/// declare default attribute array manager used in core profile
 			attribute_array_manager default_aam;
 			/// if attribute array manager is set, use it for attribute management
@@ -60,31 +62,34 @@ namespace cgv { // @<
 			bool has_attribute(const context& ctx, const std::string& name) {
 				return aam_ptr->has_attribute(ctx, get_prog_attribute_location(ctx, name, false));
 			}
+			/// implement this method to create a default render style
+			virtual render_style* create_render_style() const = 0;
 			/// access to render style
 			const render_style* get_style_ptr() const;
 			/// return whether attributes persist after a call to disable
 			bool attributes_persist() const { return has_aam(); }
-			/// overload to update the shader defines based on the current render style; only called if internal shader program is used
-			virtual void update_defines(shader_define_map& defines) {}
-			/// overload to build shader program based on the passed defines
-			virtual bool build_shader_program(context& ctx, shader_program& prog, const shader_compile_options& options) { return false; }
+			/// overload to update the shader program compile options based on the current render style; only called if internal shader program is used
+			virtual void update_shader_program_options(shader_compile_options& options) const {}
+			/// overload to change default behaviour and build a custom shader program based on the passed options
+			virtual bool build_shader_program(context& ctx, shader_program& prog, const shader_compile_options& options) const;
 		public:
-			/// access to shader define map to update defines not handled by render style
-			shader_define_map& ref_defines() { return defines; }
+			/// access to shader program compile options to update settings not handled by render style
+			shader_compile_options& ref_shader_options() { return prog_options; }
 			/// derived renderer classes have access to shader program
 			shader_program& ref_prog() { return *prog_ptr; }
 			/// set external shader program up to next call to disable() or render()
 			void set_prog(shader_program& one_shot_prog);
 		protected:
+			/// implement this method to return the name of the default shader program; return an empty string if the renderer handles program creation on its own
+			virtual std::string get_default_prog_name() const = 0;
+
 			/// access to style
 			template <typename T>
 			const T& get_style() const { return *static_cast<const T*>(get_style_ptr());  }
 			/// track whether color attribute is defined
-			mutable bool has_colors;
+			mutable bool has_colors = false;
 			/// track whether position attribute is defined
-			mutable bool has_positions;
-			/// virtual method that creates a default render style
-			virtual render_style* create_render_style() const = 0;
+			mutable bool has_positions = false;
 
 			int get_prog_attribute_location(const context& ctx, const std::string & name, bool error_check = true) {
 				int loc = ref_prog().get_attribute_location(ctx, name);

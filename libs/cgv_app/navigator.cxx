@@ -39,8 +39,8 @@ navigator::navigator() {
 
 	box_data.style.illumination_mode = IM_TWO_SIDED;
 	box_data.style.culling_mode = CM_OFF;
-	box_data.style.material.set_diffuse_reflectance(rgb(0.5f));
-	box_data.style.material.set_emission(rgb(0.05f));
+	box_data.style.material.diffuse_reflectance = rgb(0.5f);
+	box_data.style.material.emission = rgb(0.05f);
 	box_data.style.surface_opacity = 0.35f;
 
 	box_wire_data.style.default_color = rgb(0.5f);

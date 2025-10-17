@@ -67,8 +67,6 @@ bool keyframe_editor_overlay::handle_mouse_event(cgv::gui::mouse_event& e, cgv::
 		return true;
 
 	if(e.get_button() == cgv::gui::MB_LEFT_BUTTON && e.get_action() == cgv::gui::MA_PRESS) {
-		//ivec2 local_mouse_position = get_local_mouse_pos(ivec2(me.get_x(), me.get_y()));
-
 		if(layout.marker_constraint.contains(local_mouse_pos))
 			set_frame(position_to_frame(local_mouse_pos.x() + layout.timeline_offset));
 			
@@ -186,7 +184,8 @@ void keyframe_editor_overlay::init_frame(context& ctx) {
 		label_texts.clear();
 		label_texts.push_back("0");
 		labels.positions.push_back(vec3(0.0f));
-		
+		labels.alignment = TA_BOTTOM;
+
 		for(size_t i = 0; i <= layout.timeline_frames; ++i) {
 			if(i % 5 == 0) {
 				vec3 position(
@@ -196,12 +195,9 @@ void keyframe_editor_overlay::init_frame(context& ctx) {
 				);
 				label_texts.push_back(std::to_string(i));
 				labels.positions.push_back(position);
-				labels.alignments.push_back(TA_BOTTOM);
 			}
 		}
 		
-		labels.alignment = TA_BOTTOM;
-
 		create_keyframe_draggables();
 		keyframes.set_constraint(layout.timeline);
 
@@ -287,6 +283,25 @@ void keyframe_editor_overlay::update() {
 	post_damage();
 }
 
+void keyframe_editor_overlay::set_selected_frame(size_t frame) {
+
+	selected_frame = frame;
+
+	if(data) {
+		if(keyframe* k = data->keyframe_at(selected_frame)) {
+			easing_function_id = k->easing_id();
+
+			invoke_callback(Event::kKeySelect);
+		}
+	}
+
+	if(selected_frame == -1)
+		invoke_callback(Event::kKeyDeselect);
+
+	post_recreate_gui();
+	post_damage();
+}
+
 void keyframe_editor_overlay::add_keyframe() {
 
 	if(view_ptr && data) {
@@ -358,24 +373,6 @@ void keyframe_editor_overlay::set_frame(size_t frame) {
 
 		post_damage();
 	}
-}
-
-void keyframe_editor_overlay::set_selected_frame(size_t frame) {
-
-	selected_frame = frame;
-
-	if(data) {
-		if(keyframe* k = data->keyframe_at(selected_frame)) {
-			easing_function_id = k->easing_id();
-
-			invoke_callback(Event::kKeySelect);
-		}
-	}
-
-	if(selected_frame == -1)
-		invoke_callback(Event::kKeyDeselect);
-
-	post_recreate_gui();
 }
 
 void keyframe_editor_overlay::change_duration(bool before) {
@@ -592,6 +589,10 @@ void keyframe_editor_overlay::draw_time_marker_and_labels(cgv::render::context& 
 		return digits;
 	};
 
+	// update current frame label
+	label_texts[0] = std::to_string(data->frame);
+	labels.set_text_array(ctx, label_texts);
+
 	// draw frame number labels
 	auto& font_renderer = cgv::g2d::ref_msdf_gl_font_renderer_2d(ctx);
 	font_renderer.render(ctx, content_canvas, labels, label_style, 1);
@@ -625,8 +626,6 @@ void keyframe_editor_overlay::draw_time_marker_and_labels(cgv::render::context& 
 	content_canvas.disable_current_shader(ctx);
 
 	// draw time marker frame number label
-	label_texts[0] = std::to_string(data->frame);
-	labels.set_text_array(ctx, label_texts);
 	labels.positions[0] = vec3(pos0.x(), pos1.y() + 7.0f, 0.0f);
 	font_renderer.render(ctx, content_canvas, labels, label_style, 0, 1);
 }
@@ -725,8 +724,8 @@ void keyframe_editor_overlay::create_gui_impl() {
 		add_member_control(this, "", new_duration, "value", "w=64;min=0;max=4;step=0.01", "");
 		add_decorator(" s", "heading", "w=14;level=4;font_style='regular'");
 
-		connect_copy(add_button("Change Before", "w=94;tooltip='Set the transition duration to the next keyframe'", " ")->click, rebind(this, &keyframe_editor_overlay::change_duration, cgv::signal::const_expression<bool>(true)));
-		connect_copy(add_button("Change After", "w=94;tooltip='Set the transition duration from the previous keyframe'")->click, rebind(this, &keyframe_editor_overlay::change_duration, cgv::signal::const_expression<bool>(false)));
+		connect_copy(add_button("Change Before", "w=94;tooltip='Set the transition duration from the previous keyframe'", " ")->click, rebind(this, &keyframe_editor_overlay::change_duration, cgv::signal::const_expression<bool>(true)));
+		connect_copy(add_button("Change After", "w=94;tooltip='Set the transition duration to the next keyframe'")->click, rebind(this, &keyframe_editor_overlay::change_duration, cgv::signal::const_expression<bool>(false)));
 
 		add_decorator("", "separator");
 

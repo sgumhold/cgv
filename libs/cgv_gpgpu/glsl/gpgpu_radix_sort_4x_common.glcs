@@ -17,5 +17,5 @@ layout(std430, binding = 6) buffer last_sum_buffer {
 };
 
 uniform uint u_num_scan_groups; // the number of local scan groups
-uniform uint u_num_block_sums; // The number of blocksums
-uniform uint u_last_block_sum_idx; // The index of thge last valid block sum
+uniform uint u_num_block_sums; // the number of blocksums
+uniform uint u_last_block_sum_idx; // the index of the last valid block sum

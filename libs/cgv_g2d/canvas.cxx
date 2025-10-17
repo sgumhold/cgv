@@ -20,7 +20,7 @@ void canvas::register_shader(const std::string& name, const std::string& filenam
 	cgv::render::shader_compile_options options;
 	
 	if(!multi_primitive_mode)
-		options.defines["MODE"] = "0";
+		options.define_macro("MODE", 0);
 
 	shaders.add(name, filename, options);
 }

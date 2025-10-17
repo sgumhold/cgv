@@ -1,4 +1,4 @@
-#version 150 compatibility
+#version 330 core
 #extension GL_EXT_geometry_shader4 : enable
 
 layout(points) in;
@@ -11,11 +11,24 @@ in vec4 color_gs[];
 
 out vec4 color_fs;
 
+//***** begin interface of view.glsl ***********************************
+mat4 get_modelview_matrix();
+mat4 get_projection_matrix();
+mat4 get_modelview_projection_matrix();
+mat4 get_inverse_modelview_matrix();
+mat4 get_inverse_modelview_projection_matrix();
+mat3 get_normal_matrix();
+mat3 get_inverse_normal_matrix();
+//***** end interface of view.glsl ***********************************
+
 void main()
 {
 	color_fs = color_gs[0];
-	gl_Position = gl_ModelViewProjectionMatrix * gl_PositionIn[0];
+
+	mat4 MVP = get_modelview_projection_matrix();
+
+	gl_Position = MVP * gl_in[0].gl_Position;
 	EmitVertex();
-	gl_Position = gl_ModelViewProjectionMatrix * (gl_PositionIn[0] + normal_length * vec4(normal_gs[0],0.0));
+	gl_Position = MVP * (gl_in[0].gl_Position + normal_length * vec4(normal_gs[0], 0.0));
 	EmitVertex();
 }

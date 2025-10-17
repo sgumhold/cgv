@@ -50,7 +50,7 @@ std::string to_string(Type type) {
 		"dmat4x3",
 		"struct"
 	};
-	return strs[static_cast<int>(type)];
+	return strs[static_cast<int32_t>(type)];
 }
 
 type_info get_type_info(Type type) {
@@ -96,7 +96,7 @@ type_info get_type_info(Type type) {
 		{ Type::kDouble, 4, 3, 96, 32 },	// kDMat4x3
 		{ Type::kStruct, 0, 0, 0, 0 },		// kStruct
 	}};
-	return infos[static_cast<int>(type)];
+	return infos[static_cast<int32_t>(type)];
 }
 
 data_type::data_type() {}
@@ -126,7 +126,7 @@ std::string data_type::type_name() const {
 
 bool data_type::is_valid() const {
 	switch(_base_type) {
-	case sl::Type::kStruct:
+	case Type::kStruct:
 		// Struct types are only valid if they have a non-empty name.
 		return !type_name().empty();
 	default:
@@ -140,18 +140,18 @@ bool data_type::is_void() const {
 }
 
 bool data_type::is_scalar() const {
-	int index = static_cast<int>(_base_type);
-	return index >= static_cast<int>(Type::kBool) && index <= static_cast<int>(Type::kDouble);
+	int32_t index = static_cast<int32_t>(_base_type);
+	return index >= static_cast<int32_t>(Type::kBool) && index <= static_cast<int32_t>(Type::kDouble);
 }
 
 bool data_type::is_vector() const {
-	int index = static_cast<int>(_base_type);
-	return index >= static_cast<int>(Type::kBVec2) && index <= static_cast<int>(Type::kDVec4);
+	int32_t index = static_cast<int32_t>(_base_type);
+	return index >= static_cast<int32_t>(Type::kBVec2) && index <= static_cast<int32_t>(Type::kDVec4);
 }
 
 bool data_type::is_matrix() const {
-	int index = static_cast<int>(_base_type);
-	return index >= static_cast<int>(Type::kMat2) && index <= static_cast<int>(Type::kDMat4x3);
+	int32_t index = static_cast<int32_t>(_base_type);
+	return index >= static_cast<int32_t>(Type::kMat2) && index <= static_cast<int32_t>(Type::kDMat4x3);
 }
 
 bool data_type::is_compound() const {
@@ -205,25 +205,29 @@ size_t get_aligned_size(data_type type) {
 	return cgv::math::next_multiple_k_greater_than_n(type.alignment_in_bytes(), type.size_in_bytes());
 }
 
-std::string get_type_definition_string(sl::data_type type) {
+std::string get_type_definition_string(data_type type) {
 	std::string type_name = type.type_name();
 	switch(type.type()) {
-	case sl::Type::kStruct:
+	case Type::kStruct:
 		return "struct " + type_name + " { " + to_string(type.members()) + "};";
 	default:
 		return type_name;
 	}
 }
 
-std::string get_type_alias_string(const std::string& alias, sl::data_type type) {
-	return "#define " + alias + " " + type.type_name();
+std::string get_alias_string(const std::string& alias, const std::string& name) {
+	return "#define " + alias + " " + name;
+}
+
+std::string get_type_alias_string(const std::string& alias, data_type type) {
+	return get_alias_string(alias, type.type_name());
 }
 
 std::string to_string(const named_variable& variable) {
 	std::string res;
 	res = variable.type().type_name() + " " + variable.name();
 	if(variable.array_size() != 0)
-		res += "[" + (variable.array_size() == sl::varsize ? "" : std::to_string(variable.array_size())) + "]";
+		res += "[" + (variable.array_size() == varsize ? "" : std::to_string(variable.array_size())) + "]";
 	return res;
 }
 
@@ -239,15 +243,15 @@ std::string to_string(const named_variable_list& variables, const std::string& p
 
 std::string to_string(MemoryQualifier qualifier) {
 	switch(qualifier) {
-	case sl::MemoryQualifier::kCoherent:
+	case MemoryQualifier::kCoherent:
 		return "coherent";
-	case sl::MemoryQualifier::kVolatile:
+	case MemoryQualifier::kVolatile:
 		return "volatile";
-	case sl::MemoryQualifier::kRestrict:
+	case MemoryQualifier::kRestrict:
 		return "restrict";
-	case sl::MemoryQualifier::kReadOnly:
+	case MemoryQualifier::kReadOnly:
 		return "readonly";
-	case sl::MemoryQualifier::kWriteOnly:
+	case MemoryQualifier::kWriteOnly:
 		return "writeonly";
 	default:
 		return "";
@@ -265,7 +269,7 @@ memory_qualifier_storage::memory_qualifier_storage(const memory_qualifier_list& 
 }
 
 memory_qualifier_list memory_qualifier_storage::list() const {
-	const sl::memory_qualifier_list all_qualifiers = {
+	const memory_qualifier_list all_qualifiers = {
 		MemoryQualifier::kCoherent,
 		MemoryQualifier::kVolatile,
 		MemoryQualifier::kRestrict,
@@ -295,9 +299,145 @@ std::string to_string(const named_buffer& buffer, size_t location) {
 	return res;
 }
 
-std::string to_string(const named_buffer_list& buffers, size_t base_index) {
-	return cgv::utils::transform_join(buffers.begin(), buffers.end(), [&base_index](const named_buffer& buffer) {
-		return to_string(buffer, base_index++);
+std::string to_string(const named_buffer_list& buffers, size_t base_location) {
+	return cgv::utils::transform_join(buffers.begin(), buffers.end(), [&base_location](const named_buffer& buffer) {
+		return to_string(buffer, base_location++);
+	}, "\n", true);
+}
+
+std::string to_string(ImageFormatLayoutQualifier qualifier) {
+	static const std::array<std::string, 39> strs = {
+		"rgba32f",
+		"rgba16f",
+		"rg32f",
+		"rg16f",
+		"r11f_g11f_b10f",
+		"r32f",
+		"r16f",
+		"rgba16",
+		"rgb10_a2",
+		"rgba8",
+		"rg16",
+		"rg8",
+		"r16",
+		"r8",
+		"rgba16_snorm",
+		"rgba8_snorm",
+		"rg16_snorm",
+		"rg8_snorm",
+		"r16_snorm",
+		"r8_snorm",
+		"rgba32i",
+		"rgba16i",
+		"rgba8i",
+		"rg32i",
+		"rg16i",
+		"rg8i",
+		"r32i",
+		"r16i",
+		"r8i",
+		"rgba32ui",
+		"rgba16ui",
+		"rgb10_a2ui",
+		"rgba8ui",
+		"rg32ui",
+		"rg16ui",
+		"rg8ui",
+		"r32ui",
+		"r16ui",
+		"r8ui"
+	};
+	return strs[static_cast<int32_t>(qualifier)];
+}
+
+std::string get_type_prefix(ImageFormatLayoutQualifier qualifier) {
+	int32_t index = static_cast<int32_t>(qualifier);
+	if(index >= static_cast<int32_t>(ImageFormatLayoutQualifier::k_rgba32ui))
+		return "u";
+	else if(index >= static_cast<int32_t>(ImageFormatLayoutQualifier::k_rgba32i))
+		return "i";
+	else
+		return "";
+}
+
+data_type get_data_type(ImageFormatLayoutQualifier qualifier) {
+	int32_t index = static_cast<int32_t>(qualifier);
+	if(index >= static_cast<int32_t>(ImageFormatLayoutQualifier::k_rgba32ui))
+		return Type::kUVec4;
+	else if(index >= static_cast<int32_t>(ImageFormatLayoutQualifier::k_rgba32i))
+		return Type::kIVec4;
+	else
+		return Type::kVec4;
+}
+
+std::string to_string(const named_image& image, size_t location) {
+	std::string location_str = std::to_string(location);
+	std::string name = image.name().empty() ? "image" + location_str : image.name();
+
+	int32_t dims = 0;
+	switch(image.texture_type()) {
+	case cgv::render::TextureType::TT_1D:
+		dims = 1;
+		break;
+	case cgv::render::TextureType::TT_2D:
+		dims = 2;
+		break;
+	case cgv::render::TextureType::TT_3D:
+		dims = 3;
+		break;
+	default:
+		break;
+	}
+
+	std::string image_type = get_type_prefix(image.image_format()) + "image" + std::to_string(dims) + "D";
+
+	std::string res = "layout(" + to_string(image.image_format()) + ", binding=" + location_str + ") uniform ";
+	res += to_string(image.memory_qualifiers());
+	res += image_type + " " + name + ";";
+	
+	return res;
+}
+
+std::string to_string(const named_image_list& images, size_t base_location) {
+	return cgv::utils::transform_join(images.begin(), images.end(), [&base_location](const named_image& image) {
+		return to_string(image, base_location++);
+	}, "\n", true);
+}
+
+std::string get_sampler_string(const cgv::render::TextureType& texture_type, SamplerBaseFormat sampler_base_format) {
+	std::string str = "sampler2D";
+
+	switch(texture_type) {
+	case cgv::render::TextureType::TT_1D: str = "sampler1D"; break;
+	case cgv::render::TextureType::TT_2D: str = "sampler2D"; break;
+	case cgv::render::TextureType::TT_3D: str = "sampler3D"; break;
+	case cgv::render::TextureType::TT_1D_ARRAY: str = "sampler1DArray"; break;
+	case cgv::render::TextureType::TT_2D_ARRAY: str = "sampler2DArray"; break;
+	case cgv::render::TextureType::TT_CUBEMAP: str = "samplerCube"; break;
+	case cgv::render::TextureType::TT_MULTISAMPLE_2D: str = "sampler2DMS"; break;
+	case cgv::render::TextureType::TT_MULTISAMPLE_2D_ARRAY: str = "sampler2DMSArray"; break;
+	case cgv::render::TextureType::TT_BUFFER: str = "samplerBuffer"; break;
+	default: break;
+	}
+
+	if(sampler_base_format == SamplerBaseFormat::kSignedInteger)
+		return "i" + str;
+	else if(sampler_base_format == SamplerBaseFormat::kUnsignedInteger)
+		return "u" + str;
+	else
+		return str;
+}
+
+std::string to_string(const named_texture& texture, size_t location) {
+	std::string location_str = std::to_string(location);
+	std::string name = texture.name().empty() ? "texture" + location_str : texture.name();
+	std::string sampler_type = get_sampler_string(texture.texture_type(), texture.sampler_base_format());
+	return "layout(binding=" + location_str + ") uniform " + sampler_type + " " + name + ";";
+}
+
+std::string to_string(const named_texture_list& textures, size_t base_location) {
+	return cgv::utils::transform_join(textures.begin(), textures.end(), [&base_location](const named_texture& texture) {
+		return to_string(texture, base_location++);
 	}, "\n", true);
 }
 

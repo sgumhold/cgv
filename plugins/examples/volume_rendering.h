@@ -19,7 +19,7 @@ class volume_viewer :
 	public cgv::render::drawable		// derive from drawable to allow drawing in the GL context
 {
 private:
-	bool do_calculate_gradients;
+	//bool do_calculate_gradients = false;
 
 protected:
 	/// store a pointer to the color map editor overlay which is used to edit the volume transfer function
@@ -39,7 +39,6 @@ protected:
 	cgv::render::texture volume_tex;
 	cgv::render::texture depth_tex;
 
-	
 	// Render members
 	/// store a pointer to the view
 	cgv::render::view* view_ptr;

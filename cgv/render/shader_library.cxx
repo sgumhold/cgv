@@ -29,10 +29,6 @@ shader_program& shader_library::get(const std::string& name) {
 	return get_shader_info(name).prog;
 }
 
-shader_define_map& shader_library::get_defines(const std::string& name) {
-	return get_shader_info(name).options.defines;
-}
-
 shader_compile_options& shader_library::get_compile_options(const std::string& name) {
 	return get_shader_info(name).options;
 }
