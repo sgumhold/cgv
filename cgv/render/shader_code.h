@@ -79,6 +79,12 @@ public:
 		return defines.empty() && snippets.empty();
 	}
 
+	/// Clear everything, i.e. remove all defines and snippets.
+	void clear() {
+		defines.clear();
+		snippets.clear();
+	}
+
 	/// Return const reference to defined macros.
 	const string_map& get_macros() const {
 		return defines;
