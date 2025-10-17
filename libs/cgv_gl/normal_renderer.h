@@ -30,15 +30,15 @@ namespace cgv {
 			std::string get_default_prog_name() const override { return "normal.glpr"; }
 			/// create and return the default render style
 			render_style* create_render_style() const override { return new normal_render_style(); }
-			bool validate_attributes(const context& ctx) const;
+			bool validate_attributes(const context& ctx) const override;
 		public:
 			/// the normal scale is multiplied to the normal length of the normal render style
 			void set_normal_scale(float _normal_scale);
 			/// enable normal renderer
-			bool enable(context& ctx);
+			bool enable(context& ctx) override;
 			/// convenience function to render with default settings
 			void draw(context& ctx, size_t start, size_t count,
-				bool use_strips = false, bool use_adjacency = false, uint32_t strip_restart_index = -1);
+				bool use_strips = false, bool use_adjacency = false, uint32_t strip_restart_index = -1) override;
 		};
 
 		struct CGV_API normal_render_style_reflect : public normal_render_style
