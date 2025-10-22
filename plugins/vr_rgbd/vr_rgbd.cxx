@@ -185,6 +185,7 @@ class vr_rgbd : public cgv::base::node,
 	cgv::render::sphere_render_style srs;
 	cgv::render::box_render_style movable_style;
 	cgv::render::arrow_render_style ars;
+	cgv::render::point_render_style prs;
 	// declare aam for arrow renderer
 	cgv::render::attribute_array_manager a_manager;
 	// sicp;
@@ -322,6 +323,10 @@ class vr_rgbd : public cgv::base::node,
 
 		srs.radius = 0.005f;
 		ars.length_scale = 0.03f;
+		prs.measure_point_size_in_pixel = false;
+		prs.point_size = 0.2f;
+		prs.blend_width_in_pixel = 0.0f;
+		prs.blend_points = false;
 		state[0] = state[1] = state[2] = state[3] = IS_NONE;
 		rgbd_started = false;
 		record_frame = false;
@@ -373,6 +378,8 @@ class vr_rgbd : public cgv::base::node,
 					p = rgbd_2_controller_orientation * p + rgbd_2_controller_position;
 					p = controller_orientation_pc * p + controller_position_pc;
 					rgba8 c(colors[4 * i + 2], colors[4 * i + 1], colors[4 * i], 255);
+					//std::cout << "color_rgba: " << static_cast<int>(c.R()) << " " << static_cast<int>(c.G()) << " "
+							  //<< static_cast<int>(c.B()) << std::endl;
 					vertex v;
 					// filter points without color for 32 bit formats
 					static const rgba8 filter_color = rgba8(0, 0, 0, 255);
@@ -900,8 +907,6 @@ class vr_rgbd : public cgv::base::node,
 	}
 	bool init(cgv::render::context& ctx)
 	{
-		cgv::render::ref_point_renderer(ctx, 1);
-
 		if (!cgv::utils::has_option("NO_OPENVR"))
 			ctx.set_gamma(1.0f);
 		cgv::gui::connect_vr_server(true);
@@ -924,6 +929,7 @@ class vr_rgbd : public cgv::base::node,
 				vr_view_ptr->set_blit_vr_view_width(200);
 			}
 		}
+		cgv::render::ref_point_renderer(ctx, 1);
 		cgv::render::ref_box_renderer(ctx, 1);
 		cgv::render::ref_sphere_renderer(ctx, 1);
 		cgv::render::ref_arrow_renderer(ctx, 1);
@@ -941,12 +947,15 @@ class vr_rgbd : public cgv::base::node,
 		if (pc.empty())
 			return;
 		auto& pr = cgv::render::ref_point_renderer(ctx);
+		pr.set_render_style(prs);
 		pr.set_position_array(ctx, &pc.front().point, pc.size(), sizeof(vertex));
 		pr.set_color_array(ctx, &pc.front().color, pc.size(), sizeof(vertex));
-		if (pr.validate_and_enable(ctx)) {
+		pr.render(ctx, 0, pc.size()); // replace followed snippet
+		/*if (pr.validate_and_enable(ctx))
+		{
 			glDrawArrays(GL_POINTS, 0, (GLsizei)pc.size());
 			pr.disable(ctx);
-		}
+		}*/
 	}
 
 	void draw(cgv::render::context& ctx)
