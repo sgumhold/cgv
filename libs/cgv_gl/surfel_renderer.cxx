@@ -12,24 +12,6 @@ namespace cgv {
 			return r;
 		}
 
-		render_style* surfel_renderer::create_render_style() const
-		{
-			return new surfel_render_style();
-		}
-
-		surfel_render_style::surfel_render_style() : halo_color(1, 1, 1, 1)
-		{
-			surface_offset = 0.0f;
-			point_size = 1.0f;
-			use_group_point_size = false;
-			measure_point_size_in_pixel = true;
-			blend_width_in_pixel = 1.0f;
-			halo_width_in_pixel = 0.0f;
-			percentual_halo_width = 0.0;
-			halo_color_strength = 0.5f;
-			blend_points = true;
-			orient_splats = true;
-		}
 		/// call this before setting attribute arrays to manage attribute array in given manager
 		void surfel_renderer::enable_attribute_array_manager(const context& ctx, attribute_array_manager& aam)
 		{
@@ -54,15 +36,6 @@ namespace cgv {
 			has_indexed_colors = false;
 			remove_attribute_array(ctx, "indexed_color");
 		}
-		surfel_renderer::surfel_renderer()
-		{
-			has_point_sizes = false;
-			has_group_point_sizes = false;
-			has_indexed_colors = false;
-			///
-			reference_point_size = 0.01f;
-			y_view_angle = 45;
-		}
 		void surfel_renderer::set_reference_point_size(float _reference_point_size)
 		{
 			reference_point_size = _reference_point_size;
@@ -70,10 +43,6 @@ namespace cgv {
 		void surfel_renderer::set_y_view_angle(float _y_view_angle)
 		{
 			y_view_angle = _y_view_angle;
-		}
-		bool surfel_renderer::build_shader_program(context& ctx, shader_program& prog, const shader_define_map& defines)
-		{
-			return prog.build_program(ctx, "surfel.glpr", true, defines);
 		}
 		bool surfel_renderer::validate_attributes(const context& ctx) const
 		{

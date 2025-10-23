@@ -35,6 +35,15 @@ enum GPUVendorID {
 	GPU_VENDOR_NVIDIA
 };
 
+struct device_capabilities {
+	int max_render_buffer_size = -1;					/// the maximum supported size for renderbuffers in any dimension
+	int max_geometry_shader_output_vertex_count = -1;	/// the maximum number that can be provided to the max_vertices output layout qualifier in a geometry shader
+	int max_compute_shared_memory_size = -1;			/// total available storage size in bytes for all shared variables in a compute shader
+	int max_compute_work_group_invocations = -1;		/// the number of invocations in a single local work group (i.e., the product of the three dimensions) that may be dispatched to a compute shader
+	ivec3 max_compute_work_group_count = -1;			/// the maximum number of work groups that may be dispatched to a compute shader; dimension index 0, 1, and 2 correspond to the X, Y and Z dimensions, respectively
+	ivec3 max_compute_work_group_size = -1;				/// the maximum size of a work groups that may be used during compilation of a compute shader; dimension index 0, 1, and 2 correspond to the X, Y and Z dimensions, respectively
+};
+
 /// different compond types for data elements
 enum ElementType {
 	ET_VALUE,
@@ -300,7 +309,7 @@ class CGV_API context;
 class CGV_API render_component
 {
 public:
-    void* handle;
+	void* handle;
 	void* internal_format;
 	void* user_data;
 	/// keep pointer to my context
@@ -365,6 +374,8 @@ protected:
 	bool uses_material;
 	bool uses_lights;
 	bool uses_gamma;
+	// maps uniform names to their locations in the shader program
+	std::map<std::string, int> uniform_locations;
 	
 	// vertex attribute names
 	int position_index;
@@ -441,8 +452,8 @@ enum VertexBufferUsage {
 					  ///< for GL drawing and image specification commands.
 	VBU_DYNAMIC_READ, ///< Modified repeatedly and used many times; Modified by reading data from the GL, and used to
 					  ///< return that data when queried by the application.
-	VBU_DYNAMIC_COPY ///< Modified repeatedly and used many times; Modified by reading data from the GL, and used as the
-					 ///< source for GL drawing and image specification commands.
+	VBU_DYNAMIC_COPY  ///< Modified repeatedly and used many times; Modified by reading data from the GL, and used as the
+					  ///< source for GL drawing and image specification commands.
 };
 
 /// base interface for a vertex buffer
@@ -502,11 +513,6 @@ enum FrameBufferType {
 	FB_BACK_RIGHT =  FB_BACK+FB_RIGHT, 
 	FB_FRONT_LEFT  =  FB_FRONT+FB_LEFT, 
 	FB_FRONT_RIGHT =  FB_FRONT+FB_RIGHT
-};
-
-/// integer constants that can be queried from context
-enum ContextIntegerConstant { 
-	MAX_NR_GEOMETRY_SHADER_OUTPUT_VERTICES 
 };
 
 // forward declaration of all render components
@@ -622,6 +628,8 @@ class CGV_API context : public context_config
 protected:
 	// store the GPU vendor id
 	GPUVendorID gpu_vendor;
+	// store the GPU device capabilities
+	device_capabilities gpu_capabilities;
 public:
 	friend class CGV_API attribute_array_manager;
 	friend class CGV_API render_component;
@@ -769,6 +777,7 @@ protected:
 		RenderPass pass;
 		RenderPassFlags flags;
 		void* user_data;
+		int pass_index;
 	};
 	/// store the current render pass
 	std::stack<render_info> render_pass_stack;
@@ -801,7 +810,6 @@ protected:
 	/// draw some text at cursor position and update cursor position
 	virtual void draw_text(const std::string& text);
 
-	virtual int query_integer_constant(ContextIntegerConstant cic) const = 0;
 	virtual void destruct_render_objects();
 	virtual void put_id(void* handle, void* ptr) const = 0;
 
@@ -846,6 +854,8 @@ protected:
 	virtual bool shader_program_enable   (shader_program_base& spb);
 	virtual bool shader_program_disable(shader_program_base& spb);
 	virtual bool shader_program_destruct(shader_program_base& spb) const;
+	virtual void shader_program_set_uniform_locations(shader_program_base& spb) const;
+	virtual bool shader_program_get_active_uniforms(shader_program_base& spb, std::vector<std::string>& names) const = 0;
 	virtual int  get_uniform_location(const shader_program_base& spb, const std::string& name) const = 0;
 	virtual bool set_uniform_void(shader_program_base& spb, int loc, type_descriptor value_type, const void* value_ptr) const = 0;
 	virtual bool set_uniform_array_void(shader_program_base& spb, int loc, type_descriptor value_type, const void* value_ptr, size_t nr_elements) const = 0;
@@ -865,9 +875,10 @@ protected:
 	virtual bool vertex_buffer_unbind(const vertex_buffer_base& vbb, VertexBufferType _type, unsigned _idx = -1) const = 0;
 	virtual bool vertex_buffer_create(vertex_buffer_base& vbb, const void* array_ptr, size_t size_in_bytes) const = 0;
 	virtual bool vertex_buffer_resize(vertex_buffer_base& vbb, const void* array_ptr, size_t size_in_bytes) const = 0;
+	virtual bool vertex_buffer_clear(vertex_buffer_base& vbb, size_t offset, size_t size_in_bytes) const = 0;
 	virtual bool vertex_buffer_replace(vertex_buffer_base& vbb, size_t offset, size_t size_in_bytes, const void* array_ptr) const = 0;
 	virtual bool vertex_buffer_copy(const vertex_buffer_base& src, size_t src_offset, vertex_buffer_base& target, size_t target_offset, size_t size_in_bytes) const = 0;
-	virtual bool vertex_buffer_copy_back(vertex_buffer_base& vbb, size_t offset, size_t size_in_bytes, void* array_ptr) const = 0;
+	virtual bool vertex_buffer_copy_back(const vertex_buffer_base& vbb, size_t offset, size_t size_in_bytes, void* array_ptr) const = 0;
 	virtual bool vertex_buffer_destruct(vertex_buffer_base& vbb) const = 0;
 public:
 	/// init the cursor position to (0,0)
@@ -878,6 +889,7 @@ public:
 	virtual void error(const std::string& message, const render_component* rc = 0) const;
 	/// device information
 	virtual GPUVendorID get_gpu_vendor_id() const;
+	const device_capabilities& get_device_capabilities() const;
 
 	/**@name interface for implementation of specific contexts*/
 	//@{
@@ -909,10 +921,13 @@ public:
 	virtual RenderPassFlags get_default_render_pass_flags() const;
 	/// return the default render pass flags
 	virtual void set_default_render_pass_flags(RenderPassFlags);
+	/// write out render pass debug info, if activated
+	void render_pass_debug_output(const render_info& ri, const std::string& info = "");
 	/// perform the given render task
 	virtual void render_pass(RenderPass render_pass = RP_MAIN, 
 							 RenderPassFlags render_pass_flags = RPF_ALL,
-							 void* user_data = 0);
+							 void* user_data = 0,
+							 int rp_idx = -1);
 	/// set flag whether to debug render passes
 	void set_debug_render_passes(bool _debug);
 	/// check whether render passes are debugged
@@ -954,7 +969,7 @@ public:
 
 
 	/** read the current frame buffer or a rectangular region of it into the given
-	    data view.
+		data view.
 		 If no format is associated with the data view, a new format is created
 		 and assigned to the data view. 
 		 
@@ -972,11 +987,11 @@ public:
 		data::data_view& dv, 
 		unsigned int x = 0, unsigned int y = 0, 
 		FrameBufferType buffer_type = FB_BACK,
-		TypeId type = type::info::TI_UINT8,
+		cgv::type::info::TypeId type = cgv::type::info::TI_UINT8,
 		data::ComponentFormat cf = data::CF_RGB,
 		int w = -1, int h = -1) = 0;
 	/** write the content of the frame buffer to an image file. In case of writing a depth buffer
-       a the depth offset is subtracted from the value and scaled by the depth scale before conversion
+	   a the depth offset is subtracted from the value and scaled by the depth scale before conversion
 		 to an unsigned int of bit depth 8 is performed. */
 	bool write_frame_buffer_to_image(
 		const std::string& file_name, 
@@ -1068,8 +1083,8 @@ public:
 	//@{
 	DEPRECATED("deprecated and ignored.") virtual void enable_phong_shading();
 	DEPRECATED("deprecated and ignored.") virtual void disable_phong_shading();
-	DEPRECATED("deprecated, use set_material instead.") virtual void enable_material(const cgv::media::illum::phong_material& mat = cgv::media::illum::default_material(), MaterialSide ms = MS_FRONT_AND_BACK, float alpha = 1);
-	DEPRECATED("deprecated and ignored.") virtual void disable_material(const cgv::media::illum::phong_material& mat = cgv::media::illum::default_material());
+	DEPRECATED("deprecated, use set_material instead.") virtual void enable_material(const cgv::media::illum::phong_material& mat = cgv::media::illum::phong_material::get_default(), MaterialSide ms = MS_FRONT_AND_BACK, float alpha = 1);
+	DEPRECATED("deprecated and ignored.") virtual void disable_material(const cgv::media::illum::phong_material& mat = cgv::media::illum::phong_material::get_default());
 	DEPRECATED("deprecated, use enable_material(textured_surface_material) instead.") virtual void enable_material(const textured_material& mat, MaterialSide ms = MS_FRONT_AND_BACK, float alpha = 1);
 	//DEPRECATED("deprecated, use disable_material(textured_surface_material) instead.") virtual void disable_material(const textured_material& mat) = 0;
 	/// set the current per channel gamma values to single value
@@ -1165,7 +1180,7 @@ public:
 	/**@name text output*/
 	//@{
 	/** returns an output stream whose output is printed at the current cursor 
-	    location, which is managed by the context. The coordinate system of the
+		location, which is managed by the context. The coordinate system of the
 		 cursor location corresponds to opengl coordinates with (0,0) in lower left corner.
 		 The cursor position is
 		 updated during text drawing also by special characters like tab or new line and
@@ -1240,7 +1255,7 @@ public:
 	void tesselate_unit_torus(float minor_radius = 0.2f, int resolution = 25, bool flip_normals = false, bool edges = false);
 	//! tesselate an arrow from the origin in z-direction
 	/*! An arrow of length L is composed of a cylinder of radius R and a cone of radius r.
-	    The parameters are
+		The parameters are
 		@param[in] length the total length of the radius
 		@param[in] aspect is defined as R/L
 		@param[in] rel_tip_radius is defined as r/R
@@ -1251,7 +1266,7 @@ public:
 	virtual void tesselate_arrow(const dvec3& start, const dvec3& end, double aspect = 0.1f, double rel_tip_radius = 2.0f, double tip_aspect = 0.3f, int res = 25, bool edges = false);
 	//! draw a light source with an emissive material 
 	/*! @param[in] l to be rendered light source
-	    @param[in] intensity_scale used to multiply with the light source values
+		@param[in] intensity_scale used to multiply with the light source values
 	*/
 	virtual void draw_light_source(const cgv::media::illum::light_source& l, float intensity_scale, float light_scale); 
 	//@}
@@ -1340,7 +1355,7 @@ public:
 	DEPRECATED("deprecated: use get_device_matrix() instead.") 	dmatn get_D() const { return dmatn(4, 4, &get_window_matrix()(0, 0)); }
 	DEPRECATED("deprecated: use get_modelview_projection_device_matrix() instead.")	dmatn get_DPV() const { return dmatn(4, 4, &get_modelview_projection_window_matrix()(0, 0)); }
 	/** use this to push new modelview and new projection matrices onto the transformation stacks such that
-	    x and y coordinates correspond to opengl coordinates with (0,0) in lower left corner.
+		x and y coordinates correspond to opengl coordinates with (0,0) in lower left corner.
 		To transform mouse pointer coordinates to opengl coordinates use get_context()->get_height()-1-mouse_y. */
 	virtual void push_pixel_coords() = 0;
 	/// pop previously pushed transformation matrices from modelview and projection stacks
@@ -1353,7 +1368,7 @@ public:
 	virtual void mul_modelview_matrix(const dmat4& MV);
 	//! push the current viewing matrix onto a matrix stack for viewing matrices.
 	/*! A software implementation is used for the matrix stack as some hardware 
-	    stacks - i.e. in opengl - have strong limitations on their maximum size. 
+		stacks - i.e. in opengl - have strong limitations on their maximum size. 
 		The push_V method does not change the current viewing matrix similarly to
 		the glPushMatrix function. Use pop_V() to restore the pushed viewing matrix
 		into the current viewing matrix. Don't intermix these methods with the 
@@ -1375,7 +1390,7 @@ public:
 	void push_window_transformation_array();
 	//! restore previous viewport and depth range arrays defining the window transformations
 	/*! An error is emitted when the method fails because the stack of window 
-	    transformations would become empty, which is not allowed. */
+		transformations would become empty, which is not allowed. */
 	virtual void pop_window_transformation_array();
 	/// announce an external viewport change performed with rendering API to the cgv framework providing space to temporarily store viewport of cgv framework
 	virtual void announce_external_viewport_change(ivec4& cgv_viewport_storage) = 0;
@@ -1390,7 +1405,7 @@ protected:
 public:
 	//! set the current viewport or one of the viewports in the window transformation array
 	/*! If the parameter \c array_index is -1 (for example by not specifying it),
-	    the current window transformation array is resized to a single viewport and
+		the current window transformation array is resized to a single viewport and
 		the viewport is set to the integer vector of pixel values 
 		in the \c viewport parameter: [x0,y0,width,height]. If an \c array_index >= 0
 		is specified, the window transformation array is resized such that the 
@@ -1402,13 +1417,13 @@ public:
 	virtual void set_viewport(const ivec4& viewport, int array_index = -1);
 	//! set the current depth range or one of the depth ranges in the window transformation array
 	/*! The behaviour with respect to parameters \c array_index is the same as
-	    in the set_viewport() method.*/
+		in the set_viewport() method.*/
 	virtual void set_depth_range(const dvec2& depth_range = dvec2(0, 1), int array_index = -1);
 	/// return the current window transformation array
 	const std::vector<window_transformation>& get_window_transformation_array() const;
 	//! return a homogeneous 4x4 matrix to transform clip to window coordinates
 	/*! In window coordinates x- and y-coordinates correspond to opengl pixel coordinates
-	    with (0,0) in lower left corner and z corresponds to depth value stored in the depth buffer. 
+		with (0,0) in lower left corner and z corresponds to depth value stored in the depth buffer. 
 		This is the same convention as in gl_FragCoord and gl_FragDepth of GLSL. 
 		Optionally one can specify a window transformation index with the parameter \c array_index
 		for the case when an array of window transformations is used.*/
@@ -1473,8 +1488,8 @@ public:
 };
 
 /** construct a context of the given size. This is primarily used to create
-    a context without a window for console applications that render into a frame
-    buffer object only. The newly created context will be current right after
+	a context without a window for console applications that render into a frame
+	buffer object only. The newly created context will be current right after
 	 creation. After usage you need to delete the context by hand. */
 extern CGV_API context* create_context(RenderAPI api = RA_OPENGL, 
 		unsigned int w = 800, unsigned int h = 600, 

@@ -57,29 +57,27 @@ namespace cgv {
 				- set_rectangle_array()
 				- set_textured_rectangle_array()
 				Thus it is important to set the render style of the renderer before you call any of these functions.*/
-			mutable bool position_is_center;
+			mutable bool position_is_center = true;
 			/// default value of secondary color which is ignored if set_secondary_color_array() is used to set per rectangle secondary colors (default: opaque 50% grey)
-			rgba default_secondary_color;
+			rgba default_secondary_color = { 0.5f, 0.5f, 0.5f, 1.0f };
 			/// default value for the border color attribute which is ignored when set_border_color_array() is used to set per rectangle border colors (default: opaque black)
-			rgba default_border_color;
+			rgba default_border_color = { 0.0f, 0.0f, 0.0f, 1.0f };
 			/// border width measured in pixels (default: 0)
-			float border_width_in_pixel;
+			float border_width_in_pixel = 0.0f;
 			/// border width measured relative to rectangle extent computed according to current \c border_mode (default: 0)
-			float percentual_border_width;
+			float percentual_border_width = 0.0f;
 			/// different modes of computing the width of the border (default: RBM_MIN)
-			RectangleBoderMode border_mode;
+			RectangleBoderMode border_mode = RBM_MIN;
 			/// number of pixels around the rectangle splat used for antialiasing (default: 0.0f)
-			float pixel_blend;
+			float pixel_blend = 0.0f;
 			/// mode of using texture during rastrization (default: RTM_REPLACE)
-			RectangleTextureMode texture_mode;
+			RectangleTextureMode texture_mode = RTM_REPLACE;
 			//! default depth offset added to depth value of fragment. (default: 0.0f)
 			/*! Depth values are in [0,1]. Minimal depth offsets can be estimated from 1/2^n where n is
 				the number of bits in the depth buffer (typically 24 or 32). */
-			float default_depth_offset;
+			float default_depth_offset = 0.0f;
 			/// if true the renderer enables blending in the enable method and recovers previous blending mode on disable (default: false)
-			bool blend_rectangles;
-			/// default constructor initializes members as specified in member comments
-			rectangle_render_style();
+			bool blend_rectangles = false;
 		};
 
 		/// renderer that supports plane rendering
@@ -87,35 +85,33 @@ namespace cgv {
 		{
 		protected:
 			/// whether extent array has been specified
-			bool has_extents;
+			bool has_extents = false;
 			/// whether secondary color or color array was set
-			bool has_secondary_colors;
+			bool has_secondary_colors = false;
 			/// whether border color or color array was set
-			bool has_border_colors;
+			bool has_border_colors = false;
 			/// whether border info or info array was set
-			bool has_border_infos;
+			bool has_border_infos = false;
 			/// whether translation array has been specified
-			bool has_translations;
+			bool has_translations = false;
 			/// whether rotation array has been specified
-			bool has_rotations;
+			bool has_rotations = false;
 			/// whether depth offset array has been specified
-			bool has_depth_offsets;
-			float y_view_angle;
-			/// overload to allow instantiation of rectangle_renderer
-			render_style* create_render_style() const;
-			/// build rectangle program
-			bool build_shader_program(context& ctx, shader_program& prog, const shader_define_map& defines);
+			bool has_depth_offsets = false;
+			float y_view_angle = 45.0f;
+			/// return the default shader program name
+			std::string get_default_prog_name() const override { return "rectangle.glpr"; }
+			/// create and return the default render style
+			render_style* create_render_style() const override { return new rectangle_render_style(); }
 		public:
-			///
-			rectangle_renderer();
 			///
 			void set_y_view_angle(float y_view_angle);
 			/// call this before setting attribute arrays to manage attribute array in given manager
-			void enable_attribute_array_manager(const context& ctx, attribute_array_manager& aam);
+			void enable_attribute_array_manager(const context& ctx, attribute_array_manager& aam) override;
 			/// call this after last render/draw call to ensure that no other users of renderer change attribute arrays of given manager
-			void disable_attribute_array_manager(const context& ctx, attribute_array_manager& aam);
+			void disable_attribute_array_manager(const context& ctx, attribute_array_manager& aam) override;
 			///
-			bool init(context& ctx);
+			bool init(context& ctx) override;
 			/// set the flag of the render style, whether the position is interpreted as the box center
 			void set_position_is_center(bool _position_is_center);
 			/// specify a single extent for all boxes
@@ -259,14 +255,14 @@ namespace cgv {
 			/// remove the rotation attribute
 			void remove_rotation_array(const context& ctx);
 			///
-			bool validate_attributes(const context& ctx) const;
+			bool validate_attributes(const context& ctx) const override;
 			///
-			bool enable(context& ctx);
+			bool enable(context& ctx) override;
 			///
-			bool disable(context& ctx);
+			bool disable(context& ctx) override;
 			/// convenience function to render with default settings
 			void draw(context& ctx, size_t start, size_t count,
-				bool use_strips = false, bool use_adjacency = false, uint32_t strip_restart_index = -1);
+				bool use_strips = false, bool use_adjacency = false, uint32_t strip_restart_index = -1) override;
 		};
 		struct CGV_API rectangle_render_style_reflect : public rectangle_render_style
 		{

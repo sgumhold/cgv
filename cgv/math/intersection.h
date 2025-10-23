@@ -135,6 +135,8 @@ int ray_cylinder_intersection(const ray<T, 3>& ray, const fvec<T, 3>& position, 
 
 /// @brief Computes the intersection between a ray and oriented cylinder defined by start and end position and returns the number of intersections.
 /// Differentiates between 0 or 1 intersections.
+/// 
+/// @tparam T the numeric type.
 /// @param [in] ray the incomming ray.
 /// @param [in] start_position the cylinder base center position.
 /// @param [in] end_position the cylinder top center position.
@@ -150,15 +152,17 @@ int ray_cylinder_intersection2(const ray<T, 3>& ray, const fvec<T, 3>& start_pos
 
 /// @brief Computes the intersection between a ray and infinite plane and returns the number of intersections.
 /// Differentiates between 0 or 1 intersections.
+/// 
+/// @tparam T the numeric type.
 /// @param [in] ray the incomming ray.
 /// @param [in] origin the plane origin position.
-/// @param [in] normal the plane surface normal.
+/// @param [in] normal the plane surface normal (must be normalized).
 /// @param [out] out_t the distance to the intersection point.
 /// @return the number of intersections.
 template <typename T>
 int ray_plane_intersection(const ray<T, 3>& ray, const fvec<T, 3>& origin, const fvec<T, 3>& normal, T& out_t) {
 
-	float denom = dot(normal, ray.direction);
+	T denom = dot(normal, ray.direction);
 	if(std::abs(denom) < std::numeric_limits<T>::epsilon())
 		return 0;
 
@@ -166,8 +170,202 @@ int ray_plane_intersection(const ray<T, 3>& ray, const fvec<T, 3>& origin, const
 	return 1;
 };
 
+/// @brief Computes the intersection between a ray and axis aligned rectangle and returns the number of intersections.
+/// Differentiates between 0 or 1 intersections.
+/// 
+/// @tparam T the numeric type.
+/// @param [in] ray the incomming ray.
+/// @param [in] position the rectangle center position.
+/// @param [in] extent the total rectangle size.
+/// @param [in] axis_index the rectangle normal axis index in [0,3] corresponding to positive x, y and z axis respectively.
+/// @param [out] out_t the distance to the intersection point.
+/// @param [out] out_uv optional texture coordinates in [0,1] at the intersection point.
+/// @return the number of intersections.
+template <typename T>
+int ray_axis_aligned_rectangle_intersection(const ray<T, 3>& ray, const fvec<T, 3>& position, const fvec<T, 2>& extent, int axis_index, T& out_t, fvec<T, 2>* out_uv = nullptr) {
+	
+	assert(axis_index >= 0 && axis_index < 3);
+
+	fvec<T, 3> normal = { T(0) };
+	normal[axis_index] = T(1);
+
+	T t = std::numeric_limits<T>::max();
+	if(cgv::math::ray_plane_intersection(ray, position, normal, t)) {
+		fvec<T, 3> intersection_position = ray.position(t);
+		intersection_position -= position;
+
+		vec2 uv;
+		switch(axis_index) {
+		case 0:
+			uv[0] = intersection_position[1];
+			uv[1] = intersection_position[2];
+			break;
+		case 1:
+			uv[0] = intersection_position[0];
+			uv[1] = intersection_position[2];
+			break;
+		case 2:
+			uv[0] = intersection_position[0];
+			uv[1] = intersection_position[1];
+			break;
+		default:
+			return 0;
+		}
+
+		uv += T(0.5) * extent;
+
+		if(uv[0] >= T(0) && uv[0] <= extent.x() && uv[1] >= T(0) && uv[1] <= extent.y()) {
+			out_t = t;
+			if(out_uv)
+				*out_uv = uv / extent;
+			return 1;
+		}
+	}
+
+	return 0;
+}
+
+/// @brief Computes the intersection between a ray and oriented parallelogram defined by a pivot corner and two outgoing edges and returns the number of intersections.
+/// Differentiates between 0 or 1 intersections.
+/// 
+/// @tparam T the numeric type.
+/// @param [in] ray the incomming ray.
+/// @param [in] origin the pivot corner position.
+/// @param [in] edge_u the direction and length of the first side pair.
+/// @param [in] edge_v the direction and length of the second side pair.
+/// @param [out] out_t the distance to the intersection point.
+/// @param [out] out_normal optional surface normal at the intersection point.
+/// @param [out] out_uv optional texture coordinates in [0,1] at the intersection point.
+/// @return the number of intersections.
+template <typename T>
+int ray_parallelogram_intersection(const ray<T, 3>& ray, const fvec<T, 3>& origin, const fvec<T, 3> edge_u, const fvec<T, 3>& edge_v, T& out_t, fvec<T, 3>* out_normal = nullptr, fvec<T, 2>* out_uv = nullptr) {
+
+	fvec<T, 3> normal = normalize(cross(edge_u, edge_v));
+
+	T sf = T(0);
+	int ku = 0;
+	int kv = 1;
+
+	// decide on best projection plane based on projected surface area
+	//area in xy plane
+	T axy = edge_u.x() * edge_u.x() + edge_u.y() * edge_u.y();
+	axy *= edge_v.x() * edge_v.x() + edge_v.y() * edge_v.y();
+
+	//area in xz plane
+	T axz = edge_u.x() * edge_u.x() + edge_u.z() * edge_u.z();
+	axz *= edge_v.x() * edge_v.x() + edge_v.z() * edge_v.z();
+
+	//area in yz plane
+	T ayz = edge_u.y() * edge_u.y() + edge_u.z() * edge_u.z();
+	ayz *= edge_v.y() * edge_v.y() + edge_v.z() * edge_v.z();
+
+	if(axy > axz) {
+		if(axy > ayz) {
+			//xy
+			ku = 0;
+			kv = 1;
+			sf = normal.z() < T(0) ? T(1) : -T(1);
+		} else {
+			//yz
+			ku = 1;
+			kv = 2;
+			sf = normal.x() < T(0) ? T(1) : -T(1);
+		}
+	} else {
+		if(axz > ayz) {
+			//xz
+			ku = 0;
+			kv = 2;
+			sf = normal.y() < T(0) ? -T(1) : T(1);
+		} else {
+			//yz
+			ku = 1;
+			kv = 2;
+			sf = normal.x() < T(0) ? T(1) : -T(1);
+		}
+	}
+
+	T ndd = dot(normal, ray.direction);
+	if(std::abs(ndd) < std::numeric_limits<T>::epsilon())
+		return 0;
+
+	T t = dot(normal, origin - ray.origin) / ndd;
+
+	//ray intersects plane
+	//now test if hitpoint is inside parallelogram
+	fvec<T, 3> x = ray.position(t);
+	fvec<T, 2> x2d(x[ku] - origin[ku], x[kv] - origin[kv]);
+
+	fvec<T, 2> e1(edge_u[ku], edge_u[kv]);
+	fvec<T, 2> e2(edge_v[ku], edge_v[kv]);
+
+	T s = e1.x() * x2d.y() - e1.y() * x2d.x();
+	if(sf * s > -std::numeric_limits<T>::epsilon())
+		return 0;
+
+	s = e2.x() * x2d.y() - e2.y() * x2d.x();
+	if(sf * s < std::numeric_limits<T>::epsilon())
+		return 0;
+
+	x2d -= (e1 + e2);
+
+	s = e1.y() * x2d.x() - e1.x() * x2d.y();
+	if(sf * s > -std::numeric_limits<T>::epsilon())
+		return 0;
+
+	s = e2.y() * x2d.x() - e2.x() * x2d.y();
+	if(sf * s < std::numeric_limits<T>::epsilon())
+		return 0;
+
+	out_t = t;
+
+	if(out_normal)
+		*out_normal = normal;
+
+	if(out_uv) {
+		fvec<T, 2> uv = x2d;
+		uv.x() /= length(e1);
+		uv.y() /= length(e2);
+		*out_uv = uv;
+	}
+
+	return 1;
+};
+
+/// @brief Computes the intersection between a ray and oriented rectangle and returns the number of intersections.
+/// Differentiates between 0 or 1 intersections.
+/// 
+/// @tparam T the numeric type.
+/// @param [in] ray the incomming ray.
+/// @param [in] position the rectangle center position.
+/// @param [in] extent the total rectangle size.
+/// @param [in] rotation the rectangle orientation, default is axis aligned with normal pointing along positive z-axis.
+/// @param [out] out_t the distance to the intersection point.
+/// @param [out] out_normal optional surface normal at the intersection point.
+/// @param [out] out_uv optional texture coordinates in [0,1] at the intersection point.
+/// @return the number of intersections.
+template <typename T>
+int ray_rectangle_intersection(const ray<T, 3>& ray, const fvec<T, 3>& position, const fvec<T, 2> extent, const quaternion<T>& rotation, T& out_t, fvec<T, 3>* out_normal = nullptr, fvec<T, 2>* out_uv = nullptr) {
+
+	// define tangent and bitangent assuming the normal is (0, 1, 0) without rotation
+	fvec<T, 3> tangent = { T(1), T(0), T(0) };
+	fvec<T, 3> bitangent = { T(0), T(1), T(0) };
+	
+	tangent = rotation.apply(tangent);
+	bitangent = rotation.apply(bitangent);
+
+	fvec<T, 3> corner = position - T(0.5) * extent.x() * tangent - T(0.5) * extent.y() * bitangent;
+
+	fvec<T, 3> edge_u = extent.x() * tangent;
+	fvec<T, 3> edge_v = extent.y() * bitangent;
+
+	return ray_parallelogram_intersection(ray, corner, edge_u, edge_v, out_t, out_normal, out_uv);
+};
+
 /// @brief Computes the intersection between a ray and sphere and returns the number of intersections.
 /// Differentiates between 0, 1 or 2 intersections.
+/// 
+/// @tparam T the numeric type.
 /// @param [in] ray the incomming ray.
 /// @param [in] center the sphere center position.
 /// @param [in] radius the sphere radius.
@@ -199,6 +397,8 @@ int ray_sphere_intersection(const ray<T, 3>& ray, const fvec<T, 3>& center, T ra
 
 /// @brief Computes the first intersection between a ray and sphere and returns the number of intersections.
 /// Differentiates between 0 or 1 intersections.
+/// 
+/// @tparam T the numeric type.
 /// @param [in] ray the incomming ray.
 /// @param [in] center the sphere center position.
 /// @param [in] radius the sphere radius.
@@ -226,6 +426,8 @@ int first_ray_sphere_intersection(const ray<T, 3>& ray, const fvec<T, 3>& center
 
 /// @brief Computes the intersection between a ray and axis aligned torus with medial axis equal to the y-axis and returns the number of intersections.
 /// Differentiates between 0 or 1 intersections.
+/// 
+/// @tparam T the numeric type.
 /// @param [in] ray the incomming ray.
 /// @param [in] large_radius the torus ring radius (R).
 /// @param [in] small_radius the radial torus tube radius (r).
@@ -319,6 +521,8 @@ int ray_torus_intersection(const ray<T, 3>& ray, T large_radius, T small_radius,
 
 /// @brief Computes the intersection between a ray and oriented torus defined by origin and medial axis and returns the number of intersections.
 /// Differentiates between 0 or 1 intersections.
+/// 
+/// @tparam T the numeric type.
 /// @param [in] ray the incomming ray.
 /// @param [in] center the torus center position.
 /// @param [in] normal the torus medial axis direction.

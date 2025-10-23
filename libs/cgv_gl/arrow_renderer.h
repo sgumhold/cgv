@@ -30,50 +30,48 @@ namespace cgv {
 			/*@name arrow rendering attributes*/
 			//@{
 			/// smallest value for the radius
-			float radius_lower_bound;
+			float radius_lower_bound = 0.00001f;
 			/// 
-			float radius_relative_to_length;
+			float radius_relative_to_length = 0.1f;
 			/// scaling factor of head radius with respect to tail radius
-			float head_radius_scale;
+			float head_radius_scale = 2.0f;
 			///
-			ArrowHeadLengthMode head_length_mode;
+			ArrowHeadLengthMode head_length_mode = AHLM_MINIMUM_OF_RADIUS_AND_LENGTH;
 			/// 
-			float head_length_relative_to_radius;
+			float head_length_relative_to_radius = 2.0f;
 			/// 
-			float head_length_relative_to_length;
+			float head_length_relative_to_length = 0.3f;
 			///
-			float length_scale;
+			float length_scale = 1.0f;
 			///
-			float color_scale;
+			float color_scale = 1.0f;
 			///
-			bool normalize_length;
+			bool normalize_length = false;
 			/// 
-			float relative_location_of_position;
+			float relative_location_of_position = 0.0f;
 			///
-			float length_eps;
+			float length_eps = 0.000001f;
 			//@}
-			/// construct with default values
-			arrow_render_style();
 		};
 
 		/// renderer that supports point splatting
 		class CGV_API arrow_renderer : public surface_renderer
 		{
 		protected:
-			bool has_directions;
-			bool position_is_center;
-			bool direction_is_end_point;
-			/// overload to allow instantiation of arrow_renderer
-			render_style* create_render_style() const;
+			bool has_directions = false;
+			bool position_is_center = false;
+			bool direction_is_end_point = false;
+			/// return the default shader program name
+			std::string get_default_prog_name() const override { return "arrow.glpr"; }
+			/// create and return the default render style
+			render_style* create_render_style() const override { return new arrow_render_style(); }
 			/// build arrow program
-			bool build_shader_program(context& ctx, shader_program& prog, const shader_define_map& defines);
+			bool build_shader_program(context& ctx, shader_program& prog, const shader_compile_options& options) const override;
 		public:
-			///
-			arrow_renderer();
 			/// call this before setting attribute arrays to manage attribute array in given manager
-			void enable_attribute_array_manager(const context& ctx, attribute_array_manager& aam);
+			void enable_attribute_array_manager(const context& ctx, attribute_array_manager& aam) override;
 			/// call this after last render/draw call to ensure that no other users of renderer change attribute arrays of given manager
-			void disable_attribute_array_manager(const context& ctx, attribute_array_manager& aam);
+			void disable_attribute_array_manager(const context& ctx, attribute_array_manager& aam) override;
 			/// templated method to set the direction attribute from a vector of directions of type T, which should have 3 components
 			template <typename T>
 			void set_direction_array(const context& ctx, const std::vector<T>& directions) { has_directions = true;  direction_is_end_point = false;  set_attribute_array(ctx, "direction", directions); }
@@ -91,14 +89,14 @@ namespace cgv {
 			/// remove the end point attribute
 			void remove_end_point_array(const context& ctx);
 			///
-			bool validate_attributes(const context& ctx) const;
+			bool validate_attributes(const context& ctx) const override;
 			///
-			bool enable(context& ctx);
+			bool enable(context& ctx) override;
 			///
-			bool disable(context& ctx);
+			bool disable(context& ctx) override;
 			/// convenience function to render with default settings
 			void draw(context& ctx, size_t start, size_t count,
-				bool use_strips = false, bool use_adjacency = false, uint32_t strip_restart_index = -1);
+				bool use_strips = false, bool use_adjacency = false, uint32_t strip_restart_index = -1) override;
 		};
 		struct CGV_API arrow_render_style_reflect : public arrow_render_style
 		{

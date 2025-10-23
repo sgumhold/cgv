@@ -111,7 +111,7 @@ public:
 		raycast_prog.destruct(ctx);
 	}
 	bool init (cgv::render::context &ctx) {
-		return cgv::render::shader_library::load(ctx, raycast_prog, "holo_raycast.glpr", false, "holo_raycast::init()");
+		return cgv::render::shader_library::load(ctx, raycast_prog, "holo_raycast.glpr", "holo_raycast::init()");
 	}
 	void init_frame(cgv::render::context &ctx) {
 		if(!stereo_view_ptr)
@@ -253,7 +253,7 @@ public:
 		if(auto ctx_ptr = get_context()) {
 			auto& ctx = *ctx_ptr;
 			ctx.disable_shader_file_cache();
-			cgv::render::shader_library::load(ctx, raycast_prog, "holo_raycast.glpr", true, "holo_raycast::init()");
+			cgv::render::shader_library::load(ctx, raycast_prog, "holo_raycast.glpr", "holo_raycast::init()");
 			ctx.enable_shader_file_cache();
 		}
 	}

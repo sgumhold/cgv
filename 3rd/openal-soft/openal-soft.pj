@@ -1,4 +1,7 @@
 @=
+if (SYSTEM=="windows") {
+	system(INPUT_DIR."/sparse_checkout.bat"; result)
+}
 projectType="library";
 projectName="openal-soft";
 projectGUID="10779BCA-52DE-40D3-A5B8-F6611CBABD49";

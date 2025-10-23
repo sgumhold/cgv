@@ -107,7 +107,7 @@ public:
 	///
 	void destruct()
 	{
-		unregister_object(base_ptr(this));
+		unregister_object(cgv::base::base_ptr(this));
 	}
 	void menu_cb()
 	{

@@ -1,3 +1,5 @@
+#version 130
+
 varying vec3 eye_normal;
 varying vec3 eye_position;
 

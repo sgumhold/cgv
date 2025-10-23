@@ -1,0 +1,58 @@
+#version 430
+
+#include "gpgpu_radix_sort_onesweep_common.glcs"
+
+layout(local_size_x = GLOBAL_HIST_DIM) in;
+
+shared uvec4 s_global_hist[RADIX * 2];
+
+void histogram_digit_counts(uint gtid, uint gid) {
+	const uint hist_offset = gtid / 64 * RADIX;
+	const uint partition_end = gid == u_thread_blocks - 1 ? u_num_keys : (gid + 1) * GLOBAL_HIST_PART_SIZE;
+	
+	uint t;
+	for(uint i = gtid + gid * GLOBAL_HIST_PART_SIZE; i < partition_end; i += GLOBAL_HIST_DIM) {
+#if KEY_TYPE == KEY_UINT
+		t = b_keys_in[i];
+#elif KEY_TYPE == KEY_INT
+		t = int_to_uint(b_keys_in[i]);
+#elif KEY_TYPE == KEY_FLOAT
+		t = float_to_uint(b_keys_in[i]);
+#endif
+		atomicAdd(s_global_hist[extract_digit(t, 0) + hist_offset].x, 1);
+		atomicAdd(s_global_hist[extract_digit(t, 8) + hist_offset].y, 1);
+		atomicAdd(s_global_hist[extract_digit(t, 16) + hist_offset].z, 1);
+		atomicAdd(s_global_hist[extract_digit(t, 24) + hist_offset].w, 1);
+	}
+}
+
+//reduce counts and atomically add to device
+void reduce_write_digit_counts(uint gtid) {
+	for(uint i = gtid; i < RADIX; i += GLOBAL_HIST_DIM) {
+		atomicAdd(b_global_hist[i], s_global_hist[i].x + s_global_hist[i + RADIX].x);
+		atomicAdd(b_global_hist[i + SEC_RADIX_START], s_global_hist[i].y + s_global_hist[i + RADIX].y);
+		atomicAdd(b_global_hist[i + THIRD_RADIX_START], s_global_hist[i].z + s_global_hist[i + RADIX].z);
+		atomicAdd(b_global_hist[i + FOURTH_RADIX_START], s_global_hist[i].w + s_global_hist[i + RADIX].w);
+	}
+}
+
+// histogram, 64 threads to a histogram
+void main() {
+	uvec3 gtid = gl_LocalInvocationID;
+	uvec3 gid = gl_WorkGroupID;
+
+	//clear shared memory
+	const uint hists_end = RADIX * 2;
+	for(uint i = gtid.x; i < hists_end; i += GLOBAL_HIST_DIM)
+		s_global_hist[i] = uvec4(0);
+
+	groupMemoryBarrier();
+	barrier();
+	
+	histogram_digit_counts(gtid.x, flatten_gid(gid));
+	
+	groupMemoryBarrier();
+	barrier();
+	
+	reduce_write_digit_counts(gtid.x);
+}

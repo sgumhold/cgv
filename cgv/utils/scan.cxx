@@ -77,14 +77,14 @@ uint8_t from_hex(char c)
 	case 'D':
 	case 'E':
 	case 'F':
-		return c - 'A';
+		return 10 + (c - 'A');
 	case 'a':
 	case 'b':
 	case 'c':
 	case 'd':
 	case 'e':
 	case 'f':
-		return c - 'a';
+		return 10 + (c - 'a');
 	}
 	return 0;
 }
@@ -730,30 +730,28 @@ std::string trim(const std::string& str, const std::string& chars)
 	return ltrim(rtrim(str, chars), chars);
 }
 
-std::string join(const std::vector<std::string>::const_iterator first, const std::vector<std::string>::const_iterator last, const std::string& sep, bool trailing_sep)
+std::string condense_to_line(std::string str)
 {
-	if(last < first)
-		return "";
-
-	std::string res = "";
-
-	for(auto curr = first; curr != last; ++curr) {
-		res += *curr;
-		if(last - curr > 1 || trailing_sep)
-			res += sep;
-	}
-	return res;
+	std::replace_if(str.begin(), str.end(), is_space, ' ');
+	cgv::utils::trim(str);
+	// replace all consecutive spaces with a single space
+	std::string::iterator new_end = std::unique(str.begin(), str.end(), [](char lhs, char rhs) {
+		return (lhs == rhs) && lhs == ' ';
+	});
+	str.erase(new_end, str.end());
+	return str;
 }
 
 std::string join(const std::vector<std::string>& strs, const std::string& sep, bool trailing_sep)
 {
-	return join(strs.begin(), strs.end(), sep, trailing_sep);
-}
-
-std::string join(const std::vector<cgv::utils::token>::const_iterator first, const std::vector<cgv::utils::token>::const_iterator last, const std::string& sep, bool trailing_sep)
-{
-	std::vector<std::string> strs = to_strings(first, last);
-	return join(strs.begin(), strs.end(), sep, trailing_sep);
+	std::string res = "";
+	for(size_t i = 0; i < strs.size(); ++i) {
+		const std::string& str = strs[i];
+		res += str;
+		if((i + 1) < strs.size() || trailing_sep)
+			res += sep;
+	}
+	return res;
 }
 
 unsigned int levenshtein_distance(const std::string& s1, const std::string& s2)

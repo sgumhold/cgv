@@ -256,11 +256,11 @@ bool obj_reader_base::parse_obj(const std::string & content, const std::string p
 			}
 			if (material_index == -1) {
 				obj_material m;
-				m.set_name("default");
+				m.name = "default";
 				material_index = 0;
 				nr_materials = 1;
 				process_material(m, 0);
-				material_index_lut[m.get_name()] = material_index;
+				material_index_lut[m.name] = material_index;
 				have_default_material = true;
 			}
 			parse_face(tokens); 
@@ -340,66 +340,66 @@ bool obj_reader_base::read_mtl(const std::string& file_name)
 		if (tokens[0] == "newmtl") {
 			if (in_mtl) {
 				// check if material name is new
-				if (material_index_lut.find(mtl.get_name()) == material_index_lut.end()) {
-					material_index_lut[mtl.get_name()] = nr_materials;
+				if (material_index_lut.find(mtl.name) == material_index_lut.end()) {
+					material_index_lut[mtl.name] = nr_materials;
 					process_material(mtl, nr_materials);
 					++nr_materials;
 				}
 				// if not overwrite old definition
 				else 
-					process_material(mtl, material_index_lut[mtl.get_name()]);
+					process_material(mtl, material_index_lut[mtl.name]);
 			}
 			in_mtl = true;
 			mtl = obj_material();
 			if (tokens.size() > 1)
-				mtl.set_name(to_string(tokens[1]));
+				mtl.name = to_string(tokens[1]);
 		}
 		else if (tokens[0] == "map_Ka" && tokens.size() > 1)
-			mtl.set_ambient_texture_name(path_name+to_string(tokens[1]));
+			mtl.ambient_texture_name = path_name+to_string(tokens[1]);
 		else if (tokens[0] == "map_Kd" && tokens.size() > 1)
-			mtl.set_diffuse_texture_name(path_name + to_string(tokens[1]));
+			mtl.diffuse_texture_name = path_name + to_string(tokens[1]);
 		else if (tokens[0] == "map_d" && tokens.size() > 1)
-			mtl.set_opacity_texture_name(path_name + to_string(tokens[1]));
+			mtl.opacity_texture_name = path_name + to_string(tokens[1]);
 		else if (tokens[0] == "map_Ks" && tokens.size() > 1)
-			mtl.set_specular_texture_name(path_name + to_string(tokens[1]));
+			mtl.specular_texture_name = path_name + to_string(tokens[1]);
 		else if (tokens[0] == "map_Ke" && tokens.size() > 1)
-			mtl.set_emission_texture_name(path_name + to_string(tokens[1]));
+			mtl.emission_texture_name = path_name + to_string(tokens[1]);
 		else if (tokens[0] == "Ka")
-			mtl.set_ambient(parse_color(tokens));
+			mtl.ambient = parse_color(tokens);
 		else if (tokens[0] == "Kd")
-			mtl.set_diffuse(parse_color(tokens));
+			mtl.diffuse = parse_color(tokens);
 		else if (tokens[0] == "Ks")
-			mtl.set_specular(parse_color(tokens));
+			mtl.specular = parse_color(tokens);
 		else if (tokens[0] == "Ke")
-			mtl.set_emission(parse_color(tokens));
+			mtl.emission = parse_color(tokens);
 		else if (tokens[0] == "Ns")
-			mtl.set_shininess((float)atof(to_string(tokens.back()).c_str()));
+			mtl.shininess = (float)atof(to_string(tokens.back()).c_str());
 		else if (tokens[0] == "d")
-			mtl.set_opacity((float)atof(to_string(tokens.back()).c_str()));
+			mtl.opacity = (float)atof(to_string(tokens.back()).c_str());
 		else if (tokens[0] == "bump") {
 			for (unsigned i=1; i<tokens.size(); ++i) {
 				if (tokens[i] == "-bm") {
 					if (i+1 < tokens.size()) {
-						mtl.set_bump_scale((float)atof(to_string(tokens[i+1]).c_str()));
+						mtl.bump_scale = (float)atof(to_string(tokens[i+1]).c_str());
 						++i;
 					}
 				}
 				else {
-					mtl.set_bump_texture_name(path_name+to_string(tokens[i]));
+					mtl.bump_texture_name = path_name+to_string(tokens[i]);
 				}
 			}
 		}
 	}
 	if (in_mtl) {
 		// check if material name is new
-		if (material_index_lut.find(mtl.get_name()) == material_index_lut.end()) {
-			material_index_lut[mtl.get_name()] = nr_materials;
+		if (material_index_lut.find(mtl.name) == material_index_lut.end()) {
+			material_index_lut[mtl.name] = nr_materials;
 			process_material(mtl, nr_materials);
 			++nr_materials;
 		}
 		// if not overwrite old definition
 		else 
-			process_material(mtl, material_index_lut[mtl.get_name()]);
+			process_material(mtl, material_index_lut[mtl.name]);
 	}
 	return true;
 }

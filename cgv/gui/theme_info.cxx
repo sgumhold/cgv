@@ -9,8 +9,6 @@ theme_info& theme_info::instance() {
 }
 
 theme_info::theme_info() {
-	theme_idx = -1;
-
 	background(240, 240, 240);
 	group(240, 240, 240);
 	control(225, 225, 225);
@@ -22,19 +20,12 @@ theme_info::theme_info() {
 	warning(255, 0, 0);
 }
 
-void theme_info::set_index(int idx) {
-	if(idx != theme_idx) {
-		theme_idx = idx;
-		on_change(instance());
-	}
-}
-
-int theme_info::get_index() const {
-	return theme_idx;
-}
-
 bool theme_info::is_dark() const {
-	return theme_idx > 1;
+	return index_ > 1;
+}
+
+void theme_info::notify_observers() const {
+	on_change(instance());
 }
 
 }

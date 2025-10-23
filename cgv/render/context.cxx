@@ -232,6 +232,10 @@ GPUVendorID context::get_gpu_vendor_id() const
 	return gpu_vendor;
 }
 
+const device_capabilities& context::get_device_capabilities() const {
+	return gpu_capabilities;
+}
+
 /// virtual destructor
 context::~context()
 {
@@ -787,8 +791,21 @@ void context::set_debug_render_passes(bool _debug)
 	debug_render_passes = _debug;
 }
 
+void context::render_pass_debug_output(const render_info& ri, const std::string& info)
+{
+	if (!debug_render_passes)
+		return;
+	std::cout 
+		<< std::string(2 * (render_pass_stack.size()-1), ' ')
+		<< get_render_pass_name(ri.pass) << " <"
+		<< ri.user_data;
+	if (ri.pass_index != -1)
+		std::cout << ":" << ri.pass_index;
+	std::cout << "> " << info << std::endl;
+}
+
 /// perform the given render task
-void context::render_pass(RenderPass rp, RenderPassFlags rpf, void* user_data)
+void context::render_pass(RenderPass rp, RenderPassFlags rpf, void* user_data, int rp_idx)
 {
 	// ensure that default light sources are created
 	if (default_light_source_handles[0] == 0) {
@@ -799,13 +816,10 @@ void context::render_pass(RenderPass rp, RenderPassFlags rpf, void* user_data)
 	ri.pass  = rp;
 	ri.flags = rpf;
 	ri.user_data = user_data;
-	if (debug_render_passes) {
-		std::cout << std::string(2 * render_pass_stack.size(), ' ') << get_render_pass_name(rp) << " <" << user_data << ">" << std::endl;
-	}
+	ri.pass_index = rp_idx;
 	render_pass_stack.push(ri);
-
+	render_pass_debug_output(ri, "init");
 	init_render_pass();
-
 	if (get_render_pass_flags()&RPF_SET_LIGHTS) {
 		for (unsigned i = 0; i < nr_default_light_sources; ++i)
 			place_light_source(default_light_source_handles[i]);
@@ -813,29 +827,34 @@ void context::render_pass(RenderPass rp, RenderPassFlags rpf, void* user_data)
 
 	group* grp = dynamic_cast<group*>(this);
 	if (grp && (rpf&RPF_DRAWABLES_DRAW)) {
-		matched_method_action<drawable,void,void,context&> 
+		render_pass_debug_output(ri, "draw+finish_draw");
+		matched_method_action<drawable,void,void,context&>
 			mma(*this, &drawable::draw, &drawable::finish_draw, true, true);
 		traverser(mma).traverse(group_ptr(grp));
 	}
-	if (rpf&RPF_DRAW_TEXTUAL_INFO)
+	if (rpf & RPF_DRAW_TEXTUAL_INFO) {
+		render_pass_debug_output(ri, "textual_info");
 		draw_textual_info();
+	}
 	if (grp && (rpf&RPF_DRAWABLES_FINISH_FRAME)) {
-		single_method_action<drawable,void,context&> 
+		render_pass_debug_output(ri, "finish_frame");
+		single_method_action<drawable,void,context&>
 			sma(*this, &drawable::finish_frame, true, true);
 		traverser(sma).traverse(group_ptr(grp));
 	}
 	if (grp && (rpf&RPF_DRAWABLES_AFTER_FINISH)) {
-		single_method_action<drawable,void,context&> 
+		render_pass_debug_output(ri, "after_finish");
+		single_method_action<drawable,void,context&>
 			sma(*this, &drawable::after_finish, true, true);
 		traverser(sma).traverse(group_ptr(grp));
 	}
 	if ((rpf&RPF_HANDLE_SCREEN_SHOT) && do_screen_shot) {
+		render_pass_debug_output(ri, "screenshot");
 		perform_screen_shot();
 		do_screen_shot = false;
 	}
-
+	render_pass_debug_output(ri, "finish render pass");
 	finish_render_pass();
-
 	render_pass_stack.pop();
 }
 
@@ -926,17 +945,17 @@ cgv::media::font::font_face_ptr context::get_current_font_face() const
 
 
 /// write the content of a buffer to an image file
-bool context::write_frame_buffer_to_image(const std::string& file_name, data::ComponentFormat cf,
+bool context::write_frame_buffer_to_image(const std::string& file_name, cgv::data::ComponentFormat cf,
 														FrameBufferType buffer_type, unsigned int x, unsigned int y, int w, int h,
 														float depth_offset, float depth_scale)
 {
-	data::data_view dv;
-	if (cf == CF_D) {
-		if (read_frame_buffer(dv, x, y, buffer_type, type::info::TI_FLT32, cf, w, h)) {
-			data::data_format df("uint8[L]");
+	cgv::data::data_view dv;
+	if (cf == cgv::data::CF_D) {
+		if (read_frame_buffer(dv, x, y, buffer_type, cgv::type::info::TI_FLT32, cf, w, h)) {
+			cgv::data::data_format df("uint8[L]");
 			df.set_width(dv.get_format()->get_width());
 			df.set_height(dv.get_format()->get_height());
-			data::data_view dv1(&df);
+			cgv::data::data_view dv1(&df);
 			size_t n = df.get_width()*df.get_height();
 			const float* src = dv.get_ptr<float>();
 			unsigned char* dst = dv1.get_ptr<unsigned char>();
@@ -948,9 +967,9 @@ bool context::write_frame_buffer_to_image(const std::string& file_name, data::Co
 			}
 		}
 	}
-	else if (read_frame_buffer(dv, x, y, buffer_type, type::info::TI_UINT8, cf, w, h)) {
-		if (cf == CF_S) {
-			const_cast<data::data_format*>(dv.get_format())->set_component_names("L");
+	else if (read_frame_buffer(dv, x, y, buffer_type, cgv::type::info::TI_UINT8, cf, w, h)) {
+		if (cf == cgv::data::CF_S) {
+			const_cast<cgv::data::data_format*>(dv.get_format())->set_component_names("L");
 			size_t n = dv.get_format()->get_width()*dv.get_format()->get_height();
 			unsigned char* dst = dv.get_ptr<unsigned char>();
 			unsigned char s = (int)depth_scale;
@@ -2222,6 +2241,19 @@ bool context::shader_program_destruct(shader_program_base& spb) const
 		return false;
 	}
 	return true;
+}
+
+void context::shader_program_set_uniform_locations(shader_program_base& spb) const
+{
+	spb.uniform_locations.clear();
+	std::vector<std::string> uniform_names;
+	if(shader_program_get_active_uniforms(spb, uniform_names)) {
+		for(size_t i = 0; i < uniform_names.size(); ++i) {
+			int location = get_uniform_location(spb, uniform_names[i]);
+			if(location > -1)
+				spb.uniform_locations[uniform_names[i]] = location;
+		}
+	}
 }
 
 attribute_array_binding_base::attribute_array_binding_base()

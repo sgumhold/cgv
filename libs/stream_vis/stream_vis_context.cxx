@@ -226,7 +226,7 @@ namespace stream_vis {
 		construct_streaming_aabbs();
 
 	}
-	stream_vis_context::stream_vis_context(const std::string& name) : application_plugin(name)
+	stream_vis_context::stream_vis_context(const std::string& name) : cgv::base::group(name)
 	{
 		paused = false;
 		sleep_ms = 20;
@@ -261,12 +261,12 @@ namespace stream_vis {
 			for (const auto& vi : view_infos) {
 				view_overlay_ptr v_overlay = 0;
 				if (vi.dim == 2) {
-					view2d_overlay_ptr v2d_overlay = register_overlay<view2d_overlay>(vi.name);
+					view2d_overlay_ptr v2d_overlay = create_and_append_child<view2d_overlay>(vi.name);
 					v2d_overlay->set_update_handler(this);
 					v_overlay = v2d_overlay;
 				}
 				else {
-					view3d_overlay_ptr v3d_overlay = register_overlay<view3d_overlay>(vi.name);
+					view3d_overlay_ptr v3d_overlay = create_and_append_child<view3d_overlay>(vi.name);
 					v3d_overlay->set_update_handler(this);
 					v3d_overlay->set_current_view(vi.current_view);
 					v3d_overlay->set_default_view(vi.default_view);
@@ -487,10 +487,10 @@ namespace stream_vis {
 				tsrb.storage_buffer_index << "|" << tsrb.storage_buffer_offset << std::endl;
 		}
 	}
-	bool stream_vis_context::handle_event(cgv::gui::event& e)
+	bool stream_vis_context::handle(cgv::gui::event& e)
 	{
 		if (e.get_kind() == cgv::gui::EID_KEY) {
-			auto& ke = reinterpret_cast<cgv::gui::key_event&>(e);
+			auto& ke = dynamic_cast<cgv::gui::key_event&>(e);
 			if (ke.get_action() != cgv::gui::KA_RELEASE) {
 				// first check for changes in overlay visibility
 				for (view_overlay_ptr vo : view_overlays) 

@@ -6,20 +6,7 @@ namespace cgv {
 		render_style::~render_style()
 		{
 		}
-		renderer::renderer()
-		{
-			// initialize to the threshold count to prevent outputting warnings for the very first render procedure
-			current_prog_render_count = 10;
-			has_colors = false;
-			has_positions = false;
-			rs = default_render_style = 0;
-			aam_ptr = 0;
-			indices = 0;
-			index_buffer_ptr = 0;
-			index_type = cgv::type::info::TI_UNDEF;
-			index_count = 0;
-			prog_ptr = &prog;
-		}
+		renderer::renderer() {}
 		void renderer::manage_singleton(context& ctx, const std::string& renderer_name, int& ref_count, int ref_count_change)
 		{
 			switch (ref_count_change) {
@@ -48,7 +35,14 @@ namespace cgv {
 		{
 			if (default_render_style)
 				delete default_render_style;
-			default_render_style = 0;
+			default_render_style = nullptr;
+		}
+		bool renderer::build_shader_program(context& ctx, shader_program& prog, const shader_compile_options& options) const
+		{
+			std::string prog_name = get_default_prog_name();
+			if(!prog_name.empty())
+				return prog.build_program(ctx, prog_name, options, true);
+			return false;
 		}
 		/// call this before setting attribute arrays to manage attribute array in given manager
 		void renderer::enable_attribute_array_manager(const context& ctx, attribute_array_manager& aam)
@@ -145,11 +139,11 @@ namespace cgv {
 		/// build shader program for specific render style
 		bool renderer::build_program(context& ctx, shader_program& prog, const render_style& _rs)
 		{
-			shader_define_map defines;
 			auto* tmp = rs;
 			rs = &_rs;
-			update_defines(defines);
-			bool res = build_shader_program(ctx, prog, defines);
+			shader_compile_options options;
+			update_shader_program_options(options);
+			bool res = build_shader_program(ctx, prog, options);
 			rs = tmp;
 			return res;
 		}
@@ -177,17 +171,18 @@ namespace cgv {
 				if (!aam_ptr)
 					aam_ptr = &default_aam;
 			}
+
 			if (!default_render_style)
 				default_render_style = create_render_style();
 
 			if (!rs)
 				rs = default_render_style;
 
-			if (prog_ptr == &prog) {
-				update_defines(defines);
-				if (!build_shader_program(ctx, prog, defines))
+			if(prog_ptr == &prog) {
+				update_shader_program_options(prog_options);
+				if(!build_shader_program(ctx, prog, prog_options))
 					return false;
-				last_defines = defines;
+				last_prog_options = prog_options;
 			}
 			return default_render_style != 0;
 		}
@@ -203,11 +198,11 @@ namespace cgv {
 		bool renderer::enable(context& ctx)
 		{
 			if(prog_ptr == &prog) {
-				update_defines(defines);
-				if(defines != last_defines) {
+				update_shader_program_options(prog_options);
+				if(prog_options != last_prog_options) {
 					if(prog.is_created())
 						prog.destruct(ctx);
-					if(!build_shader_program(ctx, prog, defines))
+					if(!build_shader_program(ctx, prog, prog_options))
 						return false;
 #ifndef _DEBUG
 				}
@@ -218,7 +213,7 @@ namespace cgv {
 				}
 				++current_prog_render_count;
 #endif
-				last_defines = defines;
+				last_prog_options = prog_options;
 			}
 			bool res = ref_prog().enable(ctx);
 			if (aam_ptr)

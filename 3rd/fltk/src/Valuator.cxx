@@ -225,19 +225,22 @@ void Valuator::handle_drag(double v) {
     else set_changed();
   }
 }
-
 /*!  Subclasses should call this when the user stops moving the
   value. It may call the callback. */
 void Valuator::handle_release() {
-  if (when()&WHEN_RELEASE && !pushed()) {
-    // insure changed() is off even if no callback is done.  It may have
-    // been turned on by the drag, and then the slider returned to it's
-    // initial position:
-    clear_changed();
-    // now do the callback only if slider in new position or always is on:
-    if (value_ != previous_value_ || when() & WHEN_NOT_CHANGED)
-      do_callback();
-  }
+    if (when() & WHEN_RELEASE && !pushed()) {
+        // insure changed() is off even if no callback is done.  It may have
+        // been turned on by the drag, and then the slider returned to it's
+        // initial position:
+        clear_changed();
+        // now do the callback only if slider in new position or always is on:
+        if (value_ != previous_value_ || when() & WHEN_NOT_CHANGED) {
+            uchar old_damage = damage();
+            set_damage(0xff);
+            do_callback();
+            set_damage(old_damage);
+        }
+    }
 }
 
 /*!

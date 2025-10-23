@@ -36,7 +36,7 @@ public:
 
 	void create_gui(cgv::gui::provider* p) const {
 		
-		cgv::gui::button_ptr btn = p->add_button("?", "w=0;font_style='bold'", "");
+		cgv::gui::button_ptr btn = p->add_button("?", "w=0;font_style='bold';tooltip='Show help'", "");
 		
 		int x = btn->get<int>("x");
 		int y = btn->get<int>("y");

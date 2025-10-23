@@ -40,8 +40,8 @@
 /* Define to 1 if you have the <endian.h> header file. */
 #define HAVE_ENDIAN_H 0
 
-/* Will be set to 1 if flac, ogg and vorbis are available. */
-#define HAVE_EXTERNAL_XIPH_LIBS 0
+/* Will be set to 1 if flac, ogg, opus and vorbis are available. */
+#define HAVE_EXTERNAL_XIPH_LIBS 1
 
 /* Will be set to 1 if lame and mpg123 are available. */
 #define HAVE_MPEG 0

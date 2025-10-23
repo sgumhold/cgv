@@ -1,0 +1,337 @@
+//?#version 430
+
+// This library provides several discrete differentiation operators for images in 1D, 2D and 3D.
+// The library is configured using macros that must be defined before including this library in another shader.
+// The following macros are required:
+//  - DIMS The number of image dimensions.
+//  - INDEX_TYPE The image coordinate/index type.
+//  - IMAGE_NAME The image uniform name.
+//  - GET_VALUE_FUNC(IDX) The function used to retrieve values for differentiation. Taking an index as argument.
+//
+
+#ifndef DIMS
+	#define DIMS 2
+#endif
+#ifndef INDEX_TYPE
+	#define INDEX_TYPE ivec2
+#endif
+
+INDEX_TYPE clamp_index(in INDEX_TYPE idx) {
+#ifdef IMAGE_NAME
+	return clamp(idx, INDEX_TYPE(0), imageSize(IMAGE_NAME) - 1);
+#else
+	return idx;
+#endif
+}
+
+#ifndef GET_VALUE_FUNC
+	#define GET_VALUE_FUNC(IDX) 0.0
+#endif
+
+// TODO: use image element type as return type (value_type)
+float get_value(in INDEX_TYPE idx, in INDEX_TYPE offset) {
+#ifdef IMAGE_NAME
+	INDEX_TYPE clamped_idx = clamp_index(idx + offset);
+	return GET_VALUE_FUNC(clamped_idx);
+#else
+	return 0.0;
+#endif
+}
+
+#if DIMS == 1
+// forward difference using step with h = 1
+float forward_difference1d(in int idx) {
+	float xr = get_value(idx, +1);
+	float xl = get_value(idx, +0);
+	return xr - xl;
+}
+#elif DIMS == 2
+// forward difference using step with h = 1
+vec2 forward_difference2d(in ivec2 idx) {
+	float xr = get_value(idx, ivec2(+1, +0));
+	float xl = get_value(idx, ivec2(+0, +0));
+	float yr = get_value(idx, ivec2(+0, +1));
+	float yl = get_value(idx, ivec2(+0, +0));
+	return vec2(xr - xl, yr - yl);
+}
+#else // DIMS == 3
+// forward difference using step with h = 1
+vec3 forward_difference3d(in ivec3 idx) {
+	float xr = get_value(idx, ivec3(+1, +0, +0));
+	float xl = get_value(idx, ivec3(+0, +0, +0));
+	float yr = get_value(idx, ivec3(+0, +1, +0));
+	float yl = get_value(idx, ivec3(+0, +0, +0));
+	float zr = get_value(idx, ivec3(+0, +0, +1));
+	float zl = get_value(idx, ivec3(+0, +0, +0));
+	return vec3(xr - xl, yr - yl, zr - zl);
+}
+#endif
+
+#if DIMS == 1
+// backward difference using step with h = 1
+float backward_difference1d(in int idx) {
+	float xr = get_value(idx, +0);
+	float xl = get_value(idx, -1);
+	return (xr - xl);
+}
+#elif DIMS == 2
+// backward difference using step with h = 1
+vec2 backward_difference2d(in ivec2 idx) {
+	float xr = get_value(idx, ivec2(+0, +0));
+	float xl = get_value(idx, ivec2(-1, +0));
+	float yr = get_value(idx, ivec2(+0, +0));
+	float yl = get_value(idx, ivec2(+0, -1));
+	return vec2(xr - xl, yr - yl);
+}
+#else // DIMS == 3
+// backward difference using step with h = 1
+vec3 backward_difference3d(in ivec3 idx) {
+	float xr = get_value(idx, ivec3(+0, +0, +0));
+	float xl = get_value(idx, ivec3(-1, +0, +0));
+	float yr = get_value(idx, ivec3(+0, +0, +0));
+	float yl = get_value(idx, ivec3(+0, -1, +0));
+	float zr = get_value(idx, ivec3(+0, +0, +0));
+	float zl = get_value(idx, ivec3(+0, +0, -1));
+	return vec3(xr - xl, yr - yl, zr - zl);
+}
+#endif
+
+#if DIMS == 1
+// central difference using step with h = 2
+float central_difference1d(in int idx) {
+	float xr = get_value(idx, +1);
+	float xl = get_value(idx, -1);
+	return 0.5 * (xr - xl);
+}
+#elif DIMS == 2
+// central difference using step with h = 2
+vec2 central_difference2d(in ivec2 idx) {
+	float xr = get_value(idx, ivec2(+1, +0));
+	float xl = get_value(idx, ivec2(-1, +0));
+	float yr = get_value(idx, ivec2(+0, +1));
+	float yl = get_value(idx, ivec2(+0, -1));
+	return 0.5 * vec2(xr - xl, yr - yl);
+}
+#else // DIMS == 3
+// central difference using step with h = 2
+vec3 central_difference3d(in ivec3 idx) {
+	float xr = get_value(idx, ivec3(+1, +0, +0));
+	float xl = get_value(idx, ivec3(-1, +0, +0));
+	float yr = get_value(idx, ivec3(+0, +1, +0));
+	float yl = get_value(idx, ivec3(+0, -1, +0));
+	float zr = get_value(idx, ivec3(+0, +0, +1));
+	float zl = get_value(idx, ivec3(+0, +0, -1));
+	return 0.5 * vec3(xr - xl, yr - yl, zr - zl);
+}
+#endif
+// central difference scaling factor; multiply to result of central_difference to map all components to range [-1,1]
+float central_difference_scaling() { return 2.0; }
+// central difference normalization factor
+float central_difference_norm() { return 1.0; }
+
+#if DIMS == 1
+// "1d" sobel operator that is essentially just a central difference
+// Exists for compatibility reasons.
+// Implements a kernel G for x direction:
+//
+// Gx = | -1  0 +1 |
+//
+float sobel1d(in int idx) {
+	float res = 0.0;
+	res -= get_value(idx, -1);
+	res += get_value(idx, +1);
+	return res;
+}
+// 1d sobel operator scaling factor; multiply to result of sobel1d to map all components to range [-1,1]
+float sobel1d_scaling() {
+	return 1.0;
+}
+// 1d sobel operator normalization factor
+float sobel1d_norm() {
+	return 1.0/2.0;
+}
+#elif DIMS == 2
+// 2d sobel operator
+// Implements kernels G in for x and y direction:
+//
+//      | -1  0 +1 |       | -1 -2 -1 |
+// Gx = | -2  0 +2 |  Gy = |  0  0  0 | 
+//      | -1  0 +1 |       | +1 +2 +1 |
+//
+vec2 sobel2d(in ivec2 idx) {
+	float val[2];
+	vec2 res = vec2(0.0);
+
+	// 4 corners
+	// corners (part 1)
+	val[0] = get_value(idx, ivec2(-1, -1));
+	val[1] = get_value(idx, ivec2(-1, +1));
+	
+	res.x -= val[0];
+	res.x -= val[1];
+	
+	res.y -= val[0];
+	res.y += val[1];
+	
+	// corners (part 2)
+	val[0] = get_value(idx, ivec2(+1, -1));
+	val[1] = get_value(idx, ivec2(+1, +1));
+
+	res.x += val[0];
+	res.x += val[1];
+
+	res.y -= val[0];
+	res.y += val[1];
+	
+	// 4 edges
+	// edges (part 1)
+	val[0] = get_value(idx, ivec2(-1, +0));
+	val[1] = get_value(idx, ivec2(+1, +0));
+	
+	res.x -= 2.0 * val[0];
+	res.x += 2.0 * val[1];
+
+	// edges (part 2)
+	val[0] = get_value(idx, ivec2(+0, -1));
+	val[1] = get_value(idx, ivec2(+0, +1));
+
+	res.y -= 2.0 * val[0];
+	res.y += 2.0 * val[1];
+	
+	return res;
+}
+// 2d sobel operator scaling factor; multiply to result of sobel2d to map all components to range [-1,1]
+float sobel2d_scaling() {
+	return 1.0/4.0;
+}
+// 2d sobel operator normalization factor
+float sobel2d_norm() {
+	return 1.0/8.0;
+}
+#else // DIMS == 3
+// 3d sobel operator
+// Implements kernels G for x, y and z direction:
+//
+//             | -1 -2 -1 |             | 0  0  0 |              | +1 +2 +1 |
+// G(_,_,-1) = | -2 -4 -2 |  G(_,_,0) = | 0  0  0 |  G(_,_,+1) = | +2 +4 +2 |
+//             | -1 -2 -1 |             | 0  0  0 |              | +1 +2 +1 |
+//
+vec3 sobel3d(in ivec3 idx) {
+	float val[4];
+	vec3 res = vec3(0.0);
+
+	// 8 corners
+	// corners (part 1)
+	val[0] = get_value(idx, ivec3(-1, -1, -1));
+	val[1] = get_value(idx, ivec3(-1, -1, +1));
+	val[2] = get_value(idx, ivec3(-1, +1, -1));
+	val[3] = get_value(idx, ivec3(-1, +1, +1));
+
+	res.x -= val[0];
+	res.x -= val[1];
+	res.x -= val[2];
+	res.x -= val[3];
+
+	res.y -= val[0];
+	res.y -= val[1];
+	res.y += val[2];
+	res.y += val[3];
+
+	res.z -= val[0];
+	res.z += val[1];
+	res.z -= val[2];
+	res.z += val[3];
+
+	// corners (part 2)
+	val[0] = get_value(idx, ivec3(+1, -1, -1));
+	val[1] = get_value(idx, ivec3(+1, -1, +1));
+	val[2] = get_value(idx, ivec3(+1, +1, -1));
+	val[3] = get_value(idx, ivec3(+1, +1, +1));
+
+	res.x += val[0];
+	res.x += val[1];
+	res.x += val[2];
+	res.x += val[3];
+
+	res.y -= val[0];
+	res.y -= val[1];
+	res.y += val[2];
+	res.y += val[3];
+
+	res.z -= val[0];
+	res.z += val[1];
+	res.z -= val[2];
+	res.z += val[3];
+
+	// 12 edges
+	// edges (part 1)
+	val[0] = get_value(idx, ivec3(-1, +0, -1));
+	val[1] = get_value(idx, ivec3(-1, +0, +1));
+	val[2] = get_value(idx, ivec3(-1, -1, +0));
+	val[3] = get_value(idx, ivec3(-1, +1, +0));
+
+	res.x -= 2.0 * val[0];
+	res.x -= 2.0 * val[1];
+	res.x -= 2.0 * val[2];
+	res.x -= 2.0 * val[3];
+
+	res.y -= 2.0 * val[2];
+	res.y += 2.0 * val[3];
+	
+	res.z -= 2.0 * val[0];
+	res.z += 2.0 * val[1];
+
+	// edges (part 2)
+	val[0] = get_value(idx, ivec3(+0, -1, -1));
+	val[1] = get_value(idx, ivec3(+0, -1, +1));
+	val[2] = get_value(idx, ivec3(+0, +1, -1));
+	val[3] = get_value(idx, ivec3(+0, +1, +1));
+
+	res.y -= 2.0 * val[0];
+	res.y -= 2.0 * val[1];
+	res.y += 2.0 * val[2];
+	res.y += 2.0 * val[3];
+
+	res.z -= 2.0 * val[0];
+	res.z -= 2.0 * val[2];
+	res.z += 2.0 * val[1];
+	res.z += 2.0 * val[3];
+
+	// edges (part 3)
+	val[0] = get_value(idx, ivec3(+1, +0, -1));
+	val[1] = get_value(idx, ivec3(+1, +0, +1));
+	val[2] = get_value(idx, ivec3(+1, -1, +0));
+	val[3] = get_value(idx, ivec3(+1, +1, +0));
+
+	res.x += 2.0 * val[0];
+	res.x += 2.0 * val[1];
+	res.x += 2.0 * val[2];
+	res.x += 2.0 * val[3];
+
+	res.y -= 2.0 * val[2];
+	res.y += 2.0 * val[3];
+
+	res.z -= 2.0 * val[0];
+	res.z += 2.0 * val[1];
+
+	// 6 centers
+	res.x -= 4.0 * get_value(idx, ivec3(-1, +0, +0));
+	res.x += 4.0 * get_value(idx, ivec3(+1, +0, +0));
+
+	res.y -= 4.0 * get_value(idx, ivec3(+0, -1, +0));
+	res.y += 4.0 * get_value(idx, ivec3(+0, +1, +0));
+
+	res.z -= 4.0 * get_value(idx, ivec3(+0, +0, -1));
+	res.z += 4.0 * get_value(idx, ivec3(+0, +0, +1));
+
+	return res;
+}
+// 3d sobel operator scaling factor; multiply to result of sobel3d to map all components to range [-1,1]
+float sobel3d_scaling() {
+	return 1.0/16.0;
+}
+// 3d sobel operator normalization factor
+float sobel3d_norm() {
+	return 1.0/32.0;
+}
+#endif

@@ -17,8 +17,7 @@ namespace cgv {
 
 		struct CGV_API normal_render_style : public line_render_style
 		{
-			float normal_length;
-			normal_render_style();
+			float normal_length = 1.0f;
 		};
 
 		/// renderer that supports rendering point normals
@@ -26,21 +25,20 @@ namespace cgv {
 		{
 		protected:
 			/// scaling of normal length
-			float normal_scale;
-			/// overload to allow instantiation of box_wire_renderer
-			render_style* create_render_style() const;
-			/// build normal program
-			bool build_shader_program(context& ctx, shader_program& prog, const shader_define_map& defines);
-			bool validate_attributes(const context& ctx) const;
+			float normal_scale = 1.0f;
+			/// return the default shader program name
+			std::string get_default_prog_name() const override { return "normal.glpr"; }
+			/// create and return the default render style
+			render_style* create_render_style() const override { return new normal_render_style(); }
+			bool validate_attributes(const context& ctx) const override;
 		public:
-			normal_renderer();
 			/// the normal scale is multiplied to the normal length of the normal render style
 			void set_normal_scale(float _normal_scale);
 			/// enable normal renderer
-			bool enable(context& ctx);
+			bool enable(context& ctx) override;
 			/// convenience function to render with default settings
 			void draw(context& ctx, size_t start, size_t count,
-				bool use_strips = false, bool use_adjacency = false, uint32_t strip_restart_index = -1);
+				bool use_strips = false, bool use_adjacency = false, uint32_t strip_restart_index = -1) override;
 		};
 
 		struct CGV_API normal_render_style_reflect : public normal_render_style

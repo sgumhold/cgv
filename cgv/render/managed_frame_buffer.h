@@ -26,7 +26,7 @@ protected:
 		TextureWrap tw;
 		texture tex;
 
-		bool is_depth_attachment() {
+		bool is_depth_attachment() const {
 			return
 				format == "[D]" ||
 				format == "uint16[D]" ||
@@ -43,18 +43,16 @@ protected:
 public:
 	managed_frame_buffer();
 
-	~managed_frame_buffer();
-
 	void destruct(const context& ctx);
 
 	ivec2 get_size();
 
-	/** Sets the size of the framebuffer renderbuffers.
-		Set the x and/or y-component to <= 0 to use the width/height from the context.
-		Returns false if the size is larger than the maximum allowed render buffer size,
-		as given by the OpenGL API.
-	*/
-	bool set_size(const ivec2& size);
+	/// @brief Set the size of the framebuffer attachments. Requires to call ensure afterwards to actually construct the framebuffer.
+	/// 
+	/// If the given width or height is <= 0, the attachment widths or heights will be set to the context width or height respectively.
+	/// 
+	/// @param size The requested size.
+	void set_size(const ivec2& size);
 
 	void add_attachment(const std::string& name, const std::string& format = "uint8[R,G,B]", TextureFilter tf = TF_NEAREST, TextureWrap tw = TW_CLAMP_TO_EDGE, bool attach = true);
 
@@ -64,11 +62,15 @@ public:
 
 	texture* attachment_texture_ptr(const std::string& name);
 
+	/// @brief Ensure the framebuffer is constructed with the specified size.
+	/// 
+	/// @param ctx The graphics context.
+	/// @return True if the framebuffer could be constructed wit the specified attachments and size, false otherwise.
 	bool ensure(context& ctx);
 
-	bool enable(context& ctx);
+	bool enable(context& ctx, bool push_viewport=true);
 	
-	bool disable(context& ctx);
+	bool disable(context& ctx, bool pop_viewport=true);
 	
 	frame_buffer& ref_frame_buffer() { return fb; }
 };

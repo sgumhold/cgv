@@ -1,54 +1,34 @@
 #pragma once
 
-#include <cgv/media/color.h> //@<
-#include "lib_begin.h" //@<
+#include <cgv/media/color.h>
+#include "lib_begin.h"
 
-namespace cgv { //@<
-	namespace media { //@<
-		namespace illum { //@<
+namespace cgv {
+	namespace media {
+		namespace illum {
 
-///@>simple class to hold the material properties of a phong material
-class CGV_API phong_material
+/// Stores properties of a phong brdf material.
+struct CGV_API phong_material
 {
-public: //@<
-	///@>used color type
-	typedef color<float,RGB,OPACITY> color_type;
-protected: //@<
-	///@>ambient color component
-	color_type ambient;
-	///@>diffuse color component
-	color_type diffuse;
-	///@>specular color component
-	color_type specular;
-	///@>emissive color component
-	color_type emission;
-	///@>exponent of the specular cosine term
-	float      shininess;
-public: //@<
-	/// construct default material
-	phong_material();
-	void set_ambient(const color_type& c);
-	void set_diffuse(const color_type& c);
-	void set_specular(const color_type& c);
-	void set_emission(const color_type& c);
-	void set_shininess(float s);
-	const color_type& get_ambient() const;
-	const color_type& get_diffuse() const;
-	const color_type& get_specular() const;
-	const color_type& get_emission() const;
-	float get_shininess() const;
-	color_type& ref_ambient();
-	color_type& ref_diffuse();
-	color_type& ref_specular();
-	color_type& ref_emission();
-	float& ref_shininess();
-}; //@<
+	using color_type = cgv::rgba;
 
-/// provide reference to a standard material
-extern CGV_API const phong_material& default_material();
+	/// ambient color component
+	color_type ambient = { 0.1f, 0.1f, 0.1f, 1.0f };
+	/// diffuse color component
+	color_type diffuse = { 0.5f, 0.5f, 0.5f, 1.0f };
+	/// specular color component
+	color_type specular = { 0.5f, 0.5f, 0.5f, 1.0f };
+	/// emissive color component
+	color_type emission = { 0.0f, 0.0f, 0.0f, 1.0f };
+	/// exponent of the specular cosine term
+	float      shininess = 50.0f;
 
-		} //@<
-	} //@<
-} //@<
+	/// provide a const reference to a standard phong material
+	static const phong_material& get_default();
+};
 
-#include <cgv/config/lib_end.h> //@<
+		}
+	}
+}
+
+#include <cgv/config/lib_end.h>

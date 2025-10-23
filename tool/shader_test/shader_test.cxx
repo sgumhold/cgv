@@ -254,12 +254,12 @@ char** g_argv;
 context* g_ctx_ptr;
 bool g_shader_developer;
 
-void stream_out_prog(std::ostream& os, const std::string& fn, const cgv::render::shader_define_map& defines)
+void stream_out_prog(std::ostream& os, const std::string& fn, const cgv::render::shader_compile_options& options)
 {
 	os << fn;
-	if (!defines.empty())
-		for (const auto& d : defines)
-			os << "|" << d.first << "=" << d.second;
+	if (!options.empty())
+		for (const auto& macro : options.get_macros())
+			os << "|" << macro.first << "=" << macro.second;
 }
 
 int perform_test()
@@ -268,17 +268,17 @@ int perform_test()
 	// check input file extension
 	std::string ext = to_lower(get_extension(g_argv[1]));
 	if (ext == "glpr") {
-		std::vector<shader_define_map> define_maps = shader_program::extract_instances(g_argv[1]);
-		if (define_maps.empty())
-			define_maps.push_back({});
-		for (auto defines : define_maps) {
+		std::vector<shader_compile_options> per_instance_compile_options = shader_program::extract_instances(g_argv[1]);
+		if (per_instance_compile_options.empty())
+			per_instance_compile_options.push_back({});
+		for (const auto& compile_options : per_instance_compile_options) {
 			// in case of shader program, build it from the file
 			shader_program prog(true);
-			if (prog.build_program(*g_ctx_ptr, g_argv[1], g_shader_developer, defines)) {
+			if (prog.build_program(*g_ctx_ptr, g_argv[1], compile_options, g_shader_developer)) {
 				convert_to_string(g_argv[1], g_argv[2]);
 				//write(g_argv[2], "ok", 2, true);
 				std::cout << "shader program ok (";
-				stream_out_prog(std::cout, g_argv[1], defines);
+				stream_out_prog(std::cout, g_argv[1], compile_options);
 				std::cout << ")" << std::endl;
 			}
 			else {
@@ -286,7 +286,7 @@ int perform_test()
 					convert_to_string(g_argv[1], g_argv[2]);
 				else {
 					std::cout << "error:";
-					stream_out_prog(std::cout, g_argv[1], defines);
+					stream_out_prog(std::cout, g_argv[1], compile_options);
 					std::cout << " (1) : glsl program error" << std::endl;
 					exit_code = 1;
 				}
@@ -295,7 +295,7 @@ int perform_test()
 	}
 	else {
 		shader_code code;
-		if (code.read_and_compile(*g_ctx_ptr, g_argv[1], cgv::render::ST_DETECT, g_shader_developer)) {
+		if (code.read_and_compile(*g_ctx_ptr, g_argv[1], cgv::render::ST_DETECT, {}, g_shader_developer)) {
 			// convert the input file to a string declaration with the string
 			convert_to_string(g_argv[1], g_argv[2]);
 			// write(g_argv[2], "ok", 2, true);
@@ -337,6 +337,8 @@ int main(int argc, char** argv)
 		convert_to_string(argv[1], argv[2]);
 		return exit_code;
 	}
+	// extract path of input file and add it to the shader path in order to correctly resolve local includes
+	get_shader_config()->shader_path += ";" + cgv::utils::file::get_path(argv[1]);
 	g_argc = argc;
 	g_argv = argv;
 	g_ctx_ptr = ctx_ptr;

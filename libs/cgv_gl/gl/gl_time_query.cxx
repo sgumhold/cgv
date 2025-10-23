@@ -46,12 +46,34 @@ bool gl_time_query::is_initialized() const
 	return ctx_ptr != nullptr;
 }
 
-void gl_time_query::begin()
+void gl_time_query::begin_scope() const
 {
 	glBeginQuery(GL_TIME_ELAPSED, query);
 }
 
-double gl_time_query::end()
+void gl_time_query::end_scope() const
+{
+	glEndQuery(GL_TIME_ELAPSED);
+}
+
+double gl_time_query::collect() const
+{
+	GLint done = false;
+	while(!done)
+		glGetQueryObjectiv(query, GL_QUERY_RESULT_AVAILABLE, &done);
+
+	GLuint64 elapsed_time = 0;
+	glGetQueryObjectui64v(query, GL_QUERY_RESULT, &elapsed_time);
+
+	return double(elapsed_time);
+}
+
+void gl_time_query::begin() const
+{
+	glBeginQuery(GL_TIME_ELAPSED, query);
+}
+
+double gl_time_query::end() const
 {
 	glEndQuery(GL_TIME_ELAPSED);
 

@@ -19,7 +19,7 @@ namespace cgv {
 extern CGV_API float black[4], white[4], gray[4], green[4], brown[4], dark_red[4], cyan[4], yellow[4], red[4], blue[4];
 
 /// map a type id to a gl enum
-extern CGV_API unsigned map_to_gl(TypeId ti);
+extern CGV_API unsigned map_to_gl(cgv::type::info::TypeId ti);
 
 /// map a component format to a gl enum, return -1 of this was not possible
 extern CGV_API unsigned map_to_gl(cgv::data::ComponentFormat cf, cgv::data::ComponentIntegerInterpretation cii = cgv::data::CII_DEFAULT);
@@ -34,7 +34,7 @@ extern CGV_API unsigned get_gl_cube_map_target(unsigned side);
 extern CGV_API bool generate_mipmaps(unsigned int dim, bool is_cubemap, bool is_array = false, std::string* last_error = 0);
 
 /// map the given component format to the best matching available gl component format
-extern CGV_API unsigned find_best_texture_format(const cgv::data::component_format& cf, cgv::data::component_format* best_cf = 0, const std::vector<cgv::data::data_view>* palettes = 0);
+extern CGV_API unsigned find_best_texture_format(const cgv::data::component_format& cf, cgv::data::component_format* best_cf = 0, const std::vector<cgv::data::data_view>* palettes = 0, bool show_debug_info = false);
 
 /// load data to a texture with the glTexImage commands and generate mipmaps if the level parameter is -1, return whether mipmaps were created
 extern CGV_API bool load_texture(const cgv::data::const_data_view& data, unsigned gl_tex_format, unsigned level = -1, unsigned cube_side = -1, int num_array_layers = 0, const std::vector<cgv::data::data_view>* palettes = 0);

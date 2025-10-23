@@ -37,32 +37,18 @@ namespace cgv {
 			ensure_buffer(node_buffer, GL_SHADER_STORAGE_BUFFER, nodes_per_pixel * 3 * num_pixels * sizeof(GLuint), NULL); // buffer to store linked list nodes, each with 3 32-bit values; reserve space for as much as 64 fragments per pixel
 			last_nodes_per_pixel = nodes_per_pixel;
 		}
-		void a_buffer::update_defines(shader_define_map& defines, bool include_binding_points)
+		void a_buffer::update_shader_program_options(shader_compile_options& options, bool include_binding_points)
 		{
-			if (fragments_per_pixel == 32)
-				defines.erase("MAX_FRAGMENTS");
-			else
-				defines["MAX_FRAGMENTS"] = cgv::utils::to_string(fragments_per_pixel);
-
-			if (!include_binding_points)
-				return;
-
-			if (node_counter_binding_point == 0)
-				defines.erase("NODE_COUNTER_BINDING_POINT");
-			else
-				defines["NODE_COUNTER_BINDING_POINT"] = cgv::utils::to_string(node_counter_binding_point);
-			if (head_pointers_binding_point == 0)
-				defines.erase("HEAD_POINTERS_BINDING_POINT");
-			else
-				defines["HEAD_POINTERS_BINDING_POINT"] = cgv::utils::to_string(head_pointers_binding_point);
-			if (nodes_binding_point == 1)
-				defines.erase("NODES_BINDING_POINT");
-			else
-				defines["NODES_BINDING_POINT"] = cgv::utils::to_string(nodes_binding_point);
+			options.define_macro_if_not_default("MAX_FRAGMENTS", fragments_per_pixel, 32u);
+			if(include_binding_points) {
+				options.define_macro_if_not_default("NODE_COUNTER_BINDING_POINT", node_counter_binding_point, 0);
+				options.define_macro_if_not_default("HEAD_POINTERS_BINDING_POINT", head_pointers_binding_point, 0);
+				options.define_macro_if_not_default("NODES_BINDING_POINT", nodes_binding_point, 1);
+			}
 		}
-		void a_buffer::update_defines(shader_define_map& defines)
+		void a_buffer::update_shader_program_options(shader_compile_options& options)
 		{
-			update_defines(defines, true);
+			update_shader_program_options(options, true);
 		}
 		a_buffer::a_buffer(unsigned _fragments_per_pixel, unsigned _nodes_per_pixel, int _depth_tex_unit, 
 			int _node_counter_binding_point, int _head_pointers_binding_point, int _nodes_binding_point)
@@ -88,10 +74,10 @@ namespace cgv {
 		{
 			if (!clear_ssbo_prog.build_files(ctx, "a_buffer_clear", true))
 				return false;
-			update_defines(defines, false);
-			if (!a_buffer_prog.build_program(ctx, "a_buffer.glpr", true, defines))
+			update_shader_program_options(prog_options, false);
+			if (!a_buffer_prog.build_program(ctx, "a_buffer.glpr", prog_options, true))
 				return false;
-			last_defines = defines;
+			last_prog_options = prog_options;
 			return true;
 		}
 		void a_buffer::destruct(context& ctx)
@@ -132,12 +118,12 @@ namespace cgv {
 			glBindBufferBase(GL_SHADER_STORAGE_BUFFER, 0, 0);
 
 			// check for rebuild of program
-			update_defines(defines, false);
-			if (defines != last_defines) {
+			update_shader_program_options(prog_options, false);
+			if (prog_options != last_prog_options) {
 				if (a_buffer_prog.is_created())
 					a_buffer_prog.destruct(ctx);
-				if (a_buffer_prog.build_program(ctx, "a_buffer.glpr", true, defines)) {
-					last_defines = defines;
+				if (a_buffer_prog.build_program(ctx, "a_buffer.glpr", prog_options, true)) {
+					last_prog_options = prog_options;
 					std::cout << "a_buffer: rebuilt shader program" << std::endl;
 				}
 			}

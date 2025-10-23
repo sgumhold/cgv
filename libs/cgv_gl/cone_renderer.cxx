@@ -4,71 +4,20 @@
 
 namespace cgv {
 	namespace render {
-		cone_renderer& ref_cone_renderer(context& ctx, int ref_count_change)
-		{
+		cone_renderer& ref_cone_renderer(context& ctx, int ref_count_change) {
 			static int ref_count = 0;
 			static cone_renderer r;
 			r.manage_singleton(ctx, "cone_renderer", ref_count, ref_count_change);
 			return r;
 		}
-
-		render_style* cone_renderer::create_render_style() const
-		{
-			return new cone_render_style();
-		}
-
-		cone_render_style::cone_render_style()
-		{
-			radius = 1.0f;
-			radius_scale = 1.0f;
-			
-			show_caps = true;
-			rounded_caps = false;
-
-			enable_texturing = false;
-			texture_blend_mode = TBM_MIX;
-			texture_blend_factor = 1.0f;
-			texture_tile_from_center = false;
-			texture_offset = vec2(0.0f);
-			texture_tiling = vec2(1.0f);
-			texture_use_reference_length = false;
-			texture_reference_length = 1.0f;
-
-			enable_ambient_occlusion = false;
-			ao_offset = 0.04f;
-			ao_distance = 0.8f;
-			ao_strength = 1.0f;
-
-			tex_offset = vec3(0.0f);
-			tex_scaling = vec3(1.0f);
-			tex_coord_scaling = vec3(1.0f);
-			texel_size = 1.0f;
-
-			cone_angle_factor = 1.0f;
-			sample_dirs.resize(3);
-			sample_dirs[0] = vec3(0.0f, 1.0f, 0.0f);
-			sample_dirs[1] = vec3(0.0f, 1.0f, 0.0f);
-			sample_dirs[2] = vec3(0.0f, 1.0f, 0.0f);
-		}
-
-		cone_renderer::cone_renderer()
-		{
-			has_radii = false;
-			shader_defines = shader_define_map();
-			albedo_texture = nullptr;
-			density_texture = nullptr;
-		}
-
 		/// call this before setting attribute arrays to manage attribute array in given manager
-		void cone_renderer::enable_attribute_array_manager(const context& ctx, attribute_array_manager& aam)
-		{
+		void cone_renderer::enable_attribute_array_manager(const context& ctx, attribute_array_manager& aam) {
 			surface_renderer::enable_attribute_array_manager(ctx, aam);
-			if (has_attribute(ctx, "radius"))
+			if(has_attribute(ctx, "radius"))
 				has_radii = true;
 		}
 		/// call this after last render/draw call to ensure that no other users of renderer change attribute arrays of given manager
-		void cone_renderer::disable_attribute_array_manager(const context& ctx, attribute_array_manager& aam)
-		{
+		void cone_renderer::disable_attribute_array_manager(const context& ctx, attribute_array_manager& aam) {
 			surface_renderer::disable_attribute_array_manager(ctx, aam);
 			has_radii = false;
 		}
@@ -76,45 +25,33 @@ namespace cgv {
 			has_radii = false;
 			remove_attribute_array(ctx, "radius");
 		}
-		bool cone_renderer::validate_attributes(const context& ctx) const
-		{
+		bool cone_renderer::validate_attributes(const context& ctx) const {
 			const cone_render_style& crs = get_style<cone_render_style>();
 			bool res = surface_renderer::validate_attributes(ctx);
 			return res;
 		}
-		void cone_renderer::update_defines(shader_define_map& defines)
-		{
+		void cone_renderer::update_shader_program_options(shader_compile_options& options) const {
 			const cone_render_style& crs = get_style<cone_render_style>();
-			shader_code::set_define(defines, "CAPS", crs.show_caps, true);
-			shader_code::set_define(defines, "CAP_TYPE", crs.rounded_caps, false);
-			shader_code::set_define(defines, "ENABLE_TEXTURING", crs.enable_texturing, false);
-			shader_code::set_define(defines, "TEXTURE_BLEND_MODE", crs.texture_blend_mode, cone_render_style::TBM_MIX);
-			shader_code::set_define(defines, "TEXTURE_TILE_FROM_CENTER", crs.texture_tile_from_center, false);
-			shader_code::set_define(defines, "TEXTURE_USE_REFERENCE_LENGTH", crs.texture_use_reference_length, false);
-			shader_code::set_define(defines, "ENABLE_AMBIENT_OCCLUSION", crs.enable_ambient_occlusion, false);
+			options.define_macro_if_true(crs.enable_texturing, "ENABLE_TEXTURE");
+			options.define_macro_if_true(crs.show_caps, "ENABLE_CAPS");
+			options.define_macro_if_true(crs.rounded_caps, "USE_ROUNDED_CONE");
+			options.define_macro_if_true(crs.enable_ambient_occlusion, "ENABLE_AMBIENT_OCCLUSION");
 		}
-		bool cone_renderer::build_shader_program(context& ctx, shader_program& prog, const shader_define_map& defines)
-		{
-			return prog.build_program(ctx, "cone.glpr", true, defines);
-		}
-		bool cone_renderer::set_albedo_texture(texture* tex)
-		{
+		bool cone_renderer::set_albedo_texture(texture* tex) {
 			if(!tex || tex->get_nr_dimensions() != 2)
 				return false;
 			albedo_texture = tex;
 			return true;
 		}
-		bool cone_renderer::set_density_texture(texture* tex)
-		{
+		bool cone_renderer::set_density_texture(texture* tex) {
 			if(!tex || tex->get_nr_dimensions() != 3)
 				return false;
 			density_texture = tex;
 			return true;
 		}
 		/// 
-		bool cone_renderer::enable(context& ctx)
-		{
-			if (!surface_renderer::enable(ctx))
+		bool cone_renderer::enable(context& ctx) {
+			if(!surface_renderer::enable(ctx))
 				return false;
 
 			if(!ref_prog().is_linked())
@@ -125,7 +62,7 @@ namespace cgv {
 				ref_prog().set_attribute(ctx, "radius", crs.radius);
 
 			ref_prog().set_uniform(ctx, "radius_scale", crs.radius_scale);
-			
+
 			if(crs.enable_texturing && !albedo_texture)
 				return false;
 
@@ -156,8 +93,7 @@ namespace cgv {
 			return true;
 		}
 		///
-		bool cone_renderer::disable(context& ctx)
-		{
+		bool cone_renderer::disable(context& ctx) {
 			if(albedo_texture) albedo_texture->disable(ctx);
 			if(density_texture) density_texture->disable(ctx);
 
@@ -167,27 +103,23 @@ namespace cgv {
 			return surface_renderer::disable(ctx);
 		}
 
-		bool cone_render_style_reflect::self_reflect(cgv::reflect::reflection_handler& rh)
-		{
+		bool cone_render_style_reflect::self_reflect(cgv::reflect::reflection_handler& rh) {
 			return
 				rh.reflect_base(*static_cast<surface_render_style*>(this)) &&
 				rh.reflect_member("radius", radius);
 		}
 
-		void cone_renderer::draw(context& ctx, size_t start, size_t count, bool use_strips, bool use_adjacency, uint32_t strip_restart_index)
-		{
+		void cone_renderer::draw(context& ctx, size_t start, size_t count, bool use_strips, bool use_adjacency, uint32_t strip_restart_index) {
 			draw_impl(ctx, PT_LINES, start, count, use_strips, use_adjacency, strip_restart_index);
 		}
 
-		void cone_renderer::clear(const context& ctx)
-		{
+		void cone_renderer::clear(const context& ctx) {
 			renderer::clear(ctx);
 			albedo_texture = nullptr;
 			density_texture = nullptr;
 		}
 
-		cgv::reflect::extern_reflection_traits<cone_render_style, cone_render_style_reflect> get_reflection_traits(const cone_render_style&)
-		{
+		cgv::reflect::extern_reflection_traits<cone_render_style, cone_render_style_reflect> get_reflection_traits(const cone_render_style&) {
 			return cgv::reflect::extern_reflection_traits<cone_render_style, cone_render_style_reflect>();
 		}
 	}
@@ -201,8 +133,8 @@ namespace cgv {
 		struct cone_render_style_gui_creator : public gui_creator {
 			/// attempt to create a gui and return whether this was successful
 			bool create(provider* p, const std::string& label,
-				void* value_ptr, const std::string& value_type,
-				const std::string& gui_type, const std::string& options, bool*) {
+						void* value_ptr, const std::string& value_type,
+						const std::string& gui_type, const std::string& options, bool*) {
 				if(value_type != cgv::type::info::type_name<cgv::render::cone_render_style>::get_name())
 					return false;
 				cgv::render::cone_render_style* crs_ptr = reinterpret_cast<cgv::render::cone_render_style*>(value_ptr);
@@ -219,8 +151,6 @@ namespace cgv {
 					p->add_member_control(b, "Enable", crs_ptr->enable_texturing, "check");
 					p->add_member_control(b, "Blend Mode", crs_ptr->texture_blend_mode, "dropdown", "enums='Mix,Tint,Multiply,Inverse Multiply,Add'");
 					p->add_member_control(b, "Blend Factor", crs_ptr->texture_blend_factor, "value_slider", "min=0.0;step=0.0001;max=1.0;ticks=true");
-					//p->add_member_control(b, "Texcoord Offset", crs_ptr->texcoord_offset, "value_slider", "min=-1.0;step=0.0001;max=1.0;ticks=true");
-					//p->add_member_control(b, "Texcoord Scale", crs_ptr->texcoord_scale, "value_slider", "min=-10.0;step=0.0001;max=10.0;ticks=true");
 
 					p->add_member_control(b, "Tile from Center", crs_ptr->texture_tile_from_center, "check");
 
@@ -233,7 +163,7 @@ namespace cgv {
 					p->add_member_control(b, "", crs_ptr->texture_tiling[1], "value", "w=95;min=-5;max=5;step=0.001");
 					p->add_member_control(b, "", crs_ptr->texture_tiling[0], "slider", "w=95;min=-5;max=5;step=0.001;ticks=true", " ");
 					p->add_member_control(b, "", crs_ptr->texture_tiling[1], "slider", "w=95;min=-5;max=5;step=0.001;ticks=true");
-					
+
 					p->add_member_control(b, "Use Reference Length", crs_ptr->texture_use_reference_length, "check");
 					p->add_member_control(b, "Reference Length", crs_ptr->texture_reference_length, "value_slider", "min=0.0;step=0.0001;max=5.0;log=true;ticks=true");
 
@@ -249,7 +179,7 @@ namespace cgv {
 					p->add_member_control(b, "Strength", crs_ptr->ao_strength, "value_slider", "min=0.0;step=0.0001;max=10.0;log=true;ticks=true");
 					p->align("\b");
 				}
-				
+
 				p->add_gui("surface_render_style", *static_cast<cgv::render::surface_render_style*>(crs_ptr));
 				return true;
 			}

@@ -12,22 +12,6 @@ namespace cgv {
 			return r;
 		}
 
-		render_style* spline_tube_renderer::create_render_style() const
-		{
-			return new spline_tube_render_style();
-		}
-
-		spline_tube_render_style::spline_tube_render_style()
-		{
-			radius_scale = 1.0f;
-			radius = 1.0f;
-		}
-
-		spline_tube_renderer::spline_tube_renderer()
-		{
-			has_radii = false;
-			has_tangents = false;
-		}
 		/// call this before setting attribute arrays to manage attribute array in given manager
 		void spline_tube_renderer::enable_attribute_array_manager(const context& ctx, attribute_array_manager& aam)
 		{
@@ -57,10 +41,6 @@ namespace cgv {
 			const spline_tube_render_style& strs = get_style<spline_tube_render_style>();
 			bool res = surface_renderer::validate_attributes(ctx);
 			return res;
-		}
-		bool spline_tube_renderer::build_shader_program(context& ctx, shader_program& prog, const shader_define_map& defines)
-		{
-			return prog.build_program(ctx, "spline_tube.glpr", true, defines);
 		}
 		bool spline_tube_renderer::enable(context& ctx)
 		{

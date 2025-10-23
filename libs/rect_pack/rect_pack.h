@@ -117,3 +117,5 @@ namespace rect_pack {
 		bool print_warnings = false,
 		bool print_progress = false);
 }
+
+#include <cgv/config/lib_end.h>

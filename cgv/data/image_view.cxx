@@ -2,6 +2,7 @@
 #include <algorithm>
 
 using namespace cgv::type;
+using namespace cgv::type::info;
 
 namespace cgv {
 	namespace data {

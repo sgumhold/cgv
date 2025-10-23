@@ -6,8 +6,6 @@
 
 #include "lib_begin.h"
 
-using namespace cgv::type;
-
 /// the cgv namespace
 namespace cgv {
 	/// the base namespace holds the base hierarchy, support for plugin registration and signals
@@ -29,8 +27,8 @@ struct standard_type_property_access : public abst_property_access
 	T* ptr;
 	standard_type_property_access(T* _ptr) : ptr(_ptr) {}
 	const char* get_type_name() const override { return cgv::type::info::type_name<T>::get_name(); }
-	bool set(const std::string& value_type, const void* value_ptr) override { get_variant(*ptr,value_type,value_ptr); has_changed = true; return true; }
-	bool get(const std::string& value_type, void* value_ptr) override { set_variant(*ptr,value_type,value_ptr); return true; }
+	bool set(const std::string& value_type, const void* value_ptr) override { cgv::type::get_variant(*ptr,value_type,value_ptr); has_changed = true; return true; }
+	bool get(const std::string& value_type, void* value_ptr) override { cgv::type::set_variant(*ptr,value_type,value_ptr); return true; }
 };
 
 template <typename T>
@@ -68,26 +66,26 @@ struct property_access : public emulated_property_access<T>
 	property_access(T* _ptr) : emulated_property_access<T>(_ptr) {}
 };
 
-template <> struct property_access<int8_type>   : public standard_type_property_access<int8_type>   { property_access<int8_type>( int8_type* _ptr)  : standard_type_property_access<int8_type>(_ptr) {}; }; 
-template <> struct property_access<int16_type>  : public standard_type_property_access<int16_type>  { property_access<int16_type>(int16_type* _ptr) : standard_type_property_access<int16_type>(_ptr) {}; }; 
-template <> struct property_access<int32_type>  : public standard_type_property_access<int32_type>  { property_access<int32_type>(int32_type* _ptr) : standard_type_property_access<int32_type>(_ptr) {}; }; 
-template <> struct property_access<int64_type>  : public standard_type_property_access<int64_type>  { property_access<int64_type>(int64_type* _ptr) : standard_type_property_access<int64_type>(_ptr) {}; }; 
-template <> struct property_access<uint8_type>   : public standard_type_property_access<uint8_type>   { property_access<uint8_type>( uint8_type* _ptr)  : standard_type_property_access<uint8_type>(_ptr) {}; }; 
-template <> struct property_access<uint16_type>  : public standard_type_property_access<uint16_type>  { property_access<uint16_type>(uint16_type* _ptr) : standard_type_property_access<uint16_type>(_ptr) {}; }; 
-template <> struct property_access<uint32_type>  : public standard_type_property_access<uint32_type>  { property_access<uint32_type>(uint32_type* _ptr) : standard_type_property_access<uint32_type>(_ptr) {}; }; 
-template <> struct property_access<uint64_type>  : public standard_type_property_access<uint64_type>  { property_access<uint64_type>(uint64_type* _ptr) : standard_type_property_access<uint64_type>(_ptr) {}; }; 
-template <> struct property_access<float>       : public standard_type_property_access<float> { property_access<float>(float* _ptr) : standard_type_property_access<float>(_ptr) {}; }; 
-template <> struct property_access<double>      : public standard_type_property_access<double> { property_access<double>(double* _ptr) : standard_type_property_access<double>(_ptr) {}; }; 
+template <> struct property_access<cgv::type::int8_type>   : public standard_type_property_access<cgv::type::int8_type>   { property_access<cgv::type::int8_type>  (cgv::type::int8_type* _ptr)	  : standard_type_property_access<cgv::type::int8_type>(_ptr) {}; }; 
+template <> struct property_access<cgv::type::int16_type>  : public standard_type_property_access<cgv::type::int16_type>  { property_access<cgv::type::int16_type> (cgv::type::int16_type* _ptr)  : standard_type_property_access<cgv::type::int16_type>(_ptr) {}; }; 
+template <> struct property_access<cgv::type::int32_type>  : public standard_type_property_access<cgv::type::int32_type>  { property_access<cgv::type::int32_type> (cgv::type::int32_type* _ptr)  : standard_type_property_access<cgv::type::int32_type>(_ptr) {}; }; 
+template <> struct property_access<cgv::type::int64_type>  : public standard_type_property_access<cgv::type::int64_type>  { property_access<cgv::type::int64_type> (cgv::type::int64_type* _ptr)  : standard_type_property_access<cgv::type::int64_type>(_ptr) {}; }; 
+template <> struct property_access<cgv::type::uint8_type>  : public standard_type_property_access<cgv::type::uint8_type>  { property_access<cgv::type::uint8_type> (cgv::type::uint8_type* _ptr)  : standard_type_property_access<cgv::type::uint8_type>(_ptr) {}; }; 
+template <> struct property_access<cgv::type::uint16_type> : public standard_type_property_access<cgv::type::uint16_type> { property_access<cgv::type::uint16_type>(cgv::type::uint16_type* _ptr) : standard_type_property_access<cgv::type::uint16_type>(_ptr) {}; }; 
+template <> struct property_access<cgv::type::uint32_type> : public standard_type_property_access<cgv::type::uint32_type> { property_access<cgv::type::uint32_type>(cgv::type::uint32_type* _ptr) : standard_type_property_access<cgv::type::uint32_type>(_ptr) {}; }; 
+template <> struct property_access<cgv::type::uint64_type> : public standard_type_property_access<cgv::type::uint64_type> { property_access<cgv::type::uint64_type>(cgv::type::uint64_type* _ptr) : standard_type_property_access<cgv::type::uint64_type>(_ptr) {}; }; 
+template <> struct property_access<float>       : public standard_type_property_access<float>       { property_access<float>(float* _ptr) : standard_type_property_access<float>(_ptr) {}; }; 
+template <> struct property_access<double>      : public standard_type_property_access<double>      { property_access<double>(double* _ptr) : standard_type_property_access<double>(_ptr) {}; }; 
 template <> struct property_access<bool>        : public standard_type_property_access<bool>        { property_access<bool>(bool* _ptr) : standard_type_property_access<bool>(_ptr) {}; }; 
 template <> struct property_access<std::string> : public standard_type_property_access<std::string> { property_access<std::string>(std::string* _ptr) : standard_type_property_access<std::string>(_ptr) {}; }; 
 
 /** implements a dynamic object, that can be composed of independent variables, which are 
-    handled as properties of the base_generator and published through the property interface
+	handled as properties of the base_generator and published through the property interface
 	of the base class. */
-class CGV_API base_generator : public cgv::base::base
+class CGV_API base_generator : public base
 {
 protected:
-	typedef std::map<std::string,abst_property_access*> map_type;
+	typedef std::map<std::string, abst_property_access*> map_type;
 	typedef map_type::iterator iter_type;
 	typedef map_type::const_iterator const_iter_type;
 	/// store the properties as map from property name to type and pointer to instance
@@ -116,7 +114,7 @@ public:
 
 //! simple parsing support to access values of properties in a string of property assignment 
 /*! Given an option string (first parameter) with name-value-pairs, i.e. "x=10.4;tooltip='help'" 
-    and a property name (second parameter), the function returns whether the option string contains
+	and a property name (second parameter), the function returns whether the option string contains
 	an assignment of the queried property and if yes, the value is stored in the reference given
 	in the third parameter. The type casts supported by the cgv::type::variant type are used when
 	converting to the reference type.

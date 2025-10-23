@@ -6,8 +6,6 @@
 
 #include <cgv/media/image/image_writer.h>
 
-using namespace cgv::media::image;
-
 #include "lib_begin.h"
 
 struct my_error_mgr
@@ -19,7 +17,7 @@ struct my_error_mgr
 typedef struct my_error_mgr* my_error_ptr;
 
 /// implements the image reader interface for jpg files
-class jpg_writer : public abst_image_writer
+class jpg_writer : public cgv::media::image::abst_image_writer
 {
 protected:
 	/* This struct contains the JPEG compression parameters and pointers to
@@ -48,17 +46,17 @@ public:
 	/// overload to return the type name of this object
 	std::string get_type_name() const;
 	/// construct a copy of the reader
-	abst_image_writer* clone() const;
+	cgv::media::image::abst_image_writer* clone() const;
 	/// return a string containing a colon separated list of extensions that can be read with this reader
 	const char* get_supported_extensions() const;
 	/// check if the chosen writer supports the given component format
-	bool is_format_supported(const component_format& cf, const std::vector<component_format>* palette_formats) const;
+	bool is_format_supported(const cgv::data::component_format& cf, const std::vector<cgv::data::component_format>* palette_formats) const;
 	/// return a reference to the last error message
 	const std::string& get_last_error() const;
 	/// open image file to write
 	bool open(const std::string& file_name);
 	/** write the data stored in the data view to a file with the file name given in the constructor. */
-	bool write_image(const const_data_view& dv, const std::vector<const_data_view>* palettes, double duration);
+	bool write_image(const cgv::data::const_data_view& dv, const std::vector<cgv::data::const_data_view>* palettes, double duration);
 	/// close image [stream]
 	bool close();
 };

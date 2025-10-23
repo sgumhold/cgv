@@ -1037,9 +1037,9 @@ void holo_view_interactor::draw_mouse_pointer_as_arrow(cgv::render::context& ctx
 {
 	static cgv::media::illum::surface_material smp_mat_visible;
 	static cgv::media::illum::surface_material smp_mat_hidden;
-	smp_mat_visible.set_diffuse_reflectance(cgv::rgb(1, 1, 1));
-	smp_mat_hidden.set_diffuse_reflectance(cgv::rgb(0.3f, 0.3f, 0.3f));
-	smp_mat_hidden.set_emission(cgv::rgb(0.3f, 0.3f, 0.3f));
+	smp_mat_visible.diffuse_reflectance = cgv::rgb(1, 1, 1);
+	smp_mat_hidden.diffuse_reflectance = cgv::rgb(0.3f, 0.3f, 0.3f);
+	smp_mat_hidden.emission = cgv::rgb(0.3f, 0.3f, 0.3f);
 
 	double z0_D = get_z_D(-get_parallax_zero_depth(), z_near_derived, z_far_derived);
 
@@ -1209,6 +1209,12 @@ bool holo_view_interactor::init(cgv::render::context& ctx)
 		return false;
 	return true;
 }
+void holo_view_interactor::clear(cgv::render::context& ctx)
+{
+	quilt_prog.destruct(ctx);
+	volume_prog.destruct(ctx);
+}
+
 float holo_view_interactor::compute_eye_base(int view_index) const
 {
 	return eye_separation_factor*((2.0f * view_index) / (nr_views - 1) - 1.0f);
