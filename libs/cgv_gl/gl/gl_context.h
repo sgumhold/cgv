@@ -28,6 +28,12 @@ extern CGV_API GLuint map_to_gl(MaterialSide ms);
 
 extern CGV_API GLuint map_to_gl(BlendFunction blend_function);
 
+extern CGV_API GLboolean map_to_gl(bool flag);
+
+extern CGV_API GLuint get_gl_id(const void* handle);
+
+extern CGV_API void* get_handle(GLuint id);
+
 /// set material in opengl state to given material
 extern CGV_API void set_material(const cgv::media::illum::phong_material& mat, MaterialSide ms, float alpha);
 
@@ -37,7 +43,6 @@ extern CGV_API void set_material(const cgv::media::illum::phong_material& mat, M
 class CGV_API gl_context : public render::context
 {
 private:
-	int query_integer_constant(ContextIntegerConstant cic) const override;
 	GLuint texture_bind(TextureType tt, GLuint tex_id) const;
 	void texture_unbind(TextureType tt, GLuint tmp_id) const;
 	GLuint texture_generate(texture_base& tb) const;
@@ -50,6 +55,7 @@ private:
 protected:
 	shader_program progs[4];
 	mutable cgv::type::uint64_type max_nr_indices, max_nr_vertices;
+	bool debug_texture_format_matching = false;
 	void ensure_configured() const;
 	void destruct_render_objects() override;
 	void put_id(void* handle, void* ptr) const override;
@@ -103,6 +109,7 @@ protected:
 	void shader_program_detach(shader_program_base& spb, const render_component& sc) const override;
 	bool shader_program_destruct(shader_program_base& spb) const override;
 
+	bool shader_program_get_active_uniforms(shader_program_base& spb, std::vector<std::string>& names) const override;
 	int  get_uniform_location(const shader_program_base& spb, const std::string& name) const override;
 	bool set_uniform_void(shader_program_base& spb, int loc, type_descriptor value_type, const void* value_ptr) const override;
 	bool set_uniform_array_void(shader_program_base& spb, int loc, type_descriptor value_type, const void* value_ptr, size_t nr_elements) const override;
@@ -122,9 +129,10 @@ protected:
 	bool vertex_buffer_unbind(const vertex_buffer_base& vbb, VertexBufferType _type, unsigned _idx) const override;
 	bool vertex_buffer_create(vertex_buffer_base& vbb, const void* array_ptr, size_t size_in_bytes) const override;
 	bool vertex_buffer_resize(vertex_buffer_base& vbb, const void* array_ptr, size_t size_in_bytes) const override;
+	bool vertex_buffer_clear(vertex_buffer_base& vbb, size_t offset, size_t size_in_bytes) const override;
 	bool vertex_buffer_replace(vertex_buffer_base& vbb, size_t offset, size_t size_in_bytes, const void* array_ptr) const override;
 	bool vertex_buffer_copy(const vertex_buffer_base& src, size_t src_offset, vertex_buffer_base& target, size_t target_offset, size_t size_in_bytes) const override;
-	bool vertex_buffer_copy_back(vertex_buffer_base& vbb, size_t offset, size_t size_in_bytes, void* array_ptr) const override;
+	bool vertex_buffer_copy_back(const vertex_buffer_base& vbb, size_t offset, size_t size_in_bytes, void* array_ptr) const override;
 	bool vertex_buffer_destruct(vertex_buffer_base& vbb) const override;
 
 	bool check_gl_error(const std::string& where, const cgv::render::render_component* rc = 0) const;
@@ -223,7 +231,7 @@ public:
 		data::data_view& dv, 
 		unsigned int x = 0, unsigned int y = 0, 
 		FrameBufferType buffer_type = FB_BACK,
-		TypeId type = type::info::TI_UINT8,
+		cgv::type::info::TypeId type = type::info::TI_UINT8,
 		data::ComponentFormat cf = data::CF_RGB,
 		int w = -1, int h = -1) override;
 	//@}

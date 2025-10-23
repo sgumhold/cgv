@@ -192,7 +192,7 @@ bool build_render_info(const std::string& file_name, const fx::gltf::Document& d
 	// construct materials
 	for (const auto& m : doc.materials) {
 		cgv::render::textured_material* tm = new cgv::render::textured_material();
-		tm->set_name(m.name);
+		tm->name = m.name;
 
 		bool found_KHR_mat = false;
 		m.extensionsAndExtras.count("extensions");
@@ -203,53 +203,53 @@ bool build_render_info(const std::string& file_name, const fx::gltf::Document& d
 				found_KHR_mat = true;
 				if (mat.count("diffuseFactor")) {
 					auto& df = mat["diffuseFactor"];
-					tm->set_diffuse_reflectance(rgb(
-						df[0].get<float>(), df[1].get<float>(), df[2].get<float>()));
-					tm->set_transparency(1.0f - df[3].get<float>());
+					tm->diffuse_reflectance = rgb(
+						df[0].get<float>(), df[1].get<float>(), df[2].get<float>());
+					tm->transparency = 1.0f - df[3].get<float>();
 				}
 				if (mat.count("diffuseTexture")) {
 					int ti = tm->add_texture_reference(*R.ref_textures()[mat["diffuseTexture"]["index"].get<int>()]);
-					tm->set_diffuse_index(ti);
+					tm->diffuse_index = ti;
 				}
 				if (mat.count("glossinessFactor"))
-					tm->set_roughness(1 - mat["glossinessFactor"].get<float>());
+					tm->roughness = 1.0f - mat["glossinessFactor"].get<float>();
 				if (mat.count("specularFactor")) {
 					auto& sf = mat["specularFactor"];
-					tm->set_diffuse_reflectance(rgb(
-						sf[0].get<float>(), sf[1].get<float>(), sf[2].get<float>()));
+					tm->diffuse_reflectance = rgb(
+						sf[0].get<float>(), sf[1].get<float>(), sf[2].get<float>());
 				}
 				if (mat.count("specularGlossinessTexture")) {
 					int ti = tm->add_texture_reference(*R.ref_textures()[mat["specularGlossinessTexture"]["index"].get<int>()]);
-					tm->set_specular_index(ti);
+					tm->specular_index = ti;
 				}
 			}
 		}
 		if (!found_KHR_mat) {
-			tm->set_diffuse_reflectance(rgb(
+			tm->diffuse_reflectance = rgb(
 				m.pbrMetallicRoughness.baseColorFactor[0],
 				m.pbrMetallicRoughness.baseColorFactor[1],
-				m.pbrMetallicRoughness.baseColorFactor[2]));
-			tm->set_transparency(1.0f - m.pbrMetallicRoughness.baseColorFactor[3]);
+				m.pbrMetallicRoughness.baseColorFactor[2]);
+			tm->transparency = 1.0f - m.pbrMetallicRoughness.baseColorFactor[3];
 			if (m.pbrMetallicRoughness.baseColorTexture.index != -1) {
 				int ti = tm->add_texture_reference(*R.ref_textures()[m.pbrMetallicRoughness.baseColorTexture.index]);
-				tm->set_diffuse_index(ti);
+				tm->diffuse_index = ti;
 			}
-			tm->set_roughness(m.pbrMetallicRoughness.roughnessFactor);
-			tm->set_metalness(m.pbrMetallicRoughness.metallicFactor);
+			tm->roughness = m.pbrMetallicRoughness.roughnessFactor;
+			tm->metalness = m.pbrMetallicRoughness.metallicFactor;
 			if (m.pbrMetallicRoughness.metallicRoughnessTexture.index != -1) {
 				int ti = tm->add_texture_reference(*R.ref_textures()[m.pbrMetallicRoughness.metallicRoughnessTexture.index]);
-				tm->set_roughness_index(ti);
-				tm->set_metalness_index(ti);
+				tm->roughness_index = ti;
+				tm->metalness_index = ti;
 			}
 			if (m.alphaMode == fx::gltf::Material::AlphaMode::Mask)
 				tm->set_alpha_test(cgv::render::textured_material::AT_GREATER, m.alphaCutoff);
-			tm->set_emission(rgba(
+			tm->emission = rgba(
 				m.emissiveFactor[0],
 				m.emissiveFactor[1],
-				m.emissiveFactor[2]));
+				m.emissiveFactor[2]);
 			if (m.emissiveTexture.index != -1) {
 				int ti = tm->add_texture_reference(*R.ref_textures()[m.emissiveTexture.index]);
-				tm->set_emission_index(ti);
+				tm->emission_index = ti;
 			}
 		}
 		R.ref_materials().push_back(tm);
@@ -345,33 +345,33 @@ void extract_mesh(const std::string& file_name, const fx::gltf::Document& doc,
 	// construct materials
 	for (const auto& m : doc.materials) {
 		auto& mm = mesh.ref_material(mesh.new_material());
-		mm.set_name(m.name);
-		mm.set_diffuse_reflectance(rgba(
+		mm.name = m.name;
+		mm.diffuse_reflectance = rgba(
 			m.pbrMetallicRoughness.baseColorFactor[0],
 			m.pbrMetallicRoughness.baseColorFactor[1],
 			m.pbrMetallicRoughness.baseColorFactor[2],
-			m.pbrMetallicRoughness.baseColorFactor[3]));
+			m.pbrMetallicRoughness.baseColorFactor[3]);
 		if (m.pbrMetallicRoughness.baseColorTexture.index != -1) {
 			int ii = mm.add_image_file(image_file_names[
 				doc.textures[m.pbrMetallicRoughness.baseColorTexture.index].source]);
-			mm.set_diffuse_index(ii);
+			mm.diffuse_index = ii;
 		}
-		mm.set_roughness(m.pbrMetallicRoughness.roughnessFactor);
-		mm.set_metalness(m.pbrMetallicRoughness.metallicFactor);
+		mm.roughness = m.pbrMetallicRoughness.roughnessFactor;
+		mm.metalness = m.pbrMetallicRoughness.metallicFactor;
 		if (m.pbrMetallicRoughness.metallicRoughnessTexture.index != -1) {
 			int ii = mm.add_image_file(image_file_names[
 				doc.textures[m.pbrMetallicRoughness.metallicRoughnessTexture.index].source]);
-			mm.set_roughness_index(ii);
-			mm.set_metalness_index(ii);
+			mm.roughness_index = ii;
+			mm.metalness_index = ii;
 		}
-		mm.set_emission(rgba(
+		mm.emission = rgba(
 			m.emissiveFactor[0],
 			m.emissiveFactor[1],
-			m.emissiveFactor[2]));
+			m.emissiveFactor[2]);
 		if (m.emissiveTexture.index != -1) {
 			int ii = mm.add_image_file(image_file_names[
 				doc.textures[m.emissiveTexture.index].source]);
-			mm.set_emission_index(ii);
+			mm.emission_index = ii;
 		}
 	}
 

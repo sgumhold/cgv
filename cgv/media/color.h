@@ -7,6 +7,7 @@
 #include <cgv/type/func/promote_const.h>
 #include <cgv/type/traits/max.h>
 #include <cgv/type/info/type_name.h>
+#include <cgv/utils/scan.h>
 #include "color_model.h"
 #include <math.h>
 
@@ -736,6 +737,9 @@ public:
 	const T& operator [] (unsigned int i) const { return this->at(i); 	}
 };
 
+/// This symbol is defined when @ref cgv::media::color exists in the current compilation unit
+#define CGV_MEDIA_COLOR_DECLARED
+
 /*********************************************************************
 **
 ** operators
@@ -819,26 +823,63 @@ template <typename T, ColorModel cm, AlphaModel am>
 const color<T,cm,am> lerp(const color<T,cm,am>& c1, const color<T,cm,am>& c2, T t) {
 	return ((T)1 - t) * c1 + t * c2;
 }
-/// special pow function for colors with RGB color model using integral types, alpha model is ignored
-/// components are converted to type T2 in range [0,1] before applying the pow function
-/// to ensure correct handling of integral component types like uint8_t
-template <typename T1, typename T2, AlphaModel am,
-	typename std::enable_if<std::is_integral<T1>::value, bool>::type = true,
-	typename std::enable_if<std::is_floating_point<T2>::value, bool>::type = true>
-const color<T1,RGB,am> pow(const color<T1,RGB,am>& c, T2 e) {
-	constexpr T2 m = static_cast<T2>(std::numeric_limits<T1>::max());
-	color<T1,RGB,am> x = c;
-	for(unsigned int i=0; i<color<T1,RGB,am>::nr_color_components; ++i)
-		x[i] = static_cast<T1>(std::pow(static_cast<T2>(c[i]) / m, e) * m);
+
+/// pow function for colors with RGB color model, alpha model is ignored; color component type is converted to exponent type before applying pow function
+template<typename T1, typename T2, AlphaModel am>
+const color<T1, RGB, am> pow(const color<T1, RGB, am>& c, T2 e) {
+	color<T1, RGB, am> x = c;
+	for(unsigned int i = 0; i < color<T1, RGB, am>::nr_color_components; ++i) {
+		T2 v = T2(0);
+		convert_color_component(x[i], v);
+		convert_color_component(std::pow(v, e), x[i]);
+	}
 	return x;
 }
-/// pow function for colors with RGB color model, alpha model is ignored
-template<typename T, AlphaModel am, typename std::enable_if<std::is_floating_point<T>::value, bool>::type = true>
-const color<T,RGB,am> pow(const color<T,RGB,am>& c, T e) {
-	color<T,RGB,am> x = c;
-	for(unsigned int i=0; i<color<T,RGB,am>::nr_color_components; ++i)
-		x[i] = std::pow(x[i], e);
+
+/// invert function for colors with RGB color model and optional alpha model
+template<typename T, AlphaModel am>
+const color<T, RGB, am> inv(const color<T, RGB, am>& c) {
+	color<T, RGB, am> x;
+	for(unsigned int i = 0; i < color<T, RGB, am>::nr_components; ++i) {
+		x[i] = color_one<T>::value() - c[i];
+	}
 	return x;
+}
+
+/// convert color with RGB color model and optional alpha model to a std::string with hexadecimal encoding and "0x" prefix
+template<typename T, AlphaModel am>
+std::string to_hex(const color<T, RGB, am>& c) {
+	std::string res = "0x";
+	res.resize(2 * static_cast<size_t>(color<T, RGB, am>::nr_components) + 2, '0');
+	std::string buf = "00";
+
+	for(unsigned i = 0; i < static_cast<size_t>(color<T, RGB, am>::nr_components); ++i) {
+		uint8_t v = 0;
+		convert_color_component(c[i], v);
+		buf = cgv::utils::to_hex(v);
+		res[2 * i + 2] = buf[0];
+		res[2 * i + 3] = buf[1];
+	}
+	return res;
+}
+
+/// convert std::string to color with RGB color model and optional alpha model
+template<typename T, AlphaModel am>
+bool from_hex(const std::string& s, color<T, RGB, am>& c) {
+	size_t off = 0;
+	// skip the first parsed byte if the string has the typical hexadecimal prefix
+	if(s.length() > 1 && s[0] == '0' && s[1] == 'x')
+		off = 1;
+
+	std::vector<uint8_t> parsed = cgv::utils::parse_hex_bytes(s);
+	if(parsed.empty() || parsed.size() - off < static_cast<size_t>(color<T, RGB, am>::nr_components))
+		return false;
+	
+	for(size_t i = 0; i < static_cast<size_t>(color<T, RGB, am>::nr_components); ++i) {
+		uint8_t v = parsed[i + off];
+		convert_color_component(v, c[i]);
+	}
+	return true;
 }
 
 } // namespace media

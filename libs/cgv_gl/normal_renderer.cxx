@@ -11,26 +11,12 @@ namespace cgv {
 			r.manage_singleton(ctx, "normal_renderer", ref_count, ref_count_change);
 			return r;
 		}
-
-		normal_render_style::normal_render_style()
-		{
-			normal_length = 1.0f;
-		}
-
-		normal_renderer::normal_renderer()
-		{
-			normal_scale = 1.0f;
-		}
 		/// the normal scale is multiplied to the normal length of the normal render style
 		void normal_renderer::set_normal_scale(float _normal_scale)
 		{
 			normal_scale = _normal_scale;
 		}
 
-		render_style* normal_renderer::create_render_style() const
-		{
-			return new line_render_style();
-		}
 		bool normal_renderer::validate_attributes(const context& ctx) const
 		{
 			// validate set attributes
@@ -41,11 +27,6 @@ namespace cgv {
 			}
 			return res;
 		}
-		bool normal_renderer::build_shader_program(context& ctx, shader_program& prog, const shader_define_map& defines)
-		{
-			return prog.build_program(ctx, "normal.glpr", true, defines);
-		}
-
 		bool normal_renderer::enable(context& ctx)
 		{
 			const normal_render_style& nrs = get_style<normal_render_style>();

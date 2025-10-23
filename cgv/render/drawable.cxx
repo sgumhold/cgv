@@ -150,7 +150,7 @@ void multi_pass_drawable::perform_render_pass(context& ctx, int rp_idx, RenderPa
 {
 	current_render_pass = rp_idx;
 	unsigned rpf = (ctx.get_render_pass_flags() & ~excluded_flags) | included_flags;
-	ctx.render_pass(rp, RenderPassFlags(rpf), this);
+	ctx.render_pass(rp, RenderPassFlags(rpf), this, rp_idx);
 }
 /// call after last recursive render pass to use current render pass for last render pass
 void multi_pass_drawable::initiate_terminal_render_pass(int rp_idx)

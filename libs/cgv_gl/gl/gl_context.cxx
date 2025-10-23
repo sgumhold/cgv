@@ -26,6 +26,7 @@
 
 using namespace cgv::base;
 using namespace cgv::type;
+using namespace cgv::type::info;
 using namespace cgv::gui;
 using namespace cgv::os;
 using namespace cgv::math;
@@ -314,11 +315,11 @@ void gl_set_material(const cgv::media::illum::phong_material& mat, MaterialSide 
 	if (ms == MS_NONE)
 		return;
 	unsigned side = map_to_gl(ms);
-	gl_set_material_color(side, mat.get_ambient(), alpha, GL_AMBIENT);
-	gl_set_material_color(side, mat.get_diffuse(), alpha, GL_DIFFUSE);
-	gl_set_material_color(side, mat.get_specular(), alpha, GL_SPECULAR);
-	gl_set_material_color(side, mat.get_emission(), alpha, GL_EMISSION);
-	glMaterialf(side, GL_SHININESS, mat.get_shininess());
+	gl_set_material_color(side, mat.ambient, alpha, GL_AMBIENT);
+	gl_set_material_color(side, mat.diffuse, alpha, GL_DIFFUSE);
+	gl_set_material_color(side, mat.specular, alpha, GL_SPECULAR);
+	gl_set_material_color(side, mat.emission, alpha, GL_EMISSION);
+	glMaterialf(side, GL_SHININESS, mat.shininess);
 }
 
 /// return info font size
@@ -468,6 +469,16 @@ bool gl_context::configure_gl()
 		gpu_vendor = GPU_VENDOR_INTEL;
 	else if (vendor_string.find("AMD") != std::string::npos || vendor_string.find("ATI") != std::string::npos)
 		gpu_vendor = GPU_VENDOR_AMD;
+	
+	// query device capabilities
+	glGetIntegerv(GL_MAX_RENDERBUFFER_SIZE, &gpu_capabilities.max_render_buffer_size);
+	glGetIntegerv(GL_MAX_GEOMETRY_OUTPUT_VERTICES, &gpu_capabilities.max_geometry_shader_output_vertex_count);
+	glGetIntegerv(GL_MAX_COMPUTE_SHARED_MEMORY_SIZE, &gpu_capabilities.max_compute_shared_memory_size);
+	glGetIntegerv(GL_MAX_COMPUTE_WORK_GROUP_INVOCATIONS, &gpu_capabilities.max_compute_work_group_invocations);
+	for(unsigned i = 0; i < 3; ++i)
+		glGetIntegeri_v(GL_MAX_COMPUTE_WORK_GROUP_COUNT, static_cast<GLuint>(i), &gpu_capabilities.max_compute_work_group_count[i]);
+	for(unsigned i = 0; i < 3; ++i)
+		glGetIntegeri_v(GL_MAX_COMPUTE_WORK_GROUP_SIZE, static_cast<GLuint>(i), &gpu_capabilities.max_compute_work_group_size[i]);
 	
 #ifdef _DEBUG
 	std::cout << "OpenGL version " << version_major << "." << version_minor << (core_profile?" (core)":" (compatibility)") << (debug?" (debug)":"") << (forward_compatible?" (forward_compatible)":"") << std::endl;
@@ -816,12 +827,12 @@ void gl_context::set_material(const cgv::media::illum::surface_material& materia
 {
 	if (support_compatibility_mode && !core_profile) {
 		unsigned side = map_to_gl(MS_FRONT_AND_BACK);
-		float alpha = 1.0f - material.get_transparency();
-		gl_set_material_color(side, material.get_ambient_occlusion()*material.get_diffuse_reflectance(), alpha, GL_AMBIENT);
-		gl_set_material_color(side, material.get_diffuse_reflectance(), alpha, GL_DIFFUSE);
-		gl_set_material_color(side, material.get_specular_reflectance(), alpha, GL_SPECULAR);
-		gl_set_material_color(side, material.get_emission(), alpha, GL_EMISSION);
-		glMaterialf(side, GL_SHININESS, 1.0f/(material.get_roughness()+1.0f/128.0f));
+		float alpha = 1.0f - material.transparency;
+		gl_set_material_color(side, material.ambient_occlusion * material.diffuse_reflectance, alpha, GL_AMBIENT);
+		gl_set_material_color(side, material.diffuse_reflectance, alpha, GL_DIFFUSE);
+		gl_set_material_color(side, material.specular_reflectance, alpha, GL_SPECULAR);
+		gl_set_material_color(side, material.emission, alpha, GL_EMISSION);
+		glMaterialf(side, GL_SHININESS, 1.0f / (material.roughness + 1.0f / 128.0f));
 	}
 	context::set_material(material);
 }
@@ -914,15 +925,15 @@ void gl_context::on_lights_changed()
 			}
 			GLfloat col[4] = { 1,1,1,1 };
 			const cgv::media::illum::light_source& light = get_light_source(get_enabled_light_source_handle(light_idx));
-			(rgb&)(col[0]) = light.get_emission()*light.get_ambient_scale();
+			*(rgb*)col = light.get_emission()*light.get_ambient_scale();
 			glLightfv(GL_LIGHT0 + light_idx, GL_AMBIENT, col);
-			(rgb&)(col[0]) = light.get_emission();
+			*(rgb*)col = light.get_emission();
 			glLightfv(GL_LIGHT0 + light_idx, GL_DIFFUSE, col);
-			(rgb&)(col[0]) = light.get_emission();
+			*(rgb*)col = light.get_emission();
 			glLightfv(GL_LIGHT0 + light_idx, GL_SPECULAR, col);
 
 			GLfloat pos[4] = { 0,0,0,light.get_type() == cgv::media::illum::LT_DIRECTIONAL ? 0.0f : 1.0f };
-			(vec3&)(pos[0]) = light.get_position();
+			*(vec3*)pos = light.get_position();
 			glLightfv(GL_LIGHT0 + light_idx, GL_POSITION, pos);
 			if (light.get_type() != cgv::media::illum::LT_DIRECTIONAL) {
 				glLightf(GL_LIGHT0 + light_idx, GL_CONSTANT_ATTENUATION, light.get_constant_attenuation());
@@ -1301,15 +1312,15 @@ bool gl_context::prepare_attributes(std::vector<vec3>& P, std::vector<vec3>& N, 
 		else
 			vbo_ptr->destruct(*this);
 		vbo_ptr->create(*this, P.size() * sizeof(vec3) + N.size() * sizeof(vec3) + T.size() * sizeof(vec2));
-		vbo_ptr->replace(const_cast<gl_context&>(*this), 0, &P.front(), P.size());
+		vbo_ptr->replace(const_cast<gl_context&>(*this), 0, P.data(), P.size());
 		size_t nml_off = P.size() * sizeof(vec3);
 		size_t tex_off = nml_off;
 		if (!N.empty()) {
-			vbo_ptr->replace(const_cast<gl_context&>(*this), nml_off, &N.front(), N.size());
-			tex_off += N.size() * sizeof(vec2);
+			vbo_ptr->replace(const_cast<gl_context&>(*this), nml_off, N.data(), N.size());
+			tex_off += N.size() * sizeof(vec3);
 		}
 		if (!T.empty())
-			vbo_ptr->replace(const_cast<gl_context&>(*this), tex_off, &T.front(), T.size());
+			vbo_ptr->replace(const_cast<gl_context&>(*this), tex_off, T.data(), T.size());
 
 		type_descriptor td3 = element_descriptor_traits<vec3>::get_type_descriptor(P.front());
 		aab_ptr->set_attribute_array(*this, prog_ptr->get_position_index(), td3, *vbo_ptr, 0, P.size());
@@ -1778,13 +1789,18 @@ double gl_context::get_window_z(int x_window, int y_window) const
 	return z_window;
 }
 
+#include <iomanip>
 cgv::data::component_format gl_context::texture_find_best_format(
 				const cgv::data::component_format& cf, 
 				render_component& rc, const std::vector<cgv::data::data_view>* palettes) const
 {
 	GLuint& gl_format = (GLuint&)rc.internal_format;
 	cgv::data::component_format best_cf;
-	gl_format = find_best_texture_format(cf, &best_cf, palettes);
+	if (debug_texture_format_matching)
+		std::cout << "Texture Format Search for '" << cf << "':" << std::endl;
+	gl_format = find_best_texture_format(cf, &best_cf, palettes, debug_texture_format_matching);
+	if (debug_texture_format_matching)
+		std::cout << "found: '" << best_cf << "' = " << std::hex << gl_format << std::endl;
 	return best_cf;
 }
 
@@ -1892,19 +1908,6 @@ GLuint gl_context::texture_generate(texture_base& tb) const
 	if (glGetError() == GL_INVALID_OPERATION)
 		error("gl_context::texture_generate: attempt to create texture inside glBegin-glEnd-block", &tb);
 	return tex_id;
-}
-
-int gl_context::query_integer_constant(ContextIntegerConstant cic) const
-{
-	GLint gl_const;
-	switch (cic) {
-		case MAX_NR_GEOMETRY_SHADER_OUTPUT_VERTICES :
-			gl_const = GL_MAX_GEOMETRY_OUTPUT_VERTICES;
-			break;
-	}
-	GLint value;
-	glGetIntegerv(gl_const, &value);
-	return value;
 }
 
 GLuint gl_context::texture_bind(TextureType tt, GLuint tex_id) const
@@ -2895,6 +2898,49 @@ bool gl_context::shader_program_destruct(shader_program_base& spb) const
 	return true;
 }
 
+bool gl_context::shader_program_get_active_uniforms(shader_program_base& spb, std::vector<std::string>& names) const
+{
+	if (spb.handle == 0)
+		return false;
+
+	GLuint p_id = get_gl_id(spb.handle);
+
+	GLint num_active_uniforms = 0;
+	glGetProgramiv(p_id, GL_ACTIVE_UNIFORMS, &num_active_uniforms);
+
+	names.reserve(num_active_uniforms);
+
+	std::vector<GLchar> buffer(256);
+	for (int i = 0; i < num_active_uniforms; ++i) {
+		GLint array_size = 0;
+		GLenum type = 0;
+		GLsizei actual_length = 0;
+		
+		glGetActiveUniform(p_id, i, GLsizei(buffer.size()), &actual_length, &array_size, &type, buffer.data());
+		std::string name(static_cast<char*>(buffer.data()), actual_length);
+
+		// Uniforms for arrays of non-compound (non-struct) types are listed once with a "[0]" suffix and a given array size greater than 1.
+		if(array_size > 1) {
+			// Remove the brackets to get the base name of the uniform
+			size_t bracket_pos = name.find('[');
+			if(bracket_pos != std::string::npos)
+				name.resize(bracket_pos);
+
+			if(!name.empty()) {
+				// Store the name without the brackets to allow setting complete arrays using just the uniform name.
+				names.push_back(name);
+				// Additionally store an entry for every possible indexed name to allow setting elements individually.
+				for(GLint i = 0; i < array_size; ++i)
+					names.push_back(name + "[" + std::to_string(i) + "]");
+			}
+		} else {
+			if(!name.empty())
+				names.push_back(name);
+		}
+	}
+	return true;
+}
+
 int  gl_context::get_uniform_location(const shader_program_base& spb, const std::string& name) const
 {
 	return glGetUniformLocation(get_gl_id(spb.handle), name.c_str());
@@ -3601,6 +3647,19 @@ bool gl_context::vertex_buffer_resize(vertex_buffer_base& vbb, const void* array
 	return !check_gl_error("gl_context::vertex_buffer_resize", &vbb);
 }
 
+bool gl_context::vertex_buffer_clear(vertex_buffer_base& vbb, size_t offset, size_t size_in_bytes) const
+{
+	if (!vbb.handle) {
+		error("gl_context::vertex_buffer_clear() vertex buffer object must be created before", &vbb);
+		return false;
+	}
+	GLuint b_id = get_gl_id(vbb.handle);
+	glBindBuffer(buffer_target(vbb.type), b_id);
+	glClearBufferSubData(buffer_target(vbb.type), GL_R8, offset, size_in_bytes, GL_RED, GL_UNSIGNED_BYTE, NULL);
+	glBindBuffer(buffer_target(vbb.type), 0);
+	return !check_gl_error("gl_context::vertex_buffer_clear", &vbb);
+}
+
 bool gl_context::vertex_buffer_replace(vertex_buffer_base& vbb, size_t offset, size_t size_in_bytes, const void* array_ptr) const
 {
 	if (!vbb.handle) {
@@ -3630,16 +3689,20 @@ bool gl_context::vertex_buffer_copy(const vertex_buffer_base& src, size_t src_of
 
 }
 
-bool gl_context::vertex_buffer_copy_back(vertex_buffer_base& vbb, size_t offset, size_t size_in_bytes, void* array_ptr) const
+bool gl_context::vertex_buffer_copy_back(const vertex_buffer_base& vbb, size_t offset, size_t size_in_bytes, void* array_ptr) const
 {
 	if (!vbb.handle) {
 		error("gl_context::vertex_buffer_copy_back() vertex buffer object must be created", &vbb);
 		return false;
 	}
 	GLuint b_id = get_gl_id(vbb.handle);
-	glBindBuffer(GL_COPY_READ_BUFFER, b_id);
-	glGetBufferSubData(GL_COPY_READ_BUFFER, offset, size_in_bytes, array_ptr);
-	glBindBuffer(GL_COPY_READ_BUFFER, 0);
+	GLuint bind_point = GL_COPY_READ_BUFFER;
+	//if (vbb.type == cgv::render::VBT_STORAGE) {
+	//	bind_point = GL_SHADER_STORAGE_BUFFER;
+	//}
+	glBindBuffer(bind_point, b_id);
+	glGetBufferSubData(bind_point, offset, size_in_bytes, array_ptr);
+	glBindBuffer(bind_point, 0);
 	return !check_gl_error("gl_context::vertex_buffer_copy_back", &vbb);
 }
 

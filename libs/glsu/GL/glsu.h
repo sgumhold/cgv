@@ -70,6 +70,18 @@ enum GlsuEye
 extern "C" {
 #endif
 
+/*******************************************************************************************/
+/**** Configuration of OpenGL settings for stereo without setting viewport              ****/
+/*******************************************************************************************/
+
+/** configures OpenGL for stereo rendering of left or right eye with given
+	stereo mode and in case of anaglyph stereo also for the given anaglyph
+	configuration. Provided viewport information is updated but now
+	glViewport command is called. Return whether viewport was updates (1 for yes, 0 otherwise)
+*/
+	int APIENTRY glsuConfigureStereoViewport(enum GlsuEye eye, enum GlsuStereoMode stereoMode,
+		enum GlsuAnaglyphConfiguration ac, int viewport[4]);
+
 
 /*******************************************************************************************/
 /**** Configuration of OpenGL settings necessary to support different stereo approaches ****/

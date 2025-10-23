@@ -46,13 +46,30 @@ bool temporal_anti_aliasing::init(cgv::render::context& ctx) {
 	return is_initialized;
 }
 
-bool temporal_anti_aliasing::ensure(cgv::render::context& ctx) {
-
+bool temporal_anti_aliasing::ensure(cgv::render::context& ctx)
+{
 	fbc_post.ensure(ctx);
 	fbc_hist.ensure(ctx);
 	fbc_resolve.ensure(ctx);
 
 	if(post_process_effect::ensure(ctx) || jitter_sample_count != jitter_offsets.size()) {
+		generate_jitter_offsets();
+		return true;
+	}
+
+	return false;
+}
+
+bool temporal_anti_aliasing::ensure_fb_size(cgv::render::context& ctx, const ivec2 &fb_size)
+{
+	fbc_post.set_size(fb_size);
+	fbc_post.ensure(ctx);
+	fbc_hist.set_size(fb_size);
+	fbc_hist.ensure(ctx);
+	fbc_resolve.set_size(fb_size);
+	fbc_resolve.ensure(ctx);
+
+	if(post_process_effect::ensure_fb_size(ctx, fb_size) || jitter_sample_count != jitter_offsets.size()) {
 		generate_jitter_offsets();
 		return true;
 	}
@@ -70,7 +87,7 @@ void temporal_anti_aliasing::reset_static_frame_count() {
 	static_frame_count = 0;
 }
 
-void temporal_anti_aliasing::begin(cgv::render::context& ctx) {
+void temporal_anti_aliasing::begin(cgv::render::context& ctx, bool push_viewport) {
 
 	assert_init();
 	
@@ -99,23 +116,23 @@ void temporal_anti_aliasing::begin(cgv::render::context& ctx) {
 		ctx.mul_projection_matrix(m);
 	}
 
-	fbc_draw.enable(ctx);
+	fbc_draw.enable(ctx, push_viewport);
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 }
 
-void temporal_anti_aliasing::end(cgv::render::context& ctx) {
+void temporal_anti_aliasing::end(cgv::render::context& ctx, bool pop_viewport) {
 
 	assert_init();
 
 	if(!(enable || enable_fxaa) || !view_ptr)
 		return;
 
-	fbc_draw.disable(ctx);
+	fbc_draw.disable(ctx, pop_viewport);
 
 	ctx.pop_projection_matrix();
 
 	if(enable_fxaa) {
-		fbc_post.enable(ctx);
+		fbc_post.enable(ctx, /*push*/pop_viewport);
 
 		auto& fxaa_prog = shaders.get("fxaa");
 		fxaa_prog.enable(ctx);
@@ -130,10 +147,10 @@ void temporal_anti_aliasing::end(cgv::render::context& ctx) {
 
 		fxaa_prog.disable(ctx);
 
-		fbc_post.disable(ctx);
+		fbc_post.disable(ctx, pop_viewport);
 	}
 
-	fbc_resolve.enable(ctx);
+	fbc_resolve.enable(ctx, /*push*/pop_viewport);
 	glDepthFunc(GL_ALWAYS);
 
 	bool first = !accumulate;
@@ -184,7 +201,7 @@ void temporal_anti_aliasing::end(cgv::render::context& ctx) {
 			ctx.post_redraw();
 	}
 
-	fbc_resolve.disable(ctx);
+	fbc_resolve.disable(ctx, pop_viewport);
 
 	auto& color_src_fbc = first ? (enable_fxaa ? fbc_post : fbc_draw) : fbc_resolve;
 
@@ -194,9 +211,9 @@ void temporal_anti_aliasing::end(cgv::render::context& ctx) {
 	color_src_fbc.enable_attachment(ctx, "color", 0);
 	fbc_draw.enable_attachment(ctx, "depth", 1);
 
-	fbc_hist.enable(ctx);
+	fbc_hist.enable(ctx, /*push*/pop_viewport);
 	glDrawArrays(GL_TRIANGLE_STRIP, 0, 4);
-	fbc_hist.disable(ctx);
+	fbc_hist.disable(ctx, pop_viewport);
 
 	glDrawArrays(GL_TRIANGLE_STRIP, 0, 4);
 

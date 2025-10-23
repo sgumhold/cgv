@@ -13,27 +13,6 @@ namespace cgv {
 			r.manage_singleton(ctx, "line_renderer", ref_count, ref_count_change);
 			return r;
 		}
-		render_style* line_renderer::create_render_style() const
-		{
-			return new line_render_style();
-		}
-
-		line_render_style::line_render_style() : default_color(0, 1, 1, 1)
-		{
-			default_normal = vec3(0.0f,0.0f,1.0f);
-			default_color = rgba(1.0f);
-			default_depth_offset = 0.0f;
-			default_line_width = 1.0f;
-			blend_lines = false;
-			halo_color = rgba(0.0f,0.0f,0.0f,1.0);
-			halo_width_in_pixel = 0.0f;
-			percentual_halo_width = 0.0f;
-			screen_aligned = true;
-			measure_line_width_in_pixel = true;
-			reference_line_width = 0.001f;
-			blend_width_in_pixel = 0.0f;
-			halo_color_strength = 1.0f;
-		}
 		/// call this before setting attribute arrays to manage attribute array in given manager
 		void line_renderer::enable_attribute_array_manager(const context& ctx, attribute_array_manager& aam)
 		{
@@ -65,29 +44,22 @@ namespace cgv {
 			has_depth_offsets = false;
 			remove_attribute_array(ctx, "depth_offset");
 		}
-		line_renderer::line_renderer()
-		{
-			has_normals = false;
-			has_line_widths = false;
-			has_depth_offsets = false;
-		}
-		bool line_renderer::build_shader_program(context& ctx, shader_program& prog, const shader_define_map& defines)
-		{
-			return prog.build_program(ctx, "line.glpr", true, defines);
-		}
-
 		bool line_renderer::init(context& ctx)
 		{
 			bool res = renderer::init(ctx);
+			// FIXME: Normally we could use the shader_program::set_attribute(const context& ctx, const std::string& name, const T& value) overload
+			// to write this more cleanly but this will print an error if the attribute is not found. Under normal circumstances this would never happen,
+			// but some derived classes like the box_wire_renderer and the normal renderer do not use all the lne_renderere attributes and so the error
+			// would appear.
 			int li;
 			li = get_prog_attribute_location(ctx, "normal", false);
-			if (li != -1)
-				ref_prog().set_attribute(ctx, li, vec3(0.0f,0.0f,1.0f));
+			if(li != -1)
+				ref_prog().set_attribute(ctx, li, vec3(0.0f, 0.0f, 1.0f));
 			li = get_prog_attribute_location(ctx, "depth_offset", false);
-			if (li != -1)
+			if(li != -1)
 				ref_prog().set_attribute(ctx, li, 0.0f);
 			li = get_prog_attribute_location(ctx, "line_width", false);
-			if (li != -1)
+			if(li != -1)
 				ref_prog().set_attribute(ctx, li, 1.0f);
 			return res;
 		}
@@ -100,28 +72,27 @@ namespace cgv {
 			// set program attributes
 			if (!has_colors)
 				ctx.set_color(lrs.default_color);
-			if (!has_normals) {
+			if(!has_normals) {
 				int li = get_prog_attribute_location(ctx, "normal", false);
-				if (li != -1)
+				if(li != -1)
 					ref_prog().set_attribute(ctx, li, lrs.default_normal);
 			}
-			if (!has_depth_offsets) {
+			if(!has_depth_offsets) {
 				int li = get_prog_attribute_location(ctx, "depth_offset", false);
-				if (li != -1)
+				if(li != -1)
 					ref_prog().set_attribute(ctx, li, lrs.default_depth_offset);
 			}
-			if (!has_line_widths) {
+			if(!has_line_widths) {
 				int li = get_prog_attribute_location(ctx, "line_width", false);
-				if (li != -1)
+				if(li != -1)
 					ref_prog().set_attribute(ctx, li, lrs.default_line_width);
 			}
-			// configure opengl
+			// configure blend state
 			if (lrs.blend_lines) {
-				lrs.is_blend = glIsEnabled(GL_BLEND);
-				glGetIntegerv(GL_BLEND_DST, reinterpret_cast<GLint*>(&lrs.blend_dst));
-				glGetIntegerv(GL_BLEND_SRC, reinterpret_cast<GLint*>(&lrs.blend_src));
-				glEnable(GL_BLEND);
-				glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+				ctx.push_blend_state();
+				ctx.get_blend_state();
+				ctx.enable_blending();
+				ctx.set_blend_func(BF_SRC_ALPHA, BF_ONE_MINUS_SRC_ALPHA);
 			}
 
 			// set program uniforms
@@ -145,11 +116,8 @@ namespace cgv {
 				has_depth_offsets = false;
 			}
 			const line_render_style& lrs = get_style<line_render_style>();
-			if (lrs.blend_lines) {
-				if (!lrs.is_blend)
-					glDisable(GL_BLEND);
-				glBlendFunc(lrs.blend_src, lrs.blend_dst);
-			}
+			if (lrs.blend_lines)
+				ctx.pop_blend_state();
 			return group_renderer::disable(ctx);
 		}
 

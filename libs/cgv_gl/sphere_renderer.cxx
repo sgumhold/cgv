@@ -11,30 +11,6 @@ namespace cgv {
 			r.manage_singleton(ctx, "sphere_renderer", ref_count, ref_count_change);
 			return r;
 		}
-
-		render_style* sphere_renderer::create_render_style() const
-		{
-			return new sphere_render_style();
-		}
-
-		sphere_render_style::sphere_render_style() : halo_color(1, 1, 1, 1)
-		{
-			radius_scale = 1;
-			radius = 1;
-			use_group_radius = false;
-
-			blend_width_in_pixel = 0.0f;
-			halo_width_in_pixel = 0.0f;
-			percentual_halo_width = 0.0;
-			halo_color_strength = 0.5f;
-		}
-
-		sphere_renderer::sphere_renderer()
-		{
-			has_radii = false;
-			has_group_radii = false;
-			cull_per_primitive = false;
-		}
 		/// call this before setting attribute arrays to manage attribute array in given manager
 		void sphere_renderer::enable_attribute_array_manager(const context& ctx, attribute_array_manager& aam)
 		{
@@ -56,10 +32,6 @@ namespace cgv {
 		void sphere_renderer::set_y_view_angle(float _y_view_angle)
 		{
 			y_view_angle = _y_view_angle;
-		}
-		bool sphere_renderer::build_shader_program(context& ctx, shader_program& prog, const shader_define_map& defines)
-		{
-			return prog.build_program(ctx, "sphere.glpr", true, defines);
 		}
 		bool sphere_renderer::validate_attributes(const context& ctx) const
 		{

@@ -13,7 +13,7 @@
 #include <cgv_gl/gl/gl.h>
 #include <cgv_gl/gl/gl_tools.h>
 
-volume_viewer::volume_viewer() : application_plugin("Volume Viewer"), depth_tex("[D]")
+volume_viewer::volume_viewer() : group("Volume Viewer"), depth_tex("[D]")
 {
 	// setup volume bounding box as unit cube centered around origin
 	volume_bounding_box = cgv::box3(cgv::vec3(-0.5f), cgv::vec3(0.5f));
@@ -45,7 +45,7 @@ volume_viewer::volume_viewer() : application_plugin("Volume Viewer"), depth_tex(
 	view_ptr = nullptr;
 
 	// instantiate a color map editor as an overlay for this viewer
-	transfer_function_editor_ptr = register_overlay<cgv::app::color_map_editor>("Editor");
+	transfer_function_editor_ptr = create_and_append_child<cgv::app::color_map_editor>("Editor");
 	// make the editor cover the whole width of the window
 	transfer_function_editor_ptr->set_stretch(cgv::app::overlay::StretchOption::SO_HORIZONTAL);
 	transfer_function_editor_ptr->gui_options.show_heading = false;
@@ -55,7 +55,7 @@ volume_viewer::volume_viewer() : application_plugin("Volume Viewer"), depth_tex(
 	transfer_function_editor_ptr->set_on_change_callback(std::bind(&volume_viewer::handle_transfer_function_change, this));
 	
 	// instantiate a color map legend to show the used transfer function
-	transfer_function_legend_ptr = register_overlay<cgv::app::color_map_legend>("Legend");
+	transfer_function_legend_ptr = create_and_append_child<cgv::app::color_map_legend>("Legend");
 	// place the legend in the top left corner
 	transfer_function_legend_ptr->set_alignment(cgv::app::overlay::AlignmentOption::AO_START, cgv::app::overlay::AlignmentOption::AO_END);
 	transfer_function_legend_ptr->set_title("Density");
@@ -77,7 +77,7 @@ void volume_viewer::stream_help(std::ostream& os)
 	os << "volume_viewer: toggle <B>ox\n, toggle <T>ransfer function editor, ctrl+click in transfer function editor to add points, alt+click to remove";
 }
 
-bool volume_viewer::handle_event(cgv::gui::event& e) 
+bool volume_viewer::handle(cgv::gui::event& e) 
 {
 	if(e.get_kind() == cgv::gui::EID_MOUSE) {
 		auto& me = static_cast<cgv::gui::mouse_event&>(e);
@@ -143,13 +143,12 @@ void volume_viewer::on_set(void* member_ptr)
 void volume_viewer::clear(cgv::render::context& ctx)
 {
 	cgv::render::ref_volume_renderer(ctx, -1);
-	cgv::render::ref_box_wire_renderer(ctx, -1);
+	box_rd.destruct(ctx);
 }
 
 bool volume_viewer::init(cgv::render::context& ctx)
 {
 	cgv::render::ref_volume_renderer(ctx, 1);
-	cgv::render::ref_box_wire_renderer(ctx, 1);
 
 	// init the box wire render data object
 	box_rd.init(ctx);
@@ -186,13 +185,9 @@ void volume_viewer::init_frame(cgv::render::context& ctx) {
 
 void volume_viewer::draw(cgv::render::context& ctx)
 {
-	// default render style for the bounding box
-	static const cgv::render::box_wire_render_style box_rs;
-
 	// render the wireframe bounding box if enabled
 	if (show_box)
-		box_rd.render(ctx, cgv::render::ref_box_wire_renderer(ctx), box_rs);
-
+		box_rd.render(ctx, cgv::render::ref_box_wire_renderer(ctx));
 }
 
 void volume_viewer::after_finish(cgv::render::context & ctx)
@@ -304,7 +299,6 @@ void volume_viewer::load_transfer_function_preset() {
 		transfer_function.add_opacity_point(0.05f, 0.0f);
 		transfer_function.add_opacity_point(0.1f, 0.1f);
 		transfer_function.add_opacity_point(0.3f, 0.1f);
-		transfer_function.add_opacity_point(0.35f, 0.0f);
 		transfer_function.add_opacity_point(0.35f, 0.0f);
 		transfer_function.add_opacity_point(0.45f, 0.0f);
 		transfer_function.add_opacity_point(0.5f, 0.15f);

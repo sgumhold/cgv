@@ -44,7 +44,7 @@ public:
 	/// initialize rotation angle
 	simple_cube() : toggle(false), angle(0), speed(90), rec_depth(4), animate(true), resolution(25), shp(CUBE)
 	{
-		material.set_diffuse_reflectance(cgv::rgb(0.7f, 0.2f, 0.4f));
+		material.diffuse_reflectance = cgv::rgb(0.7f, 0.2f, 0.4f);
 		connect(get_animation_trigger().shoot, this, &simple_cube::timer_event);
 	}
 	/// 

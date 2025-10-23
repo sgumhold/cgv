@@ -32,8 +32,8 @@ protected:
 	float threshold = 0.5f;
 	/// used to scale the depth value to adjust the effect to different scene extents
 	float depth_scale = 1.0f;
-	/// return shader defines dependent on current settings
-	cgv::render::shader_define_map get_shader_defines();
+	/// return shader compile options dependent on current settings
+	cgv::render::shader_compile_options get_shader_compile_options();
 	/// mode change callback handler
 	void on_change_mode();
 	/// generate random samples and noise texture
@@ -50,9 +50,9 @@ public:
 
 	bool ensure(cgv::render::context& ctx);
 
-	void begin(cgv::render::context& ctx);
+	void begin(cgv::render::context& ctx, bool push_viewport=true);
 
-	void end(cgv::render::context& ctx);
+	void end(cgv::render::context& ctx, bool push_viewport=true);
 
 	/// accessors
 	Mode get_mode() const { return mode; }

@@ -187,8 +187,10 @@ protected:
 	cgv::g2d::draggable* get_hit_point(const vec2& pos);
 	
 	void update_value_label_rectangle(vec2 position, const cgv::g2d::rect& parent_rectangle);
-	void handle_color_point_drag();
-	void handle_opacity_point_drag();
+	void handle_color_drag(cgv::g2d::DragAction action);
+	void handle_opacity_drag(cgv::g2d::DragAction action);
+	//void handle_color_point_drag();
+	//void handle_opacity_point_drag();
 	void handle_drag_end();
 	std::string value_to_string(float value);
 	void sort_points();
@@ -210,7 +212,8 @@ public:
 
 	void clear(cgv::render::context& ctx) override;
 
-	bool handle_event(cgv::gui::event& e) override;
+	bool handle_key_event(cgv::gui::key_event& e) override;
+	bool handle_mouse_event(cgv::gui::mouse_event& e, cgv::ivec2 local_mouse_pos) override;
 	void handle_member_change(const cgv::utils::pointer_test& m) override;
 
 	bool init(cgv::render::context& ctx) override;

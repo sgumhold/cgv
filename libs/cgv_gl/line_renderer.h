@@ -14,73 +14,65 @@ namespace cgv { // @<
 			// default values for program attributes
 
 			/// default normal for case when "normal" attribute is not set
-			vec3 default_normal;
+			vec3 default_normal = { 0.0f, 0.0f, 1.0f };
 			/// default color for case when "color" attribute is not set
-			rgba default_color;
+			rgba default_color = { 1.0f };
 			/// default depth offset for case when "depth_offset" attribute is not set
-			float default_depth_offset;
+			float default_depth_offset = 0.0f;
 			/// default line width for case when "line_width" attribute is not set
-			float default_line_width;
+			float default_line_width = 1.0f;
 
-			// influence on opengl state
-			bool blend_lines;
-		protected:
-			friend class line_renderer;
-			mutable GLboolean is_blend;
-			mutable GLint blend_src, blend_dst;
-		public:
+			/// whether to enable blending while rendering (needed for smooth edges; true by default)
+			bool blend_lines = false;
+
 			// vertex shader uniforms
 
 			/// halo color
-			rgba  halo_color;
+			rgba halo_color = { 0.0f, 0.0f, 0.0f, 1.0f };
 			/// halo width in pixel
-			float halo_width_in_pixel;
+			float halo_width_in_pixel = 0.0f;
 			/// halo width in percent of line width
-			float percentual_halo_width;
+			float percentual_halo_width = 0.0f;
 			/// whether to span line splat in screen aligned coordinate system
-			bool screen_aligned;
+			bool screen_aligned = true;
 
 			// geometry shader uniforms
 
 			/// whether to measure line width in pixels - otherwise in eye space relative to reference_line_width
-			bool measure_line_width_in_pixel;
+			bool measure_line_width_in_pixel = true;
 			/// reference line width multiplied to line width if measure_line_width_in_pixel is false
-			float reference_line_width;
+			float reference_line_width = 0.001f;
 			/// blend with in pixels used for line smoothing
-			float blend_width_in_pixel;
+			float blend_width_in_pixel = 0.0f;
 
 			// fragment shader uniforms
 
 			/// parameter in [0,1] to mix line color with halo color
-			float halo_color_strength;
-			/// construct with default values
-			line_render_style();
+			float halo_color_strength = 1.0f;
 		};
 
 		/// renderer that supports point splatting
 		class CGV_API line_renderer : public group_renderer
 		{
 		protected:
-			bool has_normals;
-			bool has_line_widths;
-			bool has_depth_offsets;
-			/// 
-			render_style* create_render_style() const;
-			/// build line program
-			bool build_shader_program(context& ctx, shader_program& prog, const shader_define_map& defines);
+			bool has_normals = false;
+			bool has_line_widths = false;
+			bool has_depth_offsets = false;
+			/// return the default shader program name
+			std::string get_default_prog_name() const override { return "line.glpr"; }
+			/// create and return the default render style
+			render_style* create_render_style() const override { return new line_render_style(); }
 		public:
-			/// construct line rendering
-			line_renderer();
 			///
-			bool enable(context& ctx);
+			bool enable(context& ctx) override;
 			///
-			bool disable(context& ctx);
+			bool disable(context& ctx) override;
 			/// call this before setting attribute arrays to manage attribute array in given manager
-			void enable_attribute_array_manager(const context& ctx, attribute_array_manager& aam);
+			void enable_attribute_array_manager(const context& ctx, attribute_array_manager& aam) override;
 			/// call this after last render/draw call to ensure that no other users of renderer change attribute arrays of given manager
-			void disable_attribute_array_manager(const context& ctx, attribute_array_manager& aam);
+			void disable_attribute_array_manager(const context& ctx, attribute_array_manager& aam) override;
 			///
-			bool init(context& ctx);
+			bool init(context& ctx) override;
 			/// specify a single normal for all lines
 			template <typename T>
 			void set_normal(const context& ctx, const cgv::math::fvec<T,3>& normal) { has_normals = true;  ref_prog().set_attribute(ctx, get_prog_attribute_location(ctx, "normal"), normal); }
@@ -116,7 +108,7 @@ namespace cgv { // @<
 			void remove_depth_offset_array(const context& ctx);
 			/// convenience function to render with default settings
 			void draw(context& ctx, size_t start, size_t count,
-				bool use_strips = false, bool use_adjacency = false, uint32_t strip_restart_index = -1);
+				bool use_strips = false, bool use_adjacency = false, uint32_t strip_restart_index = -1) override;
 		};
 		///	
 		extern CGV_API line_renderer& ref_line_renderer(context& ctx, int ref_count_change = 0);

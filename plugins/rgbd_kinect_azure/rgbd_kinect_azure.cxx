@@ -218,11 +218,16 @@ namespace rgbd {
 			
 			for (int i = 0; i < fps_size; ++i) {
 				stream_formats.push_back(stream_format(1280, 720, PF_BGR, fps[i], 32));
+				stream_formats.push_back(stream_format(1280, 720, PF_JPG, fps[i], 0));
 				stream_formats.push_back(stream_format(1920, 1080, PF_BGR, fps[i], 32));
+				stream_formats.push_back(stream_format(1920, 1080, PF_JPG, fps[i], 0));
 				stream_formats.push_back(stream_format(2560, 1440, PF_BGR, fps[i], 32));
+				stream_formats.push_back(stream_format(2560, 1440, PF_JPG, fps[i], 0));
 				stream_formats.push_back(stream_format(2048, 1536, PF_BGR, fps[i], 32));
+				stream_formats.push_back(stream_format(2048, 1536, PF_JPG, fps[i], 0));
 				if (fps[i] < 30) {
 					stream_formats.push_back(stream_format(3840, 2160, PF_BGR, fps[i], 32));
+					stream_formats.push_back(stream_format(3840, 2160, PF_JPG, fps[i], 0));
 				}
 			}
 		}
@@ -423,7 +428,7 @@ namespace rgbd {
 			return false;
 		}
 		k4a_device_configuration_t cfg = K4A_DEVICE_CONFIG_INIT_DISABLE_ALL;
-		int is = 0;
+		int is = 0; //input stream
 
 		if (!make_basic_configuration(cfg, stream_formats, is)) {
 			return false;
@@ -883,7 +888,7 @@ namespace rgbd {
 				cerr << "rgbd_kinect_azure::start_device: missmatching fps in selected formats\n";
 				return false;
 			}
-			if (format.pixel_format == PF_BGR) {
+			if (format.pixel_format == PF_BGR || format.pixel_format == PF_JPG) {
 				color_stream_ix = i;
 			}
 			else if (format.pixel_format == PF_DEPTH) {
@@ -908,6 +913,10 @@ namespace rgbd {
 				cfg.color_resolution = K4A_COLOR_RESOLUTION_2160P;
 			else if (format.height == 3072)
 				cfg.color_resolution = K4A_COLOR_RESOLUTION_3072P;
+
+			if (format.pixel_format == PixelFormat::PF_JPG) {
+				cfg.color_format = K4A_IMAGE_FORMAT_COLOR_MJPG;
+			}
 			color_format = format;
 		}
 		if (depth_stream_ix != -1) {
@@ -968,7 +977,9 @@ namespace rgbd {
 		col_frame->system_time_stamp = col.get_system_timestamp().count();
 		col_frame->device_time_stamp = col.get_device_timestamp().count() * 1000;
 		col_frame->frame_data.resize(col.get_size());
-		col_frame->compute_buffer_size();
+		int tmp = col.get_size();
+		k4a_image_format_t tmpf = col.get_format();
+		//col_frame->compute_buffer_size();
 		memcpy(col_frame->frame_data.data(), col.get_buffer(), col.get_size());
 		return col_frame;
 	}

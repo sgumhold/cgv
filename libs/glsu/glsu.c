@@ -28,12 +28,68 @@ GLdouble glsuGetScreenWidth(GLdouble fovy, GLdouble aspect, GLdouble zZeroParall
 	return screenHeight*aspect;
 }
 
+int APIENTRY glsuConfigureStereoViewport(enum GlsuEye eye, enum GlsuStereoMode stereo_mode,
+	enum GlsuAnaglyphConfiguration ac, int vp[4])
+{
+	switch (eye) {
+	case GLSU_LEFT:
+		switch (stereo_mode) {
+		case GLSU_SPLIT_VERTICALLY:
+			vp[2] = vp[2] / 2;
+			return 1;
+		case GLSU_SPLIT_HORIZONTALLY:
+			vp[3] = vp[3] / 2;
+			vp[1] = vp[1] + vp[3];
+			return 1;
+		case GLSU_ANAGLYPH:
+			glColorMask(cms[ac][0][0], cms[ac][0][1], cms[ac][0][2], 1);
+			break;
+		case GLSU_QUAD_BUFFER:
+			glDrawBuffer(GL_BACK_LEFT);
+			break;
+		}
+		break;
+	case GLSU_RIGHT:
+		switch (stereo_mode) {
+		case GLSU_SPLIT_VERTICALLY:
+			vp[2] = vp[2] / 2;
+			vp[0] += vp[2];
+			return 1;
+		case GLSU_SPLIT_HORIZONTALLY:
+			vp[3] = vp[3] / 2;
+			return 1;
+		case GLSU_ANAGLYPH:
+			glColorMask(cms[ac][1][0], cms[ac][1][1], cms[ac][1][2], 1);
+			break;
+		case GLSU_QUAD_BUFFER:
+			glDrawBuffer(GL_BACK_RIGHT);
+			break;
+		}
+		break;
+	case GLSU_CENTER:
+		switch (stereo_mode) {
+		case GLSU_SPLIT_VERTICALLY:
+		case GLSU_SPLIT_HORIZONTALLY:
+			return 1;
+		case GLSU_ANAGLYPH:
+			glColorMask(1, 1, 1, 1);
+			break;
+		case GLSU_QUAD_BUFFER:
+			glDrawBuffer(GL_BACK);
+			break;
+		}
+		break;
+	}
+	return 0;
+}
+
 void APIENTRY glsuConfigureStereo(enum GlsuEye eye, 
 								  enum GlsuStereoMode stereo_mode, 
 								  enum GlsuAnaglyphConfiguration ac)
 {
 	static GLint vp[4];
 	glGetIntegerv(GL_VIEWPORT, vp);
+
 	switch (eye) {
 	case GLSU_LEFT   : 
 		switch (stereo_mode) {

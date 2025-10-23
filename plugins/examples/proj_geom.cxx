@@ -31,18 +31,18 @@ protected:
 	sphere_render_style srs;
 public:
 	proj_geom_demo() :
-		axes_mat(
+		axes_mat({
 			cgv::media::illum::BrdfType(cgv::media::illum::BT_OREN_NAYAR + cgv::media::illum::BT_COOK_TORRANCE),
-		cgv::rgb(0.1f, 0.1f, 0.1f),
+			cgv::rgb(0.1f, 0.1f, 0.1f),
 			0.1f, 0.5f, 0.2f
-		),
-		surface_mat(
+		}),
+		surface_mat({
 			cgv::media::illum::BT_OREN_NAYAR,
 			cgv::rgb(0.64f, 0.64f, 0.46f),
 			1.0f, 0.0f, 0.2f
-		)
+		})
 	{
-		surface_mat.set_transparency(0.3f);
+		surface_mat.transparency = 0.3f;
 		set_name("proj_geom_demo");
 		x[0] = cgv::dvec3(1.0, 0.0, 1.0);
 		x[1] = cgv::dvec3(0.0, 1.0, 1.0);

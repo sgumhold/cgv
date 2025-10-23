@@ -94,7 +94,7 @@ protected:
 	void update_color();
 	void update_texts();
 
-	void handle_selector_drag();
+	void handle_selector_drag(cgv::g2d::DragAction action);
 
 	void set_color(rgba color, bool opacity, bool init = false);
 
@@ -109,7 +109,7 @@ public:
 
 	void clear(cgv::render::context& ctx) override;
 
-	bool handle_event(cgv::gui::event& e) override;
+	bool handle_mouse_event(cgv::gui::mouse_event& e, cgv::ivec2 local_mouse_pos) override;
 	void handle_member_change(const cgv::utils::pointer_test& m) override;
 
 	bool init(cgv::render::context& ctx) override;

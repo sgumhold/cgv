@@ -1,0 +1,19 @@
+#version 430
+
+#include "gpgpu_args.glcs"
+
+#ifdef CGV_USE_SNIPPETS
+layout(IMAGE_FORMAT, binding = 0) uniform writeonly IMAGE_TYPE tex;
+
+uniform uvec3 u_size;
+uniform value_type u_value;
+
+layout(local_size_x = LOCAL_SIZE_X, local_size_y = LOCAL_SIZE_Y, local_size_z = LOCAL_SIZE_Z) in;
+void main() {
+	// the texel coordinates of this thread
+    INDEX_TYPE gid = INDEX_TYPE(gl_GlobalInvocationID);
+    
+	if(SIZE_GUARD(gid, u_size))
+        imageStore(tex, gid, u_value);
+}
+#endif

@@ -245,6 +245,9 @@ public:
 	}
 };
 
+/// This symbol is defined when @ref cgv::math::fmat exists in the current compilation unit
+#define CGV_MATH_FMAT_DECLARED
+
 /// return the transposed of a square matrix
 template <typename T, cgv::type::uint32_type N>
 fmat<T,N,N> transpose(const fmat<T,N,N>& m)
@@ -349,8 +352,6 @@ const fmat<T, N, M> lerp(const fmat<T, N, M>& m1, const fmat<T, N, M>& m2, fmat<
 
 /// declare type of 2x2 matrices
 typedef cgv::math::fmat<float, 2, 2> mat2;
-/// declare type of 2x3 matrices used to store camera matrix
-typedef cgv::math::fmat<float, 2, 3> mat23;
 /// declare type of 3x3 matrices
 typedef cgv::math::fmat<float, 3, 3> mat3;
 /// declare type of 4x4 matrices

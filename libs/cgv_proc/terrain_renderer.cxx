@@ -18,11 +18,6 @@ terrain_renderer& ref_terrain_renderer(cgv::render::context& ctx, int ref_count_
 	return r;
 }
 
-cgv::render::render_style* terrain_renderer::create_render_style() const
-{
-	return new terrain_render_style();
-}
-
 bool terrain_renderer::validate_attributes(const cgv::render::context& ctx) const
 {
 	const auto& style = get_style<terrain_render_style>();
@@ -84,18 +79,6 @@ bool terrain_render_style::load_default_textures(cgv::render::context& ctx)
 	else
 		success = false;
 	return success;
-}
-
-bool terrain_renderer::init(cgv::render::context& ctx)
-{
-	surface_renderer::init(ctx);
-	if (!ref_prog().is_created()) {
-		if (!ref_prog().build_program(ctx, "terrain.glpr", true)) {
-			std::cerr << "ERROR in terrain_renderer::init() ... could not build program terrain.glpr" << std::endl;
-			return false;
-		}
-	}
-	return true;
 }
 
 bool terrain_renderer::enable(cgv::render::context& ctx)

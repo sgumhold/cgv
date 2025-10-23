@@ -17,16 +17,14 @@ namespace cgv { // @<
 		/// boxes use surface render styles
 		struct CGV_API box_render_style : public surface_render_style
 		{
-			/// extent used in case extent array is not specified
-			vec3 default_extent;
-			/// box anchor position relative to center that corresponds to the position attribute
-			vec3 relative_anchor;
+			/// extent used in case extent array is not specified; defaults to (1,1,1)
+			vec3 default_extent = { 1.0f };
+			/// box anchor position relative to center that corresponds to the position attribute; defaults to (0,0,0)
+			vec3 relative_anchor = { 0.0f };
 			/// whether to use rounding of edges and corners (enabling re-compiles shader program)
 			bool rounding = false;
 			/// radius used in case radius array is not specified
 			float default_radius = 0.01f;
-			/// default constructor sets default extent to (1,1,1) and relative anchor to (0,0,0)
-			box_render_style();
 		};
 
 		/// renderer that supports point splatting
@@ -34,34 +32,33 @@ namespace cgv { // @<
 		{
 		protected:
 			/// store whether extent array has been specified
-			bool has_extents;
+			bool has_extents = false;
 			/// store whether extent array has been specified
-			bool has_radii;
+			bool has_radii = false;
 			/// whether secondary color or color array was set
-			bool has_secondary_colors;
+			bool has_secondary_colors = false;
 			/// whether array with per box translations has been specified
-			bool has_translations;
+			bool has_translations = false;
 			/// whether array with per box rotations has been specified
-			bool has_rotations;
+			bool has_rotations = false;
 			/// whether position is box center, if not it is lower left bottom corner
-			bool position_is_center;
-			/// overload to allow instantiation of box_renderer
-			render_style* create_render_style() const;
-			/// build box program
-			bool build_shader_program(context& ctx, shader_program& prog, const shader_define_map& defines);
-			///
-			void update_defines(shader_define_map& defines);
+			bool position_is_center = true;
+
+			/// return the default shader program name
+			std::string get_default_prog_name() const override { return "box.glpr"; }
+			/// create and return the default render style
+			render_style* create_render_style() const override { return new box_render_style(); }
+			/// update shader program compile options based on render style
+			void update_shader_program_options(shader_compile_options& options) const override;
 		public:
-			/// initializes position_is_center to true 
-			box_renderer();
 			/// call this before setting attribute arrays to manage attribute array in given manager
-			void enable_attribute_array_manager(const context& ctx, attribute_array_manager& aam);
+			void enable_attribute_array_manager(const context& ctx, attribute_array_manager& aam) override;
 			/// call this after last render/draw call to ensure that no other users of renderer change attribute arrays of given manager
-			void disable_attribute_array_manager(const context& ctx, attribute_array_manager& aam);
+			void disable_attribute_array_manager(const context& ctx, attribute_array_manager& aam) override;
 			/// set the flag, whether the position is interpreted as the box center, true by default
 			void set_position_is_center(bool _position_is_center);
 			/// enable box renderer
-			bool enable(context& ctx);
+			bool enable(context& ctx) override;
 			/// specify a single extent for all boxes
 			template <typename T>
 			void set_extent(const context& ctx, const T& extent) { has_extents = true; ref_prog().set_attribute(ctx, get_prog_attribute_location(ctx, "extent"), extent); }
@@ -142,10 +139,10 @@ namespace cgv { // @<
 			/// remove the rotation attribute
 			void remove_rotation_array(const context& ctx);
 			///
-			bool disable(context& ctx);
+			bool disable(context& ctx) override;
 			///
 			void draw(context& ctx, size_t start, size_t count,
-				bool use_strips = false, bool use_adjacency = false, uint32_t strip_restart_index = -1);
+				bool use_strips = false, bool use_adjacency = false, uint32_t strip_restart_index = -1) override;
 		};
 		struct CGV_API box_render_style_reflect : public box_render_style
 		{

@@ -8,7 +8,6 @@ uniform int   size_index = -1;
 uniform int   secondary_size_index = -1;
 uniform float depth_offset = 0.0;
 uniform vec3  sub_plot_delta = vec3(0.0,0.0,0.0);
-uniform float halo_width_in_pixel = 0.0;
 uniform float percentual_halo_width = 0.0;
 
 layout(location = 0) in float attribute0;
@@ -25,12 +24,10 @@ in vec4 secondary_color;
 in float size;
 
 out LINE_GS {
-	vec3  position_eye;
 	vec3  normal_eye;
 	float line_width;
 	vec4  color;
 	vec4  halo_color;
-	float halo_width_in_pixel;
 	float percentual_halo_width;
 	float depth_offset;
 } vo;
@@ -94,7 +91,7 @@ void main()
 		window_space_from_tick_space(1, tick_space_from_attribute_space(1, attributes[1])), 0.0);
 
 	// map to visual attributes
-	vo.position_eye = (get_modelview_matrix()*vec4(plot_space_from_window_space(position_window)+sub_plot_delta, 1.0)).xyz;
+	gl_Position = get_modelview_matrix()*vec4(plot_space_from_window_space(position_window)+sub_plot_delta, 1.0);
 	vo.normal_eye = get_normal_matrix()*vec3(0.0,0.0,1.0);
 	vo.color = color;
 
@@ -114,6 +111,5 @@ void main()
 	if (secondary_size_index >= 0)
 		vo.percentual_halo_width = map_size(attributes, vo.percentual_halo_width, secondary_size_index);
 
-	vo.halo_width_in_pixel = halo_width_in_pixel;
 	vo.depth_offset = depth_offset;
 }

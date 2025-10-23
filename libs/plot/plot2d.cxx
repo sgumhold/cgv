@@ -130,7 +130,10 @@ bool plot2d::init(cgv::render::context& ctx)
 	}
 	else 
 		point_prog.allow_context_to_set_color(false);
-	if (!rectangle_prog.build_program(ctx, "plot2d_rect.glpr", true, { {"PLOT_MODE", "1"} })) {
+
+	cgv::render::shader_compile_options options;
+	options.define_macro("PLOT_MODE", "1");
+	if (!rectangle_prog.build_program(ctx, "plot2d_rect.glpr", options, true)) {
 		std::cerr << "could not build GLSL program from plot2d_rect.glpr" << std::endl;
 		return false;
 	}

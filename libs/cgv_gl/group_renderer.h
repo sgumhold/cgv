@@ -14,24 +14,20 @@ namespace cgv { // @<
 		struct CGV_API group_render_style : public render_style
 		{
 			/// whether to use group colors indexed through group index, defaults to false
-			bool use_group_color;
+			bool use_group_color = false;
 			/// whether to use group translation and rotation indexed through group index, defaults to false
-			bool use_group_transformation;
-			/// set default values
-			group_render_style();
+			bool use_group_transformation = false;
 		};
 
 		/// abstract renderer class that provides functionality for grouping primitives
 		class CGV_API group_renderer : public renderer
 		{
 		protected:
-			bool has_group_indices;
-			bool has_group_colors;
-			bool has_group_translations;
-			bool has_group_rotations;
+			bool has_group_indices = false;
+			bool has_group_colors = false;
+			bool has_group_translations = false;
+			bool has_group_rotations = false;
 		public:
-			///
-			group_renderer();
 			/// call this before setting attribute arrays to manage attribute array in given manager
 			void enable_attribute_array_manager(const context& ctx, attribute_array_manager& aam);
 			/// call this after last render/draw call to ensure that no other users of renderer change attribute arrays of given manager

@@ -106,6 +106,21 @@ namespace cgv {
 			static      size_t get_size(const std::vector<T>& vec) { return vec.size() * sizeof(T); }
 		};
 
+		template <typename T, unsigned N>
+		struct array_descriptor_traits < T[N] >
+		{
+			/// return type descriptor for array
+			static type_descriptor get_type_descriptor(const T (&vec)[N]) { return type_descriptor(element_descriptor_traits<T>::get_type_descriptor(vec[0]), true); }
+			/// return const start address in array
+			static const T* get_address(const T(&vec)[N]) { return &vec[0]; }
+			/// return start address in array
+			static       T* get_address(T(&vec)[N]) { return &vec[0]; }
+			/// return number elements in array
+			static      size_t get_nr_elements(const T(&vec)[N]) { return N; }
+			/// return size of array in bytes
+			static      size_t get_size(const T(&vec)[N]) { return N * sizeof(T); }
+		};
+
 		template <typename T>
 		struct array_descriptor_traits < cgv::math::vec<T> >
 		{

@@ -98,8 +98,8 @@ bool camera_animator::close_ffmpeg_pipe()
 	return true;
 }
 
-camera_animator::camera_animator() : application_plugin("Camera Animator") {
-
+camera_animator::camera_animator() : cgv::base::group("Camera Animator") {
+	
 	eye_rd.style.measure_point_size_in_pixel = true;
 	eye_rd.style.percentual_halo_width = 33.3f;
 
@@ -107,9 +107,9 @@ camera_animator::camera_animator() : application_plugin("Camera Animator") {
 	
 	paths_rd.style.measure_line_width_in_pixel = true;
 	paths_rd.style.default_line_width = 2.0f;
-	paths_rd.style.halo_color = rgb(1.0f);
+	paths_rd.style.halo_color = cgv::rgb(1.0f);
 	paths_rd.style.halo_color_strength = 0.5f;
-	paths_rd.style.percentual_halo_width = -100.0f;
+	paths_rd.style.percentual_halo_width = 0.0f;
 	paths_rd.style.blend_width_in_pixel = 1.0f;
 	paths_rd.style.blend_lines = true;
 
@@ -119,13 +119,19 @@ camera_animator::camera_animator() : application_plugin("Camera Animator") {
 	
 	view_transformation.identity();
 
-	eye_gizmo.set_move_callback(std::bind(&camera_animator::handle_eye_gizmo_move, this));
-	eye_gizmo.set_scale(0.5f);
+	eye_gizmo = create_and_append_child<cgv::app::transformation_gizmo>();
+	eye_gizmo->on_change = [this](auto action, auto mode) { handle_eye_gizmo_move(action, mode); };
+	eye_gizmo->size_scale = 0.5f;
+	eye_gizmo->set_mode(cgv::app::transformation_gizmo::Mode::kTranslation);
+	eye_gizmo->hide();
 
-	focus_gizmo.set_move_callback(std::bind(&camera_animator::handle_focus_gizmo_move, this));
-	focus_gizmo.set_scale(0.5f);
+	focus_gizmo = create_and_append_child<cgv::app::transformation_gizmo>();
+	focus_gizmo->on_change = [this](auto action, auto mode) { handle_focus_gizmo_move(action, mode); };
+	focus_gizmo->size_scale = 0.5f;
+	focus_gizmo->set_mode(cgv::app::transformation_gizmo::Mode::kTranslation);
+	focus_gizmo->hide();
 
-	timeline_ptr = register_overlay<keyframe_editor_overlay>("Keyframe Editor");
+	timeline_ptr = create_and_append_child<keyframe_editor_overlay>("Keyframe Editor");
 	timeline_ptr->set_on_change_callback(std::bind(&camera_animator::handle_editor_change, this, std::placeholders::_1));
 	timeline_ptr->gui_options.create_default_tree_node = false;
 	timeline_ptr->gui_options.show_layout_options = false;
@@ -157,9 +163,6 @@ camera_animator::camera_animator() : application_plugin("Camera Animator") {
 
 void camera_animator::clear(context& ctx) {
 
-	eye_gizmo.destruct(ctx);
-	focus_gizmo.destruct(ctx);
-
 	local_point_renderer.clear(ctx);
 	local_line_renderer.clear(ctx);
 
@@ -176,45 +179,49 @@ bool camera_animator::self_reflect(cgv::reflect::reflection_handler& rh) {
 		rh.reflect_member("video_file", video_file_helper.file_name);
 }
 
-bool camera_animator::handle_event(cgv::gui::event& e) {
+bool camera_animator::handle(cgv::gui::event& e) {
 
 	// return true if the event gets handled and stopped here or false if you want to pass it to the next plugin
-	unsigned et = e.get_kind();
+	if(!get_context() || !view_ptr)
+		return false;
 
 	auto& ctx = *get_context();
 
-	if(selected_keyframe) {
-		if(eye_gizmo.handle(e, ctx) || focus_gizmo.handle(e, ctx)) {
-			post_redraw();
-			return true;
-		}
-	}
-
+	unsigned et = e.get_kind();
 	if(et == cgv::gui::EID_MOUSE) {
-		cgv::gui::mouse_event& me = (cgv::gui::mouse_event&) e;
+		cgv::gui::mouse_event& me = dynamic_cast<cgv::gui::mouse_event&>(e);
 		cgv::gui::MouseAction ma = me.get_action();
 
-		if(me.get_button() == cgv::gui::MB_LEFT_BUTTON && ma == cgv::gui::MA_PRESS) {
-			if(view_ptr) {
-				ivec2 viewport_size(ctx.get_width(), ctx.get_height());
-				ivec2 mpos(
-					static_cast<int>(me.get_x()),
-					viewport_size.y() - static_cast<int>(me.get_y()) - 1
-				);
+		cgv::ivec2 mpos(
+			static_cast<int>(me.get_x()),
+			static_cast<int>(ctx.get_height()) - static_cast<int>(me.get_y()) - 1
+		);
 
-				cgv::math::ray3 ray(
-					static_cast<vec2>(mpos),
-					static_cast<vec2>(viewport_size),
-					view_ptr->get_eye(),
-					ctx.get_projection_matrix() * ctx.get_modelview_matrix()
-				);
-
-				// TODO: implement picking
+		switch(me.get_action()) {
+		case cgv::gui::MA_PRESS:
+			if(me.get_button() == cgv::gui::MB_LEFT_BUTTON && me.get_modifiers() == 0) {
+				check_for_click = me.get_time();
+				mouse_down_position = mpos;
 			}
+			break;
+		case cgv::gui::MA_RELEASE:
+			if(check_for_click != -1) {
+				check_for_click = -1.0;
+				cgv::ivec2 mouse_delta = abs(mouse_down_position - mpos);
+				if(mouse_delta.x() + mouse_delta.y() <= 2) {
+					if(pick_keyframe(ctx, mouse_down_position))
+						return true;
+				}
+			}
+			break;
+		case cgv::gui::MA_DRAG:
+			check_for_click = -1.0;
+			break;
+		default:
+			break;
 		}
-
 	} else if(et == cgv::gui::EID_KEY) {
-		cgv::gui::key_event& ke = (cgv::gui::key_event&)e;
+		cgv::gui::key_event& ke = dynamic_cast<cgv::gui::key_event&>(e);
 		cgv::gui::KeyAction ka = ke.get_action();
 
 		if(ka == cgv::gui::KA_PRESS) {
@@ -282,7 +289,9 @@ void camera_animator::handle_timer_event(double t, double dt) {
 	}
 }
 
-void camera_animator::handle_member_change(const cgv::utils::pointer_test& m) {
+void camera_animator::on_set(void* member_ptr) {
+	const cgv::utils::pointer_test& m(member_ptr);
+
 	if(m.is(video_open)) {
 		if(video_open) {
 			if(video_file_helper.file_name.empty()) {
@@ -339,6 +348,9 @@ void camera_animator::handle_member_change(const cgv::utils::pointer_test& m) {
 
 	if(m.is(apply))
 		set_animation_state(false);
+
+	update_member(member_ptr);
+	post_redraw();
 }
 
 bool camera_animator::on_exit_request() {
@@ -366,9 +378,6 @@ bool camera_animator::init(context& ctx) {
 
 	bool success = true;
 
-	success &= eye_gizmo.init(ctx);
-	success &= focus_gizmo.init(ctx);
-
 	success &= local_point_renderer.init(ctx);
 	success &= local_line_renderer.init(ctx);
 
@@ -392,9 +401,6 @@ bool camera_animator::init(context& ctx) {
 void camera_animator::init_frame(context& ctx) {
 
 	if(!view_ptr && (view_ptr = find_view_as_node())) {
-		eye_gizmo.set_view_ptr(view_ptr);
-		focus_gizmo.set_view_ptr(view_ptr);
-
 		if(timeline_ptr)
 			timeline_ptr->set_view_ptr(view_ptr);
 
@@ -412,20 +418,19 @@ void camera_animator::finish_frame(context& ctx) {
 	if(show_camera) {
 		eye_rd.render(ctx, local_point_renderer);
 
-		ctx.push_modelview_matrix();
-		ctx.mul_modelview_matrix(view_transformation);
-		view_rd.render(ctx, local_line_renderer);
-		ctx.pop_modelview_matrix();
+		if(view_rd.enable(ctx, local_line_renderer, view_rd.style)) {
+			ctx.push_modelview_matrix();
+			ctx.mul_modelview_matrix(view_transformation);
+			view_rd.draw(ctx, local_line_renderer, 0, view_rd.render_count() - 2);
+			ctx.pop_modelview_matrix();
+			view_rd.draw(ctx, local_line_renderer, view_rd.render_count() - 2);
+			view_rd.disable(ctx, local_line_renderer);
+		}
 	}
 
 	if(show_path) {
 		keyframes_rd.render(ctx, local_point_renderer);
 		paths_rd.render(ctx, local_line_renderer);
-	}
-
-	if(selected_keyframe) {
-		eye_gizmo.draw(ctx);
-		focus_gizmo.draw(ctx);
 	}
 }
 
@@ -450,6 +455,8 @@ void camera_animator::after_finish(context& ctx) {
 
 void camera_animator::create_gui() {
 
+	add_gui("", keyframes_rd.style);
+
 	add_decorator("Camera Animator", "heading", "level=2");
 	help.create_gui(this);
 
@@ -467,26 +474,29 @@ void camera_animator::create_gui() {
 	add_member_control(this, "", animation->time, "wheel", "min=0;max=4" + std::to_string(limits.second) + ";step=0.005");
 
 	std::string options = "w=25;tooltip=";
-	constexpr auto align = "%x+=10";
+	constexpr auto align_btn = "%x+=10";
 
-	connect_copy(add_button("@|<", options + "'Rewind to start (keep playing)'", align)->click, rebind(this, &camera_animator::skip_to_start));
-	connect_copy(add_button("@square", options + "'Stop playback'", align)->click, rebind(this, &camera_animator::reset_animation));
-	connect_copy(add_button("@<|", options + "'Previous frame'", align)->click, rebind(this, &camera_animator::skip_frame, cgv::signal::const_expression<bool>(true)));
-	play_pause_btn = add_button(animate ? "@pause" : "@play", options + "'Play/Pause'", align);
+	connect_copy(add_button("@|<", options + "'Rewind to start (keep playing)'", align_btn)->click, rebind(this, &camera_animator::skip_to_start));
+	connect_copy(add_button("@square", options + "'Stop playback'", align_btn)->click, rebind(this, &camera_animator::reset_animation));
+	connect_copy(add_button("@<|", options + "'Previous frame'", align_btn)->click, rebind(this, &camera_animator::skip_frame, cgv::signal::const_expression<bool>(true)));
+	play_pause_btn = add_button(animate ? "@pause" : "@play", options + "'Play/Pause'", align_btn);
 	connect_copy(play_pause_btn->click, rebind(this, &camera_animator::toggle_animation));
-	connect_copy(add_button("@|>", options + "'Next frame'", align)->click, rebind(this, &camera_animator::skip_frame, cgv::signal::const_expression<bool>(false)));
+	connect_copy(add_button("@|>", options + "'Next frame'", align_btn)->click, rebind(this, &camera_animator::skip_frame, cgv::signal::const_expression<bool>(false)));
 	connect_copy(add_button("@>|", options + "'Skip to end'")->click, rebind(this, &camera_animator::skip_to_end));
 	
 	add_decorator("", "separator");
-	add_decorator("Recording", "heading", "level=4");
-
-	output_directory_helper.create_gui("Output Folder");
-	video_file_helper.create_gui("Video File");
-	add_member_control(this, "Use Named Pipe", use_named_pipe, "toggle");
-	add_member_control(this, "Video Open", video_open, "toggle");
-	add_view("Nr Queued Frames", nr_blocks);
-	add_member_control(this, "Record to Disk", record, "check");
-	connect_copy(add_button("Save Current View")->click, rebind(this, &camera_animator::write_single_image));
+	if(begin_tree_node("Recording", output_directory_helper)) {
+		align("\a");
+		output_directory_helper.create_gui("Output Folder");
+		video_file_helper.create_gui("Video File");
+		add_member_control(this, "Use Named Pipe", use_named_pipe, "toggle");
+		add_member_control(this, "Video Open", video_open, "toggle");
+		add_view("Nr Queued Frames", nr_blocks);
+		add_member_control(this, "Record to Disk", record, "check");
+		connect_copy(add_button("Save Current View")->click, rebind(this, &camera_animator::write_single_image));
+		align("\b");
+		end_tree_node(output_directory_helper);
+	}
 
 	add_decorator("", "separator");
 
@@ -544,18 +554,21 @@ bool camera_animator::set_animation_state(bool use_continuous_time) {
 	animation->use_continuous_time = use_continuous_time;
 
 	if(use_continuous_time)
-		animation->frame = static_cast<size_t>(animation->timecode * animation->time);
+		animation->frame = animation->time_to_frame(animation->time);
 	else
-		animation->time = static_cast<float>(animation->frame) / static_cast<float>(animation->timecode);
+		animation->time = animation->frame_to_time(animation->frame);
 
 	update_member(&animation->frame);
 	update_member(&animation->time);
 
 	view_parameters view;
-	bool run = animation->current_view(view) && animation->frame < animation->frame_count();
+	bool run = animation->current_view(view) && animation->frame <= animation->frame_count();
 
 	if(run && apply || record)
 		view.apply(view_ptr);
+
+	if(animation->frame == animation->frame_count())
+		run = false;
 
 	create_camera_render_data(view);
 
@@ -571,6 +584,39 @@ std::pair<size_t, float> camera_animator::get_max_frame_and_time() {
 	if(animation)
 		return { animation->frame_count(), animation->duration() };
 	return { 0ull, 0.0f };
+}
+
+bool camera_animator::pick_keyframe(context& ctx, cgv::ivec2 mouse_position) {
+
+	if(!timeline_ptr)
+		return false;
+
+	const cgv::mat4 MVPW = ctx.get_modelview_projection_window_matrix();
+	const float halo_grow_factor = 1.0f + (keyframes_rd.style.percentual_halo_width / 100.0f);
+	float eye_keyframe_radius = 0.5f * eye_keyframe_diameter * halo_grow_factor + 1.0f;
+	float focus_keyframe_radius = 0.5f * focus_keyframe_diameter * halo_grow_factor + 1.0f;
+
+	const auto calculate_distance = [&MVPW](const cgv::vec3& position3d, cgv::vec2 query_position) {
+		cgv::vec4 p = MVPW.mul_pos(position3d);
+		p /= p.w();
+		cgv::vec2 position2d = { p.x(), p.y() };
+		return length(query_position - position2d);
+	};
+
+	cgv::vec2 pick_position(mouse_down_position);
+
+	for(const auto& keyframe : animation->ref_keyframes()) {
+		const view_parameters& camera_state = keyframe.second.camera_state;
+
+		bool hit_eye_keyframe = calculate_distance(camera_state.eye_position, pick_position) <= eye_keyframe_radius;
+		bool hit_focus_keyframe = calculate_distance(camera_state.focus_position, pick_position) <= focus_keyframe_radius;
+		if(hit_eye_keyframe || hit_focus_keyframe) {
+			timeline_ptr->set_selected_frame(keyframe.first);
+			return true;
+		}
+	}
+
+	return false;
 }
 
 void camera_animator::udpate_animation_member_limits() {
@@ -596,23 +642,22 @@ void camera_animator::create_camera_render_data(const view_parameters& view) {
 		eye_rd.add(view.focus_position, focus_color, 12.0f);
 	}
 
-	if(!view_rd.render_count()) {
-		view_rd.clear();
-		const vec3 org(0.0f);
-		const vec3 x_axis(1.0f, 0.0f, 0.0f);
-		const vec3 y_axis(0.0f, 1.0f, 0.0f);
-		const vec3 z_axis(0.0f, 0.0f, 1.0f);
+	if(view_rd.empty()) {
+		const cgv::vec3 org(0.0f);
+		const cgv::vec3 x_axis(1.0f, 0.0f, 0.0f);
+		const cgv::vec3 y_axis(0.0f, 1.0f, 0.0f);
+		const cgv::vec3 z_axis(0.0f, 0.0f, 1.0f);
 
 		view_rd.add(org, x_axis);
 		view_rd.add(org, y_axis);
 		view_rd.add(org, z_axis);
-		view_rd.add_segment_color(rgb(1.0f, 0.0f, 0.0f));
-		view_rd.add_segment_color(rgb(0.0f, 1.0f, 0.0f));
-		view_rd.add_segment_color(rgb(0.0f, 0.0f, 1.0f));
+		view_rd.add_segment_color(cgv::rgb(1.0f, 0.0f, 0.0f));
+		view_rd.add_segment_color(cgv::rgb(0.0f, 1.0f, 0.0f));
+		view_rd.add_segment_color(cgv::rgb(0.0f, 0.0f, 1.0f));
 
 		float a = static_cast<float>(view_ptr->get_tan_of_half_of_fovy(true));
 
-		vec3 corner[4];
+		cgv::vec3 corner[4];
 		corner[0] = z_axis - a * x_axis - a * y_axis;
 		corner[1] = z_axis - a * x_axis + a * y_axis;
 		corner[2] = z_axis + a * x_axis - a * y_axis;
@@ -628,16 +673,26 @@ void camera_animator::create_camera_render_data(const view_parameters& view) {
 		view_rd.add(corner[3], corner[2]);
 		view_rd.add(corner[2], corner[0]);
 
-		view_rd.fill_colors(rgb(0.5f));
+		view_rd.add_position({ 0.0f });
+		view_rd.add_position({ 0.0f });
+
+		view_rd.fill_colors({ 0.5f });
 	}
 
 	const float scale = 0.1f;
 
+	size_t last_index = view_rd.positions.size() - 1;
+	view_rd.positions[last_index - 1] = view.eye_position + scale * view.view_direction();
+	view_rd.positions[last_index] = view.focus_position;
+	view_rd.set_out_of_date();
+
+	// TODO: The transformation is not a pure rotation because the view up direction is not consistently orthogonal to the view direction.
+	// This problem originates in the cgv::render::view itself.
 	view_transformation.identity();
-	view_transformation.set_col(0, scale * vec4(view.side_direction(), 0.0f));
-	view_transformation.set_col(1, scale * vec4(view.up_direction, 0.0f));
-	view_transformation.set_col(2, scale * vec4(view.view_direction(), 0.0f));
-	view_transformation.set_col(3, vec4(view.eye_position, 1.0f));
+	view_transformation.set_col(0, scale * cgv::vec4(view.side_direction(), 0.0f));
+	view_transformation.set_col(1, scale * cgv::vec4(view.up_direction, 0.0f));
+	view_transformation.set_col(2, scale * cgv::vec4(view.view_direction(), 0.0f));
+	view_transformation.set_col(3, cgv::vec4(view.eye_position, 1.0f));
 }
 
 void camera_animator::create_path_render_data() {
@@ -651,17 +706,21 @@ void camera_animator::create_path_render_data() {
 		return;
 
 	for(const auto& pair : animation->ref_keyframes())
-		keyframes_rd.add(pair.second.camera_state.eye_position, theme.highlight(), 12.0f);
+		keyframes_rd.add(pair.second.camera_state.eye_position, theme.highlight(), eye_keyframe_diameter);
 	
 	for(const auto& pair : animation->ref_keyframes())
-		keyframes_rd.add(pair.second.camera_state.focus_position, theme.warning(), 8.0f);
+		keyframes_rd.add(pair.second.camera_state.focus_position, theme.warning(), focus_keyframe_diameter);
 	
+	const cgv::rgb white = { 1.0f };
+	const cgv::rgb camera_path_color = cgv::media::lerp(theme.highlight(), white, 0.333f);
+	const cgv::rgb focus_path_color = cgv::media::lerp(theme.warning(), white, 0.333f);
+
 	for(size_t i = 1; i < keyframes_rd.size() / 2; ++i) {
 		const auto& position0 = keyframes_rd.positions[i - 1];
 		const auto& position1 = keyframes_rd.positions[i];
 
 		paths_rd.add(position0, position1);
-		paths_rd.add_color(theme.highlight());
+		paths_rd.add_segment_color(camera_path_color);
 	}
 
 	for(size_t i = 1 + keyframes_rd.size() / 2; i < keyframes_rd.size(); ++i) {
@@ -669,23 +728,23 @@ void camera_animator::create_path_render_data() {
 		const auto& position1 = keyframes_rd.positions[i];
 
 		paths_rd.add(position0, position1);
-		paths_rd.add_color(theme.warning());
+		paths_rd.add_segment_color(focus_path_color);
 	}
 }
 
-void camera_animator::handle_eye_gizmo_move() {
+void camera_animator::handle_eye_gizmo_move(cgv::app::GizmoAction action, cgv::app::transformation_gizmo::Mode mode) {
 
-	if(selected_keyframe) {
-		selected_keyframe->camera_state.eye_position = eye_gizmo.get_position();
+	if(selected_keyframe && action == cgv::app::GizmoAction::kDrag) {
+		selected_keyframe->camera_state.eye_position = eye_gizmo->get_position();
 		create_path_render_data();
 		set_animation_state(false);
 	}
 }
 
-void camera_animator::handle_focus_gizmo_move() {
+void camera_animator::handle_focus_gizmo_move(cgv::app::GizmoAction action, cgv::app::transformation_gizmo::Mode mode) {
 
-	if(selected_keyframe) {
-		selected_keyframe->camera_state.focus_position = focus_gizmo.get_position();
+	if(selected_keyframe && action == cgv::app::GizmoAction::kDrag) {
+		selected_keyframe->camera_state.focus_position = focus_gizmo->get_position();
 		create_path_render_data();
 		set_animation_state(false);
 	}
@@ -707,29 +766,39 @@ void camera_animator::handle_editor_change(keyframe_editor_overlay::Event e) {
 		break;
 	case keyframe_editor_overlay::Event::kKeySelect:
 		if(timeline_ptr) {
-			if(/**/(selected_keyframe = animation->keyframe_at(timeline_ptr->get_selected_frame()))/**/) {
-				eye_gizmo.set_position(selected_keyframe->camera_state.eye_position);
-				focus_gizmo.set_position(selected_keyframe->camera_state.focus_position);
+			selected_keyframe = animation->keyframe_at(timeline_ptr->get_selected_frame());
+			if(selected_keyframe) {
+				eye_gizmo->set_position(selected_keyframe->camera_state.eye_position);
+				focus_gizmo->set_position(selected_keyframe->camera_state.focus_position);
 			}
 		}
 		break;
 	case keyframe_editor_overlay::Event::kKeyDeselect:
 		selected_keyframe = nullptr;
 		break;
-	default: break;
+	default:
+		break;
+	}
+
+	if(selected_keyframe) {
+		eye_gizmo->show();
+		focus_gizmo->show();
+	} else {
+		eye_gizmo->hide();
+		focus_gizmo->hide();
 	}
 }
 
 bool camera_animator::load_animation(const std::string& file_name) {
 
-	auto str2vec3 = [](const std::string& str, vec3& val) {
+	auto str2vec3 = [](const std::string& str, cgv::vec3& val) {
 		std::vector<cgv::utils::token> tokens;
 		cgv::utils::split_to_tokens(str, tokens, "", true, "", "", ",");
 
 		if(tokens.size() != 3)
 			return false;
 
-		vec3 v(0.0f);
+		cgv::vec3 v(0.0f);
 
 		if(!cgv::utils::from_string(v[0], to_string(tokens[0])))
 			return false;
@@ -813,7 +882,7 @@ bool camera_animator::load_animation(const std::string& file_name) {
 
 bool camera_animator::save_animation(const std::string& file_name) {
 
-	auto vec32str = [](vec3& val) {
+	auto vec32str = [](cgv::vec3& val) {
 		return std::to_string(val[0]) + ", " + std::to_string(val[1]) + ", " + std::to_string(val[2]);
 	};
 

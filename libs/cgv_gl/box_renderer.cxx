@@ -4,13 +4,6 @@
 
 namespace cgv {
 	namespace render {
-		/// default constructor sets default extent to (1,1,1)
-		box_render_style::box_render_style()
-		{
-			default_extent = vec3(1.0f);
-			relative_anchor = vec3(0.0f);
-		}
-
 		box_renderer& ref_box_renderer(context& ctx, int ref_count_change)
 		{
 			static int ref_count = 0;
@@ -19,20 +12,6 @@ namespace cgv {
 			return r;
 		}
 
-		render_style* box_renderer::create_render_style() const
-		{
-			return new surface_render_style();
-		}
-
-		box_renderer::box_renderer()
-		{
-			has_extents = false;
-			has_radii = false;
-			position_is_center = true;
-			has_translations = false;
-			has_rotations = false;
-			has_secondary_colors = false;
-		}
 		/// call this before setting attribute arrays to manage attribute array in given manager
 		void box_renderer::enable_attribute_array_manager(const context& ctx, attribute_array_manager& aam)
 		{
@@ -83,11 +62,6 @@ namespace cgv {
 		{
 			position_is_center = _position_is_center;
 		}
-		/// build box program
-		bool box_renderer::build_shader_program(context& ctx, shader_program& prog, const shader_define_map& defines)
-		{
-			return prog.build_program(ctx, "box.glpr", true, defines);
-		}
 		/// 
 		bool box_renderer::enable(context& ctx)
 		{
@@ -135,10 +109,10 @@ namespace cgv {
 				rh.reflect_member("relative_anchor", relative_anchor);
 		}
 
-		void box_renderer::update_defines(shader_define_map& defines)
+		void box_renderer::update_shader_program_options(shader_compile_options& options) const
 		{
 			const box_render_style& brs = get_style<box_render_style>();
-			shader_code::set_define(defines, "ROUNDING", brs.rounding, false);
+			options.define_macro_if_true(brs.rounding, "ENABLE_ROUNDING");
 		}
 		cgv::reflect::extern_reflection_traits<box_render_style, box_render_style_reflect> get_reflection_traits(const box_render_style&)
 		{

@@ -27,7 +27,9 @@ bool screen_space_ambient_occlusion::init(cgv::render::context& ctx) {
 
 	shaders.add("ssao", "ssao.glpr");
 	shaders.add("ssao_resolve", "ssao_resolve.glpr");
-	shaders.add("blur", "box_blur.glpr", { { "CHANNELS", "1" } });
+	cgv::render::shader_compile_options options;
+	options.define_macro("CHANNELS", 1);
+	shaders.add("blur", "box_blur.glpr", options);
 
 	generate_samples_and_noise_texture(ctx);
 	
@@ -41,28 +43,28 @@ bool screen_space_ambient_occlusion::ensure(cgv::render::context& ctx) {
 	return post_process_effect::ensure(ctx);
 }
 
-void screen_space_ambient_occlusion::begin(cgv::render::context& ctx) {
+void screen_space_ambient_occlusion::begin(cgv::render::context& ctx, bool push_viewport) {
 
 	assert_init();
 
 	if(!enable)
 		return;
 
-	fbc_draw.enable(ctx);
+	fbc_draw.enable(ctx, push_viewport);
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 }
 
-void screen_space_ambient_occlusion::end(cgv::render::context& ctx) {
+void screen_space_ambient_occlusion::end(cgv::render::context& ctx, bool push_viewport) {
 
 	assert_init();
 
 	if(!enable)
 		return;
 
-	fbc_draw.disable(ctx);
+	fbc_draw.disable(ctx, push_viewport);
 
 	// use position, normal and depth information to compute the ambient occlussion term in screen space
-	fbc_post.enable(ctx);
+	fbc_post.enable(ctx, push_viewport);
 
 	fbc_draw.enable_attachment(ctx, "depth", 3);
 	fbc_draw.enable_attachment(ctx, "position", 0);
@@ -85,10 +87,10 @@ void screen_space_ambient_occlusion::end(cgv::render::context& ctx) {
 	noise_tex.disable(ctx);
 	fbc_draw.disable_attachment(ctx, "depth");
 
-	fbc_post.disable(ctx);
+	fbc_post.disable(ctx, push_viewport);
 
 	// blur the occlusion term
-	fbc_blur.enable(ctx);
+	fbc_blur.enable(ctx, push_viewport);
 
 	fbc_post.enable_attachment(ctx, "occlusion", 0);
 
@@ -102,7 +104,7 @@ void screen_space_ambient_occlusion::end(cgv::render::context& ctx) {
 
 	fbc_post.disable_attachment(ctx, "occlusion");
 
-	fbc_blur.disable(ctx);
+	fbc_blur.disable(ctx, push_viewport);
 
 	// composit the original color with the occlusion term
 	fbc_draw.enable_attachment(ctx, "depth", 0);
@@ -162,7 +164,7 @@ void screen_space_ambient_occlusion::generate_samples_and_noise_texture(cgv::ren
 		random_noise.push_back(noise);
 	}
 
-	cgv::data::data_view dv = cgv::data::data_view(new cgv::data::data_format(4, 4, TI_FLT32, cgv::data::CF_RGB), random_noise.data());
+	cgv::data::data_view dv = cgv::data::data_view(new cgv::data::data_format(4, 4, cgv::type::info::TI_FLT32, cgv::data::CF_RGB), random_noise.data());
 	noise_tex.create(ctx, dv, 0);
 	noise_tex.set_min_filter(cgv::render::TF_NEAREST);
 	noise_tex.set_mag_filter(cgv::render::TF_NEAREST);

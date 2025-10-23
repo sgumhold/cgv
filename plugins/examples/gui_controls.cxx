@@ -14,6 +14,7 @@ protected:
 	
 	float dial_value = 0.0f;
 	float wheel_value = 0.0f;
+	float last_wheel_value = 0.0f;
 
 	enum DemoEnum {
 		DE_A,
@@ -41,7 +42,7 @@ public:
 		auto& ti = cgv::gui::theme_info::instance();
 	}
 	void destruct() {
-		unregister_object(base_ptr(this));
+		unregister_object(cgv::base::base_ptr(this));
 	}
 	/// overload to return the type name of this object
 	std::string get_type_name() const {
@@ -50,7 +51,14 @@ public:
 	void on_set(void* member_ptr) {
 		if(member_ptr == &inactive || member_ptr == &colored)
 			post_recreate_gui();
-
+		if (member_ptr == &wheel_value) {
+			if (cgv::gui::abst_control::on_release(&wheel_value)) {
+				std::cout << "on release wheel value change from " 
+					<< last_wheel_value  << " to " 
+					<< wheel_value << std::endl;
+				last_wheel_value = wheel_value;
+			}
+		}
 		//post_redraw();
 		update_member(member_ptr);
 	}
@@ -81,7 +89,7 @@ public:
 		add_member_control(this, "Value", value, "value", "min=-10;max=10;step=1" + opt);
 		add_member_control(this, "Dial", dial_value, "dial", "min=-1.0;max=1.0;step=0.01;w=40;h=40" + opt);
 		add_view("Value View", wheel_value, "", opt);
-		add_member_control(this, "Wheel", wheel_value, "wheel", "min=-1.0;max=1.0;step=0.01" + opt);
+		add_member_control(this, "Wheel", wheel_value, "wheel", "on_release_callback=true;min=-1.0;max=1.0;step=0.01" + opt);
 		add_member_control(this, "Dropdown", demo_enum, "dropdown", "enums='Option 1,Option 2, Option 3'" + opt);
 		add_member_control(this, "RGB Color", rgb_color, "", opt);
 		add_member_control(this, "RGBA Color", rgba_color, "", opt);

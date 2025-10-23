@@ -102,7 +102,7 @@ void update_group_members(cgv::base::group_ptr gp)
 	if (!gp)
 		return;
 	for (unsigned i=0; i<gp->get_nr_children(); ++i) {
-		base_ptr bp = gp->get_child(i);
+		cgv::base::base_ptr bp = gp->get_child(i);
 		abst_view* v = bp->get_interface<abst_view>();
 		if (v)
 			v->update();
@@ -118,7 +118,7 @@ void provider::update_all_members()
 	update_group_members(parent_group);
 }
 
-gui_group_ptr provider::add_object_gui(base_ptr object, const std::string& label, const std::string& group_type, const std::string& options, const std::string& align)
+gui_group_ptr provider::add_object_gui(cgv::base::base_ptr object, const std::string& label, const std::string& group_type, const std::string& options, const std::string& align)
 {
 	provider* p = object->get_interface<provider>();
 	if (!p)
@@ -134,7 +134,7 @@ gui_group_ptr provider::add_object_gui(base_ptr object, const std::string& label
 }
 
 // inline the gui of another object that must be derived from provider.
-void provider::integrate_object_gui(base_ptr object)
+void provider::integrate_object_gui(cgv::base::base_ptr object)
 {
 	provider* p = object->get_interface<provider>();
 	if (!p)
@@ -144,7 +144,7 @@ void provider::integrate_object_gui(base_ptr object)
 }
 
 // inline the gui of another object that must be derived from provider.
-void provider::inline_object_gui(base_ptr object)
+void provider::inline_object_gui(cgv::base::base_ptr object)
 {
 	provider* p = object->get_interface<provider>();
 	if (!p)
@@ -165,10 +165,10 @@ gui_group_ptr provider::add_group(const std::string& label, const std::string& g
 }
 
 // add a newly created decorator to the group, not implemented yet
-base_ptr provider::add_decorator(const std::string& label, const std::string& decorator_type, const std::string& options, const std::string& align)
+cgv::base::base_ptr provider::add_decorator(const std::string& label, const std::string& decorator_type, const std::string& options, const std::string& align)
 {
 	if (parent_group.empty())
-		return base_ptr();
+		return cgv::base::base_ptr();
 	return parent_group->add_decorator(label, decorator_type, options, align);
 }
 
@@ -287,7 +287,7 @@ void provider::set_tree_node_visibility_void(const void* value_ptr, int index, b
 }
 
 // remove a single element from the gui
-void provider::remove_element(base_ptr e)
+void provider::remove_element(cgv::base::base_ptr e)
 {
 	if (!parent_group.empty())
 		parent_group->remove_child(e);
@@ -303,10 +303,10 @@ void provider::remove_all_elements()
 }
 
 //! find a gui element by name in the current group, return empty pointer if not found
-base_ptr provider::find_element(const std::string& name)
+cgv::base::base_ptr provider::find_element(const std::string& name)
 {
 	if (parent_group.empty())
-		return base_ptr();
+		return cgv::base::base_ptr();
 	return parent_group->find_element(name);
 }
 

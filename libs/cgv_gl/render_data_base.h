@@ -209,14 +209,14 @@ public:
 		return attribute_array;
 	}
 
-	/// @brief Initialize the attribute array manager.
+	/// @brief Initialize the attribute array manager and increase the reference count of the used renderer singleton.
 	/// @param ctx The GL context.
 	bool init(context& ctx) {
 		ref_renderer_singleton(ctx, 1);
 		return attribute_array.init(ctx);
 	}
 
-	/// @brief Destruct the attribute array manager and decrease the reference count of the used renderer.
+	/// @brief Destruct the attribute array manager and decrease the reference count of the used renderer singleton.
 	/// @param ctx The GL context.
 	void destruct(context& ctx) {
 		ref_renderer_singleton(ctx, -1);

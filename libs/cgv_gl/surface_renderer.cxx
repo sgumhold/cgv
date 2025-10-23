@@ -6,38 +6,6 @@
 namespace cgv {
 	namespace render {
 
-
-		void set_material_uniform(cgv::render::shader_program& prog, cgv::render::context& ctx, const std::string& name, const cgv::media::illum::surface_material& material)
-		{
-			prog.set_uniform(ctx, name + ".brdf_type", (int)material.get_brdf_type());
-			prog.set_uniform(ctx, name + ".diffuse_reflectance", material.get_diffuse_reflectance());
-			prog.set_uniform(ctx, name + ".roughness", material.get_roughness());
-			prog.set_uniform(ctx, name + ".ambient_occlusion", material.get_ambient_occlusion());
-			prog.set_uniform(ctx, name + ".emission", material.get_emission());
-			prog.set_uniform(ctx, name + ".specular_reflectance", material.get_specular_reflectance());
-			prog.set_uniform(ctx, name + ".roughness_anisotropy", material.get_roughness_anisotropy());
-			prog.set_uniform(ctx, name + ".roughness_orientation", material.get_roughness_orientation());
-			prog.set_uniform(ctx, name + ".propagation_slow_down", cgv::math::fvec<float, 2>(material.get_propagation_slow_down().real(), material.get_propagation_slow_down().imag()));
-			prog.set_uniform(ctx, name + ".transparency", material.get_transparency());
-			prog.set_uniform(ctx, name + ".metalness", material.get_metalness());
-		}
-
-		surface_render_style::surface_render_style() : material("default")
-		{
-			surface_color = cgv::media::illum::surface_material::color_type(0.4f, 0.1f, 0.7f);
-			surface_opacity = 1.0f;
-			culling_mode = CM_OFF;
-			illumination_mode = IM_ONE_SIDED;
-			map_color_to_material = CM_COLOR;
-			material.ref_brdf_type() = cgv::media::illum::BrdfType(cgv::media::illum::BT_STRAUSS_DIFFUSE + cgv::media::illum::BT_STRAUSS);
-		}
-
-		surface_renderer::surface_renderer()
-		{
-			cull_per_primitive = true;
-			has_normals = false;
-			has_texcoords = false;
-		}
 		/// call this before setting attribute arrays to manage attribute array in given manager
 		void surface_renderer::enable_attribute_array_manager(const context& ctx, attribute_array_manager& aam)
 		{
@@ -62,24 +30,6 @@ namespace cgv {
 			has_texcoords = false;
 			remove_attribute_array(ctx, "texcoord");
 		}
-		void set_gl_material_color(GLenum side, const cgv::media::illum::phong_material::color_type& c, float alpha, GLenum type)
-		{
-			GLfloat v[4] = { c[0], c[1], c[2], c[3] * alpha };
-			glMaterialfv(side, type, v);
-		}
-
-		void set_gl_material(const cgv::media::illum::phong_material& mat, MaterialSide ms, float alpha = 1.0f)
-		{
-			if (ms == MS_NONE)
-				return;
-			unsigned side = gl::map_to_gl(ms);
-			set_gl_material_color(side, mat.get_ambient(), alpha, GL_AMBIENT);
-			set_gl_material_color(side, mat.get_diffuse(), alpha, GL_DIFFUSE);
-			set_gl_material_color(side, mat.get_specular(), alpha, GL_SPECULAR);
-			set_gl_material_color(side, mat.get_emission(), alpha, GL_EMISSION);
-			glMaterialf(side, GL_SHININESS, mat.get_shininess());
-		}
-
 		/// method to set the normal attribute from a vertex buffer object, the element type must be given as explicit template parameter
 		void surface_renderer::set_normal_array(const context& ctx, type_descriptor element_type, const vertex_buffer& vbo, size_t offset_in_bytes, size_t nr_elements, unsigned stride_in_bytes)
 		{

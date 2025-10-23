@@ -96,15 +96,15 @@ public:
 	/// concatenate names in string to enum declaration and optionally prepend or append given additional names 
 	std::string concat_enum_def(const std::vector<std::string>& names, const std::string& additional_first_name = "", const std::string& additional_last_name = "");
 
-	gui_group_ptr add_object_gui(base_ptr object, const std::string& label, const std::string& group_type, const std::string& options, const std::string& align);	
+	gui_group_ptr add_object_gui(cgv::base::base_ptr object, const std::string& label, const std::string& group_type, const std::string& options, const std::string& align);
 	/// call this in create_gui() function to integrate gui of another provider object by setting the parent group and parent provider of the other object
-	void integrate_object_gui(base_ptr object);
+	void integrate_object_gui(cgv::base::base_ptr object);
 	/// integrate (if not explicitly done before) and inline the gui of another object that must be derived from provider
-	void inline_object_gui(base_ptr object);
+	void inline_object_gui(cgv::base::base_ptr object);
 	/// add a newly created subgroup to the group
 	gui_group_ptr add_group(const std::string& label, const std::string& group_type, const std::string& options = "", const std::string& align = "\n");
 	/// add a newly created decorator to the group
-	base_ptr add_decorator(const std::string& label, const std::string& decorator_type, const std::string& options = "", const std::string& align = "\n");
+	cgv::base::base_ptr add_decorator(const std::string& label, const std::string& decorator_type, const std::string& options = "", const std::string& align = "\n");
 	/// use the current gui driver to append a new button with the given label
 	button_ptr add_button(const std::string& label, const std::string& options = "", const std::string& align = "\n");
 	/// use this to add a new view to the gui with a given value type, gui type and init options
@@ -307,11 +307,11 @@ public:
 	/**@name update of gui*/
 	//@{
 	/// remove a single element from the gui
-	void remove_element(base_ptr);
+	void remove_element(cgv::base::base_ptr);
 	/// this method removes all elements from the gui and can be used in a method that rebuilds the complete gui
 	void remove_all_elements();
 	//! find a gui element by name in the current group, return empty pointer if not found
-	base_ptr find_element(const std::string& name);
+	cgv::base::base_ptr find_element(const std::string& name);
 	//! find a view of a given class member
 	/*! find the next view of the given value in the current group. If the index
 	    pointer is given, start at the index to which the pointer points and set

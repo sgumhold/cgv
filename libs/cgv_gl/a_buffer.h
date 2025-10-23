@@ -15,8 +15,10 @@ class CGV_API a_buffer
 {
 	unsigned last_fragments_per_pixel;
 	unsigned last_nodes_per_pixel;
-	shader_define_map last_defines;
-	shader_define_map defines;
+	//shader_define_map last_defines;
+	//shader_define_map defines;
+	shader_compile_options prog_options;
+	shader_compile_options last_prog_options;
 	bool init_frame_called;
 protected:
 	/// Depth texture used to emulate depth buffer
@@ -40,7 +42,7 @@ protected:
 	void destruct_buffers(context& ctx);
 	void ensure_buffers(context& ctx);
 
-	void update_defines(shader_define_map& defines, bool include_binding_points);
+	void update_shader_program_options(shader_compile_options& options, bool include_binding_points);
 public:
 	/// construct and configure
 	a_buffer(unsigned _fragments_per_pixel = 32, unsigned _nodes_per_pixel = 64, int _depth_tex_unit = 0, 
@@ -55,8 +57,8 @@ public:
 	void destruct(context& ctx);
 	/// ensure that a_buffer size corresponds to context size
 	void init_frame(context& ctx);
-	/// update the provided shader defines with respect to a_buffer settings. Call before enabling a program.
-	void update_defines(shader_define_map& defines);
+	/// update the provided shader compile options with respect to a_buffer settings. Call before enabling a program.
+	void update_shader_program_options(shader_compile_options& options);
 	//! Enable writing fragments to a_buffer with provided program
 	/*! In first call after each init frame call, the current depth buffer is copied to a_buffer's depth texture.
 		Function sets necessary uniforms in program and binds depth texture and buffers.

@@ -33,8 +33,8 @@ extern CGV_API cgv::render::rectangle_render_style& ref_rectangle_render_style()
 class CGV_API tt_gl_font_face : public cgv::media::font::font_face
 {
 private:
-	bool bitmap_out_of_date;
-	bool tex_out_of_date;
+	mutable bool bitmap_out_of_date;
+	mutable bool tex_out_of_date;
 protected:
 	unsigned char* ttf_buffer;
 	std::vector<unsigned char> internal_ttf_buffer;
@@ -42,15 +42,15 @@ protected:
 	std::string font_name;
 	stbtt_fontinfo f;
 
-	float font_size;
+	mutable float font_size;
 	unsigned fst_char, nr_chars;
-	std::vector<stbtt_bakedchar> baked_chars;
+	mutable std::vector<stbtt_bakedchar> baked_chars;
 
-	unsigned bitmap_width, bitmap_height;
+	mutable unsigned bitmap_width, bitmap_height;
 	std::vector<unsigned char> bitmap;
 	bool build_mipmap;
 
-	cgv::render::texture* tex_ptr;
+	mutable cgv::render::texture* tex_ptr;
 	cgv::render::context* ctx_ptr;
 
 	void bake_characters();
@@ -79,7 +79,7 @@ public:
 	unsigned get_nr_glyphs() const;
 	std::string get_font_name() const;
 	void set_character_range(int _fst_char, unsigned _nr_chars);
-	void set_font_size(float _font_size);
+	void set_font_size(float _font_size) const;
 	bool write_atlas(const std::string& file_name);
 	cgv::render::texture& ref_texture(cgv::render::context& ctx) const;
 	cgv::render::texture& ref_texture(cgv::render::context& ctx);

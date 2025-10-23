@@ -159,7 +159,7 @@ public:
 		return nullptr;
 	}
 	///
-	bool is_created();
+	bool is_created() const;
 	///
 	bool init(context& ctx);
 	///

@@ -6,7 +6,7 @@
 #include <cgv_g2d/trect.h>
 #include <cgv_g2d/shaders2d.h>
 #include <cgv_g2d/shape2d_styles.h>
-#include <cgv_g2d/utils2d.h>
+#include <cgv_g2d/utils.h>
 
 #include "lib_begin.h"
 

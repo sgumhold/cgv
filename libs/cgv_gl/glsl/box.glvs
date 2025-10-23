@@ -1,12 +1,10 @@
 #version 150 
 
-#define ROUNDING 0
-
 uniform bool position_is_center;
 uniform bool has_rotations;
 uniform bool has_translations;
 uniform vec3 relative_anchor = vec3(0.0);
-#if ROUNDING == 1
+#if ENABLE_ROUNDING
 uniform bool has_radii = false;
 uniform bool has_secondary_colors = false;
 uniform float default_radius = 0.02;
@@ -18,7 +16,7 @@ in vec4 color;
 in int group_index;
 in vec4 rotation;
 in vec3 translation;
-#if ROUNDING == 1
+#if ENABLE_ROUNDING
 in float radius;
 in vec4 secondary_color;
 #endif
@@ -26,7 +24,7 @@ in vec4 secondary_color;
 out mat3 NM;
 out mat4 PM;
 out vec4 color_gs;
-#if ROUNDING == 1
+#if ENABLE_ROUNDING
 out vec3 extent_gs;
 out float radius_gs;
 out vec4 secondary_color_gs;
@@ -105,7 +103,7 @@ void main()
 	if (has_translations)
 		t += translation;
 	right_multiply_group_position_matrix_and_rigid(PM, group_index, q, t);
-#if ROUNDING == 1
+#if ENABLE_ROUNDING
 	iPM = inverse(PM);
 	iNM = inverse(NM);
 	extent_gs = extent;

@@ -2,6 +2,8 @@
 #include <cgv/base/register.h>
 #include <iostream>
 
+using namespace cgv::data;
+
 METHODDEF(void) my_error_exit(j_common_ptr cinfo)
 {
 	/* cinfo->err really points to a my_error_mgr struct, so coerce pointer */
@@ -39,7 +41,7 @@ std::string jpg_writer::get_type_name() const
 }
 
 /// construct a copy of the reader
-abst_image_writer* jpg_writer::clone() const
+cgv::media::image::abst_image_writer* jpg_writer::clone() const
 {
 	return new jpg_writer(*this);
 }
@@ -51,7 +53,7 @@ const char* jpg_writer::get_supported_extensions() const
 /// check if the chosen writer supports the given component format
 bool jpg_writer::is_format_supported(const component_format& cf, const std::vector<component_format>* palette_formats) const
 {
-	if (cf.get_component_type() != TI_UINT8 && cf.get_component_type() != TI_INT8)
+	if (cf.get_component_type() != cgv::type::info::TI_UINT8 && cf.get_component_type() != cgv::type::info::TI_INT8)
 		return false;
 	switch (cf.get_standard_component_format()) {
 	case cgv::data::CF_RGB: return true;

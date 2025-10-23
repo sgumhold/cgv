@@ -20,45 +20,40 @@ namespace cgv { // @<
 			/*@name sphere rendering attributes*/
 			//@{
 			/// multiplied to the sphere radii, initialized to 1
-			float radius_scale;
+			float radius_scale = 1.0f;
 			/// default value assigned to radius attribute in \c enable method of sphere renderer, set to 1 in constructor
-			float radius;
+			float radius = 1.0f;
 			/// whether to use the group radius
-			bool use_group_radius;
+			bool use_group_radius = false;
 			/// set to 1 in constructor 
-			float blend_width_in_pixel;
+			float blend_width_in_pixel = 0.0f;
 			/// set to 0 in constructor
-			float halo_width_in_pixel;
+			float halo_width_in_pixel = 0.0f;
 			/// set to 0 in constructor
-			float percentual_halo_width;
+			float percentual_halo_width = 0.0f;
 			/// color of halo with opacity channel
-			cgv::media::color<float, cgv::media::RGB, cgv::media::OPACITY> halo_color;
+			cgv::rgba halo_color = { 1.0f };
 			/// strength in [0,1] of halo color with respect to color of primitive
-			float halo_color_strength;
+			float halo_color_strength = 0.5f;
 			//@}
-
-			/// construct with default values
-			sphere_render_style();
 		};
 
 		/// renderer that supports splatting of spheres
 		class CGV_API sphere_renderer : public surface_renderer
 		{
 		protected:
-			bool has_radii;
-			bool has_group_radii;
-			float y_view_angle;
-			/// overload to allow instantiation of point_renderer
-			render_style* create_render_style() const;
-			/// build sphere program
-			bool build_shader_program(context& ctx, shader_program& prog, const shader_define_map& defines);
+			bool has_radii = false;
+			bool has_group_radii = false;
+			float y_view_angle = 45.0f;
+			/// return the default shader program name
+			std::string get_default_prog_name() const override { return "sphere.glpr"; }
+			/// create and return the default render style
+			render_style* create_render_style() const override { return new sphere_render_style(); }
 		public:
-			///
-			sphere_renderer();
 			/// call this before setting attribute arrays to manage attribute array in given manager
-			void enable_attribute_array_manager(const context& ctx, attribute_array_manager& aam);
+			void enable_attribute_array_manager(const context& ctx, attribute_array_manager& aam) override;
 			/// call this after last render/draw call to ensure that no other users of renderer change attribute arrays of given manager
-			void disable_attribute_array_manager(const context& ctx, attribute_array_manager& aam);
+			void disable_attribute_array_manager(const context& ctx, attribute_array_manager& aam) override;
 			///
 			void set_y_view_angle(float y_view_angle);
 			///
@@ -92,14 +87,14 @@ namespace cgv { // @<
 				has_radii = true;
 			}
 			///
-			bool validate_attributes(const context& ctx) const;
+			bool validate_attributes(const context& ctx) const override;
 			///
-			bool enable(context& ctx);
+			bool enable(context& ctx) override;
 			///
-			bool disable(context& ctx);
+			bool disable(context& ctx) override;
 			///
 			void draw(context& ctx, size_t start, size_t count,
-				bool use_strips = false, bool use_adjacency = false, uint32_t strip_restart_index = -1);
+				bool use_strips = false, bool use_adjacency = false, uint32_t strip_restart_index = -1) override;
 		};
 
 		struct CGV_API sphere_render_style_reflect : public sphere_render_style

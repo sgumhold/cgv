@@ -40,39 +40,6 @@ namespace cgv {
 			r.manage_singleton(ctx, "rectangle_renderer", ref_count, ref_count_change);
 			return r;
 		}
-
-		render_style* rectangle_renderer::create_render_style() const
-		{
-			return new rectangle_render_style();
-		}
-
-		rectangle_render_style::rectangle_render_style()
-		{
-			position_is_center = true;
-			default_secondary_color = rgba(0.5f, 0.5f, 0.5f, 1.0f);
-			default_border_color = rgba(0.0f, 0.0f, 0.0f, 1.0f);
-			border_width_in_pixel = 0.0f;
-			percentual_border_width = 0.0f;
-			border_mode = RBM_MIN;
-			pixel_blend = 0.0f;
-			texture_mode = RTM_REPLACE;
-			default_depth_offset = 0.0f;
-			blend_rectangles = false;
-			//is_blend = GL_FALSE;
-			//blend_src = blend_dst = 0;
-		}
-		rectangle_renderer::rectangle_renderer() {
- 			has_extents = false;
-			has_secondary_colors = false;
-			has_border_colors = false;
-			has_border_infos = false;
-			has_translations = false;
-			has_rotations = false;
-			has_texcoords = false;
-			has_depth_offsets = false;
-			y_view_angle = 45;
-		}
-
 		void rectangle_renderer::set_y_view_angle(float _y_view_angle)
 		{
 			y_view_angle = _y_view_angle;
@@ -161,15 +128,10 @@ namespace cgv {
 			ref_prog().set_attribute(ctx, "extent", tcr.rectangle.get_max_pnt());
 			ref_prog().set_attribute(ctx, "texcoord", tcr.texcoords);
 		}
-		
-		bool rectangle_renderer::build_shader_program(context& ctx, shader_program& prog, const shader_define_map& defines)
-		{
-			return prog.build_program(ctx, "rectangle.glpr", true, defines);
-		}
 		bool rectangle_renderer::init(context& ctx)
 		{
-			bool res = renderer::init(ctx);
-			return res;
+			// diretly call init of top-most base class to prevent calling init of surface_renderer
+			return renderer::init(ctx);
 		}
 		void rectangle_renderer::set_position_is_center(bool _position_is_center)
 		{

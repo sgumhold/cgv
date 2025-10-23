@@ -203,11 +203,11 @@ public:
 		shaders.add("brdf_lut_gen", "brdf_lut_gen.glpr");
 		shaders.add("screen", "screen.glpr");
 
-		shader_define_map defines;
-		shader_code::set_define(defines, "ENABLE_TEXTURES", true, false);
+		shader_compile_options options;
+		options.define_macro("ENABLE_TEXTURES", true);
 
 		shaders.add("pbr_surface", "pbr_surface.glpr");
-		shaders.add("pbr_surface_textured", "pbr_surface.glpr", defines);
+		shaders.add("pbr_surface_textured", "pbr_surface.glpr", options);
 		shaders.add("surface_depth", "surface_depth.glpr");
 
 		sun_position = cgv::vec2(0.0f, 0.6f);
@@ -720,7 +720,7 @@ public:
 		if(jitter_tex.is_created())
 			jitter_tex.destruct(ctx);
 
-		cgv::data::data_view jitter_dv = cgv::data::data_view(new cgv::data::data_format(size, size, samples_u * samples_v / 2, TI_INT8, cgv::data::CF_RGBA), jitter_data.data());
+		cgv::data::data_view jitter_dv = cgv::data::data_view(new cgv::data::data_format(size, size, samples_u * samples_v / 2, cgv::type::info::TI_INT8, cgv::data::CF_RGBA), jitter_data.data());
 		success &= jitter_tex.create(ctx, jitter_dv, 0);
 		jitter_tex.set_wrap_s(TW_REPEAT);
 		jitter_tex.set_wrap_t(TW_REPEAT);

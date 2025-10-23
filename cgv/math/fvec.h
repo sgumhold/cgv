@@ -9,6 +9,7 @@
 #include <array>
 #include <cmath>
 #include <cstdint>
+#include <cstring>
 #include <iostream>
 #include <limits>
 #include <sstream>
@@ -92,7 +93,7 @@ public:
 	///creates a vector from a n-element array a, if n < N remaining N-n elements are set to zero
 	fvec(cgv::type::uint32_type n, const T *a) {
 		cgv::type::uint32_type i, min_n = n < N ? n : N;
-		std::copy(a, a+min_n, v);
+		memmove(v, a, min_n*sizeof(T)); //std::copy(a, a+min_n, v);
 		for (i = min_n; i < N; ++i) v[i] = T(0);
 	}
 	///creates a column vector initialized to array of a different type with zeros filled to not copied components
@@ -120,7 +121,7 @@ public:
 	/// set all components of vector to constant value a
 	fvec & operator = (const T &a) { std::fill(v, v+N, a); return *this; }
 	/// set to the contents of the given std::array with same size
-	fvec & operator = (const std::array<T, N>& arr) { std::copy(arr.cbegin(), arr.cend(), v); return *this; }
+	void assign(const std::array<T, N>& arr) { std::copy(arr.cbegin(), arr.cend(), v); }
 	/// set the first two components
 	void set(const T &x, const T &y) { v[0] = x; v[1] = y; }
 	/// set the first three components
@@ -319,6 +320,9 @@ public:
 	}
 	//@}
 };
+
+/// This symbol is defined when @ref cgv::math::fvec exists in the current compilation unit
+#define CGV_MATH_FVEC_DECLARED
 
 /// return normalized vector
 template<typename T, cgv::type::uint32_type N>
@@ -739,6 +743,7 @@ fvec<T, N> fvec<T, N>::from_vec(const vec<T>& v)
 
 } // namespace math
 } // namespace cgv
+
 
 /*
 #include <cgv/utils/convert_string.h>
