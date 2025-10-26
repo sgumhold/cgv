@@ -73,6 +73,7 @@ var namespacecgv_1_1render_1_1gl =
     [ "push_textured_material_prog", "namespacecgv_1_1render_1_1gl.html#a06580bb0f1265c73eb4ff13e1f53a478", null ],
     [ "read_image_to_texture", "namespacecgv_1_1render_1_1gl.html#a87ce50a7b964072a8d565d62679f816b", null ],
     [ "read_image_to_textures", "namespacecgv_1_1render_1_1gl.html#a34e2aa5c4601e79f2c5363a6bf5ab9c2", null ],
+    [ "read_texture", "namespacecgv_1_1render_1_1gl.html#a2d8b1d4e6419d4cff59bdfb0938590e8", null ],
     [ "ref_textured_material_prog", "namespacecgv_1_1render_1_1gl.html#ac1f1c7ee18dc3460fb67ee338df3ee24", null ],
     [ "render_to_texture3D", "namespacecgv_1_1render_1_1gl.html#af90d085aa1d3a6a6b42d2e7a45542fbb", null ],
     [ "replace_texture", "namespacecgv_1_1render_1_1gl.html#a73e78dce5ae71e07cd42d4af7f825923", null ],
