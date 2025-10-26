@@ -20,6 +20,7 @@ std::string to_string(DifferentiationOperator differentiation_operator) {
 
 texture_algorithm::texture_algorithm_create_info texture_differentiate_base::get_create_info(cgv::render::TextureType texture_type,
 																							 sl::ImageFormatLayoutQualifier image_format,
+																							 WrapMode wrap_mode,
 																							 DifferentiationOperator differentiation_operator,
 																							 DifferentiationOutput differentiation_output) {
 	uint32_t texture_dimensionality = get_texture_type_dimensionality(texture_type);
@@ -32,6 +33,7 @@ texture_algorithm::texture_algorithm_create_info texture_differentiate_base::get
 	info.default_image_count = 2;
 	info.texture_type = texture_type;
 	info.image_format = image_format;
+	info.options.define_macro("TEXTURE_WRAP_MODE", static_cast<int32_t>(wrap_mode));
 	info.options.define_macro("DIFF_OPERATOR_FUNC", diff_operator_str);
 	info.options.define_macro_if_not_default("DIFF_SCALING_FUNC", diff_scaling_func, "");
 	info.options.define_macro_if_true(map_to_unorm, "MAP_TO_UNORM");
@@ -73,9 +75,10 @@ texture_differentiate::texture_differentiate() : texture_differentiate_base("tex
 bool texture_differentiate::init(cgv::render::context& ctx,
 								 cgv::render::TextureType texture_type,
 								 sl::ImageFormatLayoutQualifier image_format,
+								 WrapMode wrap_mode,
 								 DifferentiationOperator differentiation_operator,
 								 DifferentiationOutput differentiation_output) {
-	texture_algorithm_create_info info = get_create_info(texture_type, image_format, differentiation_operator, differentiation_output);
+	texture_algorithm_create_info info = get_create_info(texture_type, image_format, wrap_mode, differentiation_operator, differentiation_output);
 	return texture_algorithm::init(ctx, info, { { &_kernel, "gpgpu_texture_differentiate" } });
 }
 
@@ -100,6 +103,7 @@ bool texture_differentiate::dispatch(cgv::render::context& ctx, cgv::render::tex
 	_kernel.enable(ctx);
 	_kernel.set_argument(ctx, "u_size", input_size);
 	_kernel.set_argument<int32_t>(ctx, "u_channel", texture_channel);
+	_kernel.set_argument(ctx, "u_border_value", input_texture.get_border_color());
 
 	uvec3 num_groups = get_num_groups(input_size, _group_size);
 	dispatch_compute(num_groups.x(), num_groups.y(), num_groups.z());
