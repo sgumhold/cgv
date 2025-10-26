@@ -30,6 +30,13 @@ enum class TextureChannel : int32_t {
 	kA
 };
 
+enum class WrapMode : int32_t {
+	kRepeat = 0,
+	kMirroredRepeat,
+	kClampToEdge,
+	kClampToBorder
+};
+
 extern CGV_API std::string to_string(DifferentiationOperator differentiation_operator);
 
 class CGV_API texture_differentiate_base : public texture_algorithm {
@@ -39,6 +46,7 @@ public:
 protected:
 	static texture_algorithm_create_info get_create_info(cgv::render::TextureType texture_type,
 														 sl::ImageFormatLayoutQualifier image_format,
+														 WrapMode wrap_mode,
 														 DifferentiationOperator differentiation_operator,
 														 DifferentiationOutput differentiation_output);
 private:
@@ -53,6 +61,7 @@ public:
 	bool init(cgv::render::context& ctx,
 			  cgv::render::TextureType texture_type,
 			  sl::ImageFormatLayoutQualifier image_format,
+			  WrapMode wrap_mode,
 			  DifferentiationOperator differentiation_operator = cgv::gpgpu::DifferentiationOperator::kCentralDifference,
 			  DifferentiationOutput differentiation_output = cgv::gpgpu::DifferentiationOutput::kDerivative);
 
