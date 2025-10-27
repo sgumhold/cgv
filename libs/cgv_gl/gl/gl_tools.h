@@ -54,6 +54,9 @@ extern CGV_API unsigned int create_texture(const cgv::data::const_data_view& dv,
 */
 extern CGV_API bool replace_texture(const cgv::data::const_data_view& data, int level = 0, int x = 0, int y = 0, int z = -1, const std::vector<cgv::data::data_view>* palettes = 0);
 
+/// read back a texture into a data view with the glGetTexImage command
+extern CGV_API void read_texture(cgv::data::data_view& data, unsigned level = -1);
+
 /** read the given image file into a texture and return the texture id or -1 in case of failure.
     The aspect ratio of the texture is written into the value pointed to by aspect_ptr. In case
 	has_alpha_ptr is provided a boolean telling whether the texture contains alpha values is written

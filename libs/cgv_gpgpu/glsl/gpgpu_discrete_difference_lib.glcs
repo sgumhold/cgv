@@ -1,41 +1,64 @@
 //?#version 430
 
-// This library provides several discrete differentiation operators for images in 1D, 2D and 3D.
-// The library is configured using macros that must be defined before including this library in another shader.
+// This library provides several discrete differentiation operators for arrays in 1D, 2D and 3D.
+// The library is configured using macros that must be defined before including it in a shader.
 // The following macros are required:
-//  - DIMS The number of image dimensions.
-//  - INDEX_TYPE The image coordinate/index type.
-//  - IMAGE_NAME The image uniform name.
-//  - GET_VALUE_FUNC(IDX) The function used to retrieve values for differentiation. Taking an index as argument.
-//
+//  - DIMS The number of array dimensions.
+//  - WRAP_MODE The edge wrap mode used to adjust indices that are out of the range of the array size.
+//  - GET_ARRAY_SIZE_FUNC() The function used to retrieve the array size.
+//  - GET_ARRAY_VALUE_FUNC(IDX) The function used to retrieve values for differentiation. Taking an index as argument.
+//  - GET_ARRAY_BORDER_VALUE_FUNC() The function used to retrieve border values for differentiation.
+
+//?#include "gpgpu_wrap_lib.glcs"
+
+#define __WRAP_MODE_REPEAT 0
+#define __WRAP_MODE_MIRRORED_REPEAT 1
+#define __WRAP_MODE_CLAMP_TO_EDGE 2
+#define __WRAP_MODE_CLAMP_TO_BORDER 3
 
 #ifndef DIMS
 	#define DIMS 2
 #endif
-#ifndef INDEX_TYPE
-	#define INDEX_TYPE ivec2
+
+#if DIMS == 1
+	#define __INDEX_TYPE int
+#elif DIMS == 2
+	#define __INDEX_TYPE ivec2
+#elif DIMS == 3
+	#define __INDEX_TYPE ivec3
 #endif
 
-INDEX_TYPE clamp_index(in INDEX_TYPE idx) {
-#ifdef IMAGE_NAME
-	return clamp(idx, INDEX_TYPE(0), imageSize(IMAGE_NAME) - 1);
-#else
-	return idx;
+#ifndef WRAP_MODE
+	#define WRAP_MODE __WRAP_MODE_REPEAT
 #endif
-}
 
-#ifndef GET_VALUE_FUNC
-	#define GET_VALUE_FUNC(IDX) 0.0
+#ifndef GET_ARRAY_VALUE_FUNC
+	#define GET_ARRAY_VALUE_FUNC(IDX) 0.0
+#endif
+#ifndef GET_ARRAY_BORDER_VALUE_FUNC
+	#define GET_ARRAY_BORDER_VALUE_FUNC() 0.0
+#endif
+#ifndef GET_ARRAY_SIZE_FUNC
+	#define GET_ARRAY_SIZE_FUNC() __INDEX_TYPE(0)
 #endif
 
 // TODO: use image element type as return type (value_type)
-float get_value(in INDEX_TYPE idx, in INDEX_TYPE offset) {
-#ifdef IMAGE_NAME
-	INDEX_TYPE clamped_idx = clamp_index(idx + offset);
-	return GET_VALUE_FUNC(clamped_idx);
-#else
-	return 0.0;
-#endif
+float get_value(in __INDEX_TYPE idx, in __INDEX_TYPE offset) {
+	idx += offset;
+	__INDEX_TYPE size = GET_ARRAY_SIZE_FUNC();
+
+	#if WRAP_MODE == __WRAP_MODE_REPEAT
+		idx = wrap_index_repeat(idx, size);
+	#elif WRAP_MODE == __WRAP_MODE_MIRRORED_REPEAT
+		idx = wrap_index_mirrored_repeat(idx, size);
+	#elif WRAP_MODE == __WRAP_MODE_CLAMP_TO_EDGE
+		idx = wrap_index_clamp_to_edge(idx, size);
+	#elif WRAP_MODE == __WRAP_MODE_CLAMP_TO_BORDER
+		if(wrap_index_clamp_to_border(idx, size))
+			return GET_ARRAY_BORDER_VALUE_FUNC();
+	#endif
+
+	return GET_ARRAY_VALUE_FUNC(idx);
 }
 
 #if DIMS == 1
@@ -335,3 +358,5 @@ float sobel3d_norm() {
 	return 1.0/32.0;
 }
 #endif
+
+#undef __INDEX_TYPE
