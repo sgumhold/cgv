@@ -1,9 +1,9 @@
 var classcgv_1_1render_1_1surface__renderer =
 [
-    [ "disable", "classcgv_1_1render_1_1surface__renderer.html#a8fd086df40c9d5fbd1357183db2d2826", null ],
-    [ "disable_attribute_array_manager", "classcgv_1_1render_1_1surface__renderer.html#a4b54bec7e7eee2da8f770f7562243bc3", null ],
-    [ "enable", "classcgv_1_1render_1_1surface__renderer.html#a97cc97633428aac33c5d8856600adef9", null ],
-    [ "enable_attribute_array_manager", "classcgv_1_1render_1_1surface__renderer.html#a70f2835e792aa01529445b06d3c5ec79", null ],
+    [ "disable", "classcgv_1_1render_1_1surface__renderer.html#af8454ee401ee1cbbddba9a1d4a2e2d2a", null ],
+    [ "disable_attribute_array_manager", "classcgv_1_1render_1_1surface__renderer.html#ac01dc5b0afccd333e8c30eececf8e880", null ],
+    [ "enable", "classcgv_1_1render_1_1surface__renderer.html#af3adc86d5bebf29d0ed91d9f9a7d23c4", null ],
+    [ "enable_attribute_array_manager", "classcgv_1_1render_1_1surface__renderer.html#abd5366425c4f439b118c61926e8e8e8b", null ],
     [ "remove_normal_array", "classcgv_1_1render_1_1surface__renderer.html#a663aa52e2ca1e7ba9b11278ab16968da", null ],
     [ "remove_texcoord_array", "classcgv_1_1render_1_1surface__renderer.html#a88d5cbdccd15bb2456bb8bd95736c031", null ],
     [ "set_normal", "classcgv_1_1render_1_1surface__renderer.html#a6d8d6f5b6860f649ddfbb36abf809170", null ],
