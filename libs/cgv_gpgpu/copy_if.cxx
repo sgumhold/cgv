@@ -162,7 +162,7 @@ bool copy_if_atomic::init(cgv::render::context& ctx, const sl::data_type& value_
 
 	_atomic_counter_buffer.create_or_resize<int32_t>(ctx, 1);
 
-	algorithm::init(ctx, info, { { &_kernel, "gpgpu_copy_if_atomic" }, });
+	return algorithm::init(ctx, info, { { &_kernel, "gpgpu_copy_if_atomic" }, });
 }
 
 void copy_if_atomic::destruct(const cgv::render::context& ctx) {
