@@ -115,6 +115,11 @@ void texture::set_border_color(float r, float g, float b, float a)
 	border_color[3] = a;
 	state_out_of_date = true;
 }
+/// return the texture border color
+cgv::vec4 texture::get_border_color() const
+{
+	return cgv::vec4(4, border_color);
+}
 /** set the minification filters, if minification is set to TF_ANISOTROP, 
 	the second floating point parameter specifies the degree of anisotropy */
 void texture::set_min_filter(TextureFilter _min_filter, float _anisotropy)
@@ -725,6 +730,19 @@ bool texture::replace_from_image(cgv::data::data_format& df, cgv::data::data_vie
 	return true;
 }
 
+bool texture::copy(const context& ctx, cgv::data::data_view& dv, int level) const
+{
+	if(!is_created()) {
+		render_component::last_error = "texture must be created for copy";
+		return false;
+	}
+	
+	cgv::data::data_format* df = new cgv::data::data_format(*this);
+	dv = cgv::data::data_view(df);
+	dv.manage_format();
+
+	return ctx.texture_copy_back(*this, level, dv);
+}
 
 /// destruct the texture and free texture memory and handle
 bool texture::destruct(const context& ctx)

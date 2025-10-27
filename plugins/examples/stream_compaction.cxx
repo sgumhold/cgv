@@ -3,16 +3,16 @@
 #include <cgv/base/node.h>
 #include <cgv/gui/provider.h>
 #include <cgv/gui/property_string.h>
-#include <cgv/math/constants.h>
 #include <cgv/render/drawable.h>
 #include <cgv_gl/sphere_render_data.h>
 #include <cgv_gl/gl/gl_time_query.h>
 #include <cgv_gpgpu/copy.h>
 #include <cgv_gpgpu/copy_if.h>
 
-class gpgpu_filter_test : public cgv::base::node, public cgv::render::drawable, public cgv::gui::provider {
+/// This example illustrates how to perform stream compaction, i.e. filtering of an array, using the gpgpu::copy_if algorithm.
+class stream_compaction : public cgv::base::node, public cgv::render::drawable, public cgv::gui::provider {
 public:
-	gpgpu_filter_test() : cgv::base::node("GPGPU Filter Test")
+	stream_compaction() : cgv::base::node("Stream Compaction")
 	{
 		random_engine.seed(42);
 		spheres.style.surface_color = cgv::rgb(0.5f);
@@ -20,7 +20,7 @@ public:
 	}
 
 	std::string get_type_name() const {
-		return "gpgpu_filter_test";
+		return "stream_compaction";
 	}
 
 	void on_set(void* member_ptr)
@@ -69,7 +69,7 @@ public:
 			return false;
 		}
 
-		return update_test();
+		return create_spheres();
 	}
 
 	void clear(cgv::render::context& ctx)
@@ -88,14 +88,14 @@ public:
 
 	void create_gui()
 	{
-		add_decorator("GPGPU Filter Test", "heading");
+		add_decorator("GPGPU Filtering", "heading");
 
 		add_member_control(this, "Measure time", measure_time, "check");
 
 		add_member_control(this, "Primitive count", primitive_count, "value_slider", "min=1000;max=10000000;ticks=true");
-		connect_copy(add_button("Generate")->click, cgv::signal::rebind(this, &gpgpu_filter_test::update_test));
+		connect_copy(add_button("Generate")->click, cgv::signal::rebind(this, &stream_compaction::create_spheres));
 
-		connect_copy(add_button("Filter")->click, cgv::signal::rebind(this, &gpgpu_filter_test::apply_filter));
+		connect_copy(add_button("Filter")->click, cgv::signal::rebind(this, &stream_compaction::apply_filter));
 
 		//std::string options = "min=" + std::to_string(radius_min) + ";max=" + std::to_string(radius_max) + ";step=0.0001;ticks=true";
 		/*
@@ -116,53 +116,8 @@ public:
 		}
 	}
 
-	void apply_filter()
-	{
-		if(!get_context())
-			return;
-
-		cgv::render::context& ctx = *get_context();
-		
-		if(spheres.empty())
-			return;
-
-		if(!filter.is_initialized()) {
-			std::cout << "Error: GPU filter algorithm is not initialized" << std::endl;
-			return;
-		}
-
-		if(!copy_helper.is_initialized()) {
-			std::cout << "Error: GPU copy algorithm is not initialized" << std::endl;
-			return;
-		}
-
-		// Ensure the CPU side buffers are transferred to the GPU buffers before trying to access them with the GPU-based filter.
-		cgv::render::sphere_renderer& sr = ref_sphere_renderer(ctx);
-		spheres.early_transfer(ctx, sr);
-
-		auto& aam = spheres.ref_attribute_array_manager();
-		const cgv::render::vertex_buffer* positions_buffer = sr.get_vertex_buffer_ptr(ctx, aam, "position");
-		
-		if(positions_buffer) {
-			time_query.begin_scope();
-			// Filter the sphere positions from the render data and write the result to the scratch filtered positions buffer.
-			filter.dispatch(ctx, cgv::gpgpu::begin(*positions_buffer), cgv::gpgpu::end<cgv::vec3>(*positions_buffer), cgv::gpgpu::begin(filtered_positions_buffer));
-			// read back the count of filtered (copied) positions.
-			size_t filtered_count = 0;
-			filter.read_count(ctx, filtered_count);
-			double time = time_query.end_scope_and_collect();
-			std::cout << "Filtering done in " << (time / 1'000'000.0f) << " ms. Copied " << filtered_count << " elements." << std::endl;
-
-			// Copy the filtered positions back to the sphere render data positions buffer.
-			copy_helper.dispatch(ctx, cgv::gpgpu::begin(filtered_positions_buffer), cgv::gpgpu::begin(filtered_positions_buffer) + filtered_count, cgv::gpgpu::begin(*positions_buffer));
-			sphere_render_count = filtered_count;
-		}
-		
-		post_redraw();
-	}
-
-	bool update_test()
-	{
+private:
+	bool create_spheres() {
 		cgv::render::context* ctx = get_context();
 		if(!ctx)
 			return false;
@@ -193,12 +148,58 @@ public:
 
 		// -1 means to render all spheres
 		sphere_render_count = -1;
-		
+
 		post_redraw();
 		return true;
 	}
 
-private:
+	void apply_filter() {
+		if(!get_context())
+			return;
+
+		cgv::render::context& ctx = *get_context();
+
+		if(spheres.empty())
+			return;
+
+		if(!filter.is_initialized()) {
+			std::cout << "Error: GPU filter algorithm is not initialized" << std::endl;
+			return;
+		}
+
+		if(!copy_helper.is_initialized()) {
+			std::cout << "Error: GPU copy algorithm is not initialized" << std::endl;
+			return;
+		}
+
+		// Ensure the CPU side buffers are transferred to the GPU buffers before trying to access them with the GPU-based filter.
+		cgv::render::sphere_renderer& sr = ref_sphere_renderer(ctx);
+		spheres.early_transfer(ctx, sr);
+
+		auto& aam = spheres.ref_attribute_array_manager();
+		const cgv::render::vertex_buffer* positions_buffer = sr.get_vertex_buffer_ptr(ctx, aam, "position");
+
+		if(positions_buffer) {
+			if(measure_time)
+				time_query.begin_scope();
+			// Filter the sphere positions from the render data and write the result to the scratch filtered positions buffer.
+			filter.dispatch(ctx, cgv::gpgpu::begin(*positions_buffer), cgv::gpgpu::end<cgv::vec3>(*positions_buffer), cgv::gpgpu::begin(filtered_positions_buffer));
+			// read back the count of filtered (copied) positions.
+			size_t filtered_count = 0;
+			filter.read_count(ctx, filtered_count);
+			if(measure_time) {
+				double time = time_query.end_scope_and_collect();
+				std::cout << "Filtering done in " << (time / 1'000'000.0f) << " ms. Copied " << filtered_count << " elements." << std::endl;
+			}
+
+			// Copy the filtered positions back to the sphere render data positions buffer.
+			copy_helper.dispatch(ctx, cgv::gpgpu::begin(filtered_positions_buffer), cgv::gpgpu::begin(filtered_positions_buffer) + filtered_count, cgv::gpgpu::begin(*positions_buffer));
+			sphere_render_count = filtered_count;
+		}
+
+		post_redraw();
+	}
+
 	std::default_random_engine random_engine;
 
 	int primitive_count = 10000;
@@ -219,5 +220,5 @@ private:
 
 #include <cgv/base/register.h>
 
-/// register a factory to create new gpgpu filter tests
-cgv::base::factory_registration<gpgpu_filter_test> gpgpu_filter_test_fac("New/GPGPU/Filter test");
+/// register a factory to create new stream_compaction instances
+cgv::base::factory_registration<stream_compaction> stream_compaction_fac("New/GPGPU/Stream Compaction");
