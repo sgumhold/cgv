@@ -1,0 +1,35 @@
+#version 430
+
+#include "gpgpu_args.glcs"
+
+#ifdef CGV_USE_SNIPPETS
+layout(std430, binding = 0) readonly buffer input_buffer {
+	value_type data_in[];
+};
+
+layout(std430, binding = 1) writeonly buffer output_buffer {
+	value_type data_out[];
+};
+
+layout(std430, binding = 2) readonly buffer map_buffer {
+	uint map[];
+};
+
+layout(std140, binding = 0) uniform argument_buffer {
+	uint map_begin;
+	uint map_end;
+	uint input_begin;
+	uint output_begin;
+} u_args;
+
+layout(local_size_x = LOCAL_SIZE_X) in;
+void main() {
+	uint gid = gl_GlobalInvocationID.x;
+	uint idx = u_args.map_begin + gid;
+
+	if(idx < u_args.map_end) {
+		uint addr = map[idx];
+		data_out[u_args.output_begin + gid] = data_in[addr];
+	}
+}
+#endif
