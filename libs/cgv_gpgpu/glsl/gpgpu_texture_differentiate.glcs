@@ -8,20 +8,24 @@ layout(binding = 1) uniform writeonly IMAGE_TYPE output_image;
 
 uniform uvec3 u_size;
 uniform int u_channel = 0;
+uniform vec4 u_border_value;
 
 #ifdef USE_TRANSFORM
 	scalar_type operation(value_type element) {
 		//$cgv::operation
 	}
 
-	#define GET_VALUE_FUNC(IDX) operation(imageLoad(input_image, IDX))
+	#define GET_ARRAY_VALUE_FUNC(IDX) operation(imageLoad(input_image, IDX))
 
 #else
-	#define GET_VALUE_FUNC(IDX) imageLoad(input_image, IDX)[u_channel]
+	#define GET_ARRAY_VALUE_FUNC(IDX) imageLoad(input_image, IDX)[u_channel]
 #endif
 
-#define IMAGE_NAME input_image
-// The difference library must be included after all used identifiers have been declared.
+#define GET_ARRAY_BORDER_VALUE_FUNC() u_border_value[u_channel]
+#define GET_ARRAY_SIZE_FUNC() imageSize(input_image)
+
+#define WRAP_MODE TEXTURE_WRAP_MODE
+// The difference library must be included after all necessary identifiers have been declared.
 #include "gpgpu_discrete_difference_lib.glcs"
 
 vec4 safe_normalize(vec4 v) {
