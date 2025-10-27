@@ -754,6 +754,21 @@ unsigned int create_texture(const cgv::data::const_data_view& dv, unsigned level
 	return tex_id;
 }
 
+void read_texture(cgv::data::data_view& data, unsigned level) {
+	if(level == -1)
+		level = 0;
+
+	// Todo: Support arrays and cube maps.
+
+	unsigned nr_dim = data.get_format()->get_nr_dimensions();
+	unsigned char* data_ptr = data.get_ptr<unsigned char>();
+	
+	GLuint src_type, src_fmt;
+	unsigned nr_comp = configure_src_format(data, src_type, src_fmt, nullptr);
+
+	glGetTexImage(gl_tex_dim[nr_dim-1], level, src_fmt, src_type, data_ptr);
+}
+
 /// cover the current viewport with a textured quad using the textured default shader program or the one passed in the third parameter
 bool cover_screen(context& ctx, shader_program* prog_ptr, bool flip_tex_v_coord, float xmin, float ymin, float xmax, float ymax, float umin, float vmin, float umax, float vmax)
 {
