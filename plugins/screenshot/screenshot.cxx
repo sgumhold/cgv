@@ -452,6 +452,15 @@ bool screenshot::set_active_shot_by_index(size_t index) {
 	return false;
 }
 
+bool screenshot::deselect_active_shot() {
+	if(active_shot.lock()) {
+		set_active_shot(nullptr, false);
+		return true;
+	}
+	return false;
+}
+
+
 screenshot::capture_info screenshot::get_capture_state() const {
 	return capture_state;
 }
