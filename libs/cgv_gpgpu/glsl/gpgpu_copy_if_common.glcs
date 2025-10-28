@@ -10,7 +10,11 @@ layout(std430, binding = 0) readonly buffer input_buffer {
 };
 
 layout(std430, binding = 1) writeonly buffer output_buffer {
+#ifdef WRITE_INDICES
+	uint b_data_out[];
+#else
     value_type b_data_out[];
+#endif
 };
 
 layout(std430, binding = 2) buffer votes_buffer {
@@ -18,8 +22,8 @@ layout(std430, binding = 2) buffer votes_buffer {
 };
 
 layout(std430, binding = 3) buffer prefix_sums_buffer {
-	uint b_last_sum;
-    uint b_pad[3]; // padding (unused)
+	//uint b_last_sum;
+    //uint b_pad[3]; // padding (unused)
 	uint b_prefix_sums[];
 };
 
@@ -27,11 +31,15 @@ layout(std430, binding = 4) buffer block_sums_buffer {
 	uint b_block_sums[];
 };
 
+layout(std430, binding = 5) buffer last_sum_buffer {
+	uint b_last_sum[];
+};
+
 layout(std140, binding = 0) uniform argument_buffer {
 	uint input_begin;
 	uint input_end;
 	uint output_begin;
-	uint num_values; // the number of values in the input buffer
+	uint output_count_begin;
 	uint num_block_sums; // the number of blocksums
 	uint last_block_sum_idx; // the index of the last valid block sum
 } u_args;
