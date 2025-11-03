@@ -133,6 +133,8 @@ bool write_if::dispatch(cgv::render::context& ctx, device_buffer_iterator input_
 	glMemoryBarrier(GL_SHADER_STORAGE_BARRIER_BIT);
 	_scatter_kernel.disable(ctx);
 
+	optional_memory_barrier(output_count.buffer().type);
+
 	input_first.buffer().unbind(ctx, cgv::render::VertexBufferType::VBT_STORAGE, 0);
 	output_first.buffer().unbind(ctx, cgv::render::VertexBufferType::VBT_STORAGE, 1);
 	_votes_buffer.unbind(ctx, 2);

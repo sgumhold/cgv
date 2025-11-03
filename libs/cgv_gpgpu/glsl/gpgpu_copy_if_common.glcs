@@ -22,8 +22,6 @@ layout(std430, binding = 2) buffer votes_buffer {
 };
 
 layout(std430, binding = 3) buffer prefix_sums_buffer {
-	//uint b_last_sum;
-    //uint b_pad[3]; // padding (unused)
 	uint b_prefix_sums[];
 };
 
