@@ -1,3 +1,5 @@
+#version 330
+
 /** use these forward declarations in your shader to use classic 2/3/4d Perlin noise:
 float cnoise(vec2 x);
 float cnoise(vec3 x);
