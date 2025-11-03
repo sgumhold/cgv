@@ -3,39 +3,13 @@
 namespace cgv {
 	namespace render {
 
-		void a_buffer::ensure_buffer(GLuint& buffer, GLenum target, GLsizeiptr size, const void* data, GLenum usage)
-		{
-			if (buffer == 0) {
-				glGenBuffers(1, &buffer);
-				glBindBuffer(target, buffer);
-				glBufferData(target, size, data, usage);
-				glBindBuffer(target, 0);
-			}
-		}
-
-		void a_buffer::destruct_buffer(GLuint& buffer)
-		{
-			if (buffer != 0) {
-				glDeleteBuffers(1, &buffer);
-				buffer = 0;
-			}
-		}
-		void a_buffer::destruct_buffers(context& ctx)
-		{
-			destruct_buffer(node_buffer_counter);
-			destruct_buffer(head_pointer_buffer);
-			destruct_buffer(node_buffer);
-		}
 		void a_buffer::ensure_buffers(context& ctx)
 		{
 			unsigned num_pixels = ctx.get_width() * ctx.get_height();
 			// Generate buffers for the a-buffer transparency implementation
-			ensure_buffer(node_buffer_counter, GL_ATOMIC_COUNTER_BUFFER, sizeof(GLuint), NULL, GL_STATIC_DRAW); // atomic counter variable
-			ensure_buffer(head_pointer_buffer, GL_SHADER_STORAGE_BUFFER, num_pixels * sizeof(GLuint), NULL); // linked list head pointer buffer
-			if (node_buffer != 0 && last_nodes_per_pixel != nodes_per_pixel)
-				destruct_buffer(node_buffer);
-			ensure_buffer(node_buffer, GL_SHADER_STORAGE_BUFFER, nodes_per_pixel * 3 * num_pixels * sizeof(GLuint), NULL); // buffer to store linked list nodes, each with 3 32-bit values; reserve space for as much as 64 fragments per pixel
-			last_nodes_per_pixel = nodes_per_pixel;
+			node_counter_buffer.create_or_resize(ctx, sizeof(GLuint));
+			head_pointer_buffer.create_or_resize(ctx, num_pixels * sizeof(GLuint));
+			node_buffer.create_or_resize(ctx, nodes_per_pixel * 3 * num_pixels * sizeof(GLuint));
 		}
 		void a_buffer::update_shader_program_options(shader_compile_options& options, bool include_binding_points)
 		{
@@ -58,10 +32,6 @@ namespace cgv {
 			depth_tex.set_mag_filter(TF_NEAREST);
 			fragments_per_pixel = _fragments_per_pixel;
 			nodes_per_pixel = _nodes_per_pixel;
-			last_nodes_per_pixel = 0;
-			node_buffer_counter = 0;
-			head_pointer_buffer = 0;
-			node_buffer = 0;
 
 			depth_tex_unit = _depth_tex_unit;
 			node_counter_binding_point = _node_counter_binding_point;
@@ -85,29 +55,27 @@ namespace cgv {
 			clear_ssbo_prog.destruct(ctx);
 			a_buffer_prog.destruct(ctx);
 			depth_tex.destruct(ctx);
-			destruct_buffers(ctx);
+			node_counter_buffer.destruct(ctx);
+			head_pointer_buffer.destruct(ctx);
+			node_buffer.destruct(ctx);
 		}
 		void a_buffer::init_frame(context& ctx)
 		{
 			// Ensure depth texture and node buffers of correct size
-			if (depth_tex.is_created() && (ctx.get_width() != depth_tex.get_width() || ctx.get_height() != depth_tex.get_height())) {
+			if (depth_tex.is_created() && (ctx.get_width() != depth_tex.get_width() || ctx.get_height() != depth_tex.get_height()))
 				depth_tex.destruct(ctx);
-				destruct_buffer(head_pointer_buffer);
-				destruct_buffer(node_buffer);
-			}
+
 			if (!depth_tex.is_created())
 				depth_tex.create(ctx, TT_2D, ctx.get_width(), ctx.get_height());
+
 			ensure_buffers(ctx);
 
 			// Clear the atomic counter
-			glBindBuffer(GL_ATOMIC_COUNTER_BUFFER, node_buffer_counter);
-			GLuint* ptr = (GLuint*)glMapBufferRange(GL_ATOMIC_COUNTER_BUFFER, 0, sizeof(GLuint), GL_MAP_WRITE_BIT | GL_MAP_INVALIDATE_BUFFER_BIT | GL_MAP_UNSYNCHRONIZED_BIT);
-			memset(ptr, 0, sizeof(GLuint));
-			glUnmapBuffer(GL_ATOMIC_COUNTER_BUFFER);
-			glBindBuffer(GL_ATOMIC_COUNTER_BUFFER, 0);
+			const GLuint zero = 0;
+			node_counter_buffer.replace(ctx, 0, &zero, 1);
 
-			// Clear the head pointer buffer
-			glBindBufferBase(GL_SHADER_STORAGE_BUFFER, 0, head_pointer_buffer);
+			// Clear the head pointer buffer using a compute shader
+			head_pointer_buffer.bind(ctx, 0);
 			unsigned buffer_size = ctx.get_width() * ctx.get_height();
 			clear_ssbo_prog.enable(ctx);
 			clear_ssbo_prog.set_uniform(ctx, "size", buffer_size);
@@ -115,9 +83,9 @@ namespace cgv {
 			glDispatchCompute(GLuint(ceil(buffer_size / 4)), 1, 1);
 			glMemoryBarrier(GL_SHADER_STORAGE_BARRIER_BIT);
 			clear_ssbo_prog.disable(ctx);
-			glBindBufferBase(GL_SHADER_STORAGE_BUFFER, 0, 0);
+			head_pointer_buffer.unbind(ctx, 0);
 
-			// check for rebuild of program
+			// Check if the shader program needs to be rebuilt
 			update_shader_program_options(prog_options, false);
 			if (prog_options != last_prog_options) {
 				if (a_buffer_prog.is_created())
@@ -153,36 +121,38 @@ namespace cgv {
 				std::cerr << "ERROR in a_buffer::enable(): uniform sampler2D depth_tex not found in program." << std::endl;
 				return false;
 			}
-			// Bind buffers for first a-buffer pass			
-			glBindBufferBase(GL_ATOMIC_COUNTER_BUFFER, node_counter_binding_point, node_buffer_counter);
-			glBindBufferBase(GL_SHADER_STORAGE_BUFFER, head_pointers_binding_point, head_pointer_buffer);
-			glBindBufferBase(GL_SHADER_STORAGE_BUFFER, nodes_binding_point, node_buffer);
+			// Bind buffers for first a-buffer pass
+			node_counter_buffer.bind(ctx, node_counter_binding_point);
+			head_pointer_buffer.bind(ctx, head_pointers_binding_point);
+			node_buffer.bind(ctx, nodes_binding_point);
+
 			return true;
 		}
 		// return current number of nodes in node buffer
-		size_t a_buffer::disable(context& ctx)
+		void a_buffer::disable(context& ctx, size_t* node_count)
 		{
 			// Unbind texture and buffers
 			depth_tex.disable(ctx);
-			glBindBufferBase(GL_ATOMIC_COUNTER_BUFFER, node_counter_binding_point, 0);
-			glBindBufferBase(GL_SHADER_STORAGE_BUFFER, head_pointers_binding_point, 0);
-			glBindBufferBase(GL_SHADER_STORAGE_BUFFER, nodes_binding_point, 0);
 
-			// Clear atomic counter, read it back and use it as return value
-			glBindBuffer(GL_ATOMIC_COUNTER_BUFFER, node_buffer_counter);
-			GLuint* ptr = (GLuint*)glMapBufferRange(GL_ATOMIC_COUNTER_BUFFER, 0, sizeof(GLuint), GL_MAP_READ_BIT);
-			GLuint node_cnt = *ptr;
-			glUnmapBuffer(GL_ATOMIC_COUNTER_BUFFER);
-			glBindBuffer(GL_ATOMIC_COUNTER_BUFFER, 0);
-			return node_cnt;
+			node_counter_buffer.unbind(ctx, node_counter_binding_point);
+			head_pointer_buffer.unbind(ctx, head_pointers_binding_point);
+			node_buffer.unbind(ctx, nodes_binding_point);
+
+			// Read back node count if requested
+			if(node_count) {
+				GLuint temp = 0;
+				node_counter_buffer.copy(ctx, 0, &temp, 1);
+				*node_count = temp;
+			}
 		}
 		void a_buffer::finish_frame(context& ctx)
 		{
-			glEnable(GL_BLEND);
-			glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+			ctx.push_blend_state();
+			ctx.enable_blending();
+			ctx.set_blend_func_back_to_front();
 
-			glBindBufferBase(GL_SHADER_STORAGE_BUFFER, 0, head_pointer_buffer);
-			glBindBufferBase(GL_SHADER_STORAGE_BUFFER, 1, node_buffer);
+			head_pointer_buffer.bind(ctx, 0);
+			node_buffer.bind(ctx, 1);
 
 			a_buffer_prog.enable(ctx);
 			a_buffer_prog.set_uniform(ctx, "viewport_dims", ivec2(ctx.get_width(), ctx.get_height()));
@@ -190,10 +160,10 @@ namespace cgv {
 			glDrawArrays(GL_TRIANGLE_STRIP, 0, 4);
 			a_buffer_prog.disable(ctx);
 
-			glBindBufferBase(GL_SHADER_STORAGE_BUFFER, 0, 0);
-			glBindBufferBase(GL_SHADER_STORAGE_BUFFER, 1, 0);
+			head_pointer_buffer.unbind(ctx, 0);
+			node_buffer.unbind(ctx, 1);
 
-			glDisable(GL_BLEND);
+			ctx.pop_blend_state();
 		}
 	}
 }
