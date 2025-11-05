@@ -1314,9 +1314,9 @@ public:
 	virtual void set_blend_func(BlendFunction src_factor, BlendFunction dst_factor);
 	/// set the blend function separately for color and alpha
 	virtual void set_blend_func_separate(BlendFunction src_color_factor, BlendFunction dst_color_factor, BlendFunction src_alpha_factor, BlendFunction dst_alpha_factor);
-	/// set the default blend function for front to back blending
+	/// set the default blend function for front to back blending (source = BF_ONE_MINUS_DST_ALPHA, destination = BF_ONE)
 	void set_blend_func_front_to_back();
-	/// set the default blend function for back to front blending
+	/// set the default blend function for back to front blending (source = BF_SRC_ALPHA, destination = BF_ONE_MINUS_SRC_ALPHA)
 	void set_blend_func_back_to_front();
 	/// enable blending
 	virtual void enable_blending();

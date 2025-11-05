@@ -1,3 +1,5 @@
+#version 330
+
 /** use these forward declarations in your shader to use 2/3/4d Perlin p_noise:
 float pnoise(vec2 x);
 float pnoise(vec2 x, float zoom, float time);
