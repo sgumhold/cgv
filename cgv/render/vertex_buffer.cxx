@@ -68,8 +68,11 @@ bool vertex_buffer::is_created() const
 
 bool vertex_buffer::resize(const context& ctx, size_t size_in_bytes)
 {
-	this->size_in_bytes = size_in_bytes;
-	return ctx.vertex_buffer_resize(*this, 0, size_in_bytes);
+	if(this->size_in_bytes != size_in_bytes) {
+		this->size_in_bytes = size_in_bytes;
+		return ctx.vertex_buffer_resize(*this, 0, size_in_bytes);
+	}
+	return true;
 }
 
 bool vertex_buffer::create_or_resize(const context& ctx, size_t size_in_bytes)
