@@ -794,7 +794,7 @@ bool stereo_view_interactor::handle(event& e)
 						cgv::dvec3 p;
 						double z = get_z_and_unproject(ctx, x_gl, y_gl, p);
 						if (z > 0 && z < 1) {
-							const auto interaction = view_interaction::focus_change((p - view::focus).length());
+							const auto interaction = view_interaction::focus_change_now((p - view::focus).length());
 							if (y_view_angle > 0.1) {
 								cgv::dvec3 e = view_ptr->get_eye();
 								double l_old = (e - view_ptr->get_focus()).length();
@@ -850,7 +850,7 @@ bool stereo_view_interactor::handle(event& e)
 					view_ptr->rotate(axis.x(), axis.y(), view_ptr->get_depth_of_focus());
 					update_vec_member(view_up_dir);
 					update_vec_member(view_dir);
-					on_view_interaction(view_interaction::orbit(axis.length()));
+					on_view_interaction(view_interaction::orbit_now(axis.length()));
 					post_redraw();
 					return true;
 				}
@@ -865,7 +865,7 @@ bool stereo_view_interactor::handle(event& e)
 				const double angle = ds / rotate_sensitivity;
 				view_ptr->roll(angle);
 				update_vec_member(view_up_dir);
-				on_view_interaction(view_interaction::roll(angle));
+				on_view_interaction(view_interaction::roll_now(angle));
 				post_redraw();
 				return true;
 			}
@@ -877,7 +877,7 @@ bool stereo_view_interactor::handle(event& e)
 					+ view_ptr->get_y_extent_at_focus()*pan.y()*y
 				);
 				update_vec_member(view::focus);
-				on_view_interaction(view_interaction::pan(pan.length()));
+				on_view_interaction(view_interaction::pan_now(pan.length()));
 				post_redraw();
 				return true;
 			}
@@ -926,7 +926,7 @@ bool stereo_view_interactor::handle(event& e)
 					cgv::dvec3 p;
 					double z = get_z_and_unproject(ctx, x_gl, y_gl, p);
 					if (z > 0 && z < 1) {
-						const auto interaction = view_interaction::focus_change_from_zoom(
+						const auto interaction = view_interaction::focus_change_from_zoom_now(
 							(p - view::focus).length()
 						);
 						view_ptr->set_focus(p + scale * (view_ptr->get_focus() - p));
@@ -937,7 +937,7 @@ bool stereo_view_interactor::handle(event& e)
 				view_ptr->set_y_extent_at_focus(view_ptr->get_y_extent_at_focus() * scale);
 				update_member(&y_extent_at_focus);
 				const double focus_dist = get_depth_of_focus();
-				on_view_interaction(view_interaction::zoom(
+				on_view_interaction(view_interaction::zoom_now(
 					focus_dist > focus_dist_prev ? -focus_dist/focus_dist_prev + 1 : focus_dist_prev/focus_dist - 1
 				));
 				post_redraw();
