@@ -1,5 +1,6 @@
 #pragma once
 
+#include <chrono>
 #include <cgv/base/base.h>
 #include <cgv/render/drawable.h>
 #include <cgv/render/stereo_view.h>
@@ -25,7 +26,11 @@ enum StereoMousePointer {
 extern CGV_API cgv::reflect::enum_reflection_traits<StereoMousePointer> get_reflection_traits(const StereoMousePointer&);
 
 /// struct describing a view interaction
-struct view_interaction {
+struct view_interaction
+{
+	/// the type used for timestamps
+	using time_point = std::chrono::time_point<std::chrono::system_clock>;
+
 	/// the kind of this interaction
 	enum class Kind {
 		/// the camera got orbited around the focus, providing the @ref view_interaction::amount of rotation in radians
@@ -51,28 +56,56 @@ struct view_interaction {
 		FocusChangeFromZoom,
 	} kind;
 
+	/// The system clock timestamp of the interaction
+	time_point time;
+
 	/// the "amount" of interaction, exact semantics depend on @ref #kind
 	double amount;
 
-	inline view_interaction(const Kind kind, const double amount) : kind(kind), amount(amount) {}
+	inline view_interaction(const Kind kind, const time_point &timestamp, const double amount)
+		: time(timestamp), kind(kind), amount(amount)
+	{}
 
-	inline static view_interaction orbit (const double radians) {
-		return {Kind::Orbit, radians};
+	template <class TP>
+	inline static std::chrono::milliseconds ms_from_timepoint (const TP &timepoint) {
+		return std::chrono::duration_cast<std::chrono::milliseconds>(timepoint.time_since_epoch());
 	}
-	inline static view_interaction pan (const double amount) {
-		return {Kind::Pan, amount};
+
+	inline static view_interaction orbit (const time_point &time, const double radians) {
+		return {Kind::Orbit, time, radians};
 	}
-	inline static view_interaction roll (const double radians) {
-		return {Kind::Roll, radians};
+	inline static view_interaction orbit_now (const double radians) {
+		return orbit(std::chrono::high_resolution_clock::now(), radians);
 	}
-	inline static view_interaction zoom (const double fraction) {
-		return {Kind::Zoom, fraction};
+	inline static view_interaction pan (const time_point &time, const double amount) {
+		return {Kind::Pan, time, amount};
 	}
-	inline static view_interaction focus_change (const double distance) {
-		return {Kind::FocusChange, distance};
+	inline static view_interaction pan_now (const double amount) {
+		return pan(std::chrono::high_resolution_clock::now(), amount);
 	}
-	inline static view_interaction focus_change_from_zoom (const double distance) {
-		return {Kind::FocusChangeFromZoom, distance};
+	inline static view_interaction roll (const time_point &time, const double radians) {
+		return {Kind::Roll, time, radians};
+	}
+	inline static view_interaction roll_now (const double radians) {
+		return roll(std::chrono::high_resolution_clock::now(), radians);
+	}
+	inline static view_interaction zoom (const time_point &time, const double fraction) {
+		return {Kind::Zoom, time, fraction};
+	}
+	inline static view_interaction zoom_now (const double fraction) {
+		return zoom(std::chrono::high_resolution_clock::now(), fraction);
+	}
+	inline static view_interaction focus_change (const time_point &time, const double distance) {
+		return {Kind::FocusChange, time, distance};
+	}
+	inline static view_interaction focus_change_now (const double distance) {
+		return focus_change(std::chrono::high_resolution_clock::now(), distance);
+	}
+	inline static view_interaction focus_change_from_zoom (const time_point &time, const double distance) {
+		return {Kind::FocusChangeFromZoom, time, distance};
+	}
+	inline static view_interaction focus_change_from_zoom_now (const double distance) {
+		return focus_change_from_zoom(std::chrono::high_resolution_clock::now(), distance);
 	}
 };
 
