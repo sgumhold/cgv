@@ -24,6 +24,58 @@ enum StereoMousePointer {
 
 extern CGV_API cgv::reflect::enum_reflection_traits<StereoMousePointer> get_reflection_traits(const StereoMousePointer&);
 
+/// struct describing a view interaction
+struct view_interaction {
+	/// the kind of this interaction
+	enum class Kind {
+		/// the camera got orbited around the focus, providing the @ref view_interaction::amount of rotation in radians
+		Orbit,
+
+		/// the camera got panned due to user control input, providing the @ref view_interaction::amount of movement in
+		/// screen space units
+		Pan,
+
+		/// the camera got rolled around its forward axis, providing the @ref view_interaction::amount of roll in
+		/// radians
+		Roll,
+
+		/// the camera got zoomed, providing the @ref view_interaction::amount of zoom as a fraction of the current
+		/// focus distance
+		Zoom,
+
+		/// the camera focus got changed, providing the @ref view_interaction::amount of change in world space units
+		FocusChange,
+
+		/// the camera focus got changed implicitly by a zoom action, providing the @ref view_interaction::amount of
+		/// change in world space units
+		FocusChangeFromZoom,
+	} kind;
+
+	/// the "amount" of interaction, exact semantics depend on @ref #kind
+	double amount;
+
+	inline view_interaction(const Kind kind, const double amount) : kind(kind), amount(amount) {}
+
+	inline static view_interaction orbit (const double radians) {
+		return {Kind::Orbit, radians};
+	}
+	inline static view_interaction pan (const double amount) {
+		return {Kind::Pan, amount};
+	}
+	inline static view_interaction roll (const double radians) {
+		return {Kind::Roll, radians};
+	}
+	inline static view_interaction zoom (const double fraction) {
+		return {Kind::Zoom, fraction};
+	}
+	inline static view_interaction focus_change (const double distance) {
+		return {Kind::FocusChange, distance};
+	}
+	inline static view_interaction focus_change_from_zoom (const double distance) {
+		return {Kind::FocusChangeFromZoom, distance};
+	}
+};
+
 /// class that manages a stereoscopic view
 class CGV_API stereo_view_interactor : 
 	public cgv::base::node, 
@@ -140,6 +192,9 @@ protected:
 	cgv::ivec4 split_viewport(const cgv::ivec4 vp, int col_idx, int row_idx) const;
 	//@}
 public:
+	/// signal when the camera gets manipulated by the user (useful e.g. when instrumenting for user studies etc.)
+	cgv::signal::signal<const view_interaction&> on_view_interaction;
+
 	///
 	stereo_view_interactor(const char* name);
 	/**@name viewport splitting*/

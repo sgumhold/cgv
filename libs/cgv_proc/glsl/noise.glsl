@@ -1,3 +1,5 @@
+#version 330
+
 /** use these forward declarations in your shader to use different variants of generic 1/2/3d noise:
 float noise(float v);
 float noise2(float v);
