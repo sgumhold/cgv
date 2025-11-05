@@ -75,37 +75,37 @@ struct view_interaction
 		return {Kind::Orbit, time, radians};
 	}
 	inline static view_interaction orbit_now (const double radians) {
-		return orbit(std::chrono::high_resolution_clock::now(), radians);
+		return orbit(std::chrono::system_clock::now(), radians);
 	}
 	inline static view_interaction pan (const time_point &time, const double amount) {
 		return {Kind::Pan, time, amount};
 	}
 	inline static view_interaction pan_now (const double amount) {
-		return pan(std::chrono::high_resolution_clock::now(), amount);
+		return pan(std::chrono::system_clock::now(), amount);
 	}
 	inline static view_interaction roll (const time_point &time, const double radians) {
 		return {Kind::Roll, time, radians};
 	}
 	inline static view_interaction roll_now (const double radians) {
-		return roll(std::chrono::high_resolution_clock::now(), radians);
+		return roll(std::chrono::system_clock::now(), radians);
 	}
 	inline static view_interaction zoom (const time_point &time, const double fraction) {
 		return {Kind::Zoom, time, fraction};
 	}
 	inline static view_interaction zoom_now (const double fraction) {
-		return zoom(std::chrono::high_resolution_clock::now(), fraction);
+		return zoom(std::chrono::system_clock::now(), fraction);
 	}
 	inline static view_interaction focus_change (const time_point &time, const double distance) {
 		return {Kind::FocusChange, time, distance};
 	}
 	inline static view_interaction focus_change_now (const double distance) {
-		return focus_change(std::chrono::high_resolution_clock::now(), distance);
+		return focus_change(std::chrono::system_clock::now(), distance);
 	}
 	inline static view_interaction focus_change_from_zoom (const time_point &time, const double distance) {
 		return {Kind::FocusChangeFromZoom, time, distance};
 	}
 	inline static view_interaction focus_change_from_zoom_now (const double distance) {
-		return focus_change_from_zoom(std::chrono::high_resolution_clock::now(), distance);
+		return focus_change_from_zoom(std::chrono::system_clock::now(), distance);
 	}
 };
 
