@@ -1,0 +1,146 @@
+#version 430
+
+#include "gpgpu_scan_common.glcs"
+
+#ifdef CGV_USE_SNIPPETS
+#ifdef USE_SHARED_MEMORY
+
+CGV_SBB_GROUP_LOAD_STRIPED_2X(group_load, LOCAL_SIZE_X, value_type, b_group_sums)
+CGV_SBB_GROUP_STORE_STRIPED_2X(group_store, LOCAL_SIZE_X, value_type, b_group_sums)
+
+#define N (2 * LOCAL_SIZE_X)
+shared value_type s_scan[N + CONFLICT_FREE_OFFSET(N)]; // make room for all values plus some space for offset addresses
+
+void sweep_up(in int tid, inout int offset) {
+	for(uint d = N >> 1; d > 0; d >>= 1) {
+        barrier();
+
+        if(tid < d) {
+			int ai = offset*(2*tid + 1) - 1;
+			int bi = offset*(2*tid + 2) - 1;
+
+			ai += CONFLICT_FREE_OFFSET(ai);
+			bi += CONFLICT_FREE_OFFSET(bi);
+
+            s_scan[bi] += s_scan[ai];
+        }
+        offset += offset;
+    }
+}
+
+void sweep_down(in int tid, inout int offset) {
+	for(int d = 1; d < N; d <<= 1) {
+        offset >>= 1;
+        barrier();
+
+        if(tid < d) {
+			int ai = offset*(2*tid + 1) - 1;
+			int bi = offset*(2*tid + 2) - 1;
+
+			ai += CONFLICT_FREE_OFFSET(ai);
+			bi += CONFLICT_FREE_OFFSET(bi);
+
+            value_type temp = s_scan[ai];
+            s_scan[ai] = s_scan[bi];
+            s_scan[bi] += temp;
+        }
+    }
+}
+
+layout(local_size_x = LOCAL_SIZE_X) in;
+void main() {
+	int total_count = int(u_args.num_group_sums);
+	int part_size = 2 * int(gl_WorkGroupSize.x);
+	int part_count = (total_count + part_size - 1) / part_size;
+
+	int tid = int(gl_LocalInvocationID.x);
+	int part_offset = 0;
+	
+	value_type values[2];
+	value_type temp = value_type(0);
+	value_type part_sum = value_type(0);
+
+	for(int part = 0; part < part_count; ++part) {
+		values[0] = value_type(0);
+		values[1] = value_type(0);
+
+		if(part < part_count - 1)
+			group_load(tid + part_offset, values);
+
+		if(part == part_count - 1)
+			group_load(tid + part_offset, values, total_count);
+
+		int stripe_offset = int(gl_WorkGroupSize.x);
+		int ai = tid;
+		int bi = tid + stripe_offset;
+		ai += CONFLICT_FREE_OFFSET(ai);
+		bi += CONFLICT_FREE_OFFSET(bi);
+		s_scan[ai] = values[0];
+		s_scan[bi] = values[1];
+		barrier();
+
+		int offset = 1;
+		sweep_up(tid, offset);
+
+		barrier();
+		temp = part_sum + s_scan[N - 1 + CONFLICT_FREE_OFFSET(N - 1)];
+		
+		if(tid < 1)
+			s_scan[N - 1 + CONFLICT_FREE_OFFSET(N - 1)] = value_type(0);
+
+		sweep_down(tid, offset);
+		barrier();
+	
+		values[0] = s_scan[ai] + part_sum;
+		values[1] = s_scan[bi] + part_sum;
+
+		if(part < part_count - 1)
+			group_store(tid + part_offset, values);
+
+		if(part == part_count - 1)
+			group_store(tid + part_offset, values, total_count);
+
+		part_sum = temp;
+		part_offset += part_size;
+	}
+}
+
+#else // USE_SHARED_MEMORY
+
+layout(local_size_x = LOCAL_SIZE_X) in;
+void main() {
+	int tid = int(gl_LocalInvocationID.x);
+	int bucket_offset = int(u_args.num_group_sums * gl_WorkGroupID.x - 1);
+    int offset = 1;
+
+    for(int d = int(u_args.num_group_sums) >> 1; d > 0; d >>= 1) {
+        barrier();
+
+        for(int idx = tid; idx < d; idx += int(gl_WorkGroupSize.x)) {
+            int ai = offset * (idx + idx + 1) + bucket_offset;
+            int bi = offset * (idx + idx + 2) + bucket_offset;
+
+            b_group_sums[bi] += b_group_sums[ai];
+        }
+        offset += offset;
+    }
+
+    if(tid == 0)
+        b_group_sums[u_args.num_group_sums + bucket_offset] = 0;
+
+    for(int d = 1; d < u_args.num_group_sums; d <<= 1) {
+        offset >>= 1;
+        barrier();
+
+        for(int idx = tid; idx < d; idx += int(gl_WorkGroupSize.x)) {
+            int ai = offset * (idx + idx + 1) + bucket_offset;
+            int bi = offset * (idx + idx + 2) + bucket_offset;
+            
+            int t = b_group_sums[ai];
+            b_group_sums[ai] = b_group_sums[bi];
+            b_group_sums[bi] += t;
+        }
+    }
+}
+#endif // USE_SHARED_MEMORY
+#endif // CGV_USE_SNIPPETS
