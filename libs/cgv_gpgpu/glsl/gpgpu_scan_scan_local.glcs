@@ -1,0 +1,104 @@
+#version 430
+
+//#pragma optionNV(inline all)
+//#pragma optionNV(unroll all)
+
+#include "gpgpu_scan_common.glcs"
+
+#ifdef CGV_USE_SNIPPETS
+
+CGV_SBB_GROUP_LOAD_STRIPED_2X(group_load, LOCAL_SIZE_X, value_type, b_data_in)
+CGV_SBB_GROUP_STORE_STRIPED_2X(group_store, LOCAL_SIZE_X, value_type, b_data_out)
+
+#define N (2 * LOCAL_SIZE_X)
+shared value_type s_scan[N + CONFLICT_FREE_OFFSET(N)]; // make room for all values plus some space for offset addresses
+
+void sweep_up(in int tid, inout int offset) {
+	for(uint d = N >> 1; d > 0; d >>= 1) {
+        barrier();
+
+        if(tid < d) {
+			int ai = offset*(2*tid + 1) - 1;
+			int bi = offset*(2*tid + 2) - 1;
+
+			ai += CONFLICT_FREE_OFFSET(ai);
+			bi += CONFLICT_FREE_OFFSET(bi);
+
+            s_scan[bi] += s_scan[ai];
+        }
+        offset += offset;
+    }
+}
+
+void sweep_down(in int tid, inout int offset) {
+	for(int d = 1; d < N; d <<= 1) {
+        offset >>= 1;
+        barrier();
+
+        if(tid < d) {
+			int ai = offset*(2*tid + 1) - 1;
+			int bi = offset*(2*tid + 2) - 1;
+
+			ai += CONFLICT_FREE_OFFSET(ai);
+			bi += CONFLICT_FREE_OFFSET(bi);
+
+            value_type temp = s_scan[ai];
+            s_scan[ai] = s_scan[bi];
+            s_scan[bi] += temp;
+        }
+    }
+}
+
+layout(local_size_x = LOCAL_SIZE_X) in;
+void main() {
+    int tid = int(gl_LocalInvocationID.x);
+	int part_offset = 2 * int(gl_WorkGroupSize.x * gl_WorkGroupID.x);
+
+	value_type values[2];
+	values[0] = value_type(0);
+	values[1] = value_type(0);
+
+	int count = int(u_args.input_end) - int(u_args.input_begin);
+
+	if(gl_WorkGroupID.x < gl_NumWorkGroups.x - 1)
+		group_load(tid + part_offset + int(u_args.input_begin), values);
+
+	if(gl_WorkGroupID.x == gl_NumWorkGroups.x - 1)
+		group_load(tid + part_offset + int(u_args.input_begin), values, int(u_args.input_end));
+
+	int stripe_offset = int(gl_WorkGroupSize.x);
+	int ai = tid;
+	int bi = tid + stripe_offset;
+	ai += CONFLICT_FREE_OFFSET(ai);
+	bi += CONFLICT_FREE_OFFSET(bi);
+	s_scan[ai] = values[0];
+    s_scan[bi] = values[1];
+	barrier();
+
+	int offset = 1;
+	sweep_up(tid, offset);
+
+    if(tid < 1) {
+		b_group_sums[gl_WorkGroupID.x] = s_scan[N - 1 + CONFLICT_FREE_OFFSET(N - 1)];
+        s_scan[N - 1 + CONFLICT_FREE_OFFSET(N - 1)] = u_init;
+    }
+
+	sweep_down(tid, offset);
+    barrier();
+
+	#ifdef INCLUSIVE_SCAN
+		values[0] += s_scan[ai];
+		values[1] += s_scan[bi];
+	#else
+		values[0] = s_scan[ai];
+		values[1] = s_scan[bi];
+	#endif
+
+	if(gl_WorkGroupID.x < gl_NumWorkGroups.x - 1)
+		group_store(tid + part_offset + int(u_args.output_begin), values);
+
+	if(gl_WorkGroupID.x == gl_NumWorkGroups.x - 1)
+		group_store(tid + part_offset + int(u_args.output_begin), values, int(u_args.output_begin) + count);
+}
+
+#endif
