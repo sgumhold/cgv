@@ -34,8 +34,12 @@ value_type operation(value_type lhs, value_type rhs) {
 #define APPLY_OP_SHARED(N) s_data[tid] = operation(s_data[tid], s_data[tid + (N)]);
 
 void warp_reduce(uint tid) {
-	// TODO: comment: reduce in warp so if(tid < i) not needed. memorybarrier needed because compiler may cache some values in registers and does not read latest values from shared mem
-	// CUDA can use a volatile modifier on the shared mem, but glsl cannot.
+	// Since only a single warp is active we can directly use APPLY_OP_SHARED and forego the check if tid < N
+	// that is used in REDUCE. This means we perform redundant work across threads but since a warp executes
+	// in lockstep this does not actually incur a runtime penalty.
+	// The memoryBarrierShared is still needed because the compiler may cache some intermediate values so the
+	// successive iterations would not read the latest values from the shared memory. Unlike some other shader
+	// languages, GLSL does not allow a volatile keyword on shared memory.
 #if LOCAL_SIZE_X >= 64
 	APPLY_OP_SHARED(32)
 	memoryBarrierShared();

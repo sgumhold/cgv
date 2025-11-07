@@ -351,6 +351,8 @@ struct texture {};
 
 namespace traits {
 
+// Todo: Make use of the inline keyword if the framework is ever updated to at least C++17.
+
 template<class T>
 /*inline*/ constexpr bool is_instance_of_fvec_v = std::false_type{};
 
@@ -363,7 +365,7 @@ template<class T>
 template<class T, cgv::type::uint32_type N, cgv::type::uint32_type M>
 /*inline*/ constexpr bool is_instance_of_fmat_v<cgv::math::fmat<T, N, M>> = std::true_type{};
 
-// TODO: Move is_instance_of(_v) to cgv/type/traits (can use inline if _HAS_CXX17 is defined)
+// TODO: Move is_instance_of(_v) to cgv/type/traits.
 template<class T, template<class...> class U>
 /*inline*/ constexpr bool is_instance_of_v = std::false_type{};
 
