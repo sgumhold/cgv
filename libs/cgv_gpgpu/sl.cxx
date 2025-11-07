@@ -167,7 +167,6 @@ size_t data_type::size_in_bytes() const {
 			max_alignment = std::max(member_alignment, max_alignment);
 
 			if(size > 0)
-				// TODO: put this and next_power of two in math lib and namespace
 				size = cgv::math::next_multiple_k_greater_than_n(member_alignment, size);
 
 			size_t member_size = member.type().size_in_bytes();

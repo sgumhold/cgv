@@ -2,8 +2,6 @@
 
 //?#include "gpgpu_args.glcs"
 
-#define LOCAL_HIST_GROUP_SIZE 64U // The size of a local histogram group
-
 #ifdef CGV_USE_SNIPPETS
 layout(std430, binding = 0) readonly buffer input_buffer {
     value_type b_data_in[];

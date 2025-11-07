@@ -13,7 +13,7 @@ addProjectDeps=[
 	"rect_pack",
 	
 	"cgv_viewer", 
-	"cg_fltk", "crg_stereo_view"
+	"cg_fltk", "crg_stereo_view", "cmf_tt_gl_font"
 ];
 
 // add source files of label manager without adding the whole cg_nui library
