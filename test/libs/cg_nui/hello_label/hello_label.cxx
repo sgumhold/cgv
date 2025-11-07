@@ -22,10 +22,10 @@ protected:
 	cgv::nui::label_manager lm;
 
 	// store label placements for rectangle renderer
-	std::vector<vec3> label_positions;
-	std::vector<quat> label_orientations;
-	std::vector<vec2> label_extents;
-	std::vector<vec4> label_texture_ranges;
+	std::vector<cgv::vec3> label_positions;
+	std::vector<cgv::quat> label_orientations;
+	std::vector<cgv::vec2> label_extents;
+	std::vector<cgv::vec4> label_texture_ranges;
 
 	// scale used to translate texture coordinate extents to world extents
 	float label_scale;
@@ -53,7 +53,7 @@ protected:
 		label_texture_ranges.clear();
 		for (uint32_t li = 0; li < lm.get_nr_labels(); ++li) {
 			const auto& l = lm.get_label(li);
-			label_extents.push_back(vec2(label_scale * l.get_width(), label_scale * l.get_height()));
+			label_extents.push_back(cgv::vec2(label_scale * l.get_width(), label_scale * l.get_height()));
 			label_texture_ranges.push_back(lm.get_texcoord_range(li));
 		}
 	}
@@ -64,14 +64,14 @@ protected:
 		cgv::media::font::font_ptr f = cgv::media::font::find_font("Arial");
 		lm.set_font_face(f->get_font_face(cgv::media::font::FFA_BOLD));
 		lm.set_font_size(36);
-		lm.set_text_color(rgba(0, 0, 0, 1));
+		lm.set_text_color(cgv::rgba(0, 0, 0, 1));
 		
 		// add labels to label manager
-		lm.add_label("Hello", rgba(1, 0, 0, 1));
-		lm.add_label("Label", rgba(0, 1, 0, 1));
-		lm.add_label("!", rgba(0, 0, 1, 1));
-		time_label_index = lm.add_label("00:00:00,00", rgba(0.75f, 0.75f, 0.5f, 1));
-		mouse_position_label_index = lm.add_label("0000,0000", rgba(0.75f, 0.75f, 0.75f, 1));
+		lm.add_label("Hello", cgv::rgba(1, 0, 0, 1));
+		lm.add_label("Label", cgv::rgba(0, 1, 0, 1));
+		lm.add_label("!", cgv::rgba(0, 0, 1, 1));
+		time_label_index = lm.add_label("00:00:00,00", cgv::rgba(0.75f, 0.75f, 0.5f, 1));
+		mouse_position_label_index = lm.add_label("0000,0000", cgv::rgba(0.75f, 0.75f, 0.75f, 1));
 		// fix size of dynamic labels to size computed from initial text
 		lm.fix_label_size(time_label_index);
 		lm.fix_label_size(mouse_position_label_index);
@@ -81,9 +81,9 @@ protected:
 		// place labels in world space
 		for (uint32_t li = 0; li < lm.get_nr_labels(); ++li) {
 			const auto& l = lm.get_label(li);
-			label_positions.push_back(vec3(0.4f * (li - 2.0f), 1, 0.2f * std::abs(li - 2.0f)));
+			label_positions.push_back(cgv::vec3(0.4f * (li - 2.0f), 1, 0.2f * std::abs(li - 2.0f)));
 			// rotate labels around y-axis
-			label_orientations.push_back(quat(vec3(0, 1, 0), -0.2f * (li - 2.0f) ));
+			label_orientations.push_back(cgv::quat(cgv::vec3(0, 1, 0), -0.2f * (li - 2.0f) ));
 		}
 	}
 public:
@@ -129,12 +129,14 @@ public:
 	{
 		construct_hello_label(ctx);
 		view_ptr = find_view_as_node();
+		lm.init(ctx);
 		cgv::render::ref_rectangle_renderer(ctx, 1);
 		return true;
 	}
 	void clear(cgv::render::context& ctx)
 	{
 		cgv::render::ref_rectangle_renderer(ctx, -1);
+		lm.destruct(ctx);
 	}
 	void init_frame(cgv::render::context& ctx)
 	{
@@ -153,6 +155,7 @@ public:
 		rr.set_rotation_array(ctx, label_orientations);
 		rr.set_extent_array(ctx, label_extents);
 		rr.set_texcoord_array(ctx, label_texture_ranges);
+		rr.set_render_style(rrs);
 		if (rr.validate_and_enable(ctx)) {
 			lm.get_texture()->enable(ctx);
 			rr.draw(ctx, 0, lm.get_nr_labels());
