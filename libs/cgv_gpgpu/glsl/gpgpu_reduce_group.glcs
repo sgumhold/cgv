@@ -31,7 +31,8 @@ value_type operation(value_type lhs, value_type rhs) {
 }
 #endif
 
-#define APPLY_OP_SHARED(N) s_data[tid] = operation(s_data[tid], s_data[tid + (N)]);
+#define REDUCE_UNGUARDED(N) s_data[tid] = operation(s_data[tid], s_data[tid + (N)]);
+#define REDUCE(N) if(tid < (N)) REDUCE_UNGUARDED((N))
 
 void warp_reduce(uint tid) {
 	// Since only a single warp is active we can directly use APPLY_OP_SHARED and forego the check if tid < N
@@ -40,33 +41,53 @@ void warp_reduce(uint tid) {
 	// The memoryBarrierShared is still needed because the compiler may cache some intermediate values so the
 	// successive iterations would not read the latest values from the shared memory. Unlike some other shader
 	// languages, GLSL does not allow a volatile keyword on shared memory.
-#if LOCAL_SIZE_X >= 64
-	APPLY_OP_SHARED(32)
-	memoryBarrierShared();
-#endif
-#if LOCAL_SIZE_X >= 32
-	APPLY_OP_SHARED(16)
-	memoryBarrierShared();
-#endif
-#if LOCAL_SIZE_X >= 16
-	APPLY_OP_SHARED(8)
-	memoryBarrierShared();
-#endif
-#if LOCAL_SIZE_X >= 8
-	APPLY_OP_SHARED(4)
-	memoryBarrierShared();
-#endif
-#if LOCAL_SIZE_X >= 4
-	APPLY_OP_SHARED(2)
-	memoryBarrierShared();
-#endif
-#if LOCAL_SIZE_X >= 2
-	APPLY_OP_SHARED(1)
-	memoryBarrierShared();
-#endif
+	#if LOCAL_SIZE_X >= 64
+		REDUCE_UNGUARDED(32)
+		memoryBarrierShared();
+	#endif
+	#if LOCAL_SIZE_X >= 32
+		REDUCE_UNGUARDED(16)
+		memoryBarrierShared();
+	#endif
+	#if LOCAL_SIZE_X >= 16
+		REDUCE_UNGUARDED(8)
+		memoryBarrierShared();
+	#endif
+	#if LOCAL_SIZE_X >= 8
+		REDUCE_UNGUARDED(4)
+		memoryBarrierShared();
+	#endif
+	#if LOCAL_SIZE_X >= 4
+		REDUCE_UNGUARDED(2)
+		memoryBarrierShared();
+	#endif
+	#if LOCAL_SIZE_X >= 2
+		REDUCE_UNGUARDED(1)
+		memoryBarrierShared();
+	#endif
 }
 
-#define REDUCE(N) if(tid < (N)) { APPLY_OP_SHARED(N) } barrier();
+void group_reduce(uint tid) {
+	#if LOCAL_SIZE_X >= 1024
+		REDUCE(512)
+		barrier();
+	#endif	
+	#if LOCAL_SIZE_X >= 512
+		REDUCE(256)
+		barrier();
+	#endif
+	#if LOCAL_SIZE_X >= 256
+		REDUCE(128)
+		barrier();
+	#endif
+	#if LOCAL_SIZE_X >= 128
+		REDUCE(64)
+		barrier();
+	#endif
+
+	if(tid < 32)
+		warp_reduce(tid);
+}
 
 void main() {
 	uint tid = gl_LocalInvocationID.x;
@@ -86,22 +107,8 @@ void main() {
 
 	barrier();
 	
-#if LOCAL_SIZE_X >= 1024
-	REDUCE(512)
-#endif	
-#if LOCAL_SIZE_X >= 512
-	REDUCE(256)
-#endif
-#if LOCAL_SIZE_X >= 256
-	REDUCE(128)
-#endif
-#if LOCAL_SIZE_X >= 128
-	REDUCE(64)
-#endif
+	group_reduce(tid);
 
-	if(tid < 32)
-		warp_reduce(tid);
-	
 	// Write the result of this group to global memory.
 	if(tid == 0)
 		data_out[u_output_begin + gl_WorkGroupID.x] = s_data[0];
