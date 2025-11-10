@@ -2,6 +2,8 @@
 
 #include "gpgpu_args.glcs"
 
+#include "sbb_reduce.glcs"
+
 #ifdef CGV_USE_SNIPPETS
 layout(local_size_x = LOCAL_SIZE_X) in;
 
@@ -31,63 +33,7 @@ value_type operation(value_type lhs, value_type rhs) {
 }
 #endif
 
-#define REDUCE_UNGUARDED(N) s_data[tid] = operation(s_data[tid], s_data[tid + (N)]);
-#define REDUCE(N) if(tid < (N)) REDUCE_UNGUARDED((N))
-
-void warp_reduce(uint tid) {
-	// Since only a single warp is active we can directly use APPLY_OP_SHARED and forego the check if tid < N
-	// that is used in REDUCE. This means we perform redundant work across threads but since a warp executes
-	// in lockstep this does not actually incur a runtime penalty.
-	// The memoryBarrierShared is still needed because the compiler may cache some intermediate values so the
-	// successive iterations would not read the latest values from the shared memory. Unlike some other shader
-	// languages, GLSL does not allow a volatile keyword on shared memory.
-	#if LOCAL_SIZE_X >= 64
-		REDUCE_UNGUARDED(32)
-		memoryBarrierShared();
-	#endif
-	#if LOCAL_SIZE_X >= 32
-		REDUCE_UNGUARDED(16)
-		memoryBarrierShared();
-	#endif
-	#if LOCAL_SIZE_X >= 16
-		REDUCE_UNGUARDED(8)
-		memoryBarrierShared();
-	#endif
-	#if LOCAL_SIZE_X >= 8
-		REDUCE_UNGUARDED(4)
-		memoryBarrierShared();
-	#endif
-	#if LOCAL_SIZE_X >= 4
-		REDUCE_UNGUARDED(2)
-		memoryBarrierShared();
-	#endif
-	#if LOCAL_SIZE_X >= 2
-		REDUCE_UNGUARDED(1)
-		memoryBarrierShared();
-	#endif
-}
-
-void group_reduce(uint tid) {
-	#if LOCAL_SIZE_X >= 1024
-		REDUCE(512)
-		barrier();
-	#endif	
-	#if LOCAL_SIZE_X >= 512
-		REDUCE(256)
-		barrier();
-	#endif
-	#if LOCAL_SIZE_X >= 256
-		REDUCE(128)
-		barrier();
-	#endif
-	#if LOCAL_SIZE_X >= 128
-		REDUCE(64)
-		barrier();
-	#endif
-
-	if(tid < 32)
-		warp_reduce(tid);
-}
+CGV_SBB_GROUP_REDUCE(group_reduce, LOCAL_SIZE_X, s_data, operation)
 
 void main() {
 	uint tid = gl_LocalInvocationID.x;
@@ -107,7 +53,7 @@ void main() {
 
 	barrier();
 	
-	group_reduce(tid);
+	group_reduce(int(tid));
 
 	// Write the result of this group to global memory.
 	if(tid == 0)
