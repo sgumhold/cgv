@@ -11,24 +11,27 @@
 
 #include "lib_begin.h"
 
-#define CGV_GPGPU_DEFAULT_GROUP_SIZE 512
 #define CGV_GPGPU_DISABLE_DERIVED_TYPES(TYPE) typename std::enable_if<!std::is_base_of<TYPE, T>::value, bool>::type = true
 
 namespace cgv {
 namespace gpgpu {
 
+extern CGV_API GLbitfield get_associated_memory_barrier_bits(cgv::render::VertexBufferType buffer_type);
+
+constexpr static uint32_t k_default_group_size = 256;
+
 /// The base class for compute shader based highly parallel GPU algorithms.
 class CGV_API algorithm {
 public:
 	// TODO: remove default value for group_size
-	algorithm(const std::string& type_name, uint32_t group_size = 128) : _type_name(type_name), _group_size(group_size) {}
+	algorithm(const std::string& type_name, uint32_t group_size = k_default_group_size) : _type_name(type_name), _group_size(group_size) {}
 	
 	std::string get_type_name() const;
 
 	bool is_initialized() const;
 
 protected:
-	uint32_t _group_size = 128;
+	uint32_t _group_size = k_default_group_size;
 
 	struct algorithm_create_info {
 		const argument_definitions* arguments = nullptr;
@@ -59,6 +62,8 @@ protected:
 	void unbind_buffer_like_arguments(cgv::render::context& ctx, const argument_bindings& arguments);
 
 	void dispatch_compute(unsigned num_groups_x, unsigned num_groups_y, unsigned num_groups_z);
+
+	static void optional_memory_barrier(cgv::render::VertexBufferType buffer_type);
 
 private:
 	const std::string _type_name;

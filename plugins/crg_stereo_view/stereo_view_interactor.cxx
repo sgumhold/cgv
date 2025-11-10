@@ -794,6 +794,7 @@ bool stereo_view_interactor::handle(event& e)
 						cgv::dvec3 p;
 						double z = get_z_and_unproject(ctx, x_gl, y_gl, p);
 						if (z > 0 && z < 1) {
+							const auto interaction = view_interaction::focus_change_now((p - view::focus).length());
 							if (y_view_angle > 0.1) {
 								cgv::dvec3 e = view_ptr->get_eye();
 								double l_old = (e - view_ptr->get_focus()).length();
@@ -804,6 +805,7 @@ bool stereo_view_interactor::handle(event& e)
 							cgv::gui::animate_with_linear_blend(view_ptr->ref_focus(), p, 0.5)->configure(cgv::gui::APM_SIN_SQUARED, this);
 
 							update_vec_member(view::focus);
+							on_view_interaction(interaction);
 							post_redraw();
 							return true;
 						}
@@ -841,9 +843,14 @@ bool stereo_view_interactor::handle(event& e)
 			if (me.get_button_state() == MB_LEFT_BUTTON && me.get_modifiers() == 0) {
 				if (!two_d_enabled)
 				{
-					view_ptr->rotate(-6.0 * me.get_dy() / height / rotate_sensitivity, -6.0 * me.get_dx() / width / rotate_sensitivity, view_ptr->get_depth_of_focus());
+					const auto axis = cgv::dvec2(
+						-6.0 * me.get_dy() / height / rotate_sensitivity,
+						-6.0 * me.get_dx() / width / rotate_sensitivity
+					);
+					view_ptr->rotate(axis.x(), axis.y(), view_ptr->get_depth_of_focus());
 					update_vec_member(view_up_dir);
 					update_vec_member(view_dir);
+					on_view_interaction(view_interaction::orbit_now(axis.length()));
 					post_redraw();
 					return true;
 				}
@@ -855,15 +862,22 @@ bool stereo_view_interactor::handle(event& e)
 					((double)rx * (double)rx + (double)ry * (double)ry));
 				if (rx * me.get_dy() > ry * me.get_dx())
 					ds = -ds;
-				view_ptr->roll(ds / rotate_sensitivity);
+				const double angle = ds / rotate_sensitivity;
+				view_ptr->roll(angle);
 				update_vec_member(view_up_dir);
+				on_view_interaction(view_interaction::roll_now(angle));
 				post_redraw();
 				return true;
 			}
 			if (me.get_button_state() == MB_RIGHT_BUTTON && me.get_modifiers() == 0) {
-				view_ptr->set_focus(view_ptr->get_focus() - (view_ptr->get_y_extent_at_focus() * me.get_dx() / width) * x
-					+ (view_ptr->get_y_extent_at_focus() * me.get_dy() / height) * y);
+				const double unit = std::max(width, height);
+				const auto pan = cgv::dvec2(me.get_dx()/unit, me.get_dy()/unit);
+				view_ptr->set_focus(view_ptr->get_focus()
+					- view_ptr->get_y_extent_at_focus()*pan.x()*x
+					+ view_ptr->get_y_extent_at_focus()*pan.y()*y
+				);
 				update_vec_member(view::focus);
+				on_view_interaction(view_interaction::pan_now(pan.length()));
 				post_redraw();
 				return true;
 			}
@@ -905,18 +919,27 @@ bool stereo_view_interactor::handle(event& e)
 				return true;
 			}
 			else if (e.get_modifiers() == 0) {
-				double scale = exp(0.2 * me.get_dy() / zoom_sensitivity);
+				const double scale = exp(0.2 * me.get_dy() / zoom_sensitivity);
+				const double focus_dist_prev = get_depth_of_focus();
 				if (get_context()) {
 					cgv::render::context& ctx = *get_context();
 					cgv::dvec3 p;
 					double z = get_z_and_unproject(ctx, x_gl, y_gl, p);
 					if (z > 0 && z < 1) {
+						const auto interaction = view_interaction::focus_change_from_zoom_now(
+							(p - view::focus).length()
+						);
 						view_ptr->set_focus(p + scale * (view_ptr->get_focus() - p));
 						update_vec_member(view::focus);
+						on_view_interaction(interaction);
 					}
 				}
 				view_ptr->set_y_extent_at_focus(view_ptr->get_y_extent_at_focus() * scale);
 				update_member(&y_extent_at_focus);
+				const double focus_dist = get_depth_of_focus();
+				on_view_interaction(view_interaction::zoom_now(
+					focus_dist > focus_dist_prev ? -focus_dist/focus_dist_prev + 1 : focus_dist_prev/focus_dist - 1
+				));
 				post_redraw();
 				return true;
 			}

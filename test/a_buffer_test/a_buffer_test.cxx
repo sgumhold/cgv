@@ -44,7 +44,7 @@ protected:
 	std::vector<cgv::rgba> C;
 
 	// render objects
-	shader_define_map triangle_defines;
+	shader_compile_options triangle_options;
 
 	vertex_buffer triangle_vbo;
 	attribute_array_binding triangle_aab;
@@ -89,14 +89,15 @@ protected:
 			C.push_back(c);
 		}
 	}
-	shader_define_map build_defines(bool use_a_buffer)
+	shader_compile_options build_options(bool use_a_buffer)
 	{
-		shader_define_map defines;
+		shader_compile_options options;
 		if (use_a_buffer) {
-			defines["USE_A_BUFFER"] = "1";
-			a_b.update_defines(defines);
+			options.define_macro("USE_A_BUFFER", true);
+			//defines["USE_A_BUFFER"] = "1";
+			a_b.update_shader_program_options(options);
 		}
-		return defines;
+		return options;
 	}
 
 public:
@@ -143,9 +144,9 @@ public:
 		if (!a_b.init(ctx))
 			return false;
 		// construct triangle defines
-		triangle_defines = build_defines(use_a_buffer_for_triangles);	
+		triangle_options = build_options(use_a_buffer_for_triangles);
 		// and provide them to build program function
-		if (!triangle_prog.build_program(ctx, "default_surface.glpr", true, triangle_defines))
+		if (!triangle_prog.build_program(ctx, "default_surface.glpr", triangle_options, true))
 			return false;
 		create_triangles(200, 0.8f);
 		triangle_vbo.create(ctx, V);
@@ -156,7 +157,7 @@ public:
 
 		create_spheres(60, 0.2f);
 		// configure defines before init
-		sr.ref_defines() = build_defines(use_a_buffer_for_spheres);
+		sr.ref_shader_options() = build_options(use_a_buffer_for_spheres);
 		sr.init(ctx);
 		sr.set_render_style(srs);
 		sphere_aam.init(ctx);
@@ -181,16 +182,16 @@ public:
 	{
 		if (!view_ptr)
 			view_ptr = find_view_as_node();
-		// rebuild triangle program if defines changes
-		shader_define_map new_triangle_defines = build_defines(use_a_buffer_for_triangles);
-		if (new_triangle_defines != triangle_defines) {
-			triangle_defines = new_triangle_defines;
+		// rebuild triangle program if options changed
+		shader_compile_options new_triangle_options = build_options(use_a_buffer_for_triangles);
+		if (new_triangle_options != triangle_options) {
+			triangle_options = new_triangle_options;
 			if (triangle_prog.is_created())
 				triangle_prog.destruct(ctx);
-			triangle_prog.build_program(ctx, "default_surface.glpr", true, triangle_defines);
+			triangle_prog.build_program(ctx, "default_surface.glpr", triangle_options, true);
 		}
-		// update defines for sphere renderer
-		sr.ref_defines() = build_defines(use_a_buffer_for_spheres);
+		// update options for sphere renderer
+		sr.ref_shader_options() = build_options(use_a_buffer_for_spheres);
 		if (view_ptr)
 			sr.set_y_view_angle(float(view_ptr->get_y_view_angle()));
 
@@ -226,19 +227,19 @@ public:
 		if (show_triangles && use_a_buffer_for_triangles) {
 			a_b.enable(ctx, triangle_prog);
 			draw_triangles(ctx, triangle_prog, triangle_aab);
-			node_cnt = a_b.disable(ctx);
+			a_b.disable(ctx, &node_cnt);
 		}
 		if (show_spheres && use_a_buffer_for_spheres) {
 			if (sr.enable(ctx)) {
 				a_b.enable(ctx, sr.ref_prog());
 				sr.draw(ctx, 0, S.size());
-				node_cnt = a_b.disable(ctx);
+				a_b.disable(ctx, &node_cnt);
 				sr.disable(ctx);
 			}
 		}
 		a_b.finish_frame(ctx);
 		update_member(&node_cnt);
-		fullness = float(node_cnt) / (ctx.get_width() * ctx.get_height() * a_b.nodes_per_pixel);
+		fullness = static_cast<float>(node_cnt) / (ctx.get_width() * ctx.get_height() * a_b.nodes_per_pixel);
 		update_member(&fullness);
 	}
 };

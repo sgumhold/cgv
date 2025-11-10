@@ -105,7 +105,7 @@ public:
 	};
 
 	screenshot();
-	std::string get_type_name() const { return "screenshot"; }
+	std::string get_type_name() const override { return "screenshot"; }
 
 	bool self_reflect(cgv::reflect::reflection_handler& rh) override;
 	void stream_help(std::ostream& os) override {}
@@ -131,6 +131,8 @@ public:
 	std::weak_ptr<const shot_config> get_active_shot() const;
 
 	bool set_active_shot_by_index(size_t index);
+
+	bool deselect_active_shot();
 
 	capture_info get_capture_state() const;
 

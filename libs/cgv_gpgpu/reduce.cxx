@@ -9,7 +9,6 @@ const std::string reduce::init_argument_name = "u_init";
 
 reduce::reduce(uint32_t group_count, uint32_t group_size) : algorithm("reduce", group_size) {
 	_num_groups = group_count;
-	//_group_size = group_size;
 }
 
 bool reduce::init(cgv::render::context& ctx, const sl::data_type& value_type) {
@@ -36,14 +35,7 @@ bool reduce::init(cgv::render::context& ctx, const sl::data_type& value_type, co
 		info.options.define_macro("USE_CUSTOM_OPERATION");
 	}
 
-	// TODO: Check if LOCAL_SIZE_X overwrites the define set by algorithm::init.
-	cgv::render::shader_compile_options kernel_options;
-	kernel_options.define_macro("LOCAL_SIZE_X", _group_size);
-	std::vector<compute_kernel_info> kernel_infos = {
-		{ &_kernel, "gpgpu_reduce_group", kernel_options }
-	};
-
-	if(algorithm::init(ctx, info, kernel_infos)) {
+	if(algorithm::init(ctx, info, { { &_kernel, "gpgpu_reduce_group" } })) {
 		_group_reduction_buffer.create_or_resize(ctx, value_type, _num_groups);
 		return true;
 	}

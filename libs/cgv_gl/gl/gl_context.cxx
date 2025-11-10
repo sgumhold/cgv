@@ -2205,6 +2205,22 @@ bool gl_context::texture_replace_from_buffer(
 	return result;
 }
 
+bool gl_context::texture_copy_back(const texture_base& tb, int level, cgv::data::data_view& dv) const
+{
+	if(!tb.is_created()) {
+		error("gl_context::texture_copy_back: attempt to copy from not created texture", &tb);
+		return false;
+	}
+
+	GLuint tmp_id = texture_bind(tb.tt, get_gl_id(tb.handle));
+	read_texture(dv, level);
+	
+	bool result = !check_gl_error("gl_context::texture_copy_back", &tb);
+	texture_unbind(tb.tt, tmp_id);
+
+	return result;
+}
+
 bool gl_context::texture_create_mipmaps(texture_base& tb, cgv::data::data_format& df) const
 {
 	GLuint gl_format = (const GLuint&)tb.internal_format;
@@ -2787,11 +2803,10 @@ bool gl_context::shader_code_compile(render_component& sc) const
 	GLint infologLength = 0;
 	glGetShaderiv(s_id, GL_INFO_LOG_LENGTH, &infologLength);
 	if (infologLength > 0) {
-		int charsWritten = 0;
-		char *infoLog = (char *)malloc(infologLength);
-		glGetShaderInfoLog(s_id, infologLength, &charsWritten, infoLog);
-		sc.last_error = infoLog;
-		free(infoLog);
+		GLsizei charsWritten = 0;
+		sc.last_error = std::string(infologLength, 0);
+		glGetShaderInfoLog(s_id, infologLength, &charsWritten, &sc.last_error.front());
+		sc.last_error.resize(static_cast<size_t>(charsWritten + 1));
 	}
 	return false;
 }
@@ -2838,12 +2853,12 @@ bool gl_context::shader_program_link(shader_program_base& spb) const
 	glGetProgramiv(p_id, GL_INFO_LOG_LENGTH, &infologLength);
 	if (infologLength > 0) {
 		GLsizei charsWritten = 0;
-		char *infoLog = (char *)malloc(infologLength);
-		glGetProgramInfoLog(p_id, infologLength, &charsWritten, infoLog);
-		spb.last_error = infoLog;
-		error(std::string("gl_context::shader_program_link\n")+infoLog, &spb);
-		free(infoLog);
+		spb.last_error = std::string(infologLength, 0);
+		glGetShaderInfoLog(p_id, infologLength, &charsWritten, &spb.last_error.front());
+		spb.last_error.resize(static_cast<size_t>(charsWritten + 1));
+		error("gl_context::shader_program_link\n" + spb.last_error, &spb);
 	}
+
 	return false;
 }
 

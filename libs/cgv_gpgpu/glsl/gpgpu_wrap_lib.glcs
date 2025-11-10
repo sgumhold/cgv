@@ -1,0 +1,84 @@
+//?#version 430
+
+// This library provides wrap methods to emulate texture wrap modes on indices in 1D, 2D and 3D.
+
+int wrap_index_repeat(in int idx, in int size) {
+	if(idx < 0) idx = size + idx;
+	else if(idx >= size) idx = idx - size;
+	return idx;
+}
+
+ivec2 wrap_index_repeat(in ivec2 idx, in ivec2 size) {
+	//idx = mix(idx, idx + size, lessThan(idx, ivec2(0));
+	//idx = mix(idx, idx - size, greaterThanEqual(idx, size));
+	//return idx;
+
+	if(idx.x < 0) idx.x = size.x + idx.x;
+	else if(idx.x >= size.x) idx.x = idx.x - size.x;
+	if(idx.y < 0) idx.y = size.y + idx.y;
+	else if(idx.y >= size.y) idx.y = idx.y - size.y;
+	return idx;
+}
+
+ivec3 wrap_index_repeat(in ivec3 idx, in ivec3 size) {
+	if(idx.x < 0) idx.x = size.x + idx.x;
+	else if(idx.x >= size.x) idx.x = idx.x - size.x;
+	if(idx.y < 0) idx.y = size.y + idx.y;
+	else if(idx.y >= size.y) idx.y = idx.y - size.y;
+	if(idx.z < 0) idx.z = size.z + idx.z;
+	else if(idx.z >= size.z) idx.z = idx.z - size.z;
+	return idx;
+}
+
+int wrap_index_mirrored_repeat(in int idx, in int size) {
+	if(idx < 0) idx = -idx;
+	else if(idx >= size) idx = (size - 1) - (idx - size);
+	return idx;
+}
+
+ivec2 wrap_index_mirrored_repeat(in ivec2 idx, in ivec2 size) {
+	if(idx.x < 0) idx.x = -idx.x;
+	else if(idx.x >= size.x) idx.x = (size.x - 1) - (idx.x - size.x);
+	if(idx.y < 0) idx.y = -idx.y;
+	else if(idx.y >= size.y) idx.y = (size.y - 1) - (idx.y - size.y);
+	return idx;
+}
+
+ivec3 wrap_index_mirrored_repeat(in ivec3 idx, in ivec3 size) {
+	if(idx.x < 0) idx.x = -idx.x;
+	else if(idx.x >= size.x) idx.x = (size.x - 1) - (idx.x - size.x);
+	if(idx.y < 0) idx.y = -idx.y;
+	else if(idx.y >= size.y) idx.y = (size.y - 1) - (idx.y - size.y);
+	if(idx.z < 0) idx.z = -idx.z;
+	else if(idx.z >= size.z) idx.z = (size.z - 1) - (idx.z - size.z);
+	return idx;
+}
+
+int wrap_index_clamp_to_edge(in int idx, in int size) {
+	return clamp(idx, int(0), size - 1);
+}
+
+ivec2 wrap_index_clamp_to_edge(in ivec2 idx, in ivec2 size) {
+	return clamp(idx, ivec2(0), size - 1);
+}
+
+ivec3 wrap_index_clamp_to_edge(in ivec3 idx, in ivec3 size) {
+	return clamp(idx, ivec3(0), size - 1);
+}
+
+bool wrap_index_clamp_to_border(in int idx, in int size) {
+	return idx < 0 || idx >= size;
+}
+
+bool wrap_index_clamp_to_border(in ivec2 idx, in ivec2 size) {
+	return
+		idx.x < 0 || idx.x >= size.x ||
+		idx.y < 0 || idx.y >= size.y;
+}
+
+bool wrap_index_clamp_to_border(in ivec3 idx, in ivec3 size) {
+	return
+		idx.x < 0 || idx.x >= size.x ||
+		idx.y < 0 || idx.y >= size.y ||
+		idx.z < 0 || idx.z >= size.z;
+}

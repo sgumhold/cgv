@@ -48,14 +48,10 @@ namespace cgv {
 		{
 			bool res = group_renderer::enable(ctx);
 			const surface_render_style& srs = get_style<surface_render_style>();
+
 			if (cull_per_primitive) {
-				if (srs.culling_mode == CM_OFF) {
-					glDisable(GL_CULL_FACE);
-				}
-				else {
-					glCullFace(srs.culling_mode == CM_FRONTFACE ? GL_FRONT : GL_BACK);
-					glEnable(GL_CULL_FACE);
-				}
+				ctx.push_cull_state();
+				ctx.set_cull_state(srs.culling_mode);
 			}
 			if (ref_prog().is_linked()) {
 				if (!has_colors)
@@ -74,8 +70,7 @@ namespace cgv {
 		{
 			const surface_render_style& srs = get_style<surface_render_style>();
 			if (cull_per_primitive) {
-				if (srs.culling_mode != CM_OFF)
-					glDisable(GL_CULL_FACE);
+				ctx.pop_cull_state();
 			}
 			if (!attributes_persist()) {
 				has_normals = false;

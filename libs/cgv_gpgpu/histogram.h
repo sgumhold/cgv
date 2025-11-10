@@ -13,7 +13,7 @@ namespace gpgpu {
 /// GPU compute shader implementation for computing a histogram from a range of values.
 class CGV_API histogram : public algorithm {
 public:
-	histogram(uint32_t num_bins, uint32_t group_size = CGV_GPGPU_DEFAULT_GROUP_SIZE);
+	histogram(uint32_t num_bins, uint32_t group_size = k_default_group_size);
 
 	bool init(cgv::render::context& ctx, const sl::data_type& value_type);
 

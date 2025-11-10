@@ -1,0 +1,29 @@
+#version 430
+
+#include "gpgpu_copy_if_common.glcs"
+
+#ifdef CGV_USE_SNIPPETS
+
+layout(local_size_x = 256) in;
+void main() {
+    uint idx = gl_GlobalInvocationID.x;
+	uint num_values = u_args.input_end - u_args.input_begin;
+	if(idx < num_values) {
+		uint vote_ballot_idx = idx>>5;
+		uint vote_ballot = b_votes[vote_ballot_idx];
+		uint vote_idx = idx&31;
+
+		if(((vote_ballot>>vote_idx)&1) == 1) {
+			uint prefix_sum = (b_prefix_sums[idx>>2]>>((idx&3)<<3)) & 0x000000FF;
+			uint block_sum = b_block_sums[gl_WorkGroupID.x];
+			uint addr = prefix_sum + block_sum;
+        
+			#ifdef WRITE_INDICES
+				b_data_out[addr] = idx;
+			#else
+				b_data_out[u_args.output_begin + addr] = b_data_in[u_args.input_begin + idx];
+			#endif
+		}
+    }
+}
+#endif
