@@ -115,7 +115,7 @@ namespace cgv { // @<
 			float slice_opacity = 0.5f;
 
 			/// a bounding box used to define a subspace of the volume to be visualized
-			box3 clip_box = { { 0.0f }, { 1.0f } };
+			box3 clip_box = { vec3(0.0), vec3(1.0f) };
 		};
 
 		/// renderer that supports point splatting
@@ -136,7 +136,7 @@ namespace cgv { // @<
 			/// a 2D texture from a frame buffer depth buffer used to combine volume rendering with opaque geometry
 			texture* depth_texture = nullptr;
 			/// the bounding box of the volume in scene units
-			box3 bounding_box = { { 0.0f }, { 1.0f } };
+			box3 bounding_box = { vec3(0.0f), vec3(1.0f) };
 			/// whether to translate and scale the volume to the given bounding box during rendering
 			bool apply_bounding_box_transformation = false;
 			/// offset applied to the noise texture (can be used in conjunction with temporal anti aliasing)
