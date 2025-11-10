@@ -1,7 +1,11 @@
 //?#version 430
 
-// SSB - Shader Building Blocks
-// This library provides reusable components for compute shaders.
+// Shader Building Blocks (SBB). Reusable components for compute shaders.
+
+// The template-like macros in this file generate functions that load/store items between threads and buffers.
+// Idea taken from NVIDIA CUB block load and store:
+// https://github.com/NVIDIA/cub/blob/main/cub/block/block_load.cuh
+// https://github.com/NVIDIA/cub/blob/main/cub/block/block_store.cuh
 
 // Data arrangement types
 // Examples using 2 THREADS_PER_GROUP and 2 ITEMS_PER_THREAD with emphasis on thread t0.
@@ -17,12 +21,31 @@
 // ^           ^
 //
 
-// The following template-like macros generate functions that load/store items between threads and buffers.
-// Idea taken from NVIDIA CUB block load and store:
-// https://github.com/NVIDIA/cub/blob/main/cub/block/block_load.cuh
-// https://github.com/NVIDIA/cub/blob/main/cub/block/block_store.cuh
+// Load a linear segment of items into a blocked arrangement across the work group. Second version is guarded by range.
+#define CGV_SBB_GROUP_LOAD_BLOCKED(NAME, ITEM_TYPE, ITEMS_PER_THREAD, INPUT_BUFFER) \
+void NAME(in int linear_tid, inout ITEM_TYPE items[ITEMS_PER_THREAD]) { \
+	for(int i = 0; i < ITEMS_PER_THREAD; ++i) \
+		items[i] = INPUT_BUFFER[(linear_tid * (ITEMS_PER_THREAD)) + i]; \
+} \
+void NAME(in int linear_tid, inout ITEM_TYPE items[ITEMS_PER_THREAD], in int valid_items) { \
+	for(int i = 0; i < ITEMS_PER_THREAD; ++i) \
+		if((linear_tid * (ITEMS_PER_THREAD)) + i < valid_items) \
+			items[i] = INPUT_BUFFER[(linear_tid * (ITEMS_PER_THREAD)) + i]; \
+}
 
-// Load linear segments of items into a striped arrangement across the work group. Second version is guarded by range.
+// Store a blocked arrangement of data across the work group into linear segments of items. Second version is guarded by range.
+#define CGV_SBB_GROUP_STORE_BLOCKED(NAME, ITEM_TYPE, ITEMS_PER_THREAD, OUTPUT_BUFFER) \
+void NAME(in int linear_tid, inout ITEM_TYPE items[ITEMS_PER_THREAD]) { \
+	for(int i = 0; i < ITEMS_PER_THREAD; ++i) \
+		OUTPUT_BUFFER[(linear_tid * (ITEMS_PER_THREAD)) + i] = items[i]; \
+} \
+void NAME(in int linear_tid, inout ITEM_TYPE items[ITEMS_PER_THREAD], in int valid_items) { \
+	for(int i = 0; i < ITEMS_PER_THREAD; ++i) \
+		if((linear_tid * (ITEMS_PER_THREAD)) + i < valid_items) \
+			OUTPUT_BUFFER[(linear_tid * (ITEMS_PER_THREAD)) + i] = items[i]; \
+}
+
+// Load a linear segment of items into a striped arrangement across the work group. Second version is guarded by range.
 #define CGV_SBB_GROUP_LOAD_STRIPED(NAME, THREADS_PER_GROUP, ITEM_TYPE, ITEMS_PER_THREAD, INPUT_BUFFER) \
 void NAME(in int linear_tid, inout ITEM_TYPE items[ITEMS_PER_THREAD]) { \
 	for(int i = 0; i < ITEMS_PER_THREAD; ++i) \
@@ -34,7 +57,7 @@ void NAME(in int linear_tid, inout ITEM_TYPE items[ITEMS_PER_THREAD], in int val
 			items[i] = INPUT_BUFFER[linear_tid + i * (THREADS_PER_GROUP)]; \
 }
 
-// Load linear segments of items into a striped arrangement across the work group. Second version is guarded by range.
+// Load a linear segment of items into a striped arrangement across the work group. Second version is guarded by range.
 // Specialized for 2 ITEMS_PER_THREAD with unrolled loop.
 #define CGV_SBB_GROUP_LOAD_STRIPED_2X(NAME, THREADS_PER_GROUP, ITEM_TYPE, INPUT_BUFFER) \
 void NAME(in int linear_tid, inout ITEM_TYPE items[2]) { \
@@ -59,6 +82,7 @@ void NAME(in int linear_tid, inout ITEM_TYPE items[ITEMS_PER_THREAD], in int val
 		if(linear_tid + i * (THREADS_PER_GROUP) < valid_items) \
 			OUTPUT_BUFFER[linear_tid + i * (THREADS_PER_GROUP)] = items[i]; \
 }
+
 // Store a striped arrangement of data across the work group into linear segments of items. Second version is guarded by range.
 // Specialized for 2 ITEMS_PER_THREAD with unrolled loop.
 #define CGV_SBB_GROUP_STORE_STRIPED_2X(NAME, THREADS_PER_GROUP, ITEM_TYPE, OUTPUT_BUFFER) \
