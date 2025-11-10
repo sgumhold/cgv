@@ -28,9 +28,9 @@ public:
 	//@{	
 	/// vertex data structure with position, radius and color attributes
 	struct vertex {
-		vec3  position;
+		cgv::vec3  position;
 		float radius;
-		rgba  color;
+		cgv::rgba  color;
 	};
 	/// edge data structure with indices of two vertices that it connects together
 	struct edge {
@@ -181,11 +181,11 @@ protected:
 		/// per controller radius used to draw with touch pad center
 		float draw_radius;
 		/// per controller a draw color
-		rgb   draw_color;
+		cgv::rgb   draw_color;
 		/// members used for color adjustment
 		bool in_color_selection;
-		vec3 color_selection_ref;
-		rgb last_color;
+		cgv::vec3 color_selection_ref;
+		cgv::rgb last_color;
 		// per controller whether we are drawing 
 		bool   drawing;
 		// per controller last used radius
@@ -220,27 +220,27 @@ protected:
 	float min_radius;
 	float max_radius;
 	/// distance of point p to line through l0 and l1 
-	static float distance(const vec3& p, const vec3& l0, const vec3& l1)
+	static float distance(const cgv::vec3& p, const cgv::vec3& l0, const cgv::vec3& l1)
 	{
-		vec3 dl = l1 - l0;
-		vec3 dp = p - l0;
+		cgv::vec3 dl = l1 - l0;
+		cgv::vec3 dp = p - l0;
 		float lambda = dot(dp, dl) / dot(dl, dl);
 		if (lambda > 0.0f && lambda < 1.0f)
 			return length(dp + lambda * dl);
 		return std::min(length(dp), length(p - l1));
 	}
 	/// transform point with pose to lab coordinate system 
-	vec3 compute_lab_draw_position(const float* pose, const vec3& p)
+	cgv::vec3 compute_lab_draw_position(const float* pose, const cgv::vec3& p)
 	{
-		return mat34(3, 4, pose) * vec4(p, 1.0f);
+		return cgv::mat3x4(3, 4, pose) * cgv::vec4(p, 1.0f);
 	}
 	/// transform default draw point with pose to lab coordinate system 
-	vec3 compute_lab_draw_position(const float* pose)
+	cgv::vec3 compute_lab_draw_position(const float* pose)
 	{
-		return compute_lab_draw_position(pose, vec3(0.0f, 0.0f, -draw_distance));
+		return compute_lab_draw_position(pose, cgv::vec3(0.0f, 0.0f, -draw_distance));
 	}
 	/// check newly tracked position and add new vertex if necessary
-	void consider_vertex(int ci, const vec3& p, double time, float radius)
+	void consider_vertex(int ci, const cgv::vec3& p, double time, float radius)
 	{
 		if (!get_scene_ptr())
 			return;
@@ -270,23 +270,23 @@ protected:
 			else {
 				// otherwise compute prediction
 				bool no_update = true;
-				vec3  p_pred = v_prev.position;
+				cgv::vec3  p_pred = v_prev.position;
 				float r_pred = v_prev.radius;
 				if (CI.prev_prev != -1) {
 					const auto& v_prev_prev = get_vertex(CI.prev_prev);
 					// check for direction reversal
-					vec3 d_pred = v_prev.position - v_prev_prev.position;
-					vec3 d = p - v_prev.position;
+					cgv::vec3 d_pred = v_prev.position - v_prev_prev.position;
+					cgv::vec3 d = p - v_prev.position;
 					if (dot(d_pred, d) >= 0.0f) {
 						no_update = false;
 						p_pred = v_prev_prev.position;
 						r_pred = v_prev_prev.radius;
 						if (CI.prev_prev_prev != -1) {
 							const auto& v_prev_prev_prev = get_vertex(CI.prev_prev_prev);
-							vec3 d_pred = v_prev_prev.position - v_prev_prev_prev.position;
+							cgv::vec3 d_pred = v_prev_prev.position - v_prev_prev_prev.position;
 							float l_pred_sqr = dot(d_pred, d_pred);
 							if (l_pred_sqr > 1e-8f) {
-								vec3 d = p - v_prev_prev.position;
+								cgv::vec3 d = p - v_prev_prev.position;
 								float lambda = dot(d_pred, d) / l_pred_sqr;
 								if (lambda < 0)
 									lambda = 0;
@@ -320,7 +320,7 @@ protected:
 		post_redraw();
 	}
 	/// simplest approach to colorize scene vertices
-	void colorize_vertex(int ci, const vec3& p, float radius)
+	void colorize_vertex(int ci, const cgv::vec3& p, float radius)
 	{
 		if (!get_scene_ptr())
 			return;
@@ -336,11 +336,11 @@ protected:
 		controller_info& CI = ctrl_infos[ci];
 		CI.drawing = true;
 		if (CI.draw_mode != DM_COLORIZE) {
-			vec3 p = compute_lab_draw_position(state.controller[ci].pose);
+			cgv::vec3 p = compute_lab_draw_position(state.controller[ci].pose);
 			consider_vertex(ci, p, time, radius);
 		}
 		else {
-			vec3 p = compute_lab_draw_position(state.controller[ci].pose, vec3(0, 0, -50 * CI.draw_radius));
+			cgv::vec3 p = compute_lab_draw_position(state.controller[ci].pose, cgv::vec3(0, 0, -50 * CI.draw_radius));
 			colorize_vertex(ci, p, 10 * CI.draw_radius);
 		}
 	}
@@ -349,11 +349,11 @@ protected:
 	{
 		controller_info& CI = ctrl_infos[ci];
 		if (CI.draw_mode != DM_COLORIZE) {
-			vec3 p = compute_lab_draw_position(state.controller[ci].pose);
+			cgv::vec3 p = compute_lab_draw_position(state.controller[ci].pose);
 			consider_vertex(ci, p, time, radius);
 		}
 		else {
-			vec3 p = compute_lab_draw_position(state.controller[ci].pose, vec3(0, 0, -50 * CI.draw_radius));
+			cgv::vec3 p = compute_lab_draw_position(state.controller[ci].pose, cgv::vec3(0, 0, -50 * CI.draw_radius));
 			colorize_vertex(ci, p, 10 * CI.draw_radius);
 		}
 	}
@@ -362,7 +362,7 @@ protected:
 	{
 		controller_info& CI = ctrl_infos[ci];
 		if (CI.draw_mode != DM_COLORIZE) {
-			vec3 p = compute_lab_draw_position(state.controller[ci].pose);
+			cgv::vec3 p = compute_lab_draw_position(state.controller[ci].pose);
 			consider_vertex(ci, p, time, radius);
 			CI.prev = CI.prev_prev = CI.prev_prev_prev = -1;
 		}
@@ -429,14 +429,14 @@ public:
 			li_stats = scene_ptr->add_label(
 				"drawing index: 000000\n"
 				"nr vertices:   000000\n"
-				"nr edges:      000000", rgba(0.8f, 0.6f, 0.0f, 1.0f));
+				"nr edges:      000000", cgv::rgba(0.8f, 0.6f, 0.0f, 1.0f));
 			scene_ptr->fix_label_size(li_stats);
-			scene_ptr->place_label(li_stats, vec3(0.0f, 0.01f, 0.0f), quat(vec3(1, 0, 0), -1.5f), coordinate_system::table);
+			scene_ptr->place_label(li_stats, cgv::vec3(0.0f, 0.01f, 0.0f), cgv::quat(cgv::vec3(1, 0, 0), -1.5f), coordinate_system::table);
 			for (int ci = 0; ci < 8; ++ci) {
 				ctrl_infos[ci].li_help = scene_ptr->add_label("DPAD_Right .. next/new drawing\nDPAD_Left  .. prev drawing\nDPAD_Down  .. save drawing\nDPAD_Up .. toggle draw mode\nTPAD_Touch&Up/Dn .. change radius\nTPAD_Touch&Move .. change color\ncolorize (0.000)\nRGB(0.00,0.00,0.00)\nHLS(0.00,0.00,0.00)",
-					rgba(ci == 0 ? 0.8f : 0.4f, 0.4f, ci == 1 ? 0.8f : 0.4f, 1.0f));
+					cgv::rgba(ci == 0 ? 0.8f : 0.4f, 0.4f, ci == 1 ? 0.8f : 0.4f, 1.0f));
 				scene_ptr->fix_label_size(ctrl_infos[ci].li_help);
-				scene_ptr->place_label(ctrl_infos[ci].li_help, vec3(ci == 1 ? -0.05f : 0.05f, 0.0f, 0.0f), quat(vec3(1, 0, 0), -1.5f),
+				scene_ptr->place_label(ctrl_infos[ci].li_help, cgv::vec3(ci == 1 ? -0.05f : 0.05f, 0.0f, 0.0f), cgv::quat(cgv::vec3(1, 0, 0), -1.5f),
 					ci == 0 ? coordinate_system::left_controller : coordinate_system::right_controller, ci == 1 ? label_alignment::right : label_alignment::left, 0.2f);
 				scene_ptr->hide_label(ctrl_infos[ci].li_help);
 			}
@@ -444,12 +444,12 @@ public:
 		// update visibility of visibility changing labels
 		auto* vr_view_ptr = get_view_ptr();
 		if (scene_ptr && vr_view_ptr && vr_view_ptr->get_current_vr_state()) {
-			vec3 view_dir = -reinterpret_cast<const vec3&>(vr_view_ptr->get_current_vr_state()->hmd.pose[6]);
-			vec3 view_pos = reinterpret_cast<const vec3&>(vr_view_ptr->get_current_vr_state()->hmd.pose[9]);
+			cgv::vec3 view_dir = -reinterpret_cast<const cgv::vec3&>(vr_view_ptr->get_current_vr_state()->hmd.pose[6]);
+			cgv::vec3 view_pos = reinterpret_cast<const cgv::vec3&>(vr_view_ptr->get_current_vr_state()->hmd.pose[9]);
 			for (int ci = 0; ci < 8; ++ci) {
 				if (vr_view_ptr->get_current_vr_state()->controller[ci].status != vr::VRS_TRACKED)
 					continue;
-				vec3 controller_pos = reinterpret_cast<const vec3&>(vr_view_ptr->get_current_vr_state()->controller[ci].pose[9]);
+				cgv::vec3 controller_pos = reinterpret_cast<const cgv::vec3&>(vr_view_ptr->get_current_vr_state()->controller[ci].pose[9]);
 				float controller_depth = dot(view_dir, controller_pos - view_pos);
 				float controller_dist = (view_pos + controller_depth * view_dir - controller_pos).length();
 				if (view_dir.y() < -0.5f && controller_depth / controller_dist > 5.0f)
@@ -514,9 +514,9 @@ public:
 			rcr.render(ctx, 0, (GLsizei)(2 * edges.size()));
 		}
 		// draw spheres that represent the pen
-		std::vector<vec3> P;
+		std::vector<cgv::vec3> P;
 		std::vector<float> R;
-		std::vector<rgb> C;
+		std::vector<cgv::rgb> C;
 		for (int ci = 0; ci < 8; ++ci) {
 			controller_info& CI = ctrl_infos[ci];
 			if (CI.draw_mode != DM_COLORIZE && state_ptr->controller[ci].status == vr::VRS_TRACKED) {
@@ -543,16 +543,16 @@ public:
 		if (!state_ptr)
 			return;
 
-		std::vector<vec3> P;
+		std::vector<cgv::vec3> P;
 		std::vector<float> R;
-		std::vector<rgba> C;
+		std::vector<cgv::rgba> C;
 		for (int ci = 0; ci < 8; ++ci) {
 			controller_info& CI = ctrl_infos[ci];
 			if (CI.draw_mode == DM_COLORIZE && state_ptr->controller[ci].status == vr::VRS_TRACKED) {
-				P.push_back(compute_lab_draw_position(state_ptr->controller[ci].pose, vec3(0.0f)));
+				P.push_back(compute_lab_draw_position(state_ptr->controller[ci].pose, cgv::vec3(0.0f)));
 				R.push_back(0.01f);
 				C.push_back(CI.draw_color); C.back().alpha() = 0.5f;
-				P.push_back(compute_lab_draw_position(state_ptr->controller[ci].pose, vec3(0.0f, 0.0f, -50 * CI.draw_radius)));
+				P.push_back(compute_lab_draw_position(state_ptr->controller[ci].pose, cgv::vec3(0.0f, 0.0f, -50 * CI.draw_radius)));
 				R.push_back(10 * CI.draw_radius);
 				C.push_back(CI.draw_color); C.back().alpha() = 0.5f;
 			}
@@ -573,7 +573,7 @@ public:
 			if (P.size() == 2)
 				rcr.draw(ctx, 0, (GLsizei)P.size());
 			else {
-				dvec3 e = vr_view_ptr->get_eye();
+				cgv::dvec3 e = vr_view_ptr->get_eye();
 				if (distance(e, P[0], P[1]) > distance(e, P[2], P[3]))
 					rcr.draw(ctx, 0, (GLsizei)P.size());
 				else {
@@ -660,7 +660,7 @@ public:
 			case vr::VR_GRIP:
 				if (vrke.get_action() == cgv::gui::KA_PRESS) {
 					ctrl_infos[ci].in_color_selection = true;
-					ctrl_infos[ci].color_selection_ref = reinterpret_cast<const vec3&>(vrke.get_state().controller[ci].pose[9]);
+					ctrl_infos[ci].color_selection_ref = reinterpret_cast<const cgv::vec3&>(vrke.get_state().controller[ci].pose[9]);
 					ctrl_infos[ci].last_color = ctrl_infos[ci].draw_color;
 				}
 				else {
@@ -718,7 +718,7 @@ public:
 			int ci = pe.get_trackable_index();
 			if (ci >= 0 && ci < 8) {
 				if (ctrl_infos[ci].in_color_selection) {
-					vec3 dp = reinterpret_cast<const vec3&>(pe.get_state().controller[ci].pose[9]) - ctrl_infos[ci].color_selection_ref;
+					cgv::vec3 dp = reinterpret_cast<const cgv::vec3&>(pe.get_state().controller[ci].pose[9]) - ctrl_infos[ci].color_selection_ref;
 					cgv::media::color<float, cgv::media::HLS> hls = ctrl_infos[ci].last_color;
 					for (int k = 0; k < 3; ++k)
 						hls[k] = std::max(0.0f, std::min(1.0f, hls[k] + 4.0f * dp[k]));

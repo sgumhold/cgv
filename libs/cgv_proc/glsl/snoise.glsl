@@ -1,3 +1,5 @@
+#version 330
+
 /** use this forward declaration in your shader to use 2d simplex noise:
 //***** begin interface of snoise.glsl *********************************
 float snoise(vec2 v);

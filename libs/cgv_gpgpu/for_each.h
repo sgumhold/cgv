@@ -10,7 +10,7 @@ namespace gpgpu {
 /// GPU compute shader implementation for applying a function to each buffer element.
 class CGV_API for_each : public algorithm {
 public:
-	for_each(uint32_t group_size = CGV_GPGPU_DEFAULT_GROUP_SIZE);
+	for_each(uint32_t group_size = k_default_group_size);
 
 	bool init(cgv::render::context& ctx, const sl::data_type& value_type, const std::string& unary_operation);
 	bool init(cgv::render::context& ctx, const sl::data_type& value_type, const argument_definitions& arguments, const std::string& unary_operation);

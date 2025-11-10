@@ -19,7 +19,7 @@ void main() {
 	uint gid = gl_GlobalInvocationID.x;
 	uint id = u_begin + gid;
 
-	if(gid < u_end) {
+	if(id < u_end) {
 		value_type element = data[id];
 		operation(element, gid);
 		data[id] = element;

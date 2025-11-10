@@ -66,6 +66,21 @@ private:
 
 }
 
+GLbitfield get_associated_memory_barrier_bits(cgv::render::VertexBufferType buffer_type) {
+	static const std::array<GLbitfield, 9> bits = {
+		GL_ALL_BARRIER_BITS,
+		GL_VERTEX_ATTRIB_ARRAY_BARRIER_BIT,
+		GL_ELEMENT_ARRAY_BARRIER_BIT,
+		GL_TEXTURE_FETCH_BARRIER_BIT | GL_TEXTURE_UPDATE_BARRIER_BIT,
+		GL_UNIFORM_BARRIER_BIT,
+		GL_TRANSFORM_FEEDBACK_BARRIER_BIT,
+		GL_SHADER_STORAGE_BARRIER_BIT,
+		GL_ATOMIC_COUNTER_BARRIER_BIT,
+		GL_COMMAND_BARRIER_BIT
+	};
+	return bits[static_cast<int32_t>(buffer_type) + 1]; // Add 1 since the enum starts at -1.
+}
+
 std::string algorithm::get_type_name() const {
 	return _type_name;
 }
@@ -135,7 +150,7 @@ bool algorithm::init(cgv::render::context& ctx, const algorithm_create_info& cre
 			success &= info.kernel->init(ctx, info.name, options, debug_context);
 		} else {
 			cgv::render::shader_compile_options extended_options = options;
-			extended_options.extend(options, true);
+			extended_options.extend(info.options, true);
 			success &= info.kernel->init(ctx, info.name, extended_options, debug_context);
 		}
 	}
@@ -147,6 +162,7 @@ void algorithm::destruct(const cgv::render::context& ctx) {
 	_is_initialized = false;
 }
 
+/// Return true if iterators first and last point to the same range and distance(first, last) > 0.
 bool algorithm::is_valid_range(device_buffer_iterator first, device_buffer_iterator last) {
 	return compatible(first, last) && distance(first, last) > 0;
 }
@@ -187,6 +203,11 @@ void algorithm::unbind_buffer_like_arguments(cgv::render::context& ctx, const ar
 
 void algorithm::dispatch_compute(unsigned num_groups_x, unsigned num_groups_y, unsigned num_groups_z) {
 	glDispatchCompute(num_groups_x, num_groups_y, num_groups_z);
+}
+
+void algorithm::optional_memory_barrier(cgv::render::VertexBufferType buffer_type) {
+	if(buffer_type != cgv::render::VertexBufferType::VBT_STORAGE)
+		glMemoryBarrier(get_associated_memory_barrier_bits(buffer_type));
 }
 
 } // namespace gpgpu

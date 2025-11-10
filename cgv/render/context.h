@@ -350,7 +350,7 @@ public:
 	float border_color[4];
 	CompareFunction compare_function;
 	bool use_compare_function;
-	TextureType  tt;
+	TextureType tt;
 	bool have_mipmaps;
 	unsigned nr_multi_samples = 5;
 	bool fixed_sample_locations = true;
@@ -819,6 +819,7 @@ protected:
 	virtual bool texture_create_from_buffer (texture_base& tb, cgv::data::data_format& df, int x, int y, int level) const = 0;
 	virtual bool texture_replace			(texture_base& tb, int x, int y, int z_or_cube_side, const cgv::data::const_data_view& data, int level, const std::vector<cgv::data::data_view>* palettes = 0) const = 0;
 	virtual bool texture_replace_from_buffer(texture_base& tb, int x, int y, int z_or_cube_side, int x_buffer, int y_buffer, unsigned int width, unsigned int height, int level) const = 0;
+	virtual bool texture_copy_back			(const texture_base& tb, int level, cgv::data::data_view& dv) const = 0;
 	virtual bool texture_create_mipmaps	    (texture_base& tb, cgv::data::data_format& df) const = 0;
 	virtual bool texture_generate_mipmaps	(texture_base& tb, unsigned int dim) const = 0;
 	virtual bool texture_destruct           (texture_base& tb) const = 0;
@@ -1313,9 +1314,9 @@ public:
 	virtual void set_blend_func(BlendFunction src_factor, BlendFunction dst_factor);
 	/// set the blend function separately for color and alpha
 	virtual void set_blend_func_separate(BlendFunction src_color_factor, BlendFunction dst_color_factor, BlendFunction src_alpha_factor, BlendFunction dst_alpha_factor);
-	/// set the default blend function for front to back blending
+	/// set the default blend function for front to back blending (source = BF_ONE_MINUS_DST_ALPHA, destination = BF_ONE)
 	void set_blend_func_front_to_back();
-	/// set the default blend function for back to front blending
+	/// set the default blend function for back to front blending (source = BF_SRC_ALPHA, destination = BF_ONE_MINUS_SRC_ALPHA)
 	void set_blend_func_back_to_front();
 	/// enable blending
 	virtual void enable_blending();
