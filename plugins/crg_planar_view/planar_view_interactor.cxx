@@ -14,20 +14,20 @@ using namespace cgv::math;
 using namespace cgv::gui;
 using namespace cgv::render;
 
-
-
-planar_view_interactor::planar_view_interactor(const char* name) : node(name)
+planar_view_interactor::planar_view_interactor(const std::string& name) : node(name)
 {
-	lock_rotation = false;
-	set_default_values();
-	pressed = false;
 }
 
-void planar_view_interactor::set_default_values()
+void planar_view_interactor::resize(unsigned w, unsigned h)
 {
-	target = cgv::vec2(0.0f);
-	magnification = 1;
-	angle = 0;
+	aspect = static_cast<float>(w) / h;
+}
+
+void planar_view_interactor::reset_view()
+{
+	target = { 0.0f };
+	magnification = 1.0f;
+	angle = 0.0f;
 
 	on_set(&magnification);
 	on_set(&target(0));
@@ -63,21 +63,21 @@ void planar_view_interactor::create_gui()
 	add_member_control(this, "lock_rotation", lock_rotation, "toggle");
 	add_member_control(this, "angle", angle, "value_slider", "min=-180;max=180;ticks=true");
 	add_member_control(this, "zoom", magnification, "value_slider", "min=0.01;max=100.0;step=0.0001;log=true;ticks=true");
-	add_member_control(this, "center.x", target(0), "value");
-	add_member_control(this, "center.y", target(1), "value");
+	add_member_control(this, "center_x", target(0), "value");
+	add_member_control(this, "center_y", target(1), "value");
 	find_control(angle)->set("active", !lock_rotation);
 }
 
 const cgv::dmat4 planar_view_interactor::get_projection() const
 {
-	return cgv::math::ortho4<double>(-aspect,aspect,-1,1,0.1f,10.0f);
+	return cgv::math::ortho4<double>(-aspect,aspect, -1.0f, 1.0f, 0.1f, 10.0f);
 }
 
 const cgv::dmat4 planar_view_interactor::get_modelview() const
 {
 	return 
-		cgv::math::scale4<double>(magnification, magnification, magnification)*
-		cgv::math::rotate4<double>(angle, cgv::dvec3(0,0,1))*
+		cgv::math::scale4<double>(magnification)*
+		cgv::math::rotate4<double>(angle, cgv::dvec3(0.0, 0.0, 1.0))*
 		cgv::math::translate4<double>(-target(0), -target(1), 0.0f);
 }
 
@@ -85,7 +85,7 @@ const cgv::dmat4 planar_view_interactor::get_modelview() const
 void planar_view_interactor::move(int x, int y)
 {
 	auto p = get_context()->get_model_point(x, y, 0.0, MPW);
-	target += (pos_down - cgv::vec2(p(0),p(1)));
+	target += pos_down - cgv::vec2(p);
 
 	on_set(&target(0));
 	on_set(&target(1));
@@ -94,10 +94,10 @@ void planar_view_interactor::move(int x, int y)
 void planar_view_interactor::rotate(int x, int y)
 {
 	auto p = get_context()->get_model_point(x, y, 0.0, MPW);
-	cgv::vec2 dp = cgv::vec2(p(0),p(1)) - target;
-	float ap = float(180 * atan2(dp(1), dp(0)) / M_PI);
+	cgv::vec2 dp = cgv::vec2(p) - target;
+	float ap = static_cast<float>(180.0f * atan2(dp(1), dp(0)) / M_PI);
 	cgv::vec2 dd = pos_down - target;
-	float ad = float(180 * atan2(dd(1), dd(0)) / M_PI);
+	float ad = static_cast<float>(180.0f * atan2(dd(1), dd(0)) / M_PI);
 	angle += ap - ad;
 
 	on_set(&angle);
@@ -107,14 +107,16 @@ void planar_view_interactor::zoom(int x, int y, float ds)
 {
 	auto p = get_context()->get_model_point(x, y, 0.0, MPW);
 	
-	float s1=magnification;
-	if( ds > 0)
-		magnification*=0.9f;
+	float s1 = magnification;
+
+	if(ds > 0.0f)
+		magnification *= 0.9f;
 	else
-		magnification*=1.1f;
+		magnification *= 1.1f;
+
 	float s2 = magnification;
 
-	target -= (s1-s2)*(cgv::vec2(p(0), p(1))-target)/s2;
+	target -= (s1-s2) * (cgv::vec2(p) - target) / s2;
 
 	on_set(&magnification);
 	on_set(&target(0));
@@ -171,7 +173,7 @@ bool planar_view_interactor::handle(event& e)
 		if (ke.get_action() == KA_PRESS) {
 			switch (ke.get_key()) {
 			case KEY_Space :
-				set_default_values();
+				reset_view();
 				post_redraw();
 				return true;
 			}
@@ -188,37 +190,37 @@ bool planar_view_interactor::handle(event& e)
 				 (me.get_button_state() == MB_LEFT_BUTTON && me.get_modifiers() == 0) ||
 				 (me.get_button_state() == MB_MIDDLE_BUTTON && me.get_modifiers() == 0) )
 					{
-				pressed=true;
-				auto p = get_context()->get_model_point(me.get_x(), y_gl, 0.0, MPW);
-				pos_down = cgv::vec2(p(0), p(1));
+				pressed = true;
+				cgv::vec3 p = get_context()->get_model_point(me.get_x(), y_gl, 0.0, MPW);
+				pos_down = cgv::vec2(p);
 				return true;
 			}
 			break;
 		case MA_DRAG:
 			if (me.get_button_state() == MB_RIGHT_BUTTON && me.get_modifiers() == 0 && (me.get_dx() != 0 || me.get_dy() != 0))
 			{
-				if(pressed == true)
+				if(pressed)
 					move(me.get_x(), y_gl);
 				post_redraw();
 				return true;
 			}
 			else if (me.get_button_state() == MB_LEFT_BUTTON && me.get_modifiers() == 0 && (me.get_dx() != 0 || me.get_dy() != 0) && !lock_rotation)
 			{
-				if (pressed == true)
+				if (pressed)
 					rotate(me.get_x(), y_gl);
 				post_redraw();
 				return true;
 			}
 			else if (me.get_button_state() == MB_MIDDLE_BUTTON && me.get_modifiers() == 0 && me.get_dy() != 0)
 			{
-				if (pressed == true)
+				if (pressed)
 					zoom(me.get_x(), y_gl, me.get_dy());
 				post_redraw();
 				return true;
 			}
 			break;
 		case MA_RELEASE:
-			pressed=false;
+			pressed = false;
 			break;
 		case MA_WHEEL :
 			if (e.get_modifiers() == 0) 
@@ -233,9 +235,6 @@ bool planar_view_interactor::handle(event& e)
 	}
 	return false;
 }
-
-
-
 
 /// overload to stream help information to the given output stream
 void planar_view_interactor::stream_help(std::ostream& os)
@@ -256,16 +255,9 @@ void planar_view_interactor::init_frame(cgv::render::context& ctx)
 	MPW = ctx.get_modelview_projection_window_matrix();
 }
 
-/// this method is called in one pass over all drawables before the draw method
-void planar_view_interactor::draw(context& ctx)
-{
-}
-
 /// 
 void planar_view_interactor::after_finish(cgv::render::context& ctx)
 {
 	ctx.pop_modelview_matrix();
 	ctx.pop_projection_matrix();
 }
-
-
