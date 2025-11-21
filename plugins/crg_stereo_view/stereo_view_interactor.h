@@ -147,6 +147,7 @@ protected:
 	bool show_focus;
 	bool clip_relative_to_extent;
 	double pan_sensitivity, zoom_sensitivity, rotate_sensitivity;
+	bool zoom_to_mouse;
 
 	// members for screen shots
 	bool write_images;

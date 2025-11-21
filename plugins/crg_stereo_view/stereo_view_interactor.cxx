@@ -240,6 +240,7 @@ stereo_view_interactor::stereo_view_interactor(const char* name) : node(name)
 	check_for_click = -1;
 	mono_mode = GLSU_CENTER;
 	pan_sensitivity = zoom_sensitivity = rotate_sensitivity = 1;
+	zoom_to_mouse = true;
 	last_x = last_y = -1;
 }
 /// return the type name 
@@ -925,7 +926,7 @@ bool stereo_view_interactor::handle(event& e)
 					cgv::render::context& ctx = *get_context();
 					cgv::dvec3 p;
 					double z = get_z_and_unproject(ctx, x_gl, y_gl, p);
-					if (z > 0 && z < 1) {
+					if (zoom_to_mouse && z > 0 && z < 1) {
 						const auto interaction = view_interaction::focus_change_from_zoom_now(
 							(p - view::focus).length()
 						);
@@ -1540,6 +1541,7 @@ void stereo_view_interactor::create_gui()
 		add_member_control(this, "Rotate Sensitivity", rotate_sensitivity, "value_slider", "min=0.1;max=10;ticks=true;step=0.01;log=true");
 		add_member_control(this, "Deadzone", deadzone, "value_slider", "min=0;max=1;ticks=true;step=0.0001;log=true");
 		add_member_control(this, "Viewport Shrinkage", viewport_shrinkage, "value_slider", "min=0;max=40;ticks=true");
+		add_member_control(this, "Zoom To Mouse", zoom_to_mouse, "check");
 		add_member_control(this, "Show Focus", show_focus, "check");
 		align("\b");
 		end_tree_node(zoom_sensitivity);
@@ -1736,6 +1738,7 @@ bool stereo_view_interactor::self_reflect(cgv::reflect::reflection_handler& srh)
 		srh.reflect_member("pan_sensitivity", pan_sensitivity) &&
 		srh.reflect_member("rotate_sensitivity", rotate_sensitivity) &&
 		srh.reflect_member("zoom_sensitivity", zoom_sensitivity) &&
+		srh.reflect_member("zoom_to_mouse", zoom_to_mouse) &&
 		srh.reflect_member("focus_x", view::focus(0)) &&
 		srh.reflect_member("focus_y", view::focus(1)) &&
 		srh.reflect_member("focus_z", view::focus(2)) &&

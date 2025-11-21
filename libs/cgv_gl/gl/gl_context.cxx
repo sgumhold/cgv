@@ -2803,11 +2803,10 @@ bool gl_context::shader_code_compile(render_component& sc) const
 	GLint infologLength = 0;
 	glGetShaderiv(s_id, GL_INFO_LOG_LENGTH, &infologLength);
 	if (infologLength > 0) {
-		int charsWritten = 0;
-		char *infoLog = (char *)malloc(infologLength);
-		glGetShaderInfoLog(s_id, infologLength, &charsWritten, infoLog);
-		sc.last_error = infoLog;
-		free(infoLog);
+		GLsizei charsWritten = 0;
+		sc.last_error = std::string(infologLength, 0);
+		glGetShaderInfoLog(s_id, infologLength, &charsWritten, &sc.last_error.front());
+		sc.last_error.resize(static_cast<size_t>(charsWritten + 1));
 	}
 	return false;
 }
@@ -2854,12 +2853,12 @@ bool gl_context::shader_program_link(shader_program_base& spb) const
 	glGetProgramiv(p_id, GL_INFO_LOG_LENGTH, &infologLength);
 	if (infologLength > 0) {
 		GLsizei charsWritten = 0;
-		char *infoLog = (char *)malloc(infologLength);
-		glGetProgramInfoLog(p_id, infologLength, &charsWritten, infoLog);
-		spb.last_error = infoLog;
-		error(std::string("gl_context::shader_program_link\n")+infoLog, &spb);
-		free(infoLog);
+		spb.last_error = std::string(infologLength, 0);
+		glGetShaderInfoLog(p_id, infologLength, &charsWritten, &spb.last_error.front());
+		spb.last_error.resize(static_cast<size_t>(charsWritten + 1));
+		error("gl_context::shader_program_link\n" + spb.last_error, &spb);
 	}
+
 	return false;
 }
 
