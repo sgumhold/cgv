@@ -2,6 +2,8 @@
 
 #include "gpgpu_args.glcs"
 
+#include "sbb_reduce.glcs"
+
 #ifdef CGV_USE_SNIPPETS
 layout(local_size_x = LOCAL_SIZE_X) in;
 
@@ -31,38 +33,7 @@ value_type operation(value_type lhs, value_type rhs) {
 }
 #endif
 
-#define APPLY_OP_SHARED(N) s_data[tid] = operation(s_data[tid], s_data[tid + (N)]);
-
-void warp_reduce(uint tid) {
-	// TODO: comment: reduce in warp so if(tid < i) not needed. memorybarrier needed because compiler may cache some values in registers and does not read latest values from shared mem
-	// CUDA can use a volatile modifier on the shared mem, but glsl cannot.
-#if LOCAL_SIZE_X >= 64
-	APPLY_OP_SHARED(32)
-	memoryBarrierShared();
-#endif
-#if LOCAL_SIZE_X >= 32
-	APPLY_OP_SHARED(16)
-	memoryBarrierShared();
-#endif
-#if LOCAL_SIZE_X >= 16
-	APPLY_OP_SHARED(8)
-	memoryBarrierShared();
-#endif
-#if LOCAL_SIZE_X >= 8
-	APPLY_OP_SHARED(4)
-	memoryBarrierShared();
-#endif
-#if LOCAL_SIZE_X >= 4
-	APPLY_OP_SHARED(2)
-	memoryBarrierShared();
-#endif
-#if LOCAL_SIZE_X >= 2
-	APPLY_OP_SHARED(1)
-	memoryBarrierShared();
-#endif
-}
-
-#define REDUCE(N) if(tid < (N)) { APPLY_OP_SHARED(N) } barrier();
+CGV_SBB_GROUP_REDUCE(group_reduce, LOCAL_SIZE_X, s_data, operation)
 
 void main() {
 	uint tid = gl_LocalInvocationID.x;
@@ -82,22 +53,8 @@ void main() {
 
 	barrier();
 	
-#if LOCAL_SIZE_X >= 1024
-	REDUCE(512)
-#endif	
-#if LOCAL_SIZE_X >= 512
-	REDUCE(256)
-#endif
-#if LOCAL_SIZE_X >= 256
-	REDUCE(128)
-#endif
-#if LOCAL_SIZE_X >= 128
-	REDUCE(64)
-#endif
+	group_reduce(int(tid));
 
-	if(tid < 32)
-		warp_reduce(tid);
-	
 	// Write the result of this group to global memory.
 	if(tid == 0)
 		data_out[u_output_begin + gl_WorkGroupID.x] = s_data[0];
