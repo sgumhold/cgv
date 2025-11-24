@@ -40,6 +40,17 @@ namespace cgv {
 			has_group_indices = false;
 			remove_attribute_array(ctx, "group_index");
 		}
+		/// overload to update the shader program compile options based on the current render style; only called if internal shader program is used
+		void group_renderer::update_shader_program_options(shader_compile_options& options) const
+		{
+			renderer::update_shader_program_options(options);
+			const auto& grs = get_style<group_render_style>();
+			options.define_macro_if_true(grs.use_group_color || grs.use_group_transformation, "USE_GROUPS");
+			options.define_macro_if_true(grs.use_group_color, "USE_GROUP_COLOR");
+			options.define_macro_if_true(grs.use_group_transformation, "USE_GROUP_TRANSFORMATION");
+			options.define_macro("MAX_NR_GROUPS", grs.max_nr_groups);
+		}
+
 		bool group_renderer::validate_attributes(const context& ctx) const
 		{
 			// validate set attributes
@@ -91,6 +102,7 @@ namespace cgv {
 		bool group_render_style_reflect::self_reflect(cgv::reflect::reflection_handler& rh)
 		{
 			return
+				rh.reflect_member("max_nr_groups", max_nr_groups) &&
 				rh.reflect_member("use_group_color", use_group_color) &&
 				rh.reflect_member("use_group_transformation", use_group_transformation);
 		}
@@ -126,6 +138,7 @@ namespace cgv {
 				cgv::render::group_render_style* grs_ptr = reinterpret_cast<cgv::render::group_render_style*>(value_ptr);
 				cgv::base::base* b = dynamic_cast<cgv::base::base*>(p);
 
+				p->add_member_control(b, "Max Nr Groups", grs_ptr->max_nr_groups, "value_slider", "min=2;max=512;log=true;ticks=true");
 				p->add_member_control(b, "Use Group Color", grs_ptr->use_group_color);
 				p->add_member_control(b, "Use Group Transformation", grs_ptr->use_group_transformation);
 				return true;

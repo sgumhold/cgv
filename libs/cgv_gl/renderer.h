@@ -18,7 +18,59 @@ namespace cgv { // @<
 			virtual ~render_style();
 		};
 		
-		/// abstract base class for all renderers that handles a shader program and position / color attribute
+		//! Abstract base class for all renderers that manage a render data and the rendering process.
+		/*! Render data is managed through buffer objects and fed into the rendering pipeline via an
+		*   attribute array object. Render data management is done either with vertex array pointers
+		*   or with an attribute array manager that manages buffers and one attribute array object.
+		*   The rendering process is configured via a configuration values stored in a renderer specific
+		*   render style, from which shader program defines, default attribute values and uniform values
+		*   are derived. Besides standard compiler defines, a custom mechanism similar to macros called 
+		*   snippets is provided mostly for compute shader usage and configured in specialized renderers.
+		*   
+		*   Rendering Process is decomposed into
+		*   - validate_attributes() ... check for essential attributes
+		*   - enable() ... re-compile shader program if render style configuration induced a change in 
+		*                  program defines or snippets
+		*   - draw()   ... emit a draw call to execute the rendering pipeline. Multiple calls to draw() are
+		*                  possible
+		*   - disable()... disable all program, buffers, and attribute array object and clear one shot
+		*                  programs and attributes
+		* 
+		*   Rendering Process convenience functions are
+		*   - validate_and_enable() ... call validate_attributes() and in case of success enable()  
+		*   - render() ... used for single draw calls and calls validate_and_enable(), draw(), disable() 
+		*
+		*   External program can be used by setting it with the set_prog() function. For this a pointer
+		*   to the external program is stored and used to resolve attribute indices and for successive
+		*   draw calls until the first call to disable(), what is also called when the render() function
+		*   is used. Thereafter the pointer is cleared and the own shader program set as active again. 
+		*   If an external program should be used multiple times, it needs to be set again with set_prog() 
+		*   after each call to disable() or render(). The user has to make sure that the external program 
+		*   exists till the next disable() or render() call using it.
+		*
+		*   Shader program attribute indices are determined from the own or external shader program via 
+		*   predefinded names, e.g. "position" and "color" for the attributes handled by the renderer 
+		*   class, during calls to set_position(), set_position_array(), set_color(), set_color_array().
+		*   Thus make sure if you use an external program to set the attributes after calling the 
+		*   set_prog() function.
+		* 
+		*   Attributes persist similar to external program usage only until the next disable() or
+		*   render() function call. In compatibility attribute array points are used to transfer 
+		*   attribute data to the gpu which can be done assynchronuously and in parallel to draw 
+		*   calls. For this to work, the user has to ensure that the CPU side attribute array data 
+		*   persists will the last draw() call using it. 
+		*   To store attribute data for multiple draw calls persistently in gpu buffers, an external
+		*   attribute array manager can be used and enabled or disabled with the 
+		*   enable_attribute_manager() and disable_attribute_manager() functions. In core profile a
+		*   default attribute array manager is constructed in case no external manager is provided.
+		*   In this case, the attributes are still cleared after each calls to diable() or render()
+		*   but the CPU side attribute data objects can be destructed before the draw calls. The 
+		*   context object ctx allows to check for core profile via the member ctx.core_profile.
+		* 
+		*   Render styles of concrete renderers inherit the abstract class render_style that has a 
+		*   virtual destructor. The renderer class manages a default render style and supports setting
+		*   an external render style with the set_render_style() function.
+		*/
 		class CGV_API renderer
 		{
 		private:
@@ -59,9 +111,7 @@ namespace cgv { // @<
 			/// check for attribute array manager
 			bool has_aam() const { return aam_ptr != 0 && aam_ptr != &default_aam; }
 			/// check for attribute
-			bool has_attribute(const context& ctx, const std::string& name) {
-				return aam_ptr->has_attribute(ctx, get_prog_attribute_location(ctx, name, false));
-			}
+			bool has_attribute(const context& ctx, const std::string& name);
 			/// implement this method to create a default render style
 			virtual render_style* create_render_style() const = 0;
 			/// access to render style

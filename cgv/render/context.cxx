@@ -26,6 +26,93 @@ float background_colors[] = {
 	1,1,1,0,
 };
 
+std::ostream& operator << (std::ostream& os, const type_descriptor& td)
+{
+	std::string prefix, postfix, type;
+	switch (td.coordinate_type) {
+	case cgv::type::info::TI_BOOL: type = "bool"; prefix = "b"; break;
+	case cgv::type::info::TI_FLT32: type = "float"; break;
+	case cgv::type::info::TI_FLT64: type = "double"; prefix = "d"; break;
+	case cgv::type::info::TI_INT32: type = "int"; prefix = "i";  break;
+	case cgv::type::info::TI_UINT32: type = "uint"; prefix = "u"; break;
+	}
+	switch (td.element_type) {
+	case cgv::render::ElementType::ET_VALUE:
+		prefix = "";
+		break;
+	case cgv::render::ElementType::ET_VECTOR:
+		type = "vec";
+		postfix = "0";
+		postfix[0] += td.nr_rows;
+		break;
+	case cgv::render::ElementType::ET_MATRIX: type = "mat"; break;
+		type = "mat";
+		postfix = "0";
+		postfix[0] += td.nr_rows;
+		if (td.nr_columns != td.nr_rows) {
+			postfix += "x0";
+			postfix[2] += td.nr_columns;
+		}
+		break;
+	}
+	return os << prefix << type << postfix;
+}
+
+void program_variable_info::compute_sizes(size_t& cnt, size_t& s, size_t& S) const
+{
+	cnt = 1;
+	if (type_descr.element_type == cgv::render::ET_VECTOR)
+		cnt = type_descr.nr_rows;
+	if (type_descr.element_type == cgv::render::ET_MATRIX)
+		cnt = type_descr.nr_rows * type_descr.nr_columns;
+	unsigned ctype_size = cgv::type::info::get_type_size(type_descr.coordinate_type);
+	if (type_descr.coordinate_type == cgv::type::info::TI_BOOL)
+		ctype_size = 4;
+	s = ctype_size * cnt;
+	S = s * array_size;
+}
+
+/// operator to stream out program variable info in text format
+std::ostream& operator << (std::ostream& os, const program_variable_info& V)
+{
+	os << V.type_descr << " " << V.name;
+	if (V.array_size > 1)
+		os << "[" << V.array_size << "]";
+	if (V.program_location != -1)
+		os << " @" << V.program_location;
+	if (V.current_value.empty())
+		return os;
+
+	os << " = ";
+	size_t cnt, s, S;
+	V.compute_sizes(cnt, s, S);
+	if (V.array_size > 1)
+		os << "{";
+	for (size_t j = 0; j < V.array_size; ++j) {
+		if (j > 0)
+			os << ", ";
+		if (cnt > 1)
+			os << "[";
+		for (size_t k = 0; k < cnt; ++k) {
+			if (k > 0)
+				os << ", ";
+			const void* value_ptr = V.current_value.data() + j * s;
+			switch (V.type_descr.coordinate_type) {
+			case cgv::type::info::TI_BOOL:   os << (*(const int32_t*)(value_ptr) != 0 ? "true" : "false"); break;
+			case cgv::type::info::TI_INT32:  os << *(const int32_t*)(value_ptr); break;
+			case cgv::type::info::TI_UINT32: os << *(const uint32_t*)(value_ptr);	break;
+			case cgv::type::info::TI_FLT32:  os << *(const float*)(value_ptr); break;
+			case cgv::type::info::TI_FLT64:  os << *(const double*)(value_ptr); break;
+			}
+		}
+		if (cnt > 1)
+			os << "]";
+	}
+	if (V.array_size > 1)
+		os << "}";
+	return os;
+}
+
 
 /// construct config with default parameters
 context_config::context_config()

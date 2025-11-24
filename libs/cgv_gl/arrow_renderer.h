@@ -65,8 +65,6 @@ namespace cgv {
 			std::string get_default_prog_name() const override { return "arrow.glpr"; }
 			/// create and return the default render style
 			render_style* create_render_style() const override { return new arrow_render_style(); }
-			/// build arrow program
-			bool build_shader_program(context& ctx, shader_program& prog, const shader_compile_options& options) const override;
 		public:
 			/// call this before setting attribute arrays to manage attribute array in given manager
 			void enable_attribute_array_manager(const context& ctx, attribute_array_manager& aam) override;

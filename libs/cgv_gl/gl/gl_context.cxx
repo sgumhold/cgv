@@ -2956,6 +2956,161 @@ bool gl_context::shader_program_get_active_uniforms(shader_program_base& spb, st
 	return true;
 }
 
+program_variable_info construct_program_variable(const std::vector<GLchar>& buffer, GLsizei actual_length, GLint array_size, GLenum type)
+{
+	program_variable_info V;
+	V.name = std::string(static_cast<const char*>(buffer.data()), actual_length);
+	// Uniforms for arrays of non-compound (non-struct) types are listed once with a "[0]" suffix and a given array size greater than 1.
+	if (array_size > 1) {
+		// Remove the brackets to get the base name of the uniform
+		size_t bracket_pos = V.name.find('[');
+		if (bracket_pos != std::string::npos)
+			V.name.resize(bracket_pos);
+		if (!V.name.empty())
+			V.array_size = array_size;
+	}
+	else {
+		V.array_size = 1;
+	}
+	switch (type) {
+	case GL_FLOAT: V.type_descr = type_descriptor(cgv::type::info::TI_FLT32, false); break;
+	case GL_FLOAT_VEC2: V.type_descr = type_descriptor(cgv::type::info::TI_FLT32, 2u); break;
+	case GL_FLOAT_VEC3: V.type_descr = type_descriptor(cgv::type::info::TI_FLT32, 3u); break;
+	case GL_FLOAT_VEC4: V.type_descr = type_descriptor(cgv::type::info::TI_FLT32, 4u); break;
+	case GL_FLOAT_MAT2: V.type_descr = type_descriptor(cgv::type::info::TI_FLT32, 2u, 2u, false); break;
+	case GL_FLOAT_MAT3: V.type_descr = type_descriptor(cgv::type::info::TI_FLT32, 3u, 3u, false); break;
+	case GL_FLOAT_MAT4: V.type_descr = type_descriptor(cgv::type::info::TI_FLT32, 4u, 4u, false); break;
+	case GL_FLOAT_MAT2x3: V.type_descr = type_descriptor(cgv::type::info::TI_FLT32, 2u, 3u, false); break;
+	case GL_FLOAT_MAT2x4: V.type_descr = type_descriptor(cgv::type::info::TI_FLT32, 2u, 4u, false); break;
+	case GL_FLOAT_MAT3x2: V.type_descr = type_descriptor(cgv::type::info::TI_FLT32, 3u, 2u, false); break;
+	case GL_FLOAT_MAT3x4: V.type_descr = type_descriptor(cgv::type::info::TI_FLT32, 3u, 4u, false); break;
+	case GL_FLOAT_MAT4x2: V.type_descr = type_descriptor(cgv::type::info::TI_FLT32, 4u, 2u, false); break;
+	case GL_FLOAT_MAT4x3: V.type_descr = type_descriptor(cgv::type::info::TI_FLT32, 4u, 3u, false); break;
+	case GL_BOOL: V.type_descr = type_descriptor(cgv::type::info::TI_BOOL, false); break;
+	case GL_BOOL_VEC2:V.type_descr = type_descriptor(cgv::type::info::TI_BOOL, 2u); break;
+	case GL_BOOL_VEC3:V.type_descr = type_descriptor(cgv::type::info::TI_BOOL, 3u); break;
+	case GL_BOOL_VEC4:V.type_descr = type_descriptor(cgv::type::info::TI_BOOL, 4u); break;
+	case GL_INT: V.type_descr = type_descriptor(cgv::type::info::TI_INT32, false); break;
+	case GL_INT_VEC2:V.type_descr = type_descriptor(cgv::type::info::TI_INT32, 2u); break;
+	case GL_INT_VEC3:V.type_descr = type_descriptor(cgv::type::info::TI_INT32, 3u); break;
+	case GL_INT_VEC4:V.type_descr = type_descriptor(cgv::type::info::TI_INT32, 4u); break;
+	case GL_UNSIGNED_INT:V.type_descr = type_descriptor(cgv::type::info::TI_UINT32, false); break;
+	case GL_UNSIGNED_INT_VEC2:V.type_descr = type_descriptor(cgv::type::info::TI_UINT32, 2u); break;
+	case GL_UNSIGNED_INT_VEC3:V.type_descr = type_descriptor(cgv::type::info::TI_UINT32, 3u); break;
+	case GL_UNSIGNED_INT_VEC4:V.type_descr = type_descriptor(cgv::type::info::TI_UINT32, 4u); break;
+	case GL_DOUBLE: V.type_descr = type_descriptor(cgv::type::info::TI_FLT64, false); break;
+	case GL_DOUBLE_VEC2:V.type_descr = type_descriptor(cgv::type::info::TI_FLT64, 2u); break;
+	case GL_DOUBLE_VEC3:V.type_descr = type_descriptor(cgv::type::info::TI_FLT64, 3u); break;
+	case GL_DOUBLE_VEC4:V.type_descr = type_descriptor(cgv::type::info::TI_FLT64, 4u); break;
+	case GL_DOUBLE_MAT2:V.type_descr = type_descriptor(cgv::type::info::TI_FLT64, 2u, 2u, false); break;
+	case GL_DOUBLE_MAT3:V.type_descr = type_descriptor(cgv::type::info::TI_FLT64, 3u, 3u, false); break;
+	case GL_DOUBLE_MAT4:V.type_descr = type_descriptor(cgv::type::info::TI_FLT64, 4u, 4u, false); break;
+	case GL_DOUBLE_MAT2x3:V.type_descr = type_descriptor(cgv::type::info::TI_FLT64, 2u, 3u, false); break;
+	case GL_DOUBLE_MAT2x4:V.type_descr = type_descriptor(cgv::type::info::TI_FLT64, 2u, 4u, false); break;
+	case GL_DOUBLE_MAT3x2:V.type_descr = type_descriptor(cgv::type::info::TI_FLT64, 3u, 2u, false); break;
+	case GL_DOUBLE_MAT3x4:V.type_descr = type_descriptor(cgv::type::info::TI_FLT64, 3u, 4u, false); break;
+	case GL_DOUBLE_MAT4x2:V.type_descr = type_descriptor(cgv::type::info::TI_FLT64, 4u, 2u, false); break;
+	case GL_DOUBLE_MAT4x3:V.type_descr = type_descriptor(cgv::type::info::TI_FLT64, 4u, 3u, false); break;
+	}
+	return V;
+}
+
+void gl_context::shader_program_inspect_variables(shader_program_base& spb, ProgramVariableKind kind, std::vector<program_variable_info>& Vs, bool get_location, bool get_value) const
+{
+	GLint prog_id;
+	spb.put_id(prog_id);
+	// name buffer and sizeing informations
+	std::vector<GLchar> buffer(256);
+	GLint array_size = 0;
+	GLenum type = 0;
+	GLsizei actual_length = 0;
+	// query number of active program variables of \c kind
+	GLint num_active_variables = 0;
+	glGetProgramiv(prog_id, kind == cgv::render::PVK_UNIFORM ? GL_ACTIVE_UNIFORMS : GL_ACTIVE_ATTRIBUTES, &num_active_variables);
+	// for inspecting attribute values, one has to use the to be inspected program. Remember previously used program
+	GLint old_prog_id = prog_id;
+	if (kind == cgv::render::PVK_ATTRIBUTE) {
+		glGetIntegerv(GL_CURRENT_PROGRAM, &old_prog_id);
+		if (old_prog_id != prog_id)
+			glUseProgram(prog_id);
+	}
+	// iterate all variables of \c kind
+	for (int i = 0; i < num_active_variables; ++i) {
+		// extract type and array information of program variable
+		(kind == cgv::render::PVK_UNIFORM ? glGetActiveUniform : glGetActiveAttrib)(prog_id, i,
+			GLsizei(buffer.size()), &actual_length, &array_size, &type, buffer.data());
+		cgv::render::program_variable_info V = construct_program_variable(buffer, actual_length, array_size, type);
+		// compute component count \c cnt, array element size \c s and total size \c S for all values in array
+		size_t cnt = 1, s, S;
+		if (get_value) {
+			V.compute_sizes(cnt, s, S);
+			V.current_value.resize(S);
+		}
+		// in case of attributes provide a read buffer to read array elements which write 
+		// always 4 components even if only one component is declared
+		std::vector<char> read_buffer;
+		if (kind == cgv::render::PVK_ATTRIBUTE && cnt != 4)
+			read_buffer.resize(4 * s / cnt);
+		for (unsigned j = 0; j < V.array_size; ++j) {
+			// in case of array variables use per array element postfix to query location
+			std::string postfix;
+			if (V.array_size > 1)
+				postfix += "[" + cgv::utils::to_string(j) + "]";
+			// query location of variable in 
+			if (get_location || get_value)
+				V.program_location = (kind == cgv::render::PVK_UNIFORM ? glGetUniformLocation : glGetAttribLocation)(
+					prog_id, (V.name + postfix).c_str());
+			// one is not allowed to query program attribute at location 0
+			if (kind == cgv::render::PVK_ATTRIBUTE && V.program_location == 0) {
+				V.current_value.clear();
+				break;
+			}
+			if (!get_value)
+				break;
+			// let read_ptr point where program variable values should be queried to
+			void* value_ptr = V.current_value.data() + j * s;
+			void* read_ptr = read_buffer.empty() ? value_ptr : read_buffer.data();
+			// switch over coordinate type to vary gl getter function
+			switch (V.type_descr.coordinate_type) {
+			case cgv::type::info::TI_BOOL:
+			case cgv::type::info::TI_INT32:
+				if (kind == cgv::render::PVK_UNIFORM)
+					glGetUniformiv(prog_id, V.program_location, (GLint*)(read_ptr));
+				else
+					glGetVertexAttribIiv(V.program_location, GL_CURRENT_VERTEX_ATTRIB, (GLint*)(read_ptr));
+				break;
+			case cgv::type::info::TI_UINT32:
+				if (kind == cgv::render::PVK_UNIFORM)
+					glGetUniformuiv(prog_id, V.program_location, (GLuint*)(read_ptr));
+				else
+					glGetVertexAttribIuiv(V.program_location, GL_CURRENT_VERTEX_ATTRIB, (GLuint*)(read_ptr));
+				break;
+			case cgv::type::info::TI_FLT32:
+				if (kind == cgv::render::PVK_UNIFORM)
+					glGetUniformfv(prog_id, V.program_location, (GLfloat*)(read_ptr));
+				else
+					glGetVertexAttribfv(V.program_location, GL_CURRENT_VERTEX_ATTRIB, (GLfloat*)(read_ptr));
+				break;
+			case cgv::type::info::TI_FLT64:
+				if (kind == cgv::render::PVK_UNIFORM)
+					glGetUniformdv(prog_id, V.program_location, (GLdouble*)(read_ptr));
+				else
+					glGetVertexAttribdv(V.program_location, GL_CURRENT_VERTEX_ATTRIB, (GLdouble*)(read_ptr));
+				break;
+			}
+			// in case we copied to read buffer, copy used value[s] to value buffer
+			if (read_ptr != value_ptr)
+				std::copy((const char*)read_ptr, (const char*)read_ptr + s, (char*)value_ptr);
+		}
+		// add inspected variable to list
+		Vs.push_back(V);
+	}
+	// recover previously used program
+	if (old_prog_id != prog_id)
+		glUseProgram(old_prog_id);
+}
+
+
 int  gl_context::get_uniform_location(const shader_program_base& spb, const std::string& name) const
 {
 	return glGetUniformLocation(get_gl_id(spb.handle), name.c_str());
@@ -3712,9 +3867,16 @@ bool gl_context::vertex_buffer_copy_back(const vertex_buffer_base& vbb, size_t o
 	}
 	GLuint b_id = get_gl_id(vbb.handle);
 	GLuint bind_point = GL_COPY_READ_BUFFER;
-	//if (vbb.type == cgv::render::VBT_STORAGE) {
-	//	bind_point = GL_SHADER_STORAGE_BUFFER;
-	//}
+	switch (vbb.type) {
+	case cgv::render::VBT_VERTICES: bind_point = GL_ARRAY_BUFFER; break;
+	case cgv::render::VBT_INDICES: bind_point = GL_ELEMENT_ARRAY_BUFFER; break;
+	case cgv::render::VBT_TEXTURE: bind_point = GL_TEXTURE_BUFFER; break;
+	case cgv::render::VBT_UNIFORM: bind_point = GL_UNIFORM_BUFFER; break;
+	case cgv::render::VBT_FEEDBACK: bind_point = GL_TRANSFORM_FEEDBACK_BUFFER; break;
+	case cgv::render::VBT_STORAGE: bind_point = GL_SHADER_STORAGE_BUFFER; break;
+	case cgv::render::VBT_ATOMIC_COUNTER: bind_point = GL_ATOMIC_COUNTER_BUFFER; break;
+	case cgv::render::VBT_INDIRECT: bind_point = GL_DRAW_INDIRECT_BUFFER; break;
+	}
 	glBindBuffer(bind_point, b_id);
 	glGetBufferSubData(bind_point, offset, size_in_bytes, array_ptr);
 	glBindBuffer(bind_point, 0);
