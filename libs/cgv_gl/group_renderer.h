@@ -17,6 +17,8 @@ namespace cgv { // @<
 			bool use_group_color = false;
 			/// whether to use group translation and rotation indexed through group index, defaults to false
 			bool use_group_transformation = false;
+			/// maximum number of groups supported by shader
+			int max_nr_groups = 8;
 		};
 
 		/// abstract renderer class that provides functionality for grouping primitives
@@ -27,6 +29,8 @@ namespace cgv { // @<
 			bool has_group_colors = false;
 			bool has_group_translations = false;
 			bool has_group_rotations = false;
+			/// overload to update the shader program compile options based on the current render style; only called if internal shader program is used
+			void update_shader_program_options(shader_compile_options& options) const override;
 		public:
 			/// call this before setting attribute arrays to manage attribute array in given manager
 			void enable_attribute_array_manager(const context& ctx, attribute_array_manager& aam);

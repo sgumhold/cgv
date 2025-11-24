@@ -18,6 +18,7 @@
 #include <stack>
 #include <vector>
 #include <string>
+#include <iostream>
 
 #include "lib_begin.h"
 
@@ -73,7 +74,49 @@ struct type_descriptor
 	type_descriptor(const type_descriptor& td, bool _is_array) : coordinate_type(td.coordinate_type), element_type(td.element_type), nr_rows(td.nr_rows), nr_columns(td.nr_columns), is_row_major(td.is_row_major), normalize(td.normalize), is_array(_is_array) {}
 	/// cast to int
 	operator int() const { return *reinterpret_cast<const int*>(this); }
+	/// operator to write textual description to stream
+	friend extern CGV_API std::ostream& operator << (std::ostream&, const type_descriptor&);
 };
+
+/// operator to write textual description to stream
+extern CGV_API std::ostream& operator << (std::ostream&, const type_descriptor&);
+
+/// <summary>
+/// enumerates different kinds of shader program variables
+/// </summary>
+enum ProgramVariableKind {
+	PVK_UNIFORM,
+	PVK_ATTRIBUTE
+};
+
+/// <summary>
+/// structure to store information on a shader program variable, i.e. a uniform or attribute
+/// </summary>
+struct CGV_API program_variable_info
+{
+	/// name as it appears in shaders
+	std::string name;
+	/// type descriptor providing information on component and compositions (scalar, vector or matrix)
+	cgv::render::type_descriptor type_descr;
+	/// dimension of arrays
+	unsigned array_size = 0;
+	/// location in program, but not for array variables which span multiple locations
+	int program_location;
+	/// data storage for the value of the program variable
+	std::vector<char> current_value;
+	/// operator to stream out program variable info in text format
+	extern CGV_API friend std::ostream& operator << (std::ostream& os, const program_variable_info& V);
+	/// <summary>
+	/// helper member function to compute counts and sizes
+	/// </summary>
+	/// <param name="cnt">reference to variable retrieving component count</param>
+	/// <param name="s">reference to variable retrieving array element size in bytes</param>
+	/// <param name="S">reference to variable retrieving total array size in bytes</param>
+	void compute_sizes(size_t& cnt, size_t& s, size_t& S) const;
+};
+
+/// operator to stream out program variable info in text format
+extern CGV_API std::ostream& operator << (std::ostream& os, const program_variable_info& V);
 
 /// enumeration of rendering APIs which can be queried from the context
 enum RenderAPI {
@@ -857,6 +900,7 @@ protected:
 	virtual bool shader_program_destruct(shader_program_base& spb) const;
 	virtual void shader_program_set_uniform_locations(shader_program_base& spb) const;
 	virtual bool shader_program_get_active_uniforms(shader_program_base& spb, std::vector<std::string>& names) const = 0;
+	virtual void shader_program_inspect_variables(shader_program_base& spb, ProgramVariableKind kind, std::vector<program_variable_info>& Vs, bool get_location, bool get_value) const = 0;
 	virtual int  get_uniform_location(const shader_program_base& spb, const std::string& name) const = 0;
 	virtual bool set_uniform_void(shader_program_base& spb, int loc, type_descriptor value_type, const void* value_ptr) const = 0;
 	virtual bool set_uniform_array_void(shader_program_base& spb, int loc, type_descriptor value_type, const void* value_ptr, size_t nr_elements) const = 0;

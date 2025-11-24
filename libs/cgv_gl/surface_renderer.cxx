@@ -6,6 +6,21 @@
 namespace cgv {
 	namespace render {
 
+		/// overload to update the shader program compile options based on the current render style; only called if internal shader program is used
+		void surface_renderer::update_shader_program_options(shader_compile_options& options) const
+		{
+			group_renderer::update_shader_program_options(options);
+			const auto& srs = get_style<surface_render_style>();
+			options.define_macro("MAX_NR_LIGHTS", srs.max_nr_lights);
+		}
+		/// overload to disable context from setting color in shader program
+		bool surface_renderer::build_shader_program(context& ctx, shader_program& prog, const shader_compile_options& options) const
+		{
+			bool res = group_renderer::build_shader_program(ctx, prog, options);
+			prog.allow_context_to_set_color(false);
+			return res;
+		}
+
 		/// call this before setting attribute arrays to manage attribute array in given manager
 		void surface_renderer::enable_attribute_array_manager(const context& ctx, attribute_array_manager& aam)
 		{
@@ -54,8 +69,12 @@ namespace cgv {
 				ctx.set_cull_state(srs.culling_mode);
 			}
 			if (ref_prog().is_linked()) {
-				if (!has_colors)
-					ctx.set_color(srs.surface_color, srs.surface_opacity);
+				if (!has_colors) {
+					cgv::rgba col;
+					(cgv::rgb&)col = srs.surface_color;
+					col.opacity() = srs.surface_opacity;
+					ref_prog().set_attribute(ctx, "color", col);
+				}
 				ctx.set_material(srs.material);
 				ref_prog().set_uniform(ctx, "map_color_to_material", int(srs.map_color_to_material));
 				ref_prog().set_uniform(ctx, "culling_mode", int(srs.culling_mode));
@@ -86,6 +105,7 @@ namespace cgv {
 				rh.reflect_member("illumination_mode", illumination_mode) &&
 				rh.reflect_member("map_color_to_material", map_color_to_material) &&
 				rh.reflect_member("surface_color", surface_color) &&
+				rh.reflect_member("max_nr_lights", max_nr_lights) &&
 				rh.reflect_member("material", material);
 		}
 
@@ -120,6 +140,7 @@ namespace cgv {
 					p->end_tree_node(srs_ptr->map_color_to_material);
 				}
 				p->add_member_control(b, "Illumination Mode", srs_ptr->illumination_mode, "dropdown", "enums='Off,One-Sided,Two-Sided'");
+				p->add_member_control(b, "Max Nr Light", srs_ptr->max_nr_lights, "value_slider", "min=1;max=8;ticks=true");
 				p->add_member_control(b, "Culling Mode", srs_ptr->culling_mode, "dropdown", "enums='Off,Backface,Frontface'");
 				if (p->begin_tree_node("Color and Materials", srs_ptr->surface_color, false, "level=3")) {
 					p->align("\a");

@@ -15,6 +15,13 @@ namespace cgv {
 std::map<std::string, std::string> shader_program::program_file_cache;
 std::map<std::string, std::vector<std::string>> shader_program::files_cache;
 
+
+void shader_program::inspect_program_variables(const context& ctx, cgv::render::ProgramVariableKind kind, std::vector<cgv::render::program_variable_info>& Vs,
+	bool get_location, bool get_value)
+{
+	ctx.shader_program_inspect_variables(*this, kind, Vs, get_location, get_value);
+}
+
 /// attach a list of files
 bool shader_program::attach_files(const context& ctx, const std::vector<std::string>& file_names, const shader_compile_options& options)
 {

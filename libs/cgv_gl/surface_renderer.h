@@ -36,6 +36,8 @@ namespace cgv { // @<
 			ColorMapping map_color_to_material = CM_COLOR;
 			/// material of surface
 			cgv::media::illum::textured_surface_material material;
+			/// maximum number of supported lights (change triggers recompilation of shader)
+			int max_nr_lights = 2;
 		};
 
 		/// base classes for renderers that support surface rendering
@@ -45,6 +47,10 @@ namespace cgv { // @<
 			bool has_normals = false;
 			bool has_texcoords = false;
 			bool cull_per_primitive = true;
+			/// overload to update the shader program compile options based on the current render style; only called if internal shader program is used
+			void update_shader_program_options(shader_compile_options& options) const override;
+			/// overload to disable context from setting color in shader program
+			bool build_shader_program(context& ctx, shader_program& prog, const shader_compile_options& options) const override;
 		public:
 			/// call this before setting attribute arrays to manage attribute array in given manager
 			void enable_attribute_array_manager(const context& ctx, attribute_array_manager& aam) override;
