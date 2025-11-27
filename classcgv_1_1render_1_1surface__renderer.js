@@ -1,5 +1,6 @@
 var classcgv_1_1render_1_1surface__renderer =
 [
+    [ "build_shader_program", "classcgv_1_1render_1_1surface__renderer.html#a5e9ec594ab20348fa543fa741e98deb8", null ],
     [ "disable", "classcgv_1_1render_1_1surface__renderer.html#af8454ee401ee1cbbddba9a1d4a2e2d2a", null ],
     [ "disable_attribute_array_manager", "classcgv_1_1render_1_1surface__renderer.html#ac01dc5b0afccd333e8c30eececf8e880", null ],
     [ "enable", "classcgv_1_1render_1_1surface__renderer.html#af3adc86d5bebf29d0ed91d9f9a7d23c4", null ],
@@ -15,5 +16,6 @@ var classcgv_1_1render_1_1surface__renderer =
     [ "set_texcoord_array", "classcgv_1_1render_1_1surface__renderer.html#a16fc63cdd0b4671308c4f89570fc804a", null ],
     [ "set_texcoord_array", "classcgv_1_1render_1_1surface__renderer.html#a06347854ea6ca483f982a58e22820a4a", null ],
     [ "set_texcoord_array", "classcgv_1_1render_1_1surface__renderer.html#a9308be3b02ae0506e616a851308fbbc2", null ],
-    [ "set_texcoord_array", "classcgv_1_1render_1_1surface__renderer.html#a6416f39e1d5e65fdc122cc1dcea6a1a3", null ]
+    [ "set_texcoord_array", "classcgv_1_1render_1_1surface__renderer.html#a6416f39e1d5e65fdc122cc1dcea6a1a3", null ],
+    [ "update_shader_program_options", "classcgv_1_1render_1_1surface__renderer.html#a4b47178f94d3cb796519a3a958df06b6", null ]
 ];

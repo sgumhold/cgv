@@ -1,6 +1,5 @@
 var classcgv_1_1render_1_1arrow__renderer =
 [
-    [ "build_shader_program", "classcgv_1_1render_1_1arrow__renderer.html#ad90569da0a561eafb772664b6c533317", null ],
     [ "create_render_style", "classcgv_1_1render_1_1arrow__renderer.html#a069029d872c95a142f0dc73950b8866b", null ],
     [ "disable", "classcgv_1_1render_1_1arrow__renderer.html#af93751c6c00ad0fb23d303bc3a756205", null ],
     [ "disable_attribute_array_manager", "classcgv_1_1render_1_1arrow__renderer.html#a6397a77b1eef5311aa8c4beaadce2e8a", null ],

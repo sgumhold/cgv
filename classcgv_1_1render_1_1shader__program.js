@@ -30,6 +30,7 @@ var classcgv_1_1render_1_1shader__program =
     [ "get_max_nr_geometry_shader_output_vertices", "classcgv_1_1render_1_1shader__program.html#a284d348185df93093343912db7d1a497", null ],
     [ "get_uniform_location", "classcgv_1_1render_1_1shader__program.html#adaf5ad58b59cb35a3b3ac8d70210907d", null ],
     [ "get_uniform_locations", "classcgv_1_1render_1_1shader__program.html#aec2021f9febac98c190a933909df77cb", null ],
+    [ "inspect_program_variables", "classcgv_1_1render_1_1shader__program.html#a8c425b35bc289c20e0c3da08c7961d06", null ],
     [ "is_enabled", "classcgv_1_1render_1_1shader__program.html#abacefc9eb248220de943d96ffd0d9e35", null ],
     [ "is_linked", "classcgv_1_1render_1_1shader__program.html#a95444d389d12928d3d0288470b09bfa5", null ],
     [ "link", "classcgv_1_1render_1_1shader__program.html#a98bd7f00b2aae4b4093fd410a0fc8e36", null ],
