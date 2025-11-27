@@ -5,7 +5,7 @@ namespace g2d {
 
 canvas::canvas() {
 	resolution = ivec2(100);
-	origin_setting = OriginSetting::kLowerLeft;
+	origin_setting = CoordinateOrigin::kLowerLeft;
 	apply_gamma = false;
 	zoom_factor = 1.0f;
 	initialize_modelview_matrix_stack();
@@ -69,11 +69,11 @@ void canvas::set_resolution(cgv::render::context& ctx, const ivec2& resolution) 
 	this->resolution = resolution;
 }
 
-OriginSetting canvas::get_origin_setting() const {
+CoordinateOrigin canvas::get_origin_setting() const {
 	return origin_setting;
 }
 
-void canvas::set_origin_setting(OriginSetting origin) {
+void canvas::set_origin_setting(CoordinateOrigin origin) {
 	origin_setting = origin;
 }
 
@@ -131,7 +131,7 @@ void canvas::warning(const std::string& what) const {
 void canvas::set_view(cgv::render::context& ctx, cgv::render::shader_program& prog) {
 	prog.set_uniform(ctx, "resolution", resolution);
 	prog.set_uniform(ctx, "modelview2d_matrix", modelview_matrix_stack.top());
-	prog.set_uniform(ctx, "origin_top_left", origin_setting == OriginSetting::kUpperLeft);
+	prog.set_uniform(ctx, "origin_top_left", origin_setting == CoordinateOrigin::kUpperLeft);
 	prog.set_uniform(ctx, "apply_gamma", apply_gamma);
 	prog.set_uniform(ctx, "zoom_factor", zoom_factor);
 }

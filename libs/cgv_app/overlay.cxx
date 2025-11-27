@@ -77,7 +77,7 @@ void overlay::on_set(void* member_ptr) {
 }
 
 ivec2 overlay::get_local_mouse_pos(ivec2 mouse_pos) const {
-	return cgv::g2d::apply_origin_setting(mouse_pos, last_viewport_size_, cgv::g2d::OriginSetting::kUpperLeft, cgv::g2d::OriginSetting::kLowerLeft) - container_.position;
+	return cgv::g2d::change_origin(mouse_pos, last_viewport_size_, cgv::g2d::CoordinateOrigin::kUpperLeft, cgv::g2d::CoordinateOrigin::kLowerLeft) - container_.position;
 }
 
 void overlay::set_alignment(AlignmentOption horizontal, AlignmentOption vertical, vec2 percentual_offset) {
@@ -147,7 +147,7 @@ bool overlay::ensure_layout(cgv::render::context& ctx) {
 }
 
 bool overlay::is_hit(const ivec2& mouse_pos) const {
-	ivec2 test_pos = cgv::g2d::apply_origin_setting(mouse_pos, last_viewport_size_, cgv::g2d::OriginSetting::kUpperLeft, cgv::g2d::OriginSetting::kLowerLeft);
+	ivec2 test_pos = cgv::g2d::change_origin(mouse_pos, last_viewport_size_, cgv::g2d::CoordinateOrigin::kUpperLeft, cgv::g2d::CoordinateOrigin::kLowerLeft);
 	return container_.contains(test_pos);
 };
 
