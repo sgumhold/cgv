@@ -110,7 +110,7 @@ Inheritance diagram for cgv::render::box_renderer:</div>
   <map id="cgv::render::box_5Frenderer_map" name="cgv::render::box_5Frenderer_map">
 <area href="classcgv_1_1render_1_1surface__renderer.html" title="base classes for renderers that support surface rendering" alt="cgv::render::surface_renderer" shape="rect" coords="0,112,183,136"/>
 <area href="classcgv_1_1render_1_1group__renderer.html" title="abstract renderer class that provides functionality for grouping primitives" alt="cgv::render::group_renderer" shape="rect" coords="0,56,183,80"/>
-<area href="classcgv_1_1render_1_1renderer.html" title="abstract base class for all renderers that handles a shader program and position / color attribute" alt="cgv::render::renderer" shape="rect" coords="0,0,183,24"/>
+<area href="classcgv_1_1render_1_1renderer.html" title="Abstract base class for all renderers that manage a render data and the rendering process." alt="cgv::render::renderer" shape="rect" coords="0,0,183,24"/>
   </map>
 </div></div>
 <table class="memberdecls">
@@ -443,6 +443,13 @@ Protected Member Functions</h2></td></tr>
 <tr class="memitem:a1ee2f8ec9ac66ff8117d9212c830f2ca" id="r_a1ee2f8ec9ac66ff8117d9212c830f2ca"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcgv_1_1render_1_1box__renderer.html#a1ee2f8ec9ac66ff8117d9212c830f2ca">update_shader_program_options</a> (<a class="el" href="classcgv_1_1render_1_1shader__compile__options.html">shader_compile_options</a> &amp;options) const override</td></tr>
 <tr class="memdesc:a1ee2f8ec9ac66ff8117d9212c830f2ca"><td class="mdescLeft">&#160;</td><td class="mdescRight">update shader program compile options based on render style  <br /></td></tr>
 <tr class="separator:a1ee2f8ec9ac66ff8117d9212c830f2ca"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="inherit_header pro_methods_classcgv_1_1render_1_1surface__renderer"><td colspan="2" onclick="javascript:toggleInherit('pro_methods_classcgv_1_1render_1_1surface__renderer')"><img src="closed.png" alt="-"/>&#160;Protected Member Functions inherited from <a class="el" href="classcgv_1_1render_1_1surface__renderer.html">cgv::render::surface_renderer</a></td></tr>
+<tr class="memitem:a4b47178f94d3cb796519a3a958df06b6 inherit pro_methods_classcgv_1_1render_1_1surface__renderer" id="r_a4b47178f94d3cb796519a3a958df06b6"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcgv_1_1render_1_1surface__renderer.html#a4b47178f94d3cb796519a3a958df06b6">update_shader_program_options</a> (<a class="el" href="classcgv_1_1render_1_1shader__compile__options.html">shader_compile_options</a> &amp;options) const override</td></tr>
+<tr class="memdesc:a4b47178f94d3cb796519a3a958df06b6 inherit pro_methods_classcgv_1_1render_1_1surface__renderer"><td class="mdescLeft">&#160;</td><td class="mdescRight">overload to update the shader program compile options based on the current render style; only called if internal shader program is used  <br /></td></tr>
+<tr class="separator:a4b47178f94d3cb796519a3a958df06b6 inherit pro_methods_classcgv_1_1render_1_1surface__renderer"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a5e9ec594ab20348fa543fa741e98deb8 inherit pro_methods_classcgv_1_1render_1_1surface__renderer" id="r_a5e9ec594ab20348fa543fa741e98deb8"><td class="memItemLeft" align="right" valign="top">bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcgv_1_1render_1_1surface__renderer.html#a5e9ec594ab20348fa543fa741e98deb8">build_shader_program</a> (<a class="el" href="classcgv_1_1render_1_1context.html">context</a> &amp;ctx, <a class="el" href="classcgv_1_1render_1_1shader__program.html">shader_program</a> &amp;prog, const <a class="el" href="classcgv_1_1render_1_1shader__compile__options.html">shader_compile_options</a> &amp;options) const override</td></tr>
+<tr class="memdesc:a5e9ec594ab20348fa543fa741e98deb8 inherit pro_methods_classcgv_1_1render_1_1surface__renderer"><td class="mdescLeft">&#160;</td><td class="mdescRight">overload to disable context from setting color in shader program  <br /></td></tr>
+<tr class="separator:a5e9ec594ab20348fa543fa741e98deb8 inherit pro_methods_classcgv_1_1render_1_1surface__renderer"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="inherit_header pro_methods_classcgv_1_1render_1_1renderer"><td colspan="2" onclick="javascript:toggleInherit('pro_methods_classcgv_1_1render_1_1renderer')"><img src="closed.png" alt="-"/>&#160;Protected Member Functions inherited from <a class="el" href="classcgv_1_1render_1_1renderer.html">cgv::render::renderer</a></td></tr>
 <tr class="memitem:a7264fd5effbc1beb4cc03be79c501b3c inherit pro_methods_classcgv_1_1render_1_1renderer" id="r_a7264fd5effbc1beb4cc03be79c501b3c"><td class="memItemLeft" align="right" valign="top">bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcgv_1_1render_1_1renderer.html#a7264fd5effbc1beb4cc03be79c501b3c">has_aam</a> () const</td></tr>
 <tr class="memdesc:a7264fd5effbc1beb4cc03be79c501b3c inherit pro_methods_classcgv_1_1render_1_1renderer"><td class="mdescLeft">&#160;</td><td class="mdescRight">check for attribute array manager  <br /></td></tr>
@@ -456,9 +463,6 @@ Protected Member Functions</h2></td></tr>
 <tr class="memitem:acf98eb4a64e230a55861683dee4b31ef inherit pro_methods_classcgv_1_1render_1_1renderer" id="r_acf98eb4a64e230a55861683dee4b31ef"><td class="memItemLeft" align="right" valign="top">bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcgv_1_1render_1_1renderer.html#acf98eb4a64e230a55861683dee4b31ef">attributes_persist</a> () const</td></tr>
 <tr class="memdesc:acf98eb4a64e230a55861683dee4b31ef inherit pro_methods_classcgv_1_1render_1_1renderer"><td class="mdescLeft">&#160;</td><td class="mdescRight">return whether attributes persist after a call to disable  <br /></td></tr>
 <tr class="separator:acf98eb4a64e230a55861683dee4b31ef inherit pro_methods_classcgv_1_1render_1_1renderer"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a591df90cf13667da55593699d7ce3403 inherit pro_methods_classcgv_1_1render_1_1renderer" id="r_a591df90cf13667da55593699d7ce3403"><td class="memItemLeft" align="right" valign="top">virtual bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcgv_1_1render_1_1renderer.html#a591df90cf13667da55593699d7ce3403">build_shader_program</a> (<a class="el" href="classcgv_1_1render_1_1context.html">context</a> &amp;ctx, <a class="el" href="classcgv_1_1render_1_1shader__program.html">shader_program</a> &amp;prog, const <a class="el" href="classcgv_1_1render_1_1shader__compile__options.html">shader_compile_options</a> &amp;options) const</td></tr>
-<tr class="memdesc:a591df90cf13667da55593699d7ce3403 inherit pro_methods_classcgv_1_1render_1_1renderer"><td class="mdescLeft">&#160;</td><td class="mdescRight">overload to change default behaviour and build a custom shader program based on the passed options  <br /></td></tr>
-<tr class="separator:a591df90cf13667da55593699d7ce3403 inherit pro_methods_classcgv_1_1render_1_1renderer"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:adb6814b6aa5111fdd9b9a6b3ac8bff68 inherit pro_methods_classcgv_1_1render_1_1renderer" id="r_adb6814b6aa5111fdd9b9a6b3ac8bff68"><td class="memTemplParams" colspan="2">template&lt;typename T &gt; </td></tr>
 <tr class="memitem:adb6814b6aa5111fdd9b9a6b3ac8bff68 inherit pro_methods_classcgv_1_1render_1_1renderer"><td class="memTemplItemLeft" align="right" valign="top">const T &amp;&#160;</td><td class="memTemplItemRight" valign="bottom"><a class="el" href="classcgv_1_1render_1_1renderer.html#adb6814b6aa5111fdd9b9a6b3ac8bff68">get_style</a> () const</td></tr>
 <tr class="memdesc:adb6814b6aa5111fdd9b9a6b3ac8bff68 inherit pro_methods_classcgv_1_1render_1_1renderer"><td class="mdescLeft">&#160;</td><td class="mdescRight">access to style  <br /></td></tr>
@@ -594,7 +598,7 @@ Protected Attributes</h2></td></tr>
 
 <p class="definition">Definition at line <a class="el" href="box__renderer_8cxx_source.html#l00085">85</a> of file <a class="el" href="box__renderer_8cxx_source.html">box_renderer.cxx</a>.</p>
 
-<p class="reference">References <a class="el" href="renderer_8h_source.html#l00070">cgv::render::renderer::attributes_persist()</a>, <a class="el" href="surface__renderer_8cxx_source.html#l00069">cgv::render::surface_renderer::disable()</a>, <a class="el" href="box__renderer_8h_source.html#l00035">has_extents</a>, <a class="el" href="box__renderer_8h_source.html#l00037">has_radii</a>, <a class="el" href="box__renderer_8h_source.html#l00043">has_rotations</a>, <a class="el" href="box__renderer_8h_source.html#l00041">has_translations</a>, and <a class="el" href="box__renderer_8h_source.html#l00045">position_is_center</a>.</p>
+<p class="reference">References <a class="el" href="renderer_8h_source.html#l00120">cgv::render::renderer::attributes_persist()</a>, <a class="el" href="surface__renderer_8cxx_source.html#l00088">cgv::render::surface_renderer::disable()</a>, <a class="el" href="box__renderer_8h_source.html#l00035">has_extents</a>, <a class="el" href="box__renderer_8h_source.html#l00037">has_radii</a>, <a class="el" href="box__renderer_8h_source.html#l00043">has_rotations</a>, <a class="el" href="box__renderer_8h_source.html#l00041">has_translations</a>, and <a class="el" href="box__renderer_8h_source.html#l00045">position_is_center</a>.</p>
 
 <p class="reference">Referenced by <a class="el" href="vr__test_8cxx_source.html#l00652">vr_test::draw()</a>.</p>
 
@@ -640,7 +644,7 @@ Protected Attributes</h2></td></tr>
 
 <p class="definition">Definition at line <a class="el" href="box__renderer_8cxx_source.html#l00031">31</a> of file <a class="el" href="box__renderer_8cxx_source.html">box_renderer.cxx</a>.</p>
 
-<p class="reference">References <a class="el" href="surface__renderer_8cxx_source.html#l00019">cgv::render::surface_renderer::disable_attribute_array_manager()</a>, <a class="el" href="box__renderer_8h_source.html#l00035">has_extents</a>, <a class="el" href="box__renderer_8h_source.html#l00037">has_radii</a>, <a class="el" href="box__renderer_8h_source.html#l00043">has_rotations</a>, <a class="el" href="box__renderer_8h_source.html#l00039">has_secondary_colors</a>, and <a class="el" href="box__renderer_8h_source.html#l00041">has_translations</a>.</p>
+<p class="reference">References <a class="el" href="surface__renderer_8cxx_source.html#l00034">cgv::render::surface_renderer::disable_attribute_array_manager()</a>, <a class="el" href="box__renderer_8h_source.html#l00035">has_extents</a>, <a class="el" href="box__renderer_8h_source.html#l00037">has_radii</a>, <a class="el" href="box__renderer_8h_source.html#l00043">has_rotations</a>, <a class="el" href="box__renderer_8h_source.html#l00039">has_secondary_colors</a>, and <a class="el" href="box__renderer_8h_source.html#l00041">has_translations</a>.</p>
 
 </div>
 </div>
@@ -719,7 +723,7 @@ Protected Attributes</h2></td></tr>
 
 <p class="definition">Definition at line <a class="el" href="box__renderer_8cxx_source.html#l00098">98</a> of file <a class="el" href="box__renderer_8cxx_source.html">box_renderer.cxx</a>.</p>
 
-<p class="reference">References <a class="el" href="renderer_8cxx_source.html#l00248">cgv::render::renderer::draw_impl()</a>.</p>
+<p class="reference">References <a class="el" href="renderer_8cxx_source.html#l00252">cgv::render::renderer::draw_impl()</a>.</p>
 
 <p class="reference">Referenced by <a class="el" href="vr__test_8cxx_source.html#l00652">vr_test::draw()</a>.</p>
 
@@ -755,7 +759,7 @@ Protected Attributes</h2></td></tr>
 
 <p class="definition">Definition at line <a class="el" href="box__renderer_8cxx_source.html#l00066">66</a> of file <a class="el" href="box__renderer_8cxx_source.html">box_renderer.cxx</a>.</p>
 
-<p class="reference">References <a class="el" href="surface__renderer_8cxx_source.html#l00047">cgv::render::surface_renderer::enable()</a>, <a class="el" href="box__renderer_8h_source.html#l00035">has_extents</a>, <a class="el" href="box__renderer_8h_source.html#l00037">has_radii</a>, <a class="el" href="box__renderer_8h_source.html#l00043">has_rotations</a>, <a class="el" href="box__renderer_8h_source.html#l00039">has_secondary_colors</a>, <a class="el" href="box__renderer_8h_source.html#l00041">has_translations</a>, <a class="el" href="box__renderer_8h_source.html#l00045">position_is_center</a>, <a class="el" href="renderer_8h_source.html#l00079">cgv::render::renderer::ref_prog()</a>, <a class="el" href="shader__program_8h_source.html#l00203">cgv::render::shader_program::set_attribute()</a>, and <a class="el" href="shader__program_8h_source.html#l00146">cgv::render::shader_program::set_uniform()</a>.</p>
+<p class="reference">References <a class="el" href="surface__renderer_8cxx_source.html#l00062">cgv::render::surface_renderer::enable()</a>, <a class="el" href="box__renderer_8h_source.html#l00035">has_extents</a>, <a class="el" href="box__renderer_8h_source.html#l00037">has_radii</a>, <a class="el" href="box__renderer_8h_source.html#l00043">has_rotations</a>, <a class="el" href="box__renderer_8h_source.html#l00039">has_secondary_colors</a>, <a class="el" href="box__renderer_8h_source.html#l00041">has_translations</a>, <a class="el" href="box__renderer_8h_source.html#l00045">position_is_center</a>, <a class="el" href="renderer_8h_source.html#l00129">cgv::render::renderer::ref_prog()</a>, <a class="el" href="shader__program_8h_source.html#l00214">cgv::render::shader_program::set_attribute()</a>, and <a class="el" href="shader__program_8h_source.html#l00157">cgv::render::shader_program::set_uniform()</a>.</p>
 
 </div>
 </div>
@@ -799,7 +803,7 @@ Protected Attributes</h2></td></tr>
 
 <p class="definition">Definition at line <a class="el" href="box__renderer_8cxx_source.html#l00016">16</a> of file <a class="el" href="box__renderer_8cxx_source.html">box_renderer.cxx</a>.</p>
 
-<p class="reference">References <a class="el" href="surface__renderer_8cxx_source.html#l00010">cgv::render::surface_renderer::enable_attribute_array_manager()</a>, <a class="el" href="renderer_8h_source.html#l00062">cgv::render::renderer::has_attribute()</a>, <a class="el" href="box__renderer_8h_source.html#l00035">has_extents</a>, <a class="el" href="box__renderer_8h_source.html#l00037">has_radii</a>, <a class="el" href="box__renderer_8h_source.html#l00043">has_rotations</a>, <a class="el" href="box__renderer_8h_source.html#l00039">has_secondary_colors</a>, and <a class="el" href="box__renderer_8h_source.html#l00041">has_translations</a>.</p>
+<p class="reference">References <a class="el" href="surface__renderer_8cxx_source.html#l00025">cgv::render::surface_renderer::enable_attribute_array_manager()</a>, <a class="el" href="renderer_8cxx_source.html#l00048">cgv::render::renderer::has_attribute()</a>, <a class="el" href="box__renderer_8h_source.html#l00035">has_extents</a>, <a class="el" href="box__renderer_8h_source.html#l00037">has_radii</a>, <a class="el" href="box__renderer_8h_source.html#l00043">has_rotations</a>, <a class="el" href="box__renderer_8h_source.html#l00039">has_secondary_colors</a>, and <a class="el" href="box__renderer_8h_source.html#l00041">has_translations</a>.</p>
 
 </div>
 </div>

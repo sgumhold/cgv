@@ -55,5 +55,6 @@ var searchData=
   ['current_5ffont_5fsize_52',['current_font_size',['../classcgv_1_1render_1_1context.html#a246a3d570e9aba6fa34258515ab0fb5b',1,'cgv::render::context']]],
   ['current_5fmaterial_5fis_5ftextured_53',['current_material_is_textured',['../classcgv_1_1render_1_1context.html#ab30f0b4eb8aa37e31747576520139775',1,'cgv::render::context']]],
   ['current_5fmaterial_5fptr_54',['current_material_ptr',['../classcgv_1_1render_1_1context.html#af8048992f66809847031430155f66fc0',1,'cgv::render::context']]],
-  ['cursor_5fx_55',['cursor_x',['../classcgv_1_1render_1_1context.html#ad0e33cb39fb981e2d5e575fe63bb1533',1,'cgv::render::context']]]
+  ['current_5fvalue_55',['current_value',['../structcgv_1_1render_1_1program__variable__info.html#a22295e4449b2a2143403b059957f5085',1,'cgv::render::program_variable_info']]],
+  ['cursor_5fx_56',['cursor_x',['../classcgv_1_1render_1_1context.html#ad0e33cb39fb981e2d5e575fe63bb1533',1,'cgv::render::context']]]
 ];

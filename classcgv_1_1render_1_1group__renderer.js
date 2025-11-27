@@ -15,5 +15,6 @@ var classcgv_1_1render_1_1group__renderer =
     [ "set_group_rotations", "classcgv_1_1render_1_1group__renderer.html#a05278277d5068970525f0b7b79f0ea11", null ],
     [ "set_group_translations", "classcgv_1_1render_1_1group__renderer.html#ae30af3c303225aaf61847c1e51fece20", null ],
     [ "set_group_translations", "classcgv_1_1render_1_1group__renderer.html#a27f8ff1174aadbf76fcb25793c82b90e", null ],
+    [ "update_shader_program_options", "classcgv_1_1render_1_1group__renderer.html#a5cdfa1918b9be00c72eb778853940358", null ],
     [ "validate_attributes", "classcgv_1_1render_1_1group__renderer.html#aa869609e0e452758bc32b2e3e83fa0b5", null ]
 ];

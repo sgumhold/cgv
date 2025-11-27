@@ -157,6 +157,9 @@ Public Member Functions</h2></td></tr>
 <tr class="memitem:a95444d389d12928d3d0288470b09bfa5" id="r_a95444d389d12928d3d0288470b09bfa5"><td class="memItemLeft" align="right" valign="top">bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcgv_1_1render_1_1shader__program.html#a95444d389d12928d3d0288470b09bfa5">is_linked</a> () const</td></tr>
 <tr class="memdesc:a95444d389d12928d3d0288470b09bfa5"><td class="mdescLeft">&#160;</td><td class="mdescRight">return whether program is linked  <br /></td></tr>
 <tr class="separator:a95444d389d12928d3d0288470b09bfa5"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a8c425b35bc289c20e0c3da08c7961d06" id="r_a8c425b35bc289c20e0c3da08c7961d06"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcgv_1_1render_1_1shader__program.html#a8c425b35bc289c20e0c3da08c7961d06">inspect_program_variables</a> (const <a class="el" href="classcgv_1_1render_1_1context.html">context</a> &amp;ctx, <a class="el" href="namespacecgv_1_1render.html#a76273213c8a6f2c7a304e2b004a5ca0d">cgv::render::ProgramVariableKind</a> kind, std::vector&lt; <a class="el" href="structcgv_1_1render_1_1program__variable__info.html">cgv::render::program_variable_info</a> &gt; &amp;Vs, bool get_location=true, bool get_value=true)</td></tr>
+<tr class="memdesc:a8c425b35bc289c20e0c3da08c7961d06"><td class="mdescLeft">&#160;</td><td class="mdescRight">retrieve information on all uniform or attribute variables of a shader program  <br /></td></tr>
+<tr class="separator:a8c425b35bc289c20e0c3da08c7961d06"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:af6023b60c8083039f40159b964e2d150" id="r_af6023b60c8083039f40159b964e2d150"><td class="memItemLeft" align="right" valign="top">bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcgv_1_1render_1_1shader__program.html#af6023b60c8083039f40159b964e2d150">build_files</a> (const <a class="el" href="classcgv_1_1render_1_1context.html">context</a> &amp;ctx, const std::string &amp;base_name, bool show_error=false)</td></tr>
 <tr class="memdesc:af6023b60c8083039f40159b964e2d150"><td class="mdescLeft">&#160;</td><td class="mdescRight">successively calls create, attach_files and link.  <br /></td></tr>
 <tr class="separator:af6023b60c8083039f40159b964e2d150"><td class="memSeparator" colspan="2">&#160;</td></tr>
@@ -398,7 +401,7 @@ Additional Inherited Members</h2></td></tr>
 <a name="details" id="details"></a><h2 class="groupheader">Detailed Description</h2>
 <div class="textblock"><p>a shader program combines several shader code fragments to a complete definition of the shading pipeline. </p>
 
-<p class="definition">Definition at line <a class="el" href="shader__program_8h_source.html#l00027">27</a> of file <a class="el" href="shader__program_8h_source.html">shader_program.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="shader__program_8h_source.html#l00028">28</a> of file <a class="el" href="shader__program_8h_source.html">shader_program.h</a>.</p>
 </div><h2 class="groupheader">Constructor &amp; Destructor Documentation</h2>
 <a id="a107cd1f3364e7137b5267d0070be98db" name="a107cd1f3364e7137b5267d0070be98db"></a>
 <h2 class="memtitle"><span class="permalink"><a href="#a107cd1f3364e7137b5267d0070be98db">&#9670;&#160;</a></span>shader_program()</h2>
@@ -419,7 +422,7 @@ Additional Inherited Members</h2></td></tr>
 <p>create empty shader program and set the option whether errors during shader code attachment should be printed to std::cerr </p>
 <p>create empty shader program </p>
 
-<p class="definition">Definition at line <a class="el" href="shader__program_8cxx_source.html#l00176">176</a> of file <a class="el" href="shader__program_8cxx_source.html">shader_program.cxx</a>.</p>
+<p class="definition">Definition at line <a class="el" href="shader__program_8cxx_source.html#l00183">183</a> of file <a class="el" href="shader__program_8cxx_source.html">shader_program.cxx</a>.</p>
 
 </div>
 </div>
@@ -440,9 +443,9 @@ Additional Inherited Members</h2></td></tr>
 
 <p>call destruct method </p>
 
-<p class="definition">Definition at line <a class="el" href="shader__program_8cxx_source.html#l00185">185</a> of file <a class="el" href="shader__program_8cxx_source.html">shader_program.cxx</a>.</p>
+<p class="definition">Definition at line <a class="el" href="shader__program_8cxx_source.html#l00192">192</a> of file <a class="el" href="shader__program_8cxx_source.html">shader_program.cxx</a>.</p>
 
-<p class="reference">References <a class="el" href="context_8h_source.html#l00316">cgv::render::render_component::ctx_ptr</a>, <a class="el" href="shader__program_8cxx_source.html#l00695">destruct()</a>, and <a class="el" href="classcgv_1_1render_1_1context.html#ad351a2dc1c1e0343b17738053a981816">cgv::render::context::make_current()</a>.</p>
+<p class="reference">References <a class="el" href="context_8h_source.html#l00359">cgv::render::render_component::ctx_ptr</a>, <a class="el" href="shader__program_8cxx_source.html#l00702">destruct()</a>, and <a class="el" href="classcgv_1_1render_1_1context.html#ad351a2dc1c1e0343b17738053a981816">cgv::render::context::make_current()</a>.</p>
 
 </div>
 </div>
@@ -475,11 +478,11 @@ Additional Inherited Members</h2></td></tr>
 
 <p>attach a compiled shader code instance that is managed outside of program </p>
 
-<p class="definition">Definition at line <a class="el" href="shader__program_8cxx_source.html#l00209">209</a> of file <a class="el" href="shader__program_8cxx_source.html">shader_program.cxx</a>.</p>
+<p class="definition">Definition at line <a class="el" href="shader__program_8cxx_source.html#l00216">216</a> of file <a class="el" href="shader__program_8cxx_source.html">shader_program.cxx</a>.</p>
 
-<p class="reference">References <a class="el" href="shader__code_8cxx_source.html#l00541">cgv::render::shader_code::get_shader_type()</a>, <a class="el" href="shader__code_8cxx_source.html#l01005">cgv::render::shader_code::is_compiled()</a>, and <a class="el" href="context_8h_source.html#l00318">cgv::render::render_component::last_error</a>.</p>
+<p class="reference">References <a class="el" href="shader__code_8cxx_source.html#l00541">cgv::render::shader_code::get_shader_type()</a>, <a class="el" href="shader__code_8cxx_source.html#l01005">cgv::render::shader_code::is_compiled()</a>, and <a class="el" href="context_8h_source.html#l00361">cgv::render::render_component::last_error</a>.</p>
 
-<p class="reference">Referenced by <a class="el" href="shader__program_8cxx_source.html#l00247">attach_code()</a>, <a class="el" href="shader__program_8cxx_source.html#l00260">attach_file()</a>, and <a class="el" href="gl__texture__tools_8cxx_source.html#l00906">cgv::render::gl::complete_program_form_render_to_texture3D()</a>.</p>
+<p class="reference">Referenced by <a class="el" href="shader__program_8cxx_source.html#l00254">attach_code()</a>, <a class="el" href="shader__program_8cxx_source.html#l00267">attach_file()</a>, and <a class="el" href="gl__texture__tools_8cxx_source.html#l00906">cgv::render::gl::complete_program_form_render_to_texture3D()</a>.</p>
 
 </div>
 </div>
@@ -517,9 +520,9 @@ Additional Inherited Members</h2></td></tr>
 
 <p>attach a shader code given as string and managed the created shader code object </p>
 
-<p class="definition">Definition at line <a class="el" href="shader__program_8cxx_source.html#l00247">247</a> of file <a class="el" href="shader__program_8cxx_source.html">shader_program.cxx</a>.</p>
+<p class="definition">Definition at line <a class="el" href="shader__program_8cxx_source.html#l00254">254</a> of file <a class="el" href="shader__program_8cxx_source.html">shader_program.cxx</a>.</p>
 
-<p class="reference">References <a class="el" href="shader__program_8cxx_source.html#l00209">attach_code()</a>, <a class="el" href="shader__code_8cxx_source.html#l00978">cgv::render::shader_code::compile()</a>, <a class="el" href="context_8h_source.html#l00318">cgv::render::render_component::last_error</a>, and <a class="el" href="shader__code_8cxx_source.html#l00614">cgv::render::shader_code::set_code()</a>.</p>
+<p class="reference">References <a class="el" href="shader__program_8cxx_source.html#l00216">attach_code()</a>, <a class="el" href="shader__code_8cxx_source.html#l00978">cgv::render::shader_code::compile()</a>, <a class="el" href="context_8h_source.html#l00361">cgv::render::render_component::last_error</a>, and <a class="el" href="shader__code_8cxx_source.html#l00614">cgv::render::shader_code::set_code()</a>.</p>
 
 </div>
 </div>
@@ -563,11 +566,11 @@ Additional Inherited Members</h2></td></tr>
 
 <p>collect shader code files from directory, compile and attach. </p>
 
-<p class="definition">Definition at line <a class="el" href="shader__program_8cxx_source.html#l00279">279</a> of file <a class="el" href="shader__program_8cxx_source.html">shader_program.cxx</a>.</p>
+<p class="definition">Definition at line <a class="el" href="shader__program_8cxx_source.html#l00286">286</a> of file <a class="el" href="shader__program_8cxx_source.html">shader_program.cxx</a>.</p>
 
-<p class="reference">References <a class="el" href="shader__program_8cxx_source.html#l00019">attach_files()</a>, and <a class="el" href="shader__program_8cxx_source.html#l00106">collect_dir()</a>.</p>
+<p class="reference">References <a class="el" href="shader__program_8cxx_source.html#l00026">attach_files()</a>, and <a class="el" href="shader__program_8cxx_source.html#l00113">collect_dir()</a>.</p>
 
-<p class="reference">Referenced by <a class="el" href="shader__program_8cxx_source.html#l00357">attach_program()</a>, and <a class="el" href="shader__program_8cxx_source.html#l00491">build_dir()</a>.</p>
+<p class="reference">Referenced by <a class="el" href="shader__program_8cxx_source.html#l00364">attach_program()</a>, and <a class="el" href="shader__program_8cxx_source.html#l00498">build_dir()</a>.</p>
 
 </div>
 </div>
@@ -611,11 +614,11 @@ Additional Inherited Members</h2></td></tr>
 
 <p>read shader code from file, compile and attach to program </p>
 
-<p class="definition">Definition at line <a class="el" href="shader__program_8cxx_source.html#l00260">260</a> of file <a class="el" href="shader__program_8cxx_source.html">shader_program.cxx</a>.</p>
+<p class="definition">Definition at line <a class="el" href="shader__program_8cxx_source.html#l00267">267</a> of file <a class="el" href="shader__program_8cxx_source.html">shader_program.cxx</a>.</p>
 
-<p class="reference">References <a class="el" href="shader__program_8cxx_source.html#l00209">attach_code()</a>, <a class="el" href="context_8h_source.html#l00318">cgv::render::render_component::last_error</a>, and <a class="el" href="shader__code_8cxx_source.html#l00990">cgv::render::shader_code::read_and_compile()</a>.</p>
+<p class="reference">References <a class="el" href="shader__program_8cxx_source.html#l00216">attach_code()</a>, <a class="el" href="context_8h_source.html#l00361">cgv::render::render_component::last_error</a>, and <a class="el" href="shader__code_8cxx_source.html#l00990">cgv::render::shader_code::read_and_compile()</a>.</p>
 
-<p class="reference">Referenced by <a class="el" href="shader__program_8cxx_source.html#l00019">attach_files()</a>, and <a class="el" href="shader__program_8cxx_source.html#l00357">attach_program()</a>.</p>
+<p class="reference">Referenced by <a class="el" href="shader__program_8cxx_source.html#l00026">attach_files()</a>, and <a class="el" href="shader__program_8cxx_source.html#l00364">attach_program()</a>.</p>
 
 </div>
 </div>
@@ -653,9 +656,9 @@ Additional Inherited Members</h2></td></tr>
 
 <p>read shader code from files with the given base name, compile and attach them </p>
 
-<p class="definition">Definition at line <a class="el" href="shader__program_8cxx_source.html#l00272">272</a> of file <a class="el" href="shader__program_8cxx_source.html">shader_program.cxx</a>.</p>
+<p class="definition">Definition at line <a class="el" href="shader__program_8cxx_source.html#l00279">279</a> of file <a class="el" href="shader__program_8cxx_source.html">shader_program.cxx</a>.</p>
 
-<p class="reference">References <a class="el" href="shader__program_8cxx_source.html#l00019">attach_files()</a>, <a class="el" href="shader__program_8cxx_source.html#l00072">collect_files()</a>, and <a class="el" href="context_8cxx_source.html#l00467">cgv::render::context::is_shader_file_cache_enabled()</a>.</p>
+<p class="reference">References <a class="el" href="shader__program_8cxx_source.html#l00026">attach_files()</a>, <a class="el" href="shader__program_8cxx_source.html#l00079">collect_files()</a>, and <a class="el" href="context_8cxx_source.html#l00554">cgv::render::context::is_shader_file_cache_enabled()</a>.</p>
 
 </div>
 </div>
@@ -701,11 +704,11 @@ Additional Inherited Members</h2></td></tr>
 
 <p>attach a list of files </p>
 
-<p class="definition">Definition at line <a class="el" href="shader__program_8cxx_source.html#l00019">19</a> of file <a class="el" href="shader__program_8cxx_source.html">shader_program.cxx</a>.</p>
+<p class="definition">Definition at line <a class="el" href="shader__program_8cxx_source.html#l00026">26</a> of file <a class="el" href="shader__program_8cxx_source.html">shader_program.cxx</a>.</p>
 
-<p class="reference">References <a class="el" href="shader__program_8cxx_source.html#l00260">attach_file()</a>, and <a class="el" href="context_8h_source.html#l00318">cgv::render::render_component::last_error</a>.</p>
+<p class="reference">References <a class="el" href="shader__program_8cxx_source.html#l00267">attach_file()</a>, and <a class="el" href="context_8h_source.html#l00361">cgv::render::render_component::last_error</a>.</p>
 
-<p class="reference">Referenced by <a class="el" href="shader__program_8cxx_source.html#l00279">attach_dir()</a>, <a class="el" href="shader__program_8cxx_source.html#l00272">attach_files()</a>, <a class="el" href="shader__program_8cxx_source.html#l00357">attach_program()</a>, and <a class="el" href="shader__program_8cxx_source.html#l00486">build_files()</a>.</p>
+<p class="reference">Referenced by <a class="el" href="shader__program_8cxx_source.html#l00286">attach_dir()</a>, <a class="el" href="shader__program_8cxx_source.html#l00279">attach_files()</a>, <a class="el" href="shader__program_8cxx_source.html#l00364">attach_program()</a>, and <a class="el" href="shader__program_8cxx_source.html#l00493">build_files()</a>.</p>
 
 </div>
 </div>
@@ -749,11 +752,11 @@ Additional Inherited Members</h2></td></tr>
 
 <p>collect shader code files declared in shader program file, compile and attach them </p>
 
-<p class="definition">Definition at line <a class="el" href="shader__program_8cxx_source.html#l00357">357</a> of file <a class="el" href="shader__program_8cxx_source.html">shader_program.cxx</a>.</p>
+<p class="definition">Definition at line <a class="el" href="shader__program_8cxx_source.html#l00364">364</a> of file <a class="el" href="shader__program_8cxx_source.html">shader_program.cxx</a>.</p>
 
-<p class="reference">References <a class="el" href="shader__program_8cxx_source.html#l00279">attach_dir()</a>, <a class="el" href="shader__program_8cxx_source.html#l00260">attach_file()</a>, <a class="el" href="shader__program_8cxx_source.html#l00019">attach_files()</a>, <a class="el" href="shader__program_8cxx_source.html#l00357">attach_program()</a>, <a class="el" href="token_8h_source.html#l00020">cgv::utils::token::begin</a>, <a class="el" href="shader__code_8cxx_source.html#l00049">cgv::render::get_shader_config()</a>, <a class="el" href="scan_8cxx_source.html#l00367">cgv::utils::is_integer()</a>, <a class="el" href="context_8cxx_source.html#l00467">cgv::render::context::is_shader_file_cache_enabled()</a>, <a class="el" href="scan_8cxx_source.html#l00012">cgv::utils::is_space()</a>, <a class="el" href="context_8h_source.html#l00318">cgv::render::render_component::last_error</a>, <a class="el" href="shader__program_8cxx_source.html#l00285">open_program_file()</a>, <a class="el" href="shader__program_8cxx_source.html#l00563">set_geometry_shader_info()</a>, <a class="el" href="tokenizer_8cxx_source.html#l00038">cgv::utils::tokenizer::set_ws()</a>, and <a class="el" href="convert__string_8cxx_source.html#l00007">cgv::utils::to_string()</a>.</p>
+<p class="reference">References <a class="el" href="shader__program_8cxx_source.html#l00286">attach_dir()</a>, <a class="el" href="shader__program_8cxx_source.html#l00267">attach_file()</a>, <a class="el" href="shader__program_8cxx_source.html#l00026">attach_files()</a>, <a class="el" href="shader__program_8cxx_source.html#l00364">attach_program()</a>, <a class="el" href="token_8h_source.html#l00020">cgv::utils::token::begin</a>, <a class="el" href="shader__code_8cxx_source.html#l00049">cgv::render::get_shader_config()</a>, <a class="el" href="scan_8cxx_source.html#l00367">cgv::utils::is_integer()</a>, <a class="el" href="context_8cxx_source.html#l00554">cgv::render::context::is_shader_file_cache_enabled()</a>, <a class="el" href="scan_8cxx_source.html#l00012">cgv::utils::is_space()</a>, <a class="el" href="context_8h_source.html#l00361">cgv::render::render_component::last_error</a>, <a class="el" href="shader__program_8cxx_source.html#l00292">open_program_file()</a>, <a class="el" href="shader__program_8cxx_source.html#l00570">set_geometry_shader_info()</a>, <a class="el" href="tokenizer_8cxx_source.html#l00038">cgv::utils::tokenizer::set_ws()</a>, and <a class="el" href="convert__string_8cxx_source.html#l00007">cgv::utils::to_string()</a>.</p>
 
-<p class="reference">Referenced by <a class="el" href="shader__program_8cxx_source.html#l00357">attach_program()</a>, and <a class="el" href="shader__program_8cxx_source.html#l00497">build_program()</a>.</p>
+<p class="reference">Referenced by <a class="el" href="shader__program_8cxx_source.html#l00364">attach_program()</a>, and <a class="el" href="shader__program_8cxx_source.html#l00504">build_program()</a>.</p>
 
 </div>
 </div>
@@ -797,11 +800,11 @@ Additional Inherited Members</h2></td></tr>
 
 <p>successively calls create, attach_dir and link. </p>
 
-<p class="definition">Definition at line <a class="el" href="shader__program_8cxx_source.html#l00476">476</a> of file <a class="el" href="shader__program_8cxx_source.html">shader_program.cxx</a>.</p>
+<p class="definition">Definition at line <a class="el" href="shader__program_8cxx_source.html#l00483">483</a> of file <a class="el" href="shader__program_8cxx_source.html">shader_program.cxx</a>.</p>
 
-<p class="reference">References <a class="el" href="shader__program_8cxx_source.html#l00476">build_dir()</a>.</p>
+<p class="reference">References <a class="el" href="shader__program_8cxx_source.html#l00483">build_dir()</a>.</p>
 
-<p class="reference">Referenced by <a class="el" href="shader__program_8cxx_source.html#l00476">build_dir()</a>.</p>
+<p class="reference">Referenced by <a class="el" href="shader__program_8cxx_source.html#l00483">build_dir()</a>.</p>
 
 </div>
 </div>
@@ -851,9 +854,9 @@ Additional Inherited Members</h2></td></tr>
 
 <p>successively calls create, attach_dir and link. </p>
 
-<p class="definition">Definition at line <a class="el" href="shader__program_8cxx_source.html#l00491">491</a> of file <a class="el" href="shader__program_8cxx_source.html">shader_program.cxx</a>.</p>
+<p class="definition">Definition at line <a class="el" href="shader__program_8cxx_source.html#l00498">498</a> of file <a class="el" href="shader__program_8cxx_source.html">shader_program.cxx</a>.</p>
 
-<p class="reference">References <a class="el" href="shader__program_8cxx_source.html#l00279">attach_dir()</a>, <a class="el" href="shader__program_8cxx_source.html#l00195">create()</a>, <a class="el" href="context_8cxx_source.html#l02065">cgv::render::render_component::is_created()</a>, and <a class="el" href="shader__program_8cxx_source.html#l00541">link()</a>.</p>
+<p class="reference">References <a class="el" href="shader__program_8cxx_source.html#l00286">attach_dir()</a>, <a class="el" href="shader__program_8cxx_source.html#l00202">create()</a>, <a class="el" href="context_8cxx_source.html#l02152">cgv::render::render_component::is_created()</a>, and <a class="el" href="shader__program_8cxx_source.html#l00548">link()</a>.</p>
 
 </div>
 </div>
@@ -891,11 +894,11 @@ Additional Inherited Members</h2></td></tr>
 
 <p>successively calls create, attach_files and link. </p>
 
-<p class="definition">Definition at line <a class="el" href="shader__program_8cxx_source.html#l00471">471</a> of file <a class="el" href="shader__program_8cxx_source.html">shader_program.cxx</a>.</p>
+<p class="definition">Definition at line <a class="el" href="shader__program_8cxx_source.html#l00478">478</a> of file <a class="el" href="shader__program_8cxx_source.html">shader_program.cxx</a>.</p>
 
-<p class="reference">References <a class="el" href="shader__program_8cxx_source.html#l00471">build_files()</a>.</p>
+<p class="reference">References <a class="el" href="shader__program_8cxx_source.html#l00478">build_files()</a>.</p>
 
-<p class="reference">Referenced by <a class="el" href="shader__program_8cxx_source.html#l00471">build_files()</a>, and <a class="el" href="a__buffer_8cxx_source.html#l00043">cgv::render::a_buffer::init()</a>.</p>
+<p class="reference">Referenced by <a class="el" href="shader__program_8cxx_source.html#l00478">build_files()</a>, and <a class="el" href="a__buffer_8cxx_source.html#l00043">cgv::render::a_buffer::init()</a>.</p>
 
 </div>
 </div>
@@ -939,9 +942,9 @@ Additional Inherited Members</h2></td></tr>
 
 <p>successively calls create, attach_files and link. </p>
 
-<p class="definition">Definition at line <a class="el" href="shader__program_8cxx_source.html#l00486">486</a> of file <a class="el" href="shader__program_8cxx_source.html">shader_program.cxx</a>.</p>
+<p class="definition">Definition at line <a class="el" href="shader__program_8cxx_source.html#l00493">493</a> of file <a class="el" href="shader__program_8cxx_source.html">shader_program.cxx</a>.</p>
 
-<p class="reference">References <a class="el" href="shader__program_8cxx_source.html#l00019">attach_files()</a>, <a class="el" href="shader__program_8cxx_source.html#l00195">create()</a>, <a class="el" href="context_8cxx_source.html#l02065">cgv::render::render_component::is_created()</a>, and <a class="el" href="shader__program_8cxx_source.html#l00541">link()</a>.</p>
+<p class="reference">References <a class="el" href="shader__program_8cxx_source.html#l00026">attach_files()</a>, <a class="el" href="shader__program_8cxx_source.html#l00202">create()</a>, <a class="el" href="context_8cxx_source.html#l02152">cgv::render::render_component::is_created()</a>, and <a class="el" href="shader__program_8cxx_source.html#l00548">link()</a>.</p>
 
 </div>
 </div>
@@ -979,11 +982,11 @@ Additional Inherited Members</h2></td></tr>
 
 <p>successively calls create, attach_program and link. </p>
 
-<p class="definition">Definition at line <a class="el" href="shader__program_8cxx_source.html#l00481">481</a> of file <a class="el" href="shader__program_8cxx_source.html">shader_program.cxx</a>.</p>
+<p class="definition">Definition at line <a class="el" href="shader__program_8cxx_source.html#l00488">488</a> of file <a class="el" href="shader__program_8cxx_source.html">shader_program.cxx</a>.</p>
 
-<p class="reference">References <a class="el" href="shader__program_8cxx_source.html#l00481">build_program()</a>.</p>
+<p class="reference">References <a class="el" href="shader__program_8cxx_source.html#l00488">build_program()</a>.</p>
 
-<p class="reference">Referenced by <a class="el" href="shader__program_8cxx_source.html#l00481">build_program()</a>, <a class="el" href="renderer_8cxx_source.html#l00040">cgv::render::renderer::build_shader_program()</a>, <a class="el" href="plot2d_8cxx_source.html#l00117">cgv::plot::plot2d::init()</a>, <a class="el" href="plot3d_8cxx_source.html#l00142">cgv::plot::plot3d::init()</a>, <a class="el" href="plot__base_8cxx_source.html#l01212">cgv::plot::plot_base::init()</a>, <a class="el" href="image__drawable_8cxx_source.html#l00083">cgv::render::gl::image_drawable::init()</a>, <a class="el" href="a__buffer_8cxx_source.html#l00043">cgv::render::a_buffer::init()</a>, <a class="el" href="vr__test_8cxx_source.html#l00528">vr_test::init_frame()</a>, and <a class="el" href="a__buffer_8cxx_source.html#l00062">cgv::render::a_buffer::init_frame()</a>.</p>
+<p class="reference">Referenced by <a class="el" href="shader__program_8cxx_source.html#l00488">build_program()</a>, <a class="el" href="renderer_8cxx_source.html#l00040">cgv::render::renderer::build_shader_program()</a>, <a class="el" href="plot2d_8cxx_source.html#l00117">cgv::plot::plot2d::init()</a>, <a class="el" href="plot3d_8cxx_source.html#l00142">cgv::plot::plot3d::init()</a>, <a class="el" href="plot__base_8cxx_source.html#l01212">cgv::plot::plot_base::init()</a>, <a class="el" href="image__drawable_8cxx_source.html#l00083">cgv::render::gl::image_drawable::init()</a>, <a class="el" href="a__buffer_8cxx_source.html#l00043">cgv::render::a_buffer::init()</a>, <a class="el" href="vr__test_8cxx_source.html#l00528">vr_test::init_frame()</a>, and <a class="el" href="a__buffer_8cxx_source.html#l00062">cgv::render::a_buffer::init_frame()</a>.</p>
 
 </div>
 </div>
@@ -1027,9 +1030,9 @@ Additional Inherited Members</h2></td></tr>
 
 <p>successively calls create, attach_program and link. </p>
 
-<p class="definition">Definition at line <a class="el" href="shader__program_8cxx_source.html#l00497">497</a> of file <a class="el" href="shader__program_8cxx_source.html">shader_program.cxx</a>.</p>
+<p class="definition">Definition at line <a class="el" href="shader__program_8cxx_source.html#l00504">504</a> of file <a class="el" href="shader__program_8cxx_source.html">shader_program.cxx</a>.</p>
 
-<p class="reference">References <a class="el" href="shader__program_8cxx_source.html#l00357">attach_program()</a>, <a class="el" href="shader__program_8cxx_source.html#l00195">create()</a>, <a class="el" href="shader__code_8cxx_source.html#l00180">cgv::render::shader_code::find_file()</a>, <a class="el" href="context_8cxx_source.html#l02065">cgv::render::render_component::is_created()</a>, <a class="el" href="context_8h_source.html#l00318">cgv::render::render_component::last_error</a>, <a class="el" href="shader__program_8cxx_source.html#l00541">link()</a>, <a class="el" href="advanced__scan_8cxx_source.html#l00065">cgv::utils::split_to_lines()</a>, and <a class="el" href="convert__string_8cxx_source.html#l00007">cgv::utils::to_string()</a>.</p>
+<p class="reference">References <a class="el" href="shader__program_8cxx_source.html#l00364">attach_program()</a>, <a class="el" href="shader__program_8cxx_source.html#l00202">create()</a>, <a class="el" href="shader__code_8cxx_source.html#l00180">cgv::render::shader_code::find_file()</a>, <a class="el" href="context_8cxx_source.html#l02152">cgv::render::render_component::is_created()</a>, <a class="el" href="context_8h_source.html#l00361">cgv::render::render_component::last_error</a>, <a class="el" href="shader__program_8cxx_source.html#l00548">link()</a>, <a class="el" href="advanced__scan_8cxx_source.html#l00065">cgv::utils::split_to_lines()</a>, and <a class="el" href="convert__string_8cxx_source.html#l00007">cgv::utils::to_string()</a>.</p>
 
 </div>
 </div>
@@ -1076,11 +1079,11 @@ Additional Inherited Members</h2></td></tr>
 <p>collect shader code files from directory. </p>
 <p>If the directory does not exist search it in the shader path of the shader configuration returned by <a class="el" href="namespacecgv_1_1render.html#a5929e262d43bd2e095c4776547eebe5b" title="return a reference to the current shader configuration">get_shader_config()</a>. Returns true if at least one shader code file has been collected. </p>
 
-<p class="definition">Definition at line <a class="el" href="shader__program_8cxx_source.html#l00106">106</a> of file <a class="el" href="shader__program_8cxx_source.html">shader_program.cxx</a>.</p>
+<p class="definition">Definition at line <a class="el" href="shader__program_8cxx_source.html#l00113">113</a> of file <a class="el" href="shader__program_8cxx_source.html">shader_program.cxx</a>.</p>
 
 <p class="reference">References <a class="el" href="ref__ptr_8h_source.html#l00230">cgv::data::ref_ptr&lt; T, is_ref_counted &gt;::empty()</a>, and <a class="el" href="shader__code_8cxx_source.html#l00049">cgv::render::get_shader_config()</a>.</p>
 
-<p class="reference">Referenced by <a class="el" href="shader__program_8cxx_source.html#l00279">attach_dir()</a>, and <a class="el" href="shader__program_8cxx_source.html#l00128">collect_program()</a>.</p>
+<p class="reference">Referenced by <a class="el" href="shader__program_8cxx_source.html#l00286">attach_dir()</a>, and <a class="el" href="shader__program_8cxx_source.html#l00135">collect_program()</a>.</p>
 
 </div>
 </div>
@@ -1126,11 +1129,11 @@ Additional Inherited Members</h2></td></tr>
 
 <p>resolve file name with <a class="el" href="classcgv_1_1render_1_1shader__code.html#a0ba2ea9d3dade1c74085b25f6838497e" title="Find the full path to a shader by its file name.">shader_code::find_file</a> and add file to list if found </p>
 
-<p class="definition">Definition at line <a class="el" href="shader__program_8cxx_source.html#l00046">46</a> of file <a class="el" href="shader__program_8cxx_source.html">shader_program.cxx</a>.</p>
+<p class="definition">Definition at line <a class="el" href="shader__program_8cxx_source.html#l00053">53</a> of file <a class="el" href="shader__program_8cxx_source.html">shader_program.cxx</a>.</p>
 
-<p class="reference">References <a class="el" href="shader__program_8cxx_source.html#l00030">collect_files_from_cache()</a>, and <a class="el" href="shader__code_8cxx_source.html#l00180">cgv::render::shader_code::find_file()</a>.</p>
+<p class="reference">References <a class="el" href="shader__program_8cxx_source.html#l00037">collect_files_from_cache()</a>, and <a class="el" href="shader__code_8cxx_source.html#l00180">cgv::render::shader_code::find_file()</a>.</p>
 
-<p class="reference">Referenced by <a class="el" href="shader__program_8cxx_source.html#l00128">collect_program()</a>.</p>
+<p class="reference">Referenced by <a class="el" href="shader__program_8cxx_source.html#l00135">collect_program()</a>.</p>
 
 </div>
 </div>
@@ -1177,11 +1180,11 @@ Additional Inherited Members</h2></td></tr>
 <p>collect shader code files that extent the given base name. </p>
 <p>Returns true if at least one shader code file has been collected. </p>
 
-<p class="definition">Definition at line <a class="el" href="shader__program_8cxx_source.html#l00072">72</a> of file <a class="el" href="shader__program_8cxx_source.html">shader_program.cxx</a>.</p>
+<p class="definition">Definition at line <a class="el" href="shader__program_8cxx_source.html#l00079">79</a> of file <a class="el" href="shader__program_8cxx_source.html">shader_program.cxx</a>.</p>
 
-<p class="reference">References <a class="el" href="shader__program_8cxx_source.html#l00030">collect_files_from_cache()</a>, and <a class="el" href="shader__code_8cxx_source.html#l00180">cgv::render::shader_code::find_file()</a>.</p>
+<p class="reference">References <a class="el" href="shader__program_8cxx_source.html#l00037">collect_files_from_cache()</a>, and <a class="el" href="shader__code_8cxx_source.html#l00180">cgv::render::shader_code::find_file()</a>.</p>
 
-<p class="reference">Referenced by <a class="el" href="shader__program_8cxx_source.html#l00272">attach_files()</a>, and <a class="el" href="shader__program_8cxx_source.html#l00128">collect_program()</a>.</p>
+<p class="reference">Referenced by <a class="el" href="shader__program_8cxx_source.html#l00279">attach_files()</a>, and <a class="el" href="shader__program_8cxx_source.html#l00135">collect_program()</a>.</p>
 
 </div>
 </div>
@@ -1227,9 +1230,9 @@ Additional Inherited Members</h2></td></tr>
 
 <p>resolve file name with <a class="el" href="classcgv_1_1render_1_1shader__code.html#a0ba2ea9d3dade1c74085b25f6838497e" title="Find the full path to a shader by its file name.">shader_code::find_file</a> and add file to list if found </p>
 
-<p class="definition">Definition at line <a class="el" href="shader__program_8cxx_source.html#l00030">30</a> of file <a class="el" href="shader__program_8cxx_source.html">shader_program.cxx</a>.</p>
+<p class="definition">Definition at line <a class="el" href="shader__program_8cxx_source.html#l00037">37</a> of file <a class="el" href="shader__program_8cxx_source.html">shader_program.cxx</a>.</p>
 
-<p class="reference">Referenced by <a class="el" href="shader__program_8cxx_source.html#l00046">collect_file()</a>, and <a class="el" href="shader__program_8cxx_source.html#l00072">collect_files()</a>.</p>
+<p class="reference">Referenced by <a class="el" href="shader__program_8cxx_source.html#l00053">collect_file()</a>, and <a class="el" href="shader__program_8cxx_source.html#l00079">collect_files()</a>.</p>
 
 </div>
 </div>
@@ -1286,11 +1289,11 @@ Additional Inherited Members</h2></td></tr>
 <li>geometry_shader_info:input_type;output_type;max_output_count ... calls set_geometry_shader_info with input_type, output_type and max_output_count as arguments, where the primitive types are one out of points,lines,lines_adjacency,line_strip,line_strip_adjacency,line_loop, triangles,triangles_adjacency,triangle_strip,triangle_strip_adjacency,triangle_fan, quads,quad_strip,polygon. Returns true if at least one shader code file has been collected. </li>
 </ul>
 
-<p class="definition">Definition at line <a class="el" href="shader__program_8cxx_source.html#l00128">128</a> of file <a class="el" href="shader__program_8cxx_source.html">shader_program.cxx</a>.</p>
+<p class="definition">Definition at line <a class="el" href="shader__program_8cxx_source.html#l00135">135</a> of file <a class="el" href="shader__program_8cxx_source.html">shader_program.cxx</a>.</p>
 
-<p class="reference">References <a class="el" href="shader__program_8cxx_source.html#l00106">collect_dir()</a>, <a class="el" href="shader__program_8cxx_source.html#l00046">collect_file()</a>, <a class="el" href="shader__program_8cxx_source.html#l00072">collect_files()</a>, <a class="el" href="shader__program_8cxx_source.html#l00128">collect_program()</a>, <a class="el" href="shader__code_8cxx_source.html#l00069">cgv::render::shader_code::decode_if_base64()</a>, <a class="el" href="shader__code_8cxx_source.html#l00180">cgv::render::shader_code::find_file()</a>, <a class="el" href="shader__code_8cxx_source.html#l00049">cgv::render::get_shader_config()</a>, <a class="el" href="import_8cxx_source.html#l00388">cgv::base::read_data_file()</a>, <a class="el" href="advanced__scan_8cxx_source.html#l00065">cgv::utils::split_to_lines()</a>, and <a class="el" href="convert__string_8cxx_source.html#l00007">cgv::utils::to_string()</a>.</p>
+<p class="reference">References <a class="el" href="shader__program_8cxx_source.html#l00113">collect_dir()</a>, <a class="el" href="shader__program_8cxx_source.html#l00053">collect_file()</a>, <a class="el" href="shader__program_8cxx_source.html#l00079">collect_files()</a>, <a class="el" href="shader__program_8cxx_source.html#l00135">collect_program()</a>, <a class="el" href="shader__code_8cxx_source.html#l00069">cgv::render::shader_code::decode_if_base64()</a>, <a class="el" href="shader__code_8cxx_source.html#l00180">cgv::render::shader_code::find_file()</a>, <a class="el" href="shader__code_8cxx_source.html#l00049">cgv::render::get_shader_config()</a>, <a class="el" href="import_8cxx_source.html#l00388">cgv::base::read_data_file()</a>, <a class="el" href="advanced__scan_8cxx_source.html#l00065">cgv::utils::split_to_lines()</a>, and <a class="el" href="convert__string_8cxx_source.html#l00007">cgv::utils::to_string()</a>.</p>
 
-<p class="reference">Referenced by <a class="el" href="shader__program_8cxx_source.html#l00128">collect_program()</a>.</p>
+<p class="reference">Referenced by <a class="el" href="shader__program_8cxx_source.html#l00135">collect_program()</a>.</p>
 
 </div>
 </div>
@@ -1312,11 +1315,11 @@ Additional Inherited Members</h2></td></tr>
 
 <p>create the shader program </p>
 
-<p class="definition">Definition at line <a class="el" href="shader__program_8cxx_source.html#l00195">195</a> of file <a class="el" href="shader__program_8cxx_source.html">shader_program.cxx</a>.</p>
+<p class="definition">Definition at line <a class="el" href="shader__program_8cxx_source.html#l00202">202</a> of file <a class="el" href="shader__program_8cxx_source.html">shader_program.cxx</a>.</p>
 
-<p class="reference">References <a class="el" href="context_8h_source.html#l00316">cgv::render::render_component::ctx_ptr</a>, and <a class="el" href="shader__program_8cxx_source.html#l00695">destruct()</a>.</p>
+<p class="reference">References <a class="el" href="context_8h_source.html#l00359">cgv::render::render_component::ctx_ptr</a>, and <a class="el" href="shader__program_8cxx_source.html#l00702">destruct()</a>.</p>
 
-<p class="reference">Referenced by <a class="el" href="shader__program_8cxx_source.html#l00491">build_dir()</a>, <a class="el" href="shader__program_8cxx_source.html#l00486">build_files()</a>, and <a class="el" href="shader__program_8cxx_source.html#l00497">build_program()</a>.</p>
+<p class="reference">Referenced by <a class="el" href="shader__program_8cxx_source.html#l00498">build_dir()</a>, <a class="el" href="shader__program_8cxx_source.html#l00493">build_files()</a>, and <a class="el" href="shader__program_8cxx_source.html#l00504">build_program()</a>.</p>
 
 </div>
 </div>
@@ -1338,9 +1341,9 @@ Additional Inherited Members</h2></td></tr>
 
 <p>destruct shader program </p>
 
-<p class="definition">Definition at line <a class="el" href="shader__program_8cxx_source.html#l00695">695</a> of file <a class="el" href="shader__program_8cxx_source.html">shader_program.cxx</a>.</p>
+<p class="definition">Definition at line <a class="el" href="shader__program_8cxx_source.html#l00702">702</a> of file <a class="el" href="shader__program_8cxx_source.html">shader_program.cxx</a>.</p>
 
-<p class="reference">Referenced by <a class="el" href="plot2d_8cxx_source.html#l00145">cgv::plot::plot2d::clear()</a>, <a class="el" href="plot3d_8cxx_source.html#l00538">cgv::plot::plot3d::clear()</a>, <a class="el" href="plot__base_8cxx_source.html#l01247">cgv::plot::plot_base::clear()</a>, <a class="el" href="image__drawable_8cxx_source.html#l00104">cgv::render::gl::image_drawable::clear()</a>, <a class="el" href="shader__program_8cxx_source.html#l00195">create()</a>, <a class="el" href="a__buffer_8cxx_source.html#l00053">cgv::render::a_buffer::destruct()</a>, <a class="el" href="renderer_8cxx_source.html#l00198">cgv::render::renderer::enable()</a>, <a class="el" href="a__buffer_8cxx_source.html#l00062">cgv::render::a_buffer::init_frame()</a>, and <a class="el" href="shader__program_8cxx_source.html#l00185">~shader_program()</a>.</p>
+<p class="reference">Referenced by <a class="el" href="plot2d_8cxx_source.html#l00145">cgv::plot::plot2d::clear()</a>, <a class="el" href="plot3d_8cxx_source.html#l00538">cgv::plot::plot3d::clear()</a>, <a class="el" href="plot__base_8cxx_source.html#l01247">cgv::plot::plot_base::clear()</a>, <a class="el" href="image__drawable_8cxx_source.html#l00104">cgv::render::gl::image_drawable::clear()</a>, <a class="el" href="shader__program_8cxx_source.html#l00202">create()</a>, <a class="el" href="a__buffer_8cxx_source.html#l00053">cgv::render::a_buffer::destruct()</a>, <a class="el" href="renderer_8cxx_source.html#l00203">cgv::render::renderer::enable()</a>, <a class="el" href="a__buffer_8cxx_source.html#l00062">cgv::render::a_buffer::init_frame()</a>, and <a class="el" href="shader__program_8cxx_source.html#l00192">~shader_program()</a>.</p>
 
 </div>
 </div>
@@ -1372,9 +1375,9 @@ Additional Inherited Members</h2></td></tr>
 
 <p>detach a shader code </p>
 
-<p class="definition">Definition at line <a class="el" href="shader__program_8cxx_source.html#l00230">230</a> of file <a class="el" href="shader__program_8cxx_source.html">shader_program.cxx</a>.</p>
+<p class="definition">Definition at line <a class="el" href="shader__program_8cxx_source.html#l00237">237</a> of file <a class="el" href="shader__program_8cxx_source.html">shader_program.cxx</a>.</p>
 
-<p class="reference">References <a class="el" href="shader__code_8cxx_source.html#l00541">cgv::render::shader_code::get_shader_type()</a>, and <a class="el" href="context_8h_source.html#l00318">cgv::render::render_component::last_error</a>.</p>
+<p class="reference">References <a class="el" href="shader__code_8cxx_source.html#l00541">cgv::render::shader_code::get_shader_type()</a>, and <a class="el" href="context_8h_source.html#l00361">cgv::render::render_component::last_error</a>.</p>
 
 </div>
 </div>
@@ -1396,9 +1399,9 @@ Additional Inherited Members</h2></td></tr>
 
 <p>disable shader program and restore fixed functionality </p>
 
-<p class="definition">Definition at line <a class="el" href="shader__program_8cxx_source.html#l00594">594</a> of file <a class="el" href="shader__program_8cxx_source.html">shader_program.cxx</a>.</p>
+<p class="definition">Definition at line <a class="el" href="shader__program_8cxx_source.html#l00601">601</a> of file <a class="el" href="shader__program_8cxx_source.html">shader_program.cxx</a>.</p>
 
-<p class="reference">References <a class="el" href="context_8cxx_source.html#l00219">cgv::render::context::error()</a>, and <a class="el" href="shader__program_8h_source.html#l00131">is_enabled()</a>.</p>
+<p class="reference">References <a class="el" href="context_8cxx_source.html#l00306">cgv::render::context::error()</a>, and <a class="el" href="shader__program_8h_source.html#l00142">is_enabled()</a>.</p>
 
 <p class="reference">Referenced by <a class="el" href="gl__texture__tools_8cxx_source.html#l00773">cgv::render::gl::cover_screen()</a>, <a class="el" href="gl__performance__monitor_8cxx_source.html#l00150">cgv::render::gl::gl_performance_monitor::draw()</a>, <a class="el" href="vr__test_8cxx_source.html#l00652">vr_test::draw()</a>, <a class="el" href="image__drawable_8cxx_source.html#l00241">cgv::render::gl::image_drawable::draw()</a>, <a class="el" href="render__info_8cxx_source.html#l00027">cgv::render::render_info::draw()</a>, <a class="el" href="clod__point__renderer_8cxx_source.html#l00138">cgv::render::clod_point_renderer::draw_points()</a>, <a class="el" href="vr__test_8cxx_source.html#l00871">vr_test::finish_draw()</a>, <a class="el" href="a__buffer_8cxx_source.html#l00148">cgv::render::a_buffer::finish_frame()</a>, <a class="el" href="a__buffer_8cxx_source.html#l00062">cgv::render::a_buffer::init_frame()</a>, <a class="el" href="clod__point__renderer_8cxx_source.html#l00078">cgv::render::clod_point_renderer::reduce_buffer_finish()</a>, <a class="el" href="clod__point__renderer_8cxx_source.html#l00113">cgv::render::clod_point_renderer::reduce_chunks()</a>, and <a class="el" href="clod__point__renderer_8cxx_source.html#l00084">cgv::render::clod_point_renderer::reduce_points()</a>.</p>
 
@@ -1422,9 +1425,9 @@ Additional Inherited Members</h2></td></tr>
 
 <p>enable the shader program </p>
 
-<p class="definition">Definition at line <a class="el" href="shader__program_8cxx_source.html#l00572">572</a> of file <a class="el" href="shader__program_8cxx_source.html">shader_program.cxx</a>.</p>
+<p class="definition">Definition at line <a class="el" href="shader__program_8cxx_source.html#l00579">579</a> of file <a class="el" href="shader__program_8cxx_source.html">shader_program.cxx</a>.</p>
 
-<p class="reference">References <a class="el" href="context_8cxx_source.html#l00219">cgv::render::context::error()</a>, <a class="el" href="context_8cxx_source.html#l02065">cgv::render::render_component::is_created()</a>, <a class="el" href="shader__program_8h_source.html#l00131">is_enabled()</a>, <a class="el" href="shader__program_8cxx_source.html#l00557">is_linked()</a>, and <a class="el" href="shader__program_8cxx_source.html#l00528">update_state()</a>.</p>
+<p class="reference">References <a class="el" href="context_8cxx_source.html#l00306">cgv::render::context::error()</a>, <a class="el" href="context_8cxx_source.html#l02152">cgv::render::render_component::is_created()</a>, <a class="el" href="shader__program_8h_source.html#l00142">is_enabled()</a>, <a class="el" href="shader__program_8cxx_source.html#l00564">is_linked()</a>, and <a class="el" href="shader__program_8cxx_source.html#l00535">update_state()</a>.</p>
 
 <p class="reference">Referenced by <a class="el" href="gl__texture__tools_8cxx_source.html#l00773">cgv::render::gl::cover_screen()</a>, <a class="el" href="gl__performance__monitor_8cxx_source.html#l00150">cgv::render::gl::gl_performance_monitor::draw()</a>, <a class="el" href="vr__test_8cxx_source.html#l00652">vr_test::draw()</a>, <a class="el" href="image__drawable_8cxx_source.html#l00241">cgv::render::gl::image_drawable::draw()</a>, <a class="el" href="render__info_8cxx_source.html#l00027">cgv::render::render_info::draw()</a>, <a class="el" href="gl__implicit__surface__drawable__base_8cxx_source.html#l00571">cgv::render::gl::gl_implicit_surface_drawable_base::draw_implicit_surface()</a>, <a class="el" href="clod__point__renderer_8cxx_source.html#l00138">cgv::render::clod_point_renderer::draw_points()</a>, <a class="el" href="vr__test_8cxx_source.html#l00871">vr_test::finish_draw()</a>, <a class="el" href="a__buffer_8cxx_source.html#l00148">cgv::render::a_buffer::finish_frame()</a>, <a class="el" href="a__buffer_8cxx_source.html#l00062">cgv::render::a_buffer::init_frame()</a>, <a class="el" href="clod__point__renderer_8cxx_source.html#l00046">cgv::render::clod_point_renderer::reduce_buffer_init()</a>, <a class="el" href="clod__point__renderer_8cxx_source.html#l00113">cgv::render::clod_point_renderer::reduce_chunks()</a>, and <a class="el" href="clod__point__renderer_8cxx_source.html#l00084">cgv::render::clod_point_renderer::reduce_points()</a>.</p>
 
@@ -1456,9 +1459,9 @@ Additional Inherited Members</h2></td></tr>
 
 <p>find and parse all instance definitions in a shader program file </p>
 
-<p class="definition">Definition at line <a class="el" href="shader__program_8cxx_source.html#l00317">317</a> of file <a class="el" href="shader__program_8cxx_source.html">shader_program.cxx</a>.</p>
+<p class="definition">Definition at line <a class="el" href="shader__program_8cxx_source.html#l00324">324</a> of file <a class="el" href="shader__program_8cxx_source.html">shader_program.cxx</a>.</p>
 
-<p class="reference">References <a class="el" href="token_8h_source.html#l00020">cgv::utils::token::begin</a>, <a class="el" href="shader__code_8h_source.html#l00099">cgv::render::shader_compile_options::define_macro()</a>, <a class="el" href="scan_8cxx_source.html#l00012">cgv::utils::is_space()</a>, <a class="el" href="shader__program_8cxx_source.html#l00285">open_program_file()</a>, <a class="el" href="advanced__scan_8cxx_source.html#l00006">cgv::utils::split_to_tokens()</a>, and <a class="el" href="convert__string_8cxx_source.html#l00007">cgv::utils::to_string()</a>.</p>
+<p class="reference">References <a class="el" href="token_8h_source.html#l00020">cgv::utils::token::begin</a>, <a class="el" href="shader__code_8h_source.html#l00099">cgv::render::shader_compile_options::define_macro()</a>, <a class="el" href="scan_8cxx_source.html#l00012">cgv::utils::is_space()</a>, <a class="el" href="shader__program_8cxx_source.html#l00292">open_program_file()</a>, <a class="el" href="advanced__scan_8cxx_source.html#l00006">cgv::utils::split_to_tokens()</a>, and <a class="el" href="convert__string_8cxx_source.html#l00007">cgv::utils::to_string()</a>.</p>
 
 </div>
 </div>
@@ -1490,7 +1493,7 @@ Additional Inherited Members</h2></td></tr>
 
 <p>query location index of an attribute </p>
 
-<p class="definition">Definition at line <a class="el" href="shader__program_8cxx_source.html#l00689">689</a> of file <a class="el" href="shader__program_8cxx_source.html">shader_program.cxx</a>.</p>
+<p class="definition">Definition at line <a class="el" href="shader__program_8cxx_source.html#l00696">696</a> of file <a class="el" href="shader__program_8cxx_source.html">shader_program.cxx</a>.</p>
 
 <p class="reference">Referenced by <a class="el" href="render__info_8cxx_source.html#l00175">cgv::render::render_info::bind()</a>, <a class="el" href="attribute__array__binding_8cxx_source.html#l00032">cgv::render::attribute_array_binding::bind_attribute_array()</a>, <a class="el" href="rectangle__renderer_8cxx_source.html#l00150">cgv::render::rectangle_renderer::enable()</a>, and <a class="el" href="plot__base_8cxx_source.html#l01212">cgv::plot::plot_base::init()</a>.</p>
 
@@ -1522,11 +1525,11 @@ Additional Inherited Members</h2></td></tr>
 
 <p>return the maximum number of output vertices of a geometry shader </p>
 
-<p class="definition">Definition at line <a class="el" href="shader__program_8cxx_source.html#l00522">522</a> of file <a class="el" href="shader__program_8cxx_source.html">shader_program.cxx</a>.</p>
+<p class="definition">Definition at line <a class="el" href="shader__program_8cxx_source.html#l00529">529</a> of file <a class="el" href="shader__program_8cxx_source.html">shader_program.cxx</a>.</p>
 
-<p class="reference">References <a class="el" href="context_8h_source.html#l00040">cgv::render::device_capabilities::max_geometry_shader_output_vertex_count</a>.</p>
+<p class="reference">References <a class="el" href="context_8h_source.html#l00041">cgv::render::device_capabilities::max_geometry_shader_output_vertex_count</a>.</p>
 
-<p class="reference">Referenced by <a class="el" href="shader__program_8cxx_source.html#l00528">update_state()</a>.</p>
+<p class="reference">Referenced by <a class="el" href="shader__program_8cxx_source.html#l00535">update_state()</a>.</p>
 
 </div>
 </div>
@@ -1558,9 +1561,9 @@ Additional Inherited Members</h2></td></tr>
 
 <p>query location index of an uniform </p>
 
-<p class="definition">Definition at line <a class="el" href="shader__program_8cxx_source.html#l00612">612</a> of file <a class="el" href="shader__program_8cxx_source.html">shader_program.cxx</a>.</p>
+<p class="definition">Definition at line <a class="el" href="shader__program_8cxx_source.html#l00619">619</a> of file <a class="el" href="shader__program_8cxx_source.html">shader_program.cxx</a>.</p>
 
-<p class="reference">Referenced by <a class="el" href="gl__texture__tools_8cxx_source.html#l00938">cgv::render::gl::render_to_texture3D()</a>, <a class="el" href="context_8cxx_source.html#l01599">cgv::render::context::set_current_gamma()</a>, and <a class="el" href="plot__base_8cxx_source.html#l00395">cgv::plot::plot_base::set_mapping_uniforms()</a>.</p>
+<p class="reference">Referenced by <a class="el" href="gl__texture__tools_8cxx_source.html#l00938">cgv::render::gl::render_to_texture3D()</a>, <a class="el" href="context_8cxx_source.html#l01686">cgv::render::context::set_current_gamma()</a>, and <a class="el" href="plot__base_8cxx_source.html#l00395">cgv::plot::plot_base::set_mapping_uniforms()</a>.</p>
 
 </div>
 </div>
@@ -1581,7 +1584,67 @@ Additional Inherited Members</h2></td></tr>
 
 <p>return uniform name and location pairs </p>
 
-<p class="definition">Definition at line <a class="el" href="shader__program_8cxx_source.html#l00606">606</a> of file <a class="el" href="shader__program_8cxx_source.html">shader_program.cxx</a>.</p>
+<p class="definition">Definition at line <a class="el" href="shader__program_8cxx_source.html#l00613">613</a> of file <a class="el" href="shader__program_8cxx_source.html">shader_program.cxx</a>.</p>
+
+</div>
+</div>
+<a id="a8c425b35bc289c20e0c3da08c7961d06" name="a8c425b35bc289c20e0c3da08c7961d06"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a8c425b35bc289c20e0c3da08c7961d06">&#9670;&#160;</a></span>inspect_program_variables()</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">void cgv::render::shader_program::inspect_program_variables </td>
+          <td>(</td>
+          <td class="paramtype">const <a class="el" href="classcgv_1_1render_1_1context.html">context</a> &amp;&#160;</td>
+          <td class="paramname"><em>ctx</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype"><a class="el" href="namespacecgv_1_1render.html#a76273213c8a6f2c7a304e2b004a5ca0d">cgv::render::ProgramVariableKind</a>&#160;</td>
+          <td class="paramname"><em>kind</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">std::vector&lt; <a class="el" href="structcgv_1_1render_1_1program__variable__info.html">cgv::render::program_variable_info</a> &gt; &amp;&#160;</td>
+          <td class="paramname"><em>Vs</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">bool&#160;</td>
+          <td class="paramname"><em>get_location</em> = <code>true</code>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">bool&#160;</td>
+          <td class="paramname"><em>get_value</em> = <code>true</code>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>retrieve information on all uniform or attribute variables of a shader program </p>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">ctx</td><td>render context</td></tr>
+    <tr><td class="paramname">kind</td><td>enum specifying whether uniforms or attributes are queried</td></tr>
+    <tr><td class="paramname">Vs</td><td>resulting list of program variable infos</td></tr>
+    <tr><td class="paramname">get_location</td><td>whether to retrieve program locations of variables</td></tr>
+    <tr><td class="paramname">get_value</td><td>whether to retrieve current values of program variables</td></tr>
+  </table>
+  </dd>
+</dl>
+
+<p class="definition">Definition at line <a class="el" href="shader__program_8cxx_source.html#l00019">19</a> of file <a class="el" href="shader__program_8cxx_source.html">shader_program.cxx</a>.</p>
 
 </div>
 </div>
@@ -1610,9 +1673,9 @@ Additional Inherited Members</h2></td></tr>
 
 <p>check whether program is currently enabled </p>
 
-<p class="definition">Definition at line <a class="el" href="shader__program_8h_source.html#l00131">131</a> of file <a class="el" href="shader__program_8h_source.html">shader_program.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="shader__program_8h_source.html#l00142">142</a> of file <a class="el" href="shader__program_8h_source.html">shader_program.h</a>.</p>
 
-<p class="reference">Referenced by <a class="el" href="gl__texture__tools_8cxx_source.html#l00773">cgv::render::gl::cover_screen()</a>, <a class="el" href="shader__program_8cxx_source.html#l00594">disable()</a>, and <a class="el" href="shader__program_8cxx_source.html#l00572">enable()</a>.</p>
+<p class="reference">Referenced by <a class="el" href="gl__texture__tools_8cxx_source.html#l00773">cgv::render::gl::cover_screen()</a>, <a class="el" href="shader__program_8cxx_source.html#l00601">disable()</a>, and <a class="el" href="shader__program_8cxx_source.html#l00579">enable()</a>.</p>
 
 </div>
 </div>
@@ -1633,9 +1696,9 @@ Additional Inherited Members</h2></td></tr>
 
 <p>return whether program is linked </p>
 
-<p class="definition">Definition at line <a class="el" href="shader__program_8cxx_source.html#l00557">557</a> of file <a class="el" href="shader__program_8cxx_source.html">shader_program.cxx</a>.</p>
+<p class="definition">Definition at line <a class="el" href="shader__program_8cxx_source.html#l00564">564</a> of file <a class="el" href="shader__program_8cxx_source.html">shader_program.cxx</a>.</p>
 
-<p class="reference">Referenced by <a class="el" href="image__drawable_8cxx_source.html#l00241">cgv::render::gl::image_drawable::draw()</a>, <a class="el" href="shader__program_8cxx_source.html#l00572">enable()</a>, and <a class="el" href="vr__test_8cxx_source.html#l00528">vr_test::init_frame()</a>.</p>
+<p class="reference">Referenced by <a class="el" href="image__drawable_8cxx_source.html#l00241">cgv::render::gl::image_drawable::draw()</a>, <a class="el" href="shader__program_8cxx_source.html#l00579">enable()</a>, and <a class="el" href="vr__test_8cxx_source.html#l00528">vr_test::init_frame()</a>.</p>
 
 </div>
 </div>
@@ -1667,11 +1730,11 @@ Additional Inherited Members</h2></td></tr>
 
 <p>link shaders to an executable program </p>
 
-<p class="definition">Definition at line <a class="el" href="shader__program_8cxx_source.html#l00541">541</a> of file <a class="el" href="shader__program_8cxx_source.html">shader_program.cxx</a>.</p>
+<p class="definition">Definition at line <a class="el" href="shader__program_8cxx_source.html#l00548">548</a> of file <a class="el" href="shader__program_8cxx_source.html">shader_program.cxx</a>.</p>
 
-<p class="reference">References <a class="el" href="context_8h_source.html#l00318">cgv::render::render_component::last_error</a>, and <a class="el" href="shader__program_8cxx_source.html#l00528">update_state()</a>.</p>
+<p class="reference">References <a class="el" href="context_8h_source.html#l00361">cgv::render::render_component::last_error</a>, and <a class="el" href="shader__program_8cxx_source.html#l00535">update_state()</a>.</p>
 
-<p class="reference">Referenced by <a class="el" href="shader__program_8cxx_source.html#l00491">build_dir()</a>, <a class="el" href="shader__program_8cxx_source.html#l00486">build_files()</a>, <a class="el" href="shader__program_8cxx_source.html#l00497">build_program()</a>, and <a class="el" href="gl__texture__tools_8cxx_source.html#l00906">cgv::render::gl::complete_program_form_render_to_texture3D()</a>.</p>
+<p class="reference">Referenced by <a class="el" href="shader__program_8cxx_source.html#l00498">build_dir()</a>, <a class="el" href="shader__program_8cxx_source.html#l00493">build_files()</a>, <a class="el" href="shader__program_8cxx_source.html#l00504">build_program()</a>, and <a class="el" href="gl__texture__tools_8cxx_source.html#l00906">cgv::render::gl::complete_program_form_render_to_texture3D()</a>.</p>
 
 </div>
 </div>
@@ -1729,11 +1792,11 @@ Additional Inherited Members</h2></td></tr>
 
 <p>common code necessary to open file </p>
 
-<p class="definition">Definition at line <a class="el" href="shader__program_8cxx_source.html#l00285">285</a> of file <a class="el" href="shader__program_8cxx_source.html">shader_program.cxx</a>.</p>
+<p class="definition">Definition at line <a class="el" href="shader__program_8cxx_source.html#l00292">292</a> of file <a class="el" href="shader__program_8cxx_source.html">shader_program.cxx</a>.</p>
 
-<p class="reference">References <a class="el" href="shader__code_8cxx_source.html#l00069">cgv::render::shader_code::decode_if_base64()</a>, <a class="el" href="shader__code_8cxx_source.html#l00180">cgv::render::shader_code::find_file()</a>, <a class="el" href="shader__program_8h_source.html#l00031">program_file_cache</a>, <a class="el" href="import_8cxx_source.html#l00388">cgv::base::read_data_file()</a>, and <a class="el" href="advanced__scan_8cxx_source.html#l00065">cgv::utils::split_to_lines()</a>.</p>
+<p class="reference">References <a class="el" href="shader__code_8cxx_source.html#l00069">cgv::render::shader_code::decode_if_base64()</a>, <a class="el" href="shader__code_8cxx_source.html#l00180">cgv::render::shader_code::find_file()</a>, <a class="el" href="shader__program_8h_source.html#l00032">program_file_cache</a>, <a class="el" href="import_8cxx_source.html#l00388">cgv::base::read_data_file()</a>, and <a class="el" href="advanced__scan_8cxx_source.html#l00065">cgv::utils::split_to_lines()</a>.</p>
 
-<p class="reference">Referenced by <a class="el" href="shader__program_8cxx_source.html#l00357">attach_program()</a>, and <a class="el" href="shader__program_8cxx_source.html#l00317">extract_instances()</a>.</p>
+<p class="reference">Referenced by <a class="el" href="shader__program_8cxx_source.html#l00364">attach_program()</a>, and <a class="el" href="shader__program_8cxx_source.html#l00324">extract_instances()</a>.</p>
 
 </div>
 </div>
@@ -1781,11 +1844,11 @@ template&lt;typename T &gt; </div>
 
 <p>set constant default value of a vertex attribute by attribute name, if name does not specify an attribute, an error message is generated </p>
 
-<p class="definition">Definition at line <a class="el" href="shader__program_8h_source.html#l00203">203</a> of file <a class="el" href="shader__program_8h_source.html">shader_program.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="shader__program_8h_source.html#l00214">214</a> of file <a class="el" href="shader__program_8h_source.html">shader_program.h</a>.</p>
 
-<p class="reference">References <a class="el" href="context_8cxx_source.html#l00219">cgv::render::context::error()</a>.</p>
+<p class="reference">References <a class="el" href="context_8cxx_source.html#l00306">cgv::render::context::error()</a>.</p>
 
-<p class="reference">Referenced by <a class="el" href="box__renderer_8cxx_source.html#l00066">cgv::render::box_renderer::enable()</a>, <a class="el" href="box__wire__renderer_8cxx_source.html#l00053">cgv::render::box_wire_renderer::enable()</a>, <a class="el" href="cone__renderer_8cxx_source.html#l00053">cgv::render::cone_renderer::enable()</a>, <a class="el" href="ellipsoid__renderer_8cxx_source.html#l00047">cgv::render::ellipsoid_renderer::enable()</a>, <a class="el" href="line__renderer_8cxx_source.html#l00067">cgv::render::line_renderer::enable()</a>, <a class="el" href="point__renderer_8cxx_source.html#l00081">cgv::render::point_renderer::enable()</a>, <a class="el" href="rectangle__renderer_8cxx_source.html#l00150">cgv::render::rectangle_renderer::enable()</a>, <a class="el" href="sphere__renderer_8cxx_source.html#l00046">cgv::render::sphere_renderer::enable()</a>, <a class="el" href="spline__tube__renderer_8cxx_source.html#l00045">cgv::render::spline_tube_renderer::enable()</a>, <a class="el" href="surfel__renderer_8cxx_source.html#l00071">cgv::render::surfel_renderer::enable()</a>, <a class="el" href="line__renderer_8cxx_source.html#l00047">cgv::render::line_renderer::init()</a>, <a class="el" href="context_8cxx_source.html#l01636">cgv::render::context::set_color()</a>, <a class="el" href="gl__context_8cxx_source.html#l00808">cgv::render::gl::gl_context::set_color()</a>, and <a class="el" href="rectangle__renderer_8cxx_source.html#l00121">cgv::render::rectangle_renderer::set_textured_rectangle()</a>.</p>
+<p class="reference">Referenced by <a class="el" href="box__renderer_8cxx_source.html#l00066">cgv::render::box_renderer::enable()</a>, <a class="el" href="box__wire__renderer_8cxx_source.html#l00053">cgv::render::box_wire_renderer::enable()</a>, <a class="el" href="cone__renderer_8cxx_source.html#l00054">cgv::render::cone_renderer::enable()</a>, <a class="el" href="ellipsoid__renderer_8cxx_source.html#l00047">cgv::render::ellipsoid_renderer::enable()</a>, <a class="el" href="line__renderer_8cxx_source.html#l00067">cgv::render::line_renderer::enable()</a>, <a class="el" href="point__renderer_8cxx_source.html#l00081">cgv::render::point_renderer::enable()</a>, <a class="el" href="rectangle__renderer_8cxx_source.html#l00150">cgv::render::rectangle_renderer::enable()</a>, <a class="el" href="sphere__renderer_8cxx_source.html#l00046">cgv::render::sphere_renderer::enable()</a>, <a class="el" href="spline__tube__renderer_8cxx_source.html#l00045">cgv::render::spline_tube_renderer::enable()</a>, <a class="el" href="surface__renderer_8cxx_source.html#l00062">cgv::render::surface_renderer::enable()</a>, <a class="el" href="surfel__renderer_8cxx_source.html#l00071">cgv::render::surfel_renderer::enable()</a>, <a class="el" href="line__renderer_8cxx_source.html#l00047">cgv::render::line_renderer::init()</a>, <a class="el" href="context_8cxx_source.html#l01723">cgv::render::context::set_color()</a>, <a class="el" href="gl__context_8cxx_source.html#l00808">cgv::render::gl::gl_context::set_color()</a>, and <a class="el" href="rectangle__renderer_8cxx_source.html#l00121">cgv::render::rectangle_renderer::set_textured_rectangle()</a>.</p>
 
 </div>
 </div>
@@ -1833,9 +1896,9 @@ template&lt;typename T &gt; </div>
 
 <p>set constant default value of a vertex attribute by location index </p>
 
-<p class="definition">Definition at line <a class="el" href="shader__program_8h_source.html#l00213">213</a> of file <a class="el" href="shader__program_8h_source.html">shader_program.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="shader__program_8h_source.html#l00224">224</a> of file <a class="el" href="shader__program_8h_source.html">shader_program.h</a>.</p>
 
-<p class="reference">References <a class="el" href="context_8cxx_source.html#l00219">cgv::render::context::error()</a>.</p>
+<p class="reference">References <a class="el" href="context_8cxx_source.html#l00306">cgv::render::context::error()</a>.</p>
 
 </div>
 </div>
@@ -1874,9 +1937,9 @@ template&lt;typename T &gt; </div>
 <p>configure the geometry shader, if count &lt; 1 set it to get_max_nr_geometry_shader_output_vertices </p>
 <p>configure the geometry shader </p>
 
-<p class="definition">Definition at line <a class="el" href="shader__program_8cxx_source.html#l00563">563</a> of file <a class="el" href="shader__program_8cxx_source.html">shader_program.cxx</a>.</p>
+<p class="definition">Definition at line <a class="el" href="shader__program_8cxx_source.html#l00570">570</a> of file <a class="el" href="shader__program_8cxx_source.html">shader_program.cxx</a>.</p>
 
-<p class="reference">Referenced by <a class="el" href="shader__program_8cxx_source.html#l00357">attach_program()</a>.</p>
+<p class="reference">Referenced by <a class="el" href="shader__program_8cxx_source.html#l00364">attach_program()</a>.</p>
 
 </div>
 </div>
@@ -1920,11 +1983,11 @@ template&lt;typename T &gt; </div>
 
 <p>set a uniform of type light source </p>
 
-<p class="definition">Definition at line <a class="el" href="shader__program_8cxx_source.html#l00663">663</a> of file <a class="el" href="shader__program_8cxx_source.html">shader_program.cxx</a>.</p>
+<p class="definition">Definition at line <a class="el" href="shader__program_8cxx_source.html#l00670">670</a> of file <a class="el" href="shader__program_8cxx_source.html">shader_program.cxx</a>.</p>
 
-<p class="reference">References <a class="el" href="shader__program_8h_source.html#l00146">set_uniform()</a>.</p>
+<p class="reference">References <a class="el" href="shader__program_8h_source.html#l00157">set_uniform()</a>.</p>
 
-<p class="reference">Referenced by <a class="el" href="context_8cxx_source.html#l00621">cgv::render::context::set_current_lights()</a>.</p>
+<p class="reference">Referenced by <a class="el" href="context_8cxx_source.html#l00708">cgv::render::context::set_current_lights()</a>.</p>
 
 </div>
 </div>
@@ -1968,11 +2031,11 @@ template&lt;typename T &gt; </div>
 
 <p>set a uniform of type material </p>
 
-<p class="definition">Definition at line <a class="el" href="shader__program_8cxx_source.html#l00622">622</a> of file <a class="el" href="shader__program_8cxx_source.html">shader_program.cxx</a>.</p>
+<p class="definition">Definition at line <a class="el" href="shader__program_8cxx_source.html#l00629">629</a> of file <a class="el" href="shader__program_8cxx_source.html">shader_program.cxx</a>.</p>
 
-<p class="reference">References <a class="el" href="surface__material_8h_source.html#l00036">cgv::media::illum::surface_material::ambient_occlusion</a>, <a class="el" href="surface__material_8h_source.html#l00028">cgv::media::illum::surface_material::brdf_type</a>, <a class="el" href="surface__material_8h_source.html#l00030">cgv::media::illum::surface_material::diffuse_reflectance</a>, <a class="el" href="surface__material_8h_source.html#l00038">cgv::media::illum::surface_material::emission</a>, <a class="el" href="surface__material_8h_source.html#l00034">cgv::media::illum::surface_material::metalness</a>, <a class="el" href="surface__material_8h_source.html#l00042">cgv::media::illum::surface_material::propagation_slow_down</a>, <a class="el" href="surface__material_8h_source.html#l00032">cgv::media::illum::surface_material::roughness</a>, <a class="el" href="surface__material_8h_source.html#l00044">cgv::media::illum::surface_material::roughness_anisotropy</a>, <a class="el" href="surface__material_8h_source.html#l00046">cgv::media::illum::surface_material::roughness_orientation</a>, <a class="el" href="shader__program_8h_source.html#l00146">set_uniform()</a>, <a class="el" href="surface__material_8h_source.html#l00048">cgv::media::illum::surface_material::specular_reflectance</a>, and <a class="el" href="surface__material_8h_source.html#l00040">cgv::media::illum::surface_material::transparency</a>.</p>
+<p class="reference">References <a class="el" href="surface__material_8h_source.html#l00036">cgv::media::illum::surface_material::ambient_occlusion</a>, <a class="el" href="surface__material_8h_source.html#l00028">cgv::media::illum::surface_material::brdf_type</a>, <a class="el" href="surface__material_8h_source.html#l00030">cgv::media::illum::surface_material::diffuse_reflectance</a>, <a class="el" href="surface__material_8h_source.html#l00038">cgv::media::illum::surface_material::emission</a>, <a class="el" href="surface__material_8h_source.html#l00034">cgv::media::illum::surface_material::metalness</a>, <a class="el" href="surface__material_8h_source.html#l00042">cgv::media::illum::surface_material::propagation_slow_down</a>, <a class="el" href="surface__material_8h_source.html#l00032">cgv::media::illum::surface_material::roughness</a>, <a class="el" href="surface__material_8h_source.html#l00044">cgv::media::illum::surface_material::roughness_anisotropy</a>, <a class="el" href="surface__material_8h_source.html#l00046">cgv::media::illum::surface_material::roughness_orientation</a>, <a class="el" href="shader__program_8h_source.html#l00157">set_uniform()</a>, <a class="el" href="surface__material_8h_source.html#l00048">cgv::media::illum::surface_material::specular_reflectance</a>, and <a class="el" href="surface__material_8h_source.html#l00040">cgv::media::illum::surface_material::transparency</a>.</p>
 
-<p class="reference">Referenced by <a class="el" href="context_8cxx_source.html#l00609">cgv::render::context::set_current_material()</a>, <a class="el" href="context_8cxx_source.html#l01651">cgv::render::context::set_material()</a>, and <a class="el" href="shader__program_8cxx_source.html#l00639">set_textured_material_uniform()</a>.</p>
+<p class="reference">Referenced by <a class="el" href="context_8cxx_source.html#l00696">cgv::render::context::set_current_material()</a>, <a class="el" href="context_8cxx_source.html#l01738">cgv::render::context::set_material()</a>, and <a class="el" href="shader__program_8cxx_source.html#l00646">set_textured_material_uniform()</a>.</p>
 
 </div>
 </div>
@@ -2016,11 +2079,11 @@ template&lt;typename T &gt; </div>
 
 <p>set a uniform of type <a class="el" href="classcgv_1_1render_1_1textured__material.html" title="class that extends obj_material with the management of textures">textured_material</a> </p>
 
-<p class="definition">Definition at line <a class="el" href="shader__program_8cxx_source.html#l00639">639</a> of file <a class="el" href="shader__program_8cxx_source.html">shader_program.cxx</a>.</p>
+<p class="definition">Definition at line <a class="el" href="shader__program_8cxx_source.html#l00646">646</a> of file <a class="el" href="shader__program_8cxx_source.html">shader_program.cxx</a>.</p>
 
-<p class="reference">References <a class="el" href="textured__surface__material_8h_source.html#l00033">cgv::media::illum::textured_surface_material::ambient_index</a>, <a class="el" href="textured__surface__material_8h_source.html#l00047">cgv::media::illum::textured_surface_material::bump_index</a>, <a class="el" href="textured__surface__material_8h_source.html#l00022">cgv::media::illum::textured_surface_material::diffuse_index</a>, <a class="el" href="textured__surface__material_8h_source.html#l00035">cgv::media::illum::textured_surface_material::emission_index</a>, <a class="el" href="textured__material_8h_source.html#l00048">cgv::render::textured_material::get_nr_textures()</a>, <a class="el" href="textured__surface__material_8h_source.html#l00030">cgv::media::illum::textured_surface_material::metalness_index</a>, <a class="el" href="textured__surface__material_8h_source.html#l00026">cgv::media::illum::textured_surface_material::roughness_index</a>, <a class="el" href="shader__program_8cxx_source.html#l00622">set_material_uniform()</a>, <a class="el" href="shader__program_8h_source.html#l00146">set_uniform()</a>, <a class="el" href="textured__surface__material_8h_source.html#l00042">cgv::media::illum::textured_surface_material::specular_index</a>, <a class="el" href="textured__surface__material_8h_source.html#l00020">cgv::media::illum::textured_surface_material::sRGBA_textures</a>, and <a class="el" href="textured__surface__material_8h_source.html#l00038">cgv::media::illum::textured_surface_material::transparency_index</a>.</p>
+<p class="reference">References <a class="el" href="textured__surface__material_8h_source.html#l00033">cgv::media::illum::textured_surface_material::ambient_index</a>, <a class="el" href="textured__surface__material_8h_source.html#l00047">cgv::media::illum::textured_surface_material::bump_index</a>, <a class="el" href="textured__surface__material_8h_source.html#l00022">cgv::media::illum::textured_surface_material::diffuse_index</a>, <a class="el" href="textured__surface__material_8h_source.html#l00035">cgv::media::illum::textured_surface_material::emission_index</a>, <a class="el" href="textured__material_8h_source.html#l00048">cgv::render::textured_material::get_nr_textures()</a>, <a class="el" href="textured__surface__material_8h_source.html#l00030">cgv::media::illum::textured_surface_material::metalness_index</a>, <a class="el" href="textured__surface__material_8h_source.html#l00026">cgv::media::illum::textured_surface_material::roughness_index</a>, <a class="el" href="shader__program_8cxx_source.html#l00629">set_material_uniform()</a>, <a class="el" href="shader__program_8h_source.html#l00157">set_uniform()</a>, <a class="el" href="textured__surface__material_8h_source.html#l00042">cgv::media::illum::textured_surface_material::specular_index</a>, <a class="el" href="textured__surface__material_8h_source.html#l00020">cgv::media::illum::textured_surface_material::sRGBA_textures</a>, and <a class="el" href="textured__surface__material_8h_source.html#l00038">cgv::media::illum::textured_surface_material::transparency_index</a>.</p>
 
-<p class="reference">Referenced by <a class="el" href="context_8cxx_source.html#l01670">cgv::render::context::set_textured_material()</a>.</p>
+<p class="reference">Referenced by <a class="el" href="context_8cxx_source.html#l01757">cgv::render::context::set_textured_material()</a>.</p>
 
 </div>
 </div>
@@ -2074,11 +2137,11 @@ template&lt;typename T &gt; </div>
 
 <p>Set the value of a uniform by name, where the type can be any of int, unsigned, float, <a class="el" href="classcgv_1_1math_1_1vec.html">vec&lt;int&gt;</a>, <a class="el" href="classcgv_1_1math_1_1vec.html">vec&lt;unsigned&gt;</a>, <a class="el" href="classcgv_1_1math_1_1vec.html">vec&lt;float&gt;</a>, mat&lt;float&gt; and the vectors are of dimension 2, 3 or 4 and the matrices of dimensions 2, 3 or 4. </p>
 
-<p class="definition">Definition at line <a class="el" href="shader__program_8h_source.html#l00146">146</a> of file <a class="el" href="shader__program_8h_source.html">shader_program.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="shader__program_8h_source.html#l00157">157</a> of file <a class="el" href="shader__program_8h_source.html">shader_program.h</a>.</p>
 
-<p class="reference">References <a class="el" href="context_8cxx_source.html#l00219">cgv::render::context::error()</a>.</p>
+<p class="reference">References <a class="el" href="context_8cxx_source.html#l00306">cgv::render::context::error()</a>.</p>
 
-<p class="reference">Referenced by <a class="el" href="render_2color__scale_8cxx_source.html#l00006">cgv::render::configure_color_scale()</a>, <a class="el" href="vr__render__helpers_8cxx_source.html#l00110">vr::configure_seethrough_shader_program()</a>, <a class="el" href="vr__test_8cxx_source.html#l00652">vr_test::draw()</a>, <a class="el" href="image__drawable_8cxx_source.html#l00241">cgv::render::gl::image_drawable::draw()</a>, <a class="el" href="render__info_8cxx_source.html#l00027">cgv::render::render_info::draw()</a>, <a class="el" href="group__renderer_8cxx_source.html#l00071">cgv::render::group_renderer::enable()</a>, <a class="el" href="arrow__renderer_8cxx_source.html#l00056">cgv::render::arrow_renderer::enable()</a>, <a class="el" href="box__renderer_8cxx_source.html#l00066">cgv::render::box_renderer::enable()</a>, <a class="el" href="box__wire__renderer_8cxx_source.html#l00053">cgv::render::box_wire_renderer::enable()</a>, <a class="el" href="cone__renderer_8cxx_source.html#l00053">cgv::render::cone_renderer::enable()</a>, <a class="el" href="ellipsoid__renderer_8cxx_source.html#l00047">cgv::render::ellipsoid_renderer::enable()</a>, <a class="el" href="line__renderer_8cxx_source.html#l00067">cgv::render::line_renderer::enable()</a>, <a class="el" href="normal__renderer_8cxx_source.html#l00030">cgv::render::normal_renderer::enable()</a>, <a class="el" href="point__renderer_8cxx_source.html#l00081">cgv::render::point_renderer::enable()</a>, <a class="el" href="rectangle__renderer_8cxx_source.html#l00150">cgv::render::rectangle_renderer::enable()</a>, <a class="el" href="sphere__renderer_8cxx_source.html#l00046">cgv::render::sphere_renderer::enable()</a>, <a class="el" href="spline__tube__renderer_8cxx_source.html#l00045">cgv::render::spline_tube_renderer::enable()</a>, <a class="el" href="surface__renderer_8cxx_source.html#l00047">cgv::render::surface_renderer::enable()</a>, <a class="el" href="surfel__renderer_8cxx_source.html#l00071">cgv::render::surfel_renderer::enable()</a>, <a class="el" href="volume__renderer_8cxx_source.html#l00144">cgv::render::volume_renderer::enable()</a>, <a class="el" href="a__buffer_8cxx_source.html#l00100">cgv::render::a_buffer::enable()</a>, <a class="el" href="vr__test_8cxx_source.html#l00871">vr_test::finish_draw()</a>, <a class="el" href="a__buffer_8cxx_source.html#l00148">cgv::render::a_buffer::finish_frame()</a>, <a class="el" href="plot3d_8cxx_source.html#l00142">cgv::plot::plot3d::init()</a>, <a class="el" href="a__buffer_8cxx_source.html#l00062">cgv::render::a_buffer::init_frame()</a>, <a class="el" href="clod__point__renderer_8cxx_source.html#l00060">cgv::render::clod_point_renderer::reduce_buffer()</a>, <a class="el" href="clod__point__renderer_8cxx_source.html#l00046">cgv::render::clod_point_renderer::reduce_buffer_init()</a>, <a class="el" href="clod__point__renderer_8cxx_source.html#l00113">cgv::render::clod_point_renderer::reduce_chunks()</a>, <a class="el" href="clod__point__renderer_8cxx_source.html#l00084">cgv::render::clod_point_renderer::reduce_points()</a>, <a class="el" href="gl__context_8cxx_source.html#l00862">cgv::render::gl::gl_context::ref_default_shader_program()</a>, <a class="el" href="gl__texture__tools_8cxx_source.html#l00938">cgv::render::gl::render_to_texture3D()</a>, <a class="el" href="context_8cxx_source.html#l01599">cgv::render::context::set_current_gamma()</a>, <a class="el" href="context_8cxx_source.html#l00621">cgv::render::context::set_current_lights()</a>, <a class="el" href="context_8cxx_source.html#l00580">cgv::render::context::set_current_view()</a>, <a class="el" href="shader__program_8cxx_source.html#l00663">set_light_uniform()</a>, <a class="el" href="gl__tools_8cxx_source.html#l00096">cgv::render::gl::set_lighting_parameters()</a>, <a class="el" href="shader__program_8cxx_source.html#l00622">set_material_uniform()</a>, <a class="el" href="plot__base_8cxx_source.html#l00374">cgv::plot::plot_base::set_plot_uniforms()</a>, and <a class="el" href="shader__program_8cxx_source.html#l00639">set_textured_material_uniform()</a>.</p>
+<p class="reference">Referenced by <a class="el" href="render_2color__scale_8cxx_source.html#l00006">cgv::render::configure_color_scale()</a>, <a class="el" href="vr__render__helpers_8cxx_source.html#l00110">vr::configure_seethrough_shader_program()</a>, <a class="el" href="vr__test_8cxx_source.html#l00652">vr_test::draw()</a>, <a class="el" href="image__drawable_8cxx_source.html#l00241">cgv::render::gl::image_drawable::draw()</a>, <a class="el" href="render__info_8cxx_source.html#l00027">cgv::render::render_info::draw()</a>, <a class="el" href="group__renderer_8cxx_source.html#l00082">cgv::render::group_renderer::enable()</a>, <a class="el" href="arrow__renderer_8cxx_source.html#l00050">cgv::render::arrow_renderer::enable()</a>, <a class="el" href="box__renderer_8cxx_source.html#l00066">cgv::render::box_renderer::enable()</a>, <a class="el" href="box__wire__renderer_8cxx_source.html#l00053">cgv::render::box_wire_renderer::enable()</a>, <a class="el" href="cone__renderer_8cxx_source.html#l00054">cgv::render::cone_renderer::enable()</a>, <a class="el" href="ellipsoid__renderer_8cxx_source.html#l00047">cgv::render::ellipsoid_renderer::enable()</a>, <a class="el" href="line__renderer_8cxx_source.html#l00067">cgv::render::line_renderer::enable()</a>, <a class="el" href="normal__renderer_8cxx_source.html#l00030">cgv::render::normal_renderer::enable()</a>, <a class="el" href="point__renderer_8cxx_source.html#l00081">cgv::render::point_renderer::enable()</a>, <a class="el" href="rectangle__renderer_8cxx_source.html#l00150">cgv::render::rectangle_renderer::enable()</a>, <a class="el" href="sphere__renderer_8cxx_source.html#l00046">cgv::render::sphere_renderer::enable()</a>, <a class="el" href="spline__tube__renderer_8cxx_source.html#l00045">cgv::render::spline_tube_renderer::enable()</a>, <a class="el" href="surface__renderer_8cxx_source.html#l00062">cgv::render::surface_renderer::enable()</a>, <a class="el" href="surfel__renderer_8cxx_source.html#l00071">cgv::render::surfel_renderer::enable()</a>, <a class="el" href="volume__renderer_8cxx_source.html#l00144">cgv::render::volume_renderer::enable()</a>, <a class="el" href="a__buffer_8cxx_source.html#l00100">cgv::render::a_buffer::enable()</a>, <a class="el" href="vr__test_8cxx_source.html#l00871">vr_test::finish_draw()</a>, <a class="el" href="a__buffer_8cxx_source.html#l00148">cgv::render::a_buffer::finish_frame()</a>, <a class="el" href="plot3d_8cxx_source.html#l00142">cgv::plot::plot3d::init()</a>, <a class="el" href="a__buffer_8cxx_source.html#l00062">cgv::render::a_buffer::init_frame()</a>, <a class="el" href="clod__point__renderer_8cxx_source.html#l00060">cgv::render::clod_point_renderer::reduce_buffer()</a>, <a class="el" href="clod__point__renderer_8cxx_source.html#l00046">cgv::render::clod_point_renderer::reduce_buffer_init()</a>, <a class="el" href="clod__point__renderer_8cxx_source.html#l00113">cgv::render::clod_point_renderer::reduce_chunks()</a>, <a class="el" href="clod__point__renderer_8cxx_source.html#l00084">cgv::render::clod_point_renderer::reduce_points()</a>, <a class="el" href="gl__context_8cxx_source.html#l00862">cgv::render::gl::gl_context::ref_default_shader_program()</a>, <a class="el" href="gl__texture__tools_8cxx_source.html#l00938">cgv::render::gl::render_to_texture3D()</a>, <a class="el" href="context_8cxx_source.html#l01686">cgv::render::context::set_current_gamma()</a>, <a class="el" href="context_8cxx_source.html#l00708">cgv::render::context::set_current_lights()</a>, <a class="el" href="context_8cxx_source.html#l00667">cgv::render::context::set_current_view()</a>, <a class="el" href="shader__program_8cxx_source.html#l00670">set_light_uniform()</a>, <a class="el" href="gl__tools_8cxx_source.html#l00096">cgv::render::gl::set_lighting_parameters()</a>, <a class="el" href="shader__program_8cxx_source.html#l00629">set_material_uniform()</a>, <a class="el" href="plot__base_8cxx_source.html#l00374">cgv::plot::plot_base::set_plot_uniforms()</a>, and <a class="el" href="shader__program_8cxx_source.html#l00646">set_textured_material_uniform()</a>.</p>
 
 </div>
 </div>
@@ -2126,7 +2189,7 @@ template&lt;typename T &gt; </div>
 
 <p>Set the value of a uniform by location, where the type can be any of int, unsigned, float, <a class="el" href="classcgv_1_1math_1_1vec.html">vec&lt;int&gt;</a>, <a class="el" href="classcgv_1_1math_1_1vec.html">vec&lt;unsigned&gt;</a>, <a class="el" href="classcgv_1_1math_1_1vec.html">vec&lt;float&gt;</a>, mat&lt;float&gt; and the vectors are of dimension 2, 3 or 4 and the matrices of dimensions 2, 3 or 4. </p>
 
-<p class="definition">Definition at line <a class="el" href="shader__program_8h_source.html#l00180">180</a> of file <a class="el" href="shader__program_8h_source.html">shader_program.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="shader__program_8h_source.html#l00191">191</a> of file <a class="el" href="shader__program_8h_source.html">shader_program.h</a>.</p>
 
 </div>
 </div>
@@ -2179,7 +2242,7 @@ template&lt;typename T &gt; </div>
 <p>Set the value of a uniform by location, where the value is defined by a type descriptor and address. </p>
 <p>The value type descriptor can be equivalent to any of int, unsigned, float, <a class="el" href="classcgv_1_1math_1_1vec.html">vec&lt;int&gt;</a>, <a class="el" href="classcgv_1_1math_1_1vec.html">vec&lt;unsigned&gt;</a>, <a class="el" href="classcgv_1_1math_1_1vec.html">vec&lt;float&gt;</a>, mat&lt;float&gt; and the vectors are of dimension 2, 3 or 4 and the matrices of dimensions 2, 3 or 4. </p>
 
-<p class="definition">Definition at line <a class="el" href="shader__program_8h_source.html#l00196">196</a> of file <a class="el" href="shader__program_8h_source.html">shader_program.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="shader__program_8h_source.html#l00207">207</a> of file <a class="el" href="shader__program_8h_source.html">shader_program.h</a>.</p>
 
 </div>
 </div>
@@ -2227,11 +2290,11 @@ template&lt;typename T &gt; </div>
 
 <p>set uniform array from array <code>array</code> where number elements can be derived from array through <code><a class="el" href="structcgv_1_1render_1_1array__descriptor__traits.html">array_descriptor_traits</a></code>; supported array types include <a class="el" href="classcgv_1_1math_1_1vec.html" title="A column vector class.">cgv::math::vec</a> and std::vector </p>
 
-<p class="definition">Definition at line <a class="el" href="shader__program_8h_source.html#l00157">157</a> of file <a class="el" href="shader__program_8h_source.html">shader_program.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="shader__program_8h_source.html#l00168">168</a> of file <a class="el" href="shader__program_8h_source.html">shader_program.h</a>.</p>
 
-<p class="reference">References <a class="el" href="context_8cxx_source.html#l00219">cgv::render::context::error()</a>.</p>
+<p class="reference">References <a class="el" href="context_8cxx_source.html#l00306">cgv::render::context::error()</a>.</p>
 
-<p class="reference">Referenced by <a class="el" href="render_2color__scale_8cxx_source.html#l00006">cgv::render::configure_color_scale()</a>, <a class="el" href="render_2color__scale_8cxx_source.html#l00020">cgv::render::configure_color_scale()</a>, <a class="el" href="cone__renderer_8cxx_source.html#l00053">cgv::render::cone_renderer::enable()</a>, <a class="el" href="gl__tools_8cxx_source.html#l00096">cgv::render::gl::set_lighting_parameters()</a>, <a class="el" href="plot__base_8cxx_source.html#l00395">cgv::plot::plot_base::set_mapping_uniforms()</a>, and <a class="el" href="plot__base_8cxx_source.html#l00374">cgv::plot::plot_base::set_plot_uniforms()</a>.</p>
+<p class="reference">Referenced by <a class="el" href="render_2color__scale_8cxx_source.html#l00006">cgv::render::configure_color_scale()</a>, <a class="el" href="render_2color__scale_8cxx_source.html#l00020">cgv::render::configure_color_scale()</a>, <a class="el" href="cone__renderer_8cxx_source.html#l00054">cgv::render::cone_renderer::enable()</a>, <a class="el" href="gl__tools_8cxx_source.html#l00096">cgv::render::gl::set_lighting_parameters()</a>, <a class="el" href="plot__base_8cxx_source.html#l00395">cgv::plot::plot_base::set_mapping_uniforms()</a>, and <a class="el" href="plot__base_8cxx_source.html#l00374">cgv::plot::plot_base::set_plot_uniforms()</a>.</p>
 
 </div>
 </div>
@@ -2291,9 +2354,9 @@ template&lt;typename T &gt; </div>
 
 <p>set uniform array from an array with <code>nr_elements</code> elements of type T pointed to by <code>array</code> </p>
 
-<p class="definition">Definition at line <a class="el" href="shader__program_8h_source.html#l00167">167</a> of file <a class="el" href="shader__program_8h_source.html">shader_program.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="shader__program_8h_source.html#l00178">178</a> of file <a class="el" href="shader__program_8h_source.html">shader_program.h</a>.</p>
 
-<p class="reference">References <a class="el" href="context_8cxx_source.html#l00219">cgv::render::context::error()</a>.</p>
+<p class="reference">References <a class="el" href="context_8cxx_source.html#l00306">cgv::render::context::error()</a>.</p>
 
 </div>
 </div>
@@ -2341,7 +2404,7 @@ template&lt;typename T &gt; </div>
 
 <p>set uniform array from array <code>array</code> where number elements can be derived from array through <code><a class="el" href="structcgv_1_1render_1_1array__descriptor__traits.html">array_descriptor_traits</a></code>; supported array types include <a class="el" href="classcgv_1_1math_1_1vec.html" title="A column vector class.">cgv::math::vec</a> and std::vector </p>
 
-<p class="definition">Definition at line <a class="el" href="shader__program_8h_source.html#l00185">185</a> of file <a class="el" href="shader__program_8h_source.html">shader_program.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="shader__program_8h_source.html#l00196">196</a> of file <a class="el" href="shader__program_8h_source.html">shader_program.h</a>.</p>
 
 </div>
 </div>
@@ -2395,7 +2458,7 @@ template&lt;typename T &gt; </div>
 
 <p>set uniform array from an array with <code>nr_elements</code> elements of type T pointed to by <code>array</code> </p>
 
-<p class="definition">Definition at line <a class="el" href="shader__program_8h_source.html#l00190">190</a> of file <a class="el" href="shader__program_8h_source.html">shader_program.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="shader__program_8h_source.html#l00201">201</a> of file <a class="el" href="shader__program_8h_source.html">shader_program.h</a>.</p>
 
 </div>
 </div>
@@ -2425,11 +2488,11 @@ template&lt;typename T &gt; </div>
 
 <p>ensure that the state has been set in the context </p>
 
-<p class="definition">Definition at line <a class="el" href="shader__program_8cxx_source.html#l00528">528</a> of file <a class="el" href="shader__program_8cxx_source.html">shader_program.cxx</a>.</p>
+<p class="definition">Definition at line <a class="el" href="shader__program_8cxx_source.html#l00535">535</a> of file <a class="el" href="shader__program_8cxx_source.html">shader_program.cxx</a>.</p>
 
-<p class="reference">References <a class="el" href="shader__program_8cxx_source.html#l00522">get_max_nr_geometry_shader_output_vertices()</a>.</p>
+<p class="reference">References <a class="el" href="shader__program_8cxx_source.html#l00529">get_max_nr_geometry_shader_output_vertices()</a>.</p>
 
-<p class="reference">Referenced by <a class="el" href="shader__program_8cxx_source.html#l00572">enable()</a>, and <a class="el" href="shader__program_8cxx_source.html#l00541">link()</a>.</p>
+<p class="reference">Referenced by <a class="el" href="shader__program_8cxx_source.html#l00579">enable()</a>, and <a class="el" href="shader__program_8cxx_source.html#l00548">link()</a>.</p>
 
 </div>
 </div>
@@ -2454,7 +2517,7 @@ template&lt;typename T &gt; </div>
 </table>
 </div><div class="memdoc">
 
-<p class="definition">Definition at line <a class="el" href="shader__program_8h_source.html#l00032">32</a> of file <a class="el" href="shader__program_8h_source.html">shader_program.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="shader__program_8h_source.html#l00033">33</a> of file <a class="el" href="shader__program_8h_source.html">shader_program.h</a>.</p>
 
 </div>
 </div>
@@ -2478,7 +2541,7 @@ template&lt;typename T &gt; </div>
 </table>
 </div><div class="memdoc">
 
-<p class="definition">Definition at line <a class="el" href="shader__program_8h_source.html#l00035">35</a> of file <a class="el" href="shader__program_8h_source.html">shader_program.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="shader__program_8h_source.html#l00036">36</a> of file <a class="el" href="shader__program_8h_source.html">shader_program.h</a>.</p>
 
 </div>
 </div>
@@ -2502,7 +2565,7 @@ template&lt;typename T &gt; </div>
 </table>
 </div><div class="memdoc">
 
-<p class="definition">Definition at line <a class="el" href="shader__program_8h_source.html#l00039">39</a> of file <a class="el" href="shader__program_8h_source.html">shader_program.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="shader__program_8h_source.html#l00040">40</a> of file <a class="el" href="shader__program_8h_source.html">shader_program.h</a>.</p>
 
 </div>
 </div>
@@ -2526,7 +2589,7 @@ template&lt;typename T &gt; </div>
 </table>
 </div><div class="memdoc">
 
-<p class="definition">Definition at line <a class="el" href="shader__program_8h_source.html#l00037">37</a> of file <a class="el" href="shader__program_8h_source.html">shader_program.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="shader__program_8h_source.html#l00038">38</a> of file <a class="el" href="shader__program_8h_source.html">shader_program.h</a>.</p>
 
 </div>
 </div>
@@ -2552,9 +2615,9 @@ template&lt;typename T &gt; </div>
 
 <p>maps used to cache program file contents and valid file names indexed by their respective file name </p>
 
-<p class="definition">Definition at line <a class="el" href="shader__program_8h_source.html#l00031">31</a> of file <a class="el" href="shader__program_8h_source.html">shader_program.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="shader__program_8h_source.html#l00032">32</a> of file <a class="el" href="shader__program_8h_source.html">shader_program.h</a>.</p>
 
-<p class="reference">Referenced by <a class="el" href="shader__program_8cxx_source.html#l00285">open_program_file()</a>.</p>
+<p class="reference">Referenced by <a class="el" href="shader__program_8cxx_source.html#l00292">open_program_file()</a>.</p>
 
 </div>
 </div>
@@ -2578,7 +2641,7 @@ template&lt;typename T &gt; </div>
 </table>
 </div><div class="memdoc">
 
-<p class="definition">Definition at line <a class="el" href="shader__program_8h_source.html#l00034">34</a> of file <a class="el" href="shader__program_8h_source.html">shader_program.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="shader__program_8h_source.html#l00035">35</a> of file <a class="el" href="shader__program_8h_source.html">shader_program.h</a>.</p>
 
 </div>
 </div>
@@ -2602,7 +2665,7 @@ template&lt;typename T &gt; </div>
 </table>
 </div><div class="memdoc">
 
-<p class="definition">Definition at line <a class="el" href="shader__program_8h_source.html#l00036">36</a> of file <a class="el" href="shader__program_8h_source.html">shader_program.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="shader__program_8h_source.html#l00037">37</a> of file <a class="el" href="shader__program_8h_source.html">shader_program.h</a>.</p>
 
 </div>
 </div>

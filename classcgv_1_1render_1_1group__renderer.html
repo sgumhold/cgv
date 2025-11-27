@@ -91,6 +91,7 @@ $(document).ready(function(){initNavTree('classcgv_1_1render_1_1group__renderer.
 <div class="header">
   <div class="summary">
 <a href="#pub-methods">Public Member Functions</a> &#124;
+<a href="#pro-methods">Protected Member Functions</a> &#124;
 <a href="#pro-attribs">Protected Attributes</a> &#124;
 <a href="classcgv_1_1render_1_1group__renderer-members.html">List of all members</a>  </div>
   <div class="headertitle"><div class="title">cgv::render::group_renderer Class Reference</div></div>
@@ -107,7 +108,7 @@ Inheritance diagram for cgv::render::group_renderer:</div>
  <div class="center">
   <img src="classcgv_1_1render_1_1group__renderer.png" usemap="#cgv::render::group_5Frenderer_map" alt=""/>
   <map id="cgv::render::group_5Frenderer_map" name="cgv::render::group_5Frenderer_map">
-<area href="classcgv_1_1render_1_1renderer.html" title="abstract base class for all renderers that handles a shader program and position / color attribute" alt="cgv::render::renderer" shape="rect" coords="214,0,418,24"/>
+<area href="classcgv_1_1render_1_1renderer.html" title="Abstract base class for all renderers that manage a render data and the rendering process." alt="cgv::render::renderer" shape="rect" coords="214,0,418,24"/>
 <area href="classcgv_1_1render_1_1line__renderer.html" title="renderer that supports point splatting" alt="cgv::render::line_renderer" shape="rect" coords="0,112,204,136"/>
 <area href="classcgv_1_1render_1_1point__renderer.html" title="renderer that supports point splatting" alt="cgv::render::point_renderer" shape="rect" coords="214,112,418,136"/>
 <area href="classcgv_1_1render_1_1surface__renderer.html" title="base classes for renderers that support surface rendering" alt="cgv::render::surface_renderer" shape="rect" coords="428,112,632,136"/>
@@ -297,26 +298,11 @@ Public Member Functions</h2></td></tr>
 <tr class="memdesc:a78cd29d5497c8a9d3c554266e7b171ee inherit pub_methods_classcgv_1_1render_1_1renderer"><td class="mdescLeft">&#160;</td><td class="mdescRight">the clear function destructs the shader program  <br /></td></tr>
 <tr class="separator:a78cd29d5497c8a9d3c554266e7b171ee inherit pub_methods_classcgv_1_1render_1_1renderer"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table><table class="memberdecls">
-<tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="pro-attribs" name="pro-attribs"></a>
-Protected Attributes</h2></td></tr>
-<tr class="memitem:a185c096ff88580e89c5ff451c315c808" id="r_a185c096ff88580e89c5ff451c315c808"><td class="memItemLeft" align="right" valign="top">bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcgv_1_1render_1_1group__renderer.html#a185c096ff88580e89c5ff451c315c808">has_group_indices</a> = false</td></tr>
-<tr class="separator:a185c096ff88580e89c5ff451c315c808"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a0dcbdc09bd46259d2aa3dd38e860aebe" id="r_a0dcbdc09bd46259d2aa3dd38e860aebe"><td class="memItemLeft" align="right" valign="top">bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcgv_1_1render_1_1group__renderer.html#a0dcbdc09bd46259d2aa3dd38e860aebe">has_group_colors</a> = false</td></tr>
-<tr class="separator:a0dcbdc09bd46259d2aa3dd38e860aebe"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:abfa99a5cad6fbaeda85a8986639ce392" id="r_abfa99a5cad6fbaeda85a8986639ce392"><td class="memItemLeft" align="right" valign="top">bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcgv_1_1render_1_1group__renderer.html#abfa99a5cad6fbaeda85a8986639ce392">has_group_translations</a> = false</td></tr>
-<tr class="separator:abfa99a5cad6fbaeda85a8986639ce392"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a776fe586080650b4257112e656fa7da5" id="r_a776fe586080650b4257112e656fa7da5"><td class="memItemLeft" align="right" valign="top">bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcgv_1_1render_1_1group__renderer.html#a776fe586080650b4257112e656fa7da5">has_group_rotations</a> = false</td></tr>
-<tr class="separator:a776fe586080650b4257112e656fa7da5"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="inherit_header pro_attribs_classcgv_1_1render_1_1renderer"><td colspan="2" onclick="javascript:toggleInherit('pro_attribs_classcgv_1_1render_1_1renderer')"><img src="closed.png" alt="-"/>&#160;Protected Attributes inherited from <a class="el" href="classcgv_1_1render_1_1renderer.html">cgv::render::renderer</a></td></tr>
-<tr class="memitem:a89daadf6757c440ad97b20f3f5e00ad8 inherit pro_attribs_classcgv_1_1render_1_1renderer" id="r_a89daadf6757c440ad97b20f3f5e00ad8"><td class="memItemLeft" align="right" valign="top">bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcgv_1_1render_1_1renderer.html#a89daadf6757c440ad97b20f3f5e00ad8">has_colors</a> = false</td></tr>
-<tr class="memdesc:a89daadf6757c440ad97b20f3f5e00ad8 inherit pro_attribs_classcgv_1_1render_1_1renderer"><td class="mdescLeft">&#160;</td><td class="mdescRight">track whether color attribute is defined  <br /></td></tr>
-<tr class="separator:a89daadf6757c440ad97b20f3f5e00ad8 inherit pro_attribs_classcgv_1_1render_1_1renderer"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a8dc91474133a744cfe2667c9cc517cbe inherit pro_attribs_classcgv_1_1render_1_1renderer" id="r_a8dc91474133a744cfe2667c9cc517cbe"><td class="memItemLeft" align="right" valign="top">bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcgv_1_1render_1_1renderer.html#a8dc91474133a744cfe2667c9cc517cbe">has_positions</a> = false</td></tr>
-<tr class="memdesc:a8dc91474133a744cfe2667c9cc517cbe inherit pro_attribs_classcgv_1_1render_1_1renderer"><td class="mdescLeft">&#160;</td><td class="mdescRight">track whether position attribute is defined  <br /></td></tr>
-<tr class="separator:a8dc91474133a744cfe2667c9cc517cbe inherit pro_attribs_classcgv_1_1render_1_1renderer"><td class="memSeparator" colspan="2">&#160;</td></tr>
-</table><table class="memberdecls">
-<tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="inherited" name="inherited"></a>
-Additional Inherited Members</h2></td></tr>
+<tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="pro-methods" name="pro-methods"></a>
+Protected Member Functions</h2></td></tr>
+<tr class="memitem:a5cdfa1918b9be00c72eb778853940358" id="r_a5cdfa1918b9be00c72eb778853940358"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcgv_1_1render_1_1group__renderer.html#a5cdfa1918b9be00c72eb778853940358">update_shader_program_options</a> (<a class="el" href="classcgv_1_1render_1_1shader__compile__options.html">shader_compile_options</a> &amp;options) const override</td></tr>
+<tr class="memdesc:a5cdfa1918b9be00c72eb778853940358"><td class="mdescLeft">&#160;</td><td class="mdescRight">overload to update the shader program compile options based on the current render style; only called if internal shader program is used  <br /></td></tr>
+<tr class="separator:a5cdfa1918b9be00c72eb778853940358"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="inherit_header pro_methods_classcgv_1_1render_1_1renderer"><td colspan="2" onclick="javascript:toggleInherit('pro_methods_classcgv_1_1render_1_1renderer')"><img src="closed.png" alt="-"/>&#160;Protected Member Functions inherited from <a class="el" href="classcgv_1_1render_1_1renderer.html">cgv::render::renderer</a></td></tr>
 <tr class="memitem:a7264fd5effbc1beb4cc03be79c501b3c inherit pro_methods_classcgv_1_1render_1_1renderer" id="r_a7264fd5effbc1beb4cc03be79c501b3c"><td class="memItemLeft" align="right" valign="top">bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcgv_1_1render_1_1renderer.html#a7264fd5effbc1beb4cc03be79c501b3c">has_aam</a> () const</td></tr>
 <tr class="memdesc:a7264fd5effbc1beb4cc03be79c501b3c inherit pro_methods_classcgv_1_1render_1_1renderer"><td class="mdescLeft">&#160;</td><td class="mdescRight">check for attribute array manager  <br /></td></tr>
@@ -333,9 +319,6 @@ Additional Inherited Members</h2></td></tr>
 <tr class="memitem:acf98eb4a64e230a55861683dee4b31ef inherit pro_methods_classcgv_1_1render_1_1renderer" id="r_acf98eb4a64e230a55861683dee4b31ef"><td class="memItemLeft" align="right" valign="top">bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcgv_1_1render_1_1renderer.html#acf98eb4a64e230a55861683dee4b31ef">attributes_persist</a> () const</td></tr>
 <tr class="memdesc:acf98eb4a64e230a55861683dee4b31ef inherit pro_methods_classcgv_1_1render_1_1renderer"><td class="mdescLeft">&#160;</td><td class="mdescRight">return whether attributes persist after a call to disable  <br /></td></tr>
 <tr class="separator:acf98eb4a64e230a55861683dee4b31ef inherit pro_methods_classcgv_1_1render_1_1renderer"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a324e5774ae106c0be2a72714fbc520d3 inherit pro_methods_classcgv_1_1render_1_1renderer" id="r_a324e5774ae106c0be2a72714fbc520d3"><td class="memItemLeft" align="right" valign="top">virtual void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcgv_1_1render_1_1renderer.html#a324e5774ae106c0be2a72714fbc520d3">update_shader_program_options</a> (<a class="el" href="classcgv_1_1render_1_1shader__compile__options.html">shader_compile_options</a> &amp;options) const</td></tr>
-<tr class="memdesc:a324e5774ae106c0be2a72714fbc520d3 inherit pro_methods_classcgv_1_1render_1_1renderer"><td class="mdescLeft">&#160;</td><td class="mdescRight">overload to update the shader program compile options based on the current render style; only called if internal shader program is used  <br /></td></tr>
-<tr class="separator:a324e5774ae106c0be2a72714fbc520d3 inherit pro_methods_classcgv_1_1render_1_1renderer"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a591df90cf13667da55593699d7ce3403 inherit pro_methods_classcgv_1_1render_1_1renderer" id="r_a591df90cf13667da55593699d7ce3403"><td class="memItemLeft" align="right" valign="top">virtual bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcgv_1_1render_1_1renderer.html#a591df90cf13667da55593699d7ce3403">build_shader_program</a> (<a class="el" href="classcgv_1_1render_1_1context.html">context</a> &amp;ctx, <a class="el" href="classcgv_1_1render_1_1shader__program.html">shader_program</a> &amp;prog, const <a class="el" href="classcgv_1_1render_1_1shader__compile__options.html">shader_compile_options</a> &amp;options) const</td></tr>
 <tr class="memdesc:a591df90cf13667da55593699d7ce3403 inherit pro_methods_classcgv_1_1render_1_1renderer"><td class="mdescLeft">&#160;</td><td class="mdescRight">overload to change default behaviour and build a custom shader program based on the passed options  <br /></td></tr>
 <tr class="separator:a591df90cf13667da55593699d7ce3403 inherit pro_methods_classcgv_1_1render_1_1renderer"><td class="memSeparator" colspan="2">&#160;</td></tr>
@@ -366,11 +349,29 @@ Additional Inherited Members</h2></td></tr>
 <tr class="separator:a21168f6f906f8dc8349d9e79cb9215d0 inherit pro_methods_classcgv_1_1render_1_1renderer"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a502af83ec635b6161e586fa5edf07cbb inherit pro_methods_classcgv_1_1render_1_1renderer" id="r_a502af83ec635b6161e586fa5edf07cbb"><td class="memItemLeft" align="right" valign="top">bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcgv_1_1render_1_1renderer.html#a502af83ec635b6161e586fa5edf07cbb">remove_attribute_array</a> (const <a class="el" href="classcgv_1_1render_1_1context.html">context</a> &amp;ctx, const std::string &amp;name)</td></tr>
 <tr class="separator:a502af83ec635b6161e586fa5edf07cbb inherit pro_methods_classcgv_1_1render_1_1renderer"><td class="memSeparator" colspan="2">&#160;</td></tr>
+</table><table class="memberdecls">
+<tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="pro-attribs" name="pro-attribs"></a>
+Protected Attributes</h2></td></tr>
+<tr class="memitem:a185c096ff88580e89c5ff451c315c808" id="r_a185c096ff88580e89c5ff451c315c808"><td class="memItemLeft" align="right" valign="top">bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcgv_1_1render_1_1group__renderer.html#a185c096ff88580e89c5ff451c315c808">has_group_indices</a> = false</td></tr>
+<tr class="separator:a185c096ff88580e89c5ff451c315c808"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a0dcbdc09bd46259d2aa3dd38e860aebe" id="r_a0dcbdc09bd46259d2aa3dd38e860aebe"><td class="memItemLeft" align="right" valign="top">bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcgv_1_1render_1_1group__renderer.html#a0dcbdc09bd46259d2aa3dd38e860aebe">has_group_colors</a> = false</td></tr>
+<tr class="separator:a0dcbdc09bd46259d2aa3dd38e860aebe"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:abfa99a5cad6fbaeda85a8986639ce392" id="r_abfa99a5cad6fbaeda85a8986639ce392"><td class="memItemLeft" align="right" valign="top">bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcgv_1_1render_1_1group__renderer.html#abfa99a5cad6fbaeda85a8986639ce392">has_group_translations</a> = false</td></tr>
+<tr class="separator:abfa99a5cad6fbaeda85a8986639ce392"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a776fe586080650b4257112e656fa7da5" id="r_a776fe586080650b4257112e656fa7da5"><td class="memItemLeft" align="right" valign="top">bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcgv_1_1render_1_1group__renderer.html#a776fe586080650b4257112e656fa7da5">has_group_rotations</a> = false</td></tr>
+<tr class="separator:a776fe586080650b4257112e656fa7da5"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="inherit_header pro_attribs_classcgv_1_1render_1_1renderer"><td colspan="2" onclick="javascript:toggleInherit('pro_attribs_classcgv_1_1render_1_1renderer')"><img src="closed.png" alt="-"/>&#160;Protected Attributes inherited from <a class="el" href="classcgv_1_1render_1_1renderer.html">cgv::render::renderer</a></td></tr>
+<tr class="memitem:a89daadf6757c440ad97b20f3f5e00ad8 inherit pro_attribs_classcgv_1_1render_1_1renderer" id="r_a89daadf6757c440ad97b20f3f5e00ad8"><td class="memItemLeft" align="right" valign="top">bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcgv_1_1render_1_1renderer.html#a89daadf6757c440ad97b20f3f5e00ad8">has_colors</a> = false</td></tr>
+<tr class="memdesc:a89daadf6757c440ad97b20f3f5e00ad8 inherit pro_attribs_classcgv_1_1render_1_1renderer"><td class="mdescLeft">&#160;</td><td class="mdescRight">track whether color attribute is defined  <br /></td></tr>
+<tr class="separator:a89daadf6757c440ad97b20f3f5e00ad8 inherit pro_attribs_classcgv_1_1render_1_1renderer"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a8dc91474133a744cfe2667c9cc517cbe inherit pro_attribs_classcgv_1_1render_1_1renderer" id="r_a8dc91474133a744cfe2667c9cc517cbe"><td class="memItemLeft" align="right" valign="top">bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcgv_1_1render_1_1renderer.html#a8dc91474133a744cfe2667c9cc517cbe">has_positions</a> = false</td></tr>
+<tr class="memdesc:a8dc91474133a744cfe2667c9cc517cbe inherit pro_attribs_classcgv_1_1render_1_1renderer"><td class="mdescLeft">&#160;</td><td class="mdescRight">track whether position attribute is defined  <br /></td></tr>
+<tr class="separator:a8dc91474133a744cfe2667c9cc517cbe inherit pro_attribs_classcgv_1_1render_1_1renderer"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
 <a name="details" id="details"></a><h2 class="groupheader">Detailed Description</h2>
 <div class="textblock"><p>abstract renderer class that provides functionality for grouping primitives </p>
 
-<p class="definition">Definition at line <a class="el" href="group__renderer_8h_source.html#l00023">23</a> of file <a class="el" href="group__renderer_8h_source.html">group_renderer.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="group__renderer_8h_source.html#l00025">25</a> of file <a class="el" href="group__renderer_8h_source.html">group_renderer.h</a>.</p>
 </div><h2 class="groupheader">Member Function Documentation</h2>
 <a id="a32025096a541c45311e2337a0f91f214" name="a32025096a541c45311e2337a0f91f214"></a>
 <h2 class="memtitle"><span class="permalink"><a href="#a32025096a541c45311e2337a0f91f214">&#9670;&#160;</a></span>disable()</h2>
@@ -402,11 +403,11 @@ Additional Inherited Members</h2></td></tr>
 
 <p>Reimplemented in <a class="el" href="classcgv_1_1render_1_1line__renderer.html#abe21546a7ae432b3ec1ea972df558028">cgv::render::line_renderer</a>, <a class="el" href="classcgv_1_1render_1_1point__renderer.html#a8f4f46d40139b9fc5633b4d6cea2c569">cgv::render::point_renderer</a>, <a class="el" href="classcgv_1_1render_1_1rectangle__renderer.html#acfa1dbff11518de87ca30696d6501d8b">cgv::render::rectangle_renderer</a>, <a class="el" href="classcgv_1_1render_1_1sphere__renderer.html#a92ddcdd092ae84d1ef0d1b34c103d8e0">cgv::render::sphere_renderer</a>, <a class="el" href="classcgv_1_1render_1_1spline__tube__renderer.html#af7e54d74a78dfd9c8d43859fe1de8117">cgv::render::spline_tube_renderer</a>, <a class="el" href="classcgv_1_1render_1_1surface__renderer.html#af8454ee401ee1cbbddba9a1d4a2e2d2a">cgv::render::surface_renderer</a>, and <a class="el" href="classcgv_1_1render_1_1surfel__renderer.html#ab87e8317cf34030a8979512ddcc41835">cgv::render::surfel_renderer</a>.</p>
 
-<p class="definition">Definition at line <a class="el" href="group__renderer_8cxx_source.html#l00083">83</a> of file <a class="el" href="group__renderer_8cxx_source.html">group_renderer.cxx</a>.</p>
+<p class="definition">Definition at line <a class="el" href="group__renderer_8cxx_source.html#l00094">94</a> of file <a class="el" href="group__renderer_8cxx_source.html">group_renderer.cxx</a>.</p>
 
-<p class="reference">References <a class="el" href="renderer_8h_source.html#l00070">cgv::render::renderer::attributes_persist()</a>, and <a class="el" href="renderer_8cxx_source.html#l00224">cgv::render::renderer::disable()</a>.</p>
+<p class="reference">References <a class="el" href="renderer_8h_source.html#l00120">cgv::render::renderer::attributes_persist()</a>, and <a class="el" href="renderer_8cxx_source.html#l00229">cgv::render::renderer::disable()</a>.</p>
 
-<p class="reference">Referenced by <a class="el" href="line__renderer_8cxx_source.html#l00111">cgv::render::line_renderer::disable()</a>, <a class="el" href="point__renderer_8cxx_source.html#l00121">cgv::render::point_renderer::disable()</a>, and <a class="el" href="surface__renderer_8cxx_source.html#l00069">cgv::render::surface_renderer::disable()</a>.</p>
+<p class="reference">Referenced by <a class="el" href="line__renderer_8cxx_source.html#l00111">cgv::render::line_renderer::disable()</a>, <a class="el" href="point__renderer_8cxx_source.html#l00121">cgv::render::point_renderer::disable()</a>, and <a class="el" href="surface__renderer_8cxx_source.html#l00088">cgv::render::surface_renderer::disable()</a>.</p>
 
 </div>
 </div>
@@ -452,9 +453,9 @@ Additional Inherited Members</h2></td></tr>
 
 <p class="definition">Definition at line <a class="el" href="group__renderer_8cxx_source.html#l00016">16</a> of file <a class="el" href="group__renderer_8cxx_source.html">group_renderer.cxx</a>.</p>
 
-<p class="reference">References <a class="el" href="renderer_8cxx_source.html#l00057">cgv::render::renderer::disable_attribute_array_manager()</a>.</p>
+<p class="reference">References <a class="el" href="renderer_8cxx_source.html#l00062">cgv::render::renderer::disable_attribute_array_manager()</a>.</p>
 
-<p class="reference">Referenced by <a class="el" href="line__renderer_8cxx_source.html#l00028">cgv::render::line_renderer::disable_attribute_array_manager()</a>, <a class="el" href="point__renderer_8cxx_source.html#l00028">cgv::render::point_renderer::disable_attribute_array_manager()</a>, and <a class="el" href="surface__renderer_8cxx_source.html#l00019">cgv::render::surface_renderer::disable_attribute_array_manager()</a>.</p>
+<p class="reference">Referenced by <a class="el" href="line__renderer_8cxx_source.html#l00028">cgv::render::line_renderer::disable_attribute_array_manager()</a>, <a class="el" href="point__renderer_8cxx_source.html#l00028">cgv::render::point_renderer::disable_attribute_array_manager()</a>, and <a class="el" href="surface__renderer_8cxx_source.html#l00034">cgv::render::surface_renderer::disable_attribute_array_manager()</a>.</p>
 
 </div>
 </div>
@@ -488,11 +489,11 @@ Additional Inherited Members</h2></td></tr>
 
 <p>Reimplemented in <a class="el" href="classcgv_1_1render_1_1line__renderer.html#ab9da9ffd04f27c7c845277cee4e7e2db">cgv::render::line_renderer</a>, <a class="el" href="classcgv_1_1render_1_1normal__renderer.html#a161639d510c91d06da66e5fb0e67f3e1">cgv::render::normal_renderer</a>, <a class="el" href="classcgv_1_1render_1_1point__renderer.html#ac408c1d69bdda952cac8bbb699cd02ca">cgv::render::point_renderer</a>, <a class="el" href="classcgv_1_1render_1_1rectangle__renderer.html#a94a3d5508e203aee489c107079705ca5">cgv::render::rectangle_renderer</a>, <a class="el" href="classcgv_1_1render_1_1sphere__renderer.html#a31414030bd2826babb0fe7f6f0f13a28">cgv::render::sphere_renderer</a>, <a class="el" href="classcgv_1_1render_1_1spline__tube__renderer.html#a22bffbd78b08be591adaf960f3b0bf66">cgv::render::spline_tube_renderer</a>, <a class="el" href="classcgv_1_1render_1_1surface__renderer.html#af3adc86d5bebf29d0ed91d9f9a7d23c4">cgv::render::surface_renderer</a>, and <a class="el" href="classcgv_1_1render_1_1surfel__renderer.html#a15b63937cbbfc161c73d78300691d59f">cgv::render::surfel_renderer</a>.</p>
 
-<p class="definition">Definition at line <a class="el" href="group__renderer_8cxx_source.html#l00071">71</a> of file <a class="el" href="group__renderer_8cxx_source.html">group_renderer.cxx</a>.</p>
+<p class="definition">Definition at line <a class="el" href="group__renderer_8cxx_source.html#l00082">82</a> of file <a class="el" href="group__renderer_8cxx_source.html">group_renderer.cxx</a>.</p>
 
-<p class="reference">References <a class="el" href="renderer_8cxx_source.html#l00198">cgv::render::renderer::enable()</a>, <a class="el" href="renderer_8h_source.html#l00079">cgv::render::renderer::ref_prog()</a>, <a class="el" href="shader__program_8h_source.html#l00146">cgv::render::shader_program::set_uniform()</a>, <a class="el" href="group__renderer_8h_source.html#l00017">cgv::render::group_render_style::use_group_color</a>, and <a class="el" href="group__renderer_8h_source.html#l00019">cgv::render::group_render_style::use_group_transformation</a>.</p>
+<p class="reference">References <a class="el" href="renderer_8cxx_source.html#l00203">cgv::render::renderer::enable()</a>, <a class="el" href="renderer_8h_source.html#l00129">cgv::render::renderer::ref_prog()</a>, <a class="el" href="shader__program_8h_source.html#l00157">cgv::render::shader_program::set_uniform()</a>, <a class="el" href="group__renderer_8h_source.html#l00017">cgv::render::group_render_style::use_group_color</a>, and <a class="el" href="group__renderer_8h_source.html#l00019">cgv::render::group_render_style::use_group_transformation</a>.</p>
 
-<p class="reference">Referenced by <a class="el" href="line__renderer_8cxx_source.html#l00067">cgv::render::line_renderer::enable()</a>, <a class="el" href="point__renderer_8cxx_source.html#l00081">cgv::render::point_renderer::enable()</a>, and <a class="el" href="surface__renderer_8cxx_source.html#l00047">cgv::render::surface_renderer::enable()</a>.</p>
+<p class="reference">Referenced by <a class="el" href="line__renderer_8cxx_source.html#l00067">cgv::render::line_renderer::enable()</a>, <a class="el" href="point__renderer_8cxx_source.html#l00081">cgv::render::point_renderer::enable()</a>, and <a class="el" href="surface__renderer_8cxx_source.html#l00062">cgv::render::surface_renderer::enable()</a>.</p>
 
 </div>
 </div>
@@ -538,9 +539,9 @@ Additional Inherited Members</h2></td></tr>
 
 <p class="definition">Definition at line <a class="el" href="group__renderer_8cxx_source.html#l00009">9</a> of file <a class="el" href="group__renderer_8cxx_source.html">group_renderer.cxx</a>.</p>
 
-<p class="reference">References <a class="el" href="renderer_8cxx_source.html#l00048">cgv::render::renderer::enable_attribute_array_manager()</a>, and <a class="el" href="renderer_8h_source.html#l00062">cgv::render::renderer::has_attribute()</a>.</p>
+<p class="reference">References <a class="el" href="renderer_8cxx_source.html#l00053">cgv::render::renderer::enable_attribute_array_manager()</a>, and <a class="el" href="renderer_8cxx_source.html#l00048">cgv::render::renderer::has_attribute()</a>.</p>
 
-<p class="reference">Referenced by <a class="el" href="line__renderer_8cxx_source.html#l00017">cgv::render::line_renderer::enable_attribute_array_manager()</a>, <a class="el" href="point__renderer_8cxx_source.html#l00017">cgv::render::point_renderer::enable_attribute_array_manager()</a>, and <a class="el" href="surface__renderer_8cxx_source.html#l00010">cgv::render::surface_renderer::enable_attribute_array_manager()</a>.</p>
+<p class="reference">Referenced by <a class="el" href="line__renderer_8cxx_source.html#l00017">cgv::render::line_renderer::enable_attribute_array_manager()</a>, <a class="el" href="point__renderer_8cxx_source.html#l00017">cgv::render::point_renderer::enable_attribute_array_manager()</a>, and <a class="el" href="surface__renderer_8cxx_source.html#l00025">cgv::render::surface_renderer::enable_attribute_array_manager()</a>.</p>
 
 </div>
 </div>
@@ -604,7 +605,7 @@ template&lt;typename T &gt; </div>
 
 <p>template method to set the group colors from a vector of colors of type T </p>
 
-<p class="definition">Definition at line <a class="el" href="group__renderer_8h_source.html#l00054">54</a> of file <a class="el" href="group__renderer_8h_source.html">group_renderer.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="group__renderer_8h_source.html#l00058">58</a> of file <a class="el" href="group__renderer_8h_source.html">group_renderer.h</a>.</p>
 
 </div>
 </div>
@@ -652,7 +653,7 @@ template&lt;typename T &gt; </div>
 
 <p>template method to set the group colors from a vector of colors of type T </p>
 
-<p class="definition">Definition at line <a class="el" href="group__renderer_8h_source.html#l00057">57</a> of file <a class="el" href="group__renderer_8h_source.html">group_renderer.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="group__renderer_8h_source.html#l00061">61</a> of file <a class="el" href="group__renderer_8h_source.html">group_renderer.h</a>.</p>
 
 </div>
 </div>
@@ -782,11 +783,11 @@ template&lt;typename T &gt; </div>
 
 <p>template method to set the group index color attribute from a vertex buffer object, the element type must be given as explicit template parameter </p>
 
-<p class="definition">Definition at line <a class="el" href="group__renderer_8h_source.html#l00049">49</a> of file <a class="el" href="group__renderer_8h_source.html">group_renderer.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="group__renderer_8h_source.html#l00053">53</a> of file <a class="el" href="group__renderer_8h_source.html">group_renderer.h</a>.</p>
 
-<p class="reference">References <a class="el" href="group__renderer_8h_source.html#l00049">set_group_index_array()</a>.</p>
+<p class="reference">References <a class="el" href="group__renderer_8h_source.html#l00053">set_group_index_array()</a>.</p>
 
-<p class="reference">Referenced by <a class="el" href="group__renderer_8h_source.html#l00049">set_group_index_array()</a>.</p>
+<p class="reference">Referenced by <a class="el" href="group__renderer_8h_source.html#l00053">set_group_index_array()</a>.</p>
 
 </div>
 </div>
@@ -885,7 +886,7 @@ template&lt;typename T &gt; </div>
 
 <p>template method to set the group rotation from a vector of quaternions of type T, which should have 4 components </p>
 
-<p class="definition">Definition at line <a class="el" href="group__renderer_8h_source.html#l00066">66</a> of file <a class="el" href="group__renderer_8h_source.html">group_renderer.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="group__renderer_8h_source.html#l00070">70</a> of file <a class="el" href="group__renderer_8h_source.html">group_renderer.h</a>.</p>
 
 </div>
 </div>
@@ -933,7 +934,7 @@ template&lt;typename T &gt; </div>
 
 <p>template method to set the group rotation from a vector of quaternions of type T, which should have 4 components </p>
 
-<p class="definition">Definition at line <a class="el" href="group__renderer_8h_source.html#l00069">69</a> of file <a class="el" href="group__renderer_8h_source.html">group_renderer.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="group__renderer_8h_source.html#l00073">73</a> of file <a class="el" href="group__renderer_8h_source.html">group_renderer.h</a>.</p>
 
 </div>
 </div>
@@ -975,7 +976,7 @@ template&lt;typename T &gt; </div>
 
 <p>template method to set the group translations from a vector of vectors of type T, which should have 3 components </p>
 
-<p class="definition">Definition at line <a class="el" href="group__renderer_8h_source.html#l00060">60</a> of file <a class="el" href="group__renderer_8h_source.html">group_renderer.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="group__renderer_8h_source.html#l00064">64</a> of file <a class="el" href="group__renderer_8h_source.html">group_renderer.h</a>.</p>
 
 </div>
 </div>
@@ -1023,7 +1024,45 @@ template&lt;typename T &gt; </div>
 
 <p>template method to set the group translations from a vector of vectors of type T, which should have 3 components </p>
 
-<p class="definition">Definition at line <a class="el" href="group__renderer_8h_source.html#l00063">63</a> of file <a class="el" href="group__renderer_8h_source.html">group_renderer.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="group__renderer_8h_source.html#l00067">67</a> of file <a class="el" href="group__renderer_8h_source.html">group_renderer.h</a>.</p>
+
+</div>
+</div>
+<a id="a5cdfa1918b9be00c72eb778853940358" name="a5cdfa1918b9be00c72eb778853940358"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a5cdfa1918b9be00c72eb778853940358">&#9670;&#160;</a></span>update_shader_program_options()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">void cgv::render::group_renderer::update_shader_program_options </td>
+          <td>(</td>
+          <td class="paramtype"><a class="el" href="classcgv_1_1render_1_1shader__compile__options.html">shader_compile_options</a> &amp;&#160;</td>
+          <td class="paramname"><em>options</em></td><td>)</td>
+          <td> const</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">override</span><span class="mlabel">protected</span><span class="mlabel">virtual</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p>overload to update the shader program compile options based on the current render style; only called if internal shader program is used </p>
+
+<p>Reimplemented from <a class="el" href="classcgv_1_1render_1_1renderer.html#a324e5774ae106c0be2a72714fbc520d3">cgv::render::renderer</a>.</p>
+
+<p>Reimplemented in <a class="el" href="classcgv_1_1render_1_1surface__renderer.html#a4b47178f94d3cb796519a3a958df06b6">cgv::render::surface_renderer</a>.</p>
+
+<p class="definition">Definition at line <a class="el" href="group__renderer_8cxx_source.html#l00044">44</a> of file <a class="el" href="group__renderer_8cxx_source.html">group_renderer.cxx</a>.</p>
+
+<p class="reference">References <a class="el" href="shader__code_8h_source.html#l00099">cgv::render::shader_compile_options::define_macro()</a>, <a class="el" href="shader__code_8h_source.html#l00184">cgv::render::shader_compile_options::define_macro_if_true()</a>, and <a class="el" href="renderer_8h_source.html#l00122">cgv::render::renderer::update_shader_program_options()</a>.</p>
+
+<p class="reference">Referenced by <a class="el" href="surface__renderer_8cxx_source.html#l00010">cgv::render::surface_renderer::update_shader_program_options()</a>.</p>
 
 </div>
 </div>
@@ -1057,11 +1096,11 @@ template&lt;typename T &gt; </div>
 
 <p>Reimplemented in <a class="el" href="classcgv_1_1render_1_1normal__renderer.html#a0830b2a238aae3cd8f737c5814070a81">cgv::render::normal_renderer</a>, <a class="el" href="classcgv_1_1render_1_1point__renderer.html#af6ed1aa94c2f1cc14cdff51312bbce33">cgv::render::point_renderer</a>, <a class="el" href="classcgv_1_1render_1_1rectangle__renderer.html#ae9abdc6309efbce5ebe15399142cb5f7">cgv::render::rectangle_renderer</a>, <a class="el" href="classcgv_1_1render_1_1sphere__renderer.html#ac2ed04c92733409aa72e4fb15813a13c">cgv::render::sphere_renderer</a>, <a class="el" href="classcgv_1_1render_1_1spline__tube__renderer.html#a157ff4dde38b282aed4323cb1125d7ad">cgv::render::spline_tube_renderer</a>, and <a class="el" href="classcgv_1_1render_1_1surfel__renderer.html#a1ef86f83aebb71883856d894b1d45c69">cgv::render::surfel_renderer</a>.</p>
 
-<p class="definition">Definition at line <a class="el" href="group__renderer_8cxx_source.html#l00043">43</a> of file <a class="el" href="group__renderer_8cxx_source.html">group_renderer.cxx</a>.</p>
+<p class="definition">Definition at line <a class="el" href="group__renderer_8cxx_source.html#l00054">54</a> of file <a class="el" href="group__renderer_8cxx_source.html">group_renderer.cxx</a>.</p>
 
-<p class="reference">References <a class="el" href="context_8cxx_source.html#l00219">cgv::render::context::error()</a>, <a class="el" href="renderer_8cxx_source.html#l00152">cgv::render::renderer::get_style_ptr()</a>, <a class="el" href="group__renderer_8h_source.html#l00017">cgv::render::group_render_style::use_group_color</a>, <a class="el" href="group__renderer_8h_source.html#l00019">cgv::render::group_render_style::use_group_transformation</a>, and <a class="el" href="renderer_8cxx_source.html#l00124">cgv::render::renderer::validate_attributes()</a>.</p>
+<p class="reference">References <a class="el" href="context_8cxx_source.html#l00306">cgv::render::context::error()</a>, <a class="el" href="renderer_8cxx_source.html#l00157">cgv::render::renderer::get_style_ptr()</a>, <a class="el" href="group__renderer_8h_source.html#l00017">cgv::render::group_render_style::use_group_color</a>, <a class="el" href="group__renderer_8h_source.html#l00019">cgv::render::group_render_style::use_group_transformation</a>, and <a class="el" href="renderer_8cxx_source.html#l00129">cgv::render::renderer::validate_attributes()</a>.</p>
 
-<p class="reference">Referenced by <a class="el" href="arrow__renderer_8cxx_source.html#l00044">cgv::render::arrow_renderer::validate_attributes()</a>, <a class="el" href="cone__renderer_8cxx_source.html#l00028">cgv::render::cone_renderer::validate_attributes()</a>, <a class="el" href="ellipsoid__renderer_8cxx_source.html#l00042">cgv::render::ellipsoid_renderer::validate_attributes()</a>, <a class="el" href="normal__renderer_8cxx_source.html#l00020">cgv::render::normal_renderer::validate_attributes()</a>, <a class="el" href="point__renderer_8cxx_source.html#l00057">cgv::render::point_renderer::validate_attributes()</a>, <a class="el" href="rectangle__renderer_8cxx_source.html#l00140">cgv::render::rectangle_renderer::validate_attributes()</a>, <a class="el" href="sphere__renderer_8cxx_source.html#l00036">cgv::render::sphere_renderer::validate_attributes()</a>, <a class="el" href="spline__tube__renderer_8cxx_source.html#l00039">cgv::render::spline_tube_renderer::validate_attributes()</a>, and <a class="el" href="surfel__renderer_8cxx_source.html#l00047">cgv::render::surfel_renderer::validate_attributes()</a>.</p>
+<p class="reference">Referenced by <a class="el" href="arrow__renderer_8cxx_source.html#l00038">cgv::render::arrow_renderer::validate_attributes()</a>, <a class="el" href="cone__renderer_8cxx_source.html#l00028">cgv::render::cone_renderer::validate_attributes()</a>, <a class="el" href="ellipsoid__renderer_8cxx_source.html#l00042">cgv::render::ellipsoid_renderer::validate_attributes()</a>, <a class="el" href="normal__renderer_8cxx_source.html#l00020">cgv::render::normal_renderer::validate_attributes()</a>, <a class="el" href="point__renderer_8cxx_source.html#l00057">cgv::render::point_renderer::validate_attributes()</a>, <a class="el" href="rectangle__renderer_8cxx_source.html#l00140">cgv::render::rectangle_renderer::validate_attributes()</a>, <a class="el" href="sphere__renderer_8cxx_source.html#l00036">cgv::render::sphere_renderer::validate_attributes()</a>, <a class="el" href="spline__tube__renderer_8cxx_source.html#l00039">cgv::render::spline_tube_renderer::validate_attributes()</a>, and <a class="el" href="surfel__renderer_8cxx_source.html#l00047">cgv::render::surfel_renderer::validate_attributes()</a>.</p>
 
 </div>
 </div>
@@ -1086,7 +1125,7 @@ template&lt;typename T &gt; </div>
 </table>
 </div><div class="memdoc">
 
-<p class="definition">Definition at line <a class="el" href="group__renderer_8h_source.html#l00027">27</a> of file <a class="el" href="group__renderer_8h_source.html">group_renderer.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="group__renderer_8h_source.html#l00029">29</a> of file <a class="el" href="group__renderer_8h_source.html">group_renderer.h</a>.</p>
 
 </div>
 </div>
@@ -1110,7 +1149,7 @@ template&lt;typename T &gt; </div>
 </table>
 </div><div class="memdoc">
 
-<p class="definition">Definition at line <a class="el" href="group__renderer_8h_source.html#l00026">26</a> of file <a class="el" href="group__renderer_8h_source.html">group_renderer.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="group__renderer_8h_source.html#l00028">28</a> of file <a class="el" href="group__renderer_8h_source.html">group_renderer.h</a>.</p>
 
 </div>
 </div>
@@ -1134,7 +1173,7 @@ template&lt;typename T &gt; </div>
 </table>
 </div><div class="memdoc">
 
-<p class="definition">Definition at line <a class="el" href="group__renderer_8h_source.html#l00029">29</a> of file <a class="el" href="group__renderer_8h_source.html">group_renderer.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="group__renderer_8h_source.html#l00031">31</a> of file <a class="el" href="group__renderer_8h_source.html">group_renderer.h</a>.</p>
 
 </div>
 </div>
@@ -1158,7 +1197,7 @@ template&lt;typename T &gt; </div>
 </table>
 </div><div class="memdoc">
 
-<p class="definition">Definition at line <a class="el" href="group__renderer_8h_source.html#l00028">28</a> of file <a class="el" href="group__renderer_8h_source.html">group_renderer.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="group__renderer_8h_source.html#l00030">30</a> of file <a class="el" href="group__renderer_8h_source.html">group_renderer.h</a>.</p>
 
 </div>
 </div>

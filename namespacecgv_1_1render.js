@@ -77,6 +77,7 @@ var namespacecgv_1_1render =
     [ "point_render_style", "structcgv_1_1render_1_1point__render__style.html", "structcgv_1_1render_1_1point__render__style" ],
     [ "point_render_style_reflect", "structcgv_1_1render_1_1point__render__style__reflect.html", null ],
     [ "point_renderer", "classcgv_1_1render_1_1point__renderer.html", "classcgv_1_1render_1_1point__renderer" ],
+    [ "program_variable_info", "structcgv_1_1render_1_1program__variable__info.html", "structcgv_1_1render_1_1program__variable__info" ],
     [ "rectangle_render_data", "classcgv_1_1render_1_1rectangle__render__data.html", "classcgv_1_1render_1_1rectangle__render__data" ],
     [ "rectangle_render_style", "structcgv_1_1render_1_1rectangle__render__style.html", "structcgv_1_1render_1_1rectangle__render__style" ],
     [ "rectangle_render_style_reflect", "structcgv_1_1render_1_1rectangle__render__style__reflect.html", null ],
@@ -252,6 +253,10 @@ var namespacecgv_1_1render =
       [ "PT_POLYGON", "namespacecgv_1_1render.html#ad09ce7c1f1275e31a8fbc3a85efbb1b6aec6142ad1042868452ddb18b4c28e405", null ],
       [ "PT_PATCHES", "namespacecgv_1_1render.html#ad09ce7c1f1275e31a8fbc3a85efbb1b6ab63273c4027c57a07a055f95b883210e", null ],
       [ "PT_LAST", "namespacecgv_1_1render.html#ad09ce7c1f1275e31a8fbc3a85efbb1b6a00cdddca84751345bfe61bd8eb938c25", null ]
+    ] ],
+    [ "ProgramVariableKind", "namespacecgv_1_1render.html#a76273213c8a6f2c7a304e2b004a5ca0d", [
+      [ "PVK_UNIFORM", "namespacecgv_1_1render.html#a76273213c8a6f2c7a304e2b004a5ca0da3f22cbe626d6387a5c8afc9c7b2c5ef5", null ],
+      [ "PVK_ATTRIBUTE", "namespacecgv_1_1render.html#a76273213c8a6f2c7a304e2b004a5ca0daed2ebf80e6d1853579bf48bab683f7c4", null ]
     ] ],
     [ "RectangleBoderMode", "namespacecgv_1_1render.html#ad374e4f9dfd4abf6af64a4c3610fa07a", [
       [ "RBM_SEPARATE", "namespacecgv_1_1render.html#ad374e4f9dfd4abf6af64a4c3610fa07aa4d313f9a7311bdca2328a3386ad91676", null ],
@@ -435,6 +440,8 @@ var namespacecgv_1_1render =
     [ "get_render_config", "namespacecgv_1_1render.html#a3c6001e0ff62d2640089f453591dbd4f", null ],
     [ "get_render_pass_name", "namespacecgv_1_1render.html#a34f01911dc10ffc2500dc4d9f8cdc526", null ],
     [ "get_shader_config", "namespacecgv_1_1render.html#a5929e262d43bd2e095c4776547eebe5b", null ],
+    [ "operator<<", "namespacecgv_1_1render.html#a291adad2346ffb6ce2d280954d564c5d", null ],
+    [ "operator<<", "namespacecgv_1_1render.html#a485a377d3dcb7ee4b8c7f7330fa27471", null ],
     [ "ref_arrow_renderer", "namespacecgv_1_1render.html#aa97c8b871a5e56f8664e1619f65d99f8", null ],
     [ "ref_box_renderer", "namespacecgv_1_1render.html#a8b3b7372ee5147ff1ba384f8bbe74156", null ],
     [ "ref_box_wire_renderer", "namespacecgv_1_1render.html#a7fafbbe77ca934f780fb7456aee4e9cb", null ],

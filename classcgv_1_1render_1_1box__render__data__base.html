@@ -251,7 +251,7 @@ Protected Member Functions</h2></td></tr>
 class cgv::render::box_render_data_base&lt; RendererType, RenderStyleType, ColorType &gt;</div><p>A base class for storing render data usable with the <a class="el" href="classcgv_1_1render_1_1box__renderer.html" title="renderer that supports point splatting">box_renderer</a> and <a class="el" href="classcgv_1_1render_1_1box__wire__renderer.html" title="renderer that supports point splatting">box_wire_renderer</a>. </p>
 <p>See <a class="el" href="classcgv_1_1render_1_1render__data__base.html" title="A base class for storing render data and style usable with the default renderers provided in the cgv:...">render_data_base</a>. </p><dl class="tparams"><dt>Template Parameters</dt><dd>
   <table class="tparams">
-    <tr><td class="paramname">RendererType</td><td>The type of the used renderer. Must be derived from <a class="el" href="classcgv_1_1render_1_1renderer.html" title="abstract base class for all renderers that handles a shader program and position / color attribute">cgv::render::renderer</a>. </td></tr>
+    <tr><td class="paramname">RendererType</td><td>The type of the used renderer. Must be derived from <a class="el" href="classcgv_1_1render_1_1renderer.html" title="Abstract base class for all renderers that manage a render data and the rendering process.">cgv::render::renderer</a>. </td></tr>
     <tr><td class="paramname">renderStyleType</td><td>The type of the used render style. Must be supported by RendererType. </td></tr>
     <tr><td class="paramname">ColorType</td><td>The type used to represent colors. Must be cgv::render::rgb or cgv::render::rgba. </td></tr>
   </table>

@@ -760,6 +760,7 @@ var hierarchy =
       [ "cgv::render::gl::gl_performance_monitor", "classcgv_1_1render_1_1gl_1_1gl__performance__monitor.html", null ]
     ] ],
     [ "cgv::render::performance_task", "structcgv_1_1render_1_1performance__task.html", null ],
+    [ "cgv::render::program_variable_info", "structcgv_1_1render_1_1program__variable__info.html", null ],
     [ "cgv::render::render_component", "classcgv_1_1render_1_1render__component.html", [
       [ "cgv::render::attribute_array_binding_base", "classcgv_1_1render_1_1attribute__array__binding__base.html", [
         [ "cgv::render::attribute_array_binding", "classcgv_1_1render_1_1attribute__array__binding.html", null ]

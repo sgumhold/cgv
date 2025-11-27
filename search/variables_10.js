@@ -42,12 +42,13 @@ var searchData=
   ['primary_5fticks_39',['primary_ticks',['../classcgv_1_1plot_1_1axis__config.html#a075d127b1da04b02a248e71f5654d5b7',1,'cgv::plot::axis_config']]],
   ['primitive_5fnames_40',['primitive_names',['../classcgv_1_1render_1_1mesh__render__info.html#a82f8442bff30589cfa60f47a88ef8b93',1,'cgv::render::mesh_render_info']]],
   ['program_5ffile_5fcache_41',['program_file_cache',['../classcgv_1_1render_1_1shader__program.html#a136af580100935a0751f226655b295ee',1,'cgv::render::shader_program']]],
-  ['propagation_5fslow_5fdown_42',['propagation_slow_down',['../structcgv_1_1media_1_1illum_1_1surface__material.html#a91dd38994fcab38d3b9b974af5f888da',1,'cgv::media::illum::surface_material']]],
-  ['propagation_5fslow_5fdown_5findex_43',['propagation_slow_down_index',['../classcgv_1_1media_1_1illum_1_1textured__surface__material.html#a1b1369127af64f7a53cb05f0e774fee0',1,'cgv::media::illum::textured_surface_material']]],
-  ['property_5fmap_44',['property_map',['../classcgv_1_1base_1_1base__generator.html#a58416e00966a4489835f2f9eaa41e9ae',1,'cgv::base::base_generator']]],
-  ['provider_5fptr_45',['provider_ptr',['../classcgv_1_1gui_1_1subprovider.html#a649449ee0e23aae2a6188abdba1bab6f',1,'cgv::gui::subprovider']]],
-  ['provider_5fptr_5f_46',['provider_ptr_',['../classcgv_1_1gui_1_1directory__helper.html#a0ce2be5a7075d592a15ee4729479c269',1,'cgv::gui::directory_helper']]],
-  ['providers_47',['providers',['../classcgv_1_1gui_1_1base__provider__generator.html#a485d69431790c16bcbc40a60a9e23df3',1,'cgv::gui::base_provider_generator']]],
-  ['provides_5fbattery_5fcharge_5flevel_48',['provides_battery_charge_level',['../structvr_1_1vr__trackable__info.html#a4ff3fc2812bf0d96ffabe1e9ec85c3ba',1,'vr::vr_trackable_info']]],
-  ['ptr_49',['ptr',['../classcgv_1_1utils_1_1pointer__test.html#a6849761239933abc6b7fba0991e32bba',1,'cgv::utils::pointer_test']]]
+  ['program_5flocation_42',['program_location',['../structcgv_1_1render_1_1program__variable__info.html#acc92af15bfcdf8e88742bcba4488108d',1,'cgv::render::program_variable_info']]],
+  ['propagation_5fslow_5fdown_43',['propagation_slow_down',['../structcgv_1_1media_1_1illum_1_1surface__material.html#a91dd38994fcab38d3b9b974af5f888da',1,'cgv::media::illum::surface_material']]],
+  ['propagation_5fslow_5fdown_5findex_44',['propagation_slow_down_index',['../classcgv_1_1media_1_1illum_1_1textured__surface__material.html#a1b1369127af64f7a53cb05f0e774fee0',1,'cgv::media::illum::textured_surface_material']]],
+  ['property_5fmap_45',['property_map',['../classcgv_1_1base_1_1base__generator.html#a58416e00966a4489835f2f9eaa41e9ae',1,'cgv::base::base_generator']]],
+  ['provider_5fptr_46',['provider_ptr',['../classcgv_1_1gui_1_1subprovider.html#a649449ee0e23aae2a6188abdba1bab6f',1,'cgv::gui::subprovider']]],
+  ['provider_5fptr_5f_47',['provider_ptr_',['../classcgv_1_1gui_1_1directory__helper.html#a0ce2be5a7075d592a15ee4729479c269',1,'cgv::gui::directory_helper']]],
+  ['providers_48',['providers',['../classcgv_1_1gui_1_1base__provider__generator.html#a485d69431790c16bcbc40a60a9e23df3',1,'cgv::gui::base_provider_generator']]],
+  ['provides_5fbattery_5fcharge_5flevel_49',['provides_battery_charge_level',['../structvr_1_1vr__trackable__info.html#a4ff3fc2812bf0d96ffabe1e9ec85c3ba',1,'vr::vr_trackable_info']]],
+  ['ptr_50',['ptr',['../classcgv_1_1utils_1_1pointer__test.html#a6849761239933abc6b7fba0991e32bba',1,'cgv::utils::pointer_test']]]
 ];

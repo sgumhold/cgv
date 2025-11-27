@@ -300,6 +300,9 @@ Classes</h2></td></tr>
 <tr class="memitem:"><td class="memItemLeft" align="right" valign="top">class &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcgv_1_1render_1_1point__renderer.html">point_renderer</a></td></tr>
 <tr class="memdesc:"><td class="mdescLeft">&#160;</td><td class="mdescRight">renderer that supports point splatting  <a href="classcgv_1_1render_1_1point__renderer.html#details">More...</a><br /></td></tr>
 <tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:"><td class="memItemLeft" align="right" valign="top">struct &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structcgv_1_1render_1_1program__variable__info.html">program_variable_info</a></td></tr>
+<tr class="memdesc:"><td class="mdescLeft">&#160;</td><td class="mdescRight">structure to store information on a shader program variable, i.e.  <a href="structcgv_1_1render_1_1program__variable__info.html#details">More...</a><br /></td></tr>
+<tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:"><td class="memItemLeft" align="right" valign="top">class &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcgv_1_1render_1_1rectangle__render__data.html">rectangle_render_data</a></td></tr>
 <tr class="memdesc:"><td class="mdescLeft">&#160;</td><td class="mdescRight">Render data for rectangle geometry with support for the <a class="el" href="classcgv_1_1render_1_1rectangle__renderer.html" title="renderer that supports plane rendering">rectangle_renderer</a>.  <a href="classcgv_1_1render_1_1rectangle__render__data.html#details">More...</a><br /></td></tr>
 <tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
@@ -333,7 +336,7 @@ Classes</h2></td></tr>
 <tr class="memdesc:"><td class="mdescLeft">&#160;</td><td class="mdescRight">base class for all render styles  <a href="structcgv_1_1render_1_1render__style.html#details">More...</a><br /></td></tr>
 <tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:"><td class="memItemLeft" align="right" valign="top">class &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcgv_1_1render_1_1renderer.html">renderer</a></td></tr>
-<tr class="memdesc:"><td class="mdescLeft">&#160;</td><td class="mdescRight">abstract base class for all renderers that handles a shader program and position / color attribute  <a href="classcgv_1_1render_1_1renderer.html#details">More...</a><br /></td></tr>
+<tr class="memdesc:"><td class="mdescLeft">&#160;</td><td class="mdescRight">Abstract base class for all renderers that manage a render data and the rendering process.  <a href="classcgv_1_1render_1_1renderer.html#details">More...</a><br /></td></tr>
 <tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:"><td class="memItemLeft" align="right" valign="top">class &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcgv_1_1render_1_1shader__code.html">shader_code</a></td></tr>
 <tr class="memdesc:"><td class="mdescLeft">&#160;</td><td class="mdescRight">a shader code object holds a code fragment of a geometry vertex or fragment shader and can be added to a shader program.  <a href="classcgv_1_1render_1_1shader__code.html#details">More...</a><br /></td></tr>
@@ -458,6 +461,11 @@ Enumerations</h2></td></tr>
  }</td></tr>
 <tr class="memdesc:a6f68d5e423e96440b1c6121905e08b3e"><td class="mdescLeft">&#160;</td><td class="mdescRight">different compond types for data elements  <a href="namespacecgv_1_1render.html#a6f68d5e423e96440b1c6121905e08b3e">More...</a><br /></td></tr>
 <tr class="separator:a6f68d5e423e96440b1c6121905e08b3e"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a76273213c8a6f2c7a304e2b004a5ca0d" id="r_a76273213c8a6f2c7a304e2b004a5ca0d"><td class="memItemLeft" align="right" valign="top">enum &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespacecgv_1_1render.html#a76273213c8a6f2c7a304e2b004a5ca0d">ProgramVariableKind</a> { <b>PVK_UNIFORM</b>
+, <b>PVK_ATTRIBUTE</b>
+ }</td></tr>
+<tr class="memdesc:a76273213c8a6f2c7a304e2b004a5ca0d"><td class="mdescLeft">&#160;</td><td class="mdescRight">enumerates different kinds of shader program variables  <a href="namespacecgv_1_1render.html#a76273213c8a6f2c7a304e2b004a5ca0d">More...</a><br /></td></tr>
+<tr class="separator:a76273213c8a6f2c7a304e2b004a5ca0d"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a04797cd64ece747a5fda1f3bd7f45ee7" id="r_a04797cd64ece747a5fda1f3bd7f45ee7"><td class="memItemLeft" align="right" valign="top">enum &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespacecgv_1_1render.html#a04797cd64ece747a5fda1f3bd7f45ee7">RenderAPI</a> { <b>RA_OPENGL</b>
 , <b>RA_DIRECTX</b>
  }</td></tr>
@@ -893,6 +901,12 @@ Functions</h2></td></tr>
 <tr class="memitem:a30147ad00afa94d5133a66836282a047" id="r_a30147ad00afa94d5133a66836282a047"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespacecgv_1_1render.html#a30147ad00afa94d5133a66836282a047">configure_color_scale</a> (<a class="el" href="classcgv_1_1render_1_1context.html">cgv::render::context</a> &amp;ctx, <a class="el" href="classcgv_1_1render_1_1shader__program.html">cgv::render::shader_program</a> &amp;prog, cgv::media::ColorScale cs[2], float window_zero_position[2])</td></tr>
 <tr class="memdesc:a30147ad00afa94d5133a66836282a047"><td class="mdescLeft">&#160;</td><td class="mdescRight">convenience function to configure a shader that uses color_scale.glsl with two color scales  <br /></td></tr>
 <tr class="separator:a30147ad00afa94d5133a66836282a047"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a291adad2346ffb6ce2d280954d564c5d" id="r_a291adad2346ffb6ce2d280954d564c5d"><td class="memItemLeft" align="right" valign="top">std::ostream &amp;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespacecgv_1_1render.html#a291adad2346ffb6ce2d280954d564c5d">operator&lt;&lt;</a> (std::ostream &amp;, <a class="el" href="classcgv_1_1base_1_1single__method__action.html">const</a> <a class="el" href="structcgv_1_1render_1_1type__descriptor.html">type_descriptor</a> &amp;)</td></tr>
+<tr class="memdesc:a291adad2346ffb6ce2d280954d564c5d"><td class="mdescLeft">&#160;</td><td class="mdescRight">operator to write textual description to stream  <br /></td></tr>
+<tr class="separator:a291adad2346ffb6ce2d280954d564c5d"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a485a377d3dcb7ee4b8c7f7330fa27471" id="r_a485a377d3dcb7ee4b8c7f7330fa27471"><td class="memItemLeft" align="right" valign="top">std::ostream &amp;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespacecgv_1_1render.html#a485a377d3dcb7ee4b8c7f7330fa27471">operator&lt;&lt;</a> (std::ostream &amp;os, <a class="el" href="classcgv_1_1base_1_1single__method__action.html">const</a> <a class="el" href="structcgv_1_1render_1_1program__variable__info.html">program_variable_info</a> &amp;<a class="el" href="classcgv_1_1base_1_1single__method__action.html">V</a>)</td></tr>
+<tr class="memdesc:a485a377d3dcb7ee4b8c7f7330fa27471"><td class="mdescLeft">&#160;</td><td class="mdescRight">operator to stream out program variable info in text format  <br /></td></tr>
+<tr class="separator:a485a377d3dcb7ee4b8c7f7330fa27471"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a3c6001e0ff62d2640089f453591dbd4f" id="r_a3c6001e0ff62d2640089f453591dbd4f"><td class="memItemLeft" align="right" valign="top"><a class="el" href="namespacecgv_1_1render.html#a140190d5ae0854d5f6d150f58221b640">render_config_ptr</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespacecgv_1_1render.html#a3c6001e0ff62d2640089f453591dbd4f">get_render_config</a> ()</td></tr>
 <tr class="memdesc:a3c6001e0ff62d2640089f453591dbd4f"><td class="mdescLeft">&#160;</td><td class="mdescRight">return a pointer to the current shader configuration  <br /></td></tr>
 <tr class="separator:a3c6001e0ff62d2640089f453591dbd4f"><td class="memSeparator" colspan="2">&#160;</td></tr>
@@ -1142,7 +1156,7 @@ Variables</h2></td></tr>
 
 <p>type of ref counted pointer to context creation configuration </p>
 
-<p class="definition">Definition at line <a class="el" href="context_8h_source.html#l00577">577</a> of file <a class="el" href="context_8h_source.html">context.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="context_8h_source.html#l00620">620</a> of file <a class="el" href="context_8h_source.html">context.h</a>.</p>
 
 </div>
 </div>
@@ -1158,7 +1172,7 @@ Variables</h2></td></tr>
       </table>
 </div><div class="memdoc">
 
-<p class="definition">Definition at line <a class="el" href="context_8h_source.html#l01499">1499</a> of file <a class="el" href="context_8h_source.html">context.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="context_8h_source.html#l01543">1543</a> of file <a class="el" href="context_8h_source.html">context.h</a>.</p>
 
 </div>
 </div>
@@ -1176,7 +1190,7 @@ Variables</h2></td></tr>
 
 <p>type of ref counted pointer to render configuration </p>
 
-<p class="definition">Definition at line <a class="el" href="context_8h_source.html#l00611">611</a> of file <a class="el" href="context_8h_source.html">context.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="context_8h_source.html#l00654">654</a> of file <a class="el" href="context_8h_source.html">context.h</a>.</p>
 
 </div>
 </div>
@@ -1213,7 +1227,7 @@ Variables</h2></td></tr>
 
 <p>different access types </p>
 
-<p class="definition">Definition at line <a class="el" href="context_8h_source.html#l00275">275</a> of file <a class="el" href="context_8h_source.html">context.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="context_8h_source.html#l00318">318</a> of file <a class="el" href="context_8h_source.html">context.h</a>.</p>
 
 </div>
 </div>
@@ -1265,7 +1279,7 @@ Variables</h2></td></tr>
 
 <p>different blend functions </p>
 
-<p class="definition">Definition at line <a class="el" href="context_8h_source.html#l00159">159</a> of file <a class="el" href="context_8h_source.html">context.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="context_8h_source.html#l00202">202</a> of file <a class="el" href="context_8h_source.html">context.h</a>.</p>
 
 </div>
 </div>
@@ -1295,7 +1309,7 @@ Variables</h2></td></tr>
 </td></tr>
 </table>
 
-<p class="definition">Definition at line <a class="el" href="context_8h_source.html#l00472">472</a> of file <a class="el" href="context_8h_source.html">context.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="context_8h_source.html#l00515">515</a> of file <a class="el" href="context_8h_source.html">context.h</a>.</p>
 
 </div>
 </div>
@@ -1331,7 +1345,7 @@ Variables</h2></td></tr>
 
 <p>different comparison functions used for depth testing or texture comparisons </p>
 
-<p class="definition">Definition at line <a class="el" href="context_8h_source.html#l00262">262</a> of file <a class="el" href="context_8h_source.html">context.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="context_8h_source.html#l00305">305</a> of file <a class="el" href="context_8h_source.html">context.h</a>.</p>
 
 </div>
 </div>
@@ -1349,7 +1363,7 @@ Variables</h2></td></tr>
 
 <p>different culling modes </p>
 
-<p class="definition">Definition at line <a class="el" href="context_8h_source.html#l00152">152</a> of file <a class="el" href="context_8h_source.html">context.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="context_8h_source.html#l00195">195</a> of file <a class="el" href="context_8h_source.html">context.h</a>.</p>
 
 </div>
 </div>
@@ -1383,7 +1397,7 @@ Variables</h2></td></tr>
 
 <p>different compond types for data elements </p>
 
-<p class="definition">Definition at line <a class="el" href="context_8h_source.html#l00048">48</a> of file <a class="el" href="context_8h_source.html">context.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="context_8h_source.html#l00049">49</a> of file <a class="el" href="context_8h_source.html">context.h</a>.</p>
 
 </div>
 </div>
@@ -1401,7 +1415,7 @@ Variables</h2></td></tr>
 
 <p>different frame buffer types which can be combined together with or </p>
 
-<p class="definition">Definition at line <a class="el" href="context_8h_source.html#l00499">499</a> of file <a class="el" href="context_8h_source.html">context.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="context_8h_source.html#l00542">542</a> of file <a class="el" href="context_8h_source.html">context.h</a>.</p>
 
 </div>
 </div>
@@ -1419,7 +1433,7 @@ Variables</h2></td></tr>
 
 <p>IDs for GPU vendors. </p>
 
-<p class="definition">Definition at line <a class="el" href="context_8h_source.html#l00031">31</a> of file <a class="el" href="context_8h_source.html">context.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="context_8h_source.html#l00032">32</a> of file <a class="el" href="context_8h_source.html">context.h</a>.</p>
 
 </div>
 </div>
@@ -1437,7 +1451,7 @@ Variables</h2></td></tr>
 
 <p>different illumination modes </p>
 
-<p class="definition">Definition at line <a class="el" href="context_8h_source.html#l00145">145</a> of file <a class="el" href="context_8h_source.html">context.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="context_8h_source.html#l00188">188</a> of file <a class="el" href="context_8h_source.html">context.h</a>.</p>
 
 </div>
 </div>
@@ -1455,7 +1469,7 @@ Variables</h2></td></tr>
 
 <p>different sides of a material </p>
 
-<p class="definition">Definition at line <a class="el" href="context_8h_source.html#l00137">137</a> of file <a class="el" href="context_8h_source.html">context.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="context_8h_source.html#l00180">180</a> of file <a class="el" href="context_8h_source.html">context.h</a>.</p>
 
 </div>
 </div>
@@ -1491,7 +1505,25 @@ Variables</h2></td></tr>
 
 <p>different primitive types </p>
 
-<p class="definition">Definition at line <a class="el" href="context_8h_source.html#l00234">234</a> of file <a class="el" href="context_8h_source.html">context.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="context_8h_source.html#l00277">277</a> of file <a class="el" href="context_8h_source.html">context.h</a>.</p>
+
+</div>
+</div>
+<a id="a76273213c8a6f2c7a304e2b004a5ca0d" name="a76273213c8a6f2c7a304e2b004a5ca0d"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a76273213c8a6f2c7a304e2b004a5ca0d">&#9670;&#160;</a></span>ProgramVariableKind</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">enum <a class="el" href="namespacecgv_1_1render.html#a76273213c8a6f2c7a304e2b004a5ca0d">cgv::render::ProgramVariableKind</a></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>enumerates different kinds of shader program variables </p>
+
+<p class="definition">Definition at line <a class="el" href="context_8h_source.html#l00087">87</a> of file <a class="el" href="context_8h_source.html">context.h</a>.</p>
 
 </div>
 </div>
@@ -1545,7 +1577,7 @@ Variables</h2></td></tr>
 
 <p>enumeration of rendering APIs which can be queried from the context </p>
 
-<p class="definition">Definition at line <a class="el" href="context_8h_source.html#l00079">79</a> of file <a class="el" href="context_8h_source.html">context.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="context_8h_source.html#l00122">122</a> of file <a class="el" href="context_8h_source.html">context.h</a>.</p>
 
 </div>
 </div>
@@ -1583,7 +1615,7 @@ Variables</h2></td></tr>
 </td></tr>
 </table>
 
-<p class="definition">Definition at line <a class="el" href="context_8h_source.html#l00086">86</a> of file <a class="el" href="context_8h_source.html">context.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="context_8h_source.html#l00129">129</a> of file <a class="el" href="context_8h_source.html">context.h</a>.</p>
 
 </div>
 </div>
@@ -1657,7 +1689,7 @@ Variables</h2></td></tr>
 </td></tr>
 </table>
 
-<p class="definition">Definition at line <a class="el" href="context_8h_source.html#l00102">102</a> of file <a class="el" href="context_8h_source.html">context.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="context_8h_source.html#l00145">145</a> of file <a class="el" href="context_8h_source.html">context.h</a>.</p>
 
 </div>
 </div>
@@ -1675,7 +1707,7 @@ Variables</h2></td></tr>
 
 <p>different shader types </p>
 
-<p class="definition">Definition at line <a class="el" href="context_8h_source.html#l00496">496</a> of file <a class="el" href="context_8h_source.html">context.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="context_8h_source.html#l00539">539</a> of file <a class="el" href="context_8h_source.html">context.h</a>.</p>
 
 </div>
 </div>
@@ -1713,7 +1745,7 @@ Variables</h2></td></tr>
 </td></tr>
 </table>
 
-<p class="definition">Definition at line <a class="el" href="context_8h_source.html#l00282">282</a> of file <a class="el" href="context_8h_source.html">context.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="context_8h_source.html#l00325">325</a> of file <a class="el" href="context_8h_source.html">context.h</a>.</p>
 
 </div>
 </div>
@@ -1731,7 +1763,7 @@ Variables</h2></td></tr>
 
 <p>the six different sides of a cube </p>
 
-<p class="definition">Definition at line <a class="el" href="context_8h_source.html#l00224">224</a> of file <a class="el" href="context_8h_source.html">context.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="context_8h_source.html#l00267">267</a> of file <a class="el" href="context_8h_source.html">context.h</a>.</p>
 
 </div>
 </div>
@@ -1749,7 +1781,7 @@ Variables</h2></td></tr>
 
 <p>different texture filter </p>
 
-<p class="definition">Definition at line <a class="el" href="context_8h_source.html#l00198">198</a> of file <a class="el" href="context_8h_source.html">context.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="context_8h_source.html#l00241">241</a> of file <a class="el" href="context_8h_source.html">context.h</a>.</p>
 
 </div>
 </div>
@@ -1773,7 +1805,7 @@ Variables</h2></td></tr>
 </td></tr>
 </table>
 
-<p class="definition">Definition at line <a class="el" href="context_8h_source.html#l00255">255</a> of file <a class="el" href="context_8h_source.html">context.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="context_8h_source.html#l00298">298</a> of file <a class="el" href="context_8h_source.html">context.h</a>.</p>
 
 </div>
 </div>
@@ -1791,7 +1823,7 @@ Variables</h2></td></tr>
 
 <p>different texture types </p>
 
-<p class="definition">Definition at line <a class="el" href="context_8h_source.html#l00210">210</a> of file <a class="el" href="context_8h_source.html">context.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="context_8h_source.html#l00253">253</a> of file <a class="el" href="context_8h_source.html">context.h</a>.</p>
 
 </div>
 </div>
@@ -1809,7 +1841,7 @@ Variables</h2></td></tr>
 
 <p>different texture wrap modes </p>
 
-<p class="definition">Definition at line <a class="el" href="context_8h_source.html#l00182">182</a> of file <a class="el" href="context_8h_source.html">context.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="context_8h_source.html#l00225">225</a> of file <a class="el" href="context_8h_source.html">context.h</a>.</p>
 
 </div>
 </div>
@@ -1863,7 +1895,7 @@ Variables</h2></td></tr>
 </td></tr>
 </table>
 
-<p class="definition">Definition at line <a class="el" href="context_8h_source.html#l00425">425</a> of file <a class="el" href="context_8h_source.html">context.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="context_8h_source.html#l00468">468</a> of file <a class="el" href="context_8h_source.html">context.h</a>.</p>
 
 </div>
 </div>
@@ -1901,7 +1933,7 @@ Variables</h2></td></tr>
 </td></tr>
 </table>
 
-<p class="definition">Definition at line <a class="el" href="context_8h_source.html#l00438">438</a> of file <a class="el" href="context_8h_source.html">context.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="context_8h_source.html#l00481">481</a> of file <a class="el" href="context_8h_source.html">context.h</a>.</p>
 
 </div>
 </div>
@@ -2190,7 +2222,7 @@ Variables</h2></td></tr>
       </table>
 </div><div class="memdoc">
 
-<p class="definition">Definition at line <a class="el" href="context_8cxx_source.html#l01053">1053</a> of file <a class="el" href="context_8cxx_source.html">context.cxx</a>.</p>
+<p class="definition">Definition at line <a class="el" href="context_8cxx_source.html#l01140">1140</a> of file <a class="el" href="context_8cxx_source.html">context.cxx</a>.</p>
 
 </div>
 </div>
@@ -2245,7 +2277,7 @@ Variables</h2></td></tr>
 
 <p class="definition">Definition at line <a class="el" href="render_2color__scale_8cxx_source.html#l00006">6</a> of file <a class="el" href="render_2color__scale_8cxx_source.html">color_scale.cxx</a>.</p>
 
-<p class="reference">References <a class="el" href="shader__program_8h_source.html#l00146">cgv::render::shader_program::set_uniform()</a>, and <a class="el" href="shader__program_8h_source.html#l00157">cgv::render::shader_program::set_uniform_array()</a>.</p>
+<p class="reference">References <a class="el" href="shader__program_8h_source.html#l00157">cgv::render::shader_program::set_uniform()</a>, and <a class="el" href="shader__program_8h_source.html#l00168">cgv::render::shader_program::set_uniform_array()</a>.</p>
 
 <p class="reference">Referenced by <a class="el" href="plot__base_8cxx_source.html#l00395">cgv::plot::plot_base::set_mapping_uniforms()</a>.</p>
 
@@ -2302,7 +2334,7 @@ Variables</h2></td></tr>
 
 <p class="definition">Definition at line <a class="el" href="render_2color__scale_8cxx_source.html#l00020">20</a> of file <a class="el" href="render_2color__scale_8cxx_source.html">color_scale.cxx</a>.</p>
 
-<p class="reference">References <a class="el" href="shader__program_8h_source.html#l00157">cgv::render::shader_program::set_uniform_array()</a>.</p>
+<p class="reference">References <a class="el" href="shader__program_8h_source.html#l00168">cgv::render::shader_program::set_uniform_array()</a>.</p>
 
 </div>
 </div>
@@ -2354,7 +2386,7 @@ Variables</h2></td></tr>
 <p>This is primarily used to create a context without a window for console applications that render into a frame buffer object only. After usage you need to delete the context by hand.</p>
 <p>This is primarily used to create a context without a window for console applications that render into a frame buffer object only. The newly created context will be current right after creation. After usage you need to delete the context by hand. </p>
 
-<p class="definition">Definition at line <a class="el" href="context_8cxx_source.html#l02475">2475</a> of file <a class="el" href="context_8cxx_source.html">context.cxx</a>.</p>
+<p class="definition">Definition at line <a class="el" href="context_8cxx_source.html#l02562">2562</a> of file <a class="el" href="context_8cxx_source.html">context.cxx</a>.</p>
 
 <p class="reference">References <a class="el" href="classcgv_1_1render_1_1context.html#ad351a2dc1c1e0343b17738053a981816">cgv::render::context::make_current()</a>.</p>
 
@@ -2563,7 +2595,7 @@ template&lt;typename T &gt; </div>
       </table>
 </div><div class="memdoc">
 
-<p class="definition">Definition at line <a class="el" href="arrow__renderer_8cxx_source.html#l00110">110</a> of file <a class="el" href="arrow__renderer_8cxx_source.html">arrow_renderer.cxx</a>.</p>
+<p class="definition">Definition at line <a class="el" href="arrow__renderer_8cxx_source.html#l00104">104</a> of file <a class="el" href="arrow__renderer_8cxx_source.html">arrow_renderer.cxx</a>.</p>
 
 </div>
 </div>
@@ -2683,7 +2715,7 @@ template&lt;typename T &gt; </div>
       </table>
 </div><div class="memdoc">
 
-<p class="definition">Definition at line <a class="el" href="cone__renderer_8cxx_source.html#l00122">122</a> of file <a class="el" href="cone__renderer_8cxx_source.html">cone_renderer.cxx</a>.</p>
+<p class="definition">Definition at line <a class="el" href="cone__renderer_8cxx_source.html#l00123">123</a> of file <a class="el" href="cone__renderer_8cxx_source.html">cone_renderer.cxx</a>.</p>
 
 </div>
 </div>
@@ -2723,7 +2755,7 @@ template&lt;typename T &gt; </div>
       </table>
 </div><div class="memdoc">
 
-<p class="definition">Definition at line <a class="el" href="group__renderer_8cxx_source.html#l00098">98</a> of file <a class="el" href="group__renderer_8cxx_source.html">group_renderer.cxx</a>.</p>
+<p class="definition">Definition at line <a class="el" href="group__renderer_8cxx_source.html#l00110">110</a> of file <a class="el" href="group__renderer_8cxx_source.html">group_renderer.cxx</a>.</p>
 
 </div>
 </div>
@@ -2867,7 +2899,7 @@ template&lt;typename T &gt; </div>
       </table>
 </div><div class="memdoc">
 
-<p class="definition">Definition at line <a class="el" href="surface__renderer_8cxx_source.html#l00092">92</a> of file <a class="el" href="surface__renderer_8cxx_source.html">surface_renderer.cxx</a>.</p>
+<p class="definition">Definition at line <a class="el" href="surface__renderer_8cxx_source.html#l00112">112</a> of file <a class="el" href="surface__renderer_8cxx_source.html">surface_renderer.cxx</a>.</p>
 
 </div>
 </div>
@@ -2908,9 +2940,9 @@ template&lt;typename T &gt; </div>
 
 <p>return a pointer to the current shader configuration </p>
 
-<p class="definition">Definition at line <a class="el" href="context_8cxx_source.html#l00122">122</a> of file <a class="el" href="context_8cxx_source.html">context.cxx</a>.</p>
+<p class="definition">Definition at line <a class="el" href="context_8cxx_source.html#l00209">209</a> of file <a class="el" href="context_8cxx_source.html">context.cxx</a>.</p>
 
-<p class="reference">Referenced by <a class="el" href="context_8cxx_source.html#l00128">cgv::render::context::context()</a>, and <a class="el" href="context_8cxx_source.html#l00219">cgv::render::context::error()</a>.</p>
+<p class="reference">Referenced by <a class="el" href="context_8cxx_source.html#l00215">cgv::render::context::context()</a>, and <a class="el" href="context_8cxx_source.html#l00306">cgv::render::context::error()</a>.</p>
 
 </div>
 </div>
@@ -2939,9 +2971,9 @@ template&lt;typename T &gt; </div>
 <p>transparent surface rendering using depth peeling</p>
 <p>in picking pass a small rectangle around the mouse is rendered</p>
 
-<p class="definition">Definition at line <a class="el" href="context_8cxx_source.html#l00732">732</a> of file <a class="el" href="context_8cxx_source.html">context.cxx</a>.</p>
+<p class="definition">Definition at line <a class="el" href="context_8cxx_source.html#l00819">819</a> of file <a class="el" href="context_8cxx_source.html">context.cxx</a>.</p>
 
-<p class="reference">Referenced by <a class="el" href="context_8cxx_source.html#l00794">cgv::render::context::render_pass_debug_output()</a>.</p>
+<p class="reference">Referenced by <a class="el" href="context_8cxx_source.html#l00881">cgv::render::context::render_pass_debug_output()</a>.</p>
 
 </div>
 </div>
@@ -2965,7 +2997,7 @@ template&lt;typename T &gt; </div>
 
 <p class="definition">Definition at line <a class="el" href="shader__code_8cxx_source.html#l00049">49</a> of file <a class="el" href="shader__code_8cxx_source.html">shader_code.cxx</a>.</p>
 
-<p class="reference">Referenced by <a class="el" href="shader__program_8cxx_source.html#l00357">cgv::render::shader_program::attach_program()</a>, <a class="el" href="shader__program_8cxx_source.html#l00106">cgv::render::shader_program::collect_dir()</a>, <a class="el" href="shader__program_8cxx_source.html#l00128">cgv::render::shader_program::collect_program()</a>, <a class="el" href="shader__code_8cxx_source.html#l00180">cgv::render::shader_code::find_file()</a>, <a class="el" href="shader__code_8cxx_source.html#l00093">cgv::render::shader_code::get_last_error()</a>, and <a class="el" href="shader__code_8cxx_source.html#l00547">cgv::render::shader_code::read_code_file()</a>.</p>
+<p class="reference">Referenced by <a class="el" href="shader__program_8cxx_source.html#l00364">cgv::render::shader_program::attach_program()</a>, <a class="el" href="shader__program_8cxx_source.html#l00113">cgv::render::shader_program::collect_dir()</a>, <a class="el" href="shader__program_8cxx_source.html#l00135">cgv::render::shader_program::collect_program()</a>, <a class="el" href="shader__code_8cxx_source.html#l00180">cgv::render::shader_code::find_file()</a>, <a class="el" href="shader__code_8cxx_source.html#l00093">cgv::render::shader_code::get_last_error()</a>, and <a class="el" href="shader__code_8cxx_source.html#l00547">cgv::render::shader_code::read_code_file()</a>.</p>
 
 </div>
 </div>
@@ -3048,6 +3080,70 @@ template&lt;class int_type &gt; </div>
 </div><div class="memdoc">
 
 <p class="definition">Definition at line <a class="el" href="gltf__support_8cxx_source.html#l00023">23</a> of file <a class="el" href="gltf__support_8cxx_source.html">gltf_support.cxx</a>.</p>
+
+</div>
+</div>
+<a id="a291adad2346ffb6ce2d280954d564c5d" name="a291adad2346ffb6ce2d280954d564c5d"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a291adad2346ffb6ce2d280954d564c5d">&#9670;&#160;</a></span>operator&lt;&lt;() <span class="overload">[1/2]</span></h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">CGV_API std::ostream &amp; cgv::render::operator&lt;&lt; </td>
+          <td>(</td>
+          <td class="paramtype">std::ostream &amp;&#160;</td>
+          <td class="paramname"><em>os</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype"><a class="el" href="classcgv_1_1base_1_1single__method__action.html">const</a> <a class="el" href="structcgv_1_1render_1_1type__descriptor.html">type_descriptor</a> &amp;&#160;</td>
+          <td class="paramname"><em>td</em>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>operator to write textual description to stream </p>
+
+<p class="definition">Definition at line <a class="el" href="context_8cxx_source.html#l00029">29</a> of file <a class="el" href="context_8cxx_source.html">context.cxx</a>.</p>
+
+</div>
+</div>
+<a id="a485a377d3dcb7ee4b8c7f7330fa27471" name="a485a377d3dcb7ee4b8c7f7330fa27471"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a485a377d3dcb7ee4b8c7f7330fa27471">&#9670;&#160;</a></span>operator&lt;&lt;() <span class="overload">[2/2]</span></h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">CGV_API std::ostream &amp; cgv::render::operator&lt;&lt; </td>
+          <td>(</td>
+          <td class="paramtype">std::ostream &amp;&#160;</td>
+          <td class="paramname"><em>os</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype"><a class="el" href="classcgv_1_1base_1_1single__method__action.html">const</a> <a class="el" href="structcgv_1_1render_1_1program__variable__info.html">program_variable_info</a> &amp;&#160;</td>
+          <td class="paramname"><em>V</em>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>operator to stream out program variable info in text format </p>
+
+<p class="definition">Definition at line <a class="el" href="context_8cxx_source.html#l00076">76</a> of file <a class="el" href="context_8cxx_source.html">context.cxx</a>.</p>
 
 </div>
 </div>
@@ -3264,7 +3360,7 @@ template&lt;class int_type &gt; </div>
       </table>
 </div><div class="memdoc">
 
-<p class="definition">Definition at line <a class="el" href="context_8cxx_source.html#l02455">2455</a> of file <a class="el" href="context_8cxx_source.html">context.cxx</a>.</p>
+<p class="definition">Definition at line <a class="el" href="context_8cxx_source.html#l02542">2542</a> of file <a class="el" href="context_8cxx_source.html">context.cxx</a>.</p>
 
 </div>
 </div>
@@ -3600,7 +3696,7 @@ template&lt;class int_type &gt; </div>
 
 <p>registration context creation functions </p>
 
-<p class="definition">Definition at line <a class="el" href="context_8cxx_source.html#l02462">2462</a> of file <a class="el" href="context_8cxx_source.html">context.cxx</a>.</p>
+<p class="definition">Definition at line <a class="el" href="context_8cxx_source.html#l02549">2549</a> of file <a class="el" href="context_8cxx_source.html">context.cxx</a>.</p>
 
 </div>
 </div>
@@ -3644,11 +3740,11 @@ template&lt;class int_type &gt; </div>
 
 <p>render an icosahedron at a given center. </p>
 
-<p class="definition">Definition at line <a class="el" href="context_8cxx_source.html#l01507">1507</a> of file <a class="el" href="context_8cxx_source.html">context.cxx</a>.</p>
+<p class="definition">Definition at line <a class="el" href="context_8cxx_source.html#l01594">1594</a> of file <a class="el" href="context_8cxx_source.html">context.cxx</a>.</p>
 
 <p class="reference">References <a class="el" href="classcgv_1_1render_1_1context.html#a17ead29513ecdf9c56dd86c757c0286c">cgv::render::context::draw_edges_of_faces()</a>, and <a class="el" href="classcgv_1_1render_1_1context.html#a75bab7759900b0b9e909db40d0938d6c">cgv::render::context::draw_faces()</a>.</p>
 
-<p class="reference">Referenced by <a class="el" href="context_8cxx_source.html#l01584">cgv::render::context::tesselate_unit_dodecahedron()</a>, and <a class="el" href="context_8cxx_source.html#l01589">cgv::render::context::tesselate_unit_icosahedron()</a>.</p>
+<p class="reference">Referenced by <a class="el" href="context_8cxx_source.html#l01671">cgv::render::context::tesselate_unit_dodecahedron()</a>, and <a class="el" href="context_8cxx_source.html#l01676">cgv::render::context::tesselate_unit_icosahedron()</a>.</p>
 
 </div>
 </div>
@@ -3670,7 +3766,7 @@ template&lt;class int_type &gt; </div>
 
 <p>convert primitive type to string </p>
 
-<p class="definition">Definition at line <a class="el" href="context_8cxx_source.html#l01016">1016</a> of file <a class="el" href="context_8cxx_source.html">context.cxx</a>.</p>
+<p class="definition">Definition at line <a class="el" href="context_8cxx_source.html#l01103">1103</a> of file <a class="el" href="context_8cxx_source.html">context.cxx</a>.</p>
 
 </div>
 </div>
@@ -3692,7 +3788,7 @@ template&lt;class int_type &gt; </div>
 
 <p>convert texture cube side to string </p>
 
-<p class="definition">Definition at line <a class="el" href="context_8cxx_source.html#l01007">1007</a> of file <a class="el" href="context_8cxx_source.html">context.cxx</a>.</p>
+<p class="definition">Definition at line <a class="el" href="context_8cxx_source.html#l01094">1094</a> of file <a class="el" href="context_8cxx_source.html">context.cxx</a>.</p>
 
 </div>
 </div>
@@ -3714,7 +3810,7 @@ template&lt;class int_type &gt; </div>
 
 <p>convert texture filter to string </p>
 
-<p class="definition">Definition at line <a class="el" href="context_8cxx_source.html#l01027">1027</a> of file <a class="el" href="context_8cxx_source.html">context.cxx</a>.</p>
+<p class="definition">Definition at line <a class="el" href="context_8cxx_source.html#l01114">1114</a> of file <a class="el" href="context_8cxx_source.html">context.cxx</a>.</p>
 
 </div>
 </div>
@@ -3736,7 +3832,7 @@ template&lt;class int_type &gt; </div>
 
 <p>convert texture type to string </p>
 
-<p class="definition">Definition at line <a class="el" href="context_8cxx_source.html#l00998">998</a> of file <a class="el" href="context_8cxx_source.html">context.cxx</a>.</p>
+<p class="definition">Definition at line <a class="el" href="context_8cxx_source.html#l01085">1085</a> of file <a class="el" href="context_8cxx_source.html">context.cxx</a>.</p>
 
 </div>
 </div>
@@ -3758,7 +3854,7 @@ template&lt;class int_type &gt; </div>
 
 <p>convert texture wrap to string </p>
 
-<p class="definition">Definition at line <a class="el" href="context_8cxx_source.html#l00987">987</a> of file <a class="el" href="context_8cxx_source.html">context.cxx</a>.</p>
+<p class="definition">Definition at line <a class="el" href="context_8cxx_source.html#l01074">1074</a> of file <a class="el" href="context_8cxx_source.html">context.cxx</a>.</p>
 
 </div>
 </div>
@@ -3846,7 +3942,7 @@ template&lt;class int_type &gt; </div>
       </table>
 </div><div class="memdoc">
 
-<p class="definition">Definition at line <a class="el" href="context_8cxx_source.html#l01042">1042</a> of file <a class="el" href="context_8cxx_source.html">context.cxx</a>.</p>
+<p class="definition">Definition at line <a class="el" href="context_8cxx_source.html#l01129">1129</a> of file <a class="el" href="context_8cxx_source.html">context.cxx</a>.</p>
 
 </div>
 </div>
@@ -3862,7 +3958,7 @@ template&lt;class int_type &gt; </div>
       </table>
 </div><div class="memdoc">
 
-<p class="definition">Definition at line <a class="el" href="context_8cxx_source.html#l01051">1051</a> of file <a class="el" href="context_8cxx_source.html">context.cxx</a>.</p>
+<p class="definition">Definition at line <a class="el" href="context_8cxx_source.html#l01138">1138</a> of file <a class="el" href="context_8cxx_source.html">context.cxx</a>.</p>
 
 </div>
 </div>
@@ -3910,7 +4006,7 @@ template&lt;class int_type &gt; </div>
       </table>
 </div><div class="memdoc">
 
-<p class="definition">Definition at line <a class="el" href="context_8cxx_source.html#l01046">1046</a> of file <a class="el" href="context_8cxx_source.html">context.cxx</a>.</p>
+<p class="definition">Definition at line <a class="el" href="context_8cxx_source.html#l01133">1133</a> of file <a class="el" href="context_8cxx_source.html">context.cxx</a>.</p>
 
 </div>
 </div>
@@ -3942,7 +4038,7 @@ template&lt;class int_type &gt; </div>
       </table>
 </div><div class="memdoc">
 
-<p class="definition">Definition at line <a class="el" href="context_8h_source.html#l00306">306</a> of file <a class="el" href="context_8h_source.html">context.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="context_8h_source.html#l00349">349</a> of file <a class="el" href="context_8h_source.html">context.h</a>.</p>
 
 </div>
 </div>
@@ -3958,7 +4054,7 @@ template&lt;class int_type &gt; </div>
       </table>
 </div><div class="memdoc">
 
-<p class="definition">Definition at line <a class="el" href="context_8cxx_source.html#l01048">1048</a> of file <a class="el" href="context_8cxx_source.html">context.cxx</a>.</p>
+<p class="definition">Definition at line <a class="el" href="context_8cxx_source.html#l01135">1135</a> of file <a class="el" href="context_8cxx_source.html">context.cxx</a>.</p>
 
 </div>
 </div>
@@ -3974,7 +4070,7 @@ template&lt;class int_type &gt; </div>
       </table>
 </div><div class="memdoc">
 
-<p class="definition">Definition at line <a class="el" href="context_8cxx_source.html#l01047">1047</a> of file <a class="el" href="context_8cxx_source.html">context.cxx</a>.</p>
+<p class="definition">Definition at line <a class="el" href="context_8cxx_source.html#l01134">1134</a> of file <a class="el" href="context_8cxx_source.html">context.cxx</a>.</p>
 
 </div>
 </div>
@@ -3990,7 +4086,7 @@ template&lt;class int_type &gt; </div>
       </table>
 </div><div class="memdoc">
 
-<p class="definition">Definition at line <a class="el" href="context_8h_source.html#l00027">27</a> of file <a class="el" href="context_8h_source.html">context.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="context_8h_source.html#l00028">28</a> of file <a class="el" href="context_8h_source.html">context.h</a>.</p>
 
 </div>
 </div>
@@ -4022,7 +4118,7 @@ template&lt;class int_type &gt; </div>
       </table>
 </div><div class="memdoc">
 
-<p class="definition">Definition at line <a class="el" href="context_8h_source.html#l00521">521</a> of file <a class="el" href="context_8h_source.html">context.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="context_8h_source.html#l00564">564</a> of file <a class="el" href="context_8h_source.html">context.h</a>.</p>
 
 </div>
 </div>
@@ -4038,7 +4134,7 @@ template&lt;class int_type &gt; </div>
       </table>
 </div><div class="memdoc">
 
-<p class="definition">Definition at line <a class="el" href="context_8cxx_source.html#l01044">1044</a> of file <a class="el" href="context_8cxx_source.html">context.cxx</a>.</p>
+<p class="definition">Definition at line <a class="el" href="context_8cxx_source.html#l01131">1131</a> of file <a class="el" href="context_8cxx_source.html">context.cxx</a>.</p>
 
 </div>
 </div>
@@ -4054,7 +4150,7 @@ template&lt;class int_type &gt; </div>
       </table>
 </div><div class="memdoc">
 
-<p class="definition">Definition at line <a class="el" href="context_8cxx_source.html#l01045">1045</a> of file <a class="el" href="context_8cxx_source.html">context.cxx</a>.</p>
+<p class="definition">Definition at line <a class="el" href="context_8cxx_source.html#l01132">1132</a> of file <a class="el" href="context_8cxx_source.html">context.cxx</a>.</p>
 
 </div>
 </div>
@@ -4134,7 +4230,7 @@ template&lt;class int_type &gt; </div>
       </table>
 </div><div class="memdoc">
 
-<p class="definition">Definition at line <a class="el" href="context_8cxx_source.html#l01050">1050</a> of file <a class="el" href="context_8cxx_source.html">context.cxx</a>.</p>
+<p class="definition">Definition at line <a class="el" href="context_8cxx_source.html#l01137">1137</a> of file <a class="el" href="context_8cxx_source.html">context.cxx</a>.</p>
 
 </div>
 </div>
@@ -4150,7 +4246,7 @@ template&lt;class int_type &gt; </div>
       </table>
 </div><div class="memdoc">
 
-<p class="definition">Definition at line <a class="el" href="context_8h_source.html#l00520">520</a> of file <a class="el" href="context_8h_source.html">context.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="context_8h_source.html#l00563">563</a> of file <a class="el" href="context_8h_source.html">context.h</a>.</p>
 
 </div>
 </div>
@@ -4166,7 +4262,7 @@ template&lt;class int_type &gt; </div>
       </table>
 </div><div class="memdoc">
 
-<p class="definition">Definition at line <a class="el" href="context_8h_source.html#l00522">522</a> of file <a class="el" href="context_8h_source.html">context.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="context_8h_source.html#l00565">565</a> of file <a class="el" href="context_8h_source.html">context.h</a>.</p>
 
 </div>
 </div>
@@ -4182,7 +4278,7 @@ template&lt;class int_type &gt; </div>
       </table>
 </div><div class="memdoc">
 
-<p class="definition">Definition at line <a class="el" href="context_8h_source.html#l00523">523</a> of file <a class="el" href="context_8h_source.html">context.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="context_8h_source.html#l00566">566</a> of file <a class="el" href="context_8h_source.html">context.h</a>.</p>
 
 </div>
 </div>
@@ -4246,7 +4342,7 @@ template&lt;class int_type &gt; </div>
       </table>
 </div><div class="memdoc">
 
-<p class="definition">Definition at line <a class="el" href="context_8h_source.html#l00519">519</a> of file <a class="el" href="context_8h_source.html">context.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="context_8h_source.html#l00562">562</a> of file <a class="el" href="context_8h_source.html">context.h</a>.</p>
 
 </div>
 </div>
@@ -4262,7 +4358,7 @@ template&lt;class int_type &gt; </div>
       </table>
 </div><div class="memdoc">
 
-<p class="definition">Definition at line <a class="el" href="context_8h_source.html#l00028">28</a> of file <a class="el" href="context_8h_source.html">context.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="context_8h_source.html#l00029">29</a> of file <a class="el" href="context_8h_source.html">context.h</a>.</p>
 
 </div>
 </div>
@@ -4310,7 +4406,7 @@ template&lt;class int_type &gt; </div>
       </table>
 </div><div class="memdoc">
 
-<p class="definition">Definition at line <a class="el" href="context_8cxx_source.html#l01043">1043</a> of file <a class="el" href="context_8cxx_source.html">context.cxx</a>.</p>
+<p class="definition">Definition at line <a class="el" href="context_8cxx_source.html#l01130">1130</a> of file <a class="el" href="context_8cxx_source.html">context.cxx</a>.</p>
 
 </div>
 </div>
@@ -4326,7 +4422,7 @@ template&lt;class int_type &gt; </div>
       </table>
 </div><div class="memdoc">
 
-<p class="definition">Definition at line <a class="el" href="context_8cxx_source.html#l01049">1049</a> of file <a class="el" href="context_8cxx_source.html">context.cxx</a>.</p>
+<p class="definition">Definition at line <a class="el" href="context_8cxx_source.html#l01136">1136</a> of file <a class="el" href="context_8cxx_source.html">context.cxx</a>.</p>
 
 </div>
 </div>

@@ -608,6 +608,7 @@ var annotated_dup =
         [ "point_render_style", "structcgv_1_1render_1_1point__render__style.html", "structcgv_1_1render_1_1point__render__style" ],
         [ "point_render_style_reflect", "structcgv_1_1render_1_1point__render__style__reflect.html", null ],
         [ "point_renderer", "classcgv_1_1render_1_1point__renderer.html", "classcgv_1_1render_1_1point__renderer" ],
+        [ "program_variable_info", "structcgv_1_1render_1_1program__variable__info.html", "structcgv_1_1render_1_1program__variable__info" ],
         [ "rectangle_render_data", "classcgv_1_1render_1_1rectangle__render__data.html", "classcgv_1_1render_1_1rectangle__render__data" ],
         [ "rectangle_render_style", "structcgv_1_1render_1_1rectangle__render__style.html", "structcgv_1_1render_1_1rectangle__render__style" ],
         [ "rectangle_render_style_reflect", "structcgv_1_1render_1_1rectangle__render__style__reflect.html", null ],

@@ -2,5 +2,6 @@ var searchData=
 [
   ['performancemonitoringbar_0',['PerformanceMonitoringBar',['../namespacecgv_1_1render.html#a79b40c1e022fe70b55c592f296dd5e29',1,'cgv::render']]],
   ['primitivetype_1',['PrimitiveType',['../namespacecgv_1_1render.html#ad09ce7c1f1275e31a8fbc3a85efbb1b6',1,'cgv::render']]],
-  ['programinterface_2',['ProgramInterface',['../namespacecgv_1_1render_1_1gl.html#ac4adb01b5f3ef97bb3edcdd1ba82e0ee',1,'cgv::render::gl']]]
+  ['programinterface_2',['ProgramInterface',['../namespacecgv_1_1render_1_1gl.html#ac4adb01b5f3ef97bb3edcdd1ba82e0ee',1,'cgv::render::gl']]],
+  ['programvariablekind_3',['ProgramVariableKind',['../namespacecgv_1_1render.html#a76273213c8a6f2c7a304e2b004a5ca0d',1,'cgv::render']]]
 ];
