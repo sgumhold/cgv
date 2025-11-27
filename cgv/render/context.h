@@ -75,7 +75,7 @@ struct type_descriptor
 	/// cast to int
 	operator int() const { return *reinterpret_cast<const int*>(this); }
 	/// operator to write textual description to stream
-	friend extern CGV_API std::ostream& operator << (std::ostream&, const type_descriptor&);
+	friend CGV_API std::ostream& operator << (std::ostream&, const type_descriptor&);
 };
 
 /// operator to write textual description to stream
