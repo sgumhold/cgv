@@ -55,14 +55,14 @@ protected:
 		return hit;
 	}
 
-	bool handle_void(cgv::gui::event& e, const ivec2& viewport_size, const irect& container, OriginSetting origin_setting) {
+	bool handle_void(cgv::gui::event& e, const ivec2& viewport_size, const irect& container, CoordinateOrigin origin_setting) {
 		unsigned et = e.get_kind();
 
 		if(et == cgv::gui::EID_MOUSE) {
 			cgv::gui::mouse_event& me = (cgv::gui::mouse_event&)e;
 
 			vec2 mouse_position = static_cast<vec2>(
-				cgv::g2d::apply_origin_setting(ivec2(me.get_x(), me.get_y()), viewport_size, OriginSetting::kUpperLeft, origin_setting) - container.position
+				cgv::g2d::change_origin(ivec2(me.get_x(), me.get_y()), viewport_size, CoordinateOrigin::kUpperLeft, origin_setting) - container.position
 			);
 
 			return handle_mouse_event(me, mouse_position);
@@ -195,11 +195,11 @@ public:
 		return false;
 	}
 
-	bool handle(cgv::gui::event& e, const ivec2& viewport_size, OriginSetting origin_setting = OriginSetting::kLowerLeft) {
+	bool handle(cgv::gui::event& e, const ivec2& viewport_size, CoordinateOrigin origin_setting = CoordinateOrigin::kLowerLeft) {
 		return handle_void(e, viewport_size, irect(), origin_setting);
 	}
 
-	bool handle(cgv::gui::event& e, const ivec2& viewport_size, const irect& container, OriginSetting origin_setting = OriginSetting::kLowerLeft) {
+	bool handle(cgv::gui::event& e, const ivec2& viewport_size, const irect& container, CoordinateOrigin origin_setting = CoordinateOrigin::kLowerLeft) {
 		return handle_void(e, viewport_size, container, origin_setting);
 	}
 

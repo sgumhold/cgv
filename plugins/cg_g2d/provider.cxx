@@ -51,7 +51,7 @@ bool provider::handle(cgv::gui::event& e, const cgv::ivec2& viewport_size, const
 		}
 	} else if(et == cgv::gui::EID_MOUSE) {
 		cgv::gui::mouse_event& me = dynamic_cast<cgv::gui::mouse_event&>(e);
-		cgv::ivec2 mouse_position = cgv::g2d::apply_origin_setting(cgv::ivec2(me.get_x(), me.get_y()), viewport_size, cgv::g2d::OriginSetting::kUpperLeft, cgv::g2d::OriginSetting::kLowerLeft) - container.position;
+		cgv::ivec2 mouse_position = cgv::g2d::change_origin(cgv::ivec2(me.get_x(), me.get_y()), viewport_size, cgv::g2d::CoordinateOrigin::kUpperLeft, cgv::g2d::CoordinateOrigin::kLowerLeft) - container.position;
 		
 		for(auto& button : buttons) {
 			if(button->handle_mouse_event(me, mouse_position))
