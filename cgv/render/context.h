@@ -105,7 +105,7 @@ struct CGV_API program_variable_info
 	/// data storage for the value of the program variable
 	std::vector<char> current_value;
 	/// operator to stream out program variable info in text format
-	extern CGV_API friend std::ostream& operator << (std::ostream& os, const program_variable_info& V);
+	friend CGV_API std::ostream& operator << (std::ostream& os, const program_variable_info& V);
 	/// <summary>
 	/// helper member function to compute counts and sizes
 	/// </summary>
