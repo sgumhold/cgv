@@ -125,12 +125,14 @@ bool color_map_editor::handle_mouse_event(cgv::gui::mouse_event& e, cgv::ivec2 l
 	bool request_clear_selection = false;
 	if(e.get_button_state() & cgv::gui::MB_LEFT_BUTTON) {
 		if(e.get_action() == cgv::gui::MA_PRESS) {
-			request_clear_selection = is_hit(local_mouse_pos);
+			request_clear_selection = is_hit_local(local_mouse_pos);
 
 			switch(e.get_modifiers()) {
 			case cgv::gui::EM_CTRL:
-				if(!get_hit_point(local_mouse_pos))
+				if(!get_hit_point(local_mouse_pos)) {
 					add_point(local_mouse_pos);
+					request_clear_selection = false;
+				}
 				break;
 			case cgv::gui::EM_ALT:
 			{
@@ -646,13 +648,17 @@ void color_map_editor::add_point(const vec2& pos) {
 			p.position = ivec2(int(pos.x()), layout.color_handles_rect.y());
 			p.update_val(layout);
 			p.col = cmc.cm->interpolate_color(p.val);
-			cmc.color_points.add(p);
+			size_t index = cmc.color_points.add(p);
+			cmc.color_points.set_selected(index);
+			handle_drag_end();
 		} else if(supports_opacity && layout.opacity_editor_rect.contains(test_pos)) {
 			// opacity point
 			opacity_point p;
 			p.position = pos;
 			p.update_val(layout, opacity_scale_exponent);
-			cmc.opacity_points.add(p);
+			size_t index = cmc.opacity_points.add(p);
+			cmc.opacity_points.set_selected(index);
+			handle_drag_end();
 		}
 		
 		update_color_map(true);
@@ -831,7 +837,7 @@ void color_map_editor::handle_opacity_point_drag() {
 */
 
 void color_map_editor::handle_drag_end() {
-
+	
 	show_value_label = false;
 	update_geometry();
 
