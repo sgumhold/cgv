@@ -1,5 +1,6 @@
 var NAVTREEINDEX10 =
 {
+"classcgv_1_1math_1_1fmat.html#a4052626c8fe8004a992e12c3e8792098":[11,0,0,6,21,5],
 "classcgv_1_1math_1_1fmat.html#a53984cfcbb0a237f28e6aec55cb536e1":[11,0,0,6,21,10],
 "classcgv_1_1math_1_1fmat.html#a54ad673d8e18aa032f16bdf71ac8b463":[11,0,0,6,21,0],
 "classcgv_1_1math_1_1fmat.html#a5aa1cf824a238cb39853124871142b62":[11,0,0,6,21,35],
@@ -248,6 +249,5 @@ var NAVTREEINDEX10 =
 "classcgv_1_1math_1_1quadratic__bezier__curve.html#a497f612ad38fd9674cd5298dc5e6420c":[11,0,0,6,39,2],
 "classcgv_1_1math_1_1quadratic__bezier__curve.html#ad38bc9a72d78d34bbd23fa570a611413":[11,0,0,6,39,0],
 "classcgv_1_1math_1_1quadratic__bezier__curve.html#adb772dcd2f7e9ee959a8a9ed56124486":[11,0,0,6,39,1],
-"classcgv_1_1math_1_1quadratic__bezier__tube.html":[11,0,0,6,40],
-"classcgv_1_1math_1_1quaternion.html":[11,0,0,6,41]
+"classcgv_1_1math_1_1quadratic__bezier__tube.html":[11,0,0,6,40]
 };
