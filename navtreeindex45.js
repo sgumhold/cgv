@@ -1,5 +1,9 @@
 var NAVTREEINDEX45 =
 {
+"structcgv_1_1type_1_1variant_3_01bool_01_4.html":[11,0,0,14,6],
+"structcgv_1_1type_1_1variant_3_01const_01char_01_5_01_4.html":[10,0,1,6,5],
+"structcgv_1_1type_1_1variant_3_01const_01char_01_5_01_4.html":[11,0,0,14,7],
+"structcgv_1_1type_1_1variant_3_01std_1_1string_01_4.html":[11,0,0,14,8],
 "structcgv_1_1type_1_1variant_3_01std_1_1string_01_4.html":[10,0,1,6,6],
 "structcgv_1_1type_1_1variant_3_01std_1_1wstring_01_4.html":[11,0,0,14,9],
 "structcgv_1_1type_1_1variant_3_01std_1_1wstring_01_4.html":[10,0,1,6,7],
@@ -245,9 +249,5 @@ var NAVTREEINDEX45 =
 "structvr_1_1vr__trackable__info.html#a562b5f398d47ad4992cd95d07e5e8dfa":[10,0,2,14,1],
 "structvr_1_1vr__trackable__info.html#a562b5f398d47ad4992cd95d07e5e8dfa":[11,0,5,14,1],
 "structvr_1_1vr__trackable__info.html#a5ba0670c854d28974c14c416732c0f54":[11,0,5,14,3],
-"structvr_1_1vr__trackable__info.html#a5ba0670c854d28974c14c416732c0f54":[10,0,2,14,3],
-"structvr_1_1vr__trackable__info.html#a61c9dd10fd0b2f391f9caf8c15b66af6":[11,0,5,14,2],
-"structvr_1_1vr__trackable__info.html#a61c9dd10fd0b2f391f9caf8c15b66af6":[10,0,2,14,2],
-"structvr_1_1vr__trackable__info.html#a9bb447518f6a90171e85687e22c6f1c9":[10,0,2,14,5],
-"structvr_1_1vr__trackable__info.html#a9bb447518f6a90171e85687e22c6f1c9":[11,0,5,14,5]
+"structvr_1_1vr__trackable__info.html#a5ba0670c854d28974c14c416732c0f54":[10,0,2,14,3]
 };

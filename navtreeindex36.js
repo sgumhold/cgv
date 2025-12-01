@@ -1,5 +1,9 @@
 var NAVTREEINDEX36 =
 {
+"namespacevr.html#a2d6d327cdc06b4abac3e02e6f74ba57fa36d1eccf22a3dfe445de85253b268e05":[10,0,2,26,1],
+"namespacevr.html#a2d6d327cdc06b4abac3e02e6f74ba57fa986e907c9d1d1baca836af4a654da274":[10,0,2,26,0],
+"namespacevr.html#a2dd9724fa8c1880e426b5e3b2431e657":[10,0,2,24],
+"namespacevr.html#a2dd9724fa8c1880e426b5e3b2431e657a0492f7863ac0b4b3c6e5d9f4787f3b0b":[10,0,2,24,9],
 "namespacevr.html#a2dd9724fa8c1880e426b5e3b2431e657a1782838f0991efbbb7f22ddabe6b5c3d":[10,0,2,24,1],
 "namespacevr.html#a2dd9724fa8c1880e426b5e3b2431e657a215faa494d32e46026802926b146d6a9":[10,0,2,24,3],
 "namespacevr.html#a2dd9724fa8c1880e426b5e3b2431e657a4da1a1834eae380c122fd5054d3b827b":[10,0,2,24,7],
@@ -245,9 +249,5 @@ var NAVTREEINDEX36 =
 "reflect__enum_8h_source.html":[12,0,1,9,10],
 "reflect__extern_8h_source.html":[12,0,1,9,11],
 "reflection__handler_8cxx_source.html":[12,0,1,9,12],
-"reflection__handler_8h_source.html":[12,0,1,9,13],
-"reflection__traits_8cxx_source.html":[12,0,1,9,14],
-"reflection__traits_8h_source.html":[12,0,1,9,15],
-"reflection__traits__info_8h_source.html":[12,0,1,9,16],
-"register_8cxx_source.html":[12,0,1,0,21]
+"reflection__handler_8h_source.html":[12,0,1,9,13]
 };
