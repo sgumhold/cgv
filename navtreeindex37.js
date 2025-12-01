@@ -1,5 +1,9 @@
 var NAVTREEINDEX37 =
 {
+"reflection__traits_8cxx_source.html":[12,0,1,9,14],
+"reflection__traits_8h_source.html":[12,0,1,9,15],
+"reflection__traits__info_8h_source.html":[12,0,1,9,16],
+"register_8cxx_source.html":[12,0,1,0,21],
 "register_8h_source.html":[12,0,1,0,22],
 "render_2color__scale_8cxx_source.html":[12,0,1,10,8],
 "render_2color__scale_8h_source.html":[12,0,1,10,9],
@@ -245,9 +249,5 @@ var NAVTREEINDEX37 =
 "structcgv_1_1base_1_1factory__impl__2.html":[10,0,1,0,29],
 "structcgv_1_1base_1_1factory__impl__2.html#ab0cb1553fde097b63c82309b74954b89":[11,0,0,2,29,1],
 "structcgv_1_1base_1_1factory__impl__2.html#ab0cb1553fde097b63c82309b74954b89":[10,0,1,0,29,1],
-"structcgv_1_1base_1_1factory__impl__2.html#ad86f1afa101d3c3e7d50a48c2eca6899":[11,0,0,2,29,0],
-"structcgv_1_1base_1_1factory__impl__2.html#ad86f1afa101d3c3e7d50a48c2eca6899":[10,0,1,0,29,0],
-"structcgv_1_1base_1_1factory__registration.html":[11,0,0,2,30],
-"structcgv_1_1base_1_1factory__registration.html":[10,0,1,0,30],
-"structcgv_1_1base_1_1factory__registration.html#a7dbddd5b3b4e48aa1e0209365b4c8793":[11,0,0,2,30,1]
+"structcgv_1_1base_1_1factory__impl__2.html#ad86f1afa101d3c3e7d50a48c2eca6899":[11,0,0,2,29,0]
 };
