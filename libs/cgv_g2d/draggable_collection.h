@@ -83,8 +83,9 @@ public:
 		inv_transformation.identity();
 	}
 
-	void add(T obj) {
+	size_t add(T obj) {
 		draggables.push_back(obj);
+		return draggables.size() - 1;
 	}
 
 	bool empty() const {
