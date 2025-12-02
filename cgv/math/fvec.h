@@ -413,7 +413,7 @@ inline S dot_dir(const fvec<T, N + 1>& v, const fvec<S, N>& w) {
 }
 
 /// return the cross product of vector v and w
-template < typename T, cgv::type::uint32_type N>
+template <typename T, cgv::type::uint32_type N>
 inline fvec<T, N> cross(const fvec<T, N>& v, const fvec<T, N>& w) {
 	fvec<T, N> r(3);
 	r[0] = v[1] * w[2] - v[2] * w[1];
@@ -455,7 +455,7 @@ template <typename T, cgv::type::uint32_type N>
 inline fvec<T, N> ceil(const fvec<T, N>& v) { fvec<T, N> r(v); r.ceil(); return r; }
 
 ///returns homogenized vector
-template < typename T, cgv::type::uint32_type N>
+template <typename T, cgv::type::uint32_type N>
 inline fvec<T, N + 1> hom(const fvec<T, N>& v) {
 	fvec<T, N + 1> h;
 	for(unsigned i = 0; i < N; ++i)
@@ -465,25 +465,25 @@ inline fvec<T, N + 1> hom(const fvec<T, N>& v) {
 }
 
 /// return the smalles component
-template < typename T, cgv::type::uint32_type N>
+template <typename T, cgv::type::uint32_type N>
 T min_value(const fvec<T, N>& v) {
 	return *(std::min_element(v.begin(), v.end()));
 }
 
 /// return the index of the smallest component
-template < typename T, cgv::type::uint32_type N>
+template <typename T, cgv::type::uint32_type N>
 unsigned min_index(const fvec<T, N>& v) {
 	return static_cast<unsigned>(std::distance(v.begin(), std::min_element(v.begin(), v.end())));
 }
 
 /// return the value of the largest component
-template < typename T, cgv::type::uint32_type N>
+template <typename T, cgv::type::uint32_type N>
 T max_value(const fvec<T, N>& v) {
 	return *(std::max_element(v.begin(), v.end()));
 }
 
 /// return the index of the largest component
-template < typename T, cgv::type::uint32_type N>
+template <typename T, cgv::type::uint32_type N>
 unsigned max_index(const fvec<T, N>& v) {
 	return static_cast<unsigned>(std::distance(v.begin(), std::max_element(v.begin(), v.end())));
 }
