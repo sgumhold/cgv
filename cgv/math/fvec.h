@@ -64,10 +64,13 @@ public:
 	/// create a vector where all N components are initialized to the constant value a
 	fvec(const T& a) { std::fill(v, v + N, a); }
 	/// construct and initialize the first two components to the given values
+	template <uint32_t _N = N, typename std::enable_if<_N >= 2, int>::type = 0>
 	fvec(const T& x, const T& y) { set(x, y); }
 	/// construct and initialize the first three components to the given values
+	template <uint32_t _N = N, typename std::enable_if<_N >= 3, int>::type = 0>
 	fvec(const T& x, const T& y, const T& z) { set(x, y, z); }
 	/// construct and initialize the first four components to the given values
+	template <uint32_t _N = N, typename std::enable_if<_N >= 4, int>::type = 0>
 	fvec(const T& x, const T& y, const T& z, const T& w) { set(x, y, z, w); }
 	/// create a vector from an array of size n; if n is less than N the remaining N-n components are set to zero
 	fvec(cgv::type::uint32_type n, const T* a) {
@@ -96,10 +99,13 @@ public:
 	/// set to the contents of the given std::array with same size
 	void assign(const std::array<T, N>& arr) { std::copy(arr.cbegin(), arr.cend(), v); }
 	/// set the first two components
+	template <uint32_t _N = N, typename std::enable_if<_N >= 2, int>::type = 0>
 	void set(const T& x, const T& y) { v[0] = x; v[1] = y; }
 	/// set the first three components
+	template <uint32_t _N = N, typename std::enable_if<_N >= 3, int>::type = 0>
 	void set(const T& x, const T& y, const T& z) { v[0] = x; v[1] = y; v[2] = z; }
 	/// set the first four components
+	template <uint32_t _N = N, typename std::enable_if<_N >= 4, int>::type = 0>
 	void set(const T& x, const T& y, const T& z, const T& w) { v[0] = x; v[1] = y; v[2] = z; v[3] = w; }
 	/// fill the vector with constant value x
 	void fill(const T& x) { std::fill(v, v + N, x); }
