@@ -71,7 +71,7 @@ public:
 	}
 
 	/// Returns the position of the ray at the given distance (ray parameter t) from its origin.
-	fvec<T, 3> position(float t) const {
+	fvec<T, 3> position(T t) const {
 
 		return origin + t * direction;
 	}
