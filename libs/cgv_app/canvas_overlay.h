@@ -68,6 +68,12 @@ public:
 		implement your own test, i.e. for different overlay shapes.
 	*/
 	bool is_hit(const ivec2& mouse_pos) const override;
+
+	/**
+	* See is_hit. THis is a hotfix for supporting hit tests with coordinates
+	* that are already in local coordinate space.
+	*/
+	bool is_hit_local(const ivec2& local_mouse_pos) const;
 };
 
 typedef cgv::data::ref_ptr<canvas_overlay> canvas_overlay_ptr;

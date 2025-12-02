@@ -74,6 +74,10 @@ bool canvas_overlay::is_hit(const ivec2& mouse_pos) const {
 	return get_rectangle().contains(test_pos);
 }
 
+bool canvas_overlay::is_hit_local(const ivec2& local_mouse_pos) const {
+	return get_rectangle().contains(local_mouse_pos);
+}
+
 bool canvas_overlay::ensure_layout(context& ctx) {
 
 	if(overlay::ensure_layout(ctx) || recreate_layout_requested_) {
