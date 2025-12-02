@@ -127,7 +127,7 @@ $(document).ready(function(){initNavTree('point__operations_8h_source.html','');
 <div class="line"><a id="l00029" name="l00029"></a><span class="lineno">   29</span>    <span class="keywordtype">unsigned</span> N = points.ncols();</div>
 <div class="line"><a id="l00030" name="l00030"></a><span class="lineno">   30</span>    <span class="keywordtype">unsigned</span> M = points.nrows();</div>
 <div class="line"><a id="l00031" name="l00031"></a><span class="lineno">   31</span>    vec&lt;T&gt; mu;</div>
-<div class="line"><a id="l00032" name="l00032"></a><span class="lineno">   32</span>    mu.<a class="code hl_function" href="classcgv_1_1math_1_1fvec.html#af492aff2f4dcc61d70b1eeecfcb5b618">zeros</a>(M);</div>
+<div class="line"><a id="l00032" name="l00032"></a><span class="lineno">   32</span>    mu.zeros(M);</div>
 <div class="line"><a id="l00033" name="l00033"></a><span class="lineno">   33</span>    </div>
 <div class="line"><a id="l00034" name="l00034"></a><span class="lineno">   34</span> </div>
 <div class="line"><a id="l00035" name="l00035"></a><span class="lineno">   35</span>    <span class="keywordflow">for</span>(<span class="keywordtype">unsigned</span> j = 0; j &lt; N;j++)</div>
@@ -324,7 +324,7 @@ $(document).ready(function(){initNavTree('point__operations_8h_source.html','');
 <div class="line"><a id="l00233" name="l00233"></a><span class="lineno">  233</span>    <span class="keywordtype">unsigned</span> M = points.nrows();</div>
 <div class="line"><a id="l00234" name="l00234"></a><span class="lineno">  234</span>    covmat.zeros(M,M);</div>
 <div class="line"><a id="l00235" name="l00235"></a><span class="lineno">  235</span>    mean.resize(M);</div>
-<div class="line"><a id="l00236" name="l00236"></a><span class="lineno">  236</span>    mean.<a class="code hl_function" href="classcgv_1_1math_1_1fvec.html#af492aff2f4dcc61d70b1eeecfcb5b618">zeros</a>();</div>
+<div class="line"><a id="l00236" name="l00236"></a><span class="lineno">  236</span>    mean.zeros();</div>
 <div class="line"><a id="l00237" name="l00237"></a><span class="lineno">  237</span>    </div>
 <div class="line"><a id="l00238" name="l00238"></a><span class="lineno">  238</span> </div>
 <div class="line"><a id="l00239" name="l00239"></a><span class="lineno">  239</span>    <span class="keywordflow">for</span>(<span class="keywordtype">unsigned</span> c = 0; c &lt; N;c++)</div>
@@ -529,7 +529,6 @@ $(document).ready(function(){initNavTree('point__operations_8h_source.html','');
 <div class="line"><a id="l00441" name="l00441"></a><span class="lineno">  441</span> </div>
 <div class="line"><a id="l00442" name="l00442"></a><span class="lineno">  442</span>}</div>
 <div class="line"><a id="l00443" name="l00443"></a><span class="lineno">  443</span> </div>
-<div class="ttc" id="aclasscgv_1_1math_1_1fvec_html_af492aff2f4dcc61d70b1eeecfcb5b618"><div class="ttname"><a href="classcgv_1_1math_1_1fvec.html#af492aff2f4dcc61d70b1eeecfcb5b618">cgv::math::fvec::zeros</a></div><div class="ttdeci">void zeros()</div><div class="ttdoc">fill the vector with zeros</div><div class="ttdef"><b>Definition</b> <a href="fvec_8h_source.html#l00107">fvec.h:107</a></div></div>
 <div class="ttc" id="aclasscgv_1_1math_1_1mat_html"><div class="ttname"><a href="classcgv_1_1math_1_1mat.html">cgv::math::mat</a></div><div class="ttdoc">A matrix type (full column major storage) The matrix can be loaded directly into OpenGL without need ...</div><div class="ttdef"><b>Definition</b> <a href="mat_8h_source.html#l00207">mat.h:208</a></div></div>
 <div class="ttc" id="aclasscgv_1_1math_1_1mat_html_aa543f17cfd5bed4420524e8800e4f121"><div class="ttname"><a href="classcgv_1_1math_1_1mat.html#aa543f17cfd5bed4420524e8800e4f121">cgv::math::mat::col</a></div><div class="ttdeci">const vec&lt; T &gt; col(unsigned j) const</div><div class="ttdoc">extract a column of the matrix as a vector</div><div class="ttdef"><b>Definition</b> <a href="mat_8h_source.html#l00833">mat.h:833</a></div></div>
 <div class="ttc" id="aclasscgv_1_1math_1_1vec_html"><div class="ttname"><a href="classcgv_1_1math_1_1vec.html">cgv::math::vec</a></div><div class="ttdoc">A column vector class.</div><div class="ttdef"><b>Definition</b> <a href="vec_8h_source.html#l00027">vec.h:28</a></div></div>
