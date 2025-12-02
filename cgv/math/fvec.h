@@ -284,7 +284,7 @@ public:
 	/// round componentwise
 	void round() {
 		for(unsigned i = 0; i < N; ++i)
-			v[i] = std::floor(v[i] + 0.5);
+			v[i] = std::round(v[i]);
 	}
 	/// normalize the vector using the L2-Norm and return the length
 	T normalize() {
