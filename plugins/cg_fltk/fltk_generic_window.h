@@ -15,7 +15,7 @@ class CGV_API fltk_generic_window:
 	public fltk_gui_group 
 {
 public:
-	fltk_generic_window(int x, int y, int w, int h, const std::string& _name);
+	fltk_generic_window(int x, int y, int w, int h, const std::string& _name, const std::string& inner_group_type = "");
 	~fltk_generic_window();
 
 	// prepare adding a new element

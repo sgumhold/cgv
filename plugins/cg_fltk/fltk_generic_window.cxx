@@ -1,6 +1,9 @@
 #include "fltk_generic_window.h"
 #include "fltk_driver.h"
 #include <cgv/gui/gui_driver.h>
+#include "fltk_align_group.h"
+#include "fltk_tab_group.h"
+
 #include <fltk/Cursor.h>
 
 void destroy_callback_1(fltk::Widget* w)
@@ -17,7 +20,7 @@ void destroy_callback_1(fltk::Widget* w)
 	(void*&)wp = 0;
 }
 
-fltk_generic_window::fltk_generic_window(int x, int y, int w, int h, const std::string& _name):
+fltk_generic_window::fltk_generic_window(int x, int y, int w, int h, const std::string& _name, const std::string& inner_group_type):
 cgv::gui::window(_name), CI<fltk::Window>(w, h), title(_name)
 {
 	cursor_shown = true;
@@ -26,7 +29,16 @@ cgv::gui::window(_name), CI<fltk::Window>(w, h), title(_name)
 	last_w = 0;
 	last_h = 0;
 	callback(destroy_callback_1);
-
+	if (inner_group_type == "align") {
+		begin();
+		inner_group = new fltk_align_group(0, 0, w, h, "inner_group");
+		end();
+	}
+	if (inner_group_type == "tab") {
+		begin();
+		inner_group = new fltk_tab_group(0, 0, w, h, "inner_group");
+		end();
+	}
 	resizable(this);
 }
 
@@ -62,6 +74,8 @@ void fltk_generic_window::finalize_new_element(cgv::gui::gui_group_ptr ggp, cons
 {
 	if (inner_group)
 		inner_group->get_interface<fltk_gui_group>()->finalize_new_element(ggp, align, child);
+	else 
+		finalize_new_element(ggp, align, child);
 }
 
 

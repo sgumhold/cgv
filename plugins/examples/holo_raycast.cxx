@@ -3,6 +3,7 @@
 #include <cgv/gui/key_event.h>
 #include <cgv/gui/mouse_event.h>
 #include <cgv/gui/provider.h>
+#include <cgv/gui/application.h>
 #include <cgv/math/ftransform.h>
 #include <cgv/render/drawable.h>
 #include <cgv/render/shader_library.h>
@@ -28,6 +29,11 @@ protected:
 
 	bool debug_matrices = false;
 	float view_test = 0.0f;
+	cgv::gui::window_ptr gui_window;
+	float pitch = 673.46088569750157;
+	float slope = -0.074780801514116493;
+	float center = 0.076352536678314209;
+
 public:
 	holo_raycast() : cgv::base::node("Holographic Raycast Demo")
 	{
@@ -36,6 +42,17 @@ public:
 			std::cerr << "could not read holographic display calibration from <"
 					  << QUOTE_SYMBOL_VALUE(INPUT_DIR) "/visual.json>" << std::endl;
 		shader_calib.compute(disp_calib);
+
+		gui_window = cgv::gui::application::create_window(500, 800, "UI", "generic:tab");
+		cgv::gui::gui_group_ptr gptr = gui_window->get_inner_group();
+		gptr->add_decorator("Hello World", "heading", "level=2", "\n");
+		connect_copy(gptr->add_control("pitch", pitch, "value_slider", "min=500;max=1000;ticks=true")->value_change,
+			cgv::signal::rebind(this, &holo_raycast::on_set, cgv::signal::_c(&pitch)));
+		connect_copy(gptr->add_control("slope", slope, "value_slider", "min=-1;max=1;ticks=true")->value_change,
+			cgv::signal::rebind(this, &holo_raycast::on_set, cgv::signal::_c(&slope)));
+		connect_copy(gptr->add_control("center", center, "value_slider", "min=-1;max=1;ticks=true")->value_change,
+			cgv::signal::rebind(this, &holo_raycast::on_set, cgv::signal::_c(&center)));
+		gui_window->show();
 	}
 	void stream_help (std::ostream &os) {
 		os << "holo_raycast:" << std::endl
@@ -129,6 +146,9 @@ public:
 		// general appearance and test parameters
 		raycast_prog.set_uniform(ctx, "light_direction", light_direction);
 		raycast_prog.set_uniform(ctx, "enable_shadows", enable_shadows);
+		raycast_prog.set_uniform(ctx, "pitch", pitch);
+		raycast_prog.set_uniform(ctx, "slope", slope);
+		raycast_prog.set_uniform(ctx, "center", center);
 		glDrawArrays(GL_TRIANGLE_STRIP, 0, 4);
 		raycast_prog.disable(ctx);
 	}
@@ -262,4 +282,4 @@ public:
 #include <cgv/base/register.h>
 
 /// register a factory to create new holographic raycast demos
-cgv::base::factory_registration<holo_raycast> holo_raycast2_fac("New/Demo/Holographic Raycast Demo");
+cgv::base::factory_registration<holo_raycast> holo_raycast2_fac("New/Demo/Holographic Raycast Demo", 'Q');
