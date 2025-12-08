@@ -125,7 +125,7 @@ $(document).ready(function(){initNavTree('transformation__gizmo_8cxx_source.html
 <div class="line"><a id="l00026" name="l00026"></a><span class="lineno">   26</span>    <span class="comment">// calculate ring points for rotation handles</span></div>
 <div class="line"><a id="l00027" name="l00027"></a><span class="lineno">   27</span>    <span class="keywordflow">for</span>(<span class="keywordtype">size_t</span> i = 0; i &lt; _ring_segment_count; ++i) {</div>
 <div class="line"><a id="l00028" name="l00028"></a><span class="lineno">   28</span>        <span class="keywordtype">float</span> t = <span class="keyword">static_cast&lt;</span><span class="keywordtype">float</span><span class="keyword">&gt;</span>(i) / <span class="keyword">static_cast&lt;</span><span class="keywordtype">float</span><span class="keyword">&gt;</span>(_ring_segment_count - 1);</div>
-<div class="line"><a id="l00029" name="l00029"></a><span class="lineno">   29</span>        t *= 2.0f * M_PI;</div>
+<div class="line"><a id="l00029" name="l00029"></a><span class="lineno">   29</span>        t *= 2.0f * float(M_PI);</div>
 <div class="line"><a id="l00030" name="l00030"></a><span class="lineno">   30</span>        _ring_points.push_back({ std::cos(t), std::sin(t) });</div>
 <div class="line"><a id="l00031" name="l00031"></a><span class="lineno">   31</span>    }</div>
 <div class="line"><a id="l00032" name="l00032"></a><span class="lineno">   32</span>    _ring_points.back() = _ring_points.front();</div>
@@ -337,7 +337,7 @@ $(document).ready(function(){initNavTree('transformation__gizmo_8cxx_source.html
 <div class="line"><a id="l00234" name="l00234"></a><span class="lineno">  234</span>    <span class="keywordflow">switch</span>(_interaction_feature) {</div>
 <div class="line"><a id="l00235" name="l00235"></a><span class="lineno">  235</span>    <span class="keywordflow">case</span> InteractionFeature::kAxis:</div>
 <div class="line"><a id="l00236" name="l00236"></a><span class="lineno">  236</span>        <span class="keywordflow">if</span>(use_axes) {</div>
-<div class="line"><a id="l00237" name="l00237"></a><span class="lineno">  237</span>            <span class="keywordtype">size_t</span> base_idx = 2.0f * axis_idx;</div>
+<div class="line"><a id="l00237" name="l00237"></a><span class="lineno">  237</span>            <span class="keywordtype">size_t</span> base_idx = 2 * axis_idx;</div>
 <div class="line"><a id="l00238" name="l00238"></a><span class="lineno">  238</span>            <span class="keywordflow">if</span>(has_translation &amp;&amp; has_scale &amp;&amp; _interaction_mode == Mode::kScale || has_translation != has_scale) {</div>
 <div class="line"><a id="l00239" name="l00239"></a><span class="lineno">  239</span>                saturate_color(_cones.colors[base_idx]);</div>
 <div class="line"><a id="l00240" name="l00240"></a><span class="lineno">  240</span>                saturate_color(_cones.colors[base_idx + 1]);</div>
@@ -375,8 +375,8 @@ $(document).ready(function(){initNavTree('transformation__gizmo_8cxx_source.html
 <div class="line"><a id="l00272" name="l00272"></a><span class="lineno">  272</span> </div>
 <div class="line"><a id="l00273" name="l00273"></a><span class="lineno">  273</span><span class="keywordtype">void</span> transformation_gizmo::draw_geometry(<a class="code hl_class" href="classcgv_1_1render_1_1context.html">context</a>&amp; ctx) {</div>
 <div class="line"><a id="l00274" name="l00274"></a><span class="lineno">  274</span>    <span class="comment">// Pass the y view angle to the renderers so pixel measurements are computed correctly</span></div>
-<div class="line"><a id="l00275" name="l00275"></a><span class="lineno">  275</span>    _rectangle_renderer.set_y_view_angle(get_view()-&gt;get_y_view_angle());</div>
-<div class="line"><a id="l00276" name="l00276"></a><span class="lineno">  276</span>    _sphere_renderer.set_y_view_angle(get_view()-&gt;get_y_view_angle());</div>
+<div class="line"><a id="l00275" name="l00275"></a><span class="lineno">  275</span>    _rectangle_renderer.set_y_view_angle(<span class="keywordtype">float</span>(get_view()-&gt;get_y_view_angle()));</div>
+<div class="line"><a id="l00276" name="l00276"></a><span class="lineno">  276</span>    _sphere_renderer.set_y_view_angle(<span class="keywordtype">float</span>(get_view()-&gt;get_y_view_angle()));</div>
 <div class="line"><a id="l00277" name="l00277"></a><span class="lineno">  277</span> </div>
 <div class="line"><a id="l00278" name="l00278"></a><span class="lineno">  278</span>    <span class="comment">// Since we use scaling in the modelview matrix we also need to adjust the pixel measures</span></div>
 <div class="line"><a id="l00279" name="l00279"></a><span class="lineno">  279</span>    <span class="comment">// in the render styles based on the scale of the gizmo.</span></div>
@@ -460,7 +460,7 @@ $(document).ready(function(){initNavTree('transformation__gizmo_8cxx_source.html
 <div class="line"><a id="l00357" name="l00357"></a><span class="lineno">  357</span> </div>
 <div class="line"><a id="l00358" name="l00358"></a><span class="lineno">  358</span>    <span class="keywordflow">if</span>(_mode == Mode::kModel) {</div>
 <div class="line"><a id="l00359" name="l00359"></a><span class="lineno">  359</span>        cylinder_count += 3;</div>
-<div class="line"><a id="l00360" name="l00360"></a><span class="lineno">  360</span>        <span class="keywordflow">for</span>(<span class="keywordtype">size_t</span> i = 0; i &lt; 3; ++i) {</div>
+<div class="line"><a id="l00360" name="l00360"></a><span class="lineno">  360</span>        <span class="keywordflow">for</span>(<span class="keywordtype">int</span> i = 0; i &lt; 3; ++i) {</div>
 <div class="line"><a id="l00361" name="l00361"></a><span class="lineno">  361</span>            cylinders[i + 3].first[i] = axis_length + 2.0f * _handle_size;</div>
 <div class="line"><a id="l00362" name="l00362"></a><span class="lineno">  362</span>            cylinders[i + 3].second[i] = axis_length + 4.0f * _handle_size;</div>
 <div class="line"><a id="l00363" name="l00363"></a><span class="lineno">  363</span>        }</div>
@@ -480,7 +480,7 @@ $(document).ready(function(){initNavTree('transformation__gizmo_8cxx_source.html
 <div class="line"><a id="l00377" name="l00377"></a><span class="lineno">  377</span>    <span class="comment">// test rectangles for planes</span></div>
 <div class="line"><a id="l00378" name="l00378"></a><span class="lineno">  378</span>    <span class="keywordflow">if</span>(_mode == Mode::kTranslation || _mode == Mode::kScale) {</div>
 <div class="line"><a id="l00379" name="l00379"></a><span class="lineno">  379</span>        <span class="keywordtype">float</span> t = std::numeric_limits&lt;float&gt;::max();</div>
-<div class="line"><a id="l00380" name="l00380"></a><span class="lineno">  380</span>        <span class="keywordflow">for</span>(<span class="keywordtype">size_t</span> i = 0; i &lt; 3; ++i) {</div>
+<div class="line"><a id="l00380" name="l00380"></a><span class="lineno">  380</span>        <span class="keywordflow">for</span>(<span class="keywordtype">int</span> i = 0; i &lt; 3; ++i) {</div>
 <div class="line"><a id="l00381" name="l00381"></a><span class="lineno">  381</span>            <a class="code hl_class" href="classcgv_1_1math_1_1fvec.html">vec3</a> position = { 0.5f };</div>
 <div class="line"><a id="l00382" name="l00382"></a><span class="lineno">  382</span>            position[i] = 0.0f;</div>
 <div class="line"><a id="l00383" name="l00383"></a><span class="lineno">  383</span>            <span class="keywordflow">if</span>(cgv::math::ray_axis_aligned_rectangle_intersection(ray, position, { _plane_size }, <span class="keyword">static_cast&lt;</span><span class="keywordtype">int</span><span class="keyword">&gt;</span>(i), t))</div>
@@ -657,7 +657,7 @@ $(document).ready(function(){initNavTree('transformation__gizmo_8cxx_source.html
 <div class="line"><a id="l00554" name="l00554"></a><span class="lineno">  554</span> </div>
 <div class="line"><a id="l00555" name="l00555"></a><span class="lineno">  555</span>            <span class="comment">// check for side and bring angle in range [0,2pi];</span></div>
 <div class="line"><a id="l00556" name="l00556"></a><span class="lineno">  556</span>            <span class="keywordflow">if</span>(dot(plane_tangent, end_dir) &lt; 0.0f)</div>
-<div class="line"><a id="l00557" name="l00557"></a><span class="lineno">  557</span>                angle = 2.0f * M_PI - angle;</div>
+<div class="line"><a id="l00557" name="l00557"></a><span class="lineno">  557</span>                angle = 2.0f * float(M_PI) - angle;</div>
 <div class="line"><a id="l00558" name="l00558"></a><span class="lineno">  558</span> </div>
 <div class="line"><a id="l00559" name="l00559"></a><span class="lineno">  559</span>            <a class="code hl_class" href="classcgv_1_1math_1_1fvec.html">vec3</a> rotaton_axis = _interaction_feature == InteractionFeature::kCenter ? _interaction_plane.normal : axis;</div>
 <div class="line"><a id="l00560" name="l00560"></a><span class="lineno">  560</span> </div>
