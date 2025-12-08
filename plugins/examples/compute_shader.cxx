@@ -67,7 +67,7 @@ public:
 			const size_t group_count = cgv::math::div_round_up(sphere_count, group_size);
 
 			// Dispatch group_count groups in 1 dimension since we are working on a 1D array.
-			glDispatchCompute(group_count, 1, 1);
+			glDispatchCompute((GLsizei)group_count, 1, 1);
 
 			// Wait for all writes to shader storage buffers to be completed.
 			glMemoryBarrier(GL_SHADER_STORAGE_BARRIER_BIT);

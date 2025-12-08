@@ -158,43 +158,43 @@ protected:
 		ca = cos(a);
 	}
 	cgv::vec3 eval(float u, float v, float a, float b, float sa, float ca, float sb, float cb) const {
-		return v < 0.25 ? cgv::vec3((2.5 - 1.5 * cb) * ca, (2.5 - 1.5 * cb) * sa, -2.5 * sb) : (
-			   v < 0.50 ? cgv::vec3((2.5 - 1.5 * cb) * ca, (2.5 - 1.5 * cb) * sa, 3 * b - 3 * pi) : (
-			   v < 0.75 ? cgv::vec3(-2 + (2 + ca) * cb, sa, (2 + ca) * sb + 3 * pi) :
+		return v < 0.25f ? cgv::vec3((2.5f - 1.5f * cb) * ca, (2.5f - 1.5f * cb) * sa, -2.5f * sb) : (
+			   v < 0.50f ? cgv::vec3((2.5f - 1.5f * cb) * ca, (2.5f - 1.5f * cb) * sa, 3 * b - 3 * pi) : (
+			   v < 0.75f ? cgv::vec3(-2 + (2 + ca) * cb, sa, (2 + ca) * sb + 3 * pi) :
 					      cgv::vec3(-2 + 2 * cb - ca, sa, -3 * b + 12 * pi)));
 	}
 	cgv::vec3 diff_u(float u, float v, float a, float b, float sa, float ca, float sb, float cb) const {
-		return v < 0.25 ? cgv::vec3(-pi*(5 - 3 * cb) * sa, pi*(5 - 3 * cb) * ca, 0) : (
-			   v < 0.50 ? cgv::vec3(-pi*(5 - 3 * cb) * sa, pi*(5 - 3 * cb) * ca, 0) : (
-			   v < 0.75 ? cgv::vec3(-2*pi*cb*sa, 2*pi*ca, -2*pi*sb*sa) :
-					      cgv::vec3(2*pi*sa, 2*pi*ca, 0)));
+		return v < 0.25f ? cgv::vec3(-pi*(5 - 3 * cb) * sa, pi*(5 - 3 * cb) * ca, 0) : (
+			   v < 0.50f ? cgv::vec3(-pi*(5 - 3 * cb) * sa, pi*(5 - 3 * cb) * ca, 0) : (
+			   v < 0.75f ? cgv::vec3(-2*pi*cb*sa, 2*pi*ca, -2*pi*sb*sa) :
+					       cgv::vec3(2*pi*sa, 2*pi*ca, 0)));
 	}
 	cgv::vec3 diff_v(float u, float v, float a, float b, float sa, float ca, float sb, float cb) const {
-		return v < 0.25 ? cgv::vec3(6*pi*ca*sb, 6*pi*sa*sb, -10*pi*cb) : (
-			   v < 0.50 ? cgv::vec3(6*pi*ca*sb, 6*pi*sa*sb, 12*pi) : (
-			   v < 0.75 ? cgv::vec3(-4*pi*ca*sb, 0, 4*pi*ca*cb) :
-					      cgv::vec3(-8*pi*sb, 0, -12*pi)));
+		return v < 0.25f ? cgv::vec3(6*pi*ca*sb, 6*pi*sa*sb, -10*pi*cb) : (
+			   v < 0.50f ? cgv::vec3(6*pi*ca*sb, 6*pi*sa*sb, 12*pi) : (
+			   v < 0.75f ? cgv::vec3(-4*pi*ca*sb, 0, 4*pi*ca*cb) :
+					       cgv::vec3(-8*pi*sb, 0, -12*pi)));
 	}
 	bool compute_normal(float u, float v, float a, float b, float sa, float ca, float sb, float cb, cgv::vec3& nml) const {
 		nml = cross(diff_u(u, v, a, b, sa, ca, sb, cb), diff_v(u, v, a, b, sa, ca, sb, cb));
 		return nml.safe_normalize();
 	}
 	cgv::vec3 diff_uu(float u, float v, float a, float b, float sa, float ca, float sb, float cb) const {
-		return v < 0.25 ? cgv::vec3(-pi*pi*(10-6*cb)*ca, -pi*pi*(10-6*cb)*sa, 0) : (
-			   v < 0.50 ? cgv::vec3(-pi*pi*(10-6*cb)*ca, -pi*pi*(10-6*cb)*sa, 0) : (
-			   v < 0.75 ? cgv::vec3(-4*pi*pi*cb*ca, -4*pi*pi*sa, -4*pi*pi*sb*ca) :
-					      cgv::vec3(4*pi*pi*ca, -4*pi*pi*sa, 0)));
+		return v < 0.25f ? cgv::vec3(-pi*pi*(10-6*cb)*ca, -pi*pi*(10-6*cb)*sa, 0) : (
+			   v < 0.50f ? cgv::vec3(-pi*pi*(10-6*cb)*ca, -pi*pi*(10-6*cb)*sa, 0) : (
+			   v < 0.75f ? cgv::vec3(-4*pi*pi*cb*ca, -4*pi*pi*sa, -4*pi*pi*sb*ca) :
+					       cgv::vec3(4*pi*pi*ca, -4*pi*pi*sa, 0)));
 	}
 	cgv::vec3 diff_uv(float u, float v, float a, float b, float sa, float ca, float sb, float cb) const {
-		return v < 0.25 ? cgv::vec3(-12*pi*pi*sa*sb, 12*pi*pi*ca*sb, 0) : (
-			   v < 0.50 ? cgv::vec3(-12*pi*pi*sa*sb, 12*pi*pi*ca*sb, 0) : (
-			   v < 0.75 ? cgv::vec3(  8*pi*pi*sa*sb, 0, -8*pi*pi*sa*cb) :
-					      cgv::vec3(0, 0, 0)));
+		return v < 0.25f ? cgv::vec3(-12*pi*pi*sa*sb, 12*pi*pi*ca*sb, 0) : (
+			   v < 0.50f ? cgv::vec3(-12*pi*pi*sa*sb, 12*pi*pi*ca*sb, 0) : (
+			   v < 0.75f ? cgv::vec3(  8*pi*pi*sa*sb, 0, -8*pi*pi*sa*cb) :
+					       cgv::vec3(0, 0, 0)));
 	}
 	cgv::vec3 diff_vv(float u, float v, float a, float b, float sa, float ca, float sb, float cb) const {
-		return v < 0.25 ? cgv::vec3(24*pi*pi*ca*cb, 24*pi*pi*sa*cb, 40*pi*pi*sb) : (
-			   v < 0.50 ? cgv::vec3(24*pi*pi*ca*cb, 24*pi*pi*sa*cb, 0) : (
-			   v < 0.75 ? cgv::vec3(-16*pi*pi*ca*cb, 0, -16*pi*pi*ca*sb) :
+		return v < 0.25f ? cgv::vec3(24*pi*pi*ca*cb, 24*pi*pi*sa*cb, 40*pi*pi*sb) : (
+			   v < 0.50f ? cgv::vec3(24*pi*pi*ca*cb, 24*pi*pi*sa*cb, 0) : (
+			   v < 0.75f ? cgv::vec3(-16*pi*pi*ca*cb, 0, -16*pi*pi*ca*sb) :
 					      cgv::vec3(-32*pi*pi*cb, 0, 0)));
 	}
 public:
