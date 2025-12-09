@@ -1,6 +1,7 @@
 #include "transformation_gizmo.h"
 
 #include <cgv/math/intersection.h>
+#include <cgv/math/constants.h>
 
 using namespace cgv::render;
 
@@ -26,7 +27,7 @@ transformation_gizmo::transformation_gizmo() {
 	// calculate ring points for rotation handles
 	for(size_t i = 0; i < _ring_segment_count; ++i) {
 		float t = static_cast<float>(i) / static_cast<float>(_ring_segment_count - 1);
-		t *= 2.0f * float(M_PI);
+		t *= 2.0f * static_cast<float>(PI);
 		_ring_points.push_back({ std::cos(t), std::sin(t) });
 	}
 	_ring_points.back() = _ring_points.front();
@@ -234,7 +235,7 @@ void transformation_gizmo::create_geometry() {
 	switch(_interaction_feature) {
 	case InteractionFeature::kAxis:
 		if(use_axes) {
-			size_t base_idx = 2 * axis_idx;
+			size_t base_idx = 2 * static_cast<size_t>(axis_idx);
 			if(has_translation && has_scale && _interaction_mode == Mode::kScale || has_translation != has_scale) {
 				saturate_color(_cones.colors[base_idx]);
 				saturate_color(_cones.colors[base_idx + 1]);
@@ -272,8 +273,8 @@ void transformation_gizmo::create_geometry() {
 
 void transformation_gizmo::draw_geometry(context& ctx) {
 	// Pass the y view angle to the renderers so pixel measurements are computed correctly
-	_rectangle_renderer.set_y_view_angle(float(get_view()->get_y_view_angle()));
-	_sphere_renderer.set_y_view_angle(float(get_view()->get_y_view_angle()));
+	_rectangle_renderer.set_y_view_angle(static_cast<float>(get_view()->get_y_view_angle()));
+	_sphere_renderer.set_y_view_angle(static_cast<float>(get_view()->get_y_view_angle()));
 
 	// Since we use scaling in the modelview matrix we also need to adjust the pixel measures
 	// in the render styles based on the scale of the gizmo.
@@ -554,7 +555,7 @@ bool transformation_gizmo::drag(const cgv::math::ray3& ray) {
 
 			// check for side and bring angle in range [0,2pi];
 			if(dot(plane_tangent, end_dir) < 0.0f)
-				angle = 2.0f * float(M_PI) - angle;
+				angle = 2.0f * static_cast<float>(PI) - angle;
 
 			vec3 rotaton_axis = _interaction_feature == InteractionFeature::kCenter ? _interaction_plane.normal : axis;
 
