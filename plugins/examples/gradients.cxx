@@ -163,7 +163,7 @@ private:
 	}
 
 	void create_test_volume(cgv::render::context& ctx) {
-		volume_resolution = cgv::uvec3(96, 64, 29); // odd-shaped resolution to show the shader is not limited to nice power-of-two resolutions
+		volume_resolution = cgv::ivec3(96, 64, 29); // odd-shaped resolution to show the shader is not limited to nice power-of-two resolutions
 
 		// destruct previous textures
 		volume_texture.destruct(ctx);
@@ -173,7 +173,7 @@ private:
 
 		// compute volume data
 		std::vector<float> vol_data(volume_resolution[0] * volume_resolution[1] * volume_resolution[2], 0.0f);
-		cgv::uvec3 voxel = { 0 };
+		cgv::ivec3 voxel = { 0 };
 		unsigned i = 0;
 		for(voxel[2] = 0; voxel[2] < volume_resolution[2]; ++voxel[2]) {
 			for(voxel[1] = 0; voxel[1] < volume_resolution[1]; ++voxel[1]) {
@@ -240,7 +240,7 @@ private:
 		const float voxel_size = 1.0f / static_cast<float>(cgv::math::min_value(volume_resolution));
 
 		// Loop over all voxels and place arrows to visualize the gradients
-		cgv::uvec3 voxel = { 0 };
+		cgv::ivec3 voxel = { 0 };
 		unsigned i = 0;
 		for(voxel[2] = 0; voxel[2] < volume_resolution[2]; ++voxel[2]) {
 			for(voxel[1] = 0; voxel[1] < volume_resolution[1]; ++voxel[1]) {
@@ -261,7 +261,7 @@ private:
 	
 	/// voxel resolution of the volume in all three dimensions
 	cgv::box3 volume_bounding_box = { cgv::vec3(0.0f), cgv::vec3(1.0f) };
-	cgv::uvec3 volume_resolution = { -1u };
+	cgv::ivec3 volume_resolution = { 0 };
 	/// whether to show the volume
 	bool show_volume = true;
 	/// whether to show the gradients
