@@ -188,7 +188,7 @@ private:
 			std::cout << "Filtering done in " << (time / 1'000'000.0f) << " ms. Copied " << filtered_count << " elements." << std::endl;
 		}
 
-		sphere_render_count = (int)filtered_count;
+		sphere_render_count = static_cast<int>(filtered_count);
 	}
 
 	std::default_random_engine random_engine;

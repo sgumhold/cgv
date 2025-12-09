@@ -200,7 +200,7 @@ private:
 		// update the volume bounding box to later scale the rendering accordingly
 		// the bounding box is centered around the origin and is scaled so that the minimum extent is 1
 		unsigned min_resolution = cgv::math::min_value(volume_resolution);
-		const cgv::vec3 extent = cgv::vec3(volume_resolution) / cgv::vec3(float(min_resolution));
+		const cgv::vec3 extent = cgv::vec3(volume_resolution) / cgv::vec3(static_cast<float>(min_resolution));
 		cgv::vec3 min = -0.5f * extent;
 		volume_bounding_box.ref_min_pnt() = min;
 		volume_bounding_box.ref_max_pnt() = min + extent;
