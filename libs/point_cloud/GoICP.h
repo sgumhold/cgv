@@ -9,6 +9,7 @@ WIP
 #include <ctime>
 #include <vector>
 #include <cgv/math/svd.h>
+#include <cgv/math/constants.h>
 #include <memory>
 #include "3ddt.h"
 #include "ICP.h"
@@ -217,7 +218,6 @@ namespace cgv {
 		template<GoICP::DistanceComputationMode DCM>
 		inline void GoICP::outerBnB()
 		{
-			static const double PI = 3.141592653589793238462643383279502884L;
 			float lower_bound, upper_bound, error, dis;
 			rotation_node rot_node;
 			translation_node trans_node;
@@ -275,7 +275,7 @@ namespace cgv {
 
 					float t = v.length();
 					// ignore subcubes outside the pi ball (rotations > 180 deg)
-					if (t - sqrt(3) * rot_node.w / 2 > PI) continue;
+					if (t - cgv::math::constants::sqrt3 * rot_node.w / 2 > cgv::math::constants::pi) continue;
 
 					// build rotation matrix from axis angle representation
 					if (t > 0)
