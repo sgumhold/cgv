@@ -49,7 +49,7 @@ public:
 
 	ivec2 get_resolution() const;
 
-	void set_resolution(cgv::render::context& ctx, const ivec2& resolution);
+	void set_resolution(const ivec2& resolution);
 
 	CoordinateOrigin get_origin_setting() const;
 
