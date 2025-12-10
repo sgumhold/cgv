@@ -244,7 +244,7 @@ void navigator::init_frame(context& ctx) {
 		fbc.set_size(get_rectangle().size);
 		fbc.ensure(ctx);
 
-		blit_canvas.set_resolution(ctx, get_viewport_size());
+		blit_canvas.set_resolution(get_viewport_size());
 	}
 }
 

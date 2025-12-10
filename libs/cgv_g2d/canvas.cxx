@@ -65,7 +65,7 @@ ivec2 canvas::get_resolution() const {
 	return resolution;
 }
 
-void canvas::set_resolution(cgv::render::context& ctx, const ivec2& resolution) {
+void canvas::set_resolution(const ivec2& resolution) {
 	this->resolution = resolution;
 }
 
