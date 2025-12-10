@@ -11,6 +11,7 @@ var dir_eaf9d2518f1ede0a595228de81ad9d4d =
     [ "cgv_math.pj", "cgv__math_8pj_source.html", null ],
     [ "chol.h", "chol_8h_source.html", null ],
     [ "color_operations.h", "color__operations_8h_source.html", null ],
+    [ "compare_float.h", "compare__float_8h_source.html", null ],
     [ "constants.h", "constants_8h_source.html", null ],
     [ "convert_curve.h", "convert__curve_8h_source.html", null ],
     [ "det.h", "det_8h_source.html", null ],

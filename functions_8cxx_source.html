@@ -109,12 +109,12 @@ $(document).ready(function(){initNavTree('functions_8cxx_source.html',''); initR
 <div class="line"><a id="l00011" name="l00011"></a><span class="lineno">   11</span>    <span class="keywordflow">if</span> (cache.empty()) {</div>
 <div class="line"><a id="l00012" name="l00012"></a><span class="lineno">   12</span>        cache.reserve(10);</div>
 <div class="line"><a id="l00013" name="l00013"></a><span class="lineno">   13</span>        cache.push_back(2.0);</div>
-<div class="line"><a id="l00014" name="l00014"></a><span class="lineno">   14</span>        cache.push_back(PI);</div>
+<div class="line"><a id="l00014" name="l00014"></a><span class="lineno">   14</span>        cache.push_back(cgv::math::constants::pi);</div>
 <div class="line"><a id="l00015" name="l00015"></a><span class="lineno">   15</span>    }</div>
 <div class="line"><a id="l00016" name="l00016"></a><span class="lineno">   16</span>    <span class="keywordflow">if</span> (n == 0)</div>
 <div class="line"><a id="l00017" name="l00017"></a><span class="lineno">   17</span>        <span class="keywordflow">return</span> 0;</div>
 <div class="line"><a id="l00018" name="l00018"></a><span class="lineno">   18</span>    <span class="keywordflow">while</span> (n &gt; cache.size())</div>
-<div class="line"><a id="l00019" name="l00019"></a><span class="lineno">   19</span>        cache.push_back(*(cache.end()-2) * TWO_PI/cache.size());</div>
+<div class="line"><a id="l00019" name="l00019"></a><span class="lineno">   19</span>        cache.push_back(*(cache.end()-2) * 2.0 * cgv::math::constants::pi/cache.size());</div>
 <div class="line"><a id="l00020" name="l00020"></a><span class="lineno">   20</span>    <span class="keywordflow">return</span> cache[n-1];</div>
 <div class="line"><a id="l00021" name="l00021"></a><span class="lineno">   21</span>}</div>
 <div class="line"><a id="l00023" name="l00023"></a><span class="lineno">   23</span><span class="keywordtype">double</span> compute_ball_volume(<span class="keywordtype">unsigned</span> n, <span class="keywordtype">double</span> R)</div>
@@ -125,7 +125,7 @@ $(document).ready(function(){initNavTree('functions_8cxx_source.html',''); initR
 <div class="line"><a id="l00029" name="l00029"></a><span class="lineno">   29</span>{</div>
 <div class="line"><a id="l00030" name="l00030"></a><span class="lineno">   30</span>    <span class="keywordflow">if</span> (n &lt; 2)</div>
 <div class="line"><a id="l00031" name="l00031"></a><span class="lineno">   31</span>        <span class="keywordflow">return</span> 0;</div>
-<div class="line"><a id="l00032" name="l00032"></a><span class="lineno">   32</span>    <span class="keywordflow">return</span> TWO_PI*compute_unit_ball_volume(n-1);</div>
+<div class="line"><a id="l00032" name="l00032"></a><span class="lineno">   32</span>    <span class="keywordflow">return</span> 2.0 * cgv::math::constants::pi * compute_unit_ball_volume(n-1);</div>
 <div class="line"><a id="l00033" name="l00033"></a><span class="lineno">   33</span>}</div>
 <div class="line"><a id="l00035" name="l00035"></a><span class="lineno">   35</span><span class="keywordtype">double</span> compute_sphere_area(<span class="keywordtype">unsigned</span> n, <span class="keywordtype">double</span> R)</div>
 <div class="line"><a id="l00036" name="l00036"></a><span class="lineno">   36</span>{</div>
