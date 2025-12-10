@@ -5,6 +5,8 @@
 #include <limits>
 #include <vector>
 
+//#include "constants.h"
+
 #include "lib_begin.h"
 
 namespace cgv{
@@ -221,17 +223,17 @@ namespace cgv{
 
 		//convert angles measured in degree to angles measured in rad
 		template <typename T>
-		T deg2rad(const T& deg)
+		T deg2rad(T deg)
 		{
-			return (T)(deg *3.14159/180.0);
+			return static_cast<T>(deg * static_cast<T>(cgv::math::constants::pi / 180.0));
 		}
 
 
 		//convert angles measured in rad to angles measured in degree
 		template <typename T>
-		T rad2deg(const T& rad)
+		T rad2deg(T rad)
 		{
-			return (T)(rad*180.0/3.14159);
+			return static_cast<T>(rad * static_cast<T>(180.0 * cgv::math::constants::inv_pi));
 		}
 
 		//ln(gamma(x))

@@ -27,7 +27,7 @@ transformation_gizmo::transformation_gizmo() {
 	// calculate ring points for rotation handles
 	for(size_t i = 0; i < _ring_segment_count; ++i) {
 		float t = static_cast<float>(i) / static_cast<float>(_ring_segment_count - 1);
-		t *= 2.0f * static_cast<float>(PI);
+		t *= static_cast<float>(2.0 * cgv::math::constants::pi);
 		_ring_points.push_back({ std::cos(t), std::sin(t) });
 	}
 	_ring_points.back() = _ring_points.front();
@@ -555,7 +555,7 @@ bool transformation_gizmo::drag(const cgv::math::ray3& ray) {
 
 			// check for side and bring angle in range [0,2pi];
 			if(dot(plane_tangent, end_dir) < 0.0f)
-				angle = 2.0f * static_cast<float>(PI) - angle;
+				angle = static_cast<float>(2.0 * cgv::math::constants::pi) - angle;
 
 			vec3 rotaton_axis = _interaction_feature == InteractionFeature::kCenter ? _interaction_plane.normal : axis;
 

@@ -13,8 +13,11 @@
 #include <iostream>
 #include <limits>
 #include <sstream>
+
 #include <cgv/type/standard_types.h>
-#include <cgv/math/functions.h>
+
+#include "constants.h"
+#include "functions.h"
 
 namespace cgv {
 namespace math {
@@ -614,6 +617,30 @@ fvec<T, 2> ortho(const fvec<T, 2>& v) {
 template <typename T>
 fvec<T, 3> ortho(const fvec<T, 3>& v) {
 	return std::abs(v.x()) > std::abs(v.z()) ? fvec<T, 3>(-v.y(), v.x(), T(0)) : fvec<T, 3>(T(0), -v.z(), v.y());
+}
+
+/// return an angle in radians from a direction vector (only defined for 2d case)
+template <typename T, cgv::type::uint32_type N>
+T to_angle(fvec<T, N> v) = delete;
+
+/// return an angle in radians from a direction vector; (1,0) is mapped to 0; angle increases counter-clockwise
+template <typename T>
+T to_angle(fvec<T, 2> v) {
+	v.normalize();
+	float a = std::atan2(v.y(), v.x());
+	if(a < T(0))
+		a += T(2) * static_cast<T>(cgv::math::constants::pi);
+	return a;
+}
+
+/// return a direction from an angle given in radians (only defined for 2d case)
+template <typename T, cgv::type::uint32_type N>
+T to_direction(fvec<T, N> v) = delete;
+
+/// return a direction from an angle given in radians; 0 is mapped to (1,0); positive angles rotate direction counter-clockwise
+template <typename T>
+fvec<T, 2> to_direction(T a) {
+	return fvec<T, 2>(std::cos(a), std::sin(a));
 }
 
 } // namespace math
