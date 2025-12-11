@@ -4,6 +4,7 @@
 #include <cgv/gui/key_event.h>
 #include <cgv/gui/mouse_event.h>
 #include <cgv/math/ftransform.h>
+#include <cgv/math/inv.h>
 #include <cgv_gl/gl/gl.h>
 
 using namespace cgv::render;

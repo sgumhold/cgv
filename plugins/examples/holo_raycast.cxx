@@ -5,6 +5,7 @@
 #include <cgv/gui/provider.h>
 #include <cgv/gui/application.h>
 #include <cgv/math/ftransform.h>
+#include <cgv/math/inv.h>
 #include <cgv/render/drawable.h>
 #include <cgv/render/shader_library.h>
 #include <cgv/render/stereo_view.h>

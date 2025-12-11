@@ -1,7 +1,7 @@
 #include "gl_transparent_renderer.h"
 #include "gl_tools.h"
+#include <cgv/math/inv.h>
 #include <cgv_gl/gl/gl.h>
-
 
 namespace cgv {
 	namespace render {

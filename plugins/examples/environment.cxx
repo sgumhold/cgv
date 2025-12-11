@@ -6,6 +6,7 @@
 #include <cgv/gui/provider.h>
 #include <cgv/gui/trigger.h>
 #include <cgv/math/ftransform.h>
+#include <cgv/math/inv.h>
 #include <cgv/media/image/image.h>
 #include <cgv/media/image/image_reader.h>
 #include <cgv/media/mesh/simple_mesh.h>

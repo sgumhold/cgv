@@ -1,5 +1,6 @@
 #include "temporal_anti_aliasing.h"
 
+#include <cgv/math/inv.h>
 #include <cgv/render/view.h>
 
 namespace cgv {
