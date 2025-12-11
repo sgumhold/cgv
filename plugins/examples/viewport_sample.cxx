@@ -37,7 +37,7 @@ public:
 	bool mouse_over_panel = false;
 	int n = 3;
 	int m = 2;
-	int offset_x = 0, offset_y = 0;
+	cgv::ivec2 label_offset = { 0 };
 	std::vector<cgv::vec3> points;
 	std::vector<cgv::rgb> colors;
 	cgv::render::sphere_render_style srs;
@@ -128,12 +128,10 @@ public:
 					ctx.set_color(cgv::rgb(0, 0, 0));
 					for (size_t k = 0; k < points.size(); ++k) {
 						std::string text = cgv::utils::to_string(k);
-						int x, y, vp[4];
-						glGetIntegerv(GL_VIEWPORT, vp);
-						ctx.put_cursor_coords(points[k].to_vec(), x, y);
-						ctx.set_cursor(points[k].to_vec(), text, align, offset_x, offset_y);
-						//ctx.set_cursor(x, y);
+						ctx.set_cursor(points[k], text, align, label_offset);
 						ctx.output_stream() << text << std::endl;
+						//int vp[4];
+						//glGetIntegerv(GL_VIEWPORT, vp);
 						//if (mouse_over_panel && col_idx == i && row_idx == j)
 						//	std::cout << "*";
 						//std::cout << i << "," << j << "(" << vp[0] << "," << vp[1] << ":" << vp[2] << "x" << vp[3] << ") p[" << k << "]=" << x << "," << y << std::endl;
@@ -176,11 +174,11 @@ public:
 	}
 	void create_gui()
 	{
-		add_member_control(this, "n", n, "value_slider", "min=1;max=10");
-		add_member_control(this, "m", m, "value_slider", "min=1;max=10");
-		add_member_control(this, "offset_x", offset_x, "value_slider", "min=-10;max=10;ticks=true");
-		add_member_control(this, "offset_y", offset_y, "value_slider", "min=-10;max=10;ticks=true");
-		add_member_control(this, "align", (cgv::type::DummyEnum&)align, "dropdown", "enums='center,left,right,top=4,topleft,topright,bottom=8,bottomleft,bottomright'");
+		add_member_control(this, "Rows", n, "value_slider", "min=1;max=10");
+		add_member_control(this, "Columns", m, "value_slider", "min=1;max=10");
+		add_member_control(this, "Label offset x", label_offset.x(), "value_slider", "min=-10;max=10;ticks=true");
+		add_member_control(this, "Label offset y", label_offset.y(), "value_slider", "min=-10;max=10;ticks=true");
+		add_member_control(this, "Label alignment", (cgv::type::DummyEnum&)align, "dropdown", "enums='center,left,right,top=4,topleft,topright,bottom=8,bottomleft,bottomright'");
 	}
 	bool handle(event& e)
 	{
