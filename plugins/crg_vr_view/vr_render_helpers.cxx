@@ -1,6 +1,7 @@
 #include <cgv/base/base.h>
 #include "vr_render_helpers.h"
 #include <cgv/math/ftransform.h>
+#include <cgv/math/inv.h>
 #include <cgv/base/import.h>
 
 ///
