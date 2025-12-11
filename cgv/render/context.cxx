@@ -1,7 +1,8 @@
-#include <cgv/base/group.h>
 #include "context.h"
+#include <cgv/base/group.h>
 #include <cgv/media/image/image_writer.h>
 #include <cgv/math/ftransform.h>
+#include <cgv/math/inv.h>
 #include <cgv/base/traverser.h>
 #include <cgv/render/drawable.h>
 #include <cgv/render/shader_program.h>
@@ -2084,6 +2085,18 @@ void context::put_cursor_coords(const vecn& p, int& x, int& y) const
 
 	x = (int)(p4(0) / p4(3));
 	y = (int)(p4(1) / p4(3));
+	error("context::put_cursor_coords() deprecated");
+}
+
+/** transform point p in current world coordinates into opengl coordinates with (0,0) in lower left corner
+	 and return x and y coordinates */
+ivec2 context::get_cursor_coords(const vec3& p) const {
+	dvec4 p4(dvec3(p), 1.0);
+	p4 = get_modelview_projection_window_matrix() * p4;
+	return cgv::ivec2(
+		static_cast<int>(p4.x() / p4.w()),
+		static_cast<int>(p4.y() / p4.w())
+	);
 }
 
 /// sets the current text ouput position
@@ -2110,6 +2123,29 @@ void context::set_cursor(const vecn& pos,
 	x += x_offset;
 	y += y_offset;
 	set_cursor(x,y);
+}
+
+/// sets the current text ouput position
+void context::set_cursor(const vec3& pos,
+	const std::string& text, TextAlignment ta,
+	ivec2 offset) {
+	ivec2 cursor = get_cursor_coords(pos);
+	if(!text.empty() && get_current_font_face()) {
+		float h = get_current_font_size();
+		float w = get_current_font_face()->measure_text_width(text, h);
+		switch(ta & 3) {
+		case 0: cursor.x() -= static_cast<int>(std::floor(w) * 0.5f); break;
+		case 2: cursor.x() -= static_cast<int>(std::floor(w)); break;
+		default: break;
+		}
+		switch(ta & 12) {
+		case 0: cursor.y() -= static_cast<int>(std::floor(h) * 0.3f); break;
+		case 4: cursor.y() -= static_cast<int>(std::floor(h) * 0.6f); break;
+		default: break;
+		}
+	}
+	cursor += offset;
+	set_cursor(cursor.x(), cursor.y());
 }
 
 /// store the current cursor location in the passed references to x and y coordinate

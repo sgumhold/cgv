@@ -2,6 +2,7 @@
 #include <cgv/utils/convert.h>
 #include <cgv/signal/rebind.h>
 #include <cgv/math/ftransform.h>
+#include <cgv/math/inv.h>
 #include <cgv/gui/file_dialog.h>
 #include <cgv/gui/key_event.h>
 #include <cgv/gui/trigger.h>

@@ -1,5 +1,6 @@
 #include "shader_display_calibration.h"
 #include <cgv/math/ftransform.h>
+#include <cgv/math/inv.h>
 
 namespace holo_disp {
 

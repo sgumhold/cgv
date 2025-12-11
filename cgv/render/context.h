@@ -5,20 +5,22 @@
 #ifndef _USE_MATH_DEFINES
 	#define _USE_MATH_DEFINES 1
 #endif
-#include <cgv/defines/deprecated.h>
-#include <cgv/data/data_view.h>
-#include <cgv/media/font/font.h>
-#include <cgv/media/axis_aligned_box.h>
-#include <cgv/media/illum/phong_material.h>
-#include <cgv/media/illum/textured_surface_material.h>
-#include <cgv/media/illum/light_source.h>
-#include <cgv/signal/callback_stream.h>
-#include <cgv/math/vec.h>
-#include <cgv/math/inv.h>
 #include <stack>
 #include <vector>
 #include <string>
 #include <iostream>
+#include <cgv/defines/deprecated.h>
+#include <cgv/data/data_view.h>
+#include <cgv/math/fmat.h>
+#include <cgv/math/fvec.h>
+#include <cgv/math/mat.h>
+#include <cgv/math/vec.h>
+#include <cgv/media/axis_aligned_box.h>
+#include <cgv/media/font/font.h>
+#include <cgv/media/illum/light_source.h>
+#include <cgv/media/illum/phong_material.h>
+#include <cgv/media/illum/textured_surface_material.h>
+#include <cgv/signal/callback_stream.h>
 
 #include "lib_begin.h"
 
@@ -45,7 +47,7 @@ struct device_capabilities {
 	ivec3 max_compute_work_group_size = -1;				/// the maximum size of a work groups that may be used during compilation of a compute shader; dimension index 0, 1, and 2 correspond to the X, Y and Z dimensions, respectively
 };
 
-/// different compond types for data elements
+/// different compound types for data elements
 enum ElementType {
 	ET_VALUE,
 	ET_VECTOR,
@@ -1238,15 +1240,26 @@ public:
 	virtual void get_cursor(int& x, int& y) const;
 	/** transform point p in current world coordinates into opengl coordinates with (0,0) in lower left corner
 		 and put x and y coordinates into the passed variables */
-	virtual void put_cursor_coords(const vecn& p, int& x, int& y) const;
+	DEPRECATED("deprecated, use get_cursor_coords.") virtual void put_cursor_coords(const vecn& p, int& x, int& y) const;
+	/** transform point p in current world coordinates into opengl coordinates with (0,0) in lower left corner
+		 and return x and y coordinates */
+	virtual ivec2 get_cursor_coords(const vec3& p) const;
 	/** flush output_stream and set the current text position from a 3D or 4D
 		 location in current world coordinates. These are transformed to opengl
 		 coordinates opengl coordinates with (0,0) in lower left corner using the put_cursor_coords 
 		 method. If the optional parameters are given, update the cursor location such that the given 
 		 text alignment is achieved. x_offset and y_offset are in pixel and y points upward. */
-	virtual void set_cursor(const vecn& pos, 
+	DEPRECATED("deprecated, use set_cursor(vec3, ...).") virtual void set_cursor(const vecn& pos,
 		const std::string& text = "", TextAlignment ta = TA_BOTTOM_LEFT,
 		int x_offset=0, int y_offset=0);
+	/** flush output_stream and set the current text position from a 3D
+		 location in current world coordinates. These are transformed to opengl
+		 coordinates coordinates with (0,0) in lower left corner using the get_cursor_coords
+		 method. If the optional parameters are given, update the cursor location such that the given
+		 text alignment is achieved. offset is measured in pixels with y pointing upwards. */
+	virtual void set_cursor(const vec3& pos,
+		const std::string& text = "", TextAlignment ta = TA_BOTTOM_LEFT,
+		ivec2 offset = { 0 });
 	//@}
 
 	/**@name drawing*/
