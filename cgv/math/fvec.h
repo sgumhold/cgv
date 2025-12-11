@@ -5,6 +5,7 @@
 #ifndef _USE_MATH_DEFINES
 	#define _USE_MATH_DEFINES 1
 #endif
+#include <algorithm>
 #include <array>
 #include <cmath>
 #include <cstdint>
@@ -114,7 +115,7 @@ public:
 	/// fill the vector with zeros
 	void zeros() { fill(T(0)); }
 	/// fill the vector with zeros except for the last component, which will be set to one
-	void zerosh() { for(unsigned i = 0; i < N - 1; ++i) v[i] = x; v[N - 1] = T(1); }
+	void zerosh() { for(unsigned i = 0; i < N - 1; ++i) v[i] = T(0); v[N - 1] = T(1); }
 	/// fill the vector with ones
 	void ones() { fill(T(1)); }
 	/// convert to homogeneous version by adding a 1
