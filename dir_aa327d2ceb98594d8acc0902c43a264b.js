@@ -17,9 +17,6 @@ var dir_aa327d2ceb98594d8acc0902c43a264b =
     [ "colored_model.cxx", "colored__model_8cxx_source.html", null ],
     [ "colored_model.h", "colored__model_8h_source.html", null ],
     [ "lib_begin.h", "cgv_2media_2lib__begin_8h_source.html", null ],
-    [ "plane.h", "media_2plane_8h_source.html", null ],
-    [ "ray.h", "media_2ray_8h_source.html", null ],
     [ "riff.cxx", "riff_8cxx_source.html", null ],
-    [ "riff.h", "riff_8h_source.html", null ],
-    [ "sphere.h", "media_2sphere_8h_source.html", null ]
+    [ "riff.h", "riff_8h_source.html", null ]
 ];

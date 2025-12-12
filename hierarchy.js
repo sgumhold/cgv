@@ -446,6 +446,8 @@ var hierarchy =
       [ "cgv::math::weighted_edge", "structcgv_1_1math_1_1weighted__edge.html", null ]
     ] ],
     [ "cgv::math::fibo_heap< key_type, value_type, max_degrees >", "classcgv_1_1math_1_1fibo__heap.html", null ],
+    [ "cgv::math::fray< T, N >", "structcgv_1_1math_1_1fray.html", null ],
+    [ "cgv::math::fray< T, 3 >", "structcgv_1_1math_1_1fray_3_01T_00_013_01_4.html", null ],
     [ "cgv::math::fvec< T, N >", "classcgv_1_1math_1_1fvec.html", [
       [ "cgv::math::fmat< volume::coord_type, 3, 3 >", "classcgv_1_1math_1_1fmat.html", null ],
       [ "cgv::math::fmat< float, 4, 4 >", "classcgv_1_1math_1_1fmat.html", null ],
@@ -476,8 +478,7 @@ var hierarchy =
     ] ],
     [ "cgv::math::quadratic_bezier_tube< T >", "classcgv_1_1math_1_1quadratic__bezier__tube.html", null ],
     [ "cgv::math::random", "structcgv_1_1math_1_1random.html", null ],
-    [ "cgv::math::ray< T, N >", "classcgv_1_1math_1_1ray.html", null ],
-    [ "cgv::math::ray< T, 3 >", "classcgv_1_1math_1_1ray_3_01T_00_013_01_4.html", null ],
+    [ "cgv::math::ray< T >", "structcgv_1_1math_1_1ray.html", null ],
     [ "cgv::math::register_sparse_les_factory< T >", "structcgv_1_1math_1_1register__sparse__les__factory.html", null ],
     [ "cgv::math::regular_piecewise_linear_function< T >", "structcgv_1_1math_1_1regular__piecewise__linear__function.html", null ],
     [ "cgv::math::rigid_transform< T >", "classcgv_1_1math_1_1rigid__transform.html", null ],
@@ -572,12 +573,9 @@ var hierarchy =
       [ "cgv::render::gl::gl_implicit_surface_drawable_base", "classcgv_1_1render_1_1gl_1_1gl__implicit__surface__drawable__base.html", null ]
     ] ],
     [ "cgv::media::opacity_alpha_interface< ta_derived >", "structcgv_1_1media_1_1opacity__alpha__interface.html", null ],
-    [ "cgv::media::plane< T >", "classcgv_1_1media_1_1plane.html", null ],
-    [ "cgv::media::ray< T >", "classcgv_1_1media_1_1ray.html", null ],
     [ "cgv::media::rgb_color_interface< ta_derived >", "structcgv_1_1media_1_1rgb__color__interface.html", null ],
     [ "cgv::media::riff_handler", "structcgv_1_1media_1_1riff__handler.html", null ],
     [ "cgv::media::riff_reader", "classcgv_1_1media_1_1riff__reader.html", null ],
-    [ "cgv::media::sphere< T, N >", "classcgv_1_1media_1_1sphere.html", null ],
     [ "cgv::media::transparency_alpha_interface< ta_derived >", "structcgv_1_1media_1_1transparency__alpha__interface.html", null ],
     [ "cgv::media::volume::file_organisation_info", "structcgv_1_1media_1_1volume_1_1file__organisation__info.html", [
       [ "cgv::media::volume::octree_file_organisation_info", "structcgv_1_1media_1_1volume_1_1octree__file__organisation__info.html", null ],
