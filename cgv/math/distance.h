@@ -1,23 +1,11 @@
 #pragma once
 
 #include "fvec.h"
+#include "proximity.h"
 
 /// This header provides common signed and unsigned distance implementations between points and primitives or primitives and primitives.
 namespace cgv {
 namespace math {
-
-/// @brief Computes the point on the line given by direction and going through p0 which is closest to the query point.
-/// 
-/// @tparam T the numeric type.
-/// @tparam N the dimensionality.
-/// @param point the query point.
-/// @param p0 the reference point on the line.
-/// @param direction the line direction.
-/// @return the unsigned distance.
-template <typename T, cgv::type::uint32_type N>
-T closest_point_on_line_to_point(const fvec<T, N>& point, const fvec<T, N>& p0, const fvec<T, N>& direction) {
-	return p0 + (dot(point - p0, direction) / dot(direction, direction)) * direction;
-}
 
 /// @brief Computes the unsigned distance between a point and infinite line given by direction going through p0.
 /// 
@@ -29,8 +17,7 @@ T closest_point_on_line_to_point(const fvec<T, N>& point, const fvec<T, N>& p0, 
 /// @return the unsigned distance.
 template <typename T, cgv::type::uint32_type N>
 T point_line_distance(const fvec<T, N>& point, const fvec<T, N>& p0, const fvec<T, N>& direction) {
-	fvec<T, N> closest_point = closest_point_on_line_to_point(line, point);
-	return length(closest_point - point);
+	return length(closest_point_on_line_to_point(p0, direction), point) - point);
 }
 
 /// @brief Computes the signed distance between a point and axis aligned box located at the origin.
