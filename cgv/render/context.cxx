@@ -2,7 +2,6 @@
 #include <cgv/base/group.h>
 #include <cgv/media/image/image_writer.h>
 #include <cgv/math/ftransform.h>
-#include <cgv/math/lin_solve.h>
 #include <cgv/base/traverser.h>
 #include <cgv/render/drawable.h>
 #include <cgv/render/shader_program.h>
@@ -2055,11 +2054,10 @@ dmat4 context::get_modelview_projection_window_matrix(unsigned array_index) cons
 //! compute model space 3D point from the given window space point and the given modelview_projection_window matrix
 vec3 context::get_model_point(const dvec3& p_window, const dmat4& modelview_projection_window_matrix) 
 {
-	dmatn A(4, 4, &modelview_projection_window_matrix(0, 0));
-	dvecn x;
-	dvecn b(p_window(0), p_window(1), p_window(2), 1.0);
-	svd_solve(A, b, x);
-	return vec3(float(x(0) / x(3)), float(x(1) / x(3)), float(x(2) / x(3)));
+	cgv::dvec4 p(p_window, 1.0);
+	p = inverse(modelview_projection_window_matrix) * p;
+	p /= p.w();
+	return cgv::vec3(static_cast<cgv::vec4>(p));
 }
 
 /// set a new cursor position, which is only valid between calls of push_pixel_coords and pop_pixel_coords
@@ -2090,7 +2088,8 @@ void context::put_cursor_coords(const vecn& p, int& x, int& y) const
 
 /** transform point p in current world coordinates into opengl coordinates with (0,0) in lower left corner
 	 and return x and y coordinates */
-ivec2 context::get_cursor_coords(const vec3& p) const {
+ivec2 context::get_cursor_coords(const vec3& p) const
+{
 	dvec4 p4(dvec3(p), 1.0);
 	p4 = get_modelview_projection_window_matrix() * p4;
 	return cgv::ivec2(
@@ -2128,7 +2127,8 @@ void context::set_cursor(const vecn& pos,
 /// sets the current text ouput position
 void context::set_cursor(const vec3& pos,
 	const std::string& text, TextAlignment ta,
-	ivec2 offset) {
+	ivec2 offset)
+{
 	ivec2 cursor = get_cursor_coords(pos);
 	if(!text.empty() && get_current_font_face()) {
 		float h = get_current_font_size();
