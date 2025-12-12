@@ -225,78 +225,78 @@ $(document).ready(function(){initNavTree('proximity_8h_source.html',''); initRes
 <div class="line"><a id="l00176" name="l00176"></a><span class="lineno">  176</span>            <span class="comment">//T t = (a * f - b * c) / d;</span></div>
 <div class="line"><a id="l00177" name="l00177"></a><span class="lineno">  177</span>            <span class="keywordflow">return</span> <span class="keyword">true</span>;</div>
 <div class="line"><a id="l00178" name="l00178"></a><span class="lineno">  178</span>        }</div>
-<div class="line"><a id="l00187" name="l00187"></a><span class="lineno">  187</span>        <span class="keyword">template</span> &lt;<span class="keyword">typename</span> T&gt;</div>
-<div class="line"><a id="l00188" name="l00188"></a><span class="lineno">  188</span>        fvec&lt;T, 3&gt; closest_point_on_line_to_point(<span class="keyword">const</span> fvec&lt;T, 3&gt;&amp; lo, <span class="keyword">const</span> fvec&lt;T, 3&gt;&amp; ld, <span class="keyword">const</span> fvec&lt;T, 3&gt;&amp; p)</div>
-<div class="line"><a id="l00189" name="l00189"></a><span class="lineno">  189</span>        {</div>
-<div class="line"><a id="l00190" name="l00190"></a><span class="lineno">  190</span>            <span class="keywordflow">return</span> lo + (dot(p - lo, ld) / dot(ld, ld)) * ld;</div>
-<div class="line"><a id="l00191" name="l00191"></a><span class="lineno">  191</span>        }</div>
-<div class="line"><a id="l00202" name="l00202"></a><span class="lineno">  202</span>        <span class="keyword">template</span> &lt;<span class="keyword">typename</span> T&gt;</div>
-<div class="line"><a id="l00203" name="l00203"></a><span class="lineno">  203</span>        <span class="keywordtype">bool</span> closest_point_on_circle_to_point(<span class="keyword">const</span> fvec&lt;T, 3&gt;&amp; co, <span class="keyword">const</span> fvec&lt;T, 3&gt;&amp; cn, T cr, <span class="keyword">const</span> fvec&lt;T, 3&gt;&amp; p, fvec&lt;T, 3&gt;&amp; q)</div>
-<div class="line"><a id="l00204" name="l00204"></a><span class="lineno">  204</span>        {</div>
-<div class="line"><a id="l00205" name="l00205"></a><span class="lineno">  205</span>            fvec&lt;T, 3&gt; d = p - co;</div>
-<div class="line"><a id="l00206" name="l00206"></a><span class="lineno">  206</span>            d -= (dot(d, cn) / dot(cn, cn)) * cn;</div>
-<div class="line"><a id="l00207" name="l00207"></a><span class="lineno">  207</span>            T l = d.length();</div>
-<div class="line"><a id="l00208" name="l00208"></a><span class="lineno">  208</span>            <span class="keywordflow">if</span> (l &lt; 1e-6f)</div>
-<div class="line"><a id="l00209" name="l00209"></a><span class="lineno">  209</span>                <span class="keywordflow">return</span> <span class="keyword">false</span>;</div>
-<div class="line"><a id="l00210" name="l00210"></a><span class="lineno">  210</span>            q = co + (cr / l) * d;</div>
-<div class="line"><a id="l00211" name="l00211"></a><span class="lineno">  211</span>            <span class="keywordflow">return</span> <span class="keyword">true</span>;</div>
-<div class="line"><a id="l00212" name="l00212"></a><span class="lineno">  212</span>        }</div>
-<div class="line"><a id="l00213" name="l00213"></a><span class="lineno">  213</span>        <span class="keyword">template</span> &lt;<span class="keyword">typename</span> T&gt;</div>
-<div class="line"><a id="l00214" name="l00214"></a><span class="lineno">  214</span>        T closest_point_on_line_to_circle_impl(<span class="keyword">const</span> fvec&lt;T, 3&gt;&amp; lo, <span class="keyword">const</span> fvec&lt;T, 3&gt;&amp; ld, <span class="keyword">const</span> fvec&lt;T, 3&gt;&amp; co, <span class="keyword">const</span> fvec&lt;T, 3&gt;&amp; cn, T cr, fvec&lt;T, 3&gt;&amp; q, <span class="keywordtype">int</span>* iter_ptr = 0)</div>
-<div class="line"><a id="l00215" name="l00215"></a><span class="lineno">  215</span>        {</div>
-<div class="line"><a id="l00216" name="l00216"></a><span class="lineno">  216</span>            std::default_random_engine e;</div>
-<div class="line"><a id="l00217" name="l00217"></a><span class="lineno">  217</span>            std::uniform_real_distribution&lt;T&gt; d(-0.01f, 0.01f);</div>
-<div class="line"><a id="l00218" name="l00218"></a><span class="lineno">  218</span>            q = lo;</div>
-<div class="line"><a id="l00219" name="l00219"></a><span class="lineno">  219</span>            fvec&lt;T, 3&gt; q0;</div>
-<div class="line"><a id="l00220" name="l00220"></a><span class="lineno">  220</span>            <span class="keywordtype">int</span> iter = 0;</div>
-<div class="line"><a id="l00221" name="l00221"></a><span class="lineno">  221</span>            T dist = std::numeric_limits&lt;T&gt;::max();</div>
-<div class="line"><a id="l00222" name="l00222"></a><span class="lineno">  222</span>            <span class="keywordflow">do</span> {</div>
-<div class="line"><a id="l00223" name="l00223"></a><span class="lineno">  223</span>                q0 = q;</div>
-<div class="line"><a id="l00224" name="l00224"></a><span class="lineno">  224</span>                <span class="keywordtype">int</span> cnt = 0;</div>
-<div class="line"><a id="l00225" name="l00225"></a><span class="lineno">  225</span>                fvec&lt;T, 3&gt; q1 = q;</div>
-<div class="line"><a id="l00226" name="l00226"></a><span class="lineno">  226</span>                <span class="keywordflow">while</span> (!closest_point_on_circle_to_point(co, cn, cr, q, q)) {</div>
-<div class="line"><a id="l00227" name="l00227"></a><span class="lineno">  227</span>                    q += fvec&lt;T, 3&gt;(d(e), d(e), d(e));</div>
-<div class="line"><a id="l00228" name="l00228"></a><span class="lineno">  228</span>                    <span class="keywordflow">if</span> (++cnt &gt; 10) {</div>
-<div class="line"><a id="l00229" name="l00229"></a><span class="lineno">  229</span>                        std::cerr &lt;&lt; <span class="stringliteral">&quot;jittering not working!&quot;</span> &lt;&lt; std::endl;</div>
-<div class="line"><a id="l00230" name="l00230"></a><span class="lineno">  230</span>                        <span class="keywordflow">return</span> std::numeric_limits&lt;T&gt;::max();</div>
-<div class="line"><a id="l00231" name="l00231"></a><span class="lineno">  231</span>                    }</div>
-<div class="line"><a id="l00232" name="l00232"></a><span class="lineno">  232</span>                }</div>
-<div class="line"><a id="l00233" name="l00233"></a><span class="lineno">  233</span>                q1 = q;</div>
-<div class="line"><a id="l00234" name="l00234"></a><span class="lineno">  234</span>                q = closest_point_on_line_to_point(lo, ld, q);</div>
-<div class="line"><a id="l00235" name="l00235"></a><span class="lineno">  235</span>                dist = (q - q1).length();</div>
-<div class="line"><a id="l00236" name="l00236"></a><span class="lineno">  236</span>                <span class="keywordflow">if</span> (++iter &gt; 1000) {</div>
-<div class="line"><a id="l00237" name="l00237"></a><span class="lineno">  237</span>                    std::cerr &lt;&lt; <span class="stringliteral">&quot;no convergence!&quot;</span> &lt;&lt; std::endl;</div>
-<div class="line"><a id="l00238" name="l00238"></a><span class="lineno">  238</span>                    <span class="keywordflow">if</span> (iter_ptr)</div>
-<div class="line"><a id="l00239" name="l00239"></a><span class="lineno">  239</span>                        *iter_ptr = iter;</div>
-<div class="line"><a id="l00240" name="l00240"></a><span class="lineno">  240</span>                    <span class="keywordflow">return</span> std::numeric_limits&lt;T&gt;::max();</div>
-<div class="line"><a id="l00241" name="l00241"></a><span class="lineno">  241</span>                }</div>
-<div class="line"><a id="l00242" name="l00242"></a><span class="lineno">  242</span>            } <span class="keywordflow">while</span> ((q0 - q).length() &gt; 1e-6f);</div>
-<div class="line"><a id="l00243" name="l00243"></a><span class="lineno">  243</span>            <span class="keywordflow">if</span> (iter_ptr)</div>
-<div class="line"><a id="l00244" name="l00244"></a><span class="lineno">  244</span>                *iter_ptr = iter;</div>
-<div class="line"><a id="l00245" name="l00245"></a><span class="lineno">  245</span>            <span class="keywordflow">return</span> dist;</div>
-<div class="line"><a id="l00246" name="l00246"></a><span class="lineno">  246</span>        }</div>
-<div class="line"><a id="l00259" name="l00259"></a><span class="lineno">  259</span>        <span class="keyword">template</span> &lt;<span class="keyword">typename</span> T&gt; </div>
-<div class="line"><a id="l00260" name="l00260"></a><span class="lineno">  260</span>        T closest_point_on_line_to_circle(<span class="keyword">const</span> fvec&lt;T, 3&gt;&amp; lo, <span class="keyword">const</span> fvec&lt;T, 3&gt;&amp; ld, <span class="keyword">const</span> fvec&lt;T, 3&gt;&amp; co, <span class="keyword">const</span> fvec&lt;T, 3&gt;&amp; cn, T cr, fvec&lt;T, 3&gt;&amp; q, <span class="keywordtype">int</span>* iter_ptr = 0)</div>
-<div class="line"><a id="l00261" name="l00261"></a><span class="lineno">  261</span>        {</div>
-<div class="line"><a id="l00262" name="l00262"></a><span class="lineno">  262</span>            T dist = closest_point_on_line_to_circle_impl(lo, ld, co, cn, cr, q);</div>
-<div class="line"><a id="l00263" name="l00263"></a><span class="lineno">  263</span>            <span class="keywordflow">if</span> (dist == std::numeric_limits&lt;T&gt;::max())</div>
-<div class="line"><a id="l00264" name="l00264"></a><span class="lineno">  264</span>                <span class="keywordflow">return</span> dist;</div>
-<div class="line"><a id="l00265" name="l00265"></a><span class="lineno">  265</span> </div>
-<div class="line"><a id="l00266" name="l00266"></a><span class="lineno">  266</span>            fvec&lt;T, 3&gt; lo2 = closest_point_on_line_to_point(lo, ld, co);</div>
-<div class="line"><a id="l00267" name="l00267"></a><span class="lineno">  267</span>            lo2 = 2.0f * lo2 - q;</div>
-<div class="line"><a id="l00268" name="l00268"></a><span class="lineno">  268</span>            fvec&lt;T, 3&gt; q2;</div>
-<div class="line"><a id="l00269" name="l00269"></a><span class="lineno">  269</span>            T dist2 = cgv::math::closest_point_on_line_to_circle_impl(lo2, ld, co, cn, cr, q2);</div>
-<div class="line"><a id="l00270" name="l00270"></a><span class="lineno">  270</span>            <span class="keywordflow">if</span> (dist2 == std::numeric_limits&lt;float&gt;::max())</div>
-<div class="line"><a id="l00271" name="l00271"></a><span class="lineno">  271</span>                <span class="keywordflow">return</span> dist2;</div>
-<div class="line"><a id="l00272" name="l00272"></a><span class="lineno">  272</span>            <span class="keywordflow">if</span> (dist &lt; dist2)</div>
-<div class="line"><a id="l00273" name="l00273"></a><span class="lineno">  273</span>                <span class="keywordflow">return</span> dist;</div>
-<div class="line"><a id="l00274" name="l00274"></a><span class="lineno">  274</span>            q = q2;</div>
-<div class="line"><a id="l00275" name="l00275"></a><span class="lineno">  275</span>            <span class="keywordflow">return</span> dist2;</div>
-<div class="line"><a id="l00276" name="l00276"></a><span class="lineno">  276</span>        }</div>
-<div class="line"><a id="l00277" name="l00277"></a><span class="lineno">  277</span>    }</div>
-<div class="line"><a id="l00278" name="l00278"></a><span class="lineno">  278</span>}</div>
-<div class="line"><a id="l00279" name="l00279"></a><span class="lineno">  279</span> </div>
-<div class="line"><a id="l00280" name="l00280"></a><span class="lineno">  280</span><span class="preprocessor">#include &lt;cgv/config/lib_end.h&gt;</span></div>
+<div class="line"><a id="l00188" name="l00188"></a><span class="lineno">  188</span>        <span class="keyword">template</span> &lt;<span class="keyword">typename</span> T, cgv::type::u<span class="keywordtype">int</span>32_type N&gt;</div>
+<div class="line"><a id="l00189" name="l00189"></a><span class="lineno">  189</span>        fvec&lt;T, N&gt; closest_point_on_line_to_point(<span class="keyword">const</span> fvec&lt;T, N&gt;&amp; lo, <span class="keyword">const</span> fvec&lt;T, N&gt;&amp; ld, <span class="keyword">const</span> fvec&lt;T, N&gt;&amp; p)</div>
+<div class="line"><a id="l00190" name="l00190"></a><span class="lineno">  190</span>        {</div>
+<div class="line"><a id="l00191" name="l00191"></a><span class="lineno">  191</span>            <span class="keywordflow">return</span> lo + (dot(p - lo, ld) / dot(ld, ld)) * ld;</div>
+<div class="line"><a id="l00192" name="l00192"></a><span class="lineno">  192</span>        }</div>
+<div class="line"><a id="l00203" name="l00203"></a><span class="lineno">  203</span>        <span class="keyword">template</span> &lt;<span class="keyword">typename</span> T&gt;</div>
+<div class="line"><a id="l00204" name="l00204"></a><span class="lineno">  204</span>        <span class="keywordtype">bool</span> closest_point_on_circle_to_point(<span class="keyword">const</span> fvec&lt;T, 3&gt;&amp; co, <span class="keyword">const</span> fvec&lt;T, 3&gt;&amp; cn, T cr, <span class="keyword">const</span> fvec&lt;T, 3&gt;&amp; p, fvec&lt;T, 3&gt;&amp; q)</div>
+<div class="line"><a id="l00205" name="l00205"></a><span class="lineno">  205</span>        {</div>
+<div class="line"><a id="l00206" name="l00206"></a><span class="lineno">  206</span>            fvec&lt;T, 3&gt; d = p - co;</div>
+<div class="line"><a id="l00207" name="l00207"></a><span class="lineno">  207</span>            d -= (dot(d, cn) / dot(cn, cn)) * cn;</div>
+<div class="line"><a id="l00208" name="l00208"></a><span class="lineno">  208</span>            T l = d.length();</div>
+<div class="line"><a id="l00209" name="l00209"></a><span class="lineno">  209</span>            <span class="keywordflow">if</span> (l &lt; 1e-6f)</div>
+<div class="line"><a id="l00210" name="l00210"></a><span class="lineno">  210</span>                <span class="keywordflow">return</span> <span class="keyword">false</span>;</div>
+<div class="line"><a id="l00211" name="l00211"></a><span class="lineno">  211</span>            q = co + (cr / l) * d;</div>
+<div class="line"><a id="l00212" name="l00212"></a><span class="lineno">  212</span>            <span class="keywordflow">return</span> <span class="keyword">true</span>;</div>
+<div class="line"><a id="l00213" name="l00213"></a><span class="lineno">  213</span>        }</div>
+<div class="line"><a id="l00214" name="l00214"></a><span class="lineno">  214</span>        <span class="keyword">template</span> &lt;<span class="keyword">typename</span> T&gt;</div>
+<div class="line"><a id="l00215" name="l00215"></a><span class="lineno">  215</span>        T closest_point_on_line_to_circle_impl(<span class="keyword">const</span> fvec&lt;T, 3&gt;&amp; lo, <span class="keyword">const</span> fvec&lt;T, 3&gt;&amp; ld, <span class="keyword">const</span> fvec&lt;T, 3&gt;&amp; co, <span class="keyword">const</span> fvec&lt;T, 3&gt;&amp; cn, T cr, fvec&lt;T, 3&gt;&amp; q, <span class="keywordtype">int</span>* iter_ptr = 0)</div>
+<div class="line"><a id="l00216" name="l00216"></a><span class="lineno">  216</span>        {</div>
+<div class="line"><a id="l00217" name="l00217"></a><span class="lineno">  217</span>            std::default_random_engine e;</div>
+<div class="line"><a id="l00218" name="l00218"></a><span class="lineno">  218</span>            std::uniform_real_distribution&lt;T&gt; d(-0.01f, 0.01f);</div>
+<div class="line"><a id="l00219" name="l00219"></a><span class="lineno">  219</span>            q = lo;</div>
+<div class="line"><a id="l00220" name="l00220"></a><span class="lineno">  220</span>            fvec&lt;T, 3&gt; q0;</div>
+<div class="line"><a id="l00221" name="l00221"></a><span class="lineno">  221</span>            <span class="keywordtype">int</span> iter = 0;</div>
+<div class="line"><a id="l00222" name="l00222"></a><span class="lineno">  222</span>            T dist = std::numeric_limits&lt;T&gt;::max();</div>
+<div class="line"><a id="l00223" name="l00223"></a><span class="lineno">  223</span>            <span class="keywordflow">do</span> {</div>
+<div class="line"><a id="l00224" name="l00224"></a><span class="lineno">  224</span>                q0 = q;</div>
+<div class="line"><a id="l00225" name="l00225"></a><span class="lineno">  225</span>                <span class="keywordtype">int</span> cnt = 0;</div>
+<div class="line"><a id="l00226" name="l00226"></a><span class="lineno">  226</span>                fvec&lt;T, 3&gt; q1 = q;</div>
+<div class="line"><a id="l00227" name="l00227"></a><span class="lineno">  227</span>                <span class="keywordflow">while</span> (!closest_point_on_circle_to_point(co, cn, cr, q, q)) {</div>
+<div class="line"><a id="l00228" name="l00228"></a><span class="lineno">  228</span>                    q += fvec&lt;T, 3&gt;(d(e), d(e), d(e));</div>
+<div class="line"><a id="l00229" name="l00229"></a><span class="lineno">  229</span>                    <span class="keywordflow">if</span> (++cnt &gt; 10) {</div>
+<div class="line"><a id="l00230" name="l00230"></a><span class="lineno">  230</span>                        std::cerr &lt;&lt; <span class="stringliteral">&quot;jittering not working!&quot;</span> &lt;&lt; std::endl;</div>
+<div class="line"><a id="l00231" name="l00231"></a><span class="lineno">  231</span>                        <span class="keywordflow">return</span> std::numeric_limits&lt;T&gt;::max();</div>
+<div class="line"><a id="l00232" name="l00232"></a><span class="lineno">  232</span>                    }</div>
+<div class="line"><a id="l00233" name="l00233"></a><span class="lineno">  233</span>                }</div>
+<div class="line"><a id="l00234" name="l00234"></a><span class="lineno">  234</span>                q1 = q;</div>
+<div class="line"><a id="l00235" name="l00235"></a><span class="lineno">  235</span>                q = closest_point_on_line_to_point(lo, ld, q);</div>
+<div class="line"><a id="l00236" name="l00236"></a><span class="lineno">  236</span>                dist = (q - q1).length();</div>
+<div class="line"><a id="l00237" name="l00237"></a><span class="lineno">  237</span>                <span class="keywordflow">if</span> (++iter &gt; 1000) {</div>
+<div class="line"><a id="l00238" name="l00238"></a><span class="lineno">  238</span>                    std::cerr &lt;&lt; <span class="stringliteral">&quot;no convergence!&quot;</span> &lt;&lt; std::endl;</div>
+<div class="line"><a id="l00239" name="l00239"></a><span class="lineno">  239</span>                    <span class="keywordflow">if</span> (iter_ptr)</div>
+<div class="line"><a id="l00240" name="l00240"></a><span class="lineno">  240</span>                        *iter_ptr = iter;</div>
+<div class="line"><a id="l00241" name="l00241"></a><span class="lineno">  241</span>                    <span class="keywordflow">return</span> std::numeric_limits&lt;T&gt;::max();</div>
+<div class="line"><a id="l00242" name="l00242"></a><span class="lineno">  242</span>                }</div>
+<div class="line"><a id="l00243" name="l00243"></a><span class="lineno">  243</span>            } <span class="keywordflow">while</span> ((q0 - q).length() &gt; 1e-6f);</div>
+<div class="line"><a id="l00244" name="l00244"></a><span class="lineno">  244</span>            <span class="keywordflow">if</span> (iter_ptr)</div>
+<div class="line"><a id="l00245" name="l00245"></a><span class="lineno">  245</span>                *iter_ptr = iter;</div>
+<div class="line"><a id="l00246" name="l00246"></a><span class="lineno">  246</span>            <span class="keywordflow">return</span> dist;</div>
+<div class="line"><a id="l00247" name="l00247"></a><span class="lineno">  247</span>        }</div>
+<div class="line"><a id="l00260" name="l00260"></a><span class="lineno">  260</span>        <span class="keyword">template</span> &lt;<span class="keyword">typename</span> T&gt; </div>
+<div class="line"><a id="l00261" name="l00261"></a><span class="lineno">  261</span>        T closest_point_on_line_to_circle(<span class="keyword">const</span> fvec&lt;T, 3&gt;&amp; lo, <span class="keyword">const</span> fvec&lt;T, 3&gt;&amp; ld, <span class="keyword">const</span> fvec&lt;T, 3&gt;&amp; co, <span class="keyword">const</span> fvec&lt;T, 3&gt;&amp; cn, T cr, fvec&lt;T, 3&gt;&amp; q, <span class="keywordtype">int</span>* iter_ptr = 0)</div>
+<div class="line"><a id="l00262" name="l00262"></a><span class="lineno">  262</span>        {</div>
+<div class="line"><a id="l00263" name="l00263"></a><span class="lineno">  263</span>            T dist = closest_point_on_line_to_circle_impl(lo, ld, co, cn, cr, q);</div>
+<div class="line"><a id="l00264" name="l00264"></a><span class="lineno">  264</span>            <span class="keywordflow">if</span> (dist == std::numeric_limits&lt;T&gt;::max())</div>
+<div class="line"><a id="l00265" name="l00265"></a><span class="lineno">  265</span>                <span class="keywordflow">return</span> dist;</div>
+<div class="line"><a id="l00266" name="l00266"></a><span class="lineno">  266</span> </div>
+<div class="line"><a id="l00267" name="l00267"></a><span class="lineno">  267</span>            fvec&lt;T, 3&gt; lo2 = closest_point_on_line_to_point(lo, ld, co);</div>
+<div class="line"><a id="l00268" name="l00268"></a><span class="lineno">  268</span>            lo2 = 2.0f * lo2 - q;</div>
+<div class="line"><a id="l00269" name="l00269"></a><span class="lineno">  269</span>            fvec&lt;T, 3&gt; q2;</div>
+<div class="line"><a id="l00270" name="l00270"></a><span class="lineno">  270</span>            T dist2 = cgv::math::closest_point_on_line_to_circle_impl(lo2, ld, co, cn, cr, q2);</div>
+<div class="line"><a id="l00271" name="l00271"></a><span class="lineno">  271</span>            <span class="keywordflow">if</span> (dist2 == std::numeric_limits&lt;float&gt;::max())</div>
+<div class="line"><a id="l00272" name="l00272"></a><span class="lineno">  272</span>                <span class="keywordflow">return</span> dist2;</div>
+<div class="line"><a id="l00273" name="l00273"></a><span class="lineno">  273</span>            <span class="keywordflow">if</span> (dist &lt; dist2)</div>
+<div class="line"><a id="l00274" name="l00274"></a><span class="lineno">  274</span>                <span class="keywordflow">return</span> dist;</div>
+<div class="line"><a id="l00275" name="l00275"></a><span class="lineno">  275</span>            q = q2;</div>
+<div class="line"><a id="l00276" name="l00276"></a><span class="lineno">  276</span>            <span class="keywordflow">return</span> dist2;</div>
+<div class="line"><a id="l00277" name="l00277"></a><span class="lineno">  277</span>        }</div>
+<div class="line"><a id="l00278" name="l00278"></a><span class="lineno">  278</span>    }</div>
+<div class="line"><a id="l00279" name="l00279"></a><span class="lineno">  279</span>}</div>
+<div class="line"><a id="l00280" name="l00280"></a><span class="lineno">  280</span> </div>
+<div class="line"><a id="l00281" name="l00281"></a><span class="lineno">  281</span><span class="preprocessor">#include &lt;cgv/config/lib_end.h&gt;</span></div>
 <div class="ttc" id="anamespacecgv_html"><div class="ttname"><a href="namespacecgv.html">cgv</a></div><div class="ttdoc">the cgv namespace</div><div class="ttdef"><b>Definition</b> <a href="print_8h_source.html#l00011">print.h:11</a></div></div>
 </div><!-- fragment --></div><!-- contents -->
 </div><!-- doc-content -->
