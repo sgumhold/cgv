@@ -2,7 +2,7 @@
 #include <cgv/base/group.h>
 #include <cgv/media/image/image_writer.h>
 #include <cgv/math/ftransform.h>
-#include <cgv/math/inv.h>
+#include <cgv/math/lin_solve.h>
 #include <cgv/base/traverser.h>
 #include <cgv/render/drawable.h>
 #include <cgv/render/shader_program.h>
@@ -670,7 +670,7 @@ void context::set_current_view(shader_program& prog, bool modelview_deps, bool p
 	if (modelview_deps) {
 		cgv::math::fmat<float, 4, 4> V(modelview_matrix_stack.top());
 		prog.set_uniform(*this, "modelview_matrix", V);
-		prog.set_uniform(*this, "inverse_modelview_matrix", inv(V));
+		prog.set_uniform(*this, "inverse_modelview_matrix", cgv::math::inverse(V));
 		cgv::math::fmat<float, 3, 3> NM;
 		NM(0, 0) = V(0, 0);
 		NM(0, 1) = V(0, 1);
@@ -683,13 +683,13 @@ void context::set_current_view(shader_program& prog, bool modelview_deps, bool p
 		NM(2, 2) = V(2, 2);
 		NM.transpose();
 		prog.set_uniform(*this, "inverse_normal_matrix", NM);
-		NM = inv(NM);
+		NM = cgv::math::inverse(NM);
 		prog.set_uniform(*this, "normal_matrix", NM);
 	}
 	if (projection_deps) {
 		cgv::math::fmat<float, 4, 4> P(projection_matrix_stack.top());
 		prog.set_uniform(*this, "projection_matrix", P);
-		prog.set_uniform(*this, "inverse_projection_matrix", inv(P));
+		prog.set_uniform(*this, "inverse_projection_matrix", cgv::math::inverse(P));
 	}
 }
 

@@ -1,7 +1,6 @@
 #include "dynamic_mesh.h"
 
 #include <cgv/math/ftransform.h>
-#include <cgv/math/inv.h>
 
 namespace cgv {
 	namespace media {
@@ -182,7 +181,7 @@ std::vector<typename dynamic_mesh<T>::mat4_type> dynamic_mesh<T>::compute_joint_
 	}
 	// compute final rest pose to pose transformations
 	for (ji = 0; ji < target_rotations.size(); ++ji)
-		Ts[ji] = Ts[ji] * inv(Is[ji]);
+		Ts[ji] = Ts[ji] * inverse(Is[ji]);
 
 	return Ts;
 }

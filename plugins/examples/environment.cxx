@@ -6,7 +6,6 @@
 #include <cgv/gui/provider.h>
 #include <cgv/gui/trigger.h>
 #include <cgv/math/ftransform.h>
-#include <cgv/math/inv.h>
 #include <cgv/media/image/image.h>
 #include <cgv/media/image/image_reader.h>
 #include <cgv/media/mesh/simple_mesh.h>
@@ -116,7 +115,7 @@ protected:
 			NM(2, 1) = M(2, 1);
 			NM(2, 2) = M(2, 2);
 			NM.transpose();
-			NM = inv(NM);
+			NM = inverse(NM);
 			return NM;
 		}
 	};
@@ -350,7 +349,7 @@ public:
 		NM(2, 1) = M(2, 1);
 		NM(2, 2) = M(2, 2);
 		NM.transpose();
-		NM = inv(NM);
+		NM = inverse(NM);
 		return NM;
 	}
 	void draw(cgv::render::context& ctx) {

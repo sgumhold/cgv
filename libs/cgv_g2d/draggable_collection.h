@@ -2,7 +2,6 @@
 
 #include <cgv/gui/event.h>
 #include <cgv/gui/mouse_event.h>
-#include <cgv/math/inv.h>
 
 #include "canvas.h"
 #include "draggable.h"
@@ -144,7 +143,7 @@ public:
 	}
 
 	void set_transformation(const mat3& matrix) {
-		inv_transformation = cgv::math::inv(matrix);
+		inv_transformation = cgv::math::inverse(matrix);
 	}
 
 	bool handle_mouse_event(cgv::gui::mouse_event& me, vec2 mouse_position) {

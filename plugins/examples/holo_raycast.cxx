@@ -5,7 +5,6 @@
 #include <cgv/gui/provider.h>
 #include <cgv/gui/application.h>
 #include <cgv/math/ftransform.h>
-#include <cgv/math/inv.h>
 #include <cgv/render/drawable.h>
 #include <cgv/render/shader_library.h>
 #include <cgv/render/stereo_view.h>
@@ -175,17 +174,17 @@ public:
 		shader_calib.stereo_translate_modelview_matrix(-1.0f, eye_separation, screen_width, MV0);
 		shader_calib.stereo_translate_modelview_matrix(1.0f, eye_separation, screen_width, MV1);
 
-		cgv::mat4 iP0 = inv(P0);
-		cgv::mat4 iP1 = inv(P1);
+		cgv::mat4 iP0 = inverse(P0);
+		cgv::mat4 iP1 = inverse(P1);
 
-		cgv::mat4 iMV0 = inv(MV0);
-		cgv::mat4 iMV1 = inv(MV1);
+		cgv::mat4 iMV0 = inverse(MV0);
+		cgv::mat4 iMV1 = inverse(MV1);
 
 		cgv::mat4 MVP0 = P0 * MV0;
 		cgv::mat4 MVP1 = P1 * MV1;
 
-		cgv::mat4 iMVP0 = inv(MVP0);
-		cgv::mat4 iMVP1 = inv(MVP1);
+		cgv::mat4 iMVP0 = inverse(MVP0);
+		cgv::mat4 iMVP1 = inverse(MVP1);
 
 		float eye_value = view_test - 1.0f;
 		float interpolation_param = 0.5f * view_test;
@@ -194,11 +193,11 @@ public:
 		cgv::mat4 MVmid = ctx.get_modelview_matrix();
 		shader_calib.stereo_translate_modelview_matrix(eye_value, eye_separation, screen_width, MVmid);
 
-		cgv::mat4 iPmid = inv(Pmid);
-		cgv::mat4 iMVmid = inv(MVmid);
+		cgv::mat4 iPmid = inverse(Pmid);
+		cgv::mat4 iMVmid = inverse(MVmid);
 
 		cgv::mat4 MVPmid = Pmid * MVmid;
-		cgv::mat4 iMVPmid = inv(MVPmid);
+		cgv::mat4 iMVPmid = inverse(MVPmid);
 
 		cgv::vec3 col20(iMVP0.col(2));
 		cgv::vec3 col30(iMVP0.col(3));
