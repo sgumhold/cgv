@@ -4,7 +4,7 @@
 #include <cgv/gui/event_handler.h>
 #include <cgv/math/fvec.h>
 #include <cgv/math/quaternion.h>
-#include <cgv/math/ray.h>
+#include <cgv/math/fray.h>
 #include <cgv/render/drawable.h>
 #include <cgv/render/view.h>
 

@@ -1,6 +1,5 @@
 #include "gl_transparent_renderer.h"
 #include "gl_tools.h"
-#include <cgv/math/inv.h>
 #include <cgv_gl/gl/gl.h>
 
 namespace cgv {
@@ -95,7 +94,7 @@ void gl_transparent_renderer::blend_texture_over_viewport(context& ctx, texture&
 		glDisable(GL_DEPTH_TEST);
 		glDepthMask(GL_FALSE);
 
-		mat4 inv_PV = inv(ctx.get_projection_matrix()*ctx.get_modelview_matrix());
+		mat4 inv_PV = inverse(ctx.get_projection_matrix()*ctx.get_modelview_matrix());
 		vec4 p_lb = inv_PV * vec4(-1,-1, 0, 1);
 		vec4 p_rb = inv_PV * vec4( 1,-1, 0, 1);
 		vec4 p_rt = inv_PV * vec4( 1, 1, 0, 1);

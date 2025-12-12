@@ -2,7 +2,6 @@
 #include <cgv/utils/convert.h>
 #include <cgv/signal/rebind.h>
 #include <cgv/math/ftransform.h>
-#include <cgv/math/inv.h>
 #include <cgv/gui/file_dialog.h>
 #include <cgv/gui/key_event.h>
 #include <cgv/gui/trigger.h>
@@ -84,7 +83,7 @@ void light_interactor::on_set(void* member_ptr)
 					lights[i].set_spot_direction(reinterpret_cast<const cgv::dvec3&>(hspot_dir));
 				}
 				else {
-					cgv::dmat4 inv_mv = inv(last_modelview_matrix);
+					cgv::dmat4 inv_mv = inverse(last_modelview_matrix);
 					hpos = inv_mv * hpos;
 					cgv::dvec3 pos = reinterpret_cast<cgv::dvec3&>(hpos);
 					if (!is_dir)
