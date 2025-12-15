@@ -51,7 +51,7 @@ public:
 template<typename... Ts>
 class parametric_curve;
 
-/// @brief CRTP base class for parametric curves. Specialization taht allows to expose the curve point type.
+/// @brief CRTP base class for parametric curves. Specialization that allows to expose the curve point type.
 /// @tparam DerivedT The implemented class type.
 /// @tparam PointT The implemented curve class point type.
 template<template<typename> typename DerivedT, typename PointT>
