@@ -1,6 +1,7 @@
 #pragma once
 
 #include "fvec.h"
+#include "quaternion.h"
 #include <random>
 
 #include "lib_begin.h"
