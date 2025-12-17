@@ -17,7 +17,7 @@ namespace math {
 /// @return the unsigned distance.
 template <typename T, cgv::type::uint32_type N>
 T point_line_distance(const fvec<T, N>& point, const fvec<T, N>& p0, const fvec<T, N>& direction) {
-	return length(closest_point_on_line_to_point(p0, direction), point) - point);
+	return length(closest_point_on_line_to_point(p0, direction), point) - point;
 }
 
 /// @brief Computes the signed distance between a point and axis aligned box located at the origin.
