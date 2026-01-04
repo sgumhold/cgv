@@ -3,7 +3,6 @@
 #include "fvec.h"
 #include "fmat.h"
 #include "interpolate.h"
-#include "piecewise_linear_function.h"
 
 namespace cgv {
 namespace math {
@@ -79,7 +78,7 @@ public:
 	std::vector<PointT> sample(size_t num_segments) const {
 		std::vector<PointT> points;
 		points.reserve(num_segments + 1);
-		sample_steps_transform<ParamT>(std::back_inserter(points), [this](ParamT t) { return evaluate(t); }, num_segments);
+		sequence_transform<ParamT>(std::back_inserter(points), [this](ParamT t) { return evaluate(t); }, num_segments + 1);
 		return points;
 	}
 
@@ -96,10 +95,10 @@ public:
 	std::vector<PointT> sample(size_t num_segments, const curve_parameterization<ParameterizationT<ParamT>, ParamT>& parameterization) const {
 		std::vector<PointT> points;
 		points.reserve(num_segments + 1);
-		sample_steps_transform<ParamT>(std::back_inserter(points), [this, &parameterization](ParamT t) {
+		sequence_transform<ParamT>(std::back_inserter(points), [this, &parameterization](ParamT t) {
 			ParamT d = t * parameterization.total_length();
 			return evaluate(parameterization.evaluate(d));
-		}, num_segments);
+		}, num_segments + 1);
 		return points;
 	}
 };
@@ -139,8 +138,8 @@ public:
 	template<template<class> class CurveT, cgv::type::uint32_type N>
 	arc_length_linear_approximation(const parametric_curve<CurveT<fvec<T, N>>>& curve, int num_samples = 128) {
 		num_samples = std::max(num_samples, 2);
-		_lengths.values.reserve(num_samples);
-		_lengths.values.push_back(T(0));
+		_lengths.breakpoints.reserve(num_samples);
+		_lengths.breakpoints.push_back(T(0));
 
 		T step = T(1) / static_cast<T>(num_samples - 1);
 
@@ -148,7 +147,7 @@ public:
 		for(int i = 1; i < num_samples; ++i) {
 			T t_ = static_cast<T>(i) * step;
 			fvec<T, N> next_point = curve.evaluate(t_);
-			_lengths.values.push_back(_lengths.values.back() + length(next_point - prev_point));
+			_lengths.breakpoints.push_back(_lengths.breakpoints.back() + length(next_point - prev_point));
 			prev_point = next_point;
 		}
 
@@ -160,15 +159,15 @@ public:
 	}
 
 	T total_length() const {
-		return _lengths.values.back();
+		return _lengths.breakpoints.back();
 	}
 
 	const std::vector<T>& lengths() const {
-		return _lengths.values;
+		return _lengths.breakpoints;
 	}
 
 private:
-	regular_piecewise_linear_function<T> _lengths;
+	uniform_piecewise_linear_function<T, T> _lengths;
 };
 
 /// @brief Provide arc length information of a parametric curve using an approximation via multiple cubic bezier segments.
@@ -305,15 +304,15 @@ class arc_length_parameterization_fast_linear_approximation : public curve_param
 public:
 	arc_length_parameterization_fast_linear_approximation(const arc_length_linear_approximation<T>& arc_length, int num_samples = 128) {
 		num_samples = std::max(num_samples, 2);
-		_ts.values.reserve(num_samples);
+		_ts.breakpoints.reserve(num_samples);
 
 		int num_segments = num_samples - 1;
 
 		arc_length_parameterization_linear_approximation<T> param(arc_length);
-		sample_steps_transform(std::back_inserter(_ts.values), [&param](T x) {
+		sequence_transform(std::back_inserter(_ts.breakpoints), [&param](T x) {
 			T d = param.total_length() * x;
 			return param.evaluate(d);
-		}, num_segments);
+		}, num_segments + 1);
 
 		_ts.domain = { T(0), param.total_length() };
 	}
@@ -327,7 +326,7 @@ public:
 	}
 
 private:
-	regular_piecewise_linear_function<T> _ts;
+	uniform_piecewise_linear_function<T, T> _ts;
 };
 
 /// @brief Provide arc length parameterization of a parametric curve using binary search on a bezier approximation of the arc length.
