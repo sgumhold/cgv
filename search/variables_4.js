@@ -52,7 +52,7 @@ var searchData=
   ['dnd_5ftext_49',['dnd_text',['../classcgv_1_1gui_1_1mouse__event.html#a6d49befc160f8a62ba94da24e820797d',1,'cgv::gui::mouse_event']]],
   ['dom_5fcfg_50',['dom_cfg',['../classcgv_1_1plot_1_1plot__base.html#a5ddcc779b733d22548ac4f2d28d37368',1,'cgv::plot::plot_base']]],
   ['dom_5fcfg_5fptr_51',['dom_cfg_ptr',['../classcgv_1_1plot_1_1plot__base.html#a9788898764e6515a8ddebec02af1903d',1,'cgv::plot::plot_base']]],
-  ['domain_52',['domain',['../structcgv_1_1math_1_1regular__piecewise__linear__function.html#ab64e21fd519229bfadc2fc9bcfdf5470',1,'cgv::math::regular_piecewise_linear_function']]],
+  ['domain_52',['domain',['../structcgv_1_1math_1_1uniform__piecewise__linear__function.html#a12d9279fb674e4fcfcf36377a1d98e98',1,'cgv::math::uniform_piecewise_linear_function']]],
   ['dont_5frender_5fkits_53',['dont_render_kits',['../classvr__view__interactor.html#af0faa5555d58ffdf208d30965354c228',1,'vr_view_interactor']]],
   ['double_5fbuffer_54',['double_buffer',['../structcgv_1_1render_1_1context__config.html#a5a98a8b1db44d80db60fe79b0eeda876',1,'cgv::render::context_config']]],
   ['draw_5fcalls_55',['draw_calls',['../classcgv_1_1render_1_1render__info.html#aa5aad5079d7f5aaecfd25e71636476f8',1,'cgv::render::render_info']]],

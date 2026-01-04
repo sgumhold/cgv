@@ -164,7 +164,7 @@ var searchData=
   ['does_5fviewport_5fuse_5findividual_5fview_161',['does_viewport_use_individual_view',['../classcgv_1_1render_1_1view.html#a34426d520113779e787bf4364149a534',1,'cgv::render::view']]],
   ['dom_5fcfg_162',['dom_cfg',['../classcgv_1_1plot_1_1plot__base.html#a5ddcc779b733d22548ac4f2d28d37368',1,'cgv::plot::plot_base']]],
   ['dom_5fcfg_5fptr_163',['dom_cfg_ptr',['../classcgv_1_1plot_1_1plot__base.html#a9788898764e6515a8ddebec02af1903d',1,'cgv::plot::plot_base']]],
-  ['domain_164',['domain',['../structcgv_1_1math_1_1regular__piecewise__linear__function.html#ab64e21fd519229bfadc2fc9bcfdf5470',1,'cgv::math::regular_piecewise_linear_function']]],
+  ['domain_164',['domain',['../structcgv_1_1math_1_1uniform__piecewise__linear__function.html#a12d9279fb674e4fcfcf36377a1d98e98',1,'cgv::math::uniform_piecewise_linear_function']]],
   ['domain_5fconfig_165',['domain_config',['../structcgv_1_1plot_1_1domain__config.html#a0f55a13c341cd09ea8e0be0a1b4adab0',1,'cgv::plot::domain_config::domain_config()'],['../structcgv_1_1plot_1_1domain__config.html',1,'cgv::plot::domain_config']]],
   ['done_166',['done',['../classcgv_1_1os_1_1queued__input__thread.html#ad68eec45f64157dc31e4794f06310d66',1,'cgv::os::queued_input_thread::done()'],['../classcgv_1_1os_1_1queued__output__thread.html#aaf5bbeaa96eb6dcbd4be3422f9ffc616',1,'cgv::os::queued_output_thread::done()']]],
   ['dont_5frender_5fkits_167',['dont_render_kits',['../classvr__view__interactor.html#af0faa5555d58ffdf208d30965354c228',1,'vr_view_interactor']]],

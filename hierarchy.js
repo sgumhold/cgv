@@ -480,13 +480,13 @@ var hierarchy =
     [ "cgv::math::random", "structcgv_1_1math_1_1random.html", null ],
     [ "cgv::math::ray< T >", "structcgv_1_1math_1_1ray.html", null ],
     [ "cgv::math::register_sparse_les_factory< T >", "structcgv_1_1math_1_1register__sparse__les__factory.html", null ],
-    [ "cgv::math::regular_piecewise_linear_function< T >", "structcgv_1_1math_1_1regular__piecewise__linear__function.html", null ],
     [ "cgv::math::rigid_transform< T >", "classcgv_1_1math_1_1rigid__transform.html", null ],
     [ "cgv::math::sparse_mat< T >", "classcgv_1_1math_1_1sparse__mat.html", null ],
     [ "cgv::math::step_iterator< RandomAccessIterator >", "structcgv_1_1math_1_1step__iterator.html", null ],
     [ "cgv::math::thin_hyper_plate_spline< T >", "structcgv_1_1math_1_1thin__hyper__plate__spline.html", null ],
     [ "cgv::math::thin_plate_spline< T >", "structcgv_1_1math_1_1thin__plate__spline.html", null ],
     [ "cgv::math::tri_diag_mat< T >", "classcgv_1_1math_1_1tri__diag__mat.html", null ],
+    [ "cgv::math::uniform_piecewise_linear_function< X, Y >", "structcgv_1_1math_1_1uniform__piecewise__linear__function.html", null ],
     [ "cgv::math::union_find", "structcgv_1_1math_1_1union__find.html", null ],
     [ "cgv::math::Unsymmeig< T >", "structcgv_1_1math_1_1Unsymmeig.html", null ],
     [ "cgv::math::up_tri_mat< T >", "classcgv_1_1math_1_1up__tri__mat.html", null ],
@@ -1186,6 +1186,7 @@ var hierarchy =
     [ "cgv::type::ctrl::if_< cond::is_const< T1 >::value, make_const< T2 >::type, drop_const< T2 >::type >", "structcgv_1_1type_1_1ctrl_1_1if__.html", [
       [ "cgv::type::func::promote_const< T1, T2 >", "structcgv_1_1type_1_1func_1_1promote__const.html", null ]
     ] ],
+    [ "cgv::math::interval< X >", "classcgv_1_1math_1_1interval.html", null ],
     [ "cgv::type::func::MakeConst::make_const_impl< drop_const< T >::type >", "structcgv_1_1type_1_1func_1_1MakeConst_1_1make__const__impl.html", [
       [ "cgv::type::func::make_const< T >", "structcgv_1_1type_1_1func_1_1make__const.html", null ]
     ] ],
@@ -1277,6 +1278,7 @@ var hierarchy =
     [ "cgv::media::transparency_alpha_interface< color< T, cm, EXTINCTION > >", "structcgv_1_1media_1_1transparency__alpha__interface.html", [
       [ "cgv::media::extinction_alpha_interface< color< T, cm, EXTINCTION > >", "structcgv_1_1media_1_1extinction__alpha__interface_3_01color_3_01T_00_01cm_00_01EXTINCTION_01_4_01_4.html", null ]
     ] ],
+    [ "cgv::math::uniform_piecewise_linear_function< T, T >", "structcgv_1_1math_1_1uniform__piecewise__linear__function.html", null ],
     [ "cgv::math::vec< float >", "classcgv_1_1math_1_1vec.html", null ],
     [ "cgv::math::vec< int >", "classcgv_1_1math_1_1vec.html", null ],
     [ "cgv::math::vec< std::complex< T > >", "classcgv_1_1math_1_1vec.html", null ],
