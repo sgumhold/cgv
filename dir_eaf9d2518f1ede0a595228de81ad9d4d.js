@@ -53,7 +53,6 @@ var dir_eaf9d2518f1ede0a595228de81ad9d4d =
     [ "parametric_curve.h", "parametric__curve_8h_source.html", null ],
     [ "perm_mat.h", "perm__mat_8h_source.html", null ],
     [ "permute.h", "permute_8h_source.html", null ],
-    [ "piecewise_linear_function.h", "piecewise__linear__function_8h_source.html", null ],
     [ "piecewise_linear_interpolator.h", "piecewise__linear__interpolator_8h_source.html", null ],
     [ "piecewise_nearest_interpolator.h", "piecewise__nearest__interpolator_8h_source.html", null ],
     [ "plane.h", "plane_8h_source.html", null ],

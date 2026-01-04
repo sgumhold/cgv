@@ -149,7 +149,7 @@ $(document).ready(function(){initNavTree('bezier__tube_8h_source.html',''); init
 <div class="line"><a id="l00047" name="l00047"></a><span class="lineno">   47</span>    std::vector&lt;node_type&gt; sample(<span class="keywordtype">size_t</span> num_segments)<span class="keyword"> const </span>{</div>
 <div class="line"><a id="l00048" name="l00048"></a><span class="lineno">   48</span>        std::vector&lt;node_type&gt; points;</div>
 <div class="line"><a id="l00049" name="l00049"></a><span class="lineno">   49</span>        points.reserve(num_segments + 1);</div>
-<div class="line"><a id="l00050" name="l00050"></a><span class="lineno">   50</span>        sample_steps_transform&lt;ParamT&gt;(std::back_inserter(points), [<span class="keyword">this</span>](ParamT t) { <span class="keywordflow">return</span> evaluate(t); }, num_segments);</div>
+<div class="line"><a id="l00050" name="l00050"></a><span class="lineno">   50</span>        sequence_transform&lt;ParamT&gt;(std::back_inserter(points), [<span class="keyword">this</span>](ParamT t) { <span class="keywordflow">return</span> evaluate(t); }, num_segments + 1);</div>
 <div class="line"><a id="l00051" name="l00051"></a><span class="lineno">   51</span>        <span class="keywordflow">return</span> points;</div>
 <div class="line"><a id="l00052" name="l00052"></a><span class="lineno">   52</span>    }</div>
 <div class="line"><a id="l00053" name="l00053"></a><span class="lineno">   53</span> </div>

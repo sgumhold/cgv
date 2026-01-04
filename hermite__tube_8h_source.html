@@ -141,7 +141,7 @@ $(document).ready(function(){initNavTree('hermite__tube_8h_source.html',''); ini
 <div class="line"><a id="l00039" name="l00039"></a><span class="lineno">   39</span>    std::vector&lt;node_type&gt; sample(<span class="keywordtype">size_t</span> num_segments)<span class="keyword"> const </span>{</div>
 <div class="line"><a id="l00040" name="l00040"></a><span class="lineno">   40</span>        std::vector&lt;node_type&gt; points;</div>
 <div class="line"><a id="l00041" name="l00041"></a><span class="lineno">   41</span>        points.reserve(num_segments + 1);</div>
-<div class="line"><a id="l00042" name="l00042"></a><span class="lineno">   42</span>        sample_steps_transform&lt;ParamT&gt;(std::back_inserter(points), [<span class="keyword">this</span>](ParamT t) { <span class="keywordflow">return</span> evaluate(t); }, num_segments);</div>
+<div class="line"><a id="l00042" name="l00042"></a><span class="lineno">   42</span>        sequence_transform&lt;ParamT&gt;(std::back_inserter(points), [<span class="keyword">this</span>](ParamT t) { <span class="keywordflow">return</span> evaluate(t); }, num_segments + 1);</div>
 <div class="line"><a id="l00043" name="l00043"></a><span class="lineno">   43</span>        <span class="keywordflow">return</span> points;</div>
 <div class="line"><a id="l00044" name="l00044"></a><span class="lineno">   44</span>    }</div>
 <div class="line"><a id="l00045" name="l00045"></a><span class="lineno">   45</span> </div>
