@@ -114,7 +114,6 @@ T arc_length(const parametric_curve<CurveT<fvec<T, N>>>& curve, T t = T(1), int 
 
 	fvec<T, N> prev_point = curve.evaluate(T(0));
 	for(int i = 0; i < num_segments; ++i) {
-		;
 		T t_ = static_cast<T>(i + 1) * step;
 		if(t_ >= t) {
 			fvec<T, N> next_point = curve.evaluate(t);
