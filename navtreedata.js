@@ -157,17 +157,17 @@ var NAVTREEINDEX =
 "namespacecgv_1_1gui.html#a8c92a55911d18de7ab802b3be6d65df1af3fc44b2885f40f5853b3379428e64a1",
 "namespacecgv_1_1render.html#a7ca439553e212967238e29e838343eb9a9baabcf89d1703922b7e9e7bff14db37",
 "namespacecgv_1_1type_1_1info.html#accf71420e941489dc6fb6737cd11b752a13e37b73f5d0b86e72b6ac4ca70c7244",
-"namespacevr.html#a665837299018b23cf40411e8603afcb5a1dcb66a6b26250ed1500a3b715f72968",
-"scan_8h.html#a275e5d68df06a511c2f9b41c1f9f4c28",
-"structcgv_1_1base_1_1object__registration.html#ae1c8ffc3eb36830e17b519888455b9e0",
-"structcgv_1_1math_1_1Unsymmeig.html",
-"structcgv_1_1media_1_1mesh_1_1cell__info.html",
-"structcgv_1_1ppp_1_1command__token.html#ab96c84f891c0b33f640aaf2b5dd44cd6",
-"structcgv_1_1render_1_1box__wire__render__style__reflect.html",
-"structcgv_1_1render_1_1point__render__style.html#ad6b10a10d21e2a28cca96926e70f264e",
-"structcgv_1_1type_1_1cond_1_1is__const_3_01const_01T_01_4.html",
-"structcgv_1_1utils_1_1get__first.html",
-"structvr_1_1vr__tracking__reference__info.html#a0a03961d43c1772abe9d676cbb0b7bb1"
+"namespacevr.html#a4d435c9cc7df8e3d66348f2eca4fd18aaff85fc1560f4b75dce14f4c63b39ba65",
+"scan_8h.html#a145360669d325a1f530539c8aff35990",
+"structcgv_1_1base_1_1object__collection.html",
+"structcgv_1_1gui_1_1text__style.html#ae5ca2c364aeb667d04f8d879ddbdce0f",
+"structcgv_1_1media_1_1illum_1_1surface__material.html#ae99c554bb5e900406ea22a44641a04b9",
+"structcgv_1_1ppp_1_1command__token.html#a03726e4fc344119ece09d20a8afd3885",
+"structcgv_1_1render_1_1box__render__style.html#a92e0131be883f48e6877a29641e502ed",
+"structcgv_1_1render_1_1point__render__style.html#a57f8e5c80b9e643ae507ed61f6a07824",
+"structcgv_1_1signal_1_1callback__streambuf.html",
+"structcgv_1_1utils_1_1date.html",
+"structvr_1_1vr__trackable__state.html"
 ];
 
 var SYNCONMSG = 'click to disable panel synchronisation';
