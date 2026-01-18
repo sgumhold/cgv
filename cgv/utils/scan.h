@@ -58,6 +58,18 @@ extern CGV_API std::string to_lower(const std::string& _s);
 extern CGV_API char to_upper(char c);
 /// convert string to upper case
 extern CGV_API std::string to_upper(const std::string& _s);
+/// convert string to "snake_case" by trimming leading and trailing whitespaces and underscores, converting all letters to lower case and replacing all spaces with underscores (consecutive spaces are collapsed)
+extern CGV_API std::string to_snake_case(const std::string& _s, bool separate_at_upper_case = false);
+/// convert string from "snake_case" to "camelCase"
+extern CGV_API std::string snake_case_to_camel_case(const std::string& _s);
+/// convert string from "snake_case" to "kebab-case"
+extern CGV_API std::string snake_case_to_kebab_case(const std::string& _s);
+/// convert string from "snake_case" to "PascalCase"
+extern CGV_API std::string snake_case_to_pascal_case(const std::string& _s);
+/// convert string from "snake_case" to "Sentence case"
+extern CGV_API std::string snake_case_to_sentence_case(const std::string& _s);
+/// convert string from "snake_case" to "Capitalized Case"
+extern CGV_API std::string snake_case_to_capitalized_case(const std::string& _s);
 /// remove char \c c from the given string \c s and return a reference to the same string object
 extern CGV_API std::string& remove(std::string& s, char c);
 /// return a copy of the given string \c s with all occurences of char \c removed

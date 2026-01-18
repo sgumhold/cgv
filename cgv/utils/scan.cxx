@@ -124,6 +124,88 @@ std::string to_upper(const std::string& _s)
 	return s;
 }
 
+std::string to_snake_case(const std::string& _s, bool separate_at_upper_case) {
+	std::string s;
+	bool last_was_alpha = false;
+	bool last_was_upper = true;
+	for(char c : _s) {
+		bool is_alpha = false;
+
+		int is_upper = true;
+
+		if(std::isalnum(c)) {
+			is_alpha = true;
+			is_upper = std::isupper(c);
+			if(separate_at_upper_case && !last_was_upper && is_upper)
+				s += '_';
+			s += cgv::utils::to_lower(c);
+		} else if(last_was_alpha) {
+			s += '_';
+		}
+
+		last_was_alpha = is_alpha;
+		last_was_upper = is_upper;
+	}
+	if(!s.empty() && s.back() == '_')
+		s.pop_back();
+	return s;
+}
+
+std::string snake_case_to_camel_case(const std::string& _s) {
+	std::string s;
+	s.reserve(_s.size());
+	bool capitalize_next = false;
+	for(char c : _s) {
+		if(c == '_') {
+			capitalize_next = true;
+		} else {
+			s += capitalize_next ? cgv::utils::to_upper(c) : c;
+			capitalize_next = false;
+		}
+	}
+	return s;
+}
+
+std::string snake_case_to_kebab_case(const std::string& _s) {
+	std::string s = _s;
+	s.reserve(_s.size());
+	for(char& c : s)
+		c = c == '_' ? '-' : c;
+	return s;
+}
+
+std::string snake_case_to_pascal_case(const std::string& _s) {
+	std::string s = snake_case_to_camel_case(_s);
+	if(!s.empty())
+		s[0] = cgv::utils::to_upper(s[0]);
+	return s;
+}
+
+std::string snake_case_to_sentence_case(const std::string& _s) {
+	std::string s = _s;
+	cgv::utils::replace(s, '_', ' ');
+	if(!s.empty())
+		s[0] = cgv::utils::to_upper(s[0]);
+	return s;
+}
+
+std::string snake_case_to_capitalized_case(const std::string& _s) {
+	std::string s = _s;
+	bool capitalize_next = false;
+	for(char& c : s) {
+		if(c == '_') {
+			capitalize_next = true;
+			c = ' ';
+		} else {
+			c = capitalize_next ? cgv::utils::to_upper(c) : c;
+			capitalize_next = false;
+		}
+	}
+	if(!s.empty())
+		s[0] = cgv::utils::to_upper(s[0]);
+	return s;
+}
+
 std::string& remove(std::string& s, char c)
 {
 	s.erase(std::remove(s.begin(), s.end(), c), s.end());
