@@ -1,5 +1,6 @@
 var NAVTREEINDEX31 =
 {
+"gamepad__server_8cxx_source.html":[12,0,3,0,1],
 "gamepad__server_8h_source.html":[12,0,3,0,2],
 "gaussj_8h_source.html":[12,0,1,5,26],
 "generic__render__data_8h_source.html":[12,0,3,3,24],
@@ -154,8 +155,8 @@ var NAVTREEINDEX31 =
 "math_2statistics_8h_source.html":[12,0,1,5,74],
 "math_2union__find_8h_source.html":[12,0,1,5,79],
 "max_8h_source.html":[12,0,1,12,4,0],
-"media_2color__scale_8cxx_source.html":[12,0,1,6,10],
-"media_2color__scale_8h_source.html":[12,0,1,6,11],
+"media_2color__scale_8cxx_source.html":[12,0,1,6,11],
+"media_2color__scale_8h_source.html":[12,0,1,6,12],
 "member__pointer_8h_source.html":[12,0,1,12,4,1],
 "menu__provider_8cxx_source.html":[12,0,1,4,48],
 "menu__provider_8h_source.html":[12,0,1,4,49],
@@ -248,6 +249,5 @@ var NAVTREEINDEX31 =
 "namespacecgv.html#af4ac8b5b76d44a6646da80abddce60b2":[10,0,1,61],
 "namespacecgv.html#afedb57421cee1d83a531175dbbfedfd3":[10,0,1,35],
 "namespacecgv_1_1base.html":[10,0,1,0],
-"namespacecgv_1_1base.html#a09823546be3c2201d20125b59e10333b":[10,0,1,0,149],
-"namespacecgv_1_1base.html#a0e53bf7a9d7dbd6173cf988e3b2b6b92":[10,0,1,0,143]
+"namespacecgv_1_1base.html#a09823546be3c2201d20125b59e10333b":[10,0,1,0,149]
 };

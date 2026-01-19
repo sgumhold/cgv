@@ -10,6 +10,7 @@ var dir_aa327d2ceb98594d8acc0902c43a264b =
     [ "cgv_media.pj", "cgv__media_8pj_source.html", null ],
     [ "color.h", "color_8h_source.html", null ],
     [ "color_model.h", "color__model_8h_source.html", null ],
+    [ "color_presets.h", "color__presets_8h_source.html", null ],
     [ "color_scale.cxx", "media_2color__scale_8cxx_source.html", null ],
     [ "color_scale.h", "media_2color__scale_8h_source.html", null ],
     [ "color_storage.cxx", "color__storage_8cxx_source.html", null ],
