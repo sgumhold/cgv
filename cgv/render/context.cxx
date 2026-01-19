@@ -1125,18 +1125,6 @@ std::string to_string(TextureFilter filter_type)
 	return filter_str[filter_type];
 }
 
-// declare some colors by name
-float black[4]     = { 0, 0, 0, 1 };
-float white[4]     = { 1, 1, 1, 1 };
-float gray[4]      = { 0.25f, 0.25f, 0.25f, 1 };
-float green[4]     = { 0, 1, 0, 1 };
-float brown[4]     = { 0.3f, 0.1f, 0, 1 };
-float dark_red[4]  = { 0.4f, 0, 0, 1 };
-float cyan[4]      = { 0, 1, 1, 1 };
-float yellow[4]    = { 1, 1, 0, 1 };
-float red[4]       = { 1, 0, 0, 1 };
-float blue[4]      = { 0, 0, 1, 1 };
-
 void compute_face_normals(const float* vertices, float* normals, const int* vertex_indices, int* normal_indices, int nr_faces, int face_degree)
 {
 	for (int i = 0; i < nr_faces; ++i) {
