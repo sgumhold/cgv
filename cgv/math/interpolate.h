@@ -1,5 +1,9 @@
 #pragma once
 
+#include <functional>
+#include <memory>
+#include <vector>
+
 #include "interval.h"
 
 namespace cgv {
@@ -62,7 +66,7 @@ template<typename PointT, typename InterpolationOp, typename ParamT = float>
 PointT interpolate_piece(const std::vector<std::pair<ParamT, PointT>>& points, ParamT t, InterpolationOp operation) {
 	using pair_type = std::pair<ParamT, PointT>;
 	
-	if(t <= 0)
+	if(t <= ParamT(0))
 		return points.front().second;
 
 	auto it = std::lower_bound(points.begin(), points.end(), t, [](const pair_type& point, float value) { return point.first < value; });
@@ -134,7 +138,7 @@ std::vector<PointT> interpolate_n(const std::vector<std::pair<ParamT, PointT>>& 
 
 } // namespace detail
 
-/// @brief Apply operation to a generated sequence of n uniformly-spaced values in [0,1] and store the result in an output range starting from output_first.
+/// @brief Apply operation to a generated sequence of n uniformly-spaced values in [a,b] and store the result in an output range starting from output_first.
 /// 
 /// @tparam ParamT The sequence value type.
 /// @tparam OutputIt The output range iterator type.
@@ -142,15 +146,18 @@ std::vector<PointT> interpolate_n(const std::vector<std::pair<ParamT, PointT>>& 
 /// @param output_first The start of the output range.
 /// @param operation The operation to transform the sequence. Takes one argument of type ParamT.
 /// @param n The number of values in the generated sequence.
+/// @param a The lower bound of the value range.
+/// @param b The upper bound of the value range.
 template<typename ParamT = float, typename OutputIt, typename UnaryOp>
-static void sequence_transform(OutputIt output_first, UnaryOp operation, size_t n) {
+static void sequence_transform(OutputIt output_first, UnaryOp operation, size_t n, ParamT a = ParamT(0), ParamT b = ParamT(1)) {
 	if(n == 1) {
-		*output_first = operation(ParamT(0.5));
+		*output_first = operation(ParamT(0.5) * (a + b));
 		++output_first;
 	} else if(n > 1) {
-		ParamT step = ParamT(1) / static_cast<ParamT>(n - 1);
+		ParamT size = b - a;
+		ParamT step = size / static_cast<ParamT>(n - 1);
 		for(size_t i = 0; i < n; ++i) {
-			ParamT t = step * static_cast<ParamT>(i);
+			ParamT t = a + step * static_cast<ParamT>(i);
 			*output_first = operation(t);
 			++output_first;
 		}
@@ -210,7 +217,7 @@ template<typename PointT, typename ParamT = float>
 std::vector<PointT> interpolate_nearest_n(const std::vector<PointT>& points, size_t n) {
 	std::vector<PointT> res;
 	res.reserve(n);
-	sequence_transform(std::back_inserter(res), [&points](float t) { return cgv::math::interpolate_nearest(points, t); }, n);
+	sequence_transform(std::back_inserter(res), [&points](float t) { return interpolate_nearest(points, t); }, n);
 	return res;
 };
 
@@ -285,7 +292,7 @@ template<typename PointT, typename ParamT = float>
 std::vector<PointT> interpolate_linear_n(const std::vector<PointT>& points, size_t n) {
 	std::vector<PointT> res;
 	res.reserve(n);
-	sequence_transform(std::back_inserter(res), [&points](float t) { return cgv::math::interpolate_linear(points, t); }, n);
+	sequence_transform(std::back_inserter(res), [&points](float t) { return interpolate_linear(points, t); }, n);
 	return res;
 };
 
@@ -447,6 +454,180 @@ struct uniform_piecewise_linear_function {
 		X t = (x - prev) / (curr - prev);
 		return interpolate_linear(breakpoints[index], breakpoints[index + 1], t);
 	}
+};
+
+/// Template of an abstract interface for interpolators that can be evaluated at a position t and return an interpolated value at that position.
+template<typename ValueT, typename ParamT = float>
+class interpolator {
+public:
+	virtual ~interpolator() = default;
+
+	virtual std::unique_ptr<interpolator> clone() const = 0;
+
+	/// @brief Return the interpolated value at position t.
+	/// @param t The position at which to evaluate the interpolator. Typically in the range [0,1].
+	/// @return The interpolated value.
+	virtual ValueT at(ParamT t) const = 0;
+
+	/// @brief Return a sequence of n uniformly-spaced samples from the interpolator within the parameter range [0,1].
+	/// 
+	/// The first sample is always located at t = 0 and the last sample is always located at t = 1.
+	/// A derived class might override this function in order to provide a more efficient implementation.
+	/// 
+	/// @param n The number of samples to be evaluated.
+	/// @return The sequence of values.
+	virtual std::vector<ValueT> quantize(size_t n) const {
+		std::vector<ValueT> samples;
+		samples.reserve(n);
+		sequence_transform<ParamT>(std::back_inserter(samples), [this](ParamT t) { return at(t); }, n);
+		return samples;
+	}
+};
+
+template<typename PointT, typename ValueT, typename ParamT = float>
+class piecewise_interpolator_storage : public interpolator<ValueT, ParamT> {
+public:
+	using point_type = PointT;
+
+	piecewise_interpolator_storage() {}
+
+	piecewise_interpolator_storage(std::initializer_list<point_type> points) : points(points) {}
+
+	piecewise_interpolator_storage(const std::vector<point_type>& points) : points(points) {}
+
+	template<class IteratorT>
+	piecewise_interpolator_storage(IteratorT first, IteratorT last) {
+		points_.assign(first, last);
+	}
+
+	std::vector<point_type> points;
+};
+
+template<typename ValueT, typename ParamT = float>
+class identity_interpolator : public interpolator<ValueT, ParamT> {
+public:
+	identity_interpolator() {}
+
+	std::unique_ptr<interpolator<ValueT, ParamT>> clone() const override {
+		return std::unique_ptr<interpolator<ValueT, ParamT>>(new identity_interpolator(*this));
+	}
+
+	ValueT at(ParamT t) const override {
+		return ValueT(t);
+	}
+};
+
+template<typename ValueT, typename ParamT = float>
+class uniform_piecewise_interpolator : public piecewise_interpolator_storage<ValueT, ValueT, ParamT> {
+	using base = piecewise_interpolator_storage<ValueT, ValueT, ParamT>;
+
+public:
+	using base::base;
+};
+
+template<typename ValueT, typename ParamT = float>
+class piecewise_interpolator : public piecewise_interpolator_storage<std::pair<ParamT, ValueT>, ValueT, ParamT> {
+	using base = piecewise_interpolator_storage<std::pair<ParamT, ValueT>, ValueT, ParamT>;
+
+public:
+	using base::base;
+};
+
+template<typename ValueT, typename ParamT = float>
+class discrete_interpolator : public uniform_piecewise_interpolator<ValueT, ParamT> {
+	using base = uniform_piecewise_interpolator<ValueT, ParamT>;
+
+public:
+	using base::base;
+
+	std::unique_ptr<interpolator<ValueT, ParamT>> clone() const override {
+		return std::unique_ptr<interpolator<ValueT, ParamT>>(new discrete_interpolator(*this));
+	}
+
+	ValueT at(ParamT t) const override {
+		size_t num_points = points.size();
+
+		if(t <= ParamT(0))
+			return points.front();
+		else if(t >= ParamT(1))
+			return points.back();
+		else
+			return points[std::min(static_cast<size_t>(t * static_cast<ParamT>(num_points)), num_points - 1)];
+	}
+};
+
+template<typename ValueT, typename ParamT = float>
+class uniform_linear_interpolator : public uniform_piecewise_interpolator<ValueT, ParamT> {
+	using base = uniform_piecewise_interpolator<ValueT, ParamT>;
+
+public:
+	using base::base;
+
+	std::unique_ptr<interpolator<ValueT, ParamT>> clone() const override {
+		return std::unique_ptr<interpolator<ValueT, ParamT>>(new uniform_linear_interpolator(*this));
+	}
+
+	ValueT at(ParamT t) const override {
+		return interpolate_linear(points, t);
+	}
+
+	std::vector<ValueT> quantize(size_t n) const override {
+		return interpolate_linear_n(points, n);
+	}
+};
+
+template<typename ValueT, typename ParamT = float>
+class linear_interpolator : public piecewise_interpolator<ValueT, ParamT> {
+	using base = piecewise_interpolator<ValueT, ParamT>;
+
+public:
+	using base::base;
+
+	std::unique_ptr<interpolator<ValueT, ParamT>> clone() const override {
+		return std::unique_ptr<interpolator<ValueT, ParamT>>(new linear_interpolator(*this));
+	}
+
+	ValueT at(ParamT t) const override {
+		return interpolate_linear(points, t);
+	}
+
+	std::vector<ValueT> quantize(size_t n) const override {
+		return interpolate_linear_n(points, n);
+	}
+};
+
+template<typename ValueT, typename ParamT = float>
+class uniform_smooth_interpolator : public uniform_piecewise_interpolator<ValueT, ParamT> {
+	using base = uniform_piecewise_interpolator<ValueT, ParamT>;
+
+public:
+	using base::base;
+
+	std::unique_ptr<interpolator<ValueT, ParamT>> clone() const override {
+		return std::unique_ptr<interpolator<ValueT, ParamT>>(new uniform_smooth_interpolator(*this));
+	}
+
+	ValueT at(ParamT t) const override {
+		return interpolate_smooth_cubic(points, t);
+	}
+};
+
+template<typename ValueT, typename ParamT = float>
+class function_ref_interpolator : public interpolator<ValueT, ParamT> {
+public:
+	function_ref_interpolator(std::function<ValueT(ParamT)> function) : function(function) {}
+
+	std::unique_ptr<interpolator<ValueT, ParamT>> clone() const override {
+		return std::unique_ptr<interpolator<ValueT, ParamT>>(new function_ref_interpolator(*this));
+	}
+
+	ValueT at(ParamT t) const override {
+		if(function)
+			return function(t);
+		return {};
+	}
+
+	std::function<ValueT(ParamT)> function;
 };
 
 } // namespace math
