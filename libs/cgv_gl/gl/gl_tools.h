@@ -15,9 +15,6 @@ namespace cgv {
 
 		namespace gl {
 
-// declare some colors by name
-extern CGV_API float black[4], white[4], gray[4], green[4], brown[4], dark_red[4], cyan[4], yellow[4], red[4], blue[4];
-
 /// map a type id to a gl enum
 extern CGV_API unsigned map_to_gl(cgv::type::info::TypeId ti);
 

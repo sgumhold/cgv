@@ -567,10 +567,6 @@ class CGV_API frame_buffer;
 class CGV_API shader_code;
 class CGV_API shader_program;
 
-// declare some colors by name
-extern CGV_API float black[4], white[4], gray[4], green[4], brown[4], dark_red[4];
-extern CGV_API float cyan[4], yellow[4], red[4], blue[4];
-
 /** configuration object used to define context parameters that need to be set already at creation time */
 struct CGV_API context_config
 {
