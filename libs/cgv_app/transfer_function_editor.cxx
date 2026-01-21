@@ -1,4 +1,4 @@
-#include "color_map_editor.h"
+#include "transfer_function_editor.h"
 
 #include <cgv/gui/key_event.h>
 #include <cgv/gui/mouse_event.h>
@@ -13,13 +13,12 @@
 namespace cgv {
 namespace app {
 
-const float color_map_editor::color_point::default_width = 12.0f;
-const float color_map_editor::color_point::default_height = 18.0f;
+const float transfer_function_editor::color_point::default_width = 12.0f;
+const float transfer_function_editor::color_point::default_height = 18.0f;
 
-const float color_map_editor::opacity_point::default_size = 12.0f;
+const float transfer_function_editor::opacity_point::default_size = 12.0f;
 
-color_map_editor::color_map_editor() {
-
+transfer_function_editor::transfer_function_editor() {
 	set_name("Color Scale Editor");
 	blocks_events(true);
 
@@ -30,7 +29,6 @@ color_map_editor::color_map_editor() {
 	use_linear_filtering = true;
 	range = vec2(0.0f, 1.0f);
 
-	layout.padding = padding();
 	layout.total_height = supports_opacity ? 200 : 60;
 
 	set_size(ivec2(600u, layout.total_height));
@@ -40,10 +38,10 @@ color_map_editor::color_map_editor() {
 	show_value_label = false;
 
 	cmc.color_points.set_constraint(layout.color_handles_rect);
-	cmc.color_points.callback = std::bind(&color_map_editor::handle_color_drag, this, std::placeholders::_1);
+	cmc.color_points.callback = std::bind(&transfer_function_editor::handle_color_drag, this, std::placeholders::_1);
 
 	cmc.opacity_points.set_constraint(layout.opacity_editor_rect);
-	cmc.opacity_points.callback = std::bind(&color_map_editor::handle_opacity_drag, this, std::placeholders::_1);
+	cmc.opacity_points.callback = std::bind(&transfer_function_editor::handle_opacity_drag, this, std::placeholders::_1);
 
 	color_handle_renderer = cgv::g2d::generic_2d_renderer(cgv::g2d::shaders::arrow);
 	opacity_handle_renderer = cgv::g2d::generic_2d_renderer(cgv::g2d::shaders::rectangle);
@@ -51,8 +49,7 @@ color_map_editor::color_map_editor() {
 	polygon_renderer = cgv::g2d::generic_2d_renderer(cgv::g2d::shaders::polygon);
 }
 
-void color_map_editor::clear(cgv::render::context& ctx) {
-
+void transfer_function_editor::clear(cgv::render::context& ctx) {
 	cgv::g2d::ref_msdf_font_regular(ctx, -1);
 	cgv::g2d::ref_msdf_gl_font_renderer_2d(ctx, -1);
 
@@ -63,13 +60,12 @@ void color_map_editor::clear(cgv::render::context& ctx) {
 	line_renderer.destruct(ctx);
 	polygon_renderer.destruct(ctx);
 
-	bg_tex.destruct(ctx);
+	background_tex.destruct(ctx);
 	preview_tex.destruct(ctx);
-	hist_tex.destruct(ctx);
+	histogram_tex.destruct(ctx);
 }
 
-bool color_map_editor::handle_key_event(cgv::gui::key_event& e) {
-	
+bool transfer_function_editor::handle_key_event(cgv::gui::key_event& e) {
 	switch(e.get_action()) {
 	case cgv::gui::KA_PRESS:
 		switch(e.get_key()) {
@@ -102,8 +98,7 @@ bool color_map_editor::handle_key_event(cgv::gui::key_event& e) {
 	return false;
 }
 
-bool color_map_editor::handle_mouse_event(cgv::gui::mouse_event& e, cgv::ivec2 local_mouse_pos) 
-{
+bool transfer_function_editor::handle_mouse_event(cgv::gui::mouse_event& e, cgv::ivec2 local_mouse_pos) {
 	bool capture_event = false;
 	switch(e.get_action()) {
 	case cgv::gui::MA_ENTER:
@@ -163,8 +158,7 @@ bool color_map_editor::handle_mouse_event(cgv::gui::mouse_event& e, cgv::ivec2 l
 	return false;
 }
 
-void color_map_editor::handle_member_change(const cgv::utils::pointer_test& m) {
-
+void transfer_function_editor::handle_member_change(const cgv::utils::pointer_test& m) {
 	if(m.is(layout.total_height)) {
 		ivec2 size = get_rectangle().size;
 		size.y() = layout.total_height;
@@ -180,19 +174,20 @@ void color_map_editor::handle_member_change(const cgv::utils::pointer_test& m) {
 	}
 
 	if(m.is(resolution)) {
-		cgv::render::context* ctx_ptr = get_context();
-		if(cmc.cm)
-			cmc.cm->set_resolution(resolution);
+		//if(cmc.cm)
+		//	cmc.cm->set_resolution(resolution);
 		update_color_map(false);
 	}
 
 	if(m.is(use_interpolation)) {
 		cgv::render::context* ctx_ptr = get_context();
 		if(cmc.cm)
-			cmc.cm->enable_interpolation(use_interpolation);
+			//cmc.cm->enable_interpolation(use_interpolation);
+			cmc.cm->use_interpolation = use_interpolation;
 		update_color_map(false);
 	}
 
+	/*
 	if(m.is(use_linear_filtering)) {
 		cgv::render::context* ctx_ptr = get_context();
 		if(cmc.cm) {
@@ -202,6 +197,7 @@ void color_map_editor::handle_member_change(const cgv::utils::pointer_test& m) {
 		}
 		update_color_map(false);
 	}
+	*/
 
 	for(unsigned i = 0; i < cmc.color_points.size(); ++i) {
 		if(m.is(cmc.color_points[i].col)) {
@@ -212,7 +208,7 @@ void color_map_editor::handle_member_change(const cgv::utils::pointer_test& m) {
 
 	for(unsigned i = 0; i < cmc.opacity_points.size(); ++i) {
 		if(m.is(cmc.opacity_points[i].val[1])) {
-			cmc.opacity_points[i].update_pos(layout, opacity_scale_exponent);
+			cmc.opacity_points[i].update_pos(layout.opacity_editor_rect, opacity_scale_exponent);
 			update_color_map(true);
 			break;
 		}
@@ -240,14 +236,14 @@ void color_map_editor::handle_member_change(const cgv::utils::pointer_test& m) {
 	}
 }
 
-bool color_map_editor::init(cgv::render::context& ctx) {
-	
+bool transfer_function_editor::init(cgv::render::context& ctx) {
 	cgv::g2d::ref_msdf_font_regular(ctx, 1);
 	cgv::g2d::ref_msdf_gl_font_renderer_2d(ctx, 1);
 	
 	register_shader("rectangle", cgv::g2d::shaders::rectangle);
 	register_shader("circle", cgv::g2d::shaders::circle);
 	register_shader("histogram", "heightfield1d.glpr");
+	//Todo: Rename shader program?
 	register_shader("background", "color_map_editor_bg.glpr");
 
 	bool success = canvas_overlay::init(ctx);
@@ -256,27 +252,17 @@ bool color_map_editor::init(cgv::render::context& ctx) {
 	success &= opacity_handle_renderer.init(ctx);
 	success &= line_renderer.init(ctx);
 	success &= polygon_renderer.init(ctx);
-	
-	init_preview_texture(ctx);
-	update_color_map(false);
+	success &= create_background_texture(ctx);
 
-	rgb a(0.75f);
-	rgb b(0.9f);
-	std::vector<rgb> bg_data = { a, b, b, a };
-	
-	bg_tex.destruct(ctx);
-	cgv::data::data_view bg_dv = cgv::data::data_view(new cgv::data::data_format(2, 2, cgv::type::info::TI_FLT32, cgv::data::CF_RGB), bg_data.data());
-	bg_tex = cgv::render::texture("flt32[R,G,B]", cgv::render::TF_NEAREST, cgv::render::TF_NEAREST, cgv::render::TW_REPEAT, cgv::render::TW_REPEAT);
-	success &= bg_tex.create(ctx, bg_dv, 0);
+	update_color_map(false);
 
 	return success;
 }
 
-void color_map_editor::init_frame(cgv::render::context& ctx) {
-
+void transfer_function_editor::init_frame(cgv::render::context& ctx) {
 	if(ensure_layout(ctx)) {
 		ivec2 container_size = get_rectangle().size;
-		layout.update(container_size, supports_opacity);
+		update_layout(container_size);
 
 		auto& bg_prog = content_canvas.enable_shader(ctx, "background");
 		float width_factor = static_cast<float>(layout.opacity_editor_rect.w()) / static_cast<float>(layout.opacity_editor_rect.h());
@@ -292,45 +278,43 @@ void color_map_editor::init_frame(cgv::render::context& ctx) {
 	}
 }
 
-void color_map_editor::draw_content(cgv::render::context& ctx) {
-	
+void transfer_function_editor::draw_content(cgv::render::context& ctx) {
 	begin_content(ctx);
 	
 	// draw inner border
 	ivec2 container_size = get_rectangle().size;
 	content_canvas.enable_shader(ctx, "rectangle");
 	content_canvas.set_style(ctx, border_style);
-	content_canvas.draw_shape(ctx, ivec2(layout.padding - 1) + ivec2(0, 10), container_size - 2 * layout.padding + 2 - ivec2(0, 10));
+	content_canvas.draw_shape(ctx, ivec2(padding() - 1) + ivec2(0, 10), container_size - 2 * padding() + 2 - ivec2(0, 10));
 	
-	if(cmc.cm) {
+	if(cmc.cm && preview_tex.is_created()) {
 		// draw color scale texture
 		content_canvas.set_style(ctx, color_map_style);
 		preview_tex.enable(ctx, 0);
 		content_canvas.draw_shape(ctx, layout.color_editor_rect);
 		preview_tex.disable(ctx);
-		//content_canvas.disable_current_shader(ctx);
 
 		if(supports_opacity) {
 			// draw opacity editor checkerboard background
 			auto& bg_prog = content_canvas.enable_shader(ctx, "background");
 			bg_style.apply(ctx, bg_prog);
 			bg_prog.set_uniform(ctx, "scale_exponent", opacity_scale_exponent);
-			bg_tex.enable(ctx, 0);
+			background_tex.enable(ctx, 0);
 			content_canvas.draw_shape(ctx, layout.opacity_editor_rect);
-			bg_tex.disable(ctx);
+			background_tex.disable(ctx);
 			content_canvas.disable_current_shader(ctx);
 
 			// draw histogram
-			if(histogram_type != (cgv::type::DummyEnum)0 && hist_tex.is_created()) {
+			if(histogram_type != (cgv::type::DummyEnum)0 && histogram_tex.is_created()) {
 				auto& hist_prog = content_canvas.enable_shader(ctx, "histogram");
 				hist_prog.set_uniform(ctx, "max_value", hist_norm_ignore_zero ? hist_max_non_zero : hist_max);
 				hist_prog.set_uniform(ctx, "norm_gamma", hist_norm_gamma);
 				hist_prog.set_uniform(ctx, "sampling_type", cgv::math::clamp(static_cast<unsigned>(histogram_type) - 1, 0u, 2u));
 				hist_style.apply(ctx, hist_prog);
 
-				hist_tex.enable(ctx, 1);
+				histogram_tex.enable(ctx, 1);
 				content_canvas.draw_shape(ctx, layout.opacity_editor_rect);
-				hist_tex.disable(ctx);
+				histogram_tex.disable(ctx);
 				content_canvas.disable_current_shader(ctx);
 			}
 
@@ -347,7 +331,7 @@ void color_map_editor::draw_content(cgv::render::context& ctx) {
 			content_canvas.set_style(ctx, border_style);
 			content_canvas.draw_shape(ctx,
 				ivec2(layout.color_editor_rect.x(), layout.color_editor_rect.y1()),
-				ivec2(container_size.x() - 2 * layout.padding, 1)
+				ivec2(container_size.x() - 2 * padding(), 1)
 			);
 			content_canvas.disable_current_shader(ctx);
 		}
@@ -394,15 +378,13 @@ void color_map_editor::draw_content(cgv::render::context& ctx) {
 	end_content(ctx);
 }
 
-void color_map_editor::handle_theme_change(const cgv::gui::theme_info& theme) {
-
+void transfer_function_editor::handle_theme_change(const cgv::gui::theme_info& theme) {
 	themed_canvas_overlay::handle_theme_change(theme);
 	update_geometry();
 	post_recreate_gui();
 }
 
-void color_map_editor::create_gui_impl() {
-
+void transfer_function_editor::create_gui_impl() {
 	if(begin_tree_node("Settings", layout, false)) {
 		align("\a");
 		std::string height_options = "min=";
@@ -413,9 +395,9 @@ void color_map_editor::create_gui_impl() {
 		add_member_control(this, "Resolution", resolution, "dropdown", "enums='2=2,4=4,8=8,16=16,32=32,64=64,128=128,256=256,512=512,1024=1024,2048=2048';w=106", " ");
 		add_member_control(this, "Interpolate", use_interpolation, "check", "w=82");
 		
-		if(cmc.cm && cmc.cm->has_texture_support()) {
-			add_member_control(this, "Linear Filtering (Texture)", use_linear_filtering, "check");
-		}
+		//if(cmc.cm && cmc.cm->has_texture_support()) {
+		//	add_member_control(this, "Linear Filtering (Texture)", use_linear_filtering, "check");
+		//}
 		align("\b");
 		end_tree_node(layout);
 
@@ -467,20 +449,18 @@ void color_map_editor::create_gui_impl() {
 	}
 }
 
-void color_map_editor::set_opacity_support(bool flag) {
-	
+void transfer_function_editor::set_opacity_support(bool flag) {
 	supports_opacity = flag;
-	set_color_map(cmc.cm);
+	set_transfer_function(cmc.cm);
 	on_set(&supports_opacity);
 }
 
-void color_map_editor::set_color_map(cgv::render::color_map* cm) {
+void transfer_function_editor::set_transfer_function(std::shared_ptr<cgv::media::transfer_function> transfer_function) {
 	cmc.reset();
-	cmc.cm = cm;
+	cmc.cm = transfer_function;
 
 	if(cmc.cm) {
-		auto& cm = *cmc.cm;
-		auto& cp = cmc.cm->ref_color_points();
+		const std::vector<std::pair<float, cgv::rgb>>& cp = cmc.cm->get_color_points();
 		
 		for(size_t i = 0; i < cp.size(); ++i) {
 			color_point p;
@@ -490,21 +470,21 @@ void color_map_editor::set_color_map(cgv::render::color_map* cm) {
 		}
 
 		if(supports_opacity) {
-			auto& op = cmc.cm->ref_opacity_points();
-			for(size_t i = 0; i < op.size(); ++i) {
+			const std::vector<std::pair<float, float>>& ap = cmc.cm->get_opacity_points();
+			for(size_t i = 0; i < ap.size(); ++i) {
 				opacity_point p;
-				p.val.x() = cgv::math::clamp(op[i].first, 0.0f, 1.0f);
-				p.val.y() = cgv::math::clamp(op[i].second, 0.0f, 1.0f);
+				p.val.x() = cgv::math::clamp(ap[i].first, 0.0f, 1.0f);
+				p.val.y() = cgv::math::clamp(ap[i].second, 0.0f, 1.0f);
 				cmc.opacity_points.add(p);
 			}
 		}
 
-		use_interpolation = cm.is_interpolation_enabled();
-		use_linear_filtering = true;
+		use_interpolation = cmc.cm->use_interpolation;
+		//use_linear_filtering = true;
 		
-		cgv::render::gl_color_map* gl_cm = cmc.get_gl_color_map();
-		if(gl_cm)
-			use_linear_filtering = gl_cm->is_linear_filtering_enabled();
+		//cgv::render::gl_color_map* gl_cm = cmc.get_gl_color_map();
+		//if(gl_cm)
+		//	use_linear_filtering = gl_cm->is_linear_filtering_enabled();
 
 		update_point_positions();
 		update_color_map(false);
@@ -513,7 +493,7 @@ void color_map_editor::set_color_map(cgv::render::color_map* cm) {
 	}
 }
 
-void color_map_editor::set_histogram_data(const std::vector<unsigned> data) {
+void transfer_function_editor::set_histogram_data(const std::vector<unsigned> data) {
 	histogram = data;
 
 	std::vector<float> float_data(histogram.size(), 0.0f);
@@ -527,20 +507,14 @@ void color_map_editor::set_histogram_data(const std::vector<unsigned> data) {
 		float_data[i] = static_cast<float>(count);
 	}
 
-	if(auto ctx_ptr = get_context()) {
-		auto& ctx = *ctx_ptr;
-		hist_tex.destruct(ctx);
-
-		cgv::data::data_view dv = cgv::data::data_view(new cgv::data::data_format(unsigned(histogram.size()), cgv::type::info::TI_FLT32, cgv::data::CF_R), float_data.data());
-		hist_tex = cgv::render::texture("flt32[R]");
-		hist_tex.create(ctx, dv, 0);
-
+	if(get_context()) {
+		cgv::data::data_view data_view = cgv::data::data_view(new cgv::data::data_format(unsigned(histogram.size()), cgv::type::info::TI_FLT32, cgv::data::CF_R), float_data.data());
+		histogram_tex.create(*get_context(), data_view, 0);
 		post_damage();
 	}
 }
 
-void color_map_editor::set_selected_color(rgb color) {
-	
+void transfer_function_editor::set_selected_color(rgb color) {
 	auto selected_point = cmc.color_points.get_selected();
 	if(selected_point) {
 		selected_point->col = color;
@@ -550,7 +524,7 @@ void color_map_editor::set_selected_color(rgb color) {
 	}
 }
 
-void color_map_editor::init_styles() {
+void transfer_function_editor::init_styles() {
 	auto& theme = cgv::gui::theme_info::instance();
 	handle_color = rgba(theme.text(), 1.0f);
 	highlight_color = rgba(theme.highlight(), 1.0f);
@@ -619,26 +593,44 @@ void color_map_editor::init_styles() {
 	value_label_style.font_size = 12.0f;
 }
 
-void color_map_editor::setup_preview_texture(cgv::render::context& ctx) {
+void transfer_function_editor::update_layout(const ivec2& parent_size) {
+	int content_height = layout.total_height - 10 - 2 * padding();
+	if(supports_opacity) {
+		layout.color_editor_height = static_cast<int>(floor(0.15f * static_cast<float>(content_height)));
+		layout.color_editor_height = cgv::math::clamp(layout.color_editor_height, 4, 80);
+		layout.opacity_editor_height = content_height - layout.color_editor_height - 1;
+	} else {
+		layout.color_editor_height = content_height;
+		layout.opacity_editor_height = 0;
+	}
 
-	if(preview_tex.is_created())
-		preview_tex.destruct(ctx);
+	int y_off = padding();
 
-	cgv::render::TextureFilter filter = use_linear_filtering ? cgv::render::TF_LINEAR : cgv::render::TF_NEAREST;
-	preview_tex = cgv::render::texture("uint8[R,G,B,A]", filter, filter);
+	layout.color_handles_rect.position = ivec2(padding(), 20);
+	layout.color_handles_rect.size = ivec2(parent_size.x() - 2 * padding(), 0);
+
+	// move 10px up to clear some space for the color handles rect
+	y_off += 10;
+
+	layout.color_editor_rect.position = ivec2(padding(), y_off);
+	layout.color_editor_rect.size = ivec2(parent_size.x() - 2 * padding(), layout.color_editor_height);
+
+	y_off += layout.color_editor_height + 1; // plus 1px border
+
+	layout.opacity_editor_rect.position = ivec2(padding(), y_off);
+	layout.opacity_editor_rect.size = ivec2(parent_size.x() - 2 * padding(), layout.opacity_editor_height);
 }
 
-void color_map_editor::init_preview_texture(cgv::render::context& ctx) {
-
-	std::vector<uint8_t> data(resolution * 4 * 2, 0u);
-
-	setup_preview_texture(ctx);
-	cgv::data::data_view tf_dv = cgv::data::data_view(new cgv::data::data_format(resolution, 2, cgv::type::info::TI_UINT8, cgv::data::CF_RGBA), data.data());
-	preview_tex.create(ctx, tf_dv, 0);
+bool transfer_function_editor::create_background_texture(cgv::render::context& ctx) {
+	const rgb dark(0.75f);
+	const rgb light(0.9f);
+	std::vector<rgb> data = { dark, light, light, dark };
+	cgv::data::data_format format(2, 2, cgv::type::info::TI_FLT32, cgv::data::CF_RGB);
+	cgv::data::data_view data_view = cgv::data::data_view(&format, data.data());
+	return background_tex.create(ctx, data_view, 0);
 }
 
-void color_map_editor::add_point(const vec2& pos) {
-
+void transfer_function_editor::add_point(const vec2& pos) {
 	if(cmc.cm) {
 		ivec2 test_pos = static_cast<ivec2>(pos);
 
@@ -646,8 +638,8 @@ void color_map_editor::add_point(const vec2& pos) {
 			// color point
 			color_point p;
 			p.position = ivec2(int(pos.x()), layout.color_handles_rect.y());
-			p.update_val(layout);
-			p.col = cmc.cm->interpolate_color(p.val);
+			p.update_val(layout.color_editor_rect);
+			p.col = cmc.cm->get_color(p.val);
 			size_t index = cmc.color_points.add(p);
 			cmc.color_points.set_selected(index);
 			handle_drag_end();
@@ -655,7 +647,7 @@ void color_map_editor::add_point(const vec2& pos) {
 			// opacity point
 			opacity_point p;
 			p.position = pos;
-			p.update_val(layout, opacity_scale_exponent);
+			p.update_val(layout.opacity_editor_rect, opacity_scale_exponent);
 			size_t index = cmc.opacity_points.add(p);
 			cmc.opacity_points.set_selected(index);
 			handle_drag_end();
@@ -665,8 +657,7 @@ void color_map_editor::add_point(const vec2& pos) {
 	}
 }
 
-void color_map_editor::remove_point(const cgv::g2d::draggable* ptr) {
-
+void transfer_function_editor::remove_point(const cgv::g2d::draggable* ptr) {
 	int color_point_idx = -1;
 	int opacity_point_idx = -1;
 
@@ -704,8 +695,7 @@ void color_map_editor::remove_point(const cgv::g2d::draggable* ptr) {
 		update_color_map(true);
 }
 
-cgv::g2d::draggable* color_map_editor::get_hit_point(const vec2& pos) {
-
+cgv::g2d::draggable* transfer_function_editor::get_hit_point(const vec2& pos) {
 	cgv::g2d::draggable* hit = nullptr;
 
 	for(unsigned i = 0; i < cmc.color_points.size(); ++i) {
@@ -723,8 +713,7 @@ cgv::g2d::draggable* color_map_editor::get_hit_point(const vec2& pos) {
 	return hit;
 }
 
-void color_map_editor::update_value_label_rectangle(vec2 position, const cgv::g2d::rect& parent_rectangle) {
-
+void transfer_function_editor::update_value_label_rectangle(vec2 position, const cgv::g2d::rect& parent_rectangle) {
 	value_label_rectangle.position = position;
 
 	if(auto ctx = get_context()) {
@@ -738,14 +727,13 @@ void color_map_editor::update_value_label_rectangle(vec2 position, const cgv::g2
 	value_label_rectangle.position.x() = cgv::math::clamp(value_label_rectangle.position.x(), min_x, max_x);
 }
 
-void color_map_editor::handle_color_drag(cgv::g2d::DragAction action) {
-
+void transfer_function_editor::handle_color_drag(cgv::g2d::DragAction action) {
 	switch(action) {
 	case cgv::g2d::DragAction::kDrag:
 	{
 		color_point* dragged_point = cmc.color_points.get_dragged();
 		if(dragged_point) {
-			dragged_point->update_val(layout);
+			dragged_point->update_val(layout.color_editor_rect);
 			update_color_map(true);
 
 			show_value_label = true;
@@ -769,14 +757,13 @@ void color_map_editor::handle_color_drag(cgv::g2d::DragAction action) {
 	}
 }
 
-void color_map_editor::handle_opacity_drag(cgv::g2d::DragAction action) {
-
+void transfer_function_editor::handle_opacity_drag(cgv::g2d::DragAction action) {
 	switch(action) {
 	case cgv::g2d::DragAction::kDrag:
 	{
 		opacity_point* dragged_point = cmc.opacity_points.get_dragged();
 		if(dragged_point) {
-			dragged_point->update_val(layout, opacity_scale_exponent);
+			dragged_point->update_val(layout.opacity_editor_rect, opacity_scale_exponent);
 			update_color_map(true);
 
 			show_value_label = true;
@@ -800,44 +787,7 @@ void color_map_editor::handle_opacity_drag(cgv::g2d::DragAction action) {
 	}
 }
 
-/*
-void color_map_editor::handle_color_point_drag() {
-
-	auto dragged_point = cmc.color_points.get_dragged();
-	dragged_point->update_val(layout);
-	update_color_map(true);
-
-	show_value_label = true;
-	value_label = value_to_string(dragged_point->val);
-	update_value_label_rectangle(dragged_point->position, layout.color_editor_rect);
-	value_label_rectangle.position.y() += 25.0f;
-
-	if(dragged_point && on_color_point_select_callback)
-		on_color_point_select_callback(dragged_point->col);
-
-	post_damage();
-}
-
-void color_map_editor::handle_opacity_point_drag() {
-
-	auto dragged_point = cmc.opacity_points.get_dragged();
-	dragged_point->update_val(layout, opacity_scale_exponent);
-	update_color_map(true);
-
-	show_value_label = true;
-	std::string x_label = value_to_string(dragged_point->val.x());
-	std::string y_label = cgv::utils::to_string(dragged_point->val.y(), -1, 3u);
-	value_label = x_label + ", " + y_label;
-	
-	update_value_label_rectangle(dragged_point->position, layout.opacity_editor_rect);
-	value_label_rectangle.position.y() = std::min(value_label_rectangle.position.y() + 10.0f, static_cast<float>(layout.opacity_editor_rect.y1() - 6));
-
-	post_damage();
-}
-*/
-
-void color_map_editor::handle_drag_end() {
-	
+void transfer_function_editor::handle_drag_end() {
 	show_value_label = false;
 	update_geometry();
 
@@ -854,8 +804,7 @@ void color_map_editor::handle_drag_end() {
 	post_damage();
 }
 
-std::string color_map_editor::value_to_string(float value) {
-
+std::string transfer_function_editor::value_to_string(float value) {
 	float display_value = cgv::math::lerp(range.x(), range.y(), value);
 
 	float total = range.y() - range.x();
@@ -869,14 +818,13 @@ std::string color_map_editor::value_to_string(float value) {
 	}
 }
 
-void color_map_editor::sort_points() {
+void transfer_function_editor::sort_points() {
 	sort_color_points();
 	if(supports_opacity)
 		sort_opacity_points();
 }
 
-void color_map_editor::sort_color_points() {
-
+void transfer_function_editor::sort_color_points() {
 	auto& points = cmc.color_points;
 
 	if(points.size() > 1) {
@@ -922,8 +870,7 @@ void color_map_editor::sort_color_points() {
 	}
 }
 
-void color_map_editor::sort_opacity_points() {
-
+void transfer_function_editor::sort_opacity_points() {
 	auto& points = cmc.opacity_points;
 
 	if(points.size() > 1) {
@@ -969,74 +916,55 @@ void color_map_editor::sort_opacity_points() {
 	}
 }
 
-void color_map_editor::update_point_positions() {
-
+void transfer_function_editor::update_point_positions() {
 	for(unsigned i = 0; i < cmc.color_points.size(); ++i)
-		cmc.color_points[i].update_pos(layout);
+		cmc.color_points[i].update_pos(layout.color_editor_rect);
 
 	for(unsigned i = 0; i < cmc.opacity_points.size(); ++i)
-		cmc.opacity_points[i].update_pos(layout, opacity_scale_exponent);
+		cmc.opacity_points[i].update_pos(layout.opacity_editor_rect, opacity_scale_exponent);
 }
 
-void color_map_editor::update_color_map(bool is_data_change) {
-	
+void transfer_function_editor::update_color_map(bool is_data_change) {
 	cgv::render::context* ctx_ptr = get_context();
 	if(!ctx_ptr || !cmc.cm) return;
 	cgv::render::context& ctx = *ctx_ptr;
 
-	auto& cm = *cmc.cm;
+	auto cm = cmc.cm;
 	auto& color_points = cmc.color_points;
 	auto& opacity_points = cmc.opacity_points;
 	
 	sort_points();
 
-	cm.clear();
+	//cm.clear();
 
-	for(unsigned i = 0; i < color_points.size(); ++i) {
-		const color_point& p = color_points[i];
-		cm.add_color_point(p.val, p.col);
-	}
+	std::vector<std::pair<float, rgb>> colors;
+	std::vector<std::pair<float, float>> alphas;
+	colors.reserve(color_points.size());
+	alphas.reserve(opacity_points.size());
 
-	if(supports_opacity) {
-		for(unsigned i = 0; i < opacity_points.size(); ++i) {
-			const opacity_point& p = opacity_points[i];
-			cm.add_opacity_point(p.val.x(), p.val.y());
-		}
-	} else {
-		// add one fully opaque point that will be removed later on
-		cm.add_opacity_point(0.0f, 1.0f);
-	}
+	std::transform(color_points.begin(), color_points.end(), std::back_inserter(colors), [](const color_point& point) { return std::make_pair(point.val, point.col); });
+	std::transform(opacity_points.begin(), opacity_points.end(), std::back_inserter(alphas), [](const opacity_point& point) { return std::make_pair(point.val[0], point.val[1]); });
+
+	cm->set_color_points(colors);
+	cm->set_opacity_points(alphas);
 
 	size_t size = static_cast<size_t>(resolution);
-	std::vector<rgba> cs_data = cm.interpolate(size);
+	std::vector<rgba> cs_data = cm->quantize_value(size);
 
-	std::vector<uint8_t> data(4 * 2 * size);
-	for(size_t i = 0; i < size; ++i) {
-		rgba col = cs_data[i];
-		uint8_t r = static_cast<uint8_t>(255.0f * col.R());
-		uint8_t g = static_cast<uint8_t>(255.0f * col.G());
-		uint8_t b = static_cast<uint8_t>(255.0f * col.B());
-		uint8_t a = static_cast<uint8_t>(255.0f * col.alpha());
+	std::vector<cgv::rgba8> texture_data;
+	texture_data.reserve(resolution);
+	std::transform(cs_data.begin(), cs_data.end(), std::back_inserter(texture_data), [](const cgv::rgba& color) {
+		return cgv::rgba8(color);
+	});
 
-		size_t idx = 4 * i;
-		data[idx + 0] = r;
-		data[idx + 1] = g;
-		data[idx + 2] = b;
-		data[idx + 3] = a;
-		idx += 4*size;
-		data[idx + 0] = r;
-		data[idx + 1] = g;
-		data[idx + 2] = b;
-		data[idx + 3] = a;
-	}
+	cgv::data::data_view data_view(new cgv::data::data_format(resolution, 1, cgv::type::info::TI_UINT8, cgv::data::CF_RGBA), texture_data.data());
 
-	setup_preview_texture(ctx);
-	cgv::data::data_view dv = cgv::data::data_view(new cgv::data::data_format(unsigned(size), 2, cgv::type::info::TI_UINT8, cgv::data::CF_RGBA), data.data());
-	preview_tex.create(ctx, dv, 0);
+	const cgv::render::TextureFilter filter = cgv::render::TF_LINEAR;
 
-	if(!supports_opacity)
-		cm.clear_opacity_points();
-
+	preview_tex.create(ctx, data_view, 0);
+	preview_tex.set_min_filter(filter);
+	preview_tex.set_mag_filter(filter);
+	
 	update_geometry();
 
 	if(on_change_callback)
@@ -1045,8 +973,7 @@ void color_map_editor::update_color_map(bool is_data_change) {
 	post_damage();
 }
 
-bool color_map_editor::update_geometry() {
-
+bool transfer_function_editor::update_geometry() {
 	cgv::render::context* ctx_ptr = get_context();
 	if(!ctx_ptr || !cmc.cm) return false;
 	cgv::render::context& ctx = *ctx_ptr;

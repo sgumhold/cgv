@@ -1,4 +1,4 @@
-#include "color_map_legend.h"
+#include "color_scale_legend.h"
 
 #include <cgv/gui/theme_info.h>
 #include <cgv/math/ftransform.h>
@@ -8,7 +8,7 @@
 namespace cgv {
 namespace app {
 
-color_map_legend::color_map_legend() {
+color_scale_legend::color_scale_legend() {
 
 	set_name("Color Map Legend");
 
@@ -21,7 +21,7 @@ color_map_legend::color_map_legend() {
 	tick_renderer = cgv::g2d::generic_2d_renderer(cgv::g2d::shaders::rectangle);
 }
 
-void color_map_legend::clear(cgv::render::context& ctx) {
+void color_scale_legend::clear(cgv::render::context& ctx) {
 
 	cgv::g2d::ref_msdf_gl_font_renderer_2d(ctx, -1);
 
@@ -34,7 +34,7 @@ void color_map_legend::clear(cgv::render::context& ctx) {
 	labels.destruct(ctx);
 }
 
-void color_map_legend::handle_member_change(const cgv::utils::pointer_test& m) {
+void color_scale_legend::handle_member_change(const cgv::utils::pointer_test& m) {
 
 	if(m.member_of(layout.total_size)) {
 		// TODO: minimum width and height depend on other layout parameters
@@ -57,7 +57,7 @@ void color_map_legend::handle_member_change(const cgv::utils::pointer_test& m) {
 		post_recreate_layout();	
 }
 
-bool color_map_legend::init(cgv::render::context& ctx) {
+bool color_scale_legend::init(cgv::render::context& ctx) {
 
 	cgv::g2d::ref_msdf_gl_font_renderer_2d(ctx, 1);
 
@@ -73,42 +73,42 @@ bool color_map_legend::init(cgv::render::context& ctx) {
 	return success;
 }
 
-void color_map_legend::init_frame(cgv::render::context& ctx) {
+void color_scale_legend::init_frame(cgv::render::context& ctx) {
 
 	if(ensure_layout(ctx)) {
 		create_labels(ctx);
 		layout.update(get_rectangle().size);
 		create_ticks();
 
-		float width_factor = static_cast<float>(layout.color_map_rect.w());
-		float height_factor = static_cast<float>(layout.color_map_rect.h());
+		float width_factor = static_cast<float>(layout.color_ramp_rect.w());
+		float height_factor = static_cast<float>(layout.color_ramp_rect.h());
 		background_style.texcoord_scaling = vec2(width_factor, height_factor) / 10.0f;
 	}
 }
 
-void color_map_legend::draw_content(cgv::render::context& ctx) {
+void color_scale_legend::draw_content(cgv::render::context& ctx) {
 
 	begin_content(ctx);
 
 	// draw inner border
 	content_canvas.enable_shader(ctx, "rectangle");
 	content_canvas.set_style(ctx, border_style);
-	content_canvas.draw_shape(ctx, layout.color_map_rect.position - 1, layout.color_map_rect.size + 2);
+	content_canvas.draw_shape(ctx, layout.color_ramp_rect.position - 1, layout.color_ramp_rect.size + 2);
 
 	// draw background grid as contrast for transparent color maps or indicator that no color map is set
 	content_canvas.enable_shader(ctx, "grid");
 	content_canvas.set_style(ctx, background_style);
-	content_canvas.draw_shape(ctx, layout.color_map_rect);
+	content_canvas.draw_shape(ctx, layout.color_ramp_rect);
 
 	if(tex.is_created()) {
 		// draw the color map texture
 		content_canvas.push_modelview_matrix();
-		ivec2 pos = layout.color_map_rect.position;
-		ivec2 size = layout.color_map_rect.size;
+		ivec2 pos = layout.color_ramp_rect.position;
+		ivec2 size = layout.color_ramp_rect.size;
 		float angle = 0.0f;
 
 		if(layout.orientation == OO_VERTICAL) {
-			pos.x() += layout.color_map_rect.size.x();
+			pos.x() += layout.color_ramp_rect.size.x();
 			std::swap(size.x(), size.y());
 			angle = 90.0f;
 		}
@@ -117,16 +117,16 @@ void color_map_legend::draw_content(cgv::render::context& ctx) {
 		content_canvas.mul_modelview_matrix(ctx, cgv::math::rotate2h(angle));
 
 		// draw color scale texture
-		color_map_style.use_texture_alpha = show_opacity;
+		color_ramp_style.use_texture_alpha = show_opacity;
 
-		color_map_style.texcoord_offset.x() = display_range[0];
-		color_map_style.texcoord_scaling.x() = display_range[1] - display_range[0];
+		color_ramp_style.texcoord_offset.x() = display_range[0];
+		color_ramp_style.texcoord_scaling.x() = display_range[1] - display_range[0];
 		
 		if(flip_texture)
-			color_map_style.texcoord_scaling.x() *= -1.0f;
+			color_ramp_style.texcoord_scaling.x() *= -1.0f;
 
 		content_canvas.enable_shader(ctx, "rectangle");
-		content_canvas.set_style(ctx, color_map_style);
+		content_canvas.set_style(ctx, color_ramp_style);
 		tex.enable(ctx, 0);
 		content_canvas.draw_shape(ctx, ivec2(0), size);
 		tex.disable(ctx);
@@ -156,7 +156,7 @@ void color_map_legend::draw_content(cgv::render::context& ctx) {
 	end_content(ctx);
 }
 
-void color_map_legend::create_gui_impl() {
+void color_scale_legend::create_gui_impl() {
 
 	add_member_control(this, "Width", layout.total_size[0], "value_slider", "min=40;max=500;step=1;ticks=true");
 	add_member_control(this, "Height", layout.total_size[1], "value_slider", "min=40;max=500;step=1;ticks=true");
@@ -175,127 +175,131 @@ void color_map_legend::create_gui_impl() {
 	add_member_control(this, "Int", label_format.integers, "check", "w=40");
 }
 
-void color_map_legend::set_color_map(cgv::render::context& ctx, const cgv::render::color_map& cm) {
+void color_scale_legend::set_color_scale(const cgv::media::sequential_scale<cgv::rgb>& scale) {
 
-	cgv::render::TextureFilter filter = cgv::render::TF_LINEAR;
-	if(cm.has_texture_support()) {
-		const cgv::render::gl_color_map* gl_cm_ptr = dynamic_cast<const cgv::render::gl_color_map*>(&cm);
-		filter = gl_cm_ptr->is_linear_filtering_enabled() ? cgv::render::TF_LINEAR : cgv::render::TF_NEAREST;
-	}
+	if(!get_context())
+		return;
 
-	unsigned resolution = cm.get_resolution();
-	std::vector<rgb> color_data = cm.interpolate_color(static_cast<size_t>(resolution));
-	std::vector<float> opacity_data(static_cast<size_t>(resolution), 1.0f);
+	cgv::render::context& ctx = *get_context();
+
+	// Todo: Use nearest filer for scales with discrete color ramps.
+	const cgv::render::TextureFilter filter = cgv::render::TF_LINEAR;
+
+	// Todo: Ticks and labels from mapping options.
+
+	size_t resolution = 256;
+	/*
+	std::vector<rgba> colors(resolution, scale.unknown_value);
+	cgv::vec2 range = { 0.0f, 1.0f };
+	if(scale.reverse)
+		std::swap(range[0], range[1]);
+	*/
 	
-	if(!cm.ref_opacity_points().empty())
-		opacity_data = cm.interpolate_opacity(static_cast<size_t>(resolution));
+	/*const cgv::math::interpolator<cgv::rgb, float>* interpolator = scale.get_interpolator().get();
+	if(interpolator) {
+		cgv::math::sequence_transform(colors.begin(), [interpolator](float t) {
+			return interpolator->at(t);
+		}, resolution, range[0], range[1]);
+	}
+	*/
+
+	std::vector<rgb> colors = scale.get_interpolator()->quantize(resolution);
 	
-	std::vector<uint8_t> data_8(2 * 4 * color_data.size());
-	for(unsigned i = 0; i < color_data.size(); ++i) {
-		rgba col = color_data[i];
-		data_8[4 * i + 0] = static_cast<uint8_t>(255.0f * col.R());
-		data_8[4 * i + 1] = static_cast<uint8_t>(255.0f * col.G());
-		data_8[4 * i + 2] = static_cast<uint8_t>(255.0f * col.B());
-		data_8[4 * i + 3] = static_cast<uint8_t>(255.0f * opacity_data[i]);
-	}
+	std::vector<cgv::rgba8> texture_data;
+	texture_data.reserve(resolution);
+	std::transform(colors.begin(), colors.end(), std::back_inserter(texture_data), [](const cgv::rgb& color) {
+		return cgv::rgba8(cgv::rgba(color, 1.0f));
+	});
 
-	std::copy(data_8.begin(), data_8.begin() + 4 * resolution, data_8.begin() + 4 * resolution);
+	cgv::data::data_view data_view(new cgv::data::data_format(resolution, 1, cgv::type::info::TI_UINT8, cgv::data::CF_RGBA), texture_data.data());
 
-	cgv::data::data_view dv = cgv::data::data_view(new cgv::data::data_format(resolution, 2u, cgv::type::info::TI_UINT8, cgv::data::CF_RGBA), data_8.data());
+	tex.set_min_filter(filter);
+	tex.set_mag_filter(filter);
+	tex.create(ctx, data_view, 0);
 
-	unsigned width = (unsigned)tex.get_width();
-
-	bool replaced = false;
-	if(tex.is_created() && width == resolution && tex.get_nr_components() == 4) {
-		tex.set_min_filter(filter);
-		tex.set_mag_filter(filter);
-		replaced = tex.replace(ctx, 0, 0, dv);
-	}
-
-	if(!replaced) {
-		tex.destruct(ctx);
-		tex = cgv::render::texture("uint8[R,G,B,A]", filter, filter);
-		tex.create(ctx, dv, 0);
-	}
+	value_range = { scale.domain.lower_bound, scale.domain.upper_bound };
+	on_set(&value_range);
 
 	post_damage();
 }
 
-void color_map_legend::set_width(size_t w) {
+void color_scale_legend::set_width(size_t w) {
 	layout.total_size.x() = int(w);
 	on_set(&layout.total_size.x());
 }
 
-void color_map_legend::set_height(size_t h) {
+void color_scale_legend::set_height(size_t h) {
 	layout.total_size.y() = int(h);
 	on_set(&layout.total_size.y());
 }
 
-void color_map_legend::set_title(const std::string& t) {
+void color_scale_legend::set_title(const std::string& t) {
 	title = t;
 	on_set(&title);
 }
 
-void color_map_legend::set_orientation(OrientationOption orientation) {
+void color_scale_legend::set_orientation(OrientationOption orientation) {
 	layout.orientation = orientation;
 	on_set(&layout.orientation);
 }
 
-void color_map_legend::set_label_alignment(AlignmentOption alignment) {
+void color_scale_legend::set_label_alignment(AlignmentOption alignment) {
 	layout.label_alignment = alignment;
 	on_set(&layout.label_alignment);
 }
 
-void color_map_legend::set_range(vec2 r) {
+void color_scale_legend::set_range(vec2 r) {
+	/*
 	flip_texture = r.x() > r.y();
 	if(flip_texture)
 		std::swap(r.x(), r.y());
 
 	value_range = r;
 	on_set(&value_range);
+	*/
 }
 
-void color_map_legend::set_display_range(vec2 r) {
+void color_scale_legend::set_display_range(vec2 r) {
 	display_range = r;
 	on_set(&display_range);
 }
 
-void color_map_legend::set_invert_color(bool flag) {
+void color_scale_legend::set_invert_color(bool flag) {
 	invert_color = flag;
 	on_set(&invert_color);
 }
 
-void color_map_legend::set_num_ticks(unsigned n) {
+void color_scale_legend::set_num_ticks(unsigned n) {
 	num_ticks = n;
 	on_set(&num_ticks);
 }
 
-void color_map_legend::set_label_precision(unsigned p) {
+void color_scale_legend::set_label_precision(unsigned p) {
 	label_format.precision = p;
 	on_set(&label_format.precision);
 }
 
-void color_map_legend::set_label_auto_precision(bool f) {
+void color_scale_legend::set_label_auto_precision(bool f) {
 	label_format.auto_precision = f;
 	on_set(&label_format.auto_precision);
 }
 
-void color_map_legend::set_label_prune_trailing_zeros(bool f) {
+void color_scale_legend::set_label_prune_trailing_zeros(bool f) {
 	label_format.trailing_zeros = !f;
 	on_set(&label_format.trailing_zeros);
 }
 
-void color_map_legend::set_label_integer_mode(bool enabled) {
+void color_scale_legend::set_label_integer_mode(bool enabled) {
 	label_format.integers = enabled;
 	on_set(&label_format.integers);
 }
 
-void color_map_legend::set_show_opacity(bool enabled) {
+void color_scale_legend::set_show_opacity(bool enabled) {
 	show_opacity = enabled;
 	on_set(&show_opacity);
 }
 
-void color_map_legend::init_styles() {
+void color_scale_legend::init_styles() {
 	auto& theme = cgv::gui::theme_info::instance();
 	rgb tick_color = theme.text();
 
@@ -314,10 +318,10 @@ void color_map_legend::init_styles() {
 	background_style.pattern = cgv::g2d::grid2d_style::GridPattern::GP_CHECKER;
 	
 	// configure style for the color scale rectangle
-	color_map_style = border_style;
-	color_map_style.use_texture = true;
-	color_map_style.use_texture_alpha = true;
-	color_map_style.use_blending = true;
+	color_ramp_style = border_style;
+	color_ramp_style.use_texture = true;
+	color_ramp_style.use_texture_alpha = true;
+	color_ramp_style.use_blending = true;
 
 	// configure text style
 	text_style.fill_color = tick_color;
@@ -329,7 +333,7 @@ void color_map_legend::init_styles() {
 	tick_style.feather_width = 0.0f;
 }
 
-void color_map_legend::create_labels(const cgv::render::context& ctx) {
+void color_scale_legend::create_labels(const cgv::render::context& ctx) {
 
 	labels.clear();
 
@@ -400,7 +404,7 @@ void color_map_legend::create_labels(const cgv::render::context& ctx) {
 	}
 }
 
-void color_map_legend::create_ticks() {
+void color_scale_legend::create_ticks() {
 
 	ticks.clear();
 
@@ -439,8 +443,8 @@ void color_map_legend::create_ticks() {
 		layout.title_angle = 90.0f;
 	}
 
-	ivec2 color_rect_pos = layout.color_map_rect.position;
-	ivec2 color_rect_size = layout.color_map_rect.size;
+	ivec2 color_rect_pos = layout.color_ramp_rect.position;
+	ivec2 color_rect_size = layout.color_ramp_rect.size;
 
 	int length = color_rect_size[axis];
 	float step = static_cast<float>(length + 1) / static_cast<float>(num_ticks - 1);

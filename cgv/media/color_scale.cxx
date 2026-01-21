@@ -8,7 +8,7 @@ namespace cgv {
 	namespace media {
 
 /// compute an rgb color according to the selected color scale
-color<float,RGB> color_scale(double v, ColorScale cs, int polarity)
+color<float,RGB> evaluate_color_scale(double v, ColorScale cs, int polarity)
 {
 	switch (cs) {
 	case CS_RED: return color<float, RGB>((float)v, 0, 0);
@@ -31,28 +31,6 @@ color<float,RGB> color_scale(double v, ColorScale cs, int polarity)
 		break;
 	}
 	return color<float,RGB>((float)v, (float)v, (float)v);
-}
-
-double color_scale_gamma_mapping(double v, double gamma, bool is_bipolar, double window_zero_position)
-{
-	if (is_bipolar) {
-		double amplitude = std::max(window_zero_position, 1.0 - window_zero_position);
-		if (v < window_zero_position)
-			return window_zero_position - std::pow((window_zero_position - v) / amplitude, gamma) * amplitude;
-		else
-			return std::pow((v - window_zero_position) / amplitude, gamma) * amplitude + window_zero_position;
-	}
-	else
-		return std::pow(v, gamma);
-}
-
-
-double adjust_zero_position(double v, double window_zero_position)
-{
-	if (window_zero_position <= 0.5)
-		return 1.0 - 0.5 * (1.0 - v) / (1.0 - window_zero_position);
-	else
-		return 0.5 * v / window_zero_position;
 }
 
 typedef std::pair<std::vector<color<float, RGB>>, bool> scs_entry_type;

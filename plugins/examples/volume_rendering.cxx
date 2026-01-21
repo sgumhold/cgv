@@ -45,20 +45,22 @@ volume_viewer::volume_viewer() : group("Volume Viewer"), depth_tex("[D]")
 	view_ptr = nullptr;
 
 	// instantiate a color map editor as an overlay for this viewer
-	transfer_function_editor_ptr = create_and_append_child<cgv::app::color_map_editor>("Editor");
+	transfer_function_editor = create_and_append_child<cgv::app::transfer_function_editor>("Editor");
 	// make the editor cover the whole width of the window
-	transfer_function_editor_ptr->set_stretch(cgv::app::overlay::StretchOption::SO_HORIZONTAL);
-	transfer_function_editor_ptr->gui_options.show_heading = false;
+	transfer_function_editor->set_stretch(cgv::app::overlay::StretchOption::SO_HORIZONTAL);
+	transfer_function_editor->gui_options.show_heading = false;
 	// enable support for editing opacity values
-	transfer_function_editor_ptr->set_opacity_support(true);
+	transfer_function_editor->set_opacity_support(true);
 	// connect a callback function to handle changes of the transfer function
-	transfer_function_editor_ptr->set_on_change_callback(std::bind(&volume_viewer::handle_transfer_function_change, this));
+	transfer_function_editor->set_on_change_callback(std::bind(&volume_viewer::handle_transfer_function_change, this));
 	
+	/*
 	// instantiate a color map legend to show the used transfer function
 	transfer_function_legend_ptr = create_and_append_child<cgv::app::color_map_legend>("Legend");
 	// place the legend in the top left corner
 	transfer_function_legend_ptr->set_alignment(cgv::app::overlay::AlignmentOption::AO_START, cgv::app::overlay::AlignmentOption::AO_END);
 	transfer_function_legend_ptr->set_title("Density");
+	*/
 }
 
 void volume_viewer::stream_stats(std::ostream& os)
@@ -107,8 +109,8 @@ bool volume_viewer::handle(cgv::gui::event& e)
 			on_set(&show_box);
 			return true;
 		case 'T':
-			if(transfer_function_editor_ptr) {
-				transfer_function_editor_ptr->set_visibility(!transfer_function_editor_ptr->is_visible());
+			if(transfer_function_editor) {
+				transfer_function_editor->toggle_visibility();
 				post_redraw();
 			}
 			return true;
@@ -133,7 +135,7 @@ void volume_viewer::on_set(void* member_ptr)
 		update_bounding_box();
 	}
 
-	if(member_ptr == &transfer_function_preset_idx)
+	if(member_ptr == &transfer_function_preset)
 		load_transfer_function_preset();
 
 	update_member(member_ptr);
@@ -144,6 +146,7 @@ void volume_viewer::clear(cgv::render::context& ctx)
 {
 	cgv::render::ref_volume_renderer(ctx, -1);
 	box_rd.destruct(ctx);
+	transfer_function_tex.destruct(ctx);
 }
 
 bool volume_viewer::init(cgv::render::context& ctx)
@@ -155,8 +158,6 @@ bool volume_viewer::init(cgv::render::context& ctx)
 	// add the volume bounding box
 	box_rd.add(volume_bounding_box.get_center(), volume_bounding_box.get_extent());
 
-	// init a color map used as a transfer function
-	transfer_function.init(ctx);
 	load_transfer_function_preset();
 
 	create_volume(ctx);
@@ -169,11 +170,10 @@ void volume_viewer::init_frame(cgv::render::context& ctx) {
 		
 		if(view_ptr) {
 			// do one-time initialization
-			// set the transfer function as the to-be-edited color map in the editor
-			if(transfer_function_editor_ptr)
-				transfer_function_editor_ptr->set_color_map(&transfer_function);
-			if(transfer_function_legend_ptr)
-				transfer_function_legend_ptr->set_color_map(ctx, transfer_function);
+			//if(transfer_function_editor)
+			//	transfer_function_editor->set_transfer_function(transfer_function_tex.transfer_function);
+			//if(transfer_function_legend_ptr)
+			//	transfer_function_legend_ptr->set_color_map(ctx, transfer_function);
 		}
 	}
 	if (depth_tex.is_created() && (ctx.get_width() != depth_tex.get_width() || ctx.get_height() != depth_tex.get_height()))
@@ -202,7 +202,7 @@ void volume_viewer::after_finish(cgv::render::context & ctx)
 	auto& vr = cgv::render::ref_volume_renderer(ctx);
 	vr.set_render_style(vstyle);
 	vr.set_volume_texture(&volume_tex); // set volume texture as 3D scalar input data
-	vr.set_transfer_function_texture(&transfer_function.ref_texture()); // get the texture from the transfer function color map to transform scalar volume values into RGBA colors
+	vr.set_transfer_function_texture(&transfer_function_tex.get()); // get the transfer function texture to transform scalar volume values into RGBA colors
 	// set the volume bounding box and enable transform to automatically place and size the volume to the defined bounds
 	vr.set_bounding_box(volume_bounding_box);
 	vr.set_depth_texture(&depth_tex);
@@ -239,22 +239,20 @@ void volume_viewer::create_gui()
 	connect_copy(add_button("Both", "w=40")->click, cgv::signal::rebind(this, &volume_viewer::fit_to_resolution_and_spacing));
 
 	add_decorator("Transfer Function", "heading", "level=3");
-	add_member_control(this, "Preset", transfer_function_preset_idx, "dropdown", "enums='#1 (White),#2,#3 (Aneurysm),#4 (Head)'");
+	add_member_control(this, "Preset", reinterpret_cast<cgv::type::DummyEnum&>(transfer_function_preset), "dropdown", "enums='#1 (White),#2,#3 (Aneurysm),#4 (Head)'");
 
-	inline_object_gui(transfer_function_editor_ptr);
-	
-	inline_object_gui(transfer_function_legend_ptr);
+	//inline_object_gui(transfer_function_editor_ptr);
+	//inline_object_gui(transfer_function_legend_ptr);
 }
 
 void volume_viewer::handle_transfer_function_change() {
 
-	if(auto ctx_ptr = get_context()) {
-		auto& ctx = *ctx_ptr;
-		if(transfer_function_editor_ptr) {
-			transfer_function.generate_texture(ctx);
-			if(transfer_function_legend_ptr)
-				transfer_function_legend_ptr->set_color_map(ctx, transfer_function);
-		}
+	if(auto ctx = get_context()) {
+		//if(transfer_function_editor_ptr) {
+		//	transfer_function.generate_texture(ctx);
+		//	if(transfer_function_legend_ptr)
+		//		transfer_function_legend_ptr->set_color_map(ctx, transfer_function);
+		//}
 	}
 }
 
@@ -278,18 +276,10 @@ void volume_viewer::update_bounding_box() {
 
 void volume_viewer::load_transfer_function_preset() {
 
-	unsigned idx = static_cast<unsigned>(transfer_function_preset_idx);
-	idx = std::min(idx, 3u);
-
+	auto& transfer_function = transfer_function_tex.transfer_function;
 	transfer_function.clear();
 
-	switch(idx) {
-	case 0:
-		// plain white with linear opacity ramp
-		transfer_function.add_color_point(0.0f, cgv::rgb(1.0f));
-		transfer_function.add_opacity_point(0.0f, 0.0f);
-		transfer_function.add_opacity_point(1.0f, 1.0f);
-		break;
+	switch(transfer_function_preset) {
 	case 1:
 		// blue -> red -> yellow, optimized for example volume
 		transfer_function.add_color_point(0.0f, cgv::rgb(0.0f, 0.0f, 1.0f));
@@ -338,17 +328,22 @@ void volume_viewer::load_transfer_function_preset() {
 		transfer_function.add_opacity_point(0.716f, 0.0f);
 		transfer_function.add_opacity_point(0.8f, 1.0f);
 		break;
-	default: break;
+	default:
+		// plain white with linear opacity ramp
+		transfer_function.add_color_point(0.0f, cgv::rgb(1.0f));
+		transfer_function.add_opacity_point(0.0f, 0.0f);
+		transfer_function.add_opacity_point(1.0f, 1.0f);
+		break;
 	}
 	
-	if(auto ctx_ptr = get_context()) {
-		// generate the texture containing the interpolated color map values
-		transfer_function.generate_texture(*ctx_ptr);
+	if(auto ctx = get_context()) {
+		// create the texture of the interpolated transfer function values
+		transfer_function_tex.create(*ctx);
 
-		if(transfer_function_editor_ptr)
-			transfer_function_editor_ptr->set_color_map(&transfer_function);
-		if(transfer_function_legend_ptr)
-			transfer_function_legend_ptr->set_color_map(*ctx_ptr, transfer_function);
+		//if(transfer_function_editor_ptr)
+		//	transfer_function_editor_ptr->set_color_map(&transfer_function);
+		//if(transfer_function_legend_ptr)
+		//	transfer_function_legend_ptr->set_color_map(*ctx, transfer_function);
 	}
 }
 
@@ -556,10 +551,7 @@ void volume_viewer::load_volume_from_file(const std::string& file_name) {
 		return;
 	}
 
-	auto ctx_ptr = get_context();
-	if(ctx_ptr) {
-		auto& ctx = *ctx_ptr;
-
+	if(auto ctx = get_context()) {
 		vres = resolution;
 		vspacing = spacing;
 
@@ -586,11 +578,11 @@ void volume_viewer::load_volume_from_file(const std::string& file_name) {
 			vol_data[i] = static_cast<float>(raw_vol_data[i] / 255.0f);
 
 		if(volume_tex.is_created())
-			volume_tex.destruct(ctx);
+			volume_tex.destruct(*ctx);
 
 		cgv::data::data_format vol_df(resolution[0], resolution[1], resolution[2], cgv::type::info::TypeId::TI_FLT32, cgv::data::ComponentFormat::CF_R);
 		cgv::data::const_data_view vol_dv(&vol_df, vol_data.data());
-		volume_tex.create(ctx, vol_dv, 0);
+		volume_tex.create(*ctx, vol_dv, 0);
 
 		fit_to_resolution();
 	}
@@ -640,8 +632,8 @@ void volume_viewer::create_histogram() {
 		++histogram[bucket];
 	}
 
-	if(transfer_function_editor_ptr)
-		transfer_function_editor_ptr->set_histogram_data(histogram);
+	//if(transfer_function_editor_ptr)
+	//	transfer_function_editor_ptr->set_histogram_data(histogram);
 }
 
 #include <cgv/base/register.h>

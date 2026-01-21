@@ -8,9 +8,9 @@
 #include <cgv/render/drawable.h>
 #include <cgv_gl/volume_renderer.h>
 #include <cgv_gl/box_wire_render_data.h>
-#include <cgv/render/color_map.h>
-#include <cgv_app/color_map_editor.h>
-#include <cgv_app/color_map_legend.h>
+#include <cgv/render/transfer_function_texture.h>
+#include <cgv_app/transfer_function_editor.h>
+//#include <cgv_app/color_map_legend.h>
 
 class volume_viewer :
 	public cgv::base::group,			// derive from group to support child nodes (needed for overlays)
@@ -23,8 +23,8 @@ private:
 
 protected:
 	/// store a pointer to the color map editor overlay which is used to edit the volume transfer function
-	cgv::app::color_map_editor_ptr transfer_function_editor_ptr;
-	cgv::app::color_map_legend_ptr transfer_function_legend_ptr;
+	cgv::app::transfer_function_editor_ptr transfer_function_editor;
+	//cgv::app::color_map_legend_ptr legend;
 
 	/// resolution of the volume
 	cgv::uvec3 vres;
@@ -45,10 +45,9 @@ protected:
 	/// render style for volume
 	cgv::render::volume_render_style vstyle;
 	/// index of the transfer function preset
-	cgv::type::DummyEnum transfer_function_preset_idx = (cgv::type::DummyEnum)1;
-	/// using a color map to define the volume transfer function
-	/// gl_color_map supports generation of a texture from its contents
-	cgv::render::gl_color_map transfer_function;
+	int transfer_function_preset = 1;
+	/// the volume transfer function
+	cgv::render::transfer_function_texture transfer_function_tex;
 	/// render data for wireframe box
 	cgv::render::box_wire_render_data<> box_rd;
 	

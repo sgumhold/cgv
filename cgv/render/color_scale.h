@@ -1,6 +1,10 @@
 #pragma once
 
+#include <array>
+
 #include <cgv/media/color_scale.h>
+#include <cgv/media/color_scheme.h>
+
 #include "shader_program.h"
 
 #include "lib_begin.h"
@@ -29,6 +33,10 @@ namespace cgv {
 		extern CGV_API void configure_color_scale(
 			cgv::render::context& ctx, cgv::render::shader_program& prog,
 			cgv::media::ColorScale cs[2], float window_zero_position[2]);
+
+		extern CGV_API void configure_color_scales(
+			cgv::render::context& ctx, cgv::render::shader_program& prog,
+			const std::array<cgv::media::continuous_color_scheme, 2>& scales, float window_zero_position[2]);
 
 	}
 }
