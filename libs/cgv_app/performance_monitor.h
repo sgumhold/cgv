@@ -1,6 +1,6 @@
 #pragma once
 
-#include <cgv/render/color_map.h>
+#include <cgv/media/color_scheme.h>
 #include <cgv/utils/convert_string.h>
 #include <cgv/utils/stopwatch.h>
 #include <cgv_app/themed_canvas_overlay.h>
@@ -74,7 +74,7 @@ protected:
 	// general appearance
 	cgv::g2d::shape2d_style border_style, bar_style;
 	cgv::g2d::line2d_style line_style;
-	cgv::render::color_map plot_color_map;
+	cgv::media::continuous_color_scheme color_map;
 
 	// text appearance
 	cgv::g2d::text2d_style text_style, tick_text_style;

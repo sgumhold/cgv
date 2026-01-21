@@ -44,10 +44,43 @@ void configure_color_scale(
 	prog.set_uniform_array(ctx, "color_scale_samples", colors);
 	prog.set_uniform_array(ctx, "color_scale_index", color_scale_index);
 	prog.set_uniform_array(ctx, "color_scale_is_bipolar", color_scale_is_bipolar);
-	float wp[2] = { window_zero_position[0],window_zero_position[1] };
-	prog.set_uniform_array(ctx, "window_zero_position", wp);
+	prog.set_uniform_array(ctx, "window_zero_position", window_zero_position, 2);
 }
 
+void configure_color_scales(cgv::render::context& ctx, cgv::render::shader_program& prog, const std::array<cgv::media::continuous_color_scheme, 2>& scales, float window_zero_position[2])
+{
+	int nr_color_scale_samples[2] = { 0, 0 };
+	int color_scale_index[2] = { 0, 0 };
+	int color_scale_is_bipolar[2] = { 0, 0 };
+	std::vector<std::vector<rgb>> samples;
+	const size_t max_sample_count = 32;
+
+	for(size_t i = 0; i < scales.size(); ++i) {
+		const cgv::media::continuous_color_scheme& scale = scales[i];
+
+		color_scale_index[i] = static_cast<int>(cgv::media::CS_NAMED);
+		if(scale.type == cgv::media::ColorSchemeType::kDiverging || scale.type == cgv::media::ColorSchemeType::kCyclical)
+			color_scale_is_bipolar[i] = 1;
+
+		if(scale.get_interpolator()) {
+			samples.push_back(scale.get_interpolator()->quantize(max_sample_count));
+			nr_color_scale_samples[i] = max_sample_count;
+		} else {
+			samples.push_back({});
+			nr_color_scale_samples[i] = 0;
+		}
+	}
+	
+	std::vector<rgb> colors(32 + nr_color_scale_samples[1]);
+	std::copy(samples[0].begin(), samples[0].end(), colors.begin());
+	std::copy(samples[1].begin(), samples[1].end(), colors.begin() + 32);
+	
+	prog.set_uniform_array(ctx, "nr_color_scale_samples", nr_color_scale_samples);
+	prog.set_uniform_array(ctx, "color_scale_samples", colors);
+	prog.set_uniform_array(ctx, "color_scale_index", color_scale_index);
+	prog.set_uniform_array(ctx, "color_scale_is_bipolar", color_scale_is_bipolar);
+	prog.set_uniform_array(ctx, "window_zero_position", window_zero_position, 2);
+}
 
 	}
 }

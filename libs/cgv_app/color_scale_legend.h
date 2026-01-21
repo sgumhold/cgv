@@ -1,6 +1,6 @@
 #pragma once
 
-#include <cgv/render/color_map.h>
+#include <cgv/media/sequential_scale.h>
 #include <cgv/render/texture.h>
 #include <cgv/utils/convert_string.h>
 #include <cgv_app/themed_canvas_overlay.h>
@@ -12,7 +12,7 @@
 namespace cgv {
 namespace app {
 
-class CGV_API color_map_legend : public themed_canvas_overlay {
+class CGV_API color_scale_legend : public themed_canvas_overlay {
 public:
 	enum OrientationOption {
 		OO_HORIZONTAL,
@@ -32,7 +32,7 @@ protected:
 		AlignmentOption label_alignment = AO_END;
 
 		// dependent members
-		cgv::g2d::irect color_map_rect;
+		cgv::g2d::irect color_ramp_rect;
 		ivec2 title_position = ivec2(0);
 		float title_angle = 90.0f;
 
@@ -67,15 +67,15 @@ protected:
 			default: break;
 			}
 
-			color_map_rect.position = offset + padding;
-			color_map_rect.size = size - 2 * padding;
+			color_ramp_rect.position = offset + padding;
+			color_ramp_rect.size = size - 2 * padding;
 		}
 	} layout;
 
 	bool invert_color = false;
 	bool flip_texture = false;
 
-	cgv::render::texture tex;
+	cgv::render::texture tex = cgv::render::texture("uint8[R,G,B,A]");
 
 	std::string title;
 	vec2 value_range = { 0.0f, 1.0f };
@@ -94,7 +94,7 @@ protected:
 	bool show_opacity = true;
 
 	// general appearance
-	cgv::g2d::shape2d_style border_style, color_map_style, tick_style;
+	cgv::g2d::shape2d_style border_style, color_ramp_style, tick_style;
 	cgv::g2d::grid2d_style background_style;
 
 	// text appearance
@@ -112,8 +112,8 @@ protected:
 	void create_gui_impl() override;
 
 public:
-	color_map_legend();
-	std::string get_type_name() const override { return "color_map_legend"; }
+	color_scale_legend();
+	std::string get_type_name() const override { return "color_scale_legend"; }
 
 	void clear(cgv::render::context& ctx) override;
 
@@ -123,8 +123,8 @@ public:
 	void init_frame(cgv::render::context& ctx) override;
 	void draw_content(cgv::render::context& ctx) override;
 
-	void set_color_map(cgv::render::context& ctx, const cgv::render::color_map& cm);
-
+	void set_color_scale(const cgv::media::sequential_scale<cgv::rgb>& scale);
+	
 	void set_width(size_t w);
 	void set_height(size_t h);
 
@@ -154,7 +154,7 @@ public:
 	void set_show_opacity(bool enabled);
 };
 
-typedef cgv::data::ref_ptr<color_map_legend> color_map_legend_ptr;
+typedef cgv::data::ref_ptr<color_scale_legend> color_scale_legend_ptr;
 
 }
 }

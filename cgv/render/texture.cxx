@@ -776,7 +776,8 @@ bool texture::disable(const context& ctx)
 	return ctx.texture_disable(*this, tex_unit, get_nr_dimensions());
 }
 
-bool texture::bind_as_image(const context& ctx, int _tex_unit, int level, bool bind_array, int layer, AccessType access) {
+bool texture::bind_as_image(const context& ctx, int _tex_unit, int level, bool bind_array, int layer, AccessType access)
+{
 	if(!handle) {
 		render_component::last_error = "attempt to bind texture that is not created";
 		return false;

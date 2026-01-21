@@ -10,10 +10,9 @@
 #include <cgv_gl/gl/gl_context.h>
 #include <cgv/render/attribute_array_binding.h>
 #include <cgv/gui/provider.h>
-#include <cgv/media/color_scale.h>
+#include <cgv/media/color_schemes.h>
 #include <cgv/media/mesh/simple_mesh.h>
 #include <cgv/gui/key_event.h>
-#include <cgv/gui/provider.h>
 #include <cgv/gui/dialog.h>
 #include <cgv/math/ftransform.h>
 
@@ -208,10 +207,12 @@ public:
 	{
 		if (M.has_colors())
 			return;
+
+		cgv::media::continuous_color_scheme hot_scale = cgv::media::schemes::interpolateHot();
 		M.ensure_colors(cgv::media::CT_RGB, M.get_nr_positions());
 		double int_part;
-		for (unsigned i = 0; i < M.get_nr_positions(); ++i)			
-			M.set_color(i, cgv::media::color_scale(modf(20*double(i)/(M.get_nr_positions() - 1),&int_part)));
+		for (unsigned i = 0; i < M.get_nr_positions(); ++i)
+			M.set_color(i, hot_scale.interpolate(modf(20*double(i)/(M.get_nr_positions() - 1),&int_part)));
 	}
 	void create_gui()
 	{

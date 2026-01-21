@@ -63,10 +63,12 @@ bool performance_monitor::init(cgv::render::context& ctx) {
 	success &= static_text_geometry.init(ctx);
 	success &= dynamic_text_geometry.init(ctx);
 
-	plot_color_map.add_color_point(0.0f, rgb(0.5f, 1.0f, 0.5f));
-	plot_color_map.add_color_point(0.25f, rgb(0.0f, 0.9f, 0.0f));
-	plot_color_map.add_color_point(0.5f, rgb(0.8f, 0.9f, 0.0f));
-	plot_color_map.add_color_point(1.0f, rgb(0.9f, 0.0f, 0.0f));
+	color_map = cgv::media::continuous_color_scheme::linear({
+		{ 0.0f, rgb(0.5f, 1.0f, 0.5f) },
+		{ 0.25f, rgb(0.0f, 0.9f, 0.0f) },
+		{ 0.5f, rgb(0.8f, 0.9f, 0.0f) },
+		{ 1.0f, rgb(0.9f, 0.0f, 0.0f) }
+	});
 
 	return success;
 }
@@ -312,7 +314,7 @@ void performance_monitor::update_plot() {
 	float bar_height = plot_size.y() * b;
 	bar_height = std::max(bar_height, 1.0f);
 
-	rgb bar_color = a > 1.0f ? rgb(0.7f, 0.0f, 0.0f) : plot_color_map.interpolate_color(b);
+	rgb bar_color = a > 1.0f ? rgb(0.7f, 0.0f, 0.0f) : color_map.interpolate(b);
 
 	if(bars.render_count() < plot_size.x()) {
 		for(auto& position : bars.position)

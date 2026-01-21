@@ -4,10 +4,12 @@
 
 #include <cgv/math/ftransform.h>
 #include <cgv/media/color_scale.h>
+#include <cgv/media/color_scheme_registry.h>
 #include <cgv/render/attribute_array_binding.h>
 #include <cgv/render/color_scale.h>
 #include <cgv/render/shader_program.h>
 #include <cgv/signal/rebind.h>
+#include <cgv/utils/scan.h>
 #include <libs/cgv_gl/gl/gl.h>
 #include <libs/cgv_gl/rectangle_renderer.h>
 #include <libs/tt_gl_font/tt_gl_font.h>
@@ -398,7 +400,13 @@ void plot_base::set_mapping_uniforms(cgv::render::context& ctx, cgv::render::sha
 	prog.set_uniform_array(ctx, "opacity_mapping", opacity_mapping, MAX_NR_COLOR_MAPPINGS);
 	prog.set_uniform_array(ctx, "size_mapping", size_mapping, MAX_NR_COLOR_MAPPINGS);
 	if (prog.get_uniform_location(ctx, "color_scale_gamma[0]") != -1) {
-		cgv::render::configure_color_scale(ctx, prog, color_scale_index, window_zero_position);
+		const cgv::media::continuous_color_scheme_registry& registry = cgv::media::get_global_continuous_color_scheme_registry();
+		std::array<cgv::media::continuous_color_scheme, 2> scales;
+		for(size_t i = 0; i < MAX_NR_COLOR_MAPPINGS; ++i) {
+			if(color_scale_index[i] < registry.size())
+				scales[i] = registry.get(color_scale_index[i]);
+		}
+		cgv::render::configure_color_scales(ctx, prog, scales, window_zero_position);
 		prog.set_uniform_array(ctx, "color_scale_gamma", color_scale_gamma, MAX_NR_COLOR_MAPPINGS);
 	}
 	if (prog.get_uniform_location(ctx, "opacity_gamma[0]") != -1) {
@@ -594,7 +602,7 @@ plot_base::plot_base(unsigned _dim, unsigned _nr_attributes) : dom_cfg(_dim, _nr
 
 	for (int ci = 0; ci < MAX_NR_COLOR_MAPPINGS; ++ci) {
 		color_mapping[ci] = -1;
-		color_scale_index[ci] = cgv::media::CS_TEMPERATURE;
+		color_scale_index[ci] = -1;
 		color_scale_gamma[ci] = 1;
 		window_zero_position[ci] = 0.5f;
 	}
@@ -870,7 +878,19 @@ void plot_base::draw_legend(cgv::render::context& ctx, int layer_idx, bool is_fi
 	aab_legend.enable(ctx);
 	legend_prog.enable(ctx);
 	ctx.set_color(legend_color);
-	cgv::render::configure_color_scale(ctx, legend_prog, color_scale_index, window_zero_position);
+	// Todo: Legend color scale
+	//cgv::render::configure_color_scale(ctx, legend_prog, color_scale_index, window_zero_position);
+
+	/*
+	const auto& registry = cgv::media::get_global_continuous_color_scheme_registry();
+	std::array<cgv::media::continuous_color_scheme, 2> scales;
+
+	for(size_t i = 0; i < MAX_NR_COLOR_MAPPINGS; ++i) {
+		if(color_scale_index2[i] < registry.size())
+			scales[i] = registry.get(color_scale_index2[i]);
+	}
+	*/
+
 	legend_prog.set_uniform(ctx, "depth_offset", -layer_idx * layer_depth);
 	int j = 1 - legend_axis;
 	int off = 4*j;
@@ -1209,6 +1229,43 @@ void plot_base::set_sub_plot_colors(unsigned i, const rgb& base_color)
 	ref_sub_plot_config(i).set_colors(base_color);
 }
 
+bool plot_base::set_color_scale(int mapping_index, int color_scheme_index)
+{
+	bool success = false;
+	if(mapping_index < MAX_NR_COLOR_MAPPINGS) {
+		const cgv::media::continuous_color_scheme_registry& registry = cgv::media::get_global_continuous_color_scheme_registry();
+		if(color_scheme_index > -1 && static_cast<size_t>(color_scheme_index) < registry.size()) {
+			color_scale_index[mapping_index] = color_scheme_index;
+			success = true;
+		} else {
+			color_scale_index[mapping_index] = -1;
+		}
+
+		// Todo: How to update the GUI? Ideally we would just update the affected member control but we don't have access to the provider. So for now we ignore it.
+		//update_member(&color_scale_index2[mapping_index]);
+	}
+	return success = true;;
+}
+
+bool plot_base::set_color_scale(int mapping_index, const std::string& color_scheme_name)
+{
+	bool success = false;
+	if(mapping_index < MAX_NR_COLOR_MAPPINGS) {
+		const cgv::media::continuous_color_scheme_registry& registry = cgv::media::get_global_continuous_color_scheme_registry();
+		auto it = registry.find(color_scheme_name);
+		if(it != registry.end()) {
+			color_scale_index[mapping_index] = std::distance(registry.begin(), it);
+			success = true;
+		} else {
+			color_scale_index[mapping_index] = -1;
+		}
+
+		// Todo: How to update the GUI? Ideally we would just update the affected member control but we don't have access to the provider. So for now we ignore it.
+		//update_member(&color_scale_index2[mapping_index]);
+	}
+	return success;
+}
+
 bool plot_base::init(cgv::render::context& ctx)
 {
 	font_rrs = cgv::ref_rectangle_render_style();
@@ -1281,7 +1338,8 @@ void plot_base::create_plot_gui(cgv::base::base* bp, cgv::gui::provider& p)
 				p.add_member_control(bp, "", (cgv::type::DummyEnum&)color_mapping[idx], "dropdown", dropdown_options);
 				if (show) {
 					p.align("\a");
-					p.add_member_control(bp, prefix + "Color Scale", (cgv::type::DummyEnum&)color_scale_index[idx], "dropdown", cgv::media::get_color_scale_enum_definition());
+					std::string color_scheme_enums = cgv::utils::join(cgv::media::get_global_continuous_color_scheme_registry().get_names(), ",");
+					p.add_member_control(bp, prefix + "Color Scale", reinterpret_cast<cgv::type::DummyEnum&>(color_scale_index[idx]), "dropdown", "enums='" + color_scheme_enums + "'");
 					p.add_member_control(bp, prefix + "Color Gamma", color_scale_gamma[idx], "value_slider", "min=0.1;step=0.01;max=10;log=true;ticks=true");
 					p.add_member_control(bp, prefix + "Window Zero Position", window_zero_position[idx], "value_slider", "min=0;max=1;ticks=true");
 					p.align("\b");

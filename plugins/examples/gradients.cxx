@@ -2,7 +2,7 @@
 #include <cgv/gui/provider.h>
 #include <cgv/render/drawable.h>
 #include <cgv_gl/arrow_render_data.h>
-#include <cgv/render/color_map.h>
+#include <cgv/render/transfer_function_texture.h>
 #include <cgv_gl/volume_renderer.h>
 #include <cgv_gpgpu/texture_differentiate.h>
 
@@ -69,17 +69,17 @@ public:
 			std::cout << "Error: could not initialize GPU texture differentiation algorithm" << std::endl;
 			return false;
 		}
-
-		transfer_function.add_color_point(0.0f, cgv::rgb(0.3f, 0.3f, 1.0f));
-		transfer_function.add_color_point(1.0f, cgv::rgb(1.0f, 0.3f, 0.3f));
-		transfer_function.add_opacity_point(0.0f, 0.0f);
-		transfer_function.add_opacity_point(1.0f, 1.0f);
-		if(!transfer_function.init(ctx)) {
-			std::cout << "Error: could not initialize transfer function texture" << std::endl;
-			return false;
-		}
-
-		transfer_function.generate_texture(ctx);
+		
+		auto& transfer_function = transfer_function_tex.transfer_function;
+		transfer_function.set_color_points({
+			{0.0f, cgv::rgb(0.3f, 0.3f, 1.0f) },
+			{ 1.0f, cgv::rgb(1.0f, 0.3f, 0.3f) }
+		});
+		transfer_function.set_opacity_points({
+			{ 0.0f, 0.0f },
+			{ 1.0f, 1.0f },
+		});
+		transfer_function_tex.create(ctx);
 
 		create_test_volume(ctx);
 		return true;
@@ -89,6 +89,7 @@ public:
 		cgv::render::ref_volume_renderer(ctx, -1);
 		arrows.destruct(ctx);
 		gradient_kernel.destruct(ctx);
+		transfer_function_tex.destruct(ctx);
 	}
 
 	void init_frame(cgv::render::context& ctx) {
@@ -112,7 +113,9 @@ public:
 			cgv::render::volume_renderer& volume_renderer = cgv::render::ref_volume_renderer(ctx);
 			volume_renderer.set_render_style(volume_style);
 			volume_renderer.set_volume_texture(&volume_texture);
-			volume_renderer.set_transfer_function_texture(&transfer_function.ref_texture());
+
+			volume_renderer.set_transfer_function_texture(&transfer_function_tex.get());
+
 			volume_renderer.set_depth_texture(&depth_texture);
 			volume_renderer.set_bounding_box(volume_bounding_box);
 			volume_renderer.transform_to_bounding_box(true);
@@ -274,7 +277,7 @@ private:
 	// Render members
 	cgv::render::arrow_render_data<> arrows;
 	cgv::render::volume_render_style volume_style;
-	cgv::render::gl_color_map transfer_function;
+	cgv::render::transfer_function_texture transfer_function_tex;
 	cgv::render::texture volume_texture = cgv::render::texture("flt32[R]");
 	cgv::render::texture gradient_texture = cgv::render::texture("flt32[R,G,B,A]");
 	cgv::render::texture depth_texture = cgv::render::texture("[D]");

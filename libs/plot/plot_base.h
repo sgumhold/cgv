@@ -9,7 +9,8 @@
 #include <cgv/render/shader_program.h>
 #include <libs/cgv_gl/rectangle_renderer.h>
 #include <cgv/media/color.h>
-#include <cgv/media/color_scale.h>
+//#include <cgv/media/color_scale.h>
+#include <cgv/media/color_scheme.h>
 #include <cgv/media/font/font.h>
 #include <cgv/render/view.h>
 #include <cgv/gui/provider.h>
@@ -382,12 +383,11 @@ public:
 	/// index of attribute mapped to primary and secondary color
 	int color_mapping[MAX_NR_COLOR_MAPPINGS];
 	/// color scale indices of primary and secondary color mapping
-	cgv::media::ColorScale color_scale_index[MAX_NR_COLOR_MAPPINGS];
+	//cgv::media::ColorScale color_scale_index[MAX_NR_COLOR_MAPPINGS];
 	/// gamma adjustments for primary and secondary color mapping
 	float color_scale_gamma[MAX_NR_COLOR_MAPPINGS];
 	/// window space position of zero for primary and secondary color mapping
 	float window_zero_position[MAX_NR_COLOR_MAPPINGS];
-	
 	/// define maximum number of opacity mappings
 	static const unsigned MAX_NR_OPACITY_MAPPINGS = 2;
 	/// index of attribute mapped to primary and secondary opacity
@@ -413,6 +413,11 @@ public:
 	float size_min[MAX_NR_SIZE_MAPPINGS], size_max[MAX_NR_SIZE_MAPPINGS];
 	//@}
 protected:
+	/**@name visual attribute mapping*/
+	//@{
+	/// color scale indices of primary and secondary color mapping
+	int color_scale_index[MAX_NR_COLOR_MAPPINGS];
+	//@}
 	/// store pointer to label font
 	cgv::media::font::font_ptr label_font;
 	/// store pointer to label font face
@@ -578,6 +583,14 @@ public:
 	void set_sub_plot_attribute(unsigned i, unsigned ai, const float* _pointer, size_t count, size_t stride);
 	/// define a sub plot attribute from a vbo (attribute must be stored in float type in vbo)
 	void set_sub_plot_attribute(unsigned i, unsigned ai, const cgv::render::vertex_buffer* _vbo_ptr, size_t _offset, size_t _count, size_t _stride);
+	//@}
+
+	/**@name visual attribute mapping*/
+	//@{
+	/// set color scale of primary or secondary color mapping via an index into the global color scheme registry; see cgv::media::get_global_continuous_color_scheme_registry
+	bool set_color_scale(int mapping_index, int color_scheme_index);
+	/// set color scale of primary or secondary color mapping by name; the name must be registered in the global color scheme registry; see cgv::media::get_global_continuous_color_scheme_registry
+	bool set_color_scale(int mapping_index, const std::string& color_scheme_name);
 	//@}
 
 	/// build legend prog and create aab

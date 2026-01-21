@@ -31,17 +31,28 @@ enum ColorScale {
 /// <param name="cs">color scale index</param>
 /// <param name="polarity">0 ... query all named, 1 ... query unipolar only, 2 ... query bipolar only</param>
 /// <returns>rgb color sampled from queried color scale</returns>
-extern CGV_API color<float,RGB> color_scale(double value, ColorScale cs = CS_TEMPERATURE, int polarity = 0);
+extern CGV_API color<float,RGB> evaluate_color_scale(double value, ColorScale cs = CS_TEMPERATURE, int polarity = 0);
 
 /// <summary>
 /// perform a gamma mapping from [0,1] to [0,1] with optional accountance of window zero position in case of bipolar color scales
 /// </summary>
+/// <tparam name="T">value type</param>
 /// <param name="v">to be mapped value</param>
 /// <param name="gamma">gamma parameter</param>
 /// <param name="is_bipolar">whether bipolar gamma mapping should be use</param>
 /// <param name="window_zero_position">zero window position for bipolar gamma mapping</param>
 /// <returns></returns>
-extern CGV_API double color_scale_gamma_mapping(double v, double gamma, bool is_bipolar = false, double window_zero_position = 0.5);
+template<typename T>
+T color_scale_gamma_mapping(T v, T gamma, bool is_bipolar, T window_zero_position) {
+	if(is_bipolar) {
+		T amplitude = std::max(window_zero_position, T(1) - window_zero_position);
+		if(v < window_zero_position)
+			return window_zero_position - std::pow((window_zero_position - v) / amplitude, gamma) * amplitude;
+		else
+			return std::pow((v - window_zero_position) / amplitude, gamma) * amplitude + window_zero_position;
+	} else
+		return std::pow(v, gamma);
+}
 
 /// <summary>
 /// for the use of bipolar color maps this function can be used to adjust the value such that
@@ -50,11 +61,18 @@ extern CGV_API double color_scale_gamma_mapping(double v, double gamma, bool is_
 /// map_window_zero_position_to_color_scale_center to true and specifying window_zero_position
 /// with the float typed uniform of this name
 /// </summary>
+/// <tparam name="T">value type</param>
 /// <param name="value">to be adjusted value</param>
 /// <param name="window_zero_position">window position in the range [0,1] to which the 
 /// attribute value zero is mapped</param>
 /// <returns></returns>
-extern CGV_API double adjust_zero_position(double value, double window_zero_position);
+template<typename T>
+T adjust_zero_position(T v, T window_zero_position) {
+	if(window_zero_position <= T(0.5))
+		return T(1) - T(0.5) * (T(1) - v) / (T(1) - window_zero_position);
+	else
+		return T(0.5) * v / window_zero_position;
+}
 
 /// <summary>
 /// register color samples as named color scale

@@ -17,7 +17,7 @@
 #include <cgv_gl/sphere_renderer.h>
 #include <cgv_gl/rectangle_renderer.h>
 #include <cgv/math/ftransform.h>
-#include <cgv/media/color_scale.h>
+#include <cgv/media/color_schemes.h>
 #include <cgv/utils/ostream_printf.h>
 #include <cgv_gl/gl/gl.h>
 #include <vector>
@@ -44,7 +44,7 @@ protected:
 	unsigned degree = 3;
 	unsigned max_nr_segments = 0;
 	unsigned nr_steps = 20;
-	cgv::media::ColorScale cs = cgv::media::CS_HUE;
+	cgv::media::continuous_color_scheme color_scheme = cgv::media::schemes::interpolateHue();
 	std::vector<float> knot_vector;
 	std::vector<float> segment_widths;
 	float range;
@@ -54,7 +54,7 @@ protected:
 		if (segment_colors.empty())
 			return;
 		if (segment_colors.size() == 1) {
-			segment_colors[0] = cgv::media::color_scale(0.0, cs);
+			segment_colors[0] = color_scheme.interpolate(0.0f);
 			return;
 		}
 		for (size_t i = 0; i < segment_colors.size(); ++i) {
@@ -67,7 +67,7 @@ protected:
 				}
 				x = double(i+1 - degree) / (segment_colors.size()+2 - 2 * degree);
 			}
-			segment_colors[i] = cgv::media::color_scale(x, cs);
+			segment_colors[i] = color_scheme.interpolate(x);
 		}
 	}
 	void recompute_segment_widths()
