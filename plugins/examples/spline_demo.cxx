@@ -17,7 +17,7 @@
 #include <cgv_gl/sphere_renderer.h>
 #include <cgv_gl/rectangle_renderer.h>
 #include <cgv/math/ftransform.h>
-#include <cgv/media/color_schemes.h>
+#include <cgv/media/named_color_schemes.h>
 #include <cgv/utils/ostream_printf.h>
 #include <cgv_gl/gl/gl.h>
 #include <vector>

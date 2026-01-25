@@ -1,7 +1,7 @@
 #include <cgv/base/node.h>
 #include <plot/plot2d.h>
 #include <plot/plot3d.h>
-#include <cgv/media/color_schemes.h>
+#include <cgv/media/named_color_schemes.h>
 #include <cgv/math/ftransform.h>
 #include <cgv/render/drawable.h>
 #include <cgv/render/render_buffer.h>

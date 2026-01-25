@@ -1,13 +1,155 @@
 #pragma once
 
-#include "color.h"
 #include <vector>
 #include <string>
+
+#include <cgv/math/fvec.h>
+
+#include "color.h"
+#include "color_scheme.h"
 
 #include "lib_begin.h"
 
 namespace cgv {
-	namespace media {
+namespace media {
+
+
+
+
+class color_scale {
+public:
+	virtual ~color_scale() {}
+
+	virtual bool is_discrete() const = 0;
+
+	virtual bool is_opaque() const = 0;
+
+	// Todo: use get_mapped_value, get_mapped_color and get_mapped_opacity to retrieve rgba, rgb and float values (same for get_indexed and quantize)
+
+	virtual cgv::rgba get_mapped_color(float value) const {
+		return unknown_value;
+	}
+
+	virtual cgv::rgba get_indexed_color(size_t index) const {
+		return unknown_value;
+	}
+
+	virtual size_t get_indexed_color_count() const {
+		return 0;
+	}
+
+	virtual std::vector<cgv::rgba> quantize(size_t count) const {
+		std::vector<cgv::rgba> colors;
+
+		if(is_discrete()) {
+			for(size_t i = 0; i < get_indexed_color_count(); ++i)
+				colors.push_back(get_indexed_color(i));
+		} else {
+			colors.reserve(count);
+			cgv::math::sequence_transform(std::back_inserter(colors), [this](float value) { return get_mapped_color(value); }, count, domain[0], domain[1]);
+		}
+
+		return colors;
+	};
+
+	cgv::vec2 domain = { 0.0f, 1.0f };
+	bool clamp = true;
+	bool reverse = false;
+	cgv::rgba unknown_value = { 0.0f, 0.0f, 0.0f, 1.0f };
+};
+
+class continuous_color_scale : public color_scale {
+public:
+	static std::unique_ptr<continuous_color_scale> new_instance() {
+		return std::unique_ptr<continuous_color_scale>(new continuous_color_scale());
+	}
+
+	bool is_discrete() const override {
+		return false;
+	}
+
+	bool is_opaque() const override {
+		return true;
+	}
+
+	cgv::rgba get_mapped_color(float value) const override {
+		if(clamp)
+			value = cgv::math::clamp(value, domain[0], domain[1]);
+		else if(value < domain[0] || value > domain[0])
+			return unknown_value;
+
+		float t = (value - domain[0]) / (domain[1] - domain[0]);
+		
+		if(reverse)
+			t = 1.0f - t;
+
+		return cgv::rgba(scheme_.interpolate(t), 1.0f);
+	}
+
+	virtual cgv::rgba get_indexed_color(size_t index) const {
+		return unknown_value;
+	}
+
+	void set_scheme(const continuous_color_scheme& scheme) {
+		scheme_ = scheme;
+	}
+
+private:
+	continuous_color_scheme scheme_;
+};
+
+class discrete_color_scale : public color_scale {
+public:
+	static std::unique_ptr<discrete_color_scale> new_instance() {
+		return std::unique_ptr<discrete_color_scale>(new discrete_color_scale());
+	}
+
+	bool is_discrete() const override {
+		return true;
+	}
+	
+	bool is_opaque() const override {
+		return true;
+	}
+
+	virtual cgv::rgba get_mapped_color(float value) const {
+		if(clamp)
+			value = cgv::math::clamp(value, domain[0], domain[1]);
+		else if(value < domain[0] || value > domain[0])
+			return unknown_value;
+
+		float t = (value - domain[0]) / (domain[1] - domain[0]);
+
+		if(reverse)
+			t = 1.0f - t;
+
+		return cgv::rgba(cgv::math::interpolate_linear(colors_, t), 1.0f);
+	}
+
+	cgv::rgba get_indexed_color(size_t index) const override {
+		if(index < get_indexed_color_count())
+			return cgv::rgba(colors_[index], 1.0f);
+		return unknown_value;
+	}
+
+	size_t get_indexed_color_count() const override {
+		return colors_.size();
+	}
+
+	void set_scheme(const discrete_color_scheme& scheme, size_t size) {
+		colors_ = scheme.get_colors(size);
+	}
+
+private:
+	std::vector<cgv::rgb> colors_;
+};
+
+
+
+
+
+
+
 
 /// <summary>
 /// enum to index one of the fixed or named color scales
@@ -152,7 +294,7 @@ extern CGV_API std::vector<color<float, RGB>> sample_named_color_scale(const std
 extern CGV_API color<float, RGB> sample_sampled_color_scale(float value, const std::vector<color<float, RGB>>& samples, bool is_bipolar = false);
 
 
-	}
-}
+} // namespace media
+} // namespace cgv
 
 #include <cgv/config/lib_end.h>

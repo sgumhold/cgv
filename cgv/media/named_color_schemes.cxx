@@ -1,4 +1,4 @@
-#include "color_schemes.h"
+#include "named_color_schemes.h"
 
 namespace cgv {
 namespace media {

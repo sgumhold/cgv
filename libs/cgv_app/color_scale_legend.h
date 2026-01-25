@@ -1,6 +1,6 @@
 #pragma once
 
-#include <cgv/media/sequential_scale.h>
+#include <cgv/media/color_scale.h>
 #include <cgv/render/texture.h>
 #include <cgv/utils/convert_string.h>
 #include <cgv_app/themed_canvas_overlay.h>
@@ -123,7 +123,7 @@ public:
 	void init_frame(cgv::render::context& ctx) override;
 	void draw_content(cgv::render::context& ctx) override;
 
-	void set_color_scale(const cgv::media::sequential_scale<cgv::rgb>& scale);
+	void set_color_scale(const std::shared_ptr<const cgv::media::color_scale> scale);
 	
 	void set_width(size_t w);
 	void set_height(size_t h);

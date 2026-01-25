@@ -175,40 +175,25 @@ void color_scale_legend::create_gui_impl() {
 	add_member_control(this, "Int", label_format.integers, "check", "w=40");
 }
 
-void color_scale_legend::set_color_scale(const cgv::media::sequential_scale<cgv::rgb>& scale) {
+void color_scale_legend::set_color_scale(const std::shared_ptr<const cgv::media::color_scale> scale) {
 
 	if(!get_context())
 		return;
 
 	cgv::render::context& ctx = *get_context();
 
-	// Todo: Use nearest filer for scales with discrete color ramps.
-	const cgv::render::TextureFilter filter = cgv::render::TF_LINEAR;
+	const cgv::render::TextureFilter filter = scale->is_discrete() ? cgv::render::TF_NEAREST : cgv::render::TF_LINEAR;
 
 	// Todo: Ticks and labels from mapping options.
 
 	size_t resolution = 256;
-	/*
-	std::vector<rgba> colors(resolution, scale.unknown_value);
-	cgv::vec2 range = { 0.0f, 1.0f };
-	if(scale.reverse)
-		std::swap(range[0], range[1]);
-	*/
-	
-	/*const cgv::math::interpolator<cgv::rgb, float>* interpolator = scale.get_interpolator().get();
-	if(interpolator) {
-		cgv::math::sequence_transform(colors.begin(), [interpolator](float t) {
-			return interpolator->at(t);
-		}, resolution, range[0], range[1]);
-	}
-	*/
+	std::vector<rgba> colors = scale->quantize(resolution);
+	resolution = colors.size();
 
-	std::vector<rgb> colors = scale.get_interpolator()->quantize(resolution);
-	
 	std::vector<cgv::rgba8> texture_data;
 	texture_data.reserve(resolution);
-	std::transform(colors.begin(), colors.end(), std::back_inserter(texture_data), [](const cgv::rgb& color) {
-		return cgv::rgba8(cgv::rgba(color, 1.0f));
+	std::transform(colors.begin(), colors.end(), std::back_inserter(texture_data), [](const cgv::rgba& color) {
+		return cgv::rgba8(color);
 	});
 
 	cgv::data::data_view data_view(new cgv::data::data_format(resolution, 1, cgv::type::info::TI_UINT8, cgv::data::CF_RGBA), texture_data.data());
@@ -217,7 +202,7 @@ void color_scale_legend::set_color_scale(const cgv::media::sequential_scale<cgv:
 	tex.set_mag_filter(filter);
 	tex.create(ctx, data_view, 0);
 
-	value_range = { scale.domain.lower_bound, scale.domain.upper_bound };
+	value_range = scale->domain;
 	on_set(&value_range);
 
 	post_damage();
