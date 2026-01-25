@@ -10,7 +10,7 @@
 #include <cgv_gl/gl/gl_context.h>
 #include <cgv/render/attribute_array_binding.h>
 #include <cgv/gui/provider.h>
-#include <cgv/media/color_schemes.h>
+#include <cgv/media/named_color_schemes.h>
 #include <cgv/media/mesh/simple_mesh.h>
 #include <cgv/gui/key_event.h>
 #include <cgv/gui/dialog.h>

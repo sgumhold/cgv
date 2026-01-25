@@ -1,8 +1,9 @@
 #include <cgv/base/node.h>
 #include <cgv/gui/provider.h>
+#include <cgv/media/transfer_function.h>
 #include <cgv/render/drawable.h>
-#include <cgv_gl/arrow_render_data.h>
 #include <cgv/render/transfer_function_texture.h>
+#include <cgv_gl/arrow_render_data.h>
 #include <cgv_gl/volume_renderer.h>
 #include <cgv_gpgpu/texture_differentiate.h>
 
@@ -70,15 +71,15 @@ public:
 			return false;
 		}
 		
-		auto& transfer_function = transfer_function_tex.transfer_function;
-		transfer_function.set_color_points({
+		transfer_function->set_color_points({
 			{0.0f, cgv::rgb(0.3f, 0.3f, 1.0f) },
 			{ 1.0f, cgv::rgb(1.0f, 0.3f, 0.3f) }
 		});
-		transfer_function.set_opacity_points({
+		transfer_function->set_opacity_points({
 			{ 0.0f, 0.0f },
 			{ 1.0f, 1.0f },
 		});
+		transfer_function_tex.set_transfer_function(transfer_function);
 		transfer_function_tex.create(ctx);
 
 		create_test_volume(ctx);
@@ -277,6 +278,7 @@ private:
 	// Render members
 	cgv::render::arrow_render_data<> arrows;
 	cgv::render::volume_render_style volume_style;
+	std::shared_ptr<cgv::media::transfer_function> transfer_function = cgv::media::transfer_function::new_instance();
 	cgv::render::transfer_function_texture transfer_function_tex;
 	cgv::render::texture volume_texture = cgv::render::texture("flt32[R]");
 	cgv::render::texture gradient_texture = cgv::render::texture("flt32[R,G,B,A]");

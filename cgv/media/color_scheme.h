@@ -15,7 +15,7 @@ namespace cgv {
 namespace media {
 
 /// @brief Return a cgv::rgb color unpacked from an 32-bit integer where the lower 24 bits are interpreted as three 8-bit rgb channels.
-static cgv::rgb unpack_rgb(int32_t hex) {
+static cgv::rgb to_rgb(int32_t hex) {
 	return {
 		((hex >> 16) & 0xFF) / 255.0f,
 		((hex >> 8) & 0xFF) / 255.0f,
@@ -23,13 +23,13 @@ static cgv::rgb unpack_rgb(int32_t hex) {
 	};
 }
 
-/// @brief Return a vector of colors from an array of packed 32-bit integers converted using unpack_rgb.
+/// @brief Return a vector of colors from an array of packed 32-bit integers converted using to_rgb.
 template<int32_t N>
 static std::vector<cgv::rgb> to_colors(const std::array<int32_t, N>& scheme) {
 	std::vector<cgv::rgb> colors;
 	colors.reserve(scheme.size());
 	for(int32_t hex : scheme)
-		colors.push_back(unpack_rgb(hex));
+		colors.push_back(to_rgb(hex));
 	return colors;
 }
 

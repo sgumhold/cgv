@@ -54,6 +54,8 @@ volume_viewer::volume_viewer() : group("Volume Viewer"), depth_tex("[D]")
 	// connect a callback function to handle changes of the transfer function
 	transfer_function_editor->set_on_change_callback(std::bind(&volume_viewer::handle_transfer_function_change, this));
 	
+	transfer_function_editor->set_transfer_function(transfer_function);
+
 	/*
 	// instantiate a color map legend to show the used transfer function
 	transfer_function_legend_ptr = create_and_append_child<cgv::app::color_map_legend>("Legend");
@@ -158,6 +160,7 @@ bool volume_viewer::init(cgv::render::context& ctx)
 	// add the volume bounding box
 	box_rd.add(volume_bounding_box.get_center(), volume_bounding_box.get_extent());
 
+	transfer_function_tex.set_transfer_function(transfer_function);
 	load_transfer_function_preset();
 
 	create_volume(ctx);
@@ -248,11 +251,9 @@ void volume_viewer::create_gui()
 void volume_viewer::handle_transfer_function_change() {
 
 	if(auto ctx = get_context()) {
-		//if(transfer_function_editor_ptr) {
-		//	transfer_function.generate_texture(ctx);
-		//	if(transfer_function_legend_ptr)
-		//		transfer_function_legend_ptr->set_color_map(ctx, transfer_function);
-		//}
+		transfer_function_tex.create(*ctx);
+		//if(transfer_function_legend_ptr)
+		//	transfer_function_legend_ptr->set_color_map(ctx, transfer_function);
 	}
 }
 
@@ -276,72 +277,90 @@ void volume_viewer::update_bounding_box() {
 
 void volume_viewer::load_transfer_function_preset() {
 
-	auto& transfer_function = transfer_function_tex.transfer_function;
-	transfer_function.clear();
+	transfer_function->clear();
+
+	std::vector<std::pair<float, cgv::rgb>> color_points;
+	std::vector<std::pair<float, float>> opacity_points;
 
 	switch(transfer_function_preset) {
 	case 1:
 		// blue -> red -> yellow, optimized for example volume
-		transfer_function.add_color_point(0.0f, cgv::rgb(0.0f, 0.0f, 1.0f));
-		transfer_function.add_color_point(0.5f, cgv::rgb(1.0f, 0.0f, 0.0f));
-		transfer_function.add_color_point(1.0f, cgv::rgb(1.0f, 1.0f, 0.0f));
-
-		transfer_function.add_opacity_point(0.05f, 0.0f);
-		transfer_function.add_opacity_point(0.1f, 0.1f);
-		transfer_function.add_opacity_point(0.3f, 0.1f);
-		transfer_function.add_opacity_point(0.35f, 0.0f);
-		transfer_function.add_opacity_point(0.45f, 0.0f);
-		transfer_function.add_opacity_point(0.5f, 0.15f);
-		transfer_function.add_opacity_point(0.55f, 0.15f);
-		transfer_function.add_opacity_point(0.6f, 0.0f);
-		transfer_function.add_opacity_point(0.8f, 0.0f);
-		transfer_function.add_opacity_point(0.95f, 0.5f);
+		color_points = {
+			{ 0.0f, cgv::rgb(0.0f, 0.0f, 1.0f) },
+			{ 0.5f, cgv::rgb(1.0f, 0.0f, 0.0f) },
+			{ 1.0f, cgv::rgb(1.0f, 1.0f, 0.0f) }
+		};
+		opacity_points = {
+			{ 0.05f, 0.0f },
+			{ 0.1f, 0.1f },
+			{ 0.3f, 0.1f },
+			{ 0.35f, 0.0f },
+			{ 0.45f, 0.0f },
+			{ 0.5f, 0.15f },
+			{ 0.55f, 0.15f },
+			{ 0.6f, 0.0f },
+			{ 0.8f, 0.0f },
+			{ 0.95f, 0.5f }
+		};
 		break;
 	case 2:
 		// optimized for aneurysm.vox
-		transfer_function.add_color_point(0.0f, cgv::rgb(1.0f, 1.0f, 1.0f));
-		transfer_function.add_color_point(0.25f, cgv::rgb(0.95f, 1.0f, 0.8f));
-		transfer_function.add_color_point(1.0f, cgv::rgb(1.0f, 0.4f, 0.333f));
-
-		transfer_function.add_opacity_point(0.1f, 0.0f);
-		transfer_function.add_opacity_point(1.0f, 1.0f);
+		color_points = {
+			{ 0.0f, cgv::rgb(1.0f, 1.0f, 1.0f) },
+			{ 0.25f, cgv::rgb(0.95f, 1.0f, 0.8f) },
+			{ 1.0f, cgv::rgb(1.0f, 0.4f, 0.333f) }
+		};
+		opacity_points = {
+			{ 0.1f, 0.0f },
+			{ 1.0f, 1.0f }
+		};
 		break;
 	case 3:
 		// optimized for head256.vox
-		transfer_function.add_color_point(0.332f, cgv::rgb(0.5f, 0.8f, 0.85f));
-		transfer_function.add_color_point(0.349f, cgv::rgb(0.85f, 0.5f, 0.85f));
-		transfer_function.add_color_point(0.370f, cgv::rgb(0.9f, 0.85f, 0.8f));
-		transfer_function.add_color_point(0.452f, cgv::rgb(0.9f, 0.85f, 0.8f));
-		transfer_function.add_color_point(0.715f, cgv::rgb(0.9f, 0.85f, 0.8f));
-		transfer_function.add_color_point(1.0f, cgv::rgb(1.0f, 0.0f, 0.0f));
-
-		transfer_function.add_opacity_point(0.208f, 0.0f);
-		transfer_function.add_opacity_point(0.22f, 0.17f);
-		transfer_function.add_opacity_point(0.315f, 0.17f);
-		transfer_function.add_opacity_point(0.326f, 0.0f);
-		transfer_function.add_opacity_point(0.345f, 0.0f);
-		transfer_function.add_opacity_point(0.348f, 0.23f);
-		transfer_function.add_opacity_point(0.35f, 0.0f);
-		transfer_function.add_opacity_point(0.374f, 0.0f);
-		transfer_function.add_opacity_point(0.539f, 0.31f);
-		transfer_function.add_opacity_point(0.633f, 0.31f);
-		transfer_function.add_opacity_point(0.716f, 0.0f);
-		transfer_function.add_opacity_point(0.8f, 1.0f);
+		color_points = {
+			{ 0.332f, cgv::rgb(0.5f, 0.8f, 0.85f) },
+			{ 0.349f, cgv::rgb(0.85f, 0.5f, 0.85f) },
+			{ 0.370f, cgv::rgb(0.9f, 0.85f, 0.8f) },
+			{ 0.452f, cgv::rgb(0.9f, 0.85f, 0.8f) },
+			{ 0.715f, cgv::rgb(0.9f, 0.85f, 0.8f) },
+			{ 1.0f, cgv::rgb(1.0f, 0.0f, 0.0f) }
+		};
+		opacity_points = {
+			{ 0.208f, 0.0f },
+			{ 0.22f, 0.17f },
+			{ 0.315f, 0.17f },
+			{ 0.326f, 0.0f },
+			{ 0.345f, 0.0f },
+			{ 0.348f, 0.23f },
+			{ 0.35f, 0.0f },
+			{ 0.374f, 0.0f },
+			{ 0.539f, 0.31f },
+			{ 0.633f, 0.31f },
+			{ 0.716f, 0.0f },
+			{ 0.8f, 1.0f }
+		};
 		break;
 	default:
 		// plain white with linear opacity ramp
-		transfer_function.add_color_point(0.0f, cgv::rgb(1.0f));
-		transfer_function.add_opacity_point(0.0f, 0.0f);
-		transfer_function.add_opacity_point(1.0f, 1.0f);
+		color_points = {
+			{ 0.0f, cgv::rgb(1.0f) }
+		};
+		opacity_points = {
+			{ 0.0f, 0.0f },
+			{ 1.0f, 1.0f }
+		};
 		break;
 	}
 	
+	transfer_function->set_color_points(color_points);
+	transfer_function->set_opacity_points(opacity_points);
+
 	if(auto ctx = get_context()) {
 		// create the texture of the interpolated transfer function values
 		transfer_function_tex.create(*ctx);
 
-		//if(transfer_function_editor_ptr)
-		//	transfer_function_editor_ptr->set_color_map(&transfer_function);
+		if(transfer_function_editor)
+			transfer_function_editor->set_transfer_function(transfer_function);
 		//if(transfer_function_legend_ptr)
 		//	transfer_function_legend_ptr->set_color_map(*ctx, transfer_function);
 	}

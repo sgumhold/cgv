@@ -7,11 +7,12 @@
 #include <cgv/math/fvec.h>
 
 #include "color.h"
+#include "color_scale.h"
 
 namespace cgv {
 namespace media {
 
-class transfer_function {
+class transfer_function : public color_scale {
 public:
 	using color_type = cgv::rgb;
 	using opacity_type = float;
@@ -23,6 +24,18 @@ public:
 	//	kLinear,
 	//	kSmooth
 	//};
+
+	static std::unique_ptr<transfer_function> new_instance() {
+		return std::unique_ptr<transfer_function>(new transfer_function());
+	}
+
+	bool is_opaque() const override {
+		return opacity_points_.empty();
+	}
+
+	bool is_discrete() const override {
+		return false;
+	}
 
 	transfer_function() {}
 

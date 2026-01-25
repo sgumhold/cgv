@@ -5,11 +5,12 @@
 #include <cgv/base/node.h>
 #include <cgv/gui/event_handler.h>
 #include <cgv/gui/provider.h>
+#include <cgv/media/transfer_function.h>
 #include <cgv/render/drawable.h>
-#include <cgv_gl/volume_renderer.h>
-#include <cgv_gl/box_wire_render_data.h>
 #include <cgv/render/transfer_function_texture.h>
 #include <cgv_app/transfer_function_editor.h>
+#include <cgv_gl/volume_renderer.h>
+#include <cgv_gl/box_wire_render_data.h>
 //#include <cgv_app/color_map_legend.h>
 
 class volume_viewer :
@@ -46,6 +47,7 @@ protected:
 	cgv::render::volume_render_style vstyle;
 	/// index of the transfer function preset
 	int transfer_function_preset = 1;
+	std::shared_ptr<cgv::media::transfer_function> transfer_function = cgv::media::transfer_function::new_instance();
 	/// the volume transfer function
 	cgv::render::transfer_function_texture transfer_function_tex;
 	/// render data for wireframe box

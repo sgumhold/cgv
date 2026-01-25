@@ -3,8 +3,7 @@
 #include <algorithm>
 
 #include <cgv/math/ftransform.h>
-#include <cgv/media/color_scale.h>
-#include <cgv/media/color_scheme_registry.h>
+#include <cgv/media/named_color_schemes.h>
 #include <cgv/render/attribute_array_binding.h>
 #include <cgv/render/color_scale.h>
 #include <cgv/render/shader_program.h>
