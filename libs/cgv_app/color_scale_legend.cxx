@@ -202,7 +202,7 @@ void color_scale_legend::set_color_scale(const std::shared_ptr<const cgv::media:
 	tex.set_mag_filter(filter);
 	tex.create(ctx, data_view, 0);
 
-	value_range = scale->domain;
+	value_range = scale->get_domain();
 	on_set(&value_range);
 
 	post_damage();

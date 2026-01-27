@@ -25,18 +25,6 @@ public:
 	//	kSmooth
 	//};
 
-	static std::unique_ptr<transfer_function> new_instance() {
-		return std::unique_ptr<transfer_function>(new transfer_function());
-	}
-
-	bool is_opaque() const override {
-		return opacity_points_.empty();
-	}
-
-	bool is_discrete() const override {
-		return false;
-	}
-
 	transfer_function() {}
 
 	transfer_function(std::initializer_list<color_point_type> colors) {
@@ -46,6 +34,14 @@ public:
 	transfer_function(std::initializer_list<color_point_type> colors, std::initializer_list<opacity_point_type> opacities) {
 		set_color_points(colors);
 		set_opacity_points(opacities);
+	}
+
+	bool is_opaque() const override {
+		return opacity_points_.empty();
+	}
+
+	bool is_discrete() const override {
+		return false;
 	}
 
 	// Todo: Rescale, reverse, to_log, to_linear?
@@ -88,58 +84,58 @@ public:
 		return remove_point(opacity_points_, t);
 	}
 
-	bool has_opacity() const {
-		return !opacity_points_.empty();
+	void set_domain(cgv::vec2 domain) override {
+		// Todo: Set domain, update points and call modified.
 	}
 
-	cgv::vec2 get_domain() const {
-		return domain_;
-	}
-
-	cgv::rgb get_color(float t) const {
-		// Todo: Clamp t to domain if enabled. If not, check if t is outside domain and return unknown color.
-		if(color_points_.empty())
-			return { 0.0f };
-		return interpolate(color_points_, t);
-	}
-
-	std::vector<cgv::rgb> quantize_color(size_t n) const {
-		if(color_points_.empty())
-			return std::vector<cgv::rgb>(n, { 0.0f });
-		return quantize(color_points_, n);
-	}
-
-	float get_opacity(float t) const {
-		if(opacity_points_.empty())
-			return 1.0f;
-		return interpolate(opacity_points_, t);
-	}
-
-	std::vector<float> quantize_opacity(size_t n) const {
-		if(opacity_points_.empty())
-			return std::vector<float>(n, 1.0f);
-		return quantize(opacity_points_, n);
-	}
-
-	cgv::rgba get_value(float t) const {
-		cgv::rgb color = get_color(t);
-		float opacity = get_opacity(t);
+	cgv::rgba get_mapped_value(float value) const override {
+		cgv::rgb color = get_mapped_color(value);
+		float opacity = get_mapped_opacity(value);
 
 		return { color.R(), color.G(), color.B(), opacity };
 	}
 
-	std::vector<cgv::rgba> quantize_value(size_t n) const {
+	// Todo: add override
+	cgv::rgb get_mapped_color(float value) const {
+		// Todo: Clamp t to domain if enabled. If not, check if t is outside domain and return unknown color.
+		if(color_points_.empty())
+			return { 0.0f };
+		return interpolate(color_points_, value);
+	}
+
+	float get_mapped_opacity(float value) const {
+		if(opacity_points_.empty())
+			return 1.0f;
+		return interpolate(opacity_points_, value);
+	}
+
+	std::vector<cgv::rgba> quantize(size_t n) const override {
 		const std::vector<cgv::rgb> colors = quantize_color(n);
 		const std::vector<float> opacities = quantize_opacity(n);
 
-		std::vector<cgv::rgba> data;
-		data.reserve(n);
-		for(size_t i = 0; i < n; ++i) {
-			const cgv::rgb& color = colors[i];
-			data.push_back({ color.R(), color.G(), color.B(), opacities[i] });
-		}
+		std::vector<cgv::rgba> values;
+		values.reserve(n);
+		std::transform(colors.begin(), colors.end(), opacities.begin(), std::back_inserter(values), [](const cgv::rgba& color, float opacity) {
+			return cgv::rgba(color, opacity);
+		});
+		//for(size_t i = 0; i < n; ++i) {
+		//	const cgv::rgb& color = colors[i];
+		//	data.push_back({ color.R(), color.G(), color.B(), opacities[i] });
+		//}
 
-		return data;
+		return values;
+	}
+
+	std::vector<cgv::rgb> quantize_color(size_t count) const {
+		if(color_points_.empty())
+			return std::vector<cgv::rgb>(count, { 0.0f });
+		return quantize(color_points_, count);
+	}
+
+	std::vector<float> quantize_opacity(size_t count) const {
+		if(opacity_points_.empty())
+			return std::vector<float>(count, 1.0f);
+		return quantize(opacity_points_, count);
 	}
 
 	void clear() {
@@ -163,7 +159,7 @@ public:
 		return opacity_points_;
 	}
 
-	cgv::rgba unknown_color = { 0.0f, 0.0f, 0.0f, 0.0f };
+	//cgv::rgba unknown_color = { 0.0f, 0.0f, 0.0f, 0.0f };
 	bool use_interpolation = true;
 
 private:
@@ -229,7 +225,7 @@ private:
 		return false;
 	}
 
-	cgv::vec2 domain_ = { 0.0f };
+	//cgv::vec2 domain_ = { 0.0f };
 	std::vector<color_point_type> color_points_;
 	std::vector<opacity_point_type> opacity_points_;
 };

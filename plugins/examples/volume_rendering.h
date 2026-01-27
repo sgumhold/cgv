@@ -6,12 +6,12 @@
 #include <cgv/gui/event_handler.h>
 #include <cgv/gui/provider.h>
 #include <cgv/media/transfer_function.h>
+#include <cgv/render/color_scale_adapter.h>
 #include <cgv/render/drawable.h>
-#include <cgv/render/transfer_function_texture.h>
 #include <cgv_app/transfer_function_editor.h>
 #include <cgv_gl/volume_renderer.h>
 #include <cgv_gl/box_wire_render_data.h>
-//#include <cgv_app/color_map_legend.h>
+#include <cgv_app/color_scale_legend.h>
 
 class volume_viewer :
 	public cgv::base::group,			// derive from group to support child nodes (needed for overlays)
@@ -19,13 +19,10 @@ class volume_viewer :
 	public cgv::gui::provider,			// derive from gui provider to have gui controls
 	public cgv::render::drawable		// derive from drawable to allow drawing in the GL context
 {
-private:
-	//bool do_calculate_gradients = false;
-
 protected:
 	/// store a pointer to the color map editor overlay which is used to edit the volume transfer function
 	cgv::app::transfer_function_editor_ptr transfer_function_editor;
-	//cgv::app::color_map_legend_ptr legend;
+	cgv::app::color_scale_legend_ptr legend;
 
 	/// resolution of the volume
 	cgv::uvec3 vres;
@@ -47,9 +44,9 @@ protected:
 	cgv::render::volume_render_style vstyle;
 	/// index of the transfer function preset
 	int transfer_function_preset = 1;
-	std::shared_ptr<cgv::media::transfer_function> transfer_function = cgv::media::transfer_function::new_instance();
 	/// the volume transfer function
-	cgv::render::transfer_function_texture transfer_function_tex;
+	std::shared_ptr<cgv::media::transfer_function> transfer_function = std::make_shared<cgv::media::transfer_function>();
+	cgv::render::color_scale_adapter color_scale_adapter;
 	/// render data for wireframe box
 	cgv::render::box_wire_render_data<> box_rd;
 	

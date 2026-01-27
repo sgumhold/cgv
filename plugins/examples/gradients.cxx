@@ -1,8 +1,8 @@
 #include <cgv/base/node.h>
 #include <cgv/gui/provider.h>
 #include <cgv/media/transfer_function.h>
+#include <cgv/render/color_scale_adapter.h>
 #include <cgv/render/drawable.h>
-#include <cgv/render/transfer_function_texture.h>
 #include <cgv_gl/arrow_render_data.h>
 #include <cgv_gl/volume_renderer.h>
 #include <cgv_gpgpu/texture_differentiate.h>
@@ -79,8 +79,8 @@ public:
 			{ 0.0f, 0.0f },
 			{ 1.0f, 1.0f },
 		});
-		transfer_function_tex.set_transfer_function(transfer_function);
-		transfer_function_tex.create(ctx);
+		color_scale_adapter.set_color_scale(transfer_function);
+		color_scale_adapter.create_texture(ctx);
 
 		create_test_volume(ctx);
 		return true;
@@ -90,7 +90,7 @@ public:
 		cgv::render::ref_volume_renderer(ctx, -1);
 		arrows.destruct(ctx);
 		gradient_kernel.destruct(ctx);
-		transfer_function_tex.destruct(ctx);
+		color_scale_adapter.destruct(ctx);
 	}
 
 	void init_frame(cgv::render::context& ctx) {
@@ -115,7 +115,7 @@ public:
 			volume_renderer.set_render_style(volume_style);
 			volume_renderer.set_volume_texture(&volume_texture);
 
-			volume_renderer.set_transfer_function_texture(&transfer_function_tex.get());
+			volume_renderer.set_transfer_function_texture(&color_scale_adapter.get_texture());
 
 			volume_renderer.set_depth_texture(&depth_texture);
 			volume_renderer.set_bounding_box(volume_bounding_box);
@@ -278,8 +278,8 @@ private:
 	// Render members
 	cgv::render::arrow_render_data<> arrows;
 	cgv::render::volume_render_style volume_style;
-	std::shared_ptr<cgv::media::transfer_function> transfer_function = cgv::media::transfer_function::new_instance();
-	cgv::render::transfer_function_texture transfer_function_tex;
+	std::shared_ptr<cgv::media::transfer_function> transfer_function = std::make_shared<cgv::media::transfer_function>();
+	cgv::render::color_scale_adapter color_scale_adapter;
 	cgv::render::texture volume_texture = cgv::render::texture("flt32[R]");
 	cgv::render::texture gradient_texture = cgv::render::texture("flt32[R,G,B,A]");
 	cgv::render::texture depth_texture = cgv::render::texture("[D]");

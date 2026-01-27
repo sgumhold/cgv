@@ -639,7 +639,7 @@ void transfer_function_editor::add_point(const vec2& pos) {
 			color_point p;
 			p.position = ivec2(int(pos.x()), layout.color_handles_rect.y());
 			p.update_val(layout.color_editor_rect);
-			p.col = cmc.cm->get_color(p.val);
+			p.col = cmc.cm->get_mapped_color(p.val);
 			size_t index = cmc.color_points.add(p);
 			cmc.color_points.set_selected(index);
 			handle_drag_end();
@@ -949,7 +949,7 @@ void transfer_function_editor::update_color_map(bool is_data_change) {
 	cm->set_opacity_points(alphas);
 
 	size_t size = static_cast<size_t>(resolution);
-	std::vector<rgba> cs_data = cm->quantize_value(size);
+	std::vector<rgba> cs_data = cm->quantize(size);
 
 	std::vector<cgv::rgba8> texture_data;
 	texture_data.reserve(resolution);
