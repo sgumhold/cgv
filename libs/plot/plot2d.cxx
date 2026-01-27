@@ -183,7 +183,9 @@ bool plot2d::draw_point_plot(cgv::render::context& ctx, int i, int layer_idx)
 			point_prog.set_attribute(ctx, "secondary_color", spc.point_halo_color.color);
 			point_prog.set_attribute(ctx, "size", spc.point_size.size);
 			point_prog.enable(ctx);
+			color_scale_adapter.enable(ctx, color_scale_texture_unit);
 			draw_sub_plot_samples(count, spc);
+			color_scale_adapter.disable(ctx);
 			point_prog.disable(ctx);
 			result = true;
 		}
@@ -223,6 +225,7 @@ bool plot2d::draw_line_plot(cgv::render::context& ctx, int i, int layer_idx)
 			line_prog.set_attribute(ctx, line_prog.get_color_index(), spc.line_color.color);
 			line_prog.set_attribute(ctx, "secondary_color", spc.line_halo_color.color);
 			line_prog.set_attribute(ctx, "size", spc.line_width.size);
+			color_scale_adapter.enable(ctx, color_scale_texture_unit);
 			line_prog.enable(ctx);
 			if (strips[i].empty())
 				draw_sub_plot_samples(count, spc, true);
@@ -234,6 +237,7 @@ bool plot2d::draw_line_plot(cgv::render::context& ctx, int i, int layer_idx)
 				}
 			}
 			line_prog.disable(ctx);
+			color_scale_adapter.disable(ctx);
 			result = true;
 		}
 	}
@@ -267,9 +271,11 @@ bool plot2d::draw_stick_plot(cgv::render::context& ctx, int i, int layer_idx)
 			// configure geometry shader
 			rectangle_prog.set_uniform(ctx, "border_mode", spc.stick_coordinate_index == 0 ? 2 : 1);
 
+			color_scale_adapter.enable(ctx, color_scale_texture_unit);
 			rectangle_prog.enable(ctx);
 			draw_sub_plot_samples(count, spc);
 			rectangle_prog.disable(ctx);
+			color_scale_adapter.disable(ctx);
 			result = true;
 		}
 	}
@@ -320,9 +326,11 @@ bool plot2d::draw_bar_plot(cgv::render::context& ctx, int i, int layer_idx)
 			// configure geometry shader
 			rectangle_prog.set_uniform(ctx, "border_mode", spc.bar_coordinate_index == 0 ? 2 : 1);
 
+			color_scale_adapter.enable(ctx, color_scale_texture_unit);
 			rectangle_prog.enable(ctx);
 			draw_sub_plot_samples(count, spc);
 			rectangle_prog.disable(ctx);
+			color_scale_adapter.disable(ctx);
 			result = true;
 		}
 	}

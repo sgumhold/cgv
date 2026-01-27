@@ -1,11 +1,7 @@
 #version 330 core
 
-uniform int    color_scale_index[2] = int[2]( 6, 7 );
-uniform vec3   color_scale_samples[64];
-uniform int    nr_color_scale_samples[2];
-uniform int    color_scale_is_bipolar[2] = int[2]( 0, 0 );
-uniform float  window_zero_position[2] = float[2]( 0.5, 0.5 );
-uniform bool   adjust_asymmetric = false;
+#define MAX_COLOR_SCALE_COUNT 4
+
 /*
 The following interface is implemented in this shader:
 //***** begin interface of color_scale.glsl ***********************************
@@ -20,75 +16,55 @@ vec3 color_scale(in float v);
 //***** end interface of color_scale.glsl ***********************************
 */
 
-vec3 hue_scale(in float v)
-{
-	float HH = 6.0 * v;
-	float F = mod(HH, 1.0);
-	float G = 1.0 - F;
-	switch (int(HH)) {
-	case 0: return vec3(1.0, F, 0.0);
-	case 1: return vec3(G, 1.0, 0.0);
-	case 2: return vec3(0.0, 1.0, F);
-	case 3: return vec3(0.0, G, 1.0);
-	case 4: return vec3(F, 0.0, 1.0);
-	case 5: return vec3(1.0, 0.0, G);
-	}
-	return vec3(0.5, 0.5, 0.5);
+
+
+uniform int    color_scale_index[2] = int[2]( 6, 7 );
+uniform vec3   color_scale_samples[64];
+uniform int    nr_color_scale_samples[2];
+uniform int    color_scale_is_bipolar[2] = int[2]( 0, 0 );
+uniform float  window_zero_position[2] = float[2]( 0.5, 0.5 );
+uniform bool   adjust_asymmetric = false;
+
+
+
+
+
+uniform sampler2D color_scale_texture;
+
+struct ColorScaleMappingOptions {
+	vec2 domain;
+	bool clamped;
+	bool reversed;
+};
+
+uniform ColorScaleMappingOptions color_scale_mapping_options[MAX_COLOR_SCALE_COUNT];
+
+vec4 evaluate_color_scale(in int index, in float value) {
+	// Todo: Map value to domain.
+
+	float t = clamp(value, 0.0, 1.0);
+
+	ColorScaleMappingOptions mapping = color_scale_mapping_options[index];
+	//if(mapping.reversed)
+	//	t = 1.0 - t;
+
+	vec2 texture_size = vec2(textureSize(color_scale_texture, 0));
+	vec2 texel_size = (1.0 / vec2(texture_size));
+
+	float color_scale_offset = float(index) / texture_size.y + 0.5 * texel_size.y;
+
+	vec4 co = vec4(t, 0.0, 0.0, 1.0);//mapping.reversed ? vec4(t, 0.0, 0.0, 1.0) : vec4(0.0, value, 0.0, 1.0);
+
+	return mix(co, texture(color_scale_texture, vec2(t, color_scale_offset)), 0.95);
 }
 
-vec3 hue_luminance_scale(in float v)
-{
-	float HH = 6.0 * v;
-	float F = mod(HH, 1.0);
-	int I = int(HH);
-	float LL = 0.5 * v + 0.25;
-	float mx = (LL <= 0.5) ? 2.0 * LL : 1.0;
-	float mn = 2 * LL - mx;
-	float DM = mx - mn;
-	switch (I) {
-	case 0: return vec3(mx, mn + F * DM, mn);
-	case 1: return vec3(mn + (1.0 - F) * DM, mx, mn);
-	case 2: return vec3(mn, mx, mn + F * DM);
-	case 3: return vec3(mn, mn + (1.0 - F) * DM, mx);
-	case 4: return vec3(mn + F * DM, mn, mx);
-	case 5: 
-	case 6: 
-	return vec3(mx, mn, mn + (1.0 - F) * DM);
-	}
-	return vec3(0.5, 0.5, 0.5);
+// Todo: Remove these functions. They are only temporary to allow plot shaders to work with new color scales.
+vec3 color_scale(in float v, int idx) {
+	return evaluate_color_scale(idx, v).rgb;
 }
 
-vec3 sampled_color_scale(in float value, int idx)
-{
-	// first check if values needs to be clamped to 0
-	if (value <= 0.0)
-		return color_scale_samples[32*idx];
-	// than check if values needs to be clamped to 1 and make sure that values is really smaller than 1
-	if (value > 0.99999)
-		return color_scale_samples[32*idx + nr_color_scale_samples[idx] - 1];
-	float f,v;
-	int i;
-	if (color_scale_is_bipolar[idx] != 0) {
-		// scale value up to [0,n-2]
-		v = value * (nr_color_scale_samples[idx] - 2);
-		// compute index of smaller sampled necessary for linear interpolation
-		i = int(v);
-		// compute fractional part
-		f = v - float(i);
-		// correct indices in second half
-		if (i+1 >= nr_color_scale_samples[idx]/2)
-			++i;
-	}
-	else {
-		// scale value up to [0,n-1]
-		v = value * (nr_color_scale_samples[idx] - 1);
-		// compute index of smaller sampled necessary for linear interpolation
-		i = int(v);
-		// compute fractional part
-		f = v - float(i);
-	}
-	// return affine combination of two adjacent samples
-	return (1.0 - f) * color_scale_samples[32*idx + i] + f * color_scale_samples[32*idx + i+1];
+vec3 color_scale(in float v) {
+	return evaluate_color_scale(0, v).rgb;
 }
 
 float color_scale_gamma_mapping(in float v, in float gamma, int idx)
@@ -133,29 +109,3 @@ void adjust_zero_position(inout float v, in float window_zero)
 		v *= 0.5 / window_zero;
 }
 
-vec3 color_scale(in float v, int idx)
-{
-	if (color_scale_is_bipolar[idx] != 0)
-		adjust_zero_position(v, window_zero_position[idx]);
-	switch (color_scale_index[idx]) {
-	case 0: return vec3(v, 0, 0);
-	case 1: return vec3(0, v, 0);
-	case 2: return vec3(0, 0, v);
-	case 3: return vec3(v, v, v);
-	case 4:
-		if (v < 0.333333333)
-			return vec3(3.0 * v, 0.0, 0.0);
-		if (v < 0.666666666)
-			return vec3(1.0, 3.0 * v - 1.0, 0.0);
-		return vec3(1.0, 1.0, 3.0 * v - 2.0);
-	case 5: return hue_scale(v);
-	case 6: return hue_luminance_scale(v);
-	case 7: return sampled_color_scale(v, idx);
-	}
-	return vec3(v, v, v);
-}
-
-vec3 color_scale(in float v)
-{
-	return color_scale(v, 0);
-}

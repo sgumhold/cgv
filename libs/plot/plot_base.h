@@ -1,19 +1,22 @@
 #pragma once
 
-#include <cgv/base/base.h>
 #include <vector>
-#include <cgv/media/axis_aligned_box.h>
-#include <cgv/render/drawable.h>
+
+#include <cgv/base/base.h>
 #include <cgv/render/attribute_array_binding.h>
-#include <cgv/render/vertex_buffer.h>
+#include <cgv/render/color_scale_adapter.h>
+#include <cgv/render/drawable.h>
 #include <cgv/render/shader_program.h>
-#include <libs/cgv_gl/rectangle_renderer.h>
+#include <cgv/render/vertex_buffer.h>
+#include <cgv/render/view.h>
+#include <cgv/media/axis_aligned_box.h>
 #include <cgv/media/color.h>
-//#include <cgv/media/color_scale.h>
+#include <cgv/media/color_scale.h>
 #include <cgv/media/color_scheme.h>
 #include <cgv/media/font/font.h>
-#include <cgv/render/view.h>
 #include <cgv/gui/provider.h>
+#include <libs/cgv_gl/rectangle_renderer.h>
+
 #include "axis_config.h"
 
 #include "lib_begin.h"
@@ -405,6 +408,7 @@ public:
 	
 	/// define maximum number of size mappings
 	static const unsigned MAX_NR_SIZE_MAPPINGS = 2;
+	static const unsigned color_scale_texture_unit = 0;
 	/// index of attribute mapped to size
 	int size_mapping[MAX_NR_SIZE_MAPPINGS];
 	/// and independent gamma adjustments
@@ -416,7 +420,11 @@ protected:
 	/**@name visual attribute mapping*/
 	//@{
 	/// color scale indices of primary and secondary color mapping
-	int color_scale_index[MAX_NR_COLOR_MAPPINGS];
+	//int color_scale_index[MAX_NR_COLOR_MAPPINGS];
+	int color_scheme_index[MAX_NR_COLOR_MAPPINGS];
+	std::array<std::shared_ptr<cgv::media::continuous_color_scale>, MAX_NR_COLOR_MAPPINGS> color_scales;
+	cgv::render::color_scale_adapter color_scale_adapter;
+	bool reversed[2] = { false, false };
 	//@}
 	/// store pointer to label font
 	cgv::media::font::font_ptr label_font;
