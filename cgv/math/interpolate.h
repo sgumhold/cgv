@@ -5,11 +5,26 @@
 #include <vector>
 
 #include "interval.h"
+#include "compare_float.h"
 
 namespace cgv {
 namespace math {
 
 namespace detail {
+
+/// @brief Map a parameter position t to the given domain. If the domain is empty, domain.lower_bound is returned.
+/// 
+/// @tparam ParamT The parameter type.
+/// @param t The parameter position to map.
+/// @param domain The doamin to map t to.
+/// @return The mapped parameter position.
+template<typename ParamT = float>
+ParamT map_to_domain(ParamT t, const interval<ParamT>& domain = { 0.0f, 1.0f }) {
+	ParamT domain_size = domain.size();
+	if(!is_zero(domain_size))
+		return (t - domain.lower_bound) / domain_size;
+	return domain.lower_bound;
+}
 
 /// @brief Return the interpolated value of the piecewise function defined by uniformly-spaced points at position t using the interpolation operation.
 /// 
@@ -261,7 +276,7 @@ static PointT interpolate_linear(const PointT& p0, const PointT& p1, ParamT t) {
 /// @return The interpolated point.
 template<typename PointT, typename ParamT = float>
 PointT interpolate_linear(const std::vector<PointT>& points, ParamT t, const interval<ParamT>& domain = { 0.0f, 1.0f }) {
-	t = (t - domain.lower_bound) / domain.size();
+	t = detail::map_to_domain(t, domain);
 	return detail::interpolate_piece(points, t, static_cast<PointT(*)(const PointT&, const PointT&, ParamT)>(&interpolate_linear<PointT, ParamT>));
 };
 
@@ -405,7 +420,7 @@ static PointT interpolate_cubic_basis(const PointT& b0, const PointT& b1, const 
 /// @return The interpolated point.
 template<typename PointT, typename ParamT = float>
 PointT interpolate_smooth_cubic(const std::vector<PointT>& points, ParamT t, const interval<ParamT>& domain = { 0.0f, 1.0f }) {
-	t = (t - domain.lower_bound) / domain.size();
+	t = detail::map_to_domain(t, domain);
 
 	size_t num_pairs = points.size() - 1;
 
@@ -437,7 +452,7 @@ struct uniform_piecewise_linear_function {
 	
 	/// Return the piecewise linear interpolated value at position x.
 	Y evaluate(X x) const {
-		x = (x - domain.lower_bound) / domain.size();
+		x = detail::map_to_domain(x, domain);
 
 		if(x <= X(0))
 			return breakpoints.front();
