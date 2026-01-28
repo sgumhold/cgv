@@ -1,5 +1,4 @@
 #include "transforming.h"
-#include <cgv/math/inv.h>
 
 namespace cgv {
 	namespace nui {
@@ -23,7 +22,7 @@ namespace cgv {
 		void transforming::set_model_transform(const mat4& _M)
 		{
 			M = _M;
-			iM = inv(M);
+			iM = inverse(M);
 		}
 		/// set model transform and inverse model transform
 		void transforming::set_model_transform(const mat4& _M, const mat4& _iM)

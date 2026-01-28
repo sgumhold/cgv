@@ -161,7 +161,7 @@ void temporal_anti_aliasing::end(cgv::render::context& ctx, bool pop_viewport) {
 			static_frame_count = 0;
 		}
 
-		mat4 curr_clip_to_prev_clip_matrix = previous_view.view_projection_matrix * inv(current_view.view_projection_matrix);
+		mat4 curr_clip_to_prev_clip_matrix = previous_view.view_projection_matrix * inverse(current_view.view_projection_matrix);
 
 		auto& resolve_prog = shaders.get("resolve");
 		resolve_prog.enable(ctx);

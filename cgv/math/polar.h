@@ -51,7 +51,7 @@ bool decompose_rotation(const cgv::math::mat<T>& R,
 	
 		
 
-	angle =(T)(asin(abssina)*180.0/PI);
+	angle =(T)(cgv::math::rad2deg(asin(abssina))));
 	if(cosa < 0)
 		angle = (T)180.0-angle;
 		

@@ -567,7 +567,7 @@ void physics_viewer::generate_random_mesh_instance() {
 		creation_info.position = position;
 
 		float angle = 0.0f;
-		rng.uniform(0.0f, 3.1415f, angle);
+		rng.uniform(0.0f, static_cast<float>(cgv::math::constants::pi), angle);
 		cgv::quat orientation(cgv::quat::AxisEnum::Y_AXIS, angle);
 
 		creation_info.orientation = orientation;

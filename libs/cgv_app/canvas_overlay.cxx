@@ -87,8 +87,8 @@ bool canvas_overlay::ensure_layout(context& ctx) {
 		frame_buffer_.set_size(get_rectangle().size);
 		frame_buffer_.ensure(ctx);
 
-		content_canvas.set_resolution(ctx, get_rectangle().size);
-		overlay_canvas.set_resolution(ctx, get_viewport_size());
+		content_canvas.set_resolution(get_rectangle().size);
+		overlay_canvas.set_resolution(get_viewport_size());
 		return true;
 	}
 	return false;

@@ -337,7 +337,7 @@ public:
 		if(viewport_resolution != viewport_rect.size) {
 			viewport_rect.size = viewport_resolution;
 
-			canvas.set_resolution(ctx, viewport_rect.size);
+			canvas.set_resolution(viewport_rect.size);
 
 			set_resolution_uniform(ctx, line_renderer.ref_prog());
 			set_resolution_uniform(ctx, quadratic_spline_renderer.ref_prog());

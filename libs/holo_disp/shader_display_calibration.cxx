@@ -58,12 +58,12 @@ void shader_display_calibration::set_uniforms(cgv::render::context& ctx, cgv::re
 	stereo_translate_modelview_matrix(1.0f, eye_separation, screen_width, MV_right);
 
 	// get world-space eye position from inverse modelview matrix per view
-	cgv::vec3 eye_left = cgv::vec3(inv(MV_left).col(3));
-	cgv::vec3 eye_right = cgv::vec3(inv(MV_right).col(3));
+	cgv::vec3 eye_left = cgv::vec3(inverse(MV_left).col(3));
+	cgv::vec3 eye_right = cgv::vec3(inverse(MV_right).col(3));
 
 	// compute inverse modelview projection matrices for left and right view
-	cgv::mat4 iMVP_left = inv(P_left * MV_left);
-	cgv::mat4 iMVP_right = inv(P_right * MV_right);
+	cgv::mat4 iMVP_left = inverse(P_left * MV_left);
+	cgv::mat4 iMVP_right = inverse(P_right * MV_right);
 	// acquire view-dependent varying elements (last two columns)
 	cgv::mat4 stereo_view_params;
 	stereo_view_params.set_col(0, iMVP_left.col(2));

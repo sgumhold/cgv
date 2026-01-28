@@ -39,7 +39,7 @@ public:
 	std::vector<node_type> sample(size_t num_segments) const {
 		std::vector<node_type> points;
 		points.reserve(num_segments + 1);
-		sample_steps_transform<ParamT>(std::back_inserter(points), [this](ParamT t) { return evaluate(t); }, num_segments);
+		sequence_transform<ParamT>(std::back_inserter(points), [this](ParamT t) { return evaluate(t); }, num_segments + 1);
 		return points;
 	}
 

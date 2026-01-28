@@ -13,8 +13,11 @@
 #include <iostream>
 #include <limits>
 #include <sstream>
+
 #include <cgv/type/standard_types.h>
-#include <cgv/math/functions.h>
+
+#include "constants.h"
+#include "functions.h"
 
 namespace cgv {
 namespace math {
@@ -61,8 +64,8 @@ public:
 	//@{
 	/// create an uninitialized vector
 	fvec() {}
-	/// create a vector where all N components are initialized to the constant value a
-	fvec(const T& a) { std::fill(v, v + N, a); }
+	/// create a vector where all N components are initialized to the constant value x
+	fvec(const T& x) { for(unsigned i = 0; i < N; ++i) v[i] = x; }
 	/// construct and initialize the first two components to the given values
 	template <uint32_t _N = N, typename std::enable_if<_N >= 2, int>::type = 0>
 	fvec(const T& x, const T& y) { set(x, y); }
@@ -95,9 +98,9 @@ public:
 	template <typename S>
 	fvec(const fvec<S, N + 1>& other) { for(unsigned i = 0; i < N; ++i) v[i] = static_cast<T>(other[i]); }
 	/// construct from std::array of same size
-	fvec(const std::array<T, N>& arr) : fvec(N, arr.data()) {}
+	fvec(const std::array<T, N>& a) : fvec(N, a.data()) {}
 	/// set to the contents of the given std::array with same size
-	void assign(const std::array<T, N>& arr) { std::copy(arr.cbegin(), arr.cend(), v); }
+	void assign(const std::array<T, N>& a) { for(unsigned i = 0; i < N; ++i) v[i] = a[i]; }
 	/// set the first two components
 	template <uint32_t _N = N, typename std::enable_if<_N >= 2, int>::type = 0>
 	void set(const T& x, const T& y) { v[0] = x; v[1] = y; }
@@ -108,17 +111,17 @@ public:
 	template <uint32_t _N = N, typename std::enable_if<_N >= 4, int>::type = 0>
 	void set(const T& x, const T& y, const T& z, const T& w) { v[0] = x; v[1] = y; v[2] = z; v[3] = w; }
 	/// fill the vector with constant value x
-	void fill(const T& x) { std::fill(v, v + N, x); }
+	void fill(const T& x) { for(unsigned i = 0; i < N; ++i) v[i] = x; }
 	/// fill the vector with zeros
 	void zeros() { fill(T(0)); }
 	/// fill the vector with zeros except for the last component, which will be set to one
-	void zerosh() { std::fill(v, v + N - 1, T(0)); v[N - 1] = T(1); }
+	void zerosh() { for(unsigned i = 0; i < N - 1; ++i) v[i] = T(0); v[N - 1] = T(1); }
 	/// fill the vector with ones
 	void ones() { fill(T(1)); }
 	/// convert to homogeneous version by adding a 1
 	fvec<T, N + 1> lift() const { fvec<T, N + 1> h; (fvec<T, N>&)h = *this; h[N] = T(1); return h; }
 	/// constuct a homogeneous zero-vector (yields same result as calling fvec<T, N-1>(0).lift() but is faster)
-	static fvec<T, N> zeroh() { fvec<T, N> r; std::fill(r.v, r.v + N - 1, T(0)); r[N - 1] = T(1); return r; }
+	static fvec<T, N> zeroh() { fvec<T, N> r; r.zerosh(); return r; }
 	/// conversion to vector type
 	vec<T> to_vec() const;
 	/// conversion from vector
@@ -616,6 +619,30 @@ fvec<T, 3> ortho(const fvec<T, 3>& v) {
 	return std::abs(v.x()) > std::abs(v.z()) ? fvec<T, 3>(-v.y(), v.x(), T(0)) : fvec<T, 3>(T(0), -v.z(), v.y());
 }
 
+/// return an angle in radians from a direction vector (only defined for 2d case)
+template <typename T, cgv::type::uint32_type N>
+T to_angle(fvec<T, N> v) = delete;
+
+/// return an angle in radians from a direction vector; (1,0) is mapped to 0; angle increases counter-clockwise
+template <typename T>
+T to_angle(fvec<T, 2> v) {
+	v.normalize();
+	float a = std::atan2(v.y(), v.x());
+	if(a < T(0))
+		a += T(2) * static_cast<T>(cgv::math::constants::pi);
+	return a;
+}
+
+/// return a direction from an angle given in radians (only defined for 2d case)
+template <typename T, cgv::type::uint32_type N>
+T to_direction(fvec<T, N> v) = delete;
+
+/// return a direction from an angle given in radians; 0 is mapped to (1,0); positive angles rotate direction counter-clockwise
+template <typename T>
+fvec<T, 2> to_direction(T a) {
+	return fvec<T, 2>(std::cos(a), std::sin(a));
+}
+
 } // namespace math
 
 /// @name Predefined Types
@@ -702,7 +729,7 @@ vec<T> fvec<T,N>::to_vec() const {
 template <typename T, cgv::type::uint32_type N>
 fvec<T, N> fvec<T, N>::from_vec(const vec<T>& v)
 {
-	return fvec<T, N>(std::min(N, v.dim()), &v[0]);
+	return fvec<T, N>(N < v.dim() ? N : v.dim(), &v[0]);
 }
 
 } // namespace math

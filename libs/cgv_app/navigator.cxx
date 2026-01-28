@@ -101,14 +101,14 @@ bool navigator::handle_mouse_event(cgv::gui::mouse_event& e, cgv::ivec2 local_mo
 				mat4 MVP = get_projection_matrix() * get_view_matrix(ctx);
 
 				vec4 world_coord(window_coord.x(), window_coord.y(), 1.0f, 1.0f);
-				world_coord = inv(MVP) * world_coord;
+				world_coord = inverse(MVP) * world_coord;
 				world_coord /= world_coord.w();
 
 				vec3 origin = navigator_eye_pos;
 				vec3 direction = normalize(vec3(world_coord) - origin);
 			}
 
-			mat4 IM = inv(get_model_matrix(ctx));
+			mat4 IM = inverse(get_model_matrix(ctx));
 
 			origin = vec3(IM * vec4(origin, 1.0f));
 			direction = vec3(IM * vec4(direction, 0.0f));
@@ -244,7 +244,7 @@ void navigator::init_frame(context& ctx) {
 		fbc.set_size(get_rectangle().size);
 		fbc.ensure(ctx);
 
-		blit_canvas.set_resolution(ctx, get_viewport_size());
+		blit_canvas.set_resolution(get_viewport_size());
 	}
 }
 

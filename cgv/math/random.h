@@ -1,19 +1,20 @@
 #pragma once
-#include <ctime>
 #include <algorithm>
-#include "functions.h"
-#include <cgv/math/vec.h>
-#include <cgv/math/fvec.h>
-#include <cgv/math/mat.h>
-#include <cgv/math/eig.h>
-#include <cgv/math/diag_mat.h>
-#include <cgv/math/perm_mat.h>
-#include <cgv/math/up_tri_mat.h>
-#include <cgv/math/low_tri_mat.h>
-#include <cgv/math/quaternion.h>
+#include <ctime>
 #include <cmath>
 #include <set>
-//#include <cgv/math/constants.h>
+
+#include "constants.h"
+#include "functions.h"
+#include "vec.h"
+#include "fvec.h"
+#include "mat.h"
+#include "eig.h"
+#include "diag_mat.h"
+#include "perm_mat.h"
+#include "up_tri_mat.h"
+#include "low_tri_mat.h"
+#include "quaternion.h"
 
 namespace cgv {
 namespace math {
@@ -417,8 +418,8 @@ public:
 
 		z = x[0];
 		r = sqrt(1 - z * z);
-		theta = T(2) * T(3.14159) * x[1];
-		omega = T(3.14159) * x[2];
+		theta = static_cast<T>(2.0 * cgv::math::constants::pi) * x[1];
+		omega = static_cast<T>(cgv::math::constants::pi) * x[2];
 
 		s = sin(omega);
 		a = cos(omega);

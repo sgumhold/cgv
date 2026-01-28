@@ -1,7 +1,6 @@
 #include "simple_mesh.h"
 #include "stl_reader.h"
 #include "obj_loader.h"
-#include <cgv/math/inv.h>
 #include <cgv/utils/scan.h>
 #include <cgv/utils/advanced_scan.h>
 #include <cgv/media/mesh/obj_reader.h>
@@ -872,7 +871,7 @@ unsigned simple_mesh<T>::extract_vertex_attribute_buffer(const std::vector<idx4_
 
 template <typename T> void simple_mesh<T>::transform(const mat3_type& linear_transformation, const vec3_type& translation)
 {
-	mat3_type inverse_linear_transform = inv(linear_transformation);
+	mat3_type inverse_linear_transform = cgv::math::inverse(linear_transformation);
 	transform(linear_transformation, translation, inverse_linear_transform);
 }
 template <typename T> void simple_mesh<T>::transform(const mat3_type& linear_transform, const vec3_type& translation, const mat3_type& inverse_linear_transform)
