@@ -35,13 +35,13 @@ transfer_function_editor::transfer_function_editor() {
 	
 	mouse_is_on_overlay = false;
 	cursor_position = { 0 };
-	show_value_label = false;
+	//show_value_label = false;
 
-	cmc.color_points.set_constraint(layout.color_handles_rect);
-	cmc.color_points.callback = std::bind(&transfer_function_editor::handle_color_drag, this, std::placeholders::_1);
+	color_draggables.set_constraint(layout.color_draggables_rect);
+	color_draggables.callback = std::bind(&transfer_function_editor::handle_drag, this, std::placeholders::_1, DraggableType::kColor);
 
-	cmc.opacity_points.set_constraint(layout.opacity_editor_rect);
-	cmc.opacity_points.callback = std::bind(&transfer_function_editor::handle_opacity_drag, this, std::placeholders::_1);
+	opacity_draggables.set_constraint(layout.opacity_editor_rect);
+	opacity_draggables.callback = std::bind(&transfer_function_editor::handle_drag, this, std::placeholders::_1, DraggableType::kOpacity);
 
 	color_handle_renderer = cgv::g2d::generic_2d_renderer(cgv::g2d::shaders::arrow);
 	opacity_handle_renderer = cgv::g2d::generic_2d_renderer(cgv::g2d::shaders::rectangle);
@@ -143,15 +143,15 @@ bool transfer_function_editor::handle_mouse_event(cgv::gui::mouse_event& e, cgv:
 		}
 	}
 
-	if(cmc.color_points.handle(e, get_viewport_size(), get_rectangle()))
+	if(color_draggables.handle(e, get_viewport_size(), get_rectangle()))
 		return true;
-	if(cmc.opacity_points.handle(e, get_viewport_size(), get_rectangle()))
+	if(opacity_draggables.handle(e, get_viewport_size(), get_rectangle()))
 		return true;
 
 	if(request_clear_selection) {
-		cmc.color_points.clear_selected();
-		cmc.opacity_points.clear_selected();
-		handle_drag_end();
+		color_draggables.clear_selected();
+		opacity_draggables.clear_selected();
+		handle_selection_change();
 	}
 	if (capture_event)
 		return true;
@@ -176,15 +176,15 @@ void transfer_function_editor::handle_member_change(const cgv::utils::pointer_te
 	if(m.is(resolution)) {
 		//if(cmc.cm)
 		//	cmc.cm->set_resolution(resolution);
-		update_color_map(false);
+		//update_color_map(false);
 	}
 
 	if(m.is(use_interpolation)) {
 		cgv::render::context* ctx_ptr = get_context();
-		if(cmc.cm)
+		if(transfer_function)
 			//cmc.cm->enable_interpolation(use_interpolation);
-			cmc.cm->use_interpolation = use_interpolation;
-		update_color_map(false);
+			transfer_function->use_interpolation = use_interpolation;
+		//update_color_map(false);
 	}
 
 	/*
@@ -199,35 +199,34 @@ void transfer_function_editor::handle_member_change(const cgv::utils::pointer_te
 	}
 	*/
 
-	for(unsigned i = 0; i < cmc.color_points.size(); ++i) {
-		if(m.is(cmc.color_points[i].col)) {
-			update_color_map(true);
+	for(unsigned i = 0; i < color_draggables.size(); ++i) {
+		if(m.is(color_draggables[i].col)) {
+			//update_color_map(true);
 			break;
 		}
 	}
 
-	for(unsigned i = 0; i < cmc.opacity_points.size(); ++i) {
-		if(m.is(cmc.opacity_points[i].val[1])) {
-			cmc.opacity_points[i].update_pos(layout.opacity_editor_rect, opacity_scale_exponent);
-			update_color_map(true);
+	for(unsigned i = 0; i < opacity_draggables.size(); ++i) {
+		if(m.is(opacity_draggables[i].val[1])) {
+			opacity_draggables[i].update_pos(layout.opacity_editor_rect, opacity_scale_exponent);
+			//update_color_map(true);
 			break;
 		}
 	}
 	
 	if(m.is(supports_opacity)) {
+		// Todo: Fixme: This will overwrite the user-defined total height.
 		layout.total_height = supports_opacity ? 200 : 60;
 		on_set(&layout.total_height);
 
-		if(supports_opacity) {
-			layout.total_height = 200;
-		} else {
-			layout.total_height = 60;
-			if(cmc.cm) {
-				cmc.cm->clear_opacity_points();
-				cmc.opacity_points.clear();
+		if(!supports_opacity) {
+			if(transfer_function) {
+				// Todo: Clear opacity points or just disable editing them?
+				transfer_function->clear_opacity_points();
+				opacity_draggables.clear();
 
 				update_point_positions();
-				update_color_map(false);
+				//update_color_map(false);
 			}
 		}
 
@@ -252,9 +251,9 @@ bool transfer_function_editor::init(cgv::render::context& ctx) {
 	success &= opacity_handle_renderer.init(ctx);
 	success &= line_renderer.init(ctx);
 	success &= polygon_renderer.init(ctx);
-	success &= create_background_texture(ctx);
+	success &= create_background_texture();
 
-	update_color_map(false);
+	//update_color_map(false);
 
 	return success;
 }
@@ -273,9 +272,11 @@ void transfer_function_editor::init_frame(cgv::render::context& ctx) {
 		update_point_positions();
 		sort_points();
 		update_geometry();
-		cmc.color_points.set_constraint(layout.color_handles_rect);
-		cmc.opacity_points.set_constraint(layout.opacity_editor_rect);
+		color_draggables.set_constraint(layout.color_draggables_rect);
+		opacity_draggables.set_constraint(layout.opacity_editor_rect);
 	}
+
+	update_data_from_transfer_function();
 }
 
 void transfer_function_editor::draw_content(cgv::render::context& ctx) {
@@ -287,7 +288,7 @@ void transfer_function_editor::draw_content(cgv::render::context& ctx) {
 	content_canvas.set_style(ctx, border_style);
 	content_canvas.draw_shape(ctx, ivec2(padding() - 1) + ivec2(0, 10), container_size - 2 * padding() + 2 - ivec2(0, 10));
 	
-	if(cmc.cm && preview_tex.is_created()) {
+	if(transfer_function && preview_tex.is_created()) {
 		// draw color scale texture
 		content_canvas.set_style(ctx, color_map_style);
 		preview_tex.enable(ctx, 0);
@@ -305,7 +306,7 @@ void transfer_function_editor::draw_content(cgv::render::context& ctx) {
 			content_canvas.disable_current_shader(ctx);
 
 			// draw histogram
-			if(histogram_type != (cgv::type::DummyEnum)0 && histogram_tex.is_created()) {
+			if(histogram_type != HistogramType::kNone && histogram_tex.is_created()) {
 				auto& hist_prog = content_canvas.enable_shader(ctx, "histogram");
 				hist_prog.set_uniform(ctx, "max_value", hist_norm_ignore_zero ? hist_max_non_zero : hist_max);
 				hist_prog.set_uniform(ctx, "norm_gamma", hist_norm_gamma);
@@ -320,10 +321,10 @@ void transfer_function_editor::draw_content(cgv::render::context& ctx) {
 
 			preview_tex.enable(ctx, 0);
 			// draw transfer function area polygon
-			polygon_renderer.render(ctx, content_canvas, cgv::render::PT_TRIANGLE_STRIP, cmc.triangles, polygon_style);
+			polygon_renderer.render(ctx, content_canvas, cgv::render::PT_TRIANGLE_STRIP, triangle_geometry, polygon_style);
 
 			// draw transfer function lines
-			line_renderer.render(ctx, content_canvas, cgv::render::PT_LINE_STRIP, cmc.lines, line_style);
+			line_renderer.render(ctx, content_canvas, cgv::render::PT_LINE_STRIP, line_geometry, line_style);
 			preview_tex.disable(ctx);
 
 			// draw separator line
@@ -338,13 +339,13 @@ void transfer_function_editor::draw_content(cgv::render::context& ctx) {
 
 		// draw control points
 		// color handles
-		color_handle_renderer.render(ctx, content_canvas, cgv::render::PT_LINES, cmc.color_handles, color_handle_style);
+		color_handle_renderer.render(ctx, content_canvas, cgv::render::PT_LINES, color_draggables_geometry, color_handle_style);
 
 		// opacity handles
 		if(supports_opacity) {
 			auto& opacity_handle_prog = opacity_handle_renderer.enable_prog(ctx);
 			opacity_handle_prog.set_attribute(ctx, "size", vec2(opacity_point::default_size)); // size is constant for all points
-			opacity_handle_renderer.render(ctx, content_canvas, cgv::render::PT_POINTS, cmc.opacity_handles, opacity_handle_style);
+			opacity_handle_renderer.render(ctx, content_canvas, cgv::render::PT_POINTS, opacity_draggables_geometry, opacity_handle_style);
 		}
 	} else {
 		content_canvas.disable_current_shader(ctx);
@@ -354,7 +355,7 @@ void transfer_function_editor::draw_content(cgv::render::context& ctx) {
 	auto& font_renderer = cgv::g2d::ref_msdf_gl_font_renderer_2d(ctx);
 	cgv::g2d::msdf_gl_font_renderer::text_render_info text_render_info;
 
-	if(show_value_label) {
+	if(!value_label.empty()) {
 		cgv::g2d::irect rectangle = value_label_rectangle;
 		rectangle.translate(0, 5);
 		rectangle.size += ivec2(10, 6);
@@ -410,72 +411,76 @@ void transfer_function_editor::create_gui_impl() {
 		add_member_control(this, "Border Width", hist_style.border_width, "value_slider", "min=0;max=10;step=0.5;ticks=true");
 	}
 
-	if(begin_tree_node("Color Points", cmc.color_points, true)) {
+	if(begin_tree_node("Color Points", color_draggables, true)) {
 		align("\a");
-		auto& points = cmc.color_points;
+		auto& points = color_draggables;
 		for(unsigned i = 0; i < points.size(); ++i) {
 			std::string label_prefix = "";
 			std::string options = "w=48";
-			if(&points[i] == cmc.color_points.get_selected()) {
+			if(&points[i] == color_draggables.get_selected()) {
 				label_prefix = "> ";
-				options += ";label_color=" + highlight_color_hex;
+				options += ";label_color=" + cgv::media::to_hex(highlight_color);
 			}
 
 			add_view(label_prefix + std::to_string(i), points[i].val, "", options, " ");
 			add_member_control(this, "", points[i].col, "", "w=140");
 		}
 		align("\b");
-		end_tree_node(cmc.color_points);
+		end_tree_node(color_draggables);
 	}
 
 	if(supports_opacity) {
-		if(begin_tree_node("Opacity Points", cmc.opacity_points, true)) {
+		if(begin_tree_node("Opacity Points", opacity_draggables, true)) {
 			align("\a");
-			auto& points = cmc.opacity_points;
+			auto& points = opacity_draggables;
 			for(unsigned i = 0; i < points.size(); ++i) {
 				std::string label_prefix = "";
 				std::string options = "w=48";
-				if(&points[i] == cmc.opacity_points.get_selected()) {
+				if(&points[i] == opacity_draggables.get_selected()) {
 					label_prefix = "> ";
-					options += ";label_color=" + highlight_color_hex;
+					options += ";label_color=" + cgv::media::to_hex(highlight_color);
 				}
 
 				add_view(label_prefix + std::to_string(i), points[i].val[0], "", options, " ");
 				add_member_control(this, "", points[i].val[1], "value", "w=140");
 			}
 			align("\b");
-			end_tree_node(cmc.opacity_points);
+			end_tree_node(opacity_draggables);
 		}
 	}
 }
 
 void transfer_function_editor::set_opacity_support(bool flag) {
 	supports_opacity = flag;
-	set_transfer_function(cmc.cm);
+	set_transfer_function(transfer_function);
 	on_set(&supports_opacity);
 }
 
 void transfer_function_editor::set_transfer_function(std::shared_ptr<cgv::media::transfer_function> transfer_function) {
-	cmc.reset();
-	cmc.cm = transfer_function;
-
+	if(this->transfer_function != transfer_function) {
+		this->transfer_function = transfer_function;
+		build_time.reset();
+	}
+	post_damage();
+	
+	/*
 	if(cmc.cm) {
-		const std::vector<std::pair<float, cgv::rgb>>& cp = cmc.cm->get_color_points();
+		const std::vector<std::pair<float, cgv::rgb>>& cp = cmc.cm->get_color_draggables();
 		
 		for(size_t i = 0; i < cp.size(); ++i) {
 			color_point p;
 			p.val = cgv::math::clamp(cp[i].first, 0.0f, 1.0f);
 			p.col = cp[i].second;
-			cmc.color_points.add(p);
+			cmc.color_draggables.add(p);
 		}
 
 		if(supports_opacity) {
-			const std::vector<std::pair<float, float>>& ap = cmc.cm->get_opacity_points();
+			const std::vector<std::pair<float, float>>& ap = cmc.cm->get_opacity_draggables();
 			for(size_t i = 0; i < ap.size(); ++i) {
 				opacity_point p;
 				p.val.x() = cgv::math::clamp(ap[i].first, 0.0f, 1.0f);
 				p.val.y() = cgv::math::clamp(ap[i].second, 0.0f, 1.0f);
-				cmc.opacity_points.add(p);
+				cmc.opacity_draggables.add(p);
 			}
 		}
 
@@ -491,6 +496,7 @@ void transfer_function_editor::set_transfer_function(std::shared_ptr<cgv::media:
 
 		post_recreate_gui();
 	}
+	*/
 }
 
 void transfer_function_editor::set_histogram_data(const std::vector<unsigned> data) {
@@ -515,10 +521,10 @@ void transfer_function_editor::set_histogram_data(const std::vector<unsigned> da
 }
 
 void transfer_function_editor::set_selected_color(rgb color) {
-	auto selected_point = cmc.color_points.get_selected();
+	auto selected_point = color_draggables.get_selected();
 	if(selected_point) {
 		selected_point->col = color;
-		update_color_map(true);
+		//update_color_map(true);
 		update_member(&selected_point->col);
 		post_damage();
 	}
@@ -526,9 +532,9 @@ void transfer_function_editor::set_selected_color(rgb color) {
 
 void transfer_function_editor::init_styles() {
 	auto& theme = cgv::gui::theme_info::instance();
-	handle_color = rgba(theme.text(), 1.0f);
-	highlight_color = rgba(theme.highlight(), 1.0f);
-	highlight_color_hex = theme.highlight_hex();
+	// Todo: Check if alpha is set to 1.
+	handle_color = theme.text();
+	highlight_color = theme.highlight();
 
 	// configure style for the border rectangles
 	border_style.fill_color = theme.border();
@@ -606,8 +612,10 @@ void transfer_function_editor::update_layout(const ivec2& parent_size) {
 
 	int y_off = padding();
 
-	layout.color_handles_rect.position = ivec2(padding(), 20);
-	layout.color_handles_rect.size = ivec2(parent_size.x() - 2 * padding(), 0);
+	layout.color_draggables_rect = {
+		ivec2(padding(), 20),
+		ivec2(parent_size.x() - 2 * padding(), 0)
+	};
 
 	// move 10px up to clear some space for the color handles rect
 	y_off += 10;
@@ -621,55 +629,81 @@ void transfer_function_editor::update_layout(const ivec2& parent_size) {
 	layout.opacity_editor_rect.size = ivec2(parent_size.x() - 2 * padding(), layout.opacity_editor_height);
 }
 
-bool transfer_function_editor::create_background_texture(cgv::render::context& ctx) {
+bool transfer_function_editor::create_preview_texture() {
+	const size_t size = static_cast<size_t>(resolution);
+	std::vector<rgba> cs_data = transfer_function->quantize(size);
+
+	std::vector<cgv::rgba8> texture_data;
+	texture_data.reserve(resolution);
+	std::transform(cs_data.begin(), cs_data.end(), std::back_inserter(texture_data), [](const cgv::rgba& color) {
+		return cgv::rgba8(color);
+	});
+
+	cgv::data::data_format data_format(resolution, 1, cgv::type::info::TI_UINT8, cgv::data::CF_RGBA);
+	cgv::data::data_view data_view(&data_format, texture_data.data());
+
+	const cgv::render::TextureFilter filter = cgv::render::TF_LINEAR;
+
+	if(get_context()) {
+		preview_tex.set_min_filter(filter);
+		preview_tex.set_mag_filter(filter);
+		return preview_tex.create(*get_context(), data_view, 0);
+	}
+	return false;
+}
+
+bool transfer_function_editor::create_background_texture() {
 	const rgb dark(0.75f);
 	const rgb light(0.9f);
 	std::vector<rgb> data = { dark, light, light, dark };
 	cgv::data::data_format format(2, 2, cgv::type::info::TI_FLT32, cgv::data::CF_RGB);
 	cgv::data::data_view data_view = cgv::data::data_view(&format, data.data());
-	return background_tex.create(ctx, data_view, 0);
+	if(get_context())
+		return background_tex.create(*get_context(), data_view, 0);
+	return false;
 }
 
 void transfer_function_editor::add_point(const vec2& pos) {
-	if(cmc.cm) {
+	if(transfer_function) {
 		ivec2 test_pos = static_cast<ivec2>(pos);
 
 		if(layout.color_editor_rect.contains(test_pos)) {
 			// color point
 			color_point p;
-			p.position = ivec2(int(pos.x()), layout.color_handles_rect.y());
+			p.position = ivec2(int(pos.x()), layout.color_draggables_rect.y());
 			p.update_val(layout.color_editor_rect);
-			p.col = cmc.cm->get_mapped_color(p.val);
-			size_t index = cmc.color_points.add(p);
-			cmc.color_points.set_selected(index);
-			handle_drag_end();
+			p.col = transfer_function->get_mapped_color(p.val);
+			size_t index = color_draggables.add(p);
+			color_draggables.set_selected(index);
+			handle_selection_change();
 		} else if(supports_opacity && layout.opacity_editor_rect.contains(test_pos)) {
 			// opacity point
 			opacity_point p;
 			p.position = pos;
 			p.update_val(layout.opacity_editor_rect, opacity_scale_exponent);
-			size_t index = cmc.opacity_points.add(p);
-			cmc.opacity_points.set_selected(index);
-			handle_drag_end();
+			size_t index = opacity_draggables.add(p);
+			opacity_draggables.set_selected(index);
+			handle_selection_change();
 		}
 		
-		update_color_map(true);
+		//update_color_map(true);
 	}
 }
 
 void transfer_function_editor::remove_point(const cgv::g2d::draggable* ptr) {
+	// Todo: use iterators
 	int color_point_idx = -1;
 	int opacity_point_idx = -1;
 
-	for(unsigned i = 0; i < cmc.color_points.size(); ++i) {
-		if(&cmc.color_points[i] == ptr) {
+	for(size_t i = 0; i < color_draggables.size(); ++i) {
+		if(&color_draggables[i] == ptr) {
 			color_point_idx = i;
 			break;
 		}
 	}
 
-	for(unsigned i = 0; i < cmc.opacity_points.size(); ++i) {
-		if(&cmc.opacity_points[i] == ptr) {
+	for(size_t i = 0; i < opacity_draggables.size(); ++i) {
+		if(&opacity_draggables[i] == ptr) {
 			opacity_point_idx = i;
 			break;
 		}
@@ -678,68 +712,67 @@ void transfer_function_editor::remove_point(const cgv::g2d::draggable* ptr) {
 	bool removed = false;
 
 	if(color_point_idx > -1) {
-		if(cmc.color_points.size() > 1) {
-			cmc.color_points.ref_draggables().erase(cmc.color_points.ref_draggables().begin() + color_point_idx);
+		if(color_draggables.size() > 1) {
+			color_draggables.ref_draggables().erase(color_draggables.ref_draggables().begin() + color_point_idx);
 			removed = true;
 		}
 	}
 
 	if(opacity_point_idx > -1) {
-		if(cmc.opacity_points.size() > 1) {
-			cmc.opacity_points.ref_draggables().erase(cmc.opacity_points.ref_draggables().begin() + opacity_point_idx);
+		if(opacity_draggables.size() > 1) {
+			opacity_draggables.ref_draggables().erase(opacity_draggables.ref_draggables().begin() + opacity_point_idx);
 			removed = true;
 		}
 	}
 
-	if(removed)
-		update_color_map(true);
+	//if(removed)
+	//	update_color_map(true);
 }
 
 cgv::g2d::draggable* transfer_function_editor::get_hit_point(const vec2& pos) {
-	cgv::g2d::draggable* hit = nullptr;
+	const auto& contains = [&pos](const auto& draggable) {
+		return draggable.contains(pos);
+	};
 
-	for(unsigned i = 0; i < cmc.color_points.size(); ++i) {
-		color_point& p = cmc.color_points[i];
-		if(p.contains(pos))
-			hit = &p;
-	}
+	auto color_it = std::find_if(color_draggables.begin(), color_draggables.end(), contains);
+	if(color_it != color_draggables.end())
+		return &*color_it;
 
-	for(unsigned i = 0; i < cmc.opacity_points.size(); ++i) {
-		opacity_point& p = cmc.opacity_points[i];
-		if(p.contains(pos))
-			hit = &p;
-	}
-
-	return hit;
+	auto opacity_it = std::find_if(opacity_draggables.begin(), opacity_draggables.end(), contains);
+	if(opacity_it != opacity_draggables.end())
+		return &*opacity_it;
 }
 
-void transfer_function_editor::update_value_label_rectangle(vec2 position, const cgv::g2d::rect& parent_rectangle) {
+void transfer_function_editor::set_value_label(vec2 position, const std::string& text) {
+	value_label = text;
 	value_label_rectangle.position = position;
 
-	if(auto ctx = get_context()) {
+	if(get_context()) {
 		auto& font = cgv::g2d::ref_msdf_font_regular(*get_context());
 		value_label_rectangle.size = font.compute_render_size(value_label, value_label_style.font_size);
 	}
 
-	float padding = std::ceil(0.5f * value_label_rectangle.w()) + 4.0f;
-	float min_x = layout.color_editor_rect.x() + padding;
-	float max_x = layout.color_editor_rect.x1() - padding;
-	value_label_rectangle.position.x() = cgv::math::clamp(value_label_rectangle.position.x(), min_x, max_x);
+	cgv::g2d::rect constraint = get_content_rectangle();
+	constraint.scale(-0.5f * (value_label_rectangle.size + 4.0f));
+	value_label_rectangle.position = cgv::math::clamp(value_label_rectangle.position, constraint.a(), constraint.b());
 }
 
+/*
 void transfer_function_editor::handle_color_drag(cgv::g2d::DragAction action) {
 	switch(action) {
 	case cgv::g2d::DragAction::kDrag:
 	{
-		color_point* dragged_point = cmc.color_points.get_dragged();
+		color_point* dragged_point = color_draggables.get_dragged();
 		if(dragged_point) {
 			dragged_point->update_val(layout.color_editor_rect);
-			update_color_map(true);
+			update_geometry();
+			create_preview_texture();
+
+			// Todo: notify tf change
 
 			show_value_label = true;
 			value_label = value_to_string(dragged_point->val);
-			update_value_label_rectangle(dragged_point->position, layout.color_editor_rect);
-			value_label_rectangle.position.y() += 25.0f;
+			update_value_label_rectangle(dragged_point->position + cgv::vec2(0.0f, 25.0f));
 
 			if(dragged_point && on_color_point_select_callback)
 				on_color_point_select_callback(dragged_point->col);
@@ -761,18 +794,17 @@ void transfer_function_editor::handle_opacity_drag(cgv::g2d::DragAction action) 
 	switch(action) {
 	case cgv::g2d::DragAction::kDrag:
 	{
-		opacity_point* dragged_point = cmc.opacity_points.get_dragged();
+		opacity_point* dragged_point = opacity_draggables.get_dragged();
 		if(dragged_point) {
 			dragged_point->update_val(layout.opacity_editor_rect, opacity_scale_exponent);
-			update_color_map(true);
+			//update_color_map(true);
 
 			show_value_label = true;
 			std::string x_label = value_to_string(dragged_point->val.x());
 			std::string y_label = cgv::utils::to_string(dragged_point->val.y(), -1, 3u);
 			value_label = x_label + ", " + y_label;
 
-			update_value_label_rectangle(dragged_point->position, layout.opacity_editor_rect);
-			value_label_rectangle.position.y() = std::min(value_label_rectangle.position.y() + 10.0f, static_cast<float>(layout.opacity_editor_rect.y1() - 6));
+			update_value_label_rectangle(dragged_point->position + cgv::vec2(0.0f, 10.0f));
 
 			post_damage();
 		}
@@ -786,12 +818,91 @@ void transfer_function_editor::handle_opacity_drag(cgv::g2d::DragAction action) 
 		break;
 	}
 }
+*/
 
+void transfer_function_editor::handle_drag(cgv::g2d::DragAction action, DraggableType type) {
+	bool modified = false;
+
+	const auto& to_name = [](DraggableType type) {
+		if(type == DraggableType::kColor)
+			return "color";
+		else
+			return "opacity";
+	};
+	std::cout << int(action) << " " << to_name(type) << std::endl;
+
+	switch(action) {
+	case cgv::g2d::DragAction::kDrag:
+		if(type == DraggableType::kColor) {
+			color_point* dragged_point = color_draggables.get_dragged();
+			if(dragged_point) {
+				dragged_point->update_val(layout.color_editor_rect);
+				set_value_label(
+					dragged_point->position + cgv::vec2(0.0f, 25.0f),
+					value_to_string(dragged_point->val)
+				);
+				modified = true;
+
+				if(dragged_point && on_color_point_select_callback)
+					on_color_point_select_callback(dragged_point->col);
+			}
+		} else if(type == DraggableType::kOpacity) {
+			opacity_point* dragged_point = opacity_draggables.get_dragged();
+			if(dragged_point) {
+				dragged_point->update_val(layout.opacity_editor_rect, opacity_scale_exponent);
+
+				set_value_label(
+					dragged_point->position + cgv::vec2(0.0f, 10.0f),
+					// Todo: Use value mapping and then convert to string.
+					value_to_string(dragged_point->val.x()) + ", " + cgv::utils::to_string(dragged_point->val.y(), -1, 3u)
+				);
+				modified = true;
+			}
+		}
+		break;
+	case cgv::g2d::DragAction::kDragEnd:
+	case cgv::g2d::DragAction::kSelect:
+		// Todo: Fix draggable collection drag and select actions.
+		//if(action == cgv::g2d::DragAction::kSelect) {
+		//	std::cout << "select " << static_cast<int>(type) << std::endl;
+		//	std::cout << color_draggables.get_selected() << std::endl;
+		//	std::cout << opacity_draggables.get_selected() << std::endl;
+		//}
+		handle_selection_change();
+		value_label.clear();
+		modified = true;
+		break;
+	default:
+		break;
+	}
+
+	if(modified) {
+		// Todo: Notify tf change
+
+		update_geometry();
+		create_preview_texture();
+		post_damage();
+	}
+}
+
+void transfer_function_editor::handle_selection_change() {
+	auto selected = color_draggables.get_selected();
+	if(selected) {
+		if(on_color_point_select_callback)
+			on_color_point_select_callback(selected->col);
+	} else {
+		if(on_color_point_deselect_callback)
+			on_color_point_deselect_callback();
+	}
+	post_recreate_gui();
+}
+
+/*
 void transfer_function_editor::handle_drag_end() {
 	show_value_label = false;
 	update_geometry();
 
-	auto selected_point = cmc.color_points.get_selected();
+	auto selected_point = color_draggables.get_selected();
 	if(selected_point) {
 		if(on_color_point_select_callback)
 			on_color_point_select_callback(selected_point->col);
@@ -803,6 +914,7 @@ void transfer_function_editor::handle_drag_end() {
 	post_recreate_gui();
 	post_damage();
 }
+*/
 
 std::string transfer_function_editor::value_to_string(float value) {
 	float display_value = cgv::math::lerp(range.x(), range.y(), value);
@@ -819,13 +931,13 @@ std::string transfer_function_editor::value_to_string(float value) {
 }
 
 void transfer_function_editor::sort_points() {
-	sort_color_points();
+	sort_color_draggables();
 	if(supports_opacity)
-		sort_opacity_points();
+		sort_opacity_draggables();
 }
 
-void transfer_function_editor::sort_color_points() {
-	auto& points = cmc.color_points;
+void transfer_function_editor::sort_color_draggables() {
+	auto& points = color_draggables;
 
 	if(points.size() > 1) {
 		int dragged_point_idx = -1;
@@ -870,8 +982,8 @@ void transfer_function_editor::sort_color_points() {
 	}
 }
 
-void transfer_function_editor::sort_opacity_points() {
-	auto& points = cmc.opacity_points;
+void transfer_function_editor::sort_opacity_draggables() {
+	auto& points = opacity_draggables;
 
 	if(points.size() > 1) {
 		int dragged_point_idx = -1;
@@ -917,53 +1029,35 @@ void transfer_function_editor::sort_opacity_points() {
 }
 
 void transfer_function_editor::update_point_positions() {
-	for(unsigned i = 0; i < cmc.color_points.size(); ++i)
-		cmc.color_points[i].update_pos(layout.color_editor_rect);
-
-	for(unsigned i = 0; i < cmc.opacity_points.size(); ++i)
-		cmc.opacity_points[i].update_pos(layout.opacity_editor_rect, opacity_scale_exponent);
+	for(auto& point : color_draggables)
+		point.update_pos(layout.color_editor_rect);
+	
+	for(auto& point  : opacity_draggables)
+		point.update_pos(layout.opacity_editor_rect, opacity_scale_exponent);
 }
 
+/*
 void transfer_function_editor::update_color_map(bool is_data_change) {
 	cgv::render::context* ctx_ptr = get_context();
-	if(!ctx_ptr || !cmc.cm) return;
+	if(!ctx_ptr || !transfer_function) return;
 	cgv::render::context& ctx = *ctx_ptr;
 
-	auto cm = cmc.cm;
-	auto& color_points = cmc.color_points;
-	auto& opacity_points = cmc.opacity_points;
-	
-	sort_points();
+	//sort_points();
 
 	//cm.clear();
 
 	std::vector<std::pair<float, rgb>> colors;
 	std::vector<std::pair<float, float>> alphas;
-	colors.reserve(color_points.size());
-	alphas.reserve(opacity_points.size());
+	colors.reserve(color_draggables.size());
+	alphas.reserve(opacity_draggables.size());
 
-	std::transform(color_points.begin(), color_points.end(), std::back_inserter(colors), [](const color_point& point) { return std::make_pair(point.val, point.col); });
-	std::transform(opacity_points.begin(), opacity_points.end(), std::back_inserter(alphas), [](const opacity_point& point) { return std::make_pair(point.val[0], point.val[1]); });
+	std::transform(color_draggables.begin(), color_draggables.end(), std::back_inserter(colors), [](const color_point& point) { return std::make_pair(point.val, point.col); });
+	std::transform(opacity_draggables.begin(), opacity_draggables.end(), std::back_inserter(alphas), [](const opacity_point& point) { return std::make_pair(point.val[0], point.val[1]); });
 
-	cm->set_color_points(colors);
-	cm->set_opacity_points(alphas);
+	transfer_function->set_color_draggables(colors);
+	transfer_function->set_opacity_draggables(alphas);
 
-	size_t size = static_cast<size_t>(resolution);
-	std::vector<rgba> cs_data = cm->quantize(size);
-
-	std::vector<cgv::rgba8> texture_data;
-	texture_data.reserve(resolution);
-	std::transform(cs_data.begin(), cs_data.end(), std::back_inserter(texture_data), [](const cgv::rgba& color) {
-		return cgv::rgba8(color);
-	});
-
-	cgv::data::data_view data_view(new cgv::data::data_format(resolution, 1, cgv::type::info::TI_UINT8, cgv::data::CF_RGBA), texture_data.data());
-
-	const cgv::render::TextureFilter filter = cgv::render::TF_LINEAR;
-
-	preview_tex.create(ctx, data_view, 0);
-	preview_tex.set_min_filter(filter);
-	preview_tex.set_mag_filter(filter);
+	create_preview_texture();
 	
 	update_geometry();
 
@@ -972,77 +1066,64 @@ void transfer_function_editor::update_color_map(bool is_data_change) {
 
 	post_damage();
 }
+*/
 
 bool transfer_function_editor::update_geometry() {
-	cgv::render::context* ctx_ptr = get_context();
-	if(!ctx_ptr || !cmc.cm) return false;
-	cgv::render::context& ctx = *ctx_ptr;
+	color_draggables_geometry.clear();
+	opacity_draggables_geometry.clear();
+	line_geometry.clear();
+	triangle_geometry.clear();
 
-	auto& cm = *cmc.cm;
-	auto& color_points = cmc.color_points;
-	auto& opacity_points = cmc.opacity_points;
-	auto& color_handles = cmc.color_handles;
-	auto& opacity_handles = cmc.opacity_handles;
-	auto& lines = cmc.lines;
-	auto& triangles = cmc.triangles;
-
-	color_handles.clear();
-	opacity_handles.clear();
-	lines.clear();
-	triangles.clear();
-
-	bool success = color_points.size() > 0 && opacity_points.size() > 0;
+	bool success = !(color_draggables.empty() || opacity_draggables.empty());
 
 	// create color handles
 	vec2 pos_offset = vec2(0.0f, 0.5f * color_point::default_height);
 
-	for(unsigned i = 0; i < color_points.size(); ++i) {
-		const auto& p = color_points[i];
-		vec2 pos = p.center();
-		rgba col = color_points.get_selected() == &p ? highlight_color : handle_color;
-		color_handles.add(pos - pos_offset, col);
-		color_handles.add(pos + pos_offset, col);
+	for(const auto& draggable : color_draggables) {
+		vec2 pos = draggable.center();
+		rgba col = color_draggables.get_selected() == &draggable ? highlight_color : handle_color;
+		color_draggables_geometry.add(pos - pos_offset, col);
+		color_draggables_geometry.add(pos + pos_offset, col);
 	}
 
 	// create opacity handles
-	for(unsigned i = 0; i < opacity_points.size(); ++i) {
-		const auto& p = opacity_points[i];
-		vec2 pos = p.center();
-		rgba col = opacity_points.get_selected() == &p ? highlight_color : handle_color;
-		opacity_handles.add(pos, col);
+	for(const auto& draggable : opacity_draggables) {
+		vec2 pos = draggable.center();
+		rgba col = opacity_draggables.get_selected() == &draggable ? highlight_color : handle_color;
+		opacity_draggables_geometry.add(pos, col);
 	}
 
-	if(opacity_points.size() > 0) {
-		const auto& pl = opacity_points[0];
+	if(!opacity_draggables.empty()) {
+		const auto& first = *opacity_draggables.begin();
 
 		vec2 tex_coord(0.0f, 0.5f);
 
-		lines.add(vec2(float(layout.opacity_editor_rect.x()), pl.center().y()), tex_coord);
+		line_geometry.add(vec2(float(layout.opacity_editor_rect.x()), first.center().y()), tex_coord);
 		
-		triangles.add(vec2(float(layout.opacity_editor_rect.x()), pl.center().y()), tex_coord);
-		triangles.add(layout.opacity_editor_rect.position, tex_coord);
+		triangle_geometry.add(vec2(float(layout.opacity_editor_rect.x()), first.center().y()), tex_coord);
+		triangle_geometry.add(layout.opacity_editor_rect.position, tex_coord);
 
-		for(unsigned i = 0; i < opacity_points.size(); ++i) {
-			const auto& p = opacity_points[i];
+		for(unsigned i = 0; i < opacity_draggables.size(); ++i) {
+			const auto& p = opacity_draggables[i];
 			vec2 pos = p.center();
 
 			tex_coord.x() = p.val.x();
 
-			lines.add(pos, tex_coord);
+			line_geometry.add(pos, tex_coord);
 
-			triangles.add(pos, tex_coord);
-			triangles.add(vec2(pos.x(), (float)layout.opacity_editor_rect.y()), tex_coord);
+			triangle_geometry.add(pos, tex_coord);
+			triangle_geometry.add(vec2(pos.x(), (float)layout.opacity_editor_rect.y()), tex_coord);
 		}
 
-		const auto& pr = opacity_points[opacity_points.size() - 1];
+		const auto& last = *(--opacity_draggables.end());
 		vec2 max_pos = layout.opacity_editor_rect.position + vec2(1.0f, 0.0f) * layout.opacity_editor_rect.size;
 
 		tex_coord.x() = 1.0f;
 
-		lines.add(vec2(max_pos.x(), pr.center().y()), tex_coord);
+		line_geometry.add(vec2(max_pos.x(), last.center().y()), tex_coord);
 
-		triangles.add(vec2(max_pos.x(), pr.center().y()), tex_coord);
-		triangles.add(max_pos, tex_coord);
+		triangle_geometry.add(vec2(max_pos.x(), last.center().y()), tex_coord);
+		triangle_geometry.add(max_pos, tex_coord);
 	} else {
 		success = false;
 	}
