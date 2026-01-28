@@ -80,7 +80,7 @@ protected:
 	virtual ~base();
 	/// give cast_helper_base access to cast_dynamic
 	friend struct cast_helper_base;
-	/// use dynamic cast for upcast to given class
+	/// use dynamic cast for downcast to given class
 	template <class T>
 	inline static data::ref_ptr<T,true> cast_dynamic(base* b) 
 	{
