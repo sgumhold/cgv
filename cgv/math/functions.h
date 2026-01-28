@@ -36,6 +36,9 @@ T saturate(const T& v) { return v > T(1) ? T(1) : (v < T(0) ? T(0) : v); }
 /// linear interpolate between a and b; returns (1-t)*a + t*b
 template <typename T>
 T lerp(const T& a, const T& b, T t) { return (1 - t) * a + t * b; }
+/// map v from [a,b] to [0,1]
+template<typename T>
+T normalize(const T& v, const T& a, const T& b) { return (v - a) / (b - a); }
 /// map v from [a,b] to [c,d]
 template<typename T>
 T map(const T& v, const T& a, const T& b, const T& c, const T& d) { return c + (d - c) * ((v - a) / (b - a)); }
