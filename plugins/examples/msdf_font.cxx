@@ -168,7 +168,7 @@ public:
 			texts_offset = viewport_rect.w() - texts_bold.compute_text_render_size(0, 1.0f).x() - texts_origin;
 			texts_offset *= 0.5f;
 
-			canvas.set_resolution(ctx, viewport_rect.size);
+			canvas.set_resolution(viewport_rect.size);
 		}
 	}
 	void draw(cgv::render::context& ctx) {

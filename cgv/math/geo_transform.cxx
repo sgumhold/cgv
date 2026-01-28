@@ -4,11 +4,6 @@
 namespace cgv {
 	namespace math {
 
-		static const double PI = 3.1415926535898;
-		static const double TWO_PI = 6.28318530718;
-		static const double DEG_TO_RAD = 0.01745329252;
-		static const double RAD_TO_DEG = 57.2957795131;
-
 		// One millimeter tolerance.
 		static const double POSITION_TOLERANCE = 0.001;
 
@@ -22,9 +17,8 @@ namespace cgv {
 			const double& lambda = geodetic.y();
 			const double& h = geodetic.z();
 
-			// convert deg to rad
-			double phi_rad = phi * DEG_TO_RAD;
-			double lambda_rad = lambda * DEG_TO_RAD;
+			double phi_rad = cgv::math::deg2rad(phi);
+			double lambda_rad = cgv::math::deg2rad(lambda);
 
 			// some precalculations
 			double e_2 = e * e;
@@ -87,9 +81,9 @@ namespace cgv {
 				if (::fabs(phi - latold) < 1.0e-9 && fabs(h - htold) < 1.0e-9 * a) break;
 			}
 			lambda = ::atan2(Y, X);
-			if (lambda < 0.0) lambda += TWO_PI;
-			phi *= RAD_TO_DEG;
-			lambda *= RAD_TO_DEG;
+			if (lambda < 0.0) lambda += 2.0 * cgv::math::constants::phi;
+			phi = cgv::math::rad2deg(phi);
+			lambda = cgv::math::rad2deg(lambda);
 			return geodetic;
 		}
 	
@@ -142,19 +136,18 @@ namespace cgv {
 
 					// LATITUDE
 					phi = 2 * atan(Z / (D + sqrt(D_2 + Z_2)));
-					phi *= RAD_TO_DEG;
+					phi = cgv::math::rad2deg(phi);
 
 					// LONGITUDE
 					if (Y >= 0.0)
 					{
-						lambda = 0.5 * PI - 2.0 * atan(X / (sqrt(X_2 + Y_2) + Y));
+						lambda = 0.5 * cgv::math::constants::pi - 2.0 * atan(X / (sqrt(X_2 + Y_2) + Y));
 					}
 					else
 					{
-						lambda = -0.5 * PI + 2.0 * atan(X / (sqrt(X_2 + Y_2) + Y));
+						lambda = -0.5 * cgv::math::constants::pi + 2.0 * atan(X / (sqrt(X_2 + Y_2) + Y));
 					}
-					lambda *= RAD_TO_DEG;
-
+					lambda = cgv::math::rad2deg(lambda);
 				}
 				else
 					std::cout << "\nError! Input coordinates not valid";
@@ -171,8 +164,8 @@ namespace cgv {
 			const double& lambda_origin = origin_geodetic[1];
 			const double& h_origin = origin_geodetic[2];
 			// some precalculations
-			double phi_rad = phi_origin * DEG_TO_RAD;
-			double lambda_rad = lambda_origin * DEG_TO_RAD;
+			double phi_rad = cgv::math::deg2rad(phi_origin);
+			double lambda_rad = cgv::math::deg2rad(lambda_origin);
 			double sin_phi = sin(phi_rad);
 			double cos_phi = cos(phi_rad);
 			double sin_lambda = sin(lambda_rad);

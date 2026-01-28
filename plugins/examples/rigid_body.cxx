@@ -1,7 +1,9 @@
 #include <cgv/signal/rebind.h>
 #include <cgv/base/node.h>
 #include <cgv/base/register.h>
+#include <cgv/math/diag_mat.h>
 #include <cgv/math/fvec.h>
+#include <cgv/math/svd.h>
 #include <cgv/gui/provider.h>
 #include <cgv/gui/trigger.h>
 #include <cgv/render/drawable.h>

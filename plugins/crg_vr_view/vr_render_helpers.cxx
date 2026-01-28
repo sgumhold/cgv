@@ -72,7 +72,7 @@ namespace vr {
 		/*
 		float eye_to_head[12];
 		vr_kit_ptr->put_eye_to_head_matrix(eye, eye_to_head);
-		return inv(get_mat4_from_pose(state.hmd.pose) * get_mat4_from_pose(eye_to_head));		
+		return inverse(get_mat4_from_pose(state.hmd.pose) * get_mat4_from_pose(eye_to_head));		
 		*/
 	}
 	/// compute lookat matrix for a given camera (0 ... left, 1 ... right)
@@ -83,7 +83,7 @@ namespace vr {
 		if (!camera_ptr)
 			return cgv::math::identity4<float>();
 		camera_ptr->put_camera_to_head_matrix(eye, camera_to_head);
-		return inv(get_mat4_from_pose(state.hmd.pose) * get_mat4_from_pose(camera_to_head));
+		return inverse(get_mat4_from_pose(state.hmd.pose) * get_mat4_from_pose(camera_to_head));
 	}
 	/// query projection matrix for a given eye (0 ... left, 1 ... right)
 	cgv::mat4 get_eye_projection_transform(const vr_kit* vr_kit_ptr, const vr_kit_state& state, float z_near, float z_far, int eye)

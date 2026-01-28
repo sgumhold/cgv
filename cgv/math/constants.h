@@ -1,15 +1,17 @@
 #pragma once
 
+namespace cgv {
+namespace math {
+namespace constants {
 
+constexpr double pi        = 3.14159265358979323846; // the mathematical constant pi
+constexpr double inv_pi    = 0.31830988618379067153; // 1/pi
+constexpr double e         = 2.71828182845904523536; // the mathematical constant e
+constexpr double sqrt2     = 1.41421356237309504880; // sqrt(2)
+constexpr double sqrt3     = 1.73205080756887729352; // sqrt(3)
+constexpr double inv_sqrt3 = 0.57735026918962576450; // 1/sqrt(3)
+constexpr double phi       = 1.61803398874989484820; // the golden ratio (1+sqrt(5))/2
 
-#define PI		3.141592654
-#define HALF_PI	1.570796327
-#define TWO_PI	6.283185307
-#define E		2.718281828 
-#define SQRT_2	1.414213562 
-#define SQRT_3	1.732050808
-#define GOLDEN_RATIO 1.618033989
-
-
-
-
+} // namespace cgv
+} // namespace math
+} // namespace constants

@@ -182,7 +182,7 @@ public:
 		const float packing_density_percentage = 0.635f; // 63.5% of box volume for random packing of equal spheres
 		
 		const float sphere_volume = (box_volume * packing_density_percentage) / n;
-		const float sphere_radius = std::pow(sphere_volume / (4.0f/3.0f *float(PI)), 1.0f/3.0f); // r = cube_root_of(V / (4/3*pi));
+		const float sphere_radius = std::pow(sphere_volume / (4.0f/3.0f * static_cast<float>(cgv::math::constants::pi)), 1.0f/3.0f); // r = cube_root_of(V / (4/3*pi));
 		
 		sphere_style.radius = sphere_radius;
 
