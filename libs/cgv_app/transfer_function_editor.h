@@ -1,5 +1,6 @@
 #pragma once
 
+#include <cgv/data/time_stamp.h>
 #include <cgv/media/transfer_function.h>
 #include <cgv/render/texture.h>
 #include <cgv_app/themed_canvas_overlay.h>
@@ -21,7 +22,7 @@ protected:
 		int total_height;
 		int color_editor_height;
 		int opacity_editor_height;
-		cgv::g2d::irect color_handles_rect;
+		cgv::g2d::irect color_draggables_rect;
 		cgv::g2d::irect color_editor_rect;
 		cgv::g2d::irect opacity_editor_rect;
 	} layout;
@@ -88,14 +89,13 @@ protected:
 
 	ivec2 cursor_position;
 	std::string cursor_label;
-	bool show_value_label;
+	//bool show_value_label;
 	std::string value_label;
 	cgv::g2d::rect value_label_rectangle;
 
 	// general appearance
-	rgba handle_color = rgba(0.9f, 0.9f, 0.9f, 1.0f);
-	rgba highlight_color = rgba(0.5f, 0.5f, 0.5f, 1.0f);
-	std::string highlight_color_hex = "0x808080";
+	rgba handle_color = { 0.9f, 0.9f, 0.9f, 1.0f };
+	rgba highlight_color = { 0.5f, 0.5f, 0.5f, 1.0f };
 	cgv::g2d::shape2d_style border_style, color_map_style, bg_style, hist_style, label_box_style, opacity_handle_style, polygon_style;
 	cgv::g2d::arrow2d_style color_handle_style;
 	cgv::g2d::line2d_style line_style;
@@ -108,7 +108,13 @@ protected:
 	unsigned hist_max_non_zero = 1;
 	bool hist_norm_ignore_zero = true;
 	float hist_norm_gamma = 1.0f;
-	cgv::type::DummyEnum histogram_type = (cgv::type::DummyEnum)2;
+	enum class HistogramType {
+		kNone = 0,
+		kNearest = 1,
+		kLinear = 2,
+		kSmooth = 3
+	};
+	HistogramType histogram_type = HistogramType::kNone;
 
 	cgv::type::DummyEnum resolution;
 	float opacity_scale_exponent;
@@ -118,53 +124,92 @@ protected:
 	cgv::render::texture histogram_tex = { "flt32[R]" };
 
 	cgv::g2d::generic_2d_renderer color_handle_renderer, opacity_handle_renderer, line_renderer, polygon_renderer;
-	DEFINE_GENERIC_RENDER_DATA_CLASS(line_geometry, 2, vec2, position, vec2, texcoord);
+	DEFINE_GENERIC_RENDER_DATA_CLASS(textured_geometry, 2, vec2, position, vec2, texcoord);
 
-	struct cm_container {
-		std::shared_ptr<cgv::media::transfer_function> cm = nullptr;
-		cgv::g2d::draggable_collection<color_point> color_points;
-		cgv::g2d::draggable_collection<opacity_point> opacity_points;
-		
-		cgv::g2d::generic_render_data_vec2_rgba color_handles, opacity_handles;
-		line_geometry lines;
-		line_geometry triangles;
+	std::shared_ptr<cgv::media::transfer_function> transfer_function;
 
-		void reset() {
-			cm = nullptr;
-			color_points.clear();
-			opacity_points.clear();
-			color_handles.clear();
-			opacity_handles.clear();
-			lines.clear();
-			triangles.clear();
-		}
+	cgv::g2d::draggable_collection<color_point> color_draggables;
+	cgv::g2d::draggable_collection<opacity_point> opacity_draggables;
+	cgv::g2d::generic_render_data_vec2_rgba color_draggables_geometry, opacity_draggables_geometry;
+	textured_geometry line_geometry;
+	textured_geometry triangle_geometry;
+	
+	cgv::data::time_stamp build_time;
 
-		//cgv::render::gl_color_map* get_gl_color_map() {
-		//	if(cm->has_texture_support())
-		//		return dynamic_cast<cgv::render::gl_color_map*>(cm);
-		//	return nullptr;
-		//}
-	} cmc;
+	void clear_geometry() {
+		color_draggables.clear();
+		opacity_draggables.clear();
+		color_draggables_geometry.clear();
+		opacity_draggables_geometry.clear();
+		line_geometry.clear();
+		triangle_geometry.clear();
+	}
 
 	void init_styles() override;
 	void update_layout(const ivec2& parent_size);
 
-	bool create_background_texture(cgv::render::context& ctx);
+	void update_data_from_transfer_function() {
+		if(!transfer_function)
+			return;
+
+		if(!build_time.is_valid() || transfer_function->get_modified_time() > build_time.get_modified_time()) {
+			color_draggables.clear();
+			opacity_draggables.clear();
+
+			// Todo: Do not clamp to 0 and 1 ion order to support arbitrary data range.
+
+			for(const auto& point : transfer_function->get_color_points()) {
+				color_point p;
+				p.val = cgv::math::clamp(point.first, 0.0f, 1.0f);
+				p.col = point.second;
+				color_draggables.add(p);
+			}
+
+			if(supports_opacity) {
+				for(const auto& point : transfer_function->get_opacity_points()) {
+					opacity_point p;
+					p.val.x() = cgv::math::clamp(point.first, 0.0f, 1.0f);
+					p.val.y() = cgv::math::clamp(point.second, 0.0f, 1.0f);
+					opacity_draggables.add(p);
+				}
+			}
+
+			//use_interpolation = cmc.cm->use_interpolation;
+			//use_linear_filtering = true;
+
+			update_point_positions();
+			update_geometry();
+			create_preview_texture();
+			//update_color_map(false);
+
+			post_recreate_gui();
+			post_damage();
+
+			build_time.modified();
+		}
+	}
+
+	bool create_preview_texture();
+	bool create_background_texture();
 
 	void add_point(const vec2& pos);
 	void remove_point(const cgv::g2d::draggable* ptr);
 	cgv::g2d::draggable* get_hit_point(const vec2& pos);
 	
-	void update_value_label_rectangle(vec2 position, const cgv::g2d::rect& parent_rectangle);
-	void handle_color_drag(cgv::g2d::DragAction action);
-	void handle_opacity_drag(cgv::g2d::DragAction action);
-	void handle_drag_end();
+	enum class DraggableType {
+		kColor,
+		kOpacity
+	};
+
+	void set_value_label(vec2 position, const std::string& text);
+	void handle_drag(cgv::g2d::DragAction action, DraggableType type);
+	void handle_selection_change();
 	std::string value_to_string(float value);
 	void sort_points();
-	void sort_color_points();
-	void sort_opacity_points();
+	void sort_color_draggables();
+	void sort_opacity_draggables();
 	void update_point_positions();
-	void update_color_map(bool is_data_change);
+	//void update_color_map(bool is_data_change);
 	bool update_geometry();
 
 	std::function<void(void)> on_change_callback;
@@ -195,19 +240,24 @@ public:
 	vec2 get_range() const { return range; }
 	void set_range(vec2 r) { range = r; }
 
-	//cgv::render::color_map* get_color_map() { return cmc.cm; }
-	//void set_color_map(cgv::render::color_map* cm);
-
-	std::shared_ptr<cgv::media::transfer_function> get_transfer_function() { return cmc.cm; }
+	std::shared_ptr<cgv::media::transfer_function> get_transfer_function() const {
+		return transfer_function;
+	}
 	void set_transfer_function(std::shared_ptr<cgv::media::transfer_function> transfer_function);
 
 	void set_histogram_data(const std::vector<unsigned> data);
 
 	void set_selected_color(rgb color);
 
-	void set_on_change_callback(std::function<void(void)> cb) { on_change_callback = cb; }
-	void set_on_color_point_select_callback(std::function<void(rgb)> cb) { on_color_point_select_callback = cb; }
-	void set_on_color_point_deselect_callback(std::function<void(void)> cb) { on_color_point_deselect_callback = cb; }
+	void set_on_change_callback(std::function<void(void)> cb) {
+		on_change_callback = cb;
+	}
+	void set_on_color_point_select_callback(std::function<void(rgb)> cb) {
+		on_color_point_select_callback = cb;
+	}
+	void set_on_color_point_deselect_callback(std::function<void(void)> cb) {
+		on_color_point_deselect_callback = cb;
+	}
 };
 
 typedef cgv::data::ref_ptr<transfer_function_editor> transfer_function_editor_ptr;
