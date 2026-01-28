@@ -84,6 +84,8 @@ void color_scale_legend::init_frame(cgv::render::context& ctx) {
 		float height_factor = static_cast<float>(layout.color_ramp_rect.h());
 		background_style.texcoord_scaling = vec2(width_factor, height_factor) / 10.0f;
 	}
+
+	create_texture();
 }
 
 void color_scale_legend::draw_content(cgv::render::context& ctx) {
@@ -175,36 +177,11 @@ void color_scale_legend::create_gui_impl() {
 	add_member_control(this, "Int", label_format.integers, "check", "w=40");
 }
 
-void color_scale_legend::set_color_scale(const std::shared_ptr<const cgv::media::color_scale> scale) {
-
-	if(!get_context())
-		return;
-
-	cgv::render::context& ctx = *get_context();
-
-	const cgv::render::TextureFilter filter = scale->is_discrete() ? cgv::render::TF_NEAREST : cgv::render::TF_LINEAR;
-
-	// Todo: Ticks and labels from mapping options.
-
-	size_t resolution = 256;
-	std::vector<rgba> colors = scale->quantize(resolution);
-	resolution = colors.size();
-
-	std::vector<cgv::rgba8> texture_data;
-	texture_data.reserve(resolution);
-	std::transform(colors.begin(), colors.end(), std::back_inserter(texture_data), [](const cgv::rgba& color) {
-		return cgv::rgba8(color);
-	});
-
-	cgv::data::data_view data_view(new cgv::data::data_format(resolution, 1, cgv::type::info::TI_UINT8, cgv::data::CF_RGBA), texture_data.data());
-
-	tex.set_min_filter(filter);
-	tex.set_mag_filter(filter);
-	tex.create(ctx, data_view, 0);
-
-	value_range = scale->get_domain();
-	on_set(&value_range);
-
+void color_scale_legend::set_color_scale(std::shared_ptr<const cgv::media::color_scale> color_scale) {
+	if(this->color_scale != color_scale) {
+		this->color_scale = color_scale;
+		build_time.reset();
+	}
 	post_damage();
 }
 
@@ -316,6 +293,40 @@ void color_scale_legend::init_styles() {
 	tick_style.position_is_center = true;
 	tick_style.fill_color = tick_color;
 	tick_style.feather_width = 0.0f;
+}
+
+void color_scale_legend::create_texture() {
+	if(!get_context())
+		return;
+
+	if(color_scale && color_scale->get_modified_time() > build_time.get_modified_time()) {
+		const cgv::render::TextureFilter filter = color_scale->is_discrete() ? cgv::render::TF_NEAREST : cgv::render::TF_LINEAR;
+
+		// Todo: Ticks and labels from mapping options.
+
+		size_t resolution = 256;
+		std::vector<rgba> colors = color_scale->quantize(resolution);
+		resolution = colors.size();
+
+		std::vector<cgv::rgba8> texture_data;
+		texture_data.reserve(resolution);
+		std::transform(colors.begin(), colors.end(), std::back_inserter(texture_data), [](const cgv::rgba& color) {
+			return cgv::rgba8(color);
+		});
+
+		cgv::data::data_format data_format(resolution, 1, cgv::type::info::TI_UINT8, cgv::data::CF_RGBA);
+		cgv::data::data_view data_view(&data_format, texture_data.data());
+
+		tex.set_min_filter(filter);
+		tex.set_mag_filter(filter);
+		tex.create(*get_context(), data_view, 0);
+
+		value_range = color_scale->get_domain();
+		on_set(&value_range);
+
+		build_time.modified();
+		post_damage();
+	}
 }
 
 void color_scale_legend::create_labels(const cgv::render::context& ctx) {

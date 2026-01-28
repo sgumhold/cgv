@@ -12,6 +12,8 @@
 namespace cgv {
 namespace media {
 
+// Todo: Set modified when internals changed.
+
 class transfer_function : public color_scale {
 public:
 	using color_type = cgv::rgb;
@@ -77,11 +79,19 @@ public:
 	}
 
 	bool remove_color_point(float t) {
-		return remove_point(color_points_, t);
+		if(remove_point(color_points_, t)) {
+			modified();
+			return true;
+		}
+		return false;
 	}
 
 	bool remove_opacity_point(float t) {
-		return remove_point(opacity_points_, t);
+		if(remove_point(opacity_points_, t)) {
+			modified();
+			return true;
+		}
+		return false;
 	}
 
 	void set_domain(cgv::vec2 domain) override {
@@ -118,6 +128,7 @@ public:
 		std::transform(colors.begin(), colors.end(), opacities.begin(), std::back_inserter(values), [](const cgv::rgba& color, float opacity) {
 			return cgv::rgba(color, opacity);
 		});
+
 		//for(size_t i = 0; i < n; ++i) {
 		//	const cgv::rgb& color = colors[i];
 		//	data.push_back({ color.R(), color.G(), color.B(), opacities[i] });
@@ -129,26 +140,36 @@ public:
 	std::vector<cgv::rgb> quantize_color(size_t count) const {
 		if(color_points_.empty())
 			return std::vector<cgv::rgb>(count, { 0.0f });
-		return quantize(color_points_, count);
+
+		std::vector<cgv::rgb> colors = quantize(color_points_, count);
+		if(is_reversed())
+			std::reverse(colors.begin(), colors.end());
+		return colors;
 	}
 
 	std::vector<float> quantize_opacity(size_t count) const {
 		if(opacity_points_.empty())
 			return std::vector<float>(count, 1.0f);
-		return quantize(opacity_points_, count);
+		std::vector<float> opacities = quantize(opacity_points_, count);
+		if(is_reversed())
+			std::reverse(opacities.begin(), opacities.end());
+		return opacities;
 	}
 
 	void clear() {
 		color_points_.clear();
 		opacity_points_.clear();
+		update_domain();
 	}
 
 	void clear_color_points() {
 		color_points_.clear();
+		update_domain();
 	}
 
 	void clear_opacity_points() {
 		opacity_points_.clear();
+		update_domain();
 	}
 
 	const std::vector<color_point_type>& get_color_points() const {
@@ -159,7 +180,7 @@ public:
 		return opacity_points_;
 	}
 
-	//cgv::rgba unknown_color = { 0.0f, 0.0f, 0.0f, 0.0f };
+	// Todo: Make private, use getter/setter and call modified.
 	bool use_interpolation = true;
 
 private:
@@ -206,26 +227,25 @@ private:
 	}
 
 	bool update_domain() {
-		cgv::vec2 old_domain = domain_;
+		cgv::vec2 old_domain = get_domain();
 
-		domain_ = { 0.0f };
+		cgv::vec2 domain = { 0.0f };
 		if(!color_points_.empty()) {
-			domain_[0] = color_points_.front().first;
-			domain_[1] = color_points_.back().first;
+			domain[0] = color_points_.front().first;
+			domain[1] = color_points_.back().first;
 		}
 		if(!opacity_points_.empty()) {
-			domain_[0] = std::min(domain_[0], opacity_points_.front().first);
-			domain_[1] = std::max(domain_[1], opacity_points_.back().first);
+			domain[0] = std::min(domain[0], opacity_points_.front().first);
+			domain[1] = std::max(domain[1], opacity_points_.back().first);
 		}
 
-		if(old_domain != domain_) {
-			// Todo: Update modified time.
+		if(old_domain != domain) {
+			set_domain(domain);
 			return true;
 		}
 		return false;
 	}
 
-	//cgv::vec2 domain_ = { 0.0f };
 	std::vector<color_point_type> color_points_;
 	std::vector<opacity_point_type> opacity_points_;
 };

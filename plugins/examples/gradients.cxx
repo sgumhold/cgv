@@ -72,7 +72,7 @@ public:
 		}
 		
 		transfer_function->set_color_points({
-			{0.0f, cgv::rgb(0.3f, 0.3f, 1.0f) },
+			{ 0.0f, cgv::rgb(0.3f, 0.3f, 1.0f) },
 			{ 1.0f, cgv::rgb(1.0f, 0.3f, 0.3f) }
 		});
 		transfer_function->set_opacity_points({
@@ -80,8 +80,7 @@ public:
 			{ 1.0f, 1.0f },
 		});
 		color_scale_adapter.set_color_scale(transfer_function);
-		color_scale_adapter.create_texture(ctx);
-
+		
 		create_test_volume(ctx);
 		return true;
 	}
@@ -115,7 +114,7 @@ public:
 			volume_renderer.set_render_style(volume_style);
 			volume_renderer.set_volume_texture(&volume_texture);
 
-			volume_renderer.set_transfer_function_texture(&color_scale_adapter.get_texture());
+			volume_renderer.set_transfer_function_texture(&color_scale_adapter.get_texture(ctx));
 
 			volume_renderer.set_depth_texture(&depth_texture);
 			volume_renderer.set_bounding_box(volume_bounding_box);

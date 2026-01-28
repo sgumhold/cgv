@@ -1,5 +1,6 @@
 #pragma once
 
+#include <cgv/data/time_stamp.h>
 #include <cgv/media/color_scale.h>
 #include <cgv/render/texture.h>
 #include <cgv/utils/convert_string.h>
@@ -105,7 +106,13 @@ protected:
 	DEFINE_GENERIC_RENDER_DATA_CLASS(tick_geometry, 2, vec2, position, vec2, size);
 	tick_geometry ticks;
 
+	cgv::data::time_stamp build_time;
+
+	std::shared_ptr<const cgv::media::color_scale> color_scale;
+
+
 	void init_styles() override;
+	void create_texture();
 	void create_labels(const cgv::render::context& ctx);
 	void create_ticks();
 
@@ -123,7 +130,7 @@ public:
 	void init_frame(cgv::render::context& ctx) override;
 	void draw_content(cgv::render::context& ctx) override;
 
-	void set_color_scale(const std::shared_ptr<const cgv::media::color_scale> scale);
+	void set_color_scale(std::shared_ptr<const cgv::media::color_scale> color_scale);
 	
 	void set_width(size_t w);
 	void set_height(size_t h);

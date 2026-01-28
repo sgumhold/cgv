@@ -397,16 +397,10 @@ void plot_base::set_mapping_uniforms(cgv::render::context& ctx, cgv::render::sha
 	prog.set_uniform_array(ctx, "color_mapping", color_mapping, MAX_NR_COLOR_MAPPINGS);
 	prog.set_uniform_array(ctx, "opacity_mapping", opacity_mapping, MAX_NR_COLOR_MAPPINGS);
 	prog.set_uniform_array(ctx, "size_mapping", size_mapping, MAX_NR_COLOR_MAPPINGS);
+	// Todo: Change check if gamma is removed
 	if (prog.get_uniform_location(ctx, "color_scale_gamma[0]") != -1) {
-		const cgv::media::continuous_color_scheme_registry& registry = cgv::media::get_global_continuous_color_scheme_registry();
-		for(size_t i = 0; i < MAX_NR_COLOR_MAPPINGS; ++i) {
-			if(color_scheme_index[i] < registry.size())
-				color_scales[i]->set_scheme(registry.get(color_scheme_index[i]));
-			color_scales[i]->set_reversed(reversed[i]);
-		}
 		color_scale_adapter.set_color_scales({ color_scales.begin(), color_scales.end() });
 		color_scale_adapter.set_uniforms(ctx, prog, color_scale_texture_unit);
-
 		prog.set_uniform_array(ctx, "color_scale_gamma", color_scale_gamma, MAX_NR_COLOR_MAPPINGS);
 	}
 	if (prog.get_uniform_location(ctx, "opacity_gamma[0]") != -1) {
@@ -423,6 +417,15 @@ void plot_base::set_mapping_uniforms(cgv::render::context& ctx, cgv::render::sha
 		prog.set_uniform_array(ctx, "size_gamma", size_gamma, MAX_NR_SIZE_MAPPINGS);
 		prog.set_uniform_array(ctx, "size_min", size_min, MAX_NR_SIZE_MAPPINGS);
 		prog.set_uniform_array(ctx, "size_max", size_max, MAX_NR_SIZE_MAPPINGS);
+	}
+}
+
+void plot_base::update_color_scales() {
+	const cgv::media::continuous_color_scheme_registry& registry = cgv::media::get_global_continuous_color_scheme_registry();
+	for(size_t i = 0; i < MAX_NR_COLOR_MAPPINGS; ++i) {
+		if(color_scheme_index[i] < registry.size())
+			color_scales[i]->set_scheme(registry.get(color_scheme_index[i]));
+		color_scales[i]->set_reversed(reversed[i]);
 	}
 }
 
@@ -1239,6 +1242,7 @@ bool plot_base::set_color_scale(int mapping_index, int color_scheme_index)
 		const cgv::media::continuous_color_scheme_registry& registry = cgv::media::get_global_continuous_color_scheme_registry();
 		if(color_scheme_index > -1 && static_cast<size_t>(color_scheme_index) < registry.size()) {
 			this->color_scheme_index[mapping_index] = color_scheme_index;
+			update_color_scales();
 			success = true;
 		} else {
 			this->color_scheme_index[mapping_index] = -1;
@@ -1333,10 +1337,16 @@ void plot_base::create_plot_gui(cgv::base::base* bp, cgv::gui::provider& p)
 				p.add_member_control(bp, "", (cgv::type::DummyEnum&)color_mapping[idx], "dropdown", dropdown_options);
 				if (show) {
 					p.align("\a");
+					const auto& connect_color_scale_callback = [this](auto control) {
+						cgv::signal::connect_copy(
+							control->value_change,
+							cgv::signal::rebind(this, &plot_base::update_color_scales)
+						);
+					};
 					std::string color_scheme_enums = cgv::utils::join(cgv::media::get_global_continuous_color_scheme_registry().get_names(), ",");
-					p.add_member_control(bp, prefix + "Color Scale", reinterpret_cast<cgv::type::DummyEnum&>(color_scheme_index[idx]), "dropdown", "enums='" + color_scheme_enums + "'");
+					connect_color_scale_callback(p.add_member_control(bp, prefix + "Color Scale", reinterpret_cast<cgv::type::DummyEnum&>(color_scheme_index[idx]), "dropdown", "enums='" + color_scheme_enums + "'"));
 					p.add_member_control(bp, prefix + "Color Gamma", color_scale_gamma[idx], "value_slider", "min=0.1;step=0.01;max=10;log=true;ticks=true");
-					p.add_member_control(bp, prefix + "Reversed", reversed[idx], "check");
+					connect_color_scale_callback(p.add_member_control(bp, prefix + "Reversed", reversed[idx], "check"));
 					p.add_member_control(bp, prefix + "Window Zero Position", window_zero_position[idx], "value_slider", "min=0;max=1;ticks=true");
 					p.align("\b");
 					p.end_tree_node(color_mapping[idx]);
