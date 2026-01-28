@@ -746,13 +746,18 @@ public:
 **
 *********************************************************************/
 
-/// compare two colors of same type
+/// compare two colors of same type for equality
 template <typename T, ColorModel cm, AlphaModel am>
 bool operator == (const color<T,cm,am>& c1, const color<T,cm,am>& c2) {
 	for (unsigned int i=0; i<color<T,cm,am>::nr_components; ++i)
 		if (c1[i] != c2[i])
 			return false;
 	return true;
+}
+/// compare two colors of same type for inequality
+template <typename T, ColorModel cm, AlphaModel am>
+bool operator != (const color<T, cm, am>& c1, const color<T, cm, am>& c2) {
+	return !(c1 == c2);
 }
 /// pre multiply with color
 template <typename T1, ColorModel cm1, AlphaModel am1, typename T2, ColorModel cm2, AlphaModel am2>

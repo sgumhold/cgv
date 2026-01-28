@@ -203,7 +203,7 @@ void volume_viewer::after_finish(cgv::render::context & ctx)
 	auto& vr = cgv::render::ref_volume_renderer(ctx);
 	vr.set_render_style(vstyle);
 	vr.set_volume_texture(&volume_tex); // set volume texture as 3D scalar input data
-	vr.set_transfer_function_texture(&color_scale_adapter.get_texture()); // get the transfer function texture to transform scalar volume values into RGBA colors
+	vr.set_transfer_function_texture(&color_scale_adapter.get_texture(ctx)); // get the transfer function texture to transform scalar volume values into RGBA colors
 	// set the volume bounding box and enable transform to automatically place and size the volume to the defined bounds
 	vr.set_bounding_box(volume_bounding_box);
 	vr.set_depth_texture(&depth_tex);
@@ -249,9 +249,9 @@ void volume_viewer::create_gui()
 void volume_viewer::handle_transfer_function_change() {
 
 	if(auto ctx = get_context()) {
-		color_scale_adapter.create_texture(*ctx);
-		if(legend)
-			legend->set_color_scale(transfer_function);
+		//color_scale_adapter.create_texture(*ctx);
+		//if(legend)
+		//	legend->set_color_scale(transfer_function);
 	}
 }
 
@@ -355,12 +355,12 @@ void volume_viewer::load_transfer_function_preset() {
 
 	if(auto ctx = get_context()) {
 		// create the texture of the interpolated transfer function values
-		color_scale_adapter.create_texture(*ctx);
+		//color_scale_adapter.create_texture(*ctx);
 
-		if(transfer_function_editor)
-			transfer_function_editor->set_transfer_function(transfer_function);
-		if(legend)
-			legend->set_color_scale(transfer_function);
+		//if(transfer_function_editor)
+		//	transfer_function_editor->set_transfer_function(transfer_function);
+		//if(legend)
+		//	legend->set_color_scale(transfer_function);
 	}
 }
 

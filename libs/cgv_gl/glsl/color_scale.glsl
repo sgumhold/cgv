@@ -34,28 +34,24 @@ uniform sampler2D color_scale_texture;
 struct ColorScaleMappingOptions {
 	vec2 domain;
 	bool clamped;
-	bool reversed;
 };
 
 uniform ColorScaleMappingOptions color_scale_mapping_options[MAX_COLOR_SCALE_COUNT];
 
 vec4 evaluate_color_scale(in int index, in float value) {
-	// Todo: Map value to domain.
-
-	float t = clamp(value, 0.0, 1.0);
-
 	ColorScaleMappingOptions mapping = color_scale_mapping_options[index];
-	//if(mapping.reversed)
-	//	t = 1.0 - t;
 
+	// Todo: Map value to domain.
+	float t = clamp(value, 0.0, 1.0);
+	
 	vec2 texture_size = vec2(textureSize(color_scale_texture, 0));
 	vec2 texel_size = (1.0 / vec2(texture_size));
 
 	float color_scale_offset = float(index) / texture_size.y + 0.5 * texel_size.y;
 
-	vec4 co = vec4(t, 0.0, 0.0, 1.0);//mapping.reversed ? vec4(t, 0.0, 0.0, 1.0) : vec4(0.0, value, 0.0, 1.0);
-
-	return mix(co, texture(color_scale_texture, vec2(t, color_scale_offset)), 0.95);
+	vec4 color = texture(color_scale_texture, vec2(t, color_scale_offset));
+	color.rgb = pow(color.rgb, vec3(2.2));
+	return color;
 }
 
 // Todo: Remove these functions. They are only temporary to allow plot shaders to work with new color scales.

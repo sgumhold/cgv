@@ -419,11 +419,13 @@ public:
 protected:
 	/**@name visual attribute mapping*/
 	//@{
-	/// color scale indices of primary and secondary color mapping
-	//int color_scale_index[MAX_NR_COLOR_MAPPINGS];
-	int color_scheme_index[MAX_NR_COLOR_MAPPINGS];
+	/// color scales used for primary and secondary color mapping
 	std::array<std::shared_ptr<cgv::media::continuous_color_scale>, MAX_NR_COLOR_MAPPINGS> color_scales;
+	/// adapter to enable using color scales in shader programs
 	cgv::render::color_scale_adapter color_scale_adapter;
+	/// color scheme indices of primary and secondary color scales
+	int color_scheme_index[MAX_NR_COLOR_MAPPINGS];
+	/// whether to reverse the primary or secondary color scales
 	bool reversed[2] = { false, false };
 	//@}
 	/// store pointer to label font
@@ -454,6 +456,8 @@ protected:
 	void set_plot_uniforms(cgv::render::context& ctx, cgv::render::shader_program& prog);
 	/// set the uniforms for defining the mappings to visual variables
 	void set_mapping_uniforms(cgv::render::context& ctx, cgv::render::shader_program& prog);
+	/// the color scales to match the properties set through the config and gui
+	void update_color_scales();
 private:
 	/// dimension independent implementation of attribute enabling
 	size_t enable_attributes(cgv::render::context& ctx, int i, const sample_access& sa);

@@ -3,7 +3,9 @@
 #include <vector>
 #include <string>
 
+#include <cgv/data/time_stamp.h>
 #include <cgv/math/fvec.h>
+#include <cgv/math/compare_float.h>
 
 #include "color.h"
 #include "color_scheme.h"
@@ -13,9 +15,7 @@
 namespace cgv {
 namespace media {
 
-
-
-enum class ColorScaleTransform {
+enum class SequentialMappingTransform {
 	kLinear = 0,
 	kPow,
 	kLog
@@ -31,6 +31,101 @@ public:
 		return true;
 	}
 
+	virtual void set_domain(cgv::vec2 domain) {
+		domain_ = domain;
+		modified();
+	}
+
+	cgv::vec2 get_domain() const {
+		return domain_;
+	}
+
+	virtual void set_transform(SequentialMappingTransform transform) {
+		mapping_transform_ = transform;
+		modified();
+	}
+
+	SequentialMappingTransform get_transform() const {
+		return mapping_transform_;
+	}
+
+	virtual void set_pow_exponent(float exponent) {
+		if(pow_exponent_ != exponent) {
+			pow_exponent_ = exponent;
+			modified();
+		}
+	}
+
+	float get_pow_exponent() const {
+		return pow_exponent_;
+	}
+
+	virtual void set_log_base(float base) {
+		if(log_base_ != base) {
+			log_base_ = base;
+			modified();
+		}
+	}
+
+	float get_log_base() const {
+		return log_base_;
+	}
+
+	virtual void set_clamped(bool clamped) {
+		if(is_clamped_ != clamped) {
+			is_clamped_ = clamped;
+			modified();
+		}
+	}
+
+	bool is_clamped() const {
+		return is_clamped_;
+	}
+
+	virtual void set_reversed(bool reverse) {
+		if(is_reversed_ != reverse) {
+			is_reversed_ = reverse;
+			modified();
+		}
+	}
+
+	bool is_reversed() const {
+		return is_reversed_;
+	}
+
+	virtual void set_diverging(bool diverging) {
+		if(is_diverging_ != diverging) {
+			is_diverging_ = diverging;
+			modified();
+		}
+	}
+
+	bool is_diverging() const {
+		return is_diverging_;
+	}
+
+	virtual void set_midpoint(float midpoint) {
+		if(diverging_midpoint_ != midpoint) {
+			diverging_midpoint_ = midpoint;
+			modified();
+		}
+	}
+
+	bool get_midpoint() const {
+		return diverging_midpoint_;
+	}
+	
+	virtual void set_unknown_color(cgv::rgba color) {
+		if(unknown_color_ != color) {
+			unknown_color_ = color;
+			modified();
+		}
+	}
+
+	cgv::rgba get_unknown_color() const {
+		return unknown_color_;
+	}
+
 	virtual cgv::rgba get_mapped_value(float value) const {
 		return { get_mapped_color(value), get_mapped_opacity(value) };
 	}
@@ -38,7 +133,7 @@ public:
 	virtual cgv::rgb get_mapped_color(float value) const {
 		return cgv::rgb(unknown_color_);
 	}
-	
+
 	virtual float get_mapped_opacity(float value) const {
 		return 1.0f;
 	}
@@ -51,126 +146,84 @@ public:
 		return 0;
 	}
 
-	// Todo: can we simplify this into one method template?
-	// Todo: Attention: this will use the mappinmg options to get the quantized values, which may not be the preferred or expected outcome!
-	virtual std::vector<cgv::rgba> quantize(size_t count) const {
-		std::vector<cgv::rgba> colors;
-
-		if(is_discrete()) {
-			for(size_t i = 0; i < get_indexed_color_count(); ++i)
-				colors.push_back(get_indexed_value(i));
-		} else {
-			colors.reserve(count);
-			cgv::math::sequence_transform(std::back_inserter(colors), [this](float value) { return get_mapped_value(value); }, count, domain_[0], domain_[1]);
-		}
-
-		return colors;
-	};
-
-	virtual std::vector<cgv::rgb> quantize_color(size_t count) const {
-		std::vector<cgv::rgb> colors;
-
-		if(is_discrete()) {
-			for(size_t i = 0; i < get_indexed_color_count(); ++i)
-				colors.push_back(get_indexed_value(i));
-		} else {
-			colors.reserve(count);
-			cgv::math::sequence_transform(std::back_inserter(colors), [this](float value) { return get_mapped_color(value); }, count, domain_[0], domain_[1]);
-		}
-
-		return colors;
-	};
-
-	virtual std::vector<float> quantize_opacity(size_t count) const {
-		std::vector<float> opacities;
-
-		if(is_discrete()) {
-			for(size_t i = 0; i < get_indexed_color_count(); ++i)
-				opacities.push_back(get_indexed_value(i).alpha());
-		} else {
-			opacities.reserve(count);
-			cgv::math::sequence_transform(std::back_inserter(opacities), [this](float value) { return get_mapped_opacity(value); }, count, domain_[0], domain_[1]);
-		}
-
-		return opacities;
-	};
-
-	virtual void set_domain(cgv::vec2 domain) {
-		domain_ = domain;
-		modified();
-	}
-
-	cgv::vec2 get_domain() const {
-		return domain_;
-	}
-
-	virtual void set_transform(ColorScaleTransform transform) {
-		transform_ = transform;
-		modified();
-	}
-
-	ColorScaleTransform get_transform() const {
-		return transform_;
-	}
-
-	virtual void set_exponent(float exponent) {
-		exponent_ = exponent;
-		modified();
-	}
-
-	float get_exponent() const {
-		return exponent_;
-	}
-
-	virtual void set_base(float base) {
-		base_ = base;
-		modified();
-	}
-
-	float get_base() const {
-		return base_;
-	}
-
-	virtual void set_clamped(bool clamped) {
-		is_clamped_ = clamped;
-		modified();
-	}
-
-	bool is_clamped() const {
-		return is_clamped_;
-	}
-
-	virtual void set_reversed(bool reverse) {
-		is_reversed_ = reverse;
-		modified();
-	}
-
-	bool is_reversed() const {
-		return is_reversed_;
-	}
-
-	virtual void set_unknown_color(cgv::rgba color) {
-		unknown_color_ = color;
-		modified();
-	}
-
-	cgv::rgba get_unknown_color() const {
-		return unknown_color_;
-	}
+	virtual std::vector<cgv::rgba> quantize(size_t count) const = 0;
 
 	void modified() {
-		++temp_modified_counter_;
+		time_.modified();
 	};
 
-protected:
-	int64_t temp_modified_counter_ = 0;
+	cgv::data::time_point get_modified_time() const {
+		return time_.get_modified_time();
+	}
+
+	// Todo: change name to reflect that this checks for clamping
+	bool is_out_of_domain(float value) const {
+		return !is_clamped_ && (value < domain_[0] || value > domain_[1]);
+	}
+
+	// Todo: need to make this virtual in order to overwrite it in transfer function or move it back to continuous_color_scale
+	float map_value(float value) const {
+		if(is_clamped_)
+			value = cgv::math::clamp(value, domain_[0], domain_[1]);
+
+		float t = 0.0f;
+
+		switch(mapping_transform_) {
+		case SequentialMappingTransform::kLinear:
+		{
+			if(is_diverging_) {
+				if(value < diverging_midpoint_)
+					t = map_range_safe(value, domain_[0], diverging_midpoint_, 0.0f, 0.5f);
+				else
+					t = map_range_safe(value, diverging_midpoint_, domain_[1], 0.5f, 1.0f);
+			} else {
+				t = map_range_safe(value, domain_[0], domain_[1], 0.0f, 1.0f);
+			}
+			break;
+		}
+		case SequentialMappingTransform::kPow:
+		{
+			if(is_diverging_) {
+				if(value < diverging_midpoint_) {
+					t = map_range_safe(value, domain_[0], diverging_midpoint_, 0.0f, 1.0f);
+					t = 0.5f * (1.0f - std::pow(1.0f - t, pow_exponent_));
+				} else {
+					t = map_range_safe(value, diverging_midpoint_, domain_[1], 0.0f, 1.0f);
+					t = 0.5f * std::pow(t, pow_exponent_) + 0.5f;
+				}
+			} else {
+				t = map_range_safe(value, domain_[0], domain_[1], 0.0f, 1.0f);
+				t = std::pow(t, pow_exponent_);
+			}
+			break;
+		}
+		case SequentialMappingTransform::kLog:
+			std::cout << "color_scale log mapping not implemented" << std::endl;
+			break;
+		}
+
+		return is_reversed_ ? 1.0f - t : t;
+	}
+
+
+private:
+	float map_range_safe(float value, float in_left, float in_right, float out_left, float out_right) const {
+		float size = in_right - in_left;
+		if(cgv::math::is_zero(size))
+			return out_left;
+		return out_left + (out_right - out_left) * ((value - in_left) / size);
+	}
+
+	cgv::data::time_stamp time_;
 
 	cgv::vec2 domain_ = { 0.0f, 1.0f };
-	ColorScaleTransform transform_ = ColorScaleTransform::kLinear;
+	SequentialMappingTransform mapping_transform_ = SequentialMappingTransform::kLinear;
 	bool is_clamped_ = true;
 	bool is_reversed_ = false;
-	float exponent_ = 1.0f;
-	float base_ = 10.0f;
+	bool is_diverging_ = false;
+	float diverging_midpoint_ = 0.5f;
+	float pow_exponent_ = 1.0f;
+	float log_base_ = 10.0f;
 	cgv::rgba unknown_color_ = { 0.0f, 0.0f, 0.0f, 1.0f };
 };
 
@@ -189,21 +242,24 @@ public:
 	}
 
 	cgv::rgb get_mapped_color(float value) const override {
-		if(is_clamped_)
-			value = cgv::math::clamp(value, domain_[0], domain_[1]);
-		else if(value < domain_[0] || value > domain_[0])
-			return unknown_color_;
+		if(is_out_of_domain(value))
+			return { get_unknown_color(), 1.0f };
+		return scheme_.interpolate(map_value(value));
+	}
 
-		float t = (value - domain_[0]) / (domain_[1] - domain_[0]);
-
-		if(is_reversed_)
-			t = 1.0f - t;
-
-		return scheme_.interpolate(t);
+	std::vector<cgv::rgba> quantize(size_t count) const override {
+		std::vector<cgv::rgba> colors;
+		colors.reserve(count);
+		cgv::vec2 domain = { 0.0f, 1.0f };
+		if(is_reversed())
+			std::swap(domain[0], domain[1]);
+		cgv::math::sequence_transform(std::back_inserter(colors), [this](float t) { return scheme_.get_interpolator()->at(t); }, count, domain[0], domain[1]);
+		return colors;
 	}
 
 	void set_scheme(const continuous_color_scheme& scheme) {
 		scheme_ = scheme;
+		modified();
 	}
 
 private:
@@ -227,19 +283,10 @@ public:
 	}
 
 	cgv::rgb get_mapped_color(float value) const override {
-		if(colors_.empty())
-			return unknown_color_;
+		if(is_out_of_domain(value) || colors_.empty())
+			return { get_unknown_color(), 1.0f };
 
-		// Todo: Move to base class without performance hit?
-		if(is_clamped_)
-			value = cgv::math::clamp(value, domain_[0], domain_[1]);
-		else if(value < domain_[0] || value > domain_[0])
-			return unknown_color_;
-
-		float t = (value - domain_[0]) / (domain_[1] - domain_[0]);
-
-		if(is_reversed_)
-			t = 1.0f - t;
+		float t = map_value(value);
 
 		if(t <= 0.0f)
 			return colors_.front();
@@ -252,13 +299,24 @@ public:
 	}
 
 	cgv::rgba get_indexed_value(size_t index) const override {
+		// Todo: use modulo
 		if(index < colors_.size())
 			return { colors_[index], 1.0f };
-		return unknown_color_;
+		return { get_unknown_color(), 1.0f };
 	}
 
 	size_t get_indexed_color_count() const override {
 		return colors_.size();
+	}
+
+	std::vector<cgv::rgba> quantize(size_t count) const override {
+		std::vector<cgv::rgba> colors;
+		size_t color_count = get_indexed_color_count();
+		for(size_t i = 0; i < color_count; ++i) {
+			size_t index = is_reversed() ? color_count - i - 1 : i;
+			colors.push_back(colors_[index]);
+		}
+		return colors;
 	}
 
 	void set_scheme(const discrete_color_scheme& scheme, size_t size) {
@@ -268,66 +326,6 @@ public:
 private:
 	std::vector<cgv::rgb> colors_;
 };
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-/// <summary>
-/// perform a gamma mapping from [0,1] to [0,1] with optional accountance of window zero position in case of bipolar color scales
-/// </summary>
-/// <tparam name="T">value type</param>
-/// <param name="v">to be mapped value</param>
-/// <param name="gamma">gamma parameter</param>
-/// <param name="is_bipolar">whether bipolar gamma mapping should be use</param>
-/// <param name="window_zero_position">zero window position for bipolar gamma mapping</param>
-/// <returns></returns>
-template<typename T>
-T color_scale_gamma_mapping(T v, T gamma, bool is_bipolar, T window_zero_position) {
-	if(is_bipolar) {
-		T amplitude = std::max(window_zero_position, T(1) - window_zero_position);
-		if(v < window_zero_position)
-			return window_zero_position - std::pow((window_zero_position - v) / amplitude, gamma) * amplitude;
-		else
-			return std::pow((v - window_zero_position) / amplitude, gamma) * amplitude + window_zero_position;
-	} else
-		return std::pow(v, gamma);
-}
-
-/// <summary>
-/// for the use of bipolar color maps this function can be used to adjust the value such that
-/// the window position is mapped to the center of the bipolar color map. In a shader program
-/// using color_scale.glsl this adjustment can be enabled by setting the uniform flag
-/// map_window_zero_position_to_color_scale_center to true and specifying window_zero_position
-/// with the float typed uniform of this name
-/// </summary>
-/// <tparam name="T">value type</param>
-/// <param name="value">to be adjusted value</param>
-/// <param name="window_zero_position">window position in the range [0,1] to which the 
-/// attribute value zero is mapped</param>
-/// <returns></returns>
-template<typename T>
-T adjust_zero_position(T v, T window_zero_position) {
-	if(window_zero_position <= T(0.5))
-		return T(1) - T(0.5) * (T(1) - v) / (T(1) - window_zero_position);
-	else
-		return T(0.5) * v / window_zero_position;
-}
 
 } // namespace media
 } // namespace cgv
