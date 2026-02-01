@@ -420,7 +420,7 @@ protected:
 	/**@name visual attribute mapping*/
 	//@{
 	/// color scales used for primary and secondary color mapping
-	std::array<std::shared_ptr<cgv::media::continuous_color_scale>, MAX_NR_COLOR_MAPPINGS> color_scales;
+	std::array<std::shared_ptr<cgv::render::device_continuous_color_scale>, MAX_NR_COLOR_MAPPINGS> color_scales;
 	/// adapter to enable using color scales in shader programs
 	cgv::render::color_scale_adapter color_scale_adapter;
 	/// color scheme indices of primary and secondary color scales

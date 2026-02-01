@@ -16,8 +16,7 @@ namespace g2d {
 enum class DragAction {
 	kDragStart,
 	kDrag,
-	kDragEnd,
-	kSelect
+	kDragEnd
 };
 
 template<class T>
@@ -37,11 +36,7 @@ protected:
 	mat3 inv_transformation;
 
 	std::vector<T> draggables;
-
-	bool press_inside;
-	ptr_type dragged;
-	ptr_type selected;
-
+	ptr_type dragged = nullptr;
 	ivec2 offset;
 
 	ptr_type get_hit_draggable(const ivec2& pos) {
@@ -78,7 +73,6 @@ public:
 
 	void clear() {
 		dragged = nullptr;
-		selected = nullptr;
 		draggables.clear();
 		inv_transformation.identity();
 	}
@@ -117,19 +111,6 @@ public:
 			dragged = get_ptr(draggables[i]);
 	}
 
-	ptr_type get_selected() {
-		return selected;
-	}
-
-	void clear_selected() {
-		selected = nullptr;
-	}
-
-	void set_selected(int i) {
-		if(i >= 0 && i < draggables.size())
-			selected = get_ptr(draggables[i]);
-	}
-
 	const irect& get_constraint() const { return constraint_area; }
 	
 	void set_constraint(const irect& area) {
@@ -151,29 +132,18 @@ public:
 
 		if(me.get_button() == cgv::gui::MB_LEFT_BUTTON) {
 			if(me.get_action() == cgv::gui::MA_PRESS) {
-				press_inside = has_constraint && !use_individual_constraints ? constraint_area.contains(mouse_position) : true;
 				dragged = get_hit_draggable(mouse_position);
-
-				press_inside = press_inside || dragged;
-
-				if(press_inside) {
-					selected = dragged;
-					if(dragged) {
-						offset = dragged->position - mouse_position;
-						if(callback)
-							callback(DragAction::kDragStart);
-						return true;
-					}
+				if(dragged) {
+					offset = dragged->position - mouse_position;
+					if(callback)
+						callback(DragAction::kDragStart);
+					return true;
 				}
 			} else if(me.get_action() == cgv::gui::MA_RELEASE) {
 				if(dragged) {
-					dragged = nullptr;
 					if(callback)
 						callback(DragAction::kDragEnd);
-				} else if(press_inside) {
-					selected = get_hit_draggable(mouse_position);
-					if(callback)
-						callback(DragAction::kSelect);
+					dragged = nullptr;
 				}
 			}
 		}
@@ -192,7 +162,7 @@ public:
 				return true;
 			}
 		}
-		
+
 		return false;
 	}
 

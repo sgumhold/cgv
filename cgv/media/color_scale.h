@@ -21,6 +21,15 @@ enum class SequentialMappingTransform {
 	kLog
 };
 
+
+
+
+
+
+
+
+
+
 class color_scale {
 public:
 	virtual ~color_scale() {}
@@ -38,37 +47,6 @@ public:
 
 	cgv::vec2 get_domain() const {
 		return domain_;
-	}
-
-	virtual void set_transform(SequentialMappingTransform transform) {
-		mapping_transform_ = transform;
-		modified();
-	}
-
-	SequentialMappingTransform get_transform() const {
-		return mapping_transform_;
-	}
-
-	virtual void set_pow_exponent(float exponent) {
-		if(pow_exponent_ != exponent) {
-			pow_exponent_ = exponent;
-			modified();
-		}
-	}
-
-	float get_pow_exponent() const {
-		return pow_exponent_;
-	}
-
-	virtual void set_log_base(float base) {
-		if(log_base_ != base) {
-			log_base_ = base;
-			modified();
-		}
-	}
-
-	float get_log_base() const {
-		return log_base_;
 	}
 
 	virtual void set_clamped(bool clamped) {
@@ -93,28 +71,6 @@ public:
 		return is_reversed_;
 	}
 
-	virtual void set_diverging(bool diverging) {
-		if(is_diverging_ != diverging) {
-			is_diverging_ = diverging;
-			modified();
-		}
-	}
-
-	bool is_diverging() const {
-		return is_diverging_;
-	}
-
-	virtual void set_midpoint(float midpoint) {
-		if(diverging_midpoint_ != midpoint) {
-			diverging_midpoint_ = midpoint;
-			modified();
-		}
-	}
-
-	bool get_midpoint() const {
-		return diverging_midpoint_;
-	}
-	
 	virtual void set_unknown_color(cgv::rgba color) {
 		if(unknown_color_ != color) {
 			unknown_color_ = color;
@@ -148,10 +104,6 @@ public:
 
 	virtual std::vector<cgv::rgba> quantize(size_t count) const = 0;
 
-	void modified() {
-		time_.modified();
-	};
-
 	cgv::data::time_point get_modified_time() const {
 		return time_.get_modified_time();
 	}
@@ -161,9 +113,133 @@ public:
 		return !is_clamped_ && (value < domain_[0] || value > domain_[1]);
 	}
 
-	// Todo: need to make this virtual in order to overwrite it in transfer function or move it back to continuous_color_scale
+protected:
+	void modified() {
+		time_.modified();
+	};
+
+	float map_range_safe(float value, float in_left, float in_right, float out_left, float out_right) const {
+		float size = in_right - in_left;
+		if(cgv::math::is_zero(size))
+			return out_left;
+		return out_left + (out_right - out_left) * ((value - in_left) / size);
+	}
+
+private:
+	cgv::data::time_stamp time_;
+
+	cgv::vec2 domain_ = { 0.0f, 1.0f };
+	bool is_clamped_ = true;
+	bool is_reversed_ = false;
+	cgv::rgba unknown_color_ = { 0.0f, 0.0f, 0.0f, 1.0f };
+};
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+class continuous_color_scale : public color_scale {
+public:
+	continuous_color_scale() {};
+
+	continuous_color_scale(const continuous_color_scheme& scheme) : scheme_(scheme) {};
+
+	bool is_discrete() const override {
+		return false;
+	}
+
+	bool is_opaque() const override {
+		return true;
+	}
+
+	virtual void set_transform(SequentialMappingTransform transform) {
+		mapping_transform_ = transform;
+		modified();
+	}
+
+	SequentialMappingTransform get_transform() const {
+		return mapping_transform_;
+	}
+
+	virtual void set_pow_exponent(float exponent) {
+		if(pow_exponent_ != exponent) {
+			pow_exponent_ = exponent;
+			modified();
+		}
+	}
+
+	float get_pow_exponent() const {
+		return pow_exponent_;
+	}
+
+	virtual void set_log_base(float base) {
+		if(log_base_ != base) {
+			log_base_ = base;
+			modified();
+		}
+	}
+
+	float get_log_base() const {
+		return log_base_;
+	}
+
+	virtual void set_diverging(bool diverging) {
+		if(is_diverging_ != diverging) {
+			is_diverging_ = diverging;
+			modified();
+		}
+	}
+
+	bool is_diverging() const {
+		return is_diverging_;
+	}
+
+	virtual void set_midpoint(float midpoint) {
+		if(diverging_midpoint_ != midpoint) {
+			diverging_midpoint_ = midpoint;
+			modified();
+		}
+	}
+
+	float get_midpoint() const {
+		return diverging_midpoint_;
+	}
+
+	cgv::rgb get_mapped_color(float value) const override {
+		if(is_out_of_domain(value))
+			return { get_unknown_color(), 1.0f };
+		return scheme_.interpolate(map_value(value));
+	}
+
+	std::vector<cgv::rgba> quantize(size_t count) const override {
+		std::vector<cgv::rgba> colors;
+		colors.reserve(count);
+		cgv::vec2 domain = { 0.0f, 1.0f };
+		if(is_reversed())
+			std::swap(domain[0], domain[1]);
+		cgv::math::sequence_transform(std::back_inserter(colors), [this](float t) { return scheme_.get_interpolator()->at(t); }, count, domain[0], domain[1]);
+		return colors;
+	}
+
+	void set_scheme(const continuous_color_scheme& scheme) {
+		scheme_ = scheme;
+		modified();
+	}
+
 	float map_value(float value) const {
-		if(is_clamped_)
+		// Todo: Remove underscore.
+		cgv::vec2 domain_ = get_domain();
+		if(is_clamped())
 			value = cgv::math::clamp(value, domain_[0], domain_[1]);
 
 		float t = 0.0f;
@@ -202,69 +278,31 @@ public:
 			break;
 		}
 
-		return is_reversed_ ? 1.0f - t : t;
-	}
-
-
-private:
-	float map_range_safe(float value, float in_left, float in_right, float out_left, float out_right) const {
-		float size = in_right - in_left;
-		if(cgv::math::is_zero(size))
-			return out_left;
-		return out_left + (out_right - out_left) * ((value - in_left) / size);
-	}
-
-	cgv::data::time_stamp time_;
-
-	cgv::vec2 domain_ = { 0.0f, 1.0f };
-	SequentialMappingTransform mapping_transform_ = SequentialMappingTransform::kLinear;
-	bool is_clamped_ = true;
-	bool is_reversed_ = false;
-	bool is_diverging_ = false;
-	float diverging_midpoint_ = 0.5f;
-	float pow_exponent_ = 1.0f;
-	float log_base_ = 10.0f;
-	cgv::rgba unknown_color_ = { 0.0f, 0.0f, 0.0f, 1.0f };
-};
-
-class continuous_color_scale : public color_scale {
-public:
-	continuous_color_scale() {};
-
-	continuous_color_scale(const continuous_color_scheme& scheme) : scheme_(scheme) {};
-
-	bool is_discrete() const override {
-		return false;
-	}
-
-	bool is_opaque() const override {
-		return true;
-	}
-
-	cgv::rgb get_mapped_color(float value) const override {
-		if(is_out_of_domain(value))
-			return { get_unknown_color(), 1.0f };
-		return scheme_.interpolate(map_value(value));
-	}
-
-	std::vector<cgv::rgba> quantize(size_t count) const override {
-		std::vector<cgv::rgba> colors;
-		colors.reserve(count);
-		cgv::vec2 domain = { 0.0f, 1.0f };
-		if(is_reversed())
-			std::swap(domain[0], domain[1]);
-		cgv::math::sequence_transform(std::back_inserter(colors), [this](float t) { return scheme_.get_interpolator()->at(t); }, count, domain[0], domain[1]);
-		return colors;
-	}
-
-	void set_scheme(const continuous_color_scheme& scheme) {
-		scheme_ = scheme;
-		modified();
+		return is_reversed() ? 1.0f - t : t;
 	}
 
 private:
 	continuous_color_scheme scheme_;
+	SequentialMappingTransform mapping_transform_ = SequentialMappingTransform::kLinear;
+	bool is_diverging_ = false;
+	float diverging_midpoint_ = 0.5f;
+	float pow_exponent_ = 1.0f;
+	float log_base_ = 10.0f;
 };
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 class discrete_color_scale : public color_scale {
 public:
@@ -277,7 +315,7 @@ public:
 	bool is_discrete() const override {
 		return true;
 	}
-	
+
 	bool is_opaque() const override {
 		return true;
 	}
@@ -286,7 +324,11 @@ public:
 		if(is_out_of_domain(value) || colors_.empty())
 			return { get_unknown_color(), 1.0f };
 
-		float t = map_value(value);
+		cgv::vec2 domain = get_domain();
+		if(is_clamped())
+			value = cgv::math::clamp(value, domain[0], domain[1]);
+
+		float t = map_range_safe(value, domain[0], domain[1], 0.0f, 1.0f);
 
 		if(t <= 0.0f)
 			return colors_.front();

@@ -3,105 +3,97 @@
 namespace cgv {
 namespace media {
 
-size_t load_continuous_color_scheme_presets(continuous_color_scheme_registry& registry, ColorSchemeType type) {
+size_t load_continuous_color_scheme_presets(continuous_color_scheme_registry& registry, const std::set<ColorSchemeType>& types) {
 	using namespace schemes;
+	
+	continuous_color_scheme_registry_helper r(registry, types);
 
-	size_t count = 0;
-	const auto load = [&registry, &count](const std::string& name, const continuous_color_scheme& scheme) {
-		count += registry.add(name, scheme) ? 1 : 0;
-	};
-	bool load_all = type == ColorSchemeType::kUndefined;
-
-	if(load_all || type == ColorSchemeType::kSequential) {
+	if(r.can_load(ColorSchemeType::kSequential)) {
 		// sequential schemes (single-hue)
-		load("blues", interpolateBlues());
-		load("greens", interpolateGreens());
-		load("grays", interpolateGrays());
-		load("oranges", interpolateOranges());
-		load("purples", interpolatePurples());
-		load("reds", interpolateReds());
+		r.load("blues", interpolateBlues());
+		r.load("greens", interpolateGreens());
+		r.load("grays", interpolateGrays());
+		r.load("oranges", interpolateOranges());
+		r.load("purples", interpolatePurples());
+		r.load("reds", interpolateReds());
 		// sequential schemes (multi-hue)
-		load("bone", interpolateBone());
-		load("hot", interpolateHot());
-		load("jet", interpolateJet());
-		load("turbo", interpolateTurbo());
-		load("viridis", interpolateViridis());
-		load("magma", interpolateMagma());
-		load("inferno", interpolateInferno());
-		load("plasma", interpolatePlasma());
-		load("cividis", interpolateCividis());
+		r.load("bone", interpolateBone());
+		r.load("hot", interpolateHot());
+		r.load("jet", interpolateJet());
+		r.load("turbo", interpolateTurbo());
+		r.load("viridis", interpolateViridis());
+		r.load("magma", interpolateMagma());
+		r.load("inferno", interpolateInferno());
+		r.load("plasma", interpolatePlasma());
+		r.load("cividis", interpolateCividis());
 	}
 
-	if(load_all || type == ColorSchemeType::kDiverging) {
+	if(r.can_load(ColorSchemeType::kDiverging)) {
 		// diverging schemes
-		load("BrBG", interpolateBrBG());
-		load("PRGn", interpolatePRGn());
-		load("PiYG", interpolatePiYG());
-		load("PuOr", interpolatePuOr());
-		load("RdBu", interpolateRdBu());
-		load("RdGy", interpolateRdGy());
-		load("RdYlBu", interpolateRdYlBu());
-		load("RdYlGn", interpolateRdYlGn());
-		load("spectral", interpolateSpectral());
+		r.load("BrBG", interpolateBrBG());
+		r.load("PRGn", interpolatePRGn());
+		r.load("PiYG", interpolatePiYG());
+		r.load("PuOr", interpolatePuOr());
+		r.load("RdBu", interpolateRdBu());
+		r.load("RdGy", interpolateRdGy());
+		r.load("RdYlBu", interpolateRdYlBu());
+		r.load("RdYlGn", interpolateRdYlGn());
+		r.load("spectral", interpolateSpectral());
 	}
 
-	if(load_all || type == ColorSchemeType::kCyclical) {
+	if(r.can_load(ColorSchemeType::kCyclical)) {
 		// cyclical schemes
-		load("twilight", interpolateTwilight());
-		load("hues", interpolateHue());
+		r.load("twilight", interpolateTwilight());
+		r.load("hues", interpolateHue());
 	}
 
-	return count;
+	return r.loaded_count();
 }
 
-size_t load_discrete_color_scheme_presets(discrete_color_scheme_registry& registry, ColorSchemeType type) {
+size_t load_discrete_color_scheme_presets(discrete_color_scheme_registry& registry, const std::set<ColorSchemeType>& types) {
 	using namespace schemes;
 
-	size_t count = 0;
-	const auto load = [&registry, &count](const std::string& name, const discrete_color_scheme& scheme) {
-		count += registry.add(name, scheme) ? 1 : 0;
-	};
-	bool load_all = type == ColorSchemeType::kUndefined;
+	discrete_color_scheme_registry_helper r(registry, types);
 
-	if(load_all || type == ColorSchemeType::kSequential) {
+	if(r.can_load(ColorSchemeType::kSequential)) {
 		// sequential schemes (single-hue)
-		load("blues", schemeBlues());
-		load("greens", schemeGreens());
-		load("grays", schemeGrays());
-		load("oranges", schemeOranges());
-		load("purples", schemePurples());
-		load("reds", schemeReds());
+		r.load("blues", schemeBlues());
+		r.load("greens", schemeGreens());
+		r.load("grays", schemeGrays());
+		r.load("oranges", schemeOranges());
+		r.load("purples", schemePurples());
+		r.load("reds", schemeReds());
 		// sequential schemes (multi-hue)
 	}
 
-	if(load_all || type == ColorSchemeType::kDiverging) {
+	if(r.can_load(ColorSchemeType::kDiverging)) {
 		// diverging schemes
-		load("BrBG", schemeBrBG());
-		load("PRGn", schemePRGn());
-		load("PiYG", schemePiYG());
-		load("PuOr", schemePuOr());
-		load("RdBu", schemeRdBu());
-		load("RdGy", schemeRdGy());
-		load("RdYlBu", schemeRdYlBu());
-		load("RdYlGn", schemeRdYlGn());
+		r.load("BrBG", schemeBrBG());
+		r.load("PRGn", schemePRGn());
+		r.load("PiYG", schemePiYG());
+		r.load("PuOr", schemePuOr());
+		r.load("RdBu", schemeRdBu());
+		r.load("RdGy", schemeRdGy());
+		r.load("RdYlBu", schemeRdYlBu());
+		r.load("RdYlGn", schemeRdYlGn());
 	}
 
-	if(load_all || type == ColorSchemeType::kCategorical) {
+	if(r.can_load(ColorSchemeType::kCategorical)) {
 		// categorical schemes
-		load("category10", schemeCategory10());
-		load("accent8", schemeAccent8());
-		load("dark8", schemeDark8());
-		load("observable10", schemeObservable10());
-		load("paired12", schemePaired12());
-		load("pastel8_1", schemePastel8_1());
-		load("pastel8_2", schemePastel8_2());
-		load("set8", schemeSet8());
-		load("set9", schemeSet9());
-		load("set12", schemeSet12());
-		load("tableau10", schemeTableau10());
+		r.load("category10", schemeCategory10());
+		r.load("accent8", schemeAccent8());
+		r.load("dark8", schemeDark8());
+		r.load("observable10", schemeObservable10());
+		r.load("paired12", schemePaired12());
+		r.load("pastel8_1", schemePastel8_1());
+		r.load("pastel8_2", schemePastel8_2());
+		r.load("set8", schemeSet8());
+		r.load("set9", schemeSet9());
+		r.load("set12", schemeSet12());
+		r.load("tableau10", schemeTableau10());
 	}
 
-	return count;
+	return r.loaded_count();
 }
 
 } // namespace media

@@ -424,8 +424,8 @@ void plot_base::update_color_scales() {
 	const cgv::media::continuous_color_scheme_registry& registry = cgv::media::get_global_continuous_color_scheme_registry();
 	for(size_t i = 0; i < MAX_NR_COLOR_MAPPINGS; ++i) {
 		if(color_scheme_index[i] < registry.size())
-			color_scales[i]->set_scheme(registry.get(color_scheme_index[i]));
-		color_scales[i]->set_reversed(reversed[i]);
+			color_scales[i]->color_scale->set_scheme(registry.get(color_scheme_index[i]));
+		color_scales[i]->color_scale->set_reversed(reversed[i]);
 	}
 }
 
@@ -606,7 +606,7 @@ plot_base::plot_base(unsigned _dim, unsigned _nr_attributes) : dom_cfg(_dim, _nr
 	for (int ci = 0; ci < MAX_NR_COLOR_MAPPINGS; ++ci) {
 		color_mapping[ci] = -1;
 		color_scheme_index[ci] = -1;
-		color_scales[ci] = std::make_shared<cgv::media::continuous_color_scale>();
+		color_scales[ci] = std::make_shared<cgv::render::device_continuous_color_scale>();
 		color_scale_gamma[ci] = 1;
 		window_zero_position[ci] = 0.5f;
 	}
@@ -883,19 +883,6 @@ void plot_base::draw_legend(cgv::render::context& ctx, int layer_idx, bool is_fi
 	set_mapping_uniforms(ctx, legend_prog);
 	color_scale_adapter.enable(ctx);
 	ctx.set_color(legend_color);
-	// Todo: Legend color scale
-	//cgv::render::configure_color_scale(ctx, legend_prog, color_scale_index, window_zero_position);
-
-	/*
-	const auto& registry = cgv::media::get_global_continuous_color_scheme_registry();
-	std::array<cgv::media::continuous_color_scheme, 2> scales;
-
-	for(size_t i = 0; i < MAX_NR_COLOR_MAPPINGS; ++i) {
-		if(color_scale_index2[i] < registry.size())
-			scales[i] = registry.get(color_scale_index2[i]);
-	}
-	*/
-
 	legend_prog.set_uniform(ctx, "depth_offset", -layer_idx * layer_depth);
 	int j = 1 - legend_axis;
 	int off = 4*j;
