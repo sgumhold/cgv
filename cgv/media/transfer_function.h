@@ -51,13 +51,17 @@ public:
 	void set_color_points(const std::vector<color_point_type>& colors) {
 		color_points_ = colors;
 		sort_points(color_points_);
-		update_domain();
+		// Only call modified if this did not already happen in update_domain.
+		if(!update_domain())
+			modified();
 	}
 
 	void set_opacity_points(const std::vector<opacity_point_type>& opacities) {
 		opacity_points_ = opacities;
 		sort_points(opacity_points_);
-		update_domain();
+		// Only call modified if this did not already happen in update_domain.
+		if(!update_domain())
+			modified();
 	}
 
 	void add_color_point(float t, const color_type& color) {
@@ -66,7 +70,9 @@ public:
 
 		color_points_.push_back({ t, color });
 		sort_points(color_points_);
-		update_domain();
+		// Only call modified if this did not already happen in update_domain.
+		if(!update_domain())
+			modified();
 	}
 
 	void add_opacity_point(float t, float opacity) {
@@ -75,7 +81,9 @@ public:
 
 		opacity_points_.push_back({ t, opacity });
 		sort_points(opacity_points_);
-		update_domain();
+		// Only call modified if this did not already happen in update_domain.
+		if(!update_domain())
+			modified();
 	}
 
 	bool remove_color_point(float t) {

@@ -1,6 +1,6 @@
 #pragma once
 
-#include <cgv/data/time_stamp.h>
+//#include <cgv/data/time_stamp.h>
 #include <cgv/media/transfer_function.h>
 #include <cgv/render/texture.h>
 #include <cgv_app/themed_canvas_overlay.h>
@@ -13,7 +13,6 @@
 #include "lib_begin.h"
 
 namespace cgv {
-
 namespace app {
 
 class CGV_API transfer_function_editor : public themed_canvas_overlay {
@@ -27,69 +26,54 @@ protected:
 		cgv::g2d::irect opacity_editor_rect;
 	} layout;
 
-	struct color_point : public cgv::g2d::draggable {
-		static const float default_width;
-		static const float default_height;
-		float val = 0.0f;
-		rgb col = { 0.0f };
+	static const vec2 color_point_size;
+	static const vec2 opacity_point_size;
 
-		color_point() {
-			size = vec2(default_width, default_height);
+	template<typename DataT>
+	class control_point : public cgv::g2d::draggable {
+	public:
+		control_point(vec2 size, const cgv::g2d::irect* constraint) : cgv::g2d::draggable({ 0.0f }, size) {
 			position_is_center = true;
 			constraint_reference = CR_CENTER;
+			// Todo: constraint is public. remove setter and getter
+			set_constraint(constraint);
 		}
 
-		void update_val(const cgv::g2d::rect& area) {
-			vec2 p = position - area.position;
-			val = p.x() / area.size.x();
-			val = cgv::math::clamp(val, 0.0f, 1.0f);
+		void set_position_and_update_uv(vec2 position) {
+			if(!constraint)
+				return;
+
+			const auto& area = static_cast<cgv::g2d::rect>(*constraint);
+			this->position = cgv::math::clamp(position, area.a(), area.b());
+			uv = (this->position - area.position) / area.size;
 		}
 
-		void update_pos(const cgv::g2d::rect& area) {
-			val = cgv::math::clamp(val, 0.0f, 1.0f);
-			float t = val;
-			position.x() = static_cast<float>(area.x()) + t * area.w();
-			position.y() = static_cast<float>(area.y());
+		void set_uv_and_update_position(vec2 uv) {
+			if(!constraint)
+				return;
+
+			const auto& area = static_cast<cgv::g2d::rect>(*constraint);
+			this->uv = cgv::math::clamp(uv, 0.0f, 1.0f);
+			position = area.position + this->uv * area.size;
 		}
+
+		bool operator<(const control_point& other) const {
+			return uv.x() < other.uv.x();
+		}
+
+		vec2 uv = { 0.0f };
+		vec2 value = { 0.0f };
+		DataT data = {};
 	};
 
-	struct opacity_point : public cgv::g2d::draggable {
-		static const float default_size;
-		vec2 val = { 0.0f };
+	using color_point = control_point<rgb>;
+	using opacity_point = control_point<void*>;
 
-		opacity_point() {
-			size = vec2(default_size);
-			position_is_center = true;
-			constraint_reference = CR_CENTER;
-		}
-
-		void update_val(const cgv::g2d::rect& area, const float scale_exponent) {
-			vec2 p = position - area.position;
-			val = p / area.size;
-
-			val = cgv::math::clamp(val, 0.0f, 1.0f);
-			val.y() = cgv::math::clamp(std::pow(val.y(), scale_exponent), 0.0f, 1.0f);
-		}
-
-		void update_pos(const cgv::g2d::rect& area, const float scale_exponent) {
-			val = cgv::math::clamp(val, 0.0f, 1.0f);
-
-			vec2 t = val;
-			t.y() = cgv::math::clamp(std::pow(t.y(), 1.0f / scale_exponent), 0.0f, 1.0f);
-
-			position = area.position + t * area.size;
-		}
-	};
-
-	bool mouse_is_on_overlay;
 	bool supports_opacity;
 	bool use_interpolation;
 	bool use_linear_filtering;
 	vec2 range;
 
-	ivec2 cursor_position;
-	std::string cursor_label;
-	//bool show_value_label;
 	std::string value_label;
 	cgv::g2d::rect value_label_rectangle;
 
@@ -130,13 +114,18 @@ protected:
 
 	cgv::g2d::draggable_collection<color_point> color_draggables;
 	cgv::g2d::draggable_collection<opacity_point> opacity_draggables;
+	color_point* selected_color_draggable = nullptr;
+	opacity_point* selected_opacity_draggable = nullptr;
 	cgv::g2d::generic_render_data_vec2_rgba color_draggables_geometry, opacity_draggables_geometry;
 	textured_geometry line_geometry;
 	textured_geometry triangle_geometry;
 	
-	cgv::data::time_stamp build_time;
+	//cgv::data::time_stamp build_time;
 
-	void clear_geometry() {
+	// Todo: Find good name.
+	void clear_stuff() {
+		selected_color_draggable = nullptr;
+		selected_opacity_draggable = nullptr;
 		color_draggables.clear();
 		opacity_draggables.clear();
 		color_draggables_geometry.clear();
@@ -148,36 +137,47 @@ protected:
 	void init_styles() override;
 	void update_layout(const ivec2& parent_size);
 
+	color_point make_color_point() const {
+		return color_point(color_point_size, &layout.color_draggables_rect);
+	}
+
+	opacity_point make_opacity_point() const {
+		return opacity_point(opacity_point_size, &layout.opacity_editor_rect);
+	}
+
 	void update_data_from_transfer_function() {
 		if(!transfer_function)
 			return;
 
-		if(!build_time.is_valid() || transfer_function->get_modified_time() > build_time.get_modified_time()) {
-			color_draggables.clear();
-			opacity_draggables.clear();
+		//if(!build_time.is_valid() || transfer_function->get_modified_time() > build_time.get_modified_time()) {
+			//std::cout << "set editor data from tf" << std::endl;
+			//std::cout << transfer_function->get_modified_time().time_since_epoch().count() << " > " << build_time.get_modified_time().time_since_epoch().count() << std::endl;
+
+			clear_stuff();
 
 			// Todo: Do not clamp to 0 and 1 ion order to support arbitrary data range.
 
 			for(const auto& point : transfer_function->get_color_points()) {
-				color_point p;
-				p.val = cgv::math::clamp(point.first, 0.0f, 1.0f);
-				p.col = point.second;
-				color_draggables.add(p);
+				color_point draggable = make_color_point();
+				draggable.data = point.second;
+				// Todo: transform point first to normalized coords according to domain.
+				draggable.set_uv_and_update_position({ point.first, 0.0f });
+				color_draggables.add(draggable);
 			}
 
 			if(supports_opacity) {
 				for(const auto& point : transfer_function->get_opacity_points()) {
-					opacity_point p;
-					p.val.x() = cgv::math::clamp(point.first, 0.0f, 1.0f);
-					p.val.y() = cgv::math::clamp(point.second, 0.0f, 1.0f);
-					opacity_draggables.add(p);
+					opacity_point draggable = make_opacity_point();
+					// Todo: transform point first to normalized coords according to domain.
+					draggable.set_uv_and_update_position({ point.first, point.second });
+					opacity_draggables.add(draggable);
 				}
 			}
 
 			//use_interpolation = cmc.cm->use_interpolation;
 			//use_linear_filtering = true;
 
-			update_point_positions();
+			//update_point_positions();
 			update_geometry();
 			create_preview_texture();
 			//update_color_map(false);
@@ -185,15 +185,39 @@ protected:
 			post_recreate_gui();
 			post_damage();
 
-			build_time.modified();
-		}
+			//build_time.modified();
+		//}
+	}
+
+	void update_transfer_function_from_data() {
+		if(!transfer_function)
+			return;
+			
+		std::vector<std::pair<float, rgb>> colors;
+		std::vector<std::pair<float, float>> opacities;
+
+		std::transform(color_draggables.begin(), color_draggables.end(), std::back_inserter(colors), [](const color_point& point) { return std::make_pair(point.uv.x(), point.data); });
+		std::transform(opacity_draggables.begin(), opacity_draggables.end(), std::back_inserter(opacities), [](const opacity_point& point) { return std::make_pair(point.uv.x(), point.uv.y()); });
+
+		transfer_function->set_color_points(colors);
+		transfer_function->set_opacity_points(opacities);
+
+		// Todo: Use a move point function in tf.
+
+		// Set the build time to the transfer function's modified time since the geometry is already synchronized.
+		// This avoids a rebuild at the next draw.
+		//build_time = transfer_function->get_modified_time();
+		//build_time.modified();
+
+		if(on_change_callback)
+			on_change_callback();
 	}
 
 	bool create_preview_texture();
 	bool create_background_texture();
 
 	void add_point(const vec2& pos);
-	void remove_point(const cgv::g2d::draggable* ptr);
+	void erase_point(const cgv::g2d::draggable* point);
 	cgv::g2d::draggable* get_hit_point(const vec2& pos);
 	
 	enum class DraggableType {
@@ -206,11 +230,10 @@ protected:
 	void handle_selection_change();
 	std::string value_to_string(float value);
 	void sort_points();
-	void sort_color_draggables();
-	void sort_opacity_draggables();
 	void update_point_positions();
 	//void update_color_map(bool is_data_change);
-	bool update_geometry();
+	void update_geometry();
+	
 
 	std::function<void(void)> on_change_callback;
 	std::function<void(rgb)> on_color_point_select_callback;
@@ -224,7 +247,7 @@ public:
 
 	void clear(cgv::render::context& ctx) override;
 
-	bool handle_key_event(cgv::gui::key_event& e) override;
+	//bool handle_key_event(cgv::gui::key_event& e) override;
 	bool handle_mouse_event(cgv::gui::mouse_event& e, cgv::ivec2 local_mouse_pos) override;
 	void handle_member_change(const cgv::utils::pointer_test& m) override;
 
@@ -244,6 +267,10 @@ public:
 		return transfer_function;
 	}
 	void set_transfer_function(std::shared_ptr<cgv::media::transfer_function> transfer_function);
+
+	void notify_transfer_function_change() {
+		update_data_from_transfer_function();
+	}
 
 	void set_histogram_data(const std::vector<unsigned> data);
 
@@ -270,7 +297,7 @@ static void connect_color_selector_to_transfer_function_editor(const transfer_fu
 	}
 }
 
-}
-}
+} // namespace app
+} // namespace cgv
 
 #include <cgv/config/lib_end.h>

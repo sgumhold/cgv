@@ -1,8 +1,9 @@
 #pragma once
 
-#include <map>
-#include <vector>
 #include <functional>
+#include <map>
+#include <set>
+#include <vector>
 
 #include <cgv/data/object_registry.h>
 #include <cgv/math/interpolate.h>
@@ -165,6 +166,32 @@ using discrete_color_scheme_registry = cgv::data::object_registry<discrete_color
 
 extern CGV_API continuous_color_scheme_registry& get_global_continuous_color_scheme_registry();
 extern CGV_API discrete_color_scheme_registry& get_global_discrete_color_scheme_registry();
+
+template<typename RegistryT, typename ColorSchemeT>
+class color_scheme_registry_helper {
+public:
+	color_scheme_registry_helper(RegistryT& registry, const std::set<ColorSchemeType>& types) : registry_(registry), supported_types_(types) {}
+
+	void load(const std::string& name, const ColorSchemeT& scheme) {
+		loaded_count_ += registry_.add(name, scheme) ? 1 : 0;
+	}
+
+	bool can_load(ColorSchemeType type) const {
+		return supported_types_.empty() || supported_types_.find(type) != supported_types_.end();
+	}
+
+	size_t loaded_count() const {
+		return loaded_count_;
+	}
+
+private:
+	size_t loaded_count_ = 0;
+	RegistryT& registry_;
+	std::set<ColorSchemeType> supported_types_;
+};
+
+using continuous_color_scheme_registry_helper = color_scheme_registry_helper<continuous_color_scheme_registry, continuous_color_scheme>;
+using discrete_color_scheme_registry_helper = color_scheme_registry_helper<discrete_color_scheme_registry, discrete_color_scheme>;
 
 } // namespace media
 } // namespace cgv
