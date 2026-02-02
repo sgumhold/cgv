@@ -115,6 +115,8 @@ protected:
 	int  get_uniform_location(const shader_program_base& spb, const std::string& name) const override;
 	bool set_uniform_void(shader_program_base& spb, int loc, type_descriptor value_type, const void* value_ptr) const override;
 	bool set_uniform_array_void(shader_program_base& spb, int loc, type_descriptor value_type, const void* value_ptr, size_t nr_elements) const override;
+	int  get_uniform_block_index(const shader_program_base& spb, const std::string& name) const override;
+	bool set_uniform_block_binding(shader_program_base& spb, int index, int binding) const override;
 	int  get_attribute_location(const shader_program_base& spb, const std::string& name) const override;
 	bool set_attribute_void(shader_program_base& spb, int loc, type_descriptor value_type, const void* value_ptr) const override;
 
