@@ -1,6 +1,12 @@
 var NAVTREEINDEX39 =
 {
+"structcgv_1_1gui_1_1text__editor__callback__handler.html#ab02ede9806c4813df68853a3e13f5f6e":[10,0,1,3,70,2],
+"structcgv_1_1gui_1_1text__style.html":[11,0,0,5,71],
+"structcgv_1_1gui_1_1text__style.html":[10,0,1,3,71],
+"structcgv_1_1gui_1_1text__style.html#a15739096d2205fc88cf14648f4aba644":[11,0,0,5,71,2],
+"structcgv_1_1gui_1_1text__style.html#a15739096d2205fc88cf14648f4aba644":[10,0,1,3,71,2],
 "structcgv_1_1gui_1_1text__style.html#a76a0216b722e2755ac897f659453191c":[10,0,1,3,71,0],
+"structcgv_1_1gui_1_1text__style.html#a76a0216b722e2755ac897f659453191c":[11,0,0,5,71,0],
 "structcgv_1_1gui_1_1text__style.html#ae5ca2c364aeb667d04f8d879ddbdce0f":[10,0,1,3,71,1],
 "structcgv_1_1gui_1_1text__style.html#ae5ca2c364aeb667d04f8d879ddbdce0f":[11,0,0,5,71,1],
 "structcgv_1_1gui_1_1volume__render__style__gui__creator.html":[11,0,0,5,79],
@@ -243,11 +249,5 @@ var NAVTREEINDEX39 =
 "structcgv_1_1media_1_1illum_1_1surface__material.html":[11,0,0,7,1,3],
 "structcgv_1_1media_1_1illum_1_1surface__material.html#a3ca6ccb522fcfb870792f5c338eb2e43":[11,0,0,7,1,3,2],
 "structcgv_1_1media_1_1illum_1_1surface__material.html#a51fca4161b935253a23af6e2e420d9b7":[11,0,0,7,1,3,1],
-"structcgv_1_1media_1_1illum_1_1surface__material.html#a603d26b3eb0ff6c65273a333b638822d":[11,0,0,7,1,3,3],
-"structcgv_1_1media_1_1illum_1_1surface__material.html#a612bd2956c621fa487d9ddc4e37ec686":[11,0,0,7,1,3,8],
-"structcgv_1_1media_1_1illum_1_1surface__material.html#a6e8b7cc53c9d7b817569f1ac68fefeaa":[11,0,0,7,1,3,9],
-"structcgv_1_1media_1_1illum_1_1surface__material.html#a865250cb2d26cf61c9769cbeb6bf4a44":[11,0,0,7,1,3,7],
-"structcgv_1_1media_1_1illum_1_1surface__material.html#a91dd38994fcab38d3b9b974af5f888da":[11,0,0,7,1,3,5],
-"structcgv_1_1media_1_1illum_1_1surface__material.html#aa21afe6045ae017791c89530ce3b7e6d":[11,0,0,7,1,3,4],
-"structcgv_1_1media_1_1illum_1_1surface__material.html#ab3c0e8e96379fbda089c1f30de223498":[11,0,0,7,1,3,10]
+"structcgv_1_1media_1_1illum_1_1surface__material.html#a603d26b3eb0ff6c65273a333b638822d":[11,0,0,7,1,3,3]
 };
