@@ -283,38 +283,32 @@ namespace gpmf {
 		uint32_t total_samples = 0;
 		while (begin_ptr < end_ptr) {
 			uint32_t* next_ptr = klv.construct_native(begin_ptr, element_types);
-			if (klv.id == gpmf::Key::stream_name)
-				klv.to_string(name);
-			if (klv.id == gpmf::Key::units || klv.id == gpmf::Key::si_units)
-				klv.to_strings(units);
-			if (klv.id == gpmf::Key::scale)
-				klv.to_numbers(scales);
-			if (klv.id == gpmf::Key::tick)
-				klv.to_number(tick);
-			if (klv.id == gpmf::Key::tock)
-				klv.to_number(tock);
-			if (klv.id == gpmf::Key::time_stamp)
-				klv.to_number(timestamp);
-			if (klv.id == gpmf::Key::temperature_c)
-				klv.to_number(temperature);
-			if (klv.id == gpmf::Key::total_samples)
-				klv.to_number(total_samples);
-			if (klv.id == gpmf::Key::type)
-				klv.to_string(element_types);
-			if (klv.id == gpmf::Key::matrix)
-				klv.to_numbers(matrix);
-			if ((klv.id == gpmf::Key::orientation_in)
-				|| (klv.id == gpmf::Key::orientation_out)
-				|| (klv.id == gpmf::Key::time_offset)
-				|| (klv.id == gpmf::Key::timing_offset)
-				|| (klv.id == gpmf::Key::time_stamps)
-				|| (klv.id == gpmf::Key::preformatted)
-				|| (klv.id == gpmf::Key::empty_payloads)
-				|| (klv.id == gpmf::Key::quantize)
-				|| (klv.id == gpmf::Key::version)
-				|| (klv.id == gpmf::Key::freespace)
-				|| (klv.id == gpmf::Key::remark)) {
-				std::cerr << "not handled key '" << std::string(klv.fourcc, 4) << "' in stream payload" << std::endl;
+			switch (klv.id) {
+			case gpmf::Key::stream_name: klv.to_string(name); break;
+			case gpmf::Key::units:
+			case gpmf::Key::si_units: klv.to_strings(units); break;
+			case gpmf::Key::scale: klv.to_numbers(scales); break;
+			case gpmf::Key::tick: klv.to_number(tick); break;
+			case gpmf::Key::tock: klv.to_number(tock); break;
+			case gpmf::Key::time_stamp: klv.to_number(timestamp); break;
+			case gpmf::Key::temperature_c: klv.to_number(temperature); break;
+			case gpmf::Key::total_samples: klv.to_number(total_samples); break;
+			case gpmf::Key::type: klv.to_string(element_types); break;
+			case gpmf::Key::matrix: klv.to_numbers(matrix); break;
+			case gpmf::Key::orientation_in:
+			case gpmf::Key::orientation_out:
+			case gpmf::Key::timing_offset:
+			case gpmf::Key::time_stamps:
+			case gpmf::Key::preformatted:
+			case gpmf::Key::empty_payloads:
+			case gpmf::Key::quantize:
+			case gpmf::Key::version:
+			case gpmf::Key::freespace:
+			case gpmf::Key::remark:
+				// std::cerr << "not handled key '" << std::string(klv.fourcc, 4) << "' in stream payload" << std::endl;
+			default:
+				additional_klvs[klv.id] = klv;
+				break;
 			}
 			begin_ptr = next_ptr;
 		}
@@ -356,6 +350,12 @@ namespace gpmf {
 	{
 		assert(scales.size() <= 1 || element_index < scales.size());
 		return scales.size() == 1 ? scales.front() : (has_scales() ? scales[element_index] : 1.0f);
+	}
+	const key_length_value_ptr* stream_payload::has_klv(uint32_t id) const {
+		auto iter = additional_klvs.find(id);
+		if (iter == additional_klvs.end())
+			return 0;
+		return &(iter->second);
 	}
 	char stream_payload::get_element_type(unsigned element_index) const
 	{
