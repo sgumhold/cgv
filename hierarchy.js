@@ -1046,6 +1046,8 @@ var hierarchy =
     [ "cgv::utils::date", "structcgv_1_1utils_1_1date.html", [
       [ "cgv::utils::date_time", "structcgv_1_1utils_1_1date__time.html", null ]
     ] ],
+    [ "cgv::utils::detail::BE2native< T, no_swap >", "structcgv_1_1utils_1_1detail_1_1BE2native.html", null ],
+    [ "cgv::utils::detail::BE2native< T, false >", "structcgv_1_1utils_1_1detail_1_1BE2native_3_01T_00_01false_01_4.html", null ],
     [ "cgv::utils::enumerate_range< iterator_type >", "classcgv_1_1utils_1_1enumerate__range.html", null ],
     [ "cgv::utils::file::FileInfo", "structcgv_1_1utils_1_1file_1_1FileInfo.html", null ],
     [ "cgv::utils::get_first< T1, T2 >", "structcgv_1_1utils_1_1get__first.html", null ],

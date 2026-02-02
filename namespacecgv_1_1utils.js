@@ -23,6 +23,11 @@ var namespacecgv_1_1utils =
     [ "token", "structcgv_1_1utils_1_1token.html", "structcgv_1_1utils_1_1token" ],
     [ "tokenizer", "classcgv_1_1utils_1_1tokenizer.html", "classcgv_1_1utils_1_1tokenizer" ],
     [ "typed_token", "structcgv_1_1utils_1_1typed__token.html", null ],
+    [ "endian", "namespacecgv_1_1utils.html#a53a92ad4769093cc132b00d18931df3c", [
+      [ "little", "namespacecgv_1_1utils.html#a53a92ad4769093cc132b00d18931df3caaae6635e044ac56046b2893a529b5114", null ],
+      [ "big", "namespacecgv_1_1utils.html#a53a92ad4769093cc132b00d18931df3cad861877da56b8b4ceb35c8cbfdf65bb4", null ],
+      [ "native", "namespacecgv_1_1utils.html#a53a92ad4769093cc132b00d18931df3ca8e5f3adee38c8fccc13c1f3be0143796", null ]
+    ] ],
     [ "token_type", "namespacecgv_1_1utils.html#a065a09a703ff8a7a3ab31b387f1c0468", [
       [ "PLAIN", "namespacecgv_1_1utils.html#a065a09a703ff8a7a3ab31b387f1c0468a46ee8e3a7178e0cdcdc1b2ce995c34e2", null ],
       [ "URL", "namespacecgv_1_1utils.html#a065a09a703ff8a7a3ab31b387f1c0468af4bc52a6e4d96d96c7a25f694cb76e2a", null ],
@@ -31,6 +36,7 @@ var namespacecgv_1_1utils =
       [ "DATE_VALUE", "namespacecgv_1_1utils.html#a065a09a703ff8a7a3ab31b387f1c0468af476d2d725d8237b0d9baa974840b4a0", null ]
     ] ],
     [ "balanced_find_content", "namespacecgv_1_1utils.html#ac6db9d2c2746d9ad3e380c5ff689b64b", null ],
+    [ "big_endian_to_native", "namespacecgv_1_1utils.html#a40a1cdfad9542714a9f3367d61ffeecb", null ],
     [ "bite_all", "namespacecgv_1_1utils.html#a748e89bffdda8da3a478b073bf28877a", null ],
     [ "condense_to_line", "namespacecgv_1_1utils.html#a273839f63e9ac0d638c982028577a6b9", null ],
     [ "cutoff_spaces", "namespacecgv_1_1utils.html#ad395e58106935ab83b2d1e08438c5455", null ],

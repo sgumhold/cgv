@@ -816,6 +816,10 @@ var annotated_dup =
         [ "variant< std::wstring >", "structcgv_1_1type_1_1variant_3_01std_1_1wstring_01_4.html", null ]
       ] ],
       [ "utils", "namespacecgv_1_1utils.html", [
+        [ "detail", null, [
+          [ "BE2native", "structcgv_1_1utils_1_1detail_1_1BE2native.html", null ],
+          [ "BE2native< T, false >", "structcgv_1_1utils_1_1detail_1_1BE2native_3_01T_00_01false_01_4.html", null ]
+        ] ],
         [ "file", null, [
           [ "FileInfo", "structcgv_1_1utils_1_1file_1_1FileInfo.html", null ]
         ] ],

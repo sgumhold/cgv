@@ -1,5 +1,6 @@
 var NAVTREEINDEX31 =
 {
+"gamepad__driver_8h_source.html":[12,0,3,5,4],
 "gamepad__server_8cxx_source.html":[12,0,3,0,1],
 "gamepad__server_8h_source.html":[12,0,3,0,2],
 "gaussj_8h_source.html":[12,0,1,5,26],
@@ -61,8 +62,8 @@ var NAVTREEINDEX31 =
 "gui__driver_8h_source.html":[12,0,1,4,29],
 "gui__group_8cxx_source.html":[12,0,1,4,30],
 "gui__group_8h_source.html":[12,0,1,4,31],
-"guid_8cxx_source.html":[12,0,1,13,19],
-"guid_8h_source.html":[12,0,1,13,20],
+"guid_8cxx_source.html":[12,0,1,13,20],
+"guid_8h_source.html":[12,0,1,13,21],
 "has__virtual__destructor_8h_source.html":[12,0,1,12,0,0],
 "help__menu__entry_8cxx_source.html":[12,0,1,4,32],
 "help__menu__entry_8h_source.html":[12,0,1,4,33],
@@ -248,6 +249,5 @@ var NAVTREEINDEX31 =
 "namespacecgv.html#ae9c770be4fdd39551fc36516ba1ffc35":[10,0,1,41],
 "namespacecgv.html#af4ac8b5b76d44a6646da80abddce60b2":[10,0,1,61],
 "namespacecgv.html#afedb57421cee1d83a531175dbbfedfd3":[10,0,1,35],
-"namespacecgv_1_1base.html":[10,0,1,0],
-"namespacecgv_1_1base.html#a09823546be3c2201d20125b59e10333b":[10,0,1,0,149]
+"namespacecgv_1_1base.html":[10,0,1,0]
 };

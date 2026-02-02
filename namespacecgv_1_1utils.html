@@ -177,6 +177,12 @@ Enumerations</h2></td></tr>
  }</td></tr>
 <tr class="memdesc:a065a09a703ff8a7a3ab31b387f1c0468"><td class="mdescLeft">&#160;</td><td class="mdescRight">different types that a typed_token can have  <a href="namespacecgv_1_1utils.html#a065a09a703ff8a7a3ab31b387f1c0468">More...</a><br /></td></tr>
 <tr class="separator:a065a09a703ff8a7a3ab31b387f1c0468"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a53a92ad4769093cc132b00d18931df3c" id="r_a53a92ad4769093cc132b00d18931df3c"><td class="memItemLeft" align="right" valign="top">enum class &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespacecgv_1_1utils.html#a53a92ad4769093cc132b00d18931df3c">endian</a> { <b>little</b> = __ORDER_LITTLE_ENDIAN__
+, <b>big</b> = __ORDER_BIG_ENDIAN__
+, <b>native</b> = __BYTE_ORDER__
+ }</td></tr>
+<tr class="memdesc:a53a92ad4769093cc132b00d18931df3c"><td class="mdescLeft">&#160;</td><td class="mdescRight">enum providing access to native endian of host system  <a href="namespacecgv_1_1utils.html#a53a92ad4769093cc132b00d18931df3c">More...</a><br /></td></tr>
+<tr class="separator:a53a92ad4769093cc132b00d18931df3c"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="func-members" name="func-members"></a>
 Functions</h2></td></tr>
@@ -312,6 +318,10 @@ Functions</h2></td></tr>
 <tr class="separator:ac2853b5d678fa43e79e0ecc906628d5f"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a16e984a22c35b3d965947a469e363ecb" id="r_a16e984a22c35b3d965947a469e363ecb"><td class="memItemLeft" align="right" valign="top">std::ostream &amp;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespacecgv_1_1utils.html#a16e984a22c35b3d965947a469e363ecb">operator&lt;&lt;</a> (std::ostream &amp;os, const <a class="el" href="structcgv_1_1utils_1_1date__time.html">date_time</a> &amp;DT)</td></tr>
 <tr class="separator:a16e984a22c35b3d965947a469e363ecb"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a40a1cdfad9542714a9f3367d61ffeecb" id="r_a40a1cdfad9542714a9f3367d61ffeecb"><td class="memTemplParams" colspan="2">template&lt;typename T &gt; </td></tr>
+<tr class="memitem:a40a1cdfad9542714a9f3367d61ffeecb"><td class="memTemplItemLeft" align="right" valign="top">void&#160;</td><td class="memTemplItemRight" valign="bottom"><a class="el" href="namespacecgv_1_1utils.html#a40a1cdfad9542714a9f3367d61ffeecb">big_endian_to_native</a> (T &amp;v)</td></tr>
+<tr class="memdesc:a40a1cdfad9542714a9f3367d61ffeecb"><td class="mdescLeft">&#160;</td><td class="mdescRight">convert value of a numeric type T from big endian to native endian of host  <br /></td></tr>
+<tr class="separator:a40a1cdfad9542714a9f3367d61ffeecb"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a68db436c930b1ff1c1cd1b362a3c342c" id="r_a68db436c930b1ff1c1cd1b362a3c342c"><td class="memTemplParams" colspan="2">template&lt;typename container_type &gt; </td></tr>
 <tr class="memitem:a68db436c930b1ff1c1cd1b362a3c342c"><td class="memTemplItemLeft" align="right" valign="top">decltype(auto)&#160;</td><td class="memTemplItemRight" valign="bottom"><a class="el" href="namespacecgv_1_1utils.html#a68db436c930b1ff1c1cd1b362a3c342c">count</a> (container_type &amp;content, typename std::iterator_traits&lt; typename container_type::iterator &gt;::difference_type start=0)</td></tr>
 <tr class="separator:a68db436c930b1ff1c1cd1b362a3c342c"><td class="memSeparator" colspan="2">&#160;</td></tr>
@@ -586,6 +596,32 @@ Variables</h2></td></tr>
 <a name="details" id="details"></a><h2 class="groupheader">Detailed Description</h2>
 <div class="textblock"><p>namespace that holds tools that dont fit any other namespace </p>
 </div><h2 class="groupheader">Enumeration Type Documentation</h2>
+<a id="a53a92ad4769093cc132b00d18931df3c" name="a53a92ad4769093cc132b00d18931df3c"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a53a92ad4769093cc132b00d18931df3c">&#9670;&#160;</a></span>endian</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">enum class <a class="el" href="namespacecgv_1_1utils.html#a53a92ad4769093cc132b00d18931df3c">cgv::utils::endian</a></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">strong</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p>enum providing access to native endian of host system </p>
+
+<p class="definition">Definition at line <a class="el" href="endian_8h_source.html#l00009">9</a> of file <a class="el" href="endian_8h_source.html">endian.h</a>.</p>
+
+</div>
+</div>
 <a id="a065a09a703ff8a7a3ab31b387f1c0468" name="a065a09a703ff8a7a3ab31b387f1c0468"></a>
 <h2 class="memtitle"><span class="permalink"><a href="#a065a09a703ff8a7a3ab31b387f1c0468">&#9670;&#160;</a></span>token_type</h2>
 
@@ -757,6 +793,30 @@ Variables</h2></td></tr>
 </div><div class="memdoc">
 
 <p class="definition">Definition at line <a class="el" href="advanced__scan_8h_source.html#l00147">147</a> of file <a class="el" href="advanced__scan_8h_source.html">advanced_scan.h</a>.</p>
+
+</div>
+</div>
+<a id="a40a1cdfad9542714a9f3367d61ffeecb" name="a40a1cdfad9542714a9f3367d61ffeecb"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a40a1cdfad9542714a9f3367d61ffeecb">&#9670;&#160;</a></span>big_endian_to_native()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<div class="memtemplate">
+template&lt;typename T &gt; </div>
+      <table class="memname">
+        <tr>
+          <td class="memname">void cgv::utils::big_endian_to_native </td>
+          <td>(</td>
+          <td class="paramtype">T &amp;&#160;</td>
+          <td class="paramname"><em>v</em></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>convert value of a numeric type T from big endian to native endian of host </p>
+
+<p class="definition">Definition at line <a class="el" href="endian_8h_source.html#l00032">32</a> of file <a class="el" href="endian_8h_source.html">endian.h</a>.</p>
 
 </div>
 </div>
