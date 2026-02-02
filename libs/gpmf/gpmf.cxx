@@ -138,23 +138,23 @@ namespace gpmf {
 		return 0;
 	}
 	/**** ios manipulation ****/
-	int repeat::uid(std::ios_base& b) 
+	int take::uid(std::ios_base& b) 
 	{
 		static int const uid = std::ios_base::xalloc();
 		return uid;
 	}	
-	long& repeat::count(std::ios_base& b) 
+	long& take::count(std::ios_base& b) 
 	{
 		return b.iword(uid(b));
 	}	
-	std::ostream& operator<<(std::ostream& o, repeat const& r) 
+	std::ostream& operator<<(std::ostream& o, take const& t) 
 	{
-		repeat::count(o) = r._count;
+		take::count(o) = t._count;
 		return o;
 	}
 	const char*& complex_type::text(std::ios_base& b)
 	{
-		return const_cast<const char*&>(reinterpret_cast<char*&>(b.pword(repeat::uid(b))));
+		return const_cast<const char*&>(reinterpret_cast<char*&>(b.pword(take::uid(b))));
 	}
 	std::ostream& operator<<(std::ostream& o, complex_type const& ct)
 	{
@@ -249,7 +249,7 @@ namespace gpmf {
 			}
 			return os;
 		}
-		long count = repeat::count(os) <= 0 ? klv.repeat : std::min(long(klv.repeat), repeat::count(os));
+		long count = take::count(os) <= 0 ? klv.repeat : std::min(long(klv.repeat), take::count(os));
 		auto* byte_ptr = reinterpret_cast<const uint8_t*>(klv.value_ptr);
 		if (klv.type != '?')
 			stream_out(os, klv.type, byte_ptr, count, klv.get_nr_elements());
@@ -525,7 +525,7 @@ namespace gpmf {
 			<< std::string(spl.fourcc, 4) 
 			<< "[" << vmda.payload_index << "|" << vmda.payload_begin_time << "," << vmda.payload_end_time << "] "
 			<< spl.name << std::endl;
-		uint32_t count = repeat::count(os);
+		uint32_t count = take::count(os);
 		if (count == 0 || count > spl.nr_samples)
 			count = spl.nr_samples;
 		double value;

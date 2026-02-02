@@ -121,24 +121,24 @@ namespace gpmf {
 	extern CGV_API uint32_t convert_numeric_values(char type_in, const uint8_t* byte_in_ptr, char type_out, uint8_t* byte_out_ptr);
 	//@}
 
-	//! custom ios manipulator to store repetition count for streaming out klv values
+	//! custom ios manipulator to store limitation count for streaming out klv repeated values
 	/*! typical use:
 	    key_length_value klv;
 		klv.construct_native(data_ptr);
-		std::cout << gpmf::repeat(3) << klv << std::endl;
+		std::cout << gpmf::take(3) << klv << std::endl;
 	*/
-	class CGV_API repeat {
+	class CGV_API take {
 	public:
 		/// access to repeat count of stream
 		static long& count(std::ios_base& b);
 		/// construct repeat count object passable to ostream
-		explicit constexpr repeat(unsigned n) : _count(n) { }
+		explicit constexpr take(unsigned n) : _count(n) { }
 	protected:
 		static int uid(std::ios_base& b);
 		friend class complex_type;
 	private:
 		unsigned const _count;
-		extern CGV_API friend std::ostream& operator<<(std::ostream& o, repeat const& r);
+		extern CGV_API friend std::ostream& operator<<(std::ostream& o, take const& t);
 	};
 	//! custom ios manipulator to store complex type information for streaming out klv values
 	/*! typical use:
