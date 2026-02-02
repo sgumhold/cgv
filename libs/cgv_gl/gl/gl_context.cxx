@@ -3440,10 +3440,24 @@ bool gl_context::set_uniform_array_void(shader_program_base& spb, int loc, type_
 	return res;
 }
 
+int  gl_context::get_uniform_block_index(const shader_program_base& spb, const std::string& name) const
+{
+	return glGetUniformBlockIndex(get_gl_id(spb.handle), name.c_str());
+}
+
+bool gl_context::set_uniform_block_binding(shader_program_base& spb, int index, int binding) const
+{
+	if(!spb.handle) {
+		error("gl_context::set_uniform_block_binding() called on not created program", &spb);
+		return false;
+	}
+	glUniformBlockBinding(get_gl_id(spb.handle), index, binding);
+	return check_gl_error("gl_context::set_uniform_block_binding()", &spb);
+}
+
 int  gl_context::get_attribute_location(const shader_program_base& spb, const std::string& name) const
 {
-	GLint loc = glGetAttribLocation(get_gl_id(spb.handle), name.c_str());
-	return loc;
+	return glGetAttribLocation(get_gl_id(spb.handle), name.c_str());
 }
 
 bool gl_context::set_attribute_void(shader_program_base& spb, int loc, type_descriptor value_type, const void* value_ptr) const

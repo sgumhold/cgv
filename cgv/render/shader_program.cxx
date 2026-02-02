@@ -692,6 +692,26 @@ bool shader_program::set_light_uniform(const context& ctx, const std::string& na
 	return true;
 }
 
+int shader_program::get_uniform_block_index(const context& ctx, const std::string& name) const
+{
+	return ctx.get_uniform_block_index(*this, name);
+}
+
+bool shader_program::set_uniform_block_binding(const context& ctx, int index, int binding)
+{
+	return ctx.set_uniform_block_binding(*this, index, binding);
+}
+
+bool shader_program::set_uniform_block_binding(const context& ctx, const std::string& name, int binding)
+{
+	int index = ctx.get_uniform_block_index(*this, name);
+	if(index == -1) {
+		ctx.error(std::string("shader_program::set_uniform_block_binding() block <") + name + "> not found", this);
+		return false;
+	}
+	return ctx.set_uniform_block_binding(*this, index, binding);
+}
+
 /// query location index of an attribute
 int shader_program::get_attribute_location(const context& ctx, const std::string& name) const
 {

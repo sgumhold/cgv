@@ -207,6 +207,12 @@ public:
 	bool set_uniform(const context& ctx, int loc, type_descriptor value_type, const void* value_ptr) {
 		return ctx.set_uniform_void(*this, loc, value_type, value_ptr);
 	}
+
+	int get_uniform_block_index(const context& ctx, const std::string& name) const;
+	bool set_uniform_block_binding(const context& ctx, int index, int binding);
+	bool set_uniform_block_binding(const context& ctx, const std::string& name, int binding);
+
+
 	/// query location index of an attribute
 	int get_attribute_location(const context& ctx, const std::string& name) const;
 	/// set constant default value of a vertex attribute by attribute name, if name does not specify an attribute, an error message is generated
