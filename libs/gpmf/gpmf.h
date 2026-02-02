@@ -2,6 +2,7 @@
 
 #include <ostream>
 #include <vector>
+#include <map>
 #include <string>
 #include <cassert>
 
@@ -45,6 +46,9 @@ namespace gpmf {
 		remark         = MAKEID('R', 'M', 'R', 'K'),//RMRK - adding comments to the bitstream (debugging)
 
 		gps5           = MAKEID('G', 'P', 'S', '5'),       // GPS5 (Lat., Long., Alt., 2D speed, 3D speed)
+		gpsf           = MAKEID('G', 'P', 'S', 'F'),       // GPS Fix: 0 - no lock, 2 or 3 - 2D or 3D Lock
+		gpsu           = MAKEID('G', 'P', 'S', 'U'),       // UTC time and data from GPS
+		gpsp           = MAKEID('G', 'P', 'S', 'P'),       // GPS Precision - Dilution of Precision (DOP x100) - under 500 is good
 		magnetometer   = MAKEID('M', 'A', 'G', 'N'),       // Magnetometer
 		accelerometer  = MAKEID('A', 'C', 'C', 'L'),       // Accelerometer
 		gyroscope      = MAKEID('G', 'Y', 'R', 'O'),       // Gyroscope
@@ -197,39 +201,87 @@ namespace gpmf {
 	/// struct to represent a payload of a specific gpmf stream
 	struct CGV_API stream_payload
 	{
+		/*@name obligatory information of stream payload*/
+		//@{
+		/// two ways to access 4CC marker of stream as char array or uint32_t
 		union {
 			char fourcc[4] = { 0,0,0,0 };
 			uint32_t id;
 		};
+		/// name of stream
 		std::string name;
-		uint32_t tick = uint32_t(-1);
-		uint32_t tock = uint32_t(-1);
-		uint64_t timestamp = uint64_t(-1);
-		float temperature;
-		std::vector<std::string> units;
-		std::vector<double> scales;
-		std::vector<double> matrix;
-		std::string element_types;
+		/// number of stream samples in payload
 		uint32_t nr_samples = 0;
-		uint32_t nr_elements = 1;
+		/// sample size in bytes
 		uint32_t sample_size;
+		/// number of elements per stream sample
+		uint32_t nr_elements = 1;
+		/// per element byte offset into sample
 		std::vector<uint32_t> element_offsets;
+		/// string with element type represented as a chars, either a single type for all elements or one per element
+		std::string element_types;
+		/// pointer to sample values
 		uint32_t* value_ptr;
+		//@}
+		/*@name optional information per stream payload*/
+		//@{
+		/// not yet parsed key length value triples in native byte order mapped by their 4CC represented as uint32_t
+		std::map<uint32_t, key_length_value_ptr> additional_klvs;
+		/// optional mycro second start of stream data (-1 if not given)
+		uint32_t tick = uint32_t(-1);
+		/// optional mycro second end of stream data (-1 if not given)
+		uint32_t tock = uint32_t(-1);
+		/// optional nano second start of stream (-1 if not given)
+		uint64_t timestamp = uint64_t(-1);
+		/// temperature value for current payload
+		float temperature;
+		/// optional per element SI or non SI unit (mostly physical unit), either none, one for all, or one per element
+		std::vector<std::string> units;
+		/// optional per element scale used to divide sensor reading to convert to unit of element, either none, one for all, or one per element
+		std::vector<double> scales;
+		/// optional permutation matrix for vector valued samples
+		std::vector<double> matrix;
+		//@}
+		/*@name construction */
+		//@{
 		/// construct empty stream payload
 		stream_payload();
 		/// construct stream payload from memory range by constructing and analyzing native klv
 		void construct_native(uint32_t* begin_ptr, uint32_t* end_ptr);
+		//@}
+		/*@name inspection helper functions for optional information */
+		//@{
+		/// query whether additional key length value triples have been extracted
+		bool has_additional_klvs() const { return !additional_klvs.empty(); }
+		/// query additional key length value triple based on 4CC, return 0 if not available
+		const key_length_value_ptr* has_klv(uint32_t id) const;
+		/// convenience variant for passing Key enum values directly
+		const key_length_value_ptr* has_klv(Key id) const { return has_klv(uint32_t(id)); }
+		/// whether stream has a complex type defined
 		bool has_complex_type() const { return element_types.size() > 1; }
-		bool has_matrix() const { return !matrix.empty(); }
-		bool has_tick() const { return tick != uint32_t(-1); }
-		bool has_tock() const { return tock != uint32_t(-1); }
-		bool has_timestamp() const { return timestamp != uint64_t(-1); }
-		bool has_temperature() const;
-		bool has_units() const { return !units.empty(); }
-		std::string get_unit(unsigned element_index = 0) const;
-		bool has_scales() const { return !scales.empty(); }
-		double get_element_scale(unsigned element_index = 0) const;
+		/// query type of specific element
 		char get_element_type(unsigned element_index = 0) const;
+		/// whether stream has a tick member
+		bool has_tick() const { return tick != uint32_t(-1); }
+		/// whether stream has a tock member
+		bool has_tock() const { return tock != uint32_t(-1); }
+		/// whether stream has a timestamp member
+		bool has_timestamp() const { return timestamp != uint64_t(-1); }
+		/// whether stream has a temperature member
+		bool has_temperature() const;
+		/// whether stream has per element units defines
+		bool has_units() const { return !units.empty(); }
+		/// query unit of specific element
+		std::string get_unit(unsigned element_index = 0) const;
+		/// whether stream has per element scales defines
+		bool has_scales() const { return !scales.empty(); }
+		/// query scale of specific element
+		double get_element_scale(unsigned element_index = 0) const;
+		/// whether stream has a matrix member
+		bool has_matrix() const { return !matrix.empty(); }
+		//@}
+		/*@name access to scaled values and samples */
+		//@{
 		/// put single sample element value into \c dest_value, what only works if this stream_payload has no matrix
 		template <typename T>
 		void put_scaled_value(uint32_t sample_index, uint32_t element_index, T& dest_value) const {
@@ -266,6 +318,7 @@ namespace gpmf {
 				}
 			}
 		}
+		//@}
 	};
 
 	/// helper class zu access meta data in a video file
