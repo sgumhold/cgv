@@ -27,29 +27,29 @@ size_t vertex_buffer::get_size_in_bytes() const
 	return size_in_bytes;
 }
 
-void vertex_buffer::bind(context& ctx, VertexBufferType _type) const
+void vertex_buffer::bind(const context& ctx, VertexBufferType _type) const
 {
 	ctx.vertex_buffer_bind(*this, _type == VBT_UNDEF ? this->type : _type);
 }
 
-void vertex_buffer::unbind(context& ctx, VertexBufferType _type) const
+void vertex_buffer::unbind(const context& ctx, VertexBufferType _type) const
 {
 	ctx.vertex_buffer_unbind(*this, _type == VBT_UNDEF ? this->type : _type);
 }
 
-void vertex_buffer::unbind(context& ctx, unsigned index) const { ctx.vertex_buffer_unbind(*this, this->type, index); }
+void vertex_buffer::unbind(const context& ctx, unsigned index) const { ctx.vertex_buffer_unbind(*this, this->type, index); }
 
-void vertex_buffer::unbind(context& ctx, VertexBufferType type, unsigned index) const
+void vertex_buffer::unbind(const context& ctx, VertexBufferType type, unsigned index) const
 {
 	ctx.vertex_buffer_unbind(*this, type, index);
 }
 
-void vertex_buffer::bind(context& ctx, unsigned index) const
+void vertex_buffer::bind(const context& ctx, unsigned index) const
 {
 	ctx.vertex_buffer_bind(*this, this->type, index);
 }
 
-void vertex_buffer::bind(context& ctx, VertexBufferType _type, unsigned index) const
+void vertex_buffer::bind(const context& ctx, VertexBufferType _type, unsigned index) const
 {
 	ctx.vertex_buffer_bind(*this, _type, index);
 }
