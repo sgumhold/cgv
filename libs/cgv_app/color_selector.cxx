@@ -2,6 +2,7 @@
 
 #include <cgv/gui/mouse_event.h>
 #include <cgv/gui/theme_info.h>
+#include <cgv/math/interpolate.h>
 #include <cgv_g2d/msdf_gl_font_renderer.h>
 #include <cgv_gl/gl/gl.h>
 
@@ -64,8 +65,8 @@ bool color_selector::handle_mouse_event(cgv::gui::mouse_event& e, cgv::ivec2 loc
 
 				update_color();
 
-				if(hit_index == 1)
-					update_color_texture();
+				if(hit_index == 1 && get_context())
+					create_color_texture(*get_context());
 
 				post_damage();
 			}
@@ -114,7 +115,7 @@ bool color_selector::init(cgv::render::context& ctx) {
 		text_geometry.positions = std::vector<vec3>(8, { 0.0f });
 	}
 
-	init_textures(ctx);
+	//init_textures(ctx);
 
 	// saturation and value handle
 	selector_handle sh;
@@ -135,6 +136,9 @@ bool color_selector::init(cgv::render::context& ctx) {
 	selector_handles[0].set_constraint(&layout.color_rect);
 	selector_handles[1].set_constraint(&layout.hue_constraint);
 	selector_handles[2].set_constraint(&layout.opacity_constraint);
+
+	create_hue_texture(ctx);
+	create_color_texture(ctx);
 
 	if(has_opacity)
 		set_color(rgba(0.0f, 0.0f, 0.0f, 1.0f), true, true);
@@ -235,7 +239,6 @@ void color_selector::draw_content(cgv::render::context& ctx) {
 
 	glDisable(GL_SCISSOR_TEST);
 
-	//cgv::g2d::ref_msdf_gl_canvas_font_renderer(ctx).render(ctx, content_canvas, texts, text_style, 0, 2 * n_labels);
 	cgv::g2d::ref_msdf_gl_font_renderer_2d(ctx).render(ctx, content_canvas, text_geometry, text_style, 0, 2 * n_labels);
 
 	end_content(ctx);
@@ -347,6 +350,51 @@ void color_selector::init_styles() {
 	text_style.font_size = 14.0f;
 }
 
+bool color_selector::create_hue_texture(cgv::render::context& ctx) {
+	
+	const size_t resolution = 256;
+
+	std::vector<rgb8> data;
+	data.reserve(resolution);
+	cgv::math::sequence_transform(std::back_inserter(data), [](float t) {
+		return rgb8(cgv::media::color<float, cgv::media::HLS>(t, 0.5f, 1.0f));
+	}, resolution);
+
+	cgv::data::data_format data_format(1, 256, cgv::type::info::TI_UINT8, cgv::data::CF_RGB);
+	cgv::data::data_view data_view(&data_format, data.data());
+	return hue_tex.create(ctx, data_view, 0);
+}
+
+bool color_selector::create_color_texture(cgv::render::context& ctx) {
+	
+	//std::vector<uint8_t> data(3 * 4, 0u);
+	//data[6] = 255u;
+	//data[7] = 255u;
+	//data[8] = 255u;
+
+	
+	rgb color = { 0.0f };
+	if(selector_handles.size() > 1)
+		color = cgv::media::color<float, cgv::media::HLS>(selector_handles[1].val.y(), 0.5f, 1.0f);
+
+	std::vector<rgb8> data = {
+		{ 0, 0, 0 },
+		{ 0, 0, 0 },
+		{ 255, 255, 255 },
+		rgb8(color)
+	};
+	//data[6] = 255u;
+	//data[7] = 255u;
+	//data[8] = 255u;
+	//data[9] = 255u;
+
+	//color_tex.destruct(ctx);
+	cgv::data::data_format data_format(2, 2, cgv::type::info::TI_UINT8, cgv::data::CF_RGB);
+	cgv::data::data_view data_view(&data_format, data.data());
+	return color_tex.create(ctx, data_view, 0);
+}
+
+/*
 void color_selector::init_textures(cgv::render::context& ctx) {
 
 	std::vector<uint8_t> data(3*4, 0u);
@@ -357,9 +405,9 @@ void color_selector::init_textures(cgv::render::context& ctx) {
 	data[9] = 255u;
 	
 	color_tex.destruct(ctx);
-	cgv::data::data_view color_dv = cgv::data::data_view(new cgv::data::data_format(2, 2, cgv::type::info::TI_UINT8, cgv::data::CF_RGB), data.data());
-	color_tex = cgv::render::texture("uint8[R,G,B]", cgv::render::TF_LINEAR, cgv::render::TF_LINEAR);
-	color_tex.create(ctx, color_dv, 0);
+	cgv::data::data_format color_data_format(2, 2, cgv::type::info::TI_UINT8, cgv::data::CF_RGB);
+	cgv::data::data_view color_data_view(&color_data_format, data.data());
+	color_tex.create(ctx, color_data_view, 0);
 
 	std::vector<uint8_t> hue_data(2*3*256);
 
@@ -386,6 +434,7 @@ void color_selector::init_textures(cgv::render::context& ctx) {
 	hue_tex.create(ctx, hue_dv, 0);
 }
 
+/*
 void color_selector::update_color_texture() {
 
 	if(!color_tex.is_created())
@@ -408,6 +457,7 @@ void color_selector::update_color_texture() {
 	if(auto* ctx_ptr = get_context())
 		color_tex.replace(*ctx_ptr, 0, 0, color_dv);
 }
+*/
 
 void color_selector::update_color() {
 
@@ -463,8 +513,10 @@ void color_selector::handle_selector_drag(cgv::g2d::DragAction action) {
 		p->update_val();
 
 		update_color();
-		if(p == &selector_handles[1])
-			update_color_texture();
+		if(p == &selector_handles[1]) {
+			if(auto ctx = get_context())
+				create_color_texture(*ctx);
+		}
 
 		post_damage();
 	}
@@ -496,7 +548,8 @@ void color_selector::set_color(rgba color, bool opacity, bool init) {
 		has_opacity = opacity;
 	}
 	
-	update_color_texture();
+	if(auto ctx = get_context())
+		create_color_texture(*ctx);
 	update_texts();
 
 	if(!init && auto_show)

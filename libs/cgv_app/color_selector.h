@@ -80,8 +80,8 @@ protected:
 
 	cgv::g2d::draggable_collection<selector_handle> selector_handles;
 
-	cgv::render::texture color_tex;
-	cgv::render::texture hue_tex;
+	cgv::render::texture color_tex = { "uint8[R,G,B]", cgv::render::TF_LINEAR, cgv::render::TF_LINEAR };
+	cgv::render::texture hue_tex = { "uint8[R,G,B]", cgv::render::TF_LINEAR, cgv::render::TF_LINEAR };
 
 	rgb rgb_color = rgb(0.0f);
 	rgba rgba_color = rgba(0.0f);
@@ -89,8 +89,8 @@ protected:
 	void update_layout(const ivec2& parent_size);
 
 	void init_styles() override;
-	void init_textures(cgv::render::context& ctx);
-	void update_color_texture();
+	bool create_hue_texture(cgv::render::context& ctx);
+	bool create_color_texture(cgv::render::context& ctx);
 	void update_color();
 	void update_texts();
 
