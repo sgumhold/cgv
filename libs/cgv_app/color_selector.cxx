@@ -367,12 +367,6 @@ bool color_selector::create_hue_texture(cgv::render::context& ctx) {
 
 bool color_selector::create_color_texture(cgv::render::context& ctx) {
 	
-	//std::vector<uint8_t> data(3 * 4, 0u);
-	//data[6] = 255u;
-	//data[7] = 255u;
-	//data[8] = 255u;
-
-	
 	rgb color = { 0.0f };
 	if(selector_handles.size() > 1)
 		color = cgv::media::color<float, cgv::media::HLS>(selector_handles[1].val.y(), 0.5f, 1.0f);
@@ -383,81 +377,11 @@ bool color_selector::create_color_texture(cgv::render::context& ctx) {
 		{ 255, 255, 255 },
 		rgb8(color)
 	};
-	//data[6] = 255u;
-	//data[7] = 255u;
-	//data[8] = 255u;
-	//data[9] = 255u;
 
-	//color_tex.destruct(ctx);
 	cgv::data::data_format data_format(2, 2, cgv::type::info::TI_UINT8, cgv::data::CF_RGB);
 	cgv::data::data_view data_view(&data_format, data.data());
 	return color_tex.create(ctx, data_view, 0);
 }
-
-/*
-void color_selector::init_textures(cgv::render::context& ctx) {
-
-	std::vector<uint8_t> data(3*4, 0u);
-
-	data[6] = 255u;
-	data[7] = 255u;
-	data[8] = 255u;
-	data[9] = 255u;
-	
-	color_tex.destruct(ctx);
-	cgv::data::data_format color_data_format(2, 2, cgv::type::info::TI_UINT8, cgv::data::CF_RGB);
-	cgv::data::data_view color_data_view(&color_data_format, data.data());
-	color_tex.create(ctx, color_data_view, 0);
-
-	std::vector<uint8_t> hue_data(2*3*256);
-
-	for(size_t i = 0; i < 256; ++i) {
-		float hue = static_cast<float>(i) / 255.0f;
-		rgb color = cgv::media::color<float, cgv::media::HLS>(hue, 0.5f, 1.0f);
-
-		uint8_t col8[3];
-		col8[0] = static_cast<uint8_t>(round(color.R() * 255.0f));
-		col8[1] = static_cast<uint8_t>(round(color.G() * 255.0f));
-		col8[2] = static_cast<uint8_t>(round(color.B() * 255.0f));
-
-		hue_data[6 * i + 0] = col8[0];
-		hue_data[6 * i + 1] = col8[1];
-		hue_data[6 * i + 2] = col8[2];
-		hue_data[6 * i + 3] = col8[0];
-		hue_data[6 * i + 4] = col8[1];
-		hue_data[6 * i + 5] = col8[2];
-	}
-
-	hue_tex.destruct(ctx);
-	cgv::data::data_view hue_dv = cgv::data::data_view(new cgv::data::data_format(2, 256, cgv::type::info::TI_UINT8, cgv::data::CF_RGB), hue_data.data());
-	hue_tex = cgv::render::texture("uint8[R,G,B]", cgv::render::TF_LINEAR, cgv::render::TF_LINEAR);
-	hue_tex.create(ctx, hue_dv, 0);
-}
-
-/*
-void color_selector::update_color_texture() {
-
-	if(!color_tex.is_created())
-		return;
-	
-	std::vector<uint8_t> data(3 * 4, 0u);
-	data[6] = 255u;
-	data[7] = 255u;
-	data[8] = 255u;
-	
-	const auto& hp = selector_handles[1];
-	rgb color = cgv::media::color<float, cgv::media::HLS>(hp.val.y(), 0.5f, 1.0f);
-
-	data[9]  = static_cast<uint8_t>(round(color.R() * 255.0f));
-	data[10] = static_cast<uint8_t>(round(color.G() * 255.0f));
-	data[11] = static_cast<uint8_t>(round(color.B() * 255.0f));
-
-	cgv::data::data_view color_dv = cgv::data::data_view(new cgv::data::data_format(2, 2, cgv::type::info::TI_UINT8, cgv::data::CF_RGB), data.data());
-
-	if(auto* ctx_ptr = get_context())
-		color_tex.replace(*ctx_ptr, 0, 0, color_dv);
-}
-*/
 
 void color_selector::update_color() {
 
