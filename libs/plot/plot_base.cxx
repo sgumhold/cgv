@@ -400,7 +400,7 @@ void plot_base::set_mapping_uniforms(cgv::render::context& ctx, cgv::render::sha
 	// Todo: Change check if gamma is removed
 	if (prog.get_uniform_location(ctx, "color_scale_gamma[0]") != -1) {
 		color_scale_adapter.set_color_scales({ color_scales.begin(), color_scales.end() });
-		color_scale_adapter.set_uniforms(ctx, prog, color_scale_texture_unit);
+		color_scale_adapter.set_uniforms_in_program(ctx, prog, color_scale_texture_unit);
 		prog.set_uniform_array(ctx, "color_scale_gamma", color_scale_gamma, MAX_NR_COLOR_MAPPINGS);
 	}
 	if (prog.get_uniform_location(ctx, "opacity_gamma[0]") != -1) {
@@ -881,7 +881,7 @@ void plot_base::draw_legend(cgv::render::context& ctx, int layer_idx, bool is_fi
 	aab_legend.enable(ctx);
 	legend_prog.enable(ctx);
 	set_mapping_uniforms(ctx, legend_prog);
-	color_scale_adapter.enable(ctx);
+	color_scale_adapter.enable(ctx, 0);
 	ctx.set_color(legend_color);
 	legend_prog.set_uniform(ctx, "depth_offset", -layer_idx * layer_depth);
 	int j = 1 - legend_axis;
@@ -1283,6 +1283,7 @@ bool plot_base::init(cgv::render::context& ctx)
 	float& v0 = P[0][3];
 	aab_legend.set_attribute_array(ctx, pos_idx, cgv::render::get_element_type(p0), vbo_legend, 0, P.size(), sizeof(vec4));
 	aab_legend.set_attribute_array(ctx, val_idx, cgv::render::get_element_type(v0), vbo_legend, sizeof(vec3), P.size(), sizeof(vec4));
+	color_scale_adapter.init(ctx);
 	return true;
 }
 
