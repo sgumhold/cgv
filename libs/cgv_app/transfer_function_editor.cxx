@@ -838,38 +838,6 @@ void transfer_function_editor::update_point_positions() {
 		draggable.set_position_and_update_uv(draggable.position);
 }
 
-/*
-void transfer_function_editor::update_color_map(bool is_data_change) {
-	cgv::render::context* ctx_ptr = get_context();
-	if(!ctx_ptr || !transfer_function) return;
-	cgv::render::context& ctx = *ctx_ptr;
-
-	//sort_points();
-
-	//cm.clear();
-
-	std::vector<std::pair<float, rgb>> colors;
-	std::vector<std::pair<float, float>> alphas;
-	colors.reserve(color_draggables.size());
-	alphas.reserve(opacity_draggables.size());
-
-	std::transform(color_draggables.begin(), color_draggables.end(), std::back_inserter(colors), [](const color_point& point) { return std::make_pair(point.val, point.col); });
-	std::transform(opacity_draggables.begin(), opacity_draggables.end(), std::back_inserter(alphas), [](const opacity_point& point) { return std::make_pair(point.val[0], point.val[1]); });
-
-	transfer_function->set_color_draggables(colors);
-	transfer_function->set_opacity_draggables(alphas);
-
-	create_preview_texture();
-	
-	update_geometry();
-
-	if(on_change_callback)
-		on_change_callback();
-
-	post_damage();
-}
-*/
-
 void transfer_function_editor::update_geometry() {
 	color_draggables_geometry.clear();
 	opacity_draggables_geometry.clear();
