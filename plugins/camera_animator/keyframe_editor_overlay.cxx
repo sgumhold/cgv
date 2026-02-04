@@ -69,7 +69,10 @@ bool keyframe_editor_overlay::handle_mouse_event(cgv::gui::mouse_event& e, cgv::
 	if(e.get_button() == cgv::gui::MB_LEFT_BUTTON && e.get_action() == cgv::gui::MA_PRESS) {
 		if(layout.marker_constraint.contains(local_mouse_pos))
 			set_frame(position_to_frame(local_mouse_pos.x() + layout.timeline_offset));
-			
+		
+		if(layout.timeline.contains(local_mouse_pos))
+			set_selected_frame(-1);
+
 		if(!scrollbar.empty()) {
 			auto& handle = scrollbar[0];
 
@@ -459,16 +462,16 @@ void keyframe_editor_overlay::handle_keyframe_drag(cgv::g2d::DragAction action) 
 	}
 	case cgv::g2d::DragAction::kDragEnd:
 	{
-		const auto selected = keyframes.get_selected();
-		if(selected) {
-			size_t frame = position_to_frame(static_cast<int>(round(selected->x() + 0.5f * selected->size.x())));
-			selected->x() = static_cast<float>(frame_to_position(selected->frame));
+		const auto selected_keyframe = keyframes.get_dragged();
+		if(selected_keyframe) {
+			size_t frame = position_to_frame(static_cast<int>(round(selected_keyframe->x() + 0.5f * selected_keyframe->size.x())));
+			selected_keyframe->x() = static_cast<float>(frame_to_position(selected_keyframe->frame));
 
-			bool was_selected = selected->frame == selected_frame;
+			bool was_selected = selected_keyframe->frame == selected_frame;
 
-			if(selected->frame != frame && data) {
-				if(data->move_keyframe(selected->frame, frame)) {
-					selected->x() = static_cast<float>(frame_to_position(frame));
+			if(selected_keyframe->frame != frame && data) {
+				if(data->move_keyframe(selected_keyframe->frame, frame)) {
+					selected_keyframe->x() = static_cast<float>(frame_to_position(frame));
 
 					post_recreate_layout();
 
@@ -484,12 +487,6 @@ void keyframe_editor_overlay::handle_keyframe_drag(cgv::g2d::DragAction action) 
 			set_selected_frame(-1);
 		}
 
-		break;
-	}
-	case cgv::g2d::DragAction::kSelect:
-	{
-		const auto selected = keyframes.get_selected();
-		set_selected_frame(selected ? selected->frame : -1);
 		break;
 	}
 	default:
