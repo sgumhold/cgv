@@ -76,7 +76,7 @@ protected:
 	bool invert_color = false;
 	bool flip_texture = false;
 
-	cgv::render::texture tex = cgv::render::texture("uint8[R,G,B,A]");
+	cgv::render::texture tex = { "uint8[R,G,B,A]" };
 
 	std::string title;
 	vec2 value_range = { 0.0f, 1.0f };
@@ -109,7 +109,6 @@ protected:
 	cgv::data::time_stamp build_time;
 
 	std::shared_ptr<const cgv::media::color_scale> color_scale;
-
 
 	void init_styles() override;
 	void create_texture();
