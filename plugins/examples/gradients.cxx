@@ -2,6 +2,7 @@
 #include <cgv/gui/provider.h>
 #include <cgv/media/transfer_function.h>
 #include <cgv/render/color_scale_adapter.h>
+#include <cgv/render/device_color_scale.h>
 #include <cgv/render/drawable.h>
 #include <cgv_gl/arrow_render_data.h>
 #include <cgv_gl/volume_renderer.h>
@@ -60,6 +61,10 @@ public:
 
 	bool init(cgv::render::context& ctx) {
 		cgv::render::ref_volume_renderer(ctx, 1);
+		if(!color_scale_adapter.init(ctx)) {
+			std::cout << "Error: could not initialize color_scale_adapter" << std::endl;
+			return false;
+		}
 
 		if(!arrows.init(ctx)) {
 			std::cout << "Error: could not initialize arrow render data" << std::endl;
@@ -79,7 +84,8 @@ public:
 			{ 0.0f, 0.0f },
 			{ 1.0f, 1.0f },
 		});
-		color_scale_adapter.set_color_scale(transfer_function);
+
+		color_scale_adapter.set_color_scale(std::make_shared<cgv::render::device_transfer_function>(transfer_function));
 		
 		create_test_volume(ctx);
 		return true;

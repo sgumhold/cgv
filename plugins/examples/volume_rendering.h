@@ -12,6 +12,7 @@
 #include <cgv_gl/volume_renderer.h>
 #include <cgv_gl/box_wire_render_data.h>
 #include <cgv_app/color_scale_legend.h>
+#include <cgv_app/color_selector.h>
 
 class volume_viewer :
 	public cgv::base::group,			// derive from group to support child nodes (needed for overlays)
@@ -23,6 +24,7 @@ protected:
 	/// store a pointer to the color map editor overlay which is used to edit the volume transfer function
 	cgv::app::transfer_function_editor_ptr transfer_function_editor;
 	cgv::app::color_scale_legend_ptr legend;
+	cgv::app::color_selector_ptr color_selector;
 
 	/// resolution of the volume
 	cgv::uvec3 vres;
@@ -50,8 +52,6 @@ protected:
 	/// render data for wireframe box
 	cgv::render::box_wire_render_data<> box_rd;
 	
-	void handle_transfer_function_change();
-
 	void update_bounding_box();
 
 	void load_transfer_function_preset();
