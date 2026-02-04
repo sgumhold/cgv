@@ -41,13 +41,20 @@ struct ColorScaleArguments {
 	vec2 domain;
 	bool clamped;
 	// specific arguments
+	int transform;
 	bool diverging;
 	float midpoint;
 	float exponent;
-	int transform;
+	float log_base;
+	float log_midpoint;
+	float log_lower_bound;
+	float log_upper_bound;
+	float log_sign;
 };
 
-uniform ColorScaleArguments color_scale_arguments[CGV_COLOR_SCALE_MAX_COLOR_SCALE_COUNT];
+layout(std140) uniform color_scale_argument_block {
+	ColorScaleArguments color_scale_arguments[CGV_COLOR_SCALE_MAX_COLOR_SCALE_COUNT];
+};
 
 float color_scale_map_range_safe(in float value, in float in_left, in float in_right, in float out_left, in float out_right) {
 	float size = in_right - in_left;
@@ -83,8 +90,8 @@ float color_scale_map_value(in float value, in ColorScaleArguments arguments) {
 				t = color_scale_map_range_safe(value, domain.x, arguments.midpoint, 0.0, 1.0);
 				t = 0.5 * (1.0 - pow(1.0 - t, arguments.exponent));
 			} else {
-				t = color_scale_map_range_safe(value, arguments.midpoint, domain.y, 0.0, 1.0);
 				t = 0.5 * pow(t, arguments.exponent) + 0.5;
+				t = color_scale_map_range_safe(value, arguments.midpoint, domain.y, 0.0, 1.0);
 			}
 		} else {
 			t = color_scale_map_range_safe(value, domain.x, domain.y, 0.0, 1.0);
@@ -93,7 +100,20 @@ float color_scale_map_value(in float value, in ColorScaleArguments arguments) {
 		break;
 	}
 	case CGV_COLOR_SCALE_TRANSFORM_LOG:
-		// Todo: Implement log and symlog (for diverging mapping) transform.
+		t = log(arguments.log_sign * value) / arguments.log_base;
+		if(arguments.diverging) {
+			if(value < arguments.midpoint) {
+				t = color_scale_map_range_safe(t, arguments.log_lower_bound, arguments.log_midpoint, 0.0, 0.5);
+			} else {
+				t = color_scale_map_range_safe(t, arguments.log_midpoint, arguments.log_upper_bound, 0.5, 1.0);
+			}
+		} else {
+			t = color_scale_map_range_safe(t, arguments.log_lower_bound, arguments.log_upper_bound, 0.0, 1.0);
+		}
+		if(isnan(t))
+			t = 0.0;
+		t *= arguments.log_sign;
+
 		break;
 	}
 
