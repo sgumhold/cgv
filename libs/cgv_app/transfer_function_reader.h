@@ -4,7 +4,7 @@
 
 #include <cgv/base/import.h>
 #include <cgv/media/image/image_reader.h>
-#include <cgv/render/color_map.h>
+#include <cgv/media/transfer_function.h>
 #include <cgv/utils/file.h>
 
 #include <tinyxml2/tinyxml2.h>
@@ -13,7 +13,7 @@
 namespace cgv {
 namespace app {
 
-class color_map_reader {
+class transfer_function_reader {
 public:
 	// configuration for xml tag and attribute name identifiers
 	struct identifier_config {
@@ -36,8 +36,8 @@ public:
 		return default_ic;
 	}
 
-	// data structure of loaded color maps result
-	typedef std::vector<std::pair<std::string, cgv::render::color_map>> result;
+	// data structure of loaded transfer function result
+	typedef std::vector<std::pair<std::string, std::shared_ptr<cgv::media::transfer_function>>> result;
 
 private:
 	struct point_info {
@@ -49,7 +49,6 @@ private:
 	};
 
 	static void extract_value(const tinyxml2::XMLElement& elem, const std::string& name, bool as_float, float& value) {
-
 		if(as_float) {
 			elem.QueryFloatAttribute(name.c_str(), &value);
 		} else {
@@ -60,7 +59,6 @@ private:
 	}
 
 	static point_info extract_control_point(const tinyxml2::XMLElement& elem, const identifier_config& config) {
-
 		point_info pi;
 		extract_value(elem, config.position_value_id, true, pi.x);
 		extract_value(elem, config.opactiy_value_id, config.opacity_value_type_float, pi.o);
@@ -71,9 +69,8 @@ private:
 	}
 
 	static void extract_color_map(const tinyxml2::XMLElement& elem, result& entries, const identifier_config& config) {
-
 		std::string name = elem.Attribute("name");
-		cgv::render::color_map cm;
+		auto transfer_function = std::make_shared<cgv::media::transfer_function>();
 
 		auto child = elem.FirstChildElement();
 		while(child) {
@@ -94,11 +91,11 @@ private:
 							col[1] = pow(col[1], 2.2f);
 							col[2] = pow(col[2], 2.2f);
 						}
-						cm.add_color_point(pi.x, col);
+						transfer_function->add_color_point(pi.x, col);
 					}
 
 					if(!(pi.o < 0.0f)) {
-						cm.add_opacity_point(pi.x, cgv::math::clamp(pi.o, 0.0f, 1.0f));
+						transfer_function->add_opacity_point(pi.x, cgv::math::clamp(pi.o, 0.0f, 1.0f));
 					}
 				}
 			}
@@ -106,12 +103,11 @@ private:
 			child = child->NextSiblingElement();
 		}
 
-		if(!cm.empty())
-			entries.push_back({ name, cm });
+		if(!transfer_function->empty())
+			entries.push_back({ name, transfer_function });
 	}
 
 	static void extract_color_maps(const tinyxml2::XMLElement& elem, result& entries, const identifier_config& config) {
-
 		cgv::xml::FindElementByNameVisitor findElementByName("ColorMaps");
 		elem.Accept(&findElementByName);
 
@@ -128,7 +124,6 @@ private:
 
 public:
 	static bool read_from_xml(const tinyxml2::XMLElement& elem, result& entries, const identifier_config& config = default_identifier_config()) {
-
 		entries.clear();
 		extract_color_maps(elem, entries, config);
 
@@ -136,7 +131,6 @@ public:
 	}
 
 	static bool read_from_xml(const tinyxml2::XMLDocument& doc, result& entries, const identifier_config& config = default_identifier_config()) {
-
 		if(const tinyxml2::XMLElement* elem = doc.RootElement())
 			return read_from_xml(*elem, entries, config);
 
@@ -144,7 +138,6 @@ public:
 	}
 
 	static bool read_from_xml_string(const std::string& xml, result& entries, const identifier_config& config = default_identifier_config()) {
-		
 		tinyxml2::XMLDocument doc;
 		if(doc.Parse(xml.c_str()) == tinyxml2::XML_SUCCESS)
 			return read_from_xml(doc, entries, config);
@@ -153,7 +146,6 @@ public:
 	}
 
 	static bool read_from_xml_file(const std::string& file_name, result& entries, const identifier_config& config = default_identifier_config()) {
-		
 		tinyxml2::XMLDocument doc;
 		if(doc.LoadFile(file_name.c_str()) == tinyxml2::XML_SUCCESS)
 			return read_from_xml(doc, entries, config);
@@ -162,7 +154,6 @@ public:
 	}
 
 	static bool read_from_image_file(const std::string& file_name, result& entries) {
-
 		entries.clear();
 
 		if(!cgv::utils::file::exists(file_name))
@@ -188,7 +179,7 @@ public:
 				}
 			}
 
-			cgv::render::color_map cm;
+			auto transfer_function = std::make_shared<cgv::media::transfer_function>();
 			float step = 1.0f / static_cast<float>(format.get_width() - 1);
 			float t = 0.0f;
 
@@ -196,7 +187,7 @@ public:
 				switch(format.get_nr_components()) {
 				case 1u:
 					for(size_t x = 0; x < format.get_width(); ++x) {
-						cm.add_color_point(t, cgv::rgb(data.get<float>(0, 0, x) / max_value));
+						transfer_function->add_color_point(t, cgv::rgb(data.get<float>(0, 0, x) / max_value));
 						t += step;
 					}
 					break;
@@ -206,14 +197,14 @@ public:
 						float r = data.get<float>(0, 0, x) / max_value;
 						float g = data.get<float>(1, 0, x) / max_value;
 						float b = data.get<float>(2, 0, x) / max_value;
-						cm.add_color_point(t, cgv::rgb(r, g, b));
+						transfer_function->add_color_point(t, cgv::rgb(r, g, b));
 						t += step;
 					}
 
 					if(format.get_nr_components() == 4u) {
 						t = 0.0f;
 						for(size_t x = 0; x < format.get_width(); ++x) {
-							cm.add_opacity_point(t, data.get<float>(3, 0, x) / max_value);
+							transfer_function->add_opacity_point(t, data.get<float>(3, 0, x) / max_value);
 							t += step;
 						}
 					}
@@ -223,7 +214,7 @@ public:
 				}
 			}
 
-			entries.push_back({ name, cm });
+			entries.push_back({ name, transfer_function });
 		}
 
 		return !entries.empty();
