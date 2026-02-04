@@ -106,6 +106,10 @@ public:
 		return interpolator_->at(t);
 	}
 
+	std::vector<cgv::rgb> quantize(size_t n) const {
+		return interpolator_->quantize(n);
+	}
+
 private:
 	std::shared_ptr<const interpolator_type> interpolator_;
 };
@@ -125,16 +129,16 @@ public:
 		if(variants_.empty())
 			return {};
 
-		// If available, return the variant with the exact requested size.
+		// Return the variant with the exact requested size if available.
 		auto it = variants_.find(n);
 		if(it != variants_.end())
 			return it->second;
 
-		// Otherwise find the next largest sequence.
+		// Otherwise find the next largest variant.
 		it = variants_.upper_bound(n);
 
 		if(type == ColorSchemeType::kCategorical) {
-			// For categorical-type schemes the colros are not interpolated, so return at least n colors or the maximum available amount.
+			// For categorical-type schemes the colors are not interpolated, so return at least n colors or the maximum available amount.
 			if(it == variants_.end())
 				--it;
 			return it->second;

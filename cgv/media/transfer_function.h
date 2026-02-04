@@ -9,34 +9,23 @@
 #include "color.h"
 #include "color_scale.h"
 
+#include "lib_begin.h"
+
 namespace cgv {
 namespace media {
 
-// Todo: Set modified when internals changed.
-
-class transfer_function : public color_scale {
+class CGV_API transfer_function : public color_scale {
 public:
 	using color_type = cgv::rgb;
 	using opacity_type = float;
 	using color_point_type = std::pair<float, color_type>;
 	using opacity_point_type = std::pair<float, opacity_type>;
 
-	//enum class Interpolation {
-	//	kNone,
-	//	kLinear,
-	//	kSmooth
-	//};
-
 	transfer_function() {}
 
-	transfer_function(std::initializer_list<color_point_type> colors) {
-		set_color_points(colors);
-	}
+	transfer_function(std::initializer_list<color_point_type> colors);
 
-	transfer_function(std::initializer_list<color_point_type> colors, std::initializer_list<opacity_point_type> opacities) {
-		set_color_points(colors);
-		set_opacity_points(opacities);
-	}
+	transfer_function(std::initializer_list<color_point_type> colors, std::initializer_list<opacity_point_type> opacities);
 
 	bool is_opaque() const override {
 		return opacity_points_.empty();
@@ -46,139 +35,43 @@ public:
 		return false;
 	}
 
-	// Todo: Rescale, reverse, to_log, to_linear?
-
-	void set_color_points(const std::vector<color_point_type>& colors) {
-		color_points_ = colors;
-		sort_points(color_points_);
-		// Only call modified if this did not already happen in update_domain.
-		if(!update_domain())
-			modified();
+	bool empty() const {
+		return color_points_.empty() && opacity_points_.empty();
 	}
 
-	void set_opacity_points(const std::vector<opacity_point_type>& opacities) {
-		opacity_points_ = opacities;
-		sort_points(opacity_points_);
-		// Only call modified if this did not already happen in update_domain.
-		if(!update_domain())
-			modified();
-	}
+	// Todo: Add rescale function to rescale all poitns to a new domain.
 
-	void add_color_point(float t, const color_type& color) {
-		// Remove any previous point at this position.
-		remove_color_point(t);
+	void set_color_points(const std::vector<color_point_type>& colors);
 
-		color_points_.push_back({ t, color });
-		sort_points(color_points_);
-		// Only call modified if this did not already happen in update_domain.
-		if(!update_domain())
-			modified();
-	}
+	void set_opacity_points(const std::vector<opacity_point_type>& opacities);
 
-	void add_opacity_point(float t, float opacity) {
-		// Remove any previous point at this position.
-		remove_opacity_point(t);
+	void add_color_point(float t, const color_type& color);
 
-		opacity_points_.push_back({ t, opacity });
-		sort_points(opacity_points_);
-		// Only call modified if this did not already happen in update_domain.
-		if(!update_domain())
-			modified();
-	}
+	void add_opacity_point(float t, float opacity);
 
-	bool remove_color_point(float t) {
-		if(remove_point(color_points_, t)) {
-			modified();
-			return true;
-		}
-		return false;
-	}
+	bool remove_color_point(float t);
 
-	bool remove_opacity_point(float t) {
-		if(remove_point(opacity_points_, t)) {
-			modified();
-			return true;
-		}
-		return false;
-	}
+	bool remove_opacity_point(float t);
 
-	void set_domain(cgv::vec2 domain) override {
-		// Todo: Set domain, update points and call modified.
-	}
+	void set_domain(cgv::vec2 domain) override;
 
-	cgv::rgba get_mapped_value(float value) const override {
-		cgv::rgb color = get_mapped_color(value);
-		float opacity = get_mapped_opacity(value);
+	cgv::rgba get_mapped_value(float value) const override;
 
-		return { color.R(), color.G(), color.B(), opacity };
-	}
+	cgv::rgb get_mapped_color(float value) const override;
 
-	// Todo: add override
-	cgv::rgb get_mapped_color(float value) const {
-		// Todo: Clamp t to domain if enabled. If not, check if t is outside domain and return unknown color.
-		if(color_points_.empty())
-			return { 0.0f };
-		return interpolate(color_points_, value);
-	}
+	float get_mapped_opacity(float value) const override;
 
-	float get_mapped_opacity(float value) const {
-		if(opacity_points_.empty())
-			return 1.0f;
-		return interpolate(opacity_points_, value);
-	}
+	std::vector<cgv::rgba> quantize(size_t n) const override;
 
-	std::vector<cgv::rgba> quantize(size_t n) const override {
-		const std::vector<cgv::rgb> colors = quantize_color(n);
-		const std::vector<float> opacities = quantize_opacity(n);
+	std::vector<cgv::rgb> quantize_color(size_t count) const;
 
-		std::vector<cgv::rgba> values;
-		values.reserve(n);
-		std::transform(colors.begin(), colors.end(), opacities.begin(), std::back_inserter(values), [](const cgv::rgba& color, float opacity) {
-			return cgv::rgba(color, opacity);
-		});
+	std::vector<float> quantize_opacity(size_t count) const;
 
-		//for(size_t i = 0; i < n; ++i) {
-		//	const cgv::rgb& color = colors[i];
-		//	data.push_back({ color.R(), color.G(), color.B(), opacities[i] });
-		//}
+	void clear();
 
-		return values;
-	}
+	void clear_color_points();
 
-	std::vector<cgv::rgb> quantize_color(size_t count) const {
-		if(color_points_.empty())
-			return std::vector<cgv::rgb>(count, { 0.0f });
-
-		std::vector<cgv::rgb> colors = quantize(color_points_, count);
-		if(is_reversed())
-			std::reverse(colors.begin(), colors.end());
-		return colors;
-	}
-
-	std::vector<float> quantize_opacity(size_t count) const {
-		if(opacity_points_.empty())
-			return std::vector<float>(count, 1.0f);
-		std::vector<float> opacities = quantize(opacity_points_, count);
-		if(is_reversed())
-			std::reverse(opacities.begin(), opacities.end());
-		return opacities;
-	}
-
-	void clear() {
-		color_points_.clear();
-		opacity_points_.clear();
-		update_domain();
-	}
-
-	void clear_color_points() {
-		color_points_.clear();
-		update_domain();
-	}
-
-	void clear_opacity_points() {
-		opacity_points_.clear();
-		update_domain();
-	}
+	void clear_opacity_points();
 
 	const std::vector<color_point_type>& get_color_points() const {
 		return color_points_;
@@ -204,8 +97,11 @@ private:
 	}
 
 	template<typename value_type>
-	void sort_points(std::vector<std::pair<float, value_type>>& points) {
+	void sort_points_and_update_domain(std::vector<std::pair<float, value_type>>& points) {
 		std::sort(points.begin(), points.end(), [](const auto& lhs, const auto& rhs) { return lhs.first < rhs.first; });
+		// Only call modified if this did not already happen in update_domain.
+		if(!update_domain())
+			modified();
 	}
 
 	template<typename value_type>
@@ -234,25 +130,7 @@ private:
 			return interpolate_step_n(points, n);
 	}
 
-	bool update_domain() {
-		cgv::vec2 old_domain = get_domain();
-
-		cgv::vec2 domain = { 0.0f };
-		if(!color_points_.empty()) {
-			domain[0] = color_points_.front().first;
-			domain[1] = color_points_.back().first;
-		}
-		if(!opacity_points_.empty()) {
-			domain[0] = std::min(domain[0], opacity_points_.front().first);
-			domain[1] = std::max(domain[1], opacity_points_.back().first);
-		}
-
-		if(old_domain != domain) {
-			set_domain(domain);
-			return true;
-		}
-		return false;
-	}
+	bool update_domain();
 
 	std::vector<color_point_type> color_points_;
 	std::vector<opacity_point_type> opacity_points_;
@@ -260,3 +138,5 @@ private:
 
 } // namespace media
 } // namespace cgv
+
+#include <cgv/config/lib_end.h>
