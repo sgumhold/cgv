@@ -494,7 +494,8 @@ void plot3d::draw_ticks(cgv::render::context& ctx)
 		ctx.set_color(get_domain_config_ptr()->axis_configs[tbc.ai].color);
 		for (unsigned i = tbc.first_label; i < tbc.first_label + tbc.label_count; ++i) {
 			const label_info& li = tick_labels[i];
-			ctx.set_cursor(li.position, li.label, li.align);
+			cgv::vec3 label_position = cgv::vec3::from_vec(li.position);
+			ctx.set_cursor(label_position, li.label, li.align);
 			ctx.output_stream() << li.label;
 			ctx.output_stream().flush();
 		}
@@ -526,7 +527,9 @@ void plot3d::draw(cgv::render::context& ctx)
 	if (legend_components != LC_HIDDEN)
 		draw_legend(ctx);
 
+	color_scale_adapter.enable(ctx, color_scale_texture_unit);
 	draw_sub_plots(ctx);
+	color_scale_adapter.disable(ctx);
 	ctx.pop_modelview_matrix();
 
 	if (!blend)
