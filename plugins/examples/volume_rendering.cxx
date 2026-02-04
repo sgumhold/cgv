@@ -51,16 +51,23 @@ volume_viewer::volume_viewer() : group("Volume Viewer"), depth_tex("[D]")
 	transfer_function_editor->gui_options.show_heading = false;
 	// enable support for editing opacity values
 	transfer_function_editor->set_opacity_support(true);
-	// connect a callback function to handle changes of the transfer function
-	transfer_function_editor->set_on_change_callback(std::bind(&volume_viewer::handle_transfer_function_change, this));
-	
+	// if the color scale pointer does not change it is sufficient to set it only once in the editor
 	transfer_function_editor->set_transfer_function(transfer_function);
+
+	color_selector = create_and_append_child<cgv::app::color_selector>("Color Selector");
+	color_selector->set_alignment(cgv::app::overlay::AlignmentOption::AO_END, cgv::app::overlay::AlignmentOption::AO_END);
+
+	// use the convenience connect function to establish a two-way binding between the editor and color selector;
+	// this allows changing control point colors through the selector
+	cgv::app::connect_color_selector_to_transfer_function_editor(transfer_function_editor, color_selector);
 
 	// instantiate a color scale legend to show the used transfer function
 	legend = create_and_append_child<cgv::app::color_scale_legend>("Legend");
 	// place the legend in the top left corner
 	legend->set_alignment(cgv::app::overlay::AlignmentOption::AO_START, cgv::app::overlay::AlignmentOption::AO_END);
 	legend->set_title("Density");
+	// if the color scale pointer does not change it is sufficient to set it only once in the legend; all updates will happen automatically
+	legend->set_color_scale(transfer_function);
 }
 
 void volume_viewer::stream_stats(std::ostream& os)
@@ -152,13 +159,18 @@ void volume_viewer::clear(cgv::render::context& ctx)
 bool volume_viewer::init(cgv::render::context& ctx)
 {
 	cgv::render::ref_volume_renderer(ctx, 1);
+	
+	if(!color_scale_adapter.init(ctx)) {
+		std::cout << "Error: could not initialize color_scale_adapter" << std::endl;
+		return false;
+	}
 
 	// init the box wire render data object
 	box_rd.init(ctx);
 	// add the volume bounding box
 	box_rd.add(volume_bounding_box.get_center(), volume_bounding_box.get_extent());
 
-	color_scale_adapter.set_color_scale(transfer_function);
+	color_scale_adapter.set_color_scale(std::make_shared<cgv::render::device_transfer_function>(transfer_function));
 	load_transfer_function_preset();
 
 	create_volume(ctx);
@@ -166,17 +178,9 @@ bool volume_viewer::init(cgv::render::context& ctx)
 }
 
 void volume_viewer::init_frame(cgv::render::context& ctx) {
-	if(!view_ptr) {
+	if(!view_ptr)
 		view_ptr = find_view_as_node();
-		
-		if(view_ptr) {
-			// do one-time initialization
-			//if(transfer_function_editor)
-			//	transfer_function_editor->set_transfer_function(transfer_function_tex.transfer_function);
-			//if(transfer_function_legend_ptr)
-			//	transfer_function_legend_ptr->set_color_map(ctx, transfer_function);
-		}
-	}
+
 	if (depth_tex.is_created() && (ctx.get_width() != depth_tex.get_width() || ctx.get_height() != depth_tex.get_height()))
 		depth_tex.destruct(ctx);
 
@@ -242,17 +246,8 @@ void volume_viewer::create_gui()
 	add_decorator("Transfer Function", "heading", "level=3");
 	add_member_control(this, "Preset", reinterpret_cast<cgv::type::DummyEnum&>(transfer_function_preset), "dropdown", "enums='#1 (White),#2,#3 (Aneurysm),#4 (Head)'");
 
-	//inline_object_gui(transfer_function_editor_ptr);
-	//inline_object_gui(transfer_function_legend_ptr);
-}
-
-void volume_viewer::handle_transfer_function_change() {
-
-	if(auto ctx = get_context()) {
-		//color_scale_adapter.create_texture(*ctx);
-		//if(legend)
-		//	legend->set_color_scale(transfer_function);
-	}
+	inline_object_gui(transfer_function_editor);
+	inline_object_gui(legend);
 }
 
 void volume_viewer::update_bounding_box() {
@@ -353,15 +348,9 @@ void volume_viewer::load_transfer_function_preset() {
 	transfer_function->set_color_points(color_points);
 	transfer_function->set_opacity_points(opacity_points);
 
-	if(auto ctx = get_context()) {
-		// create the texture of the interpolated transfer function values
-		//color_scale_adapter.create_texture(*ctx);
-
-		//if(transfer_function_editor)
-		//	transfer_function_editor->set_transfer_function(transfer_function);
-		//if(legend)
-		//	legend->set_color_scale(transfer_function);
-	}
+	// When the transfer function is chnaged from outside the editor, it must be manually notified about this change in order to update its internals.
+	if(transfer_function_editor)
+		transfer_function_editor->notify_transfer_function_change();
 }
 
 void volume_viewer::create_volume(cgv::render::context& ctx) {
@@ -423,10 +412,8 @@ void volume_viewer::splat_spheres(std::vector<float>& vol_data, float voxel_size
 	const cgv::vec3& b = volume_bounding_box.ref_max_pnt();
 
 	for(size_t i = 0; i < n; ++i) {
-		cgv::vec3 pos;
-		pos.x() = cgv::math::lerp(a.x(), b.x(), distr(rng));
-		pos.y() = cgv::math::lerp(a.y(), b.y(), distr(rng));
-		pos.z() = cgv::math::lerp(a.z(), b.z(), distr(rng));
+		cgv::vec3 t = { distr(rng), distr(rng), distr(rng) };
+		cgv::vec3 pos = cgv::math::lerp(a, b, t);
 		splat_sphere(vol_data, voxel_size, pos, radius, contribution);
 	}
 }
@@ -434,7 +421,7 @@ void volume_viewer::splat_spheres(std::vector<float>& vol_data, float voxel_size
 // splats a single sphere of given radius into the volume by adding the contribution value to the voxel cells
 void volume_viewer::splat_sphere(std::vector<float>& vol_data, float voxel_size, const cgv::vec3& pos, float radius, float contribution) {
 
-	// compute the spheres bounding box
+	// compute the sphere's bounding box
 	cgv::box3 box(pos - radius, pos + radius);
 	box.ref_max_pnt() -= 0.005f * voxel_size;
 
@@ -448,16 +435,13 @@ void volume_viewer::splat_sphere(std::vector<float>& vol_data, float voxel_size,
 	sidx = cgv::math::clamp(sidx, cgv::ivec3(0), res - 1);
 	eidx = cgv::math::clamp(eidx, cgv::ivec3(0), res - 1);
 
+	cgv::ivec3 idx = { 0 };
 	// for each covered voxel...
-	for(int z = sidx.z(); z <= eidx.z(); ++z) {
-		for(int y = sidx.y(); y <= eidx.y(); ++y) {
-			for(int x = sidx.x(); x <= eidx.x(); ++x) {
+	for(idx.z() = sidx.z(); idx.z() <= eidx.z(); ++idx.z()) {
+		for(idx.y() = sidx.y(); idx.y() <= eidx.y(); ++idx.y()) {
+			for(idx.x() = sidx.x(); idx.x() <= eidx.x(); ++idx.x()) {
 				// ...get its center location in world space
-				cgv::vec3 voxel_pos(
-					static_cast<float>(x),
-					static_cast<float>(y),
-					static_cast<float>(z)
-				);
+				cgv::vec3 voxel_pos = static_cast<cgv::vec3>(idx);
 				voxel_pos *= voxel_size;
 				voxel_pos += volume_bounding_box.ref_min_pnt() + 0.5f*voxel_size;
 
@@ -468,7 +452,7 @@ void volume_viewer::splat_sphere(std::vector<float>& vol_data, float voxel_size,
 					// modulate contribution by distance to sphere center
 					float dist_factor = 1.0f - (dist / radius);
 					dist_factor = sqrt(dist_factor);
-					vol_data[x + vres.x()*y + vres.x()*vres.y()*z] += contribution * dist_factor;
+					vol_data[static_cast<size_t>(idx.x() + vres.x()*idx.y() + vres.x()*vres.y()*idx.z())] += contribution * dist_factor;
 				}
 			}
 		}
@@ -584,12 +568,11 @@ void volume_viewer::load_volume_from_file(const std::string& file_name) {
 			std::size_t nr = fread(raw_vol_data.data(), 1, num_voxels, fp);
 			if(nr != num_voxels) {
 				std::cout << "Error: could not read the expected number " << num_voxels << " of voxels but only " << nr << "." << std::endl;
-				fclose(fp);
 			}
+			fclose(fp);
 		} else {
 			std::cout << "Error: failed to read voxel file." << std::endl;
 		}
-		fclose(fp);
 
 		for(size_t i = 0; i < num_voxels; ++i)
 			vol_data[i] = static_cast<float>(raw_vol_data[i] / 255.0f);
@@ -649,8 +632,8 @@ void volume_viewer::create_histogram() {
 		++histogram[bucket];
 	}
 
-	//if(transfer_function_editor_ptr)
-	//	transfer_function_editor_ptr->set_histogram_data(histogram);
+	if(transfer_function_editor)
+		transfer_function_editor->set_histogram_data(histogram);
 }
 
 #include <cgv/base/register.h>
