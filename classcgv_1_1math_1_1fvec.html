@@ -302,8 +302,12 @@ Public Member Functions</h2></td></tr>
 <tr class="separator:a24a121eb032199d623ce9d7aa51aac5a"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a91360984269586a7dc86788e02b919ce" id="r_a91360984269586a7dc86788e02b919ce"><td class="memTemplParams" colspan="2">template&lt;typename S &gt; </td></tr>
 <tr class="memitem:a91360984269586a7dc86788e02b919ce"><td class="memTemplItemLeft" align="right" valign="top">bool&#160;</td><td class="memTemplItemRight" valign="bottom"><a class="el" href="classcgv_1_1math_1_1fvec.html#a91360984269586a7dc86788e02b919ce">operator!=</a> (const <a class="el" href="classcgv_1_1math_1_1fvec.html">fvec</a>&lt; S, N &gt; &amp;v) const</td></tr>
-<tr class="memdesc:a91360984269586a7dc86788e02b919ce"><td class="mdescLeft">&#160;</td><td class="mdescRight">test for inequality  <br /></td></tr>
+<tr class="memdesc:a91360984269586a7dc86788e02b919ce"><td class="mdescLeft">&#160;</td><td class="mdescRight">test for unequal  <br /></td></tr>
 <tr class="separator:a91360984269586a7dc86788e02b919ce"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a589ff6a2c5ebb28938a0d91016bb1fae" id="r_a589ff6a2c5ebb28938a0d91016bb1fae"><td class="memTemplParams" colspan="2">template&lt;typename S &gt; </td></tr>
+<tr class="memitem:a589ff6a2c5ebb28938a0d91016bb1fae"><td class="memTemplItemLeft" align="right" valign="top">bool&#160;</td><td class="memTemplItemRight" valign="bottom"><a class="el" href="classcgv_1_1math_1_1fvec.html#a589ff6a2c5ebb28938a0d91016bb1fae">operator&lt;</a> (const <a class="el" href="classcgv_1_1math_1_1fvec.html">fvec</a>&lt; S, N &gt; &amp;v) const</td></tr>
+<tr class="memdesc:a589ff6a2c5ebb28938a0d91016bb1fae"><td class="mdescLeft">&#160;</td><td class="mdescRight">define smaller operator based on component comparison with significance increasing from 0 to N-1, such that fvec can be used as keys in maps  <br /></td></tr>
+<tr class="separator:a589ff6a2c5ebb28938a0d91016bb1fae"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a5cd801220df833f820048962abe40d89" id="r_a5cd801220df833f820048962abe40d89"><td class="memItemLeft" align="right" valign="top">T&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcgv_1_1math_1_1fvec.html#a5cd801220df833f820048962abe40d89">sqr_length</a> () const</td></tr>
 <tr class="memdesc:a5cd801220df833f820048962abe40d89"><td class="mdescLeft">&#160;</td><td class="mdescRight">square length of vector  <br /></td></tr>
 <tr class="separator:a5cd801220df833f820048962abe40d89"><td class="memSeparator" colspan="2">&#160;</td></tr>
@@ -777,7 +781,7 @@ template&lt;typename T , <a class="el" href="namespacecgv_1_1type.html#a946d7ae2
 
 <p>componentwise absolute values </p>
 
-<p class="definition">Definition at line <a class="el" href="fvec_8h_source.html#l00271">271</a> of file <a class="el" href="fvec_8h_source.html">fvec.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="fvec_8h_source.html#l00281">281</a> of file <a class="el" href="fvec_8h_source.html">fvec.h</a>.</p>
 
 </div>
 </div>
@@ -904,7 +908,7 @@ template&lt;typename T , <a class="el" href="namespacecgv_1_1type.html#a946d7ae2
 
 <p>ceil componentwise </p>
 
-<p class="definition">Definition at line <a class="el" href="fvec_8h_source.html#l00278">278</a> of file <a class="el" href="fvec_8h_source.html">fvec.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="fvec_8h_source.html#l00288">288</a> of file <a class="el" href="fvec_8h_source.html">fvec.h</a>.</p>
 
 </div>
 </div>
@@ -1063,7 +1067,7 @@ template&lt;typename T , <a class="el" href="namespacecgv_1_1type.html#a946d7ae2
 
 <p>floor componentwise </p>
 
-<p class="definition">Definition at line <a class="el" href="fvec_8h_source.html#l00283">283</a> of file <a class="el" href="fvec_8h_source.html">fvec.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="fvec_8h_source.html#l00293">293</a> of file <a class="el" href="fvec_8h_source.html">fvec.h</a>.</p>
 
 </div>
 </div>
@@ -1095,7 +1099,7 @@ template&lt;typename T , <a class="el" href="namespacecgv_1_1type.html#a946d7ae2
 
 <p>conversion from vector </p>
 
-<p class="definition">Definition at line <a class="el" href="fvec_8h_source.html#l00730">730</a> of file <a class="el" href="fvec_8h_source.html">fvec.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="fvec_8h_source.html#l00740">740</a> of file <a class="el" href="fvec_8h_source.html">fvec.h</a>.</p>
 
 <p class="reference">References <a class="el" href="vec_8h_source.html#l00061">cgv::math::vec&lt; T &gt;::dim()</a>.</p>
 
@@ -1128,11 +1132,11 @@ template&lt;typename T , <a class="el" href="namespacecgv_1_1type.html#a946d7ae2
 
 <p>length of the vector L2-Norm </p>
 
-<p class="definition">Definition at line <a class="el" href="fvec_8h_source.html#l00257">257</a> of file <a class="el" href="fvec_8h_source.html">fvec.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="fvec_8h_source.html#l00267">267</a> of file <a class="el" href="fvec_8h_source.html">fvec.h</a>.</p>
 
-<p class="reference">References <a class="el" href="fvec_8h_source.html#l00250">cgv::math::fvec&lt; T, N &gt;::sqr_length()</a>.</p>
+<p class="reference">References <a class="el" href="fvec_8h_source.html#l00260">cgv::math::fvec&lt; T, N &gt;::sqr_length()</a>.</p>
 
-<p class="reference">Referenced by <a class="el" href="dual__contouring_8h_source.html#l00116">cgv::media::mesh::dual_contouring&lt; X, T &gt;::compute_cell_vertex()</a>, <a class="el" href="simple__mesh_8cxx_source.html#l00898">cgv::media::mesh::simple_mesh&lt; T &gt;::compute_face_normal()</a>, <a class="el" href="quaternion_8h_source.html#l00330">cgv::math::quaternion&lt; T &gt;::exp()</a>, <a class="el" href="gl__implicit__surface__drawable__base_8cxx_source.html#l00411">cgv::render::gl::gl_implicit_surface_drawable_base::extract_mesh()</a>, <a class="el" href="quaternion_8h_source.html#l00338">cgv::math::quaternion&lt; T &gt;::log()</a>, <a class="el" href="fvec_8h_source.html#l00293">cgv::math::fvec&lt; T, N &gt;::normalize()</a>, <a class="el" href="view_8cxx_source.html#l00242">cgv::render::view::rotate()</a>, <a class="el" href="fvec_8h_source.html#l00301">cgv::math::fvec&lt; T, N &gt;::safe_normalize()</a>, <a class="el" href="view_8cxx_source.html#l00148">cgv::render::view::set_eye_keep_extent()</a>, and <a class="el" href="view_8cxx_source.html#l00132">cgv::render::view::set_eye_keep_view_angle()</a>.</p>
+<p class="reference">Referenced by <a class="el" href="dual__contouring_8h_source.html#l00116">cgv::media::mesh::dual_contouring&lt; X, T &gt;::compute_cell_vertex()</a>, <a class="el" href="simple__mesh_8cxx_source.html#l00898">cgv::media::mesh::simple_mesh&lt; T &gt;::compute_face_normal()</a>, <a class="el" href="quaternion_8h_source.html#l00330">cgv::math::quaternion&lt; T &gt;::exp()</a>, <a class="el" href="gl__implicit__surface__drawable__base_8cxx_source.html#l00411">cgv::render::gl::gl_implicit_surface_drawable_base::extract_mesh()</a>, <a class="el" href="quaternion_8h_source.html#l00338">cgv::math::quaternion&lt; T &gt;::log()</a>, <a class="el" href="fvec_8h_source.html#l00303">cgv::math::fvec&lt; T, N &gt;::normalize()</a>, <a class="el" href="view_8cxx_source.html#l00242">cgv::render::view::rotate()</a>, <a class="el" href="fvec_8h_source.html#l00311">cgv::math::fvec&lt; T, N &gt;::safe_normalize()</a>, <a class="el" href="view_8cxx_source.html#l00148">cgv::render::view::set_eye_keep_extent()</a>, and <a class="el" href="view_8cxx_source.html#l00132">cgv::render::view::set_eye_keep_view_angle()</a>.</p>
 
 </div>
 </div>
@@ -1192,9 +1196,9 @@ template&lt;typename T , <a class="el" href="namespacecgv_1_1type.html#a946d7ae2
 
 <p>normalize the vector using the L2-Norm and return the length </p>
 
-<p class="definition">Definition at line <a class="el" href="fvec_8h_source.html#l00293">293</a> of file <a class="el" href="fvec_8h_source.html">fvec.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="fvec_8h_source.html#l00303">303</a> of file <a class="el" href="fvec_8h_source.html">fvec.h</a>.</p>
 
-<p class="reference">References <a class="el" href="fvec_8h_source.html#l00257">cgv::math::fvec&lt; T, N &gt;::length()</a>.</p>
+<p class="reference">References <a class="el" href="fvec_8h_source.html#l00267">cgv::math::fvec&lt; T, N &gt;::length()</a>.</p>
 
 <p class="reference">Referenced by <a class="el" href="gl__implicit__surface__drawable__base_8cxx_source.html#l00326">cgv::render::gl::gl_implicit_surface_drawable_base::compute_face_normal()</a>, <a class="el" href="convex__polyhedron_8h_source.html#l00185">cgv::media::mesh::convex_polyhedron&lt; T, TCDim &gt;::compute_face_plane()</a>, <a class="el" href="simple__mesh_8cxx_source.html#l00943">cgv::media::mesh::simple_mesh&lt; T &gt;::compute_face_tangents()</a>, <a class="el" href="simple__mesh_8cxx_source.html#l00787">cgv::media::mesh::simple_mesh&lt; T &gt;::compute_vertex_normals()</a>, <a class="el" href="simple__mesh_8cxx_source.html#l01118">cgv::media::mesh::simple_mesh&lt; T &gt;::dual()</a>, <a class="el" href="simple__mesh_8cxx_source.html#l01150">cgv::media::mesh::simple_mesh&lt; T &gt;::gyro()</a>, <a class="el" href="simple__mesh_8cxx_source.html#l01196">cgv::media::mesh::simple_mesh&lt; T &gt;::join()</a>, <a class="el" href="gl__implicit__surface__drawable__base_8cxx_source.html#l00302">cgv::render::gl::gl_implicit_surface_drawable_base::new_vertex()</a>, <a class="el" href="quaternion_8h_source.html#l00309">cgv::math::quaternion&lt; T &gt;::put_axis()</a>, <a class="el" href="view_8cxx_source.html#l00211">cgv::render::view::put_coordinate_system()</a>, <a class="el" href="vr__calib_8cxx_source.html#l00120">cgv::gui::vr_calibration::read_calibration()</a>, and <a class="el" href="vr__calib_8cxx_source.html#l00031">cgv::gui::vr_calibration::update_driver_calibration()</a>.</p>
 
@@ -1228,7 +1232,7 @@ template&lt;typename S &gt; </div>
 </table>
 </div><div class="memdoc">
 
-<p>test for inequality </p>
+<p>test for unequal </p>
 
 <p class="definition">Definition at line <a class="el" href="fvec_8h_source.html#l00240">240</a> of file <a class="el" href="fvec_8h_source.html">fvec.h</a>.</p>
 
@@ -1857,6 +1861,42 @@ template&lt;typename T , <a class="el" href="namespacecgv_1_1type.html#a946d7ae2
 
 </div>
 </div>
+<a id="a589ff6a2c5ebb28938a0d91016bb1fae" name="a589ff6a2c5ebb28938a0d91016bb1fae"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a589ff6a2c5ebb28938a0d91016bb1fae">&#9670;&#160;</a></span>operator&lt;()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<div class="memtemplate">
+template&lt;typename T , <a class="el" href="namespacecgv_1_1type.html#a946d7ae2eaadfe30e5b2c66601d64822">cgv::type::uint32_type</a> N&gt; </div>
+<div class="memtemplate">
+template&lt;typename S &gt; </div>
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">bool <a class="el" href="classcgv_1_1math_1_1fvec.html">cgv::math::fvec</a>&lt; T, N &gt;::operator&lt; </td>
+          <td>(</td>
+          <td class="paramtype">const <a class="el" href="classcgv_1_1math_1_1fvec.html">fvec</a>&lt; S, N &gt; &amp;&#160;</td>
+          <td class="paramname"><em>v</em></td><td>)</td>
+          <td> const</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">inline</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p>define smaller operator based on component comparison with significance increasing from 0 to N-1, such that fvec can be used as keys in maps </p>
+
+<p class="definition">Definition at line <a class="el" href="fvec_8h_source.html#l00247">247</a> of file <a class="el" href="fvec_8h_source.html">fvec.h</a>.</p>
+
+<p class="reference">References <a class="el" href="fvec_8h_source.html#l00152">cgv::math::fvec&lt; T, N &gt;::operator[]()</a>.</p>
+
+</div>
+</div>
 <a id="a24a121eb032199d623ce9d7aa51aac5a" name="a24a121eb032199d623ce9d7aa51aac5a"></a>
 <h2 class="memtitle"><span class="permalink"><a href="#a24a121eb032199d623ce9d7aa51aac5a">&#9670;&#160;</a></span>operator==()</h2>
 
@@ -1920,6 +1960,8 @@ template&lt;typename T , <a class="el" href="namespacecgv_1_1type.html#a946d7ae2
 <p>return a reference to the component at specified index i </p>
 
 <p class="definition">Definition at line <a class="el" href="fvec_8h_source.html#l00152">152</a> of file <a class="el" href="fvec_8h_source.html">fvec.h</a>.</p>
+
+<p class="reference">Referenced by <a class="el" href="fvec_8h_source.html#l00247">cgv::math::fvec&lt; T, N &gt;::operator&lt;()</a>.</p>
 
 </div>
 </div>
@@ -2114,7 +2156,7 @@ template&lt;typename T , <a class="el" href="namespacecgv_1_1type.html#a946d7ae2
 
 <p>round componentwise </p>
 
-<p class="definition">Definition at line <a class="el" href="fvec_8h_source.html#l00288">288</a> of file <a class="el" href="fvec_8h_source.html">fvec.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="fvec_8h_source.html#l00298">298</a> of file <a class="el" href="fvec_8h_source.html">fvec.h</a>.</p>
 
 </div>
 </div>
@@ -2145,9 +2187,9 @@ template&lt;typename T , <a class="el" href="namespacecgv_1_1type.html#a946d7ae2
 
 <p>normalize the vector using the L2-Norm and return the length; if length is zero the vector remains unchanged </p>
 
-<p class="definition">Definition at line <a class="el" href="fvec_8h_source.html#l00301">301</a> of file <a class="el" href="fvec_8h_source.html">fvec.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="fvec_8h_source.html#l00311">311</a> of file <a class="el" href="fvec_8h_source.html">fvec.h</a>.</p>
 
-<p class="reference">References <a class="el" href="fvec_8h_source.html#l00257">cgv::math::fvec&lt; T, N &gt;::length()</a>.</p>
+<p class="reference">References <a class="el" href="fvec_8h_source.html#l00267">cgv::math::fvec&lt; T, N &gt;::length()</a>.</p>
 
 </div>
 </div>
@@ -2178,7 +2220,7 @@ template&lt;typename T , <a class="el" href="namespacecgv_1_1type.html#a946d7ae2
 
 <p>componentwise sign values </p>
 
-<p class="definition">Definition at line <a class="el" href="fvec_8h_source.html#l00261">261</a> of file <a class="el" href="fvec_8h_source.html">fvec.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="fvec_8h_source.html#l00271">271</a> of file <a class="el" href="fvec_8h_source.html">fvec.h</a>.</p>
 
 </div>
 </div>
@@ -2242,9 +2284,9 @@ template&lt;typename T , <a class="el" href="namespacecgv_1_1type.html#a946d7ae2
 
 <p>square length of vector </p>
 
-<p class="definition">Definition at line <a class="el" href="fvec_8h_source.html#l00250">250</a> of file <a class="el" href="fvec_8h_source.html">fvec.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="fvec_8h_source.html#l00260">260</a> of file <a class="el" href="fvec_8h_source.html">fvec.h</a>.</p>
 
-<p class="reference">Referenced by <a class="el" href="camera_8h_source.html#l00469">cgv::math::distorted_pinhole&lt; T &gt;::invert_distortion_model()</a>, and <a class="el" href="fvec_8h_source.html#l00257">cgv::math::fvec&lt; T, N &gt;::length()</a>.</p>
+<p class="reference">Referenced by <a class="el" href="camera_8h_source.html#l00469">cgv::math::distorted_pinhole&lt; T &gt;::invert_distortion_model()</a>, and <a class="el" href="fvec_8h_source.html#l00267">cgv::math::fvec&lt; T, N &gt;::length()</a>.</p>
 
 </div>
 </div>
@@ -2276,7 +2318,7 @@ template&lt;typename T , <a class="el" href="namespacecgv_1_1type.html#a946d7ae2
 
 <p>componentwise sign values </p>
 
-<p class="definition">Definition at line <a class="el" href="fvec_8h_source.html#l00266">266</a> of file <a class="el" href="fvec_8h_source.html">fvec.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="fvec_8h_source.html#l00276">276</a> of file <a class="el" href="fvec_8h_source.html">fvec.h</a>.</p>
 
 </div>
 </div>
@@ -2299,7 +2341,7 @@ template&lt;typename T , <a class="el" href="namespacecgv_1_1type.html#a946d7ae2
 
 <p>conversion to vector type </p>
 
-<p class="definition">Definition at line <a class="el" href="fvec_8h_source.html#l00722">722</a> of file <a class="el" href="fvec_8h_source.html">fvec.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="fvec_8h_source.html#l00732">732</a> of file <a class="el" href="fvec_8h_source.html">fvec.h</a>.</p>
 
 <p class="reference">References <a class="el" href="vec_8h_source.html#l00168">cgv::math::vec&lt; T &gt;::set_extern_data()</a>.</p>
 
@@ -2336,7 +2378,7 @@ template&lt;typename T , <a class="el" href="namespacecgv_1_1type.html#a946d7ae2
 
 <p class="definition">Definition at line <a class="el" href="fvec_8h_source.html#l00148">148</a> of file <a class="el" href="fvec_8h_source.html">fvec.h</a>.</p>
 
-<p class="reference">Referenced by <a class="el" href="quaternion_8h_source.html#l00244">cgv::math::quaternion&lt; T &gt;::affin()</a>, <a class="el" href="fray_8h_source.html#l00052">cgv::math::fray&lt; T, 3 &gt;::fray()</a>, <a class="el" href="context_8cxx_source.html#l02043">cgv::render::context::get_model_point()</a>, <a class="el" href="gizmo_8cxx_source.html#l00060">cgv::app::gizmo::handle()</a>, <a class="el" href="navigator_8cxx_source.html#l00085">cgv::app::navigator::handle_mouse_event()</a>, and <a class="el" href="quaternion_8h_source.html#l00274">cgv::math::quaternion&lt; T &gt;::operator*=()</a>.</p>
+<p class="reference">Referenced by <a class="el" href="quaternion_8h_source.html#l00244">cgv::math::quaternion&lt; T &gt;::affin()</a>, <a class="el" href="fray_8h_source.html#l00052">cgv::math::fray&lt; T, 3 &gt;::fray()</a>, <a class="el" href="context_8cxx_source.html#l02074">cgv::render::context::get_model_point()</a>, <a class="el" href="gizmo_8cxx_source.html#l00060">cgv::app::gizmo::handle()</a>, <a class="el" href="navigator_8cxx_source.html#l00085">cgv::app::navigator::handle_mouse_event()</a>, and <a class="el" href="quaternion_8h_source.html#l00274">cgv::math::quaternion&lt; T &gt;::operator*=()</a>.</p>
 
 </div>
 </div>
@@ -2400,7 +2442,7 @@ template&lt;typename T , <a class="el" href="namespacecgv_1_1type.html#a946d7ae2
 
 <p class="definition">Definition at line <a class="el" href="fvec_8h_source.html#l00136">136</a> of file <a class="el" href="fvec_8h_source.html">fvec.h</a>.</p>
 
-<p class="reference">Referenced by <a class="el" href="quaternion_8h_source.html#l00244">cgv::math::quaternion&lt; T &gt;::affin()</a>, <a class="el" href="simple__mesh_8cxx_source.html#l00943">cgv::media::mesh::simple_mesh&lt; T &gt;::compute_face_tangents()</a>, <a class="el" href="managed__frame__buffer_8cxx_source.html#l00084">cgv::render::managed_frame_buffer::ensure()</a>, <a class="el" href="fray_8h_source.html#l00052">cgv::math::fray&lt; T, 3 &gt;::fray()</a>, <a class="el" href="fvec_8h_source.html#l00068">cgv::math::fvec&lt; T, N &gt;::fvec()</a>, <a class="el" href="context_8h_source.html#l01138">cgv::render::context::get_gamma()</a>, <a class="el" href="navigator_8cxx_source.html#l00085">cgv::app::navigator::handle_mouse_event()</a>, <a class="el" href="color__selector_8cxx_source.html#l00035">cgv::app::color_selector::handle_mouse_event()</a>, <a class="el" href="color__selector_8cxx_source.html#l00147">cgv::app::color_selector::init_frame()</a>, <a class="el" href="quaternion_8h_source.html#l00274">cgv::math::quaternion&lt; T &gt;::operator*=()</a>, <a class="el" href="quaternion_8h_source.html#l00305">cgv::math::quaternion&lt; T &gt;::put_im()</a>, <a class="el" href="quaternion_8h_source.html#l00131">cgv::math::quaternion&lt; T &gt;::set()</a>, <a class="el" href="quaternion_8h_source.html#l00171">cgv::math::quaternion&lt; T &gt;::set_normal()</a>, and <a class="el" href="overlay_8cxx_source.html#l00218">cgv::app::overlay::update_layout()</a>.</p>
+<p class="reference">Referenced by <a class="el" href="quaternion_8h_source.html#l00244">cgv::math::quaternion&lt; T &gt;::affin()</a>, <a class="el" href="simple__mesh_8cxx_source.html#l00943">cgv::media::mesh::simple_mesh&lt; T &gt;::compute_face_tangents()</a>, <a class="el" href="managed__frame__buffer_8cxx_source.html#l00084">cgv::render::managed_frame_buffer::ensure()</a>, <a class="el" href="fray_8h_source.html#l00052">cgv::math::fray&lt; T, 3 &gt;::fray()</a>, <a class="el" href="fvec_8h_source.html#l00068">cgv::math::fvec&lt; T, N &gt;::fvec()</a>, <a class="el" href="context_8h_source.html#l01139">cgv::render::context::get_gamma()</a>, <a class="el" href="navigator_8cxx_source.html#l00085">cgv::app::navigator::handle_mouse_event()</a>, <a class="el" href="color__selector_8cxx_source.html#l00035">cgv::app::color_selector::handle_mouse_event()</a>, <a class="el" href="color__selector_8cxx_source.html#l00147">cgv::app::color_selector::init_frame()</a>, <a class="el" href="quaternion_8h_source.html#l00274">cgv::math::quaternion&lt; T &gt;::operator*=()</a>, <a class="el" href="quaternion_8h_source.html#l00305">cgv::math::quaternion&lt; T &gt;::put_im()</a>, <a class="el" href="quaternion_8h_source.html#l00131">cgv::math::quaternion&lt; T &gt;::set()</a>, <a class="el" href="quaternion_8h_source.html#l00171">cgv::math::quaternion&lt; T &gt;::set_normal()</a>, and <a class="el" href="overlay_8cxx_source.html#l00218">cgv::app::overlay::update_layout()</a>.</p>
 
 </div>
 </div>
@@ -2464,7 +2506,7 @@ template&lt;typename T , <a class="el" href="namespacecgv_1_1type.html#a946d7ae2
 
 <p class="definition">Definition at line <a class="el" href="fvec_8h_source.html#l00140">140</a> of file <a class="el" href="fvec_8h_source.html">fvec.h</a>.</p>
 
-<p class="reference">Referenced by <a class="el" href="quaternion_8h_source.html#l00244">cgv::math::quaternion&lt; T &gt;::affin()</a>, <a class="el" href="simple__mesh_8cxx_source.html#l00943">cgv::media::mesh::simple_mesh&lt; T &gt;::compute_face_tangents()</a>, <a class="el" href="managed__frame__buffer_8cxx_source.html#l00084">cgv::render::managed_frame_buffer::ensure()</a>, <a class="el" href="fray_8h_source.html#l00052">cgv::math::fray&lt; T, 3 &gt;::fray()</a>, <a class="el" href="context_8h_source.html#l01138">cgv::render::context::get_gamma()</a>, <a class="el" href="gizmo_8cxx_source.html#l00060">cgv::app::gizmo::handle()</a>, <a class="el" href="color__map__legend_8cxx_source.html#l00037">cgv::app::color_map_legend::handle_member_change()</a>, <a class="el" href="libs_2cgv__app_2performance__monitor_8cxx_source.html#l00035">cgv::app::performance_monitor::handle_member_change()</a>, <a class="el" href="navigator_8cxx_source.html#l00085">cgv::app::navigator::handle_mouse_event()</a>, <a class="el" href="quaternion_8h_source.html#l00274">cgv::math::quaternion&lt; T &gt;::operator*=()</a>, <a class="el" href="quaternion_8h_source.html#l00305">cgv::math::quaternion&lt; T &gt;::put_im()</a>, <a class="el" href="quaternion_8h_source.html#l00131">cgv::math::quaternion&lt; T &gt;::set()</a>, <a class="el" href="quaternion_8h_source.html#l00171">cgv::math::quaternion&lt; T &gt;::set_normal()</a>, and <a class="el" href="overlay_8cxx_source.html#l00218">cgv::app::overlay::update_layout()</a>.</p>
+<p class="reference">Referenced by <a class="el" href="quaternion_8h_source.html#l00244">cgv::math::quaternion&lt; T &gt;::affin()</a>, <a class="el" href="simple__mesh_8cxx_source.html#l00943">cgv::media::mesh::simple_mesh&lt; T &gt;::compute_face_tangents()</a>, <a class="el" href="managed__frame__buffer_8cxx_source.html#l00084">cgv::render::managed_frame_buffer::ensure()</a>, <a class="el" href="fray_8h_source.html#l00052">cgv::math::fray&lt; T, 3 &gt;::fray()</a>, <a class="el" href="context_8h_source.html#l01139">cgv::render::context::get_gamma()</a>, <a class="el" href="gizmo_8cxx_source.html#l00060">cgv::app::gizmo::handle()</a>, <a class="el" href="color__map__legend_8cxx_source.html#l00037">cgv::app::color_map_legend::handle_member_change()</a>, <a class="el" href="libs_2cgv__app_2performance__monitor_8cxx_source.html#l00035">cgv::app::performance_monitor::handle_member_change()</a>, <a class="el" href="navigator_8cxx_source.html#l00085">cgv::app::navigator::handle_mouse_event()</a>, <a class="el" href="quaternion_8h_source.html#l00274">cgv::math::quaternion&lt; T &gt;::operator*=()</a>, <a class="el" href="quaternion_8h_source.html#l00305">cgv::math::quaternion&lt; T &gt;::put_im()</a>, <a class="el" href="quaternion_8h_source.html#l00131">cgv::math::quaternion&lt; T &gt;::set()</a>, <a class="el" href="quaternion_8h_source.html#l00171">cgv::math::quaternion&lt; T &gt;::set_normal()</a>, and <a class="el" href="overlay_8cxx_source.html#l00218">cgv::app::overlay::update_layout()</a>.</p>
 
 </div>
 </div>
@@ -2528,7 +2570,7 @@ template&lt;typename T , <a class="el" href="namespacecgv_1_1type.html#a946d7ae2
 
 <p class="definition">Definition at line <a class="el" href="fvec_8h_source.html#l00144">144</a> of file <a class="el" href="fvec_8h_source.html">fvec.h</a>.</p>
 
-<p class="reference">Referenced by <a class="el" href="quaternion_8h_source.html#l00244">cgv::math::quaternion&lt; T &gt;::affin()</a>, <a class="el" href="simple__mesh_8cxx_source.html#l00943">cgv::media::mesh::simple_mesh&lt; T &gt;::compute_face_tangents()</a>, <a class="el" href="context_8h_source.html#l01138">cgv::render::context::get_gamma()</a>, <a class="el" href="gizmo_8cxx_source.html#l00060">cgv::app::gizmo::handle()</a>, <a class="el" href="navigator_8cxx_source.html#l00085">cgv::app::navigator::handle_mouse_event()</a>, <a class="el" href="quaternion_8h_source.html#l00274">cgv::math::quaternion&lt; T &gt;::operator*=()</a>, <a class="el" href="quaternion_8h_source.html#l00305">cgv::math::quaternion&lt; T &gt;::put_im()</a>, <a class="el" href="quaternion_8h_source.html#l00131">cgv::math::quaternion&lt; T &gt;::set()</a>, and <a class="el" href="quaternion_8h_source.html#l00171">cgv::math::quaternion&lt; T &gt;::set_normal()</a>.</p>
+<p class="reference">Referenced by <a class="el" href="quaternion_8h_source.html#l00244">cgv::math::quaternion&lt; T &gt;::affin()</a>, <a class="el" href="simple__mesh_8cxx_source.html#l00943">cgv::media::mesh::simple_mesh&lt; T &gt;::compute_face_tangents()</a>, <a class="el" href="context_8h_source.html#l01139">cgv::render::context::get_gamma()</a>, <a class="el" href="gizmo_8cxx_source.html#l00060">cgv::app::gizmo::handle()</a>, <a class="el" href="navigator_8cxx_source.html#l00085">cgv::app::navigator::handle_mouse_event()</a>, <a class="el" href="quaternion_8h_source.html#l00274">cgv::math::quaternion&lt; T &gt;::operator*=()</a>, <a class="el" href="quaternion_8h_source.html#l00305">cgv::math::quaternion&lt; T &gt;::put_im()</a>, <a class="el" href="quaternion_8h_source.html#l00131">cgv::math::quaternion&lt; T &gt;::set()</a>, and <a class="el" href="quaternion_8h_source.html#l00171">cgv::math::quaternion&lt; T &gt;::set_normal()</a>.</p>
 
 </div>
 </div>
