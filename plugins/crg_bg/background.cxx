@@ -95,6 +95,7 @@ public:
 	{
 		if (!enable)
 			return;
+		ctx.begin_attribute_less_rendering();
 		glDisable(GL_DEPTH_TEST);
 			glDepthMask(GL_FALSE);
 				prog.set_uniform(ctx, "w", int(ctx.get_width()));
@@ -108,6 +109,7 @@ public:
 				prog.disable(ctx);
 			glDepthMask(GL_TRUE);
 		glEnable(GL_DEPTH_TEST);
+		ctx.end_attribute_less_rendering();
 	}
 	void swap_colors()
 	{

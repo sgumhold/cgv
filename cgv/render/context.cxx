@@ -5,6 +5,7 @@
 #include <cgv/base/traverser.h>
 #include <cgv/render/drawable.h>
 #include <cgv/render/shader_program.h>
+#include <cgv/render/attribute_array_binding.h>
 
 using namespace cgv::base;
 using namespace cgv::media::image;
@@ -326,6 +327,11 @@ const device_capabilities& context::get_device_capabilities() const {
 /// virtual destructor
 context::~context()
 {
+	if (dummy_aab) {
+		attribute_array_binding_destruct(*dummy_aab);
+		delete dummy_aab;
+		dummy_aab = 0;
+	}
 }
 
 void context::init_render_pass()
@@ -1701,6 +1707,31 @@ const cgv::media::illum::surface_material* context::get_current_material() const
 	return current_material_ptr;
 }
 
+/// this function ensures that in core profile a dummy attribute array is bound, what is essential for attribute-less rendering
+void context::begin_attribute_less_rendering()
+{
+	if (core_profile) {
+		if (dummy_aab == 0) {
+			dummy_aab = new attribute_array_binding();
+			attribute_array_binding_create(*dummy_aab);
+		}
+		attribute_array_binding_enable(*dummy_aab);
+	}
+}
+/// unbind dummy attribute array after attribute-less rendering
+void context::end_attribute_less_rendering()
+{
+	if (core_profile) {
+		if (dummy_aab == 0)
+			error("call to end_attribute_less_rendering() without call to begin_attribute_less_rendering()");
+		else if (attribute_array_binding_stack.empty())
+			error("call to end_attribute_less_rendering() with empty attribute array binding stack");
+		else if (attribute_array_binding_stack.top() != dummy_aab)
+			error("call to end_attribute_less_rendering() after another attribute array was bound");
+		else
+			attribute_array_binding_disable(*dummy_aab);
+	}
+}
 /// return current color
 const rgba& context::get_color() const
 {

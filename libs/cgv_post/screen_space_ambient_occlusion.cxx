@@ -60,7 +60,7 @@ void screen_space_ambient_occlusion::end(cgv::render::context& ctx, bool push_vi
 
 	if(!enable)
 		return;
-
+	ctx.begin_attribute_less_rendering();
 	fbc_draw.disable(ctx, push_viewport);
 
 	// use position, normal and depth information to compute the ambient occlussion term in screen space
@@ -122,6 +122,7 @@ void screen_space_ambient_occlusion::end(cgv::render::context& ctx, bool push_vi
 	fbc_draw.disable_attachment(ctx, "depth");
 	fbc_draw.disable_attachment(ctx, "color");
 	fbc_blur.disable_attachment(ctx, "occlusion");
+	ctx.end_attribute_less_rendering();
 }
 
 void screen_space_ambient_occlusion::create_gui_impl(cgv::base::base* b, cgv::gui::provider* p) {

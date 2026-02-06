@@ -42,7 +42,7 @@ void supersampling_anti_aliasing::end(cgv::render::context& ctx) {
 
 	if(!enable)
 		return;
-
+	ctx.begin_attribute_less_rendering();
 	fbc_draw.disable(ctx);
 
 	fbc_draw.enable_attachment(ctx, "color", 0);
@@ -65,6 +65,7 @@ void supersampling_anti_aliasing::end(cgv::render::context& ctx) {
 
 	fbc_draw.disable_attachment(ctx, "color");
 	fbc_draw.disable_attachment(ctx, "depth");
+	ctx.end_attribute_less_rendering();
 }
 
 void supersampling_anti_aliasing::create_gui_impl(cgv::base::base* b, cgv::gui::provider* p) {
