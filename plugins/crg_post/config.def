@@ -1,0 +1,10 @@
+// turn on temporal antialiasing
+type(post_processor):taa=true
+// turn on screen space ambient occlusion
+type(post_processor):ssao=true
+// turn on outlining
+type(post_processor):outline=true
+// turn on depth halos
+type(post_processor):depth_halo=true
+// turn on depth masking
+type(post_processor):depth_masking=true

@@ -23,12 +23,42 @@ protected:
 	cgv::post::screen_space_ambient_occlusion ssao;
 	cgv::post::temporal_anti_aliasing taa;
 
+	bool dh_enabled  = false;
+	bool dm_enabled  = false;
+	bool ol_enabled  = false;
+	bool ssao_enabled = false;
+	bool taa_enabled = false;
+
 public:
 	post_processor() : cgv::base::node("Post Processor") 
 	{
+		dh.set_enabled(false);
+		dm.set_enabled(false);
+		ol.set_enabled(false);
+		ssao.set_enabled(false);
+		taa.set_enabled(false);
+	}
+	bool self_reflect(cgv::reflect::reflection_handler& rh)
+	{
+		return
+			rh.reflect_member("depth_halos", dh_enabled) &&
+			rh.reflect_member("depth_masking", dm_enabled) &&
+			rh.reflect_member("outline", ol_enabled) &&
+			rh.reflect_member("ssao", ssao_enabled) &&
+			rh.reflect_member("taa", taa_enabled);
 	}
 	void on_set(void* member_ptr) 
 	{
+		if (member_ptr == &dh_enabled)
+			dh.set_enabled(dh_enabled);
+		if (member_ptr == &dm_enabled)
+			dm.set_enabled(dm_enabled);
+		if (member_ptr == &ol_enabled)
+			ol.set_enabled(ol_enabled);
+		if (member_ptr == &ssao_enabled)
+			ssao.set_enabled(ssao_enabled);
+		if (member_ptr == &taa_enabled)
+			taa.set_enabled(taa_enabled);
 		taa.reset();
 		post_redraw();
 		update_member(member_ptr);
