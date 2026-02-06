@@ -37,6 +37,7 @@ var classcgv_1_1math_1_1fvec =
     [ "operator/", "classcgv_1_1math_1_1fvec.html#a242e5cb357091fac9c1fcfdadbc15001", null ],
     [ "operator/=", "classcgv_1_1math_1_1fvec.html#a8b42609111973ffd8c012088424d715b", null ],
     [ "operator/=", "classcgv_1_1math_1_1fvec.html#a4e1056f74c3d7776dfdde30edbfb6e88", null ],
+    [ "operator<", "classcgv_1_1math_1_1fvec.html#a589ff6a2c5ebb28938a0d91016bb1fae", null ],
     [ "operator==", "classcgv_1_1math_1_1fvec.html#a24a121eb032199d623ce9d7aa51aac5a", null ],
     [ "operator[]", "classcgv_1_1math_1_1fvec.html#a4bc2f6fec33442cbb5aa3d409c2e4315", null ],
     [ "operator[]", "classcgv_1_1math_1_1fvec.html#afbda4bad93415d83a6c1694a1bd8a469", null ],
