@@ -408,7 +408,7 @@ static PointT interpolate_cubic_basis(const PointT& b0, const PointT& b1, const 
 
 /// @brief Return the result of a piecewise cubic interpolation on a seqence of uniformly-spaced control points at position t.
 /// 
-/// The function assumes points to define a cubic b-spline and uses interpolate_cubic_basis to interpolate a tuple of four
+/// Points are assumed to define a cubic b-spline and uses interpolate_cubic_basis to interpolate a tuple of four
 /// consecutive points defining a segment around t. Internally, an extra point is extrapolated at the start and end of the input
 /// sequence to guarantee perfect interpoaltion of the first and last point in the input sequence.
 /// 
@@ -441,6 +441,79 @@ PointT interpolate_smooth_cubic(const std::vector<PointT>& points, ParamT t, con
 	t = (t - static_cast<float>(i) / static_cast<float>(num_pairs)) * static_cast<float>(num_pairs);
 	return interpolate_cubic_basis(v0, v1, v2, v3, t);
 };
+
+/// @brief Return a sequence of n interpolated values of a piecewise cubic b-spline interpolation on a seqence of control points.
+/// 
+/// Points are defined by their position and value and must be sorted in ascending order according to their position.
+/// If the sequence of input points is not ordered, the result of the function is undefined.
+/// Points are assumed to define a cubic b-spline and uses interpolate_cubic_basis to interpolate tuples of four
+/// consecutive points defining segments around the sampled parameter values t. Internally, an extra point is extrapolated
+/// at the start and end of the input sequence to guarantee perfect interpoaltion of the first and last point in the input sequence.
+/// 
+/// @tparam PointT The point type.
+/// @tparam ParamT The parameter type.
+/// @param points The control points of the piecewise function.
+/// @param n The number of samples.
+/// @return The seqence of interpolated points.
+template<typename PointT, typename ParamT = float>
+PointT interpolate_smooth_cubic(const std::vector<std::pair<ParamT, PointT>>& points, ParamT t) {
+	using pair_type = std::pair<ParamT, PointT>;
+
+	size_t num_pairs = points.size() - 1;
+
+	if(t <= ParamT(0))
+		return points.front().second;
+
+	auto it = std::lower_bound(points.begin(), points.end(), t, [](const pair_type& point, float value) { return point.first < value; });
+	if(it == points.end())
+		return points.back().second;
+
+	if(it != points.begin())
+		--it;
+
+	size_t i = std::distance(points.begin(), it);
+
+	pair_type v1 = points[i];
+	pair_type v2 = points[i + 1];
+	PointT v0 = i > 0 ? points[i - 1].second : PointT(2) * v1.second - v2.second;
+	PointT v3 = i < num_pairs - 1 ? points[i + 2].second : PointT(2) * v2.second - v1.second;
+	t = (t - v1.first) / (v2.first - v1.first);
+	return interpolate_cubic_basis(v0, v1.second, v2.second, v3, t);
+}
+
+/// @brief Return a sequence of n interpolated values of a piecewise cubic b-spline interpolation on a seqence of uniformly-spaced control points.
+/// 
+/// Interpolation is performed by interpolate_smooth_cubic.
+/// 
+/// @tparam PointT The point type.
+/// @tparam ParamT The parameter type.
+/// @param points The control points of the piecewise function.
+/// @param n The number of samples.
+/// @return The seqence of interpolated points.
+template<typename PointT, typename ParamT = float>
+std::vector<PointT> interpolate_smooth_cubic_n(const std::vector<PointT>& points, size_t n) {
+	std::vector<PointT> res;
+	res.reserve(n);
+	sequence_transform(std::back_inserter(res), [&points](float t) { return interpolate_smooth_cubic(points, t); }, n);
+	return res;
+}
+
+/// @brief Return a sequence of n interpolated values of a piecewise cubic b-spline interpolation on a seqence of control points.
+/// 
+/// Interpolation is performed by interpolate_smooth_cubic.
+/// 
+/// @tparam PointT The point type.
+/// @tparam ParamT The parameter type.
+/// @param points The control points of the piecewise function.
+/// @param n The number of samples.
+/// @return The seqence of interpolated points.
+template<typename PointT, typename ParamT = float>
+std::vector<PointT> interpolate_smooth_cubic_n(const std::vector<std::pair<ParamT, PointT>>& points, size_t n) {
+	std::vector<PointT> res;
+	res.reserve(n);
+	sequence_transform(std::back_inserter(res), [&points](float t) { return interpolate_smooth_cubic(points, t); }, n);
+	return res;
+}
 
 /// Template class representing a piecewise linear function with uniformly spaced breakpoints that maps from X to Y.
 template<typename X, typename Y>
@@ -620,6 +693,22 @@ public:
 
 	std::unique_ptr<interpolator<ValueT, ParamT>> clone() const override {
 		return std::unique_ptr<interpolator<ValueT, ParamT>>(new uniform_smooth_interpolator(*this));
+	}
+
+	ValueT at(ParamT t) const override {
+		return interpolate_smooth_cubic(points, t);
+	}
+};
+
+template<typename ValueT, typename ParamT = float>
+class smooth_interpolator : public piecewise_interpolator<ValueT, ParamT> {
+	using base = piecewise_interpolator<ValueT, ParamT>;
+
+public:
+	using base::base;
+
+	std::unique_ptr<interpolator<ValueT, ParamT>> clone() const override {
+		return std::unique_ptr<interpolator<ValueT, ParamT>>(new smooth_interpolator(*this));
 	}
 
 	ValueT at(ParamT t) const override {
