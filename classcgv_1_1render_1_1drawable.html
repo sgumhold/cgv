@@ -176,6 +176,9 @@ Public Member Functions</h2></td></tr>
 <tr class="memitem:ad51105ec96d0bee0fda4e8e49ca7b2e6" id="r_ad51105ec96d0bee0fda4e8e49ca7b2e6"><td class="memItemLeft" align="right" valign="top">virtual void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcgv_1_1render_1_1drawable.html#ad51105ec96d0bee0fda4e8e49ca7b2e6">clear</a> (<a class="el" href="classcgv_1_1render_1_1context.html">context</a> &amp;)</td></tr>
 <tr class="memdesc:ad51105ec96d0bee0fda4e8e49ca7b2e6"><td class="mdescLeft">&#160;</td><td class="mdescRight">clear all objects living in the context like textures or display lists  <br /></td></tr>
 <tr class="separator:ad51105ec96d0bee0fda4e8e49ca7b2e6"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a3ce132f36d40179ac7c0ea3fe99bafad" id="r_a3ce132f36d40179ac7c0ea3fe99bafad"><td class="memItemLeft" align="right" valign="top">virtual void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcgv_1_1render_1_1drawable.html#a3ce132f36d40179ac7c0ea3fe99bafad">destruct</a> (<a class="el" href="classcgv_1_1render_1_1context.html">context</a> &amp;) final</td></tr>
+<tr class="memdesc:a3ce132f36d40179ac7c0ea3fe99bafad"><td class="mdescLeft">&#160;</td><td class="mdescRight">do not use destruct for a drawable but clear!!  <br /></td></tr>
+<tr class="separator:a3ce132f36d40179ac7c0ea3fe99bafad"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="inherit_header pub_methods_classcgv_1_1base_1_1traverse__policy"><td colspan="2" onclick="javascript:toggleInherit('pub_methods_classcgv_1_1base_1_1traverse__policy')"><img src="closed.png" alt="-"/>&#160;Public Member Functions inherited from <a class="el" href="classcgv_1_1base_1_1traverse__policy.html">cgv::base::traverse_policy</a></td></tr>
 <tr class="memitem:af67134fa6d40c4b6add8225583a730c1 inherit pub_methods_classcgv_1_1base_1_1traverse__policy" id="r_af67134fa6d40c4b6add8225583a730c1"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcgv_1_1base_1_1traverse__policy.html#af67134fa6d40c4b6add8225583a730c1">traverse_policy</a> (<a class="el" href="classcgv_1_1base_1_1single__method__action.html">int</a> <a class="el" href="classcgv_1_1base_1_1single__method__action.html">_policy</a>=TP_ALL+<a class="el" href="namespacecgv_1_1base.html#a746925f26d076c26742b2dc558cbae36a7b2b5c718b50e4241491dcb951599a8b">TP_STOP_ON_SUCCESS</a>, <a class="el" href="classcgv_1_1base_1_1single__method__action.html">bool</a> <a class="el" href="classcgv_1_1base_1_1single__method__action.html">_active</a>=<a class="el" href="classcgv_1_1base_1_1single__method__action.html">true</a>, <a class="el" href="classcgv_1_1base_1_1single__method__action.html">int</a> <a class="el" href="classcgv_1_1base_1_1single__method__action.html">_focus</a>=-1)</td></tr>
 <tr class="memdesc:af67134fa6d40c4b6add8225583a730c1 inherit pub_methods_classcgv_1_1base_1_1traverse__policy"><td class="mdescLeft">&#160;</td><td class="mdescRight">construct default traverse policy that visits everything  <br /></td></tr>
@@ -305,6 +308,40 @@ Additional Inherited Members</h2></td></tr>
 <p>Reimplemented in <a class="el" href="classcgv_1_1app_1_1transformation__gizmo.html#a01de00ca4acc1b73f2ddf8df1b49999f">cgv::app::transformation_gizmo</a>, <a class="el" href="classcgv_1_1app_1_1gizmo.html#aa069535190e29dcf40297441edf1a4d5">cgv::app::gizmo</a>, <a class="el" href="structcgv_1_1render_1_1callback__drawable.html#aa381b855726807f8ee92e8aede0fd9a3">cgv::render::callback_drawable</a>, <a class="el" href="classcgv_1_1app_1_1navigator.html#aec2ffe7470badb5bab2a117aab29b3fb">cgv::app::navigator</a>, <a class="el" href="classcgv_1_1plot_1_1plot2d.html#a11c1cda82ecb818dd2e0463a4ee5f76a">cgv::plot::plot2d</a>, <a class="el" href="classcgv_1_1plot_1_1plot3d.html#a910f78f4502506f8860279fd864f3f71">cgv::plot::plot3d</a>, <a class="el" href="classcgv_1_1plot_1_1plot__base.html#a34242776450fd92ff62cb2bd200968e0">cgv::plot::plot_base</a>, <a class="el" href="classvr__test.html#a54bc29ffaf3a00bc2b31f6ebb567e28e">vr_test</a>, <a class="el" href="classcgv_1_1app_1_1canvas__overlay.html#a5e2434f8ff34547c6ddfc43384f964fb">cgv::app::canvas_overlay</a>, <a class="el" href="classcgv_1_1app_1_1color__map__editor.html#a7c92b398ff4d05b2292774bf26cd00f1">cgv::app::color_map_editor</a>, <a class="el" href="classcgv_1_1app_1_1color__map__legend.html#a01fe2e1ea0268cf8bc4dbdd7368f0795">cgv::app::color_map_legend</a>, <a class="el" href="classcgv_1_1app_1_1color__selector.html#ab439a64f16d6ee33bcc7ebb4490d797a">cgv::app::color_selector</a>, <a class="el" href="classcgv_1_1app_1_1performance__monitor.html#a9a95c1d66eea53abfb062103ed64a1c2">cgv::app::performance_monitor</a>, <a class="el" href="classcgv_1_1render_1_1gl_1_1image__drawable.html#a252a74ce9695f83d49acac1f3c0cb8a5">cgv::render::gl::image_drawable</a>, <a class="el" href="classcgv_1_1render_1_1gl_1_1gl__implicit__surface__drawable__base.html#af4e13e005aebdf79ee1c3f52b917a7ac">cgv::render::gl::gl_implicit_surface_drawable_base</a>, and <a class="el" href="classcgv_1_1render_1_1gl_1_1mesh__drawable.html#a3eebbe76af2f31fd3df6a1b2e45f57c7">cgv::render::gl::mesh_drawable</a>.</p>
 
 <p class="definition">Definition at line <a class="el" href="drawable_8cxx_source.html#l00130">130</a> of file <a class="el" href="drawable_8cxx_source.html">drawable.cxx</a>.</p>
+
+<p class="reference">Referenced by <a class="el" href="drawable_8cxx_source.html#l00133">destruct()</a>.</p>
+
+</div>
+</div>
+<a id="a3ce132f36d40179ac7c0ea3fe99bafad" name="a3ce132f36d40179ac7c0ea3fe99bafad"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a3ce132f36d40179ac7c0ea3fe99bafad">&#9670;&#160;</a></span>destruct()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">void cgv::render::drawable::destruct </td>
+          <td>(</td>
+          <td class="paramtype"><a class="el" href="classcgv_1_1render_1_1context.html">context</a> &amp;&#160;</td>
+          <td class="paramname"><em>ctx</em></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">final</span><span class="mlabel">virtual</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p>do not use destruct for a drawable but clear!! </p>
+
+<p class="definition">Definition at line <a class="el" href="drawable_8cxx_source.html#l00133">133</a> of file <a class="el" href="drawable_8cxx_source.html">drawable.cxx</a>.</p>
+
+<p class="reference">References <a class="el" href="drawable_8cxx_source.html#l00130">clear()</a>.</p>
 
 </div>
 </div>

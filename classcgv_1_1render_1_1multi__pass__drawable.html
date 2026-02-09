@@ -187,6 +187,9 @@ Public Member Functions</h2></td></tr>
 <tr class="memitem:ad51105ec96d0bee0fda4e8e49ca7b2e6 inherit pub_methods_classcgv_1_1render_1_1drawable" id="r_ad51105ec96d0bee0fda4e8e49ca7b2e6"><td class="memItemLeft" align="right" valign="top">virtual void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcgv_1_1render_1_1drawable.html#ad51105ec96d0bee0fda4e8e49ca7b2e6">clear</a> (<a class="el" href="classcgv_1_1render_1_1context.html">context</a> &amp;)</td></tr>
 <tr class="memdesc:ad51105ec96d0bee0fda4e8e49ca7b2e6 inherit pub_methods_classcgv_1_1render_1_1drawable"><td class="mdescLeft">&#160;</td><td class="mdescRight">clear all objects living in the context like textures or display lists  <br /></td></tr>
 <tr class="separator:ad51105ec96d0bee0fda4e8e49ca7b2e6 inherit pub_methods_classcgv_1_1render_1_1drawable"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a3ce132f36d40179ac7c0ea3fe99bafad inherit pub_methods_classcgv_1_1render_1_1drawable" id="r_a3ce132f36d40179ac7c0ea3fe99bafad"><td class="memItemLeft" align="right" valign="top">virtual void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcgv_1_1render_1_1drawable.html#a3ce132f36d40179ac7c0ea3fe99bafad">destruct</a> (<a class="el" href="classcgv_1_1render_1_1context.html">context</a> &amp;) final</td></tr>
+<tr class="memdesc:a3ce132f36d40179ac7c0ea3fe99bafad inherit pub_methods_classcgv_1_1render_1_1drawable"><td class="mdescLeft">&#160;</td><td class="mdescRight">do not use destruct for a drawable but clear!!  <br /></td></tr>
+<tr class="separator:a3ce132f36d40179ac7c0ea3fe99bafad inherit pub_methods_classcgv_1_1render_1_1drawable"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="inherit_header pub_methods_classcgv_1_1base_1_1traverse__policy"><td colspan="2" onclick="javascript:toggleInherit('pub_methods_classcgv_1_1base_1_1traverse__policy')"><img src="closed.png" alt="-"/>&#160;Public Member Functions inherited from <a class="el" href="classcgv_1_1base_1_1traverse__policy.html">cgv::base::traverse_policy</a></td></tr>
 <tr class="memitem:af67134fa6d40c4b6add8225583a730c1 inherit pub_methods_classcgv_1_1base_1_1traverse__policy" id="r_af67134fa6d40c4b6add8225583a730c1"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcgv_1_1base_1_1traverse__policy.html#af67134fa6d40c4b6add8225583a730c1">traverse_policy</a> (<a class="el" href="classcgv_1_1base_1_1single__method__action.html">int</a> <a class="el" href="classcgv_1_1base_1_1single__method__action.html">_policy</a>=TP_ALL+<a class="el" href="namespacecgv_1_1base.html#a746925f26d076c26742b2dc558cbae36a7b2b5c718b50e4241491dcb951599a8b">TP_STOP_ON_SUCCESS</a>, <a class="el" href="classcgv_1_1base_1_1single__method__action.html">bool</a> <a class="el" href="classcgv_1_1base_1_1single__method__action.html">_active</a>=<a class="el" href="classcgv_1_1base_1_1single__method__action.html">true</a>, <a class="el" href="classcgv_1_1base_1_1single__method__action.html">int</a> <a class="el" href="classcgv_1_1base_1_1single__method__action.html">_focus</a>=-1)</td></tr>
 <tr class="memdesc:af67134fa6d40c4b6add8225583a730c1 inherit pub_methods_classcgv_1_1base_1_1traverse__policy"><td class="mdescLeft">&#160;</td><td class="mdescRight">construct default traverse policy that visits everything  <br /></td></tr>
@@ -235,7 +238,7 @@ Protected Attributes</h2></td></tr>
 <p><br  />
  </p>
 
-<p class="definition">Definition at line <a class="el" href="drawable_8h_source.html#l00065">65</a> of file <a class="el" href="drawable_8h_source.html">drawable.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="drawable_8h_source.html#l00067">67</a> of file <a class="el" href="drawable_8h_source.html">drawable.h</a>.</p>
 </div><h2 class="groupheader">Constructor &amp; Destructor Documentation</h2>
 <a id="acc8467cf63dbd57bfcacb448fa8647c2" name="acc8467cf63dbd57bfcacb448fa8647c2"></a>
 <h2 class="memtitle"><span class="permalink"><a href="#acc8467cf63dbd57bfcacb448fa8647c2">&#9670;&#160;</a></span>multi_pass_drawable()</h2>
@@ -254,7 +257,7 @@ Protected Attributes</h2></td></tr>
 
 <p>construct to be not inside of a render pass </p>
 
-<p class="definition">Definition at line <a class="el" href="drawable_8cxx_source.html#l00135">135</a> of file <a class="el" href="drawable_8cxx_source.html">drawable.cxx</a>.</p>
+<p class="definition">Definition at line <a class="el" href="drawable_8cxx_source.html#l00140">140</a> of file <a class="el" href="drawable_8cxx_source.html">drawable.cxx</a>.</p>
 
 </div>
 </div>
@@ -277,7 +280,7 @@ Protected Attributes</h2></td></tr>
 
 <p>call in init_frame method to check whether the recursive render passes need to be initiated </p>
 
-<p class="definition">Definition at line <a class="el" href="drawable_8cxx_source.html#l00141">141</a> of file <a class="el" href="drawable_8cxx_source.html">drawable.cxx</a>.</p>
+<p class="definition">Definition at line <a class="el" href="drawable_8cxx_source.html#l00146">146</a> of file <a class="el" href="drawable_8cxx_source.html">drawable.cxx</a>.</p>
 
 <p class="reference">References <a class="el" href="context_8cxx_source.html#l00842">cgv::render::context::get_render_pass_recursion_depth()</a>.</p>
 
@@ -301,7 +304,7 @@ Protected Attributes</h2></td></tr>
 
 <p>call after last recursive render pass to use current render pass for last render pass </p>
 
-<p class="definition">Definition at line <a class="el" href="drawable_8cxx_source.html#l00156">156</a> of file <a class="el" href="drawable_8cxx_source.html">drawable.cxx</a>.</p>
+<p class="definition">Definition at line <a class="el" href="drawable_8cxx_source.html#l00161">161</a> of file <a class="el" href="drawable_8cxx_source.html">drawable.cxx</a>.</p>
 
 </div>
 </div>
@@ -323,7 +326,7 @@ Protected Attributes</h2></td></tr>
 
 <p>check in after_finish method, whether this should be directly exited with a return statement </p>
 
-<p class="definition">Definition at line <a class="el" href="drawable_8cxx_source.html#l00161">161</a> of file <a class="el" href="drawable_8cxx_source.html">drawable.cxx</a>.</p>
+<p class="definition">Definition at line <a class="el" href="drawable_8cxx_source.html#l00166">166</a> of file <a class="el" href="drawable_8cxx_source.html">drawable.cxx</a>.</p>
 
 <p class="reference">References <a class="el" href="context_8cxx_source.html#l00842">cgv::render::context::get_render_pass_recursion_depth()</a>, and <a class="el" href="context_8cxx_source.html#l00876">cgv::render::context::get_render_pass_user_data()</a>.</p>
 
@@ -347,7 +350,7 @@ Protected Attributes</h2></td></tr>
 
 <p>check in after_finish method, whether this was the terminating render pass </p>
 
-<p class="definition">Definition at line <a class="el" href="drawable_8cxx_source.html#l00171">171</a> of file <a class="el" href="drawable_8cxx_source.html">drawable.cxx</a>.</p>
+<p class="definition">Definition at line <a class="el" href="drawable_8cxx_source.html#l00176">176</a> of file <a class="el" href="drawable_8cxx_source.html">drawable.cxx</a>.</p>
 
 <p class="reference">References <a class="el" href="context_8cxx_source.html#l00842">cgv::render::context::get_render_pass_recursion_depth()</a>.</p>
 
@@ -399,7 +402,7 @@ Protected Attributes</h2></td></tr>
 
 <p>call to initiate a render pass in the init_frame method after <a class="el" href="classcgv_1_1render_1_1multi__pass__drawable.html#a4b1926144e7dc280804463a36c5436eb" title="call in init_frame method to check whether the recursive render passes need to be initiated">initiate_render_pass_recursion()</a> has succeeded </p>
 
-<p class="definition">Definition at line <a class="el" href="drawable_8cxx_source.html#l00149">149</a> of file <a class="el" href="drawable_8cxx_source.html">drawable.cxx</a>.</p>
+<p class="definition">Definition at line <a class="el" href="drawable_8cxx_source.html#l00154">154</a> of file <a class="el" href="drawable_8cxx_source.html">drawable.cxx</a>.</p>
 
 <p class="reference">References <a class="el" href="context_8cxx_source.html#l00855">cgv::render::context::get_render_pass_flags()</a>, and <a class="el" href="context_8cxx_source.html#l00901">cgv::render::context::render_pass()</a>.</p>
 
@@ -426,7 +429,7 @@ Protected Attributes</h2></td></tr>
 </table>
 </div><div class="memdoc">
 
-<p class="definition">Definition at line <a class="el" href="drawable_8h_source.html#l00069">69</a> of file <a class="el" href="drawable_8h_source.html">drawable.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="drawable_8h_source.html#l00071">71</a> of file <a class="el" href="drawable_8h_source.html">drawable.h</a>.</p>
 
 </div>
 </div>
@@ -450,7 +453,7 @@ Protected Attributes</h2></td></tr>
 </table>
 </div><div class="memdoc">
 
-<p class="definition">Definition at line <a class="el" href="drawable_8h_source.html#l00071">71</a> of file <a class="el" href="drawable_8h_source.html">drawable.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="drawable_8h_source.html#l00073">73</a> of file <a class="el" href="drawable_8h_source.html">drawable.h</a>.</p>
 
 </div>
 </div>
