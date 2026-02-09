@@ -1,5 +1,7 @@
 var NAVTREEINDEX46 =
 {
+"structvr_1_1vr__kit__state.html#a7a227ba8ffb1ba5841b1ce0d2e191447":[11,0,5,12,0],
+"structvr_1_1vr__trackable__info.html":[10,0,2,14],
 "structvr_1_1vr__trackable__info.html":[11,0,5,14],
 "structvr_1_1vr__trackable__info.html#a4ff3fc2812bf0d96ffabe1e9ec85c3ba":[11,0,5,14,6],
 "structvr_1_1vr__trackable__info.html#a4ff3fc2812bf0d96ffabe1e9ec85c3ba":[10,0,2,14,6],

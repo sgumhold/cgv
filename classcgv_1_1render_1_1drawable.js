@@ -3,6 +3,7 @@ var classcgv_1_1render_1_1drawable =
     [ "drawable", "classcgv_1_1render_1_1drawable.html#abb11b4156b879aa8e5f3596a61126005", null ],
     [ "after_finish", "classcgv_1_1render_1_1drawable.html#aa11c9869c19d4e4408d95142f7f85cb7", null ],
     [ "clear", "classcgv_1_1render_1_1drawable.html#ad51105ec96d0bee0fda4e8e49ca7b2e6", null ],
+    [ "destruct", "classcgv_1_1render_1_1drawable.html#a3ce132f36d40179ac7c0ea3fe99bafad", null ],
     [ "draw", "classcgv_1_1render_1_1drawable.html#a44f9bb08d50739e9d5ca6c8e53762e85", null ],
     [ "find_view_as_node", "classcgv_1_1render_1_1drawable.html#ad53ea85f6e09e4e2886250600a70742d", null ],
     [ "finish_draw", "classcgv_1_1render_1_1drawable.html#a3a917f5d2bdb637d9dfce7c6b4351144", null ],
