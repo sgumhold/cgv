@@ -59,6 +59,8 @@ public:
 	virtual void after_finish(context&);
 	/// clear all objects living in the context like textures or display lists
 	virtual void clear(context&);
+	/// do not use destruct for a drawable but clear!!
+	virtual void destruct(context&) final;
 };
 
 /** helper class to control multiple render passes in init_frame and after_finish methods of drawable.  */

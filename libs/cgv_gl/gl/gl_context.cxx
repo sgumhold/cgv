@@ -2350,6 +2350,7 @@ bool gl_context::texture_destruct(texture_base& tb) const
 	glDeleteTextures(1, &tex_id);
 	bool result = !check_gl_error("gl_context::texture_destruct", &tb);
 	tb.handle = 0;
+	tb.ctx_ptr = 0;
 	return result;
 }
 
@@ -2517,6 +2518,7 @@ bool gl_context::render_buffer_destruct(render_buffer_base& rc) const
 	if (check_gl_error("gl_context::render_buffer_destruct", &rc))
 		return false;
 	rc.handle = 0;
+	rc.ctx_ptr = 0;
 	return true;
 }
 
@@ -2584,6 +2586,7 @@ bool gl_context::frame_buffer_destruct(frame_buffer_base& fbb) const
 	GLuint fbo_id = get_gl_id(fbb.handle);
 	glDeleteFramebuffers(1, &fbo_id);
 	fbb.handle = 0;
+	fbb.ctx_ptr = 0;
 	return true;
 }
 
@@ -2764,6 +2767,8 @@ void gl_context::shader_code_destruct(render_component& sc) const
 		return;
 	}
 	glDeleteShader(get_gl_id(sc.handle));
+	sc.handle = 0;
+	sc.ctx_ptr = 0;
 	check_gl_error("gl_context::shader_code_destruct", &sc);
 }
 
@@ -2910,6 +2915,8 @@ bool gl_context::shader_program_destruct(shader_program_base& spb) const
 	if (!context::shader_program_destruct(spb))
 		return false;
 	glDeleteProgram(get_gl_id(spb.handle));
+	spb.handle = 0;
+	spb.ctx_ptr = 0;
 	return true;
 }
 
@@ -3574,6 +3581,8 @@ bool gl_context::attribute_array_binding_destruct(attribute_array_binding_base& 
 	}
 	GLuint a_id = get_gl_id(aab.handle);
 	glDeleteVertexArrays(1, &a_id);
+	aab.handle = 0;
+	aab.ctx_ptr = 0;
 	return !check_gl_error("gl_context::attribute_array_binding_destruct");
 }
 
@@ -3888,6 +3897,8 @@ bool gl_context::vertex_buffer_destruct(vertex_buffer_base& vbb) const
 	if (vbb.handle) {
 		GLuint b_id = get_gl_id(vbb.handle);
 		glDeleteBuffers(1, &b_id);
+		vbb.handle = 0;
+		vbb.ctx_ptr = 0;
 		return !check_gl_error("gl_context::vertex_buffer_destruct");
 	}
 	else {

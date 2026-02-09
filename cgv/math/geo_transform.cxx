@@ -11,6 +11,16 @@ namespace cgv {
 		typedef fvec<double, 2> dvec2;
 		typedef fvec<double, 3> dvec3;
 
+		void epsg4326_to_epsg3857(double lon, double lat, double& x, double& y)
+		{
+			x = (epsg3857_scale / 180) * lon;
+			y = (epsg3857_scale / M_PI) * log(tan((M_PI / 360) * (lat + 90)));
+		}
+		void epsg3857_to_epsg4326(double x, double y, double& lon, double& lat)
+		{
+			lon = (180 / epsg3857_scale) * x;
+			lat = (360 / M_PI) * atan(exp((M_PI / epsg3857_scale) * y)) - 90;
+		}
 		dvec3 ECFE_from_geodetic(const dvec3& geodetic, double a, double e)
 		{
 			const double& phi = geodetic.x();

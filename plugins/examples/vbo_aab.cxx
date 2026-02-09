@@ -671,7 +671,7 @@ public:
 		ref_sphere_renderer(ctx, 1);
 		return true;
 	}
-	void destruct(context& ctx)
+	void clear(context& ctx)
 	{
 		vbo_attribs.destruct(ctx);
 		vbo_elements.destruct(ctx);
