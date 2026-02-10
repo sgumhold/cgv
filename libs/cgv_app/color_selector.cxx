@@ -79,15 +79,15 @@ bool color_selector::handle_mouse_event(cgv::gui::mouse_event& e, cgv::ivec2 loc
 	return false;
 }
 
-void color_selector::handle_member_change(const cgv::utils::pointer_test& m) {
+void color_selector::handle_member_change(cgv::data::informed_ptr ptr) {
 
-	if(m.is(rgb_color))
+	if(ptr.points_to(rgb_color))
 		set_rgb_color(rgb_color);
 
-	if(m.is(rgba_color))
+	if(ptr.points_to(rgba_color))
 		set_rgba_color(rgba_color);
 
-	if(m.is(layout.size))
+	if(ptr.points_to(layout.size))
 		set_size(ivec2(layout.size));
 }
 

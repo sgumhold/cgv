@@ -41,26 +41,26 @@ void color_scale_legend::clear(cgv::render::context& ctx) {
 	label_geometry.destruct(ctx);
 }
 
-void color_scale_legend::handle_member_change(const cgv::utils::pointer_test& m) {
+void color_scale_legend::handle_member_change(cgv::data::informed_ptr ptr) {
 
-	if(m.member_of(layout.total_size)) {
+	if(ptr.points_to_member_of(layout.total_size)) {
 		// TODO: minimum width and height depend on other layout parameters
 		layout.total_size.y() = std::max(layout.total_size.y(), 2 * layout.padding + 4 + layout.label_space);
 		set_size(layout.total_size);
 	}
 
-	if(m.one_of(background_visible_, invert_color))
+	if(ptr.points_to_one_of(background_visible_, invert_color))
 		init_styles();
 
-	if(m.is(num_ticks))
+	if(ptr.points_to(num_ticks))
 		num_ticks = cgv::math::clamp(num_ticks, 2u, 100u);
 
-	if(m.is(title)) {
+	if(ptr.points_to(title)) {
 		layout.title_space = title == "" ? 0 : 12;
 		post_recreate_layout();
 	}
 
-	if(m.one_of(layout.orientation, layout.label_alignment, num_ticks, nice_ticks, auto_precision) || m.member_of(label_format))
+	if(ptr.points_to_one_of(layout.orientation, layout.label_alignment, num_ticks, nice_ticks, auto_precision) || ptr.points_to_member_of(label_format))
 		post_recreate_layout();
 }
 

@@ -32,19 +32,19 @@ void performance_monitor::clear(cgv::render::context& ctx) {
 	dynamic_text_geometry.destruct(ctx);
 }
 
-void performance_monitor::handle_member_change(const cgv::utils::pointer_test& m) {
+void performance_monitor::handle_member_change(cgv::data::informed_ptr ptr) {
 
-	if(m.is(show_plot)) {
+	if(ptr.points_to(show_plot)) {
 		layout.total_size.y() = show_plot ? 80 : 45;
 		set_size(layout.total_size);
 		if(get_context())
 			create_static_texts(*get_context());
 	}
 
-	if(m.one_of(background_visible_, invert_color))
+	if(ptr.points_to_one_of(background_visible_, invert_color))
 		init_styles();
 
-	if(m.is(monitor.enabled)) {
+	if(ptr.points_to(monitor.enabled)) {
 		if(monitor.enabled)
 			monitor.reset();
 	}
