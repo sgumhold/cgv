@@ -257,14 +257,16 @@ void performance_monitor::create_static_texts(const cgv::render::context& ctx) {
 		static_text_geometry.alignments.push_back(cgv::render::TA_BOTTOM_LEFT);
 	}
 
-	static_text_geometry.set_text_array(ctx, texts);	
+	static_text_geometry.texts = texts;
+	static_text_geometry.create(ctx);
 }
 
 void performance_monitor::create_dynamic_texts(const cgv::render::context& ctx) {
 
 	dynamic_text_geometry.clear();
 
-	dynamic_text_geometry.set_text_array(ctx, { "", "" });
+	dynamic_text_geometry.texts = { "", "" };
+	dynamic_text_geometry.create(ctx);
 
 	const float line_spacing = 1.25f * text_style.font_size;
 	cgv::g2d::rect content_rect = static_cast<cgv::g2d::rect>(layout.content_rect);
@@ -299,11 +301,10 @@ void performance_monitor::update_dynamic_texts(const cgv::render::context& ctx) 
 
 	value_labels[1] = ss.str();
 
-	dynamic_text_geometry.set_text_array(ctx, value_labels);
+	dynamic_text_geometry.texts = value_labels;
+	dynamic_text_geometry.create(ctx);
 	post_damage();
 }
-
-
 
 void performance_monitor::update_plot() {
 

@@ -71,7 +71,6 @@ protected:
 	bool has_opacity = false;
 	bool auto_show = true;
 
-	std::vector<std::string> texts;
 	cgv::g2d::msdf_text_geometry text_geometry;
 
 	cgv::g2d::shape2d_style border_style, color_texture_style, hue_texture_style, opacity_color_style, color_handle_style, hue_handle_style;

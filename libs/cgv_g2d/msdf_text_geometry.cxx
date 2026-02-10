@@ -19,6 +19,7 @@ void msdf_text_geometry::destruct(cgv::render::context& ctx) {
 
 void msdf_text_geometry::clear() {
 	text_infos.clear();
+	texts.clear();
 	positions.clear();
 	colors.clear();
 	scales.clear();
@@ -28,16 +29,11 @@ void msdf_text_geometry::clear() {
 
 void msdf_text_geometry::set_msdf_font(const cgv::render::context& ctx, msdf_font* font_ptr) {
 	custom_msdf_font_ptr = font_ptr;
-
-	if(custom_msdf_font_ptr) {
-		std::vector<std::string> texts;
-		texts.reserve(text_infos.size());
-		std::transform(text_infos.begin(), text_infos.end(), std::back_inserter(texts), [](const auto& info) { return info.str; });
-		set_text_array(ctx, texts);
-	}
+	if(custom_msdf_font_ptr)
+		create(ctx);
 }
 
-void msdf_text_geometry::set_text_array(const cgv::render::context& ctx, const std::vector<std::string>& texts) {
+void msdf_text_geometry::create(const cgv::render::context& ctx) {
 	const int quad_attrib_index = 0;
 	const int texcoord_attrib_index = 1;
 
@@ -63,8 +59,8 @@ void msdf_text_geometry::set_text_array(const cgv::render::context& ctx, const s
 	int last_offset = 0;
 	for(const auto& text : texts) {
 		text_info info;
-		info.str = text;
 		info.offset = last_offset;
+		info.size = static_cast<int>(text.size());
 		info.normalized_width = ref_font().compute_normalized_length(text);
 		text_infos.push_back(info);
 
@@ -77,17 +73,8 @@ void msdf_text_geometry::set_text_array(const cgv::render::context& ctx, const s
 	attribute_arrays.set_attribute_array(ctx, texcoord_attrib_index, texcoords);
 }
 
-vec2 msdf_text_geometry::compute_text_render_size(size_t index, float font_size) const {
-	const text_info& info = text_infos[index];
-
-	float width = info.normalized_width;
-
-	//if(length != std::string::npos && length < text.str.length()) {
-		//std::string str = text.str.substr(0, length);
-		//size_x = ref_font().compute_normalized_length(str);
-	//}
-
-	return get_scale(index) * font_size * vec2(width, 1.0f);
+vec2 msdf_text_geometry::get_text_render_size(size_t index, float font_size) const {
+	return get_scale(index) * font_size * vec2(text_infos[index].normalized_width, 1.0f);
 }
 
 bool msdf_text_geometry::enable(cgv::render::context& ctx) {
