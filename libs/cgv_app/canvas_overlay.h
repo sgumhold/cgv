@@ -52,7 +52,7 @@ public:
 	/// default implementation of that calls handle_member_change and afterwards upates the member in the gui and post damage to the canvas overlay
 	virtual void on_set(void* member_ptr) override;
 	/// implement to handle member changes
-	virtual void handle_member_change(const cgv::utils::pointer_test& m) override {}
+	virtual void handle_member_change(cgv::data::informed_ptr ptr) override {}
 	/// draw the content of the canvas overlay
 	void after_finish(cgv::render::context&) override;
 	virtual void draw_content(cgv::render::context& ctx) = 0;

@@ -1,11 +1,11 @@
 #pragma once
 
+#include <cgv/data/informed_ptr.h>
 #include <cgv/defines/deprecated.h>
 #include <cgv/gui/event_handler.h>
 #include <cgv/gui/provider.h>
 #include <cgv/render/context.h>
 #include <cgv/render/drawable.h>
-#include <cgv/utils/pointer_test.h>
 #include <cgv_g2d/trect.h>
 #include <cgv_g2d/utils.h>
 
@@ -118,7 +118,7 @@ public:
 	virtual bool handle_mouse_event(cgv::gui::mouse_event& e, cgv::ivec2 local_mouse_pos) { return false; };
 
 	/// implement to handle member changes
-	virtual void handle_member_change(const cgv::utils::pointer_test& m) {}
+	virtual void handle_member_change(cgv::data::informed_ptr ptr) {}
 
 	/// default implementation of that calls handle_member_change and afterwards updates the member in the gui and post a redraw
 	virtual void on_set(void* member_ptr);

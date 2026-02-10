@@ -96,7 +96,7 @@ public:
 
 	void clear(cgv::render::context& ctx) override;
 
-	void handle_member_change(const cgv::utils::pointer_test& m) override;
+	void handle_member_change(cgv::data::informed_ptr ptr) override;
 
 	bool init(cgv::render::context& ctx) override;
 	void init_frame(cgv::render::context& ctx) override;

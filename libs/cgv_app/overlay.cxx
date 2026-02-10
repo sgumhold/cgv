@@ -71,7 +71,7 @@ bool overlay::handle(cgv::gui::event& e) {
 }
 
 void overlay::on_set(void* member_ptr) {
-	handle_member_change(cgv::utils::pointer_test(member_ptr));
+	handle_member_change(cgv::data::informed_ptr(member_ptr));
 	update_member(member_ptr);
 	post_redraw();
 }

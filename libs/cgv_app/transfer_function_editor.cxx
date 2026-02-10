@@ -102,14 +102,14 @@ bool transfer_function_editor::handle_mouse_event(cgv::gui::mouse_event& e, cgv:
 	return false;
 }
 
-void transfer_function_editor::handle_member_change(const cgv::utils::pointer_test& m) {
-	if(m.is(layout.total_height)) {
+void transfer_function_editor::handle_member_change(cgv::data::informed_ptr ptr) {
+	if(ptr.points_to(layout.total_height)) {
 		ivec2 size = get_rectangle().size;
 		size.y() = layout.total_height;
 		set_size(size);
 	}
 
-	if(m.is(opacity_scale_exponent)) {
+	if(ptr.points_to(opacity_scale_exponent)) {
 		opacity_scale_exponent = cgv::math::clamp(opacity_scale_exponent, 1.0f, 5.0f);
 
 		update_point_positions();
@@ -117,12 +117,13 @@ void transfer_function_editor::handle_member_change(const cgv::utils::pointer_te
 		update_geometry();
 	}
 
-	if(m.is(resolution)) {
+	if(ptr.points_to(resolution)) {
 		//if(cmc.cm)
 		//	cmc.cm->set_resolution(resolution);
 		//update_color_map(false);
 	}
 
+	/*
 	if(m.is(use_interpolation)) {
 		cgv::render::context* ctx_ptr = get_context();
 		if(transfer_function)
@@ -130,6 +131,7 @@ void transfer_function_editor::handle_member_change(const cgv::utils::pointer_te
 			transfer_function->use_interpolation = use_interpolation;
 		//update_color_map(false);
 	}
+	*/
 
 	/*
 	if(m.is(use_linear_filtering)) {
@@ -142,19 +144,16 @@ void transfer_function_editor::handle_member_change(const cgv::utils::pointer_te
 		update_color_map(false);
 	}
 	*/
-
-	for(const auto& draggable : color_draggables) {
-		if(m.is(draggable.data)) {
-			update_transfer_function_from_data();
-			create_preview_texture();
-			update_geometry();
-			post_damage();
-			break;
-		}
+	
+	if(ptr.points_to_data_of(color_draggables.ref_draggables())) {
+		update_transfer_function_from_data();
+		create_preview_texture();
+		update_geometry();
+		post_damage();
 	}
 
 	for(auto& draggable : opacity_draggables) {
-		if(m.is(draggable.uv.y())) {
+		if(ptr.points_to(draggable.uv.y())) {
 			draggable.set_uv_and_update_position(draggable.uv);
 			update_transfer_function_from_data();
 			update_geometry();
@@ -163,7 +162,7 @@ void transfer_function_editor::handle_member_change(const cgv::utils::pointer_te
 		}
 	}
 	
-	if(m.is(supports_opacity)) {
+	if(ptr.points_to(supports_opacity)) {
 		// Todo: Fixme: This will overwrite the user-defined total height.
 		layout.total_height = supports_opacity ? 200 : 60;
 		on_set(&layout.total_height);

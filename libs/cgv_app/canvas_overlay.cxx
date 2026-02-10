@@ -40,7 +40,7 @@ void canvas_overlay::clear(context& ctx) {
 
 void canvas_overlay::on_set(void* member_ptr) {
 
-	handle_member_change(cgv::utils::pointer_test(member_ptr));
+	handle_member_change(cgv::data::informed_ptr(member_ptr));
 	update_member(member_ptr);
 	post_damage();
 }
