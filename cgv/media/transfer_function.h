@@ -16,6 +16,12 @@ namespace media {
 
 class CGV_API transfer_function : public color_scale {
 public:
+	enum class InterpolationType {
+		kStep,
+		kLinear,
+		kSmooth
+	};
+
 	using color_type = cgv::rgb;
 	using opacity_type = float;
 	using color_point_type = std::pair<float, color_type>;
@@ -55,7 +61,9 @@ public:
 
 	void set_domain(cgv::vec2 domain) override;
 
-	cgv::rgba get_mapped_value(float value) const override;
+	float normalize_value(float value) const override;
+
+	cgv::rgba map_value(float value) const override;
 
 	cgv::rgb get_mapped_color(float value) const override;
 
@@ -66,6 +74,8 @@ public:
 	std::vector<cgv::rgb> quantize_color(size_t count) const;
 
 	std::vector<float> quantize_opacity(size_t count) const;
+
+	std::vector<float> get_ticks(size_t request_count) const override;
 
 	void clear();
 
@@ -81,8 +91,16 @@ public:
 		return opacity_points_;
 	}
 
-	// Todo: Make private, use getter/setter and call modified.
-	bool use_interpolation = true;
+	virtual void set_interpolation(InterpolationType type) {
+		if(interpolation_type_ != type) {
+			interpolation_type_ = type;
+			modified();
+		}
+	}
+
+	InterpolationType get_interpolation() const {
+		return interpolation_type_;
+	}
 
 private:
 	// Todo: Make step only affect color.
@@ -116,22 +134,31 @@ private:
 
 	template<typename value_type>
 	value_type interpolate(const std::vector<std::pair<float, value_type>>& points, float t) const {
-		if(use_interpolation)
-			return cgv::math::interpolate_linear(points, t);
-		else
+		switch(interpolation_type_) {
+		case InterpolationType::kStep:
 			return interpolate_step(points, t);
+		case InterpolationType::kSmooth:
+			return cgv::math::interpolate_smooth_cubic(points, t);
+		default:
+			return cgv::math::interpolate_linear(points, t);
+		}
 	}
 
 	template<typename value_type>
 	std::vector<value_type> quantize(const std::vector<std::pair<float, value_type>>& points, size_t n) const {
-		if(use_interpolation)
-			return cgv::math::interpolate_linear_n(points, n);
-		else
+		switch(interpolation_type_) {
+		case InterpolationType::kStep:
 			return interpolate_step_n(points, n);
+		case InterpolationType::kSmooth:
+			return cgv::math::interpolate_smooth_cubic_n(points, n);
+		default:
+			return cgv::math::interpolate_linear_n(points, n);
+		}
 	}
 
 	bool update_domain();
 
+	InterpolationType interpolation_type_ = InterpolationType::kLinear;
 	std::vector<color_point_type> color_points_;
 	std::vector<opacity_point_type> opacity_points_;
 };
