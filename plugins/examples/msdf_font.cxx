@@ -165,7 +165,7 @@ public:
 		if(viewport_resolution != viewport_rect.size) {
 			viewport_rect.size = viewport_resolution;
 
-			texts_offset = viewport_rect.w() - texts_bold.compute_text_render_size(0, 1.0f).x() - texts_origin;
+			texts_offset = viewport_rect.w() - texts_bold.get_text_render_size(0, 1.0f).x() - texts_origin;
 			texts_offset *= 0.5f;
 
 			canvas.set_resolution(viewport_rect.size);
@@ -220,9 +220,9 @@ public:
 		texts_regular.clear();
 		texts_bold.clear();
 
-		texts_light.set_text_array(ctx, strs);
-		texts_regular.set_text_array(ctx, strs);
-		texts_bold.set_text_array(ctx, strs);
+		texts_light.texts = strs;
+		texts_regular.texts = strs;
+		texts_bold.texts = strs;
 
 		texts_light.positions = positions;
 		texts_regular.positions = positions;
@@ -231,6 +231,10 @@ public:
 		texts_light.scales = scales;
 		texts_regular.scales = scales;
 		texts_bold.scales = scales;
+
+		texts_light.create(ctx);
+		texts_regular.create(ctx);
+		texts_bold.create(ctx);
 	}
 	cgv::mat3 get_view_matrix() {
 		cgv::mat3 T0 = cgv::math::translate2h(cgv::vec2(-viewport_rect.center()));
