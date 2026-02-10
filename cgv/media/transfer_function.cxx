@@ -1,5 +1,7 @@
 #include "transfer_function.h"
 
+#include <cgv/utils/algorithm.h>
+
 namespace cgv {
 namespace media {
 
@@ -62,7 +64,13 @@ void transfer_function::set_domain(cgv::vec2 domain) {
 	//}
 }
 
-cgv::rgba transfer_function::get_mapped_value(float value) const {
+float transfer_function::normalize_value(float value) const {
+	const vec2 domain = get_domain();
+	value = cgv::math::clamp(value, domain[0], domain[1]);
+	return map_range_safe(value, domain[0], domain[1], 0.0f, 1.0f);
+}
+
+cgv::rgba transfer_function::map_value(float value) const {
 	cgv::rgb color = get_mapped_color(value);
 	float opacity = get_mapped_opacity(value);
 
@@ -72,8 +80,8 @@ cgv::rgba transfer_function::get_mapped_value(float value) const {
 cgv::rgb transfer_function::get_mapped_color(float value) const {
 	if(is_unknown(value) || color_points_.empty())
 		return get_unknown_color();
-	const vec2 domain = get_domain();
-	value = cgv::math::clamp(value, domain[0], domain[1]);
+	//const vec2 domain = get_domain();
+	//value = cgv::math::clamp(value, domain[0], domain[1]);
 	return interpolate(color_points_, value);
 }
 
@@ -113,6 +121,15 @@ std::vector<float> transfer_function::quantize_opacity(size_t count) const {
 	if(is_reversed())
 		std::reverse(opacities.begin(), opacities.end());
 	return opacities;
+}
+
+std::vector<float> transfer_function::get_ticks(size_t request_count) const {
+	std::vector<float> ticks;
+	if(!color_points_.empty())
+		std::transform(color_points_.begin(), color_points_.end(), std::back_inserter(ticks), cgv::utils::get_first<>{});// [] (const color_point_type& point))
+	else
+		std::transform(opacity_points_.begin(), opacity_points_.end(), std::back_inserter(ticks), cgv::utils::get_first<>{});
+	return ticks;
 }
 
 void transfer_function::clear() {

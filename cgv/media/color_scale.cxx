@@ -1,6 +1,7 @@
 #include "color_scale.h"
 
 #include <cgv/math/compare_float.h>
+#include <cgv/media/ticks.h>
 
 namespace cgv {
 namespace media {
@@ -76,28 +77,7 @@ void continuous_color_scale::set_midpoint(float midpoint) {
 	}
 }
 
-cgv::rgb continuous_color_scale::get_mapped_color(float value) const {
-	if(is_unknown(value))
-		return { get_unknown_color(), 1.0f };
-	return scheme_.interpolate(map_value(value));
-}
-
-std::vector<cgv::rgba> continuous_color_scale::quantize(size_t count) const {
-	std::vector<cgv::rgba> colors;
-	colors.reserve(count);
-	cgv::vec2 domain = { 0.0f, 1.0f };
-	if(is_reversed())
-		std::swap(domain[0], domain[1]);
-	cgv::math::sequence_transform(std::back_inserter(colors), [this](float t) { return scheme_.get_interpolator()->at(t); }, count, domain[0], domain[1]);
-	return colors;
-}
-
-void continuous_color_scale::set_scheme(const continuous_color_scheme& scheme) {
-	scheme_ = scheme;
-	modified();
-}
-
-float continuous_color_scale::map_value(float value) const {
+float continuous_color_scale::normalize_value(float value) const {
 	const cgv::vec2 domain = get_domain();
 	if(is_clamped())
 		value = cgv::math::clamp(value, domain[0], domain[1]);
@@ -151,6 +131,36 @@ float continuous_color_scale::map_value(float value) const {
 	return is_reversed() ? 1.0f - t : t;
 }
 
+cgv::rgb continuous_color_scale::get_mapped_color(float value) const {
+	if(is_unknown(value))
+		return { get_unknown_color(), 1.0f };
+	return scheme_.interpolate(normalize_value(value));
+}
+
+std::vector<cgv::rgba> continuous_color_scale::quantize(size_t count) const {
+	std::vector<cgv::rgba> colors;
+	colors.reserve(count);
+	cgv::vec2 domain = { 0.0f, 1.0f };
+	if(is_reversed())
+		std::swap(domain[0], domain[1]);
+	cgv::math::sequence_transform(std::back_inserter(colors), [this](float t) { return scheme_.get_interpolator()->at(t); }, count, domain[0], domain[1]);
+	return colors;
+}
+
+std::vector<float> continuous_color_scale::get_ticks(size_t request_count) const {
+	const vec2 domain = get_domain();
+
+	if(mapping_transform_ == ContinuousMappingTransform::kLog)
+		return compute_ticks_log(domain[0], domain[1], log_base_, request_count);
+	else
+		return compute_ticks(domain[0], domain[1], request_count);
+}
+
+void continuous_color_scale::set_scheme(const continuous_color_scheme& scheme) {
+	scheme_ = scheme;
+	modified();
+}
+
 void continuous_color_scale::update_log_invariants() {
 	if(mapping_transform_ == ContinuousMappingTransform::kLog) {
 		vec2 domain = get_domain();
@@ -165,15 +175,19 @@ void continuous_color_scale::update_log_invariants() {
 	}
 }
 
-cgv::rgb discrete_color_scale::get_mapped_color(float value) const {
-	if(is_unknown(value) || colors_.empty())
-		return { get_unknown_color(), 1.0f };
-
+float discrete_color_scale::normalize_value(float value) const {
 	cgv::vec2 domain = get_domain();
 	if(is_clamped())
 		value = cgv::math::clamp(value, domain[0], domain[1]);
 
-	float t = map_range_safe(value, domain[0], domain[1], 0.0f, 1.0f);
+	return map_range_safe(value, domain[0], domain[1], 0.0f, 1.0f);
+}
+
+cgv::rgb discrete_color_scale::get_mapped_color(float value) const {
+	if(is_unknown(value) || colors_.empty())
+		return { get_unknown_color(), 1.0f };
+
+	float t = normalize_value(value);
 
 	if(t <= 0.0f)
 		return colors_.front();
@@ -181,11 +195,9 @@ cgv::rgb discrete_color_scale::get_mapped_color(float value) const {
 		return colors_.back();
 	else
 		return colors_[std::min(static_cast<size_t>(t * static_cast<float>(colors_.size())), colors_.size() - 1)];
-
-	return cgv::math::interpolate_linear(colors_, t);
 }
 
-cgv::rgba discrete_color_scale::get_indexed_value(size_t index) const {
+cgv::rgba discrete_color_scale::get_indexed_color(size_t index) const {
 	index %= colors_.size();
 	return { colors_[index], 1.0f };
 }
@@ -198,6 +210,10 @@ std::vector<cgv::rgba> discrete_color_scale::quantize(size_t count) const {
 		colors.push_back(colors_[index]);
 	}
 	return colors;
+}
+
+std::vector<float> discrete_color_scale::get_ticks(size_t request_count) const {
+	return {};
 }
 
 void discrete_color_scale::set_scheme(const discrete_color_scheme& scheme, size_t size) {

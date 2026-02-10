@@ -52,7 +52,11 @@ public:
 		return unknown_color_;
 	}
 
-	virtual cgv::rgba get_mapped_value(float value) const {
+	virtual float normalize_value(float value) const {
+		return 0.0f;
+	};
+
+	virtual cgv::rgba map_value(float value) const {
 		return { get_mapped_color(value), get_mapped_opacity(value) };
 	}
 
@@ -64,7 +68,7 @@ public:
 		return 1.0f;
 	}
 
-	virtual cgv::rgba get_indexed_value(size_t index) const {
+	virtual cgv::rgba get_indexed_color(size_t index) const {
 		return unknown_color_;
 	}
 
@@ -73,6 +77,8 @@ public:
 	}
 
 	virtual std::vector<cgv::rgba> quantize(size_t count) const = 0;
+
+	virtual std::vector<float> get_ticks(size_t request_count) const = 0;
 
 	cgv::data::time_point get_modified_time() const {
 		return time_.get_modified_time();
@@ -148,13 +154,15 @@ public:
 		return diverging_midpoint_;
 	}
 
+	float normalize_value(float value) const override;
+
 	cgv::rgb get_mapped_color(float value) const override;
 
 	std::vector<cgv::rgba> quantize(size_t count) const override;
 
-	void set_scheme(const continuous_color_scheme& scheme);
+	std::vector<float> get_ticks(size_t request_count) const override;
 
-	float map_value(float value) const;
+	void set_scheme(const continuous_color_scheme& scheme);
 
 private:
 	void update_log_invariants();
@@ -188,15 +196,19 @@ public:
 		return true;
 	}
 
+	float normalize_value(float value) const override;
+
 	cgv::rgb get_mapped_color(float value) const override;
 
-	cgv::rgba get_indexed_value(size_t index) const override;
+	cgv::rgba get_indexed_color(size_t index) const override;
 
 	size_t get_indexed_color_count() const override {
 		return colors_.size();
 	}
 
 	std::vector<cgv::rgba> quantize(size_t count) const override;
+
+	std::vector<float> get_ticks(size_t request_count) const override;
 
 	void set_scheme(const discrete_color_scheme& scheme, size_t size);
 
