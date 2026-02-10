@@ -1,6 +1,7 @@
 #include "screenshot.h"
 
 #include <cgv/base/find_action.h>
+#include <cgv/data/informed_ptr.h>
 #include <cgv/gui/dialog.h>
 #include <cgv/gui/theme_info.h>
 #include <cgv/render/clipped_view.h>
@@ -81,9 +82,9 @@ bool screenshot::handle(cgv::gui::event& e) {
 }
 
 void screenshot::on_set(void* member_ptr) {
-	const cgv::utils::pointer_test& m(member_ptr);
+	const cgv::data::informed_ptr ptr(member_ptr);
 
-	if(m.is(input_file.file_name)) {
+	if(ptr.points_to(input_file.file_name)) {
 		const std::string& file_name = input_file.file_name;
 		if(input_file.is_save_action()) {
 			// force the file name to have a xml extension if not already present
@@ -124,7 +125,7 @@ void screenshot::on_set(void* member_ptr) {
 	if(active_shot.lock()) {
 		bool properties_out_of_date = false;
 
-		if(m.is(edit_view)) {
+		if(ptr.points_to(edit_view)) {
 			if(edit_view) {
 				edit_frame = false;
 				update_member(&edit_frame);
@@ -132,7 +133,7 @@ void screenshot::on_set(void* member_ptr) {
 				properties_out_of_date = true;
 			}
 		}
-		if(m.is(edit_frame)) {
+		if(ptr.points_to(edit_frame)) {
 			if(edit_frame) {
 				properties_out_of_date = true;
 				edit_view = false;
@@ -149,7 +150,7 @@ void screenshot::on_set(void* member_ptr) {
 		update_framing_overlay();
 	}
 
-	if(m.is(resolution_preset)) {
+	if(ptr.points_to(resolution_preset)) {
 		size_t index = static_cast<size_t>(resolution_preset);
 		if(index >= resolution_presets.size())
 			index = 0;
@@ -159,17 +160,17 @@ void screenshot::on_set(void* member_ptr) {
 		update_member(&requested_resolution.y());
 	}
 
-	if(m.member_of(requested_resolution)) {
+	if(ptr.points_to_member_of(requested_resolution)) {
 		int max_resolution = get_context()->get_device_capabilities().max_render_buffer_size;
 		requested_resolution = cgv::math::clamp(requested_resolution, -1, max_resolution);
 		update_member(&requested_resolution.x());
 		update_member(&requested_resolution.y());
 	}
 
-	if(m.is(capture_state.resolution_multiplier))
+	if(ptr.points_to(capture_state.resolution_multiplier))
 		update_resolution_info();
 
-	if(m.is(override_gamma))
+	if(ptr.points_to(override_gamma))
 		update_gui_state();
 
 	update_member(member_ptr);
