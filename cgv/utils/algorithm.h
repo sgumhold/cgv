@@ -184,6 +184,31 @@ std::vector<std::pair<typename InputIt::value_type, typename InputIt::value_type
 	return res;
 }
 
+/// @brief Generate a sequence of n uniformly-spaced values in [start,stop] and store the result in an output range starting from output_first.
+/// 
+/// @tparam ParamT The sequence value type.
+/// @tparam OutputIt The output range iterator type.
+/// @param output_first The start of the output range.
+/// @param operation The operation to transform the sequence. Takes one argument of type ParamT.
+/// @param start The starting value of the sequence.
+/// @param stop The end value of the sequence.
+/// /// @param n The number of values in the generated sequence.
+template<typename ParamT = float, typename OutputIt>
+static void subdivision_sequence(OutputIt output_first, ParamT start, ParamT stop, size_t n) {
+	if(n == 1) {
+		*output_first = ParamT(0.5) * (start + stop);
+		++output_first;
+	} else if(n > 1) {
+		const ParamT size = stop - start;
+		const ParamT step = size / static_cast<ParamT>(n - 1);
+		for(size_t i = 0; i < n; ++i) {
+			ParamT t = start + step * static_cast<ParamT>(i);
+			*output_first = t;
+			++output_first;
+		}
+	}
+}
+
 } // namespace utils
 } // namespace cgv
 
