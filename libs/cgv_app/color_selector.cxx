@@ -103,9 +103,9 @@ bool color_selector::init(cgv::render::context& ctx) {
 
 	success &= text_geometry.init(ctx);
 
-	texts = { "R", "0", "G", "0", "B", "0", "A", "0" };
+	text_geometry.texts = { "R", "0", "G", "0", "B", "0", "A", "0" };
 	if(success) {
-		text_geometry.set_text_array(ctx, texts);
+		text_geometry.create(ctx);
 		
 		for(size_t i = 0; i < 4; ++i) {
 			text_geometry.alignments.push_back(cgv::render::TA_LEFT);
@@ -114,8 +114,6 @@ bool color_selector::init(cgv::render::context& ctx) {
 
 		text_geometry.positions = std::vector<vec3>(8, { 0.0f });
 	}
-
-	//init_textures(ctx);
 
 	// saturation and value handle
 	selector_handle sh;
@@ -161,8 +159,7 @@ void color_selector::init_frame(cgv::render::context& ctx) {
 		opacity_bg_style.texcoord_scaling = vec2(1.0f, static_cast<float>(h) / static_cast<float>(w));
 
 		ivec2 text_position = ivec2(layout.preview_rect.b().x() + 10, layout.preview_rect.center().y());
-		for(unsigned i = 0; i < texts.size(); ++i) {
-			//texts.set_position(i, text_position);
+		for(size_t i = 0; i < text_geometry.texts.size(); ++i) {
 			text_geometry.positions[i] = vec3(text_position, 0.0f);
 			text_position.x() += i & 1 ? 15 : 40;
 		}
@@ -421,13 +418,13 @@ void color_selector::update_texts() {
 
 	components = cgv::math::clamp(components, 0, 255);
 
-	texts[1] = std::to_string(components[0]);
-	texts[3] = std::to_string(components[1]);
-	texts[5] = std::to_string(components[2]);
-	texts[7] = std::to_string(components[3]);
+	text_geometry.texts[1] = std::to_string(components[0]);
+	text_geometry.texts[3] = std::to_string(components[1]);
+	text_geometry.texts[5] = std::to_string(components[2]);
+	text_geometry.texts[7] = std::to_string(components[3]);
 
 	if(auto* ctx_ptr = get_context())
-		text_geometry.set_text_array(*ctx_ptr, texts);
+		text_geometry.create(*ctx_ptr);
 }
 
 void color_selector::handle_selector_drag(cgv::g2d::DragAction action) {
