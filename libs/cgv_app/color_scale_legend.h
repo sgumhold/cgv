@@ -4,8 +4,10 @@
 #include <cgv/media/color_scale.h>
 #include <cgv/render/texture.h>
 #include <cgv/utils/convert_string.h>
+#include <cgv/utils/number_format.h>
 #include <cgv_app/themed_canvas_overlay.h>
 #include <cgv_g2d/generic_2d_renderer.h>
+#include <cgv_g2d/generic_2d_render_data.h>
 #include <cgv_g2d/msdf_text_geometry.h>
 
 #include "lib_begin.h"
@@ -15,9 +17,9 @@ namespace app {
 
 class CGV_API color_scale_legend : public themed_canvas_overlay {
 public:
-	enum OrientationOption {
-		OO_HORIZONTAL,
-		OO_VERTICAL
+	enum class Orientation {
+		kHorizontal,
+		kVertical
 	};
 
 protected:
@@ -29,48 +31,11 @@ protected:
 
 		ivec2 total_size;
 
-		OrientationOption orientation = OO_HORIZONTAL;
+		Orientation orientation = Orientation::kHorizontal;
 		AlignmentOption label_alignment = AO_END;
 
 		// dependent members
 		cgv::g2d::irect color_ramp_rect;
-		ivec2 title_position = ivec2(0);
-		float title_angle = 90.0f;
-
-		void update(const ivec2& parent_size) {
-			ivec2 offset(0, 0);
-			ivec2 size(parent_size);
-
-			switch(label_alignment) {
-			case AO_START:
-				if(orientation == OO_HORIZONTAL) {
-					offset.x() = x_label_size / 2;
-					offset.y() = title_space;
-					size.x() -= x_label_size;
-					size.y() -= label_space + title_space;
-				} else {
-					offset.x() = x_label_size + 4;
-					offset.y() = 0;
-					size.x() -= x_label_size + 4 + title_space;
-				}
-				break;
-			case AO_END:
-				if(orientation == OO_HORIZONTAL) {
-					offset.x() = x_label_size / 2;
-					offset.y() = label_space;
-					size.x() -= x_label_size;
-					size.y() -= label_space + title_space;
-				} else {
-					offset.x() = title_space;
-					size.x() -= x_label_size + 4 + title_space;
-				}
-				break;
-			default: break;
-			}
-
-			color_ramp_rect.position = offset + padding;
-			color_ramp_rect.size = size - 2 * padding;
-		}
 	} layout;
 
 	bool invert_color = false;
@@ -79,18 +44,12 @@ protected:
 	cgv::render::texture tex = { "uint8[R,G,B,A]" };
 
 	std::string title;
-	vec2 value_range = { 0.0f, 1.0f };
-	vec2 display_range = { 0.0f, 1.0f };
-	unsigned num_ticks = 3;
+	AlignmentOption title_alignment = AO_START;
 
-	AlignmentOption title_align = AO_START;
-	
-	struct {
-		unsigned precision = 0;
-		bool auto_precision = true;
-		bool trailing_zeros = false;
-		bool integers = false;
-	} label_format;
+	unsigned num_ticks = 10;
+	bool nice_ticks = true;
+	bool auto_precision = true;
+	cgv::utils::number_format label_format;
 
 	bool show_opacity = true;
 
@@ -100,20 +59,19 @@ protected:
 
 	// text appearance
 	cgv::g2d::text2d_style text_style;
-	cgv::g2d::msdf_text_geometry labels;
+	cgv::g2d::msdf_text_geometry label_geometry;
 
 	cgv::g2d::generic_2d_renderer tick_renderer;
-	DEFINE_GENERIC_RENDER_DATA_CLASS(tick_geometry, 2, vec2, position, vec2, size);
-	tick_geometry ticks;
+	cgv::g2d::generic_render_data_vec2_vec2 tick_geometry;
 
 	cgv::data::time_stamp build_time;
 
 	std::shared_ptr<const cgv::media::color_scale> color_scale;
 
 	void init_styles() override;
+	void update_layout(const ivec2& parent_size);
 	void create_texture();
-	void create_labels(const cgv::render::context& ctx);
-	void create_ticks();
+	bool create_ticks(const cgv::render::context& ctx);
 
 	void create_gui_impl() override;
 
@@ -136,17 +94,11 @@ public:
 
 	void set_title(const std::string& t);
 
-	OrientationOption get_orientation() const { return layout.orientation; }
-	void set_orientation(OrientationOption orientation);
+	Orientation get_orientation() const { return layout.orientation; }
+	void set_orientation(Orientation orientation);
 
 	AlignmentOption get_label_alignment() const { return layout.label_alignment; }
 	void set_label_alignment(AlignmentOption alignment);
-
-	vec2 get_range() const { return value_range; }
-	void set_range(vec2 r);
-
-	vec2 get_display_range() const { return display_range; }
-	void set_display_range(vec2 r);
 
 	void set_invert_color(bool flag);
 
