@@ -164,6 +164,10 @@ public:
 
 	void set_scheme(const continuous_color_scheme& scheme);
 
+	continuous_color_scheme get_scheme() const {
+		return scheme_;
+	}
+
 private:
 	void update_log_invariants();
 
@@ -211,6 +215,10 @@ public:
 	std::vector<float> get_ticks(size_t request_count) const override;
 
 	void set_scheme(const discrete_color_scheme& scheme, size_t size);
+
+	discrete_color_scheme get_scheme() const {
+		return cgv::media::discrete_color_scheme(colors_);
+	}
 
 private:
 	std::vector<cgv::rgb> colors_;
