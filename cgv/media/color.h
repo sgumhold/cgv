@@ -858,7 +858,7 @@ std::string to_hex(const color<T, RGB, am>& c) {
 	res.resize(2 * static_cast<size_t>(color<T, RGB, am>::nr_components) + 2, '0');
 	std::string buf = "00";
 
-	for(unsigned i = 0; i < static_cast<size_t>(color<T, RGB, am>::nr_components); ++i) {
+	for(unsigned i = 0; i < color<T, RGB, am>::nr_components; ++i) {
 		uint8_t v = 0;
 		convert_color_component(c[i], v);
 		buf = cgv::utils::to_hex(v);
@@ -880,7 +880,7 @@ bool from_hex(const std::string& s, color<T, RGB, am>& c) {
 	if(parsed.empty() || parsed.size() - off < static_cast<size_t>(color<T, RGB, am>::nr_components))
 		return false;
 	
-	for(size_t i = 0; i < static_cast<size_t>(color<T, RGB, am>::nr_components); ++i) {
+	for(unsigned i = 0; i < color<T, RGB, am>::nr_components; ++i) {
 		uint8_t v = parsed[i + off];
 		convert_color_component(v, c[i]);
 	}
