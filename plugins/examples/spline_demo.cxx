@@ -58,14 +58,14 @@ protected:
 			return;
 		}
 		for (size_t i = 0; i < segment_colors.size(); ++i) {
-			double x = double(i) / segment_colors.size();
+			float x = static_cast<float>(i) / static_cast<float>(segment_colors.size());
 			if (is_open) {
 				float v = 0.3f + 0.4f * (i & 1);
 				if (i+1 < degree || i+degree > segment_colors.size()) {
 					segment_colors[i] = cgv::rgb(v, v, v);
 					continue;
 				}
-				x = double(i+1 - degree) / (segment_colors.size()+2 - 2 * degree);
+				x = static_cast<float>(i+1 - degree) / static_cast<float>(segment_colors.size() + 2 - 2 * degree);
 			}
 			segment_colors[i] = color_scheme.interpolate(x);
 		}
