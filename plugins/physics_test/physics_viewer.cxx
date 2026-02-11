@@ -20,7 +20,7 @@
 
 using namespace cgv::render;
 
-physics_viewer::physics_viewer() : application_plugin("Physics Viewer") {
+physics_viewer::physics_viewer() : cgv::base::node("Physics Viewer") {
 
 	// Seed the random generator with a constant value so that every run produces the same results
 	rng.set_seed(42ull);
@@ -94,14 +94,14 @@ void physics_viewer::clear(context& ctx) {
 
 void physics_viewer::on_set(void* member_ptr) {
 
-	handle_member_change(cgv::utils::pointer_test(member_ptr));
+	handle_member_change(member_ptr);
 	update_member(member_ptr);
 	post_redraw();
 }
 
-void physics_viewer::handle_member_change(const cgv::utils::pointer_test& m) {}
+void physics_viewer::handle_member_change(cgv::data::informed_ptr ptr) {}
 
-bool physics_viewer::handle_event(cgv::gui::event& e) {
+bool physics_viewer::handle(cgv::gui::event& e) {
 
 	if(e.get_kind() == cgv::gui::EID_MOUSE) {
 		// Currently unused
@@ -189,13 +189,13 @@ void physics_viewer::draw_background(context& ctx) {
 
 void physics_viewer::after_finish(cgv::render::context& ctx) {
 	
-	if(initialize_view_ptr()) {
-		taa.set_view(view_ptr);
+	if(!view && (view = find_view_as_node())) {
+		taa.set_view(view);
 
 		background_color_top = cgv::rgb(0.1f, 0.13f, 0.22f);
 		background_color_bottom = cgv::rgb(0.33f, 0.40f, 0.52f);
 
-		view_ptr->set_eye_keep_view_angle(cgv::dvec3(0.0f, 6.0f, 12.0f));
+		view->set_eye_keep_view_angle(cgv::dvec3(0.0f, 6.0f, 12.0f));
 		post_redraw();
 	}
 }

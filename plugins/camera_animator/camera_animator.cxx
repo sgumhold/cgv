@@ -290,9 +290,9 @@ void camera_animator::handle_timer_event(double t, double dt) {
 }
 
 void camera_animator::on_set(void* member_ptr) {
-	const cgv::utils::pointer_test& m(member_ptr);
+	cgv::data::informed_ptr ptr(member_ptr);
 
-	if(m.is(video_open)) {
+	if(ptr.points_to(video_open)) {
 		if(video_open) {
 			if(video_file_helper.file_name.empty()) {
 				video_open = false;
@@ -306,7 +306,7 @@ void camera_animator::on_set(void* member_ptr) {
 		}
 	}
 
-	if(m.is(input_file_helper.file_name)) {
+	if(ptr.points_to(input_file_helper.file_name)) {
 		const std::string& file_name = input_file_helper.file_name;
 		if(input_file_helper.is_save_action()) {
 			// force the file name to have a xml extension if not already present
@@ -325,7 +325,7 @@ void camera_animator::on_set(void* member_ptr) {
 		}
 	}
 
-	if(m.is(record)) {
+	if(ptr.points_to(record)) {
 		get_context()->set_gamma(record ? 1.0f : 2.2f);
 		animation->use_continuous_time = !record;
 		
@@ -340,13 +340,13 @@ void camera_animator::on_set(void* member_ptr) {
 		set_animation_state(false);
 	}
 
-	if(m.is(animation->frame))
+	if(ptr.points_to(animation->frame))
 		set_animation_state(false);
 
-	if(m.is(animation->time))
+	if(ptr.points_to(animation->time))
 		set_animation_state(true);
 
-	if(m.is(apply))
+	if(ptr.points_to(apply))
 		set_animation_state(false);
 
 	update_member(member_ptr);

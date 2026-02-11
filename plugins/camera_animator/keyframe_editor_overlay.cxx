@@ -111,9 +111,9 @@ bool keyframe_editor_overlay::handle_mouse_event(cgv::gui::mouse_event& e, cgv::
 	return false;
 }
 
-void keyframe_editor_overlay::handle_member_change(const cgv::utils::pointer_test& m) {
+void keyframe_editor_overlay::handle_member_change(cgv::data::informed_ptr ptr) {
 
-	if(m.is(easing_function_id)) {
+	if(ptr.points_to(easing_function_id)) {
 		if(data) {
 			if(keyframe* k = data->keyframe_at(selected_frame)) {
 				k->ease(easing_function_id);
@@ -123,7 +123,7 @@ void keyframe_editor_overlay::handle_member_change(const cgv::utils::pointer_tes
 		}
 	}
 
-	if(m.is(new_frame_count)) {
+	if(ptr.points_to(new_frame_count)) {
 		new_frame_count = cgv::math::clamp((size_t)new_frame_count, (size_t)0, (size_t)9000);
 		if(data) {
 			new_duration = data->frame_to_time(new_frame_count);
@@ -131,7 +131,7 @@ void keyframe_editor_overlay::handle_member_change(const cgv::utils::pointer_tes
 		}
 	}
 
-	if(m.is(new_duration)) {
+	if(ptr.points_to(new_duration)) {
 		new_duration = cgv::math::clamp(new_duration, 0.0f, 300.0f);
 		if(data) {
 			new_frame_count = data->time_to_frame(new_duration);
@@ -184,8 +184,7 @@ void keyframe_editor_overlay::init_frame(context& ctx) {
 		marker.set_constraint(layout.marker_constraint);
 
 		labels.clear();
-		label_texts.clear();
-		label_texts.push_back("0");
+		labels.texts.push_back("0");
 		labels.positions.push_back(vec3(0.0f));
 		labels.alignment = TA_BOTTOM;
 
@@ -196,7 +195,7 @@ void keyframe_editor_overlay::init_frame(context& ctx) {
 					static_cast<float>(layout.total_height(padding()) - 10 - layout.marker_height + 7),
 					0.0f
 				);
-				label_texts.push_back(std::to_string(i));
+				labels.texts.push_back(std::to_string(i));
 				labels.positions.push_back(position);
 			}
 		}
@@ -587,8 +586,8 @@ void keyframe_editor_overlay::draw_time_marker_and_labels(cgv::render::context& 
 	};
 
 	// update current frame label
-	label_texts[0] = std::to_string(data->frame);
-	labels.set_text_array(ctx, label_texts);
+	labels.texts.front() = std::to_string(data->frame);
+	labels.create(ctx);
 
 	// draw frame number labels
 	auto& font_renderer = cgv::g2d::ref_msdf_gl_font_renderer_2d(ctx);
