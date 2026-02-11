@@ -198,12 +198,10 @@ void framing_overlay::draw_content(context& ctx) {
 			return str;
 		};
 
-		std::vector<std::string> texts;
-		texts.push_back(to_resolution_string(frame_absolute.size));
-		texts.push_back("Viewport size: " + to_resolution_string(viewport_size));
-
 		labels.clear();
-		labels.set_text_array(ctx, texts);
+		labels.texts.push_back(to_resolution_string(frame_absolute.size));
+		labels.texts.push_back("Viewport size: " + to_resolution_string(viewport_size));
+		labels.create(ctx);
 
 		labels.positions.push_back(cgv::vec3(label_rect.center(), 0.0f));
 		labels.positions.push_back(cgv::vec3(viewport_label_rect.center(), 0.0f));

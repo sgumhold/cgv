@@ -2,9 +2,13 @@
 
 #include <random>
 
+#include <cgv/base/node.h>
+#include <cgv/data/informed_ptr.h>
+#include <cgv/gui/event_handler.h>
 #include <cgv/gui/help_message.h>
+#include <cgv/gui/provider.h>
 #include <cgv/math/random.h>
-#include <cgv_app/application_plugin.h>
+#include <cgv/render/drawable.h>
 #include <cgv_gl/box_render_data.h>
 #include <cgv_gl/sphere_render_data.h>
 #include <cgv_gl/gl/mesh_render_info.h>
@@ -13,7 +17,11 @@
 #include <physics/simulation_world.h>
 #include <physics/renderer.h>
 
-class physics_viewer : public cgv::app::application_plugin {
+class physics_viewer :
+	public cgv::base::node,
+	public cgv::render::drawable,
+	public cgv::gui::event_handler,
+	public cgv::gui::provider {
 public:
 	struct body_creation_info {
 		cgv::vec3 position = { 0.0f };
@@ -67,6 +75,8 @@ protected:
 
 	cgv::gui::help_message help;
 
+	cgv::render::view* view = nullptr;
+
 	void post_redraw() {
 		taa.reset();
 		drawable::post_redraw();
@@ -112,22 +122,22 @@ protected:
 
 public:
 	physics_viewer();
-	std::string get_type_name() const { return "physics_viewer"; }
+	std::string get_type_name() const override { return "physics_viewer"; }
 	
-	void stream_stats(std::ostream& os) {};
-	void stream_help(std::ostream& os) {};
-	bool self_reflect(cgv::reflect::reflection_handler& _rh);
+	void stream_stats(std::ostream& os) override {};
+	void stream_help(std::ostream& os) override {};
+	bool self_reflect(cgv::reflect::reflection_handler& _rh) override;
 
-	bool init(cgv::render::context& ctx);
-	void clear(cgv::render::context& ctx);
+	bool init(cgv::render::context& ctx) override;
+	void clear(cgv::render::context& ctx) override;
 
-	void on_set(void* member_ptr);
-	void handle_member_change(const cgv::utils::pointer_test& m);
-	bool handle_event(cgv::gui::event& e);
+	void on_set(void* member_ptr) override;
+	void handle_member_change(cgv::data::informed_ptr ptr);
+	bool handle(cgv::gui::event& e) override;
 	
-	void init_frame(cgv::render::context& ctx);
-	void draw(cgv::render::context& ctx);
-	void after_finish(cgv::render::context& ctx);
+	void init_frame(cgv::render::context& ctx) override;
+	void draw(cgv::render::context& ctx) override;
+	void after_finish(cgv::render::context& ctx) override;
 
-	void create_gui();
+	void create_gui() override;
 };

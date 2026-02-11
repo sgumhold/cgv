@@ -1,6 +1,6 @@
 #include "rgbd_starter.h"
 #include <cgv/utils/convert_string.h>
-#include <cgv/utils/pointer_test.h>
+#include <cgv/data/informed_ptr.h>
 #include <cgv/gui/dialog.h>
 
 namespace rgbd {
@@ -73,8 +73,8 @@ void rgbd_starter_base::update_stream_formats(cgv::gui::provider& p)
 }
 void rgbd_starter_base::on_set_base(void* member_ptr, cgv::gui::provider& p)
 {
-	cgv::utils::pointer_test pt(member_ptr);
-	if (pt.is(is_running)) {
+	cgv::data::informed_ptr ptr(member_ptr);
+	if (ptr.points_to(is_running)) {
 		if (is_running) {
 			rgbd_inp.set_near_mode(near_mode);
 			bool use_default = false;
@@ -136,11 +136,11 @@ void rgbd_starter_base::on_set_base(void* member_ptr, cgv::gui::provider& p)
 			on_stop();
 		}
 	}
-	if (pt.is(pitch)) {
+	if (ptr.points_to(pitch)) {
 		if (rgbd_inp.is_attached())
 			rgbd_inp.set_pitch(pitch);
 	}
-	if (pt.is(device_idx)) {
+	if (ptr.points_to(device_idx)) {
 		if (rgbd_inp.is_started())
 			rgbd_inp.stop();
 		is_running = false;
