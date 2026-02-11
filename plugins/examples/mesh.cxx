@@ -210,9 +210,9 @@ public:
 
 		cgv::media::continuous_color_scheme hot_scale = cgv::media::schemes::interpolateHot();
 		M.ensure_colors(cgv::media::CT_RGB, M.get_nr_positions());
-		double int_part;
+		float int_part;
 		for (unsigned i = 0; i < M.get_nr_positions(); ++i)
-			M.set_color(i, hot_scale.interpolate(modf(20*double(i)/(M.get_nr_positions() - 1),&int_part)));
+			M.set_color(i, hot_scale.interpolate(std::modf(20.0f * static_cast<float>(i)/static_cast<float>(M.get_nr_positions() - 1), &int_part)));
 	}
 	void create_gui()
 	{

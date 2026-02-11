@@ -64,7 +64,7 @@ bool reduce::dispatch(cgv::render::context& ctx, device_buffer_iterator input_fi
 	input_first.buffer().bind(ctx, cgv::render::VertexBufferType::VBT_STORAGE, 0);
 	_group_reduction_buffer.bind(ctx, 1);
 
-	uint32_t count = cgv::gpgpu::distance(input_first, input_last);
+	uint32_t count = static_cast<uint32_t>(cgv::gpgpu::distance(input_first, input_last));
 	uint32_t num_groups = std::min(_num_groups, cgv::math::div_round_up(count, _group_size));
 
 	_kernel.enable(ctx);

@@ -30,9 +30,9 @@ protected:
 	bool debug_matrices = false;
 	float view_test = 0.0f;
 	cgv::gui::window_ptr gui_window;
-	float pitch = 673.46088569750157;
-	float slope = -0.074780801514116493;
-	float center = 0.076352536678314209;
+	float pitch = 673.46088569750157f;
+	float slope = -0.074780801514116493f;
+	float center = 0.076352536678314209f;
 
 public:
 	holo_raycast() : cgv::base::node("Holographic Raycast Demo")

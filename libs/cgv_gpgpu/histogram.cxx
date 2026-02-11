@@ -68,7 +68,7 @@ bool histogram::dispatch(cgv::render::context & ctx, device_buffer_iterator inpu
 	const uint32_t _num_groups = 256;
 	const uint32_t _group_size = 512;
 
-	uint32_t count = cgv::gpgpu::distance(input_first, input_last);
+	uint32_t count = static_cast<uint32_t>(cgv::gpgpu::distance(input_first, input_last));
 	uint32_t num_groups = std::min(_num_groups, cgv::math::div_round_up(count, _group_size));
 	dispatch_compute(num_groups, 1, 1);
 
