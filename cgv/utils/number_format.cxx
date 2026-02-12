@@ -1,5 +1,7 @@
 #include "number_format.h"
 
+#include <cmath>
+
 #include "convert_string.h"
 #include "scan.h"
 
