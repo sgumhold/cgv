@@ -98,7 +98,7 @@ public:
 	template<typename UnaryPredicate>
 	const_iterator find_first(UnaryPredicate predicate) const {
 		for(auto it = entries_.begin(); it != entries_.end(); ++it) {
-			if(predicate(entry))
+			if(predicate(it->first, it->second))
 				return it;
 		}
 		return entries_.end();
@@ -108,7 +108,7 @@ public:
 	std::vector<const_iterator> find_all(UnaryPredicate predicate) const {
 		std::vector<const_iterator> result;
 		for(auto it = entries_.begin(); it != entries_.end(); ++it) {
-			if(predicate(entry))
+			if(predicate(it->first, it->second))
 				result.push_back(it);
 		}
 		return result;
