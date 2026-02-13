@@ -529,7 +529,7 @@ static auto schemeTableau10() { return discrete_color_scheme(to_colors(tableau10
 } // namespace schemes
 
 extern CGV_API size_t load_continuous_color_scheme_presets(continuous_color_scheme_registry& registry, const std::set<ColorSchemeType>& types = {});
-extern CGV_API size_t load_discrete_color_scheme_presets(discrete_color_scheme_registry& registry, ColorSchemeType type = ColorSchemeType::kUndefined);
+extern CGV_API size_t load_discrete_color_scheme_presets(discrete_color_scheme_registry& registry, const std::set<ColorSchemeType>& types = {});
 
 } // namespace media
 } // namespace cgv
