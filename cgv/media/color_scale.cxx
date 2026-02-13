@@ -194,7 +194,7 @@ cgv::rgb discrete_color_scale::get_mapped_color(float value) const {
 	else if(t >= 1.0f)
 		return colors_.back();
 	else
-		return colors_[std::min(static_cast<size_t>(t * static_cast<float>(colors_.size())), colors_.size() - 1)];
+		return colors_[std::min(static_cast<size_t>(std::floor(t * static_cast<float>(colors_.size()))), colors_.size() - 1)];
 }
 
 cgv::rgba discrete_color_scale::get_indexed_color(size_t index) const {

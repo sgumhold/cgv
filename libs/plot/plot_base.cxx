@@ -397,11 +397,9 @@ void plot_base::set_mapping_uniforms(cgv::render::context& ctx, cgv::render::sha
 	prog.set_uniform_array(ctx, "color_mapping", color_mapping, MAX_NR_COLOR_MAPPINGS);
 	prog.set_uniform_array(ctx, "opacity_mapping", opacity_mapping, MAX_NR_COLOR_MAPPINGS);
 	prog.set_uniform_array(ctx, "size_mapping", size_mapping, MAX_NR_COLOR_MAPPINGS);
-	// Todo: Change check if gamma is removed
-	if (prog.get_uniform_location(ctx, "color_scale_gamma[0]") != -1) {
+	if (prog.get_uniform_location(ctx, "color_scale_texture") != -1) {
 		color_scale_adapter.set_color_scales({ color_scales.begin(), color_scales.end() });
 		color_scale_adapter.set_uniforms_in_program(ctx, prog, color_scale_texture_unit);
-		prog.set_uniform_array(ctx, "color_scale_gamma", color_scale_gamma, MAX_NR_COLOR_MAPPINGS);
 	}
 	if (prog.get_uniform_location(ctx, "opacity_gamma[0]") != -1) {
 		prog.set_uniform_array(ctx, "opacity_gamma", opacity_gamma, MAX_NR_OPACITY_MAPPINGS);
@@ -425,7 +423,10 @@ void plot_base::update_color_scales() {
 	for(size_t i = 0; i < MAX_NR_COLOR_MAPPINGS; ++i) {
 		if(color_scheme_index[i] < registry.size())
 			color_scales[i]->color_scale->set_scheme(registry.get(color_scheme_index[i]));
+		color_scales[i]->color_scale->set_diverging(color_scale_is_bipolar[i]);
 		color_scales[i]->color_scale->set_reversed(reversed[i]);
+		color_scales[i]->color_scale->set_pow_exponent(color_scale_gamma[i]);
+		color_scales[i]->color_scale->set_midpoint(window_zero_position[i]);
 	}
 }
 
@@ -607,7 +608,9 @@ plot_base::plot_base(unsigned _dim, unsigned _nr_attributes) : dom_cfg(_dim, _nr
 		color_mapping[ci] = -1;
 		color_scheme_index[ci] = -1;
 		color_scales[ci] = std::make_shared<cgv::render::device_continuous_color_scale>();
+		color_scales[ci]->color_scale->set_transform(cgv::media::ContinuousMappingTransform::kPow);
 		color_scale_gamma[ci] = 1;
+		color_scale_is_bipolar[ci] = false;
 		window_zero_position[ci] = 0.5f;
 	}
 	for (int oi = 0; oi < MAX_NR_OPACITY_MAPPINGS; ++oi) {
@@ -1333,9 +1336,10 @@ void plot_base::create_plot_gui(cgv::base::base* bp, cgv::gui::provider& p)
 					};
 					std::string color_scheme_enums = cgv::utils::join(cgv::media::get_global_continuous_color_scheme_registry().get_names(), ",");
 					connect_color_scale_callback(p.add_member_control(bp, prefix + "Color Scale", reinterpret_cast<cgv::type::DummyEnum&>(color_scheme_index[idx]), "dropdown", "enums='" + color_scheme_enums + "'"));
-					p.add_member_control(bp, prefix + "Color Gamma", color_scale_gamma[idx], "value_slider", "min=0.1;step=0.01;max=10;log=true;ticks=true");
+					connect_color_scale_callback(p.add_member_control(bp, prefix + "Color Gamma", color_scale_gamma[idx], "value_slider", "min=0.1;step=0.01;max=10;log=true;ticks=true"));
 					connect_color_scale_callback(p.add_member_control(bp, prefix + "Reversed", reversed[idx], "check"));
-					p.add_member_control(bp, prefix + "Window Zero Position", window_zero_position[idx], "value_slider", "min=0;max=1;ticks=true");
+					connect_color_scale_callback(p.add_member_control(bp, prefix + "Color Is Bipolar", color_scale_is_bipolar[idx], "check"));
+					connect_color_scale_callback(p.add_member_control(bp, prefix + "Window Zero Position", window_zero_position[idx], "value_slider", "min=0;max=1;ticks=true"));
 					p.align("\b");
 					p.end_tree_node(color_mapping[idx]);
 				}

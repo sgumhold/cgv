@@ -48,14 +48,7 @@ void rigid_to_matrix(in vec4 q, in vec3 t, out mat4 M);
 //***** end interface of quaternion.glsl ***********************************
 
 //***** begin interface of color_scale.glsl ***********************************
-/// gamma adjust value after clamping to [0,1] and in case of uniform color_scale_is_bi_polar[0] accounting for uniform window_zero_position[0]
-float color_scale_gamma_mapping(in float v, in float gamma);
-/// gamma adjust value after clamping to [0,1] and in case of uniform color_scale_is_bi_polar[idx] accounting for uniform window_zero_position[idx]
-float color_scale_gamma_mapping(in float v, in float gamma, int idx);
-/// map value with color scale selected in uniform color_scale_index[idx=0|1] to rgb color
-vec3 color_scale(in float v, int idx);
-/// map value with color scale selected in uniform color_scale_index[0] to rgb color
-vec3 color_scale(in float v, int idx);
+vec4 evaluate_color_scale(in int index, in float value);
 //***** end interface of color_scale.glsl ***********************************
 
 // for first three attributes the mode of handling data that is out of range
@@ -81,7 +74,6 @@ uniform float feature_offset;
 // color mapping
 const int MAX_NR_COLOR_MAPPINGS = 2;
 uniform int   color_mapping[MAX_NR_COLOR_MAPPINGS] = int[MAX_NR_COLOR_MAPPINGS]( -1, -1 );
-uniform float color_scale_gamma[MAX_NR_COLOR_MAPPINGS] = float[MAX_NR_COLOR_MAPPINGS](1.0, 1.0 );
 
 // opacity mapping
 const int MAX_NR_OPACITY_MAPPINGS = 2;
@@ -175,7 +167,7 @@ vec3 world_space_from_plot_space(vec3 pnt)
 
 vec3 map_color(in float v, int idx)
 {
-	return color_scale(color_scale_gamma_mapping(v, color_scale_gamma[idx], idx), idx);
+	return evaluate_color_scale(idx, v).rgb;
 }
 
 vec3 map_color(in float v)

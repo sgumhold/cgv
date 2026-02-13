@@ -89,7 +89,7 @@ private:
 
 	cgv::data::time_stamp build_time_;
 	std::vector<std::shared_ptr<const device_color_scale>> color_scales_;
-	texture texture_;
+	texture texture_ = { "uint8[R,G,B,A]" };
 	std::vector<device_color_scale_arguments> uniforms_;
 	uniform_buffer<device_color_scale_arguments> uniform_buffer_;
 };

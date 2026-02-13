@@ -1,5 +1,7 @@
 #pragma once
 
+#include <cstdint>
+
 #include <cgv/media/color_scale.h>
 #include <cgv/media/transfer_function.h>
 #include <cgv/type/bool32_t.h>
@@ -9,17 +11,34 @@
 namespace cgv {
 namespace render {
 
+enum class DeviceColorScaleSampleMode : uint8_t {
+	kContinuous = 0,
+	kDiscrete = 1
+};
+
+enum class DeviceColorScaleMappingOptions : uint8_t {
+	kNone = 0,
+	kClamped = 1,
+	kDiverging = 2
+};
+
+static DeviceColorScaleMappingOptions operator|(DeviceColorScaleMappingOptions lhs, DeviceColorScaleMappingOptions rhs) {
+	using T = std::underlying_type_t<DeviceColorScaleMappingOptions>;
+	return static_cast<DeviceColorScaleMappingOptions>(static_cast<T>(lhs) | static_cast<T>(rhs));
+}
+
+static DeviceColorScaleMappingOptions& operator|=(DeviceColorScaleMappingOptions& lhs, DeviceColorScaleMappingOptions rhs) {
+	lhs = lhs | rhs;
+	return lhs;
+}
+
 /// @brief Color scale arguments as used by the graphics device or shader program.
 /// Members must follow the alignment rules of the device and the size of the struct
 /// must be a multiple of 16 bytes, which may necessitate the use of padding.
 struct device_color_scale_arguments {
-	// general arguments
-	vec4 unknown_color = { 0.0f, 0.0f, 0.0f, 1.0f };
+	static const size_t k_max_indexed_color_count = 255;
 	vec2 domain = { 0.0f, 1.0f };
-	cgv::type::bool32_t clamped = false;
-	// specific arguments
-	int transform = static_cast<int>(cgv::media::ContinuousMappingTransform::kLinear);
-	cgv::type::bool32_t diverging = false;
+	rgba8 unknown_color = { 0, 0, 0, 255 };
 	float midpoint = 0.5f;
 	float exponent = 1.0f;
 	float log_base = 1.0f;
@@ -27,6 +46,11 @@ struct device_color_scale_arguments {
 	float log_lower_bound = 0.0f;
 	float log_upper_bound = 1.0f;
 	float log_sign = 1.0f;
+	// The next three fields "transform, mapping_options and sample_mode" take up 4 bytes total. They have to be specified in reverse order of how they are used in the shader.
+	uint16_t transform = 0;
+	DeviceColorScaleMappingOptions mapping_options = DeviceColorScaleMappingOptions::kNone;
+	DeviceColorScaleSampleMode sample_mode = DeviceColorScaleSampleMode::kContinuous;
+	int32_t indexed_color_count = 0;
 };
 
 class CGV_API device_color_scale {
@@ -62,6 +86,16 @@ private:
 
 class CGV_API device_continuous_color_scale : public device_color_scale_storage<cgv::media::continuous_color_scale> {
 	using base = device_color_scale_storage<cgv::media::continuous_color_scale>;
+
+public:
+	using base::base;
+
+private:
+	void update_color_scale_specific_arguments(device_color_scale_arguments& out_arguments) const override;
+};
+
+class CGV_API device_discrete_color_scale : public device_color_scale_storage<cgv::media::discrete_color_scale> {
+	using base = device_color_scale_storage<cgv::media::discrete_color_scale>;
 
 public:
 	using base::base;
