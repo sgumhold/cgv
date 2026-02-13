@@ -4,15 +4,12 @@ namespace cgv {
 namespace render {
 
 device_color_scale_arguments device_color_scale::get_arguments() const {
-	const auto& to_vec = [](const cgv::rgba& color) {
-		return cgv::vec4(color.R(), color.G(), color.B(), color.alpha());
-	};
-
 	const cgv::media::color_scale* color_scale = get_color_scale();
 	device_color_scale_arguments arguments;
-	arguments.unknown_color = to_vec(color_scale->get_unknown_color());
+	arguments.unknown_color = color_scale->get_unknown_color();
 	arguments.domain = color_scale->get_domain();
-	arguments.clamped = color_scale->is_clamped();
+	if(color_scale->is_clamped())
+		arguments.mapping_options |= DeviceColorScaleMappingOptions::kClamped;
 	update_color_scale_specific_arguments(arguments);
 	return arguments;
 }
@@ -26,8 +23,9 @@ std::vector<cgv::rgba> device_color_scale::get_texture_data(size_t texture_resol
 }
 
 void device_continuous_color_scale::update_color_scale_specific_arguments(device_color_scale_arguments& out_arguments) const {
-	out_arguments.transform = static_cast<int>(color_scale->get_transform());
-	out_arguments.diverging = color_scale->is_diverging();
+	out_arguments.transform = static_cast<uint16_t>(color_scale->get_transform());
+	if(color_scale->is_diverging())
+		out_arguments.mapping_options |= DeviceColorScaleMappingOptions::kDiverging;
 	out_arguments.midpoint = color_scale->get_midpoint();
 	out_arguments.exponent = color_scale->get_pow_exponent();
 
@@ -39,6 +37,12 @@ void device_continuous_color_scale::update_color_scale_specific_arguments(device
 		out_arguments.log_lower_bound = std::log(out_arguments.log_sign * domain[0]) / out_arguments.log_base;
 		out_arguments.log_upper_bound = std::log(out_arguments.log_sign * domain[1]) / out_arguments.log_base;
 	}
+}
+
+void device_discrete_color_scale::update_color_scale_specific_arguments(device_color_scale_arguments& out_arguments) const {
+	size_t count = std::min(color_scale->get_indexed_color_count(), device_color_scale_arguments::k_max_indexed_color_count);
+	out_arguments.indexed_color_count = static_cast<uint8_t>(count);
+	out_arguments.sample_mode = DeviceColorScaleSampleMode::kDiscrete;
 }
 
 } // namespace render

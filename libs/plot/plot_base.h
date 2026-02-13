@@ -385,8 +385,8 @@ public:
 	static const unsigned MAX_NR_COLOR_MAPPINGS = 2;
 	/// index of attribute mapped to primary and secondary color
 	int color_mapping[MAX_NR_COLOR_MAPPINGS];
-	/// color scale indices of primary and secondary color mapping
-	//cgv::media::ColorScale color_scale_index[MAX_NR_COLOR_MAPPINGS];
+	/// flag whether color mapping is bipolar for primary and secondary color scale
+	bool color_scale_is_bipolar[MAX_NR_COLOR_MAPPINGS];
 	/// gamma adjustments for primary and secondary color mapping
 	float color_scale_gamma[MAX_NR_COLOR_MAPPINGS];
 	/// window space position of zero for primary and secondary color mapping
