@@ -431,7 +431,7 @@ PointT interpolate_smooth_cubic(const std::vector<PointT>& points, ParamT t, con
 		t = ParamT(1);
 		i = num_pairs - 1;
 	} else {
-		i = static_cast<size_t>(std::floor(t * static_cast<float>(num_pairs)));
+		i = static_cast<size_t>(t * static_cast<float>(num_pairs));
 	}
 
 	PointT v1 = points[i];
@@ -585,7 +585,7 @@ public:
 
 	template<class IteratorT>
 	piecewise_interpolator_storage(IteratorT first, IteratorT last) {
-		points_.assign(first, last);
+		points.assign(first, last);
 	}
 
 	std::vector<point_type> points;
@@ -633,14 +633,14 @@ public:
 	}
 
 	ValueT at(ParamT t) const override {
-		size_t num_points = points.size();
+		size_t num_points = this->points.size();
 
 		if(t <= ParamT(0))
-			return points.front();
+			return this->points.front();
 		else if(t >= ParamT(1))
-			return points.back();
+			return this->points.back();
 		else
-			return points[std::min(static_cast<size_t>(t * static_cast<ParamT>(num_points)), num_points - 1)];
+			return this->points[std::min(static_cast<size_t>(t * static_cast<ParamT>(num_points)), num_points - 1)];
 	}
 };
 
@@ -656,11 +656,11 @@ public:
 	}
 
 	ValueT at(ParamT t) const override {
-		return interpolate_linear(points, t);
+		return interpolate_linear(this->points, t);
 	}
 
 	std::vector<ValueT> quantize(size_t n) const override {
-		return interpolate_linear_n(points, n);
+		return interpolate_linear_n(this->points, n);
 	}
 };
 
@@ -676,11 +676,11 @@ public:
 	}
 
 	ValueT at(ParamT t) const override {
-		return interpolate_linear(points, t);
+		return interpolate_linear(this->points, t);
 	}
 
 	std::vector<ValueT> quantize(size_t n) const override {
-		return interpolate_linear_n(points, n);
+		return interpolate_linear_n(this->points, n);
 	}
 };
 
@@ -696,7 +696,7 @@ public:
 	}
 
 	ValueT at(ParamT t) const override {
-		return interpolate_smooth_cubic(points, t);
+		return interpolate_smooth_cubic(this->points, t);
 	}
 };
 
@@ -712,7 +712,7 @@ public:
 	}
 
 	ValueT at(ParamT t) const override {
-		return interpolate_smooth_cubic(points, t);
+		return interpolate_smooth_cubic(this->points, t);
 	}
 };
 
