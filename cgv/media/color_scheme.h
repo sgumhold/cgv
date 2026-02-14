@@ -3,7 +3,7 @@
 #include <functional>
 #include <map>
 #include <set>
-#include <string>
+#include <cstring>
 #include <vector>
 
 #include <cgv/data/object_registry.h>
