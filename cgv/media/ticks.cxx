@@ -1,5 +1,6 @@
 #include "ticks.h"
 
+#include <algorithm>
 #include <cmath>
 #include <cgv/math/compare_float.h>
 
