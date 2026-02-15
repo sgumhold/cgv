@@ -197,8 +197,8 @@ public:
 		points[2] = blue_points;
 	}
 
-	std::unique_ptr<interpolator> clone() const override {
-		return std::unique_ptr<interpolator>(new rgb_per_channel_piecewise_interpolator(*this));
+	std::unique_ptr<cgv::math::interpolator<cgv::rgb, ParamT>> clone() const override {
+		return std::unique_ptr<cgv::math::interpolator<cgv::rgb, ParamT>>(new rgb_per_channel_piecewise_interpolator(*this));
 	};
 
 	cgv::rgb at(ParamT t) const override {
