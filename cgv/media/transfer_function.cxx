@@ -1,5 +1,6 @@
 #include "transfer_function.h"
 
+#include <cgv/media/ticks.h>
 #include <cgv/utils/algorithm.h>
 
 namespace cgv {
@@ -124,12 +125,16 @@ std::vector<float> transfer_function::quantize_opacity(size_t count) const {
 }
 
 std::vector<float> transfer_function::get_ticks(size_t request_count) const {
+	/* This would return one tick for every color or opacity point.
 	std::vector<float> ticks;
 	if(!color_points_.empty())
 		std::transform(color_points_.begin(), color_points_.end(), std::back_inserter(ticks), cgv::utils::get_first<>{});// [] (const color_point_type& point))
 	else
 		std::transform(opacity_points_.begin(), opacity_points_.end(), std::back_inserter(ticks), cgv::utils::get_first<>{});
 	return ticks;
+	*/
+	const vec2 domain = get_domain();
+	return compute_ticks(domain[0], domain[1], request_count);
 }
 
 void transfer_function::clear() {
