@@ -51,7 +51,7 @@ static std::vector<cgv::rgb> to_colors(const char* data) {
 }
 
 /// @brief Return a vector of color vectors converted from an array of char arrays. See also to_colors(const char* data).
-template<uint32_t N>
+template<size_t N>
 static std::vector<std::vector<cgv::rgb>> to_colors(const std::array<const char*, N>& data) {
 	std::vector<std::vector<cgv::rgb>> colors;
 	colors.reserve(N);
