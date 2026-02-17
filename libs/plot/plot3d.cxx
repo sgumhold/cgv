@@ -506,15 +506,11 @@ void plot3d::draw(cgv::render::context& ctx)
 {	
 	prepare_extents();
 
-	GLboolean blend = glIsEnabled(GL_BLEND); 
-	GLenum blend_src, blend_dst, depth;
-	glGetIntegerv(GL_BLEND_DST, reinterpret_cast<GLint*>(&blend_dst));
-	glGetIntegerv(GL_BLEND_SRC, reinterpret_cast<GLint*>(&blend_src));
-	glGetIntegerv(GL_DEPTH_FUNC, reinterpret_cast<GLint*>(&depth));
-
-	glEnable(GL_BLEND);
-	glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
-	glDepthFunc(GL_LEQUAL);
+	ctx.push_blend_state();
+	ctx.enable_blending();
+	ctx.set_blend_func_back_to_front();
+	ctx.push_depth_test_state();
+	ctx.set_depth_func(cgv::render::CF_LEQUAL);
 
 	ctx.push_modelview_matrix();
 	mat4 R;
@@ -532,10 +528,8 @@ void plot3d::draw(cgv::render::context& ctx)
 	color_scale_adapter.disable(ctx);
 	ctx.pop_modelview_matrix();
 
-	if (!blend)
-		glDisable(GL_BLEND);
-	glDepthFunc(depth);
-	glBlendFunc(blend_src, blend_dst);
+	ctx.pop_blend_state();
+	ctx.pop_depth_test_state();
 }
 
 void plot3d::clear(cgv::render::context& ctx)
