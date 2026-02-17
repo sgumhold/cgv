@@ -542,21 +542,14 @@ void plot2d::draw(cgv::render::context& ctx)
 {
 	prepare_extents();
 
-	// store to be changed opengl state
-	GLboolean line_smooth = glIsEnabled(GL_LINE_SMOOTH); 
-	GLboolean blend = glIsEnabled(GL_BLEND); 
-	GLboolean cull_face = glIsEnabled(GL_CULL_FACE);
-	GLenum blend_src, blend_dst, depth;
-	glGetIntegerv(GL_BLEND_DST, reinterpret_cast<GLint*>(&blend_dst));
-	glGetIntegerv(GL_BLEND_SRC, reinterpret_cast<GLint*>(&blend_src));
-	glGetIntegerv(GL_DEPTH_FUNC, reinterpret_cast<GLint*>(&depth));
-
-	// update state
-	glEnable(GL_LINE_SMOOTH);
-	glDisable(GL_CULL_FACE);
-	glEnable(GL_BLEND);
-	glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
-	glDepthFunc(GL_LEQUAL);
+	ctx.push_blend_state();
+	ctx.enable_blending();
+	ctx.set_blend_func_back_to_front();
+	ctx.push_cull_state();
+	ctx.set_cull_state(cgv::render::CM_OFF);
+	ctx.push_depth_test_state();
+	ctx.set_depth_func(cgv::render::CF_LEQUAL);
+	ctx.push_buffer_mask();
 
 	// place plot with modelview matrix
 	ctx.push_modelview_matrix();
@@ -573,14 +566,14 @@ void plot2d::draw(cgv::render::context& ctx)
 		if (legend_components != LC_HIDDEN)
 			draw_legend(ctx, 5);
 		if (disable_depth_mask)
-			glDepthMask(GL_FALSE);
+			ctx.set_depth_mask(false);
 		else
-			glDepthFunc(GL_LEQUAL);
+			ctx.set_depth_func(cgv::render::CF_LEQUAL);
 		draw_sub_plots_jointly(ctx, 8);
 		if (disable_depth_mask)
-			glDepthMask(GL_TRUE);
+			ctx.set_depth_mask(true);
 		else
-			glDepthFunc(GL_LESS);
+			ctx.set_depth_func(cgv::render::CF_LESS);
 	}
 	// draw subplots with offset in back to front order
 	else {
@@ -621,17 +614,17 @@ void plot2d::draw(cgv::render::context& ctx)
 			if (legend_components != LC_HIDDEN)
 				draw_legend(ctx, 5, i == i_begin, multi_axis_modes);
 			if (disable_depth_mask)
-				glDepthMask(GL_FALSE);
+				ctx.set_depth_mask(false);
 			else
-				glDepthFunc(GL_LEQUAL);
+				ctx.set_depth_func(cgv::render::CF_LEQUAL);
 			draw_bar_plot(ctx, i, 8);
 			draw_stick_plot(ctx, i, 9);
 			draw_line_plot(ctx, i, 10);
 			draw_point_plot(ctx, i, 11);
 			if (disable_depth_mask)
-				glDepthMask(GL_TRUE);
+				ctx.set_depth_mask(true);
 			else
-				glDepthFunc(GL_LESS);
+				ctx.set_depth_func(cgv::render::CF_LESS);
 			ctx.mul_modelview_matrix(cgv::math::translate4<float>(vec3(0, 0, i_delta* sub_plot_delta[2])));
 			fst = false;
 		}
@@ -642,15 +635,10 @@ void plot2d::draw(cgv::render::context& ctx)
 
 	ctx.pop_modelview_matrix();
 
-	// recover opengl state
-	if (!line_smooth)
-		glDisable(GL_LINE_SMOOTH);
-	if (!blend)
-		glDisable(GL_BLEND);
-	if (cull_face)
-		glEnable(GL_CULL_FACE);
-	glDepthFunc(depth);
-	glBlendFunc(blend_src, blend_dst);
+	ctx.pop_blend_state();
+	ctx.pop_cull_state();
+	ctx.pop_depth_test_state();
+	ctx.pop_buffer_mask();
 }
 
 /// create the gui for a point subplot
