@@ -35,7 +35,7 @@ protected:
 		selector_handle() {
 			size = vec2(10.0f);
 			position_is_center = true;
-			constraint_reference = CR_CENTER;
+			constraint_reference = cgv::g2d::ConstraintReference::kCenter;
 		}
 
 		void update_val() {

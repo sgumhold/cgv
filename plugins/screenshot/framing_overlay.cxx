@@ -286,7 +286,7 @@ void framing_overlay::create_handles() {
 		handles.add(rect);
 		handles.add(rect);
 
-		const auto center_constraint = cgv::g2d::draggable::ConstraintReference::CR_CENTER;
+		const auto center_constraint = cgv::g2d::ConstraintReference::kCenter;
 		handles[1].constraint_reference = center_constraint;
 		handles[2].constraint_reference = center_constraint;
 		handles[3].constraint_reference = center_constraint;

@@ -111,6 +111,10 @@ public:
 			dragged = get_ptr(draggables[i]);
 	}
 
+	void cancel_drag() {
+		dragged = nullptr;
+	}
+
 	const irect& get_constraint() const { return constraint_area; }
 	
 	void set_constraint(const irect& area) {
@@ -152,7 +156,7 @@ public:
 			if(dragged) {
 				dragged->position = mouse_position + offset;
 
-				if(use_individual_constraints && dragged->get_constraint())
+				if(use_individual_constraints && dragged->constraint)
 					dragged->apply_constraint();
 				else if(has_constraint)
 					dragged->apply_constraint(constraint_area);

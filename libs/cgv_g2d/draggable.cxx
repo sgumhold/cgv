@@ -3,14 +3,6 @@
 namespace cgv {
 namespace g2d {
 
-void draggable::set_constraint(const irect* area) {
-	constraint = area;
-}
-
-const irect* draggable::get_constraint() const {
-	return constraint;
-}
-
 void draggable::apply_constraint() {
 	if(constraint)
 		apply_constraint(*constraint);
@@ -26,22 +18,22 @@ void draggable::apply_constraint(const irect& area) {
 		s *= 0.5f;
 
 	switch(constraint_reference) {
-	case CR_MIN_POINT:
+	case ConstraintReference::kMinPoint:
 		if(position_is_center) {
 			min_pnt += s;
 			max_pnt += s;
 		}
 		break;
-	case CR_MAX_POINT:
+	case ConstraintReference::kMaxPoint:
 		min_pnt -= s;
 		max_pnt -= s;
 		break;
-	case CR_FULL_SIZE:
+	case ConstraintReference::kBoundingBox:
 		if(position_is_center)
 			min_pnt += s;
 		max_pnt -= s;
 		break;
-	case CR_CENTER:
+	case ConstraintReference::kCenter:
 		if(!position_is_center) {
 			min_pnt -= 0.5f*s;
 			max_pnt -= 0.5f*s;
