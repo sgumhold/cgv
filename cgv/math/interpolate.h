@@ -81,7 +81,7 @@ template<typename PointT, typename InterpolationOp, typename ParamT = float>
 PointT interpolate_piece(const std::vector<std::pair<ParamT, PointT>>& points, ParamT t, InterpolationOp operation) {
 	using pair_type = std::pair<ParamT, PointT>;
 	
-	if(t <= ParamT(0))
+	if(t <= points.front().first)
 		return points.front().second;
 
 	auto it = std::lower_bound(points.begin(), points.end(), t, [](const pair_type& point, float value) { return point.first < value; });
@@ -120,19 +120,15 @@ std::vector<PointT> interpolate_n(const std::vector<std::pair<ParamT, PointT>>& 
 	if(points.size() == 1)
 		return std::vector<PointT>(n, points.front().second);
 
-	size_t l = 0;
-	size_t r = 1;
-
-	if(points.front().first > ParamT(0))
-		r = 0;
-
 	std::vector<PointT> res;
 	res.reserve(n);
 
-	ParamT step = ParamT(1) / static_cast<ParamT>(n - 1);
-
+	size_t l = 0;
+	size_t r = 1;
+	ParamT size = points.back().first - points.front().first;
+	ParamT step = size / static_cast<ParamT>(n - 1);
 	for(size_t i = 0; i < n; ++i) {
-		ParamT x = static_cast<ParamT>(i) * step;
+		ParamT x = points.front().first + step * static_cast<ParamT>(i);
 
 		while(x > points[r].first && l < points.size() - 1) {
 			l = r;
