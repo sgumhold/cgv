@@ -17,26 +17,13 @@ namespace app {
 
 class CGV_API transfer_function_editor : public themed_canvas_overlay {
 protected:
-	struct layout_attributes {
-		int total_height;
-		int color_editor_height;
-		int opacity_editor_height;
-		cgv::g2d::irect color_draggables_rect;
-		cgv::g2d::irect color_editor_rect;
-		cgv::g2d::irect opacity_editor_rect;
-	} layout;
-
-	static const vec2 color_point_size;
-	static const vec2 opacity_point_size;
-
 	template<typename DataT>
 	class control_point : public cgv::g2d::draggable {
 	public:
 		control_point(vec2 size, const cgv::g2d::irect* constraint) : cgv::g2d::draggable({ 0.0f }, size) {
 			position_is_center = true;
-			constraint_reference = CR_CENTER;
-			// Todo: constraint is public. remove setter and getter
-			set_constraint(constraint);
+			constraint_reference = cgv::g2d::ConstraintReference::kCenter;
+			this->constraint = constraint;
 		}
 
 		void set_position_and_update_uv(vec2 position) {
@@ -69,10 +56,26 @@ protected:
 	using color_point = control_point<rgb>;
 	using opacity_point = control_point<void*>;
 
-	bool supports_opacity;
-	bool use_interpolation;
-	bool use_linear_filtering;
-	vec2 range;
+	static const vec2 color_point_size;
+	static const vec2 opacity_point_size;
+
+	enum class DraggableType {
+		kColor,
+		kOpacity
+	};
+
+	struct layout_attributes {
+		int total_height;
+		int color_editor_height;
+		int opacity_editor_height;
+		cgv::g2d::irect color_draggables_rect;
+		cgv::g2d::irect color_editor_rect;
+		cgv::g2d::irect opacity_editor_rect;
+	} layout;
+
+	bool supports_opacity = false;
+	cgv::media::transfer_function::InterpolationMode color_interpolation = cgv::media::transfer_function::InterpolationMode::kLinear;
+	cgv::media::transfer_function::InterpolationMode opacity_interpolation = cgv::media::transfer_function::InterpolationMode::kLinear;
 
 	std::string value_label;
 	cgv::g2d::rect value_label_rectangle;
@@ -100,8 +103,8 @@ protected:
 	};
 	HistogramType histogram_type = HistogramType::kNone;
 
-	cgv::type::DummyEnum resolution;
-	float opacity_scale_exponent;
+	//int discretization_resolution = 256;
+	float opacity_scale_exponent = 1.0f;
 
 	cgv::render::texture background_tex = { "flt32[R,G,B]", cgv::render::TF_NEAREST, cgv::render::TF_NEAREST, cgv::render::TW_REPEAT, cgv::render::TW_REPEAT };
 	cgv::render::texture preview_tex = { "uint8[R,G,B,A]" };
@@ -116,23 +119,15 @@ protected:
 	cgv::g2d::draggable_collection<opacity_point> opacity_draggables;
 	color_point* selected_color_draggable = nullptr;
 	opacity_point* selected_opacity_draggable = nullptr;
+	vec2 color_draggable_start_position = { 0.0f };
+	vec2 opacity_draggable_start_position = { 0.0f };
 	cgv::g2d::generic_render_data_vec2_rgba color_draggables_geometry, opacity_draggables_geometry;
 	textured_geometry line_geometry;
 	textured_geometry triangle_geometry;
+	vec2 input_domain = { 0.0f, 1.0f };
+	float input_position = 0.0f;
 	
-	//cgv::data::time_stamp build_time;
-
-	// Todo: Find good name.
-	void clear_stuff() {
-		selected_color_draggable = nullptr;
-		selected_opacity_draggable = nullptr;
-		color_draggables.clear();
-		opacity_draggables.clear();
-		color_draggables_geometry.clear();
-		opacity_draggables_geometry.clear();
-		line_geometry.clear();
-		triangle_geometry.clear();
-	}
+	cgv::data::time_stamp build_time;
 
 	void init_styles() override;
 	void update_layout(const ivec2& parent_size);
@@ -145,101 +140,33 @@ protected:
 		return opacity_point(opacity_point_size, &layout.opacity_editor_rect);
 	}
 
-	void update_data_from_transfer_function() {
-		if(!transfer_function)
-			return;
-
-		//if(!build_time.is_valid() || transfer_function->get_modified_time() > build_time.get_modified_time()) {
-			//std::cout << "set editor data from tf" << std::endl;
-			//std::cout << transfer_function->get_modified_time().time_since_epoch().count() << " > " << build_time.get_modified_time().time_since_epoch().count() << std::endl;
-
-			clear_stuff();
-
-			// Todo: Do not clamp to 0 and 1 ion order to support arbitrary data range.
-
-			for(const auto& point : transfer_function->get_color_points()) {
-				color_point draggable = make_color_point();
-				draggable.data = point.second;
-				// Todo: transform point first to normalized coords according to domain.
-				draggable.set_uv_and_update_position({ point.first, 0.0f });
-				color_draggables.add(draggable);
-			}
-
-			if(supports_opacity) {
-				for(const auto& point : transfer_function->get_opacity_points()) {
-					opacity_point draggable = make_opacity_point();
-					// Todo: transform point first to normalized coords according to domain.
-					draggable.set_uv_and_update_position({ point.first, point.second });
-					opacity_draggables.add(draggable);
-				}
-			}
-
-			//use_interpolation = cmc.cm->use_interpolation;
-			//use_linear_filtering = true;
-
-			//update_point_positions();
-			update_geometry();
-			create_preview_texture();
-			//update_color_map(false);
-
-			post_recreate_gui();
-			post_damage();
-
-			//build_time.modified();
-		//}
-	}
-
-	void update_transfer_function_from_data() {
-		if(!transfer_function)
-			return;
-			
-		std::vector<std::pair<float, rgb>> colors;
-		std::vector<std::pair<float, float>> opacities;
-
-		std::transform(color_draggables.begin(), color_draggables.end(), std::back_inserter(colors), [](const color_point& point) { return std::make_pair(point.uv.x(), point.data); });
-		std::transform(opacity_draggables.begin(), opacity_draggables.end(), std::back_inserter(opacities), [](const opacity_point& point) { return std::make_pair(point.uv.x(), point.uv.y()); });
-
-		transfer_function->set_color_points(colors);
-		transfer_function->set_opacity_points(opacities);
-
-		// Todo: Use a move point function in tf.
-
-		// Set the build time to the transfer function's modified time since the geometry is already synchronized.
-		// This avoids a rebuild at the next draw.
-		//build_time = transfer_function->get_modified_time();
-		//build_time.modified();
-
-		if(on_change_callback)
-			on_change_callback();
-	}
-
-	bool create_preview_texture();
-	bool create_background_texture();
-
+	void clear_data();
+	void force_update_data_from_transfer_function();
+	void update_data_from_transfer_function();
+	void update_transfer_function_from_data();
+	void rescale_domain();
+	
 	void add_point(const vec2& pos);
 	void erase_point(const cgv::g2d::draggable* point);
+	void set_selected_point_domain_value();
 	cgv::g2d::draggable* get_hit_point(const vec2& pos);
 	
-	enum class DraggableType {
-		kColor,
-		kOpacity
-	};
-
 	void set_value_label(vec2 position, const std::string& text);
 	void handle_drag(cgv::g2d::DragAction action, DraggableType type);
 	void handle_selection_change();
 	std::string value_to_string(float value);
 	void sort_points();
 	void update_point_positions();
-	//void update_color_map(bool is_data_change);
-	void update_geometry();
+
+	bool create_preview_texture();
+	bool create_background_texture();
+	void create_geometry();
 	
+	void create_gui_impl() override;
 
 	std::function<void(void)> on_change_callback;
 	std::function<void(rgb)> on_color_point_select_callback;
 	std::function<void(void)> on_color_point_deselect_callback;
-
-	void create_gui_impl() override;
 
 public:
 	transfer_function_editor();
@@ -247,7 +174,6 @@ public:
 
 	void clear(cgv::render::context& ctx) override;
 
-	//bool handle_key_event(cgv::gui::key_event& e) override;
 	bool handle_mouse_event(cgv::gui::mouse_event& e, cgv::ivec2 local_mouse_pos) override;
 	void handle_member_change(cgv::data::informed_ptr ptr) override;
 
@@ -260,16 +186,13 @@ public:
 	bool get_opacity_support() { return supports_opacity; }
 	void set_opacity_support(bool flag);
 
-	vec2 get_range() const { return range; }
-	void set_range(vec2 r) { range = r; }
-
 	std::shared_ptr<cgv::media::transfer_function> get_transfer_function() const {
 		return transfer_function;
 	}
 	void set_transfer_function(std::shared_ptr<cgv::media::transfer_function> transfer_function);
 
 	void notify_transfer_function_change() {
-		update_data_from_transfer_function();
+		force_update_data_from_transfer_function();
 	}
 
 	void set_histogram_data(const std::vector<unsigned> data);

@@ -16,7 +16,7 @@ namespace media {
 
 class CGV_API transfer_function : public color_scale {
 public:
-	enum class InterpolationType {
+	enum class InterpolationMode {
 		kStep,
 		kLinear,
 		kSmooth
@@ -45,8 +45,6 @@ public:
 		return color_points_.empty() && opacity_points_.empty();
 	}
 
-	// Todo: Add rescale function to rescale all poitns to a new domain.
-
 	void set_color_points(const std::vector<color_point_type>& colors);
 
 	void set_opacity_points(const std::vector<opacity_point_type>& opacities);
@@ -60,6 +58,8 @@ public:
 	bool remove_opacity_point(float t);
 
 	void set_domain(cgv::vec2 domain) override;
+
+	void rescale(cgv::vec2 domain);
 
 	float normalize_value(float value) const override;
 
@@ -91,27 +91,39 @@ public:
 		return opacity_points_;
 	}
 
-	virtual void set_interpolation(InterpolationType type) {
-		if(interpolation_type_ != type) {
-			interpolation_type_ = type;
-			modified();
-		}
+	virtual void set_interpolation(InterpolationMode interpolation);
+
+	virtual void set_color_interpolation(InterpolationMode interpolation);
+
+	InterpolationMode get_color_interpolation() const {
+		return color_interpolation_;
 	}
 
-	InterpolationType get_interpolation() const {
-		return interpolation_type_;
+	virtual void set_opacity_interpolation(InterpolationMode interpolation);
+
+	InterpolationMode set_opacity_interpolation() const {
+		return color_interpolation_;
 	}
 
 private:
-	// Todo: Make step only affect color.
-
 	template<typename value_type>
 	bool remove_point(std::vector<std::pair<float, value_type>>& points, float t) {
 		auto it = std::find_if(points.begin(), points.end(), [&t](const std::pair<float, value_type>& point) { return point.first == t; });
-		if(it == points.end())
+		if(it == points.end() || it == points.begin() || it == --points.end())
 			return false;
 		points.erase(it);
 		return true;
+	}
+
+	template<typename value_type>
+	void ensure_domain(std::vector<std::pair<float, value_type>>& points) {
+		if(!points.empty()) {
+			cgv::vec2 domain = get_domain();
+			if(domain[0] < points.front().first)
+				points.insert(points.begin(), { domain[0], points.front().second });
+			if(domain[1] > points.back().first)
+				points.push_back({ domain[1], points.back().second });
+		}
 	}
 
 	template<typename value_type>
@@ -133,11 +145,11 @@ private:
 	}
 
 	template<typename value_type>
-	value_type interpolate(const std::vector<std::pair<float, value_type>>& points, float t) const {
-		switch(interpolation_type_) {
-		case InterpolationType::kStep:
+	value_type interpolate(const std::vector<std::pair<float, value_type>>& points, float t, InterpolationMode interpolation) const {
+		switch(interpolation) {
+		case InterpolationMode::kStep:
 			return interpolate_step(points, t);
-		case InterpolationType::kSmooth:
+		case InterpolationMode::kSmooth:
 			return cgv::math::interpolate_smooth_cubic(points, t);
 		default:
 			return cgv::math::interpolate_linear(points, t);
@@ -145,11 +157,11 @@ private:
 	}
 
 	template<typename value_type>
-	std::vector<value_type> quantize(const std::vector<std::pair<float, value_type>>& points, size_t n) const {
-		switch(interpolation_type_) {
-		case InterpolationType::kStep:
+	std::vector<value_type> quantize(const std::vector<std::pair<float, value_type>>& points, size_t n, InterpolationMode interpolation) const {
+		switch(interpolation) {
+		case InterpolationMode::kStep:
 			return interpolate_step_n(points, n);
-		case InterpolationType::kSmooth:
+		case InterpolationMode::kSmooth:
 			return cgv::math::interpolate_smooth_cubic_n(points, n);
 		default:
 			return cgv::math::interpolate_linear_n(points, n);
@@ -158,7 +170,8 @@ private:
 
 	bool update_domain();
 
-	InterpolationType interpolation_type_ = InterpolationType::kLinear;
+	InterpolationMode color_interpolation_ = InterpolationMode::kLinear;
+	InterpolationMode opacity_interpolation_ = InterpolationMode::kLinear;
 	std::vector<color_point_type> color_points_;
 	std::vector<opacity_point_type> opacity_points_;
 };
