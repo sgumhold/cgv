@@ -180,12 +180,9 @@ void overlay::create_layout_gui() {
 		align("\a");
 
 		if(gui_options.allow_alignment) {
-			add_decorator("Alignment", "heading", "level=4", "%y-=8\n");
-
 			add_decorator("Horizontal", "heading", "level=4;font_style=regular;w=94", " ");
-			add_decorator("Vertical", "heading", "level=4;font_style=regular;w=94");
-
-			add_layout_member_control("", horizontal_alignment_, "dropdown", "enums='Free,Left,Center,Right';w=94", " ");
+			add_decorator("Vertical", "heading", "level=4;font_style=regular;w=94", "%y-=6\n");
+			add_layout_member_control("Alignment", horizontal_alignment_, "dropdown", "enums='Free,Left,Center,Right';w=94", " ");
 			add_layout_member_control("", vertical_alignment_, "dropdown", "enums='Free=0,Top=3,Center=2,Bottom=1';w=94");
 		}
 
