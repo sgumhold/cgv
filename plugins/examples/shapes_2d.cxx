@@ -271,7 +271,7 @@ public:
 		const auto& setup_point = [](const cgv::vec2 & position) {
 			cgv::g2d::circle_draggable p(position, cgv::vec2(16.0f));
 			p.position_is_center = true;
-			p.constraint_reference = cgv::g2d::draggable::ConstraintReference::CR_FULL_SIZE;
+			p.constraint_reference = cgv::g2d::ConstraintReference::kBoundingBox;
 			return p;
 		};
 		

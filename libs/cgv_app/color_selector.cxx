@@ -124,16 +124,16 @@ bool color_selector::init(cgv::render::context& ctx) {
 	sh.is_rectangular = true;
 	sh.size = vec2(20.0f, 10.0f);
 	sh.position_is_center = false;
-	sh.constraint_reference = cgv::g2d::draggable::CR_MIN_POINT;
+	sh.constraint_reference = cgv::g2d::ConstraintReference::kMinPoint;
 	selector_handles.add(sh);
 
 	// opacity handle
 	selector_handles.add(sh);
 
 	// set constraints
-	selector_handles[0].set_constraint(&layout.color_rect);
-	selector_handles[1].set_constraint(&layout.hue_constraint);
-	selector_handles[2].set_constraint(&layout.opacity_constraint);
+	selector_handles[0].constraint = &layout.color_rect;
+	selector_handles[1].constraint = &layout.hue_constraint;
+	selector_handles[2].constraint = &layout.opacity_constraint;
 
 	create_hue_texture(ctx);
 	create_color_texture(ctx);
