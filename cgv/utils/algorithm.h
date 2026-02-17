@@ -192,7 +192,7 @@ std::vector<std::pair<typename InputIt::value_type, typename InputIt::value_type
 /// @param operation The operation to transform the sequence. Takes one argument of type ParamT.
 /// @param start The starting value of the sequence.
 /// @param stop The end value of the sequence.
-/// /// @param n The number of values in the generated sequence.
+/// @param n The number of values in the generated sequence.
 template<typename ParamT = float, typename OutputIt>
 static void subdivision_sequence(OutputIt output_first, ParamT start, ParamT stop, size_t n) {
 	if(n == 1) {
@@ -208,6 +208,90 @@ static void subdivision_sequence(OutputIt output_first, ParamT start, ParamT sto
 		}
 	}
 }
+
+/// @brief Generate a sequence of monotonically increasing values from 0 to n = distance(first, last) - 1 with first == 0 and last == n.
+/// 
+/// @tparam InputIt The input sequence iterator type.
+/// @param first The start of the input range.
+/// @param last The end of the input range.
+/// @return The index sequence.
+template<class InputIt>
+std::vector<size_t> generate_index_sequence(const InputIt first, const InputIt last) {
+	std::vector<size_t> indices(static_cast<size_t>(std::distance(first, last)));
+	std::iota(indices.begin(), indices.end(), 0);
+	return indices;
+}
+
+/// @brief Return a sequence of indices corresponding to the sorted order of values in [first,last).
+/// The value sequence remains unchanged.
+/// 
+/// @tparam RandomIt The value sequence iterator type.
+/// @param first first The start of the value range.
+/// @param last The end of the value range.
+/// @return The index sequence.
+template<class RandomIt>
+std::vector<size_t> sort_indices(const RandomIt first, const RandomIt last) {
+	std::vector<size_t> indices = generate_index_sequence(first, last);
+	std::sort(indices.begin(), indices.end(), [first](size_t i1, size_t i2) {
+		return first[i1] < first[i2];
+	});
+	return indices;
+}
+
+/// @brief Return a sequence of indices corresponding to the sorted order of values in [first,last) while preserving the order of equivalent elements.
+/// The value sequence remains unchanged.
+/// 
+/// @tparam RandomIt The value sequence iterator type.
+/// @param first first The start of the value range.
+/// @param last The end of the value range.
+/// @return The index sequence.
+template<class RandomIt>
+std::vector<size_t> stable_sort_indices(const RandomIt first, const RandomIt last) {
+	std::vector<size_t> indices = generate_index_sequence(first, last);
+	std::stable_sort(indices.begin(), indices.end(), [first](size_t i1, size_t i2) {
+		return first[i1] < first[i2];
+	});
+	return indices;
+}
+
+/// @brief Return a sequence of indices corresponding to the sorted order of values in [first,last).
+/// Elements are sorted with respect to comp.
+/// The value sequence remains unchanged.
+/// 
+/// @tparam RandomIt The value sequence iterator type.
+/// @tparam Compare The comparison function object type.
+/// @param first first The start of the value range.
+/// @param last The end of the value range.
+/// @param comp The comparison function object.
+/// @return The index sequence.
+template<class RandomIt, class Compare>
+std::vector<size_t> sort_indices(const RandomIt first, const RandomIt last, Compare comp) {
+	std::vector<size_t> indices = generate_index_sequence(first, last);
+	std::sort(indices.begin(), indices.end(), [first](size_t i1, size_t i2) {
+		return comp(first[i1], first[i2]);
+	});
+	return indices;
+}
+
+/// @brief Return a sequence of indices corresponding to the sorted order of values in [first,last).
+/// Elements are sorted with respect to comp while the order of equivalent elements is preserved.
+/// The value sequence remains unchanged.
+/// 
+/// @tparam RandomIt The value sequence iterator type.
+/// @tparam Compare The comparison function object type. 
+/// @param first first The start of the value range.
+/// @param last The end of the value range.
+/// @param comp The comparison function object.
+/// @return The index sequence.
+template<class RandomIt, class Compare>
+std::vector<size_t> stable_sort_indices(const RandomIt first, const RandomIt last, Compare comp) {
+	std::vector<size_t> indices = generate_index_sequence(first, last);
+	std::stable_sort(indices.begin(), indices.end(), [first](size_t i1, size_t i2) {
+		return comp(first[i1], first[i2]);
+	});
+	return indices;
+}
+
 
 } // namespace utils
 } // namespace cgv
