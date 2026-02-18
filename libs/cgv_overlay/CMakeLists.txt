@@ -21,5 +21,6 @@ cgv_add_target(cgv_overlay
 		cgv_type
 		cgv_utils
 		cg_msdf
+)
 
 install(DIRECTORY glsl/. DESTINATION ${CGV_LIBS_INCLUDE_DEST}/cgv_overlay/glsl)
