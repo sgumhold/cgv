@@ -1,7 +1,7 @@
 #include "overlay.h"
 
 namespace cgv {
-namespace app {
+namespace overlay {
 
 void overlay::on_visibility_change() {
 	update_member(&(cgv::render::drawable::active));
@@ -80,7 +80,7 @@ ivec2 overlay::get_local_mouse_pos(ivec2 mouse_pos) const {
 	return cgv::g2d::change_origin(mouse_pos, last_viewport_size_, cgv::g2d::CoordinateOrigin::kUpperLeft, cgv::g2d::CoordinateOrigin::kLowerLeft) - container_.position;
 }
 
-void overlay::set_alignment(AlignmentOption horizontal, AlignmentOption vertical, vec2 percentual_offset) {
+void overlay::set_alignment(Alignment horizontal, Alignment vertical, vec2 percentual_offset) {
 	horizontal_alignment_ = horizontal;
 	vertical_alignment_ = vertical;
 	
@@ -92,7 +92,7 @@ void overlay::set_alignment(AlignmentOption horizontal, AlignmentOption vertical
 	on_layout_change();
 }
 
-void overlay::set_stretch(StretchOption stretch, vec2 percentual_size) {
+void overlay::set_stretch_mode(StretchMode stretch, vec2 percentual_size) {
 	stretch_ = stretch;
 
 	for(int i = 0; i < 2; ++i) {
@@ -217,29 +217,29 @@ void overlay::update_layout() {
 	ivec2 max_size = last_viewport_size_ - 2 * margin_;
 
 	switch(stretch_) {
-	case SO_HORIZONTAL:
+	case StretchMode::kHorizontal:
 		container_.w() = max_size.x();
 		break;
-	case SO_VERTICAL:
+	case StretchMode::kVertical:
 		container_.h() = max_size.y();
 		break;
-	case SO_BOTH:
+	case StretchMode::kCover:
 		container_.size = max_size;
 		break;
-	case SO_PERCENTUAL:
+	case StretchMode::kPercentual:
 		container_.size = percentual_size_ * max_size;
 		break;
 	default:
 		break;
 	}
 
-	const auto compute_aligned_position = [this, &max_size](AlignmentOption alignment, int axis) {
+	const auto compute_aligned_position = [this, &max_size](Alignment alignment, int axis) {
 		switch(alignment) {
-		case AO_CENTER: return (last_viewport_size_[axis] - container_.size[axis]) / 2;
-		case AO_END: return last_viewport_size_[axis] - container_.size[axis] - margin_[axis];
-		case AO_PERCENTUAL: return static_cast<int32_t>(margin_[axis] + percentual_offset_[axis] * max_size[axis]);
-		case AO_START:
-		case AO_FREE:
+		case Alignment::kCenter: return (last_viewport_size_[axis] - container_.size[axis]) / 2;
+		case Alignment::kEnd: return last_viewport_size_[axis] - container_.size[axis] - margin_[axis];
+		case Alignment::kPercentual: return static_cast<int32_t>(margin_[axis] + percentual_offset_[axis] * max_size[axis]);
+		case Alignment::kStart:
+		case Alignment::kFree:
 		default: return margin_[axis];
 		}
 	};
@@ -248,5 +248,5 @@ void overlay::update_layout() {
 	container_.y() = compute_aligned_position(vertical_alignment_, 1);
 }
 
-}
-}
+} // namespace overlay
+} // namespace cgv

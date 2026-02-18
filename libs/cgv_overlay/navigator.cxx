@@ -9,7 +9,7 @@
 using namespace cgv::render;
 
 namespace cgv {
-namespace app {
+namespace overlay {
 
 navigator::navigator() {
 	
@@ -23,8 +23,8 @@ navigator::navigator() {
 
 	layout_size = 150;
 
-	set_alignment(AO_END, AO_END);
-	set_stretch(SO_NONE);
+	set_alignment(Alignment::kEnd, Alignment::kEnd);
+	set_stretch_mode(StretchMode::kNone);
 	set_margin(ivec2(0));
 	overlay::set_size(ivec2(layout_size));
 	
@@ -393,5 +393,5 @@ bool navigator::intersect_box(const vec3 &origin, const vec3& direction, float& 
 	return t_max > std::max(t_min, 0.0f);
 }
 
-}
-}
+} // namespace overlay
+} // namespace cgv

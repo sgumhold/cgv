@@ -6,7 +6,7 @@
 using namespace cgv::render;
 
 namespace cgv {
-namespace app {
+namespace gui {
 
 transformation_gizmo::transformation_gizmo() {
 	_boxes.style.illumination_mode = IM_OFF;
@@ -594,5 +594,5 @@ std::pair<float, float> transformation_gizmo::ray_ray_closest_approach(const cgv
 	return { st.y(), st.x() };
 }
 
-}
-}
+} // namespace gizmo
+} // namespace cgv

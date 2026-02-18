@@ -7,7 +7,7 @@
 #include <cgv_g2d/msdf_gl_font_renderer.h>
 
 namespace cgv {
-namespace app {
+namespace overlay {
 
 color_scale_legend::color_scale_legend() {
 
@@ -202,7 +202,7 @@ void color_scale_legend::set_orientation(Orientation orientation) {
 	on_set(&layout.orientation);
 }
 
-void color_scale_legend::set_label_alignment(AlignmentOption alignment) {
+void color_scale_legend::set_label_alignment(Alignment alignment) {
 	layout.label_alignment = alignment;
 	on_set(&layout.label_alignment);
 }
@@ -281,7 +281,7 @@ void color_scale_legend::update_layout(const ivec2& parent_size) {
 	ivec2 size(parent_size);
 
 	switch(layout.label_alignment) {
-	case AO_START:
+	case Alignment::kStart:
 		if(layout.orientation == Orientation::kHorizontal) {
 			offset.x() = layout.x_label_size / 2;
 			offset.y() = layout.title_space;
@@ -293,7 +293,7 @@ void color_scale_legend::update_layout(const ivec2& parent_size) {
 			size.x() -= layout.x_label_size + 4 + layout.title_space;
 		}
 		break;
-	case AO_END:
+	case Alignment::kEnd:
 		if(layout.orientation == Orientation::kHorizontal) {
 			offset.x() = layout.x_label_size / 2;
 			offset.y() = layout.label_space;
@@ -345,7 +345,7 @@ bool color_scale_legend::create_ticks(const cgv::render::context& ctx) {
 	label_geometry.clear();
 	tick_geometry.clear();
 
-	if(!color_scale || layout.label_alignment == AO_FREE) {
+	if(!color_scale || layout.label_alignment == Alignment::kFree) {
 		layout.x_label_size = 0;
 		return true;
 	}
@@ -367,7 +367,7 @@ bool color_scale_legend::create_ticks(const cgv::render::context& ctx) {
 
 	int axis = 0;
 	int label_offset = 4;
-	AlignmentOption label_alignment = layout.label_alignment;
+	Alignment label_alignment = layout.label_alignment;
 	cgv::render::TextAlignment text_h_start = cgv::render::TextAlignment::TA_LEFT;
 	cgv::render::TextAlignment text_h_end = cgv::render::TextAlignment::TA_RIGHT;
 	cgv::render::TextAlignment text_v_start = cgv::render::TextAlignment::TA_TOP;
@@ -382,8 +382,8 @@ bool color_scale_legend::create_ticks(const cgv::render::context& ctx) {
 
 		std::swap(tick_size.x(), tick_size.y());
 
-		if(label_alignment == AO_START) label_alignment = AO_END;
-		else if(label_alignment == AO_END) label_alignment = AO_START;
+		if(label_alignment == Alignment::kStart) label_alignment = Alignment::kEnd;
+		else if(label_alignment == Alignment::kEnd) label_alignment = Alignment::kStart;
 
 		text_h_start = cgv::render::TextAlignment::TA_BOTTOM;
 		text_h_end = cgv::render::TextAlignment::TA_TOP;
@@ -403,17 +403,17 @@ bool color_scale_legend::create_ticks(const cgv::render::context& ctx) {
 
 	bool inside = false;
 	switch(label_alignment) {
-	case AO_START:
+	case Alignment::kStart:
 		title_position[1 - axis] -= 4;
 		tick_start[1 - axis] += layout.color_ramp_rect.size[1 - axis] + 3;
 		break;
-	case AO_CENTER:
+	case Alignment::kCenter:
 		title_position[axis] += 2;
 		title_position[1 - axis] += layout.color_ramp_rect.size[1 - axis] - (axis ? 3 : 1);
 		tick_start[1 - axis] += 3;
 		inside = true;
 		break;
-	case AO_END:
+	case Alignment::kEnd:
 		title_alignment = title_alignment_2;
 		title_position[1 - axis] += layout.color_ramp_rect.size[1 - axis] + 4;
 		tick_start[1 - axis] -= 3;
@@ -492,5 +492,5 @@ bool color_scale_legend::create_ticks(const cgv::render::context& ctx) {
 	return false;
 }
 
-}
-}
+} // namespace overlay
+} // namespace cgv

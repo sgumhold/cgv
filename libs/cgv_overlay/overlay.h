@@ -15,7 +15,23 @@
 #include "lib_begin.h"
 
 namespace cgv {
-namespace app {
+namespace overlay {
+
+enum class Alignment {
+	kFree,			// alignment solely controlled by margin
+	kStart,			// left for horizontal, bottom for vertical direction
+	kCenter,		// center of the reference area for both directions
+	kEnd,			// right for horizontal, top for vertical direction
+	kPercentual,	// alignment based on offset from lower left corner based on percentual size of reference area
+};
+
+enum class StretchMode {
+	kNone,			// size is unchanged
+	kHorizontal,	// width is stretched to cover reference area
+	kVertical,		// height is stretched to cover reference area
+	kCover,			// width and height are stretched to cover reference area
+	kPercentual,	// width and height are scaled according to percentual size of reference area
+};
 
 class CGV_API overlay :
 	public cgv::base::node,
@@ -23,66 +39,6 @@ class CGV_API overlay :
 	public cgv::gui::provider,
 	public cgv::gui::event_handler
 {
-public:
-	enum AlignmentOption {
-		AO_FREE,		// alignment solely controlled by margin
-		AO_START,		// left for horizontal, bottom for vertical direction
-		AO_CENTER,		// center of the viewport for both directions
-		AO_END,			// right for horizontal, top for vertical direction
-		AO_PERCENTUAL,	// alignment based on offset from lower left corner based on percentual size of viewport
-	};
-
-	enum StretchOption {
-		SO_NONE,		// size is unchanged
-		SO_HORIZONTAL,	// width is stretched to cover viewport
-		SO_VERTICAL,	// height is stretched to cover viewport
-		SO_BOTH,		// width and height are stretched to cover viewport
-		SO_PERCENTUAL,  // width and height are scaled according to percentual size of viewport
-	};
-
-private:
-	/// the last recorded size of the viewport, is kept current with ensure_viewport
-	ivec2 last_viewport_size_ = ivec2(-1);
-	/// the last recorded size of this overlay
-	ivec2 last_size_ = ivec2(-1);
-	/// the last local mouse position used to detect mouse enter and leave events
-	ivec2 last_local_mouse_pos_ = ivec2(-1);
-	/// is true if the overlay has captured the mouse for further events; will block events from propagating if blocks_events_ is also true
-	bool captured_mouse_ = false;
-	/// rectangle area this overlay is fully contained whithin
-	cgv::g2d::irect container_;
-	/// whether the overlay blocks events or lets them pass through to other handlers
-	bool blocks_events_ = false;
-
-	/// layout parameters
-	AlignmentOption horizontal_alignment_ = AlignmentOption::AO_START;
-	AlignmentOption vertical_alignment_ = AlignmentOption::AO_START;
-	StretchOption stretch_ = SO_NONE;
-	ivec2 margin_ = ivec2(0);
-	vec2 percentual_offset_ = vec2(0.0f);
-	vec2 percentual_size_ = vec2(1.0f);
-
-	template<typename T>
-	data::ref_ptr<cgv::gui::control<T>> add_layout_member_control(const std::string& label, T& value, const std::string& gui_type = "", const std::string& options = "", const std::string& align = "\n") {
-		data::ref_ptr<cgv::gui::control<T>> cp = add_control(label, value, gui_type, options, align);
-		if(cp)
-			connect_copy(cp->value_change, cgv::signal::rebind(this, &overlay::on_layout_change));
-		return cp;
-	}
-
-protected:
-	/// called when the overlay visibility is changed through the default gui
-	virtual void on_visibility_change();
-
-	/// called when the overlay layout parameters are changed through the default gui
-	virtual void on_layout_change();
-
-	/// update the layout of the overlay container
-	void update_layout();
-
-	/// virtual method to implement the derived class gui creation
-	virtual void create_gui_impl() {};
-
 public:
 	struct gui_options_t {
 		std::string heading = "";
@@ -142,25 +98,25 @@ public:
 	cgv::g2d::irect get_local_rectangle() const { return cgv::g2d::irect(ivec2(0), container_.size); }
 
 	/// get the horizontal alignment
-	AlignmentOption get_horizontal_alignment() const { return horizontal_alignment_; }
+	Alignment get_horizontal_alignment() const { return horizontal_alignment_; }
 
 	/// get the vertical alignment
-	AlignmentOption get_vertical_alignment() const { return vertical_alignment_; }
+	Alignment get_vertical_alignment() const { return vertical_alignment_; }
 
 	/// get the percentual alignment offset (only valid if get_horizontal_alignment() or get_vertical_alignment() returns AlignmentOption::AO_PERCENTUAL)
 	vec2 get_percentual_offset() const { return percentual_offset_; }
 
-	/// set the alignment options
-	void set_alignment(AlignmentOption horizontal, AlignmentOption vertical, vec2 percentual_offset = vec2(-1.0f));
+	/// set the alignment
+	void set_alignment(Alignment horizontal, Alignment vertical, vec2 percentual_offset = vec2(-1.0f));
 
 	/// get the stretch
-	StretchOption get_stretch() const { return stretch_; }
+	StretchMode get_stretch_mode() const { return stretch_; }
 
-	/// get the percentual stretch (only valid if get_stretch() returns StretchOption::SO_PERCENTUAL)
+	/// get the percentual stretch (only valid if get_stretch_mode() returns StretchMode::kPercentual)
 	vec2 get_percentual_size() const { return percentual_size_; }
 
-	/// set the stretch option
-	void set_stretch(StretchOption stretch, vec2 percentual_size = vec2(-1.0f));
+	/// set the stretch mode
+	void set_stretch_mode(StretchMode stretch, vec2 percentual_size = vec2(-1.0f));
 
 	/// return the margin as set in the layout parameters
 	ivec2 get_margin() const { return margin_; }
@@ -223,11 +179,54 @@ public:
 		!!! Do not overwrite create_gui() in the derived class if you want the default behaviour. !!!
 	*/
 	void create_gui();
+
+protected:
+	/// called when the overlay visibility is changed through the default gui
+	virtual void on_visibility_change();
+
+	/// called when the overlay layout parameters are changed through the default gui
+	virtual void on_layout_change();
+
+	/// update the layout of the overlay container
+	void update_layout();
+
+	/// virtual method to implement the derived class gui creation
+	virtual void create_gui_impl() {};
+
+private:
+	/// the last recorded size of the viewport, is kept current with ensure_viewport
+	ivec2 last_viewport_size_ = ivec2(-1);
+	/// the last recorded size of this overlay
+	ivec2 last_size_ = ivec2(-1);
+	/// the last local mouse position used to detect mouse enter and leave events
+	ivec2 last_local_mouse_pos_ = ivec2(-1);
+	/// is true if the overlay has captured the mouse for further events; will block events from propagating if blocks_events_ is also true
+	bool captured_mouse_ = false;
+	/// rectangle area this overlay is fully contained whithin
+	cgv::g2d::irect container_;
+	/// whether the overlay blocks events or lets them pass through to other handlers
+	bool blocks_events_ = false;
+
+	/// layout parameters
+	Alignment horizontal_alignment_ = Alignment::kStart;
+	Alignment vertical_alignment_ = Alignment::kStart;
+	StretchMode stretch_ = StretchMode::kNone;
+	ivec2 margin_ = ivec2(0);
+	vec2 percentual_offset_ = vec2(0.0f);
+	vec2 percentual_size_ = vec2(1.0f);
+
+	template<typename T>
+	data::ref_ptr<cgv::gui::control<T>> add_layout_member_control(const std::string& label, T& value, const std::string& gui_type = "", const std::string& options = "", const std::string& align = "\n") {
+		data::ref_ptr<cgv::gui::control<T>> cp = add_control(label, value, gui_type, options, align);
+		if(cp)
+			connect_copy(cp->value_change, cgv::signal::rebind(this, &overlay::on_layout_change));
+		return cp;
+	}
 };
 
 typedef cgv::data::ref_ptr<overlay> overlay_ptr;
 
-}
-}
+} // namespace overlay
+} // namespace cgv
 
 #include <cgv/config/lib_end.h>

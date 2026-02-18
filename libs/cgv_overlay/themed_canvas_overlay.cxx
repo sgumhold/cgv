@@ -1,7 +1,7 @@
 #include "themed_canvas_overlay.h"
 
 namespace cgv {
-namespace app {
+namespace overlay {
 
 themed_canvas_overlay::themed_canvas_overlay() : canvas_overlay() {
 	const auto& theme = cgv::gui::theme_info::instance();
@@ -50,5 +50,5 @@ void themed_canvas_overlay::set_background_visible(bool flag) {
 	on_set(&background_visible_);
 }
 
-}
-}
+} // namespace overlay
+} // namespace cgv

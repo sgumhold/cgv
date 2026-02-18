@@ -7,7 +7,7 @@
 #include <cgv_gl/gl/gl.h>
 
 namespace cgv {
-namespace app {
+namespace overlay {
 
 color_selector::color_selector() {
 
@@ -479,5 +479,5 @@ void color_selector::set_color(rgba color, bool opacity, bool init) {
 	post_damage();
 }
 
-}
-}
+} // namespace overlay
+} // namespace cgv

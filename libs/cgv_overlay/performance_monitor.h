@@ -3,14 +3,14 @@
 #include <cgv/media/color_scheme.h>
 #include <cgv/utils/convert_string.h>
 #include <cgv/utils/stopwatch.h>
-#include <cgv_app/themed_canvas_overlay.h>
 #include <cgv_g2d/generic_2d_renderer.h>
 #include <cgv_g2d/msdf_text_geometry.h>
+#include <cgv_overlay/themed_canvas_overlay.h>
 
 #include "lib_begin.h"
 
 namespace cgv {
-namespace app {
+namespace overlay {
 
 class CGV_API performance_monitor : public themed_canvas_overlay {
 protected:
@@ -111,7 +111,7 @@ public:
 
 typedef cgv::data::ref_ptr<performance_monitor> performance_monitor_ptr;
 
-}
-}
+} // namespace overlay
+} // namespace cgv
 
 #include <cgv/config/lib_end.h>

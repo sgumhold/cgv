@@ -7,7 +7,7 @@
 using namespace cgv::render;
 
 namespace cgv {
-namespace app {
+namespace gui {
 
 void gizmo::finish_frame(context& ctx) {
 	if(!_view)
@@ -210,5 +210,5 @@ gizmo::AxisId gizmo::index_to_axis_id(int idx) const {
 	return static_cast<AxisId>(idx);
 }
 
-}
-}
+} // namespace gizmo
+} // namespace cgv
