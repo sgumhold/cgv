@@ -1,15 +1,15 @@
 #pragma once
 
 #include <cgv/render/texture.h>
-#include <cgv_app/themed_canvas_overlay.h>
 #include <cgv_g2d/draggable_collection.h>
 #include <cgv_g2d/msdf_text_geometry.h>
 #include <cgv_g2d/shape2d_styles.h>
+#include <cgv_overlay/themed_canvas_overlay.h>
 
 #include "lib_begin.h"
 
 namespace cgv {
-namespace app {
+namespace overlay {
 
 class CGV_API color_selector : public themed_canvas_overlay {
 protected:
@@ -129,7 +129,7 @@ public:
 
 typedef cgv::data::ref_ptr<color_selector> color_selector_ptr;
 
-}
-}
+} // namespace overlay
+} // namespace cgv
 
 #include <cgv/config/lib_end.h>

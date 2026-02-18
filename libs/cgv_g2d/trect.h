@@ -108,12 +108,12 @@ struct trect {
 		);
 	}
 
-	// align outside the bounds of the reference rectangle
+	// align inside the bounds of the reference rectangle
 	void align_inside(const trect<coord_type>& reference, Alignment alignment, CoordinateOrigin origin = CoordinateOrigin::kLowerLeft) {
 		align_with_percentual_offset(reference, alignment, coord_type(0), coord_type(0), origin);
 	}
 
-	// align center to the bounds of the reference rectangle
+	// align centered to the bounds of the reference rectangle
 	void align_middle(const trect<coord_type>& reference, Alignment alignment, CoordinateOrigin origin = CoordinateOrigin::kLowerLeft) {
 		align_with_percentual_offset(reference, alignment, coord_type(0.5), coord_type(0.5));
 	}
@@ -123,7 +123,7 @@ struct trect {
 		align_with_percentual_offset(reference, alignment, coord_type(1), coord_type(1), origin);
 	}
 
-	// align to the bounds of the reference rectangle and apply percentual offsets relative to this size
+	// align to the bounds of the reference rectangle and apply percentual offsets relative to this rectangle's size
 	void align_with_percentual_offset(const trect<coord_type>& reference, Alignment alignment, coord_type horizontal_offset, coord_type vertical_offset, CoordinateOrigin origin = CoordinateOrigin::kLowerLeft) {
 		// first center this in reference rectangle
 		position = reference.center() - coord_type(0.5) * size;

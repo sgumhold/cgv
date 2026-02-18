@@ -1,0 +1,25 @@
+@=
+projectName="cgv_overlay";
+projectType="library";
+projectGUID="5FE4049F-7BCF-45B2-B0D5-0659D7C911C7";
+addSharedDefines=["CGV_OVERLAY_EXPORTS"];
+addProjectDirs=[CGV_DIR."/libs"];
+addProjectDeps=[
+	"cgv_base",
+	"cgv_data",
+	"cgv_g2d",
+	"cgv_gl",
+	"cgv_gui",
+	"cgv_media",
+	"cgv_os",
+	"cgv_reflect",
+	"cgv_render",
+	"cgv_type",
+	"cgv_utils",
+	"cg_msdf"
+];
+addIncDirs=[CGV_DIR."/libs", CGV_BUILD_DIR."/".projectName];
+if(SYSTEM=="windows") {
+	addStaticDefines=["REGISTER_SHADER_FILES"];
+}
+addShaderPaths=[[INPUT_DIR,"all"]];

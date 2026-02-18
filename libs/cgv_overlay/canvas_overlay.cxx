@@ -3,7 +3,7 @@
 using namespace cgv::render;
 
 namespace cgv {
-namespace app {
+namespace overlay {
 
 canvas_overlay::canvas_overlay() : overlay() {
 
@@ -156,5 +156,5 @@ void canvas_overlay::draw_impl(context& ctx) {
 	ctx.pop_depth_test_state();
 }
 
-}
-}
+} // namespace overlay
+} // namespace cgv

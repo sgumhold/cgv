@@ -1,19 +1,19 @@
 #pragma once
 
-//#include <cgv/data/time_stamp.h>
+#include <cgv/data/time_stamp.h>
 #include <cgv/media/transfer_function.h>
 #include <cgv/render/texture.h>
-#include <cgv_app/themed_canvas_overlay.h>
-#include <cgv_app/color_selector.h>
 #include <cgv_g2d/draggable_collection.h>
 #include <cgv_g2d/generic_2d_renderer.h>
 #include <cgv_g2d/generic_2d_render_data.h>
 #include <cgv_g2d/msdf_text_geometry.h>
+#include <cgv_overlay/color_selector.h>
+#include <cgv_overlay/themed_canvas_overlay.h>
 
 #include "lib_begin.h"
 
 namespace cgv {
-namespace app {
+namespace overlay {
 
 class CGV_API transfer_function_editor : public themed_canvas_overlay {
 protected:
@@ -214,13 +214,13 @@ typedef cgv::data::ref_ptr<transfer_function_editor> transfer_function_editor_pt
 
 static void connect_color_selector_to_transfer_function_editor(const transfer_function_editor_ptr cme_ptr, const color_selector_ptr cs_ptr) {
 	if(cme_ptr && cs_ptr) {
-		cme_ptr->set_on_color_point_select_callback(std::bind(&cgv::app::color_selector::set_rgb_color, cs_ptr, std::placeholders::_1));
-		cme_ptr->set_on_color_point_deselect_callback(std::bind(&cgv::app::color_selector::set_visibility, cs_ptr, false));
-		cs_ptr->set_on_change_rgb_callback(std::bind(&cgv::app::transfer_function_editor::set_selected_color, cme_ptr, std::placeholders::_1));
+		cme_ptr->set_on_color_point_select_callback(std::bind(&cgv::overlay::color_selector::set_rgb_color, cs_ptr, std::placeholders::_1));
+		cme_ptr->set_on_color_point_deselect_callback(std::bind(&cgv::overlay::color_selector::set_visibility, cs_ptr, false));
+		cs_ptr->set_on_change_rgb_callback(std::bind(&cgv::overlay::transfer_function_editor::set_selected_color, cme_ptr, std::placeholders::_1));
 	}
 }
 
-} // namespace app
+} // namespace overlay
 } // namespace cgv
 
 #include <cgv/config/lib_end.h>

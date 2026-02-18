@@ -8,11 +8,11 @@
 #include <cgv/media/transfer_function.h>
 #include <cgv/render/color_scale_adapter.h>
 #include <cgv/render/drawable.h>
-#include <cgv_app/transfer_function_editor.h>
 #include <cgv_gl/volume_renderer.h>
 #include <cgv_gl/box_wire_render_data.h>
-#include <cgv_app/color_scale_legend.h>
-#include <cgv_app/color_selector.h>
+#include <cgv_overlay/color_scale_legend.h>
+#include <cgv_overlay/color_selector.h>
+#include <cgv_overlay/transfer_function_editor.h>
 
 class volume_viewer :
 	public cgv::base::group,			// derive from group to support child nodes (needed for overlays)
@@ -21,10 +21,12 @@ class volume_viewer :
 	public cgv::render::drawable		// derive from drawable to allow drawing in the GL context
 {
 protected:
-	/// store a pointer to the color map editor overlay which is used to edit the volume transfer function
-	cgv::app::transfer_function_editor_ptr transfer_function_editor;
-	cgv::app::color_scale_legend_ptr legend;
-	cgv::app::color_selector_ptr color_selector;
+	/// a transfer funciton editor is used to edit the volume transfer function
+	cgv::overlay::transfer_function_editor_ptr transfer_function_editor;
+	/// a color scale legend is used to show the volume transfer function
+	cgv::overlay::color_scale_legend_ptr legend;
+	/// a color selector is used to allow live selection of transfer function colors
+	cgv::overlay::color_selector_ptr color_selector;
 
 	/// resolution of the volume
 	cgv::uvec3 vres;

@@ -11,7 +11,7 @@
 #include "lib_begin.h"
 
 namespace cgv {
-namespace app {
+namespace gui {
 
 class CGV_API transformation_gizmo : public gizmo {
 public:
@@ -85,7 +85,9 @@ private:
 	cgv::render::sphere_render_data<rgba> _sphere;
 };
 
-}
-}
+typedef cgv::data::ref_ptr<transformation_gizmo> transformation_gizmo_ptr;
+
+} // namespace gizmo
+} // namespace cgv
 
 #include <cgv/config/lib_end.h>

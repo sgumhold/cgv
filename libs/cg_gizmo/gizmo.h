@@ -11,16 +11,7 @@
 #include "lib_begin.h"
 
 namespace cgv {
-namespace app {
-
-struct plane {
-	vec3 origin = { 0.0f };
-	vec3 normal = { 0.0f };
-
-	bool valid() const {
-		return length(normal) > std::numeric_limits<float>::epsilon();
-	}
-};
+namespace gui {
 
 enum class GizmoAction {
 	kDragStart,
@@ -67,6 +58,15 @@ public:
 	bool lock_size_during_interaction = false;
 
 protected:
+	struct plane {
+		vec3 origin = { 0.0f };
+		vec3 normal = { 0.0f };
+
+		bool valid() const {
+			return length(normal) > std::numeric_limits<float>::epsilon();
+		}
+	};
+
 	enum class InteractionFeature {
 		kNone = 0,
 		kAxis,
@@ -132,7 +132,7 @@ private:
 	GizmoOrientation _orientation = GizmoOrientation::kGlobal;
 };
 
-}
-}
+} // namespace gizmo
+} // namespace cgv
 
 #include <cgv/config/lib_end.h>

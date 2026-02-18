@@ -1,4 +1,4 @@
-#ifdef CGV_APP_EXPORTS
+#ifdef CG_GIZMO_EXPORTS
 #	define CGV_EXPORTS
 #endif
 

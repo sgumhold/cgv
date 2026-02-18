@@ -44,27 +44,31 @@ volume_viewer::volume_viewer() : group("Volume Viewer"), depth_tex("[D]")
 
 	view_ptr = nullptr;
 
-	// instantiate a color map editor as an overlay for this viewer
-	transfer_function_editor = create_and_append_child<cgv::app::transfer_function_editor>("Editor");
+	// instantiate a transfer function editor as an overlay for this viewer
+	transfer_function_editor = create_and_append_child<cgv::overlay::transfer_function_editor>("Editor");
 	// make the editor cover the whole width of the window
-	transfer_function_editor->set_stretch(cgv::app::overlay::StretchOption::SO_HORIZONTAL);
+	transfer_function_editor->set_stretch_mode(cgv::overlay::StretchMode::kHorizontal);
 	transfer_function_editor->gui_options.show_heading = false;
 	// enable support for editing opacity values
 	transfer_function_editor->set_opacity_support(true);
-	// if the color scale pointer does not change it is sufficient to set it only once in the editor
+	// if the color scale pointer does not change it is sufficient to set it only once
 	transfer_function_editor->set_transfer_function(transfer_function);
 
-	color_selector = create_and_append_child<cgv::app::color_selector>("Color Selector");
-	color_selector->set_alignment(cgv::app::overlay::AlignmentOption::AO_END, cgv::app::overlay::AlignmentOption::AO_END);
+	// instantiate a color selector as an overlay for this viewer
+	color_selector = create_and_append_child<cgv::overlay::color_selector>("Color Selector");
+	// move the selector to the upper right corner of the window
+	color_selector->set_alignment(cgv::overlay::Alignment::kEnd, cgv::overlay::Alignment::kEnd);
+	// initially hide the selector; its visibility will be controlled through point selection in the transfer function editor
+	color_selector->hide();
 
 	// use the convenience connect function to establish a two-way binding between the editor and color selector;
 	// this allows changing control point colors through the selector
-	cgv::app::connect_color_selector_to_transfer_function_editor(transfer_function_editor, color_selector);
+	cgv::overlay::connect_color_selector_to_transfer_function_editor(transfer_function_editor, color_selector);
 
 	// instantiate a color scale legend to show the used transfer function
-	legend = create_and_append_child<cgv::app::color_scale_legend>("Legend");
+	legend = create_and_append_child<cgv::overlay::color_scale_legend>("Legend");
 	// place the legend in the top left corner
-	legend->set_alignment(cgv::app::overlay::AlignmentOption::AO_START, cgv::app::overlay::AlignmentOption::AO_END);
+	legend->set_alignment(cgv::overlay::Alignment::kStart, cgv::overlay::Alignment::kEnd);
 	legend->set_title("Density");
 	// if the color scale pointer does not change it is sufficient to set it only once in the legend; all updates will happen automatically
 	legend->set_color_scale(transfer_function);

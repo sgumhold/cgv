@@ -5,7 +5,7 @@
 #include <cgv_g2d/msdf_gl_font_renderer.h>
 
 namespace cgv {
-namespace app {
+namespace overlay {
 
 performance_monitor::performance_monitor() {
 
@@ -340,5 +340,5 @@ void performance_monitor::update_plot() {
 	post_damage();
 }
 
-}
-}
+} // namespace overlay
+} // namespace cgv

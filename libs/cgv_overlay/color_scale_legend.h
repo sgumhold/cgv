@@ -5,15 +5,15 @@
 #include <cgv/render/texture.h>
 #include <cgv/utils/convert_string.h>
 #include <cgv/utils/number_format.h>
-#include <cgv_app/themed_canvas_overlay.h>
 #include <cgv_g2d/generic_2d_renderer.h>
 #include <cgv_g2d/generic_2d_render_data.h>
 #include <cgv_g2d/msdf_text_geometry.h>
+#include <cgv_overlay/themed_canvas_overlay.h>
 
 #include "lib_begin.h"
 
 namespace cgv {
-namespace app {
+namespace overlay {
 
 class CGV_API color_scale_legend : public themed_canvas_overlay {
 public:
@@ -32,7 +32,7 @@ protected:
 		ivec2 total_size;
 
 		Orientation orientation = Orientation::kHorizontal;
-		AlignmentOption label_alignment = AO_END;
+		Alignment label_alignment = Alignment::kEnd;
 
 		// dependent members
 		cgv::g2d::irect color_ramp_rect;
@@ -44,7 +44,7 @@ protected:
 	cgv::render::texture tex = { "uint8[R,G,B,A]" };
 
 	std::string title;
-	AlignmentOption title_alignment = AO_START;
+	Alignment title_alignment = Alignment::kStart;
 
 	unsigned num_ticks = 10;
 	bool nice_ticks = true;
@@ -97,8 +97,8 @@ public:
 	Orientation get_orientation() const { return layout.orientation; }
 	void set_orientation(Orientation orientation);
 
-	AlignmentOption get_label_alignment() const { return layout.label_alignment; }
-	void set_label_alignment(AlignmentOption alignment);
+	Alignment get_label_alignment() const { return layout.label_alignment; }
+	void set_label_alignment(Alignment alignment);
 
 	void set_invert_color(bool flag);
 
@@ -114,7 +114,7 @@ public:
 
 typedef cgv::data::ref_ptr<color_scale_legend> color_scale_legend_ptr;
 
-}
-}
+} // namespace overlay
+} // namespace cgv
 
 #include <cgv/config/lib_end.h>

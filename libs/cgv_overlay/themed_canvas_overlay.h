@@ -1,12 +1,12 @@
 #pragma once
 
-#include <cgv_app/canvas_overlay.h>
 #include <cgv/gui/theme_info.h>
+#include <cgv_overlay/canvas_overlay.h>
 
 #include "lib_begin.h"
 
 namespace cgv {
-namespace app {
+namespace overlay {
 
 class CGV_API themed_canvas_overlay : public canvas_overlay, public cgv::gui::theme_observer {
 private:
@@ -43,7 +43,7 @@ public:
 
 typedef cgv::data::ref_ptr<canvas_overlay> canvas_overlay_ptr;
 
-}
-}
+} // namespace overlay
+} // namespace cgv
 
 #include <cgv/config/lib_end.h>

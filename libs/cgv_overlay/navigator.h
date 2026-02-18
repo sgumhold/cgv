@@ -10,14 +10,14 @@
 #include <cgv_gl/box_wire_render_data.h>
 #include <cgv_gl/rectangle_render_data.h>
 #include <cgv_gl/sphere_render_data.h>
-#include <cgv_app/overlay.h>
 #include <cgv_g2d/canvas.h>
 #include <cgv_g2d/shape2d_styles.h>
+#include <cgv_overlay/overlay.h>
 
 #include "lib_begin.h"
 
 namespace cgv {
-namespace app {
+namespace overlay {
 
 class CGV_API navigator : public overlay {
 protected:
@@ -74,7 +74,7 @@ public:
 
 typedef cgv::data::ref_ptr<navigator> navigator_ptr;
 
-}
-}
+} // namespace overlay
+} // namespace cgv
 
 #include <cgv/config/lib_end.h>

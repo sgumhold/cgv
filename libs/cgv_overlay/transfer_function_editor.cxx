@@ -15,7 +15,7 @@
 #include <cgv_g2d/msdf_gl_font_renderer.h>
 
 namespace cgv {
-namespace app {
+namespace overlay {
 
 const vec2 transfer_function_editor::color_point_size = { 12.0f, 18.0f };
 const vec2 transfer_function_editor::opacity_point_size = { 12.0f };
@@ -981,5 +981,5 @@ void transfer_function_editor::create_geometry() {
 	}
 }
 
-}
-}
+} // namespace overlay
+} // namespace cgv
