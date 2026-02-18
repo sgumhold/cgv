@@ -1,12 +1,10 @@
 #pragma once
 
 #include <algorithm>
+#include <numeric>
 #include <string>
-#include <vector>
-
 #include <utility>
-
-//#include "lib_begin.h"
+#include <vector>
 
 namespace cgv {
 namespace utils {
@@ -267,7 +265,7 @@ std::vector<size_t> stable_sort_indices(const RandomIt first, const RandomIt las
 template<class RandomIt, class Compare>
 std::vector<size_t> sort_indices(const RandomIt first, const RandomIt last, Compare comp) {
 	std::vector<size_t> indices = generate_index_sequence(first, last);
-	std::sort(indices.begin(), indices.end(), [first](size_t i1, size_t i2) {
+	std::sort(indices.begin(), indices.end(), [first, &comp](size_t i1, size_t i2) {
 		return comp(first[i1], first[i2]);
 	});
 	return indices;
@@ -286,14 +284,11 @@ std::vector<size_t> sort_indices(const RandomIt first, const RandomIt last, Comp
 template<class RandomIt, class Compare>
 std::vector<size_t> stable_sort_indices(const RandomIt first, const RandomIt last, Compare comp) {
 	std::vector<size_t> indices = generate_index_sequence(first, last);
-	std::stable_sort(indices.begin(), indices.end(), [first](size_t i1, size_t i2) {
+	std::stable_sort(indices.begin(), indices.end(), [first, &comp](size_t i1, size_t i2) {
 		return comp(first[i1], first[i2]);
 	});
 	return indices;
 }
 
-
 } // namespace utils
 } // namespace cgv
-
-//#include <cgv/config/lib_end.h>
