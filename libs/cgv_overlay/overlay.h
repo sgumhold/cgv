@@ -103,7 +103,7 @@ public:
 	/// get the vertical alignment
 	Alignment get_vertical_alignment() const { return vertical_alignment_; }
 
-	/// get the percentual alignment offset (only valid if get_horizontal_alignment() or get_vertical_alignment() returns AlignmentOption::AO_PERCENTUAL)
+	/// get the percentual alignment offset (only valid if get_horizontal_alignment() or get_vertical_alignment() returns AlignmentOption::kPercentual)
 	vec2 get_percentual_offset() const { return percentual_offset_; }
 
 	/// set the alignment

@@ -1,6 +1,7 @@
 #pragma once
 
 
+#include <cg_gizmo/transformation_gizmo.h>
 #include <cgv/base/group.h>
 #include <cgv/gui/directory_helper.h>
 #include <cgv/gui/event_handler.h>
@@ -11,7 +12,6 @@
 #include <cgv/render/drawable.h>
 #include <cgv/utils/file.h>
 #include <cgv/utils/dir.h>
-#include <cgv_app/transformation_gizmo.h>
 #include <cgv_gl/line_render_data.h>
 #include <cgv_gl/point_render_data.h>
 
@@ -66,7 +66,7 @@ protected:
 
 	/// store a pointer to the view
 	cgv::render::view* view_ptr = nullptr;
-	cgv::data::ref_ptr<cgv::app::transformation_gizmo> eye_gizmo, focus_gizmo;
+	cgv::gui::transformation_gizmo_ptr eye_gizmo, focus_gizmo;
 	keyframe_editor_overlay_ptr timeline_ptr;
 	keyframe* selected_keyframe = nullptr;
 
@@ -119,9 +119,9 @@ protected:
 
 	void create_path_render_data();
 
-	void handle_eye_gizmo_move(cgv::app::GizmoAction action, cgv::app::transformation_gizmo::Mode mode);
+	void handle_eye_gizmo_move(cgv::gui::GizmoAction action, cgv::gui::transformation_gizmo::Mode mode);
 
-	void handle_focus_gizmo_move(cgv::app::GizmoAction action, cgv::app::transformation_gizmo::Mode mode);
+	void handle_focus_gizmo_move(cgv::gui::GizmoAction action, cgv::gui::transformation_gizmo::Mode mode);
 
 	void handle_editor_change(keyframe_editor_overlay::Event e);
 

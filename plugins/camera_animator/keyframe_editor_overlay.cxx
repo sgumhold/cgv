@@ -15,7 +15,7 @@ keyframe_editor_overlay::keyframe_editor_overlay() {
 	gui_options.allow_stretch = false;
 	gui_options.allow_margin = false;
 	
-	set_stretch(SO_HORIZONTAL);
+	set_stretch_mode(cgv::overlay::StretchMode::kHorizontal);
 	set_size(ivec2(100, layout.total_height(padding())));
 
 	scrollbar.callback = std::bind(&keyframe_editor_overlay::handle_scrollbar_drag, this, std::placeholders::_1);

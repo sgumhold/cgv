@@ -119,16 +119,16 @@ camera_animator::camera_animator() : cgv::base::group("Camera Animator") {
 	
 	view_transformation.identity();
 
-	eye_gizmo = create_and_append_child<cgv::app::transformation_gizmo>();
+	eye_gizmo = create_and_append_child<cgv::gui::transformation_gizmo>();
 	eye_gizmo->on_change = [this](auto action, auto mode) { handle_eye_gizmo_move(action, mode); };
 	eye_gizmo->size_scale = 0.5f;
-	eye_gizmo->set_mode(cgv::app::transformation_gizmo::Mode::kTranslation);
+	eye_gizmo->set_mode(cgv::gui::transformation_gizmo::Mode::kTranslation);
 	eye_gizmo->hide();
 
-	focus_gizmo = create_and_append_child<cgv::app::transformation_gizmo>();
+	focus_gizmo = create_and_append_child<cgv::gui::transformation_gizmo>();
 	focus_gizmo->on_change = [this](auto action, auto mode) { handle_focus_gizmo_move(action, mode); };
 	focus_gizmo->size_scale = 0.5f;
-	focus_gizmo->set_mode(cgv::app::transformation_gizmo::Mode::kTranslation);
+	focus_gizmo->set_mode(cgv::gui::transformation_gizmo::Mode::kTranslation);
 	focus_gizmo->hide();
 
 	timeline_ptr = create_and_append_child<keyframe_editor_overlay>("Keyframe Editor");
@@ -732,18 +732,18 @@ void camera_animator::create_path_render_data() {
 	}
 }
 
-void camera_animator::handle_eye_gizmo_move(cgv::app::GizmoAction action, cgv::app::transformation_gizmo::Mode mode) {
+void camera_animator::handle_eye_gizmo_move(cgv::gui::GizmoAction action, cgv::gui::transformation_gizmo::Mode mode) {
 
-	if(selected_keyframe && action == cgv::app::GizmoAction::kDrag) {
+	if(selected_keyframe && action == cgv::gui::GizmoAction::kDrag) {
 		selected_keyframe->camera_state.eye_position = eye_gizmo->get_position();
 		create_path_render_data();
 		set_animation_state(false);
 	}
 }
 
-void camera_animator::handle_focus_gizmo_move(cgv::app::GizmoAction action, cgv::app::transformation_gizmo::Mode mode) {
+void camera_animator::handle_focus_gizmo_move(cgv::gui::GizmoAction action, cgv::gui::transformation_gizmo::Mode mode) {
 
-	if(selected_keyframe && action == cgv::app::GizmoAction::kDrag) {
+	if(selected_keyframe && action == cgv::gui::GizmoAction::kDrag) {
 		selected_keyframe->camera_state.focus_position = focus_gizmo->get_position();
 		create_path_render_data();
 		set_animation_state(false);
