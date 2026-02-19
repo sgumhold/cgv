@@ -13,7 +13,7 @@ float framing_overlay::min_frame_size = 128.0f;
 framing_overlay::framing_overlay() {
 	set_name("Framing Editor");
 	blocks_events(false);
-	set_stretch(SO_BOTH);
+	set_stretch_mode(cgv::overlay::StretchMode::kCover);
 	set_margin(0);
 	set_size(-1);
 

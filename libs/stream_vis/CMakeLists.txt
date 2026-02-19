@@ -8,7 +8,7 @@ cgv_add_target(stream_vis
 	HEADERS ${HEADERS}
 	DEPENDENCIES
 		glew cgv_utils cgv_type cgv_reflect cgv_data cgv_signal cgv_base
-		cgv_media cgv_gui cgv_render cgv_os cgv_gl cgv_app plot
+		cgv_media cgv_gui cgv_render cgv_os cgv_gl cgv_overlay plot
 )
 
 # Disable warnings we can't do anything about since they're being emitted erroneously because of a GCC bug 

@@ -4,7 +4,7 @@ projectName="screenshot";
 projectGUID="3EB82E97-3B01-4CCD-87FF-0977A02CA103";
 addProjectDeps=[
 	"cgv_type", "cgv_utils", "cgv_base", "cgv_data", "cgv_signal", "cgv_reflect", "cgv_reflect_types", 
-	"cgv_render", "cgv_gui", "cg_ext", "cgv_gl", "cgv_g2d", "cgv_app", "xml"];
+	"cgv_render", "cgv_gui", "cg_ext", "cgv_gl", "cgv_g2d", "cgv_overlay", "xml"];
 addProjectDirs=[
 	CGV_DIR."/libs/cgv_gl", 
 	CGV_DIR."/plugins"
