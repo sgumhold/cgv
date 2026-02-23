@@ -9,6 +9,8 @@
 
 #include <tinyxml2/tinyxml2.h>
 
+#include "lib_begin.h"
+
 namespace cgv {
 namespace media {
 
@@ -17,84 +19,27 @@ struct transfer_function_writer_entry {
 	const cgv::media::transfer_function* transfer_function = nullptr;
 };
 
-class transfer_function_writer {
+class CGV_API transfer_function_writer {
 public:
-	static void to_xml_printer(tinyxml2::XMLPrinter& printer, const std::string& name, const cgv::media::transfer_function* transfer_function, bool put_parent_tag = true) {
-		std::vector<transfer_function_writer_entry> entries = { { name, transfer_function } };
-		to_xml_printer(printer, entries, put_parent_tag);
-	}
+	static void to_xml_printer(tinyxml2::XMLPrinter& printer, const std::string& name, const cgv::media::transfer_function* transfer_function, bool put_parent_tag = true);
 
-	static void to_xml_printer(tinyxml2::XMLPrinter& printer, const std::vector<transfer_function_writer_entry>& entries, bool put_parent_tag = true) {
-		if(put_parent_tag)
-			printer.OpenElement("ColorMaps");
+	static void to_xml_printer(tinyxml2::XMLPrinter& printer, const std::vector<transfer_function_writer_entry>& entries, bool put_parent_tag = true);
 
-		for(const auto& entry : entries)
-			write_color_map(printer, entry.name, entry.transfer_function);
+	static std::string to_xml(const std::string& name, const cgv::media::transfer_function* transfer_function, bool put_parent_tag = true);
 
-		if(put_parent_tag)
-			printer.CloseElement();
-	}
+	static std::string to_xml(const std::vector<transfer_function_writer_entry>& entries, bool put_parent_tag = true);
 
-	static std::string to_xml(const std::string& name, const cgv::media::transfer_function* transfer_function, bool put_parent_tag = true) {
-		std::vector<transfer_function_writer_entry> entries = { { name, transfer_function } };
-		return to_xml(entries, put_parent_tag);
-	}
+	static bool write_to_xml_file(const std::string& file_name, const std::string& name, const cgv::media::transfer_function* transfer_function, bool put_parent_tag = true);
 
-	static std::string to_xml(const std::vector<transfer_function_writer_entry>& entries, bool put_parent_tag = true) {
-		tinyxml2::XMLPrinter printer;
-		to_xml_printer(printer, entries, put_parent_tag);
-		std::string xml = printer.CStr();
-		return xml;
-	}
+	static bool write_to_xml_file(const std::string& file_name, const std::vector<transfer_function_writer_entry>& entries, bool put_parent_tag = true);
 
-	static bool write_to_xml_file(const std::string& file_name, const std::string& name, const cgv::media::transfer_function* transfer_function, bool put_parent_tag = true) {
-		std::vector<transfer_function_writer_entry> entries = { { name, transfer_function } };
-		return write_to_xml_file(file_name, entries, put_parent_tag);
-	}
-
-	static bool write_to_xml_file(const std::string& file_name, const std::vector<transfer_function_writer_entry>& entries, bool put_parent_tag = true) {
-		return cgv::utils::file::write(file_name, to_xml(entries, put_parent_tag), true);
-	}
-
-	static bool write_to_png_file(const std::string& file_name, const cgv::media::transfer_function* transfer_function, size_t resolution) {
-		std::vector<rgba> data = transfer_function->quantize(resolution);
-
-		std::vector<rgba8> data8;
-		std::transform(data.begin(), data.end(), std::back_inserter(data8), [](const rgba& color) {
-			return rgba8(color);
-		});
-
-		cgv::data::data_format data_format(resolution, 1, cgv::type::info::TI_UINT8, cgv::data::CF_RGBA);
-		cgv::data::data_view data_view(&data_format, data8.data());
-		cgv::media::image::image_writer writer(file_name);
-		return writer.write_image(data_view);
-	}
+	static bool write_to_png_file(const std::string& file_name, const cgv::media::transfer_function* transfer_function, size_t resolution);
 
 private:
-	static void write_color_map(tinyxml2::XMLPrinter& printer, const std::string& name, const cgv::media::transfer_function* transfer_function) {
-		printer.OpenElement("ColorMap");
-		printer.PushAttribute("name", name.c_str());
-
-		for(const auto& color_point : transfer_function->get_color_points()) {
-			printer.OpenElement("ColorPoint");
-			printer.PushAttribute("x", color_point.first);
-			printer.PushAttribute("r", color_point.second.R());
-			printer.PushAttribute("g", color_point.second.G());
-			printer.PushAttribute("b", color_point.second.B());
-			printer.CloseElement();
-		}
-
-		for(const auto& opacity_point : transfer_function->get_opacity_points()) {
-			printer.OpenElement("OpacityPoint");
-			printer.PushAttribute("x", opacity_point.first);
-			printer.PushAttribute("o", opacity_point.second);
-			printer.CloseElement();
-		}
-
-		printer.CloseElement();
-	}
-
+	static void write_color_map(tinyxml2::XMLPrinter& printer, const std::string& name, const cgv::media::transfer_function* transfer_function);
 };
 
 } // namespace media
 } // namespace cgv
+
+#include <cgv/config/lib_end.h>
