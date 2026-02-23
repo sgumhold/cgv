@@ -7,10 +7,11 @@ addProjectDeps=[
 	"cgv_render", "cgv_gui", "cg_ext", "cgv_gl", "cgv_g2d", "cgv_overlay", "xml"];
 addProjectDirs=[
 	CGV_DIR."/libs/cgv_gl", 
-	CGV_DIR."/plugins"
+	CGV_DIR."/plugins",
+	CGV_DIR."/3rd/xml"
 ];
 addIncDirs=[
-	CGV_DIR."/libs", 
+	CGV_DIR."/libs",
 	[INPUT_DIR, "all"]
 ];
 addSharedDefines=["CGV_SCREENSHOT_EXPORTS"];
