@@ -14,14 +14,14 @@ jobs:
             compiler: gcc
             c_compiler: gcc
             cxx_compiler: g++
-            compiler_flags: -O0 -g0
+            compiler_flags: "-O0 -g0"
             install_deps: "sudo apt-get update && sudo apt-get install -y libglx-dev libglew-dev libxft-dev libxinerama-dev libxi-dev"
             ccache_key: ubuntu-ccache-gcc
           - os: ubuntu-latest
             compiler: clang
             c_compiler: clang
             cxx_compiler: clang++
-            compiler_flags: -O0 -g0
+            compiler_flags: "-O0 -g0"
             install_deps: "sudo apt-get update && sudo apt-get install -y clang libglx-dev libglew-dev libxft-dev libxinerama-dev libxi-dev"
             ccache_key: ubuntu-ccache-clang
           - os: windows-latest
