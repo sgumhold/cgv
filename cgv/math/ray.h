@@ -22,7 +22,7 @@ struct ray {
 
 	/// Construct a ray with given origin and direction. The given orign and direction must have the same dimension.
 	ray(const vec<T>& origin, const vec<T>& direction) : origin(origin), direction(direction) {
-		assert(origin.dim() == directin.dim());
+		assert(origin.dim() == direction.dim());
 	}
 
 	/// Return the position of the ray at the given distance (ray parameter t) from its origin.
