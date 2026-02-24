@@ -37,6 +37,7 @@ jobs:
         uses: lukka/get-cmake@latest
 
       - name: Setup ccache
+        if: runner.os != 'Windows'
         uses: hendrikmuhs/ccache-action@v1.2.20
         with:
           key: ${{ github.job }}-${{ matrix.os }}
@@ -54,19 +55,17 @@ jobs:
           cmake -B build -G Ninja
           -D CMAKE_C_COMPILER=${{ matrix.c_compiler }}
           -D CMAKE_CXX_COMPILER=${{ matrix.cxx_compiler }}
-          -D CMAKE_C_COMPILER_LAUNCHER=ccache
-          -D CMAKE_CXX_COMPILER_LAUNCHER=ccache
-          -D CMAKE_C_FLAGS="${{ matrix.compiler_flags }}"
-          -D CMAKE_CXX_FLAGS="${{ matrix.compiler_flags }}"
+          ${{ runner.os != 'Windows' && '-D CMAKE_C_COMPILER_LAUNCHER=ccache -D CMAKE_CXX_COMPILER_LAUNCHER=ccache' || '' }}
+          ${{ matrix.compiler_flags != '' && format('-D CMAKE_C_FLAGS="{0}" -D CMAKE_CXX_FLAGS="{0}"', matrix.compiler_flags) || '' }}
           -D CMAKE_INSTALL_PREFIX=../install
 
       - name: Reset cache statistics
-        if: always()
+        if: always() && runner.os != 'Windows'
         run: ccache --zero-stats || true
 
       - name: Build
         run: cmake --build build
 
       - name: Show cache statistics
-        if: always()
+        if: always() && runner.os != 'Windows'
         run: ccache --show-stats --verbose || true
