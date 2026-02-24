@@ -1,0 +1,10 @@
+@=
+projectName="cmc_crameri";
+projectType="library";
+projectGUID="BBF4321C-B3E4-4F59-A280-89627D817D80";
+addSharedDefines=["CGV_MEDIA_COLOR_CRAMERI_EXPORTS"];
+addIncDirs=[CGV_DIR."/libs"];
+addProjectDirs=[CGV_DIR."/libs"];
+addProjectDeps=[
+	"cgv_media"
+];
