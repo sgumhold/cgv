@@ -16,21 +16,18 @@ jobs:
             cxx_compiler: g++
             compiler_flags: -O0 -g0
             install_deps: "sudo apt-get update && sudo apt-get install -y libglx-dev libglew-dev libxft-dev libxinerama-dev libxi-dev"
-            ccache_key: ubuntu-ccache-gcc
           - os: ubuntu-latest
             compiler: clang
             c_compiler: clang
             cxx_compiler: clang++
             compiler_flags: -O0 -g0
             install_deps: "sudo apt-get update && sudo apt-get install -y clang libglx-dev libglew-dev libxft-dev libxinerama-dev libxi-dev"
-            ccache_key: ubuntu-ccache-clang
           - os: windows-latest
             compiler: msvc
             c_compiler: cl
             cxx_compiler: cl
             compiler_flags: ""
             install_deps: ""
-            ccache_key: windows-ccache-cl
 
     steps:
       - name: Checkout code
@@ -42,7 +39,7 @@ jobs:
       - name: Setup ccache
         uses: hendrikmuhs/ccache-action@v1.2.20
         with:
-          key: ${{ matrix.ccache_key }}
+          key: ${{ github.job }}-${{ matrix.os }}
 
       - name: Setup VS Environment
         if: runner.os == 'Windows'
