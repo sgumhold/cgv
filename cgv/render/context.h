@@ -39,12 +39,14 @@ enum GPUVendorID {
 };
 
 struct device_capabilities {
-	int max_render_buffer_size = -1;					/// the maximum supported size for renderbuffers in any dimension
-	int max_geometry_shader_output_vertex_count = -1;	/// the maximum number that can be provided to the max_vertices output layout qualifier in a geometry shader
-	int max_compute_shared_memory_size = -1;			/// total available storage size in bytes for all shared variables in a compute shader
-	int max_compute_work_group_invocations = -1;		/// the number of invocations in a single local work group (i.e., the product of the three dimensions) that may be dispatched to a compute shader
-	ivec3 max_compute_work_group_count = -1;			/// the maximum number of work groups that may be dispatched to a compute shader; dimension index 0, 1, and 2 correspond to the X, Y and Z dimensions, respectively
-	ivec3 max_compute_work_group_size = -1;				/// the maximum size of a work groups that may be used during compilation of a compute shader; dimension index 0, 1, and 2 correspond to the X, Y and Z dimensions, respectively
+	int max_render_buffer_size = -1;							/// the maximum supported size for renderbuffers in any dimension
+	int max_geometry_shader_output_vertex_count = -1;			/// the maximum number that can be provided to the max_vertices output layout qualifier in a geometry shader
+	int max_geometry_shader_output_component_count = -1;		/// the maximum number of components of outputs (out variables) written by a geometry shader
+	int max_geometry_shader_total_output_component_count = -1;	/// the total number of output values (a component, in GLSL terms, is a component of a vector. So a float is one component; a vec3 is 3 components) that a single GS invocation can write to over all vertices
+	int max_compute_shared_memory_size = -1;					/// total available storage size in bytes for all shared variables in a compute shader
+	int max_compute_work_group_invocations = -1;				/// the number of invocations in a single local work group (i.e., the product of the three dimensions) that may be dispatched to a compute shader
+	ivec3 max_compute_work_group_count = -1;					/// the maximum number of work groups that may be dispatched to a compute shader; dimension index 0, 1, and 2 correspond to the X, Y and Z dimensions, respectively
+	ivec3 max_compute_work_group_size = -1;						/// the maximum size of a work groups that may be used during compilation of a compute shader; dimension index 0, 1, and 2 correspond to the X, Y and Z dimensions, respectively
 };
 
 /// different compound types for data elements
