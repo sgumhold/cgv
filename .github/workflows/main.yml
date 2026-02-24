@@ -9,7 +9,7 @@ jobs:
 
     steps:
       - name: Checkout code
-        uses: actions/checkout@v2
+        uses: actions/checkout@v6.0.2
 
       - name: Build Docker Image
         run: docker build . -t build-image
@@ -28,7 +28,7 @@ jobs:
 
     steps:
       - name: Checkout code
-        uses: actions/checkout@v2
+        uses: actions/checkout@v6.0.2
       - name: Install Ninja
         uses: seanmiddleditch/gha-setup-ninja@master
       - name: Setup VS Environment
