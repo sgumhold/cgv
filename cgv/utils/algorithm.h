@@ -182,6 +182,44 @@ std::vector<std::pair<typename InputIt::value_type, typename InputIt::value_type
 	return res;
 }
 
+/// @brief Zip two sequences together to form a single sequene of pairs and store the results in an output range starting from d_first.
+/// 
+/// The sequence beginning at first2 must provide at least distance(first1, last1) - 1 elements.
+/// For example, applying zip to sequences (1, 2, 3) and ('a', 'b', 'c') would result in: ((1, 'a'),(2, 'b'),(3, 'c')).
+/// 
+/// @tparam InputIt1 The first input range iterator type.
+/// @tparam InputIt2 The second input range iterator type.
+/// @tparam OutputIt The output range iterator type.
+/// @param first1 The start of the first input range.
+/// @param last1 The end of the first input range.
+/// @param first2 The start of the second input range.
+/// @param d_first The start of the output range.
+/// @return Output iterator to the element that follows the last element transformed.
+template<typename InputIt1, typename InputIt2, typename OutputIt>
+OutputIt zip(const InputIt1 first1, const InputIt1 last1, const InputIt2 first2, OutputIt d_first) {
+	return std::transform(first1, last1, first2, d_first, [](const auto& a, const auto& b) {
+		return std::make_pair(a, b);
+	});
+}
+
+/// @brief Zip two sequences together to form a single sequene of pairs.
+/// 
+/// The sequence beginning at first2 must provide at least distance(first1, last1) - 1 elements.
+/// For example, applying zip to sequences (1, 2, 3) and ('a', 'b', 'c') would return: ((1, 'a'),(2, 'b'),(3, 'c')).
+/// 
+/// @tparam InputIt1 The first input range iterator type.
+/// @tparam InputIt2 The second input range iterator type.
+/// @param first1 The start of the first input range.
+/// @param last1 The end of the first input range.
+/// @param first2 The start of the second input range.
+/// @return A std::vector of std::pair s containing copies of zipped elements.
+template<typename InputIt1, typename InputIt2>
+std::vector<std::pair<typename InputIt1::value_type, typename InputIt2::value_type>> zip(const InputIt1 first1, const InputIt1 last1, const InputIt2 first2) {
+	std::vector<std::pair<typename InputIt1::value_type, typename InputIt2::value_type>> res;
+	zip(first1, last1, first2, std::back_inserter(res));
+	return res;
+}
+
 /// @brief Generate a sequence of n uniformly-spaced values in [start,stop] and store the result in an output range starting from output_first.
 /// 
 /// @tparam ParamT The sequence value type.
@@ -192,7 +230,7 @@ std::vector<std::pair<typename InputIt::value_type, typename InputIt::value_type
 /// @param stop The end value of the sequence.
 /// @param n The number of values in the generated sequence.
 template<typename ParamT = float, typename OutputIt>
-static void subdivision_sequence(OutputIt output_first, ParamT start, ParamT stop, size_t n) {
+void subdivision_sequence(OutputIt output_first, ParamT start, ParamT stop, size_t n) {
 	if(n == 1) {
 		*output_first = ParamT(0.5) * (start + stop);
 		++output_first;
@@ -207,7 +245,7 @@ static void subdivision_sequence(OutputIt output_first, ParamT start, ParamT sto
 	}
 }
 
-/// @brief Generate a sequence of monotonically increasing values from 0 to n = distance(first, last) - 1 with first == 0 and last == n.
+/// @brief Return a sequence of monotonically increasing values from 0 to n = distance(first, last) - 1 with first == 0 and last == n.
 /// 
 /// @tparam InputIt The input sequence iterator type.
 /// @param first The start of the input range.
