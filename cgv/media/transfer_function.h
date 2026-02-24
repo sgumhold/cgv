@@ -8,6 +8,7 @@
 
 #include "color.h"
 #include "color_scale.h"
+#include "color_scheme.h"
 
 #include "lib_begin.h"
 
@@ -46,6 +47,8 @@ public:
 	}
 
 	void set_color_points(const std::vector<color_point_type>& colors);
+
+	void set_color_points_from_scheme(const cgv::media::continuous_color_scheme& scheme, size_t n);
 
 	void set_opacity_points(const std::vector<opacity_point_type>& opacities);
 

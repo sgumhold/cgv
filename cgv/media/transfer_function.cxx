@@ -22,6 +22,13 @@ void transfer_function::set_color_points(const std::vector<color_point_type>& co
 	ensure_domain(opacity_points_);
 }
 
+void transfer_function::set_color_points_from_scheme(const cgv::media::continuous_color_scheme& scheme, size_t n) {
+	std::vector<float> positions;
+	cgv::utils::subdivision_sequence(std::back_inserter(positions), 0.0f, 1.0f, n);
+	std::vector<cgv::rgb> colors = scheme.quantize(n);
+	set_color_points(cgv::utils::zip(positions.begin(), positions.end(), colors.begin()));
+}
+
 void transfer_function::set_opacity_points(const std::vector<opacity_point_type>& opacities) {
 	opacity_points_ = opacities;
 	std::for_each(opacity_points_.begin(), opacity_points_.end(), [](const opacity_point_type& point) { cgv::math::saturate(point.second); });
