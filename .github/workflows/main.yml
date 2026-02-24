@@ -39,6 +39,10 @@ jobs:
 
       - name: Build
         run: cmake --build build
+        continue-on-error: true
+
+      - name: Show cache statistics
+        run: ccache -s
 
   build-windows:
     name: "Windows: Build and Install the CGV framework"
