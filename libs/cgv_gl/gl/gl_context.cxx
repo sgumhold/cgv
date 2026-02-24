@@ -473,6 +473,8 @@ bool gl_context::configure_gl()
 	// query device capabilities
 	glGetIntegerv(GL_MAX_RENDERBUFFER_SIZE, &gpu_capabilities.max_render_buffer_size);
 	glGetIntegerv(GL_MAX_GEOMETRY_OUTPUT_VERTICES, &gpu_capabilities.max_geometry_shader_output_vertex_count);
+	glGetIntegerv(GL_MAX_GEOMETRY_OUTPUT_COMPONENTS, &gpu_capabilities.max_geometry_shader_output_component_count);
+	glGetIntegerv(GL_MAX_GEOMETRY_TOTAL_OUTPUT_COMPONENTS, &gpu_capabilities.max_geometry_shader_total_output_component_count);
 	glGetIntegerv(GL_MAX_COMPUTE_SHARED_MEMORY_SIZE, &gpu_capabilities.max_compute_shared_memory_size);
 	glGetIntegerv(GL_MAX_COMPUTE_WORK_GROUP_INVOCATIONS, &gpu_capabilities.max_compute_work_group_invocations);
 	for(unsigned i = 0; i < 3; ++i)
@@ -2795,9 +2797,9 @@ bool gl_context::shader_code_compile(render_component& sc) const
 	}
 	GLuint s_id = get_gl_id(sc.handle);
 	glCompileShader(s_id);
-	int result;
-	glGetShaderiv(s_id, GL_COMPILE_STATUS, &result); 
-	if (result == 1)
+	GLint result = GL_FALSE;
+	glGetShaderiv(s_id, GL_COMPILE_STATUS, &result);
+	if (result == GL_TRUE)
 		return true;
 	sc.last_error = std::string();
 	GLint infologLength = 0;
@@ -2806,7 +2808,7 @@ bool gl_context::shader_code_compile(render_component& sc) const
 		GLsizei charsWritten = 0;
 		sc.last_error = std::string(infologLength, 0);
 		glGetShaderInfoLog(s_id, infologLength, &charsWritten, &sc.last_error.front());
-		sc.last_error.resize(static_cast<size_t>(charsWritten + 1));
+		sc.last_error.resize(static_cast<size_t>(charsWritten));
 	}
 	return false;
 }
@@ -2845,17 +2847,17 @@ bool gl_context::shader_program_link(shader_program_base& spb) const
 	}
 	GLuint p_id = get_gl_id(spb.handle);
 	glLinkProgram(p_id); 
-	int result;
-	glGetProgramiv(p_id, GL_LINK_STATUS, &result); 
-	if (result == 1)
+	GLint result = GL_FALSE;
+	glGetProgramiv(p_id, GL_LINK_STATUS, &result);
+	if (result == GL_TRUE)
 		return context::shader_program_link(spb);
 	GLint infologLength = 0;
 	glGetProgramiv(p_id, GL_INFO_LOG_LENGTH, &infologLength);
 	if (infologLength > 0) {
 		GLsizei charsWritten = 0;
 		spb.last_error = std::string(infologLength, 0);
-		glGetShaderInfoLog(p_id, infologLength, &charsWritten, &spb.last_error.front());
-		spb.last_error.resize(static_cast<size_t>(charsWritten + 1));
+		glGetProgramInfoLog(p_id, infologLength, &charsWritten, &spb.last_error.front());
+		spb.last_error.resize(static_cast<size_t>(charsWritten));
 		error("gl_context::shader_program_link\n" + spb.last_error, &spb);
 	}
 
