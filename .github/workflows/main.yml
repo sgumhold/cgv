@@ -16,10 +16,7 @@ jobs:
         run: echo "date=$(date +%Y-%m)" >> $GITHUB_OUTPUT
 
       - name: Cache apt packages
-        # Cache APT packages to speed up subsequent runs
-        # Cache key includes current month to ensure periodic refresh (monthly)
-        # This balances speed with getting package updates
-        uses: actions/cache@v4
+        uses: actions/cache@v5
         with:
           path: /var/cache/apt/archives
           key: ${{ runner.os }}-apt-${{ hashFiles('.github/workflows/main.yml') }}-${{ steps.date.outputs.date }}
@@ -27,10 +24,18 @@ jobs:
             ${{ runner.os }}-apt-
 
       - name: Install dependencies
-        run: sudo apt-get update && sudo apt-get install -y cmake ninja-build g++ libglx-dev libglew-dev libxft-dev libxinerama-dev libxi-dev
+        run: sudo apt-get update && sudo apt-get install -y cmake ninja-build g++ libglx-dev libglew-dev libxft-dev libxinerama-dev libxi-dev ccache
+
+      - name: Setup ccache
+        uses: actions/cache@v5
+        with:
+          path: |
+            ~/.ccache
+            ~/.cache/ccache
+          key: ${{ runner.os }}-ccache
 
       - name: Configure with CMake
-        run: cmake -B build -G Ninja -D CMAKE_INSTALL_PREFIX=../install
+        run: cmake -B build -G Ninja -D CMAKE_C_COMPILER_LAUNCHER=ccache -D CMAKE_CXX_COMPILER_LAUNCHER=ccache -D CMAKE_INSTALL_PREFIX=../install
 
       - name: Build
         run: cmake --build build
