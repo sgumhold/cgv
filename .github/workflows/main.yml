@@ -11,6 +11,16 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v6.0.2
 
+      - name: Cache apt packages
+        # Cache APT packages to speed up subsequent runs
+        # Cache automatically expires after 7 days to get package updates
+        uses: actions/cache@v4
+        with:
+          path: /var/cache/apt/archives
+          key: ${{ runner.os }}-apt-${{ hashFiles('.github/workflows/main.yml') }}-${{ 'week-' + format('{0:yyyy-MM-dd}', github.run_number / 7) }}
+          restore-keys: |
+            ${{ runner.os }}-apt-
+
       - name: Install dependencies
         run: sudo apt-get update && sudo apt-get install -y cmake ninja-build g++ libglx-dev libglew-dev libxft-dev libxinerama-dev libxi-dev
 
