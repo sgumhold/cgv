@@ -11,27 +11,12 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v6.0.2
 
-      - name: Get current date
-        id: date
-        run: echo "date=$(date +%Y-%m)" >> $GITHUB_OUTPUT
-
-      - name: Cache apt packages
-        uses: actions/cache@v5
-        with:
-          path: /var/cache/apt/archives
-          key: ${{ runner.os }}-apt-${{ hashFiles('.github/workflows/main.yml') }}-${{ steps.date.outputs.date }}
-          restore-keys: |
-            ${{ runner.os }}-apt-
-
       - name: Install dependencies
-        run: sudo apt-get update && sudo apt-get install -y cmake ninja-build g++ libglx-dev libglew-dev libxft-dev libxinerama-dev libxi-dev ccache
+        run: sudo apt-get update && sudo apt-get install -y cmake ccache ninja-build g++ libglx-dev libglew-dev libxft-dev libxinerama-dev libxi-dev
 
       - name: Setup ccache
-        uses: actions/cache@v5
+        uses: hendrikmuhs/ccache-action@v1.2.20
         with:
-          path: |
-            ~/.ccache
-            ~/.cache/ccache
           key: ${{ runner.os }}-ccache
 
       - name: Configure with CMake
@@ -39,9 +24,9 @@ jobs:
 
       - name: Build
         run: cmake --build build
-        continue-on-error: true
 
       - name: Show cache statistics
+        if: always()
         run: ccache -s
 
   build-windows:
