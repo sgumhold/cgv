@@ -3,9 +3,34 @@ name: Build and Install the CGV framework
 on: push
 
 jobs:
-  build-ubuntu:
-    name: "Ubuntu: Build and Install the CGV framework"
-    runs-on: ubuntu-latest
+  build:
+    name: "${{ matrix.os }} (${{ matrix.compiler }})"
+    runs-on: ${{ matrix.os }}
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - os: ubuntu-latest
+            compiler: gcc
+            c_compiler: gcc
+            cxx_compiler: g++
+            compiler_flags: -O0 -g0
+            install_deps: "sudo apt-get update && sudo apt-get install -y libglx-dev libglew-dev libxft-dev libxinerama-dev libxi-dev"
+            ccache_key: ubuntu-ccache-gcc
+          - os: ubuntu-latest
+            compiler: clang
+            c_compiler: clang
+            cxx_compiler: clang++
+            compiler_flags: -O0 -g0
+            install_deps: "sudo apt-get update && sudo apt-get install -y clang libglx-dev libglew-dev libxft-dev libxinerama-dev libxi-dev"
+            ccache_key: ubuntu-ccache-clang
+          - os: windows-latest
+            compiler: msvc
+            c_compiler: cl
+            cxx_compiler: cl
+            compiler_flags: ""
+            install_deps: ""
+            ccache_key: windows-ccache-cl
 
     steps:
       - name: Checkout code
@@ -17,54 +42,34 @@ jobs:
       - name: Setup ccache
         uses: hendrikmuhs/ccache-action@v1.2.20
         with:
-          key: ${{ runner.os }}-ccache
+          key: ${{ matrix.ccache_key }}
 
-      - name: Install dependencies
-        run: sudo apt-get update && sudo apt-get install -y libglx-dev libglew-dev libxft-dev libxinerama-dev libxi-dev
-
-      - name: Configure with CMake
-        run: cmake -B build -G Ninja -D CMAKE_C_COMPILER_LAUNCHER=ccache -D CMAKE_CXX_COMPILER_LAUNCHER=ccache -D CMAKE_INSTALL_PREFIX=../install -D CMAKE_CXX_FLAGS="-O0 -g0" -D CMAKE_C_FLAGS="-O0 -g0" -D CMAKE_CXX_FLAGS="-O0 -g0" -D CMAKE_C_FLAGS="-O0 -g0"
-
-      - name: Reset cache statistics
-        if: always()
-        run: ccache --zero-stats 
-
-      - name: Build
-        run: cmake --build build
-
-      - name: Show cache statistics
-        if: always()
-        run: ccache --show-stats --verbose
-
-  build-windows:
-    name: "Windows: Build and Install the CGV framework"
-    runs-on: windows-latest
-
-    steps:
-      - name: Checkout code
-        uses: actions/checkout@v6.0.2
-
-      - name: Install build tools
-        uses: lukka/get-cmake@latest
-      
       - name: Setup VS Environment
+        if: runner.os == 'Windows'
         uses: ilammy/msvc-dev-cmd@v1
 
-      - name: Setup ccache
-        uses: hendrikmuhs/ccache-action@v1.2.20
-        with:
-          key: ${{ runner.os }}-ccache
+      - name: Install dependencies
+        if: matrix.install_deps != ''
+        run: ${{ matrix.install_deps }}
 
       - name: Configure with CMake
-        run: cmake -B build -G Ninja -D CMAKE_C_COMPILER_LAUNCHER=ccache -D CMAKE_CXX_COMPILER_LAUNCHER=ccache -D CMAKE_INSTALL_PREFIX=../install -D CMAKE_CXX_FLAGS="/Od /DEBUG:NONE /EHsc" -D CMAKE_C_FLAGS="/Od /DEBUG:NONE /EHsc"
+        run: >-
+          cmake -B build -G Ninja
+          -D CMAKE_C_COMPILER=${{ matrix.c_compiler }}
+          -D CMAKE_CXX_COMPILER=${{ matrix.cxx_compiler }}
+          -D CMAKE_C_COMPILER_LAUNCHER=ccache
+          -D CMAKE_CXX_COMPILER_LAUNCHER=ccache
+          -D CMAKE_C_FLAGS=${{ matrix.compiler_flags }}
+          -D CMAKE_CXX_FLAGS=${{ matrix.compiler_flags }}
+          -D CMAKE_INSTALL_PREFIX=../install
 
       - name: Reset cache statistics
         if: always()
-        run: ccache --zero-stats 
+        run: ccache --zero-stats || true
 
       - name: Build
         run: cmake --build build
 
       - name: Show cache statistics
         if: always()
-        run: ccache --show-stats --verbose
+        run: ccache --show-stats --verbose || true
