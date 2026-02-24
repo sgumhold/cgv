@@ -11,10 +11,22 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v6.0.2
 
-      - name: Build Docker Image
-        run: docker build . -t build-image
-      - name: Run Build
-        run: docker run -v $(pwd):/app build-image
+      - name: Install dependencies
+        run: sudo apt-get update && sudo apt-get install -y \
+            cmake \
+            ninja-build \
+            g++ \
+            libglx-dev \
+            libglew-dev \
+            libxft-dev \
+            libxinerama-dev \
+            libxi-dev
+
+      - name: Configure with CMake
+        run: cmake -B build -G Ninja -D CMAKE_INSTALL_PREFIX=../install
+
+      - name: Build
+        run: cmake --build build
 
   build-windows:
     name: "Windows: Build and Install the CGV framework"
