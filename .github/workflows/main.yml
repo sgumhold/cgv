@@ -41,6 +41,7 @@ jobs:
         uses: hendrikmuhs/ccache-action@v1.2.20
         with:
           key: ${{ github.job }}-${{ matrix.os }}
+          verbose: 1
 
       - name: Setup VS Environment
         if: runner.os == 'Windows'
@@ -59,13 +60,5 @@ jobs:
           ${{ matrix.compiler_flags != '' && format('-D CMAKE_C_FLAGS="{0}" -D CMAKE_CXX_FLAGS="{0}"', matrix.compiler_flags) || '' }}
           -D CMAKE_INSTALL_PREFIX=../install
 
-      - name: Reset cache statistics
-        if: always() && runner.os != 'Windows'
-        run: ccache --zero-stats || true
-
       - name: Build
         run: cmake --build build
-
-      - name: Show cache statistics
-        if: always() && runner.os != 'Windows'
-        run: ccache --show-stats --verbose || true
