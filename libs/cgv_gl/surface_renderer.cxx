@@ -70,9 +70,7 @@ namespace cgv {
 			}
 			if (ref_prog().is_linked()) {
 				if (!has_colors) {
-					cgv::rgba col;
-					(cgv::rgb&)col = srs.surface_color;
-					col.opacity() = srs.surface_opacity;
+					cgv::rgba col(srs.surface_color, srs.surface_opacity);
 					ref_prog().set_attribute(ctx, "color", col);
 				}
 				ctx.set_material(srs.material);
