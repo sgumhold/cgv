@@ -135,7 +135,7 @@ namespace cgv { // @<
 
 			/// access to style
 			template <typename T>
-			const T& get_style() const { return *static_cast<const T*>(get_style_ptr());  }
+			const T& get_style() const { return *reinterpret_cast<const T*>(get_style_ptr()); }
 			/// track whether color attribute is defined
 			mutable bool has_colors = false;
 			/// track whether position attribute is defined
