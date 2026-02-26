@@ -60,7 +60,7 @@ jobs:
           ${{ runner.os != 'Windows' && '-D CMAKE_C_COMPILER_LAUNCHER=ccache -D CMAKE_CXX_COMPILER_LAUNCHER=ccache' || '' }}
           ${{ matrix.compiler_flags != '' && format('-D CMAKE_C_FLAGS="{0}" -D CMAKE_CXX_FLAGS="{0}"', matrix.compiler_flags) || '' }}
           ${{ matrix.linker_flags != '' && format('-D CMAKE_EXE_LINKER_FLAGS="{0}"', matrix.linker_flags) || '' }}
-          ${{ runner.os == 'Windows' && '-D CMAKE_JOB_POOL_LINK=1' || '' }}
+          ${{ runner.os == 'Windows' && '-D CMAKE_JOB_POOL_LINK="link=1"' || '' }}
           -D CMAKE_INSTALL_PREFIX=../install
 
       - name: Build
