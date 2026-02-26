@@ -26,7 +26,7 @@ jobs:
             compiler: msvc
             c_compiler: cl
             cxx_compiler: cl
-            compiler_flags: ""
+            compiler_flags: "/INCREMENTAL:NO /DWIN32"
             install_deps: ""
 
     steps:
@@ -61,4 +61,4 @@ jobs:
           -D CMAKE_INSTALL_PREFIX=../install
 
       - name: Build
-        run: cmake --build build ${{ runner.os == 'Windows' && '-- -j1' || '' }}
+        run: cmake --build build
