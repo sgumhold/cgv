@@ -74,9 +74,9 @@ namespace cgv {
 					ref_prog().set_attribute(ctx, "color", col);
 				}
 				ctx.set_material(srs.material);
-				ref_prog().set_uniform(ctx, "map_color_to_material", int(srs.map_color_to_material));
-				ref_prog().set_uniform(ctx, "culling_mode", int(srs.culling_mode));
-				ref_prog().set_uniform(ctx, "illumination_mode", int(srs.illumination_mode));
+				ref_prog().set_uniform(ctx, "map_color_to_material", static_cast<int>(srs.map_color_to_material));
+				ref_prog().set_uniform(ctx, "culling_mode", static_cast<int>(srs.culling_mode));
+				ref_prog().set_uniform(ctx, "illumination_mode", static_cast<int>(srs.illumination_mode));
 			}
 			else
 				res = false;
