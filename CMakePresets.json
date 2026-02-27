@@ -2,7 +2,7 @@
   "version": 3,
   "configurePresets": [
     {
-      "name": "ci-linux-gcc",
+      "name": "ci-ubuntu-latest-gcc",
       "displayName": "Linux GCC (CI)",
       "description": "Preset for CI builds using GCC on Linux",
       "inherits": ["linux-base"],
@@ -12,7 +12,7 @@
       }
     },
     {
-      "name": "ci-linux-clang",
+      "name": "ci-ubuntu-latest-clang",
       "displayName": "Linux Clang (CI)",
       "description": "Preset for CI builds using Clang on Linux",
       "inherits": ["linux-base"],
@@ -22,7 +22,7 @@
       }
     },
     {
-      "name": "ci-windows-msvc",
+      "name": "ci-windows-latest-msvc",
       "displayName": "Windows MSVC (CI)",
       "description": "Preset for CI builds using MSVC on Windows",
       "inherits": ["windows-base"],
