@@ -1,4 +1,4 @@
-name: Build and Install the CGV framework
+name: Build the CGV framework
 
 on: push
 
