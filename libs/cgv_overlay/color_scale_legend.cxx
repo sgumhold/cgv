@@ -433,7 +433,10 @@ bool color_scale_legend::create_ticks(const cgv::render::context& ctx) {
 	int length = layout.color_ramp_rect.size[axis] + 2; // +2 for border
 	
 	for(float tick : ticks) {
-		int offset = static_cast<int>(std::round(color_scale->normalize_value(tick) * length));
+		float normalized_position = color_scale->normalize_value(tick);
+		if(color_scale->is_reversed())
+			normalized_position = 1.0f - normalized_position;
+		int offset = static_cast<int>(std::round(normalized_position * length));
 		offset = cgv::math::clamp(offset, 0, length - 1);
 
 		ivec2 tick_pos = tick_start;
