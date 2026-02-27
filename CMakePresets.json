@@ -58,6 +58,7 @@
       "cacheVariables": {
         "CMAKE_INSTALL_PREFIX": "../install"
       },
+      "binaryDir": "build",
       "generator": "Ninja"
     }
   ]
