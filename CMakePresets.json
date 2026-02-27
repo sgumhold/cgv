@@ -1,0 +1,64 @@
+{
+  "version": 3,
+  "configurePresets": [
+    {
+      "name": "ci-linux-gcc",
+      "displayName": "Linux GCC (CI)",
+      "description": "Preset for CI builds using GCC on Linux",
+      "inherits": ["linux-base"],
+      "cacheVariables": {
+        "CMAKE_C_COMPILER": "gcc",
+        "CMAKE_CXX_COMPILER": "g++"
+      }
+    },
+    {
+      "name": "ci-linux-clang",
+      "displayName": "Linux Clang (CI)",
+      "description": "Preset for CI builds using Clang on Linux",
+      "inherits": ["linux-base"],
+      "cacheVariables": {
+        "CMAKE_C_COMPILER": "clang",
+        "CMAKE_CXX_COMPILER": "clang++"
+      }
+    },
+    {
+      "name": "ci-windows-msvc",
+      "displayName": "Windows MSVC (CI)",
+      "description": "Preset for CI builds using MSVC on Windows",
+      "inherits": ["windows-base"],
+      "cacheVariables": {
+        "CMAKE_C_COMPILER": "cl",
+        "CMAKE_CXX_COMPILER": "cl",
+        "CMAKE_C_FLAGS": "/DWIN32 /EHsc",
+        "CMAKE_EXE_LINKER_FLAGS": "",
+        "CMAKE_JOB_POOLS": "link=1",
+        "CMAKE_JOB_POOL_LINK": "link"
+      }
+    },
+    {
+      "name": "linux-base",
+      "inherits": ["base"],
+      "cacheVariables": {
+        "CMAKE_C_COMPILER_LAUNCHER": "ccache",
+        "CMAKE_CXX_COMPILER_LAUNCHER": "ccache",
+        "CMAKE_C_FLAGS": "-O0 -g0",
+        "CMAKE_CXX_FLAGS": "-O0 -g0"
+      }
+    },
+    {
+      "name": "windows-base",
+      "inherits": ["base"],
+      "cacheVariables": {
+        "CMAKE_C_COMPILER_LAUNCHER": "ccache",
+        "CMAKE_CXX_COMPILER_LAUNCHER": "ccache"
+      }
+    },
+    {
+      "name": "base",
+      "cacheVariables": {
+        "CMAKE_INSTALL_PREFIX": "../install"
+      },
+      "generator": "Ninja"
+    }
+  ]
+}
