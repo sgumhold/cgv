@@ -78,6 +78,24 @@ public:
 		return ptr_ >= reinterpret_cast<const void*>(first) && ptr_ < reinterpret_cast<const void*>(last);
 	}
 
+	/// Return iterator to the element in vector that the stored pointer points to or vector.end();
+	template<typename T>
+	typename std::vector<T>::iterator find_in_data_of(std::vector<T>& vector) const {
+		if(points_to_data_of(vector)) {
+			for(auto it = vector.begin(); it != vector.end(); ++it) {
+				if(is(&*it))
+					return it;
+			}
+		}
+		return vector.end();
+	}
+
+	/// Return const iterator to the element in vector that the stored pointer points to or vector.end();
+	template<typename T>
+	typename std::vector<T>::const_iterator find_in_data_of(const std::vector<T>& vector) const {
+		return find_in_data_of(const_cast<std::vector<T>&>(vector));
+	}
+
 private:
 	/// Specialization of points_to_one_of that takes zero arguments to break recursive variadic template instantiation.
 	bool points_to_one_of() const {
