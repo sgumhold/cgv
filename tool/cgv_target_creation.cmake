@@ -722,6 +722,9 @@ function(cgv_add_target NAME)
 	if (IS_PLUGIN AND NOT CGVARG__NO_EXECUTABLE)
 		add_executable(${NAME_EXE})
 		set_target_properties(${NAME_EXE} PROPERTIES OUTPUT_NAME "${NAME}")
+		if (CMAKE_GENERATOR MATCHES "Ninja" AND MSVC)
+			set_target_properties(${NAME_EXE} PROPERTIES COMPILE_PDB_NAME "${NAME}")
+		endif()
 		target_compile_definitions(${NAME_EXE} PRIVATE ${PRIVATE_STATIC_TARGET_DEFINES})
 		target_include_directories(
 			${NAME_EXE} PUBLIC
@@ -735,6 +738,9 @@ function(cgv_add_target NAME)
 	if (IS_PLUGIN AND CGVARG__SERVICE)
 		add_library(${NAME_SVC} SHARED)
 		set_target_properties(${NAME_SVC} PROPERTIES OUTPUT_NAME "${NAME_SVC}")
+		if (CMAKE_GENERATOR MATCHES "Ninja" AND MSVC)
+			set_target_properties(${NAME_EXE} PROPERTIES COMPILE_PDB_NAME "${NAME_SVC}")
+		endif()
 		target_compile_definitions(${NAME_SVC} PRIVATE ${PRIVATE_STATIC_TARGET_DEFINES})
 		target_include_directories(
 			${NAME_SVC} PUBLIC
