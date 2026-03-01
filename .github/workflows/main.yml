@@ -32,7 +32,7 @@ jobs:
         with:
           variant: ${{ runner.os == 'Windows' && 'sccache' || 'ccache' }}
           key: ${{ github.job }}-${{ matrix.os }}
-          verbose: 1
+          verbose: 2
 
       - name: Setup VS Environment
         if: runner.os == 'Windows'
