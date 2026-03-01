@@ -5,27 +5,29 @@
       "name": "ci-ubuntu-latest-gcc",
       "displayName": "Linux GCC (CI)",
       "description": "Preset for CI builds using GCC on Linux",
-      "inherits": ["linux-base"],
+      "inherits": ["ci-linux-base"],
       "cacheVariables": {
         "CMAKE_C_COMPILER": "gcc",
         "CMAKE_CXX_COMPILER": "g++"
-      }
+      },
+      "generator": "Ninja"
     },
     {
       "name": "ci-ubuntu-latest-clang",
       "displayName": "Linux Clang (CI)",
       "description": "Preset for CI builds using Clang on Linux",
-      "inherits": ["linux-base"],
+      "inherits": ["ci-linux-base"],
       "cacheVariables": {
         "CMAKE_C_COMPILER": "clang",
         "CMAKE_CXX_COMPILER": "clang++"
-      }
+      },
+      "generator": "Ninja"
     },
     {
       "name": "ci-windows-latest-msvc",
       "displayName": "Windows MSVC (CI)",
       "description": "Preset for CI builds using MSVC on Windows",
-      "inherits": ["windows-base"],
+      "inherits": ["ci-windows-base"],
       "cacheVariables": {
         "CMAKE_C_COMPILER": "cl",
         "CMAKE_CXX_COMPILER": "cl",
@@ -36,10 +38,11 @@
         "CMAKE_JOB_POOL_LINK": "link",
         "CMAKE_POLICY_DEFAULT_CMP0141": "NEW",
         "CMAKE_MSVC_DEBUG_INFORMATION_FORMAT": "Embedded"
-      }
+      },
+      "generator": "Ninja"
     },
     {
-      "name": "linux-base",
+      "name": "ci-linux-base",
       "inherits": ["base"],
       "cacheVariables": {
         "CMAKE_C_COMPILER_LAUNCHER": "ccache",
@@ -49,7 +52,7 @@
       }
     },
     {
-      "name": "windows-base",
+      "name": "ci-windows-base",
       "inherits": ["base"],
       "cacheVariables": {
         "CMAKE_C_COMPILER_LAUNCHER": "sccache",
@@ -61,8 +64,7 @@
       "cacheVariables": {
         "CMAKE_INSTALL_PREFIX": "../install"
       },
-      "binaryDir": "build",
-      "generator": "Ninja"
+      "binaryDir": "build"
     }
   ]
 }
