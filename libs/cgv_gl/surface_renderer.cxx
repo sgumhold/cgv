@@ -138,7 +138,7 @@ namespace cgv {
 					p->end_tree_node(srs_ptr->map_color_to_material);
 				}
 				p->add_member_control(b, "Illumination Mode", srs_ptr->illumination_mode, "dropdown", "enums='Off,One-Sided,Two-Sided'");
-				p->add_member_control(b, "Max Nr Light", srs_ptr->max_nr_lights, "value_slider", "min=1;max=8;ticks=true");
+				p->add_member_control(b, "Max Lights", srs_ptr->max_nr_lights, "value_slider", "min=1;max=8;ticks=true");
 				p->add_member_control(b, "Culling Mode", srs_ptr->culling_mode, "dropdown", "enums='Off,Backface,Frontface'");
 				if (p->begin_tree_node("Color and Materials", srs_ptr->surface_color, false, "level=3")) {
 					p->align("\a");
