@@ -15,6 +15,28 @@ using namespace cgv::base;
 using namespace cgv::gui;
 using namespace cgv::render;
 
+// Define BackgroundMode outside of background class to be able to use it with type reflection.
+enum class BackgroundMode {
+	kSolidColor,
+	kHorizontalGradient,
+	kVerticalGradient,
+	kCheckerboard,
+	kGammaTestPattern
+};
+
+static const int k_background_mode_count = 5;
+
+namespace cgv {
+namespace reflect {
+
+// Define custom reflection traits for the BackgroundMode
+enum_reflection_traits<BackgroundMode> get_reflection_traits(const BackgroundMode&) {
+	return enum_reflection_traits<BackgroundMode>("solid_color,horizontal_gradient,vertical_gradient,checkerboard,gamma_test_pattern");
+}
+
+} // namespace reflect
+} // namespace cgv
+
 class background : public node, public drawable, public provider, public event_handler
 {
 protected:
@@ -22,8 +44,10 @@ protected:
 	bool enable = true;
 	cgv::rgba color_1 = cgv::rgba(0.7f, 0.7f, 0.7f, 1.0f);
 	cgv::rgba color_2 = cgv::rgba(1.0f, 1.0f, 1.0f, 1.0f);
-	int mode = 0;
+	BackgroundMode mode = BackgroundMode::kSolidColor;
 	int checker_step = 16;
+	bool use_gamma_correction = true;
+
 public:
 	background() : node("Background")
 	{
@@ -39,7 +63,8 @@ public:
 			rh.reflect_member("mode", mode) &&
 			rh.reflect_member("color_1", color_1) &&
 			rh.reflect_member("color_2", color_2) &&
-			rh.reflect_member("checker_step", checker_step);
+			rh.reflect_member("checker_step", checker_step) &&
+			rh.reflect_member("use_gamma_correction", use_gamma_correction);
 	}
 	void synch_render_flags(context& ctx)
 	{
@@ -60,7 +85,7 @@ public:
 	}
 	void stream_help(std::ostream& os)
 	{
-		os << "background: <S-F12> to toggle mode";
+		os << "background: <Shift + F12> to toggle mode";
 	}
 	bool handle(event& e)
 	{
@@ -72,7 +97,8 @@ public:
 		switch (ke.get_key()) {
 		case KEY_F12:
 			if (ke.get_modifiers() == EM_SHIFT) {
-				mode = (mode + 1) % 5;
+				int mode_idx = static_cast<int>(mode);
+				mode = static_cast<BackgroundMode>((mode_idx + 1) % k_background_mode_count);
 				on_set(&mode);
 				return true;
 			}
@@ -95,19 +121,22 @@ public:
 	{
 		if (!enable)
 			return;
-		glDisable(GL_DEPTH_TEST);
-			glDepthMask(GL_FALSE);
-				prog.set_uniform(ctx, "w", int(ctx.get_width()));
-				prog.set_uniform(ctx, "h", int(ctx.get_height()));
-				prog.set_uniform(ctx, "mode", mode);
-				prog.set_uniform(ctx, "color_1", color_1);
-				prog.set_uniform(ctx, "color_2", color_2);
-				prog.set_uniform(ctx, "checker_step", checker_step);
-				prog.enable(ctx);
-					glDrawArrays(GL_TRIANGLE_STRIP, 0, 4);
-				prog.disable(ctx);
-			glDepthMask(GL_TRUE);
-		glEnable(GL_DEPTH_TEST);
+		ctx.push_depth_test_state();
+		ctx.disable_depth_test();
+		
+		prog.enable(ctx);
+		prog.set_uniform(ctx, "w", int(ctx.get_width()));
+		prog.set_uniform(ctx, "h", int(ctx.get_height()));
+		prog.set_uniform(ctx, "mode", static_cast<int>(mode));
+		prog.set_uniform(ctx, "color_1", color_1);
+		prog.set_uniform(ctx, "color_2", color_2);
+		prog.set_uniform(ctx, "checker_step", checker_step);
+		if(!use_gamma_correction)
+			prog.set_uniform(ctx, "gamma3", cgv::vec3(1.0f));
+		glDrawArrays(GL_TRIANGLE_STRIP, 0, 4);
+		prog.disable(ctx);
+		
+		ctx.pop_depth_test_state();
 	}
 	void swap_colors()
 	{
@@ -120,11 +149,12 @@ public:
 	{
 		add_decorator("Background", "heading");
 		add_member_control(this, "Enable", enable, "toggle");
-		add_member_control(this, "Mode", (cgv::type::DummyEnum&)mode, "dropdown", "enums='Constant,Horizontal,Vertical,Checkerboard,Gamma Test'");
+		add_member_control(this, "Mode", mode, "dropdown", "enums='Solid color,Horizontal gradient,Vertical gradient,Checkerboard,Gamma test pattern'");
 		add_member_control(this, "Color 1", color_1);
 		add_member_control(this, "Color 2", color_2);
-		connect_copy(add_button("Swap Colors")->click, rebind(this, &background::swap_colors));
-		add_member_control(this, "Checkerboard Step", checker_step, "value_slider", "min=1;max=128;log=true;ticks=true");
+		add_member_control(this, "Use gamma correction", use_gamma_correction, "check");
+		connect_copy(add_button("Swap colors")->click, rebind(this, &background::swap_colors));
+		add_member_control(this, "Checkerboard step size", checker_step, "value_slider", "min=1;max=128;log=true;ticks=true");
 	}
 };
 
@@ -132,5 +162,5 @@ public:
 
 #include "lib_begin.h"
 
-/// register a light interactor factory
+/// register a background object
 CGV_API cgv::base::object_registration<background> bg_reg("");
