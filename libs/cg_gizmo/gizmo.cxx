@@ -34,13 +34,6 @@ void gizmo::finish_frame(context& ctx) {
 		_size = size_scale;
 	}
 
-	ctx.push_modelview_matrix();
-	ctx.mul_modelview_matrix(cgv::math::translate4(_position));
-	ctx.mul_modelview_matrix(cgv::math::scale4(_size));
-
-	if(_orientation == GizmoOrientation::kLocal)
-		ctx.mul_modelview_matrix(_rotation.get_homogeneous_matrix());
-	
 	ctx.push_depth_test_state();
 	ctx.disable_depth_test();
 
@@ -48,13 +41,20 @@ void gizmo::finish_frame(context& ctx) {
 	ctx.enable_blending();
 	ctx.set_blend_func_back_to_front();
 
+	ctx.push_modelview_matrix();
+	ctx.mul_modelview_matrix(cgv::math::translate4(_position));
+	ctx.mul_modelview_matrix(cgv::math::scale4(_size));
+
+	if(_orientation == GizmoOrientation::kLocal)
+		ctx.mul_modelview_matrix(_rotation.get_homogeneous_matrix());
+
 	draw_geometry(ctx);
+
+	ctx.pop_modelview_matrix();
 
 	ctx.pop_blend_state();
 
 	ctx.pop_depth_test_state();
-
-	ctx.pop_modelview_matrix();
 }
 
 bool gizmo::handle(cgv::gui::event& e) {
@@ -85,7 +85,7 @@ bool gizmo::handle(cgv::gui::event& e) {
 		evaluate_hover_state = !_captured_mouse;
 		break;
 	case cgv::gui::MA_PRESS:
-		if(_hovered && _interaction_feature != InteractionFeature::kNone) {
+		if(me.get_button() == cgv::gui::MouseButton::MB_LEFT_BUTTON && _hovered && _interaction_feature != InteractionFeature::kNone) {
 			if(start_drag(ray)) {
 				_drag_start_ray = ray;
 				_captured_mouse = true;
@@ -94,14 +94,14 @@ bool gizmo::handle(cgv::gui::event& e) {
 		}
 		break;
 	case cgv::gui::MA_RELEASE:
-		if(_captured_mouse) {
+		if(_captured_mouse && me.get_button() == cgv::gui::MouseButton::MB_LEFT_BUTTON) {
 			end_drag(ray);
 			_captured_mouse = false;
 			evaluate_hover_state = true;
 		}
 		break;
 	case cgv::gui::MA_DRAG:
-		if(_captured_mouse && drag(ray))
+		if(_captured_mouse && me.get_button_state() == cgv::gui::MouseButton::MB_LEFT_BUTTON && drag(ray))
 			return true;
 		break;
 	default:
