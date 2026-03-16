@@ -12,7 +12,6 @@ uniform int w = 640;
 uniform int h = 480;
 
 //***** begin interface of fragment.glfs ***********************************
-uniform vec3 gamma3 = vec3(2.2);
 void finish_fragment(vec4 color);
 void finish_fragment(vec4 color, float depth);
 //***** end interface of fragment.glfs ***********************************
