@@ -1,5 +1,6 @@
 #pragma once
 
+#include <cgv/math/interval.h>
 #include <cgv/math/ray.h>
 #include <cgv_gl/box_render_data.h>
 #include <cgv_gl/cone_render_data.h>
@@ -30,6 +31,8 @@ public:
 
 	void clear(cgv::render::context&) override;
 
+	void init_frame(cgv::render::context& ctx) override;
+
 	Mode get_mode() const;
 	
 	void set_mode(Mode mode);
@@ -41,6 +44,8 @@ public:
 	std::function<void(GizmoAction, Mode)> on_change;
 
 private:
+	using index_interval = cgv::math::interval<size_t>;
+
 	void create_geometry() override;
 
 	void draw_geometry(cgv::render::context& ctx) override;
@@ -61,7 +66,8 @@ private:
 	const float _axis_radius = 0.01f;
 	const float _handle_size = 0.1f;
 	const float _plane_size = 0.2f;
-	const size_t _ring_segment_count = 32;
+	static const size_t _k_ring_segment_count;
+	static const float _k_full_ring_angle_threshold;
 
 	std::vector<vec2> _ring_points;
 
@@ -83,6 +89,8 @@ private:
 	cgv::render::cone_render_data<rgba> _cones;
 	cgv::render::rectangle_render_data<rgba> _rectangles;
 	cgv::render::sphere_render_data<rgba> _sphere;
+
+	index_interval _ring_ranges[3];
 };
 
 typedef cgv::data::ref_ptr<transformation_gizmo> transformation_gizmo_ptr;

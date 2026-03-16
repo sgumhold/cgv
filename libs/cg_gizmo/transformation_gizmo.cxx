@@ -1,12 +1,18 @@
 #include "transformation_gizmo.h"
 
-#include <cgv/math/intersection.h>
 #include <cgv/math/constants.h>
+#include <cgv/math/ftransform.h>
+#include <cgv/math/intersection.h>
+#include <cgv/math/interpolate.h>
+#include <cgv/media/named_colors.h>
 
 using namespace cgv::render;
 
 namespace cgv {
 namespace gui {
+
+const size_t transformation_gizmo::_k_ring_segment_count = 32;
+const float transformation_gizmo::_k_full_ring_angle_threshold = 0.95f;
 
 transformation_gizmo::transformation_gizmo() {
 	_boxes.style.illumination_mode = IM_OFF;
@@ -24,13 +30,14 @@ transformation_gizmo::transformation_gizmo() {
 	_rectangles.style.illumination_mode = IM_OFF;
 	_rectangles.style.map_color_to_material = CM_COLOR_AND_OPACITY;
 
+	_ring_ranges[0] = { 0, 0 };
+	_ring_ranges[1] = { 0, 0 };
+	_ring_ranges[2] = { 0, 0 };
+
 	// calculate ring points for rotation handles
-	for(size_t i = 0; i < _ring_segment_count; ++i) {
-		float t = static_cast<float>(i) / static_cast<float>(_ring_segment_count - 1);
-		t *= static_cast<float>(2.0 * cgv::math::constants::pi);
-		_ring_points.push_back({ std::cos(t), std::sin(t) });
-	}
-	_ring_points.back() = _ring_points.front();
+	cgv::math::sequence_transform(std::back_inserter(_ring_points), [](const float t) {
+		return vec2(std::cos(t), std::sin(t));
+	}, _k_ring_segment_count + 1, 0.0f, static_cast<float>(cgv::math::constants::pi));
 }
 
 bool transformation_gizmo::init(context& ctx) {
@@ -61,6 +68,10 @@ void transformation_gizmo::clear(context& ctx) {
 	_sphere.destruct(ctx);
 }
 
+void transformation_gizmo::init_frame(cgv::render::context& ctx) {
+	set_geometry_out_of_date();
+}
+
 transformation_gizmo::Mode transformation_gizmo::get_mode() const {
 	return _mode;
 }
@@ -89,23 +100,36 @@ void transformation_gizmo::create_geometry() {
 	const vec3 vy(0.0f, 1.0f, 0.0f);
 	const vec3 vz(0.0f, 0.0f, 1.0f);
 
-	hls red = rgb(1.0f, 0.0f, 0.0f);
-	hls green = rgb(0.0f, 1.0f, 0.0f);
-	hls blue = rgb(0.0f, 0.0f, 1.0f);
+	const float base_saturation = 0.9f;
+	const float hover_saturation = 0.95f;
+	const float base_lightness = 0.3f;
+	const float hover_lightness = 0.52f;
 
-	const float saturation = 0.9f;
-	const float lightness = 0.3f;
+	auto make_color = [](const rgb& base_color, float saturation, float lightness) {
+		hls color = base_color;
+		color.S() = saturation;
+		color.L() = lightness;
+		return rgb(color);
+	};
 
-	red.S() = saturation;
-	green.S() = saturation;
-	blue.S() = saturation;
-	red.L() = lightness;
-	green.L() = lightness;
-	blue.L() = lightness;
+	namespace colors = cgv::media::colors;
 
-	const rgb x_color = red;
-	const rgb y_color = green;
-	const rgb z_color = blue;
+	const std::array<rgb, 3> base_colors = {
+		make_color(colors::red, base_saturation, base_lightness),
+		make_color(colors::green, base_saturation, base_lightness),
+		make_color(colors::blue, base_saturation, base_lightness)
+	};
+	const std::array<rgb, 3> hover_colors = {
+		make_color(colors::red, hover_saturation, hover_lightness),
+		make_color(colors::green, hover_saturation, hover_lightness),
+		make_color(colors::blue, hover_saturation, hover_lightness)
+	};
+
+	auto get_color = [this, &base_colors, &hover_colors](InteractionFeature feature, AxisId axis_id) {
+		return is_hovered() && _interaction_feature == feature && _interaction_axis_id == axis_id ?
+			hover_colors[axis_id_to_index(axis_id)] :
+			base_colors[axis_id_to_index(axis_id)];
+	};
 
 	_boxes.clear();
 	_cones.clear();
@@ -143,13 +167,17 @@ void transformation_gizmo::create_geometry() {
 		vec3 hy = axis_length * vy;
 		vec3 hz = axis_length * vz;
 
+		const rgb x_color = get_color(InteractionFeature::kAxis, AxisId::kX);
+		const rgb y_color = get_color(InteractionFeature::kAxis, AxisId::kY);
+		const rgb z_color = get_color(InteractionFeature::kAxis, AxisId::kZ);
+
 		_cones.add(v0 + _center_radius * vx, hx);
 		_cones.add(v0 + _center_radius * vy, hy);
 		_cones.add(v0 + _center_radius * vz, hz);
 		_cones.fill_radii(_axis_radius);
-		_cones.add_segment_color({ x_color, 1.0f });
-		_cones.add_segment_color({ y_color, 1.0f });
-		_cones.add_segment_color({ z_color, 1.0f });
+		_cones.add_segment_color(x_color);
+		_cones.add_segment_color(y_color);
+		_cones.add_segment_color(z_color);
 
 		float arrow_offset = has_scale ? 3.0f * _handle_size : 0.0f;
 
@@ -161,9 +189,9 @@ void transformation_gizmo::create_geometry() {
 			_cones.add(0.5f * _handle_size, 0.0f);
 			_cones.add(0.5f * _handle_size, 0.0f);
 			_cones.add(0.5f * _handle_size, 0.0f);
-			_cones.add_segment_color({ x_color, 1.0f });
-			_cones.add_segment_color({ y_color, 1.0f });
-			_cones.add_segment_color({ z_color, 1.0f });
+			_cones.add_segment_color(x_color);
+			_cones.add_segment_color(y_color);
+			_cones.add_segment_color(z_color);
 		}
 
 		if(has_scale) {
@@ -173,23 +201,82 @@ void transformation_gizmo::create_geometry() {
 			_boxes.add_position(v0 + box_offset * vx);
 			_boxes.add_position(v0 + box_offset * vy);
 			_boxes.add_position(v0 + box_offset * vz);
-			_boxes.add_color({ x_color, 1.0f });
-			_boxes.add_color({ y_color, 1.0f });
-			_boxes.add_color({ z_color, 1.0f });
+			_boxes.add_color(x_color);
+			_boxes.add_color(y_color);
+			_boxes.add_color(z_color);
 		}
 	}
 	
+	_ring_ranges[0] = { 0, 0 };
+	_ring_ranges[1] = { 0, 0 };
+	_ring_ranges[2] = { 0, 0 };
+
 	if(has_rotation) {
 		// create rings
-		const auto add_ring = [this](auto transform, const rgba& color) {
-			for(size_t i = 0; i < _ring_points.size(); ++i)
-				_cones.add(transform(_ring_points[i]), transform(_ring_points[(i + 1) % _ring_points.size()]));
-			_cones.fill_colors(color);
+		const auto add_ring = [this, &get_color](AxisId axis_id, auto point_transform) {
+			int axis_index = axis_id_to_index(axis_id);
+			_ring_ranges[axis_index].lower_bound = _cones.size();
+
+			const vec3 position_to_eye = normalize(get_view()->get_eye() - get_position());
+			vec3 plane_normal = { 0.0f };
+			plane_normal[axis_index] = 1.0f;
+
+			vec3 rotated_plane_normal = get_rotation().apply(plane_normal);
+
+			float cos_angle = cgv::math::dot(rotated_plane_normal, position_to_eye);
+
+			if(std::abs(cos_angle) > _k_full_ring_angle_threshold) {
+				for(size_t i = 0; i < 2 * _k_ring_segment_count; ++i) {
+					vec2 ring_a = _ring_points[(i % _k_ring_segment_count)];
+					vec2 ring_b = _ring_points[(i % _k_ring_segment_count) + 1];
+					// Flip the y-axis to build the second half of the ring.
+					if(i >= _k_ring_segment_count) {
+						ring_a.y() = -ring_a.y();
+						ring_b.y() = -ring_b.y();
+					}
+					vec3 a = point_transform(ring_a);
+					vec3 b = point_transform(ring_b);
+					_cones.add(a, b);
+				}
+
+			} else {
+				vec3 projected = normalize(project_to_plane(position_to_eye, rotated_plane_normal));
+				get_rotation().inverse_rotate(projected);
+
+				vec2 plane_components = { 0.0f };
+				switch(axis_id) {
+				case AxisId::kX:
+					plane_components = { projected.y(), projected.z() };
+					break;
+				case AxisId::kY:
+					plane_components = { -projected.x(), projected.z() };
+					break;
+				case AxisId::kZ:
+					plane_components = { projected.x(), projected.y() };
+					break;
+				}
+
+				float angle = cgv::math::to_angle(plane_components);
+				angle -= cgv::math::deg2rad(90.0f);
+
+				quat rotation(plane_normal, angle);
+
+				for(size_t i = 0; i < _k_ring_segment_count; ++i) {
+					vec3 a = point_transform(_ring_points[i]);
+					vec3 b = point_transform(_ring_points[i + 1]);
+					rotation.rotate(a);
+					rotation.rotate(b);
+					_cones.add(a, b);
+				}
+			}
+
+			_cones.fill_colors(get_color(InteractionFeature::kPlane, axis_id));
+			_ring_ranges[axis_index].upper_bound = _cones.size();
 		};
 
-		add_ring([](vec2 p) { return vec3(0.0f, p.x(), p.y()); }, { x_color, 1.0f }); // yz plane
-		add_ring([](vec2 p) { return vec3(p.x(), 0.0f, p.y()); }, { y_color, 1.0f }); // xz plane
-		add_ring([](vec2 p) { return vec3(p.x(), p.y(), 0.0f); }, { z_color, 1.0f }); // xy plane
+		add_ring(AxisId::kX, [](vec2 p) { return vec3(0.0f, p.x(), p.y()); }); // yz plane
+		add_ring(AxisId::kY, [](vec2 p) { return vec3(p.x(), 0.0f, p.y()); }); // xz plane
+		add_ring(AxisId::kZ, [](vec2 p) { return vec3(p.x(), p.y(), 0.0f); }); // xy plane
 		_cones.fill_radii(_axis_radius);
 	}
 
@@ -200,75 +287,31 @@ void transformation_gizmo::create_geometry() {
 		_rectangles.add_position(v0 + 0.5f * (vx + vy));
 		_rectangles.fill_extents(vec2(_plane_size));
 
+		_rectangles.add_rotation(quat(vy, cgv::math::deg2rad(90.0f)));
+		_rectangles.add_rotation(quat(vx, cgv::math::deg2rad(-90.0f)));
+		_rectangles.add_rotation(quat());
+
+		const rgb x_color = get_color(InteractionFeature::kPlane, AxisId::kX);
+		const rgb y_color = get_color(InteractionFeature::kPlane, AxisId::kY);
+		const rgb z_color = get_color(InteractionFeature::kPlane, AxisId::kZ);
+
 		_rectangles.add_color({ x_color, 0.5f });
 		_rectangles.add_color({ y_color, 0.5f });
 		_rectangles.add_color({ z_color, 0.5f });
 
-		_rectangles.add_border_color({ x_color, 1.0f });
-		_rectangles.add_border_color({ y_color, 1.0f });
-		_rectangles.add_border_color({ z_color, 1.0f });
-
-		_rectangles.add_rotation(quat(vy, cgv::math::deg2rad(90.0f)));
-		_rectangles.add_rotation(quat(vx, cgv::math::deg2rad(-90.0f)));
-		_rectangles.add_rotation(quat());
+		_rectangles.add_border_color(x_color);
+		_rectangles.add_border_color(y_color);
+		_rectangles.add_border_color(z_color);
 	}
 
 	// create center sphere
 	_sphere.add(v0, _axis_radius);
-	_sphere.colors.push_back({ 1.0f });
+	_sphere.add_color(colors::white);
 
 	_sphere.add(v0, _center_radius);
-	_sphere.colors.push_back({ 0.7f, 0.7f, 0.7f, 0.0f });
-	
-	if(!is_hovered())
-		return;
-
-	// set colors based on hover state
-	const auto saturate_color = [](rgba& color) {
-		cgv::media::color<float, cgv::media::ColorModel::HLS> hls = color;
-		hls.S() = 0.95f;
-		hls.L() = 0.52f;
-		color = { rgb(hls), color.alpha() };
-	};
-
-	int axis_idx = axis_id_to_index(_interaction_axis_id);
-	switch(_interaction_feature) {
-	case InteractionFeature::kAxis:
-		if(use_axes) {
-			size_t base_idx = 2 * static_cast<size_t>(axis_idx);
-			if(has_translation && has_scale && _interaction_mode == Mode::kScale || has_translation != has_scale) {
-				saturate_color(_cones.colors[base_idx]);
-				saturate_color(_cones.colors[base_idx + 1]);
-			}
-
-			if(_interaction_mode == Mode::kTranslation) {
-				saturate_color(_cones.colors[base_idx + 6]);
-				saturate_color(_cones.colors[base_idx + 7]);
-			}
-
-			if(_interaction_mode == Mode::kScale)
-				saturate_color(_boxes.colors[axis_idx]);
-		}
-		break;
-	case InteractionFeature::kPlane:
-		if(has_rotation) {
-			size_t base_idx = static_cast<size_t>(axis_idx) * 2 * _ring_segment_count;
-			if(_mode == Mode::kModel)
-				base_idx += 12;
-
-			for(size_t i = 0; i < 2 * _ring_segment_count; ++i)
-				saturate_color(_cones.colors[base_idx + i]);
-		} else {
-			saturate_color(_rectangles.colors[axis_idx]);
-			saturate_color(_rectangles.border_colors[axis_idx]);
-		}
-		break;
-	case InteractionFeature::kCenter:
-		_sphere.colors.back().alpha() = 0.2f;
-		break;
-	default:
-		break;
-	}
+	_sphere.colors.back().alpha() = 0.2f;
+	const float center_opacity = is_hovered() && _interaction_feature == InteractionFeature::kCenter ? 0.2f : 0.0f;
+	_sphere.add_color({ 0.7f, 0.7f, 0.7f, center_opacity });
 }
 
 void transformation_gizmo::draw_geometry(context& ctx) {
@@ -325,20 +368,15 @@ bool transformation_gizmo::intersect(const cgv::math::ray3& ray) {
 
 	if(_mode == Mode::kRotation || _mode == Mode::kModel) {
 		// test rings for planes
-		size_t start_offset = _mode == Mode::kModel ? 12 : 0;
-		for(size_t i = start_offset; i < _cones.size(); i += 2) {
-			vec3 pa = _cones.positions[i];
-			vec3 pb = _cones.positions[i + 1];
-
-			float t = std::numeric_limits<float>::max();
-			if(cgv::math::ray_cylinder_intersection2(ray, pa, pb, 3.0f * _axis_radius, t)) {
-				int axis_idx = static_cast<int>((i - start_offset) / (2 * _ring_segment_count));
-				update_t_if_closer(t, Mode::kRotation, InteractionFeature::kPlane, index_to_axis_id(axis_idx));
+		for(int i = 0; i < 3; ++i) {
+			for(size_t j = _ring_ranges[i].lower_bound; j < _ring_ranges[i].upper_bound; j += 2) {
+				float t = std::numeric_limits<float>::max();
+				if(cgv::math::ray_cylinder_intersection2(ray, _cones.positions[j], _cones.positions[j + 1], 3.0f * _axis_radius, t))
+					update_t_if_closer(t, Mode::kRotation, InteractionFeature::kPlane, index_to_axis_id(i));
 			}
 		}
 	}
 
-	
 	std::array<std::pair<vec3, vec3>, 6> cylinders;
 	cylinders.fill({ 0.0f, 0.0f });
 	size_t cylinder_count = 0;
@@ -433,7 +471,7 @@ bool transformation_gizmo::start_drag(const cgv::math::ray3& ray) {
 		switch(_interaction_feature) {
 		case InteractionFeature::kAxis:
 		{
-			// the plane is not actually needed for axis interaction, so we just chose one that will
+			// the plane is not actually needed for axis interaction, so we just choose one that will
 			// always produce an intersection with the mouse ray
 			_interaction_plane.normal = view_dir;
 			break;
