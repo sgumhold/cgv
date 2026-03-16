@@ -139,7 +139,7 @@ public:
 					z = cross(x, y);
 				}
 			} else {
-				y = project_to_plane(n1.pos - n0.pos, x);
+				y = cgv::math::project_to_plane(n1.pos - n0.pos, x);
 				yl = length(y);
 
 				if(yl < T(0.0001)) {
@@ -203,11 +203,6 @@ public:
 	}
 
 private:
-	// TODO: Ideally, this function is provided in the math namespace to allow reuse.
-	vec_type project_to_plane(vec_type vec, vec_type n) const {
-		return vec - n * dot(vec, n) / dot(n, n);
-	}
-
 	void control_points_to_poly_coeffs(T p0, T h, T p1, T o_c[3]) const {
 		o_c[0] = p0;
 		o_c[1] = T(-2) * p0 + T(2) * h;
