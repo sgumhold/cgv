@@ -21,17 +21,23 @@ void gizmo::finish_frame(context& ctx) {
 		_geometry_out_of_date = false;
 	}
 	
-	if(keep_screen_size_constant) {
-		float adjusted_size = 0.3f * size_scale * static_cast<float>(_view->get_tan_of_half_of_fovy(true)) * dot(_position - _view->get_eye(), _view->get_view_dir());
+	if(use_screen_size) {
+		const vec3 eye_to_position = _position - static_cast<vec3>(_view->get_eye());
+		const vec3 view_direction = static_cast<vec3>(_view->get_view_dir());
+		const float perpendicular_distance = length(project_to_vector(eye_to_position, view_direction));// dot(eye_to_position, view_direction)* view_direction);
+		const float visible_height = 2.0f * static_cast<float>(_view->get_tan_of_half_of_fovy(true)) * perpendicular_distance;
 
-		if(lock_size_during_interaction) {
+		const ivec4& viewport = ctx.get_window_transformation_array().back().viewport;
+		float adjusted_size = screen_size * visible_height / static_cast<float>(viewport.w());
+
+		if(lock_screen_size_during_interaction) {
 			if(!_captured_mouse || _size < 0.0f)
 				_size = adjusted_size;
 		} else {
 			_size = adjusted_size;
 		}
 	} else {
-		_size = size_scale;
+		_size = world_size;
 	}
 
 	ctx.push_depth_test_state();
