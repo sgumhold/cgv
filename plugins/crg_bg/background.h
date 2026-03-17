@@ -5,6 +5,8 @@
 #include <cgv/reflect/reflect_enum.h>
 #include <cgv/render/shader_program.h>
 
+#include "lib_begin.h"
+
 // Define BackgroundMode outside of background class to be able to use it with type reflection.
 enum class BackgroundMode {
 	kSolidColor,
@@ -20,12 +22,10 @@ namespace cgv {
 namespace reflect {
 
 // Define custom reflection traits for the BackgroundMode
-enum_reflection_traits<BackgroundMode> get_reflection_traits(const BackgroundMode&);
+extern CGV_API enum_reflection_traits<BackgroundMode> get_reflection_traits(const BackgroundMode&);
 
 } // namespace reflect
 } // namespace cgv
-
-#include "lib_begin.h"
 
 class CGV_API background : public cgv::base::node, public cgv::render::drawable, public cgv::gui::provider, public cgv::gui::event_handler
 {
