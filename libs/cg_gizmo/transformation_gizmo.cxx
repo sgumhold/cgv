@@ -508,7 +508,7 @@ bool transformation_gizmo::drag(const cgv::math::ray3& ray) {
 
 	const vec3 position = get_position();
 
-	if(!_interaction_plane.valid())
+	if(!_interaction_plane.is_valid())
 		return false;
 
 	float t = -1.0f;

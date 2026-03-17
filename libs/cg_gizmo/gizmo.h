@@ -53,16 +53,21 @@ public:
 
 	void set_rotation(const quat& rotation);
 
-	float size_scale = 1.0f;
-	bool keep_screen_size_constant = true;
-	bool lock_size_during_interaction = false;
+	/// The size of the gizmo in world units.
+	float world_size = 100.0f;
+	/// The size of the gizmo in pixels.
+	float screen_size = 100.0f;
+	// If true, scales the gizmo according to screen_size independent of view distance and window size.
+	bool use_screen_size = true;
+	// If true, only updates the gizmo size once the interaction has stopped. Only used if use_screen_size is true.
+	bool lock_screen_size_during_interaction = false;
 
 protected:
 	struct plane {
 		vec3 origin = { 0.0f };
 		vec3 normal = { 0.0f };
 
-		bool valid() const {
+		bool is_valid() const {
 			return length(normal) > std::numeric_limits<float>::epsilon();
 		}
 	};
