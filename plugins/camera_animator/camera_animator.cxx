@@ -121,13 +121,11 @@ camera_animator::camera_animator() : cgv::base::group("Camera Animator") {
 
 	eye_gizmo = create_and_append_child<cgv::gui::transformation_gizmo>();
 	eye_gizmo->on_change = [this](auto action, auto mode) { handle_eye_gizmo_move(action, mode); };
-	eye_gizmo->size_scale = 0.5f;
 	eye_gizmo->set_mode(cgv::gui::transformation_gizmo::Mode::kTranslation);
 	eye_gizmo->hide();
 
 	focus_gizmo = create_and_append_child<cgv::gui::transformation_gizmo>();
 	focus_gizmo->on_change = [this](auto action, auto mode) { handle_focus_gizmo_move(action, mode); };
-	focus_gizmo->size_scale = 0.5f;
 	focus_gizmo->set_mode(cgv::gui::transformation_gizmo::Mode::kTranslation);
 	focus_gizmo->hide();
 
