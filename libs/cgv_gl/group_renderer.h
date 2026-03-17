@@ -33,15 +33,15 @@ namespace cgv { // @<
 			void update_shader_program_options(shader_compile_options& options) const override;
 		public:
 			/// call this before setting attribute arrays to manage attribute array in given manager
-			void enable_attribute_array_manager(const context& ctx, attribute_array_manager& aam);
+			void enable_attribute_array_manager(const context& ctx, attribute_array_manager& aam) override;
 			/// call this after last render/draw call to ensure that no other users of renderer change attribute arrays of given manager
-			void disable_attribute_array_manager(const context& ctx, attribute_array_manager& aam);
+			void disable_attribute_array_manager(const context& ctx, attribute_array_manager& aam) override;
 			/// check additionally the group attributes
-			bool validate_attributes(const context& ctx) const;
+			bool validate_attributes(const context& ctx) const override;
 			/// overload to activate group style
-			bool enable(context& ctx);
+			bool enable(context& ctx) override;
 			///
-			bool disable(context& ctx);
+			bool disable(context& ctx) override;
 			/// method to set the group index attribute
 			void set_group_index_array(const context& ctx, const std::vector<unsigned>& group_indices);
 			/// method to set the group index attribute
