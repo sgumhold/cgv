@@ -643,6 +643,12 @@ fvec<T, 2> to_direction(T a) {
 	return fvec<T, 2>(std::cos(a), std::sin(a));
 }
 
+/// return projection of direction v onto direction w
+template <typename T, cgv::type::uint32_type N>
+fvec<T, N> project_to_vector(const fvec<T, N>& v, const fvec<T, N>& w) {
+	return w * dot(v, w) / dot(w, w);
+}
+
 /// return projection of direction v onto plane with normal n
 template <typename T, cgv::type::uint32_type N>
 fvec<T, N> project_to_plane(const fvec<T, N>& v, const fvec<T, N>& n) {
