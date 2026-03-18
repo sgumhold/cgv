@@ -78,12 +78,16 @@ void continuous_color_scale::set_midpoint(float midpoint) {
 }
 
 float continuous_color_scale::normalize_value(float value) const {
+	// Clamp the input value to the domain if requested.
 	const cgv::vec2 domain = get_domain();
 	if(is_clamped())
 		value = cgv::math::clamp(value, domain[0], domain[1]);
 
 	float t = 0.0f;
 
+	// Map the value fromt he input domain to [0,1] while applying the set transform.
+	// Diverging scales split the domain at the midpoint into a lower [domain[0], midpoint] and upper part [midpoint, domain[1]].
+	// The lower part uses a reversed transform.
 	switch(mapping_transform_) {
 	case ContinuousMappingTransform::kLinear:
 		if(is_diverging_) {

@@ -6,6 +6,8 @@
 
 #include "color.h"
 
+/// This header provides predefined colors using a RGB color model.
+
 namespace cgv {
 namespace media {
 namespace colors {
