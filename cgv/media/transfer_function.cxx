@@ -18,8 +18,8 @@ transfer_function::transfer_function(std::initializer_list<color_point_type> col
 void transfer_function::set_color_points(const std::vector<color_point_type>& colors) {
 	color_points_ = colors;
 	sort_points_and_update_domain(color_points_);
-	ensure_domain(color_points_);
-	ensure_domain(opacity_points_);
+	ensure_control_points_cover_domain(color_points_);
+	ensure_control_points_cover_domain(opacity_points_);
 }
 
 void transfer_function::set_color_points_from_scheme(const cgv::media::continuous_color_scheme& scheme, size_t n) {
@@ -33,34 +33,34 @@ void transfer_function::set_opacity_points(const std::vector<opacity_point_type>
 	opacity_points_ = opacities;
 	std::for_each(opacity_points_.begin(), opacity_points_.end(), [](const opacity_point_type& point) { cgv::math::saturate(point.second); });
 	sort_points_and_update_domain(opacity_points_);
-	ensure_domain(opacity_points_);
-	ensure_domain(color_points_);
+	ensure_control_points_cover_domain(opacity_points_);
+	ensure_control_points_cover_domain(color_points_);
 }
 
-void transfer_function::add_color_point(float t, const color_type& color) {
-	remove_color_point(t);
-	color_points_.push_back({ t, color });
+void transfer_function::add_color_point(float x, const color_type& color) {
+	remove_color_point(x);
+	color_points_.push_back({ x, color });
 	sort_points_and_update_domain(color_points_);
-	ensure_domain(opacity_points_);
+	ensure_control_points_cover_domain(opacity_points_);
 }
 
-void transfer_function::add_opacity_point(float t, float opacity) {
-	remove_opacity_point(t);
-	opacity_points_.push_back({ t, cgv::math::saturate(opacity) });
+void transfer_function::add_opacity_point(float x, float opacity) {
+	remove_opacity_point(x);
+	opacity_points_.push_back({ x, cgv::math::saturate(opacity) });
 	sort_points_and_update_domain(opacity_points_);
-	ensure_domain(color_points_);
+	ensure_control_points_cover_domain(color_points_);
 }
 
-bool transfer_function::remove_color_point(float t) {
-	if(remove_point(color_points_, t)) {
+bool transfer_function::remove_color_point(float x) {
+	if(remove_point(color_points_, x)) {
 		modified();
 		return true;
 	}
 	return false;
 }
 
-bool transfer_function::remove_opacity_point(float t) {
-	if(remove_point(opacity_points_, t)) {
+bool transfer_function::remove_opacity_point(float x) {
+	if(remove_point(opacity_points_, x)) {
 		modified();
 		return true;
 	}
@@ -160,12 +160,12 @@ float transfer_function::get_mapped_opacity(float value) const {
 	return interpolate(opacity_points_, value, opacity_interpolation_);
 }
 
-std::vector<cgv::rgba> transfer_function::quantize(size_t n) const {
-	const std::vector<cgv::rgb> colors = quantize_color(n);
-	const std::vector<float> opacities = quantize_opacity(n);
+std::vector<cgv::rgba> transfer_function::quantize(size_t count) const {
+	const std::vector<cgv::rgb> colors = quantize_color(count);
+	const std::vector<float> opacities = quantize_opacity(count);
 
 	std::vector<cgv::rgba> values;
-	values.reserve(n);
+	values.reserve(count);
 	std::transform(colors.begin(), colors.end(), opacities.begin(), std::back_inserter(values), [](const cgv::rgba& color, float opacity) {
 		return cgv::rgba(color, opacity);
 	});
