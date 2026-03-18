@@ -36,7 +36,7 @@ static DeviceColorScaleMappingOptions& operator|=(DeviceColorScaleMappingOptions
 /// Members must follow the alignment rules of the device and the size of the struct
 /// must be a multiple of 16 bytes, which may necessitate the use of padding.
 struct device_color_scale_arguments {
-	static const size_t k_max_indexed_color_count = 255;
+	static constexpr size_t k_max_indexed_color_count = 255;
 	vec2 domain = { 0.0f, 1.0f };
 	rgba8 unknown_color = { 0, 0, 0, 255 };
 	float midpoint = 0.5f;
