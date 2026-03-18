@@ -8,7 +8,7 @@
 #include "lib_begin.h"
 
 // Define BackgroundMode outside of background class to be able to use it with type reflection.
-enum class BackgroundMode {
+enum class BackgroundMode : unsigned {
 	kSolidColor,
 	kHorizontalGradient,
 	kVerticalGradient,
@@ -18,14 +18,9 @@ enum class BackgroundMode {
 
 static const int k_background_mode_count = 5;
 
-namespace cgv {
-namespace reflect {
-
-// Define custom reflection traits for the BackgroundMode
-extern CGV_API enum_reflection_traits<BackgroundMode> get_reflection_traits(const BackgroundMode&);
-
-} // namespace reflect
-} // namespace cgv
+// Define custom reflection traits for BackgroundMode in the enum's namespace
+// so argument-dependent lookup can find the overload during reflection.
+extern CGV_API cgv::reflect::enum_reflection_traits<BackgroundMode> get_reflection_traits(const BackgroundMode&);
 
 class CGV_API background : public cgv::base::node, public cgv::render::drawable, public cgv::gui::provider, public cgv::gui::event_handler
 {

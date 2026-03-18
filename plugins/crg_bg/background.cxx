@@ -7,15 +7,9 @@
 using namespace cgv::gui;
 using namespace cgv::render;
 
-namespace cgv {
-namespace reflect {
-
-enum_reflection_traits<BackgroundMode> get_reflection_traits(const BackgroundMode&) {
-	return enum_reflection_traits<BackgroundMode>("solid_color,horizontal_gradient,vertical_gradient,checkerboard,gamma_test_pattern");
+cgv::reflect::enum_reflection_traits<BackgroundMode> get_reflection_traits(const BackgroundMode&) {
+	return { "solid_color,horizontal_gradient,vertical_gradient,checkerboard,gamma_test_pattern" };
 }
-
-} // namespace reflect
-} // namespace cgv
 
 
 bool background::self_reflect(cgv::reflect::reflection_handler& rh)
