@@ -252,6 +252,7 @@ bool shader_program::detach_code(const context& ctx, const shader_code& code) {
 
 /// attach a shader code given as string and managed the created shader code object
 bool shader_program::attach_code(const context& ctx, const std::string& source, ShaderType st) {
+	/*
 	shader_code* code_ptr = new shader_code;
 	if(code_ptr->set_code(ctx, source, st) && code_ptr->compile(ctx)) {
 		managed_codes.push_back(code_ptr);
@@ -260,11 +261,18 @@ bool shader_program::attach_code(const context& ctx, const std::string& source, 
 	last_error = code_ptr->last_error;
 	delete code_ptr;
 	return false;
+	*/
+	shader_code code;
+	if(code.set_code(ctx, source, st) && code.compile(ctx))
+		return attach_code(ctx, code);
+	last_error = code.last_error;
+	return false;
 }
 
 
 /// read shader code from file, compile and attach to program
 bool shader_program::attach_file(const context& ctx, const std::string& file_name, ShaderType st, const shader_compile_options& options) {
+	/*
 	shader_code* code_ptr = new shader_code;
 	if(!code_ptr->read_and_compile(ctx, file_name, st, options, show_code_errors)) {
 		last_error = code_ptr->last_error;
@@ -273,6 +281,12 @@ bool shader_program::attach_file(const context& ctx, const std::string& file_nam
 	}
 	managed_codes.push_back(code_ptr);
 	return attach_code(ctx, *code_ptr);
+	*/
+	shader_code code;
+	if(code.read_and_compile(ctx, file_name, st, options, show_code_errors))
+		return attach_code(ctx, code);
+	last_error = code.last_error;
+	return false;
 }
 
 /// read shader code from files with the given base name, compile and attach them
@@ -721,10 +735,12 @@ int shader_program::get_attribute_location(const context& ctx, const std::string
 /// destruct shader program
 void shader_program::destruct(const context& ctx)
 {
-	while (managed_codes.size() > 0) {
+	/*
+	while(managed_codes.size() > 0) {
 		delete managed_codes.back();
 		managed_codes.pop_back();
 	}
+	*/
 	if (handle) {
 		ctx.shader_program_destruct(*this);
 		handle = 0;

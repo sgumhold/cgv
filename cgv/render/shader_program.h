@@ -37,7 +37,7 @@ protected:
 	bool state_out_of_date : 1;
 	int  nr_attached_geometry_shaders : 13;
 
-	std::vector<shader_code*> managed_codes;
+	//std::vector<shader_code*> managed_codes;
 
 	/// attach a list of files
 	bool attach_files(const context& ctx, const std::vector<std::string>& file_names, const shader_compile_options& options = {});
