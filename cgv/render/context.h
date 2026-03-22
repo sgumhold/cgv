@@ -508,11 +508,9 @@ class CGV_API vertex_buffer_base : public render_component
 {
 public:
 	/// buffer type defaults to VBT_VERTICES
-	VertexBufferType type;
+	VertexBufferType type = VBT_VERTICES;
 	/// usage defaults to VBU_STATIC_DRAW
-	VertexBufferUsage usage;
-	/// initialize members
-	vertex_buffer_base();
+	VertexBufferUsage usage = VBU_STATIC_DRAW;
 };
 
 /// Bits for the selection of different buffer types

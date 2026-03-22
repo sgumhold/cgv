@@ -6,17 +6,22 @@
 #include "lib_begin.h"
 
 namespace cgv {
-	namespace render {
+namespace render {
 
 /** a vertex buffer is an unstructured memory block on the GPU. */
 class CGV_API vertex_buffer : public vertex_buffer_base
 {
 protected:
-	size_t size_in_bytes;
+	size_t size_in_bytes = 0;
 
 public:
-	/// construct from description of component format, where the default format specifies a color buffer with alpha channel
-	vertex_buffer(VertexBufferType _type = VBT_VERTICES, VertexBufferUsage _usage = VBU_STATIC_DRAW);
+	/**
+	 * Construct a vertex buffer of the given type and usage.
+	 *
+	 * \param type The default type of this buffer.
+	 * \param usage The default usage of this buffer.
+	 */
+	vertex_buffer(VertexBufferType type = VBT_VERTICES, VertexBufferUsage usage = VBU_STATIC_DRAW);
 	/// calls the destruct method if necessary
 	~vertex_buffer();
 	/**
@@ -218,7 +223,7 @@ public:
 	void destruct(const context& ctx);
 };
 
-	}
-}
+} // namespace render
+} // namespace cgv
 
 #include <cgv/config/lib_end.h>

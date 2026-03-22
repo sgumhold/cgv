@@ -1,7 +1,8 @@
 #pragma once
 
+#include <cgv/render/uniform_buffer.h>
+
 #include "algorithm.h"
-#include "uniform_buffer.h"
 
 #include "lib_begin.h"
 
@@ -29,7 +30,7 @@ private:
 	};
 
 	compute_kernel _kernel;
-	uniform_buffer<uniform_data> _uniform_buffer;
+	cgv::render::uniform_buffer<uniform_data> _uniform_buffer;
 };
 
 } // namespace gpgpu
