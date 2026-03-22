@@ -6,6 +6,8 @@ namespace render {
 device_color_scale_arguments device_color_scale::get_arguments() const {
 	const cgv::media::color_scale* color_scale = get_color_scale();
 	device_color_scale_arguments arguments;
+	// Set arguments that are available to every color scale through the base class
+	// and then update the implementation-specific fields.
 	arguments.unknown_color = color_scale->get_unknown_color();
 	arguments.domain = color_scale->get_domain();
 	if(color_scale->is_clamped())
@@ -29,6 +31,8 @@ void device_continuous_color_scale::update_color_scale_specific_arguments(device
 	out_arguments.midpoint = color_scale->get_midpoint();
 	out_arguments.exponent = color_scale->get_pow_exponent();
 
+	// Continuous color scales with logarithmic transform use precomputed values to make mapping calculations more efficient.
+	// However, these invariants are private so we need to recompute them here.
 	if(color_scale->get_transform() == cgv::media::ContinuousMappingTransform::kLog) {
 		vec2 domain = color_scale->get_domain();
 		out_arguments.log_sign = domain[0] < 0.0f && domain[1] < 0.0f ? -1.0f : 1.0f;

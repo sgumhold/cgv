@@ -4,7 +4,7 @@ namespace cgv {
 namespace render {
 
 bool color_scale_adapter::init(const context& ctx) {
-	return uniform_buffer_.create(ctx, 2);
+	return uniform_buffer_.create(ctx);
 }
 
 bool color_scale_adapter::destruct(const context& ctx) {
@@ -58,12 +58,12 @@ void color_scale_adapter::set_color_scales(const std::vector<std::shared_ptr<con
 	if(color_scales_ != color_scales) {
 		build_time_.reset();
 		color_scales_ = color_scales;
-		uniforms_ = std::vector<device_color_scale_arguments>(color_scales.size());
+		if(color_scales_.size() > k_max_color_scale_count_)
+			color_scales_.resize(k_max_color_scale_count_);
+		uniforms_ = std::vector<device_color_scale_arguments>(color_scales_.size());
 	}
 }
 
-// Todo: Return const reference. Need to make texture enable/disable const in order to use returned texture.
-// Problem: Not so easy, because enable uses user_data from render_component which cannot be altered if texture_base is const.
 texture& color_scale_adapter::get_texture(const context& ctx) {
 	create_texture(ctx);
 	return texture_;
@@ -81,20 +81,18 @@ bool color_scale_adapter::create_texture(const context& ctx) {
 		return false;
 
 	if(!build_time_.is_valid() || get_latest_color_scale_modification_time() > build_time_.get_modified_time()) {
-		const size_t texture_width = 256;
-
 		std::vector<cgv::rgba8> texture_data;
 
 		for(const auto& color_scale : color_scales_) {
 			size_t offset = texture_data.size();
-			texture_data.resize(texture_data.size() + texture_width);
-			std::vector<rgba> colors = color_scale->get_texture_data(texture_width);
+			texture_data.resize(texture_data.size() + k_texture_width_);
+			std::vector<rgba> colors = color_scale->get_texture_data(k_texture_width_);
 			std::transform(colors.begin(), colors.end(), texture_data.begin() + offset, [](const cgv::rgba& color) {
 				return cgv::rgba8(color);
 			});
 		}
 
-		cgv::data::data_format data_format(texture_width, color_scales_.size(), cgv::type::info::TI_UINT8, cgv::data::CF_RGBA);
+		cgv::data::data_format data_format(k_texture_width_, color_scales_.size(), cgv::type::info::TI_UINT8, cgv::data::CF_RGBA);
 		cgv::data::data_view data_view(&data_format, texture_data.data());
 
 		const cgv::render::TextureFilter filter = cgv::render::TF_LINEAR;

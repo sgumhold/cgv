@@ -13,7 +13,12 @@
 namespace cgv {
 namespace media {
 
-/// @brief Base class defining an interface for color scales that can map continuous or discrete scalar values to colors and opacity.
+/// @brief Base class defining an interface for color scales.
+///
+/// A color_scale is a function that maps scalar values from an input domain to a RGB output range. The color_scale
+/// can optionally also map to opacity. The mapping from input to output values can be linear or follow some other
+/// transform, like log or power scales. color_scales can have a continuous or discrete input domain and can be sampled
+/// with continuous scalar values or, in case of discrete scales, additionally with indexed lookup.
 class CGV_API color_scale {
 public:
 	/// @brief Destruct this color scale.
@@ -212,7 +217,7 @@ enum class ContinuousMappingTransform {
 };
 
 /// @brief Implementation of a color_scale with a continuous input domain and output range using a continuous_color_scheme.
-/// The scale supports various mapping transforms.
+/// The scale supports mapping input values to colors using one of the transforms defined in ContinuousMappingTransform.
 class CGV_API continuous_color_scale : public color_scale {
 public:
 	/// @brief Construct using default arguments.
@@ -239,15 +244,16 @@ public:
 	void set_domain(cgv::vec2 domain) override;
 
 	/// @brief Set the transform used to map scalars to colors.
+	/// Power and log scales support negative domains. For scales with power or log transform and negative domains,
+	/// input and output values are implicitly multiplied by -1.
+	/// Log scale domains must be strictly-positive or strictly-negative; the domain must not include or cross zero.
+	/// The behavior of the scale is undefined if a negative value is passed to a log scale with a positive domain or vice versa.
 	/// 
 	/// @param transform The transform type.
 	void set_transform(ContinuousMappingTransform transform);
 
 	/// @brief Get the transform used to map scalars to colors.
-	/// Power and log scales support negative domains. For scales with power or log transform and negative domains,
-	/// input and output values are implicitly multiplied by -1.
-	/// Log scale domains must be strictly-positive or strictly-negative; the domain must not include or cross zero.
-	/// The behavior of the scale is undefined if a negative value is passed to a log scale with a positive domain or vice versa.
+	/// See also set_transform().
 	/// 
 	/// @return The transform type.
 	ContinuousMappingTransform get_transform() const {
@@ -362,6 +368,8 @@ private:
 };
 
 /// @brief Implementation of a color_scale with a discrete input domain and output range using a discrete_color_scheme.
+/// The scale is mainly used for mapping discrete indices to discrete colors for, e.g., categorical data.
+/// Additionally, discrete_color_scale supports mapping continuous input values to discrete colors.
 class CGV_API discrete_color_scale : public color_scale {
 public:
 	// @brief Construct using default arguments. The scale will have a single black indexed color.
