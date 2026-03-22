@@ -1,8 +1,9 @@
 #pragma once
 
+#include <cgv/render/uniform_buffer.h>
+
 #include "algorithm.h"
 #include "device_buffer_iterator.h"
-#include "uniform_buffer.h"
 #include "storage_buffer.h"
 
 #include "lib_begin.h"
@@ -40,7 +41,7 @@ private:
 	};
 
 	compute_kernel _kernel;
-	uniform_buffer<uniform_data> _uniform_buffer;
+	cgv::render::uniform_buffer<uniform_data> _uniform_buffer;
 	storage_buffer _atomic_counter_buffer;
 };
 

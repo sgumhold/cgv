@@ -2439,13 +2439,6 @@ bool context::attribute_array_binding_disable(attribute_array_binding_base& aab)
 	return true;
 }
 
-vertex_buffer_base::vertex_buffer_base()
-{
-	type = VBT_VERTICES;
-	usage = VBU_STATIC_DRAW;
-}
-
-
 /// initialize members
 frame_buffer_base::frame_buffer_base()
 {
