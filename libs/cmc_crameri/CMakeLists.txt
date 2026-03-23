@@ -6,5 +6,6 @@ cgv_add_target(cmc_crameri
 	TYPE library
 	SOURCES ${SOURCES}
 	HEADERS ${HEADERS}
-	DEPENDENCIES cgv_media
+	DEPENDENCIES
+		cgv_media
 )
