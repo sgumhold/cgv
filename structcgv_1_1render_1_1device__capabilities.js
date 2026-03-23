@@ -4,5 +4,7 @@ var structcgv_1_1render_1_1device__capabilities =
     [ "max_compute_work_group_count", "structcgv_1_1render_1_1device__capabilities.html#a7278b8f26a1bc27124cb280b8bcf9b54", null ],
     [ "max_compute_work_group_invocations", "structcgv_1_1render_1_1device__capabilities.html#a9adb382f8aa0b69112e25564c22a76e6", null ],
     [ "max_compute_work_group_size", "structcgv_1_1render_1_1device__capabilities.html#ae1689cbe7c1c64bea4bfa165c86e1745", null ],
-    [ "max_geometry_shader_output_vertex_count", "structcgv_1_1render_1_1device__capabilities.html#aca285c27b41dadb6c2f48d5f9531873c", null ]
+    [ "max_geometry_shader_output_component_count", "structcgv_1_1render_1_1device__capabilities.html#ae4b4a71add72fdc7bb2ded67af40d0c2", null ],
+    [ "max_geometry_shader_output_vertex_count", "structcgv_1_1render_1_1device__capabilities.html#aca285c27b41dadb6c2f48d5f9531873c", null ],
+    [ "max_geometry_shader_total_output_component_count", "structcgv_1_1render_1_1device__capabilities.html#ab068ce0d1e8d8c66f85675c1be8a193c", null ]
 ];

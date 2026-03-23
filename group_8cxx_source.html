@@ -120,14 +120,14 @@ $(document).ready(function(){initNavTree('group_8cxx_source.html',''); initResiz
 <div class="foldopen" id="foldopen00017" data-start="{" data-end="}">
 <div class="line"><a id="l00017" name="l00017"></a><span class="lineno"><a class="line" href="classcgv_1_1base_1_1group.html#ab1fb4949807f1c86f816c31b2efb7ca2">   17</a></span><span class="keywordtype">void</span> <a class="code hl_function" href="classcgv_1_1base_1_1group.html#ab1fb4949807f1c86f816c31b2efb7ca2">group::unlink</a>(<a class="code hl_class" href="classcgv_1_1data_1_1ref__ptr.html">base_ptr</a> <a class="code hl_class" href="classcgv_1_1base_1_1single__method__action.html">child</a>)</div>
 <div class="line"><a id="l00018" name="l00018"></a><span class="lineno">   18</span>{</div>
-<div class="line"><a id="l00019" name="l00019"></a><span class="lineno">   19</span>    <a class="code hl_class" href="classcgv_1_1data_1_1ref__ptr.html">group_ptr</a> g = <a class="code hl_class" href="classcgv_1_1base_1_1single__method__action.html">child</a>-&gt;get_group();</div>
-<div class="line"><a id="l00020" name="l00020"></a><span class="lineno">   20</span>    <span class="keywordflow">if</span>(g.<a class="code hl_function" href="classcgv_1_1data_1_1ref__ptr.html#a064308a0ae0990b5ca8296f03e23c344">empty</a>()) {</div>
+<div class="line"><a id="l00019" name="l00019"></a><span class="lineno">   19</span>    <a class="code hl_class" href="classcgv_1_1data_1_1ref__ptr.html">group_ptr</a> <a class="code hl_class" href="classcgv_1_1base_1_1single__method__action.html">g</a> = <a class="code hl_class" href="classcgv_1_1base_1_1single__method__action.html">child</a>-&gt;get_group();</div>
+<div class="line"><a id="l00020" name="l00020"></a><span class="lineno">   20</span>    <span class="keywordflow">if</span>(<a class="code hl_class" href="classcgv_1_1base_1_1single__method__action.html">g</a>.empty()) {</div>
 <div class="line"><a id="l00021" name="l00021"></a><span class="lineno">   21</span>        <a class="code hl_class" href="classcgv_1_1data_1_1ref__ptr.html">node_ptr</a> n = <a class="code hl_class" href="classcgv_1_1base_1_1single__method__action.html">child</a>-&gt;get_node();</div>
 <div class="line"><a id="l00022" name="l00022"></a><span class="lineno">   22</span>        <span class="keywordflow">if</span>(n.<a class="code hl_function" href="classcgv_1_1data_1_1ref__ptr.html#a064308a0ae0990b5ca8296f03e23c344">empty</a>())</div>
 <div class="line"><a id="l00023" name="l00023"></a><span class="lineno">   23</span>            <span class="keywordflow">return</span>;</div>
 <div class="line"><a id="l00024" name="l00024"></a><span class="lineno">   24</span>        n-&gt;set_parent(<a class="code hl_typedef" href="namespacecgv_1_1base.html#a876ea103d1a70f0477574fd136a99192">node_ptr</a>());</div>
 <div class="line"><a id="l00025" name="l00025"></a><span class="lineno">   25</span>    } <span class="keywordflow">else</span> {</div>
-<div class="line"><a id="l00026" name="l00026"></a><span class="lineno">   26</span>        g-&gt;remove_all_children();</div>
+<div class="line"><a id="l00026" name="l00026"></a><span class="lineno">   26</span>        <a class="code hl_class" href="classcgv_1_1base_1_1single__method__action.html">g</a>-&gt;remove_all_children();</div>
 <div class="line"><a id="l00027" name="l00027"></a><span class="lineno">   27</span>    }</div>
 <div class="line"><a id="l00028" name="l00028"></a><span class="lineno">   28</span>}</div>
 </div>

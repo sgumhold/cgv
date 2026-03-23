@@ -31,16 +31,6 @@ var hierarchy =
     [ "nes::basic_pipe_istream< char, std::char_traits< char > >", "classnes_1_1basic__pipe__istream.html", null ],
     [ "nes::basic_pipe_ostream< char, std::char_traits< char > >", "classnes_1_1basic__pipe__ostream.html", null ],
     [ "cfg_reg_type", "structcfg__reg__type.html", null ],
-    [ "cgv::app::color_map_editor::cm_container", "structcgv_1_1app_1_1color__map__editor_1_1cm__container.html", null ],
-    [ "cgv::app::color_map_editor::layout_attributes", "structcgv_1_1app_1_1color__map__editor_1_1layout__attributes.html", null ],
-    [ "cgv::app::color_map_legend::layout_attributes", "structcgv_1_1app_1_1color__map__legend_1_1layout__attributes.html", null ],
-    [ "cgv::app::color_map_reader", "classcgv_1_1app_1_1color__map__reader.html", null ],
-    [ "cgv::app::color_map_reader::identifier_config", "structcgv_1_1app_1_1color__map__reader_1_1identifier__config.html", null ],
-    [ "cgv::app::color_map_writer", "classcgv_1_1app_1_1color__map__writer.html", null ],
-    [ "cgv::app::color_selector::layout_attributes", "structcgv_1_1app_1_1color__selector_1_1layout__attributes.html", null ],
-    [ "cgv::app::overlay::gui_options_t", "structcgv_1_1app_1_1overlay_1_1gui__options__t.html", null ],
-    [ "cgv::app::performance_monitor::layout_attributes", "structcgv_1_1app_1_1performance__monitor_1_1layout__attributes.html", null ],
-    [ "cgv::app::plane", "structcgv_1_1app_1_1plane.html", null ],
     [ "cgv::audio::OALContext", "classcgv_1_1audio_1_1OALContext.html", null ],
     [ "cgv::audio::OALListener", "classcgv_1_1audio_1_1OALListener.html", null ],
     [ "cgv::audio::OALSoundFormat", "structcgv_1_1audio_1_1OALSoundFormat.html", null ],
@@ -167,28 +157,24 @@ var hierarchy =
     ] ],
     [ "cgv::base::traverse_policy", "classcgv_1_1base_1_1traverse__policy.html", [
       [ "cgv::gui::event_handler", "classcgv_1_1gui_1_1event__handler.html", [
-        [ "cgv::app::gizmo", "classcgv_1_1app_1_1gizmo.html", [
-          [ "cgv::app::transformation_gizmo", "classcgv_1_1app_1_1transformation__gizmo.html", null ]
-        ] ],
-        [ "cgv::app::overlay", "classcgv_1_1app_1_1overlay.html", [
-          [ "cgv::app::canvas_overlay", "classcgv_1_1app_1_1canvas__overlay.html", [
-            [ "cgv::app::themed_canvas_overlay", "classcgv_1_1app_1_1themed__canvas__overlay.html", [
-              [ "cgv::app::color_map_editor", "classcgv_1_1app_1_1color__map__editor.html", null ],
-              [ "cgv::app::color_map_legend", "classcgv_1_1app_1_1color__map__legend.html", null ],
-              [ "cgv::app::color_selector", "classcgv_1_1app_1_1color__selector.html", null ],
-              [ "cgv::app::performance_monitor", "classcgv_1_1app_1_1performance__monitor.html", null ]
-            ] ]
-          ] ],
-          [ "cgv::app::navigator", "classcgv_1_1app_1_1navigator.html", null ]
-        ] ],
         [ "cgv::gui::key_control< T >", "classcgv_1_1gui_1_1key__control.html", null ],
         [ "cgv::gui::key_control< bool >", "classcgv_1_1gui_1_1key__control_3_01bool_01_4.html", null ],
+        [ "cgv::overlay::overlay", "classcgv_1_1overlay_1_1overlay.html", [
+          [ "cgv::overlay::canvas_overlay", "classcgv_1_1overlay_1_1canvas__overlay.html", [
+            [ "cgv::overlay::themed_canvas_overlay", "classcgv_1_1overlay_1_1themed__canvas__overlay.html", [
+              [ "cgv::overlay::color_scale_legend", "classcgv_1_1overlay_1_1color__scale__legend.html", null ],
+              [ "cgv::overlay::color_selector", "classcgv_1_1overlay_1_1color__selector.html", null ],
+              [ "cgv::overlay::performance_monitor", "classcgv_1_1overlay_1_1performance__monitor.html", null ],
+              [ "cgv::overlay::transfer_function_editor", "classcgv_1_1overlay_1_1transfer__function__editor.html", null ]
+            ] ]
+          ] ],
+          [ "cgv::overlay::navigator", "classcgv_1_1overlay_1_1navigator.html", null ]
+        ] ],
         [ "vr_emulator", "classvr__emulator.html", null ],
         [ "vr_test", "classvr__test.html", null ]
       ] ],
       [ "cgv::render::drawable", "classcgv_1_1render_1_1drawable.html", [
-        [ "cgv::app::gizmo", "classcgv_1_1app_1_1gizmo.html", null ],
-        [ "cgv::app::overlay", "classcgv_1_1app_1_1overlay.html", null ],
+        [ "cgv::overlay::overlay", "classcgv_1_1overlay_1_1overlay.html", null ],
         [ "cgv::plot::plot_base", "classcgv_1_1plot_1_1plot__base.html", [
           [ "cgv::plot::plot2d", "classcgv_1_1plot_1_1plot2d.html", null ],
           [ "cgv::plot::plot3d", "classcgv_1_1plot_1_1plot3d.html", null ]
@@ -218,7 +204,9 @@ var hierarchy =
     [ "cgv::data::dynamic_priority_queue< T >", "classcgv_1_1data_1_1dynamic__priority__queue.html", null ],
     [ "cgv::data::dynamic_priority_queue< T >::extended_element", "structcgv_1_1data_1_1dynamic__priority__queue_1_1extended__element.html", null ],
     [ "cgv::data::image_view", "classcgv_1_1data_1_1image__view.html", null ],
+    [ "cgv::data::informed_ptr", "classcgv_1_1data_1_1informed__ptr.html", null ],
     [ "cgv::data::interval_map< Key, T >", "classcgv_1_1data_1_1interval__map.html", null ],
+    [ "cgv::data::object_registry< T >", "classcgv_1_1data_1_1object__registry.html", null ],
     [ "cgv::data::optional< T >", "classcgv_1_1data_1_1optional.html", null ],
     [ "cgv::data::packing_info", "classcgv_1_1data_1_1packing__info.html", [
       [ "cgv::data::component_format", "classcgv_1_1data_1_1component__format.html", [
@@ -244,8 +232,6 @@ var hierarchy =
         ] ],
         [ "cgv::base::named", "classcgv_1_1base_1_1named.html", [
           [ "cgv::base::node", "classcgv_1_1base_1_1node.html", [
-            [ "cgv::app::gizmo", "classcgv_1_1app_1_1gizmo.html", null ],
-            [ "cgv::app::overlay", "classcgv_1_1app_1_1overlay.html", null ],
             [ "cgv::base::group", "classcgv_1_1base_1_1group.html", [
               [ "cgv::gui::gui_group", "classcgv_1_1gui_1_1gui__group.html", null ]
             ] ],
@@ -273,6 +259,7 @@ var hierarchy =
             ] ],
             [ "cgv::gui::button", "classcgv_1_1gui_1_1button.html", null ],
             [ "cgv::gui::help_menu_entry", "classcgv_1_1gui_1_1help__menu__entry.html", null ],
+            [ "cgv::overlay::overlay", "classcgv_1_1overlay_1_1overlay.html", null ],
             [ "cgv::render::callback_drawable", "structcgv_1_1render_1_1callback__drawable.html", null ],
             [ "vr_emulator", "classvr__emulator.html", null ],
             [ "vr_test", "classvr__test.html", null ]
@@ -345,13 +332,13 @@ var hierarchy =
     [ "cgv::data::ref_ptr_tag", "classcgv_1_1data_1_1ref__ptr__tag.html", [
       [ "cgv::data::ref_ptr_impl< T, true >", "classcgv_1_1data_1_1ref__ptr__impl_3_01T_00_01true_01_4.html", null ]
     ] ],
+    [ "cgv::data::time_stamp", "classcgv_1_1data_1_1time__stamp.html", null ],
     [ "cgv::defines::static_assert_test< x >", "structcgv_1_1defines_1_1static__assert__test.html", null ],
     [ "cgv::defines::STATIC_ASSERTION_FAILURE< x >", "structcgv_1_1defines_1_1STATIC__ASSERTION__FAILURE.html", null ],
     [ "cgv::defines::STATIC_ASSERTION_FAILURE< true >", "structcgv_1_1defines_1_1STATIC__ASSERTION__FAILURE_3_01true_01_4.html", null ],
     [ "cgv::g2d::draggable", null, [
-      [ "cgv::app::color_map_editor::color_point", "structcgv_1_1app_1_1color__map__editor_1_1color__point.html", null ],
-      [ "cgv::app::color_map_editor::opacity_point", "structcgv_1_1app_1_1color__map__editor_1_1opacity__point.html", null ],
-      [ "cgv::app::color_selector::selector_handle", "structcgv_1_1app_1_1color__selector_1_1selector__handle.html", null ]
+      [ "cgv::overlay::color_selector::selector_handle", "structcgv_1_1overlay_1_1color__selector_1_1selector__handle.html", null ],
+      [ "cgv::overlay::transfer_function_editor::control_point< DataT >", "classcgv_1_1overlay_1_1transfer__function__editor_1_1control__point.html", null ]
     ] ],
     [ "cgv::gui::abst_control_provider", "structcgv_1_1gui_1_1abst__control__provider.html", [
       [ "cgv::gui::control_provider< bool >", "structcgv_1_1gui_1_1control__provider.html", null ],
@@ -432,7 +419,6 @@ var hierarchy =
     [ "cgv::math::adjacency_list< v_type >", "classcgv_1_1math_1_1adjacency__list.html", null ],
     [ "cgv::math::bezier_tube_node< T >", "structcgv_1_1math_1_1bezier__tube__node.html", null ],
     [ "cgv::math::bresenham_traverser", "classcgv_1_1math_1_1bresenham__traverser.html", null ],
-    [ "cgv::math::control_point_container< T >", "classcgv_1_1math_1_1control__point__container.html", null ],
     [ "cgv::math::cubic_hermite_tube< T >", "classcgv_1_1math_1_1cubic__hermite__tube.html", null ],
     [ "cgv::math::curve_arc_length< DerivedT, ParamT >", "structcgv_1_1math_1_1curve__arc__length.html", null ],
     [ "cgv::math::curve_parameterization< DerivedT, ParamT >", "structcgv_1_1math_1_1curve__parameterization.html", null ],
@@ -457,9 +443,25 @@ var hierarchy =
     ] ],
     [ "cgv::math::hermite_node< T >", "structcgv_1_1math_1_1hermite__node.html", null ],
     [ "cgv::math::hermite_tube_node< T >", "structcgv_1_1math_1_1hermite__tube__node.html", null ],
-    [ "cgv::math::interpolator< T >", "classcgv_1_1math_1_1interpolator.html", [
-      [ "cgv::math::piecewise_linear_interpolator< T >", "classcgv_1_1math_1_1piecewise__linear__interpolator.html", null ],
-      [ "cgv::math::piecewise_nearest_interpolator< T >", "classcgv_1_1math_1_1piecewise__nearest__interpolator.html", null ]
+    [ "cgv::math::interpolator< ValueT, ParamT >", "classcgv_1_1math_1_1interpolator.html", [
+      [ "cgv::math::piecewise_interpolator_storage< ValueT, ValueT, float >", "classcgv_1_1math_1_1piecewise__interpolator__storage.html", null ],
+      [ "cgv::math::piecewise_interpolator_storage< std::pair< float, ValueT >, ValueT, float >", "classcgv_1_1math_1_1piecewise__interpolator__storage.html", null ],
+      [ "cgv::math::function_ref_interpolator< ValueT, ParamT >", "classcgv_1_1math_1_1function__ref__interpolator.html", null ],
+      [ "cgv::math::identity_interpolator< ValueT, ParamT >", "classcgv_1_1math_1_1identity__interpolator.html", null ],
+      [ "cgv::math::piecewise_interpolator_storage< PointT, ValueT, ParamT >", "classcgv_1_1math_1_1piecewise__interpolator__storage.html", [
+        [ "cgv::math::piecewise_interpolator< ValueT, float >", "classcgv_1_1math_1_1piecewise__interpolator.html", null ],
+        [ "cgv::math::uniform_piecewise_interpolator< ValueT, float >", "classcgv_1_1math_1_1uniform__piecewise__interpolator.html", null ],
+        [ "cgv::math::piecewise_interpolator< ValueT, ParamT >", "classcgv_1_1math_1_1piecewise__interpolator.html", [
+          [ "cgv::math::linear_interpolator< ValueT, ParamT >", "classcgv_1_1math_1_1linear__interpolator.html", null ],
+          [ "cgv::math::smooth_interpolator< ValueT, ParamT >", "classcgv_1_1math_1_1smooth__interpolator.html", null ]
+        ] ],
+        [ "cgv::math::uniform_piecewise_interpolator< ValueT, ParamT >", "classcgv_1_1math_1_1uniform__piecewise__interpolator.html", [
+          [ "cgv::math::discrete_interpolator< ValueT, ParamT >", "classcgv_1_1math_1_1discrete__interpolator.html", null ],
+          [ "cgv::math::uniform_linear_interpolator< ValueT, ParamT >", "classcgv_1_1math_1_1uniform__linear__interpolator.html", null ],
+          [ "cgv::math::uniform_smooth_interpolator< ValueT, ParamT >", "classcgv_1_1math_1_1uniform__smooth__interpolator.html", null ]
+        ] ]
+      ] ],
+      [ "cgv::media::schemes::rgb_per_channel_piecewise_interpolator< ParamT >", "classcgv_1_1media_1_1schemes_1_1rgb__per__channel__piecewise__interpolator.html", null ]
     ] ],
     [ "cgv::math::interval< T >", "classcgv_1_1math_1_1interval.html", null ],
     [ "cgv::math::low_tri_mat< T >", "classcgv_1_1math_1_1low__tri__mat.html", null ],
@@ -508,6 +510,16 @@ var hierarchy =
     [ "cgv::media::color_one< T >", "structcgv_1_1media_1_1color__one.html", null ],
     [ "cgv::media::color_one< double >", "structcgv_1_1media_1_1color__one_3_01double_01_4.html", null ],
     [ "cgv::media::color_one< float >", "structcgv_1_1media_1_1color__one_3_01float_01_4.html", null ],
+    [ "cgv::media::color_scale", "classcgv_1_1media_1_1color__scale.html", [
+      [ "cgv::media::continuous_color_scale", "classcgv_1_1media_1_1continuous__color__scale.html", null ],
+      [ "cgv::media::discrete_color_scale", "classcgv_1_1media_1_1discrete__color__scale.html", null ],
+      [ "cgv::media::transfer_function", "classcgv_1_1media_1_1transfer__function.html", null ]
+    ] ],
+    [ "cgv::media::color_scheme", "structcgv_1_1media_1_1color__scheme.html", [
+      [ "cgv::media::continuous_color_scheme", "classcgv_1_1media_1_1continuous__color__scheme.html", null ],
+      [ "cgv::media::discrete_color_scheme", "classcgv_1_1media_1_1discrete__color__scheme.html", null ]
+    ] ],
+    [ "cgv::media::color_scheme_registry_helper< RegistryT, ColorSchemeT >", "classcgv_1_1media_1_1color__scheme__registry__helper.html", null ],
     [ "cgv::media::color_storage_traits< T >", "structcgv_1_1media_1_1color__storage__traits.html", null ],
     [ "cgv::media::color_storage_traits< color< float, RGB > >", "structcgv_1_1media_1_1color__storage__traits_3_01color_3_01float_00_01RGB_01_4_01_4.html", null ],
     [ "cgv::media::color_storage_traits< color< float, RGB, OPACITY > >", "structcgv_1_1media_1_1color__storage__traits_3_01color_3_01float_00_01RGB_00_01OPACITY_01_4_01_4.html", null ],
@@ -528,9 +540,10 @@ var hierarchy =
     [ "cgv::media::const_alpha_reference< T, am >", "structcgv_1_1media_1_1const__alpha__reference.html", null ],
     [ "cgv::media::const_alpha_reference< T, NO_ALPHA >", "structcgv_1_1media_1_1const__alpha__reference_3_01T_00_01NO__ALPHA_01_4.html", null ],
     [ "cgv::media::extinction_alpha_interface< ta_derived >", "structcgv_1_1media_1_1extinction__alpha__interface.html", [
-      [ "cgv::media::color< float, cgv::media::RGB, cgv::media::OPACITY >", "classcgv_1_1media_1_1color.html", null ],
       [ "cgv::media::color< float, cgv::media::RGB >", "classcgv_1_1media_1_1color.html", null ],
+      [ "cgv::media::color< float, cgv::media::RGB, cgv::media::OPACITY >", "classcgv_1_1media_1_1color.html", null ],
       [ "cgv::media::color< cgv::type::uint8_type, cgv::media::RGB >", "classcgv_1_1media_1_1color.html", null ],
+      [ "cgv::media::color< cgv::type::uint8_type, cgv::media::RGB, cgv::media::OPACITY >", "classcgv_1_1media_1_1color.html", null ],
       [ "cgv::media::color< float >", "classcgv_1_1media_1_1color.html", null ]
     ] ],
     [ "cgv::media::fourcc", "structcgv_1_1media_1_1fourcc.html", null ],
@@ -616,6 +629,11 @@ var hierarchy =
     ] ],
     [ "cgv::os::web_server_provider", "classcgv_1_1os_1_1web__server__provider.html", null ],
     [ "cgv::os::web_server_provider_registration< T >", "structcgv_1_1os_1_1web__server__provider__registration.html", null ],
+    [ "cgv::overlay::color_scale_legend::layout_attributes", "structcgv_1_1overlay_1_1color__scale__legend_1_1layout__attributes.html", null ],
+    [ "cgv::overlay::color_selector::layout_attributes", "structcgv_1_1overlay_1_1color__selector_1_1layout__attributes.html", null ],
+    [ "cgv::overlay::overlay::gui_options_t", "structcgv_1_1overlay_1_1overlay_1_1gui__options__t.html", null ],
+    [ "cgv::overlay::performance_monitor::layout_attributes", "structcgv_1_1overlay_1_1performance__monitor_1_1layout__attributes.html", null ],
+    [ "cgv::overlay::transfer_function_editor::layout_attributes", "structcgv_1_1overlay_1_1transfer__function__editor_1_1layout__attributes.html", null ],
     [ "cgv::plot::attribute_source", "structcgv_1_1plot_1_1attribute__source.html", null ],
     [ "cgv::plot::attribute_source_array", "structcgv_1_1plot_1_1attribute__source__array.html", null ],
     [ "cgv::plot::axis_config", "classcgv_1_1plot_1_1axis__config.html", null ],
@@ -709,9 +727,7 @@ var hierarchy =
     [ "cgv::render::clod_point_buffer_manager", "classcgv_1_1render_1_1clod__point__buffer__manager.html", null ],
     [ "cgv::render::clod_point_renderer", "classcgv_1_1render_1_1clod__point__renderer.html", null ],
     [ "cgv::render::clod_point_renderer::Point", "structcgv_1_1render_1_1clod__point__renderer_1_1Point.html", null ],
-    [ "cgv::render::color_map", "classcgv_1_1render_1_1color__map.html", [
-      [ "cgv::render::gl_color_map", "classcgv_1_1render_1_1gl__color__map.html", null ]
-    ] ],
+    [ "cgv::render::color_scale_adapter", "classcgv_1_1render_1_1color__scale__adapter.html", null ],
     [ "cgv::render::context::BlendState", "structcgv_1_1render_1_1context_1_1BlendState.html", null ],
     [ "cgv::render::context::BufferMask", "structcgv_1_1render_1_1context_1_1BufferMask.html", null ],
     [ "cgv::render::context::DepthTestState", "structcgv_1_1render_1_1context_1_1DepthTestState.html", null ],
@@ -725,6 +741,19 @@ var hierarchy =
     ] ],
     [ "cgv::render::context_factory_registration", "structcgv_1_1render_1_1context__factory__registration.html", null ],
     [ "cgv::render::device_capabilities", "structcgv_1_1render_1_1device__capabilities.html", null ],
+    [ "cgv::render::device_color_scale", "classcgv_1_1render_1_1device__color__scale.html", [
+      [ "cgv::render::device_color_scale_storage< cgv::media::continuous_color_scale >", "classcgv_1_1render_1_1device__color__scale__storage.html", [
+        [ "cgv::render::device_continuous_color_scale", "classcgv_1_1render_1_1device__continuous__color__scale.html", null ]
+      ] ],
+      [ "cgv::render::device_color_scale_storage< cgv::media::discrete_color_scale >", "classcgv_1_1render_1_1device__color__scale__storage.html", [
+        [ "cgv::render::device_discrete_color_scale", "classcgv_1_1render_1_1device__discrete__color__scale.html", null ]
+      ] ],
+      [ "cgv::render::device_color_scale_storage< cgv::media::transfer_function >", "classcgv_1_1render_1_1device__color__scale__storage.html", [
+        [ "cgv::render::device_transfer_function", "classcgv_1_1render_1_1device__transfer__function.html", null ]
+      ] ],
+      [ "cgv::render::device_color_scale_storage< T >", "classcgv_1_1render_1_1device__color__scale__storage.html", null ]
+    ] ],
+    [ "cgv::render::device_color_scale_arguments", "structcgv_1_1render_1_1device__color__scale__arguments.html", null ],
     [ "cgv::render::draw_call", "structcgv_1_1render_1_1draw__call.html", null ],
     [ "cgv::render::element_descriptor_traits< T >", "structcgv_1_1render_1_1element__descriptor__traits.html", null ],
     [ "cgv::render::element_descriptor_traits< cgv::math::fmat< T, N, M > >", "structcgv_1_1render_1_1element__descriptor__traits_3_01cgv_1_1math_1_1fmat_3_01T_00_01N_00_01M_01_4_01_4.html", null ],
@@ -777,19 +806,17 @@ var hierarchy =
         [ "cgv::render::texture", "classcgv_1_1render_1_1texture.html", null ]
       ] ],
       [ "cgv::render::vertex_buffer_base", "classcgv_1_1render_1_1vertex__buffer__base.html", [
-        [ "cgv::render::vertex_buffer", "classcgv_1_1render_1_1vertex__buffer.html", null ]
+        [ "cgv::render::vertex_buffer", "classcgv_1_1render_1_1vertex__buffer.html", [
+          [ "cgv::render::uniform_buffer< cgv::render::device_color_scale_arguments >", "classcgv_1_1render_1_1uniform__buffer.html", null ],
+          [ "cgv::render::uniform_buffer< T >", "classcgv_1_1render_1_1uniform__buffer.html", null ]
+        ] ]
       ] ]
     ] ],
     [ "cgv::render::render_data_base< RendererType, RenderStyleType, ColorType >", "classcgv_1_1render_1_1render__data__base.html", [
       [ "cgv::render::box_render_data_base< box_renderer, box_render_style, rgb >", "classcgv_1_1render_1_1box__render__data__base.html", null ],
       [ "cgv::render::box_render_data_base< box_wire_renderer, box_wire_render_style, rgb >", "classcgv_1_1render_1_1box__render__data__base.html", null ],
-      [ "cgv::render::box_render_data_base< box_renderer, box_render_style, color< float, cgv::media::RGB, cgv::media::OPACITY > >", "classcgv_1_1render_1_1box__render__data__base.html", null ],
-      [ "cgv::render::cone_render_data< color< float, cgv::media::RGB, cgv::media::OPACITY > >", "classcgv_1_1render_1_1cone__render__data.html", null ],
-      [ "cgv::render::rectangle_render_data< color< float, cgv::media::RGB, cgv::media::OPACITY > >", "classcgv_1_1render_1_1rectangle__render__data.html", null ],
-      [ "cgv::render::sphere_render_data< color< float, cgv::media::RGB, cgv::media::OPACITY > >", "classcgv_1_1render_1_1sphere__render__data.html", null ],
       [ "cgv::render::arrow_render_data< ColorType >", "classcgv_1_1render_1_1arrow__render__data.html", null ],
       [ "cgv::render::box_render_data_base< RendererType, RenderStyleType, ColorType >", "classcgv_1_1render_1_1box__render__data__base.html", [
-        [ "cgv::render::box_render_data< color< float, cgv::media::RGB, cgv::media::OPACITY > >", "classcgv_1_1render_1_1box__render__data.html", null ],
         [ "cgv::render::box_render_data< ColorType >", "classcgv_1_1render_1_1box__render__data.html", null ],
         [ "cgv::render::box_wire_render_data< ColorType >", "classcgv_1_1render_1_1box__wire__render__data.html", null ]
       ] ],
@@ -892,16 +919,17 @@ var hierarchy =
       [ "cgv::gui::base_provider_generator", "classcgv_1_1gui_1_1base__provider__generator.html", null ],
       [ "cgv::gui::key_control< T >", "classcgv_1_1gui_1_1key__control.html", null ],
       [ "cgv::gui::provider", "classcgv_1_1gui_1_1provider.html", [
-        [ "cgv::app::overlay", "classcgv_1_1app_1_1overlay.html", null ],
         [ "cgv::gui::base_provider", "classcgv_1_1gui_1_1base__provider.html", null ],
+        [ "cgv::overlay::overlay", "classcgv_1_1overlay_1_1overlay.html", null ],
         [ "vr_emulator", "classvr__emulator.html", null ],
         [ "vr_test", "classvr__test.html", null ]
       ] ],
       [ "cgv::gui::theme_observer", "classcgv_1_1gui_1_1theme__observer.html", [
-        [ "cgv::app::themed_canvas_overlay", "classcgv_1_1app_1_1themed__canvas__overlay.html", null ]
+        [ "cgv::overlay::themed_canvas_overlay", "classcgv_1_1overlay_1_1themed__canvas__overlay.html", null ]
       ] ],
       [ "cgv::plot::plot_base", "classcgv_1_1plot_1_1plot__base.html", null ]
     ] ],
+    [ "cgv::type::bool32_t", "classcgv_1_1type_1_1bool32__t.html", null ],
     [ "cgv::type::cond::has_virtual_destructor< T >", "structcgv_1_1type_1_1cond_1_1has__virtual__destructor.html", null ],
     [ "cgv::type::cond::is_abstract< T >", "structcgv_1_1type_1_1cond_1_1is__abstract.html", null ],
     [ "cgv::type::cond::is_base_of< base_type, derived_type >", "structcgv_1_1type_1_1cond_1_1is__base__of.html", null ],
@@ -1059,7 +1087,7 @@ var hierarchy =
       [ "cgv::utils::count_iterator< iterator_type >", "classcgv_1_1utils_1_1count__iterator.html", null ],
       [ "cgv::utils::enumerate_iterator< iterator_type >", "classcgv_1_1utils_1_1enumerate__iterator.html", null ]
     ] ],
-    [ "cgv::utils::pointer_test", "classcgv_1_1utils_1_1pointer__test.html", null ],
+    [ "cgv::utils::number_format", "classcgv_1_1utils_1_1number__format.html", null ],
     [ "cgv::utils::Profiler< T >", "classcgv_1_1utils_1_1Profiler.html", null ],
     [ "cgv::utils::progression", "structcgv_1_1utils_1_1progression.html", null ],
     [ "cgv::utils::statistics", "classcgv_1_1utils_1_1statistics.html", null ],
@@ -1094,8 +1122,6 @@ var hierarchy =
     ] ],
     [ "Condition", "structCondition.html", null ],
     [ "config_file_view", "structconfig__file__view.html", null ],
-    [ "cgv::math::control_point_container< cgv::media::color >", "classcgv_1_1math_1_1control__point__container.html", null ],
-    [ "cgv::math::control_point_container< float >", "classcgv_1_1math_1_1control__point__container.html", null ],
     [ "cgv::math::curve_arc_length< arc_length_bezier_approximation< T >, T >", "structcgv_1_1math_1_1curve__arc__length.html", [
       [ "cgv::math::arc_length_bezier_approximation< T >", "classcgv_1_1math_1_1arc__length__bezier__approximation.html", null ]
     ] ],
@@ -1188,6 +1214,8 @@ var hierarchy =
     [ "cgv::type::ctrl::if_< cond::is_const< T1 >::value, make_const< T2 >::type, drop_const< T2 >::type >", "structcgv_1_1type_1_1ctrl_1_1if__.html", [
       [ "cgv::type::func::promote_const< T1, T2 >", "structcgv_1_1type_1_1func_1_1promote__const.html", null ]
     ] ],
+    [ "cgv::math::interpolator< cgv::rgb, float >", "classcgv_1_1math_1_1interpolator.html", null ],
+    [ "cgv::math::interpolator< ValueT, float >", "classcgv_1_1math_1_1interpolator.html", null ],
     [ "cgv::math::interval< X >", "classcgv_1_1math_1_1interval.html", null ],
     [ "cgv::type::func::MakeConst::make_const_impl< drop_const< T >::type >", "structcgv_1_1type_1_1func_1_1MakeConst_1_1make__const__impl.html", [
       [ "cgv::type::func::make_const< T >", "structcgv_1_1type_1_1func_1_1make__const.html", null ]
@@ -1199,7 +1227,6 @@ var hierarchy =
     ] ],
     [ "cgv::data::optional< cgv::math::fvec >", "classcgv_1_1data_1_1optional.html", null ],
     [ "cgv::data::optional< cgv::math::quaternion >", "classcgv_1_1data_1_1optional.html", null ],
-    [ "cgv::data::optional< color< float, cgv::media::RGB, cgv::media::OPACITY > >", "classcgv_1_1data_1_1optional.html", null ],
     [ "cgv::data::optional< rgb >", "classcgv_1_1data_1_1optional.html", null ],
     [ "cgv::math::parametric_curve< bezier_curve< PointT > >", "classcgv_1_1math_1_1parametric__curve.html", [
       [ "cgv::math::bezier_curve< PointT >", "classcgv_1_1math_1_1bezier__curve.html", null ]
@@ -1230,18 +1257,14 @@ var hierarchy =
     [ "register_driver_and_object", "structregister__driver__and__object.html", null ],
     [ "render_config_registration", "structrender__config__registration.html", null ],
     [ "cgv::render::render_data_base< arrow_renderer, arrow_render_style, rgb >", "classcgv_1_1render_1_1render__data__base.html", null ],
-    [ "cgv::render::render_data_base< box_renderer, box_render_style, color< float, cgv::media::RGB, cgv::media::OPACITY > >", "classcgv_1_1render_1_1render__data__base.html", null ],
     [ "cgv::render::render_data_base< box_renderer, box_render_style, rgb >", "classcgv_1_1render_1_1render__data__base.html", null ],
     [ "cgv::render::render_data_base< box_wire_renderer, box_wire_render_style, rgb >", "classcgv_1_1render_1_1render__data__base.html", null ],
-    [ "cgv::render::render_data_base< cone_renderer, cone_render_style, color< float, cgv::media::RGB, cgv::media::OPACITY > >", "classcgv_1_1render_1_1render__data__base.html", null ],
     [ "cgv::render::render_data_base< cone_renderer, cone_render_style, rgb >", "classcgv_1_1render_1_1render__data__base.html", null ],
     [ "cgv::render::render_data_base< ellipsoid_renderer, ellipsoid_render_style, rgb >", "classcgv_1_1render_1_1render__data__base.html", null ],
     [ "cgv::render::render_data_base< line_renderer, line_render_style, rgb >", "classcgv_1_1render_1_1render__data__base.html", null ],
     [ "cgv::render::render_data_base< point_renderer, point_render_style, rgb >", "classcgv_1_1render_1_1render__data__base.html", null ],
-    [ "cgv::render::render_data_base< rectangle_renderer, rectangle_render_style, color< float, cgv::media::RGB, cgv::media::OPACITY > >", "classcgv_1_1render_1_1render__data__base.html", null ],
     [ "cgv::render::render_data_base< rectangle_renderer, rectangle_render_style, rgb >", "classcgv_1_1render_1_1render__data__base.html", null ],
     [ "cgv::render::render_data_base< RendererType, RenderStyleType, rgb >", "classcgv_1_1render_1_1render__data__base.html", null ],
-    [ "cgv::render::render_data_base< sphere_renderer, sphere_render_style, color< float, cgv::media::RGB, cgv::media::OPACITY > >", "classcgv_1_1render_1_1render__data__base.html", null ],
     [ "cgv::render::render_data_base< sphere_renderer, sphere_render_style, rgb >", "classcgv_1_1render_1_1render__data__base.html", null ],
     [ "cgv::render::render_data_base< surfel_renderer, surfel_render_style, rgb >", "classcgv_1_1render_1_1render__data__base.html", null ],
     [ "cgv::media::rgb_color_interface< color< T, HLS, am > >", "structcgv_1_1media_1_1rgb__color__interface.html", [

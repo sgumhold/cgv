@@ -22,7 +22,7 @@ var searchData=
   ['defs_5fby_5fname_19',['defs_by_name',['../classcgv_1_1gui_1_1base__provider__generator.html#a41294a574a7487f210fe4a53d324888d',1,'cgv::gui::base_provider_generator']]],
   ['defs_5fby_5ftype_20',['defs_by_type',['../classcgv_1_1gui_1_1base__provider__generator.html#a19072a2adffe7f78a6c5ee4ea6a93c62',1,'cgv::gui::base_provider_generator']]],
   ['degree_21',['degree',['../structcgv_1_1media_1_1mesh_1_1face__info.html#abbd2eb94d142e67c98d60764f8ba8124',1,'cgv::media::mesh::face_info']]],
-  ['delta_5ftime_22',['delta_time',['../classcgv_1_1app_1_1performance__monitor.html#a46a2af804638cd9777c3c62979ee5130',1,'cgv::app::performance_monitor']]],
+  ['delta_5ftime_22',['delta_time',['../classcgv_1_1overlay_1_1performance__monitor.html#a3fe6c6b6c9c226c1751a2c16206b3ae1',1,'cgv::overlay::performance_monitor']]],
   ['depth_5fbits_23',['depth_bits',['../structcgv_1_1render_1_1context__config.html#a3f3095f1511792b9ee39f7f45d9d9775',1,'cgv::render::context_config']]],
   ['depth_5fbuffer_24',['depth_buffer',['../structcgv_1_1render_1_1context__config.html#afe52005a1741b6dc2f24359d4ae1429e',1,'cgv::render::context_config']]],
   ['depth_5fflag_25',['depth_flag',['../structcgv_1_1render_1_1context_1_1BufferMask.html#a88d516e428c3d0c4f2a8a6d700d73a95',1,'cgv::render::context::BufferMask']]],

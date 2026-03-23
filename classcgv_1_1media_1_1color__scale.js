@@ -1,0 +1,26 @@
+var classcgv_1_1media_1_1color__scale =
+[
+    [ "~color_scale", "classcgv_1_1media_1_1color__scale.html#a7bcfb065f9155bb2c7fe611ee8e21007", null ],
+    [ "get_domain", "classcgv_1_1media_1_1color__scale.html#a8fbe891b2c5e7adf006872f9f5d205bf", null ],
+    [ "get_indexed_color", "classcgv_1_1media_1_1color__scale.html#a43aadf83c53c708995defce818ccba5e", null ],
+    [ "get_indexed_color_count", "classcgv_1_1media_1_1color__scale.html#aa8edb0df319b5dbb9642df7ece393782", null ],
+    [ "get_mapped_color", "classcgv_1_1media_1_1color__scale.html#aa9dbe5b199a49fbfe99716306404ca50", null ],
+    [ "get_mapped_opacity", "classcgv_1_1media_1_1color__scale.html#a0c5cb86ab1b1d33f6e9e3868d0a0bcdd", null ],
+    [ "get_modified_time", "classcgv_1_1media_1_1color__scale.html#ad5377c8bf9ad0c9615ee431692b1914b", null ],
+    [ "get_ticks", "classcgv_1_1media_1_1color__scale.html#ae3d2028f6028d46e9774904977ca1966", null ],
+    [ "get_unknown_color", "classcgv_1_1media_1_1color__scale.html#a8bfffc28f3e21f705b684bd28e8e8229", null ],
+    [ "is_clamped", "classcgv_1_1media_1_1color__scale.html#ad0000f59bd7a08d736b865339e08e24f", null ],
+    [ "is_discrete", "classcgv_1_1media_1_1color__scale.html#a44664f893c9955d4538821f6dc409045", null ],
+    [ "is_opaque", "classcgv_1_1media_1_1color__scale.html#a13ee0f8130a17e357edcf38e75aaa662", null ],
+    [ "is_reversed", "classcgv_1_1media_1_1color__scale.html#a57ca673fb325b2b5b30972272c5b142b", null ],
+    [ "is_unknown", "classcgv_1_1media_1_1color__scale.html#a3cbd7c200aea22766dfbb79ecbfcf2b8", null ],
+    [ "map_range_safe", "classcgv_1_1media_1_1color__scale.html#a40a8fd40b9297829e58c45c46c88c6ff", null ],
+    [ "map_value", "classcgv_1_1media_1_1color__scale.html#ade607b8231ef7d438c09e79189c422e4", null ],
+    [ "modified", "classcgv_1_1media_1_1color__scale.html#ab2115a89a63941bf667f41d90fca4ee4", null ],
+    [ "normalize_value", "classcgv_1_1media_1_1color__scale.html#ab8a87b61f400a5258dd5248a8958123a", null ],
+    [ "quantize", "classcgv_1_1media_1_1color__scale.html#a9d5d47eb2999229f799793d660e81a6b", null ],
+    [ "set_clamped", "classcgv_1_1media_1_1color__scale.html#afb670f6b92af863fef78e4b8bd007037", null ],
+    [ "set_domain", "classcgv_1_1media_1_1color__scale.html#afa20918c2e338674d281e6f55cceeb82", null ],
+    [ "set_reversed", "classcgv_1_1media_1_1color__scale.html#a81d6285fff8e21faff20013ef69c3a7e", null ],
+    [ "set_unknown_color", "classcgv_1_1media_1_1color__scale.html#abf81aaba90cdd9adf78f8c1f6de48e60", null ]
+];

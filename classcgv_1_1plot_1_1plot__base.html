@@ -238,12 +238,6 @@ Public Member Functions</h2></td></tr>
 <tr class="memitem:ae874fc29ed8668f8adceca49cba96430" id="r_ae874fc29ed8668f8adceca49cba96430"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcgv_1_1plot_1_1plot__base.html#ae874fc29ed8668f8adceca49cba96430">set_sub_plot_attribute</a> (unsigned i, unsigned ai, const <a class="el" href="classcgv_1_1render_1_1vertex__buffer.html">cgv::render::vertex_buffer</a> *_vbo_ptr, size_t _offset, size_t _count, size_t _stride)</td></tr>
 <tr class="memdesc:ae874fc29ed8668f8adceca49cba96430"><td class="mdescLeft">&#160;</td><td class="mdescRight">define a sub plot attribute from a vbo (attribute must be stored in float type in vbo)  <br /></td></tr>
 <tr class="separator:ae874fc29ed8668f8adceca49cba96430"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:af24a07ff01b07bc866213533b1bf68d8" id="r_af24a07ff01b07bc866213533b1bf68d8"><td class="memItemLeft" align="right" valign="top">bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcgv_1_1plot_1_1plot__base.html#af24a07ff01b07bc866213533b1bf68d8">init</a> (<a class="el" href="classcgv_1_1render_1_1context.html">cgv::render::context</a> &amp;ctx)</td></tr>
-<tr class="memdesc:af24a07ff01b07bc866213533b1bf68d8"><td class="mdescLeft">&#160;</td><td class="mdescRight">build legend prog and create aab  <br /></td></tr>
-<tr class="separator:af24a07ff01b07bc866213533b1bf68d8"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a34242776450fd92ff62cb2bd200968e0" id="r_a34242776450fd92ff62cb2bd200968e0"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcgv_1_1plot_1_1plot__base.html#a34242776450fd92ff62cb2bd200968e0">clear</a> (<a class="el" href="classcgv_1_1render_1_1context.html">cgv::render::context</a> &amp;ctx)</td></tr>
-<tr class="memdesc:a34242776450fd92ff62cb2bd200968e0"><td class="mdescLeft">&#160;</td><td class="mdescRight">destruct shader programs  <br /></td></tr>
-<tr class="separator:a34242776450fd92ff62cb2bd200968e0"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="inherit_header pub_methods_classcgv_1_1render_1_1drawable"><td colspan="2" onclick="javascript:toggleInherit('pub_methods_classcgv_1_1render_1_1drawable')"><img src="closed.png" alt="-"/>&#160;Public Member Functions inherited from <a class="el" href="classcgv_1_1render_1_1drawable.html">cgv::render::drawable</a></td></tr>
 <tr class="memitem:abb11b4156b879aa8e5f3596a61126005 inherit pub_methods_classcgv_1_1render_1_1drawable" id="r_abb11b4156b879aa8e5f3596a61126005"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcgv_1_1render_1_1drawable.html#abb11b4156b879aa8e5f3596a61126005">drawable</a> ()</td></tr>
 <tr class="memdesc:abb11b4156b879aa8e5f3596a61126005 inherit pub_methods_classcgv_1_1render_1_1drawable"><td class="mdescLeft">&#160;</td><td class="mdescRight">default construction  <br /></td></tr>
@@ -401,6 +395,18 @@ Protected Attributes</h2></td></tr>
 <tr class="separator:a74c73e9c905e045ae923ce0d858d67ad"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader">visual attribute mapping</h2></td></tr>
+<tr class="memitem:ac7db4aa1985b19ab3e1d24171e1ac37a" id="r_ac7db4aa1985b19ab3e1d24171e1ac37a"><td class="memItemLeft" align="right" valign="top">std::array&lt; std::shared_ptr&lt; <a class="el" href="classcgv_1_1render_1_1device__continuous__color__scale.html">cgv::render::device_continuous_color_scale</a> &gt;, <a class="el" href="classcgv_1_1plot_1_1plot__base.html#a83414ab13137a719465795aee6b97da1">MAX_NR_COLOR_MAPPINGS</a> &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcgv_1_1plot_1_1plot__base.html#ac7db4aa1985b19ab3e1d24171e1ac37a">color_scales</a></td></tr>
+<tr class="memdesc:ac7db4aa1985b19ab3e1d24171e1ac37a"><td class="mdescLeft">&#160;</td><td class="mdescRight">color scales used for primary and secondary color mapping  <br /></td></tr>
+<tr class="separator:ac7db4aa1985b19ab3e1d24171e1ac37a"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ad320d102157cb8ead9643f89b3fc62dc" id="r_ad320d102157cb8ead9643f89b3fc62dc"><td class="memItemLeft" align="right" valign="top"><a class="el" href="classcgv_1_1render_1_1color__scale__adapter.html">cgv::render::color_scale_adapter</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcgv_1_1plot_1_1plot__base.html#ad320d102157cb8ead9643f89b3fc62dc">color_scale_adapter</a></td></tr>
+<tr class="memdesc:ad320d102157cb8ead9643f89b3fc62dc"><td class="mdescLeft">&#160;</td><td class="mdescRight">adapter to enable using color scales in shader programs  <br /></td></tr>
+<tr class="separator:ad320d102157cb8ead9643f89b3fc62dc"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ab2d61714e94c6274c957b3d80652f9d9" id="r_ab2d61714e94c6274c957b3d80652f9d9"><td class="memItemLeft" align="right" valign="top">int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcgv_1_1plot_1_1plot__base.html#ab2d61714e94c6274c957b3d80652f9d9">color_scheme_index</a> [<a class="el" href="classcgv_1_1plot_1_1plot__base.html#a83414ab13137a719465795aee6b97da1">MAX_NR_COLOR_MAPPINGS</a>]</td></tr>
+<tr class="memdesc:ab2d61714e94c6274c957b3d80652f9d9"><td class="mdescLeft">&#160;</td><td class="mdescRight">color scheme indices of primary and secondary color scales  <br /></td></tr>
+<tr class="separator:ab2d61714e94c6274c957b3d80652f9d9"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a47d99b344a68ce4fb67a130b097acfe3" id="r_a47d99b344a68ce4fb67a130b097acfe3"><td class="memItemLeft" align="right" valign="top">bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcgv_1_1plot_1_1plot__base.html#a47d99b344a68ce4fb67a130b097acfe3">reversed</a> [2] = { false, false }</td></tr>
+<tr class="memdesc:a47d99b344a68ce4fb67a130b097acfe3"><td class="mdescLeft">&#160;</td><td class="mdescRight">whether to reverse the primary or secondary color scales  <br /></td></tr>
+<tr class="separator:a47d99b344a68ce4fb67a130b097acfe3"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:adb735205ef82cb57ebe8f1bfd1118808" id="r_adb735205ef82cb57ebe8f1bfd1118808"><td class="memItemLeft" align="right" valign="top"><a class="el" href="namespacecgv_1_1media_1_1font.html#ac5151bb36a5366f021affc1726149e28">cgv::media::font::font_ptr</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcgv_1_1plot_1_1plot__base.html#adb735205ef82cb57ebe8f1bfd1118808">label_font</a></td></tr>
 <tr class="memdesc:adb735205ef82cb57ebe8f1bfd1118808"><td class="mdescLeft">&#160;</td><td class="mdescRight">store pointer to label font  <br /></td></tr>
 <tr class="separator:adb735205ef82cb57ebe8f1bfd1118808"><td class="memSeparator" colspan="2">&#160;</td></tr>
@@ -442,9 +448,9 @@ Protected Attributes</h2></td></tr>
 <tr class="memitem:a06baf8eec1ca25651da5d13f4d9c46ef" id="r_a06baf8eec1ca25651da5d13f4d9c46ef"><td class="memItemLeft" align="right" valign="top">int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcgv_1_1plot_1_1plot__base.html#a06baf8eec1ca25651da5d13f4d9c46ef">color_mapping</a> [<a class="el" href="classcgv_1_1plot_1_1plot__base.html#a83414ab13137a719465795aee6b97da1">MAX_NR_COLOR_MAPPINGS</a>]</td></tr>
 <tr class="memdesc:a06baf8eec1ca25651da5d13f4d9c46ef"><td class="mdescLeft">&#160;</td><td class="mdescRight">index of attribute mapped to primary and secondary color  <br /></td></tr>
 <tr class="separator:a06baf8eec1ca25651da5d13f4d9c46ef"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a7821f8369bf09ed87915b2185b79c66d" id="r_a7821f8369bf09ed87915b2185b79c66d"><td class="memItemLeft" align="right" valign="top">cgv::media::ColorScale&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcgv_1_1plot_1_1plot__base.html#a7821f8369bf09ed87915b2185b79c66d">color_scale_index</a> [<a class="el" href="classcgv_1_1plot_1_1plot__base.html#a83414ab13137a719465795aee6b97da1">MAX_NR_COLOR_MAPPINGS</a>]</td></tr>
-<tr class="memdesc:a7821f8369bf09ed87915b2185b79c66d"><td class="mdescLeft">&#160;</td><td class="mdescRight">color scale indices of primary and secondary color mapping  <br /></td></tr>
-<tr class="separator:a7821f8369bf09ed87915b2185b79c66d"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a1c002aab66e3ce4c93ffae0510bc1b94" id="r_a1c002aab66e3ce4c93ffae0510bc1b94"><td class="memItemLeft" align="right" valign="top">bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcgv_1_1plot_1_1plot__base.html#a1c002aab66e3ce4c93ffae0510bc1b94">color_scale_is_bipolar</a> [<a class="el" href="classcgv_1_1plot_1_1plot__base.html#a83414ab13137a719465795aee6b97da1">MAX_NR_COLOR_MAPPINGS</a>]</td></tr>
+<tr class="memdesc:a1c002aab66e3ce4c93ffae0510bc1b94"><td class="mdescLeft">&#160;</td><td class="mdescRight">flag whether color mapping is bipolar for primary and secondary color scale  <br /></td></tr>
+<tr class="separator:a1c002aab66e3ce4c93ffae0510bc1b94"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a81c2c71140caf60d5b09bdb9c6b96b72" id="r_a81c2c71140caf60d5b09bdb9c6b96b72"><td class="memItemLeft" align="right" valign="top">float&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcgv_1_1plot_1_1plot__base.html#a81c2c71140caf60d5b09bdb9c6b96b72">color_scale_gamma</a> [<a class="el" href="classcgv_1_1plot_1_1plot__base.html#a83414ab13137a719465795aee6b97da1">MAX_NR_COLOR_MAPPINGS</a>]</td></tr>
 <tr class="memdesc:a81c2c71140caf60d5b09bdb9c6b96b72"><td class="mdescLeft">&#160;</td><td class="mdescRight">gamma adjustments for primary and secondary color mapping  <br /></td></tr>
 <tr class="separator:a81c2c71140caf60d5b09bdb9c6b96b72"><td class="memSeparator" colspan="2">&#160;</td></tr>
@@ -489,6 +495,8 @@ Protected Attributes</h2></td></tr>
 <tr class="memitem:a05c40ba743aabd18f6832721eec57b43" id="r_a05c40ba743aabd18f6832721eec57b43"><td class="memItemLeft" align="right" valign="top">static const unsigned&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcgv_1_1plot_1_1plot__base.html#a05c40ba743aabd18f6832721eec57b43">MAX_NR_SIZE_MAPPINGS</a> = 2</td></tr>
 <tr class="memdesc:a05c40ba743aabd18f6832721eec57b43"><td class="mdescLeft">&#160;</td><td class="mdescRight">define maximum number of size mappings  <br /></td></tr>
 <tr class="separator:a05c40ba743aabd18f6832721eec57b43"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a9974f69c447c1cbab62ceb6746005d21" id="r_a9974f69c447c1cbab62ceb6746005d21"><td class="memItemLeft" align="right" valign="top">static const unsigned&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcgv_1_1plot_1_1plot__base.html#a9974f69c447c1cbab62ceb6746005d21">color_scale_texture_unit</a> = 0</td></tr>
+<tr class="separator:a9974f69c447c1cbab62ceb6746005d21"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a91bc11bba10ea335bb3d40c136a538a2" id="r_a91bc11bba10ea335bb3d40c136a538a2"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcgv_1_1plot_1_1plot__base.html#a91bc11bba10ea335bb3d40c136a538a2">plot_base</a> (unsigned <a class="el" href="classcgv_1_1plot_1_1plot__base.html#a5badba2f425ccf7f08be9f25b74f0769">dim</a>, unsigned <a class="el" href="classcgv_1_1plot_1_1plot__base.html#aa1eedd26d1b14ebb96f8181877f83e7e">nr_attributes</a>=0)</td></tr>
 <tr class="memdesc:a91bc11bba10ea335bb3d40c136a538a2"><td class="mdescLeft">&#160;</td><td class="mdescRight">construct from plot dimension and number of additional attributes with default parameters  <br /></td></tr>
 <tr class="separator:a91bc11bba10ea335bb3d40c136a538a2"><td class="memSeparator" colspan="2">&#160;</td></tr>
@@ -498,6 +506,18 @@ Protected Attributes</h2></td></tr>
 <tr class="memitem:a54a3c64c99a6f25aa44683cb3178bdb7" id="r_a54a3c64c99a6f25aa44683cb3178bdb7"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcgv_1_1plot_1_1plot__base.html#a54a3c64c99a6f25aa44683cb3178bdb7">set_view_ptr</a> (<a class="el" href="classcgv_1_1render_1_1view.html">cgv::render::view</a> *_view_ptr)</td></tr>
 <tr class="memdesc:a54a3c64c99a6f25aa44683cb3178bdb7"><td class="mdescLeft">&#160;</td><td class="mdescRight">set the view ptr  <br /></td></tr>
 <tr class="separator:a54a3c64c99a6f25aa44683cb3178bdb7"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ac8ce3068e672aa623105a207c5dd5926" id="r_ac8ce3068e672aa623105a207c5dd5926"><td class="memItemLeft" align="right" valign="top">bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcgv_1_1plot_1_1plot__base.html#ac8ce3068e672aa623105a207c5dd5926">set_color_scale</a> (int mapping_index, int <a class="el" href="classcgv_1_1plot_1_1plot__base.html#ab2d61714e94c6274c957b3d80652f9d9">color_scheme_index</a>)</td></tr>
+<tr class="memdesc:ac8ce3068e672aa623105a207c5dd5926"><td class="mdescLeft">&#160;</td><td class="mdescRight">set color scale of primary or secondary color mapping via an index into the global color scheme registry; see cgv::media::get_global_continuous_color_scheme_registry  <br /></td></tr>
+<tr class="separator:ac8ce3068e672aa623105a207c5dd5926"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a50e36b470c2e2968520f482c137f1471" id="r_a50e36b470c2e2968520f482c137f1471"><td class="memItemLeft" align="right" valign="top">bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcgv_1_1plot_1_1plot__base.html#a50e36b470c2e2968520f482c137f1471">set_color_scale</a> (int mapping_index, const std::string &amp;color_scheme_name)</td></tr>
+<tr class="memdesc:a50e36b470c2e2968520f482c137f1471"><td class="mdescLeft">&#160;</td><td class="mdescRight">set color scale of primary or secondary color mapping by name; the name must be registered in the global color scheme registry; see cgv::media::get_global_continuous_color_scheme_registry  <br /></td></tr>
+<tr class="separator:a50e36b470c2e2968520f482c137f1471"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:af24a07ff01b07bc866213533b1bf68d8" id="r_af24a07ff01b07bc866213533b1bf68d8"><td class="memItemLeft" align="right" valign="top">bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcgv_1_1plot_1_1plot__base.html#af24a07ff01b07bc866213533b1bf68d8">init</a> (<a class="el" href="classcgv_1_1render_1_1context.html">cgv::render::context</a> &amp;ctx)</td></tr>
+<tr class="memdesc:af24a07ff01b07bc866213533b1bf68d8"><td class="mdescLeft">&#160;</td><td class="mdescRight">build legend prog and create aab  <br /></td></tr>
+<tr class="separator:af24a07ff01b07bc866213533b1bf68d8"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a34242776450fd92ff62cb2bd200968e0" id="r_a34242776450fd92ff62cb2bd200968e0"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcgv_1_1plot_1_1plot__base.html#a34242776450fd92ff62cb2bd200968e0">clear</a> (<a class="el" href="classcgv_1_1render_1_1context.html">cgv::render::context</a> &amp;ctx)</td></tr>
+<tr class="memdesc:a34242776450fd92ff62cb2bd200968e0"><td class="mdescLeft">&#160;</td><td class="mdescRight">destruct shader programs  <br /></td></tr>
+<tr class="separator:a34242776450fd92ff62cb2bd200968e0"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a45b5399deb013e4a81dc33533111aa5b" id="r_a45b5399deb013e4a81dc33533111aa5b"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcgv_1_1plot_1_1plot__base.html#a45b5399deb013e4a81dc33533111aa5b">on_legend_axis_change</a> (<a class="el" href="classcgv_1_1gui_1_1provider.html">cgv::gui::provider</a> &amp;p, <a class="el" href="classcgv_1_1gui_1_1control.html">cgv::gui::control</a>&lt; int &gt; &amp;ctrl)</td></tr>
 <tr class="separator:a45b5399deb013e4a81dc33533111aa5b"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a1f4a71bca1bf1644f471d370b20c2ab2" id="r_a1f4a71bca1bf1644f471d370b20c2ab2"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcgv_1_1plot_1_1plot__base.html#a1f4a71bca1bf1644f471d370b20c2ab2">on_font_selection</a> ()</td></tr>
@@ -515,6 +535,9 @@ Protected Attributes</h2></td></tr>
 <tr class="memitem:a68bde3207c89595a5c9123d689666e61" id="r_a68bde3207c89595a5c9123d689666e61"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcgv_1_1plot_1_1plot__base.html#a68bde3207c89595a5c9123d689666e61">set_mapping_uniforms</a> (<a class="el" href="classcgv_1_1render_1_1context.html">cgv::render::context</a> &amp;ctx, <a class="el" href="classcgv_1_1render_1_1shader__program.html">cgv::render::shader_program</a> &amp;prog)</td></tr>
 <tr class="memdesc:a68bde3207c89595a5c9123d689666e61"><td class="mdescLeft">&#160;</td><td class="mdescRight">set the uniforms for defining the mappings to visual variables  <br /></td></tr>
 <tr class="separator:a68bde3207c89595a5c9123d689666e61"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:abfa61a9c5fb2875e7b6ccc9c47b75829" id="r_abfa61a9c5fb2875e7b6ccc9c47b75829"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcgv_1_1plot_1_1plot__base.html#abfa61a9c5fb2875e7b6ccc9c47b75829">update_color_scales</a> ()</td></tr>
+<tr class="memdesc:abfa61a9c5fb2875e7b6ccc9c47b75829"><td class="mdescLeft">&#160;</td><td class="mdescRight">the color scales to match the properties set through the config and gui  <br /></td></tr>
+<tr class="separator:abfa61a9c5fb2875e7b6ccc9c47b75829"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a71a99d5317c3d09bc34edb2ae67bd76b" id="r_a71a99d5317c3d09bc34edb2ae67bd76b"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcgv_1_1plot_1_1plot__base.html#a71a99d5317c3d09bc34edb2ae67bd76b">draw_rectangles</a> (<a class="el" href="classcgv_1_1render_1_1context.html">cgv::render::context</a> &amp;ctx, <a class="el" href="classcgv_1_1render_1_1attribute__array__manager.html">cgv::render::attribute_array_manager</a> &amp;aam, std::vector&lt; <a class="el" href="namespacecgv.html#a8d19e8e90d519a1eda5aeab08ef9aa94">box2</a> &gt; &amp;R, std::vector&lt; <a class="el" href="namespacecgv.html#a465f589beeb5e4e76eb2db8d1f6057c1">rgb</a> &gt; &amp;C, std::vector&lt; float &gt; &amp;D, size_t offset=0)</td></tr>
 <tr class="separator:a71a99d5317c3d09bc34edb2ae67bd76b"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a1f04e7519cf7065acad9db8b7b122fd6" id="r_a1f04e7519cf7065acad9db8b7b122fd6"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcgv_1_1plot_1_1plot__base.html#a1f04e7519cf7065acad9db8b7b122fd6">draw_tick_labels</a> (<a class="el" href="classcgv_1_1render_1_1context.html">cgv::render::context</a> &amp;ctx, <a class="el" href="classcgv_1_1render_1_1attribute__array__manager.html">cgv::render::attribute_array_manager</a> &amp;aam_ticks, std::vector&lt; <a class="el" href="structcgv_1_1plot_1_1plot__base_1_1label__info.html">label_info</a> &gt; &amp;<a class="el" href="classcgv_1_1plot_1_1plot__base.html#a826fb503f855f485b08078525ebe222e">tick_labels</a>, std::vector&lt; <a class="el" href="structcgv_1_1plot_1_1plot__base_1_1tick__batch__info.html">tick_batch_info</a> &gt; &amp;<a class="el" href="classcgv_1_1plot_1_1plot__base.html#ad1b2d99a6c05690701e5511704318610">tick_batches</a>, float depth)</td></tr>
@@ -595,7 +618,7 @@ virtual bool&#160;</td><td class="memItemRight" valign="bottom"><b>compute_sampl
 <a name="details" id="details"></a><h2 class="groupheader">Detailed Description</h2>
 <div class="textblock"><p>base class for <a class="el" href="classcgv_1_1plot_1_1plot2d.html" title="The plot2d class draws 2d plots with potentially several sub plots of different chart types.">plot2d</a> and <a class="el" href="classcgv_1_1plot_1_1plot3d.html" title="The plot3d class draws 2d plots with potentially several sub plots of different plot configuration.">plot3d</a>, which can have several sub plots each </p>
 
-<p class="definition">Definition at line <a class="el" href="plot__base_8h_source.html#l00281">281</a> of file <a class="el" href="plot__base_8h_source.html">plot_base.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="plot__base_8h_source.html#l00285">285</a> of file <a class="el" href="plot__base_8h_source.html">plot_base.h</a>.</p>
 </div><h2 class="groupheader">Constructor &amp; Destructor Documentation</h2>
 <a id="a91bc11bba10ea335bb3d40c136a538a2" name="a91bc11bba10ea335bb3d40c136a538a2"></a>
 <h2 class="memtitle"><span class="permalink"><a href="#a91bc11bba10ea335bb3d40c136a538a2">&#9670;&#160;</a></span>plot_base()</h2>
@@ -625,9 +648,9 @@ virtual bool&#160;</td><td class="memItemRight" valign="bottom"><b>compute_sampl
 
 <p>construct from plot dimension and number of additional attributes with default parameters </p>
 
-<p class="definition">Definition at line <a class="el" href="plot__base_8cxx_source.html#l00576">576</a> of file <a class="el" href="plot__base_8cxx_source.html">plot_base.cxx</a>.</p>
+<p class="definition">Definition at line <a class="el" href="plot__base_8cxx_source.html#l00588">588</a> of file <a class="el" href="plot__base_8cxx_source.html">plot_base.cxx</a>.</p>
 
-<p class="reference">References <a class="el" href="plot__base_8h_source.html#l00356">center_location</a>, <a class="el" href="plot__base_8h_source.html#l00383">color_mapping</a>, <a class="el" href="plot__base_8h_source.html#l00387">color_scale_gamma</a>, <a class="el" href="plot__base_8h_source.html#l00385">color_scale_index</a>, <a class="el" href="plot__base_8h_source.html#l00340">dim</a>, <a class="el" href="plot__base_8h_source.html#l00344">dom_cfg</a>, <a class="el" href="plot__base_8h_source.html#l00346">dom_cfg_ptr</a>, <a class="el" href="surface__renderer_8h_source.html#l00034">cgv::render::surface_render_style::illumination_mode</a>, <a class="el" href="plot__base_8h_source.html#l00323">layer_depth</a>, <a class="el" href="plot__base_8h_source.html#l00372">legend_axis</a>, <a class="el" href="plot__base_8h_source.html#l00374">legend_color</a>, <a class="el" href="plot__base_8h_source.html#l00366">legend_components</a>, <a class="el" href="plot__base_8h_source.html#l00370">legend_extent</a>, <a class="el" href="plot__base_8h_source.html#l00368">legend_location</a>, <a class="el" href="surface__renderer_8h_source.html#l00036">cgv::render::surface_render_style::map_color_to_material</a>, <a class="el" href="plot__base_8h_source.html#l00381">MAX_NR_COLOR_MAPPINGS</a>, <a class="el" href="plot__base_8h_source.html#l00392">MAX_NR_OPACITY_MAPPINGS</a>, <a class="el" href="plot__base_8h_source.html#l00407">MAX_NR_SIZE_MAPPINGS</a>, <a class="el" href="plot__base_8h_source.html#l00342">nr_attributes</a>, <a class="el" href="plot__base_8h_source.html#l00396">opacity_gamma</a>, <a class="el" href="plot__base_8h_source.html#l00398">opacity_is_bipolar</a>, <a class="el" href="plot__base_8h_source.html#l00394">opacity_mapping</a>, <a class="el" href="plot__base_8h_source.html#l00404">opacity_max</a>, <a class="el" href="plot__base_8h_source.html#l00402">opacity_min</a>, <a class="el" href="plot__base_8h_source.html#l00400">opacity_window_zero_position</a>, <a class="el" href="plot__base_8h_source.html#l00354">orientation</a>, <a class="el" href="plot__base_8h_source.html#l00379">out_of_range_mode</a>, <a class="el" href="plot__base_8h_source.html#l00449">rrs</a>, <a class="el" href="plot__base_8h_source.html#l00411">size_gamma</a>, <a class="el" href="plot__base_8h_source.html#l00409">size_mapping</a>, <a class="el" href="plot__base_8h_source.html#l00413">size_min</a>, and <a class="el" href="plot__base_8h_source.html#l00389">window_zero_position</a>.</p>
+<p class="reference">References <a class="el" href="plot__base_8h_source.html#l00360">center_location</a>, <a class="el" href="plot__base_8h_source.html#l00387">color_mapping</a>, <a class="el" href="plot__base_8h_source.html#l00391">color_scale_gamma</a>, <a class="el" href="plot__base_8h_source.html#l00389">color_scale_is_bipolar</a>, <a class="el" href="plot__base_8h_source.html#l00423">color_scales</a>, <a class="el" href="plot__base_8h_source.html#l00427">color_scheme_index</a>, <a class="el" href="plot__base_8h_source.html#l00344">dim</a>, <a class="el" href="plot__base_8h_source.html#l00348">dom_cfg</a>, <a class="el" href="plot__base_8h_source.html#l00350">dom_cfg_ptr</a>, <a class="el" href="surface__renderer_8h_source.html#l00034">cgv::render::surface_render_style::illumination_mode</a>, <a class="el" href="plot__base_8h_source.html#l00327">layer_depth</a>, <a class="el" href="plot__base_8h_source.html#l00376">legend_axis</a>, <a class="el" href="plot__base_8h_source.html#l00378">legend_color</a>, <a class="el" href="plot__base_8h_source.html#l00370">legend_components</a>, <a class="el" href="plot__base_8h_source.html#l00374">legend_extent</a>, <a class="el" href="plot__base_8h_source.html#l00372">legend_location</a>, <a class="el" href="surface__renderer_8h_source.html#l00036">cgv::render::surface_render_style::map_color_to_material</a>, <a class="el" href="plot__base_8h_source.html#l00385">MAX_NR_COLOR_MAPPINGS</a>, <a class="el" href="plot__base_8h_source.html#l00395">MAX_NR_OPACITY_MAPPINGS</a>, <a class="el" href="plot__base_8h_source.html#l00410">MAX_NR_SIZE_MAPPINGS</a>, <a class="el" href="plot__base_8h_source.html#l00346">nr_attributes</a>, <a class="el" href="plot__base_8h_source.html#l00399">opacity_gamma</a>, <a class="el" href="plot__base_8h_source.html#l00401">opacity_is_bipolar</a>, <a class="el" href="plot__base_8h_source.html#l00397">opacity_mapping</a>, <a class="el" href="plot__base_8h_source.html#l00407">opacity_max</a>, <a class="el" href="plot__base_8h_source.html#l00405">opacity_min</a>, <a class="el" href="plot__base_8h_source.html#l00403">opacity_window_zero_position</a>, <a class="el" href="plot__base_8h_source.html#l00358">orientation</a>, <a class="el" href="plot__base_8h_source.html#l00383">out_of_range_mode</a>, <a class="el" href="plot__base_8h_source.html#l00466">rrs</a>, <a class="el" href="plot__base_8h_source.html#l00415">size_gamma</a>, <a class="el" href="plot__base_8h_source.html#l00413">size_mapping</a>, <a class="el" href="plot__base_8h_source.html#l00417">size_min</a>, and <a class="el" href="plot__base_8h_source.html#l00393">window_zero_position</a>.</p>
 
 </div>
 </div>
@@ -702,11 +725,11 @@ virtual bool&#160;</td><td class="memItemRight" valign="bottom"><b>compute_sampl
 
 <p>adjust the domain with respect to <code>ai</code> th axis to the visible or all data depending on last parameter </p>
 
-<p class="definition">Definition at line <a class="el" href="plot__base_8cxx_source.html#l01092">1092</a> of file <a class="el" href="plot__base_8cxx_source.html">plot_base.cxx</a>.</p>
+<p class="definition">Definition at line <a class="el" href="plot__base_8cxx_source.html#l01108">1108</a> of file <a class="el" href="plot__base_8cxx_source.html">plot_base.cxx</a>.</p>
 
-<p class="reference">References <a class="el" href="plot__base_8h_source.html#l00056">cgv::plot::domain_config::axis_configs</a>, <a class="el" href="plot__base_8h_source.html#l00348">configs</a>, <a class="el" href="plot__base_8cxx_source.html#l01047">determine_axis_extent_from_subplot()</a>, <a class="el" href="plot__base_8cxx_source.html#l01180">get_domain_config_ptr()</a>, and <a class="el" href="plot__base_8cxx_source.html#l01199">ref_sub_plot_config()</a>.</p>
+<p class="reference">References <a class="el" href="plot__base_8h_source.html#l00060">cgv::plot::domain_config::axis_configs</a>, <a class="el" href="plot__base_8h_source.html#l00352">configs</a>, <a class="el" href="plot__base_8cxx_source.html#l01063">determine_axis_extent_from_subplot()</a>, <a class="el" href="plot__base_8cxx_source.html#l01196">get_domain_config_ptr()</a>, and <a class="el" href="plot__base_8cxx_source.html#l01215">ref_sub_plot_config()</a>.</p>
 
-<p class="reference">Referenced by <a class="el" href="plot__base_8cxx_source.html#l01158">adjust_domain_to_data()</a>.</p>
+<p class="reference">Referenced by <a class="el" href="plot__base_8cxx_source.html#l01174">adjust_domain_to_data()</a>.</p>
 
 </div>
 </div>
@@ -728,9 +751,9 @@ virtual bool&#160;</td><td class="memItemRight" valign="bottom"><b>compute_sampl
 
 <p>adjust selected axes of domain to the visible or all data depending on last parameter </p>
 
-<p class="definition">Definition at line <a class="el" href="plot__base_8cxx_source.html#l01158">1158</a> of file <a class="el" href="plot__base_8cxx_source.html">plot_base.cxx</a>.</p>
+<p class="definition">Definition at line <a class="el" href="plot__base_8cxx_source.html#l01174">1174</a> of file <a class="el" href="plot__base_8cxx_source.html">plot_base.cxx</a>.</p>
 
-<p class="reference">References <a class="el" href="plot__base_8cxx_source.html#l01092">adjust_domain_axis_to_data()</a>, and <a class="el" href="plot__base_8cxx_source.html#l01180">get_domain_config_ptr()</a>.</p>
+<p class="reference">References <a class="el" href="plot__base_8cxx_source.html#l01108">adjust_domain_axis_to_data()</a>, and <a class="el" href="plot__base_8cxx_source.html#l01196">get_domain_config_ptr()</a>.</p>
 
 </div>
 </div>
@@ -752,9 +775,9 @@ virtual bool&#160;</td><td class="memItemRight" valign="bottom"><b>compute_sampl
 
 <p>adjust the extent such that it has same aspect ration as domain </p>
 
-<p class="definition">Definition at line <a class="el" href="plot__base_8cxx_source.html#l01137">1137</a> of file <a class="el" href="plot__base_8cxx_source.html">plot_base.cxx</a>.</p>
+<p class="definition">Definition at line <a class="el" href="plot__base_8cxx_source.html#l01153">1153</a> of file <a class="el" href="plot__base_8cxx_source.html">plot_base.cxx</a>.</p>
 
-<p class="reference">References <a class="el" href="plot__base_8h_source.html#l00056">cgv::plot::domain_config::axis_configs</a>, <a class="el" href="plot__base_8h_source.html#l00488">get_dim()</a>, and <a class="el" href="plot__base_8cxx_source.html#l01180">get_domain_config_ptr()</a>.</p>
+<p class="reference">References <a class="el" href="plot__base_8h_source.html#l00060">cgv::plot::domain_config::axis_configs</a>, <a class="el" href="plot__base_8h_source.html#l00505">get_dim()</a>, and <a class="el" href="plot__base_8cxx_source.html#l01196">get_domain_config_ptr()</a>.</p>
 
 </div>
 </div>
@@ -786,9 +809,9 @@ virtual bool&#160;</td><td class="memItemRight" valign="bottom"><b>compute_sampl
 
 <p>adjust tick marks of all axes based on maximum number of secondary ticks and domain min and max in coordinate of axis </p>
 
-<p class="definition">Definition at line <a class="el" href="plot__base_8cxx_source.html#l01128">1128</a> of file <a class="el" href="plot__base_8cxx_source.html">plot_base.cxx</a>.</p>
+<p class="definition">Definition at line <a class="el" href="plot__base_8cxx_source.html#l01144">1144</a> of file <a class="el" href="plot__base_8cxx_source.html">plot_base.cxx</a>.</p>
 
-<p class="reference">References <a class="el" href="plot__base_8h_source.html#l00056">cgv::plot::domain_config::axis_configs</a>, <a class="el" href="plot__base_8h_source.html#l00488">get_dim()</a>, and <a class="el" href="plot__base_8cxx_source.html#l01180">get_domain_config_ptr()</a>.</p>
+<p class="reference">References <a class="el" href="plot__base_8h_source.html#l00060">cgv::plot::domain_config::axis_configs</a>, <a class="el" href="plot__base_8h_source.html#l00505">get_dim()</a>, and <a class="el" href="plot__base_8cxx_source.html#l01196">get_domain_config_ptr()</a>.</p>
 
 </div>
 </div>
@@ -820,11 +843,11 @@ virtual bool&#160;</td><td class="memItemRight" valign="bottom"><b>compute_sampl
 
 <p>Reimplemented from <a class="el" href="classcgv_1_1render_1_1drawable.html#ad51105ec96d0bee0fda4e8e49ca7b2e6">cgv::render::drawable</a>.</p>
 
-<p class="definition">Definition at line <a class="el" href="plot__base_8cxx_source.html#l01247">1247</a> of file <a class="el" href="plot__base_8cxx_source.html">plot_base.cxx</a>.</p>
+<p class="definition">Definition at line <a class="el" href="plot__base_8cxx_source.html#l01293">1293</a> of file <a class="el" href="plot__base_8cxx_source.html">plot_base.cxx</a>.</p>
 
-<p class="reference">References <a class="el" href="plot__base_8h_source.html#l00427">aab_legend</a>, <a class="el" href="plot__base_8h_source.html#l00429">attribute_source_arrays</a>, <a class="el" href="attribute__array__binding_8cxx_source.html#l00094">cgv::render::attribute_array_binding::destruct()</a>, <a class="el" href="shader__program_8cxx_source.html#l00702">cgv::render::shader_program::destruct()</a>, <a class="el" href="vertex__buffer_8cxx_source.html#l00089">cgv::render::vertex_buffer::destruct()</a>, <a class="el" href="plot__base_8cxx_source.html#l01195">get_nr_sub_plots()</a>, <a class="el" href="rectangle__renderer_8cxx_source.html#l00036">cgv::render::ref_rectangle_renderer()</a>, and <a class="el" href="plot__base_8h_source.html#l00425">vbo_legend</a>.</p>
+<p class="reference">References <a class="el" href="plot__base_8h_source.html#l00442">aab_legend</a>, <a class="el" href="plot__base_8h_source.html#l00444">attribute_source_arrays</a>, <a class="el" href="plot__base_8h_source.html#l00425">color_scale_adapter</a>, <a class="el" href="attribute__array__binding_8cxx_source.html#l00094">cgv::render::attribute_array_binding::destruct()</a>, <a class="el" href="color__scale__adapter_8cxx_source.html#l00010">cgv::render::color_scale_adapter::destruct()</a>, <a class="el" href="shader__program_8cxx_source.html#l00736">cgv::render::shader_program::destruct()</a>, <a class="el" href="vertex__buffer_8cxx_source.html#l00084">cgv::render::vertex_buffer::destruct()</a>, <a class="el" href="plot__base_8cxx_source.html#l01211">get_nr_sub_plots()</a>, <a class="el" href="rectangle__renderer_8cxx_source.html#l00036">cgv::render::ref_rectangle_renderer()</a>, and <a class="el" href="plot__base_8h_source.html#l00440">vbo_legend</a>.</p>
 
-<p class="reference">Referenced by <a class="el" href="plot2d_8cxx_source.html#l00145">cgv::plot::plot2d::clear()</a>, and <a class="el" href="plot3d_8cxx_source.html#l00538">cgv::plot::plot3d::clear()</a>.</p>
+<p class="reference">Referenced by <a class="el" href="plot2d_8cxx_source.html#l00145">cgv::plot::plot2d::clear()</a>, and <a class="el" href="plot3d_8cxx_source.html#l00535">cgv::plot::plot3d::clear()</a>.</p>
 
 </div>
 </div>
@@ -872,11 +895,11 @@ virtual bool&#160;</td><td class="memItemRight" valign="bottom"><b>compute_sampl
 
 <p>Reimplemented in <a class="el" href="classcgv_1_1plot_1_1plot2d.html#a691456b40089b6e6d1e33a9d5c48bd12">cgv::plot::plot2d</a>, and <a class="el" href="classcgv_1_1plot_1_1plot3d.html#a8f14f5a56973f35a9cd4fcfe2cb2639e">cgv::plot::plot3d</a>.</p>
 
-<p class="definition">Definition at line <a class="el" href="plot__base_8cxx_source.html#l01533">1533</a> of file <a class="el" href="plot__base_8cxx_source.html">plot_base.cxx</a>.</p>
+<p class="definition">Definition at line <a class="el" href="plot__base_8cxx_source.html#l01589">1589</a> of file <a class="el" href="plot__base_8cxx_source.html">plot_base.cxx</a>.</p>
 
-<p class="reference">References <a class="el" href="provider_8h_source.html#l00137">cgv::gui::provider::add_member_control()</a>, <a class="el" href="plot__base_8h_source.html#l00196">cgv::plot::plot_base_config::bar_color</a>, <a class="el" href="plot__base_8h_source.html#l00188">cgv::plot::plot_base_config::bar_coordinate_index</a>, <a class="el" href="plot__base_8h_source.html#l00198">cgv::plot::plot_base_config::bar_outline_color</a>, <a class="el" href="plot__base_8h_source.html#l00192">cgv::plot::plot_base_config::bar_outline_width</a>, <a class="el" href="plot__base_8h_source.html#l00194">cgv::plot::plot_base_config::bar_percentual_width</a>, and <a class="el" href="plot__base_8h_source.html#l00488">get_dim()</a>.</p>
+<p class="reference">References <a class="el" href="provider_8h_source.html#l00137">cgv::gui::provider::add_member_control()</a>, <a class="el" href="plot__base_8h_source.html#l00200">cgv::plot::plot_base_config::bar_color</a>, <a class="el" href="plot__base_8h_source.html#l00192">cgv::plot::plot_base_config::bar_coordinate_index</a>, <a class="el" href="plot__base_8h_source.html#l00202">cgv::plot::plot_base_config::bar_outline_color</a>, <a class="el" href="plot__base_8h_source.html#l00196">cgv::plot::plot_base_config::bar_outline_width</a>, <a class="el" href="plot__base_8h_source.html#l00198">cgv::plot::plot_base_config::bar_percentual_width</a>, and <a class="el" href="plot__base_8h_source.html#l00505">get_dim()</a>.</p>
 
-<p class="reference">Referenced by <a class="el" href="plot2d_8cxx_source.html#l00663">cgv::plot::plot2d::create_bar_config_gui()</a>, <a class="el" href="plot3d_8cxx_source.html#l00558">cgv::plot::plot3d::create_bar_config_gui()</a>, and <a class="el" href="plot__base_8cxx_source.html#l01543">create_config_gui()</a>.</p>
+<p class="reference">Referenced by <a class="el" href="plot2d_8cxx_source.html#l00659">cgv::plot::plot2d::create_bar_config_gui()</a>, <a class="el" href="plot3d_8cxx_source.html#l00555">cgv::plot::plot3d::create_bar_config_gui()</a>, and <a class="el" href="plot__base_8cxx_source.html#l01599">create_config_gui()</a>.</p>
 
 </div>
 </div>
@@ -922,11 +945,11 @@ virtual bool&#160;</td><td class="memItemRight" valign="bottom"><b>compute_sampl
 
 <p>create the gui for base subplot settings </p>
 
-<p class="definition">Definition at line <a class="el" href="plot__base_8cxx_source.html#l01461">1461</a> of file <a class="el" href="plot__base_8cxx_source.html">plot_base.cxx</a>.</p>
+<p class="definition">Definition at line <a class="el" href="plot__base_8cxx_source.html#l01517">1517</a> of file <a class="el" href="plot__base_8cxx_source.html">plot_base.cxx</a>.</p>
 
-<p class="reference">References <a class="el" href="provider_8h_source.html#l00247">cgv::gui::provider::add_gui()</a>, <a class="el" href="provider_8h_source.html#l00137">cgv::gui::provider::add_member_control()</a>, <a class="el" href="provider_8cxx_source.html#l00036">cgv::gui::provider::align()</a>, <a class="el" href="plot__base_8h_source.html#l00429">attribute_source_arrays</a>, <a class="el" href="plot__base_8h_source.html#l00135">cgv::plot::plot_base_config::begin_sample</a>, <a class="el" href="plot__base_8h_source.html#l00137">cgv::plot::plot_base_config::end_sample</a>, <a class="el" href="plot__base_8h_source.html#l00132">cgv::plot::plot_base_config::name</a>, <a class="el" href="plot__base_8h_source.html#l00145">cgv::plot::plot_base_config::ref_color</a>, <a class="el" href="plot__base_8h_source.html#l00147">cgv::plot::plot_base_config::ref_opacity</a>, <a class="el" href="plot__base_8h_source.html#l00149">cgv::plot::plot_base_config::ref_size</a>, <a class="el" href="plot__base_8cxx_source.html#l01199">ref_sub_plot_config()</a>, and <a class="el" href="plot__base_8h_source.html#l00143">cgv::plot::plot_base_config::sub_plot_influence</a>.</p>
+<p class="reference">References <a class="el" href="provider_8h_source.html#l00247">cgv::gui::provider::add_gui()</a>, <a class="el" href="provider_8h_source.html#l00137">cgv::gui::provider::add_member_control()</a>, <a class="el" href="provider_8cxx_source.html#l00036">cgv::gui::provider::align()</a>, <a class="el" href="plot__base_8h_source.html#l00444">attribute_source_arrays</a>, <a class="el" href="plot__base_8h_source.html#l00139">cgv::plot::plot_base_config::begin_sample</a>, <a class="el" href="plot__base_8h_source.html#l00141">cgv::plot::plot_base_config::end_sample</a>, <a class="el" href="plot__base_8h_source.html#l00136">cgv::plot::plot_base_config::name</a>, <a class="el" href="plot__base_8h_source.html#l00149">cgv::plot::plot_base_config::ref_color</a>, <a class="el" href="plot__base_8h_source.html#l00151">cgv::plot::plot_base_config::ref_opacity</a>, <a class="el" href="plot__base_8h_source.html#l00153">cgv::plot::plot_base_config::ref_size</a>, <a class="el" href="plot__base_8cxx_source.html#l01215">ref_sub_plot_config()</a>, and <a class="el" href="plot__base_8h_source.html#l00147">cgv::plot::plot_base_config::sub_plot_influence</a>.</p>
 
-<p class="reference">Referenced by <a class="el" href="plot__base_8cxx_source.html#l01543">create_config_gui()</a>.</p>
+<p class="reference">Referenced by <a class="el" href="plot__base_8cxx_source.html#l01599">create_config_gui()</a>.</p>
 
 </div>
 </div>
@@ -974,11 +997,11 @@ virtual bool&#160;</td><td class="memItemRight" valign="bottom"><b>compute_sampl
 
 <p>Reimplemented in <a class="el" href="classcgv_1_1plot_1_1plot2d.html#ab0b737492d5eb5932394d7d4e4cddb32">cgv::plot::plot2d</a>, and <a class="el" href="classcgv_1_1plot_1_1plot3d.html#afe7e4ee18fad73277ad4ae8c550fa057">cgv::plot::plot3d</a>.</p>
 
-<p class="definition">Definition at line <a class="el" href="plot__base_8cxx_source.html#l01543">1543</a> of file <a class="el" href="plot__base_8cxx_source.html">plot_base.cxx</a>.</p>
+<p class="definition">Definition at line <a class="el" href="plot__base_8cxx_source.html#l01599">1599</a> of file <a class="el" href="plot__base_8cxx_source.html">plot_base.cxx</a>.</p>
 
-<p class="reference">References <a class="el" href="provider_8h_source.html#l00137">cgv::gui::provider::add_member_control()</a>, <a class="el" href="provider_8cxx_source.html#l00036">cgv::gui::provider::align()</a>, <a class="el" href="provider_8h_source.html#l00212">cgv::gui::provider::begin_tree_node()</a>, <a class="el" href="plot__base_8cxx_source.html#l01533">create_bar_config_gui()</a>, <a class="el" href="plot__base_8cxx_source.html#l01461">create_base_config_gui()</a>, <a class="el" href="plot__base_8cxx_source.html#l01518">create_line_config_gui()</a>, <a class="el" href="plot__base_8cxx_source.html#l01511">create_point_config_gui()</a>, <a class="el" href="plot__base_8cxx_source.html#l01525">create_stick_config_gui()</a>, <a class="el" href="provider_8h_source.html#l00222">cgv::gui::provider::end_tree_node()</a>, <a class="el" href="plot__base_8cxx_source.html#l01199">ref_sub_plot_config()</a>, <a class="el" href="drawable_8cxx_source.html#l00026">cgv::render::drawable::show()</a>, <a class="el" href="plot__base_8h_source.html#l00186">cgv::plot::plot_base_config::show_bars</a>, <a class="el" href="plot__base_8h_source.html#l00164">cgv::plot::plot_base_config::show_lines</a>, <a class="el" href="plot__base_8h_source.html#l00140">cgv::plot::plot_base_config::show_plot</a>, <a class="el" href="plot__base_8h_source.html#l00152">cgv::plot::plot_base_config::show_points</a>, and <a class="el" href="plot__base_8h_source.html#l00175">cgv::plot::plot_base_config::show_sticks</a>.</p>
+<p class="reference">References <a class="el" href="provider_8h_source.html#l00137">cgv::gui::provider::add_member_control()</a>, <a class="el" href="provider_8cxx_source.html#l00036">cgv::gui::provider::align()</a>, <a class="el" href="provider_8h_source.html#l00212">cgv::gui::provider::begin_tree_node()</a>, <a class="el" href="plot__base_8cxx_source.html#l01589">create_bar_config_gui()</a>, <a class="el" href="plot__base_8cxx_source.html#l01517">create_base_config_gui()</a>, <a class="el" href="plot__base_8cxx_source.html#l01574">create_line_config_gui()</a>, <a class="el" href="plot__base_8cxx_source.html#l01567">create_point_config_gui()</a>, <a class="el" href="plot__base_8cxx_source.html#l01581">create_stick_config_gui()</a>, <a class="el" href="provider_8h_source.html#l00222">cgv::gui::provider::end_tree_node()</a>, <a class="el" href="plot__base_8cxx_source.html#l01215">ref_sub_plot_config()</a>, <a class="el" href="drawable_8cxx_source.html#l00026">cgv::render::drawable::show()</a>, <a class="el" href="plot__base_8h_source.html#l00190">cgv::plot::plot_base_config::show_bars</a>, <a class="el" href="plot__base_8h_source.html#l00168">cgv::plot::plot_base_config::show_lines</a>, <a class="el" href="plot__base_8h_source.html#l00144">cgv::plot::plot_base_config::show_plot</a>, <a class="el" href="plot__base_8h_source.html#l00156">cgv::plot::plot_base_config::show_points</a>, and <a class="el" href="plot__base_8h_source.html#l00179">cgv::plot::plot_base_config::show_sticks</a>.</p>
 
-<p class="reference">Referenced by <a class="el" href="plot2d_8cxx_source.html#l00669">cgv::plot::plot2d::create_config_gui()</a>, <a class="el" href="plot3d_8cxx_source.html#l00565">cgv::plot::plot3d::create_config_gui()</a>, and <a class="el" href="plot__base_8cxx_source.html#l01586">create_gui()</a>.</p>
+<p class="reference">Referenced by <a class="el" href="plot2d_8cxx_source.html#l00665">cgv::plot::plot2d::create_config_gui()</a>, <a class="el" href="plot3d_8cxx_source.html#l00562">cgv::plot::plot3d::create_config_gui()</a>, and <a class="el" href="plot__base_8cxx_source.html#l01642">create_gui()</a>.</p>
 
 </div>
 </div>
@@ -1020,11 +1043,11 @@ virtual bool&#160;</td><td class="memItemRight" valign="bottom"><b>compute_sampl
 
 <p>Reimplemented in <a class="el" href="classcgv_1_1plot_1_1plot2d.html#a3f31a5847cf033b1876437577b199635">cgv::plot::plot2d</a>, and <a class="el" href="classcgv_1_1plot_1_1plot3d.html#a96c2520766cfa5987388763e4c577506">cgv::plot::plot3d</a>.</p>
 
-<p class="definition">Definition at line <a class="el" href="plot__base_8cxx_source.html#l01586">1586</a> of file <a class="el" href="plot__base_8cxx_source.html">plot_base.cxx</a>.</p>
+<p class="definition">Definition at line <a class="el" href="plot__base_8cxx_source.html#l01642">1642</a> of file <a class="el" href="plot__base_8cxx_source.html">plot_base.cxx</a>.</p>
 
-<p class="reference">References <a class="el" href="provider_8cxx_source.html#l00168">cgv::gui::provider::add_decorator()</a>, <a class="el" href="provider_8h_source.html#l00137">cgv::gui::provider::add_member_control()</a>, <a class="el" href="provider_8cxx_source.html#l00036">cgv::gui::provider::align()</a>, <a class="el" href="provider_8h_source.html#l00212">cgv::gui::provider::begin_tree_node()</a>, <a class="el" href="plot__base_8cxx_source.html#l01543">create_config_gui()</a>, <a class="el" href="plot__base_8cxx_source.html#l01262">create_plot_gui()</a>, <a class="el" href="provider_8h_source.html#l00222">cgv::gui::provider::end_tree_node()</a>, <a class="el" href="plot__base_8cxx_source.html#l01195">get_nr_sub_plots()</a>, <a class="el" href="plot__base_8h_source.html#l00132">cgv::plot::plot_base_config::name</a>, <a class="el" href="plot__base_8h_source.html#l00145">cgv::plot::plot_base_config::ref_color</a>, <a class="el" href="plot__base_8cxx_source.html#l01199">ref_sub_plot_config()</a>, <a class="el" href="drawable_8cxx_source.html#l00026">cgv::render::drawable::show()</a>, and <a class="el" href="plot__base_8h_source.html#l00140">cgv::plot::plot_base_config::show_plot</a>.</p>
+<p class="reference">References <a class="el" href="provider_8cxx_source.html#l00168">cgv::gui::provider::add_decorator()</a>, <a class="el" href="provider_8h_source.html#l00137">cgv::gui::provider::add_member_control()</a>, <a class="el" href="provider_8cxx_source.html#l00036">cgv::gui::provider::align()</a>, <a class="el" href="provider_8h_source.html#l00212">cgv::gui::provider::begin_tree_node()</a>, <a class="el" href="plot__base_8cxx_source.html#l01599">create_config_gui()</a>, <a class="el" href="plot__base_8cxx_source.html#l01309">create_plot_gui()</a>, <a class="el" href="provider_8h_source.html#l00222">cgv::gui::provider::end_tree_node()</a>, <a class="el" href="plot__base_8cxx_source.html#l01211">get_nr_sub_plots()</a>, <a class="el" href="plot__base_8h_source.html#l00136">cgv::plot::plot_base_config::name</a>, <a class="el" href="plot__base_8h_source.html#l00149">cgv::plot::plot_base_config::ref_color</a>, <a class="el" href="plot__base_8cxx_source.html#l01215">ref_sub_plot_config()</a>, <a class="el" href="drawable_8cxx_source.html#l00026">cgv::render::drawable::show()</a>, and <a class="el" href="plot__base_8h_source.html#l00144">cgv::plot::plot_base_config::show_plot</a>.</p>
 
-<p class="reference">Referenced by <a class="el" href="plot2d_8cxx_source.html#l00674">cgv::plot::plot2d::create_gui()</a>, and <a class="el" href="plot3d_8cxx_source.html#l00582">cgv::plot::plot3d::create_gui()</a>.</p>
+<p class="reference">Referenced by <a class="el" href="plot2d_8cxx_source.html#l00670">cgv::plot::plot2d::create_gui()</a>, and <a class="el" href="plot3d_8cxx_source.html#l00579">cgv::plot::plot3d::create_gui()</a>.</p>
 
 </div>
 </div>
@@ -1072,11 +1095,11 @@ virtual bool&#160;</td><td class="memItemRight" valign="bottom"><b>compute_sampl
 
 <p>Reimplemented in <a class="el" href="classcgv_1_1plot_1_1plot3d.html#ad377a1768899476373aa06cfca62db55">cgv::plot::plot3d</a>.</p>
 
-<p class="definition">Definition at line <a class="el" href="plot__base_8cxx_source.html#l01518">1518</a> of file <a class="el" href="plot__base_8cxx_source.html">plot_base.cxx</a>.</p>
+<p class="definition">Definition at line <a class="el" href="plot__base_8cxx_source.html#l01574">1574</a> of file <a class="el" href="plot__base_8cxx_source.html">plot_base.cxx</a>.</p>
 
-<p class="reference">References <a class="el" href="plot__base_8h_source.html#l00168">cgv::plot::plot_base_config::line_color</a>, <a class="el" href="plot__base_8h_source.html#l00172">cgv::plot::plot_base_config::line_halo_color</a>, <a class="el" href="plot__base_8h_source.html#l00170">cgv::plot::plot_base_config::line_halo_width</a>, and <a class="el" href="plot__base_8h_source.html#l00166">cgv::plot::plot_base_config::line_width</a>.</p>
+<p class="reference">References <a class="el" href="plot__base_8h_source.html#l00172">cgv::plot::plot_base_config::line_color</a>, <a class="el" href="plot__base_8h_source.html#l00176">cgv::plot::plot_base_config::line_halo_color</a>, <a class="el" href="plot__base_8h_source.html#l00174">cgv::plot::plot_base_config::line_halo_width</a>, and <a class="el" href="plot__base_8h_source.html#l00170">cgv::plot::plot_base_config::line_width</a>.</p>
 
-<p class="reference">Referenced by <a class="el" href="plot__base_8cxx_source.html#l01543">create_config_gui()</a>, and <a class="el" href="plot3d_8cxx_source.html#l00552">cgv::plot::plot3d::create_line_config_gui()</a>.</p>
+<p class="reference">Referenced by <a class="el" href="plot__base_8cxx_source.html#l01599">create_config_gui()</a>, and <a class="el" href="plot3d_8cxx_source.html#l00549">cgv::plot::plot3d::create_line_config_gui()</a>.</p>
 
 </div>
 </div>
@@ -1116,11 +1139,11 @@ virtual bool&#160;</td><td class="memItemRight" valign="bottom"><b>compute_sampl
 
 <p>create the gui for the plot without gui for sub plots </p>
 
-<p class="definition">Definition at line <a class="el" href="plot__base_8cxx_source.html#l01262">1262</a> of file <a class="el" href="plot__base_8cxx_source.html">plot_base.cxx</a>.</p>
+<p class="definition">Definition at line <a class="el" href="plot__base_8cxx_source.html#l01309">1309</a> of file <a class="el" href="plot__base_8cxx_source.html">plot_base.cxx</a>.</p>
 
-<p class="reference">References <a class="el" href="provider_8h_source.html#l00247">cgv::gui::provider::add_gui()</a>, <a class="el" href="provider_8h_source.html#l00137">cgv::gui::provider::add_member_control()</a>, <a class="el" href="provider_8cxx_source.html#l00036">cgv::gui::provider::align()</a>, <a class="el" href="plot__base_8h_source.html#l00056">cgv::plot::domain_config::axis_configs</a>, <a class="el" href="provider_8h_source.html#l00212">cgv::gui::provider::begin_tree_node()</a>, <a class="el" href="plot__base_8h_source.html#l00356">center_location</a>, <a class="el" href="plot__base_8h_source.html#l00383">color_mapping</a>, <a class="el" href="plot__base_8h_source.html#l00387">color_scale_gamma</a>, <a class="el" href="plot__base_8h_source.html#l00385">color_scale_index</a>, <a class="el" href="plot__base_8h_source.html#l00340">dim</a>, <a class="el" href="provider_8h_source.html#l00222">cgv::gui::provider::end_tree_node()</a>, <a class="el" href="plot__base_8cxx_source.html#l00275">ensure_font_names()</a>, <a class="el" href="provider_8h_source.html#l00330">cgv::gui::provider::find_control()</a>, <a class="el" href="plot__base_8h_source.html#l00330">font_name_enum_def</a>, <a class="el" href="plot__base_8h_source.html#l00488">get_dim()</a>, <a class="el" href="plot__base_8cxx_source.html#l01180">get_domain_config_ptr()</a>, <a class="el" href="plot__base_8h_source.html#l00323">layer_depth</a>, <a class="el" href="plot__base_8h_source.html#l00372">legend_axis</a>, <a class="el" href="plot__base_8h_source.html#l00374">legend_color</a>, <a class="el" href="plot__base_8h_source.html#l00366">legend_components</a>, <a class="el" href="plot__base_8h_source.html#l00370">legend_extent</a>, <a class="el" href="plot__base_8h_source.html#l00368">legend_location</a>, <a class="el" href="plot__base_8h_source.html#l00381">MAX_NR_COLOR_MAPPINGS</a>, <a class="el" href="plot__base_8h_source.html#l00392">MAX_NR_OPACITY_MAPPINGS</a>, <a class="el" href="plot__base_8h_source.html#l00407">MAX_NR_SIZE_MAPPINGS</a>, <a class="el" href="plot__base_8h_source.html#l00342">nr_attributes</a>, <a class="el" href="plot__base_8cxx_source.html#l00335">on_font_face_selection()</a>, <a class="el" href="plot__base_8cxx_source.html#l00327">on_font_selection()</a>, <a class="el" href="plot__base_8h_source.html#l00396">opacity_gamma</a>, <a class="el" href="plot__base_8h_source.html#l00398">opacity_is_bipolar</a>, <a class="el" href="plot__base_8h_source.html#l00394">opacity_mapping</a>, <a class="el" href="plot__base_8h_source.html#l00404">opacity_max</a>, <a class="el" href="plot__base_8h_source.html#l00402">opacity_min</a>, <a class="el" href="plot__base_8h_source.html#l00400">opacity_window_zero_position</a>, <a class="el" href="plot__base_8h_source.html#l00354">orientation</a>, <a class="el" href="plot__base_8h_source.html#l00379">out_of_range_mode</a>, <a class="el" href="plot__base_8h_source.html#l00449">rrs</a>, <a class="el" href="drawable_8cxx_source.html#l00026">cgv::render::drawable::show()</a>, <a class="el" href="plot__base_8h_source.html#l00044">cgv::plot::domain_config::show_sub_plot_names</a>, <a class="el" href="plot__base_8h_source.html#l00042">cgv::plot::domain_config::show_title</a>, <a class="el" href="plot__base_8h_source.html#l00411">size_gamma</a>, <a class="el" href="plot__base_8h_source.html#l00409">size_mapping</a>, <a class="el" href="plot__base_8h_source.html#l00413">size_min</a>, <a class="el" href="plot__base_8h_source.html#l00040">cgv::plot::domain_config::title</a>, <a class="el" href="plot__base_8h_source.html#l00064">cgv::plot::domain_config::title_font_index</a>, <a class="el" href="plot__base_8h_source.html#l00066">cgv::plot::domain_config::title_font_size</a>, <a class="el" href="plot__base_8h_source.html#l00046">cgv::plot::domain_config::title_pos</a>, and <a class="el" href="plot__base_8h_source.html#l00389">window_zero_position</a>.</p>
+<p class="reference">References <a class="el" href="provider_8h_source.html#l00247">cgv::gui::provider::add_gui()</a>, <a class="el" href="provider_8h_source.html#l00137">cgv::gui::provider::add_member_control()</a>, <a class="el" href="provider_8cxx_source.html#l00036">cgv::gui::provider::align()</a>, <a class="el" href="plot__base_8h_source.html#l00060">cgv::plot::domain_config::axis_configs</a>, <a class="el" href="provider_8h_source.html#l00212">cgv::gui::provider::begin_tree_node()</a>, <a class="el" href="plot__base_8h_source.html#l00360">center_location</a>, <a class="el" href="plot__base_8h_source.html#l00387">color_mapping</a>, <a class="el" href="plot__base_8h_source.html#l00391">color_scale_gamma</a>, <a class="el" href="plot__base_8h_source.html#l00389">color_scale_is_bipolar</a>, <a class="el" href="plot__base_8h_source.html#l00427">color_scheme_index</a>, <a class="el" href="plot__base_8h_source.html#l00344">dim</a>, <a class="el" href="provider_8h_source.html#l00222">cgv::gui::provider::end_tree_node()</a>, <a class="el" href="plot__base_8cxx_source.html#l00275">ensure_font_names()</a>, <a class="el" href="provider_8h_source.html#l00330">cgv::gui::provider::find_control()</a>, <a class="el" href="plot__base_8h_source.html#l00334">font_name_enum_def</a>, <a class="el" href="plot__base_8h_source.html#l00505">get_dim()</a>, <a class="el" href="plot__base_8cxx_source.html#l01196">get_domain_config_ptr()</a>, <a class="el" href="algorithm_8h_source.html#l00146">cgv::utils::join()</a>, <a class="el" href="plot__base_8h_source.html#l00327">layer_depth</a>, <a class="el" href="plot__base_8h_source.html#l00376">legend_axis</a>, <a class="el" href="plot__base_8h_source.html#l00378">legend_color</a>, <a class="el" href="plot__base_8h_source.html#l00370">legend_components</a>, <a class="el" href="plot__base_8h_source.html#l00374">legend_extent</a>, <a class="el" href="plot__base_8h_source.html#l00372">legend_location</a>, <a class="el" href="plot__base_8h_source.html#l00385">MAX_NR_COLOR_MAPPINGS</a>, <a class="el" href="plot__base_8h_source.html#l00395">MAX_NR_OPACITY_MAPPINGS</a>, <a class="el" href="plot__base_8h_source.html#l00410">MAX_NR_SIZE_MAPPINGS</a>, <a class="el" href="plot__base_8h_source.html#l00346">nr_attributes</a>, <a class="el" href="plot__base_8cxx_source.html#l00335">on_font_face_selection()</a>, <a class="el" href="plot__base_8cxx_source.html#l00327">on_font_selection()</a>, <a class="el" href="plot__base_8h_source.html#l00399">opacity_gamma</a>, <a class="el" href="plot__base_8h_source.html#l00401">opacity_is_bipolar</a>, <a class="el" href="plot__base_8h_source.html#l00397">opacity_mapping</a>, <a class="el" href="plot__base_8h_source.html#l00407">opacity_max</a>, <a class="el" href="plot__base_8h_source.html#l00405">opacity_min</a>, <a class="el" href="plot__base_8h_source.html#l00403">opacity_window_zero_position</a>, <a class="el" href="plot__base_8h_source.html#l00358">orientation</a>, <a class="el" href="plot__base_8h_source.html#l00383">out_of_range_mode</a>, <a class="el" href="plot__base_8h_source.html#l00429">reversed</a>, <a class="el" href="plot__base_8h_source.html#l00466">rrs</a>, <a class="el" href="drawable_8cxx_source.html#l00026">cgv::render::drawable::show()</a>, <a class="el" href="plot__base_8h_source.html#l00048">cgv::plot::domain_config::show_sub_plot_names</a>, <a class="el" href="plot__base_8h_source.html#l00046">cgv::plot::domain_config::show_title</a>, <a class="el" href="plot__base_8h_source.html#l00415">size_gamma</a>, <a class="el" href="plot__base_8h_source.html#l00413">size_mapping</a>, <a class="el" href="plot__base_8h_source.html#l00417">size_min</a>, <a class="el" href="plot__base_8h_source.html#l00044">cgv::plot::domain_config::title</a>, <a class="el" href="plot__base_8h_source.html#l00068">cgv::plot::domain_config::title_font_index</a>, <a class="el" href="plot__base_8h_source.html#l00070">cgv::plot::domain_config::title_font_size</a>, <a class="el" href="plot__base_8h_source.html#l00050">cgv::plot::domain_config::title_pos</a>, <a class="el" href="plot__base_8cxx_source.html#l00421">update_color_scales()</a>, and <a class="el" href="plot__base_8h_source.html#l00393">window_zero_position</a>.</p>
 
-<p class="reference">Referenced by <a class="el" href="plot__base_8cxx_source.html#l01586">create_gui()</a>.</p>
+<p class="reference">Referenced by <a class="el" href="plot__base_8cxx_source.html#l01642">create_gui()</a>.</p>
 
 </div>
 </div>
@@ -1168,11 +1191,11 @@ virtual bool&#160;</td><td class="memItemRight" valign="bottom"><b>compute_sampl
 
 <p>Reimplemented in <a class="el" href="classcgv_1_1plot_1_1plot2d.html#a298c0e1abd268e51403286ce85e9b8ce">cgv::plot::plot2d</a>.</p>
 
-<p class="definition">Definition at line <a class="el" href="plot__base_8cxx_source.html#l01511">1511</a> of file <a class="el" href="plot__base_8cxx_source.html">plot_base.cxx</a>.</p>
+<p class="definition">Definition at line <a class="el" href="plot__base_8cxx_source.html#l01567">1567</a> of file <a class="el" href="plot__base_8cxx_source.html">plot_base.cxx</a>.</p>
 
-<p class="reference">References <a class="el" href="plot__base_8h_source.html#l00157">cgv::plot::plot_base_config::point_color</a>, <a class="el" href="plot__base_8h_source.html#l00161">cgv::plot::plot_base_config::point_halo_color</a>, <a class="el" href="plot__base_8h_source.html#l00159">cgv::plot::plot_base_config::point_halo_width</a>, and <a class="el" href="plot__base_8h_source.html#l00154">cgv::plot::plot_base_config::point_size</a>.</p>
+<p class="reference">References <a class="el" href="plot__base_8h_source.html#l00161">cgv::plot::plot_base_config::point_color</a>, <a class="el" href="plot__base_8h_source.html#l00165">cgv::plot::plot_base_config::point_halo_color</a>, <a class="el" href="plot__base_8h_source.html#l00163">cgv::plot::plot_base_config::point_halo_width</a>, and <a class="el" href="plot__base_8h_source.html#l00158">cgv::plot::plot_base_config::point_size</a>.</p>
 
-<p class="reference">Referenced by <a class="el" href="plot__base_8cxx_source.html#l01543">create_config_gui()</a>, and <a class="el" href="plot2d_8cxx_source.html#l00649">cgv::plot::plot2d::create_point_config_gui()</a>.</p>
+<p class="reference">Referenced by <a class="el" href="plot__base_8cxx_source.html#l01599">create_config_gui()</a>, and <a class="el" href="plot2d_8cxx_source.html#l00645">cgv::plot::plot2d::create_point_config_gui()</a>.</p>
 
 </div>
 </div>
@@ -1220,11 +1243,11 @@ virtual bool&#160;</td><td class="memItemRight" valign="bottom"><b>compute_sampl
 
 <p>Reimplemented in <a class="el" href="classcgv_1_1plot_1_1plot2d.html#a07c6896a27b52b3b8e7a88536101d0b3">cgv::plot::plot2d</a>.</p>
 
-<p class="definition">Definition at line <a class="el" href="plot__base_8cxx_source.html#l01525">1525</a> of file <a class="el" href="plot__base_8cxx_source.html">plot_base.cxx</a>.</p>
+<p class="definition">Definition at line <a class="el" href="plot__base_8cxx_source.html#l01581">1581</a> of file <a class="el" href="plot__base_8cxx_source.html">plot_base.cxx</a>.</p>
 
-<p class="reference">References <a class="el" href="provider_8h_source.html#l00137">cgv::gui::provider::add_member_control()</a>, <a class="el" href="plot__base_8h_source.html#l00488">get_dim()</a>, <a class="el" href="plot__base_8h_source.html#l00179">cgv::plot::plot_base_config::stick_base_window</a>, <a class="el" href="plot__base_8h_source.html#l00183">cgv::plot::plot_base_config::stick_color</a>, <a class="el" href="plot__base_8h_source.html#l00177">cgv::plot::plot_base_config::stick_coordinate_index</a>, and <a class="el" href="plot__base_8h_source.html#l00181">cgv::plot::plot_base_config::stick_width</a>.</p>
+<p class="reference">References <a class="el" href="provider_8h_source.html#l00137">cgv::gui::provider::add_member_control()</a>, <a class="el" href="plot__base_8h_source.html#l00505">get_dim()</a>, <a class="el" href="plot__base_8h_source.html#l00183">cgv::plot::plot_base_config::stick_base_window</a>, <a class="el" href="plot__base_8h_source.html#l00187">cgv::plot::plot_base_config::stick_color</a>, <a class="el" href="plot__base_8h_source.html#l00181">cgv::plot::plot_base_config::stick_coordinate_index</a>, and <a class="el" href="plot__base_8h_source.html#l00185">cgv::plot::plot_base_config::stick_width</a>.</p>
 
-<p class="reference">Referenced by <a class="el" href="plot__base_8cxx_source.html#l01543">create_config_gui()</a>, and <a class="el" href="plot2d_8cxx_source.html#l00656">cgv::plot::plot2d::create_stick_config_gui()</a>.</p>
+<p class="reference">Referenced by <a class="el" href="plot__base_8cxx_source.html#l01599">create_config_gui()</a>, and <a class="el" href="plot2d_8cxx_source.html#l00652">cgv::plot::plot2d::create_stick_config_gui()</a>.</p>
 
 </div>
 </div>
@@ -1298,11 +1321,11 @@ virtual bool&#160;</td><td class="memItemRight" valign="bottom"><b>compute_sampl
 
 <p>adjust the domain with respect to <code>ai</code> th axis to the i-th subplot </p>
 
-<p class="definition">Definition at line <a class="el" href="plot__base_8cxx_source.html#l01047">1047</a> of file <a class="el" href="plot__base_8cxx_source.html">plot_base.cxx</a>.</p>
+<p class="definition">Definition at line <a class="el" href="plot__base_8cxx_source.html#l01063">1063</a> of file <a class="el" href="plot__base_8cxx_source.html">plot_base.cxx</a>.</p>
 
-<p class="reference">References <a class="el" href="plot__base_8h_source.html#l00429">attribute_source_arrays</a>.</p>
+<p class="reference">References <a class="el" href="plot__base_8h_source.html#l00444">attribute_source_arrays</a>.</p>
 
-<p class="reference">Referenced by <a class="el" href="plot__base_8cxx_source.html#l01092">adjust_domain_axis_to_data()</a>, and <a class="el" href="plot2d_8cxx_source.html#l00533">cgv::plot::plot2d::draw()</a>.</p>
+<p class="reference">Referenced by <a class="el" href="plot__base_8cxx_source.html#l01108">adjust_domain_axis_to_data()</a>, and <a class="el" href="plot2d_8cxx_source.html#l00541">cgv::plot::plot2d::draw()</a>.</p>
 
 </div>
 </div>
@@ -1340,7 +1363,7 @@ virtual bool&#160;</td><td class="memItemRight" valign="bottom"><b>compute_sampl
 </table>
 </div><div class="memdoc">
 
-<p class="definition">Definition at line <a class="el" href="plot__base_8cxx_source.html#l00566">566</a> of file <a class="el" href="plot__base_8cxx_source.html">plot_base.cxx</a>.</p>
+<p class="definition">Definition at line <a class="el" href="plot__base_8cxx_source.html#l00578">578</a> of file <a class="el" href="plot__base_8cxx_source.html">plot_base.cxx</a>.</p>
 
 </div>
 </div>
@@ -1390,7 +1413,7 @@ virtual bool&#160;</td><td class="memItemRight" valign="bottom"><b>compute_sampl
 </table>
 </div><div class="memdoc">
 
-<p class="definition">Definition at line <a class="el" href="plot__base_8cxx_source.html#l00862">862</a> of file <a class="el" href="plot__base_8cxx_source.html">plot_base.cxx</a>.</p>
+<p class="definition">Definition at line <a class="el" href="plot__base_8cxx_source.html#l00877">877</a> of file <a class="el" href="plot__base_8cxx_source.html">plot_base.cxx</a>.</p>
 
 </div>
 </div>
@@ -1552,7 +1575,7 @@ virtual bool&#160;</td><td class="memItemRight" valign="bottom"><b>compute_sampl
 </table>
 </div><div class="memdoc">
 
-<p class="definition">Definition at line <a class="el" href="plot__base_8cxx_source.html#l00812">812</a> of file <a class="el" href="plot__base_8cxx_source.html">plot_base.cxx</a>.</p>
+<p class="definition">Definition at line <a class="el" href="plot__base_8cxx_source.html#l00827">827</a> of file <a class="el" href="plot__base_8cxx_source.html">plot_base.cxx</a>.</p>
 
 </div>
 </div>
@@ -1602,7 +1625,7 @@ virtual bool&#160;</td><td class="memItemRight" valign="bottom"><b>compute_sampl
 </table>
 </div><div class="memdoc">
 
-<p class="definition">Definition at line <a class="el" href="plot__base_8cxx_source.html#l00762">762</a> of file <a class="el" href="plot__base_8cxx_source.html">plot_base.cxx</a>.</p>
+<p class="definition">Definition at line <a class="el" href="plot__base_8cxx_source.html#l00777">777</a> of file <a class="el" href="plot__base_8cxx_source.html">plot_base.cxx</a>.</p>
 
 </div>
 </div>
@@ -1648,7 +1671,7 @@ virtual bool&#160;</td><td class="memItemRight" valign="bottom"><b>compute_sampl
 
 <p>set vertex shader input attributes based on attribute source information </p>
 
-<p class="definition">Definition at line <a class="el" href="plot__base_8cxx_source.html#l00558">558</a> of file <a class="el" href="plot__base_8cxx_source.html">plot_base.cxx</a>.</p>
+<p class="definition">Definition at line <a class="el" href="plot__base_8cxx_source.html#l00570">570</a> of file <a class="el" href="plot__base_8cxx_source.html">plot_base.cxx</a>.</p>
 
 </div>
 </div>
@@ -1694,7 +1717,7 @@ virtual bool&#160;</td><td class="memItemRight" valign="bottom"><b>compute_sampl
 
 <p>set vertex shader input attributes based on attribute source information </p>
 
-<p class="definition">Definition at line <a class="el" href="plot__base_8cxx_source.html#l00562">562</a> of file <a class="el" href="plot__base_8cxx_source.html">plot_base.cxx</a>.</p>
+<p class="definition">Definition at line <a class="el" href="plot__base_8cxx_source.html#l00574">574</a> of file <a class="el" href="plot__base_8cxx_source.html">plot_base.cxx</a>.</p>
 
 </div>
 </div>
@@ -1717,9 +1740,9 @@ virtual bool&#160;</td><td class="memItemRight" valign="bottom"><b>compute_sampl
 
 <p class="definition">Definition at line <a class="el" href="plot__base_8cxx_source.html#l00275">275</a> of file <a class="el" href="plot__base_8cxx_source.html">plot_base.cxx</a>.</p>
 
-<p class="reference">References <a class="el" href="font_8cxx_source.html#l00057">cgv::media::font::default_font()</a>, <a class="el" href="font_8cxx_source.html#l00065">cgv::media::font::enumerate_font_names()</a>, <a class="el" href="plot__base_8h_source.html#l00330">font_name_enum_def</a>, <a class="el" href="plot__base_8h_source.html#l00328">font_names</a>, <a class="el" href="plot__base_8cxx_source.html#l01180">get_domain_config_ptr()</a>, <a class="el" href="plot__base_8h_source.html#l00417">label_font</a>, <a class="el" href="plot__base_8h_source.html#l00058">cgv::plot::domain_config::label_font_index</a>, <a class="el" href="plot__base_8cxx_source.html#l00327">on_font_selection()</a>, <a class="el" href="plot__base_8h_source.html#l00421">title_font</a>, and <a class="el" href="plot__base_8h_source.html#l00064">cgv::plot::domain_config::title_font_index</a>.</p>
+<p class="reference">References <a class="el" href="font_8cxx_source.html#l00057">cgv::media::font::default_font()</a>, <a class="el" href="font_8cxx_source.html#l00065">cgv::media::font::enumerate_font_names()</a>, <a class="el" href="plot__base_8h_source.html#l00334">font_name_enum_def</a>, <a class="el" href="plot__base_8h_source.html#l00332">font_names</a>, <a class="el" href="plot__base_8cxx_source.html#l01196">get_domain_config_ptr()</a>, <a class="el" href="plot__base_8h_source.html#l00432">label_font</a>, <a class="el" href="plot__base_8h_source.html#l00062">cgv::plot::domain_config::label_font_index</a>, <a class="el" href="plot__base_8cxx_source.html#l00327">on_font_selection()</a>, <a class="el" href="plot__base_8h_source.html#l00436">title_font</a>, and <a class="el" href="plot__base_8h_source.html#l00068">cgv::plot::domain_config::title_font_index</a>.</p>
 
-<p class="reference">Referenced by <a class="el" href="plot__base_8cxx_source.html#l01262">create_plot_gui()</a>, and <a class="el" href="plot__base_8cxx_source.html#l01212">init()</a>.</p>
+<p class="reference">Referenced by <a class="el" href="plot__base_8cxx_source.html#l01309">create_plot_gui()</a>, and <a class="el" href="plot__base_8cxx_source.html#l01257">init()</a>.</p>
 
 </div>
 </div>
@@ -1799,7 +1822,7 @@ virtual bool&#160;</td><td class="memItemRight" valign="bottom"><b>compute_sampl
 </table>
 </div><div class="memdoc">
 
-<p class="definition">Definition at line <a class="el" href="plot__base_8cxx_source.html#l00723">723</a> of file <a class="el" href="plot__base_8cxx_source.html">plot_base.cxx</a>.</p>
+<p class="definition">Definition at line <a class="el" href="plot__base_8cxx_source.html#l00738">738</a> of file <a class="el" href="plot__base_8cxx_source.html">plot_base.cxx</a>.</p>
 
 </div>
 </div>
@@ -1903,7 +1926,7 @@ virtual bool&#160;</td><td class="memItemRight" valign="bottom"><b>compute_sampl
 </table>
 </div><div class="memdoc">
 
-<p class="definition">Definition at line <a class="el" href="plot__base_8cxx_source.html#l00622">622</a> of file <a class="el" href="plot__base_8cxx_source.html">plot_base.cxx</a>.</p>
+<p class="definition">Definition at line <a class="el" href="plot__base_8cxx_source.html#l00637">637</a> of file <a class="el" href="plot__base_8cxx_source.html">plot_base.cxx</a>.</p>
 
 </div>
 </div>
@@ -1925,9 +1948,9 @@ virtual bool&#160;</td><td class="memItemRight" valign="bottom"><b>compute_sampl
 
 <p>return true world direction of x, y or z axis </p>
 
-<p class="definition">Definition at line <a class="el" href="plot__base_8cxx_source.html#l01040">1040</a> of file <a class="el" href="plot__base_8cxx_source.html">plot_base.cxx</a>.</p>
+<p class="definition">Definition at line <a class="el" href="plot__base_8cxx_source.html#l01056">1056</a> of file <a class="el" href="plot__base_8cxx_source.html">plot_base.cxx</a>.</p>
 
-<p class="reference">References <a class="el" href="quaternion_8h_source.html#l00219">cgv::math::quaternion&lt; T &gt;::apply()</a>, and <a class="el" href="plot__base_8h_source.html#l00354">orientation</a>.</p>
+<p class="reference">References <a class="el" href="quaternion_8h_source.html#l00219">cgv::math::quaternion&lt; T &gt;::apply()</a>, and <a class="el" href="plot__base_8h_source.html#l00358">orientation</a>.</p>
 
 </div>
 </div>
@@ -1948,9 +1971,9 @@ virtual bool&#160;</td><td class="memItemRight" valign="bottom"><b>compute_sampl
 
 <p>return the current plot center in 3D coordinates </p>
 
-<p class="definition">Definition at line <a class="el" href="plot__base_8cxx_source.html#l01027">1027</a> of file <a class="el" href="plot__base_8cxx_source.html">plot_base.cxx</a>.</p>
+<p class="definition">Definition at line <a class="el" href="plot__base_8cxx_source.html#l01043">1043</a> of file <a class="el" href="plot__base_8cxx_source.html">plot_base.cxx</a>.</p>
 
-<p class="reference">References <a class="el" href="plot__base_8h_source.html#l00356">center_location</a>.</p>
+<p class="reference">References <a class="el" href="plot__base_8h_source.html#l00360">center_location</a>.</p>
 
 </div>
 </div>
@@ -1972,11 +1995,11 @@ virtual bool&#160;</td><td class="memItemRight" valign="bottom"><b>compute_sampl
 
 <p>return the i-th plot corner in 3D coordinates </p>
 
-<p class="definition">Definition at line <a class="el" href="plot__base_8cxx_source.html#l01031">1031</a> of file <a class="el" href="plot__base_8cxx_source.html">plot_base.cxx</a>.</p>
+<p class="definition">Definition at line <a class="el" href="plot__base_8cxx_source.html#l01047">1047</a> of file <a class="el" href="plot__base_8cxx_source.html">plot_base.cxx</a>.</p>
 
-<p class="reference">References <a class="el" href="axis__aligned__box_8h_source.html#l00064">cgv::media::axis_aligned_box&lt; T, N &gt;::get_corner()</a>, <a class="el" href="plot__base_8h_source.html#l00488">get_dim()</a>, <a class="el" href="plot__base_8cxx_source.html#l00939">get_domain3()</a>, and <a class="el" href="plot__base_8cxx_source.html#l00261">transform_to_world()</a>.</p>
+<p class="reference">References <a class="el" href="axis__aligned__box_8h_source.html#l00064">cgv::media::axis_aligned_box&lt; T, N &gt;::get_corner()</a>, <a class="el" href="plot__base_8h_source.html#l00505">get_dim()</a>, <a class="el" href="plot__base_8cxx_source.html#l00955">get_domain3()</a>, and <a class="el" href="plot__base_8cxx_source.html#l00261">transform_to_world()</a>.</p>
 
-<p class="reference">Referenced by <a class="el" href="plot__base_8cxx_source.html#l01015">place_corner()</a>.</p>
+<p class="reference">Referenced by <a class="el" href="plot__base_8cxx_source.html#l01031">place_corner()</a>.</p>
 
 </div>
 </div>
@@ -2005,9 +2028,9 @@ virtual bool&#160;</td><td class="memItemRight" valign="bottom"><b>compute_sampl
 
 <p>return nr dimensions of plot </p>
 
-<p class="definition">Definition at line <a class="el" href="plot__base_8h_source.html#l00488">488</a> of file <a class="el" href="plot__base_8h_source.html">plot_base.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="plot__base_8h_source.html#l00505">505</a> of file <a class="el" href="plot__base_8h_source.html">plot_base.h</a>.</p>
 
-<p class="reference">Referenced by <a class="el" href="plot__base_8cxx_source.html#l01137">adjust_extent_to_domain_aspect_ratio()</a>, <a class="el" href="plot__base_8cxx_source.html#l01128">adjust_tick_marks()</a>, <a class="el" href="plot__base_8cxx_source.html#l01533">create_bar_config_gui()</a>, <a class="el" href="plot__base_8cxx_source.html#l01262">create_plot_gui()</a>, <a class="el" href="plot__base_8cxx_source.html#l01525">create_stick_config_gui()</a>, <a class="el" href="plot__base_8cxx_source.html#l01031">get_corner()</a>, <a class="el" href="plot__base_8cxx_source.html#l00939">get_domain3()</a>, <a class="el" href="plot__base_8cxx_source.html#l00958">get_extent()</a>, <a class="el" href="plot__base_8cxx_source.html#l01146">include_axis_to_domain()</a>, <a class="el" href="plot__base_8cxx_source.html#l00343">prepare_extents()</a>, <a class="el" href="plot__base_8cxx_source.html#l00951">set_domain3()</a>, <a class="el" href="plot__base_8cxx_source.html#l00966">set_extent()</a>, <a class="el" href="plot__base_8cxx_source.html#l00974">set_extent_scaling()</a>, and <a class="el" href="plot__base_8cxx_source.html#l00421">set_sub_plot_attribute()</a>.</p>
+<p class="reference">Referenced by <a class="el" href="plot__base_8cxx_source.html#l01153">adjust_extent_to_domain_aspect_ratio()</a>, <a class="el" href="plot__base_8cxx_source.html#l01144">adjust_tick_marks()</a>, <a class="el" href="plot__base_8cxx_source.html#l01589">create_bar_config_gui()</a>, <a class="el" href="plot__base_8cxx_source.html#l01309">create_plot_gui()</a>, <a class="el" href="plot__base_8cxx_source.html#l01581">create_stick_config_gui()</a>, <a class="el" href="plot__base_8cxx_source.html#l01047">get_corner()</a>, <a class="el" href="plot__base_8cxx_source.html#l00955">get_domain3()</a>, <a class="el" href="plot__base_8cxx_source.html#l00974">get_extent()</a>, <a class="el" href="plot__base_8cxx_source.html#l01162">include_axis_to_domain()</a>, <a class="el" href="plot__base_8cxx_source.html#l00343">prepare_extents()</a>, <a class="el" href="plot__base_8cxx_source.html#l00967">set_domain3()</a>, <a class="el" href="plot__base_8cxx_source.html#l00982">set_extent()</a>, <a class="el" href="plot__base_8cxx_source.html#l00990">set_extent_scaling()</a>, and <a class="el" href="plot__base_8cxx_source.html#l00433">set_sub_plot_attribute()</a>.</p>
 
 </div>
 </div>
@@ -2028,9 +2051,9 @@ virtual bool&#160;</td><td class="memItemRight" valign="bottom"><b>compute_sampl
 
 <p>return 2d domain shown in plot </p>
 
-<p class="definition">Definition at line <a class="el" href="plot__base_8cxx_source.html#l00933">933</a> of file <a class="el" href="plot__base_8cxx_source.html">plot_base.cxx</a>.</p>
+<p class="definition">Definition at line <a class="el" href="plot__base_8cxx_source.html#l00949">949</a> of file <a class="el" href="plot__base_8cxx_source.html">plot_base.cxx</a>.</p>
 
-<p class="reference">References <a class="el" href="plot__base_8h_source.html#l00056">cgv::plot::domain_config::axis_configs</a>, and <a class="el" href="plot__base_8cxx_source.html#l01180">get_domain_config_ptr()</a>.</p>
+<p class="reference">References <a class="el" href="plot__base_8h_source.html#l00060">cgv::plot::domain_config::axis_configs</a>, and <a class="el" href="plot__base_8cxx_source.html#l01196">get_domain_config_ptr()</a>.</p>
 
 </div>
 </div>
@@ -2051,11 +2074,11 @@ virtual bool&#160;</td><td class="memItemRight" valign="bottom"><b>compute_sampl
 
 <p>return 3d domain shown in plot </p>
 
-<p class="definition">Definition at line <a class="el" href="plot__base_8cxx_source.html#l00939">939</a> of file <a class="el" href="plot__base_8cxx_source.html">plot_base.cxx</a>.</p>
+<p class="definition">Definition at line <a class="el" href="plot__base_8cxx_source.html#l00955">955</a> of file <a class="el" href="plot__base_8cxx_source.html">plot_base.cxx</a>.</p>
 
-<p class="reference">References <a class="el" href="plot__base_8h_source.html#l00056">cgv::plot::domain_config::axis_configs</a>, <a class="el" href="plot__base_8h_source.html#l00488">get_dim()</a>, and <a class="el" href="plot__base_8cxx_source.html#l01180">get_domain_config_ptr()</a>.</p>
+<p class="reference">References <a class="el" href="plot__base_8h_source.html#l00060">cgv::plot::domain_config::axis_configs</a>, <a class="el" href="plot__base_8h_source.html#l00505">get_dim()</a>, and <a class="el" href="plot__base_8cxx_source.html#l01196">get_domain_config_ptr()</a>.</p>
 
-<p class="reference">Referenced by <a class="el" href="plot__base_8cxx_source.html#l01031">get_corner()</a>, and <a class="el" href="plot__base_8cxx_source.html#l01019">get_origin()</a>.</p>
+<p class="reference">Referenced by <a class="el" href="plot__base_8cxx_source.html#l01047">get_corner()</a>, and <a class="el" href="plot__base_8cxx_source.html#l01035">get_origin()</a>.</p>
 
 </div>
 </div>
@@ -2076,9 +2099,9 @@ virtual bool&#160;</td><td class="memItemRight" valign="bottom"><b>compute_sampl
 
 <p>return pointer to domain configuration </p>
 
-<p class="definition">Definition at line <a class="el" href="plot__base_8cxx_source.html#l01184">1184</a> of file <a class="el" href="plot__base_8cxx_source.html">plot_base.cxx</a>.</p>
+<p class="definition">Definition at line <a class="el" href="plot__base_8cxx_source.html#l01200">1200</a> of file <a class="el" href="plot__base_8cxx_source.html">plot_base.cxx</a>.</p>
 
-<p class="reference">References <a class="el" href="plot__base_8h_source.html#l00346">dom_cfg_ptr</a>.</p>
+<p class="reference">References <a class="el" href="plot__base_8h_source.html#l00350">dom_cfg_ptr</a>.</p>
 
 </div>
 </div>
@@ -2099,11 +2122,11 @@ virtual bool&#160;</td><td class="memItemRight" valign="bottom"><b>compute_sampl
 
 <p>return const pointer to domain configuration </p>
 
-<p class="definition">Definition at line <a class="el" href="plot__base_8cxx_source.html#l01180">1180</a> of file <a class="el" href="plot__base_8cxx_source.html">plot_base.cxx</a>.</p>
+<p class="definition">Definition at line <a class="el" href="plot__base_8cxx_source.html#l01196">1196</a> of file <a class="el" href="plot__base_8cxx_source.html">plot_base.cxx</a>.</p>
 
-<p class="reference">References <a class="el" href="plot__base_8h_source.html#l00346">dom_cfg_ptr</a>.</p>
+<p class="reference">References <a class="el" href="plot__base_8h_source.html#l00350">dom_cfg_ptr</a>.</p>
 
-<p class="reference">Referenced by <a class="el" href="plot__base_8cxx_source.html#l01092">adjust_domain_axis_to_data()</a>, <a class="el" href="plot__base_8cxx_source.html#l01158">adjust_domain_to_data()</a>, <a class="el" href="plot__base_8cxx_source.html#l01137">adjust_extent_to_domain_aspect_ratio()</a>, <a class="el" href="plot__base_8cxx_source.html#l01128">adjust_tick_marks()</a>, <a class="el" href="plot2d_8cxx_source.html#l00674">cgv::plot::plot2d::create_gui()</a>, <a class="el" href="plot__base_8cxx_source.html#l01262">create_plot_gui()</a>, <a class="el" href="plot2d_8cxx_source.html#l00533">cgv::plot::plot2d::draw()</a>, <a class="el" href="plot3d_8cxx_source.html#l00504">cgv::plot::plot3d::draw()</a>, <a class="el" href="plot__base_8cxx_source.html#l00275">ensure_font_names()</a>, <a class="el" href="plot__base_8cxx_source.html#l00933">get_domain()</a>, <a class="el" href="plot__base_8cxx_source.html#l00939">get_domain3()</a>, <a class="el" href="plot__base_8cxx_source.html#l00958">get_extent()</a>, <a class="el" href="plot__base_8cxx_source.html#l01146">include_axis_to_domain()</a>, <a class="el" href="plot__base_8cxx_source.html#l00335">on_font_face_selection()</a>, <a class="el" href="plot__base_8cxx_source.html#l00327">on_font_selection()</a>, <a class="el" href="plot2d_8cxx_source.html#l00024">cgv::plot::plot2d::plot2d()</a>, <a class="el" href="plot3d_8cxx_source.html#l00066">cgv::plot::plot3d::plot3d()</a>, <a class="el" href="plot__base_8cxx_source.html#l00343">prepare_extents()</a>, <a class="el" href="plot__base_8cxx_source.html#l00945">set_domain()</a>, <a class="el" href="plot__base_8cxx_source.html#l00951">set_domain3()</a>, <a class="el" href="plot__base_8cxx_source.html#l00966">set_extent()</a>, <a class="el" href="plot__base_8cxx_source.html#l00974">set_extent_scaling()</a>, <a class="el" href="plot__base_8cxx_source.html#l00993">set_height()</a>, <a class="el" href="plot__base_8cxx_source.html#l01164">set_label_font()</a>, <a class="el" href="plot__base_8cxx_source.html#l00374">set_plot_uniforms()</a>, <a class="el" href="plot__base_8cxx_source.html#l00983">set_width()</a>, and <a class="el" href="plot__base_8cxx_source.html#l00261">transform_to_world()</a>.</p>
+<p class="reference">Referenced by <a class="el" href="plot__base_8cxx_source.html#l01108">adjust_domain_axis_to_data()</a>, <a class="el" href="plot__base_8cxx_source.html#l01174">adjust_domain_to_data()</a>, <a class="el" href="plot__base_8cxx_source.html#l01153">adjust_extent_to_domain_aspect_ratio()</a>, <a class="el" href="plot__base_8cxx_source.html#l01144">adjust_tick_marks()</a>, <a class="el" href="plot2d_8cxx_source.html#l00670">cgv::plot::plot2d::create_gui()</a>, <a class="el" href="plot__base_8cxx_source.html#l01309">create_plot_gui()</a>, <a class="el" href="plot2d_8cxx_source.html#l00541">cgv::plot::plot2d::draw()</a>, <a class="el" href="plot3d_8cxx_source.html#l00505">cgv::plot::plot3d::draw()</a>, <a class="el" href="plot__base_8cxx_source.html#l00275">ensure_font_names()</a>, <a class="el" href="plot__base_8cxx_source.html#l00949">get_domain()</a>, <a class="el" href="plot__base_8cxx_source.html#l00955">get_domain3()</a>, <a class="el" href="plot__base_8cxx_source.html#l00974">get_extent()</a>, <a class="el" href="plot__base_8cxx_source.html#l01162">include_axis_to_domain()</a>, <a class="el" href="plot__base_8cxx_source.html#l00335">on_font_face_selection()</a>, <a class="el" href="plot__base_8cxx_source.html#l00327">on_font_selection()</a>, <a class="el" href="plot2d_8cxx_source.html#l00024">cgv::plot::plot2d::plot2d()</a>, <a class="el" href="plot3d_8cxx_source.html#l00066">cgv::plot::plot3d::plot3d()</a>, <a class="el" href="plot__base_8cxx_source.html#l00343">prepare_extents()</a>, <a class="el" href="plot__base_8cxx_source.html#l00961">set_domain()</a>, <a class="el" href="plot__base_8cxx_source.html#l00967">set_domain3()</a>, <a class="el" href="plot__base_8cxx_source.html#l00982">set_extent()</a>, <a class="el" href="plot__base_8cxx_source.html#l00990">set_extent_scaling()</a>, <a class="el" href="plot__base_8cxx_source.html#l01009">set_height()</a>, <a class="el" href="plot__base_8cxx_source.html#l01180">set_label_font()</a>, <a class="el" href="plot__base_8cxx_source.html#l00374">set_plot_uniforms()</a>, <a class="el" href="plot__base_8cxx_source.html#l00999">set_width()</a>, and <a class="el" href="plot__base_8cxx_source.html#l00261">transform_to_world()</a>.</p>
 
 </div>
 </div>
@@ -2124,9 +2147,9 @@ virtual bool&#160;</td><td class="memItemRight" valign="bottom"><b>compute_sampl
 
 <p>query the plot extend in 2D coordinates </p>
 
-<p class="definition">Definition at line <a class="el" href="plot__base_8cxx_source.html#l00958">958</a> of file <a class="el" href="plot__base_8cxx_source.html">plot_base.cxx</a>.</p>
+<p class="definition">Definition at line <a class="el" href="plot__base_8cxx_source.html#l00974">974</a> of file <a class="el" href="plot__base_8cxx_source.html">plot_base.cxx</a>.</p>
 
-<p class="reference">References <a class="el" href="plot__base_8h_source.html#l00056">cgv::plot::domain_config::axis_configs</a>, <a class="el" href="plot__base_8h_source.html#l00437">extent</a>, <a class="el" href="plot__base_8h_source.html#l00488">get_dim()</a>, and <a class="el" href="plot__base_8cxx_source.html#l01180">get_domain_config_ptr()</a>.</p>
+<p class="reference">References <a class="el" href="plot__base_8h_source.html#l00060">cgv::plot::domain_config::axis_configs</a>, <a class="el" href="plot__base_8h_source.html#l00452">extent</a>, <a class="el" href="plot__base_8h_source.html#l00505">get_dim()</a>, and <a class="el" href="plot__base_8cxx_source.html#l01196">get_domain_config_ptr()</a>.</p>
 
 </div>
 </div>
@@ -2147,11 +2170,11 @@ virtual bool&#160;</td><td class="memItemRight" valign="bottom"><b>compute_sampl
 
 <p>return current number of sub plots </p>
 
-<p class="definition">Definition at line <a class="el" href="plot__base_8cxx_source.html#l01195">1195</a> of file <a class="el" href="plot__base_8cxx_source.html">plot_base.cxx</a>.</p>
+<p class="definition">Definition at line <a class="el" href="plot__base_8cxx_source.html#l01211">1211</a> of file <a class="el" href="plot__base_8cxx_source.html">plot_base.cxx</a>.</p>
 
-<p class="reference">References <a class="el" href="plot__base_8h_source.html#l00348">configs</a>.</p>
+<p class="reference">References <a class="el" href="plot__base_8h_source.html#l00352">configs</a>.</p>
 
-<p class="reference">Referenced by <a class="el" href="plot2d_8cxx_source.html#l00068">cgv::plot::plot2d::add_sub_plot()</a>, <a class="el" href="plot3d_8cxx_source.html#l00084">cgv::plot::plot3d::add_sub_plot()</a>, <a class="el" href="plot__base_8cxx_source.html#l01247">clear()</a>, <a class="el" href="plot__base_8cxx_source.html#l01586">create_gui()</a>, and <a class="el" href="plot2d_8cxx_source.html#l00533">cgv::plot::plot2d::draw()</a>.</p>
+<p class="reference">Referenced by <a class="el" href="plot2d_8cxx_source.html#l00068">cgv::plot::plot2d::add_sub_plot()</a>, <a class="el" href="plot3d_8cxx_source.html#l00084">cgv::plot::plot3d::add_sub_plot()</a>, <a class="el" href="plot__base_8cxx_source.html#l01293">clear()</a>, <a class="el" href="plot__base_8cxx_source.html#l01642">create_gui()</a>, and <a class="el" href="plot2d_8cxx_source.html#l00541">cgv::plot::plot2d::draw()</a>.</p>
 
 </div>
 </div>
@@ -2172,9 +2195,9 @@ virtual bool&#160;</td><td class="memItemRight" valign="bottom"><b>compute_sampl
 
 <p>get current orientation quaternion </p>
 
-<p class="definition">Definition at line <a class="el" href="plot__base_8cxx_source.html#l01023">1023</a> of file <a class="el" href="plot__base_8cxx_source.html">plot_base.cxx</a>.</p>
+<p class="definition">Definition at line <a class="el" href="plot__base_8cxx_source.html#l01039">1039</a> of file <a class="el" href="plot__base_8cxx_source.html">plot_base.cxx</a>.</p>
 
-<p class="reference">References <a class="el" href="plot__base_8h_source.html#l00354">orientation</a>.</p>
+<p class="reference">References <a class="el" href="plot__base_8h_source.html#l00358">orientation</a>.</p>
 
 </div>
 </div>
@@ -2195,11 +2218,11 @@ virtual bool&#160;</td><td class="memItemRight" valign="bottom"><b>compute_sampl
 
 <p>return the current origin in 3D coordinates </p>
 
-<p class="definition">Definition at line <a class="el" href="plot__base_8cxx_source.html#l01019">1019</a> of file <a class="el" href="plot__base_8cxx_source.html">plot_base.cxx</a>.</p>
+<p class="definition">Definition at line <a class="el" href="plot__base_8cxx_source.html#l01035">1035</a> of file <a class="el" href="plot__base_8cxx_source.html">plot_base.cxx</a>.</p>
 
-<p class="reference">References <a class="el" href="plot__base_8cxx_source.html#l00939">get_domain3()</a>, and <a class="el" href="plot__base_8cxx_source.html#l00261">transform_to_world()</a>.</p>
+<p class="reference">References <a class="el" href="plot__base_8cxx_source.html#l00955">get_domain3()</a>, and <a class="el" href="plot__base_8cxx_source.html#l00261">transform_to_world()</a>.</p>
 
-<p class="reference">Referenced by <a class="el" href="plot__base_8cxx_source.html#l01007">place_origin()</a>.</p>
+<p class="reference">Referenced by <a class="el" href="plot__base_8cxx_source.html#l01023">place_origin()</a>.</p>
 
 </div>
 </div>
@@ -2221,9 +2244,9 @@ virtual bool&#160;</td><td class="memItemRight" valign="bottom"><b>compute_sampl
 
 <p>extend domain such that given axis is included </p>
 
-<p class="definition">Definition at line <a class="el" href="plot__base_8cxx_source.html#l01146">1146</a> of file <a class="el" href="plot__base_8cxx_source.html">plot_base.cxx</a>.</p>
+<p class="definition">Definition at line <a class="el" href="plot__base_8cxx_source.html#l01162">1162</a> of file <a class="el" href="plot__base_8cxx_source.html">plot_base.cxx</a>.</p>
 
-<p class="reference">References <a class="el" href="plot__base_8h_source.html#l00056">cgv::plot::domain_config::axis_configs</a>, <a class="el" href="plot__base_8h_source.html#l00488">get_dim()</a>, and <a class="el" href="plot__base_8cxx_source.html#l01180">get_domain_config_ptr()</a>.</p>
+<p class="reference">References <a class="el" href="plot__base_8h_source.html#l00060">cgv::plot::domain_config::axis_configs</a>, <a class="el" href="plot__base_8h_source.html#l00505">get_dim()</a>, and <a class="el" href="plot__base_8cxx_source.html#l01196">get_domain_config_ptr()</a>.</p>
 
 </div>
 </div>
@@ -2255,9 +2278,9 @@ virtual bool&#160;</td><td class="memItemRight" valign="bottom"><b>compute_sampl
 
 <p>Reimplemented from <a class="el" href="classcgv_1_1render_1_1drawable.html#acc29110926fa9e045b972b9ce4a303ba">cgv::render::drawable</a>.</p>
 
-<p class="definition">Definition at line <a class="el" href="plot__base_8cxx_source.html#l01212">1212</a> of file <a class="el" href="plot__base_8cxx_source.html">plot_base.cxx</a>.</p>
+<p class="definition">Definition at line <a class="el" href="plot__base_8cxx_source.html#l01257">1257</a> of file <a class="el" href="plot__base_8cxx_source.html">plot_base.cxx</a>.</p>
 
-<p class="reference">References <a class="el" href="plot__base_8h_source.html#l00427">aab_legend</a>, <a class="el" href="shader__program_8cxx_source.html#l00488">cgv::render::shader_program::build_program()</a>, <a class="el" href="attribute__array__binding_8cxx_source.html#l00088">cgv::render::attribute_array_binding::create()</a>, <a class="el" href="vertex__buffer_8cxx_source.html#l00058">cgv::render::vertex_buffer::create()</a>, <a class="el" href="attribute__array__binding_8cxx_source.html#l00117">cgv::render::attribute_array_binding::enable_array()</a>, <a class="el" href="plot__base_8cxx_source.html#l00275">ensure_font_names()</a>, <a class="el" href="shader__program_8cxx_source.html#l00696">cgv::render::shader_program::get_attribute_location()</a>, <a class="el" href="rectangle__renderer_8cxx_source.html#l00036">cgv::render::ref_rectangle_renderer()</a>, <a class="el" href="attribute__array__binding_8h_source.html#l00068">cgv::render::attribute_array_binding::set_attribute_array()</a>, and <a class="el" href="plot__base_8h_source.html#l00425">vbo_legend</a>.</p>
+<p class="reference">References <a class="el" href="plot__base_8h_source.html#l00442">aab_legend</a>, <a class="el" href="shader__program_8cxx_source.html#l00502">cgv::render::shader_program::build_program()</a>, <a class="el" href="plot__base_8h_source.html#l00425">color_scale_adapter</a>, <a class="el" href="attribute__array__binding_8cxx_source.html#l00088">cgv::render::attribute_array_binding::create()</a>, <a class="el" href="vertex__buffer_8cxx_source.html#l00054">cgv::render::vertex_buffer::create()</a>, <a class="el" href="attribute__array__binding_8cxx_source.html#l00117">cgv::render::attribute_array_binding::enable_array()</a>, <a class="el" href="plot__base_8cxx_source.html#l00275">ensure_font_names()</a>, <a class="el" href="shader__program_8cxx_source.html#l00730">cgv::render::shader_program::get_attribute_location()</a>, <a class="el" href="color__scale__adapter_8cxx_source.html#l00006">cgv::render::color_scale_adapter::init()</a>, <a class="el" href="rectangle__renderer_8cxx_source.html#l00036">cgv::render::ref_rectangle_renderer()</a>, <a class="el" href="attribute__array__binding_8h_source.html#l00068">cgv::render::attribute_array_binding::set_attribute_array()</a>, and <a class="el" href="plot__base_8h_source.html#l00440">vbo_legend</a>.</p>
 
 <p class="reference">Referenced by <a class="el" href="plot2d_8cxx_source.html#l00117">cgv::plot::plot2d::init()</a>, and <a class="el" href="plot3d_8cxx_source.html#l00142">cgv::plot::plot3d::init()</a>.</p>
 
@@ -2290,9 +2313,9 @@ virtual bool&#160;</td><td class="memItemRight" valign="bottom"><b>compute_sampl
 
 <p class="definition">Definition at line <a class="el" href="plot__base_8cxx_source.html#l00335">335</a> of file <a class="el" href="plot__base_8cxx_source.html">plot_base.cxx</a>.</p>
 
-<p class="reference">References <a class="el" href="plot__base_8cxx_source.html#l01180">get_domain_config_ptr()</a>, <a class="el" href="plot__base_8h_source.html#l00417">label_font</a>, <a class="el" href="plot__base_8h_source.html#l00419">label_font_face</a>, <a class="el" href="plot__base_8h_source.html#l00421">title_font</a>, and <a class="el" href="plot__base_8h_source.html#l00423">title_font_face</a>.</p>
+<p class="reference">References <a class="el" href="plot__base_8cxx_source.html#l01196">get_domain_config_ptr()</a>, <a class="el" href="plot__base_8h_source.html#l00432">label_font</a>, <a class="el" href="plot__base_8h_source.html#l00434">label_font_face</a>, <a class="el" href="plot__base_8h_source.html#l00436">title_font</a>, and <a class="el" href="plot__base_8h_source.html#l00438">title_font_face</a>.</p>
 
-<p class="reference">Referenced by <a class="el" href="plot__base_8cxx_source.html#l01262">create_plot_gui()</a>, <a class="el" href="plot__base_8cxx_source.html#l00327">on_font_selection()</a>, and <a class="el" href="plot__base_8cxx_source.html#l01164">set_label_font()</a>.</p>
+<p class="reference">Referenced by <a class="el" href="plot__base_8cxx_source.html#l01309">create_plot_gui()</a>, <a class="el" href="plot__base_8cxx_source.html#l00327">on_font_selection()</a>, and <a class="el" href="plot__base_8cxx_source.html#l01180">set_label_font()</a>.</p>
 
 </div>
 </div>
@@ -2323,9 +2346,9 @@ virtual bool&#160;</td><td class="memItemRight" valign="bottom"><b>compute_sampl
 
 <p class="definition">Definition at line <a class="el" href="plot__base_8cxx_source.html#l00327">327</a> of file <a class="el" href="plot__base_8cxx_source.html">plot_base.cxx</a>.</p>
 
-<p class="reference">References <a class="el" href="font_8cxx_source.html#l00032">cgv::media::font::find_font()</a>, <a class="el" href="plot__base_8h_source.html#l00328">font_names</a>, <a class="el" href="plot__base_8cxx_source.html#l01180">get_domain_config_ptr()</a>, <a class="el" href="plot__base_8h_source.html#l00417">label_font</a>, <a class="el" href="plot__base_8cxx_source.html#l00335">on_font_face_selection()</a>, and <a class="el" href="plot__base_8h_source.html#l00421">title_font</a>.</p>
+<p class="reference">References <a class="el" href="font_8cxx_source.html#l00032">cgv::media::font::find_font()</a>, <a class="el" href="plot__base_8h_source.html#l00332">font_names</a>, <a class="el" href="plot__base_8cxx_source.html#l01196">get_domain_config_ptr()</a>, <a class="el" href="plot__base_8h_source.html#l00432">label_font</a>, <a class="el" href="plot__base_8cxx_source.html#l00335">on_font_face_selection()</a>, and <a class="el" href="plot__base_8h_source.html#l00436">title_font</a>.</p>
 
-<p class="reference">Referenced by <a class="el" href="plot__base_8cxx_source.html#l01262">create_plot_gui()</a>, <a class="el" href="plot__base_8cxx_source.html#l00275">ensure_font_names()</a>, and <a class="el" href="plot__base_8cxx_source.html#l01164">set_label_font()</a>.</p>
+<p class="reference">Referenced by <a class="el" href="plot__base_8cxx_source.html#l01309">create_plot_gui()</a>, <a class="el" href="plot__base_8cxx_source.html#l00275">ensure_font_names()</a>, and <a class="el" href="plot__base_8cxx_source.html#l01180">set_label_font()</a>.</p>
 
 </div>
 </div>
@@ -2385,9 +2408,9 @@ virtual bool&#160;</td><td class="memItemRight" valign="bottom"><b>compute_sampl
 
 <p>place the plot extent center in 3D to the given location (this might can change the current origin location) </p>
 
-<p class="definition">Definition at line <a class="el" href="plot__base_8cxx_source.html#l01011">1011</a> of file <a class="el" href="plot__base_8cxx_source.html">plot_base.cxx</a>.</p>
+<p class="definition">Definition at line <a class="el" href="plot__base_8cxx_source.html#l01027">1027</a> of file <a class="el" href="plot__base_8cxx_source.html">plot_base.cxx</a>.</p>
 
-<p class="reference">References <a class="el" href="plot__base_8h_source.html#l00356">center_location</a>.</p>
+<p class="reference">References <a class="el" href="plot__base_8h_source.html#l00360">center_location</a>.</p>
 
 </div>
 </div>
@@ -2419,9 +2442,9 @@ virtual bool&#160;</td><td class="memItemRight" valign="bottom"><b>compute_sampl
 
 <p>place a corner (0 .. lower left, 1 .. lower right, 2 .. upper left, 3 .. upper right) to a given 3D location ((this might can change the current origin / center location) </p>
 
-<p class="definition">Definition at line <a class="el" href="plot__base_8cxx_source.html#l01015">1015</a> of file <a class="el" href="plot__base_8cxx_source.html">plot_base.cxx</a>.</p>
+<p class="definition">Definition at line <a class="el" href="plot__base_8cxx_source.html#l01031">1031</a> of file <a class="el" href="plot__base_8cxx_source.html">plot_base.cxx</a>.</p>
 
-<p class="reference">References <a class="el" href="plot__base_8h_source.html#l00356">center_location</a>, and <a class="el" href="plot__base_8cxx_source.html#l01031">get_corner()</a>.</p>
+<p class="reference">References <a class="el" href="plot__base_8h_source.html#l00360">center_location</a>, and <a class="el" href="plot__base_8cxx_source.html#l01047">get_corner()</a>.</p>
 
 </div>
 </div>
@@ -2443,9 +2466,9 @@ virtual bool&#160;</td><td class="memItemRight" valign="bottom"><b>compute_sampl
 
 <p>place the origin of the plot in 3D to the given location </p>
 
-<p class="definition">Definition at line <a class="el" href="plot__base_8cxx_source.html#l01007">1007</a> of file <a class="el" href="plot__base_8cxx_source.html">plot_base.cxx</a>.</p>
+<p class="definition">Definition at line <a class="el" href="plot__base_8cxx_source.html#l01023">1023</a> of file <a class="el" href="plot__base_8cxx_source.html">plot_base.cxx</a>.</p>
 
-<p class="reference">References <a class="el" href="plot__base_8h_source.html#l00356">center_location</a>, and <a class="el" href="plot__base_8cxx_source.html#l01019">get_origin()</a>.</p>
+<p class="reference">References <a class="el" href="plot__base_8h_source.html#l00360">center_location</a>, and <a class="el" href="plot__base_8cxx_source.html#l01035">get_origin()</a>.</p>
 
 </div>
 </div>
@@ -2476,9 +2499,9 @@ virtual bool&#160;</td><td class="memItemRight" valign="bottom"><b>compute_sampl
 
 <p class="definition">Definition at line <a class="el" href="plot__base_8cxx_source.html#l00343">343</a> of file <a class="el" href="plot__base_8cxx_source.html">plot_base.cxx</a>.</p>
 
-<p class="reference">References <a class="el" href="plot__base_8h_source.html#l00056">cgv::plot::domain_config::axis_configs</a>, <a class="el" href="plot__base_8h_source.html#l00437">extent</a>, <a class="el" href="plot__base_8h_source.html#l00488">get_dim()</a>, and <a class="el" href="plot__base_8cxx_source.html#l01180">get_domain_config_ptr()</a>.</p>
+<p class="reference">References <a class="el" href="plot__base_8h_source.html#l00060">cgv::plot::domain_config::axis_configs</a>, <a class="el" href="plot__base_8h_source.html#l00452">extent</a>, <a class="el" href="plot__base_8h_source.html#l00505">get_dim()</a>, and <a class="el" href="plot__base_8cxx_source.html#l01196">get_domain_config_ptr()</a>.</p>
 
-<p class="reference">Referenced by <a class="el" href="plot2d_8cxx_source.html#l00533">cgv::plot::plot2d::draw()</a>, and <a class="el" href="plot3d_8cxx_source.html#l00504">cgv::plot::plot3d::draw()</a>.</p>
+<p class="reference">Referenced by <a class="el" href="plot2d_8cxx_source.html#l00541">cgv::plot::plot2d::draw()</a>, and <a class="el" href="plot3d_8cxx_source.html#l00505">cgv::plot::plot3d::draw()</a>.</p>
 
 </div>
 </div>
@@ -2500,11 +2523,81 @@ virtual bool&#160;</td><td class="memItemRight" valign="bottom"><b>compute_sampl
 
 <p>return a reference to the plot base configuration of the i-th plot </p>
 
-<p class="definition">Definition at line <a class="el" href="plot__base_8cxx_source.html#l01199">1199</a> of file <a class="el" href="plot__base_8cxx_source.html">plot_base.cxx</a>.</p>
+<p class="definition">Definition at line <a class="el" href="plot__base_8cxx_source.html#l01215">1215</a> of file <a class="el" href="plot__base_8cxx_source.html">plot_base.cxx</a>.</p>
 
-<p class="reference">References <a class="el" href="plot__base_8h_source.html#l00348">configs</a>.</p>
+<p class="reference">References <a class="el" href="plot__base_8h_source.html#l00352">configs</a>.</p>
 
-<p class="reference">Referenced by <a class="el" href="plot2d_8cxx_source.html#l00068">cgv::plot::plot2d::add_sub_plot()</a>, <a class="el" href="plot3d_8cxx_source.html#l00084">cgv::plot::plot3d::add_sub_plot()</a>, <a class="el" href="plot__base_8cxx_source.html#l01092">adjust_domain_axis_to_data()</a>, <a class="el" href="plot__base_8cxx_source.html#l01461">create_base_config_gui()</a>, <a class="el" href="plot__base_8cxx_source.html#l01543">create_config_gui()</a>, <a class="el" href="plot__base_8cxx_source.html#l01586">create_gui()</a>, <a class="el" href="plot2d_8cxx_source.html#l00101">cgv::plot::plot2d::ref_sub_plot2d_config()</a>, <a class="el" href="plot3d_8cxx_source.html#l00129">cgv::plot::plot3d::ref_sub_plot3d_config()</a>, and <a class="el" href="plot__base_8cxx_source.html#l01207">set_sub_plot_colors()</a>.</p>
+<p class="reference">Referenced by <a class="el" href="plot2d_8cxx_source.html#l00068">cgv::plot::plot2d::add_sub_plot()</a>, <a class="el" href="plot3d_8cxx_source.html#l00084">cgv::plot::plot3d::add_sub_plot()</a>, <a class="el" href="plot__base_8cxx_source.html#l01108">adjust_domain_axis_to_data()</a>, <a class="el" href="plot__base_8cxx_source.html#l01517">create_base_config_gui()</a>, <a class="el" href="plot__base_8cxx_source.html#l01599">create_config_gui()</a>, <a class="el" href="plot__base_8cxx_source.html#l01642">create_gui()</a>, <a class="el" href="plot2d_8cxx_source.html#l00101">cgv::plot::plot2d::ref_sub_plot2d_config()</a>, <a class="el" href="plot3d_8cxx_source.html#l00129">cgv::plot::plot3d::ref_sub_plot3d_config()</a>, and <a class="el" href="plot__base_8cxx_source.html#l01223">set_sub_plot_colors()</a>.</p>
+
+</div>
+</div>
+<a id="a50e36b470c2e2968520f482c137f1471" name="a50e36b470c2e2968520f482c137f1471"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a50e36b470c2e2968520f482c137f1471">&#9670;&#160;</a></span>set_color_scale() <span class="overload">[1/2]</span></h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">bool cgv::plot::plot_base::set_color_scale </td>
+          <td>(</td>
+          <td class="paramtype">int&#160;</td>
+          <td class="paramname"><em>mapping_index</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">const std::string &amp;&#160;</td>
+          <td class="paramname"><em>color_scheme_name</em>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>set color scale of primary or secondary color mapping by name; the name must be registered in the global color scheme registry; see cgv::media::get_global_continuous_color_scheme_registry </p>
+
+<p class="definition">Definition at line <a class="el" href="plot__base_8cxx_source.html#l01247">1247</a> of file <a class="el" href="plot__base_8cxx_source.html">plot_base.cxx</a>.</p>
+
+<p class="reference">References <a class="el" href="plot__base_8cxx_source.html#l01228">set_color_scale()</a>.</p>
+
+</div>
+</div>
+<a id="ac8ce3068e672aa623105a207c5dd5926" name="ac8ce3068e672aa623105a207c5dd5926"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#ac8ce3068e672aa623105a207c5dd5926">&#9670;&#160;</a></span>set_color_scale() <span class="overload">[2/2]</span></h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">bool cgv::plot::plot_base::set_color_scale </td>
+          <td>(</td>
+          <td class="paramtype">int&#160;</td>
+          <td class="paramname"><em>mapping_index</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">int&#160;</td>
+          <td class="paramname"><em>color_scheme_index</em>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>set color scale of primary or secondary color mapping via an index into the global color scheme registry; see cgv::media::get_global_continuous_color_scheme_registry </p>
+
+<p class="definition">Definition at line <a class="el" href="plot__base_8cxx_source.html#l01228">1228</a> of file <a class="el" href="plot__base_8cxx_source.html">plot_base.cxx</a>.</p>
+
+<p class="reference">References <a class="el" href="plot__base_8h_source.html#l00427">color_scheme_index</a>, <a class="el" href="plot__base_8h_source.html#l00385">MAX_NR_COLOR_MAPPINGS</a>, and <a class="el" href="plot__base_8cxx_source.html#l00421">update_color_scales()</a>.</p>
+
+<p class="reference">Referenced by <a class="el" href="plot__base_8cxx_source.html#l01247">set_color_scale()</a>.</p>
 
 </div>
 </div>
@@ -2526,9 +2619,9 @@ virtual bool&#160;</td><td class="memItemRight" valign="bottom"><b>compute_sampl
 
 <p>set the domain for 2d plots </p>
 
-<p class="definition">Definition at line <a class="el" href="plot__base_8cxx_source.html#l00945">945</a> of file <a class="el" href="plot__base_8cxx_source.html">plot_base.cxx</a>.</p>
+<p class="definition">Definition at line <a class="el" href="plot__base_8cxx_source.html#l00961">961</a> of file <a class="el" href="plot__base_8cxx_source.html">plot_base.cxx</a>.</p>
 
-<p class="reference">References <a class="el" href="plot__base_8h_source.html#l00056">cgv::plot::domain_config::axis_configs</a>, <a class="el" href="plot__base_8cxx_source.html#l01180">get_domain_config_ptr()</a>, <a class="el" href="axis__aligned__box_8h_source.html#l00058">cgv::media::axis_aligned_box&lt; T, N &gt;::get_max_pnt()</a>, and <a class="el" href="axis__aligned__box_8h_source.html#l00056">cgv::media::axis_aligned_box&lt; T, N &gt;::get_min_pnt()</a>.</p>
+<p class="reference">References <a class="el" href="plot__base_8h_source.html#l00060">cgv::plot::domain_config::axis_configs</a>, <a class="el" href="plot__base_8cxx_source.html#l01196">get_domain_config_ptr()</a>, <a class="el" href="axis__aligned__box_8h_source.html#l00058">cgv::media::axis_aligned_box&lt; T, N &gt;::get_max_pnt()</a>, and <a class="el" href="axis__aligned__box_8h_source.html#l00056">cgv::media::axis_aligned_box&lt; T, N &gt;::get_min_pnt()</a>.</p>
 
 </div>
 </div>
@@ -2550,9 +2643,9 @@ virtual bool&#160;</td><td class="memItemRight" valign="bottom"><b>compute_sampl
 
 <p>set the domain for 3d plots </p>
 
-<p class="definition">Definition at line <a class="el" href="plot__base_8cxx_source.html#l00951">951</a> of file <a class="el" href="plot__base_8cxx_source.html">plot_base.cxx</a>.</p>
+<p class="definition">Definition at line <a class="el" href="plot__base_8cxx_source.html#l00967">967</a> of file <a class="el" href="plot__base_8cxx_source.html">plot_base.cxx</a>.</p>
 
-<p class="reference">References <a class="el" href="plot__base_8h_source.html#l00056">cgv::plot::domain_config::axis_configs</a>, <a class="el" href="plot__base_8h_source.html#l00488">get_dim()</a>, <a class="el" href="plot__base_8cxx_source.html#l01180">get_domain_config_ptr()</a>, <a class="el" href="axis__aligned__box_8h_source.html#l00058">cgv::media::axis_aligned_box&lt; T, N &gt;::get_max_pnt()</a>, and <a class="el" href="axis__aligned__box_8h_source.html#l00056">cgv::media::axis_aligned_box&lt; T, N &gt;::get_min_pnt()</a>.</p>
+<p class="reference">References <a class="el" href="plot__base_8h_source.html#l00060">cgv::plot::domain_config::axis_configs</a>, <a class="el" href="plot__base_8h_source.html#l00505">get_dim()</a>, <a class="el" href="plot__base_8cxx_source.html#l01196">get_domain_config_ptr()</a>, <a class="el" href="axis__aligned__box_8h_source.html#l00058">cgv::media::axis_aligned_box&lt; T, N &gt;::get_max_pnt()</a>, and <a class="el" href="axis__aligned__box_8h_source.html#l00056">cgv::media::axis_aligned_box&lt; T, N &gt;::get_min_pnt()</a>.</p>
 
 </div>
 </div>
@@ -2574,9 +2667,9 @@ virtual bool&#160;</td><td class="memItemRight" valign="bottom"><b>compute_sampl
 
 <p>set the domain configuration to an external configuration in order to synch several plots, if set to null, the internal domain config is used again </p>
 
-<p class="definition">Definition at line <a class="el" href="plot__base_8cxx_source.html#l01188">1188</a> of file <a class="el" href="plot__base_8cxx_source.html">plot_base.cxx</a>.</p>
+<p class="definition">Definition at line <a class="el" href="plot__base_8cxx_source.html#l01204">1204</a> of file <a class="el" href="plot__base_8cxx_source.html">plot_base.cxx</a>.</p>
 
-<p class="reference">References <a class="el" href="plot__base_8h_source.html#l00344">dom_cfg</a>, and <a class="el" href="plot__base_8h_source.html#l00346">dom_cfg_ptr</a>.</p>
+<p class="reference">References <a class="el" href="plot__base_8h_source.html#l00348">dom_cfg</a>, and <a class="el" href="plot__base_8h_source.html#l00350">dom_cfg_ptr</a>.</p>
 
 </div>
 </div>
@@ -2598,9 +2691,9 @@ virtual bool&#160;</td><td class="memItemRight" valign="bottom"><b>compute_sampl
 
 <p>set the plot extend in 2D coordinates </p>
 
-<p class="definition">Definition at line <a class="el" href="plot__base_8cxx_source.html#l00966">966</a> of file <a class="el" href="plot__base_8cxx_source.html">plot_base.cxx</a>.</p>
+<p class="definition">Definition at line <a class="el" href="plot__base_8cxx_source.html#l00982">982</a> of file <a class="el" href="plot__base_8cxx_source.html">plot_base.cxx</a>.</p>
 
-<p class="reference">References <a class="el" href="plot__base_8h_source.html#l00056">cgv::plot::domain_config::axis_configs</a>, <a class="el" href="plot__base_8h_source.html#l00437">extent</a>, <a class="el" href="plot__base_8h_source.html#l00488">get_dim()</a>, <a class="el" href="plot__base_8cxx_source.html#l01180">get_domain_config_ptr()</a>, and <a class="el" href="vec_8h_source.html#l00059">cgv::math::vec&lt; T &gt;::size()</a>.</p>
+<p class="reference">References <a class="el" href="plot__base_8h_source.html#l00060">cgv::plot::domain_config::axis_configs</a>, <a class="el" href="plot__base_8h_source.html#l00452">extent</a>, <a class="el" href="plot__base_8h_source.html#l00505">get_dim()</a>, <a class="el" href="plot__base_8cxx_source.html#l01196">get_domain_config_ptr()</a>, and <a class="el" href="vec_8h_source.html#l00059">cgv::math::vec&lt; T &gt;::size()</a>.</p>
 
 </div>
 </div>
@@ -2639,9 +2732,9 @@ virtual bool&#160;</td><td class="memItemRight" valign="bottom"><b>compute_sampl
 <p>set extent_scaling values for all axes </p>
 <p>for all axes with extent_scaling &gt; 0 (axes values default to 0) ensure that world extents are in same ratio as extent_scaling values </p>
 
-<p class="definition">Definition at line <a class="el" href="plot__base_8cxx_source.html#l00974">974</a> of file <a class="el" href="plot__base_8cxx_source.html">plot_base.cxx</a>.</p>
+<p class="definition">Definition at line <a class="el" href="plot__base_8cxx_source.html#l00990">990</a> of file <a class="el" href="plot__base_8cxx_source.html">plot_base.cxx</a>.</p>
 
-<p class="reference">References <a class="el" href="plot__base_8h_source.html#l00056">cgv::plot::domain_config::axis_configs</a>, <a class="el" href="plot__base_8h_source.html#l00488">get_dim()</a>, and <a class="el" href="plot__base_8cxx_source.html#l01180">get_domain_config_ptr()</a>.</p>
+<p class="reference">References <a class="el" href="plot__base_8h_source.html#l00060">cgv::plot::domain_config::axis_configs</a>, <a class="el" href="plot__base_8h_source.html#l00505">get_dim()</a>, and <a class="el" href="plot__base_8cxx_source.html#l01196">get_domain_config_ptr()</a>.</p>
 
 </div>
 </div>
@@ -2673,9 +2766,9 @@ virtual bool&#160;</td><td class="memItemRight" valign="bottom"><b>compute_sampl
 
 <p>set the plot height to given value and if constrained == true the width, such that the aspect ration is the same as the aspect ratio of the domain </p>
 
-<p class="definition">Definition at line <a class="el" href="plot__base_8cxx_source.html#l00993">993</a> of file <a class="el" href="plot__base_8cxx_source.html">plot_base.cxx</a>.</p>
+<p class="definition">Definition at line <a class="el" href="plot__base_8cxx_source.html#l01009">1009</a> of file <a class="el" href="plot__base_8cxx_source.html">plot_base.cxx</a>.</p>
 
-<p class="reference">References <a class="el" href="plot__base_8h_source.html#l00056">cgv::plot::domain_config::axis_configs</a>, and <a class="el" href="plot__base_8cxx_source.html#l01180">get_domain_config_ptr()</a>.</p>
+<p class="reference">References <a class="el" href="plot__base_8h_source.html#l00060">cgv::plot::domain_config::axis_configs</a>, and <a class="el" href="plot__base_8cxx_source.html#l01196">get_domain_config_ptr()</a>.</p>
 
 </div>
 </div>
@@ -2713,9 +2806,9 @@ virtual bool&#160;</td><td class="memItemRight" valign="bottom"><b>compute_sampl
 
 <p>configure the label font </p>
 
-<p class="definition">Definition at line <a class="el" href="plot__base_8cxx_source.html#l01164">1164</a> of file <a class="el" href="plot__base_8cxx_source.html">plot_base.cxx</a>.</p>
+<p class="definition">Definition at line <a class="el" href="plot__base_8cxx_source.html#l01180">1180</a> of file <a class="el" href="plot__base_8cxx_source.html">plot_base.cxx</a>.</p>
 
-<p class="reference">References <a class="el" href="plot__base_8h_source.html#l00328">font_names</a>, <a class="el" href="plot__base_8cxx_source.html#l01180">get_domain_config_ptr()</a>, <a class="el" href="plot__base_8h_source.html#l00062">cgv::plot::domain_config::label_ffa</a>, <a class="el" href="plot__base_8h_source.html#l00058">cgv::plot::domain_config::label_font_index</a>, <a class="el" href="plot__base_8h_source.html#l00060">cgv::plot::domain_config::label_font_size</a>, <a class="el" href="plot__base_8cxx_source.html#l00335">on_font_face_selection()</a>, and <a class="el" href="plot__base_8cxx_source.html#l00327">on_font_selection()</a>.</p>
+<p class="reference">References <a class="el" href="plot__base_8h_source.html#l00332">font_names</a>, <a class="el" href="plot__base_8cxx_source.html#l01196">get_domain_config_ptr()</a>, <a class="el" href="plot__base_8h_source.html#l00066">cgv::plot::domain_config::label_ffa</a>, <a class="el" href="plot__base_8h_source.html#l00062">cgv::plot::domain_config::label_font_index</a>, <a class="el" href="plot__base_8h_source.html#l00064">cgv::plot::domain_config::label_font_size</a>, <a class="el" href="plot__base_8cxx_source.html#l00335">on_font_face_selection()</a>, and <a class="el" href="plot__base_8cxx_source.html#l00327">on_font_selection()</a>.</p>
 
 </div>
 </div>
@@ -2757,7 +2850,7 @@ virtual bool&#160;</td><td class="memItemRight" valign="bottom"><b>compute_sampl
 
 <p class="definition">Definition at line <a class="el" href="plot__base_8cxx_source.html#l00395">395</a> of file <a class="el" href="plot__base_8cxx_source.html">plot_base.cxx</a>.</p>
 
-<p class="reference">References <a class="el" href="plot__base_8h_source.html#l00383">color_mapping</a>, <a class="el" href="plot__base_8h_source.html#l00387">color_scale_gamma</a>, <a class="el" href="plot__base_8h_source.html#l00385">color_scale_index</a>, <a class="el" href="render_2color__scale_8cxx_source.html#l00006">cgv::render::configure_color_scale()</a>, <a class="el" href="shader__program_8cxx_source.html#l00619">cgv::render::shader_program::get_uniform_location()</a>, <a class="el" href="plot__base_8h_source.html#l00381">MAX_NR_COLOR_MAPPINGS</a>, <a class="el" href="plot__base_8h_source.html#l00392">MAX_NR_OPACITY_MAPPINGS</a>, <a class="el" href="plot__base_8h_source.html#l00407">MAX_NR_SIZE_MAPPINGS</a>, <a class="el" href="plot__base_8h_source.html#l00396">opacity_gamma</a>, <a class="el" href="plot__base_8h_source.html#l00398">opacity_is_bipolar</a>, <a class="el" href="plot__base_8h_source.html#l00394">opacity_mapping</a>, <a class="el" href="plot__base_8h_source.html#l00404">opacity_max</a>, <a class="el" href="plot__base_8h_source.html#l00402">opacity_min</a>, <a class="el" href="plot__base_8h_source.html#l00400">opacity_window_zero_position</a>, <a class="el" href="shader__program_8h_source.html#l00168">cgv::render::shader_program::set_uniform_array()</a>, <a class="el" href="plot__base_8h_source.html#l00411">size_gamma</a>, <a class="el" href="plot__base_8h_source.html#l00409">size_mapping</a>, <a class="el" href="plot__base_8h_source.html#l00413">size_min</a>, and <a class="el" href="plot__base_8h_source.html#l00389">window_zero_position</a>.</p>
+<p class="reference">References <a class="el" href="plot__base_8h_source.html#l00387">color_mapping</a>, <a class="el" href="plot__base_8h_source.html#l00425">color_scale_adapter</a>, <a class="el" href="plot__base_8h_source.html#l00423">color_scales</a>, <a class="el" href="shader__program_8cxx_source.html#l00633">cgv::render::shader_program::get_uniform_location()</a>, <a class="el" href="plot__base_8h_source.html#l00385">MAX_NR_COLOR_MAPPINGS</a>, <a class="el" href="plot__base_8h_source.html#l00395">MAX_NR_OPACITY_MAPPINGS</a>, <a class="el" href="plot__base_8h_source.html#l00410">MAX_NR_SIZE_MAPPINGS</a>, <a class="el" href="plot__base_8h_source.html#l00399">opacity_gamma</a>, <a class="el" href="plot__base_8h_source.html#l00401">opacity_is_bipolar</a>, <a class="el" href="plot__base_8h_source.html#l00397">opacity_mapping</a>, <a class="el" href="plot__base_8h_source.html#l00407">opacity_max</a>, <a class="el" href="plot__base_8h_source.html#l00405">opacity_min</a>, <a class="el" href="plot__base_8h_source.html#l00403">opacity_window_zero_position</a>, <a class="el" href="color__scale__adapter_8cxx_source.html#l00057">cgv::render::color_scale_adapter::set_color_scales()</a>, <a class="el" href="shader__program_8h_source.html#l00168">cgv::render::shader_program::set_uniform_array()</a>, <a class="el" href="color__scale__adapter_8cxx_source.html#l00032">cgv::render::color_scale_adapter::set_uniforms_in_program()</a>, <a class="el" href="plot__base_8h_source.html#l00415">size_gamma</a>, <a class="el" href="plot__base_8h_source.html#l00413">size_mapping</a>, and <a class="el" href="plot__base_8h_source.html#l00417">size_min</a>.</p>
 
 </div>
 </div>
@@ -2779,9 +2872,9 @@ virtual bool&#160;</td><td class="memItemRight" valign="bottom"><b>compute_sampl
 
 <p>set new orientation quaternion </p>
 
-<p class="definition">Definition at line <a class="el" href="plot__base_8cxx_source.html#l01003">1003</a> of file <a class="el" href="plot__base_8cxx_source.html">plot_base.cxx</a>.</p>
+<p class="definition">Definition at line <a class="el" href="plot__base_8cxx_source.html#l01019">1019</a> of file <a class="el" href="plot__base_8cxx_source.html">plot_base.cxx</a>.</p>
 
-<p class="reference">References <a class="el" href="plot__base_8h_source.html#l00354">orientation</a>.</p>
+<p class="reference">References <a class="el" href="plot__base_8h_source.html#l00358">orientation</a>.</p>
 
 </div>
 </div>
@@ -2823,7 +2916,7 @@ virtual bool&#160;</td><td class="memItemRight" valign="bottom"><b>compute_sampl
 
 <p class="definition">Definition at line <a class="el" href="plot__base_8cxx_source.html#l00374">374</a> of file <a class="el" href="plot__base_8cxx_source.html">plot_base.cxx</a>.</p>
 
-<p class="reference">References <a class="el" href="plot__base_8h_source.html#l00056">cgv::plot::domain_config::axis_configs</a>, <a class="el" href="plot__base_8h_source.html#l00356">center_location</a>, <a class="el" href="plot__base_8h_source.html#l00437">extent</a>, <a class="el" href="plot__base_8cxx_source.html#l01180">get_domain_config_ptr()</a>, <a class="el" href="plot__base_8h_source.html#l00354">orientation</a>, <a class="el" href="plot__base_8h_source.html#l00379">out_of_range_mode</a>, <a class="el" href="shader__program_8h_source.html#l00157">cgv::render::shader_program::set_uniform()</a>, <a class="el" href="shader__program_8h_source.html#l00168">cgv::render::shader_program::set_uniform_array()</a>, and <a class="el" href="fvec_8h_source.html#l00134">cgv::math::fvec&lt; T, N &gt;::size()</a>.</p>
+<p class="reference">References <a class="el" href="plot__base_8h_source.html#l00060">cgv::plot::domain_config::axis_configs</a>, <a class="el" href="plot__base_8h_source.html#l00360">center_location</a>, <a class="el" href="plot__base_8h_source.html#l00452">extent</a>, <a class="el" href="plot__base_8cxx_source.html#l01196">get_domain_config_ptr()</a>, <a class="el" href="plot__base_8h_source.html#l00358">orientation</a>, <a class="el" href="plot__base_8h_source.html#l00383">out_of_range_mode</a>, <a class="el" href="shader__program_8h_source.html#l00157">cgv::render::shader_program::set_uniform()</a>, <a class="el" href="shader__program_8h_source.html#l00168">cgv::render::shader_program::set_uniform_array()</a>, and <a class="el" href="fvec_8h_source.html#l00134">cgv::math::fvec&lt; T, N &gt;::size()</a>.</p>
 
 </div>
 </div>
@@ -2845,9 +2938,9 @@ virtual bool&#160;</td><td class="memItemRight" valign="bottom"><b>compute_sampl
 
 <p>notify plot that samples of given subplot are out of date </p>
 
-<p class="definition">Definition at line <a class="el" href="plot__base_8cxx_source.html#l01203">1203</a> of file <a class="el" href="plot__base_8cxx_source.html">plot_base.cxx</a>.</p>
+<p class="definition">Definition at line <a class="el" href="plot__base_8cxx_source.html#l01219">1219</a> of file <a class="el" href="plot__base_8cxx_source.html">plot_base.cxx</a>.</p>
 
-<p class="reference">References <a class="el" href="plot__base_8h_source.html#l00429">attribute_source_arrays</a>.</p>
+<p class="reference">References <a class="el" href="plot__base_8h_source.html#l00444">attribute_source_arrays</a>.</p>
 
 </div>
 </div>
@@ -2903,9 +2996,9 @@ virtual bool&#160;</td><td class="memItemRight" valign="bottom"><b>compute_sampl
 
 <p>define a sub plot attribute from a vbo (attribute must be stored in float type in vbo) </p>
 
-<p class="definition">Definition at line <a class="el" href="plot__base_8cxx_source.html#l00439">439</a> of file <a class="el" href="plot__base_8cxx_source.html">plot_base.cxx</a>.</p>
+<p class="definition">Definition at line <a class="el" href="plot__base_8cxx_source.html#l00451">451</a> of file <a class="el" href="plot__base_8cxx_source.html">plot_base.cxx</a>.</p>
 
-<p class="reference">References <a class="el" href="plot__base_8h_source.html#l00429">attribute_source_arrays</a>.</p>
+<p class="reference">References <a class="el" href="plot__base_8h_source.html#l00444">attribute_source_arrays</a>.</p>
 
 </div>
 </div>
@@ -2955,9 +3048,9 @@ virtual bool&#160;</td><td class="memItemRight" valign="bottom"><b>compute_sampl
 
 <p>define a sub plot attribute from an external pointer </p>
 
-<p class="definition">Definition at line <a class="el" href="plot__base_8cxx_source.html#l00430">430</a> of file <a class="el" href="plot__base_8cxx_source.html">plot_base.cxx</a>.</p>
+<p class="definition">Definition at line <a class="el" href="plot__base_8cxx_source.html#l00442">442</a> of file <a class="el" href="plot__base_8cxx_source.html">plot_base.cxx</a>.</p>
 
-<p class="reference">References <a class="el" href="plot__base_8h_source.html#l00429">attribute_source_arrays</a>.</p>
+<p class="reference">References <a class="el" href="plot__base_8h_source.html#l00444">attribute_source_arrays</a>.</p>
 
 </div>
 </div>
@@ -3001,9 +3094,9 @@ virtual bool&#160;</td><td class="memItemRight" valign="bottom"><b>compute_sampl
 
 <p>define a sub plot attribute ai from coordinate aj of the i-th internal sample container </p>
 
-<p class="definition">Definition at line <a class="el" href="plot__base_8cxx_source.html#l00421">421</a> of file <a class="el" href="plot__base_8cxx_source.html">plot_base.cxx</a>.</p>
+<p class="definition">Definition at line <a class="el" href="plot__base_8cxx_source.html#l00433">433</a> of file <a class="el" href="plot__base_8cxx_source.html">plot_base.cxx</a>.</p>
 
-<p class="reference">References <a class="el" href="plot__base_8h_source.html#l00429">attribute_source_arrays</a>, and <a class="el" href="plot__base_8h_source.html#l00488">get_dim()</a>.</p>
+<p class="reference">References <a class="el" href="plot__base_8h_source.html#l00444">attribute_source_arrays</a>, and <a class="el" href="plot__base_8h_source.html#l00505">get_dim()</a>.</p>
 
 </div>
 </div>
@@ -3035,9 +3128,9 @@ virtual bool&#160;</td><td class="memItemRight" valign="bottom"><b>compute_sampl
 
 <p>set the colors for all plot features of the i-th sub plot as variation of the given color </p>
 
-<p class="definition">Definition at line <a class="el" href="plot__base_8cxx_source.html#l01207">1207</a> of file <a class="el" href="plot__base_8cxx_source.html">plot_base.cxx</a>.</p>
+<p class="definition">Definition at line <a class="el" href="plot__base_8cxx_source.html#l01223">1223</a> of file <a class="el" href="plot__base_8cxx_source.html">plot_base.cxx</a>.</p>
 
-<p class="reference">References <a class="el" href="plot__base_8cxx_source.html#l01199">ref_sub_plot_config()</a>, and <a class="el" href="plot__base_8cxx_source.html#l00084">cgv::plot::plot_base_config::set_colors()</a>.</p>
+<p class="reference">References <a class="el" href="plot__base_8cxx_source.html#l01215">ref_sub_plot_config()</a>, and <a class="el" href="plot__base_8cxx_source.html#l00084">cgv::plot::plot_base_config::set_colors()</a>.</p>
 
 </div>
 </div>
@@ -3059,7 +3152,7 @@ virtual bool&#160;</td><td class="memItemRight" valign="bottom"><b>compute_sampl
 
 <p>set the view ptr </p>
 
-<p class="definition">Definition at line <a class="el" href="plot__base_8cxx_source.html#l00617">617</a> of file <a class="el" href="plot__base_8cxx_source.html">plot_base.cxx</a>.</p>
+<p class="definition">Definition at line <a class="el" href="plot__base_8cxx_source.html#l00632">632</a> of file <a class="el" href="plot__base_8cxx_source.html">plot_base.cxx</a>.</p>
 
 </div>
 </div>
@@ -3091,9 +3184,9 @@ virtual bool&#160;</td><td class="memItemRight" valign="bottom"><b>compute_sampl
 
 <p>set the plot width to given value and if constrained == true the height, such that the aspect ration is the same as the aspect ratio of the domain </p>
 
-<p class="definition">Definition at line <a class="el" href="plot__base_8cxx_source.html#l00983">983</a> of file <a class="el" href="plot__base_8cxx_source.html">plot_base.cxx</a>.</p>
+<p class="definition">Definition at line <a class="el" href="plot__base_8cxx_source.html#l00999">999</a> of file <a class="el" href="plot__base_8cxx_source.html">plot_base.cxx</a>.</p>
 
-<p class="reference">References <a class="el" href="plot__base_8h_source.html#l00056">cgv::plot::domain_config::axis_configs</a>, and <a class="el" href="plot__base_8cxx_source.html#l01180">get_domain_config_ptr()</a>.</p>
+<p class="reference">References <a class="el" href="plot__base_8h_source.html#l00060">cgv::plot::domain_config::axis_configs</a>, and <a class="el" href="plot__base_8cxx_source.html#l01196">get_domain_config_ptr()</a>.</p>
 
 </div>
 </div>
@@ -3125,9 +3218,42 @@ virtual bool&#160;</td><td class="memItemRight" valign="bottom"><b>compute_sampl
 
 <p class="definition">Definition at line <a class="el" href="plot__base_8cxx_source.html#l00261">261</a> of file <a class="el" href="plot__base_8cxx_source.html">plot_base.cxx</a>.</p>
 
-<p class="reference">References <a class="el" href="plot__base_8h_source.html#l00056">cgv::plot::domain_config::axis_configs</a>, <a class="el" href="plot__base_8cxx_source.html#l01180">get_domain_config_ptr()</a>, and <a class="el" href="vec_8h_source.html#l00059">cgv::math::vec&lt; T &gt;::size()</a>.</p>
+<p class="reference">References <a class="el" href="plot__base_8h_source.html#l00060">cgv::plot::domain_config::axis_configs</a>, <a class="el" href="plot__base_8cxx_source.html#l01196">get_domain_config_ptr()</a>, and <a class="el" href="vec_8h_source.html#l00059">cgv::math::vec&lt; T &gt;::size()</a>.</p>
 
-<p class="reference">Referenced by <a class="el" href="plot__base_8cxx_source.html#l01031">get_corner()</a>, and <a class="el" href="plot__base_8cxx_source.html#l01019">get_origin()</a>.</p>
+<p class="reference">Referenced by <a class="el" href="plot__base_8cxx_source.html#l01047">get_corner()</a>, and <a class="el" href="plot__base_8cxx_source.html#l01035">get_origin()</a>.</p>
+
+</div>
+</div>
+<a id="abfa61a9c5fb2875e7b6ccc9c47b75829" name="abfa61a9c5fb2875e7b6ccc9c47b75829"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#abfa61a9c5fb2875e7b6ccc9c47b75829">&#9670;&#160;</a></span>update_color_scales()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">void cgv::plot::plot_base::update_color_scales </td>
+          <td>(</td>
+          <td class="paramname"></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">protected</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p>the color scales to match the properties set through the config and gui </p>
+
+<p class="definition">Definition at line <a class="el" href="plot__base_8cxx_source.html#l00421">421</a> of file <a class="el" href="plot__base_8cxx_source.html">plot_base.cxx</a>.</p>
+
+<p class="reference">References <a class="el" href="plot__base_8h_source.html#l00391">color_scale_gamma</a>, <a class="el" href="plot__base_8h_source.html#l00389">color_scale_is_bipolar</a>, <a class="el" href="plot__base_8h_source.html#l00423">color_scales</a>, <a class="el" href="plot__base_8h_source.html#l00427">color_scheme_index</a>, <a class="el" href="plot__base_8h_source.html#l00385">MAX_NR_COLOR_MAPPINGS</a>, <a class="el" href="plot__base_8h_source.html#l00429">reversed</a>, and <a class="el" href="plot__base_8h_source.html#l00393">window_zero_position</a>.</p>
+
+<p class="reference">Referenced by <a class="el" href="plot__base_8cxx_source.html#l01309">create_plot_gui()</a>, and <a class="el" href="plot__base_8cxx_source.html#l01228">set_color_scale()</a>.</p>
 
 </div>
 </div>
@@ -3165,7 +3291,7 @@ virtual bool&#160;</td><td class="memItemRight" valign="bottom"><b>compute_sampl
 </table>
 </div><div class="memdoc">
 
-<p class="definition">Definition at line <a class="el" href="plot__base_8cxx_source.html#l01417">1417</a> of file <a class="el" href="plot__base_8cxx_source.html">plot_base.cxx</a>.</p>
+<p class="definition">Definition at line <a class="el" href="plot__base_8cxx_source.html#l01473">1473</a> of file <a class="el" href="plot__base_8cxx_source.html">plot_base.cxx</a>.</p>
 
 </div>
 </div>
@@ -3203,7 +3329,7 @@ virtual bool&#160;</td><td class="memItemRight" valign="bottom"><b>compute_sampl
 </table>
 </div><div class="memdoc">
 
-<p class="definition">Definition at line <a class="el" href="plot__base_8cxx_source.html#l01429">1429</a> of file <a class="el" href="plot__base_8cxx_source.html">plot_base.cxx</a>.</p>
+<p class="definition">Definition at line <a class="el" href="plot__base_8cxx_source.html#l01485">1485</a> of file <a class="el" href="plot__base_8cxx_source.html">plot_base.cxx</a>.</p>
 
 </div>
 </div>
@@ -3241,7 +3367,7 @@ virtual bool&#160;</td><td class="memItemRight" valign="bottom"><b>compute_sampl
 </table>
 </div><div class="memdoc">
 
-<p class="definition">Definition at line <a class="el" href="plot__base_8cxx_source.html#l01393">1393</a> of file <a class="el" href="plot__base_8cxx_source.html">plot_base.cxx</a>.</p>
+<p class="definition">Definition at line <a class="el" href="plot__base_8cxx_source.html#l01449">1449</a> of file <a class="el" href="plot__base_8cxx_source.html">plot_base.cxx</a>.</p>
 
 </div>
 </div>
@@ -3279,7 +3405,7 @@ virtual bool&#160;</td><td class="memItemRight" valign="bottom"><b>compute_sampl
 </table>
 </div><div class="memdoc">
 
-<p class="definition">Definition at line <a class="el" href="plot__base_8cxx_source.html#l01405">1405</a> of file <a class="el" href="plot__base_8cxx_source.html">plot_base.cxx</a>.</p>
+<p class="definition">Definition at line <a class="el" href="plot__base_8cxx_source.html#l01461">1461</a> of file <a class="el" href="plot__base_8cxx_source.html">plot_base.cxx</a>.</p>
 
 </div>
 </div>
@@ -3317,7 +3443,7 @@ virtual bool&#160;</td><td class="memItemRight" valign="bottom"><b>compute_sampl
 </table>
 </div><div class="memdoc">
 
-<p class="definition">Definition at line <a class="el" href="plot__base_8cxx_source.html#l01441">1441</a> of file <a class="el" href="plot__base_8cxx_source.html">plot_base.cxx</a>.</p>
+<p class="definition">Definition at line <a class="el" href="plot__base_8cxx_source.html#l01497">1497</a> of file <a class="el" href="plot__base_8cxx_source.html">plot_base.cxx</a>.</p>
 
 </div>
 </div>
@@ -3355,7 +3481,7 @@ virtual bool&#160;</td><td class="memItemRight" valign="bottom"><b>compute_sampl
 </table>
 </div><div class="memdoc">
 
-<p class="definition">Definition at line <a class="el" href="plot__base_8cxx_source.html#l01451">1451</a> of file <a class="el" href="plot__base_8cxx_source.html">plot_base.cxx</a>.</p>
+<p class="definition">Definition at line <a class="el" href="plot__base_8cxx_source.html#l01507">1507</a> of file <a class="el" href="plot__base_8cxx_source.html">plot_base.cxx</a>.</p>
 
 </div>
 </div>
@@ -3382,7 +3508,7 @@ virtual bool&#160;</td><td class="memItemRight" valign="bottom"><b>compute_sampl
 </table>
 </div><div class="memdoc">
 
-<p class="definition">Definition at line <a class="el" href="plot__base_8cxx_source.html#l00570">570</a> of file <a class="el" href="plot__base_8cxx_source.html">plot_base.cxx</a>.</p>
+<p class="definition">Definition at line <a class="el" href="plot__base_8cxx_source.html#l00582">582</a> of file <a class="el" href="plot__base_8cxx_source.html">plot_base.cxx</a>.</p>
 
 </div>
 </div>
@@ -3437,9 +3563,9 @@ virtual bool&#160;</td><td class="memItemRight" valign="bottom"><b>compute_sampl
 
 <p>manage attributes for legend drawing </p>
 
-<p class="definition">Definition at line <a class="el" href="plot__base_8h_source.html#l00427">427</a> of file <a class="el" href="plot__base_8h_source.html">plot_base.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="plot__base_8h_source.html#l00442">442</a> of file <a class="el" href="plot__base_8h_source.html">plot_base.h</a>.</p>
 
-<p class="reference">Referenced by <a class="el" href="plot__base_8cxx_source.html#l01247">clear()</a>, and <a class="el" href="plot__base_8cxx_source.html#l01212">init()</a>.</p>
+<p class="reference">Referenced by <a class="el" href="plot__base_8cxx_source.html#l01293">clear()</a>, and <a class="el" href="plot__base_8cxx_source.html#l01257">init()</a>.</p>
 
 </div>
 </div>
@@ -3463,7 +3589,7 @@ virtual bool&#160;</td><td class="memItemRight" valign="bottom"><b>compute_sampl
 </table>
 </div><div class="memdoc">
 
-<p class="definition">Definition at line <a class="el" href="plot__base_8h_source.html#l00450">450</a> of file <a class="el" href="plot__base_8h_source.html">plot_base.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="plot__base_8h_source.html#l00467">467</a> of file <a class="el" href="plot__base_8h_source.html">plot_base.h</a>.</p>
 
 </div>
 </div>
@@ -3487,7 +3613,7 @@ virtual bool&#160;</td><td class="memItemRight" valign="bottom"><b>compute_sampl
 </table>
 </div><div class="memdoc">
 
-<p class="definition">Definition at line <a class="el" href="plot__base_8h_source.html#l00450">450</a> of file <a class="el" href="plot__base_8h_source.html">plot_base.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="plot__base_8h_source.html#l00467">467</a> of file <a class="el" href="plot__base_8h_source.html">plot_base.h</a>.</p>
 
 </div>
 </div>
@@ -3511,7 +3637,7 @@ virtual bool&#160;</td><td class="memItemRight" valign="bottom"><b>compute_sampl
 </table>
 </div><div class="memdoc">
 
-<p class="definition">Definition at line <a class="el" href="plot__base_8h_source.html#l00450">450</a> of file <a class="el" href="plot__base_8h_source.html">plot_base.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="plot__base_8h_source.html#l00467">467</a> of file <a class="el" href="plot__base_8h_source.html">plot_base.h</a>.</p>
 
 </div>
 </div>
@@ -3537,9 +3663,9 @@ virtual bool&#160;</td><td class="memItemRight" valign="bottom"><b>compute_sampl
 
 <p>attribute sources </p>
 
-<p class="definition">Definition at line <a class="el" href="plot__base_8h_source.html#l00429">429</a> of file <a class="el" href="plot__base_8h_source.html">plot_base.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="plot__base_8h_source.html#l00444">444</a> of file <a class="el" href="plot__base_8h_source.html">plot_base.h</a>.</p>
 
-<p class="reference">Referenced by <a class="el" href="plot2d_8cxx_source.html#l00068">cgv::plot::plot2d::add_sub_plot()</a>, <a class="el" href="plot3d_8cxx_source.html#l00084">cgv::plot::plot3d::add_sub_plot()</a>, <a class="el" href="plot__base_8cxx_source.html#l01247">clear()</a>, <a class="el" href="plot__base_8cxx_source.html#l01461">create_base_config_gui()</a>, <a class="el" href="plot__base_8cxx_source.html#l01047">determine_axis_extent_from_subplot()</a>, <a class="el" href="plot__base_8cxx_source.html#l01203">set_samples_out_of_date()</a>, <a class="el" href="plot__base_8cxx_source.html#l00439">set_sub_plot_attribute()</a>, <a class="el" href="plot__base_8cxx_source.html#l00430">set_sub_plot_attribute()</a>, and <a class="el" href="plot__base_8cxx_source.html#l00421">set_sub_plot_attribute()</a>.</p>
+<p class="reference">Referenced by <a class="el" href="plot2d_8cxx_source.html#l00068">cgv::plot::plot2d::add_sub_plot()</a>, <a class="el" href="plot3d_8cxx_source.html#l00084">cgv::plot::plot3d::add_sub_plot()</a>, <a class="el" href="plot__base_8cxx_source.html#l01293">clear()</a>, <a class="el" href="plot__base_8cxx_source.html#l01517">create_base_config_gui()</a>, <a class="el" href="plot__base_8cxx_source.html#l01063">determine_axis_extent_from_subplot()</a>, <a class="el" href="plot__base_8cxx_source.html#l01219">set_samples_out_of_date()</a>, <a class="el" href="plot__base_8cxx_source.html#l00451">set_sub_plot_attribute()</a>, <a class="el" href="plot__base_8cxx_source.html#l00442">set_sub_plot_attribute()</a>, and <a class="el" href="plot__base_8cxx_source.html#l00433">set_sub_plot_attribute()</a>.</p>
 
 </div>
 </div>
@@ -3565,9 +3691,9 @@ virtual bool&#160;</td><td class="memItemRight" valign="bottom"><b>compute_sampl
 
 <p>center location of domain in world coordinates </p>
 
-<p class="definition">Definition at line <a class="el" href="plot__base_8h_source.html#l00356">356</a> of file <a class="el" href="plot__base_8h_source.html">plot_base.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="plot__base_8h_source.html#l00360">360</a> of file <a class="el" href="plot__base_8h_source.html">plot_base.h</a>.</p>
 
-<p class="reference">Referenced by <a class="el" href="plot__base_8cxx_source.html#l01262">create_plot_gui()</a>, <a class="el" href="plot2d_8cxx_source.html#l00533">cgv::plot::plot2d::draw()</a>, <a class="el" href="plot3d_8cxx_source.html#l00504">cgv::plot::plot3d::draw()</a>, <a class="el" href="plot__base_8cxx_source.html#l01027">get_center()</a>, <a class="el" href="plot__base_8cxx_source.html#l01011">place_center()</a>, <a class="el" href="plot__base_8cxx_source.html#l01015">place_corner()</a>, <a class="el" href="plot__base_8cxx_source.html#l01007">place_origin()</a>, <a class="el" href="plot__base_8cxx_source.html#l00576">plot_base()</a>, and <a class="el" href="plot__base_8cxx_source.html#l00374">set_plot_uniforms()</a>.</p>
+<p class="reference">Referenced by <a class="el" href="plot__base_8cxx_source.html#l01309">create_plot_gui()</a>, <a class="el" href="plot2d_8cxx_source.html#l00541">cgv::plot::plot2d::draw()</a>, <a class="el" href="plot3d_8cxx_source.html#l00505">cgv::plot::plot3d::draw()</a>, <a class="el" href="plot__base_8cxx_source.html#l01043">get_center()</a>, <a class="el" href="plot__base_8cxx_source.html#l01027">place_center()</a>, <a class="el" href="plot__base_8cxx_source.html#l01031">place_corner()</a>, <a class="el" href="plot__base_8cxx_source.html#l01023">place_origin()</a>, <a class="el" href="plot__base_8cxx_source.html#l00588">plot_base()</a>, and <a class="el" href="plot__base_8cxx_source.html#l00374">set_plot_uniforms()</a>.</p>
 
 </div>
 </div>
@@ -3585,9 +3711,37 @@ virtual bool&#160;</td><td class="memItemRight" valign="bottom"><b>compute_sampl
 
 <p>index of attribute mapped to primary and secondary color </p>
 
-<p class="definition">Definition at line <a class="el" href="plot__base_8h_source.html#l00383">383</a> of file <a class="el" href="plot__base_8h_source.html">plot_base.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="plot__base_8h_source.html#l00387">387</a> of file <a class="el" href="plot__base_8h_source.html">plot_base.h</a>.</p>
 
-<p class="reference">Referenced by <a class="el" href="plot__base_8cxx_source.html#l01262">create_plot_gui()</a>, <a class="el" href="plot__base_8cxx_source.html#l00576">plot_base()</a>, and <a class="el" href="plot__base_8cxx_source.html#l00395">set_mapping_uniforms()</a>.</p>
+<p class="reference">Referenced by <a class="el" href="plot__base_8cxx_source.html#l01309">create_plot_gui()</a>, <a class="el" href="plot__base_8cxx_source.html#l00588">plot_base()</a>, and <a class="el" href="plot__base_8cxx_source.html#l00395">set_mapping_uniforms()</a>.</p>
+
+</div>
+</div>
+<a id="ad320d102157cb8ead9643f89b3fc62dc" name="ad320d102157cb8ead9643f89b3fc62dc"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#ad320d102157cb8ead9643f89b3fc62dc">&#9670;&#160;</a></span>color_scale_adapter</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname"><a class="el" href="classcgv_1_1render_1_1color__scale__adapter.html">cgv::render::color_scale_adapter</a> cgv::plot::plot_base::color_scale_adapter</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">protected</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p>adapter to enable using color scales in shader programs </p>
+
+<p class="definition">Definition at line <a class="el" href="plot__base_8h_source.html#l00425">425</a> of file <a class="el" href="plot__base_8h_source.html">plot_base.h</a>.</p>
+
+<p class="reference">Referenced by <a class="el" href="plot__base_8cxx_source.html#l01293">clear()</a>, <a class="el" href="plot3d_8cxx_source.html#l00505">cgv::plot::plot3d::draw()</a>, <a class="el" href="plot__base_8cxx_source.html#l01257">init()</a>, and <a class="el" href="plot__base_8cxx_source.html#l00395">set_mapping_uniforms()</a>.</p>
 
 </div>
 </div>
@@ -3605,29 +3759,109 @@ virtual bool&#160;</td><td class="memItemRight" valign="bottom"><b>compute_sampl
 
 <p>gamma adjustments for primary and secondary color mapping </p>
 
-<p class="definition">Definition at line <a class="el" href="plot__base_8h_source.html#l00387">387</a> of file <a class="el" href="plot__base_8h_source.html">plot_base.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="plot__base_8h_source.html#l00391">391</a> of file <a class="el" href="plot__base_8h_source.html">plot_base.h</a>.</p>
 
-<p class="reference">Referenced by <a class="el" href="plot__base_8cxx_source.html#l01262">create_plot_gui()</a>, <a class="el" href="plot__base_8cxx_source.html#l00576">plot_base()</a>, and <a class="el" href="plot__base_8cxx_source.html#l00395">set_mapping_uniforms()</a>.</p>
+<p class="reference">Referenced by <a class="el" href="plot__base_8cxx_source.html#l01309">create_plot_gui()</a>, <a class="el" href="plot__base_8cxx_source.html#l00588">plot_base()</a>, and <a class="el" href="plot__base_8cxx_source.html#l00421">update_color_scales()</a>.</p>
 
 </div>
 </div>
-<a id="a7821f8369bf09ed87915b2185b79c66d" name="a7821f8369bf09ed87915b2185b79c66d"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a7821f8369bf09ed87915b2185b79c66d">&#9670;&#160;</a></span>color_scale_index</h2>
+<a id="a1c002aab66e3ce4c93ffae0510bc1b94" name="a1c002aab66e3ce4c93ffae0510bc1b94"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a1c002aab66e3ce4c93ffae0510bc1b94">&#9670;&#160;</a></span>color_scale_is_bipolar</h2>
 
 <div class="memitem">
 <div class="memproto">
       <table class="memname">
         <tr>
-          <td class="memname">cgv::media::ColorScale cgv::plot::plot_base::color_scale_index[<a class="el" href="classcgv_1_1plot_1_1plot__base.html#a83414ab13137a719465795aee6b97da1">MAX_NR_COLOR_MAPPINGS</a>]</td>
+          <td class="memname">bool cgv::plot::plot_base::color_scale_is_bipolar[<a class="el" href="classcgv_1_1plot_1_1plot__base.html#a83414ab13137a719465795aee6b97da1">MAX_NR_COLOR_MAPPINGS</a>]</td>
         </tr>
       </table>
 </div><div class="memdoc">
 
-<p>color scale indices of primary and secondary color mapping </p>
+<p>flag whether color mapping is bipolar for primary and secondary color scale </p>
 
-<p class="definition">Definition at line <a class="el" href="plot__base_8h_source.html#l00385">385</a> of file <a class="el" href="plot__base_8h_source.html">plot_base.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="plot__base_8h_source.html#l00389">389</a> of file <a class="el" href="plot__base_8h_source.html">plot_base.h</a>.</p>
 
-<p class="reference">Referenced by <a class="el" href="plot__base_8cxx_source.html#l01262">create_plot_gui()</a>, <a class="el" href="plot__base_8cxx_source.html#l00576">plot_base()</a>, and <a class="el" href="plot__base_8cxx_source.html#l00395">set_mapping_uniforms()</a>.</p>
+<p class="reference">Referenced by <a class="el" href="plot__base_8cxx_source.html#l01309">create_plot_gui()</a>, <a class="el" href="plot__base_8cxx_source.html#l00588">plot_base()</a>, and <a class="el" href="plot__base_8cxx_source.html#l00421">update_color_scales()</a>.</p>
+
+</div>
+</div>
+<a id="a9974f69c447c1cbab62ceb6746005d21" name="a9974f69c447c1cbab62ceb6746005d21"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a9974f69c447c1cbab62ceb6746005d21">&#9670;&#160;</a></span>color_scale_texture_unit</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">const unsigned cgv::plot::plot_base::color_scale_texture_unit = 0</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">static</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p class="definition">Definition at line <a class="el" href="plot__base_8h_source.html#l00411">411</a> of file <a class="el" href="plot__base_8h_source.html">plot_base.h</a>.</p>
+
+</div>
+</div>
+<a id="ac7db4aa1985b19ab3e1d24171e1ac37a" name="ac7db4aa1985b19ab3e1d24171e1ac37a"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#ac7db4aa1985b19ab3e1d24171e1ac37a">&#9670;&#160;</a></span>color_scales</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">std::array&lt;std::shared_ptr&lt;<a class="el" href="classcgv_1_1render_1_1device__continuous__color__scale.html">cgv::render::device_continuous_color_scale</a>&gt;, <a class="el" href="classcgv_1_1plot_1_1plot__base.html#a83414ab13137a719465795aee6b97da1">MAX_NR_COLOR_MAPPINGS</a>&gt; cgv::plot::plot_base::color_scales</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">protected</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p>color scales used for primary and secondary color mapping </p>
+
+<p class="definition">Definition at line <a class="el" href="plot__base_8h_source.html#l00423">423</a> of file <a class="el" href="plot__base_8h_source.html">plot_base.h</a>.</p>
+
+<p class="reference">Referenced by <a class="el" href="plot__base_8cxx_source.html#l00588">plot_base()</a>, <a class="el" href="plot__base_8cxx_source.html#l00395">set_mapping_uniforms()</a>, and <a class="el" href="plot__base_8cxx_source.html#l00421">update_color_scales()</a>.</p>
+
+</div>
+</div>
+<a id="ab2d61714e94c6274c957b3d80652f9d9" name="ab2d61714e94c6274c957b3d80652f9d9"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#ab2d61714e94c6274c957b3d80652f9d9">&#9670;&#160;</a></span>color_scheme_index</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">int cgv::plot::plot_base::color_scheme_index[<a class="el" href="classcgv_1_1plot_1_1plot__base.html#a83414ab13137a719465795aee6b97da1">MAX_NR_COLOR_MAPPINGS</a>]</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">protected</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p>color scheme indices of primary and secondary color scales </p>
+
+<p class="definition">Definition at line <a class="el" href="plot__base_8h_source.html#l00427">427</a> of file <a class="el" href="plot__base_8h_source.html">plot_base.h</a>.</p>
+
+<p class="reference">Referenced by <a class="el" href="plot__base_8cxx_source.html#l01309">create_plot_gui()</a>, <a class="el" href="plot__base_8cxx_source.html#l00588">plot_base()</a>, <a class="el" href="plot__base_8cxx_source.html#l01228">set_color_scale()</a>, and <a class="el" href="plot__base_8cxx_source.html#l00421">update_color_scales()</a>.</p>
 
 </div>
 </div>
@@ -3653,9 +3887,9 @@ virtual bool&#160;</td><td class="memItemRight" valign="bottom"><b>compute_sampl
 
 <p>store one configuration per sub plot </p>
 
-<p class="definition">Definition at line <a class="el" href="plot__base_8h_source.html#l00348">348</a> of file <a class="el" href="plot__base_8h_source.html">plot_base.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="plot__base_8h_source.html#l00352">352</a> of file <a class="el" href="plot__base_8h_source.html">plot_base.h</a>.</p>
 
-<p class="reference">Referenced by <a class="el" href="plot2d_8cxx_source.html#l00068">cgv::plot::plot2d::add_sub_plot()</a>, <a class="el" href="plot3d_8cxx_source.html#l00084">cgv::plot::plot3d::add_sub_plot()</a>, <a class="el" href="plot__base_8cxx_source.html#l01092">adjust_domain_axis_to_data()</a>, <a class="el" href="plot2d_8cxx_source.html#l00091">cgv::plot::plot2d::delete_sub_plot()</a>, <a class="el" href="plot3d_8cxx_source.html#l00108">cgv::plot::plot3d::delete_sub_plot()</a>, <a class="el" href="plot__base_8cxx_source.html#l01195">get_nr_sub_plots()</a>, and <a class="el" href="plot__base_8cxx_source.html#l01199">ref_sub_plot_config()</a>.</p>
+<p class="reference">Referenced by <a class="el" href="plot2d_8cxx_source.html#l00068">cgv::plot::plot2d::add_sub_plot()</a>, <a class="el" href="plot3d_8cxx_source.html#l00084">cgv::plot::plot3d::add_sub_plot()</a>, <a class="el" href="plot__base_8cxx_source.html#l01108">adjust_domain_axis_to_data()</a>, <a class="el" href="plot2d_8cxx_source.html#l00091">cgv::plot::plot2d::delete_sub_plot()</a>, <a class="el" href="plot3d_8cxx_source.html#l00108">cgv::plot::plot3d::delete_sub_plot()</a>, <a class="el" href="plot__base_8cxx_source.html#l01211">get_nr_sub_plots()</a>, and <a class="el" href="plot__base_8cxx_source.html#l01215">ref_sub_plot_config()</a>.</p>
 
 </div>
 </div>
@@ -3681,9 +3915,9 @@ virtual bool&#160;</td><td class="memItemRight" valign="bottom"><b>compute_sampl
 
 <p>dimension of plot </p>
 
-<p class="definition">Definition at line <a class="el" href="plot__base_8h_source.html#l00340">340</a> of file <a class="el" href="plot__base_8h_source.html">plot_base.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="plot__base_8h_source.html#l00344">344</a> of file <a class="el" href="plot__base_8h_source.html">plot_base.h</a>.</p>
 
-<p class="reference">Referenced by <a class="el" href="plot__base_8cxx_source.html#l01262">create_plot_gui()</a>, and <a class="el" href="plot__base_8cxx_source.html#l00576">plot_base()</a>.</p>
+<p class="reference">Referenced by <a class="el" href="plot__base_8cxx_source.html#l01309">create_plot_gui()</a>, and <a class="el" href="plot__base_8cxx_source.html#l00588">plot_base()</a>.</p>
 
 </div>
 </div>
@@ -3709,9 +3943,9 @@ virtual bool&#160;</td><td class="memItemRight" valign="bottom"><b>compute_sampl
 
 <p>domain configuration </p>
 
-<p class="definition">Definition at line <a class="el" href="plot__base_8h_source.html#l00344">344</a> of file <a class="el" href="plot__base_8h_source.html">plot_base.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="plot__base_8h_source.html#l00348">348</a> of file <a class="el" href="plot__base_8h_source.html">plot_base.h</a>.</p>
 
-<p class="reference">Referenced by <a class="el" href="plot__base_8cxx_source.html#l00576">plot_base()</a>, and <a class="el" href="plot__base_8cxx_source.html#l01188">set_domain_config_ptr()</a>.</p>
+<p class="reference">Referenced by <a class="el" href="plot__base_8cxx_source.html#l00588">plot_base()</a>, and <a class="el" href="plot__base_8cxx_source.html#l01204">set_domain_config_ptr()</a>.</p>
 
 </div>
 </div>
@@ -3737,9 +3971,9 @@ virtual bool&#160;</td><td class="memItemRight" valign="bottom"><b>compute_sampl
 
 <p>pointer to currently used domain config </p>
 
-<p class="definition">Definition at line <a class="el" href="plot__base_8h_source.html#l00346">346</a> of file <a class="el" href="plot__base_8h_source.html">plot_base.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="plot__base_8h_source.html#l00350">350</a> of file <a class="el" href="plot__base_8h_source.html">plot_base.h</a>.</p>
 
-<p class="reference">Referenced by <a class="el" href="plot__base_8cxx_source.html#l01184">get_domain_config_ptr()</a>, <a class="el" href="plot__base_8cxx_source.html#l01180">get_domain_config_ptr()</a>, <a class="el" href="plot__base_8cxx_source.html#l00576">plot_base()</a>, and <a class="el" href="plot__base_8cxx_source.html#l01188">set_domain_config_ptr()</a>.</p>
+<p class="reference">Referenced by <a class="el" href="plot__base_8cxx_source.html#l01200">get_domain_config_ptr()</a>, <a class="el" href="plot__base_8cxx_source.html#l01196">get_domain_config_ptr()</a>, <a class="el" href="plot__base_8cxx_source.html#l00588">plot_base()</a>, and <a class="el" href="plot__base_8cxx_source.html#l01204">set_domain_config_ptr()</a>.</p>
 
 </div>
 </div>
@@ -3765,9 +3999,9 @@ virtual bool&#160;</td><td class="memItemRight" valign="bottom"><b>compute_sampl
 
 <p>extents used for drawing current </p>
 
-<p class="definition">Definition at line <a class="el" href="plot__base_8h_source.html#l00437">437</a> of file <a class="el" href="plot__base_8h_source.html">plot_base.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="plot__base_8h_source.html#l00452">452</a> of file <a class="el" href="plot__base_8h_source.html">plot_base.h</a>.</p>
 
-<p class="reference">Referenced by <a class="el" href="plot__base_8cxx_source.html#l00958">get_extent()</a>, <a class="el" href="plot__base_8cxx_source.html#l00343">prepare_extents()</a>, <a class="el" href="plot__base_8cxx_source.html#l00966">set_extent()</a>, and <a class="el" href="plot__base_8cxx_source.html#l00374">set_plot_uniforms()</a>.</p>
+<p class="reference">Referenced by <a class="el" href="plot__base_8cxx_source.html#l00974">get_extent()</a>, <a class="el" href="plot__base_8cxx_source.html#l00343">prepare_extents()</a>, <a class="el" href="plot__base_8cxx_source.html#l00982">set_extent()</a>, and <a class="el" href="plot__base_8cxx_source.html#l00374">set_plot_uniforms()</a>.</p>
 
 </div>
 </div>
@@ -3793,9 +4027,9 @@ virtual bool&#160;</td><td class="memItemRight" valign="bottom"><b>compute_sampl
 
 <p>concatenate font names to enum definition for dropdown control </p>
 
-<p class="definition">Definition at line <a class="el" href="plot__base_8h_source.html#l00330">330</a> of file <a class="el" href="plot__base_8h_source.html">plot_base.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="plot__base_8h_source.html#l00334">334</a> of file <a class="el" href="plot__base_8h_source.html">plot_base.h</a>.</p>
 
-<p class="reference">Referenced by <a class="el" href="plot__base_8cxx_source.html#l01262">create_plot_gui()</a>, and <a class="el" href="plot__base_8cxx_source.html#l00275">ensure_font_names()</a>.</p>
+<p class="reference">Referenced by <a class="el" href="plot__base_8cxx_source.html#l01309">create_plot_gui()</a>, and <a class="el" href="plot__base_8cxx_source.html#l00275">ensure_font_names()</a>.</p>
 
 </div>
 </div>
@@ -3821,9 +4055,9 @@ virtual bool&#160;</td><td class="memItemRight" valign="bottom"><b>compute_sampl
 
 <p>store a vector with all fonts on the system </p>
 
-<p class="definition">Definition at line <a class="el" href="plot__base_8h_source.html#l00328">328</a> of file <a class="el" href="plot__base_8h_source.html">plot_base.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="plot__base_8h_source.html#l00332">332</a> of file <a class="el" href="plot__base_8h_source.html">plot_base.h</a>.</p>
 
-<p class="reference">Referenced by <a class="el" href="plot__base_8cxx_source.html#l00275">ensure_font_names()</a>, <a class="el" href="plot__base_8cxx_source.html#l00327">on_font_selection()</a>, and <a class="el" href="plot__base_8cxx_source.html#l01164">set_label_font()</a>.</p>
+<p class="reference">Referenced by <a class="el" href="plot__base_8cxx_source.html#l00275">ensure_font_names()</a>, <a class="el" href="plot__base_8cxx_source.html#l00327">on_font_selection()</a>, and <a class="el" href="plot__base_8cxx_source.html#l01180">set_label_font()</a>.</p>
 
 </div>
 </div>
@@ -3847,7 +4081,7 @@ virtual bool&#160;</td><td class="memItemRight" valign="bottom"><b>compute_sampl
 </table>
 </div><div class="memdoc">
 
-<p class="definition">Definition at line <a class="el" href="plot__base_8h_source.html#l00449">449</a> of file <a class="el" href="plot__base_8h_source.html">plot_base.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="plot__base_8h_source.html#l00466">466</a> of file <a class="el" href="plot__base_8h_source.html">plot_base.h</a>.</p>
 
 </div>
 </div>
@@ -3873,7 +4107,7 @@ virtual bool&#160;</td><td class="memItemRight" valign="bottom"><b>compute_sampl
 
 <p>store pointer to label font </p>
 
-<p class="definition">Definition at line <a class="el" href="plot__base_8h_source.html#l00417">417</a> of file <a class="el" href="plot__base_8h_source.html">plot_base.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="plot__base_8h_source.html#l00432">432</a> of file <a class="el" href="plot__base_8h_source.html">plot_base.h</a>.</p>
 
 <p class="reference">Referenced by <a class="el" href="plot__base_8cxx_source.html#l00275">ensure_font_names()</a>, <a class="el" href="plot__base_8cxx_source.html#l00335">on_font_face_selection()</a>, and <a class="el" href="plot__base_8cxx_source.html#l00327">on_font_selection()</a>.</p>
 
@@ -3901,7 +4135,7 @@ virtual bool&#160;</td><td class="memItemRight" valign="bottom"><b>compute_sampl
 
 <p>store pointer to label font face </p>
 
-<p class="definition">Definition at line <a class="el" href="plot__base_8h_source.html#l00419">419</a> of file <a class="el" href="plot__base_8h_source.html">plot_base.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="plot__base_8h_source.html#l00434">434</a> of file <a class="el" href="plot__base_8h_source.html">plot_base.h</a>.</p>
 
 <p class="reference">Referenced by <a class="el" href="plot__base_8cxx_source.html#l00335">on_font_face_selection()</a>.</p>
 
@@ -3929,9 +4163,9 @@ virtual bool&#160;</td><td class="memItemRight" valign="bottom"><b>compute_sampl
 
 <p>depth offset of a single layer </p>
 
-<p class="definition">Definition at line <a class="el" href="plot__base_8h_source.html#l00323">323</a> of file <a class="el" href="plot__base_8h_source.html">plot_base.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="plot__base_8h_source.html#l00327">327</a> of file <a class="el" href="plot__base_8h_source.html">plot_base.h</a>.</p>
 
-<p class="reference">Referenced by <a class="el" href="plot__base_8cxx_source.html#l01262">create_plot_gui()</a>, and <a class="el" href="plot__base_8cxx_source.html#l00576">plot_base()</a>.</p>
+<p class="reference">Referenced by <a class="el" href="plot__base_8cxx_source.html#l01309">create_plot_gui()</a>, and <a class="el" href="plot__base_8cxx_source.html#l00588">plot_base()</a>.</p>
 
 </div>
 </div>
@@ -3949,9 +4183,9 @@ virtual bool&#160;</td><td class="memItemRight" valign="bottom"><b>compute_sampl
 
 <p>coordinate direction along which to draw legend </p>
 
-<p class="definition">Definition at line <a class="el" href="plot__base_8h_source.html#l00372">372</a> of file <a class="el" href="plot__base_8h_source.html">plot_base.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="plot__base_8h_source.html#l00376">376</a> of file <a class="el" href="plot__base_8h_source.html">plot_base.h</a>.</p>
 
-<p class="reference">Referenced by <a class="el" href="plot__base_8cxx_source.html#l01262">create_plot_gui()</a>, and <a class="el" href="plot__base_8cxx_source.html#l00576">plot_base()</a>.</p>
+<p class="reference">Referenced by <a class="el" href="plot__base_8cxx_source.html#l01309">create_plot_gui()</a>, and <a class="el" href="plot__base_8cxx_source.html#l00588">plot_base()</a>.</p>
 
 </div>
 </div>
@@ -3969,9 +4203,9 @@ virtual bool&#160;</td><td class="memItemRight" valign="bottom"><b>compute_sampl
 
 <p>color and opacity of legend </p>
 
-<p class="definition">Definition at line <a class="el" href="plot__base_8h_source.html#l00374">374</a> of file <a class="el" href="plot__base_8h_source.html">plot_base.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="plot__base_8h_source.html#l00378">378</a> of file <a class="el" href="plot__base_8h_source.html">plot_base.h</a>.</p>
 
-<p class="reference">Referenced by <a class="el" href="plot__base_8cxx_source.html#l01262">create_plot_gui()</a>, and <a class="el" href="plot__base_8cxx_source.html#l00576">plot_base()</a>.</p>
+<p class="reference">Referenced by <a class="el" href="plot__base_8cxx_source.html#l01309">create_plot_gui()</a>, and <a class="el" href="plot__base_8cxx_source.html#l00588">plot_base()</a>.</p>
 
 </div>
 </div>
@@ -3989,9 +4223,9 @@ virtual bool&#160;</td><td class="memItemRight" valign="bottom"><b>compute_sampl
 
 <p>whether to show legend </p>
 
-<p class="definition">Definition at line <a class="el" href="plot__base_8h_source.html#l00366">366</a> of file <a class="el" href="plot__base_8h_source.html">plot_base.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="plot__base_8h_source.html#l00370">370</a> of file <a class="el" href="plot__base_8h_source.html">plot_base.h</a>.</p>
 
-<p class="reference">Referenced by <a class="el" href="plot__base_8cxx_source.html#l01262">create_plot_gui()</a>, <a class="el" href="plot2d_8cxx_source.html#l00533">cgv::plot::plot2d::draw()</a>, <a class="el" href="plot3d_8cxx_source.html#l00504">cgv::plot::plot3d::draw()</a>, and <a class="el" href="plot__base_8cxx_source.html#l00576">plot_base()</a>.</p>
+<p class="reference">Referenced by <a class="el" href="plot__base_8cxx_source.html#l01309">create_plot_gui()</a>, <a class="el" href="plot2d_8cxx_source.html#l00541">cgv::plot::plot2d::draw()</a>, <a class="el" href="plot3d_8cxx_source.html#l00505">cgv::plot::plot3d::draw()</a>, and <a class="el" href="plot__base_8cxx_source.html#l00588">plot_base()</a>.</p>
 
 </div>
 </div>
@@ -4009,9 +4243,9 @@ virtual bool&#160;</td><td class="memItemRight" valign="bottom"><b>compute_sampl
 
 <p>width of legend </p>
 
-<p class="definition">Definition at line <a class="el" href="plot__base_8h_source.html#l00370">370</a> of file <a class="el" href="plot__base_8h_source.html">plot_base.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="plot__base_8h_source.html#l00374">374</a> of file <a class="el" href="plot__base_8h_source.html">plot_base.h</a>.</p>
 
-<p class="reference">Referenced by <a class="el" href="plot__base_8cxx_source.html#l01262">create_plot_gui()</a>, and <a class="el" href="plot__base_8cxx_source.html#l00576">plot_base()</a>.</p>
+<p class="reference">Referenced by <a class="el" href="plot__base_8cxx_source.html#l01309">create_plot_gui()</a>, and <a class="el" href="plot__base_8cxx_source.html#l00588">plot_base()</a>.</p>
 
 </div>
 </div>
@@ -4029,9 +4263,9 @@ virtual bool&#160;</td><td class="memItemRight" valign="bottom"><b>compute_sampl
 
 <p>center location of legend in domain coordinates </p>
 
-<p class="definition">Definition at line <a class="el" href="plot__base_8h_source.html#l00368">368</a> of file <a class="el" href="plot__base_8h_source.html">plot_base.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="plot__base_8h_source.html#l00372">372</a> of file <a class="el" href="plot__base_8h_source.html">plot_base.h</a>.</p>
 
-<p class="reference">Referenced by <a class="el" href="plot__base_8cxx_source.html#l01262">create_plot_gui()</a>, <a class="el" href="plot3d_8cxx_source.html#l00066">cgv::plot::plot3d::plot3d()</a>, and <a class="el" href="plot__base_8cxx_source.html#l00576">plot_base()</a>.</p>
+<p class="reference">Referenced by <a class="el" href="plot__base_8cxx_source.html#l01309">create_plot_gui()</a>, <a class="el" href="plot3d_8cxx_source.html#l00066">cgv::plot::plot3d::plot3d()</a>, and <a class="el" href="plot__base_8cxx_source.html#l00588">plot_base()</a>.</p>
 
 </div>
 </div>
@@ -4055,7 +4289,7 @@ virtual bool&#160;</td><td class="memItemRight" valign="bottom"><b>compute_sampl
 </table>
 </div><div class="memdoc">
 
-<p class="definition">Definition at line <a class="el" href="plot__base_8h_source.html#l00321">321</a> of file <a class="el" href="plot__base_8h_source.html">plot_base.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="plot__base_8h_source.html#l00325">325</a> of file <a class="el" href="plot__base_8h_source.html">plot_base.h</a>.</p>
 
 </div>
 </div>
@@ -4079,7 +4313,7 @@ virtual bool&#160;</td><td class="memItemRight" valign="bottom"><b>compute_sampl
 </table>
 </div><div class="memdoc">
 
-<p class="definition">Definition at line <a class="el" href="plot__base_8h_source.html#l00319">319</a> of file <a class="el" href="plot__base_8h_source.html">plot_base.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="plot__base_8h_source.html#l00323">323</a> of file <a class="el" href="plot__base_8h_source.html">plot_base.h</a>.</p>
 
 </div>
 </div>
@@ -4105,9 +4339,9 @@ virtual bool&#160;</td><td class="memItemRight" valign="bottom"><b>compute_sampl
 
 <p>define maximum number of color mappings </p>
 
-<p class="definition">Definition at line <a class="el" href="plot__base_8h_source.html#l00381">381</a> of file <a class="el" href="plot__base_8h_source.html">plot_base.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="plot__base_8h_source.html#l00385">385</a> of file <a class="el" href="plot__base_8h_source.html">plot_base.h</a>.</p>
 
-<p class="reference">Referenced by <a class="el" href="plot__base_8cxx_source.html#l01262">create_plot_gui()</a>, <a class="el" href="plot__base_8cxx_source.html#l00576">plot_base()</a>, and <a class="el" href="plot__base_8cxx_source.html#l00395">set_mapping_uniforms()</a>.</p>
+<p class="reference">Referenced by <a class="el" href="plot__base_8cxx_source.html#l01309">create_plot_gui()</a>, <a class="el" href="plot__base_8cxx_source.html#l00588">plot_base()</a>, <a class="el" href="plot__base_8cxx_source.html#l01228">set_color_scale()</a>, <a class="el" href="plot__base_8cxx_source.html#l00395">set_mapping_uniforms()</a>, and <a class="el" href="plot__base_8cxx_source.html#l00421">update_color_scales()</a>.</p>
 
 </div>
 </div>
@@ -4133,9 +4367,9 @@ virtual bool&#160;</td><td class="memItemRight" valign="bottom"><b>compute_sampl
 
 <p>define maximum number of opacity mappings </p>
 
-<p class="definition">Definition at line <a class="el" href="plot__base_8h_source.html#l00392">392</a> of file <a class="el" href="plot__base_8h_source.html">plot_base.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="plot__base_8h_source.html#l00395">395</a> of file <a class="el" href="plot__base_8h_source.html">plot_base.h</a>.</p>
 
-<p class="reference">Referenced by <a class="el" href="plot__base_8cxx_source.html#l01262">create_plot_gui()</a>, <a class="el" href="plot__base_8cxx_source.html#l00576">plot_base()</a>, and <a class="el" href="plot__base_8cxx_source.html#l00395">set_mapping_uniforms()</a>.</p>
+<p class="reference">Referenced by <a class="el" href="plot__base_8cxx_source.html#l01309">create_plot_gui()</a>, <a class="el" href="plot__base_8cxx_source.html#l00588">plot_base()</a>, and <a class="el" href="plot__base_8cxx_source.html#l00395">set_mapping_uniforms()</a>.</p>
 
 </div>
 </div>
@@ -4161,9 +4395,9 @@ virtual bool&#160;</td><td class="memItemRight" valign="bottom"><b>compute_sampl
 
 <p>define maximum number of size mappings </p>
 
-<p class="definition">Definition at line <a class="el" href="plot__base_8h_source.html#l00407">407</a> of file <a class="el" href="plot__base_8h_source.html">plot_base.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="plot__base_8h_source.html#l00410">410</a> of file <a class="el" href="plot__base_8h_source.html">plot_base.h</a>.</p>
 
-<p class="reference">Referenced by <a class="el" href="plot__base_8cxx_source.html#l01262">create_plot_gui()</a>, <a class="el" href="plot__base_8cxx_source.html#l00576">plot_base()</a>, and <a class="el" href="plot__base_8cxx_source.html#l00395">set_mapping_uniforms()</a>.</p>
+<p class="reference">Referenced by <a class="el" href="plot__base_8cxx_source.html#l01309">create_plot_gui()</a>, <a class="el" href="plot__base_8cxx_source.html#l00588">plot_base()</a>, and <a class="el" href="plot__base_8cxx_source.html#l00395">set_mapping_uniforms()</a>.</p>
 
 </div>
 </div>
@@ -4189,9 +4423,9 @@ virtual bool&#160;</td><td class="memItemRight" valign="bottom"><b>compute_sampl
 
 <p>number of additional attributes </p>
 
-<p class="definition">Definition at line <a class="el" href="plot__base_8h_source.html#l00342">342</a> of file <a class="el" href="plot__base_8h_source.html">plot_base.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="plot__base_8h_source.html#l00346">346</a> of file <a class="el" href="plot__base_8h_source.html">plot_base.h</a>.</p>
 
-<p class="reference">Referenced by <a class="el" href="plot2d_8cxx_source.html#l00674">cgv::plot::plot2d::create_gui()</a>, <a class="el" href="plot__base_8cxx_source.html#l01262">create_plot_gui()</a>, <a class="el" href="plot2d_8cxx_source.html#l00533">cgv::plot::plot2d::draw()</a>, <a class="el" href="plot2d_8cxx_source.html#l00024">cgv::plot::plot2d::plot2d()</a>, <a class="el" href="plot3d_8cxx_source.html#l00066">cgv::plot::plot3d::plot3d()</a>, and <a class="el" href="plot__base_8cxx_source.html#l00576">plot_base()</a>.</p>
+<p class="reference">Referenced by <a class="el" href="plot2d_8cxx_source.html#l00670">cgv::plot::plot2d::create_gui()</a>, <a class="el" href="plot__base_8cxx_source.html#l01309">create_plot_gui()</a>, <a class="el" href="plot2d_8cxx_source.html#l00541">cgv::plot::plot2d::draw()</a>, <a class="el" href="plot2d_8cxx_source.html#l00024">cgv::plot::plot2d::plot2d()</a>, <a class="el" href="plot3d_8cxx_source.html#l00066">cgv::plot::plot3d::plot3d()</a>, and <a class="el" href="plot__base_8cxx_source.html#l00588">plot_base()</a>.</p>
 
 </div>
 </div>
@@ -4209,9 +4443,9 @@ virtual bool&#160;</td><td class="memItemRight" valign="bottom"><b>compute_sampl
 
 <p>gamma adjustments for primary and secondary opacity mapping </p>
 
-<p class="definition">Definition at line <a class="el" href="plot__base_8h_source.html#l00396">396</a> of file <a class="el" href="plot__base_8h_source.html">plot_base.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="plot__base_8h_source.html#l00399">399</a> of file <a class="el" href="plot__base_8h_source.html">plot_base.h</a>.</p>
 
-<p class="reference">Referenced by <a class="el" href="plot__base_8cxx_source.html#l01262">create_plot_gui()</a>, <a class="el" href="plot__base_8cxx_source.html#l00576">plot_base()</a>, and <a class="el" href="plot__base_8cxx_source.html#l00395">set_mapping_uniforms()</a>.</p>
+<p class="reference">Referenced by <a class="el" href="plot__base_8cxx_source.html#l01309">create_plot_gui()</a>, <a class="el" href="plot__base_8cxx_source.html#l00588">plot_base()</a>, and <a class="el" href="plot__base_8cxx_source.html#l00395">set_mapping_uniforms()</a>.</p>
 
 </div>
 </div>
@@ -4229,9 +4463,9 @@ virtual bool&#160;</td><td class="memItemRight" valign="bottom"><b>compute_sampl
 
 <p>flag whether opacity mapping is bipolar for primary and secondary opacity mapping </p>
 
-<p class="definition">Definition at line <a class="el" href="plot__base_8h_source.html#l00398">398</a> of file <a class="el" href="plot__base_8h_source.html">plot_base.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="plot__base_8h_source.html#l00401">401</a> of file <a class="el" href="plot__base_8h_source.html">plot_base.h</a>.</p>
 
-<p class="reference">Referenced by <a class="el" href="plot__base_8cxx_source.html#l01262">create_plot_gui()</a>, <a class="el" href="plot__base_8cxx_source.html#l00576">plot_base()</a>, and <a class="el" href="plot__base_8cxx_source.html#l00395">set_mapping_uniforms()</a>.</p>
+<p class="reference">Referenced by <a class="el" href="plot__base_8cxx_source.html#l01309">create_plot_gui()</a>, <a class="el" href="plot__base_8cxx_source.html#l00588">plot_base()</a>, and <a class="el" href="plot__base_8cxx_source.html#l00395">set_mapping_uniforms()</a>.</p>
 
 </div>
 </div>
@@ -4249,9 +4483,9 @@ virtual bool&#160;</td><td class="memItemRight" valign="bottom"><b>compute_sampl
 
 <p>index of attribute mapped to primary and secondary opacity </p>
 
-<p class="definition">Definition at line <a class="el" href="plot__base_8h_source.html#l00394">394</a> of file <a class="el" href="plot__base_8h_source.html">plot_base.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="plot__base_8h_source.html#l00397">397</a> of file <a class="el" href="plot__base_8h_source.html">plot_base.h</a>.</p>
 
-<p class="reference">Referenced by <a class="el" href="plot__base_8cxx_source.html#l01262">create_plot_gui()</a>, <a class="el" href="plot__base_8cxx_source.html#l00576">plot_base()</a>, and <a class="el" href="plot__base_8cxx_source.html#l00395">set_mapping_uniforms()</a>.</p>
+<p class="reference">Referenced by <a class="el" href="plot__base_8cxx_source.html#l01309">create_plot_gui()</a>, <a class="el" href="plot__base_8cxx_source.html#l00588">plot_base()</a>, and <a class="el" href="plot__base_8cxx_source.html#l00395">set_mapping_uniforms()</a>.</p>
 
 </div>
 </div>
@@ -4269,9 +4503,9 @@ virtual bool&#160;</td><td class="memItemRight" valign="bottom"><b>compute_sampl
 
 <p>maximum opacity value for primary and secondary opacity mapping </p>
 
-<p class="definition">Definition at line <a class="el" href="plot__base_8h_source.html#l00404">404</a> of file <a class="el" href="plot__base_8h_source.html">plot_base.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="plot__base_8h_source.html#l00407">407</a> of file <a class="el" href="plot__base_8h_source.html">plot_base.h</a>.</p>
 
-<p class="reference">Referenced by <a class="el" href="plot__base_8cxx_source.html#l01262">create_plot_gui()</a>, <a class="el" href="plot__base_8cxx_source.html#l00576">plot_base()</a>, and <a class="el" href="plot__base_8cxx_source.html#l00395">set_mapping_uniforms()</a>.</p>
+<p class="reference">Referenced by <a class="el" href="plot__base_8cxx_source.html#l01309">create_plot_gui()</a>, <a class="el" href="plot__base_8cxx_source.html#l00588">plot_base()</a>, and <a class="el" href="plot__base_8cxx_source.html#l00395">set_mapping_uniforms()</a>.</p>
 
 </div>
 </div>
@@ -4289,9 +4523,9 @@ virtual bool&#160;</td><td class="memItemRight" valign="bottom"><b>compute_sampl
 
 <p>minimum opacity value for primary and secondary opacity mapping </p>
 
-<p class="definition">Definition at line <a class="el" href="plot__base_8h_source.html#l00402">402</a> of file <a class="el" href="plot__base_8h_source.html">plot_base.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="plot__base_8h_source.html#l00405">405</a> of file <a class="el" href="plot__base_8h_source.html">plot_base.h</a>.</p>
 
-<p class="reference">Referenced by <a class="el" href="plot__base_8cxx_source.html#l01262">create_plot_gui()</a>, <a class="el" href="plot__base_8cxx_source.html#l00576">plot_base()</a>, and <a class="el" href="plot__base_8cxx_source.html#l00395">set_mapping_uniforms()</a>.</p>
+<p class="reference">Referenced by <a class="el" href="plot__base_8cxx_source.html#l01309">create_plot_gui()</a>, <a class="el" href="plot__base_8cxx_source.html#l00588">plot_base()</a>, and <a class="el" href="plot__base_8cxx_source.html#l00395">set_mapping_uniforms()</a>.</p>
 
 </div>
 </div>
@@ -4309,9 +4543,9 @@ virtual bool&#160;</td><td class="memItemRight" valign="bottom"><b>compute_sampl
 
 <p>window space position of zero for primary and secondary opacity mapping </p>
 
-<p class="definition">Definition at line <a class="el" href="plot__base_8h_source.html#l00400">400</a> of file <a class="el" href="plot__base_8h_source.html">plot_base.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="plot__base_8h_source.html#l00403">403</a> of file <a class="el" href="plot__base_8h_source.html">plot_base.h</a>.</p>
 
-<p class="reference">Referenced by <a class="el" href="plot__base_8cxx_source.html#l01262">create_plot_gui()</a>, <a class="el" href="plot__base_8cxx_source.html#l00576">plot_base()</a>, and <a class="el" href="plot__base_8cxx_source.html#l00395">set_mapping_uniforms()</a>.</p>
+<p class="reference">Referenced by <a class="el" href="plot__base_8cxx_source.html#l01309">create_plot_gui()</a>, <a class="el" href="plot__base_8cxx_source.html#l00588">plot_base()</a>, and <a class="el" href="plot__base_8cxx_source.html#l00395">set_mapping_uniforms()</a>.</p>
 
 </div>
 </div>
@@ -4337,9 +4571,9 @@ virtual bool&#160;</td><td class="memItemRight" valign="bottom"><b>compute_sampl
 
 <p>orientiation quaternion mapping from domain to world coordinates </p>
 
-<p class="definition">Definition at line <a class="el" href="plot__base_8h_source.html#l00354">354</a> of file <a class="el" href="plot__base_8h_source.html">plot_base.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="plot__base_8h_source.html#l00358">358</a> of file <a class="el" href="plot__base_8h_source.html">plot_base.h</a>.</p>
 
-<p class="reference">Referenced by <a class="el" href="plot__base_8cxx_source.html#l01262">create_plot_gui()</a>, <a class="el" href="plot2d_8cxx_source.html#l00533">cgv::plot::plot2d::draw()</a>, <a class="el" href="plot3d_8cxx_source.html#l00504">cgv::plot::plot3d::draw()</a>, <a class="el" href="plot__base_8cxx_source.html#l01040">get_axis_direction()</a>, <a class="el" href="plot__base_8cxx_source.html#l01023">get_orientation()</a>, <a class="el" href="plot__base_8cxx_source.html#l00576">plot_base()</a>, <a class="el" href="plot__base_8cxx_source.html#l01003">set_orientation()</a>, and <a class="el" href="plot__base_8cxx_source.html#l00374">set_plot_uniforms()</a>.</p>
+<p class="reference">Referenced by <a class="el" href="plot__base_8cxx_source.html#l01309">create_plot_gui()</a>, <a class="el" href="plot2d_8cxx_source.html#l00541">cgv::plot::plot2d::draw()</a>, <a class="el" href="plot3d_8cxx_source.html#l00505">cgv::plot::plot3d::draw()</a>, <a class="el" href="plot__base_8cxx_source.html#l01056">get_axis_direction()</a>, <a class="el" href="plot__base_8cxx_source.html#l01039">get_orientation()</a>, <a class="el" href="plot__base_8cxx_source.html#l00588">plot_base()</a>, <a class="el" href="plot__base_8cxx_source.html#l01019">set_orientation()</a>, and <a class="el" href="plot__base_8cxx_source.html#l00374">set_plot_uniforms()</a>.</p>
 
 </div>
 </div>
@@ -4357,9 +4591,37 @@ virtual bool&#160;</td><td class="memItemRight" valign="bottom"><b>compute_sampl
 
 <p>handling of values that are out of range </p>
 
-<p class="definition">Definition at line <a class="el" href="plot__base_8h_source.html#l00379">379</a> of file <a class="el" href="plot__base_8h_source.html">plot_base.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="plot__base_8h_source.html#l00383">383</a> of file <a class="el" href="plot__base_8h_source.html">plot_base.h</a>.</p>
 
-<p class="reference">Referenced by <a class="el" href="plot__base_8cxx_source.html#l01262">create_plot_gui()</a>, <a class="el" href="plot__base_8cxx_source.html#l00576">plot_base()</a>, and <a class="el" href="plot__base_8cxx_source.html#l00374">set_plot_uniforms()</a>.</p>
+<p class="reference">Referenced by <a class="el" href="plot__base_8cxx_source.html#l01309">create_plot_gui()</a>, <a class="el" href="plot__base_8cxx_source.html#l00588">plot_base()</a>, and <a class="el" href="plot__base_8cxx_source.html#l00374">set_plot_uniforms()</a>.</p>
+
+</div>
+</div>
+<a id="a47d99b344a68ce4fb67a130b097acfe3" name="a47d99b344a68ce4fb67a130b097acfe3"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a47d99b344a68ce4fb67a130b097acfe3">&#9670;&#160;</a></span>reversed</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">bool cgv::plot::plot_base::reversed[2] = { false, false }</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">protected</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p>whether to reverse the primary or secondary color scales </p>
+
+<p class="definition">Definition at line <a class="el" href="plot__base_8h_source.html#l00429">429</a> of file <a class="el" href="plot__base_8h_source.html">plot_base.h</a>.</p>
+
+<p class="reference">Referenced by <a class="el" href="plot__base_8cxx_source.html#l01309">create_plot_gui()</a>, and <a class="el" href="plot__base_8cxx_source.html#l00421">update_color_scales()</a>.</p>
 
 </div>
 </div>
@@ -4385,9 +4647,9 @@ virtual bool&#160;</td><td class="memItemRight" valign="bottom"><b>compute_sampl
 
 <p>render style of rectangles </p>
 
-<p class="definition">Definition at line <a class="el" href="plot__base_8h_source.html#l00449">449</a> of file <a class="el" href="plot__base_8h_source.html">plot_base.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="plot__base_8h_source.html#l00466">466</a> of file <a class="el" href="plot__base_8h_source.html">plot_base.h</a>.</p>
 
-<p class="reference">Referenced by <a class="el" href="plot2d_8cxx_source.html#l00674">cgv::plot::plot2d::create_gui()</a>, <a class="el" href="plot__base_8cxx_source.html#l01262">create_plot_gui()</a>, and <a class="el" href="plot__base_8cxx_source.html#l00576">plot_base()</a>.</p>
+<p class="reference">Referenced by <a class="el" href="plot2d_8cxx_source.html#l00670">cgv::plot::plot2d::create_gui()</a>, <a class="el" href="plot__base_8cxx_source.html#l01309">create_plot_gui()</a>, and <a class="el" href="plot__base_8cxx_source.html#l00588">plot_base()</a>.</p>
 
 </div>
 </div>
@@ -4405,9 +4667,9 @@ virtual bool&#160;</td><td class="memItemRight" valign="bottom"><b>compute_sampl
 
 <p>and independent gamma adjustments </p>
 
-<p class="definition">Definition at line <a class="el" href="plot__base_8h_source.html#l00411">411</a> of file <a class="el" href="plot__base_8h_source.html">plot_base.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="plot__base_8h_source.html#l00415">415</a> of file <a class="el" href="plot__base_8h_source.html">plot_base.h</a>.</p>
 
-<p class="reference">Referenced by <a class="el" href="plot__base_8cxx_source.html#l01262">create_plot_gui()</a>, <a class="el" href="plot__base_8cxx_source.html#l00576">plot_base()</a>, and <a class="el" href="plot__base_8cxx_source.html#l00395">set_mapping_uniforms()</a>.</p>
+<p class="reference">Referenced by <a class="el" href="plot__base_8cxx_source.html#l01309">create_plot_gui()</a>, <a class="el" href="plot__base_8cxx_source.html#l00588">plot_base()</a>, and <a class="el" href="plot__base_8cxx_source.html#l00395">set_mapping_uniforms()</a>.</p>
 
 </div>
 </div>
@@ -4425,9 +4687,9 @@ virtual bool&#160;</td><td class="memItemRight" valign="bottom"><b>compute_sampl
 
 <p>index of attribute mapped to size </p>
 
-<p class="definition">Definition at line <a class="el" href="plot__base_8h_source.html#l00409">409</a> of file <a class="el" href="plot__base_8h_source.html">plot_base.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="plot__base_8h_source.html#l00413">413</a> of file <a class="el" href="plot__base_8h_source.html">plot_base.h</a>.</p>
 
-<p class="reference">Referenced by <a class="el" href="plot__base_8cxx_source.html#l01262">create_plot_gui()</a>, <a class="el" href="plot__base_8cxx_source.html#l00576">plot_base()</a>, and <a class="el" href="plot__base_8cxx_source.html#l00395">set_mapping_uniforms()</a>.</p>
+<p class="reference">Referenced by <a class="el" href="plot__base_8cxx_source.html#l01309">create_plot_gui()</a>, <a class="el" href="plot__base_8cxx_source.html#l00588">plot_base()</a>, and <a class="el" href="plot__base_8cxx_source.html#l00395">set_mapping_uniforms()</a>.</p>
 
 </div>
 </div>
@@ -4443,7 +4705,7 @@ virtual bool&#160;</td><td class="memItemRight" valign="bottom"><b>compute_sampl
       </table>
 </div><div class="memdoc">
 
-<p class="definition">Definition at line <a class="el" href="plot__base_8h_source.html#l00413">413</a> of file <a class="el" href="plot__base_8h_source.html">plot_base.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="plot__base_8h_source.html#l00417">417</a> of file <a class="el" href="plot__base_8h_source.html">plot_base.h</a>.</p>
 
 </div>
 </div>
@@ -4461,9 +4723,9 @@ virtual bool&#160;</td><td class="memItemRight" valign="bottom"><b>compute_sampl
 
 <p>min and max of mapped size </p>
 
-<p class="definition">Definition at line <a class="el" href="plot__base_8h_source.html#l00413">413</a> of file <a class="el" href="plot__base_8h_source.html">plot_base.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="plot__base_8h_source.html#l00417">417</a> of file <a class="el" href="plot__base_8h_source.html">plot_base.h</a>.</p>
 
-<p class="reference">Referenced by <a class="el" href="plot__base_8cxx_source.html#l01262">create_plot_gui()</a>, <a class="el" href="plot__base_8cxx_source.html#l00576">plot_base()</a>, and <a class="el" href="plot__base_8cxx_source.html#l00395">set_mapping_uniforms()</a>.</p>
+<p class="reference">Referenced by <a class="el" href="plot__base_8cxx_source.html#l01309">create_plot_gui()</a>, <a class="el" href="plot__base_8cxx_source.html#l00588">plot_base()</a>, and <a class="el" href="plot__base_8cxx_source.html#l00395">set_mapping_uniforms()</a>.</p>
 
 </div>
 </div>
@@ -4489,7 +4751,7 @@ virtual bool&#160;</td><td class="memItemRight" valign="bottom"><b>compute_sampl
 
 <p>twice number of axis pairs with index of first tick label and number of tick labels for primary and secondary ticks </p>
 
-<p class="definition">Definition at line <a class="el" href="plot__base_8h_source.html#l00321">321</a> of file <a class="el" href="plot__base_8h_source.html">plot_base.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="plot__base_8h_source.html#l00325">325</a> of file <a class="el" href="plot__base_8h_source.html">plot_base.h</a>.</p>
 
 </div>
 </div>
@@ -4515,7 +4777,7 @@ virtual bool&#160;</td><td class="memItemRight" valign="bottom"><b>compute_sampl
 
 <p>all tick labels </p>
 
-<p class="definition">Definition at line <a class="el" href="plot__base_8h_source.html#l00319">319</a> of file <a class="el" href="plot__base_8h_source.html">plot_base.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="plot__base_8h_source.html#l00323">323</a> of file <a class="el" href="plot__base_8h_source.html">plot_base.h</a>.</p>
 
 </div>
 </div>
@@ -4541,7 +4803,7 @@ virtual bool&#160;</td><td class="memItemRight" valign="bottom"><b>compute_sampl
 
 <p>store pointer to title font </p>
 
-<p class="definition">Definition at line <a class="el" href="plot__base_8h_source.html#l00421">421</a> of file <a class="el" href="plot__base_8h_source.html">plot_base.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="plot__base_8h_source.html#l00436">436</a> of file <a class="el" href="plot__base_8h_source.html">plot_base.h</a>.</p>
 
 <p class="reference">Referenced by <a class="el" href="plot__base_8cxx_source.html#l00275">ensure_font_names()</a>, <a class="el" href="plot__base_8cxx_source.html#l00335">on_font_face_selection()</a>, and <a class="el" href="plot__base_8cxx_source.html#l00327">on_font_selection()</a>.</p>
 
@@ -4569,7 +4831,7 @@ virtual bool&#160;</td><td class="memItemRight" valign="bottom"><b>compute_sampl
 
 <p>store pointer to title font face </p>
 
-<p class="definition">Definition at line <a class="el" href="plot__base_8h_source.html#l00423">423</a> of file <a class="el" href="plot__base_8h_source.html">plot_base.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="plot__base_8h_source.html#l00438">438</a> of file <a class="el" href="plot__base_8h_source.html">plot_base.h</a>.</p>
 
 <p class="reference">Referenced by <a class="el" href="plot__base_8cxx_source.html#l00335">on_font_face_selection()</a>.</p>
 
@@ -4597,9 +4859,9 @@ virtual bool&#160;</td><td class="memItemRight" valign="bottom"><b>compute_sampl
 
 <p>vbo for legend drawing </p>
 
-<p class="definition">Definition at line <a class="el" href="plot__base_8h_source.html#l00425">425</a> of file <a class="el" href="plot__base_8h_source.html">plot_base.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="plot__base_8h_source.html#l00440">440</a> of file <a class="el" href="plot__base_8h_source.html">plot_base.h</a>.</p>
 
-<p class="reference">Referenced by <a class="el" href="plot__base_8cxx_source.html#l01247">clear()</a>, and <a class="el" href="plot__base_8cxx_source.html#l01212">init()</a>.</p>
+<p class="reference">Referenced by <a class="el" href="plot__base_8cxx_source.html#l01293">clear()</a>, and <a class="el" href="plot__base_8cxx_source.html#l01257">init()</a>.</p>
 
 </div>
 </div>
@@ -4623,7 +4885,7 @@ virtual bool&#160;</td><td class="memItemRight" valign="bottom"><b>compute_sampl
 </table>
 </div><div class="memdoc">
 
-<p class="definition">Definition at line <a class="el" href="plot__base_8h_source.html#l00289">289</a> of file <a class="el" href="plot__base_8h_source.html">plot_base.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="plot__base_8h_source.html#l00293">293</a> of file <a class="el" href="plot__base_8h_source.html">plot_base.h</a>.</p>
 
 </div>
 </div>
@@ -4641,9 +4903,9 @@ virtual bool&#160;</td><td class="memItemRight" valign="bottom"><b>compute_sampl
 
 <p>window space position of zero for primary and secondary color mapping </p>
 
-<p class="definition">Definition at line <a class="el" href="plot__base_8h_source.html#l00389">389</a> of file <a class="el" href="plot__base_8h_source.html">plot_base.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="plot__base_8h_source.html#l00393">393</a> of file <a class="el" href="plot__base_8h_source.html">plot_base.h</a>.</p>
 
-<p class="reference">Referenced by <a class="el" href="plot__base_8cxx_source.html#l01262">create_plot_gui()</a>, <a class="el" href="plot__base_8cxx_source.html#l00576">plot_base()</a>, and <a class="el" href="plot__base_8cxx_source.html#l00395">set_mapping_uniforms()</a>.</p>
+<p class="reference">Referenced by <a class="el" href="plot__base_8cxx_source.html#l01309">create_plot_gui()</a>, <a class="el" href="plot__base_8cxx_source.html#l00588">plot_base()</a>, and <a class="el" href="plot__base_8cxx_source.html#l00421">update_color_scales()</a>.</p>
 
 </div>
 </div>

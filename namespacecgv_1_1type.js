@@ -3,6 +3,7 @@ var namespacecgv_1_1type =
     [ "cond", "namespacecgv_1_1type_1_1cond.html", "namespacecgv_1_1type_1_1cond" ],
     [ "func", "namespacecgv_1_1type_1_1func.html", "namespacecgv_1_1type_1_1func" ],
     [ "info", "namespacecgv_1_1type_1_1info.html", "namespacecgv_1_1type_1_1info" ],
+    [ "bool32_t", "classcgv_1_1type_1_1bool32__t.html", null ],
     [ "variant", "structcgv_1_1type_1_1variant.html", "structcgv_1_1type_1_1variant" ],
     [ "variant< bool >", "structcgv_1_1type_1_1variant_3_01bool_01_4.html", null ],
     [ "variant< const char * >", "structcgv_1_1type_1_1variant_3_01const_01char_01_5_01_4.html", null ],

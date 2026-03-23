@@ -21,8 +21,8 @@ var searchData=
   ['rendered_5feye_18',['rendered_eye',['../classvr__view__interactor.html#aed3d9ea37cfb8cd259a2092a0e8c34cf',1,'vr_view_interactor']]],
   ['reports_5ftime_5fsince_5fvsynch_19',['reports_time_since_vsynch',['../structvr_1_1vr__hmd__info.html#a0943288705d2b752aca5d9833ec1cd9f',1,'vr::vr_hmd_info']]],
   ['request_20',['request',['../structcgv_1_1os_1_1http__request.html#a1d7b003998382dc3c2fe40122faad622',1,'cgv::os::http_request']]],
-  ['resolution_21',['resolution',['../classcgv_1_1render_1_1color__map.html#a09dec0994e36b33d2df6348d6303b35e',1,'cgv::render::color_map']]],
-  ['result_22',['result',['../classcgv_1_1os_1_1pipe__output__thread.html#a6c05d1d6d5dd94a33336b4c82f2b2b27',1,'cgv::os::pipe_output_thread']]],
+  ['result_21',['result',['../classcgv_1_1os_1_1pipe__output__thread.html#a6c05d1d6d5dd94a33336b4c82f2b2b27',1,'cgv::os::pipe_output_thread']]],
+  ['reversed_22',['reversed',['../classcgv_1_1plot_1_1plot__base.html#a47d99b344a68ce4fb67a130b097acfe3',1,'cgv::plot::plot_base']]],
   ['right_5fstick_5fposition_23',['right_stick_position',['../structgamepad_1_1gamepad__state.html#a085176ecd68c889a3f508dacf9018795',1,'gamepad::gamepad_state']]],
   ['role_24',['role',['../structvr_1_1vr__controller__info.html#aac03869f0da14d6ff1bfc445e2daf8e9',1,'vr::vr_controller_info']]],
   ['rotations_25',['rotations',['../classcgv_1_1render_1_1box__render__data__base.html#a69801a6dc377ebbd6869703b65fd6894',1,'cgv::render::box_render_data_base::rotations'],['../classcgv_1_1render_1_1rectangle__render__data.html#abbf20564e2538476c62a3388c040d247',1,'cgv::render::rectangle_render_data::rotations']]],
@@ -32,5 +32,5 @@ var searchData=
   ['roughness_5forientation_29',['roughness_orientation',['../structcgv_1_1media_1_1illum_1_1surface__material.html#a612bd2956c621fa487d9ddc4e37ec686',1,'cgv::media::illum::surface_material']]],
   ['rounding_30',['rounding',['../structcgv_1_1render_1_1box__render__style.html#a92e0131be883f48e6877a29641e502ed',1,'cgv::render::box_render_style']]],
   ['rrs_31',['rrs',['../classcgv_1_1plot_1_1plot__base.html#a05166adb7d1175f04a0e2dc8607cf2d5',1,'cgv::plot::plot_base']]],
-  ['running_5ftime_32',['running_time',['../classcgv_1_1app_1_1performance__monitor.html#a8f604e624947512390e3734e7d02f5d8',1,'cgv::app::performance_monitor']]]
+  ['running_5ftime_32',['running_time',['../classcgv_1_1overlay_1_1performance__monitor.html#a0b6ca6569377021ce4dde6d886ab21d0',1,'cgv::overlay::performance_monitor']]]
 ];

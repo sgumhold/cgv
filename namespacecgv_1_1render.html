@@ -183,7 +183,8 @@ Classes</h2></td></tr>
 <tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:"><td class="memItemLeft" align="right" valign="top">class &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcgv_1_1render_1_1clod__point__renderer.html">clod_point_renderer</a></td></tr>
 <tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:"><td class="memItemLeft" align="right" valign="top">class &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcgv_1_1render_1_1color__map.html">color_map</a></td></tr>
+<tr class="memitem:"><td class="memItemLeft" align="right" valign="top">class &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcgv_1_1render_1_1color__scale__adapter.html">color_scale_adapter</a></td></tr>
+<tr class="memdesc:"><td class="mdescLeft">&#160;</td><td class="mdescRight">Manages graphics resources to enable using <a class="el" href="classcgv_1_1render_1_1device__color__scale.html" title="Base class defining an interface for using color scales on the graphics device, e....">device_color_scale</a> in shader programs.  <a href="classcgv_1_1render_1_1color__scale__adapter.html#details">More...</a><br /></td></tr>
 <tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:"><td class="memItemLeft" align="right" valign="top">class &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcgv_1_1render_1_1cone__render__data.html">cone_render_data</a></td></tr>
 <tr class="memdesc:"><td class="mdescLeft">&#160;</td><td class="mdescRight">Render data for cone geometry with support for the <a class="el" href="classcgv_1_1render_1_1cone__renderer.html" title="renderer that supports raycasting of cones">cone_renderer</a>.  <a href="classcgv_1_1render_1_1cone__render__data.html#details">More...</a><br /></td></tr>
@@ -204,6 +205,24 @@ Classes</h2></td></tr>
 <tr class="memitem:"><td class="memItemLeft" align="right" valign="top">struct &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structcgv_1_1render_1_1context__factory__registration.html">context_factory_registration</a></td></tr>
 <tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:"><td class="memItemLeft" align="right" valign="top">struct &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structcgv_1_1render_1_1device__capabilities.html">device_capabilities</a></td></tr>
+<tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:"><td class="memItemLeft" align="right" valign="top">class &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcgv_1_1render_1_1device__color__scale.html">device_color_scale</a></td></tr>
+<tr class="memdesc:"><td class="mdescLeft">&#160;</td><td class="mdescRight">Base class defining an interface for using color scales on the graphics device, e.g. in a shader.  <a href="classcgv_1_1render_1_1device__color__scale.html#details">More...</a><br /></td></tr>
+<tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:"><td class="memItemLeft" align="right" valign="top">struct &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structcgv_1_1render_1_1device__color__scale__arguments.html">device_color_scale_arguments</a></td></tr>
+<tr class="memdesc:"><td class="mdescLeft">&#160;</td><td class="mdescRight">Color scale arguments as used by the graphics device or shader program.  <a href="structcgv_1_1render_1_1device__color__scale__arguments.html#details">More...</a><br /></td></tr>
+<tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:"><td class="memItemLeft" align="right" valign="top">class &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcgv_1_1render_1_1device__color__scale__storage.html">device_color_scale_storage</a></td></tr>
+<tr class="memdesc:"><td class="mdescLeft">&#160;</td><td class="mdescRight">Base class template that provides a pointer to a concrete color scale implementation.  <a href="classcgv_1_1render_1_1device__color__scale__storage.html#details">More...</a><br /></td></tr>
+<tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:"><td class="memItemLeft" align="right" valign="top">class &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcgv_1_1render_1_1device__continuous__color__scale.html">device_continuous_color_scale</a></td></tr>
+<tr class="memdesc:"><td class="mdescLeft">&#160;</td><td class="mdescRight">Implementation of a <a class="el" href="classcgv_1_1render_1_1device__color__scale.html" title="Base class defining an interface for using color scales on the graphics device, e....">device_color_scale</a> that wraps <a class="el" href="classcgv_1_1media_1_1continuous__color__scale.html" title="Implementation of a color_scale with a continuous input domain and output range using a continuous_co...">cgv::media::continuous_color_scale</a>.  <a href="classcgv_1_1render_1_1device__continuous__color__scale.html#details">More...</a><br /></td></tr>
+<tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:"><td class="memItemLeft" align="right" valign="top">class &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcgv_1_1render_1_1device__discrete__color__scale.html">device_discrete_color_scale</a></td></tr>
+<tr class="memdesc:"><td class="mdescLeft">&#160;</td><td class="mdescRight">Implementation of a <a class="el" href="classcgv_1_1render_1_1device__color__scale.html" title="Base class defining an interface for using color scales on the graphics device, e....">device_color_scale</a> that wraps <a class="el" href="classcgv_1_1media_1_1discrete__color__scale.html" title="Implementation of a color_scale with a discrete input domain and output range using a discrete_color_...">cgv::media::discrete_color_scale</a>.  <a href="classcgv_1_1render_1_1device__discrete__color__scale.html#details">More...</a><br /></td></tr>
+<tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:"><td class="memItemLeft" align="right" valign="top">class &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcgv_1_1render_1_1device__transfer__function.html">device_transfer_function</a></td></tr>
+<tr class="memdesc:"><td class="mdescLeft">&#160;</td><td class="mdescRight">Implementation of a <a class="el" href="classcgv_1_1render_1_1device__color__scale.html" title="Base class defining an interface for using color scales on the graphics device, e....">device_color_scale</a> that wraps <a class="el" href="classcgv_1_1media_1_1transfer__function.html" title="Implementation of a color_scale with a continuous input domain that maps explicit domain values to co...">cgv::media::transfer_function</a>.  <a href="classcgv_1_1render_1_1device__transfer__function.html#details">More...</a><br /></td></tr>
 <tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:"><td class="memItemLeft" align="right" valign="top">struct &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structcgv_1_1render_1_1draw__call.html">draw_call</a></td></tr>
 <tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
@@ -244,8 +263,6 @@ Classes</h2></td></tr>
 <tr class="memitem:"><td class="memItemLeft" align="right" valign="top">class &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcgv_1_1render_1_1generic__render__data.html">generic_render_data</a></td></tr>
 <tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:"><td class="memItemLeft" align="right" valign="top">class &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcgv_1_1render_1_1generic__renderer.html">generic_renderer</a></td></tr>
-<tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:"><td class="memItemLeft" align="right" valign="top">class &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcgv_1_1render_1_1gl__color__map.html">gl_color_map</a></td></tr>
 <tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:"><td class="memItemLeft" align="right" valign="top">struct &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structcgv_1_1render_1_1group__render__style.html">group_render_style</a></td></tr>
 <tr class="memdesc:"><td class="mdescLeft">&#160;</td><td class="mdescRight">render style used for group information  <a href="structcgv_1_1render_1_1group__render__style.html#details">More...</a><br /></td></tr>
@@ -410,6 +427,9 @@ Classes</h2></td></tr>
 <tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:"><td class="memItemLeft" align="right" valign="top">struct &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structcgv_1_1render_1_1type__descriptor.html">type_descriptor</a></td></tr>
 <tr class="memdesc:"><td class="mdescLeft">&#160;</td><td class="mdescRight">compact type description of data that can be sent to the context; convertible to int  <a href="structcgv_1_1render_1_1type__descriptor.html#details">More...</a><br /></td></tr>
+<tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:"><td class="memItemLeft" align="right" valign="top">class &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcgv_1_1render_1_1uniform__buffer.html">uniform_buffer</a></td></tr>
+<tr class="memdesc:"><td class="mdescLeft">&#160;</td><td class="mdescRight">Helper class template for handling vertex buffers of type uniform buffer object that explicitly states the type of data stored.  <a href="classcgv_1_1render_1_1uniform__buffer.html#details">More...</a><br /></td></tr>
 <tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:"><td class="memItemLeft" align="right" valign="top">struct &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structcgv_1_1render_1_1vertex__attribute.html">vertex_attribute</a></td></tr>
 <tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
@@ -778,6 +798,17 @@ Enumerations</h2></td></tr>
  }</td></tr>
 <tr class="memdesc:a6a9c2282e6df914ff013f5a587bbd49c"><td class="mdescLeft">&#160;</td><td class="mdescRight">different frame buffer types which can be combined together with or  <a href="namespacecgv_1_1render.html#a6a9c2282e6df914ff013f5a587bbd49c">More...</a><br /></td></tr>
 <tr class="separator:a6a9c2282e6df914ff013f5a587bbd49c"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a200f6ce0cfdcb01c551ffaa493e64006" id="r_a200f6ce0cfdcb01c551ffaa493e64006"><td class="memItemLeft" align="right" valign="top">enum class &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespacecgv_1_1render.html#a200f6ce0cfdcb01c551ffaa493e64006">DeviceColorScaleSampleMode</a> : uint8_t { <b>kContinuous</b> = 0
+, <b>kDiscrete</b> = 1
+ }</td></tr>
+<tr class="memdesc:a200f6ce0cfdcb01c551ffaa493e64006"><td class="mdescLeft">&#160;</td><td class="mdescRight">Sample mode of the device color scale.  <a href="namespacecgv_1_1render.html#a200f6ce0cfdcb01c551ffaa493e64006">More...</a><br /></td></tr>
+<tr class="separator:a200f6ce0cfdcb01c551ffaa493e64006"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ac93b54592b90e02852552a2e9f467940" id="r_ac93b54592b90e02852552a2e9f467940"><td class="memItemLeft" align="right" valign="top">enum class &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespacecgv_1_1render.html#ac93b54592b90e02852552a2e9f467940">DeviceColorScaleMappingOptions</a> : uint8_t { <b>kNone</b> = 0
+, <b>kClamped</b> = 1
+, <b>kDiverging</b> = 2
+ }</td></tr>
+<tr class="memdesc:ac93b54592b90e02852552a2e9f467940"><td class="mdescLeft">&#160;</td><td class="mdescRight">Flags that represent boolean mapping options of the color scales.  <a href="namespacecgv_1_1render.html#ac93b54592b90e02852552a2e9f467940">More...</a><br /></td></tr>
+<tr class="separator:ac93b54592b90e02852552a2e9f467940"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a79b40c1e022fe70b55c592f296dd5e29" id="r_a79b40c1e022fe70b55c592f296dd5e29"><td class="memItemLeft" align="right" valign="top">enum &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespacecgv_1_1render.html#a79b40c1e022fe70b55c592f296dd5e29">PerformanceMonitoringBar</a> { <b>PMB_MIN</b>
 , <b>PMB_MAX</b>
 , <b>PMB_CUR</b>
@@ -895,12 +926,6 @@ Enumerations</h2></td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="func-members" name="func-members"></a>
 Functions</h2></td></tr>
-<tr class="memitem:a59dab50ff09426084782ca221f1452ed" id="r_a59dab50ff09426084782ca221f1452ed"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespacecgv_1_1render.html#a59dab50ff09426084782ca221f1452ed">configure_color_scale</a> (<a class="el" href="classcgv_1_1render_1_1context.html">cgv::render::context</a> &amp;ctx, <a class="el" href="classcgv_1_1render_1_1shader__program.html">cgv::render::shader_program</a> &amp;prog, cgv::media::ColorScale cs, float window_zero_position=0.5f)</td></tr>
-<tr class="memdesc:a59dab50ff09426084782ca221f1452ed"><td class="mdescLeft">&#160;</td><td class="mdescRight">convenience function to configure a shader that uses color_scale.glsl with a single color scale  <br /></td></tr>
-<tr class="separator:a59dab50ff09426084782ca221f1452ed"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a30147ad00afa94d5133a66836282a047" id="r_a30147ad00afa94d5133a66836282a047"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespacecgv_1_1render.html#a30147ad00afa94d5133a66836282a047">configure_color_scale</a> (<a class="el" href="classcgv_1_1render_1_1context.html">cgv::render::context</a> &amp;ctx, <a class="el" href="classcgv_1_1render_1_1shader__program.html">cgv::render::shader_program</a> &amp;prog, cgv::media::ColorScale cs[2], float window_zero_position[2])</td></tr>
-<tr class="memdesc:a30147ad00afa94d5133a66836282a047"><td class="mdescLeft">&#160;</td><td class="mdescRight">convenience function to configure a shader that uses color_scale.glsl with two color scales  <br /></td></tr>
-<tr class="separator:a30147ad00afa94d5133a66836282a047"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a291adad2346ffb6ce2d280954d564c5d" id="r_a291adad2346ffb6ce2d280954d564c5d"><td class="memItemLeft" align="right" valign="top">std::ostream &amp;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespacecgv_1_1render.html#a291adad2346ffb6ce2d280954d564c5d">operator&lt;&lt;</a> (std::ostream &amp;, <a class="el" href="classcgv_1_1base_1_1single__method__action.html">const</a> <a class="el" href="structcgv_1_1render_1_1type__descriptor.html">type_descriptor</a> &amp;)</td></tr>
 <tr class="memdesc:a291adad2346ffb6ce2d280954d564c5d"><td class="mdescLeft">&#160;</td><td class="mdescRight">operator to write textual description to stream  <br /></td></tr>
 <tr class="separator:a291adad2346ffb6ce2d280954d564c5d"><td class="memSeparator" colspan="2">&#160;</td></tr>
@@ -941,6 +966,10 @@ Functions</h2></td></tr>
 <tr class="memitem:a70f8fa845a248470de8b176c778b3e32" id="r_a70f8fa845a248470de8b176c778b3e32"><td class="memItemLeft" align="right" valign="top"><a class="el" href="classcgv_1_1render_1_1context.html">context</a> *&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespacecgv_1_1render.html#a70f8fa845a248470de8b176c778b3e32">create_context</a> (<a class="el" href="namespacecgv_1_1render.html#a04797cd64ece747a5fda1f3bd7f45ee7">RenderAPI</a> <a class="el" href="classcgv_1_1base_1_1single__method__action.html">api</a>, <a class="el" href="classcgv_1_1base_1_1single__method__action.html">unsigned</a> <a class="el" href="classcgv_1_1base_1_1single__method__action.html">int</a> w, <a class="el" href="classcgv_1_1base_1_1single__method__action.html">unsigned</a> <a class="el" href="classcgv_1_1base_1_1single__method__action.html">int</a> h, <a class="el" href="classcgv_1_1base_1_1single__method__action.html">const</a> std::string &amp;title, <a class="el" href="classcgv_1_1base_1_1single__method__action.html">bool</a> show)</td></tr>
 <tr class="memdesc:a70f8fa845a248470de8b176c778b3e32"><td class="mdescLeft">&#160;</td><td class="mdescRight">construct a context of the given size.  <br /></td></tr>
 <tr class="separator:a70f8fa845a248470de8b176c778b3e32"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:abc352bc76d0115533695de30caa937f7" id="r_abc352bc76d0115533695de30caa937f7"><td class="memItemLeft" align="right" valign="top">static <a class="el" href="namespacecgv_1_1render.html#ac93b54592b90e02852552a2e9f467940">DeviceColorScaleMappingOptions</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespacecgv_1_1render.html#abc352bc76d0115533695de30caa937f7">operator|</a> (<a class="el" href="namespacecgv_1_1render.html#ac93b54592b90e02852552a2e9f467940">DeviceColorScaleMappingOptions</a> lhs, <a class="el" href="namespacecgv_1_1render.html#ac93b54592b90e02852552a2e9f467940">DeviceColorScaleMappingOptions</a> rhs)</td></tr>
+<tr class="separator:abc352bc76d0115533695de30caa937f7"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a7af3055482b303b30d4654282cd1dfaa" id="r_a7af3055482b303b30d4654282cd1dfaa"><td class="memItemLeft" align="right" valign="top">static <a class="el" href="namespacecgv_1_1render.html#ac93b54592b90e02852552a2e9f467940">DeviceColorScaleMappingOptions</a> &amp;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespacecgv_1_1render.html#a7af3055482b303b30d4654282cd1dfaa">operator|=</a> (<a class="el" href="namespacecgv_1_1render.html#ac93b54592b90e02852552a2e9f467940">DeviceColorScaleMappingOptions</a> &amp;lhs, <a class="el" href="namespacecgv_1_1render.html#ac93b54592b90e02852552a2e9f467940">DeviceColorScaleMappingOptions</a> rhs)</td></tr>
+<tr class="separator:a7af3055482b303b30d4654282cd1dfaa"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ad451e11c00353abd76e865f0fc4a078b" id="r_ad451e11c00353abd76e865f0fc4a078b"><td class="memTemplParams" colspan="2">template&lt;typename T &gt; </td></tr>
 <tr class="memitem:ad451e11c00353abd76e865f0fc4a078b"><td class="memTemplItemLeft" align="right" valign="top"><a class="el" href="structcgv_1_1render_1_1type__descriptor.html">type_descriptor</a>&#160;</td><td class="memTemplItemRight" valign="bottom"><a class="el" href="namespacecgv_1_1render.html#ad451e11c00353abd76e865f0fc4a078b">get_element_type</a> (const T &amp;element)</td></tr>
 <tr class="separator:ad451e11c00353abd76e865f0fc4a078b"><td class="memSeparator" colspan="2">&#160;</td></tr>
@@ -1152,7 +1181,7 @@ Variables</h2></td></tr>
       </table>
 </div><div class="memdoc">
 
-<p class="definition">Definition at line <a class="el" href="context_8h_source.html#l01557">1557</a> of file <a class="el" href="context_8h_source.html">context.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="context_8h_source.html#l01559">1559</a> of file <a class="el" href="context_8h_source.html">context.h</a>.</p>
 
 </div>
 </div>
@@ -1207,7 +1236,7 @@ Variables</h2></td></tr>
 
 <p>different access types </p>
 
-<p class="definition">Definition at line <a class="el" href="context_8h_source.html#l00320">320</a> of file <a class="el" href="context_8h_source.html">context.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="context_8h_source.html#l00322">322</a> of file <a class="el" href="context_8h_source.html">context.h</a>.</p>
 
 </div>
 </div>
@@ -1259,7 +1288,7 @@ Variables</h2></td></tr>
 
 <p>different blend functions </p>
 
-<p class="definition">Definition at line <a class="el" href="context_8h_source.html#l00204">204</a> of file <a class="el" href="context_8h_source.html">context.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="context_8h_source.html#l00206">206</a> of file <a class="el" href="context_8h_source.html">context.h</a>.</p>
 
 </div>
 </div>
@@ -1325,7 +1354,7 @@ Variables</h2></td></tr>
 
 <p>different comparison functions used for depth testing or texture comparisons </p>
 
-<p class="definition">Definition at line <a class="el" href="context_8h_source.html#l00307">307</a> of file <a class="el" href="context_8h_source.html">context.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="context_8h_source.html#l00309">309</a> of file <a class="el" href="context_8h_source.html">context.h</a>.</p>
 
 </div>
 </div>
@@ -1343,7 +1372,59 @@ Variables</h2></td></tr>
 
 <p>different culling modes </p>
 
-<p class="definition">Definition at line <a class="el" href="context_8h_source.html#l00197">197</a> of file <a class="el" href="context_8h_source.html">context.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="context_8h_source.html#l00199">199</a> of file <a class="el" href="context_8h_source.html">context.h</a>.</p>
+
+</div>
+</div>
+<a id="ac93b54592b90e02852552a2e9f467940" name="ac93b54592b90e02852552a2e9f467940"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#ac93b54592b90e02852552a2e9f467940">&#9670;&#160;</a></span>DeviceColorScaleMappingOptions</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">enum class <a class="el" href="namespacecgv_1_1render.html#ac93b54592b90e02852552a2e9f467940">cgv::render::DeviceColorScaleMappingOptions</a> : uint8_t</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">strong</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p>Flags that represent boolean mapping options of the color scales. </p>
+
+<p class="definition">Definition at line <a class="el" href="device__color__scale_8h_source.html#l00021">21</a> of file <a class="el" href="device__color__scale_8h_source.html">device_color_scale.h</a>.</p>
+
+</div>
+</div>
+<a id="a200f6ce0cfdcb01c551ffaa493e64006" name="a200f6ce0cfdcb01c551ffaa493e64006"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a200f6ce0cfdcb01c551ffaa493e64006">&#9670;&#160;</a></span>DeviceColorScaleSampleMode</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">enum class <a class="el" href="namespacecgv_1_1render.html#a200f6ce0cfdcb01c551ffaa493e64006">cgv::render::DeviceColorScaleSampleMode</a> : uint8_t</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">strong</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p>Sample mode of the device color scale. </p>
+
+<p class="definition">Definition at line <a class="el" href="device__color__scale_8h_source.html#l00015">15</a> of file <a class="el" href="device__color__scale_8h_source.html">device_color_scale.h</a>.</p>
 
 </div>
 </div>
@@ -1377,7 +1458,7 @@ Variables</h2></td></tr>
 
 <p>different compound types for data elements </p>
 
-<p class="definition">Definition at line <a class="el" href="context_8h_source.html#l00051">51</a> of file <a class="el" href="context_8h_source.html">context.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="context_8h_source.html#l00053">53</a> of file <a class="el" href="context_8h_source.html">context.h</a>.</p>
 
 </div>
 </div>
@@ -1431,7 +1512,7 @@ Variables</h2></td></tr>
 
 <p>different illumination modes </p>
 
-<p class="definition">Definition at line <a class="el" href="context_8h_source.html#l00190">190</a> of file <a class="el" href="context_8h_source.html">context.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="context_8h_source.html#l00192">192</a> of file <a class="el" href="context_8h_source.html">context.h</a>.</p>
 
 </div>
 </div>
@@ -1449,7 +1530,7 @@ Variables</h2></td></tr>
 
 <p>different sides of a material </p>
 
-<p class="definition">Definition at line <a class="el" href="context_8h_source.html#l00182">182</a> of file <a class="el" href="context_8h_source.html">context.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="context_8h_source.html#l00184">184</a> of file <a class="el" href="context_8h_source.html">context.h</a>.</p>
 
 </div>
 </div>
@@ -1485,7 +1566,7 @@ Variables</h2></td></tr>
 
 <p>different primitive types </p>
 
-<p class="definition">Definition at line <a class="el" href="context_8h_source.html#l00279">279</a> of file <a class="el" href="context_8h_source.html">context.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="context_8h_source.html#l00281">281</a> of file <a class="el" href="context_8h_source.html">context.h</a>.</p>
 
 </div>
 </div>
@@ -1503,7 +1584,7 @@ Variables</h2></td></tr>
 
 <p>enumerates different kinds of shader program variables </p>
 
-<p class="definition">Definition at line <a class="el" href="context_8h_source.html#l00089">89</a> of file <a class="el" href="context_8h_source.html">context.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="context_8h_source.html#l00091">91</a> of file <a class="el" href="context_8h_source.html">context.h</a>.</p>
 
 </div>
 </div>
@@ -1557,7 +1638,7 @@ Variables</h2></td></tr>
 
 <p>enumeration of rendering APIs which can be queried from the context </p>
 
-<p class="definition">Definition at line <a class="el" href="context_8h_source.html#l00124">124</a> of file <a class="el" href="context_8h_source.html">context.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="context_8h_source.html#l00126">126</a> of file <a class="el" href="context_8h_source.html">context.h</a>.</p>
 
 </div>
 </div>
@@ -1595,7 +1676,7 @@ Variables</h2></td></tr>
 </td></tr>
 </table>
 
-<p class="definition">Definition at line <a class="el" href="context_8h_source.html#l00131">131</a> of file <a class="el" href="context_8h_source.html">context.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="context_8h_source.html#l00133">133</a> of file <a class="el" href="context_8h_source.html">context.h</a>.</p>
 
 </div>
 </div>
@@ -1669,7 +1750,7 @@ Variables</h2></td></tr>
 </td></tr>
 </table>
 
-<p class="definition">Definition at line <a class="el" href="context_8h_source.html#l00147">147</a> of file <a class="el" href="context_8h_source.html">context.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="context_8h_source.html#l00149">149</a> of file <a class="el" href="context_8h_source.html">context.h</a>.</p>
 
 </div>
 </div>
@@ -1725,7 +1806,7 @@ Variables</h2></td></tr>
 </td></tr>
 </table>
 
-<p class="definition">Definition at line <a class="el" href="context_8h_source.html#l00327">327</a> of file <a class="el" href="context_8h_source.html">context.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="context_8h_source.html#l00329">329</a> of file <a class="el" href="context_8h_source.html">context.h</a>.</p>
 
 </div>
 </div>
@@ -1743,7 +1824,7 @@ Variables</h2></td></tr>
 
 <p>the six different sides of a cube </p>
 
-<p class="definition">Definition at line <a class="el" href="context_8h_source.html#l00269">269</a> of file <a class="el" href="context_8h_source.html">context.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="context_8h_source.html#l00271">271</a> of file <a class="el" href="context_8h_source.html">context.h</a>.</p>
 
 </div>
 </div>
@@ -1761,7 +1842,7 @@ Variables</h2></td></tr>
 
 <p>different texture filter </p>
 
-<p class="definition">Definition at line <a class="el" href="context_8h_source.html#l00243">243</a> of file <a class="el" href="context_8h_source.html">context.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="context_8h_source.html#l00245">245</a> of file <a class="el" href="context_8h_source.html">context.h</a>.</p>
 
 </div>
 </div>
@@ -1785,7 +1866,7 @@ Variables</h2></td></tr>
 </td></tr>
 </table>
 
-<p class="definition">Definition at line <a class="el" href="context_8h_source.html#l00300">300</a> of file <a class="el" href="context_8h_source.html">context.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="context_8h_source.html#l00302">302</a> of file <a class="el" href="context_8h_source.html">context.h</a>.</p>
 
 </div>
 </div>
@@ -1803,7 +1884,7 @@ Variables</h2></td></tr>
 
 <p>different texture types </p>
 
-<p class="definition">Definition at line <a class="el" href="context_8h_source.html#l00255">255</a> of file <a class="el" href="context_8h_source.html">context.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="context_8h_source.html#l00257">257</a> of file <a class="el" href="context_8h_source.html">context.h</a>.</p>
 
 </div>
 </div>
@@ -1821,7 +1902,7 @@ Variables</h2></td></tr>
 
 <p>different texture wrap modes </p>
 
-<p class="definition">Definition at line <a class="el" href="context_8h_source.html#l00227">227</a> of file <a class="el" href="context_8h_source.html">context.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="context_8h_source.html#l00229">229</a> of file <a class="el" href="context_8h_source.html">context.h</a>.</p>
 
 </div>
 </div>
@@ -1875,7 +1956,7 @@ Variables</h2></td></tr>
 </td></tr>
 </table>
 
-<p class="definition">Definition at line <a class="el" href="context_8h_source.html#l00470">470</a> of file <a class="el" href="context_8h_source.html">context.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="context_8h_source.html#l00472">472</a> of file <a class="el" href="context_8h_source.html">context.h</a>.</p>
 
 </div>
 </div>
@@ -1913,7 +1994,7 @@ Variables</h2></td></tr>
 </td></tr>
 </table>
 
-<p class="definition">Definition at line <a class="el" href="context_8h_source.html#l00483">483</a> of file <a class="el" href="context_8h_source.html">context.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="context_8h_source.html#l00485">485</a> of file <a class="el" href="context_8h_source.html">context.h</a>.</p>
 
 </div>
 </div>
@@ -2148,7 +2229,7 @@ Variables</h2></td></tr>
 
 <p class="definition">Definition at line <a class="el" href="gltf__support_8cxx_source.html#l00134">134</a> of file <a class="el" href="gltf__support_8cxx_source.html">gltf_support.cxx</a>.</p>
 
-<p class="reference">References <a class="el" href="textured__material_8cxx_source.html#l00033">cgv::render::textured_material::add_texture_reference()</a>, <a class="el" href="image__reader_8cxx_source.html#l00296">cgv::media::image::image_reader::close()</a>, <a class="el" href="attribute__array__binding_8cxx_source.html#l00088">cgv::render::attribute_array_binding::create()</a>, <a class="el" href="vertex__buffer_8cxx_source.html#l00058">cgv::render::vertex_buffer::create()</a>, <a class="el" href="texture_8cxx_source.html#l00213">cgv::render::texture::create()</a>, <a class="el" href="render__info_8cxx_source.html#l00257">cgv::render::render_info::destruct()</a>, <a class="el" href="textured__surface__material_8h_source.html#l00022">cgv::media::illum::textured_surface_material::diffuse_index</a>, <a class="el" href="surface__material_8h_source.html#l00030">cgv::media::illum::surface_material::diffuse_reflectance</a>, <a class="el" href="surface__material_8h_source.html#l00038">cgv::media::illum::surface_material::emission</a>, <a class="el" href="textured__surface__material_8h_source.html#l00035">cgv::media::illum::textured_surface_material::emission_index</a>, <a class="el" href="classcgv_1_1render_1_1context.html#ad351a2dc1c1e0343b17738053a981816">cgv::render::context::make_current()</a>, <a class="el" href="surface__material_8h_source.html#l00034">cgv::media::illum::surface_material::metalness</a>, <a class="el" href="textured__surface__material_8h_source.html#l00030">cgv::media::illum::textured_surface_material::metalness_index</a>, <a class="el" href="textured__surface__material_8h_source.html#l00018">cgv::media::illum::textured_surface_material::name</a>, <a class="el" href="image__reader_8cxx_source.html#l00141">cgv::media::image::image_reader::open()</a>, <a class="el" href="image__reader_8cxx_source.html#l00121">cgv::media::image::image_reader::read_image()</a>, <a class="el" href="render__info_8cxx_source.html#l00158">cgv::render::render_info::ref_aas()</a>, <a class="el" href="render__info_8cxx_source.html#l00169">cgv::render::render_info::ref_draw_calls()</a>, <a class="el" href="render__info_8cxx_source.html#l00146">cgv::render::render_info::ref_materials()</a>, <a class="el" href="render__info_8cxx_source.html#l00163">cgv::render::render_info::ref_textures()</a>, <a class="el" href="render__info_8cxx_source.html#l00152">cgv::render::render_info::ref_vbos()</a>, <a class="el" href="surface__material_8h_source.html#l00032">cgv::media::illum::surface_material::roughness</a>, <a class="el" href="textured__surface__material_8h_source.html#l00026">cgv::media::illum::textured_surface_material::roughness_index</a>, <a class="el" href="textured__material_8cxx_source.html#l00068">cgv::render::textured_material::set_alpha_test()</a>, <a class="el" href="texture_8cxx_source.html#l00143">cgv::render::texture::set_mag_filter()</a>, <a class="el" href="texture_8cxx_source.html#l00125">cgv::render::texture::set_min_filter()</a>, <a class="el" href="texture_8cxx_source.html#l00077">cgv::render::texture::set_wrap_s()</a>, <a class="el" href="texture_8cxx_source.html#l00083">cgv::render::texture::set_wrap_t()</a>, <a class="el" href="textured__surface__material_8h_source.html#l00042">cgv::media::illum::textured_surface_material::specular_index</a>, <a class="el" href="type__id_8h_source.html#l00024">cgv::type::info::TI_UINT16</a>, <a class="el" href="type__id_8h_source.html#l00025">cgv::type::info::TI_UINT32</a>, <a class="el" href="type__id_8h_source.html#l00023">cgv::type::info::TI_UINT8</a>, and <a class="el" href="surface__material_8h_source.html#l00040">cgv::media::illum::surface_material::transparency</a>.</p>
+<p class="reference">References <a class="el" href="textured__material_8cxx_source.html#l00033">cgv::render::textured_material::add_texture_reference()</a>, <a class="el" href="image__reader_8cxx_source.html#l00296">cgv::media::image::image_reader::close()</a>, <a class="el" href="attribute__array__binding_8cxx_source.html#l00088">cgv::render::attribute_array_binding::create()</a>, <a class="el" href="vertex__buffer_8cxx_source.html#l00054">cgv::render::vertex_buffer::create()</a>, <a class="el" href="texture_8cxx_source.html#l00213">cgv::render::texture::create()</a>, <a class="el" href="render__info_8cxx_source.html#l00257">cgv::render::render_info::destruct()</a>, <a class="el" href="textured__surface__material_8h_source.html#l00022">cgv::media::illum::textured_surface_material::diffuse_index</a>, <a class="el" href="surface__material_8h_source.html#l00030">cgv::media::illum::surface_material::diffuse_reflectance</a>, <a class="el" href="surface__material_8h_source.html#l00038">cgv::media::illum::surface_material::emission</a>, <a class="el" href="textured__surface__material_8h_source.html#l00035">cgv::media::illum::textured_surface_material::emission_index</a>, <a class="el" href="classcgv_1_1render_1_1context.html#ad351a2dc1c1e0343b17738053a981816">cgv::render::context::make_current()</a>, <a class="el" href="surface__material_8h_source.html#l00034">cgv::media::illum::surface_material::metalness</a>, <a class="el" href="textured__surface__material_8h_source.html#l00030">cgv::media::illum::textured_surface_material::metalness_index</a>, <a class="el" href="textured__surface__material_8h_source.html#l00018">cgv::media::illum::textured_surface_material::name</a>, <a class="el" href="image__reader_8cxx_source.html#l00141">cgv::media::image::image_reader::open()</a>, <a class="el" href="image__reader_8cxx_source.html#l00121">cgv::media::image::image_reader::read_image()</a>, <a class="el" href="render__info_8cxx_source.html#l00158">cgv::render::render_info::ref_aas()</a>, <a class="el" href="render__info_8cxx_source.html#l00169">cgv::render::render_info::ref_draw_calls()</a>, <a class="el" href="render__info_8cxx_source.html#l00146">cgv::render::render_info::ref_materials()</a>, <a class="el" href="render__info_8cxx_source.html#l00163">cgv::render::render_info::ref_textures()</a>, <a class="el" href="render__info_8cxx_source.html#l00152">cgv::render::render_info::ref_vbos()</a>, <a class="el" href="surface__material_8h_source.html#l00032">cgv::media::illum::surface_material::roughness</a>, <a class="el" href="textured__surface__material_8h_source.html#l00026">cgv::media::illum::textured_surface_material::roughness_index</a>, <a class="el" href="textured__material_8cxx_source.html#l00068">cgv::render::textured_material::set_alpha_test()</a>, <a class="el" href="texture_8cxx_source.html#l00143">cgv::render::texture::set_mag_filter()</a>, <a class="el" href="texture_8cxx_source.html#l00125">cgv::render::texture::set_min_filter()</a>, <a class="el" href="texture_8cxx_source.html#l00077">cgv::render::texture::set_wrap_s()</a>, <a class="el" href="texture_8cxx_source.html#l00083">cgv::render::texture::set_wrap_t()</a>, <a class="el" href="textured__surface__material_8h_source.html#l00042">cgv::media::illum::textured_surface_material::specular_index</a>, <a class="el" href="type__id_8h_source.html#l00024">cgv::type::info::TI_UINT16</a>, <a class="el" href="type__id_8h_source.html#l00025">cgv::type::info::TI_UINT32</a>, <a class="el" href="type__id_8h_source.html#l00023">cgv::type::info::TI_UINT8</a>, and <a class="el" href="surface__material_8h_source.html#l00040">cgv::media::illum::surface_material::transparency</a>.</p>
 
 </div>
 </div>
@@ -2206,118 +2287,6 @@ Variables</h2></td></tr>
 
 </div>
 </div>
-<a id="a59dab50ff09426084782ca221f1452ed" name="a59dab50ff09426084782ca221f1452ed"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a59dab50ff09426084782ca221f1452ed">&#9670;&#160;</a></span>configure_color_scale() <span class="overload">[1/2]</span></h2>
-
-<div class="memitem">
-<div class="memproto">
-      <table class="memname">
-        <tr>
-          <td class="memname">CGV_API void cgv::render::configure_color_scale </td>
-          <td>(</td>
-          <td class="paramtype"><a class="el" href="classcgv_1_1render_1_1context.html">cgv::render::context</a> &amp;&#160;</td>
-          <td class="paramname"><em>ctx</em>, </td>
-        </tr>
-        <tr>
-          <td class="paramkey"></td>
-          <td></td>
-          <td class="paramtype"><a class="el" href="classcgv_1_1render_1_1shader__program.html">cgv::render::shader_program</a> &amp;&#160;</td>
-          <td class="paramname"><em>prog</em>, </td>
-        </tr>
-        <tr>
-          <td class="paramkey"></td>
-          <td></td>
-          <td class="paramtype">cgv::media::ColorScale&#160;</td>
-          <td class="paramname"><em>cs</em>, </td>
-        </tr>
-        <tr>
-          <td class="paramkey"></td>
-          <td></td>
-          <td class="paramtype">float&#160;</td>
-          <td class="paramname"><em>window_zero_position</em> = <code>0.5f</code>&#160;</td>
-        </tr>
-        <tr>
-          <td></td>
-          <td>)</td>
-          <td></td><td></td>
-        </tr>
-      </table>
-</div><div class="memdoc">
-
-<p>convenience function to configure a shader that uses color_scale.glsl with a single color scale </p>
-<dl class="params"><dt>Parameters</dt><dd>
-  <table class="params">
-    <tr><td class="paramname">ctx</td><td>render context</td></tr>
-    <tr><td class="paramname">prog</td><td>shader program using the color scale</td></tr>
-    <tr><td class="paramname">cs</td><td>color scale index that can surpass cgv::media::CS_NAMED to index named color scales</td></tr>
-    <tr><td class="paramname">window_zero_position</td><td>window_zero_position which is mapped to center of a bipolar color scale</td></tr>
-  </table>
-  </dd>
-</dl>
-
-<p class="definition">Definition at line <a class="el" href="render_2color__scale_8cxx_source.html#l00006">6</a> of file <a class="el" href="render_2color__scale_8cxx_source.html">color_scale.cxx</a>.</p>
-
-<p class="reference">References <a class="el" href="shader__program_8h_source.html#l00157">cgv::render::shader_program::set_uniform()</a>, and <a class="el" href="shader__program_8h_source.html#l00168">cgv::render::shader_program::set_uniform_array()</a>.</p>
-
-<p class="reference">Referenced by <a class="el" href="plot__base_8cxx_source.html#l00395">cgv::plot::plot_base::set_mapping_uniforms()</a>.</p>
-
-</div>
-</div>
-<a id="a30147ad00afa94d5133a66836282a047" name="a30147ad00afa94d5133a66836282a047"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a30147ad00afa94d5133a66836282a047">&#9670;&#160;</a></span>configure_color_scale() <span class="overload">[2/2]</span></h2>
-
-<div class="memitem">
-<div class="memproto">
-      <table class="memname">
-        <tr>
-          <td class="memname">CGV_API void cgv::render::configure_color_scale </td>
-          <td>(</td>
-          <td class="paramtype"><a class="el" href="classcgv_1_1render_1_1context.html">cgv::render::context</a> &amp;&#160;</td>
-          <td class="paramname"><em>ctx</em>, </td>
-        </tr>
-        <tr>
-          <td class="paramkey"></td>
-          <td></td>
-          <td class="paramtype"><a class="el" href="classcgv_1_1render_1_1shader__program.html">cgv::render::shader_program</a> &amp;&#160;</td>
-          <td class="paramname"><em>prog</em>, </td>
-        </tr>
-        <tr>
-          <td class="paramkey"></td>
-          <td></td>
-          <td class="paramtype">cgv::media::ColorScale&#160;</td>
-          <td class="paramname"><em>cs</em>[2], </td>
-        </tr>
-        <tr>
-          <td class="paramkey"></td>
-          <td></td>
-          <td class="paramtype">float&#160;</td>
-          <td class="paramname"><em>window_zero_position</em>[2]&#160;</td>
-        </tr>
-        <tr>
-          <td></td>
-          <td>)</td>
-          <td></td><td></td>
-        </tr>
-      </table>
-</div><div class="memdoc">
-
-<p>convenience function to configure a shader that uses color_scale.glsl with two color scales </p>
-<dl class="params"><dt>Parameters</dt><dd>
-  <table class="params">
-    <tr><td class="paramname">ctx</td><td>render context</td></tr>
-    <tr><td class="paramname">prog</td><td>shader program using the color scales</td></tr>
-    <tr><td class="paramname">cs</td><td>color scale indices that can surpass cgv::media::CS_NAMED to index named color scales</td></tr>
-    <tr><td class="paramname">window_zero_position</td><td>window space positions of attribute value zero which is mapped to center of a bipolar color scale</td></tr>
-  </table>
-  </dd>
-</dl>
-
-<p class="definition">Definition at line <a class="el" href="render_2color__scale_8cxx_source.html#l00020">20</a> of file <a class="el" href="render_2color__scale_8cxx_source.html">color_scale.cxx</a>.</p>
-
-<p class="reference">References <a class="el" href="shader__program_8h_source.html#l00168">cgv::render::shader_program::set_uniform_array()</a>.</p>
-
-</div>
-</div>
 <a id="a70f8fa845a248470de8b176c778b3e32" name="a70f8fa845a248470de8b176c778b3e32"></a>
 <h2 class="memtitle"><span class="permalink"><a href="#a70f8fa845a248470de8b176c778b3e32">&#9670;&#160;</a></span>create_context()</h2>
 
@@ -2366,7 +2335,7 @@ Variables</h2></td></tr>
 <p>This is primarily used to create a context without a window for console applications that render into a frame buffer object only. After usage you need to delete the context by hand.</p>
 <p>This is primarily used to create a context without a window for console applications that render into a frame buffer object only. The newly created context will be current right after creation. After usage you need to delete the context by hand. </p>
 
-<p class="definition">Definition at line <a class="el" href="context_8cxx_source.html#l02617">2617</a> of file <a class="el" href="context_8cxx_source.html">context.cxx</a>.</p>
+<p class="definition">Definition at line <a class="el" href="context_8cxx_source.html#l02610">2610</a> of file <a class="el" href="context_8cxx_source.html">context.cxx</a>.</p>
 
 <p class="reference">References <a class="el" href="classcgv_1_1render_1_1context.html#ad351a2dc1c1e0343b17738053a981816">cgv::render::context::make_current()</a>.</p>
 
@@ -2879,7 +2848,7 @@ template&lt;typename T &gt; </div>
       </table>
 </div><div class="memdoc">
 
-<p class="definition">Definition at line <a class="el" href="surface__renderer_8cxx_source.html#l00112">112</a> of file <a class="el" href="surface__renderer_8cxx_source.html">surface_renderer.cxx</a>.</p>
+<p class="definition">Definition at line <a class="el" href="surface__renderer_8cxx_source.html#l00110">110</a> of file <a class="el" href="surface__renderer_8cxx_source.html">surface_renderer.cxx</a>.</p>
 
 </div>
 </div>
@@ -2977,7 +2946,7 @@ template&lt;typename T &gt; </div>
 
 <p class="definition">Definition at line <a class="el" href="shader__code_8cxx_source.html#l00049">49</a> of file <a class="el" href="shader__code_8cxx_source.html">shader_code.cxx</a>.</p>
 
-<p class="reference">Referenced by <a class="el" href="shader__program_8cxx_source.html#l00364">cgv::render::shader_program::attach_program()</a>, <a class="el" href="shader__program_8cxx_source.html#l00113">cgv::render::shader_program::collect_dir()</a>, <a class="el" href="shader__program_8cxx_source.html#l00135">cgv::render::shader_program::collect_program()</a>, <a class="el" href="shader__code_8cxx_source.html#l00180">cgv::render::shader_code::find_file()</a>, <a class="el" href="shader__code_8cxx_source.html#l00093">cgv::render::shader_code::get_last_error()</a>, and <a class="el" href="shader__code_8cxx_source.html#l00547">cgv::render::shader_code::read_code_file()</a>.</p>
+<p class="reference">Referenced by <a class="el" href="shader__program_8cxx_source.html#l00378">cgv::render::shader_program::attach_program()</a>, <a class="el" href="shader__program_8cxx_source.html#l00113">cgv::render::shader_program::collect_dir()</a>, <a class="el" href="shader__program_8cxx_source.html#l00135">cgv::render::shader_program::collect_program()</a>, <a class="el" href="shader__code_8cxx_source.html#l00180">cgv::render::shader_code::find_file()</a>, <a class="el" href="shader__code_8cxx_source.html#l00093">cgv::render::shader_code::get_last_error()</a>, and <a class="el" href="shader__code_8cxx_source.html#l00547">cgv::render::shader_code::read_code_file()</a>.</p>
 
 </div>
 </div>
@@ -3127,6 +3096,82 @@ template&lt;class int_type &gt; </div>
 
 </div>
 </div>
+<a id="abc352bc76d0115533695de30caa937f7" name="abc352bc76d0115533695de30caa937f7"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#abc352bc76d0115533695de30caa937f7">&#9670;&#160;</a></span>operator|()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">static <a class="el" href="namespacecgv_1_1render.html#ac93b54592b90e02852552a2e9f467940">DeviceColorScaleMappingOptions</a> cgv::render::operator| </td>
+          <td>(</td>
+          <td class="paramtype"><a class="el" href="namespacecgv_1_1render.html#ac93b54592b90e02852552a2e9f467940">DeviceColorScaleMappingOptions</a>&#160;</td>
+          <td class="paramname"><em>lhs</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype"><a class="el" href="namespacecgv_1_1render.html#ac93b54592b90e02852552a2e9f467940">DeviceColorScaleMappingOptions</a>&#160;</td>
+          <td class="paramname"><em>rhs</em>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">static</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p class="definition">Definition at line <a class="el" href="device__color__scale_8h_source.html#l00027">27</a> of file <a class="el" href="device__color__scale_8h_source.html">device_color_scale.h</a>.</p>
+
+</div>
+</div>
+<a id="a7af3055482b303b30d4654282cd1dfaa" name="a7af3055482b303b30d4654282cd1dfaa"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a7af3055482b303b30d4654282cd1dfaa">&#9670;&#160;</a></span>operator|=()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">static <a class="el" href="namespacecgv_1_1render.html#ac93b54592b90e02852552a2e9f467940">DeviceColorScaleMappingOptions</a> &amp; cgv::render::operator|= </td>
+          <td>(</td>
+          <td class="paramtype"><a class="el" href="namespacecgv_1_1render.html#ac93b54592b90e02852552a2e9f467940">DeviceColorScaleMappingOptions</a> &amp;&#160;</td>
+          <td class="paramname"><em>lhs</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype"><a class="el" href="namespacecgv_1_1render.html#ac93b54592b90e02852552a2e9f467940">DeviceColorScaleMappingOptions</a>&#160;</td>
+          <td class="paramname"><em>rhs</em>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">static</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p class="definition">Definition at line <a class="el" href="device__color__scale_8h_source.html#l00032">32</a> of file <a class="el" href="device__color__scale_8h_source.html">device_color_scale.h</a>.</p>
+
+</div>
+</div>
 <a id="aab48e21d721c4d5e157f3659170da061" name="aab48e21d721c4d5e157f3659170da061"></a>
 <h2 class="memtitle"><span class="permalink"><a href="#aab48e21d721c4d5e157f3659170da061">&#9670;&#160;</a></span>power_of_two_ub()</h2>
 
@@ -3219,7 +3264,7 @@ template&lt;class int_type &gt; </div>
 
 <p class="reference">References <a class="el" href="renderer_8cxx_source.html#l00010">cgv::render::renderer::manage_singleton()</a>.</p>
 
-<p class="reference">Referenced by <a class="el" href="plot3d_8cxx_source.html#l00538">cgv::plot::plot3d::clear()</a>, <a class="el" href="vr__test_8cxx_source.html#l00521">vr_test::clear()</a>, <a class="el" href="gl__implicit__surface__drawable__base_8cxx_source.html#l00434">cgv::render::gl::gl_implicit_surface_drawable_base::clear()</a>, <a class="el" href="vr__test_8cxx_source.html#l00652">vr_test::draw()</a>, <a class="el" href="gl__implicit__surface__drawable__base_8cxx_source.html#l00446">cgv::render::gl::gl_implicit_surface_drawable_base::draw()</a>, <a class="el" href="plot3d_8cxx_source.html#l00142">cgv::plot::plot3d::init()</a>, <a class="el" href="vr__test_8cxx_source.html#l00457">vr_test::init()</a>, and <a class="el" href="gl__implicit__surface__drawable__base_8cxx_source.html#l00425">cgv::render::gl::gl_implicit_surface_drawable_base::init()</a>.</p>
+<p class="reference">Referenced by <a class="el" href="plot3d_8cxx_source.html#l00535">cgv::plot::plot3d::clear()</a>, <a class="el" href="vr__test_8cxx_source.html#l00521">vr_test::clear()</a>, <a class="el" href="gl__implicit__surface__drawable__base_8cxx_source.html#l00434">cgv::render::gl::gl_implicit_surface_drawable_base::clear()</a>, <a class="el" href="vr__test_8cxx_source.html#l00652">vr_test::draw()</a>, <a class="el" href="gl__implicit__surface__drawable__base_8cxx_source.html#l00446">cgv::render::gl::gl_implicit_surface_drawable_base::draw()</a>, <a class="el" href="plot3d_8cxx_source.html#l00142">cgv::plot::plot3d::init()</a>, <a class="el" href="vr__test_8cxx_source.html#l00457">vr_test::init()</a>, and <a class="el" href="gl__implicit__surface__drawable__base_8cxx_source.html#l00425">cgv::render::gl::gl_implicit_surface_drawable_base::init()</a>.</p>
 
 </div>
 </div>
@@ -3321,7 +3366,7 @@ template&lt;class int_type &gt; </div>
 
 <p class="reference">References <a class="el" href="renderer_8cxx_source.html#l00010">cgv::render::renderer::manage_singleton()</a>.</p>
 
-<p class="reference">Referenced by <a class="el" href="plot3d_8cxx_source.html#l00538">cgv::plot::plot3d::clear()</a>, <a class="el" href="vr__test_8cxx_source.html#l00521">vr_test::clear()</a>, <a class="el" href="gl__implicit__surface__drawable__base_8cxx_source.html#l00434">cgv::render::gl::gl_implicit_surface_drawable_base::clear()</a>, <a class="el" href="vr__test_8cxx_source.html#l00652">vr_test::draw()</a>, <a class="el" href="gl__implicit__surface__drawable__base_8cxx_source.html#l00446">cgv::render::gl::gl_implicit_surface_drawable_base::draw()</a>, <a class="el" href="gl__implicit__surface__drawable__base_8cxx_source.html#l00571">cgv::render::gl::gl_implicit_surface_drawable_base::draw_implicit_surface()</a>, <a class="el" href="gl__implicit__surface__drawable__base_8cxx_source.html#l00539">cgv::render::gl::gl_implicit_surface_drawable_base::finish_frame()</a>, <a class="el" href="plot3d_8cxx_source.html#l00142">cgv::plot::plot3d::init()</a>, <a class="el" href="vr__test_8cxx_source.html#l00457">vr_test::init()</a>, and <a class="el" href="gl__implicit__surface__drawable__base_8cxx_source.html#l00425">cgv::render::gl::gl_implicit_surface_drawable_base::init()</a>.</p>
+<p class="reference">Referenced by <a class="el" href="plot3d_8cxx_source.html#l00535">cgv::plot::plot3d::clear()</a>, <a class="el" href="vr__test_8cxx_source.html#l00521">vr_test::clear()</a>, <a class="el" href="gl__implicit__surface__drawable__base_8cxx_source.html#l00434">cgv::render::gl::gl_implicit_surface_drawable_base::clear()</a>, <a class="el" href="vr__test_8cxx_source.html#l00652">vr_test::draw()</a>, <a class="el" href="gl__implicit__surface__drawable__base_8cxx_source.html#l00446">cgv::render::gl::gl_implicit_surface_drawable_base::draw()</a>, <a class="el" href="gl__implicit__surface__drawable__base_8cxx_source.html#l00571">cgv::render::gl::gl_implicit_surface_drawable_base::draw_implicit_surface()</a>, <a class="el" href="gl__implicit__surface__drawable__base_8cxx_source.html#l00539">cgv::render::gl::gl_implicit_surface_drawable_base::finish_frame()</a>, <a class="el" href="plot3d_8cxx_source.html#l00142">cgv::plot::plot3d::init()</a>, <a class="el" href="vr__test_8cxx_source.html#l00457">vr_test::init()</a>, and <a class="el" href="gl__implicit__surface__drawable__base_8cxx_source.html#l00425">cgv::render::gl::gl_implicit_surface_drawable_base::init()</a>.</p>
 
 </div>
 </div>
@@ -3340,7 +3385,7 @@ template&lt;class int_type &gt; </div>
       </table>
 </div><div class="memdoc">
 
-<p class="definition">Definition at line <a class="el" href="context_8cxx_source.html#l02597">2597</a> of file <a class="el" href="context_8cxx_source.html">context.cxx</a>.</p>
+<p class="definition">Definition at line <a class="el" href="context_8cxx_source.html#l02590">2590</a> of file <a class="el" href="context_8cxx_source.html">context.cxx</a>.</p>
 
 </div>
 </div>
@@ -3512,7 +3557,7 @@ template&lt;class int_type &gt; </div>
 
 <p class="reference">References <a class="el" href="renderer_8cxx_source.html#l00010">cgv::render::renderer::manage_singleton()</a>.</p>
 
-<p class="reference">Referenced by <a class="el" href="plot__base_8cxx_source.html#l01247">cgv::plot::plot_base::clear()</a>, and <a class="el" href="plot__base_8cxx_source.html#l01212">cgv::plot::plot_base::init()</a>.</p>
+<p class="reference">Referenced by <a class="el" href="plot__base_8cxx_source.html#l01293">cgv::plot::plot_base::clear()</a>, and <a class="el" href="plot__base_8cxx_source.html#l01257">cgv::plot::plot_base::init()</a>.</p>
 
 </div>
 </div>
@@ -3676,7 +3721,7 @@ template&lt;class int_type &gt; </div>
 
 <p>registration context creation functions </p>
 
-<p class="definition">Definition at line <a class="el" href="context_8cxx_source.html#l02604">2604</a> of file <a class="el" href="context_8cxx_source.html">context.cxx</a>.</p>
+<p class="definition">Definition at line <a class="el" href="context_8cxx_source.html#l02597">2597</a> of file <a class="el" href="context_8cxx_source.html">context.cxx</a>.</p>
 
 </div>
 </div>
@@ -3970,7 +4015,7 @@ template&lt;class int_type &gt; </div>
       </table>
 </div><div class="memdoc">
 
-<p class="definition">Definition at line <a class="el" href="context_8h_source.html#l00351">351</a> of file <a class="el" href="context_8h_source.html">context.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="context_8h_source.html#l00353">353</a> of file <a class="el" href="context_8h_source.html">context.h</a>.</p>
 
 </div>
 </div>

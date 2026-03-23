@@ -5,7 +5,7 @@
 <meta http-equiv="X-UA-Compatible" content="IE=11"/>
 <meta name="generator" content="Doxygen 1.9.8"/>
 <meta name="viewport" content="width=device-width, initial-scale=1"/>
-<title>cgv: cgv::math::interpolator&lt; T &gt; Class Template Reference</title>
+<title>cgv: cgv::math::interpolator&lt; ValueT, ParamT &gt; Class Template Reference</title>
 <link href="tabs.css" rel="stylesheet" type="text/css"/>
 <script type="text/javascript" src="jquery.js"></script>
 <script type="text/javascript" src="dynsections.js"></script>
@@ -92,35 +92,145 @@ $(document).ready(function(){initNavTree('classcgv_1_1math_1_1interpolator.html'
   <div class="summary">
 <a href="#pub-methods">Public Member Functions</a> &#124;
 <a href="classcgv_1_1math_1_1interpolator-members.html">List of all members</a>  </div>
-  <div class="headertitle"><div class="title">cgv::math::interpolator&lt; T &gt; Class Template Reference<span class="mlabels"><span class="mlabel">abstract</span></span></div></div>
+  <div class="headertitle"><div class="title">cgv::math::interpolator&lt; ValueT, ParamT &gt; Class Template Reference<span class="mlabels"><span class="mlabel">abstract</span></span></div></div>
 </div><!--header-->
 <div class="contents">
+
+<p>Template of an abstract interface for interpolators that can be evaluated at a position t and return an interpolated value at that position.  
+ <a href="classcgv_1_1math_1_1interpolator.html#details">More...</a></p>
+
+<p><code>#include &lt;<a class="el" href="interpolate_8h_source.html">interpolate.h</a>&gt;</code></p>
 <div class="dynheader">
-Inheritance diagram for cgv::math::interpolator&lt; T &gt;:</div>
+Inheritance diagram for cgv::math::interpolator&lt; ValueT, ParamT &gt;:</div>
 <div class="dyncontent">
  <div class="center">
-  <img src="classcgv_1_1math_1_1interpolator.png" usemap="#cgv::math::interpolator_3C_20T_20_3E_map" alt=""/>
-  <map id="cgv::math::interpolator_3C_20T_20_3E_map" name="cgv::math::interpolator_3C_20T_20_3E_map">
-<area href="classcgv_1_1math_1_1piecewise__linear__interpolator.html" alt="cgv::math::piecewise_linear_interpolator&lt; T &gt;" shape="rect" coords="0,56,278,80"/>
-<area href="classcgv_1_1math_1_1piecewise__nearest__interpolator.html" alt="cgv::math::piecewise_nearest_interpolator&lt; T &gt;" shape="rect" coords="288,56,566,80"/>
+  <img src="classcgv_1_1math_1_1interpolator.png" usemap="#cgv::math::interpolator_3C_20ValueT_2C_20ParamT_20_3E_map" alt=""/>
+  <map id="cgv::math::interpolator_3C_20ValueT_2C_20ParamT_20_3E_map" name="cgv::math::interpolator_3C_20ValueT_2C_20ParamT_20_3E_map">
+<area href="classcgv_1_1math_1_1piecewise__interpolator__storage.html" alt="cgv::math::piecewise_interpolator_storage&lt; ValueT, ValueT, float &gt;" shape="rect" coords="0,56,494,80"/>
+<area href="classcgv_1_1math_1_1piecewise__interpolator__storage.html" alt="cgv::math::piecewise_interpolator_storage&lt; std::pair&lt; float, ValueT &gt;, ValueT, float &gt;" shape="rect" coords="504,56,998,80"/>
+<area href="classcgv_1_1math_1_1function__ref__interpolator.html" alt="cgv::math::function_ref_interpolator&lt; ValueT, ParamT &gt;" shape="rect" coords="1008,56,1502,80"/>
+<area href="classcgv_1_1math_1_1identity__interpolator.html" alt="cgv::math::identity_interpolator&lt; ValueT, ParamT &gt;" shape="rect" coords="1512,56,2006,80"/>
+<area href="classcgv_1_1math_1_1piecewise__interpolator__storage.html" alt="cgv::math::piecewise_interpolator_storage&lt; PointT, ValueT, ParamT &gt;" shape="rect" coords="2016,56,2510,80"/>
+<area href="classcgv_1_1media_1_1schemes_1_1rgb__per__channel__piecewise__interpolator.html" title="Implementation of a specialized interpolator for rgb colors that allows separate piecewise linear int..." alt="cgv::media::schemes::rgb_per_channel_piecewise_interpolator&lt; ParamT &gt;" shape="rect" coords="2520,56,3014,80"/>
+<area href="classcgv_1_1math_1_1piecewise__interpolator.html" alt="cgv::math::piecewise_interpolator&lt; ValueT, float &gt;" shape="rect" coords="1260,112,1754,136"/>
+<area href="classcgv_1_1math_1_1uniform__piecewise__interpolator.html" alt="cgv::math::uniform_piecewise_interpolator&lt; ValueT, float &gt;" shape="rect" coords="1764,112,2258,136"/>
+<area href="classcgv_1_1math_1_1piecewise__interpolator.html" alt="cgv::math::piecewise_interpolator&lt; ValueT, ParamT &gt;" shape="rect" coords="2268,112,2762,136"/>
+<area href="classcgv_1_1math_1_1uniform__piecewise__interpolator.html" alt="cgv::math::uniform_piecewise_interpolator&lt; ValueT, ParamT &gt;" shape="rect" coords="3528,112,4022,136"/>
+<area href="classcgv_1_1math_1_1linear__interpolator.html" alt="cgv::math::linear_interpolator&lt; ValueT, ParamT &gt;" shape="rect" coords="2016,168,2510,192"/>
+<area href="classcgv_1_1math_1_1smooth__interpolator.html" alt="cgv::math::smooth_interpolator&lt; ValueT, ParamT &gt;" shape="rect" coords="2520,168,3014,192"/>
+<area href="classcgv_1_1math_1_1discrete__interpolator.html" alt="cgv::math::discrete_interpolator&lt; ValueT, ParamT &gt;" shape="rect" coords="3024,168,3518,192"/>
+<area href="classcgv_1_1math_1_1uniform__linear__interpolator.html" alt="cgv::math::uniform_linear_interpolator&lt; ValueT, ParamT &gt;" shape="rect" coords="3528,168,4022,192"/>
+<area href="classcgv_1_1math_1_1uniform__smooth__interpolator.html" alt="cgv::math::uniform_smooth_interpolator&lt; ValueT, ParamT &gt;" shape="rect" coords="4032,168,4526,192"/>
   </map>
 </div></div>
 <table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="pub-methods" name="pub-methods"></a>
 Public Member Functions</h2></td></tr>
-<tr class="memitem:a57695f27fd81448630a77ec3bb50cdfc" id="r_a57695f27fd81448630a77ec3bb50cdfc"><td class="memItemLeft" align="right" valign="top"><a id="a57695f27fd81448630a77ec3bb50cdfc" name="a57695f27fd81448630a77ec3bb50cdfc"></a>
-virtual T&#160;</td><td class="memItemRight" valign="bottom"><b>interpolate</b> (<a class="el" href="classcgv_1_1math_1_1control__point__container.html">control_point_container</a>&lt; T &gt; control_points, float t) const =0</td></tr>
-<tr class="separator:a57695f27fd81448630a77ec3bb50cdfc"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a4ab36d59542470a377660031434622a9" id="r_a4ab36d59542470a377660031434622a9"><td class="memItemLeft" align="right" valign="top"><a id="a4ab36d59542470a377660031434622a9" name="a4ab36d59542470a377660031434622a9"></a>
-virtual std::vector&lt; T &gt;&#160;</td><td class="memItemRight" valign="bottom"><b>interpolate</b> (<a class="el" href="classcgv_1_1math_1_1control__point__container.html">control_point_container</a>&lt; T &gt; control_points, size_t n) const =0</td></tr>
-<tr class="separator:a4ab36d59542470a377660031434622a9"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a678b8fd957815eb3f5a5aac43bb0be2b" id="r_a678b8fd957815eb3f5a5aac43bb0be2b"><td class="memItemLeft" align="right" valign="top"><a id="a678b8fd957815eb3f5a5aac43bb0be2b" name="a678b8fd957815eb3f5a5aac43bb0be2b"></a>
+virtual std::unique_ptr&lt; <a class="el" href="classcgv_1_1math_1_1interpolator.html">interpolator</a> &gt;&#160;</td><td class="memItemRight" valign="bottom"><b>clone</b> () const =0</td></tr>
+<tr class="separator:a678b8fd957815eb3f5a5aac43bb0be2b"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a245f8c65f4e9920fbc4121293846877c" id="r_a245f8c65f4e9920fbc4121293846877c"><td class="memItemLeft" align="right" valign="top">virtual ValueT&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcgv_1_1math_1_1interpolator.html#a245f8c65f4e9920fbc4121293846877c">at</a> (ParamT t) const =0</td></tr>
+<tr class="memdesc:a245f8c65f4e9920fbc4121293846877c"><td class="mdescLeft">&#160;</td><td class="mdescRight">Return the interpolated value at position t.  <br /></td></tr>
+<tr class="separator:a245f8c65f4e9920fbc4121293846877c"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ad10eacfff34fcc88c3df976421cdee95" id="r_ad10eacfff34fcc88c3df976421cdee95"><td class="memItemLeft" align="right" valign="top">virtual std::vector&lt; ValueT &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcgv_1_1math_1_1interpolator.html#ad10eacfff34fcc88c3df976421cdee95">quantize</a> (size_t n) const</td></tr>
+<tr class="memdesc:ad10eacfff34fcc88c3df976421cdee95"><td class="mdescLeft">&#160;</td><td class="mdescRight">Return a sequence of n uniformly-spaced samples from the interpolator within the parameter range [0,1].  <br /></td></tr>
+<tr class="separator:ad10eacfff34fcc88c3df976421cdee95"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
 <a name="details" id="details"></a><h2 class="groupheader">Detailed Description</h2>
-<div class="textblock"><div class="compoundTemplParams">template&lt;typename T&gt;<br />
-class cgv::math::interpolator&lt; T &gt;</div>
-<p class="definition">Definition at line <a class="el" href="interpolator_8h_source.html#l00077">77</a> of file <a class="el" href="interpolator_8h_source.html">interpolator.h</a>.</p>
-</div><hr/>The documentation for this class was generated from the following file:<ul>
-<li>cgv/math/<a class="el" href="interpolator_8h_source.html">interpolator.h</a></li>
+<div class="textblock"><div class="compoundTemplParams">template&lt;typename ValueT, typename ParamT = float&gt;<br />
+class cgv::math::interpolator&lt; ValueT, ParamT &gt;</div><p>Template of an abstract interface for interpolators that can be evaluated at a position t and return an interpolated value at that position. </p>
+
+<p class="definition">Definition at line <a class="el" href="interpolate_8h_source.html#l00545">545</a> of file <a class="el" href="interpolate_8h_source.html">interpolate.h</a>.</p>
+</div><h2 class="groupheader">Member Function Documentation</h2>
+<a id="a245f8c65f4e9920fbc4121293846877c" name="a245f8c65f4e9920fbc4121293846877c"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a245f8c65f4e9920fbc4121293846877c">&#9670;&#160;</a></span>at()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<div class="memtemplate">
+template&lt;typename ValueT , typename ParamT  = float&gt; </div>
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">virtual ValueT <a class="el" href="classcgv_1_1math_1_1interpolator.html">cgv::math::interpolator</a>&lt; ValueT, ParamT &gt;::at </td>
+          <td>(</td>
+          <td class="paramtype">ParamT&#160;</td>
+          <td class="paramname"><em>t</em></td><td>)</td>
+          <td> const</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">pure virtual</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p>Return the interpolated value at position t. </p>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">t</td><td>The position at which to evaluate the interpolator. Typically in the range [0,1]. </td></tr>
+  </table>
+  </dd>
+</dl>
+<dl class="section return"><dt>Returns</dt><dd>The interpolated value. </dd></dl>
+
+<p>Implemented in <a class="el" href="classcgv_1_1math_1_1identity__interpolator.html#a21edd152c56fda2df8739afb312082aa">cgv::math::identity_interpolator&lt; ValueT, ParamT &gt;</a>, <a class="el" href="classcgv_1_1math_1_1discrete__interpolator.html#a5d9424913c2e13d21c5146d5c01cbafa">cgv::math::discrete_interpolator&lt; ValueT, ParamT &gt;</a>, <a class="el" href="classcgv_1_1math_1_1uniform__linear__interpolator.html#aa7e3fbd07594e6f8bd1b6c24b83995cc">cgv::math::uniform_linear_interpolator&lt; ValueT, ParamT &gt;</a>, <a class="el" href="classcgv_1_1math_1_1linear__interpolator.html#a3b8a0c65c4bc20a894d76084570bcfc2">cgv::math::linear_interpolator&lt; ValueT, ParamT &gt;</a>, <a class="el" href="classcgv_1_1math_1_1uniform__smooth__interpolator.html#ac077b10cce737c3db1856aca086084ae">cgv::math::uniform_smooth_interpolator&lt; ValueT, ParamT &gt;</a>, <a class="el" href="classcgv_1_1math_1_1smooth__interpolator.html#afe18ab1b4f03183e601a22a54921a129">cgv::math::smooth_interpolator&lt; ValueT, ParamT &gt;</a>, <a class="el" href="classcgv_1_1math_1_1function__ref__interpolator.html#af7d48a4f513358d45fd84957c62c42aa">cgv::math::function_ref_interpolator&lt; ValueT, ParamT &gt;</a>, and <a class="el" href="classcgv_1_1media_1_1schemes_1_1rgb__per__channel__piecewise__interpolator.html#a3a13576f7b97996369753427e0b9e281">cgv::media::schemes::rgb_per_channel_piecewise_interpolator&lt; ParamT &gt;</a>.</p>
+
+<p class="reference">Referenced by <a class="el" href="interpolate_8h_source.html#l00563">cgv::math::interpolator&lt; ValueT, ParamT &gt;::quantize()</a>.</p>
+
+</div>
+</div>
+<a id="ad10eacfff34fcc88c3df976421cdee95" name="ad10eacfff34fcc88c3df976421cdee95"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#ad10eacfff34fcc88c3df976421cdee95">&#9670;&#160;</a></span>quantize()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<div class="memtemplate">
+template&lt;typename ValueT , typename ParamT  = float&gt; </div>
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">virtual std::vector&lt; ValueT &gt; <a class="el" href="classcgv_1_1math_1_1interpolator.html">cgv::math::interpolator</a>&lt; ValueT, ParamT &gt;::quantize </td>
+          <td>(</td>
+          <td class="paramtype">size_t&#160;</td>
+          <td class="paramname"><em>n</em></td><td>)</td>
+          <td> const</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">inline</span><span class="mlabel">virtual</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p>Return a sequence of n uniformly-spaced samples from the interpolator within the parameter range [0,1]. </p>
+<p>The first sample is always located at t = 0 and the last sample is always located at t = 1. A derived class might override this function in order to provide a more efficient implementation.</p>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">n</td><td>The number of samples to be evaluated. </td></tr>
+  </table>
+  </dd>
+</dl>
+<dl class="section return"><dt>Returns</dt><dd>The sequence of values. </dd></dl>
+
+<p>Reimplemented in <a class="el" href="classcgv_1_1math_1_1uniform__linear__interpolator.html#a266bf798c99d92bce7bc4bbfaa2d233c">cgv::math::uniform_linear_interpolator&lt; ValueT, ParamT &gt;</a>, and <a class="el" href="classcgv_1_1math_1_1linear__interpolator.html#a29ef922d6b44e8a37cdb3b362b2cddd8">cgv::math::linear_interpolator&lt; ValueT, ParamT &gt;</a>.</p>
+
+<p class="definition">Definition at line <a class="el" href="interpolate_8h_source.html#l00563">563</a> of file <a class="el" href="interpolate_8h_source.html">interpolate.h</a>.</p>
+
+<p class="reference">References <a class="el" href="classcgv_1_1math_1_1interpolator.html#a245f8c65f4e9920fbc4121293846877c">cgv::math::interpolator&lt; ValueT, ParamT &gt;::at()</a>.</p>
+
+<p class="reference">Referenced by <a class="el" href="color__scheme_8h_source.html#l00180">cgv::media::discrete_color_scheme::get_colors()</a>.</p>
+
+</div>
+</div>
+<hr/>The documentation for this class was generated from the following file:<ul>
+<li>cgv/math/<a class="el" href="interpolate_8h_source.html">interpolate.h</a></li>
 </ul>
 </div><!-- contents -->
 </div><!-- doc-content -->

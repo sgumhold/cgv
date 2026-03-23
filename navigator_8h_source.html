@@ -5,7 +5,7 @@
 <meta http-equiv="X-UA-Compatible" content="IE=11"/>
 <meta name="generator" content="Doxygen 1.9.8"/>
 <meta name="viewport" content="width=device-width, initial-scale=1"/>
-<title>cgv: libs/cgv_app/navigator.h Source File</title>
+<title>cgv: libs/cgv_overlay/navigator.h Source File</title>
 <link href="tabs.css" rel="stylesheet" type="text/css"/>
 <script type="text/javascript" src="jquery.js"></script>
 <script type="text/javascript" src="dynsections.js"></script>
@@ -109,17 +109,17 @@ $(document).ready(function(){initNavTree('navigator_8h_source.html',''); initRes
 <div class="line"><a id="l00010" name="l00010"></a><span class="lineno">   10</span><span class="preprocessor">#include &lt;cgv_gl/box_wire_render_data.h&gt;</span></div>
 <div class="line"><a id="l00011" name="l00011"></a><span class="lineno">   11</span><span class="preprocessor">#include &lt;cgv_gl/rectangle_render_data.h&gt;</span></div>
 <div class="line"><a id="l00012" name="l00012"></a><span class="lineno">   12</span><span class="preprocessor">#include &lt;cgv_gl/sphere_render_data.h&gt;</span></div>
-<div class="line"><a id="l00013" name="l00013"></a><span class="lineno">   13</span><span class="preprocessor">#include &lt;cgv_app/overlay.h&gt;</span></div>
-<div class="line"><a id="l00014" name="l00014"></a><span class="lineno">   14</span><span class="preprocessor">#include &lt;cgv_g2d/canvas.h&gt;</span></div>
-<div class="line"><a id="l00015" name="l00015"></a><span class="lineno">   15</span><span class="preprocessor">#include &lt;cgv_g2d/shape2d_styles.h&gt;</span></div>
+<div class="line"><a id="l00013" name="l00013"></a><span class="lineno">   13</span><span class="preprocessor">#include &lt;cgv_g2d/canvas.h&gt;</span></div>
+<div class="line"><a id="l00014" name="l00014"></a><span class="lineno">   14</span><span class="preprocessor">#include &lt;cgv_g2d/shape2d_styles.h&gt;</span></div>
+<div class="line"><a id="l00015" name="l00015"></a><span class="lineno">   15</span><span class="preprocessor">#include &lt;cgv_overlay/overlay.h&gt;</span></div>
 <div class="line"><a id="l00016" name="l00016"></a><span class="lineno">   16</span> </div>
 <div class="line"><a id="l00017" name="l00017"></a><span class="lineno">   17</span><span class="preprocessor">#include &quot;lib_begin.h&quot;</span></div>
 <div class="line"><a id="l00018" name="l00018"></a><span class="lineno">   18</span> </div>
 <div class="line"><a id="l00019" name="l00019"></a><span class="lineno">   19</span><span class="keyword">namespace </span><a class="code hl_namespace" href="namespacecgv.html">cgv</a> {</div>
-<div class="line"><a id="l00020" name="l00020"></a><span class="lineno">   20</span><span class="keyword">namespace </span>app {</div>
+<div class="line"><a id="l00020" name="l00020"></a><span class="lineno">   20</span><span class="keyword">namespace </span>overlay {</div>
 <div class="line"><a id="l00021" name="l00021"></a><span class="lineno">   21</span> </div>
 <div class="foldopen" id="foldopen00022" data-start="{" data-end="};">
-<div class="line"><a id="l00022" name="l00022"></a><span class="lineno"><a class="line" href="classcgv_1_1app_1_1navigator.html">   22</a></span><span class="keyword">class </span>CGV_API <a class="code hl_class" href="classcgv_1_1app_1_1navigator.html">navigator</a> : <span class="keyword">public</span> <a class="code hl_class" href="classcgv_1_1app_1_1overlay.html">overlay</a> {</div>
+<div class="line"><a id="l00022" name="l00022"></a><span class="lineno"><a class="line" href="classcgv_1_1overlay_1_1navigator.html">   22</a></span><span class="keyword">class </span>CGV_API <a class="code hl_class" href="classcgv_1_1overlay_1_1navigator.html">navigator</a> : <span class="keyword">public</span> <a class="code hl_class" href="classcgv_1_1overlay_1_1overlay.html">overlay</a> {</div>
 <div class="line"><a id="l00023" name="l00023"></a><span class="lineno">   23</span><span class="keyword">protected</span>:</div>
 <div class="line"><a id="l00024" name="l00024"></a><span class="lineno">   24</span>    <a class="code hl_class" href="classcgv_1_1render_1_1view.html">cgv::render::view</a>* view_ptr;</div>
 <div class="line"><a id="l00025" name="l00025"></a><span class="lineno">   25</span>    <a class="code hl_class" href="classcgv_1_1math_1_1fvec.html">vec3</a> navigator_eye_pos;</div>
@@ -154,13 +154,13 @@ $(document).ready(function(){initNavTree('navigator_8h_source.html',''); initRes
 <div class="line"><a id="l00054" name="l00054"></a><span class="lineno">   54</span>    <span class="keyword">virtual</span> <span class="keywordtype">void</span> create_gui_impl();</div>
 <div class="line"><a id="l00055" name="l00055"></a><span class="lineno">   55</span> </div>
 <div class="line"><a id="l00056" name="l00056"></a><span class="lineno">   56</span><span class="keyword">public</span>:</div>
-<div class="line"><a id="l00057" name="l00057"></a><span class="lineno">   57</span>    <a class="code hl_class" href="classcgv_1_1app_1_1navigator.html">navigator</a>();</div>
-<div class="line"><a id="l00058" name="l00058"></a><span class="lineno"><a class="line" href="classcgv_1_1app_1_1navigator.html#ac1bbe756cf1df3e34654fdda2d24cdb2">   58</a></span>    std::string <a class="code hl_function" href="classcgv_1_1app_1_1navigator.html#ac1bbe756cf1df3e34654fdda2d24cdb2">get_type_name</a>()<span class="keyword"> const </span>{ <span class="keywordflow">return</span> <span class="stringliteral">&quot;navigator&quot;</span>; }</div>
+<div class="line"><a id="l00057" name="l00057"></a><span class="lineno">   57</span>    <a class="code hl_class" href="classcgv_1_1overlay_1_1navigator.html">navigator</a>();</div>
+<div class="line"><a id="l00058" name="l00058"></a><span class="lineno"><a class="line" href="classcgv_1_1overlay_1_1navigator.html#aae7e4d35b5a149026deb571ad2a65562">   58</a></span>    std::string <a class="code hl_function" href="classcgv_1_1overlay_1_1navigator.html#aae7e4d35b5a149026deb571ad2a65562">get_type_name</a>()<span class="keyword"> const </span>{ <span class="keywordflow">return</span> <span class="stringliteral">&quot;navigator&quot;</span>; }</div>
 <div class="line"><a id="l00059" name="l00059"></a><span class="lineno">   59</span> </div>
 <div class="line"><a id="l00060" name="l00060"></a><span class="lineno">   60</span>    <span class="keywordtype">void</span> clear(<a class="code hl_class" href="classcgv_1_1render_1_1context.html">cgv::render::context</a>&amp; ctx);</div>
 <div class="line"><a id="l00061" name="l00061"></a><span class="lineno">   61</span> </div>
 <div class="line"><a id="l00062" name="l00062"></a><span class="lineno">   62</span>    <span class="keywordtype">bool</span> self_reflect(<a class="code hl_class" href="classcgv_1_1reflect_1_1reflection__handler.html">cgv::reflect::reflection_handler</a>&amp; _rh);</div>
-<div class="line"><a id="l00063" name="l00063"></a><span class="lineno"><a class="line" href="classcgv_1_1app_1_1navigator.html#a811ce39cc582e94fb2892e36d0e7cf55">   63</a></span>    <span class="keywordtype">void</span> <a class="code hl_function" href="classcgv_1_1app_1_1navigator.html#a811ce39cc582e94fb2892e36d0e7cf55">stream_help</a>(std::ostream&amp; os) {}</div>
+<div class="line"><a id="l00063" name="l00063"></a><span class="lineno"><a class="line" href="classcgv_1_1overlay_1_1navigator.html#a6b00443561690edf32ed74662e6ec05e">   63</a></span>    <span class="keywordtype">void</span> <a class="code hl_function" href="classcgv_1_1overlay_1_1navigator.html#a6b00443561690edf32ed74662e6ec05e">stream_help</a>(std::ostream&amp; os) {}</div>
 <div class="line"><a id="l00064" name="l00064"></a><span class="lineno">   64</span> </div>
 <div class="line"><a id="l00065" name="l00065"></a><span class="lineno">   65</span>    <span class="keywordtype">bool</span> handle_mouse_event(<a class="code hl_class" href="classcgv_1_1gui_1_1mouse__event.html">cgv::gui::mouse_event</a>&amp; e, <a class="code hl_class" href="classcgv_1_1math_1_1fvec.html">cgv::ivec2</a> local_mouse_pos);</div>
 <div class="line"><a id="l00066" name="l00066"></a><span class="lineno">   66</span>    <span class="keywordtype">void</span> on_set(<span class="keywordtype">void</span>* member_ptr);</div>
@@ -175,18 +175,18 @@ $(document).ready(function(){initNavTree('navigator_8h_source.html',''); initRes
 <div class="line"><a id="l00074" name="l00074"></a><span class="lineno">   74</span> </div>
 <div class="line"><a id="l00075" name="l00075"></a><span class="lineno">   75</span><span class="keyword">typedef</span> <a class="code hl_class" href="classcgv_1_1data_1_1ref__ptr.html">cgv::data::ref_ptr&lt;navigator&gt;</a> navigator_ptr;</div>
 <div class="line"><a id="l00076" name="l00076"></a><span class="lineno">   76</span> </div>
-<div class="line"><a id="l00077" name="l00077"></a><span class="lineno">   77</span>}</div>
-<div class="line"><a id="l00078" name="l00078"></a><span class="lineno">   78</span>}</div>
+<div class="line"><a id="l00077" name="l00077"></a><span class="lineno">   77</span>} <span class="comment">// namespace overlay</span></div>
+<div class="line"><a id="l00078" name="l00078"></a><span class="lineno">   78</span>} <span class="comment">// namespace cgv</span></div>
 <div class="line"><a id="l00079" name="l00079"></a><span class="lineno">   79</span> </div>
 <div class="line"><a id="l00080" name="l00080"></a><span class="lineno">   80</span><span class="preprocessor">#include &lt;cgv/config/lib_end.h&gt;</span></div>
-<div class="ttc" id="aclasscgv_1_1app_1_1navigator_html"><div class="ttname"><a href="classcgv_1_1app_1_1navigator.html">cgv::app::navigator</a></div><div class="ttdef"><b>Definition</b> <a href="navigator_8h_source.html#l00022">navigator.h:22</a></div></div>
-<div class="ttc" id="aclasscgv_1_1app_1_1navigator_html_a811ce39cc582e94fb2892e36d0e7cf55"><div class="ttname"><a href="classcgv_1_1app_1_1navigator.html#a811ce39cc582e94fb2892e36d0e7cf55">cgv::app::navigator::stream_help</a></div><div class="ttdeci">void stream_help(std::ostream &amp;os)</div><div class="ttdoc">overload to stream help information to the given output stream</div><div class="ttdef"><b>Definition</b> <a href="navigator_8h_source.html#l00063">navigator.h:63</a></div></div>
-<div class="ttc" id="aclasscgv_1_1app_1_1navigator_html_ac1bbe756cf1df3e34654fdda2d24cdb2"><div class="ttname"><a href="classcgv_1_1app_1_1navigator.html#ac1bbe756cf1df3e34654fdda2d24cdb2">cgv::app::navigator::get_type_name</a></div><div class="ttdeci">std::string get_type_name() const</div><div class="ttdoc">overload to return the type name of this object. By default the type interface is queried over get_ty...</div><div class="ttdef"><b>Definition</b> <a href="navigator_8h_source.html#l00058">navigator.h:58</a></div></div>
-<div class="ttc" id="aclasscgv_1_1app_1_1overlay_html"><div class="ttname"><a href="classcgv_1_1app_1_1overlay.html">cgv::app::overlay</a></div><div class="ttdef"><b>Definition</b> <a href="overlay_8h_source.html#l00020">overlay.h:25</a></div></div>
 <div class="ttc" id="aclasscgv_1_1data_1_1ref__ptr_html"><div class="ttname"><a href="classcgv_1_1data_1_1ref__ptr.html">cgv::data::ref_ptr</a></div><div class="ttdoc">reference counted pointer, which can work together with types that are derived from ref_counted,...</div><div class="ttdef"><b>Definition</b> <a href="ref__ptr_8h_source.html#l00159">ref_ptr.h:160</a></div></div>
 <div class="ttc" id="aclasscgv_1_1gui_1_1mouse__event_html"><div class="ttname"><a href="classcgv_1_1gui_1_1mouse__event.html">cgv::gui::mouse_event</a></div><div class="ttdoc">class to represent all possible mouse events with the EID_MOUSE</div><div class="ttdef"><b>Definition</b> <a href="mouse__event_8h_source.html#l00032">mouse_event.h:33</a></div></div>
 <div class="ttc" id="aclasscgv_1_1math_1_1fmat_html"><div class="ttname"><a href="classcgv_1_1math_1_1fmat.html">cgv::math::fmat&lt; float, 4, 4 &gt;</a></div></div>
 <div class="ttc" id="aclasscgv_1_1math_1_1fvec_html"><div class="ttname"><a href="classcgv_1_1math_1_1fvec.html">cgv::math::fvec&lt; float, 3 &gt;</a></div></div>
+<div class="ttc" id="aclasscgv_1_1overlay_1_1navigator_html"><div class="ttname"><a href="classcgv_1_1overlay_1_1navigator.html">cgv::overlay::navigator</a></div><div class="ttdef"><b>Definition</b> <a href="navigator_8h_source.html#l00022">navigator.h:22</a></div></div>
+<div class="ttc" id="aclasscgv_1_1overlay_1_1navigator_html_a6b00443561690edf32ed74662e6ec05e"><div class="ttname"><a href="classcgv_1_1overlay_1_1navigator.html#a6b00443561690edf32ed74662e6ec05e">cgv::overlay::navigator::stream_help</a></div><div class="ttdeci">void stream_help(std::ostream &amp;os)</div><div class="ttdoc">overload to stream help information to the given output stream</div><div class="ttdef"><b>Definition</b> <a href="navigator_8h_source.html#l00063">navigator.h:63</a></div></div>
+<div class="ttc" id="aclasscgv_1_1overlay_1_1navigator_html_aae7e4d35b5a149026deb571ad2a65562"><div class="ttname"><a href="classcgv_1_1overlay_1_1navigator.html#aae7e4d35b5a149026deb571ad2a65562">cgv::overlay::navigator::get_type_name</a></div><div class="ttdeci">std::string get_type_name() const</div><div class="ttdoc">overload to return the type name of this object</div><div class="ttdef"><b>Definition</b> <a href="navigator_8h_source.html#l00058">navigator.h:58</a></div></div>
+<div class="ttc" id="aclasscgv_1_1overlay_1_1overlay_html"><div class="ttname"><a href="classcgv_1_1overlay_1_1overlay.html">cgv::overlay::overlay</a></div><div class="ttdef"><b>Definition</b> <a href="overlay_8h_source.html#l00036">overlay.h:41</a></div></div>
 <div class="ttc" id="aclasscgv_1_1reflect_1_1reflection__handler_html"><div class="ttname"><a href="classcgv_1_1reflect_1_1reflection__handler.html">cgv::reflect::reflection_handler</a></div><div class="ttdoc">the self reflection handler is passed to the virtual self_reflect() method of cgv::base::base.</div><div class="ttdef"><b>Definition</b> <a href="reflection__handler_8h_source.html#l00062">reflection_handler.h:63</a></div></div>
 <div class="ttc" id="aclasscgv_1_1render_1_1arrow__render__data_html"><div class="ttname"><a href="classcgv_1_1render_1_1arrow__render__data.html">cgv::render::arrow_render_data</a></div><div class="ttdef"><b>Definition</b> <a href="arrow__render__data_8h_source.html#l00010">arrow_render_data.h:10</a></div></div>
 <div class="ttc" id="aclasscgv_1_1render_1_1box__render__data_html"><div class="ttname"><a href="classcgv_1_1render_1_1box__render__data.html">cgv::render::box_render_data</a></div><div class="ttdoc">Render data for box geometry with support for the box_renderer.</div><div class="ttdef"><b>Definition</b> <a href="box__render__data_8h_source.html#l00012">box_render_data.h:12</a></div></div>
@@ -203,7 +203,7 @@ $(document).ready(function(){initNavTree('navigator_8h_source.html',''); initRes
 <!-- start footer part -->
 <div id="nav-path" class="navpath"><!-- id is needed for treeview function! -->
   <ul>
-    <li class="navelem"><a class="el" href="dir_6719ab1f1f7655efc2fa43f7eb574fd1.html">libs</a></li><li class="navelem"><a class="el" href="dir_284aa825dfcd36fc77eb764ce6199a8f.html">cgv_app</a></li><li class="navelem"><b>navigator.h</b></li>
+    <li class="navelem"><a class="el" href="dir_6719ab1f1f7655efc2fa43f7eb574fd1.html">libs</a></li><li class="navelem"><a class="el" href="dir_940fea13ded9d02cf58440c9cc55face.html">cgv_overlay</a></li><li class="navelem"><b>navigator.h</b></li>
     <li class="footer">Generated by <a href="https://www.doxygen.org/index.html"><img class="footer" src="doxygen.svg" width="104" height="31" alt="doxygen"/></a> 1.9.8 </li>
   </ul>
 </div>

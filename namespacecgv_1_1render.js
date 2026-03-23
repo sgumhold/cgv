@@ -30,7 +30,7 @@ var namespacecgv_1_1render =
     [ "clod_point_render_style", "structcgv_1_1render_1_1clod__point__render__style.html", "structcgv_1_1render_1_1clod__point__render__style" ],
     [ "clod_point_render_style_reflect", "structcgv_1_1render_1_1clod__point__render__style__reflect.html", null ],
     [ "clod_point_renderer", "classcgv_1_1render_1_1clod__point__renderer.html", "classcgv_1_1render_1_1clod__point__renderer" ],
-    [ "color_map", "classcgv_1_1render_1_1color__map.html", "classcgv_1_1render_1_1color__map" ],
+    [ "color_scale_adapter", "classcgv_1_1render_1_1color__scale__adapter.html", "classcgv_1_1render_1_1color__scale__adapter" ],
     [ "cone_render_data", "classcgv_1_1render_1_1cone__render__data.html", "classcgv_1_1render_1_1cone__render__data" ],
     [ "cone_render_style", "structcgv_1_1render_1_1cone__render__style.html", "structcgv_1_1render_1_1cone__render__style" ],
     [ "cone_render_style_reflect", "structcgv_1_1render_1_1cone__render__style__reflect.html", null ],
@@ -39,6 +39,12 @@ var namespacecgv_1_1render =
     [ "context_config", "structcgv_1_1render_1_1context__config.html", "structcgv_1_1render_1_1context__config" ],
     [ "context_factory_registration", "structcgv_1_1render_1_1context__factory__registration.html", null ],
     [ "device_capabilities", "structcgv_1_1render_1_1device__capabilities.html", "structcgv_1_1render_1_1device__capabilities" ],
+    [ "device_color_scale", "classcgv_1_1render_1_1device__color__scale.html", "classcgv_1_1render_1_1device__color__scale" ],
+    [ "device_color_scale_arguments", "structcgv_1_1render_1_1device__color__scale__arguments.html", "structcgv_1_1render_1_1device__color__scale__arguments" ],
+    [ "device_color_scale_storage", "classcgv_1_1render_1_1device__color__scale__storage.html", "classcgv_1_1render_1_1device__color__scale__storage" ],
+    [ "device_continuous_color_scale", "classcgv_1_1render_1_1device__continuous__color__scale.html", null ],
+    [ "device_discrete_color_scale", "classcgv_1_1render_1_1device__discrete__color__scale.html", null ],
+    [ "device_transfer_function", "classcgv_1_1render_1_1device__transfer__function.html", null ],
     [ "draw_call", "structcgv_1_1render_1_1draw__call.html", null ],
     [ "drawable", "classcgv_1_1render_1_1drawable.html", "classcgv_1_1render_1_1drawable" ],
     [ "element_descriptor_traits", "structcgv_1_1render_1_1element__descriptor__traits.html", null ],
@@ -56,7 +62,6 @@ var namespacecgv_1_1render =
     [ "frame_buffer_base", "classcgv_1_1render_1_1frame__buffer__base.html", "classcgv_1_1render_1_1frame__buffer__base" ],
     [ "generic_render_data", "classcgv_1_1render_1_1generic__render__data.html", null ],
     [ "generic_renderer", "classcgv_1_1render_1_1generic__renderer.html", null ],
-    [ "gl_color_map", "classcgv_1_1render_1_1gl__color__map.html", "classcgv_1_1render_1_1gl__color__map" ],
     [ "group_render_style", "structcgv_1_1render_1_1group__render__style.html", "structcgv_1_1render_1_1group__render__style" ],
     [ "group_render_style_reflect", "structcgv_1_1render_1_1group__render__style__reflect.html", null ],
     [ "group_renderer", "classcgv_1_1render_1_1group__renderer.html", "classcgv_1_1render_1_1group__renderer" ],
@@ -116,6 +121,7 @@ var namespacecgv_1_1render =
     [ "textured_material", "classcgv_1_1render_1_1textured__material.html", "classcgv_1_1render_1_1textured__material" ],
     [ "textured_rectangle", "structcgv_1_1render_1_1textured__rectangle.html", null ],
     [ "type_descriptor", "structcgv_1_1render_1_1type__descriptor.html", "structcgv_1_1render_1_1type__descriptor" ],
+    [ "uniform_buffer", "classcgv_1_1render_1_1uniform__buffer.html", "classcgv_1_1render_1_1uniform__buffer" ],
     [ "vertex_attribute", "structcgv_1_1render_1_1vertex__attribute.html", null ],
     [ "vertex_buffer", "classcgv_1_1render_1_1vertex__buffer.html", "classcgv_1_1render_1_1vertex__buffer" ],
     [ "vertex_buffer_base", "classcgv_1_1render_1_1vertex__buffer__base.html", "classcgv_1_1render_1_1vertex__buffer__base" ],
@@ -188,6 +194,15 @@ var namespacecgv_1_1render =
       [ "CM_OFF", "namespacecgv_1_1render.html#a0b2ec1d0f6ff0852f53654cb8e6fab57a46b943667304a38cd74c39c0dd14dabc", null ],
       [ "CM_BACKFACE", "namespacecgv_1_1render.html#a0b2ec1d0f6ff0852f53654cb8e6fab57af7c69f92fa28e1ec449654e4cf771537", null ],
       [ "CM_FRONTFACE", "namespacecgv_1_1render.html#a0b2ec1d0f6ff0852f53654cb8e6fab57a7a69ff32554dc367769e0ed058017bbe", null ]
+    ] ],
+    [ "DeviceColorScaleMappingOptions", "namespacecgv_1_1render.html#ac93b54592b90e02852552a2e9f467940", [
+      [ "kNone", "namespacecgv_1_1render.html#ac93b54592b90e02852552a2e9f467940a35c3ace1970663a16e5c65baa5941b13", null ],
+      [ "kClamped", "namespacecgv_1_1render.html#ac93b54592b90e02852552a2e9f467940a740cbdfffe12345524236b2ec8fda613", null ],
+      [ "kDiverging", "namespacecgv_1_1render.html#ac93b54592b90e02852552a2e9f467940a467ce15dc4f02a0b8e04edce172fae60", null ]
+    ] ],
+    [ "DeviceColorScaleSampleMode", "namespacecgv_1_1render.html#a200f6ce0cfdcb01c551ffaa493e64006", [
+      [ "kContinuous", "namespacecgv_1_1render.html#a200f6ce0cfdcb01c551ffaa493e64006a0445605283282f17470ec2fa998a78c8", null ],
+      [ "kDiscrete", "namespacecgv_1_1render.html#a200f6ce0cfdcb01c551ffaa493e64006a7095b968071a21b3995448cd36a11cef", null ]
     ] ],
     [ "ElementType", "namespacecgv_1_1render.html#a6f68d5e423e96440b1c6121905e08b3e", [
       [ "ET_VALUE", "namespacecgv_1_1render.html#a6f68d5e423e96440b1c6121905e08b3eabb8a09b57c81d74558a4fd4490f0a0a2", null ],
@@ -427,8 +442,6 @@ var namespacecgv_1_1render =
       [ "kTransparent", "namespacecgv_1_1render.html#aa1699bcd3dddc398a7035e39d133d24fad0b1155630ed06710cbda709b8aa11fc", null ]
     ] ],
     [ "build_render_info", "namespacecgv_1_1render.html#a7b675d0a601181144b6ce95371ad087d", null ],
-    [ "configure_color_scale", "namespacecgv_1_1render.html#a59dab50ff09426084782ca221f1452ed", null ],
-    [ "configure_color_scale", "namespacecgv_1_1render.html#a30147ad00afa94d5133a66836282a047", null ],
     [ "create_context", "namespacecgv_1_1render.html#a70f8fa845a248470de8b176c778b3e32", null ],
     [ "DEFINE_GENERIC_RENDER_DATA_CLASS", "namespacecgv_1_1render.html#ac1c6026d5e38a153edd00586bc413984", null ],
     [ "DEFINE_GENERIC_RENDER_DATA_CLASS", "namespacecgv_1_1render.html#ac6e3efd4c7be58e391c1eb7e6086859e", null ],
