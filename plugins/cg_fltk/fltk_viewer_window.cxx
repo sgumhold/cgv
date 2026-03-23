@@ -1073,8 +1073,6 @@ void fltk_viewer_window::register_object(base_ptr object, const std::string& opt
 	provider* p = object->get_interface<cgv::gui::provider>();
 	if (p) {
 		tab_group->register_object(object,options);
-		// ensure docking of tab group
-		show_gui();
 		// add button to menu path
 		std::string mp = p->get_menu_path();
 		cgv::gui::shortcut sc = p->get_shortcut();

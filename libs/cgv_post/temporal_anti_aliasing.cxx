@@ -131,6 +131,7 @@ void temporal_anti_aliasing::end(cgv::render::context& ctx, bool pop_viewport) {
 
 	ctx.pop_projection_matrix();
 
+	ctx.begin_attribute_less_rendering();
 	if(enable_fxaa) {
 		fbc_post.enable(ctx, /*push*/pop_viewport);
 
@@ -223,6 +224,7 @@ void temporal_anti_aliasing::end(cgv::render::context& ctx, bool pop_viewport) {
 	screen_prog.disable(ctx);
 
 	glDepthFunc(GL_LESS);
+	ctx.end_attribute_less_rendering();
 
 	previous_view = current_view;
 	return;

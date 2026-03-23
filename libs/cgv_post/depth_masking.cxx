@@ -65,6 +65,7 @@ void depth_masking::end(cgv::render::context& ctx, bool push_viewport) {
 
 	if(!enable || !view)
 		return;
+	ctx.begin_attribute_less_rendering();
 
 	fbc_draw.disable(ctx, push_viewport);
 
@@ -200,6 +201,8 @@ void depth_masking::end(cgv::render::context& ctx, bool push_viewport) {
 	fbc_draw.disable_attachment(ctx, "depth");
 	fbc_depth_info.disable_attachment(ctx, "linear_depth");
 	fbc_blurred_depth_pong.disable_attachment(ctx, "blurred_depth");
+
+	ctx.end_attribute_less_rendering();
 }
 
 void depth_masking::create_gui_impl(cgv::base::base* b, cgv::gui::provider* p) {

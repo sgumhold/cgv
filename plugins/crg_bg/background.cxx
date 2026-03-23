@@ -65,6 +65,7 @@ bool background::init(context& ctx)
 {
 	if (!prog.build_program(ctx, "background.glpr", true))
 		return false;
+	
 	sync_render_flags(ctx);
 	return true;
 }
@@ -78,6 +79,7 @@ void background::init_frame(context& ctx)
 {
 	if (!enable)
 		return;
+	ctx.begin_attribute_less_rendering();
 	ctx.push_depth_test_state();
 	ctx.disable_depth_test();
 		
@@ -94,6 +96,7 @@ void background::init_frame(context& ctx)
 	prog.disable(ctx);
 		
 	ctx.pop_depth_test_state();
+	ctx.end_attribute_less_rendering();
 }
 
 void background::create_gui()
