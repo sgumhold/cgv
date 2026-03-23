@@ -15,8 +15,10 @@ var namespacecgv_1_1data =
     [ "dynamic_priority_queue", "classcgv_1_1data_1_1dynamic__priority__queue.html", "classcgv_1_1data_1_1dynamic__priority__queue" ],
     [ "grid", "classcgv_1_1data_1_1grid.html", "classcgv_1_1data_1_1grid" ],
     [ "image_view", "classcgv_1_1data_1_1image__view.html", null ],
+    [ "informed_ptr", "classcgv_1_1data_1_1informed__ptr.html", "classcgv_1_1data_1_1informed__ptr" ],
     [ "interval_map", "classcgv_1_1data_1_1interval__map.html", "classcgv_1_1data_1_1interval__map" ],
     [ "io_reflection_handler", "classcgv_1_1data_1_1io__reflection__handler.html", "classcgv_1_1data_1_1io__reflection__handler" ],
+    [ "object_registry", "classcgv_1_1data_1_1object__registry.html", null ],
     [ "optional", "classcgv_1_1data_1_1optional.html", "classcgv_1_1data_1_1optional" ],
     [ "packing_info", "classcgv_1_1data_1_1packing__info.html", "classcgv_1_1data_1_1packing__info" ],
     [ "quadtree", "classcgv_1_1data_1_1quadtree.html", "classcgv_1_1data_1_1quadtree" ],
@@ -26,6 +28,7 @@ var namespacecgv_1_1data =
     [ "ref_ptr_impl", "classcgv_1_1data_1_1ref__ptr__impl.html", "classcgv_1_1data_1_1ref__ptr__impl" ],
     [ "ref_ptr_impl< T, true >", "classcgv_1_1data_1_1ref__ptr__impl_3_01T_00_01true_01_4.html", "classcgv_1_1data_1_1ref__ptr__impl_3_01T_00_01true_01_4" ],
     [ "ref_ptr_tag", "classcgv_1_1data_1_1ref__ptr__tag.html", "classcgv_1_1data_1_1ref__ptr__tag" ],
+    [ "time_stamp", "classcgv_1_1data_1_1time__stamp.html", null ],
     [ "union_find", "structcgv_1_1data_1_1union__find.html", "structcgv_1_1data_1_1union__find" ],
     [ "ComponentFormat", "namespacecgv_1_1data.html#a04ff4cdaed048a306aed8dd5a8c5c979", [
       [ "CF_UNDEF", "namespacecgv_1_1data.html#a04ff4cdaed048a306aed8dd5a8c5c979a21e044c2db6fef80997427db99403175", null ],

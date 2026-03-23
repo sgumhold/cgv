@@ -7,5 +7,5 @@ var searchData=
   ['group_5findex_4',['group_index',['../structcgv_1_1media_1_1mesh_1_1face__info.html#a6a1d5fa444f2cd6ad918748541c86693',1,'cgv::media::mesh::face_info::group_index'],['../structcgv_1_1media_1_1mesh_1_1line__info.html#a51b8f325242b070c52aaacbb3c94c2b5',1,'cgv::media::mesh::line_info::group_index'],['../classcgv_1_1media_1_1mesh_1_1obj__reader__base.html#a9fd7ea5f1b66917ec61177a6b3a92dc2',1,'cgv::media::mesh::obj_reader_base::group_index']]],
   ['group_5fkind_5',['group_kind',['../structcgv_1_1reflect_1_1reflection__handler_1_1nesting__info.html#aa7cf8f010fc7569816e29b713190851c',1,'cgv::reflect::reflection_handler::nesting_info']]],
   ['gui_5ffiles_6',['gui_files',['../classcgv_1_1gui_1_1base__provider__generator.html#ac3283a1d55c194aeb5e997b278bd136c',1,'cgv::gui::base_provider_generator']]],
-  ['gui_5foptions_7',['gui_options',['../classcgv_1_1app_1_1overlay.html#a8a67de4ed4f9acebe0b075de2c59fbbb',1,'cgv::app::overlay']]]
+  ['gui_5foptions_7',['gui_options',['../classcgv_1_1overlay_1_1overlay.html#addf225dc1088c4f83f04187e672f1ead',1,'cgv::overlay::overlay']]]
 ];

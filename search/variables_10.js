@@ -49,6 +49,5 @@ var searchData=
   ['provider_5fptr_46',['provider_ptr',['../classcgv_1_1gui_1_1subprovider.html#a649449ee0e23aae2a6188abdba1bab6f',1,'cgv::gui::subprovider']]],
   ['provider_5fptr_5f_47',['provider_ptr_',['../classcgv_1_1gui_1_1directory__helper.html#a0ce2be5a7075d592a15ee4729479c269',1,'cgv::gui::directory_helper']]],
   ['providers_48',['providers',['../classcgv_1_1gui_1_1base__provider__generator.html#a485d69431790c16bcbc40a60a9e23df3',1,'cgv::gui::base_provider_generator']]],
-  ['provides_5fbattery_5fcharge_5flevel_49',['provides_battery_charge_level',['../structvr_1_1vr__trackable__info.html#a4ff3fc2812bf0d96ffabe1e9ec85c3ba',1,'vr::vr_trackable_info']]],
-  ['ptr_50',['ptr',['../classcgv_1_1utils_1_1pointer__test.html#a6849761239933abc6b7fba0991e32bba',1,'cgv::utils::pointer_test']]]
+  ['provides_5fbattery_5fcharge_5flevel_49',['provides_battery_charge_level',['../structvr_1_1vr__trackable__info.html#a4ff3fc2812bf0d96ffabe1e9ec85c3ba',1,'vr::vr_trackable_info']]]
 ];

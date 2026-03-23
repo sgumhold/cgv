@@ -138,7 +138,8 @@ Classes</h2></td></tr>
 <tr class="memitem:"><td class="memItemLeft" align="right" valign="top">struct &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structcgv_1_1utils_1_1line.html">line</a></td></tr>
 <tr class="memdesc:"><td class="mdescLeft">&#160;</td><td class="mdescRight">a line in a text is simply represented as a token  <a href="structcgv_1_1utils_1_1line.html#details">More...</a><br /></td></tr>
 <tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:"><td class="memItemLeft" align="right" valign="top">class &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcgv_1_1utils_1_1pointer__test.html">pointer_test</a></td></tr>
+<tr class="memitem:"><td class="memItemLeft" align="right" valign="top">class &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcgv_1_1utils_1_1number__format.html">number_format</a></td></tr>
+<tr class="memdesc:"><td class="mdescLeft">&#160;</td><td class="mdescRight">A class to store number formatting specification and allow converting numbers to strings.  <a href="classcgv_1_1utils_1_1number__format.html#details">More...</a><br /></td></tr>
 <tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:"><td class="memItemLeft" align="right" valign="top">class &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcgv_1_1utils_1_1Profiler.html">Profiler</a></td></tr>
 <tr class="memdesc:"><td class="mdescLeft">&#160;</td><td class="mdescRight">A profiler class for managing different stopwatches.  <a href="classcgv_1_1utils_1_1Profiler.html#details">More...</a><br /></td></tr>
@@ -246,6 +247,38 @@ Functions</h2></td></tr>
 <tr class="memitem:af12b7d989d404281dfb555f1eabf04c6"><td class="memTemplItemLeft" align="right" valign="top">std::vector&lt; std::pair&lt; typename InputIt::value_type, typename InputIt::value_type &gt; &gt;&#160;</td><td class="memTemplItemRight" valign="bottom"><a class="el" href="namespacecgv_1_1utils.html#af12b7d989d404281dfb555f1eabf04c6">pair_adjacent</a> (const InputIt first, const InputIt last)</td></tr>
 <tr class="memdesc:af12b7d989d404281dfb555f1eabf04c6"><td class="mdescLeft">&#160;</td><td class="mdescRight">Return a collection of pairwise adjacent elements in the range [first, last).  <br /></td></tr>
 <tr class="separator:af12b7d989d404281dfb555f1eabf04c6"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a841d90ef59ab283e83587f6a7cdde8dc" id="r_a841d90ef59ab283e83587f6a7cdde8dc"><td class="memTemplParams" colspan="2">template&lt;typename InputIt1 , typename InputIt2 , typename OutputIt &gt; </td></tr>
+<tr class="memitem:a841d90ef59ab283e83587f6a7cdde8dc"><td class="memTemplItemLeft" align="right" valign="top">OutputIt&#160;</td><td class="memTemplItemRight" valign="bottom"><a class="el" href="namespacecgv_1_1utils.html#a841d90ef59ab283e83587f6a7cdde8dc">zip</a> (const InputIt1 first1, const InputIt1 last1, const InputIt2 first2, OutputIt d_first)</td></tr>
+<tr class="memdesc:a841d90ef59ab283e83587f6a7cdde8dc"><td class="mdescLeft">&#160;</td><td class="mdescRight">Zip two sequences together to form a single sequene of pairs and store the results in an output range starting from d_first.  <br /></td></tr>
+<tr class="separator:a841d90ef59ab283e83587f6a7cdde8dc"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a51093fc19928c68d19548e8c25bfc5d2" id="r_a51093fc19928c68d19548e8c25bfc5d2"><td class="memTemplParams" colspan="2">template&lt;typename InputIt1 , typename InputIt2 &gt; </td></tr>
+<tr class="memitem:a51093fc19928c68d19548e8c25bfc5d2"><td class="memTemplItemLeft" align="right" valign="top">std::vector&lt; std::pair&lt; typename InputIt1::value_type, typename InputIt2::value_type &gt; &gt;&#160;</td><td class="memTemplItemRight" valign="bottom"><a class="el" href="namespacecgv_1_1utils.html#a51093fc19928c68d19548e8c25bfc5d2">zip</a> (const InputIt1 first1, const InputIt1 last1, const InputIt2 first2)</td></tr>
+<tr class="memdesc:a51093fc19928c68d19548e8c25bfc5d2"><td class="mdescLeft">&#160;</td><td class="mdescRight">Zip two sequences together to form a single sequene of pairs.  <br /></td></tr>
+<tr class="separator:a51093fc19928c68d19548e8c25bfc5d2"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ac85b6c96afdf6be149997886d8edaa82" id="r_ac85b6c96afdf6be149997886d8edaa82"><td class="memTemplParams" colspan="2">template&lt;typename ParamT  = float, typename OutputIt &gt; </td></tr>
+<tr class="memitem:ac85b6c96afdf6be149997886d8edaa82"><td class="memTemplItemLeft" align="right" valign="top">void&#160;</td><td class="memTemplItemRight" valign="bottom"><a class="el" href="namespacecgv_1_1utils.html#ac85b6c96afdf6be149997886d8edaa82">subdivision_sequence</a> (OutputIt output_first, ParamT start, ParamT stop, size_t n)</td></tr>
+<tr class="memdesc:ac85b6c96afdf6be149997886d8edaa82"><td class="mdescLeft">&#160;</td><td class="mdescRight">Generate a sequence of n uniformly-spaced values in [start,stop] and store the result in an output range starting from output_first.  <br /></td></tr>
+<tr class="separator:ac85b6c96afdf6be149997886d8edaa82"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a1cc72ef3ca8609ec729c66a8495181ae" id="r_a1cc72ef3ca8609ec729c66a8495181ae"><td class="memTemplParams" colspan="2">template&lt;class InputIt &gt; </td></tr>
+<tr class="memitem:a1cc72ef3ca8609ec729c66a8495181ae"><td class="memTemplItemLeft" align="right" valign="top">std::vector&lt; size_t &gt;&#160;</td><td class="memTemplItemRight" valign="bottom"><a class="el" href="namespacecgv_1_1utils.html#a1cc72ef3ca8609ec729c66a8495181ae">generate_index_sequence</a> (const InputIt first, const InputIt last)</td></tr>
+<tr class="memdesc:a1cc72ef3ca8609ec729c66a8495181ae"><td class="mdescLeft">&#160;</td><td class="mdescRight">Return a sequence of monotonically increasing values from 0 to n = distance(first, last) - 1 with first == 0 and last == n.  <br /></td></tr>
+<tr class="separator:a1cc72ef3ca8609ec729c66a8495181ae"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a72d462a4ceaca6d66a9bb4bbc3c1ae47" id="r_a72d462a4ceaca6d66a9bb4bbc3c1ae47"><td class="memTemplParams" colspan="2">template&lt;class RandomIt &gt; </td></tr>
+<tr class="memitem:a72d462a4ceaca6d66a9bb4bbc3c1ae47"><td class="memTemplItemLeft" align="right" valign="top">std::vector&lt; size_t &gt;&#160;</td><td class="memTemplItemRight" valign="bottom"><a class="el" href="namespacecgv_1_1utils.html#a72d462a4ceaca6d66a9bb4bbc3c1ae47">sort_indices</a> (const RandomIt first, const RandomIt last)</td></tr>
+<tr class="memdesc:a72d462a4ceaca6d66a9bb4bbc3c1ae47"><td class="mdescLeft">&#160;</td><td class="mdescRight">Return a sequence of indices corresponding to the sorted order of values in [first,last).  <br /></td></tr>
+<tr class="separator:a72d462a4ceaca6d66a9bb4bbc3c1ae47"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:aa3e994b07bb0131646b86207e477eeb2" id="r_aa3e994b07bb0131646b86207e477eeb2"><td class="memTemplParams" colspan="2">template&lt;class RandomIt &gt; </td></tr>
+<tr class="memitem:aa3e994b07bb0131646b86207e477eeb2"><td class="memTemplItemLeft" align="right" valign="top">std::vector&lt; size_t &gt;&#160;</td><td class="memTemplItemRight" valign="bottom"><a class="el" href="namespacecgv_1_1utils.html#aa3e994b07bb0131646b86207e477eeb2">stable_sort_indices</a> (const RandomIt first, const RandomIt last)</td></tr>
+<tr class="memdesc:aa3e994b07bb0131646b86207e477eeb2"><td class="mdescLeft">&#160;</td><td class="mdescRight">Return a sequence of indices corresponding to the sorted order of values in [first,last) while preserving the order of equivalent elements.  <br /></td></tr>
+<tr class="separator:aa3e994b07bb0131646b86207e477eeb2"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a8bdd73f2059b6b505a87d4efc9391baf" id="r_a8bdd73f2059b6b505a87d4efc9391baf"><td class="memTemplParams" colspan="2">template&lt;class RandomIt , class Compare &gt; </td></tr>
+<tr class="memitem:a8bdd73f2059b6b505a87d4efc9391baf"><td class="memTemplItemLeft" align="right" valign="top">std::vector&lt; size_t &gt;&#160;</td><td class="memTemplItemRight" valign="bottom"><a class="el" href="namespacecgv_1_1utils.html#a8bdd73f2059b6b505a87d4efc9391baf">sort_indices</a> (const RandomIt first, const RandomIt last, Compare comp)</td></tr>
+<tr class="memdesc:a8bdd73f2059b6b505a87d4efc9391baf"><td class="mdescLeft">&#160;</td><td class="mdescRight">Return a sequence of indices corresponding to the sorted order of values in [first,last).  <br /></td></tr>
+<tr class="separator:a8bdd73f2059b6b505a87d4efc9391baf"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:aebc2a4cf44914c857a184a0563e9bedd" id="r_aebc2a4cf44914c857a184a0563e9bedd"><td class="memTemplParams" colspan="2">template&lt;class RandomIt , class Compare &gt; </td></tr>
+<tr class="memitem:aebc2a4cf44914c857a184a0563e9bedd"><td class="memTemplItemLeft" align="right" valign="top">std::vector&lt; size_t &gt;&#160;</td><td class="memTemplItemRight" valign="bottom"><a class="el" href="namespacecgv_1_1utils.html#aebc2a4cf44914c857a184a0563e9bedd">stable_sort_indices</a> (const RandomIt first, const RandomIt last, Compare comp)</td></tr>
+<tr class="memdesc:aebc2a4cf44914c857a184a0563e9bedd"><td class="mdescLeft">&#160;</td><td class="mdescRight">Return a sequence of indices corresponding to the sorted order of values in [first,last).  <br /></td></tr>
+<tr class="separator:aebc2a4cf44914c857a184a0563e9bedd"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a481bc36ea7e12bdc82437f4d841d14ee" id="r_a481bc36ea7e12bdc82437f4d841d14ee"><td class="memItemLeft" align="right" valign="top">bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespacecgv_1_1utils.html#a481bc36ea7e12bdc82437f4d841d14ee">is_bit_set</a> (unsigned int bit_idx, unsigned int bit_field)</td></tr>
 <tr class="memdesc:a481bc36ea7e12bdc82437f4d841d14ee"><td class="mdescLeft">&#160;</td><td class="mdescRight">check if a bit of a bit field is set  <br /></td></tr>
 <tr class="separator:a481bc36ea7e12bdc82437f4d841d14ee"><td class="memSeparator" colspan="2">&#160;</td></tr>
@@ -1796,6 +1829,56 @@ template&lt;typename T &gt; </div>
 
 </div>
 </div>
+<a id="a1cc72ef3ca8609ec729c66a8495181ae" name="a1cc72ef3ca8609ec729c66a8495181ae"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a1cc72ef3ca8609ec729c66a8495181ae">&#9670;&#160;</a></span>generate_index_sequence()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<div class="memtemplate">
+template&lt;class InputIt &gt; </div>
+      <table class="memname">
+        <tr>
+          <td class="memname">std::vector&lt; size_t &gt; cgv::utils::generate_index_sequence </td>
+          <td>(</td>
+          <td class="paramtype">const InputIt&#160;</td>
+          <td class="paramname"><em>first</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">const InputIt&#160;</td>
+          <td class="paramname"><em>last</em>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>Return a sequence of monotonically increasing values from 0 to n = distance(first, last) - 1 with first == 0 and last == n. </p>
+<dl class="tparams"><dt>Template Parameters</dt><dd>
+  <table class="tparams">
+    <tr><td class="paramname">InputIt</td><td>The input sequence iterator type. </td></tr>
+  </table>
+  </dd>
+</dl>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">first</td><td>The start of the input range. </td></tr>
+    <tr><td class="paramname">last</td><td>The end of the input range. </td></tr>
+  </table>
+  </dd>
+</dl>
+<dl class="section return"><dt>Returns</dt><dd>The index sequence. </dd></dl>
+
+<p class="definition">Definition at line <a class="el" href="algorithm_8h_source.html#l00255">255</a> of file <a class="el" href="algorithm_8h_source.html">algorithm.h</a>.</p>
+
+<p class="reference">Referenced by <a class="el" href="algorithm_8h_source.html#l00269">sort_indices()</a>, <a class="el" href="algorithm_8h_source.html#l00304">sort_indices()</a>, <a class="el" href="algorithm_8h_source.html#l00285">stable_sort_indices()</a>, and <a class="el" href="algorithm_8h_source.html#l00323">stable_sort_indices()</a>.</p>
+
+</div>
+</div>
 <a id="a18e2419852e04a69d36223b9da5af74f" name="a18e2419852e04a69d36223b9da5af74f"></a>
 <h2 class="memtitle"><span class="permalink"><a href="#a18e2419852e04a69d36223b9da5af74f">&#9670;&#160;</a></span>get_element()</h2>
 
@@ -2312,7 +2395,7 @@ template&lt;typename T &gt; </div>
 
 <p class="reference">References <a class="el" href="scan_8cxx_source.html#l00020">is_digit()</a>, and <a class="el" href="scan_8cxx_source.html#l00106">to_upper()</a>.</p>
 
-<p class="reference">Referenced by <a class="el" href="shader__program_8cxx_source.html#l00364">cgv::render::shader_program::attach_program()</a>, <a class="el" href="shader__code_8cxx_source.html#l00093">cgv::render::shader_code::get_last_error()</a>, <a class="el" href="scan_8cxx_source.html#l00673">is_date()</a>, <a class="el" href="scan_8cxx_source.html#l00503">is_integer()</a>, <a class="el" href="scan_8cxx_source.html#l00602">is_month()</a>, <a class="el" href="scan_8cxx_source.html#l00633">is_time()</a>, <a class="el" href="scan_8cxx_source.html#l00572">is_year()</a>, <a class="el" href="config__file_8cxx_source.html#l00154">gui_config_file_observer::multi_observe()</a>, <a class="el" href="base_8cxx_source.html#l00287">cgv::base::base::multi_set()</a>, <a class="el" href="scan__enum_8cxx_source.html#l00010">parse_enum_declarations()</a>, <a class="el" href="dialog_8cxx_source.html#l00034">cgv::gui::question()</a>, <a class="el" href="find__reflection__handler_8cxx_source.html#l00128">cgv::reflect::find_reflection_handler::reflect_group_begin()</a>, <a class="el" href="component__format_8cxx_source.html#l00166">cgv::data::component_format::set_component_format()</a>, and <a class="el" href="data__format_8cxx_source.html#l00018">cgv::data::data_format::set_data_format()</a>.</p>
+<p class="reference">Referenced by <a class="el" href="shader__program_8cxx_source.html#l00378">cgv::render::shader_program::attach_program()</a>, <a class="el" href="shader__code_8cxx_source.html#l00093">cgv::render::shader_code::get_last_error()</a>, <a class="el" href="scan_8cxx_source.html#l00673">is_date()</a>, <a class="el" href="scan_8cxx_source.html#l00503">is_integer()</a>, <a class="el" href="scan_8cxx_source.html#l00602">is_month()</a>, <a class="el" href="scan_8cxx_source.html#l00633">is_time()</a>, <a class="el" href="scan_8cxx_source.html#l00572">is_year()</a>, <a class="el" href="config__file_8cxx_source.html#l00154">gui_config_file_observer::multi_observe()</a>, <a class="el" href="base_8cxx_source.html#l00287">cgv::base::base::multi_set()</a>, <a class="el" href="scan__enum_8cxx_source.html#l00010">parse_enum_declarations()</a>, <a class="el" href="dialog_8cxx_source.html#l00034">cgv::gui::question()</a>, <a class="el" href="find__reflection__handler_8cxx_source.html#l00128">cgv::reflect::find_reflection_handler::reflect_group_begin()</a>, <a class="el" href="component__format_8cxx_source.html#l00166">cgv::data::component_format::set_component_format()</a>, and <a class="el" href="data__format_8cxx_source.html#l00018">cgv::data::data_format::set_data_format()</a>.</p>
 
 </div>
 </div>
@@ -2470,7 +2553,7 @@ template&lt;typename T &gt; </div>
 
 <p class="definition">Definition at line <a class="el" href="scan_8cxx_source.html#l00012">12</a> of file <a class="el" href="scan_8cxx_source.html">scan.cxx</a>.</p>
 
-<p class="reference">Referenced by <a class="el" href="shader__program_8cxx_source.html#l00364">cgv::render::shader_program::attach_program()</a>, <a class="el" href="scan_8cxx_source.html#l00815">condense_to_line()</a>, <a class="el" href="scan_8cxx_source.html#l00772">cutoff_spaces()</a>, <a class="el" href="shader__program_8cxx_source.html#l00324">cgv::render::shader_program::extract_instances()</a>, <a class="el" href="scan_8cxx_source.html#l00765">skip_spaces()</a>, and <a class="el" href="advanced__scan_8cxx_source.html#l00065">split_to_lines()</a>.</p>
+<p class="reference">Referenced by <a class="el" href="shader__program_8cxx_source.html#l00378">cgv::render::shader_program::attach_program()</a>, <a class="el" href="scan_8cxx_source.html#l00815">condense_to_line()</a>, <a class="el" href="scan_8cxx_source.html#l00772">cutoff_spaces()</a>, <a class="el" href="shader__program_8cxx_source.html#l00338">cgv::render::shader_program::extract_instances()</a>, <a class="el" href="scan_8cxx_source.html#l00765">skip_spaces()</a>, and <a class="el" href="advanced__scan_8cxx_source.html#l00065">split_to_lines()</a>.</p>
 
 </div>
 </div>
@@ -2809,11 +2892,11 @@ template&lt;class InputIt &gt; </div>
 </dl>
 <dl class="section return"><dt>Returns</dt><dd>The concatenated string. </dd></dl>
 
-<p class="definition">Definition at line <a class="el" href="algorithm_8h_source.html#l00148">148</a> of file <a class="el" href="algorithm_8h_source.html">algorithm.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="algorithm_8h_source.html#l00146">146</a> of file <a class="el" href="algorithm_8h_source.html">algorithm.h</a>.</p>
 
-<p class="reference">References <a class="el" href="convert__string_8cxx_source.html#l00007">to_string()</a>, and <a class="el" href="algorithm_8h_source.html#l00125">transform_join()</a>.</p>
+<p class="reference">References <a class="el" href="convert__string_8cxx_source.html#l00007">to_string()</a>, and <a class="el" href="algorithm_8h_source.html#l00123">transform_join()</a>.</p>
 
-<p class="reference">Referenced by <a class="el" href="file__helper_8h_source.html#l00230">cgv::gui::file_helper::add_multi_filter()</a>.</p>
+<p class="reference">Referenced by <a class="el" href="file__helper_8h_source.html#l00230">cgv::gui::file_helper::add_multi_filter()</a>, and <a class="el" href="plot__base_8cxx_source.html#l01309">cgv::plot::plot_base::create_plot_gui()</a>.</p>
 
 </div>
 </div>
@@ -3005,7 +3088,7 @@ template&lt;typename ForwardIt , typename T &gt; </div>
 </dl>
 <dl class="section return"><dt>Returns</dt><dd>The maximum or fallback value. </dd></dl>
 
-<p class="definition">Definition at line <a class="el" href="algorithm_8h_source.html#l00091">91</a> of file <a class="el" href="algorithm_8h_source.html">algorithm.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="algorithm_8h_source.html#l00089">89</a> of file <a class="el" href="algorithm_8h_source.html">algorithm.h</a>.</p>
 
 <p class="reference">Referenced by <a class="el" href="key__control_8cxx_source.html#l00071">cgv::gui::key_control&lt; T &gt;::on_set()</a>, and <a class="el" href="key__control_8cxx_source.html#l00022">cgv::gui::key_control&lt; T &gt;::self_reflect()</a>.</p>
 
@@ -3071,7 +3154,7 @@ template&lt;typename ForwardIt , typename UnaryOp , typename T &gt; </div>
 </dl>
 <dl class="section return"><dt>Returns</dt><dd>The maximum or fallback value. </dd></dl>
 
-<p class="definition">Definition at line <a class="el" href="algorithm_8h_source.html#l00107">107</a> of file <a class="el" href="algorithm_8h_source.html">algorithm.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="algorithm_8h_source.html#l00105">105</a> of file <a class="el" href="algorithm_8h_source.html">algorithm.h</a>.</p>
 
 </div>
 </div>
@@ -3127,7 +3210,7 @@ template&lt;typename ForwardIt , typename T &gt; </div>
 </dl>
 <dl class="section return"><dt>Returns</dt><dd>The minimum or fallback value. </dd></dl>
 
-<p class="definition">Definition at line <a class="el" href="algorithm_8h_source.html#l00059">59</a> of file <a class="el" href="algorithm_8h_source.html">algorithm.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="algorithm_8h_source.html#l00057">57</a> of file <a class="el" href="algorithm_8h_source.html">algorithm.h</a>.</p>
 
 <p class="reference">Referenced by <a class="el" href="key__control_8cxx_source.html#l00071">cgv::gui::key_control&lt; T &gt;::on_set()</a>, and <a class="el" href="key__control_8cxx_source.html#l00022">cgv::gui::key_control&lt; T &gt;::self_reflect()</a>.</p>
 
@@ -3193,7 +3276,7 @@ template&lt;typename ForwardIt , typename UnaryOp , typename T &gt; </div>
 </dl>
 <dl class="section return"><dt>Returns</dt><dd>The minimum or fallback value. </dd></dl>
 
-<p class="definition">Definition at line <a class="el" href="algorithm_8h_source.html#l00075">75</a> of file <a class="el" href="algorithm_8h_source.html">algorithm.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="algorithm_8h_source.html#l00073">73</a> of file <a class="el" href="algorithm_8h_source.html">algorithm.h</a>.</p>
 
 </div>
 </div>
@@ -3487,9 +3570,9 @@ template&lt;class InputIt &gt; </div>
 </dl>
 <dl class="section return"><dt>Returns</dt><dd>A std::vector of std::pair s containing copies of adjacent elements. </dd></dl>
 
-<p class="definition">Definition at line <a class="el" href="algorithm_8h_source.html#l00181">181</a> of file <a class="el" href="algorithm_8h_source.html">algorithm.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="algorithm_8h_source.html#l00179">179</a> of file <a class="el" href="algorithm_8h_source.html">algorithm.h</a>.</p>
 
-<p class="reference">References <a class="el" href="algorithm_8h_source.html#l00163">pair_adjacent()</a>.</p>
+<p class="reference">References <a class="el" href="algorithm_8h_source.html#l00161">pair_adjacent()</a>.</p>
 
 </div>
 </div>
@@ -3546,9 +3629,9 @@ template&lt;class InputIt , class OutputIt &gt; </div>
 </dl>
 <dl class="section return"><dt>Returns</dt><dd>Output iterator to the element that follows the last element transformed. </dd></dl>
 
-<p class="definition">Definition at line <a class="el" href="algorithm_8h_source.html#l00163">163</a> of file <a class="el" href="algorithm_8h_source.html">algorithm.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="algorithm_8h_source.html#l00161">161</a> of file <a class="el" href="algorithm_8h_source.html">algorithm.h</a>.</p>
 
-<p class="reference">Referenced by <a class="el" href="algorithm_8h_source.html#l00181">pair_adjacent()</a>.</p>
+<p class="reference">Referenced by <a class="el" href="algorithm_8h_source.html#l00179">pair_adjacent()</a>.</p>
 
 </div>
 </div>
@@ -4054,6 +4137,116 @@ template&lt;class InputIt , class OutputIt &gt; </div>
 
 </div>
 </div>
+<a id="a72d462a4ceaca6d66a9bb4bbc3c1ae47" name="a72d462a4ceaca6d66a9bb4bbc3c1ae47"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a72d462a4ceaca6d66a9bb4bbc3c1ae47">&#9670;&#160;</a></span>sort_indices() <span class="overload">[1/2]</span></h2>
+
+<div class="memitem">
+<div class="memproto">
+<div class="memtemplate">
+template&lt;class RandomIt &gt; </div>
+      <table class="memname">
+        <tr>
+          <td class="memname">std::vector&lt; size_t &gt; cgv::utils::sort_indices </td>
+          <td>(</td>
+          <td class="paramtype">const RandomIt&#160;</td>
+          <td class="paramname"><em>first</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">const RandomIt&#160;</td>
+          <td class="paramname"><em>last</em>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>Return a sequence of indices corresponding to the sorted order of values in [first,last). </p>
+<p>The value sequence remains unchanged.</p>
+<dl class="tparams"><dt>Template Parameters</dt><dd>
+  <table class="tparams">
+    <tr><td class="paramname">RandomIt</td><td>The value sequence iterator type. </td></tr>
+  </table>
+  </dd>
+</dl>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">first</td><td>first The start of the value range. </td></tr>
+    <tr><td class="paramname">last</td><td>The end of the value range. </td></tr>
+  </table>
+  </dd>
+</dl>
+<dl class="section return"><dt>Returns</dt><dd>The index sequence. </dd></dl>
+
+<p class="definition">Definition at line <a class="el" href="algorithm_8h_source.html#l00269">269</a> of file <a class="el" href="algorithm_8h_source.html">algorithm.h</a>.</p>
+
+<p class="reference">References <a class="el" href="algorithm_8h_source.html#l00255">generate_index_sequence()</a>.</p>
+
+</div>
+</div>
+<a id="a8bdd73f2059b6b505a87d4efc9391baf" name="a8bdd73f2059b6b505a87d4efc9391baf"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a8bdd73f2059b6b505a87d4efc9391baf">&#9670;&#160;</a></span>sort_indices() <span class="overload">[2/2]</span></h2>
+
+<div class="memitem">
+<div class="memproto">
+<div class="memtemplate">
+template&lt;class RandomIt , class Compare &gt; </div>
+      <table class="memname">
+        <tr>
+          <td class="memname">std::vector&lt; size_t &gt; cgv::utils::sort_indices </td>
+          <td>(</td>
+          <td class="paramtype">const RandomIt&#160;</td>
+          <td class="paramname"><em>first</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">const RandomIt&#160;</td>
+          <td class="paramname"><em>last</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">Compare&#160;</td>
+          <td class="paramname"><em>comp</em>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>Return a sequence of indices corresponding to the sorted order of values in [first,last). </p>
+<p>Elements are sorted with respect to comp. The value sequence remains unchanged.</p>
+<dl class="tparams"><dt>Template Parameters</dt><dd>
+  <table class="tparams">
+    <tr><td class="paramname">RandomIt</td><td>The value sequence iterator type. </td></tr>
+    <tr><td class="paramname">Compare</td><td>The comparison function object type. </td></tr>
+  </table>
+  </dd>
+</dl>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">first</td><td>first The start of the value range. </td></tr>
+    <tr><td class="paramname">last</td><td>The end of the value range. </td></tr>
+    <tr><td class="paramname">comp</td><td>The comparison function object. </td></tr>
+  </table>
+  </dd>
+</dl>
+<dl class="section return"><dt>Returns</dt><dd>The index sequence. </dd></dl>
+
+<p class="definition">Definition at line <a class="el" href="algorithm_8h_source.html#l00304">304</a> of file <a class="el" href="algorithm_8h_source.html">algorithm.h</a>.</p>
+
+<p class="reference">References <a class="el" href="algorithm_8h_source.html#l00255">generate_index_sequence()</a>.</p>
+
+</div>
+</div>
 <a id="a485f1ad0eee5a254282231fd7c2f10d9" name="a485f1ad0eee5a254282231fd7c2f10d9"></a>
 <h2 class="memtitle"><span class="permalink"><a href="#a485f1ad0eee5a254282231fd7c2f10d9">&#9670;&#160;</a></span>split_to_lines() <span class="overload">[1/3]</span></h2>
 
@@ -4099,7 +4292,7 @@ template&lt;class InputIt , class OutputIt &gt; </div>
 
 <p class="reference">References <a class="el" href="scan_8cxx_source.html#l00012">is_space()</a>.</p>
 
-<p class="reference">Referenced by <a class="el" href="shader__program_8cxx_source.html#l00504">cgv::render::shader_program::build_program()</a>, <a class="el" href="shader__program_8cxx_source.html#l00135">cgv::render::shader_program::collect_program()</a>, <a class="el" href="shader__code_8cxx_source.html#l00093">cgv::render::shader_code::get_last_error()</a>, <a class="el" href="shader__program_8cxx_source.html#l00292">cgv::render::shader_program::open_program_file()</a>, <a class="el" href="obj__reader_8cxx_source.html#l00207">cgv::media::mesh::obj_reader_base::parse_obj()</a>, <a class="el" href="vr__calib_8cxx_source.html#l00120">cgv::gui::vr_calibration::read_calibration()</a>, <a class="el" href="obj__reader_8cxx_source.html#l00311">cgv::media::mesh::obj_reader_base::read_mtl()</a>, <a class="el" href="advanced__scan_8h_source.html#l00126">split_to_lines()</a>, and <a class="el" href="advanced__scan_8h_source.html#l00119">split_to_lines()</a>.</p>
+<p class="reference">Referenced by <a class="el" href="shader__program_8cxx_source.html#l00518">cgv::render::shader_program::build_program()</a>, <a class="el" href="shader__program_8cxx_source.html#l00135">cgv::render::shader_program::collect_program()</a>, <a class="el" href="shader__code_8cxx_source.html#l00093">cgv::render::shader_code::get_last_error()</a>, <a class="el" href="shader__program_8cxx_source.html#l00306">cgv::render::shader_program::open_program_file()</a>, <a class="el" href="obj__reader_8cxx_source.html#l00207">cgv::media::mesh::obj_reader_base::parse_obj()</a>, <a class="el" href="vr__calib_8cxx_source.html#l00120">cgv::gui::vr_calibration::read_calibration()</a>, <a class="el" href="obj__reader_8cxx_source.html#l00311">cgv::media::mesh::obj_reader_base::read_mtl()</a>, <a class="el" href="advanced__scan_8h_source.html#l00126">split_to_lines()</a>, and <a class="el" href="advanced__scan_8h_source.html#l00119">split_to_lines()</a>.</p>
 
 </div>
 </div>
@@ -4280,7 +4473,7 @@ template&lt;class InputIt , class OutputIt &gt; </div>
 
 <p class="reference">References <a class="el" href="scan_8cxx_source.html#l00373">is_element()</a>.</p>
 
-<p class="reference">Referenced by <a class="el" href="options_8cxx_source.html#l00018">enumerate_options()</a>, <a class="el" href="shader__program_8cxx_source.html#l00324">cgv::render::shader_program::extract_instances()</a>, <a class="el" href="advanced__scan_8h_source.html#l00100">split_to_tokens()</a>, and <a class="el" href="advanced__scan_8h_source.html#l00084">split_to_tokens()</a>.</p>
+<p class="reference">Referenced by <a class="el" href="options_8cxx_source.html#l00018">enumerate_options()</a>, <a class="el" href="shader__program_8cxx_source.html#l00338">cgv::render::shader_program::extract_instances()</a>, <a class="el" href="advanced__scan_8h_source.html#l00100">split_to_tokens()</a>, and <a class="el" href="advanced__scan_8h_source.html#l00084">split_to_tokens()</a>.</p>
 
 </div>
 </div>
@@ -4440,6 +4633,116 @@ template&lt;class InputIt , class OutputIt &gt; </div>
 
 </div>
 </div>
+<a id="aa3e994b07bb0131646b86207e477eeb2" name="aa3e994b07bb0131646b86207e477eeb2"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#aa3e994b07bb0131646b86207e477eeb2">&#9670;&#160;</a></span>stable_sort_indices() <span class="overload">[1/2]</span></h2>
+
+<div class="memitem">
+<div class="memproto">
+<div class="memtemplate">
+template&lt;class RandomIt &gt; </div>
+      <table class="memname">
+        <tr>
+          <td class="memname">std::vector&lt; size_t &gt; cgv::utils::stable_sort_indices </td>
+          <td>(</td>
+          <td class="paramtype">const RandomIt&#160;</td>
+          <td class="paramname"><em>first</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">const RandomIt&#160;</td>
+          <td class="paramname"><em>last</em>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>Return a sequence of indices corresponding to the sorted order of values in [first,last) while preserving the order of equivalent elements. </p>
+<p>The value sequence remains unchanged.</p>
+<dl class="tparams"><dt>Template Parameters</dt><dd>
+  <table class="tparams">
+    <tr><td class="paramname">RandomIt</td><td>The value sequence iterator type. </td></tr>
+  </table>
+  </dd>
+</dl>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">first</td><td>first The start of the value range. </td></tr>
+    <tr><td class="paramname">last</td><td>The end of the value range. </td></tr>
+  </table>
+  </dd>
+</dl>
+<dl class="section return"><dt>Returns</dt><dd>The index sequence. </dd></dl>
+
+<p class="definition">Definition at line <a class="el" href="algorithm_8h_source.html#l00285">285</a> of file <a class="el" href="algorithm_8h_source.html">algorithm.h</a>.</p>
+
+<p class="reference">References <a class="el" href="algorithm_8h_source.html#l00255">generate_index_sequence()</a>.</p>
+
+</div>
+</div>
+<a id="aebc2a4cf44914c857a184a0563e9bedd" name="aebc2a4cf44914c857a184a0563e9bedd"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#aebc2a4cf44914c857a184a0563e9bedd">&#9670;&#160;</a></span>stable_sort_indices() <span class="overload">[2/2]</span></h2>
+
+<div class="memitem">
+<div class="memproto">
+<div class="memtemplate">
+template&lt;class RandomIt , class Compare &gt; </div>
+      <table class="memname">
+        <tr>
+          <td class="memname">std::vector&lt; size_t &gt; cgv::utils::stable_sort_indices </td>
+          <td>(</td>
+          <td class="paramtype">const RandomIt&#160;</td>
+          <td class="paramname"><em>first</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">const RandomIt&#160;</td>
+          <td class="paramname"><em>last</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">Compare&#160;</td>
+          <td class="paramname"><em>comp</em>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>Return a sequence of indices corresponding to the sorted order of values in [first,last). </p>
+<p>Elements are sorted with respect to comp while the order of equivalent elements is preserved. The value sequence remains unchanged.</p>
+<dl class="tparams"><dt>Template Parameters</dt><dd>
+  <table class="tparams">
+    <tr><td class="paramname">RandomIt</td><td>The value sequence iterator type. </td></tr>
+    <tr><td class="paramname">Compare</td><td>The comparison function object type. </td></tr>
+  </table>
+  </dd>
+</dl>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">first</td><td>first The start of the value range. </td></tr>
+    <tr><td class="paramname">last</td><td>The end of the value range. </td></tr>
+    <tr><td class="paramname">comp</td><td>The comparison function object. </td></tr>
+  </table>
+  </dd>
+</dl>
+<dl class="section return"><dt>Returns</dt><dd>The index sequence. </dd></dl>
+
+<p class="definition">Definition at line <a class="el" href="algorithm_8h_source.html#l00323">323</a> of file <a class="el" href="algorithm_8h_source.html">algorithm.h</a>.</p>
+
+<p class="reference">References <a class="el" href="algorithm_8h_source.html#l00255">generate_index_sequence()</a>.</p>
+
+</div>
+</div>
 <a id="ab89ee8cc10713a3df171d4a469d0e320" name="ab89ee8cc10713a3df171d4a469d0e320"></a>
 <h2 class="memtitle"><span class="permalink"><a href="#ab89ee8cc10713a3df171d4a469d0e320">&#9670;&#160;</a></span>str2wstr()</h2>
 
@@ -4501,6 +4804,71 @@ template&lt;class InputIt , class OutputIt &gt; </div>
 <dl class="section return"><dt>Returns</dt><dd>source string without any comments</dd></dl>
 
 <p class="definition">Definition at line <a class="el" href="advanced__scan_8cxx_source.html#l00115">115</a> of file <a class="el" href="advanced__scan_8cxx_source.html">advanced_scan.cxx</a>.</p>
+
+</div>
+</div>
+<a id="ac85b6c96afdf6be149997886d8edaa82" name="ac85b6c96afdf6be149997886d8edaa82"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#ac85b6c96afdf6be149997886d8edaa82">&#9670;&#160;</a></span>subdivision_sequence()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<div class="memtemplate">
+template&lt;typename ParamT  = float, typename OutputIt &gt; </div>
+      <table class="memname">
+        <tr>
+          <td class="memname">void cgv::utils::subdivision_sequence </td>
+          <td>(</td>
+          <td class="paramtype">OutputIt&#160;</td>
+          <td class="paramname"><em>output_first</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">ParamT&#160;</td>
+          <td class="paramname"><em>start</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">ParamT&#160;</td>
+          <td class="paramname"><em>stop</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">size_t&#160;</td>
+          <td class="paramname"><em>n</em>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>Generate a sequence of n uniformly-spaced values in [start,stop] and store the result in an output range starting from output_first. </p>
+<dl class="tparams"><dt>Template Parameters</dt><dd>
+  <table class="tparams">
+    <tr><td class="paramname">ParamT</td><td>The sequence value type. </td></tr>
+    <tr><td class="paramname">OutputIt</td><td>The output range iterator type. </td></tr>
+  </table>
+  </dd>
+</dl>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">output_first</td><td>The start of the output range. </td></tr>
+    <tr><td class="paramname">operation</td><td>The operation to transform the sequence. Takes one argument of type ParamT. </td></tr>
+    <tr><td class="paramname">start</td><td>The starting value of the sequence. </td></tr>
+    <tr><td class="paramname">stop</td><td>The end value of the sequence. </td></tr>
+    <tr><td class="paramname">n</td><td>The number of values in the generated sequence. </td></tr>
+  </table>
+  </dd>
+</dl>
+
+<p class="definition">Definition at line <a class="el" href="algorithm_8h_source.html#l00233">233</a> of file <a class="el" href="algorithm_8h_source.html">algorithm.h</a>.</p>
+
+<p class="reference">Referenced by <a class="el" href="transfer__function_8cxx_source.html#l00025">cgv::media::transfer_function::set_color_points_from_scheme()</a>.</p>
 
 </div>
 </div>
@@ -4688,7 +5056,7 @@ template&lt;&gt; </div>
 
 <p class="reference">References <a class="el" href="convert__string_8cxx_source.html#l00007">to_string()</a>.</p>
 
-<p class="reference">Referenced by <a class="el" href="provider_8cxx_source.html#l00183">cgv::gui::provider::add_tree_node()</a>, <a class="el" href="register_8cxx_source.html#l00992">cgv::base::analyze_command()</a>, <a class="el" href="shader__program_8cxx_source.html#l00364">cgv::render::shader_program::attach_program()</a>, <a class="el" href="provider_8cxx_source.html#l00207">cgv::gui::provider::begin_tree_node_void()</a>, <a class="el" href="shader__program_8cxx_source.html#l00504">cgv::render::shader_program::build_program()</a>, <a class="el" href="shader__program_8cxx_source.html#l00135">cgv::render::shader_program::collect_program()</a>, <a class="el" href="mesh__render__info_8cxx_source.html#l00066">cgv::render::mesh_render_info::configure_vbos()</a>, <a class="el" href="vr__emulator_8cxx_source.html#l00780">vr_emulator::create_controller_gui()</a>, <a class="el" href="vr__test_8cxx_source.html#l00907">vr_test::create_gui()</a>, <a class="el" href="texture_8cxx_source.html#l00350">cgv::render::texture::deduce_file_names()</a>, <a class="el" href="options_8cxx_source.html#l00018">enumerate_options()</a>, <a class="el" href="expression__processor_8cxx_source.html#l00598">cgv::ppp::expression_processor::evaluate()</a>, <a class="el" href="shader__program_8cxx_source.html#l00324">cgv::render::shader_program::extract_instances()</a>, <a class="el" href="gltf__support_8cxx_source.html#l00328">cgv::render::extract_mesh()</a>, <a class="el" href="scan__enum_8cxx_source.html#l00053">find_enum_name()</a>, <a class="el" href="shader__code_8cxx_source.html#l00093">cgv::render::shader_code::get_last_error()</a>, <a class="el" href="ppp__variant_8cxx_source.html#l00752">cgv::ppp::variant::get_str()</a>, <a class="el" href="config__file_8cxx_source.html#l00088">config_view&lt; T &gt;::get_user_data()</a>, <a class="el" href="context_8cxx_source.html#l02046">cgv::render::context::get_window_matrix()</a>, <a class="el" href="reflection__handler_8cxx_source.html#l00045">cgv::reflect::reflection_handler::group_traversal_name()</a>, <a class="el" href="base_8cxx_source.html#l00336">cgv::base::base::is_property()</a>, <a class="el" href="algorithm_8h_source.html#l00148">join()</a>, <a class="el" href="register_8cxx_source.html#l01399">cgv::base::load_plugin()</a>, <a class="el" href="config__file_8cxx_source.html#l00154">gui_config_file_observer::multi_observe()</a>, <a class="el" href="base_8cxx_source.html#l00287">cgv::base::base::multi_set()</a>, <a class="el" href="token_8cxx_source.html#l00054">cgv::utils::token::operator!=()</a>, <a class="el" href="token_8cxx_source.html#l00059">cgv::utils::token::operator!=()</a>, <a class="el" href="token_8cxx_source.html#l00044">cgv::utils::token::operator==()</a>, <a class="el" href="token_8cxx_source.html#l00049">cgv::utils::token::operator==()</a>, <a class="el" href="base__provider__generator_8cxx_source.html#l00069">cgv::gui::base_provider_generator::parse_gui_file()</a>, <a class="el" href="obj__reader_8cxx_source.html#l00207">cgv::media::mesh::obj_reader_base::parse_obj()</a>, <a class="el" href="plot2d_8cxx_source.html#l00024">cgv::plot::plot2d::plot2d()</a>, <a class="el" href="plot3d_8cxx_source.html#l00066">cgv::plot::plot3d::plot3d()</a>, <a class="el" href="dialog_8cxx_source.html#l00034">cgv::gui::question()</a>, <a class="el" href="gl__context_8cxx_source.html#l01124">cgv::render::gl::gl_context::read_frame_buffer()</a>, <a class="el" href="obj__reader_8cxx_source.html#l00311">cgv::media::mesh::obj_reader_base::read_mtl()</a>, <a class="el" href="import_8cxx_source.html#l00274">cgv::base::ref_data_path_list()</a>, <a class="el" href="base_8cxx_source.html#l00075">cgv::base::property_declaration_reflection_handler::reflect_group_begin()</a>, <a class="el" href="debug__reflection__handler_8cxx_source.html#l00033">cgv::reflect::debug_reflection_handler::reflect_group_begin()</a>, <a class="el" href="type_2variant_8h_source.html#l00056">cgv::type::variant&lt; T &gt;::set()</a>, <a class="el" href="component__format_8cxx_source.html#l00166">cgv::data::component_format::set_component_format()</a>, <a class="el" href="context_8cxx_source.html#l00714">cgv::render::context::set_current_lights()</a>, <a class="el" href="data__format_8cxx_source.html#l00018">cgv::data::data_format::set_data_format()</a>, <a class="el" href="command__token_8cxx_source.html#l00187">cgv::ppp::command_token::split_off_from()</a>, <a class="el" href="guid_8cxx_source.html#l00012">to_string()</a>, <a class="el" href="convert__string_8cxx_source.html#l00007">to_string()</a>, <a class="el" href="convert__string_8h_source.html#l00033">to_string()</a>, <a class="el" href="convert__string_8h_source.html#l00018">to_string()</a>, <a class="el" href="token_8h_source.html#l00060">to_string()</a>, and <a class="el" href="token_8h_source.html#l00062">to_strings()</a>.</p>
+<p class="reference">Referenced by <a class="el" href="provider_8cxx_source.html#l00183">cgv::gui::provider::add_tree_node()</a>, <a class="el" href="register_8cxx_source.html#l00992">cgv::base::analyze_command()</a>, <a class="el" href="shader__program_8cxx_source.html#l00378">cgv::render::shader_program::attach_program()</a>, <a class="el" href="provider_8cxx_source.html#l00207">cgv::gui::provider::begin_tree_node_void()</a>, <a class="el" href="shader__program_8cxx_source.html#l00518">cgv::render::shader_program::build_program()</a>, <a class="el" href="shader__program_8cxx_source.html#l00135">cgv::render::shader_program::collect_program()</a>, <a class="el" href="mesh__render__info_8cxx_source.html#l00066">cgv::render::mesh_render_info::configure_vbos()</a>, <a class="el" href="vr__emulator_8cxx_source.html#l00780">vr_emulator::create_controller_gui()</a>, <a class="el" href="vr__test_8cxx_source.html#l00907">vr_test::create_gui()</a>, <a class="el" href="texture_8cxx_source.html#l00350">cgv::render::texture::deduce_file_names()</a>, <a class="el" href="options_8cxx_source.html#l00018">enumerate_options()</a>, <a class="el" href="expression__processor_8cxx_source.html#l00598">cgv::ppp::expression_processor::evaluate()</a>, <a class="el" href="shader__program_8cxx_source.html#l00338">cgv::render::shader_program::extract_instances()</a>, <a class="el" href="gltf__support_8cxx_source.html#l00328">cgv::render::extract_mesh()</a>, <a class="el" href="scan__enum_8cxx_source.html#l00053">find_enum_name()</a>, <a class="el" href="shader__code_8cxx_source.html#l00093">cgv::render::shader_code::get_last_error()</a>, <a class="el" href="ppp__variant_8cxx_source.html#l00752">cgv::ppp::variant::get_str()</a>, <a class="el" href="config__file_8cxx_source.html#l00088">config_view&lt; T &gt;::get_user_data()</a>, <a class="el" href="context_8cxx_source.html#l02046">cgv::render::context::get_window_matrix()</a>, <a class="el" href="reflection__handler_8cxx_source.html#l00045">cgv::reflect::reflection_handler::group_traversal_name()</a>, <a class="el" href="base_8cxx_source.html#l00336">cgv::base::base::is_property()</a>, <a class="el" href="algorithm_8h_source.html#l00146">join()</a>, <a class="el" href="register_8cxx_source.html#l01399">cgv::base::load_plugin()</a>, <a class="el" href="config__file_8cxx_source.html#l00154">gui_config_file_observer::multi_observe()</a>, <a class="el" href="base_8cxx_source.html#l00287">cgv::base::base::multi_set()</a>, <a class="el" href="token_8cxx_source.html#l00054">cgv::utils::token::operator!=()</a>, <a class="el" href="token_8cxx_source.html#l00059">cgv::utils::token::operator!=()</a>, <a class="el" href="token_8cxx_source.html#l00044">cgv::utils::token::operator==()</a>, <a class="el" href="token_8cxx_source.html#l00049">cgv::utils::token::operator==()</a>, <a class="el" href="base__provider__generator_8cxx_source.html#l00069">cgv::gui::base_provider_generator::parse_gui_file()</a>, <a class="el" href="obj__reader_8cxx_source.html#l00207">cgv::media::mesh::obj_reader_base::parse_obj()</a>, <a class="el" href="plot2d_8cxx_source.html#l00024">cgv::plot::plot2d::plot2d()</a>, <a class="el" href="plot3d_8cxx_source.html#l00066">cgv::plot::plot3d::plot3d()</a>, <a class="el" href="dialog_8cxx_source.html#l00034">cgv::gui::question()</a>, <a class="el" href="gl__context_8cxx_source.html#l01126">cgv::render::gl::gl_context::read_frame_buffer()</a>, <a class="el" href="obj__reader_8cxx_source.html#l00311">cgv::media::mesh::obj_reader_base::read_mtl()</a>, <a class="el" href="import_8cxx_source.html#l00274">cgv::base::ref_data_path_list()</a>, <a class="el" href="base_8cxx_source.html#l00075">cgv::base::property_declaration_reflection_handler::reflect_group_begin()</a>, <a class="el" href="debug__reflection__handler_8cxx_source.html#l00033">cgv::reflect::debug_reflection_handler::reflect_group_begin()</a>, <a class="el" href="type_2variant_8h_source.html#l00056">cgv::type::variant&lt; T &gt;::set()</a>, <a class="el" href="component__format_8cxx_source.html#l00166">cgv::data::component_format::set_component_format()</a>, <a class="el" href="context_8cxx_source.html#l00714">cgv::render::context::set_current_lights()</a>, <a class="el" href="data__format_8cxx_source.html#l00018">cgv::data::data_format::set_data_format()</a>, <a class="el" href="command__token_8cxx_source.html#l00187">cgv::ppp::command_token::split_off_from()</a>, <a class="el" href="guid_8cxx_source.html#l00012">to_string()</a>, <a class="el" href="convert__string_8cxx_source.html#l00007">to_string()</a>, <a class="el" href="convert__string_8h_source.html#l00033">to_string()</a>, <a class="el" href="convert__string_8h_source.html#l00018">to_string()</a>, <a class="el" href="token_8h_source.html#l00060">to_string()</a>, and <a class="el" href="token_8h_source.html#l00062">to_strings()</a>.</p>
 
 </div>
 </div>
@@ -4738,7 +5106,7 @@ template&lt;&gt; </div>
 
 <p class="reference">References <a class="el" href="convert__string_8cxx_source.html#l00007">to_string()</a>.</p>
 
-<p class="reference">Referenced by <a class="el" href="provider_8cxx_source.html#l00183">cgv::gui::provider::add_tree_node()</a>, <a class="el" href="register_8cxx_source.html#l00992">cgv::base::analyze_command()</a>, <a class="el" href="shader__program_8cxx_source.html#l00364">cgv::render::shader_program::attach_program()</a>, <a class="el" href="provider_8cxx_source.html#l00207">cgv::gui::provider::begin_tree_node_void()</a>, <a class="el" href="shader__program_8cxx_source.html#l00504">cgv::render::shader_program::build_program()</a>, <a class="el" href="shader__program_8cxx_source.html#l00135">cgv::render::shader_program::collect_program()</a>, <a class="el" href="mesh__render__info_8cxx_source.html#l00066">cgv::render::mesh_render_info::configure_vbos()</a>, <a class="el" href="vr__emulator_8cxx_source.html#l00780">vr_emulator::create_controller_gui()</a>, <a class="el" href="vr__test_8cxx_source.html#l00907">vr_test::create_gui()</a>, <a class="el" href="texture_8cxx_source.html#l00350">cgv::render::texture::deduce_file_names()</a>, <a class="el" href="options_8cxx_source.html#l00018">enumerate_options()</a>, <a class="el" href="expression__processor_8cxx_source.html#l00598">cgv::ppp::expression_processor::evaluate()</a>, <a class="el" href="shader__program_8cxx_source.html#l00324">cgv::render::shader_program::extract_instances()</a>, <a class="el" href="gltf__support_8cxx_source.html#l00328">cgv::render::extract_mesh()</a>, <a class="el" href="scan__enum_8cxx_source.html#l00053">find_enum_name()</a>, <a class="el" href="shader__code_8cxx_source.html#l00093">cgv::render::shader_code::get_last_error()</a>, <a class="el" href="ppp__variant_8cxx_source.html#l00752">cgv::ppp::variant::get_str()</a>, <a class="el" href="config__file_8cxx_source.html#l00088">config_view&lt; T &gt;::get_user_data()</a>, <a class="el" href="context_8cxx_source.html#l02046">cgv::render::context::get_window_matrix()</a>, <a class="el" href="reflection__handler_8cxx_source.html#l00045">cgv::reflect::reflection_handler::group_traversal_name()</a>, <a class="el" href="base_8cxx_source.html#l00336">cgv::base::base::is_property()</a>, <a class="el" href="algorithm_8h_source.html#l00148">join()</a>, <a class="el" href="register_8cxx_source.html#l01399">cgv::base::load_plugin()</a>, <a class="el" href="config__file_8cxx_source.html#l00154">gui_config_file_observer::multi_observe()</a>, <a class="el" href="base_8cxx_source.html#l00287">cgv::base::base::multi_set()</a>, <a class="el" href="token_8cxx_source.html#l00054">cgv::utils::token::operator!=()</a>, <a class="el" href="token_8cxx_source.html#l00059">cgv::utils::token::operator!=()</a>, <a class="el" href="token_8cxx_source.html#l00044">cgv::utils::token::operator==()</a>, <a class="el" href="token_8cxx_source.html#l00049">cgv::utils::token::operator==()</a>, <a class="el" href="base__provider__generator_8cxx_source.html#l00069">cgv::gui::base_provider_generator::parse_gui_file()</a>, <a class="el" href="obj__reader_8cxx_source.html#l00207">cgv::media::mesh::obj_reader_base::parse_obj()</a>, <a class="el" href="plot2d_8cxx_source.html#l00024">cgv::plot::plot2d::plot2d()</a>, <a class="el" href="plot3d_8cxx_source.html#l00066">cgv::plot::plot3d::plot3d()</a>, <a class="el" href="dialog_8cxx_source.html#l00034">cgv::gui::question()</a>, <a class="el" href="gl__context_8cxx_source.html#l01124">cgv::render::gl::gl_context::read_frame_buffer()</a>, <a class="el" href="obj__reader_8cxx_source.html#l00311">cgv::media::mesh::obj_reader_base::read_mtl()</a>, <a class="el" href="import_8cxx_source.html#l00274">cgv::base::ref_data_path_list()</a>, <a class="el" href="base_8cxx_source.html#l00075">cgv::base::property_declaration_reflection_handler::reflect_group_begin()</a>, <a class="el" href="debug__reflection__handler_8cxx_source.html#l00033">cgv::reflect::debug_reflection_handler::reflect_group_begin()</a>, <a class="el" href="type_2variant_8h_source.html#l00056">cgv::type::variant&lt; T &gt;::set()</a>, <a class="el" href="component__format_8cxx_source.html#l00166">cgv::data::component_format::set_component_format()</a>, <a class="el" href="context_8cxx_source.html#l00714">cgv::render::context::set_current_lights()</a>, <a class="el" href="data__format_8cxx_source.html#l00018">cgv::data::data_format::set_data_format()</a>, <a class="el" href="command__token_8cxx_source.html#l00187">cgv::ppp::command_token::split_off_from()</a>, <a class="el" href="guid_8cxx_source.html#l00012">to_string()</a>, <a class="el" href="convert__string_8cxx_source.html#l00007">to_string()</a>, <a class="el" href="convert__string_8h_source.html#l00033">to_string()</a>, <a class="el" href="convert__string_8h_source.html#l00018">to_string()</a>, <a class="el" href="token_8h_source.html#l00060">to_string()</a>, and <a class="el" href="token_8h_source.html#l00062">to_strings()</a>.</p>
+<p class="reference">Referenced by <a class="el" href="provider_8cxx_source.html#l00183">cgv::gui::provider::add_tree_node()</a>, <a class="el" href="register_8cxx_source.html#l00992">cgv::base::analyze_command()</a>, <a class="el" href="shader__program_8cxx_source.html#l00378">cgv::render::shader_program::attach_program()</a>, <a class="el" href="provider_8cxx_source.html#l00207">cgv::gui::provider::begin_tree_node_void()</a>, <a class="el" href="shader__program_8cxx_source.html#l00518">cgv::render::shader_program::build_program()</a>, <a class="el" href="shader__program_8cxx_source.html#l00135">cgv::render::shader_program::collect_program()</a>, <a class="el" href="mesh__render__info_8cxx_source.html#l00066">cgv::render::mesh_render_info::configure_vbos()</a>, <a class="el" href="vr__emulator_8cxx_source.html#l00780">vr_emulator::create_controller_gui()</a>, <a class="el" href="vr__test_8cxx_source.html#l00907">vr_test::create_gui()</a>, <a class="el" href="texture_8cxx_source.html#l00350">cgv::render::texture::deduce_file_names()</a>, <a class="el" href="options_8cxx_source.html#l00018">enumerate_options()</a>, <a class="el" href="expression__processor_8cxx_source.html#l00598">cgv::ppp::expression_processor::evaluate()</a>, <a class="el" href="shader__program_8cxx_source.html#l00338">cgv::render::shader_program::extract_instances()</a>, <a class="el" href="gltf__support_8cxx_source.html#l00328">cgv::render::extract_mesh()</a>, <a class="el" href="scan__enum_8cxx_source.html#l00053">find_enum_name()</a>, <a class="el" href="shader__code_8cxx_source.html#l00093">cgv::render::shader_code::get_last_error()</a>, <a class="el" href="ppp__variant_8cxx_source.html#l00752">cgv::ppp::variant::get_str()</a>, <a class="el" href="config__file_8cxx_source.html#l00088">config_view&lt; T &gt;::get_user_data()</a>, <a class="el" href="context_8cxx_source.html#l02046">cgv::render::context::get_window_matrix()</a>, <a class="el" href="reflection__handler_8cxx_source.html#l00045">cgv::reflect::reflection_handler::group_traversal_name()</a>, <a class="el" href="base_8cxx_source.html#l00336">cgv::base::base::is_property()</a>, <a class="el" href="algorithm_8h_source.html#l00146">join()</a>, <a class="el" href="register_8cxx_source.html#l01399">cgv::base::load_plugin()</a>, <a class="el" href="config__file_8cxx_source.html#l00154">gui_config_file_observer::multi_observe()</a>, <a class="el" href="base_8cxx_source.html#l00287">cgv::base::base::multi_set()</a>, <a class="el" href="token_8cxx_source.html#l00054">cgv::utils::token::operator!=()</a>, <a class="el" href="token_8cxx_source.html#l00059">cgv::utils::token::operator!=()</a>, <a class="el" href="token_8cxx_source.html#l00044">cgv::utils::token::operator==()</a>, <a class="el" href="token_8cxx_source.html#l00049">cgv::utils::token::operator==()</a>, <a class="el" href="base__provider__generator_8cxx_source.html#l00069">cgv::gui::base_provider_generator::parse_gui_file()</a>, <a class="el" href="obj__reader_8cxx_source.html#l00207">cgv::media::mesh::obj_reader_base::parse_obj()</a>, <a class="el" href="plot2d_8cxx_source.html#l00024">cgv::plot::plot2d::plot2d()</a>, <a class="el" href="plot3d_8cxx_source.html#l00066">cgv::plot::plot3d::plot3d()</a>, <a class="el" href="dialog_8cxx_source.html#l00034">cgv::gui::question()</a>, <a class="el" href="gl__context_8cxx_source.html#l01126">cgv::render::gl::gl_context::read_frame_buffer()</a>, <a class="el" href="obj__reader_8cxx_source.html#l00311">cgv::media::mesh::obj_reader_base::read_mtl()</a>, <a class="el" href="import_8cxx_source.html#l00274">cgv::base::ref_data_path_list()</a>, <a class="el" href="base_8cxx_source.html#l00075">cgv::base::property_declaration_reflection_handler::reflect_group_begin()</a>, <a class="el" href="debug__reflection__handler_8cxx_source.html#l00033">cgv::reflect::debug_reflection_handler::reflect_group_begin()</a>, <a class="el" href="type_2variant_8h_source.html#l00056">cgv::type::variant&lt; T &gt;::set()</a>, <a class="el" href="component__format_8cxx_source.html#l00166">cgv::data::component_format::set_component_format()</a>, <a class="el" href="context_8cxx_source.html#l00714">cgv::render::context::set_current_lights()</a>, <a class="el" href="data__format_8cxx_source.html#l00018">cgv::data::data_format::set_data_format()</a>, <a class="el" href="command__token_8cxx_source.html#l00187">cgv::ppp::command_token::split_off_from()</a>, <a class="el" href="guid_8cxx_source.html#l00012">to_string()</a>, <a class="el" href="convert__string_8cxx_source.html#l00007">to_string()</a>, <a class="el" href="convert__string_8h_source.html#l00033">to_string()</a>, <a class="el" href="convert__string_8h_source.html#l00018">to_string()</a>, <a class="el" href="token_8h_source.html#l00060">to_string()</a>, and <a class="el" href="token_8h_source.html#l00062">to_strings()</a>.</p>
 
 </div>
 </div>
@@ -5054,9 +5422,9 @@ template&lt;class InputIt , class UnaryOp &gt; </div>
 </dl>
 <dl class="section return"><dt>Returns</dt><dd>The concatenated string. </dd></dl>
 
-<p class="definition">Definition at line <a class="el" href="algorithm_8h_source.html#l00125">125</a> of file <a class="el" href="algorithm_8h_source.html">algorithm.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="algorithm_8h_source.html#l00123">123</a> of file <a class="el" href="algorithm_8h_source.html">algorithm.h</a>.</p>
 
-<p class="reference">Referenced by <a class="el" href="algorithm_8h_source.html#l00148">join()</a>.</p>
+<p class="reference">Referenced by <a class="el" href="algorithm_8h_source.html#l00146">join()</a>.</p>
 
 </div>
 </div>
@@ -5151,6 +5519,132 @@ template&lt;class InputIt , class UnaryOp &gt; </div>
 <p class="definition">Definition at line <a class="el" href="convert_8cxx_source.html#l00026">26</a> of file <a class="el" href="convert_8cxx_source.html">convert.cxx</a>.</p>
 
 <p class="reference">Referenced by <a class="el" href="type_2variant_8h_source.html#l00023">cgv::type::variant&lt; T &gt;::get()</a>.</p>
+
+</div>
+</div>
+<a id="a51093fc19928c68d19548e8c25bfc5d2" name="a51093fc19928c68d19548e8c25bfc5d2"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a51093fc19928c68d19548e8c25bfc5d2">&#9670;&#160;</a></span>zip() <span class="overload">[1/2]</span></h2>
+
+<div class="memitem">
+<div class="memproto">
+<div class="memtemplate">
+template&lt;typename InputIt1 , typename InputIt2 &gt; </div>
+      <table class="memname">
+        <tr>
+          <td class="memname">std::vector&lt; std::pair&lt; typename InputIt1::value_type, typename InputIt2::value_type &gt; &gt; cgv::utils::zip </td>
+          <td>(</td>
+          <td class="paramtype">const InputIt1&#160;</td>
+          <td class="paramname"><em>first1</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">const InputIt1&#160;</td>
+          <td class="paramname"><em>last1</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">const InputIt2&#160;</td>
+          <td class="paramname"><em>first2</em>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>Zip two sequences together to form a single sequene of pairs. </p>
+<p>The sequence beginning at first2 must provide at least distance(first1, last1) - 1 elements. For example, applying zip to sequences (1, 2, 3) and ('a', 'b', 'c') would return: ((1, 'a'),(2, 'b'),(3, 'c')).</p>
+<dl class="tparams"><dt>Template Parameters</dt><dd>
+  <table class="tparams">
+    <tr><td class="paramname">InputIt1</td><td>The first input range iterator type. </td></tr>
+    <tr><td class="paramname">InputIt2</td><td>The second input range iterator type. </td></tr>
+  </table>
+  </dd>
+</dl>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">first1</td><td>The start of the first input range. </td></tr>
+    <tr><td class="paramname">last1</td><td>The end of the first input range. </td></tr>
+    <tr><td class="paramname">first2</td><td>The start of the second input range. </td></tr>
+  </table>
+  </dd>
+</dl>
+<dl class="section return"><dt>Returns</dt><dd>A std::vector of std::pair s containing copies of zipped elements. </dd></dl>
+
+<p class="definition">Definition at line <a class="el" href="algorithm_8h_source.html#l00217">217</a> of file <a class="el" href="algorithm_8h_source.html">algorithm.h</a>.</p>
+
+<p class="reference">References <a class="el" href="algorithm_8h_source.html#l00199">zip()</a>.</p>
+
+</div>
+</div>
+<a id="a841d90ef59ab283e83587f6a7cdde8dc" name="a841d90ef59ab283e83587f6a7cdde8dc"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a841d90ef59ab283e83587f6a7cdde8dc">&#9670;&#160;</a></span>zip() <span class="overload">[2/2]</span></h2>
+
+<div class="memitem">
+<div class="memproto">
+<div class="memtemplate">
+template&lt;typename InputIt1 , typename InputIt2 , typename OutputIt &gt; </div>
+      <table class="memname">
+        <tr>
+          <td class="memname">OutputIt cgv::utils::zip </td>
+          <td>(</td>
+          <td class="paramtype">const InputIt1&#160;</td>
+          <td class="paramname"><em>first1</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">const InputIt1&#160;</td>
+          <td class="paramname"><em>last1</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">const InputIt2&#160;</td>
+          <td class="paramname"><em>first2</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">OutputIt&#160;</td>
+          <td class="paramname"><em>d_first</em>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>Zip two sequences together to form a single sequene of pairs and store the results in an output range starting from d_first. </p>
+<p>The sequence beginning at first2 must provide at least distance(first1, last1) - 1 elements. For example, applying zip to sequences (1, 2, 3) and ('a', 'b', 'c') would result in: ((1, 'a'),(2, 'b'),(3, 'c')).</p>
+<dl class="tparams"><dt>Template Parameters</dt><dd>
+  <table class="tparams">
+    <tr><td class="paramname">InputIt1</td><td>The first input range iterator type. </td></tr>
+    <tr><td class="paramname">InputIt2</td><td>The second input range iterator type. </td></tr>
+    <tr><td class="paramname">OutputIt</td><td>The output range iterator type. </td></tr>
+  </table>
+  </dd>
+</dl>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">first1</td><td>The start of the first input range. </td></tr>
+    <tr><td class="paramname">last1</td><td>The end of the first input range. </td></tr>
+    <tr><td class="paramname">first2</td><td>The start of the second input range. </td></tr>
+    <tr><td class="paramname">d_first</td><td>The start of the output range. </td></tr>
+  </table>
+  </dd>
+</dl>
+<dl class="section return"><dt>Returns</dt><dd>Output iterator to the element that follows the last element transformed. </dd></dl>
+
+<p class="definition">Definition at line <a class="el" href="algorithm_8h_source.html#l00199">199</a> of file <a class="el" href="algorithm_8h_source.html">algorithm.h</a>.</p>
+
+<p class="reference">Referenced by <a class="el" href="transfer__function_8cxx_source.html#l00025">cgv::media::transfer_function::set_color_points_from_scheme()</a>, and <a class="el" href="algorithm_8h_source.html#l00217">zip()</a>.</p>
 
 </div>
 </div>

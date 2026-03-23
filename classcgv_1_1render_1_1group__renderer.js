@@ -1,9 +1,9 @@
 var classcgv_1_1render_1_1group__renderer =
 [
-    [ "disable", "classcgv_1_1render_1_1group__renderer.html#a32025096a541c45311e2337a0f91f214", null ],
-    [ "disable_attribute_array_manager", "classcgv_1_1render_1_1group__renderer.html#af13979ad9da37d9e8393330ac94b320a", null ],
-    [ "enable", "classcgv_1_1render_1_1group__renderer.html#af44ec3345ceb1fb2e09ce4181e4e26ac", null ],
-    [ "enable_attribute_array_manager", "classcgv_1_1render_1_1group__renderer.html#a3cc2bfa02c2442c70a9cf254b239f47b", null ],
+    [ "disable", "classcgv_1_1render_1_1group__renderer.html#a02598572eb94ab3080a50776603d226e", null ],
+    [ "disable_attribute_array_manager", "classcgv_1_1render_1_1group__renderer.html#ae00e5f99d813efad5177f61ddddff990", null ],
+    [ "enable", "classcgv_1_1render_1_1group__renderer.html#a87cbd3af0425563803eedf6b2addff5f", null ],
+    [ "enable_attribute_array_manager", "classcgv_1_1render_1_1group__renderer.html#a97047120221f7276751de350336248a4", null ],
     [ "remove_group_index_array", "classcgv_1_1render_1_1group__renderer.html#a45fd164f2e2e0aa28a6a54739ff676d6", null ],
     [ "set_group_colors", "classcgv_1_1render_1_1group__renderer.html#a792a522d7f726b34aeabd8a1addd0a40", null ],
     [ "set_group_colors", "classcgv_1_1render_1_1group__renderer.html#ac71ae30d9c52755580f7cc51a03e813a", null ],
@@ -16,5 +16,5 @@ var classcgv_1_1render_1_1group__renderer =
     [ "set_group_translations", "classcgv_1_1render_1_1group__renderer.html#ae30af3c303225aaf61847c1e51fece20", null ],
     [ "set_group_translations", "classcgv_1_1render_1_1group__renderer.html#a27f8ff1174aadbf76fcb25793c82b90e", null ],
     [ "update_shader_program_options", "classcgv_1_1render_1_1group__renderer.html#a5cdfa1918b9be00c72eb778853940358", null ],
-    [ "validate_attributes", "classcgv_1_1render_1_1group__renderer.html#aa869609e0e452758bc32b2e3e83fa0b5", null ]
+    [ "validate_attributes", "classcgv_1_1render_1_1group__renderer.html#a8813a5c491fb089eb0a04a22928da67f", null ]
 ];

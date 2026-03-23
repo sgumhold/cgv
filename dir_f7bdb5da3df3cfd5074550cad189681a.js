@@ -15,10 +15,12 @@ var dir_f7bdb5da3df3cfd5074550cad189681a =
     [ "grid.h", "grid_8h_source.html", null ],
     [ "image_view.cxx", "image__view_8cxx_source.html", null ],
     [ "image_view.h", "image__view_8h_source.html", null ],
+    [ "informed_ptr.h", "informed__ptr_8h_source.html", null ],
     [ "interval_map.h", "interval__map_8h_source.html", null ],
     [ "io_reflection_handler.cxx", "io__reflection__handler_8cxx_source.html", null ],
     [ "io_reflection_handler.h", "io__reflection__handler_8h_source.html", null ],
     [ "lib_begin.h", "cgv_2data_2lib__begin_8h_source.html", null ],
+    [ "object_registry.h", "object__registry_8h_source.html", null ],
     [ "optional.h", "optional_8h_source.html", null ],
     [ "packing_info.cxx", "packing__info_8cxx_source.html", null ],
     [ "packing_info.h", "packing__info_8h_source.html", null ],
@@ -26,5 +28,6 @@ var dir_f7bdb5da3df3cfd5074550cad189681a =
     [ "ref_arr.h", "ref__arr_8h_source.html", null ],
     [ "ref_counted.h", "ref__counted_8h_source.html", null ],
     [ "ref_ptr.h", "ref__ptr_8h_source.html", null ],
+    [ "time_stamp.h", "time__stamp_8h_source.html", null ],
     [ "union_find.h", "data_2union__find_8h_source.html", null ]
 ];

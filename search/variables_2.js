@@ -1,6 +1,6 @@
 var searchData=
 [
-  ['background_5fvisible_5f_0',['background_visible_',['../classcgv_1_1app_1_1themed__canvas__overlay.html#a92159dc158ff2460805e8459b3421c34',1,'cgv::app::themed_canvas_overlay']]],
+  ['background_5fvisible_5f_0',['background_visible_',['../classcgv_1_1overlay_1_1themed__canvas__overlay.html#a1e029e744c74f0fcf4406867a2a5e2a6',1,'cgv::overlay::themed_canvas_overlay']]],
   ['bar_5fcolor_1',['bar_color',['../structcgv_1_1plot_1_1plot__base__config.html#a718ec7738ea565d6e1742cdd9f47a3ce',1,'cgv::plot::plot_base_config']]],
   ['bar_5fcoordinate_5findex_2',['bar_coordinate_index',['../structcgv_1_1plot_1_1plot__base__config.html#a0d7bce16384c99c2f530fe483e4e910e',1,'cgv::plot::plot_base_config']]],
   ['bar_5foutline_5fcolor_3',['bar_outline_color',['../structcgv_1_1plot_1_1plot__base__config.html#ad6a97e52a799ac7d5adfb42840b1d75a',1,'cgv::plot::plot_base_config']]],
