@@ -49,7 +49,7 @@ plot_base_config::plot_base_config(const std::string& _name, unsigned dim) : nam
 	show_plot = true;
 	begin_sample = 0;
 	end_sample = size_t(-1);
-	ref_size = 8;
+	ref_size = 2;
 	ref_color = rgb(1, 0, 0);
 	ref_opacity = 1.0f;
 	bar_percentual_width = 0.75f;

@@ -235,11 +235,21 @@ public:
 			if(operator[](i) != static_cast<T>(v[i])) return false;
 		return true;
 	}
-	/// test for inequality
+	/// test for unequal
 	template <typename S>
 	bool operator != (const fvec<S, N>& v) const {
 		for(unsigned i = 0; i < N; ++i)
 			if(operator[](i) != static_cast<T>(v[i])) return true;
+		return false;
+	}
+	/// define smaller operator based on component comparison with significance increasing from 0 to N-1, such that fvec can be used as keys in maps
+	template <typename S>
+	bool operator < (const fvec<S, N>& v) const {
+		for (unsigned i = N; i > 0; ) {
+			if (operator[](i) == static_cast<T>(v[i]))
+				continue;
+			return operator[](i) < static_cast<T>(v[i]);
+		}
 		return false;
 	}
 	//@}

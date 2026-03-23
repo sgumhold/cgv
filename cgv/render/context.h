@@ -720,7 +720,8 @@ public:
 	};
 protected:
 	friend class shader_program_base;
-
+	/// allocate a dummy attribute array binding used to support attribute-less rendering
+	attribute_array_binding_base* dummy_aab = 0;
 	/// whether to use the caching facilities of shader_program and shader_code to store loaded shader file contents as strings for faster loading
 	bool use_shader_file_cache;
 	/// whether to automatically set viewing matrixes in current shader program, defaults to true 
@@ -1144,6 +1145,10 @@ public:
 	virtual void enable_sRGB_framebuffer(bool do_enable = true);
 	/// check whether sRGB framebuffer is enabled
 	bool sRGB_framebuffer_enabled() { return sRGB_framebuffer; }
+	/// this function ensures that in core profile a dummy attribute array is bound, what is essential for attribute-less rendering
+	void begin_attribute_less_rendering();
+	/// unbind dummy attribute array after attribute-less rendering
+	void end_attribute_less_rendering();
 	/// return current color
 	const rgba& get_color() const;
 	/// set the current color
