@@ -38,16 +38,19 @@ public:
 		bool color_value_type_float = true;
 		bool opacity_value_type_float = true;
 		bool apply_gamma = false;
+
+		
 	};
 
-public:
-	static transfer_function_reader_result read_from_xml(const tinyxml2::XMLElement& elem, const identifier_config& config = {});
+	static const identifier_config& default_identifier_config();
 
-	static transfer_function_reader_result read_from_xml(const tinyxml2::XMLDocument& doc, const identifier_config& config = {});
+	static transfer_function_reader_result read_from_xml(const tinyxml2::XMLElement& elem, const identifier_config& config = default_identifier_config());
 
-	static transfer_function_reader_result read_from_xml_string(const std::string& xml, const identifier_config& config = {});
+	static transfer_function_reader_result read_from_xml(const tinyxml2::XMLDocument& doc, const identifier_config& config = default_identifier_config());
 
-	static transfer_function_reader_result read_from_xml_file(const std::string& file_name, const identifier_config& config = {});
+	static transfer_function_reader_result read_from_xml_string(const std::string& xml, const identifier_config& config = default_identifier_config());
+
+	static transfer_function_reader_result read_from_xml_file(const std::string& file_name, const identifier_config& config = default_identifier_config());
 
 	static transfer_function_reader_result read_from_image_file(const std::string& file_name);
 

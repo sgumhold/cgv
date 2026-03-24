@@ -8,6 +8,11 @@
 namespace cgv {
 namespace media {
 
+const transfer_function_reader::identifier_config& transfer_function_reader::default_identifier_config() {
+	static const identifier_config default_ic;
+	return default_ic;
+}
+
 transfer_function_reader_result transfer_function_reader::read_from_xml(const tinyxml2::XMLElement& elem, const identifier_config& config) {
 	transfer_function_reader_result result;
 	result.entries = extract_color_maps(elem, config);
