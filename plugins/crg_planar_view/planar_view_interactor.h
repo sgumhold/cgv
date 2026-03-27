@@ -91,6 +91,7 @@ private:
 	cgv::dvec2 pixel2world(const cgv::ivec2& pixel) const;
 	cgv::ivec2 world2pixel(const cgv::dvec2& point) const;
 	void put_coordinate_system(cgv::dvec2& xdir, cgv::dvec2& ydir) const;
+	cgv::dvec2 get_model_point(int x, int y) const;
 
 	bool pressed = false;
 	cgv::dvec2 pos_down = { 0.0 };

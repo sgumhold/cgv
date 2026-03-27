@@ -117,31 +117,24 @@ const cgv::dmat4 planar_view_interactor::get_modelview() const
 	
 void planar_view_interactor::move(int x, int y)
 {
-	auto p = get_context()->get_model_point(x, y, 0.0, MPW);
-	center += pos_down - cgv::vec2(p);
-
+	center += pos_down - get_model_point(x, y);
 	on_set(&center(0));
 	on_set(&center(1));
 }
 
 void planar_view_interactor::rotate(int x, int y)
 {
-	auto p = get_context()->get_model_point(x, y, 0.0, MPW);
-	cgv::vec2 dp = cgv::vec2(p) - center;
+	cgv::dvec2 dp = get_model_point(x, y) - center;
 	float ap = static_cast<float>(180.0f * atan2(dp(1), dp(0)) / M_PI);
-	cgv::vec2 dd = pos_down - center;
+	cgv::dvec2 dd = pos_down - center;
 	float ad = static_cast<float>(180.0f * atan2(dd(1), dd(0)) / M_PI);
 	angle += ap - ad;
-
 	on_set(&angle);
 }
 
 void planar_view_interactor::zoom(int x, int y, float ds)
 {
-	auto p = get_context()->get_model_point(x, y, 0.0, MPW);
-	
 	double s1 = zoom_factor;
-
 	if(ds > 0.0f)
 		zoom_factor *= 0.9;
 	else
@@ -149,7 +142,7 @@ void planar_view_interactor::zoom(int x, int y, float ds)
 
 	double s2 = zoom_factor;
 
-	center -= (s1-s2) * (cgv::dvec2(p) - center) / s2;
+	center -= (s1-s2) * (get_model_point(x, y) - center) / s2;
 
 	on_set(&zoom_factor);
 	on_set(&center(0));
@@ -197,7 +190,16 @@ bool planar_view_interactor::init(context& ctx)
 {
 	return true;
 }
-
+cgv::dvec2 planar_view_interactor::get_model_point(int x, int y) const
+{
+	double angle_radians = 0.01745329252 * angle;
+	double s = sin(angle_radians);
+	double c = cos(angle_radians);
+	cgv::dvec2 extent = 2.0 * cgv::dvec2(aspect, 1.0);
+	cgv::dvec2 p = extent * cgv::dvec2((x - 0.5*width)/width,(y-0.5*height)/height) / zoom_factor;
+	p = cgv::dvec2(c * p.x() + s * p.y(), c * p.y() - s * p.x());
+	return center + p;
+}
 /// overload and implement this method to handle events
 bool planar_view_interactor::handle(event& e)
 {
@@ -224,8 +226,7 @@ bool planar_view_interactor::handle(event& e)
 				 (me.get_button_state() == MB_MIDDLE_BUTTON && me.get_modifiers() == 0) )
 					{
 				pressed = true;
-				cgv::dvec3 p = get_context()->get_model_point(me.get_x(), y_gl, 0.0, MPW);
-				pos_down = cgv::dvec2(p);
+				pos_down = get_model_point(me.get_x(), y_gl);
 				return true;
 			}
 			break;
