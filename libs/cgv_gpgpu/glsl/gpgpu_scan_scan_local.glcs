@@ -1,9 +1,10 @@
-#version 430
-
-//#pragma optionNV(inline all)
-//#pragma optionNV(unroll all)
+#version 460
 
 #include "gpgpu_scan_common.glcs"
+
+#define CGV_SBB_SCAN_USE_ADDRESS_OFFSET
+#include "sbb_scan.glcs"
+#undef CGV_SBB_SCAN_USE_ADDRESS_OFFSET
 
 #ifdef CGV_USE_SNIPPETS
 
@@ -11,47 +12,17 @@ CGV_SBB_GROUP_LOAD_STRIPED_2X(group_load, LOCAL_SIZE_X, value_type, b_data_in)
 CGV_SBB_GROUP_STORE_STRIPED_2X(group_store, LOCAL_SIZE_X, value_type, b_data_out)
 
 #define N (2 * LOCAL_SIZE_X)
-shared value_type s_scan[N + CONFLICT_FREE_OFFSET(N)]; // make room for all values plus some space for offset addresses
+shared value_type s_scan[N + CGV_SBB_CONFLICT_FREE_OFFSET(N)]; // make room for all values plus some space for offset addresses
 
-void sweep_up(in int tid, inout int offset) {
-	for(uint d = N >> 1; d > 0; d >>= 1) {
-        barrier();
-
-        if(tid < d) {
-			int ai = offset*(2*tid + 1) - 1;
-			int bi = offset*(2*tid + 2) - 1;
-
-			ai += CONFLICT_FREE_OFFSET(ai);
-			bi += CONFLICT_FREE_OFFSET(bi);
-
-            s_scan[bi] += s_scan[ai];
-        }
-        offset += offset;
-    }
+value_type operation(value_type lhs, value_type rhs) {
+	return lhs + rhs;
 }
 
-void sweep_down(in int tid, inout int offset) {
-	for(int d = 1; d < N; d <<= 1) {
-        offset >>= 1;
-        barrier();
-
-        if(tid < d) {
-			int ai = offset*(2*tid + 1) - 1;
-			int bi = offset*(2*tid + 2) - 1;
-
-			ai += CONFLICT_FREE_OFFSET(ai);
-			bi += CONFLICT_FREE_OFFSET(bi);
-
-            value_type temp = s_scan[ai];
-            s_scan[ai] = s_scan[bi];
-            s_scan[bi] += temp;
-        }
-    }
-}
+CGV_SBB_GROUP_SCAN(group_scan, value_type, LOCAL_SIZE_X, s_scan, operation)
 
 layout(local_size_x = LOCAL_SIZE_X) in;
 void main() {
-    int tid = int(gl_LocalInvocationID.x);
+	int tid = int(gl_LocalInvocationID.x);
 	int part_offset = 2 * int(gl_WorkGroupSize.x * gl_WorkGroupID.x);
 
 	value_type values[2];
@@ -69,22 +40,20 @@ void main() {
 	int stripe_offset = int(gl_WorkGroupSize.x);
 	int ai = tid;
 	int bi = tid + stripe_offset;
-	ai += CONFLICT_FREE_OFFSET(ai);
-	bi += CONFLICT_FREE_OFFSET(bi);
+	ai += CGV_SBB_CONFLICT_FREE_OFFSET(ai);
+	bi += CGV_SBB_CONFLICT_FREE_OFFSET(bi);
 	s_scan[ai] = values[0];
-    s_scan[bi] = values[1];
+	s_scan[bi] = values[1];
 	barrier();
 
-	int offset = 1;
-	sweep_up(tid, offset);
+	int offset = group_scan_upsweep(tid);
 
-    if(tid < 1) {
-		b_group_sums[gl_WorkGroupID.x] = s_scan[N - 1 + CONFLICT_FREE_OFFSET(N - 1)];
-        s_scan[N - 1 + CONFLICT_FREE_OFFSET(N - 1)] = u_init;
-    }
+	if(tid < 1) {
+		b_group_sums[gl_WorkGroupID.x] = s_scan[N - 1 + CGV_SBB_CONFLICT_FREE_OFFSET(N - 1)];
+		s_scan[N - 1 + CGV_SBB_CONFLICT_FREE_OFFSET(N - 1)] = u_init;
+	}
 
-	sweep_down(tid, offset);
-    barrier();
+	group_scan_downsweep(tid, offset);
 
 	#ifdef INCLUSIVE_SCAN
 		values[0] += s_scan[ai];
