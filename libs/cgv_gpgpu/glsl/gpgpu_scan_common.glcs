@@ -3,11 +3,6 @@
 //?#include "sbb_load_store.glcs"
 //?#include "gpgpu_args.glcs"
 
-#define NUM_BANKS 32
-#define LOG_NUM_BANKS 5
-// Compute an offset of 1 for every 32 steps to avoid bank conflicts.
-#define CONFLICT_FREE_OFFSET(n)((n) >> LOG_NUM_BANKS)
-
 #ifdef CGV_USE_SNIPPETS
 layout(std430, binding = 0) readonly buffer input_buffer {
     value_type b_data_in[];
