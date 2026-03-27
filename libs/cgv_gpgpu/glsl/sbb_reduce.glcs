@@ -2,9 +2,9 @@
 
 // Shader Building Blocks (SBB). Reusable components for compute shaders.
 
-// The template-like macros in this file generate functions that perform reduction operations on a range of data.
+//?#include "sbb_macros.glcs"
 
-#define CGV_SBB_INTERNAL_CONCAT_SYMBOLS(A, B) A ## B
+// The template-like macros in this file generate functions that perform reduction operations on a range of data.
 
 #define CGV_SBB_INTERNAL_REDUCE_BINARY_OP(N, BUFFER, OPERATION) BUFFER[tid] = OPERATION(BUFFER[tid], BUFFER[tid + (N)]);
 
@@ -68,7 +68,7 @@
 //
 #define CGV_SBB_GROUP_REDUCE(NAME, THREADS_PER_GROUP, BUFFER, BINARY_OPERATION) \
 void NAME(int tid) { \
-	CGV_SBB_INTERNAL_CONCAT_SYMBOLS(CGV_SBB_INTERNAL_GROUP_REDUCE_, THREADS_PER_GROUP)(BUFFER, BINARY_OPERATION)\
+	CGV_SBB_INTERNAL_CONCAT_SYMBOLS(CGV_SBB_INTERNAL_GROUP_REDUCE_, THREADS_PER_GROUP)(BUFFER, BINARY_OPERATION) \
 }
 //CGV_SBB_INTERNAL_GROUP_REDUCE_##THREADS_PER_GROUP(BUFFER, BINARY_OPERATION) \
 
