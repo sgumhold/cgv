@@ -53,6 +53,8 @@ void planar_view_interactor::resize(unsigned w, unsigned h)
 {
 	width = w;
 	height = h;
+	last_x = w / 2;
+	last_y = h / 2;
 	aspect = static_cast<float>(w) / h;
 }
 
@@ -75,6 +77,7 @@ bool planar_view_interactor::self_reflect(cgv::reflect::reflection_handler& rh)
 		rh.reflect_member("lock_rotation", lock_rotation) &&
 		rh.reflect_member("angle", angle) &&
 		rh.reflect_member("zoom_factor", zoom_factor) &&
+		rh.reflect_member("zoom_factor_exp", zoom_factor_exp) &&
 		rh.reflect_member("center", center);
 }
 
@@ -84,6 +87,9 @@ void planar_view_interactor::on_set(void* member_ptr)
 	if (member_ptr == &lock_rotation) {
 		if (find_control(angle))
 			find_control(angle)->set("active", !lock_rotation);
+	}
+	if (member_ptr == &zoom_factor_exp) {
+		zoom(last_x, last_y, zoom_factor_exp);
 	}
 	update_member(member_ptr);
 	post_redraw();
@@ -132,18 +138,12 @@ void planar_view_interactor::rotate(int x, int y)
 	on_set(&angle);
 }
 
-void planar_view_interactor::zoom(int x, int y, float ds)
+void planar_view_interactor::zoom(int x, int y, double zf_exp)
 {
-	double s1 = zoom_factor;
-	if(ds > 0.0f)
-		zoom_factor *= 0.9;
-	else
-		zoom_factor *= 1.1;
-
-	double s2 = zoom_factor;
-
-	center -= (s1-s2) * (get_model_point(x, y) - center) / s2;
-
+	auto p = get_model_point(x, y);
+	zoom_factor *= exp(zf_exp);
+	auto new_p = get_model_point(x, y);
+	center += p - new_p;
 	on_set(&zoom_factor);
 	on_set(&center(0));
 	on_set(&center(1));
@@ -219,6 +219,8 @@ bool planar_view_interactor::handle(event& e)
 	{
 		cgv::gui::mouse_event me = (cgv::gui::mouse_event&) e;
 		int y_gl = get_context()->get_height() - 1 - me.get_y();
+		last_x = me.get_x();
+		last_y = y_gl;
 		switch (me.get_action()) {
 		case MA_PRESS:
 			if ( (me.get_button_state() == MB_RIGHT_BUTTON && me.get_modifiers() == 0) ||
@@ -248,7 +250,7 @@ bool planar_view_interactor::handle(event& e)
 			else if (me.get_button_state() == MB_MIDDLE_BUTTON && me.get_modifiers() == 0 && me.get_dy() != 0)
 			{
 				if (pressed)
-					zoom(me.get_x(), y_gl, me.get_dy());
+					zoom(me.get_x(), y_gl, 0.1*me.get_dy());
 				post_redraw();
 				return true;
 			}
@@ -259,7 +261,7 @@ bool planar_view_interactor::handle(event& e)
 		case MA_WHEEL :
 			if (e.get_modifiers() == 0) 
 			{
-				zoom(me.get_x(), y_gl,me.get_dy());
+				zoom(me.get_x(), y_gl,-0.1*me.get_dy());
 				return true;
 			}
 			break;
@@ -286,7 +288,6 @@ void planar_view_interactor::init_frame(cgv::render::context& ctx)
 	ctx.set_modelview_matrix(get_modelview());
 	ctx.push_projection_matrix();
 	ctx.set_projection_matrix(get_projection());
-	MPW = ctx.get_modelview_projection_window_matrix();
 }
 
 /// 

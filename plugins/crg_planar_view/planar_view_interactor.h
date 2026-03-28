@@ -53,7 +53,7 @@ public:
 	/// move (dx,dy)
 	void move(int x, int y);
 
-	void zoom(int x, int y, float ds);
+	void zoom(int x, int y, double zf_exp);
 
 	/// return the center of the view
 	cgv::dvec2 get_center() const { return center; }
@@ -83,6 +83,8 @@ private:
 	cgv::dvec2 center = { 0.0, 0.0 };
 	/// zoom factor with one corresponding to y-extent of 1.0
 	double zoom_factor = 1.0;
+	/// zoom factor exp allows other plugins to use the zoom function
+	double zoom_factor_exp = 0.0;
 	/// rotation angle
 	double angle = 0.0;
 	/// whether to lock rotation
@@ -95,5 +97,5 @@ private:
 
 	bool pressed = false;
 	cgv::dvec2 pos_down = { 0.0 };
-	cgv::dmat4 MPW = { 0.0 };
+	int last_x, last_y;
 };
