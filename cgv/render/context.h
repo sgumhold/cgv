@@ -1496,37 +1496,37 @@ public:
 	//! compute model space 3D point from the given opengl pixel location (window location)
 	/*! the function queries the window z coordinate from the depth buffer and inversely transforms the
 		window space 3D point with the current modelview_projection_window matrix */
-	inline vec3 get_model_point(int x_window, int y_window) const { 
+	inline dvec3 get_model_point(int x_window, int y_window) const { 
 		return get_model_point(x_window, y_window, get_window_z(x_window, y_window)); 
 	}
 	//! compute model space 3D point from the given opengl pixel location (window location)
 	/*! the function inversely transforms the window space 3D point with the current
 		modelview_projection_window matrix */
-	inline vec3 get_model_point(int x_window, int y_window, double z_window) const {
+	inline dvec3 get_model_point(int x_window, int y_window, double z_window) const {
 		return get_model_point(x_window, y_window, z_window, get_modelview_projection_window_matrix());
 	}
 	//! compute model space 3D point from the given opengl pixel location (window location) and modelview_projection_window matrix
 	/*! the function queries the window z coordinate from the depth buffer and inversely transforms the
 		window space 3D point with the given modelview_projection_window matrix */
-	inline vec3 get_model_point(int x_window, int y_window, const dmat4& modelview_projection_window_matrix) const {
+	inline dvec3 get_model_point(int x_window, int y_window, const dmat4& modelview_projection_window_matrix) const {
 		return get_model_point(x_window, y_window, get_window_z(x_window, y_window), modelview_projection_window_matrix);
 	}
 	//! compute model space 3D point from the given opengl pixel location (window location) with the given modelview_projection_window matrix
 	/*! the function inversely transforms the window space 3D point with the given
 		modelview_projection_window matrix */
-	inline static vec3 get_model_point(int x_window, int y_window, double z_window, const dmat4& modelview_projection_window_matrix) {
+	inline static dvec3 get_model_point(int x_window, int y_window, double z_window, const dmat4& modelview_projection_window_matrix) {
 		return get_model_point(dvec3(x_window+0.5, y_window+0.5, z_window), modelview_projection_window_matrix);
 	}
 	//! compute model space 3D point from the given window space point
 	/*! the function inversely transforms the window space 3D point with the current
 		modelview_projection_window matrix */
-	inline vec3 get_model_point(const vec3& p_window) const {
+	inline dvec3 get_model_point(const vec3& p_window) const {
 		return get_model_point(p_window, get_modelview_projection_window_matrix());
 	}
 	//! compute model space 3D point from the given window space point and the given modelview_projection_window matrix
 	/*! the function inversely transforms the window space point with the given
 		modelview_projection_window matrix */
-	static vec3 get_model_point(const dvec3& p_window, const dmat4& modelview_projection_window_matrix);
+	static dvec3 get_model_point(const dvec3& p_window, const dmat4& modelview_projection_window_matrix);
 	/// return homogeneous 4x4 projection matrix, which transforms from clip to device space
 	DEPRECATED("use get_window_matrix() instead.") dmat4 get_device_matrix() const { return get_window_matrix(); }
 	/// return matrix to transfrom from model to device coordinates, i.e. the product of modelview, projection and device matrix in reversed order (device_matrix*projection_matrix*modelview_matrix)

@@ -2071,7 +2071,7 @@ dmat4 context::get_modelview_projection_window_matrix(unsigned array_index) cons
 }
 
 //! compute model space 3D point from the given window space point and the given modelview_projection_window matrix
-vec3 context::get_model_point(const dvec3& p_window, const dmat4& modelview_projection_window_matrix) 
+dvec3 context::get_model_point(const dvec3& p_window, const dmat4& modelview_projection_window_matrix) 
 {
 	cgv::dvec4 p(p_window, 1.0);
 	p = inverse(modelview_projection_window_matrix) * p;
