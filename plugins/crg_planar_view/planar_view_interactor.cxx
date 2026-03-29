@@ -1,5 +1,4 @@
 #include "planar_view_interactor.h"
-#include <cgv/utils/ostream_printf.h>
 #include <cgv/gui/key_event.h>
 #include <cgv/gui/mouse_event.h>
 #ifndef _USE_MATH_DEFINES
@@ -183,7 +182,7 @@ std::string planar_view_interactor::get_type_name() const
 /// overload to show the content of this object
 void planar_view_interactor::stream_stats(std::ostream& os)
 {
-	//cgv::media::text::oprintf(os, "%s: azimut = %.3f, elevation = %.3f\n", get_name(), azimut,elevation);
+	os << get_name() << ": center = (" << center << "), zoom = " << zoom_factor << ", angle = " << angle << std::endl;
 }
 
 bool planar_view_interactor::init(context& ctx)
@@ -275,10 +274,7 @@ bool planar_view_interactor::handle(event& e)
 /// overload to stream help information to the given output stream
 void planar_view_interactor::stream_help(std::ostream& os)
 {
-	os << "planar_view_interactor\n\a"
-	   << "move target parallel to image plane: right mouse button\n"
-	   << "scale: mouse wheel\n"
-	   << "reset view: <Space> \n";
+	os << "Planar View Interactor: pan (LMB), zoom (MMB,Wheel), rotate (RMB); reset view: <Space> \n";
 }
 
 ///
