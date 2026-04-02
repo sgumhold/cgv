@@ -3,6 +3,7 @@
 #include <string>
 #include <vector>
 #include <functional>
+#include <cgv/utils/convert_string.h>
 #include <cgv/utils/advanced_scan.h>
 
 #include <cgv/utils/lib_begin.h>
