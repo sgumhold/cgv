@@ -1071,6 +1071,10 @@ var hierarchy =
     [ "cgv::type::variant< std::wstring >", "structcgv_1_1type_1_1variant_3_01std_1_1wstring_01_4.html", null ],
     [ "cgv::utils::big_binary_file", "classcgv_1_1utils_1_1big__binary__file.html", null ],
     [ "cgv::utils::count_range< iterator_type >", "classcgv_1_1utils_1_1count__range.html", null ],
+    [ "cgv::utils::csv_reader_base", "classcgv_1_1utils_1_1csv__reader__base.html", [
+      [ "cgv::utils::csv_matrix_reader", "classcgv_1_1utils_1_1csv__matrix__reader.html", null ],
+      [ "cgv::utils::csv_reader< T >", "classcgv_1_1utils_1_1csv__reader.html", null ]
+    ] ],
     [ "cgv::utils::date", "structcgv_1_1utils_1_1date.html", [
       [ "cgv::utils::date_time", "structcgv_1_1utils_1_1date__time.html", null ]
     ] ],
