@@ -3,6 +3,9 @@ var namespacecgv_1_1utils =
     [ "big_binary_file", "classcgv_1_1utils_1_1big__binary__file.html", "classcgv_1_1utils_1_1big__binary__file" ],
     [ "count_iterator", "classcgv_1_1utils_1_1count__iterator.html", null ],
     [ "count_range", "classcgv_1_1utils_1_1count__range.html", null ],
+    [ "csv_matrix_reader", "classcgv_1_1utils_1_1csv__matrix__reader.html", "classcgv_1_1utils_1_1csv__matrix__reader" ],
+    [ "csv_reader", "classcgv_1_1utils_1_1csv__reader.html", "classcgv_1_1utils_1_1csv__reader" ],
+    [ "csv_reader_base", "classcgv_1_1utils_1_1csv__reader__base.html", null ],
     [ "date", "structcgv_1_1utils_1_1date.html", null ],
     [ "date_time", "structcgv_1_1utils_1_1date__time.html", "structcgv_1_1utils_1_1date__time" ],
     [ "enumerate_iterator", "classcgv_1_1utils_1_1enumerate__iterator.html", null ],
@@ -23,6 +26,13 @@ var namespacecgv_1_1utils =
     [ "token", "structcgv_1_1utils_1_1token.html", "structcgv_1_1utils_1_1token" ],
     [ "tokenizer", "classcgv_1_1utils_1_1tokenizer.html", "classcgv_1_1utils_1_1tokenizer" ],
     [ "typed_token", "structcgv_1_1utils_1_1typed__token.html", null ],
+    [ "CSV_Flags", "namespacecgv_1_1utils.html#a7d80aa42cb0083d93d716ad73c6b0fe8", [
+      [ "CSV_HEADING", "namespacecgv_1_1utils.html#a7d80aa42cb0083d93d716ad73c6b0fe8a1d46b0a93a358373047b98ebaaed285f", null ],
+      [ "CSV_COMMA", "namespacecgv_1_1utils.html#a7d80aa42cb0083d93d716ad73c6b0fe8aedfe817760216d0450ec401e0ec0971c", null ],
+      [ "CSV_TAB", "namespacecgv_1_1utils.html#a7d80aa42cb0083d93d716ad73c6b0fe8a5bc9ff1b6714d1d5837bf7dfd41f9b74", null ],
+      [ "CSV_SPACE", "namespacecgv_1_1utils.html#a7d80aa42cb0083d93d716ad73c6b0fe8ae3a743f075a577eff0f8bdc893fcf2f4", null ],
+      [ "CSV_DEFAULT", "namespacecgv_1_1utils.html#a7d80aa42cb0083d93d716ad73c6b0fe8a34731b277d1db74ef6d35ee6bea51e33", null ]
+    ] ],
     [ "endian", "namespacecgv_1_1utils.html#a53a92ad4769093cc132b00d18931df3c", [
       [ "little", "namespacecgv_1_1utils.html#a53a92ad4769093cc132b00d18931df3caaae6635e044ac56046b2893a529b5114", null ],
       [ "big", "namespacecgv_1_1utils.html#a53a92ad4769093cc132b00d18931df3cad861877da56b8b4ceb35c8cbfdf65bb4", null ],
