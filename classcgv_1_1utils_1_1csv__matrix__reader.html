@@ -119,6 +119,10 @@ Public Member Functions</h2></td></tr>
 <tr class="memitem:a43210c58aa10497f085324a6e2b78a24"><td class="memTemplItemLeft" align="right" valign="top">bool&#160;</td><td class="memTemplItemRight" valign="bottom"><a class="el" href="classcgv_1_1utils_1_1csv__matrix__reader.html#a43210c58aa10497f085324a6e2b78a24">parse_matrix</a> (std::vector&lt; std::vector&lt; T &gt; &gt; &amp;matrix, T init=T(0))</td></tr>
 <tr class="memdesc:a43210c58aa10497f085324a6e2b78a24"><td class="mdescLeft">&#160;</td><td class="mdescRight">parse matrix into nested vector struct and initialize entries to given init value (only rectangular matrices supported)  <br /></td></tr>
 <tr class="separator:a43210c58aa10497f085324a6e2b78a24"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a088a4a9378ede1926e032b831fd7d078" id="r_a088a4a9378ede1926e032b831fd7d078"><td class="memTemplParams" colspan="2">template&lt;typename T , unsigned N&gt; </td></tr>
+<tr class="memitem:a088a4a9378ede1926e032b831fd7d078"><td class="memTemplItemLeft" align="right" valign="top">bool&#160;</td><td class="memTemplItemRight" valign="bottom"><a class="el" href="classcgv_1_1utils_1_1csv__matrix__reader.html#a088a4a9378ede1926e032b831fd7d078">parse_matrix</a> (std::vector&lt; <a class="el" href="classcgv_1_1math_1_1fvec.html">cgv::math::fvec</a>&lt; T, N &gt; &gt; &amp;matrix, T init=T(0))</td></tr>
+<tr class="memdesc:a088a4a9378ede1926e032b831fd7d078"><td class="mdescLeft">&#160;</td><td class="mdescRight">parse matrix into nested vector struct and initialize entries to given init value (only rectangular matrices supported)  <br /></td></tr>
+<tr class="separator:a088a4a9378ede1926e032b831fd7d078"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="inherit_header pub_methods_classcgv_1_1utils_1_1csv__reader__base"><td colspan="2" onclick="javascript:toggleInherit('pub_methods_classcgv_1_1utils_1_1csv__reader__base')"><img src="closed.png" alt="-"/>&#160;Public Member Functions inherited from <a class="el" href="classcgv_1_1utils_1_1csv__reader__base.html">cgv::utils::csv_reader_base</a></td></tr>
 <tr class="memitem:ab3786e648eca9a1d0a1727714fe27f21 inherit pub_methods_classcgv_1_1utils_1_1csv__reader__base" id="r_ab3786e648eca9a1d0a1727714fe27f21"><td class="memItemLeft" align="right" valign="top">bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcgv_1_1utils_1_1csv__reader__base.html#ab3786e648eca9a1d0a1727714fe27f21">fail</a> () const</td></tr>
 <tr class="separator:ab3786e648eca9a1d0a1727714fe27f21 inherit pub_methods_classcgv_1_1utils_1_1csv__reader__base"><td class="memSeparator" colspan="2">&#160;</td></tr>
@@ -159,7 +163,7 @@ Additional Inherited Members</h2></td></tr>
 <a name="details" id="details"></a><h2 class="groupheader">Detailed Description</h2>
 <div class="textblock"><p>csv reader for parsing matrices of a homogenous number type </p>
 
-<p class="definition">Definition at line <a class="el" href="csv__reader_8h_source.html#l00048">48</a> of file <a class="el" href="csv__reader_8h_source.html">csv_reader.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="csv__reader_8h_source.html#l00049">49</a> of file <a class="el" href="csv__reader_8h_source.html">csv_reader.h</a>.</p>
 </div><h2 class="groupheader">Constructor &amp; Destructor Documentation</h2>
 <a id="a2151dc24623ae007f521c5310cec2d3b" name="a2151dc24623ae007f521c5310cec2d3b"></a>
 <h2 class="memtitle"><span class="permalink"><a href="#a2151dc24623ae007f521c5310cec2d3b">&#9670;&#160;</a></span>csv_matrix_reader()</h2>
@@ -197,13 +201,57 @@ Additional Inherited Members</h2></td></tr>
 
 <p>construct from csv file with flags defaulting to use of space as separator </p>
 
-<p class="definition">Definition at line <a class="el" href="csv__reader_8h_source.html#l00052">52</a> of file <a class="el" href="csv__reader_8h_source.html">csv_reader.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="csv__reader_8h_source.html#l00053">53</a> of file <a class="el" href="csv__reader_8h_source.html">csv_reader.h</a>.</p>
 
 </div>
 </div>
 <h2 class="groupheader">Member Function Documentation</h2>
+<a id="a088a4a9378ede1926e032b831fd7d078" name="a088a4a9378ede1926e032b831fd7d078"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a088a4a9378ede1926e032b831fd7d078">&#9670;&#160;</a></span>parse_matrix() <span class="overload">[1/2]</span></h2>
+
+<div class="memitem">
+<div class="memproto">
+<div class="memtemplate">
+template&lt;typename T , unsigned N&gt; </div>
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">bool cgv::utils::csv_matrix_reader::parse_matrix </td>
+          <td>(</td>
+          <td class="paramtype">std::vector&lt; <a class="el" href="classcgv_1_1math_1_1fvec.html">cgv::math::fvec</a>&lt; T, N &gt; &gt; &amp;&#160;</td>
+          <td class="paramname"><em>matrix</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">T&#160;</td>
+          <td class="paramname"><em>init</em> = <code>T(0)</code>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">inline</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p>parse matrix into nested vector struct and initialize entries to given init value (only rectangular matrices supported) </p>
+
+<p class="definition">Definition at line <a class="el" href="csv__reader_8h_source.html#l00068">68</a> of file <a class="el" href="csv__reader_8h_source.html">csv_reader.h</a>.</p>
+
+<p class="reference">References <a class="el" href="convert__string_8cxx_source.html#l00013">cgv::utils::from_string()</a>, and <a class="el" href="convert__string_8cxx_source.html#l00007">cgv::utils::to_string()</a>.</p>
+
+</div>
+</div>
 <a id="a43210c58aa10497f085324a6e2b78a24" name="a43210c58aa10497f085324a6e2b78a24"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a43210c58aa10497f085324a6e2b78a24">&#9670;&#160;</a></span>parse_matrix()</h2>
+<h2 class="memtitle"><span class="permalink"><a href="#a43210c58aa10497f085324a6e2b78a24">&#9670;&#160;</a></span>parse_matrix() <span class="overload">[2/2]</span></h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -240,7 +288,7 @@ template&lt;typename T &gt; </div>
 
 <p>parse matrix into nested vector struct and initialize entries to given init value (only rectangular matrices supported) </p>
 
-<p class="definition">Definition at line <a class="el" href="csv__reader_8h_source.html#l00055">55</a> of file <a class="el" href="csv__reader_8h_source.html">csv_reader.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="csv__reader_8h_source.html#l00056">56</a> of file <a class="el" href="csv__reader_8h_source.html">csv_reader.h</a>.</p>
 
 <p class="reference">References <a class="el" href="convert__string_8cxx_source.html#l00013">cgv::utils::from_string()</a>, and <a class="el" href="convert__string_8cxx_source.html#l00007">cgv::utils::to_string()</a>.</p>
 
