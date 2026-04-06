@@ -5,6 +5,7 @@
 #include <functional>
 #include <cgv/utils/convert_string.h>
 #include <cgv/utils/advanced_scan.h>
+#include <cgv/math/fvec.h>
 
 #include <cgv/utils/lib_begin.h>
 
@@ -58,6 +59,18 @@ public:
 			std::vector<T> vec(tokens.size(), init);
 			for (size_t i = 0; i < tokens.size(); ++i)
 				cgv::utils::from_string(vec[i], cgv::utils::to_string(tokens[i]));
+			matrix.emplace_back(vec);
+		}
+		return true;
+	}
+	/// parse matrix into nested vector struct and initialize entries to given init value (only rectangular matrices supported)
+	template <typename T, unsigned N>
+	bool parse_matrix(std::vector<cgv::math::fvec<T,N>>& matrix, T init = T(0)) {
+		std::vector<cgv::utils::token> tokens;
+		while (parse_next_line(tokens)) {
+			cgv::math::fvec<T,N> vec(init);
+			for (size_t i = 0; i < tokens.size() && i < N; ++i)
+				cgv::utils::from_string(vec[int(i)], cgv::utils::to_string(tokens[i]));
 			matrix.emplace_back(vec);
 		}
 		return true;
