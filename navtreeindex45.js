@@ -1,5 +1,12 @@
 var NAVTREEINDEX45 =
 {
+"structcgv_1_1render_1_1volume__render__style.html#a7df7161a9db5e2aac43be8fb04550f03":[10,0,1,5,126,18],
+"structcgv_1_1render_1_1volume__render__style.html#a7df7161a9db5e2aac43be8fb04550f03":[11,0,0,12,126,18],
+"structcgv_1_1render_1_1volume__render__style.html#a82636d490952274f8ed663446e782dd9":[11,0,0,12,126,10],
+"structcgv_1_1render_1_1volume__render__style.html#a82636d490952274f8ed663446e782dd9":[10,0,1,5,126,10],
+"structcgv_1_1render_1_1volume__render__style.html#a8929cf23e3b8ee46e67c3c6d7eac8a4b":[10,0,1,5,126,22],
+"structcgv_1_1render_1_1volume__render__style.html#a8929cf23e3b8ee46e67c3c6d7eac8a4b":[11,0,0,12,126,22],
+"structcgv_1_1render_1_1volume__render__style.html#a946cbf3ae1806463ecaee71c046d1be4":[10,0,1,5,126,9],
 "structcgv_1_1render_1_1volume__render__style.html#a946cbf3ae1806463ecaee71c046d1be4":[11,0,0,12,126,9],
 "structcgv_1_1render_1_1volume__render__style.html#aa700054fd154b3b4e52b05e2285fa25c":[10,0,1,5,126,23],
 "structcgv_1_1render_1_1volume__render__style.html#aa700054fd154b3b4e52b05e2285fa25c":[11,0,0,12,126,23],
@@ -242,12 +249,5 @@ var NAVTREEINDEX45 =
 "structcgv_1_1type_1_1traits_1_1max_3_01uint64__type_01_4.html":[11,0,0,14,4,7],
 "structcgv_1_1type_1_1traits_1_1max_3_01uint8__type_01_4.html":[11,0,0,14,4,8],
 "structcgv_1_1type_1_1traits_1_1max__fct.html":[11,0,0,14,4,9],
-"structcgv_1_1type_1_1traits_1_1max__fct_3_01double_01_4.html":[11,0,0,14,4,10],
-"structcgv_1_1type_1_1traits_1_1max__fct_3_01float_01_4.html":[11,0,0,14,4,11],
-"structcgv_1_1type_1_1traits_1_1member__pointer.html":[11,0,0,14,4,12],
-"structcgv_1_1type_1_1traits_1_1member__pointer_3_01M_01T_1_1_5_01_4.html":[11,0,0,14,4,13],
-"structcgv_1_1type_1_1traits_1_1min.html":[11,0,0,14,4,14],
-"structcgv_1_1type_1_1traits_1_1min_3_01char_01_4.html":[11,0,0,14,4,15],
-"structcgv_1_1type_1_1traits_1_1min_3_01int_01_4.html":[11,0,0,14,4,16],
-"structcgv_1_1type_1_1traits_1_1min_3_01long_01_4.html":[11,0,0,14,4,17]
+"structcgv_1_1type_1_1traits_1_1max__fct_3_01double_01_4.html":[11,0,0,14,4,10]
 };

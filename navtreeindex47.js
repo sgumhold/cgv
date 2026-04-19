@@ -1,5 +1,12 @@
 var NAVTREEINDEX47 =
 {
+"structvr_1_1vr__kit__info.html":[10,0,2,11],
+"structvr_1_1vr__kit__info.html#a28ad8eeb113b1a031e83e90bfbf2a77d":[10,0,2,11,0],
+"structvr_1_1vr__kit__info.html#a28ad8eeb113b1a031e83e90bfbf2a77d":[11,0,5,11,0],
+"structvr_1_1vr__kit__info.html#a54053e3a11e99f369916abf0568767f4":[11,0,5,11,3],
+"structvr_1_1vr__kit__info.html#a54053e3a11e99f369916abf0568767f4":[10,0,2,11,3],
+"structvr_1_1vr__kit__info.html#accdcd81c77c26ea43900d986ca2f9e0b":[10,0,2,11,1],
+"structvr_1_1vr__kit__info.html#accdcd81c77c26ea43900d986ca2f9e0b":[11,0,5,11,1],
 "structvr_1_1vr__kit__info.html#af5b7b66c685bbf006643ebc022ae9db9":[11,0,5,11,2],
 "structvr_1_1vr__kit__info.html#af5b7b66c685bbf006643ebc022ae9db9":[10,0,2,11,2],
 "structvr_1_1vr__kit__state.html":[11,0,5,12],

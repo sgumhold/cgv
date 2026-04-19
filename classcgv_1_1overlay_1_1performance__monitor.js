@@ -4,6 +4,7 @@ var classcgv_1_1overlay_1_1performance__monitor =
     [ "after_finish", "classcgv_1_1overlay_1_1performance__monitor.html#a729265ddd1f53713a714d82cf06e2af4", null ],
     [ "clear", "classcgv_1_1overlay_1_1performance__monitor.html#a32b9fcb0644eff4afd5d96a3b185dfa8", null ],
     [ "create_gui_impl", "classcgv_1_1overlay_1_1performance__monitor.html#ac807aec173a86252f1c5be7303211965", null ],
+    [ "draw_content", "classcgv_1_1overlay_1_1performance__monitor.html#a06e15b6a57cf86aa15c8092d74a9000a", null ],
     [ "get_type_name", "classcgv_1_1overlay_1_1performance__monitor.html#a81dbd375ab2899393514c9a78f216cad", null ],
     [ "handle_member_change", "classcgv_1_1overlay_1_1performance__monitor.html#afa26df5464fa90cfe18a7cc375f2b8e4", null ],
     [ "init", "classcgv_1_1overlay_1_1performance__monitor.html#a07c9a778adeb5a93f25a45b889909077", null ],

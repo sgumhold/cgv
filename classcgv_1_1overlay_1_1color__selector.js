@@ -4,6 +4,7 @@ var classcgv_1_1overlay_1_1color__selector =
     [ "selector_handle", "structcgv_1_1overlay_1_1color__selector_1_1selector__handle.html", null ],
     [ "clear", "classcgv_1_1overlay_1_1color__selector.html#af1039a861ea839fd844c84e5de618e4f", null ],
     [ "create_gui_impl", "classcgv_1_1overlay_1_1color__selector.html#ad5b1168b82376074256125716af15331", null ],
+    [ "draw_content", "classcgv_1_1overlay_1_1color__selector.html#a298dded3fbea52478e7b9a02ebf462c4", null ],
     [ "get_type_name", "classcgv_1_1overlay_1_1color__selector.html#ae9f9706b95635694f03757a7bc76aae1", null ],
     [ "handle_member_change", "classcgv_1_1overlay_1_1color__selector.html#aefe5b8a818fa26f85e478eab25d69f02", null ],
     [ "handle_mouse_event", "classcgv_1_1overlay_1_1color__selector.html#a8766a95059521aba676d7b9e436d041b", null ],
