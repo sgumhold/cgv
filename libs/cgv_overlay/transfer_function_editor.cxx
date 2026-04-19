@@ -877,7 +877,7 @@ void sort_draggables(cgv::g2d::draggable_collection<T>& draggables, T*& selected
 		int permuted_index = static_cast<int>(permutation[i]);
 		draggables[i] = draggables_copy[permuted_index];
 		if(permuted_index == dragged_idx)
-			draggables.set_dragged(i);
+			draggables.set_dragged(int(i));
 		if(permuted_index == selected_idx)
 			selected = &draggables[i];
 	}

@@ -15,14 +15,14 @@ class CGV_API canvas_overlay : public overlay {
 private:
 	bool has_damage_ = true;
 	bool recreate_layout_requested_ = true;
-
+	
 	cgv::g2d::shape2d_style blit_style_;
 
 	cgv::render::managed_frame_buffer frame_buffer_;
 
 protected:
 	cgv::g2d::canvas overlay_canvas, content_canvas;
-
+	bool draw_in_finish_frame = false;
 	bool ensure_layout(cgv::render::context& ctx);
 
 	void post_recreate_layout();
@@ -44,17 +44,19 @@ protected:
 public:
 	/// creates an overlay in the bottom left corner with zero size using a canvas for 2d drawing
 	canvas_overlay();
-
 	bool init(cgv::render::context& ctx) override;
-
 	void clear(cgv::render::context& ctx) override;
-
+	/// set the drawing of the content to be in finish_frame (enable = true) or after_finish (enable = false)
+	void set_draw_in_finish_frame(bool enable = true);
 	/// default implementation of that calls handle_member_change and afterwards upates the member in the gui and post damage to the canvas overlay
 	virtual void on_set(void* member_ptr) override;
 	/// implement to handle member changes
 	virtual void handle_member_change(cgv::data::informed_ptr ptr) override {}
-	/// draw the content of the canvas overlay
+	/// draw the content of the canvas overlay either in finish_frame
+	void finish_frame(cgv::render::context&) override;
+	/// or in after_finish, what is the default
 	void after_finish(cgv::render::context&) override;
+	/// draw_content is implemented by decendent classes
 	virtual void draw_content(cgv::render::context& ctx) = 0;
 
 	void post_damage(bool redraw = true);

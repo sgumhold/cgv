@@ -44,10 +44,18 @@ void canvas_overlay::on_set(void* member_ptr) {
 	update_member(member_ptr);
 	post_damage();
 }
+void canvas_overlay::set_draw_in_finish_frame(bool enable)
+{
+	draw_in_finish_frame = enable;
+}
+
+void canvas_overlay::finish_frame(cgv::render::context& ctx) {
+	if (is_visible() && draw_in_finish_frame)
+		draw_impl(ctx);
+}
 
 void canvas_overlay::after_finish(context& ctx) {
-
-	if(is_visible())
+	if(is_visible() && !draw_in_finish_frame)
 		draw_impl(ctx);
 }
 
