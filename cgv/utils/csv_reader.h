@@ -19,7 +19,8 @@ enum CSV_Flags
 	CSV_COMMA   = 2, // whether comma is a separator
 	CSV_TAB     = 4, // whether tab is a separator
 	CSV_SPACE   = 8, // whether space is a separating white space (always merged)
-	CSV_DEFAULT  = CSV_HEADING | CSV_COMMA| CSV_TAB
+	CSV_QUOTES  = 16, // whether quotes are used to combine text to single fields
+	CSV_DEFAULT  = CSV_HEADING | CSV_COMMA| CSV_TAB | CSV_QUOTES
 };
 
 /// base class of csv parser responsible for splitting file into lines and tokens

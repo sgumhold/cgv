@@ -544,6 +544,15 @@ shader_program_base* context::get_current_program() const
 	return &prog;
 }
 
+/// check for current framebuffer, and return pointer to it
+const frame_buffer_base* context::get_current_frame_buffer() const
+{
+	if (frame_buffer_stack.empty())
+		return 0;
+	return frame_buffer_stack.top();
+}
+
+
 /// enable the usage of the shader file caches
 void context::enable_shader_file_cache()
 {
@@ -857,6 +866,16 @@ RenderPassFlags context::get_render_pass_flags() const
 	if (render_pass_stack.empty())
 		return RPF_NONE;
 	return render_pass_stack.top().flags;
+}
+
+/// update the current render pass flags
+bool context::update_render_pass_flags(int exclude_flags, int include_flags)
+{
+	if (render_pass_stack.empty())
+		return false;
+	auto& flags = render_pass_stack.top().flags;
+	flags = RenderPassFlags((flags & ~exclude_flags) | include_flags);
+	return true;
 }
 
 /// return the default render pass flags

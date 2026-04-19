@@ -6,7 +6,10 @@ namespace cgv {
 		render_style::~render_style()
 		{
 		}
-		renderer::renderer() {}
+		renderer::renderer() 
+		{
+			aam_ptr = 0;
+		}
 		void renderer::manage_singleton(context& ctx, const std::string& renderer_name, int& ref_count, int ref_count_change)
 		{
 			switch (ref_count_change) {
