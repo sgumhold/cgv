@@ -1,5 +1,10 @@
 var NAVTREEINDEX42 =
 {
+"structcgv_1_1plot_1_1plot__base__config.html#ad4db154de2792d416452a3a1fc93465e":[11,0,0,9,13,1],
+"structcgv_1_1plot_1_1plot__base__config.html#ad6a97e52a799ac7d5adfb42840b1d75a":[11,0,0,9,13,8],
+"structcgv_1_1plot_1_1plot__base__config.html#ae7b5ac492333990659ae75b224be40d8":[11,0,0,9,13,4],
+"structcgv_1_1plot_1_1plot__base__config.html#ae94ea10b60d591b6dbaa3c367e44e431":[11,0,0,9,13,21],
+"structcgv_1_1plot_1_1plot__base__config.html#af28b3de60af8e1543333bf20bf3d22e2":[11,0,0,9,13,19],
 "structcgv_1_1plot_1_1plot__base__config.html#afae1e32c85f99d0c3cc322d5a9d7ca66":[11,0,0,9,13,12],
 "structcgv_1_1plot_1_1sample__access.html":[11,0,0,9,14],
 "structcgv_1_1plot_1_1tick__config.html":[11,0,0,9,15],
@@ -244,10 +249,5 @@ var NAVTREEINDEX42 =
 "structcgv_1_1render_1_1array__descriptor__traits_3_01std_1_1vector_3_01T_01_4_01_4.html#a1bc4f4cc4ade30d929751fdb68c46567":[10,0,1,5,5,0],
 "structcgv_1_1render_1_1array__descriptor__traits_3_01std_1_1vector_3_01T_01_4_01_4.html#a82de9f48bf1068908e3f456465107a19":[10,0,1,5,5,2],
 "structcgv_1_1render_1_1array__descriptor__traits_3_01std_1_1vector_3_01T_01_4_01_4.html#a82de9f48bf1068908e3f456465107a19":[11,0,0,12,5,2],
-"structcgv_1_1render_1_1array__descriptor__traits_3_01std_1_1vector_3_01T_01_4_01_4.html#a93e6270e80a32b44f14baf53941728ea":[11,0,0,12,5,4],
-"structcgv_1_1render_1_1array__descriptor__traits_3_01std_1_1vector_3_01T_01_4_01_4.html#a93e6270e80a32b44f14baf53941728ea":[10,0,1,5,5,4],
-"structcgv_1_1render_1_1array__descriptor__traits_3_01std_1_1vector_3_01T_01_4_01_4.html#aff09b55840e55b800a696322fe177f7a":[11,0,0,12,5,1],
-"structcgv_1_1render_1_1array__descriptor__traits_3_01std_1_1vector_3_01T_01_4_01_4.html#aff09b55840e55b800a696322fe177f7a":[10,0,1,5,5,1],
-"structcgv_1_1render_1_1arrow__render__style.html":[10,0,1,5,8],
-"structcgv_1_1render_1_1arrow__render__style.html":[11,0,0,12,8]
+"structcgv_1_1render_1_1array__descriptor__traits_3_01std_1_1vector_3_01T_01_4_01_4.html#a93e6270e80a32b44f14baf53941728ea":[11,0,0,12,5,4]
 };

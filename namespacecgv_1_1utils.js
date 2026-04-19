@@ -31,6 +31,7 @@ var namespacecgv_1_1utils =
       [ "CSV_COMMA", "namespacecgv_1_1utils.html#a7d80aa42cb0083d93d716ad73c6b0fe8aedfe817760216d0450ec401e0ec0971c", null ],
       [ "CSV_TAB", "namespacecgv_1_1utils.html#a7d80aa42cb0083d93d716ad73c6b0fe8a5bc9ff1b6714d1d5837bf7dfd41f9b74", null ],
       [ "CSV_SPACE", "namespacecgv_1_1utils.html#a7d80aa42cb0083d93d716ad73c6b0fe8ae3a743f075a577eff0f8bdc893fcf2f4", null ],
+      [ "CSV_QUOTES", "namespacecgv_1_1utils.html#a7d80aa42cb0083d93d716ad73c6b0fe8a30b9d3dbeed9b5c779d4695844455f4e", null ],
       [ "CSV_DEFAULT", "namespacecgv_1_1utils.html#a7d80aa42cb0083d93d716ad73c6b0fe8a34731b277d1db74ef6d35ee6bea51e33", null ]
     ] ],
     [ "endian", "namespacecgv_1_1utils.html#a53a92ad4769093cc132b00d18931df3c", [
