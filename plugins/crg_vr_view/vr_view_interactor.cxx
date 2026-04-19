@@ -242,15 +242,15 @@ void vr_view_interactor::on_set(void* member_ptr)
 		vr::set_vrmesh_file_name(vr::VRM_TRACKER, tracker_mesh_file_name);
 	if (member_ptr == &base_mesh_file_name) {
 		vr::set_vrmesh_file_name(vr::VRM_BASE, base_mesh_file_name);
-		update_member(&base_mesh_file_name);
+		cgv::gui::provider::update_member(&base_mesh_file_name);
 	}
 
 	if (member_ptr == &vis_type) {
 		hmd_vis_type = controller_vis_type = tracker_vis_type = vis_type;
-		update_member(&hmd_vis_type);
-		update_member(&controller_vis_type);
-		update_member(&tracker_vis_type);
-		update_member(&base_vis_type);
+		cgv::gui::provider::update_member(&hmd_vis_type);
+		cgv::gui::provider::update_member(&controller_vis_type);
+		cgv::gui::provider::update_member(&tracker_vis_type);
+		cgv::gui::provider::update_member(&base_vis_type);
 	}
 
 	if (member_ptr == &current_vr_handle_index) {
@@ -258,7 +258,7 @@ void vr_view_interactor::on_set(void* member_ptr)
 			current_vr_handle = 0;
 			if (!separate_view) {
 				separate_view = true;
-				update_member(&separate_view);
+				cgv::gui::provider::update_member(&separate_view);
 			}
 		}
 		else
@@ -384,7 +384,7 @@ bool vr_view_interactor::handle(cgv::gui::event& e)
 					if (player_index < kits.size()) {
 						current_vr_handle_index = player_index;
 						current_vr_handle = kits[player_index];
-						update_member(&current_vr_handle_index);
+						cgv::gui::provider::update_member(&current_vr_handle_index);
 						return true;
 					}
 				}
@@ -414,8 +414,8 @@ bool vr_view_interactor::handle(cgv::gui::event& e)
 							tracking_origin = get_focus();
 							p = get_focus();
 							for (int i = 0; i < 3; ++i) {
-								update_member(&tracking_origin[i]);
-								update_member(&tracking_rotation_origin[i]);
+								cgv::gui::provider::update_member(&tracking_origin[i]);
+								cgv::gui::provider::update_member(&tracking_rotation_origin[i]);
 							}
 							calibrate_driver();
 						}
@@ -567,7 +567,7 @@ void vr_view_interactor::configure_kits()
 					break;
 				}
 		}
-		update_member(&current_vr_handle_index);
+		cgv::gui::provider::update_member(&current_vr_handle_index);
 	}
 }
 
@@ -741,7 +741,7 @@ void vr_view_interactor::draw_vr_kits(cgv::render::context& ctx)
 					// try to read meshes and turn off mesh rendering and potentially switch to sphere rendering in case meshes are not available
 					if (MI_hmd_ptr) {
 						hmd_mesh_file_name = vr::get_vrmesh_file_name(vr::VRM_HMD);
-						update_member(&hmd_mesh_file_name);
+						cgv::gui::provider::update_member(&hmd_mesh_file_name);
 					}
 					else {
 						hmd_vis_type = VVT_SPHERE;
@@ -794,7 +794,7 @@ void vr_view_interactor::draw_vr_kits(cgv::render::context& ctx)
 						MI_controller_ptr = vr::get_vrmesh_render_info(ctx, vr::VRM_CONTROLLER);
 						if (MI_controller_ptr) {
 							controller_mesh_file_name = vr::get_vrmesh_file_name(vr::VRM_CONTROLLER);
-							update_member(&controller_mesh_file_name);
+							cgv::gui::provider::update_member(&controller_mesh_file_name);
 						}
 						else {
 							controller_vis_type = VVT_SPHERE;
@@ -814,7 +814,7 @@ void vr_view_interactor::draw_vr_kits(cgv::render::context& ctx)
 						MI_tracker_ptr = vr::get_vrmesh_render_info(ctx, vr::VRM_TRACKER);
 						if (MI_tracker_ptr) {
 							tracker_mesh_file_name = vr::get_vrmesh_file_name(vr::VRM_TRACKER);
-							update_member(&tracker_mesh_file_name);
+							cgv::gui::provider::update_member(&tracker_mesh_file_name);
 						}
 						else {
 							tracker_vis_type = VVT_SPHERE;
@@ -849,7 +849,7 @@ void vr_view_interactor::draw_vr_kits(cgv::render::context& ctx)
 						MI_base_ptr = vr::get_vrmesh_render_info(ctx, vr::VRM_BASE);
 						if (MI_base_ptr) {
 							base_mesh_file_name = vr::get_vrmesh_file_name(vr::VRM_BASE);
-							update_member(&base_mesh_file_name);
+							cgv::gui::provider::update_member(&base_mesh_file_name);
 						}
 						else {
 							base_vis_type = VVT_SPHERE;
