@@ -4,6 +4,7 @@ var classcgv_1_1overlay_1_1transfer__function__editor =
     [ "layout_attributes", "structcgv_1_1overlay_1_1transfer__function__editor_1_1layout__attributes.html", null ],
     [ "clear", "classcgv_1_1overlay_1_1transfer__function__editor.html#a12988c20f321203e3412f53d04a6a96c", null ],
     [ "create_gui_impl", "classcgv_1_1overlay_1_1transfer__function__editor.html#a43be2e845bfea327fae8df13a1751fa1", null ],
+    [ "draw_content", "classcgv_1_1overlay_1_1transfer__function__editor.html#a7e21c21ef76b25552d6e77d7183808a2", null ],
     [ "get_type_name", "classcgv_1_1overlay_1_1transfer__function__editor.html#af2d43eacb063be60eca03c373692886e", null ],
     [ "handle_member_change", "classcgv_1_1overlay_1_1transfer__function__editor.html#a4605ce9ae0ee9c720aca7c3625bc7fdc", null ],
     [ "handle_mouse_event", "classcgv_1_1overlay_1_1transfer__function__editor.html#a7ff80144d259f637bf051be208c56503", null ],
