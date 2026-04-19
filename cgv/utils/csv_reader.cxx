@@ -75,7 +75,7 @@ bool csv_reader_base::parse_next_line(std::vector<cgv::utils::token>& tokens) co
 		}
 		// split with seperator extration to support empty entries 
 		std::vector<cgv::utils::token> sep_tokens;
-		cgv::utils::split_to_tokens(lines[li], sep_tokens, get_sep(), false, "", "", get_ws());
+		cgv::utils::split_to_tokens(lines[li], sep_tokens, get_sep(), false, "'\"", "'\"", get_ws());
 		// filter out separators
 		tokens.clear();
 		bool last_was_empty = true;

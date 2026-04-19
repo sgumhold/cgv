@@ -776,6 +776,8 @@ protected:
 public:
 	/// check for current program, prepare it for rendering and return pointer to it
 	shader_program_base* get_current_program() const;
+	/// check for current framebuffer, and return pointer to it
+	const frame_buffer_base* get_current_frame_buffer() const;
 	/// enable the usage of the shader file caches
 	void enable_shader_file_cache();
 	/// disable the usage of the shader file caches
@@ -961,6 +963,8 @@ public:
 	virtual RenderPass get_render_pass() const;
 	/// return the current render pass flags
 	virtual RenderPassFlags get_render_pass_flags() const;
+	/// update the current render pass flags, return whether this was possible (fails outside of render passes)
+	bool update_render_pass_flags(int exclude_flags, int include_flags = 0);
 	/// return the current render pass user data
 	virtual void* get_render_pass_user_data() const;
 	/// return the default render pass flags

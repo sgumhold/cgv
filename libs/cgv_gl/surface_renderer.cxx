@@ -69,7 +69,7 @@ namespace cgv {
 				ctx.set_cull_state(srs.culling_mode);
 			}
 			if (ref_prog().is_linked()) {
-				if (!has_colors) {
+				if (!has_colors && ref_prog().get_attribute_location(ctx, "color") != -1) {
 					cgv::rgba col(srs.surface_color, srs.surface_opacity);
 					ref_prog().set_attribute(ctx, "color", col);
 				}
