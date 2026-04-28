@@ -17,8 +17,8 @@
 namespace cgv {
 namespace overlay {
 
-vec2 transfer_function_editor::color_point::domain = { 0.0f, 1.0f };
-vec2 transfer_function_editor::opacity_point::domain = { 0.0f, 1.0f };
+template<> vec2 transfer_function_editor::color_point::domain = { 0.0f, 1.0f };
+template<> vec2 transfer_function_editor::opacity_point::domain = { 0.0f, 1.0f };
 const vec2 transfer_function_editor::color_point_size = { 12.0f, 18.0f };
 const vec2 transfer_function_editor::opacity_point_size = { 12.0f };
 const size_t transfer_function_editor::preview_texture_resolution = 256;
