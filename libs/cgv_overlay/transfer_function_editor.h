@@ -17,6 +17,11 @@ namespace overlay {
 
 class CGV_API transfer_function_editor : public themed_canvas_overlay {
 protected:
+	enum class DraggableType {
+		kColor,
+		kOpacity
+	};
+
 	template<typename DataT>
 	class control_point : public cgv::g2d::draggable {
 	public:
@@ -30,39 +35,40 @@ protected:
 			if(!constraint)
 				return;
 
-			const auto& area = static_cast<cgv::g2d::rect>(*constraint);
+			const auto area = static_cast<cgv::g2d::rect>(*constraint);
 			this->position = cgv::math::clamp(position, area.a(), area.b());
 			uv = (this->position - area.position) / area.size;
+			update_domain_value();
 		}
 
 		void set_uv_and_update_position(vec2 uv) {
 			if(!constraint)
 				return;
 
-			const auto& area = static_cast<cgv::g2d::rect>(*constraint);
+			const auto area = static_cast<cgv::g2d::rect>(*constraint);
 			this->uv = cgv::math::clamp(uv, 0.0f, 1.0f);
 			position = area.position + this->uv * area.size;
+			update_domain_value();
 		}
 
 		bool operator<(const control_point& other) const {
 			return uv.x() < other.uv.x();
 		}
 
+		static vec2 domain;
+
 		vec2 uv = { 0.0f };
-		vec2 value = { 0.0f };
+		float domain_value = 0.0f;
 		DataT data = {};
+
+	private:
+		void update_domain_value() {
+			domain_value = cgv::math::lerp(domain.x(), domain.y(), uv.x());
+		}
 	};
 
 	using color_point = control_point<rgb>;
 	using opacity_point = control_point<void*>;
-
-	static const vec2 color_point_size;
-	static const vec2 opacity_point_size;
-
-	enum class DraggableType {
-		kColor,
-		kOpacity
-	};
 
 	struct layout_attributes {
 		int total_height;
@@ -72,6 +78,10 @@ protected:
 		cgv::g2d::irect color_editor_rect;
 		cgv::g2d::irect opacity_editor_rect;
 	} layout;
+
+	static const vec2 color_point_size;
+	static const vec2 opacity_point_size;
+	static const size_t preview_texture_resolution;
 
 	bool supports_opacity = false;
 	cgv::media::transfer_function::InterpolationMode color_interpolation = cgv::media::transfer_function::InterpolationMode::kLinear;
@@ -83,7 +93,7 @@ protected:
 	// general appearance
 	rgba handle_color = { 0.9f, 0.9f, 0.9f, 1.0f };
 	rgba highlight_color = { 0.5f, 0.5f, 0.5f, 1.0f };
-	cgv::g2d::shape2d_style border_style, color_map_style, bg_style, hist_style, label_box_style, opacity_handle_style, polygon_style;
+	cgv::g2d::shape2d_style border_style, color_map_style, background_style, histogram_style, label_box_style, opacity_handle_style, polygon_style;
 	cgv::g2d::arrow2d_style color_handle_style;
 	cgv::g2d::line2d_style line_style;
 
@@ -102,9 +112,6 @@ protected:
 		kSmooth = 3
 	};
 	HistogramType histogram_type = HistogramType::kNone;
-
-	//int discretization_resolution = 256;
-	float opacity_scale_exponent = 1.0f;
 
 	cgv::render::texture background_tex = { "flt32[R,G,B]", cgv::render::TF_NEAREST, cgv::render::TF_NEAREST, cgv::render::TW_REPEAT, cgv::render::TW_REPEAT };
 	cgv::render::texture preview_tex = { "uint8[R,G,B,A]" };
