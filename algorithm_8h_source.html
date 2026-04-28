@@ -245,88 +245,98 @@ $(document).ready(function(){initNavTree('algorithm_8h_source.html',''); initRes
 <div class="line"><a id="l00221" name="l00221"></a><span class="lineno">  221</span>}</div>
 </div>
 <div class="line"><a id="l00222" name="l00222"></a><span class="lineno">  222</span> </div>
-<div class="line"><a id="l00232" name="l00232"></a><span class="lineno">  232</span><span class="keyword">template</span>&lt;<span class="keyword">typename</span> ParamT = <span class="keywordtype">float</span>, <span class="keyword">typename</span> OutputIt&gt;</div>
-<div class="foldopen" id="foldopen00233" data-start="{" data-end="}">
-<div class="line"><a id="l00233" name="l00233"></a><span class="lineno"><a class="line" href="namespacecgv_1_1utils.html#ac85b6c96afdf6be149997886d8edaa82">  233</a></span><span class="keywordtype">void</span> <a class="code hl_function" href="namespacecgv_1_1utils.html#ac85b6c96afdf6be149997886d8edaa82">subdivision_sequence</a>(OutputIt output_first, ParamT start, ParamT stop, <span class="keywordtype">size_t</span> n) {</div>
-<div class="line"><a id="l00234" name="l00234"></a><span class="lineno">  234</span>    <span class="keywordflow">if</span>(n == 1) {</div>
-<div class="line"><a id="l00235" name="l00235"></a><span class="lineno">  235</span>        *output_first = ParamT(0.5) * (start + stop);</div>
-<div class="line"><a id="l00236" name="l00236"></a><span class="lineno">  236</span>        ++output_first;</div>
-<div class="line"><a id="l00237" name="l00237"></a><span class="lineno">  237</span>    } <span class="keywordflow">else</span> <span class="keywordflow">if</span>(n &gt; 1) {</div>
-<div class="line"><a id="l00238" name="l00238"></a><span class="lineno">  238</span>        <span class="keyword">const</span> ParamT size = stop - start;</div>
-<div class="line"><a id="l00239" name="l00239"></a><span class="lineno">  239</span>        <span class="keyword">const</span> ParamT step = size / <span class="keyword">static_cast&lt;</span>ParamT<span class="keyword">&gt;</span>(n - 1);</div>
-<div class="line"><a id="l00240" name="l00240"></a><span class="lineno">  240</span>        <span class="keywordflow">for</span>(<span class="keywordtype">size_t</span> i = 0; i &lt; n; ++i) {</div>
-<div class="line"><a id="l00241" name="l00241"></a><span class="lineno">  241</span>            ParamT t = start + step * <span class="keyword">static_cast&lt;</span>ParamT<span class="keyword">&gt;</span>(i);</div>
-<div class="line"><a id="l00242" name="l00242"></a><span class="lineno">  242</span>            *output_first = t;</div>
-<div class="line"><a id="l00243" name="l00243"></a><span class="lineno">  243</span>            ++output_first;</div>
-<div class="line"><a id="l00244" name="l00244"></a><span class="lineno">  244</span>        }</div>
-<div class="line"><a id="l00245" name="l00245"></a><span class="lineno">  245</span>    }</div>
-<div class="line"><a id="l00246" name="l00246"></a><span class="lineno">  246</span>}</div>
+<div class="line"><a id="l00231" name="l00231"></a><span class="lineno">  231</span><span class="keyword">template</span>&lt;<span class="keyword">typename</span> ParamT = <span class="keywordtype">float</span>, <span class="keyword">typename</span> OutputIt&gt;</div>
+<div class="foldopen" id="foldopen00232" data-start="{" data-end="}">
+<div class="line"><a id="l00232" name="l00232"></a><span class="lineno"><a class="line" href="namespacecgv_1_1utils.html#ac85b6c96afdf6be149997886d8edaa82">  232</a></span><span class="keywordtype">void</span> <a class="code hl_function" href="namespacecgv_1_1utils.html#ac85b6c96afdf6be149997886d8edaa82">subdivision_sequence</a>(OutputIt output_first, ParamT start, ParamT stop, <span class="keywordtype">size_t</span> n) {</div>
+<div class="line"><a id="l00233" name="l00233"></a><span class="lineno">  233</span>    <span class="keywordflow">if</span>(n == 1) {</div>
+<div class="line"><a id="l00234" name="l00234"></a><span class="lineno">  234</span>        *output_first = ParamT(0.5) * (start + stop);</div>
+<div class="line"><a id="l00235" name="l00235"></a><span class="lineno">  235</span>        ++output_first;</div>
+<div class="line"><a id="l00236" name="l00236"></a><span class="lineno">  236</span>    } <span class="keywordflow">else</span> <span class="keywordflow">if</span>(n &gt; 1) {</div>
+<div class="line"><a id="l00237" name="l00237"></a><span class="lineno">  237</span>        <span class="keyword">const</span> ParamT size = stop - start;</div>
+<div class="line"><a id="l00238" name="l00238"></a><span class="lineno">  238</span>        <span class="keyword">const</span> ParamT step = size / <span class="keyword">static_cast&lt;</span>ParamT<span class="keyword">&gt;</span>(n - 1);</div>
+<div class="line"><a id="l00239" name="l00239"></a><span class="lineno">  239</span>        <span class="keywordflow">for</span>(<span class="keywordtype">size_t</span> i = 0; i &lt; n; ++i) {</div>
+<div class="line"><a id="l00240" name="l00240"></a><span class="lineno">  240</span>            ParamT t = start + step * <span class="keyword">static_cast&lt;</span>ParamT<span class="keyword">&gt;</span>(i);</div>
+<div class="line"><a id="l00241" name="l00241"></a><span class="lineno">  241</span>            *output_first = t;</div>
+<div class="line"><a id="l00242" name="l00242"></a><span class="lineno">  242</span>            ++output_first;</div>
+<div class="line"><a id="l00243" name="l00243"></a><span class="lineno">  243</span>        }</div>
+<div class="line"><a id="l00244" name="l00244"></a><span class="lineno">  244</span>    }</div>
+<div class="line"><a id="l00245" name="l00245"></a><span class="lineno">  245</span>}</div>
 </div>
-<div class="line"><a id="l00247" name="l00247"></a><span class="lineno">  247</span> </div>
-<div class="line"><a id="l00254" name="l00254"></a><span class="lineno">  254</span><span class="keyword">template</span>&lt;<span class="keyword">class</span> InputIt&gt;</div>
-<div class="foldopen" id="foldopen00255" data-start="{" data-end="}">
-<div class="line"><a id="l00255" name="l00255"></a><span class="lineno"><a class="line" href="namespacecgv_1_1utils.html#a1cc72ef3ca8609ec729c66a8495181ae">  255</a></span>std::vector&lt;size_t&gt; <a class="code hl_function" href="namespacecgv_1_1utils.html#a1cc72ef3ca8609ec729c66a8495181ae">generate_index_sequence</a>(<span class="keyword">const</span> InputIt first, <span class="keyword">const</span> InputIt last) {</div>
-<div class="line"><a id="l00256" name="l00256"></a><span class="lineno">  256</span>    std::vector&lt;size_t&gt; indices(<span class="keyword">static_cast&lt;</span><span class="keywordtype">size_t</span><span class="keyword">&gt;</span>(std::distance(first, last)));</div>
-<div class="line"><a id="l00257" name="l00257"></a><span class="lineno">  257</span>    std::iota(indices.begin(), indices.end(), 0);</div>
-<div class="line"><a id="l00258" name="l00258"></a><span class="lineno">  258</span>    <span class="keywordflow">return</span> indices;</div>
+<div class="line"><a id="l00246" name="l00246"></a><span class="lineno">  246</span> </div>
+<div class="line"><a id="l00253" name="l00253"></a><span class="lineno">  253</span><span class="keyword">template</span>&lt;<span class="keyword">typename</span> ParamT&gt;</div>
+<div class="foldopen" id="foldopen00254" data-start="{" data-end="}">
+<div class="line"><a id="l00254" name="l00254"></a><span class="lineno"><a class="line" href="namespacecgv_1_1utils.html#a984dcfa531e812e127811f977a17299e">  254</a></span>std::vector&lt;ParamT&gt; <a class="code hl_function" href="namespacecgv_1_1utils.html#ac85b6c96afdf6be149997886d8edaa82">subdivision_sequence</a>(ParamT start, ParamT stop, <span class="keywordtype">size_t</span> n) {</div>
+<div class="line"><a id="l00255" name="l00255"></a><span class="lineno">  255</span>    std::vector&lt;ParamT&gt; out;</div>
+<div class="line"><a id="l00256" name="l00256"></a><span class="lineno">  256</span>    out.reserve(n);</div>
+<div class="line"><a id="l00257" name="l00257"></a><span class="lineno">  257</span>    <a class="code hl_function" href="namespacecgv_1_1utils.html#ac85b6c96afdf6be149997886d8edaa82">cgv::utils::subdivision_sequence</a>(std::back_inserter(out), start, stop, n);</div>
+<div class="line"><a id="l00258" name="l00258"></a><span class="lineno">  258</span>    <span class="keywordflow">return</span> out;</div>
 <div class="line"><a id="l00259" name="l00259"></a><span class="lineno">  259</span>}</div>
 </div>
 <div class="line"><a id="l00260" name="l00260"></a><span class="lineno">  260</span> </div>
-<div class="line"><a id="l00268" name="l00268"></a><span class="lineno">  268</span><span class="keyword">template</span>&lt;<span class="keyword">class</span> RandomIt&gt;</div>
-<div class="foldopen" id="foldopen00269" data-start="{" data-end="}">
-<div class="line"><a id="l00269" name="l00269"></a><span class="lineno"><a class="line" href="namespacecgv_1_1utils.html#a72d462a4ceaca6d66a9bb4bbc3c1ae47">  269</a></span>std::vector&lt;size_t&gt; <a class="code hl_function" href="namespacecgv_1_1utils.html#a72d462a4ceaca6d66a9bb4bbc3c1ae47">sort_indices</a>(<span class="keyword">const</span> RandomIt first, <span class="keyword">const</span> RandomIt last) {</div>
-<div class="line"><a id="l00270" name="l00270"></a><span class="lineno">  270</span>    std::vector&lt;size_t&gt; indices = <a class="code hl_function" href="namespacecgv_1_1utils.html#a1cc72ef3ca8609ec729c66a8495181ae">generate_index_sequence</a>(first, last);</div>
-<div class="line"><a id="l00271" name="l00271"></a><span class="lineno">  271</span>    std::sort(indices.begin(), indices.end(), [first](<span class="keywordtype">size_t</span> i1, <span class="keywordtype">size_t</span> i2) {</div>
-<div class="line"><a id="l00272" name="l00272"></a><span class="lineno">  272</span>        return first[i1] &lt; first[i2];</div>
-<div class="line"><a id="l00273" name="l00273"></a><span class="lineno">  273</span>    });</div>
-<div class="line"><a id="l00274" name="l00274"></a><span class="lineno">  274</span>    <span class="keywordflow">return</span> indices;</div>
-<div class="line"><a id="l00275" name="l00275"></a><span class="lineno">  275</span>}</div>
+<div class="line"><a id="l00267" name="l00267"></a><span class="lineno">  267</span><span class="keyword">template</span>&lt;<span class="keyword">class</span> InputIt&gt;</div>
+<div class="foldopen" id="foldopen00268" data-start="{" data-end="}">
+<div class="line"><a id="l00268" name="l00268"></a><span class="lineno"><a class="line" href="namespacecgv_1_1utils.html#a1cc72ef3ca8609ec729c66a8495181ae">  268</a></span>std::vector&lt;size_t&gt; <a class="code hl_function" href="namespacecgv_1_1utils.html#a1cc72ef3ca8609ec729c66a8495181ae">generate_index_sequence</a>(<span class="keyword">const</span> InputIt first, <span class="keyword">const</span> InputIt last) {</div>
+<div class="line"><a id="l00269" name="l00269"></a><span class="lineno">  269</span>    std::vector&lt;size_t&gt; indices(<span class="keyword">static_cast&lt;</span><span class="keywordtype">size_t</span><span class="keyword">&gt;</span>(std::distance(first, last)));</div>
+<div class="line"><a id="l00270" name="l00270"></a><span class="lineno">  270</span>    std::iota(indices.begin(), indices.end(), 0);</div>
+<div class="line"><a id="l00271" name="l00271"></a><span class="lineno">  271</span>    <span class="keywordflow">return</span> indices;</div>
+<div class="line"><a id="l00272" name="l00272"></a><span class="lineno">  272</span>}</div>
 </div>
-<div class="line"><a id="l00276" name="l00276"></a><span class="lineno">  276</span> </div>
-<div class="line"><a id="l00284" name="l00284"></a><span class="lineno">  284</span><span class="keyword">template</span>&lt;<span class="keyword">class</span> RandomIt&gt;</div>
-<div class="foldopen" id="foldopen00285" data-start="{" data-end="}">
-<div class="line"><a id="l00285" name="l00285"></a><span class="lineno"><a class="line" href="namespacecgv_1_1utils.html#aa3e994b07bb0131646b86207e477eeb2">  285</a></span>std::vector&lt;size_t&gt; <a class="code hl_function" href="namespacecgv_1_1utils.html#aa3e994b07bb0131646b86207e477eeb2">stable_sort_indices</a>(<span class="keyword">const</span> RandomIt first, <span class="keyword">const</span> RandomIt last) {</div>
-<div class="line"><a id="l00286" name="l00286"></a><span class="lineno">  286</span>    std::vector&lt;size_t&gt; indices = <a class="code hl_function" href="namespacecgv_1_1utils.html#a1cc72ef3ca8609ec729c66a8495181ae">generate_index_sequence</a>(first, last);</div>
-<div class="line"><a id="l00287" name="l00287"></a><span class="lineno">  287</span>    std::stable_sort(indices.begin(), indices.end(), [first](<span class="keywordtype">size_t</span> i1, <span class="keywordtype">size_t</span> i2) {</div>
-<div class="line"><a id="l00288" name="l00288"></a><span class="lineno">  288</span>        return first[i1] &lt; first[i2];</div>
-<div class="line"><a id="l00289" name="l00289"></a><span class="lineno">  289</span>    });</div>
-<div class="line"><a id="l00290" name="l00290"></a><span class="lineno">  290</span>    <span class="keywordflow">return</span> indices;</div>
-<div class="line"><a id="l00291" name="l00291"></a><span class="lineno">  291</span>}</div>
+<div class="line"><a id="l00273" name="l00273"></a><span class="lineno">  273</span> </div>
+<div class="line"><a id="l00281" name="l00281"></a><span class="lineno">  281</span><span class="keyword">template</span>&lt;<span class="keyword">class</span> RandomIt&gt;</div>
+<div class="foldopen" id="foldopen00282" data-start="{" data-end="}">
+<div class="line"><a id="l00282" name="l00282"></a><span class="lineno"><a class="line" href="namespacecgv_1_1utils.html#a72d462a4ceaca6d66a9bb4bbc3c1ae47">  282</a></span>std::vector&lt;size_t&gt; <a class="code hl_function" href="namespacecgv_1_1utils.html#a72d462a4ceaca6d66a9bb4bbc3c1ae47">sort_indices</a>(<span class="keyword">const</span> RandomIt first, <span class="keyword">const</span> RandomIt last) {</div>
+<div class="line"><a id="l00283" name="l00283"></a><span class="lineno">  283</span>    std::vector&lt;size_t&gt; indices = <a class="code hl_function" href="namespacecgv_1_1utils.html#a1cc72ef3ca8609ec729c66a8495181ae">generate_index_sequence</a>(first, last);</div>
+<div class="line"><a id="l00284" name="l00284"></a><span class="lineno">  284</span>    std::sort(indices.begin(), indices.end(), [first](<span class="keywordtype">size_t</span> i1, <span class="keywordtype">size_t</span> i2) {</div>
+<div class="line"><a id="l00285" name="l00285"></a><span class="lineno">  285</span>        return first[i1] &lt; first[i2];</div>
+<div class="line"><a id="l00286" name="l00286"></a><span class="lineno">  286</span>    });</div>
+<div class="line"><a id="l00287" name="l00287"></a><span class="lineno">  287</span>    <span class="keywordflow">return</span> indices;</div>
+<div class="line"><a id="l00288" name="l00288"></a><span class="lineno">  288</span>}</div>
 </div>
-<div class="line"><a id="l00292" name="l00292"></a><span class="lineno">  292</span> </div>
-<div class="line"><a id="l00303" name="l00303"></a><span class="lineno">  303</span><span class="keyword">template</span>&lt;<span class="keyword">class</span> RandomIt, <span class="keyword">class</span> Compare&gt;</div>
-<div class="foldopen" id="foldopen00304" data-start="{" data-end="}">
-<div class="line"><a id="l00304" name="l00304"></a><span class="lineno"><a class="line" href="namespacecgv_1_1utils.html#a8bdd73f2059b6b505a87d4efc9391baf">  304</a></span>std::vector&lt;size_t&gt; <a class="code hl_function" href="namespacecgv_1_1utils.html#a72d462a4ceaca6d66a9bb4bbc3c1ae47">sort_indices</a>(<span class="keyword">const</span> RandomIt first, <span class="keyword">const</span> RandomIt last, Compare comp) {</div>
-<div class="line"><a id="l00305" name="l00305"></a><span class="lineno">  305</span>    std::vector&lt;size_t&gt; indices = <a class="code hl_function" href="namespacecgv_1_1utils.html#a1cc72ef3ca8609ec729c66a8495181ae">generate_index_sequence</a>(first, last);</div>
-<div class="line"><a id="l00306" name="l00306"></a><span class="lineno">  306</span>    std::sort(indices.begin(), indices.end(), [first, &amp;comp](<span class="keywordtype">size_t</span> i1, <span class="keywordtype">size_t</span> i2) {</div>
-<div class="line"><a id="l00307" name="l00307"></a><span class="lineno">  307</span>        return comp(first[i1], first[i2]);</div>
-<div class="line"><a id="l00308" name="l00308"></a><span class="lineno">  308</span>    });</div>
-<div class="line"><a id="l00309" name="l00309"></a><span class="lineno">  309</span>    <span class="keywordflow">return</span> indices;</div>
-<div class="line"><a id="l00310" name="l00310"></a><span class="lineno">  310</span>}</div>
+<div class="line"><a id="l00289" name="l00289"></a><span class="lineno">  289</span> </div>
+<div class="line"><a id="l00297" name="l00297"></a><span class="lineno">  297</span><span class="keyword">template</span>&lt;<span class="keyword">class</span> RandomIt&gt;</div>
+<div class="foldopen" id="foldopen00298" data-start="{" data-end="}">
+<div class="line"><a id="l00298" name="l00298"></a><span class="lineno"><a class="line" href="namespacecgv_1_1utils.html#aa3e994b07bb0131646b86207e477eeb2">  298</a></span>std::vector&lt;size_t&gt; <a class="code hl_function" href="namespacecgv_1_1utils.html#aa3e994b07bb0131646b86207e477eeb2">stable_sort_indices</a>(<span class="keyword">const</span> RandomIt first, <span class="keyword">const</span> RandomIt last) {</div>
+<div class="line"><a id="l00299" name="l00299"></a><span class="lineno">  299</span>    std::vector&lt;size_t&gt; indices = <a class="code hl_function" href="namespacecgv_1_1utils.html#a1cc72ef3ca8609ec729c66a8495181ae">generate_index_sequence</a>(first, last);</div>
+<div class="line"><a id="l00300" name="l00300"></a><span class="lineno">  300</span>    std::stable_sort(indices.begin(), indices.end(), [first](<span class="keywordtype">size_t</span> i1, <span class="keywordtype">size_t</span> i2) {</div>
+<div class="line"><a id="l00301" name="l00301"></a><span class="lineno">  301</span>        return first[i1] &lt; first[i2];</div>
+<div class="line"><a id="l00302" name="l00302"></a><span class="lineno">  302</span>    });</div>
+<div class="line"><a id="l00303" name="l00303"></a><span class="lineno">  303</span>    <span class="keywordflow">return</span> indices;</div>
+<div class="line"><a id="l00304" name="l00304"></a><span class="lineno">  304</span>}</div>
 </div>
-<div class="line"><a id="l00311" name="l00311"></a><span class="lineno">  311</span> </div>
-<div class="line"><a id="l00322" name="l00322"></a><span class="lineno">  322</span><span class="keyword">template</span>&lt;<span class="keyword">class</span> RandomIt, <span class="keyword">class</span> Compare&gt;</div>
-<div class="foldopen" id="foldopen00323" data-start="{" data-end="}">
-<div class="line"><a id="l00323" name="l00323"></a><span class="lineno"><a class="line" href="namespacecgv_1_1utils.html#aebc2a4cf44914c857a184a0563e9bedd">  323</a></span>std::vector&lt;size_t&gt; <a class="code hl_function" href="namespacecgv_1_1utils.html#aa3e994b07bb0131646b86207e477eeb2">stable_sort_indices</a>(<span class="keyword">const</span> RandomIt first, <span class="keyword">const</span> RandomIt last, Compare comp) {</div>
-<div class="line"><a id="l00324" name="l00324"></a><span class="lineno">  324</span>    std::vector&lt;size_t&gt; indices = <a class="code hl_function" href="namespacecgv_1_1utils.html#a1cc72ef3ca8609ec729c66a8495181ae">generate_index_sequence</a>(first, last);</div>
-<div class="line"><a id="l00325" name="l00325"></a><span class="lineno">  325</span>    std::stable_sort(indices.begin(), indices.end(), [first, &amp;comp](<span class="keywordtype">size_t</span> i1, <span class="keywordtype">size_t</span> i2) {</div>
-<div class="line"><a id="l00326" name="l00326"></a><span class="lineno">  326</span>        return comp(first[i1], first[i2]);</div>
-<div class="line"><a id="l00327" name="l00327"></a><span class="lineno">  327</span>    });</div>
-<div class="line"><a id="l00328" name="l00328"></a><span class="lineno">  328</span>    <span class="keywordflow">return</span> indices;</div>
-<div class="line"><a id="l00329" name="l00329"></a><span class="lineno">  329</span>}</div>
+<div class="line"><a id="l00305" name="l00305"></a><span class="lineno">  305</span> </div>
+<div class="line"><a id="l00316" name="l00316"></a><span class="lineno">  316</span><span class="keyword">template</span>&lt;<span class="keyword">class</span> RandomIt, <span class="keyword">class</span> Compare&gt;</div>
+<div class="foldopen" id="foldopen00317" data-start="{" data-end="}">
+<div class="line"><a id="l00317" name="l00317"></a><span class="lineno"><a class="line" href="namespacecgv_1_1utils.html#a8bdd73f2059b6b505a87d4efc9391baf">  317</a></span>std::vector&lt;size_t&gt; <a class="code hl_function" href="namespacecgv_1_1utils.html#a72d462a4ceaca6d66a9bb4bbc3c1ae47">sort_indices</a>(<span class="keyword">const</span> RandomIt first, <span class="keyword">const</span> RandomIt last, Compare comp) {</div>
+<div class="line"><a id="l00318" name="l00318"></a><span class="lineno">  318</span>    std::vector&lt;size_t&gt; indices = <a class="code hl_function" href="namespacecgv_1_1utils.html#a1cc72ef3ca8609ec729c66a8495181ae">generate_index_sequence</a>(first, last);</div>
+<div class="line"><a id="l00319" name="l00319"></a><span class="lineno">  319</span>    std::sort(indices.begin(), indices.end(), [first, &amp;comp](<span class="keywordtype">size_t</span> i1, <span class="keywordtype">size_t</span> i2) {</div>
+<div class="line"><a id="l00320" name="l00320"></a><span class="lineno">  320</span>        return comp(first[i1], first[i2]);</div>
+<div class="line"><a id="l00321" name="l00321"></a><span class="lineno">  321</span>    });</div>
+<div class="line"><a id="l00322" name="l00322"></a><span class="lineno">  322</span>    <span class="keywordflow">return</span> indices;</div>
+<div class="line"><a id="l00323" name="l00323"></a><span class="lineno">  323</span>}</div>
 </div>
-<div class="line"><a id="l00330" name="l00330"></a><span class="lineno">  330</span> </div>
-<div class="line"><a id="l00331" name="l00331"></a><span class="lineno">  331</span>} <span class="comment">// namespace utils</span></div>
-<div class="line"><a id="l00332" name="l00332"></a><span class="lineno">  332</span>} <span class="comment">// namespace cgv</span></div>
+<div class="line"><a id="l00324" name="l00324"></a><span class="lineno">  324</span> </div>
+<div class="line"><a id="l00335" name="l00335"></a><span class="lineno">  335</span><span class="keyword">template</span>&lt;<span class="keyword">class</span> RandomIt, <span class="keyword">class</span> Compare&gt;</div>
+<div class="foldopen" id="foldopen00336" data-start="{" data-end="}">
+<div class="line"><a id="l00336" name="l00336"></a><span class="lineno"><a class="line" href="namespacecgv_1_1utils.html#aebc2a4cf44914c857a184a0563e9bedd">  336</a></span>std::vector&lt;size_t&gt; <a class="code hl_function" href="namespacecgv_1_1utils.html#aa3e994b07bb0131646b86207e477eeb2">stable_sort_indices</a>(<span class="keyword">const</span> RandomIt first, <span class="keyword">const</span> RandomIt last, Compare comp) {</div>
+<div class="line"><a id="l00337" name="l00337"></a><span class="lineno">  337</span>    std::vector&lt;size_t&gt; indices = <a class="code hl_function" href="namespacecgv_1_1utils.html#a1cc72ef3ca8609ec729c66a8495181ae">generate_index_sequence</a>(first, last);</div>
+<div class="line"><a id="l00338" name="l00338"></a><span class="lineno">  338</span>    std::stable_sort(indices.begin(), indices.end(), [first, &amp;comp](<span class="keywordtype">size_t</span> i1, <span class="keywordtype">size_t</span> i2) {</div>
+<div class="line"><a id="l00339" name="l00339"></a><span class="lineno">  339</span>        return comp(first[i1], first[i2]);</div>
+<div class="line"><a id="l00340" name="l00340"></a><span class="lineno">  340</span>    });</div>
+<div class="line"><a id="l00341" name="l00341"></a><span class="lineno">  341</span>    <span class="keywordflow">return</span> indices;</div>
+<div class="line"><a id="l00342" name="l00342"></a><span class="lineno">  342</span>}</div>
+</div>
+<div class="line"><a id="l00343" name="l00343"></a><span class="lineno">  343</span> </div>
+<div class="line"><a id="l00344" name="l00344"></a><span class="lineno">  344</span>} <span class="comment">// namespace utils</span></div>
+<div class="line"><a id="l00345" name="l00345"></a><span class="lineno">  345</span>} <span class="comment">// namespace cgv</span></div>
 <div class="ttc" id="anamespacecgv_1_1utils_html_a10d24dbeb7dc677d2ca115f1c104bc62"><div class="ttname"><a href="namespacecgv_1_1utils.html#a10d24dbeb7dc677d2ca115f1c104bc62">cgv::utils::join</a></div><div class="ttdeci">std::string join(const InputIt first, const InputIt last, const std::string &amp;separator, bool trailing_separator=false)</div><div class="ttdoc">Concatenate elements in the range [first, last) to a std::string.</div><div class="ttdef"><b>Definition</b> <a href="algorithm_8h_source.html#l00146">algorithm.h:146</a></div></div>
-<div class="ttc" id="anamespacecgv_1_1utils_html_a1cc72ef3ca8609ec729c66a8495181ae"><div class="ttname"><a href="namespacecgv_1_1utils.html#a1cc72ef3ca8609ec729c66a8495181ae">cgv::utils::generate_index_sequence</a></div><div class="ttdeci">std::vector&lt; size_t &gt; generate_index_sequence(const InputIt first, const InputIt last)</div><div class="ttdoc">Return a sequence of monotonically increasing values from 0 to n = distance(first,...</div><div class="ttdef"><b>Definition</b> <a href="algorithm_8h_source.html#l00255">algorithm.h:255</a></div></div>
+<div class="ttc" id="anamespacecgv_1_1utils_html_a1cc72ef3ca8609ec729c66a8495181ae"><div class="ttname"><a href="namespacecgv_1_1utils.html#a1cc72ef3ca8609ec729c66a8495181ae">cgv::utils::generate_index_sequence</a></div><div class="ttdeci">std::vector&lt; size_t &gt; generate_index_sequence(const InputIt first, const InputIt last)</div><div class="ttdoc">Return a sequence of monotonically increasing values from 0 to n = distance(first,...</div><div class="ttdef"><b>Definition</b> <a href="algorithm_8h_source.html#l00268">algorithm.h:268</a></div></div>
 <div class="ttc" id="anamespacecgv_1_1utils_html_a2340f2ac1fcbaacd6f43f748e67c3f41"><div class="ttname"><a href="namespacecgv_1_1utils.html#a2340f2ac1fcbaacd6f43f748e67c3f41">cgv::utils::to_string</a></div><div class="ttdeci">std::string to_string(const std::string &amp;v, unsigned int w, unsigned int p, bool)</div><div class="ttdoc">specialization of conversion from string to strings</div><div class="ttdef"><b>Definition</b> <a href="convert__string_8cxx_source.html#l00007">convert_string.cxx:7</a></div></div>
 <div class="ttc" id="anamespacecgv_1_1utils_html_a6c7f4f74701225d2e3f612877e56b416"><div class="ttname"><a href="namespacecgv_1_1utils.html#a6c7f4f74701225d2e3f612877e56b416">cgv::utils::transform_join</a></div><div class="ttdeci">std::string transform_join(const InputIt first, const InputIt last, UnaryOp operation, const std::string &amp;separator, bool trailing_separator=false)</div><div class="ttdoc">Transform elements in the range [first, last) and concatenate them to a std::string.</div><div class="ttdef"><b>Definition</b> <a href="algorithm_8h_source.html#l00123">algorithm.h:123</a></div></div>
-<div class="ttc" id="anamespacecgv_1_1utils_html_a72d462a4ceaca6d66a9bb4bbc3c1ae47"><div class="ttname"><a href="namespacecgv_1_1utils.html#a72d462a4ceaca6d66a9bb4bbc3c1ae47">cgv::utils::sort_indices</a></div><div class="ttdeci">std::vector&lt; size_t &gt; sort_indices(const RandomIt first, const RandomIt last)</div><div class="ttdoc">Return a sequence of indices corresponding to the sorted order of values in [first,...</div><div class="ttdef"><b>Definition</b> <a href="algorithm_8h_source.html#l00269">algorithm.h:269</a></div></div>
+<div class="ttc" id="anamespacecgv_1_1utils_html_a72d462a4ceaca6d66a9bb4bbc3c1ae47"><div class="ttname"><a href="namespacecgv_1_1utils.html#a72d462a4ceaca6d66a9bb4bbc3c1ae47">cgv::utils::sort_indices</a></div><div class="ttdeci">std::vector&lt; size_t &gt; sort_indices(const RandomIt first, const RandomIt last)</div><div class="ttdoc">Return a sequence of indices corresponding to the sorted order of values in [first,...</div><div class="ttdef"><b>Definition</b> <a href="algorithm_8h_source.html#l00282">algorithm.h:282</a></div></div>
 <div class="ttc" id="anamespacecgv_1_1utils_html_a841d90ef59ab283e83587f6a7cdde8dc"><div class="ttname"><a href="namespacecgv_1_1utils.html#a841d90ef59ab283e83587f6a7cdde8dc">cgv::utils::zip</a></div><div class="ttdeci">OutputIt zip(const InputIt1 first1, const InputIt1 last1, const InputIt2 first2, OutputIt d_first)</div><div class="ttdoc">Zip two sequences together to form a single sequene of pairs and store the results in an output range...</div><div class="ttdef"><b>Definition</b> <a href="algorithm_8h_source.html#l00199">algorithm.h:199</a></div></div>
-<div class="ttc" id="anamespacecgv_1_1utils_html_aa3e994b07bb0131646b86207e477eeb2"><div class="ttname"><a href="namespacecgv_1_1utils.html#aa3e994b07bb0131646b86207e477eeb2">cgv::utils::stable_sort_indices</a></div><div class="ttdeci">std::vector&lt; size_t &gt; stable_sort_indices(const RandomIt first, const RandomIt last)</div><div class="ttdoc">Return a sequence of indices corresponding to the sorted order of values in [first,...</div><div class="ttdef"><b>Definition</b> <a href="algorithm_8h_source.html#l00285">algorithm.h:285</a></div></div>
+<div class="ttc" id="anamespacecgv_1_1utils_html_aa3e994b07bb0131646b86207e477eeb2"><div class="ttname"><a href="namespacecgv_1_1utils.html#aa3e994b07bb0131646b86207e477eeb2">cgv::utils::stable_sort_indices</a></div><div class="ttdeci">std::vector&lt; size_t &gt; stable_sort_indices(const RandomIt first, const RandomIt last)</div><div class="ttdoc">Return a sequence of indices corresponding to the sorted order of values in [first,...</div><div class="ttdef"><b>Definition</b> <a href="algorithm_8h_source.html#l00298">algorithm.h:298</a></div></div>
 <div class="ttc" id="anamespacecgv_1_1utils_html_ac2c47ec225c9c2ae191cc9dab52e3470"><div class="ttname"><a href="namespacecgv_1_1utils.html#ac2c47ec225c9c2ae191cc9dab52e3470">cgv::utils::min_value</a></div><div class="ttdeci">T min_value(ForwardIt first, ForwardIt last, T fallback)</div><div class="ttdoc">Find the minimum value in the range [first, last) or return fallback if the range is empty.</div><div class="ttdef"><b>Definition</b> <a href="algorithm_8h_source.html#l00057">algorithm.h:57</a></div></div>
-<div class="ttc" id="anamespacecgv_1_1utils_html_ac85b6c96afdf6be149997886d8edaa82"><div class="ttname"><a href="namespacecgv_1_1utils.html#ac85b6c96afdf6be149997886d8edaa82">cgv::utils::subdivision_sequence</a></div><div class="ttdeci">void subdivision_sequence(OutputIt output_first, ParamT start, ParamT stop, size_t n)</div><div class="ttdoc">Generate a sequence of n uniformly-spaced values in [start,stop] and store the result in an output ra...</div><div class="ttdef"><b>Definition</b> <a href="algorithm_8h_source.html#l00233">algorithm.h:233</a></div></div>
+<div class="ttc" id="anamespacecgv_1_1utils_html_ac85b6c96afdf6be149997886d8edaa82"><div class="ttname"><a href="namespacecgv_1_1utils.html#ac85b6c96afdf6be149997886d8edaa82">cgv::utils::subdivision_sequence</a></div><div class="ttdeci">void subdivision_sequence(OutputIt output_first, ParamT start, ParamT stop, size_t n)</div><div class="ttdoc">Generate a sequence of n uniformly-spaced values in [start,stop] and store the result in an output ra...</div><div class="ttdef"><b>Definition</b> <a href="algorithm_8h_source.html#l00232">algorithm.h:232</a></div></div>
 <div class="ttc" id="anamespacecgv_1_1utils_html_aeca60e868d0caafb2632c9c5655cad83"><div class="ttname"><a href="namespacecgv_1_1utils.html#aeca60e868d0caafb2632c9c5655cad83">cgv::utils::pair_adjacent</a></div><div class="ttdeci">OutputIt pair_adjacent(const InputIt first, const InputIt last, OutputIt d_first)</div><div class="ttdoc">Transform the elements in the range [first, last) to adjacent pairs and store the results in an outpu...</div><div class="ttdef"><b>Definition</b> <a href="algorithm_8h_source.html#l00161">algorithm.h:161</a></div></div>
 <div class="ttc" id="anamespacecgv_1_1utils_html_afc6235cd77c60d13d10815313be3b52d"><div class="ttname"><a href="namespacecgv_1_1utils.html#afc6235cd77c60d13d10815313be3b52d">cgv::utils::max_value</a></div><div class="ttdeci">T max_value(ForwardIt first, ForwardIt last, T fallback)</div><div class="ttdoc">Find the maximum value in the range [first, last) or return fallback if the range is empty.</div><div class="ttdef"><b>Definition</b> <a href="algorithm_8h_source.html#l00089">algorithm.h:89</a></div></div>
 <div class="ttc" id="anamespacecgv_html"><div class="ttname"><a href="namespacecgv.html">cgv</a></div><div class="ttdoc">this header is dependency free</div><div class="ttdef"><b>Definition</b> <a href="print_8h_source.html#l00011">print.h:11</a></div></div>

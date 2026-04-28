@@ -22,6 +22,7 @@ var classcgv_1_1media_1_1transfer__function =
     [ "get_color_points", "classcgv_1_1media_1_1transfer__function.html#a9580a060289af4c732fc0f563b5c8e4e", null ],
     [ "get_mapped_color", "classcgv_1_1media_1_1transfer__function.html#acf0cea46ecf6a05975dfeefe4e2c355c", null ],
     [ "get_mapped_opacity", "classcgv_1_1media_1_1transfer__function.html#a20a38fc305beec15a217fd322c891836", null ],
+    [ "get_opacity_interpolation", "classcgv_1_1media_1_1transfer__function.html#af9fdbf6344758ae609d23b06140d1da3", null ],
     [ "get_opacity_points", "classcgv_1_1media_1_1transfer__function.html#a80d0853cc2ffdb30e18460b1aaf95e2e", null ],
     [ "get_ticks", "classcgv_1_1media_1_1transfer__function.html#a6ed552840cf8e9ea2dcb1bb0f3f24e0b", null ],
     [ "is_discrete", "classcgv_1_1media_1_1transfer__function.html#a908f101f06ac3aa69d869d37bf4d8749", null ],
@@ -39,7 +40,6 @@ var classcgv_1_1media_1_1transfer__function =
     [ "set_color_points_from_scheme", "classcgv_1_1media_1_1transfer__function.html#a9e61f2dde979c178f940cb8a0a33a8eb", null ],
     [ "set_domain", "classcgv_1_1media_1_1transfer__function.html#ac56a9126606a53173ff3f8833ab50c2f", null ],
     [ "set_interpolation", "classcgv_1_1media_1_1transfer__function.html#a873ea8caef546350021b2100dcf8f458", null ],
-    [ "set_opacity_interpolation", "classcgv_1_1media_1_1transfer__function.html#a8c6c407d5a20a18ec76c7403f0ac479b", null ],
     [ "set_opacity_interpolation", "classcgv_1_1media_1_1transfer__function.html#ac6a39bfd3bdd94c9523c8fd19876c4bc", null ],
     [ "set_opacity_points", "classcgv_1_1media_1_1transfer__function.html#a53fa07bc3915a1927b7df5c50130bff1", null ]
 ];

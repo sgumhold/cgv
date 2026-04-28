@@ -1,5 +1,6 @@
 var NAVTREEINDEX37 =
 {
+"namespacevr.html#a1adb34d1720592b089835844f9abb3c8":[10,0,2,48],
 "namespacevr.html#a2d6d327cdc06b4abac3e02e6f74ba57f":[10,0,2,26],
 "namespacevr.html#a2d6d327cdc06b4abac3e02e6f74ba57fa2536dc4a07580a05d6600ef1404b3d76":[10,0,2,26,2],
 "namespacevr.html#a2d6d327cdc06b4abac3e02e6f74ba57fa36d1eccf22a3dfe445de85253b268e05":[10,0,2,26,1],
@@ -248,6 +249,5 @@ var NAVTREEINDEX37 =
 "ref__counted_8h_source.html":[12,0,1,2,26],
 "ref__ptr_8h_source.html":[12,0,1,2,27],
 "reflect__config_8h_source.html":[12,0,1,9,8],
-"reflect__enum_8cxx_source.html":[12,0,1,9,9],
-"reflect__enum_8h_source.html":[12,0,1,9,10]
+"reflect__enum_8cxx_source.html":[12,0,1,9,9]
 };

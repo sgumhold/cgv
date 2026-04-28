@@ -139,6 +139,7 @@ var namespacecgv_1_1utils =
     [ "str2wstr", "namespacecgv_1_1utils.html#ab89ee8cc10713a3df171d4a469d0e320", null ],
     [ "strip_cpp_comments", "namespacecgv_1_1utils.html#a88174e77ea4ee1dbaef45334df8d5333", null ],
     [ "subdivision_sequence", "namespacecgv_1_1utils.html#ac85b6c96afdf6be149997886d8edaa82", null ],
+    [ "subdivision_sequence", "namespacecgv_1_1utils.html#a984dcfa531e812e127811f977a17299e", null ],
     [ "to_hex", "namespacecgv_1_1utils.html#a155b5e0a440b5d442d41187cc8d41695", null ],
     [ "to_lower", "namespacecgv_1_1utils.html#a6b682be2fdbb130c91a3bd8bd7936ff8", null ],
     [ "to_lower", "namespacecgv_1_1utils.html#a7807eab90c69363c21cc7ef34a2dadf1", null ],
