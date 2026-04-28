@@ -14,7 +14,6 @@ var dir_940fea13ded9d02cf58440c9cc55face =
     [ "overlay.h", "overlay_8h_source.html", null ],
     [ "performance_monitor.cxx", "libs_2cgv__overlay_2performance__monitor_8cxx_source.html", null ],
     [ "performance_monitor.h", "libs_2cgv__overlay_2performance__monitor_8h_source.html", null ],
-    [ "shader_registration.cxx", "shader__registration_8cxx_source.html", null ],
     [ "themed_canvas_overlay.cxx", "themed__canvas__overlay_8cxx_source.html", null ],
     [ "themed_canvas_overlay.h", "themed__canvas__overlay_8h_source.html", null ],
     [ "transfer_function_editor.cxx", "transfer__function__editor_8cxx_source.html", null ],
