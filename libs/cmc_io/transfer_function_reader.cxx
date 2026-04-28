@@ -68,6 +68,9 @@ transfer_function_reader_result transfer_function_reader::read_from_image_file(c
 		float step = 1.0f / static_cast<float>(format.get_width() - 1);
 		float t = 0.0f;
 
+		std::vector<transfer_function::color_point_type> color_points;
+		std::vector<transfer_function::opacity_point_type> opacity_points;
+		
 		if(format.get_width() > 0 && format.get_height() > 0) {
 			switch(format.get_nr_components()) {
 			case 1u:
@@ -82,14 +85,14 @@ transfer_function_reader_result transfer_function_reader::read_from_image_file(c
 					float r = data.get<float>(0, 0, x) / max_value;
 					float g = data.get<float>(1, 0, x) / max_value;
 					float b = data.get<float>(2, 0, x) / max_value;
-					transfer_function->add_color_point(t, cgv::rgb(r, g, b));
+					color_points.push_back({ t, cgv::rgb(r, g, b) });
 					t += step;
 				}
 
 				if(format.get_nr_components() == 4u) {
 					t = 0.0f;
 					for(size_t x = 0; x < format.get_width(); ++x) {
-						transfer_function->add_opacity_point(t, data.get<float>(3, 0, x) / max_value);
+						opacity_points.push_back({ t, data.get<float>(3, 0, x) / max_value });
 						t += step;
 					}
 				}
@@ -98,6 +101,9 @@ transfer_function_reader_result transfer_function_reader::read_from_image_file(c
 				break;
 			}
 		}
+
+		transfer_function->set_color_points(color_points);
+		transfer_function->set_opacity_points(opacity_points);
 
 		const std::string name = cgv::utils::file::drop_extension(cgv::utils::file::get_file_name(file_name));
 		result.entries.push_back({ name, transfer_function });
@@ -131,6 +137,9 @@ transfer_function_reader_result::entry transfer_function_reader::extract_color_m
 	std::string name = elem.Attribute("name");
 	auto transfer_function = std::make_shared<cgv::media::transfer_function>();
 
+	std::vector<transfer_function::color_point_type> color_points;
+	std::vector<transfer_function::opacity_point_type> opacity_points;
+	
 	auto child = elem.FirstChildElement();
 	while(child) {
 		if(strcmp(child->Name(), config.point_tag_id.c_str()) == 0 ||
@@ -146,16 +155,19 @@ transfer_function_reader_result::entry transfer_function_reader::extract_color_m
 				// apply gamma correction if requested
 				if(config.apply_gamma)
 					col = cgv::media::pow(col, 2.2f);
-				transfer_function->add_color_point(pi.x, col);
+				color_points.push_back({ pi.x, col });
 			}
 
 			if(!(pi.o < 0.0f)) {
-				transfer_function->add_opacity_point(pi.x, cgv::math::clamp(pi.o, 0.0f, 1.0f));
+				opacity_points.push_back({ pi.x, cgv::math::clamp(pi.o, 0.0f, 1.0f) });
 			}
 		}
 
 		child = child->NextSiblingElement();
 	}
+
+	transfer_function->set_color_points(color_points);
+	transfer_function->set_opacity_points(opacity_points);
 
 	return { name, transfer_function };
 }
