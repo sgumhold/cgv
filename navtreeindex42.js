@@ -1,5 +1,6 @@
 var NAVTREEINDEX42 =
 {
+"structcgv_1_1plot_1_1plot__base__config.html#a9e9fa6f5b0278adc4943d4c3abc63e4b":[11,0,0,9,13,24],
 "structcgv_1_1plot_1_1plot__base__config.html#aaa8c6c7a1d7d6bf1e70c4392fbca6b15":[11,0,0,9,13,11],
 "structcgv_1_1plot_1_1plot__base__config.html#aafbecb3302851fe88872045e0cc1ffe2":[11,0,0,9,13,32],
 "structcgv_1_1plot_1_1plot__base__config.html#ab03a53e4bae2a5cbffaabc55b0a6d605":[11,0,0,9,13,27],
@@ -248,6 +249,5 @@ var NAVTREEINDEX42 =
 "structcgv_1_1render_1_1array__descriptor__traits_3_01cgv_1_1math_1_1vec_3_01T_01_4_01_4.html#ad2956f9413b500be865e0d7d0125de49":[11,0,0,12,4,3],
 "structcgv_1_1render_1_1array__descriptor__traits_3_01cgv_1_1math_1_1vec_3_01T_01_4_01_4.html#af7c4ff642f2bf2d4b22c80bb6ec059cd":[10,0,1,5,4,4],
 "structcgv_1_1render_1_1array__descriptor__traits_3_01cgv_1_1math_1_1vec_3_01T_01_4_01_4.html#af7c4ff642f2bf2d4b22c80bb6ec059cd":[11,0,0,12,4,4],
-"structcgv_1_1render_1_1array__descriptor__traits_3_01std_1_1vector_3_01T_01_4_01_4.html":[10,0,1,5,5],
-"structcgv_1_1render_1_1array__descriptor__traits_3_01std_1_1vector_3_01T_01_4_01_4.html":[11,0,0,12,5]
+"structcgv_1_1render_1_1array__descriptor__traits_3_01std_1_1vector_3_01T_01_4_01_4.html":[10,0,1,5,5]
 };

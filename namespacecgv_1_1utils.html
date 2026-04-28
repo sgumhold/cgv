@@ -280,6 +280,10 @@ Functions</h2></td></tr>
 <tr class="memitem:ac85b6c96afdf6be149997886d8edaa82"><td class="memTemplItemLeft" align="right" valign="top">void&#160;</td><td class="memTemplItemRight" valign="bottom"><a class="el" href="namespacecgv_1_1utils.html#ac85b6c96afdf6be149997886d8edaa82">subdivision_sequence</a> (OutputIt output_first, ParamT start, ParamT stop, size_t n)</td></tr>
 <tr class="memdesc:ac85b6c96afdf6be149997886d8edaa82"><td class="mdescLeft">&#160;</td><td class="mdescRight">Generate a sequence of n uniformly-spaced values in [start,stop] and store the result in an output range starting from output_first.  <br /></td></tr>
 <tr class="separator:ac85b6c96afdf6be149997886d8edaa82"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a984dcfa531e812e127811f977a17299e" id="r_a984dcfa531e812e127811f977a17299e"><td class="memTemplParams" colspan="2">template&lt;typename ParamT &gt; </td></tr>
+<tr class="memitem:a984dcfa531e812e127811f977a17299e"><td class="memTemplItemLeft" align="right" valign="top">std::vector&lt; ParamT &gt;&#160;</td><td class="memTemplItemRight" valign="bottom"><a class="el" href="namespacecgv_1_1utils.html#a984dcfa531e812e127811f977a17299e">subdivision_sequence</a> (ParamT start, ParamT stop, size_t n)</td></tr>
+<tr class="memdesc:a984dcfa531e812e127811f977a17299e"><td class="mdescLeft">&#160;</td><td class="mdescRight">Generate a sequence of n uniformly-spaced values in [start,stop] and returnt eh result as a std::vector.  <br /></td></tr>
+<tr class="separator:a984dcfa531e812e127811f977a17299e"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a1cc72ef3ca8609ec729c66a8495181ae" id="r_a1cc72ef3ca8609ec729c66a8495181ae"><td class="memTemplParams" colspan="2">template&lt;class InputIt &gt; </td></tr>
 <tr class="memitem:a1cc72ef3ca8609ec729c66a8495181ae"><td class="memTemplItemLeft" align="right" valign="top">std::vector&lt; size_t &gt;&#160;</td><td class="memTemplItemRight" valign="bottom"><a class="el" href="namespacecgv_1_1utils.html#a1cc72ef3ca8609ec729c66a8495181ae">generate_index_sequence</a> (const InputIt first, const InputIt last)</td></tr>
 <tr class="memdesc:a1cc72ef3ca8609ec729c66a8495181ae"><td class="mdescLeft">&#160;</td><td class="mdescRight">Return a sequence of monotonically increasing values from 0 to n = distance(first, last) - 1 with first == 0 and last == n.  <br /></td></tr>
@@ -1912,9 +1916,9 @@ template&lt;class InputIt &gt; </div>
 </dl>
 <dl class="section return"><dt>Returns</dt><dd>The index sequence. </dd></dl>
 
-<p class="definition">Definition at line <a class="el" href="algorithm_8h_source.html#l00255">255</a> of file <a class="el" href="algorithm_8h_source.html">algorithm.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="algorithm_8h_source.html#l00268">268</a> of file <a class="el" href="algorithm_8h_source.html">algorithm.h</a>.</p>
 
-<p class="reference">Referenced by <a class="el" href="algorithm_8h_source.html#l00269">sort_indices()</a>, <a class="el" href="algorithm_8h_source.html#l00304">sort_indices()</a>, <a class="el" href="algorithm_8h_source.html#l00285">stable_sort_indices()</a>, and <a class="el" href="algorithm_8h_source.html#l00323">stable_sort_indices()</a>.</p>
+<p class="reference">Referenced by <a class="el" href="algorithm_8h_source.html#l00282">sort_indices()</a>, <a class="el" href="algorithm_8h_source.html#l00317">sort_indices()</a>, <a class="el" href="algorithm_8h_source.html#l00298">stable_sort_indices()</a>, and <a class="el" href="algorithm_8h_source.html#l00336">stable_sort_indices()</a>.</p>
 
 </div>
 </div>
@@ -4221,9 +4225,9 @@ template&lt;class RandomIt &gt; </div>
 </dl>
 <dl class="section return"><dt>Returns</dt><dd>The index sequence. </dd></dl>
 
-<p class="definition">Definition at line <a class="el" href="algorithm_8h_source.html#l00269">269</a> of file <a class="el" href="algorithm_8h_source.html">algorithm.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="algorithm_8h_source.html#l00282">282</a> of file <a class="el" href="algorithm_8h_source.html">algorithm.h</a>.</p>
 
-<p class="reference">References <a class="el" href="algorithm_8h_source.html#l00255">generate_index_sequence()</a>.</p>
+<p class="reference">References <a class="el" href="algorithm_8h_source.html#l00268">generate_index_sequence()</a>.</p>
 
 </div>
 </div>
@@ -4280,9 +4284,9 @@ template&lt;class RandomIt , class Compare &gt; </div>
 </dl>
 <dl class="section return"><dt>Returns</dt><dd>The index sequence. </dd></dl>
 
-<p class="definition">Definition at line <a class="el" href="algorithm_8h_source.html#l00304">304</a> of file <a class="el" href="algorithm_8h_source.html">algorithm.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="algorithm_8h_source.html#l00317">317</a> of file <a class="el" href="algorithm_8h_source.html">algorithm.h</a>.</p>
 
-<p class="reference">References <a class="el" href="algorithm_8h_source.html#l00255">generate_index_sequence()</a>.</p>
+<p class="reference">References <a class="el" href="algorithm_8h_source.html#l00268">generate_index_sequence()</a>.</p>
 
 </div>
 </div>
@@ -4717,9 +4721,9 @@ template&lt;class RandomIt &gt; </div>
 </dl>
 <dl class="section return"><dt>Returns</dt><dd>The index sequence. </dd></dl>
 
-<p class="definition">Definition at line <a class="el" href="algorithm_8h_source.html#l00285">285</a> of file <a class="el" href="algorithm_8h_source.html">algorithm.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="algorithm_8h_source.html#l00298">298</a> of file <a class="el" href="algorithm_8h_source.html">algorithm.h</a>.</p>
 
-<p class="reference">References <a class="el" href="algorithm_8h_source.html#l00255">generate_index_sequence()</a>.</p>
+<p class="reference">References <a class="el" href="algorithm_8h_source.html#l00268">generate_index_sequence()</a>.</p>
 
 </div>
 </div>
@@ -4776,9 +4780,9 @@ template&lt;class RandomIt , class Compare &gt; </div>
 </dl>
 <dl class="section return"><dt>Returns</dt><dd>The index sequence. </dd></dl>
 
-<p class="definition">Definition at line <a class="el" href="algorithm_8h_source.html#l00323">323</a> of file <a class="el" href="algorithm_8h_source.html">algorithm.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="algorithm_8h_source.html#l00336">336</a> of file <a class="el" href="algorithm_8h_source.html">algorithm.h</a>.</p>
 
-<p class="reference">References <a class="el" href="algorithm_8h_source.html#l00255">generate_index_sequence()</a>.</p>
+<p class="reference">References <a class="el" href="algorithm_8h_source.html#l00268">generate_index_sequence()</a>.</p>
 
 </div>
 </div>
@@ -4847,7 +4851,7 @@ template&lt;class RandomIt , class Compare &gt; </div>
 </div>
 </div>
 <a id="ac85b6c96afdf6be149997886d8edaa82" name="ac85b6c96afdf6be149997886d8edaa82"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#ac85b6c96afdf6be149997886d8edaa82">&#9670;&#160;</a></span>subdivision_sequence()</h2>
+<h2 class="memtitle"><span class="permalink"><a href="#ac85b6c96afdf6be149997886d8edaa82">&#9670;&#160;</a></span>subdivision_sequence() <span class="overload">[1/2]</span></h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -4897,7 +4901,6 @@ template&lt;typename ParamT  = float, typename OutputIt &gt; </div>
 <dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
     <tr><td class="paramname">output_first</td><td>The start of the output range. </td></tr>
-    <tr><td class="paramname">operation</td><td>The operation to transform the sequence. Takes one argument of type ParamT. </td></tr>
     <tr><td class="paramname">start</td><td>The starting value of the sequence. </td></tr>
     <tr><td class="paramname">stop</td><td>The end value of the sequence. </td></tr>
     <tr><td class="paramname">n</td><td>The number of values in the generated sequence. </td></tr>
@@ -4905,9 +4908,65 @@ template&lt;typename ParamT  = float, typename OutputIt &gt; </div>
   </dd>
 </dl>
 
-<p class="definition">Definition at line <a class="el" href="algorithm_8h_source.html#l00233">233</a> of file <a class="el" href="algorithm_8h_source.html">algorithm.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="algorithm_8h_source.html#l00232">232</a> of file <a class="el" href="algorithm_8h_source.html">algorithm.h</a>.</p>
 
-<p class="reference">Referenced by <a class="el" href="transfer__function_8cxx_source.html#l00025">cgv::media::transfer_function::set_color_points_from_scheme()</a>.</p>
+<p class="reference">Referenced by <a class="el" href="transfer__function_8cxx_source.html#l00025">cgv::media::transfer_function::set_color_points_from_scheme()</a>, and <a class="el" href="algorithm_8h_source.html#l00254">subdivision_sequence()</a>.</p>
+
+</div>
+</div>
+<a id="a984dcfa531e812e127811f977a17299e" name="a984dcfa531e812e127811f977a17299e"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a984dcfa531e812e127811f977a17299e">&#9670;&#160;</a></span>subdivision_sequence() <span class="overload">[2/2]</span></h2>
+
+<div class="memitem">
+<div class="memproto">
+<div class="memtemplate">
+template&lt;typename ParamT &gt; </div>
+      <table class="memname">
+        <tr>
+          <td class="memname">std::vector&lt; ParamT &gt; cgv::utils::subdivision_sequence </td>
+          <td>(</td>
+          <td class="paramtype">ParamT&#160;</td>
+          <td class="paramname"><em>start</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">ParamT&#160;</td>
+          <td class="paramname"><em>stop</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">size_t&#160;</td>
+          <td class="paramname"><em>n</em>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>Generate a sequence of n uniformly-spaced values in [start,stop] and returnt eh result as a std::vector. </p>
+<dl class="tparams"><dt>Template Parameters</dt><dd>
+  <table class="tparams">
+    <tr><td class="paramname">ParamT</td><td>The sequence value type. </td></tr>
+  </table>
+  </dd>
+</dl>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">start</td><td>The starting value of the sequence. </td></tr>
+    <tr><td class="paramname">stop</td><td>The end value of the sequence. </td></tr>
+    <tr><td class="paramname">n</td><td>The number of values in the generated sequence. </td></tr>
+  </table>
+  </dd>
+</dl>
+
+<p class="definition">Definition at line <a class="el" href="algorithm_8h_source.html#l00254">254</a> of file <a class="el" href="algorithm_8h_source.html">algorithm.h</a>.</p>
+
+<p class="reference">References <a class="el" href="algorithm_8h_source.html#l00232">subdivision_sequence()</a>.</p>
 
 </div>
 </div>

@@ -1,5 +1,6 @@
 var NAVTREEINDEX41 =
 {
+"structcgv_1_1media_1_1illum_1_1phong__material.html#a1c8bc0098838d301f33351c5ef1c0f06":[11,0,0,6,1,2,3],
 "structcgv_1_1media_1_1illum_1_1phong__material.html#a39522abf4c27e142548cc077dea2d338":[11,0,0,6,1,2,2],
 "structcgv_1_1media_1_1illum_1_1phong__material.html#a47db8abbdfe349610355de6cab91caeb":[11,0,0,6,1,2,5],
 "structcgv_1_1media_1_1illum_1_1phong__material.html#ae9aa56ed4d22d32c5cdfbd24adcf9b12":[11,0,0,6,1,2,4],
@@ -248,6 +249,5 @@ var NAVTREEINDEX41 =
 "structcgv_1_1plot_1_1plot__base__config.html#a718ec7738ea565d6e1742cdd9f47a3ce":[11,0,0,9,13,6],
 "structcgv_1_1plot_1_1plot__base__config.html#a77bb92d4ad9e8419998a8f32a5c7b172":[11,0,0,9,13,34],
 "structcgv_1_1plot_1_1plot__base__config.html#a88f2134c8c5ada0f129be062ca1021d2":[11,0,0,9,13,14],
-"structcgv_1_1plot_1_1plot__base__config.html#a959405bbca84dbaa7053759c6cfe3381":[11,0,0,9,13,18],
-"structcgv_1_1plot_1_1plot__base__config.html#a9e9fa6f5b0278adc4943d4c3abc63e4b":[11,0,0,9,13,24]
+"structcgv_1_1plot_1_1plot__base__config.html#a959405bbca84dbaa7053759c6cfe3381":[11,0,0,9,13,18]
 };
