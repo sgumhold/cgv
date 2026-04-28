@@ -17,8 +17,11 @@
 namespace cgv {
 namespace overlay {
 
+vec2 transfer_function_editor::color_point::domain = { 0.0f, 1.0f };
+vec2 transfer_function_editor::opacity_point::domain = { 0.0f, 1.0f };
 const vec2 transfer_function_editor::color_point_size = { 12.0f, 18.0f };
 const vec2 transfer_function_editor::opacity_point_size = { 12.0f };
+const size_t transfer_function_editor::preview_texture_resolution = 256;
 
 transfer_function_editor::transfer_function_editor() {
 	set_name("Color Scale Editor");
@@ -99,22 +102,6 @@ void transfer_function_editor::handle_member_change(cgv::data::informed_ptr ptr)
 		set_size(size);
 	}
 
-	if(ptr.points_to(opacity_scale_exponent)) {
-		opacity_scale_exponent = cgv::math::clamp(opacity_scale_exponent, 1.0f, 5.0f);
-
-		update_point_positions();
-		sort_points();
-		create_geometry();
-	}
-
-	/*
-	if(ptr.points_to(discretization_resolution)) {
-		if(cmc.cm)
-			cmc.cm->set_resolution(resolution);
-		update_color_map(false);
-	}
-	*/
-
 	if(ptr.points_to_one_of(color_interpolation, opacity_interpolation)) {
 		if(transfer_function) {
 			transfer_function->set_color_interpolation(color_interpolation);
@@ -173,8 +160,6 @@ bool transfer_function_editor::init(cgv::render::context& ctx) {
 	register_shader("rectangle", cgv::g2d::shaders::rectangle);
 	register_shader("circle", cgv::g2d::shaders::circle);
 	register_shader("histogram", "heightfield1d.glpr");
-	//Todo: Rename shader program?
-	register_shader("background", "color_map_editor_bg.glpr");
 
 	bool success = canvas_overlay::init(ctx);
 
@@ -183,8 +168,6 @@ bool transfer_function_editor::init(cgv::render::context& ctx) {
 	success &= line_renderer.init(ctx);
 	success &= polygon_renderer.init(ctx);
 	success &= create_background_texture();
-
-	//update_color_map(false);
 
 	return success;
 }
@@ -196,16 +179,9 @@ void transfer_function_editor::init_frame(cgv::render::context& ctx) {
 		update_layout(container_size);
 		force_update_data_from_transfer_function();
 
-		auto& bg_prog = content_canvas.enable_shader(ctx, "background");
 		float width_factor = static_cast<float>(layout.opacity_editor_rect.w()) / static_cast<float>(layout.opacity_editor_rect.h());
-		bg_style.texcoord_scaling = vec2(5.0f * width_factor, 5.0f);
-		bg_style.apply(ctx, bg_prog);
-		content_canvas.disable_current_shader(ctx);
+		background_style.texcoord_scaling = vec2(5.0f * width_factor, 5.0f);
 
-		//update_point_positions();
-		////sort_points();
-		//update_geometry();
-		
 		color_draggables.set_constraint(layout.color_draggables_rect);
 		opacity_draggables.set_constraint(layout.opacity_editor_rect);
 	}
@@ -229,21 +205,18 @@ void transfer_function_editor::draw_content(cgv::render::context& ctx) {
 
 		if(supports_opacity) {
 			// draw opacity editor checkerboard background
-			auto& bg_prog = content_canvas.enable_shader(ctx, "background");
-			bg_style.apply(ctx, bg_prog);
-			bg_prog.set_uniform(ctx, "scale_exponent", opacity_scale_exponent);
+			content_canvas.set_style(ctx, background_style);
 			background_tex.enable(ctx, 0);
 			content_canvas.draw_shape(ctx, layout.opacity_editor_rect);
 			background_tex.disable(ctx);
-			content_canvas.disable_current_shader(ctx);
-
+			
 			// draw histogram
 			if(histogram_type != HistogramType::kNone && histogram_tex.is_created()) {
 				auto& hist_prog = content_canvas.enable_shader(ctx, "histogram");
 				hist_prog.set_uniform(ctx, "max_value", hist_norm_ignore_zero ? hist_max_non_zero : hist_max);
 				hist_prog.set_uniform(ctx, "norm_gamma", hist_norm_gamma);
 				hist_prog.set_uniform(ctx, "sampling_type", cgv::math::clamp(static_cast<unsigned>(histogram_type) - 1, 0u, 2u));
-				hist_style.apply(ctx, hist_prog);
+				histogram_style.apply(ctx, hist_prog);
 
 				histogram_tex.enable(ctx, 1);
 				content_canvas.draw_shape(ctx, layout.opacity_editor_rect);
@@ -317,8 +290,6 @@ void transfer_function_editor::create_gui_impl() {
 		height_options += supports_opacity ? "80" : "40";
 		height_options += ";max=500;step=10;ticks=true";
 		add_member_control(this, "Height", layout.total_height, "value_slider", height_options);
-		//add_member_control(this, "Opacity Scale Exponent", opacity_scale_exponent, "value_slider", "min=1.0;max=5.0;step=0.001;ticks=true");
-		//add_member_control(this, "Resolution", discretization_resolution, "dropdown", "enums='2=2,4=4,8=8,16=16,32=32,64=64,128=128,256=256,512=512,1024=1024,2048=2048';w=106", " ");
 		align("\b");
 		end_tree_node(layout);
 	}
@@ -333,12 +304,10 @@ void transfer_function_editor::create_gui_impl() {
 	add_member_control(this, "", input_domain[1], "value", "step=0.001;w=94");
 	cgv::signal::connect_copy(add_button("Rescale")->click, cgv::signal::rebind(this, &transfer_function_editor::rescale_domain));
 
-	// Todo: Add input and button to set point position through GUI.
-
 	if(begin_tree_node("Color Points", color_draggables, false)) {
 		align("\a");
 		auto& points = color_draggables;
-		for(unsigned i = 0; i < points.size(); ++i) {
+		for(size_t i = 0; i < points.size(); ++i) {
 			std::string label_prefix = "";
 			std::string options = "w=48";
 			if(&points[i] == selected_color_draggable) {
@@ -346,7 +315,7 @@ void transfer_function_editor::create_gui_impl() {
 				options += ";label_color=" + cgv::media::to_hex(highlight_color);
 			}
 
-			add_view(label_prefix + std::to_string(i), points[i].uv.x(), "", options, " ");
+			add_view(label_prefix + std::to_string(i), points[i].domain_value, "", options, " ");
 			add_member_control(this, "", points[i].data, "", "w=140");
 		}
 		align("\b");
@@ -357,7 +326,7 @@ void transfer_function_editor::create_gui_impl() {
 		if(begin_tree_node("Opacity Points", opacity_draggables, false)) {
 			align("\a");
 			auto& points = opacity_draggables;
-			for(unsigned i = 0; i < points.size(); ++i) {
+			for(size_t i = 0; i < points.size(); ++i) {
 				std::string label_prefix = "";
 				std::string options = "w=48";
 				if(&points[i] == selected_opacity_draggable) {
@@ -365,7 +334,7 @@ void transfer_function_editor::create_gui_impl() {
 					options += ";label_color=" + cgv::media::to_hex(highlight_color);
 				}
 
-				add_view(label_prefix + std::to_string(i), points[i].uv.x(), "", options, " ");
+				add_view(label_prefix + std::to_string(i), points[i].domain_value, "", options, " ");
 				add_member_control(this, "", points[i].uv.y(), "value", "w=140");
 			}
 			align("\b");
@@ -381,9 +350,9 @@ void transfer_function_editor::create_gui_impl() {
 		add_member_control(this, "Type", histogram_type, "dropdown", "enums='None,Nearest,Linear,Smooth'");
 		add_member_control(this, "Ignore Zero for Normalization", hist_norm_ignore_zero, "check");
 		add_member_control(this, "Gamma", hist_norm_gamma, "value_slider", "min=0.001;max=2;step=0.001;ticks=true");
-		add_member_control(this, "Fill Color", hist_style.fill_color);
-		add_member_control(this, "Border Color", hist_style.border_color);
-		add_member_control(this, "Border Width", hist_style.border_width, "value_slider", "min=0;max=10;step=0.5;ticks=true");
+		add_member_control(this, "Fill Color", histogram_style.fill_color);
+		add_member_control(this, "Border Color", histogram_style.border_color);
+		add_member_control(this, "Border Width", histogram_style.border_width, "value_slider", "min=0;max=10;step=0.5;ticks=true");
 		align("\b");
 		end_tree_node(histogram);
 	}
@@ -437,7 +406,6 @@ void transfer_function_editor::set_selected_color(rgb color) {
 
 void transfer_function_editor::init_styles() {
 	auto& theme = cgv::gui::theme_info::instance();
-	// Todo: Check if alpha is set to 1.
 	handle_color = theme.text();
 	highlight_color = theme.highlight();
 
@@ -451,16 +419,16 @@ void transfer_function_editor::init_styles() {
 	color_map_style.use_texture = true;
 
 	// configure style for background
-	bg_style.use_texture = true;
-	bg_style.feather_width = 0.0f;
+	background_style.use_texture = true;
+	background_style.feather_width = 0.0f;
 
 	// configure style for histogram
-	hist_style.use_blending = true;
-	hist_style.feather_width = 1.0f;
-	hist_style.feather_origin = 0.0f;
-	hist_style.fill_color = rgba(rgb(0.5f), 0.666f);
-	hist_style.border_color = rgba(rgb(0.0f), 0.666f);
-	hist_style.border_width = 1.0f;
+	histogram_style.use_blending = true;
+	histogram_style.feather_width = 1.0f;
+	histogram_style.feather_origin = 0.0f;
+	histogram_style.fill_color = rgba(rgb(0.5f), 0.666f);
+	histogram_style.border_color = rgba(rgb(0.0f), 0.666f);
+	histogram_style.border_width = 1.0f;
 
 	// configure style for color handles
 	color_handle_style.use_blending = true;
@@ -549,12 +517,17 @@ void transfer_function_editor::force_update_data_from_transfer_function() {
 	if(!transfer_function)
 		return;
 
+	size_t previous_color_point_count = color_draggables.size();
+	size_t previous_opacity_point_count = opacity_draggables.size();
+
 	clear_data();
 
 	const vec2 domain = transfer_function->get_domain();
 	input_domain = domain;
 	update_member(&input_domain[0]);
 	update_member(&input_domain[1]);
+	color_point::domain = domain;
+	opacity_point::domain = domain;
 
 	for(const auto& point : transfer_function->get_color_points()) {
 		color_point draggable = make_color_point();
@@ -576,7 +549,25 @@ void transfer_function_editor::force_update_data_from_transfer_function() {
 	create_geometry();
 	create_preview_texture();
 
-	post_recreate_gui();
+	color_interpolation = transfer_function->get_color_interpolation();
+	opacity_interpolation = transfer_function->get_opacity_interpolation();
+
+	// Don't do a full gui recreation if the number of control points did not change to prevent canceling potential mouse interactions.
+	if(previous_color_point_count == color_draggables.size() && previous_opacity_point_count == opacity_draggables.size()) {
+		update_member(&color_interpolation);
+		update_member(&opacity_interpolation);
+		for(auto& point : color_draggables) {
+			update_member(&point.domain_value);
+			update_member(&point.data);
+		}
+		for(auto& point : opacity_draggables) {
+			update_member(&point.domain_value);
+			update_member(&point.uv.y());
+		}
+	} else {
+		post_recreate_gui();
+	}
+	
 	post_damage();
 }
 
@@ -584,14 +575,8 @@ void transfer_function_editor::update_data_from_transfer_function() {
 	if(!transfer_function)
 		return;
 
-	// Todo: Only update if the tf changed or if forced.
 	if(!build_time.is_valid() || transfer_function->get_modified_time() > build_time.get_modified_time()) {
-		std::cout << "set editor data from tf" << std::endl;
-		//std::cout << transfer_function->get_modified_time().time_since_epoch().count() << " > " << build_time.get_modified_time().time_since_epoch().count() << std::endl;
-
-		// Todo: Need force_update?
 		force_update_data_from_transfer_function();
-
 		build_time.modified();
 	}
 }
@@ -618,11 +603,6 @@ void transfer_function_editor::update_transfer_function_from_data() {
 
 	transfer_function->set_color_points(colors);
 	transfer_function->set_opacity_points(opacities);
-
-	// Set the build time to the transfer function's modified time since the geometry is already synchronized.
-	// This avoids a rebuild at the next draw.
-	//build_time = transfer_function->get_modified_time();
-	//build_time.modified();
 
 	if(on_change_callback)
 		on_change_callback();
@@ -675,8 +655,6 @@ void transfer_function_editor::add_point(const vec2& pos) {
 		draggable.set_position_and_update_uv({ pos.x(), 0.0f });
 		draggable.data = transfer_function->get_mapped_color(draggable.uv.x());
 		size_t index = color_draggables.add(draggable);
-		// Todo: Allow drag after add.
-		//color_draggables.set_dragged(index);
 		selected_color_draggable = &color_draggables[index];
 	} else if(supports_opacity && layout.opacity_editor_rect.contains(test_pos)) {
 		opacity_point draggable = make_opacity_point();
@@ -728,10 +706,14 @@ void transfer_function_editor::set_selected_point_domain_value() {
 	const float x = cgv::math::clamp(input_position, domain[0], domain[1]);
 	const float u = cgv::math::normalize(x, domain[0], domain[1]);
 
-	if(selected_color_draggable && !is_boundary_point(selected_color_draggable, color_draggables))
+	if(selected_color_draggable && !is_boundary_point(selected_color_draggable, color_draggables)) {
 		selected_color_draggable->set_uv_and_update_position({ u, 0.0f });
-	else if(selected_opacity_draggable && !is_boundary_point(selected_opacity_draggable, opacity_draggables))
+		update_member(&selected_color_draggable->domain_value);
+	}
+	else if(selected_opacity_draggable && !is_boundary_point(selected_opacity_draggable, opacity_draggables)) {
 		selected_opacity_draggable->set_uv_and_update_position({ u, selected_opacity_draggable->uv.y() });
+		update_member(&selected_opacity_draggable->domain_value);
+	}
 
 	sort_points();
 	update_transfer_function_from_data();
@@ -898,16 +880,15 @@ void transfer_function_editor::update_point_positions() {
 }
 
 bool transfer_function_editor::create_preview_texture() {
-	const size_t size = static_cast<size_t>(256);// discretization_resolution);
-	std::vector<rgba> cs_data = transfer_function->quantize(size);
+	std::vector<rgba> cs_data = transfer_function->quantize(preview_texture_resolution);
 
 	std::vector<cgv::rgba8> texture_data;
-	texture_data.reserve(size);
+	texture_data.reserve(preview_texture_resolution);
 	std::transform(cs_data.begin(), cs_data.end(), std::back_inserter(texture_data), [](const cgv::rgba& color) {
 		return cgv::rgba8(color);
 	});
 
-	cgv::data::data_format data_format(size, 1, cgv::type::info::TI_UINT8, cgv::data::CF_RGBA);
+	cgv::data::data_format data_format(preview_texture_resolution, 1, cgv::type::info::TI_UINT8, cgv::data::CF_RGBA);
 	cgv::data::data_view data_view(&data_format, texture_data.data());
 
 	const cgv::render::TextureFilter filter = cgv::render::TF_LINEAR;
