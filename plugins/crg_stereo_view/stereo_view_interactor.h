@@ -127,6 +127,7 @@ protected:
 	GlsuAnaglyphConfiguration anaglyph_config;
 	bool stereo_enabled;
 	bool stereo_translate_in_model_view;
+	float screen_tilt_angle = 0.0f;
 	bool two_d_enabled;
 	bool fix_view_up_dir;
 	bool adapt_aspect_ratio_to_stereo_mode;
