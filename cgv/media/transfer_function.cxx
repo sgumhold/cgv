@@ -42,6 +42,7 @@ void transfer_function::add_color_point(float x, const color_type& color) {
 	color_points_.push_back({ x, color });
 	sort_points_and_update_domain(color_points_);
 	ensure_control_points_cover_domain(opacity_points_);
+	ensure_control_points_cover_domain(color_points_);
 }
 
 void transfer_function::add_opacity_point(float x, float opacity) {
@@ -49,6 +50,7 @@ void transfer_function::add_opacity_point(float x, float opacity) {
 	opacity_points_.push_back({ x, cgv::math::saturate(opacity) });
 	sort_points_and_update_domain(opacity_points_);
 	ensure_control_points_cover_domain(color_points_);
+	ensure_control_points_cover_domain(opacity_points_);
 }
 
 bool transfer_function::remove_color_point(float x) {
@@ -74,14 +76,14 @@ void transfer_function::set_domain(cgv::vec2 domain) {
 	float lower_bound = current_domain[0] < domain[0] ? domain[0] : current_domain[0];
 	float upper_bound = current_domain[1] > domain[1] ? domain[1] : current_domain[1];
 
-	if(!color_points_.empty() && color_points_.front().first != lower_bound)
+	if(!color_points_.empty() && color_points_.front().first != domain[0])
 		add_color_point(domain[0], get_mapped_color(lower_bound));
-	if(!opacity_points_.empty() && opacity_points_.front().first != lower_bound)
+	if(!opacity_points_.empty() && opacity_points_.front().first != domain[0])
 		add_opacity_point(domain[0], get_mapped_opacity(lower_bound));
-	
-	if(!color_points_.empty() && color_points_.back().first != upper_bound)
+
+	if(!color_points_.empty() && color_points_.back().first != domain[1])
 		add_color_point(domain[1], get_mapped_color(upper_bound));
-	if(!opacity_points_.empty() && opacity_points_.back().first != upper_bound)
+	if(!opacity_points_.empty() && opacity_points_.back().first != domain[1])
 		add_opacity_point(domain[1], get_mapped_opacity(upper_bound));
 
 	// Remove all points that are outside the new domain.
