@@ -225,7 +225,6 @@ std::vector<std::pair<typename InputIt1::value_type, typename InputIt2::value_ty
 /// @tparam ParamT The sequence value type.
 /// @tparam OutputIt The output range iterator type.
 /// @param output_first The start of the output range.
-/// @param operation The operation to transform the sequence. Takes one argument of type ParamT.
 /// @param start The starting value of the sequence.
 /// @param stop The end value of the sequence.
 /// @param n The number of values in the generated sequence.
@@ -243,6 +242,20 @@ void subdivision_sequence(OutputIt output_first, ParamT start, ParamT stop, size
 			++output_first;
 		}
 	}
+}
+
+/// @brief Generate a sequence of n uniformly-spaced values in [start,stop] and returnt eh result as a std::vector.
+/// 
+/// @tparam ParamT The sequence value type.
+/// @param start The starting value of the sequence.
+/// @param stop The end value of the sequence.
+/// @param n The number of values in the generated sequence.
+template<typename ParamT>
+std::vector<ParamT> subdivision_sequence(ParamT start, ParamT stop, size_t n) {
+	std::vector<ParamT> out;
+	out.reserve(n);
+	cgv::utils::subdivision_sequence(std::back_inserter(out), start, stop, n);
+	return out;
 }
 
 /// @brief Return a sequence of monotonically increasing values from 0 to n = distance(first, last) - 1 with first == 0 and last == n.

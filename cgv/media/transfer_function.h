@@ -208,8 +208,8 @@ public:
 	/// @brief Get the interpolation mode of the opacity function.
 	/// 
 	/// @param interpolation The interpolation mode.
-	InterpolationMode set_opacity_interpolation() const {
-		return color_interpolation_;
+	InterpolationMode get_opacity_interpolation() const {
+		return opacity_interpolation_;
 	}
 
 private:
