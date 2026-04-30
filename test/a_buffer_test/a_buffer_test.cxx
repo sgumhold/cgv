@@ -166,7 +166,7 @@ public:
 		sr.set_color_array(ctx, C);
 		return true;
 	}
-	void destruct(context& ctx)
+	void clear(context& ctx)
 	{
 		triangle_vbo.destruct(ctx);
 		triangle_aab.destruct(ctx);
