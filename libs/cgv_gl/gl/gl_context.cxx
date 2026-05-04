@@ -1824,6 +1824,9 @@ std::string gl_error_to_string(GLenum eid) {
 
 std::string gl_error() {
 	GLenum eid = glGetError();
+	// Clear potential other error flags, see https://registry.khronos.org/OpenGL-Refpages/gl4/html/glGetError.xhtml:
+	// "glGetError should always be called in a loop, until it returns GL_NO_ERROR, if all error flags are to be reset."
+	while (glGetError());
 	return gl_error_to_string(eid);
 }
 
@@ -1834,6 +1837,7 @@ bool gl_context::check_gl_error(const std::string& where, const cgv::render::ren
 		return false;
 	std::string error_string = where + ": " + gl_error_to_string(eid);
 	error(error_string, rc);
+	while (glGetError()); // Clear all error flags, see gl_error.
 	return true;
 }
 
@@ -2778,6 +2782,8 @@ bool gl_context::shader_code_create(render_component& sc, ShaderType st, const s
 {
 	if (!check_shader_support(st, "gl_context::shader_code_create", &sc))
 		return false;
+
+	while (glGetError()); // Clear error flags.
 
 	GLuint s_id = glCreateShader(gl_shader_type[st]);
 	if (s_id == -1) {
