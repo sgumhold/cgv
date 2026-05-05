@@ -97,6 +97,7 @@ var annotated_dup =
         [ "binary_read_reflection_handler", "classcgv_1_1data_1_1binary__read__reflection__handler.html", "classcgv_1_1data_1_1binary__read__reflection__handler" ],
         [ "binary_reflection_handler", "classcgv_1_1data_1_1binary__reflection__handler.html", null ],
         [ "binary_write_reflection_handler", "classcgv_1_1data_1_1binary__write__reflection__handler.html", "classcgv_1_1data_1_1binary__write__reflection__handler" ],
+        [ "buffer2d", "classcgv_1_1data_1_1buffer2d.html", null ],
         [ "component_format", "classcgv_1_1data_1_1component__format.html", "classcgv_1_1data_1_1component__format" ],
         [ "const_data_view", "classcgv_1_1data_1_1const__data__view.html", "classcgv_1_1data_1_1const__data__view" ],
         [ "data_format", "classcgv_1_1data_1_1data__format.html", "classcgv_1_1data_1_1data__format" ],

@@ -191,6 +191,7 @@ var hierarchy =
     [ "cgv::base::traverser", "classcgv_1_1base_1_1traverser.html", null ],
     [ "cgv::base::use_handler", "structcgv_1_1base_1_1use__handler.html", null ],
     [ "cgv::base::user_feedback", "structcgv_1_1base_1_1user__feedback.html", null ],
+    [ "cgv::data::buffer2d< T >", "classcgv_1_1data_1_1buffer2d.html", null ],
     [ "cgv::data::data_format::dimension_info", "structcgv_1_1data_1_1data__format_1_1dimension__info.html", null ],
     [ "cgv::data::data_view_base", "classcgv_1_1data_1_1data__view__base.html", [
       [ "cgv::data::data_view_impl< const_data_view, const unsigned char * >", "classcgv_1_1data_1_1data__view__impl.html", [
