@@ -152,6 +152,15 @@ Public Member Functions</h2></td></tr>
 <tr class="memitem:adf5abe8ea4d06f2983d6f952ba2373ab" id="r_adf5abe8ea4d06f2983d6f952ba2373ab"><td class="memItemLeft" align="right" valign="top">bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcgv_1_1media_1_1transfer__function.html#adf5abe8ea4d06f2983d6f952ba2373ab">empty</a> () const</td></tr>
 <tr class="memdesc:adf5abe8ea4d06f2983d6f952ba2373ab"><td class="mdescLeft">&#160;</td><td class="mdescRight">Check whether the transfer function is empty.  <br /></td></tr>
 <tr class="separator:adf5abe8ea4d06f2983d6f952ba2373ab"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a001cca31207d57cf940c53f476c45ae7" id="r_a001cca31207d57cf940c53f476c45ae7"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcgv_1_1media_1_1transfer__function.html#a001cca31207d57cf940c53f476c45ae7">clear</a> ()</td></tr>
+<tr class="memdesc:a001cca31207d57cf940c53f476c45ae7"><td class="mdescLeft">&#160;</td><td class="mdescRight">Clear all color and opacity control points.  <br /></td></tr>
+<tr class="separator:a001cca31207d57cf940c53f476c45ae7"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ad3d435e251c7a99c8f4028b298ab84ea" id="r_ad3d435e251c7a99c8f4028b298ab84ea"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcgv_1_1media_1_1transfer__function.html#ad3d435e251c7a99c8f4028b298ab84ea">clear_color_points</a> ()</td></tr>
+<tr class="memdesc:ad3d435e251c7a99c8f4028b298ab84ea"><td class="mdescLeft">&#160;</td><td class="mdescRight">Clear color control points only.  <br /></td></tr>
+<tr class="separator:ad3d435e251c7a99c8f4028b298ab84ea"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a54ac601596d0c01acd6a1957ec914569" id="r_a54ac601596d0c01acd6a1957ec914569"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcgv_1_1media_1_1transfer__function.html#a54ac601596d0c01acd6a1957ec914569">clear_opacity_points</a> ()</td></tr>
+<tr class="memdesc:a54ac601596d0c01acd6a1957ec914569"><td class="mdescLeft">&#160;</td><td class="mdescRight">Clear opacity control points only.  <br /></td></tr>
+<tr class="separator:a54ac601596d0c01acd6a1957ec914569"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a5c7072176d2caace9e9d2e05468a301c" id="r_a5c7072176d2caace9e9d2e05468a301c"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcgv_1_1media_1_1transfer__function.html#a5c7072176d2caace9e9d2e05468a301c">set_color_points</a> (const std::vector&lt; <a class="el" href="classcgv_1_1media_1_1transfer__function.html#ad1bd1190fde3edb9f8070c845e618220">color_point_type</a> &gt; &amp;colors)</td></tr>
 <tr class="memdesc:a5c7072176d2caace9e9d2e05468a301c"><td class="mdescLeft">&#160;</td><td class="mdescRight">Set the color function to use the given control points.  <br /></td></tr>
 <tr class="separator:a5c7072176d2caace9e9d2e05468a301c"><td class="memSeparator" colspan="2">&#160;</td></tr>
@@ -167,12 +176,36 @@ Public Member Functions</h2></td></tr>
 <tr class="memitem:a79ede63dacce375dfef56d8ecb3f6fee" id="r_a79ede63dacce375dfef56d8ecb3f6fee"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcgv_1_1media_1_1transfer__function.html#a79ede63dacce375dfef56d8ecb3f6fee">add_opacity_point</a> (float x, float opacity)</td></tr>
 <tr class="memdesc:a79ede63dacce375dfef56d8ecb3f6fee"><td class="mdescLeft">&#160;</td><td class="mdescRight">Add an opacity point at position x.  <br /></td></tr>
 <tr class="separator:a79ede63dacce375dfef56d8ecb3f6fee"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a79a3144015c99c8c751bcff66ed8ceef" id="r_a79a3144015c99c8c751bcff66ed8ceef"><td class="memItemLeft" align="right" valign="top">bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcgv_1_1media_1_1transfer__function.html#a79a3144015c99c8c751bcff66ed8ceef">set_color</a> (size_t index, const <a class="el" href="classcgv_1_1media_1_1transfer__function.html#a84a3bb0397e4a98730edbcb088873b4f">color_type</a> &amp;<a class="el" href="classcgv_1_1media_1_1color.html">color</a>)</td></tr>
+<tr class="memdesc:a79a3144015c99c8c751bcff66ed8ceef"><td class="mdescLeft">&#160;</td><td class="mdescRight">Set the color of the control point at the given index.  <br /></td></tr>
+<tr class="separator:a79a3144015c99c8c751bcff66ed8ceef"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a6c04046a9299c221aee909c0e918b739" id="r_a6c04046a9299c221aee909c0e918b739"><td class="memItemLeft" align="right" valign="top">bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcgv_1_1media_1_1transfer__function.html#a6c04046a9299c221aee909c0e918b739">set_color_at</a> (float x, const <a class="el" href="classcgv_1_1media_1_1transfer__function.html#a84a3bb0397e4a98730edbcb088873b4f">color_type</a> &amp;<a class="el" href="classcgv_1_1media_1_1color.html">color</a>)</td></tr>
+<tr class="memdesc:a6c04046a9299c221aee909c0e918b739"><td class="mdescLeft">&#160;</td><td class="mdescRight">Set the color of the control point at the given position.  <br /></td></tr>
+<tr class="separator:a6c04046a9299c221aee909c0e918b739"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a5205b7e45a14b93f969d4bdf4876d21a" id="r_a5205b7e45a14b93f969d4bdf4876d21a"><td class="memItemLeft" align="right" valign="top">bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcgv_1_1media_1_1transfer__function.html#a5205b7e45a14b93f969d4bdf4876d21a">set_opacity</a> (size_t index, const <a class="el" href="classcgv_1_1media_1_1transfer__function.html#aff682f6e625b6536e758de91db347a61">opacity_type</a> &amp;opacity)</td></tr>
+<tr class="memdesc:a5205b7e45a14b93f969d4bdf4876d21a"><td class="mdescLeft">&#160;</td><td class="mdescRight">Set the opacity of the control point at the given index.  <br /></td></tr>
+<tr class="separator:a5205b7e45a14b93f969d4bdf4876d21a"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a717a9a57375acb934fd1803be272c397" id="r_a717a9a57375acb934fd1803be272c397"><td class="memItemLeft" align="right" valign="top">bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcgv_1_1media_1_1transfer__function.html#a717a9a57375acb934fd1803be272c397">set_opacity_at</a> (float x, const <a class="el" href="classcgv_1_1media_1_1transfer__function.html#aff682f6e625b6536e758de91db347a61">opacity_type</a> &amp;opacity)</td></tr>
+<tr class="memdesc:a717a9a57375acb934fd1803be272c397"><td class="mdescLeft">&#160;</td><td class="mdescRight">Set the opacity of the control point at the given position.  <br /></td></tr>
+<tr class="separator:a717a9a57375acb934fd1803be272c397"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a58c7cc36719d24b720534f6015fcb6f1" id="r_a58c7cc36719d24b720534f6015fcb6f1"><td class="memItemLeft" align="right" valign="top">bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcgv_1_1media_1_1transfer__function.html#a58c7cc36719d24b720534f6015fcb6f1">remove_color_point</a> (float x)</td></tr>
 <tr class="memdesc:a58c7cc36719d24b720534f6015fcb6f1"><td class="mdescLeft">&#160;</td><td class="mdescRight">Remove the color point at position x if it exists.  <br /></td></tr>
 <tr class="separator:a58c7cc36719d24b720534f6015fcb6f1"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a248f3b902dfb6e82e60eaef4f0b0b4f0" id="r_a248f3b902dfb6e82e60eaef4f0b0b4f0"><td class="memItemLeft" align="right" valign="top">bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcgv_1_1media_1_1transfer__function.html#a248f3b902dfb6e82e60eaef4f0b0b4f0">remove_opacity_point</a> (float x)</td></tr>
 <tr class="memdesc:a248f3b902dfb6e82e60eaef4f0b0b4f0"><td class="mdescLeft">&#160;</td><td class="mdescRight">Remove the opacity point at position x if it exists.  <br /></td></tr>
 <tr class="separator:a248f3b902dfb6e82e60eaef4f0b0b4f0"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:af9914928caa44a1b5f471c04edea4a3c" id="r_af9914928caa44a1b5f471c04edea4a3c"><td class="memItemLeft" align="right" valign="top">const size_t&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcgv_1_1media_1_1transfer__function.html#af9914928caa44a1b5f471c04edea4a3c">get_color_point_count</a> () const</td></tr>
+<tr class="memdesc:af9914928caa44a1b5f471c04edea4a3c"><td class="mdescLeft">&#160;</td><td class="mdescRight">Get the color control point count.  <br /></td></tr>
+<tr class="separator:af9914928caa44a1b5f471c04edea4a3c"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:aded24a1d5fa7c154b5ced315857e8a5e" id="r_aded24a1d5fa7c154b5ced315857e8a5e"><td class="memItemLeft" align="right" valign="top">const size_t&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcgv_1_1media_1_1transfer__function.html#aded24a1d5fa7c154b5ced315857e8a5e">get_opacity_point_count</a> () const</td></tr>
+<tr class="memdesc:aded24a1d5fa7c154b5ced315857e8a5e"><td class="mdescLeft">&#160;</td><td class="mdescRight">Get the opacity control point count.  <br /></td></tr>
+<tr class="separator:aded24a1d5fa7c154b5ced315857e8a5e"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a9580a060289af4c732fc0f563b5c8e4e" id="r_a9580a060289af4c732fc0f563b5c8e4e"><td class="memItemLeft" align="right" valign="top">const std::vector&lt; <a class="el" href="classcgv_1_1media_1_1transfer__function.html#ad1bd1190fde3edb9f8070c845e618220">color_point_type</a> &gt; &amp;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcgv_1_1media_1_1transfer__function.html#a9580a060289af4c732fc0f563b5c8e4e">get_color_points</a> () const</td></tr>
+<tr class="memdesc:a9580a060289af4c732fc0f563b5c8e4e"><td class="mdescLeft">&#160;</td><td class="mdescRight">Get the color control points.  <br /></td></tr>
+<tr class="separator:a9580a060289af4c732fc0f563b5c8e4e"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a80d0853cc2ffdb30e18460b1aaf95e2e" id="r_a80d0853cc2ffdb30e18460b1aaf95e2e"><td class="memItemLeft" align="right" valign="top">const std::vector&lt; <a class="el" href="classcgv_1_1media_1_1transfer__function.html#a590b06bdcbdddc7eb3dcfa10914050f6">opacity_point_type</a> &gt; &amp;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcgv_1_1media_1_1transfer__function.html#a80d0853cc2ffdb30e18460b1aaf95e2e">get_opacity_points</a> () const</td></tr>
+<tr class="memdesc:a80d0853cc2ffdb30e18460b1aaf95e2e"><td class="mdescLeft">&#160;</td><td class="mdescRight">Get the opacity control points.  <br /></td></tr>
+<tr class="separator:a80d0853cc2ffdb30e18460b1aaf95e2e"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ac56a9126606a53173ff3f8833ab50c2f" id="r_ac56a9126606a53173ff3f8833ab50c2f"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcgv_1_1media_1_1transfer__function.html#ac56a9126606a53173ff3f8833ab50c2f">set_domain</a> (<a class="el" href="namespacecgv.html#a8044b02f248048405a9d97418f545a1a">cgv::vec2</a> domain) override</td></tr>
 <tr class="memdesc:ac56a9126606a53173ff3f8833ab50c2f"><td class="mdescLeft">&#160;</td><td class="mdescRight">Set the domain.  <br /></td></tr>
 <tr class="separator:ac56a9126606a53173ff3f8833ab50c2f"><td class="memSeparator" colspan="2">&#160;</td></tr>
@@ -203,21 +236,6 @@ Public Member Functions</h2></td></tr>
 <tr class="memitem:a6ed552840cf8e9ea2dcb1bb0f3f24e0b" id="r_a6ed552840cf8e9ea2dcb1bb0f3f24e0b"><td class="memItemLeft" align="right" valign="top">std::vector&lt; float &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcgv_1_1media_1_1transfer__function.html#a6ed552840cf8e9ea2dcb1bb0f3f24e0b">get_ticks</a> (size_t request_count) const override</td></tr>
 <tr class="memdesc:a6ed552840cf8e9ea2dcb1bb0f3f24e0b"><td class="mdescLeft">&#160;</td><td class="mdescRight">See <a class="el" href="classcgv_1_1media_1_1color__scale.html#ae3d2028f6028d46e9774904977ca1966" title="Evaluate the color scheme at n uniformly-spaced positions within the range [0,1].">color_scale::get_ticks()</a>.  <br /></td></tr>
 <tr class="separator:a6ed552840cf8e9ea2dcb1bb0f3f24e0b"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a001cca31207d57cf940c53f476c45ae7" id="r_a001cca31207d57cf940c53f476c45ae7"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcgv_1_1media_1_1transfer__function.html#a001cca31207d57cf940c53f476c45ae7">clear</a> ()</td></tr>
-<tr class="memdesc:a001cca31207d57cf940c53f476c45ae7"><td class="mdescLeft">&#160;</td><td class="mdescRight">Clear all color and opacity control points.  <br /></td></tr>
-<tr class="separator:a001cca31207d57cf940c53f476c45ae7"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:ad3d435e251c7a99c8f4028b298ab84ea" id="r_ad3d435e251c7a99c8f4028b298ab84ea"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcgv_1_1media_1_1transfer__function.html#ad3d435e251c7a99c8f4028b298ab84ea">clear_color_points</a> ()</td></tr>
-<tr class="memdesc:ad3d435e251c7a99c8f4028b298ab84ea"><td class="mdescLeft">&#160;</td><td class="mdescRight">Clear color control points only.  <br /></td></tr>
-<tr class="separator:ad3d435e251c7a99c8f4028b298ab84ea"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a54ac601596d0c01acd6a1957ec914569" id="r_a54ac601596d0c01acd6a1957ec914569"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcgv_1_1media_1_1transfer__function.html#a54ac601596d0c01acd6a1957ec914569">clear_opacity_points</a> ()</td></tr>
-<tr class="memdesc:a54ac601596d0c01acd6a1957ec914569"><td class="mdescLeft">&#160;</td><td class="mdescRight">Clear opacity control points only.  <br /></td></tr>
-<tr class="separator:a54ac601596d0c01acd6a1957ec914569"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a9580a060289af4c732fc0f563b5c8e4e" id="r_a9580a060289af4c732fc0f563b5c8e4e"><td class="memItemLeft" align="right" valign="top">const std::vector&lt; <a class="el" href="classcgv_1_1media_1_1transfer__function.html#ad1bd1190fde3edb9f8070c845e618220">color_point_type</a> &gt; &amp;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcgv_1_1media_1_1transfer__function.html#a9580a060289af4c732fc0f563b5c8e4e">get_color_points</a> () const</td></tr>
-<tr class="memdesc:a9580a060289af4c732fc0f563b5c8e4e"><td class="mdescLeft">&#160;</td><td class="mdescRight">Get the color control points.  <br /></td></tr>
-<tr class="separator:a9580a060289af4c732fc0f563b5c8e4e"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a80d0853cc2ffdb30e18460b1aaf95e2e" id="r_a80d0853cc2ffdb30e18460b1aaf95e2e"><td class="memItemLeft" align="right" valign="top">const std::vector&lt; <a class="el" href="classcgv_1_1media_1_1transfer__function.html#a590b06bdcbdddc7eb3dcfa10914050f6">opacity_point_type</a> &gt; &amp;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcgv_1_1media_1_1transfer__function.html#a80d0853cc2ffdb30e18460b1aaf95e2e">get_opacity_points</a> () const</td></tr>
-<tr class="memdesc:a80d0853cc2ffdb30e18460b1aaf95e2e"><td class="mdescLeft">&#160;</td><td class="mdescRight">Get the opacity control points.  <br /></td></tr>
-<tr class="separator:a80d0853cc2ffdb30e18460b1aaf95e2e"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a873ea8caef546350021b2100dcf8f458" id="r_a873ea8caef546350021b2100dcf8f458"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcgv_1_1media_1_1transfer__function.html#a873ea8caef546350021b2100dcf8f458">set_interpolation</a> (<a class="el" href="classcgv_1_1media_1_1transfer__function.html#a256762112fe6da45f5dd6540d75daa5f">InterpolationMode</a> interpolation)</td></tr>
 <tr class="memdesc:a873ea8caef546350021b2100dcf8f458"><td class="mdescLeft">&#160;</td><td class="mdescRight">Set the interpolation mode of the color and opacity function.  <br /></td></tr>
 <tr class="separator:a873ea8caef546350021b2100dcf8f458"><td class="memSeparator" colspan="2">&#160;</td></tr>
@@ -443,7 +461,7 @@ Additional Inherited Members</h2></td></tr>
 
 <p class="definition">Definition at line <a class="el" href="transfer__function_8cxx_source.html#l00009">9</a> of file <a class="el" href="transfer__function_8cxx_source.html">transfer_function.cxx</a>.</p>
 
-<p class="reference">References <a class="el" href="transfer__function_8cxx_source.html#l00018">set_color_points()</a>.</p>
+<p class="reference">References <a class="el" href="transfer__function_8cxx_source.html#l00034">set_color_points()</a>.</p>
 
 </div>
 </div>
@@ -485,7 +503,7 @@ Additional Inherited Members</h2></td></tr>
 
 <p class="definition">Definition at line <a class="el" href="transfer__function_8cxx_source.html#l00013">13</a> of file <a class="el" href="transfer__function_8cxx_source.html">transfer_function.cxx</a>.</p>
 
-<p class="reference">References <a class="el" href="transfer__function_8cxx_source.html#l00018">set_color_points()</a>, and <a class="el" href="transfer__function_8cxx_source.html#l00032">set_opacity_points()</a>.</p>
+<p class="reference">References <a class="el" href="transfer__function_8cxx_source.html#l00034">set_color_points()</a>, and <a class="el" href="transfer__function_8cxx_source.html#l00048">set_opacity_points()</a>.</p>
 
 </div>
 </div>
@@ -526,11 +544,11 @@ Additional Inherited Members</h2></td></tr>
   </dd>
 </dl>
 
-<p class="definition">Definition at line <a class="el" href="transfer__function_8cxx_source.html#l00040">40</a> of file <a class="el" href="transfer__function_8cxx_source.html">transfer_function.cxx</a>.</p>
+<p class="definition">Definition at line <a class="el" href="transfer__function_8cxx_source.html#l00056">56</a> of file <a class="el" href="transfer__function_8cxx_source.html">transfer_function.cxx</a>.</p>
 
-<p class="reference">References <a class="el" href="transfer__function_8cxx_source.html#l00056">remove_color_point()</a>.</p>
+<p class="reference">References <a class="el" href="transfer__function_8cxx_source.html#l00110">remove_color_point()</a>.</p>
 
-<p class="reference">Referenced by <a class="el" href="transfer__function_8cxx_source.html#l00072">set_domain()</a>.</p>
+<p class="reference">Referenced by <a class="el" href="transfer__function_8cxx_source.html#l00126">set_domain()</a>.</p>
 
 </div>
 </div>
@@ -570,11 +588,11 @@ Additional Inherited Members</h2></td></tr>
   </dd>
 </dl>
 
-<p class="definition">Definition at line <a class="el" href="transfer__function_8cxx_source.html#l00048">48</a> of file <a class="el" href="transfer__function_8cxx_source.html">transfer_function.cxx</a>.</p>
+<p class="definition">Definition at line <a class="el" href="transfer__function_8cxx_source.html#l00064">64</a> of file <a class="el" href="transfer__function_8cxx_source.html">transfer_function.cxx</a>.</p>
 
-<p class="reference">References <a class="el" href="transfer__function_8cxx_source.html#l00064">remove_opacity_point()</a>.</p>
+<p class="reference">References <a class="el" href="transfer__function_8cxx_source.html#l00118">remove_opacity_point()</a>.</p>
 
-<p class="reference">Referenced by <a class="el" href="transfer__function_8cxx_source.html#l00072">set_domain()</a>.</p>
+<p class="reference">Referenced by <a class="el" href="transfer__function_8cxx_source.html#l00126">set_domain()</a>.</p>
 
 </div>
 </div>
@@ -595,7 +613,7 @@ Additional Inherited Members</h2></td></tr>
 
 <p>Clear all color and opacity control points. </p>
 
-<p class="definition">Definition at line <a class="el" href="transfer__function_8cxx_source.html#l00210">210</a> of file <a class="el" href="transfer__function_8cxx_source.html">transfer_function.cxx</a>.</p>
+<p class="definition">Definition at line <a class="el" href="transfer__function_8cxx_source.html#l00018">18</a> of file <a class="el" href="transfer__function_8cxx_source.html">transfer_function.cxx</a>.</p>
 
 </div>
 </div>
@@ -616,7 +634,7 @@ Additional Inherited Members</h2></td></tr>
 
 <p>Clear color control points only. </p>
 
-<p class="definition">Definition at line <a class="el" href="transfer__function_8cxx_source.html#l00216">216</a> of file <a class="el" href="transfer__function_8cxx_source.html">transfer_function.cxx</a>.</p>
+<p class="definition">Definition at line <a class="el" href="transfer__function_8cxx_source.html#l00024">24</a> of file <a class="el" href="transfer__function_8cxx_source.html">transfer_function.cxx</a>.</p>
 
 </div>
 </div>
@@ -637,7 +655,7 @@ Additional Inherited Members</h2></td></tr>
 
 <p>Clear opacity control points only. </p>
 
-<p class="definition">Definition at line <a class="el" href="transfer__function_8cxx_source.html#l00221">221</a> of file <a class="el" href="transfer__function_8cxx_source.html">transfer_function.cxx</a>.</p>
+<p class="definition">Definition at line <a class="el" href="transfer__function_8cxx_source.html#l00029">29</a> of file <a class="el" href="transfer__function_8cxx_source.html">transfer_function.cxx</a>.</p>
 
 </div>
 </div>
@@ -702,7 +720,37 @@ Additional Inherited Members</h2></td></tr>
   </dd>
 </dl>
 
-<p class="definition">Definition at line <a class="el" href="transfer__function_8h_source.html#l00199">199</a> of file <a class="el" href="transfer__function_8h_source.html">transfer_function.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="transfer__function_8h_source.html#l00241">241</a> of file <a class="el" href="transfer__function_8h_source.html">transfer_function.h</a>.</p>
+
+</div>
+</div>
+<a id="af9914928caa44a1b5f471c04edea4a3c" name="af9914928caa44a1b5f471c04edea4a3c"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#af9914928caa44a1b5f471c04edea4a3c">&#9670;&#160;</a></span>get_color_point_count()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">const size_t cgv::media::transfer_function::get_color_point_count </td>
+          <td>(</td>
+          <td class="paramname"></td><td>)</td>
+          <td> const</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">inline</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p>Get the color control point count. </p>
+<dl class="section return"><dt>Returns</dt><dd>The control point count. </dd></dl>
+
+<p class="definition">Definition at line <a class="el" href="transfer__function_8h_source.html#l00163">163</a> of file <a class="el" href="transfer__function_8h_source.html">transfer_function.h</a>.</p>
 
 </div>
 </div>
@@ -733,7 +781,7 @@ Additional Inherited Members</h2></td></tr>
 <dl class="section return"><dt>Returns</dt><dd>The control points. <br  />
  </dd></dl>
 
-<p class="definition">Definition at line <a class="el" href="transfer__function_8h_source.html#l00175">175</a> of file <a class="el" href="transfer__function_8h_source.html">transfer_function.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="transfer__function_8h_source.html#l00177">177</a> of file <a class="el" href="transfer__function_8h_source.html">transfer_function.h</a>.</p>
 
 </div>
 </div>
@@ -765,11 +813,11 @@ Additional Inherited Members</h2></td></tr>
 
 <p>Reimplemented from <a class="el" href="classcgv_1_1media_1_1color__scale.html#aa9dbe5b199a49fbfe99716306404ca50">cgv::media::color_scale</a>.</p>
 
-<p class="definition">Definition at line <a class="el" href="transfer__function_8cxx_source.html#l00151">151</a> of file <a class="el" href="transfer__function_8cxx_source.html">transfer_function.cxx</a>.</p>
+<p class="definition">Definition at line <a class="el" href="transfer__function_8cxx_source.html#l00205">205</a> of file <a class="el" href="transfer__function_8cxx_source.html">transfer_function.cxx</a>.</p>
 
 <p class="reference">References <a class="el" href="color__scale_8h_source.html#l00093">cgv::media::color_scale::get_unknown_color()</a>, and <a class="el" href="color__scale_8cxx_source.html#l00028">cgv::media::color_scale::is_unknown()</a>.</p>
 
-<p class="reference">Referenced by <a class="el" href="transfer__function_8cxx_source.html#l00144">map_value()</a>, and <a class="el" href="transfer__function_8cxx_source.html#l00072">set_domain()</a>.</p>
+<p class="reference">Referenced by <a class="el" href="transfer__function_8cxx_source.html#l00198">map_value()</a>, and <a class="el" href="transfer__function_8cxx_source.html#l00126">set_domain()</a>.</p>
 
 </div>
 </div>
@@ -801,9 +849,9 @@ Additional Inherited Members</h2></td></tr>
 
 <p>Reimplemented from <a class="el" href="classcgv_1_1media_1_1color__scale.html#a0c5cb86ab1b1d33f6e9e3868d0a0bcdd">cgv::media::color_scale</a>.</p>
 
-<p class="definition">Definition at line <a class="el" href="transfer__function_8cxx_source.html#l00159">159</a> of file <a class="el" href="transfer__function_8cxx_source.html">transfer_function.cxx</a>.</p>
+<p class="definition">Definition at line <a class="el" href="transfer__function_8cxx_source.html#l00211">211</a> of file <a class="el" href="transfer__function_8cxx_source.html">transfer_function.cxx</a>.</p>
 
-<p class="reference">Referenced by <a class="el" href="transfer__function_8cxx_source.html#l00144">map_value()</a>, and <a class="el" href="transfer__function_8cxx_source.html#l00072">set_domain()</a>.</p>
+<p class="reference">Referenced by <a class="el" href="transfer__function_8cxx_source.html#l00198">map_value()</a>, and <a class="el" href="transfer__function_8cxx_source.html#l00126">set_domain()</a>.</p>
 
 </div>
 </div>
@@ -838,7 +886,37 @@ Additional Inherited Members</h2></td></tr>
   </dd>
 </dl>
 
-<p class="definition">Definition at line <a class="el" href="transfer__function_8h_source.html#l00211">211</a> of file <a class="el" href="transfer__function_8h_source.html">transfer_function.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="transfer__function_8h_source.html#l00253">253</a> of file <a class="el" href="transfer__function_8h_source.html">transfer_function.h</a>.</p>
+
+</div>
+</div>
+<a id="aded24a1d5fa7c154b5ced315857e8a5e" name="aded24a1d5fa7c154b5ced315857e8a5e"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#aded24a1d5fa7c154b5ced315857e8a5e">&#9670;&#160;</a></span>get_opacity_point_count()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">const size_t cgv::media::transfer_function::get_opacity_point_count </td>
+          <td>(</td>
+          <td class="paramname"></td><td>)</td>
+          <td> const</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">inline</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p>Get the opacity control point count. </p>
+<dl class="section return"><dt>Returns</dt><dd>The control point count. </dd></dl>
+
+<p class="definition">Definition at line <a class="el" href="transfer__function_8h_source.html#l00170">170</a> of file <a class="el" href="transfer__function_8h_source.html">transfer_function.h</a>.</p>
 
 </div>
 </div>
@@ -869,7 +947,7 @@ Additional Inherited Members</h2></td></tr>
 <dl class="section return"><dt>Returns</dt><dd>The control points. <br  />
  </dd></dl>
 
-<p class="definition">Definition at line <a class="el" href="transfer__function_8h_source.html#l00182">182</a> of file <a class="el" href="transfer__function_8h_source.html">transfer_function.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="transfer__function_8h_source.html#l00184">184</a> of file <a class="el" href="transfer__function_8h_source.html">transfer_function.h</a>.</p>
 
 </div>
 </div>
@@ -901,7 +979,7 @@ Additional Inherited Members</h2></td></tr>
 
 <p>Implements <a class="el" href="classcgv_1_1media_1_1color__scale.html#ae3d2028f6028d46e9774904977ca1966">cgv::media::color_scale</a>.</p>
 
-<p class="definition">Definition at line <a class="el" href="transfer__function_8cxx_source.html#l00197">197</a> of file <a class="el" href="transfer__function_8cxx_source.html">transfer_function.cxx</a>.</p>
+<p class="definition">Definition at line <a class="el" href="transfer__function_8cxx_source.html#l00249">249</a> of file <a class="el" href="transfer__function_8cxx_source.html">transfer_function.cxx</a>.</p>
 
 <p class="reference">References <a class="el" href="color__scale_8h_source.html#l00052">cgv::media::color_scale::get_domain()</a>.</p>
 
@@ -999,9 +1077,9 @@ Additional Inherited Members</h2></td></tr>
 
 <p>Reimplemented from <a class="el" href="classcgv_1_1media_1_1color__scale.html#ade607b8231ef7d438c09e79189c422e4">cgv::media::color_scale</a>.</p>
 
-<p class="definition">Definition at line <a class="el" href="transfer__function_8cxx_source.html#l00144">144</a> of file <a class="el" href="transfer__function_8cxx_source.html">transfer_function.cxx</a>.</p>
+<p class="definition">Definition at line <a class="el" href="transfer__function_8cxx_source.html#l00198">198</a> of file <a class="el" href="transfer__function_8cxx_source.html">transfer_function.cxx</a>.</p>
 
-<p class="reference">References <a class="el" href="color_8h_source.html#l00418">cgv::media::rgb_color_interface&lt; color&lt; T, cm, am &gt; &gt;::B()</a>, <a class="el" href="color_8h_source.html#l00416">cgv::media::rgb_color_interface&lt; color&lt; T, cm, am &gt; &gt;::G()</a>, <a class="el" href="transfer__function_8cxx_source.html#l00151">get_mapped_color()</a>, <a class="el" href="transfer__function_8cxx_source.html#l00159">get_mapped_opacity()</a>, and <a class="el" href="color_8h_source.html#l00414">cgv::media::rgb_color_interface&lt; color&lt; T, cm, am &gt; &gt;::R()</a>.</p>
+<p class="reference">References <a class="el" href="color_8h_source.html#l00418">cgv::media::rgb_color_interface&lt; color&lt; T, cm, am &gt; &gt;::B()</a>, <a class="el" href="color_8h_source.html#l00416">cgv::media::rgb_color_interface&lt; color&lt; T, cm, am &gt; &gt;::G()</a>, <a class="el" href="transfer__function_8cxx_source.html#l00205">get_mapped_color()</a>, <a class="el" href="transfer__function_8cxx_source.html#l00211">get_mapped_opacity()</a>, and <a class="el" href="color_8h_source.html#l00414">cgv::media::rgb_color_interface&lt; color&lt; T, cm, am &gt; &gt;::R()</a>.</p>
 
 </div>
 </div>
@@ -1033,7 +1111,7 @@ Additional Inherited Members</h2></td></tr>
 
 <p>Reimplemented from <a class="el" href="classcgv_1_1media_1_1color__scale.html#ab8a87b61f400a5258dd5248a8958123a">cgv::media::color_scale</a>.</p>
 
-<p class="definition">Definition at line <a class="el" href="transfer__function_8cxx_source.html#l00138">138</a> of file <a class="el" href="transfer__function_8cxx_source.html">transfer_function.cxx</a>.</p>
+<p class="definition">Definition at line <a class="el" href="transfer__function_8cxx_source.html#l00192">192</a> of file <a class="el" href="transfer__function_8cxx_source.html">transfer_function.cxx</a>.</p>
 
 <p class="reference">References <a class="el" href="color__scale_8h_source.html#l00052">cgv::media::color_scale::get_domain()</a>, and <a class="el" href="color__scale_8cxx_source.html#l00033">cgv::media::color_scale::map_range_safe()</a>.</p>
 
@@ -1067,11 +1145,11 @@ Additional Inherited Members</h2></td></tr>
 
 <p>Implements <a class="el" href="classcgv_1_1media_1_1color__scale.html#a9d5d47eb2999229f799793d660e81a6b">cgv::media::color_scale</a>.</p>
 
-<p class="definition">Definition at line <a class="el" href="transfer__function_8cxx_source.html#l00165">165</a> of file <a class="el" href="transfer__function_8cxx_source.html">transfer_function.cxx</a>.</p>
+<p class="definition">Definition at line <a class="el" href="transfer__function_8cxx_source.html#l00217">217</a> of file <a class="el" href="transfer__function_8cxx_source.html">transfer_function.cxx</a>.</p>
 
-<p class="reference">References <a class="el" href="transfer__function_8cxx_source.html#l00178">quantize_color()</a>, and <a class="el" href="transfer__function_8cxx_source.html#l00188">quantize_opacity()</a>.</p>
+<p class="reference">References <a class="el" href="transfer__function_8cxx_source.html#l00230">quantize_color()</a>, and <a class="el" href="transfer__function_8cxx_source.html#l00240">quantize_opacity()</a>.</p>
 
-<p class="reference">Referenced by <a class="el" href="transfer__function_8cxx_source.html#l00178">quantize_color()</a>, and <a class="el" href="transfer__function_8cxx_source.html#l00188">quantize_opacity()</a>.</p>
+<p class="reference">Referenced by <a class="el" href="transfer__function_8cxx_source.html#l00230">quantize_color()</a>, and <a class="el" href="transfer__function_8cxx_source.html#l00240">quantize_opacity()</a>.</p>
 
 </div>
 </div>
@@ -1094,11 +1172,11 @@ Additional Inherited Members</h2></td></tr>
 <p>Quantize the color function only. </p>
 <p>See <a class="el" href="classcgv_1_1media_1_1transfer__function.html#aa3728f164362e10be427af46311cbe85" title="See color_scale::quantize().">quantize()</a>. </p>
 
-<p class="definition">Definition at line <a class="el" href="transfer__function_8cxx_source.html#l00178">178</a> of file <a class="el" href="transfer__function_8cxx_source.html">transfer_function.cxx</a>.</p>
+<p class="definition">Definition at line <a class="el" href="transfer__function_8cxx_source.html#l00230">230</a> of file <a class="el" href="transfer__function_8cxx_source.html">transfer_function.cxx</a>.</p>
 
-<p class="reference">References <a class="el" href="color__scale_8h_source.html#l00076">cgv::media::color_scale::is_reversed()</a>, and <a class="el" href="transfer__function_8cxx_source.html#l00165">quantize()</a>.</p>
+<p class="reference">References <a class="el" href="color__scale_8h_source.html#l00076">cgv::media::color_scale::is_reversed()</a>, and <a class="el" href="transfer__function_8cxx_source.html#l00217">quantize()</a>.</p>
 
-<p class="reference">Referenced by <a class="el" href="transfer__function_8cxx_source.html#l00165">quantize()</a>.</p>
+<p class="reference">Referenced by <a class="el" href="transfer__function_8cxx_source.html#l00217">quantize()</a>.</p>
 
 </div>
 </div>
@@ -1121,11 +1199,11 @@ Additional Inherited Members</h2></td></tr>
 <p>Quantize the opacity function only. </p>
 <p>See <a class="el" href="classcgv_1_1media_1_1transfer__function.html#aa3728f164362e10be427af46311cbe85" title="See color_scale::quantize().">quantize()</a>. </p>
 
-<p class="definition">Definition at line <a class="el" href="transfer__function_8cxx_source.html#l00188">188</a> of file <a class="el" href="transfer__function_8cxx_source.html">transfer_function.cxx</a>.</p>
+<p class="definition">Definition at line <a class="el" href="transfer__function_8cxx_source.html#l00240">240</a> of file <a class="el" href="transfer__function_8cxx_source.html">transfer_function.cxx</a>.</p>
 
-<p class="reference">References <a class="el" href="color__scale_8h_source.html#l00076">cgv::media::color_scale::is_reversed()</a>, and <a class="el" href="transfer__function_8cxx_source.html#l00165">quantize()</a>.</p>
+<p class="reference">References <a class="el" href="color__scale_8h_source.html#l00076">cgv::media::color_scale::is_reversed()</a>, and <a class="el" href="transfer__function_8cxx_source.html#l00217">quantize()</a>.</p>
 
-<p class="reference">Referenced by <a class="el" href="transfer__function_8cxx_source.html#l00165">quantize()</a>.</p>
+<p class="reference">Referenced by <a class="el" href="transfer__function_8cxx_source.html#l00217">quantize()</a>.</p>
 
 </div>
 </div>
@@ -1154,11 +1232,11 @@ Additional Inherited Members</h2></td></tr>
 </dl>
 <dl class="section return"><dt>Returns</dt><dd>True if a point was removed, false otherwise. </dd></dl>
 
-<p class="definition">Definition at line <a class="el" href="transfer__function_8cxx_source.html#l00056">56</a> of file <a class="el" href="transfer__function_8cxx_source.html">transfer_function.cxx</a>.</p>
+<p class="definition">Definition at line <a class="el" href="transfer__function_8cxx_source.html#l00110">110</a> of file <a class="el" href="transfer__function_8cxx_source.html">transfer_function.cxx</a>.</p>
 
 <p class="reference">References <a class="el" href="color__scale_8h_source.html#l00177">cgv::media::color_scale::modified()</a>.</p>
 
-<p class="reference">Referenced by <a class="el" href="transfer__function_8cxx_source.html#l00040">add_color_point()</a>.</p>
+<p class="reference">Referenced by <a class="el" href="transfer__function_8cxx_source.html#l00056">add_color_point()</a>.</p>
 
 </div>
 </div>
@@ -1187,11 +1265,11 @@ Additional Inherited Members</h2></td></tr>
 </dl>
 <dl class="section return"><dt>Returns</dt><dd>True if a point was removed, false otherwise. </dd></dl>
 
-<p class="definition">Definition at line <a class="el" href="transfer__function_8cxx_source.html#l00064">64</a> of file <a class="el" href="transfer__function_8cxx_source.html">transfer_function.cxx</a>.</p>
+<p class="definition">Definition at line <a class="el" href="transfer__function_8cxx_source.html#l00118">118</a> of file <a class="el" href="transfer__function_8cxx_source.html">transfer_function.cxx</a>.</p>
 
 <p class="reference">References <a class="el" href="color__scale_8h_source.html#l00177">cgv::media::color_scale::modified()</a>.</p>
 
-<p class="reference">Referenced by <a class="el" href="transfer__function_8cxx_source.html#l00048">add_opacity_point()</a>.</p>
+<p class="reference">Referenced by <a class="el" href="transfer__function_8cxx_source.html#l00064">add_opacity_point()</a>.</p>
 
 </div>
 </div>
@@ -1220,9 +1298,93 @@ Additional Inherited Members</h2></td></tr>
   </dd>
 </dl>
 
-<p class="definition">Definition at line <a class="el" href="transfer__function_8cxx_source.html#l00119">119</a> of file <a class="el" href="transfer__function_8cxx_source.html">transfer_function.cxx</a>.</p>
+<p class="definition">Definition at line <a class="el" href="transfer__function_8cxx_source.html#l00173">173</a> of file <a class="el" href="transfer__function_8cxx_source.html">transfer_function.cxx</a>.</p>
 
 <p class="reference">References <a class="el" href="color__scale_8h_source.html#l00052">cgv::media::color_scale::get_domain()</a>, <a class="el" href="color__scale_8cxx_source.html#l00033">cgv::media::color_scale::map_range_safe()</a>, and <a class="el" href="color__scale_8cxx_source.html#l00009">cgv::media::color_scale::set_domain()</a>.</p>
+
+</div>
+</div>
+<a id="a79a3144015c99c8c751bcff66ed8ceef" name="a79a3144015c99c8c751bcff66ed8ceef"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a79a3144015c99c8c751bcff66ed8ceef">&#9670;&#160;</a></span>set_color()</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">bool cgv::media::transfer_function::set_color </td>
+          <td>(</td>
+          <td class="paramtype">size_t&#160;</td>
+          <td class="paramname"><em>index</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">const <a class="el" href="classcgv_1_1media_1_1transfer__function.html#a84a3bb0397e4a98730edbcb088873b4f">color_type</a> &amp;&#160;</td>
+          <td class="paramname"><em>color</em>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>Set the color of the control point at the given index. </p>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">index</td><td>The index of the control point to modify. </td></tr>
+    <tr><td class="paramname">color</td><td>The new color. </td></tr>
+  </table>
+  </dd>
+</dl>
+<dl class="section return"><dt>Returns</dt><dd>False if no point exists at the given index, true otherwise. </dd></dl>
+
+<p class="definition">Definition at line <a class="el" href="transfer__function_8cxx_source.html#l00072">72</a> of file <a class="el" href="transfer__function_8cxx_source.html">transfer_function.cxx</a>.</p>
+
+<p class="reference">References <a class="el" href="color__scale_8h_source.html#l00177">cgv::media::color_scale::modified()</a>.</p>
+
+</div>
+</div>
+<a id="a6c04046a9299c221aee909c0e918b739" name="a6c04046a9299c221aee909c0e918b739"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a6c04046a9299c221aee909c0e918b739">&#9670;&#160;</a></span>set_color_at()</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">bool cgv::media::transfer_function::set_color_at </td>
+          <td>(</td>
+          <td class="paramtype">float&#160;</td>
+          <td class="paramname"><em>x</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">const <a class="el" href="classcgv_1_1media_1_1transfer__function.html#a84a3bb0397e4a98730edbcb088873b4f">color_type</a> &amp;&#160;</td>
+          <td class="paramname"><em>color</em>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>Set the color of the control point at the given position. </p>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">x</td><td>The position of the control point to modify. </td></tr>
+    <tr><td class="paramname">color</td><td>The new color. </td></tr>
+  </table>
+  </dd>
+</dl>
+<dl class="section return"><dt>Returns</dt><dd>False if no point exists at the given position, true otherwise. </dd></dl>
+
+<p class="definition">Definition at line <a class="el" href="transfer__function_8cxx_source.html#l00081">81</a> of file <a class="el" href="transfer__function_8cxx_source.html">transfer_function.cxx</a>.</p>
+
+<p class="reference">References <a class="el" href="color__scale_8h_source.html#l00177">cgv::media::color_scale::modified()</a>.</p>
 
 </div>
 </div>
@@ -1250,7 +1412,7 @@ Additional Inherited Members</h2></td></tr>
   </dd>
 </dl>
 
-<p class="definition">Definition at line <a class="el" href="transfer__function_8cxx_source.html#l00234">234</a> of file <a class="el" href="transfer__function_8cxx_source.html">transfer_function.cxx</a>.</p>
+<p class="definition">Definition at line <a class="el" href="transfer__function_8cxx_source.html#l00270">270</a> of file <a class="el" href="transfer__function_8cxx_source.html">transfer_function.cxx</a>.</p>
 
 <p class="reference">References <a class="el" href="color__scale_8h_source.html#l00177">cgv::media::color_scale::modified()</a>.</p>
 
@@ -1281,9 +1443,9 @@ Additional Inherited Members</h2></td></tr>
   </dd>
 </dl>
 
-<p class="definition">Definition at line <a class="el" href="transfer__function_8cxx_source.html#l00018">18</a> of file <a class="el" href="transfer__function_8cxx_source.html">transfer_function.cxx</a>.</p>
+<p class="definition">Definition at line <a class="el" href="transfer__function_8cxx_source.html#l00034">34</a> of file <a class="el" href="transfer__function_8cxx_source.html">transfer_function.cxx</a>.</p>
 
-<p class="reference">Referenced by <a class="el" href="transfer__function_8cxx_source.html#l00025">set_color_points_from_scheme()</a>, <a class="el" href="transfer__function_8cxx_source.html#l00009">transfer_function()</a>, and <a class="el" href="transfer__function_8cxx_source.html#l00013">transfer_function()</a>.</p>
+<p class="reference">Referenced by <a class="el" href="transfer__function_8cxx_source.html#l00041">set_color_points_from_scheme()</a>, <a class="el" href="transfer__function_8cxx_source.html#l00009">transfer_function()</a>, and <a class="el" href="transfer__function_8cxx_source.html#l00013">transfer_function()</a>.</p>
 
 </div>
 </div>
@@ -1323,9 +1485,9 @@ Additional Inherited Members</h2></td></tr>
   </dd>
 </dl>
 
-<p class="definition">Definition at line <a class="el" href="transfer__function_8cxx_source.html#l00025">25</a> of file <a class="el" href="transfer__function_8cxx_source.html">transfer_function.cxx</a>.</p>
+<p class="definition">Definition at line <a class="el" href="transfer__function_8cxx_source.html#l00041">41</a> of file <a class="el" href="transfer__function_8cxx_source.html">transfer_function.cxx</a>.</p>
 
-<p class="reference">References <a class="el" href="color__scheme_8h_source.html#l00139">cgv::media::continuous_color_scheme::quantize()</a>, <a class="el" href="transfer__function_8cxx_source.html#l00018">set_color_points()</a>, <a class="el" href="algorithm_8h_source.html#l00232">cgv::utils::subdivision_sequence()</a>, and <a class="el" href="algorithm_8h_source.html#l00199">cgv::utils::zip()</a>.</p>
+<p class="reference">References <a class="el" href="color__scheme_8h_source.html#l00139">cgv::media::continuous_color_scheme::quantize()</a>, <a class="el" href="transfer__function_8cxx_source.html#l00034">set_color_points()</a>, <a class="el" href="algorithm_8h_source.html#l00232">cgv::utils::subdivision_sequence()</a>, and <a class="el" href="algorithm_8h_source.html#l00199">cgv::utils::zip()</a>.</p>
 
 </div>
 </div>
@@ -1364,9 +1526,9 @@ Additional Inherited Members</h2></td></tr>
 
 <p>Reimplemented from <a class="el" href="classcgv_1_1media_1_1color__scale.html#afa20918c2e338674d281e6f55cceeb82">cgv::media::color_scale</a>.</p>
 
-<p class="definition">Definition at line <a class="el" href="transfer__function_8cxx_source.html#l00072">72</a> of file <a class="el" href="transfer__function_8cxx_source.html">transfer_function.cxx</a>.</p>
+<p class="definition">Definition at line <a class="el" href="transfer__function_8cxx_source.html#l00126">126</a> of file <a class="el" href="transfer__function_8cxx_source.html">transfer_function.cxx</a>.</p>
 
-<p class="reference">References <a class="el" href="transfer__function_8cxx_source.html#l00040">add_color_point()</a>, <a class="el" href="transfer__function_8cxx_source.html#l00048">add_opacity_point()</a>, <a class="el" href="color__scale_8h_source.html#l00052">cgv::media::color_scale::get_domain()</a>, <a class="el" href="transfer__function_8cxx_source.html#l00151">get_mapped_color()</a>, <a class="el" href="transfer__function_8cxx_source.html#l00159">get_mapped_opacity()</a>, and <a class="el" href="color__scale_8h_source.html#l00177">cgv::media::color_scale::modified()</a>.</p>
+<p class="reference">References <a class="el" href="transfer__function_8cxx_source.html#l00056">add_color_point()</a>, <a class="el" href="transfer__function_8cxx_source.html#l00064">add_opacity_point()</a>, <a class="el" href="color__scale_8h_source.html#l00052">cgv::media::color_scale::get_domain()</a>, <a class="el" href="transfer__function_8cxx_source.html#l00205">get_mapped_color()</a>, <a class="el" href="transfer__function_8cxx_source.html#l00211">get_mapped_opacity()</a>, and <a class="el" href="color__scale_8h_source.html#l00177">cgv::media::color_scale::modified()</a>.</p>
 
 </div>
 </div>
@@ -1394,7 +1556,91 @@ Additional Inherited Members</h2></td></tr>
   </dd>
 </dl>
 
-<p class="definition">Definition at line <a class="el" href="transfer__function_8cxx_source.html#l00226">226</a> of file <a class="el" href="transfer__function_8cxx_source.html">transfer_function.cxx</a>.</p>
+<p class="definition">Definition at line <a class="el" href="transfer__function_8cxx_source.html#l00262">262</a> of file <a class="el" href="transfer__function_8cxx_source.html">transfer_function.cxx</a>.</p>
+
+<p class="reference">References <a class="el" href="color__scale_8h_source.html#l00177">cgv::media::color_scale::modified()</a>.</p>
+
+</div>
+</div>
+<a id="a5205b7e45a14b93f969d4bdf4876d21a" name="a5205b7e45a14b93f969d4bdf4876d21a"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a5205b7e45a14b93f969d4bdf4876d21a">&#9670;&#160;</a></span>set_opacity()</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">bool cgv::media::transfer_function::set_opacity </td>
+          <td>(</td>
+          <td class="paramtype">size_t&#160;</td>
+          <td class="paramname"><em>index</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">const <a class="el" href="classcgv_1_1media_1_1transfer__function.html#aff682f6e625b6536e758de91db347a61">opacity_type</a> &amp;&#160;</td>
+          <td class="paramname"><em>opacity</em>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>Set the opacity of the control point at the given index. </p>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">index</td><td>The index of the control point to modify. </td></tr>
+    <tr><td class="paramname">opacity</td><td>The new opacity. </td></tr>
+  </table>
+  </dd>
+</dl>
+<dl class="section return"><dt>Returns</dt><dd>False if no point exists at the given index, true otherwise. </dd></dl>
+
+<p class="definition">Definition at line <a class="el" href="transfer__function_8cxx_source.html#l00091">91</a> of file <a class="el" href="transfer__function_8cxx_source.html">transfer_function.cxx</a>.</p>
+
+<p class="reference">References <a class="el" href="color__scale_8h_source.html#l00177">cgv::media::color_scale::modified()</a>.</p>
+
+</div>
+</div>
+<a id="a717a9a57375acb934fd1803be272c397" name="a717a9a57375acb934fd1803be272c397"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a717a9a57375acb934fd1803be272c397">&#9670;&#160;</a></span>set_opacity_at()</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">bool cgv::media::transfer_function::set_opacity_at </td>
+          <td>(</td>
+          <td class="paramtype">float&#160;</td>
+          <td class="paramname"><em>x</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">const <a class="el" href="classcgv_1_1media_1_1transfer__function.html#aff682f6e625b6536e758de91db347a61">opacity_type</a> &amp;&#160;</td>
+          <td class="paramname"><em>opacity</em>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>Set the opacity of the control point at the given position. </p>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">x</td><td>The position of the control point to modify. </td></tr>
+    <tr><td class="paramname">opacity</td><td>The new opacity. </td></tr>
+  </table>
+  </dd>
+</dl>
+<dl class="section return"><dt>Returns</dt><dd>False if no point exists at the given position, true otherwise. </dd></dl>
+
+<p class="definition">Definition at line <a class="el" href="transfer__function_8cxx_source.html#l00100">100</a> of file <a class="el" href="transfer__function_8cxx_source.html">transfer_function.cxx</a>.</p>
 
 <p class="reference">References <a class="el" href="color__scale_8h_source.html#l00177">cgv::media::color_scale::modified()</a>.</p>
 
@@ -1424,7 +1670,7 @@ Additional Inherited Members</h2></td></tr>
   </dd>
 </dl>
 
-<p class="definition">Definition at line <a class="el" href="transfer__function_8cxx_source.html#l00241">241</a> of file <a class="el" href="transfer__function_8cxx_source.html">transfer_function.cxx</a>.</p>
+<p class="definition">Definition at line <a class="el" href="transfer__function_8cxx_source.html#l00277">277</a> of file <a class="el" href="transfer__function_8cxx_source.html">transfer_function.cxx</a>.</p>
 
 <p class="reference">References <a class="el" href="color__scale_8h_source.html#l00177">cgv::media::color_scale::modified()</a>.</p>
 
@@ -1455,7 +1701,7 @@ Additional Inherited Members</h2></td></tr>
   </dd>
 </dl>
 
-<p class="definition">Definition at line <a class="el" href="transfer__function_8cxx_source.html#l00032">32</a> of file <a class="el" href="transfer__function_8cxx_source.html">transfer_function.cxx</a>.</p>
+<p class="definition">Definition at line <a class="el" href="transfer__function_8cxx_source.html#l00048">48</a> of file <a class="el" href="transfer__function_8cxx_source.html">transfer_function.cxx</a>.</p>
 
 <p class="reference">Referenced by <a class="el" href="transfer__function_8cxx_source.html#l00013">transfer_function()</a>.</p>
 
