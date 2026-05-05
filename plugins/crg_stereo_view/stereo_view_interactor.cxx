@@ -1261,10 +1261,35 @@ void stereo_view_interactor::set_projection_matrix(cgv::render::context& ctx, Gl
 	if (y_view_angle <= 0.1)
 		P = ortho4<double>(-aspect * y_extent_at_focus, aspect * y_extent_at_focus, -y_extent_at_focus, y_extent_at_focus, z_near_derived, z_far_derived);
 	else {
-		if (stereo_translate_in_model_view)
-			P = cgv::math::stereo_frustum_screen4<double>(e, eye_distance, y_extent_at_focus * aspect, y_extent_at_focus, get_parallax_zero_depth(), z_near_derived, z_far_derived);
-		else
-			P = cgv::math::stereo_perspective_screen4<double>(e, eye_distance, y_extent_at_focus * aspect, y_extent_at_focus, get_parallax_zero_depth(), z_near_derived, z_far_derived);
+		if (fabs(screen_tilt_angle) > 0.1) {
+			double screen_width = aspect * y_extent_at_focus;
+			double alpha = 0.01745329252 * screen_tilt_angle;
+			double Ca = cos(alpha);
+			double Sa = sin(alpha);
+			cgv::dvec3 screen_center = { 0.0, 0.0, -get_parallax_zero_depth() };
+			cgv::dvec3 screen_normal = { Sa, 0.0, -Ca };
+			cgv::dvec3 screen_x      = { Ca, 0.0, Sa };
+			cgv::dvec3 eye_point     = { e * 0.5 * eye_distance * screen_width, 0.0, 0.0 };
+			double eye_x_on_screen   = dot(screen_x, eye_point - screen_center);
+			double eye_z = (screen_center + eye_x_on_screen * screen_x - eye_point).length();
+			double z_scale = z_near_derived / eye_z;
+			double delta = z_scale * eye_x_on_screen;
+			double top = 0.5 * z_scale * y_extent_at_focus;
+			double bottom = -top;
+			double left = bottom * aspect - delta;
+			double right = top * aspect - delta;
+			auto F = frustum4<double>(left, right, bottom, top, z_near_derived, z_far_derived);
+			auto R = cgv::math::rotate4<double>(screen_tilt_angle, cgv::dvec3(0, 1, 0));
+			P = F * R;
+			if (!stereo_translate_in_model_view) 				
+				P *= cgv::math::stereo_translate_screen4<double>(e, eye_distance, y_extent_at_focus * aspect);
+		}
+		else {
+			if (stereo_translate_in_model_view)
+				P = cgv::math::stereo_frustum_screen4<double>(e, eye_distance, y_extent_at_focus * aspect, y_extent_at_focus, get_parallax_zero_depth(), z_near_derived, z_far_derived);
+			else
+				P = cgv::math::stereo_perspective_screen4<double>(e, eye_distance, y_extent_at_focus * aspect, y_extent_at_focus, get_parallax_zero_depth(), z_near_derived, z_far_derived);
+		}
 	}
 	/*
 	bool flip_vert = ((e == GLSU_LEFT) ? flip_x[0] : ((e == GLSU_RIGHT) ? flip_x[1] : false));
@@ -1654,6 +1679,7 @@ void stereo_view_interactor::create_gui()
 		add_member_control(this, "Anaglyph Config", anaglyph_config, "dropdown", "enums='" AC_ENUMS "'");
 		add_member_control(this, "Eye Distance", eye_distance, "value_slider", "min=0.001;max=0.5;ticks=true;step=0.00001;log=true");
 		add_member_control(this, "Parallax Zero Scale", parallax_zero_scale, "value_slider", "min=0.03;max=1;ticks=true;step=0.001;log=true");
+		add_member_control(this, "Screen Tilt Angle", screen_tilt_angle, "value_slider", "min=-90;max=90;ticks=true;step=0.1");
 		add_member_control(this, "Stereo Translate in Model View", stereo_translate_in_model_view, "check");
 		add_member_control(this, "Stereo Mouse Pointer", stereo_mouse_pointer, "dropdown", "enums='" SMP_ENUMS "'");
 		align("\b");
@@ -1845,6 +1871,7 @@ bool stereo_view_interactor::self_reflect(cgv::reflect::reflection_handler& srh)
 		srh.reflect_member("flip_y_left", flip_y[0]) &&
 		srh.reflect_member("flip_y_right", flip_y[1]) &&
 		srh.reflect_member("y_view_angle", y_view_angle) &&
+		srh.reflect_member("screen_tilt_angle", screen_tilt_angle) &&
 		srh.reflect_member("extent", y_extent_at_focus) &&
 		srh.reflect_member("z_near", z_near) &&
 		srh.reflect_member("z_far", z_far) &&

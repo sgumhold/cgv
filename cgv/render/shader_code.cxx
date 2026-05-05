@@ -61,6 +61,7 @@ shader_config_ptr get_shader_config()
 				std::string(getenv("CGV_DIR")) + "/libs/cgv_overlay/glsl;" +
 				std::string(getenv("CGV_DIR")) + "/libs/holo_disp;" +
 				std::string(getenv("CGV_DIR")) + "/libs/plot/glsl;"+
+				std::string(getenv("CGV_DIR")) + "/libs/cgv_proc/glsl;"+
 				std::string(getenv("CGV_DIR")) + "/plugins/examples";
 	}
 	return config;
