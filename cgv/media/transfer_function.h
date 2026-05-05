@@ -73,6 +73,15 @@ public:
 		return color_points_.empty() && opacity_points_.empty();
 	}
 
+	/// @brief Clear all color and opacity control points.
+	void clear();
+
+	/// @brief Clear color control points only.
+	void clear_color_points();
+
+	/// @brief Clear opacity control points only.
+	void clear_opacity_points();
+
 	/// @brief Set the color function to use the given control points.
 	/// Extends the domain if the new control points are outside the current domain.
 	/// 
@@ -108,6 +117,34 @@ public:
 	/// @param opacity The control point color.
 	void add_opacity_point(float x, float opacity);
 
+	/// @brief Set the color of the control point at the given index.
+	/// 
+	/// @param index The index of the control point to modify.
+	/// @param color The new color.
+	/// @return False if no point exists at the given index, true otherwise.
+	bool set_color(size_t index, const color_type& color);
+
+	/// @brief Set the color of the control point at the given position.
+	/// 
+	/// @param x The position of the control point to modify.
+	/// @param color The new color.
+	/// @return False if no point exists at the given position, true otherwise.
+	bool set_color_at(float x, const color_type& color);
+
+	/// @brief Set the opacity of the control point at the given index.
+	/// 
+	/// @param index The index of the control point to modify.
+	/// @param opacity The new opacity.
+	/// @return False if no point exists at the given index, true otherwise.
+	bool set_opacity(size_t index, const opacity_type& opacity);
+
+	/// @brief Set the opacity of the control point at the given position.
+	/// 
+	/// @param x The position of the control point to modify.
+	/// @param opacity The new opacity.
+	/// @return False if no point exists at the given position, true otherwise.
+	bool set_opacity_at(float x, const opacity_type& opacity);
+
 	/// @brief Remove the color point at position x if it exists.
 	/// 
 	/// @param x The position of the control point to be removed.
@@ -119,6 +156,34 @@ public:
 	/// @param x The position of the control point to be removed.
 	/// @return True if a point was removed, false otherwise.
 	bool remove_opacity_point(float x);
+
+	/// @brief Get the color control point count.
+	/// 
+	/// @return The control point count.
+	const size_t get_color_point_count() const {
+		return color_points_.size();
+	}
+
+	/// @brief Get the opacity control point count.
+	/// 
+	/// @return The control point count.
+	const size_t get_opacity_point_count() const {
+		return opacity_points_.size();
+	}
+
+	/// @brief Get the color control points.
+	/// 
+	/// @return The control points. 
+	const std::vector<color_point_type>& get_color_points() const {
+		return color_points_;
+	}
+
+	/// @brief Get the opacity control points.
+	/// 
+	/// @return The control points. 
+	const std::vector<opacity_point_type>& get_opacity_points() const {
+		return opacity_points_;
+	}
 
 	/// @brief Set the domain.
 	/// All control points outside of the new domain will be removed. New control points
@@ -160,29 +225,6 @@ public:
 	/// See color_scale::get_ticks().
 	std::vector<float> get_ticks(size_t request_count) const override;
 
-	/// @brief Clear all color and opacity control points.
-	void clear();
-
-	/// @brief Clear color control points only.
-	void clear_color_points();
-
-	/// @brief Clear opacity control points only.
-	void clear_opacity_points();
-
-	/// @brief Get the color control points.
-	/// 
-	/// @return The control points. 
-	const std::vector<color_point_type>& get_color_points() const {
-		return color_points_;
-	}
-
-	/// @brief Get the opacity control points.
-	/// 
-	/// @return The control points. 
-	const std::vector<opacity_point_type>& get_opacity_points() const {
-		return opacity_points_;
-	}
-
 	/// @brief Set the interpolation mode of the color and opacity function.
 	/// 
 	/// @param interpolation The interpolation mode.
@@ -213,6 +255,17 @@ public:
 	}
 
 private:
+	/// @brief Helper template to find a control point of any value type by its position.
+	/// 
+	/// @tparam value_type The control point value type.
+	/// @param points The control point vector.
+	/// @param x The position of the control point to be removed.
+	/// @return An iterator pointing to the control point with position x or the end of the control points.
+	template<typename value_type>
+	typename std::vector<std::pair<float, value_type>>::iterator find_point(std::vector<std::pair<float, value_type>>& points, float x) {
+		return std::find_if(points.begin(), points.end(), [&x](const std::pair<float, value_type>& point) { return point.first == x; });
+	}
+
 	/// @brief Helper template to remove a control point of any value type by its position if it exists.
 	/// 
 	/// @tparam value_type The control point value type.
@@ -221,7 +274,7 @@ private:
 	/// @return True if a point was removed, false otherwise.
 	template<typename value_type>
 	bool remove_point(std::vector<std::pair<float, value_type>>& points, float x) {
-		auto it = std::find_if(points.begin(), points.end(), [&x](const std::pair<float, value_type>& point) { return point.first == x; });
+		auto it = find_point(points, x);
 		if(it == points.end() || it == points.begin() || it == --points.end())
 			return false;
 		points.erase(it);
