@@ -184,7 +184,8 @@ float discrete_color_scale::normalize_value(float value) const {
 	if(is_clamped())
 		value = cgv::math::clamp(value, domain[0], domain[1]);
 
-	return map_range_safe(value, domain[0], domain[1], 0.0f, 1.0f);
+	float t = map_range_safe(value, domain[0], domain[1], 0.0f, 1.0f);
+	return is_reversed() ? 1.0f - t : t;
 }
 
 cgv::rgb discrete_color_scale::get_mapped_color(float value) const {
@@ -203,7 +204,7 @@ cgv::rgb discrete_color_scale::get_mapped_color(float value) const {
 
 cgv::rgba discrete_color_scale::get_indexed_color(size_t index) const {
 	index %= colors_.size();
-	return { colors_[index], 1.0f };
+	return { colors_[is_reversed() ? colors_.size() - index - 1 : index], 1.0f };
 }
 
 std::vector<cgv::rgba> discrete_color_scale::quantize(size_t count) const {
