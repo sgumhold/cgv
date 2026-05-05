@@ -1,6 +1,7 @@
 #include "texture.h"
 #include "frame_buffer.h"
 
+#include <cgv/math/integer.h>
 #include <cgv/media/image/image_reader.h>
 #include <cgv/media/image/image_writer.h>
 #include <cgv/utils/tokenizer.h>
@@ -237,29 +238,6 @@ void texture::set_fixed_sample_locations(bool use)
 	fixed_sample_locations = use; 
 }
 
-template <class int_type>
-bool is_power_of_two(int_type i)
-{
-	do {
-		if (i == 1)
-			return true;
-		if ((i & 1) != 0)
-			return false;
-		i /= 2;
-	} 
-	while (true);
-	return false;
-}
-
-template <class int_type>
-int_type power_of_two_ub(int_type i)
-{
-	int_type res = 2;
-	while (res < i)
-		res *= 2;
-	return res;
-}
-
 bool texture::create_from_image(cgv::data::data_format& df, cgv::data::data_view& dv, const context& ctx,
 								const std::string& file_name, unsigned char* clear_color_ptr, int level, int cube_side)
 {
@@ -295,9 +273,9 @@ bool texture::create_from_image(cgv::data::data_format& df, cgv::data::data_view
 	size_t w = df.get_width(), h = df.get_height();
 	size_t W = w, H = h;
 	data_format df1(df);
-	if (ensure_power_of_two && (!is_power_of_two(w) || !is_power_of_two(h))) {
-		W = power_of_two_ub(df.get_width());
-		H = power_of_two_ub(df.get_height());
+	if (ensure_power_of_two && (!cgv::math::is_power_of_two(w) || !cgv::math::is_power_of_two(h))) {
+		W = cgv::math::next_power_of_two(df.get_width());
+		H = cgv::math::next_power_of_two(df.get_height());
 		df1.set_width(W);
 		df1.set_height(H);
 	}
