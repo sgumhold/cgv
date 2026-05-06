@@ -681,13 +681,13 @@ struct format_callback_handler : public traverse_callback_handler
 	{
 	}
 	/// called before the children of a group node g are processed, return whether these should be skipped. If children are skipped, the on_leave_children callback is still called.
-	bool on_enter_children(group*)
+	bool on_enter_children(group_ptr) override
 	{
 		os << "\a";
 		return false;
 	}
 	/// called when the children of a group node g have been left, return whether to terminate traversal
-	bool on_leave_children(group*)
+	bool on_leave_children(group_ptr) override
 	{
 		os << "\b";
 		return false;
@@ -3591,7 +3591,7 @@ bool gl_context::attribute_array_binding_create(attribute_array_binding_base& aa
 	return true;
 }
 
-bool gl_context::attribute_array_binding_destruct(attribute_array_binding_base& aab)
+bool gl_context::attribute_array_binding_destruct(attribute_array_binding_base& aab) const
 {
 	if (&aab == attribute_array_binding_stack.top())
 		glBindVertexArray(0);
