@@ -756,7 +756,7 @@ namespace cgv {
 								func_var = &value_stack.top().ref_value();
 							else {
 								std::string func_name = (value_stack.top().is_str() ? value_stack.top().get_str() : value_stack.top().get_name());
-								variant* func_var = &ref_variable(func_name);
+								func_var = &ref_variable(func_name);
 							}
 							if (func_var->is_func()) {
 								goto_child_namespace();
