@@ -437,11 +437,11 @@ int get_element_index(const std::string& e, const std::string& s, char sep)
 
 #if __cplusplus >= 201703L
 	// We will be using std::from_chars below for parsing, this provides the whitespace check we need there
-	inline const bool char_is_zero_or_whitespace (const char ch) {
+	inline bool char_is_zero_or_whitespace (const char ch) {
 		return ch == 0 || ch == '\r' || ch == '\n' || ch == ' ' || ch == '\t';
 	}
 	// This is the logic we're using to test whether a from_chars conversion was successful
-	inline const bool from_chars_success (const std::from_chars_result &r, const char *end_char) {
+	inline bool from_chars_success (const std::from_chars_result &r, const char *end_char) {
 		return r.ec == std::errc() && (r.ptr == end_char || char_is_zero_or_whitespace(*r.ptr));
 	}
 #endif
@@ -573,8 +573,7 @@ bool is_year(const char* begin, const char* end, unsigned short& year, bool shor
 {
 	int i;
 	unsigned int size = (unsigned int) (end-begin);
-	if ((size == 2 && short_allowed) || 
-		 ((size == 4) && is_integer(begin, end, i))) {
+	if ((size == 2 && short_allowed || size == 4) && is_integer(begin, end, i)) {
 		year = i;
 		return true;
 	}
