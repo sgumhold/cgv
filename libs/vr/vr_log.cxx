@@ -95,7 +95,7 @@ const std::unordered_map<std::string, vr::vr_log::Filter> filter_map = {
 };
 
 
-const vr::vr_log::Filter filter_from_string(const std::string& f) {
+vr::vr_log::Filter filter_from_string(const std::string& f) {
 	const auto it = filter_map.find(f);
 	if (it != filter_map.cend()) {
 		return (*it).second;
