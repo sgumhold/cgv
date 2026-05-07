@@ -31,11 +31,11 @@ public:
 	/// set a new parent node
 	void set_name(const std::string& _name);
 	/// cast upward to named
-	named_ptr get_named();
+	named_ptr get_named() override;
 	/// cast upward to const named
-	const_named_ptr get_named_const();
+	const_named_ptr get_named_const() const override;
 	/// overload to return the type name of this object
-	std::string get_type_name() const;
+	std::string get_type_name() const override;
 };
 
 template <> struct cast_helper<named>

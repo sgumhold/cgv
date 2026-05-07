@@ -42,71 +42,73 @@ struct fltk_gl_context : public gl::gl_context, public fltk::GlWindow
 		show();
 	}
 
-	bool is_created() const { return true; }
-	void attach_depth_buffer(bool attach = true) {}
+	bool is_created() const override { return true; }
+	void attach_depth_buffer(bool attach = true) override {}
 	bool is_alpha_buffer_attached() const { return true; }
-	void attach_alpha_buffer(bool attach = true) {}
+	void attach_alpha_buffer(bool attach = true) override {}
 	void detach_alpha_buffer() {}
 	bool is_stencil_buffer_attached() const { return false; }
-	void attach_stencil_buffer(bool attach = true) {}
+	void attach_stencil_buffer(bool attach = true) override {}
 	void detach_stencil_buffer() {}
 	bool is_quad_buffer_supported() const { return false; }
 	bool is_quad_buffer_attached() const { return false; }
 	void attach_quad_buffer() {}
 	void detach_quad_buffer() {}
 	bool is_accum_buffer_attached() const { return false; }
-	void attach_accumulation_buffer(bool attach = true) {}
+	void attach_accumulation_buffer(bool attach = true) override {}
 	void detach_accumulation_buffer() {}
 	bool is_multisample_enabled() const { return false; }
-	void attach_multi_sample_buffer(bool attach = true) {}
+	void attach_multi_sample_buffer(bool attach = true) override {}
 	void enable_multisample() {}
 	void disable_multisample() {}
-	bool is_stereo_buffer_supported() const { return false; }
-	void attach_stereo_buffer(bool attach = true) {}
+	bool is_stereo_buffer_supported() const override { return false; }
+	void attach_stereo_buffer(bool attach = true) override {}
 
 
 	/// return the current render pass
-	RenderPass get_render_pass() const { return RP_NONE; }
+	RenderPass get_render_pass() const override { return RP_NONE; }
 	/// return the current render pass flags
-	RenderPassFlags get_render_pass_flags() const { return RPF_NONE; }
+	RenderPassFlags get_render_pass_flags() const override { return RPF_NONE; }
 	/// perform the given render task
-	void render_pass(RenderPass render_pass = RP_MAIN, 
-		RenderPassFlags render_pass_flags = RPF_ALL) {}
+	void render_pass(RenderPass render_pass = RP_MAIN,
+		RenderPassFlags render_pass_flags = RPF_ALL,
+		void* user_data = nullptr,
+		int rp_idx = -1) override {}
 	/// return whether the context is currently in process of rendering
-	bool in_render_process() const { return false; }
+	bool in_render_process() const override { return false; }
 	/// return whether the context is current
-	bool is_current() const { return true; }
+	bool is_current() const override { return true; }
 	/// make the current context current
-	bool make_current() const { const_cast<fltk_gl_context*>(this)->fltk::GlWindow::make_current(); return true; }
+	bool make_current() const override { const_cast<fltk_gl_context*>(this)->fltk::GlWindow::make_current(); return true; }
 	///
-	void clear_current() const {}
+	void clear_current() const override {}
 	//@}
 
 	/// return the width of the window
-	unsigned int get_width() const { return w(); }
+	unsigned int get_width() const override { return w(); }
 	/// return the height of the window
-	unsigned int get_height() const { return h(); }
+	unsigned int get_height() const override { return h(); }
 	/// resize the context to the given dimensions
-	void resize(unsigned int width, unsigned int height) { fltk::GlWindow::resize(width,height); }
+	void resize(unsigned int width, unsigned int height) override { fltk::GlWindow::resize(width,height); }
 	/// set a user defined background color
-	void set_bg_color(float r, float g, float b, float a) {}
+	void set_bg_color(cgv::vec4) override {}
 	/// the context will be redrawn when the system is idle again
-	void post_redraw() { redraw(); }
+	void post_redraw() override { redraw(); }
 	/// the context will be redrawn right now. This method cannot be called inside the following methods of a drawable: init, init_frame, draw, finish_draw
-	void force_redraw() { redraw(); }
+	void force_redraw() override { redraw(); }
 
 	/**@name font selection and measure*/
 	//@{
 	/// enable the given font face with the given size in pixels
-	void enable_font_face(cgv::media::font::font_face_ptr font_face, float font_size) {}
+	void enable_font_face(cgv::media::font::font_face_ptr font_face, float font_size) override {}
 	/// return the size in pixels of the currently enabled font face
-	float get_current_font_size() const { return 12; }
+	float get_current_font_size() const override { return 12; }
 	/// return the currently enabled font face
-	cgv::media::font::font_face_ptr get_current_font_face() const { return cgv::media::font::font_face_ptr(); }
+	cgv::media::font::font_face_ptr get_current_font_face() const override { return cgv::media::font::font_face_ptr(); }
 	//@}
 	/// returns an output stream whose output is printed at the current cursor location
-	std::ostream& output_stream() { return std::cout; }
-	void draw() 
+	std::ostream& output_stream() override { return std::cout; }
+	void draw() override
 	{
 		int exit_code = perform_test();
 		exit(exit_code);

@@ -54,11 +54,11 @@ public:
 	/// insert a child at the given position
 	virtual void insert_child(unsigned int i, base_ptr child);
 	/// cast upward to group
-	group_ptr get_group();
+	group_ptr get_group() override;
 	/// cast upward to const group
-	const_group_ptr get_group_const();
+	const_group_ptr get_group_const() const override;
 	/// overload to return the type name of this object
-	std::string get_type_name() const;
+	std::string get_type_name() const override;
 };
 
 template <> struct cast_helper<group>
