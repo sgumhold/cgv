@@ -113,12 +113,12 @@ Public Member Functions</h2></td></tr>
 virtual void&#160;</td><td class="memItemRight" valign="bottom"><b>set_value</b> (const T &amp;value, void *user_data)=0</td></tr>
 <tr class="memdesc:a161d55666be9921d8b8c26489f3219c9"><td class="mdescLeft">&#160;</td><td class="mdescRight">overload to set the value <br /></td></tr>
 <tr class="separator:a161d55666be9921d8b8c26489f3219c9"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:afb380b9d79e3b74ecd85f821874d81d1" id="r_afb380b9d79e3b74ecd85f821874d81d1"><td class="memItemLeft" align="right" valign="top"><a id="afb380b9d79e3b74ecd85f821874d81d1" name="afb380b9d79e3b74ecd85f821874d81d1"></a>
-virtual const T&#160;</td><td class="memItemRight" valign="bottom"><b>get_value</b> (void *user_data) const =0</td></tr>
-<tr class="memdesc:afb380b9d79e3b74ecd85f821874d81d1"><td class="mdescLeft">&#160;</td><td class="mdescRight">overload to get the value <br /></td></tr>
-<tr class="separator:afb380b9d79e3b74ecd85f821874d81d1"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a649cad938c8ea3705fd25d57bb00b642" id="r_a649cad938c8ea3705fd25d57bb00b642"><td class="memItemLeft" align="right" valign="top"><a id="a649cad938c8ea3705fd25d57bb00b642" name="a649cad938c8ea3705fd25d57bb00b642"></a>
+virtual T&#160;</td><td class="memItemRight" valign="bottom"><b>get_value</b> (void *user_data) const =0</td></tr>
+<tr class="memdesc:a649cad938c8ea3705fd25d57bb00b642"><td class="mdescLeft">&#160;</td><td class="mdescRight">overload to get the value <br /></td></tr>
+<tr class="separator:a649cad938c8ea3705fd25d57bb00b642"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ad10eeb6479c8d0b149fa29f585bfddcf" id="r_ad10eeb6479c8d0b149fa29f585bfddcf"><td class="memItemLeft" align="right" valign="top">virtual bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structcgv_1_1gui_1_1control__provider.html#ad10eeb6479c8d0b149fa29f585bfddcf">controls</a> (const void *ptr, void *user_data) const</td></tr>
-<tr class="memdesc:ad10eeb6479c8d0b149fa29f585bfddcf"><td class="mdescLeft">&#160;</td><td class="mdescRight">the default implementation compares ptr to &amp;<a class="el" href="structcgv_1_1gui_1_1control__provider.html#afb380b9d79e3b74ecd85f821874d81d1" title="overload to get the value">get_value()</a>.  <br /></td></tr>
+<tr class="memdesc:ad10eeb6479c8d0b149fa29f585bfddcf"><td class="mdescLeft">&#160;</td><td class="mdescRight">the default implementation compares ptr to &amp;<a class="el" href="structcgv_1_1gui_1_1control__provider.html#a649cad938c8ea3705fd25d57bb00b642" title="overload to get the value">get_value()</a>.  <br /></td></tr>
 <tr class="separator:ad10eeb6479c8d0b149fa29f585bfddcf"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
 <a name="details" id="details"></a><h2 class="groupheader">Detailed Description</h2>
@@ -163,7 +163,7 @@ template&lt;typename T &gt; </div>
 </table>
 </div><div class="memdoc">
 
-<p>the default implementation compares ptr to &amp;<a class="el" href="structcgv_1_1gui_1_1control__provider.html#afb380b9d79e3b74ecd85f821874d81d1" title="overload to get the value">get_value()</a>. </p>
+<p>the default implementation compares ptr to &amp;<a class="el" href="structcgv_1_1gui_1_1control__provider.html#a649cad938c8ea3705fd25d57bb00b642" title="overload to get the value">get_value()</a>. </p>
 
 <p>Implements <a class="el" href="structcgv_1_1gui_1_1abst__control__provider.html#ab4c2359e97a4421e3001df9e7f99ad0a">cgv::gui::abst_control_provider</a>.</p>
 

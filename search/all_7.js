@@ -25,7 +25,7 @@ var searchData=
   ['can_5fsave_22',['can_save',['../classcgv_1_1gui_1_1file__helper.html#ad4fb7951ce4d786986ebfc89c888a5dd',1,'cgv::gui::file_helper::can_save()'],['../classcgv_1_1gui_1_1directory__helper.html#aa1ae2393cc65f1f161b348df6408bce8',1,'cgv::gui::directory_helper::can_save()']]],
   ['canvas_5foverlay_23',['canvas_overlay',['../classcgv_1_1overlay_1_1canvas__overlay.html',1,'cgv::overlay::canvas_overlay'],['../classcgv_1_1overlay_1_1canvas__overlay.html#a85acd82c74245aec17c07941b2eb79c1',1,'cgv::overlay::canvas_overlay::canvas_overlay()']]],
   ['cast_24',['cast',['../classcgv_1_1base_1_1base.html#ab2a6c0d840f8fa8518417f0d0ed0f4ac',1,'cgv::base::base']]],
-  ['cast_5fconst_25',['cast_const',['../classcgv_1_1base_1_1base.html#a5ac778bdd106440c00d8b9c7f3f27acd',1,'cgv::base::base']]],
+  ['cast_5fconst_25',['cast_const',['../classcgv_1_1base_1_1base.html#a09288c1e2eeefd7c7ce09b1a0d45c741',1,'cgv::base::base']]],
   ['cast_5fconst_5fhelper_26',['cast_const_helper',['../structcgv_1_1base_1_1cast__const__helper.html',1,'cgv::base']]],
   ['cast_5fconst_5fhelper_3c_20group_20_3e_27',['cast_const_helper&lt; group &gt;',['../structcgv_1_1base_1_1cast__const__helper_3_01group_01_4.html',1,'cgv::base']]],
   ['cast_5fconst_5fhelper_3c_20named_20_3e_28',['cast_const_helper&lt; named &gt;',['../structcgv_1_1base_1_1cast__const__helper_3_01named_01_4.html',1,'cgv::base']]],
