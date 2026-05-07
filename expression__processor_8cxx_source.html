@@ -850,7 +850,7 @@ $(document).ready(function(){initNavTree('expression__processor_8cxx_source.html
 <div class="line"><a id="l00756" name="l00756"></a><span class="lineno">  756</span>                                func_var = &amp;value_stack.top().<a class="code hl_function" href="classcgv_1_1ppp_1_1variant.html#aca8b80cb698b21ebeb1293d3e9ad69b3">ref_value</a>();</div>
 <div class="line"><a id="l00757" name="l00757"></a><span class="lineno">  757</span>                            <span class="keywordflow">else</span> {</div>
 <div class="line"><a id="l00758" name="l00758"></a><span class="lineno">  758</span>                                std::string func_name = (value_stack.top().is_str() ? value_stack.top().get_str() : value_stack.top().get_name());</div>
-<div class="line"><a id="l00759" name="l00759"></a><span class="lineno">  759</span>                                <a class="code hl_class" href="classcgv_1_1ppp_1_1variant.html">variant</a>* func_var = &amp;ref_variable(func_name);</div>
+<div class="line"><a id="l00759" name="l00759"></a><span class="lineno">  759</span>                                func_var = &amp;ref_variable(func_name);</div>
 <div class="line"><a id="l00760" name="l00760"></a><span class="lineno">  760</span>                            }</div>
 <div class="line"><a id="l00761" name="l00761"></a><span class="lineno">  761</span>                            <span class="keywordflow">if</span> (func_var-&gt;<a class="code hl_function" href="classcgv_1_1ppp_1_1variant.html#a722ed5683ff878d2471bfc5232db979d">is_func</a>()) {</div>
 <div class="line"><a id="l00762" name="l00762"></a><span class="lineno">  762</span>                                goto_child_namespace();</div>

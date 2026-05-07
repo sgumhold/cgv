@@ -11,7 +11,7 @@ var classcgv_1_1gui_1_1control =
     [ "controls", "classcgv_1_1gui_1_1control.html#ab7d32c65b473ebaad16397000eea6d49", null ],
     [ "get_new_value", "classcgv_1_1gui_1_1control.html#a41a46982cd2b00bed3610d9c2dd33388", null ],
     [ "get_old_value", "classcgv_1_1gui_1_1control.html#a930a57546523656e3641059a38752759", null ],
-    [ "get_value", "classcgv_1_1gui_1_1control.html#a60118d7dd880b3df325f0b4b6da98cfd", null ],
+    [ "get_value", "classcgv_1_1gui_1_1control.html#a2ef6b29f440b83849d240929b49d39cd", null ],
     [ "set_new_value", "classcgv_1_1gui_1_1control.html#a4735f33dd4214fae002e7de35b73aaeb", null ],
     [ "check_value", "classcgv_1_1gui_1_1control.html#a98f1acd3765c38931079bf9d866f8fd6", null ],
     [ "value_change", "classcgv_1_1gui_1_1control.html#a49af8e128fc1e8443b95adbddfed009a", null ]

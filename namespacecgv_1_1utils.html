@@ -486,7 +486,7 @@ Functions</h2></td></tr>
 <tr class="memdesc:a812fedad9007ec86f4e2e4003d88ab1e"><td class="mdescLeft">&#160;</td><td class="mdescRight">return a copy of the given string <code>s</code> with all occurences of char <code>removed</code>  <br /></td></tr>
 <tr class="separator:a812fedad9007ec86f4e2e4003d88ab1e"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a97032f8b8a5544a118c84ff2346b5bfe" id="r_a97032f8b8a5544a118c84ff2346b5bfe"><td class="memItemLeft" align="right" valign="top">std::string&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespacecgv_1_1utils.html#a97032f8b8a5544a118c84ff2346b5bfe">replace_special</a> (const std::string &amp;_s)</td></tr>
-<tr class="memdesc:a97032f8b8a5544a118c84ff2346b5bfe"><td class="mdescLeft">&#160;</td><td class="mdescRight">replaces the german special characters ä,ö,ü,ß,Ä,Ö,Ü  <br /></td></tr>
+<tr class="memdesc:a97032f8b8a5544a118c84ff2346b5bfe"><td class="mdescLeft">&#160;</td><td class="mdescRight">replaces the german special characters Ã¤,Ã¶,Ã¼,Ã,Ã,Ã,Ã  <br /></td></tr>
 <tr class="separator:a97032f8b8a5544a118c84ff2346b5bfe"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a145360669d325a1f530539c8aff35990" id="r_a145360669d325a1f530539c8aff35990"><td class="memItemLeft" align="right" valign="top">unsigned int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespacecgv_1_1utils.html#a145360669d325a1f530539c8aff35990">replace</a> (std::string &amp;_s, char c1, char c2)</td></tr>
 <tr class="memdesc:a145360669d325a1f530539c8aff35990"><td class="mdescLeft">&#160;</td><td class="mdescRight">replace char <code>c1</code> with <code>c2</code> in the given string <code>_s</code> and return number of replacements  <br /></td></tr>
@@ -768,7 +768,7 @@ Variables</h2></td></tr>
 
 <p class="definition">Definition at line <a class="el" href="advanced__scan_8cxx_source.html#l00087">87</a> of file <a class="el" href="advanced__scan_8cxx_source.html">advanced_scan.cxx</a>.</p>
 
-<p class="reference">References <a class="el" href="token_8h_source.html#l00020">cgv::utils::token::begin</a>, and <a class="el" href="scan_8cxx_source.html#l00765">skip_spaces()</a>.</p>
+<p class="reference">References <a class="el" href="token_8h_source.html#l00020">cgv::utils::token::begin</a>, and <a class="el" href="scan_8cxx_source.html#l00764">skip_spaces()</a>.</p>
 
 </div>
 </div>
@@ -958,9 +958,9 @@ template&lt;typename T &gt; </div>
 
 <p>replace all newlines and white spaces with single spaces </p>
 
-<p class="definition">Definition at line <a class="el" href="scan_8cxx_source.html#l00815">815</a> of file <a class="el" href="scan_8cxx_source.html">scan.cxx</a>.</p>
+<p class="definition">Definition at line <a class="el" href="scan_8cxx_source.html#l00814">814</a> of file <a class="el" href="scan_8cxx_source.html">scan.cxx</a>.</p>
 
-<p class="reference">References <a class="el" href="scan_8cxx_source.html#l00012">is_space()</a>, and <a class="el" href="scan_8cxx_source.html#l00791">trim()</a>.</p>
+<p class="reference">References <a class="el" href="scan_8cxx_source.html#l00012">is_space()</a>, and <a class="el" href="scan_8cxx_source.html#l00790">trim()</a>.</p>
 
 </div>
 </div>
@@ -1198,7 +1198,7 @@ template&lt;typename type , std::size_t N&gt; </div>
 
 <p>return new end pointer by cutting off spaces at the end </p>
 
-<p class="definition">Definition at line <a class="el" href="scan_8cxx_source.html#l00772">772</a> of file <a class="el" href="scan_8cxx_source.html">scan.cxx</a>.</p>
+<p class="definition">Definition at line <a class="el" href="scan_8cxx_source.html#l00771">771</a> of file <a class="el" href="scan_8cxx_source.html">scan.cxx</a>.</p>
 
 <p class="reference">References <a class="el" href="scan_8cxx_source.html#l00012">is_space()</a>.</p>
 
@@ -1736,9 +1736,9 @@ template&lt;typename type , std::size_t N&gt; </div>
 
 <p>check if string <code>s</code> is contained in the given array of names and in case of success store name index in <code>idx</code> </p>
 
-<p class="definition">Definition at line <a class="el" href="scan_8cxx_source.html#l00589">589</a> of file <a class="el" href="scan_8cxx_source.html">scan.cxx</a>.</p>
+<p class="definition">Definition at line <a class="el" href="scan_8cxx_source.html#l00588">588</a> of file <a class="el" href="scan_8cxx_source.html">scan.cxx</a>.</p>
 
-<p class="reference">Referenced by <a class="el" href="scan_8cxx_source.html#l00602">is_month()</a>.</p>
+<p class="reference">Referenced by <a class="el" href="scan_8cxx_source.html#l00601">is_month()</a>.</p>
 
 </div>
 </div>
@@ -2180,9 +2180,9 @@ template&lt;class InputIt &gt; </div>
 
 <p>check and extract date from string token [<code>begin</code>, <code>end</code>] </p>
 
-<p class="definition">Definition at line <a class="el" href="scan_8cxx_source.html#l00724">724</a> of file <a class="el" href="scan_8cxx_source.html">scan.cxx</a>.</p>
+<p class="definition">Definition at line <a class="el" href="scan_8cxx_source.html#l00723">723</a> of file <a class="el" href="scan_8cxx_source.html">scan.cxx</a>.</p>
 
-<p class="reference">References <a class="el" href="scan_8cxx_source.html#l00673">is_date()</a>.</p>
+<p class="reference">References <a class="el" href="scan_8cxx_source.html#l00672">is_date()</a>.</p>
 
 </div>
 </div>
@@ -2220,11 +2220,11 @@ template&lt;class InputIt &gt; </div>
 
 <p>check and extract date from string <code>s</code> </p>
 
-<p class="definition">Definition at line <a class="el" href="scan_8cxx_source.html#l00673">673</a> of file <a class="el" href="scan_8cxx_source.html">scan.cxx</a>.</p>
+<p class="definition">Definition at line <a class="el" href="scan_8cxx_source.html#l00672">672</a> of file <a class="el" href="scan_8cxx_source.html">scan.cxx</a>.</p>
 
-<p class="reference">References <a class="el" href="scan_8cxx_source.html#l00020">is_digit()</a>, <a class="el" href="scan_8cxx_source.html#l00449">is_integer()</a>, <a class="el" href="scan_8cxx_source.html#l00602">is_month()</a>, <a class="el" href="scan_8cxx_source.html#l00016">is_url_special()</a>, and <a class="el" href="scan_8cxx_source.html#l00572">is_year()</a>.</p>
+<p class="reference">References <a class="el" href="scan_8cxx_source.html#l00020">is_digit()</a>, <a class="el" href="scan_8cxx_source.html#l00449">is_integer()</a>, <a class="el" href="scan_8cxx_source.html#l00601">is_month()</a>, <a class="el" href="scan_8cxx_source.html#l00016">is_url_special()</a>, and <a class="el" href="scan_8cxx_source.html#l00572">is_year()</a>.</p>
 
-<p class="reference">Referenced by <a class="el" href="scan_8cxx_source.html#l00724">is_date()</a>.</p>
+<p class="reference">Referenced by <a class="el" href="scan_8cxx_source.html#l00723">is_date()</a>.</p>
 
 </div>
 </div>
@@ -2248,7 +2248,7 @@ template&lt;class InputIt &gt; </div>
 
 <p class="definition">Definition at line <a class="el" href="scan_8cxx_source.html#l00020">20</a> of file <a class="el" href="scan_8cxx_source.html">scan.cxx</a>.</p>
 
-<p class="reference">Referenced by <a class="el" href="scan_8cxx_source.html#l00309">interpret_special()</a>, <a class="el" href="scan_8cxx_source.html#l00673">is_date()</a>, <a class="el" href="scan_8cxx_source.html#l00449">is_integer()</a>, <a class="el" href="scan_8cxx_source.html#l00633">is_time()</a>, <a class="el" href="config__file_8cxx_source.html#l00154">gui_config_file_observer::multi_observe()</a>, and <a class="el" href="base_8cxx_source.html#l00287">cgv::base::base::multi_set()</a>.</p>
+<p class="reference">Referenced by <a class="el" href="scan_8cxx_source.html#l00309">interpret_special()</a>, <a class="el" href="scan_8cxx_source.html#l00672">is_date()</a>, <a class="el" href="scan_8cxx_source.html#l00449">is_integer()</a>, <a class="el" href="scan_8cxx_source.html#l00632">is_time()</a>, <a class="el" href="config__file_8cxx_source.html#l00154">gui_config_file_observer::multi_observe()</a>, and <a class="el" href="base_8cxx_source.html#l00287">cgv::base::base::multi_set()</a>.</p>
 
 </div>
 </div>
@@ -2438,7 +2438,7 @@ template&lt;class InputIt &gt; </div>
 
 <p class="reference">References <a class="el" href="scan_8cxx_source.html#l00020">is_digit()</a>, and <a class="el" href="scan_8cxx_source.html#l00106">to_upper()</a>.</p>
 
-<p class="reference">Referenced by <a class="el" href="shader__program_8cxx_source.html#l00378">cgv::render::shader_program::attach_program()</a>, <a class="el" href="shader__code_8cxx_source.html#l00094">cgv::render::shader_code::get_last_error()</a>, <a class="el" href="scan_8cxx_source.html#l00673">is_date()</a>, <a class="el" href="scan_8cxx_source.html#l00503">is_integer()</a>, <a class="el" href="scan_8cxx_source.html#l00602">is_month()</a>, <a class="el" href="scan_8cxx_source.html#l00633">is_time()</a>, <a class="el" href="scan_8cxx_source.html#l00572">is_year()</a>, <a class="el" href="config__file_8cxx_source.html#l00154">gui_config_file_observer::multi_observe()</a>, <a class="el" href="base_8cxx_source.html#l00287">cgv::base::base::multi_set()</a>, <a class="el" href="scan__enum_8cxx_source.html#l00010">parse_enum_declarations()</a>, <a class="el" href="dialog_8cxx_source.html#l00034">cgv::gui::question()</a>, <a class="el" href="find__reflection__handler_8cxx_source.html#l00128">cgv::reflect::find_reflection_handler::reflect_group_begin()</a>, <a class="el" href="component__format_8cxx_source.html#l00166">cgv::data::component_format::set_component_format()</a>, and <a class="el" href="data__format_8cxx_source.html#l00018">cgv::data::data_format::set_data_format()</a>.</p>
+<p class="reference">Referenced by <a class="el" href="shader__program_8cxx_source.html#l00378">cgv::render::shader_program::attach_program()</a>, <a class="el" href="shader__code_8cxx_source.html#l00094">cgv::render::shader_code::get_last_error()</a>, <a class="el" href="scan_8cxx_source.html#l00672">is_date()</a>, <a class="el" href="scan_8cxx_source.html#l00503">is_integer()</a>, <a class="el" href="scan_8cxx_source.html#l00601">is_month()</a>, <a class="el" href="scan_8cxx_source.html#l00632">is_time()</a>, <a class="el" href="scan_8cxx_source.html#l00572">is_year()</a>, <a class="el" href="config__file_8cxx_source.html#l00154">gui_config_file_observer::multi_observe()</a>, <a class="el" href="base_8cxx_source.html#l00287">cgv::base::base::multi_set()</a>, <a class="el" href="scan__enum_8cxx_source.html#l00010">parse_enum_declarations()</a>, <a class="el" href="dialog_8cxx_source.html#l00034">cgv::gui::question()</a>, <a class="el" href="find__reflection__handler_8cxx_source.html#l00128">cgv::reflect::find_reflection_handler::reflect_group_begin()</a>, <a class="el" href="component__format_8cxx_source.html#l00166">cgv::data::component_format::set_component_format()</a>, and <a class="el" href="data__format_8cxx_source.html#l00018">cgv::data::data_format::set_data_format()</a>.</p>
 
 </div>
 </div>
@@ -2534,11 +2534,11 @@ template&lt;class InputIt &gt; </div>
 
 <p>check and extract month from string token [<code>begin</code>, <code>end</code>] </p>
 
-<p class="definition">Definition at line <a class="el" href="scan_8cxx_source.html#l00602">602</a> of file <a class="el" href="scan_8cxx_source.html">scan.cxx</a>.</p>
+<p class="definition">Definition at line <a class="el" href="scan_8cxx_source.html#l00601">601</a> of file <a class="el" href="scan_8cxx_source.html">scan.cxx</a>.</p>
 
-<p class="reference">References <a class="el" href="scan_8cxx_source.html#l00589">find_name()</a>, <a class="el" href="scan_8cxx_source.html#l00449">is_integer()</a>, <a class="el" href="scan_8cxx_source.html#l00223">replace_special()</a>, and <a class="el" href="scan_8cxx_source.html#l00039">to_lower()</a>.</p>
+<p class="reference">References <a class="el" href="scan_8cxx_source.html#l00588">find_name()</a>, <a class="el" href="scan_8cxx_source.html#l00449">is_integer()</a>, <a class="el" href="scan_8cxx_source.html#l00223">replace_special()</a>, and <a class="el" href="scan_8cxx_source.html#l00039">to_lower()</a>.</p>
 
-<p class="reference">Referenced by <a class="el" href="scan_8cxx_source.html#l00673">is_date()</a>, and <a class="el" href="scan_8cxx_source.html#l00628">is_month()</a>.</p>
+<p class="reference">Referenced by <a class="el" href="scan_8cxx_source.html#l00672">is_date()</a>, and <a class="el" href="scan_8cxx_source.html#l00627">is_month()</a>.</p>
 
 </div>
 </div>
@@ -2570,9 +2570,9 @@ template&lt;class InputIt &gt; </div>
 
 <p>check and extract month from string <code>s</code> </p>
 
-<p class="definition">Definition at line <a class="el" href="scan_8cxx_source.html#l00628">628</a> of file <a class="el" href="scan_8cxx_source.html">scan.cxx</a>.</p>
+<p class="definition">Definition at line <a class="el" href="scan_8cxx_source.html#l00627">627</a> of file <a class="el" href="scan_8cxx_source.html">scan.cxx</a>.</p>
 
-<p class="reference">References <a class="el" href="scan_8cxx_source.html#l00602">is_month()</a>.</p>
+<p class="reference">References <a class="el" href="scan_8cxx_source.html#l00601">is_month()</a>.</p>
 
 </div>
 </div>
@@ -2596,7 +2596,7 @@ template&lt;class InputIt &gt; </div>
 
 <p class="definition">Definition at line <a class="el" href="scan_8cxx_source.html#l00012">12</a> of file <a class="el" href="scan_8cxx_source.html">scan.cxx</a>.</p>
 
-<p class="reference">Referenced by <a class="el" href="shader__program_8cxx_source.html#l00378">cgv::render::shader_program::attach_program()</a>, <a class="el" href="scan_8cxx_source.html#l00815">condense_to_line()</a>, <a class="el" href="scan_8cxx_source.html#l00772">cutoff_spaces()</a>, <a class="el" href="shader__program_8cxx_source.html#l00338">cgv::render::shader_program::extract_instances()</a>, <a class="el" href="scan_8cxx_source.html#l00765">skip_spaces()</a>, and <a class="el" href="advanced__scan_8cxx_source.html#l00065">split_to_lines()</a>.</p>
+<p class="reference">Referenced by <a class="el" href="shader__program_8cxx_source.html#l00378">cgv::render::shader_program::attach_program()</a>, <a class="el" href="scan_8cxx_source.html#l00814">condense_to_line()</a>, <a class="el" href="scan_8cxx_source.html#l00771">cutoff_spaces()</a>, <a class="el" href="shader__program_8cxx_source.html#l00338">cgv::render::shader_program::extract_instances()</a>, <a class="el" href="scan_8cxx_source.html#l00764">skip_spaces()</a>, and <a class="el" href="advanced__scan_8cxx_source.html#l00065">split_to_lines()</a>.</p>
 
 </div>
 </div>
@@ -2640,9 +2640,9 @@ template&lt;class InputIt &gt; </div>
 
 <p>check and extract time from string token [<code>begin</code>, <code>end</code>] </p>
 
-<p class="definition">Definition at line <a class="el" href="scan_8cxx_source.html#l00713">713</a> of file <a class="el" href="scan_8cxx_source.html">scan.cxx</a>.</p>
+<p class="definition">Definition at line <a class="el" href="scan_8cxx_source.html#l00712">712</a> of file <a class="el" href="scan_8cxx_source.html">scan.cxx</a>.</p>
 
-<p class="reference">References <a class="el" href="scan_8cxx_source.html#l00633">is_time()</a>.</p>
+<p class="reference">References <a class="el" href="scan_8cxx_source.html#l00632">is_time()</a>.</p>
 
 </div>
 </div>
@@ -2680,11 +2680,11 @@ template&lt;class InputIt &gt; </div>
 
 <p>check and extract time from string <code>s</code> </p>
 
-<p class="definition">Definition at line <a class="el" href="scan_8cxx_source.html#l00633">633</a> of file <a class="el" href="scan_8cxx_source.html">scan.cxx</a>.</p>
+<p class="definition">Definition at line <a class="el" href="scan_8cxx_source.html#l00632">632</a> of file <a class="el" href="scan_8cxx_source.html">scan.cxx</a>.</p>
 
 <p class="reference">References <a class="el" href="scan_8cxx_source.html#l00020">is_digit()</a>, <a class="el" href="scan_8cxx_source.html#l00449">is_integer()</a>, and <a class="el" href="scan_8cxx_source.html#l00016">is_url_special()</a>.</p>
 
-<p class="reference">Referenced by <a class="el" href="scan_8cxx_source.html#l00713">is_time()</a>.</p>
+<p class="reference">Referenced by <a class="el" href="scan_8cxx_source.html#l00712">is_time()</a>.</p>
 
 </div>
 </div>
@@ -2722,9 +2722,9 @@ template&lt;class InputIt &gt; </div>
 
 <p>check and extract end of valid url from string token [<code>begin</code>, <code>end</code>] </p>
 
-<p class="definition">Definition at line <a class="el" href="scan_8cxx_source.html#l00754">754</a> of file <a class="el" href="scan_8cxx_source.html">scan.cxx</a>.</p>
+<p class="definition">Definition at line <a class="el" href="scan_8cxx_source.html#l00753">753</a> of file <a class="el" href="scan_8cxx_source.html">scan.cxx</a>.</p>
 
-<p class="reference">References <a class="el" href="scan_8cxx_source.html#l00735">is_url()</a>.</p>
+<p class="reference">References <a class="el" href="scan_8cxx_source.html#l00734">is_url()</a>.</p>
 
 </div>
 </div>
@@ -2756,11 +2756,11 @@ template&lt;class InputIt &gt; </div>
 
 <p>check and extract end of valid url from string <code>s</code> </p>
 
-<p class="definition">Definition at line <a class="el" href="scan_8cxx_source.html#l00735">735</a> of file <a class="el" href="scan_8cxx_source.html">scan.cxx</a>.</p>
+<p class="definition">Definition at line <a class="el" href="scan_8cxx_source.html#l00734">734</a> of file <a class="el" href="scan_8cxx_source.html">scan.cxx</a>.</p>
 
 <p class="reference">References <a class="el" href="scan_8cxx_source.html#l00016">is_url_special()</a>.</p>
 
-<p class="reference">Referenced by <a class="el" href="scan_8cxx_source.html#l00754">is_url()</a>.</p>
+<p class="reference">Referenced by <a class="el" href="scan_8cxx_source.html#l00753">is_url()</a>.</p>
 
 </div>
 </div>
@@ -2784,7 +2784,7 @@ template&lt;class InputIt &gt; </div>
 
 <p class="definition">Definition at line <a class="el" href="scan_8cxx_source.html#l00016">16</a> of file <a class="el" href="scan_8cxx_source.html">scan.cxx</a>.</p>
 
-<p class="reference">Referenced by <a class="el" href="scan_8cxx_source.html#l00673">is_date()</a>, <a class="el" href="scan_8cxx_source.html#l00633">is_time()</a>, and <a class="el" href="scan_8cxx_source.html#l00735">is_url()</a>.</p>
+<p class="reference">Referenced by <a class="el" href="scan_8cxx_source.html#l00672">is_date()</a>, <a class="el" href="scan_8cxx_source.html#l00632">is_time()</a>, and <a class="el" href="scan_8cxx_source.html#l00734">is_url()</a>.</p>
 
 </div>
 </div>
@@ -2832,7 +2832,7 @@ template&lt;class InputIt &gt; </div>
 
 <p class="reference">References <a class="el" href="scan_8cxx_source.html#l00449">is_integer()</a>.</p>
 
-<p class="reference">Referenced by <a class="el" href="scan_8cxx_source.html#l00673">is_date()</a>, and <a class="el" href="scan_8cxx_source.html#l00584">is_year()</a>.</p>
+<p class="reference">Referenced by <a class="el" href="scan_8cxx_source.html#l00672">is_date()</a>, and <a class="el" href="scan_8cxx_source.html#l00583">is_year()</a>.</p>
 
 </div>
 </div>
@@ -2870,7 +2870,7 @@ template&lt;class InputIt &gt; </div>
 
 <p>check and extract year from string <code>s</code> </p>
 
-<p class="definition">Definition at line <a class="el" href="scan_8cxx_source.html#l00584">584</a> of file <a class="el" href="scan_8cxx_source.html">scan.cxx</a>.</p>
+<p class="definition">Definition at line <a class="el" href="scan_8cxx_source.html#l00583">583</a> of file <a class="el" href="scan_8cxx_source.html">scan.cxx</a>.</p>
 
 <p class="reference">References <a class="el" href="scan_8cxx_source.html#l00572">is_year()</a>.</p>
 
@@ -2977,7 +2977,7 @@ template&lt;class InputIt &gt; </div>
 
 <p>joins a given list of strings delimiting them by the given separator; if trailing_sep is true, also puts a separator at the end </p>
 
-<p class="definition">Definition at line <a class="el" href="scan_8cxx_source.html#l00827">827</a> of file <a class="el" href="scan_8cxx_source.html">scan.cxx</a>.</p>
+<p class="definition">Definition at line <a class="el" href="scan_8cxx_source.html#l00826">826</a> of file <a class="el" href="scan_8cxx_source.html">scan.cxx</a>.</p>
 
 </div>
 </div>
@@ -3009,7 +3009,7 @@ template&lt;class InputIt &gt; </div>
 
 <p>compute the levenshtein distance between two strings <code>s1</code> and <code>s2</code> </p>
 
-<p class="definition">Definition at line <a class="el" href="scan_8cxx_source.html#l00839">839</a> of file <a class="el" href="scan_8cxx_source.html">scan.cxx</a>.</p>
+<p class="definition">Definition at line <a class="el" href="scan_8cxx_source.html#l00838">838</a> of file <a class="el" href="scan_8cxx_source.html">scan.cxx</a>.</p>
 
 </div>
 </div>
@@ -3041,7 +3041,7 @@ template&lt;class InputIt &gt; </div>
 
 <p>trim white space or other characters from start of string </p>
 
-<p class="definition">Definition at line <a class="el" href="scan_8cxx_source.html#l00796">796</a> of file <a class="el" href="scan_8cxx_source.html">scan.cxx</a>.</p>
+<p class="definition">Definition at line <a class="el" href="scan_8cxx_source.html#l00795">795</a> of file <a class="el" href="scan_8cxx_source.html">scan.cxx</a>.</p>
 
 </div>
 </div>
@@ -3073,9 +3073,9 @@ template&lt;class InputIt &gt; </div>
 
 <p>trim white space or other characters from start of string </p>
 
-<p class="definition">Definition at line <a class="el" href="scan_8cxx_source.html#l00779">779</a> of file <a class="el" href="scan_8cxx_source.html">scan.cxx</a>.</p>
+<p class="definition">Definition at line <a class="el" href="scan_8cxx_source.html#l00778">778</a> of file <a class="el" href="scan_8cxx_source.html">scan.cxx</a>.</p>
 
-<p class="reference">Referenced by <a class="el" href="scan_8cxx_source.html#l00810">trim()</a>, and <a class="el" href="scan_8cxx_source.html#l00791">trim()</a>.</p>
+<p class="reference">Referenced by <a class="el" href="scan_8cxx_source.html#l00809">trim()</a>, and <a class="el" href="scan_8cxx_source.html#l00790">trim()</a>.</p>
 
 </div>
 </div>
@@ -3902,11 +3902,11 @@ template&lt;class InputIt , class OutputIt &gt; </div>
       </table>
 </div><div class="memdoc">
 
-<p>replaces the german special characters ä,ö,ü,ß,Ä,Ö,Ü </p>
+<p>replaces the german special characters Ã¤,Ã¶,Ã¼,Ã,Ã,Ã,Ã </p>
 
 <p class="definition">Definition at line <a class="el" href="scan_8cxx_source.html#l00223">223</a> of file <a class="el" href="scan_8cxx_source.html">scan.cxx</a>.</p>
 
-<p class="reference">Referenced by <a class="el" href="scan_8cxx_source.html#l00602">is_month()</a>.</p>
+<p class="reference">Referenced by <a class="el" href="scan_8cxx_source.html#l00601">is_month()</a>.</p>
 
 </div>
 </div>
@@ -3938,7 +3938,7 @@ template&lt;class InputIt , class OutputIt &gt; </div>
 
 <p>trim white space or other characters from end of string </p>
 
-<p class="definition">Definition at line <a class="el" href="scan_8cxx_source.html#l00803">803</a> of file <a class="el" href="scan_8cxx_source.html">scan.cxx</a>.</p>
+<p class="definition">Definition at line <a class="el" href="scan_8cxx_source.html#l00802">802</a> of file <a class="el" href="scan_8cxx_source.html">scan.cxx</a>.</p>
 
 </div>
 </div>
@@ -3970,9 +3970,9 @@ template&lt;class InputIt , class OutputIt &gt; </div>
 
 <p>trim white space or other characters from end of string </p>
 
-<p class="definition">Definition at line <a class="el" href="scan_8cxx_source.html#l00785">785</a> of file <a class="el" href="scan_8cxx_source.html">scan.cxx</a>.</p>
+<p class="definition">Definition at line <a class="el" href="scan_8cxx_source.html#l00784">784</a> of file <a class="el" href="scan_8cxx_source.html">scan.cxx</a>.</p>
 
-<p class="reference">Referenced by <a class="el" href="scan_8cxx_source.html#l00810">trim()</a>, and <a class="el" href="scan_8cxx_source.html#l00791">trim()</a>.</p>
+<p class="reference">Referenced by <a class="el" href="scan_8cxx_source.html#l00809">trim()</a>, and <a class="el" href="scan_8cxx_source.html#l00790">trim()</a>.</p>
 
 </div>
 </div>
@@ -4052,7 +4052,7 @@ template&lt;class InputIt , class OutputIt &gt; </div>
 
 <p>return new start pointer by skipping spaces at begin </p>
 
-<p class="definition">Definition at line <a class="el" href="scan_8cxx_source.html#l00765">765</a> of file <a class="el" href="scan_8cxx_source.html">scan.cxx</a>.</p>
+<p class="definition">Definition at line <a class="el" href="scan_8cxx_source.html#l00764">764</a> of file <a class="el" href="scan_8cxx_source.html">scan.cxx</a>.</p>
 
 <p class="reference">References <a class="el" href="scan_8cxx_source.html#l00012">is_space()</a>.</p>
 
@@ -5022,7 +5022,7 @@ template&lt;typename ParamT &gt; </div>
 
 <p class="definition">Definition at line <a class="el" href="scan_8cxx_source.html#l00039">39</a> of file <a class="el" href="scan_8cxx_source.html">scan.cxx</a>.</p>
 
-<p class="reference">Referenced by <a class="el" href="shader__code_8cxx_source.html#l00280">cgv::render::shader_code::detect_shader_type()</a>, <a class="el" href="image__writer_8cxx_source.html#l00049">cgv::media::image::image_writer::image_writer()</a>, <a class="el" href="vr__test_8cxx_source.html#l00457">vr_test::init()</a>, <a class="el" href="scan_8cxx_source.html#l00309">interpret_special()</a>, <a class="el" href="scan_8cxx_source.html#l00024">is_letter()</a>, <a class="el" href="scan_8cxx_source.html#l00602">is_month()</a>, <a class="el" href="register_8cxx_source.html#l01399">cgv::base::load_plugin()</a>, <a class="el" href="image__reader_8cxx_source.html#l00141">cgv::media::image::image_reader::open()</a>, <a class="el" href="video__reader_8cxx_source.html#l00096">cgv::media::video::video_reader::open()</a>, <a class="el" href="simple__mesh_8cxx_source.html#l00693">cgv::media::mesh::simple_mesh&lt; T &gt;::read()</a>, <a class="el" href="scan_8cxx_source.html#l00098">to_lower()</a>, <a class="el" href="scan_8cxx_source.html#l00127">to_snake_case()</a>, and <a class="el" href="video__writer_8cxx_source.html#l00093">cgv::media::video::video_writer::video_writer()</a>.</p>
+<p class="reference">Referenced by <a class="el" href="shader__code_8cxx_source.html#l00280">cgv::render::shader_code::detect_shader_type()</a>, <a class="el" href="image__writer_8cxx_source.html#l00049">cgv::media::image::image_writer::image_writer()</a>, <a class="el" href="vr__test_8cxx_source.html#l00457">vr_test::init()</a>, <a class="el" href="scan_8cxx_source.html#l00309">interpret_special()</a>, <a class="el" href="scan_8cxx_source.html#l00024">is_letter()</a>, <a class="el" href="scan_8cxx_source.html#l00601">is_month()</a>, <a class="el" href="register_8cxx_source.html#l01399">cgv::base::load_plugin()</a>, <a class="el" href="image__reader_8cxx_source.html#l00141">cgv::media::image::image_reader::open()</a>, <a class="el" href="video__reader_8cxx_source.html#l00096">cgv::media::video::video_reader::open()</a>, <a class="el" href="simple__mesh_8cxx_source.html#l00693">cgv::media::mesh::simple_mesh&lt; T &gt;::read()</a>, <a class="el" href="scan_8cxx_source.html#l00098">to_lower()</a>, <a class="el" href="scan_8cxx_source.html#l00127">to_snake_case()</a>, and <a class="el" href="video__writer_8cxx_source.html#l00093">cgv::media::video::video_writer::video_writer()</a>.</p>
 
 </div>
 </div>
@@ -5554,9 +5554,9 @@ template&lt;class InputIt , class UnaryOp &gt; </div>
 
 <p>trim white space or other characters from start and end of string </p>
 
-<p class="definition">Definition at line <a class="el" href="scan_8cxx_source.html#l00810">810</a> of file <a class="el" href="scan_8cxx_source.html">scan.cxx</a>.</p>
+<p class="definition">Definition at line <a class="el" href="scan_8cxx_source.html#l00809">809</a> of file <a class="el" href="scan_8cxx_source.html">scan.cxx</a>.</p>
 
-<p class="reference">References <a class="el" href="scan_8cxx_source.html#l00779">ltrim()</a>, and <a class="el" href="scan_8cxx_source.html#l00785">rtrim()</a>.</p>
+<p class="reference">References <a class="el" href="scan_8cxx_source.html#l00778">ltrim()</a>, and <a class="el" href="scan_8cxx_source.html#l00784">rtrim()</a>.</p>
 
 </div>
 </div>
@@ -5588,11 +5588,11 @@ template&lt;class InputIt , class UnaryOp &gt; </div>
 
 <p>trim white space or other characters from start and end of string </p>
 
-<p class="definition">Definition at line <a class="el" href="scan_8cxx_source.html#l00791">791</a> of file <a class="el" href="scan_8cxx_source.html">scan.cxx</a>.</p>
+<p class="definition">Definition at line <a class="el" href="scan_8cxx_source.html#l00790">790</a> of file <a class="el" href="scan_8cxx_source.html">scan.cxx</a>.</p>
 
-<p class="reference">References <a class="el" href="scan_8cxx_source.html#l00779">ltrim()</a>, and <a class="el" href="scan_8cxx_source.html#l00785">rtrim()</a>.</p>
+<p class="reference">References <a class="el" href="scan_8cxx_source.html#l00778">ltrim()</a>, and <a class="el" href="scan_8cxx_source.html#l00784">rtrim()</a>.</p>
 
-<p class="reference">Referenced by <a class="el" href="scan_8cxx_source.html#l00815">condense_to_line()</a>, and <a class="el" href="help__menu__entry_8cxx_source.html#l00008">cgv::gui::help_menu_entry::on_register()</a>.</p>
+<p class="reference">Referenced by <a class="el" href="scan_8cxx_source.html#l00814">condense_to_line()</a>, and <a class="el" href="help__menu__entry_8cxx_source.html#l00008">cgv::gui::help_menu_entry::on_register()</a>.</p>
 
 </div>
 </div>
