@@ -35,7 +35,7 @@ void bit_field_controler::set_value(const bool& new_value, void* user_data)
 }
 
 /// overload to get the value
-const bool bit_field_controler::get_value(void* user_data) const 
+bool bit_field_controler::get_value(void* user_data) const
 {
 	return (value & bit_values[reinterpret_cast<size_t>(user_data)]) != 0;
 }
@@ -94,6 +94,6 @@ struct bit_field_controler_gui_creator : public cgv::gui::gui_creator
 #include "lib_begin.h"
 
 CGV_API cgv::gui::gui_creator_registration<bit_field_controler_gui_creator> bfc_gc_reg("bit_field_gui_creator");
-	
+
 	}
 }
