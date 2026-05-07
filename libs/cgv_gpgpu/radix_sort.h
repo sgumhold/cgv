@@ -15,6 +15,7 @@ enum class SortOrder {
 class CGV_API radix_sort : public algorithm {
 public:
 	radix_sort(const std::string& type_name, uint32_t radix);
+	virtual ~radix_sort() = default;
 
 	bool init(cgv::render::context& ctx, const sl::data_type& key_type, SortOrder order, size_t size);
 	bool init(cgv::render::context& ctx, const sl::data_type& key_type, const sl::data_type& value_type, SortOrder order, size_t size);
