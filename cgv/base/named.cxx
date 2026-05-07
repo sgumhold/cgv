@@ -18,9 +18,9 @@ named_ptr named::get_named()
 {
 	return named_ptr(this);
 }
-const_named_ptr named::get_named_const()
+const_named_ptr named::get_named_const() const
 {
-	return named_ptr(this);
+	return const_named_ptr(this);
 }
 std::string named::get_type_name() const
 {

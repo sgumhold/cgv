@@ -148,7 +148,7 @@ Agreement.
 
 ==============================================================================
 
-[3] Cynthia A. Brewer’s ColorBrewer https://colorbrewer2.org/
+[3] Cynthia A. Brewerâ€™s ColorBrewer https://colorbrewer2.org/
 Many of the color schemes listed under [1] and [2] originate from Cynthia A. Brewer's ColorBrewer
 
 License:

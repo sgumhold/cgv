@@ -74,7 +74,7 @@ extern CGV_API std::string snake_case_to_capitalized_case(const std::string& _s)
 extern CGV_API std::string& remove(std::string& s, char c);
 /// return a copy of the given string \c s with all occurences of char \c removed
 extern CGV_API std::string remove_copy(const std::string& s, char c);
-/// replaces the german special characters ä,ö,ü,ß,Ä,Ö,Ü
+/// replaces the german special characters Ã¤,Ã¶,Ã¼,ÃŸ,Ã„,Ã–,Ãœ
 extern CGV_API std::string replace_special(const std::string& _s);
 /// replace char \c c1 with \c c2 in the given string \c _s and return number of replacements
 extern CGV_API unsigned int replace(std::string& _s, char c1, char c2);
