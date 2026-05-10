@@ -3593,7 +3593,7 @@ bool gl_context::attribute_array_binding_create(attribute_array_binding_base& aa
 
 bool gl_context::attribute_array_binding_destruct(attribute_array_binding_base& aab) const
 {
-	if (&aab == attribute_array_binding_stack.top())
+	if (!attribute_array_binding_stack.empty() && &aab == attribute_array_binding_stack.top())
 		glBindVertexArray(0);
 	if (!context::attribute_array_binding_destruct(aab))
 		return false;
