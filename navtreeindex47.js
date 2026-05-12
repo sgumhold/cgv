@@ -1,5 +1,6 @@
 var NAVTREEINDEX47 =
 {
+"structvr_1_1vr__hmd__info.html#a82fd5b344174c286e9d0b114afe3e2a5":[10,0,2,9,4],
 "structvr_1_1vr__hmd__info.html#a8d60f4499e543fbd0a6bb7931394b904":[11,0,5,9,0],
 "structvr_1_1vr__hmd__info.html#a8d60f4499e543fbd0a6bb7931394b904":[10,0,2,9,0],
 "structvr_1_1vr__hmd__info.html#aa250e5a5e4b9dc8d8d02d4be12e43e18":[11,0,5,9,7],

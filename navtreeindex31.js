@@ -1,5 +1,6 @@
 var NAVTREEINDEX31 =
 {
+"clod__point__renderer_8h_source.html":[12,0,3,2,17],
 "cmdline__tools_8cxx_source.html":[12,0,1,7,3],
 "cmdline__tools_8h_source.html":[12,0,1,7,4],
 "color_8h_source.html":[12,0,1,6,8],
@@ -248,6 +249,5 @@ var NAVTREEINDEX31 =
 "functions_vars_u.html":[11,3,2,21],
 "functions_vars_v.html":[11,3,2,22],
 "functions_vars_w.html":[11,3,2,23],
-"functions_vars_x.html":[11,3,2,24],
-"functions_vars_y.html":[11,3,2,25]
+"functions_vars_x.html":[11,3,2,24]
 };

@@ -418,6 +418,9 @@ Public Member Functions</h2></td></tr>
 <tr class="memitem:a15e0a544e48b8a9deca6f471c229e2a3 inherit pub_methods_classcgv_1_1media_1_1mesh_1_1simple__mesh__base" id="r_a15e0a544e48b8a9deca6f471c229e2a3"><td class="memItemLeft" align="right" valign="top"><a class="el" href="classcgv_1_1media_1_1mesh_1_1simple__mesh__base.html#a0eb0181dc49db651e738bd0e66d1f0e6">idx_type</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcgv_1_1media_1_1mesh_1_1simple__mesh__base.html#a15e0a544e48b8a9deca6f471c229e2a3">extract_vertex_attribute_buffer_base</a> (const std::vector&lt; <a class="el" href="classcgv_1_1media_1_1mesh_1_1simple__mesh__base.html#a48fca8dd677c2aab4532857a792b5ed8">idx4_type</a> &gt; &amp;unique_quadruples, <a class="el" href="classcgv_1_1media_1_1mesh_1_1simple__mesh__base.html#a211b6d732e1a6977bc8241b3e61c80af">AttributeFlags</a> &amp;flags, std::vector&lt; uint8_t &gt; &amp;attrib_buffer) const</td></tr>
 <tr class="memdesc:a15e0a544e48b8a9deca6f471c229e2a3 inherit pub_methods_classcgv_1_1media_1_1mesh_1_1simple__mesh__base"><td class="mdescLeft">&#160;</td><td class="mdescRight">extract vertex attribute buffer for the given flags and return size of vertex in bytes  <br /></td></tr>
 <tr class="separator:a15e0a544e48b8a9deca6f471c229e2a3 inherit pub_methods_classcgv_1_1media_1_1mesh_1_1simple__mesh__base"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a8fe51ba9ad74e8d0c4215cad652f7028 inherit pub_methods_classcgv_1_1media_1_1mesh_1_1simple__mesh__base" id="r_a8fe51ba9ad74e8d0c4215cad652f7028"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcgv_1_1media_1_1mesh_1_1simple__mesh__base.html#a8fe51ba9ad74e8d0c4215cad652f7028">extract_triangle_indices</a> (std::vector&lt; <a class="el" href="classcgv_1_1media_1_1mesh_1_1simple__mesh__base.html#afdbd8bfcc25849237978752d1dfd3f86">idx3_type</a> &gt; &amp;position_indices, std::vector&lt; <a class="el" href="classcgv_1_1media_1_1mesh_1_1simple__mesh__base.html#afdbd8bfcc25849237978752d1dfd3f86">idx3_type</a> &gt; *tex_coord_indices=nullptr, std::vector&lt; <a class="el" href="classcgv_1_1media_1_1mesh_1_1simple__mesh__base.html#afdbd8bfcc25849237978752d1dfd3f86">idx3_type</a> &gt; *normal_indices=nullptr, std::vector&lt; <a class="el" href="classcgv_1_1media_1_1mesh_1_1simple__mesh__base.html#afdbd8bfcc25849237978752d1dfd3f86">idx3_type</a> &gt; *tangent_indices=nullptr) const</td></tr>
+<tr class="memdesc:a8fe51ba9ad74e8d0c4215cad652f7028 inherit pub_methods_classcgv_1_1media_1_1mesh_1_1simple__mesh__base"><td class="mdescLeft">&#160;</td><td class="mdescRight">Extract index lists of triangle positions and optional attributes.  <br /></td></tr>
+<tr class="separator:a8fe51ba9ad74e8d0c4215cad652f7028 inherit pub_methods_classcgv_1_1media_1_1mesh_1_1simple__mesh__base"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a34d6eefa7fd6d41bb8b3f692d2bb9e11 inherit pub_methods_classcgv_1_1media_1_1mesh_1_1simple__mesh__base" id="r_a34d6eefa7fd6d41bb8b3f692d2bb9e11"><td class="memItemLeft" align="right" valign="top"><a class="el" href="classcgv_1_1media_1_1mesh_1_1simple__mesh__base.html#a0eb0181dc49db651e738bd0e66d1f0e6">idx_type</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcgv_1_1media_1_1mesh_1_1simple__mesh__base.html#a34d6eefa7fd6d41bb8b3f692d2bb9e11">compute_inv</a> (std::vector&lt; <a class="el" href="classcgv_1_1media_1_1mesh_1_1simple__mesh__base.html#a0eb0181dc49db651e738bd0e66d1f0e6">idx_type</a> &gt; &amp;inv, bool link_non_manifold_edges=false, std::vector&lt; <a class="el" href="classcgv_1_1media_1_1mesh_1_1simple__mesh__base.html#a0eb0181dc49db651e738bd0e66d1f0e6">idx_type</a> &gt; *p2c_ptr=0, std::vector&lt; <a class="el" href="classcgv_1_1media_1_1mesh_1_1simple__mesh__base.html#a0eb0181dc49db651e738bd0e66d1f0e6">idx_type</a> &gt; *next_ptr=0, std::vector&lt; <a class="el" href="classcgv_1_1media_1_1mesh_1_1simple__mesh__base.html#a0eb0181dc49db651e738bd0e66d1f0e6">idx_type</a> &gt; *prev_ptr=0, std::vector&lt; <a class="el" href="classcgv_1_1media_1_1mesh_1_1simple__mesh__base.html#a0eb0181dc49db651e738bd0e66d1f0e6">idx_type</a> &gt; *unmatched=0, std::vector&lt; <a class="el" href="classcgv_1_1media_1_1mesh_1_1simple__mesh__base.html#a0eb0181dc49db651e738bd0e66d1f0e6">idx_type</a> &gt; *non_manifold=0, std::vector&lt; <a class="el" href="classcgv_1_1media_1_1mesh_1_1simple__mesh__base.html#a0eb0181dc49db651e738bd0e66d1f0e6">idx_type</a> &gt; *unmatched_elements=0, std::vector&lt; <a class="el" href="classcgv_1_1media_1_1mesh_1_1simple__mesh__base.html#a0eb0181dc49db651e738bd0e66d1f0e6">idx_type</a> &gt; *non_manifold_elements=0) const</td></tr>
 <tr class="memdesc:a34d6eefa7fd6d41bb8b3f692d2bb9e11 inherit pub_methods_classcgv_1_1media_1_1mesh_1_1simple__mesh__base"><td class="mdescLeft">&#160;</td><td class="mdescRight">Do inverse matching of half-edges.  <br /></td></tr>
 <tr class="separator:a34d6eefa7fd6d41bb8b3f692d2bb9e11 inherit pub_methods_classcgv_1_1media_1_1mesh_1_1simple__mesh__base"><td class="memSeparator" colspan="2">&#160;</td></tr>
@@ -570,7 +573,7 @@ Additional Inherited Members</h2></td></tr>
 <div class="textblock"><div class="compoundTemplParams">template&lt;typename T = float&gt;<br />
 class cgv::media::mesh::simple_mesh&lt; T &gt;</div><p>the <a class="el" href="classcgv_1_1media_1_1mesh_1_1simple__mesh.html" title="the simple_mesh class is templated over the coordinate type that defaults to float">simple_mesh</a> class is templated over the coordinate type that defaults to float </p>
 
-<p class="definition">Definition at line <a class="el" href="simple__mesh_8h_source.html#l00248">248</a> of file <a class="el" href="simple__mesh_8h_source.html">simple_mesh.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="simple__mesh_8h_source.html#l00260">260</a> of file <a class="el" href="simple__mesh_8h_source.html">simple_mesh.h</a>.</p>
 </div><h2 class="groupheader">Member Typedef Documentation</h2>
 <a id="ace75aa18225995a4d947eedba63b2f7e" name="ace75aa18225995a4d947eedba63b2f7e"></a>
 <h2 class="memtitle"><span class="permalink"><a href="#ace75aa18225995a4d947eedba63b2f7e">&#9670;&#160;</a></span>box_type</h2>
@@ -588,7 +591,7 @@ template&lt;typename T  = float&gt; </div>
 
 <p>type of axis aligned 3d box </p>
 
-<p class="definition">Definition at line <a class="el" href="simple__mesh_8h_source.html#l00256">256</a> of file <a class="el" href="simple__mesh_8h_source.html">simple_mesh.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="simple__mesh_8h_source.html#l00268">268</a> of file <a class="el" href="simple__mesh_8h_source.html">simple_mesh.h</a>.</p>
 
 </div>
 </div>
@@ -608,7 +611,7 @@ template&lt;typename T  = float&gt; </div>
 
 <p>linear transformation </p>
 
-<p class="definition">Definition at line <a class="el" href="simple__mesh_8h_source.html#l00262">262</a> of file <a class="el" href="simple__mesh_8h_source.html">simple_mesh.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="simple__mesh_8h_source.html#l00274">274</a> of file <a class="el" href="simple__mesh_8h_source.html">simple_mesh.h</a>.</p>
 
 </div>
 </div>
@@ -628,7 +631,7 @@ template&lt;typename T  = float&gt; </div>
 
 <p>type of axis aligned 3d box </p>
 
-<p class="definition">Definition at line <a class="el" href="simple__mesh_8h_source.html#l00254">254</a> of file <a class="el" href="simple__mesh_8h_source.html">simple_mesh.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="simple__mesh_8h_source.html#l00266">266</a> of file <a class="el" href="simple__mesh_8h_source.html">simple_mesh.h</a>.</p>
 
 </div>
 </div>
@@ -646,7 +649,7 @@ template&lt;typename T  = float&gt; </div>
       </table>
 </div><div class="memdoc">
 
-<p class="definition">Definition at line <a class="el" href="simple__mesh_8h_source.html#l00251">251</a> of file <a class="el" href="simple__mesh_8h_source.html">simple_mesh.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="simple__mesh_8h_source.html#l00263">263</a> of file <a class="el" href="simple__mesh_8h_source.html">simple_mesh.h</a>.</p>
 
 </div>
 </div>
@@ -666,7 +669,7 @@ template&lt;typename T  = float&gt; </div>
 
 <p>type of 2d vector </p>
 
-<p class="definition">Definition at line <a class="el" href="simple__mesh_8h_source.html#l00258">258</a> of file <a class="el" href="simple__mesh_8h_source.html">simple_mesh.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="simple__mesh_8h_source.html#l00270">270</a> of file <a class="el" href="simple__mesh_8h_source.html">simple_mesh.h</a>.</p>
 
 </div>
 </div>
@@ -686,7 +689,7 @@ template&lt;typename T  = float&gt; </div>
 
 <p>type of 3d vector </p>
 
-<p class="definition">Definition at line <a class="el" href="simple__mesh_8h_source.html#l00260">260</a> of file <a class="el" href="simple__mesh_8h_source.html">simple_mesh.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="simple__mesh_8h_source.html#l00272">272</a> of file <a class="el" href="simple__mesh_8h_source.html">simple_mesh.h</a>.</p>
 
 </div>
 </div>
@@ -711,7 +714,7 @@ template&lt;typename T &gt; </div>
 
 <p>copy constructor </p>
 
-<p class="definition">Definition at line <a class="el" href="simple__mesh_8cxx_source.html#l00531">531</a> of file <a class="el" href="simple__mesh_8cxx_source.html">simple_mesh.cxx</a>.</p>
+<p class="definition">Definition at line <a class="el" href="simple__mesh_8cxx_source.html#l00566">566</a> of file <a class="el" href="simple__mesh_8cxx_source.html">simple_mesh.cxx</a>.</p>
 
 </div>
 </div>
@@ -735,7 +738,7 @@ template&lt;typename T &gt; </div>
 
 <p>move constructor </p>
 
-<p class="definition">Definition at line <a class="el" href="simple__mesh_8cxx_source.html#l00538">538</a> of file <a class="el" href="simple__mesh_8cxx_source.html">simple_mesh.cxx</a>.</p>
+<p class="definition">Definition at line <a class="el" href="simple__mesh_8cxx_source.html#l00573">573</a> of file <a class="el" href="simple__mesh_8cxx_source.html">simple_mesh.cxx</a>.</p>
 
 </div>
 </div>
@@ -759,7 +762,7 @@ template&lt;typename T &gt; </div>
 
 <p>assignment operator </p>
 
-<p class="definition">Definition at line <a class="el" href="simple__mesh_8cxx_source.html#l00996">996</a> of file <a class="el" href="simple__mesh_8cxx_source.html">simple_mesh.cxx</a>.</p>
+<p class="definition">Definition at line <a class="el" href="simple__mesh_8cxx_source.html#l01031">1031</a> of file <a class="el" href="simple__mesh_8cxx_source.html">simple_mesh.cxx</a>.</p>
 
 </div>
 </div>
@@ -783,9 +786,9 @@ template&lt;typename T &gt; </div>
 
 <p>Conway ambo operator. </p>
 
-<p class="definition">Definition at line <a class="el" href="simple__mesh_8cxx_source.html#l01001">1001</a> of file <a class="el" href="simple__mesh_8cxx_source.html">simple_mesh.cxx</a>.</p>
+<p class="definition">Definition at line <a class="el" href="simple__mesh_8cxx_source.html#l01036">1036</a> of file <a class="el" href="simple__mesh_8cxx_source.html">simple_mesh.cxx</a>.</p>
 
-<p class="reference">References <a class="el" href="simple__mesh_8cxx_source.html#l00922">cgv::media::mesh::simple_mesh&lt; T &gt;::compute_face_normals()</a>, <a class="el" href="simple__mesh_8cxx_source.html#l00086">cgv::media::mesh::simple_mesh_base::new_corner()</a>, <a class="el" href="simple__mesh_8h_source.html#l00327">cgv::media::mesh::simple_mesh&lt; T &gt;::new_position()</a>, and <a class="el" href="simple__mesh_8cxx_source.html#l00077">cgv::media::mesh::simple_mesh_base::start_face()</a>.</p>
+<p class="reference">References <a class="el" href="simple__mesh_8cxx_source.html#l00957">cgv::media::mesh::simple_mesh&lt; T &gt;::compute_face_normals()</a>, <a class="el" href="simple__mesh_8cxx_source.html#l00086">cgv::media::mesh::simple_mesh_base::new_corner()</a>, <a class="el" href="simple__mesh_8h_source.html#l00339">cgv::media::mesh::simple_mesh&lt; T &gt;::new_position()</a>, and <a class="el" href="simple__mesh_8cxx_source.html#l00077">cgv::media::mesh::simple_mesh_base::start_face()</a>.</p>
 
 </div>
 </div>
@@ -808,7 +811,7 @@ template&lt;typename T &gt; </div>
 
 <p>clear simple mesh </p>
 
-<p class="definition">Definition at line <a class="el" href="simple__mesh_8cxx_source.html#l00570">570</a> of file <a class="el" href="simple__mesh_8cxx_source.html">simple_mesh.cxx</a>.</p>
+<p class="definition">Definition at line <a class="el" href="simple__mesh_8cxx_source.html#l00605">605</a> of file <a class="el" href="simple__mesh_8cxx_source.html">simple_mesh.cxx</a>.</p>
 
 <p class="reference">Referenced by <a class="el" href="gl__implicit__surface__drawable__base_8cxx_source.html#l00411">cgv::render::gl::gl_implicit_surface_drawable_base::extract_mesh()</a>, <a class="el" href="gltf__support_8cxx_source.html#l00328">cgv::render::extract_mesh()</a>, and <a class="el" href="mesh__drawable_8cxx_source.html#l00052">cgv::render::gl::mesh_drawable::read_mesh()</a>.</p>
 
@@ -833,7 +836,7 @@ template&lt;typename T &gt; </div>
 
 <p>compute the axis aligned bounding box </p>
 
-<p class="definition">Definition at line <a class="el" href="simple__mesh_8cxx_source.html#l00778">778</a> of file <a class="el" href="simple__mesh_8cxx_source.html">simple_mesh.cxx</a>.</p>
+<p class="definition">Definition at line <a class="el" href="simple__mesh_8cxx_source.html#l00813">813</a> of file <a class="el" href="simple__mesh_8cxx_source.html">simple_mesh.cxx</a>.</p>
 
 <p class="reference">References <a class="el" href="axis__aligned__box_8h_source.html#l00090">cgv::media::axis_aligned_box&lt; T, N &gt;::add_point()</a>.</p>
 
@@ -861,7 +864,7 @@ template&lt;typename T &gt; </div>
 
 <p>compute face center </p>
 
-<p class="definition">Definition at line <a class="el" href="simple__mesh_8cxx_source.html#l00887">887</a> of file <a class="el" href="simple__mesh_8cxx_source.html">simple_mesh.cxx</a>.</p>
+<p class="definition">Definition at line <a class="el" href="simple__mesh_8cxx_source.html#l00922">922</a> of file <a class="el" href="simple__mesh_8cxx_source.html">simple_mesh.cxx</a>.</p>
 
 </div>
 </div>
@@ -901,7 +904,7 @@ template&lt;typename T &gt; </div>
 
 <p>compute the normal nml of a face and return whether this was possible </p>
 
-<p class="definition">Definition at line <a class="el" href="simple__mesh_8cxx_source.html#l00898">898</a> of file <a class="el" href="simple__mesh_8cxx_source.html">simple_mesh.cxx</a>.</p>
+<p class="definition">Definition at line <a class="el" href="simple__mesh_8cxx_source.html#l00933">933</a> of file <a class="el" href="simple__mesh_8cxx_source.html">simple_mesh.cxx</a>.</p>
 
 <p class="reference">References <a class="el" href="fvec_8h_source.html#l00267">cgv::math::fvec&lt; T, N &gt;::length()</a>.</p>
 
@@ -927,9 +930,9 @@ template&lt;typename T &gt; </div>
 
 <p>compute per face normals (ensure that per corner normal indices are set correspondingly) </p>
 
-<p class="definition">Definition at line <a class="el" href="simple__mesh_8cxx_source.html#l00922">922</a> of file <a class="el" href="simple__mesh_8cxx_source.html">simple_mesh.cxx</a>.</p>
+<p class="definition">Definition at line <a class="el" href="simple__mesh_8cxx_source.html#l00957">957</a> of file <a class="el" href="simple__mesh_8cxx_source.html">simple_mesh.cxx</a>.</p>
 
-<p class="reference">Referenced by <a class="el" href="simple__mesh_8cxx_source.html#l01001">cgv::media::mesh::simple_mesh&lt; T &gt;::ambo()</a>, <a class="el" href="simple__mesh_8cxx_source.html#l01118">cgv::media::mesh::simple_mesh&lt; T &gt;::dual()</a>, <a class="el" href="simple__mesh_8cxx_source.html#l01150">cgv::media::mesh::simple_mesh&lt; T &gt;::gyro()</a>, <a class="el" href="simple__mesh_8cxx_source.html#l01196">cgv::media::mesh::simple_mesh&lt; T &gt;::join()</a>, <a class="el" href="simple__mesh_8cxx_source.html#l01073">cgv::media::mesh::simple_mesh&lt; T &gt;::snub()</a>, and <a class="el" href="simple__mesh_8cxx_source.html#l01037">cgv::media::mesh::simple_mesh&lt; T &gt;::truncate()</a>.</p>
+<p class="reference">Referenced by <a class="el" href="simple__mesh_8cxx_source.html#l01036">cgv::media::mesh::simple_mesh&lt; T &gt;::ambo()</a>, <a class="el" href="simple__mesh_8cxx_source.html#l01153">cgv::media::mesh::simple_mesh&lt; T &gt;::dual()</a>, <a class="el" href="simple__mesh_8cxx_source.html#l01185">cgv::media::mesh::simple_mesh&lt; T &gt;::gyro()</a>, <a class="el" href="simple__mesh_8cxx_source.html#l01231">cgv::media::mesh::simple_mesh&lt; T &gt;::join()</a>, <a class="el" href="simple__mesh_8cxx_source.html#l01108">cgv::media::mesh::simple_mesh&lt; T &gt;::snub()</a>, and <a class="el" href="simple__mesh_8cxx_source.html#l01072">cgv::media::mesh::simple_mesh&lt; T &gt;::truncate()</a>.</p>
 
 </div>
 </div>
@@ -953,7 +956,7 @@ template&lt;typename T &gt; </div>
 
 <p>compute per face tangents (ensure that per corner tangent indices are set correspondingly) </p>
 
-<p class="definition">Definition at line <a class="el" href="simple__mesh_8cxx_source.html#l00943">943</a> of file <a class="el" href="simple__mesh_8cxx_source.html">simple_mesh.cxx</a>.</p>
+<p class="definition">Definition at line <a class="el" href="simple__mesh_8cxx_source.html#l00978">978</a> of file <a class="el" href="simple__mesh_8cxx_source.html">simple_mesh.cxx</a>.</p>
 
 <p class="reference">References <a class="el" href="fvec_8h_source.html#l00303">cgv::math::fvec&lt; T, N &gt;::normalize()</a>, <a class="el" href="fvec_8h_source.html#l00136">cgv::math::fvec&lt; T, N &gt;::x()</a>, <a class="el" href="fvec_8h_source.html#l00140">cgv::math::fvec&lt; T, N &gt;::y()</a>, and <a class="el" href="fvec_8h_source.html#l00144">cgv::math::fvec&lt; T, N &gt;::z()</a>.</p>
 
@@ -1001,7 +1004,7 @@ template&lt;typename T &gt; </div>
 </table>
 </div><div class="memdoc">
 
-<p class="definition">Definition at line <a class="el" href="simple__mesh_8cxx_source.html#l00939">939</a> of file <a class="el" href="simple__mesh_8cxx_source.html">simple_mesh.cxx</a>.</p>
+<p class="definition">Definition at line <a class="el" href="simple__mesh_8cxx_source.html#l00974">974</a> of file <a class="el" href="simple__mesh_8cxx_source.html">simple_mesh.cxx</a>.</p>
 
 </div>
 </div>
@@ -1025,7 +1028,7 @@ template&lt;typename T &gt; </div>
 
 <p>compute vertex normals by averaging triangle normals </p>
 
-<p class="definition">Definition at line <a class="el" href="simple__mesh_8cxx_source.html#l00787">787</a> of file <a class="el" href="simple__mesh_8cxx_source.html">simple_mesh.cxx</a>.</p>
+<p class="definition">Definition at line <a class="el" href="simple__mesh_8cxx_source.html#l00822">822</a> of file <a class="el" href="simple__mesh_8cxx_source.html">simple_mesh.cxx</a>.</p>
 
 <p class="reference">References <a class="el" href="fvec_8h_source.html#l00303">cgv::math::fvec&lt; T, N &gt;::normalize()</a>.</p>
 
@@ -1067,7 +1070,7 @@ template&lt;typename T &gt; </div>
 
 <p>construct from obj loader </p>
 
-<p class="definition">Definition at line <a class="el" href="simple__mesh_8cxx_source.html#l00432">432</a> of file <a class="el" href="simple__mesh_8cxx_source.html">simple_mesh.cxx</a>.</p>
+<p class="definition">Definition at line <a class="el" href="simple__mesh_8cxx_source.html#l00467">467</a> of file <a class="el" href="simple__mesh_8cxx_source.html">simple_mesh.cxx</a>.</p>
 
 </div>
 </div>
@@ -1091,7 +1094,7 @@ template&lt;typename T &gt; </div>
 
 <p>construct new mesh according to Conway polyhedron notation: [a|t|s|d|g|j|o]*[T|C|O|D|I] which is evaluated from right to left and last capital letter is Platonic solid and lowercase letters are Conway operations </p>
 
-<p class="definition">Definition at line <a class="el" href="simple__mesh_8cxx_source.html#l01246">1246</a> of file <a class="el" href="simple__mesh_8cxx_source.html">simple_mesh.cxx</a>.</p>
+<p class="definition">Definition at line <a class="el" href="simple__mesh_8cxx_source.html#l01281">1281</a> of file <a class="el" href="simple__mesh_8cxx_source.html">simple_mesh.cxx</a>.</p>
 
 </div>
 </div>
@@ -1114,9 +1117,9 @@ template&lt;typename T &gt; </div>
 
 <p>Conway dual operator. </p>
 
-<p class="definition">Definition at line <a class="el" href="simple__mesh_8cxx_source.html#l01118">1118</a> of file <a class="el" href="simple__mesh_8cxx_source.html">simple_mesh.cxx</a>.</p>
+<p class="definition">Definition at line <a class="el" href="simple__mesh_8cxx_source.html#l01153">1153</a> of file <a class="el" href="simple__mesh_8cxx_source.html">simple_mesh.cxx</a>.</p>
 
-<p class="reference">References <a class="el" href="simple__mesh_8cxx_source.html#l00922">cgv::media::mesh::simple_mesh&lt; T &gt;::compute_face_normals()</a>, <a class="el" href="simple__mesh_8cxx_source.html#l00086">cgv::media::mesh::simple_mesh_base::new_corner()</a>, <a class="el" href="simple__mesh_8h_source.html#l00327">cgv::media::mesh::simple_mesh&lt; T &gt;::new_position()</a>, <a class="el" href="fvec_8h_source.html#l00303">cgv::math::fvec&lt; T, N &gt;::normalize()</a>, and <a class="el" href="simple__mesh_8cxx_source.html#l00077">cgv::media::mesh::simple_mesh_base::start_face()</a>.</p>
+<p class="reference">References <a class="el" href="simple__mesh_8cxx_source.html#l00957">cgv::media::mesh::simple_mesh&lt; T &gt;::compute_face_normals()</a>, <a class="el" href="simple__mesh_8cxx_source.html#l00086">cgv::media::mesh::simple_mesh_base::new_corner()</a>, <a class="el" href="simple__mesh_8h_source.html#l00339">cgv::media::mesh::simple_mesh&lt; T &gt;::new_position()</a>, <a class="el" href="fvec_8h_source.html#l00303">cgv::math::fvec&lt; T, N &gt;::normalize()</a>, and <a class="el" href="simple__mesh_8cxx_source.html#l00077">cgv::media::mesh::simple_mesh_base::start_face()</a>.</p>
 
 </div>
 </div>
@@ -1193,7 +1196,7 @@ template&lt;typename T &gt; </div>
 </dl>
 <dl class="section return"><dt>Returns</dt><dd>The size of one color in bytes. </dd></dl>
 
-<p class="definition">Definition at line <a class="el" href="simple__mesh_8cxx_source.html#l00820">820</a> of file <a class="el" href="simple__mesh_8cxx_source.html">simple_mesh.cxx</a>.</p>
+<p class="definition">Definition at line <a class="el" href="simple__mesh_8cxx_source.html#l00855">855</a> of file <a class="el" href="simple__mesh_8cxx_source.html">simple_mesh.cxx</a>.</p>
 
 </div>
 </div>
@@ -1225,7 +1228,7 @@ template&lt;typename T  = float&gt; </div>
 
 <p>Implements <a class="el" href="classcgv_1_1media_1_1mesh_1_1simple__mesh__base.html">cgv::media::mesh::simple_mesh_base</a>.</p>
 
-<p class="definition">Definition at line <a class="el" href="simple__mesh_8h_source.html#l00302">302</a> of file <a class="el" href="simple__mesh_8h_source.html">simple_mesh.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="simple__mesh_8h_source.html#l00314">314</a> of file <a class="el" href="simple__mesh_8h_source.html">simple_mesh.h</a>.</p>
 
 </div>
 </div>
@@ -1267,7 +1270,7 @@ template&lt;typename T  = float&gt; </div>
 
 <p>Implements <a class="el" href="classcgv_1_1media_1_1mesh_1_1simple__mesh__base.html">cgv::media::mesh::simple_mesh_base</a>.</p>
 
-<p class="definition">Definition at line <a class="el" href="simple__mesh_8h_source.html#l00280">280</a> of file <a class="el" href="simple__mesh_8h_source.html">simple_mesh.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="simple__mesh_8h_source.html#l00292">292</a> of file <a class="el" href="simple__mesh_8h_source.html">simple_mesh.h</a>.</p>
 
 </div>
 </div>
@@ -1299,7 +1302,7 @@ template&lt;typename T  = float&gt; </div>
 
 <p>Implements <a class="el" href="classcgv_1_1media_1_1mesh_1_1simple__mesh__base.html">cgv::media::mesh::simple_mesh_base</a>.</p>
 
-<p class="definition">Definition at line <a class="el" href="simple__mesh_8h_source.html#l00291">291</a> of file <a class="el" href="simple__mesh_8h_source.html">simple_mesh.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="simple__mesh_8h_source.html#l00303">303</a> of file <a class="el" href="simple__mesh_8h_source.html">simple_mesh.h</a>.</p>
 
 </div>
 </div>
@@ -1332,7 +1335,7 @@ template&lt;typename T  = float&gt; </div>
 
 <p>Implements <a class="el" href="classcgv_1_1media_1_1mesh_1_1simple__mesh__base.html#aae1f5e45ff26b59e113f8b996a4d3972">cgv::media::mesh::simple_mesh_base</a>.</p>
 
-<p class="definition">Definition at line <a class="el" href="simple__mesh_8h_source.html#l00322">322</a> of file <a class="el" href="simple__mesh_8h_source.html">simple_mesh.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="simple__mesh_8h_source.html#l00334">334</a> of file <a class="el" href="simple__mesh_8h_source.html">simple_mesh.h</a>.</p>
 
 </div>
 </div>
@@ -1361,7 +1364,7 @@ template&lt;typename T  = float&gt; </div>
 </table>
 </div><div class="memdoc">
 
-<p class="definition">Definition at line <a class="el" href="simple__mesh_8h_source.html#l00342">342</a> of file <a class="el" href="simple__mesh_8h_source.html">simple_mesh.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="simple__mesh_8h_source.html#l00354">354</a> of file <a class="el" href="simple__mesh_8h_source.html">simple_mesh.h</a>.</p>
 
 </div>
 </div>
@@ -1390,7 +1393,7 @@ template&lt;typename T  = float&gt; </div>
 </table>
 </div><div class="memdoc">
 
-<p class="definition">Definition at line <a class="el" href="simple__mesh_8h_source.html#l00339">339</a> of file <a class="el" href="simple__mesh_8h_source.html">simple_mesh.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="simple__mesh_8h_source.html#l00351">351</a> of file <a class="el" href="simple__mesh_8h_source.html">simple_mesh.h</a>.</p>
 
 </div>
 </div>
@@ -1423,7 +1426,7 @@ template&lt;typename T  = float&gt; </div>
 
 <p>Implements <a class="el" href="classcgv_1_1media_1_1mesh_1_1simple__mesh__base.html#aa5c14f7cd17464eea93a30926aea4ae3">cgv::media::mesh::simple_mesh_base</a>.</p>
 
-<p class="definition">Definition at line <a class="el" href="simple__mesh_8h_source.html#l00329">329</a> of file <a class="el" href="simple__mesh_8h_source.html">simple_mesh.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="simple__mesh_8h_source.html#l00341">341</a> of file <a class="el" href="simple__mesh_8h_source.html">simple_mesh.h</a>.</p>
 
 <p class="reference">Referenced by <a class="el" href="gl__implicit__surface__drawable__base_8cxx_source.html#l00571">cgv::render::gl::gl_implicit_surface_drawable_base::draw_implicit_surface()</a>, and <a class="el" href="gltf__support_8cxx_source.html#l00328">cgv::render::extract_mesh()</a>.</p>
 
@@ -1454,7 +1457,7 @@ template&lt;typename T  = float&gt; </div>
 </table>
 </div><div class="memdoc">
 
-<p class="definition">Definition at line <a class="el" href="simple__mesh_8h_source.html#l00348">348</a> of file <a class="el" href="simple__mesh_8h_source.html">simple_mesh.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="simple__mesh_8h_source.html#l00360">360</a> of file <a class="el" href="simple__mesh_8h_source.html">simple_mesh.h</a>.</p>
 
 </div>
 </div>
@@ -1483,7 +1486,7 @@ template&lt;typename T  = float&gt; </div>
 </table>
 </div><div class="memdoc">
 
-<p class="definition">Definition at line <a class="el" href="simple__mesh_8h_source.html#l00356">356</a> of file <a class="el" href="simple__mesh_8h_source.html">simple_mesh.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="simple__mesh_8h_source.html#l00368">368</a> of file <a class="el" href="simple__mesh_8h_source.html">simple_mesh.h</a>.</p>
 
 </div>
 </div>
@@ -1512,7 +1515,7 @@ template&lt;typename T  = float&gt; </div>
 </table>
 </div><div class="memdoc">
 
-<p class="definition">Definition at line <a class="el" href="simple__mesh_8h_source.html#l00332">332</a> of file <a class="el" href="simple__mesh_8h_source.html">simple_mesh.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="simple__mesh_8h_source.html#l00344">344</a> of file <a class="el" href="simple__mesh_8h_source.html">simple_mesh.h</a>.</p>
 
 </div>
 </div>
@@ -1536,9 +1539,9 @@ template&lt;typename T &gt; </div>
 
 <p>Conway gyro operator. </p>
 
-<p class="definition">Definition at line <a class="el" href="simple__mesh_8cxx_source.html#l01150">1150</a> of file <a class="el" href="simple__mesh_8cxx_source.html">simple_mesh.cxx</a>.</p>
+<p class="definition">Definition at line <a class="el" href="simple__mesh_8cxx_source.html#l01185">1185</a> of file <a class="el" href="simple__mesh_8cxx_source.html">simple_mesh.cxx</a>.</p>
 
-<p class="reference">References <a class="el" href="simple__mesh_8cxx_source.html#l00922">cgv::media::mesh::simple_mesh&lt; T &gt;::compute_face_normals()</a>, <a class="el" href="simple__mesh_8cxx_source.html#l00086">cgv::media::mesh::simple_mesh_base::new_corner()</a>, <a class="el" href="simple__mesh_8h_source.html#l00327">cgv::media::mesh::simple_mesh&lt; T &gt;::new_position()</a>, <a class="el" href="fvec_8h_source.html#l00303">cgv::math::fvec&lt; T, N &gt;::normalize()</a>, and <a class="el" href="simple__mesh_8cxx_source.html#l00077">cgv::media::mesh::simple_mesh_base::start_face()</a>.</p>
+<p class="reference">References <a class="el" href="simple__mesh_8cxx_source.html#l00957">cgv::media::mesh::simple_mesh&lt; T &gt;::compute_face_normals()</a>, <a class="el" href="simple__mesh_8cxx_source.html#l00086">cgv::media::mesh::simple_mesh_base::new_corner()</a>, <a class="el" href="simple__mesh_8h_source.html#l00339">cgv::media::mesh::simple_mesh&lt; T &gt;::new_position()</a>, <a class="el" href="fvec_8h_source.html#l00303">cgv::math::fvec&lt; T, N &gt;::normalize()</a>, and <a class="el" href="simple__mesh_8cxx_source.html#l00077">cgv::media::mesh::simple_mesh_base::start_face()</a>.</p>
 
 </div>
 </div>
@@ -1570,7 +1573,7 @@ template&lt;typename T  = float&gt; </div>
 
 <p>Implements <a class="el" href="classcgv_1_1media_1_1mesh_1_1simple__mesh__base.html">cgv::media::mesh::simple_mesh_base</a>.</p>
 
-<p class="definition">Definition at line <a class="el" href="simple__mesh_8h_source.html#l00269">269</a> of file <a class="el" href="simple__mesh_8h_source.html">simple_mesh.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="simple__mesh_8h_source.html#l00281">281</a> of file <a class="el" href="simple__mesh_8h_source.html">simple_mesh.h</a>.</p>
 
 </div>
 </div>
@@ -1601,7 +1604,7 @@ template&lt;typename T  = float&gt; </div>
 
 <p>access to normals </p>
 
-<p class="definition">Definition at line <a class="el" href="simple__mesh_8h_source.html#l00338">338</a> of file <a class="el" href="simple__mesh_8h_source.html">simple_mesh.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="simple__mesh_8h_source.html#l00350">350</a> of file <a class="el" href="simple__mesh_8h_source.html">simple_mesh.h</a>.</p>
 
 <p class="reference">Referenced by <a class="el" href="mesh__render__info_8h_source.html#l00131">cgv::render::mesh_render_info::construct()</a>.</p>
 
@@ -1634,7 +1637,7 @@ template&lt;typename T  = float&gt; </div>
 
 <p>access to tangents </p>
 
-<p class="definition">Definition at line <a class="el" href="simple__mesh_8h_source.html#l00347">347</a> of file <a class="el" href="simple__mesh_8h_source.html">simple_mesh.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="simple__mesh_8h_source.html#l00359">359</a> of file <a class="el" href="simple__mesh_8h_source.html">simple_mesh.h</a>.</p>
 
 <p class="reference">Referenced by <a class="el" href="mesh__render__info_8h_source.html#l00131">cgv::render::mesh_render_info::construct()</a>.</p>
 
@@ -1667,7 +1670,7 @@ template&lt;typename T  = float&gt; </div>
 
 <p>access to texture coordinates </p>
 
-<p class="definition">Definition at line <a class="el" href="simple__mesh_8h_source.html#l00355">355</a> of file <a class="el" href="simple__mesh_8h_source.html">simple_mesh.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="simple__mesh_8h_source.html#l00367">367</a> of file <a class="el" href="simple__mesh_8h_source.html">simple_mesh.h</a>.</p>
 
 <p class="reference">Referenced by <a class="el" href="mesh__render__info_8h_source.html#l00131">cgv::render::mesh_render_info::construct()</a>.</p>
 
@@ -1692,9 +1695,9 @@ template&lt;typename T &gt; </div>
 
 <p>Conway join operator. </p>
 
-<p class="definition">Definition at line <a class="el" href="simple__mesh_8cxx_source.html#l01196">1196</a> of file <a class="el" href="simple__mesh_8cxx_source.html">simple_mesh.cxx</a>.</p>
+<p class="definition">Definition at line <a class="el" href="simple__mesh_8cxx_source.html#l01231">1231</a> of file <a class="el" href="simple__mesh_8cxx_source.html">simple_mesh.cxx</a>.</p>
 
-<p class="reference">References <a class="el" href="simple__mesh_8cxx_source.html#l00922">cgv::media::mesh::simple_mesh&lt; T &gt;::compute_face_normals()</a>, <a class="el" href="simple__mesh_8cxx_source.html#l00086">cgv::media::mesh::simple_mesh_base::new_corner()</a>, <a class="el" href="simple__mesh_8h_source.html#l00327">cgv::media::mesh::simple_mesh&lt; T &gt;::new_position()</a>, <a class="el" href="fvec_8h_source.html#l00303">cgv::math::fvec&lt; T, N &gt;::normalize()</a>, and <a class="el" href="simple__mesh_8cxx_source.html#l00077">cgv::media::mesh::simple_mesh_base::start_face()</a>.</p>
+<p class="reference">References <a class="el" href="simple__mesh_8cxx_source.html#l00957">cgv::media::mesh::simple_mesh&lt; T &gt;::compute_face_normals()</a>, <a class="el" href="simple__mesh_8cxx_source.html#l00086">cgv::media::mesh::simple_mesh_base::new_corner()</a>, <a class="el" href="simple__mesh_8h_source.html#l00339">cgv::media::mesh::simple_mesh&lt; T &gt;::new_position()</a>, <a class="el" href="fvec_8h_source.html#l00303">cgv::math::fvec&lt; T, N &gt;::normalize()</a>, and <a class="el" href="simple__mesh_8cxx_source.html#l00077">cgv::media::mesh::simple_mesh_base::start_face()</a>.</p>
 
 </div>
 </div>
@@ -1726,7 +1729,7 @@ template&lt;typename T  = float&gt; </div>
 
 <p>add a new normal and return normal index </p>
 
-<p class="definition">Definition at line <a class="el" href="simple__mesh_8h_source.html#l00336">336</a> of file <a class="el" href="simple__mesh_8h_source.html">simple_mesh.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="simple__mesh_8h_source.html#l00348">348</a> of file <a class="el" href="simple__mesh_8h_source.html">simple_mesh.h</a>.</p>
 
 <p class="reference">Referenced by <a class="el" href="gltf__support_8cxx_source.html#l00328">cgv::render::extract_mesh()</a>, and <a class="el" href="gl__implicit__surface__drawable__base_8cxx_source.html#l00223">cgv::render::gl::gl_implicit_surface_drawable_base::new_polygon()</a>.</p>
 
@@ -1760,9 +1763,9 @@ template&lt;typename T  = float&gt; </div>
 
 <p>add a new position and return position index </p>
 
-<p class="definition">Definition at line <a class="el" href="simple__mesh_8h_source.html#l00327">327</a> of file <a class="el" href="simple__mesh_8h_source.html">simple_mesh.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="simple__mesh_8h_source.html#l00339">339</a> of file <a class="el" href="simple__mesh_8h_source.html">simple_mesh.h</a>.</p>
 
-<p class="reference">Referenced by <a class="el" href="simple__mesh_8cxx_source.html#l01001">cgv::media::mesh::simple_mesh&lt; T &gt;::ambo()</a>, <a class="el" href="simple__mesh_8cxx_source.html#l01118">cgv::media::mesh::simple_mesh&lt; T &gt;::dual()</a>, <a class="el" href="gltf__support_8cxx_source.html#l00328">cgv::render::extract_mesh()</a>, <a class="el" href="simple__mesh_8cxx_source.html#l01150">cgv::media::mesh::simple_mesh&lt; T &gt;::gyro()</a>, <a class="el" href="simple__mesh_8cxx_source.html#l01196">cgv::media::mesh::simple_mesh&lt; T &gt;::join()</a>, <a class="el" href="gl__implicit__surface__drawable__base_8cxx_source.html#l00302">cgv::render::gl::gl_implicit_surface_drawable_base::new_vertex()</a>, <a class="el" href="simple__mesh_8cxx_source.html#l01073">cgv::media::mesh::simple_mesh&lt; T &gt;::snub()</a>, and <a class="el" href="simple__mesh_8cxx_source.html#l01037">cgv::media::mesh::simple_mesh&lt; T &gt;::truncate()</a>.</p>
+<p class="reference">Referenced by <a class="el" href="simple__mesh_8cxx_source.html#l01036">cgv::media::mesh::simple_mesh&lt; T &gt;::ambo()</a>, <a class="el" href="simple__mesh_8cxx_source.html#l01153">cgv::media::mesh::simple_mesh&lt; T &gt;::dual()</a>, <a class="el" href="gltf__support_8cxx_source.html#l00328">cgv::render::extract_mesh()</a>, <a class="el" href="simple__mesh_8cxx_source.html#l01185">cgv::media::mesh::simple_mesh&lt; T &gt;::gyro()</a>, <a class="el" href="simple__mesh_8cxx_source.html#l01231">cgv::media::mesh::simple_mesh&lt; T &gt;::join()</a>, <a class="el" href="gl__implicit__surface__drawable__base_8cxx_source.html#l00302">cgv::render::gl::gl_implicit_surface_drawable_base::new_vertex()</a>, <a class="el" href="simple__mesh_8cxx_source.html#l01108">cgv::media::mesh::simple_mesh&lt; T &gt;::snub()</a>, and <a class="el" href="simple__mesh_8cxx_source.html#l01072">cgv::media::mesh::simple_mesh&lt; T &gt;::truncate()</a>.</p>
 
 </div>
 </div>
@@ -1794,7 +1797,7 @@ template&lt;typename T  = float&gt; </div>
 
 <p>add a new tangent and return tangent index </p>
 
-<p class="definition">Definition at line <a class="el" href="simple__mesh_8h_source.html#l00345">345</a> of file <a class="el" href="simple__mesh_8h_source.html">simple_mesh.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="simple__mesh_8h_source.html#l00357">357</a> of file <a class="el" href="simple__mesh_8h_source.html">simple_mesh.h</a>.</p>
 
 </div>
 </div>
@@ -1826,7 +1829,7 @@ template&lt;typename T  = float&gt; </div>
 
 <p>add a new texture coordinate and return texture coordinate index </p>
 
-<p class="definition">Definition at line <a class="el" href="simple__mesh_8h_source.html#l00353">353</a> of file <a class="el" href="simple__mesh_8h_source.html">simple_mesh.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="simple__mesh_8h_source.html#l00365">365</a> of file <a class="el" href="simple__mesh_8h_source.html">simple_mesh.h</a>.</p>
 
 <p class="reference">Referenced by <a class="el" href="gltf__support_8cxx_source.html#l00328">cgv::render::extract_mesh()</a>.</p>
 
@@ -1858,7 +1861,7 @@ template&lt;typename T  = float&gt; </div>
 </table>
 </div><div class="memdoc">
 
-<p class="definition">Definition at line <a class="el" href="simple__mesh_8h_source.html#l00340">340</a> of file <a class="el" href="simple__mesh_8h_source.html">simple_mesh.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="simple__mesh_8h_source.html#l00352">352</a> of file <a class="el" href="simple__mesh_8h_source.html">simple_mesh.h</a>.</p>
 
 </div>
 </div>
@@ -1888,7 +1891,7 @@ template&lt;typename T  = float&gt; </div>
 </table>
 </div><div class="memdoc">
 
-<p class="definition">Definition at line <a class="el" href="simple__mesh_8h_source.html#l00341">341</a> of file <a class="el" href="simple__mesh_8h_source.html">simple_mesh.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="simple__mesh_8h_source.html#l00353">353</a> of file <a class="el" href="simple__mesh_8h_source.html">simple_mesh.h</a>.</p>
 
 </div>
 </div>
@@ -1912,7 +1915,7 @@ template&lt;typename T &gt; </div>
 
 <p>assignment operator </p>
 
-<p class="definition">Definition at line <a class="el" href="simple__mesh_8cxx_source.html#l00546">546</a> of file <a class="el" href="simple__mesh_8cxx_source.html">simple_mesh.cxx</a>.</p>
+<p class="definition">Definition at line <a class="el" href="simple__mesh_8cxx_source.html#l00581">581</a> of file <a class="el" href="simple__mesh_8cxx_source.html">simple_mesh.cxx</a>.</p>
 
 <p class="reference">References <a class="el" href="simple__mesh_8cxx_source.html#l00051">cgv::media::mesh::simple_mesh_base::operator=()</a>.</p>
 
@@ -1938,7 +1941,7 @@ template&lt;typename T &gt; </div>
 
 <p>move assignment operator </p>
 
-<p class="definition">Definition at line <a class="el" href="simple__mesh_8cxx_source.html#l00558">558</a> of file <a class="el" href="simple__mesh_8cxx_source.html">simple_mesh.cxx</a>.</p>
+<p class="definition">Definition at line <a class="el" href="simple__mesh_8cxx_source.html#l00593">593</a> of file <a class="el" href="simple__mesh_8cxx_source.html">simple_mesh.cxx</a>.</p>
 
 <p class="reference">References <a class="el" href="simple__mesh_8cxx_source.html#l00051">cgv::media::mesh::simple_mesh_base::operator=()</a>.</p>
 
@@ -1963,7 +1966,7 @@ template&lt;typename T &gt; </div>
 
 <p>Conway ortho operator. </p>
 
-<p class="definition">Definition at line <a class="el" href="simple__mesh_8cxx_source.html#l01241">1241</a> of file <a class="el" href="simple__mesh_8cxx_source.html">simple_mesh.cxx</a>.</p>
+<p class="definition">Definition at line <a class="el" href="simple__mesh_8cxx_source.html#l01276">1276</a> of file <a class="el" href="simple__mesh_8cxx_source.html">simple_mesh.cxx</a>.</p>
 
 </div>
 </div>
@@ -1993,7 +1996,7 @@ template&lt;typename T  = float&gt; </div>
 </table>
 </div><div class="memdoc">
 
-<p class="definition">Definition at line <a class="el" href="simple__mesh_8h_source.html#l00330">330</a> of file <a class="el" href="simple__mesh_8h_source.html">simple_mesh.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="simple__mesh_8h_source.html#l00342">342</a> of file <a class="el" href="simple__mesh_8h_source.html">simple_mesh.h</a>.</p>
 
 </div>
 </div>
@@ -2023,7 +2026,7 @@ template&lt;typename T  = float&gt; </div>
 </table>
 </div><div class="memdoc">
 
-<p class="definition">Definition at line <a class="el" href="simple__mesh_8h_source.html#l00331">331</a> of file <a class="el" href="simple__mesh_8h_source.html">simple_mesh.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="simple__mesh_8h_source.html#l00343">343</a> of file <a class="el" href="simple__mesh_8h_source.html">simple_mesh.h</a>.</p>
 
 </div>
 </div>
@@ -2048,7 +2051,7 @@ template&lt;typename T &gt; </div>
 <p>read simple mesh from file (currently only obj and stl are supported) </p>
 <p>read simple mesh from file </p>
 
-<p class="definition">Definition at line <a class="el" href="simple__mesh_8cxx_source.html#l00693">693</a> of file <a class="el" href="simple__mesh_8cxx_source.html">simple_mesh.cxx</a>.</p>
+<p class="definition">Definition at line <a class="el" href="simple__mesh_8cxx_source.html#l00728">728</a> of file <a class="el" href="simple__mesh_8cxx_source.html">simple_mesh.cxx</a>.</p>
 
 <p class="reference">References <a class="el" href="stl__reader_8h_source.html#l00303">stl_reader::StlMesh&lt; TNumber, TIndex &gt;::num_tris()</a>, <a class="el" href="stl__reader_8h_source.html#l00291">stl_reader::StlMesh&lt; TNumber, TIndex &gt;::num_vrts()</a>, <a class="el" href="stl__reader_8h_source.html#l00376">stl_reader::StlMesh&lt; TNumber, TIndex &gt;::raw_normals()</a>, <a class="el" href="obj__reader_8cxx_source.html#l00195">cgv::media::mesh::obj_reader_base::read_obj()</a>, <a class="el" href="scan_8cxx_source.html#l00039">cgv::utils::to_lower()</a>, <a class="el" href="stl__reader_8h_source.html#l00315">stl_reader::StlMesh&lt; TNumber, TIndex &gt;::tri_corner_ind()</a>, <a class="el" href="stl__reader_8h_source.html#l00333">stl_reader::StlMesh&lt; TNumber, TIndex &gt;::tri_normal()</a>, and <a class="el" href="stl__reader_8h_source.html#l00297">stl_reader::StlMesh&lt; TNumber, TIndex &gt;::vrt_coords()</a>.</p>
 
@@ -2081,7 +2084,7 @@ template&lt;typename T  = float&gt; </div>
 </table>
 </div><div class="memdoc">
 
-<p class="definition">Definition at line <a class="el" href="simple__mesh_8h_source.html#l00333">333</a> of file <a class="el" href="simple__mesh_8h_source.html">simple_mesh.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="simple__mesh_8h_source.html#l00345">345</a> of file <a class="el" href="simple__mesh_8h_source.html">simple_mesh.h</a>.</p>
 
 </div>
 </div>
@@ -2105,9 +2108,9 @@ template&lt;typename T &gt; </div>
 
 <p>Conway snub operator. </p>
 
-<p class="definition">Definition at line <a class="el" href="simple__mesh_8cxx_source.html#l01073">1073</a> of file <a class="el" href="simple__mesh_8cxx_source.html">simple_mesh.cxx</a>.</p>
+<p class="definition">Definition at line <a class="el" href="simple__mesh_8cxx_source.html#l01108">1108</a> of file <a class="el" href="simple__mesh_8cxx_source.html">simple_mesh.cxx</a>.</p>
 
-<p class="reference">References <a class="el" href="simple__mesh_8cxx_source.html#l00922">cgv::media::mesh::simple_mesh&lt; T &gt;::compute_face_normals()</a>, <a class="el" href="simple__mesh_8cxx_source.html#l00086">cgv::media::mesh::simple_mesh_base::new_corner()</a>, <a class="el" href="simple__mesh_8h_source.html#l00327">cgv::media::mesh::simple_mesh&lt; T &gt;::new_position()</a>, and <a class="el" href="simple__mesh_8cxx_source.html#l00077">cgv::media::mesh::simple_mesh_base::start_face()</a>.</p>
+<p class="reference">References <a class="el" href="simple__mesh_8cxx_source.html#l00957">cgv::media::mesh::simple_mesh&lt; T &gt;::compute_face_normals()</a>, <a class="el" href="simple__mesh_8cxx_source.html#l00086">cgv::media::mesh::simple_mesh_base::new_corner()</a>, <a class="el" href="simple__mesh_8h_source.html#l00339">cgv::media::mesh::simple_mesh&lt; T &gt;::new_position()</a>, and <a class="el" href="simple__mesh_8cxx_source.html#l00077">cgv::media::mesh::simple_mesh_base::start_face()</a>.</p>
 
 </div>
 </div>
@@ -2137,7 +2140,7 @@ template&lt;typename T  = float&gt; </div>
 </table>
 </div><div class="memdoc">
 
-<p class="definition">Definition at line <a class="el" href="simple__mesh_8h_source.html#l00349">349</a> of file <a class="el" href="simple__mesh_8h_source.html">simple_mesh.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="simple__mesh_8h_source.html#l00361">361</a> of file <a class="el" href="simple__mesh_8h_source.html">simple_mesh.h</a>.</p>
 
 </div>
 </div>
@@ -2167,7 +2170,7 @@ template&lt;typename T  = float&gt; </div>
 </table>
 </div><div class="memdoc">
 
-<p class="definition">Definition at line <a class="el" href="simple__mesh_8h_source.html#l00350">350</a> of file <a class="el" href="simple__mesh_8h_source.html">simple_mesh.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="simple__mesh_8h_source.html#l00362">362</a> of file <a class="el" href="simple__mesh_8h_source.html">simple_mesh.h</a>.</p>
 
 </div>
 </div>
@@ -2197,7 +2200,7 @@ template&lt;typename T  = float&gt; </div>
 </table>
 </div><div class="memdoc">
 
-<p class="definition">Definition at line <a class="el" href="simple__mesh_8h_source.html#l00357">357</a> of file <a class="el" href="simple__mesh_8h_source.html">simple_mesh.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="simple__mesh_8h_source.html#l00369">369</a> of file <a class="el" href="simple__mesh_8h_source.html">simple_mesh.h</a>.</p>
 
 </div>
 </div>
@@ -2227,7 +2230,7 @@ template&lt;typename T  = float&gt; </div>
 </table>
 </div><div class="memdoc">
 
-<p class="definition">Definition at line <a class="el" href="simple__mesh_8h_source.html#l00358">358</a> of file <a class="el" href="simple__mesh_8h_source.html">simple_mesh.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="simple__mesh_8h_source.html#l00370">370</a> of file <a class="el" href="simple__mesh_8h_source.html">simple_mesh.h</a>.</p>
 
 </div>
 </div>
@@ -2267,7 +2270,7 @@ template&lt;typename T &gt; </div>
 
 <p>apply transformation to mesh with given inverse linear transformation </p>
 
-<p class="definition">Definition at line <a class="el" href="simple__mesh_8cxx_source.html#l00877">877</a> of file <a class="el" href="simple__mesh_8cxx_source.html">simple_mesh.cxx</a>.</p>
+<p class="definition">Definition at line <a class="el" href="simple__mesh_8cxx_source.html#l00912">912</a> of file <a class="el" href="simple__mesh_8cxx_source.html">simple_mesh.cxx</a>.</p>
 
 </div>
 </div>
@@ -2301,7 +2304,7 @@ template&lt;typename T &gt; </div>
 
 <p>apply transformation to mesh </p>
 
-<p class="definition">Definition at line <a class="el" href="simple__mesh_8cxx_source.html#l00872">872</a> of file <a class="el" href="simple__mesh_8cxx_source.html">simple_mesh.cxx</a>.</p>
+<p class="definition">Definition at line <a class="el" href="simple__mesh_8cxx_source.html#l00907">907</a> of file <a class="el" href="simple__mesh_8cxx_source.html">simple_mesh.cxx</a>.</p>
 
 </div>
 </div>
@@ -2325,9 +2328,9 @@ template&lt;typename T &gt; </div>
 
 <p>Conway truncate operator. </p>
 
-<p class="definition">Definition at line <a class="el" href="simple__mesh_8cxx_source.html#l01037">1037</a> of file <a class="el" href="simple__mesh_8cxx_source.html">simple_mesh.cxx</a>.</p>
+<p class="definition">Definition at line <a class="el" href="simple__mesh_8cxx_source.html#l01072">1072</a> of file <a class="el" href="simple__mesh_8cxx_source.html">simple_mesh.cxx</a>.</p>
 
-<p class="reference">References <a class="el" href="simple__mesh_8cxx_source.html#l00922">cgv::media::mesh::simple_mesh&lt; T &gt;::compute_face_normals()</a>, <a class="el" href="simple__mesh_8cxx_source.html#l00086">cgv::media::mesh::simple_mesh_base::new_corner()</a>, <a class="el" href="simple__mesh_8h_source.html#l00327">cgv::media::mesh::simple_mesh&lt; T &gt;::new_position()</a>, and <a class="el" href="simple__mesh_8cxx_source.html#l00077">cgv::media::mesh::simple_mesh_base::start_face()</a>.</p>
+<p class="reference">References <a class="el" href="simple__mesh_8cxx_source.html#l00957">cgv::media::mesh::simple_mesh&lt; T &gt;::compute_face_normals()</a>, <a class="el" href="simple__mesh_8cxx_source.html#l00086">cgv::media::mesh::simple_mesh_base::new_corner()</a>, <a class="el" href="simple__mesh_8h_source.html#l00339">cgv::media::mesh::simple_mesh&lt; T &gt;::new_position()</a>, and <a class="el" href="simple__mesh_8cxx_source.html#l00077">cgv::media::mesh::simple_mesh_base::start_face()</a>.</p>
 
 </div>
 </div>
@@ -2351,7 +2354,7 @@ template&lt;typename T &gt; </div>
 
 <p>write simple mesh to file (currently only obj is supported) </p>
 
-<p class="definition">Definition at line <a class="el" href="simple__mesh_8cxx_source.html#l00744">744</a> of file <a class="el" href="simple__mesh_8cxx_source.html">simple_mesh.cxx</a>.</p>
+<p class="definition">Definition at line <a class="el" href="simple__mesh_8cxx_source.html#l00779">779</a> of file <a class="el" href="simple__mesh_8cxx_source.html">simple_mesh.cxx</a>.</p>
 
 </div>
 </div>
@@ -2378,7 +2381,7 @@ template&lt;typename T  = float&gt; </div>
 </table>
 </div><div class="memdoc">
 
-<p class="definition">Definition at line <a class="el" href="simple__mesh_8h_source.html#l00262">262</a> of file <a class="el" href="simple__mesh_8h_source.html">simple_mesh.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="simple__mesh_8h_source.html#l00274">274</a> of file <a class="el" href="simple__mesh_8h_source.html">simple_mesh.h</a>.</p>
 
 </div>
 </div>
@@ -2405,7 +2408,7 @@ template&lt;typename T  = float&gt; </div>
 </table>
 </div><div class="memdoc">
 
-<p class="definition">Definition at line <a class="el" href="simple__mesh_8h_source.html#l00266">266</a> of file <a class="el" href="simple__mesh_8h_source.html">simple_mesh.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="simple__mesh_8h_source.html#l00278">278</a> of file <a class="el" href="simple__mesh_8h_source.html">simple_mesh.h</a>.</p>
 
 </div>
 </div>
@@ -2431,7 +2434,7 @@ template&lt;typename T  = float&gt; </div>
 </table>
 </div><div class="memdoc">
 
-<p class="definition">Definition at line <a class="el" href="simple__mesh_8h_source.html#l00265">265</a> of file <a class="el" href="simple__mesh_8h_source.html">simple_mesh.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="simple__mesh_8h_source.html#l00277">277</a> of file <a class="el" href="simple__mesh_8h_source.html">simple_mesh.h</a>.</p>
 
 </div>
 </div>
@@ -2457,7 +2460,7 @@ template&lt;typename T  = float&gt; </div>
 </table>
 </div><div class="memdoc">
 
-<p class="definition">Definition at line <a class="el" href="simple__mesh_8h_source.html#l00267">267</a> of file <a class="el" href="simple__mesh_8h_source.html">simple_mesh.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="simple__mesh_8h_source.html#l00279">279</a> of file <a class="el" href="simple__mesh_8h_source.html">simple_mesh.h</a>.</p>
 
 </div>
 </div>
@@ -2483,7 +2486,7 @@ template&lt;typename T  = float&gt; </div>
 </table>
 </div><div class="memdoc">
 
-<p class="definition">Definition at line <a class="el" href="simple__mesh_8h_source.html#l00268">268</a> of file <a class="el" href="simple__mesh_8h_source.html">simple_mesh.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="simple__mesh_8h_source.html#l00280">280</a> of file <a class="el" href="simple__mesh_8h_source.html">simple_mesh.h</a>.</p>
 
 </div>
 </div>
