@@ -285,6 +285,9 @@ virtual size_t&#160;</td><td class="memItemRight" valign="bottom"><b>get_attribu
 <tr class="memitem:a15e0a544e48b8a9deca6f471c229e2a3" id="r_a15e0a544e48b8a9deca6f471c229e2a3"><td class="memItemLeft" align="right" valign="top"><a class="el" href="classcgv_1_1media_1_1mesh_1_1simple__mesh__base.html#a0eb0181dc49db651e738bd0e66d1f0e6">idx_type</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcgv_1_1media_1_1mesh_1_1simple__mesh__base.html#a15e0a544e48b8a9deca6f471c229e2a3">extract_vertex_attribute_buffer_base</a> (const std::vector&lt; <a class="el" href="classcgv_1_1media_1_1mesh_1_1simple__mesh__base.html#a48fca8dd677c2aab4532857a792b5ed8">idx4_type</a> &gt; &amp;unique_quadruples, <a class="el" href="classcgv_1_1media_1_1mesh_1_1simple__mesh__base.html#a211b6d732e1a6977bc8241b3e61c80af">AttributeFlags</a> &amp;flags, std::vector&lt; uint8_t &gt; &amp;attrib_buffer) const</td></tr>
 <tr class="memdesc:a15e0a544e48b8a9deca6f471c229e2a3"><td class="mdescLeft">&#160;</td><td class="mdescRight">extract vertex attribute buffer for the given flags and return size of vertex in bytes  <br /></td></tr>
 <tr class="separator:a15e0a544e48b8a9deca6f471c229e2a3"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a8fe51ba9ad74e8d0c4215cad652f7028" id="r_a8fe51ba9ad74e8d0c4215cad652f7028"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcgv_1_1media_1_1mesh_1_1simple__mesh__base.html#a8fe51ba9ad74e8d0c4215cad652f7028">extract_triangle_indices</a> (std::vector&lt; <a class="el" href="classcgv_1_1media_1_1mesh_1_1simple__mesh__base.html#afdbd8bfcc25849237978752d1dfd3f86">idx3_type</a> &gt; &amp;position_indices, std::vector&lt; <a class="el" href="classcgv_1_1media_1_1mesh_1_1simple__mesh__base.html#afdbd8bfcc25849237978752d1dfd3f86">idx3_type</a> &gt; *tex_coord_indices=nullptr, std::vector&lt; <a class="el" href="classcgv_1_1media_1_1mesh_1_1simple__mesh__base.html#afdbd8bfcc25849237978752d1dfd3f86">idx3_type</a> &gt; *normal_indices=nullptr, std::vector&lt; <a class="el" href="classcgv_1_1media_1_1mesh_1_1simple__mesh__base.html#afdbd8bfcc25849237978752d1dfd3f86">idx3_type</a> &gt; *tangent_indices=nullptr) const</td></tr>
+<tr class="memdesc:a8fe51ba9ad74e8d0c4215cad652f7028"><td class="mdescLeft">&#160;</td><td class="mdescRight">Extract index lists of triangle positions and optional attributes.  <br /></td></tr>
+<tr class="separator:a8fe51ba9ad74e8d0c4215cad652f7028"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a34d6eefa7fd6d41bb8b3f692d2bb9e11" id="r_a34d6eefa7fd6d41bb8b3f692d2bb9e11"><td class="memItemLeft" align="right" valign="top"><a class="el" href="classcgv_1_1media_1_1mesh_1_1simple__mesh__base.html#a0eb0181dc49db651e738bd0e66d1f0e6">idx_type</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcgv_1_1media_1_1mesh_1_1simple__mesh__base.html#a34d6eefa7fd6d41bb8b3f692d2bb9e11">compute_inv</a> (std::vector&lt; <a class="el" href="classcgv_1_1media_1_1mesh_1_1simple__mesh__base.html#a0eb0181dc49db651e738bd0e66d1f0e6">idx_type</a> &gt; &amp;inv, bool link_non_manifold_edges=false, std::vector&lt; <a class="el" href="classcgv_1_1media_1_1mesh_1_1simple__mesh__base.html#a0eb0181dc49db651e738bd0e66d1f0e6">idx_type</a> &gt; *p2c_ptr=0, std::vector&lt; <a class="el" href="classcgv_1_1media_1_1mesh_1_1simple__mesh__base.html#a0eb0181dc49db651e738bd0e66d1f0e6">idx_type</a> &gt; *next_ptr=0, std::vector&lt; <a class="el" href="classcgv_1_1media_1_1mesh_1_1simple__mesh__base.html#a0eb0181dc49db651e738bd0e66d1f0e6">idx_type</a> &gt; *prev_ptr=0, std::vector&lt; <a class="el" href="classcgv_1_1media_1_1mesh_1_1simple__mesh__base.html#a0eb0181dc49db651e738bd0e66d1f0e6">idx_type</a> &gt; *unmatched=0, std::vector&lt; <a class="el" href="classcgv_1_1media_1_1mesh_1_1simple__mesh__base.html#a0eb0181dc49db651e738bd0e66d1f0e6">idx_type</a> &gt; *non_manifold=0, std::vector&lt; <a class="el" href="classcgv_1_1media_1_1mesh_1_1simple__mesh__base.html#a0eb0181dc49db651e738bd0e66d1f0e6">idx_type</a> &gt; *unmatched_elements=0, std::vector&lt; <a class="el" href="classcgv_1_1media_1_1mesh_1_1simple__mesh__base.html#a0eb0181dc49db651e738bd0e66d1f0e6">idx_type</a> &gt; *non_manifold_elements=0) const</td></tr>
 <tr class="memdesc:a34d6eefa7fd6d41bb8b3f692d2bb9e11"><td class="mdescLeft">&#160;</td><td class="mdescRight">Do inverse matching of half-edges.  <br /></td></tr>
 <tr class="separator:a34d6eefa7fd6d41bb8b3f692d2bb9e11"><td class="memSeparator" colspan="2">&#160;</td></tr>
@@ -655,7 +658,7 @@ Protected Attributes</h2></td></tr>
 
 <p class="definition">Definition at line <a class="el" href="simple__mesh_8h_source.html#l00117">117</a> of file <a class="el" href="simple__mesh_8h_source.html">simple_mesh.h</a>.</p>
 
-<p class="reference">Referenced by <a class="el" href="simple__mesh_8cxx_source.html#l00423">compute_c2f()</a>, <a class="el" href="simple__mesh_8cxx_source.html#l00264">compute_inv()</a>, <a class="el" href="simple__mesh_8cxx_source.html#l00163">extract_triangle_element_buffer()</a>, <a class="el" href="simple__mesh_8cxx_source.html#l00193">extract_wireframe_element_buffer()</a>, and <a class="el" href="simple__mesh_8cxx_source.html#l00096">revert_face_orientation()</a>.</p>
+<p class="reference">Referenced by <a class="el" href="simple__mesh_8cxx_source.html#l00440">compute_c2e()</a>, <a class="el" href="simple__mesh_8cxx_source.html#l00458">compute_c2f()</a>, <a class="el" href="simple__mesh_8cxx_source.html#l00299">compute_inv()</a>, <a class="el" href="simple__mesh_8cxx_source.html#l00163">extract_triangle_element_buffer()</a>, <a class="el" href="simple__mesh_8cxx_source.html#l00193">extract_wireframe_element_buffer()</a>, and <a class="el" href="simple__mesh_8cxx_source.html#l00096">revert_face_orientation()</a>.</p>
 
 </div>
 </div>
@@ -717,7 +720,7 @@ Protected Attributes</h2></td></tr>
 
 <p class="definition">Definition at line <a class="el" href="simple__mesh_8h_source.html#l00098">98</a> of file <a class="el" href="simple__mesh_8h_source.html">simple_mesh.h</a>.</p>
 
-<p class="reference">Referenced by <a class="el" href="simple__mesh_8cxx_source.html#l00264">compute_inv()</a>, and <a class="el" href="simple__mesh_8cxx_source.html#l00531">cgv::media::mesh::simple_mesh&lt; float &gt;::simple_mesh()</a>.</p>
+<p class="reference">Referenced by <a class="el" href="simple__mesh_8cxx_source.html#l00299">compute_inv()</a>, and <a class="el" href="simple__mesh_8cxx_source.html#l00566">cgv::media::mesh::simple_mesh&lt; float &gt;::simple_mesh()</a>.</p>
 
 </div>
 </div>
@@ -785,7 +788,9 @@ Protected Attributes</h2></td></tr>
 
 <p>given the inv corners compute vector storing per corner the edge index and optionally per edge one corner index and return edge count (implementation assumes closed manifold connectivity) </p>
 
-<p class="definition">Definition at line <a class="el" href="simple__mesh_8cxx_source.html#l00405">405</a> of file <a class="el" href="simple__mesh_8cxx_source.html">simple_mesh.cxx</a>.</p>
+<p class="definition">Definition at line <a class="el" href="simple__mesh_8cxx_source.html#l00440">440</a> of file <a class="el" href="simple__mesh_8cxx_source.html">simple_mesh.cxx</a>.</p>
+
+<p class="reference">References <a class="el" href="simple__mesh_8h_source.html#l00117">begin_corner()</a>, <a class="el" href="simple__mesh_8h_source.html#l00124">end_corner()</a>, <a class="el" href="simple__mesh_8h_source.html#l00110">get_nr_corners()</a>, and <a class="el" href="simple__mesh_8h_source.html#l00108">get_nr_faces()</a>.</p>
 
 </div>
 </div>
@@ -807,7 +812,7 @@ Protected Attributes</h2></td></tr>
 
 <p>compute index vector with per corner its face index </p>
 
-<p class="definition">Definition at line <a class="el" href="simple__mesh_8cxx_source.html#l00423">423</a> of file <a class="el" href="simple__mesh_8cxx_source.html">simple_mesh.cxx</a>.</p>
+<p class="definition">Definition at line <a class="el" href="simple__mesh_8cxx_source.html#l00458">458</a> of file <a class="el" href="simple__mesh_8cxx_source.html">simple_mesh.cxx</a>.</p>
 
 <p class="reference">References <a class="el" href="simple__mesh_8h_source.html#l00117">begin_corner()</a>, <a class="el" href="simple__mesh_8h_source.html#l00124">end_corner()</a>, <a class="el" href="simple__mesh_8h_source.html#l00110">get_nr_corners()</a>, and <a class="el" href="simple__mesh_8h_source.html#l00108">get_nr_faces()</a>.</p>
 
@@ -892,7 +897,7 @@ Protected Attributes</h2></td></tr>
 <li><code>non_manifold_elements</code> ... position indices of non-manifold edges The function returns the number of interior manifold edges </li>
 </ul>
 
-<p class="definition">Definition at line <a class="el" href="simple__mesh_8cxx_source.html#l00264">264</a> of file <a class="el" href="simple__mesh_8cxx_source.html">simple_mesh.cxx</a>.</p>
+<p class="definition">Definition at line <a class="el" href="simple__mesh_8cxx_source.html#l00299">299</a> of file <a class="el" href="simple__mesh_8cxx_source.html">simple_mesh.cxx</a>.</p>
 
 <p class="reference">References <a class="el" href="simple__mesh_8h_source.html#l00117">begin_corner()</a>, <a class="el" href="simple__mesh_8h_source.html#l00098">c2p()</a>, <a class="el" href="simple__mesh_8h_source.html#l00124">end_corner()</a>, <a class="el" href="simple__mesh_8h_source.html#l00110">get_nr_corners()</a>, <a class="el" href="simple__mesh_8h_source.html#l00108">get_nr_faces()</a>, and <a class="el" href="classcgv_1_1media_1_1mesh_1_1simple__mesh__base.html#aa5c14f7cd17464eea93a30926aea4ae3">get_nr_positions()</a>.</p>
 
@@ -933,7 +938,7 @@ Protected Attributes</h2></td></tr>
 
 <p class="definition">Definition at line <a class="el" href="simple__mesh_8h_source.html#l00124">124</a> of file <a class="el" href="simple__mesh_8h_source.html">simple_mesh.h</a>.</p>
 
-<p class="reference">Referenced by <a class="el" href="simple__mesh_8cxx_source.html#l00423">compute_c2f()</a>, <a class="el" href="simple__mesh_8cxx_source.html#l00264">compute_inv()</a>, <a class="el" href="simple__mesh_8cxx_source.html#l00163">extract_triangle_element_buffer()</a>, <a class="el" href="simple__mesh_8cxx_source.html#l00193">extract_wireframe_element_buffer()</a>, and <a class="el" href="simple__mesh_8cxx_source.html#l00096">revert_face_orientation()</a>.</p>
+<p class="reference">Referenced by <a class="el" href="simple__mesh_8cxx_source.html#l00440">compute_c2e()</a>, <a class="el" href="simple__mesh_8cxx_source.html#l00458">compute_c2f()</a>, <a class="el" href="simple__mesh_8cxx_source.html#l00299">compute_inv()</a>, <a class="el" href="simple__mesh_8cxx_source.html#l00163">extract_triangle_element_buffer()</a>, <a class="el" href="simple__mesh_8cxx_source.html#l00193">extract_wireframe_element_buffer()</a>, and <a class="el" href="simple__mesh_8cxx_source.html#l00096">revert_face_orientation()</a>.</p>
 
 </div>
 </div>
@@ -993,7 +998,62 @@ Protected Attributes</h2></td></tr>
 
 <p class="reference">References <a class="el" href="simple__mesh_8h_source.html#l00117">begin_corner()</a>, <a class="el" href="simple__mesh_8h_source.html#l00124">end_corner()</a>, and <a class="el" href="simple__mesh_8h_source.html#l00126">face_degree()</a>.</p>
 
-<p class="reference">Referenced by <a class="el" href="mesh__render__info_8cxx_source.html#l00024">cgv::render::mesh_render_info::construct_index_buffers()</a>.</p>
+<p class="reference">Referenced by <a class="el" href="mesh__render__info_8cxx_source.html#l00024">cgv::render::mesh_render_info::construct_index_buffers()</a>, and <a class="el" href="simple__mesh_8cxx_source.html#l00264">extract_triangle_indices()</a>.</p>
+
+</div>
+</div>
+<a id="a8fe51ba9ad74e8d0c4215cad652f7028" name="a8fe51ba9ad74e8d0c4215cad652f7028"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a8fe51ba9ad74e8d0c4215cad652f7028">&#9670;&#160;</a></span>extract_triangle_indices()</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">void cgv::media::mesh::simple_mesh_base::extract_triangle_indices </td>
+          <td>(</td>
+          <td class="paramtype">std::vector&lt; <a class="el" href="classcgv_1_1media_1_1mesh_1_1simple__mesh__base.html#afdbd8bfcc25849237978752d1dfd3f86">idx3_type</a> &gt; &amp;&#160;</td>
+          <td class="paramname"><em>position_indices</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">std::vector&lt; <a class="el" href="classcgv_1_1media_1_1mesh_1_1simple__mesh__base.html#afdbd8bfcc25849237978752d1dfd3f86">idx3_type</a> &gt; *&#160;</td>
+          <td class="paramname"><em>tex_coord_indices</em> = <code>nullptr</code>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">std::vector&lt; <a class="el" href="classcgv_1_1media_1_1mesh_1_1simple__mesh__base.html#afdbd8bfcc25849237978752d1dfd3f86">idx3_type</a> &gt; *&#160;</td>
+          <td class="paramname"><em>normal_indices</em> = <code>nullptr</code>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">std::vector&lt; <a class="el" href="classcgv_1_1media_1_1mesh_1_1simple__mesh__base.html#afdbd8bfcc25849237978752d1dfd3f86">idx3_type</a> &gt; *&#160;</td>
+          <td class="paramname"><em>tangent_indices</em> = <code>nullptr</code>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td> const</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>Extract index lists of triangle positions and optional attributes. </p>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramdir">[out]</td><td class="paramname">position_indices</td><td>Stores the position index triples which make up individual triangles. </td></tr>
+    <tr><td class="paramdir">[out]</td><td class="paramname">tex_coord_indices</td><td>if nullptr then texture coordinate indices won't be extracted. Otherwise the pointed to vector will store the texture coordinate index triples for each triangle only if the mesh includes texture coordinates. </td></tr>
+    <tr><td class="paramdir">[out]</td><td class="paramname">normal_indices</td><td>if nullptr then normal indices won't be extracted. Otherwise the pointed to vector will store the normal index triples for each triangle only if the mesh includes normals. </td></tr>
+    <tr><td class="paramdir">[out]</td><td class="paramname">tangent_indices</td><td>if nullptr then tangent indices won't be extracted. Otherwise the pointed to vector will store the tangent index triples for each triangle only if the mesh includes tangents. </td></tr>
+  </table>
+  </dd>
+</dl>
+
+<p class="definition">Definition at line <a class="el" href="simple__mesh_8cxx_source.html#l00264">264</a> of file <a class="el" href="simple__mesh_8cxx_source.html">simple_mesh.cxx</a>.</p>
+
+<p class="reference">References <a class="el" href="simple__mesh_8cxx_source.html#l00163">extract_triangle_element_buffer()</a>, and <a class="el" href="simple__mesh_8cxx_source.html#l00126">merge_indices()</a>.</p>
 
 </div>
 </div>
@@ -1261,7 +1321,7 @@ Protected Attributes</h2></td></tr>
 
 <p class="definition">Definition at line <a class="el" href="simple__mesh_8h_source.html#l00110">110</a> of file <a class="el" href="simple__mesh_8h_source.html">simple_mesh.h</a>.</p>
 
-<p class="reference">Referenced by <a class="el" href="simple__mesh_8cxx_source.html#l00423">compute_c2f()</a>, and <a class="el" href="simple__mesh_8cxx_source.html#l00264">compute_inv()</a>.</p>
+<p class="reference">Referenced by <a class="el" href="simple__mesh_8cxx_source.html#l00440">compute_c2e()</a>, <a class="el" href="simple__mesh_8cxx_source.html#l00458">compute_c2f()</a>, and <a class="el" href="simple__mesh_8cxx_source.html#l00299">compute_inv()</a>.</p>
 
 </div>
 </div>
@@ -1292,7 +1352,7 @@ Protected Attributes</h2></td></tr>
 
 <p class="definition">Definition at line <a class="el" href="simple__mesh_8h_source.html#l00108">108</a> of file <a class="el" href="simple__mesh_8h_source.html">simple_mesh.h</a>.</p>
 
-<p class="reference">Referenced by <a class="el" href="simple__mesh_8cxx_source.html#l00423">compute_c2f()</a>, <a class="el" href="simple__mesh_8cxx_source.html#l00264">compute_inv()</a>, <a class="el" href="gl__implicit__surface__drawable__base_8cxx_source.html#l00446">cgv::render::gl::gl_implicit_surface_drawable_base::draw()</a>, <a class="el" href="gl__implicit__surface__drawable__base_8cxx_source.html#l00571">cgv::render::gl::gl_implicit_surface_drawable_base::draw_implicit_surface()</a>, and <a class="el" href="simple__mesh_8cxx_source.html#l00096">revert_face_orientation()</a>.</p>
+<p class="reference">Referenced by <a class="el" href="simple__mesh_8cxx_source.html#l00440">compute_c2e()</a>, <a class="el" href="simple__mesh_8cxx_source.html#l00458">compute_c2f()</a>, <a class="el" href="simple__mesh_8cxx_source.html#l00299">compute_inv()</a>, <a class="el" href="gl__implicit__surface__drawable__base_8cxx_source.html#l00446">cgv::render::gl::gl_implicit_surface_drawable_base::draw()</a>, <a class="el" href="gl__implicit__surface__drawable__base_8cxx_source.html#l00571">cgv::render::gl::gl_implicit_surface_drawable_base::draw_implicit_surface()</a>, and <a class="el" href="simple__mesh_8cxx_source.html#l00096">revert_face_orientation()</a>.</p>
 
 </div>
 </div>
@@ -1385,7 +1445,7 @@ Protected Attributes</h2></td></tr>
 
 <p>Implemented in <a class="el" href="classcgv_1_1media_1_1mesh_1_1simple__mesh.html#a1c180cf2d63031eee50a82d8b3c517fa">cgv::media::mesh::simple_mesh&lt; T &gt;</a>, <a class="el" href="classcgv_1_1media_1_1mesh_1_1simple__mesh.html#a1c180cf2d63031eee50a82d8b3c517fa">cgv::media::mesh::simple_mesh&lt; float &gt;</a>, and <a class="el" href="classcgv_1_1media_1_1mesh_1_1simple__mesh.html#a1c180cf2d63031eee50a82d8b3c517fa">cgv::media::mesh::simple_mesh&lt; T &gt;</a>.</p>
 
-<p class="reference">Referenced by <a class="el" href="simple__mesh_8cxx_source.html#l00264">compute_inv()</a>.</p>
+<p class="reference">Referenced by <a class="el" href="simple__mesh_8cxx_source.html#l00299">compute_inv()</a>.</p>
 
 </div>
 </div>
@@ -1694,7 +1754,7 @@ Protected Attributes</h2></td></tr>
 
 <p class="definition">Definition at line <a class="el" href="simple__mesh_8cxx_source.html#l00126">126</a> of file <a class="el" href="simple__mesh_8cxx_source.html">simple_mesh.cxx</a>.</p>
 
-<p class="reference">Referenced by <a class="el" href="mesh__render__info_8cxx_source.html#l00024">cgv::render::mesh_render_info::construct_index_buffers()</a>.</p>
+<p class="reference">Referenced by <a class="el" href="mesh__render__info_8cxx_source.html#l00024">cgv::render::mesh_render_info::construct_index_buffers()</a>, and <a class="el" href="simple__mesh_8cxx_source.html#l00264">extract_triangle_indices()</a>.</p>
 
 </div>
 </div>
@@ -1743,7 +1803,7 @@ Protected Attributes</h2></td></tr>
 
 <p class="definition">Definition at line <a class="el" href="simple__mesh_8cxx_source.html#l00086">86</a> of file <a class="el" href="simple__mesh_8cxx_source.html">simple_mesh.cxx</a>.</p>
 
-<p class="reference">Referenced by <a class="el" href="simple__mesh_8cxx_source.html#l01001">cgv::media::mesh::simple_mesh&lt; T &gt;::ambo()</a>, <a class="el" href="simple__mesh_8cxx_source.html#l01118">cgv::media::mesh::simple_mesh&lt; T &gt;::dual()</a>, <a class="el" href="gltf__support_8cxx_source.html#l00328">cgv::render::extract_mesh()</a>, <a class="el" href="simple__mesh_8cxx_source.html#l01150">cgv::media::mesh::simple_mesh&lt; T &gt;::gyro()</a>, <a class="el" href="simple__mesh_8cxx_source.html#l01196">cgv::media::mesh::simple_mesh&lt; T &gt;::join()</a>, <a class="el" href="gl__implicit__surface__drawable__base_8cxx_source.html#l00223">cgv::render::gl::gl_implicit_surface_drawable_base::new_polygon()</a>, <a class="el" href="simple__mesh_8cxx_source.html#l01073">cgv::media::mesh::simple_mesh&lt; T &gt;::snub()</a>, and <a class="el" href="simple__mesh_8cxx_source.html#l01037">cgv::media::mesh::simple_mesh&lt; T &gt;::truncate()</a>.</p>
+<p class="reference">Referenced by <a class="el" href="simple__mesh_8cxx_source.html#l01036">cgv::media::mesh::simple_mesh&lt; T &gt;::ambo()</a>, <a class="el" href="simple__mesh_8cxx_source.html#l01153">cgv::media::mesh::simple_mesh&lt; T &gt;::dual()</a>, <a class="el" href="gltf__support_8cxx_source.html#l00328">cgv::render::extract_mesh()</a>, <a class="el" href="simple__mesh_8cxx_source.html#l01185">cgv::media::mesh::simple_mesh&lt; T &gt;::gyro()</a>, <a class="el" href="simple__mesh_8cxx_source.html#l01231">cgv::media::mesh::simple_mesh&lt; T &gt;::join()</a>, <a class="el" href="gl__implicit__surface__drawable__base_8cxx_source.html#l00223">cgv::render::gl::gl_implicit_surface_drawable_base::new_polygon()</a>, <a class="el" href="simple__mesh_8cxx_source.html#l01108">cgv::media::mesh::simple_mesh&lt; T &gt;::snub()</a>, and <a class="el" href="simple__mesh_8cxx_source.html#l01072">cgv::media::mesh::simple_mesh&lt; T &gt;::truncate()</a>.</p>
 
 </div>
 </div>
@@ -1832,7 +1892,7 @@ Protected Attributes</h2></td></tr>
 
 <p class="reference">References <a class="el" href="colored__model_8cxx_source.html#l00024">cgv::media::colored_model::operator=()</a>.</p>
 
-<p class="reference">Referenced by <a class="el" href="simple__mesh_8cxx_source.html#l00546">cgv::media::mesh::simple_mesh&lt; T &gt;::operator=()</a>, and <a class="el" href="simple__mesh_8cxx_source.html#l00558">cgv::media::mesh::simple_mesh&lt; T &gt;::operator=()</a>.</p>
+<p class="reference">Referenced by <a class="el" href="simple__mesh_8cxx_source.html#l00581">cgv::media::mesh::simple_mesh&lt; T &gt;::operator=()</a>, and <a class="el" href="simple__mesh_8cxx_source.html#l00593">cgv::media::mesh::simple_mesh&lt; T &gt;::operator=()</a>.</p>
 
 </div>
 </div>
@@ -1986,7 +2046,7 @@ Protected Attributes</h2></td></tr>
 
 <p class="definition">Definition at line <a class="el" href="simple__mesh_8cxx_source.html#l00077">77</a> of file <a class="el" href="simple__mesh_8cxx_source.html">simple_mesh.cxx</a>.</p>
 
-<p class="reference">Referenced by <a class="el" href="simple__mesh_8cxx_source.html#l01001">cgv::media::mesh::simple_mesh&lt; T &gt;::ambo()</a>, <a class="el" href="simple__mesh_8cxx_source.html#l01118">cgv::media::mesh::simple_mesh&lt; T &gt;::dual()</a>, <a class="el" href="gltf__support_8cxx_source.html#l00328">cgv::render::extract_mesh()</a>, <a class="el" href="simple__mesh_8cxx_source.html#l01150">cgv::media::mesh::simple_mesh&lt; T &gt;::gyro()</a>, <a class="el" href="simple__mesh_8cxx_source.html#l01196">cgv::media::mesh::simple_mesh&lt; T &gt;::join()</a>, <a class="el" href="gl__implicit__surface__drawable__base_8cxx_source.html#l00223">cgv::render::gl::gl_implicit_surface_drawable_base::new_polygon()</a>, <a class="el" href="simple__mesh_8cxx_source.html#l01073">cgv::media::mesh::simple_mesh&lt; T &gt;::snub()</a>, and <a class="el" href="simple__mesh_8cxx_source.html#l01037">cgv::media::mesh::simple_mesh&lt; T &gt;::truncate()</a>.</p>
+<p class="reference">Referenced by <a class="el" href="simple__mesh_8cxx_source.html#l01036">cgv::media::mesh::simple_mesh&lt; T &gt;::ambo()</a>, <a class="el" href="simple__mesh_8cxx_source.html#l01153">cgv::media::mesh::simple_mesh&lt; T &gt;::dual()</a>, <a class="el" href="gltf__support_8cxx_source.html#l00328">cgv::render::extract_mesh()</a>, <a class="el" href="simple__mesh_8cxx_source.html#l01185">cgv::media::mesh::simple_mesh&lt; T &gt;::gyro()</a>, <a class="el" href="simple__mesh_8cxx_source.html#l01231">cgv::media::mesh::simple_mesh&lt; T &gt;::join()</a>, <a class="el" href="gl__implicit__surface__drawable__base_8cxx_source.html#l00223">cgv::render::gl::gl_implicit_surface_drawable_base::new_polygon()</a>, <a class="el" href="simple__mesh_8cxx_source.html#l01108">cgv::media::mesh::simple_mesh&lt; T &gt;::snub()</a>, and <a class="el" href="simple__mesh_8cxx_source.html#l01072">cgv::media::mesh::simple_mesh&lt; T &gt;::truncate()</a>.</p>
 
 </div>
 </div>

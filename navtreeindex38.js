@@ -1,5 +1,6 @@
 var NAVTREEINDEX38 =
 {
+"ransac_8h_source.html":[12,0,1,5,61],
 "ray_8h_source.html":[12,0,1,5,62],
 "rectangle__render__data_8h_source.html":[12,0,3,2,36],
 "rectangle__renderer_8cxx_source.html":[12,0,3,2,37],
@@ -248,6 +249,5 @@ var NAVTREEINDEX38 =
 "structcgv_1_1base_1_1factory__impl__1.html#ae8d8ca1142c33e11db79395fd85047a4":[11,0,0,1,28,1],
 "structcgv_1_1base_1_1factory__impl__2.html":[10,0,1,0,29],
 "structcgv_1_1base_1_1factory__impl__2.html":[11,0,0,1,29],
-"structcgv_1_1base_1_1factory__impl__2.html#ab0cb1553fde097b63c82309b74954b89":[10,0,1,0,29,1],
-"structcgv_1_1base_1_1factory__impl__2.html#ab0cb1553fde097b63c82309b74954b89":[11,0,0,1,29,1]
+"structcgv_1_1base_1_1factory__impl__2.html#ab0cb1553fde097b63c82309b74954b89":[10,0,1,0,29,1]
 };
