@@ -46,7 +46,7 @@ void color_scale_adapter::set_uniforms_in_program(context& ctx, shader_program& 
 }
 
 void color_scale_adapter::set_color_scale(std::shared_ptr<const device_color_scale> color_scale) {
-	if(!color_scales_.size() == 1 || color_scales_.front() != color_scale) {
+	if(color_scales_.empty() || color_scales_.front() != color_scale) {
 		auto g = cgv::data::time_point::min();
 		build_time_.reset();
 		color_scales_ = { color_scale };

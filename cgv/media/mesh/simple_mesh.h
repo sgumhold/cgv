@@ -211,6 +211,18 @@ public:
 										  std::vector<idx_type>& edge_element_buffer) const;
 	/// extract vertex attribute buffer for the given flags and return size of vertex in bytes
 	idx_type extract_vertex_attribute_buffer_base(const std::vector<idx4_type>& unique_quadruples, AttributeFlags& flags, std::vector<uint8_t>& attrib_buffer) const;
+	/**
+	 * Extract index lists of triangle positions and optional attributes.
+	 *
+	 * \param [out] position_indices Stores the position index triples which make up individual triangles.
+	 * \param [out] tex_coord_indices if nullptr then texture coordinate indices won't be extracted.
+	 * Otherwise the pointed to vector will store the texture coordinate index triples for each triangle only if the mesh includes texture coordinates.
+	 * \param [out] normal_indices if nullptr then normal indices won't be extracted.
+	 * Otherwise the pointed to vector will store the normal index triples for each triangle only if the mesh includes normals.
+	 * \param [out] tangent_indices if nullptr then tangent indices won't be extracted.
+	 * Otherwise the pointed to vector will store the tangent index triples for each triangle only if the mesh includes tangents.
+	 */
+	void extract_triangle_indices(std::vector<idx3_type>& position_indices, std::vector<idx3_type>* tex_coord_indices = nullptr, std::vector<idx3_type>* normal_indices = nullptr, std::vector<idx3_type>* tangent_indices = nullptr) const;
 	//! Do inverse matching of half-edges.
 	/*! For this corners are converted to the half - edges that point in winding order
 		away from the corner. The inverse matching result is stored in the vector \c inv
@@ -266,7 +278,7 @@ protected:
 	std::vector<vec3_type>  normals;
 	std::vector<vec3_type>  tangents;
 	std::vector<vec2_type>  tex_coords;
-	bool  has_attribute(attribute_type attr) const {
+	bool has_attribute(attribute_type attr) const {
 		switch (attr) {
 		case attribute_type::position:  return true;
 		case attribute_type::texcoords: return has_tex_coords() && has_tex_coord_indices();

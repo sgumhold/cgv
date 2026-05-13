@@ -631,10 +631,10 @@ void shader_code::set_defines_and_snippets(std::string& source, const shader_com
 
 	struct directive_t {
 		DirectiveType type = DirectiveType::kUndefined;
-		std::string identifier;
-		std::string replacement_list;
+		std::string identifier {};
+		std::string replacement_list {};
 	};
-	
+
 	if(options.empty())
 		return;
 

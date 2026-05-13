@@ -1,0 +1,19 @@
+#version 330
+
+vec4 evaluate_color_scale(in int index, in float value);
+
+uniform sampler2D value_texture;
+
+uniform vec3 gamma3 = vec3(2.2);
+uniform bool apply_gamma = false;
+
+in vec2 texcoord_fs;
+
+out vec4 frag_color;
+
+void main() {
+	float value = texture(value_texture, texcoord_fs).r;
+	frag_color = evaluate_color_scale(0, value);
+	if(apply_gamma)
+		frag_color.rgb = pow(frag_color.rgb, 1.0/gamma3);
+}

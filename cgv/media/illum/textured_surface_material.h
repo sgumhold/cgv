@@ -52,6 +52,7 @@ public:
 	textured_surface_material() {}
 	/// construct from obj material
 	textured_surface_material(const obj_material& obj_mat);
+	virtual ~textured_surface_material() noexcept = default;
 
 	/// return number of image files
 	unsigned get_nr_image_files() const { return unsigned(image_file_names.size()); }

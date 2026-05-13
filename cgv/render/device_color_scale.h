@@ -61,8 +61,10 @@ struct device_color_scale_arguments {
 /// @brief Base class defining an interface for using color scales on the graphics device, e.g. in a shader.
 class CGV_API device_color_scale {
 public:
+	virtual ~device_color_scale() = default;
+
 	/// @brief Get the color scale arguments of the underlying color scale implementation.
-	/// 
+	///
 	/// @return The arguments struct.
 	device_color_scale_arguments get_arguments() const;
 

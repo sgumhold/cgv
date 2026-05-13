@@ -120,7 +120,7 @@ public:
 	}
 	/// const cast to arbitrary class, but use the casts to named, node and group from the interface
 	template <class T>
-	data::ref_ptr<const T, true> cast_const() {
+	data::ref_ptr<const T, true> cast_const() const {
 		return cast_const_helper<T>::cast_const(this);
 	}
 	/// use dynamic type cast to check for the given interface

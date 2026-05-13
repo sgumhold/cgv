@@ -261,6 +261,41 @@ simple_mesh_base::idx_type simple_mesh_base::extract_vertex_attribute_buffer_bas
 	}
 	return vs;
 }
+void simple_mesh_base::extract_triangle_indices(std::vector<idx3_type>& position_indices, std::vector<idx3_type>* tex_coord_indices, std::vector<idx3_type>* normal_indices, std::vector<idx3_type>* tangent_indices) const {
+	std::vector<idx_type> vertex_indices;
+	std::vector<idx4_type> unique_quadruples;
+
+	bool include_tex_coords = tex_coord_indices != nullptr;
+	bool include_normals = normal_indices != nullptr;
+	bool include_tangents = tangent_indices != nullptr;
+
+	merge_indices(vertex_indices, unique_quadruples, &include_tex_coords, &include_normals, &include_tangents);
+
+	std::vector<idx_type> triangle_element_buffer;
+	extract_triangle_element_buffer(vertex_indices, triangle_element_buffer);
+
+	constexpr size_t position_index = 0;
+	constexpr size_t tex_coord_index = 1;
+	constexpr size_t normal_index = 2;
+	constexpr size_t tangent_index = 3;
+
+	for(size_t i = 0; i < triangle_element_buffer.size(); i += 3) {
+		idx4_type i0 = unique_quadruples[triangle_element_buffer[i + 0]][0];
+		idx4_type i1 = unique_quadruples[triangle_element_buffer[i + 1]][0];
+		idx4_type i2 = unique_quadruples[triangle_element_buffer[i + 2]][0];
+
+		position_indices.emplace_back(i0[position_index], i1[position_index], i2[position_index]);
+
+		if(include_tex_coords)
+			tex_coord_indices->emplace_back(i0[tex_coord_index], i1[tex_coord_index], i2[tex_coord_index]);
+
+		if(include_normals)
+			normal_indices->emplace_back(i0[normal_index], i1[normal_index], i2[normal_index]);
+
+		if(include_tangents)
+			tangent_indices->emplace_back(i0[tangent_index], i1[tangent_index], i2[tangent_index]);
+	}
+}
 simple_mesh_base::idx_type simple_mesh_base::compute_inv(
 	std::vector<idx_type>& inv,
 	bool link_non_manifold_edges,

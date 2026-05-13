@@ -25,7 +25,7 @@ bool supersampling_anti_aliasing::ensure(cgv::render::context& ctx) {
 	return post_process_effect::ensure(ctx);
 }
 
-void supersampling_anti_aliasing::begin(cgv::render::context& ctx) {
+void supersampling_anti_aliasing::begin(cgv::render::context& ctx, bool push_viewport) {
 
 	assert_init();
 
@@ -36,7 +36,7 @@ void supersampling_anti_aliasing::begin(cgv::render::context& ctx) {
 	ctx.clear_background(true, true);
 }
 
-void supersampling_anti_aliasing::end(cgv::render::context& ctx) {
+void supersampling_anti_aliasing::end(cgv::render::context& ctx, bool push_viewport) {
 
 	assert_init();
 

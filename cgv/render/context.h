@@ -365,9 +365,10 @@ public:
 	mutable std::string last_error;
 	/// initialize members
 	render_component();
+	virtual ~render_component() noexcept = default;
 	/// return whether component has been created
 	virtual bool is_created() const;
-	/// copy the rendering api specific id the component to the memory location of the given pointer. 
+	/// copy the rendering api specific id the component to the memory location of the given pointer.
 	/// For opengl this the passed pointer should be of type GLint or GLuint.
 	void put_id_void(void* ptr) const;
 	/// cast the refence to rendering api specific representation of component id to the specified type
@@ -465,6 +466,7 @@ protected:
 public:
 	/// nothing to be done heremembers
 	attribute_array_binding_base();
+	virtual ~attribute_array_binding_base() = default;
 };
 
 

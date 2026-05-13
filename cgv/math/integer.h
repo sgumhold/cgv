@@ -10,6 +10,12 @@
 namespace cgv {
 namespace math {
 
+/// @brief Return true if x is a power of two.
+template<typename T, IS_INTEGRAL_GUARD>
+T is_power_of_two(T x) {
+	return x > 0 && (x & (x - 1)) == 0;
+}
+
 /// @brief Return the lowest power of two greater than or equal to x.
 template<typename T, IS_INTEGRAL_GUARD>
 T next_power_of_two(T x) {

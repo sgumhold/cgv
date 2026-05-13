@@ -15,6 +15,22 @@ transfer_function::transfer_function(std::initializer_list<color_point_type> col
 	set_opacity_points(opacities);
 }
 
+void transfer_function::clear() {
+	color_points_.clear();
+	opacity_points_.clear();
+	update_domain();
+}
+
+void transfer_function::clear_color_points() {
+	color_points_.clear();
+	update_domain();
+}
+
+void transfer_function::clear_opacity_points() {
+	opacity_points_.clear();
+	update_domain();
+}
+
 void transfer_function::set_color_points(const std::vector<color_point_type>& colors) {
 	color_points_ = colors;
 	sort_points_and_update_domain(color_points_);
@@ -51,6 +67,44 @@ void transfer_function::add_opacity_point(float x, float opacity) {
 	sort_points_and_update_domain(opacity_points_);
 	ensure_control_points_cover_domain(color_points_);
 	ensure_control_points_cover_domain(opacity_points_);
+}
+
+bool transfer_function::set_color(size_t index, const color_type& color) {
+	if(index < color_points_.size()) {
+		color_points_[index].second = color;
+		modified();
+		return true;
+	}
+	return false;
+}
+
+bool transfer_function::set_color_at(float x, const color_type& color) {
+	auto it = find_point(color_points_, x);
+	if(it != color_points_.end()) {
+		it->second = color;
+		modified();
+		return true;
+	}
+	return false;
+}
+
+bool transfer_function::set_opacity(size_t index, const opacity_type& opacity) {
+	if(index < opacity_points_.size()) {
+		opacity_points_[index].second = opacity;
+		modified();
+		return true;
+	}
+	return false;
+}
+
+bool transfer_function::set_opacity_at(float x, const opacity_type& opacity) {
+	auto it = find_point(opacity_points_, x);
+	if(it != opacity_points_.end()) {
+		it->second = opacity;
+		modified();
+		return true;
+	}
+	return false;
 }
 
 bool transfer_function::remove_color_point(float x) {
@@ -151,8 +205,6 @@ cgv::rgba transfer_function::map_value(float value) const {
 cgv::rgb transfer_function::get_mapped_color(float value) const {
 	if(is_unknown(value) || color_points_.empty())
 		return get_unknown_color();
-	//const vec2 domain = get_domain();
-	//value = cgv::math::clamp(value, domain[0], domain[1]);
 	return interpolate(color_points_, value, color_interpolation_);
 }
 
@@ -205,22 +257,6 @@ std::vector<float> transfer_function::get_ticks(size_t request_count) const {
 	*/
 	const vec2 domain = get_domain();
 	return compute_ticks(domain[0], domain[1], request_count);
-}
-
-void transfer_function::clear() {
-	color_points_.clear();
-	opacity_points_.clear();
-	update_domain();
-}
-
-void transfer_function::clear_color_points() {
-	color_points_.clear();
-	update_domain();
-}
-
-void transfer_function::clear_opacity_points() {
-	opacity_points_.clear();
-	update_domain();
 }
 
 void transfer_function::set_interpolation(InterpolationMode interpolation) {
