@@ -14,6 +14,8 @@ namespace cgv {
 		void a_buffer::update_shader_program_options(shader_compile_options& options, bool include_binding_points)
 		{
 			options.define_macro_if_not_default("MAX_FRAGMENTS", fragments_per_pixel, 32u);
+			options.define_macro_if_not_default("PRE_MULTIPLY_OPACITY", pre_multiply_opacity, true);
+			options.define_macro_if_not_default("Z_FIGHT_REMOVAL", z_fight_removal, false);
 			if(include_binding_points) {
 				options.define_macro_if_not_default("NODE_COUNTER_BINDING_POINT", node_counter_binding_point, 0);
 				options.define_macro_if_not_default("HEAD_POINTERS_BINDING_POINT", head_pointers_binding_point, 0);
@@ -157,6 +159,8 @@ namespace cgv {
 			a_buffer_prog.enable(ctx);
 			a_buffer_prog.set_uniform(ctx, "viewport_dims", ivec2(ctx.get_width(), ctx.get_height()));
 			a_buffer_prog.set_uniform(ctx, "nodes_per_pixel", nodes_per_pixel);
+			if (z_fight_removal)
+				a_buffer_prog.set_uniform(ctx, "z_fight_delta", pow(10.0f, z_fight_removal_exp));
 			glDrawArrays(GL_TRIANGLE_STRIP, 0, 4);
 			a_buffer_prog.disable(ctx);
 

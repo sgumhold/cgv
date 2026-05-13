@@ -75,6 +75,8 @@ bool planar_view_interactor::self_reflect(cgv::reflect::reflection_handler& rh)
 	return
 		rh.reflect_member("lock_rotation", lock_rotation) &&
 		rh.reflect_member("angle", angle) &&
+		rh.reflect_member("last_x", last_x) &&
+		rh.reflect_member("last_y", last_y) &&
 		rh.reflect_member("zoom_factor", zoom_factor) &&
 		rh.reflect_member("zoom_factor_exp", zoom_factor_exp) &&
 		rh.reflect_member("center", center);
