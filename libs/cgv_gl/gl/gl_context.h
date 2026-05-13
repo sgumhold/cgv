@@ -121,7 +121,7 @@ protected:
 	bool set_attribute_void(shader_program_base& spb, int loc, type_descriptor value_type, const void* value_ptr) const override;
 
 	bool attribute_array_binding_create(attribute_array_binding_base& aab) const override;
-	bool attribute_array_binding_destruct(attribute_array_binding_base& aab);
+	bool attribute_array_binding_destruct(attribute_array_binding_base& aab) const override;
 	bool attribute_array_binding_enable(attribute_array_binding_base& aab) override;
 	bool attribute_array_binding_disable(attribute_array_binding_base& aab) override;
 	bool set_attribute_array_void(attribute_array_binding_base* aab, int loc, type_descriptor value_type, const vertex_buffer_base* vbb, const void* ptr, size_t nr_elements, unsigned stride_in_bytes) const override;

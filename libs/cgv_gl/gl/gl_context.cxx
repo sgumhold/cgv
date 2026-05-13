@@ -681,13 +681,13 @@ struct format_callback_handler : public traverse_callback_handler
 	{
 	}
 	/// called before the children of a group node g are processed, return whether these should be skipped. If children are skipped, the on_leave_children callback is still called.
-	bool on_enter_children(group*)
+	bool on_enter_children(group_ptr) override
 	{
 		os << "\a";
 		return false;
 	}
 	/// called when the children of a group node g have been left, return whether to terminate traversal
-	bool on_leave_children(group*)
+	bool on_leave_children(group_ptr) override
 	{
 		os << "\b";
 		return false;
@@ -1824,6 +1824,9 @@ std::string gl_error_to_string(GLenum eid) {
 
 std::string gl_error() {
 	GLenum eid = glGetError();
+	// Clear potential other error flags, see https://registry.khronos.org/OpenGL-Refpages/gl4/html/glGetError.xhtml:
+	// "glGetError should always be called in a loop, until it returns GL_NO_ERROR, if all error flags are to be reset."
+	while (glGetError());
 	return gl_error_to_string(eid);
 }
 
@@ -1834,6 +1837,7 @@ bool gl_context::check_gl_error(const std::string& where, const cgv::render::ren
 		return false;
 	std::string error_string = where + ": " + gl_error_to_string(eid);
 	error(error_string, rc);
+	while (glGetError()); // Clear all error flags, see gl_error.
 	return true;
 }
 
@@ -2779,6 +2783,8 @@ bool gl_context::shader_code_create(render_component& sc, ShaderType st, const s
 	if (!check_shader_support(st, "gl_context::shader_code_create", &sc))
 		return false;
 
+	while (glGetError()); // Clear error flags.
+
 	GLuint s_id = glCreateShader(gl_shader_type[st]);
 	if (s_id == -1) {
 		error(std::string("gl_context::shader_code_create: ")+gl_error(), &sc);
@@ -3585,9 +3591,9 @@ bool gl_context::attribute_array_binding_create(attribute_array_binding_base& aa
 	return true;
 }
 
-bool gl_context::attribute_array_binding_destruct(attribute_array_binding_base& aab)
+bool gl_context::attribute_array_binding_destruct(attribute_array_binding_base& aab) const
 {
-	if (&aab == attribute_array_binding_stack.top())
+	if (!attribute_array_binding_stack.empty() && &aab == attribute_array_binding_stack.top())
 		glBindVertexArray(0);
 	if (!context::attribute_array_binding_destruct(aab))
 		return false;

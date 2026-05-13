@@ -11,7 +11,6 @@ namespace cgv {
 		class context;
 		class shader_program;
 		class texture;
-		enum TextureSampling;
 
 		namespace gl {
 

@@ -529,35 +529,18 @@ void physics_viewer::generate_random_mesh_instance() {
 	represenation->mesh_info = &bunny_mesh_info;
 	represenation->scale = scale;
 
+	std::vector<cgv::media::mesh::simple_mesh<>::idx3_type> triangle_position_indices;
+	bunny_mesh.extract_triangle_indices(triangle_position_indices);
 
-
-	using index_type = cgv::media::mesh::simple_mesh<>::idx_type;
-	// TODO: Create a method for this in simple_mesh?
-	std::vector<index_type> vertex_indices;
-	std::vector<cgv::math::fvec<index_type, 4>> unique_quadruples;
-	bunny_mesh.merge_indices(vertex_indices, unique_quadruples);
-
-	std::vector<index_type> triangle_element_buffer;
-	bunny_mesh.extract_triangle_element_buffer(vertex_indices, triangle_element_buffer);
-
-	auto& positions = bunny_mesh.get_positions();
 	JPH::TriangleList triangles;
-
-	for(size_t i = 0; i < triangle_element_buffer.size(); i += 3) {
+	for(const auto& index_triple : triangle_position_indices) {
 		using namespace cgv::physics::convert;
-
-		index_type i0 = unique_quadruples[triangle_element_buffer[i + 0]][0];
-		index_type i1 = unique_quadruples[triangle_element_buffer[i + 1]][0];
-		index_type i2 = unique_quadruples[triangle_element_buffer[i + 2]][0];
-
 		triangles.emplace_back(
-			to_Jolt_Vec3(positions[i0]),
-			to_Jolt_Vec3(positions[i1]),
-			to_Jolt_Vec3(positions[i2])
+			to_Jolt_Vec3(bunny_mesh.position(index_triple[0])),
+			to_Jolt_Vec3(bunny_mesh.position(index_triple[1])),
+			to_Jolt_Vec3(bunny_mesh.position(index_triple[2]))
 		);
 	}
-
-
 
 	JPH::MeshShapeSettings settings(triangles);
 	auto result = settings.Create();

@@ -58,7 +58,7 @@ struct control_provider : public abst_control_provider
 	/// overload to set the value
 	virtual void set_value(const T& value, void* user_data) = 0;
 	/// overload to get the value
-	virtual const T get_value(void* user_data) const = 0;
+	virtual T get_value(void* user_data) const = 0;
 	/// the default implementation compares ptr to &get_value().
 	virtual bool controls(const void* ptr, void* user_data) const { return false; }
 };
@@ -140,7 +140,7 @@ public:
 	/*! You can access the old value with get_old_value() method. */
 	cgv::signal::signal<control<T>&> value_change;
 	/// return a reference to the current value
-	const T get_value() const { return cp ? cp->get_value(value_ptr) : *value_ptr; }
+	T get_value() const { return cp ? cp->get_value(value_ptr) : *value_ptr; }
 	/// return the new value to the callbacks attached to the check_value signal
 	const T& get_new_value() const { return new_value; }
 	/// set a different new value from the callbacks attached to the check_value signal
