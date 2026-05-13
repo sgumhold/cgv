@@ -280,9 +280,9 @@ void simple_mesh_base::extract_triangle_indices(std::vector<idx3_type>& position
 	constexpr size_t tangent_index = 3;
 
 	for(size_t i = 0; i < triangle_element_buffer.size(); i += 3) {
-		idx4_type i0 = unique_quadruples[triangle_element_buffer[i + 0]][0];
-		idx4_type i1 = unique_quadruples[triangle_element_buffer[i + 1]][0];
-		idx4_type i2 = unique_quadruples[triangle_element_buffer[i + 2]][0];
+		idx4_type i0 = unique_quadruples[triangle_element_buffer[i + 0]];
+		idx4_type i1 = unique_quadruples[triangle_element_buffer[i + 1]];
+		idx4_type i2 = unique_quadruples[triangle_element_buffer[i + 2]];
 
 		position_indices.emplace_back(i0[position_index], i1[position_index], i2[position_index]);
 
