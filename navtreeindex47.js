@@ -1,5 +1,15 @@
 var NAVTREEINDEX47 =
 {
+"structvr_1_1vr__device__info.html#af60c8e4e6ca4eb993050a3b9b1a0c9ab":[11,0,5,7,3],
+"structvr_1_1vr__hmd__info.html":[10,0,2,9],
+"structvr_1_1vr__hmd__info.html":[11,0,5,9],
+"structvr_1_1vr__hmd__info.html#a07c54e510fa73e08364f495c525409a6":[10,0,2,9,1],
+"structvr_1_1vr__hmd__info.html#a07c54e510fa73e08364f495c525409a6":[11,0,5,9,1],
+"structvr_1_1vr__hmd__info.html#a0943288705d2b752aca5d9833ec1cd9f":[11,0,5,9,6],
+"structvr_1_1vr__hmd__info.html#a0943288705d2b752aca5d9833ec1cd9f":[10,0,2,9,6],
+"structvr_1_1vr__hmd__info.html#a53bc67b7b2ad2dc4a728e9c64f35256e":[10,0,2,9,3],
+"structvr_1_1vr__hmd__info.html#a53bc67b7b2ad2dc4a728e9c64f35256e":[11,0,5,9,3],
+"structvr_1_1vr__hmd__info.html#a82fd5b344174c286e9d0b114afe3e2a5":[11,0,5,9,4],
 "structvr_1_1vr__hmd__info.html#a82fd5b344174c286e9d0b114afe3e2a5":[10,0,2,9,4],
 "structvr_1_1vr__hmd__info.html#a8d60f4499e543fbd0a6bb7931394b904":[11,0,5,9,0],
 "structvr_1_1vr__hmd__info.html#a8d60f4499e543fbd0a6bb7931394b904":[10,0,2,9,0],

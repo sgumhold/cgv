@@ -234,8 +234,14 @@ Public Member Functions</h2></td></tr>
 <tr class="separator:af910ff47d6ef0aff86aa3cfa73056fef"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:abc20d64521b0b230236b2cae4433ec91" id="r_abc20d64521b0b230236b2cae4433ec91"><td class="memItemLeft" align="right" valign="top">const <a class="el" href="classcgv_1_1render_1_1vertex__buffer.html">vertex_buffer</a> *&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcgv_1_1render_1_1renderer.html#abc20d64521b0b230236b2cae4433ec91">get_vertex_buffer_ptr</a> (const <a class="el" href="classcgv_1_1render_1_1context.html">context</a> &amp;ctx, const <a class="el" href="classcgv_1_1render_1_1attribute__array__manager.html">attribute_array_manager</a> &amp;aam, const std::string &amp;attr_name)</td></tr>
 <tr class="separator:abc20d64521b0b230236b2cae4433ec91"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ab95877c8bee456caa188e7fb66091245" id="r_ab95877c8bee456caa188e7fb66091245"><td class="memItemLeft" align="right" valign="top">const <a class="el" href="classcgv_1_1render_1_1vertex__buffer.html">vertex_buffer</a> *&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcgv_1_1render_1_1renderer.html#ab95877c8bee456caa188e7fb66091245">get_vertex_buffer_ptr</a> (const <a class="el" href="classcgv_1_1render_1_1context.html">context</a> &amp;ctx, const std::string &amp;attr_name)</td></tr>
+<tr class="memdesc:ab95877c8bee456caa188e7fb66091245"><td class="mdescLeft">&#160;</td><td class="mdescRight">use attribute array manager of renderer to return pointer to vertex buffer  <br /></td></tr>
+<tr class="separator:ab95877c8bee456caa188e7fb66091245"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:aca96320a38f2bc3a2a12d9a32e35afc3" id="r_aca96320a38f2bc3a2a12d9a32e35afc3"><td class="memItemLeft" align="right" valign="top">const <a class="el" href="classcgv_1_1render_1_1vertex__buffer.html">vertex_buffer</a> *&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcgv_1_1render_1_1renderer.html#aca96320a38f2bc3a2a12d9a32e35afc3">get_index_buffer_ptr</a> (const <a class="el" href="classcgv_1_1render_1_1attribute__array__manager.html">attribute_array_manager</a> &amp;aam)</td></tr>
 <tr class="separator:aca96320a38f2bc3a2a12d9a32e35afc3"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a912e2a4e0ce7bf6544661e9857f43510" id="r_a912e2a4e0ce7bf6544661e9857f43510"><td class="memItemLeft" align="right" valign="top">const <a class="el" href="classcgv_1_1render_1_1vertex__buffer.html">vertex_buffer</a> *&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcgv_1_1render_1_1renderer.html#a912e2a4e0ce7bf6544661e9857f43510">get_index_buffer_ptr</a> ()</td></tr>
+<tr class="memdesc:a912e2a4e0ce7bf6544661e9857f43510"><td class="mdescLeft">&#160;</td><td class="mdescRight">use attribute array manager of renderer to return pointer to index buffer  <br /></td></tr>
+<tr class="separator:a912e2a4e0ce7bf6544661e9857f43510"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:aaf4e1ef25deea9f251280444b8ba5dee" id="r_aaf4e1ef25deea9f251280444b8ba5dee"><td class="memItemLeft" align="right" valign="top">virtual bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcgv_1_1render_1_1renderer.html#aaf4e1ef25deea9f251280444b8ba5dee">validate_attributes</a> (const <a class="el" href="classcgv_1_1render_1_1context.html">context</a> &amp;ctx) const</td></tr>
 <tr class="memdesc:aaf4e1ef25deea9f251280444b8ba5dee"><td class="mdescLeft">&#160;</td><td class="mdescRight">call to validate, whether essential position attribute is defined  <br /></td></tr>
 <tr class="separator:aaf4e1ef25deea9f251280444b8ba5dee"><td class="memSeparator" colspan="2">&#160;</td></tr>
@@ -989,8 +995,39 @@ Protected Attributes</h2></td></tr>
 
 </div>
 </div>
+<a id="a912e2a4e0ce7bf6544661e9857f43510" name="a912e2a4e0ce7bf6544661e9857f43510"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a912e2a4e0ce7bf6544661e9857f43510">&#9670;&#160;</a></span>get_index_buffer_ptr() <span class="overload">[1/2]</span></h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">const <a class="el" href="classcgv_1_1render_1_1vertex__buffer.html">vertex_buffer</a> * cgv::render::renderer::get_index_buffer_ptr </td>
+          <td>(</td>
+          <td class="paramname"></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">inline</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p>use attribute array manager of renderer to return pointer to index buffer </p>
+
+<p class="definition">Definition at line <a class="el" href="renderer_8h_source.html#l00347">347</a> of file <a class="el" href="renderer_8h_source.html">renderer.h</a>.</p>
+
+<p class="reference">References <a class="el" href="attribute__array__manager_8h_source.html#l00155">cgv::render::attribute_array_manager::get_buffer_ptr()</a>.</p>
+
+</div>
+</div>
 <a id="aca96320a38f2bc3a2a12d9a32e35afc3" name="aca96320a38f2bc3a2a12d9a32e35afc3"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#aca96320a38f2bc3a2a12d9a32e35afc3">&#9670;&#160;</a></span>get_index_buffer_ptr()</h2>
+<h2 class="memtitle"><span class="permalink"><a href="#aca96320a38f2bc3a2a12d9a32e35afc3">&#9670;&#160;</a></span>get_index_buffer_ptr() <span class="overload">[2/2]</span></h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -1014,7 +1051,7 @@ Protected Attributes</h2></td></tr>
 </div><div class="memdoc">
 <p>Returns a pointer to the vertex buffer of type element buffer holding the indices for indexed rendering as managed by the attribute array manager. Returns nullptr if the buffer or attribute array manager does not exist. Take caution when manipulating the buffer. </p>
 
-<p class="definition">Definition at line <a class="el" href="renderer_8h_source.html#l00337">337</a> of file <a class="el" href="renderer_8h_source.html">renderer.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="renderer_8h_source.html#l00343">343</a> of file <a class="el" href="renderer_8h_source.html">renderer.h</a>.</p>
 
 <p class="reference">References <a class="el" href="attribute__array__manager_8h_source.html#l00155">cgv::render::attribute_array_manager::get_buffer_ptr()</a>.</p>
 
@@ -1129,7 +1166,7 @@ template&lt;typename T &gt; </div>
 </div>
 </div>
 <a id="abc20d64521b0b230236b2cae4433ec91" name="abc20d64521b0b230236b2cae4433ec91"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#abc20d64521b0b230236b2cae4433ec91">&#9670;&#160;</a></span>get_vertex_buffer_ptr()</h2>
+<h2 class="memtitle"><span class="permalink"><a href="#abc20d64521b0b230236b2cae4433ec91">&#9670;&#160;</a></span>get_vertex_buffer_ptr() <span class="overload">[1/2]</span></h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -1170,6 +1207,48 @@ template&lt;typename T &gt; </div>
 <p>Returns a pointer to the vertex buffer of the given attribute name as managed by the attribute array manager. Returns nullptr if the buffer or attribute array manager does not exist. Take caution when manipulating the buffer. </p>
 
 <p class="definition">Definition at line <a class="el" href="renderer_8h_source.html#l00331">331</a> of file <a class="el" href="renderer_8h_source.html">renderer.h</a>.</p>
+
+<p class="reference">References <a class="el" href="attribute__array__manager_8h_source.html#l00155">cgv::render::attribute_array_manager::get_buffer_ptr()</a>.</p>
+
+</div>
+</div>
+<a id="ab95877c8bee456caa188e7fb66091245" name="ab95877c8bee456caa188e7fb66091245"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#ab95877c8bee456caa188e7fb66091245">&#9670;&#160;</a></span>get_vertex_buffer_ptr() <span class="overload">[2/2]</span></h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">const <a class="el" href="classcgv_1_1render_1_1vertex__buffer.html">vertex_buffer</a> * cgv::render::renderer::get_vertex_buffer_ptr </td>
+          <td>(</td>
+          <td class="paramtype">const <a class="el" href="classcgv_1_1render_1_1context.html">context</a> &amp;&#160;</td>
+          <td class="paramname"><em>ctx</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">const std::string &amp;&#160;</td>
+          <td class="paramname"><em>attr_name</em>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">inline</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p>use attribute array manager of renderer to return pointer to vertex buffer </p>
+
+<p class="definition">Definition at line <a class="el" href="renderer_8h_source.html#l00335">335</a> of file <a class="el" href="renderer_8h_source.html">renderer.h</a>.</p>
 
 <p class="reference">References <a class="el" href="attribute__array__manager_8h_source.html#l00155">cgv::render::attribute_array_manager::get_buffer_ptr()</a>.</p>
 
