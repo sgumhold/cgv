@@ -331,11 +331,23 @@ namespace cgv { // @<
 			const vertex_buffer* get_vertex_buffer_ptr(const context& ctx, const attribute_array_manager& aam, const std::string& attr_name) {
 				return aam.get_buffer_ptr(get_prog_attribute_location(ctx, attr_name));
 			}
+			/// use attribute array manager of renderer to return pointer to vertex buffer
+			const vertex_buffer* get_vertex_buffer_ptr(const context& ctx, const std::string& attr_name) {
+				if (aam_ptr == 0)
+					return 0;
+				return aam_ptr->get_buffer_ptr(get_prog_attribute_location(ctx, attr_name));
+			}
 			/*! Returns a pointer to the vertex buffer of type element buffer holding the indices for indexed rendering as managed by the attribute array manager.
 				Returns nullptr if the buffer or attribute array manager does not exist.
 				Take caution when manipulating the buffer. */
 			const vertex_buffer* get_index_buffer_ptr(const attribute_array_manager& aam) {
 				return aam.get_buffer_ptr(-1);
+			}
+			/// use attribute array manager of renderer to return pointer to index buffer
+			const vertex_buffer* get_index_buffer_ptr() {
+				if (aam_ptr == 0)
+					return 0;
+				return aam_ptr->get_buffer_ptr(-1);
 			}
 			/// call to validate, whether essential position attribute is defined
 			virtual bool validate_attributes(const context& ctx) const;

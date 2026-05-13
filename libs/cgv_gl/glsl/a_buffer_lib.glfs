@@ -4,10 +4,15 @@
 #define NODE_COUNTER_BINDING_POINT 0
 #define HEAD_POINTERS_BINDING_POINT 0
 #define NODES_BINDING_POINT 1
+#define PRE_MULTIPLY_OPACITY 1
+#define Z_FIGHT_REMOVAL 0
 
 uniform sampler2D depth_tex;
 uniform ivec2 viewport_dims;
 uniform int nodes_per_pixel = 64;
+#if Z_FIGHT_REMOVAL == 1
+uniform float z_fight_delta = 0.00001;
+#endif
 
 layout(binding = NODE_COUNTER_BINDING_POINT) uniform atomic_uint node_buffer_counter;
 
@@ -64,11 +69,94 @@ bool a_buffer_gather_and_blend(in vec2 frag_xy, out vec4 rgba, out float depth)
 
 	// Blend the fragments Front-to-back with transparency in dst.a 
 	vec4 dst = vec4(0.0, 0.0, 0.0, 1.0);
+#if Z_FIGHT_REMOVAL == 0
 	for (int i = 0; i < count; ++i) {
-		vec4 src = unpackUnorm4x8(fragments[i].color);
-		dst.rgb = dst.a * src.rgb + 1.0 * dst.rgb;
+		vec4 src = vec4(unpackUnorm4x8(fragments[i].color));
+#if PRE_MULTIPLY_OPACITY == 1
+		dst.rgb = dst.a * src.rgb + dst.rgb;
+#else
+		dst.rgb = dst.a * src.a * src.rgb + dst.rgb;
+#endif
 		dst.a = (1.0 - src.a) * dst.a;
 	}
+#else
+	int i_front = 0;
+	int i_back = 0;
+	int layer_count = 0;
+
+	vec3  epsilon_acc = vec3(0.0);
+	float O_acc = 0.0;
+	float T_acc = 1.0;
+
+	float z_front = float(fragments[i_front].depth) - float(0.5*z_fight_delta);
+	float z_prev = z_front;
+	float z_back  = float(fragments[i_back ].depth) + float(0.5*z_fight_delta);
+	
+	while (i_front < count) {
+		// advance volume rendering integral
+		float z = min(z_front,z_back);
+		float dz = z - z_prev;
+		z_prev = z;
+		if (layer_count > 0) {
+			vec3  epsilon = epsilon_acc/O_acc;
+			float T = pow(T_acc,dz/z_fight_delta);
+			dst.rgb += dst.a*(1.0-T)*epsilon;
+			dst.a   *= T;
+		}
+		// check for sphere enter event
+		if (z_front < z_back) {
+			vec4 src = vec4(unpackUnorm4x8(fragments[i_front].color));
+			T_acc       *= 1.0 - src.a;
+			O_acc       += src.a;
+#if PRE_MULTIPLY_OPACITY == 1
+			epsilon_acc += src.rgb;
+#else
+			epsilon_acc += src.a*src.rgb;
+#endif
+			++layer_count;
+			if (++i_front < count)
+				z_front = float(fragments[i_front].depth) - float(0.5*z_fight_delta);
+		}
+		else {
+			z_back = float(fragments[++i_back].depth) + float(0.5*z_fight_delta);
+			if (--layer_count == 0) {
+				T_acc = 1.0;
+				O_acc = 0.0;
+				epsilon_acc = vec3(0.0);
+			}
+			else {
+				vec4 src = vec4(unpackUnorm4x8(fragments[i_back].color));
+				T_acc       /= 1.0 - src.a;
+				O_acc       -= src.a;
+#if PRE_MULTIPLY_OPACITY == 1
+				epsilon_acc -= src.rgb;
+#else
+				epsilon_acc -= src.a*src.rgb;
+#endif
+			}
+		}
+	}
+	for (; i_back < count; ++i_back) {
+		// advance volume rendering integral
+		float z = float(fragments[i_back].depth) + float(0.5*z_fight_delta);
+		float dz = z - z_prev;
+		z_prev = z;
+		vec3  epsilon = epsilon_acc/O_acc;
+		float T       = pow(T_acc,dz/z_fight_delta);
+		dst.rgb += dst.a*(1.0-T)*epsilon;
+		dst.a   *= T;
+		if (--layer_count > 0) {
+			vec4 src = vec4(unpackUnorm4x8(fragments[i_back].color));
+			T_acc       /= 1.0 - src.a;
+			O_acc       -= src.a;
+#if PRE_MULTIPLY_OPACITY == 1
+			epsilon_acc -= src.rgb;
+#else
+			epsilon_acc -= src.a*src.rgb;
+#endif
+		}
+	}
+#endif
 	rgba = vec4(dst.rgb, 1.0 - dst.a);
 	depth = fragments[0].depth-0.000001;
 	return true;
