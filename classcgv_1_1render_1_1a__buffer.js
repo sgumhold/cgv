@@ -13,5 +13,8 @@ var classcgv_1_1render_1_1a__buffer =
     [ "fragments_per_pixel", "classcgv_1_1render_1_1a__buffer.html#a24b651f05fb4feca5b5931a8715dd68f", null ],
     [ "node_counter_binding_point", "classcgv_1_1render_1_1a__buffer.html#aa5b8516e15b937f0196f3a48a72acbca", null ],
     [ "node_counter_buffer", "classcgv_1_1render_1_1a__buffer.html#a9817b36e2f471e5456d835ad56242c77", null ],
-    [ "nodes_per_pixel", "classcgv_1_1render_1_1a__buffer.html#a0b66fb7b28c9fdde1a17a9e6f899a35d", null ]
+    [ "nodes_per_pixel", "classcgv_1_1render_1_1a__buffer.html#a0b66fb7b28c9fdde1a17a9e6f899a35d", null ],
+    [ "pre_multiply_opacity", "classcgv_1_1render_1_1a__buffer.html#a3da47989214102ebef3c13c929fe7d2d", null ],
+    [ "z_fight_removal", "classcgv_1_1render_1_1a__buffer.html#af7f9489ac5a07d5e127765f78b40e55c", null ],
+    [ "z_fight_removal_exp", "classcgv_1_1render_1_1a__buffer.html#a06b428cff8a6b8440a6a341840bc9135", null ]
 ];

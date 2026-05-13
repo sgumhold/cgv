@@ -141,6 +141,15 @@ Public Member Functions</h2></td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="pub-attribs" name="pub-attribs"></a>
 Public Attributes</h2></td></tr>
+<tr class="memitem:af7f9489ac5a07d5e127765f78b40e55c" id="r_af7f9489ac5a07d5e127765f78b40e55c"><td class="memItemLeft" align="right" valign="top">bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcgv_1_1render_1_1a__buffer.html#af7f9489ac5a07d5e127765f78b40e55c">z_fight_removal</a> = false</td></tr>
+<tr class="memdesc:af7f9489ac5a07d5e127765f78b40e55c"><td class="mdescLeft">&#160;</td><td class="mdescRight">whether to use volumetric blending of thickened fragments  <br /></td></tr>
+<tr class="separator:af7f9489ac5a07d5e127765f78b40e55c"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a06b428cff8a6b8440a6a341840bc9135" id="r_a06b428cff8a6b8440a6a341840bc9135"><td class="memItemLeft" align="right" valign="top">float&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcgv_1_1render_1_1a__buffer.html#a06b428cff8a6b8440a6a341840bc9135">z_fight_removal_exp</a> = -5.0f</td></tr>
+<tr class="memdesc:a06b428cff8a6b8440a6a341840bc9135"><td class="mdescLeft">&#160;</td><td class="mdescRight">set thickness of fragments to 10^z_fight_removal_exp where this is measured in scaling of depth buffer  <br /></td></tr>
+<tr class="separator:a06b428cff8a6b8440a6a341840bc9135"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a3da47989214102ebef3c13c929fe7d2d" id="r_a3da47989214102ebef3c13c929fe7d2d"><td class="memItemLeft" align="right" valign="top">bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcgv_1_1render_1_1a__buffer.html#a3da47989214102ebef3c13c929fe7d2d">pre_multiply_opacity</a> = true</td></tr>
+<tr class="memdesc:a3da47989214102ebef3c13c929fe7d2d"><td class="mdescLeft">&#160;</td><td class="mdescRight">whether to assume that fragment color is already multiplied with opacity  <br /></td></tr>
+<tr class="separator:a3da47989214102ebef3c13c929fe7d2d"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a24b651f05fb4feca5b5931a8715dd68f" id="r_a24b651f05fb4feca5b5931a8715dd68f"><td class="memItemLeft" align="right" valign="top">unsigned&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcgv_1_1render_1_1a__buffer.html#a24b651f05fb4feca5b5931a8715dd68f">fragments_per_pixel</a></td></tr>
 <tr class="memdesc:a24b651f05fb4feca5b5931a8715dd68f"><td class="mdescLeft">&#160;</td><td class="mdescRight">to be handled fragments per pixel (changes are applied when in <a class="el" href="classcgv_1_1render_1_1a__buffer.html#aaba5e671255c64900a6cf0b70cb2c910" title="ensure that a_buffer size corresponds to context size">init_frame()</a> function)  <br /></td></tr>
 <tr class="separator:a24b651f05fb4feca5b5931a8715dd68f"><td class="memSeparator" colspan="2">&#160;</td></tr>
@@ -240,9 +249,9 @@ Protected Attributes</h2></td></tr>
 
 <p>construct and configure </p>
 
-<p class="definition">Definition at line <a class="el" href="a__buffer_8cxx_source.html#l00027">27</a> of file <a class="el" href="a__buffer_8cxx_source.html">a_buffer.cxx</a>.</p>
+<p class="definition">Definition at line <a class="el" href="a__buffer_8cxx_source.html#l00029">29</a> of file <a class="el" href="a__buffer_8cxx_source.html">a_buffer.cxx</a>.</p>
 
-<p class="reference">References <a class="el" href="a__buffer_8h_source.html#l00022">depth_tex</a>, <a class="el" href="a__buffer_8h_source.html#l00028">depth_tex_unit</a>, <a class="el" href="a__buffer_8h_source.html#l00045">fragments_per_pixel</a>, <a class="el" href="a__buffer_8h_source.html#l00030">node_counter_binding_point</a>, <a class="el" href="a__buffer_8h_source.html#l00047">nodes_per_pixel</a>, <a class="el" href="texture_8cxx_source.html#l00144">cgv::render::texture::set_mag_filter()</a>, and <a class="el" href="texture_8cxx_source.html#l00126">cgv::render::texture::set_min_filter()</a>.</p>
+<p class="reference">References <a class="el" href="a__buffer_8h_source.html#l00022">depth_tex</a>, <a class="el" href="a__buffer_8h_source.html#l00028">depth_tex_unit</a>, <a class="el" href="a__buffer_8h_source.html#l00051">fragments_per_pixel</a>, <a class="el" href="a__buffer_8h_source.html#l00030">node_counter_binding_point</a>, <a class="el" href="a__buffer_8h_source.html#l00053">nodes_per_pixel</a>, <a class="el" href="texture_8cxx_source.html#l00144">cgv::render::texture::set_mag_filter()</a>, and <a class="el" href="texture_8cxx_source.html#l00126">cgv::render::texture::set_min_filter()</a>.</p>
 
 </div>
 </div>
@@ -265,7 +274,7 @@ Protected Attributes</h2></td></tr>
 
 <p>destruct all render objects </p>
 
-<p class="definition">Definition at line <a class="el" href="a__buffer_8cxx_source.html#l00053">53</a> of file <a class="el" href="a__buffer_8cxx_source.html">a_buffer.cxx</a>.</p>
+<p class="definition">Definition at line <a class="el" href="a__buffer_8cxx_source.html#l00055">55</a> of file <a class="el" href="a__buffer_8cxx_source.html">a_buffer.cxx</a>.</p>
 
 <p class="reference">References <a class="el" href="a__buffer_8h_source.html#l00022">depth_tex</a>, <a class="el" href="shader__program_8cxx_source.html#l00736">cgv::render::shader_program::destruct()</a>, <a class="el" href="texture_8cxx_source.html#l00726">cgv::render::texture::destruct()</a>, <a class="el" href="vertex__buffer_8cxx_source.html#l00084">cgv::render::vertex_buffer::destruct()</a>, and <a class="el" href="a__buffer_8h_source.html#l00024">node_counter_buffer</a>.</p>
 
@@ -299,7 +308,7 @@ Protected Attributes</h2></td></tr>
 
 <p>finish writing fragments to <a class="el" href="classcgv_1_1render_1_1a__buffer.html" title="This class provides a_buffer functionality.">a_buffer</a> and return current number of nodes in node buffer </p>
 
-<p class="definition">Definition at line <a class="el" href="a__buffer_8cxx_source.html#l00132">132</a> of file <a class="el" href="a__buffer_8cxx_source.html">a_buffer.cxx</a>.</p>
+<p class="definition">Definition at line <a class="el" href="a__buffer_8cxx_source.html#l00134">134</a> of file <a class="el" href="a__buffer_8cxx_source.html">a_buffer.cxx</a>.</p>
 
 <p class="reference">References <a class="el" href="vertex__buffer_8cxx_source.html#l00079">cgv::render::vertex_buffer::copy()</a>, <a class="el" href="a__buffer_8h_source.html#l00022">depth_tex</a>, <a class="el" href="texture_8cxx_source.html#l00752">cgv::render::texture::disable()</a>, <a class="el" href="a__buffer_8h_source.html#l00030">node_counter_binding_point</a>, <a class="el" href="a__buffer_8h_source.html#l00024">node_counter_buffer</a>, and <a class="el" href="vertex__buffer_8cxx_source.html#l00032">cgv::render::vertex_buffer::unbind()</a>.</p>
 
@@ -340,9 +349,9 @@ Protected Attributes</h2></td></tr>
 <p>Enable writing fragments to <a class="el" href="classcgv_1_1render_1_1a__buffer.html" title="This class provides a_buffer functionality.">a_buffer</a> with provided program. </p>
 <p>In first call after each init frame call, the current depth buffer is copied to <a class="el" href="classcgv_1_1render_1_1a__buffer.html" title="This class provides a_buffer functionality.">a_buffer</a>'s depth texture. Function sets necessary uniforms in program and binds depth texture and buffers. In <a class="el" href="classcgv_1_1render_1_1a__buffer.html" title="This class provides a_buffer functionality.">a_buffer</a> constructor depth texture unit can be overwritten by third argument. Function fails by returning false if program query of binding points to buffers fail. </p>
 
-<p class="definition">Definition at line <a class="el" href="a__buffer_8cxx_source.html#l00100">100</a> of file <a class="el" href="a__buffer_8cxx_source.html">a_buffer.cxx</a>.</p>
+<p class="definition">Definition at line <a class="el" href="a__buffer_8cxx_source.html#l00102">102</a> of file <a class="el" href="a__buffer_8cxx_source.html">a_buffer.cxx</a>.</p>
 
-<p class="reference">References <a class="el" href="vertex__buffer_8cxx_source.html#l00027">cgv::render::vertex_buffer::bind()</a>, <a class="el" href="a__buffer_8h_source.html#l00022">depth_tex</a>, <a class="el" href="a__buffer_8h_source.html#l00028">depth_tex_unit</a>, <a class="el" href="texture_8cxx_source.html#l00741">cgv::render::texture::enable()</a>, <a class="el" href="classcgv_1_1render_1_1context.html#a6dde896fc37726e3ec39e7d450f1e168">cgv::render::context::get_height()</a>, <a class="el" href="classcgv_1_1render_1_1context.html#a473170ee5d7651a063695574f4b9f91f">cgv::render::context::get_width()</a>, <a class="el" href="a__buffer_8h_source.html#l00030">node_counter_binding_point</a>, <a class="el" href="a__buffer_8h_source.html#l00024">node_counter_buffer</a>, <a class="el" href="a__buffer_8h_source.html#l00047">nodes_per_pixel</a>, <a class="el" href="texture_8cxx_source.html#l00650">cgv::render::texture::replace_from_buffer()</a>, and <a class="el" href="shader__program_8h_source.html#l00157">cgv::render::shader_program::set_uniform()</a>.</p>
+<p class="reference">References <a class="el" href="vertex__buffer_8cxx_source.html#l00027">cgv::render::vertex_buffer::bind()</a>, <a class="el" href="a__buffer_8h_source.html#l00022">depth_tex</a>, <a class="el" href="a__buffer_8h_source.html#l00028">depth_tex_unit</a>, <a class="el" href="texture_8cxx_source.html#l00741">cgv::render::texture::enable()</a>, <a class="el" href="classcgv_1_1render_1_1context.html#a6dde896fc37726e3ec39e7d450f1e168">cgv::render::context::get_height()</a>, <a class="el" href="classcgv_1_1render_1_1context.html#a473170ee5d7651a063695574f4b9f91f">cgv::render::context::get_width()</a>, <a class="el" href="a__buffer_8h_source.html#l00030">node_counter_binding_point</a>, <a class="el" href="a__buffer_8h_source.html#l00024">node_counter_buffer</a>, <a class="el" href="a__buffer_8h_source.html#l00053">nodes_per_pixel</a>, <a class="el" href="texture_8cxx_source.html#l00650">cgv::render::texture::replace_from_buffer()</a>, and <a class="el" href="shader__program_8h_source.html#l00157">cgv::render::shader_program::set_uniform()</a>.</p>
 
 </div>
 </div>
@@ -392,9 +401,9 @@ Protected Attributes</h2></td></tr>
 
 <p>per fragment sort nodes and blend over current framebuffer </p>
 
-<p class="definition">Definition at line <a class="el" href="a__buffer_8cxx_source.html#l00148">148</a> of file <a class="el" href="a__buffer_8cxx_source.html">a_buffer.cxx</a>.</p>
+<p class="definition">Definition at line <a class="el" href="a__buffer_8cxx_source.html#l00150">150</a> of file <a class="el" href="a__buffer_8cxx_source.html">a_buffer.cxx</a>.</p>
 
-<p class="reference">References <a class="el" href="vertex__buffer_8cxx_source.html#l00027">cgv::render::vertex_buffer::bind()</a>, <a class="el" href="shader__program_8cxx_source.html#l00615">cgv::render::shader_program::disable()</a>, <a class="el" href="shader__program_8cxx_source.html#l00593">cgv::render::shader_program::enable()</a>, <a class="el" href="context_8cxx_source.html#l01900">cgv::render::context::enable_blending()</a>, <a class="el" href="classcgv_1_1render_1_1context.html#a6dde896fc37726e3ec39e7d450f1e168">cgv::render::context::get_height()</a>, <a class="el" href="classcgv_1_1render_1_1context.html#a473170ee5d7651a063695574f4b9f91f">cgv::render::context::get_width()</a>, <a class="el" href="a__buffer_8h_source.html#l00047">nodes_per_pixel</a>, <a class="el" href="context_8cxx_source.html#l01864">cgv::render::context::pop_blend_state()</a>, <a class="el" href="context_8cxx_source.html#l01860">cgv::render::context::push_blend_state()</a>, <a class="el" href="context_8cxx_source.html#l01896">cgv::render::context::set_blend_func_back_to_front()</a>, <a class="el" href="shader__program_8h_source.html#l00157">cgv::render::shader_program::set_uniform()</a>, and <a class="el" href="vertex__buffer_8cxx_source.html#l00032">cgv::render::vertex_buffer::unbind()</a>.</p>
+<p class="reference">References <a class="el" href="vertex__buffer_8cxx_source.html#l00027">cgv::render::vertex_buffer::bind()</a>, <a class="el" href="shader__program_8cxx_source.html#l00615">cgv::render::shader_program::disable()</a>, <a class="el" href="shader__program_8cxx_source.html#l00593">cgv::render::shader_program::enable()</a>, <a class="el" href="context_8cxx_source.html#l01900">cgv::render::context::enable_blending()</a>, <a class="el" href="classcgv_1_1render_1_1context.html#a6dde896fc37726e3ec39e7d450f1e168">cgv::render::context::get_height()</a>, <a class="el" href="classcgv_1_1render_1_1context.html#a473170ee5d7651a063695574f4b9f91f">cgv::render::context::get_width()</a>, <a class="el" href="a__buffer_8h_source.html#l00053">nodes_per_pixel</a>, <a class="el" href="context_8cxx_source.html#l01864">cgv::render::context::pop_blend_state()</a>, <a class="el" href="context_8cxx_source.html#l01860">cgv::render::context::push_blend_state()</a>, <a class="el" href="context_8cxx_source.html#l01896">cgv::render::context::set_blend_func_back_to_front()</a>, <a class="el" href="shader__program_8h_source.html#l00157">cgv::render::shader_program::set_uniform()</a>, <a class="el" href="vertex__buffer_8cxx_source.html#l00032">cgv::render::vertex_buffer::unbind()</a>, <a class="el" href="a__buffer_8h_source.html#l00042">z_fight_removal</a>, and <a class="el" href="a__buffer_8h_source.html#l00044">z_fight_removal_exp</a>.</p>
 
 </div>
 </div>
@@ -416,7 +425,7 @@ Protected Attributes</h2></td></tr>
 
 <p>construct internally used programs </p>
 
-<p class="definition">Definition at line <a class="el" href="a__buffer_8cxx_source.html#l00043">43</a> of file <a class="el" href="a__buffer_8cxx_source.html">a_buffer.cxx</a>.</p>
+<p class="definition">Definition at line <a class="el" href="a__buffer_8cxx_source.html#l00045">45</a> of file <a class="el" href="a__buffer_8cxx_source.html">a_buffer.cxx</a>.</p>
 
 <p class="reference">References <a class="el" href="shader__program_8cxx_source.html#l00492">cgv::render::shader_program::build_files()</a>, and <a class="el" href="shader__program_8cxx_source.html#l00502">cgv::render::shader_program::build_program()</a>.</p>
 
@@ -440,7 +449,7 @@ Protected Attributes</h2></td></tr>
 
 <p>ensure that <a class="el" href="classcgv_1_1render_1_1a__buffer.html" title="This class provides a_buffer functionality.">a_buffer</a> size corresponds to context size </p>
 
-<p class="definition">Definition at line <a class="el" href="a__buffer_8cxx_source.html#l00062">62</a> of file <a class="el" href="a__buffer_8cxx_source.html">a_buffer.cxx</a>.</p>
+<p class="definition">Definition at line <a class="el" href="a__buffer_8cxx_source.html#l00064">64</a> of file <a class="el" href="a__buffer_8cxx_source.html">a_buffer.cxx</a>.</p>
 
 <p class="reference">References <a class="el" href="vertex__buffer_8cxx_source.html#l00027">cgv::render::vertex_buffer::bind()</a>, <a class="el" href="shader__program_8cxx_source.html#l00502">cgv::render::shader_program::build_program()</a>, <a class="el" href="texture_8cxx_source.html#l00214">cgv::render::texture::create()</a>, <a class="el" href="a__buffer_8h_source.html#l00022">depth_tex</a>, <a class="el" href="shader__program_8cxx_source.html#l00736">cgv::render::shader_program::destruct()</a>, <a class="el" href="texture_8cxx_source.html#l00726">cgv::render::texture::destruct()</a>, <a class="el" href="shader__program_8cxx_source.html#l00615">cgv::render::shader_program::disable()</a>, <a class="el" href="shader__program_8cxx_source.html#l00593">cgv::render::shader_program::enable()</a>, <a class="el" href="data__format_8cxx_source.html#l00219">cgv::data::data_format::get_height()</a>, <a class="el" href="classcgv_1_1render_1_1context.html#a6dde896fc37726e3ec39e7d450f1e168">cgv::render::context::get_height()</a>, <a class="el" href="data__format_8cxx_source.html#l00215">cgv::data::data_format::get_width()</a>, <a class="el" href="classcgv_1_1render_1_1context.html#a473170ee5d7651a063695574f4b9f91f">cgv::render::context::get_width()</a>, <a class="el" href="context_8cxx_source.html#l02226">cgv::render::render_component::is_created()</a>, <a class="el" href="a__buffer_8h_source.html#l00024">node_counter_buffer</a>, <a class="el" href="vertex__buffer_8h_source.html#l00172">cgv::render::vertex_buffer::replace()</a>, <a class="el" href="shader__program_8h_source.html#l00157">cgv::render::shader_program::set_uniform()</a>, and <a class="el" href="vertex__buffer_8cxx_source.html#l00032">cgv::render::vertex_buffer::unbind()</a>.</p>
 
@@ -469,7 +478,7 @@ Protected Attributes</h2></td></tr>
 </table>
 </div><div class="memdoc">
 
-<p class="definition">Definition at line <a class="el" href="a__buffer_8h_source.html#l00068">68</a> of file <a class="el" href="a__buffer_8h_source.html">a_buffer.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="a__buffer_8h_source.html#l00074">74</a> of file <a class="el" href="a__buffer_8h_source.html">a_buffer.h</a>.</p>
 
 </div>
 </div>
@@ -496,7 +505,7 @@ Protected Attributes</h2></td></tr>
 </table>
 </div><div class="memdoc">
 
-<p class="definition">Definition at line <a class="el" href="a__buffer_8h_source.html#l00070">70</a> of file <a class="el" href="a__buffer_8h_source.html">a_buffer.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="a__buffer_8h_source.html#l00076">76</a> of file <a class="el" href="a__buffer_8h_source.html">a_buffer.h</a>.</p>
 
 </div>
 </div>
@@ -523,7 +532,7 @@ Protected Attributes</h2></td></tr>
 </table>
 </div><div class="memdoc">
 
-<p class="definition">Definition at line <a class="el" href="a__buffer_8h_source.html#l00069">69</a> of file <a class="el" href="a__buffer_8h_source.html">a_buffer.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="a__buffer_8h_source.html#l00075">75</a> of file <a class="el" href="a__buffer_8h_source.html">a_buffer.h</a>.</p>
 
 </div>
 </div>
@@ -550,7 +559,7 @@ Protected Attributes</h2></td></tr>
 </table>
 </div><div class="memdoc">
 
-<p class="definition">Definition at line <a class="el" href="a__buffer_8h_source.html#l00071">71</a> of file <a class="el" href="a__buffer_8h_source.html">a_buffer.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="a__buffer_8h_source.html#l00077">77</a> of file <a class="el" href="a__buffer_8h_source.html">a_buffer.h</a>.</p>
 
 </div>
 </div>
@@ -572,7 +581,7 @@ Protected Attributes</h2></td></tr>
 
 <p>update the provided shader compile options with respect to <a class="el" href="classcgv_1_1render_1_1a__buffer.html" title="This class provides a_buffer functionality.">a_buffer</a> settings. Call before enabling a program. </p>
 
-<p class="definition">Definition at line <a class="el" href="a__buffer_8cxx_source.html#l00023">23</a> of file <a class="el" href="a__buffer_8cxx_source.html">a_buffer.cxx</a>.</p>
+<p class="definition">Definition at line <a class="el" href="a__buffer_8cxx_source.html#l00025">25</a> of file <a class="el" href="a__buffer_8cxx_source.html">a_buffer.cxx</a>.</p>
 
 </div>
 </div>
@@ -687,7 +696,7 @@ Protected Attributes</h2></td></tr>
 
 <p class="definition">Definition at line <a class="el" href="a__buffer_8h_source.html#l00022">22</a> of file <a class="el" href="a__buffer_8h_source.html">a_buffer.h</a>.</p>
 
-<p class="reference">Referenced by <a class="el" href="a__buffer_8cxx_source.html#l00027">a_buffer()</a>, <a class="el" href="a__buffer_8cxx_source.html#l00053">destruct()</a>, <a class="el" href="a__buffer_8cxx_source.html#l00132">disable()</a>, <a class="el" href="a__buffer_8cxx_source.html#l00100">enable()</a>, and <a class="el" href="a__buffer_8cxx_source.html#l00062">init_frame()</a>.</p>
+<p class="reference">Referenced by <a class="el" href="a__buffer_8cxx_source.html#l00029">a_buffer()</a>, <a class="el" href="a__buffer_8cxx_source.html#l00055">destruct()</a>, <a class="el" href="a__buffer_8cxx_source.html#l00134">disable()</a>, <a class="el" href="a__buffer_8cxx_source.html#l00102">enable()</a>, and <a class="el" href="a__buffer_8cxx_source.html#l00064">init_frame()</a>.</p>
 
 </div>
 </div>
@@ -715,7 +724,7 @@ Protected Attributes</h2></td></tr>
 
 <p class="definition">Definition at line <a class="el" href="a__buffer_8h_source.html#l00028">28</a> of file <a class="el" href="a__buffer_8h_source.html">a_buffer.h</a>.</p>
 
-<p class="reference">Referenced by <a class="el" href="a__buffer_8cxx_source.html#l00027">a_buffer()</a>, and <a class="el" href="a__buffer_8cxx_source.html#l00100">enable()</a>.</p>
+<p class="reference">Referenced by <a class="el" href="a__buffer_8cxx_source.html#l00029">a_buffer()</a>, and <a class="el" href="a__buffer_8cxx_source.html#l00102">enable()</a>.</p>
 
 </div>
 </div>
@@ -733,9 +742,9 @@ Protected Attributes</h2></td></tr>
 
 <p>to be handled fragments per pixel (changes are applied when in <a class="el" href="classcgv_1_1render_1_1a__buffer.html#aaba5e671255c64900a6cf0b70cb2c910" title="ensure that a_buffer size corresponds to context size">init_frame()</a> function) </p>
 
-<p class="definition">Definition at line <a class="el" href="a__buffer_8h_source.html#l00045">45</a> of file <a class="el" href="a__buffer_8h_source.html">a_buffer.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="a__buffer_8h_source.html#l00051">51</a> of file <a class="el" href="a__buffer_8h_source.html">a_buffer.h</a>.</p>
 
-<p class="reference">Referenced by <a class="el" href="a__buffer_8cxx_source.html#l00027">a_buffer()</a>.</p>
+<p class="reference">Referenced by <a class="el" href="a__buffer_8cxx_source.html#l00029">a_buffer()</a>.</p>
 
 </div>
 </div>
@@ -835,7 +844,7 @@ Protected Attributes</h2></td></tr>
 
 <p class="definition">Definition at line <a class="el" href="a__buffer_8h_source.html#l00030">30</a> of file <a class="el" href="a__buffer_8h_source.html">a_buffer.h</a>.</p>
 
-<p class="reference">Referenced by <a class="el" href="a__buffer_8cxx_source.html#l00027">a_buffer()</a>, <a class="el" href="a__buffer_8cxx_source.html#l00132">disable()</a>, and <a class="el" href="a__buffer_8cxx_source.html#l00100">enable()</a>.</p>
+<p class="reference">Referenced by <a class="el" href="a__buffer_8cxx_source.html#l00029">a_buffer()</a>, <a class="el" href="a__buffer_8cxx_source.html#l00134">disable()</a>, and <a class="el" href="a__buffer_8cxx_source.html#l00102">enable()</a>.</p>
 
 </div>
 </div>
@@ -863,7 +872,7 @@ Protected Attributes</h2></td></tr>
 
 <p class="definition">Definition at line <a class="el" href="a__buffer_8h_source.html#l00024">24</a> of file <a class="el" href="a__buffer_8h_source.html">a_buffer.h</a>.</p>
 
-<p class="reference">Referenced by <a class="el" href="a__buffer_8cxx_source.html#l00053">destruct()</a>, <a class="el" href="a__buffer_8cxx_source.html#l00132">disable()</a>, <a class="el" href="a__buffer_8cxx_source.html#l00100">enable()</a>, and <a class="el" href="a__buffer_8cxx_source.html#l00062">init_frame()</a>.</p>
+<p class="reference">Referenced by <a class="el" href="a__buffer_8cxx_source.html#l00055">destruct()</a>, <a class="el" href="a__buffer_8cxx_source.html#l00134">disable()</a>, <a class="el" href="a__buffer_8cxx_source.html#l00102">enable()</a>, and <a class="el" href="a__buffer_8cxx_source.html#l00064">init_frame()</a>.</p>
 
 </div>
 </div>
@@ -905,9 +914,67 @@ Protected Attributes</h2></td></tr>
 
 <p>to be reserved number of fragment nodes per pixel (changes are applied when in <a class="el" href="classcgv_1_1render_1_1a__buffer.html#aaba5e671255c64900a6cf0b70cb2c910" title="ensure that a_buffer size corresponds to context size">init_frame()</a> function) </p>
 
-<p class="definition">Definition at line <a class="el" href="a__buffer_8h_source.html#l00047">47</a> of file <a class="el" href="a__buffer_8h_source.html">a_buffer.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="a__buffer_8h_source.html#l00053">53</a> of file <a class="el" href="a__buffer_8h_source.html">a_buffer.h</a>.</p>
 
-<p class="reference">Referenced by <a class="el" href="a__buffer_8cxx_source.html#l00027">a_buffer()</a>, <a class="el" href="a__buffer_8cxx_source.html#l00100">enable()</a>, and <a class="el" href="a__buffer_8cxx_source.html#l00148">finish_frame()</a>.</p>
+<p class="reference">Referenced by <a class="el" href="a__buffer_8cxx_source.html#l00029">a_buffer()</a>, <a class="el" href="a__buffer_8cxx_source.html#l00102">enable()</a>, and <a class="el" href="a__buffer_8cxx_source.html#l00150">finish_frame()</a>.</p>
+
+</div>
+</div>
+<a id="a3da47989214102ebef3c13c929fe7d2d" name="a3da47989214102ebef3c13c929fe7d2d"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a3da47989214102ebef3c13c929fe7d2d">&#9670;&#160;</a></span>pre_multiply_opacity</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">bool cgv::render::a_buffer::pre_multiply_opacity = true</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>whether to assume that fragment color is already multiplied with opacity </p>
+
+<p class="definition">Definition at line <a class="el" href="a__buffer_8h_source.html#l00046">46</a> of file <a class="el" href="a__buffer_8h_source.html">a_buffer.h</a>.</p>
+
+</div>
+</div>
+<a id="af7f9489ac5a07d5e127765f78b40e55c" name="af7f9489ac5a07d5e127765f78b40e55c"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#af7f9489ac5a07d5e127765f78b40e55c">&#9670;&#160;</a></span>z_fight_removal</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">bool cgv::render::a_buffer::z_fight_removal = false</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>whether to use volumetric blending of thickened fragments </p>
+
+<p class="definition">Definition at line <a class="el" href="a__buffer_8h_source.html#l00042">42</a> of file <a class="el" href="a__buffer_8h_source.html">a_buffer.h</a>.</p>
+
+<p class="reference">Referenced by <a class="el" href="a__buffer_8cxx_source.html#l00150">finish_frame()</a>.</p>
+
+</div>
+</div>
+<a id="a06b428cff8a6b8440a6a341840bc9135" name="a06b428cff8a6b8440a6a341840bc9135"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a06b428cff8a6b8440a6a341840bc9135">&#9670;&#160;</a></span>z_fight_removal_exp</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">float cgv::render::a_buffer::z_fight_removal_exp = -5.0f</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>set thickness of fragments to 10^z_fight_removal_exp where this is measured in scaling of depth buffer </p>
+
+<p class="definition">Definition at line <a class="el" href="a__buffer_8h_source.html#l00044">44</a> of file <a class="el" href="a__buffer_8h_source.html">a_buffer.h</a>.</p>
+
+<p class="reference">Referenced by <a class="el" href="a__buffer_8cxx_source.html#l00150">finish_frame()</a>.</p>
 
 </div>
 </div>
