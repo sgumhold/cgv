@@ -1,5 +1,7 @@
 var NAVTREEINDEX38 =
 {
+"property__string_8h_source.html":[12,0,1,4,54],
+"provider_8cxx_source.html":[12,0,1,4,55],
 "provider_8h_source.html":[12,0,1,4,56],
 "proximity_8h_source.html":[12,0,1,5,56],
 "pthread__lib_8cxx_source.html":[12,0,1,7,23],
@@ -247,7 +249,5 @@ var NAVTREEINDEX38 =
 "structcgv_1_1base_1_1factory.html#ad73889620918b35a13ab85a8a8283d33":[11,0,0,1,26,2],
 "structcgv_1_1base_1_1factory__impl.html":[11,0,0,1,27],
 "structcgv_1_1base_1_1factory__impl.html":[10,0,1,0,27],
-"structcgv_1_1base_1_1factory__impl.html#a3f5649e886cde97647a03b6c8b68e925":[10,0,1,0,27,1],
-"structcgv_1_1base_1_1factory__impl.html#a3f5649e886cde97647a03b6c8b68e925":[11,0,0,1,27,1],
-"structcgv_1_1base_1_1factory__impl.html#adf7d50867813f0c05448e66ded8f5d42":[10,0,1,0,27,0]
+"structcgv_1_1base_1_1factory__impl.html#a3f5649e886cde97647a03b6c8b68e925":[10,0,1,0,27,1]
 };

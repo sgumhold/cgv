@@ -15,6 +15,7 @@ var classcgv_1_1render_1_1a__buffer =
     [ "node_counter_buffer", "classcgv_1_1render_1_1a__buffer.html#a9817b36e2f471e5456d835ad56242c77", null ],
     [ "nodes_per_pixel", "classcgv_1_1render_1_1a__buffer.html#a0b66fb7b28c9fdde1a17a9e6f899a35d", null ],
     [ "pre_multiply_opacity", "classcgv_1_1render_1_1a__buffer.html#a3da47989214102ebef3c13c929fe7d2d", null ],
-    [ "z_fight_removal", "classcgv_1_1render_1_1a__buffer.html#af7f9489ac5a07d5e127765f78b40e55c", null ],
-    [ "z_fight_removal_exp", "classcgv_1_1render_1_1a__buffer.html#a06b428cff8a6b8440a6a341840bc9135", null ]
+    [ "z_fight_removal", "classcgv_1_1render_1_1a__buffer.html#a0c0804d07f0e1ec92657cc455052bb8d", null ],
+    [ "z_fight_removal_exp", "classcgv_1_1render_1_1a__buffer.html#a06b428cff8a6b8440a6a341840bc9135", null ],
+    [ "z_fight_window_width", "classcgv_1_1render_1_1a__buffer.html#a5ed4a828d946312ece4d9a6bbd85ad85", null ]
 ];
