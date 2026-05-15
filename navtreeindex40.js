@@ -1,5 +1,7 @@
 var NAVTREEINDEX40 =
 {
+"structcgv_1_1gui_1_1sphere__render__style__gui__creator.html#addb280c41222512ff61b270e7c5a0510":[11,0,0,4,63,0],
+"structcgv_1_1gui_1_1sphere__render__style__gui__creator.html#addb280c41222512ff61b270e7c5a0510":[10,0,1,3,63,0],
 "structcgv_1_1gui_1_1spline__tube__render__style__gui__creator.html":[11,0,0,4,64],
 "structcgv_1_1gui_1_1spline__tube__render__style__gui__creator.html":[10,0,1,3,64],
 "structcgv_1_1gui_1_1spline__tube__render__style__gui__creator.html#a517da8250691166776dd5d8ae4e292e2":[11,0,0,4,64,0],
@@ -247,7 +249,5 @@ var NAVTREEINDEX40 =
 "structcgv_1_1media_1_1hls__color__interface_3_01color_3_01T_00_01cm_00_01am_01_4_01_4.html":[11,0,0,6,41],
 "structcgv_1_1media_1_1hls__color__interface_3_01color_3_01T_00_01cm_00_01am_01_4_01_4.html#a34b3ec15e5f7c000cfd5356254c91175":[11,0,0,6,41,0],
 "structcgv_1_1media_1_1hls__color__interface_3_01color_3_01T_00_01cm_00_01am_01_4_01_4.html#a4d6c2dca4ed607fac123b6a83269db6a":[11,0,0,6,41,2],
-"structcgv_1_1media_1_1hls__color__interface_3_01color_3_01T_00_01cm_00_01am_01_4_01_4.html#a4fbe1a91e5d90fae8a91ff16846247c9":[11,0,0,6,41,1],
-"structcgv_1_1media_1_1illum_1_1obj__material.html":[11,0,0,6,1,1],
-"structcgv_1_1media_1_1illum_1_1obj__material.html#a13abbce59a501210fb5191d0a5a57917":[11,0,0,6,1,1,2]
+"structcgv_1_1media_1_1hls__color__interface_3_01color_3_01T_00_01cm_00_01am_01_4_01_4.html#a4fbe1a91e5d90fae8a91ff16846247c9":[11,0,0,6,41,1]
 };
