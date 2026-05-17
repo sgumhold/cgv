@@ -8,6 +8,7 @@ namespace data {
 template<typename T>
 class buffer2d {
 public:
+	using value_type = T;
 	using vector_type = std::vector<T>;
 
 	buffer2d() {}
