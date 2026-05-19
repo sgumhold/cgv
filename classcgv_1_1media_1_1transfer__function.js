@@ -5,9 +5,9 @@ var classcgv_1_1media_1_1transfer__function =
     [ "opacity_point_type", "classcgv_1_1media_1_1transfer__function.html#a590b06bdcbdddc7eb3dcfa10914050f6", null ],
     [ "opacity_type", "classcgv_1_1media_1_1transfer__function.html#aff682f6e625b6536e758de91db347a61", null ],
     [ "InterpolationMode", "classcgv_1_1media_1_1transfer__function.html#a256762112fe6da45f5dd6540d75daa5f", [
-      [ "kStep", "classcgv_1_1media_1_1transfer__function.html#a256762112fe6da45f5dd6540d75daa5fa91bcd78a299b9747fbffc0cf1c1ae144", null ],
-      [ "kLinear", "classcgv_1_1media_1_1transfer__function.html#a256762112fe6da45f5dd6540d75daa5faac97f0008bcf7c7fe4f2ff94160e1385", null ],
-      [ "kSmooth", "classcgv_1_1media_1_1transfer__function.html#a256762112fe6da45f5dd6540d75daa5fada0c07f1994eeca75017d09a6104a9e5", null ]
+      [ "Step", "classcgv_1_1media_1_1transfer__function.html#a256762112fe6da45f5dd6540d75daa5fa48c7c41b72e1d678923ce3571aa65b2d", null ],
+      [ "Linear", "classcgv_1_1media_1_1transfer__function.html#a256762112fe6da45f5dd6540d75daa5fa32a843da6ea40ab3b17a3421ccdf671b", null ],
+      [ "Smooth", "classcgv_1_1media_1_1transfer__function.html#a256762112fe6da45f5dd6540d75daa5fae510cdf33cd497134b47b9316314d4b4", null ]
     ] ],
     [ "transfer_function", "classcgv_1_1media_1_1transfer__function.html#a647b5fde76652f5bec0031ad5a02b47a", null ],
     [ "transfer_function", "classcgv_1_1media_1_1transfer__function.html#a26b7d65abea7a4ca2828ecdd5b2c6336", null ],

@@ -125,7 +125,7 @@ var searchData=
   ['frustum_122',['frustum',['../structvr_1_1vr__tracking__reference__info.html#a3527c236e9b612f0892f4d6f80d324f6',1,'vr::vr_tracking_reference_info']]],
   ['fullscreen_5fmonitor_123',['fullscreen_monitor',['../structcgv_1_1render_1_1render__config.html#aa8b3496b6e191d4614ada9874a0e4e6c',1,'cgv::render::render_config']]],
   ['func_5ftype_124',['func_type',['../structcgv_1_1ppp_1_1func__type.html',1,'cgv::ppp']]],
-  ['function_125',['function',['../classcgv_1_1media_1_1continuous__color__scheme.html#a312260e019c6b85986e789e0d56a5db2',1,'cgv::media::continuous_color_scheme']]],
+  ['function_125',['function',['../classcgv_1_1media_1_1continuous__color__scheme.html#a00e5a6e45be609465a58cdd9d7fdde65',1,'cgv::media::continuous_color_scheme']]],
   ['function_5fref_5finterpolator_126',['function_ref_interpolator',['../classcgv_1_1math_1_1function__ref__interpolator.html',1,'cgv::math']]],
   ['function_5fthread_127',['function_thread',['../classcgv_1_1os_1_1function__thread.html',1,'cgv::os']]],
   ['fvec_128',['fvec',['../classcgv_1_1math_1_1fvec.html#a0a6f0eb621e32bdbcd27e6f88862648d',1,'cgv::math::fvec::fvec()'],['../classcgv_1_1math_1_1fvec.html',1,'cgv::math::fvec&lt; T, N &gt;'],['../classcgv_1_1math_1_1fvec.html#ad1f2755e812b233b6f04174b8af8c4ad',1,'cgv::math::fvec::fvec()'],['../classcgv_1_1math_1_1fvec.html#aa814cf80b31729abe42d82d0baa41ba2',1,'cgv::math::fvec::fvec(const T &amp;x)'],['../classcgv_1_1math_1_1fvec.html#a86ed02c1ff1aef93e95110c88514a989',1,'cgv::math::fvec::fvec(const std::array&lt; T, N &gt; &amp;a)']]],

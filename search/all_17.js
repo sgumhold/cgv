@@ -425,7 +425,7 @@ var searchData=
   ['slice_5fopacity_422',['slice_opacity',['../structcgv_1_1render_1_1volume__render__style.html#a8929cf23e3b8ee46e67c3c6d7eac8a4b',1,'cgv::render::volume_render_style']]],
   ['sliced_5fvolume_5finfo_423',['sliced_volume_info',['../structcgv_1_1media_1_1volume_1_1sliced__volume__info.html',1,'cgv::media::volume']]],
   ['smcbh_424',['smcbh',['../classcgv_1_1media_1_1mesh_1_1streaming__mesh.html#a448840b91331510822bb0e45dcd2c380',1,'cgv::media::mesh::streaming_mesh']]],
-  ['smooth_425',['smooth',['../classcgv_1_1media_1_1continuous__color__scheme.html#a205e9e0e4b8930c9e03d219e00e8989f',1,'cgv::media::continuous_color_scheme']]],
+  ['smooth_425',['smooth',['../classcgv_1_1media_1_1continuous__color__scheme.html#ae946cc157dff7c6e955a4aed644c3d08',1,'cgv::media::continuous_color_scheme']]],
   ['smooth_5finterpolator_426',['smooth_interpolator',['../classcgv_1_1math_1_1smooth__interpolator.html',1,'cgv::math']]],
   ['snake_5fcase_5fto_5fcamel_5fcase_427',['snake_case_to_camel_case',['../namespacecgv_1_1utils.html#a65e6f97bb75d01065fbd790910e0cb7c',1,'cgv::utils']]],
   ['snake_5fcase_5fto_5fcapitalized_5fcase_428',['snake_case_to_capitalized_case',['../namespacecgv_1_1utils.html#a68992d219fc981b159e6430e61735ab5',1,'cgv::utils']]],
