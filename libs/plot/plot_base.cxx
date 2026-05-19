@@ -608,7 +608,7 @@ plot_base::plot_base(unsigned _dim, unsigned _nr_attributes) : dom_cfg(_dim, _nr
 		color_mapping[ci] = -1;
 		color_scheme_index[ci] = -1;
 		color_scales[ci] = std::make_shared<cgv::render::device_continuous_color_scale>();
-		color_scales[ci]->color_scale->set_transform(cgv::media::ContinuousMappingTransform::kPow);
+		color_scales[ci]->color_scale->set_transform(cgv::media::ContinuousMappingTransform::Pow);
 		color_scale_gamma[ci] = 1;
 		color_scale_is_bipolar[ci] = false;
 		window_zero_position[ci] = 0.5f;

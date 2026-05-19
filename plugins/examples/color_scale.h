@@ -123,10 +123,10 @@ private:
 	float midpoint = 0.5f;
 	float pow_exponent = 1.0f;
 	float log_base = 10.0f;
-	cgv::media::ContinuousMappingTransform transform = cgv::media::ContinuousMappingTransform::kLinear;
+	cgv::media::ContinuousMappingTransform transform = cgv::media::ContinuousMappingTransform::Linear;
 	cgv::rgba unknown_color = { 1.0f, 0.0f, 1.0f, 0.0f };
-	cgv::media::transfer_function::InterpolationMode color_interpolation = cgv::media::transfer_function::InterpolationMode::kLinear;
-	cgv::media::transfer_function::InterpolationMode opacity_interpolation = cgv::media::transfer_function::InterpolationMode::kLinear;
+	cgv::media::transfer_function::InterpolationMode color_interpolation = cgv::media::transfer_function::InterpolationMode::Linear;
+	cgv::media::transfer_function::InterpolationMode opacity_interpolation = cgv::media::transfer_function::InterpolationMode::Linear;
 
 	/// Overlay instances.
 	cgv::overlay::transfer_function_editor_ptr editor;

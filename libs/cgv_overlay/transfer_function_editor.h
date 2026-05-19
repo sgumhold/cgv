@@ -84,8 +84,8 @@ protected:
 	static const size_t preview_texture_resolution;
 
 	bool supports_opacity = false;
-	cgv::media::transfer_function::InterpolationMode color_interpolation = cgv::media::transfer_function::InterpolationMode::kLinear;
-	cgv::media::transfer_function::InterpolationMode opacity_interpolation = cgv::media::transfer_function::InterpolationMode::kLinear;
+	cgv::media::transfer_function::InterpolationMode color_interpolation = cgv::media::transfer_function::InterpolationMode::Linear;
+	cgv::media::transfer_function::InterpolationMode opacity_interpolation = cgv::media::transfer_function::InterpolationMode::Linear;
 
 	std::string value_label;
 	cgv::g2d::rect value_label_rectangle;

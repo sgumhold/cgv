@@ -8,7 +8,7 @@ size_t load_continuous_color_scheme_presets(continuous_color_scheme_registry& re
 	
 	continuous_color_scheme_registry_helper r(registry, types);
 
-	if(r.can_load(ColorSchemeType::kSequential)) {
+	if(r.can_load(ColorSchemeType::Sequential)) {
 		// sequential schemes (single-hue)
 		r.load("blues", interpolateBlues());
 		r.load("greens", interpolateGreens());
@@ -28,7 +28,7 @@ size_t load_continuous_color_scheme_presets(continuous_color_scheme_registry& re
 		r.load("cividis", interpolateCividis());
 	}
 
-	if(r.can_load(ColorSchemeType::kDiverging)) {
+	if(r.can_load(ColorSchemeType::Diverging)) {
 		// diverging schemes
 		r.load("BrBG", interpolateBrBG());
 		r.load("PRGn", interpolatePRGn());
@@ -41,7 +41,7 @@ size_t load_continuous_color_scheme_presets(continuous_color_scheme_registry& re
 		r.load("spectral", interpolateSpectral());
 	}
 
-	if(r.can_load(ColorSchemeType::kCyclical)) {
+	if(r.can_load(ColorSchemeType::Cyclical)) {
 		// cyclical schemes
 		r.load("twilight", interpolateTwilight());
 		r.load("hues", interpolateHue());
@@ -55,7 +55,7 @@ size_t load_discrete_color_scheme_presets(discrete_color_scheme_registry& regist
 
 	discrete_color_scheme_registry_helper r(registry, types);
 
-	if(r.can_load(ColorSchemeType::kSequential)) {
+	if(r.can_load(ColorSchemeType::Sequential)) {
 		// sequential schemes (single-hue)
 		r.load("blues", schemeBlues());
 		r.load("greens", schemeGreens());
@@ -66,7 +66,7 @@ size_t load_discrete_color_scheme_presets(discrete_color_scheme_registry& regist
 		// sequential schemes (multi-hue)
 	}
 
-	if(r.can_load(ColorSchemeType::kDiverging)) {
+	if(r.can_load(ColorSchemeType::Diverging)) {
 		// diverging schemes
 		r.load("BrBG", schemeBrBG());
 		r.load("PRGn", schemePRGn());
@@ -78,7 +78,7 @@ size_t load_discrete_color_scheme_presets(discrete_color_scheme_registry& regist
 		r.load("RdYlGn", schemeRdYlGn());
 	}
 
-	if(r.can_load(ColorSchemeType::kCategorical)) {
+	if(r.can_load(ColorSchemeType::Categorical)) {
 		// categorical schemes
 		r.load("category10", schemeCategory10());
 		r.load("accent8", schemeAccent8());

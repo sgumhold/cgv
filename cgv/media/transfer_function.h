@@ -22,9 +22,9 @@ class CGV_API transfer_function : public color_scale {
 public:
 	/// @brief The interpolation modes supported by the transfer function.
 	enum class InterpolationMode {
-		kStep,
-		kLinear,
-		kSmooth
+		Step,
+		Linear,
+		Smooth
 	};
 
 	/// @brief The used color type.
@@ -341,9 +341,9 @@ private:
 	template<typename value_type>
 	value_type interpolate(const std::vector<std::pair<float, value_type>>& points, float x, InterpolationMode interpolation) const {
 		switch(interpolation) {
-		case InterpolationMode::kStep:
+		case InterpolationMode::Step:
 			return interpolate_step(points, x);
-		case InterpolationMode::kSmooth:
+		case InterpolationMode::Smooth:
 			return cgv::math::interpolate_smooth_cubic(points, x);
 		default:
 			return cgv::math::interpolate_linear(points, x);
@@ -360,9 +360,9 @@ private:
 	template<typename value_type>
 	std::vector<value_type> quantize(const std::vector<std::pair<float, value_type>>& points, size_t n, InterpolationMode interpolation) const {
 		switch(interpolation) {
-		case InterpolationMode::kStep:
+		case InterpolationMode::Step:
 			return interpolate_step_n(points, n);
-		case InterpolationMode::kSmooth:
+		case InterpolationMode::Smooth:
 			return cgv::math::interpolate_smooth_cubic_n(points, n);
 		default:
 			return cgv::math::interpolate_linear_n(points, n);
@@ -377,9 +377,9 @@ private:
 	bool update_domain();
 
 	/// The interpolation mode used for the color function.
-	InterpolationMode color_interpolation_ = InterpolationMode::kLinear;
+	InterpolationMode color_interpolation_ = InterpolationMode::Linear;
 	/// The interpolation mode used for the opacity function.
-	InterpolationMode opacity_interpolation_ = InterpolationMode::kLinear;
+	InterpolationMode opacity_interpolation_ = InterpolationMode::Linear;
 	/// The control points of the color function.
 	std::vector<color_point_type> color_points_;
 	/// The control points of the opacity function.

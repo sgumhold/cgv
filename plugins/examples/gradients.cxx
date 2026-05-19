@@ -165,10 +165,10 @@ private:
 		return gradient_kernel.init(
 			ctx,
 			cgv::render::TextureType::TT_3D,
-			sl::ImageFormatLayoutQualifier::k_r32f,
+			sl::ImageFormatLayoutQualifier::r32f,
 			wrap_mode,
 			gradient_operator,
-			cgv::gpgpu::DifferentiationOutput::kDerivative);
+			cgv::gpgpu::DifferentiationOutput::Derivative);
 	}
 
 	void create_test_volume(cgv::render::context& ctx) {
@@ -277,8 +277,8 @@ private:
 	bool show_gradients = true;
 
 	cgv::gpgpu::texture_differentiate gradient_kernel;
-	cgv::gpgpu::WrapMode wrap_mode = cgv::gpgpu::WrapMode::kClampToBorder;
-	cgv::gpgpu::DifferentiationOperator gradient_operator = cgv::gpgpu::DifferentiationOperator::kSobel;
+	cgv::gpgpu::WrapMode wrap_mode = cgv::gpgpu::WrapMode::ClampToBorder;
+	cgv::gpgpu::DifferentiationOperator gradient_operator = cgv::gpgpu::DifferentiationOperator::Sobel;
 
 	// Render members
 	cgv::render::arrow_render_data<> arrows;

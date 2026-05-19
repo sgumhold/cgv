@@ -7,7 +7,7 @@ size_t load_continuous_color_scheme_presets(cgv::media::continuous_color_scheme_
 
 	cgv::media::continuous_color_scheme_registry_helper r(registry, types);
 
-	if(r.can_load(cgv::media::ColorSchemeType::kSequential)) {
+	if(r.can_load(cgv::media::ColorSchemeType::Sequential)) {
 		r.load("acton", interpolateActon());
 		r.load("bamako", interpolateBamako());
 		r.load("batlow", interpolateBatlow());
@@ -35,7 +35,7 @@ size_t load_continuous_color_scheme_presets(cgv::media::continuous_color_scheme_
 		r.load("oleron", interpolateOleron());
 	}
 
-	if(r.can_load(cgv::media::ColorSchemeType::kDiverging)) {
+	if(r.can_load(cgv::media::ColorSchemeType::Diverging)) {
 		r.load("bam", interpolateBam());
 		r.load("berlin", interpolateBerlin());
 		r.load("broc", interpolateBroc());
@@ -48,7 +48,7 @@ size_t load_continuous_color_scheme_presets(cgv::media::continuous_color_scheme_
 		r.load("vik", interpolateVik());
 	}
 
-	if(r.can_load(cgv::media::ColorSchemeType::kCyclical)) {
+	if(r.can_load(cgv::media::ColorSchemeType::Cyclical)) {
 		r.load("bamO", interpolateBamO());
 		r.load("brocO", interpolateBrocO());
 		r.load("corkO", interpolateCorkO());
@@ -64,7 +64,7 @@ size_t load_discrete_color_scheme_presets(cgv::media::discrete_color_scheme_regi
 
 	cgv::media::discrete_color_scheme_registry_helper r(registry, types);
 
-	if(r.can_load(cgv::media::ColorSchemeType::kCategorical)) {
+	if(r.can_load(cgv::media::ColorSchemeType::Categorical)) {
 		r.load("acton10", schemeActon10());
 		r.load("bamako10", schemeBamako10());
 		r.load("batlow10", schemeBatlow10());

@@ -34,7 +34,7 @@ bool radix_sort::init(cgv::render::context& ctx, const sl::data_type& key_type, 
 
 	config.define_macro("VALUE_TYPEDEF", to_string(_value_type.type()));
 
-	config.define_macro("SORT_ASCENDING", _order == SortOrder::kAscending);
+	config.define_macro("SORT_ASCENDING", _order == SortOrder::Ascending);
 	config.define_macro("SORT_PAIRS", !_value_type.is_void());
 
 	config.define_macro("RADIX", _radix);
@@ -81,7 +81,7 @@ bool radix_sort::is_type_supported(const sl::data_type& type) const {
 	if(type.is_compound())
 		return false;
 	sl::Type base_type = type.type();
-	return base_type == sl::Type::kUInt || base_type == sl::Type::kInt || base_type == sl::Type::kFloat;
+	return base_type == sl::Type::UInt || base_type == sl::Type::Int || base_type == sl::Type::Float;
 }
 
 } // namespace gpgpu

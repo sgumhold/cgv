@@ -56,7 +56,7 @@ public:
 
 		// Load sequential and diverging color scheme presets into the global registry.
 		cgv::media::continuous_color_scheme_registry& color_schemes = cgv::media::get_global_continuous_color_scheme_registry();
-		cgv::media::load_continuous_color_scheme_presets(color_schemes, { cgv::media::ColorSchemeType::kSequential, cgv::media::ColorSchemeType::kDiverging });
+		cgv::media::load_continuous_color_scheme_presets(color_schemes, { cgv::media::ColorSchemeType::Sequential, cgv::media::ColorSchemeType::Diverging });
 
 		plot.adjust_domain_to_data();
 		plot.adjust_tick_marks();
@@ -145,7 +145,7 @@ public:
 
 		// Load sequential and diverging color scheme presets into the global registry.
 		cgv::media::continuous_color_scheme_registry& color_schemes = cgv::media::get_global_continuous_color_scheme_registry();
-		cgv::media::load_continuous_color_scheme_presets(color_schemes, { cgv::media::ColorSchemeType::kSequential, cgv::media::ColorSchemeType::kDiverging });
+		cgv::media::load_continuous_color_scheme_presets(color_schemes, { cgv::media::ColorSchemeType::Sequential, cgv::media::ColorSchemeType::Diverging });
 
 		plot.color_mapping[0] = 2;
 		if(!plot.set_color_scale(0, "turbo"))

@@ -268,19 +268,19 @@ static constexpr std::array<const char*, 7> reds_data = {
 	"fff5f0fee0d2fcbba1fc9272fb6a4aef3b2ccb181da50f1567000d"
 };
 
-static auto interpolateBlues() { return continuous_color_scheme::smooth(to_colors(blues_data.back()), ColorSchemeType::kSequential); }
-static auto interpolateGreens() { return continuous_color_scheme::smooth(to_colors(greens_data.back()), ColorSchemeType::kSequential); }
-static auto interpolateGrays() { return continuous_color_scheme::smooth(to_colors(grays_data.back()), ColorSchemeType::kSequential); }
-static auto interpolateOranges() { return continuous_color_scheme::smooth(to_colors(oranges_data.back()), ColorSchemeType::kSequential); }
-static auto interpolatePurples() { return continuous_color_scheme::smooth(to_colors(purples_data.back()), ColorSchemeType::kSequential); }
-static auto interpolateReds() { return continuous_color_scheme::smooth(to_colors(reds_data.back()), ColorSchemeType::kSequential); }
+static auto interpolateBlues() { return continuous_color_scheme::smooth(to_colors(blues_data.back()), ColorSchemeType::Sequential); }
+static auto interpolateGreens() { return continuous_color_scheme::smooth(to_colors(greens_data.back()), ColorSchemeType::Sequential); }
+static auto interpolateGrays() { return continuous_color_scheme::smooth(to_colors(grays_data.back()), ColorSchemeType::Sequential); }
+static auto interpolateOranges() { return continuous_color_scheme::smooth(to_colors(oranges_data.back()), ColorSchemeType::Sequential); }
+static auto interpolatePurples() { return continuous_color_scheme::smooth(to_colors(purples_data.back()), ColorSchemeType::Sequential); }
+static auto interpolateReds() { return continuous_color_scheme::smooth(to_colors(reds_data.back()), ColorSchemeType::Sequential); }
 
-static auto schemeBlues() { return discrete_color_scheme(to_colors(blues_data), ColorSchemeType::kSequential); }
-static auto schemeGreens() { return discrete_color_scheme(to_colors(greens_data), ColorSchemeType::kSequential); }
-static auto schemeGrays() { return discrete_color_scheme(to_colors(grays_data), ColorSchemeType::kSequential); }
-static auto schemeOranges() { return discrete_color_scheme(to_colors(oranges_data), ColorSchemeType::kSequential); }
-static auto schemePurples() { return discrete_color_scheme(to_colors(purples_data), ColorSchemeType::kSequential); }
-static auto schemeReds() { return discrete_color_scheme(to_colors(reds_data), ColorSchemeType::kSequential); }
+static auto schemeBlues() { return discrete_color_scheme(to_colors(blues_data), ColorSchemeType::Sequential); }
+static auto schemeGreens() { return discrete_color_scheme(to_colors(greens_data), ColorSchemeType::Sequential); }
+static auto schemeGrays() { return discrete_color_scheme(to_colors(grays_data), ColorSchemeType::Sequential); }
+static auto schemeOranges() { return discrete_color_scheme(to_colors(oranges_data), ColorSchemeType::Sequential); }
+static auto schemePurples() { return discrete_color_scheme(to_colors(purples_data), ColorSchemeType::Sequential); }
+static auto schemeReds() { return discrete_color_scheme(to_colors(reds_data), ColorSchemeType::Sequential); }
 
 // sequential (multi-hue)
 // Viridis turbo
@@ -472,23 +472,23 @@ constexpr std::array<const char*, 9> RdYlGn_data = {
 	"a50026d73027f46d43fdae61fee08bffffbfd9ef8ba6d96a66bd631a9850006837"
 };
 
-static auto interpolateBrBG() { return continuous_color_scheme::smooth(to_colors(BrBG_data.back()), ColorSchemeType::kDiverging); }
-static auto interpolatePiYG() { return continuous_color_scheme::smooth(to_colors(PiYG_data.back()), ColorSchemeType::kDiverging); }
-static auto interpolatePRGn() { return continuous_color_scheme::smooth(to_colors(PRGn_data.back()), ColorSchemeType::kDiverging); }
-static auto interpolatePuOr() { return continuous_color_scheme::smooth(to_colors(PuOr_data.back()), ColorSchemeType::kDiverging); }
-static auto interpolateRdBu() { return continuous_color_scheme::smooth(to_colors(RdBu_data.back()), ColorSchemeType::kDiverging); }
-static auto interpolateRdGy() { return continuous_color_scheme::smooth(to_colors(RdGy_data.back()), ColorSchemeType::kDiverging); }
-static auto interpolateRdYlBu() { return continuous_color_scheme::smooth(to_colors(RdYlBu_data.back()), ColorSchemeType::kDiverging); }
-static auto interpolateRdYlGn() { return continuous_color_scheme::smooth(to_colors(RdYlGn_data.back()), ColorSchemeType::kDiverging); }
+static auto interpolateBrBG() { return continuous_color_scheme::smooth(to_colors(BrBG_data.back()), ColorSchemeType::Diverging); }
+static auto interpolatePiYG() { return continuous_color_scheme::smooth(to_colors(PiYG_data.back()), ColorSchemeType::Diverging); }
+static auto interpolatePRGn() { return continuous_color_scheme::smooth(to_colors(PRGn_data.back()), ColorSchemeType::Diverging); }
+static auto interpolatePuOr() { return continuous_color_scheme::smooth(to_colors(PuOr_data.back()), ColorSchemeType::Diverging); }
+static auto interpolateRdBu() { return continuous_color_scheme::smooth(to_colors(RdBu_data.back()), ColorSchemeType::Diverging); }
+static auto interpolateRdGy() { return continuous_color_scheme::smooth(to_colors(RdGy_data.back()), ColorSchemeType::Diverging); }
+static auto interpolateRdYlBu() { return continuous_color_scheme::smooth(to_colors(RdYlBu_data.back()), ColorSchemeType::Diverging); }
+static auto interpolateRdYlGn() { return continuous_color_scheme::smooth(to_colors(RdYlGn_data.back()), ColorSchemeType::Diverging); }
 
-static auto schemeBrBG() { return discrete_color_scheme(to_colors(BrBG_data), ColorSchemeType::kDiverging); }
-static auto schemePRGn() { return discrete_color_scheme(to_colors(PRGn_data), ColorSchemeType::kDiverging); }
-static auto schemePiYG() { return discrete_color_scheme(to_colors(PiYG_data), ColorSchemeType::kDiverging); }
-static auto schemePuOr() { return discrete_color_scheme(to_colors(PuOr_data), ColorSchemeType::kDiverging); }
-static auto schemeRdBu() { return discrete_color_scheme(to_colors(RdBu_data), ColorSchemeType::kDiverging); }
-static auto schemeRdGy() { return discrete_color_scheme(to_colors(RdGy_data), ColorSchemeType::kDiverging); }
-static auto schemeRdYlBu() { return discrete_color_scheme(to_colors(RdYlBu_data), ColorSchemeType::kDiverging); }
-static auto schemeRdYlGn() { return discrete_color_scheme(to_colors(RdYlGn_data), ColorSchemeType::kDiverging); }
+static auto schemeBrBG() { return discrete_color_scheme(to_colors(BrBG_data), ColorSchemeType::Diverging); }
+static auto schemePRGn() { return discrete_color_scheme(to_colors(PRGn_data), ColorSchemeType::Diverging); }
+static auto schemePiYG() { return discrete_color_scheme(to_colors(PiYG_data), ColorSchemeType::Diverging); }
+static auto schemePuOr() { return discrete_color_scheme(to_colors(PuOr_data), ColorSchemeType::Diverging); }
+static auto schemeRdBu() { return discrete_color_scheme(to_colors(RdBu_data), ColorSchemeType::Diverging); }
+static auto schemeRdGy() { return discrete_color_scheme(to_colors(RdGy_data), ColorSchemeType::Diverging); }
+static auto schemeRdYlBu() { return discrete_color_scheme(to_colors(RdYlBu_data), ColorSchemeType::Diverging); }
+static auto schemeRdYlGn() { return discrete_color_scheme(to_colors(RdYlGn_data), ColorSchemeType::Diverging); }
 
 constexpr const char* spectral_data = "9e0142d53e4ff46d43fdae61fee08bffffbfe6f598abdda466c2a53288bd5e4fa2";
 static auto interpolateSpectral() { return continuous_color_scheme::smooth(to_colors(spectral_data)); }
@@ -497,8 +497,8 @@ static auto interpolateSpectral() { return continuous_color_scheme::smooth(to_co
 constexpr const char* hue_data = "ff0000ffff0000ff0000ffff0000ffff00ffff0000";
 constexpr const char* twilight_data = "e1d8e2e0d9e2dfd9e1ded9e0ddd9e0dbd8dfd9d8ded8d7ddd6d6dcd4d6dbd2d5dacfd4d9cdd2d8cad1d7c7d0d6c5cfd4c2cdd3bfccd2bccbd1b9c9d0b6c8cfb3c6ceb0c4cdadc3ccaac1cba7c0caa4becaa1bcc99ebbc89bb9c898b7c796b5c793b4c690b2c58eb0c58baec589adc487abc484a9c382a7c380a5c37ea3c27ca1c27a9fc2789ec1769cc1749ac17398c07196c07094c06e92bf6d90bf6b8ebf6a8cbe698abe6888be6786bd6683bd6581bd647fbc647dbc637bbb6279bb6277ba6174ba6172b96070b8606eb8606bb75f69b65f67b65f65b55f62b45f60b35e5eb25e5bb15e59b05e57af5e54ae5e52ad5e4fac5e4daa5e4ba95d48a85d46a65d43a55d41a35d3ea15c3c9f5c3a9e5c379c5b359a5b32975a30955a2e93592b9059298e58278b572588562386552183541f7f531d7c521c79511a764f19724e186f4c176b4b166849156547146146135e44135b4212574012543f11513d114e3c114c3a104939104637104436104235104034113e33113c32113a3112393013372f13363012363212373311373411373611383711393911393a113a3c113b3e113c40113d42113e44123f4712404912414c13424e13435014445314455615465815475b16485d174960174a63184b65194b68194c6b1a4d6d1b4d701c4e721d4e751e4f781f4f7a204f7d214f7f22508124508425508626508828508b29508d2b508f2d50912e4f93304f95324f97344f99364f9b374f9d394f9e3b4fa03d4fa23f4fa4414fa5444fa7464fa84850aa4a50ab4c50ad4e50ae5051b05351b15551b25752b45952b55c53b65e54b76054b86355b96556ba6757bc6a58bc6c59bd6f5abe715cbf735dc0765ec17860c27b61c27d63c38065c48267c48569c5876bc68a6dc68c6fc78e71c79174c89376c99679c9987cca9b7eca9d81cba084cba287cca48acda78dcda991ceab94ceae97cfb09ad0b29ed1b5a1d1b7a4d2b9a8d3bbabd4bdafd5bfb2d6c1b6d7c3b9d8c5bcd8c7c0d9c9c3dacbc6dbcdc9dcceccddd0cfddd1d2ded3d4dfd4d6dfd5d8e0d6dae0d7dce1d7dde1d8dfe1d8e0e1d8e1";
 
-static auto interpolateHue() { return continuous_color_scheme::linear(to_colors(hue_data), ColorSchemeType::kCyclical); }
-static auto interpolateTwilight() { return continuous_color_scheme::linear(to_colors(twilight_data), ColorSchemeType::kCyclical); }
+static auto interpolateHue() { return continuous_color_scheme::linear(to_colors(hue_data), ColorSchemeType::Cyclical); }
+static auto interpolateTwilight() { return continuous_color_scheme::linear(to_colors(twilight_data), ColorSchemeType::Cyclical); }
 
 // categorical
 constexpr const char* category10_data = "1f77b4ff7f0e2ca02cd627289467bd8c564be377c27f7f7fbcbd2217becf";
@@ -513,17 +513,17 @@ constexpr const char* set9_data = "e41a1c377eb84daf4a984ea3ff7f00ffff33a65628f78
 constexpr const char* set12_data = "8dd3c7ffffb3bebadafb807280b1d3fdb462b3de69fccde5d9d9d9bc80bdccebc5ffed6f";
 constexpr const char* tableau10_data = "4e79a7f28e2ce1575976b7b259a14fedc949af7aa1ff9da79c755fbab0ab";
 
-static auto schemeCategory10() { return discrete_color_scheme(to_colors(category10_data), ColorSchemeType::kCategorical);}
-static auto schemeAccent8() { return discrete_color_scheme(to_colors(accent8_data), ColorSchemeType::kCategorical); }
-static auto schemeDark8() { return discrete_color_scheme(to_colors(dark8_data), ColorSchemeType::kCategorical); }
-static auto schemeObservable10() { return discrete_color_scheme(to_colors(observable10_data), ColorSchemeType::kCategorical); }
-static auto schemePaired12() { return discrete_color_scheme(to_colors(paired12_data), ColorSchemeType::kCategorical); }
-static auto schemePastel8_1() { return discrete_color_scheme(to_colors(pastel8_1_data), ColorSchemeType::kCategorical); }
-static auto schemePastel8_2() { return discrete_color_scheme(to_colors(pastel8_2_data), ColorSchemeType::kCategorical); }
-static auto schemeSet8() { return discrete_color_scheme(to_colors(set8_data), ColorSchemeType::kCategorical); }
-static auto schemeSet9() { return discrete_color_scheme(to_colors(set9_data), ColorSchemeType::kCategorical); }
-static auto schemeSet12() { return discrete_color_scheme(to_colors(set12_data), ColorSchemeType::kCategorical); }
-static auto schemeTableau10() { return discrete_color_scheme(to_colors(tableau10_data), ColorSchemeType::kCategorical); }
+static auto schemeCategory10() { return discrete_color_scheme(to_colors(category10_data), ColorSchemeType::Categorical);}
+static auto schemeAccent8() { return discrete_color_scheme(to_colors(accent8_data), ColorSchemeType::Categorical); }
+static auto schemeDark8() { return discrete_color_scheme(to_colors(dark8_data), ColorSchemeType::Categorical); }
+static auto schemeObservable10() { return discrete_color_scheme(to_colors(observable10_data), ColorSchemeType::Categorical); }
+static auto schemePaired12() { return discrete_color_scheme(to_colors(paired12_data), ColorSchemeType::Categorical); }
+static auto schemePastel8_1() { return discrete_color_scheme(to_colors(pastel8_1_data), ColorSchemeType::Categorical); }
+static auto schemePastel8_2() { return discrete_color_scheme(to_colors(pastel8_2_data), ColorSchemeType::Categorical); }
+static auto schemeSet8() { return discrete_color_scheme(to_colors(set8_data), ColorSchemeType::Categorical); }
+static auto schemeSet9() { return discrete_color_scheme(to_colors(set9_data), ColorSchemeType::Categorical); }
+static auto schemeSet12() { return discrete_color_scheme(to_colors(set12_data), ColorSchemeType::Categorical); }
+static auto schemeTableau10() { return discrete_color_scheme(to_colors(tableau10_data), ColorSchemeType::Categorical); }
 
 } // namespace schemes
 

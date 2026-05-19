@@ -12,10 +12,10 @@ namespace gpgpu {
 // TODO: provide iterator (or vector) initializers in all constructors with initializer lists.
 
 enum class ArgumentType {
-	kUniform,
-	kBuffer,
-	kImage,
-	kTexture
+	Uniform,
+	Buffer,
+	Image,
+	Texture
 };
 
 class argument_definition {
@@ -27,24 +27,24 @@ public:
 	argument_definition(const sl::data_type& type, const std::string& name, size_t array_size) : _variable(type, name, array_size) {}
 
 	argument_definition(sl::tag::buffer, const sl::named_variable& variable, const std::string& name, const sl::memory_qualifier_list& memory_qualifiers = {}) :
-		_variable({ "", { variable } }, name), _memory_qualifiers(memory_qualifiers), _type(ArgumentType::kBuffer) {}
+		_variable({ "", { variable } }, name), _memory_qualifiers(memory_qualifiers), _type(ArgumentType::Buffer) {}
 
 	argument_definition(sl::tag::buffer, const sl::named_variable_list& variables, const std::string& name, const sl::memory_qualifier_list& memory_qualifiers = {}) :
-		_variable({ "", variables }, name), _memory_qualifiers(memory_qualifiers), _type(ArgumentType::kBuffer) {}
+		_variable({ "", variables }, name), _memory_qualifiers(memory_qualifiers), _type(ArgumentType::Buffer) {}
 
 	argument_definition(sl::tag::image, cgv::render::TextureType texture_type, sl::ImageFormatLayoutQualifier image_format, const std::string& name, const sl::memory_qualifier_list& memory_qualifiers = {}) :
-		_variable(sl::Type::kVoid, name), _texture_type(texture_type), _image_format(image_format), _memory_qualifiers(memory_qualifiers), _type(ArgumentType::kImage) {}
+		_variable(sl::Type::Void, name), _texture_type(texture_type), _image_format(image_format), _memory_qualifiers(memory_qualifiers), _type(ArgumentType::Image) {}
 
 	argument_definition(sl::tag::texture, cgv::render::TextureType texture_type, sl::SamplerBaseFormat sampler_base_format, const std::string& name) :
-		_variable(sl::Type::kVoid, name), _texture_type(texture_type), _sampler_base_format(sampler_base_format), _type(ArgumentType::kTexture) {}
+		_variable(sl::Type::Void, name), _texture_type(texture_type), _sampler_base_format(sampler_base_format), _type(ArgumentType::Texture) {}
 
 private:
 	sl::named_variable _variable;
 	cgv::render::TextureType _texture_type = cgv::render::TextureType::TT_UNDEF;
-	sl::SamplerBaseFormat _sampler_base_format = sl::SamplerBaseFormat::kFloatingPoint;
-	sl::ImageFormatLayoutQualifier _image_format = sl::ImageFormatLayoutQualifier::k_rgba8;
+	sl::SamplerBaseFormat _sampler_base_format = sl::SamplerBaseFormat::FloatingPoint;
+	sl::ImageFormatLayoutQualifier _image_format = sl::ImageFormatLayoutQualifier::rgba8;
 	sl::memory_qualifier_storage _memory_qualifiers;
-	ArgumentType _type = ArgumentType::kUniform;
+	ArgumentType _type = ArgumentType::Uniform;
 };
 
 struct argument_definitions {
@@ -53,16 +53,16 @@ struct argument_definitions {
 	argument_definitions(std::initializer_list<argument_definition> arguments) {
 		for(const argument_definition& argument : arguments) {
 			switch(argument._type) {
-			case ArgumentType::kUniform:
+			case ArgumentType::Uniform:
 				uniforms.push_back(argument._variable);
 				break;
-			case ArgumentType::kBuffer:
+			case ArgumentType::Buffer:
 				buffers.push_back(sl::named_buffer(argument._variable.type().members(), argument._variable.name(), argument._memory_qualifiers.list()));
 				break;
-			case ArgumentType::kImage:
+			case ArgumentType::Image:
 				images.push_back(sl::named_image(argument._texture_type, argument._image_format, argument._variable.name(), argument._memory_qualifiers.list()));
 				break;
-			case ArgumentType::kTexture:
+			case ArgumentType::Texture:
 				textures.push_back(sl::named_texture(argument._texture_type, argument._sampler_base_format, argument._variable.name()));
 				break;
 			default:
@@ -81,44 +81,44 @@ static cgv::render::type_descriptor get_type_descriptor(sl::data_type type) {
 	using namespace cgv::render;
 	using namespace cgv::type;
 	switch(type.type()) {
-	case sl::Type::kBool: return element_descriptor_traits<bool>::get_type_descriptor({});
-	case sl::Type::kInt: return element_descriptor_traits<int32_type>::get_type_descriptor({});
-	case sl::Type::kUInt: return element_descriptor_traits<uint32_type>::get_type_descriptor({});
-	case sl::Type::kFloat: return element_descriptor_traits<flt32_type>::get_type_descriptor({});
-	case sl::Type::kDouble: return element_descriptor_traits<flt64_type>::get_type_descriptor({});
-	case sl::Type::kBVec2: return element_descriptor_traits<bvec2>::get_type_descriptor({});
-	case sl::Type::kBVec3: return element_descriptor_traits<bvec3>::get_type_descriptor({});
-	case sl::Type::kBVec4: return element_descriptor_traits<bvec4>::get_type_descriptor({});
-	case sl::Type::kIVec2: return element_descriptor_traits<ivec2>::get_type_descriptor({});
-	case sl::Type::kIVec3: return element_descriptor_traits<ivec3>::get_type_descriptor({});
-	case sl::Type::kIVec4: return element_descriptor_traits<ivec4>::get_type_descriptor({});
-	case sl::Type::kUVec2: return element_descriptor_traits<uvec2>::get_type_descriptor({});
-	case sl::Type::kUVec3: return element_descriptor_traits<uvec3>::get_type_descriptor({});
-	case sl::Type::kUVec4: return element_descriptor_traits<uvec4>::get_type_descriptor({});
-	case sl::Type::kVec2: return element_descriptor_traits<vec2>::get_type_descriptor({});
-	case sl::Type::kVec3: return element_descriptor_traits<vec3>::get_type_descriptor({});
-	case sl::Type::kVec4: return element_descriptor_traits<vec4>::get_type_descriptor({});
-	case sl::Type::kDVec2: return element_descriptor_traits<dvec2>::get_type_descriptor({});
-	case sl::Type::kDVec3: return element_descriptor_traits<dvec3>::get_type_descriptor({});
-	case sl::Type::kDVec4: return element_descriptor_traits<dvec4>::get_type_descriptor({});
-	case sl::Type::kMat2: return element_descriptor_traits<mat2>::get_type_descriptor({});
-	case sl::Type::kMat3: return element_descriptor_traits<mat3>::get_type_descriptor({});
-	case sl::Type::kMat4: return element_descriptor_traits<mat4>::get_type_descriptor({});
-	case sl::Type::kMat2x3: return element_descriptor_traits<cgv::math::fmat<float, 2u, 3u>>::get_type_descriptor({});
-	case sl::Type::kMat2x4: return element_descriptor_traits<cgv::math::fmat<float, 2u, 4u>>::get_type_descriptor({});
-	case sl::Type::kMat3x2: return element_descriptor_traits<cgv::math::fmat<float, 3u, 2u>>::get_type_descriptor({});
-	case sl::Type::kMat3x4: return element_descriptor_traits<cgv::math::fmat<float, 3u, 4u>>::get_type_descriptor({});
-	case sl::Type::kMat4x2: return element_descriptor_traits<cgv::math::fmat<float, 4u, 2u>>::get_type_descriptor({});
-	case sl::Type::kMat4x3: return element_descriptor_traits<cgv::math::fmat<float, 4u, 3u>>::get_type_descriptor({});
-	case sl::Type::kDMat2: return element_descriptor_traits<dmat2>::get_type_descriptor({});
-	case sl::Type::kDMat3: return element_descriptor_traits<dmat3>::get_type_descriptor({});
-	case sl::Type::kDMat4: return element_descriptor_traits<dmat4>::get_type_descriptor({});
-	case sl::Type::kDMat2x3: return element_descriptor_traits<cgv::math::fmat<double, 2u, 3u>>::get_type_descriptor({});
-	case sl::Type::kDMat2x4: return element_descriptor_traits<cgv::math::fmat<double, 2u, 4u>>::get_type_descriptor({});
-	case sl::Type::kDMat3x2: return element_descriptor_traits<cgv::math::fmat<double, 3u, 2u>>::get_type_descriptor({});
-	case sl::Type::kDMat3x4: return element_descriptor_traits<cgv::math::fmat<double, 3u, 4u>>::get_type_descriptor({});
-	case sl::Type::kDMat4x2: return element_descriptor_traits<cgv::math::fmat<double, 4u, 2u>>::get_type_descriptor({});
-	case sl::Type::kDMat4x3: return element_descriptor_traits<cgv::math::fmat<double, 4u, 3u>>::get_type_descriptor({});
+	case sl::Type::Bool: return element_descriptor_traits<bool>::get_type_descriptor({});
+	case sl::Type::Int: return element_descriptor_traits<int32_type>::get_type_descriptor({});
+	case sl::Type::UInt: return element_descriptor_traits<uint32_type>::get_type_descriptor({});
+	case sl::Type::Float: return element_descriptor_traits<flt32_type>::get_type_descriptor({});
+	case sl::Type::Double: return element_descriptor_traits<flt64_type>::get_type_descriptor({});
+	case sl::Type::BVec2: return element_descriptor_traits<bvec2>::get_type_descriptor({});
+	case sl::Type::BVec3: return element_descriptor_traits<bvec3>::get_type_descriptor({});
+	case sl::Type::BVec4: return element_descriptor_traits<bvec4>::get_type_descriptor({});
+	case sl::Type::IVec2: return element_descriptor_traits<ivec2>::get_type_descriptor({});
+	case sl::Type::IVec3: return element_descriptor_traits<ivec3>::get_type_descriptor({});
+	case sl::Type::IVec4: return element_descriptor_traits<ivec4>::get_type_descriptor({});
+	case sl::Type::UVec2: return element_descriptor_traits<uvec2>::get_type_descriptor({});
+	case sl::Type::UVec3: return element_descriptor_traits<uvec3>::get_type_descriptor({});
+	case sl::Type::UVec4: return element_descriptor_traits<uvec4>::get_type_descriptor({});
+	case sl::Type::Vec2: return element_descriptor_traits<vec2>::get_type_descriptor({});
+	case sl::Type::Vec3: return element_descriptor_traits<vec3>::get_type_descriptor({});
+	case sl::Type::Vec4: return element_descriptor_traits<vec4>::get_type_descriptor({});
+	case sl::Type::DVec2: return element_descriptor_traits<dvec2>::get_type_descriptor({});
+	case sl::Type::DVec3: return element_descriptor_traits<dvec3>::get_type_descriptor({});
+	case sl::Type::DVec4: return element_descriptor_traits<dvec4>::get_type_descriptor({});
+	case sl::Type::Mat2: return element_descriptor_traits<mat2>::get_type_descriptor({});
+	case sl::Type::Mat3: return element_descriptor_traits<mat3>::get_type_descriptor({});
+	case sl::Type::Mat4: return element_descriptor_traits<mat4>::get_type_descriptor({});
+	case sl::Type::Mat2x3: return element_descriptor_traits<cgv::math::fmat<float, 2u, 3u>>::get_type_descriptor({});
+	case sl::Type::Mat2x4: return element_descriptor_traits<cgv::math::fmat<float, 2u, 4u>>::get_type_descriptor({});
+	case sl::Type::Mat3x2: return element_descriptor_traits<cgv::math::fmat<float, 3u, 2u>>::get_type_descriptor({});
+	case sl::Type::Mat3x4: return element_descriptor_traits<cgv::math::fmat<float, 3u, 4u>>::get_type_descriptor({});
+	case sl::Type::Mat4x2: return element_descriptor_traits<cgv::math::fmat<float, 4u, 2u>>::get_type_descriptor({});
+	case sl::Type::Mat4x3: return element_descriptor_traits<cgv::math::fmat<float, 4u, 3u>>::get_type_descriptor({});
+	case sl::Type::DMat2: return element_descriptor_traits<dmat2>::get_type_descriptor({});
+	case sl::Type::DMat3: return element_descriptor_traits<dmat3>::get_type_descriptor({});
+	case sl::Type::DMat4: return element_descriptor_traits<dmat4>::get_type_descriptor({});
+	case sl::Type::DMat2x3: return element_descriptor_traits<cgv::math::fmat<double, 2u, 3u>>::get_type_descriptor({});
+	case sl::Type::DMat2x4: return element_descriptor_traits<cgv::math::fmat<double, 2u, 4u>>::get_type_descriptor({});
+	case sl::Type::DMat3x2: return element_descriptor_traits<cgv::math::fmat<double, 3u, 2u>>::get_type_descriptor({});
+	case sl::Type::DMat3x4: return element_descriptor_traits<cgv::math::fmat<double, 3u, 4u>>::get_type_descriptor({});
+	case sl::Type::DMat4x2: return element_descriptor_traits<cgv::math::fmat<double, 4u, 2u>>::get_type_descriptor({});
+	case sl::Type::DMat4x3: return element_descriptor_traits<cgv::math::fmat<double, 4u, 3u>>::get_type_descriptor({});
 	default: return type_descriptor(cgv::type::info::type_id<void>::get_id());
 	}
 }

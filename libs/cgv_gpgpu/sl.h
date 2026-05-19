@@ -14,57 +14,57 @@
 namespace sl {
 
 enum class Type : int32_t {
-	kVoid = 0,
+	Void = 0,
 
-	kBool,
-	kInt,
-	kUInt,
-	kFloat,
-	kDouble,
+	Bool,
+	Int,
+	UInt,
+	Float,
+	Double,
 
-	kBVec2,
-	kBVec3,
-	kBVec4,
+	BVec2,
+	BVec3,
+	BVec4,
 
-	kIVec2,
-	kIVec3,
-	kIVec4,
+	IVec2,
+	IVec3,
+	IVec4,
 
-	kUVec2,
-	kUVec3,
-	kUVec4,
+	UVec2,
+	UVec3,
+	UVec4,
 
-	kVec2,
-	kVec3,
-	kVec4,
+	Vec2,
+	Vec3,
+	Vec4,
 
-	kDVec2,
-	kDVec3,
-	kDVec4,
+	DVec2,
+	DVec3,
+	DVec4,
 
-	kMat2,
-	kMat3,
-	kMat4,
+	Mat2,
+	Mat3,
+	Mat4,
 
-	kMat2x3,
-	kMat2x4,
-	kMat3x2,
-	kMat3x4,
-	kMat4x2,
-	kMat4x3,
+	Mat2x3,
+	Mat2x4,
+	Mat3x2,
+	Mat3x4,
+	Mat4x2,
+	Mat4x3,
 
-	kDMat2,
-	kDMat3,
-	kDMat4,
+	DMat2,
+	DMat3,
+	DMat4,
 
-	kDMat2x3,
-	kDMat2x4,
-	kDMat3x2,
-	kDMat3x4,
-	kDMat4x2,
-	kDMat4x3,
+	DMat2x3,
+	DMat2x4,
+	DMat3x2,
+	DMat3x4,
+	DMat4x2,
+	DMat4x3,
 
-	kStruct
+	Struct
 };
 
 struct type_info {
@@ -120,7 +120,7 @@ public:
 	size_t alignment_in_bytes() const;
 
 private:
-	Type _base_type = Type::kVoid;
+	Type _base_type = Type::Void;
 	std::shared_ptr<type_definition> _definition;
 };
 
@@ -177,12 +177,12 @@ extern CGV_API std::string to_string(const named_variable_list& variables);
 extern CGV_API std::string to_string(const named_variable_list& variables, const std::string& prefix);
 
 enum class MemoryQualifier : int32_t {
-	kNone = 0,
-	kCoherent = 1,
-	kVolatile = 2,
-	kRestrict = 4,
-	kReadOnly = 8,
-	kWriteOnly = 16
+	None = 0,
+	Coherent = 1,
+	Volatile = 2,
+	Restrict = 4,
+	ReadOnly = 8,
+	WriteOnly = 16
 };
 
 extern CGV_API std::string to_string(MemoryQualifier qualifier);
@@ -228,51 +228,52 @@ using named_buffer_list = std::vector<named_buffer>;
 
 extern CGV_API std::string to_string(const named_buffer_list& buffers, size_t base_location);
 
+/// @brief Layout qualifiers for image formats (lower case names are used for better readability).
 enum class ImageFormatLayoutQualifier : int32_t {
 	// floating-point layout image formats
-	k_rgba32f = 0,
-	k_rgba16f,
-	k_rg32f,
-	k_rg16f,
-	k_r11f_g11f_b10f,
-	k_r32f,
-	k_r16f,
-	k_rgba16,
-	k_rgb10_a2,
-	k_rgba8,
-	k_rg16,
-	k_rg8,
-	k_r16,
-	k_r8,
-	k_rgba16_snorm,
-	k_rgba8_snorm,
-	k_rg16_snorm,
-	k_rg8_snorm,
-	k_r16_snorm,
-	k_r8_snorm,
+	rgba32f = 0,
+	rgba16f,
+	rg32f,
+	rg16f,
+	r11f_g11f_b10f,
+	r32f,
+	r16f,
+	rgba16,
+	rgb10_a2,
+	rgba8,
+	rg16,
+	rg8,
+	r16,
+	r8,
+	rgba16_snorm,
+	rgba8_snorm,
+	rg16_snorm,
+	rg8_snorm,
+	r16_snorm,
+	r8_snorm,
 
 	// signed integer layout image formats
-	k_rgba32i,
-	k_rgba16i,
-	k_rgba8i,
-	k_rg32i,
-	k_rg16i,
-	k_rg8i,
-	k_r32i,
-	k_r16i,
-	k_r8i,
+	rgba32i,
+	rgba16i,
+	rgba8i,
+	rg32i,
+	rg16i,
+	rg8i,
+	r32i,
+	r16i,
+	r8i,
 
 	// unsigned integer layout image formats
-	k_rgba32ui,
-	k_rgba16ui,
-	k_rgb10_a2ui,
-	k_rgba8ui,
-	k_rg32ui,
-	k_rg16ui,
-	k_rg8ui,
-	k_r32ui,
-	k_r16ui,
-	k_r8ui,
+	rgba32ui,
+	rgba16ui,
+	rgb10_a2ui,
+	rgba8ui,
+	rg32ui,
+	rg16ui,
+	rg8ui,
+	r32ui,
+	r16ui,
+	r8ui,
 };
 
 extern CGV_API std::string to_string(ImageFormatLayoutQualifier qualifier);
@@ -310,9 +311,9 @@ using named_image_list = std::vector<named_image>;
 extern CGV_API std::string to_string(const named_image_list& images, size_t base_location);
 
 enum class SamplerBaseFormat {
-	kFloatingPoint,
-	kSignedInteger,
-	kUnsignedInteger
+	FloatingPoint,
+	SignedInteger,
+	UnsignedInteger
 };
 
 class named_texture : public named_object {

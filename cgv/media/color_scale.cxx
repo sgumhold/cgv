@@ -89,7 +89,7 @@ float continuous_color_scale::normalize_value(float value) const {
 	// Diverging scales split the domain at the midpoint into a lower [domain[0], midpoint] and upper part [midpoint, domain[1]].
 	// The lower part uses a reversed transform.
 	switch(mapping_transform_) {
-	case ContinuousMappingTransform::kLinear:
+	case ContinuousMappingTransform::Linear:
 		if(is_diverging_) {
 			if(value < diverging_midpoint_)
 				t = map_range_safe(value, domain[0], diverging_midpoint_, 0.0f, 0.5f);
@@ -99,7 +99,7 @@ float continuous_color_scale::normalize_value(float value) const {
 			t = map_range_safe(value, domain[0], domain[1], 0.0f, 1.0f);
 		}
 		break;
-	case ContinuousMappingTransform::kPow:
+	case ContinuousMappingTransform::Pow:
 		if(is_diverging_) {
 			if(value < diverging_midpoint_) {
 				t = map_range_safe(value, domain[0], diverging_midpoint_, 0.0f, 1.0f);
@@ -113,7 +113,7 @@ float continuous_color_scale::normalize_value(float value) const {
 			t = std::pow(t, pow_exponent_);
 		}
 		break;
-	case ContinuousMappingTransform::kLog:
+	case ContinuousMappingTransform::Log:
 		t = std::log(log_value_sign_ * value) / log_of_base_;
 		if(is_diverging_) {
 			if(value < diverging_midpoint_) {
@@ -154,7 +154,7 @@ std::vector<cgv::rgba> continuous_color_scale::quantize(size_t count) const {
 std::vector<float> continuous_color_scale::get_ticks(size_t request_count) const {
 	const vec2 domain = get_domain();
 
-	if(mapping_transform_ == ContinuousMappingTransform::kLog)
+	if(mapping_transform_ == ContinuousMappingTransform::Log)
 		return compute_ticks_log(domain[0], domain[1], log_base_, request_count);
 	else
 		return compute_ticks(domain[0], domain[1], request_count);
@@ -166,7 +166,7 @@ void continuous_color_scale::set_scheme(const continuous_color_scheme& scheme) {
 }
 
 void continuous_color_scale::update_log_invariants() {
-	if(mapping_transform_ == ContinuousMappingTransform::kLog) {
+	if(mapping_transform_ == ContinuousMappingTransform::Log) {
 		vec2 domain = get_domain();
 
 		if(domain[0] < 0.0f && domain[1] < 0.0f)

@@ -51,17 +51,17 @@ static std::vector<std::vector<cgv::rgb>> to_colors(const std::array<const char*
 
 /// @brief Enum class of possible color scheme types.
 enum class ColorSchemeType {
-	kUndefined,		// All others.
-	kSequential,	// Continuously varying colors from a limited set of hues (typically 1 or 2). Typically used for ordered and quantitative data.
-	kDiverging,		// Continuously varying colors with contrasting hues meeting at a neutral midpoint. Typically used when the data range covers a 'zero' point.
-	kCyclical,		// Continuously varying colors where the start and end color match. Typically used when the lower and upper bound of the data range should be mapped to the same color.
-	kCategorical	// Distinct colors with sharp boundaries. Typically used to represent unordered, discrete data categories.
+	Undefined,		// All others.
+	Sequential,	// Continuously varying colors from a limited set of hues (typically 1 or 2). Typically used for ordered and quantitative data.
+	Diverging,		// Continuously varying colors with contrasting hues meeting at a neutral midpoint. Typically used when the data range covers a 'zero' point.
+	Cyclical,		// Continuously varying colors where the start and end color match. Typically used when the lower and upper bound of the data range should be mapped to the same color.
+	Categorical	// Distinct colors with sharp boundaries. Typically used to represent unordered, discrete data categories.
 };
 
 /// @brief Base class for color schemes. Only holds color scheme type.
 struct color_scheme {
 	/// The type of this color scheme.
-	ColorSchemeType type = ColorSchemeType::kUndefined;
+	ColorSchemeType type = ColorSchemeType::Undefined;
 };
 
 /// @brief This class represents a continuous color scheme using an interpolator to convert continuous scalar values to colors.
@@ -77,7 +77,7 @@ public:
 	/// 
 	/// @param interpolator The used interpolator.
 	/// @param type The color scheme type.
-	continuous_color_scheme(const interpolator_type& interpolator, ColorSchemeType type = ColorSchemeType::kUndefined) {
+	continuous_color_scheme(const interpolator_type& interpolator, ColorSchemeType type = ColorSchemeType::Undefined) {
 		this->type = type;
 		interpolator_ = interpolator.clone();
 	}
@@ -87,7 +87,7 @@ public:
 	/// @param colors The list of colors to interpolate.
 	/// @param type The color scheme type.
 	/// @return The color scheme.
-	static continuous_color_scheme linear(const std::vector<cgv::rgb>& colors, ColorSchemeType type = ColorSchemeType::kUndefined) {
+	static continuous_color_scheme linear(const std::vector<cgv::rgb>& colors, ColorSchemeType type = ColorSchemeType::Undefined) {
 		return { cgv::math::uniform_linear_interpolator<cgv::rgb, float>(colors), type };
 	}
 
@@ -97,7 +97,7 @@ public:
 	/// @param colors The list of control points to interpolate.
 	/// @param type The color scheme type.
 	/// @return The color scheme.
-	static continuous_color_scheme linear(const std::vector<std::pair<float, cgv::rgb>>& colors, ColorSchemeType type = ColorSchemeType::kUndefined) {
+	static continuous_color_scheme linear(const std::vector<std::pair<float, cgv::rgb>>& colors, ColorSchemeType type = ColorSchemeType::Undefined) {
 		return { cgv::math::linear_interpolator<cgv::rgb, float>(colors), type };
 	}
 
@@ -106,7 +106,7 @@ public:
 	/// @param colors The list of colors to interpolate.
 	/// @param type The color scheme type.
 	/// @return The color scheme.
-	static continuous_color_scheme smooth(const std::vector<cgv::rgb>& colors, ColorSchemeType type = ColorSchemeType::kUndefined) {
+	static continuous_color_scheme smooth(const std::vector<cgv::rgb>& colors, ColorSchemeType type = ColorSchemeType::Undefined) {
 		return { cgv::math::uniform_smooth_interpolator<cgv::rgb, float>(colors), type };
 	}
 
@@ -115,7 +115,7 @@ public:
 	/// @param colors The function used to map scalars to colors.
 	/// @param type The color scheme type.
 	/// @return The color scheme.
-	static continuous_color_scheme function(std::function<cgv::rgb(float)> fn, ColorSchemeType type = ColorSchemeType::kUndefined) {
+	static continuous_color_scheme function(std::function<cgv::rgb(float)> fn, ColorSchemeType type = ColorSchemeType::Undefined) {
 		return { cgv::math::function_ref_interpolator<cgv::rgb, float>(fn), type };
 	}
 
@@ -151,18 +151,18 @@ public:
 	/// Construct an empty scheme.
 	discrete_color_scheme() {}
 
-	/// @brief Construct from a set of colors and scheme type. The type should describe the color set produced by the interpolator if possible (typically ColorSchemeType::kCategorical).
+	/// @brief Construct from a set of colors and scheme type. The type should describe the color set produced by the interpolator if possible (typically ColorSchemeType::Categorical).
 	/// 
 	/// @param colors The set of used colors.
 	/// @param type The color scheme type.
-	discrete_color_scheme(const std::vector<cgv::rgb>& colors, ColorSchemeType type = ColorSchemeType::kUndefined) : discrete_color_scheme(std::vector<std::vector<cgv::rgb>>{ colors }, type) {}
+	discrete_color_scheme(const std::vector<cgv::rgb>& colors, ColorSchemeType type = ColorSchemeType::Undefined) : discrete_color_scheme(std::vector<std::vector<cgv::rgb>>{ colors }, type) {}
 	
 	/// @brief Construct from a list of color sets and scheme type.
 	/// The color sets represent variants of the scheme that should be similar but can express slight variations at different scheme sizes.
 	/// 
 	/// @param variants The list of sets of color scheme variants.
 	/// @param type The color scheme type.
-	discrete_color_scheme(const std::vector<std::vector<cgv::rgb>>& variants, ColorSchemeType type = ColorSchemeType::kUndefined) {
+	discrete_color_scheme(const std::vector<std::vector<cgv::rgb>>& variants, ColorSchemeType type = ColorSchemeType::Undefined) {
 		this->type = type;
 		variants_.clear();
 		for(const auto& variant : variants)
@@ -171,7 +171,7 @@ public:
 
 	/// @brief Return a sequence of colors of the specified count.
 	/// Returns the scheme variant with exact size n if it exists.
-	/// Otherwise, for schemes of type ColorSchemeType::kCategorical the next largest or largest available variant is returned,
+	/// Otherwise, for schemes of type ColorSchemeType::Categorical the next largest or largest available variant is returned,
 	/// possibly being larger than n. For all other scheme types the next smaller variant is smoothly interpolated at n positions
 	/// and the result returned.
 	/// 
@@ -189,7 +189,7 @@ public:
 		// Otherwise, find the next largest variant.
 		it = variants_.upper_bound(n);
 
-		if(type == ColorSchemeType::kCategorical) {
+		if(type == ColorSchemeType::Categorical) {
 			// For categorical-type schemes the colors are not interpolated, so return at least n colors or the maximum available amount.
 			if(it == variants_.end())
 				--it;
