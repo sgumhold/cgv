@@ -11,7 +11,7 @@ const std::string histogram::upper_limit_argument_name = "u_upper_limit";
 histogram::histogram(uint32_t num_bins, uint32_t group_size) : algorithm("histogram", group_size), _num_bins(num_bins) {}
 
 bool histogram::init(cgv::render::context& ctx, const sl::data_type& value_type) {
-	if(!value_type.is_valid() || !value_type.is_scalar() || value_type.type() == sl::Type::kBool)
+	if(!value_type.is_valid() || !value_type.is_scalar() || value_type.type() == sl::Type::Bool)
 		return false;
 
 	_value_type = value_type;
@@ -23,11 +23,11 @@ bool histogram::init(cgv::render::context& ctx, const sl::data_type& value_type)
 	info.options.define_macro("NUM_BINS", _num_bins);
 
 	sl::Type base_type = value_type.type();
-	info.options.define_macro_if_true(base_type == sl::Type::kFloat || base_type == sl::Type::kDouble, "VALUE_TYPE_IS_FLOATING_POINT");
+	info.options.define_macro_if_true(base_type == sl::Type::Float || base_type == sl::Type::Double, "VALUE_TYPE_IS_FLOATING_POINT");
 	
 	if(algorithm::init(ctx, info, { { &_kernel, "gpgpu_histogram" } })) {
 		_bins_buffer.create_or_resize<uint32_t>(ctx, _num_bins);
-		return _fill.init(ctx, sl::Type::kUInt);
+		return _fill.init(ctx, sl::Type::UInt);
 	}
 
 	return false;

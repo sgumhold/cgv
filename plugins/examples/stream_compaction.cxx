@@ -41,15 +41,15 @@ public:
 		}
 
 		// Define the value type to match the radius values in floating point format.
-		sl::data_type value_type = sl::Type::kFloat;
+		sl::data_type value_type = sl::Type::Float;
 
 		// Define the arguments used by the predicate. Since the predicate depends on uniform, outside variables we have to define them before usage.
-		// The following defines two uniform single-valued arguments of type float. The arguments are then available to use in the predicate functin by their given name.
+		// The following defines two uniform single-valued arguments of type float. The arguments are then available to use in the predicate function by their given name.
 		// Is is considered good practice to give arguments a prefix, here "a_", to differentiate them from other identifiers.
 		// In general, arguments can be of type uniform, buffer, texture or image.
 		cgv::gpgpu::argument_definitions arguments = {
-			{ sl::Type::kFloat, "a_radius_min" },
-			{ sl::Type::kFloat, "a_radius_max" }
+			{ sl::Type::Float, "a_radius_min" },
+			{ sl::Type::Float, "a_radius_max" }
 		};
 
 		// Define a boolean predicate that returns true for all input elements we want to keep and copy to the output buffer.
@@ -62,7 +62,7 @@ public:
 		)";
 
 		// Initialize the filter (select_if) using the given value type, arguments and predicate.
-		if(!filter.init(ctx, sl::Type::kFloat, arguments, predicate)) {
+		if(!filter.init(ctx, value_type, arguments, predicate)) {
 			std::cout << "Error: could not initialize GPU filter algorithm" << std::endl;
 			return false;
 		}

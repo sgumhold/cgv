@@ -5,13 +5,13 @@ namespace gpgpu {
 
 std::string to_string(DifferentiationOperator differentiation_operator) {
 	switch(differentiation_operator) {
-	case DifferentiationOperator::kForwardDifference:
+	case DifferentiationOperator::ForwardDifference:
 		return "forward_difference";
-	case DifferentiationOperator::kBackwardDifference:
+	case DifferentiationOperator::BackwardDifference:
 		return "backward_difference";
-	case DifferentiationOperator::kCentralDifference:
+	case DifferentiationOperator::CentralDifference:
 		return "central_difference";
-	case DifferentiationOperator::kSobel:
+	case DifferentiationOperator::Sobel:
 		return "sobel";
 	default:
 		return "";
@@ -26,7 +26,7 @@ texture_algorithm::texture_algorithm_create_info texture_differentiate_base::get
 	uint32_t texture_dimensionality = get_texture_type_dimensionality(texture_type);
 	std::string diff_operator_str = to_string(differentiation_operator) + std::to_string(texture_dimensionality) + "d";
 	std::string diff_scaling_func = get_scaling_func(differentiation_operator, differentiation_output, texture_dimensionality);
-	bool map_to_unorm = differentiation_output == DifferentiationOutput::kScaledDerivativeUNorm || differentiation_output != DifferentiationOutput::kNormalizedDerivativeUNorm;
+	bool map_to_unorm = differentiation_output == DifferentiationOutput::ScaledDerivativeUNorm || differentiation_output != DifferentiationOutput::NormalizedDerivativeUNorm;
 
 	texture_algorithm_create_info info;
 	info.typedefs.push_back({ "value_type", sl::get_data_type(image_format) });
@@ -37,22 +37,22 @@ texture_algorithm::texture_algorithm_create_info texture_differentiate_base::get
 	info.options.define_macro("DIFF_OPERATOR_FUNC", diff_operator_str);
 	info.options.define_macro_if_not_default("DIFF_SCALING_FUNC", diff_scaling_func, "");
 	info.options.define_macro_if_true(map_to_unorm, "MAP_TO_UNORM");
-	info.options.define_macro_if_true(differentiation_output == DifferentiationOutput::kMagnitude, "OUTPUT_MAGNITUDE");
+	info.options.define_macro_if_true(differentiation_output == DifferentiationOutput::Magnitude, "OUTPUT_MAGNITUDE");
 
 	return info;
 }
 
 std::string texture_differentiate_base::get_scaling_func(DifferentiationOperator differentiation_operator, DifferentiationOutput differentiation_output, uint32_t dimensions) {
-	if(differentiation_output == DifferentiationOutput::kDerivative || differentiation_output == DifferentiationOutput::kMagnitude)
+	if(differentiation_output == DifferentiationOutput::Derivative || differentiation_output == DifferentiationOutput::Magnitude)
 		return "";
 
 	std::string res = "";
 
 	switch(differentiation_operator) {
-	case DifferentiationOperator::kCentralDifference:
+	case DifferentiationOperator::CentralDifference:
 		res = "central_difference";
 		break;
-	case DifferentiationOperator::kSobel:
+	case DifferentiationOperator::Sobel:
 		res = "sobel" + std::to_string(dimensions) + "d";
 		break;
 	default:
@@ -62,9 +62,9 @@ std::string texture_differentiate_base::get_scaling_func(DifferentiationOperator
 	if(res.empty())
 		return res;
 
-	if(differentiation_output == DifferentiationOutput::kScaledDerivative || differentiation_output == DifferentiationOutput::kScaledDerivativeUNorm)
+	if(differentiation_output == DifferentiationOutput::ScaledDerivative || differentiation_output == DifferentiationOutput::ScaledDerivativeUNorm)
 		return res + "_scaling";
-	else if(differentiation_output == DifferentiationOutput::kNormalizedDerivative || differentiation_output == DifferentiationOutput::kNormalizedDerivativeUNorm)
+	else if(differentiation_output == DifferentiationOutput::NormalizedDerivative || differentiation_output == DifferentiationOutput::NormalizedDerivativeUNorm)
 		return res + "_norm";
 	else
 		return "";

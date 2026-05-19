@@ -211,9 +211,9 @@ private:
 
 /// @brief The type of transform used for continuous scalar mappings.
 enum class ContinuousMappingTransform {
-	kLinear = 0,	// Linear: y = m * x + b
-	kPow,			// Power: y = m * x^k + b
-	kLog			// Logarithmic: y = m * log(x) + b
+	Linear = 0,	// Linear: y = m * x + b
+	Pow,		// Power: y = m * x^k + b
+	Log			// Logarithmic: y = m * log(x) + b
 };
 
 /// @brief Implementation of a color_scale with a continuous input domain and output range using a continuous_color_scheme.
@@ -261,7 +261,7 @@ public:
 	}
 
 	/// @brief Set the exponent for power scales.
-	/// Only used if get_transform() returns ContinuousMappingTransform::kPow.
+	/// Only used if get_transform() returns ContinuousMappingTransform::Pow.
 	/// Defaults to 1.
 	/// 
 	/// @param exponent The exponent.
@@ -275,7 +275,7 @@ public:
 	}
 
 	/// @brief Set the base for logarithmic scales.
-	/// Only used if get_transform() returns ContinuousMappingTransform::kLog.
+	/// Only used if get_transform() returns ContinuousMappingTransform::Log.
 	/// Defaults to 10.
 	/// 
 	/// @param exponent The exponent.
@@ -345,7 +345,7 @@ private:
 	/// The color scheme used to provide the output color ramp.
 	continuous_color_scheme scheme_;
 	/// The transform used to map scalars.
-	ContinuousMappingTransform mapping_transform_ = ContinuousMappingTransform::kLinear;
+	ContinuousMappingTransform mapping_transform_ = ContinuousMappingTransform::Linear;
 	/// Whether the scale is diverging.
 	bool is_diverging_ = false;
 	/// The midpoint of a diverging scale.

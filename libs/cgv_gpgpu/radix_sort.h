@@ -8,8 +8,8 @@ namespace cgv {
 namespace gpgpu {
 
 enum class SortOrder {
-	kAscending,
-	kDescending
+	Ascending,
+	Descending
 };
 
 class CGV_API radix_sort : public algorithm {
@@ -43,7 +43,7 @@ protected:
 
 	sl::data_type _key_type;
 	sl::data_type _value_type;
-	SortOrder _order = SortOrder::kAscending;
+	SortOrder _order = SortOrder::Ascending;
 	uint32_t _num_keys = 0;
 
 private:

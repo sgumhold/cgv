@@ -63,9 +63,9 @@ public:
 			return false;
 		
 		sl::data_type vec3_t = { "vec3_t", {
-			{ sl::Type::kFloat, "x" },
-			{ sl::Type::kFloat, "y" },
-			{ sl::Type::kFloat, "z" }
+			{ sl::Type::Float, "x" },
+			{ sl::Type::Float, "y" },
+			{ sl::Type::Float, "z" }
 		}};
 
 		std::string operation = R"(
@@ -74,7 +74,7 @@ public:
 			return dot(eye_to_pos, eye_to_pos);
 		)";
 
-		sort.init(ctx, vec3_t, sl::Type::kUInt, 1, operation, cgv::gpgpu::SortOrder::kDescending);
+		sort.init(ctx, vec3_t, sl::Type::UInt, 1, operation, cgv::gpgpu::SortOrder::Descending);
 
 		create_data();
 

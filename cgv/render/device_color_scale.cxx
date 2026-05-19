@@ -33,7 +33,7 @@ void device_continuous_color_scale::update_color_scale_specific_arguments(device
 
 	// Continuous color scales with logarithmic transform use precomputed values to make mapping calculations more efficient.
 	// However, these invariants are private so we need to recompute them here.
-	if(color_scale->get_transform() == cgv::media::ContinuousMappingTransform::kLog) {
+	if(color_scale->get_transform() == cgv::media::ContinuousMappingTransform::Log) {
 		vec2 domain = color_scale->get_domain();
 		out_arguments.log_sign = domain[0] < 0.0f && domain[1] < 0.0f ? -1.0f : 1.0f;
 		out_arguments.log_base = std::log(color_scale->get_log_base());

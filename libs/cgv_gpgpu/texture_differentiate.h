@@ -8,33 +8,33 @@ namespace cgv {
 namespace gpgpu {
 
 enum class DifferentiationOperator {
-	kForwardDifference,
-	kBackwardDifference,
-	kCentralDifference,
-	kSobel
+	ForwardDifference,
+	BackwardDifference,
+	CentralDifference,
+	Sobel
 };
 
 enum class DifferentiationOutput {
-	kDerivative = 0,			// output the unchanged derivative
-	kScaledDerivative,			// output the derivative with components scaled to range [-1,1]
-	kScaledDerivativeUNorm,		// output the derivative with components scaled to range [-1,1] and then mapped to range [0,1]
-	kNormalizedDerivative,		// output the normalized derivative
-	kNormalizedDerivativeUNorm,	// output the normalized derivative with components mapped from [-1,1] to [0,1]
-	kMagnitude					// output the magnitude (L2 norm) of the derivative
+	Derivative = 0,			// output the unchanged derivative
+	ScaledDerivative,			// output the derivative with components scaled to range [-1,1]
+	ScaledDerivativeUNorm,		// output the derivative with components scaled to range [-1,1] and then mapped to range [0,1]
+	NormalizedDerivative,		// output the normalized derivative
+	NormalizedDerivativeUNorm,	// output the normalized derivative with components mapped from [-1,1] to [0,1]
+	Magnitude					// output the magnitude (L2 norm) of the derivative
 };
 
 enum class TextureChannel : int32_t {
-	kR = 0,
-	kG,
-	kB,
-	kA
+	Red = 0,
+	Greed,
+	Blue,
+	Alpha
 };
 
 enum class WrapMode : int32_t {
-	kRepeat = 0,
-	kMirroredRepeat,
-	kClampToEdge,
-	kClampToBorder
+	Repeat = 0,
+	MirroredRepeat,
+	ClampToEdge,
+	ClampToBorder
 };
 
 extern CGV_API std::string to_string(DifferentiationOperator differentiation_operator);
@@ -62,12 +62,12 @@ public:
 			  cgv::render::TextureType texture_type,
 			  sl::ImageFormatLayoutQualifier image_format,
 			  WrapMode wrap_mode,
-			  DifferentiationOperator differentiation_operator = cgv::gpgpu::DifferentiationOperator::kCentralDifference,
-			  DifferentiationOutput differentiation_output = cgv::gpgpu::DifferentiationOutput::kDerivative);
+			  DifferentiationOperator differentiation_operator = cgv::gpgpu::DifferentiationOperator::CentralDifference,
+			  DifferentiationOutput differentiation_output = cgv::gpgpu::DifferentiationOutput::Derivative);
 
 	void destruct(const cgv::render::context& ctx);
 
-	bool dispatch(cgv::render::context& ctx, cgv::render::texture& input_texture, cgv::render::texture& output_texture, TextureChannel texture_channel = TextureChannel::kR);
+	bool dispatch(cgv::render::context& ctx, cgv::render::texture& input_texture, cgv::render::texture& output_texture, TextureChannel texture_channel = TextureChannel::Red);
 
 private:
 	compute_kernel _kernel;

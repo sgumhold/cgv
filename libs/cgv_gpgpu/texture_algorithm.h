@@ -26,7 +26,7 @@ public:
 protected:
 	struct texture_algorithm_create_info : public algorithm_create_info {
 		TextureType texture_type = TextureType::TT_UNDEF;
-		sl::ImageFormatLayoutQualifier image_format = sl::ImageFormatLayoutQualifier::k_rgba8;
+		sl::ImageFormatLayoutQualifier image_format = sl::ImageFormatLayoutQualifier::rgba8;
 	};
 
 	cgv::render::shader_compile_options get_compile_options(const texture_algorithm_create_info& create_info);
