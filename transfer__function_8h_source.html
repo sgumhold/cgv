@@ -119,9 +119,9 @@ $(document).ready(function(){initNavTree('transfer__function_8h_source.html','')
 <div class="line"><a id="l00022" name="l00022"></a><span class="lineno">   22</span><span class="keyword">public</span>:</div>
 <div class="foldopen" id="foldopen00024" data-start="{" data-end="};">
 <div class="line"><a id="l00024" name="l00024"></a><span class="lineno"><a class="line" href="classcgv_1_1media_1_1transfer__function.html#a256762112fe6da45f5dd6540d75daa5f">   24</a></span>    <span class="keyword">enum class</span> <a class="code hl_enumeration" href="classcgv_1_1media_1_1transfer__function.html#a256762112fe6da45f5dd6540d75daa5f">InterpolationMode</a> {</div>
-<div class="line"><a id="l00025" name="l00025"></a><span class="lineno">   25</span>        kStep,</div>
-<div class="line"><a id="l00026" name="l00026"></a><span class="lineno">   26</span>        kLinear,</div>
-<div class="line"><a id="l00027" name="l00027"></a><span class="lineno">   27</span>        kSmooth</div>
+<div class="line"><a id="l00025" name="l00025"></a><span class="lineno">   25</span>        Step,</div>
+<div class="line"><a id="l00026" name="l00026"></a><span class="lineno">   26</span>        Linear,</div>
+<div class="line"><a id="l00027" name="l00027"></a><span class="lineno">   27</span>        Smooth</div>
 <div class="line"><a id="l00028" name="l00028"></a><span class="lineno">   28</span>    };</div>
 </div>
 <div class="line"><a id="l00029" name="l00029"></a><span class="lineno">   29</span> </div>
@@ -291,9 +291,9 @@ $(document).ready(function(){initNavTree('transfer__function_8h_source.html','')
 <div class="line"><a id="l00341" name="l00341"></a><span class="lineno">  341</span>    <span class="keyword">template</span>&lt;<span class="keyword">typename</span> value_type&gt;</div>
 <div class="line"><a id="l00342" name="l00342"></a><span class="lineno">  342</span>    value_type interpolate(<span class="keyword">const</span> std::vector&lt;std::pair&lt;float, value_type&gt;&gt;&amp; points, <span class="keywordtype">float</span> x, InterpolationMode interpolation)<span class="keyword"> const </span>{</div>
 <div class="line"><a id="l00343" name="l00343"></a><span class="lineno">  343</span>        <span class="keywordflow">switch</span>(interpolation) {</div>
-<div class="line"><a id="l00344" name="l00344"></a><span class="lineno">  344</span>        <span class="keywordflow">case</span> InterpolationMode::kStep:</div>
+<div class="line"><a id="l00344" name="l00344"></a><span class="lineno">  344</span>        <span class="keywordflow">case</span> InterpolationMode::Step:</div>
 <div class="line"><a id="l00345" name="l00345"></a><span class="lineno">  345</span>            <span class="keywordflow">return</span> interpolate_step(points, x);</div>
-<div class="line"><a id="l00346" name="l00346"></a><span class="lineno">  346</span>        <span class="keywordflow">case</span> InterpolationMode::kSmooth:</div>
+<div class="line"><a id="l00346" name="l00346"></a><span class="lineno">  346</span>        <span class="keywordflow">case</span> InterpolationMode::Smooth:</div>
 <div class="line"><a id="l00347" name="l00347"></a><span class="lineno">  347</span>            <span class="keywordflow">return</span> cgv::math::interpolate_smooth_cubic(points, x);</div>
 <div class="line"><a id="l00348" name="l00348"></a><span class="lineno">  348</span>        <span class="keywordflow">default</span>:</div>
 <div class="line"><a id="l00349" name="l00349"></a><span class="lineno">  349</span>            <span class="keywordflow">return</span> cgv::math::interpolate_linear(points, x);</div>
@@ -303,9 +303,9 @@ $(document).ready(function(){initNavTree('transfer__function_8h_source.html','')
 <div class="line"><a id="l00360" name="l00360"></a><span class="lineno">  360</span>    <span class="keyword">template</span>&lt;<span class="keyword">typename</span> value_type&gt;</div>
 <div class="line"><a id="l00361" name="l00361"></a><span class="lineno">  361</span>    std::vector&lt;value_type&gt; quantize(<span class="keyword">const</span> std::vector&lt;std::pair&lt;float, value_type&gt;&gt;&amp; points, <span class="keywordtype">size_t</span> n, InterpolationMode interpolation)<span class="keyword"> const </span>{</div>
 <div class="line"><a id="l00362" name="l00362"></a><span class="lineno">  362</span>        <span class="keywordflow">switch</span>(interpolation) {</div>
-<div class="line"><a id="l00363" name="l00363"></a><span class="lineno">  363</span>        <span class="keywordflow">case</span> InterpolationMode::kStep:</div>
+<div class="line"><a id="l00363" name="l00363"></a><span class="lineno">  363</span>        <span class="keywordflow">case</span> InterpolationMode::Step:</div>
 <div class="line"><a id="l00364" name="l00364"></a><span class="lineno">  364</span>            <span class="keywordflow">return</span> interpolate_step_n(points, n);</div>
-<div class="line"><a id="l00365" name="l00365"></a><span class="lineno">  365</span>        <span class="keywordflow">case</span> InterpolationMode::kSmooth:</div>
+<div class="line"><a id="l00365" name="l00365"></a><span class="lineno">  365</span>        <span class="keywordflow">case</span> InterpolationMode::Smooth:</div>
 <div class="line"><a id="l00366" name="l00366"></a><span class="lineno">  366</span>            <span class="keywordflow">return</span> cgv::math::interpolate_smooth_cubic_n(points, n);</div>
 <div class="line"><a id="l00367" name="l00367"></a><span class="lineno">  367</span>        <span class="keywordflow">default</span>:</div>
 <div class="line"><a id="l00368" name="l00368"></a><span class="lineno">  368</span>            <span class="keywordflow">return</span> cgv::math::interpolate_linear_n(points, n);</div>
@@ -314,8 +314,8 @@ $(document).ready(function(){initNavTree('transfer__function_8h_source.html','')
 <div class="line"><a id="l00371" name="l00371"></a><span class="lineno">  371</span> </div>
 <div class="line"><a id="l00377" name="l00377"></a><span class="lineno">  377</span>    <span class="keywordtype">bool</span> update_domain();</div>
 <div class="line"><a id="l00378" name="l00378"></a><span class="lineno">  378</span> </div>
-<div class="line"><a id="l00380" name="l00380"></a><span class="lineno">  380</span>    InterpolationMode color_interpolation_ = InterpolationMode::kLinear;</div>
-<div class="line"><a id="l00382" name="l00382"></a><span class="lineno">  382</span>    InterpolationMode opacity_interpolation_ = InterpolationMode::kLinear;</div>
+<div class="line"><a id="l00380" name="l00380"></a><span class="lineno">  380</span>    InterpolationMode color_interpolation_ = InterpolationMode::Linear;</div>
+<div class="line"><a id="l00382" name="l00382"></a><span class="lineno">  382</span>    InterpolationMode opacity_interpolation_ = InterpolationMode::Linear;</div>
 <div class="line"><a id="l00384" name="l00384"></a><span class="lineno">  384</span>    std::vector&lt;color_point_type&gt; color_points_;</div>
 <div class="line"><a id="l00386" name="l00386"></a><span class="lineno">  386</span>    std::vector&lt;opacity_point_type&gt; opacity_points_;</div>
 <div class="line"><a id="l00387" name="l00387"></a><span class="lineno">  387</span>};</div>

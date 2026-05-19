@@ -477,12 +477,12 @@ $(document).ready(function(){initNavTree('shader__code_8cxx_source.html',''); in
 <div class="line"><a id="l00361" name="l00361"></a><span class="lineno">  361</span> </div>
 <div class="line"><a id="l00362" name="l00362"></a><span class="lineno">  362</span>    <span class="keyword">struct </span><a class="code hl_class" href="classcgv_1_1base_1_1single__method__action.html">preprocessor_directive_t</a> {</div>
 <div class="line"><a id="l00363" name="l00363"></a><span class="lineno">  363</span>        <span class="keyword">enum</span> Type {</div>
-<div class="line"><a id="l00364" name="l00364"></a><span class="lineno">  364</span>            kUndefined,</div>
+<div class="line"><a id="l00364" name="l00364"></a><span class="lineno">  364</span>            <a class="code hl_class" href="classcgv_1_1base_1_1single__method__action.html">kUndefined</a>,</div>
 <div class="line"><a id="l00365" name="l00365"></a><span class="lineno">  365</span>            <a class="code hl_class" href="classcgv_1_1base_1_1single__method__action.html">kVersion</a>,</div>
 <div class="line"><a id="l00366" name="l00366"></a><span class="lineno">  366</span>            <a class="code hl_class" href="classcgv_1_1base_1_1single__method__action.html">kExtension</a></div>
 <div class="line"><a id="l00367" name="l00367"></a><span class="lineno">  367</span>        };</div>
 <div class="line"><a id="l00368" name="l00368"></a><span class="lineno">  368</span> </div>
-<div class="line"><a id="l00369" name="l00369"></a><span class="lineno">  369</span>        Type type = kUndefined;</div>
+<div class="line"><a id="l00369" name="l00369"></a><span class="lineno">  369</span>        Type type = <a class="code hl_class" href="classcgv_1_1base_1_1single__method__action.html">kUndefined</a>;</div>
 <div class="line"><a id="l00370" name="l00370"></a><span class="lineno">  370</span>        <a class="code hl_class" href="classcgv_1_1base_1_1single__method__action.html">index_range</a> <a class="code hl_class" href="classcgv_1_1base_1_1single__method__action.html">type_range</a>;</div>
 <div class="line"><a id="l00371" name="l00371"></a><span class="lineno">  371</span>        <a class="code hl_class" href="classcgv_1_1base_1_1single__method__action.html">index_range</a> <a class="code hl_class" href="classcgv_1_1base_1_1single__method__action.html">content_range</a>;</div>
 <div class="line"><a id="l00372" name="l00372"></a><span class="lineno">  372</span>        <span class="comment">// TODO: Replace with semantics for replace comment //! and conditional expansion //?</span></div>
@@ -743,7 +743,7 @@ $(document).ready(function(){initNavTree('shader__code_8cxx_source.html',''); in
 <div class="line"><a id="l00624" name="l00624"></a><span class="lineno">  624</span><span class="keywordtype">void</span> shader_code::set_defines_and_snippets(std::string&amp; source, <span class="keyword">const</span> <a class="code hl_class" href="classcgv_1_1render_1_1shader__compile__options.html">shader_compile_options</a>&amp; options)</div>
 <div class="line"><a id="l00625" name="l00625"></a><span class="lineno">  625</span>{</div>
 <div class="line"><a id="l00626" name="l00626"></a><span class="lineno">  626</span>    <span class="keyword">enum class</span> <a class="code hl_class" href="classcgv_1_1base_1_1single__method__action.html">DirectiveType</a> {</div>
-<div class="line"><a id="l00627" name="l00627"></a><span class="lineno">  627</span>        kUndefined,</div>
+<div class="line"><a id="l00627" name="l00627"></a><span class="lineno">  627</span>        <a class="code hl_class" href="classcgv_1_1base_1_1single__method__action.html">kUndefined</a>,</div>
 <div class="line"><a id="l00628" name="l00628"></a><span class="lineno">  628</span>        <a class="code hl_class" href="classcgv_1_1base_1_1single__method__action.html">kDefine</a>,</div>
 <div class="line"><a id="l00629" name="l00629"></a><span class="lineno">  629</span>        <a class="code hl_class" href="classcgv_1_1base_1_1single__method__action.html">kSnippet</a></div>
 <div class="line"><a id="l00630" name="l00630"></a><span class="lineno">  630</span>    };</div>

@@ -65,6 +65,6 @@ var searchData=
   ['from_5fhex_62',['from_hex',['../namespacecgv_1_1utils.html#add0a6017402a8aec581af77f4f81b452',1,'cgv::utils']]],
   ['from_5fstring_63',['from_string',['../namespacecgv_1_1utils.html#a92de341dd4bf63b75de4439b4785e8dd',1,'cgv::utils::from_string(std::string &amp;v, const std::string &amp;s)'],['../namespacecgv_1_1utils.html#af33afeb1f6c4584325695717d1300b44',1,'cgv::utils::from_string(T &amp;v, const std::string &amp;s)'],['../namespacecgv_1_1utils.html#a9a1535e8aa563c690fc1880c2842727d',1,'cgv::utils::from_string(std::string &amp;v, const std::string &amp;s)']]],
   ['from_5fvec_64',['from_vec',['../classcgv_1_1math_1_1fvec.html#a6deaaa9cc232afe687c0de21e0b01907',1,'cgv::math::fvec']]],
-  ['function_65',['function',['../classcgv_1_1media_1_1continuous__color__scheme.html#a312260e019c6b85986e789e0d56a5db2',1,'cgv::media::continuous_color_scheme']]],
+  ['function_65',['function',['../classcgv_1_1media_1_1continuous__color__scheme.html#a00e5a6e45be609465a58cdd9d7fdde65',1,'cgv::media::continuous_color_scheme']]],
   ['fvec_66',['fvec',['../classcgv_1_1math_1_1fvec.html#a86ed02c1ff1aef93e95110c88514a989',1,'cgv::math::fvec::fvec(const std::array&lt; T, N &gt; &amp;a)'],['../classcgv_1_1math_1_1fvec.html#a0a6f0eb621e32bdbcd27e6f88862648d',1,'cgv::math::fvec::fvec(const fvec&lt; S, N+1 &gt; &amp;other)'],['../classcgv_1_1math_1_1fvec.html#aa814cf80b31729abe42d82d0baa41ba2',1,'cgv::math::fvec::fvec(const T &amp;x)'],['../classcgv_1_1math_1_1fvec.html#ad1f2755e812b233b6f04174b8af8c4ad',1,'cgv::math::fvec::fvec()']]]
 ];
