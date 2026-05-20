@@ -165,7 +165,7 @@ void curvature_estimator::compute_principal_curvature(std::vector<principal_curv
 		plane_reference_matrix.set_row(0, x_axis);
 		plane_reference_matrix.set_row(1, y_axis);
 		plane_reference_matrix.set_row(2, point_normal);
-		Mat inv_plane_reference_matrix = cgv::math::inv(plane_reference_matrix);
+		Mat inv_plane_reference_matrix = cgv::math::inverse(plane_reference_matrix);
 
 		// change reference system, z is distance to plane, and x,y span the tangent space
 		plane_projected_points.clear();
