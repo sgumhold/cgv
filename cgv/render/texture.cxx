@@ -242,7 +242,7 @@ bool texture::create_from_image(cgv::data::data_format& df, cgv::data::data_view
 								const std::string& file_name, unsigned char* clear_color_ptr, int level, int cube_side)
 {
 	bool ensure_power_of_two = clear_color_ptr != 0;
-	std::string fn = file_name;
+	auto const& fn = file_name;
 	if (df.empty()) {
 		if (fn.empty()) {
 			cgv::render::render_component::last_error = "attempt to create texture from empty file name";
@@ -687,10 +687,10 @@ bool texture::replace_from_image(const context& ctx, const std::string& file_nam
 /** same as previous method but use the passed data format and data view to
 	store the content of the image. */
 bool texture::replace_from_image(cgv::data::data_format& df, cgv::data::data_view& dv, const context& ctx,
-								 const std::string& file_name, int x, int y, int z_or_cube_side, 
+								 const std::string& file_name, int x, int y, int z_or_cube_side,
 								 int level)
 {
-	std::string fn = file_name;
+	auto const& fn = file_name;
 	if (fn.empty()) {
 		return false;
 	}
