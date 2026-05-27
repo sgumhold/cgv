@@ -56,7 +56,7 @@ void depth_masking::begin(cgv::render::context& ctx, bool push_viewport) {
 		return;
 
 	fbc_draw.enable(ctx, push_viewport);
-	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+	ctx.clear_background(true, true);
 }
 
 void depth_masking::end(cgv::render::context& ctx, bool push_viewport) {

@@ -117,7 +117,7 @@ void temporal_anti_aliasing::begin(cgv::render::context& ctx, bool push_viewport
 	}
 
 	fbc_draw.enable(ctx, push_viewport);
-	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+	ctx.clear_background(true, true);
 }
 
 void temporal_anti_aliasing::end(cgv::render::context& ctx, bool pop_viewport) {
@@ -152,7 +152,8 @@ void temporal_anti_aliasing::end(cgv::render::context& ctx, bool pop_viewport) {
 	}
 
 	fbc_resolve.enable(ctx, /*push*/pop_viewport);
-	glDepthFunc(GL_ALWAYS);
+	ctx.push_depth_test_state();
+	ctx.set_depth_func(cgv::render::CompareFunction::CF_ALWAYS);
 
 	bool first = !accumulate;
 	if(accumulate) {
@@ -223,7 +224,7 @@ void temporal_anti_aliasing::end(cgv::render::context& ctx, bool pop_viewport) {
 
 	screen_prog.disable(ctx);
 
-	glDepthFunc(GL_LESS);
+	ctx.pop_depth_test_state();
 	ctx.end_attribute_less_rendering();
 
 	previous_view = current_view;
