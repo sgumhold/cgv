@@ -272,7 +272,7 @@ public:
 		for(unsigned i = 0; i < N; ++i)
 			v[i] = cgv::math::sign(v[i]);
 	}
-	/// componentwise sign values
+	/// componentwise step function using stored values as edge
 	void step(const fvec<T, N>& r) {
 		for(unsigned i = 0; i < N; ++i)
 			v[i] = cgv::math::step(v[i], r[i]);
@@ -445,42 +445,47 @@ inline fvec<T, N> cross(const fvec<T, N>& v, const fvec<T, N>& w) {
 template <typename T, cgv::type::uint32_type N>
 inline T sqr_length(const fvec<T, N>& v) { return dot(v, v); }
 
-/// return the length of vector v 
+/// return the length of vector v (L2-Norm)
 template <typename T, cgv::type::uint32_type N>
 inline T length(const fvec<T, N>& v) { return std::sqrt(dot(v, v)); }
 
+/// return the L1-Norm of vector v
+template <typename T, cgv::type::uint32_type N>
+inline T l1_norm(const fvec<T, N>& v) {
+	T sum = T(0);
+	for(unsigned i = 0; i < N; ++i)
+		sum += std::numeric_limits<T>::is_signed ? std::abs(v[i]) : v[i];
+	return sum;
+}
+
 /// apply sign function component wise to vector
 template <typename T, cgv::type::uint32_type N>
-inline fvec<T, N> sign(const fvec<T, N>& v) { fvec<T, N> r(v); r.sign(); return r; }
+inline fvec<T, N> sign(fvec<T, N> v) { v.sign(); return v; }
 
 /// apply step function component wise to vector
 template <typename T, cgv::type::uint32_type N>
-inline fvec<T, N> step(const fvec<T, N>& a, const fvec<T, N>& b) { fvec<T, N> r(a); r.step(b); return r; }
+inline fvec<T, N> step(const fvec<T, N>& edge, const fvec<T, N>& x) { fvec<T, N> r(edge); r.step(x); return r; }
 
 /// apply abs function component wise to vector
 template <typename T, cgv::type::uint32_type N>
-inline fvec<T, N> abs(const fvec<T, N>& v) { fvec<T, N> r(v); r.abs(); return r; }
+inline fvec<T, N> abs(fvec<T, N> v) { v.abs(); return v; }
 
 /// apply round function component wise to vector
 template <typename T, cgv::type::uint32_type N>
-inline fvec<T, N> round(const fvec<T, N>& v) { fvec<T, N> r(v); r.round(); return r; }
+inline fvec<T, N> round(fvec<T, N> v) { v.round(); return v; }
 
 /// apply floor function component wise to vector
 template <typename T, cgv::type::uint32_type N>
-inline fvec<T, N> floor(const fvec<T, N>& v) { fvec<T, N> r(v); r.floor(); return r; }
+inline fvec<T, N> floor(fvec<T, N> v) { v.floor(); return v; }
 
 /// apply ceil function component wise to vector
 template <typename T, cgv::type::uint32_type N>
-inline fvec<T, N> ceil(const fvec<T, N>& v) { fvec<T, N> r(v); r.ceil(); return r; }
+inline fvec<T, N> ceil(fvec<T, N> v) { v.ceil(); return v; }
 
-///returns homogenized vector
+/// return a homogenized vector of dimension N + 1
 template <typename T, cgv::type::uint32_type N>
-inline fvec<T, N + 1> hom(const fvec<T, N>& v) {
-	fvec<T, N + 1> h;
-	for(unsigned i = 0; i < N; ++i)
-		h[i] = v[i];
-	h[N] = 1;
-	return h;
+inline fvec<T, N + 1> hom(fvec<T, N> v) {
+	return fvec<T, N + 1>(v, T(1));
 }
 
 /// return the smalles component
