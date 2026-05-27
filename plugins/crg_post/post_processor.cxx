@@ -104,6 +104,8 @@ public:
 		ssao.ensure(ctx);
 		taa.ensure(ctx);
 
+		ctx.clear_background(true, true);
+
 		taa.begin(ctx);
 		dh.begin(ctx);
 		dm.begin(ctx);
