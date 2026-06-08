@@ -1,7 +1,8 @@
 #pragma once
 @exclude <cgv/config/ppp.ppp>
+#include <memory>
+#include <unordered_map>
 #include <vector>
-#include <map>
 #include <cgv/type/invalid_type.h>
 #include <cgv/type/func/make_argument.h>
 
@@ -16,19 +17,32 @@ class CGV_API tacker;
 /// base functionality of all signals that allows connection and disconnection of abst_functors also to instances derived from the tacker class
 class CGV_API signal_base
 {
+	friend class tacker;
 protected:
-	std::vector<functor_base*> functors;
-	void link(functor_base* fp);
-	void unlink(functor_base* fp);
+	/// A connected functor and its optional tacker as returned by `functor_base::get_tacker`.
+	struct receiver
+	{
+		std::unique_ptr<functor_base> functor;
+		tacker const* tacker;
+	};
+	std::vector<receiver> receivers {};
+
+	void link(receiver&);
+	void unlink(receiver&);
 	void connect(functor_base* fp);
 	void disconnect(const functor_base* fp);
 public:
+	signal_base() = default;
+	/// New instances have no connected functors.
+	signal_base(signal_base const&) {}
+	constexpr signal_base& operator=(signal_base const&) {return *this;}
+
 	/// return the number of connected functors
-	unsigned get_nr_functors() const;
+	unsigned get_nr_functors() const {return static_cast<unsigned>(receivers.size());}
 	/// only use this if you exactly know what to do!
 	void connect_abst(functor_base* fp);
 	/// virtual destructor
-	virtual ~signal_base();
+	virtual ~signal_base() noexcept;
 	/// disconnect all connections to the given tacker
 	void disconnect(const tacker* t);
 	/// disconnect all connections
@@ -42,14 +56,15 @@ protected:
 	/// place characteristic pointers into the two passed references, which serve as basis for the comparison of two functors
 	virtual void put_pointers(const void* &p1, const void* &p2) const = 0;
 public:
-	/// virtual desctructor
-	virtual ~functor_base();
+	/// virtual destructor
+	virtual ~functor_base() noexcept = default;
 	/// return the tacker interface of an involved instance or 0 if this is a function functor
 	virtual const tacker* get_tacker() const;
 	/// construct a copy of the functor on the heap
 	virtual functor_base* clone() const = 0;
 	/// compare this functor to another functor based on the pointers
 	bool operator == (const functor_base& f) const;
+	bool operator != (const functor_base& f) const {return !(*this == f);}
 };
 
 /** derive your classes that are attached to signals from this tacker class. 
@@ -59,21 +74,23 @@ public:
 class CGV_API tacker
 {
 private:
-	typedef std::map<signal_base*, int> map_type;
+	typedef std::unordered_map<signal_base*, int> map_type;
 	mutable map_type signals;
 public:
 	/// implement to allow reimplementation of copy constructor
-	tacker();
-	/// overload to avoid copying of signals
-	tacker(const tacker&);
+	tacker() = default;
+	/// avoid copying of signals
+	tacker(const tacker&) {}
+	constexpr tacker& operator=(const tacker&) noexcept {return *this;}
 	/// keep track of the given signal
 	void tack(signal_base* s) const;
 	/// forget the given signal
 	void untack(signal_base* s) const;
 	/// forget all signals
 	void untack_all() const;
+protected:
 	/// disconnect from all tacked signals on destruction
-	virtual ~tacker();
+	~tacker() noexcept;
 };
 
 template <int i, @["typename T1 = type::invalid_type"; ", "; "typename T".N_ARG." = type::invalid_type"]>
