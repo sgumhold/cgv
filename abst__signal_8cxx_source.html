@@ -129,14 +129,14 @@ $(document).ready(function(){initNavTree('abst__signal_8cxx_source.html',''); in
 <div class="line"><a id="l00031" name="l00031"></a><span class="lineno">   31</span> </div>
 <div class="line"><a id="l00032" name="l00032"></a><span class="lineno">   32</span><span class="keywordtype">void</span> signal_base::link(receiver&amp; rcvr)</div>
 <div class="line"><a id="l00033" name="l00033"></a><span class="lineno">   33</span>{</div>
-<div class="line"><a id="l00034" name="l00034"></a><span class="lineno">   34</span>    <span class="keywordflow">if</span> (rcvr.tacker)</div>
-<div class="line"><a id="l00035" name="l00035"></a><span class="lineno">   35</span>        rcvr.tacker-&gt;tack(<span class="keyword">this</span>);</div>
+<div class="line"><a id="l00034" name="l00034"></a><span class="lineno">   34</span>    <span class="keywordflow">if</span> (rcvr.tacker_ptr)</div>
+<div class="line"><a id="l00035" name="l00035"></a><span class="lineno">   35</span>        rcvr.tacker_ptr-&gt;tack(<span class="keyword">this</span>);</div>
 <div class="line"><a id="l00036" name="l00036"></a><span class="lineno">   36</span>}</div>
 <div class="line"><a id="l00037" name="l00037"></a><span class="lineno">   37</span> </div>
 <div class="line"><a id="l00038" name="l00038"></a><span class="lineno">   38</span><span class="keywordtype">void</span> signal_base::unlink(receiver&amp; rcvr)</div>
 <div class="line"><a id="l00039" name="l00039"></a><span class="lineno">   39</span>{</div>
-<div class="line"><a id="l00040" name="l00040"></a><span class="lineno">   40</span>    <span class="keywordflow">if</span> (rcvr.tacker)</div>
-<div class="line"><a id="l00041" name="l00041"></a><span class="lineno">   41</span>        rcvr.tacker-&gt;untack(<span class="keyword">this</span>);</div>
+<div class="line"><a id="l00040" name="l00040"></a><span class="lineno">   40</span>    <span class="keywordflow">if</span> (rcvr.tacker_ptr)</div>
+<div class="line"><a id="l00041" name="l00041"></a><span class="lineno">   41</span>        rcvr.tacker_ptr-&gt;untack(<span class="keyword">this</span>);</div>
 <div class="line"><a id="l00042" name="l00042"></a><span class="lineno">   42</span>}</div>
 <div class="line"><a id="l00043" name="l00043"></a><span class="lineno">   43</span> </div>
 <div class="line"><a id="l00044" name="l00044"></a><span class="lineno">   44</span><span class="keywordtype">void</span> signal_base::connect(functor_base* fp)</div>
@@ -164,7 +164,7 @@ $(document).ready(function(){initNavTree('abst__signal_8cxx_source.html',''); in
 <div class="line"><a id="l00066" name="l00066"></a><span class="lineno">   66</span>{</div>
 <div class="line"><a id="l00067" name="l00067"></a><span class="lineno">   67</span>    <span class="keyword">auto</span> found = <span class="keyword">false</span>;</div>
 <div class="line"><a id="l00068" name="l00068"></a><span class="lineno">   68</span>    <span class="keywordflow">for</span> (<span class="keyword">auto</span> rcvr = receivers.rbegin(); rcvr != receivers.rend(); ++rcvr) {</div>
-<div class="line"><a id="l00069" name="l00069"></a><span class="lineno">   69</span>        <span class="keywordflow">if</span> (rcvr-&gt;tacker != c) <span class="keywordflow">continue</span>;</div>
+<div class="line"><a id="l00069" name="l00069"></a><span class="lineno">   69</span>        <span class="keywordflow">if</span> (rcvr-&gt;tacker_ptr != c) <span class="keywordflow">continue</span>;</div>
 <div class="line"><a id="l00070" name="l00070"></a><span class="lineno">   70</span>        found = <span class="keyword">true</span>;</div>
 <div class="line"><a id="l00071" name="l00071"></a><span class="lineno">   71</span>        unlink(*rcvr);</div>
 <div class="line"><a id="l00072" name="l00072"></a><span class="lineno">   72</span>        receivers.erase(rcvr.base() - 1);</div>
@@ -217,13 +217,13 @@ $(document).ready(function(){initNavTree('abst__signal_8cxx_source.html',''); in
 <div class="line"><a id="l00119" name="l00119"></a><span class="lineno">  119</span> </div>
 <div class="line"><a id="l00120" name="l00120"></a><span class="lineno">  120</span><span class="keywordtype">void</span> tacker::untack_all()<span class="keyword"> const</span></div>
 <div class="line"><a id="l00121" name="l00121"></a><span class="lineno">  121</span><span class="keyword"></span>{</div>
-<div class="line"><a id="l00122" name="l00122"></a><span class="lineno">  122</span>    <span class="keywordflow">for</span> (<span class="keyword">auto</span> [signal, num_tacks] : signals) {</div>
-<div class="line"><a id="l00123" name="l00123"></a><span class="lineno">  123</span>        <span class="keyword">auto</span>&amp; receivers = signal-&gt;receivers;</div>
+<div class="line"><a id="l00122" name="l00122"></a><span class="lineno">  122</span>    <span class="keywordflow">for</span> (<span class="keyword">auto</span>&amp; signal : signals) {</div>
+<div class="line"><a id="l00123" name="l00123"></a><span class="lineno">  123</span>        <span class="keyword">auto</span>&amp; receivers = signal.first-&gt;receivers;</div>
 <div class="line"><a id="l00124" name="l00124"></a><span class="lineno">  124</span>        <span class="keyword">auto</span> removed = 0u;</div>
 <div class="line"><a id="l00125" name="l00125"></a><span class="lineno">  125</span>        <span class="keywordflow">for</span> (<span class="keyword">auto</span> rcvr = receivers.rbegin(); rcvr != receivers.rend(); ++rcvr) {</div>
-<div class="line"><a id="l00126" name="l00126"></a><span class="lineno">  126</span>            <span class="keywordflow">if</span> (rcvr-&gt;tacker != <span class="keyword">this</span>) <span class="keywordflow">continue</span>;</div>
+<div class="line"><a id="l00126" name="l00126"></a><span class="lineno">  126</span>            <span class="keywordflow">if</span> (rcvr-&gt;tacker_ptr != <span class="keyword">this</span>) <span class="keywordflow">continue</span>;</div>
 <div class="line"><a id="l00127" name="l00127"></a><span class="lineno">  127</span>            receivers.erase(rcvr.base() - 1);</div>
-<div class="line"><a id="l00128" name="l00128"></a><span class="lineno">  128</span>            <span class="keywordflow">if</span> (++removed == num_tacks) <span class="keywordflow">break</span>;</div>
+<div class="line"><a id="l00128" name="l00128"></a><span class="lineno">  128</span>            <span class="keywordflow">if</span> (++removed == signal.second) <span class="keywordflow">break</span>;</div>
 <div class="line"><a id="l00129" name="l00129"></a><span class="lineno">  129</span>        }</div>
 <div class="line"><a id="l00130" name="l00130"></a><span class="lineno">  130</span>    }</div>
 <div class="line"><a id="l00131" name="l00131"></a><span class="lineno">  131</span>}</div>
