@@ -31,14 +31,14 @@ void signal_base::connect_abst(functor_base* fp)
 
 void signal_base::link(receiver& rcvr)
 {
-	if (rcvr.tacker)
-		rcvr.tacker->tack(this);
+	if (rcvr.tacker_ptr)
+		rcvr.tacker_ptr->tack(this);
 }
 
 void signal_base::unlink(receiver& rcvr)
 {
-	if (rcvr.tacker)
-		rcvr.tacker->untack(this);
+	if (rcvr.tacker_ptr)
+		rcvr.tacker_ptr->untack(this);
 }
 
 void signal_base::connect(functor_base* fp)
@@ -66,7 +66,7 @@ void signal_base::disconnect(const tacker* c)
 {
 	auto found = false;
 	for (auto rcvr = receivers.rbegin(); rcvr != receivers.rend(); ++rcvr) {
-		if (rcvr->tacker != c) continue;
+		if (rcvr->tacker_ptr != c) continue;
 		found = true;
 		unlink(*rcvr);
 		receivers.erase(rcvr.base() - 1);
@@ -119,13 +119,13 @@ void tacker::untack(signal_base* s) const
 
 void tacker::untack_all() const
 {
-	for (auto [signal, num_tacks] : signals) {
-		auto& receivers = signal->receivers;
+	for (auto& signal : signals) {
+		auto& receivers = signal.first->receivers;
 		auto removed = 0u;
 		for (auto rcvr = receivers.rbegin(); rcvr != receivers.rend(); ++rcvr) {
-			if (rcvr->tacker != this) continue;
+			if (rcvr->tacker_ptr != this) continue;
 			receivers.erase(rcvr.base() - 1);
-			if (++removed == num_tacks) break;
+			if (++removed == signal.second) break;
 		}
 	}
 }
