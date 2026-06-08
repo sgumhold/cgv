@@ -23,7 +23,7 @@ protected:
 	struct receiver
 	{
 		std::unique_ptr<functor_base> functor;
-		tacker const* tacker;
+		tacker const* tacker_ptr;
 	};
 	std::vector<receiver> receivers {};
 
