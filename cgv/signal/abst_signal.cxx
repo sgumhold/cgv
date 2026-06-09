@@ -107,7 +107,7 @@ void tacker::untack(signal_base* s) const
 {
 	const auto s_it = signals.find(s);
 	if (s_it == signals.end()) {
-		#ifdef NDEBUG
+		#ifndef NDEBUG
 			std::cout << "Attempted to untack a signal the tacker is not connected to.\n";
 		#endif
 		return;
