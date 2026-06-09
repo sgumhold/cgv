@@ -205,7 +205,7 @@ $(document).ready(function(){initNavTree('abst__signal_8cxx_source.html',''); in
 <div class="line"><a id="l00107" name="l00107"></a><span class="lineno">  107</span><span class="keyword"></span>{</div>
 <div class="line"><a id="l00108" name="l00108"></a><span class="lineno">  108</span>    <span class="keyword">const</span> <span class="keyword">auto</span> s_it = signals.find(s);</div>
 <div class="line"><a id="l00109" name="l00109"></a><span class="lineno">  109</span>    <span class="keywordflow">if</span> (s_it == signals.end()) {</div>
-<div class="line"><a id="l00110" name="l00110"></a><span class="lineno">  110</span><span class="preprocessor">        #ifdef NDEBUG</span></div>
+<div class="line"><a id="l00110" name="l00110"></a><span class="lineno">  110</span><span class="preprocessor">        #ifndef NDEBUG</span></div>
 <div class="line"><a id="l00111" name="l00111"></a><span class="lineno">  111</span>            std::cout &lt;&lt; <span class="stringliteral">&quot;Attempted to untack a signal the tacker is not connected to.\n&quot;</span>;</div>
 <div class="line"><a id="l00112" name="l00112"></a><span class="lineno">  112</span><span class="preprocessor">        #endif</span></div>
 <div class="line"><a id="l00113" name="l00113"></a><span class="lineno">  113</span>        <span class="keywordflow">return</span>;</div>
