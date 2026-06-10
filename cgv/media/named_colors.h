@@ -22,6 +22,7 @@ static const cgv::rgb magenta = { 1.0f, 0.0f, 1.0f };
 static const cgv::rgb red = { 1.0f, 0.0f, 0.0f };
 static const cgv::rgb white = { 1.0f, 1.0f, 1.0f };
 static const cgv::rgb yellow = { 1.0f, 1.0f, 0.0f };
+static const cgv::rgb orange = { 1.0f, 0.5f, 0.0f };
 
 } // namespace colors
 } // namespace media
