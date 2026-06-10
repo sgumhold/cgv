@@ -2,6 +2,8 @@
 #	include <iostream>
 #endif
 
+#include <algorithm>
+
 #include <cgv/signal/abst_signal.h>
 #include "signal.h"
 
@@ -50,12 +52,15 @@ void signal_base::connect(functor_base* fp)
 void signal_base::disconnect(const functor_base* fp)
 {
 	auto found = false;
-	for (auto rcvr = receivers.rbegin(); rcvr != receivers.rend(); ++rcvr) {
-		if (*rcvr->functor != *fp) continue;
-		found = true;
-		unlink(*rcvr);
-		receivers.erase(rcvr.base() - 1);
-	}
+	receivers.erase(std::remove_if(receivers.begin(), receivers.end(), [this, &found, fp](receiver& rcvr) {
+		if(rcvr.functor.get() == fp) {
+			found = true;
+			unlink(rcvr);
+			return true;
+		}
+		return false;
+	}), receivers.end());
+
 	#ifndef NDEBUG
 		if (!found)
 			std::cerr << "Attempted to disconnect a functor from a signal it is not connected to.\n";
@@ -65,12 +70,15 @@ void signal_base::disconnect(const functor_base* fp)
 void signal_base::disconnect(const tacker* c)
 {
 	auto found = false;
-	for (auto rcvr = receivers.rbegin(); rcvr != receivers.rend(); ++rcvr) {
-		if (rcvr->tacker_ptr != c) continue;
-		found = true;
-		unlink(*rcvr);
-		receivers.erase(rcvr.base() - 1);
-	}
+	receivers.erase(std::remove_if(receivers.begin(), receivers.end(), [this, &found, c](receiver& rcvr) {
+		if(rcvr.tacker_ptr == c) {
+			found = true;
+			unlink(rcvr);
+			return true;
+		}
+		return false;
+	}), receivers.end());
+
 	#ifndef NDEBUG
 		if (!found)
 			std::cerr << "Attempted to disconnect a tacker from a signal it is not connected to.\n";
@@ -121,12 +129,16 @@ void tacker::untack_all() const
 {
 	for (auto& signal : signals) {
 		auto& receivers = signal.first->receivers;
-		auto removed = 0u;
-		for (auto rcvr = receivers.rbegin(); rcvr != receivers.rend(); ++rcvr) {
-			if (rcvr->tacker_ptr != this) continue;
-			receivers.erase(rcvr.base() - 1);
-			if (++removed == signal.second) break;
-		}
+		int removed = 0;
+		bool done = false;
+		receivers.erase(std::remove_if(receivers.begin(), receivers.end(), [this, &signal, &done, &removed](signal_base::receiver& rcvr) {
+			if(!done && rcvr.tacker_ptr == this) {
+				if(++removed == signal.second)
+					done = true;
+				return true;
+			}
+			return false;
+		}), receivers.end());
 	}
 }
 
