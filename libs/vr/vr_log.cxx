@@ -95,7 +95,7 @@ const std::unordered_map<std::string, vr::vr_log::Filter> filter_map = {
 };
 
 
-const vr::vr_log::Filter filter_from_string(const std::string& f) {
+vr::vr_log::Filter filter_from_string(const std::string& f) {
 	const auto it = filter_map.find(f);
 	if (it != filter_map.cend()) {
 		return (*it).second;
@@ -120,10 +120,10 @@ void vr::vr_log::enable_in_memory_log()
 
 void vr::vr_log::enable_ostream_log(const std::shared_ptr<std::ostream>& stream)
 {
-	if (!setting_locked)
-		log_stream = stream;
-		log_stream->precision(std::numeric_limits<double>::max_digits10);
-		log_storage_mode = log_storage_mode | SM_OSTREAM;
+	if (setting_locked) return;
+	log_stream = stream;
+	log_stream->precision(std::numeric_limits<double>::max_digits10);
+	log_storage_mode = log_storage_mode | SM_OSTREAM;
 }
 
 vr::vr_log::vr_log(std::istringstream& is) {

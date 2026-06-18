@@ -1,0 +1,86 @@
+#pragma once
+
+#include <cgv/gui/theme_info.h>
+#include <cgv/render/managed_frame_buffer.h>
+#include <cgv_g2d/canvas.h>
+#include <cgv_g2d/shape2d_styles.h>
+#include <cgv_overlay/overlay.h>
+
+#include "lib_begin.h"
+
+namespace cgv {
+namespace overlay {
+
+class CGV_API canvas_overlay : public overlay {
+private:
+	bool has_damage_ = true;
+	bool recreate_layout_requested_ = true;
+	
+	cgv::g2d::shape2d_style blit_style_;
+
+	cgv::render::managed_frame_buffer frame_buffer_;
+
+protected:
+	cgv::g2d::canvas overlay_canvas, content_canvas;
+	bool draw_in_finish_frame = false;
+	bool ensure_layout(cgv::render::context& ctx);
+
+	void post_recreate_layout();
+
+	void clear_damage();
+
+	bool is_damaged() const;
+
+	void begin_content(cgv::render::context& ctx, bool clear_frame_buffer = true);
+	
+	void end_content(cgv::render::context& ctx, bool keep_damage = false);
+
+	virtual void draw_impl(cgv::render::context& ctx);
+
+	virtual void init_styles() {}
+
+	void register_shader(const std::string& name, const std::string& filename);
+
+public:
+	/// creates an overlay in the bottom left corner with zero size using a canvas for 2d drawing
+	canvas_overlay();
+	bool init(cgv::render::context& ctx) override;
+	void clear(cgv::render::context& ctx) override;
+	/// set the drawing of the content to be in finish_frame (enable = true) or after_finish (enable = false)
+	void set_draw_in_finish_frame(bool enable = true);
+	/// default implementation of that calls handle_member_change and afterwards upates the member in the gui and post damage to the canvas overlay
+	virtual void on_set(void* member_ptr) override;
+	/// implement to handle member changes
+	virtual void handle_member_change(cgv::data::informed_ptr ptr) override {}
+	/// draw the content of the canvas overlay either in finish_frame
+	void finish_frame(cgv::render::context&) override;
+	/// or in after_finish, what is the default
+	void after_finish(cgv::render::context&) override;
+	/// draw_content is implemented by decendent classes
+	virtual void draw_content(cgv::render::context& ctx) = 0;
+
+	void post_damage(bool redraw = true);
+
+	/// return the mouse position local to the container of this overlay taking the canvas origin into account
+	ivec2 get_local_mouse_pos(ivec2 mouse_pos) const override;
+
+	/** Test if the mouse pointer is hovering over this overlay and returns
+		true if this is the case. Specifically it checks if the mouse position
+		is inside the rectangle defined by container. Override this method to
+		implement your own test, i.e. for different overlay shapes.
+	*/
+	bool is_hit(const ivec2& mouse_pos) const override;
+
+	/**
+	* See is_hit. THis is a hotfix for supporting hit tests with coordinates
+	* that are already in local coordinate space.
+	*/
+	bool is_hit_local(const ivec2& local_mouse_pos) const;
+};
+
+typedef cgv::data::ref_ptr<canvas_overlay> canvas_overlay_ptr;
+
+} // namespace overlay
+} // namespace cgv
+
+#include <cgv/config/lib_end.h>

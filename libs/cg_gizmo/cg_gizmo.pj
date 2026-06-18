@@ -1,0 +1,18 @@
+@=
+projectName="cg_gizmo";
+projectType="library";
+projectGUID="11C28DFE-4088-48EF-808E-9EA91B001000";
+addSharedDefines=["CG_GIZMO_EXPORTS"];
+addProjectDirs=[CGV_DIR."/libs"];
+addProjectDeps=[
+	"cgv_base",
+	"cgv_data",
+	"cgv_gl",
+	"cgv_gui",
+	"cgv_reflect",
+	"cgv_render",
+	"cgv_signal",
+	"cgv_type",
+	"cgv_utils"
+];
+addIncDirs=[CGV_DIR."/libs", CGV_BUILD_DIR."/".projectName];

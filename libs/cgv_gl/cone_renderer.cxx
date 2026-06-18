@@ -31,6 +31,7 @@ namespace cgv {
 			return res;
 		}
 		void cone_renderer::update_shader_program_options(shader_compile_options& options) const {
+			surface_renderer::update_shader_program_options(options);
 			const cone_render_style& crs = get_style<cone_render_style>();
 			options.define_macro_if_true(crs.enable_texturing, "ENABLE_TEXTURE");
 			options.define_macro_if_true(crs.show_caps, "ENABLE_CAPS");

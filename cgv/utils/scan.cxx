@@ -124,6 +124,88 @@ std::string to_upper(const std::string& _s)
 	return s;
 }
 
+std::string to_snake_case(const std::string& _s, bool separate_at_upper_case) {
+	std::string s;
+	bool last_was_alpha = false;
+	bool last_was_upper = true;
+	for(char c : _s) {
+		bool is_alpha = false;
+
+		int is_upper = true;
+
+		if(std::isalnum(c)) {
+			is_alpha = true;
+			is_upper = std::isupper(c);
+			if(separate_at_upper_case && !last_was_upper && is_upper)
+				s += '_';
+			s += cgv::utils::to_lower(c);
+		} else if(last_was_alpha) {
+			s += '_';
+		}
+
+		last_was_alpha = is_alpha;
+		last_was_upper = is_upper;
+	}
+	if(!s.empty() && s.back() == '_')
+		s.pop_back();
+	return s;
+}
+
+std::string snake_case_to_camel_case(const std::string& _s) {
+	std::string s;
+	s.reserve(_s.size());
+	bool capitalize_next = false;
+	for(char c : _s) {
+		if(c == '_') {
+			capitalize_next = true;
+		} else {
+			s += capitalize_next ? cgv::utils::to_upper(c) : c;
+			capitalize_next = false;
+		}
+	}
+	return s;
+}
+
+std::string snake_case_to_kebab_case(const std::string& _s) {
+	std::string s = _s;
+	s.reserve(_s.size());
+	for(char& c : s)
+		c = c == '_' ? '-' : c;
+	return s;
+}
+
+std::string snake_case_to_pascal_case(const std::string& _s) {
+	std::string s = snake_case_to_camel_case(_s);
+	if(!s.empty())
+		s[0] = cgv::utils::to_upper(s[0]);
+	return s;
+}
+
+std::string snake_case_to_sentence_case(const std::string& _s) {
+	std::string s = _s;
+	cgv::utils::replace(s, '_', ' ');
+	if(!s.empty())
+		s[0] = cgv::utils::to_upper(s[0]);
+	return s;
+}
+
+std::string snake_case_to_capitalized_case(const std::string& _s) {
+	std::string s = _s;
+	bool capitalize_next = false;
+	for(char& c : s) {
+		if(c == '_') {
+			capitalize_next = true;
+			c = ' ';
+		} else {
+			c = capitalize_next ? cgv::utils::to_upper(c) : c;
+			capitalize_next = false;
+		}
+	}
+	if(!s.empty())
+		s[0] = cgv::utils::to_upper(s[0]);
+	return s;
+}
+
 std::string& remove(std::string& s, char c)
 {
 	s.erase(std::remove(s.begin(), s.end(), c), s.end());
@@ -355,11 +437,11 @@ int get_element_index(const std::string& e, const std::string& s, char sep)
 
 #if __cplusplus >= 201703L
 	// We will be using std::from_chars below for parsing, this provides the whitespace check we need there
-	inline const bool char_is_zero_or_whitespace (const char ch) {
+	inline bool char_is_zero_or_whitespace (const char ch) {
 		return ch == 0 || ch == '\r' || ch == '\n' || ch == ' ' || ch == '\t';
 	}
 	// This is the logic we're using to test whether a from_chars conversion was successful
-	inline const bool from_chars_success (const std::from_chars_result &r, const char *end_char) {
+	inline bool from_chars_success (const std::from_chars_result &r, const char *end_char) {
 		return r.ec == std::errc() && (r.ptr == end_char || char_is_zero_or_whitespace(*r.ptr));
 	}
 #endif
@@ -491,8 +573,7 @@ bool is_year(const char* begin, const char* end, unsigned short& year, bool shor
 {
 	int i;
 	unsigned int size = (unsigned int) (end-begin);
-	if ((size == 2 && short_allowed) || 
-		 ((size == 4) && is_integer(begin, end, i))) {
+	if ((size == 2 && short_allowed || size == 4) && is_integer(begin, end, i)) {
 		year = i;
 		return true;
 	}

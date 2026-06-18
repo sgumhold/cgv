@@ -1,9 +1,11 @@
+#version 330
+
 /** use these forward declarations in your shader to use classic 2/3/4d Perlin noise:
 float cnoise(vec2 x);
 float cnoise(vec3 x);
 float cnoise(vec4 x);
-// classic periodic Perlin noise
 float cnoise(vec4 x, vec4 rep);
+float fbm_cnoise(vec3 P, int octaves, float persistence, float lacunarity);
 */
 
 vec4 cpermute(vec4 x) { return mod(((x * 34.0) + 1.0) * x, 289.0); }
@@ -378,4 +380,20 @@ float cnoise(vec4 P, vec4 rep)
 	vec2 n_yzw = mix(n_zw.xy, n_zw.zw, cfade_xyzw.y);
 	float n_xyzw = mix(n_yzw.x, n_yzw.y, cfade_xyzw.x);
 	return 2.2 * n_xyzw;
+}
+
+float fbm_cnoise(vec3 P, int octaves, float persistence, float lacunarity)
+{
+	float total = 0.0;
+	float amplitude = 1.0;
+	float frequency = 1.0;
+
+	for (int i = 0; i < octaves; i++) {
+		float noise = cnoise(P * frequency);
+		total += noise * amplitude;
+		amplitude *= persistence;
+		frequency *= lacunarity;
+	}
+
+	return total / (1.0 - pow(persistence, float(octaves)));
 }

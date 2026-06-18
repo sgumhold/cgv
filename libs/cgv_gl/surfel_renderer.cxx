@@ -84,8 +84,9 @@ namespace cgv {
 
 			glPointSize(srs.point_size);
 			if (srs.blend_points) {
-				glEnable(GL_BLEND);
-				glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+				ctx.push_blend_state();
+				ctx.enable_blending();
+				ctx.set_blend_func_back_to_front();
 			}
 			if (ref_prog().is_linked()) {
 				if (!has_normals)
@@ -113,10 +114,7 @@ namespace cgv {
 		{
 			const surfel_render_style& srs = get_style<surfel_render_style>();
 			if (srs.blend_points) {
-				glDisable(GL_BLEND);
-			}
-			if (srs.culling_mode != CM_OFF) {
-				glDisable(GL_CULL_FACE);
+				ctx.pop_blend_state();
 			}
 			if (!attributes_persist()) {
 				has_indexed_colors = false;

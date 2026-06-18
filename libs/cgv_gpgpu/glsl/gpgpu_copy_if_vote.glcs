@@ -25,7 +25,8 @@ void main() {
 		b_votes[subgroup_votes_offset] = 0;
 
 	uint idx = gl_GlobalInvocationID.x;
-	if(idx < u_args.num_values) {
+	uint num_values = u_args.input_end - u_args.input_begin;
+	if(idx < num_values) {
         bool vote = predicate(b_data_in[u_args.input_begin + idx], idx);
 		uint ballot = subgroupBallot(vote).x;
 		if(subgroupElect())
@@ -53,7 +54,8 @@ void main() {
 	s_votes[gl_LocalInvocationID.x] = 0;
 
     uint idx = gl_GlobalInvocationID.x;
-	if(idx < u_args.num_values) {
+	uint num_values = u_args.input_end - u_args.input_begin;
+	if(idx < num_values) {
         bool vote = predicate(b_data_in[u_args.input_begin + idx], idx);
 
 		s_votes[gl_LocalInvocationID.x] = vote ? 1 : 0;

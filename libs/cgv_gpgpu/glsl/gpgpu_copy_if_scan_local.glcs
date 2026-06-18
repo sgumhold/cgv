@@ -5,13 +5,6 @@
 #ifdef CGV_USE_SNIPPETS
 shared uint s_scan[LOCAL_HIST_GROUP_SIZE + 16]; // make room for all values plus some space for offset addresses
 
-bool predicate(value_type element, uint index) {
-	if(index >= u_args.num_values)
-		return false;
-
-	//$cgv::predicate
-}
-
 // Returns the address offset by 1 for every 32 steps to avoid bank conflicts.
 uint addr(uint i) {
 	return i + (i>>5);
@@ -91,6 +84,6 @@ void main() {
 	b_prefix_sums[thread_offset] = sums;
     
     if(tid == 63 && gl_WorkGroupID.x == gl_NumWorkGroups.x - 1)
-		b_last_sum = scan_value + ((value_pack>>3)&1) + v2;
+		b_last_sum[u_args.output_count_begin] = scan_value + ((value_pack>>3)&1) + v2;
 }
 #endif

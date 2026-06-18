@@ -818,10 +818,10 @@ void fltk_gl_view::debug_dispatch(cgv::gui::event& e, bool before)
 			char sep = ':';
 			policy += "focus:";
 			switch (pol) {
-			case cgv::base::TP_ALL: "all"; break;
-			case cgv::base::TP_FIRST_FOCUS: "fst"; break;
-			case cgv::base::TP_ONLY_FOCUS: "only"; break;
-			case cgv::base::TP_AUTO_FOCUS: "auto"; break;
+			case cgv::base::TP_ALL:        policy += "all"; break;
+			case cgv::base::TP_FIRST_FOCUS:policy += "fst"; break;
+			case cgv::base::TP_ONLY_FOCUS: policy += "only"; break;
+			case cgv::base::TP_AUTO_FOCUS: policy += "auto"; break;
 			}
 			std::string seps = ";stop:";
 			if (stop_on_failure) {

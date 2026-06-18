@@ -1,6 +1,7 @@
 #include <cgv/base/node.h>
 #include <plot/plot2d.h>
 #include <plot/plot3d.h>
+#include <cgv/media/named_color_schemes.h>
 #include <cgv/math/ftransform.h>
 #include <cgv/render/drawable.h>
 #include <cgv/render/render_buffer.h>
@@ -52,6 +53,10 @@ public:
 		plot.legend_components = cgv::plot::LegendComponent(cgv::plot::LC_PRIMARY_COLOR + cgv::plot::LC_PRIMARY_OPACITY);
 		plot.color_mapping[0] = 3;
 		plot.opacity_mapping[0] = 3;
+
+		// Load sequential and diverging color scheme presets into the global registry.
+		cgv::media::continuous_color_scheme_registry& color_schemes = cgv::media::get_global_continuous_color_scheme_registry();
+		cgv::media::load_continuous_color_scheme_presets(color_schemes, { cgv::media::ColorSchemeType::Sequential, cgv::media::ColorSchemeType::Diverging });
 
 		plot.adjust_domain_to_data();
 		plot.adjust_tick_marks();
@@ -138,8 +143,13 @@ public:
 
 		plot.legend_components = cgv::plot::LegendComponent(cgv::plot::LC_PRIMARY_COLOR + cgv::plot::LC_PRIMARY_OPACITY);
 
+		// Load sequential and diverging color scheme presets into the global registry.
+		cgv::media::continuous_color_scheme_registry& color_schemes = cgv::media::get_global_continuous_color_scheme_registry();
+		cgv::media::load_continuous_color_scheme_presets(color_schemes, { cgv::media::ColorSchemeType::Sequential, cgv::media::ColorSchemeType::Diverging });
+
 		plot.color_mapping[0] = 2;
-		plot.color_scale_index[0] = cgv::media::CS_HUE;
+		if(!plot.set_color_scale(0, "turbo"))
+			std::cout << "Error: could not set primary color scale of plot" << std::endl;
 		plot.opacity_mapping[0] = 3;
 
 		plot.ref_sub_plot2d_config(0).set_color_indices(0);

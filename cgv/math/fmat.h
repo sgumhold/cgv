@@ -248,7 +248,111 @@ public:
 /// This symbol is defined when @ref cgv::math::fmat exists in the current compilation unit
 #define CGV_MATH_FMAT_DECLARED
 
-/// return the transposed of a square matrix
+/// Return the inverse of a NxN square matrix (only defined for N = 2,3 and 4).
+// For N > 4, convert to mat first and use inv function from inv.h
+// Example:
+//   mat<T> M(N, N, &m(0, 0));
+//   return fmat<T, N, N>(N, N, &(inv(M)(0, 0)));
+template <typename T, cgv::type::uint32_type N>
+fmat<T, N, N> inverse(const fmat<T, N, N>& m) = delete;
+
+/// return the inverse of a 2x2 matrix
+template <typename T>
+fmat<T, 2, 2> inverse(const fmat<T, 2, 2>& m)
+{
+	fmat<T, 2, 2> im;
+	T t4 = T(1) / (-m(0, 0) * m(1, 1) + m(0, 1) * m(1, 0));
+	im(0, 0) = -m(1, 1) * t4;
+	im(1, 0) = +m(1, 0) * t4;
+	im(0, 1) = +m(0, 1) * t4;
+	im(1, 1) = -m(0, 0) * t4;
+
+	return im;
+}
+
+/// return the inverse of a 3x3 matrix
+template <typename T>
+fmat<T, 3, 3> inverse(const fmat<T, 3, 3>& m)
+{
+	T inv_det = (T)1 / (
+		+m(0, 0) * (m(1, 1) * m(2, 2) - m(1, 2) * m(2, 1))
+		- m(0, 1) * (m(1, 0) * m(2, 2) - m(1, 2) * m(2, 0))
+		+ m(0, 2) * (m(1, 0) * m(2, 1) - m(1, 1) * m(2, 0)));
+
+	fmat<T, 3, 3> im;
+	im(0, 0) = +(m(1, 1) * m(2, 2) - m(1, 2) * m(2, 1)) * inv_det;
+	im(0, 1) = -(m(0, 1) * m(2, 2) - m(0, 2) * m(2, 1)) * inv_det;
+	im(0, 2) = +(m(0, 1) * m(1, 2) - m(0, 2) * m(1, 1)) * inv_det;
+	im(1, 0) = -(m(1, 0) * m(2, 2) - m(1, 2) * m(2, 0)) * inv_det;
+	im(1, 1) = +(m(0, 0) * m(2, 2) - m(0, 2) * m(2, 0)) * inv_det;
+	im(1, 2) = -(m(0, 0) * m(1, 2) - m(0, 2) * m(1, 0)) * inv_det;
+	im(2, 0) = +(m(1, 0) * m(2, 1) - m(1, 1) * m(2, 0)) * inv_det;
+	im(2, 1) = -(m(0, 0) * m(2, 1) - m(0, 1) * m(2, 0)) * inv_det;
+	im(2, 2) = +(m(0, 0) * m(1, 1) - m(0, 1) * m(1, 0)) * inv_det;
+	return im;
+}
+
+/// return the inverse of a 4x4 matrix
+template <typename T>
+fmat<T, 4, 4> inverse(const fmat<T, 4, 4>& m)
+{
+	T coef00 = m(2, 2) * m(3, 3) - m(2, 3) * m(3, 2);
+	T coef02 = m(2, 1) * m(3, 3) - m(2, 3) * m(3, 1);
+	T coef03 = m(2, 1) * m(3, 2) - m(2, 2) * m(3, 1);
+
+	T coef04 = m(1, 2) * m(3, 3) - m(1, 3) * m(3, 2);
+	T coef06 = m(1, 1) * m(3, 3) - m(1, 3) * m(3, 1);
+	T coef07 = m(1, 1) * m(3, 2) - m(1, 2) * m(3, 1);
+
+	T coef08 = m(1, 2) * m(2, 3) - m(1, 3) * m(2, 2);
+	T coef10 = m(1, 1) * m(2, 3) - m(1, 3) * m(2, 1);
+	T coef11 = m(1, 1) * m(2, 2) - m(1, 2) * m(2, 1);
+
+	T coef12 = m(0, 2) * m(3, 3) - m(0, 3) * m(3, 2);
+	T coef14 = m(0, 1) * m(3, 3) - m(0, 3) * m(3, 1);
+	T coef15 = m(0, 1) * m(3, 2) - m(0, 2) * m(3, 1);
+
+	T coef16 = m(0, 2) * m(2, 3) - m(0, 3) * m(2, 2);
+	T coef18 = m(0, 1) * m(2, 3) - m(0, 3) * m(2, 1);
+	T coef19 = m(0, 1) * m(2, 2) - m(0, 2) * m(2, 1);
+
+	T coef20 = m(0, 2) * m(1, 3) - m(0, 3) * m(1, 2);
+	T coef22 = m(0, 1) * m(1, 3) - m(0, 3) * m(1, 1);
+	T coef23 = m(0, 1) * m(1, 2) - m(0, 2) * m(1, 1);
+
+	fvec<T, 4> fac0(coef00, coef00, coef02, coef03);
+	fvec<T, 4> fac1(coef04, coef04, coef06, coef07);
+	fvec<T, 4> fac2(coef08, coef08, coef10, coef11);
+	fvec<T, 4> fac3(coef12, coef12, coef14, coef15);
+	fvec<T, 4> fac4(coef16, coef16, coef18, coef19);
+	fvec<T, 4> fac5(coef20, coef20, coef22, coef23);
+
+	fvec<T, 4> vec0(m(0, 1), m(0, 0), m(0, 0), m(0, 0));
+	fvec<T, 4> vec1(m(1, 1), m(1, 0), m(1, 0), m(1, 0));
+	fvec<T, 4> vec2(m(2, 1), m(2, 0), m(2, 0), m(2, 0));
+	fvec<T, 4> vec3(m(3, 1), m(3, 0), m(3, 0), m(3, 0));
+
+	fvec<T, 4> inv0(vec1 * fac0 - vec2 * fac1 + vec3 * fac2);
+	fvec<T, 4> inv1(vec0 * fac0 - vec2 * fac3 + vec3 * fac4);
+	fvec<T, 4> inv2(vec0 * fac1 - vec1 * fac3 + vec3 * fac5);
+	fvec<T, 4> inv3(vec0 * fac2 - vec1 * fac4 + vec2 * fac5);
+
+	fvec<T, 4> sign_a(+(T)1, -(T)1, +(T)1, -(T)1);
+	fvec<T, 4> sign_b(-(T)1, +(T)1, -(T)1, +(T)1);
+
+	fmat<T, 4, 4> im;
+	im.set_col(0, inv0 * sign_a);
+	im.set_col(1, inv1 * sign_b);
+	im.set_col(2, inv2 * sign_a);
+	im.set_col(3, inv3 * sign_b);
+	fvec<T, 4> row0(im(0, 0), im(1, 0), im(2, 0), im(3, 0));
+	fvec<T, 4> dot0(m.row(0) * row0);
+	T dot1 = (dot0[0] + dot0[1]) + (dot0[2] + dot0[3]);
+	T inv_det = (T)1 / dot1;
+	return im * inv_det;
+}
+
+/// return the transpose of a square matrix
 template <typename T, cgv::type::uint32_type N>
 fmat<T,N,N> transpose(const fmat<T,N,N>& m)
 {

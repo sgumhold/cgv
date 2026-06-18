@@ -45,7 +45,7 @@ public:
 	/// copy constructor with type conversion
 	template <typename S>
 	quaternion(const quaternion<S>& q) : fvec<T,4>(q) {}
-	/// assignement operator
+	/// assignment operator
 	quaternion<T>& operator=(const quaternion<T>& quat) {
 		base_type::operator = (quat);
 		return *this;

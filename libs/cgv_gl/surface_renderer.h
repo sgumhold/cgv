@@ -28,7 +28,7 @@ namespace cgv { // @<
 			cgv::media::illum::surface_material::color_type surface_color = cgv::media::illum::surface_material::color_type(0.4f, 0.1f, 0.7f);
 			/// default value for the surface opacity when map color to material is used
 			float surface_opacity = 1.0f;
-			/// culling mode for point splats, set to CM_OFF in constructor
+			/// culling mode for point splats, defaults to CM_OFF
 			CullingMode culling_mode = CM_OFF;
 			/// illumination mode defaults to \c IM_ONE_SIDED
 			IlluminationMode illumination_mode = IM_ONE_SIDED;
@@ -36,6 +36,8 @@ namespace cgv { // @<
 			ColorMapping map_color_to_material = CM_COLOR;
 			/// material of surface
 			cgv::media::illum::textured_surface_material material;
+			/// maximum number of supported lights (change triggers recompilation of shader)
+			int max_nr_lights = 2;
 		};
 
 		/// base classes for renderers that support surface rendering
@@ -45,15 +47,19 @@ namespace cgv { // @<
 			bool has_normals = false;
 			bool has_texcoords = false;
 			bool cull_per_primitive = true;
+			/// overload to update the shader program compile options based on the current render style; only called if internal shader program is used
+			void update_shader_program_options(shader_compile_options& options) const override;
+			/// overload to disable context from setting color in shader program
+			bool build_shader_program(context& ctx, shader_program& prog, const shader_compile_options& options) const override;
 		public:
 			/// call this before setting attribute arrays to manage attribute array in given manager
-			void enable_attribute_array_manager(const context& ctx, attribute_array_manager& aam);
+			void enable_attribute_array_manager(const context& ctx, attribute_array_manager& aam) override;
 			/// call this after last render/draw call to ensure that no other users of renderer change attribute arrays of given manager
-			void disable_attribute_array_manager(const context& ctx, attribute_array_manager& aam);
+			void disable_attribute_array_manager(const context& ctx, attribute_array_manager& aam) override;
 			/// 
-			bool enable(context& ctx);
+			bool enable(context& ctx) override;
 			///
-			bool disable(context& ctx);
+			bool disable(context& ctx) override;
 			/// specify a single normal for all lines
 			template <typename T>
 			void set_normal(const context& ctx, const cgv::math::fvec<T, 3>& normal) { has_normals = true;  ref_prog().set_attribute(ctx, get_prog_attribute_location(ctx, "normal"), normal); }

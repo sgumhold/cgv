@@ -132,6 +132,8 @@ public:
 
 	bool set_active_shot_by_index(size_t index);
 
+	bool deselect_active_shot();
+
 	capture_info get_capture_state() const;
 
 	cgv::signal::signal<event&> on_change;

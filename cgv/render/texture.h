@@ -58,6 +58,8 @@ public:
 	void set_border_color(const float* rgba) { set_border_color(rgba[0],rgba[1],rgba[2],rgba[3]); }
 	/// set the border color
 	void set_border_color(float r, float g, float b, float a = 1.0f);
+	/// return the texture border color
+	cgv::vec4 get_border_color() const;
 	/** set the minification filters, if minification is set to TF_ANISOTROP, 
 	    the second floating point parameter specifies the degree of anisotropy */
 	void set_min_filter(TextureFilter _min_filter, float _anisotropy = 2.0f);
@@ -199,6 +201,9 @@ public:
 	    store the content of the image. */
 	bool replace_from_image(cgv::data::data_format& df, cgv::data::data_view& dv, const context& ctx,
 		                    const std::string& file_name, int x, int y, int z_or_cube_side, int level);
+	/** read back a texture level to CPU memory storing the content in a data view whose data format
+		will match the one stored in this texture. */
+	bool copy(const context& ctx, cgv::data::data_view& dv, int level = -1) const;
 	/// destruct the texture and free texture memory and handle
 	bool destruct(const context& ctx);
 	//@}

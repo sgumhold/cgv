@@ -1,6 +1,9 @@
 #version 330 core
 
 uniform bool use_texture = false;
+uniform float alpha_overwrite = 1.0;
+uniform bool overwrite_alpha = false;
+
 // 0 ... replace (color.rgba = texture.rgba)
 // 1 ... replace alpha (color.a = texture.r)
 // 2 ... multiply color (color.rgba*texture.rgba)
@@ -125,5 +128,7 @@ void main()
 
 	// illumination
 	color = compute_reflected_appearance(fi.position_eye, normalize(fi.normal_eye), color, fi.side);
+	if (overwrite_alpha)
+		color.a = alpha_overwrite;
 	finish_fragment(color, gl_FragCoord.z+fi.depth_offset);
 }

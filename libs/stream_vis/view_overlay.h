@@ -1,6 +1,6 @@
 #pragma once
 
-#include <cgv_app/overlay.h>
+#include <cgv_overlay/overlay.h>
 #include <libs/plot/plot_base.h>
 #include <cgv/gui/mouse_event.h>
 #include "lib_begin.h"
@@ -22,7 +22,7 @@ namespace stream_vis {
 		virtual void handle_subplot_visibility_update(unsigned pi, int si, bool is_visible) = 0;
 	};
 
-	class CGV_API view_overlay : public cgv::app::overlay
+	class CGV_API view_overlay : public cgv::overlay::overlay
 	{
 	public:
 		char toggle_key = 0;

@@ -6,12 +6,12 @@
 #include <cgv/gui/key_event.h>
 #include <cgv/gui/mouse_event.h>
 #include <cgv/math/ftransform.h>
-#include <cgv_app/themed_canvas_overlay.h>
 #include <cgv_g2d/draggable_collection.h>
 #include <cgv_g2d/generic_2d_renderer.h>
 #include <cgv_g2d/msdf_text_geometry.h>
+#include <cgv_overlay/themed_canvas_overlay.h>
 
-class framing_overlay : public cgv::app::themed_canvas_overlay {
+class framing_overlay : public cgv::overlay::themed_canvas_overlay {
 public:
 	framing_overlay();
 	std::string get_type_name() const override { return "framing_overlay"; }

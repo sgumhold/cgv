@@ -1,0 +1,11 @@
+@=
+projectType="plugin";
+projectName="crg_post";
+projectGUID="7898C1AC-E526-4AD1-BD99-8A2D992DC6EF";
+addProjectDeps=[
+	"cgv_utils", "cgv_type", "cgv_reflect", "cgv_base", "cgv_signal", "cgv_media","cgv_render", "cgv_gui",
+	"cgv_gl", "cg_ext", "cgv_post"
+];
+addProjectDirs=[CGV_DIR."/libs/cgv_post", CGV_DIR."/plugins"];
+addIncDirs=[CGV_DIR."/libs"];
+addSharedDefines=["CGV_RENDER_POSTPROC_EXPORTS"];

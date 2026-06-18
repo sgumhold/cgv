@@ -24,18 +24,18 @@ public:
 		return instance;
 	}
 
-	bool init(cgv::render::context& ctx, const sl::data_type& element_type, const sl::data_type& index_type, size_t element_count, const std::string& key_transform_operation, SortOrder order = SortOrder::kAscending) {
-		cgv::gpgpu::argument_definitions arguments = { { sl::Type::kVec3, _distance_transform_arguments.eye_pos.name() } };
+	bool init(cgv::render::context& ctx, const sl::data_type& element_type, const sl::data_type& index_type, size_t element_count, const std::string& key_transform_operation, SortOrder order = SortOrder::Ascending) {
+		cgv::gpgpu::argument_definitions arguments = { { sl::Type::Vec3, _distance_transform_arguments.eye_pos.name() } };
 		return init(ctx, element_type, index_type, element_count, arguments, key_transform_operation, order);
 	}
 
-	bool init(cgv::render::context& ctx, const sl::data_type& element_type, const sl::data_type& index_type, size_t element_count, const argument_definitions& key_transform_arguments, const std::string& key_transform_operation, SortOrder order = SortOrder::kAscending) {
+	bool init(cgv::render::context& ctx, const sl::data_type& element_type, const sl::data_type& index_type, size_t element_count, const argument_definitions& key_transform_arguments, const std::string& key_transform_operation, SortOrder order = SortOrder::Ascending) {
 		bool success = true;
-		success &= _distance_transform.init(ctx, element_type, { sl::Type::kFloat }, key_transform_arguments, key_transform_operation);
+		success &= _distance_transform.init(ctx, element_type, { sl::Type::Float }, key_transform_arguments, key_transform_operation);
 		success &= _generate_indices.init(ctx, index_type);
 		if(!_sort)
 			_sort = get_default_sort_implementation(ctx);
-		success &= _sort->init(ctx, sl::Type::kFloat, index_type, order, element_count);
+		success &= _sort->init(ctx, sl::Type::Float, index_type, order, element_count);
 		success &= _distance_buffer.create_or_resize<uint32_t>(ctx, element_count);
 		return success;
 	}

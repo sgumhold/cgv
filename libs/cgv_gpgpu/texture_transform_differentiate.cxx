@@ -11,6 +11,7 @@ bool texture_transform_differentiate::init(
 	cgv::render::context& ctx,
 	cgv::render::TextureType texture_type,
 	sl::ImageFormatLayoutQualifier image_format,
+	WrapMode wrap_mode,
 	const std::string& unary_operation,
 	const argument_definitions& arguments,
 	DifferentiationOperator differentiation_operator,
@@ -18,7 +19,7 @@ bool texture_transform_differentiate::init(
 ) {
 	sl::data_type scalar_type(sl::get_type_info(sl::get_data_type(image_format).type()).component_type);
 
-	texture_algorithm_create_info info = get_create_info(texture_type, image_format, differentiation_operator, differentiation_output);
+	texture_algorithm_create_info info = get_create_info(texture_type, image_format, wrap_mode, differentiation_operator, differentiation_output);
 	info.arguments = &arguments;
 	info.typedefs.push_back({ "value_type", sl::get_data_type(image_format) });
 	info.typedefs.push_back({ "scalar_type", scalar_type });
@@ -48,6 +49,7 @@ bool texture_transform_differentiate::dispatch(cgv::render::context& ctx, cgv::r
 
 	_kernel.enable(ctx);
 	_kernel.set_argument(ctx, "u_size", input_size);
+	_kernel.set_argument(ctx, "u_border_value", input_texture.get_border_color());
 	_kernel.set_arguments(ctx, arguments);
 	bind_buffer_like_arguments(ctx, arguments);
 

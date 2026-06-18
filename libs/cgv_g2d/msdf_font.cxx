@@ -154,10 +154,11 @@ bool msdf_font::load_atlas_metadata(const std::string& filename) {
 			tknzr.set_ws(",");
 			tknzr.bite_all(tokens);
 
-			if(tokens.size() == 3) {
-				// This should be the first line. It contains the file id "MSDF_FONT_GLYPH_METADATA",
-				// initial font size used to generate the msdf and the pixel range of the signed
-				// distance field.
+			if(tokens.size() == 4) {
+				// This should be the first line of format: MAGIC_ID,int,int,string
+				// It contains the file id "MSDF_FONT_GLYPH_METADATA", followed by the initial font size
+				// used to generate the msdf and the pixel range of the signed distance field. The last entry
+				// specifies the font face style.
 				initial_font_size = static_cast<float>(std::strtol(to_string(tokens[1]).c_str(), 0, 10));
 				pixel_range = static_cast<float>(std::strtol(to_string(tokens[2]).c_str(), 0, 10));
 			}

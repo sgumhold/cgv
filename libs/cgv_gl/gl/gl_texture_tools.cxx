@@ -17,19 +17,6 @@ namespace cgv {
 	namespace render {
 		namespace gl {
 
-// declare some colors by name
-float black[4] = { 0, 0, 0, 1 };
-float white[4] = { 1, 1, 1, 1 };
-float gray[4] = { 0.25f, 0.25f, 0.25f, 1 };
-float green[4] = { 0, 1, 0, 1 };
-float brown[4] = { 0.3f, 0.1f, 0, 1 };
-float dark_red[4] = { 0.4f, 0, 0, 1 };
-float cyan[4] = { 0, 1, 1, 1 };
-float yellow[4] = { 1, 1, 0, 1 };
-float red[4] = { 1, 0, 0, 1 };
-float blue[4] = { 0, 0, 1, 1 };
-
-
 unsigned map_to_gl(cgv::data::ComponentFormat cf, cgv::data::ComponentIntegerInterpretation cii)
 {
 	static unsigned cf_to_gl[] = {
@@ -752,6 +739,21 @@ unsigned int create_texture(const cgv::data::const_data_view& dv, unsigned level
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
 	return tex_id;
+}
+
+void read_texture(cgv::data::data_view& data, unsigned level) {
+	if(level == -1)
+		level = 0;
+
+	// Todo: Support arrays and cube maps.
+
+	unsigned nr_dim = data.get_format()->get_nr_dimensions();
+	unsigned char* data_ptr = data.get_ptr<unsigned char>();
+	
+	GLuint src_type, src_fmt;
+	unsigned nr_comp = configure_src_format(data, src_type, src_fmt, nullptr);
+
+	glGetTexImage(gl_tex_dim[nr_dim-1], level, src_fmt, src_type, data_ptr);
 }
 
 /// cover the current viewport with a textured quad using the textured default shader program or the one passed in the third parameter

@@ -1,8 +1,11 @@
+#version 330
+
 /** use this forward declaration in your shader to use 2d simplex noise:
 //***** begin interface of snoise.glsl *********************************
 float snoise(vec2 v);
 float snoise(vec3 v);
 float snoise(vec4 v);
+float fbm_snoise(vec3 P, int octaves, float persistence, float lacunarity);
 //***** end interface of snoise.glsl ***********************************
 */
 
@@ -193,4 +196,20 @@ float snoise(vec4 v)
 	m1 = m1 * m1;
 	return 49.0 * (dot(m0 * m0, vec3(dot(p0, x0), dot(p1, x1), dot(p2, x2)))
 		+ dot(m1 * m1, vec2(dot(p3, x3), dot(p4, x4))));
+}
+
+float fbm_snoise(vec3 P, int octaves, float persistence, float lacunarity) 
+{
+	float total = 0.0;
+	float amplitude = 1.0;
+	float frequency = 1.0;
+
+	for (int i = 0; i < octaves; i++) {
+		float noise = snoise(P * frequency);
+		total += noise * amplitude;
+		amplitude *= persistence;
+		frequency *= lacunarity;
+	}
+
+	return total / (1.0 - pow(persistence, float(octaves)));
 }

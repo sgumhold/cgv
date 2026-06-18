@@ -5,6 +5,7 @@ vertex_file:group.glsl
 vertex_file:sphere_lib.glvs
 geometry_file:splat.glsl
 geometry_file:sphere_lib.glgs
+geometry_file:view.glsl
 fragment_file:sphere_lib.glfs
 fragment_file:splat.glsl
 fragment_file:side.glsl

@@ -2,6 +2,7 @@
 #include <libs/plot/plot2d.h>
 #include <libs/plot/plot3d.h>
 #include <cgv/utils/scan.h>
+#include <cgv/media/named_color_schemes.h>
 
 namespace stream_vis {
 
@@ -540,9 +541,10 @@ namespace stream_vis {
 		}
 		std::string value;
 		if (get_value("primary_color_scale", value)) {
-			cgv::media::ColorScale cs;
-			if (cgv::media::find_color_scale(value, cs))
-				pi.plot_ptr->color_scale_index[0] = cs;
+			pi.plot_ptr->set_color_scale(0, value);
+			//cgv::media::ColorScale cs;
+			//if (cgv::media::find_color_scale(value, cs))
+			//	pi.plot_ptr->color_scale_index[0] = cs;
 		}
 		parse_float("primary_color_scale_gamma", pi.plot_ptr->color_scale_gamma[0]);
 		parse_float("primary_window_zero_position", pi.plot_ptr->window_zero_position[0]);
@@ -580,9 +582,10 @@ namespace stream_vis {
 			}
 		}
 		if (get_value("secondary_color_scale", value)) {
-			cgv::media::ColorScale cs;
-			if (cgv::media::find_color_scale(value, cs))
-				pi.plot_ptr->color_scale_index[1] = cs;
+			pi.plot_ptr->set_color_scale(1, value);
+			//cgv::media::ColorScale cs;
+			//if (cgv::media::find_color_scale(value, cs))
+			//	pi.plot_ptr->color_scale_index[1] = cs;
 		}
 		parse_float("secondary_color_scale_gamma", pi.plot_ptr->color_scale_gamma[1]);
 		parse_float("secondary_window_zero_position", pi.plot_ptr->window_zero_position[1]);
@@ -615,10 +618,14 @@ namespace stream_vis {
 			if (auto_color) {
 				unsigned n = pi.plot_ptr->get_nr_sub_plots();
 				if (n > 1) {
-					float scale = 1.0f / n;
-					for (unsigned i = 0; i < n; ++i) {
-						pi.plot_ptr->ref_sub_plot_config(i).set_colors(cgv::media::color_scale(scale * i, cgv::media::CS_HUE));
+					std::vector<cgv::rgb> colors = cgv::media::schemes::interpolateHue().quantize(n);
+					for(unsigned i = 0; i < n; ++i) {
+						pi.plot_ptr->ref_sub_plot_config(i).set_colors(colors[i]);
 					}
+					//float scale = 1.0f / n;
+					//for (unsigned i = 0; i < n; ++i) {
+					//	pi.plot_ptr->ref_sub_plot_config(i).set_colors(cgv::media::color_scale(scale * i, cgv::media::CS_HUE));
+					//}
 				}
 			}
 			plot_pool_ptr->push_back(pi);

@@ -6,14 +6,14 @@
 #include <cgv/gui/key_event.h>
 #include <cgv/gui/mouse_event.h>
 #include <cgv/math/ftransform.h>
-#include <cgv_app/themed_canvas_overlay.h>
+#include <cgv_overlay/themed_canvas_overlay.h>
 #include <cgv_g2d/draggable_collection.h>
 #include <cgv_g2d/generic_2d_renderer.h>
 #include <cgv_g2d/msdf_text_geometry.h>
 
 #include "animation_data.h"
 
-class keyframe_editor_overlay : public cgv::app::themed_canvas_overlay {
+class keyframe_editor_overlay : public cgv::overlay::themed_canvas_overlay {
 public:
 	enum class Event {
 		kUndefined,
@@ -101,7 +101,6 @@ protected:
 	cgv::g2d::draggable_collection<cgv::g2d::draggable> marker;
 	cgv::g2d::draggable_collection<keyframe_draggable> keyframes;
 	
-	std::vector<std::string> label_texts;
 	cgv::g2d::msdf_text_geometry labels;
 
 	cgv::g2d::shape2d_style border_style, rectangle_style, line_style, key_rect_style, scrollbar_style;
@@ -158,7 +157,7 @@ public:
 
 	bool handle_key_event(cgv::gui::key_event& e) override;
 	bool handle_mouse_event(cgv::gui::mouse_event& e, cgv::ivec2 local_mouse_pos) override;
-	void handle_member_change(const cgv::utils::pointer_test& m) override;
+	void handle_member_change(cgv::data::informed_ptr ptr) override;
 
 	bool init(cgv::render::context& ctx) override;
 	void init_frame(cgv::render::context& ctx) override;

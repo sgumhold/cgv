@@ -228,26 +228,33 @@ public:
 		cgv::render::ref_ellipsoid_renderer(ctx, 1);
 		return true;
 	}
-
-	void set_group_geometry(cgv::render::context& ctx, cgv::render::group_renderer& sr)
+	void set_group_geometry(cgv::render::context& ctx, cgv::render::group_renderer& gr, cgv::render::group_render_style& grs)
 	{
-		sr.set_group_colors(ctx, group_colors);
-		sr.set_group_translations(ctx, group_translations);
-		sr.set_group_rotations(ctx, group_rotations);
+		if (grs.use_group_color)
+			gr.set_group_colors(ctx, group_colors);
+		if (grs.use_group_transformation) {
+			gr.set_group_translations(ctx, group_translations);
+			gr.set_group_rotations(ctx, group_rotations);
+		}
 	}
-	void set_geometry(cgv::render::context& ctx, cgv::render::group_renderer& sr, bool use_group_indices = true)
+	void set_geometry(cgv::render::context& ctx, cgv::render::group_renderer& gr, cgv::render::group_render_style& grs)
 	{
 		if (interleaved_mode) {
-			sr.set_position_array(ctx, &vertices.front().point, vertices.size(), sizeof(vertex));
-			sr.set_color_array(ctx, &vertices.front().color, vertices.size(), sizeof(vertex));
+			gr.set_position_array(ctx, &vertices.front().point, vertices.size(), sizeof(vertex));
+			if (grs.use_group_color)
+				gr.remove_color_array(ctx);
+			else
+				gr.set_color_array(ctx, &vertices.front().color, vertices.size(), sizeof(vertex));
 		}
 		else {
-			sr.set_position_array(ctx, transformed_points);
-			//sr.set_position_array(ctx, points);
-			sr.set_color_array(ctx, colors);
+			gr.set_position_array(ctx, transformed_points);
+			if (grs.use_group_color)
+				gr.remove_color_array(ctx);
+			else
+				gr.set_color_array(ctx, colors);
 		}
-		if(use_group_indices)
-			sr.set_group_index_array(ctx, group_indices);
+		if(grs.use_group_color || grs.use_group_transformation)
+			gr.set_group_index_array(ctx, group_indices);
 	}
 	void render_points(cgv::render::context& ctx, cgv::render::renderer& R)
 	{
@@ -298,9 +305,9 @@ public:
 			p_renderer.set_y_view_angle(float(view_ptr->get_y_view_angle()));
 			p_renderer.set_render_style(point_style);
 			p_renderer.enable_attribute_array_manager(ctx, p_manager);
-			set_group_geometry(ctx, p_renderer);
+			set_group_geometry(ctx, p_renderer, point_style);
 			if (p_vbos_out_of_date) {
-				set_geometry(ctx, p_renderer);
+				set_geometry(ctx, p_renderer, point_style);
 				p_vbos_out_of_date = false;
 			}
 			render_points(ctx, p_renderer);
@@ -312,9 +319,9 @@ public:
 			sl_renderer.set_y_view_angle(float(view_ptr->get_y_view_angle()));
 			sl_renderer.set_render_style(surfel_style);
 			sl_renderer.enable_attribute_array_manager(ctx, sl_manager);
-			set_group_geometry(ctx, sl_renderer);
+			set_group_geometry(ctx, sl_renderer, surfel_style);
 			if (sl_vbos_out_of_date) {
-				set_geometry(ctx, sl_renderer);
+				set_geometry(ctx, sl_renderer, surfel_style);
 				if (interleaved_mode)
 					sl_renderer.set_normal_array(ctx, &vertices.front().normal, vertices.size(), sizeof(vertex));
 				else
@@ -328,15 +335,17 @@ public:
 			cgv::render::box_renderer& b_renderer = cgv::render::ref_box_renderer(ctx);
 			b_renderer.set_render_style(box_style);
 			b_renderer.enable_attribute_array_manager(ctx, b_manager);
-			set_group_geometry(ctx, b_renderer);
+			set_group_geometry(ctx, b_renderer, box_style);
 			if (b_vbos_out_of_date) {
 				if (use_box_array) {
-					b_renderer.set_color_array(ctx, colors);
-					b_renderer.set_group_index_array(ctx, group_indices);
+					if (box_style.use_group_color)
+						b_renderer.set_color_array(ctx, colors);
+					if (box_style.use_group_color || box_style.use_group_transformation)
+						b_renderer.set_group_index_array(ctx, group_indices);
 					b_renderer.set_box_array(ctx, boxes);
 				}
 				else {
-					set_geometry(ctx, b_renderer);
+					set_geometry(ctx, b_renderer, box_style);
 					b_renderer.set_extent_array(ctx, sizes);
 				}
 				b_vbos_out_of_date = false;
@@ -348,14 +357,16 @@ public:
 			cgv::render::box_wire_renderer& bw_renderer = cgv::render::ref_box_wire_renderer(ctx);
 			bw_renderer.set_render_style(box_wire_style);
 			bw_renderer.enable_attribute_array_manager(ctx, bw_manager);
-			set_group_geometry(ctx, bw_renderer);
+			set_group_geometry(ctx, bw_renderer, box_wire_style);
 			if (use_box_array) {
-				bw_renderer.set_color_array(ctx, colors);
-				bw_renderer.set_group_index_array(ctx, group_indices);
+				if (box_wire_style.use_group_color)
+					bw_renderer.set_color_array(ctx, colors);
+				if (box_wire_style.use_group_color || box_wire_style.use_group_transformation)
+					bw_renderer.set_group_index_array(ctx, group_indices);
 				bw_renderer.set_box_array(ctx, boxes);
 			}
 			else {
-				set_geometry(ctx, bw_renderer);
+				set_geometry(ctx, bw_renderer, box_wire_style);
 				bw_renderer.set_extent_array(ctx, sizes);
 			}
 			render_points(ctx, bw_renderer);
@@ -365,8 +376,8 @@ public:
 			cgv::render::normal_renderer& n_renderer = cgv::render::ref_normal_renderer(ctx);
 			n_renderer.set_render_style(normal_style);
 			n_renderer.enable_attribute_array_manager(ctx, n_manager);
-			set_group_geometry(ctx, n_renderer);
-			set_geometry(ctx, n_renderer);
+			set_group_geometry(ctx, n_renderer, normal_style);
+			set_geometry(ctx, n_renderer, normal_style);
 			n_renderer.set_normal_array(ctx, normals);
 			render_points(ctx, n_renderer);
 			n_renderer.disable_attribute_array_manager(ctx, n_manager);
@@ -376,7 +387,8 @@ public:
 			a_renderer.set_render_style(arrow_style);
 			a_renderer.enable_attribute_array_manager(ctx, a_manager);
 			if(a_vbos_out_of_date) {
-				set_geometry(ctx, a_renderer);
+				set_group_geometry(ctx, a_renderer, arrow_style);
+				set_geometry(ctx, a_renderer, arrow_style);
 				a_vbos_out_of_date = false;
 			}
 			a_renderer.set_direction_array(ctx, directions);
@@ -388,9 +400,8 @@ public:
 			s_renderer.set_y_view_angle(float(view_ptr->get_y_view_angle()));
 			s_renderer.set_render_style(sphere_style);
 			s_renderer.enable_attribute_array_manager(ctx, s_manager);
-
-			set_group_geometry(ctx, s_renderer);
-			set_geometry(ctx, s_renderer);
+			set_group_geometry(ctx, s_renderer, sphere_style);
+			set_geometry(ctx, s_renderer, sphere_style);
 			s_renderer.set_radius_array(ctx, &sizes[0][0], sizes.size(), sizeof(cgv::vec3));
 			render_points(ctx, s_renderer);
 			s_renderer.disable_attribute_array_manager(ctx, s_manager);
@@ -400,7 +411,8 @@ public:
 			cgv::render::cone_renderer& rc_renderer = cgv::render::ref_cone_renderer(ctx);
 			rc_renderer.set_render_style(cone_style);
 			rc_renderer.enable_attribute_array_manager(ctx, rc_manager);
-			set_geometry(ctx, rc_renderer);
+			set_group_geometry(ctx, rc_renderer, cone_style);
+			set_geometry(ctx, rc_renderer, cone_style);
 			rc_renderer.set_radius_array(ctx, &sizes[0][0], sizes.size(), sizeof(cgv::vec3));
 			render_points(ctx, rc_renderer);
 			rc_renderer.disable_attribute_array_manager(ctx, rc_manager);
@@ -410,8 +422,8 @@ public:
 			cgv::render::ellipsoid_renderer& e_renderer = cgv::render::ref_ellipsoid_renderer(ctx);
 			e_renderer.set_render_style(ellipsoid_style);
 			e_renderer.enable_attribute_array_manager(ctx, e_manager);
-			// don't use group indices because the ellipsoid renderer does not yet support groups
-			set_geometry(ctx, e_renderer, false);
+			set_group_geometry(ctx, e_renderer, ellipsoid_style);
+			set_geometry(ctx, e_renderer, ellipsoid_style);
 			e_renderer.set_size_array(ctx, sizes);
 			e_renderer.set_orientation_array(ctx, orientations);
 			render_points(ctx, e_renderer);

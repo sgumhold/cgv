@@ -514,7 +514,7 @@ public:
 			// improve approximation before the last iteration
 			xd_best = xd;
 			err_best = err;
-			fvec<T, 2> dxd = inv(J) * dxu;
+			fvec<T, 2> dxd = inverse(J) * dxu;
 			xd += slow_down * dxd;
 		}
 		return distortion_inversion_result::max_iterations_reached;

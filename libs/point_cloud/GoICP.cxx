@@ -5,9 +5,6 @@ using namespace std;
 using namespace cgv;
 using namespace cgv::pointcloud;
 
-#define PI 3.141592653589793238462643383279502884L
-
-
 namespace cgv {
 	namespace pointcloud {
 
@@ -24,10 +21,10 @@ namespace cgv {
 			distance_transform_expand_factor = 2.0;
 			max_icp_iterations = 50;
 
-			init_rot_node.a = -PI;
-			init_rot_node.b = -PI;
-			init_rot_node.c = -PI;
-			init_rot_node.w = 2 * PI;
+			init_rot_node.a = -cgv::math::constants::pi;
+			init_rot_node.b = -cgv::math::constants::pi;
+			init_rot_node.c = -cgv::math::constants::pi;
+			init_rot_node.w = 2 * cgv::math::constants::pi;
 			init_rot_node.l = 0;
 			init_rot_node.lb = 0;
 			init_trans_node.x = -1.0;
@@ -109,8 +106,8 @@ namespace cgv {
 				sigma = init_rot_node.w / pow(2.0, i) / 2.0; // Half-side length of each rotation subcube
 				max_angle = sqrt(3.f) * sigma;
 
-				if (max_angle > PI)
-					max_angle = PI;
+				if (max_angle > cgv::math::constants::pi)
+					max_angle = cgv::math::constants::pi;
 				for (int j = 0; j < sample_size; j++)
 					max_rot_dis[i][j] = 2 * sin(max_angle / 2)*norm_data[j];
 			}

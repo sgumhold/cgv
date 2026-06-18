@@ -36,7 +36,7 @@ void msdf_gl_font_renderer::draw_text(cgv::render::context& ctx, const msdf_font
 	prog.set_uniform(ctx, "color", render_info.color);
 	prog.set_uniform(ctx, "percentual_offset", percentual_offset);
 
-	glDrawArraysInstancedBaseInstance(GL_TRIANGLE_STRIP, (GLint)0, (GLsizei)4, (GLsizei)text_info.str.length(), (GLuint)text_info.offset);
+	glDrawArraysInstancedBaseInstance(GL_TRIANGLE_STRIP, GLint(0), GLsizei(4), static_cast<GLsizei>(text_info.size), static_cast<GLuint>(text_info.offset));
 }
 
 void msdf_gl_font_renderer::manage_singleton(cgv::render::context& ctx, const std::string& name, int& ref_count, int ref_count_change) {
@@ -118,8 +118,8 @@ void msdf_gl_font_renderer::draw(cgv::render::context& ctx, msdf_font& font, con
 		glVertexAttribDivisor(1, 1);
 
 		msdf_text_geometry::text_info text_info;
-		text_info.str = text;
 		text_info.offset = 0;
+		text_info.size = static_cast<int>(text.size());
 		text_info.normalized_width = font.compute_normalized_length(text);
 		draw_text(ctx, font, position, text_info, render_info);
 

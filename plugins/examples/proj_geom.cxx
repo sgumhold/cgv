@@ -68,7 +68,7 @@ public:
 		ref_sphere_renderer(ctx, 1);
 		return true;
 	}
-	void destruct(context& ctx)
+	void clear(context& ctx)
 	{
 		ref_sphere_renderer(ctx, -1);
 	}

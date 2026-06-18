@@ -1,0 +1,38 @@
+#version 430
+
+// Declare a custom vec3-like data structure to avoid padding of vec3 caused by layout std430.
+// A vec3 would be padded to 4 floats, causing wrong data to be read when accessing the buffer
+// that only contains 3 floats per position.
+struct float3_t {
+	float x;
+	float y;
+	float z;
+};
+
+layout(std430, binding = 0) buffer position_buffer {
+	float3_t positions[];
+};
+
+layout(std430, binding = 1) buffer velocity_buffer {
+	float velocities[];
+};
+
+uniform uint count; // The total count of positions
+uniform float velocity; // The
+
+layout(local_size_x = 64) in;
+void main() {
+	uint id = gl_GlobalInvocationID.x;
+
+	// Make sure to only access valid data.
+	if(id < count) {
+		float3_t position = positions[id];
+		
+		float dv = 0.01 * velocity * velocities[id];
+		if(position.y < 0.0)
+			dv = -dv;
+
+		position.y += dv;
+		positions[id] = position;
+	}
+}

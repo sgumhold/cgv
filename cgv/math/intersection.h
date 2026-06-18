@@ -3,7 +3,7 @@
 #include "functions.h"
 #include "fvec.h"
 #include "pose.h"
-#include "ray.h"
+#include "fray.h"
 #include <limits>
 
 /// This header provides implementation for common ray-primitive intersection routines.
@@ -20,8 +20,7 @@ namespace math {
 /// @param [out] out_normal optional surface normal at the first intersection point.
 /// @return the number of intersections.
 template <typename T>
-int ray_box_intersection(const ray<T, 3>& ray, fvec<T, 3> extent, fvec<T, 2>& out_ts, fvec<T, 3>* out_normal = nullptr) {
-
+int ray_box_intersection(const fray<T, 3>& ray, fvec<T, 3> extent, fvec<T, 2>& out_ts, fvec<T, 3>* out_normal = nullptr) {
 	fvec<T, 3> m = fvec<T, 3>(T(1)) / ray.direction; // could be precomputed if traversing a set of aligned boxes
 	fvec<T, 3> n = m * ray.origin;   // could be precomputed if traversing a set of aligned boxes
 	fvec<T, 3> k = abs(m) * extent;
@@ -54,8 +53,7 @@ int ray_box_intersection(const ray<T, 3>& ray, fvec<T, 3> extent, fvec<T, 2>& ou
 /// @param [out] out_ts the distances to the intersection points.
 /// @return the number of intersections.
 template <typename T>
-int ray_box_intersection(const ray<T, 3> &ray, const fvec<T, 3> &min, const fvec<T, 3> &max, fvec<T, 2>& out_ts) {
-
+int ray_box_intersection(const fray<T, 3> &ray, const fvec<T, 3> &min, const fvec<T, 3> &max, fvec<T, 2>& out_ts) {
 	fvec<T, 3> t0 = (min - ray.origin) / ray.direction;
 	fvec<T, 3> t1 = (max - ray.origin) / ray.direction;
 
@@ -97,8 +95,7 @@ int ray_box_intersection(const ray<T, 3> &ray, const fvec<T, 3> &min, const fvec
 /// @param [out] out_normal optional surface normal at the intersection point.
 /// @return the number of intersections.
 template <typename T>
-int ray_cylinder_intersection(const ray<T, 3>& ray, const fvec<T, 3>& position, const fvec<T, 3>& axis, T radius, T& out_t, fvec<T, 3>* out_normal = nullptr) {
-
+int ray_cylinder_intersection(const fray<T, 3>& ray, const fvec<T, 3>& position, const fvec<T, 3>& axis, T radius, T& out_t, fvec<T, 3>* out_normal = nullptr) {
 	fvec<T, 3> oc = ray.origin - position;
 	T caca = dot(axis, axis);
 	T card = dot(axis, ray.direction);
@@ -145,8 +142,7 @@ int ray_cylinder_intersection(const ray<T, 3>& ray, const fvec<T, 3>& position, 
 /// @param [out] out_normal optional surface normal at the intersection point.
 /// @return the number of intersections.
 template <typename T>
-int ray_cylinder_intersection2(const ray<T, 3>& ray, const fvec<T, 3>& start_position, const fvec<T, 3>& end_position, T radius, T& out_t, fvec<T, 3>* out_normal = nullptr) {
-
+int ray_cylinder_intersection2(const fray<T, 3>& ray, const fvec<T, 3>& start_position, const fvec<T, 3>& end_position, T radius, T& out_t, fvec<T, 3>* out_normal = nullptr) {
 	return ray_cylinder_intersection(ray, start_position, end_position - start_position, radius, out_t, out_normal);
 }
 
@@ -160,8 +156,7 @@ int ray_cylinder_intersection2(const ray<T, 3>& ray, const fvec<T, 3>& start_pos
 /// @param [out] out_t the distance to the intersection point.
 /// @return the number of intersections.
 template <typename T>
-int ray_plane_intersection(const ray<T, 3>& ray, const fvec<T, 3>& origin, const fvec<T, 3>& normal, T& out_t) {
-
+int ray_plane_intersection(const fray<T, 3>& ray, const fvec<T, 3>& origin, const fvec<T, 3>& normal, T& out_t) {
 	T denom = dot(normal, ray.direction);
 	if(std::abs(denom) < std::numeric_limits<T>::epsilon())
 		return 0;
@@ -182,15 +177,14 @@ int ray_plane_intersection(const ray<T, 3>& ray, const fvec<T, 3>& origin, const
 /// @param [out] out_uv optional texture coordinates in [0,1] at the intersection point.
 /// @return the number of intersections.
 template <typename T>
-int ray_axis_aligned_rectangle_intersection(const ray<T, 3>& ray, const fvec<T, 3>& position, const fvec<T, 2>& extent, int axis_index, T& out_t, fvec<T, 2>* out_uv = nullptr) {
-	
+int ray_axis_aligned_rectangle_intersection(const fray<T, 3>& ray, const fvec<T, 3>& position, const fvec<T, 2>& extent, int axis_index, T& out_t, fvec<T, 2>* out_uv = nullptr) {
 	assert(axis_index >= 0 && axis_index < 3);
 
 	fvec<T, 3> normal = { T(0) };
 	normal[axis_index] = T(1);
 
 	T t = std::numeric_limits<T>::max();
-	if(cgv::math::ray_plane_intersection(ray, position, normal, t)) {
+	if(ray_plane_intersection(ray, position, normal, t)) {
 		fvec<T, 3> intersection_position = ray.position(t);
 		intersection_position -= position;
 
@@ -238,8 +232,7 @@ int ray_axis_aligned_rectangle_intersection(const ray<T, 3>& ray, const fvec<T, 
 /// @param [out] out_uv optional texture coordinates in [0,1] at the intersection point.
 /// @return the number of intersections.
 template <typename T>
-int ray_parallelogram_intersection(const ray<T, 3>& ray, const fvec<T, 3>& origin, const fvec<T, 3> edge_u, const fvec<T, 3>& edge_v, T& out_t, fvec<T, 3>* out_normal = nullptr, fvec<T, 2>* out_uv = nullptr) {
-
+int ray_parallelogram_intersection(const fray<T, 3>& ray, const fvec<T, 3>& origin, const fvec<T, 3> edge_u, const fvec<T, 3>& edge_v, T& out_t, fvec<T, 3>* out_normal = nullptr, fvec<T, 2>* out_uv = nullptr) {
 	fvec<T, 3> normal = normalize(cross(edge_u, edge_v));
 
 	T sf = T(0);
@@ -345,8 +338,7 @@ int ray_parallelogram_intersection(const ray<T, 3>& ray, const fvec<T, 3>& origi
 /// @param [out] out_uv optional texture coordinates in [0,1] at the intersection point.
 /// @return the number of intersections.
 template <typename T>
-int ray_rectangle_intersection(const ray<T, 3>& ray, const fvec<T, 3>& position, const fvec<T, 2> extent, const quaternion<T>& rotation, T& out_t, fvec<T, 3>* out_normal = nullptr, fvec<T, 2>* out_uv = nullptr) {
-
+int ray_rectangle_intersection(const fray<T, 3>& ray, const fvec<T, 3>& position, const fvec<T, 2> extent, const quaternion<T>& rotation, T& out_t, fvec<T, 3>* out_normal = nullptr, fvec<T, 2>* out_uv = nullptr) {
 	// define tangent and bitangent assuming the normal is (0, 1, 0) without rotation
 	fvec<T, 3> tangent = { T(1), T(0), T(0) };
 	fvec<T, 3> bitangent = { T(0), T(1), T(0) };
@@ -372,8 +364,7 @@ int ray_rectangle_intersection(const ray<T, 3>& ray, const fvec<T, 3>& position,
 /// @param [out] out_ts the distances to the intersection points.
 /// @return the number of intersections.
 template <typename T>
-int ray_sphere_intersection(const ray<T, 3>& ray, const fvec<T, 3>& center, T radius, fvec<T, 2>& out_ts) {
-
+int ray_sphere_intersection(const fray<T, 3>& ray, const fvec<T, 3>& center, T radius, fvec<T, 2>& out_ts) {
 	fvec<T, 3> d = ray.origin - center;
 	T il = T(1) / dot(ray.direction, ray.direction);
 	T b = il * dot(d, ray.direction);
@@ -406,8 +397,7 @@ int ray_sphere_intersection(const ray<T, 3>& ray, const fvec<T, 3>& center, T ra
 /// @param [out] out_normal optional surface normal at the intersection point.
 /// @return The number of intersections.
 template <typename T>
-int first_ray_sphere_intersection(const ray<T, 3>& ray, const fvec<T, 3>& center, T radius, T& out_t, fvec<T, 3>* out_normal = nullptr) {
-
+int first_ray_sphere_intersection(const fray<T, 3>& ray, const fvec<T, 3>& center, T radius, T& out_t, fvec<T, 3>* out_normal = nullptr) {
 	fvec<T, 2> ts;
 	int k = ray_sphere_intersection(ray, center, radius, ts);
 
@@ -435,8 +425,7 @@ int first_ray_sphere_intersection(const ray<T, 3>& ray, const fvec<T, 3>& center
 /// @param [out] out_normal optional surface normal at the intersection point.
 /// @return the number of intersections.
 template <typename T>
-int ray_torus_intersection(const ray<T, 3>& ray, T large_radius, T small_radius, T& out_t, fvec<T, 3>* out_normal = nullptr) {
-
+int ray_torus_intersection(const fray<T, 3>& ray, T large_radius, T small_radius, T& out_t, fvec<T, 3>* out_normal = nullptr) {
 	T po = T(1);
 	T Ra2 = large_radius * large_radius;
 	T ra2 = small_radius * small_radius;
@@ -532,11 +521,10 @@ int ray_torus_intersection(const ray<T, 3>& ray, T large_radius, T small_radius,
 /// @param [out] out_normal optional surface normal at the intersection point.
 /// @return the number of intersections.
 template <typename T>
-int ray_torus_intersection(const ray<T, 3>& ray, const fvec<T, 3>& center, const fvec<T, 3>& normal, T large_radius, T small_radius, T& out_t, fvec<T, 3>* out_normal = nullptr) {
-
+int ray_torus_intersection(const fray<T, 3>& ray, const fvec<T, 3>& center, const fvec<T, 3>& normal, T large_radius, T small_radius, T& out_t, fvec<T, 3>* out_normal = nullptr) {
 	// compute pose transformation
 	fmat<T, 3, 4> pose;
-	cgv::math::pose_position(pose) = center;
+	pose_position(pose) = center;
 	fvec<T, 3>& x = reinterpret_cast<fvec<T, 3>&>(pose[0]);
 	fvec<T, 3>& y = reinterpret_cast<fvec<T, 3>&>(pose[3]);
 	fvec<T, 3>& z = reinterpret_cast<fvec<T, 3>&>(pose[6]);
@@ -548,16 +536,16 @@ int ray_torus_intersection(const ray<T, 3>& ray, const fvec<T, 3>& center, const
 	y = normalize(cross(normal, x));
 	x = cross(y, normal);
 
-	cgv::math::ray<T, 3> transformed_ray;
-	transformed_ray.origin = cgv::math::inverse_pose_transform_point(pose, ray.origin);
-	transformed_ray.direction = cgv::math::inverse_pose_transform_vector(pose, ray.direction);
+	fray<T, 3> transformed_ray;
+	transformed_ray.origin = inverse_pose_transform_point(pose, ray.origin);
+	transformed_ray.direction = inverse_pose_transform_vector(pose, ray.direction);
 
 	// transform ray into torus pose
 	int res = ray_torus_intersection(transformed_ray, large_radius, small_radius, out_t, out_normal);
 
 	// in case of intersection, transform normal back to world space
 	if(res)
-		*out_normal = cgv::math::pose_transform_vector(pose, *out_normal);
+		*out_normal = pose_transform_vector(pose, *out_normal);
 
 	return res;
 }
