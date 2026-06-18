@@ -7,6 +7,10 @@
 #include <cgv/signal/abst_signal.h>
 #include "signal.h"
 
+
+#define MSG_ERROR "\x1b[1;31m[error]\x1b[39m[cgv::signal]\x1b[m"
+
+
 namespace cgv {
 	namespace signal {
 
@@ -53,7 +57,7 @@ void signal_base::disconnect(const functor_base* fp)
 {
 	auto found = false;
 	receivers.erase(std::remove_if(receivers.begin(), receivers.end(), [this, &found, fp](receiver& rcvr) {
-		if(rcvr.functor.get() == fp) {
+		if(*rcvr.functor == *fp) {
 			found = true;
 			unlink(rcvr);
 			return true;
@@ -63,7 +67,7 @@ void signal_base::disconnect(const functor_base* fp)
 
 	#ifndef NDEBUG
 		if (!found)
-			std::cerr << "Attempted to disconnect a functor from a signal it is not connected to.\n";
+			std::cerr << MSG_ERROR" Attempted to disconnect a functor from a signal it is not connected to.\n";
 	#endif
 }
 
@@ -81,7 +85,7 @@ void signal_base::disconnect(const tacker* c)
 
 	#ifndef NDEBUG
 		if (!found)
-			std::cerr << "Attempted to disconnect a tacker from a signal it is not connected to.\n";
+			std::cerr << MSG_ERROR" Attempted to disconnect a tacker from a signal it is not connected to.\n";
 	#endif
 }
 
@@ -116,7 +120,7 @@ void tacker::untack(signal_base* s) const
 	const auto s_it = signals.find(s);
 	if (s_it == signals.end()) {
 		#ifndef NDEBUG
-			std::cout << "Attempted to untack a signal the tacker is not connected to.\n";
+			std::cout << MSG_ERROR" Attempted to untack a signal for a tacker that is not connected to it.\n";
 		#endif
 		return;
 	}
