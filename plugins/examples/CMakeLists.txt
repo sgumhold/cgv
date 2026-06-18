@@ -34,8 +34,8 @@ cgv_add_target(examples
 	AUDIO_RESOURCES ${AUDIO}	# <-- inclusion of audio resources is automatically disabled when BUILD_WITH_AUDIO is off
 
 	DEPENDENCIES
-		cgv_viewer delaunay plot cg_gamepad holo_disp cgv_proc cgv_gl cgv_os cgv_signal cgv_g2d cgv_gpgpu cgv_app cgv_post
-		cg_ext cg_fltk cg_icons cg_meta cmi_io cgv_proc cmf_tt_gl_font crg_antialias crg_depth_of_field
+		cgv_viewer delaunay plot cg_gamepad holo_disp cgv_proc cgv_gl cgv_os cgv_signal cgv_g2d cgv_gpgpu cgv_overlay
+		cgv_post cg_ext cg_fltk cg_icons cg_meta cmi_io cgv_proc cmf_tt_gl_font crg_antialias crg_depth_of_field
 		crg_grid crg_light crg_stereo_view crg_bg camera_animator screenshot ${AUDIO_DEPENDENCIES} ${WINDOWS_DEPENDENCIES}
 
 	# we are not using symbols from other plugins directly anywhere in the examples code, but if we did, we could specify them

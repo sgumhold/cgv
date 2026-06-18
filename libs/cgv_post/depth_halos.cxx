@@ -40,7 +40,7 @@ void depth_halos::begin(cgv::render::context& ctx, bool push_viewport) {
 		return;
 
 	fbc_draw.enable(ctx, push_viewport);
-	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+	ctx.clear_background(true, true);
 }
 
 void depth_halos::end(cgv::render::context& ctx, bool push_viewport) {
@@ -49,6 +49,8 @@ void depth_halos::end(cgv::render::context& ctx, bool push_viewport) {
 
 	if(!enable)
 		return;
+
+	ctx.begin_attribute_less_rendering();
 
 	fbc_draw.disable(ctx, push_viewport);
 
@@ -71,6 +73,8 @@ void depth_halos::end(cgv::render::context& ctx, bool push_viewport) {
 	fbc_draw.disable_attachment(ctx, "depth");
 	fbc_draw.disable_attachment(ctx, "color");
 	noise_tex.disable(ctx);
+
+	ctx.end_attribute_less_rendering();
 }
 
 void depth_halos::create_gui_impl(cgv::base::base* b, cgv::gui::provider* p) {

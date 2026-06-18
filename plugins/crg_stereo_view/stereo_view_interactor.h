@@ -1,5 +1,6 @@
 #pragma once
 
+#include <chrono>
 #include <cgv/base/base.h>
 #include <cgv/render/drawable.h>
 #include <cgv/render/stereo_view.h>
@@ -9,6 +10,8 @@
 #include <cgv/reflect/reflect_enum.h>
 #include <cgv_gl/gl/gl.h>
 #include <glsu/GL/glsu.h>
+#include <libs/cgv_post/post_process_effect.h>
+
 #if defined(_WINDOWS) || defined(WIN32) || defined(WIN64)
 #undef max
 #undef min
@@ -24,26 +27,117 @@ enum StereoMousePointer {
 
 extern CGV_API cgv::reflect::enum_reflection_traits<StereoMousePointer> get_reflection_traits(const StereoMousePointer&);
 
+/// struct describing a view interaction
+struct view_interaction
+{
+	/// the type used for timestamps
+	using time_point = std::chrono::time_point<std::chrono::system_clock>;
+
+	/// the kind of this interaction
+	enum class Kind {
+		/// the camera got orbited around the focus, providing the @ref view_interaction::amount of rotation in radians
+		Orbit,
+
+		/// the camera got panned due to user control input, providing the @ref view_interaction::amount of movement in
+		/// screen space units
+		Pan,
+
+		/// the camera got rolled around its forward axis, providing the @ref view_interaction::amount of roll in
+		/// radians
+		Roll,
+
+		/// the camera got zoomed, providing the @ref view_interaction::amount of zoom as a fraction of the current
+		/// focus distance
+		Zoom,
+
+		/// the camera focus got changed, providing the @ref view_interaction::amount of change in world space units
+		FocusChange,
+
+		/// the camera focus got changed implicitly by a zoom action, providing the @ref view_interaction::amount of
+		/// change in world space units
+		FocusChangeFromZoom,
+	} kind;
+
+	/// The system clock timestamp of the interaction
+	time_point time;
+
+	/// the "amount" of interaction, exact semantics depend on @ref #kind
+	double amount;
+
+	inline view_interaction(const Kind kind, const time_point &timestamp, const double amount)
+		: time(timestamp), kind(kind), amount(amount)
+	{}
+
+	template <class TP>
+	inline static std::chrono::milliseconds ms_from_timepoint (const TP &timepoint) {
+		return std::chrono::duration_cast<std::chrono::milliseconds>(timepoint.time_since_epoch());
+	}
+
+	inline static view_interaction orbit (const time_point &time, const double radians) {
+		return {Kind::Orbit, time, radians};
+	}
+	inline static view_interaction orbit_now (const double radians) {
+		return orbit(std::chrono::system_clock::now(), radians);
+	}
+	inline static view_interaction pan (const time_point &time, const double amount) {
+		return {Kind::Pan, time, amount};
+	}
+	inline static view_interaction pan_now (const double amount) {
+		return pan(std::chrono::system_clock::now(), amount);
+	}
+	inline static view_interaction roll (const time_point &time, const double radians) {
+		return {Kind::Roll, time, radians};
+	}
+	inline static view_interaction roll_now (const double radians) {
+		return roll(std::chrono::system_clock::now(), radians);
+	}
+	inline static view_interaction zoom (const time_point &time, const double fraction) {
+		return {Kind::Zoom, time, fraction};
+	}
+	inline static view_interaction zoom_now (const double fraction) {
+		return zoom(std::chrono::system_clock::now(), fraction);
+	}
+	inline static view_interaction focus_change (const time_point &time, const double distance) {
+		return {Kind::FocusChange, time, distance};
+	}
+	inline static view_interaction focus_change_now (const double distance) {
+		return focus_change(std::chrono::system_clock::now(), distance);
+	}
+	inline static view_interaction focus_change_from_zoom (const time_point &time, const double distance) {
+		return {Kind::FocusChangeFromZoom, time, distance};
+	}
+	inline static view_interaction focus_change_from_zoom_now (const double distance) {
+		return focus_change_from_zoom(std::chrono::system_clock::now(), distance);
+	}
+};
+
 /// class that manages a stereoscopic view
 class CGV_API stereo_view_interactor : 
 	public cgv::base::node, 
 	public cgv::gui::event_handler, 
 	public cgv::render::multi_pass_drawable,
 	public cgv::gui::provider,
+	public cgv::post::post_process_effect,
 	public cgv::render::stereo_view
 {
 protected:
+	bool terminal_pass = false;
 	GlsuStereoMode stereo_mode;
 	GlsuEye mono_mode;
 	GlsuAnaglyphConfiguration anaglyph_config;
 	bool stereo_enabled;
 	bool stereo_translate_in_model_view;
+	float screen_tilt_angle = 0.0f;
 	bool two_d_enabled;
 	bool fix_view_up_dir;
 	bool adapt_aspect_ratio_to_stereo_mode;
 	bool flip_x[2] = { false, false };
 	bool flip_y[2] = { false, false };
+	bool do_flip() const {
+		return flip_x[0] || flip_x[1] || flip_y[0] || flip_y[1];
+	}
 	bool swap_eyes = false;
+	cgv::ivec2 last_screen_size = { -1 };
 public:
 	void set_default_values();
 	GlsuStereoMode get_stereo_mode() const { return stereo_mode; }
@@ -62,6 +156,7 @@ protected:
 	bool show_focus;
 	bool clip_relative_to_extent;
 	double pan_sensitivity, zoom_sensitivity, rotate_sensitivity;
+	bool zoom_to_mouse;
 
 	// members for screen shots
 	bool write_images;
@@ -77,16 +172,19 @@ protected:
 	template <typename T>
 	void update_vec_member(cgv::math::vec<T>& v) {
 		for (unsigned int i=0; i<v.size(); ++i)
-			update_member(&v(i));
+			cgv::gui::provider::update_member(&v(i));
 	}
 	template <typename T, cgv::type::uint32_type N>
 	void update_vec_member(cgv::math::fvec<T,N>& v) {
 		for (unsigned int i=0; i<N; ++i)
-			update_member(&v(i));
+			cgv::gui::provider::update_member(&v(i));
 	}
 	void dir_gui_cb(cgv::dvec3& dir, int i);
 	void add_dir_control(const std::string& name, cgv::dvec3& dir);
 	void check_write_image(cgv::render::context& ctx, const char* post_fix = "", bool done = true);
+	void ensure_fbc_size(cgv::render::context& ctx);
+	void begin(cgv::render::context& ctx, bool push_viewport = true);
+	void end(cgv::render::context& ctx, bool pop_viewport = true);
 
 	///
 	StereoMousePointer stereo_mouse_pointer;
@@ -140,6 +238,9 @@ protected:
 	cgv::ivec4 split_viewport(const cgv::ivec4 vp, int col_idx, int row_idx) const;
 	//@}
 public:
+	/// signal when the camera gets manipulated by the user (useful e.g. when instrumenting for user studies etc.)
+	cgv::signal::signal<const view_interaction&> on_view_interaction;
+
 	///
 	stereo_view_interactor(const char* name);
 	/**@name viewport splitting*/
@@ -192,6 +293,10 @@ public:
 	bool handle(cgv::gui::event& e);
 	/// overload to stream help information to the given output stream
 	void stream_help(std::ostream& os);
+	/// this method is called when context or instance is created
+	bool init(cgv::render::context&);
+	/// destruct flipper
+	void clear(cgv::render::context&);
 	/// this method is called in one pass over all drawables before the draw method
 	void init_frame(cgv::render::context&);
 	/// 

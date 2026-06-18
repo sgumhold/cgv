@@ -79,7 +79,7 @@ group_ptr group::get_group()
 {
 	return group_ptr(this);
 }
-const_group_ptr group::get_group_const()
+const_group_ptr group::get_group_const() const
 {
 	return const_group_ptr(this);
 }

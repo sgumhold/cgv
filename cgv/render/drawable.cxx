@@ -130,6 +130,11 @@ void drawable::after_finish(context&)
 void drawable::clear(context&)
 {
 }
+void drawable::destruct(context& ctx) 
+{
+	clear(ctx);
+}
+
 
 /// construct to be not inside of a render pass
 multi_pass_drawable::multi_pass_drawable()

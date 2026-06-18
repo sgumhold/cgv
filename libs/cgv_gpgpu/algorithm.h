@@ -16,6 +16,8 @@
 namespace cgv {
 namespace gpgpu {
 
+extern CGV_API GLbitfield get_associated_memory_barrier_bits(cgv::render::VertexBufferType buffer_type);
+
 constexpr static uint32_t k_default_group_size = 256;
 
 /// The base class for compute shader based highly parallel GPU algorithms.
@@ -43,8 +45,8 @@ protected:
 
 	struct compute_kernel_info {
 		compute_kernel* kernel = nullptr;
-		std::string name;
-		cgv::render::shader_compile_options options;
+		std::string name {};
+		cgv::render::shader_compile_options options {};
 	};
 
 	cgv::render::shader_compile_options get_compile_options(const algorithm_create_info& create_info);
@@ -60,6 +62,8 @@ protected:
 	void unbind_buffer_like_arguments(cgv::render::context& ctx, const argument_bindings& arguments);
 
 	void dispatch_compute(unsigned num_groups_x, unsigned num_groups_y, unsigned num_groups_z);
+
+	static void optional_memory_barrier(cgv::render::VertexBufferType buffer_type);
 
 private:
 	const std::string _type_name;

@@ -15,7 +15,7 @@ keyframe_editor_overlay::keyframe_editor_overlay() {
 	gui_options.allow_stretch = false;
 	gui_options.allow_margin = false;
 	
-	set_stretch(SO_HORIZONTAL);
+	set_stretch_mode(cgv::overlay::StretchMode::kHorizontal);
 	set_size(ivec2(100, layout.total_height(padding())));
 
 	scrollbar.callback = std::bind(&keyframe_editor_overlay::handle_scrollbar_drag, this, std::placeholders::_1);
@@ -69,7 +69,10 @@ bool keyframe_editor_overlay::handle_mouse_event(cgv::gui::mouse_event& e, cgv::
 	if(e.get_button() == cgv::gui::MB_LEFT_BUTTON && e.get_action() == cgv::gui::MA_PRESS) {
 		if(layout.marker_constraint.contains(local_mouse_pos))
 			set_frame(position_to_frame(local_mouse_pos.x() + layout.timeline_offset));
-			
+		
+		if(layout.timeline.contains(local_mouse_pos))
+			set_selected_frame(-1);
+
 		if(!scrollbar.empty()) {
 			auto& handle = scrollbar[0];
 
@@ -108,9 +111,9 @@ bool keyframe_editor_overlay::handle_mouse_event(cgv::gui::mouse_event& e, cgv::
 	return false;
 }
 
-void keyframe_editor_overlay::handle_member_change(const cgv::utils::pointer_test& m) {
+void keyframe_editor_overlay::handle_member_change(cgv::data::informed_ptr ptr) {
 
-	if(m.is(easing_function_id)) {
+	if(ptr.points_to(easing_function_id)) {
 		if(data) {
 			if(keyframe* k = data->keyframe_at(selected_frame)) {
 				k->ease(easing_function_id);
@@ -120,7 +123,7 @@ void keyframe_editor_overlay::handle_member_change(const cgv::utils::pointer_tes
 		}
 	}
 
-	if(m.is(new_frame_count)) {
+	if(ptr.points_to(new_frame_count)) {
 		new_frame_count = cgv::math::clamp((size_t)new_frame_count, (size_t)0, (size_t)9000);
 		if(data) {
 			new_duration = data->frame_to_time(new_frame_count);
@@ -128,7 +131,7 @@ void keyframe_editor_overlay::handle_member_change(const cgv::utils::pointer_tes
 		}
 	}
 
-	if(m.is(new_duration)) {
+	if(ptr.points_to(new_duration)) {
 		new_duration = cgv::math::clamp(new_duration, 0.0f, 300.0f);
 		if(data) {
 			new_frame_count = data->time_to_frame(new_duration);
@@ -181,8 +184,7 @@ void keyframe_editor_overlay::init_frame(context& ctx) {
 		marker.set_constraint(layout.marker_constraint);
 
 		labels.clear();
-		label_texts.clear();
-		label_texts.push_back("0");
+		labels.texts.push_back("0");
 		labels.positions.push_back(vec3(0.0f));
 		labels.alignment = TA_BOTTOM;
 
@@ -193,7 +195,7 @@ void keyframe_editor_overlay::init_frame(context& ctx) {
 					static_cast<float>(layout.total_height(padding()) - 10 - layout.marker_height + 7),
 					0.0f
 				);
-				label_texts.push_back(std::to_string(i));
+				labels.texts.push_back(std::to_string(i));
 				labels.positions.push_back(position);
 			}
 		}
@@ -459,16 +461,16 @@ void keyframe_editor_overlay::handle_keyframe_drag(cgv::g2d::DragAction action) 
 	}
 	case cgv::g2d::DragAction::kDragEnd:
 	{
-		const auto selected = keyframes.get_selected();
-		if(selected) {
-			size_t frame = position_to_frame(static_cast<int>(round(selected->x() + 0.5f * selected->size.x())));
-			selected->x() = static_cast<float>(frame_to_position(selected->frame));
+		const auto selected_keyframe = keyframes.get_dragged();
+		if(selected_keyframe) {
+			size_t frame = position_to_frame(static_cast<int>(round(selected_keyframe->x() + 0.5f * selected_keyframe->size.x())));
+			selected_keyframe->x() = static_cast<float>(frame_to_position(selected_keyframe->frame));
 
-			bool was_selected = selected->frame == selected_frame;
+			bool was_selected = selected_keyframe->frame == selected_frame;
 
-			if(selected->frame != frame && data) {
-				if(data->move_keyframe(selected->frame, frame)) {
-					selected->x() = static_cast<float>(frame_to_position(frame));
+			if(selected_keyframe->frame != frame && data) {
+				if(data->move_keyframe(selected_keyframe->frame, frame)) {
+					selected_keyframe->x() = static_cast<float>(frame_to_position(frame));
 
 					post_recreate_layout();
 
@@ -484,12 +486,6 @@ void keyframe_editor_overlay::handle_keyframe_drag(cgv::g2d::DragAction action) 
 			set_selected_frame(-1);
 		}
 
-		break;
-	}
-	case cgv::g2d::DragAction::kSelect:
-	{
-		const auto selected = keyframes.get_selected();
-		set_selected_frame(selected ? selected->frame : -1);
 		break;
 	}
 	default:
@@ -590,8 +586,8 @@ void keyframe_editor_overlay::draw_time_marker_and_labels(cgv::render::context& 
 	};
 
 	// update current frame label
-	label_texts[0] = std::to_string(data->frame);
-	labels.set_text_array(ctx, label_texts);
+	labels.texts.front() = std::to_string(data->frame);
+	labels.create(ctx);
 
 	// draw frame number labels
 	auto& font_renderer = cgv::g2d::ref_msdf_gl_font_renderer_2d(ctx);

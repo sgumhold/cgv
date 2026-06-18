@@ -1,0 +1,12 @@
+@=
+projectName="cmc_io";
+projectType="library";
+projectGUID="FC9B43F7-B652-4BD2-8724-58367CF91436";
+addSharedDefines=["CGV_MEDIA_COLOR_IO_EXPORTS"];
+addIncDirs=[CGV_DIR."/libs"];
+addProjectDirs=[CGV_DIR."/libs", CGV_DIR."/3rd/xml"];
+addProjectDeps=[
+	"cgv_media",
+	"cgv_utils",
+	"xml"
+];

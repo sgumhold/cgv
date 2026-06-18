@@ -31,7 +31,7 @@ node_ptr node::get_node()
 {
 	return node_ptr(this);
 }
-const_node_ptr node::get_node_const()
+const_node_ptr node::get_node_const() const
 {
 	return const_node_ptr(this);
 }

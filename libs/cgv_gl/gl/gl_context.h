@@ -74,6 +74,7 @@ protected:
 	bool texture_create_from_buffer(texture_base& tb, cgv::data::data_format& df, int x, int y, int level) const override;
 	bool texture_replace(texture_base& tb, int x, int y, int z_or_cube_side, const cgv::data::const_data_view& data, int level, const std::vector<cgv::data::data_view>* palettes = 0) const override;
 	bool texture_replace_from_buffer(texture_base& tb, int x, int y, int z_or_cube_side, int x_buffer, int y_buffer, unsigned int width, unsigned int height, int level) const override;
+	bool texture_copy_back(const texture_base& tb, int level, cgv::data::data_view& dv) const override;
 	bool texture_create_mipmaps(texture_base& tb, cgv::data::data_format& df) const override;
 	bool texture_generate_mipmaps(texture_base& tb, unsigned int dim) const override;
 	bool texture_destruct(texture_base& tb) const override;
@@ -108,16 +109,19 @@ protected:
 	bool shader_program_disable(shader_program_base& spb) override;
 	void shader_program_detach(shader_program_base& spb, const render_component& sc) const override;
 	bool shader_program_destruct(shader_program_base& spb) const override;
-
 	bool shader_program_get_active_uniforms(shader_program_base& spb, std::vector<std::string>& names) const override;
+	void shader_program_inspect_variables(shader_program_base& spb, ProgramVariableKind kind, std::vector<program_variable_info>& Vs, bool get_location, bool get_value) const override;
+
 	int  get_uniform_location(const shader_program_base& spb, const std::string& name) const override;
 	bool set_uniform_void(shader_program_base& spb, int loc, type_descriptor value_type, const void* value_ptr) const override;
 	bool set_uniform_array_void(shader_program_base& spb, int loc, type_descriptor value_type, const void* value_ptr, size_t nr_elements) const override;
+	int  get_uniform_block_index(const shader_program_base& spb, const std::string& name) const override;
+	bool set_uniform_block_binding(shader_program_base& spb, int index, int binding) const override;
 	int  get_attribute_location(const shader_program_base& spb, const std::string& name) const override;
 	bool set_attribute_void(shader_program_base& spb, int loc, type_descriptor value_type, const void* value_ptr) const override;
 
 	bool attribute_array_binding_create(attribute_array_binding_base& aab) const override;
-	bool attribute_array_binding_destruct(attribute_array_binding_base& aab);
+	bool attribute_array_binding_destruct(attribute_array_binding_base& aab) const override;
 	bool attribute_array_binding_enable(attribute_array_binding_base& aab) override;
 	bool attribute_array_binding_disable(attribute_array_binding_base& aab) override;
 	bool set_attribute_array_void(attribute_array_binding_base* aab, int loc, type_descriptor value_type, const vertex_buffer_base* vbb, const void* ptr, size_t nr_elements, unsigned stride_in_bytes) const override;

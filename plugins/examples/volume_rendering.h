@@ -5,12 +5,14 @@
 #include <cgv/base/node.h>
 #include <cgv/gui/event_handler.h>
 #include <cgv/gui/provider.h>
+#include <cgv/media/transfer_function.h>
+#include <cgv/render/color_scale_adapter.h>
 #include <cgv/render/drawable.h>
 #include <cgv_gl/volume_renderer.h>
 #include <cgv_gl/box_wire_render_data.h>
-#include <cgv/render/color_map.h>
-#include <cgv_app/color_map_editor.h>
-#include <cgv_app/color_map_legend.h>
+#include <cgv_overlay/color_scale_legend.h>
+#include <cgv_overlay/color_selector.h>
+#include <cgv_overlay/transfer_function_editor.h>
 
 class volume_viewer :
 	public cgv::base::group,			// derive from group to support child nodes (needed for overlays)
@@ -18,13 +20,13 @@ class volume_viewer :
 	public cgv::gui::provider,			// derive from gui provider to have gui controls
 	public cgv::render::drawable		// derive from drawable to allow drawing in the GL context
 {
-private:
-	//bool do_calculate_gradients = false;
-
 protected:
-	/// store a pointer to the color map editor overlay which is used to edit the volume transfer function
-	cgv::app::color_map_editor_ptr transfer_function_editor_ptr;
-	cgv::app::color_map_legend_ptr transfer_function_legend_ptr;
+	/// a transfer funciton editor is used to edit the volume transfer function
+	cgv::overlay::transfer_function_editor_ptr transfer_function_editor;
+	/// a color scale legend is used to show the volume transfer function
+	cgv::overlay::color_scale_legend_ptr legend;
+	/// a color selector is used to allow live selection of transfer function colors
+	cgv::overlay::color_selector_ptr color_selector;
 
 	/// resolution of the volume
 	cgv::uvec3 vres;
@@ -45,15 +47,13 @@ protected:
 	/// render style for volume
 	cgv::render::volume_render_style vstyle;
 	/// index of the transfer function preset
-	cgv::type::DummyEnum transfer_function_preset_idx = (cgv::type::DummyEnum)1;
-	/// using a color map to define the volume transfer function
-	/// gl_color_map supports generation of a texture from its contents
-	cgv::render::gl_color_map transfer_function;
+	int transfer_function_preset = 1;
+	/// the volume transfer function
+	std::shared_ptr<cgv::media::transfer_function> transfer_function = std::make_shared<cgv::media::transfer_function>();
+	cgv::render::color_scale_adapter color_scale_adapter;
 	/// render data for wireframe box
 	cgv::render::box_wire_render_data<> box_rd;
 	
-	void handle_transfer_function_change();
-
 	void update_bounding_box();
 
 	void load_transfer_function_preset();

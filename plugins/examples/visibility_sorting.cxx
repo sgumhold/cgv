@@ -63,9 +63,9 @@ public:
 			return false;
 		
 		sl::data_type vec3_t = { "vec3_t", {
-			{ sl::Type::kFloat, "x" },
-			{ sl::Type::kFloat, "y" },
-			{ sl::Type::kFloat, "z" }
+			{ sl::Type::Float, "x" },
+			{ sl::Type::Float, "y" },
+			{ sl::Type::Float, "z" }
 		}};
 
 		std::string operation = R"(
@@ -74,7 +74,7 @@ public:
 			return dot(eye_to_pos, eye_to_pos);
 		)";
 
-		sort.init(ctx, vec3_t, sl::Type::kUInt, 1, operation, cgv::gpgpu::SortOrder::kDescending);
+		sort.init(ctx, vec3_t, sl::Type::UInt, 1, operation, cgv::gpgpu::SortOrder::Descending);
 
 		create_data();
 
@@ -182,7 +182,7 @@ public:
 		const float packing_density_percentage = 0.635f; // 63.5% of box volume for random packing of equal spheres
 		
 		const float sphere_volume = (box_volume * packing_density_percentage) / n;
-		const float sphere_radius = std::pow(sphere_volume / (4.0f/3.0f * PI), 1.0f/3.0f); // r = cube_root_of(V / (4/3*pi));
+		const float sphere_radius = std::pow(sphere_volume / (4.0f/3.0f * static_cast<float>(cgv::math::constants::pi)), 1.0f/3.0f); // r = cube_root_of(V / (4/3*pi));
 		
 		sphere_style.radius = sphere_radius;
 

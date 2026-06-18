@@ -52,8 +52,13 @@ int ThumbWheel::handle(int event) {
     ipos = newpos;
     return 1;
   case DRAG:
-    handle_drag(previous_value()+(newpos-ipos)*(step()?step():.01));
-    return 1;
+      if (event_state(CTRL))
+        handle_drag(previous_value()+(newpos-ipos)*(step()?100*step():.01));
+      else if (event_state(SHIFT))
+        handle_drag(previous_value()+(newpos-ipos)*(step()?10*step():.01));
+      else
+          handle_drag(previous_value() + (newpos - ipos) * (step() ? step() : .01));
+      return 1;
   case RELEASE:
     handle_release();
     redraw();

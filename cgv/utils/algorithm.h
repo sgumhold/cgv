@@ -1,12 +1,10 @@
 #pragma once
 
 #include <algorithm>
+#include <numeric>
 #include <string>
-#include <vector>
-
 #include <utility>
-
-//#include "lib_begin.h"
+#include <vector>
 
 namespace cgv {
 namespace utils {
@@ -184,7 +182,164 @@ std::vector<std::pair<typename InputIt::value_type, typename InputIt::value_type
 	return res;
 }
 
+/// @brief Zip two sequences together to form a single sequene of pairs and store the results in an output range starting from d_first.
+/// 
+/// The sequence beginning at first2 must provide at least distance(first1, last1) - 1 elements.
+/// For example, applying zip to sequences (1, 2, 3) and ('a', 'b', 'c') would result in: ((1, 'a'),(2, 'b'),(3, 'c')).
+/// 
+/// @tparam InputIt1 The first input range iterator type.
+/// @tparam InputIt2 The second input range iterator type.
+/// @tparam OutputIt The output range iterator type.
+/// @param first1 The start of the first input range.
+/// @param last1 The end of the first input range.
+/// @param first2 The start of the second input range.
+/// @param d_first The start of the output range.
+/// @return Output iterator to the element that follows the last element transformed.
+template<typename InputIt1, typename InputIt2, typename OutputIt>
+OutputIt zip(const InputIt1 first1, const InputIt1 last1, const InputIt2 first2, OutputIt d_first) {
+	return std::transform(first1, last1, first2, d_first, [](const auto& a, const auto& b) {
+		return std::make_pair(a, b);
+	});
+}
+
+/// @brief Zip two sequences together to form a single sequene of pairs.
+/// 
+/// The sequence beginning at first2 must provide at least distance(first1, last1) - 1 elements.
+/// For example, applying zip to sequences (1, 2, 3) and ('a', 'b', 'c') would return: ((1, 'a'),(2, 'b'),(3, 'c')).
+/// 
+/// @tparam InputIt1 The first input range iterator type.
+/// @tparam InputIt2 The second input range iterator type.
+/// @param first1 The start of the first input range.
+/// @param last1 The end of the first input range.
+/// @param first2 The start of the second input range.
+/// @return A std::vector of std::pair s containing copies of zipped elements.
+template<typename InputIt1, typename InputIt2>
+std::vector<std::pair<typename InputIt1::value_type, typename InputIt2::value_type>> zip(const InputIt1 first1, const InputIt1 last1, const InputIt2 first2) {
+	std::vector<std::pair<typename InputIt1::value_type, typename InputIt2::value_type>> res;
+	zip(first1, last1, first2, std::back_inserter(res));
+	return res;
+}
+
+/// @brief Generate a sequence of n uniformly-spaced values in [start,stop] and store the result in an output range starting from output_first.
+/// 
+/// @tparam ParamT The sequence value type.
+/// @tparam OutputIt The output range iterator type.
+/// @param output_first The start of the output range.
+/// @param start The starting value of the sequence.
+/// @param stop The end value of the sequence.
+/// @param n The number of values in the generated sequence.
+template<typename ParamT = float, typename OutputIt>
+void subdivision_sequence(OutputIt output_first, ParamT start, ParamT stop, size_t n) {
+	if(n == 1) {
+		*output_first = ParamT(0.5) * (start + stop);
+		++output_first;
+	} else if(n > 1) {
+		const ParamT size = stop - start;
+		const ParamT step = size / static_cast<ParamT>(n - 1);
+		for(size_t i = 0; i < n; ++i) {
+			ParamT t = start + step * static_cast<ParamT>(i);
+			*output_first = t;
+			++output_first;
+		}
+	}
+}
+
+/// @brief Generate a sequence of n uniformly-spaced values in [start,stop] and returnt eh result as a std::vector.
+/// 
+/// @tparam ParamT The sequence value type.
+/// @param start The starting value of the sequence.
+/// @param stop The end value of the sequence.
+/// @param n The number of values in the generated sequence.
+template<typename ParamT>
+std::vector<ParamT> subdivision_sequence(ParamT start, ParamT stop, size_t n) {
+	std::vector<ParamT> out;
+	out.reserve(n);
+	cgv::utils::subdivision_sequence(std::back_inserter(out), start, stop, n);
+	return out;
+}
+
+/// @brief Return a sequence of monotonically increasing values from 0 to n = distance(first, last) - 1 with first == 0 and last == n.
+/// 
+/// @tparam InputIt The input sequence iterator type.
+/// @param first The start of the input range.
+/// @param last The end of the input range.
+/// @return The index sequence.
+template<class InputIt>
+std::vector<size_t> generate_index_sequence(const InputIt first, const InputIt last) {
+	std::vector<size_t> indices(static_cast<size_t>(std::distance(first, last)));
+	std::iota(indices.begin(), indices.end(), 0);
+	return indices;
+}
+
+/// @brief Return a sequence of indices corresponding to the sorted order of values in [first,last).
+/// The value sequence remains unchanged.
+/// 
+/// @tparam RandomIt The value sequence iterator type.
+/// @param first first The start of the value range.
+/// @param last The end of the value range.
+/// @return The index sequence.
+template<class RandomIt>
+std::vector<size_t> sort_indices(const RandomIt first, const RandomIt last) {
+	std::vector<size_t> indices = generate_index_sequence(first, last);
+	std::sort(indices.begin(), indices.end(), [first](size_t i1, size_t i2) {
+		return first[i1] < first[i2];
+	});
+	return indices;
+}
+
+/// @brief Return a sequence of indices corresponding to the sorted order of values in [first,last) while preserving the order of equivalent elements.
+/// The value sequence remains unchanged.
+/// 
+/// @tparam RandomIt The value sequence iterator type.
+/// @param first first The start of the value range.
+/// @param last The end of the value range.
+/// @return The index sequence.
+template<class RandomIt>
+std::vector<size_t> stable_sort_indices(const RandomIt first, const RandomIt last) {
+	std::vector<size_t> indices = generate_index_sequence(first, last);
+	std::stable_sort(indices.begin(), indices.end(), [first](size_t i1, size_t i2) {
+		return first[i1] < first[i2];
+	});
+	return indices;
+}
+
+/// @brief Return a sequence of indices corresponding to the sorted order of values in [first,last).
+/// Elements are sorted with respect to comp.
+/// The value sequence remains unchanged.
+/// 
+/// @tparam RandomIt The value sequence iterator type.
+/// @tparam Compare The comparison function object type.
+/// @param first first The start of the value range.
+/// @param last The end of the value range.
+/// @param comp The comparison function object.
+/// @return The index sequence.
+template<class RandomIt, class Compare>
+std::vector<size_t> sort_indices(const RandomIt first, const RandomIt last, Compare comp) {
+	std::vector<size_t> indices = generate_index_sequence(first, last);
+	std::sort(indices.begin(), indices.end(), [first, &comp](size_t i1, size_t i2) {
+		return comp(first[i1], first[i2]);
+	});
+	return indices;
+}
+
+/// @brief Return a sequence of indices corresponding to the sorted order of values in [first,last).
+/// Elements are sorted with respect to comp while the order of equivalent elements is preserved.
+/// The value sequence remains unchanged.
+/// 
+/// @tparam RandomIt The value sequence iterator type.
+/// @tparam Compare The comparison function object type. 
+/// @param first first The start of the value range.
+/// @param last The end of the value range.
+/// @param comp The comparison function object.
+/// @return The index sequence.
+template<class RandomIt, class Compare>
+std::vector<size_t> stable_sort_indices(const RandomIt first, const RandomIt last, Compare comp) {
+	std::vector<size_t> indices = generate_index_sequence(first, last);
+	std::stable_sort(indices.begin(), indices.end(), [first, &comp](size_t i1, size_t i2) {
+		return comp(first[i1], first[i2]);
+	});
+	return indices;
+}
+
 } // namespace utils
 } // namespace cgv
-
-//#include <cgv/config/lib_end.h>

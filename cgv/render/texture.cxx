@@ -1,6 +1,7 @@
 #include "texture.h"
 #include "frame_buffer.h"
 
+#include <cgv/math/integer.h>
 #include <cgv/media/image/image_reader.h>
 #include <cgv/media/image/image_writer.h>
 #include <cgv/utils/tokenizer.h>
@@ -114,6 +115,11 @@ void texture::set_border_color(float r, float g, float b, float a)
 	border_color[2] = b;
 	border_color[3] = a;
 	state_out_of_date = true;
+}
+/// return the texture border color
+cgv::vec4 texture::get_border_color() const
+{
+	return cgv::vec4(4, border_color);
 }
 /** set the minification filters, if minification is set to TF_ANISOTROP, 
 	the second floating point parameter specifies the degree of anisotropy */
@@ -232,34 +238,11 @@ void texture::set_fixed_sample_locations(bool use)
 	fixed_sample_locations = use; 
 }
 
-template <class int_type>
-bool is_power_of_two(int_type i)
-{
-	do {
-		if (i == 1)
-			return true;
-		if ((i & 1) != 0)
-			return false;
-		i /= 2;
-	} 
-	while (true);
-	return false;
-}
-
-template <class int_type>
-int_type power_of_two_ub(int_type i)
-{
-	int_type res = 2;
-	while (res < i)
-		res *= 2;
-	return res;
-}
-
 bool texture::create_from_image(cgv::data::data_format& df, cgv::data::data_view& dv, const context& ctx,
 								const std::string& file_name, unsigned char* clear_color_ptr, int level, int cube_side)
 {
 	bool ensure_power_of_two = clear_color_ptr != 0;
-	std::string fn = file_name;
+	auto const& fn = file_name;
 	if (df.empty()) {
 		if (fn.empty()) {
 			cgv::render::render_component::last_error = "attempt to create texture from empty file name";
@@ -290,9 +273,9 @@ bool texture::create_from_image(cgv::data::data_format& df, cgv::data::data_view
 	size_t w = df.get_width(), h = df.get_height();
 	size_t W = w, H = h;
 	data_format df1(df);
-	if (ensure_power_of_two && (!is_power_of_two(w) || !is_power_of_two(h))) {
-		W = power_of_two_ub(df.get_width());
-		H = power_of_two_ub(df.get_height());
+	if (ensure_power_of_two && (!cgv::math::is_power_of_two(w) || !cgv::math::is_power_of_two(h))) {
+		W = cgv::math::next_power_of_two(df.get_width());
+		H = cgv::math::next_power_of_two(df.get_height());
 		df1.set_width(W);
 		df1.set_height(H);
 	}
@@ -704,10 +687,10 @@ bool texture::replace_from_image(const context& ctx, const std::string& file_nam
 /** same as previous method but use the passed data format and data view to
 	store the content of the image. */
 bool texture::replace_from_image(cgv::data::data_format& df, cgv::data::data_view& dv, const context& ctx,
-								 const std::string& file_name, int x, int y, int z_or_cube_side, 
+								 const std::string& file_name, int x, int y, int z_or_cube_side,
 								 int level)
 {
-	std::string fn = file_name;
+	auto const& fn = file_name;
 	if (fn.empty()) {
 		return false;
 	}
@@ -725,6 +708,19 @@ bool texture::replace_from_image(cgv::data::data_format& df, cgv::data::data_vie
 	return true;
 }
 
+bool texture::copy(const context& ctx, cgv::data::data_view& dv, int level) const
+{
+	if(!is_created()) {
+		render_component::last_error = "texture must be created for copy";
+		return false;
+	}
+	
+	cgv::data::data_format* df = new cgv::data::data_format(*this);
+	dv = cgv::data::data_view(df);
+	dv.manage_format();
+
+	return ctx.texture_copy_back(*this, level, dv);
+}
 
 /// destruct the texture and free texture memory and handle
 bool texture::destruct(const context& ctx)
@@ -758,7 +754,8 @@ bool texture::disable(const context& ctx)
 	return ctx.texture_disable(*this, tex_unit, get_nr_dimensions());
 }
 
-bool texture::bind_as_image(const context& ctx, int _tex_unit, int level, bool bind_array, int layer, AccessType access) {
+bool texture::bind_as_image(const context& ctx, int _tex_unit, int level, bool bind_array, int layer, AccessType access)
+{
 	if(!handle) {
 		render_component::last_error = "attempt to bind texture that is not created";
 		return false;

@@ -64,7 +64,7 @@
 #define GRD_APPLY_FUNC_N(n, f, s, ...) GRD_EXPAND( GRD_APPLY_FUNC##n(f, s, __VA_ARGS__) )
 
 #define GRD_GET_FIRST_PAIR_(f, t, i, ...) f(t, i)
-#define GRD_GET_FIRST_PAIR(f, ...) GRD_EXPAND( GRD_GET_FIRST_PAIR_(f, __VA_ARGS__) )
+#define GRD_GET_FIRST_PAIR(f, ...) GRD_EXPAND( GRD_GET_FIRST_PAIR_(f, __VA_ARGS__, _) )
 
 namespace cgv {
 

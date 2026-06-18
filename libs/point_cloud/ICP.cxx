@@ -158,19 +158,28 @@ namespace cgv {
 				}
 				get_center_point(Q, target_center);
 
-				///cast fA to A
+
+				/// cast fA to A
 				cgv::math::mat<float> A(3, 3, &fA(0, 0));
 				cgv::math::svd(A, U, Sigma, V, false);
-				Mat fU(3, 3, &U(0, 0)), fV(3, 3, &V(0, 0)), m;
-				float det = cgv::math::det(V * cgv::math::transpose(U));
+
+				Mat fU(3, 3, &U(0, 0));
+				Mat fV(3, 3, &V(0, 0));
+				Mat m;
+
+				// det() now expects fixed-size fmat, so use fU/fV instead of dynamic U/V.
+				Mat R_tmp = fV * cgv::math::transpose(fU);
+				float det = cgv::math::det(R_tmp);
+
 				m.identity();
 				m(2, 2) = det;
-				///get new R and t
-				//Mat rotation_update_mat = fU * cgv::math::transpose(fV);
+
+				/// get new R and t
 				rotation_update_mat = fV * m * cgv::math::transpose(fU);
 				rotation_update_mat.transpose();
 
 				translation_update_vec = target_center - rotation_update_mat * source_center;
+			
 				///calculate error function E(R,t)
 				cost = 0.f;
 				for (unsigned int i = 0; i < S.get_nr_points(); i++) {

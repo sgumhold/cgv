@@ -13,7 +13,7 @@ float framing_overlay::min_frame_size = 128.0f;
 framing_overlay::framing_overlay() {
 	set_name("Framing Editor");
 	blocks_events(false);
-	set_stretch(SO_BOTH);
+	set_stretch_mode(cgv::overlay::StretchMode::kCover);
 	set_margin(0);
 	set_size(-1);
 
@@ -198,12 +198,10 @@ void framing_overlay::draw_content(context& ctx) {
 			return str;
 		};
 
-		std::vector<std::string> texts;
-		texts.push_back(to_resolution_string(frame_absolute.size));
-		texts.push_back("Viewport size: " + to_resolution_string(viewport_size));
-
 		labels.clear();
-		labels.set_text_array(ctx, texts);
+		labels.texts.push_back(to_resolution_string(frame_absolute.size));
+		labels.texts.push_back("Viewport size: " + to_resolution_string(viewport_size));
+		labels.create(ctx);
 
 		labels.positions.push_back(cgv::vec3(label_rect.center(), 0.0f));
 		labels.positions.push_back(cgv::vec3(viewport_label_rect.center(), 0.0f));
@@ -288,7 +286,7 @@ void framing_overlay::create_handles() {
 		handles.add(rect);
 		handles.add(rect);
 
-		const auto center_constraint = cgv::g2d::draggable::ConstraintReference::CR_CENTER;
+		const auto center_constraint = cgv::g2d::ConstraintReference::kCenter;
 		handles[1].constraint_reference = center_constraint;
 		handles[2].constraint_reference = center_constraint;
 		handles[3].constraint_reference = center_constraint;

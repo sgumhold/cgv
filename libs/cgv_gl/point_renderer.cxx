@@ -94,8 +94,9 @@ namespace cgv {
 
 			glPointSize(prs.point_size);
 			if (prs.blend_points) {
-				glEnable(GL_BLEND);
-				glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+				ctx.push_blend_state();
+				ctx.enable_blending();
+				ctx.set_blend_func_back_to_front();
 			}
 			if (ref_prog().is_linked()) {
 				if (!has_point_sizes)
@@ -121,7 +122,7 @@ namespace cgv {
 		{
 			const point_render_style& prs = get_style<point_render_style>();
 			if (prs.blend_points) {
-				glDisable(GL_BLEND);
+				ctx.pop_blend_state();
 			}
 			if (!attributes_persist()) {
 				has_indexed_colors = false;

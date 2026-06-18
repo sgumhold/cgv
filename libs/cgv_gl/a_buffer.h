@@ -2,6 +2,7 @@
 
 #include <cgv/render/shader_program.h>
 #include <cgv/render/texture.h>
+#include <cgv/render/vertex_buffer.h>
 #include <cgv_gl/gl/gl.h>
 
 #include "gl/lib_begin.h"
@@ -13,10 +14,6 @@ namespace cgv {
 	Compare cgv/test/a_buffer_test for an example of using this class.*/
 class CGV_API a_buffer
 {
-	unsigned last_fragments_per_pixel;
-	unsigned last_nodes_per_pixel;
-	//shader_define_map last_defines;
-	//shader_define_map defines;
 	shader_compile_options prog_options;
 	shader_compile_options last_prog_options;
 	bool init_frame_called;
@@ -24,9 +21,9 @@ protected:
 	/// Depth texture used to emulate depth buffer
 	texture depth_tex;
 	/// Buffers used to store per pixel frament lists
-	unsigned node_buffer_counter;
-	unsigned head_pointer_buffer;
-	unsigned node_buffer;
+	cgv::render::vertex_buffer node_counter_buffer = { cgv::render::VertexBufferType::VBT_ATOMIC_COUNTER };
+	cgv::render::vertex_buffer head_pointer_buffer = { cgv::render::VertexBufferType::VBT_STORAGE };
+	cgv::render::vertex_buffer node_buffer = { cgv::render::VertexBufferType::VBT_STORAGE };
 	/// Default texture unit used for depth texture
 	int depth_tex_unit;
 	/// Buffer binding point indices
@@ -36,14 +33,19 @@ protected:
 	// GPU objects
 	shader_program clear_ssbo_prog;
 	shader_program a_buffer_prog;
-	
-	static void ensure_buffer(GLuint& buffer, GLenum target, GLsizeiptr size, const void* data, GLenum usage = GL_DYNAMIC_DRAW);
-	static void destruct_buffer(GLuint& buffer);
-	void destruct_buffers(context& ctx);
+
 	void ensure_buffers(context& ctx);
 
 	void update_shader_program_options(shader_compile_options& options, bool include_binding_points);
 public:
+	/// whether to assume that fragment color is already multiplied with opacity
+	bool pre_multiply_opacity = true;
+	/// whether to use volumetric blending of thickened fragments
+	int z_fight_removal = 0;
+	/// set thickness of fragments to 10^z_fight_removal_exp where this is measured in scaling of depth buffer
+	float z_fight_removal_exp = -5.0f;
+	/// size of disambiguation windows
+	unsigned z_fight_window_width = 8;
 	/// construct and configure
 	a_buffer(unsigned _fragments_per_pixel = 32, unsigned _nodes_per_pixel = 64, int _depth_tex_unit = 0, 
 		int _node_counter_binding_point = 0, int _head_pointers_binding_point = 0, int _nodes_binding_point = 1);
@@ -67,7 +69,7 @@ public:
 	*/
 	bool enable(context& ctx, shader_program& prog, int tex_unit = -1);
 	/// finish writing fragments to a_buffer and return current number of nodes in node buffer
-	size_t disable(context& ctx);
+	void disable(context& ctx, size_t* out_node_count = nullptr);
 	/// per fragment sort nodes and blend over current framebuffer
 	void finish_frame(context& ctx);
 

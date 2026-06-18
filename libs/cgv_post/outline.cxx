@@ -33,7 +33,7 @@ void outline::begin(cgv::render::context& ctx, bool push_viewport) {
 		return;
 
 	fbc_draw.enable(ctx, push_viewport);
-	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+	ctx.clear_background(true, true);
 }
 
 void outline::end(cgv::render::context& ctx, bool push_viewport) {
@@ -43,6 +43,7 @@ void outline::end(cgv::render::context& ctx, bool push_viewport) {
 	if(!enable)
 		return;
 
+	ctx.begin_attribute_less_rendering();
 	fbc_draw.disable(ctx, push_viewport);
 
 	fbc_draw.enable_attachment(ctx, "depth", 0);
@@ -60,6 +61,7 @@ void outline::end(cgv::render::context& ctx, bool push_viewport) {
 
 	fbc_draw.disable_attachment(ctx, "depth");
 	fbc_draw.disable_attachment(ctx, "color");
+	ctx.end_attribute_less_rendering();
 }
 
 void outline::create_gui_impl(cgv::base::base* b, cgv::gui::provider* p) {

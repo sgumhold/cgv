@@ -1,6 +1,7 @@
 #pragma once
 
 #include "fvec.h"
+#include "quaternion.h"
 #include <random>
 
 #include "lib_begin.h"
@@ -180,12 +181,13 @@ namespace cgv {
 		/// find point on line closest to reference point
 		/// </summary>
 		/// <typeparam name="T">coordinate type</typeparam>
+		/// <typeparam name="N">dimensionality</typeparam>
 		/// <param name="lo">point on line</param>
 		/// <param name="ld">direction of line</param>
 		/// <param name="p">reference point</param>
 		/// <returns>point on line closest to reference point</returns>
-		template <typename T>
-		fvec<T, 3> closest_point_on_line_to_point(const fvec<T, 3>& lo, const fvec<T, 3>& ld, const fvec<T, 3>& p)
+		template <typename T, cgv::type::uint32_type N>
+		fvec<T, N> closest_point_on_line_to_point(const fvec<T, N>& lo, const fvec<T, N>& ld, const fvec<T, N>& p)
 		{
 			return lo + (dot(p - lo, ld) / dot(ld, ld)) * ld;
 		}

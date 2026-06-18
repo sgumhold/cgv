@@ -393,8 +393,16 @@ window_ptr fltk_driver::create_window(int w, int h, const std::string& title, co
 	window_ptr wp;
 	if (window_type == "viewer")
 		wp = window_ptr(new fltk_viewer_window(w, h, title));
-	else if (window_type == "generic")
-		wp = window_ptr(new fltk_generic_window(0, 0, w, h, title));
+	else if (window_type.substr(0, 7) == "generic") {
+		std::string group_type;
+		auto pos = window_type.find_first_of(':');
+		if (pos != std::string::npos) {
+			std::string grp_type = window_type.substr(pos + 1);
+			if (grp_type == "align" || grp_type == "tab")
+				group_type = grp_type;
+		}
+		wp = window_ptr(new fltk_generic_window(0, 0, w, h, title, group_type));
+	}
 	if (wp.empty())
 		return wp;
 	windows.push_back(wp);

@@ -21,10 +21,10 @@ public:
 	/// overload to set single bit, where user_data specifies bit index
 	void set_value(const bool& new_value, void* user_data);
 	/// overload to get the value
-	const bool get_value(void* user_data) const;
+	bool get_value(void* user_data) const;
 	/// the default implementation compares ptr to &get_value().
 	bool controls(const void* ptr, void* user_data) const;
-	/// 
+	///
 	void add_bit_controls(cgv::gui::provider* p, const std::string& gui_type, const std::string& options, const std::string& align);
 };
 	}
