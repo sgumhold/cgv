@@ -72,6 +72,8 @@ namespace cgv { // @<
 			/// the coefficient used to adjust sample opacity based on volume scaling (useful range between 50 and 500)
 			float scale_adjustment_factor = 100.0f;
 			
+			/// whether to show direct volume
+			bool show_volume = true;
 			/// whether to enable lighting
 			bool enable_lighting = false;
 			/// whether the light is local to the eye position (moves with the eye) or is static to the scene

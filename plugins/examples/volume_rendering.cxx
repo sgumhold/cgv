@@ -87,7 +87,7 @@ bool volume_viewer::self_reflect(cgv::reflect::reflection_handler& rh)
 
 void volume_viewer::stream_help(std::ostream& os) 
 {
-	os << "volume_viewer: toggle <B>ox\n, toggle <T>ransfer function editor, ctrl+click in transfer function editor to add points, alt+click to remove";
+	os << "volume_viewer: toggle <B>ox, <V>olume, <I>sosurface\n, toggle <T>ransfer function editor, ctrl+click in transfer function editor to add points, alt+click to remove";
 }
 
 bool volume_viewer::handle(cgv::gui::event& e) 
@@ -118,6 +118,17 @@ bool volume_viewer::handle(cgv::gui::event& e)
 		case 'B':
 			show_box = !show_box;
 			on_set(&show_box);
+			return true;
+		case 'V':
+			vstyle.show_volume = !vstyle.show_volume;
+			on_set(&vstyle.show_volume);
+			return true;
+		case 'I':
+			if (vstyle.isosurface_mode == cgv::render::VolumeIsosurfaceMode::kIsovalue)
+				vstyle.isosurface_mode = cgv::render::VolumeIsosurfaceMode::kNone;
+			else if (vstyle.isosurface_mode == cgv::render::VolumeIsosurfaceMode::kNone)
+				vstyle.isosurface_mode = cgv::render::VolumeIsosurfaceMode::kIsovalue;
+			on_set(&vstyle.isosurface_mode);
 			return true;
 		case 'T':
 			if(transfer_function_editor) {
