@@ -173,16 +173,10 @@ float fbm_pnoise(vec3 p, int octaves, float persistence, float lacunarity)
     float total = 0.0;
     float amplitude = 1.0;
     float frequency = 1.0;
-    //float maxValue = 0.0;  // Used to normalize result
-
-    for (int i = 0; i < octaves; ++i)
-    {
+    for (int i = 0; i < octaves; ++i) {
         total += pnoise(p * frequency) * amplitude;
-//        maxValue += amplitude;
         amplitude *= persistence;
         frequency *= lacunarity;
     }
-
     return total / (1.0 - pow(persistence, float(octaves)));
-//    return total / maxValue;
 }
