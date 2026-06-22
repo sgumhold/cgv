@@ -19,6 +19,7 @@ var structcgv_1_1render_1_1volume__render__style =
     [ "light_local_to_eye", "structcgv_1_1render_1_1volume__render__style.html#a0050c7a4742ce78f1e03ee5e377f37dd", null ],
     [ "roughness", "structcgv_1_1render_1_1volume__render__style.html#ab3a1c304c9c6709b0c4f5ec534502a22", null ],
     [ "scale_adjustment_factor", "structcgv_1_1render_1_1volume__render__style.html#a7df7161a9db5e2aac43be8fb04550f03", null ],
+    [ "show_volume", "structcgv_1_1render_1_1volume__render__style.html#a16801fc5d45485e9eb91e127c85a2a6e", null ],
     [ "slice_axis", "structcgv_1_1render_1_1volume__render__style.html#ad2340320da128529e551eb95676b567d", null ],
     [ "slice_coordinate", "structcgv_1_1render_1_1volume__render__style.html#ae63c8a7558fa6d59b41248c73552e19b", null ],
     [ "slice_mode", "structcgv_1_1render_1_1volume__render__style.html#a5453555b4c57ec2cb34e130900a2fc6f", null ],
