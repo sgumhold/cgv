@@ -158,16 +158,16 @@ public:
 	bool remove_opacity_point(float x);
 
 	/// @brief Get the color control point count.
-	/// 
+	///
 	/// @return The control point count.
-	const size_t get_color_point_count() const {
+	size_t get_color_point_count() const {
 		return color_points_.size();
 	}
 
 	/// @brief Get the opacity control point count.
-	/// 
+	///
 	/// @return The control point count.
-	const size_t get_opacity_point_count() const {
+	size_t get_opacity_point_count() const {
 		return opacity_points_.size();
 	}
 
