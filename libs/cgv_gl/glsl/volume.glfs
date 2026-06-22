@@ -15,6 +15,8 @@ mat3 get_normal_matrix();
 mat3 get_inverse_normal_matrix();
 //***** end interface of view.glsl ***********************************
 
+#define SHOW_VOLUME 1
+
 // constant defines
 #define TRANSPARENCY_THRESHOLD 0.01
 
@@ -511,7 +513,7 @@ void main() {
 	#endif
 		// premultiply alpha
 		color_in.rgb *= color_in.a;
-
+	#if SHOW_VOLUME
 		// blend front-to-back
 		color.rgb += color.a*color_in.rgb;
 		color.a *= (1.0 - color_in.a);
@@ -520,13 +522,13 @@ void main() {
 			max_opacity = color_in.a;
 			t_at_max_opacity = t;
 		}
-
 		// early termination when transparency threshold is reached
 	#if !ENABLE_ISOSURFACE
 		if(color.a < TRANSPARENCY_THRESHOLD) {
 			color.a = 0.0;
 			break;
 		}
+	#endif
 	#endif
 	#if SLICE_MODE == 1
 		if (at_slice) {
