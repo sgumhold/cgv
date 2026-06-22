@@ -2,7 +2,7 @@
 
 // based on https://www.shadertoy.com/view/XlXBWj
 
-/** use these forward declarations in your shader to use classic 2/3/4d Perlin noise:
+/** use these forward declarations in your shader to use classic 3d Voronoi noise:
 // 3D voronoi noise mapping to [0,1]
 float vnoise(vec3 x);
 // fractal brownian motion version of 3D voronoi noise mapping to [0,1]
@@ -42,14 +42,15 @@ float vnoise(vec3 p)
 // fractal brownian motion version of 3D voronoi noise mapping to [0,1]
 float fbm_vnoise(vec3 p, int octaves, float persistence, float lacunarity)
 {
-	float n = 0.0;
-	float f = 0.5, a = 0.5;
+	float total = 0.0;
+	float amplitude = 1.0;
+	float frequency = 1.0;
 	mat2 m = mat2(0.8, 0.6, -0.6, 0.8);
 	for (int i = 0; i < octaves; i++) {
-		n += vnoise(p * f) * a;
-		f *= lacunarity;
-		a *= persistence;
+		total += vnoise(p * frequency) * amplitude;
+		amplitude *= persistence;
+		frequency *= lacunarity;
 		p.xy = m * p.xy;
 	}
-	return n;
+	return total / (1.0 - pow(persistence, float(octaves)));
 }

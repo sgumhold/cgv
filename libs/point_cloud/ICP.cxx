@@ -1,4 +1,5 @@
 #include "point_cloud.h"
+#include <cgv/math/det.h>
 #include <algorithm>
 #include <random>
 #include <fstream>
