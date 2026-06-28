@@ -485,6 +485,7 @@ var hierarchy =
     [ "cgv::math::register_sparse_les_factory< T >", "structcgv_1_1math_1_1register__sparse__les__factory.html", null ],
     [ "cgv::math::rigid_transform< T >", "classcgv_1_1math_1_1rigid__transform.html", null ],
     [ "cgv::math::sparse_mat< T >", "classcgv_1_1math_1_1sparse__mat.html", null ],
+    [ "cgv::math::sphere< T >", "structcgv_1_1math_1_1sphere.html", null ],
     [ "cgv::math::step_iterator< RandomAccessIterator >", "structcgv_1_1math_1_1step__iterator.html", null ],
     [ "cgv::math::thin_hyper_plate_spline< T >", "structcgv_1_1math_1_1thin__hyper__plate__spline.html", null ],
     [ "cgv::math::thin_plate_spline< T >", "structcgv_1_1math_1_1thin__plate__spline.html", null ],

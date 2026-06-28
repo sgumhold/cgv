@@ -278,6 +278,7 @@ var annotated_dup =
         [ "sparse_les_factory", "classcgv_1_1math_1_1sparse__les__factory.html", "classcgv_1_1math_1_1sparse__les__factory" ],
         [ "sparse_les_factory_impl", "classcgv_1_1math_1_1sparse__les__factory__impl.html", "classcgv_1_1math_1_1sparse__les__factory__impl" ],
         [ "sparse_mat", "classcgv_1_1math_1_1sparse__mat.html", "classcgv_1_1math_1_1sparse__mat" ],
+        [ "sphere", "structcgv_1_1math_1_1sphere.html", null ],
         [ "step_iterator", "structcgv_1_1math_1_1step__iterator.html", null ],
         [ "thin_hyper_plate_spline", "structcgv_1_1math_1_1thin__hyper__plate__spline.html", "structcgv_1_1math_1_1thin__hyper__plate__spline" ],
         [ "thin_plate_spline", "structcgv_1_1math_1_1thin__plate__spline.html", "structcgv_1_1math_1_1thin__plate__spline" ],
