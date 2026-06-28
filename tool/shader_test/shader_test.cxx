@@ -147,6 +147,7 @@ bool convert_to_string(const std::string& in_fn, const std::string& out_fn, bool
 	bool last_is_newline = false;
 	bool last_is_slash = false;
 	bool last_is_hashtag = false;
+	bool on_preprocessor_line = false;
 	size_t written_chars = 0;
 	for (unsigned int i=0; i<content.size(); ++i) {
 		bool new_last_is_newline = false;
@@ -160,15 +161,19 @@ bool convert_to_string(const std::string& in_fn, const std::string& out_fn, bool
 				char special_char = ' ';
 				if(!skip_special_comments) {
 					unsigned ni = i + 1;
-					if(ni < content.size() && content[ni] == '?' || content[ni] == '!') {
+					// special comments are single line comments followed by one of the special single char identifiers '?', '!', or '$'; they declare include or snippet replacement statements
+					if(ni < content.size() && content[ni] == '?' || content[ni] == '!' || content[ni] == '$') {
 						special_char = content[ni];
 						skip = false;
 					}
 				}
 
+				bool add_line_break = false;
 				if(skip) {
 					// skip till end of line or end of content
 					do { ++i; } while(i < content.size() && content[i] != '\n');
+					// add a line break if the comment is on the same line as a preprocessor directive as normal code cannot be placed on the same line as preprocessor directives
+					add_line_break = on_preprocessor_line;
 				} else {
 					// put second slash
 					os << "/";
@@ -184,9 +189,15 @@ bool convert_to_string(const std::string& in_fn, const std::string& out_fn, bool
 						++i;
 					}
 
+					// always add a line break
+					add_line_break = true;
+				}
+
+				if(add_line_break) {
 					// put newline
 					os << "\\n\\\n";
 					written_chars += 3;
+					on_preprocessor_line = false;
 				}
 			} else
 				new_last_is_slash = true;
@@ -224,6 +235,7 @@ bool convert_to_string(const std::string& in_fn, const std::string& out_fn, bool
 			os << content[i];
 			++written_chars;
 
+			on_preprocessor_line = true;
 			new_last_is_hashtag = true;
 		}
 			break;
@@ -232,7 +244,7 @@ bool convert_to_string(const std::string& in_fn, const std::string& out_fn, bool
 				os << '/';
 			switch (content[i]) {
 			case '\\': os << "\\\\"; written_chars += 2; break;
-			case '\n': os << "\\n\\\n"; written_chars += 3; new_last_is_newline = true; break;
+			case '\n': os << "\\n\\\n"; written_chars += 3; new_last_is_newline = true; on_preprocessor_line = false; break;
 			case '\t': os << "\\t"; ++written_chars; break;
 			case '"': os << "\\\""; written_chars += 2; break;
 			default: os << content[i]; ++written_chars; break;
