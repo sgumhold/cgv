@@ -108,6 +108,9 @@ Inheritance diagram for cgv::math::bezier_curve&lt; PointT &gt;:</div>
 <table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="pub-methods" name="pub-methods"></a>
 Public Member Functions</h2></td></tr>
+<tr class="memitem:a7e9a23cb80b41dd589363ba65fbabbb4" id="r_a7e9a23cb80b41dd589363ba65fbabbb4"><td class="memTemplParams" colspan="2">template&lt;typename InputIt &gt; </td></tr>
+<tr class="memitem:a7e9a23cb80b41dd589363ba65fbabbb4"><td class="memTemplItemLeft" align="right" valign="top">&#160;</td><td class="memTemplItemRight" valign="bottom"><a class="el" href="classcgv_1_1math_1_1bezier__curve.html#a7e9a23cb80b41dd589363ba65fbabbb4">bezier_curve</a> (InputIt first, InputIt last)</td></tr>
+<tr class="separator:a7e9a23cb80b41dd589363ba65fbabbb4"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a792310b9e47d03767f4c7a76cc19e6af" id="r_a792310b9e47d03767f4c7a76cc19e6af"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcgv_1_1math_1_1bezier__curve.html#a792310b9e47d03767f4c7a76cc19e6af">bezier_curve</a> (std::initializer_list&lt; PointT &gt; <a class="el" href="classcgv_1_1math_1_1bezier__curve.html#a951d4b9cc6ad46ffd0baf6e53d9bc81b">points</a>)</td></tr>
 <tr class="separator:a792310b9e47d03767f4c7a76cc19e6af"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a1c61dd6e8fec2bd29d0ff71fc4d68a93" id="r_a1c61dd6e8fec2bd29d0ff71fc4d68a93"><td class="memTemplParams" colspan="2">template&lt;typename ParamT  = float&gt; </td></tr>
@@ -126,7 +129,7 @@ class cgv::math::bezier_curve&lt; PointT &gt;</div>
 <p class="definition">Definition at line <a class="el" href="bezier_8h_source.html#l00012">12</a> of file <a class="el" href="bezier_8h_source.html">bezier.h</a>.</p>
 </div><h2 class="groupheader">Constructor &amp; Destructor Documentation</h2>
 <a id="a5cb10d3d678660b5eed838c724bebf96" name="a5cb10d3d678660b5eed838c724bebf96"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a5cb10d3d678660b5eed838c724bebf96">&#9670;&#160;</a></span>bezier_curve() <span class="overload">[1/2]</span></h2>
+<h2 class="memtitle"><span class="permalink"><a href="#a5cb10d3d678660b5eed838c724bebf96">&#9670;&#160;</a></span>bezier_curve() <span class="overload">[1/3]</span></h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -154,8 +157,50 @@ template&lt;typename PointT &gt; </div>
 
 </div>
 </div>
+<a id="a7e9a23cb80b41dd589363ba65fbabbb4" name="a7e9a23cb80b41dd589363ba65fbabbb4"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a7e9a23cb80b41dd589363ba65fbabbb4">&#9670;&#160;</a></span>bezier_curve() <span class="overload">[2/3]</span></h2>
+
+<div class="memitem">
+<div class="memproto">
+<div class="memtemplate">
+template&lt;typename PointT &gt; </div>
+<div class="memtemplate">
+template&lt;typename InputIt &gt; </div>
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname"><a class="el" href="classcgv_1_1math_1_1bezier__curve.html">cgv::math::bezier_curve</a>&lt; PointT &gt;::bezier_curve </td>
+          <td>(</td>
+          <td class="paramtype">InputIt&#160;</td>
+          <td class="paramname"><em>first</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">InputIt&#160;</td>
+          <td class="paramname"><em>last</em>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">inline</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p class="definition">Definition at line <a class="el" href="bezier_8h_source.html#l00019">19</a> of file <a class="el" href="bezier_8h_source.html">bezier.h</a>.</p>
+
+</div>
+</div>
 <a id="a792310b9e47d03767f4c7a76cc19e6af" name="a792310b9e47d03767f4c7a76cc19e6af"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a792310b9e47d03767f4c7a76cc19e6af">&#9670;&#160;</a></span>bezier_curve() <span class="overload">[2/2]</span></h2>
+<h2 class="memtitle"><span class="permalink"><a href="#a792310b9e47d03767f4c7a76cc19e6af">&#9670;&#160;</a></span>bezier_curve() <span class="overload">[3/3]</span></h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -180,7 +225,7 @@ template&lt;typename PointT &gt; </div>
 </table>
 </div><div class="memdoc">
 
-<p class="definition">Definition at line <a class="el" href="bezier_8h_source.html#l00018">18</a> of file <a class="el" href="bezier_8h_source.html">bezier.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="bezier_8h_source.html#l00020">20</a> of file <a class="el" href="bezier_8h_source.html">bezier.h</a>.</p>
 
 </div>
 </div>
@@ -213,7 +258,7 @@ template&lt;typename ParamT  = float&gt; </div>
 </table>
 </div><div class="memdoc">
 
-<p class="definition">Definition at line <a class="el" href="bezier_8h_source.html#l00021">21</a> of file <a class="el" href="bezier_8h_source.html">bezier.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="bezier_8h_source.html#l00023">23</a> of file <a class="el" href="bezier_8h_source.html">bezier.h</a>.</p>
 
 </div>
 </div>
