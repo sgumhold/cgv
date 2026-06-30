@@ -8,6 +8,12 @@ namespace cgv {
 namespace math {
 
 template<typename T>
+struct sphere {
+	fvec<T, 3> pos = T(0);
+	T rad = T(0);
+};
+
+template<typename T>
 struct bezier_tube_node {
 	fvec<T, 3> pos = T(0);
 	T rad = T(0);
@@ -19,6 +25,7 @@ public:
 	using vec_type = fvec<T, 3>;
 	using matrix_type = fmat<T, 4, 4>;
 	using node_type = bezier_tube_node<T>;
+	using sample_type = sphere<T>;
 
 	// the start node
 	node_type n0;
@@ -28,24 +35,24 @@ public:
 	node_type n2;
 
 	template<typename ParamT = float>
-	node_type evaluate(ParamT t) const {
-		node_type n;
+	sample_type evaluate(ParamT t) const {
+		sample_type n;
 		n.pos = interpolate_quadratic_bezier(n0.pos, n1.pos, n2.pos, t);
 		n.rad = interpolate_quadratic_bezier(n0.rad, n1.rad, n2.rad, t);
 		return n;
 	}
 
 	template<typename ParamT = float>
-	node_type derivative(ParamT t) const {
-		node_type n;
+	sample_type derivative(ParamT t) const {
+		sample_type n;
 		n.pos = interpolate_linear(point_type(2) * (n1.pos - n0.pos), point_type(2) * (n2.pos - n1.pos), t);
 		n.rad = interpolate_linear(point_type(2) * (n1.rad - n0.rad), point_type(2) * (n2.rad - n1.rad), t);
 		return n;
 	}
 
 	template<typename ParamT = float>
-	std::vector<node_type> sample(size_t num_segments) const {
-		std::vector<node_type> points;
+	std::vector<sample_type> sample(size_t num_segments) const {
+		std::vector<sample_type> points;
 		points.reserve(num_segments + 1);
 		sequence_transform<ParamT>(std::back_inserter(points), [this](ParamT t) { return evaluate(t); }, num_segments + 1);
 		return points;
