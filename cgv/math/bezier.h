@@ -15,6 +15,8 @@ public:
 	std::vector<PointT> points;
 
 	bezier_curve() {}
+	template<typename InputIt>
+	bezier_curve(InputIt first, InputIt last) : points(first, last) {}
 	bezier_curve(std::initializer_list<PointT> points) : points(points) {}
 
 	template<typename ParamT = float>

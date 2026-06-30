@@ -1881,6 +1881,10 @@ bool stereo_view_interactor::self_reflect(cgv::reflect::reflection_handler& srh)
 		srh.reflect_member("clip_relative_to_extent", clip_relative_to_extent);
 }
 
+#ifdef REGISTER_SHADER_FILES
+#include <cgv/base/register.h>
+#include <crg_stereo_view_shader_inc.h>
+#endif
 
 #ifndef NO_STEREO_VIEW_INTERACTOR
 
