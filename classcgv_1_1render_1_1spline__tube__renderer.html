@@ -143,6 +143,14 @@ Public Member Functions</h2></td></tr>
 <tr class="memitem:a424805364376e3572eaca0a88ee6f446" id="r_a424805364376e3572eaca0a88ee6f446"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcgv_1_1render_1_1spline__tube__renderer.html#a424805364376e3572eaca0a88ee6f446">remove_tangent_array</a> (const <a class="el" href="classcgv_1_1render_1_1context.html">context</a> &amp;ctx)</td></tr>
 <tr class="memdesc:a424805364376e3572eaca0a88ee6f446"><td class="mdescLeft">&#160;</td><td class="mdescRight">remove the tangent attribute  <br /></td></tr>
 <tr class="separator:a424805364376e3572eaca0a88ee6f446"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a205a826f7ca9629b03cf52a665988c19" id="r_a205a826f7ca9629b03cf52a665988c19"><td class="memTemplParams" colspan="2">template&lt;typename T  = float&gt; </td></tr>
+<tr class="memitem:a205a826f7ca9629b03cf52a665988c19"><td class="memTemplItemLeft" align="right" valign="top">void&#160;</td><td class="memTemplItemRight" valign="bottom"><a class="el" href="classcgv_1_1render_1_1spline__tube__renderer.html#a205a826f7ca9629b03cf52a665988c19">set_sphere_array</a> (const <a class="el" href="classcgv_1_1render_1_1context.html">context</a> &amp;ctx, const std::vector&lt; <a class="el" href="classcgv_1_1math_1_1fvec.html">cgv::math::fvec</a>&lt; T, 4 &gt; &gt; &amp;spheres)</td></tr>
+<tr class="memdesc:a205a826f7ca9629b03cf52a665988c19"><td class="mdescLeft">&#160;</td><td class="mdescRight">use this function if you store spheres in vec4 with the 4th component the radius  <br /></td></tr>
+<tr class="separator:a205a826f7ca9629b03cf52a665988c19"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:af6180b56eef2c936aff2f453396d7cae" id="r_af6180b56eef2c936aff2f453396d7cae"><td class="memTemplParams" colspan="2">template&lt;typename T  = float&gt; </td></tr>
+<tr class="memitem:af6180b56eef2c936aff2f453396d7cae"><td class="memTemplItemLeft" align="right" valign="top">void&#160;</td><td class="memTemplItemRight" valign="bottom"><a class="el" href="classcgv_1_1render_1_1spline__tube__renderer.html#af6180b56eef2c936aff2f453396d7cae">set_sphere_array</a> (const <a class="el" href="classcgv_1_1render_1_1context.html">context</a> &amp;ctx, const <a class="el" href="classcgv_1_1math_1_1fvec.html">cgv::math::fvec</a>&lt; T, 4 &gt; *spheres, size_t nr_elements)</td></tr>
+<tr class="memdesc:af6180b56eef2c936aff2f453396d7cae"><td class="mdescLeft">&#160;</td><td class="mdescRight">use this function if you store spheres in vec4 with the 4th component the radius  <br /></td></tr>
+<tr class="separator:af6180b56eef2c936aff2f453396d7cae"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a157ff4dde38b282aed4323cb1125d7ad" id="r_a157ff4dde38b282aed4323cb1125d7ad"><td class="memItemLeft" align="right" valign="top">bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcgv_1_1render_1_1spline__tube__renderer.html#a157ff4dde38b282aed4323cb1125d7ad">validate_attributes</a> (const <a class="el" href="classcgv_1_1render_1_1context.html">context</a> &amp;ctx) const override</td></tr>
 <tr class="memdesc:a157ff4dde38b282aed4323cb1125d7ad"><td class="mdescLeft">&#160;</td><td class="mdescRight">check additionally the group attributes  <br /></td></tr>
 <tr class="separator:a157ff4dde38b282aed4323cb1125d7ad"><td class="memSeparator" colspan="2">&#160;</td></tr>
@@ -918,6 +926,96 @@ template&lt;typename T  = float&gt; </div>
 </div><div class="memdoc">
 
 <p class="definition">Definition at line <a class="el" href="spline__tube__renderer_8h_source.html#l00051">51</a> of file <a class="el" href="spline__tube__renderer_8h_source.html">spline_tube_renderer.h</a>.</p>
+
+</div>
+</div>
+<a id="af6180b56eef2c936aff2f453396d7cae" name="af6180b56eef2c936aff2f453396d7cae"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#af6180b56eef2c936aff2f453396d7cae">&#9670;&#160;</a></span>set_sphere_array() <span class="overload">[1/2]</span></h2>
+
+<div class="memitem">
+<div class="memproto">
+<div class="memtemplate">
+template&lt;typename T  = float&gt; </div>
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">void cgv::render::spline_tube_renderer::set_sphere_array </td>
+          <td>(</td>
+          <td class="paramtype">const <a class="el" href="classcgv_1_1render_1_1context.html">context</a> &amp;&#160;</td>
+          <td class="paramname"><em>ctx</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">const <a class="el" href="classcgv_1_1math_1_1fvec.html">cgv::math::fvec</a>&lt; T, 4 &gt; *&#160;</td>
+          <td class="paramname"><em>spheres</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">size_t&#160;</td>
+          <td class="paramname"><em>nr_elements</em>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">inline</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p>use this function if you store spheres in vec4 with the 4th component the radius </p>
+
+<p class="definition">Definition at line <a class="el" href="spline__tube__renderer_8h_source.html#l00072">72</a> of file <a class="el" href="spline__tube__renderer_8h_source.html">spline_tube_renderer.h</a>.</p>
+
+</div>
+</div>
+<a id="a205a826f7ca9629b03cf52a665988c19" name="a205a826f7ca9629b03cf52a665988c19"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a205a826f7ca9629b03cf52a665988c19">&#9670;&#160;</a></span>set_sphere_array() <span class="overload">[2/2]</span></h2>
+
+<div class="memitem">
+<div class="memproto">
+<div class="memtemplate">
+template&lt;typename T  = float&gt; </div>
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">void cgv::render::spline_tube_renderer::set_sphere_array </td>
+          <td>(</td>
+          <td class="paramtype">const <a class="el" href="classcgv_1_1render_1_1context.html">context</a> &amp;&#160;</td>
+          <td class="paramname"><em>ctx</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">const std::vector&lt; <a class="el" href="classcgv_1_1math_1_1fvec.html">cgv::math::fvec</a>&lt; T, 4 &gt; &gt; &amp;&#160;</td>
+          <td class="paramname"><em>spheres</em>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">inline</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p>use this function if you store spheres in vec4 with the 4th component the radius </p>
+
+<p class="definition">Definition at line <a class="el" href="spline__tube__renderer_8h_source.html#l00064">64</a> of file <a class="el" href="spline__tube__renderer_8h_source.html">spline_tube_renderer.h</a>.</p>
 
 </div>
 </div>

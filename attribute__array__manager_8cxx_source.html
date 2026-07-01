@@ -139,12 +139,12 @@ $(document).ready(function(){initNavTree('attribute__array__manager_8cxx_source.
 <div class="line"><a id="l00034" name="l00034"></a><span class="lineno">   34</span>}</div>
 <div class="line"><a id="l00035" name="l00035"></a><span class="lineno">   35</span><span class="keywordtype">void</span> attribute_array_manager::remove_attribute_array(<span class="keyword">const</span> context&amp; ctx, <span class="keywordtype">int</span> loc) {</div>
 <div class="line"><a id="l00036" name="l00036"></a><span class="lineno">   36</span>    vertex_buffer*&amp; vbo_ptr = <a class="code hl_variable" href="classcgv_1_1render_1_1attribute__array__manager.html#a0204e5b65d71cbc67d735148c9a8fa6f">vbos</a>[loc];</div>
-<div class="line"><a id="l00037" name="l00037"></a><span class="lineno">   37</span>    <span class="keywordflow">if</span>(vbo_ptr) {</div>
+<div class="line"><a id="l00037" name="l00037"></a><span class="lineno">   37</span>    <span class="keywordflow">if</span> (vbo_ptr) {</div>
 <div class="line"><a id="l00038" name="l00038"></a><span class="lineno">   38</span>        vbo_ptr-&gt;<a class="code hl_function" href="classcgv_1_1render_1_1vertex__buffer.html#ad1740efa4b262d12e26b4747267e4996">destruct</a>(ctx);</div>
 <div class="line"><a id="l00039" name="l00039"></a><span class="lineno">   39</span>        <span class="keyword">delete</span> vbo_ptr;</div>
 <div class="line"><a id="l00040" name="l00040"></a><span class="lineno">   40</span>        <a class="code hl_variable" href="classcgv_1_1render_1_1attribute__array__manager.html#a0204e5b65d71cbc67d735148c9a8fa6f">vbos</a>.erase(loc);</div>
-<div class="line"><a id="l00041" name="l00041"></a><span class="lineno">   41</span>        ctx.enable_attribute_array(&amp;<a class="code hl_variable" href="classcgv_1_1render_1_1attribute__array__manager.html#aada2b020a230d0392294576224148e27">aab</a>, loc, <span class="keyword">false</span>);</div>
-<div class="line"><a id="l00042" name="l00042"></a><span class="lineno">   42</span>    }</div>
+<div class="line"><a id="l00041" name="l00041"></a><span class="lineno">   41</span>    }</div>
+<div class="line"><a id="l00042" name="l00042"></a><span class="lineno">   42</span>    ctx.enable_attribute_array(&amp;<a class="code hl_variable" href="classcgv_1_1render_1_1attribute__array__manager.html#aada2b020a230d0392294576224148e27">aab</a>, loc, <span class="keyword">false</span>);</div>
 <div class="line"><a id="l00043" name="l00043"></a><span class="lineno">   43</span>}</div>
 <div class="line"><a id="l00044" name="l00044"></a><span class="lineno">   44</span><span class="keywordtype">bool</span> attribute_array_manager::is_created()<span class="keyword"> const </span>{</div>
 <div class="line"><a id="l00045" name="l00045"></a><span class="lineno">   45</span>    <span class="keywordflow">return</span> <a class="code hl_variable" href="classcgv_1_1render_1_1attribute__array__manager.html#aada2b020a230d0392294576224148e27">aab</a>.<a class="code hl_function" href="classcgv_1_1render_1_1render__component.html#a4c896d2654616448824f5f2f759b8947">is_created</a>();</div>
