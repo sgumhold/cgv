@@ -10,6 +10,8 @@ var classcgv_1_1render_1_1spline__tube__renderer =
     [ "remove_radius_array", "classcgv_1_1render_1_1spline__tube__renderer.html#a2aa171a7f1844db7551c8eb403ea6c9b", null ],
     [ "remove_tangent_array", "classcgv_1_1render_1_1spline__tube__renderer.html#a424805364376e3572eaca0a88ee6f446", null ],
     [ "set_eye_pos", "classcgv_1_1render_1_1spline__tube__renderer.html#a386da3ed2ddd50a2457d8996ba05b9d9", null ],
+    [ "set_sphere_array", "classcgv_1_1render_1_1spline__tube__renderer.html#af6180b56eef2c936aff2f453396d7cae", null ],
+    [ "set_sphere_array", "classcgv_1_1render_1_1spline__tube__renderer.html#a205a826f7ca9629b03cf52a665988c19", null ],
     [ "validate_attributes", "classcgv_1_1render_1_1spline__tube__renderer.html#a157ff4dde38b282aed4323cb1125d7ad", null ],
     [ "eye_pos", "classcgv_1_1render_1_1spline__tube__renderer.html#a939702618f677e184c69e096a5f40156", null ],
     [ "has_radii", "classcgv_1_1render_1_1spline__tube__renderer.html#a69a70810eec2ba6fc81c2c7e63219d74", null ],
