@@ -91,6 +91,14 @@ namespace cgv { // @<
 				has_positions = true;
 				has_radii = true;
 			}
+			/// use this function if you store spheres in vec4 with the 4th component the radius
+			template <typename T = float>
+			void set_sphere_array(const context& ctx, const cgv::math::fvec<T, 4>* spheres, size_t nr_elements) {
+				set_composed_attribute_array(ctx, "position", spheres, nr_elements, reinterpret_cast<const cgv::math::fvec<T, 3>&>(*spheres));
+				ref_composed_attribute_array(ctx, "radius", "position", spheres, nr_elements, (*spheres)[3]);
+				has_positions = true;
+				has_radii = true;
+			}
 			///
 			bool validate_attributes(const context& ctx) const override;
 

@@ -91,19 +91,20 @@ public:
 	bool set_attribute_array(const context& ctx, int loc, const T* array_ptr, size_t nr_elements, unsigned stride) {
 		bool res;
 		vertex_buffer*& vbo_ptr = vbos[loc];
+		size_t buffer_size = nr_elements*std::max(sizeof(T), size_t(stride));
 		if(vbo_ptr) {
-			if(vbo_ptr->get_size_in_bytes() == nr_elements * sizeof(T))
-				res = vbo_ptr->replace(ctx, 0, array_ptr, nr_elements);
+			if(vbo_ptr->get_size_in_bytes() == buffer_size)
+				res = vbo_ptr->replace(ctx, 0, reinterpret_cast<const uint8_t*>(array_ptr), buffer_size);
 			else {
 				vbo_ptr->destruct(ctx);
-				res = vbo_ptr->create(ctx, array_ptr, nr_elements);
+				res = vbo_ptr->create(ctx, reinterpret_cast<const uint8_t*>(array_ptr), buffer_size);
 			}
 		} else {
 			vbo_ptr = new vertex_buffer(VBT_VERTICES, default_usage);
-			res = vbo_ptr->create(ctx, array_ptr, nr_elements);
+			res = vbo_ptr->create(ctx, reinterpret_cast<const uint8_t*>(array_ptr), buffer_size);
 		}
-		if(res)
-			res = ctx.set_attribute_array_void(&aab, loc, type_descriptor(element_descriptor_traits<T>::get_type_descriptor(*array_ptr), true), vbo_ptr, 0, nr_elements);
+		if (res)
+			res = ctx.set_attribute_array_void(&aab, loc, type_descriptor(element_descriptor_traits<T>::get_type_descriptor(*array_ptr), true), vbo_ptr, 0, nr_elements, stride);
 		return res;
 	}
 	///
