@@ -460,6 +460,16 @@ typedef cgv::math::fmat<float, 2, 2> mat2;
 typedef cgv::math::fmat<float, 3, 3> mat3;
 /// declare type of 4x4 matrices
 typedef cgv::math::fmat<float, 4, 4> mat4;
+/// declare type of 2x3 matrices which can be used to store three 2d vectors
+typedef cgv::math::fmat<float, 2, 3> mat2x3;
+/// declare type of 3x2 matrices which can be used to store two 3d vectors
+typedef cgv::math::fmat<float, 3, 2> mat3x2;
+/// declare type of 2x4 matrices which can be used to store four 2d vectors
+typedef cgv::math::fmat<float, 2, 4> mat2x4;
+/// declare type of 4x2 matrices which can be used to store two 4d vectors
+typedef cgv::math::fmat<float, 4, 2> mat4x2;
+/// declare type of 4x3 matrices which can be used to store three 4d vectors
+typedef cgv::math::fmat<float, 4, 3> mat4x3;
 /// declare type of 3x4 matrices which are often used to store a pose
 typedef cgv::math::fmat<float, 3, 4> mat3x4;
 
@@ -469,6 +479,16 @@ typedef cgv::math::fmat<double, 2, 2> dmat2;
 typedef cgv::math::fmat<double, 3, 3> dmat3;
 /// declare type of 4x4 matrices
 typedef cgv::math::fmat<double, 4, 4> dmat4;
+/// declare type of 2x3 matrices which can be used to store three 2d vectors
+typedef cgv::math::fmat<double, 2, 3> dmat2x3;
+/// declare type of 3x2 matrices which can be used to store two 3d vectors
+typedef cgv::math::fmat<double, 3, 2> dmat3x2;
+/// declare type of 2x4 matrices which can be used to store four 2d vectors
+typedef cgv::math::fmat<double, 2, 4> dmat2x4;
+/// declare type of 4x2 matrices which can be used to store two 4d vectors
+typedef cgv::math::fmat<double, 4, 2> dmat4x2;
+/// declare type of 4x3 matrices which can be used to store three 4d vectors
+typedef cgv::math::fmat<double, 4, 3> dmat4x3;
 /// declare type of 3x4 matrices which are often used to store a pose
 typedef cgv::math::fmat<double, 3, 4> dmat3x4;
 

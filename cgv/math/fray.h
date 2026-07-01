@@ -66,31 +66,32 @@ struct fray<T, 3> {
 	}
 };
 
+	} // namespace math
+
 // Predefined ray types
 /// 2d ray using 32 bit unsigned integer type
-typedef fray<unsigned, 2> uray2;
+typedef cgv::math::fray<unsigned, 2> uray2;
 /// 3d ray using 32 bit unsigned integer type
-typedef fray<unsigned, 3> uray3;
+typedef cgv::math::fray<unsigned, 3> uray3;
 /// 4d ray using 32 bit unsigned integer type
-typedef fray<unsigned, 3> uray4;
+typedef cgv::math::fray<unsigned, 3> uray4;
 /// 2d ray using 32 bit signed integer type
-typedef fray<int, 2> iray2;
+typedef cgv::math::fray<int, 2> iray2;
 /// 3d ray using 32 bit signed integer type
-typedef fray<int, 3> iray3;
+typedef cgv::math::fray<int, 3> iray3;
 /// 4d ray using 32 bit signed integer type
-typedef fray<int, 3> iray4;
+typedef cgv::math::fray<int, 3> iray4;
 /// 2d ray using 32 bit single precision floating point type
-typedef fray<float, 2> ray2;
+typedef cgv::math::fray<float, 2> ray2;
 /// 3d ray using 32 bit single precision floating point type
-typedef fray<float, 3> ray3;
+typedef cgv::math::fray<float, 3> ray3;
 /// 4d ray using 32 bit single precision floating point type
-typedef fray<float, 3> ray4;
+typedef cgv::math::fray<float, 3> ray4;
 /// 2d ray using 32 bit double precision floating point type
-typedef fray<double, 2> dray2;
+typedef cgv::math::fray<double, 2> dray2;
 /// 3d ray using 32 bit double precision floating point type
-typedef fray<double, 3> dray3;
+typedef cgv::math::fray<double, 3> dray3;
 /// 4d ray using 32 bit double precision floating point type
-typedef fray<double, 3> dray4;
+typedef cgv::math::fray<double, 3> dray4;
 
-} // namespace math
 } // namespace cgv
