@@ -335,7 +335,7 @@ void transformation_gizmo::draw_geometry(context& ctx) {
 	_boxes.render(ctx, _box_renderer);
 }
 
-bool transformation_gizmo::intersect_bounding_box(const cgv::math::ray3& ray) {
+bool transformation_gizmo::intersect_bounding_box(const cgv::ray3& ray) {
 	vec3 min = { 0.0f };
 	vec3 max = { 1.0f };
 
@@ -354,7 +354,7 @@ bool transformation_gizmo::intersect_bounding_box(const cgv::math::ray3& ray) {
 	return cgv::math::ray_box_intersection(ray, min, max, t) != 0;
 }
 
-bool transformation_gizmo::intersect(const cgv::math::ray3& ray) {
+bool transformation_gizmo::intersect(const cgv::ray3& ray) {
 	float min_t = std::numeric_limits<float>::max();
 
 	const auto update_t_if_closer = [this, &min_t](float t, Mode transformation, InteractionFeature feature, AxisId axis_id) {
@@ -434,7 +434,7 @@ bool transformation_gizmo::intersect(const cgv::math::ray3& ray) {
 	return min_t > 0.0f && min_t < std::numeric_limits<float>::max();
 }
 
-bool transformation_gizmo::start_drag(const cgv::math::ray3& ray) {
+bool transformation_gizmo::start_drag(const cgv::ray3& ray) {
 	int axis_idx = axis_id_to_index(_interaction_axis_id);
 	vec3 axis = get_axis(axis_idx);
 
@@ -502,7 +502,7 @@ bool transformation_gizmo::start_drag(const cgv::math::ray3& ray) {
 	return true;
 }
 
-bool transformation_gizmo::drag(const cgv::math::ray3& ray) {
+bool transformation_gizmo::drag(const cgv::ray3& ray) {
 	int axis_idx = axis_id_to_index(_interaction_axis_id);
 	vec3 axis = get_axis(axis_idx);
 
@@ -528,7 +528,7 @@ bool transformation_gizmo::drag(const cgv::math::ray3& ray) {
 		case Mode::kTranslation:
 		{
 			// TODO: FIXME: This is not optimal and only works well when the mouse position is pointing close to the manipulated axis.
-			cgv::math::ray3 axis_ray = { _drag_start_position, axis };
+			cgv::ray3 axis_ray = { _drag_start_position, axis };
 
 			float start_offset = ray_ray_closest_approach(_drag_start_ray, axis_ray).second;
 			float offset = ray_ray_closest_approach(ray, axis_ray).second;
@@ -613,12 +613,12 @@ bool transformation_gizmo::drag(const cgv::math::ray3& ray) {
 	return true;
 }
 
-void transformation_gizmo::end_drag(const cgv::math::ray3& ray) {
+void transformation_gizmo::end_drag(const cgv::ray3& ray) {
 	if(on_change)
 		on_change(GizmoAction::kDragEnd, _interaction_mode);
 }
 
-std::pair<float, float> transformation_gizmo::ray_ray_closest_approach(const cgv::math::ray3& r0, const cgv::math::ray3& r1) const {
+std::pair<float, float> transformation_gizmo::ray_ray_closest_approach(const cgv::ray3& r0, const cgv::ray3& r1) const {
 	vec3 ba = r1.direction;
 	vec3 oa = r0.origin - r1.origin;
 
