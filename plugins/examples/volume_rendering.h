@@ -2,7 +2,7 @@
 
 #include <random>
 
-#include <cgv/base/node.h>
+#include <cgv/base/group.h>
 #include <cgv/gui/event_handler.h>
 #include <cgv/gui/provider.h>
 #include <cgv/media/transfer_function.h>

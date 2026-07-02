@@ -74,7 +74,7 @@ bool gizmo::handle(cgv::gui::event& e) {
 		return false;
 
 	const ivec4& viewport = ctx->get_window_transformation_array().front().viewport;
-	vec2 viewport_size = vec2(viewport.z(), viewport.w());
+	vec2 viewport_size = vec2(float(viewport.z()), float(viewport.w()));
 
 	// get the mouse position in GL space
 	ivec2 mouse_pos(
@@ -82,7 +82,7 @@ bool gizmo::handle(cgv::gui::event& e) {
 		viewport_size.y() - static_cast<int>(me.get_y()) - 1
 	);
 
-	cgv::math::ray3 ray(vec2(mouse_pos), viewport_size, _view->get_eye(), ctx->get_projection_matrix() * ctx->get_modelview_matrix());
+	cgv::ray3 ray(vec2(mouse_pos), viewport_size, _view->get_eye(), ctx->get_projection_matrix() * ctx->get_modelview_matrix());
 
 	bool evaluate_hover_state = false;
 
@@ -116,7 +116,7 @@ bool gizmo::handle(cgv::gui::event& e) {
 
 	if(evaluate_hover_state) {
 		// transform ray to gizmo object space
-		cgv::math::ray3 ray_object = ray;
+		cgv::ray3 ray_object = ray;
 		ray_object.origin -= _position;
 		ray_object.origin /= _size;
 

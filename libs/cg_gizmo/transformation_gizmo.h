@@ -50,17 +50,17 @@ private:
 
 	void draw_geometry(cgv::render::context& ctx) override;
 
-	bool intersect_bounding_box(const cgv::math::ray3& ray) override;
+	bool intersect_bounding_box(const cgv::ray3& ray) override;
 
-	bool intersect(const cgv::math::ray3& ray) override;
+	bool intersect(const cgv::ray3& ray) override;
 
-	bool start_drag(const cgv::math::ray3& ray) override;
+	bool start_drag(const cgv::ray3& ray) override;
 
-	bool drag(const cgv::math::ray3& ray) override;
+	bool drag(const cgv::ray3& ray) override;
 
-	void end_drag(const cgv::math::ray3& ray) override;
+	void end_drag(const cgv::ray3& ray) override;
 
-	std::pair<float, float> ray_ray_closest_approach(const cgv::math::ray3& r0, const cgv::math::ray3& r1) const;
+	std::pair<float, float> ray_ray_closest_approach(const cgv::ray3& r0, const cgv::ray3& r1) const;
 
 	const float _center_radius = 0.15f;
 	const float _axis_radius = 0.01f;

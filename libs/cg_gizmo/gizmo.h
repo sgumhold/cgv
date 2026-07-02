@@ -88,7 +88,7 @@ protected:
 	InteractionFeature _interaction_feature = InteractionFeature::kNone;
 	AxisId _interaction_axis_id = AxisId::kX;
 	plane _interaction_plane;
-	cgv::math::ray3 _drag_start_ray;
+	cgv::ray3 _drag_start_ray;
 	float _drag_start_t = 0.0f;
 
 	float get_size() const;
@@ -114,15 +114,15 @@ private:
 
 	virtual void draw_geometry(cgv::render::context& ctx) = 0;
 
-	virtual bool intersect_bounding_box(const cgv::math::ray3& ray) { return true; }
+	virtual bool intersect_bounding_box(const cgv::ray3& ray) { return true; }
 
-	virtual bool intersect(const cgv::math::ray3& ray) { return false; }
+	virtual bool intersect(const cgv::ray3& ray) { return false; }
 
-	virtual bool start_drag(const cgv::math::ray3& ray) { return false; }
+	virtual bool start_drag(const cgv::ray3& ray) { return false; }
 
-	virtual bool drag(const cgv::math::ray3& ray) { return false; }
+	virtual bool drag(const cgv::ray3& ray) { return false; }
 
-	virtual void end_drag(const cgv::math::ray3& ray) {}
+	virtual void end_drag(const cgv::ray3& ray) {}
 
 	cgv::render::view* _view = nullptr;
 
