@@ -1,6 +1,6 @@
 #include <cgv/defines/quote.h>
 #include <cgv/utils/file.h>
-#include <cgv/base/node.h>
+#include <cgv/base/group.h>
 #include <cgv/gui/event_handler.h>
 #include <cgv/gui/key_event.h>
 #include <cgv/gui/provider.h>
@@ -13,6 +13,7 @@
 #include <cgv_gl/arrow_renderer.h>
 #include <cgv_gl/surfel_renderer.h>
 #include <cgv_gl/cone_renderer.h>
+#include <cg_gizmo/transformation_gizmo.h>
 #include "cyPolynomial.h"
 
 struct camera_manager
@@ -371,14 +372,14 @@ struct thick_line_data
 };
 
 class thick_line_viewer :
-	public cgv::base::node,
+	public cgv::base::group,
 	public cgv::render::drawable,
 	public cgv::gui::provider,
 	public cgv::gui::event_handler
 {
 protected:
 	cgv::render::clipped_view* view_ptr = 0;
-
+	cgv::gui::transformation_gizmo_ptr tg_ptr;
 	cgv::render::spline_tube_render_style trs;
 	cgv::render::sphere_render_style srs;
 	cgv::render::cone_render_style crs;
@@ -422,6 +423,7 @@ protected:
 		intersection_colors.clear();
 		if (rays.empty())
 			return;
+		lines.compute_bezier_tubes();
 		std::vector<cgv::mat4x2> Is;
 		for (const auto& r : rays) {
 			cgv::mat4x2 best(-1.f);
@@ -463,8 +465,56 @@ private:
 	int camera_index = 0;
 	bool record_next_camera = false;
 	unsigned nr_tubes;
+
+	int current_control_point = -1;
+
+	void callback(cgv::gui::GizmoAction action, cgv::gui::transformation_gizmo::Mode mode)
+	{
+		switch (mode) {
+		case cgv::gui::transformation_gizmo::Mode::kTranslation:
+			reinterpret_cast<cgv::vec3&>(lines.spheres[current_control_point]) = tg_ptr->get_position();
+			post_redraw();
+			break;
+		case cgv::gui::transformation_gizmo::Mode::kScale: {
+			cgv::vec3 scale = tg_ptr->get_scale();
+			float radius = (scale[0]+scale[1]+scale[2])/3;
+			lines.spheres[current_control_point][3] = radius;
+			tg_ptr->set_scale(cgv::vec3(radius));
+			post_redraw();
+			break;
+		}
+		}
+	}
+	void begin_gizmo()
+	{
+		if (current_control_point == -1)
+			tg_ptr->hide();
+		else {
+			if (!tg_ptr->is_visible())
+				tg_ptr->show();
+			tg_ptr->set_position(reinterpret_cast<const cgv::vec3&>(lines.spheres[current_control_point]));
+			tg_ptr->set_scale(cgv::vec3(lines.spheres[current_control_point][3]));
+		}
+	}
+	void set_mode(cgv::gui::transformation_gizmo::Mode mode)
+	{
+		if (tg_ptr->get_mode() == mode)
+			return;
+		tg_ptr->set_mode(mode);
+		begin_gizmo();
+		post_redraw();
+	}
+	void select_control_point(int i)
+	{
+		if (i == current_control_point)
+			return;
+		current_control_point = i;
+		begin_gizmo();
+		post_redraw();
+	}
+
 public:
-	thick_line_viewer() : cgv::base::node("Thick Line Viewer") {
+	thick_line_viewer() : cgv::base::group("Thick Line Viewer") {
 		urs.orient_splats = true;
 		urs.measure_point_size_in_pixel = false;
 		urs.point_size = 3;
@@ -482,6 +532,10 @@ public:
 		nr_tubes = unsigned(lines.indices.size() / 2);
 		if (cgv::utils::file::exists(cam_man.path))
 			cam_man.read(cam_man.path);
+		tg_ptr = create_and_append_child<cgv::gui::transformation_gizmo>("Gizmo");
+		tg_ptr->on_change = [this](cgv::gui::GizmoAction action, cgv::gui::transformation_gizmo::Mode mode) {
+			this->callback(action, mode); };
+		tg_ptr->hide();
 	}
 	std::string get_type_name() const { return "Thick Line Viewer"; }
 	void clear(cgv::render::context& ctx) {
@@ -536,19 +590,41 @@ public:
 				return true;
 			}
 			switch (ke.get_key()) {
-			case cgv::gui::KEY_Right:
+			case cgv::gui::KEY_Up:
 				if (camera_index == cam_man.max_index())
 					camera_index = 0;
 				else
 					++camera_index;
 				on_set(&camera_index);
-				break;
-			case cgv::gui::KEY_Left:
+				return true;
+			case cgv::gui::KEY_Down:
 				if (camera_index == 0)
 					camera_index = cam_man.max_index();
 				else
 					--camera_index;
 				on_set(&camera_index);
+				return true;
+			case cgv::gui::KEY_Right:
+				if (++current_control_point == lines.spheres.size())
+					current_control_point = -1;
+				on_set(&current_control_point);
+				return true;
+			case cgv::gui::KEY_Left:
+				if (current_control_point == -1)
+					current_control_point = int(lines.spheres.size()) - 1;
+				else 
+					--current_control_point;
+				on_set(&current_control_point);
+				return true;
+			case cgv::gui::KEY_Space:
+				if (tg_ptr->is_visible()) {
+					if (tg_ptr->get_mode() == cgv::gui::transformation_gizmo::Mode::kScale)
+						set_mode(cgv::gui::transformation_gizmo::Mode::kTranslation);
+					else
+						set_mode(cgv::gui::transformation_gizmo::Mode::kScale);
+					post_redraw();
+					return true;
+				}
 				break;
 			case 'T':
 				show_tube = !show_tube;
@@ -625,6 +701,8 @@ public:
 			sample_rays();
 		if (!intersections.empty() && ((member_ptr == &primitive) || (member_ptr == &ray_color_offset) || (member_ptr == &ray_color_scale)))
 			intersect_rays();
+		if (member_ptr == &current_control_point)
+			begin_gizmo();
 		update_member(member_ptr);
 		post_redraw();
 	}
@@ -813,6 +891,8 @@ public:
 	}
 	void create_gui() {
 		add_decorator("Thick Line View", "heading", "level=2");
+		add_member_control(this, "Control Point", current_control_point, "value_slider", "min=-1;ticks=true")->
+			set("max", lines.spheres.size() - 1);
 		add_member_control(this, "Nr Tubes", nr_tubes, "value_slider", "min=0;ticks=true")->
 			set("max", lines.indices.size() / 2);
 		add_member_control(this, "Show Tubes", show_tube, "check");
