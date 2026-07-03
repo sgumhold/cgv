@@ -120,6 +120,12 @@ public:
 	void ones() { fill(T(1)); }
 	/// convert to homogeneous version by adding a 1
 	fvec<T, N + 1> lift() const { fvec<T, N + 1> h; (fvec<T, N>&)h = *this; h[N] = T(1); return h; }
+	/// convert back from homogeneous representation by performing a w-clip
+	fvec<T, N - 1> clip() const { return down()/this->operator[](N-1); }
+	/// provide const reference to vector where last dimension is dropped
+	const fvec<T, N - 1>& down() const { return *reinterpret_cast<const fvec<T, N-1>*>(this); }
+	/// provide reference to vector where last dimension is dropped
+	fvec<T, N - 1>& down() { return *reinterpret_cast<fvec<T, N-1>*>(this); }
 	/// constuct a homogeneous zero-vector (yields same result as calling fvec<T, N-1>(0).lift() but is faster)
 	static fvec<T, N> zeroh() { fvec<T, N> r; r.zerosh(); return r; }
 	/// conversion to vector type

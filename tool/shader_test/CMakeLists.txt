@@ -31,6 +31,7 @@ add_executable(shader_test
         ${CGV_DIR}/cgv/os/clipboard.cxx
         ${CGV_DIR}/cgv/render/context.cxx
         ${CGV_DIR}/cgv/render/drawable.cxx
+        ${CGV_DIR}/cgv/render/view.cxx
         ${CGV_DIR}/libs/cgv_gl/gl/gl.cxx
         ${CGV_DIR}/libs/cgv_gl/gl/gl_texture_tools.cxx
         ${CGV_DIR}/libs/cgv_gl/gl/gl_context.cxx

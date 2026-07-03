@@ -79,7 +79,7 @@ bool gizmo::handle(cgv::gui::event& e) {
 	// get the mouse position in GL space
 	ivec2 mouse_pos(
 		static_cast<int>(me.get_x()),
-		viewport_size.y() - static_cast<int>(me.get_y()) - 1
+		(int)viewport_size.y() - static_cast<int>(me.get_y()) - 1
 	);
 
 	cgv::ray3 ray(vec2(mouse_pos), viewport_size, _view->get_eye(), ctx->get_projection_matrix() * ctx->get_modelview_matrix());

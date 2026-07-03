@@ -23,8 +23,8 @@ protected:
 	std::vector<cgv::vec3> translations;
 	std::vector<cgv::quat> rotations;
 
-	cgv::vec3 on_scale_start_center;
-	cgv::vec3 on_scale_start_half_extent;
+	cgv::vec3 on_gizmo_begin_center;
+	cgv::vec3 on_gizmo_scale_begin_half_extent;
 
 	int current_primitive = -1;
 
@@ -32,7 +32,7 @@ protected:
 	{
 		switch (mode) {
 		case cgv::gui::transformation_gizmo::Mode::kTranslation:
-			translations[current_primitive] = tg_ptr->get_position() - on_scale_start_center;
+			translations[current_primitive] = tg_ptr->get_position() - on_gizmo_begin_center;
 			post_redraw();
 			break;
 		case cgv::gui::transformation_gizmo::Mode::kRotation:
@@ -41,8 +41,8 @@ protected:
 			break;
 		case cgv::gui::transformation_gizmo::Mode::kScale:
 			boxes[current_primitive] = cgv::box3(
-				on_scale_start_center - tg_ptr->get_scale() * on_scale_start_half_extent,
-				on_scale_start_center + tg_ptr->get_scale() * on_scale_start_half_extent);
+				on_gizmo_begin_center - tg_ptr->get_scale() * on_gizmo_scale_begin_half_extent,
+				on_gizmo_begin_center + tg_ptr->get_scale() * on_gizmo_scale_begin_half_extent);
 			post_redraw();
 			break;
 		}
@@ -56,10 +56,10 @@ protected:
 				tg_ptr->show();
 			tg_ptr->set_position(boxes[current_primitive].get_center()+translations[current_primitive]);
 			tg_ptr->set_rotation(rotations[current_primitive]);
-			on_scale_start_center = boxes[current_primitive].get_center();
+			on_gizmo_begin_center = boxes[current_primitive].get_center();
 			if (tg_ptr->get_mode() == cgv::gui::transformation_gizmo::Mode::kScale) {
-				on_scale_start_center = boxes[current_primitive].get_center();
-				on_scale_start_half_extent = 0.5f * boxes[current_primitive].get_extent();
+				on_gizmo_begin_center = boxes[current_primitive].get_center();
+				on_gizmo_scale_begin_half_extent = 0.5f * boxes[current_primitive].get_extent();
 			}
 		}
 	}

@@ -155,9 +155,9 @@ std::vector<float> continuous_color_scale::get_ticks(size_t request_count) const
 	const vec2 domain = get_domain();
 
 	if(mapping_transform_ == ContinuousMappingTransform::Log)
-		return compute_ticks_log(domain[0], domain[1], log_base_, request_count);
+		return compute_ticks_log(domain[0], domain[1], log_base_, (int)request_count);
 	else
-		return compute_ticks(domain[0], domain[1], request_count);
+		return compute_ticks(domain[0], domain[1], (int)request_count);
 }
 
 void continuous_color_scale::set_scheme(const continuous_color_scheme& scheme) {
