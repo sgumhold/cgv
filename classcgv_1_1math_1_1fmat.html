@@ -306,6 +306,15 @@ Public Member Functions</h2></td></tr>
 <tr class="separator:afe9fbc4bcad729e895022e3311aae10c inherit pub_methods_classcgv_1_1math_1_1fvec"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a9cd2bef26afab83530ca7c3acfbcf684 inherit pub_methods_classcgv_1_1math_1_1fvec" id="r_a9cd2bef26afab83530ca7c3acfbcf684"><td class="memItemLeft" align="right" valign="top">int int N&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcgv_1_1math_1_1fvec.html#a9cd2bef26afab83530ca7c3acfbcf684">lift</a> () const</td></tr>
 <tr class="separator:a9cd2bef26afab83530ca7c3acfbcf684 inherit pub_methods_classcgv_1_1math_1_1fvec"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:aa18e74fc9afb072b801a40b3dc2b60bc inherit pub_methods_classcgv_1_1math_1_1fvec" id="r_aa18e74fc9afb072b801a40b3dc2b60bc"><td class="memItemLeft" align="right" valign="top"><a class="el" href="classcgv_1_1math_1_1fvec.html">fvec</a>&lt; T, N - 1 &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcgv_1_1math_1_1fvec.html#aa18e74fc9afb072b801a40b3dc2b60bc">clip</a> () const</td></tr>
+<tr class="memdesc:aa18e74fc9afb072b801a40b3dc2b60bc inherit pub_methods_classcgv_1_1math_1_1fvec"><td class="mdescLeft">&#160;</td><td class="mdescRight">convert back from homogeneous representation by performing a w-clip  <br /></td></tr>
+<tr class="separator:aa18e74fc9afb072b801a40b3dc2b60bc inherit pub_methods_classcgv_1_1math_1_1fvec"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a625973b2848df6c7342f60f45c200b1f inherit pub_methods_classcgv_1_1math_1_1fvec" id="r_a625973b2848df6c7342f60f45c200b1f"><td class="memItemLeft" align="right" valign="top">const <a class="el" href="classcgv_1_1math_1_1fvec.html">fvec</a>&lt; T, N - 1 &gt; &amp;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcgv_1_1math_1_1fvec.html#a625973b2848df6c7342f60f45c200b1f">down</a> () const</td></tr>
+<tr class="memdesc:a625973b2848df6c7342f60f45c200b1f inherit pub_methods_classcgv_1_1math_1_1fvec"><td class="mdescLeft">&#160;</td><td class="mdescRight">provide const reference to vector where last dimension is dropped  <br /></td></tr>
+<tr class="separator:a625973b2848df6c7342f60f45c200b1f inherit pub_methods_classcgv_1_1math_1_1fvec"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a3f8684c1a35c4a93a7f5b561ad0eaf9c inherit pub_methods_classcgv_1_1math_1_1fvec" id="r_a3f8684c1a35c4a93a7f5b561ad0eaf9c"><td class="memItemLeft" align="right" valign="top"><a class="el" href="classcgv_1_1math_1_1fvec.html">fvec</a>&lt; T, N - 1 &gt; &amp;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcgv_1_1math_1_1fvec.html#a3f8684c1a35c4a93a7f5b561ad0eaf9c">down</a> ()</td></tr>
+<tr class="memdesc:a3f8684c1a35c4a93a7f5b561ad0eaf9c inherit pub_methods_classcgv_1_1math_1_1fvec"><td class="mdescLeft">&#160;</td><td class="mdescRight">provide reference to vector where last dimension is dropped  <br /></td></tr>
+<tr class="separator:a3f8684c1a35c4a93a7f5b561ad0eaf9c inherit pub_methods_classcgv_1_1math_1_1fvec"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a9e07f200dccec2bf7decb19bae51080f inherit pub_methods_classcgv_1_1math_1_1fvec" id="r_a9e07f200dccec2bf7decb19bae51080f"><td class="memItemLeft" align="right" valign="top"><a class="el" href="classcgv_1_1math_1_1vec.html">vec</a>&lt; T &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcgv_1_1math_1_1fvec.html#a9e07f200dccec2bf7decb19bae51080f">to_vec</a> () const</td></tr>
 <tr class="memdesc:a9e07f200dccec2bf7decb19bae51080f inherit pub_methods_classcgv_1_1math_1_1fvec"><td class="mdescLeft">&#160;</td><td class="mdescRight">conversion to vector type  <br /></td></tr>
 <tr class="separator:a9e07f200dccec2bf7decb19bae51080f inherit pub_methods_classcgv_1_1math_1_1fvec"><td class="memSeparator" colspan="2">&#160;</td></tr>
@@ -857,7 +866,7 @@ template&lt;typename T1 , typename T2 &gt; </div>
 
 <p class="definition">Definition at line <a class="el" href="fmat_8h_source.html#l00063">63</a> of file <a class="el" href="fmat_8h_source.html">fmat.h</a>.</p>
 
-<p class="reference">References <a class="el" href="fvec_8h_source.html#l00148">cgv::math::fvec&lt; T, N *M &gt;::w()</a>.</p>
+<p class="reference">References <a class="el" href="fvec_8h_source.html#l00154">cgv::math::fvec&lt; T, N *M &gt;::w()</a>.</p>
 
 </div>
 </div>
@@ -957,7 +966,7 @@ template&lt;typename T , <a class="el" href="namespacecgv_1_1type.html#a946d7ae2
 
 <p class="definition">Definition at line <a class="el" href="fmat_8h_source.html#l00238">238</a> of file <a class="el" href="fmat_8h_source.html">fmat.h</a>.</p>
 
-<p class="reference">References <a class="el" href="fvec_8h_source.html#l00267">cgv::math::fvec&lt; T, N *M &gt;::length()</a>.</p>
+<p class="reference">References <a class="el" href="fvec_8h_source.html#l00273">cgv::math::fvec&lt; T, N *M &gt;::length()</a>.</p>
 
 </div>
 </div>
@@ -1550,7 +1559,7 @@ template&lt;typename S &gt; </div>
 
 <p class="definition">Definition at line <a class="el" href="fmat_8h_source.html#l00115">115</a> of file <a class="el" href="fmat_8h_source.html">fmat.h</a>.</p>
 
-<p class="reference">References <a class="el" href="fvec_8h_source.html#l00188">cgv::math::fvec&lt; T, N *M &gt;::operator+=()</a>.</p>
+<p class="reference">References <a class="el" href="fvec_8h_source.html#l00194">cgv::math::fvec&lt; T, N *M &gt;::operator+=()</a>.</p>
 
 </div>
 </div>
@@ -1584,7 +1593,7 @@ template&lt;typename T , <a class="el" href="namespacecgv_1_1type.html#a946d7ae2
 
 <p class="definition">Definition at line <a class="el" href="fmat_8h_source.html#l00104">104</a> of file <a class="el" href="fmat_8h_source.html">fmat.h</a>.</p>
 
-<p class="reference">References <a class="el" href="fvec_8h_source.html#l00188">cgv::math::fvec&lt; T, N *M &gt;::operator+=()</a>.</p>
+<p class="reference">References <a class="el" href="fvec_8h_source.html#l00194">cgv::math::fvec&lt; T, N *M &gt;::operator+=()</a>.</p>
 
 </div>
 </div>
@@ -1717,7 +1726,7 @@ template&lt;typename S &gt; </div>
 
 <p class="definition">Definition at line <a class="el" href="fmat_8h_source.html#l00118">118</a> of file <a class="el" href="fmat_8h_source.html">fmat.h</a>.</p>
 
-<p class="reference">References <a class="el" href="fvec_8h_source.html#l00190">cgv::math::fvec&lt; T, N *M &gt;::operator-=()</a>.</p>
+<p class="reference">References <a class="el" href="fvec_8h_source.html#l00196">cgv::math::fvec&lt; T, N *M &gt;::operator-=()</a>.</p>
 
 </div>
 </div>
@@ -1751,7 +1760,7 @@ template&lt;typename T , <a class="el" href="namespacecgv_1_1type.html#a946d7ae2
 
 <p class="definition">Definition at line <a class="el" href="fmat_8h_source.html#l00108">108</a> of file <a class="el" href="fmat_8h_source.html">fmat.h</a>.</p>
 
-<p class="reference">References <a class="el" href="fvec_8h_source.html#l00190">cgv::math::fvec&lt; T, N *M &gt;::operator-=()</a>.</p>
+<p class="reference">References <a class="el" href="fvec_8h_source.html#l00196">cgv::math::fvec&lt; T, N *M &gt;::operator-=()</a>.</p>
 
 </div>
 </div>
@@ -1817,7 +1826,7 @@ template&lt;typename T , <a class="el" href="namespacecgv_1_1type.html#a946d7ae2
 
 <p class="definition">Definition at line <a class="el" href="fmat_8h_source.html#l00100">100</a> of file <a class="el" href="fmat_8h_source.html">fmat.h</a>.</p>
 
-<p class="reference">References <a class="el" href="fvec_8h_source.html#l00194">cgv::math::fvec&lt; T, N *M &gt;::operator/=()</a>.</p>
+<p class="reference">References <a class="el" href="fvec_8h_source.html#l00200">cgv::math::fvec&lt; T, N *M &gt;::operator/=()</a>.</p>
 
 </div>
 </div>

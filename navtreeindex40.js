@@ -1,5 +1,10 @@
 var NAVTREEINDEX40 =
 {
+"structcgv_1_1gui_1_1gui__creator.html#a21ba9a35036ae6f60d5d9e1e577e0465":[10,0,1,3,31,0],
+"structcgv_1_1gui_1_1help__menu__entry__registration.html":[10,0,1,3,36],
+"structcgv_1_1gui_1_1help__menu__entry__registration.html":[11,0,0,4,36],
+"structcgv_1_1gui_1_1help__menu__entry__registration.html#ab5699226f0a7e1fe829a0eb68e2b1cc3":[11,0,0,4,36,0],
+"structcgv_1_1gui_1_1help__menu__entry__registration.html#ab5699226f0a7e1fe829a0eb68e2b1cc3":[10,0,1,3,36,0],
 "structcgv_1_1gui_1_1layout__dir__spacing.html":[11,0,0,4,42],
 "structcgv_1_1gui_1_1layout__dir__spacing.html":[10,0,1,3,42],
 "structcgv_1_1gui_1_1layout__spacings.html":[11,0,0,4,44],
@@ -244,10 +249,5 @@ var NAVTREEINDEX40 =
 "structcgv_1_1media_1_1color__model__traits_3_01LUM_01_4.html":[11,0,0,6,16],
 "structcgv_1_1media_1_1color__one.html":[11,0,0,6,17],
 "structcgv_1_1media_1_1color__one_3_01double_01_4.html":[11,0,0,6,18],
-"structcgv_1_1media_1_1color__one_3_01float_01_4.html":[11,0,0,6,19],
-"structcgv_1_1media_1_1color__scheme.html":[11,0,0,6,21],
-"structcgv_1_1media_1_1color__scheme.html#af3470fd6f31f72008ac06725cf8162d2":[11,0,0,6,21,0],
-"structcgv_1_1media_1_1color__storage__traits.html":[11,0,0,6,24],
-"structcgv_1_1media_1_1color__storage__traits_3_01color_3_01float_00_01RGB_00_01OPACITY_01_4_01_4.html":[11,0,0,6,26],
-"structcgv_1_1media_1_1color__storage__traits_3_01color_3_01float_00_01RGB_01_4_01_4.html":[11,0,0,6,25]
+"structcgv_1_1media_1_1color__one_3_01float_01_4.html":[11,0,0,6,19]
 };
