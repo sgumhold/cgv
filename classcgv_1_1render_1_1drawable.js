@@ -11,6 +11,7 @@ var classcgv_1_1render_1_1drawable =
     [ "force_redraw", "classcgv_1_1render_1_1drawable.html#a62a95149c05a07e8a50243c7ac612fdd", null ],
     [ "get_context", "classcgv_1_1render_1_1drawable.html#a13d9f363f8618f0a8333e4e06f71ae94", null ],
     [ "get_world_location", "classcgv_1_1render_1_1drawable.html#a00165fd1992f7d06c1d1ddc2680f21e3", null ],
+    [ "get_world_ray", "classcgv_1_1render_1_1drawable.html#a2c49c340782f732c3eb1c218d3368426", null ],
     [ "hide", "classcgv_1_1render_1_1drawable.html#a98393d93b5d15bd89a5970f7a8c6903b", null ],
     [ "init", "classcgv_1_1render_1_1drawable.html#acc29110926fa9e045b972b9ce4a303ba", null ],
     [ "init_frame", "classcgv_1_1render_1_1drawable.html#a14e47d48f2cad26d15377e9cbc32d1f1", null ],

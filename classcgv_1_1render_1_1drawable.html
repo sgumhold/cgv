@@ -145,6 +145,9 @@ Public Member Functions</h2></td></tr>
 <tr class="memitem:a00165fd1992f7d06c1d1ddc2680f21e3" id="r_a00165fd1992f7d06c1d1ddc2680f21e3"><td class="memItemLeft" align="right" valign="top">bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcgv_1_1render_1_1drawable.html#a00165fd1992f7d06c1d1ddc2680f21e3">get_world_location</a> (int x, int y, const <a class="el" href="classcgv_1_1render_1_1view.html">view</a> &amp;V, <a class="el" href="namespacecgv.html#a1b017a7250682dd1414b799b73129cd6">dvec3</a> &amp;world_location, double *window_z_ptr=0) const</td></tr>
 <tr class="memdesc:a00165fd1992f7d06c1d1ddc2680f21e3"><td class="mdescLeft">&#160;</td><td class="mdescRight">use given view together with depth buffer of context in order to compute the world location of the point at mouse pointer location (x,y)  <br /></td></tr>
 <tr class="separator:a00165fd1992f7d06c1d1ddc2680f21e3"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a2c49c340782f732c3eb1c218d3368426" id="r_a2c49c340782f732c3eb1c218d3368426"><td class="memItemLeft" align="right" valign="top"><a class="el" href="namespacecgv.html#a072cac1e97d7126b54848f962191c41f">cgv::ray3</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcgv_1_1render_1_1drawable.html#a2c49c340782f732c3eb1c218d3368426">get_world_ray</a> (int x, int y, <a class="el" href="classcgv_1_1render_1_1view.html">view</a> *view_ptr, const <a class="el" href="namespacecgv.html#a6c3091f6c4a7b32a0dec501e8c056734">cgv::dmat4</a> &amp;modelview_projection_window_matrix) const</td></tr>
+<tr class="memdesc:a2c49c340782f732c3eb1c218d3368426"><td class="mdescLeft">&#160;</td><td class="mdescRight">compute ray from eye of given view_ptr through pixel at given mouse location (x,y) according to given modelview projection window matrix  <br /></td></tr>
+<tr class="separator:a2c49c340782f732c3eb1c218d3368426"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ae75519749727672fc4f46f925ac2af79" id="r_ae75519749727672fc4f46f925ac2af79"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcgv_1_1render_1_1drawable.html#ae75519749727672fc4f46f925ac2af79">post_redraw</a> ()</td></tr>
 <tr class="memdesc:ae75519749727672fc4f46f925ac2af79"><td class="mdescLeft">&#160;</td><td class="mdescRight">posts a redraw event to the current context if one is available  <br /></td></tr>
 <tr class="separator:ae75519749727672fc4f46f925ac2af79"><td class="memSeparator" colspan="2">&#160;</td></tr>
@@ -220,7 +223,7 @@ Additional Inherited Members</h2></td></tr>
 <a name="details" id="details"></a><h2 class="groupheader">Detailed Description</h2>
 <div class="textblock"><p>base class for all drawables, which is independent of the used rendering API. </p>
 
-<p class="definition">Definition at line <a class="el" href="drawable_8h_source.html#l00014">14</a> of file <a class="el" href="drawable_8h_source.html">drawable.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="drawable_8h_source.html#l00015">15</a> of file <a class="el" href="drawable_8h_source.html">drawable.h</a>.</p>
 </div><h2 class="groupheader">Constructor &amp; Destructor Documentation</h2>
 <a id="abb11b4156b879aa8e5f3596a61126005" name="abb11b4156b879aa8e5f3596a61126005"></a>
 <h2 class="memtitle"><span class="permalink"><a href="#abb11b4156b879aa8e5f3596a61126005">&#9670;&#160;</a></span>drawable()</h2>
@@ -272,7 +275,7 @@ Additional Inherited Members</h2></td></tr>
 
 <p>Reimplemented in <a class="el" href="classcgv_1_1overlay_1_1canvas__overlay.html#a9e7289e2619738171b49b1ab7e782946">cgv::overlay::canvas_overlay</a>, <a class="el" href="structcgv_1_1render_1_1callback__drawable.html#ab415e3bbe9766be01577febd661bb3d9">cgv::render::callback_drawable</a>, and <a class="el" href="classcgv_1_1overlay_1_1performance__monitor.html#a729265ddd1f53713a714d82cf06e2af4">cgv::overlay::performance_monitor</a>.</p>
 
-<p class="definition">Definition at line <a class="el" href="drawable_8cxx_source.html#l00125">125</a> of file <a class="el" href="drawable_8cxx_source.html">drawable.cxx</a>.</p>
+<p class="definition">Definition at line <a class="el" href="drawable_8cxx_source.html#l00142">142</a> of file <a class="el" href="drawable_8cxx_source.html">drawable.cxx</a>.</p>
 
 <p class="reference">Referenced by <a class="el" href="libs_2cgv__overlay_2performance__monitor_8cxx_source.html#l00128">cgv::overlay::performance_monitor::after_finish()</a>, and <a class="el" href="context_8cxx_source.html#l00920">cgv::render::context::render_pass()</a>.</p>
 
@@ -306,9 +309,9 @@ Additional Inherited Members</h2></td></tr>
 
 <p>Reimplemented in <a class="el" href="structcgv_1_1render_1_1callback__drawable.html#aa381b855726807f8ee92e8aede0fd9a3">cgv::render::callback_drawable</a>, <a class="el" href="classcgv_1_1overlay_1_1navigator.html#a453270423a9da7eb3b1aa690464ac2cb">cgv::overlay::navigator</a>, <a class="el" href="classcgv_1_1plot_1_1plot2d.html#a11c1cda82ecb818dd2e0463a4ee5f76a">cgv::plot::plot2d</a>, <a class="el" href="classcgv_1_1plot_1_1plot3d.html#a910f78f4502506f8860279fd864f3f71">cgv::plot::plot3d</a>, <a class="el" href="classcgv_1_1plot_1_1plot__base.html#a34242776450fd92ff62cb2bd200968e0">cgv::plot::plot_base</a>, <a class="el" href="classvr__test.html#a54bc29ffaf3a00bc2b31f6ebb567e28e">vr_test</a>, <a class="el" href="classcgv_1_1overlay_1_1canvas__overlay.html#ad334cc5e7923ef29e4faebf08049e990">cgv::overlay::canvas_overlay</a>, <a class="el" href="classcgv_1_1overlay_1_1color__scale__legend.html#a8311a909c15cfdef4e3f303cef68b7e3">cgv::overlay::color_scale_legend</a>, <a class="el" href="classcgv_1_1overlay_1_1color__selector.html#af1039a861ea839fd844c84e5de618e4f">cgv::overlay::color_selector</a>, <a class="el" href="classcgv_1_1overlay_1_1performance__monitor.html#a32b9fcb0644eff4afd5d96a3b185dfa8">cgv::overlay::performance_monitor</a>, <a class="el" href="classcgv_1_1overlay_1_1transfer__function__editor.html#a12988c20f321203e3412f53d04a6a96c">cgv::overlay::transfer_function_editor</a>, <a class="el" href="classcgv_1_1render_1_1gl_1_1image__drawable.html#a252a74ce9695f83d49acac1f3c0cb8a5">cgv::render::gl::image_drawable</a>, <a class="el" href="classcgv_1_1render_1_1gl_1_1gl__implicit__surface__drawable__base.html#af4e13e005aebdf79ee1c3f52b917a7ac">cgv::render::gl::gl_implicit_surface_drawable_base</a>, and <a class="el" href="classcgv_1_1render_1_1gl_1_1mesh__drawable.html#a3eebbe76af2f31fd3df6a1b2e45f57c7">cgv::render::gl::mesh_drawable</a>.</p>
 
-<p class="definition">Definition at line <a class="el" href="drawable_8cxx_source.html#l00130">130</a> of file <a class="el" href="drawable_8cxx_source.html">drawable.cxx</a>.</p>
+<p class="definition">Definition at line <a class="el" href="drawable_8cxx_source.html#l00147">147</a> of file <a class="el" href="drawable_8cxx_source.html">drawable.cxx</a>.</p>
 
-<p class="reference">Referenced by <a class="el" href="drawable_8cxx_source.html#l00133">destruct()</a>.</p>
+<p class="reference">Referenced by <a class="el" href="drawable_8cxx_source.html#l00150">destruct()</a>.</p>
 
 </div>
 </div>
@@ -338,9 +341,9 @@ Additional Inherited Members</h2></td></tr>
 
 <p>do not use destruct for a drawable but clear!! </p>
 
-<p class="definition">Definition at line <a class="el" href="drawable_8cxx_source.html#l00133">133</a> of file <a class="el" href="drawable_8cxx_source.html">drawable.cxx</a>.</p>
+<p class="definition">Definition at line <a class="el" href="drawable_8cxx_source.html#l00150">150</a> of file <a class="el" href="drawable_8cxx_source.html">drawable.cxx</a>.</p>
 
-<p class="reference">References <a class="el" href="drawable_8cxx_source.html#l00130">clear()</a>.</p>
+<p class="reference">References <a class="el" href="drawable_8cxx_source.html#l00147">clear()</a>.</p>
 
 </div>
 </div>
@@ -372,7 +375,7 @@ Additional Inherited Members</h2></td></tr>
 
 <p>Reimplemented in <a class="el" href="classvr__emulator.html#a7cbda38438c6763dacb724c8e10be8bf">vr_emulator</a>, <a class="el" href="structcgv_1_1render_1_1callback__drawable.html#a56f7b35db80343cecea304c6d1262a2e">cgv::render::callback_drawable</a>, <a class="el" href="classcgv_1_1render_1_1gl_1_1mesh__drawable.html#ae3e4810ef53833faa1eb632866f9f1e7">cgv::render::gl::mesh_drawable</a>, <a class="el" href="classcgv_1_1plot_1_1plot2d.html#a6aebbdefd9eae5ac8dbd76bc180ccbe9">cgv::plot::plot2d</a>, <a class="el" href="classcgv_1_1plot_1_1plot3d.html#a1d421e15afba26b0ef710fd702f8eee6">cgv::plot::plot3d</a>, <a class="el" href="classvr__test.html#ac2b84c476a79166566996a3dbded0dcc">vr_test</a>, <a class="el" href="classcgv_1_1render_1_1gl_1_1image__drawable.html#ae72e2ac818f63f7df68bfadf63c75716">cgv::render::gl::image_drawable</a>, and <a class="el" href="classcgv_1_1render_1_1gl_1_1gl__implicit__surface__drawable__base.html#a74b00205ffff7faf10594eb61c1c73bd">cgv::render::gl::gl_implicit_surface_drawable_base</a>.</p>
 
-<p class="definition">Definition at line <a class="el" href="drawable_8cxx_source.html#l00112">112</a> of file <a class="el" href="drawable_8cxx_source.html">drawable.cxx</a>.</p>
+<p class="definition">Definition at line <a class="el" href="drawable_8cxx_source.html#l00129">129</a> of file <a class="el" href="drawable_8cxx_source.html">drawable.cxx</a>.</p>
 
 <p class="reference">Referenced by <a class="el" href="context_8cxx_source.html#l00920">cgv::render::context::render_pass()</a>.</p>
 
@@ -431,7 +434,7 @@ Additional Inherited Members</h2></td></tr>
 
 <p>Reimplemented in <a class="el" href="structcgv_1_1render_1_1callback__drawable.html#a5ac097d7fae4a6bee150fdfce542e26d">cgv::render::callback_drawable</a>, <a class="el" href="classcgv_1_1overlay_1_1navigator.html#ac75b7975bd2f9dd31863c1d0119f7e67">cgv::overlay::navigator</a>, <a class="el" href="classvr__test.html#ae1df2b2fa71cc8be5ae409745d2c1513">vr_test</a>, and <a class="el" href="classcgv_1_1render_1_1gl_1_1mesh__drawable.html#a7c689c118b3986ee9909ba0f640bb0cc">cgv::render::gl::mesh_drawable</a>.</p>
 
-<p class="definition">Definition at line <a class="el" href="drawable_8cxx_source.html#l00116">116</a> of file <a class="el" href="drawable_8cxx_source.html">drawable.cxx</a>.</p>
+<p class="definition">Definition at line <a class="el" href="drawable_8cxx_source.html#l00133">133</a> of file <a class="el" href="drawable_8cxx_source.html">drawable.cxx</a>.</p>
 
 <p class="reference">Referenced by <a class="el" href="context_8cxx_source.html#l00920">cgv::render::context::render_pass()</a>.</p>
 
@@ -465,7 +468,7 @@ Additional Inherited Members</h2></td></tr>
 
 <p>Reimplemented in <a class="el" href="classvr__emulator.html#a3275ae8cadf6a1c03dceb3757721f2ea">vr_emulator</a>, <a class="el" href="classcgv_1_1overlay_1_1canvas__overlay.html#a5ef365b33c6c093a5cde113237e14358">cgv::overlay::canvas_overlay</a>, <a class="el" href="structcgv_1_1render_1_1callback__drawable.html#af0ed84bc423d3ee9bb12cd8765ed96fe">cgv::render::callback_drawable</a>, and <a class="el" href="classcgv_1_1render_1_1gl_1_1gl__implicit__surface__drawable__base.html#aaee066cb059328a369492389faf95103">cgv::render::gl::gl_implicit_surface_drawable_base</a>.</p>
 
-<p class="definition">Definition at line <a class="el" href="drawable_8cxx_source.html#l00120">120</a> of file <a class="el" href="drawable_8cxx_source.html">drawable.cxx</a>.</p>
+<p class="definition">Definition at line <a class="el" href="drawable_8cxx_source.html#l00137">137</a> of file <a class="el" href="drawable_8cxx_source.html">drawable.cxx</a>.</p>
 
 <p class="reference">Referenced by <a class="el" href="context_8cxx_source.html#l00920">cgv::render::context::render_pass()</a>.</p>
 
@@ -488,7 +491,7 @@ Additional Inherited Members</h2></td></tr>
 
 <p>forces a redraw right now. This cannot be called from init, init_frame, draw, finish_draw, finish_frame and clear </p>
 
-<p class="definition">Definition at line <a class="el" href="drawable_8cxx_source.html#l00092">92</a> of file <a class="el" href="drawable_8cxx_source.html">drawable.cxx</a>.</p>
+<p class="definition">Definition at line <a class="el" href="drawable_8cxx_source.html#l00109">109</a> of file <a class="el" href="drawable_8cxx_source.html">drawable.cxx</a>.</p>
 
 <p class="reference">References <a class="el" href="classcgv_1_1render_1_1context.html#ab14e584870fd1f657b474cf8f1aeaa15">cgv::render::context::force_redraw()</a>.</p>
 
@@ -513,7 +516,7 @@ Additional Inherited Members</h2></td></tr>
 
 <p class="definition">Definition at line <a class="el" href="drawable_8cxx_source.html#l00037">37</a> of file <a class="el" href="drawable_8cxx_source.html">drawable.cxx</a>.</p>
 
-<p class="reference">Referenced by <a class="el" href="drawable_8cxx_source.html#l00059">get_world_location()</a>, <a class="el" href="libs_2cgv__overlay_2performance__monitor_8cxx_source.html#l00035">cgv::overlay::performance_monitor::handle_member_change()</a>, <a class="el" href="navigator_8cxx_source.html#l00085">cgv::overlay::navigator::handle_mouse_event()</a>, and <a class="el" href="color__selector_8cxx_source.html#l00036">cgv::overlay::color_selector::handle_mouse_event()</a>.</p>
+<p class="reference">Referenced by <a class="el" href="drawable_8cxx_source.html#l00059">get_world_location()</a>, <a class="el" href="drawable_8cxx_source.html#l00091">get_world_ray()</a>, <a class="el" href="libs_2cgv__overlay_2performance__monitor_8cxx_source.html#l00035">cgv::overlay::performance_monitor::handle_member_change()</a>, <a class="el" href="navigator_8cxx_source.html#l00085">cgv::overlay::navigator::handle_mouse_event()</a>, and <a class="el" href="color__selector_8cxx_source.html#l00036">cgv::overlay::color_selector::handle_mouse_event()</a>.</p>
 
 </div>
 </div>
@@ -570,6 +573,53 @@ Additional Inherited Members</h2></td></tr>
 
 </div>
 </div>
+<a id="a2c49c340782f732c3eb1c218d3368426" name="a2c49c340782f732c3eb1c218d3368426"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a2c49c340782f732c3eb1c218d3368426">&#9670;&#160;</a></span>get_world_ray()</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname"><a class="el" href="namespacecgv.html#a072cac1e97d7126b54848f962191c41f">cgv::ray3</a> cgv::render::drawable::get_world_ray </td>
+          <td>(</td>
+          <td class="paramtype">int&#160;</td>
+          <td class="paramname"><em>x</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">int&#160;</td>
+          <td class="paramname"><em>y</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype"><a class="el" href="classcgv_1_1render_1_1view.html">view</a> *&#160;</td>
+          <td class="paramname"><em>view_ptr</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">const <a class="el" href="namespacecgv.html#a6c3091f6c4a7b32a0dec501e8c056734">cgv::dmat4</a> &amp;&#160;</td>
+          <td class="paramname"><em>modelview_projection_window_matrix</em>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td> const</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>compute ray from eye of given view_ptr through pixel at given mouse location (x,y) according to given modelview projection window matrix </p>
+<p>compute ray through pixel at given mouse location according to given modelview projection window matrix </p>
+
+<p class="definition">Definition at line <a class="el" href="drawable_8cxx_source.html#l00091">91</a> of file <a class="el" href="drawable_8cxx_source.html">drawable.cxx</a>.</p>
+
+<p class="reference">References <a class="el" href="drawable_8cxx_source.html#l00037">get_context()</a>, and <a class="el" href="classcgv_1_1render_1_1context.html#a6dde896fc37726e3ec39e7d450f1e168">cgv::render::context::get_height()</a>.</p>
+
+</div>
+</div>
 <a id="a98393d93b5d15bd89a5970f7a8c6903b" name="a98393d93b5d15bd89a5970f7a8c6903b"></a>
 <h2 class="memtitle"><span class="permalink"><a href="#a98393d93b5d15bd89a5970f7a8c6903b">&#9670;&#160;</a></span>hide()</h2>
 
@@ -621,7 +671,7 @@ Additional Inherited Members</h2></td></tr>
 
 <p>Reimplemented in <a class="el" href="structcgv_1_1render_1_1callback__drawable.html#afc15e06f2cc55604d795870ad01099e6">cgv::render::callback_drawable</a>, <a class="el" href="classcgv_1_1overlay_1_1navigator.html#a9a96c0b0886080ba73296477f91120c1">cgv::overlay::navigator</a>, <a class="el" href="classcgv_1_1plot_1_1plot2d.html#afe2f3cce67ece6a9059a613ed895d46c">cgv::plot::plot2d</a>, <a class="el" href="classcgv_1_1plot_1_1plot3d.html#a6f7ef08d830fd499aae8e36f81d90739">cgv::plot::plot3d</a>, <a class="el" href="classcgv_1_1plot_1_1plot__base.html#af24a07ff01b07bc866213533b1bf68d8">cgv::plot::plot_base</a>, <a class="el" href="classvr__test.html#aeac0e0a250489daf6b9eabc8483573da">vr_test</a>, <a class="el" href="classvr__emulator.html#a3f5896c300e9bca467521046b9748379">vr_emulator</a>, <a class="el" href="classcgv_1_1overlay_1_1canvas__overlay.html#a077a7e06735d0ec8e0941f2e2177530f">cgv::overlay::canvas_overlay</a>, <a class="el" href="classcgv_1_1overlay_1_1color__scale__legend.html#a2b8bb88a983698f504446a215e083be7">cgv::overlay::color_scale_legend</a>, <a class="el" href="classcgv_1_1overlay_1_1color__selector.html#ab177262ac344e9efe2fd442100907a1b">cgv::overlay::color_selector</a>, <a class="el" href="classcgv_1_1overlay_1_1performance__monitor.html#a07c9a778adeb5a93f25a45b889909077">cgv::overlay::performance_monitor</a>, <a class="el" href="classcgv_1_1overlay_1_1themed__canvas__overlay.html#abdb67ccae67ae3589fa20808acd21d78">cgv::overlay::themed_canvas_overlay</a>, <a class="el" href="classcgv_1_1overlay_1_1transfer__function__editor.html#af477b7fc465e47ff38378ecc0687e941">cgv::overlay::transfer_function_editor</a>, <a class="el" href="classcgv_1_1render_1_1gl_1_1image__drawable.html#a4a107f777ae8c706b7a864a83867c288">cgv::render::gl::image_drawable</a>, and <a class="el" href="classcgv_1_1render_1_1gl_1_1gl__implicit__surface__drawable__base.html#a7cb8b90eaa6ac86b9a7d36a241a793d7">cgv::render::gl::gl_implicit_surface_drawable_base</a>.</p>
 
-<p class="definition">Definition at line <a class="el" href="drawable_8cxx_source.html#l00099">99</a> of file <a class="el" href="drawable_8cxx_source.html">drawable.cxx</a>.</p>
+<p class="definition">Definition at line <a class="el" href="drawable_8cxx_source.html#l00116">116</a> of file <a class="el" href="drawable_8cxx_source.html">drawable.cxx</a>.</p>
 
 <p class="reference">Referenced by <a class="el" href="gl__context_8cxx_source.html#l00422">cgv::render::gl::gl_context::configure_gl()</a>, and <a class="el" href="context_8cxx_source.html#l00363">cgv::render::context::configure_new_child()</a>.</p>
 
@@ -655,7 +705,7 @@ Additional Inherited Members</h2></td></tr>
 
 <p>Reimplemented in <a class="el" href="classvr__emulator.html#a5528c4fb1ea17b3918a17836c9f14668">vr_emulator</a>, <a class="el" href="structcgv_1_1render_1_1callback__drawable.html#a1a87a36f95ddb4ba0aec3430cb4bf6cf">cgv::render::callback_drawable</a>, <a class="el" href="classcgv_1_1render_1_1gl_1_1mesh__drawable.html#a19c6edf3b5bf5095cdcb2a853515e7f2">cgv::render::gl::mesh_drawable</a>, <a class="el" href="classcgv_1_1overlay_1_1navigator.html#a644e765ae8aaf959a8a49da56899d400">cgv::overlay::navigator</a>, <a class="el" href="classvr__test.html#a641ac031d5871f73fbdc7603a408699e">vr_test</a>, <a class="el" href="classcgv_1_1overlay_1_1color__scale__legend.html#a12d2a6ee2f757694441fbff9c53ec588">cgv::overlay::color_scale_legend</a>, <a class="el" href="classcgv_1_1overlay_1_1color__selector.html#aaff15803b92a84e6765ef37b1db91716">cgv::overlay::color_selector</a>, <a class="el" href="classcgv_1_1overlay_1_1performance__monitor.html#a9ee743e9c9e32eb1480b1838b536bae7">cgv::overlay::performance_monitor</a>, and <a class="el" href="classcgv_1_1overlay_1_1transfer__function__editor.html#a60c738b37d34f01dfe6e6af5353443e4">cgv::overlay::transfer_function_editor</a>.</p>
 
-<p class="definition">Definition at line <a class="el" href="drawable_8cxx_source.html#l00108">108</a> of file <a class="el" href="drawable_8cxx_source.html">drawable.cxx</a>.</p>
+<p class="definition">Definition at line <a class="el" href="drawable_8cxx_source.html#l00125">125</a> of file <a class="el" href="drawable_8cxx_source.html">drawable.cxx</a>.</p>
 
 </div>
 </div>
@@ -744,7 +794,7 @@ Additional Inherited Members</h2></td></tr>
 <p>callback to announce resizing of the output window </p>
 <p>callback to anounce resizing of the output window </p>
 
-<p class="definition">Definition at line <a class="el" href="drawable_8cxx_source.html#l00104">104</a> of file <a class="el" href="drawable_8cxx_source.html">drawable.cxx</a>.</p>
+<p class="definition">Definition at line <a class="el" href="drawable_8cxx_source.html#l00121">121</a> of file <a class="el" href="drawable_8cxx_source.html">drawable.cxx</a>.</p>
 
 </div>
 </div>
