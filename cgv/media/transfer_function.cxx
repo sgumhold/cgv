@@ -256,7 +256,7 @@ std::vector<float> transfer_function::get_ticks(size_t request_count) const {
 	return ticks;
 	*/
 	const vec2 domain = get_domain();
-	return compute_ticks(domain[0], domain[1], request_count);
+	return compute_ticks(domain[0], domain[1], (int)request_count);
 }
 
 void transfer_function::set_interpolation(InterpolationMode interpolation) {

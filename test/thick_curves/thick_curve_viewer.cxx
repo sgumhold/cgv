@@ -3,11 +3,13 @@
 #include <cgv/base/group.h>
 #include <cgv/gui/event_handler.h>
 #include <cgv/gui/key_event.h>
+#include <cgv/gui/mouse_event.h>
 #include <cgv/gui/provider.h>
 #include <cgv/render/drawable.h>
 #include <cgv/render/clipped_view.h>
 #include <cgv/math/fray.h>
 #include <cgv/math/functions.h>
+#include <cgv/math/intersection.h>
 #include <cgv_gl/spline_tube_renderer.h>
 #include <cgv_gl/sphere_renderer.h>
 #include <cgv_gl/arrow_renderer.h>
@@ -361,9 +363,7 @@ struct thick_line_data
 			B.col(1) = spheres[j] + (1.0f/3)*tangents[j];
 			B.col(2) = spheres[k] - (1.0f/3)*tangents[k];
 			B.col(3) = spheres[k];
-			std::cout << "s0 = " << spheres[j] << ", s1 = " << spheres[k] << std::endl;
 			bezier_tubes.push_back(B);
-			std::cout << i / 2 << ": " << B << std::endl;
 		}
 	}
 	thick_line_data() {
@@ -467,18 +467,47 @@ private:
 	unsigned nr_tubes;
 
 	int current_control_point = -1;
-
+	cgv::dmat4 last_MPW;
+	int get_current_sphere_index(int ccp, int* tangent_index_ptr) const
+	{
+		int si, ti = 0;
+		if ((ccp % 3) == 0)
+			si = ccp / 3;
+		else {
+			int segment_index = ccp / 3;
+			ti = 3 - 2 * (ccp % 3);
+			si = lines.indices[2 * segment_index + ccp % 3 - 1];
+		}
+		if (tangent_index_ptr)
+			*tangent_index_ptr = ti;
+		return si;
+	}
+	cgv::vec4 get_control_sphere(int ccp) const {
+		int ti, si = get_current_sphere_index(ccp, &ti);
+		return (ti == 0) ? lines.spheres[si] : lines.spheres[si] + 1 / 3.f * ti * lines.tangents[si];
+	}
 	void callback(cgv::gui::GizmoAction action, cgv::gui::transformation_gizmo::Mode mode)
 	{
+		int tangent_index, sphere_index = get_current_sphere_index(current_control_point, &tangent_index);
 		switch (mode) {
 		case cgv::gui::transformation_gizmo::Mode::kTranslation:
-			reinterpret_cast<cgv::vec3&>(lines.spheres[current_control_point]) = tg_ptr->get_position();
+			if (tangent_index == 0)
+				lines.spheres[sphere_index].down() = tg_ptr->get_position();
+			else
+				lines.tangents[sphere_index].down() =
+					(3.f*tangent_index) * (tg_ptr->get_position() - lines.spheres[sphere_index].down());
+			lines.compute_bezier_tubes();
 			post_redraw();
 			break;
 		case cgv::gui::transformation_gizmo::Mode::kScale: {
 			cgv::vec3 scale = tg_ptr->get_scale();
 			float radius = (scale[0]+scale[1]+scale[2])/3;
-			lines.spheres[current_control_point][3] = radius;
+			if (tangent_index == 0)
+				lines.spheres[sphere_index][3] = radius;
+			else
+				lines.tangents[sphere_index][3] =
+					(3.f * tangent_index) * radius - lines.spheres[sphere_index][3];
+			lines.compute_bezier_tubes();
 			tg_ptr->set_scale(cgv::vec3(radius));
 			post_redraw();
 			break;
@@ -492,8 +521,9 @@ private:
 		else {
 			if (!tg_ptr->is_visible())
 				tg_ptr->show();
-			tg_ptr->set_position(reinterpret_cast<const cgv::vec3&>(lines.spheres[current_control_point]));
-			tg_ptr->set_scale(cgv::vec3(lines.spheres[current_control_point][3]));
+			cgv::vec4 control_sphere = get_control_sphere(current_control_point);
+			tg_ptr->set_position(control_sphere.down());
+			tg_ptr->set_scale(control_sphere[3]);
 		}
 	}
 	void set_mode(cgv::gui::transformation_gizmo::Mode mode)
@@ -512,7 +542,6 @@ private:
 		begin_gizmo();
 		post_redraw();
 	}
-
 public:
 	thick_line_viewer() : cgv::base::group("Thick Line Viewer") {
 		urs.orient_splats = true;
@@ -571,6 +600,32 @@ public:
 	void stream_stats(std::ostream& os) {}
 
 	bool handle(cgv::gui::event& e) { 
+		if (e.get_kind() == cgv::gui::EID_MOUSE) {
+			auto& me = reinterpret_cast<cgv::gui::mouse_event&>(e);
+			if (me.get_modifiers() != cgv::gui::EM_SHIFT)
+				return false;
+			if (me.get_action() != cgv::gui::MA_PRESS || me.get_button() != cgv::gui::MB_LEFT_BUTTON)
+				return false;
+			cgv::ray3 ray = get_world_ray(me.get_x(),me.get_y(),view_ptr,last_MPW);
+			for (int ci = 0; ci < 3 * lines.indices.size() / 2 + 1; ++ci) {
+				cgv::vec4 cs = get_control_sphere(ci);
+				cgv::vec2 ts;
+				if (cgv::math::ray_sphere_intersection(ray, cs.down(), cs[3], ts) > 0) {
+					if (current_control_point == ci) {
+						if (tg_ptr->get_mode() == cgv::gui::transformation_gizmo::Mode::kScale)
+							select_control_point(-1);
+						else
+							tg_ptr->set_mode(cgv::gui::transformation_gizmo::Mode::kScale);
+					}
+					else {
+						tg_ptr->set_mode(cgv::gui::transformation_gizmo::Mode::kTranslation);
+						select_control_point(ci);
+					}
+					break;
+				}
+			}
+			return true;
+		}
 		if (e.get_kind() == cgv::gui::EID_KEY) {
 			auto& ke = reinterpret_cast<cgv::gui::key_event&>(e);
 			if (ke.get_action() == cgv::gui::KA_RELEASE)
@@ -605,13 +660,13 @@ public:
 				on_set(&camera_index);
 				return true;
 			case cgv::gui::KEY_Right:
-				if (++current_control_point == lines.spheres.size())
+				if (++current_control_point > 3*lines.indices.size()/2)
 					current_control_point = -1;
 				on_set(&current_control_point);
 				return true;
 			case cgv::gui::KEY_Left:
 				if (current_control_point == -1)
-					current_control_point = int(lines.spheres.size()) - 1;
+					current_control_point = int(3*lines.indices.size()/2);
 				else 
 					--current_control_point;
 				on_set(&current_control_point);
@@ -878,6 +933,7 @@ public:
 		sr.render(ctx, 0, intersections.size());
 	}
 	void draw(cgv::render::context& ctx) {
+		last_MPW = ctx.get_modelview_projection_window_matrix();
 		if (show_tube)
 			draw_tubes(ctx);
 		if (show_cameras)
@@ -892,7 +948,7 @@ public:
 	void create_gui() {
 		add_decorator("Thick Line View", "heading", "level=2");
 		add_member_control(this, "Control Point", current_control_point, "value_slider", "min=-1;ticks=true")->
-			set("max", lines.spheres.size() - 1);
+			set("max", 3*lines.indices.size()/2);
 		add_member_control(this, "Nr Tubes", nr_tubes, "value_slider", "min=0;ticks=true")->
 			set("max", lines.indices.size() / 2);
 		add_member_control(this, "Show Tubes", show_tube, "check");

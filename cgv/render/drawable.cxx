@@ -87,6 +87,23 @@ bool drawable::get_world_location(int x, int y, const view& V, dvec3& world_loca
 	}
 	return true;
 }
+/// compute ray through pixel at given mouse location according to given modelview projection window matrix
+cgv::ray3 drawable::get_world_ray(int x, int y, view* view_ptr, const cgv::dmat4& modelview_projection_window_matrix) const
+{
+	cgv::dmat4 iMPW = inverse(modelview_projection_window_matrix);
+	int height = get_context() ? get_context()->get_height() : 800;
+	cgv::dvec4 p_window(x, height - y - 1, 1, 1);
+	cgv::dvec3 p_world = (iMPW * p_window).clip();
+	cgv::dvec3 eye;
+	if (view_ptr)
+		eye = view_ptr->get_eye();
+	else {
+		p_window[2] = 0.01;
+		eye = (iMPW * p_window).clip();
+	}
+	cgv::dvec3 dir = normalize(p_world-eye);
+	return cgv::ray3(eye, dir);
+}
 
 /// forces a redraw right now. This cannot be called from init, init_frame, draw, finish_draw, finish_frame and clear
 void drawable::force_redraw()
