@@ -16,6 +16,7 @@
 #include <cgv_gl/surfel_renderer.h>
 #include <cgv_gl/cone_renderer.h>
 #include <cg_gizmo/transformation_gizmo.h>
+#include "fpoly.h"
 #include "cyPolynomial.h"
 
 struct camera_manager
@@ -106,6 +107,19 @@ void compute_ray_local_polynomials(const cgv::ray3& r, const cgv::mat4& B, cy::P
 	cgv::mat4 T = { {1,-3,3,-1},{0,3,-6,3},{0,0,3,-3},{0,0,0,1} };
 	// convert to monom basis in ray local coordinate frame
 	cgv::mat4 M = T * transpose(B);
+	// extract base polynomials
+	cx = { M(0,0), M(1,0), M(2,0), M(3,0) };
+	cy = { M(0,1), M(1,1), M(2,1), M(3,1) };
+	cz = { M(0,2), M(1,2), M(2,2), M(3,2) };
+	ra = { M(0,3), M(1,3), M(2,3), M(3,3) };
+}
+void compute_ray_local_polynomials(const cgv::ray3& r, const cgv::mat4& B, cgv::math::fpoly_mon<double, 3>& cx,
+	cgv::math::fpoly_mon<double, 3>& cy, cgv::math::fpoly_mon<double, 3>& cz, cgv::math::fpoly_mon<double, 3>& ra)
+{
+	// construct matrix for conversion to monom basis
+	cgv::mat4 T = { {1,-3,3,-1},{0,3,-6,3},{0,0,3,-3},{0,0,0,1} };
+	// convert to monom basis in ray local coordinate frame
+	cgv::dmat4 M = T * transpose(B);
 	// extract base polynomials
 	cx = { M(0,0), M(1,0), M(2,0), M(3,0) };
 	cy = { M(0,1), M(1,1), M(2,1), M(3,1) };
@@ -344,6 +358,165 @@ bool compute_ray_view_aligned_ribbon_intersection(const cgv::ray3& r, const cgv:
 	return false;
 }
 
+
+#include <random>
+
+std::vector<double> random_vector(int N, std::default_random_engine& e, std::uniform_real_distribution<double>& u)
+{
+	std::vector<double> v;
+	for (int i = 0; i < N; ++i)
+		v.push_back(u(e));
+	return v;
+}
+
+template <int N, int M>
+bool random_test_remainder(int n)
+{
+	std::default_random_engine e;
+	std::uniform_real_distribution<double> u(-5, 5);
+	for (int i = 0; i < n; ++i) {
+		std::vector<double> f = random_vector(N, e, u);
+		std::vector<double> g = random_vector(M, e, u);		
+		cgv::math::fpoly_mon<double, N> divident(f.data());
+		cgv::math::fpoly_mon<double, M> divisor(g.data());
+		cgv::math::fpoly_mon<double, N-M> quotient;
+		cgv::math::fpoly_mon<double, M-1> remainder;
+		divident.div(divisor, quotient, remainder);
+		cgv::math::fpoly_mon<double, N> reconstruction = quotient * divisor;
+		for (int j=0; j<M; ++j)
+			reconstruction[j] += remainder[j];
+		if ((reconstruction - divident).length() > 1e-8) {
+			std::cout << "ERROR: divident = " << divident << ", divisor = " << divisor << ", quotient = " << quotient << ", remainder = " << remainder << ", reconstruction = " << reconstruction << std::endl;
+			return false;
+		}
+	}
+	return true;
+}
+
+bool test_remainder(int n = 100)
+{
+	return
+		random_test_remainder<4, 1>(n) &&
+		random_test_remainder<4, 2>(n) &&
+		random_test_remainder<4, 3>(n) &&
+		random_test_remainder<4, 4>(n) &&
+		random_test_remainder<5, 1>(n) &&
+		random_test_remainder<5, 2>(n) &&
+		random_test_remainder<5, 3>(n) &&
+		random_test_remainder<5, 4>(n) &&
+		random_test_remainder<5, 5>(n) &&
+		random_test_remainder<6, 1>(n) &&
+		random_test_remainder<6, 2>(n) &&
+		random_test_remainder<6, 3>(n) &&
+		random_test_remainder<6, 4>(n) &&
+		random_test_remainder<6, 5>(n) &&
+		random_test_remainder<6, 6>(n);
+}
+
+template<typename T, int G = 6>
+void test_schur_chain(T eps, T eps_val, int n = 100)
+{
+	std::default_random_engine e;
+	std::uniform_real_distribution<T> u(T(0.001), T(0.999));
+	for (int i = 0; i < n; ++i) {
+		std::vector<T> v;
+		for (int j = 0; j < G; ++j)
+			v.push_back(u(e));
+		int cnt = G;
+		for (int j = 0; j < G; ++j)
+			if (u(e) > 0.5) {
+				v[j] += 1.0;
+				--cnt;
+			}
+		cgv::math::fpoly_mon<T, G> p(v);
+		cgv::math::sturm_chain_mon<T, G> sc(p);
+		auto I = sc.eliminate_roots(0.0, 1.0);
+		std::vector<T> w;
+		for (auto iv : I)
+			w.push_back(sc.find_root(iv[0], iv[1], eps));
+
+		for (auto r : w) {
+			int j;
+			T min_delta = 1000.0;
+			for (j = 0; j < v.size(); ++j) {
+				T delta = std::abs(r - v[j]);
+				if (delta <= eps_val)
+					break;
+				else if (delta < min_delta)
+					min_delta = delta;
+			}
+			if (j < v.size())
+				v.erase(v.begin() + j);
+			else {
+				std::cout << "ERROR: did not find root " << r << " in";
+				for (auto vv : v)
+					std::cout << " " << vv;
+				std::cout << " [" << eps_val << " <-> " << min_delta<< "]" << std::endl;
+			}
+		}
+		///int sturm_cnt = sc.estimate_nr_roots_on_interval(0.0, 1.0);
+		if (w.size() + v.size() == G) {
+		}
+		else {
+			std::cout << "ERROR: found the roots";
+			for (auto ww : w)
+				std::cout << " " << ww;
+			std::cout << " and the non roots";
+			for (auto vv : v)
+				std::cout << " " << vv;
+
+			std::cout << std::endl;
+		}
+	}
+
+}
+
+/*
+bool my_compute_ray_sphere_tube_intersection(const cgv::ray3& r, const cgv::mat4& B_world, std::vector<cgv::mat4x2>& intersections)
+{
+	cgv::mat4 B = transform_to_ray_coordinates(r, B_world);
+	cgv::math::fpoly_mon<double, 3> cx, cy, cz, ra;
+	compute_ray_local_polynomials(r, B, cx, cy, cz, ra);
+	// polynomial representing ortogonal distance to ray
+	cgv::math::fpoly_mon<double, 6> D = cy * cy + cz * cz;
+	cgv::math::fpoly_mon<double, 2> dcx = cx.derive();
+	cgv::math::fpoly_mon<double, 6> q = ra * ra - D;
+	cgv::math::fpoly_mon<double, 10> lhs = dcx * dcx * q;
+	cgv::math::fpoly_mon<double, 5> hdD = D.derive(); hdD *= 0.5;
+	cgv::math::fpoly_mon<double, 5> rhs_sqrt = ra * ra.derive() - hdD;
+	cgv::math::fpoly_mon<double, 10> p = lhs - rhs_sqrt * rhs_sqrt;
+	double t[12], s[12];
+//	int cnt = p.Roots(t);
+	consider_ray_local_sphere_intersection(B.col(0), 0, s, t, cnt);
+	consider_ray_local_sphere_intersection(B.col(3), 1, s, t, cnt);
+	int i_min = -1;
+	for (int i = 0; i < cnt; ++i) {
+		if (t[i] >= 0.f && t[i] <= 1.f) {
+			s[i] = cx.eval(t[i]) - sqrt(q.eval(t[i]));
+			if (s[i] > 0.0 && (i_min == -1 || s[i] < s[i_min]))
+				i_min = i;
+		}
+	}
+	if (i_min != -1) {
+		cgv::vec3 b0 = reinterpret_cast<const cgv::vec3&>(B_world.col(0));
+		cgv::vec3 b1 = reinterpret_cast<const cgv::vec3&>(B_world.col(1));
+		cgv::vec3 b2 = reinterpret_cast<const cgv::vec3&>(B_world.col(2));
+		cgv::vec3 b3 = reinterpret_cast<const cgv::vec3&>(B_world.col(3));
+		float tt = float(t[i_min]);
+		cgv::vec3 b10 = lerp(b0, b1, tt);
+		cgv::vec3 b11 = lerp(b1, b2, tt);
+		cgv::vec3 b12 = lerp(b2, b3, tt);
+		cgv::vec3 b20 = lerp(b10, b11, tt);
+		cgv::vec3 b21 = lerp(b11, b12, tt);
+		cgv::vec3 cp = lerp(b20, b21, tt);
+		cgv::vec3 ip = r.position((float)s[i_min]);
+		cgv::mat4x2 I = { cgv::vec4(ip,s[i_min]), cgv::vec4(normalize(ip - cp),t[i_min]) };
+		intersections.push_back(I);
+		return true;
+	}
+	return false;
+}
+*/
 struct thick_line_data 
 {
 	std::vector<uint32_t>  indices  = { 0,1,1,2 };
@@ -544,6 +717,14 @@ private:
 	}
 public:
 	thick_line_viewer() : cgv::base::group("Thick Line Viewer") {
+		//test_remainder(100);
+		std::cout << "test degree 6:" << std::endl;
+		test_schur_chain<double,6>(0.0000001f,0.00001f,10000);
+		std::cout << "test degree 8:" << std::endl;
+		test_schur_chain<double,8>(0.0000001f,0.00001f, 10000);
+		std::cout << "test degree 10:" << std::endl;
+		test_schur_chain<double,10>(0.0000001f,0.00001f, 10000);
+		std::cout << "performed tests with n=100" << std::endl;
 		urs.orient_splats = true;
 		urs.measure_point_size_in_pixel = false;
 		urs.point_size = 3;
