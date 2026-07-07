@@ -55,6 +55,5 @@ bool fill::dispatch(cgv::render::context& ctx, device_buffer_iterator first, dev
 	return true;
 }
 
-
 } // namespace gpgpu
 } // namespace cgv

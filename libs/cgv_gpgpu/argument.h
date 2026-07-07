@@ -160,14 +160,19 @@ public:
 
 class argument_binding_list : public argument_bindings {
 public:
-	template<typename T, typename std::enable_if<sl::traits::is_fundamental_sl_type<T>::value, bool>::type = true>
-	void bind_uniform(const std::string& name, const T& value) {
+	template<typename T, typename std::enable_if<sl::traits::is_fundamental_sl_scalar_type<T>::value, bool>::type = true>
+	void bind_uniform(const std::string& name, T value) {
 		_uniform_bindings.emplace_back(name, value);
 	}
 
-	template<typename T, typename std::enable_if<sl::traits::is_fundamental_sl_type<T>::value, bool>::type = true>
-	void bind_uniform(sl::data_type type, const std::string& name, const T& value) {
-		_uniform_bindings.emplace_back(name, get_type_descriptor(type), &value);
+	template<typename T, cgv::type::uint32_type N>
+	void bind_uniform(const std::string& name, const cgv::math::fvec<T, N>* value) {
+		_uniform_bindings.emplace_back(name, value);
+	}
+
+	template<typename T, cgv::type::uint32_type N, cgv::type::uint32_type M>
+	void bind_uniform(const std::string& name, const cgv::math::fmat<T, N, M>* value) {
+		_uniform_bindings.emplace_back(name, value);
 	}
 
 	template<typename T, typename std::enable_if<std::is_base_of<cgv::render::vertex_buffer, T>::value, bool>::type = true>

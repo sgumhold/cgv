@@ -222,6 +222,32 @@ std::string get_type_alias_string(const std::string& alias, data_type type) {
 	return get_alias_string(alias, type.type_name());
 }
 
+cgv::render::type_descriptor get_type_descriptor(const data_type& type) {
+	if(!type.is_valid())
+		return {};
+
+	type_info info = get_type_info(type.type());
+
+	using cgv::type::info::TypeId;
+	TypeId type_id = TypeId::TI_UNDEF;
+	switch(info.component_type) {
+	case Type::Void: type_id = TypeId::TI_VOID; break;
+	case Type::Bool: type_id = TypeId::TI_BOOL; break;
+	case Type::Int: type_id = TypeId::TI_INT32; break;
+	case Type::UInt: type_id = TypeId::TI_UINT32; break;
+	case Type::Float: type_id = TypeId::TI_FLT32; break;
+	case Type::Double: type_id = TypeId::TI_FLT64; break;
+	default: break;
+	}
+
+	if(type.is_vector())
+		return cgv::render::type_descriptor(type_id, static_cast<unsigned int>(info.row_count));
+	else if(type.is_matrix())
+		return cgv::render::type_descriptor(type_id, static_cast<unsigned int>(info.row_count), static_cast<unsigned int>(info.column_count), false);
+	else
+		return cgv::render::type_descriptor(type_id);
+}
+
 std::string to_string(const named_variable& variable) {
 	std::string res;
 	res = variable.type().type_name() + " " + variable.name();
