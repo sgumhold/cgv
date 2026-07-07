@@ -14,10 +14,10 @@ namespace math {
 
 /// return 1 if v > 0, -1 if v < 0 or 0 if v = 0
 template<typename T>
-T sgn(const T& v) { return (T(0) < v) - (v < T(0)); }
+int sgn(const T& v) { return (T(0) < v) - (v < T(0)); }
 /// if v >= 0 returns 1 and otherwise -1
 template<typename T>
-T sign(const T&v) { return (v >= T(0)) ? T(1) : T(-1); }
+int sign(const T&v) { return (v >= T(0)) ? T(1) : T(-1); }
 /// returns the abs(a)*sign(b)
 template<typename T>
 T sign(const T& a, const T& b) { return (b < 0) ? -std::abs(a) : std::abs(a); }
