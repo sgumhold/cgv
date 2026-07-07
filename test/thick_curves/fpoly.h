@@ -16,6 +16,22 @@ public:
 	fpoly_mon(const T& v) : fvec<T, N + 1>(v) {}
 	/// init from array
 	fpoly_mon(const T* v_ptr) : fvec<T, N + 1>(N+1,v_ptr) {}
+	/// construct from a vector of roots
+	fpoly_mon(const std::vector<T>& roots) : fvec<T, N + 1>(T(0)) {
+		if (roots.size() == 0)
+			return;
+		data()[0] = -roots[0];
+		data()[1] = T(1);
+		for (int i = 1; i < roots.size(); ++i) {
+			T v = -roots[i];
+			data()[i + 1] = data()[i];
+			for (int j = i; j > 0; --j)
+				data()[j] = data()[j] * v + data()[j - 1];
+			data()[0] *= v;
+		}
+	}
+	/// convert to lower dimensional 
+	template <int M> fpoly_mon<T,M>& down() { return *reinterpret_cast<fpoly_mon<T, M>*>(this) }
 	/// construct from value list
 	template <typename S>
 	fpoly_mon(std::initializer_list<S> values) {
@@ -160,6 +176,81 @@ public:
 	/// estimate root count
 	int estimate_nr_roots_on_interval(const T& a, const T& b) const {
 		return count_sign_changes(evaluate(a)) - count_sign_changes(evaluate(b));
+	}
+	/// return list of interval boundary pairs that contain one root each
+	std::vector<cgv::math::fvec<T,2>> eliminate_roots(const T& a, const T& b) const {
+		int cnt_a = count_sign_changes(evaluate(a));
+		int cnt_b = count_sign_changes(evaluate(b));
+		if (cnt_a == cnt_b)
+			return {};
+		if (cnt_b+1 == cnt_a)
+			return { { a,b } };
+		T upper_bounds[N+1], lower_bounds[N+1];
+		int cnts[N+1], nexts[N+1];
+		int i = 0, j = cnt_a - cnt_b;
+		upper_bounds[i] = a;
+		cnts[i] = cnt_a;
+		nexts[i] = j;
+		lower_bounds[j] = b;
+		cnts[j] = cnt_b;
+		while (i < j) {
+			int k = nexts[i];
+			if (k == i + 1) {
+				i = k;
+				continue;
+			}
+			T split = T(0.5) * (upper_bounds[i] + lower_bounds[k]);
+			int cnt_split = count_sign_changes(evaluate(split));
+			int l = cnt_a - cnt_split;
+			if (l == i)
+				upper_bounds[i] = split;
+			else if (l == k)
+				lower_bounds[k] = split;
+			else {
+				lower_bounds[l] = upper_bounds[l] = split;
+				cnts[l] = cnt_split;
+				nexts[l] = nexts[i];
+				nexts[i] = l;
+			}
+		}
+		std::vector<cgv::math::fvec<T, 2>> res;
+		for (i = 0; i < j; ++i)
+			res.push_back({ upper_bounds[i], lower_bounds[i + 1] } );
+		return res;
+	}
+	/// find root in interval
+	T find_root(const T& a, const T& b, const T& eps)
+	{
+		T t0 = a, t1 = b;
+		T y0 = poly().eval(t0);
+		while (true) {
+			// interval bisection
+			T tm = (t0 + t1) / 2;
+			if (t1 - t0 <= eps)
+				return tm;
+			T ym = poly().eval(tm);
+			// try to improve with Newton step
+			T tn = tm - ym / deri().eval(tm);
+			if (tn > t0 && tn < t1) { // valid Newton step
+				T yn = poly().eval(tn);
+				if (yn < ym) {
+					if (std::abs(tm - tn) <= eps)
+						return tn;
+					else {
+						tm = tn;
+						ym = yn;
+					}
+				}
+			}
+			// select interval
+			if (sgn(y0) == sgn(ym)) {
+				t0 = tm;
+				y0 = ym;
+			}
+			else
+				t1 = tm;
+		}
+		return a;
 	}
 };
 	}

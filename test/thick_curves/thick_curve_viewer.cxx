@@ -413,36 +413,59 @@ bool test_remainder(int n = 100)
 		random_test_remainder<6, 6>(n);
 }
 
-void test_schur_chain()
+template<typename T, int G = 6>
+void test_schur_chain(T eps, T eps_val, int n = 100)
 {
-	cgv::math::fpoly_mon<double, 2> P = { 2.0,-3.0,1.0 };
-	cgv::math::sturm_chain_mon<double, 2> SC(P);
-	SC.estimate_nr_roots_on_interval(0.0, 3.0);
-
 	std::default_random_engine e;
-	std::uniform_real_distribution<double> u(-0.001, 1.001);
-	for (int i = 0; i < 1000; ++i) {
-		cgv::math::fvec<double, 6> v;
-		for (int j = 0; j < 6; ++j)
-			v[j] = u(e);
-		int cnt = 6;
-		for (int j = 0; j < 6; ++j)
+	std::uniform_real_distribution<T> u(T(0.001), T(0.999));
+	for (int i = 0; i < n; ++i) {
+		std::vector<T> v;
+		for (int j = 0; j < G; ++j)
+			v.push_back(u(e));
+		int cnt = G;
+		for (int j = 0; j < G; ++j)
 			if (u(e) > 0.5) {
 				v[j] += 1.0;
 				--cnt;
 			}
-		cgv::math::fpoly_mon<double, 1> p0 = { -v[0], 1.0 };
-		cgv::math::fpoly_mon<double, 1> p1 = { -v[1], 1.0 };
-		cgv::math::fpoly_mon<double, 1> p2 = { -v[2], 1.0 };
-		cgv::math::fpoly_mon<double, 1> p3 = { -v[3], 1.0 };
-		cgv::math::fpoly_mon<double, 1> p4 = { -v[4], 1.0 };
-		cgv::math::fpoly_mon<double, 1> p5 = { -v[5], 1.0 };
-		cgv::math::fpoly_mon<double, 6> p = p0 * p1 * p2 * p3 * p4 * p5;
+		cgv::math::fpoly_mon<T, G> p(v);
+		cgv::math::sturm_chain_mon<T, G> sc(p);
+		auto I = sc.eliminate_roots(0.0, 1.0);
+		std::vector<T> w;
+		for (auto iv : I)
+			w.push_back(sc.find_root(iv[0], iv[1], eps));
 
-		cgv::math::sturm_chain_mon<double, 6> sc(p);
-		int sturm_cnt = sc.estimate_nr_roots_on_interval(0.0, 1.0);
-		if (sturm_cnt != cnt) {
-			std::cout << "of " << v << " found " << sturm_cnt << " instead of " << cnt << " nr roots" << std::endl;
+		for (auto r : w) {
+			int j;
+			T min_delta = 1000.0;
+			for (j = 0; j < v.size(); ++j) {
+				T delta = std::abs(r - v[j]);
+				if (delta <= eps_val)
+					break;
+				else if (delta < min_delta)
+					min_delta = delta;
+			}
+			if (j < v.size())
+				v.erase(v.begin() + j);
+			else {
+				std::cout << "ERROR: did not find root " << r << " in";
+				for (auto vv : v)
+					std::cout << " " << vv;
+				std::cout << " [" << eps_val << " <-> " << min_delta<< "]" << std::endl;
+			}
+		}
+		///int sturm_cnt = sc.estimate_nr_roots_on_interval(0.0, 1.0);
+		if (w.size() + v.size() == G) {
+		}
+		else {
+			std::cout << "ERROR: found the roots";
+			for (auto ww : w)
+				std::cout << " " << ww;
+			std::cout << " and the non roots";
+			for (auto vv : v)
+				std::cout << " " << vv;
+
+			std::cout << std::endl;
 		}
 	}
 
@@ -695,7 +718,12 @@ private:
 public:
 	thick_line_viewer() : cgv::base::group("Thick Line Viewer") {
 		//test_remainder(100);
-		test_schur_chain();
+		std::cout << "test degree 6:" << std::endl;
+		test_schur_chain<double,6>(0.0000001f,0.00001f,10000);
+		std::cout << "test degree 8:" << std::endl;
+		test_schur_chain<double,8>(0.0000001f,0.00001f, 10000);
+		std::cout << "test degree 10:" << std::endl;
+		test_schur_chain<double,10>(0.0000001f,0.00001f, 10000);
 		std::cout << "performed tests with n=100" << std::endl;
 		urs.orient_splats = true;
 		urs.measure_point_size_in_pixel = false;
