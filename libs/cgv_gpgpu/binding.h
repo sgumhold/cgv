@@ -14,16 +14,64 @@ public:
 
 	uniform_binding(const std::string& name) : sl::named_object(name) {}
 
-	template<typename T>
-	uniform_binding(const std::string& name, const T& value) : sl::named_object(name) {
-		set(value);
+	uniform_binding(const std::string& name, bool value) : sl::named_object(name) {
+		store_value(value);
 	}
 
-	uniform_binding(const std::string& name, cgv::render::type_descriptor descriptor, const void* address) : sl::named_object(name), _desc(descriptor), _addr(address) {}
+	uniform_binding(const std::string& name, int32_t value) : sl::named_object(name) {
+		store_value(value);
+	}
 
-	template<typename T>
-	void operator=(const T& value) {
-		set(value);
+	uniform_binding(const std::string& name, uint32_t value) : sl::named_object(name) {
+		store_value(value);
+	}
+
+	uniform_binding(const std::string& name, float value) : sl::named_object(name) {
+		store_value(value);
+	}
+
+	uniform_binding(const std::string& name, double value) : sl::named_object(name) {
+		store_value(value);
+	}
+
+	template<typename T, cgv::type::uint32_type N>
+	uniform_binding(const std::string& name, const cgv::math::fvec<T, N>* value) : sl::named_object(name) {
+		store_address(value);
+	}
+
+	template<typename T, cgv::type::uint32_type N, cgv::type::uint32_type M>
+	uniform_binding(const std::string& name, const cgv::math::fmat<T, N, M>* value) : sl::named_object(name) {
+		store_address(value);
+	}
+
+	void bind(bool value) {
+		store_value(value);
+	}
+
+	void bind(int32_t value) {
+		store_value(value);
+	}
+
+	void bind(uint32_t value) {
+		store_value(value);
+	}
+
+	void bind(float value) {
+		store_value(value);
+	}
+
+	void bind(double value) {
+		store_value(value);
+	}
+
+	template<typename T, cgv::type::uint32_type N>
+	void bind(const cgv::math::fvec<T, N>* value) {
+		store_address(value);
+	}
+
+	template<typename T, cgv::type::uint32_type N, cgv::type::uint32_type M>
+	void bind(const cgv::math::fmat<T, N, M>* value) {
+		store_address(value);
 	}
 
 	cgv::render::type_descriptor descriptor() const {
@@ -31,33 +79,88 @@ public:
 	};
 
 	const void* address() const {
-		return _addr;
+		if(_stores_value)
+			return static_cast<const void*>(&_value_buffer);
+		else
+			return _addr;
 	};
 
 private:
 	template<typename T>
-	void set(const T& value) {
+	void store_value(T value) {
+		_stores_value = true;
 		_desc = cgv::render::element_descriptor_traits<T>::get_type_descriptor({});
-		_addr = cgv::render::element_descriptor_traits<T>::get_address(value);
+		T& buffer = reinterpret_cast<T&>(_value_buffer[0]);
+		buffer = value;
 	}
 
+	template<typename T>
+	void store_address(const T* address) {
+		_stores_value = false;
+		_desc = cgv::render::element_descriptor_traits<T>::get_type_descriptor({});
+		_addr = address;
+	}
+
+	bool _stores_value = false;
 	cgv::render::type_descriptor _desc;
-	const void* _addr = nullptr;
+	union {
+		const void* _addr = nullptr;
+		uint8_t _value_buffer[sizeof(_addr)];
+	};
 };
 
 using uniform_binding_list = std::vector<uniform_binding>;
 
-template<typename T>
+template<typename T, typename Enable = void>
 class typed_uniform_binding : public uniform_binding {
+public:
+	typed_uniform_binding() = delete;
+	~typed_uniform_binding() = delete;
+};
+
+template<typename T>
+class typed_uniform_binding<T, typename std::enable_if<sl::traits::is_fundamental_sl_scalar_type<T>::value>::type> : public uniform_binding {
 public:
 	typed_uniform_binding() {}
 
 	typed_uniform_binding(const std::string& name) : uniform_binding(name) {}
 
-	typed_uniform_binding(const std::string& name, const T& value) : uniform_binding(name, value) {}
+	typed_uniform_binding(const std::string& name, T value) : uniform_binding(name, value) {}
 
-	void operator=(const T& value) {
-		uniform_binding::operator=(value);
+	void bind(T value) {
+		uniform_binding::bind(value);
+	}
+};
+
+template<typename T, cgv::type::uint32_type N>
+class typed_uniform_binding<cgv::math::fvec<T, N>, typename std::enable_if<sl::traits::is_fundamental_sl_scalar_type<T>::value>::type> : public uniform_binding {
+public:
+	using value_type = cgv::math::fvec<T, N>;
+
+	typed_uniform_binding() {}
+
+	typed_uniform_binding(const std::string& name) : uniform_binding(name) {}
+
+	typed_uniform_binding(const std::string& name, const value_type* value) : uniform_binding(name, value) {}
+
+	void bind(const value_type* value) {
+		uniform_binding::bind(value);
+	}
+};
+
+template<typename T, cgv::type::uint32_type N, cgv::type::uint32_type M>
+class typed_uniform_binding<cgv::math::fmat<T, N, M>, typename std::enable_if<sl::traits::is_fundamental_sl_scalar_type<T>::value>::type> : public uniform_binding {
+public:
+	using value_type = cgv::math::fmat<T, N, M>;
+
+	typed_uniform_binding() {}
+
+	typed_uniform_binding(const std::string& name) : uniform_binding(name) {}
+
+	typed_uniform_binding(const std::string& name, const value_type* value) : uniform_binding(name, value) {}
+
+	void bind(const value_type* value) {
+		uniform_binding::bind(value);
 	}
 };
 

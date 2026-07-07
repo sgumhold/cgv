@@ -12,7 +12,7 @@ namespace cgv {
 namespace gpgpu {
 namespace detail {
 
-/// GPU compute shader implementation of a configurable scan over a linear range of elements. This class is not intended for direct use.
+/// GPU compute shader implementation of a configurable scan over a linear range of elements. This class is not intended for direct use. Use inclusive_scan or exclusive_scan instead.
 class CGV_API scan : public algorithm {
 public:
 	scan(const std::string& name, bool inclusive, uint32_t group_size);
@@ -36,8 +36,11 @@ public:
 
 	template<typename T, CGV_GPGPU_DISABLE_DERIVED_TYPES(argument_bindings)>
 	bool dispatch(cgv::render::context& ctx, device_buffer_iterator input_first, device_buffer_iterator input_last, device_buffer_iterator output_first, T init) {
+		if(!sl::matches_type(_value_type, init))
+			return false;
+
 		argument_binding_list arguments;
-		arguments.bind_uniform(_value_type, init_argument_name, init);
+		arguments.bind_uniform(init_argument_name, init);
 		return dispatch(ctx, input_first, input_last, output_first, arguments);
 	}
 
