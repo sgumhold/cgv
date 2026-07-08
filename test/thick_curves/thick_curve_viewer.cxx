@@ -1,5 +1,6 @@
 #include <cgv/defines/quote.h>
 #include <cgv/utils/file.h>
+#include <cgv/utils/stopwatch.h>
 #include <cgv/base/group.h>
 #include <cgv/gui/event_handler.h>
 #include <cgv/gui/key_event.h>
@@ -100,39 +101,40 @@ cgv::mat4 transform_to_ray_coordinates(const cgv::ray3& r, const cgv::mat4& B_wo
 	b3 = (b3 - r.origin) * R;
 	return B;
 }
-void compute_ray_local_polynomials(const cgv::ray3& r, const cgv::mat4& B, cy::Polynomial<double, 3>& cx,
-	cy::Polynomial<double, 3>& cy, cy::Polynomial<double, 3>& cz, cy::Polynomial<double, 3>& ra)
+const cgv::mat4& monom_from_bernstein_matrix()
 {
-	// construct matrix for conversion to monom basis
-	cgv::mat4 T = { {1,-3,3,-1},{0,3,-6,3},{0,0,3,-3},{0,0,0,1} };
-	// convert to monom basis in ray local coordinate frame
-	cgv::mat4 M = T * transpose(B);
-	// extract base polynomials
-	cx = { M(0,0), M(1,0), M(2,0), M(3,0) };
-	cy = { M(0,1), M(1,1), M(2,1), M(3,1) };
-	cz = { M(0,2), M(1,2), M(2,2), M(3,2) };
-	ra = { M(0,3), M(1,3), M(2,3), M(3,3) };
+	static cgv::mat4 T = { {1, 0, 0, 0}, { -3,3,0,0 }, { 3,-6,3,0 }, { -1,3,-3,1 } };
+	return T;
 }
-void compute_ray_local_polynomials(const cgv::ray3& r, const cgv::mat4& B, cgv::math::fpoly_mon<double, 3>& cx,
-	cgv::math::fpoly_mon<double, 3>& cy, cgv::math::fpoly_mon<double, 3>& cz, cgv::math::fpoly_mon<double, 3>& ra)
+
+template <typename T>
+void matrix_to_polynomials(cgv::math::fmat<T, 4, 4> M, cy::Polynomial<T, 3>& cx,
+	cy::Polynomial<T, 3>& cy, cy::Polynomial<T, 3>& cz, cy::Polynomial<T, 3>& ra)
 {
-	// construct matrix for conversion to monom basis
-	cgv::mat4 T = { {1,-3,3,-1},{0,3,-6,3},{0,0,3,-3},{0,0,0,1} };
-	// convert to monom basis in ray local coordinate frame
-	cgv::dmat4 M = T * transpose(B);
-	// extract base polynomials
-	cx = { M(0,0), M(1,0), M(2,0), M(3,0) };
-	cy = { M(0,1), M(1,1), M(2,1), M(3,1) };
-	cz = { M(0,2), M(1,2), M(2,2), M(3,2) };
-	ra = { M(0,3), M(1,3), M(2,3), M(3,3) };
+	cx = { M(0,0), M(0,1), M(0,2), M(0,3) };
+	cy = { M(1,0), M(1,1), M(1,2), M(1,3) };
+	cz = { M(2,0), M(2,1), M(2,2), M(2,3) };
+	ra = { M(3,0), M(3,1), M(3,2), M(3,3) };
 }
-void consider_ray_local_sphere_intersection(const cgv::vec4& sphere, double t0, double* s, double* t, int& cnt)
+
+template <typename T>
+void matrix_to_polynomials(cgv::math::fmat<T,4,4> M, cgv::math::fpoly_mon<T, 3>& cx,
+	cgv::math::fpoly_mon<T, 3>& cy, cgv::math::fpoly_mon<T, 3>& cz, cgv::math::fpoly_mon<T, 3>& ra)
 {
-	double x = sphere.x();
-	double y = sphere.y();
-	double z = sphere.z();
-	double r = sphere.w();
-	double q = r * r - y * y - z * z;
+	cx = { M(0,0), M(0,1), M(0,2), M(0,3) };
+	cy = { M(1,0), M(1,1), M(1,2), M(1,3) };
+	cz = { M(2,0), M(2,1), M(2,2), M(2,3) };
+	ra = { M(3,0), M(3,1), M(3,2), M(3,3) };
+}
+
+template <typename T>
+void consider_ray_local_sphere_intersection(const cgv::vec4& sphere, T t0, T* s, T* t, int& cnt)
+{
+	T x = sphere.x();
+	T y = sphere.y();
+	T z = sphere.z();
+	T r = sphere.w();
+	T q = r * r - y * y - z * z;
 	if (q >= 0) {
 		s[cnt] = x - sqrt(q);
 		t[cnt++] = t0;
@@ -189,8 +191,8 @@ bool compute_ray_control_geometry_intersection(const cgv::ray3& r, const cgv::ma
 		cy::Polynomial<double, 2> p = lhs - rhs_sqrt * rhs_sqrt;
 		double s[4], t[4];
 		int cnt = p.Roots(t);
-		consider_ray_local_sphere_intersection(cgv::vec4(p0,r0), 0, s, t, cnt);
-		consider_ray_local_sphere_intersection(cgv::vec4(p1,r1), 1, s, t, cnt);
+		consider_ray_local_sphere_intersection(cgv::vec4(p0,r0), 0.0, s, t, cnt);
+		consider_ray_local_sphere_intersection(cgv::vec4(p1,r1), 1.0, s, t, cnt);
 		int i_min = -1;
 		for (int j = 0; j < cnt; ++j) {
 			if (t[j] >= 0. && t[j] <= 1.) {
@@ -215,55 +217,75 @@ bool compute_ray_control_geometry_intersection(const cgv::ray3& r, const cgv::ma
 	}
 	return found;
 }
-bool compute_ray_sphere_tube_intersection(const cgv::ray3& r, const cgv::mat4& B_world, std::vector<cgv::mat4x2>& intersections)
+
+template <typename T, int solver = 0>
+bool compute_ray_sphere_tube_intersection(const cgv::ray3& r, const cgv::mat4& B_world, 
+	std::vector<cgv::mat4x2>& intersections, T eps)
 {
 	cgv::mat4 B = transform_to_ray_coordinates(r, B_world);
-	cy::Polynomial<double, 3> cx, cy, cz, ra;
-	compute_ray_local_polynomials(r, B, cx, cy, cz, ra);
-	// polynomial representing ortogonal distance to ray
-	cy::Polynomial<double, 6> D = cy * cy + cz * cz;
-	cy::Polynomial<double, 2> dcx = cx.Derivative();
-	cy::Polynomial<double, 6> q   = ra * ra - D;
-	cy::Polynomial<double, 10> lhs = dcx * dcx * q;
-	cy::Polynomial<double, 5> hdD = D.Derivative(); hdD *= 0.5;
-	cy::Polynomial<double, 5> rhs_sqrt = ra * ra.Derivative() - hdD;
-	cy::Polynomial<double, 10> p = lhs - rhs_sqrt * rhs_sqrt;
-	double t[12], s[12];
-	int cnt = p.Roots(t);
-	consider_ray_local_sphere_intersection(B.col(0), 0, s, t, cnt);
-	consider_ray_local_sphere_intersection(B.col(3), 1, s, t, cnt);
-	int i_min = -1;
-	for (int i = 0; i < cnt; ++i) {
-		if (t[i] >= 0.f && t[i] <= 1.f) {
+	cgv::math::fmat<T, 4, 4> M = B * monom_from_bernstein_matrix();
+	T t[12], s[12];
+	int cnt = 0;
+	if (solver == 0) {
+		cy::Polynomial<T, 3> cx, cy, cz, ra;
+		matrix_to_polynomials(M, cx, cy, cz, ra);
+		// polynomial representing ortogonal distance to ray
+		cy::Polynomial<T, 6> D = cy * cy + cz * cz;
+		cy::Polynomial<T, 2> dcx = cx.Derivative();
+		cy::Polynomial<T, 6> q = ra * ra - D;
+		cy::Polynomial<T, 10> lhs = dcx * dcx * q;
+		cy::Polynomial<T, 5> hdD = D.Derivative(); hdD *= 0.5;
+		cy::Polynomial<T, 5> rhs_sqrt = ra * ra.Derivative() - hdD;
+		cy::Polynomial<T, 10> p = lhs - rhs_sqrt * rhs_sqrt;
+		cnt = p.Roots(t, 0.0, 1.0, eps);
+		for (int i = 0; i < cnt; ++i)
 			s[i] = cx.Eval(t[i]) - sqrt(q.Eval(t[i]));
-			if (s[i] > 0.0 && (i_min == -1 || s[i] < s[i_min]))
-				i_min = i;
-		}
 	}
-	if (i_min != -1) {
-		cgv::vec3 b0 = reinterpret_cast<const cgv::vec3&>(B_world.col(0));
-		cgv::vec3 b1 = reinterpret_cast<const cgv::vec3&>(B_world.col(1));
-		cgv::vec3 b2 = reinterpret_cast<const cgv::vec3&>(B_world.col(2));
-		cgv::vec3 b3 = reinterpret_cast<const cgv::vec3&>(B_world.col(3));
-		float tt = float(t[i_min]);
-		cgv::vec3 b10 = lerp(b0, b1, tt);
-		cgv::vec3 b11 = lerp(b1, b2, tt);
-		cgv::vec3 b12 = lerp(b2, b3, tt);
-		cgv::vec3 b20 = lerp(b10, b11, tt);
-		cgv::vec3 b21 = lerp(b11, b12, tt);
-		cgv::vec3 cp = lerp(b20,b21,tt);
-		cgv::vec3 ip = r.position((float)s[i_min]);
-		cgv::mat4x2 I = { cgv::vec4(ip,s[i_min]), cgv::vec4(normalize(ip - cp),t[i_min]) };
-		intersections.push_back(I);
-		return true;
+	else {
+		cgv::math::fpoly_mon<T, 3> cx, cy, cz, ra;
+		matrix_to_polynomials(M, cx, cy, cz, ra);
+		// polynomial representing ortogonal distance to ray
+		cgv::math::fpoly_mon<T, 6> D = cy * cy + cz * cz;
+		cgv::math::fpoly_mon<T, 2> dcx = cx.derive();
+		cgv::math::fpoly_mon<T, 6> q = ra * ra - D;
+		cgv::math::fpoly_mon<T, 10> lhs = dcx * dcx * q;
+		cgv::math::fpoly_mon<T, 5> hdD = D.derive(); hdD *= 0.5;
+		cgv::math::fpoly_mon<T, 5> rhs_sqrt = ra * ra.derive() - hdD;
+		cgv::math::fpoly_mon<T, 10> p = lhs - rhs_sqrt * rhs_sqrt;
+		cnt = p.compute_roots(0.0, 1.0, t, eps);
+		for (int i = 0; i < cnt; ++i)
+			s[i] = cx.eval(t[i]) - sqrt(q.eval(t[i]));
 	}
-	return false;
+	consider_ray_local_sphere_intersection(B.col(0), T(0), s, t, cnt);
+	consider_ray_local_sphere_intersection(B.col(3), T(1), s, t, cnt);
+	int i_min = -1;
+	for (int i = 0; i < cnt; ++i)
+		if (s[i] > 0.0 && (i_min == -1 || s[i] < s[i_min]))
+			i_min = i;
+	if (i_min == -1)
+		return false;
+	cgv::vec3 b0 = B_world.col(0).down();
+	cgv::vec3 b1 = B_world.col(1).down();
+	cgv::vec3 b2 = B_world.col(2).down();
+	cgv::vec3 b3 = B_world.col(3).down();
+	float tt = float(t[i_min]);
+	cgv::vec3 b10 = lerp(b0, b1, tt);
+	cgv::vec3 b11 = lerp(b1, b2, tt);
+	cgv::vec3 b12 = lerp(b2, b3, tt);
+	cgv::vec3 b20 = lerp(b10, b11, tt);
+	cgv::vec3 b21 = lerp(b11, b12, tt);
+	cgv::vec3 cp = lerp(b20,b21,tt);
+	cgv::vec3 ip = r.position((float)s[i_min]);
+	cgv::mat4x2 I = { cgv::vec4(ip,s[i_min]), cgv::vec4(normalize(ip - cp),t[i_min]) };
+	intersections.push_back(I);
+	return true;
 }
+
 bool compute_ray_circle_tube_intersection(const cgv::ray3& r, const cgv::mat4& B_world, std::vector<cgv::mat4x2>& intersections)
 {
-	cgv::mat4 B = transform_to_ray_coordinates(r, B_world);
+	cgv::dmat4 M = transform_to_ray_coordinates(r, B_world) * monom_from_bernstein_matrix();
 	cy::Polynomial<double, 3> cx, cy, cz, ra;
-	compute_ray_local_polynomials(r, B, cx, cy, cz, ra);
+	matrix_to_polynomials(M, cx, cy, cz, ra);
 	// polynomial representing ortogonal distance to ray
 	cy::Polynomial<double, 6> D = cy * cy + cz * cz;
 	cy::Polynomial<double, 2> dcx = cx.Derivative();
@@ -272,24 +294,20 @@ bool compute_ray_circle_tube_intersection(const cgv::ray3& r, const cgv::mat4& B
 	cy::Polynomial<double, 5> hdD = D.Derivative(); hdD *= 0.5;
 	cy::Polynomial<double, 10> p = lhs - hdD * hdD;
 	double t[12], s[12];
-	int cnt = p.Roots(t);
-	//consider_ray_local_sphere_intersection(B.col(0), 0, s, t, cnt);
-	//consider_ray_local_sphere_intersection(B.col(3), 1, s, t, cnt);
+	int cnt = p.Roots(t, 0.0, 1.0);
 	int i_min = -1;
 	for (int i = 0; i < cnt; ++i) {
-		if (t[i] >= 0.f && t[i] <= 1.f) {
-			cgv::dvec3 dc;
-			cgv::dvec3 c(cx.EvalWithDeriv(dc[0], t[i]), cy.EvalWithDeriv(dc[1],t[i]), cz.EvalWithDeriv(dc[2],t[i]));
-			s[i] = dot(c,dc)/dc[0];
-			if (s[i] > 0.0 && (i_min == -1 || s[i] < s[i_min]))
-				i_min = i;
-		}
+		cgv::dvec3 dc;
+		cgv::dvec3 c(cx.EvalWithDeriv(dc[0], t[i]), cy.EvalWithDeriv(dc[1],t[i]), cz.EvalWithDeriv(dc[2],t[i]));
+		s[i] = dot(c,dc)/dc[0];
+		if (s[i] > 0.0 && (i_min == -1 || s[i] < s[i_min]))
+			i_min = i;
 	}
 	if (i_min != -1) {
-		cgv::vec3 b0 = reinterpret_cast<const cgv::vec3&>(B_world.col(0));
-		cgv::vec3 b1 = reinterpret_cast<const cgv::vec3&>(B_world.col(1));
-		cgv::vec3 b2 = reinterpret_cast<const cgv::vec3&>(B_world.col(2));
-		cgv::vec3 b3 = reinterpret_cast<const cgv::vec3&>(B_world.col(3));
+		cgv::vec3 b0 = B_world.col(0).down();
+		cgv::vec3 b1 = B_world.col(1).down();
+		cgv::vec3 b2 = B_world.col(2).down();
+		cgv::vec3 b3 = B_world.col(3).down();
 		float tt = float(t[i_min]);
 		cgv::vec3 b10 = lerp(b0, b1, tt);
 		cgv::vec3 b11 = lerp(b1, b2, tt);
@@ -311,9 +329,9 @@ bool compute_ray_circle_tube_intersection(const cgv::ray3& r, const cgv::mat4& B
 }
 bool compute_ray_view_aligned_ribbon_intersection(const cgv::ray3& r, const cgv::mat4& B_world, std::vector<cgv::mat4x2>& intersections)
 {
-	cgv::mat4 B = transform_to_ray_coordinates(r, B_world);
+	cgv::dmat4 M = transform_to_ray_coordinates(r, B_world) * monom_from_bernstein_matrix();
 	cy::Polynomial<double, 3> cx, cy, cz, ra;
-	compute_ray_local_polynomials(r, B, cx, cy, cz, ra);
+	matrix_to_polynomials(M, cx, cy, cz, ra);
 	// polynomial representing ortogonal distance to ray
 	cy::Polynomial<double, 2> dcx = cx.Derivative(), dcy = cy.Derivative(), dcz = cz.Derivative();
 	cy::Polynomial<double, 8> p = (cx*dcx+cy*dcy+cz*dcz)*cx - (cx*cx+cy*cy+cz*cz)*dcx;
@@ -471,52 +489,6 @@ void test_schur_chain(T eps, T eps_val, int n = 100)
 
 }
 
-/*
-bool my_compute_ray_sphere_tube_intersection(const cgv::ray3& r, const cgv::mat4& B_world, std::vector<cgv::mat4x2>& intersections)
-{
-	cgv::mat4 B = transform_to_ray_coordinates(r, B_world);
-	cgv::math::fpoly_mon<double, 3> cx, cy, cz, ra;
-	compute_ray_local_polynomials(r, B, cx, cy, cz, ra);
-	// polynomial representing ortogonal distance to ray
-	cgv::math::fpoly_mon<double, 6> D = cy * cy + cz * cz;
-	cgv::math::fpoly_mon<double, 2> dcx = cx.derive();
-	cgv::math::fpoly_mon<double, 6> q = ra * ra - D;
-	cgv::math::fpoly_mon<double, 10> lhs = dcx * dcx * q;
-	cgv::math::fpoly_mon<double, 5> hdD = D.derive(); hdD *= 0.5;
-	cgv::math::fpoly_mon<double, 5> rhs_sqrt = ra * ra.derive() - hdD;
-	cgv::math::fpoly_mon<double, 10> p = lhs - rhs_sqrt * rhs_sqrt;
-	double t[12], s[12];
-//	int cnt = p.Roots(t);
-	consider_ray_local_sphere_intersection(B.col(0), 0, s, t, cnt);
-	consider_ray_local_sphere_intersection(B.col(3), 1, s, t, cnt);
-	int i_min = -1;
-	for (int i = 0; i < cnt; ++i) {
-		if (t[i] >= 0.f && t[i] <= 1.f) {
-			s[i] = cx.eval(t[i]) - sqrt(q.eval(t[i]));
-			if (s[i] > 0.0 && (i_min == -1 || s[i] < s[i_min]))
-				i_min = i;
-		}
-	}
-	if (i_min != -1) {
-		cgv::vec3 b0 = reinterpret_cast<const cgv::vec3&>(B_world.col(0));
-		cgv::vec3 b1 = reinterpret_cast<const cgv::vec3&>(B_world.col(1));
-		cgv::vec3 b2 = reinterpret_cast<const cgv::vec3&>(B_world.col(2));
-		cgv::vec3 b3 = reinterpret_cast<const cgv::vec3&>(B_world.col(3));
-		float tt = float(t[i_min]);
-		cgv::vec3 b10 = lerp(b0, b1, tt);
-		cgv::vec3 b11 = lerp(b1, b2, tt);
-		cgv::vec3 b12 = lerp(b2, b3, tt);
-		cgv::vec3 b20 = lerp(b10, b11, tt);
-		cgv::vec3 b21 = lerp(b11, b12, tt);
-		cgv::vec3 cp = lerp(b20, b21, tt);
-		cgv::vec3 ip = r.position((float)s[i_min]);
-		cgv::mat4x2 I = { cgv::vec4(ip,s[i_min]), cgv::vec4(normalize(ip - cp),t[i_min]) };
-		intersections.push_back(I);
-		return true;
-	}
-	return false;
-}
-*/
 struct thick_line_data 
 {
 	std::vector<uint32_t>  indices  = { 0,1,1,2 };
@@ -578,7 +550,18 @@ protected:
 	std::vector<cgv::ray3> rays;
 	enum class primitive_type {
 		spheres, control_geometry, sphere_tube, circle_tube, view_aligned_ribbon
-	} primitive = primitive_type::view_aligned_ribbon;
+	} primitive = primitive_type::sphere_tube;
+	enum class precision_type {
+		flt32, flt64
+	} precision = precision_type::flt32;
+	enum class solver_type {
+		recursive, sturm
+	} solver = solver_type::sturm;
+	enum class strategy_type {
+		direct, filtered
+	} strategy = strategy_type::direct;
+	float eps32 = 6e-4f;
+	double eps64 = 6e-7;
 	std::vector<cgv::vec3> intersections;
 	std::vector<cgv::vec3> intersection_normals;
 	float ray_color_offset = 0.5f;
@@ -598,7 +581,11 @@ protected:
 			return;
 		lines.compute_bezier_tubes();
 		std::vector<cgv::mat4x2> Is;
+		cgv::utils::stopwatch watch(true);
+		int iter = -1;
 		for (const auto& r : rays) {
+			//if (++iter % 100 == 0)
+			//	std::cout << iter << std::endl;
 			cgv::mat4x2 best(-1.f);
 			for (unsigned i = 0; i < nr_tubes; ++i) {
 				Is.clear();
@@ -611,7 +598,28 @@ protected:
 					found = compute_ray_control_geometry_intersection(r, lines.bezier_tubes[i], Is);
 					break;
 				case primitive_type::sphere_tube:
-					found = compute_ray_sphere_tube_intersection(r, lines.bezier_tubes[i], Is); 
+					switch (precision) {
+					case precision_type::flt32:
+						switch (solver) {
+						case solver_type::recursive:
+							found = compute_ray_sphere_tube_intersection<float, 0>(r, lines.bezier_tubes[i], Is, eps32);
+							break;
+						case solver_type::sturm:
+							found = compute_ray_sphere_tube_intersection<float, 1>(r, lines.bezier_tubes[i], Is, eps32);
+							break;
+						}
+						break;
+					case precision_type::flt64:
+						switch (solver) {
+						case solver_type::recursive:
+							found = compute_ray_sphere_tube_intersection<double, 0>(r, lines.bezier_tubes[i], Is, eps64);
+							break;
+						case solver_type::sturm:
+							found = compute_ray_sphere_tube_intersection<double, 1>(r, lines.bezier_tubes[i], Is, eps64);
+							break;
+						}
+						break;
+					}
 					break;
 				case primitive_type::circle_tube:
 					found = compute_ray_circle_tube_intersection(r, lines.bezier_tubes[i], Is);
@@ -621,16 +629,22 @@ protected:
 					break;
 				}
 				if (found) {
-					if (best(3,0) == -1.f || (best(3, 0) > Is.front()(3,0)))
+					if (best(3, 0) == -1.f || (best(3, 0) > Is.front()(3, 0)))
 						best = Is.front();
 				}
 			}
 			if (best(3, 0) != -1) {
 				intersections.push_back(reinterpret_cast<const cgv::vec3&>(best.col(0)));
 				intersection_normals.push_back(reinterpret_cast<const cgv::vec3&>(best.col(1)));
-				intersection_colors.push_back(cgv::rgb(cgv::math::clamp(ray_color_scale*(best(3,0)-ray_color_offset),0.f,1.f),best(3,1),0.f));
+				intersection_colors.push_back(cgv::rgb(cgv::math::clamp(ray_color_scale * (best(3, 0) - ray_color_offset), 0.f, 1.f), best(3, 1), 0.f));
 			}
 		}
+		static const char* primitive_names[] = { "sphere", "geometry", "sphere tube", "circle tube", "ribbon" };
+		static const char* solver_names[] = { "recursive", "Sturm" };
+		static const char* precision_names[] = { "float", "double" };
+		static const char* strategy_names[] = { "direct", "filtered" };
+		std::cout << "elapsed time [" << primitive_names[(int&)primitive] << "," << solver_names[(int&)solver]
+			<< "," << precision_names[(int&)precision] << "]: " << watch.get_elapsed_time() << std::endl;
 		post_recreate_gui();
 	}
 private:
@@ -718,13 +732,13 @@ private:
 public:
 	thick_line_viewer() : cgv::base::group("Thick Line Viewer") {
 		//test_remainder(100);
-		std::cout << "test degree 6:" << std::endl;
-		test_schur_chain<double,6>(0.0000001f,0.00001f,10000);
-		std::cout << "test degree 8:" << std::endl;
-		test_schur_chain<double,8>(0.0000001f,0.00001f, 10000);
-		std::cout << "test degree 10:" << std::endl;
-		test_schur_chain<double,10>(0.0000001f,0.00001f, 10000);
-		std::cout << "performed tests with n=100" << std::endl;
+		//std::cout << "test degree 6:" << std::endl;
+		//test_schur_chain<double,6>(0.0000001f,0.00001f,10000);
+		//std::cout << "test degree 8:" << std::endl;
+		//test_schur_chain<double,8>(0.0000001f,0.00001f, 10000);
+		//std::cout << "test degree 10:" << std::endl;
+		//test_schur_chain<double,10>(0.0000001f,0.00001f, 10000);
+		//std::cout << "performed tests with n=100" << std::endl;
 		urs.orient_splats = true;
 		urs.measure_point_size_in_pixel = false;
 		urs.point_size = 3;
@@ -935,7 +949,8 @@ public:
 	void on_set(void* member_ptr) {
 		if (!rays.empty() && (member_ptr == &ray_length || member_ptr == &ray_offset || member_ptr == &subsampling))
 			sample_rays();
-		if (!intersections.empty() && ((member_ptr == &primitive) || (member_ptr == &ray_color_offset) || (member_ptr == &ray_color_scale)))
+		if (!intersections.empty() && 
+			((member_ptr == &primitive) || (member_ptr == &precision) || (member_ptr == &solver) || (member_ptr == &strategy) || (member_ptr == &ray_color_offset) || (member_ptr == &ray_color_scale)))
 			intersect_rays();
 		if (member_ptr == &current_control_point)
 			begin_gizmo();
@@ -1137,7 +1152,13 @@ public:
 		add_member_control(this, "Show Cameras", show_cameras, "check");
 		connect_copy(add_button("Sample Rays")->click, cgv::signal::rebind(this, &thick_line_viewer::sample_rays));
 		add_member_control(this, "Show Rays", show_rays, "check");
-		add_member_control(this, "Primitive Type", primitive, "dropdown", "enums='spheres,control geometry,sphere tube,circle tube,view aligned ribbon'");
+		add_member_control(this, "Primitive", primitive, "dropdown", "enums='spheres,control geometry,sphere tube,circle tube,view aligned ribbon'");
+		add_member_control(this, "Precision", precision, "dropdown", "enums='float,double'");
+		add_member_control(this, "Solver", solver, "dropdown", "enums='recursive,Sturm'");
+		add_member_control(this, "Strategy", strategy, "dropdown", "enums='direct,filtered'");
+		add_member_control(this, "Eps32", eps32, "value_slider", "min=0.0000001;step=0.000000001;max=0.01;log=true;ticks=true");
+		add_member_control(this, "Eps64", eps64, "value_slider", "min=0.000000001;step=0.00000000001;max=0.01;log=true;ticks=true");
+
 		connect_copy(add_button("Intersect Rays")->click, cgv::signal::rebind(this, &thick_line_viewer::intersect_rays));
 		add_member_control(this, "Show Intersections", show_intersections, "check");
 		add_member_control(this, "Ray Color Offset", ray_color_offset, "value_slider", "min=0.01;max=20;ticks=true;log=true");

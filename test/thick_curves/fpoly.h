@@ -6,6 +6,8 @@
 namespace cgv {
 	namespace math {
 
+template <typename T, int N> class sturm_chain_mon;
+
 template <typename T, int N> 
 class fpoly_mon : public fvec<T, N+1>
 {
@@ -112,6 +114,15 @@ public:
 			r[i - 1] = i * data()[i];
 		return r;
 	}
+	/// compute roots of polynom and return count
+	int compute_roots(const T& a, const T& b, T* roots, const T& eps) {
+		sturm_chain_mon<T, N> sc(*this);
+		auto Is = sc.eliminate_roots(a, b, eps);
+		int cnt = 0;
+		for (auto I : Is)
+			roots[cnt++] = sc.find_root(I[0], I[1], eps);
+		return cnt;
+	}
 };
 
 /// implementation of schur chain to estimate root count on given interval
@@ -178,10 +189,11 @@ public:
 		return count_sign_changes(evaluate(a)) - count_sign_changes(evaluate(b));
 	}
 	/// return list of interval boundary pairs that contain one root each
-	std::vector<cgv::math::fvec<T,2>> eliminate_roots(const T& a, const T& b) const {
+	std::vector<cgv::math::fvec<T,2>> eliminate_roots(const T& a, const T& b, T eps) const {
 		int cnt_a = count_sign_changes(evaluate(a));
 		int cnt_b = count_sign_changes(evaluate(b));
-		if (cnt_a == cnt_b)
+		// less in less or equal is necessary for float precision to avoid accessing invalid memory
+		if (cnt_a <= cnt_b)
 			return {};
 		if (cnt_b+1 == cnt_a)
 			return { { a,b } };
@@ -200,8 +212,15 @@ public:
 				continue;
 			}
 			T split = T(0.5) * (upper_bounds[i] + lower_bounds[k]);
-			int cnt_split = count_sign_changes(evaluate(split));
+			// clamping is necessary for float precision to avoid invalid memory access
+			int cnt_split = clamp(count_sign_changes(evaluate(split)),cnt_b,cnt_a);
 			int l = cnt_a - cnt_split;
+			if (lower_bounds[k] - upper_bounds[i] <= eps) {
+				upper_bounds[i] = lower_bounds[k];
+				for (int j = i + 1; j < k; ++j)
+					lower_bounds[j] = upper_bounds[j] = split;
+				i = k;
+			}
 			if (l == i)
 				upper_bounds[i] = split;
 			else if (l == k)
@@ -221,6 +240,8 @@ public:
 	/// find root in interval
 	T find_root(const T& a, const T& b, const T& eps)
 	{
+		if (a == b)
+			return a;
 		T t0 = a, t1 = b;
 		T y0 = poly().eval(t0);
 		while (true) {
