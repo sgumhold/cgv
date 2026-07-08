@@ -8,10 +8,56 @@
 #include <cgv/math/fmat.h>
 #include <cgv/math/interval.h>
 #include <cgv/render/context.h>
+#include <cgv/render/element_traits.h>
 
 #include "lib_begin.h"
 
 namespace sl {
+
+namespace traits {
+
+// Todo: Make use of the inline keyword if the framework is ever updated to at least C++17.
+
+template<class T>
+/*inline*/ constexpr bool is_instance_of_fvec_v = std::false_type{};
+
+template<class T, cgv::type::uint32_type N>
+/*inline*/ constexpr bool is_instance_of_fvec_v<cgv::math::fvec<T, N>> = std::true_type{};
+
+template<class T>
+/*inline*/ constexpr bool is_instance_of_fmat_v = std::false_type{};
+
+template<class T, cgv::type::uint32_type N, cgv::type::uint32_type M>
+/*inline*/ constexpr bool is_instance_of_fmat_v<cgv::math::fmat<T, N, M>> = std::true_type{};
+
+// TODO: Move is_instance_of(_v) to cgv/type/traits.
+template<class T, template<class...> class U>
+/*inline*/ constexpr bool is_instance_of_v = std::false_type{};
+
+template<template<class...> class U, class ...Vs>
+/*inline*/ constexpr bool is_instance_of_v<U<Vs...>, U> = std::true_type{};
+
+template<class T>
+/*inline*/ constexpr bool is_fundamental_sl_scalar_type_v =
+std::is_same_v<T, bool> ||
+std::is_same_v<T, std::int32_t> ||
+std::is_same_v<T, std::uint32_t> ||
+std::is_same_v<T, float> ||
+std::is_same_v<T, double>;
+
+template<class T>
+struct is_fundamental_sl_scalar_type : std::bool_constant<is_fundamental_sl_scalar_type_v<T>> {};
+
+template<class T>
+/*inline*/ constexpr bool is_fundamental_sl_type_v =
+is_fundamental_sl_scalar_type_v<T> ||
+is_instance_of_fvec_v<T> ||
+is_instance_of_fmat_v<T>;
+
+template<class T>
+struct is_fundamental_sl_type : std::bool_constant<is_fundamental_sl_type_v<T>> {};
+
+} // namespace traits
 
 enum class Type : int32_t {
 	Void = 0,
@@ -131,6 +177,16 @@ extern CGV_API std::string get_type_definition_string(data_type type);
 extern CGV_API std::string get_alias_string(const std::string& alias, const std::string& type);
 
 extern CGV_API std::string get_type_alias_string(const std::string& alias, data_type type);
+
+extern CGV_API cgv::render::type_descriptor get_type_descriptor(const data_type& type);
+
+template<class T>
+bool matches_type(const data_type& type, const T& value) {
+	if(!type.is_valid() || type.is_compound())
+		return false;
+
+	return get_type_descriptor(type) == cgv::render::element_descriptor_traits<T>::get_type_descriptor({});
+}
 
 struct type_definition {
 	std::string type_name;
@@ -349,40 +405,6 @@ struct image {};
 struct texture {};
 
 } // namespace tag
-
-namespace traits {
-
-// Todo: Make use of the inline keyword if the framework is ever updated to at least C++17.
-
-template<class T>
-/*inline*/ constexpr bool is_instance_of_fvec_v = std::false_type{};
-
-template<class T, cgv::type::uint32_type N>
-/*inline*/ constexpr bool is_instance_of_fvec_v<cgv::math::fvec<T, N>> = std::true_type{};
-
-template<class T>
-/*inline*/ constexpr bool is_instance_of_fmat_v = std::false_type{};
-
-template<class T, cgv::type::uint32_type N, cgv::type::uint32_type M>
-/*inline*/ constexpr bool is_instance_of_fmat_v<cgv::math::fmat<T, N, M>> = std::true_type{};
-
-// TODO: Move is_instance_of(_v) to cgv/type/traits.
-template<class T, template<class...> class U>
-/*inline*/ constexpr bool is_instance_of_v = std::false_type{};
-
-template<template<class...> class U, class ...Vs>
-/*inline*/ constexpr bool is_instance_of_v<U<Vs...>, U> = std::true_type{};
-
-template<class T>
-/*inline*/ constexpr bool is_fundamental_sl_type_v =
-	std::is_arithmetic_v<std::remove_cv_t<T>> ||
-	is_instance_of_fvec_v<T> ||
-	is_instance_of_fmat_v<T>;
-
-template<class T>
-struct is_fundamental_sl_type : std::bool_constant<is_fundamental_sl_type_v<T>> {};
-
-} // namespace traits
 
 namespace operation {
 

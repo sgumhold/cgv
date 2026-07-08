@@ -69,7 +69,7 @@ public:
 	}
 
 	bool execute(cgv::render::context& ctx, device_buffer_iterator elements_first, device_buffer_iterator elements_last, device_buffer_iterator output_indices, const cgv::vec3& eye_position) {
-		_distance_transform_arguments.eye_pos = eye_position;
+		_distance_transform_arguments.eye_pos.bind(&eye_position);
 		return execute(ctx, elements_first, elements_last, output_indices, _distance_transform_arguments);
 	}
 

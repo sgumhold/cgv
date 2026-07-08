@@ -36,9 +36,12 @@ public:
 
 	template<typename T, CGV_GPGPU_DISABLE_DERIVED_TYPES(argument_bindings)>
 	bool dispatch(cgv::render::context& ctx, device_buffer_iterator input_first, device_buffer_iterator input_last, device_buffer_iterator output_first, T lower_limit, T upper_limit, bool clear_bins = true) {
+		if(!sl::matches_type(_value_type, lower_limit))
+			return false;
+
 		argument_binding_list arguments;
-		arguments.bind_uniform(_value_type, lower_limit_argument_name, lower_limit);
-		arguments.bind_uniform(_value_type, upper_limit_argument_name, upper_limit);
+		arguments.bind_uniform(lower_limit_argument_name, lower_limit);
+		arguments.bind_uniform(upper_limit_argument_name, upper_limit);
 		bool use_remapping = !range_fits_bin_count(lower_limit, upper_limit);
 		return dispatch(ctx, input_first, input_last, output_first, arguments, use_remapping, clear_bins);
 	}
