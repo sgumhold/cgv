@@ -280,52 +280,79 @@ bool compute_ray_sphere_tube_intersection(const cgv::ray3& r, const cgv::mat4& B
 	intersections.push_back(I);
 	return true;
 }
-
-bool compute_ray_circle_tube_intersection(const cgv::ray3& r, const cgv::mat4& B_world, std::vector<cgv::mat4x2>& intersections)
+template <typename T, int solver = 0>
+bool compute_ray_circle_tube_intersection(const cgv::ray3& r, const cgv::mat4& B_world, std::vector<cgv::mat4x2>& intersections, const T& eps)
 {
-	cgv::dmat4 M = transform_to_ray_coordinates(r, B_world) * monom_from_bernstein_matrix();
-	cy::Polynomial<double, 3> cx, cy, cz, ra;
-	matrix_to_polynomials(M, cx, cy, cz, ra);
-	// polynomial representing ortogonal distance to ray
-	cy::Polynomial<double, 6> D = cy * cy + cz * cz;
-	cy::Polynomial<double, 2> dcx = cx.Derivative();
-	cy::Polynomial<double, 6> q = ra * ra - D;
-	cy::Polynomial<double, 10> lhs = dcx * dcx * q;
-	cy::Polynomial<double, 5> hdD = D.Derivative(); hdD *= 0.5;
-	cy::Polynomial<double, 10> p = lhs - hdD * hdD;
-	double t[12], s[12];
-	int cnt = p.Roots(t, 0.0, 1.0);
+	cy::Polynomial<T, 3> ra0;
+	cgv::math::fpoly_mon<T, 3> ra1;
+	cgv::mat4 B = transform_to_ray_coordinates(r, B_world);
+	cgv::math::fmat<T, 4, 4> M = B * monom_from_bernstein_matrix();
+	T t[12], s[12];
+	int cnt = 0;
+	if (solver == 0) {
+		cy::Polynomial<T, 3> cx, cy, cz;
+		matrix_to_polynomials(M, cx, cy, cz, ra0);
+		// polynomial representing ortogonal distance to ray
+		cy::Polynomial<T, 6> D = cy * cy + cz * cz;
+		cy::Polynomial<T, 2> dcx = cx.Derivative();
+		cy::Polynomial<T, 6> q = ra0 * ra0 - D;
+		cy::Polynomial<T, 10> lhs = dcx * dcx * q;
+		cy::Polynomial<T, 5> hdD = D.Derivative(); hdD *= T(0.5);
+		cy::Polynomial<T, 10> p = lhs - hdD * hdD;
+		cnt = p.Roots(t, T(0.0), T(1.0), eps);
+		for (int i = 0; i < cnt; ++i) {
+			cgv::math::fvec<T, 3> dc;
+			cgv::math::fvec<T, 3> c(cx.EvalWithDeriv(dc[0], t[i]), cy.EvalWithDeriv(dc[1], t[i]), cz.EvalWithDeriv(dc[2], t[i]));
+			s[i] = dot(c, dc) / dc[0];
+		}
+	}
+	else {
+		cgv::math::fpoly_mon<T, 3> cx, cy, cz;
+		matrix_to_polynomials(M, cx, cy, cz, ra1);
+		// polynomial representing ortogonal distance to ray
+		cgv::math::fpoly_mon<T, 6> D = cy * cy + cz * cz;
+		cgv::math::fpoly_mon<T, 2> dcx = cx.derive();
+		cgv::math::fpoly_mon<T, 6> q = ra1 * ra1 - D;
+		cgv::math::fpoly_mon<T, 10> lhs = dcx * dcx * q;
+		cgv::math::fpoly_mon<T, 5> hdD = D.derive(); hdD *= T(0.5);
+		cgv::math::fpoly_mon<T, 10> p = lhs - hdD * hdD;
+		cnt = p.compute_roots(T(0.0), T(1.0), t, eps);
+		for (int i = 0; i < cnt; ++i) {
+			cgv::math::fvec<T, 3> dc;
+			cgv::math::fvec<T, 3> c(cx.eval_with_derivative(t[i], dc[0]), cy.eval_with_derivative(t[i], dc[1]), cz.eval_with_derivative(t[i], dc[2]));
+			s[i] = dot(c, dc) / dc[0];
+		}
+	}
 	int i_min = -1;
 	for (int i = 0; i < cnt; ++i) {
-		cgv::dvec3 dc;
-		cgv::dvec3 c(cx.EvalWithDeriv(dc[0], t[i]), cy.EvalWithDeriv(dc[1],t[i]), cz.EvalWithDeriv(dc[2],t[i]));
-		s[i] = dot(c,dc)/dc[0];
 		if (s[i] > 0.0 && (i_min == -1 || s[i] < s[i_min]))
 			i_min = i;
 	}
-	if (i_min != -1) {
-		cgv::vec3 b0 = B_world.col(0).down();
-		cgv::vec3 b1 = B_world.col(1).down();
-		cgv::vec3 b2 = B_world.col(2).down();
-		cgv::vec3 b3 = B_world.col(3).down();
-		float tt = float(t[i_min]);
-		cgv::vec3 b10 = lerp(b0, b1, tt);
-		cgv::vec3 b11 = lerp(b1, b2, tt);
-		cgv::vec3 b12 = lerp(b2, b3, tt);
-		cgv::vec3 b20 = lerp(b10, b11, tt);
-		cgv::vec3 b21 = lerp(b11, b12, tt);
-		cgv::vec3 cp = lerp(b20, b21, tt);
-		cgv::vec3 ta = normalize(b21-b20);
-		cgv::vec3 ip = r.position((float)s[i_min]);
-		cgv::vec3 no = normalize(ip - cp);
-		double drad;
-		double rad = ra.EvalWithDeriv(drad, t[i_min]);
-		cgv::vec3 nml = normalize(no - (float)drad * ta);
-		cgv::mat4x2 I = { cgv::vec4(ip,s[i_min]), cgv::vec4(nml,t[i_min]) };
-		intersections.push_back(I);
-		return true;
-	}
-	return false;
+	if (i_min == -1)
+		return false;
+	cgv::vec3 b0 = B_world.col(0).down();
+	cgv::vec3 b1 = B_world.col(1).down();
+	cgv::vec3 b2 = B_world.col(2).down();
+	cgv::vec3 b3 = B_world.col(3).down();
+	float tt = float(t[i_min]);
+	cgv::vec3 b10 = lerp(b0, b1, tt);
+	cgv::vec3 b11 = lerp(b1, b2, tt);
+	cgv::vec3 b12 = lerp(b2, b3, tt);
+	cgv::vec3 b20 = lerp(b10, b11, tt);
+	cgv::vec3 b21 = lerp(b11, b12, tt);
+	cgv::vec3 cp = lerp(b20, b21, tt);
+	cgv::vec3 ta = normalize(b21 - b20);
+	cgv::vec3 ip = r.position((float)s[i_min]);
+	cgv::vec3 no = normalize(ip - cp);
+	T rad, drad;
+	if (solver == 0)
+		rad = ra0.EvalWithDeriv(drad, t[i_min]);
+	else
+		rad = ra1.eval_with_derivative(t[i_min], drad);
+	cgv::vec3 nml = normalize(no - (float)drad * ta);
+	cgv::mat4x2 I = { cgv::vec4(ip,s[i_min]), cgv::vec4(nml,t[i_min]) };
+	intersections.push_back(I);
+	return true;
 }
 bool compute_ray_view_aligned_ribbon_intersection(const cgv::ray3& r, const cgv::mat4& B_world, std::vector<cgv::mat4x2>& intersections)
 {
@@ -544,19 +571,19 @@ protected:
 
 	thick_line_data lines;
 
-	unsigned subsampling = 8;
+	unsigned subsampling = 32;
 	float ray_offset = 1.0f;
 	float ray_length = 2.0f;
 	std::vector<cgv::ray3> rays;
 	enum class primitive_type {
 		spheres, control_geometry, sphere_tube, circle_tube, view_aligned_ribbon
-	} primitive = primitive_type::sphere_tube;
+	} primitive = primitive_type::circle_tube;
 	enum class precision_type {
 		flt32, flt64
-	} precision = precision_type::flt32;
+	} precision = precision_type::flt64;
 	enum class solver_type {
 		recursive, sturm
-	} solver = solver_type::sturm;
+	} solver = solver_type::recursive;
 	enum class strategy_type {
 		direct, filtered
 	} strategy = strategy_type::direct;
@@ -622,7 +649,28 @@ protected:
 					}
 					break;
 				case primitive_type::circle_tube:
-					found = compute_ray_circle_tube_intersection(r, lines.bezier_tubes[i], Is);
+					switch (precision) {
+					case precision_type::flt32:
+						switch (solver) {
+						case solver_type::recursive:
+							found = compute_ray_circle_tube_intersection<float, 0>(r, lines.bezier_tubes[i], Is, eps32);
+							break;
+						case solver_type::sturm:
+							found = compute_ray_circle_tube_intersection<float, 1>(r, lines.bezier_tubes[i], Is, eps32);
+							break;
+						}
+						break;
+					case precision_type::flt64:
+						switch (solver) {
+						case solver_type::recursive:
+							found = compute_ray_circle_tube_intersection<double, 0>(r, lines.bezier_tubes[i], Is, eps64);
+							break;
+						case solver_type::sturm:
+							found = compute_ray_circle_tube_intersection<double, 1>(r, lines.bezier_tubes[i], Is, eps64);
+							break;
+						}
+						break;
+					}
 					break;
 				case primitive_type::view_aligned_ribbon:
 					found = compute_ray_view_aligned_ribbon_intersection(r, lines.bezier_tubes[i], Is);
@@ -638,6 +686,7 @@ protected:
 				intersection_normals.push_back(reinterpret_cast<const cgv::vec3&>(best.col(1)));
 				intersection_colors.push_back(cgv::rgb(cgv::math::clamp(ray_color_scale * (best(3, 0) - ray_color_offset), 0.f, 1.f), best(3, 1), 0.f));
 			}
+			post_redraw();
 		}
 		static const char* primitive_names[] = { "sphere", "geometry", "sphere tube", "circle tube", "ribbon" };
 		static const char* solver_names[] = { "recursive", "Sturm" };
@@ -876,6 +925,18 @@ public:
 					return true;
 				}
 				break;
+			case '0':
+				if (solver != solver_type::recursive) {
+					solver = solver_type::recursive;
+					on_set(&solver);
+				}
+				return true;
+			case '1':
+				if (solver != solver_type::sturm) {
+					solver = solver_type::sturm;
+					on_set(&solver);
+				}
+				return true;
 			case 'T':
 				show_tube = !show_tube;
 				on_set(&show_tube);
@@ -949,9 +1010,10 @@ public:
 	void on_set(void* member_ptr) {
 		if (!rays.empty() && (member_ptr == &ray_length || member_ptr == &ray_offset || member_ptr == &subsampling))
 			sample_rays();
-		if (!intersections.empty() && 
-			((member_ptr == &primitive) || (member_ptr == &precision) || (member_ptr == &solver) || (member_ptr == &strategy) || (member_ptr == &ray_color_offset) || (member_ptr == &ray_color_scale)))
+		if (!intersections.empty() &&
+			((member_ptr == &primitive) || (member_ptr == &precision) || (member_ptr == &solver) || (member_ptr == &strategy) || (member_ptr == &ray_color_offset) || (member_ptr == &ray_color_scale))) {
 			intersect_rays();
+		}
 		if (member_ptr == &current_control_point)
 			begin_gizmo();
 		update_member(member_ptr);
