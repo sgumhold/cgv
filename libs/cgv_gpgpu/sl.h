@@ -8,6 +8,7 @@
 #include <cgv/math/fmat.h>
 #include <cgv/math/interval.h>
 #include <cgv/render/context.h>
+#include <cgv/render/element_traits.h>
 
 #include "lib_begin.h"
 
