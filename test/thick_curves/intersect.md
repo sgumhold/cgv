@@ -171,7 +171,15 @@ $\left.\left<c(t),\dot c(t)\right>c(t)-\left<c(t),c(t)\right>\dot c(t)\right|_x=
 
 $\left<c(t),\dot c(t)\right>c_x(t)-\left<c(t),c(t)\right>\dot c_x(t)=0$
 
-This is actually a polynomial of degree 8 (3+3+2).
+Now this seems as a polynomial of degree 8 but the highest degree term $c_x^2(t)\dot c_x(t)$ cancels out. Thus we multiply out to get
+
+$c_x^2(t)\dot c_x(t)+c_x(t)c_y(t)\dot c_y(t)+c_x(t)c_z(t)\dot c_z(t)-\left(c_x^2(t)\dot c_x(t)+c_y^2(t)\dot c_y(t)+c_z^2(t)\dot c_z(t)\right)=0$
+
+Canceling the degree 8 terms yields a degree 7 polynomial:
+
+$c_x(t)c_y(t)\dot c_y(t)+c_x(t)c_z(t)\dot c_z(t)-\left(c_y^2(t)\dot c_y(t)+c_z^2(t)\dot c_z(t)\right)=0$
+
+$\left(c_x(t)-c_y(t)\right)c_y(t)\dot c_y(t)+\left(c_x(t)-c_z(t)\right)c_z(t)\dot c_z(t)=0$
 
 The intersection point itself can be computed from: $p=\left(\left<m_1,d_2\right>\mathbf 1+d_1m_2^T-d_2m_1^T\right)\frac{d_1\times d_2}{\left\|d_1\times d_2\right\|}$
 

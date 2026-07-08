@@ -11,6 +11,12 @@ template <typename T, int N> class sturm_chain_mon;
 template <typename T, int N> 
 class fpoly_mon : public fvec<T, N+1>
 {
+	template <int M> struct recursive_down {
+		static int compute_roots(fpoly_mon<T,N>& This, const T& a, const T& b, T* roots, const T& eps) {
+			return This.down<M>().compute_roots(a, b, roots, eps);
+		}
+	};
+	template <> struct recursive_down<1> {  static int compute_roots(fpoly_mon<T, N>& This, const T& a, const T& b, T* roots, const T& eps) { return 0; } };
 public:
 	/// default constructor
 	fpoly_mon() {}
@@ -33,7 +39,7 @@ public:
 		}
 	}
 	/// convert to lower dimensional 
-	template <int M> fpoly_mon<T,M>& down() { return *reinterpret_cast<fpoly_mon<T, M>*>(this) }
+	template <int M> fpoly_mon<T, M>& down() { return *reinterpret_cast<fpoly_mon<T, M>*>(this); }
 	/// construct from value list
 	template <typename S>
 	fpoly_mon(std::initializer_list<S> values) {
@@ -116,12 +122,16 @@ public:
 	}
 	/// compute roots of polynom and return count
 	int compute_roots(const T& a, const T& b, T* roots, const T& eps) {
-		sturm_chain_mon<T, N> sc(*this);
-		auto Is = sc.eliminate_roots(a, b, eps);
-		int cnt = 0;
-		for (auto I : Is)
-			roots[cnt++] = sc.find_root(I[0], I[1], eps);
-		return cnt;
+		if (std::abs(data()[N]) > eps) {
+			sturm_chain_mon<T, N> sc(*this);
+			auto Is = sc.eliminate_roots(a, b, eps);
+			int cnt = 0;
+			for (auto I : Is)
+				roots[cnt++] = sc.find_root(I[0], I[1], eps);
+			return cnt;
+		}
+		else
+			return recursive_down<N-1>::compute_roots(*this, a, b, roots, eps);
 	}
 };
 
