@@ -141,7 +141,8 @@ void consider_ray_local_sphere_intersection(const cgv::vec4& sphere, T t0, T* s,
 	}
 }
 
-bool compute_ray_sphere_intersection(const cgv::ray3& r, const cgv::mat4& B_world, std::vector<cgv::mat4x2>& intersections)
+bool compute_ray_sphere_intersection(
+	const cgv::ray3& r, const cgv::mat4& B_world, std::vector<cgv::mat4x2>& intersections, double eps)
 {
 	bool found = false;
 	cgv::mat4 B = transform_to_ray_coordinates(r, B_world);
@@ -168,7 +169,8 @@ bool compute_ray_sphere_intersection(const cgv::ray3& r, const cgv::mat4& B_worl
 	}
 	return found;
 }
-bool compute_ray_control_geometry_intersection(const cgv::ray3& r, const cgv::mat4& B_world, std::vector<cgv::mat4x2>& intersections)
+bool compute_ray_control_geometry_intersection(
+	const cgv::ray3& r, const cgv::mat4& B_world, std::vector<cgv::mat4x2>& intersections, double eps)
 {
 	bool found = false;
 	cgv::mat4 B = transform_to_ray_coordinates(r, B_world);
@@ -217,11 +219,11 @@ bool compute_ray_control_geometry_intersection(const cgv::ray3& r, const cgv::ma
 	}
 	return found;
 }
-
-template <typename T, int solver = 0>
-bool compute_ray_sphere_tube_intersection(const cgv::ray3& r, const cgv::mat4& B_world, 
-	std::vector<cgv::mat4x2>& intersections, T eps)
+template <typename T, int solver = 0, int strategy = 0>
+bool compute_ray_sphere_tube_intersection(
+	const cgv::ray3& r, const cgv::mat4& B_world, std::vector<cgv::mat4x2>& intersections, double _eps)
 {
+	T eps = T(_eps);
 	cgv::mat4 B = transform_to_ray_coordinates(r, B_world);
 	cgv::math::fmat<T, 4, 4> M = B * monom_from_bernstein_matrix();
 	T t[12], s[12];
@@ -237,7 +239,20 @@ bool compute_ray_sphere_tube_intersection(const cgv::ray3& r, const cgv::mat4& B
 		cy::Polynomial<T, 5> hdD = D.Derivative(); hdD *= 0.5;
 		cy::Polynomial<T, 5> rhs_sqrt = ra * ra.Derivative() - hdD;
 		cy::Polynomial<T, 10> p = lhs - rhs_sqrt * rhs_sqrt;
-		cnt = p.Roots(t, 0.0, 1.0, eps);
+		if (strategy == 0)
+			cnt = p.Roots(t, 0.0, 1.0, eps);
+		else {
+			T tq[8];
+			tq[0] = 0.0;
+			int cntq = q.Roots(tq+1, 0.0, 1.0, eps);
+			tq[cntq + 1] = 1.0;
+			cnt = 0;
+			for (int i = 0; i < cntq + 1; ++i) {
+				T split = T(0.5) * (tq[i] + tq[i + 1]);
+				if (q.Eval(split) > T(0))
+					cnt += p.Roots(t + cnt, tq[i], tq[i + 1], eps);
+			}
+		}
 		for (int i = 0; i < cnt; ++i)
 			s[i] = cx.Eval(t[i]) - sqrt(q.Eval(t[i]));
 	}
@@ -252,7 +267,24 @@ bool compute_ray_sphere_tube_intersection(const cgv::ray3& r, const cgv::mat4& B
 		cgv::math::fpoly_mon<T, 5> hdD = D.derive(); hdD *= 0.5;
 		cgv::math::fpoly_mon<T, 5> rhs_sqrt = ra * ra.derive() - hdD;
 		cgv::math::fpoly_mon<T, 10> p = lhs - rhs_sqrt * rhs_sqrt;
-		cnt = p.compute_roots(0.0, 1.0, t, eps);
+		if (strategy == 0)
+			cnt = p.compute_roots(0.0, 1.0, t, eps);
+		else {
+			T tq[8];
+			tq[0] = 0.0;
+			int cntq = q.compute_roots(0.0, 1.0, tq+1, eps);
+			tq[cntq + 1] = 1.0;
+			cnt = 0;
+			cgv::math::sturm_chain_mon<T, 10> sc(p);
+			for (int i = 0; i < cntq + 1; ++i) {
+				T split = T(0.5) * (tq[i] + tq[i + 1]);
+				if (q.eval(split) > T(0)) {
+					auto Is = sc.eliminate_roots(tq[i], tq[i + 1], eps);
+					for (auto I : Is)
+						t[cnt++] = sc.find_root(I[0], I[1], eps);
+				}
+			}
+		}
 		for (int i = 0; i < cnt; ++i)
 			s[i] = cx.eval(t[i]) - sqrt(q.eval(t[i]));
 	}
@@ -280,9 +312,11 @@ bool compute_ray_sphere_tube_intersection(const cgv::ray3& r, const cgv::mat4& B
 	intersections.push_back(I);
 	return true;
 }
-template <typename T, int solver = 0>
-bool compute_ray_circle_tube_intersection(const cgv::ray3& r, const cgv::mat4& B_world, std::vector<cgv::mat4x2>& intersections, const T& eps)
+template <typename T, int solver = 0, int strategy = 0>
+bool compute_ray_circle_tube_intersection(
+	const cgv::ray3& r, const cgv::mat4& B_world, std::vector<cgv::mat4x2>& intersections, double _eps)
 {
+	T eps = T(_eps);
 	cy::Polynomial<T, 3> ra0;
 	cgv::math::fpoly_mon<T, 3> ra1;
 	cgv::mat4 B = transform_to_ray_coordinates(r, B_world);
@@ -303,7 +337,30 @@ bool compute_ray_circle_tube_intersection(const cgv::ray3& r, const cgv::mat4& B
 		for (int i = 0; i < cnt; ++i) {
 			cgv::math::fvec<T, 3> dc;
 			cgv::math::fvec<T, 3> c(cx.EvalWithDeriv(dc[0], t[i]), cy.EvalWithDeriv(dc[1], t[i]), cz.EvalWithDeriv(dc[2], t[i]));
-			s[i] = dot(c, dc) / dc[0];
+			if (strategy == 0 || std::abs(dc[0]) > 0.01)
+				s[i] = dot(c, dc) / dc[0];
+			else {
+				dc.normalize();
+				cgv::math::fvec<T, 3> v(1, 0, 0);
+				v -= dot(v, dc) * dc;
+				cy::Polynomial<T, 2> g;
+				T r = ra0.Eval(t[i]);
+				g[0] = dot(c, c) - r * r;
+				g[1] = -2 * dot(c, v);
+				g[2] = dot(v, v);
+				T sg[2];
+				int cntg = g.Roots(sg);
+				if (cntg == 1)
+					s[i] = sg[0];
+				else if (cntg == 2) {
+					if (sg[0] < sg[1] && sg[0] > 0)
+						s[i] = sg[0];
+					else
+						s[i] = sg[1];
+				}
+				else
+					s[i] = -1;
+			}
 		}
 	}
 	else {
@@ -355,8 +412,10 @@ bool compute_ray_circle_tube_intersection(const cgv::ray3& r, const cgv::mat4& B
 	return true;
 }
 template <typename T, int solver = 0>
-bool compute_ray_view_aligned_ribbon_intersection(const cgv::ray3& r, const cgv::mat4& B_world, std::vector<cgv::mat4x2>& intersections, const T& eps)
+bool compute_ray_view_aligned_ribbon_intersection(
+	const cgv::ray3& r, const cgv::mat4& B_world, std::vector<cgv::mat4x2>& intersections, double _eps)
 {
+	T eps = T(_eps);
 	cgv::mat4 B = transform_to_ray_coordinates(r, B_world);
 	cgv::math::fmat<T, 4, 4> M = B * monom_from_bernstein_matrix();
 	T t[8], s[8];
@@ -601,7 +660,7 @@ protected:
 	std::vector<cgv::ray3> rays;
 	enum class primitive_type {
 		spheres, control_geometry, sphere_tube, circle_tube, view_aligned_ribbon
-	} primitive = primitive_type::view_aligned_ribbon;
+	} primitive = primitive_type::sphere_tube;
 	enum class precision_type {
 		flt32, flt64
 	} precision = precision_type::flt64;
@@ -610,7 +669,7 @@ protected:
 	} solver = solver_type::sturm;
 	enum class strategy_type {
 		direct, filtered
-	} strategy = strategy_type::direct;
+	} strategy = strategy_type::filtered;
 	float eps32 = 6e-4f;
 	double eps64 = 6e-7;
 	std::vector<cgv::vec3> intersections;
@@ -618,128 +677,422 @@ protected:
 	float ray_color_offset = 0.5f;
 	float ray_color_scale = 0.3f;
 	std::vector<cgv::rgb> intersection_colors;
-
+	bool use_dispatch = false;
+	bool dispatch_loop = false;
 	void sample_rays() {
 		rays.clear();
 		cam_man.sample_rays(cam_man.cameras[camera_index], rays, subsampling);
 		post_redraw();
+	}	
+	inline bool intersect_ray(const cgv::ray3& r, const cgv::mat4& B_world, std::vector<cgv::mat4x2>& Is, double eps) const {
+		bool found = false;
+		switch (primitive) {
+		case primitive_type::spheres:
+			found = compute_ray_sphere_intersection(r, B_world, Is, eps64);
+			break;
+		case primitive_type::control_geometry:
+			found = compute_ray_control_geometry_intersection(r, B_world, Is, eps64);
+			break;
+		case primitive_type::sphere_tube:
+			switch (precision) {
+			case precision_type::flt32:
+				switch (solver) {
+				case solver_type::recursive:
+					switch (strategy) {
+					case strategy_type::direct:
+						found = compute_ray_sphere_tube_intersection<float, 0, 0>(r, B_world, Is, eps32);
+						break;
+					case strategy_type::filtered:
+						found = compute_ray_sphere_tube_intersection<float, 0, 1>(r, B_world, Is, eps32);
+						break;
+					}
+					break;
+				case solver_type::sturm:
+					switch (strategy) {
+					case strategy_type::direct:
+						found = compute_ray_sphere_tube_intersection<float, 1, 0>(r, B_world, Is, eps32);
+						break;
+					case strategy_type::filtered:
+						found = compute_ray_sphere_tube_intersection<float, 1, 1>(r, B_world, Is, eps32);
+						break;
+					}
+					break;
+				}
+				break;
+			case precision_type::flt64:
+				switch (solver) {
+				case solver_type::recursive:
+					switch (strategy) {
+					case strategy_type::direct:
+						found = compute_ray_sphere_tube_intersection<double, 0, 0>(r, B_world, Is, eps32);
+						break;
+					case strategy_type::filtered:
+						found = compute_ray_sphere_tube_intersection<double, 0, 1>(r, B_world, Is, eps32);
+						break;
+					}
+					break;
+				case solver_type::sturm:
+					switch (strategy) {
+					case strategy_type::direct:
+						found = compute_ray_sphere_tube_intersection<double, 1, 0>(r, B_world, Is, eps32);
+						break;
+					case strategy_type::filtered:
+						found = compute_ray_sphere_tube_intersection<double, 1, 1>(r, B_world, Is, eps32);
+						break;
+					}
+					break;
+				}
+				break;
+			}
+			break;
+		case primitive_type::circle_tube:
+			switch (precision) {
+			case precision_type::flt32:
+				switch (solver) {
+				case solver_type::recursive:
+					found = compute_ray_circle_tube_intersection<float, 0>(r, B_world, Is, eps32);
+					break;
+				case solver_type::sturm:
+					found = compute_ray_circle_tube_intersection<float, 1>(r, B_world, Is, eps32);
+					break;
+				}
+				break;
+			case precision_type::flt64:
+				switch (solver) {
+				case solver_type::recursive:
+					found = compute_ray_circle_tube_intersection<double, 0>(r, B_world, Is, eps64);
+					break;
+				case solver_type::sturm:
+					found = compute_ray_circle_tube_intersection<double, 1>(r, B_world, Is, eps64);
+					break;
+				}
+				break;
+			}
+			break;
+		case primitive_type::view_aligned_ribbon:
+			switch (precision) {
+			case precision_type::flt32:
+				switch (solver) {
+				case solver_type::recursive:
+					found = compute_ray_view_aligned_ribbon_intersection<float, 0>(r, B_world, Is, eps32);
+					break;
+				case solver_type::sturm:
+					found = compute_ray_view_aligned_ribbon_intersection<float, 1>(r, B_world, Is, eps32);
+					break;
+				}
+				break;
+			case precision_type::flt64:
+				switch (solver) {
+				case solver_type::recursive:
+					found = compute_ray_view_aligned_ribbon_intersection<double, 0>(r, B_world, Is, eps64);
+					break;
+				case solver_type::sturm:
+					found = compute_ray_view_aligned_ribbon_intersection<double, 1>(r, B_world, Is, eps64);
+					break;
+				}
+				break;
+			}
+			break;
+		}
+		return found;
 	}
-	void intersect_rays() {
+	inline void intersect_rays_() {
 		intersections.clear();
 		intersection_normals.clear();
 		intersection_colors.clear();
 		if (rays.empty())
 			return;
 		lines.compute_bezier_tubes();
-		std::vector<cgv::mat4x2> Is;
-		cgv::utils::stopwatch watch(true);
-		int iter = -1;
-		for (const auto& r : rays) {
-			//if (++iter % 100 == 0)
-			//	std::cout << iter << std::endl;
-			cgv::mat4x2 best(-1.f);
-			for (unsigned i = 0; i < nr_tubes; ++i) {
-				Is.clear();
-				bool found = false;
-				switch (primitive) {
-				case primitive_type::spheres:
-					found = compute_ray_sphere_intersection(r, lines.bezier_tubes[i], Is);
-					break;
-				case primitive_type::control_geometry:
-					found = compute_ray_control_geometry_intersection(r, lines.bezier_tubes[i], Is);
-					break;
-				case primitive_type::sphere_tube:
-					switch (precision) {
-					case precision_type::flt32:
-						switch (solver) {
-						case solver_type::recursive:
-							found = compute_ray_sphere_tube_intersection<float, 0>(r, lines.bezier_tubes[i], Is, eps32);
-							break;
-						case solver_type::sturm:
-							found = compute_ray_sphere_tube_intersection<float, 1>(r, lines.bezier_tubes[i], Is, eps32);
-							break;
-						}
+		switch (primitive) {
+		case primitive_type::spheres:
+			rays_sphere_intersection();
+			break;
+		case primitive_type::control_geometry:
+			rays_control_geometry_intersection();
+			break;
+		case primitive_type::sphere_tube:
+			switch (precision) {
+			case precision_type::flt32:
+				switch (solver) {
+				case solver_type::recursive:
+					switch (strategy) {
+					case strategy_type::direct:
+						rays_sphere_tube_intersection<float, 0, 0>();
 						break;
-					case precision_type::flt64:
-						switch (solver) {
-						case solver_type::recursive:
-							found = compute_ray_sphere_tube_intersection<double, 0>(r, lines.bezier_tubes[i], Is, eps64);
-							break;
-						case solver_type::sturm:
-							found = compute_ray_sphere_tube_intersection<double, 1>(r, lines.bezier_tubes[i], Is, eps64);
-							break;
-						}
+					case strategy_type::filtered:
+						rays_sphere_tube_intersection<float, 0, 1>();
 						break;
 					}
 					break;
-				case primitive_type::circle_tube:
-					switch (precision) {
-					case precision_type::flt32:
-						switch (solver) {
-						case solver_type::recursive:
-							found = compute_ray_circle_tube_intersection<float, 0>(r, lines.bezier_tubes[i], Is, eps32);
-							break;
-						case solver_type::sturm:
-							found = compute_ray_circle_tube_intersection<float, 1>(r, lines.bezier_tubes[i], Is, eps32);
-							break;
-						}
+				case solver_type::sturm:
+					switch (strategy) {
+					case strategy_type::direct:
+						rays_sphere_tube_intersection<float, 1, 0>();
 						break;
-					case precision_type::flt64:
-						switch (solver) {
-						case solver_type::recursive:
-							found = compute_ray_circle_tube_intersection<double, 0>(r, lines.bezier_tubes[i], Is, eps64);
-							break;
-						case solver_type::sturm:
-							found = compute_ray_circle_tube_intersection<double, 1>(r, lines.bezier_tubes[i], Is, eps64);
-							break;
-						}
-						break;
-					}
-					break;
-				case primitive_type::view_aligned_ribbon:
-					switch (precision) {
-					case precision_type::flt32:
-						switch (solver) {
-						case solver_type::recursive:
-							found = compute_ray_view_aligned_ribbon_intersection<float, 0>(r, lines.bezier_tubes[i], Is, eps32);
-							break;
-						case solver_type::sturm:
-							found = compute_ray_view_aligned_ribbon_intersection<float, 1>(r, lines.bezier_tubes[i], Is, eps32);
-							break;
-						}
-						break;
-					case precision_type::flt64:
-						switch (solver) {
-						case solver_type::recursive:
-							found = compute_ray_view_aligned_ribbon_intersection<double, 0>(r, lines.bezier_tubes[i], Is, eps64);
-							break;
-						case solver_type::sturm:
-							found = compute_ray_view_aligned_ribbon_intersection<double, 1>(r, lines.bezier_tubes[i], Is, eps64);
-							break;
-						}
+					case strategy_type::filtered:
+						rays_sphere_tube_intersection<float, 1, 1>();
 						break;
 					}
 					break;
 				}
-				if (found) {
+				break;
+			case precision_type::flt64:
+				switch (solver) {
+				case solver_type::recursive:
+					switch (strategy) {
+					case strategy_type::direct:
+						rays_sphere_tube_intersection<double, 0, 0>();
+						break;
+					case strategy_type::filtered:
+						rays_sphere_tube_intersection<double, 0, 1>();
+						break;
+					}
+					break;
+				case solver_type::sturm:
+					switch (strategy) {
+					case strategy_type::direct:
+						rays_sphere_tube_intersection<double, 1, 0>();
+						break;
+					case strategy_type::filtered:
+						rays_sphere_tube_intersection<double, 1, 1>();
+						break;
+					}
+					break;
+				}
+				break;
+			}
+			break;
+		case primitive_type::circle_tube:
+			switch (precision) {
+			case precision_type::flt32:
+				switch (solver) {
+				case solver_type::recursive:
+					rays_circle_tube_intersection<float, 0, 0>();
+					break;
+				case solver_type::sturm:
+					rays_circle_tube_intersection<float, 1, 0>();
+					break;
+				}
+				break;
+			case precision_type::flt64:
+				switch (solver) {
+				case solver_type::recursive:
+					rays_circle_tube_intersection<double, 0, 0>();
+					break;
+				case solver_type::sturm:
+					rays_circle_tube_intersection<double, 1, 0>();
+					break;
+				}
+				break;
+			}
+			break;
+		case primitive_type::view_aligned_ribbon:
+			switch (precision) {
+			case precision_type::flt32:
+				switch (solver) {
+				case solver_type::recursive:
+					rays_view_aligned_ribbon_intersection<float, 0>();
+					break;
+				case solver_type::sturm:
+					rays_view_aligned_ribbon_intersection<float, 1>();
+					break;
+				}
+				break;
+			case precision_type::flt64:
+				switch (solver) {
+				case solver_type::recursive:
+					rays_view_aligned_ribbon_intersection<double, 0>();
+					break;
+				case solver_type::sturm:
+					rays_view_aligned_ribbon_intersection<double, 1>();
+					break;
+				}
+				break;
+			}
+			break;
+		}
+	}
+
+	typedef bool (*ray_intersection_function_type)(const cgv::ray3& r, const cgv::mat4& B_world, std::vector<cgv::mat4x2>& Is, double eps);
+	ray_intersection_function_type get_intersect_ray_function() {
+		return precision == precision_type::flt32 ?
+			intersect_ray_dispatch_solver<float>() :
+			intersect_ray_dispatch_solver<double>();
+	}
+	template <typename T>
+	ray_intersection_function_type intersect_ray_dispatch_solver() {
+		return solver == solver_type::recursive ?
+			intersect_ray_dispatch_strategy<T, 0>() :
+			intersect_ray_dispatch_strategy<T, 1>();
+	}
+	template <typename T, int Solver>
+	ray_intersection_function_type intersect_ray_dispatch_strategy() {
+		return strategy == strategy_type::direct ?
+			intersect_ray_dispatch_primitive<T, Solver, 0>() :
+			intersect_ray_dispatch_primitive<T, Solver, 1>();
+	}
+	template <typename T, int Solver, int Strategy>
+	ray_intersection_function_type intersect_ray_dispatch_primitive() {
+		switch (primitive) {
+		case primitive_type::spheres:          return &compute_ray_sphere_intersection;
+		case primitive_type::control_geometry: return &compute_ray_control_geometry_intersection;
+		case primitive_type::sphere_tube:      return &compute_ray_sphere_tube_intersection<T, Solver, Strategy>;
+		case primitive_type::circle_tube:      return &compute_ray_circle_tube_intersection<T, Solver, Strategy>;
+		default: return &compute_ray_view_aligned_ribbon_intersection<T, Solver>;			
+		}
+	}
+
+	typedef void (thick_line_viewer::*rays_intersection_function_type)();
+	rays_intersection_function_type get_intersect_rays_function() {
+		return precision == precision_type::flt32 ?
+			intersect_rays_dispatch_solver<float>() :
+			intersect_rays_dispatch_solver<double>();
+	}
+	template <typename T>
+	rays_intersection_function_type intersect_rays_dispatch_solver() {
+		return solver == solver_type::recursive ?
+			intersect_rays_dispatch_strategy<T, 0>() :
+			intersect_rays_dispatch_strategy<T, 1>();
+	}
+	template <typename T, int Solver>
+	rays_intersection_function_type intersect_rays_dispatch_strategy() {
+		return strategy == strategy_type::direct ?
+			intersect_rays_dispatch_primitive<T, Solver, 0>() :
+			intersect_rays_dispatch_primitive<T, Solver, 1>();
+	}
+	template <typename T, int Solver, int Strategy>
+	rays_intersection_function_type intersect_rays_dispatch_primitive() {
+		switch (primitive) {
+		case primitive_type::spheres:          return &thick_line_viewer::rays_sphere_intersection;
+		case primitive_type::control_geometry: return &thick_line_viewer::rays_control_geometry_intersection;
+		case primitive_type::sphere_tube:      return &thick_line_viewer::rays_sphere_tube_intersection<T, Solver, Strategy>;
+		case primitive_type::circle_tube:      return &thick_line_viewer::rays_circle_tube_intersection<T, Solver, Strategy>;
+		default: return &thick_line_viewer::rays_view_aligned_ribbon_intersection<T, Solver>;
+		}
+	}
+	void consider_best(const cgv::mat4x2& best)
+	{
+		if (best(3, 0) == -1)
+			return;
+		intersections.push_back(best.col(0).down());
+		intersection_normals.push_back(best.col(1).down());
+		intersection_colors.push_back(cgv::rgb(cgv::math::clamp(ray_color_scale * (best(3, 0) - ray_color_offset), 0.f, 1.f), best(3, 1), 0.f));
+	}
+	void rays_sphere_intersection() {
+		double eps = precision == precision_type::flt32 ? eps32 : eps64;
+		for (const auto& r : rays) {
+			cgv::mat4x2 best(-1.f);
+			for (unsigned i = 0; i < nr_tubes; ++i) {
+				std::vector<cgv::mat4x2> Is;
+				if (compute_ray_sphere_intersection(r, lines.bezier_tubes[i], Is, eps)) {
 					if (best(3, 0) == -1.f || (best(3, 0) > Is.front()(3, 0)))
 						best = Is.front();
 				}
 			}
-			if (best(3, 0) != -1) {
-				intersections.push_back(reinterpret_cast<const cgv::vec3&>(best.col(0)));
-				intersection_normals.push_back(reinterpret_cast<const cgv::vec3&>(best.col(1)));
-				intersection_colors.push_back(cgv::rgb(cgv::math::clamp(ray_color_scale * (best(3, 0) - ray_color_offset), 0.f, 1.f), best(3, 1), 0.f));
-			}
-			post_redraw();
+			consider_best(best);
 		}
+	}
+	void rays_control_geometry_intersection() {
+		double eps = precision == precision_type::flt32 ? eps32 : eps64;
+		for (const auto& r : rays) {
+			cgv::mat4x2 best(-1.f);
+			for (unsigned i = 0; i < nr_tubes; ++i) {
+				std::vector<cgv::mat4x2> Is;
+				if (compute_ray_control_geometry_intersection(r, lines.bezier_tubes[i], Is, eps)) {
+					if (best(3, 0) == -1.f || (best(3, 0) > Is.front()(3, 0)))
+						best = Is.front();
+				}
+			}
+			consider_best(best);
+		}
+	}
+	template <typename T, int Solver, int Strategy>
+	void rays_sphere_tube_intersection() {
+		double eps = precision == precision_type::flt32 ? eps32 : eps64;
+		for (const auto& r : rays) {
+			cgv::mat4x2 best(-1.f);
+			for (unsigned i = 0; i < nr_tubes; ++i) {
+				std::vector<cgv::mat4x2> Is;
+				if (compute_ray_sphere_tube_intersection<T,Solver,Strategy>(r, lines.bezier_tubes[i], Is, eps)) {
+					if (best(3, 0) == -1.f || (best(3, 0) > Is.front()(3, 0)))
+						best = Is.front();
+				}
+			}
+			consider_best(best);
+		}
+	}
+	template <typename T, int Solver, int Strategy>
+	void rays_circle_tube_intersection() {
+		double eps = precision == precision_type::flt32 ? eps32 : eps64;
+		for (const auto& r : rays) {
+			cgv::mat4x2 best(-1.f);
+			for (unsigned i = 0; i < nr_tubes; ++i) {
+				std::vector<cgv::mat4x2> Is;
+				if (compute_ray_circle_tube_intersection<T,Solver,Strategy>(r, lines.bezier_tubes[i], Is, eps)) {
+					if (best(3, 0) == -1.f || (best(3, 0) > Is.front()(3, 0)))
+						best = Is.front();
+				}
+			}
+			consider_best(best);
+		}
+	}
+	template <typename T, int Solver>
+	void rays_view_aligned_ribbon_intersection() {
+		double eps = precision == precision_type::flt32 ? eps32 : eps64;
+		for (const auto& r : rays) {
+			cgv::mat4x2 best(-1.f);
+			for (unsigned i = 0; i < nr_tubes; ++i) {
+				std::vector<cgv::mat4x2> Is;
+				if (compute_ray_view_aligned_ribbon_intersection<T,Solver>(r, lines.bezier_tubes[i], Is, eps)) {
+					if (best(3, 0) == -1.f || (best(3, 0) > Is.front()(3, 0)))
+						best = Is.front();
+				}
+			}
+			consider_best(best);
+		}
+	}
+
+	void intersect_rays() {
 		static const char* primitive_names[] = { "sphere", "geometry", "sphere tube", "circle tube", "ribbon" };
 		static const char* solver_names[] = { "recursive", "Sturm" };
 		static const char* precision_names[] = { "float", "double" };
 		static const char* strategy_names[] = { "direct", "filtered" };
+		intersections.clear();
+		intersection_normals.clear();
+		intersection_colors.clear();
+		if (rays.empty())
+			return;
+		lines.compute_bezier_tubes();
+		cgv::utils::stopwatch watch(true);
+		if (dispatch_loop)
+		//	if (precision == precision_type::flt32)
+		//		rays_sphere_tube_intersection<float, 1, 0>();
+		//	else
+		//		rays_sphere_tube_intersection<double, 1, 0>();
+		//(this->*get_intersect_rays_function())();
+			intersect_rays_();
+		else {
+			double eps = precision == precision_type::flt32 ? eps32 : eps64;
+			ray_intersection_function_type intersect_ray_ptr = get_intersect_ray_function();
+			for (const auto& r : rays) {
+				cgv::mat4x2 best(-1.f);
+				for (unsigned i = 0; i < nr_tubes; ++i) {
+					std::vector<cgv::mat4x2> Is;
+					bool found = use_dispatch ?
+						intersect_ray_ptr(r, lines.bezier_tubes[i], Is, eps) :
+						intersect_ray(r, lines.bezier_tubes[i], Is, eps);
+					if (found) {
+						if (best(3, 0) == -1.f || (best(3, 0) > Is.front()(3, 0)))
+							best = Is.front();
+					}
+				}
+				consider_best(best);
+			}
+		}
 		std::cout << "elapsed time [" << primitive_names[(int&)primitive] << "," << solver_names[(int&)solver]
 			<< "," << precision_names[(int&)precision] << "]: " << watch.get_elapsed_time() << std::endl;
 		post_recreate_gui();
+		post_redraw();
 	}
 private:
 	camera_manager cam_man;
@@ -1267,6 +1620,8 @@ public:
 		add_member_control(this, "Eps64", eps64, "value_slider", "min=0.000000001;step=0.00000000001;max=0.01;log=true;ticks=true");
 
 		connect_copy(add_button("Intersect Rays")->click, cgv::signal::rebind(this, &thick_line_viewer::intersect_rays));
+		add_member_control(this, "Use Dispatch", use_dispatch, "check");
+		add_member_control(this, "Dispatch Loop", dispatch_loop, "check");
 		add_member_control(this, "Show Intersections", show_intersections, "check");
 		add_member_control(this, "Ray Color Offset", ray_color_offset, "value_slider", "min=0.01;max=20;ticks=true;log=true");
 		add_member_control(this, "Ray Color Scale", ray_color_scale, "value_slider", "min=0.01;max=2;ticks=true;log=true");

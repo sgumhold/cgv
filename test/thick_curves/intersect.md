@@ -100,6 +100,8 @@ We can solve for $s$:
 $s = \frac{\left<\mathrm c(t)-\mathrm o,\dot c(t)\right>}{\left<\hat v,\dot c(t)\right>}=
 \frac{\left<\mathrm c(t),\dot c(t)\right>}{\dot c_x(t)}$
 
+This becomes numerically unstable if viewing ray becomes parallel to plane.
+
 Now the resulting point should be at distance $r$ from $c(t)$:
 $\left[\mathrm o + \frac{\left<\mathrm c(t),\dot c(t)\right>}{\dot c_x(t)}\hat v - \mathbf c(t)\right]^2=r^2(t)$
 
@@ -171,15 +173,26 @@ $\left.\left<c(t),\dot c(t)\right>c(t)-\left<c(t),c(t)\right>\dot c(t)\right|_x=
 
 $\left<c(t),\dot c(t)\right>c_x(t)-\left<c(t),c(t)\right>\dot c_x(t)=0$
 
-Now this seems as a polynomial of degree 8 but the highest degree term $c_x^2(t)\dot c_x(t)$ cancels out. Thus we multiply out to get
+Now this seems as a polynomial of degree 8 but in practice this is only of degree 7. The reason is that the leading coefficient of a cubic polynomial derivative is just 3 times the leading coefficient of the polynomial itself. This if $\gamma_{\alpha,i}$ are the monomial coefficients $c_{\alpha}$, i.e. $c_{\alpha}(t)=\sum_{i=0}^3\gamma_{\alpha,i}t^i$ and $\dot\gamma_{\alpha,i}$ of $\dot c_{\alpha}$ then we have $\dot\gamma_{\alpha,2}=3\gamma_{\alpha,3}$. As a result the coefficient $\pi_8$ of $t^8$ in the last equation above computes to
 
-$c_x^2(t)\dot c_x(t)+c_x(t)c_y(t)\dot c_y(t)+c_x(t)c_z(t)\dot c_z(t)-\left(c_x^2(t)\dot c_x(t)+c_y^2(t)\dot c_y(t)+c_z^2(t)\dot c_z(t)\right)=0$
+$\pi_8=\gamma_{x,3}\left(\gamma_{x,3}\cdot3\gamma_{x,3}+\gamma_{y,3}\cdot 3\gamma_{y,3}+\gamma_{z,3}\cdot 3\gamma_{z,3}\right)-3\gamma_{x,3}\left(\gamma_{x,3}^2+\gamma_{y,3}^2+\gamma_{z,3}^2\right)=0$
 
-Canceling the degree 8 terms yields a degree 7 polynomial:
+For the coefficient of $t^7$ we have more contributions. In each term of each triple product one can decrease maximum degree to one below individually. For example:
 
-$c_x(t)c_y(t)\dot c_y(t)+c_x(t)c_z(t)\dot c_z(t)-\left(c_y^2(t)\dot c_y(t)+c_z^2(t)\dot c_z(t)\right)=0$
+$c_x(t)\dot c_x(t)c_x(t)\Rightarrow\gamma_{x,2}3\gamma_{x,3}\gamma_{x,3}+\gamma_{x,3}2\gamma_{x,2}\gamma_{x,3}+\gamma_{x,3}3\gamma_{x,3}\gamma_{x,2}=8\gamma_{x,3}^2\gamma_{x,2}$
 
-$\left(c_x(t)-c_y(t)\right)c_y(t)\dot c_y(t)+\left(c_x(t)-c_z(t)\right)c_z(t)\dot c_z(t)=0$
+$c_y(t)\dot c_y(t)c_x(t)\Rightarrow\gamma_{y,2}3\gamma_{y,3}\gamma_{x,3}+\gamma_{y,3}2\gamma_{y,2}\gamma_{x,3}+\gamma_{y,3}3\gamma_{y,3}\gamma_{x,2}=5\gamma_{x,3}\gamma_{y,3}\gamma_{y,2}+3\gamma_{x,2}\gamma_{y,3}^2$
+
+The negative terms look like
+$c_x(t)^2\dot c_x(t)\Rightarrow\gamma_{x,2}\gamma_{x,3}3\gamma_{x,3}+\gamma_{x,3}\gamma_{x,2}3\gamma_{x,3}+\gamma_{x,3}^22\gamma_{x,2}=8\gamma_{x,3}^2\gamma_{x,2}$
+
+$c_y(t)^2\dot c_x(t)\Rightarrow\gamma_{y,2}\gamma_{y,3}3\gamma_{x,3}+\gamma_{y,3}\gamma_{y,2}3\gamma_{x,3}+\gamma_{y,3}^22\gamma_{x,2}=6\gamma_{x,3}\gamma_{y,3}\gamma_{y,2}+2\gamma_{x,2}\gamma_{y,3}^2$
+
+Again a lot cancels, but not all. It remains
+
+$\pi_7=\gamma_{x,2}\left(\gamma_{y,3}^2+\gamma_{z,3}^2\right)-\gamma_{x,3}\left(\gamma_{y,3}\gamma_{y,2}+\gamma_{z,3}\gamma_{z,2}\right)\not=0$
+
+Probably, the other coefficients could also be computed in a simplified manner.
 
 The intersection point itself can be computed from: $p=\left(\left<m_1,d_2\right>\mathbf 1+d_1m_2^T-d_2m_1^T\right)\frac{d_1\times d_2}{\left\|d_1\times d_2\right\|}$
 
