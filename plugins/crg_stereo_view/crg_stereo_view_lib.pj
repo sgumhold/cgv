@@ -7,6 +7,7 @@ addProjectDeps=[
 	"cgv_base","cgv_signal", "cgv_post"
 ];
 addProjectDirs=[CGV_DIR."/libs"];
+addShaderPaths=[[INPUT_DIR,"all"]];
 addIncDirs=[ [CGV_DIR."/libs/glsu", "all"], [INPUT_DIR, "all"] ];
 addSharedDefines=["CGV_RENDER_STEREO_VIEW_EXPORTS"];
 addDefines=["NO_STEREO_VIEW_INTERACTOR"];
