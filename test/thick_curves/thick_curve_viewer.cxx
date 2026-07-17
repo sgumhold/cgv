@@ -1,6 +1,7 @@
 #include <cgv/defines/quote.h>
 #include <cgv/utils/file.h>
 #include <cgv/utils/stopwatch.h>
+#include <cgv/utils/statistics.h>
 #include <cgv/base/group.h>
 #include <cgv/gui/event_handler.h>
 #include <cgv/gui/key_event.h>
@@ -19,6 +20,10 @@
 #include <cg_gizmo/transformation_gizmo.h>
 #include "fpoly.h"
 #include "cyPolynomial.h"
+
+
+//f_6(s)t^6+f_5(s)t^5+f_4(s)t^4+f_3(s)t^3+f_2(s)t^2+f_1(s)t+f_0
+
 
 struct camera_manager
 {
@@ -520,7 +525,6 @@ bool random_test_remainder(int n)
 	}
 	return true;
 }
-
 bool test_remainder(int n = 100)
 {
 	return
@@ -540,7 +544,6 @@ bool test_remainder(int n = 100)
 		random_test_remainder<6, 5>(n) &&
 		random_test_remainder<6, 6>(n);
 }
-
 template<typename T, int G = 6>
 void test_schur_chain(T eps, T eps_val, int n = 100)
 {
@@ -597,6 +600,91 @@ void test_schur_chain(T eps, T eps_val, int n = 100)
 		}
 	}
 
+}
+
+template <typename T, int N>
+void create_random_polynomials(std::vector<cgv::math::fpoly_ber<T, N>>& P, int n, T r)
+{
+	std::default_random_engine e;
+	std::uniform_real_distribution<T> u(-r, r);
+	for (int i = 0; i < n; ++i) {
+		cgv::math::fpoly_ber<T, N> p;
+		for (int j = 0; j < N + 1; ++j)
+			p[j] = u(e);
+		P.push_back(p);
+	}
+}
+template <typename T, int N>
+void test_conversion(int n, T r, int m, T p_eps, T v_eps)
+{
+	std::vector<cgv::math::fpoly_ber<T, N>> P;
+	create_random_polynomials<T, N>(P, n, r);
+	T delta = 1.0f / (m - 1);
+	for (int i = 0; i < n; ++i) {
+		cgv::math::fpoly_mon<T, N> p_mon(P[i]);
+		cgv::math::fpoly_ber<T, N> p_bez(p_mon);
+		if ((P[i]-p_bez).length() > p_eps) 
+			std::cout << "conversion difference (i=" << i << "): " << P[i] << " <-> " << p_bez << std::endl;
+		for (int j = 0; j < m; ++j) {
+			T t = j * delta;
+			T f_mon = p_mon.eval(t);
+			T f_bez = P[i].eval(t);
+			if (std::abs(f_mon-f_bez) > v_eps)
+				std::cout << "evaluation difference (i=" << i << ",j=" << j << ": " << f_mon << " <-> " << f_bez << std::endl;
+		}
+	}
+}
+
+template <typename X>
+void test_precision_once(
+	const std::vector<X>& P,
+	const std::vector<std::vector<std::pair<float, double>>>& R,
+	float (X::*my_eval)(const float&) const, 
+	const std::string& name)
+{
+	cgv::utils::statistics stats;
+	cgv::utils::stopwatch watch(true);
+	int i = 0;
+	for (const auto& p : P) {
+		for (const auto& res : R[i]) {
+			double r = (p.*my_eval)(res.first);
+			stats.update(std::abs(r - res.second));
+		}
+		++i;
+	}
+	std::cout << name << " in " << watch.get_elapsed_time() << "sec: avg=" << stats.get_average() << ", max = " << stats.get_max() << std::endl;
+}
+
+template <int N>
+void test_precision(int n, float r, int m)
+{
+	std::default_random_engine e;
+	std::uniform_real_distribution<float> u(0.f, 1.f);
+	std::vector<cgv::math::fpoly_ber<float, N>> P;
+	std::vector<cgv::math::fpoly_mon<float, N>> M;
+	create_random_polynomials<float, N>(P, n, r);
+	std::vector<std::vector<std::pair<float, double>>> R;
+	for (int i = 0; i < n; ++i) {
+		cgv::math::fpoly_ber<double, N> p(P[i]);
+		cgv::math::fpoly_mon<double, N> q(p);
+		M.push_back(cgv::math::fpoly_mon<float, N>(q));
+		R.push_back({});
+		for (int j = 0; j < m; ++j) {
+			float t = u(e);
+			double res = p.eval_de_casteljau<0>(t);
+			R.back().push_back({ t,res });
+		}
+	}
+	test_precision_once(P, R, &cgv::math::fpoly_ber<float, N>::eval_de_casteljau<0>, "deCast<mix>");
+	test_precision_once(P, R, &cgv::math::fpoly_ber<float, N>::eval_de_casteljau<1>, "deCast<fma>");
+	test_precision_once(P, R, &cgv::math::fpoly_ber<float, N>::eval_de_casteljau<2>, "deCast<fma2>");
+	test_precision_once(P, R, &cgv::math::fpoly_ber<float, N>::eval_chudy_pawel<0>, "chudyPawel<mix>");
+	test_precision_once(P, R, &cgv::math::fpoly_ber<float, N>::eval_chudy_pawel<1>, "chudyPawel<fma>");
+	test_precision_once(P, R, &cgv::math::fpoly_ber<float, N>::eval_chudy_pawel<2>, "chudyPawel<fma2>");
+	test_precision_once(P, R, &cgv::math::fpoly_ber<float, N>::eval_ltcs<0>, "lcts<mix>");
+	test_precision_once(P, R, &cgv::math::fpoly_ber<float, N>::eval_ltcs<1>, "lcts<fma>");
+	test_precision_once(P, R, &cgv::math::fpoly_ber<float, N>::eval_ltcs<2>, "lcts<fma2>");
+	test_precision_once(M, R, &cgv::math::fpoly_mon<float, N>::eval, "monom");
 }
 
 struct thick_line_data 
@@ -834,6 +922,8 @@ private:
 	}
 public:
 	thick_line_viewer() : cgv::base::group("Thick Line Viewer") {
+		test_conversion<double, 10>(100, 2.0, 10, 0.0001, 0.000001);
+		test_precision<10>(100000,2.0f,100);
 		//test_remainder(100);
 		//std::cout << "test degree 6:" << std::endl;
 		//test_schur_chain<double,6>(0.0000001f,0.00001f,10000);

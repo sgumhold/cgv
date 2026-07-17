@@ -28,42 +28,42 @@ output
 
 * $s_{\mathrm{fst}}$ ray parameter of first intersection
 
-transform such that ray origin $\mathbf o$ is in coordinate origin and $\hat v$ coincides with x-direction. The ray sphere-tube entering intersection is found at ray-parameters that minimize the x-coordinate and the leaving intersections at maxima in the x-coordinate. Both can be found from $\frac{dx}{dt}=0$.
+transform such that ray origin $\mathbf o$ is in coordinate origin and $\hat v$ coincides with x-direction. The ray sphere-tube entering intersection is found at ray-parameters that minimize the x-coordinate and the leaving intersections at maxima in the x-coordinate. Both can be found from $\frac{ds}{dt}=0$.
 
 The sphere surface constraint implicitly relates $x$ with $t$:
 
- $g(x,t)=0=(c_x(t)-x)^2+c^2_y(t)+c_z^2(t)-r^2(t)$
+ $g(s,t)=0=(c_x(t)-s)^2+c^2_y(t)+c_z^2(t)-r^2(t)$
 
-and the Implicit Function Theorem allows computation of $\frac{dx}{dt}=-\frac{\partial g}{\partial t}/\frac{\partial g}{\partial x}$:
+and the Implicit Function Theorem allows computation of $\frac{ds}{dt}=-\frac{\partial g}{\partial t}/\frac{\partial g}{\partial s}$:
 
-$\frac{\partial g}{\partial t}=2\left[\left(c_x(t)-x\right)\dot c_x(t)+2c_y(t)\dot c_y(t)+2c_z(t)\dot c_z(t)-2r(t)\dot r(t)\right]$ 
+$\frac{\partial g}{\partial t}=2\left[\left(c_x(t)-s\right)\dot c_x(t)+2c_y(t)\dot c_y(t)+2c_z(t)\dot c_z(t)-2r(t)\dot r(t)\right]$ 
 
-$\frac{\partial g}{\partial x}=2\left(x-c_x(t)\right)$ 
+$\frac{\partial g}{\partial s}=2\left(s-c_x(t)\right)$ 
 
 Thus we get 
-$\frac{dx}{dt}=-\left[\left(c_x(t)-x\right)\dot c_x(t)+c_y(t)\dot c_y(t)+c_z(t)\dot c_z(t)-r(t)\dot r(t)\right]/\left(x-c_x(t)\right)$
+$\frac{dx}{dt}=-\left[\left(c_x(t)-s\right)\dot c_x(t)+c_y(t)\dot c_y(t)+c_z(t)\dot c_z(t)-r(t)\dot r(t)\right]/\left(s-c_x(t)\right)$
 
-Here we assume $x\not=c_x(t)$. From $\frac{dx}{dt}=0$ we get:
+Here we assume $s\not=c_x(t)$. From $\frac{ds}{dt}=0$ we get:
 
-$\left(c_x(t)-x\right)\dot c_x(t)+c_y(t)\dot c_y(t)+c_z(t)\dot c_z(t)-r(t)\dot r(t)=0$
+$f(s,t)=\left(c_x(t)-s\right)\dot c_x(t)+c_y(t)\dot c_y(t)+c_z(t)\dot c_z(t)-r(t)\dot r(t)=0$
 
-To eliminate dependency from $x$, we separate term containing it, square it and eliminate square form constraint:
+To eliminate dependency from $s$, we separate term containing it, square it and eliminate square form constraint:
 
-$\left(c_x(t)-x\right)\dot c_x(t)= r(t)\dot r(t)-c_y(t)\dot c_y(t)-c_z(t)\dot c_z(t)$
+$\left(c_x(t)-s\right)\dot c_x(t)= r(t)\dot r(t)-c_y(t)\dot c_y(t)-c_z(t)\dot c_z(t)$
 
-$\left(c_x(t)-x\right)^2\dot c^2_x(t)= \left[r(t)\dot r(t)-c_y(t)\dot c_y(t)-c_z(t)\dot c_z(t)\right]^2$
+$\left(c_x(t)-s\right)^2\dot c^2_x(t)= \left[r(t)\dot r(t)-c_y(t)\dot c_y(t)-c_z(t)\dot c_z(t)\right]^2$
 
 $\left[r^2(t)-c^2_y(t)-c_z^2(t)\right]\dot c^2_x(t)= \left[r(t)\dot r(t)-c_y(t)\dot c_y(t)-c_z(t)\dot c_z(t)\right]^2$
 
 The final result is polynomial of degree 10 in $t$.
 
-Alternatively, we can directly solve $g(x,t)=0$ for $x$:
+Alternatively, we can directly solve $g(s,t)=0$ for $s$:
 
-$x=c_x(t)\pm\sqrt{r^2(t)-c_y^2(t)-c_z^2(t)}=h(t)\pm\sqrt{q(t)}$
+$s=c_x(t)\pm\sqrt{r^2(t)-c_y^2(t)-c_z^2(t)}=h(t)\pm\sqrt{q(t)}$
 
 Next compute derivative
 
-$\dot x(t)=\dot h(t)\pm\frac{\dot q(t)}{2\sqrt{q(t)}}$
+$\dot s(t)=\dot h(t)\pm\frac{\dot q(t)}{2\sqrt{q(t)}}$
 
 Choose first - thus - negative solution and set equal to zero:
 
@@ -78,6 +78,44 @@ Plugin $h(t)$ and $q(t)$ back in:
 $4\left[r^2(t)-c_y^2(t)-c_z^2(t)\right]\dot c_x^2(t)=\left[2r(t)\dot r(t)-2c_y(t)\dot c_y(t)-2c_z(t)\dot c_z(t)\right]^2$
 
 Again this is polynomial of degree 10 - actually the same as with the Langrangian multiplier method.
+
+## Rewriting the equations in s
+
+If we restart on the three polynomial equations
+
+$q(t)=r^2(t)-c_y^2(t)-c_z^2(t)$
+
+$f(s,t)=\left(c_x(t)-s\right)\dot c_x(t)+c_y(t)\dot c_y(t)+c_z(t)\dot c_z(t)-r(t)\dot r(t)=0$
+
+$g(s,t)=(c_x(t)-s)^2+c^2_y(t)+c_z^2(t)-r^2(t)=0$ 
+
+we can use Silvester matrix and its determinant to compute a residual polynomial in $s$. First we write both equations as polynomials in $t$ with coefficients depending on $s$. Let
+$c_x(t)=at^3+bt^2+ct+d$ and $\dot c_x(t)=3at^2+2bt+c$ as well as $f_i/g_j$ the $s$-independent coefficients. Then
+
+$q(t)=q_6t^6+q_5t^5+q_4t^4+q_3t^3+q_2t^2+q_1t+q_0$
+
+$f(s,t)=f_6t^6+f_5t^5+f_4t^4+f_3t^3+(f_2-3as)t^2+(f_1-2bs)t+f_0-cs$
+
+$g(s,t)=g_5t^5+gt^4+(g_3-2as)t^3+(g_2-2bs)t^2+(g_1-2cs)t+g_0-2ds+s^2$
+
+From $f$ and $g$ we form a $deg_t(f)+deg_t(g)=11$ dimensional square Silvester matrix:
+
+$S(s)=\begin{pmatrix}\phi_0&\phi_1&\phi_2&\phi_3&\phi_4&\phi_5&\phi_6&0&0&0&0\\
+0&\phi_0&\phi_1&\phi_2&\phi_3&\phi_4&\phi_5&\phi_6&0&0&0\\
+0&0&\phi_0&\phi_1&\phi_2&\phi_3&\phi_4&\phi_5&\phi_6&0&0\\
+0&0&0&\phi_0&\phi_1&\phi_2&\phi_3&\phi_4&\phi_5&\phi_6&0\\
+0&0&0&0&\phi_0&\phi_1&\phi_2&\phi_3&\phi_4&\phi_5&\phi_6\\
+\gamma_0&\gamma_1&\gamma_2&\gamma_3&\gamma_4&\gamma_5&0&0&0&0&0\\
+0&\gamma_0&\gamma_1&\gamma_2&\gamma_3&\gamma_4&\gamma_5&0&0&0&0\\
+0&0&\gamma_0&\gamma_1&\gamma_2&\gamma_3&\gamma_4&\gamma_5&0&0&0\\
+0&0&0&\gamma_0&\gamma_1&\gamma_2&\gamma_3&\gamma_4&\gamma_5&0&0\\
+0&0&0&0&\gamma_0&\gamma_1&\gamma_2&\gamma_3&\gamma_4&\gamma_5&0\\
+0&0&0&0&0&\gamma_0&\gamma_1&\gamma_2&\gamma_3&\gamma_4&\gamma_5
+\end{pmatrix}
+$
+
+The resultant polynomial in $s$ is then
+$R_t(s)=\mathrm{det}S(s)$
 
 # Circle Case
 
@@ -201,3 +239,27 @@ With $m_1=0$ this simplifies to $p=\left(d_1m_2^T\right)\frac{d_1\times d_2}{\le
 As $d_1$ is just the x-direction, we can compute the ray parameter to
 
 $s=\frac{\left<m_2,d_1\times d_2\right>}{\left|d_1\times d_2\right|}=\frac{\left<c(t)\times\left(c(t)\times\dot c(t)\right),\hat x\times \left(c(t)\times\dot c(t)\right)\right>}{\left|d_1\times d_2\right|}$
+
+# Bernstein Representation
+
+## Conversion
+
+a polynomial in power basis $f(t)=\sum_{i=0}^n a_it^i$ can be converted into Bernstein basis $f(t)=\sum_{i=0}^nb_iB_i^n(t)$ with $B_i^n(t)=\left(n\atop i\right)t^i(1-t)^{n-i}$ :
+
+$b_i=\sum_{j=0}^i\frac{\left(i\atop j\right)}{\left(n\atop j\right)}a_j$
+
+The other direction is derived from multiplying out:
+
+$B_i^n(t)=\left(n\atop i\right)t^i(1-t)^{n-i}=\sum_{j=i}^n(-1)^{j-i}\left(n\atop j\right)\left(j\atop i\right)t^j$
+
+and collecting the terms over all basis functions
+
+$f(t)=\sum_{i=0}^nb_iB_i^n(t)=\sum_{i=0}^nb_i\sum_{j=i}^n(-1)^{j-i}\left(n\atop j\right)\left(j\atop i\right)t^j=\sum_{j=0}^n\left[\left(n\atop j\right)\sum_{i=0}^j(-1)^{j-i}\left(j\atop i\right)b_i\right]t^j$
+
+and thus
+
+$a_j=\left(n\atop j\right)\sum_{i=0}^j(-1)^{j-i}\left(j\atop i\right)b_i$
+
+or
+e
+$a_i=\left(n\atop i\right)\sum_{j=0}^i(-1)^{i-j}\left(i\atop j\right)b_j$

@@ -6,7 +6,17 @@
 namespace cgv {
 	namespace math {
 
+template <typename T, int N> class fpoly_ber;
+
 template <typename T, int N> class sturm_chain_mon;
+
+int binom(int n, int k) {
+	std::vector<std::vector<int>> dp(n + 1, std::vector<int>(k + 1));
+	for (int i = 0; i <= n; i++)
+		for (int j = 0; j <= std::min(i, k); j++)
+			dp[i][j] = (j == 0 || j == i) ? 1 : dp[i][j] = dp[i - 1][j - 1] + dp[i - 1][j];
+	return dp[n][k];
+}
 
 template <typename T, int N> 
 class fpoly_mon : public fvec<T, N+1>
@@ -17,13 +27,33 @@ class fpoly_mon : public fvec<T, N+1>
 		}
 	};
 	template <> struct recursive_down<1> {  static int compute_roots(fpoly_mon<T, N>& This, const T& a, const T& b, T* roots, const T& eps) { return 0; } };
+	static const int* b2m_coeffs() {
+		static int coeffs[(N+1)*(N+2)/2], *coeff_ptr = 0;
+		if (coeff_ptr == 0) {
+			int* c_ptr = coeff_ptr = coeffs;
+			for (int i = 0; i <= N; ++i)
+				for (int j = 0; j <= i; ++j)
+					(*c_ptr++) = (((i + j) % 2 == 1) ? -1 : 1) * binom(N, i) * binom(i, j);
+		}
+		return coeff_ptr;
+	}
 public:
 	/// default constructor
 	fpoly_mon() {}
+	/// coordinate type templated copy constructor
+	template <typename S>
+	fpoly_mon(const fpoly_mon<S, N>& p) : fvec<T, N + 1>(p) {}
 	/// init all coefficients to v
 	fpoly_mon(const T& v) : fvec<T, N + 1>(v) {}
 	/// init from array
 	fpoly_mon(const T* v_ptr) : fvec<T, N + 1>(N+1,v_ptr) {}
+	/// construct from Bernstein representation
+	fpoly_mon(const fpoly_ber<T, N>& b) : fvec<T, N + 1>(T(0)) {
+		const int* c_ptr = b2m_coeffs();
+		for (int i = 0; i <= N; ++i)
+			for (int j = 0; j <= i; ++j) 
+				data()[i] += (*c_ptr++)*b[j];
+	}
 	/// construct from a vector of roots
 	fpoly_mon(const std::vector<T>& roots) : fvec<T, N + 1>(T(0)) {
 		if (roots.size() == 0)
@@ -134,6 +164,189 @@ public:
 			return recursive_down<N-1>::compute_roots(*this, a, b, roots, eps);
 	}
 };
+
+template <typename T, int N>
+class fpoly_ber : public fvec<T, N + 1>
+{
+	template <int M> struct recursive_down {
+		static int compute_roots(fpoly_ber<T, N>& This, const T& a, const T& b, T* roots, const T& eps) {
+			return This.down<M>().compute_roots(a, b, roots, eps);
+		}
+	};
+	template <> struct recursive_down<1> { static int compute_roots(fpoly_ber<T, N>& This, const T& a, const T& b, T* roots, const T& eps) { return 0; } };
+	static const T* m2b_coeffs() {
+		static T coeffs[(N+1)*(N+2)/2], *coeff_ptr = 0;
+		if (coeff_ptr == 0) {
+			T* c_ptr = coeff_ptr = coeffs;
+			for (int i = 0; i <= N; ++i)
+				for (int j = 0; j <= i; ++j)
+					(*c_ptr++) = T(binom(i, j)) / binom(N, j);
+		}
+		return coeff_ptr; 
+	}
+public:
+	/// default constructor
+	fpoly_ber() {}
+	/// coordinate type templated copy constructor
+	template <typename S>
+	fpoly_ber(const fpoly_ber<S, N>& p) : fvec<T, N + 1>(p) {}
+	/// init all coefficients to v
+	fpoly_ber(const T& v) : fvec<T, N + 1>(v) {}
+	/// init from array
+	fpoly_ber(const T* v_ptr) : fvec<T, N + 1>(N + 1, v_ptr) {}
+	/// construct from monom representation
+	fpoly_ber(const fpoly_mon<T, N>& a) : fvec<T, N + 1>(T(0)) {
+		const T* c_ptr = m2b_coeffs();
+		for (int i = 0; i <= N; ++i)
+			for (int j = 0; j <= i; ++j)
+				data()[i] += (*c_ptr++) * a[j];
+	}
+	/// convert to lower dimensional 
+	template <int M> fpoly_ber<T, M>& down() { return *reinterpret_cast<fpoly_ber<T, M>*>(this); }
+	/// construct from value list
+	template <typename S> fpoly_ber(std::initializer_list<S> values) {
+		//static_assert(values.size() == N+1, "Initializer list must have exactly N+1 entries");
+		size_t i = 0;
+		for (auto v : values)
+			data()[i++] = T(v);
+	}
+	/// multiply two polynomials
+	template <int M>
+	fpoly_ber<T, N + M> operator * (const fpoly_ber<T, M>& p) const {
+		fpoly_ber<T, N + M> r(T(0));
+		for (int i = 0; i <= N; ++i)
+			for (int j = 0; j <= M; ++j)
+				r[i + j] += data()[i] * p[j];
+		return r;
+	}
+	/// perform polynomial division with respect to divident d and compute quotient q and remainder r
+	template <int M>
+	void div(const fpoly_ber<T, M>& d, fpoly_ber<T, N - M>& q, fpoly_ber<T, M - 1>& r) const {
+		static_assert(M <= N, "divisor with larger degree than divident not allowed in polynomial division. Result is always 0 for quotient and divident for remainder.");
+		r = fpoly_ber<T, M - 1>(data() + (N - M + 1));
+		for (int j = 0; j <= N - M; ++j) {
+			q[N - M - j] = r[M - 1] / d[M];
+			for (int i = 1; i < M; ++i)
+				r[M - i] = r[M - i - 1] - q[N - M - j] * d[M - i];
+			r[0] = data()[N - M - j] - q[N - M - j] * d[0];
+		}
+	}
+	/// negate polynomial
+	void negate() {
+		for (int i = 0; i <= N; ++i)
+			data()[i] = -data()[i];
+	}
+	/// add two polynomials
+	fpoly_ber<T, N> operator + (const fpoly_ber<T, N>& p) const {
+		fpoly_ber<T, N> r;
+		for (int i = 0; i <= N; ++i)
+			r[i] = data()[i] + p[i];
+		return r;
+	}
+	/// subtract polynomials
+	fpoly_ber<T, N> operator - (const fpoly_ber<T, N>& p) const {
+		fpoly_ber<T, N> r;
+		for (int i = 0; i <= N; ++i)
+			r[i] = data()[i] - p[i];
+		return r;
+	}
+
+	/// Chudy and Pawel evaluation at given parameter with one of implementations of the mix operation: 0 ... default, 1 ... fma, 2 ... twice fma
+	template <int mix_impl = 1>
+	T eval_chudy_pawel(const T& t) const {
+		T p = data()[0];
+		T h = T(1);
+		T u = T(1) - t;
+		int n1 = N + 1;
+		if (t <= T(0.5)) {
+			u = t / u;
+			for (int i = 1; i <= N; i++) {
+				h = h * u * (n1 - i);
+				h = h / (i + h);
+				T h1 = T(1) - h;
+				if (mix_impl == 0)
+					p = h1 * p + h * data()[i];
+				else if (mix_impl == 1)
+					p = std::fma(h1, p, h*data()[i]);
+				else
+					p = std::fma(data()[i], h, std::fma(p, -h, p));
+			}
+		}
+		else {
+			u = u / t;
+			for (int i = 1; i <= N; i++) {
+				h = h * (n1 - i);
+				h = h / (i * u + h);
+				T h1 = T(1) - h;
+				if (mix_impl == 0)
+					p = h1 * p + h * data()[i];
+				else if (mix_impl == 1)
+					p = std::fma(h1, p, h * data()[i]);
+				else
+					p = std::fma(data()[i], h, std::fma(p, -h, p));
+			}
+		}
+		return p;
+	}
+	/// de Casteljau evaluation at given parameter with one of implementations of the mix operation: 0 ... default, 1 ... fma, 2 ... twice fma
+	template <int mix_impl = 1>
+	T eval_de_casteljau(const T& t) const {
+		T b[N+1]; std::copy(data(), data() + size(), b);
+		T omt = T(1) - t;
+		for (size_t r = 1; r <= N; ++r)
+			for (size_t i = 0; i <= N - r; ++i)
+				if (mix_impl == 0)
+					b[i] = omt * b[i] + t * b[i + 1];
+				else if (mix_impl == 1)
+					b[i] = std::fma(b[i], omt, t*b[i + 1]);
+				else
+					b[i] = std::fma(b[i + 1], t, std::fma(b[i], -t, b[i]));
+		return b[0];
+	}
+	/// linear time constraint storage evaluation at given parameter with one of three implementations of the mix operation: 0 ... default, 1 ... fma, 2 ... twice fma
+	template <int mix_impl = 1>
+	T eval_ltcs(const T& t) const {
+		T p = data()[0];
+		const T omt = T(1) - t;
+		T ti = t;
+		T nck = T(1);
+		for (int i = 1; i <= N; ++i) {
+			nck = nck * T(N - i + 1) / T(i);
+			if (mix_impl == 0)
+				p = p * omt + nck * ti * data()[i];
+			else if (mix_impl == 1)
+				p = std::fma(p, omt, nck * ti * data()[i]);
+			else
+				p = std::fma(ti * nck, data()[i], std::fma(-t, p, p));
+			ti *= t;
+		}
+		return p;
+	}
+	/// uses suggested implementation of evaluation
+	T eval(const T& t) const {
+		if (N == 0)
+			return data()[0];
+		return eval_ltcs<1>(t);
+	}
+	/// jointly evaluate polynomial and derivative
+	T eval_with_derivative(const T& t, T& d) const {
+		if constexpr (N < 1) {
+			d = 0;
+			return data()[0];
+		}
+		else {
+			fpoly_ber<T, N - 1> der = derive();
+			d = der.eval(T);
+			return eval(t);
+		}
+	}
+	/// compute derivative
+	fpoly_ber<T, N - 1> derive() const {
+		fpoly_ber<T, N - 1> r;	
+		return r;
+	}
+};
+
 
 /// implementation of schur chain to estimate root count on given interval
 template <typename T, int N>
