@@ -10,7 +10,7 @@ var searchData=
   ['vertex_5fweight_5fdata_7',['vertex_weight_data',['../classcgv_1_1media_1_1mesh_1_1dynamic__mesh.html#abfa3cd726d641ddd91a85c92e33cc80b',1,'cgv::media::mesh::dynamic_mesh']]],
   ['vertex_5fweight_5findex_5fbegins_8',['vertex_weight_index_begins',['../classcgv_1_1media_1_1mesh_1_1dynamic__mesh.html#a7f434a1232d1789d02e6688d2e7cc13c',1,'cgv::media::mesh::dynamic_mesh']]],
   ['vertex_5fweight_5findices_9',['vertex_weight_indices',['../classcgv_1_1media_1_1mesh_1_1dynamic__mesh.html#ab6b63fa8585950c1dd803b352d36b259',1,'cgv::media::mesh::dynamic_mesh']]],
-  ['vertices_10',['vertices',['../classcgv_1_1math_1_1adjacency__list.html#a72b26efa6fe617182141e8fd02fb404e',1,'cgv::math::adjacency_list::vertices'],['../classcgv_1_1media_1_1mesh_1_1convex__polyhedron.html#afe44313dd21e4ef9a791b2c13241e9c5',1,'cgv::media::mesh::convex_polyhedron::vertices']]],
+  ['vertices_10',['vertices',['../classcgv_1_1media_1_1mesh_1_1convex__polyhedron.html#afe44313dd21e4ef9a791b2c13241e9c5',1,'cgv::media::mesh::convex_polyhedron']]],
   ['vibration_11',['vibration',['../structvr_1_1vr__controller__state.html#a2049e60e70d799088e50a514e8db44f0',1,'vr::vr_controller_state']]],
   ['vibration_5fstrength_12',['vibration_strength',['../structgamepad_1_1device__info.html#a3661dad12c7fedbc4072cc015e760be1',1,'gamepad::device_info']]],
   ['viewport_13',['viewport',['../structcgv_1_1render_1_1window__transformation.html#adb98777ac74ebf96d4ffb9b690b089a0',1,'cgv::render::window_transformation']]],

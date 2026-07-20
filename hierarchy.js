@@ -417,7 +417,7 @@ var hierarchy =
     [ "cgv::gui::with_index_struct< T >", "structcgv_1_1gui_1_1with__index__struct.html", null ],
     [ "cgv::gui::with_index_traits< T >", "structcgv_1_1gui_1_1with__index__traits.html", null ],
     [ "cgv::gui::with_index_traits< with_index_struct< T > >", "structcgv_1_1gui_1_1with__index__traits_3_01with__index__struct_3_01T_01_4_01_4.html", null ],
-    [ "cgv::math::adjacency_list< v_type >", "classcgv_1_1math_1_1adjacency__list.html", null ],
+    [ "cgv::math::adjacency_list< VertexT >", "classcgv_1_1math_1_1adjacency__list.html", null ],
     [ "cgv::math::bezier_tube_node< T >", "structcgv_1_1math_1_1bezier__tube__node.html", null ],
     [ "cgv::math::bresenham_traverser", "classcgv_1_1math_1_1bresenham__traverser.html", null ],
     [ "cgv::math::cubic_hermite_tube< T >", "classcgv_1_1math_1_1cubic__hermite__tube.html", null ],
@@ -430,7 +430,7 @@ var hierarchy =
       ] ]
     ] ],
     [ "cgv::math::edge", "structcgv_1_1math_1_1edge.html", [
-      [ "cgv::math::weighted_edge", "structcgv_1_1math_1_1weighted__edge.html", null ]
+      [ "cgv::math::weighted_edge< T >", "structcgv_1_1math_1_1weighted__edge.html", null ]
     ] ],
     [ "cgv::math::fibo_heap< key_type, value_type, max_degrees >", "classcgv_1_1math_1_1fibo__heap.html", null ],
     [ "cgv::math::fray< T, N >", "structcgv_1_1math_1_1fray.html", null ],
@@ -497,7 +497,7 @@ var hierarchy =
     [ "cgv::math::vec< T >", "classcgv_1_1math_1_1vec.html", [
       [ "cgv::math::qem< T >", "classcgv_1_1math_1_1qem.html", null ]
     ] ],
-    [ "cgv::math::vertex< ET >", "structcgv_1_1math_1_1vertex.html", null ],
+    [ "cgv::math::vertex< EdgeT >", "structcgv_1_1math_1_1vertex.html", null ],
     [ "cgv::media::abst_color_storage", "classcgv_1_1media_1_1abst__color__storage.html", [
       [ "cgv::media::color_storage< C >", "classcgv_1_1media_1_1color__storage.html", null ]
     ] ],

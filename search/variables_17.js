@@ -1,7 +1,7 @@
 var searchData=
 [
   ['w_0',['W',['../classcgv_1_1render_1_1gl_1_1image__drawable.html#a150b078891f4c1211f076eecaa3bfdc6',1,'cgv::render::gl::image_drawable']]],
-  ['weight_1',['weight',['../structcgv_1_1math_1_1weighted__edge.html#a77d777f3a618c86e4109a40dd58148db',1,'cgv::math::weighted_edge']]],
+  ['weight_1',['weight',['../structcgv_1_1math_1_1weighted__edge.html#ad39d5952c6ae3769adc7a53a14667e92',1,'cgv::math::weighted_edge']]],
   ['weight_5fmode_2',['weight_mode',['../classcgv_1_1media_1_1mesh_1_1dynamic__mesh.html#aab4e4b45879f1ae825052427809c07d8',1,'cgv::media::mesh::dynamic_mesh']]],
   ['width_3',['width',['../classvr_1_1gl__vr__display.html#a3ed3143ae5fbe0e15b2e6a0e282827cb',1,'vr::gl_vr_display::width'],['../structcgv_1_1os_1_1display__mode.html#ac3d5b427ba824a1fa6d59af4ddfc5d24',1,'cgv::os::display_mode::width']]],
   ['widths_4',['widths',['../classcgv_1_1render_1_1line__render__data.html#a66cd21e9d9a9f23183735b7208737b26',1,'cgv::render::line_render_data']]],

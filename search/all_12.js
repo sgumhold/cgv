@@ -84,6 +84,5 @@ var searchData=
   ['num_5ftris_81',['num_tris',['../classstl__reader_1_1StlMesh.html#a4463d33f7d1d24dd9551f2a7780d2ed0',1,'stl_reader::StlMesh']]],
   ['num_5fvrts_82',['num_vrts',['../classstl__reader_1_1StlMesh.html#aefdafe070182cab44d08c6edf1f40c0d',1,'stl_reader::StlMesh']]],
   ['number_5fcameras_83',['number_cameras',['../structvr_1_1vr__hmd__info.html#ae0a95150efe25e1e88293e334b461078',1,'vr::vr_hmd_info']]],
-  ['number_5fformat_84',['number_format',['../classcgv_1_1utils_1_1number__format.html',1,'cgv::utils']]],
-  ['nverts_85',['nverts',['../classcgv_1_1math_1_1adjacency__list.html#aa2802f4d80ff269bbf4e466d12b33191',1,'cgv::math::adjacency_list']]]
+  ['number_5fformat_84',['number_format',['../classcgv_1_1utils_1_1number__format.html',1,'cgv::utils']]]
 ];
