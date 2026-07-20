@@ -18,6 +18,56 @@ int binom(int n, int k) {
 	return dp[n][k];
 }
 
+/// count the number of sign changes in vector ignoring all contained zeros
+template <typename T, int N>
+int count_sign_changes(const fvec<T, N>& v) {
+	int prev_sgn;
+	int i = 0;
+	while (i < N && (prev_sgn=sgn(v[i])) == 0)
+		++i;
+	int last = N - 1;
+	while (sgn(v[last]) == 0)
+		if (--last <= i)
+			return 0;
+	int cnt = 0;
+	for (++i; i <= last; ++i) {
+		int next_sgn;
+		while ((next_sgn=sgn(v[i])) == 0)
+			++i;
+		cnt += prev_sgn != next_sgn;
+		prev_sgn = next_sgn;
+	}
+	return cnt;
+}
+
+/// count the number of sign changes in vector ignoring all contained zeros
+template <typename T, int N>
+void suggest_splits(const fvec<T, N>& v, int* splits) {
+	int prev_sgn;
+	int i = 0;
+	while (i < N && (prev_sgn = sgn(v[i])) == 0)
+		++i;
+	int last = N - 1;
+	while (sgn(v[last]) == 0)
+		if (--last <= i)
+			return;
+	int cnt = 0;
+	splits[0] = i;
+	for (++i; i <= last; ++i) {
+		int next_sgn;
+		while ((next_sgn = sgn(v[i])) == 0)
+			++i;
+		if (prev_sgn == next_sgn) {
+			if ((v[i] > v[splits[cnt]]) == (next_sgn == 1))
+				splits[cnt] = i;
+		}
+		else {
+			splits[++cnt] = i;
+			prev_sgn = next_sgn;
+		}
+	}
+}
+
 template <typename T, int N> 
 class fpoly_mon : public fvec<T, N+1>
 {
@@ -127,7 +177,7 @@ public:
 	}
 	/// jointly evaluate polynomial and derivative
 	T eval_with_derivative(const T& t, T& d) const {
-		if constexpr (N < 1) { 
+		if (N < 1) { 
 			d = 0; 
 			return data()[0]; 
 		}
@@ -168,21 +218,44 @@ public:
 template <typename T, int N>
 class fpoly_ber : public fvec<T, N + 1>
 {
-	template <int M> struct recursive_down {
+	template <int M, int S> struct recursive_down {
 		static int compute_roots(fpoly_ber<T, N>& This, const T& a, const T& b, T* roots, const T& eps) {
-			return This.down<M>().compute_roots(a, b, roots, eps);
+			return This.down<M>().compute_roots<S>(a, b, roots, eps);
 		}
 	};
-	template <> struct recursive_down<1> { static int compute_roots(fpoly_ber<T, N>& This, const T& a, const T& b, T* roots, const T& eps) { return 0; } };
+	template <int S> struct recursive_down<1,S> { static int compute_roots(fpoly_ber<T, N>& This, const T& a, const T& b, T* roots, const T& eps) { return 0; } };
 	static const T* m2b_coeffs() {
-		static T coeffs[(N+1)*(N+2)/2], *coeff_ptr = 0;
+		static T coeffs[(N + 1) * (N + 2) / 2], * coeff_ptr = 0;
 		if (coeff_ptr == 0) {
 			T* c_ptr = coeff_ptr = coeffs;
 			for (int i = 0; i <= N; ++i)
 				for (int j = 0; j <= i; ++j)
 					(*c_ptr++) = T(binom(i, j)) / binom(N, j);
 		}
-		return coeff_ptr; 
+		return coeff_ptr;
+	}
+	static const T* eval_coeffs() {
+		static T coeffs[N+1], * coeff_ptr = 0;
+		if (coeff_ptr == 0) {
+			T* c_ptr = coeff_ptr = coeffs;
+			T nck = T(1);
+			for (int i = 1; i <= N; ++i) {
+				nck = nck * T(N - i + 1) / T(i);
+				(*c_ptr++) = nck;
+			}
+		}
+		return coeff_ptr;
+	}
+	template <int M>
+	static const T* prod_coeffs() {
+		static T coeffs[(N + M + 1) * (N + M + 1)], * coeff_ptr = 0;
+		if (coeff_ptr == 0) {
+			T* c_ptr = coeff_ptr = coeffs;
+			for (int k = 0; k <= N + M; ++k)
+				for (int i = std::max(0, k - M); i <= std::min(N, k); ++i)
+					(*c_ptr++) = T(binom(N, i)) * T(binom(M, k - i)) / T(binom(N + M, k));
+		}
+		return coeff_ptr;
 	}
 public:
 	/// default constructor
@@ -212,11 +285,12 @@ public:
 	}
 	/// multiply two polynomials
 	template <int M>
-	fpoly_ber<T, N + M> operator * (const fpoly_ber<T, M>& p) const {
+	fpoly_ber<T, N + M> operator * (const fpoly_ber<T, M>& q) const {
 		fpoly_ber<T, N + M> r(T(0));
-		for (int i = 0; i <= N; ++i)
-			for (int j = 0; j <= M; ++j)
-				r[i + j] += data()[i] * p[j];
+		const T* c_ptr = prod_coeffs<M>();
+		for (int k = 0; k <= N + M; ++k)
+			for (int i = std::max(0, k - M); i <= std::min(N, k); ++i)
+				r[k] += (*c_ptr++) * data()[i] * q[k - i];
 		return r;
 	}
 	/// perform polynomial division with respect to divident d and compute quotient q and remainder r
@@ -250,7 +324,6 @@ public:
 			r[i] = data()[i] - p[i];
 		return r;
 	}
-
 	/// Chudy and Pawel evaluation at given parameter with one of implementations of the mix operation: 0 ... default, 1 ... fma, 2 ... twice fma
 	template <int mix_impl = 1>
 	T eval_chudy_pawel(const T& t) const {
@@ -267,7 +340,7 @@ public:
 				if (mix_impl == 0)
 					p = h1 * p + h * data()[i];
 				else if (mix_impl == 1)
-					p = std::fma(h1, p, h*data()[i]);
+					p = std::fma(h1, p, h * data()[i]);
 				else
 					p = std::fma(data()[i], h, std::fma(p, -h, p));
 			}
@@ -291,17 +364,31 @@ public:
 	/// de Casteljau evaluation at given parameter with one of implementations of the mix operation: 0 ... default, 1 ... fma, 2 ... twice fma
 	template <int mix_impl = 1>
 	T eval_de_casteljau(const T& t) const {
-		T b[N+1]; std::copy(data(), data() + size(), b);
+		T b[N + 1]; std::copy(data(), data() + size(), b);
 		T omt = T(1) - t;
 		for (size_t r = 1; r <= N; ++r)
 			for (size_t i = 0; i <= N - r; ++i)
 				if (mix_impl == 0)
 					b[i] = omt * b[i] + t * b[i + 1];
 				else if (mix_impl == 1)
-					b[i] = std::fma(b[i], omt, t*b[i + 1]);
+					b[i] = std::fma(b[i], omt, t * b[i + 1]);
 				else
 					b[i] = std::fma(b[i + 1], t, std::fma(b[i], -t, b[i]));
 		return b[0];
+	}
+	/// use de Casteljau to split curve into two parts at parameter t, left side overwrites this poly and right side is returned
+	fpoly_ber<T,N> split_de_casteljau(const T& t) {
+		fpoly_ber<T, N> q;
+		T b[N + 1]; std::copy(data(), data() + size(), b);
+		T omt = T(1) - t;
+		for (int r = 1; r <= N; ++r) {
+			data()[r-1] = b[0];
+			q[N-r+1] = b[N-r+1];
+			for (int i = 0; i <= N - r; ++i) 
+				b[i] = omt * b[i] + t * b[i + 1];
+		}
+		data()[N] = q[0] = b[0];
+		return q;
 	}
 	/// linear time constraint storage evaluation at given parameter with one of three implementations of the mix operation: 0 ... default, 1 ... fma, 2 ... twice fma
 	template <int mix_impl = 1>
@@ -309,15 +396,14 @@ public:
 		T p = data()[0];
 		const T omt = T(1) - t;
 		T ti = t;
-		T nck = T(1);
+		const T* c_ptr = eval_coeffs();
 		for (int i = 1; i <= N; ++i) {
-			nck = nck * T(N - i + 1) / T(i);
 			if (mix_impl == 0)
-				p = p * omt + nck * ti * data()[i];
+				p = p * omt + (*c_ptr++) * ti * data()[i];
 			else if (mix_impl == 1)
-				p = std::fma(p, omt, nck * ti * data()[i]);
+				p = std::fma(p, omt, (*c_ptr++) * ti * data()[i]);
 			else
-				p = std::fma(ti * nck, data()[i], std::fma(-t, p, p));
+				p = std::fma(ti * (*c_ptr++), data()[i], std::fma(-t, p, p));
 			ti *= t;
 		}
 		return p;
@@ -326,47 +412,229 @@ public:
 	T eval(const T& t) const {
 		if (N == 0)
 			return data()[0];
-		return eval_ltcs<1>(t);
+		return eval_ltcs<0>(t);
 	}
-	/// jointly evaluate polynomial and derivative
+	/// jointly evaluate polynomial and derivative is not more efficient than computing derivative first and then evaluating it
 	T eval_with_derivative(const T& t, T& d) const {
-		if constexpr (N < 1) {
-			d = 0;
-			return data()[0];
-		}
-		else {
-			fpoly_ber<T, N - 1> der = derive();
-			d = der.eval(T);
-			return eval(t);
-		}
+		d = N == 0 ? T(0) : derive().eval(t);
+		return eval(t);
 	}
 	/// compute derivative
-	fpoly_ber<T, N - 1> derive() const {
-		fpoly_ber<T, N - 1> r;	
-		return r;
+	fpoly_ber<T, N-1> derive() const {
+		fpoly_ber<T, N - 1> d;
+		for (int i = 0; i < N; ++i)
+			d[i] = N * (data()[i + 1] - data()[i]);
+		return d;
+	}
+	/// construct up to N intervals that contain individual roots within [a,b]
+	int eliminate_roots(const T& a, const T& b, cgv::math::fvec<T, 2>* I, T eps) const {
+		fpoly_ber<T, N> P[N];
+		P[0] = *this;
+		if (a > T(0)) {
+			fpoly_ber<T, N> q = P[0].split_de_casteljau(a);
+			P[0] = q;
+			if (b < T(1))
+				P[0].split_de_casteljau((b-a) / (T(1) - a));
+		}
+		else if (b < T(1))
+			P[0].split_de_casteljau(b);
+		int cnt = count_sign_changes(P[0]);
+		// less in less or equal is necessary for float precision to avoid accessing invalid memory
+		if (cnt == 0)
+			return 0;
+		I[0] = { a,b };
+		if (cnt == 1)
+			return 1;
+		// keep track of current interval
+		int root_cnt[N];
+		root_cnt[0] = cnt;
+		int i = 0, n = 1;
+		while (i<n) {
+			// if current interval only one root left, advance i
+			int current_cnt = root_cnt[i];
+			if (current_cnt == 1) {
+				++i;
+				continue;
+			}
+			// otherwise split in half
+			T split = T(0.5) * (I[i][0] + I[i][1]);
+			// avoid infinite subdivision
+			if (std::abs(I[i][1] - I[i][0]) < eps) {
+				++i;
+				continue;
+			}
+			// use de Casteljau splitting on polynomial
+			fpoly_ber<T, N> q = P[i].split_de_casteljau(T(.5));
+			// if left side has no roots, replace with right side
+			int left_cnt = count_sign_changes(P[i]);
+			if (left_cnt == 0) {
+				P[i] = q;
+				I[i][0] = split;
+				root_cnt[i] = count_sign_changes(q);
+				// if no more roots found, remove interval
+				if (root_cnt[i] == 0) {
+					if (n == i+1)
+						return n-1;
+					P[i] = P[n - 1];
+					root_cnt[0] = root_cnt[n - 1];
+					I[i] = I[n - 1];
+					--n;
+					continue;
+				}
+			}
+			else {
+				T tmp = I[i][1];
+				I[i][1] = split;
+				root_cnt[i] = left_cnt;
+				int right_cnt = count_sign_changes(q);
+				if (right_cnt > 0) {
+					I[n] = { split, tmp };
+					P[n] = q;
+					root_cnt[n++] = right_cnt;
+				}
+			}
+		}
+		return n;
+	}
+	/// construct up to N intervals that contain individual roots within [a,b]
+	int eliminate_roots_improved(const T& a, const T& b, cgv::math::fvec<T, 2>* I, T eps) const {
+		int cnt = count_sign_changes(*this);
+		// less in less or equal is necessary for float precision to avoid accessing invalid memory
+		if (cnt == 0)
+			return 0;
+		I[0] = { a,b };
+		if (cnt == 1)
+			return 1;
+		// keep track of current interval
+		fpoly_ber<T, N> P[N];
+		int root_cnt[N];
+		root_cnt[0] = cnt;
+		P[0] = *this;
+		int i = 0, n = 1;
+		while (i<n) {
+			// if current interval only one root left, advance i
+			int current_cnt = root_cnt[i];
+			if (current_cnt == 1) {
+				++i;
+				continue;
+			}
+			int prev_split = 0;
+			int splits[N+1];
+			suggest_splits(P[i], splits);
+			T begin = I[i][0];
+			T end   = I[i][1];
+			T dit   = (I[i][1]-begin)/N;
+			int insert = i;
+			for (int j = 1; j < current_cnt; ++j) {				
+				T split = begin + T(splits[j]) * dit; // absolute split location
+				fpoly_ber<T, N> q = P[insert].split_de_casteljau(T(splits[j] - prev_split) / (N - prev_split));
+				prev_split = splits[j];
+				if ((root_cnt[insert] = count_sign_changes(P[insert])) > 0) {
+					I[insert][1] = split;
+					insert = (n += (insert == n));
+				}
+				I[insert] = { split, end };
+				P[insert] = q;
+			}
+			if ((root_cnt[insert] = count_sign_changes(P[insert])) > 0)
+				n += (insert == n);
+			else if (i == insert) {
+				if (--n == i)
+					return n;
+				P[i] = P[n];
+				root_cnt[0] = root_cnt[n];
+				I[i] = I[n];
+			}
+		}
+		return n;
+	}
+	/// compute roots of polynom with bernstein clipping
+	int compute_roots_direct(const T& a, const T& b, T* roots, const T& eps) {
+		if (count_sign_changes(*this) == 0)
+			return 0;
+		std::vector<std::pair<fpoly_ber<T, N>, fvec<T, 2>>> P;
+		P.push_back({ *this,fvec<T,2>(a,b) });
+		int cnt = 0;
+		do {
+			T split = T(.5) * (P.back().second[0] + P.back().second[1]);
+			if (P.back().second[1] - P.back().second[0] > eps) {
+				fpoly_ber<T, N> p = P.back().first.split_de_casteljau(T(.5));
+				if (count_sign_changes(P.back().first) == 0) {
+					if (count_sign_changes(p) > 0) {
+						P.back().first = p;
+						P.back().second[0] = split;
+						continue;
+					}
+				}
+				else {
+					T tmp = P.back().second[1];
+					P.back().second[1] = split;
+					if (count_sign_changes(p) > 0)
+						P.push_back({ p, fvec<T,2>(split,tmp) });
+					continue;
+				}
+			}
+			else
+				roots[cnt++] = split;
+			P.pop_back();
+		} while (!P.empty());
+		return cnt;
+	}
+	/// find root with Newton's method in given interval
+	T find_root(const T& a, const T& b, const T& eps) {
+		if (a == b)
+			return a;
+		T t0 = a, t1 = b;
+		T y0 = eval(t0);
+		fpoly_ber<T,N-1> deri = derive();
+		while (true) {
+			// interval bisection
+			T tm = (t0 + t1) / 2;
+			if (t1 - t0 <= eps)
+				return tm;
+			T ym = eval(tm);
+			// try to improve with Newton step
+			T tn = tm - ym / deri.eval(tm);
+			if (tn > t0 && tn < t1) { // valid Newton step
+				T yn = eval(tn);
+				if (yn < ym) {
+					if (std::abs(tm - tn) <= eps)
+						return tn;
+					else {
+						tm = tn;
+						ym = yn;
+					}
+				}
+			}
+			// select interval
+			if (sgn(y0) == sgn(ym)) {
+				t0 = tm;
+				y0 = ym;
+			}
+			else
+				t1 = tm;
+		}
+		return a;
+	}
+	/// compute roots of Bernstein polynom with different strategies and return count
+	template <int S = 0>
+	int compute_roots(const T& a, const T& b, T* roots, const T& eps) {
+		if (std::abs(data()[N]) < eps)
+			return recursive_down<N-1,S>::compute_roots(*this, a, b, roots, eps);
+//			return compute_roots_direct(a, b, roots, eps);
+		cgv::math::fvec<T, 2> I[N];
+		int cnt = (S == 0) ? eliminate_roots(a, b, I, eps) : eliminate_roots_improved(a, b, I, eps);
+		for (int i=0; i<cnt; ++i)
+			roots[i] = find_root(I[i][0], I[i][1], eps);
+		return cnt;
 	}
 };
-
 
 /// implementation of schur chain to estimate root count on given interval
 template <typename T, int N>
 class sturm_chain_mon : public fvec<T, (N + 1)* (N + 2) / 2>
 {
 protected:
-	/// count the number of sign changes in vector ignoring all contained zeros
-	int count_sign_changes(const fvec<T, N + 1>& v) const {
-		int cnt = 0, last_sgn = 0;
-		for (int i = 0; i < N + 1; ++i) {
-			int next_sgn = sgn(v[i]);
-			if (last_sgn == 0)
-				last_sgn = next_sgn;
-			else if (next_sgn != 0) {
-				cnt += last_sgn != next_sgn;
-				last_sgn = next_sgn;
-			}
-		}
-		return cnt;
-	}
 	template <int M> struct recursive_eval {
 		static void call(const T* sc, const T& t, T*v) {
 			*v = reinterpret_cast<const fpoly_mon<T, M>*>(sc)->eval(t);

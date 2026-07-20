@@ -131,6 +131,15 @@ void matrix_to_polynomials(cgv::math::fmat<T,4,4> M, cgv::math::fpoly_mon<T, 3>&
 	cz = { M(2,0), M(2,1), M(2,2), M(2,3) };
 	ra = { M(3,0), M(3,1), M(3,2), M(3,3) };
 }
+template <typename T>
+void matrix_to_polynomials(cgv::math::fmat<T,4,4> B, cgv::math::fpoly_ber<T, 3>& cx,
+	cgv::math::fpoly_ber<T, 3>& cy, cgv::math::fpoly_ber<T, 3>& cz, cgv::math::fpoly_ber<T, 3>& ra)
+{
+	cx = { B(0,0), B(0,1), B(0,2), B(0,3) };
+	cy = { B(1,0), B(1,1), B(1,2), B(1,3) };
+	cz = { B(2,0), B(2,1), B(2,2), B(2,3) };
+	ra = { B(3,0), B(3,1), B(3,2), B(3,3) };
+}
 
 template <typename T>
 void consider_ray_local_sphere_intersection(const cgv::vec4& sphere, T t0, T* s, T* t, int& cnt)
@@ -229,7 +238,7 @@ bool compute_ray_sphere_tube_intersection(
 	const cgv::ray3& r, const cgv::mat4& B_world, std::vector<cgv::mat4x2>& intersections, double _eps)
 {
 	T eps = T(_eps);
-	cgv::mat4 B = transform_to_ray_coordinates(r, B_world);
+	cgv::math::fmat<T, 4, 4> B = transform_to_ray_coordinates(r, B_world);
 	cgv::math::fmat<T, 4, 4> M = B * monom_from_bernstein_matrix();
 	T t[12], s[12];
 	int cnt = 0;
@@ -261,7 +270,7 @@ bool compute_ray_sphere_tube_intersection(
 		for (int i = 0; i < cnt; ++i)
 			s[i] = cx.Eval(t[i]) - sqrt(q.Eval(t[i]));
 	}
-	else {
+	else if (solver == 1) {
 		cgv::math::fpoly_mon<T, 3> cx, cy, cz, ra;
 		matrix_to_polynomials(M, cx, cy, cz, ra);
 		// polynomial representing ortogonal distance to ray
@@ -288,6 +297,34 @@ bool compute_ray_sphere_tube_intersection(
 					for (auto I : Is)
 						t[cnt++] = sc.find_root(I[0], I[1], eps);
 				}
+			}
+		}
+		for (int i = 0; i < cnt; ++i)
+			s[i] = cx.eval(t[i]) - sqrt(q.eval(t[i]));
+	}
+	else {
+		cgv::math::fpoly_ber<T, 3> cx, cy, cz, ra;
+		matrix_to_polynomials(B, cx, cy, cz, ra);
+		// polynomial representing ortogonal distance to ray
+		cgv::math::fpoly_ber<T, 6> D = cy * cy + cz * cz;
+		cgv::math::fpoly_ber<T, 2> dcx = cx.derive();
+		cgv::math::fpoly_ber<T, 6> q = ra * ra - D;
+		cgv::math::fpoly_ber<T, 10> lhs = dcx * dcx * q;
+		cgv::math::fpoly_ber<T, 5> hdD = D.derive(); hdD *= 0.5;
+		cgv::math::fpoly_ber<T, 5> rhs_sqrt = ra * ra.derive() - hdD;
+		cgv::math::fpoly_ber<T, 10> p = lhs - rhs_sqrt * rhs_sqrt;
+		if (strategy == 0)
+			cnt = p.compute_roots<0>(0.0, 1.0, t, eps);
+		else {
+			T tq[8];
+			tq[0] = 0.0;
+			int cntq = q.compute_roots<0>(0.0, 1.0, tq + 1, eps);
+			tq[cntq + 1] = 1.0;
+			cnt = 0;
+			for (int i = 0; i < cntq + 1; ++i) {
+				T split = T(0.5) * (tq[i] + tq[i + 1]);
+				if (q.eval(split) > T(0))
+					cnt += p.compute_roots<0>(tq[i], tq[i + 1], t+cnt, eps);
 			}
 		}
 		for (int i = 0; i < cnt; ++i)
@@ -544,8 +581,8 @@ bool test_remainder(int n = 100)
 		random_test_remainder<6, 5>(n) &&
 		random_test_remainder<6, 6>(n);
 }
-template<typename T, int G = 6>
-void test_schur_chain(T eps, T eps_val, int n = 100)
+template<typename T, int G = 6, int M>
+void test_roots(T eps, T eps_val, int n = 100)
 {
 	std::default_random_engine e;
 	std::uniform_real_distribution<T> u(T(0.001), T(0.999));
@@ -560,11 +597,16 @@ void test_schur_chain(T eps, T eps_val, int n = 100)
 				--cnt;
 			}
 		cgv::math::fpoly_mon<T, G> p(v);
-		cgv::math::sturm_chain_mon<T, G> sc(p);
-		auto I = sc.eliminate_roots(0.0, 1.0);
-		std::vector<T> w;
-		for (auto iv : I)
-			w.push_back(sc.find_root(iv[0], iv[1], eps));
+		T roots[G];
+		int cnt_found;
+		if (M == 2)
+			cnt_found = p.compute_roots(0.0, 1.0, roots, eps);
+		else {
+			cgv::math::fpoly_ber<T, G> b(p);
+			cnt_found = b.compute_roots<M>(0.0, 1.0, roots, eps);
+		}
+		std::vector<T> w(roots, roots + cnt_found), matched;
+		std::vector<cgv::math::fvec<T,2>> halucinated;
 
 		for (auto r : w) {
 			int j;
@@ -576,26 +618,33 @@ void test_schur_chain(T eps, T eps_val, int n = 100)
 				else if (delta < min_delta)
 					min_delta = delta;
 			}
-			if (j < v.size())
+			if (j < v.size()) {
 				v.erase(v.begin() + j);
-			else {
-				std::cout << "ERROR: did not find root " << r << " in";
-				for (auto vv : v)
-					std::cout << " " << vv;
-				std::cout << " [" << eps_val << " <-> " << min_delta<< "]" << std::endl;
+				matched.push_back(r);
 			}
+			else
+				halucinated.push_back({ r,min_delta });
 		}
 		///int sturm_cnt = sc.estimate_nr_roots_on_interval(0.0, 1.0);
-		if (w.size() + v.size() == G) {
+		if (matched.size() == cnt || halucinated.empty()) {
 		}
 		else {
-			std::cout << "ERROR: found the roots";
-			for (auto ww : w)
-				std::cout << " " << ww;
-			std::cout << " and the non roots";
-			for (auto vv : v)
-				std::cout << " " << vv;
-
+			std::cout << "ERROR[" << i << "]:";
+			if (matched.size() > 0) {
+				std::cout << " matched";
+				for (auto m : matched)
+					std::cout << " " << m;
+			}
+			if (halucinated.size() > 0) {
+				std::cout << " halucinated <" << eps_val << ">";
+				for (auto m : halucinated)
+					std::cout << " " << m[0] << "<" << m[1] << ">";
+			}
+			if (v.size() > 0) {
+				std::cout << " remaining";
+				for (auto vv : v)
+					std::cout << " " << vv;
+			}
 			std::cout << std::endl;
 		}
 	}
@@ -612,6 +661,23 @@ void create_random_polynomials(std::vector<cgv::math::fpoly_ber<T, N>>& P, int n
 		for (int j = 0; j < N + 1; ++j)
 			p[j] = u(e);
 		P.push_back(p);
+	}
+}
+template <typename T, int N, int M>
+void test_bernstein_product(int n, T r, int m, T p_eps, T v_eps)
+{
+	std::vector<cgv::math::fpoly_ber<T, N>> P;
+	create_random_polynomials<T, N>(P, n, r);
+	std::vector<cgv::math::fpoly_ber<T, M>> Q;
+	create_random_polynomials<T, M>(Q, n, r);
+	for (int i = 0; i < n; ++i) {
+		cgv::math::fpoly_mon<T, N> p_mon(P[i]);
+		cgv::math::fpoly_mon<T, M> q_mon(Q[i]);
+		cgv::math::fpoly_ber<T, N+M> pq = P[i]*Q[i];
+		cgv::math::fpoly_mon<T, N+M> pq_mon = p_mon*q_mon;
+		cgv::math::fpoly_ber<T, N+M> pq_val(pq_mon);		
+		if ((pq - pq_val).length() > p_eps)
+			std::cout << "conversion difference (i=" << i << "): " << pq << " <-> " << pq_val << std::endl;
 	}
 }
 template <typename T, int N>
@@ -753,8 +819,8 @@ protected:
 		flt32, flt64
 	} precision = precision_type::flt64;
 	enum class solver_type {
-		recursive, sturm
-	} solver = solver_type::sturm;
+		recursive, sturm, bernstein
+	} solver = solver_type::bernstein;
 	enum class strategy_type {
 		direct, filtered
 	} strategy = strategy_type::filtered;
@@ -780,7 +846,9 @@ protected:
 	ray_intersection_function_type intersect_ray_dispatch_solver() {
 		return solver == solver_type::recursive ?
 			intersect_ray_dispatch_strategy<T, 0>() :
-			intersect_ray_dispatch_strategy<T, 1>();
+			(solver == solver_type::sturm ?
+			intersect_ray_dispatch_strategy<T, 1>() :
+			intersect_ray_dispatch_strategy<T, 2>());
 	}
 	template <typename T, int Solver>
 	ray_intersection_function_type intersect_ray_dispatch_strategy() {
@@ -801,7 +869,7 @@ protected:
 
 	void intersect_rays() {
 		static const char* primitive_names[] = { "sphere", "geometry", "sphere tube", "circle tube", "ribbon" };
-		static const char* solver_names[] = { "recursive", "Sturm" };
+		static const char* solver_names[] = { "recursive", "Sturm", "Bernstein" };
 		static const char* precision_names[] = { "float", "double" };
 		static const char* strategy_names[] = { "direct", "filtered" };
 
@@ -817,16 +885,21 @@ protected:
 
 		double eps = precision == precision_type::flt32 ? eps32 : eps64;
 		ray_intersection_function_type intersect_ray_ptr = get_intersect_ray_function();
+		int iter = 0;
 		for (const auto& r : rays) {
 			cgv::mat4x2 best(-1.f);
 			for (unsigned i = 0; i < nr_tubes; ++i) {
 				std::vector<cgv::mat4x2> Is;
+				//if (iter == 37 && i == 1) {
+				//	std::cout << std::endl;
+				//}
 				bool found = intersect_ray_ptr(r, lines.bezier_tubes[i], Is, eps);
 				if (found) {
 					if (best(3, 0) == -1.f || (best(3, 0) > Is.front()(3, 0)))
 						best = Is.front();
 				}
 			}
+			++iter;
 			if (best(3, 0) == -1)
 				continue;
 			intersections.push_back(best.col(0).down());
@@ -922,8 +995,10 @@ private:
 	}
 public:
 	thick_line_viewer() : cgv::base::group("Thick Line Viewer") {
-		test_conversion<double, 10>(100, 2.0, 10, 0.0001, 0.000001);
-		test_precision<10>(100000,2.0f,100);
+		test_roots<double,10,1>(0.0000001f, 0.00001f, 10000);
+		//test_bernstein_product<float, 3, 4>(100, 4.0, 10, 0.0001, 0.000001);
+		//test_conversion<double, 10>(100, 2.0, 10, 0.0001, 0.000001);
+		//test_precision<10>(100000,2.0f,100);
 		//test_remainder(100);
 		//std::cout << "test degree 6:" << std::endl;
 		//test_schur_chain<double,6>(0.0000001f,0.00001f,10000);
@@ -1078,6 +1153,12 @@ public:
 			case '1':
 				if (solver != solver_type::sturm) {
 					solver = solver_type::sturm;
+					on_set(&solver);
+				}
+				return true;
+			case '2':
+				if (solver != solver_type::bernstein) {
+					solver = solver_type::bernstein;
 					on_set(&solver);
 				}
 				return true;
@@ -1360,7 +1441,7 @@ public:
 		add_member_control(this, "Show Rays", show_rays, "check");
 		add_member_control(this, "Primitive", primitive, "dropdown", "enums='spheres,control geometry,sphere tube,circle tube,view aligned ribbon'");
 		add_member_control(this, "Precision", precision, "dropdown", "enums='float,double'");
-		add_member_control(this, "Solver", solver, "dropdown", "enums='recursive,Sturm'");
+		add_member_control(this, "Solver", solver, "dropdown", "enums='recursive,Sturm,Bernstein'");
 		add_member_control(this, "Strategy", strategy, "dropdown", "enums='direct,filtered'");
 		add_member_control(this, "Eps32", eps32, "value_slider", "min=0.0000001;step=0.000000001;max=0.01;log=true;ticks=true");
 		add_member_control(this, "Eps64", eps64, "value_slider", "min=0.000000001;step=0.00000000001;max=0.01;log=true;ticks=true");

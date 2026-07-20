@@ -240,26 +240,95 @@ As $d_1$ is just the x-direction, we can compute the ray parameter to
 
 $s=\frac{\left<m_2,d_1\times d_2\right>}{\left|d_1\times d_2\right|}=\frac{\left<c(t)\times\left(c(t)\times\dot c(t)\right),\hat x\times \left(c(t)\times\dot c(t)\right)\right>}{\left|d_1\times d_2\right|}$
 
-# Bernstein Representation
+# Bernstein Solver
 
-## Conversion
+## Bernstein Polynomials
 
-a polynomial in power basis $f(t)=\sum_{i=0}^n a_it^i$ can be converted into Bernstein basis $f(t)=\sum_{i=0}^nb_iB_i^n(t)$ with $B_i^n(t)=\left(n\atop i\right)t^i(1-t)^{n-i}$ :
+### Conversion
 
-$b_i=\sum_{j=0}^i\frac{\left(i\atop j\right)}{\left(n\atop j\right)}a_j$
+power basis $f(t)=\sum_{i=0}^n a_it^i$ 
 
-The other direction is derived from multiplying out:
+Bernstein basis $f(t)=\sum_{i=0}^nb_iB_i^n(t)$ with $B_i^n(t)=\left(n\atop i\right)t^i(1-t)^{n-i}$ 
 
-$B_i^n(t)=\left(n\atop i\right)t^i(1-t)^{n-i}=\sum_{j=i}^n(-1)^{j-i}\left(n\atop j\right)\left(j\atop i\right)t^j$
+Conversion to Bernstein: $b_i=\sum_{j=0}^i\frac{\left(i\atop j\right)}{\left(n\atop j\right)}a_j$
 
-and collecting the terms over all basis functions
+Conversion to Power: $a_i=\left(n\atop i\right)\sum_{j=0}^i(-1)^{i-j}\left(i\atop j\right)b_j$
 
-$f(t)=\sum_{i=0}^nb_iB_i^n(t)=\sum_{i=0}^nb_i\sum_{j=i}^n(-1)^{j-i}\left(n\atop j\right)\left(j\atop i\right)t^j=\sum_{j=0}^n\left[\left(n\atop j\right)\sum_{i=0}^j(-1)^{j-i}\left(j\atop i\right)b_i\right]t^j$
+<span style="color:blue">Proof:</span>
+The latter can be derived from multiplying out the $(1-t)^{n-i}$: $B_i^n(t)=\left(n\atop i\right)t^i(1-t)^{n-i}=\sum_{j=i}^n(-1)^{j-i}\left(n\atop j\right)\left(j\atop i\right)t^j$
+Collecting the terms of $t^j$: $f(t)=\sum_{i=0}^nb_iB_i^n(t)=\sum_{i=0}^nb_i\sum_{j=i}^n(-1)^{j-i}\left(n\atop j\right)\left(j\atop i\right)t^j=\sum_{j=0}^n\left[\left(n\atop j\right)\sum_{i=0}^j(-1)^{j-i}\left(j\atop i\right)b_i\right]t^j$
+Results in version before exchanging $i$ and $j$: $a_j=\left(n\atop j\right)\sum_{i=0}^j(-1)^{j-i}\left(j\atop i\right)b_i$
 
-and thus
+### Product
 
-$a_j=\left(n\atop j\right)\sum_{i=0}^j(-1)^{j-i}\left(j\atop i\right)b_i$
+Two Bernstein polynomials $p(t)=\sum_{i=0}^np_iB_i^n(t)$ and $q(t)=\sum_{j=0}^mq_jB_j^m(t)$ can be multiplied according to 
 
-or
-e
-$a_i=\left(n\atop i\right)\sum_{j=0}^i(-1)^{i-j}\left(i\atop j\right)b_j$
+$r(t)=p(t)\cdot q(t)=\left(\sum_{i=0}^np_iB_i^n(t)\right)\cdot\left(\sum_{i=0}^mq_iB_i^m(t)\right)=\sum_{i=0}^n\sum_{j=0}^mp_iq_jB_i^n(t)B_j^m(t)$
+
+If we substitute back in $B_i^n(t)B_j^m(t)=\frac{\left(n\atop i\right)\left(m\atop j\right)}{\left(n+m\atop i+j\right)}B_{i+j}^{n+m}(t)$ and collecting coefficients of $r(t)$ gives:
+
+$r_k = \sum_{i=\mathrm{max}(0,k-m)}^{\mathrm{min}(n,k)}\frac{\left(n\atop i\right)\left(m\atop k-i\right)}{\left(n+m\atop k\right)}p_iq_{k-i}$
+
+### Derivative
+
+Given $f(t)=\sum_{i=0}^nb_iB_i^n(t)$ we look for the first derivative $f'(t)=\sum_{i=0}^{n-1}d_iB_i^{n-1}(t)$ of one degree less:
+
+$d_{i=0..n-1}=n\cdot(b_{i+1}-b_i)$
+
+For the k-th $f^{(k)}(t)=\sum_{i=0}^{n-k}d^{(k)}_iB_i^{n-1}(t)$ derivative we get
+
+$d^{(k)}_{i=0..n-k}=\frac{n!}{(n-k)!}\sum_{j=0}^k(-1)^{k-j}\left(k\atop j\right)b_{i+j}$
+
+### Evaluation
+
+Linear time constant storage algorithm
+
+```cpp
+double eval_ltcs(const std::vector<double>& b, double t) {
+    double p  = b[0];
+    double s  = 1.0 - t;
+    double ti = t;
+    double f  = 1.0;
+    for (int i = 1; i <= N; ++i) {
+        f  *= double(N - i + 1)/i;
+        p   = s*p + f*ti*b[i];
+        ti *= t;
+    }
+    return p;
+}
+```
+
+The target expression is
+
+$f(t)=\sum_{i=0}^n\left(n\atop i\right)t^i(1-t)^{n-i}b_i$
+
+The algorithm incrementally computes
+
+$b_0$
+
+$(1-t)\cdot b_0+N\cdot t\cdot b_1 = \left(n\atop 0\right)(1-t)b_0+\left(n\atop 1\right)tb_1$
+
+$(1-t)\cdot\left((1-t)\cdot b_0+N\cdot t\cdot b_1\right)+N\frac{N-1}2\cdot t^2\cdot b_2=\left(n\atop 0\right)(1-t)^2b_0+\left(n\atop 1\right)(1-t)tb_1+\left(n\atop 2\right)t^2b_2$
+
+$(1-t)\cdot\left((1-t)\cdot\left((1-t)\cdot b_0+N\cdot t\cdot b_1\right)+N\frac{N-1}2\cdot t^2\cdot b_2\right)+N\cdot\frac{N-1}2\frac{N-2}3t^3b_3$
+
+If we apply this to joint function and derivative evaluation, the code becomes slower than explicitly computing the derivative and evaluating it with ltcs.
+
+### Splitting
+
+Splitting a Bernstein polynomial at a parameter value t into a left and a right polynomial is achieved with the de Casteljau algorithm but consumes quadratic runtime in the degree:
+
+```cpp
+auto split_de_casteljau(const std::vector<double>& b, double t) {
+    std::vector<double> L, R;
+    double s = 1.0 - t;
+    for (int r = 1; r <= N; ++r) {
+        L[r-1]   = B[0];
+        R[N-r+1] = B[N-r+1];
+        for (int i = 0; i <= N - r; ++i) 
+            B[i] = s*B[i] + t*B[i + 1];
+    }
+    L[N] = q[0] = B[0];
+    return { L, R };
+}
+```
