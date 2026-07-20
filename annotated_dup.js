@@ -241,7 +241,7 @@ var annotated_dup =
         [ "discrete_interpolator", "classcgv_1_1math_1_1discrete__interpolator.html", "classcgv_1_1math_1_1discrete__interpolator" ],
         [ "distorted_pinhole", "classcgv_1_1math_1_1distorted__pinhole.html", "classcgv_1_1math_1_1distorted__pinhole" ],
         [ "distorted_pinhole_types", "classcgv_1_1math_1_1distorted__pinhole__types.html", "classcgv_1_1math_1_1distorted__pinhole__types" ],
-        [ "edge", "structcgv_1_1math_1_1edge.html", null ],
+        [ "edge", "structcgv_1_1math_1_1edge.html", "structcgv_1_1math_1_1edge" ],
         [ "fibo_heap", "classcgv_1_1math_1_1fibo__heap.html", "classcgv_1_1math_1_1fibo__heap" ],
         [ "fmat", "classcgv_1_1math_1_1fmat.html", "classcgv_1_1math_1_1fmat" ],
         [ "fray", "structcgv_1_1math_1_1fray.html", "structcgv_1_1math_1_1fray" ],
@@ -293,7 +293,7 @@ var annotated_dup =
         [ "v2_func", "classcgv_1_1math_1_1v2__func.html", "classcgv_1_1math_1_1v2__func" ],
         [ "v3_func", "classcgv_1_1math_1_1v3__func.html", "classcgv_1_1math_1_1v3__func" ],
         [ "vec", "classcgv_1_1math_1_1vec.html", "classcgv_1_1math_1_1vec" ],
-        [ "vertex", "structcgv_1_1math_1_1vertex.html", null ],
+        [ "vertex", "structcgv_1_1math_1_1vertex.html", "structcgv_1_1math_1_1vertex" ],
         [ "weighted_edge", "structcgv_1_1math_1_1weighted__edge.html", "structcgv_1_1math_1_1weighted__edge" ]
       ] ],
       [ "media", null, [

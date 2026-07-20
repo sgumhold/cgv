@@ -5,7 +5,7 @@
 <meta http-equiv="X-UA-Compatible" content="IE=11"/>
 <meta name="generator" content="Doxygen 1.9.8"/>
 <meta name="viewport" content="width=device-width, initial-scale=1"/>
-<title>cgv: cgv::math::vertex&lt; ET &gt; Struct Template Reference</title>
+<title>cgv: cgv::math::vertex&lt; EdgeT &gt; Struct Template Reference</title>
 <link href="tabs.css" rel="stylesheet" type="text/css"/>
 <script type="text/javascript" src="jquery.js"></script>
 <script type="text/javascript" src="dynsections.js"></script>
@@ -91,97 +91,75 @@ $(document).ready(function(){initNavTree('structcgv_1_1math_1_1vertex.html','');
 <div class="header">
   <div class="summary">
 <a href="#pub-types">Public Types</a> &#124;
-<a href="#pub-methods">Public Member Functions</a> &#124;
 <a href="#pub-attribs">Public Attributes</a> &#124;
 <a href="structcgv_1_1math_1_1vertex-members.html">List of all members</a>  </div>
-  <div class="headertitle"><div class="title">cgv::math::vertex&lt; ET &gt; Struct Template Reference</div></div>
+  <div class="headertitle"><div class="title">cgv::math::vertex&lt; EdgeT &gt; Struct Template Reference</div></div>
 </div><!--header-->
 <div class="contents">
+
+<p>a basic graph node type  
+ <a href="structcgv_1_1math_1_1vertex.html#details">More...</a></p>
+
+<p><code>#include &lt;<a class="el" href="adjacency__list_8h_source.html">adjacency_list.h</a>&gt;</code></p>
 <table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="pub-types" name="pub-types"></a>
 Public Types</h2></td></tr>
-<tr class="memitem:ad56669fafdfa3201fa9ccdbebad57e31" id="r_ad56669fafdfa3201fa9ccdbebad57e31"><td class="memItemLeft" align="right" valign="top">typedef ET&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structcgv_1_1math_1_1vertex.html#ad56669fafdfa3201fa9ccdbebad57e31">edge_type</a></td></tr>
-<tr class="separator:ad56669fafdfa3201fa9ccdbebad57e31"><td class="memSeparator" colspan="2">&#160;</td></tr>
-</table><table class="memberdecls">
-<tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="pub-methods" name="pub-methods"></a>
-Public Member Functions</h2></td></tr>
-<tr class="memitem:a894ea6d415dc81c46c38eb5d4a593d81" id="r_a894ea6d415dc81c46c38eb5d4a593d81"><td class="memItemLeft" align="right" valign="top">unsigned&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structcgv_1_1math_1_1vertex.html#a894ea6d415dc81c46c38eb5d4a593d81">nedges</a> ()</td></tr>
-<tr class="separator:a894ea6d415dc81c46c38eb5d4a593d81"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a8d16550894b1a4af6dc30e8f7b02bcb9" id="r_a8d16550894b1a4af6dc30e8f7b02bcb9"><td class="memItemLeft" align="right" valign="top">using&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structcgv_1_1math_1_1vertex.html#a8d16550894b1a4af6dc30e8f7b02bcb9">edge_type</a> = EdgeT</td></tr>
+<tr class="memdesc:a8d16550894b1a4af6dc30e8f7b02bcb9"><td class="mdescLeft">&#160;</td><td class="mdescRight">the used edge type  <br /></td></tr>
+<tr class="separator:a8d16550894b1a4af6dc30e8f7b02bcb9"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="pub-attribs" name="pub-attribs"></a>
 Public Attributes</h2></td></tr>
-<tr class="memitem:ae20c845744feabf5adad6935368d5d27" id="r_ae20c845744feabf5adad6935368d5d27"><td class="memItemLeft" align="right" valign="top">std::vector&lt; edge_type &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structcgv_1_1math_1_1vertex.html#ae20c845744feabf5adad6935368d5d27">edges</a></td></tr>
-<tr class="separator:ae20c845744feabf5adad6935368d5d27"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a640edf57799062c3ca5161f6bdcdc839" id="r_a640edf57799062c3ca5161f6bdcdc839"><td class="memItemLeft" align="right" valign="top">std::vector&lt; <a class="el" href="structcgv_1_1math_1_1vertex.html#a8d16550894b1a4af6dc30e8f7b02bcb9">edge_type</a> &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structcgv_1_1math_1_1vertex.html#a640edf57799062c3ca5161f6bdcdc839">edges</a></td></tr>
+<tr class="memdesc:a640edf57799062c3ca5161f6bdcdc839"><td class="mdescLeft">&#160;</td><td class="mdescRight">incident edges  <br /></td></tr>
+<tr class="separator:a640edf57799062c3ca5161f6bdcdc839"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
 <a name="details" id="details"></a><h2 class="groupheader">Detailed Description</h2>
-<div class="textblock"><div class="compoundTemplParams">template&lt;typename ET&gt;<br />
-struct cgv::math::vertex&lt; ET &gt;</div>
-<p class="definition">Definition at line <a class="el" href="adjacency__list_8h_source.html#l00031">31</a> of file <a class="el" href="adjacency__list_8h_source.html">adjacency_list.h</a>.</p>
-</div><h2 class="groupheader">Member Typedef Documentation</h2>
-<a id="ad56669fafdfa3201fa9ccdbebad57e31" name="ad56669fafdfa3201fa9ccdbebad57e31"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#ad56669fafdfa3201fa9ccdbebad57e31">&#9670;&#160;</a></span>edge_type</h2>
-
-<div class="memitem">
-<div class="memproto">
-<div class="memtemplate">
-template&lt;typename ET &gt; </div>
-      <table class="memname">
-        <tr>
-          <td class="memname">typedef ET <a class="el" href="structcgv_1_1math_1_1vertex.html">cgv::math::vertex</a>&lt; ET &gt;::edge_type</td>
-        </tr>
-      </table>
-</div><div class="memdoc">
+<div class="textblock"><div class="compoundTemplParams">template&lt;typename EdgeT&gt;<br />
+struct cgv::math::vertex&lt; EdgeT &gt;</div><p>a basic graph node type </p>
 
 <p class="definition">Definition at line <a class="el" href="adjacency__list_8h_source.html#l00033">33</a> of file <a class="el" href="adjacency__list_8h_source.html">adjacency_list.h</a>.</p>
-
-</div>
-</div>
-<h2 class="groupheader">Member Function Documentation</h2>
-<a id="a894ea6d415dc81c46c38eb5d4a593d81" name="a894ea6d415dc81c46c38eb5d4a593d81"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a894ea6d415dc81c46c38eb5d4a593d81">&#9670;&#160;</a></span>nedges()</h2>
+</div><h2 class="groupheader">Member Typedef Documentation</h2>
+<a id="a8d16550894b1a4af6dc30e8f7b02bcb9" name="a8d16550894b1a4af6dc30e8f7b02bcb9"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a8d16550894b1a4af6dc30e8f7b02bcb9">&#9670;&#160;</a></span>edge_type</h2>
 
 <div class="memitem">
 <div class="memproto">
 <div class="memtemplate">
-template&lt;typename ET &gt; </div>
-<table class="mlabels">
-  <tr>
-  <td class="mlabels-left">
+template&lt;typename EdgeT &gt; </div>
       <table class="memname">
         <tr>
-          <td class="memname">unsigned <a class="el" href="structcgv_1_1math_1_1vertex.html">cgv::math::vertex</a>&lt; ET &gt;::nedges </td>
-          <td>(</td>
-          <td class="paramname"></td><td>)</td>
-          <td></td>
+          <td class="memname">using <a class="el" href="structcgv_1_1math_1_1vertex.html">cgv::math::vertex</a>&lt; EdgeT &gt;::edge_type =  EdgeT</td>
         </tr>
       </table>
-  </td>
-  <td class="mlabels-right">
-<span class="mlabels"><span class="mlabel">inline</span></span>  </td>
-  </tr>
-</table>
 </div><div class="memdoc">
 
-<p class="definition">Definition at line <a class="el" href="adjacency__list_8h_source.html#l00037">37</a> of file <a class="el" href="adjacency__list_8h_source.html">adjacency_list.h</a>.</p>
+<p>the used edge type </p>
+
+<p class="definition">Definition at line <a class="el" href="adjacency__list_8h_source.html#l00036">36</a> of file <a class="el" href="adjacency__list_8h_source.html">adjacency_list.h</a>.</p>
 
 </div>
 </div>
 <h2 class="groupheader">Member Data Documentation</h2>
-<a id="ae20c845744feabf5adad6935368d5d27" name="ae20c845744feabf5adad6935368d5d27"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#ae20c845744feabf5adad6935368d5d27">&#9670;&#160;</a></span>edges</h2>
+<a id="a640edf57799062c3ca5161f6bdcdc839" name="a640edf57799062c3ca5161f6bdcdc839"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a640edf57799062c3ca5161f6bdcdc839">&#9670;&#160;</a></span>edges</h2>
 
 <div class="memitem">
 <div class="memproto">
 <div class="memtemplate">
-template&lt;typename ET &gt; </div>
+template&lt;typename EdgeT &gt; </div>
       <table class="memname">
         <tr>
-          <td class="memname">std::vector&lt;edge_type&gt; <a class="el" href="structcgv_1_1math_1_1vertex.html">cgv::math::vertex</a>&lt; ET &gt;::edges</td>
+          <td class="memname">std::vector&lt;<a class="el" href="structcgv_1_1math_1_1vertex.html#a8d16550894b1a4af6dc30e8f7b02bcb9">edge_type</a>&gt; <a class="el" href="structcgv_1_1math_1_1vertex.html">cgv::math::vertex</a>&lt; EdgeT &gt;::edges</td>
         </tr>
       </table>
 </div><div class="memdoc">
 
-<p class="definition">Definition at line <a class="el" href="adjacency__list_8h_source.html#l00035">35</a> of file <a class="el" href="adjacency__list_8h_source.html">adjacency_list.h</a>.</p>
+<p>incident edges </p>
+
+<p class="definition">Definition at line <a class="el" href="adjacency__list_8h_source.html#l00039">39</a> of file <a class="el" href="adjacency__list_8h_source.html">adjacency_list.h</a>.</p>
+
+<p class="reference">Referenced by <a class="el" href="adjacency__list_8h_source.html#l00154">cgv::math::adjacency_list&lt; VertexT &gt;::add_edge()</a>, <a class="el" href="adjacency__list_8h_source.html#l00177">cgv::math::adjacency_list&lt; VertexT &gt;::edge_exists()</a>, and <a class="el" href="adjacency__list_8h_source.html#l00140">cgv::math::adjacency_list&lt; VertexT &gt;::to_edge_list()</a>.</p>
 
 </div>
 </div>

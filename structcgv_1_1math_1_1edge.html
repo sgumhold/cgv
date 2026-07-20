@@ -95,56 +95,72 @@ $(document).ready(function(){initNavTree('structcgv_1_1math_1_1edge.html',''); i
   <div class="headertitle"><div class="title">cgv::math::edge Struct Reference</div></div>
 </div><!--header-->
 <div class="contents">
+
+<p>a basic graph edge type  
+ <a href="structcgv_1_1math_1_1edge.html#details">More...</a></p>
+
+<p><code>#include &lt;<a class="el" href="adjacency__list_8h_source.html">adjacency_list.h</a>&gt;</code></p>
 <div class="dynheader">
 Inheritance diagram for cgv::math::edge:</div>
 <div class="dyncontent">
  <div class="center">
   <img src="structcgv_1_1math_1_1edge.png" usemap="#cgv::math::edge_map" alt=""/>
   <map id="cgv::math::edge_map" name="cgv::math::edge_map">
-<area href="structcgv_1_1math_1_1weighted__edge.html" alt="cgv::math::weighted_edge" shape="rect" coords="0,56,156,80"/>
+<area href="structcgv_1_1math_1_1weighted__edge.html" alt="cgv::math::weighted_edge&lt; T &gt;" shape="rect" coords="0,56,187,80"/>
   </map>
 </div></div>
 <table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="pub-attribs" name="pub-attribs"></a>
 Public Attributes</h2></td></tr>
-<tr class="memitem:a8d8001be399f0fd302dee9250837d85e" id="r_a8d8001be399f0fd302dee9250837d85e"><td class="memItemLeft" align="right" valign="top">unsigned&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structcgv_1_1math_1_1edge.html#a8d8001be399f0fd302dee9250837d85e">start</a></td></tr>
-<tr class="separator:a8d8001be399f0fd302dee9250837d85e"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:ae7349a2eefce92dc6a8d099b29635a86" id="r_ae7349a2eefce92dc6a8d099b29635a86"><td class="memItemLeft" align="right" valign="top">unsigned&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structcgv_1_1math_1_1edge.html#ae7349a2eefce92dc6a8d099b29635a86">end</a></td></tr>
-<tr class="separator:ae7349a2eefce92dc6a8d099b29635a86"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a48fb0db3338a0f740131cb57e1e37bcc" id="r_a48fb0db3338a0f740131cb57e1e37bcc"><td class="memItemLeft" align="right" valign="top">size_t&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structcgv_1_1math_1_1edge.html#a48fb0db3338a0f740131cb57e1e37bcc">start</a> = 0</td></tr>
+<tr class="memdesc:a48fb0db3338a0f740131cb57e1e37bcc"><td class="mdescLeft">&#160;</td><td class="mdescRight">the index of the start vertex  <br /></td></tr>
+<tr class="separator:a48fb0db3338a0f740131cb57e1e37bcc"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a19ce7c25a0d0ce5c0a168360ef960b2a" id="r_a19ce7c25a0d0ce5c0a168360ef960b2a"><td class="memItemLeft" align="right" valign="top">size_t&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structcgv_1_1math_1_1edge.html#a19ce7c25a0d0ce5c0a168360ef960b2a">end</a> = 0</td></tr>
+<tr class="memdesc:a19ce7c25a0d0ce5c0a168360ef960b2a"><td class="mdescLeft">&#160;</td><td class="mdescRight">the index of the end vertex  <br /></td></tr>
+<tr class="separator:a19ce7c25a0d0ce5c0a168360ef960b2a"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
 <a name="details" id="details"></a><h2 class="groupheader">Detailed Description</h2>
-<div class="textblock">
-<p class="definition">Definition at line <a class="el" href="adjacency__list_8h_source.html#l00011">11</a> of file <a class="el" href="adjacency__list_8h_source.html">adjacency_list.h</a>.</p>
+<div class="textblock"><p>a basic graph edge type </p>
+
+<p class="definition">Definition at line <a class="el" href="adjacency__list_8h_source.html#l00014">14</a> of file <a class="el" href="adjacency__list_8h_source.html">adjacency_list.h</a>.</p>
 </div><h2 class="groupheader">Member Data Documentation</h2>
-<a id="ae7349a2eefce92dc6a8d099b29635a86" name="ae7349a2eefce92dc6a8d099b29635a86"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#ae7349a2eefce92dc6a8d099b29635a86">&#9670;&#160;</a></span>end</h2>
+<a id="a19ce7c25a0d0ce5c0a168360ef960b2a" name="a19ce7c25a0d0ce5c0a168360ef960b2a"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a19ce7c25a0d0ce5c0a168360ef960b2a">&#9670;&#160;</a></span>end</h2>
 
 <div class="memitem">
 <div class="memproto">
       <table class="memname">
         <tr>
-          <td class="memname">unsigned cgv::math::edge::end</td>
+          <td class="memname">size_t cgv::math::edge::end = 0</td>
         </tr>
       </table>
 </div><div class="memdoc">
 
-<p class="definition">Definition at line <a class="el" href="adjacency__list_8h_source.html#l00014">14</a> of file <a class="el" href="adjacency__list_8h_source.html">adjacency_list.h</a>.</p>
+<p>the index of the end vertex </p>
+
+<p class="definition">Definition at line <a class="el" href="adjacency__list_8h_source.html#l00019">19</a> of file <a class="el" href="adjacency__list_8h_source.html">adjacency_list.h</a>.</p>
+
+<p class="reference">Referenced by <a class="el" href="adjacency__list_8h_source.html#l00154">cgv::math::adjacency_list&lt; VertexT &gt;::add_edge()</a>, and <a class="el" href="adjacency__list_8h_source.html#l00177">cgv::math::adjacency_list&lt; VertexT &gt;::edge_exists()</a>.</p>
 
 </div>
 </div>
-<a id="a8d8001be399f0fd302dee9250837d85e" name="a8d8001be399f0fd302dee9250837d85e"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a8d8001be399f0fd302dee9250837d85e">&#9670;&#160;</a></span>start</h2>
+<a id="a48fb0db3338a0f740131cb57e1e37bcc" name="a48fb0db3338a0f740131cb57e1e37bcc"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a48fb0db3338a0f740131cb57e1e37bcc">&#9670;&#160;</a></span>start</h2>
 
 <div class="memitem">
 <div class="memproto">
       <table class="memname">
         <tr>
-          <td class="memname">unsigned cgv::math::edge::start</td>
+          <td class="memname">size_t cgv::math::edge::start = 0</td>
         </tr>
       </table>
 </div><div class="memdoc">
 
-<p class="definition">Definition at line <a class="el" href="adjacency__list_8h_source.html#l00014">14</a> of file <a class="el" href="adjacency__list_8h_source.html">adjacency_list.h</a>.</p>
+<p>the index of the start vertex </p>
+
+<p class="definition">Definition at line <a class="el" href="adjacency__list_8h_source.html#l00017">17</a> of file <a class="el" href="adjacency__list_8h_source.html">adjacency_list.h</a>.</p>
+
+<p class="reference">Referenced by <a class="el" href="adjacency__list_8h_source.html#l00154">cgv::math::adjacency_list&lt; VertexT &gt;::add_edge()</a>.</p>
 
 </div>
 </div>

@@ -1,5 +1,6 @@
 var NAVTREEINDEX32 =
 {
+"functions_vars_a.html":[11,3,2,1],
 "functions_vars_b.html":[11,3,2,2],
 "functions_vars_c.html":[11,3,2,3],
 "functions_vars_d.html":[11,3,2,4],
@@ -248,6 +249,5 @@ var NAVTREEINDEX32 =
 "namespacecgv.html#a45c5800e9a69f87664bf697e27ebb024":[10,0,1,86],
 "namespacecgv.html#a465f589beeb5e4e76eb2db8d1f6057c1":[10,0,1,64],
 "namespacecgv.html#a4a6df8f99545fbc6aa3bca65e75b7b6a":[10,0,1,78],
-"namespacecgv.html#a4c6f28c5add1993fa8b1af7d587c51e6":[10,0,1,30],
-"namespacecgv.html#a4e88ab68744702f9b7aa559de4f31521":[10,0,1,53]
+"namespacecgv.html#a4c6f28c5add1993fa8b1af7d587c51e6":[10,0,1,30]
 };
