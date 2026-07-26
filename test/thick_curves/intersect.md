@@ -28,20 +28,63 @@ output
 
 * $s_{\mathrm{fst}}$ ray parameter of first intersection
 
-transform such that ray origin $\mathbf o$ is in coordinate origin and $\hat v$ coincides with x-direction. The ray sphere-tube entering intersection is found at ray-parameters that minimize the x-coordinate and the leaving intersections at maxima in the x-coordinate. Both can be found from $\frac{ds}{dt}=0$.
+The ray sphere-tube entering intersection is found at ray-parameters that are locally minimal in $s$ and the exiting intersections at local maximums in $s$. Both can be found from $\frac{ds}{dt}=0$. One option is inspect the ray intersection problem in a coordinate system where $\mathbf o$ coincides with the origin of the coordinate system and $\hat v$ coincides with the x-axis.
 
-The sphere surface constraint implicitly relates $x$ with $t$:
+The constraint $g(s,t)=0$ that the ray tube intersection is on the sphere surface implicitly relates $s$ with $t$, where
 
- $g(s,t)=0=(c_x(t)-s)^2+c^2_y(t)+c_z^2(t)-r^2(t)$
+$g(s,t)=(c(t)-o-s\hat v)^2-r^2(t)$ or in ray coordinates: $g(s,t)=(c_x(t)-s)^2+c^2_y(t)+c_z^2(t)-r^2(t)$
 
-and the Implicit Function Theorem allows computation of $\frac{ds}{dt}=-\frac{\partial g}{\partial t}/\frac{\partial g}{\partial s}$:
+In the standard derivation we solve $g(s,t)=0$ for $s$ and set $\dot s=\frac{ds}{dt}=0$:
 
-$\frac{\partial g}{\partial t}=2\left[\left(c_x(t)-s\right)\dot c_x(t)+2c_y(t)\dot c_y(t)+2c_z(t)\dot c_z(t)-2r(t)\dot r(t)\right]$ 
+$s^2-2\hat vc(t)s+(c(t)-o)^2-r^2=0\Longrightarrow s=h(t)\pm\sqrt{q(t)}$ with
+$h(t)=c_{\hat v}(t)$ or in the ray coordinate system $h(t)=c_x(t)$ and
+
+$q(t)=r^2+c_{\hat v}^2(t)-(c(t)-o)^2$ or $q(t)=r^2(t)-c_y^2(t)-c_z^2(t)$
+
+From this we compute the derivative
+
+$\dot s(t)=\dot h(t)\pm\frac{\dot q(t)}{2\sqrt{q(t)}}$
+
+Setting $\dot s(t)$ equal to zero yields:
+
+$\dot h(t)=\pm\frac{\dot q(t)}{2\sqrt{q(t)}} \Rightarrow 2\sqrt{q(t)}\dot h(t)=\pm\dot q(t)$
+
+Finally, we square both sides to eliminate the square root:
+
+$4q(t)\dot h^2(t)=\dot q^2(t)$
+
+Plugin $h(t)$ and $q(t)$ back in:
+
+$4\left[r^2+c_{\hat v}^2(t)-(c(t)-o)^2\right]\dot c^2_{\hat v}(t)=\left[2r(t)\dot r(t)+2c_{\hat v}(t)\dot c_{\hat v}(t)-2(c(t)-o)\dot c(t)\right]^2$
+
+or in the ray coordinate system:
+
+$4\left[r^2(t)-c_y^2(t)-c_z^2(t)\right]\dot c_x^2(t)=\left[2r(t)\dot r(t)-2c_y(t)\dot c_y(t)-2c_z(t)\dot c_z(t)\right]^2$
+
+Independent of the coordinate system the final result is a polynomial of degree 10 in $t$ and no matter what coordinate system is used, the polynomial representation is identical:
+
+$\left[r^2+c_{\hat v}^2(t)-(c(t)-o)^2\right]\dot c^2_{\hat v}(t)-\left[r(t)\dot r(t)+c_{\hat v}(t)\dot c_{\hat v}(t)-(c(t)-o)\dot c(t)\right]^2=0$
+
+### Splitting Computation of Polynomial Setup
+
+In the rasterization pipeline one can pre-compute terms in the geometry shader that are independent of the ray direction that varies of the silhouette quad. We need to use the general coordinate system and define the two ray direction invariant polynomials of degree 6 and 5:
+
+$a(t)=r^2-(c(t)-o)^2$  and  $b(t)=r(t)\dot r(t)-(c(t)-o)\dot c(t)$
+
+Then the per ray direction polynomial setup simplifies to
+
+$\left[a(t)+c_{\hat v}^2(t)\right]\dot c^2_{\hat v}(t)-\left[b(t)+c_{\hat v}(t)\dot c_{\hat v}(t)\right]^2=0$
+
+### Alternative Derivation with the Implicit Function Theorem
+
+The Implicit Function Theorem allows computation of $\frac{ds}{dt}=-\frac{\partial g}{\partial t}/\frac{\partial g}{\partial s}$, what yields an alternative derivation for the ray coordinate system. The general case is a bit cumbersome to derive though.
+
+$\frac{\partial g}{\partial t}=2\left[\left(c_x(t)-s\right)\dot c_x(t)+c_y(t)\dot c_y(t)+c_z(t)\dot c_z(t)-r(t)\dot r(t)\right]$ 
 
 $\frac{\partial g}{\partial s}=2\left(s-c_x(t)\right)$ 
 
 Thus we get 
-$\frac{dx}{dt}=-\left[\left(c_x(t)-s\right)\dot c_x(t)+c_y(t)\dot c_y(t)+c_z(t)\dot c_z(t)-r(t)\dot r(t)\right]/\left(s-c_x(t)\right)$
+$\frac{ds}{dt}=-\left[\left(c_x(t)-s\right)\dot c_x(t)+c_y(t)\dot c_y(t)+c_z(t)\dot c_z(t)-r(t)\dot r(t)\right]/\left(s-c_x(t)\right)$
 
 Here we assume $s\not=c_x(t)$. From $\frac{ds}{dt}=0$ we get:
 
@@ -55,29 +98,7 @@ $\left(c_x(t)-s\right)^2\dot c^2_x(t)= \left[r(t)\dot r(t)-c_y(t)\dot c_y(t)-c_z
 
 $\left[r^2(t)-c^2_y(t)-c_z^2(t)\right]\dot c^2_x(t)= \left[r(t)\dot r(t)-c_y(t)\dot c_y(t)-c_z(t)\dot c_z(t)\right]^2$
 
-The final result is polynomial of degree 10 in $t$.
-
-Alternatively, we can directly solve $g(s,t)=0$ for $s$:
-
-$s=c_x(t)\pm\sqrt{r^2(t)-c_y^2(t)-c_z^2(t)}=h(t)\pm\sqrt{q(t)}$
-
-Next compute derivative
-
-$\dot s(t)=\dot h(t)\pm\frac{\dot q(t)}{2\sqrt{q(t)}}$
-
-Choose first - thus - negative solution and set equal to zero:
-
-$\dot h(t)=\frac{\dot q(t)}{2\sqrt{q(t)}} \Rightarrow 2\sqrt{q(t)}\dot h(t)=\dot q(t)$
-
-Finally, we square both sides
-
-$4q(t)\dot h^2(t)=\dot q^2(t)$
-
-Plugin $h(t)$ and $q(t)$ back in:
-
-$4\left[r^2(t)-c_y^2(t)-c_z^2(t)\right]\dot c_x^2(t)=\left[2r(t)\dot r(t)-2c_y(t)\dot c_y(t)-2c_z(t)\dot c_z(t)\right]^2$
-
-Again this is polynomial of degree 10 - actually the same as with the Langrangian multiplier method.
+Again this is polynomial of degree 10 - actually the same as with the standard derivation.
 
 ## Rewriting the equations in s
 
@@ -284,13 +305,14 @@ $d^{(k)}_{i=0..n-k}=\frac{n!}{(n-k)!}\sum_{j=0}^k(-1)^{k-j}\left(k\atop j\right)
 Linear time constant storage algorithm
 
 ```cpp
-double eval_ltcs(const std::vector<double>& b, double t) {
-    double p  = b[0];
-    double s  = 1.0 - t;
-    double ti = t;
-    double f  = 1.0;
+template <typename T, int N>
+double eval_ltcs(const std::vector<T>& b, T t) {
+    T p  = b[0];
+    T s  = 1.0 - t;
+    T ti = t;
+    T f  = 1.0;
     for (int i = 1; i <= N; ++i) {
-        f  *= double(N - i + 1)/i;
+        f  *= T(N - i + 1)/i;
         p   = s*p + f*ti*b[i];
         ti *= t;
     }
@@ -316,12 +338,14 @@ If we apply this to joint function and derivative evaluation, the code becomes s
 
 ### Splitting
 
-Splitting a Bernstein polynomial at a parameter value t into a left and a right polynomial is achieved with the de Casteljau algorithm but consumes quadratic runtime in the degree:
+Splitting a Bernstein polynomial at a parameter value t into a left and a right polynomial is achieved with the de Casteljau algorithm, but uses quadratic runtime in the degree N:
 
 ```cpp
-auto split_de_casteljau(const std::vector<double>& b, double t) {
-    std::vector<double> L, R;
-    double s = 1.0 - t;
+template <typename T, int N>
+auto split_de_casteljau(const std::vector<T>& b, T t) {
+    std::vector<T> B = b;
+    std::vector<T> L(N), R(N);
+    T s = 1.0 - t;
     for (int r = 1; r <= N; ++r) {
         L[r-1]   = B[0];
         R[N-r+1] = B[N-r+1];
@@ -332,3 +356,34 @@ auto split_de_casteljau(const std::vector<double>& b, double t) {
     return { L, R };
 }
 ```
+
+### Degree Elevation
+
+Map degree $n$ Bernstein polynomial $b_{i=0..n}$ to $B_{0..n+1}$of degree $n+1$:
+$B_0 = b_0$
+$B_i = tb_{i-1}+(1 - t)b_i \quad \text{with }t=\frac{i}{n+1}\text{ for } 1 \le i\le n$
+$B_{n+1} = b_n$
+
+### Degree Reduction
+
+Map degree n+1 Bernstein polynomial $B_{0..n+1}$ to $b_{i=0..n}$ of degree $n$ forward:
+
+$b^{\rightarrow}_0=B_0$
+
+$b^{\rightarrow}_i=\frac{B_i-tb^{\rightarrow}_{i-1}}{1-t} \quad \text{ with }t=\frac i{n+1}\text{ for } 1\le i\le n$
+
+If $b^{\rightarrow}_n=B_{n+1}$ the polynomial was of degree $n$ and forward reduction is exact.
+
+Otherwise we do a backward estimation:
+
+$b^{\leftarrow}_n=B_{n+1}$
+
+$b^{\leftarrow}_{i-1}=\frac{B_i-(1-t)b^{\leftarrow}_i}t\quad\text{with }t=\frac{i}{n+1}\text{ for }1\le i\le n$
+
+Again $b^{\leftarrow}_0=B_0$ only if the polynomial $B_i$ was only of degree $n$. An L2 approximation $b_i$ can be computed as
+
+$b_0 = B_0$
+
+$b_i=\frac12\left(b^{\leftarrow}_i+b^{\rightarrow}_i\right)$
+
+$b_n=B_{n+1}$

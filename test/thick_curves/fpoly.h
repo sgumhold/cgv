@@ -426,6 +426,58 @@ public:
 			d[i] = N * (data()[i + 1] - data()[i]);
 		return d;
 	}
+	/// return Bernstein polynomial of one degree more representing this polynomial exactly
+	fpoly_ber<T, N + 1> elevate_degree() const {
+		fpoly_ber<T, N+1> p;
+		p[0] = data()[0];
+		p[N+1] = data()[N];
+		T f = T(1) / (N + 1);
+		for (int i = 1; i <= N; ++i) {
+			T t = i * f;
+			T s = T(1) - t;
+			p[i] = t*data()[i-1] + s*data()[i];
+		}
+		return p;
+	}
+	/// check whether this Bernstein polynomial is of full degree
+	bool is_full_degree(T eps) const {
+		fpoly_ber<T, N-1> p;
+		return is_full_degree(p, eps);
+	}
+	/// check whether this Bernstein polynomial is of full degree and if not, provide degree reduced version
+	bool is_full_degree(fpoly_ber<T, N-1>& p, T eps) const {
+		T f = T(1) / N;
+		p[0] = data()[0]; // forward pass
+		for (int i = 1; i < N; ++i) {
+			T t = f * i;
+			p[i] = (data()[i] - t * p[i - 1]) / (1-t); // alternative implementation: p[i] = (N * data()[i] - i * p[i - 1]) / (N - i);
+		}
+		return std::abs(p[N - 1] - data()[N]) > eps;
+	}
+	/// return degree reduces L2 approximation
+	fpoly_ber<T, N-1> reduce_degree() const {
+		fpoly_ber<T, N-1> p;
+		T f = T(1) / N;
+		p[0] = data()[0]; // forward pass
+		for (int i = 1; i < N; ++i) {
+			T t = f * i;
+			p[i] = (data()[i] - t * p[i - 1]) / (1-t);
+		}
+		T q = p[N-1] = data()[N]; // backward pass
+		for (int i = N-1; i > 1; --i) {
+			T t = f * i;
+			q = (data()[i]-(1-t)*q)/t;
+			p[i-1] = T(.5) * (p[i-1] + q);
+		}
+		return p;
+	}
+	/// compute the L2 error to another Bernstein polynomial of same degree
+	T compute_L2_error(const fpoly_ber<T,N>& p) {
+		T sqr_diff_sum = T(0);
+		for (int i=0; i<=N; ++i)
+			sqr_diff_sum += sqr(p[i] - data()[i]);
+		return sqr_diff_sum / (N + 1);
+	}
 	/// construct up to N intervals that contain individual roots within [a,b]
 	int eliminate_roots(const T& a, const T& b, cgv::math::fvec<T, 2>* I, T eps) const {
 		fpoly_ber<T, N> P[N];

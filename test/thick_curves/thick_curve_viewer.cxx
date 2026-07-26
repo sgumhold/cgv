@@ -721,6 +721,29 @@ void test_precision_once(
 	std::cout << name << " in " << watch.get_elapsed_time() << "sec: avg=" << stats.get_average() << ", max = " << stats.get_max() << std::endl;
 }
 
+template <typename T, int N>
+void test_degree_functions(int n, T r, T eps)
+{
+	std::vector<cgv::math::fpoly_ber<T, N>> P;
+	create_random_polynomials<T, N>(P, n, r);
+	for (int i = 0; i < n; ++i) {
+		if (!P[i].is_full_degree(eps))
+			std::cout << i << " ... accidentally not of full degree: " << P[i] << std::endl;
+		auto q = P[i].reduce_degree();
+		auto Q = q.elevate_degree();
+		if (Q.is_full_degree(eps))
+			std::cout << i << " ... ERROR elevation reconstruction should not have full degree: " << Q << std::endl;
+		else
+			std::cout << i << " ... L2 error = " << Q.compute_L2_error(P[i]) << std::endl;
+		auto qq = Q.reduce_degree();
+		auto QQ = qq.elevate_degree();
+		if (qq.compute_L2_error(q) > eps)
+			std::cout << i << " ... ERROR: reduced reconstruction L2 error = " << qq.compute_L2_error(q) << std::endl;
+		if (QQ.compute_L2_error(Q) > eps)
+			std::cout << i << " ... ERROR: elevated reconstruction L2 error = " << QQ.compute_L2_error(Q) << std::endl;
+	}
+}
+
 template <int N>
 void test_precision(int n, float r, int m)
 {
@@ -906,8 +929,9 @@ protected:
 			intersection_normals.push_back(best.col(1).down());
 			intersection_colors.push_back(cgv::rgb(cgv::math::clamp(ray_color_scale * (best(3, 0) - ray_color_offset), 0.f, 1.f), best(3, 1), 0.f));
 		}
+		double time = watch.get_elapsed_time();
 		std::cout << "elapsed time [" << primitive_names[(int&)primitive] << "," << solver_names[(int&)solver]
-			<< "," << precision_names[(int&)precision] << "]: " << watch.get_elapsed_time() << std::endl;
+			<< "," << precision_names[(int&)precision] << "]: " << time << std::endl;
 		post_recreate_gui();
 		post_redraw();
 	}
@@ -995,7 +1019,8 @@ private:
 	}
 public:
 	thick_line_viewer() : cgv::base::group("Thick Line Viewer") {
-		test_roots<double,10,1>(0.0000001f, 0.00001f, 10000);
+		test_degree_functions<double, 7>(10, 2.0, 0.0000001);
+		//test_roots<double,10,1>(0.0000001f, 0.00001f, 10000);
 		//test_bernstein_product<float, 3, 4>(100, 4.0, 10, 0.0001, 0.000001);
 		//test_conversion<double, 10>(100, 2.0, 10, 0.0001, 0.000001);
 		//test_precision<10>(100000,2.0f,100);
