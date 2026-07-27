@@ -219,11 +219,17 @@ template <typename T, int N>
 class fpoly_ber : public fvec<T, N + 1>
 {
 	template <int M, int S> struct recursive_down {
-		static int compute_roots(fpoly_ber<T, N>& This, const T& a, const T& b, T* roots, const T& eps) {
+		static int compute_roots(const fpoly_ber<T, N>& This, const T& a, const T& b, T* roots, const T& eps) {
 			return This.down<M>().compute_roots<S>(a, b, roots, eps);
 		}
+		static int compute_inner_roots(const fpoly_ber<T, N>& This, T* roots, const T& eps) {
+			return This.differ().compute_inner_roots(roots, eps);
+		}
 	};
-	template <int S> struct recursive_down<1,S> { static int compute_roots(fpoly_ber<T, N>& This, const T& a, const T& b, T* roots, const T& eps) { return 0; } };
+	template <int S> struct recursive_down<1,S> { 
+		static int compute_roots(const fpoly_ber<T, N>& This, const T& a, const T& b, T* roots, const T& eps) { return 0; } 
+		static int compute_inner_roots(const fpoly_ber<T, N>& This, T* roots, const T& eps) { return 0; } 
+	};
 	static const T* m2b_coeffs() {
 		static T coeffs[(N + 1) * (N + 2) / 2], * coeff_ptr = 0;
 		if (coeff_ptr == 0) {
@@ -276,6 +282,7 @@ public:
 	}
 	/// convert to lower dimensional 
 	template <int M> fpoly_ber<T, M>& down() { return *reinterpret_cast<fpoly_ber<T, M>*>(this); }
+	template <int M> const fpoly_ber<T, M>& down() const { return *reinterpret_cast<const fpoly_ber<T, M>*>(this); }
 	/// construct from value list
 	template <typename S> fpoly_ber(std::initializer_list<S> values) {
 		//static_assert(values.size() == N+1, "Initializer list must have exactly N+1 entries");
@@ -478,7 +485,7 @@ public:
 			sqr_diff_sum += sqr(p[i] - data()[i]);
 		return sqr_diff_sum / (N + 1);
 	}
-	/// construct up to N intervals that contain individual roots within [a,b]
+	/// use Bernstein clipping to construct up to N intervals that contain individual roots within [a,b]
 	int eliminate_roots(const T& a, const T& b, cgv::math::fvec<T, 2>* I, T eps) const {
 		fpoly_ber<T, N> P[N];
 		P[0] = *this;
@@ -548,7 +555,7 @@ public:
 		}
 		return n;
 	}
-	/// construct up to N intervals that contain individual roots within [a,b]
+	/// use Bernstein clipping with prediction of interval boundaries to construct up to N intervals that contain individual roots within [a,b]
 	int eliminate_roots_improved(const T& a, const T& b, cgv::math::fvec<T, 2>* I, T eps) const {
 		int cnt = count_sign_changes(*this);
 		// less in less or equal is necessary for float precision to avoid accessing invalid memory
@@ -600,6 +607,49 @@ public:
 		}
 		return n;
 	}
+	/// compute polynomial of one degree less with coefficient differences, i.e. 1/N the derivative
+	fpoly_ber<T,N-1> differ() const {
+		fpoly_ber<T,N-1> D;
+		for (int i=0; i<N; ++i)
+			D[i] = data()[i+1]-data()[i];
+		return D;
+	}
+	/// compute the roots inside of 0<t<1
+	int compute_inner_roots(T* roots, T eps) const {
+		int cnt = 0;
+		if (N == 1) {
+			if (data()[0] * data()[1] < 0) {
+				T t = data()[0] / (data()[0] - data()[1]);
+				if (t > 0 && t < 1)
+					roots[cnt++] = t;
+			}
+			return cnt;
+		}
+		cnt = count_sign_changes(*this);
+		if (cnt == 0)
+			return 0;
+		if (cnt == 1) {
+			roots[0] = find_root(0, 1, eps);
+			return 1;
+		}
+		cnt = recursive_down<N-1,0>::compute_inner_roots(*this, roots, eps);
+		T F[N + 1];
+		F[0] = data()[0];
+		for (int i=0; i<cnt; ++i)
+			F[i+1] = eval(roots[i]);
+		F[cnt+1] = data()[N];
+		int i, new_cnt = 0;
+		T b = 0;
+		for (i=0; i<cnt; ++i) {
+			T e = roots[i];
+			if (F[i]*F[i+1] < 0)
+				roots[new_cnt++] = find_root(b, e, eps);
+			b = e;
+		}
+		if (F[i]*F[i+1] < 0)
+			roots[new_cnt++] = find_root(b,1,eps);
+		return new_cnt;
+	}
 	/// compute roots of polynom with bernstein clipping
 	int compute_roots_direct(const T& a, const T& b, T* roots, const T& eps) {
 		if (count_sign_changes(*this) == 0)
@@ -633,7 +683,7 @@ public:
 		return cnt;
 	}
 	/// find root with Newton's method in given interval
-	T find_root(const T& a, const T& b, const T& eps) {
+	T find_root(const T& a, const T& b, const T& eps) const {
 		if (a == b)
 			return a;
 		T t0 = a, t1 = b;
@@ -670,7 +720,7 @@ public:
 	}
 	/// compute roots of Bernstein polynom with different strategies and return count
 	template <int S = 0>
-	int compute_roots(const T& a, const T& b, T* roots, const T& eps) {
+	int compute_roots(const T& a, const T& b, T* roots, const T& eps) const {
 		if (std::abs(data()[N]) < eps)
 			return recursive_down<N-1,S>::compute_roots(*this, a, b, roots, eps);
 //			return compute_roots_direct(a, b, roots, eps);

@@ -313,8 +313,12 @@ bool compute_ray_sphere_tube_intersection(
 		cgv::math::fpoly_ber<T, 5> hdD = D.derive(); hdD *= 0.5;
 		cgv::math::fpoly_ber<T, 5> rhs_sqrt = ra * ra.derive() - hdD;
 		cgv::math::fpoly_ber<T, 10> p = lhs - rhs_sqrt * rhs_sqrt;
-		if (strategy == 0)
-			cnt = p.compute_roots<0>(0.0, 1.0, t, eps);
+		if (strategy == 0) {
+			if (solver == 2)
+				cnt = p.compute_roots<0>(0.0, 1.0, t, eps);
+			else
+				cnt = p.compute_inner_roots(t, eps);
+		}
 		else {
 			T tq[8];
 			tq[0] = 0.0;
@@ -361,7 +365,8 @@ bool compute_ray_circle_tube_intersection(
 	T eps = T(_eps);
 	cy::Polynomial<T, 3> ra0;
 	cgv::math::fpoly_mon<T, 3> ra1;
-	cgv::mat4 B = transform_to_ray_coordinates(r, B_world);
+	cgv::math::fpoly_ber<T, 3> ra2;
+	cgv::math::fmat<T, 4, 4> B = transform_to_ray_coordinates(r, B_world);
 	cgv::math::fmat<T, 4, 4> M = B * monom_from_bernstein_matrix();
 	T t[12], s[12];
 	int cnt = 0;
@@ -405,7 +410,7 @@ bool compute_ray_circle_tube_intersection(
 			}
 		}
 	}
-	else {
+	else if (solver == 1) {
 		cgv::math::fpoly_mon<T, 3> cx, cy, cz;
 		matrix_to_polynomials(M, cx, cy, cz, ra1);
 		// polynomial representing ortogonal distance to ray
@@ -415,6 +420,23 @@ bool compute_ray_circle_tube_intersection(
 		cgv::math::fpoly_mon<T, 10> lhs = dcx * dcx * q;
 		cgv::math::fpoly_mon<T, 5> hdD = D.derive(); hdD *= T(0.5);
 		cgv::math::fpoly_mon<T, 10> p = lhs - hdD * hdD;
+		cnt = p.compute_roots(T(0.0), T(1.0), t, eps);
+		for (int i = 0; i < cnt; ++i) {
+			cgv::math::fvec<T, 3> dc;
+			cgv::math::fvec<T, 3> c(cx.eval_with_derivative(t[i], dc[0]), cy.eval_with_derivative(t[i], dc[1]), cz.eval_with_derivative(t[i], dc[2]));
+			s[i] = dot(c, dc) / dc[0];
+		}
+	}
+	else {
+		cgv::math::fpoly_ber<T, 3> cx, cy, cz;
+		matrix_to_polynomials(B, cx, cy, cz, ra2);
+		// polynomial representing ortogonal distance to ray
+		cgv::math::fpoly_ber<T, 6> D = cy * cy + cz * cz;
+		cgv::math::fpoly_ber<T, 2> dcx = cx.derive();
+		cgv::math::fpoly_ber<T, 6> q = ra2 * ra2 - D;
+		cgv::math::fpoly_ber<T, 10> lhs = dcx * dcx * q;
+		cgv::math::fpoly_ber<T, 5> hdD = D.derive(); hdD *= T(0.5);
+		cgv::math::fpoly_ber<T, 10> p = lhs - hdD * hdD;
 		cnt = p.compute_roots(T(0.0), T(1.0), t, eps);
 		for (int i = 0; i < cnt; ++i) {
 			cgv::math::fvec<T, 3> dc;
@@ -446,8 +468,10 @@ bool compute_ray_circle_tube_intersection(
 	T rad, drad;
 	if (solver == 0)
 		rad = ra0.EvalWithDeriv(drad, t[i_min]);
-	else
+	else if (solver == 1)
 		rad = ra1.eval_with_derivative(t[i_min], drad);
+	else
+		rad = ra2.eval_with_derivative(t[i_min], drad);
 	cgv::vec3 nml = normalize(no - (float)drad * ta);
 	cgv::mat4x2 I = { cgv::vec4(ip,s[i_min]), cgv::vec4(nml,t[i_min]) };
 	intersections.push_back(I);
@@ -458,7 +482,7 @@ bool compute_ray_view_aligned_ribbon_intersection(
 	const cgv::ray3& r, const cgv::mat4& B_world, std::vector<cgv::mat4x2>& intersections, double _eps)
 {
 	T eps = T(_eps);
-	cgv::mat4 B = transform_to_ray_coordinates(r, B_world);
+	cgv::math::fmat<T, 4, 4> B = transform_to_ray_coordinates(r, B_world);
 	cgv::math::fmat<T, 4, 4> M = B * monom_from_bernstein_matrix();
 	T t[8], s[8];
 	bool valid[8];
@@ -481,12 +505,31 @@ bool compute_ray_view_aligned_ribbon_intersection(
 			valid[i] = (c - cgv::math::fvec<T, 3>(s[i],0,0)).length() <= ra.Eval(t[i]);
 		}
 	}
-	else {
+	else if (solver == 1) {
 		cgv::math::fpoly_mon<T, 3> cx, cy, cz, ra;
 		matrix_to_polynomials(M, cx, cy, cz, ra);
 		// polynomial representing ortogonal distance to ray
 		cgv::math::fpoly_mon<T, 2> dcx = cx.derive(), dcy = cy.derive(), dcz = cz.derive();
 		cgv::math::fpoly_mon<T, 8> p = p = (cx * dcx + cy * dcy + cz * dcz) * cx - (cx * cx + cy * cy + cz * cz) * dcx;
+		cnt = p.compute_roots(0.0, 1.0, t, eps);
+		for (int i = 0; i < cnt; ++i) {
+			cgv::math::fvec<T, 3> dc;
+			cgv::math::fvec<T, 3> c(cx.eval_with_derivative(t[i], dc[0]), cy.eval_with_derivative(t[i], dc[1]), cz.eval_with_derivative(t[i], dc[2]));
+			cgv::math::fvec<T, 3> d2 = cross(c, dc);
+			cgv::math::fvec<T, 3> m2 = cross(c, d2);
+			cgv::math::fvec<T, 3> d1 = { 1,0,0 };
+			cgv::math::fvec<T, 3> d12 = cross(d1, d2);
+			s[i] = dot(m2, d12) / dot(d12, d12);
+			valid[i] = (c - cgv::math::fvec<T, 3>(s[i], 0, 0)).length() <= ra.eval(t[i]);
+		}
+	}
+	else {
+		cgv::math::fpoly_ber<T, 3> cx, cy, cz, ra;
+		matrix_to_polynomials(B, cx, cy, cz, ra);
+		// polynomial representing ortogonal distance to ray
+		cgv::math::fpoly_ber<T, 2> dcx = cx.derive(), dcy = cy.derive(), dcz = cz.derive();
+		cgv::math::fpoly_ber<T, 8> p8 = (cx * dcx + cy * dcy + cz * dcz) * cx - (cx * cx + cy * cy + cz * cz) * dcx;
+		cgv::math::fpoly_ber<T, 7> p = p8.reduce_degree();
 		cnt = p.compute_roots(0.0, 1.0, t, eps);
 		for (int i = 0; i < cnt; ++i) {
 			cgv::math::fvec<T, 3> dc;
@@ -842,7 +885,7 @@ protected:
 		flt32, flt64
 	} precision = precision_type::flt64;
 	enum class solver_type {
-		recursive, sturm, bernstein
+		recursive, sturm, bernstein, mixed
 	} solver = solver_type::bernstein;
 	enum class strategy_type {
 		direct, filtered
@@ -870,8 +913,10 @@ protected:
 		return solver == solver_type::recursive ?
 			intersect_ray_dispatch_strategy<T, 0>() :
 			(solver == solver_type::sturm ?
-			intersect_ray_dispatch_strategy<T, 1>() :
-			intersect_ray_dispatch_strategy<T, 2>());
+				intersect_ray_dispatch_strategy<T, 1>() :
+				(solver == solver_type::bernstein ? 
+					intersect_ray_dispatch_strategy<T, 2>() :
+					intersect_ray_dispatch_strategy<T, 3>()));
 	}
 	template <typename T, int Solver>
 	ray_intersection_function_type intersect_ray_dispatch_strategy() {
@@ -892,7 +937,7 @@ protected:
 
 	void intersect_rays() {
 		static const char* primitive_names[] = { "sphere", "geometry", "sphere tube", "circle tube", "ribbon" };
-		static const char* solver_names[] = { "recursive", "Sturm", "Bernstein" };
+		static const char* solver_names[] = { "recursive", "Sturm", "Bernstein", "Mixed" };
 		static const char* precision_names[] = { "float", "double" };
 		static const char* strategy_names[] = { "direct", "filtered" };
 
@@ -1187,6 +1232,12 @@ public:
 					on_set(&solver);
 				}
 				return true;
+			case '3':
+				if (solver != solver_type::mixed) {
+					solver = solver_type::mixed;
+					on_set(&solver);
+				}
+				return true;
 			case 'T':
 				show_tube = !show_tube;
 				on_set(&show_tube);
@@ -1466,7 +1517,7 @@ public:
 		add_member_control(this, "Show Rays", show_rays, "check");
 		add_member_control(this, "Primitive", primitive, "dropdown", "enums='spheres,control geometry,sphere tube,circle tube,view aligned ribbon'");
 		add_member_control(this, "Precision", precision, "dropdown", "enums='float,double'");
-		add_member_control(this, "Solver", solver, "dropdown", "enums='recursive,Sturm,Bernstein'");
+		add_member_control(this, "Solver", solver, "dropdown", "enums='recursive,Sturm,Bernstein,Mixed'");
 		add_member_control(this, "Strategy", strategy, "dropdown", "enums='direct,filtered'");
 		add_member_control(this, "Eps32", eps32, "value_slider", "min=0.0000001;step=0.000000001;max=0.01;log=true;ticks=true");
 		add_member_control(this, "Eps64", eps64, "value_slider", "min=0.000000001;step=0.00000000001;max=0.01;log=true;ticks=true");
