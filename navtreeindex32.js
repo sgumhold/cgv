@@ -129,6 +129,7 @@ var NAVTREEINDEX32 =
 "install.html#ppp":[1,3],
 "install.html#prereq":[1,0],
 "install.html#thirdparty":[1,4],
+"instance__of_8h_source.html":[12,0,1,12,4,0],
 "integer_8h_source.html":[12,0,1,5,31],
 "interpolate_8h_source.html":[12,0,1,5,32],
 "interval_8h_source.html":[12,0,1,5,34],
@@ -189,8 +190,8 @@ var NAVTREEINDEX32 =
 "mat_8h_source.html":[12,0,1,5,41],
 "math_2statistics_8h_source.html":[12,0,1,5,70],
 "math_2union__find_8h_source.html":[12,0,1,5,75],
-"max_8h_source.html":[12,0,1,12,4,0],
-"member__pointer_8h_source.html":[12,0,1,12,4,1],
+"max_8h_source.html":[12,0,1,12,4,1],
+"member__pointer_8h_source.html":[12,0,1,12,4,2],
 "menu__provider_8cxx_source.html":[12,0,1,4,48],
 "menu__provider_8h_source.html":[12,0,1,4,49],
 "mesh__drawable_8cxx_source.html":[12,0,3,2,0,27],
@@ -198,7 +199,7 @@ var NAVTREEINDEX32 =
 "mesh__render__info_8cxx_source.html":[12,0,3,2,0,29],
 "mesh__render__info_8h_source.html":[12,0,3,2,0,30],
 "mfunc_8h_source.html":[12,0,1,5,42],
-"min_8h_source.html":[12,0,1,12,4,2],
+"min_8h_source.html":[12,0,1,12,4,3],
 "model__comp_8h_source.html":[12,0,1,5,43],
 "mouse__ctrl_8cxx_source.html":[12,0,1,7,12],
 "mouse__ctrl_8h_source.html":[12,0,1,7,13],
@@ -248,6 +249,5 @@ var NAVTREEINDEX32 =
 "namespacecgv.html#a400f459bf0e859c58644f757e1e4a958":[10,0,1,57],
 "namespacecgv.html#a45c5800e9a69f87664bf697e27ebb024":[10,0,1,86],
 "namespacecgv.html#a465f589beeb5e4e76eb2db8d1f6057c1":[10,0,1,64],
-"namespacecgv.html#a4a6df8f99545fbc6aa3bca65e75b7b6a":[10,0,1,78],
-"namespacecgv.html#a4c6f28c5add1993fa8b1af7d587c51e6":[10,0,1,30]
+"namespacecgv.html#a4a6df8f99545fbc6aa3bca65e75b7b6a":[10,0,1,78]
 };
