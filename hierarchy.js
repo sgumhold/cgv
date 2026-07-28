@@ -1277,6 +1277,9 @@ var hierarchy =
       [ "cgv::media::hls_color_interface< color< T, HLS, am > >", "structcgv_1_1media_1_1hls__color__interface_3_01color_3_01T_00_01HLS_00_01am_01_4_01_4.html", null ]
     ] ],
     [ "shader_config_registration", "structshader__config__registration.html", null ],
+    [ "std::bool_constant", null, [
+      [ "cgv::type::traits::is_instance_of< T, Template >", "structcgv_1_1type_1_1traits_1_1is__instance__of.html", null ]
+    ] ],
     [ "std::ostream", null, [
       [ "cgv::signal::callback_stream", "classcgv_1_1signal_1_1callback__stream.html", null ]
     ] ],

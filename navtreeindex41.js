@@ -1,5 +1,6 @@
 var NAVTREEINDEX41 =
 {
+"structcgv_1_1media_1_1color__model__traits.html":[11,0,0,6,15],
 "structcgv_1_1media_1_1color__model__traits_3_01LUM_01_4.html":[11,0,0,6,16],
 "structcgv_1_1media_1_1color__one.html":[11,0,0,6,17],
 "structcgv_1_1media_1_1color__one_3_01double_01_4.html":[11,0,0,6,18],
@@ -248,6 +249,5 @@ var NAVTREEINDEX41 =
 "structcgv_1_1plot_1_1attribute__source.html#aece94a7029616f5997a3d61e26e288dc":[11,0,0,9,0,1],
 "structcgv_1_1plot_1_1attribute__source__array.html":[11,0,0,9,1],
 "structcgv_1_1plot_1_1domain__config.html":[11,0,0,9,3],
-"structcgv_1_1plot_1_1domain__config.html#a0f55a13c341cd09ea8e0be0a1b4adab0":[11,0,0,9,3,0],
-"structcgv_1_1plot_1_1domain__config.html#a1061452a5957a155e4082ae922e74861":[11,0,0,9,3,13]
+"structcgv_1_1plot_1_1domain__config.html#a0f55a13c341cd09ea8e0be0a1b4adab0":[11,0,0,9,3,0]
 };

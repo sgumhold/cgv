@@ -801,6 +801,7 @@ var annotated_dup =
           [ "type_ptr< TI_WSTRING >", "structcgv_1_1type_1_1info_1_1type__ptr_3_01TI__WSTRING_01_4.html", null ]
         ] ],
         [ "traits", null, [
+          [ "is_instance_of", "structcgv_1_1type_1_1traits_1_1is__instance__of.html", null ],
           [ "max", "structcgv_1_1type_1_1traits_1_1max.html", null ],
           [ "max< int16_type >", "structcgv_1_1type_1_1traits_1_1max_3_01int16__type_01_4.html", null ],
           [ "max< int32_type >", "structcgv_1_1type_1_1traits_1_1max_3_01int32__type_01_4.html", null ],
