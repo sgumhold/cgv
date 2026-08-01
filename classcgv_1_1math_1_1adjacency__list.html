@@ -151,10 +151,10 @@ Public Member Functions</h2></td></tr>
 <tr class="memdesc:a1ad8942f9cc87c5a74a2c08c011e877b"><td class="mdescLeft">&#160;</td><td class="mdescRight">add a new vertex to graph and return its index  <br /></td></tr>
 <tr class="separator:a1ad8942f9cc87c5a74a2c08c011e877b"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:aa68df223d940f1d7919c3f8495af6eb2" id="r_aa68df223d940f1d7919c3f8495af6eb2"><td class="memItemLeft" align="right" valign="top">bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcgv_1_1math_1_1adjacency__list.html#aa68df223d940f1d7919c3f8495af6eb2">add_edge</a> (const edge_type &amp;<a class="el" href="structcgv_1_1math_1_1edge.html">edge</a>)</td></tr>
-<tr class="memdesc:aa68df223d940f1d7919c3f8495af6eb2"><td class="mdescLeft">&#160;</td><td class="mdescRight">add an edge to the list; return false if the edge or, in case of a directed graph, its inverse already exists, true otherwise  <br /></td></tr>
+<tr class="memdesc:aa68df223d940f1d7919c3f8495af6eb2"><td class="mdescLeft">&#160;</td><td class="mdescRight">add an edge to the list; return false if the edge already exists, true otherwise  <br /></td></tr>
 <tr class="separator:aa68df223d940f1d7919c3f8495af6eb2"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a487afd2811d69c845540600f321cc88c" id="r_a487afd2811d69c845540600f321cc88c"><td class="memItemLeft" align="right" valign="top">bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcgv_1_1math_1_1adjacency__list.html#a487afd2811d69c845540600f321cc88c">add_edge</a> (size_t start, size_t end)</td></tr>
-<tr class="memdesc:a487afd2811d69c845540600f321cc88c"><td class="mdescLeft">&#160;</td><td class="mdescRight">add a default-initialized edge definded by the start and end vertex to the list; return false if the edge or, in case of a directed graph, its inverse already exists, true otherwise  <br /></td></tr>
+<tr class="memdesc:a487afd2811d69c845540600f321cc88c"><td class="mdescLeft">&#160;</td><td class="mdescRight">add a default-initialized edge definded by the start and end vertex to the list; return false if the edge already exists, true otherwise  <br /></td></tr>
 <tr class="separator:a487afd2811d69c845540600f321cc88c"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a4ce25a6973c4b5cf9bd9a78f9f4bbc2e" id="r_a4ce25a6973c4b5cf9bd9a78f9f4bbc2e"><td class="memItemLeft" align="right" valign="top">bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcgv_1_1math_1_1adjacency__list.html#a4ce25a6973c4b5cf9bd9a78f9f4bbc2e">edge_exists</a> (size_t start, size_t end) const</td></tr>
 <tr class="memdesc:a4ce25a6973c4b5cf9bd9a78f9f4bbc2e"><td class="mdescLeft">&#160;</td><td class="mdescRight">check if edge is already in list  <br /></td></tr>
@@ -317,7 +317,7 @@ template&lt;typename VertexT &gt; </div>
 </table>
 </div><div class="memdoc">
 
-<p>add an edge to the list; return false if the edge or, in case of a directed graph, its inverse already exists, true otherwise </p>
+<p>add an edge to the list; return false if the edge already exists, true otherwise </p>
 
 <p class="definition">Definition at line <a class="el" href="adjacency__list_8h_source.html#l00154">154</a> of file <a class="el" href="adjacency__list_8h_source.html">adjacency_list.h</a>.</p>
 
@@ -363,7 +363,7 @@ template&lt;typename VertexT &gt; </div>
 </table>
 </div><div class="memdoc">
 
-<p>add a default-initialized edge definded by the start and end vertex to the list; return false if the edge or, in case of a directed graph, its inverse already exists, true otherwise </p>
+<p>add a default-initialized edge definded by the start and end vertex to the list; return false if the edge already exists, true otherwise </p>
 
 <p class="definition">Definition at line <a class="el" href="adjacency__list_8h_source.html#l00172">172</a> of file <a class="el" href="adjacency__list_8h_source.html">adjacency_list.h</a>.</p>
 

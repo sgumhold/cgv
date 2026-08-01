@@ -10,5 +10,6 @@ var searchData=
   ['use_5fgroup_5ftransformation_7',['use_group_transformation',['../structcgv_1_1render_1_1group__render__style.html#a113f4aa88c33c892574038e0f2478a7a',1,'cgv::render::group_render_style']]],
   ['use_5fshader_5ffile_5fcache_8',['use_shader_file_cache',['../classcgv_1_1render_1_1context.html#a80306fb1d08f59cdb7d540ae13a88e22',1,'cgv::render::context']]],
   ['user_5fdata_9',['user_data',['../classcgv_1_1os_1_1socket.html#ac8c9d9da08fbb231343c4bf334c5ac97',1,'cgv::os::socket']]],
-  ['username_10',['username',['../structcgv_1_1os_1_1http__request.html#adb8c354e4a3f3a1f0a50b96ac2e077b2',1,'cgv::os::http_request']]]
+  ['username_10',['username',['../structcgv_1_1os_1_1http__request.html#adb8c354e4a3f3a1f0a50b96ac2e077b2',1,'cgv::os::http_request']]],
+  ['uv_11',['uv',['../structcgv_1_1data_1_1ray__intersection__info.html#aca1afb4bcfedfb527022d132b8f40a79',1,'cgv::data::ray_intersection_info']]]
 ];
