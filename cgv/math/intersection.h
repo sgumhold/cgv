@@ -83,6 +83,54 @@ int ray_box_intersection(const fray<T, 3> &ray, const fvec<T, 3> &min, const fve
 	return 2;
 }
 
+/// @brief Computes the intersection between a ray and two-sided triangle and returns the number of intersections.
+/// The front side is defined by the corner positions in anti-clockwise winding order.
+/// Differentiates between 0 or 1 intersections.
+/// 
+/// @tparam T the numeric type.
+/// @param [in] ray the incomming ray.
+/// @param [i] corner0 the first corner position.
+/// @param [i] corner1 the second corner position
+/// @param [i] corner2 the third corner position
+/// @param [out] out_t the distance to the intersection point.
+/// @param [out] out_is_backside true if the ray hit the backside of the triangle as determined by the corner winding order, false otherwise.
+/// @param [out] out_normal optional surface normal at the intersection point.
+/// @param [out] out_barycentric optional barycentric coordinates of the intersection point with mapping [x, y, z] -> [corner0, corner1, corner2]
+/// @return the number of intersections.
+template <typename T>
+int ray_triangle_intersection(const fray<T, 3>& ray, const fvec<T, 3>& corner0, const fvec<T, 3>& corner1, const fvec<T, 3>& corner2, T& out_t, bool* out_is_backside = nullptr, fvec<T, 3>* out_normal = nullptr, fvec<T, 3>* out_barycentric = nullptr) {
+	// Using Möller–Trumbore algorithm for calculating the intersection between a ray and oriented triangle
+	fvec<T, 3> edge10 = corner1 - corner0;
+	fvec<T, 3> edge20 = corner2 - corner0;
+	fvec<T, 3> normal = cross(edge10, edge20);
+	fvec<T, 3> ao = ray.origin - corner0;
+	fvec<T, 3> dao = cross(ao, ray.direction);
+
+	T determinant = -dot(ray.direction, normal);
+
+	T inverse_determinant = T(1) / determinant;
+
+	// Calculate distance t to triangle and barycentric coordinates of intersection point
+	T t = dot(ao, normal) * inverse_determinant;
+	T u = dot(edge20, dao) * inverse_determinant;
+	T v = -dot(edge10, dao) * inverse_determinant;
+	T w = T(1) - u - v;
+
+	// The sign of the determinant identifies an intersection from the front- (+) or backside (-)
+	if(out_is_backside)
+		*out_is_backside = determinant < T(0);
+	// Make sure the determinant is positive to accept intersections from both sides
+	determinant = std::abs(determinant);
+
+	out_t = t;
+	if(out_normal)
+		*out_normal = normal;
+	if(out_barycentric)
+		*out_barycentric = { w, u, v };
+	bool hit = determinant >= std::numeric_limits<T>::epsilon() && t >= T(0) && u >= T(0) && v >= T(0) && w >= T(0);
+	return hit ? 1 : 0;
+}
+
 /// @brief Computes the intersection between a ray and oriented cylinder defined by base center and axis and returns the number of intersections.
 /// Differentiates between 0 or 1 intersections.
 /// 
