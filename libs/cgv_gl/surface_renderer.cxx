@@ -5,7 +5,13 @@
 
 namespace cgv {
 	namespace render {
-
+		surface_renderer& ref_surface_renderer(context& ctx, int ref_count_change)
+		{
+			static int ref_count = 0;
+			static surface_renderer r;
+			r.manage_singleton(ctx, "surface_renderer", ref_count, ref_count_change);
+			return r;
+		}
 		/// overload to update the shader program compile options based on the current render style; only called if internal shader program is used
 		void surface_renderer::update_shader_program_options(shader_compile_options& options) const
 		{
