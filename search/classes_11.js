@@ -76,13 +76,14 @@ var searchData=
   ['streaming_5fmesh_5fcallback_5fhandler_73',['streaming_mesh_callback_handler',['../structcgv_1_1media_1_1mesh_1_1streaming__mesh__callback__handler.html',1,'cgv::media::mesh']]],
   ['subprovider_74',['subprovider',['../classcgv_1_1gui_1_1subprovider.html',1,'cgv::gui']]],
   ['surface_5fmaterial_75',['surface_material',['../structcgv_1_1media_1_1illum_1_1surface__material.html',1,'cgv::media::illum']]],
-  ['surface_5frender_5fstyle_76',['surface_render_style',['../structcgv_1_1render_1_1surface__render__style.html',1,'cgv::render']]],
-  ['surface_5frender_5fstyle_5fgui_5fcreator_77',['surface_render_style_gui_creator',['../structcgv_1_1gui_1_1surface__render__style__gui__creator.html',1,'cgv::gui']]],
-  ['surface_5frender_5fstyle_5freflect_78',['surface_render_style_reflect',['../structcgv_1_1render_1_1surface__render__style__reflect.html',1,'cgv::render']]],
-  ['surface_5frenderer_79',['surface_renderer',['../classcgv_1_1render_1_1surface__renderer.html',1,'cgv::render']]],
-  ['surfel_5frender_5fdata_80',['surfel_render_data',['../classcgv_1_1render_1_1surfel__render__data.html',1,'cgv::render']]],
-  ['surfel_5frender_5fstyle_81',['surfel_render_style',['../structcgv_1_1render_1_1surfel__render__style.html',1,'cgv::render']]],
-  ['surfel_5frender_5fstyle_5fgui_5fcreator_82',['surfel_render_style_gui_creator',['../structcgv_1_1gui_1_1surfel__render__style__gui__creator.html',1,'cgv::gui']]],
-  ['surfel_5frender_5fstyle_5freflect_83',['surfel_render_style_reflect',['../structcgv_1_1render_1_1surfel__render__style__reflect.html',1,'cgv::render']]],
-  ['surfel_5frenderer_84',['surfel_renderer',['../classcgv_1_1render_1_1surfel__renderer.html',1,'cgv::render']]]
+  ['surface_5frender_5fdata_76',['surface_render_data',['../classcgv_1_1render_1_1surface__render__data.html',1,'cgv::render']]],
+  ['surface_5frender_5fstyle_77',['surface_render_style',['../structcgv_1_1render_1_1surface__render__style.html',1,'cgv::render']]],
+  ['surface_5frender_5fstyle_5fgui_5fcreator_78',['surface_render_style_gui_creator',['../structcgv_1_1gui_1_1surface__render__style__gui__creator.html',1,'cgv::gui']]],
+  ['surface_5frender_5fstyle_5freflect_79',['surface_render_style_reflect',['../structcgv_1_1render_1_1surface__render__style__reflect.html',1,'cgv::render']]],
+  ['surface_5frenderer_80',['surface_renderer',['../classcgv_1_1render_1_1surface__renderer.html',1,'cgv::render']]],
+  ['surfel_5frender_5fdata_81',['surfel_render_data',['../classcgv_1_1render_1_1surfel__render__data.html',1,'cgv::render']]],
+  ['surfel_5frender_5fstyle_82',['surfel_render_style',['../structcgv_1_1render_1_1surfel__render__style.html',1,'cgv::render']]],
+  ['surfel_5frender_5fstyle_5fgui_5fcreator_83',['surfel_render_style_gui_creator',['../structcgv_1_1gui_1_1surfel__render__style__gui__creator.html',1,'cgv::gui']]],
+  ['surfel_5frender_5fstyle_5freflect_84',['surfel_render_style_reflect',['../structcgv_1_1render_1_1surfel__render__style__reflect.html',1,'cgv::render']]],
+  ['surfel_5frenderer_85',['surfel_renderer',['../classcgv_1_1render_1_1surfel__renderer.html',1,'cgv::render']]]
 ];

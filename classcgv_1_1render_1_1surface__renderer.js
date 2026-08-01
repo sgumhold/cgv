@@ -1,10 +1,12 @@
 var classcgv_1_1render_1_1surface__renderer =
 [
     [ "build_shader_program", "classcgv_1_1render_1_1surface__renderer.html#a5e9ec594ab20348fa543fa741e98deb8", null ],
+    [ "create_render_style", "classcgv_1_1render_1_1surface__renderer.html#a928a0e10707e1a4125e2385a78c7c38a", null ],
     [ "disable", "classcgv_1_1render_1_1surface__renderer.html#af8454ee401ee1cbbddba9a1d4a2e2d2a", null ],
     [ "disable_attribute_array_manager", "classcgv_1_1render_1_1surface__renderer.html#ac01dc5b0afccd333e8c30eececf8e880", null ],
     [ "enable", "classcgv_1_1render_1_1surface__renderer.html#af3adc86d5bebf29d0ed91d9f9a7d23c4", null ],
     [ "enable_attribute_array_manager", "classcgv_1_1render_1_1surface__renderer.html#abd5366425c4f439b118c61926e8e8e8b", null ],
+    [ "get_default_prog_name", "classcgv_1_1render_1_1surface__renderer.html#a2fcdada6cb2867a8bb97c9d409f89efd", null ],
     [ "remove_normal_array", "classcgv_1_1render_1_1surface__renderer.html#a663aa52e2ca1e7ba9b11278ab16968da", null ],
     [ "remove_texcoord_array", "classcgv_1_1render_1_1surface__renderer.html#a88d5cbdccd15bb2456bb8bd95736c031", null ],
     [ "set_normal", "classcgv_1_1render_1_1surface__renderer.html#a6d8d6f5b6860f649ddfbb36abf809170", null ],

@@ -5,6 +5,8 @@ var dir_f7bdb5da3df3cfd5074550cad189681a =
     [ "binary_io_reflection_handlers.cxx", "binary__io__reflection__handlers_8cxx_source.html", null ],
     [ "binary_io_reflection_handlers.h", "binary__io__reflection__handlers_8h_source.html", null ],
     [ "buffer2d.h", "buffer2d_8h_source.html", null ],
+    [ "bvh.cxx", "bvh_8cxx_source.html", null ],
+    [ "bvh.h", "bvh_8h_source.html", null ],
     [ "cgv_data.pj", "cgv__data_8pj_source.html", null ],
     [ "component_format.cxx", "component__format_8cxx_source.html", null ],
     [ "component_format.h", "component__format_8h_source.html", null ],

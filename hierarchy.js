@@ -192,6 +192,9 @@ var hierarchy =
     [ "cgv::base::use_handler", "structcgv_1_1base_1_1use__handler.html", null ],
     [ "cgv::base::user_feedback", "structcgv_1_1base_1_1user__feedback.html", null ],
     [ "cgv::data::buffer2d< T >", "classcgv_1_1data_1_1buffer2d.html", null ],
+    [ "cgv::data::bvh", "classcgv_1_1data_1_1bvh.html", null ],
+    [ "cgv::data::bvh_node", "structcgv_1_1data_1_1bvh__node.html", null ],
+    [ "cgv::data::bvh_result", "structcgv_1_1data_1_1bvh__result.html", null ],
     [ "cgv::data::data_format::dimension_info", "structcgv_1_1data_1_1data__format_1_1dimension__info.html", null ],
     [ "cgv::data::data_view_base", "classcgv_1_1data_1_1data__view__base.html", [
       [ "cgv::data::data_view_impl< const_data_view, const unsigned char * >", "classcgv_1_1data_1_1data__view__impl.html", [
@@ -221,6 +224,8 @@ var hierarchy =
     [ "cgv::data::quadtree< T >", "classcgv_1_1data_1_1quadtree.html", null ],
     [ "cgv::data::quadtree< T >::node", "structcgv_1_1data_1_1quadtree_1_1node.html", null ],
     [ "cgv::data::quadtree< T >::point_provider", "structcgv_1_1data_1_1quadtree_1_1point__provider.html", null ],
+    [ "cgv::data::ray_intersectable", "classcgv_1_1data_1_1ray__intersectable.html", null ],
+    [ "cgv::data::ray_intersection_info", "structcgv_1_1data_1_1ray__intersection__info.html", null ],
     [ "cgv::data::ref_arr< T >", "classcgv_1_1data_1_1ref__arr.html", null ],
     [ "cgv::data::ref_counted", "classcgv_1_1data_1_1ref__counted.html", [
       [ "cgv::base::base", "classcgv_1_1base_1_1base.html", [
@@ -828,6 +833,7 @@ var hierarchy =
       [ "cgv::render::point_render_data< ColorType >", "classcgv_1_1render_1_1point__render__data.html", null ],
       [ "cgv::render::rectangle_render_data< ColorType >", "classcgv_1_1render_1_1rectangle__render__data.html", null ],
       [ "cgv::render::sphere_render_data< ColorType >", "classcgv_1_1render_1_1sphere__render__data.html", null ],
+      [ "cgv::render::surface_render_data< ColorType >", "classcgv_1_1render_1_1surface__render__data.html", null ],
       [ "cgv::render::surfel_render_data< ColorType >", "classcgv_1_1render_1_1surfel__render__data.html", null ]
     ] ],
     [ "cgv::render::render_info", "classcgv_1_1render_1_1render__info.html", [
@@ -1272,6 +1278,7 @@ var hierarchy =
     [ "cgv::render::render_data_base< rectangle_renderer, rectangle_render_style, rgb >", "classcgv_1_1render_1_1render__data__base.html", null ],
     [ "cgv::render::render_data_base< RendererType, RenderStyleType, rgb >", "classcgv_1_1render_1_1render__data__base.html", null ],
     [ "cgv::render::render_data_base< sphere_renderer, sphere_render_style, rgb >", "classcgv_1_1render_1_1render__data__base.html", null ],
+    [ "cgv::render::render_data_base< surface_renderer, surface_render_style, rgb >", "classcgv_1_1render_1_1render__data__base.html", null ],
     [ "cgv::render::render_data_base< surfel_renderer, surfel_render_style, rgb >", "classcgv_1_1render_1_1render__data__base.html", null ],
     [ "cgv::media::rgb_color_interface< color< T, HLS, am > >", "structcgv_1_1media_1_1rgb__color__interface.html", [
       [ "cgv::media::hls_color_interface< color< T, HLS, am > >", "structcgv_1_1media_1_1hls__color__interface_3_01color_3_01T_00_01HLS_00_01am_01_4_01_4.html", null ]

@@ -47,6 +47,7 @@ var dir_f16db7e8e986822ea044923d3ae8a0b5 =
     [ "sphere_renderer.h", "sphere__renderer_8h_source.html", null ],
     [ "spline_tube_renderer.cxx", "spline__tube__renderer_8cxx_source.html", null ],
     [ "spline_tube_renderer.h", "spline__tube__renderer_8h_source.html", null ],
+    [ "surface_render_data.h", "surface__render__data_8h_source.html", null ],
     [ "surface_renderer.cxx", "surface__renderer_8cxx_source.html", null ],
     [ "surface_renderer.h", "surface__renderer_8h_source.html", null ],
     [ "surfel_render_data.h", "surfel__render__data_8h_source.html", null ],
