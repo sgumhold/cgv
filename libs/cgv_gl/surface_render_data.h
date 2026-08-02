@@ -56,15 +56,15 @@ public:
 	}
 
 	void add_triangle_color(const ColorType& color) {
-		add_color(color);
-		add_color(color);
-		add_color(color);
+		super::add_color(color);
+		super::add_color(color);
+		super::add_color(color);
 	}
 
 	void add_triangle_colors(const ColorType& color0, const ColorType& color1, const ColorType& color2) {
-		add_color(color0);
-		add_color(color1);
-		add_color(color2);
+		super::add_color(color0);
+		super::add_color(color1);
+		super::add_color(color2);
 	}
 
 	void add_triangle_normal(const vec3& normal) {
