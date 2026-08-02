@@ -96,7 +96,7 @@ $(document).ready(function(){initNavTree('classcgv_1_1data_1_1bvh.html',''); ini
 </div><!--header-->
 <div class="contents">
 
-<p>A simple Bounding Volume Hierarchy (BVH) using axis-aligned bounding boxes to patition primitives into a binary tree structure for efficient ray intersection tests.  
+<p>A Bounding Volume Hierarchy(BVH) using axis-aligned bounding boxes to partition primitives into a binary tree structure for efficient ray intersection tests.  
  <a href="classcgv_1_1data_1_1bvh.html#details">More...</a></p>
 
 <p><code>#include &lt;<a class="el" href="bvh_8h_source.html">bvh.h</a>&gt;</code></p>
@@ -111,10 +111,21 @@ Public Member Functions</h2></td></tr>
 <tr class="separator:a99212da2fa81465d0f7b2d81eb6e351a"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
 <a name="details" id="details"></a><h2 class="groupheader">Detailed Description</h2>
-<div class="textblock"><p>A simple Bounding Volume Hierarchy (BVH) using axis-aligned bounding boxes to patition primitives into a binary tree structure for efficient ray intersection tests. </p>
-<p>Primitives are partitioned based on the center of their bounding boxes and the center along the longest extent of the nodes. </p>
+<div class="textblock"><p>A Bounding Volume Hierarchy(BVH) using axis-aligned bounding boxes to partition primitives into a binary tree structure for efficient ray intersection tests. </p>
+<p>Nodes are split using the midpoint heuristic that splits primitives at the geometric center point of a node's longest axis, sorting primitives based on their bounding box centroid.</p>
+<p>Example: Create a custom primitive class usable with the BVH:</p>
+<p>struct my_primitive : public <a class="el" href="classcgv_1_1data_1_1ray__intersectable.html" title="An interface to define objects that are intersectable with a ray.">ray_intersectable</a> { ... custom fields</p>
+<p><a class="el" href="namespacecgv.html#a1cf52fa077640959da4eb3b2728b4e47" title="declare type of 3d single precision floating point axis-aligned boxes">cgv::box3</a> get_bounds() const override { ...return axis-aligned bounding box of the primitive };</p>
+<p>bool intersect(const cgv::ray3&amp; ray, ray_intersection_info&amp; info) const override { ...return true if ray intersects primitive and fill out intersection info with at least the ray parameter t }; };</p>
+<p>Create some primitives:</p>
+<p>std::vector&lt;ray_intersectable*&gt; primitives; primitives.push_back(new my_primitive(...)); ...</p>
+<p>Attention: The call-site must manage the lifetime of the primitives!</p>
+<p>To build the BVH: bvh scene; scene.build(primitives, 8) // using depth 8 (sensible values depend on the scene complexity but are typically between 4 and 32)</p>
+<p>To test for a closest intersection:</p>
+<p><a class="el" href="namespacecgv.html#a072cac1e97d7126b54848f962191c41f" title="3d ray using 32 bit single precision floating point type">cgv::ray3</a> ray(...); // some test ray <a class="el" href="structcgv_1_1data_1_1bvh__result.html" title="The result of a BVH intersection test.">bvh_result</a> result = scene.closest_intersection(ray);</p>
+<p>if(result.is_hit) { // A primitive was hit. result.intersection contains the ray parameter of the intersection point and other optional attributes // result further contains the pointer to the hit primitive and the index intot he 'primitives' list used to build the BVH } else { ...no hit } </p>
 
-<p class="definition">Definition at line <a class="el" href="bvh_8h_source.html#l00073">73</a> of file <a class="el" href="bvh_8h_source.html">bvh.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="bvh_8h_source.html#l00116">116</a> of file <a class="el" href="bvh_8h_source.html">bvh.h</a>.</p>
 </div><h2 class="groupheader">Member Function Documentation</h2>
 <a id="a456157256f00cdaa484372e6429d049a" name="a456157256f00cdaa484372e6429d049a"></a>
 <h2 class="memtitle"><span class="permalink"><a href="#a456157256f00cdaa484372e6429d049a">&#9670;&#160;</a></span>build()</h2>
@@ -143,7 +154,7 @@ Public Member Functions</h2></td></tr>
 </div><div class="memdoc">
 
 <p>Build the hierarchy over the given primitives. </p>
-<p>Attention: The primitives are merely borrowed during the build process and by the created nodes. The call site must ensure the primitive's lifetime as long as the bvh is used.</p>
+<p>Attention: The primitives are merely borrowed during the build process and afterwards by the created nodes. The call site must ensure the primitives' lifetime as long as the bvh is used. Modifying any primitive attributes that alter its bounding box after building the BVH results in undefined behaviour. The BVH must be built again after modifying such attributes to ensure correct calculation of intersections.</p>
 <dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
     <tr><td class="paramname">primitives</td><td>The primitives to consider during building. </td></tr>
@@ -185,7 +196,7 @@ Public Member Functions</h2></td></tr>
 
 <p class="definition">Definition at line <a class="el" href="bvh_8cxx_source.html#l00062">62</a> of file <a class="el" href="bvh_8cxx_source.html">bvh.cxx</a>.</p>
 
-<p class="reference">References <a class="el" href="classcgv_1_1data_1_1ray__intersectable.html#a54ac46a63540a28c1c1cbeaad87ee628">cgv::data::ray_intersectable::intersect()</a>, <a class="el" href="bvh_8h_source.html#l00064">cgv::data::bvh_result::intersection</a>, <a class="el" href="bvh_8h_source.html#l00062">cgv::data::bvh_result::is_hit</a>, <a class="el" href="bvh_8h_source.html#l00068">cgv::data::bvh_result::primitive</a>, <a class="el" href="bvh_8h_source.html#l00066">cgv::data::bvh_result::primitive_index</a>, and <a class="el" href="bvh_8h_source.html#l00018">cgv::data::ray_intersection_info::t</a>.</p>
+<p class="reference">References <a class="el" href="classcgv_1_1data_1_1ray__intersectable.html#a54ac46a63540a28c1c1cbeaad87ee628">cgv::data::ray_intersectable::intersect()</a>, <a class="el" href="bvh_8h_source.html#l00065">cgv::data::bvh_result::intersection</a>, <a class="el" href="bvh_8h_source.html#l00063">cgv::data::bvh_result::is_hit</a>, <a class="el" href="bvh_8h_source.html#l00069">cgv::data::bvh_result::primitive</a>, <a class="el" href="bvh_8h_source.html#l00067">cgv::data::bvh_result::primitive_index</a>, and <a class="el" href="bvh_8h_source.html#l00019">cgv::data::ray_intersection_info::t</a>.</p>
 
 </div>
 </div>
