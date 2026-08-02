@@ -1,6 +1,7 @@
 #pragma once
 
 #include <limits>
+#include <memory>
 #include <vector>
 
 #include <cgv/math/fray.h>
@@ -68,13 +69,57 @@ struct bvh_result {
 	const ray_intersectable* primitive = nullptr;
 };
 
-/// A simple Bounding Volume Hierarchy (BVH) using axis-aligned bounding boxes to patition primitives into a binary tree structure for efficient ray intersection tests.
-/// Primitives are partitioned based on the center of their bounding boxes and the center along the longest extent of the nodes.
+/**
+ * A Bounding Volume Hierarchy(BVH) using axis-aligned bounding boxes to partition primitives into a binary tree structure for efficient ray intersection tests.
+ * Nodes are split using the midpoint heuristic that splits primitives at the geometric center point of a node's longest axis, sorting primitives based on their bounding box centroid.
+ * 
+ * Example:
+ * Create a custom primitive class usable with the BVH:
+ * 
+ * struct my_primitive : public ray_intersectable {
+ *		... custom fields
+ *		
+ *		cgv::box3 get_bounds() const override {
+ *			...return axis-aligned bounding box of the primitive
+ *		};
+ * 
+ *		bool intersect(const cgv::ray3& ray, ray_intersection_info& info) const override {
+ *			...return true if ray intersects primitive and fill out intersection info with at least the ray parameter t
+ *		};
+ * };
+ * 
+ * Create some primitives:
+ * 
+ * std::vector<ray_intersectable*> primitives;
+ * primitives.push_back(new my_primitive(...));
+ * ...
+ * 
+ * Attention: The call-site must manage the lifetime of the primitives!
+ * 
+ * To build the BVH:
+ * bvh scene;
+ * scene.build(primitives, 8) // using depth 8 (sensible values depend on the scene complexity but are typically between 4 and 32)
+ * 
+ * To test for a closest intersection:
+ * 
+ * cgv::ray3 ray(...); // some test ray
+ * bvh_result result = scene.closest_intersection(ray);
+ * 
+ * if(result.is_hit) {
+ *		// A primitive was hit. result.intersection contains the ray parameter of the intersection point and other optional attributes
+ *		// result further contains the pointer to the hit primitive and the index intot he 'primitives' list used to build the BVH
+ * } else {
+ *		...no hit
+ * }
+ * 
+ */
 class CGV_API bvh {
 public:
 	/// @brief Build the hierarchy over the given primitives.
-	/// Attention: The primitives are merely borrowed during the build process and by the created nodes.
-	/// The call site must ensure the primitive's lifetime as long as the bvh is used.
+	/// Attention: The primitives are merely borrowed during the build process and afterwards by the created nodes.
+	/// The call site must ensure the primitives' lifetime as long as the bvh is used. Modifying any primitive
+	/// attributes that alter its bounding box after building the BVH results in undefined behaviour. The BVH
+	/// must be built again after modifying such attributes to ensure correct calculation of intersections.
 	/// 
 	/// @param primitives The primitives to consider during building.
 	/// @param max_depth The maximum depth of the resulting tree.
