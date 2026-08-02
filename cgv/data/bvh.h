@@ -107,7 +107,10 @@ struct bvh_result {
  * 
  * if(result.is_hit) {
  *		// A primitive was hit. result.intersection contains the ray parameter of the intersection point and other optional attributes
- *		// result further contains the pointer to the hit primitive and the index intot he 'primitives' list used to build the BVH
+ *		// result further contains the pointer to the hit primitive and the index into the 'primitives' list used to build the BVH
+ *      const my_primitive* hit_primitive = result.primitive;
+ *		...or
+ *		my_primitive* hit_primitive = primitives[result.primitive_index];
  * } else {
  *		...no hit
  * }
