@@ -6,7 +6,7 @@ namespace cgv {
 namespace gpgpu {
 namespace generic {
 
-const const char* fill::_value_argument_name = "u_value";
+const char* fill::_value_argument_name = "u_value";
 
 fill::fill(GroupSize group_size) : algorithm("fill", group_size) {}
 
