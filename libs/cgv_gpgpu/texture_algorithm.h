@@ -15,7 +15,7 @@ protected:
 	using TextureType = cgv::render::TextureType;
 	
 public:
-	texture_algorithm(const std::string& type_name, std::initializer_list<TextureType> supported_texture_types) : algorithm(type_name) {
+	texture_algorithm(const std::string& type_name, std::initializer_list<TextureType> supported_texture_types) : algorithm(type_name, GroupSize::Auto) {
 		_supported_texture_types = supported_texture_types;
 		// Overwrite default value of group size from algorithm to ensure correct group count.
 		_group_size = 4u;

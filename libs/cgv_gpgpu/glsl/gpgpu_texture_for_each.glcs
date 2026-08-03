@@ -14,12 +14,12 @@ void operation(inout value_type element, INDEX_TYPE index) {
 layout(local_size_x = LOCAL_SIZE_X, local_size_y = LOCAL_SIZE_Y, local_size_z = LOCAL_SIZE_Z) in;
 void main() {
 	// the texel coordinates of this thread
-    INDEX_TYPE gid = INDEX_TYPE(gl_GlobalInvocationID);
-    
+	INDEX_TYPE gid = INDEX_TYPE(gl_GlobalInvocationID);
+	
 	if(SIZE_GUARD(gid, u_size)) {
 		value_type element = imageLoad(tex, gid);
 		operation(element, gid);
-        imageStore(tex, gid, element);
+		imageStore(tex, gid, element);
 	}
 }
 #endif

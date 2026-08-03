@@ -200,18 +200,27 @@ size_t data_type::alignment_in_bytes() const {
 	return get_type_info(_base_type).base_alignment;
 }
 
+bool data_type::operator==(const data_type& other) const {
+	if(_base_type != other._base_type)
+		return false;
+
+	if(_definition == other._definition)
+		return true;
+
+	if(_definition && other._definition)
+		return *_definition == *other._definition;
+
+	return false;
+}
+
 size_t get_aligned_size(data_type type) {
 	return cgv::math::next_multiple_k_greater_than_n(type.alignment_in_bytes(), type.size_in_bytes());
 }
 
 std::string get_type_definition_string(data_type type) {
-	std::string type_name = type.type_name();
-	switch(type.type()) {
-	case Type::Struct:
-		return "struct " + type_name + " { " + to_string(type.members()) + "};";
-	default:
-		return type_name;
-	}
+	if(type.is_compound())
+		return "struct " + type.type_name() + " { " + to_string(type.members()) + "};";
+	return type.type_name();
 }
 
 std::string get_alias_string(const std::string& alias, const std::string& name) {
@@ -464,6 +473,44 @@ std::string to_string(const named_texture_list& textures, size_t base_location) 
 	return cgv::utils::transform_join(textures.begin(), textures.end(), [&base_location](const named_texture& texture) {
 		return to_string(texture, base_location++);
 	}, "\n", true);
+}
+
+std::string to_string(ParameterQualifier qualifier) {
+	switch(qualifier) {
+	case ParameterQualifier::Out: return "out";
+	case ParameterQualifier::InOut: return "inout";
+	default: return "in"; // ParameterQualifier::In and undefined defaults to 'in'
+	}
+}
+
+std::string to_string(parameter param) {
+	return to_string(param.qualifier) + " " + to_string(param.type_and_name);
+}
+
+std::string to_string(parameter_list params) {
+	return cgv::utils::join(params.begin(), params.end(), ", ");
+}
+
+std::vector<data_type> function_definition::get_used_types() const {
+	std::vector<data_type> types;
+	types.reserve(parameters.size() + 1);
+	types.push_back(ret_type);
+	for(const parameter& param : parameters)
+		types.push_back(param.type_and_name.type());
+	return types;
+}
+
+std::string to_string(const function_definition& function) {
+	std::string str = function.ret_type.type_name() + " " + function.name + "(";
+	str += to_string(function.parameters);
+	str += ") {\n";
+	str += function.body;
+	str += "\n}";
+	return str;
+}
+
+std::string to_string(const function_definition_list& functions) {
+	return cgv::utils::join(functions.begin(), functions.end(), "\n");
 }
 
 } // namespace sl

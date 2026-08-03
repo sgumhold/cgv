@@ -19,8 +19,10 @@ void texture_fill::destruct(const cgv::render::context& ctx) {
 }
 
 bool texture_fill::dispatch(cgv::render::context& ctx, cgv::render::texture& texture, const vec4& value) {
-	if(!is_initialized_for_texture(texture))
+	if(!is_initialized_for_texture(texture)) {
+		raise_error(errc::invalid_argument, "texture type does not match initialized texture type");
 		return false;
+	}
 
 	bind_image_texture(ctx, texture, 0);
 
