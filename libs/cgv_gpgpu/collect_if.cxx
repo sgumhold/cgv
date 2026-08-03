@@ -4,17 +4,15 @@
 
 namespace cgv {
 namespace gpgpu {
+namespace generic {
 
-collect_if::collect_if() : algorithm("collect_if") {}
+collect_if::collect_if(GroupSize group_size) : algorithm("collect_if", group_size) {}
 
 bool collect_if::init(cgv::render::context& ctx, const sl::data_type& value_type, const std::string& unary_predicate) {
 	return init(ctx, value_type, {}, unary_predicate);
 }
 
 bool collect_if::init(cgv::render::context& ctx, const sl::data_type& value_type, const argument_definitions& arguments, const std::string& unary_predicate) {
-	if(!value_type.is_valid())
-		return false;
-
 	algorithm_create_info info;
 	info.arguments = &arguments;
 	info.types.push_back(value_type);
@@ -40,11 +38,15 @@ bool collect_if::dispatch(cgv::render::context& ctx, const cgv::render::vertex_b
 }
 
 bool collect_if::dispatch(cgv::render::context& ctx, device_buffer_iterator input_first, device_buffer_iterator input_last, device_buffer_iterator output_first, const argument_bindings& arguments) {
-	if(!is_valid_range(input_first, input_last))
+	if(!is_valid_range(input_first, input_last)) {
+		raise_error(errc::invalid_range, "input");
 		return false;
+	}
 
-	if(compatible(input_first, output_first))
+	if(compatible(input_first, output_first)) {
+		raise_error(errc::overlapping_range, "input, output");
 		return false;
+	}
 
 	// Reset atomic_counter_buffer to zero.
 	_atomic_counter_buffer.ctx_ptr = &ctx;
@@ -86,5 +88,6 @@ bool collect_if::dispatch(cgv::render::context& ctx, device_buffer_iterator inpu
 	return true;
 }
 
+} // namespace generic
 } // namespace gpgpu
 } // namespace cgv

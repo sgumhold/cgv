@@ -10,11 +10,17 @@
 
 namespace cgv {
 namespace gpgpu {
+namespace generic {
 namespace detail {
 
 class CGV_API write_if : public algorithm {
 public:
-	write_if(const std::string& name, bool write_indices);
+	enum class OutputMode {
+		Values,
+		Indices
+	};
+
+	write_if(const std::string& name, OutputMode output_mode, GroupSize group_size);
 
 	bool init(cgv::render::context& ctx, const sl::data_type& value_type, const std::string& unary_predicate);
 	bool init(cgv::render::context& ctx, const sl::data_type& value_type, const argument_definitions& arguments, const std::string& unary_predicate);
@@ -39,7 +45,7 @@ private:
 
 	void resize(cgv::render::context& ctx, uint32_t size);
 
-	bool _write_indices = false;
+	OutputMode _output_mode = OutputMode::Values;
 
 	const uint32_t _group_size = 64;
 	const uint32_t _block_size = 4 * _group_size;
@@ -63,6 +69,31 @@ private:
 };
 
 } // namespace detail
+
+} // namespace generic
+
+namespace detail {
+
+template<class T>
+class write_if : public generic::detail::write_if {
+public:
+	static_assert(type_representation<T>::value, "T must be representable as sl::data_type");
+
+	using base = generic::detail::write_if;
+	using base::base;
+
+	bool init(cgv::render::context& ctx, const std::string& unary_predicate) {
+		return init(ctx, {}, unary_predicate);
+	}
+
+	bool init(cgv::render::context& ctx, const argument_definitions& arguments, const std::string& unary_predicate) {
+		sl::data_type value_type = register_type_representation<T>();
+		return base::init(ctx, value_type, arguments, unary_predicate);
+	}
+};
+
+} // namespace detail
+
 } // namespace gpgpu
 } // namespace cgv
 

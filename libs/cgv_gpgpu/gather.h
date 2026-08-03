@@ -9,10 +9,12 @@
 namespace cgv {
 namespace gpgpu {
 
+namespace generic {
+
 /// GPU compute shader implementation for performing a gather operation on a range of elements.
 class CGV_API gather : public algorithm {
 public:
-	gather(uint32_t group_size = k_default_group_size);
+	gather(GroupSize group_size = k_default_group_size);
 
 	bool init(cgv::render::context& ctx, const sl::data_type& value_type);
 
@@ -31,6 +33,23 @@ private:
 
 	compute_kernel _kernel;
 	cgv::render::uniform_buffer<uniform_data> _uniform_buffer;
+};
+
+} // namespace generic
+
+/// GPU compute shader implementation for performing a gather operation on a range of elements.
+template<class T>
+class gather : public generic::gather {
+public:
+	static_assert(type_representation<T>::value, "T must be representable as sl::data_type");
+
+	using base = generic::gather;
+	using base::base;
+
+	bool init(cgv::render::context& ctx) {
+		sl::data_type value_type = register_type_representation<T>();
+		return base::init(ctx, value_type);
+	}
 };
 
 } // namespace gpgpu

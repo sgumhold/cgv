@@ -26,8 +26,10 @@ void texture_for_each::destruct(const cgv::render::context& ctx) {
 }
 
 bool texture_for_each::dispatch(cgv::render::context& ctx, cgv::render::texture& texture, const argument_bindings& arguments) {
-	if(!is_initialized_for_texture(texture))
+	if(!is_initialized_for_texture(texture)) {
+		raise_error(errc::invalid_argument, "texture type does not match initialized texture type");
 		return false;
+	}
 
 	bind_image_texture(ctx, texture, 0);
 

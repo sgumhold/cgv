@@ -4,21 +4,25 @@
 
 namespace cgv {
 namespace gpgpu {
+namespace generic {
 namespace detail {
 
-const std::string scan::init_argument_name = "u_init";
+const char* scan::_init_argument_name = "u_init";
 
-scan::scan(const std::string& name, bool inclusive, uint32_t group_size) : algorithm(name, group_size), _inclusive(inclusive) {}
+scan::scan(const std::string& name, Mode mode, GroupSize group_size) : algorithm(name, group_size), _mode(mode) {}
 
 bool scan::init(cgv::render::context& ctx, const sl::data_type& value_type) {
-	if(!value_type.is_valid())
-		return false;
+	return init(ctx, value_type, "");
+}
 
+bool scan::init(cgv::render::context& ctx, const sl::data_type& value_type, const std::string& binary_operation) {
 	size_t available_size = static_cast<size_t>(ctx.get_device_capabilities().max_compute_shared_memory_size);
 	size_t available_element_count = available_size / sl::get_aligned_size(value_type);
 
-	if(available_element_count < static_cast<size_t>(2 * _group_size))
+	if(available_element_count < static_cast<size_t>(2 * _group_size)) {
+		raise_not_enough_shared_memory_error(available_element_count, static_cast<size_t>(2 * _group_size));
 		return false;
+	}
 
 	_value_type = value_type;
 	
@@ -26,15 +30,16 @@ bool scan::init(cgv::render::context& ctx, const sl::data_type& value_type) {
 	info.types.push_back(value_type);
 	info.typedefs.push_back({ "value_type", value_type });
 	info.default_buffer_count = 3;
-	info.options.define_macro_if_true(_inclusive, "INCLUSIVE_SCAN");
+	info.options.define_macro_if_true(_mode == Mode::Inclusive, "INCLUSIVE_SCAN");
+
+	if(!binary_operation.empty()) {
+		info.options.define_snippet("operation", binary_operation);
+		info.options.define_macro("USE_CUSTOM_OPERATION");
+	}
 
 	cgv::render::shader_compile_options global_scan_options;
 	global_scan_options.define_macro("LOCAL_SIZE_X", ctx.get_device_capabilities().max_compute_work_group_size.x());
-	// The global scan can be performed in a raking fashion using shared memory to sequentially scan parts of the input
-	// array and propagate the partial sums. This can be enabled by uncommenting the following line. However, in practice
-	// this has shown worse performance than the naive approach. One must also ensure that enough shared memory is available
-	// for the used work group size and value_type.
-	//global_scan_options.define_macro("USE_SHARED_MEMORY");
+	
 	
 	std::vector<compute_kernel_info> kernels = {
 		{ &_scan_local_kernel, "gpgpu_scan_scan_local" },
@@ -69,16 +74,23 @@ bool scan::dispatch(cgv::render::context& ctx, const cgv::render::vertex_buffer&
 }
 
 bool scan::dispatch(cgv::render::context& ctx, device_buffer_iterator input_first, device_buffer_iterator input_last, device_buffer_iterator output_first, const argument_bindings& arguments) {
-	if(!is_valid_range(input_first, input_last))
+	if(!is_valid_range(input_first, input_last)) {
+		raise_error(errc::invalid_range, "input");
 		return false;
+	}
 
-	if(compatible(input_first, output_first))
+	if(compatible(input_first, output_first)) {
+		raise_error(errc::overlapping_range, "input, output");
 		return false;
+	}
 
 	uint32_t count = static_cast<uint32_t>(cgv::gpgpu::distance(input_first, input_last));
 	uint32_t max_count = static_cast<uint32_t>(ctx.get_device_capabilities().max_compute_work_group_count.x()) * _part_size;
-	if(count > max_count)
+	if(count > max_count) {
+		std::string description = "the length of the input range must not exceed " + std::to_string(max_count);
+		raise_error(errc::size_too_large, description);
 		return false;
+	}
 
 	if(count != _last_size) {
 		resize(ctx, count);
@@ -123,5 +135,6 @@ bool scan::dispatch(cgv::render::context& ctx, device_buffer_iterator input_firs
 }
 
 } // namespace detail
+} // namespace generic
 } // namespace gpgpu
 } // namespace cgv

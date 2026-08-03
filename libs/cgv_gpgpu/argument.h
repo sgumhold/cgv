@@ -5,11 +5,10 @@
 
 #include "sl.h"
 #include "binding.h"
+#include "representation.h"
 
 namespace cgv {
 namespace gpgpu {
-
-// TODO: provide iterator (or vector) initializers in all constructors with initializer lists.
 
 enum class ArgumentType {
 	Uniform,
@@ -49,9 +48,13 @@ private:
 
 struct argument_definitions {
 	argument_definitions() {}
+	argument_definitions(std::initializer_list<argument_definition> arguments) : argument_definitions(arguments.begin(), arguments.end()) {}
+	argument_definitions(const std::vector<argument_definition>& arguments) : argument_definitions(arguments.begin(), arguments.end()) {}
 
-	argument_definitions(std::initializer_list<argument_definition> arguments) {
-		for(const argument_definition& argument : arguments) {
+	template<class Iterator>
+	argument_definitions(const Iterator begin, const Iterator end) {
+		for(Iterator it = begin; it != end; ++it) {
+			const argument_definition& argument = *it;
 			switch(argument._type) {
 			case ArgumentType::Uniform:
 				uniforms.push_back(argument._variable);
@@ -76,52 +79,6 @@ struct argument_definitions {
 	sl::named_image_list images;
 	sl::named_texture_list textures;
 };
-
-static cgv::render::type_descriptor get_type_descriptor(sl::data_type type) {
-	using namespace cgv::render;
-	using namespace cgv::type;
-	switch(type.type()) {
-	case sl::Type::Bool: return element_descriptor_traits<bool>::get_type_descriptor({});
-	case sl::Type::Int: return element_descriptor_traits<int32_type>::get_type_descriptor({});
-	case sl::Type::UInt: return element_descriptor_traits<uint32_type>::get_type_descriptor({});
-	case sl::Type::Float: return element_descriptor_traits<flt32_type>::get_type_descriptor({});
-	case sl::Type::Double: return element_descriptor_traits<flt64_type>::get_type_descriptor({});
-	case sl::Type::BVec2: return element_descriptor_traits<bvec2>::get_type_descriptor({});
-	case sl::Type::BVec3: return element_descriptor_traits<bvec3>::get_type_descriptor({});
-	case sl::Type::BVec4: return element_descriptor_traits<bvec4>::get_type_descriptor({});
-	case sl::Type::IVec2: return element_descriptor_traits<ivec2>::get_type_descriptor({});
-	case sl::Type::IVec3: return element_descriptor_traits<ivec3>::get_type_descriptor({});
-	case sl::Type::IVec4: return element_descriptor_traits<ivec4>::get_type_descriptor({});
-	case sl::Type::UVec2: return element_descriptor_traits<uvec2>::get_type_descriptor({});
-	case sl::Type::UVec3: return element_descriptor_traits<uvec3>::get_type_descriptor({});
-	case sl::Type::UVec4: return element_descriptor_traits<uvec4>::get_type_descriptor({});
-	case sl::Type::Vec2: return element_descriptor_traits<vec2>::get_type_descriptor({});
-	case sl::Type::Vec3: return element_descriptor_traits<vec3>::get_type_descriptor({});
-	case sl::Type::Vec4: return element_descriptor_traits<vec4>::get_type_descriptor({});
-	case sl::Type::DVec2: return element_descriptor_traits<dvec2>::get_type_descriptor({});
-	case sl::Type::DVec3: return element_descriptor_traits<dvec3>::get_type_descriptor({});
-	case sl::Type::DVec4: return element_descriptor_traits<dvec4>::get_type_descriptor({});
-	case sl::Type::Mat2: return element_descriptor_traits<mat2>::get_type_descriptor({});
-	case sl::Type::Mat3: return element_descriptor_traits<mat3>::get_type_descriptor({});
-	case sl::Type::Mat4: return element_descriptor_traits<mat4>::get_type_descriptor({});
-	case sl::Type::Mat2x3: return element_descriptor_traits<cgv::math::fmat<float, 2u, 3u>>::get_type_descriptor({});
-	case sl::Type::Mat2x4: return element_descriptor_traits<cgv::math::fmat<float, 2u, 4u>>::get_type_descriptor({});
-	case sl::Type::Mat3x2: return element_descriptor_traits<cgv::math::fmat<float, 3u, 2u>>::get_type_descriptor({});
-	case sl::Type::Mat3x4: return element_descriptor_traits<cgv::math::fmat<float, 3u, 4u>>::get_type_descriptor({});
-	case sl::Type::Mat4x2: return element_descriptor_traits<cgv::math::fmat<float, 4u, 2u>>::get_type_descriptor({});
-	case sl::Type::Mat4x3: return element_descriptor_traits<cgv::math::fmat<float, 4u, 3u>>::get_type_descriptor({});
-	case sl::Type::DMat2: return element_descriptor_traits<dmat2>::get_type_descriptor({});
-	case sl::Type::DMat3: return element_descriptor_traits<dmat3>::get_type_descriptor({});
-	case sl::Type::DMat4: return element_descriptor_traits<dmat4>::get_type_descriptor({});
-	case sl::Type::DMat2x3: return element_descriptor_traits<cgv::math::fmat<double, 2u, 3u>>::get_type_descriptor({});
-	case sl::Type::DMat2x4: return element_descriptor_traits<cgv::math::fmat<double, 2u, 4u>>::get_type_descriptor({});
-	case sl::Type::DMat3x2: return element_descriptor_traits<cgv::math::fmat<double, 3u, 2u>>::get_type_descriptor({});
-	case sl::Type::DMat3x4: return element_descriptor_traits<cgv::math::fmat<double, 3u, 4u>>::get_type_descriptor({});
-	case sl::Type::DMat4x2: return element_descriptor_traits<cgv::math::fmat<double, 4u, 2u>>::get_type_descriptor({});
-	case sl::Type::DMat4x3: return element_descriptor_traits<cgv::math::fmat<double, 4u, 3u>>::get_type_descriptor({});
-	default: return type_descriptor(cgv::type::info::type_id<void>::get_id());
-	}
-}
 
 class argument_bindings {
 public:
@@ -160,8 +117,23 @@ public:
 
 class argument_binding_list : public argument_bindings {
 public:
-	template<typename T, typename std::enable_if<sl::traits::is_fundamental_sl_scalar_type<T>::value, bool>::type = true>
-	void bind_uniform(const std::string& name, T value) {
+	void bind_uniform(const std::string& name, bool value) {
+		_uniform_bindings.emplace_back(name, value);
+	}
+
+	void bind_uniform(const std::string& name, int32_t value) {
+		_uniform_bindings.emplace_back(name, value);
+	}
+
+	void bind_uniform(const std::string& name, uint32_t value) {
+		_uniform_bindings.emplace_back(name, value);
+	}
+
+	void bind_uniform(const std::string& name, float value) {
+		_uniform_bindings.emplace_back(name, value);
+	}
+
+	void bind_uniform(const std::string& name, double value) {
 		_uniform_bindings.emplace_back(name, value);
 	}
 
@@ -173,6 +145,16 @@ public:
 	template<typename T, cgv::type::uint32_type N, cgv::type::uint32_type M>
 	void bind_uniform(const std::string& name, const cgv::math::fmat<T, N, M>* value) {
 		_uniform_bindings.emplace_back(name, value);
+	}
+
+	template<typename T, typename std::enable_if<type_representation<T>::value, bool>::type = true>
+	void bind_uniform(const std::string& name, const T& value) {
+		type_representation<T>::create_uniform_binding(_uniform_bindings, name, value);
+	}
+
+	template<typename T>
+	void bind_uniform(const std::string& name, const sl::data_type& type, T value) {
+		_uniform_bindings.emplace_back(name, type, value);
 	}
 
 	template<typename T, typename std::enable_if<std::is_base_of<cgv::render::vertex_buffer, T>::value, bool>::type = true>

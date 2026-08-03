@@ -23,7 +23,7 @@ public:
 		return cgv::render::vertex_buffer::create_or_resize(ctx, array);
 	}
 
-	bool create_or_resize(const cgv::render::context& ctx, sl::data_type element_type, size_t element_count) {
+	bool create_or_resize(const cgv::render::context& ctx, const sl::data_type& element_type, size_t element_count) {
 		return cgv::render::vertex_buffer::create_or_resize(ctx, element_count * sl::get_aligned_size(element_type));
 	}
 };

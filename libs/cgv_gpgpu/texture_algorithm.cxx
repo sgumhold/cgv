@@ -61,8 +61,10 @@ cgv::render::shader_compile_options texture_algorithm::get_compile_options(const
 }
 
 bool texture_algorithm::init(cgv::render::context& ctx, const texture_algorithm_create_info& create_info, const std::vector<compute_kernel_info>& kernel_infos) {
-	if(!is_texture_type_supported(create_info.texture_type))
+	if(!is_texture_type_supported(create_info.texture_type)) {
+		raise_error(errc::texture_type_not_supported);
 		return false;
+	}
 	
 	_texture_type = create_info.texture_type;
 

@@ -44,6 +44,13 @@ public:
 		store_address(value);
 	}
 
+	template<typename T, typename std::enable_if<sl::traits::is_fundamental_sl_scalar_type_v<T>, bool>::type = true>
+	uniform_binding(const std::string& name, const sl::data_type& type, T value) : sl::named_object(name) {
+		store_value(value);
+		// Overwrite descriptor set by store_value
+		_desc = sl::get_type_descriptor(type);
+	}
+
 	void bind(bool value) {
 		store_value(value);
 	}
@@ -72,6 +79,13 @@ public:
 	template<typename T, cgv::type::uint32_type N, cgv::type::uint32_type M>
 	void bind(const cgv::math::fmat<T, N, M>* value) {
 		store_address(value);
+	}
+
+	template<typename T, typename std::enable_if<sl::traits::is_fundamental_sl_scalar_type_v<T>, bool>::type = true>
+	void bind(const sl::data_type& type, T value) {
+		store_value(value);
+		// Overwrite descriptor set by store_value
+		_desc = sl::get_type_descriptor(type);
 	}
 
 	cgv::render::type_descriptor descriptor() const {
@@ -218,7 +232,6 @@ public:
 
 	void bind(cgv::render::context& ctx, uint32_t index) const {
 		_binding_index = index;
-		// TODO: Expose access type to user?
 		_texture->bind_as_image(ctx, index, 0, false, 0, cgv::render::AccessType::AT_READ_WRITE);
 	}
 
@@ -253,7 +266,6 @@ public:
 	};
 
 	void bind(cgv::render::context& ctx, uint32_t index) const {
-		//_binding_index = index;
 		_texture->enable(ctx, index);
 	}
 
@@ -262,7 +274,6 @@ public:
 	}
 
 private:
-	//mutable uint32_t _binding_index = 0;
 	cgv::render::texture* _texture = nullptr;
 };
 
