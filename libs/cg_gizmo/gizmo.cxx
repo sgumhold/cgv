@@ -1,6 +1,7 @@
 #include "gizmo.h"
 
 #include <cgv/gui/mouse_event.h>
+#include <cgv/gui/key_event.h>
 #include <cgv/math/ftransform.h>
 #include <cgv/math/intersection.h>
 
@@ -64,76 +65,85 @@ void gizmo::finish_frame(context& ctx) {
 }
 
 bool gizmo::handle(cgv::gui::event& e) {
-	if(!cgv::render::drawable::get_active() || e.get_kind() != cgv::gui::EID_MOUSE)
-		return false;
-
-	cgv::gui::mouse_event& me = dynamic_cast<cgv::gui::mouse_event&>(e);
-
 	context* ctx = get_context();
-	if(!_view || !ctx)
+
+	if(!cgv::render::drawable::get_active() || !_view || !ctx)
 		return false;
 
-	const ivec4& viewport = ctx->get_window_transformation_array().front().viewport;
-	vec2 viewport_size = vec2(float(viewport.z()), float(viewport.w()));
+	if(e.get_kind() == cgv::gui::EID_KEY) {
+		cgv::gui::key_event& ke = dynamic_cast<cgv::gui::key_event&>(e);
 
-	// get the mouse position in GL space
-	ivec2 mouse_pos(
-		static_cast<int>(me.get_x()),
-		(int)viewport_size.y() - static_cast<int>(me.get_y()) - 1
-	);
-
-	cgv::ray3 ray(vec2(mouse_pos), viewport_size, _view->get_eye(), ctx->get_projection_matrix() * ctx->get_modelview_matrix());
-
-	bool evaluate_hover_state = false;
-
-	switch(me.get_action()) {
-	case cgv::gui::MA_MOVE:
-		evaluate_hover_state = !_captured_mouse;
-		break;
-	case cgv::gui::MA_PRESS:
-		if(me.get_button() == cgv::gui::MouseButton::MB_LEFT_BUTTON && _hovered && _interaction_feature != InteractionFeature::kNone) {
-			if(start_drag(ray)) {
-				_drag_start_ray = ray;
-				_captured_mouse = true;
-				return true;
+		if(ke.get_action() != cgv::gui::KeyAction::KA_REPEAT) {
+			if(ke.get_key() == cgv::gui::Keys::KEY_Left_Ctrl) {
+				if(_captured_mouse)
+					drag(_drag_ray, ke.get_modifiers());
 			}
 		}
-		break;
-	case cgv::gui::MA_RELEASE:
-		if(_captured_mouse && me.get_button() == cgv::gui::MouseButton::MB_LEFT_BUTTON) {
-			end_drag(ray);
-			_captured_mouse = false;
-			evaluate_hover_state = true;
+	} else if(e.get_kind() == cgv::gui::EID_MOUSE) {
+		cgv::gui::mouse_event& me = dynamic_cast<cgv::gui::mouse_event&>(e);
+
+		const ivec4& viewport = ctx->get_window_transformation_array().front().viewport;
+		vec2 viewport_size = vec2(static_cast<float>(viewport.z()), static_cast<float>(viewport.w()));
+
+		// get the mouse position in GL space
+		ivec2 mouse_pos(
+			static_cast<int>(me.get_x()),
+			static_cast<int>(viewport_size.y()) - static_cast<int>(me.get_y()) - 1
+		);
+
+		_drag_ray = cgv::ray3(vec2(mouse_pos), viewport_size, _view->get_eye(), ctx->get_projection_matrix() * ctx->get_modelview_matrix());
+
+		bool evaluate_hover_state = false;
+
+		switch(me.get_action()) {
+		case cgv::gui::MA_MOVE:
+			evaluate_hover_state = !_captured_mouse;
+			break;
+		case cgv::gui::MA_PRESS:
+			if(me.get_button() == cgv::gui::MouseButton::MB_LEFT_BUTTON && _hovered && _interaction_feature != InteractionFeature::kNone) {
+				if(start_drag(_drag_ray)) {
+					_drag_start_ray = _drag_ray;
+					_captured_mouse = true;
+					return true;
+				}
+			}
+			break;
+		case cgv::gui::MA_RELEASE:
+			if(_captured_mouse && me.get_button() == cgv::gui::MouseButton::MB_LEFT_BUTTON) {
+				end_drag(_drag_ray);
+				_captured_mouse = false;
+				evaluate_hover_state = true;
+			}
+			break;
+		case cgv::gui::MA_DRAG:
+			if(_captured_mouse && me.get_button_state() == cgv::gui::MouseButton::MB_LEFT_BUTTON && drag(_drag_ray, me.get_modifiers()))
+				return true;
+			break;
+		default:
+			break;
 		}
-		break;
-	case cgv::gui::MA_DRAG:
-		if(_captured_mouse && me.get_button_state() == cgv::gui::MouseButton::MB_LEFT_BUTTON && drag(ray))
-			return true;
-		break;
-	default:
-		break;
-	}
 
-	if(evaluate_hover_state) {
-		// transform ray to gizmo object space
-		cgv::ray3 ray_object = ray;
-		ray_object.origin -= _position;
-		ray_object.origin /= _size;
+		if(evaluate_hover_state) {
+			// transform ray to gizmo object space
+			cgv::ray3 ray_object = _drag_ray;
+			ray_object.origin -= _position;
+			ray_object.origin /= _size;
 
-		if(_orientation == GizmoOrientation::kLocal) {
-			_rotation.inverse_rotate(ray_object.origin);
-			_rotation.inverse_rotate(ray_object.direction);
-		}
+			if(_orientation == GizmoOrientation::kLocal) {
+				_rotation.inverse_rotate(ray_object.origin);
+				_rotation.inverse_rotate(ray_object.direction);
+			}
 
-		bool was_hovered = _hovered;
-		InteractionFeature last_feature = _interaction_feature;
-		AxisId last_axis_id = _interaction_axis_id;
+			bool was_hovered = _hovered;
+			InteractionFeature last_feature = _interaction_feature;
+			AxisId last_axis_id = _interaction_axis_id;
 
-		_hovered = intersect_bounding_box(ray_object) && intersect(ray_object);
+			_hovered = intersect_bounding_box(ray_object) && intersect(ray_object);
 
-		if(was_hovered != _hovered || last_feature != _interaction_feature || last_axis_id != _interaction_axis_id) {
-			set_geometry_out_of_date();
-			post_redraw();
+			if(was_hovered != _hovered || last_feature != _interaction_feature || last_axis_id != _interaction_axis_id) {
+				set_geometry_out_of_date();
+				post_redraw();
+			}
 		}
 	}
 
