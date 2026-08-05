@@ -79,13 +79,13 @@ private:
 /// GPU compute shader implementation to perform an inclusive scan over a linear range of elements.
 class inclusive_scan : public detail::scan {
 public:
-	inclusive_scan(GroupSize group_size = k_default_group_size) : detail::scan("inclusive_scan", Mode::Inclusive, group_size) {}
+	inclusive_scan(GroupSize group_size = k_default_group_size) : detail::scan("inclusive_scan", generic::detail::scan::Mode::Inclusive, group_size) {}
 };
 
 /// GPU compute shader implementation to perform an exclusive scan over a linear range of elements.
 class exclusive_scan : public detail::scan {
 public:
-	exclusive_scan(GroupSize group_size = k_default_group_size) : detail::scan("exclusive_scan", Mode::Exclusive, group_size) {}
+	exclusive_scan(GroupSize group_size = k_default_group_size) : detail::scan("exclusive_scan", generic::detail::scan::Mode::Exclusive, group_size) {}
 };
 
 } // namespace generic
@@ -137,14 +137,14 @@ public:
 template<class T>
 class inclusive_scan : public detail::scan<T> {
 public:
-	inclusive_scan(GroupSize group_size = k_default_group_size) : detail::scan<T>("inclusive_scan", Mode::Inclusive, group_size) {}
+	inclusive_scan(GroupSize group_size = k_default_group_size) : detail::scan<T>("inclusive_scan", generic::detail::scan::Mode::Inclusive, group_size) {}
 };
 
 /// GPU compute shader implementation to perform an exclusive scan over a linear range of elements.
 template<class T>
 class exclusive_scan : public detail::scan<T> {
 public:
-	exclusive_scan(GroupSize group_size = k_default_group_size) : detail::scan<T>("exclusive_scan", Mode::Exclusive, group_size) {}
+	exclusive_scan(GroupSize group_size = k_default_group_size) : detail::scan<T>("exclusive_scan", generic::detail::scan::Mode::Exclusive, group_size) {}
 };
 
 } // namespace gpgpu
