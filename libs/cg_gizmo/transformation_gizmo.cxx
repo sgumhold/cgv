@@ -502,7 +502,7 @@ bool transformation_gizmo::start_drag(const cgv::ray3& ray) {
 	return true;
 }
 
-bool transformation_gizmo::drag(const cgv::ray3& ray) {
+bool transformation_gizmo::drag(const cgv::ray3& ray, unsigned char modifiers) {
 	int axis_idx = axis_id_to_index(_interaction_axis_id);
 	vec3 axis = get_axis(axis_idx);
 
@@ -594,6 +594,14 @@ bool transformation_gizmo::drag(const cgv::ray3& ray) {
 			// check for side and bring angle in range [0,2pi];
 			if(dot(plane_tangent, end_dir) < 0.0f)
 				angle = static_cast<float>(2.0 * cgv::math::constants::pi) - angle;
+
+			// snap to ansolute increments of 15 degrees
+			// Todo: Make increment configurable.
+			// Todo: Allow toggling absolute or relative snapping.
+			if(modifiers & cgv::gui::EventModifier::EM_CTRL) {
+				const float angle_step = cgv::math::deg2rad(15.0f);
+				angle = std::round(angle / angle_step) * angle_step;
+			}
 
 			vec3 rotaton_axis = _interaction_feature == InteractionFeature::kCenter ? _interaction_plane.normal : axis;
 

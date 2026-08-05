@@ -56,7 +56,7 @@ private:
 
 	bool start_drag(const cgv::ray3& ray) override;
 
-	bool drag(const cgv::ray3& ray) override;
+	bool drag(const cgv::ray3& ray, unsigned char modifiers) override;
 
 	void end_drag(const cgv::ray3& ray) override;
 
@@ -76,6 +76,7 @@ private:
 	Mode _mode = Mode::kTranslation;
 
 	Mode _interaction_mode = Mode::kTranslation;
+	float _drag_start_t = 0.0f;
 	vec3 _drag_start_position = { 0.0f };
 	quat _drag_start_rotation;
 	vec3 _drag_start_scale = { 1.0f };
