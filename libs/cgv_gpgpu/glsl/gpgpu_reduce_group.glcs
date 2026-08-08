@@ -8,7 +8,11 @@
 layout(local_size_x = LOCAL_SIZE_X) in;
 
 layout(std430, binding = 0) buffer input_buffer {
+#ifdef USE_TRANSFORM
+	input_type data_in[];
+#else
 	value_type data_in[];
+#endif
 };
 
 layout(std430, binding = 1) buffer output_buffer {
@@ -22,11 +26,25 @@ uniform value_type u_init;
 
 shared value_type s_data[gl_WorkGroupSize.x];
 
-value_type operation(value_type lhs, value_type rhs) {
-	//$cgv::operation
+#ifdef USE_TRANSFORM
+value_type transform_operation(input_type element, uint index) {
+	//$cgv::transform_operation
+}
+#endif
+
+value_type reduce_operation(value_type lhs, value_type rhs) {
+	//$cgv::reduce_operation
 }
 
-CGV_SBB_GROUP_REDUCE(group_reduce, LOCAL_SIZE_X, s_data, operation)
+value_type load_value(uint index) {
+#ifdef USE_TRANSFORM
+	return transform_operation(data_in[index], index);
+#else
+	return data_in[index];
+#endif
+}
+
+CGV_SBB_GROUP_REDUCE(group_reduce, LOCAL_SIZE_X, s_data, reduce_operation)
 
 void main() {
 	uint tid = gl_LocalInvocationID.x;
@@ -35,18 +53,18 @@ void main() {
 
 	uint index = gid;
 	if(index < u_count)
-		s_data[tid] = data_in[u_input_begin + index];
+		s_data[tid] = load_value(u_input_begin + index);
 
 	index += grid_size;
 
 	while(index < u_count) {
-		s_data[tid] = operation(s_data[tid], data_in[u_input_begin + index]);
+		s_data[tid] = reduce_operation(s_data[tid], load_value(u_input_begin + index));
 		index += grid_size;
 	}
 
 	// If just one group is active a single thread needs to include the initial value in the reduction.
 	if(tid == 0 && gl_NumWorkGroups.x == 1)
-		s_data[0] = operation(u_init, s_data[0]);
+		s_data[0] = reduce_operation(u_init, s_data[0]);
 	
 	barrier();
 	

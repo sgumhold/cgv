@@ -27,7 +27,7 @@ bool reduce::init(cgv::render::context& ctx, const sl::data_type& value_type, co
 	info.types.push_back(value_type);
 	info.typedefs.push_back({ "value_type", value_type });
 	info.default_buffer_count = 2;
-	info.options.define_snippet("operation", binary_operation);
+	info.options.define_snippet("reduce_operation", binary_operation);
 
 	if(algorithm::init(ctx, info, { { &_kernel, "gpgpu_reduce_group" } })) {
 		_group_reduction_buffer.create_or_resize(ctx, value_type, _num_groups);
@@ -77,13 +77,11 @@ bool reduce::dispatch(cgv::render::context& ctx, device_buffer_iterator input_fi
 	glMemoryBarrier(GL_SHADER_STORAGE_BARRIER_BIT);
 
 	input_first.buffer().unbind(ctx, cgv::render::VertexBufferType::VBT_STORAGE, 0);
-	if(num_groups == 1)
-		output.buffer().unbind(ctx, 1);
-	else
-		_group_reduction_buffer.unbind(ctx, 1);
 
-	// If we need more than one group the partial results are contained in _group_reduction_buffer and we need to run a second reduction pass to reduce over those.
-	if(num_groups > 1) {
+	if(num_groups == 1) {
+		output.buffer().unbind(ctx, 1);
+	} else {
+		// If we need more than one group the partial results are contained in _group_reduction_buffer and we need to run a second reduction pass to reduce over those.
 		_group_reduction_buffer.bind(ctx, 0);
 		output.buffer().bind(ctx, 1);
 
@@ -93,12 +91,12 @@ bool reduce::dispatch(cgv::render::context& ctx, device_buffer_iterator input_fi
 
 		dispatch_compute(1, 1, 1);
 		glMemoryBarrier(GL_SHADER_STORAGE_BARRIER_BIT);
+
+		_group_reduction_buffer.unbind(ctx, 0);
+		output.buffer().unbind(ctx, 1);
 	}
 
 	_kernel.disable(ctx);
-
-	_group_reduction_buffer.unbind(ctx, 0);
-	output.buffer().unbind(ctx, 1);
 
 	return true;
 }
