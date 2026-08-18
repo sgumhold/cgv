@@ -47,8 +47,8 @@ namespace rgbd {
 		std::vector<cgv::vec2> distortion_map;
 		cgv::render::texture distortion_tex;
 		// internal renderer functions
-		void update_defines(cgv::render::shader_define_map& defines);
-		bool build_shader_program(cgv::render::context& ctx, cgv::render::shader_program& prog, const cgv::render::shader_define_map& defines);
+		std::string get_default_prog_name() const;
+		void update_shader_program_options(cgv::render::shader_compile_options& options) const;			
 	public:
 		rgbd_point_renderer();
 		// configuration functions

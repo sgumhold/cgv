@@ -2,6 +2,7 @@
 #include <cgv/math/vec.h>
 #include <cgv/math/point_operations.h>
 #include <cgv/math/eig.h>
+#include <cgv/math/ray.h>
 #include <algorithm>
 
 namespace cgv{
@@ -187,7 +188,30 @@ vec<T> ransac_plane_fit(const mat<T>& points,const T p_out=0.8, const T d_max=0.
 	return plane;
 }
 
+/// @brief Computes the intersection between a ray and infinite plane in n-d space and returns the number of intersections.
+/// Differentiates between 0 or 1 intersections.
+/// 
+/// @tparam T the numeric type.
+/// @param [in] ray the incomming ray.
+/// @param [in] origin the plane origin position.
+/// @param [in] normal the plane surface normal (must be normalized).
+/// @param [out] out_t the distance to the intersection point.
+/// @return the number of intersections.
+template <typename T>
+int ray_plane_intersection_nd(const ray<T>& ray, const vec<T>& plane, T& out_t) {
+	out_t = T(0);
+	T s = T(0);
+	for(unsigned i = 0; i < ray.origin.dim(); i++) {
+		t += plane[i] * ray.origin[i];
+		s += plane[i] * ray.direction[i];
+	}
+	if(s == 0)
+		return 0;
 
+	t += plane[ray.origin.dim()];
+	t /= -s;
+	return 1;
+}
 
 
 

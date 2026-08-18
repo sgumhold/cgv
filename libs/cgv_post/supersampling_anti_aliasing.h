@@ -16,20 +16,20 @@ protected:
 
 	void ensure_fbc_size(cgv::render::context& ctx);
 
-	void create_gui_impl(cgv::base::base* b, cgv::gui::provider* p);
+	void create_gui_impl(cgv::base::base* b, cgv::gui::provider* p) override;
 
 public:
 	supersampling_anti_aliasing() : post_process_effect("SSAO") {}
 
-	void destruct(cgv::render::context& ctx);
+	void destruct(cgv::render::context& ctx) override;
 
-	bool init(cgv::render::context& ctx);
+	bool init(cgv::render::context& ctx) override;
 
-	bool ensure(cgv::render::context& ctx);
+	bool ensure(cgv::render::context& ctx) override;
 
-	void begin(cgv::render::context& ctx);
+	void begin(cgv::render::context& ctx, bool push_viewport=true) override;
 
-	void end(cgv::render::context& ctx);
+	void end(cgv::render::context& ctx, bool pop_viewport=true) override;
 
 	unsigned get_resolution_multiplier() const { return multiplier; }
 

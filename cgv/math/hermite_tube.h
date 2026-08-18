@@ -21,6 +21,7 @@ public:
 	using vec_type = fvec<T, 3>;
 	using matrix_type = fmat<T, 4, 4>;
 	using node_type = hermite_tube_node<T>;
+	using sample_type = sphere<T>;
 	
 	// the start node
 	node_type n0;
@@ -28,18 +29,18 @@ public:
 	node_type n1;
 
 	template<typename ParamT = float>
-	node_type evaluate(ParamT t) const {
-		node_type n;
-		n.pos = interpolate_cubic_hermite(n0.val, n0.tan, n1.val, n1.tan, t);
-		n.rad = interpolate_cubic_hermite(n0.val, n0.tan, n1.val, n1.tan, t);
+	sample_type evaluate(ParamT t) const {
+		sample_type n;
+		n.pos = interpolate_cubic_hermite(n0.pos.val, n0.pos.tan, n1.pos.val, n1.pos.tan, t);
+		n.rad = interpolate_cubic_hermite(n0.rad.val, n0.rad.tan, n1.rad.val, n1.rad.tan, t);
 		return n;
 	}
 
 	template<typename ParamT = float>
-	std::vector<node_type> sample(size_t num_segments) const {
-		std::vector<node_type> points;
+	std::vector<sample_type> sample(size_t num_segments) const {
+		std::vector<sample_type> points;
 		points.reserve(num_segments + 1);
-		sample_steps_transform<ParamT>(std::back_inserter(points), [this](ParamT t) { return evaluate(t); }, num_segments);
+		sequence_transform<ParamT>(std::back_inserter(points), [this](ParamT t) { return evaluate(t); }, num_segments + 1);
 		return points;
 	}
 

@@ -3,6 +3,7 @@
 #include <cgv/base/base.h>
 #include <cgv/base/traverser.h>
 #include <cgv/render/context.h>
+#include <cgv/math/fray.h>
 #include <cgv/render/view.h>
 
 #include "lib_begin.h"
@@ -38,6 +39,8 @@ public:
 	/*! returns true if a world location could be computed which is the case when the context pointer of the drawable has been set and when 
 	    the mouse location points inside a valid view panel. */
 	bool get_world_location(int x, int y, const view& V, dvec3& world_location, double* window_z_ptr = 0) const;
+	/// compute ray from eye of given view_ptr through pixel at given mouse location (x,y) according to given modelview projection window matrix
+	cgv::ray3 get_world_ray(int x, int y, view* view_ptr, const cgv::dmat4& modelview_projection_window_matrix) const;
 	/// posts a redraw event to the current context if one is available
 	void post_redraw();
 	/// forces a redraw right now. This cannot be called from init, init_frame, draw, finish_draw, finish_frame and clear
@@ -59,6 +62,8 @@ public:
 	virtual void after_finish(context&);
 	/// clear all objects living in the context like textures or display lists
 	virtual void clear(context&);
+	/// do not use destruct for a drawable but clear!!
+	virtual void destruct(context&) final;
 };
 
 /** helper class to control multiple render passes in init_frame and after_finish methods of drawable.  */

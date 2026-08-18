@@ -22,6 +22,7 @@ namespace cgv {
 	}
 	namespace render {
 
+
 /** a shader program combines several shader code fragments
     to a complete definition of the shading pipeline. */
 class CGV_API shader_program : public shader_program_base
@@ -36,7 +37,7 @@ protected:
 	bool state_out_of_date : 1;
 	int  nr_attached_geometry_shaders : 13;
 
-	std::vector<shader_code*> managed_codes;
+	//std::vector<shader_code*> managed_codes;
 
 	/// attach a list of files
 	bool attach_files(const context& ctx, const std::vector<std::string>& file_names, const shader_compile_options& options = {});
@@ -109,6 +110,16 @@ public:
 	bool link(const context& ctx, bool show_error = false);
 	/// return whether program is linked
 	bool is_linked() const;
+	/// <summary>
+	/// retrieve information on all uniform or attribute variables of a shader program
+	/// </summary>
+	/// <param name="ctx">render context</param>
+	/// <param name="kind">enum specifying whether uniforms or attributes are queried</param>
+	/// <param name="Vs">resulting list of program variable infos</param>
+	/// <param name="get_location">whether to retrieve program locations of variables</param>
+	/// <param name="get_value">whether to retrieve current values of program variables</param>
+	void inspect_program_variables(const context& ctx, cgv::render::ProgramVariableKind kind, std::vector<cgv::render::program_variable_info>& Vs,
+		bool get_location = true, bool get_value = true);
 	/// successively calls create, attach_files and link.
 	bool build_files(const context& ctx, const std::string& base_name, bool show_error = false);
 	/// successively calls create, attach_dir and link.
@@ -196,6 +207,12 @@ public:
 	bool set_uniform(const context& ctx, int loc, type_descriptor value_type, const void* value_ptr) {
 		return ctx.set_uniform_void(*this, loc, value_type, value_ptr);
 	}
+
+	int get_uniform_block_index(const context& ctx, const std::string& name) const;
+	bool set_uniform_block_binding(const context& ctx, int index, int binding);
+	bool set_uniform_block_binding(const context& ctx, const std::string& name, int binding);
+
+
 	/// query location index of an attribute
 	int get_attribute_location(const context& ctx, const std::string& name) const;
 	/// set constant default value of a vertex attribute by attribute name, if name does not specify an attribute, an error message is generated

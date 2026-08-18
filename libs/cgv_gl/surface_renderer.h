@@ -21,6 +21,14 @@ namespace cgv { // @<
 			CM_COLOR_AND_OPACITY = CM_COLOR | CM_OPACITY
 		};
 
+		class CGV_API surface_renderer;
+
+		//! reference to a singleton surface renderer that can be shared among drawables
+		/*! the second parameter is used for reference counting. Use +1 in your init method,
+			-1 in your clear method and default 0 argument otherwise. If internal reference
+			counter decreases to 0, singleton renderer is destructed. */
+		extern CGV_API surface_renderer& ref_surface_renderer(context& ctx, int ref_count_change = 0);
+
 		/** style of a point */
 		struct CGV_API surface_render_style : public group_render_style
 		{
@@ -36,6 +44,8 @@ namespace cgv { // @<
 			ColorMapping map_color_to_material = CM_COLOR;
 			/// material of surface
 			cgv::media::illum::textured_surface_material material;
+			/// maximum number of supported lights (change triggers recompilation of shader)
+			int max_nr_lights = 2;
 		};
 
 		/// base classes for renderers that support surface rendering
@@ -45,6 +55,14 @@ namespace cgv { // @<
 			bool has_normals = false;
 			bool has_texcoords = false;
 			bool cull_per_primitive = true;
+			/// return the default shader program name
+			std::string get_default_prog_name() const override { return "textured_surface.glpr"; }
+			/// create and return the default render style
+			render_style* create_render_style() const override { return new surface_render_style(); }
+			/// overload to update the shader program compile options based on the current render style; only called if internal shader program is used
+			void update_shader_program_options(shader_compile_options& options) const override;
+			/// overload to disable context from setting color in shader program
+			bool build_shader_program(context& ctx, shader_program& prog, const shader_compile_options& options) const override;
 		public:
 			/// call this before setting attribute arrays to manage attribute array in given manager
 			void enable_attribute_array_manager(const context& ctx, attribute_array_manager& aam) override;

@@ -10,32 +10,36 @@ CGV_SBB_GROUP_STORE_STRIPED_2X(group_store, LOCAL_SIZE_X, value_type, b_data_out
 layout(local_size_x = LOCAL_SIZE_X) in;
 void main() {
     int tid = int(gl_LocalInvocationID.x);
-	int part_offset = 2 * int(gl_WorkGroupSize.x * gl_WorkGroupID.x);
+	int group_offset = 2 * int(gl_WorkGroupSize.x * gl_WorkGroupID.x);
 
-	int part_sum_offset = int(gl_WorkGroupID.x);
+	// Since the global scan over all group sums is inclusive, we have to skip the first
+	// group and shift all other groups by -1 to correctly propagate the group sums to the
+	// partial results from each group/block.
+	if(gl_WorkGroupID.x != 0) {
+		int group_sum_offset = int(gl_WorkGroupID.x) - 1;
+		value_type group_sum = b_group_sums[group_sum_offset];
 
-	value_type part_sum = b_group_sums[part_sum_offset];
+		value_type values[2];
+		values[0] = value_type(0);
+		values[1] = value_type(0);
 
-	value_type values[2];
-	values[0] = value_type(0);
-	values[1] = value_type(0);
+		int count = int(u_args.input_end) - int(u_args.input_begin);
 
-	int count = int(u_args.input_end) - int(u_args.input_begin);
+		if(gl_WorkGroupID.x < gl_NumWorkGroups.x - 1)
+			group_load(tid + group_offset + int(u_args.output_begin), values);
 
-	if(gl_WorkGroupID.x < gl_NumWorkGroups.x - 1)
-		group_load(tid + part_offset + int(u_args.output_begin), values);
-
-	if(gl_WorkGroupID.x == gl_NumWorkGroups.x - 1)
-		group_load(tid + part_offset + int(u_args.output_begin), values, int(u_args.output_begin) + count);
-		
-	values[0] += part_sum;
-	values[1] += part_sum;
+		if(gl_WorkGroupID.x == gl_NumWorkGroups.x - 1)
+			group_load(tid + group_offset + int(u_args.output_begin), values, int(u_args.output_begin) + count);
 	
-	if(gl_WorkGroupID.x < gl_NumWorkGroups.x - 1)
-		group_store(tid + part_offset + int(u_args.output_begin), values);
+		values[0] = operation(values[0], group_sum);
+		values[1] = operation(values[1], group_sum);
+	
+		if(gl_WorkGroupID.x < gl_NumWorkGroups.x - 1)
+			group_store(tid + group_offset + int(u_args.output_begin), values);
 
-	if(gl_WorkGroupID.x == gl_NumWorkGroups.x - 1)
-		group_store(tid + part_offset + int(u_args.output_begin), values, int(u_args.output_begin) + count);
+		if(gl_WorkGroupID.x == gl_NumWorkGroups.x - 1)
+			group_store(tid + group_offset + int(u_args.output_begin), values, int(u_args.output_begin) + count);
+	}
 }
 
 #endif

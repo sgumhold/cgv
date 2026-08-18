@@ -6,7 +6,10 @@ namespace cgv {
 		render_style::~render_style()
 		{
 		}
-		renderer::renderer() {}
+		renderer::renderer() 
+		{
+			aam_ptr = 0;
+		}
 		void renderer::manage_singleton(context& ctx, const std::string& renderer_name, int& ref_count, int ref_count_change)
 		{
 			switch (ref_count_change) {
@@ -43,6 +46,11 @@ namespace cgv {
 			if(!prog_name.empty())
 				return prog.build_program(ctx, prog_name, options, true);
 			return false;
+		}
+		/// check for attribute
+		bool renderer::has_attribute(const context& ctx, const std::string& name) 
+		{
+			return aam_ptr->has_attribute(ctx, get_prog_attribute_location(ctx, name, false));
 		}
 		/// call this before setting attribute arrays to manage attribute array in given manager
 		void renderer::enable_attribute_array_manager(const context& ctx, attribute_array_manager& aam)
@@ -224,11 +232,10 @@ namespace cgv {
 		bool renderer::disable(context& ctx)
 		{
 			bool res = true;
-			if (has_aam())
+			if (aam_ptr)
 				res = aam_ptr->disable(ctx);
-			else {
+			if (!has_aam()) {
 				if (ctx.core_profile) {
-					default_aam.disable(ctx);
 					for (int loc : enabled_attribute_arrays)
 						res = default_aam.aab.disable_array(ctx, loc) && res;
 				}

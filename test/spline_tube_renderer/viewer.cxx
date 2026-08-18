@@ -47,32 +47,22 @@ void viewer::init_frame(cgv::render::context& ctx) {
 
 	if(!view_ptr) {
 		if(view_ptr = find_view_as_node()) {
-			view_ptr->set_eye_keep_view_angle(dvec3(2.5f, 0.0f, 2.5f));
+			view_ptr->set_eye_keep_view_angle(cgv::dvec3(2.5f, 0.0f, 2.5f));
 		}
 	}
 }
 
 void viewer::draw(cgv::render::context& ctx) {
 
-	std::vector<vec3> positions(4);
-	positions[0] = vec3(-2.0f, 0.0f, 0.0f);
-	positions[1] = vec3(0.0f, 0.0f, 0.0f);
-	positions[2] = vec3(0.0f, 0.0f, 0.0f);
-	positions[3] = vec3(0.0f, 0.0f, -2.0f);
-
-	std::vector<float> radii(4);
-	radii[0] = 0.2f;
-	radii[1] = 0.1f;
-	radii[2] = 0.1f;
-	radii[3] = 0.2f;
-
-	std::vector<vec4> tangents(4, vec4(0.0f));
+	std::vector<cgv::vec3> positions = { {-2.f, 0.f, 0.f}, {0.f, 0.f, 0.f}, {0.f, 0.f, 0.f}, {0.f, 0.f, -2.f} };
+	std::vector<float> radii = { 0.2f, 0.1f, 0.1f, 0.2f };
+	std::vector<cgv::vec4> tangents(4, cgv::vec4(0.0f));
 	
 	if(use_position_tangents) {
-		tangents[0] = vec4(0.0f, 4.0f, 0.0f, 0.0f);
-		tangents[1] = vec4(0.0f, -4.0f, 0.0f, 0.0f);
-		tangents[2] = vec4(0.0f, -4.0f, 0.0f, 0.0f);
-		tangents[3] = vec4(0.0f, 4.0f, 0.0f, 0.0f);
+		tangents[0] = cgv::vec4(0.0f, 4.0f, 0.0f, 0.0f);
+		tangents[1] = cgv::vec4(0.0f, -4.0f, 0.0f, 0.0f);
+		tangents[2] = cgv::vec4(0.0f, -4.0f, 0.0f, 0.0f);
+		tangents[3] = cgv::vec4(0.0f, 4.0f, 0.0f, 0.0f);
 	}
 
 	if(use_radius_tangents) {
@@ -81,21 +71,22 @@ void viewer::draw(cgv::render::context& ctx) {
 		tangents[2].w() = 0.2f;
 		tangents[3].w() = 0.4f;
 	}
-
-	std::vector<rgb> colors(4);
-	colors[0] = rgb(1.0f, 0.0f, 0.0f);
-	colors[1] = rgb(0.0f, 1.0f, 0.0f);
-	colors[2] = rgb(0.0f, 1.0f, 0.0f);
-	colors[3] = rgb(0.0f, 0.0f, 1.0f);
-
+	std::vector<cgv::rgb> colors = { {1.f, 0.f, 0.f}, {0.f, 1.f, 0.f}, {0.f, 1.f, 0.f}, {0.f, 0.f, 1.f} };
 	spline_tube_renderer& str = ref_spline_tube_renderer(ctx);
 	str.set_render_style(spline_tubes_style);
 	str.set_position_array(ctx, positions);
-	if(use_radii)
+	if (use_radii)
 		str.set_radius_array(ctx, radii);
-	str.set_tangent_array(ctx, tangents);
-	if(use_colors)
+	else
+		str.remove_radius_array(ctx);
+	if (use_radius_tangents || use_position_tangents)
+		str.set_tangent_array(ctx, tangents);
+	else
+		str.remove_tangent_array(ctx);
+	if (use_colors)
 		str.set_color_array(ctx, colors);
+	else
+		str.remove_color_array(ctx);
 	
 	str.render(ctx, 0, positions.size());
 }

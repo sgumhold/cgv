@@ -3,11 +3,11 @@
 #include <algorithm>
 
 #include <cgv/math/ftransform.h>
-#include <cgv/media/color_scale.h>
+#include <cgv/media/named_color_schemes.h>
 #include <cgv/render/attribute_array_binding.h>
-#include <cgv/render/color_scale.h>
 #include <cgv/render/shader_program.h>
 #include <cgv/signal/rebind.h>
+#include <cgv/utils/scan.h>
 #include <libs/cgv_gl/gl/gl.h>
 #include <libs/cgv_gl/rectangle_renderer.h>
 #include <libs/tt_gl_font/tt_gl_font.h>
@@ -49,7 +49,7 @@ plot_base_config::plot_base_config(const std::string& _name, unsigned dim) : nam
 	show_plot = true;
 	begin_sample = 0;
 	end_sample = size_t(-1);
-	ref_size = 8;
+	ref_size = 2;
 	ref_color = rgb(1, 0, 0);
 	ref_opacity = 1.0f;
 	bar_percentual_width = 0.75f;
@@ -397,9 +397,9 @@ void plot_base::set_mapping_uniforms(cgv::render::context& ctx, cgv::render::sha
 	prog.set_uniform_array(ctx, "color_mapping", color_mapping, MAX_NR_COLOR_MAPPINGS);
 	prog.set_uniform_array(ctx, "opacity_mapping", opacity_mapping, MAX_NR_COLOR_MAPPINGS);
 	prog.set_uniform_array(ctx, "size_mapping", size_mapping, MAX_NR_COLOR_MAPPINGS);
-	if (prog.get_uniform_location(ctx, "color_scale_gamma[0]") != -1) {
-		cgv::render::configure_color_scale(ctx, prog, color_scale_index, window_zero_position);
-		prog.set_uniform_array(ctx, "color_scale_gamma", color_scale_gamma, MAX_NR_COLOR_MAPPINGS);
+	if (prog.get_uniform_location(ctx, "color_scale_texture") != -1) {
+		color_scale_adapter.set_color_scales({ color_scales.begin(), color_scales.end() });
+		color_scale_adapter.set_uniforms_in_program(ctx, prog, color_scale_texture_unit);
 	}
 	if (prog.get_uniform_location(ctx, "opacity_gamma[0]") != -1) {
 		prog.set_uniform_array(ctx, "opacity_gamma", opacity_gamma, MAX_NR_OPACITY_MAPPINGS);
@@ -415,6 +415,18 @@ void plot_base::set_mapping_uniforms(cgv::render::context& ctx, cgv::render::sha
 		prog.set_uniform_array(ctx, "size_gamma", size_gamma, MAX_NR_SIZE_MAPPINGS);
 		prog.set_uniform_array(ctx, "size_min", size_min, MAX_NR_SIZE_MAPPINGS);
 		prog.set_uniform_array(ctx, "size_max", size_max, MAX_NR_SIZE_MAPPINGS);
+	}
+}
+
+void plot_base::update_color_scales() {
+	const cgv::media::continuous_color_scheme_registry& registry = cgv::media::get_global_continuous_color_scheme_registry();
+	for(size_t i = 0; i < MAX_NR_COLOR_MAPPINGS; ++i) {
+		if(color_scheme_index[i] < registry.size())
+			color_scales[i]->color_scale->set_scheme(registry.get(color_scheme_index[i]));
+		color_scales[i]->color_scale->set_diverging(color_scale_is_bipolar[i]);
+		color_scales[i]->color_scale->set_reversed(reversed[i]);
+		color_scales[i]->color_scale->set_pow_exponent(color_scale_gamma[i]);
+		color_scales[i]->color_scale->set_midpoint(window_zero_position[i]);
 	}
 }
 
@@ -594,8 +606,11 @@ plot_base::plot_base(unsigned _dim, unsigned _nr_attributes) : dom_cfg(_dim, _nr
 
 	for (int ci = 0; ci < MAX_NR_COLOR_MAPPINGS; ++ci) {
 		color_mapping[ci] = -1;
-		color_scale_index[ci] = cgv::media::CS_TEMPERATURE;
+		color_scheme_index[ci] = -1;
+		color_scales[ci] = std::make_shared<cgv::render::device_continuous_color_scale>();
+		color_scales[ci]->color_scale->set_transform(cgv::media::ContinuousMappingTransform::Pow);
 		color_scale_gamma[ci] = 1;
+		color_scale_is_bipolar[ci] = false;
 		window_zero_position[ci] = 0.5f;
 	}
 	for (int oi = 0; oi < MAX_NR_OPACITY_MAPPINGS; ++oi) {
@@ -866,11 +881,11 @@ void plot_base::draw_legend(cgv::render::context& ctx, int layer_idx, bool is_fi
 	legend_prog.set_uniform(ctx, "extent", E);
 	vec3 loc = legend_location;
 	legend_prog.set_uniform(ctx, "legend_extent", legend_extent);
-	set_mapping_uniforms(ctx, legend_prog);
 	aab_legend.enable(ctx);
 	legend_prog.enable(ctx);
+	set_mapping_uniforms(ctx, legend_prog);
+	color_scale_adapter.enable(ctx, 0);
 	ctx.set_color(legend_color);
-	cgv::render::configure_color_scale(ctx, legend_prog, color_scale_index, window_zero_position);
 	legend_prog.set_uniform(ctx, "depth_offset", -layer_idx * layer_depth);
 	int j = 1 - legend_axis;
 	int off = 4*j;
@@ -910,6 +925,7 @@ void plot_base::draw_legend(cgv::render::context& ctx, int layer_idx, bool is_fi
 		}
 		loc[j] += 1.2f * legend_extent[j];
 	}
+	color_scale_adapter.disable(ctx);
 	legend_prog.disable(ctx);
 	aab_legend.disable(ctx);
 	// extract tickmark information for legend and draw it
@@ -1209,6 +1225,35 @@ void plot_base::set_sub_plot_colors(unsigned i, const rgb& base_color)
 	ref_sub_plot_config(i).set_colors(base_color);
 }
 
+bool plot_base::set_color_scale(int mapping_index, int color_scheme_index)
+{
+	bool success = false;
+	if(mapping_index < MAX_NR_COLOR_MAPPINGS) {
+		const cgv::media::continuous_color_scheme_registry& registry = cgv::media::get_global_continuous_color_scheme_registry();
+		if(color_scheme_index > -1 && static_cast<size_t>(color_scheme_index) < registry.size()) {
+			this->color_scheme_index[mapping_index] = color_scheme_index;
+			update_color_scales();
+			success = true;
+		} else {
+			this->color_scheme_index[mapping_index] = -1;
+		}
+
+		// Todo: How to update the GUI? Ideally we would just update the affected member control but we don't have access to the provider. So for now we ignore it.
+		//update_member(&color_scale_index2[mapping_index]);
+	}
+	return success;
+}
+
+bool plot_base::set_color_scale(int mapping_index, const std::string& color_scheme_name)
+{
+	const cgv::media::continuous_color_scheme_registry& registry = cgv::media::get_global_continuous_color_scheme_registry();
+	auto it = registry.find(color_scheme_name);
+	int index = -1;
+	if(it != registry.end())
+		index = std::distance(registry.begin(), it);
+	return set_color_scale(mapping_index, index);
+}
+
 bool plot_base::init(cgv::render::context& ctx)
 {
 	font_rrs = cgv::ref_rectangle_render_style();
@@ -1241,6 +1286,7 @@ bool plot_base::init(cgv::render::context& ctx)
 	float& v0 = P[0][3];
 	aab_legend.set_attribute_array(ctx, pos_idx, cgv::render::get_element_type(p0), vbo_legend, 0, P.size(), sizeof(vec4));
 	aab_legend.set_attribute_array(ctx, val_idx, cgv::render::get_element_type(v0), vbo_legend, sizeof(vec3), P.size(), sizeof(vec4));
+	color_scale_adapter.init(ctx);
 	return true;
 }
 
@@ -1257,6 +1303,7 @@ void plot_base::clear(cgv::render::context& ctx)
 		attribute_source_arrays[i].aab.destruct(ctx);
 		attribute_source_arrays[i].vbo.destruct(ctx);
 	}
+	color_scale_adapter.destruct(ctx);
 }
 
 void plot_base::create_plot_gui(cgv::base::base* bp, cgv::gui::provider& p)
@@ -1281,9 +1328,18 @@ void plot_base::create_plot_gui(cgv::base::base* bp, cgv::gui::provider& p)
 				p.add_member_control(bp, "", (cgv::type::DummyEnum&)color_mapping[idx], "dropdown", dropdown_options);
 				if (show) {
 					p.align("\a");
-					p.add_member_control(bp, prefix + "Color Scale", (cgv::type::DummyEnum&)color_scale_index[idx], "dropdown", cgv::media::get_color_scale_enum_definition());
-					p.add_member_control(bp, prefix + "Color Gamma", color_scale_gamma[idx], "value_slider", "min=0.1;step=0.01;max=10;log=true;ticks=true");
-					p.add_member_control(bp, prefix + "Window Zero Position", window_zero_position[idx], "value_slider", "min=0;max=1;ticks=true");
+					const auto& connect_color_scale_callback = [this](auto control) {
+						cgv::signal::connect_copy(
+							control->value_change,
+							cgv::signal::rebind(this, &plot_base::update_color_scales)
+						);
+					};
+					std::string color_scheme_enums = cgv::utils::join(cgv::media::get_global_continuous_color_scheme_registry().get_names(), ",");
+					connect_color_scale_callback(p.add_member_control(bp, prefix + "Color Scale", reinterpret_cast<cgv::type::DummyEnum&>(color_scheme_index[idx]), "dropdown", "enums='" + color_scheme_enums + "'"));
+					connect_color_scale_callback(p.add_member_control(bp, prefix + "Color Gamma", color_scale_gamma[idx], "value_slider", "min=0.1;step=0.01;max=10;log=true;ticks=true"));
+					connect_color_scale_callback(p.add_member_control(bp, prefix + "Reversed", reversed[idx], "check"));
+					connect_color_scale_callback(p.add_member_control(bp, prefix + "Color Is Bipolar", color_scale_is_bipolar[idx], "check"));
+					connect_color_scale_callback(p.add_member_control(bp, prefix + "Window Zero Position", window_zero_position[idx], "value_slider", "min=0;max=1;ticks=true"));
 					p.align("\b");
 					p.end_tree_node(color_mapping[idx]);
 				}

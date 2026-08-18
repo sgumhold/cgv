@@ -15,6 +15,13 @@ namespace cgv {
 std::map<std::string, std::string> shader_program::program_file_cache;
 std::map<std::string, std::vector<std::string>> shader_program::files_cache;
 
+
+void shader_program::inspect_program_variables(const context& ctx, cgv::render::ProgramVariableKind kind, std::vector<cgv::render::program_variable_info>& Vs,
+	bool get_location, bool get_value)
+{
+	ctx.shader_program_inspect_variables(*this, kind, Vs, get_location, get_value);
+}
+
 /// attach a list of files
 bool shader_program::attach_files(const context& ctx, const std::vector<std::string>& file_names, const shader_compile_options& options)
 {
@@ -245,6 +252,7 @@ bool shader_program::detach_code(const context& ctx, const shader_code& code) {
 
 /// attach a shader code given as string and managed the created shader code object
 bool shader_program::attach_code(const context& ctx, const std::string& source, ShaderType st) {
+	/*
 	shader_code* code_ptr = new shader_code;
 	if(code_ptr->set_code(ctx, source, st) && code_ptr->compile(ctx)) {
 		managed_codes.push_back(code_ptr);
@@ -253,11 +261,18 @@ bool shader_program::attach_code(const context& ctx, const std::string& source, 
 	last_error = code_ptr->last_error;
 	delete code_ptr;
 	return false;
+	*/
+	shader_code code;
+	if(code.set_code(ctx, source, st) && code.compile(ctx))
+		return attach_code(ctx, code);
+	last_error = code.last_error;
+	return false;
 }
 
 
 /// read shader code from file, compile and attach to program
 bool shader_program::attach_file(const context& ctx, const std::string& file_name, ShaderType st, const shader_compile_options& options) {
+	/*
 	shader_code* code_ptr = new shader_code;
 	if(!code_ptr->read_and_compile(ctx, file_name, st, options, show_code_errors)) {
 		last_error = code_ptr->last_error;
@@ -266,6 +281,12 @@ bool shader_program::attach_file(const context& ctx, const std::string& file_nam
 	}
 	managed_codes.push_back(code_ptr);
 	return attach_code(ctx, *code_ptr);
+	*/
+	shader_code code;
+	if(code.read_and_compile(ctx, file_name, st, options, show_code_errors))
+		return attach_code(ctx, code);
+	last_error = code.last_error;
+	return false;
 }
 
 /// read shader code from files with the given base name, compile and attach them
@@ -685,6 +706,26 @@ bool shader_program::set_light_uniform(const context& ctx, const std::string& na
 	return true;
 }
 
+int shader_program::get_uniform_block_index(const context& ctx, const std::string& name) const
+{
+	return ctx.get_uniform_block_index(*this, name);
+}
+
+bool shader_program::set_uniform_block_binding(const context& ctx, int index, int binding)
+{
+	return ctx.set_uniform_block_binding(*this, index, binding);
+}
+
+bool shader_program::set_uniform_block_binding(const context& ctx, const std::string& name, int binding)
+{
+	int index = ctx.get_uniform_block_index(*this, name);
+	if(index == -1) {
+		ctx.error(std::string("shader_program::set_uniform_block_binding() block <") + name + "> not found", this);
+		return false;
+	}
+	return ctx.set_uniform_block_binding(*this, index, binding);
+}
+
 /// query location index of an attribute
 int shader_program::get_attribute_location(const context& ctx, const std::string& name) const
 {
@@ -694,10 +735,12 @@ int shader_program::get_attribute_location(const context& ctx, const std::string
 /// destruct shader program
 void shader_program::destruct(const context& ctx)
 {
-	while (managed_codes.size() > 0) {
+	/*
+	while(managed_codes.size() > 0) {
 		delete managed_codes.back();
 		managed_codes.pop_back();
 	}
+	*/
 	if (handle) {
 		ctx.shader_program_destruct(*this);
 		handle = 0;

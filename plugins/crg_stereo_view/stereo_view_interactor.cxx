@@ -6,6 +6,7 @@
 #include <libs/cg_gamepad/gamepad_server.h>
 #include <cgv_reflect_types/math/fvec.h>
 #include <cgv/render/shader_program.h>
+#include <cgv/render/frame_buffer.h>
 #include <cgv/utils/scan.h>
 #include <cgv/utils/scan_enum.h>
 #include <cgv/utils/ostream_printf.h>
@@ -171,7 +172,7 @@ void stereo_view_interactor::timer_event(double t, double dt)
 			}
 			else {
 				zoom(pow(2.0f, -10 * dt * right_stick[1] / zoom_sensitivity));
-				update_member(&y_extent_at_focus);
+				cgv::gui::provider::update_member(&y_extent_at_focus);
 			}
 			break;
 		case 1:
@@ -181,7 +182,7 @@ void stereo_view_interactor::timer_event(double t, double dt)
 					set_y_view_angle(1);
 				if (get_y_view_angle() > 160)
 					set_y_view_angle(160);
-				update_member(&y_view_angle);
+				cgv::gui::provider::update_member(&y_view_angle);
 			}
 			else {
 				set_focus(get_focus() - 20 * dt * get_y_extent_at_focus() * right_stick[1] * z / zoom_sensitivity);
@@ -194,7 +195,7 @@ void stereo_view_interactor::timer_event(double t, double dt)
 }
 
 ///
-stereo_view_interactor::stereo_view_interactor(const char* name) : node(name)
+stereo_view_interactor::stereo_view_interactor(const char* name) : node(name), cgv::post::post_process_effect("screen_flip")
 {
 	enable_messages = true;
 	use_gamepad = true;
@@ -577,7 +578,7 @@ bool stereo_view_interactor::handle(event& e)
 	if (use_gamepad && ((e.get_flags() & EF_PAD) != 0)) {
 		if (!gamepad_attached) {
 			gamepad_attached = true;
-			update_member(&gamepad_attached);
+			cgv::gui::provider::update_member(&gamepad_attached);
 			post_redraw();
 		}
 		if (e.get_kind() == EID_THROTTLE) {
@@ -895,7 +896,7 @@ bool stereo_view_interactor::handle(event& e)
 				eye_distance -= 0.001 * me.get_dy();
 				if (eye_distance < 0)
 					eye_distance = 0;
-				update_member(&eye_distance);
+				cgv::gui::provider::update_member(&eye_distance);
 				post_redraw();
 				return true;
 			}
@@ -905,7 +906,7 @@ bool stereo_view_interactor::handle(event& e)
 					parallax_zero_scale = 1;
 				else if (parallax_zero_scale < 0.01)
 					parallax_zero_scale = 0.01;
-				update_member(&parallax_zero_scale);
+				cgv::gui::provider::update_member(&parallax_zero_scale);
 				post_redraw();
 				return true;
 			}
@@ -915,7 +916,7 @@ bool stereo_view_interactor::handle(event& e)
 					view_ptr->set_y_view_angle(0);
 				if (view_ptr->get_y_view_angle() > 180)
 					view_ptr->set_y_view_angle(180);
-				update_member(&y_view_angle);
+				cgv::gui::provider::update_member(&y_view_angle);
 				post_redraw();
 				return true;
 			}
@@ -936,7 +937,7 @@ bool stereo_view_interactor::handle(event& e)
 					}
 				}
 				view_ptr->set_y_extent_at_focus(view_ptr->get_y_extent_at_focus() * scale);
-				update_member(&y_extent_at_focus);
+				cgv::gui::provider::update_member(&y_extent_at_focus);
 				const double focus_dist = get_depth_of_focus();
 				on_view_interaction(view_interaction::zoom_now(
 					focus_dist > focus_dist_prev ? -focus_dist/focus_dist_prev + 1 : focus_dist_prev/focus_dist - 1
@@ -956,8 +957,8 @@ void stereo_view_interactor::on_rotation_change()
 	for (unsigned i = 0; i < 3; ++i) {
 		if (fix_view_up_dir)
 			view_up_dir(i) = i == 1 ? 1 : 0;
-		update_member(&view_up_dir(i));
-		update_member(&view_dir(i));
+		cgv::gui::provider::update_member(&view_up_dir(i));
+		cgv::gui::provider::update_member(&view_dir(i));
 	}
 	post_redraw();
 }
@@ -966,18 +967,10 @@ void stereo_view_interactor::on_rotation_change()
 void stereo_view_interactor::finish_frame(cgv::render::context& ctx)
 {
 	cgv::render::RenderPassFlags rpf = ctx.get_render_pass_flags();
-	if ((rpf & RPF_SET_MODELVIEW_PROJECTION) == 0)
-		return;
 	if (show_focus) {
-		/*		ctx.push_P();
-				ctx.push_V();
-				ctx.set_P(P);
-				ctx.set_V(V);
-				*/
 		glDisable(GL_DEPTH_TEST);
 		glLineStipple(1, 15);
 		glEnable(GL_LINE_STIPPLE);
-
 		if (is_viewport_splitting_enabled()) {
 			for (unsigned c = 0; c < nr_viewport_columns; ++c) {
 				for (unsigned r = 0; r < nr_viewport_rows; ++r) {
@@ -991,13 +984,7 @@ void stereo_view_interactor::finish_frame(cgv::render::context& ctx)
 			draw_focus();
 		glDisable(GL_LINE_STIPPLE);
 		glEnable(GL_DEPTH_TEST);
-		/*
-		ctx.pop_V();
-		ctx.pop_P();
-		*/
 	}
-
-
 	if (stereo_enabled && ((stereo_mode == GLSU_SPLIT_HORIZONTALLY) || (stereo_mode == GLSU_SPLIT_VERTICALLY))) {
 		if (last_x != -1) {
 			draw_mouse_pointer(ctx, false);
@@ -1217,6 +1204,8 @@ void stereo_view_interactor::after_finish(cgv::render::context& ctx)
 				ctx.pop_window_transformation_array();
 			}
 		}
+		if (do_flip() && terminal_pass)
+			end(ctx);
 	}
 	if (ctx.get_render_pass() == RP_MAIN)
 		check_write_image(ctx, (is_stereo_enabled() && stereo_mode == GLSU_QUAD_BUFFER) ? "_r" : "");
@@ -1262,9 +1251,6 @@ void stereo_view_interactor::set_projection_matrix(cgv::render::context& ctx, Gl
 {
 	if (swap_eyes)
 		e = GlsuEye(int(-e));
-	bool flip_vert = ((e == GLSU_LEFT) ? flip_x[0] : ((e == GLSU_RIGHT) ? flip_x[1] : false));
-	bool flip_hori = ((e == GLSU_LEFT) ? flip_y[0] : ((e == GLSU_RIGHT) ? flip_y[1] : false));
-
 	if (stereo_enabled && adapt_aspect_ratio_to_stereo_mode) {
 		if (stereo_mode == GLSU_SPLIT_HORIZONTALLY)
 			aspect *= 0.5;
@@ -1275,11 +1261,39 @@ void stereo_view_interactor::set_projection_matrix(cgv::render::context& ctx, Gl
 	if (y_view_angle <= 0.1)
 		P = ortho4<double>(-aspect * y_extent_at_focus, aspect * y_extent_at_focus, -y_extent_at_focus, y_extent_at_focus, z_near_derived, z_far_derived);
 	else {
-		if (stereo_translate_in_model_view)
-			P = cgv::math::stereo_frustum_screen4<double>(e, eye_distance, y_extent_at_focus * aspect, y_extent_at_focus, get_parallax_zero_depth(), z_near_derived, z_far_derived);
-		else
-			P = cgv::math::stereo_perspective_screen4<double>(e, eye_distance, y_extent_at_focus * aspect, y_extent_at_focus, get_parallax_zero_depth(), z_near_derived, z_far_derived);
+		if (fabs(screen_tilt_angle) > 0.1) {
+			double screen_width = aspect * y_extent_at_focus;
+			double alpha = 0.01745329252 * screen_tilt_angle;
+			double Ca = cos(alpha);
+			double Sa = sin(alpha);
+			cgv::dvec3 screen_center = { 0.0, 0.0, -get_parallax_zero_depth() };
+			cgv::dvec3 screen_normal = { Sa, 0.0, -Ca };
+			cgv::dvec3 screen_x      = { Ca, 0.0, Sa };
+			cgv::dvec3 eye_point     = { e * 0.5 * eye_distance * screen_width, 0.0, 0.0 };
+			double eye_x_on_screen   = dot(screen_x, eye_point - screen_center);
+			double eye_z = (screen_center + eye_x_on_screen * screen_x - eye_point).length();
+			double z_scale = z_near_derived / eye_z;
+			double delta = z_scale * eye_x_on_screen;
+			double top = 0.5 * z_scale * y_extent_at_focus;
+			double bottom = -top;
+			double left = bottom * aspect - delta;
+			double right = top * aspect - delta;
+			auto F = frustum4<double>(left, right, bottom, top, z_near_derived, z_far_derived);
+			auto R = cgv::math::rotate4<double>(screen_tilt_angle, cgv::dvec3(0, 1, 0));
+			P = F * R;
+			if (!stereo_translate_in_model_view) 				
+				P *= cgv::math::stereo_translate_screen4<double>(e, eye_distance, y_extent_at_focus * aspect);
+		}
+		else {
+			if (stereo_translate_in_model_view)
+				P = cgv::math::stereo_frustum_screen4<double>(e, eye_distance, y_extent_at_focus * aspect, y_extent_at_focus, get_parallax_zero_depth(), z_near_derived, z_far_derived);
+			else
+				P = cgv::math::stereo_perspective_screen4<double>(e, eye_distance, y_extent_at_focus * aspect, y_extent_at_focus, get_parallax_zero_depth(), z_near_derived, z_far_derived);
+		}
 	}
+	/*
+	bool flip_vert = ((e == GLSU_LEFT) ? flip_x[0] : ((e == GLSU_RIGHT) ? flip_x[1] : false));
+	bool flip_hori = ((e == GLSU_LEFT) ? flip_y[0] : ((e == GLSU_RIGHT) ? flip_y[1] : false));
 	if (flip_vert || flip_hori) {
 		cgv::dmat4 F;
 		F.identity();
@@ -1288,7 +1302,7 @@ void stereo_view_interactor::set_projection_matrix(cgv::render::context& ctx, Gl
 		if (flip_hori)
 			F(1, 1) = -1;
 		P = F*P;
-	}
+	}*/
 	ctx.set_projection_matrix(P);
 }
 
@@ -1307,6 +1321,73 @@ void stereo_view_interactor::set_modelview_matrix(cgv::render::context& ctx, Gls
 		ctx.mul_modelview_matrix(cgv::math::stereo_translate_screen4<double>(e, eye_distance, view.get_y_extent_at_focus() * aspect));
 	ctx.mul_modelview_matrix(cgv::math::look_at4(view.get_eye(), view.get_focus(), view.get_view_up_dir()));
 }
+void stereo_view_interactor::ensure_fbc_size(cgv::render::context& ctx)
+{
+	cgv::ivec2 screen_size(
+		static_cast<int>(ctx.get_width()),
+		static_cast<int>(ctx.get_height())
+	);
+	if (screen_size != last_screen_size) {
+		fbc_draw.set_size(screen_size);
+		last_screen_size = screen_size;
+	}
+}
+void stereo_view_interactor::begin(cgv::render::context& ctx, bool push_viewport)
+{
+	assert_init();
+	if (!enable)
+		return;
+	fbc_draw.enable(ctx, push_viewport);
+	ctx.clear_background(true, true);
+}
+void stereo_view_interactor::end(cgv::render::context& ctx, bool pop_viewport)
+{
+	const std::pair<cgv::vec3, cgv::vec3> anaglyph_masks[] = {
+		{ {1,0,0}, {0,0,1} },
+		{ {1,0,0}, {0,1,1} },
+		{ {1,1,0}, {0,0,1} },
+		{ {1,0,1}, {0,1,0} },
+		{ {0,0,1}, {1,0,0} },
+		{ {0,1,1}, {1,0,0} },
+		{ {0,0,1}, {1,1,0} },
+		{ {0,1,0}, {1,0,1} }
+	};
+	if (!enable)
+		return;
+	assert_init();
+
+	fbc_draw.disable(ctx, pop_viewport);
+
+	ctx.begin_attribute_less_rendering();
+	fbc_draw.enable_attachment(ctx, "color", 0);
+	fbc_draw.enable_attachment(ctx, "depth", 1);
+
+	auto& flip_prog = shaders.get("flip");
+	flip_prog.enable(ctx);
+
+	flip_prog.set_uniform(ctx, "viewport_size", viewport_size);
+
+	flip_prog.set_uniform(ctx, "stereo_mode", int(stereo_mode));
+	flip_prog.set_uniform(ctx, "res", last_screen_size);
+	flip_prog.set_uniform(ctx, "anaglyph_left_mask", anaglyph_masks[int(anaglyph_config)].first);
+	flip_prog.set_uniform(ctx, "anaglyph_right_mask", anaglyph_masks[int(anaglyph_config)].second);
+	flip_prog.set_uniform(ctx, "vflip", cgv::bvec2(flip_x[0],flip_x[1]));
+	flip_prog.set_uniform(ctx, "hflip", cgv::bvec2(flip_y[0],flip_y[1]));
+
+	ctx.push_depth_test_state();
+	ctx.set_depth_func(cgv::render::CompareFunction::CF_ALWAYS);
+
+	glDrawArrays(GL_TRIANGLE_STRIP, 0, 4);
+
+	ctx.pop_depth_test_state();
+
+	flip_prog.disable(ctx);
+
+	fbc_draw.disable_attachment(ctx, "color");
+	fbc_draw.disable_attachment(ctx, "depth");
+	ctx.end_attribute_less_rendering();
+}
+
 
 /// ensure sufficient number of viewport views
 void stereo_view_interactor::ensure_viewport_view_number(unsigned nr)
@@ -1320,6 +1401,19 @@ void stereo_view_interactor::ensure_viewport_view_number(unsigned nr)
 			use_individual_view[i] = false;
 		}
 	}
+}
+
+/// this method is called when context or instance is created
+bool stereo_view_interactor::init(cgv::render::context& ctx)
+{	
+	fbc_draw.add_attachment("depth", "[D]");
+	fbc_draw.add_attachment("color", "flt32[R,G,B,A]");
+	shaders.add("flip", "stereo_flip.glpr");
+	return post_process_effect::init(ctx);
+}
+void stereo_view_interactor::clear(cgv::render::context& ctx)
+{
+	post_process_effect::destruct(ctx);
 }
 
 /// this method is called in one pass over all drawables before the draw method
@@ -1339,11 +1433,21 @@ void stereo_view_interactor::init_frame(context& ctx)
 	// stereo rendering
 	else {
 		if (initiate_render_pass_recursion(ctx)) {
+			if (do_flip()) {
+				ensure_fbc_size(ctx);
+				cgv::post::post_process_effect::ensure(ctx);
+				begin(ctx);
+				terminal_pass = false;
+			}
 			last_do_viewport_splitting = do_viewport_splitting;
 			last_nr_viewport_columns = nr_viewport_columns;
 			last_nr_viewport_rows = nr_viewport_rows;
 			perform_render_pass(ctx, 0, RP_STEREO);
 			initiate_terminal_render_pass(1);
+			if (stereo_mode == GLSU_SPLIT_VERTICALLY || stereo_mode == GLSU_SPLIT_HORIZONTALLY) {
+				ctx.update_render_pass_flags(cgv::render::RPF_CLEAR_COLOR);
+			}
+			terminal_pass = true;
 		}
 		if (!multi_pass_ignore_finish(ctx)) {
 			current_e = current_render_pass == 0 ? GLSU_LEFT : GLSU_RIGHT;
@@ -1496,7 +1600,7 @@ void stereo_view_interactor::write_images_to_file()
 	ctx->set_gamma(gamma);
 
 	write_images = false;
-	update_member(&write_images);
+	cgv::gui::provider::update_member(&write_images);
 }
 
 void stereo_view_interactor::add_dir_control(const std::string& name, cgv::dvec3& dir)
@@ -1575,6 +1679,7 @@ void stereo_view_interactor::create_gui()
 		add_member_control(this, "Anaglyph Config", anaglyph_config, "dropdown", "enums='" AC_ENUMS "'");
 		add_member_control(this, "Eye Distance", eye_distance, "value_slider", "min=0.001;max=0.5;ticks=true;step=0.00001;log=true");
 		add_member_control(this, "Parallax Zero Scale", parallax_zero_scale, "value_slider", "min=0.03;max=1;ticks=true;step=0.001;log=true");
+		add_member_control(this, "Screen Tilt Angle", screen_tilt_angle, "value_slider", "min=-90;max=90;ticks=true;step=0.1");
 		add_member_control(this, "Stereo Translate in Model View", stereo_translate_in_model_view, "check");
 		add_member_control(this, "Stereo Mouse Pointer", stereo_mouse_pointer, "dropdown", "enums='" SMP_ENUMS "'");
 		align("\b");
@@ -1682,21 +1787,21 @@ bool stereo_view_interactor::get_void(const std::string& property, const std::st
 void stereo_view_interactor::on_set(void* m)
 {
 	if (m == &view_dir) {
-		update_member(&view_dir[1]);
-		update_member(&view_dir[2]);
+		cgv::gui::provider::update_member(&view_dir[1]);
+		cgv::gui::provider::update_member(&view_dir[2]);
 	}
 	if (m == &view_up_dir) {
-		update_member(&view_up_dir[1]);
-		update_member(&view_up_dir[2]);
+		cgv::gui::provider::update_member(&view_up_dir[1]);
+		cgv::gui::provider::update_member(&view_up_dir[2]);
 	}
 	cgv::dvec3& foc = cgv::render::view::focus;
 	if (m == &foc) {
-		update_member(&foc[1]);
-		update_member(&foc[2]);
+		cgv::gui::provider::update_member(&foc[1]);
+		cgv::gui::provider::update_member(&foc[2]);
 	}
 	if (m == &stereo_enabled || m == &stereo_mode)
 		on_stereo_change();
-	update_member(m);
+	cgv::gui::provider::update_member(m);
 	if (m == &write_images)
 		write_images_to_file();
 	else
@@ -1706,24 +1811,24 @@ void stereo_view_interactor::on_set(void* m)
 void stereo_view_interactor::set_z_near(double z)
 {
 	cgv::render::clipped_view::set_z_near(z);
-	update_member(&z_near);
+	cgv::gui::provider::update_member(&z_near);
 	post_redraw();
 }
 void stereo_view_interactor::set_z_far(double z)
 {
 	cgv::render::clipped_view::set_z_far(z);
-	update_member(&z_far);
+	cgv::gui::provider::update_member(&z_far);
 	post_redraw();
 }
 void stereo_view_interactor::set_default_view()
 {
 	cgv::render::clipped_view::set_default_view();
 	for (unsigned c = 0; c < 3; ++c) {
-		update_member(&view_dir[c]);
-		update_member(&view_up_dir[c]);
-		update_member(&cgv::render::view::focus[c]);
+		cgv::gui::provider::update_member(&view_dir[c]);
+		cgv::gui::provider::update_member(&view_up_dir[c]);
+		cgv::gui::provider::update_member(&cgv::render::view::focus[c]);
 	}
-	update_member(&y_extent_at_focus);
+	cgv::gui::provider::update_member(&y_extent_at_focus);
 	post_redraw();
 }
 
@@ -1766,6 +1871,7 @@ bool stereo_view_interactor::self_reflect(cgv::reflect::reflection_handler& srh)
 		srh.reflect_member("flip_y_left", flip_y[0]) &&
 		srh.reflect_member("flip_y_right", flip_y[1]) &&
 		srh.reflect_member("y_view_angle", y_view_angle) &&
+		srh.reflect_member("screen_tilt_angle", screen_tilt_angle) &&
 		srh.reflect_member("extent", y_extent_at_focus) &&
 		srh.reflect_member("z_near", z_near) &&
 		srh.reflect_member("z_far", z_far) &&
@@ -1775,6 +1881,10 @@ bool stereo_view_interactor::self_reflect(cgv::reflect::reflection_handler& srh)
 		srh.reflect_member("clip_relative_to_extent", clip_relative_to_extent);
 }
 
+#ifdef REGISTER_SHADER_FILES
+#include <cgv/base/register.h>
+#include <crg_stereo_view_shader_inc.h>
+#endif
 
 #ifndef NO_STEREO_VIEW_INTERACTOR
 

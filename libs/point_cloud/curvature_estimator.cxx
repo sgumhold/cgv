@@ -46,8 +46,8 @@ namespace {
 		{
 			assert(pnts.size() >= 5);
 			size_t num_pnts = pnts.size();
-			cgv::math::mat<double> A(num_pnts,5);
-			cgv::math::mat<double> b(num_pnts,1);
+			cgv::math::mat<double> A((unsigned)num_pnts,5);
+			cgv::math::mat<double> b((unsigned)num_pnts,1);
 			cgv::math::mat<double> x(5, 1); //solution vector
 			
 			//copy points to A and b
@@ -119,8 +119,8 @@ void curvature_estimator::compute_unsigned_principal_curvature(std::vector<princ
 		auto* eigenvectors = analysis.eigen_vectors_ptr();
 		//store the two largest eigenvalues as prinicpal curvature
 		double kf = 1.0 / k;
-		float curv1 = eigenvalues[0] * kf;
-		float curv2 = eigenvalues[1] * kf;
+		float curv1 = float(eigenvalues[0] * kf);
+		float curv2 = float(eigenvalues[1] * kf);
 		pce[i] = principal_curvature_estimation(curv1, curv2, eigenvectors[0], eigenvectors[1]);
 	}
 }
@@ -165,7 +165,7 @@ void curvature_estimator::compute_principal_curvature(std::vector<principal_curv
 		plane_reference_matrix.set_row(0, x_axis);
 		plane_reference_matrix.set_row(1, y_axis);
 		plane_reference_matrix.set_row(2, point_normal);
-		Mat inv_plane_reference_matrix = cgv::math::inv(plane_reference_matrix);
+		Mat inv_plane_reference_matrix = cgv::math::inverse(plane_reference_matrix);
 
 		// change reference system, z is distance to plane, and x,y span the tangent space
 		plane_projected_points.clear();

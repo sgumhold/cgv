@@ -1,0 +1,5 @@
+@=
+projectType="library";
+projectName="gpmf";
+projectGUID="355424E8-D50D-404F-8929-B7976BF00ADB";
+addSharedDefines=["GPMF_EXPORTS"];

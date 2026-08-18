@@ -16,8 +16,7 @@ namespace g2d {
 enum class DragAction {
 	kDragStart,
 	kDrag,
-	kDragEnd,
-	kSelect
+	kDragEnd
 };
 
 template<class T>
@@ -37,11 +36,7 @@ protected:
 	mat3 inv_transformation;
 
 	std::vector<T> draggables;
-
-	bool press_inside;
-	ptr_type dragged;
-	ptr_type selected;
-
+	ptr_type dragged = nullptr;
 	ivec2 offset;
 
 	ptr_type get_hit_draggable(const ivec2& pos) {
@@ -55,14 +50,14 @@ protected:
 		return hit;
 	}
 
-	bool handle_void(cgv::gui::event& e, const ivec2& viewport_size, const irect& container, OriginSetting origin_setting) {
+	bool handle_void(cgv::gui::event& e, const ivec2& viewport_size, const irect& container, CoordinateOrigin origin_setting) {
 		unsigned et = e.get_kind();
 
 		if(et == cgv::gui::EID_MOUSE) {
 			cgv::gui::mouse_event& me = (cgv::gui::mouse_event&)e;
 
 			vec2 mouse_position = static_cast<vec2>(
-				cgv::g2d::apply_origin_setting(ivec2(me.get_x(), me.get_y()), viewport_size, OriginSetting::kUpperLeft, origin_setting) - container.position
+				cgv::g2d::change_origin(ivec2(me.get_x(), me.get_y()), viewport_size, CoordinateOrigin::kUpperLeft, origin_setting) - container.position
 			);
 
 			return handle_mouse_event(me, mouse_position);
@@ -78,13 +73,13 @@ public:
 
 	void clear() {
 		dragged = nullptr;
-		selected = nullptr;
 		draggables.clear();
 		inv_transformation.identity();
 	}
 
-	void add(T obj) {
+	size_t add(T obj) {
 		draggables.push_back(obj);
+		return draggables.size() - 1;
 	}
 
 	bool empty() const {
@@ -116,17 +111,8 @@ public:
 			dragged = get_ptr(draggables[i]);
 	}
 
-	ptr_type get_selected() {
-		return selected;
-	}
-
-	void clear_selected() {
-		selected = nullptr;
-	}
-
-	void set_selected(int i) {
-		if(i >= 0 && i < draggables.size())
-			selected = get_ptr(draggables[i]);
+	void cancel_drag() {
+		dragged = nullptr;
 	}
 
 	const irect& get_constraint() const { return constraint_area; }
@@ -142,7 +128,7 @@ public:
 	}
 
 	void set_transformation(const mat3& matrix) {
-		inv_transformation = cgv::math::inv(matrix);
+		inv_transformation = cgv::math::inverse(matrix);
 	}
 
 	bool handle_mouse_event(cgv::gui::mouse_event& me, vec2 mouse_position) {
@@ -150,29 +136,18 @@ public:
 
 		if(me.get_button() == cgv::gui::MB_LEFT_BUTTON) {
 			if(me.get_action() == cgv::gui::MA_PRESS) {
-				press_inside = has_constraint && !use_individual_constraints ? constraint_area.contains(mouse_position) : true;
 				dragged = get_hit_draggable(mouse_position);
-
-				press_inside = press_inside || dragged;
-
-				if(press_inside) {
-					selected = dragged;
-					if(dragged) {
-						offset = dragged->position - mouse_position;
-						if(callback)
-							callback(DragAction::kDragStart);
-						return true;
-					}
+				if(dragged) {
+					offset = dragged->position - mouse_position;
+					if(callback)
+						callback(DragAction::kDragStart);
+					return true;
 				}
 			} else if(me.get_action() == cgv::gui::MA_RELEASE) {
 				if(dragged) {
-					dragged = nullptr;
 					if(callback)
 						callback(DragAction::kDragEnd);
-				} else if(press_inside) {
-					selected = get_hit_draggable(mouse_position);
-					if(callback)
-						callback(DragAction::kSelect);
+					dragged = nullptr;
 				}
 			}
 		}
@@ -181,7 +156,7 @@ public:
 			if(dragged) {
 				dragged->position = mouse_position + offset;
 
-				if(use_individual_constraints && dragged->get_constraint())
+				if(use_individual_constraints && dragged->constraint)
 					dragged->apply_constraint();
 				else if(has_constraint)
 					dragged->apply_constraint(constraint_area);
@@ -191,15 +166,15 @@ public:
 				return true;
 			}
 		}
-		
+
 		return false;
 	}
 
-	bool handle(cgv::gui::event& e, const ivec2& viewport_size, OriginSetting origin_setting = OriginSetting::kLowerLeft) {
+	bool handle(cgv::gui::event& e, const ivec2& viewport_size, CoordinateOrigin origin_setting = CoordinateOrigin::kLowerLeft) {
 		return handle_void(e, viewport_size, irect(), origin_setting);
 	}
 
-	bool handle(cgv::gui::event& e, const ivec2& viewport_size, const irect& container, OriginSetting origin_setting = OriginSetting::kLowerLeft) {
+	bool handle(cgv::gui::event& e, const ivec2& viewport_size, const irect& container, CoordinateOrigin origin_setting = CoordinateOrigin::kLowerLeft) {
 		return handle_void(e, viewport_size, container, origin_setting);
 	}
 

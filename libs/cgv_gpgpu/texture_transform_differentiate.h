@@ -19,8 +19,8 @@ public:
 		WrapMode wrap_mode,
 		const std::string& unary_operation,
 		const argument_definitions& arguments = {},
-		DifferentiationOperator differentiation_operator = cgv::gpgpu::DifferentiationOperator::kCentralDifference,
-		DifferentiationOutput differentiation_output = cgv::gpgpu::DifferentiationOutput::kDerivative
+		DifferentiationOperator differentiation_operator = cgv::gpgpu::DifferentiationOperator::CentralDifference,
+		DifferentiationOutput differentiation_output = cgv::gpgpu::DifferentiationOutput::Derivative
 	);
 
 	void destruct(const cgv::render::context& ctx);

@@ -1,6 +1,5 @@
 #pragma once
 
-#include <cgv/math/interpolator.h>
 #include <cgv/utils/scan.h>
 
 namespace easing_functions {

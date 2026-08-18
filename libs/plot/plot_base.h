@@ -1,18 +1,22 @@
 #pragma once
 
-#include <cgv/base/base.h>
 #include <vector>
-#include <cgv/media/axis_aligned_box.h>
-#include <cgv/render/drawable.h>
+
+#include <cgv/base/base.h>
 #include <cgv/render/attribute_array_binding.h>
-#include <cgv/render/vertex_buffer.h>
+#include <cgv/render/color_scale_adapter.h>
+#include <cgv/render/drawable.h>
 #include <cgv/render/shader_program.h>
-#include <libs/cgv_gl/rectangle_renderer.h>
+#include <cgv/render/vertex_buffer.h>
+#include <cgv/render/view.h>
+#include <cgv/media/axis_aligned_box.h>
 #include <cgv/media/color.h>
 #include <cgv/media/color_scale.h>
+#include <cgv/media/color_scheme.h>
 #include <cgv/media/font/font.h>
-#include <cgv/render/view.h>
 #include <cgv/gui/provider.h>
+#include <libs/cgv_gl/rectangle_renderer.h>
+
 #include "axis_config.h"
 
 #include "lib_begin.h"
@@ -381,13 +385,12 @@ public:
 	static const unsigned MAX_NR_COLOR_MAPPINGS = 2;
 	/// index of attribute mapped to primary and secondary color
 	int color_mapping[MAX_NR_COLOR_MAPPINGS];
-	/// color scale indices of primary and secondary color mapping
-	cgv::media::ColorScale color_scale_index[MAX_NR_COLOR_MAPPINGS];
+	/// flag whether color mapping is bipolar for primary and secondary color scale
+	bool color_scale_is_bipolar[MAX_NR_COLOR_MAPPINGS];
 	/// gamma adjustments for primary and secondary color mapping
 	float color_scale_gamma[MAX_NR_COLOR_MAPPINGS];
 	/// window space position of zero for primary and secondary color mapping
 	float window_zero_position[MAX_NR_COLOR_MAPPINGS];
-	
 	/// define maximum number of opacity mappings
 	static const unsigned MAX_NR_OPACITY_MAPPINGS = 2;
 	/// index of attribute mapped to primary and secondary opacity
@@ -405,6 +408,7 @@ public:
 	
 	/// define maximum number of size mappings
 	static const unsigned MAX_NR_SIZE_MAPPINGS = 2;
+	static const unsigned color_scale_texture_unit = 0;
 	/// index of attribute mapped to size
 	int size_mapping[MAX_NR_SIZE_MAPPINGS];
 	/// and independent gamma adjustments
@@ -413,6 +417,17 @@ public:
 	float size_min[MAX_NR_SIZE_MAPPINGS], size_max[MAX_NR_SIZE_MAPPINGS];
 	//@}
 protected:
+	/**@name visual attribute mapping*/
+	//@{
+	/// color scales used for primary and secondary color mapping
+	std::array<std::shared_ptr<cgv::render::device_continuous_color_scale>, MAX_NR_COLOR_MAPPINGS> color_scales;
+	/// adapter to enable using color scales in shader programs
+	cgv::render::color_scale_adapter color_scale_adapter;
+	/// color scheme indices of primary and secondary color scales
+	int color_scheme_index[MAX_NR_COLOR_MAPPINGS];
+	/// whether to reverse the primary or secondary color scales
+	bool reversed[2] = { false, false };
+	//@}
 	/// store pointer to label font
 	cgv::media::font::font_ptr label_font;
 	/// store pointer to label font face
@@ -441,6 +456,8 @@ protected:
 	void set_plot_uniforms(cgv::render::context& ctx, cgv::render::shader_program& prog);
 	/// set the uniforms for defining the mappings to visual variables
 	void set_mapping_uniforms(cgv::render::context& ctx, cgv::render::shader_program& prog);
+	/// the color scales to match the properties set through the config and gui
+	void update_color_scales();
 private:
 	/// dimension independent implementation of attribute enabling
 	size_t enable_attributes(cgv::render::context& ctx, int i, const sample_access& sa);
@@ -578,6 +595,14 @@ public:
 	void set_sub_plot_attribute(unsigned i, unsigned ai, const float* _pointer, size_t count, size_t stride);
 	/// define a sub plot attribute from a vbo (attribute must be stored in float type in vbo)
 	void set_sub_plot_attribute(unsigned i, unsigned ai, const cgv::render::vertex_buffer* _vbo_ptr, size_t _offset, size_t _count, size_t _stride);
+	//@}
+
+	/**@name visual attribute mapping*/
+	//@{
+	/// set color scale of primary or secondary color mapping via an index into the global color scheme registry; see cgv::media::get_global_continuous_color_scheme_registry
+	bool set_color_scale(int mapping_index, int color_scheme_index);
+	/// set color scale of primary or secondary color mapping by name; the name must be registered in the global color scheme registry; see cgv::media::get_global_continuous_color_scheme_registry
+	bool set_color_scale(int mapping_index, const std::string& color_scheme_name);
 	//@}
 
 	/// build legend prog and create aab
