@@ -1,0 +1,389 @@
+# Ellipsoidal Case
+
+input:
+
+- center curve $\mathbf c(t)$ and symmetric matrix polynomial with  $\mathbf T(t)$
+
+- ray: $\mathbf x(t)=\mathbf o+s\cdot\hat v$ with $t\geq 0$
+
+output
+
+- $s_{\mathrm{fst}}$ ray parameter and curve parameter $t$ of first intersection with $g(x,t)=(x\hat v-c(t))^t\mathbf T(t)(x\hat v-c(t))-1=0$
+
+$\frac{\partial g}{\partial x}=2\mathbf T(t)\left(x-c(t)\right)$
+
+$\frac{\partial g}{\partial t}=(x-c(t))^t\mathbf{\dot T}(t)(x-c(t))-2(x-c(t))^t\mathbf T(t)\dot c(t)$
+
+$\frac{dx}{dt}=-\left[\left(c_x(t)-x\right)\dot c_x(t)+c_y(t)\dot c_y(t)+c_z(t)\dot c_z(t)-r(t)\dot r(t)\right]/\left(x-c_x(t)\right)$
+
+# Sphere Case
+
+input:
+
+* center curve $\mathbf c(t)$ and radius polynomial $r(t)$ 
+
+* ray: $\mathbf x(t)=\mathbf o+s\cdot\hat v$ with $t\geq 0$
+
+output
+
+* $s_{\mathrm{fst}}$ ray parameter of first intersection
+
+The ray sphere-tube entering intersection is found at ray-parameters that are locally minimal in $s$ and the exiting intersections at local maximums in $s$. Both can be found from $\frac{ds}{dt}=0$. One option is inspect the ray intersection problem in a coordinate system where $\mathbf o$ coincides with the origin of the coordinate system and $\hat v$ coincides with the x-axis.
+
+The constraint $g(s,t)=0$ that the ray tube intersection is on the sphere surface implicitly relates $s$ with $t$, where
+
+$g(s,t)=(c(t)-o-s\hat v)^2-r^2(t)$ or in ray coordinates: $g(s,t)=(c_x(t)-s)^2+c^2_y(t)+c_z^2(t)-r^2(t)$
+
+In the standard derivation we solve $g(s,t)=0$ for $s$ and set $\dot s=\frac{ds}{dt}=0$:
+
+$s^2-2\hat vc(t)s+(c(t)-o)^2-r^2=0\Longrightarrow s=h(t)\pm\sqrt{q(t)}$ with
+$h(t)=c_{\hat v}(t)$ or in the ray coordinate system $h(t)=c_x(t)$ and
+
+$q(t)=r^2+c_{\hat v}^2(t)-(c(t)-o)^2$ or $q(t)=r^2(t)-c_y^2(t)-c_z^2(t)$
+
+From this we compute the derivative
+
+$\dot s(t)=\dot h(t)\pm\frac{\dot q(t)}{2\sqrt{q(t)}}$
+
+Setting $\dot s(t)$ equal to zero yields:
+
+$\dot h(t)=\pm\frac{\dot q(t)}{2\sqrt{q(t)}} \Rightarrow 2\sqrt{q(t)}\dot h(t)=\pm\dot q(t)$
+
+Finally, we square both sides to eliminate the square root:
+
+$4q(t)\dot h^2(t)=\dot q^2(t)$
+
+Plugin $h(t)$ and $q(t)$ back in:
+
+$4\left[r^2+c_{\hat v}^2(t)-(c(t)-o)^2\right]\dot c^2_{\hat v}(t)=\left[2r(t)\dot r(t)+2c_{\hat v}(t)\dot c_{\hat v}(t)-2(c(t)-o)\dot c(t)\right]^2$
+
+or in the ray coordinate system:
+
+$4\left[r^2(t)-c_y^2(t)-c_z^2(t)\right]\dot c_x^2(t)=\left[2r(t)\dot r(t)-2c_y(t)\dot c_y(t)-2c_z(t)\dot c_z(t)\right]^2$
+
+Independent of the coordinate system the final result is a polynomial of degree 10 in $t$ and no matter what coordinate system is used, the polynomial representation is identical:
+
+$\left[r^2+c_{\hat v}^2(t)-(c(t)-o)^2\right]\dot c^2_{\hat v}(t)-\left[r(t)\dot r(t)+c_{\hat v}(t)\dot c_{\hat v}(t)-(c(t)-o)\dot c(t)\right]^2=0$
+
+### Splitting Computation of Polynomial Setup
+
+In the rasterization pipeline one can pre-compute terms in the geometry shader that are independent of the ray direction that varies of the silhouette quad. We need to use the general coordinate system and define the two ray direction invariant polynomials of degree 6 and 5:
+
+$a(t)=r^2-(c(t)-o)^2$  and  $b(t)=r(t)\dot r(t)-(c(t)-o)\dot c(t)$
+
+Then the per ray direction polynomial setup simplifies to
+
+$\left[a(t)+c_{\hat v}^2(t)\right]\dot c^2_{\hat v}(t)-\left[b(t)+c_{\hat v}(t)\dot c_{\hat v}(t)\right]^2=0$
+
+### Alternative Derivation with the Implicit Function Theorem
+
+The Implicit Function Theorem allows computation of $\frac{ds}{dt}=-\frac{\partial g}{\partial t}/\frac{\partial g}{\partial s}$, what yields an alternative derivation for the ray coordinate system. The general case is a bit cumbersome to derive though.
+
+$\frac{\partial g}{\partial t}=2\left[\left(c_x(t)-s\right)\dot c_x(t)+c_y(t)\dot c_y(t)+c_z(t)\dot c_z(t)-r(t)\dot r(t)\right]$ 
+
+$\frac{\partial g}{\partial s}=2\left(s-c_x(t)\right)$ 
+
+Thus we get 
+$\frac{ds}{dt}=-\left[\left(c_x(t)-s\right)\dot c_x(t)+c_y(t)\dot c_y(t)+c_z(t)\dot c_z(t)-r(t)\dot r(t)\right]/\left(s-c_x(t)\right)$
+
+Here we assume $s\not=c_x(t)$. From $\frac{ds}{dt}=0$ we get:
+
+$f(s,t)=\left(c_x(t)-s\right)\dot c_x(t)+c_y(t)\dot c_y(t)+c_z(t)\dot c_z(t)-r(t)\dot r(t)=0$
+
+To eliminate dependency from $s$, we separate term containing it, square it and eliminate square form constraint:
+
+$\left(c_x(t)-s\right)\dot c_x(t)= r(t)\dot r(t)-c_y(t)\dot c_y(t)-c_z(t)\dot c_z(t)$
+
+$\left(c_x(t)-s\right)^2\dot c^2_x(t)= \left[r(t)\dot r(t)-c_y(t)\dot c_y(t)-c_z(t)\dot c_z(t)\right]^2$
+
+$\left[r^2(t)-c^2_y(t)-c_z^2(t)\right]\dot c^2_x(t)= \left[r(t)\dot r(t)-c_y(t)\dot c_y(t)-c_z(t)\dot c_z(t)\right]^2$
+
+Again this is polynomial of degree 10 - actually the same as with the standard derivation.
+
+## Rewriting the equations in s
+
+If we restart on the three polynomial equations
+
+$q(t)=r^2(t)-c_y^2(t)-c_z^2(t)$
+
+$f(s,t)=\left(c_x(t)-s\right)\dot c_x(t)+c_y(t)\dot c_y(t)+c_z(t)\dot c_z(t)-r(t)\dot r(t)=0$
+
+$g(s,t)=(c_x(t)-s)^2+c^2_y(t)+c_z^2(t)-r^2(t)=0$ 
+
+we can use Silvester matrix and its determinant to compute a residual polynomial in $s$. First we write both equations as polynomials in $t$ with coefficients depending on $s$. Let
+$c_x(t)=at^3+bt^2+ct+d$ and $\dot c_x(t)=3at^2+2bt+c$ as well as $f_i/g_j$ the $s$-independent coefficients. Then
+
+$q(t)=q_6t^6+q_5t^5+q_4t^4+q_3t^3+q_2t^2+q_1t+q_0$
+
+$f(s,t)=f_6t^6+f_5t^5+f_4t^4+f_3t^3+(f_2-3as)t^2+(f_1-2bs)t+f_0-cs$
+
+$g(s,t)=g_5t^5+gt^4+(g_3-2as)t^3+(g_2-2bs)t^2+(g_1-2cs)t+g_0-2ds+s^2$
+
+From $f$ and $g$ we form a $deg_t(f)+deg_t(g)=11$ dimensional square Silvester matrix:
+
+$S(s)=\begin{pmatrix}\phi_0&\phi_1&\phi_2&\phi_3&\phi_4&\phi_5&\phi_6&0&0&0&0\\
+0&\phi_0&\phi_1&\phi_2&\phi_3&\phi_4&\phi_5&\phi_6&0&0&0\\
+0&0&\phi_0&\phi_1&\phi_2&\phi_3&\phi_4&\phi_5&\phi_6&0&0\\
+0&0&0&\phi_0&\phi_1&\phi_2&\phi_3&\phi_4&\phi_5&\phi_6&0\\
+0&0&0&0&\phi_0&\phi_1&\phi_2&\phi_3&\phi_4&\phi_5&\phi_6\\
+\gamma_0&\gamma_1&\gamma_2&\gamma_3&\gamma_4&\gamma_5&0&0&0&0&0\\
+0&\gamma_0&\gamma_1&\gamma_2&\gamma_3&\gamma_4&\gamma_5&0&0&0&0\\
+0&0&\gamma_0&\gamma_1&\gamma_2&\gamma_3&\gamma_4&\gamma_5&0&0&0\\
+0&0&0&\gamma_0&\gamma_1&\gamma_2&\gamma_3&\gamma_4&\gamma_5&0&0\\
+0&0&0&0&\gamma_0&\gamma_1&\gamma_2&\gamma_3&\gamma_4&\gamma_5&0\\
+0&0&0&0&0&\gamma_0&\gamma_1&\gamma_2&\gamma_3&\gamma_4&\gamma_5
+\end{pmatrix}
+$
+
+The resultant polynomial in $s$ is then
+$R_t(s)=\mathrm{det}S(s)$
+
+# Circle Case
+
+input:
+
+- center curve $\mathbf c(t)$ and radius polynomial $r(t)$
+
+- ray: $\mathbf x(t)=\mathbf o+s\cdot\hat v$ with $t\geq 0$
+
+output
+
+- $s_{\mathrm{fst}}$ ray parameter of first intersection
+
+At every center curve point we define a plane from the center curve point and tangent:
+
+$\left<\mathbf o+s\cdot\hat v-\mathrm c(t),\dot c(t)\right>=0$
+
+We can solve for $s$:
+
+$s = \frac{\left<\mathrm c(t)-\mathrm o,\dot c(t)\right>}{\left<\hat v,\dot c(t)\right>}=
+\frac{\left<\mathrm c(t),\dot c(t)\right>}{\dot c_x(t)}$
+
+This becomes numerically unstable if viewing ray becomes parallel to plane.
+
+Now the resulting point should be at distance $r$ from $c(t)$:
+$\left[\mathrm o + \frac{\left<\mathrm c(t),\dot c(t)\right>}{\dot c_x(t)}\hat v - \mathbf c(t)\right]^2=r^2(t)$
+
+Exploiting that $\hat v$ points in x-direction and that the ray starts in coordinate system origin, we get:
+
+$\left(\frac{\left<\mathrm c(t),\dot c(t)\right>}{\dot c_x(t)}-c_x(t)\right)^2+c_y^2(t)+c_z^2(t)=r^2(t)$
+
+Multiplying with $\dot c_x^2(t)$ yields
+
+$\left[\left<\mathrm c(t),\dot c(t)\right>-c_x(t)\dot c_x(t)\right]^2=\dot c_x^2(t)\left[r^2(t)-c_y^2(t)-c_z^2(t)\right]^2$
+
+# Comparison of Both Cases
+
+Both cases can be written in the form
+
+$\lambda_{\mathrm case}(t)=\rho(t)$
+
+furthermore defining the orthogonal square distance $d(t)$ of the curve to the ray helps shortening the terms:
+
+$D(t):=c_y^2(t)+c_z^2(t),\qquad \dot D(t)=2c_y(t)\dot c_y(t)+2c_z(t)\dot c_z(t)$
+
+The right hand side for both cases is
+
+$\rho(t)=\dot c_x^2(t)\left[r^2(t)-D(t)\right]$
+
+the differing left hand sides are:
+
+$\lambda_{\mathrm sphere}(t)=\frac14\left[\frac{\partial}{\partial t}\left(r^2(t)-D(t)\right)\right]^2 = \left[r(t)\dot r(t)-\frac12\dot D(t)\right]^2$
+
+$\lambda_{\mathrm circle}(t)=\left[\left<\mathrm c(t),\dot c(t)\right>-c_x(t)\dot c_x(t)\right]^2=\left[c_y(t)\dot c_y(t)+c_z(t)\dot c_z(t)\right]^2 = \frac14\left[D(t)\dot D(t)\right]^2$
+
+And finally combining both into one double equation
+
+$\frac14\left[\dot D(t)\right]^2 {\mathrm circle\atop=}\dot c_x^2(t)\left[r^2(t)-D(t)\right]{\mathrm sphere\atop=}\left[r(t)\dot r(t)-\frac12\dot D(t)\right]^2$
+
+In both cases we have polynomials of degree 10 on both sides or in case of degree two curves degree 6.
+
+# View Aligned Ribbon
+
+input:
+
+- center curve $\mathbf c(t)$ and completely arbitrary (no continuity is needed) radius function $r(t)$
+
+- ray: $\mathbf x(t)=\mathbf o+s\cdot\hat v$ with $t\geq 0$
+
+output
+
+- $s_{\mathrm{fst}}$ ray parameter of first intersection with view aligned ribbon
+
+The view aligned ribbon is defined by specifying a bi-tangent direction $b(t)$ for each curve parameter $t$ that is computed from the cross product of the viewing vector that coincides with the positional direction to the curve center $c(t)$ and the curve tangent direction $\dot c(t)$:
+
+$b(t)=c(t)\times\dot c(t)$
+
+The curve point and bi-tangent direction span the bi-tangent line. The idea of computing the ray-ribbon intersection is to exploit the sparsity of line-line intersections in 3D and first solve the ray-bi-tangent intersection problem yielding up to 8 potential solutions $t_i$ and in a second step test for each intersection if the radius is smaller than $r(t_i)$. The problem is solved in eye coordinates where the ray origin is in the eye point and the ray points along the x-direction. 
+
+Plücker Coordinates are used to check for each $t$ whether the ray intersects the ribbon bi-tangent line:
+
+ray: $[d_1,m_1]=\left[\hat v,0\right]$
+
+bi-tanget: $[d_2,m_2]=\left[b(t),c(t)\times b(t)\right]$
+
+Ray and bi-tangent intersection, iff $d_1\cdot m_2+d_2\cdot m_1=0$:
+
+$\hat v\cdot \left[c(t)\times b(t)\right] = 0$
+
+$\left.c(t)\times\left[c(t)\times\dot c(t)\right]\right|_x=0$
+
+$\left.\left<c(t),\dot c(t)\right>c(t)-\left<c(t),c(t)\right>\dot c(t)\right|_x=0$
+
+$\left<c(t),\dot c(t)\right>c_x(t)-\left<c(t),c(t)\right>\dot c_x(t)=0$
+
+Now this seems as a polynomial of degree 8 but in practice this is only of degree 7. The reason is that the leading coefficient of a cubic polynomial derivative is just 3 times the leading coefficient of the polynomial itself. This if $\gamma_{\alpha,i}$ are the monomial coefficients $c_{\alpha}$, i.e. $c_{\alpha}(t)=\sum_{i=0}^3\gamma_{\alpha,i}t^i$ and $\dot\gamma_{\alpha,i}$ of $\dot c_{\alpha}$ then we have $\dot\gamma_{\alpha,2}=3\gamma_{\alpha,3}$. As a result the coefficient $\pi_8$ of $t^8$ in the last equation above computes to
+
+$\pi_8=\gamma_{x,3}\left(\gamma_{x,3}\cdot3\gamma_{x,3}+\gamma_{y,3}\cdot 3\gamma_{y,3}+\gamma_{z,3}\cdot 3\gamma_{z,3}\right)-3\gamma_{x,3}\left(\gamma_{x,3}^2+\gamma_{y,3}^2+\gamma_{z,3}^2\right)=0$
+
+For the coefficient of $t^7$ we have more contributions. In each term of each triple product one can decrease maximum degree to one below individually. For example:
+
+$c_x(t)\dot c_x(t)c_x(t)\Rightarrow\gamma_{x,2}3\gamma_{x,3}\gamma_{x,3}+\gamma_{x,3}2\gamma_{x,2}\gamma_{x,3}+\gamma_{x,3}3\gamma_{x,3}\gamma_{x,2}=8\gamma_{x,3}^2\gamma_{x,2}$
+
+$c_y(t)\dot c_y(t)c_x(t)\Rightarrow\gamma_{y,2}3\gamma_{y,3}\gamma_{x,3}+\gamma_{y,3}2\gamma_{y,2}\gamma_{x,3}+\gamma_{y,3}3\gamma_{y,3}\gamma_{x,2}=5\gamma_{x,3}\gamma_{y,3}\gamma_{y,2}+3\gamma_{x,2}\gamma_{y,3}^2$
+
+The negative terms look like
+$c_x(t)^2\dot c_x(t)\Rightarrow\gamma_{x,2}\gamma_{x,3}3\gamma_{x,3}+\gamma_{x,3}\gamma_{x,2}3\gamma_{x,3}+\gamma_{x,3}^22\gamma_{x,2}=8\gamma_{x,3}^2\gamma_{x,2}$
+
+$c_y(t)^2\dot c_x(t)\Rightarrow\gamma_{y,2}\gamma_{y,3}3\gamma_{x,3}+\gamma_{y,3}\gamma_{y,2}3\gamma_{x,3}+\gamma_{y,3}^22\gamma_{x,2}=6\gamma_{x,3}\gamma_{y,3}\gamma_{y,2}+2\gamma_{x,2}\gamma_{y,3}^2$
+
+Again a lot cancels, but not all. It remains
+
+$\pi_7=\gamma_{x,2}\left(\gamma_{y,3}^2+\gamma_{z,3}^2\right)-\gamma_{x,3}\left(\gamma_{y,3}\gamma_{y,2}+\gamma_{z,3}\gamma_{z,2}\right)\not=0$
+
+Probably, the other coefficients could also be computed in a simplified manner.
+
+The intersection point itself can be computed from: $p=\left(\left<m_1,d_2\right>\mathbf 1+d_1m_2^T-d_2m_1^T\right)\frac{d_1\times d_2}{\left\|d_1\times d_2\right\|}$
+
+With $m_1=0$ this simplifies to $p=\left(d_1m_2^T\right)\frac{d_1\times d_2}{\left|d_1\times d_2\right|}$ or $p=\frac{\left<m_2,d_1\times d_2\right>}{\left|d_1\times d_2\right|}d_1$
+
+As $d_1$ is just the x-direction, we can compute the ray parameter to
+
+$s=\frac{\left<m_2,d_1\times d_2\right>}{\left|d_1\times d_2\right|}=\frac{\left<c(t)\times\left(c(t)\times\dot c(t)\right),\hat x\times \left(c(t)\times\dot c(t)\right)\right>}{\left|d_1\times d_2\right|}$
+
+# Bernstein Solver
+
+## Bernstein Polynomials
+
+### Conversion
+
+power basis $f(t)=\sum_{i=0}^n a_it^i$ 
+
+Bernstein basis $f(t)=\sum_{i=0}^nb_iB_i^n(t)$ with $B_i^n(t)=\left(n\atop i\right)t^i(1-t)^{n-i}$ 
+
+Conversion to Bernstein: $b_i=\sum_{j=0}^i\frac{\left(i\atop j\right)}{\left(n\atop j\right)}a_j$
+
+Conversion to Power: $a_i=\left(n\atop i\right)\sum_{j=0}^i(-1)^{i-j}\left(i\atop j\right)b_j$
+
+<span style="color:blue">Proof:</span>
+The latter can be derived from multiplying out the $(1-t)^{n-i}$: $B_i^n(t)=\left(n\atop i\right)t^i(1-t)^{n-i}=\sum_{j=i}^n(-1)^{j-i}\left(n\atop j\right)\left(j\atop i\right)t^j$
+Collecting the terms of $t^j$: $f(t)=\sum_{i=0}^nb_iB_i^n(t)=\sum_{i=0}^nb_i\sum_{j=i}^n(-1)^{j-i}\left(n\atop j\right)\left(j\atop i\right)t^j=\sum_{j=0}^n\left[\left(n\atop j\right)\sum_{i=0}^j(-1)^{j-i}\left(j\atop i\right)b_i\right]t^j$
+Results in version before exchanging $i$ and $j$: $a_j=\left(n\atop j\right)\sum_{i=0}^j(-1)^{j-i}\left(j\atop i\right)b_i$
+
+### Product
+
+Two Bernstein polynomials $p(t)=\sum_{i=0}^np_iB_i^n(t)$ and $q(t)=\sum_{j=0}^mq_jB_j^m(t)$ can be multiplied according to 
+
+$r(t)=p(t)\cdot q(t)=\left(\sum_{i=0}^np_iB_i^n(t)\right)\cdot\left(\sum_{i=0}^mq_iB_i^m(t)\right)=\sum_{i=0}^n\sum_{j=0}^mp_iq_jB_i^n(t)B_j^m(t)$
+
+If we substitute back in $B_i^n(t)B_j^m(t)=\frac{\left(n\atop i\right)\left(m\atop j\right)}{\left(n+m\atop i+j\right)}B_{i+j}^{n+m}(t)$ and collecting coefficients of $r(t)$ gives:
+
+$r_k = \sum_{i=\mathrm{max}(0,k-m)}^{\mathrm{min}(n,k)}\frac{\left(n\atop i\right)\left(m\atop k-i\right)}{\left(n+m\atop k\right)}p_iq_{k-i}$
+
+### Derivative
+
+Given $f(t)=\sum_{i=0}^nb_iB_i^n(t)$ we look for the first derivative $f'(t)=\sum_{i=0}^{n-1}d_iB_i^{n-1}(t)$ of one degree less:
+
+$d_{i=0..n-1}=n\cdot(b_{i+1}-b_i)$
+
+For the k-th $f^{(k)}(t)=\sum_{i=0}^{n-k}d^{(k)}_iB_i^{n-1}(t)$ derivative we get
+
+$d^{(k)}_{i=0..n-k}=\frac{n!}{(n-k)!}\sum_{j=0}^k(-1)^{k-j}\left(k\atop j\right)b_{i+j}$
+
+### Evaluation
+
+Linear time constant storage algorithm
+
+```cpp
+template <typename T, int N>
+double eval_ltcs(const std::vector<T>& b, T t) {
+    T p  = b[0];
+    T s  = 1.0 - t;
+    T ti = t;
+    T f  = 1.0;
+    for (int i = 1; i <= N; ++i) {
+        f  *= T(N - i + 1)/i;
+        p   = s*p + f*ti*b[i];
+        ti *= t;
+    }
+    return p;
+}
+```
+
+The target expression is
+
+$f(t)=\sum_{i=0}^n\left(n\atop i\right)t^i(1-t)^{n-i}b_i$
+
+The algorithm incrementally computes
+
+$b_0$
+
+$(1-t)\cdot b_0+N\cdot t\cdot b_1 = \left(n\atop 0\right)(1-t)b_0+\left(n\atop 1\right)tb_1$
+
+$(1-t)\cdot\left((1-t)\cdot b_0+N\cdot t\cdot b_1\right)+N\frac{N-1}2\cdot t^2\cdot b_2=\left(n\atop 0\right)(1-t)^2b_0+\left(n\atop 1\right)(1-t)tb_1+\left(n\atop 2\right)t^2b_2$
+
+$(1-t)\cdot\left((1-t)\cdot\left((1-t)\cdot b_0+N\cdot t\cdot b_1\right)+N\frac{N-1}2\cdot t^2\cdot b_2\right)+N\cdot\frac{N-1}2\frac{N-2}3t^3b_3$
+
+If we apply this to joint function and derivative evaluation, the code becomes slower than explicitly computing the derivative and evaluating it with ltcs.
+
+### Splitting
+
+Splitting a Bernstein polynomial at a parameter value t into a left and a right polynomial is achieved with the de Casteljau algorithm, but uses quadratic runtime in the degree N:
+
+```cpp
+template <typename T, int N>
+auto split_de_casteljau(const std::vector<T>& b, T t) {
+    std::vector<T> B = b;
+    std::vector<T> L(N), R(N);
+    T s = 1.0 - t;
+    for (int r = 1; r <= N; ++r) {
+        L[r-1]   = B[0];
+        R[N-r+1] = B[N-r+1];
+        for (int i = 0; i <= N - r; ++i) 
+            B[i] = s*B[i] + t*B[i + 1];
+    }
+    L[N] = q[0] = B[0];
+    return { L, R };
+}
+```
+
+### Degree Elevation
+
+Map degree $n$ Bernstein polynomial $b_{i=0..n}$ to $B_{0..n+1}$of degree $n+1$:
+$B_0 = b_0$
+$B_i = tb_{i-1}+(1 - t)b_i \quad \text{with }t=\frac{i}{n+1}\text{ for } 1 \le i\le n$
+$B_{n+1} = b_n$
+
+### Degree Reduction
+
+Map degree n+1 Bernstein polynomial $B_{0..n+1}$ to $b_{i=0..n}$ of degree $n$ forward:
+
+$b^{\rightarrow}_0=B_0$
+
+$b^{\rightarrow}_i=\frac{B_i-tb^{\rightarrow}_{i-1}}{1-t} \quad \text{ with }t=\frac i{n+1}\text{ for } 1\le i\le n$
+
+If $b^{\rightarrow}_n=B_{n+1}$ the polynomial was of degree $n$ and forward reduction is exact.
+
+Otherwise we do a backward estimation:
+
+$b^{\leftarrow}_n=B_{n+1}$
+
+$b^{\leftarrow}_{i-1}=\frac{B_i-(1-t)b^{\leftarrow}_i}t\quad\text{with }t=\frac{i}{n+1}\text{ for }1\le i\le n$
+
+Again $b^{\leftarrow}_0=B_0$ only if the polynomial $B_i$ was only of degree $n$. An L2 approximation $b_i$ can be computed as
+
+$b_0 = B_0$
+
+$b_i=\frac12\left(b^{\leftarrow}_i+b^{\rightarrow}_i\right)$
+
+$b_n=B_{n+1}$

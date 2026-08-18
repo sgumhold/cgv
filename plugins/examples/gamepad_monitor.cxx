@@ -117,6 +117,6 @@ public:
 #include <cgv/base/register.h>
 
 cgv::base::factory_registration<gamepad_monitor> gamepad_monitor_fac("gamepad_monitor", 
-	"shortcut='Ctrl-Shift-G';menu_text='New/Gamepad Monitor'", true);
+	"shortcut='Shift-Ctrl-G';menu_text='New/Gamepad Monitor'", true);
 
 

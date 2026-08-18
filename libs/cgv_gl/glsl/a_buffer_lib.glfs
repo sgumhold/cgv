@@ -4,6 +4,8 @@
 #define NODE_COUNTER_BINDING_POINT 0
 #define HEAD_POINTERS_BINDING_POINT 0
 #define NODES_BINDING_POINT 1
+#define PRE_MULTIPLY_OPACITY 1
+#define Z_FIGHT_REMOVAL 0
 
 uniform sampler2D depth_tex;
 uniform ivec2 viewport_dims;
@@ -33,6 +35,130 @@ struct Fragment
 	uint color;
 	float depth;
 };
+
+#if Z_FIGHT_REMOVAL == 0
+
+vec4 blend_front_to_back(in Fragment fragments[MAX_FRAGMENTS + 1], int count)
+{
+	vec4 dst = vec4(0.0, 0.0, 0.0, 1.0); // Blend the fragments Front-to-back with transparency in dst.a 
+	for (int i = 0; i < count; ++i) {
+		vec4 src = vec4(unpackUnorm4x8(fragments[i].color));
+#if PRE_MULTIPLY_OPACITY == 1
+		dst.rgb = dst.a * src.rgb + dst.rgb;
+#else
+		dst.rgb = dst.a * src.a * src.rgb + dst.rgb;
+#endif
+		dst.a = (1.0 - src.a) * dst.a;
+	}
+	return vec4(dst.rgb, 1.0-dst.a);
+}
+
+#else
+
+uniform float z_fight_delta = 0.00001;
+#if Z_FIGHT_REMOVAL > 1
+uniform uint z_fight_window_width = 8;
+#endif
+
+struct MixingContext
+{
+	vec3 epsilon_acc;
+	float T_acc;
+	float O_acc;
+};
+
+void mixed_layer_blend(inout vec4 dst, in vec2 frag_xy, in float dz, in MixingContext mc, in Fragment fragments[MAX_FRAGMENTS + 1], int layer_count, int i_front)
+{
+	if (layer_count > 0) {
+		vec3 epsilon = mc.epsilon_acc/mc.O_acc;
+		float T = pow(mc.T_acc, dz/z_fight_delta);
+#if Z_FIGHT_REMOVAL > 1
+		if (layer_count > 1) {
+			int idx = (int(frag_xy.x/z_fight_window_width)&1)+2*(int(frag_xy.y/z_fight_window_width)&1);
+			if (idx == 1 || idx == 2) {
+				if (fragments[i_front - 1].color < fragments[i_front - 2].color)
+					idx = 3-idx;
+				epsilon = unpackUnorm4x8(fragments[i_front - idx].color).rgb;
+			}
+		}
+#endif
+		dst.rgb += dst.a*(1.0-T)*epsilon;
+		dst.a   *= T;
+	}
+}
+void layer_enter_event(in Fragment fragments[MAX_FRAGMENTS + 1], int count, 
+                       inout int layer_count, inout int i_front, inout MixingContext mc, inout float z_front)
+{
+	vec4 src = vec4(unpackUnorm4x8(fragments[i_front].color));
+	mc.T_acc       *= 1.001 - src.a;
+	mc.O_acc       += src.a;
+#if PRE_MULTIPLY_OPACITY == 1
+	mc.epsilon_acc += src.rgb;
+#else
+	mc.epsilon_acc += src.a*src.rgb;
+#endif
+	++layer_count;
+	if (++i_front < count)
+		z_front = float(fragments[i_front].depth) - float(0.5*z_fight_delta);
+}
+
+void layer_leave_event(in Fragment fragments[MAX_FRAGMENTS + 1], int count, 
+                       inout int layer_count, inout int i_back, inout MixingContext mc, inout float z_back)
+{
+	if (--layer_count == 0) {
+		mc.T_acc = 1.0;
+		mc.O_acc = 0.0;
+		mc.epsilon_acc = vec3(0.0);
+	}
+	else {
+		vec4 src = unpackUnorm4x8(fragments[i_back].color);
+		mc.T_acc       /= 1.001 - src.a;
+		mc.O_acc       -= src.a;
+#if PRE_MULTIPLY_OPACITY == 1
+		mc.epsilon_acc -= src.rgb;
+#else
+		mc.epsilon_acc -= src.a*src.rgb;
+#endif
+	}
+	z_back = float(fragments[++i_back].depth) + float(0.5*z_fight_delta);
+}
+
+vec4 thickend_blend_front_to_back(in vec2 frag_xy, in Fragment fragments[MAX_FRAGMENTS + 1], int count)
+{
+	vec4 dst = vec4(0.0, 0.0, 0.0, 1.0); // Blend the fragments Front-to-back with transparency in dst.a 
+
+	int i_front = 0;
+	int i_back = 0;
+	int layer_count = 0;
+
+	MixingContext mc = MixingContext(vec3(0.0),1.0,0.0);
+
+	float z_front = float(fragments[i_front].depth) - float(0.5*z_fight_delta);
+	float z_prev = z_front;
+	float z_back  = float(fragments[i_back ].depth) + float(0.5*z_fight_delta);
+	
+	while (i_front < count) {
+		// advance volume rendering integral
+		float z = min(z_front,z_back);
+		mixed_layer_blend(dst, frag_xy, z - z_prev, mc, fragments, layer_count, i_front);
+		z_prev = z;
+		// check for sphere enter event
+		if (z_front < z_back)
+			layer_enter_event(fragments, count, layer_count, i_front, mc, z_front);
+		else
+			layer_leave_event(fragments, count, layer_count, i_back, mc, z_back);
+	}
+	for (; i_back < count; ++i_back) {
+		// advance volume rendering integral
+		float z = float(fragments[i_back].depth) + float(0.5*z_fight_delta);
+		mixed_layer_blend(dst, frag_xy, z - z_prev, mc, fragments, layer_count, i_front);
+		z_prev = z;
+		layer_leave_event(fragments, count, layer_count, i_back, mc, z_back);
+	}
+	return vec4(dst.rgb, 1.0-dst.a);
+}
+
+#endif
 
 bool a_buffer_gather_and_blend(in vec2 frag_xy, out vec4 rgba, out float depth)
 {
@@ -64,12 +190,11 @@ bool a_buffer_gather_and_blend(in vec2 frag_xy, out vec4 rgba, out float depth)
 
 	// Blend the fragments Front-to-back with transparency in dst.a 
 	vec4 dst = vec4(0.0, 0.0, 0.0, 1.0);
-	for (int i = 0; i < count; ++i) {
-		vec4 src = unpackUnorm4x8(fragments[i].color);
-		dst.rgb = dst.a * src.rgb + 1.0 * dst.rgb;
-		dst.a = (1.0 - src.a) * dst.a;
-	}
-	rgba = vec4(dst.rgb, 1.0 - dst.a);
+#if Z_FIGHT_REMOVAL == 0
+	rgba = blend_front_to_back(fragments, count);
+#else
+	rgba = thickend_blend_front_to_back(frag_xy, fragments, count);
+#endif
 	depth = fragments[0].depth-0.000001;
 	return true;
 }

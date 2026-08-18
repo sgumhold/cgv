@@ -55,12 +55,14 @@ shader_config_ptr get_shader_config()
 			config->shader_path = getenv("CGV_SHADER_PATH");
 		else if (getenv("CGV_DIR"))
 			config->shader_path = 
-				std::string(getenv("CGV_DIR"))+"/libs/cgv_gl/glsl;"+
-				std::string(getenv("CGV_DIR"))+"/libs/plot/glsl;"+
-				std::string(getenv("CGV_DIR")) + "/libs/cgv_app/glsl;" +
 				std::string(getenv("CGV_DIR")) + "/libs/cgv_g2d/glsl;" +
+				std::string(getenv("CGV_DIR")) + "/libs/cgv_gl/glsl;"+
 				std::string(getenv("CGV_DIR")) + "/libs/cgv_gpgpu/glsl;" +
+				std::string(getenv("CGV_DIR")) + "/libs/cgv_overlay/glsl;" +
 				std::string(getenv("CGV_DIR")) + "/libs/holo_disp;" +
+				std::string(getenv("CGV_DIR")) + "/libs/plot/glsl;"+
+				std::string(getenv("CGV_DIR")) + "/libs/cgv_proc/glsl;"+
+				std::string(getenv("CGV_DIR")) + "/libs/rgbd_render;"+
 				std::string(getenv("CGV_DIR")) + "/plugins/examples";
 	}
 	return config;
@@ -630,10 +632,10 @@ void shader_code::set_defines_and_snippets(std::string& source, const shader_com
 
 	struct directive_t {
 		DirectiveType type = DirectiveType::kUndefined;
-		std::string identifier;
-		std::string replacement_list;
+		std::string identifier {};
+		std::string replacement_list {};
 	};
-	
+
 	if(options.empty())
 		return;
 

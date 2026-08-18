@@ -1,8 +1,10 @@
 #include <cgv/base/node.h>
 #include <cgv/gui/provider.h>
+#include <cgv/media/transfer_function.h>
+#include <cgv/render/color_scale_adapter.h>
+#include <cgv/render/device_color_scale.h>
 #include <cgv/render/drawable.h>
 #include <cgv_gl/arrow_render_data.h>
-#include <cgv/render/color_map.h>
 #include <cgv_gl/volume_renderer.h>
 #include <cgv_gpgpu/texture_differentiate.h>
 
@@ -59,6 +61,10 @@ public:
 
 	bool init(cgv::render::context& ctx) {
 		cgv::render::ref_volume_renderer(ctx, 1);
+		if(!color_scale_adapter.init(ctx)) {
+			std::cout << "Error: could not initialize color_scale_adapter" << std::endl;
+			return false;
+		}
 
 		if(!arrows.init(ctx)) {
 			std::cout << "Error: could not initialize arrow render data" << std::endl;
@@ -69,18 +75,18 @@ public:
 			std::cout << "Error: could not initialize GPU texture differentiation algorithm" << std::endl;
 			return false;
 		}
+		
+		transfer_function->set_color_points({
+			{ 0.0f, cgv::rgb(0.3f, 0.3f, 1.0f) },
+			{ 1.0f, cgv::rgb(1.0f, 0.3f, 0.3f) }
+		});
+		transfer_function->set_opacity_points({
+			{ 0.0f, 0.0f },
+			{ 1.0f, 1.0f },
+		});
 
-		transfer_function.add_color_point(0.0f, cgv::rgb(0.3f, 0.3f, 1.0f));
-		transfer_function.add_color_point(1.0f, cgv::rgb(1.0f, 0.3f, 0.3f));
-		transfer_function.add_opacity_point(0.0f, 0.0f);
-		transfer_function.add_opacity_point(1.0f, 1.0f);
-		if(!transfer_function.init(ctx)) {
-			std::cout << "Error: could not initialize transfer function texture" << std::endl;
-			return false;
-		}
-
-		transfer_function.generate_texture(ctx);
-
+		color_scale_adapter.set_color_scale(std::make_shared<cgv::render::device_transfer_function>(transfer_function));
+		
 		create_test_volume(ctx);
 		return true;
 	}
@@ -89,6 +95,7 @@ public:
 		cgv::render::ref_volume_renderer(ctx, -1);
 		arrows.destruct(ctx);
 		gradient_kernel.destruct(ctx);
+		color_scale_adapter.destruct(ctx);
 	}
 
 	void init_frame(cgv::render::context& ctx) {
@@ -112,7 +119,9 @@ public:
 			cgv::render::volume_renderer& volume_renderer = cgv::render::ref_volume_renderer(ctx);
 			volume_renderer.set_render_style(volume_style);
 			volume_renderer.set_volume_texture(&volume_texture);
-			volume_renderer.set_transfer_function_texture(&transfer_function.ref_texture());
+
+			volume_renderer.set_transfer_function_texture(&color_scale_adapter.get_texture(ctx));
+
 			volume_renderer.set_depth_texture(&depth_texture);
 			volume_renderer.set_bounding_box(volume_bounding_box);
 			volume_renderer.transform_to_bounding_box(true);
@@ -156,14 +165,14 @@ private:
 		return gradient_kernel.init(
 			ctx,
 			cgv::render::TextureType::TT_3D,
-			sl::ImageFormatLayoutQualifier::k_r32f,
+			sl::ImageFormatLayoutQualifier::r32f,
 			wrap_mode,
 			gradient_operator,
-			cgv::gpgpu::DifferentiationOutput::kDerivative);
+			cgv::gpgpu::DifferentiationOutput::Derivative);
 	}
 
 	void create_test_volume(cgv::render::context& ctx) {
-		volume_resolution = cgv::uvec3(96, 64, 29); // odd-shaped resolution to show the shader is not limited to nice power-of-two resolutions
+		volume_resolution = cgv::ivec3(96, 64, 29); // odd-shaped resolution to show the shader is not limited to nice power-of-two resolutions
 
 		// destruct previous textures
 		volume_texture.destruct(ctx);
@@ -173,7 +182,7 @@ private:
 
 		// compute volume data
 		std::vector<float> vol_data(volume_resolution[0] * volume_resolution[1] * volume_resolution[2], 0.0f);
-		cgv::uvec3 voxel = { 0 };
+		cgv::ivec3 voxel = { 0 };
 		unsigned i = 0;
 		for(voxel[2] = 0; voxel[2] < volume_resolution[2]; ++voxel[2]) {
 			for(voxel[1] = 0; voxel[1] < volume_resolution[1]; ++voxel[1]) {
@@ -200,7 +209,7 @@ private:
 		// update the volume bounding box to later scale the rendering accordingly
 		// the bounding box is centered around the origin and is scaled so that the minimum extent is 1
 		unsigned min_resolution = cgv::math::min_value(volume_resolution);
-		const cgv::vec3 extent = cgv::vec3(volume_resolution) / cgv::vec3(min_resolution);
+		const cgv::vec3 extent = cgv::vec3(volume_resolution) / cgv::vec3(static_cast<float>(min_resolution));
 		cgv::vec3 min = -0.5f * extent;
 		volume_bounding_box.ref_min_pnt() = min;
 		volume_bounding_box.ref_max_pnt() = min + extent;
@@ -240,7 +249,7 @@ private:
 		const float voxel_size = 1.0f / static_cast<float>(cgv::math::min_value(volume_resolution));
 
 		// Loop over all voxels and place arrows to visualize the gradients
-		cgv::uvec3 voxel = { 0 };
+		cgv::ivec3 voxel = { 0 };
 		unsigned i = 0;
 		for(voxel[2] = 0; voxel[2] < volume_resolution[2]; ++voxel[2]) {
 			for(voxel[1] = 0; voxel[1] < volume_resolution[1]; ++voxel[1]) {
@@ -261,20 +270,21 @@ private:
 	
 	/// voxel resolution of the volume in all three dimensions
 	cgv::box3 volume_bounding_box = { cgv::vec3(0.0f), cgv::vec3(1.0f) };
-	cgv::uvec3 volume_resolution = { -1u };
+	cgv::ivec3 volume_resolution = { 0 };
 	/// whether to show the volume
 	bool show_volume = true;
 	/// whether to show the gradients
 	bool show_gradients = true;
 
 	cgv::gpgpu::texture_differentiate gradient_kernel;
-	cgv::gpgpu::WrapMode wrap_mode = cgv::gpgpu::WrapMode::kClampToBorder;
-	cgv::gpgpu::DifferentiationOperator gradient_operator = cgv::gpgpu::DifferentiationOperator::kSobel;
+	cgv::gpgpu::WrapMode wrap_mode = cgv::gpgpu::WrapMode::ClampToBorder;
+	cgv::gpgpu::DifferentiationOperator gradient_operator = cgv::gpgpu::DifferentiationOperator::Sobel;
 
 	// Render members
 	cgv::render::arrow_render_data<> arrows;
 	cgv::render::volume_render_style volume_style;
-	cgv::render::gl_color_map transfer_function;
+	std::shared_ptr<cgv::media::transfer_function> transfer_function = std::make_shared<cgv::media::transfer_function>();
+	cgv::render::color_scale_adapter color_scale_adapter;
 	cgv::render::texture volume_texture = cgv::render::texture("flt32[R]");
 	cgv::render::texture gradient_texture = cgv::render::texture("flt32[R,G,B,A]");
 	cgv::render::texture depth_texture = cgv::render::texture("[D]");

@@ -47,6 +47,7 @@ namespace cgv {
 			options.define_macro_if_not_default("NUM_STEPS", vrs.integration_quality, VolumeIntegrationQuality::k128);
 			options.define_macro_if_not_default("INTERPOLATION_MODE", vrs.interpolation_mode, VolumeInterpolationMode::kLinear);
 			options.define_macro_if_true(vrs.enable_noise_offset, "ENABLE_NOISE_OFFSET");
+			options.define_macro_if_not_default("SHOW_VOLUME", vrs.show_volume, true);
 			options.define_macro_if_true(vrs.enable_lighting, "ENABLE_LIGHTING");
 			options.define_macro_if_true(vrs.use_gradient_texture, "USE_GRADIENT_TEXTURE");
 			options.define_macro_if_true(vrs.enable_gradient_modulation, "ENABLE_GRADIENT_MODULATION");
@@ -249,6 +250,7 @@ namespace cgv {
 				p->add_member_control(b, "Depth Test", vrs_ptr->enable_depth_test, "check");
 				p->add_member_control(b, "Opacity Threshold", vrs_ptr->picking_opacity_threshold, "value_slider", "min=0.0;max=1.0;step=0.001;tooltip='Opacity threshold used for focus picking'");
 
+				p->add_member_control(b, "Show Volume", vrs_ptr->show_volume, "toggle");
 				p->add_member_control(b, "Compositing Mode", vrs_ptr->compositing_mode, "dropdown", "enums='Maximum Intensity Projection, Average, Blend'");
 
 				p->add_member_control(b, "Scale Adjustment", vrs_ptr->scale_adjustment_factor, "value_slider", "min=0.0;step=0.001;max=1000.0;log=true;ticks=true");

@@ -1,5 +1,7 @@
 #version 150 
 
+#define MAX_NR_LIGHTS 2
+
 /*
 The following interface is implemented in this shader:
 //***** begin interface of lights.glsl ***********************************
@@ -37,12 +39,12 @@ struct LightSource
 	float quadratic_attenuation;
 };
 
-uniform LightSource light_sources[8];
+uniform LightSource light_sources[MAX_NR_LIGHTS];
 uniform int nr_light_sources = 1;
 
 int get_nr_light_sources() 
 {
-	return nr_light_sources;
+	return min(nr_light_sources, MAX_NR_LIGHTS);
 }
 
 LightSource get_light_source(int i)

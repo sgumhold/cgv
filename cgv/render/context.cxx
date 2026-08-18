@@ -1,10 +1,11 @@
-#include <cgv/base/group.h>
 #include "context.h"
+#include <cgv/base/group.h>
 #include <cgv/media/image/image_writer.h>
 #include <cgv/math/ftransform.h>
 #include <cgv/base/traverser.h>
 #include <cgv/render/drawable.h>
 #include <cgv/render/shader_program.h>
+#include <cgv/render/attribute_array_binding.h>
 
 using namespace cgv::base;
 using namespace cgv::media::image;
@@ -25,6 +26,93 @@ float background_colors[] = {
 	0.5f, 0.5f, 1,0,
 	1,1,1,0,
 };
+
+std::ostream& operator << (std::ostream& os, const type_descriptor& td)
+{
+	std::string prefix, postfix, type;
+	switch (td.coordinate_type) {
+	case cgv::type::info::TI_BOOL: type = "bool"; prefix = "b"; break;
+	case cgv::type::info::TI_FLT32: type = "float"; break;
+	case cgv::type::info::TI_FLT64: type = "double"; prefix = "d"; break;
+	case cgv::type::info::TI_INT32: type = "int"; prefix = "i";  break;
+	case cgv::type::info::TI_UINT32: type = "uint"; prefix = "u"; break;
+	}
+	switch (td.element_type) {
+	case cgv::render::ElementType::ET_VALUE:
+		prefix = "";
+		break;
+	case cgv::render::ElementType::ET_VECTOR:
+		type = "vec";
+		postfix = "0";
+		postfix[0] += td.nr_rows;
+		break;
+	case cgv::render::ElementType::ET_MATRIX: type = "mat"; break;
+		type = "mat";
+		postfix = "0";
+		postfix[0] += td.nr_rows;
+		if (td.nr_columns != td.nr_rows) {
+			postfix += "x0";
+			postfix[2] += td.nr_columns;
+		}
+		break;
+	}
+	return os << prefix << type << postfix;
+}
+
+void program_variable_info::compute_sizes(size_t& cnt, size_t& s, size_t& S) const
+{
+	cnt = 1;
+	if (type_descr.element_type == cgv::render::ET_VECTOR)
+		cnt = type_descr.nr_rows;
+	if (type_descr.element_type == cgv::render::ET_MATRIX)
+		cnt = type_descr.nr_rows * type_descr.nr_columns;
+	unsigned ctype_size = cgv::type::info::get_type_size(type_descr.coordinate_type);
+	if (type_descr.coordinate_type == cgv::type::info::TI_BOOL)
+		ctype_size = 4;
+	s = ctype_size * cnt;
+	S = s * array_size;
+}
+
+/// operator to stream out program variable info in text format
+std::ostream& operator << (std::ostream& os, const program_variable_info& V)
+{
+	os << V.type_descr << " " << V.name;
+	if (V.array_size > 1)
+		os << "[" << V.array_size << "]";
+	if (V.program_location != -1)
+		os << " @" << V.program_location;
+	if (V.current_value.empty())
+		return os;
+
+	os << " = ";
+	size_t cnt, s, S;
+	V.compute_sizes(cnt, s, S);
+	if (V.array_size > 1)
+		os << "{";
+	for (size_t j = 0; j < V.array_size; ++j) {
+		if (j > 0)
+			os << ", ";
+		if (cnt > 1)
+			os << "[";
+		for (size_t k = 0; k < cnt; ++k) {
+			if (k > 0)
+				os << ", ";
+			const void* value_ptr = V.current_value.data() + j * s;
+			switch (V.type_descr.coordinate_type) {
+			case cgv::type::info::TI_BOOL:   os << (*(const int32_t*)(value_ptr) != 0 ? "true" : "false"); break;
+			case cgv::type::info::TI_INT32:  os << *(const int32_t*)(value_ptr); break;
+			case cgv::type::info::TI_UINT32: os << *(const uint32_t*)(value_ptr);	break;
+			case cgv::type::info::TI_FLT32:  os << *(const float*)(value_ptr); break;
+			case cgv::type::info::TI_FLT64:  os << *(const double*)(value_ptr); break;
+			}
+		}
+		if (cnt > 1)
+			os << "]";
+	}
+	if (V.array_size > 1)
+		os << "}";
+	return os;
+}
 
 
 /// construct config with default parameters
@@ -239,6 +327,11 @@ const device_capabilities& context::get_device_capabilities() const {
 /// virtual destructor
 context::~context()
 {
+	if (dummy_aab) {
+		attribute_array_binding_destruct(*dummy_aab);
+		delete dummy_aab;
+		dummy_aab = 0;
+	}
 }
 
 void context::init_render_pass()
@@ -451,6 +544,15 @@ shader_program_base* context::get_current_program() const
 	return &prog;
 }
 
+/// check for current framebuffer, and return pointer to it
+const frame_buffer_base* context::get_current_frame_buffer() const
+{
+	if (frame_buffer_stack.empty())
+		return 0;
+	return frame_buffer_stack.top();
+}
+
+
 /// enable the usage of the shader file caches
 void context::enable_shader_file_cache()
 {
@@ -582,7 +684,7 @@ void context::set_current_view(shader_program& prog, bool modelview_deps, bool p
 	if (modelview_deps) {
 		cgv::math::fmat<float, 4, 4> V(modelview_matrix_stack.top());
 		prog.set_uniform(*this, "modelview_matrix", V);
-		prog.set_uniform(*this, "inverse_modelview_matrix", inv(V));
+		prog.set_uniform(*this, "inverse_modelview_matrix", cgv::math::inverse(V));
 		cgv::math::fmat<float, 3, 3> NM;
 		NM(0, 0) = V(0, 0);
 		NM(0, 1) = V(0, 1);
@@ -595,13 +697,13 @@ void context::set_current_view(shader_program& prog, bool modelview_deps, bool p
 		NM(2, 2) = V(2, 2);
 		NM.transpose();
 		prog.set_uniform(*this, "inverse_normal_matrix", NM);
-		NM = inv(NM);
+		NM = cgv::math::inverse(NM);
 		prog.set_uniform(*this, "normal_matrix", NM);
 	}
 	if (projection_deps) {
 		cgv::math::fmat<float, 4, 4> P(projection_matrix_stack.top());
 		prog.set_uniform(*this, "projection_matrix", P);
-		prog.set_uniform(*this, "inverse_projection_matrix", inv(P));
+		prog.set_uniform(*this, "inverse_projection_matrix", cgv::math::inverse(P));
 	}
 }
 
@@ -764,6 +866,16 @@ RenderPassFlags context::get_render_pass_flags() const
 	if (render_pass_stack.empty())
 		return RPF_NONE;
 	return render_pass_stack.top().flags;
+}
+
+/// update the current render pass flags
+bool context::update_render_pass_flags(int exclude_flags, int include_flags)
+{
+	if (render_pass_stack.empty())
+		return false;
+	auto& flags = render_pass_stack.top().flags;
+	flags = RenderPassFlags((flags & ~exclude_flags) | include_flags);
+	return true;
 }
 
 /// return the default render pass flags
@@ -1037,18 +1149,6 @@ std::string to_string(TextureFilter filter_type)
 	};
 	return filter_str[filter_type];
 }
-
-// declare some colors by name
-float black[4]     = { 0, 0, 0, 1 };
-float white[4]     = { 1, 1, 1, 1 };
-float gray[4]      = { 0.25f, 0.25f, 0.25f, 1 };
-float green[4]     = { 0, 1, 0, 1 };
-float brown[4]     = { 0.3f, 0.1f, 0, 1 };
-float dark_red[4]  = { 0.4f, 0, 0, 1 };
-float cyan[4]      = { 0, 1, 1, 1 };
-float yellow[4]    = { 1, 1, 0, 1 };
-float red[4]       = { 1, 0, 0, 1 };
-float blue[4]      = { 0, 0, 1, 1 };
 
 void compute_face_normals(const float* vertices, float* normals, const int* vertex_indices, int* normal_indices, int nr_faces, int face_degree)
 {
@@ -1626,6 +1726,31 @@ const cgv::media::illum::surface_material* context::get_current_material() const
 	return current_material_ptr;
 }
 
+/// this function ensures that in core profile a dummy attribute array is bound, what is essential for attribute-less rendering
+void context::begin_attribute_less_rendering()
+{
+	if (core_profile) {
+		if (dummy_aab == 0) {
+			dummy_aab = new attribute_array_binding();
+			attribute_array_binding_create(*dummy_aab);
+		}
+		attribute_array_binding_enable(*dummy_aab);
+	}
+}
+/// unbind dummy attribute array after attribute-less rendering
+void context::end_attribute_less_rendering()
+{
+	if (core_profile) {
+		if (dummy_aab == 0)
+			error("call to end_attribute_less_rendering() without call to begin_attribute_less_rendering()");
+		else if (attribute_array_binding_stack.empty())
+			error("call to end_attribute_less_rendering() with empty attribute array binding stack");
+		else if (attribute_array_binding_stack.top() != dummy_aab)
+			error("call to end_attribute_less_rendering() after another attribute array was bound");
+		else
+			attribute_array_binding_disable(*dummy_aab);
+	}
+}
 /// return current color
 const rgba& context::get_color() const
 {
@@ -1965,13 +2090,12 @@ dmat4 context::get_modelview_projection_window_matrix(unsigned array_index) cons
 }
 
 //! compute model space 3D point from the given window space point and the given modelview_projection_window matrix
-vec3 context::get_model_point(const dvec3& p_window, const dmat4& modelview_projection_window_matrix) 
+dvec3 context::get_model_point(const dvec3& p_window, const dmat4& modelview_projection_window_matrix) 
 {
-	dmatn A(4, 4, &modelview_projection_window_matrix(0, 0));
-	dvecn x;
-	dvecn b(p_window(0), p_window(1), p_window(2), 1.0);
-	svd_solve(A, b, x);
-	return vec3(float(x(0) / x(3)), float(x(1) / x(3)), float(x(2) / x(3)));
+	cgv::dvec4 p(p_window, 1.0);
+	p = inverse(modelview_projection_window_matrix) * p;
+	p /= p.w();
+	return cgv::vec3(static_cast<cgv::vec4>(p));
 }
 
 /// set a new cursor position, which is only valid between calls of push_pixel_coords and pop_pixel_coords
@@ -1997,6 +2121,19 @@ void context::put_cursor_coords(const vecn& p, int& x, int& y) const
 
 	x = (int)(p4(0) / p4(3));
 	y = (int)(p4(1) / p4(3));
+	error("context::put_cursor_coords() deprecated");
+}
+
+/** transform point p in current world coordinates into opengl coordinates with (0,0) in lower left corner
+	 and return x and y coordinates */
+ivec2 context::get_cursor_coords(const vec3& p) const
+{
+	dvec4 p4(dvec3(p), 1.0);
+	p4 = get_modelview_projection_window_matrix() * p4;
+	return cgv::ivec2(
+		static_cast<int>(p4.x() / p4.w()),
+		static_cast<int>(p4.y() / p4.w())
+	);
 }
 
 /// sets the current text ouput position
@@ -2023,6 +2160,30 @@ void context::set_cursor(const vecn& pos,
 	x += x_offset;
 	y += y_offset;
 	set_cursor(x,y);
+}
+
+/// sets the current text ouput position
+void context::set_cursor(const vec3& pos,
+	const std::string& text, TextAlignment ta,
+	ivec2 offset)
+{
+	ivec2 cursor = get_cursor_coords(pos);
+	if(!text.empty() && get_current_font_face()) {
+		float h = get_current_font_size();
+		float w = get_current_font_face()->measure_text_width(text, h);
+		switch(ta & 3) {
+		case 0: cursor.x() -= static_cast<int>(std::floor(w) * 0.5f); break;
+		case 2: cursor.x() -= static_cast<int>(std::floor(w)); break;
+		default: break;
+		}
+		switch(ta & 12) {
+		case 0: cursor.y() -= static_cast<int>(std::floor(h) * 0.3f); break;
+		case 4: cursor.y() -= static_cast<int>(std::floor(h) * 0.6f); break;
+		default: break;
+		}
+	}
+	cursor += offset;
+	set_cursor(cursor.x(), cursor.y());
 }
 
 /// store the current cursor location in the passed references to x and y coordinate
@@ -2327,13 +2488,6 @@ bool context::attribute_array_binding_disable(attribute_array_binding_base& aab)
 	aab.is_enabled = false;
 	return true;
 }
-
-vertex_buffer_base::vertex_buffer_base()
-{
-	type = VBT_VERTICES;
-	usage = VBU_STATIC_DRAW;
-}
-
 
 /// initialize members
 frame_buffer_base::frame_buffer_base()

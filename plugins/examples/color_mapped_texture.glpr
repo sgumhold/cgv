@@ -1,0 +1,3 @@
+vertex_file:screen_quad.glvs
+fragment_file:color_scale.glsl
+fragment_file:color_mapped_texture.glfs

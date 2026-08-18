@@ -473,6 +473,8 @@ bool gl_context::configure_gl()
 	// query device capabilities
 	glGetIntegerv(GL_MAX_RENDERBUFFER_SIZE, &gpu_capabilities.max_render_buffer_size);
 	glGetIntegerv(GL_MAX_GEOMETRY_OUTPUT_VERTICES, &gpu_capabilities.max_geometry_shader_output_vertex_count);
+	glGetIntegerv(GL_MAX_GEOMETRY_OUTPUT_COMPONENTS, &gpu_capabilities.max_geometry_shader_output_component_count);
+	glGetIntegerv(GL_MAX_GEOMETRY_TOTAL_OUTPUT_COMPONENTS, &gpu_capabilities.max_geometry_shader_total_output_component_count);
 	glGetIntegerv(GL_MAX_COMPUTE_SHARED_MEMORY_SIZE, &gpu_capabilities.max_compute_shared_memory_size);
 	glGetIntegerv(GL_MAX_COMPUTE_WORK_GROUP_INVOCATIONS, &gpu_capabilities.max_compute_work_group_invocations);
 	for(unsigned i = 0; i < 3; ++i)
@@ -679,13 +681,13 @@ struct format_callback_handler : public traverse_callback_handler
 	{
 	}
 	/// called before the children of a group node g are processed, return whether these should be skipped. If children are skipped, the on_leave_children callback is still called.
-	bool on_enter_children(group*)
+	bool on_enter_children(group_ptr) override
 	{
 		os << "\a";
 		return false;
 	}
 	/// called when the children of a group node g have been left, return whether to terminate traversal
-	bool on_leave_children(group*)
+	bool on_leave_children(group_ptr) override
 	{
 		os << "\b";
 		return false;
@@ -1822,6 +1824,9 @@ std::string gl_error_to_string(GLenum eid) {
 
 std::string gl_error() {
 	GLenum eid = glGetError();
+	// Clear potential other error flags, see https://registry.khronos.org/OpenGL-Refpages/gl4/html/glGetError.xhtml:
+	// "glGetError should always be called in a loop, until it returns GL_NO_ERROR, if all error flags are to be reset."
+	while (glGetError());
 	return gl_error_to_string(eid);
 }
 
@@ -1832,6 +1837,7 @@ bool gl_context::check_gl_error(const std::string& where, const cgv::render::ren
 		return false;
 	std::string error_string = where + ": " + gl_error_to_string(eid);
 	error(error_string, rc);
+	while (glGetError()); // Clear all error flags, see gl_error.
 	return true;
 }
 
@@ -2350,6 +2356,7 @@ bool gl_context::texture_destruct(texture_base& tb) const
 	glDeleteTextures(1, &tex_id);
 	bool result = !check_gl_error("gl_context::texture_destruct", &tb);
 	tb.handle = 0;
+	tb.ctx_ptr = 0;
 	return result;
 }
 
@@ -2517,6 +2524,7 @@ bool gl_context::render_buffer_destruct(render_buffer_base& rc) const
 	if (check_gl_error("gl_context::render_buffer_destruct", &rc))
 		return false;
 	rc.handle = 0;
+	rc.ctx_ptr = 0;
 	return true;
 }
 
@@ -2584,6 +2592,7 @@ bool gl_context::frame_buffer_destruct(frame_buffer_base& fbb) const
 	GLuint fbo_id = get_gl_id(fbb.handle);
 	glDeleteFramebuffers(1, &fbo_id);
 	fbb.handle = 0;
+	fbb.ctx_ptr = 0;
 	return true;
 }
 
@@ -2764,6 +2773,8 @@ void gl_context::shader_code_destruct(render_component& sc) const
 		return;
 	}
 	glDeleteShader(get_gl_id(sc.handle));
+	sc.handle = 0;
+	sc.ctx_ptr = 0;
 	check_gl_error("gl_context::shader_code_destruct", &sc);
 }
 
@@ -2771,6 +2782,8 @@ bool gl_context::shader_code_create(render_component& sc, ShaderType st, const s
 {
 	if (!check_shader_support(st, "gl_context::shader_code_create", &sc))
 		return false;
+
+	while (glGetError()); // Clear error flags.
 
 	GLuint s_id = glCreateShader(gl_shader_type[st]);
 	if (s_id == -1) {
@@ -2795,9 +2808,9 @@ bool gl_context::shader_code_compile(render_component& sc) const
 	}
 	GLuint s_id = get_gl_id(sc.handle);
 	glCompileShader(s_id);
-	int result;
-	glGetShaderiv(s_id, GL_COMPILE_STATUS, &result); 
-	if (result == 1)
+	GLint result = GL_FALSE;
+	glGetShaderiv(s_id, GL_COMPILE_STATUS, &result);
+	if (result == GL_TRUE)
 		return true;
 	sc.last_error = std::string();
 	GLint infologLength = 0;
@@ -2806,7 +2819,7 @@ bool gl_context::shader_code_compile(render_component& sc) const
 		GLsizei charsWritten = 0;
 		sc.last_error = std::string(infologLength, 0);
 		glGetShaderInfoLog(s_id, infologLength, &charsWritten, &sc.last_error.front());
-		sc.last_error.resize(static_cast<size_t>(charsWritten + 1));
+		sc.last_error.resize(static_cast<size_t>(charsWritten));
 	}
 	return false;
 }
@@ -2845,17 +2858,17 @@ bool gl_context::shader_program_link(shader_program_base& spb) const
 	}
 	GLuint p_id = get_gl_id(spb.handle);
 	glLinkProgram(p_id); 
-	int result;
-	glGetProgramiv(p_id, GL_LINK_STATUS, &result); 
-	if (result == 1)
+	GLint result = GL_FALSE;
+	glGetProgramiv(p_id, GL_LINK_STATUS, &result);
+	if (result == GL_TRUE)
 		return context::shader_program_link(spb);
 	GLint infologLength = 0;
 	glGetProgramiv(p_id, GL_INFO_LOG_LENGTH, &infologLength);
 	if (infologLength > 0) {
 		GLsizei charsWritten = 0;
 		spb.last_error = std::string(infologLength, 0);
-		glGetShaderInfoLog(p_id, infologLength, &charsWritten, &spb.last_error.front());
-		spb.last_error.resize(static_cast<size_t>(charsWritten + 1));
+		glGetProgramInfoLog(p_id, infologLength, &charsWritten, &spb.last_error.front());
+		spb.last_error.resize(static_cast<size_t>(charsWritten));
 		error("gl_context::shader_program_link\n" + spb.last_error, &spb);
 	}
 
@@ -2910,6 +2923,8 @@ bool gl_context::shader_program_destruct(shader_program_base& spb) const
 	if (!context::shader_program_destruct(spb))
 		return false;
 	glDeleteProgram(get_gl_id(spb.handle));
+	spb.handle = 0;
+	spb.ctx_ptr = 0;
 	return true;
 }
 
@@ -2955,6 +2970,161 @@ bool gl_context::shader_program_get_active_uniforms(shader_program_base& spb, st
 	}
 	return true;
 }
+
+program_variable_info construct_program_variable(const std::vector<GLchar>& buffer, GLsizei actual_length, GLint array_size, GLenum type)
+{
+	program_variable_info V;
+	V.name = std::string(static_cast<const char*>(buffer.data()), actual_length);
+	// Uniforms for arrays of non-compound (non-struct) types are listed once with a "[0]" suffix and a given array size greater than 1.
+	if (array_size > 1) {
+		// Remove the brackets to get the base name of the uniform
+		size_t bracket_pos = V.name.find('[');
+		if (bracket_pos != std::string::npos)
+			V.name.resize(bracket_pos);
+		if (!V.name.empty())
+			V.array_size = array_size;
+	}
+	else {
+		V.array_size = 1;
+	}
+	switch (type) {
+	case GL_FLOAT: V.type_descr = type_descriptor(cgv::type::info::TI_FLT32, false); break;
+	case GL_FLOAT_VEC2: V.type_descr = type_descriptor(cgv::type::info::TI_FLT32, 2u); break;
+	case GL_FLOAT_VEC3: V.type_descr = type_descriptor(cgv::type::info::TI_FLT32, 3u); break;
+	case GL_FLOAT_VEC4: V.type_descr = type_descriptor(cgv::type::info::TI_FLT32, 4u); break;
+	case GL_FLOAT_MAT2: V.type_descr = type_descriptor(cgv::type::info::TI_FLT32, 2u, 2u, false); break;
+	case GL_FLOAT_MAT3: V.type_descr = type_descriptor(cgv::type::info::TI_FLT32, 3u, 3u, false); break;
+	case GL_FLOAT_MAT4: V.type_descr = type_descriptor(cgv::type::info::TI_FLT32, 4u, 4u, false); break;
+	case GL_FLOAT_MAT2x3: V.type_descr = type_descriptor(cgv::type::info::TI_FLT32, 2u, 3u, false); break;
+	case GL_FLOAT_MAT2x4: V.type_descr = type_descriptor(cgv::type::info::TI_FLT32, 2u, 4u, false); break;
+	case GL_FLOAT_MAT3x2: V.type_descr = type_descriptor(cgv::type::info::TI_FLT32, 3u, 2u, false); break;
+	case GL_FLOAT_MAT3x4: V.type_descr = type_descriptor(cgv::type::info::TI_FLT32, 3u, 4u, false); break;
+	case GL_FLOAT_MAT4x2: V.type_descr = type_descriptor(cgv::type::info::TI_FLT32, 4u, 2u, false); break;
+	case GL_FLOAT_MAT4x3: V.type_descr = type_descriptor(cgv::type::info::TI_FLT32, 4u, 3u, false); break;
+	case GL_BOOL: V.type_descr = type_descriptor(cgv::type::info::TI_BOOL, false); break;
+	case GL_BOOL_VEC2:V.type_descr = type_descriptor(cgv::type::info::TI_BOOL, 2u); break;
+	case GL_BOOL_VEC3:V.type_descr = type_descriptor(cgv::type::info::TI_BOOL, 3u); break;
+	case GL_BOOL_VEC4:V.type_descr = type_descriptor(cgv::type::info::TI_BOOL, 4u); break;
+	case GL_INT: V.type_descr = type_descriptor(cgv::type::info::TI_INT32, false); break;
+	case GL_INT_VEC2:V.type_descr = type_descriptor(cgv::type::info::TI_INT32, 2u); break;
+	case GL_INT_VEC3:V.type_descr = type_descriptor(cgv::type::info::TI_INT32, 3u); break;
+	case GL_INT_VEC4:V.type_descr = type_descriptor(cgv::type::info::TI_INT32, 4u); break;
+	case GL_UNSIGNED_INT:V.type_descr = type_descriptor(cgv::type::info::TI_UINT32, false); break;
+	case GL_UNSIGNED_INT_VEC2:V.type_descr = type_descriptor(cgv::type::info::TI_UINT32, 2u); break;
+	case GL_UNSIGNED_INT_VEC3:V.type_descr = type_descriptor(cgv::type::info::TI_UINT32, 3u); break;
+	case GL_UNSIGNED_INT_VEC4:V.type_descr = type_descriptor(cgv::type::info::TI_UINT32, 4u); break;
+	case GL_DOUBLE: V.type_descr = type_descriptor(cgv::type::info::TI_FLT64, false); break;
+	case GL_DOUBLE_VEC2:V.type_descr = type_descriptor(cgv::type::info::TI_FLT64, 2u); break;
+	case GL_DOUBLE_VEC3:V.type_descr = type_descriptor(cgv::type::info::TI_FLT64, 3u); break;
+	case GL_DOUBLE_VEC4:V.type_descr = type_descriptor(cgv::type::info::TI_FLT64, 4u); break;
+	case GL_DOUBLE_MAT2:V.type_descr = type_descriptor(cgv::type::info::TI_FLT64, 2u, 2u, false); break;
+	case GL_DOUBLE_MAT3:V.type_descr = type_descriptor(cgv::type::info::TI_FLT64, 3u, 3u, false); break;
+	case GL_DOUBLE_MAT4:V.type_descr = type_descriptor(cgv::type::info::TI_FLT64, 4u, 4u, false); break;
+	case GL_DOUBLE_MAT2x3:V.type_descr = type_descriptor(cgv::type::info::TI_FLT64, 2u, 3u, false); break;
+	case GL_DOUBLE_MAT2x4:V.type_descr = type_descriptor(cgv::type::info::TI_FLT64, 2u, 4u, false); break;
+	case GL_DOUBLE_MAT3x2:V.type_descr = type_descriptor(cgv::type::info::TI_FLT64, 3u, 2u, false); break;
+	case GL_DOUBLE_MAT3x4:V.type_descr = type_descriptor(cgv::type::info::TI_FLT64, 3u, 4u, false); break;
+	case GL_DOUBLE_MAT4x2:V.type_descr = type_descriptor(cgv::type::info::TI_FLT64, 4u, 2u, false); break;
+	case GL_DOUBLE_MAT4x3:V.type_descr = type_descriptor(cgv::type::info::TI_FLT64, 4u, 3u, false); break;
+	}
+	return V;
+}
+
+void gl_context::shader_program_inspect_variables(shader_program_base& spb, ProgramVariableKind kind, std::vector<program_variable_info>& Vs, bool get_location, bool get_value) const
+{
+	GLint prog_id;
+	spb.put_id(prog_id);
+	// name buffer and sizeing informations
+	std::vector<GLchar> buffer(256);
+	GLint array_size = 0;
+	GLenum type = 0;
+	GLsizei actual_length = 0;
+	// query number of active program variables of \c kind
+	GLint num_active_variables = 0;
+	glGetProgramiv(prog_id, kind == cgv::render::PVK_UNIFORM ? GL_ACTIVE_UNIFORMS : GL_ACTIVE_ATTRIBUTES, &num_active_variables);
+	// for inspecting attribute values, one has to use the to be inspected program. Remember previously used program
+	GLint old_prog_id = prog_id;
+	if (kind == cgv::render::PVK_ATTRIBUTE) {
+		glGetIntegerv(GL_CURRENT_PROGRAM, &old_prog_id);
+		if (old_prog_id != prog_id)
+			glUseProgram(prog_id);
+	}
+	// iterate all variables of \c kind
+	for (int i = 0; i < num_active_variables; ++i) {
+		// extract type and array information of program variable
+		(kind == cgv::render::PVK_UNIFORM ? glGetActiveUniform : glGetActiveAttrib)(prog_id, i,
+			GLsizei(buffer.size()), &actual_length, &array_size, &type, buffer.data());
+		cgv::render::program_variable_info V = construct_program_variable(buffer, actual_length, array_size, type);
+		// compute component count \c cnt, array element size \c s and total size \c S for all values in array
+		size_t cnt = 1, s, S;
+		if (get_value) {
+			V.compute_sizes(cnt, s, S);
+			V.current_value.resize(S);
+		}
+		// in case of attributes provide a read buffer to read array elements which write 
+		// always 4 components even if only one component is declared
+		std::vector<char> read_buffer;
+		if (kind == cgv::render::PVK_ATTRIBUTE && cnt != 4)
+			read_buffer.resize(4 * s / cnt);
+		for (unsigned j = 0; j < V.array_size; ++j) {
+			// in case of array variables use per array element postfix to query location
+			std::string postfix;
+			if (V.array_size > 1)
+				postfix += "[" + cgv::utils::to_string(j) + "]";
+			// query location of variable in 
+			if (get_location || get_value)
+				V.program_location = (kind == cgv::render::PVK_UNIFORM ? glGetUniformLocation : glGetAttribLocation)(
+					prog_id, (V.name + postfix).c_str());
+			// one is not allowed to query program attribute at location 0
+			if (kind == cgv::render::PVK_ATTRIBUTE && V.program_location == 0) {
+				V.current_value.clear();
+				break;
+			}
+			if (!get_value)
+				break;
+			// let read_ptr point where program variable values should be queried to
+			void* value_ptr = V.current_value.data() + j * s;
+			void* read_ptr = read_buffer.empty() ? value_ptr : read_buffer.data();
+			// switch over coordinate type to vary gl getter function
+			switch (V.type_descr.coordinate_type) {
+			case cgv::type::info::TI_BOOL:
+			case cgv::type::info::TI_INT32:
+				if (kind == cgv::render::PVK_UNIFORM)
+					glGetUniformiv(prog_id, V.program_location, (GLint*)(read_ptr));
+				else
+					glGetVertexAttribIiv(V.program_location, GL_CURRENT_VERTEX_ATTRIB, (GLint*)(read_ptr));
+				break;
+			case cgv::type::info::TI_UINT32:
+				if (kind == cgv::render::PVK_UNIFORM)
+					glGetUniformuiv(prog_id, V.program_location, (GLuint*)(read_ptr));
+				else
+					glGetVertexAttribIuiv(V.program_location, GL_CURRENT_VERTEX_ATTRIB, (GLuint*)(read_ptr));
+				break;
+			case cgv::type::info::TI_FLT32:
+				if (kind == cgv::render::PVK_UNIFORM)
+					glGetUniformfv(prog_id, V.program_location, (GLfloat*)(read_ptr));
+				else
+					glGetVertexAttribfv(V.program_location, GL_CURRENT_VERTEX_ATTRIB, (GLfloat*)(read_ptr));
+				break;
+			case cgv::type::info::TI_FLT64:
+				if (kind == cgv::render::PVK_UNIFORM)
+					glGetUniformdv(prog_id, V.program_location, (GLdouble*)(read_ptr));
+				else
+					glGetVertexAttribdv(V.program_location, GL_CURRENT_VERTEX_ATTRIB, (GLdouble*)(read_ptr));
+				break;
+			}
+			// in case we copied to read buffer, copy used value[s] to value buffer
+			if (read_ptr != value_ptr)
+				std::copy((const char*)read_ptr, (const char*)read_ptr + s, (char*)value_ptr);
+		}
+		// add inspected variable to list
+		Vs.push_back(V);
+	}
+	// recover previously used program
+	if (old_prog_id != prog_id)
+		glUseProgram(old_prog_id);
+}
+
 
 int  gl_context::get_uniform_location(const shader_program_base& spb, const std::string& name) const
 {
@@ -3285,10 +3455,24 @@ bool gl_context::set_uniform_array_void(shader_program_base& spb, int loc, type_
 	return res;
 }
 
+int  gl_context::get_uniform_block_index(const shader_program_base& spb, const std::string& name) const
+{
+	return glGetUniformBlockIndex(get_gl_id(spb.handle), name.c_str());
+}
+
+bool gl_context::set_uniform_block_binding(shader_program_base& spb, int index, int binding) const
+{
+	if(!spb.handle) {
+		error("gl_context::set_uniform_block_binding() called on not created program", &spb);
+		return false;
+	}
+	glUniformBlockBinding(get_gl_id(spb.handle), index, binding);
+	return check_gl_error("gl_context::set_uniform_block_binding()", &spb);
+}
+
 int  gl_context::get_attribute_location(const shader_program_base& spb, const std::string& name) const
 {
-	GLint loc = glGetAttribLocation(get_gl_id(spb.handle), name.c_str());
-	return loc;
+	return glGetAttribLocation(get_gl_id(spb.handle), name.c_str());
 }
 
 bool gl_context::set_attribute_void(shader_program_base& spb, int loc, type_descriptor value_type, const void* value_ptr) const
@@ -3407,9 +3591,9 @@ bool gl_context::attribute_array_binding_create(attribute_array_binding_base& aa
 	return true;
 }
 
-bool gl_context::attribute_array_binding_destruct(attribute_array_binding_base& aab)
+bool gl_context::attribute_array_binding_destruct(attribute_array_binding_base& aab) const
 {
-	if (&aab == attribute_array_binding_stack.top())
+	if (!attribute_array_binding_stack.empty() && &aab == attribute_array_binding_stack.top())
 		glBindVertexArray(0);
 	if (!context::attribute_array_binding_destruct(aab))
 		return false;
@@ -3419,6 +3603,8 @@ bool gl_context::attribute_array_binding_destruct(attribute_array_binding_base& 
 	}
 	GLuint a_id = get_gl_id(aab.handle);
 	glDeleteVertexArrays(1, &a_id);
+	aab.handle = 0;
+	aab.ctx_ptr = 0;
 	return !check_gl_error("gl_context::attribute_array_binding_destruct");
 }
 
@@ -3712,9 +3898,16 @@ bool gl_context::vertex_buffer_copy_back(const vertex_buffer_base& vbb, size_t o
 	}
 	GLuint b_id = get_gl_id(vbb.handle);
 	GLuint bind_point = GL_COPY_READ_BUFFER;
-	//if (vbb.type == cgv::render::VBT_STORAGE) {
-	//	bind_point = GL_SHADER_STORAGE_BUFFER;
-	//}
+	switch (vbb.type) {
+	case cgv::render::VBT_VERTICES: bind_point = GL_ARRAY_BUFFER; break;
+	case cgv::render::VBT_INDICES: bind_point = GL_ELEMENT_ARRAY_BUFFER; break;
+	case cgv::render::VBT_TEXTURE: bind_point = GL_TEXTURE_BUFFER; break;
+	case cgv::render::VBT_UNIFORM: bind_point = GL_UNIFORM_BUFFER; break;
+	case cgv::render::VBT_FEEDBACK: bind_point = GL_TRANSFORM_FEEDBACK_BUFFER; break;
+	case cgv::render::VBT_STORAGE: bind_point = GL_SHADER_STORAGE_BUFFER; break;
+	case cgv::render::VBT_ATOMIC_COUNTER: bind_point = GL_ATOMIC_COUNTER_BUFFER; break;
+	case cgv::render::VBT_INDIRECT: bind_point = GL_DRAW_INDIRECT_BUFFER; break;
+	}
 	glBindBuffer(bind_point, b_id);
 	glGetBufferSubData(bind_point, offset, size_in_bytes, array_ptr);
 	glBindBuffer(bind_point, 0);
@@ -3726,6 +3919,8 @@ bool gl_context::vertex_buffer_destruct(vertex_buffer_base& vbb) const
 	if (vbb.handle) {
 		GLuint b_id = get_gl_id(vbb.handle);
 		glDeleteBuffers(1, &b_id);
+		vbb.handle = 0;
+		vbb.ctx_ptr = 0;
 		return !check_gl_error("gl_context::vertex_buffer_destruct");
 	}
 	else {

@@ -10,6 +10,11 @@
 // FIXME: Can't we just use std::numeric_limits?
 #ifndef _MSC_VER
 // FIXME: better use stdint.h
+
+// Explicit redefinition to avoid compiler warnings.
+#undef __INT64_C
+#undef __UINT64_C
+
 # if __WORDSIZE == 64
 #  define __INT64_C(c)	c ## L
 #  define __UINT64_C(c)	c ## UL

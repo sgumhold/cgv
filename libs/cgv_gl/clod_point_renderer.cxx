@@ -266,7 +266,7 @@ namespace cgv {
 			vec3 pa = vec3(hpa.x(), hpa.y(), hpa.z());
 			vec3 pb = vec3(hpb.x(), hpb.y(), hpb.z());
 
-			double y_view_angle = PI - acos(dot(pa, pb) / (pa.length() * pb.length()));
+			double y_view_angle = cgv::math::constants::pi- acos(dot(pa, pb) / (pa.length() * pb.length()));
 			float pixel_extent_per_depth = (float)(2.0 * tan(0.5 * y_view_angle) / ctx.get_height());
 
 			//general point renderer uniforms

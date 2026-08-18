@@ -35,12 +35,6 @@ namespace cgv {
 			direction_is_end_point = true;
 			remove_attribute_array(ctx, "direction");
 		}
-		bool arrow_renderer::build_shader_program(context& ctx, shader_program& prog, const shader_compile_options& options) const
-		{
-			prog.allow_context_to_set_color(false);
-			return renderer::build_shader_program(ctx, prog, options);
-		}
-
 		bool arrow_renderer::validate_attributes(const context& ctx) const
 		{
 			const arrow_render_style& ars = get_style<arrow_render_style>();

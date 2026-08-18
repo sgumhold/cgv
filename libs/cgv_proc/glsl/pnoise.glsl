@@ -3,6 +3,8 @@
 /** use these forward declarations in your shader to use 2/3/4d Perlin p_noise:
 float pnoise(vec2 x);
 float pnoise(vec2 x, float zoom, float time);
+float pnoise(vec3 p);
+float fbm_pnoise(vec3 p, int octaves, float persistence, float lacunarity);
 */
 
 #define M_PI 3.14159265358979323846
@@ -69,3 +71,112 @@ float pnoise(vec2 p, float dim, float time)
 }
 
 
+
+/* ----------------------------------------------------------
+   3D Perlin Noise
+   Based on Stefan Gustavson / Ashima Arts improved noise.
+   Cleaned up with explicit gradient vectors.
+   Output range is approximately [-1, 1].
+   ---------------------------------------------------------- */
+
+vec3 mod289(vec3 x) { return x - floor(x * (1.0 / 289.0)) * 289.0; }
+vec4 mod289(vec4 x) { return x - floor(x * (1.0 / 289.0)) * 289.0; }
+
+// Permutation polynomial: returns pseudo-random integers in [0, 288]
+vec4 permute(vec4 x) { return mod289(((x * 34.0) + 1.0) * x); }
+
+// 16 gradient directions (12 unique edges + 4 repeats)
+// Normalized so output is roughly [-1, 1]
+const float R2 = 1.4142135623730951; // sqrt(2)
+const vec3 grad[16] = vec3[](
+    vec3(1, 1, 0) / R2, vec3(-1, 1, 0) / R2, vec3(1, -1, 0) / R2, vec3(-1, -1, 0) / R2,
+    vec3(1, 0, 1) / R2, vec3(-1, 0, 1) / R2, vec3(1, 0, -1) / R2, vec3(-1, 0, -1) / R2,
+    vec3(0, 1, 1) / R2, vec3(0, -1, 1) / R2, vec3(0, 1, -1) / R2, vec3(0, -1, -1) / R2,
+    vec3(1, 1, 0) / R2, vec3(0, -1, 1) / R2, vec3(-1, 1, 0) / R2, vec3(0, -1, -1) / R2
+    );
+
+float pnoise(vec3 p)
+{
+    // Integer coordinates of the unit cube
+    vec3 pi0 = floor(p);
+    vec3 pi1 = pi0 + 1.0;
+
+    // Wrap indices to avoid overflow
+    pi0 = mod289(pi0);
+    pi1 = mod289(pi1);
+
+    // Fractional part (0 to 1) and fractional part - 1
+    vec3 pf0 = fract(p);
+    vec3 pf1 = pf0 - 1.0;
+
+    // Hash the 8 corners
+    vec4 ix = vec4(pi0.x, pi1.x, pi0.x, pi1.x);
+    vec4 iy = vec4(pi0.yy, pi1.yy);
+    vec4 iz0 = pi0.zzzz;
+    vec4 iz1 = pi1.zzzz;
+
+    vec4 ixy = permute(permute(ix) + iy);
+    vec4 ixy0 = permute(ixy + iz0);
+    vec4 ixy1 = permute(ixy + iz1);
+
+    // Map hashes to gradient indices 0-15
+    int gi000 = int(mod(ixy0.x, 16.0));
+    int gi100 = int(mod(ixy0.y, 16.0));
+    int gi010 = int(mod(ixy0.z, 16.0));
+    int gi110 = int(mod(ixy0.w, 16.0));
+    int gi001 = int(mod(ixy1.x, 16.0));
+    int gi101 = int(mod(ixy1.y, 16.0));
+    int gi011 = int(mod(ixy1.z, 16.0));
+    int gi111 = int(mod(ixy1.w, 16.0));
+
+    // Gradient vectors at the 8 corners
+    vec3 g000 = grad[gi000];
+    vec3 g100 = grad[gi100];
+    vec3 g010 = grad[gi010];
+    vec3 g110 = grad[gi110];
+    vec3 g001 = grad[gi001];
+    vec3 g101 = grad[gi101];
+    vec3 g011 = grad[gi011];
+    vec3 g111 = grad[gi111];
+
+    // Distance from each corner to the sample point, then dot with gradient
+    float n000 = dot(g000, pf0);
+    float n100 = dot(g100, vec3(pf1.x, pf0.yz));
+    float n010 = dot(g010, vec3(pf0.x, pf1.y, pf0.z));
+    float n110 = dot(g110, vec3(pf1.xy, pf0.z));
+    float n001 = dot(g001, vec3(pf0.xy, pf1.z));
+    float n101 = dot(g101, vec3(pf1.x, pf0.y, pf1.z));
+    float n011 = dot(g011, vec3(pf0.x, pf1.yz));
+    float n111 = dot(g111, pf1);
+
+    // Fade curve: 6t^5 - 15t^4 + 10t^3
+    vec3 f = pf0 * pf0 * pf0 * (pf0 * (pf0 * 6.0 - 15.0) + 10.0);
+
+    // Trilinear interpolation
+    vec4 n_z = mix(
+        vec4(n000, n100, n010, n110),
+        vec4(n001, n101, n011, n111),
+        f.z
+    );
+    vec2 n_yz = mix(n_z.xy, n_z.zw, f.y);
+    float n_xyz = mix(n_yz.x, n_yz.y, f.x);
+
+    return n_xyz;
+}
+
+/* ----------------------------------------------------------
+   Fractal Brownian Motion (FBM) using the Perlin function
+   ---------------------------------------------------------- */
+
+float fbm_pnoise(vec3 p, int octaves, float persistence, float lacunarity)
+{
+    float total = 0.0;
+    float amplitude = 1.0;
+    float frequency = 1.0;
+    for (int i = 0; i < octaves; ++i) {
+        total += pnoise(p * frequency) * amplitude;
+        amplitude *= persistence;
+        frequency *= lacunarity;
+    }
+    return total / (1.0 - pow(persistence, float(octaves)));
+}

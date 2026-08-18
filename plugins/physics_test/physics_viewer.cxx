@@ -20,7 +20,7 @@
 
 using namespace cgv::render;
 
-physics_viewer::physics_viewer() : application_plugin("Physics Viewer") {
+physics_viewer::physics_viewer() : cgv::base::node("Physics Viewer") {
 
 	// Seed the random generator with a constant value so that every run produces the same results
 	rng.set_seed(42ull);
@@ -94,14 +94,14 @@ void physics_viewer::clear(context& ctx) {
 
 void physics_viewer::on_set(void* member_ptr) {
 
-	handle_member_change(cgv::utils::pointer_test(member_ptr));
+	handle_member_change(member_ptr);
 	update_member(member_ptr);
 	post_redraw();
 }
 
-void physics_viewer::handle_member_change(const cgv::utils::pointer_test& m) {}
+void physics_viewer::handle_member_change(cgv::data::informed_ptr ptr) {}
 
-bool physics_viewer::handle_event(cgv::gui::event& e) {
+bool physics_viewer::handle(cgv::gui::event& e) {
 
 	if(e.get_kind() == cgv::gui::EID_MOUSE) {
 		// Currently unused
@@ -189,13 +189,13 @@ void physics_viewer::draw_background(context& ctx) {
 
 void physics_viewer::after_finish(cgv::render::context& ctx) {
 	
-	if(initialize_view_ptr()) {
-		taa.set_view(view_ptr);
+	if(!view && (view = find_view_as_node())) {
+		taa.set_view(view);
 
 		background_color_top = cgv::rgb(0.1f, 0.13f, 0.22f);
 		background_color_bottom = cgv::rgb(0.33f, 0.40f, 0.52f);
 
-		view_ptr->set_eye_keep_view_angle(cgv::dvec3(0.0f, 6.0f, 12.0f));
+		view->set_eye_keep_view_angle(cgv::dvec3(0.0f, 6.0f, 12.0f));
 		post_redraw();
 	}
 }
@@ -529,25 +529,18 @@ void physics_viewer::generate_random_mesh_instance() {
 	represenation->mesh_info = &bunny_mesh_info;
 	represenation->scale = scale;
 
+	std::vector<cgv::media::mesh::simple_mesh<>::idx3_type> triangle_position_indices;
+	bunny_mesh.extract_triangle_indices(triangle_position_indices);
 
-
-	// TODO: Create a method for this in simple_mesh?
-	std::vector<cgv::media::mesh::simple_mesh<>::idx_type> vertex_indices;
-	std::vector<cgv::math::fvec<cgv::media::mesh::simple_mesh<>::idx_type, 4>> unique_quadruples;
-	bunny_mesh.merge_indices(vertex_indices, unique_quadruples);
-
-	std::vector<cgv::media::mesh::simple_mesh<>::idx_type> triangle_element_buffer;
-	bunny_mesh.extract_triangle_element_buffer(vertex_indices, triangle_element_buffer);
-
-	auto& positions = bunny_mesh.get_positions();
 	JPH::TriangleList triangles;
-
-	for(size_t i = 0; i < triangle_element_buffer.size(); i += 3)
-		triangles.emplace_back(cgv::physics::convert::to_Jolt_Vec3(positions[triangle_element_buffer[i + 0]]),
-							   cgv::physics::convert::to_Jolt_Vec3(positions[triangle_element_buffer[i + 1]]),
-							   cgv::physics::convert::to_Jolt_Vec3(positions[triangle_element_buffer[i + 2]]));
-
-
+	for(const auto& index_triple : triangle_position_indices) {
+		using namespace cgv::physics::convert;
+		triangles.emplace_back(
+			to_Jolt_Vec3(bunny_mesh.position(index_triple[0])),
+			to_Jolt_Vec3(bunny_mesh.position(index_triple[1])),
+			to_Jolt_Vec3(bunny_mesh.position(index_triple[2]))
+		);
+	}
 
 	JPH::MeshShapeSettings settings(triangles);
 	auto result = settings.Create();
@@ -567,7 +560,7 @@ void physics_viewer::generate_random_mesh_instance() {
 		creation_info.position = position;
 
 		float angle = 0.0f;
-		rng.uniform(0.0f, 3.1415f, angle);
+		rng.uniform(0.0f, static_cast<float>(cgv::math::constants::pi), angle);
 		cgv::quat orientation(cgv::quat::AxisEnum::Y_AXIS, angle);
 
 		creation_info.orientation = orientation;

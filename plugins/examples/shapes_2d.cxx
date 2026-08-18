@@ -93,7 +93,7 @@ protected:
 	bool apply_gamma = true;
 
 	// text appearance
-	std::vector<std::string> texts;
+	//std::vector<std::string> texts;
 	cgv::render::TextAlignment text_align_h, text_align_v;
 	float text_angle = 0.0f;
 	cgv::g2d::msdf_text_geometry text_geometry;
@@ -126,9 +126,6 @@ public:
 		point_renderer = cgv::render::generic_renderer(cgv::g2d::shaders::circle);
 
 		text_align_h = text_align_v = cgv::render::TA_NONE;
-
-		texts.push_back("Hello World!");
-		texts.push_back("CGV Framework");
 
 		// Set callbacks for changes to draggable control points.
 		// Use lambdas to call the appropriate function and just ignore the DragAction argument, because we don't need it.
@@ -274,7 +271,7 @@ public:
 		const auto& setup_point = [](const cgv::vec2 & position) {
 			cgv::g2d::circle_draggable p(position, cgv::vec2(16.0f));
 			p.position_is_center = true;
-			p.constraint_reference = cgv::g2d::draggable::ConstraintReference::CR_FULL_SIZE;
+			p.constraint_reference = cgv::g2d::ConstraintReference::kBoundingBox;
 			return p;
 		};
 		
@@ -337,7 +334,7 @@ public:
 		if(viewport_resolution != viewport_rect.size) {
 			viewport_rect.size = viewport_resolution;
 
-			canvas.set_resolution(ctx, viewport_rect.size);
+			canvas.set_resolution(viewport_rect.size);
 
 			set_resolution_uniform(ctx, line_renderer.ref_prog());
 			set_resolution_uniform(ctx, quadratic_spline_renderer.ref_prog());
@@ -534,11 +531,11 @@ public:
 			return;
 		cgv::render::context& ctx = *ctx_ptr;
 
-		std::vector<std::string> labels;
-		labels.push_back("Hello World!");
-		labels.push_back("CGV Framework");
-
-		text_geometry.set_text_array(ctx, labels);
+		text_geometry.texts = {
+			"Hello World!",
+			"CGV Framework"
+		};
+		text_geometry.create(ctx);
 
 		text_geometry.positions.clear();
 		for(unsigned i = 0; i < 2; ++i)
@@ -562,8 +559,8 @@ public:
 		pos_str += ", ";
 		pos_str += std::to_string(p.y());
 		pos_str += ")";
-		texts[0] = pos_str;
-		text_geometry.set_text_array(ctx, texts);
+		text_geometry.texts[0] = pos_str;
+		text_geometry.create(ctx);
 	}
 	void set_resolution_uniform(cgv::render::context& ctx, cgv::render::shader_program& prog) {
 		prog.enable(ctx);

@@ -30,7 +30,7 @@ namespace cgv {
 		}
 		void spline_tube_renderer::remove_radius_array(const context& ctx) {
 			has_radii = false;
-			remove_attribute_array(ctx, "radii");
+			remove_attribute_array(ctx, "radius");
 		}
 		void spline_tube_renderer::remove_tangent_array(const context& ctx) {
 			has_tangents = false;

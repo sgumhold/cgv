@@ -12,7 +12,7 @@ uniform uint u_end;
 uniform value_type u_init;
 uniform value_type u_step;
 
-layout(local_size_x = 512) in;
+layout(local_size_x = LOCAL_SIZE_X) in;
 void main() {
 	uint gid = gl_GlobalInvocationID.x;
 	uint id = u_begin + gid;

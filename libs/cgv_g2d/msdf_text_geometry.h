@@ -15,8 +15,8 @@ namespace g2d {
 class CGV_API msdf_text_geometry {
 public:
 	struct text_info {
-		std::string str = "";
-		unsigned offset = 0;
+		int offset = 0;
+		int size = 0;
 		float normalized_width = 0.0f;
 	};
 
@@ -35,6 +35,7 @@ private:
 	msdf_font& ref_font() const;
 
 public:
+	std::vector<std::string> texts;
 	std::vector<vec3> positions;
 	std::vector<rgba> colors;
 	std::vector<float> scales;
@@ -57,15 +58,17 @@ public:
 
 	void clear();
 
-	size_t size() const { return text_infos.size(); }
+	size_t size() const { return texts.size(); }
 
-	bool empty() const { return text_infos.empty(); }
+	size_t render_count() const { return text_infos.size(); }
+
+	bool empty() const { return texts.empty(); }
 
 	msdf_font& ref_msdf_font() { return ref_font(); }
 
 	void set_msdf_font(const cgv::render::context& ctx, msdf_font* font_ptr);
 
-	void set_text_array(const cgv::render::context& ctx, const std::vector<std::string>& texts);
+	void create(const cgv::render::context& ctx);
 
 	const std::vector<text_info>& ref_text_infos() const {
 		return text_infos;
@@ -95,7 +98,7 @@ public:
 		return index < alignments.size() ? alignments[index] : alignment;
 	}
 
-	vec2 compute_text_render_size(size_t index, float font_size) const;
+	vec2 get_text_render_size(size_t index, float font_size) const;
 
 	bool enable(cgv::render::context& ctx);
 

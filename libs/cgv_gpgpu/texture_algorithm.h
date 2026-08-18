@@ -15,7 +15,7 @@ protected:
 	using TextureType = cgv::render::TextureType;
 	
 public:
-	texture_algorithm(const std::string& type_name, std::initializer_list<TextureType> supported_texture_types) : algorithm(type_name) {
+	texture_algorithm(const std::string& type_name, std::initializer_list<TextureType> supported_texture_types) : algorithm(type_name, GroupSize::Auto) {
 		_supported_texture_types = supported_texture_types;
 		// Overwrite default value of group size from algorithm to ensure correct group count.
 		_group_size = 4u;
@@ -26,7 +26,7 @@ public:
 protected:
 	struct texture_algorithm_create_info : public algorithm_create_info {
 		TextureType texture_type = TextureType::TT_UNDEF;
-		sl::ImageFormatLayoutQualifier image_format = sl::ImageFormatLayoutQualifier::k_rgba8;
+		sl::ImageFormatLayoutQualifier image_format = sl::ImageFormatLayoutQualifier::rgba8;
 	};
 
 	cgv::render::shader_compile_options get_compile_options(const texture_algorithm_create_info& create_info);

@@ -21,8 +21,8 @@ namespace stream_vis {
 
 	view_overlay::view_overlay()
 	{
-		set_alignment(AO_START, AO_START);
-		set_stretch(SO_BOTH);
+		set_alignment(cgv::overlay::Alignment::kStart, cgv::overlay::Alignment::kStart);
+		set_stretch_mode(cgv::overlay::StretchMode::kCover);
 		set_margin(cgv::ivec2(-3));
 		set_size(cgv::ivec2(600u, 600u));
 	}

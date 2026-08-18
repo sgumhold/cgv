@@ -1,10 +1,24 @@
 #pragma once
 
 #include "fvec.h"
+#include "proximity.h"
 
 /// This header provides common signed and unsigned distance implementations between points and primitives or primitives and primitives.
 namespace cgv {
 namespace math {
+
+/// @brief Computes the unsigned distance between a point and infinite line given by direction going through p0.
+/// 
+/// @tparam T the numeric type.
+/// @tparam N the dimensionality.
+/// @param point the query point.
+/// @param p0 the reference point on the line.
+/// @param direction the line direction.
+/// @return the unsigned distance.
+template <typename T, cgv::type::uint32_type N>
+T point_line_distance(const fvec<T, N>& point, const fvec<T, N>& p0, const fvec<T, N>& direction) {
+	return length(closest_point_on_line_to_point(p0, direction), point) - point;
+}
 
 /// @brief Computes the signed distance between a point and axis aligned box located at the origin.
 /// Negative distances are inside of the box.
@@ -14,8 +28,7 @@ namespace math {
 /// @param [in] extent the total box extent/size.
 /// @return the signed distance.
 template <typename T>
-T point_box_distance(const fvec<T, 3>& point, fvec<T, 3> extent) {
-
+T point_box_distance(const fvec<T, 3>& point, const fvec<T, 3>& extent) {
 	fvec<T, 3> q = abs(point) - T(0.5) * extent;
 	return length(max(q, T(0))) + std::min(std::max(q.x(), std::max(q.y(), q.z())), T(0));
 }
@@ -30,7 +43,6 @@ T point_box_distance(const fvec<T, 3>& point, fvec<T, 3> extent) {
 /// @return the signed distance.
 template <typename T>
 T point_plane_distance(const fvec<T, 3>& point, const fvec<T, 3>& origin, const fvec<T, 3>& normal) {
-
 	return dot(point - origin, normal);
 };
 
@@ -45,7 +57,6 @@ T point_plane_distance(const fvec<T, 3>& point, const fvec<T, 3>& origin, const 
 /// @return the signed distance.
 template <typename T, cgv::type::uint32_type N>
 T point_sphere_distance(const fvec<T, N>& point, const fvec<T, N>& center, T radius) {
-
 	return length(center - point) - radius;
 }
 

@@ -14,6 +14,7 @@ bool create_or_update_texture_from_frame(cgv::render::context& ctx,
 		cgv::data::CF_RGBA,  // PF_RGBA
 		cgv::data::CF_BGRA,  // PF_BGRA
 		cgv::data::CF_UNDEF, // PF_BAYER
+		cgv::data::CF_UNDEF, // PF_JPG
 		cgv::data::CF_R,     // PF_DEPTH
 		cgv::data::CF_UNDEF, // PF_DEPTH_AND_PLAYER
 		cgv::data::CF_UNDEF, // PF_POINTS_AND_TRIANGLES

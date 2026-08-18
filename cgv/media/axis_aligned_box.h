@@ -28,11 +28,9 @@ public:
 	axis_aligned_box() { invalidate(); }
 	/// type conversion copy constructor
 	template <typename S>
-	axis_aligned_box(const axis_aligned_box<S, N>& B) : 
-		minp(T(B.get_min_pnt()(0)), T(B.get_min_pnt()(1)), T(B.get_min_pnt()(2))), 
-		maxp(T(B.get_max_pnt()(0)), T(B.get_max_pnt()(1)), T(B.get_max_pnt()(2))) {}
+	axis_aligned_box(const axis_aligned_box<S, N>& other) : minp(other.get_min_pnt()), maxp(other.get_max_pnt()) {}
 	/// construct from min point and max point
-	axis_aligned_box(const fpnt_type& _minp, const fpnt_type& _maxp) : minp(_minp), maxp(_maxp) {}
+	axis_aligned_box(const fpnt_type& minp, const fpnt_type& maxp) : minp(minp), maxp(maxp) {}
 	/// construct from min point and max point
 	axis_aligned_box(const pnt_type& _minp, const pnt_type& _maxp)
 	{
@@ -51,10 +49,8 @@ public:
 	}
 	/// set to invalid min and max points
 	void invalidate() {
-		for (unsigned int c = 0; c<N; ++c) {
-			minp(c) = 1;
-			maxp(c) = 0;
-		}
+		minp = T(1);
+		maxp = T(0);
 	}
 	/// return a const reference to corner 0
 	const fpnt_type& get_min_pnt() const { return minp; }

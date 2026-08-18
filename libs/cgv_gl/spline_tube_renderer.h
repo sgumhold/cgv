@@ -59,6 +59,22 @@ namespace cgv { // @<
 			void set_tangent_array(const context& ctx, const T* tangents, size_t nr_elements, unsigned stride_in_bytes = 0) { has_tangents = true; set_attribute_array(ctx, "tangent", tangents, nr_elements, stride_in_bytes); }
 			/// remove the tangent attribute
 			void remove_tangent_array(const context& ctx);
+			/// use this function if you store spheres in vec4 with the 4th component the radius
+			template <typename T = float>
+			void set_sphere_array(const context& ctx, const std::vector<cgv::math::fvec<T, 4> >& spheres) {
+				set_composed_attribute_array(ctx, "position", spheres.data(), spheres.size(), reinterpret_cast<const cgv::math::fvec<T, 3>&>(spheres.front()));
+				ref_composed_attribute_array(ctx, "radius", "position", &spheres.front(), spheres.size(), spheres[0][3]);
+				has_positions = true;
+				has_radii = true;
+			}
+			/// use this function if you store spheres in vec4 with the 4th component the radius
+			template <typename T = float>
+			void set_sphere_array(const context& ctx, const cgv::math::fvec<T, 4>* spheres, size_t nr_elements) {
+				set_composed_attribute_array(ctx, "position", spheres, nr_elements, reinterpret_cast<const cgv::math::fvec<T, 3>&>(*spheres));
+				ref_composed_attribute_array(ctx, "radius", "position", spheres, nr_elements, (*spheres)[3]);
+				has_positions = true;
+				has_radii = true;
+			}
 			///
 			bool validate_attributes(const context& ctx) const override;
 			///

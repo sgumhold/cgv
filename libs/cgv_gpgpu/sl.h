@@ -8,63 +8,102 @@
 #include <cgv/math/fmat.h>
 #include <cgv/math/interval.h>
 #include <cgv/render/context.h>
+#include <cgv/render/element_traits.h>
 
 #include "lib_begin.h"
 
 namespace sl {
 
+namespace traits {
+
+// Todo: Make use of the inline keyword if the framework is ever updated to at least C++17.
+
+template<class T>
+/*inline*/ constexpr bool is_instance_of_fvec_v = std::false_type{};
+
+template<class T, cgv::type::uint32_type N>
+/*inline*/ constexpr bool is_instance_of_fvec_v<cgv::math::fvec<T, N>> = std::true_type{};
+
+template<class T>
+/*inline*/ constexpr bool is_instance_of_fmat_v = std::false_type{};
+
+template<class T, cgv::type::uint32_type N, cgv::type::uint32_type M>
+/*inline*/ constexpr bool is_instance_of_fmat_v<cgv::math::fmat<T, N, M>> = std::true_type{};
+
+template<class T>
+/*inline*/ constexpr bool is_fundamental_sl_scalar_type_v =
+std::is_same_v<T, bool> ||
+std::is_same_v<T, std::int32_t> ||
+std::is_same_v<T, std::uint32_t> ||
+std::is_same_v<T, float> ||
+std::is_same_v<T, double>;
+
+template<class T>
+struct is_fundamental_sl_scalar_type : std::bool_constant<is_fundamental_sl_scalar_type_v<T>> {};
+
+template<class T>
+/*inline*/ constexpr bool is_fundamental_sl_type_v =
+is_fundamental_sl_scalar_type_v<T> ||
+is_instance_of_fvec_v<T> ||
+is_instance_of_fmat_v<T>;
+
+template<class T>
+struct is_fundamental_sl_type : std::bool_constant<is_fundamental_sl_type_v<T>> {};
+
+} // namespace traits
+
 enum class Type : int32_t {
-	kVoid = 0,
+	Void = 0,
 
-	kBool,
-	kInt,
-	kUInt,
-	kFloat,
-	kDouble,
+	Bool,
+	Int,
+	UInt,
+	Float,
+	Double,
 
-	kBVec2,
-	kBVec3,
-	kBVec4,
+	BVec2,
+	BVec3,
+	BVec4,
 
-	kIVec2,
-	kIVec3,
-	kIVec4,
+	IVec2,
+	IVec3,
+	IVec4,
 
-	kUVec2,
-	kUVec3,
-	kUVec4,
+	UVec2,
+	UVec3,
+	UVec4,
 
-	kVec2,
-	kVec3,
-	kVec4,
+	Vec2,
+	Vec3,
+	Vec4,
 
-	kDVec2,
-	kDVec3,
-	kDVec4,
+	DVec2,
+	DVec3,
+	DVec4,
 
-	kMat2,
-	kMat3,
-	kMat4,
+	Mat2,
+	Mat3,
+	Mat4,
 
-	kMat2x3,
-	kMat2x4,
-	kMat3x2,
-	kMat3x4,
-	kMat4x2,
-	kMat4x3,
+	Mat2x3,
+	Mat2x4,
+	Mat3x2,
+	Mat3x4,
+	Mat4x2,
+	Mat4x3,
 
-	kDMat2,
-	kDMat3,
-	kDMat4,
+	DMat2,
+	DMat3,
+	DMat4,
 
-	kDMat2x3,
-	kDMat2x4,
-	kDMat3x2,
-	kDMat3x4,
-	kDMat4x2,
-	kDMat4x3,
+	DMat2x3,
+	DMat2x4,
+	DMat3x2,
+	DMat3x4,
+	DMat4x2,
+	DMat4x3,
 
-	kStruct
+	Struct
 };
 
 struct type_info {
@@ -119,8 +158,10 @@ public:
 	/// @brief Return the memory alignment of this data_type in bytes according to GLSL layout std430.
 	size_t alignment_in_bytes() const;
 
+	bool operator==(const data_type& other) const;
+
 private:
-	Type _base_type = Type::kVoid;
+	Type _base_type = Type::Void;
 	std::shared_ptr<type_definition> _definition;
 };
 
@@ -132,9 +173,23 @@ extern CGV_API std::string get_alias_string(const std::string& alias, const std:
 
 extern CGV_API std::string get_type_alias_string(const std::string& alias, data_type type);
 
+extern CGV_API cgv::render::type_descriptor get_type_descriptor(const data_type& type);
+
+template<class T>
+bool matches_type(const data_type& type, const T& value) {
+	if(!type.is_valid() || type.is_compound())
+		return false;
+
+	return get_type_descriptor(type) == cgv::render::element_descriptor_traits<T>::get_type_descriptor({});
+}
+
 struct type_definition {
 	std::string type_name;
 	named_variable_list members;
+
+	bool operator==(const type_definition& other) const {
+		return type_name == other.type_name && members == other.members;
+	}
 };
 
 class named_object {
@@ -165,6 +220,10 @@ public:
 		return _array_size;
 	}
 
+	bool operator==(const named_variable& other) const {
+		return name() == other.name() && _array_size == other._array_size && _type == other._type;
+	}
+
 private:
 	data_type _type;
 	size_t _array_size = 0;
@@ -177,12 +236,12 @@ extern CGV_API std::string to_string(const named_variable_list& variables);
 extern CGV_API std::string to_string(const named_variable_list& variables, const std::string& prefix);
 
 enum class MemoryQualifier : int32_t {
-	kNone = 0,
-	kCoherent = 1,
-	kVolatile = 2,
-	kRestrict = 4,
-	kReadOnly = 8,
-	kWriteOnly = 16
+	None = 0,
+	Coherent = 1,
+	Volatile = 2,
+	Restrict = 4,
+	ReadOnly = 8,
+	WriteOnly = 16
 };
 
 extern CGV_API std::string to_string(MemoryQualifier qualifier);
@@ -228,51 +287,52 @@ using named_buffer_list = std::vector<named_buffer>;
 
 extern CGV_API std::string to_string(const named_buffer_list& buffers, size_t base_location);
 
+/// @brief Layout qualifiers for image formats (lower case names are used for better readability).
 enum class ImageFormatLayoutQualifier : int32_t {
 	// floating-point layout image formats
-	k_rgba32f = 0,
-	k_rgba16f,
-	k_rg32f,
-	k_rg16f,
-	k_r11f_g11f_b10f,
-	k_r32f,
-	k_r16f,
-	k_rgba16,
-	k_rgb10_a2,
-	k_rgba8,
-	k_rg16,
-	k_rg8,
-	k_r16,
-	k_r8,
-	k_rgba16_snorm,
-	k_rgba8_snorm,
-	k_rg16_snorm,
-	k_rg8_snorm,
-	k_r16_snorm,
-	k_r8_snorm,
+	rgba32f = 0,
+	rgba16f,
+	rg32f,
+	rg16f,
+	r11f_g11f_b10f,
+	r32f,
+	r16f,
+	rgba16,
+	rgb10_a2,
+	rgba8,
+	rg16,
+	rg8,
+	r16,
+	r8,
+	rgba16_snorm,
+	rgba8_snorm,
+	rg16_snorm,
+	rg8_snorm,
+	r16_snorm,
+	r8_snorm,
 
 	// signed integer layout image formats
-	k_rgba32i,
-	k_rgba16i,
-	k_rgba8i,
-	k_rg32i,
-	k_rg16i,
-	k_rg8i,
-	k_r32i,
-	k_r16i,
-	k_r8i,
+	rgba32i,
+	rgba16i,
+	rgba8i,
+	rg32i,
+	rg16i,
+	rg8i,
+	r32i,
+	r16i,
+	r8i,
 
 	// unsigned integer layout image formats
-	k_rgba32ui,
-	k_rgba16ui,
-	k_rgb10_a2ui,
-	k_rgba8ui,
-	k_rg32ui,
-	k_rg16ui,
-	k_rg8ui,
-	k_r32ui,
-	k_r16ui,
-	k_r8ui,
+	rgba32ui,
+	rgba16ui,
+	rgb10_a2ui,
+	rgba8ui,
+	rg32ui,
+	rg16ui,
+	rg8ui,
+	r32ui,
+	r16ui,
+	r8ui,
 };
 
 extern CGV_API std::string to_string(ImageFormatLayoutQualifier qualifier);
@@ -310,9 +370,9 @@ using named_image_list = std::vector<named_image>;
 extern CGV_API std::string to_string(const named_image_list& images, size_t base_location);
 
 enum class SamplerBaseFormat {
-	kFloatingPoint,
-	kSignedInteger,
-	kUnsignedInteger
+	FloatingPoint,
+	SignedInteger,
+	UnsignedInteger
 };
 
 class named_texture : public named_object {
@@ -340,6 +400,70 @@ using named_texture_list = std::vector<named_texture>;
 
 extern CGV_API std::string to_string(const named_texture_list& textures, size_t base_location);
 
+enum class ParameterQualifier {
+	In,
+	Out,
+	InOut
+};
+
+extern CGV_API std::string to_string(ParameterQualifier qualifier);
+
+struct parameter {
+	ParameterQualifier qualifier = ParameterQualifier::In;
+	named_variable type_and_name;
+
+	parameter(const data_type& type, const std::string& name) : type_and_name(type, name) {}
+
+	parameter(ParameterQualifier qualifier, const data_type& type, const std::string& name) : qualifier(qualifier), type_and_name(type, name) {}
+
+	static parameter in(const data_type& type, const std::string& name) {
+		return parameter(ParameterQualifier::In, type, name);
+	}
+
+	static parameter out(const data_type& type, const std::string& name) {
+		return parameter(ParameterQualifier::Out, type, name);
+	}
+
+	static parameter inout(const data_type& type, const std::string& name) {
+		return parameter(ParameterQualifier::InOut, type, name);
+	}
+
+	bool operator==(const parameter& other) const {
+		// Only the parameter type is important when comparing for equality.
+		return type_and_name.type() == other.type_and_name.type();
+	}
+};
+
+using parameter_list = std::vector<parameter>;
+
+extern CGV_API std::string to_string(parameter param);
+
+extern CGV_API std::string to_string(parameter_list params);
+
+struct function_definition {
+	data_type ret_type;
+	std::string name;
+	parameter_list parameters;
+	std::string body;
+
+	/// Return all data_types used in the signature and as return type. Does not include any further potential types used in the function body.
+	std::vector<data_type> get_used_types() const;
+
+	bool operator==(const function_definition& other) const {
+		return
+			name == other.name &&
+			ret_type == other.ret_type &&
+			parameters == other.parameters &&
+			body == other.body;
+	}
+};
+
+using function_definition_list = std::vector<function_definition>;
+
+extern CGV_API std::string to_string(const function_definition& function);
+
+extern CGV_API std::string to_string(const function_definition_list& functions);
+
 namespace tag {
 
 struct uniform {};
@@ -348,40 +472,6 @@ struct image {};
 struct texture {};
 
 } // namespace tag
-
-namespace traits {
-
-// Todo: Make use of the inline keyword if the framework is ever updated to at least C++17.
-
-template<class T>
-/*inline*/ constexpr bool is_instance_of_fvec_v = std::false_type{};
-
-template<class T, cgv::type::uint32_type N>
-/*inline*/ constexpr bool is_instance_of_fvec_v<cgv::math::fvec<T, N>> = std::true_type{};
-
-template<class T>
-/*inline*/ constexpr bool is_instance_of_fmat_v = std::false_type{};
-
-template<class T, cgv::type::uint32_type N, cgv::type::uint32_type M>
-/*inline*/ constexpr bool is_instance_of_fmat_v<cgv::math::fmat<T, N, M>> = std::true_type{};
-
-// TODO: Move is_instance_of(_v) to cgv/type/traits.
-template<class T, template<class...> class U>
-/*inline*/ constexpr bool is_instance_of_v = std::false_type{};
-
-template<template<class...> class U, class ...Vs>
-/*inline*/ constexpr bool is_instance_of_v<U<Vs...>, U> = std::true_type{};
-
-template<class T>
-/*inline*/ constexpr bool is_fundamental_sl_type_v =
-	std::is_arithmetic_v<std::remove_cv_t<T>> ||
-	is_instance_of_fvec_v<T> ||
-	is_instance_of_fmat_v<T>;
-
-template<class T>
-struct is_fundamental_sl_type : std::bool_constant<is_fundamental_sl_type_v<T>> {};
-
-} // namespace traits
 
 namespace operation {
 

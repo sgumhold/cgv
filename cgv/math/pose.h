@@ -3,14 +3,13 @@
 #include "fvec.h"
 #include "fmat.h"
 #include "quaternion.h"
-#include <cassert>
 
 /**@file
    helper functions to work with poses that can be represented with 3x4 matrix or quaternion plus vector
 */
 
-namespace cgv { ///
-	namespace math { ///
+namespace cgv {
+namespace math {
 
 /// extract orientation matrix from pose matrix
 template <typename T> fmat<T, 3, 3>& pose_orientation(fmat<T, 3, 4>& pose) { return reinterpret_cast<fmat<T, 3, 3>&>(pose); }
@@ -59,5 +58,5 @@ template <typename T> fmat<T, 3, 4> pose_concat(const fmat<T, 3, 4>& pose_1, con
 	return pose;
 }
 
-	}
-}
+} // namespace math
+} // namespace cgv

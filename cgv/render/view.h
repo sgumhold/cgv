@@ -34,6 +34,7 @@ protected:
 public:
 	/// construct a parallel view with focus in the world origin looking in negative z-direction and the y-direction as up-direction with an extent of +-1
 	view();
+	virtual ~view() noexcept = default;
 
 	/**@name getter and setter methods of view defining parameters*/
 	//@{

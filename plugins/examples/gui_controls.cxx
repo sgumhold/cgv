@@ -58,6 +58,9 @@ public:
 					<< wheel_value << std::endl;
 				last_wheel_value = wheel_value;
 			}
+			else {
+				std::cout << "wheel value changed to " << wheel_value << std::endl;
+			}
 		}
 		//post_redraw();
 		update_member(member_ptr);
@@ -73,6 +76,12 @@ public:
 		
 		//return colored ? ";color=0xff0000" : "";
 	}
+	void on_value_change() {
+		std::cout << "value changed to " << value << std::endl;
+	}
+	bool on_check_value(cgv::gui::control<int>& ctrl) const {		
+		return ctrl.get_new_value() >= 100;
+	}
 	void create_gui() {
 
 		const std::string opt = is_active() + is_colored();
@@ -86,7 +95,9 @@ public:
 		
 		add_member_control(this, "Toggle Button", toggle, "toggle", "tooltip='A toggle button'" + opt);
 		add_member_control(this, "Checkmark", check, "check", opt);
-		add_member_control(this, "Value", value, "value", "min=-10;max=10;step=1" + opt);
+		auto ctrl_ptr = add_member_control(this, "Value", value, "value", "min=-10;max=10;step=1" + opt);
+		connect(ctrl_ptr->check_value, this, &gui_controls::on_check_value);
+		connect_copy(ctrl_ptr->value_change, cgv::signal::rebind(this, &gui_controls::on_value_change));
 		add_member_control(this, "Dial", dial_value, "dial", "min=-1.0;max=1.0;step=0.01;w=40;h=40" + opt);
 		add_view("Value View", wheel_value, "", opt);
 		add_member_control(this, "Wheel", wheel_value, "wheel", "on_release_callback=true;min=-1.0;max=1.0;step=0.01" + opt);

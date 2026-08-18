@@ -49,7 +49,7 @@ int get_bin(value_type value) {
 	return -1;
 }
 
-layout(local_size_x = 512) in;
+layout(local_size_x = LOCAL_SIZE_X) in;
 void main() {
 	uint tid = gl_LocalInvocationID.x;
 	uint id = u_input_begin + gl_GlobalInvocationID.x;

@@ -45,11 +45,11 @@ public:
 	{
 		return (unsigned int)sqrt(2.0*this->size())-1;
 	}
-	///assignment of  a vector v
-	qem<T>& operator = (const qem<T>& v) 
-	{ 
+	///assignment of a vector v
+	qem<T>& operator = (const vec<T>& v)
+	{
 		*static_cast<vec<T>*>(this) = v;
-		return *this; 
+		return *this;
 	}
 	/// return the scalar part of the qem
 	const T& scalar_part() const

@@ -5,19 +5,22 @@
 #ifndef _USE_MATH_DEFINES
 	#define _USE_MATH_DEFINES 1
 #endif
-#include <cgv/defines/deprecated.h>
-#include <cgv/data/data_view.h>
-#include <cgv/media/font/font.h>
-#include <cgv/media/axis_aligned_box.h>
-#include <cgv/media/illum/phong_material.h>
-#include <cgv/media/illum/textured_surface_material.h>
-#include <cgv/media/illum/light_source.h>
-#include <cgv/signal/callback_stream.h>
-#include <cgv/math/vec.h>
-#include <cgv/math/inv.h>
 #include <stack>
 #include <vector>
 #include <string>
+#include <iostream>
+#include <cgv/defines/deprecated.h>
+#include <cgv/data/data_view.h>
+#include <cgv/math/fmat.h>
+#include <cgv/math/fvec.h>
+#include <cgv/math/mat.h>
+#include <cgv/math/vec.h>
+#include <cgv/media/axis_aligned_box.h>
+#include <cgv/media/font/font.h>
+#include <cgv/media/illum/light_source.h>
+#include <cgv/media/illum/phong_material.h>
+#include <cgv/media/illum/textured_surface_material.h>
+#include <cgv/signal/callback_stream.h>
 
 #include "lib_begin.h"
 
@@ -36,15 +39,17 @@ enum GPUVendorID {
 };
 
 struct device_capabilities {
-	int max_render_buffer_size = -1;					/// the maximum supported size for renderbuffers in any dimension
-	int max_geometry_shader_output_vertex_count = -1;	/// the maximum number that can be provided to the max_vertices output layout qualifier in a geometry shader
-	int max_compute_shared_memory_size = -1;			/// total available storage size in bytes for all shared variables in a compute shader
-	int max_compute_work_group_invocations = -1;		/// the number of invocations in a single local work group (i.e., the product of the three dimensions) that may be dispatched to a compute shader
-	ivec3 max_compute_work_group_count = -1;			/// the maximum number of work groups that may be dispatched to a compute shader; dimension index 0, 1, and 2 correspond to the X, Y and Z dimensions, respectively
-	ivec3 max_compute_work_group_size = -1;				/// the maximum size of a work groups that may be used during compilation of a compute shader; dimension index 0, 1, and 2 correspond to the X, Y and Z dimensions, respectively
+	int max_render_buffer_size = -1;							/// the maximum supported size for renderbuffers in any dimension
+	int max_geometry_shader_output_vertex_count = -1;			/// the maximum number that can be provided to the max_vertices output layout qualifier in a geometry shader
+	int max_geometry_shader_output_component_count = -1;		/// the maximum number of components of outputs (out variables) written by a geometry shader
+	int max_geometry_shader_total_output_component_count = -1;	/// the total number of output values (a component, in GLSL terms, is a component of a vector. So a float is one component; a vec3 is 3 components) that a single GS invocation can write to over all vertices
+	int max_compute_shared_memory_size = -1;					/// total available storage size in bytes for all shared variables in a compute shader
+	int max_compute_work_group_invocations = -1;				/// the number of invocations in a single local work group (i.e., the product of the three dimensions) that may be dispatched to a compute shader
+	ivec3 max_compute_work_group_count = -1;					/// the maximum number of work groups that may be dispatched to a compute shader; dimension index 0, 1, and 2 correspond to the X, Y and Z dimensions, respectively
+	ivec3 max_compute_work_group_size = -1;						/// the maximum size of a work groups that may be used during compilation of a compute shader; dimension index 0, 1, and 2 correspond to the X, Y and Z dimensions, respectively
 };
 
-/// different compond types for data elements
+/// different compound types for data elements
 enum ElementType {
 	ET_VALUE,
 	ET_VECTOR,
@@ -73,7 +78,49 @@ struct type_descriptor
 	type_descriptor(const type_descriptor& td, bool _is_array) : coordinate_type(td.coordinate_type), element_type(td.element_type), nr_rows(td.nr_rows), nr_columns(td.nr_columns), is_row_major(td.is_row_major), normalize(td.normalize), is_array(_is_array) {}
 	/// cast to int
 	operator int() const { return *reinterpret_cast<const int*>(this); }
+	/// operator to write textual description to stream
+	friend CGV_API std::ostream& operator << (std::ostream&, const type_descriptor&);
 };
+
+/// operator to write textual description to stream
+extern CGV_API std::ostream& operator << (std::ostream&, const type_descriptor&);
+
+/// <summary>
+/// enumerates different kinds of shader program variables
+/// </summary>
+enum ProgramVariableKind {
+	PVK_UNIFORM,
+	PVK_ATTRIBUTE
+};
+
+/// <summary>
+/// structure to store information on a shader program variable, i.e. a uniform or attribute
+/// </summary>
+struct CGV_API program_variable_info
+{
+	/// name as it appears in shaders
+	std::string name;
+	/// type descriptor providing information on component and compositions (scalar, vector or matrix)
+	cgv::render::type_descriptor type_descr;
+	/// dimension of arrays
+	unsigned array_size = 0;
+	/// location in program, but not for array variables which span multiple locations
+	int program_location;
+	/// data storage for the value of the program variable
+	std::vector<char> current_value;
+	/// operator to stream out program variable info in text format
+	friend CGV_API std::ostream& operator << (std::ostream& os, const program_variable_info& V);
+	/// <summary>
+	/// helper member function to compute counts and sizes
+	/// </summary>
+	/// <param name="cnt">reference to variable retrieving component count</param>
+	/// <param name="s">reference to variable retrieving array element size in bytes</param>
+	/// <param name="S">reference to variable retrieving total array size in bytes</param>
+	void compute_sizes(size_t& cnt, size_t& s, size_t& S) const;
+};
+
+/// operator to stream out program variable info in text format
+extern CGV_API std::ostream& operator << (std::ostream& os, const program_variable_info& V);
 
 /// enumeration of rendering APIs which can be queried from the context
 enum RenderAPI {
@@ -318,9 +365,10 @@ public:
 	mutable std::string last_error;
 	/// initialize members
 	render_component();
+	virtual ~render_component() noexcept = default;
 	/// return whether component has been created
 	virtual bool is_created() const;
-	/// copy the rendering api specific id the component to the memory location of the given pointer. 
+	/// copy the rendering api specific id the component to the memory location of the given pointer.
 	/// For opengl this the passed pointer should be of type GLint or GLuint.
 	void put_id_void(void* ptr) const;
 	/// cast the refence to rendering api specific representation of component id to the specified type
@@ -418,6 +466,7 @@ protected:
 public:
 	/// nothing to be done heremembers
 	attribute_array_binding_base();
+	virtual ~attribute_array_binding_base() = default;
 };
 
 
@@ -461,11 +510,9 @@ class CGV_API vertex_buffer_base : public render_component
 {
 public:
 	/// buffer type defaults to VBT_VERTICES
-	VertexBufferType type;
+	VertexBufferType type = VBT_VERTICES;
 	/// usage defaults to VBU_STATIC_DRAW
-	VertexBufferUsage usage;
-	/// initialize members
-	vertex_buffer_base();
+	VertexBufferUsage usage = VBU_STATIC_DRAW;
 };
 
 /// Bits for the selection of different buffer types
@@ -521,10 +568,6 @@ class CGV_API render_buffer;
 class CGV_API frame_buffer;
 class CGV_API shader_code;
 class CGV_API shader_program;
-
-// declare some colors by name
-extern CGV_API float black[4], white[4], gray[4], green[4], brown[4], dark_red[4];
-extern CGV_API float cyan[4], yellow[4], red[4], blue[4];
 
 /** configuration object used to define context parameters that need to be set already at creation time */
 struct CGV_API context_config
@@ -679,7 +722,8 @@ public:
 	};
 protected:
 	friend class shader_program_base;
-
+	/// allocate a dummy attribute array binding used to support attribute-less rendering
+	attribute_array_binding_base* dummy_aab = 0;
 	/// whether to use the caching facilities of shader_program and shader_code to store loaded shader file contents as strings for faster loading
 	bool use_shader_file_cache;
 	/// whether to automatically set viewing matrixes in current shader program, defaults to true 
@@ -734,6 +778,8 @@ protected:
 public:
 	/// check for current program, prepare it for rendering and return pointer to it
 	shader_program_base* get_current_program() const;
+	/// check for current framebuffer, and return pointer to it
+	const frame_buffer_base* get_current_frame_buffer() const;
 	/// enable the usage of the shader file caches
 	void enable_shader_file_cache();
 	/// disable the usage of the shader file caches
@@ -857,9 +903,12 @@ protected:
 	virtual bool shader_program_destruct(shader_program_base& spb) const;
 	virtual void shader_program_set_uniform_locations(shader_program_base& spb) const;
 	virtual bool shader_program_get_active_uniforms(shader_program_base& spb, std::vector<std::string>& names) const = 0;
+	virtual void shader_program_inspect_variables(shader_program_base& spb, ProgramVariableKind kind, std::vector<program_variable_info>& Vs, bool get_location, bool get_value) const = 0;
 	virtual int  get_uniform_location(const shader_program_base& spb, const std::string& name) const = 0;
 	virtual bool set_uniform_void(shader_program_base& spb, int loc, type_descriptor value_type, const void* value_ptr) const = 0;
 	virtual bool set_uniform_array_void(shader_program_base& spb, int loc, type_descriptor value_type, const void* value_ptr, size_t nr_elements) const = 0;
+	virtual int  get_uniform_block_index(const shader_program_base& spb, const std::string& name) const = 0;
+	virtual bool set_uniform_block_binding(shader_program_base& spb, int index, int binding) const = 0;
 	virtual int  get_attribute_location(const shader_program_base& spb, const std::string& name) const = 0;
 	virtual bool set_attribute_void(shader_program_base& spb, int loc, type_descriptor value_type, const void* value_ptr) const = 0;
 
@@ -916,6 +965,8 @@ public:
 	virtual RenderPass get_render_pass() const;
 	/// return the current render pass flags
 	virtual RenderPassFlags get_render_pass_flags() const;
+	/// update the current render pass flags, return whether this was possible (fails outside of render passes)
+	bool update_render_pass_flags(int exclude_flags, int include_flags = 0);
 	/// return the current render pass user data
 	virtual void* get_render_pass_user_data() const;
 	/// return the default render pass flags
@@ -1100,6 +1151,10 @@ public:
 	virtual void enable_sRGB_framebuffer(bool do_enable = true);
 	/// check whether sRGB framebuffer is enabled
 	bool sRGB_framebuffer_enabled() { return sRGB_framebuffer; }
+	/// this function ensures that in core profile a dummy attribute array is bound, what is essential for attribute-less rendering
+	void begin_attribute_less_rendering();
+	/// unbind dummy attribute array after attribute-less rendering
+	void end_attribute_less_rendering();
 	/// return current color
 	const rgba& get_color() const;
 	/// set the current color
@@ -1194,15 +1249,26 @@ public:
 	virtual void get_cursor(int& x, int& y) const;
 	/** transform point p in current world coordinates into opengl coordinates with (0,0) in lower left corner
 		 and put x and y coordinates into the passed variables */
-	virtual void put_cursor_coords(const vecn& p, int& x, int& y) const;
+	DEPRECATED("deprecated, use get_cursor_coords.") virtual void put_cursor_coords(const vecn& p, int& x, int& y) const;
+	/** transform point p in current world coordinates into opengl coordinates with (0,0) in lower left corner
+		 and return x and y coordinates */
+	virtual ivec2 get_cursor_coords(const vec3& p) const;
 	/** flush output_stream and set the current text position from a 3D or 4D
 		 location in current world coordinates. These are transformed to opengl
 		 coordinates opengl coordinates with (0,0) in lower left corner using the put_cursor_coords 
 		 method. If the optional parameters are given, update the cursor location such that the given 
 		 text alignment is achieved. x_offset and y_offset are in pixel and y points upward. */
-	virtual void set_cursor(const vecn& pos, 
+	DEPRECATED("deprecated, use set_cursor(vec3, ...).") virtual void set_cursor(const vecn& pos,
 		const std::string& text = "", TextAlignment ta = TA_BOTTOM_LEFT,
 		int x_offset=0, int y_offset=0);
+	/** flush output_stream and set the current text position from a 3D
+		 location in current world coordinates. These are transformed to opengl
+		 coordinates coordinates with (0,0) in lower left corner using the get_cursor_coords
+		 method. If the optional parameters are given, update the cursor location such that the given
+		 text alignment is achieved. offset is measured in pixels with y pointing upwards. */
+	virtual void set_cursor(const vec3& pos,
+		const std::string& text = "", TextAlignment ta = TA_BOTTOM_LEFT,
+		ivec2 offset = { 0 });
 	//@}
 
 	/**@name drawing*/
@@ -1436,37 +1502,37 @@ public:
 	//! compute model space 3D point from the given opengl pixel location (window location)
 	/*! the function queries the window z coordinate from the depth buffer and inversely transforms the
 		window space 3D point with the current modelview_projection_window matrix */
-	inline vec3 get_model_point(int x_window, int y_window) const { 
+	inline dvec3 get_model_point(int x_window, int y_window) const { 
 		return get_model_point(x_window, y_window, get_window_z(x_window, y_window)); 
 	}
 	//! compute model space 3D point from the given opengl pixel location (window location)
 	/*! the function inversely transforms the window space 3D point with the current
 		modelview_projection_window matrix */
-	inline vec3 get_model_point(int x_window, int y_window, double z_window) const {
+	inline dvec3 get_model_point(int x_window, int y_window, double z_window) const {
 		return get_model_point(x_window, y_window, z_window, get_modelview_projection_window_matrix());
 	}
 	//! compute model space 3D point from the given opengl pixel location (window location) and modelview_projection_window matrix
 	/*! the function queries the window z coordinate from the depth buffer and inversely transforms the
 		window space 3D point with the given modelview_projection_window matrix */
-	inline vec3 get_model_point(int x_window, int y_window, const dmat4& modelview_projection_window_matrix) const {
+	inline dvec3 get_model_point(int x_window, int y_window, const dmat4& modelview_projection_window_matrix) const {
 		return get_model_point(x_window, y_window, get_window_z(x_window, y_window), modelview_projection_window_matrix);
 	}
 	//! compute model space 3D point from the given opengl pixel location (window location) with the given modelview_projection_window matrix
 	/*! the function inversely transforms the window space 3D point with the given
 		modelview_projection_window matrix */
-	inline static vec3 get_model_point(int x_window, int y_window, double z_window, const dmat4& modelview_projection_window_matrix) {
+	inline static dvec3 get_model_point(int x_window, int y_window, double z_window, const dmat4& modelview_projection_window_matrix) {
 		return get_model_point(dvec3(x_window+0.5, y_window+0.5, z_window), modelview_projection_window_matrix);
 	}
 	//! compute model space 3D point from the given window space point
 	/*! the function inversely transforms the window space 3D point with the current
 		modelview_projection_window matrix */
-	inline vec3 get_model_point(const vec3& p_window) const {
+	inline dvec3 get_model_point(const vec3& p_window) const {
 		return get_model_point(p_window, get_modelview_projection_window_matrix());
 	}
 	//! compute model space 3D point from the given window space point and the given modelview_projection_window matrix
 	/*! the function inversely transforms the window space point with the given
 		modelview_projection_window matrix */
-	static vec3 get_model_point(const dvec3& p_window, const dmat4& modelview_projection_window_matrix);
+	static dvec3 get_model_point(const dvec3& p_window, const dmat4& modelview_projection_window_matrix);
 	/// return homogeneous 4x4 projection matrix, which transforms from clip to device space
 	DEPRECATED("use get_window_matrix() instead.") dmat4 get_device_matrix() const { return get_window_matrix(); }
 	/// return matrix to transfrom from model to device coordinates, i.e. the product of modelview, projection and device matrix in reversed order (device_matrix*projection_matrix*modelview_matrix)

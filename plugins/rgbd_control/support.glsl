@@ -1,3 +1,5 @@
+#version 330 
+
 uniform sampler2D depth_texture;
 uniform float     depth_scale;
 

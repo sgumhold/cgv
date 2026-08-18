@@ -11,30 +11,30 @@ bool texture_algorithm::is_texture_type_supported(TextureType texture_type) cons
 
 cgv::render::shader_compile_options texture_algorithm::get_compile_options(const texture_algorithm_create_info& create_info) {
 	uint32_t dims = 0;
-	sl::data_type index_type = sl::Type::kVoid;
-	sl::data_type coord_type = sl::Type::kVoid;
+	sl::data_type index_type = sl::Type::Void;
+	sl::data_type coord_type = sl::Type::Void;
 	uvec3 local_size = { 1, 1, 1 };
 	std::string size_guard;
 
 	switch(create_info.texture_type) {
 	case TextureType::TT_1D:
 		dims = 1;
-		index_type = sl::Type::kInt;
-		coord_type = sl::Type::kFloat;
+		index_type = sl::Type::Int;
+		coord_type = sl::Type::Float;
 		local_size = { 4, 1, 1 };
 		size_guard = "((IDX) < (SIZE).x)";
 		break;
 	case TextureType::TT_2D:
 		dims = 2;
-		index_type = sl::Type::kIVec2;
-		coord_type = sl::Type::kVec2;
+		index_type = sl::Type::IVec2;
+		coord_type = sl::Type::Vec2;
 		local_size = { 4, 4, 1 };
 		size_guard = "((IDX).x < (SIZE).x && (IDX).y < (SIZE).y)";
 		break;
 	case TextureType::TT_3D:
 		dims = 3;
-		index_type = sl::Type::kIVec3;
-		coord_type = sl::Type::kVec3;
+		index_type = sl::Type::IVec3;
+		coord_type = sl::Type::Vec3;
 		local_size = { 4, 4, 4 };
 		size_guard = "((IDX).x < (SIZE).x && (IDX).y < (SIZE).y && (IDX).z < (SIZE).z)";
 		break;
@@ -61,8 +61,10 @@ cgv::render::shader_compile_options texture_algorithm::get_compile_options(const
 }
 
 bool texture_algorithm::init(cgv::render::context& ctx, const texture_algorithm_create_info& create_info, const std::vector<compute_kernel_info>& kernel_infos) {
-	if(!is_texture_type_supported(create_info.texture_type))
+	if(!is_texture_type_supported(create_info.texture_type)) {
+		raise_error(errc::texture_type_not_supported);
 		return false;
+	}
 	
 	_texture_type = create_info.texture_type;
 

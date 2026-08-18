@@ -55,46 +55,46 @@ std::string to_string(Type type) {
 
 type_info get_type_info(Type type) {
 	static const std::array<type_info, 40> infos = {{
-		{ Type::kVoid, 0, 0, 0, 0 },		// kVoid
-		{ Type::kBool, 1, 1, 4, 4 },		// kBool
-		{ Type::kInt, 1, 1, 4, 4 },			// kInt
-		{ Type::kUInt, 1, 1, 4, 4 },		// kUInt
-		{ Type::kFloat, 1, 1, 4, 4 },		// kFloat
-		{ Type::kDouble, 1, 1, 8, 8 },		// kDouble
-		{ Type::kBool, 1, 2, 8, 8 },		// kBVec2
-		{ Type::kBool, 1, 3, 12, 16 },		// kBVec3
-		{ Type::kBool, 1, 4, 16, 16 },		// kBVec4
-		{ Type::kInt, 1, 2, 8, 8 },			// kIVec2
-		{ Type::kInt, 1, 3, 12, 16 },		// kIVec3
-		{ Type::kInt, 1, 4, 16, 16 },		// kIVec4
-		{ Type::kUInt, 1, 2, 8, 8 },		// kUVec2
-		{ Type::kUInt, 1, 3, 12, 16 },		// kUVec3
-		{ Type::kUInt, 1, 4, 16, 16 },		// kUVec4
-		{ Type::kFloat, 1, 2, 8, 8 },		// kVec2
-		{ Type::kFloat, 1, 3, 12, 16 },		// kVec3
-		{ Type::kFloat, 1, 4, 16, 16 },		// kVec4
-		{ Type::kDouble, 1, 2, 16, 16 },	// kDVec2
-		{ Type::kDouble, 1, 3, 24, 32 },	// kDVec3
-		{ Type::kDouble, 1, 4, 32, 32 },	// kDVec4
-		{ Type::kFloat, 2, 2, 16, 8 },		// kMat2
-		{ Type::kFloat, 3, 3, 36, 16 },		// kMat3
-		{ Type::kFloat, 4, 4, 64, 16 },		// kMat4
-		{ Type::kFloat, 2, 3, 24, 16 },		// kMat2x3
-		{ Type::kFloat, 2, 4, 32, 16 },		// kMat2x4
-		{ Type::kFloat, 3, 2, 24, 8 },		// kMat3x2
-		{ Type::kFloat, 3, 4, 48, 16 },		// kMat3x4
-		{ Type::kFloat, 4, 2, 32, 8 },		// kMat4x2
-		{ Type::kFloat, 4, 3, 48, 16 },		// kMat4x3
-		{ Type::kDouble, 2, 2, 32, 16 },	// kDMat2
-		{ Type::kDouble, 3, 3, 72, 32 },	// kDMat3
-		{ Type::kDouble, 4, 4, 128, 32 },	// kDMat4
-		{ Type::kDouble, 2, 3, 48, 32 },	// kDMat2x3
-		{ Type::kDouble, 2, 4, 64, 32 },	// kDMat2x4
-		{ Type::kDouble, 3, 2, 48, 16 },	// kDMat3x2
-		{ Type::kDouble, 3, 4, 96, 32 },	// kDMat3x4
-		{ Type::kDouble, 4, 2, 64, 16 },	// kDMat4x2
-		{ Type::kDouble, 4, 3, 96, 32 },	// kDMat4x3
-		{ Type::kStruct, 0, 0, 0, 0 },		// kStruct
+		{ Type::Void, 0, 0, 0, 0 },			// Void
+		{ Type::Bool, 1, 1, 4, 4 },			// Bool
+		{ Type::Int, 1, 1, 4, 4 },			// Int
+		{ Type::UInt, 1, 1, 4, 4 },			// UInt
+		{ Type::Float, 1, 1, 4, 4 },		// Float
+		{ Type::Double, 1, 1, 8, 8 },		// Double
+		{ Type::Bool, 1, 2, 8, 8 },			// BVec2
+		{ Type::Bool, 1, 3, 12, 16 },		// BVec3
+		{ Type::Bool, 1, 4, 16, 16 },		// BVec4
+		{ Type::Int, 1, 2, 8, 8 },			// IVec2
+		{ Type::Int, 1, 3, 12, 16 },		// IVec3
+		{ Type::Int, 1, 4, 16, 16 },		// IVec4
+		{ Type::UInt, 1, 2, 8, 8 },			// UVec2
+		{ Type::UInt, 1, 3, 12, 16 },		// UVec3
+		{ Type::UInt, 1, 4, 16, 16 },		// UVec4
+		{ Type::Float, 1, 2, 8, 8 },		// Vec2
+		{ Type::Float, 1, 3, 12, 16 },		// Vec3
+		{ Type::Float, 1, 4, 16, 16 },		// Vec4
+		{ Type::Double, 1, 2, 16, 16 },		// DVec2
+		{ Type::Double, 1, 3, 24, 32 },		// DVec3
+		{ Type::Double, 1, 4, 32, 32 },		// DVec4
+		{ Type::Float, 2, 2, 16, 8 },		// Mat2
+		{ Type::Float, 3, 3, 36, 16 },		// Mat3
+		{ Type::Float, 4, 4, 64, 16 },		// Mat4
+		{ Type::Float, 2, 3, 24, 16 },		// Mat2x3
+		{ Type::Float, 2, 4, 32, 16 },		// Mat2x4
+		{ Type::Float, 3, 2, 24, 8 },		// Mat3x2
+		{ Type::Float, 3, 4, 48, 16 },		// Mat3x4
+		{ Type::Float, 4, 2, 32, 8 },		// Mat4x2
+		{ Type::Float, 4, 3, 48, 16 },		// Mat4x3
+		{ Type::Double, 2, 2, 32, 16 },		// DMat2
+		{ Type::Double, 3, 3, 72, 32 },		// DMat3
+		{ Type::Double, 4, 4, 128, 32 },	// DMat4
+		{ Type::Double, 2, 3, 48, 32 },		// DMat2x3
+		{ Type::Double, 2, 4, 64, 32 },		// DMat2x4
+		{ Type::Double, 3, 2, 48, 16 },		// DMat3x2
+		{ Type::Double, 3, 4, 96, 32 },		// DMat3x4
+		{ Type::Double, 4, 2, 64, 16 },		// DMat4x2
+		{ Type::Double, 4, 3, 96, 32 },		// DMat4x3
+		{ Type::Struct, 0, 0, 0, 0 },		// Struct
 	}};
 	return infos[static_cast<int32_t>(type)];
 }
@@ -103,7 +103,7 @@ data_type::data_type() {}
 
 data_type::data_type(Type type) : _base_type(type) {}
 
-data_type::data_type(const std::string& name, const named_variable_list& members) : _base_type(Type::kStruct) {
+data_type::data_type(const std::string& name, const named_variable_list& members) : _base_type(Type::Struct) {
 	_definition = std::make_shared<type_definition>(type_definition{ name, members });
 }
 
@@ -112,13 +112,13 @@ Type data_type::type() const {
 }
 
 named_variable_list data_type::members() const {
-	if(_base_type == Type::kStruct)
+	if(_base_type == Type::Struct)
 		return { _definition->members };
 	return {};
 }
 
 std::string data_type::type_name() const {
-	if(_base_type == Type::kStruct)
+	if(_base_type == Type::Struct)
 		return _definition->type_name;
 	else
 		return to_string(_base_type);
@@ -126,7 +126,7 @@ std::string data_type::type_name() const {
 
 bool data_type::is_valid() const {
 	switch(_base_type) {
-	case Type::kStruct:
+	case Type::Struct:
 		// Struct types are only valid if they have a non-empty name.
 		return !type_name().empty();
 	default:
@@ -136,26 +136,26 @@ bool data_type::is_valid() const {
 }
 
 bool data_type::is_void() const {
-	return _base_type == Type::kVoid;
+	return _base_type == Type::Void;
 }
 
 bool data_type::is_scalar() const {
 	int32_t index = static_cast<int32_t>(_base_type);
-	return index >= static_cast<int32_t>(Type::kBool) && index <= static_cast<int32_t>(Type::kDouble);
+	return index >= static_cast<int32_t>(Type::Bool) && index <= static_cast<int32_t>(Type::Double);
 }
 
 bool data_type::is_vector() const {
 	int32_t index = static_cast<int32_t>(_base_type);
-	return index >= static_cast<int32_t>(Type::kBVec2) && index <= static_cast<int32_t>(Type::kDVec4);
+	return index >= static_cast<int32_t>(Type::BVec2) && index <= static_cast<int32_t>(Type::DVec4);
 }
 
 bool data_type::is_matrix() const {
 	int32_t index = static_cast<int32_t>(_base_type);
-	return index >= static_cast<int32_t>(Type::kMat2) && index <= static_cast<int32_t>(Type::kDMat4x3);
+	return index >= static_cast<int32_t>(Type::Mat2) && index <= static_cast<int32_t>(Type::DMat4x3);
 }
 
 bool data_type::is_compound() const {
-	return _base_type == Type::kStruct;
+	return _base_type == Type::Struct;
 }
 
 size_t data_type::size_in_bytes() const {
@@ -200,18 +200,27 @@ size_t data_type::alignment_in_bytes() const {
 	return get_type_info(_base_type).base_alignment;
 }
 
+bool data_type::operator==(const data_type& other) const {
+	if(_base_type != other._base_type)
+		return false;
+
+	if(_definition == other._definition)
+		return true;
+
+	if(_definition && other._definition)
+		return *_definition == *other._definition;
+
+	return false;
+}
+
 size_t get_aligned_size(data_type type) {
 	return cgv::math::next_multiple_k_greater_than_n(type.alignment_in_bytes(), type.size_in_bytes());
 }
 
 std::string get_type_definition_string(data_type type) {
-	std::string type_name = type.type_name();
-	switch(type.type()) {
-	case Type::kStruct:
-		return "struct " + type_name + " { " + to_string(type.members()) + "};";
-	default:
-		return type_name;
-	}
+	if(type.is_compound())
+		return "struct " + type.type_name() + " { " + to_string(type.members()) + "};";
+	return type.type_name();
 }
 
 std::string get_alias_string(const std::string& alias, const std::string& name) {
@@ -220,6 +229,32 @@ std::string get_alias_string(const std::string& alias, const std::string& name) 
 
 std::string get_type_alias_string(const std::string& alias, data_type type) {
 	return get_alias_string(alias, type.type_name());
+}
+
+cgv::render::type_descriptor get_type_descriptor(const data_type& type) {
+	if(!type.is_valid())
+		return {};
+
+	type_info info = get_type_info(type.type());
+
+	using cgv::type::info::TypeId;
+	TypeId type_id = TypeId::TI_UNDEF;
+	switch(info.component_type) {
+	case Type::Void: type_id = TypeId::TI_VOID; break;
+	case Type::Bool: type_id = TypeId::TI_BOOL; break;
+	case Type::Int: type_id = TypeId::TI_INT32; break;
+	case Type::UInt: type_id = TypeId::TI_UINT32; break;
+	case Type::Float: type_id = TypeId::TI_FLT32; break;
+	case Type::Double: type_id = TypeId::TI_FLT64; break;
+	default: break;
+	}
+
+	if(type.is_vector())
+		return cgv::render::type_descriptor(type_id, static_cast<unsigned int>(info.row_count));
+	else if(type.is_matrix())
+		return cgv::render::type_descriptor(type_id, static_cast<unsigned int>(info.row_count), static_cast<unsigned int>(info.column_count), false);
+	else
+		return cgv::render::type_descriptor(type_id);
 }
 
 std::string to_string(const named_variable& variable) {
@@ -242,15 +277,15 @@ std::string to_string(const named_variable_list& variables, const std::string& p
 
 std::string to_string(MemoryQualifier qualifier) {
 	switch(qualifier) {
-	case MemoryQualifier::kCoherent:
+	case MemoryQualifier::Coherent:
 		return "coherent";
-	case MemoryQualifier::kVolatile:
+	case MemoryQualifier::Volatile:
 		return "volatile";
-	case MemoryQualifier::kRestrict:
+	case MemoryQualifier::Restrict:
 		return "restrict";
-	case MemoryQualifier::kReadOnly:
+	case MemoryQualifier::ReadOnly:
 		return "readonly";
-	case MemoryQualifier::kWriteOnly:
+	case MemoryQualifier::WriteOnly:
 		return "writeonly";
 	default:
 		return "";
@@ -269,11 +304,11 @@ memory_qualifier_storage::memory_qualifier_storage(const memory_qualifier_list& 
 
 memory_qualifier_list memory_qualifier_storage::list() const {
 	const memory_qualifier_list all_qualifiers = {
-		MemoryQualifier::kCoherent,
-		MemoryQualifier::kVolatile,
-		MemoryQualifier::kRestrict,
-		MemoryQualifier::kReadOnly,
-		MemoryQualifier::kWriteOnly
+		MemoryQualifier::Coherent,
+		MemoryQualifier::Volatile,
+		MemoryQualifier::Restrict,
+		MemoryQualifier::ReadOnly,
+		MemoryQualifier::WriteOnly
 	};
 
 	memory_qualifier_list qualifiers;
@@ -351,9 +386,9 @@ std::string to_string(ImageFormatLayoutQualifier qualifier) {
 
 std::string get_type_prefix(ImageFormatLayoutQualifier qualifier) {
 	int32_t index = static_cast<int32_t>(qualifier);
-	if(index >= static_cast<int32_t>(ImageFormatLayoutQualifier::k_rgba32ui))
+	if(index >= static_cast<int32_t>(ImageFormatLayoutQualifier::rgba32ui))
 		return "u";
-	else if(index >= static_cast<int32_t>(ImageFormatLayoutQualifier::k_rgba32i))
+	else if(index >= static_cast<int32_t>(ImageFormatLayoutQualifier::rgba32i))
 		return "i";
 	else
 		return "";
@@ -361,12 +396,12 @@ std::string get_type_prefix(ImageFormatLayoutQualifier qualifier) {
 
 data_type get_data_type(ImageFormatLayoutQualifier qualifier) {
 	int32_t index = static_cast<int32_t>(qualifier);
-	if(index >= static_cast<int32_t>(ImageFormatLayoutQualifier::k_rgba32ui))
-		return Type::kUVec4;
-	else if(index >= static_cast<int32_t>(ImageFormatLayoutQualifier::k_rgba32i))
-		return Type::kIVec4;
+	if(index >= static_cast<int32_t>(ImageFormatLayoutQualifier::rgba32ui))
+		return Type::UVec4;
+	else if(index >= static_cast<int32_t>(ImageFormatLayoutQualifier::rgba32i))
+		return Type::IVec4;
 	else
-		return Type::kVec4;
+		return Type::Vec4;
 }
 
 std::string to_string(const named_image& image, size_t location) {
@@ -419,9 +454,9 @@ std::string get_sampler_string(const cgv::render::TextureType& texture_type, Sam
 	default: break;
 	}
 
-	if(sampler_base_format == SamplerBaseFormat::kSignedInteger)
+	if(sampler_base_format == SamplerBaseFormat::SignedInteger)
 		return "i" + str;
-	else if(sampler_base_format == SamplerBaseFormat::kUnsignedInteger)
+	else if(sampler_base_format == SamplerBaseFormat::UnsignedInteger)
 		return "u" + str;
 	else
 		return str;
@@ -438,6 +473,44 @@ std::string to_string(const named_texture_list& textures, size_t base_location) 
 	return cgv::utils::transform_join(textures.begin(), textures.end(), [&base_location](const named_texture& texture) {
 		return to_string(texture, base_location++);
 	}, "\n", true);
+}
+
+std::string to_string(ParameterQualifier qualifier) {
+	switch(qualifier) {
+	case ParameterQualifier::Out: return "out";
+	case ParameterQualifier::InOut: return "inout";
+	default: return "in"; // ParameterQualifier::In and undefined defaults to 'in'
+	}
+}
+
+std::string to_string(parameter param) {
+	return to_string(param.qualifier) + " " + to_string(param.type_and_name);
+}
+
+std::string to_string(parameter_list params) {
+	return cgv::utils::join(params.begin(), params.end(), ", ");
+}
+
+std::vector<data_type> function_definition::get_used_types() const {
+	std::vector<data_type> types;
+	types.reserve(parameters.size() + 1);
+	types.push_back(ret_type);
+	for(const parameter& param : parameters)
+		types.push_back(param.type_and_name.type());
+	return types;
+}
+
+std::string to_string(const function_definition& function) {
+	std::string str = function.ret_type.type_name() + " " + function.name + "(";
+	str += to_string(function.parameters);
+	str += ") {\n";
+	str += function.body;
+	str += "\n}";
+	return str;
+}
+
+std::string to_string(const function_definition_list& functions) {
+	return cgv::utils::join(functions.begin(), functions.end(), "\n");
 }
 
 } // namespace sl

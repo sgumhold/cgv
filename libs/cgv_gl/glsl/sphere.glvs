@@ -7,6 +7,7 @@ uniform float percentual_halo_width = 0.0;
 in vec4  position;
 in float radius;
 in vec4  color;
+
 in int   group_index;
 
 out SPHERE_GS {

@@ -11,12 +11,12 @@ double compute_unit_ball_volume(unsigned n)
 	if (cache.empty()) {
 		cache.reserve(10);
 		cache.push_back(2.0);
-		cache.push_back(PI);
+		cache.push_back(cgv::math::constants::pi);
 	}
 	if (n == 0)
 		return 0;
 	while (n > cache.size())
-		cache.push_back(*(cache.end()-2) * TWO_PI/cache.size());
+		cache.push_back(*(cache.end()-2) * 2.0 * cgv::math::constants::pi/cache.size());
 	return cache[n-1];
 }
 /// compute volume of n-ball of radius R living in n-dimensional space with n>=1; results are cached for O(1) runtime
@@ -29,7 +29,7 @@ double compute_unit_sphere_area(unsigned n)
 {
 	if (n < 2)
 		return 0;
-	return TWO_PI*compute_unit_ball_volume(n-1);
+	return 2.0 * cgv::math::constants::pi * compute_unit_ball_volume(n-1);
 }
 /// compute surface area of a n-ball of radius R living in n-dimensional space with n>=2 (this is a n-1 dimensional area); results are cached for O(1) runtime
 double compute_sphere_area(unsigned n, double R)

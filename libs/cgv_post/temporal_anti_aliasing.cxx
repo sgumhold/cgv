@@ -117,7 +117,7 @@ void temporal_anti_aliasing::begin(cgv::render::context& ctx, bool push_viewport
 	}
 
 	fbc_draw.enable(ctx, push_viewport);
-	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+	ctx.clear_background(true, true);
 }
 
 void temporal_anti_aliasing::end(cgv::render::context& ctx, bool pop_viewport) {
@@ -131,6 +131,7 @@ void temporal_anti_aliasing::end(cgv::render::context& ctx, bool pop_viewport) {
 
 	ctx.pop_projection_matrix();
 
+	ctx.begin_attribute_less_rendering();
 	if(enable_fxaa) {
 		fbc_post.enable(ctx, /*push*/pop_viewport);
 
@@ -151,7 +152,8 @@ void temporal_anti_aliasing::end(cgv::render::context& ctx, bool pop_viewport) {
 	}
 
 	fbc_resolve.enable(ctx, /*push*/pop_viewport);
-	glDepthFunc(GL_ALWAYS);
+	ctx.push_depth_test_state();
+	ctx.set_depth_func(cgv::render::CompareFunction::CF_ALWAYS);
 
 	bool first = !accumulate;
 	if(accumulate) {
@@ -161,7 +163,7 @@ void temporal_anti_aliasing::end(cgv::render::context& ctx, bool pop_viewport) {
 			static_frame_count = 0;
 		}
 
-		mat4 curr_clip_to_prev_clip_matrix = previous_view.view_projection_matrix * inv(current_view.view_projection_matrix);
+		mat4 curr_clip_to_prev_clip_matrix = previous_view.view_projection_matrix * inverse(current_view.view_projection_matrix);
 
 		auto& resolve_prog = shaders.get("resolve");
 		resolve_prog.enable(ctx);
@@ -222,7 +224,8 @@ void temporal_anti_aliasing::end(cgv::render::context& ctx, bool pop_viewport) {
 
 	screen_prog.disable(ctx);
 
-	glDepthFunc(GL_LESS);
+	ctx.pop_depth_test_state();
+	ctx.end_attribute_less_rendering();
 
 	previous_view = current_view;
 	return;

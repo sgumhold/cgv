@@ -10,6 +10,8 @@
 #include <cgv/reflect/reflect_enum.h>
 #include <cgv_gl/gl/gl.h>
 #include <glsu/GL/glsu.h>
+#include <libs/cgv_post/post_process_effect.h>
+
 #if defined(_WINDOWS) || defined(WIN32) || defined(WIN64)
 #undef max
 #undef min
@@ -115,20 +117,27 @@ class CGV_API stereo_view_interactor :
 	public cgv::gui::event_handler, 
 	public cgv::render::multi_pass_drawable,
 	public cgv::gui::provider,
+	public cgv::post::post_process_effect,
 	public cgv::render::stereo_view
 {
 protected:
+	bool terminal_pass = false;
 	GlsuStereoMode stereo_mode;
 	GlsuEye mono_mode;
 	GlsuAnaglyphConfiguration anaglyph_config;
 	bool stereo_enabled;
 	bool stereo_translate_in_model_view;
+	float screen_tilt_angle = 0.0f;
 	bool two_d_enabled;
 	bool fix_view_up_dir;
 	bool adapt_aspect_ratio_to_stereo_mode;
 	bool flip_x[2] = { false, false };
 	bool flip_y[2] = { false, false };
+	bool do_flip() const {
+		return flip_x[0] || flip_x[1] || flip_y[0] || flip_y[1];
+	}
 	bool swap_eyes = false;
+	cgv::ivec2 last_screen_size = { -1 };
 public:
 	void set_default_values();
 	GlsuStereoMode get_stereo_mode() const { return stereo_mode; }
@@ -163,16 +172,19 @@ protected:
 	template <typename T>
 	void update_vec_member(cgv::math::vec<T>& v) {
 		for (unsigned int i=0; i<v.size(); ++i)
-			update_member(&v(i));
+			cgv::gui::provider::update_member(&v(i));
 	}
 	template <typename T, cgv::type::uint32_type N>
 	void update_vec_member(cgv::math::fvec<T,N>& v) {
 		for (unsigned int i=0; i<N; ++i)
-			update_member(&v(i));
+			cgv::gui::provider::update_member(&v(i));
 	}
 	void dir_gui_cb(cgv::dvec3& dir, int i);
 	void add_dir_control(const std::string& name, cgv::dvec3& dir);
 	void check_write_image(cgv::render::context& ctx, const char* post_fix = "", bool done = true);
+	void ensure_fbc_size(cgv::render::context& ctx);
+	void begin(cgv::render::context& ctx, bool push_viewport = true);
+	void end(cgv::render::context& ctx, bool pop_viewport = true);
 
 	///
 	StereoMousePointer stereo_mouse_pointer;
@@ -281,6 +293,10 @@ public:
 	bool handle(cgv::gui::event& e);
 	/// overload to stream help information to the given output stream
 	void stream_help(std::ostream& os);
+	/// this method is called when context or instance is created
+	bool init(cgv::render::context&);
+	/// destruct flipper
+	void clear(cgv::render::context&);
 	/// this method is called in one pass over all drawables before the draw method
 	void init_frame(cgv::render::context&);
 	/// 

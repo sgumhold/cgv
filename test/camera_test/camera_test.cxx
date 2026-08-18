@@ -23,7 +23,7 @@
 #include <random>
 #include <cgv/utils/file.h>
 #include <cgv/utils/convert.h>
-#include <cgv/utils/pointer_test.h>
+#include <cgv/data/informed_ptr.h>
 
 using namespace cgv::base;
 using namespace cgv::data;
@@ -499,18 +499,18 @@ public:
 	}
 	void on_set(void* member_ptr)
 	{
-		cgv::utils::pointer_test pt(member_ptr);
-		if (pt.one_of(nr_iterations, slow_down, calib.depth.max_radius_for_projection)) {
+		cgv::data::informed_ptr ptr(member_ptr);
+		if (ptr.points_to_one_of(nr_iterations, slow_down, calib.depth.max_radius_for_projection)) {
 			calib.depth.compute_distortion_map(distortion_map, sub_sample);
 			construct_point_clouds();
 		}
-		else if (pt.one_of(sub_sample, sub_line_sample, xu0_rad, prec, random_offset, use_standard_epsilon, epsilon) ||
+		else if (ptr.points_to_one_of(sub_sample, sub_line_sample, xu0_rad, prec, random_offset, use_standard_epsilon, epsilon) ||
 			pt.member_of(calib.color.pose) ||
 			pt.one_of(scale, use_azure_impl, debug_mode, debug_colors, xu_xd_lambda) ||
 			pt.one_of(debug_xu0, depth_lambda, error_threshold, error_scale)) {
 			construct_point_clouds(false);
 		}
-		else if (pt.is(use_distortion_map)) {
+		else if (ptr.points_to(use_distortion_map)) {
 			construct_point_clouds(false);
 			pr.set_distortion_map_usage(use_distortion_map);
 		}

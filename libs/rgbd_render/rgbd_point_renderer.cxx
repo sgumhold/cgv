@@ -2,19 +2,19 @@
 
 namespace rgbd {
 
-void rgbd_point_renderer::update_defines(cgv::render::shader_define_map& defines) 
+void rgbd_point_renderer::update_shader_program_options(cgv::render::shader_compile_options& options) const
 {
-	point_renderer::update_defines(defines);
-	cgv::render::shader_code::set_define(defines, "USE_DISTORTION_MAP", use_distortion_map, false);
-	cgv::render::shader_code::set_define(defines, "GEOMETRY_LESS_MODE", (int&)geometry_less_mode, 0);
-	cgv::render::shader_code::set_define(defines, "USE_MESH_SHADER", use_mesh_shader, true);
+	point_renderer::update_shader_program_options(options);
+	options.define_macro_if_not_default("USE_DISTORTION_MAP", use_distortion_map, false);
+	options.define_macro_if_not_default("GEOMETRY_LESS_MODE", (int&)geometry_less_mode, 0);
+	options.define_macro_if_not_default("USE_MESH_SHADER", use_mesh_shader, true);
 }
-bool rgbd_point_renderer::build_shader_program(cgv::render::context& ctx, cgv::render::shader_program& prog, const cgv::render::shader_define_map& defines)
+std::string rgbd_point_renderer::get_default_prog_name() const
 {
 	if (use_mesh_shader)
-		return prog.build_program(ctx, "rgbd_mesh.glpr", true, defines);
+		return "rgbd_mesh.glpr";
 	else
-		return prog.build_program(ctx, "rgbd_pc.glpr", true, defines);
+		return "rgbd_pc.glpr";
 }
 rgbd_point_renderer::rgbd_point_renderer() : distortion_tex("flt32[R,G]") 
 {

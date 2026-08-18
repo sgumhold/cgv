@@ -8,7 +8,14 @@
 #include <cgv_gl/gl/gl_time_query.h>
 #include <cgv_gpgpu/select_if.h>
 
-/// This example illustrates how to perform stream compaction, i.e. filtering of an array, on the GPU using the gpgpu::select_if algorithm.
+/// This example illustrates how to perform stream compaction, i.e. filtering of an array, on the GPU 
+/// using the gpgpu::select_if algorithm.
+/// 
+/// The scene consists of spheres generated uniformly within a cube. Each sphere is assigned a random
+/// radius that is also mapped to color. The gpgpu::select_if algorithm is used to select spheres based
+/// on a filter predicate and write their indices into a compact output array. Only the indices of the
+/// spheres where the predicate evaluates to true get written. The filter used in this example simply
+/// checks if the radius of the spheres is within a given value range.
 class stream_compaction : public cgv::base::node, public cgv::render::drawable, public cgv::gui::provider {
 public:
 	stream_compaction() : cgv::base::node("Stream Compaction")
@@ -40,16 +47,13 @@ public:
 			return false;
 		}
 
-		// Define the value type to match the radius values in floating point format.
-		sl::data_type value_type = sl::Type::kFloat;
-
 		// Define the arguments used by the predicate. Since the predicate depends on uniform, outside variables we have to define them before usage.
-		// The following defines two uniform single-valued arguments of type float. The arguments are then available to use in the predicate functin by their given name.
+		// The following defines two uniform single-valued arguments of type float. The arguments are then available to use in the predicate function by their given name.
 		// Is is considered good practice to give arguments a prefix, here "a_", to differentiate them from other identifiers.
 		// In general, arguments can be of type uniform, buffer, texture or image.
 		cgv::gpgpu::argument_definitions arguments = {
-			{ sl::Type::kFloat, "a_radius_min" },
-			{ sl::Type::kFloat, "a_radius_max" }
+			{ sl::Type::Float, "a_radius_min" },
+			{ sl::Type::Float, "a_radius_max" }
 		};
 
 		// Define a boolean predicate that returns true for all input elements we want to keep and copy to the output buffer.
@@ -62,7 +66,7 @@ public:
 		)";
 
 		// Initialize the filter (select_if) using the given value type, arguments and predicate.
-		if(!filter.init(ctx, sl::Type::kFloat, arguments, predicate)) {
+		if(!filter.init(ctx, arguments, predicate)) {
 			std::cout << "Error: could not initialize GPU filter algorithm" << std::endl;
 			return false;
 		}
@@ -179,7 +183,7 @@ private:
 			time_query.begin_scope();
 
 		// Filter the spheres by their radii and write the resulting indices to the index buffer.
-		filter.dispatch(ctx, cgv::gpgpu::begin(*radius_buffer), cgv::gpgpu::end<cgv::vec3>(*radius_buffer), cgv::gpgpu::begin(*index_buffer), arguments);
+		filter.dispatch(ctx, cgv::gpgpu::begin(*radius_buffer), cgv::gpgpu::end<float>(*radius_buffer), cgv::gpgpu::begin(*index_buffer), arguments);
 		// Read back the count of filtered indices.
 		size_t filtered_count = 0;
 		filter.read_count(ctx, filtered_count);
@@ -188,7 +192,7 @@ private:
 			std::cout << "Filtering done in " << (time / 1'000'000.0f) << " ms. Copied " << filtered_count << " elements." << std::endl;
 		}
 
-		sphere_render_count = filtered_count;
+		sphere_render_count = static_cast<int>(filtered_count);
 	}
 
 	std::default_random_engine random_engine;
@@ -199,7 +203,8 @@ private:
 	cgv::render::sphere_render_data<> spheres;
 	int sphere_render_count = -1;
 
-	cgv::gpgpu::select_if filter;
+	// An instance of the select_if algorithm that is used to filter the spheres. The value type matches the type of the sphere's radii.
+	cgv::gpgpu::select_if<float> filter;
 	float threshold_min = radius_min;
 	float threshold_max = radius_max;
 
