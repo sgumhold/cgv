@@ -3,7 +3,7 @@
 OSMDataLoader::OSMDataLoader(double latMin, double lonMin, double latMax, double lonMax)
 	: m_latMin(latMin), m_lonMin(lonMin), m_latMax(latMax), m_lonMax(lonMax)
 {
-	m_url = "http://overpass-api.de";
+	m_url = "https://overpass-api.de";
 	m_query = "";
 }
 

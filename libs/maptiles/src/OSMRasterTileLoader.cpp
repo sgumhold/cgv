@@ -10,7 +10,7 @@ OSMRasterTileLoader::OSMRasterTileLoader(int zoom, double lat, double lon)
 	m_y = lat2tiley(lat, m_zoom);
 	m_x = long2tilex(lon, m_zoom);
 
-	m_url = "http://tile.openstreetmap.org";
+	m_url = "https://tile.openstreetmap.org";
 
 	m_query = "/";
 	m_query.append(std::to_string(zoom));
@@ -24,7 +24,7 @@ OSMRasterTileLoader::OSMRasterTileLoader(int zoom, double lat, double lon)
 OSMRasterTileLoader::OSMRasterTileLoader(int zoom, int x, int y)
 	: m_zoom(zoom), m_x(x), m_y(y)
 {
-	m_url = "http://tile.openstreetmap.org";
+	m_url = "https://tile.openstreetmap.org";
 
 	m_query = "/";
 	m_query.append(std::to_string(zoom));

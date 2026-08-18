@@ -16,5 +16,6 @@ addIncDirs=addIncDirs.[
 	INPUT_DIR."/3rd/WGS84toCartesian", CGV_DIR."/3rd/cpp-httplib"
 ];
 addProjectDeps=["xml", "zlib", "cgv_gl"];
+addDefines=["CPPHTTPLIB_OPENSSL_SUPPORT=1"];
 addSharedDefines=["MAPTILES_BUILDING"];
 addStaticDefines=["MAPTILES_STATIC"];
