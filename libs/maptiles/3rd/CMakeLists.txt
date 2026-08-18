@@ -1,11 +1,11 @@
 
 # manage inclusion of 3rd party sublibs
 # - cpp-httplib
-set(HTTPLIB_REQUIRE_OPENSSL OFF CACHE BOOL "" FORCE)
+set(HTTPLIB_REQUIRE_OPENSSL ON CACHE BOOL "") #set(HTTPLIB_REQUIRE_OPENSSL OFF CACHE BOOL "" FORCE)
 mark_as_advanced(FORCE HTTPLIB_REQUIRE_OPENSSL)
 set(HTTPLIB_REQUIRE_ZLIB OFF CACHE BOOL "" FORCE) # we will still use zlib; the internally provided one will be force-fed in
 mark_as_advanced(FORCE HTTPLIB_REQUIRE_ZLIB)
-set(HTTPLIB_USE_OPENSSL_IF_AVAILABLE OFF CACHE BOOL "" FORCE)
+set(HTTPLIB_USE_OPENSSL_IF_AVAILABLE ON CACHE BOOL "") #set(HTTPLIB_USE_OPENSSL_IF_AVAILABLE OFF CACHE BOOL "" FORCE)
 mark_as_advanced(FORCE HTTPLIB_USE_OPENSSL_IF_AVAILABLE)
 set(HTTPLIB_USE_ZLIB_IF_AVAILABLE OFF CACHE BOOL "" FORCE) # we will still use zlib; the internally provided one will be force-fed in
 mark_as_advanced(FORCE HTTPLIB_USE_ZLIB_IF_AVAILABLE)
