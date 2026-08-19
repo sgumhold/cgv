@@ -267,12 +267,13 @@ function(create_idea_run_entry TARGET_NAME)
 		endif()
 		set(IDEA_TARGET_NAME "${NAME_SVC}")
 		set(IDEA_LAUNCH_CMD "${LAUNCH_PROGRAM_SERVICE}")
-		format_idea_launch_args(IDEA_LAUNCH_ARGS ARGUMENT_LIST ${CMD_ARGS_SERVICE})
+		format_idea_launch_args(IDEA_LAUNCH_ARGS_MALFORMED ARGUMENT_LIST ${CMD_ARGS_SERVICE})
+		string(REGEX REPLACE "&quot$" "&quot; " IDEA_LAUNCH_ARGS "${IDEA_LAUNCH_ARGS_MALFORMED}")
 		configure_file("${CGV_DIR}/make/cmake/idea_launch.xml.in" "${CMAKE_SOURCE_DIR}/.run/${IDEA_CONFIG_NAME}.run.xml" @ONLY)
 		file(
-				GENERATE OUTPUT "${CMAKE_SOURCE_DIR}/.run/${IDEA_CONFIG_NAME}.run.xml"
-				INPUT "${CMAKE_SOURCE_DIR}/.run/${IDEA_CONFIG_NAME}.run.xml"
-				USE_SOURCE_PERMISSIONS
+			GENERATE OUTPUT "${CMAKE_SOURCE_DIR}/.run/${IDEA_CONFIG_NAME}.run.xml"
+			INPUT "${CMAKE_SOURCE_DIR}/.run/${IDEA_CONFIG_NAME}.run.xml"
+			USE_SOURCE_PERMISSIONS
 		)
 	endif()
 endfunction()
