@@ -578,7 +578,7 @@ void TileManager::CalculateViewFrustum(const cgv::mat4& mvp)
 	frustum_bbox_min.set(double_max, double_max, double_max);
 	frustum_bbox_max.set(double_min, double_min, double_min);
 
-	cgv::mat4 invMvp = inv(mvp);
+	cgv::mat4 invMvp = inverse(mvp);
 
 	for (int x = -1; x <= 1; x += 2)
 		for (int y = -1; y <= 1; y += 2)
