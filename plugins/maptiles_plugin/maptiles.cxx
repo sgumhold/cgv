@@ -175,7 +175,7 @@ public:
 			// We need to keep track of the x and z coordinate of the original camera matrix for recentering
 			auto original_mv = ctx.get_modelview_matrix();
 
-			auto original_mv_inverse = inv(original_mv);
+			auto original_mv_inverse = inverse(original_mv);
 			x = original_mv_inverse(0, 3);
 			z = original_mv_inverse(2, 3);
 
@@ -187,7 +187,7 @@ public:
 
 			auto mv = ctx.get_modelview_matrix();
 
-			auto cam_pos = inv(inv_rotation * original_mv) * vec4(0.0, 0.0, 0.0, 1.0);
+			auto cam_pos = inverse(inv_rotation * original_mv) * vec4(0.0, 0.0, 0.0, 1.0);
 
 			// make AutoRecenterDistance dependent on the altitude, making moving at greater altitude (consequently moving at greater speeds) easier
 			if (auto_recenter && (std::abs(cam_pos[0]) > std::max(config.AutoRecenterDistance, cam_pos[1]) || std::abs(cam_pos[2]) > std::max(config.AutoRecenterDistance, cam_pos[1])))
