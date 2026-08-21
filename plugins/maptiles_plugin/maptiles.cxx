@@ -109,9 +109,12 @@ public:
 		success = rh.reflect_member("enabled", enabled) && success;
 		success = rh.reflect_member("latitude", latitude) && success;
 		success = rh.reflect_member("longitude", longitude) && success;
+		success = rh.reflect_member("tiles_3d_size", config.Tile3DSize) && success;
+		success = rh.reflect_member("grid_raster_tiles_count", config.NeighbourhoodFetchSizeRasterTile) && success;
+		success = rh.reflect_member("grid_tiles_3d_count", config.NeighbourhoodFetchSizeTile3D) && success;
 		success = rh.reflect_member("frustum_raster_tiles_count", config.FrustumRasterTilesCount) && success;
 		success = rh.reflect_member("frustum_raster_tiles_distance", config.FrustumRasterTilesDistance) && success;
-		success = rh.reflect_member("frustum_3d_tiles_distance", config.FrustumTile3DMaxDistance) && success;
+		success = rh.reflect_member("frustum_tiles_3d_distance", config.FrustumTile3DMaxDistance) && success;
 		success = rh.reflect_member("frustum_based_tiles", config.FrustumBasedTileGeneration) && success;
 		success = rh.reflect_member("auto_recenter", auto_recenter) && success;
 		return success;
@@ -121,7 +124,7 @@ public:
 	{ 
 		//config.ReferencePoint = {51.02596, 13.7230};
 		config.ReferencePoint = {latitude, longitude};
-		
+
 		std::string shader_raster_tile = "maptiles_textured.glpr";
 		std::string shader_tile3D = "maptiles.glpr";
 
@@ -129,7 +132,7 @@ public:
 		RasterTileRender::shader.specify_standard_uniforms(true, false, false, true);
 		RasterTileRender::shader.specify_standard_vertex_attribute_names(ctx, false, false, true);
 		RasterTileRender::shader.allow_context_to_set_color(true);
-		
+
 		Tile3DRender::shader.build_program(ctx, shader_tile3D);
 		Tile3DRender::shader.specify_standard_uniforms(true, false, false, true);
 		Tile3DRender::shader.specify_standard_vertex_attribute_names(ctx, true, true, false);
@@ -138,7 +141,7 @@ public:
 		renderer.Init(ctx, shader_tile3D, shader_raster_tile);
 		manager.Init(config.ReferencePoint.lat, config.ReferencePoint.lon, 10, &config);
 		connect_copy(manager.tile_downloaded, cgv::signal::rebind(this, &maptiles::tile_download_callback));
-		
+
 		return true;
 	}
 
