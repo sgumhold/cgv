@@ -1,6 +1,5 @@
 var NAVTREEINDEX37 =
 {
-"namespacecgv_1_1utils.html#add0a6017402a8aec581af77f4f81b452":[10,0,1,7,46],
 "namespacecgv_1_1utils.html#ae385ad052891ece976accf415c461c51":[10,0,1,7,36],
 "namespacecgv_1_1utils.html#ae51531449e7c08f4306502dc502261b7":[10,0,1,7,140],
 "namespacecgv_1_1utils.html#ae571a5eae1a85b1b00bbc45ffe6133f1":[10,0,1,7,102],
@@ -225,11 +224,11 @@ var NAVTREEINDEX37 =
 "obj__material_8h_source.html":[12,0,1,6,1,3],
 "obj__reader_8cxx_source.html":[12,0,1,6,3,12],
 "obj__reader_8h_source.html":[12,0,1,6,3,13],
-"object__registry_8h_source.html":[12,0,1,2,23],
+"object__registry_8h_source.html":[12,0,1,2,22],
 "one_8h_source.html":[12,0,1,12,4,4],
 "operators_8cxx_source.html":[12,0,1,8,6],
 "operators_8h_source.html":[12,0,1,8,7],
-"optional_8h_source.html":[12,0,1,2,24],
+"optional_8h_source.html":[12,0,1,2,23],
 "options_8cxx_source.html":[12,0,1,13,27],
 "options_8h.html":[12,0,1,13,28],
 "options_8h.html#acac309902b58e10c2d8076c33466ae20":[12,0,1,13,28,1],
@@ -247,7 +246,8 @@ var NAVTREEINDEX37 =
 "overview.html#platforms":[0,1],
 "overview.html#plugins":[0,3],
 "overview.html#viewer":[0,5],
-"packing__info_8cxx_source.html":[12,0,1,2,25],
-"packing__info_8h_source.html":[12,0,1,2,26],
-"pages.html":[]
+"packing__info_8cxx_source.html":[12,0,1,2,24],
+"packing__info_8h_source.html":[12,0,1,2,25],
+"pages.html":[],
+"parametric__curve_8h_source.html":[12,0,1,5,48]
 };

@@ -38,12 +38,11 @@ var searchData=
   ['box_5fwire_5frenderer_35',['box_wire_renderer',['../classcgv_1_1render_1_1box__wire__renderer.html',1,'cgv::render']]],
   ['bresenham_5ftraverser_36',['bresenham_traverser',['../classcgv_1_1math_1_1bresenham__traverser.html',1,'cgv::math']]],
   ['buffer_37',['Buffer',['../structfx_1_1gltf_1_1Buffer.html',1,'fx::gltf']]],
-  ['buffer2d_38',['buffer2d',['../classcgv_1_1data_1_1buffer2d.html',1,'cgv::data']]],
-  ['buffermask_39',['BufferMask',['../structcgv_1_1render_1_1context_1_1BufferMask.html',1,'cgv::render::context']]],
-  ['bufferview_40',['BufferView',['../structfx_1_1gltf_1_1BufferView.html',1,'fx::gltf']]],
-  ['button_41',['button',['../classcgv_1_1gui_1_1button.html',1,'cgv::gui']]],
-  ['button_5fmapping_42',['button_mapping',['../structcgv_1_1gui_1_1button__mapping.html',1,'cgv::gui']]],
-  ['bvh_43',['bvh',['../classcgv_1_1data_1_1bvh.html',1,'cgv::data']]],
-  ['bvh_5fnode_44',['bvh_node',['../structcgv_1_1data_1_1bvh__node.html',1,'cgv::data']]],
-  ['bvh_5fresult_45',['bvh_result',['../structcgv_1_1data_1_1bvh__result.html',1,'cgv::data']]]
+  ['buffermask_38',['BufferMask',['../structcgv_1_1render_1_1context_1_1BufferMask.html',1,'cgv::render::context']]],
+  ['bufferview_39',['BufferView',['../structfx_1_1gltf_1_1BufferView.html',1,'fx::gltf']]],
+  ['button_40',['button',['../classcgv_1_1gui_1_1button.html',1,'cgv::gui']]],
+  ['button_5fmapping_41',['button_mapping',['../structcgv_1_1gui_1_1button__mapping.html',1,'cgv::gui']]],
+  ['bvh_42',['bvh',['../classcgv_1_1data_1_1bvh.html',1,'cgv::data']]],
+  ['bvh_5fnode_43',['bvh_node',['../structcgv_1_1data_1_1bvh__node.html',1,'cgv::data']]],
+  ['bvh_5fresult_44',['bvh_result',['../structcgv_1_1data_1_1bvh__result.html',1,'cgv::data']]]
 ];

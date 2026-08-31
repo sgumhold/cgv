@@ -191,7 +191,6 @@ var hierarchy =
     [ "cgv::base::traverser", "classcgv_1_1base_1_1traverser.html", null ],
     [ "cgv::base::use_handler", "structcgv_1_1base_1_1use__handler.html", null ],
     [ "cgv::base::user_feedback", "structcgv_1_1base_1_1user__feedback.html", null ],
-    [ "cgv::data::buffer2d< T >", "classcgv_1_1data_1_1buffer2d.html", null ],
     [ "cgv::data::bvh", "classcgv_1_1data_1_1bvh.html", null ],
     [ "cgv::data::bvh_node", "structcgv_1_1data_1_1bvh__node.html", null ],
     [ "cgv::data::bvh_result", "structcgv_1_1data_1_1bvh__result.html", null ],
@@ -339,6 +338,7 @@ var hierarchy =
       [ "cgv::data::ref_ptr_impl< T, true >", "classcgv_1_1data_1_1ref__ptr__impl_3_01T_00_01true_01_4.html", null ]
     ] ],
     [ "cgv::data::time_stamp", "classcgv_1_1data_1_1time__stamp.html", null ],
+    [ "cgv::data::vector2d< T >", "classcgv_1_1data_1_1vector2d.html", null ],
     [ "cgv::defines::static_assert_test< x >", "structcgv_1_1defines_1_1static__assert__test.html", null ],
     [ "cgv::defines::STATIC_ASSERTION_FAILURE< x >", "structcgv_1_1defines_1_1STATIC__ASSERTION__FAILURE.html", null ],
     [ "cgv::defines::STATIC_ASSERTION_FAILURE< true >", "structcgv_1_1defines_1_1STATIC__ASSERTION__FAILURE_3_01true_01_4.html", null ],

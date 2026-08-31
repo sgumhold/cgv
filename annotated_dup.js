@@ -97,7 +97,6 @@ var annotated_dup =
         [ "binary_read_reflection_handler", "classcgv_1_1data_1_1binary__read__reflection__handler.html", "classcgv_1_1data_1_1binary__read__reflection__handler" ],
         [ "binary_reflection_handler", "classcgv_1_1data_1_1binary__reflection__handler.html", null ],
         [ "binary_write_reflection_handler", "classcgv_1_1data_1_1binary__write__reflection__handler.html", "classcgv_1_1data_1_1binary__write__reflection__handler" ],
-        [ "buffer2d", "classcgv_1_1data_1_1buffer2d.html", null ],
         [ "bvh", "classcgv_1_1data_1_1bvh.html", "classcgv_1_1data_1_1bvh" ],
         [ "bvh_node", "structcgv_1_1data_1_1bvh__node.html", "structcgv_1_1data_1_1bvh__node" ],
         [ "bvh_result", "structcgv_1_1data_1_1bvh__result.html", "structcgv_1_1data_1_1bvh__result" ],
@@ -126,7 +125,8 @@ var annotated_dup =
         [ "ref_ptr_impl< T, true >", "classcgv_1_1data_1_1ref__ptr__impl_3_01T_00_01true_01_4.html", "classcgv_1_1data_1_1ref__ptr__impl_3_01T_00_01true_01_4" ],
         [ "ref_ptr_tag", "classcgv_1_1data_1_1ref__ptr__tag.html", "classcgv_1_1data_1_1ref__ptr__tag" ],
         [ "time_stamp", "classcgv_1_1data_1_1time__stamp.html", null ],
-        [ "union_find", "structcgv_1_1data_1_1union__find.html", "structcgv_1_1data_1_1union__find" ]
+        [ "union_find", "structcgv_1_1data_1_1union__find.html", "structcgv_1_1data_1_1union__find" ],
+        [ "vector2d", "classcgv_1_1data_1_1vector2d.html", null ]
       ] ],
       [ "defines", null, [
         [ "static_assert_test", "structcgv_1_1defines_1_1static__assert__test.html", null ],
