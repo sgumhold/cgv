@@ -1,7 +1,7 @@
 #pragma once
 
 #include <cgv/base/group.h>
-#include <cgv/data/buffer2d.h>
+#include <cgv/data/vector2d.h>
 #include <cgv/gui/event_handler.h>
 #include <cgv/gui/provider.h>
 #include <cgv/media/color_scale.h>
@@ -76,9 +76,9 @@ private:
 	DataProperties data_properties;
 
 	/// Stores the generated test data values.
-	cgv::data::buffer2d<float> values;
+	cgv::data::vector2d<float> values;
 	/// Stores the colors mapped from the test data.
-	cgv::data::buffer2d<cgv::rgb> image;
+	cgv::data::vector2d<cgv::rgb> image;
 
 	/// Flag whether the test data in 'values' is out of date w.r.t. to the 'data_properties'.
 	bool data_out_of_date = true;
@@ -139,7 +139,7 @@ private:
 	void set_color_scale_mapping_properties();
 
 	template<typename T>
-	void ensure_buffer_size(cgv::data::buffer2d<T>& buffer, size_t width, size_t height) {
+	void ensure_buffer_size(cgv::data::vector2d<T>& buffer, size_t width, size_t height) {
 		if(width != buffer.width() || height != buffer.height()) {
 			buffer.clear();
 			buffer.resize(width, height, T{ 0 });
@@ -152,5 +152,5 @@ private:
 	void update_value_texture(cgv::render::context& ctx);
 	void update_image_texture(cgv::render::context& ctx);
 
-	void map_values_to_color(const cgv::data::buffer2d<float>& values, cgv::data::buffer2d<cgv::rgb>& out_image);
+	void map_values_to_color(const cgv::data::vector2d<float>& values, cgv::data::vector2d<cgv::rgb>& out_image);
 };
