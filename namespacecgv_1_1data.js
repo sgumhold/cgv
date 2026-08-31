@@ -6,7 +6,6 @@ var namespacecgv_1_1data =
     [ "binary_read_reflection_handler", "classcgv_1_1data_1_1binary__read__reflection__handler.html", "classcgv_1_1data_1_1binary__read__reflection__handler" ],
     [ "binary_reflection_handler", "classcgv_1_1data_1_1binary__reflection__handler.html", null ],
     [ "binary_write_reflection_handler", "classcgv_1_1data_1_1binary__write__reflection__handler.html", "classcgv_1_1data_1_1binary__write__reflection__handler" ],
-    [ "buffer2d", "classcgv_1_1data_1_1buffer2d.html", null ],
     [ "bvh", "classcgv_1_1data_1_1bvh.html", "classcgv_1_1data_1_1bvh" ],
     [ "bvh_node", "structcgv_1_1data_1_1bvh__node.html", "structcgv_1_1data_1_1bvh__node" ],
     [ "bvh_result", "structcgv_1_1data_1_1bvh__result.html", "structcgv_1_1data_1_1bvh__result" ],
@@ -36,6 +35,7 @@ var namespacecgv_1_1data =
     [ "ref_ptr_tag", "classcgv_1_1data_1_1ref__ptr__tag.html", "classcgv_1_1data_1_1ref__ptr__tag" ],
     [ "time_stamp", "classcgv_1_1data_1_1time__stamp.html", null ],
     [ "union_find", "structcgv_1_1data_1_1union__find.html", "structcgv_1_1data_1_1union__find" ],
+    [ "vector2d", "classcgv_1_1data_1_1vector2d.html", null ],
     [ "ComponentFormat", "namespacecgv_1_1data.html#a04ff4cdaed048a306aed8dd5a8c5c979", [
       [ "CF_UNDEF", "namespacecgv_1_1data.html#a04ff4cdaed048a306aed8dd5a8c5c979a21e044c2db6fef80997427db99403175", null ],
       [ "CF_R", "namespacecgv_1_1data.html#a04ff4cdaed048a306aed8dd5a8c5c979a336a5038cab60a212d8a5bc4242c2586", null ],

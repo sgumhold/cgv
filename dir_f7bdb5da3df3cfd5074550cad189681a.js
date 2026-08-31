@@ -4,7 +4,6 @@ var dir_f7bdb5da3df3cfd5074550cad189681a =
     [ "ascii_io_reflection_handlers.h", "ascii__io__reflection__handlers_8h_source.html", null ],
     [ "binary_io_reflection_handlers.cxx", "binary__io__reflection__handlers_8cxx_source.html", null ],
     [ "binary_io_reflection_handlers.h", "binary__io__reflection__handlers_8h_source.html", null ],
-    [ "buffer2d.h", "buffer2d_8h_source.html", null ],
     [ "bvh.cxx", "bvh_8cxx_source.html", null ],
     [ "bvh.h", "bvh_8h_source.html", null ],
     [ "cgv_data.pj", "cgv__data_8pj_source.html", null ],
@@ -32,5 +31,6 @@ var dir_f7bdb5da3df3cfd5074550cad189681a =
     [ "ref_counted.h", "ref__counted_8h_source.html", null ],
     [ "ref_ptr.h", "ref__ptr_8h_source.html", null ],
     [ "time_stamp.h", "time__stamp_8h_source.html", null ],
-    [ "union_find.h", "data_2union__find_8h_source.html", null ]
+    [ "union_find.h", "data_2union__find_8h_source.html", null ],
+    [ "vector2d.h", "vector2d_8h_source.html", null ]
 ];
