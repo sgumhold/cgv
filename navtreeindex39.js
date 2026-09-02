@@ -1,5 +1,7 @@
 var NAVTREEINDEX39 =
 {
+"structcgv_1_1base_1_1cast__helper_3_01node_01_4.html":[11,0,0,1,16],
+"structcgv_1_1base_1_1cast__helper_3_01node_01_4.html":[10,0,1,0,16],
 "structcgv_1_1base_1_1cast__helper__base.html":[10,0,1,0,17],
 "structcgv_1_1base_1_1cast__helper__base.html":[11,0,0,1,17],
 "structcgv_1_1base_1_1command__info.html":[11,0,0,1,18],
@@ -247,7 +249,5 @@ var NAVTREEINDEX39 =
 "structcgv_1_1defines_1_1STATIC__ASSERTION__FAILURE.html":[11,0,0,3,1],
 "structcgv_1_1defines_1_1STATIC__ASSERTION__FAILURE_3_01true_01_4.html":[11,0,0,3,2],
 "structcgv_1_1defines_1_1static__assert__test.html":[11,0,0,3,0],
-"structcgv_1_1gui_1_1abst__control__provider.html":[11,0,0,4,1],
-"structcgv_1_1gui_1_1abst__control__provider.html":[10,0,1,3,1],
-"structcgv_1_1gui_1_1abst__control__provider.html#ab4c2359e97a4421e3001df9e7f99ad0a":[11,0,0,4,1,0]
+"structcgv_1_1gui_1_1abst__control__provider.html":[11,0,0,4,1]
 };

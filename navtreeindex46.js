@@ -1,5 +1,7 @@
 var NAVTREEINDEX46 =
 {
+"structcgv_1_1type_1_1func_1_1make__const.html":[11,0,0,14,2,13],
+"structcgv_1_1type_1_1func_1_1make__const.html":[10,0,1,6,1,11],
 "structcgv_1_1type_1_1func_1_1make__ref.html":[11,0,0,14,2,14],
 "structcgv_1_1type_1_1func_1_1make__ref.html":[10,0,1,6,1,12],
 "structcgv_1_1type_1_1func_1_1promote.html":[10,0,1,6,1,13],
@@ -247,7 +249,5 @@ var NAVTREEINDEX46 =
 "structfx_1_1gltf_1_1Material.html":[11,0,1,0,10],
 "structfx_1_1gltf_1_1Material_1_1NormalTexture.html":[11,0,1,0,10,0],
 "structfx_1_1gltf_1_1Material_1_1OcclusionTexture.html":[11,0,1,0,10,1],
-"structfx_1_1gltf_1_1Material_1_1PBRMetallicRoughness.html":[11,0,1,0,10,2],
-"structfx_1_1gltf_1_1Material_1_1Texture.html":[11,0,1,0,10,3],
-"structfx_1_1gltf_1_1Mesh.html":[11,0,1,0,11]
+"structfx_1_1gltf_1_1Material_1_1PBRMetallicRoughness.html":[11,0,1,0,10,2]
 };

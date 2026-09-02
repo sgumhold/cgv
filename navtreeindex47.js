@@ -1,5 +1,7 @@
 var NAVTREEINDEX47 =
 {
+"structfx_1_1gltf_1_1Material_1_1Texture.html":[11,0,1,0,10,3],
+"structfx_1_1gltf_1_1Mesh.html":[11,0,1,0,11],
 "structfx_1_1gltf_1_1NeverEmpty.html":[11,0,1,0,12],
 "structfx_1_1gltf_1_1Node.html":[11,0,1,0,13],
 "structfx_1_1gltf_1_1Primitive.html":[11,0,1,0,14],
@@ -247,7 +249,5 @@ var NAVTREEINDEX47 =
 "uniform__buffer_8h_source.html":[12,0,1,10,38],
 "up__tri__mat_8h_source.html":[12,0,1,5,76],
 "utils_2statistics_8h_source.html":[12,0,1,13,38],
-"variables_8cxx_source.html":[12,0,1,8,11],
-"variables_8h_source.html":[12,0,1,8,12],
-"variant_8cxx_source.html":[12,0,1,12,9]
+"variables_8cxx_source.html":[12,0,1,8,11]
 };

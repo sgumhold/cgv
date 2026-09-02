@@ -698,6 +698,9 @@ virtual void&#160;</td><td class="memItemRight" valign="bottom"><b>force_redraw<
 <tr class="memitem:a0a5de5ff32c3f70c495ad248b6d00520 inherit pub_methods_classcgv_1_1render_1_1context" id="r_a0a5de5ff32c3f70c495ad248b6d00520"><td class="memItemLeft" align="right" valign="top"><a class="el" href="classcgv_1_1base_1_1single__method__action.html">void</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcgv_1_1render_1_1context.html#a0a5de5ff32c3f70c495ad248b6d00520">set_blend_func_back_to_front</a> ()</td></tr>
 <tr class="memdesc:a0a5de5ff32c3f70c495ad248b6d00520 inherit pub_methods_classcgv_1_1render_1_1context"><td class="mdescLeft">&#160;</td><td class="mdescRight">set the default blend function for back to front blending (source = BF_SRC_ALPHA, destination = BF_ONE_MINUS_SRC_ALPHA)  <br /></td></tr>
 <tr class="separator:a0a5de5ff32c3f70c495ad248b6d00520 inherit pub_methods_classcgv_1_1render_1_1context"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ac8e34e0d6b8c399f01aaa61b6dc07209 inherit pub_methods_classcgv_1_1render_1_1context" id="r_ac8e34e0d6b8c399f01aaa61b6dc07209"><td class="memItemLeft" align="right" valign="top"><a class="el" href="classcgv_1_1base_1_1single__method__action.html">void</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcgv_1_1render_1_1context.html#ac8e34e0d6b8c399f01aaa61b6dc07209">set_blend_func_alpha_over</a> ()</td></tr>
+<tr class="memdesc:ac8e34e0d6b8c399f01aaa61b6dc07209 inherit pub_methods_classcgv_1_1render_1_1context"><td class="mdescLeft">&#160;</td><td class="mdescRight">set the blend function for back to front blendingusing the source-over operator (Porter-Duff alpha-over) for the alpha channel; (color_source = BF_SRC_ALPHA, color-destination = BF_ONE_MINUS_SRC_ALPHA, alpha_source = BF_ONE, alpha_destination = BF_ONE_MINUS_SRC_ALPHA)  <br /></td></tr>
+<tr class="separator:ac8e34e0d6b8c399f01aaa61b6dc07209 inherit pub_methods_classcgv_1_1render_1_1context"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:afa54e4fb55b2dad004f6b84de68ae89d inherit pub_methods_classcgv_1_1render_1_1context" id="r_afa54e4fb55b2dad004f6b84de68ae89d"><td class="memItemLeft" align="right" valign="top"><a class="el" href="classcgv_1_1base_1_1single__method__action.html">void</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcgv_1_1render_1_1context.html#afa54e4fb55b2dad004f6b84de68ae89d">push_buffer_mask</a> ()</td></tr>
 <tr class="memdesc:afa54e4fb55b2dad004f6b84de68ae89d inherit pub_methods_classcgv_1_1render_1_1context"><td class="mdescLeft">&#160;</td><td class="mdescRight">push a copy of the current buffer mask onto the stack saved attributes: depth mask, color mask  <br /></td></tr>
 <tr class="separator:afa54e4fb55b2dad004f6b84de68ae89d inherit pub_methods_classcgv_1_1render_1_1context"><td class="memSeparator" colspan="2">&#160;</td></tr>
@@ -1274,7 +1277,7 @@ Additional Inherited Members</h2></td></tr>
 
 <p class="definition">Definition at line <a class="el" href="gl__context_8cxx_source.html#l00342">342</a> of file <a class="el" href="gl__context_8cxx_source.html">gl_context.cxx</a>.</p>
 
-<p class="reference">References <a class="el" href="context_8h_source.html#l00775">cgv::render::context::frame_buffer_stack</a>, <a class="el" href="context_8cxx_source.html#l00484">cgv::render::context::get_bg_accum_color()</a>, <a class="el" href="context_8cxx_source.html#l00399">cgv::render::context::get_bg_color()</a>, <a class="el" href="context_8cxx_source.html#l00446">cgv::render::context::get_bg_depth()</a>, <a class="el" href="context_8cxx_source.html#l00463">cgv::render::context::get_bg_stencil()</a>, <a class="el" href="context_8cxx_source.html#l01869">cgv::render::context::get_blend_state()</a>, <a class="el" href="context_8cxx_source.html#l01917">cgv::render::context::get_buffer_mask()</a>, <a class="el" href="context_8cxx_source.html#l01852">cgv::render::context::get_cull_state()</a>, <a class="el" href="context_8cxx_source.html#l01822">cgv::render::context::get_depth_test_state()</a>, <a class="el" href="gl__context_8h_source.html#l00149">info_font_size</a>, <a class="el" href="gl__context_8cxx_source.html#l00554">set_bg_accum_color()</a>, <a class="el" href="gl__context_8cxx_source.html#l00539">set_bg_color()</a>, <a class="el" href="gl__context_8cxx_source.html#l00544">set_bg_depth()</a>, <a class="el" href="gl__context_8cxx_source.html#l00549">set_bg_stencil()</a>, <a class="el" href="gl__context_8cxx_source.html#l01561">set_blend_state()</a>, <a class="el" href="gl__context_8cxx_source.html#l01604">set_buffer_mask()</a>, <a class="el" href="gl__context_8cxx_source.html#l01542">set_cull_state()</a>, and <a class="el" href="gl__context_8cxx_source.html#l01518">set_depth_test_state()</a>.</p>
+<p class="reference">References <a class="el" href="context_8h_source.html#l00775">cgv::render::context::frame_buffer_stack</a>, <a class="el" href="context_8cxx_source.html#l00484">cgv::render::context::get_bg_accum_color()</a>, <a class="el" href="context_8cxx_source.html#l00399">cgv::render::context::get_bg_color()</a>, <a class="el" href="context_8cxx_source.html#l00446">cgv::render::context::get_bg_depth()</a>, <a class="el" href="context_8cxx_source.html#l00463">cgv::render::context::get_bg_stencil()</a>, <a class="el" href="context_8cxx_source.html#l01869">cgv::render::context::get_blend_state()</a>, <a class="el" href="context_8cxx_source.html#l01922">cgv::render::context::get_buffer_mask()</a>, <a class="el" href="context_8cxx_source.html#l01852">cgv::render::context::get_cull_state()</a>, <a class="el" href="context_8cxx_source.html#l01822">cgv::render::context::get_depth_test_state()</a>, <a class="el" href="gl__context_8h_source.html#l00149">info_font_size</a>, <a class="el" href="gl__context_8cxx_source.html#l00554">set_bg_accum_color()</a>, <a class="el" href="gl__context_8cxx_source.html#l00539">set_bg_color()</a>, <a class="el" href="gl__context_8cxx_source.html#l00544">set_bg_depth()</a>, <a class="el" href="gl__context_8cxx_source.html#l00549">set_bg_stencil()</a>, <a class="el" href="gl__context_8cxx_source.html#l01561">set_blend_state()</a>, <a class="el" href="gl__context_8cxx_source.html#l01604">set_buffer_mask()</a>, <a class="el" href="gl__context_8cxx_source.html#l01542">set_cull_state()</a>, and <a class="el" href="gl__context_8cxx_source.html#l01518">set_depth_test_state()</a>.</p>
 
 </div>
 </div>
@@ -1769,7 +1772,7 @@ Additional Inherited Members</h2></td></tr>
 
 <p class="definition">Definition at line <a class="el" href="gl__context_8cxx_source.html#l01599">1599</a> of file <a class="el" href="gl__context_8cxx_source.html">gl_context.cxx</a>.</p>
 
-<p class="reference">References <a class="el" href="context_8cxx_source.html#l01904">cgv::render::context::disable_blending()</a>.</p>
+<p class="reference">References <a class="el" href="context_8cxx_source.html#l01909">cgv::render::context::disable_blending()</a>.</p>
 
 </div>
 </div>
@@ -2259,7 +2262,7 @@ template&lt;typename T &gt; </div>
 
 <p class="definition">Definition at line <a class="el" href="gl__context_8cxx_source.html#l01017">1017</a> of file <a class="el" href="gl__context_8cxx_source.html">gl_context.cxx</a>.</p>
 
-<p class="reference">References <a class="el" href="context_8cxx_source.html#l01952">cgv::render::context::mul_modelview_matrix()</a>, <a class="el" href="context_8cxx_source.html#l01847">cgv::render::context::pop_cull_state()</a>, <a class="el" href="context_8cxx_source.html#l01958">cgv::render::context::pop_modelview_matrix()</a>, <a class="el" href="context_8cxx_source.html#l01843">cgv::render::context::push_cull_state()</a>, <a class="el" href="context_8cxx_source.html#l01946">cgv::render::context::push_modelview_matrix()</a>, <a class="el" href="gl__context_8cxx_source.html#l00995">rotate_vector_to_target()</a>, <a class="el" href="gl__context_8cxx_source.html#l00810">set_color()</a>, <a class="el" href="gl__context_8cxx_source.html#l01542">set_cull_state()</a>, <a class="el" href="gl__context_8cxx_source.html#l00967">tesselate_arrow()</a>, <a class="el" href="context_8cxx_source.html#l01327">cgv::render::context::tesselate_unit_cone()</a>, and <a class="el" href="context_8cxx_source.html#l01463">cgv::render::context::tesselate_unit_sphere()</a>.</p>
+<p class="reference">References <a class="el" href="context_8cxx_source.html#l01957">cgv::render::context::mul_modelview_matrix()</a>, <a class="el" href="context_8cxx_source.html#l01847">cgv::render::context::pop_cull_state()</a>, <a class="el" href="context_8cxx_source.html#l01963">cgv::render::context::pop_modelview_matrix()</a>, <a class="el" href="context_8cxx_source.html#l01843">cgv::render::context::push_cull_state()</a>, <a class="el" href="context_8cxx_source.html#l01951">cgv::render::context::push_modelview_matrix()</a>, <a class="el" href="gl__context_8cxx_source.html#l00995">rotate_vector_to_target()</a>, <a class="el" href="gl__context_8cxx_source.html#l00810">set_color()</a>, <a class="el" href="gl__context_8cxx_source.html#l01542">set_cull_state()</a>, <a class="el" href="gl__context_8cxx_source.html#l00967">tesselate_arrow()</a>, <a class="el" href="context_8cxx_source.html#l01327">cgv::render::context::tesselate_unit_cone()</a>, and <a class="el" href="context_8cxx_source.html#l01463">cgv::render::context::tesselate_unit_sphere()</a>.</p>
 
 </div>
 </div>
@@ -2459,7 +2462,7 @@ template&lt;typename T &gt; </div>
 
 <p class="definition">Definition at line <a class="el" href="gl__context_8cxx_source.html#l01594">1594</a> of file <a class="el" href="gl__context_8cxx_source.html">gl_context.cxx</a>.</p>
 
-<p class="reference">References <a class="el" href="context_8cxx_source.html#l01900">cgv::render::context::enable_blending()</a>.</p>
+<p class="reference">References <a class="el" href="context_8cxx_source.html#l01905">cgv::render::context::enable_blending()</a>.</p>
 
 </div>
 </div>
@@ -3687,7 +3690,7 @@ template&lt;typename T &gt; </div>
 
 <p class="definition">Definition at line <a class="el" href="gl__context_8cxx_source.html#l01119">1119</a> of file <a class="el" href="gl__context_8cxx_source.html">gl_context.cxx</a>.</p>
 
-<p class="reference">References <a class="el" href="context_8cxx_source.html#l01958">cgv::render::context::pop_modelview_matrix()</a>, and <a class="el" href="context_8cxx_source.html#l01969">cgv::render::context::pop_projection_matrix()</a>.</p>
+<p class="reference">References <a class="el" href="context_8cxx_source.html#l01963">cgv::render::context::pop_modelview_matrix()</a>, and <a class="el" href="context_8cxx_source.html#l01974">cgv::render::context::pop_projection_matrix()</a>.</p>
 
 </div>
 </div>
@@ -3720,7 +3723,7 @@ template&lt;typename T &gt; </div>
 
 <p class="definition">Definition at line <a class="el" href="gl__context_8cxx_source.html#l01656">1656</a> of file <a class="el" href="gl__context_8cxx_source.html">gl_context.cxx</a>.</p>
 
-<p class="reference">References <a class="el" href="context_8cxx_source.html#l02019">cgv::render::context::pop_window_transformation_array()</a>.</p>
+<p class="reference">References <a class="el" href="context_8cxx_source.html#l02024">cgv::render::context::pop_window_transformation_array()</a>.</p>
 
 </div>
 </div>
@@ -3843,7 +3846,7 @@ template&lt;typename T &gt; </div>
 
 <p class="definition">Definition at line <a class="el" href="gl__context_8cxx_source.html#l01095">1095</a> of file <a class="el" href="gl__context_8cxx_source.html">gl_context.cxx</a>.</p>
 
-<p class="reference">References <a class="el" href="context_8h_source.html#l00609">cgv::render::context_config::core_profile</a>, <a class="el" href="context_8cxx_source.html#l01946">cgv::render::context::push_modelview_matrix()</a>, <a class="el" href="context_8cxx_source.html#l01964">cgv::render::context::push_projection_matrix()</a>, <a class="el" href="gl__context_8cxx_source.html#l01741">set_modelview_matrix()</a>, <a class="el" href="gl__context_8cxx_source.html#l01753">set_projection_matrix()</a>, and <a class="el" href="context_8h_source.html#l00738">cgv::render::context::support_compatibility_mode</a>.</p>
+<p class="reference">References <a class="el" href="context_8h_source.html#l00609">cgv::render::context_config::core_profile</a>, <a class="el" href="context_8cxx_source.html#l01951">cgv::render::context::push_modelview_matrix()</a>, <a class="el" href="context_8cxx_source.html#l01969">cgv::render::context::push_projection_matrix()</a>, <a class="el" href="gl__context_8cxx_source.html#l01741">set_modelview_matrix()</a>, <a class="el" href="gl__context_8cxx_source.html#l01753">set_projection_matrix()</a>, and <a class="el" href="context_8h_source.html#l00738">cgv::render::context::support_compatibility_mode</a>.</p>
 
 </div>
 </div>
@@ -4291,7 +4294,7 @@ template&lt;typename T &gt; </div>
 
 <p class="definition">Definition at line <a class="el" href="gl__context_8cxx_source.html#l00995">995</a> of file <a class="el" href="gl__context_8cxx_source.html">gl_context.cxx</a>.</p>
 
-<p class="reference">References <a class="el" href="context_8cxx_source.html#l01952">cgv::render::context::mul_modelview_matrix()</a>.</p>
+<p class="reference">References <a class="el" href="context_8cxx_source.html#l01957">cgv::render::context::mul_modelview_matrix()</a>.</p>
 
 <p class="reference">Referenced by <a class="el" href="gl__context_8cxx_source.html#l01017">draw_light_source()</a>, and <a class="el" href="gl__context_8cxx_source.html#l01004">tesselate_arrow()</a>.</p>
 
@@ -4729,7 +4732,7 @@ template&lt;typename T &gt; </div>
 
 <p class="definition">Definition at line <a class="el" href="gl__context_8cxx_source.html#l01604">1604</a> of file <a class="el" href="gl__context_8cxx_source.html">gl_context.cxx</a>.</p>
 
-<p class="reference">References <a class="el" href="context_8cxx_source.html#l01921">cgv::render::context::set_buffer_mask()</a>.</p>
+<p class="reference">References <a class="el" href="context_8cxx_source.html#l01926">cgv::render::context::set_buffer_mask()</a>.</p>
 
 <p class="reference">Referenced by <a class="el" href="gl__context_8cxx_source.html#l00342">gl_context()</a>.</p>
 
@@ -4801,7 +4804,7 @@ template&lt;typename T &gt; </div>
 
 <p class="definition">Definition at line <a class="el" href="gl__context_8cxx_source.html#l01620">1620</a> of file <a class="el" href="gl__context_8cxx_source.html">gl_context.cxx</a>.</p>
 
-<p class="reference">References <a class="el" href="context_8cxx_source.html#l01938">cgv::render::context::set_color_mask()</a>.</p>
+<p class="reference">References <a class="el" href="context_8cxx_source.html#l01943">cgv::render::context::set_color_mask()</a>.</p>
 
 </div>
 </div>
@@ -4905,7 +4908,7 @@ template&lt;typename T &gt; </div>
 
 <p class="definition">Definition at line <a class="el" href="gl__context_8cxx_source.html#l01615">1615</a> of file <a class="el" href="gl__context_8cxx_source.html">gl_context.cxx</a>.</p>
 
-<p class="reference">References <a class="el" href="context_8cxx_source.html#l01929">cgv::render::context::set_depth_mask()</a>.</p>
+<p class="reference">References <a class="el" href="context_8cxx_source.html#l01934">cgv::render::context::set_depth_mask()</a>.</p>
 
 </div>
 </div>
@@ -4949,7 +4952,7 @@ template&lt;typename T &gt; </div>
 
 <p class="definition">Definition at line <a class="el" href="gl__context_8cxx_source.html#l01711">1711</a> of file <a class="el" href="gl__context_8cxx_source.html">gl_context.cxx</a>.</p>
 
-<p class="reference">References <a class="el" href="context_8cxx_source.html#l02052">cgv::render::context::set_depth_range()</a>, and <a class="el" href="context_8h_source.html#l00773">cgv::render::context::window_transformation_stack</a>.</p>
+<p class="reference">References <a class="el" href="context_8cxx_source.html#l02057">cgv::render::context::set_depth_range()</a>, and <a class="el" href="context_8h_source.html#l00773">cgv::render::context::window_transformation_stack</a>.</p>
 
 </div>
 </div>
@@ -5093,7 +5096,7 @@ template&lt;typename T &gt; </div>
 
 <p class="definition">Definition at line <a class="el" href="gl__context_8cxx_source.html#l01741">1741</a> of file <a class="el" href="gl__context_8cxx_source.html">gl_context.cxx</a>.</p>
 
-<p class="reference">References <a class="el" href="context_8h_source.html#l00609">cgv::render::context_config::core_profile</a>, <a class="el" href="context_8cxx_source.html#l01980">cgv::render::context::set_modelview_matrix()</a>, and <a class="el" href="context_8h_source.html#l00738">cgv::render::context::support_compatibility_mode</a>.</p>
+<p class="reference">References <a class="el" href="context_8h_source.html#l00609">cgv::render::context_config::core_profile</a>, <a class="el" href="context_8cxx_source.html#l01985">cgv::render::context::set_modelview_matrix()</a>, and <a class="el" href="context_8h_source.html#l00738">cgv::render::context::support_compatibility_mode</a>.</p>
 
 <p class="reference">Referenced by <a class="el" href="gl__context_8cxx_source.html#l01095">push_pixel_coords()</a>.</p>
 
@@ -5129,7 +5132,7 @@ template&lt;typename T &gt; </div>
 
 <p class="definition">Definition at line <a class="el" href="gl__context_8cxx_source.html#l01753">1753</a> of file <a class="el" href="gl__context_8cxx_source.html">gl_context.cxx</a>.</p>
 
-<p class="reference">References <a class="el" href="context_8h_source.html#l00609">cgv::render::context_config::core_profile</a>, <a class="el" href="context_8cxx_source.html#l01997">cgv::render::context::set_projection_matrix()</a>, and <a class="el" href="context_8h_source.html#l00738">cgv::render::context::support_compatibility_mode</a>.</p>
+<p class="reference">References <a class="el" href="context_8h_source.html#l00609">cgv::render::context_config::core_profile</a>, <a class="el" href="context_8cxx_source.html#l02002">cgv::render::context::set_projection_matrix()</a>, and <a class="el" href="context_8h_source.html#l00738">cgv::render::context::support_compatibility_mode</a>.</p>
 
 <p class="reference">Referenced by <a class="el" href="gl__context_8cxx_source.html#l01095">push_pixel_coords()</a>.</p>
 
@@ -5331,7 +5334,7 @@ template&lt;typename T &gt; </div>
 
 <p class="definition">Definition at line <a class="el" href="gl__context_8cxx_source.html#l01692">1692</a> of file <a class="el" href="gl__context_8cxx_source.html">gl_context.cxx</a>.</p>
 
-<p class="reference">References <a class="el" href="context_8cxx_source.html#l02045">cgv::render::context::set_viewport()</a>, and <a class="el" href="context_8h_source.html#l00773">cgv::render::context::window_transformation_stack</a>.</p>
+<p class="reference">References <a class="el" href="context_8cxx_source.html#l02050">cgv::render::context::set_viewport()</a>, and <a class="el" href="context_8h_source.html#l00773">cgv::render::context::window_transformation_stack</a>.</p>
 
 <p class="reference">Referenced by <a class="el" href="gl__context_8cxx_source.html#l00422">configure_gl()</a>.</p>
 
@@ -5871,7 +5874,7 @@ template&lt;typename T &gt; </div>
 
 <p class="definition">Definition at line <a class="el" href="gl__context_8cxx_source.html#l01004">1004</a> of file <a class="el" href="gl__context_8cxx_source.html">gl_context.cxx</a>.</p>
 
-<p class="reference">References <a class="el" href="context_8cxx_source.html#l00307">cgv::render::context::error()</a>, <a class="el" href="context_8cxx_source.html#l01952">cgv::render::context::mul_modelview_matrix()</a>, <a class="el" href="context_8cxx_source.html#l01958">cgv::render::context::pop_modelview_matrix()</a>, <a class="el" href="context_8cxx_source.html#l01946">cgv::render::context::push_modelview_matrix()</a>, <a class="el" href="gl__context_8cxx_source.html#l00995">rotate_vector_to_target()</a>, and <a class="el" href="gl__context_8cxx_source.html#l00967">tesselate_arrow()</a>.</p>
+<p class="reference">References <a class="el" href="context_8cxx_source.html#l00307">cgv::render::context::error()</a>, <a class="el" href="context_8cxx_source.html#l01957">cgv::render::context::mul_modelview_matrix()</a>, <a class="el" href="context_8cxx_source.html#l01963">cgv::render::context::pop_modelview_matrix()</a>, <a class="el" href="context_8cxx_source.html#l01951">cgv::render::context::push_modelview_matrix()</a>, <a class="el" href="gl__context_8cxx_source.html#l00995">rotate_vector_to_target()</a>, and <a class="el" href="gl__context_8cxx_source.html#l00967">tesselate_arrow()</a>.</p>
 
 </div>
 </div>
@@ -5948,7 +5951,7 @@ template&lt;typename T &gt; </div>
 
 <p class="definition">Definition at line <a class="el" href="gl__context_8cxx_source.html#l00967">967</a> of file <a class="el" href="gl__context_8cxx_source.html">gl_context.cxx</a>.</p>
 
-<p class="reference">References <a class="el" href="context_8cxx_source.html#l01952">cgv::render::context::mul_modelview_matrix()</a>, <a class="el" href="context_8cxx_source.html#l01958">cgv::render::context::pop_modelview_matrix()</a>, <a class="el" href="context_8cxx_source.html#l01946">cgv::render::context::push_modelview_matrix()</a>, <a class="el" href="context_8cxx_source.html#l01327">cgv::render::context::tesselate_unit_cone()</a>, <a class="el" href="context_8cxx_source.html#l01371">cgv::render::context::tesselate_unit_cylinder()</a>, and <a class="el" href="context_8cxx_source.html#l01295">cgv::render::context::tesselate_unit_disk()</a>.</p>
+<p class="reference">References <a class="el" href="context_8cxx_source.html#l01957">cgv::render::context::mul_modelview_matrix()</a>, <a class="el" href="context_8cxx_source.html#l01963">cgv::render::context::pop_modelview_matrix()</a>, <a class="el" href="context_8cxx_source.html#l01951">cgv::render::context::push_modelview_matrix()</a>, <a class="el" href="context_8cxx_source.html#l01327">cgv::render::context::tesselate_unit_cone()</a>, <a class="el" href="context_8cxx_source.html#l01371">cgv::render::context::tesselate_unit_cylinder()</a>, and <a class="el" href="context_8cxx_source.html#l01295">cgv::render::context::tesselate_unit_disk()</a>.</p>
 
 <p class="reference">Referenced by <a class="el" href="gl__context_8cxx_source.html#l01017">draw_light_source()</a>, and <a class="el" href="gl__context_8cxx_source.html#l01004">tesselate_arrow()</a>.</p>
 
