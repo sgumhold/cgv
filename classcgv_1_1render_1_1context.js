@@ -170,6 +170,7 @@ var classcgv_1_1render_1_1context =
     [ "set_bg_depth", "classcgv_1_1render_1_1context.html#adb90ef348ef87481350c51e49d3683e3", null ],
     [ "set_bg_stencil", "classcgv_1_1render_1_1context.html#ac0cc4cccaace3e205f38617ebb869af0", null ],
     [ "set_blend_func", "classcgv_1_1render_1_1context.html#a015186cbc9c25e2ad4b959796ab67476", null ],
+    [ "set_blend_func_alpha_over", "classcgv_1_1render_1_1context.html#ac8e34e0d6b8c399f01aaa61b6dc07209", null ],
     [ "set_blend_func_back_to_front", "classcgv_1_1render_1_1context.html#a0a5de5ff32c3f70c495ad248b6d00520", null ],
     [ "set_blend_func_front_to_back", "classcgv_1_1render_1_1context.html#a55ec2e4c4ccc3bafba91ae1875bb8cfc", null ],
     [ "set_blend_func_separate", "classcgv_1_1render_1_1context.html#a34543903b209c2439315ac7e25f91a97", null ],

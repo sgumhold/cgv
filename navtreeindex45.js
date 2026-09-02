@@ -1,5 +1,7 @@
 var NAVTREEINDEX45 =
 {
+"structcgv_1_1render_1_1sphere__render__style.html":[11,0,0,12,102],
+"structcgv_1_1render_1_1sphere__render__style.html#a120f0966e4b4e9e6e6b6b7b9ccca8846":[11,0,0,12,102,5],
 "structcgv_1_1render_1_1sphere__render__style.html#a120f0966e4b4e9e6e6b6b7b9ccca8846":[10,0,1,5,102,5],
 "structcgv_1_1render_1_1sphere__render__style.html#a1b3f1e362740748b28961a40455b5c80":[10,0,1,5,102,1],
 "structcgv_1_1render_1_1sphere__render__style.html#a1b3f1e362740748b28961a40455b5c80":[11,0,0,12,102,1],
@@ -247,7 +249,5 @@ var NAVTREEINDEX45 =
 "structcgv_1_1type_1_1func_1_1make__argument.html":[10,0,1,6,1,9],
 "structcgv_1_1type_1_1func_1_1make__argument.html":[11,0,0,14,2,11],
 "structcgv_1_1type_1_1func_1_1make__argument_3_01T_01_6_01_4.html":[11,0,0,14,2,12],
-"structcgv_1_1type_1_1func_1_1make__argument_3_01T_01_6_01_4.html":[10,0,1,6,1,10],
-"structcgv_1_1type_1_1func_1_1make__const.html":[11,0,0,14,2,13],
-"structcgv_1_1type_1_1func_1_1make__const.html":[10,0,1,6,1,11]
+"structcgv_1_1type_1_1func_1_1make__argument_3_01T_01_6_01_4.html":[10,0,1,6,1,10]
 };
