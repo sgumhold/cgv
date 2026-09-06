@@ -1384,6 +1384,9 @@ public:
 	void set_blend_func_front_to_back();
 	/// set the default blend function for back to front blending (source = BF_SRC_ALPHA, destination = BF_ONE_MINUS_SRC_ALPHA)
 	void set_blend_func_back_to_front();
+	/// set the blend function for back to front blendingusing the source-over operator (Porter-Duff alpha-over) for the alpha channel;
+	/// (color_source = BF_SRC_ALPHA, color-destination = BF_ONE_MINUS_SRC_ALPHA, alpha_source = BF_ONE, alpha_destination = BF_ONE_MINUS_SRC_ALPHA)
+	void set_blend_func_alpha_over();
 	/// enable blending
 	virtual void enable_blending();
 	/// disable blending

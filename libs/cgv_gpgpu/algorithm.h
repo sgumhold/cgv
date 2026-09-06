@@ -1,13 +1,15 @@
 #pragma once
 
 #include <limits>
+#include <system_error>
 
 #include <cgv/render/context.h>
 #include <cgv_gl/gl/gl.h>
 
-#include "device_buffer_iterator.h"
 #include "compute_kernel.h"
-#include "sl.h"
+#include "device_buffer_iterator.h"
+#include "error.h"
+#include "representation.h"
 
 #include "lib_begin.h"
 
@@ -16,22 +18,35 @@
 namespace cgv {
 namespace gpgpu {
 
+enum class GroupSize : uint32_t {
+	Auto = 0,		// Automatically determine group size based on algorithm type and/or device capabilities; currently only used in texture_algorithm (the automatic tuning of group sizes for the used device is not yet implemented)
+	k32 = 32,
+	k64 = 64,
+	k128 = 128,
+	k256 = 256,
+	k512 = 512,
+	k1024 = 1024
+};
+
 extern CGV_API GLbitfield get_associated_memory_barrier_bits(cgv::render::VertexBufferType buffer_type);
 
-constexpr static uint32_t k_default_group_size = 256;
+constexpr static GroupSize k_default_group_size = GroupSize::k256;
 
 /// The base class for compute shader based highly parallel GPU algorithms.
 class CGV_API algorithm {
 public:
-	// TODO: remove default value for group_size
-	algorithm(const std::string& type_name, uint32_t group_size = k_default_group_size) : _type_name(type_name), _group_size(group_size) {}
+	algorithm(const std::string& type_name, GroupSize group_size) : _type_name(type_name), _group_size(static_cast<uint32_t>(group_size)) {}
 	
 	std::string get_type_name() const;
 
 	bool is_initialized() const;
 
+	error get_last_error() const {
+		return _last_error;
+	}
+
 protected:
-	uint32_t _group_size = k_default_group_size;
+	uint32_t _group_size = static_cast<uint32_t>(k_default_group_size);
 
 	struct algorithm_create_info {
 		const argument_definitions* arguments = nullptr;
@@ -55,7 +70,8 @@ protected:
 
 	void destruct(const cgv::render::context& ctx);
 
-	bool is_valid_range(device_buffer_iterator first, device_buffer_iterator last);
+	/// Return true if iterators first and last point to the same range and distance(first, last) > 0.
+	bool is_valid_range(device_buffer_iterator first, device_buffer_iterator last) const;
 
 	void bind_buffer_like_arguments(cgv::render::context& ctx, const argument_bindings& arguments);
 
@@ -65,7 +81,17 @@ protected:
 
 	static void optional_memory_barrier(cgv::render::VertexBufferType buffer_type);
 
+	void raise_error(errc e, const std::string& description = "");
+
+	void raise_unsupported_type_error(const sl::data_type& type);
+
+	void raise_not_enough_shared_memory_error(size_t available, size_t required);
+
 private:
+	std::string get_type_error_description(const sl::data_type& type) const;
+
+	error _last_error;
+
 	const std::string _type_name;
 	bool _is_initialized = false;
 	std::map<std::string, uint32_t> _buffer_binding_indices;

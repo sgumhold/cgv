@@ -22,9 +22,10 @@ enum class DragAction {
 template<class T>
 class draggable_collection {
 protected:
-	typedef typename std::remove_pointer<T>::type raw_type;
-	typedef          raw_type* ptr_type;
-	typedef typename std::conditional<std::is_pointer<T>::value, ptr_type, raw_type&>::type accessor_type;
+	using raw_type = typename std::remove_pointer<T>::type;
+	using ptr_type = raw_type*;
+	using accessor_type = typename std::conditional<std::is_pointer<T>::value, ptr_type, raw_type&>::type;
+	using const_accessor_type = typename std::conditional<std::is_pointer<T>::value, const ptr_type, const raw_type&>::type;
 
 	static_assert(std::is_base_of<draggable, raw_type>::value, "T must inherit from draggable");
 
@@ -91,6 +92,10 @@ public:
 	std::vector<T>& ref_draggables() { return draggables; }
 
 	accessor_type operator[](size_t i) {
+		return draggables[i];
+	}
+
+	const_accessor_type operator[](size_t i) const {
 		return draggables[i];
 	}
 

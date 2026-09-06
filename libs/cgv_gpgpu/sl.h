@@ -30,13 +30,6 @@ template<class T>
 template<class T, cgv::type::uint32_type N, cgv::type::uint32_type M>
 /*inline*/ constexpr bool is_instance_of_fmat_v<cgv::math::fmat<T, N, M>> = std::true_type{};
 
-// TODO: Move is_instance_of(_v) to cgv/type/traits.
-template<class T, template<class...> class U>
-/*inline*/ constexpr bool is_instance_of_v = std::false_type{};
-
-template<template<class...> class U, class ...Vs>
-/*inline*/ constexpr bool is_instance_of_v<U<Vs...>, U> = std::true_type{};
-
 template<class T>
 /*inline*/ constexpr bool is_fundamental_sl_scalar_type_v =
 std::is_same_v<T, bool> ||
@@ -165,6 +158,8 @@ public:
 	/// @brief Return the memory alignment of this data_type in bytes according to GLSL layout std430.
 	size_t alignment_in_bytes() const;
 
+	bool operator==(const data_type& other) const;
+
 private:
 	Type _base_type = Type::Void;
 	std::shared_ptr<type_definition> _definition;
@@ -191,6 +186,10 @@ bool matches_type(const data_type& type, const T& value) {
 struct type_definition {
 	std::string type_name;
 	named_variable_list members;
+
+	bool operator==(const type_definition& other) const {
+		return type_name == other.type_name && members == other.members;
+	}
 };
 
 class named_object {
@@ -219,6 +218,10 @@ public:
 
 	size_t array_size() const {
 		return _array_size;
+	}
+
+	bool operator==(const named_variable& other) const {
+		return name() == other.name() && _array_size == other._array_size && _type == other._type;
 	}
 
 private:
@@ -396,6 +399,70 @@ extern CGV_API std::string to_string(const named_texture& texture, size_t locati
 using named_texture_list = std::vector<named_texture>;
 
 extern CGV_API std::string to_string(const named_texture_list& textures, size_t base_location);
+
+enum class ParameterQualifier {
+	In,
+	Out,
+	InOut
+};
+
+extern CGV_API std::string to_string(ParameterQualifier qualifier);
+
+struct parameter {
+	ParameterQualifier qualifier = ParameterQualifier::In;
+	named_variable type_and_name;
+
+	parameter(const data_type& type, const std::string& name) : type_and_name(type, name) {}
+
+	parameter(ParameterQualifier qualifier, const data_type& type, const std::string& name) : qualifier(qualifier), type_and_name(type, name) {}
+
+	static parameter in(const data_type& type, const std::string& name) {
+		return parameter(ParameterQualifier::In, type, name);
+	}
+
+	static parameter out(const data_type& type, const std::string& name) {
+		return parameter(ParameterQualifier::Out, type, name);
+	}
+
+	static parameter inout(const data_type& type, const std::string& name) {
+		return parameter(ParameterQualifier::InOut, type, name);
+	}
+
+	bool operator==(const parameter& other) const {
+		// Only the parameter type is important when comparing for equality.
+		return type_and_name.type() == other.type_and_name.type();
+	}
+};
+
+using parameter_list = std::vector<parameter>;
+
+extern CGV_API std::string to_string(parameter param);
+
+extern CGV_API std::string to_string(parameter_list params);
+
+struct function_definition {
+	data_type ret_type;
+	std::string name;
+	parameter_list parameters;
+	std::string body;
+
+	/// Return all data_types used in the signature and as return type. Does not include any further potential types used in the function body.
+	std::vector<data_type> get_used_types() const;
+
+	bool operator==(const function_definition& other) const {
+		return
+			name == other.name &&
+			ret_type == other.ret_type &&
+			parameters == other.parameters &&
+			body == other.body;
+	}
+};
+
+using function_definition_list = std::vector<function_definition>;
+
+extern CGV_API std::string to_string(const function_definition& function);
+
+extern CGV_API std::string to_string(const function_definition_list& functions);
 
 namespace tag {
 

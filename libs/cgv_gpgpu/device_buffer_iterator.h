@@ -98,7 +98,7 @@ static device_buffer_iterator end(const cgv::render::vertex_buffer& buffer) {
 	return { buffer, element_count };
 }
 
-static device_buffer_iterator end(const cgv::render::vertex_buffer& buffer, sl::data_type element_type) {
+static device_buffer_iterator end(const cgv::render::vertex_buffer& buffer, const sl::data_type& element_type) {
 	size_t size_in_bytes = buffer.get_size_in_bytes();
 	size_t element_count = size_in_bytes / sl::get_aligned_size(element_type);
 	return { buffer, element_count };

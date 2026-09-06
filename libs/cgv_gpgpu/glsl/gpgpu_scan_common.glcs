@@ -25,4 +25,12 @@ layout(std140, binding = 0) uniform argument_buffer {
 
 uniform value_type u_init;
 
+value_type operation(value_type lhs, value_type rhs) {
+#ifdef USE_CUSTOM_OPERATION
+	//$cgv::operation
+#else
+	return lhs + rhs;
+#endif
+}
+
 #endif

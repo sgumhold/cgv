@@ -1,38 +1,27 @@
 #pragma once
 
-#include "algorithm.h"
+#include "sort_algorithm.h"
 
 #include "lib_begin.h"
 
 namespace cgv {
 namespace gpgpu {
 
-enum class SortOrder {
-	Ascending,
-	Descending
-};
-
-class CGV_API radix_sort : public algorithm {
+class CGV_API radix_sort : public sort_algorithm {
 public:
 	radix_sort(const std::string& type_name, uint32_t radix);
-	virtual ~radix_sort() = default;
-
-	bool init(cgv::render::context& ctx, const sl::data_type& key_type, SortOrder order, size_t size);
-	bool init(cgv::render::context& ctx, const sl::data_type& key_type, const sl::data_type& value_type, SortOrder order, size_t size);
 	
-	virtual void destruct(const cgv::render::context& ctx) = 0;
+	bool init(cgv::render::context& ctx, const sl::data_type& key_type, SortOrder order, size_t size) override;
+	bool init(cgv::render::context& ctx, const sl::data_type& key_type, const sl::data_type& value_type, SortOrder order, size_t size) override;
 
-	bool resize(cgv::render::context& ctx, size_t size);
-
-	void dispatch(cgv::render::context& ctx, const cgv::render::vertex_buffer& keys_buffer);
-	void dispatch(cgv::render::context& ctx, const cgv::render::vertex_buffer& keys_buffer, const cgv::render::vertex_buffer& values_buffer);
+	void destruct(const cgv::render::context& ctx) override = 0;
 
 protected:
-	virtual bool v_init(cgv::render::context& ctx, cgv::render::shader_compile_options& config) = 0;
+	bool v_init(cgv::render::context& ctx, cgv::render::shader_compile_options& config) override = 0;
 
-	virtual bool v_resize(cgv::render::context& ctx) = 0;
+	bool v_resize(cgv::render::context& ctx) override = 0;
 
-	virtual void v_dispatch(cgv::render::context& ctx, const cgv::render::vertex_buffer* keys_buffer, const cgv::render::vertex_buffer* values_buffer) = 0;
+	void v_dispatch(cgv::render::context& ctx, const cgv::render::vertex_buffer* keys_buffer, const cgv::render::vertex_buffer* values_buffer) override = 0;
 
 	// TODO: Make configurable.
 	const uint32_t _key_width = 32;
@@ -43,11 +32,9 @@ protected:
 
 	sl::data_type _key_type;
 	sl::data_type _value_type;
-	SortOrder _order = SortOrder::Ascending;
-	uint32_t _num_keys = 0;
 
 private:
-	bool is_type_supported(const sl::data_type& type) const;	
+	bool is_type_supported(const sl::data_type& type) const;
 };
 
 } // namespace gpgpu

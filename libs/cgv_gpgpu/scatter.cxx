@@ -4,19 +4,18 @@
 
 namespace cgv {
 namespace gpgpu {
+namespace generic {
 
-scatter::scatter(uint32_t group_size) : algorithm("scatter", group_size) {}
+scatter::scatter(GroupSize group_size) : algorithm("scatter", group_size) {}
 
 bool scatter::init(cgv::render::context& ctx, const sl::data_type& value_type) {
-	if(!value_type.is_valid())
-		return false;
-
 	_uniform_buffer.create(ctx);
 
 	algorithm_create_info info;
 	info.types.push_back(value_type);
 	info.typedefs.push_back({ "value_type", value_type });
 	info.default_buffer_count = 3;
+
 	return algorithm::init(ctx, info, { { &_kernel, "gpgpu_scatter" } });
 }
 
@@ -31,11 +30,15 @@ bool scatter::dispatch(cgv::render::context& ctx, const cgv::render::vertex_buff
 }
 
 bool scatter::dispatch(cgv::render::context& ctx, device_buffer_iterator input_first, device_buffer_iterator input_last, device_buffer_iterator map_first, device_buffer_iterator output_first) {
-	if(!is_valid_range(input_first, input_last))
+	if(!is_valid_range(input_first, input_last)) {
+		raise_error(errc::invalid_range, "input");
 		return false;
+	}
 
-	if(compatible(input_first, output_first))
+	if(compatible(input_first, output_first)) {
+		raise_error(errc::overlapping_range, "input, output");
 		return false;
+	}
 
 	input_first.buffer().bind(ctx, cgv::render::VertexBufferType::VBT_STORAGE, 0);
 	output_first.buffer().bind(ctx, cgv::render::VertexBufferType::VBT_STORAGE, 1);
@@ -65,5 +68,6 @@ bool scatter::dispatch(cgv::render::context& ctx, device_buffer_iterator input_f
 	return true;
 }
 
+} // namespace generic
 } // namespace gpgpu
 } // namespace cgv

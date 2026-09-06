@@ -4,17 +4,15 @@
 
 namespace cgv {
 namespace gpgpu {
+namespace generic {
 
-transform::transform() : algorithm("transform") {}
+transform::transform(GroupSize group_size) : algorithm("transform", group_size) {}
 
 bool transform::init(cgv::render::context& ctx, const sl::data_type& input_type, const sl::data_type& output_type, const std::string& unary_operation) {
 	return init(ctx, input_type, output_type, {}, unary_operation);
 }
 
 bool transform::init(cgv::render::context& ctx, const sl::data_type& input_type, const sl::data_type& output_type, const argument_definitions& arguments, const std::string& unary_operation) {
-	if(!input_type.is_valid() || !output_type.is_valid())
-		return false;
-
 	algorithm_create_info info;
 	info.arguments = &arguments;
 	info.types = { input_type, output_type };
@@ -35,11 +33,15 @@ bool transform::dispatch(cgv::render::context& ctx, const cgv::render::vertex_bu
 }
 
 bool transform::dispatch(cgv::render::context& ctx, device_buffer_iterator input_first, device_buffer_iterator input_last, device_buffer_iterator output_first, const argument_bindings& arguments) {
-	if(!is_valid_range(input_first, input_last))
+	if(!is_valid_range(input_first, input_last)) {
+		raise_error(errc::invalid_range, "input");
 		return false;
+	}
 
-	if(compatible(input_first, output_first))
+	if(compatible(input_first, output_first)) {
+		raise_error(errc::overlapping_range, "input, output");
 		return false;
+	}
 
 	input_first.buffer().bind(ctx, cgv::render::VertexBufferType::VBT_STORAGE, 0);
 	output_first.buffer().bind(ctx, cgv::render::VertexBufferType::VBT_STORAGE, 1);
@@ -51,9 +53,7 @@ bool transform::dispatch(cgv::render::context& ctx, device_buffer_iterator input
 	_kernel.set_arguments(ctx, arguments);
 	bind_buffer_like_arguments(ctx, arguments);
 
-	// TODO: Make configurable.
-	const uint32_t group_size = 512;
-	uint32_t num_groups = cgv::math::div_round_up(static_cast<uint32_t>(cgv::gpgpu::distance(input_first, input_last)), group_size);
+	uint32_t num_groups = cgv::math::div_round_up(static_cast<uint32_t>(cgv::gpgpu::distance(input_first, input_last)), _group_size);
 	dispatch_compute(num_groups, 1, 1);
 	glMemoryBarrier(GL_SHADER_STORAGE_BARRIER_BIT);
 
@@ -66,5 +66,6 @@ bool transform::dispatch(cgv::render::context& ctx, device_buffer_iterator input
 	return true;
 }
 
+} // namespace generic
 } // namespace gpgpu
 } // namespace cgv

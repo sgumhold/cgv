@@ -19,7 +19,7 @@ output_type operation(input_type element, uint index) {
 	//$cgv::operation
 }
 
-layout(local_size_x = 512) in;
+layout(local_size_x = LOCAL_SIZE_X) in;
 void main() {
 	uint gid = gl_GlobalInvocationID.x;
 	uint id = u_input_begin + gid;

@@ -89,7 +89,7 @@ protected:
 	AxisId _interaction_axis_id = AxisId::kX;
 	plane _interaction_plane;
 	cgv::ray3 _drag_start_ray;
-	float _drag_start_t = 0.0f;
+	cgv::ray3 _drag_ray;
 
 	float get_size() const;
 
@@ -120,7 +120,7 @@ private:
 
 	virtual bool start_drag(const cgv::ray3& ray) { return false; }
 
-	virtual bool drag(const cgv::ray3& ray) { return false; }
+	virtual bool drag(const cgv::ray3& ray, unsigned char modifiers) { return false; }
 
 	virtual void end_drag(const cgv::ray3& ray) {}
 

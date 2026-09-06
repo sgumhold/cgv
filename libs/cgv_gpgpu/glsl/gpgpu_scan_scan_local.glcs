@@ -14,10 +14,6 @@ CGV_SBB_GROUP_STORE_STRIPED_2X(group_store, LOCAL_SIZE_X, value_type, b_data_out
 #define N (2 * LOCAL_SIZE_X)
 shared value_type s_scan[N + CGV_SBB_CONFLICT_FREE_OFFSET(N)]; // make room for all values plus some space for offset addresses
 
-value_type operation(value_type lhs, value_type rhs) {
-	return lhs + rhs;
-}
-
 CGV_SBB_GROUP_SCAN(group_scan, value_type, LOCAL_SIZE_X, s_scan, operation)
 
 layout(local_size_x = LOCAL_SIZE_X) in;
@@ -48,7 +44,7 @@ void main() {
 
 	int offset = group_scan_upsweep(tid);
 
-	if(tid < 1) {
+	if(tid == 0) {
 		b_group_sums[gl_WorkGroupID.x] = s_scan[N - 1 + CGV_SBB_CONFLICT_FREE_OFFSET(N - 1)];
 		s_scan[N - 1 + CGV_SBB_CONFLICT_FREE_OFFSET(N - 1)] = u_init;
 	}
@@ -56,8 +52,8 @@ void main() {
 	group_scan_downsweep(tid, offset);
 
 	#ifdef INCLUSIVE_SCAN
-		values[0] += s_scan[ai];
-		values[1] += s_scan[bi];
+		values[0] = operation(values[0], s_scan[ai]);
+		values[1] = operation(values[1], s_scan[bi]);
 	#else
 		values[0] = s_scan[ai];
 		values[1] = s_scan[bi];

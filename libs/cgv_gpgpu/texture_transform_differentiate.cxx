@@ -35,8 +35,10 @@ void texture_transform_differentiate::destruct(const cgv::render::context& ctx) 
 }
 
 bool texture_transform_differentiate::dispatch(cgv::render::context& ctx, cgv::render::texture& input_texture, cgv::render::texture& output_texture, const argument_bindings& arguments) {
-	if(!is_initialized_for_texture(input_texture) || !is_initialized_for_texture(output_texture))
+	if(!is_initialized_for_texture(input_texture) || !is_initialized_for_texture(output_texture)) {
+		raise_error(errc::invalid_argument, "texture type does not match initialized texture type");
 		return false;
+	}
 
 	uvec3 input_size = get_texture_size(input_texture);
 	uvec3 output_size = get_texture_size(output_texture);
