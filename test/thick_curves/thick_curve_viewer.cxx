@@ -18,6 +18,44 @@
 #include <cgv_gl/surfel_renderer.h>
 #include <cgv_gl/cone_renderer.h>
 #include <cg_gizmo/transformation_gizmo.h>
+//#define SOLVER_STATS
+#ifdef SOLVER_STATS
+int find_root_iter_cnt, find_root_newton_iter_cnt;
+int find_root_cnt[12];
+int find_root_iter_sum[12];
+int find_root_newton_iter_sum[12];
+int solve_cnt[12];
+int solve_root_sum[12];
+void init_solver_stats()
+{
+	find_root_iter_cnt = 0;
+	for (int i=0; i<12; ++i) {
+		find_root_cnt[i] = 0;
+		find_root_iter_sum[i] = 0;
+		solve_cnt[i] = 0;
+		solve_root_sum[i] = 0;
+	}
+}
+void show_solver_stats() {
+	int total_cnt = 0, total_iter_sum = 0, total_newton_iter_sum = 0;
+	for (int i = 0; i < 12; ++i) {
+		total_cnt += find_root_cnt[i];
+		total_iter_sum += find_root_iter_sum[i];
+		total_newton_iter_sum += find_root_newton_iter_sum[i];
+	}
+	std::cout << "solver roots:";
+	for (int i = 0; i < 12; ++i)
+		if (solve_cnt[i] > 0)
+			std::cout << " " << i << ":" << solve_cnt[i] << "~" << (float)solve_root_sum[i] / solve_cnt[i];
+	std::cout << std::endl;
+	std::cout << "solver iters [" << total_cnt << "~" << (float)total_iter_sum/total_cnt << "]:";
+	for (int i = 0; i < 12; ++i)
+		if (find_root_cnt[i] > 0)
+			std::cout << " " << i << ":" << find_root_cnt[i] << "~" << (float)find_root_iter_sum[i] / find_root_cnt[i] << "~" << (float)find_root_newton_iter_sum[i] / find_root_cnt[i];
+	std::cout << std::endl;
+}
+#endif
+
 #include "fpoly.h"
 #include "cyPolynomial.h"
 
@@ -886,10 +924,10 @@ protected:
 	} precision = precision_type::flt64;
 	enum class solver_type {
 		recursive, sturm, bernstein, mixed
-	} solver = solver_type::bernstein;
+	} solver = solver_type::recursive;
 	enum class strategy_type {
 		direct, filtered
-	} strategy = strategy_type::filtered;
+	} strategy = strategy_type::direct;
 	float eps32 = 6e-4f;
 	double eps64 = 6e-7;
 	std::vector<cgv::vec3> intersections;
@@ -949,8 +987,10 @@ protected:
 
 		lines.compute_bezier_tubes();
 
+#ifdef SOLVER_STATS
+		init_solver_stats();
+#endif
 		cgv::utils::stopwatch watch(true);
-
 		double eps = precision == precision_type::flt32 ? eps32 : eps64;
 		ray_intersection_function_type intersect_ray_ptr = get_intersect_ray_function();
 		int iter = 0;
@@ -977,6 +1017,9 @@ protected:
 		double time = watch.get_elapsed_time();
 		std::cout << "elapsed time [" << primitive_names[(int&)primitive] << "," << solver_names[(int&)solver]
 			<< "," << precision_names[(int&)precision] << "]: " << time << std::endl;
+#ifdef SOLVER_STATS
+		show_solver_stats();
+#endif
 		post_recreate_gui();
 		post_redraw();
 	}

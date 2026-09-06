@@ -215,21 +215,65 @@ public:
 	}
 };
 
+template <typename T, int N, int S = 0> 
+struct fpoly_ber_down {
+	static int compute_roots(const fpoly_ber<T, N>& This, const T& a, const T& b, T* roots, const T& eps) {
+		return This.down<N-1>().compute_roots<S>(a, b, roots, eps);
+	}
+	static int compute_inner_roots(const fpoly_ber<T, N>& This, T* roots, const T& eps) {
+		return This.differ().compute_inner_roots(roots, eps);
+	}
+};
+template <typename T, int S>
+struct fpoly_ber_down<T, 3, S> {
+	static int compute_roots(const fpoly_ber<T, 3>& This, const T& a, const T& b, T* roots, const T& eps) {
+		return This.down<2>().compute_roots<S>(a, b, roots, eps);
+	}
+	static int compute_inner_roots(const fpoly_ber<T, 3>& P, T* roots, const T& eps) {
+		int cnt = 0;
+		fpoly_mon<T,2> p = P.differ();
+		T c = p[0];
+		T b = p[1];
+		T a = p[2];
+		T delta = b * b - 4 * a * c;
+		if (delta > 0) {
+			T d = sqrt(delta);
+			T q = T(-0.5) * (b + (b < 0 ? -d : d));
+			T rv0 = q / a;
+			T rv1 = c / q;
+			T r0 = std::min(rv0, rv1);
+			T r1 = std::max(rv0, rv1);
+			int r0i = (r0 > 0) & (r0 < 1);
+			int r1i = (r1 > 0) & (r1 < 1);
+			roots[0] = r0;
+			roots[r0i] = r1;
+			return r0i + r1i;
+		}
+		else if (delta < 0)
+			return 0;
+		T r0 = T(-0.5) * b / a;
+		roots[0] = r0;
+		return (r0 > 0) & (r0 < 1);
+	}
+};
+template <typename T, int S>
+struct fpoly_ber_down<T, 2, S> {
+	static int compute_roots(const fpoly_ber<T, 2>& This, const T& a, const T& b, T* roots, const T& eps) { return 0; }
+	static int compute_inner_roots(const fpoly_ber<T, 2>& P, T* roots, const T& eps) {
+		int cnt = 0;
+		auto p = P.differ();
+		if (p[0] * p[1] < 0) {
+			T t = p[0] / (p[0] - p[1]);
+			if (t > 0 && t < 1)
+				roots[cnt++] = t;
+		}
+		return cnt;
+	}
+};
+
 template <typename T, int N>
 class fpoly_ber : public fvec<T, N + 1>
 {
-	template <int M, int S> struct recursive_down {
-		static int compute_roots(const fpoly_ber<T, N>& This, const T& a, const T& b, T* roots, const T& eps) {
-			return This.down<M>().compute_roots<S>(a, b, roots, eps);
-		}
-		static int compute_inner_roots(const fpoly_ber<T, N>& This, T* roots, const T& eps) {
-			return This.differ().compute_inner_roots(roots, eps);
-		}
-	};
-	template <int S> struct recursive_down<1,S> { 
-		static int compute_roots(const fpoly_ber<T, N>& This, const T& a, const T& b, T* roots, const T& eps) { return 0; } 
-		static int compute_inner_roots(const fpoly_ber<T, N>& This, T* roots, const T& eps) { return 0; } 
-	};
 	static const T* m2b_coeffs() {
 		static T coeffs[(N + 1) * (N + 2) / 2], * coeff_ptr = 0;
 		if (coeff_ptr == 0) {
@@ -616,23 +660,26 @@ public:
 	}
 	/// compute the roots inside of 0<t<1
 	int compute_inner_roots(T* roots, T eps) const {
-		int cnt = 0;
-		if (N == 1) {
-			if (data()[0] * data()[1] < 0) {
-				T t = data()[0] / (data()[0] - data()[1]);
-				if (t > 0 && t < 1)
-					roots[cnt++] = t;
-			}
-			return cnt;
-		}
-		cnt = count_sign_changes(*this);
+		int cnt = count_sign_changes(*this);
 		if (cnt == 0)
 			return 0;
 		if (cnt == 1) {
 			roots[0] = find_root(0, 1, eps);
+#ifdef SOLVER_STATS
+			++solve_cnt[N];
+			++solve_root_sum[N];
+			++find_root_cnt[N];
+			find_root_iter_sum[N] += find_root_iter_cnt;
+#endif
 			return 1;
 		}
-		cnt = recursive_down<N-1,0>::compute_inner_roots(*this, roots, eps);
+		cnt = fpoly_ber_down<T,N>::compute_inner_roots(*this, roots, eps);
+#ifdef SOLVER_DEBUG
+		std::cout << "cir<" << N << "> inner extrems [";
+		for (int k = 0; k < cnt; ++k)
+			std::cout << (k == 0 ? "" : " ") << roots[k];
+		std::cout << "]" << std::endl;
+#endif
 		T F[N + 1];
 		F[0] = data()[0];
 		for (int i=0; i<cnt; ++i)
@@ -642,12 +689,28 @@ public:
 		T b = 0;
 		for (i=0; i<cnt; ++i) {
 			T e = roots[i];
-			if (F[i]*F[i+1] < 0)
+			if (F[i] * F[i + 1] < 0) {
 				roots[new_cnt++] = find_root(b, e, eps);
+#ifdef SOLVER_STATS
+				++find_root_cnt[N];
+				find_root_iter_sum[N] += find_root_iter_cnt;
+				find_root_newton_iter_sum[N] += find_root_newton_iter_cnt;
+#endif
+			}
 			b = e;
 		}
-		if (F[i]*F[i+1] < 0)
+		if (F[i]*F[i+1] < 0) {
 			roots[new_cnt++] = find_root(b,1,eps);
+#ifdef SOLVER_STATS
+			++find_root_cnt[N];
+			find_root_iter_sum[N] += find_root_iter_cnt;
+			find_root_newton_iter_sum[N] += find_root_newton_iter_cnt;
+#endif
+		}
+#ifdef SOLVER_STATS
+		++solve_cnt[N];
+		++solve_root_sum[N] += new_cnt;
+#endif
 		return new_cnt;
 	}
 	/// compute roots of polynom with bernstein clipping
@@ -684,37 +747,56 @@ public:
 	}
 	/// find root with Newton's method in given interval
 	T find_root(const T& a, const T& b, const T& eps) const {
+#ifdef SOLVER_DEBUG
+		std::cout << "find<" << N << ">(" << a << "," << b << ")" << std::endl;
+#endif
 		if (a == b)
 			return a;
 		T t0 = a, t1 = b;
 		T y0 = eval(t0);
 		fpoly_ber<T,N-1> deri = derive();
+#ifdef SOLVER_STATS
+		find_root_iter_cnt = 0;
+		find_root_newton_iter_cnt = 0;
+#endif
+		// start with mid point
+		T tm = (t0 + t1) / 2;
+		T ym = eval(tm);
 		while (true) {
-			// interval bisection
-			T tm = (t0 + t1) / 2;
+			// split interval
+			if (ym<0 != y0<0)
+				t1 = tm;
+			else {
+				t0 = tm;
+				y0 = ym;
+			}
+			// check for termination
 			if (t1 - t0 <= eps)
 				return tm;
-			T ym = eval(tm);
+#ifdef SOLVER_DEBUG
+			std::cout << "  tm=" << tm;
+#endif
+#ifdef SOLVER_STATS
+			++find_root_iter_cnt;
+#endif
 			// try to improve with Newton step
 			T tn = tm - ym / deri.eval(tm);
 			if (tn > t0 && tn < t1) { // valid Newton step
 				T yn = eval(tn);
-				if (yn < ym) {
-					if (std::abs(tm - tn) <= eps)
-						return tn;
-					else {
-						tm = tn;
-						ym = yn;
-					}
+#ifdef SOLVER_STATS
+				++find_root_newton_iter_cnt;
+#endif
+				if (std::abs(tm - tn) <= eps)
+					return tn;
+				else {
+					tm = tn;
+					ym = yn;
 				}
 			}
-			// select interval
-			if (sgn(y0) == sgn(ym)) {
-				t0 = tm;
-				y0 = ym;
+			else {
+				tm = T(0.5) * (t0 + t1);
+				ym = eval(tm);
 			}
-			else
-				t1 = tm;
 		}
 		return a;
 	}
@@ -722,7 +804,7 @@ public:
 	template <int S = 0>
 	int compute_roots(const T& a, const T& b, T* roots, const T& eps) const {
 		if (std::abs(data()[N]) < eps)
-			return recursive_down<N-1,S>::compute_roots(*this, a, b, roots, eps);
+			return fpoly_ber_down<T,N,S>::compute_roots(*this, a, b, roots, eps);
 //			return compute_roots_direct(a, b, roots, eps);
 		cgv::math::fvec<T, 2> I[N];
 		int cnt = (S == 0) ? eliminate_roots(a, b, I, eps) : eliminate_roots_improved(a, b, I, eps);

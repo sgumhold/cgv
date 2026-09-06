@@ -409,9 +409,16 @@ inline ftype RootFinderNewton::FindClosed( ftype const coef[N+1], ftype const de
 	ftype xb0 = x0;
 	ftype xb1 = x1;
 
+#ifdef SOLVER_STATS
+	find_root_iter_cnt = 0;
+	find_root_newton_iter_cnt = 0;
+#endif
 	while ( true ) {
 		int side = IsDifferentSign( y0, yr );
 		if ( side ) xb1 = xr; else xb0 = xr;
+#ifdef SOLVER_STATS
+		++find_root_iter_cnt;
+#endif
 		ftype dy = PolynomialEval<N-1,ftype>( deriv, xr );
 		ftype dx = yr / dy;
 		ftype xn = xr - dx;
@@ -436,6 +443,9 @@ inline ftype RootFinderNewton::FindClosed( ftype const coef[N+1], ftype const de
 					yr = ys;
 				} else break;
 			}
+#ifdef SOLVER_STATS
+			++find_root_newton_iter_cnt;
+#endif
 		} else { // Newton step failed
 			xr = (xb0 + xb1) / 2;
 			if ( xr == xb0 || xr == xb1 || xb1 - xb0 <= ep2 ) {
@@ -1237,10 +1247,11 @@ inline bool CubicForEachRoot( RootCallback callback, ftype const coef[4], ftype 
 template <int N, typename ftype, bool boundError, typename RootFinder>
 inline int PolynomialRoots( ftype roots[N], ftype const coef[N+1], ftype x0, ftype x1, ftype xError )
 {
-	if      constexpr ( N == 1 ) return LinearRoot     <    ftype                      >( *roots, coef, x0, x1 );
-	else if constexpr ( N == 2 ) return QuadraticRoots <    ftype                      >(  roots, coef, x0, x1 );
-	else if constexpr ( N == 3 ) return CubicRoots     <    ftype,boundError,RootFinder>(  roots, coef, x0, x1, xError );
-	else if     ( coef[N] == 0 ) return PolynomialRoots<N-1,ftype,boundError,RootFinder>(  roots, coef, x0, x1, xError );
+	int nr;
+	if      constexpr (N == 1) nr = LinearRoot     <    ftype                      >(*roots, coef, x0, x1);
+	else if constexpr ( N == 2 ) nr = QuadraticRoots <    ftype                      >(  roots, coef, x0, x1 );
+	else if constexpr ( N == 3 ) nr = CubicRoots     <    ftype,boundError,RootFinder>(  roots, coef, x0, x1, xError );
+	else if     ( coef[N] == 0 ) nr = PolynomialRoots<N-1,ftype,boundError,RootFinder>(  roots, coef, x0, x1, xError );
 	else {
 		ftype y0 = PolynomialEval<N,ftype>( coef, x0 );
 		ftype deriv[N];
@@ -1252,14 +1263,23 @@ inline int PolynomialRoots( ftype roots[N], ftype const coef[N+1], ftype x0, fty
 		for ( int i=0; i<nd; ++i ) { x[i+1] = derivRoots[i]; y[i+1] = PolynomialEval<N,ftype>( coef, derivRoots[i] ); }
 		x[nd+1] = x1;
 		y[nd+1] = PolynomialEval<N,ftype>( coef, x1 );
-		int nr = 0;
+		nr = 0;
 		for ( int i=0; i<=nd; ++i ) {
 			if ( IsDifferentSign(y[i],y[i+1]) ) {
 				roots[nr++] = RootFinder::template FindClosed<N,ftype,boundError>( coef, deriv, x[i], x[i+1], y[i], xError );
+#ifdef SOLVER_STATS
+				++find_root_cnt[N];
+				find_root_iter_sum[N] += find_root_iter_cnt;
+				find_root_newton_iter_sum[N] += find_root_newton_iter_cnt;
+#endif
 			}
 		}
-		return nr;
 	}
+#ifdef SOLVER_STATS
+	++solve_cnt[N];
+	solve_root_sum[N] += nr;
+#endif
+	return nr;
 }
 
 //-------------------------------------------------------------------------------
