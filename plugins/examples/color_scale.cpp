@@ -408,7 +408,7 @@ void color_scale_example::update_image_texture(context& ctx) {
 	image_texture.create(ctx, data);
 }
 
-void color_scale_example::map_values_to_color(const cgv::data::buffer2d<float>& values, cgv::data::buffer2d<cgv::rgb>& out_image) {
+void color_scale_example::map_values_to_color(const cgv::data::vector2d<float>& values, cgv::data::vector2d<cgv::rgb>& out_image) {
 	// Map all scalar test data 'values' through the active color scale and store the resulting colors in the 'image' buffer.
 	const cgv::media::color_scale* color_scale = get_active_color_scale();
 	std::transform(values.begin(), values.end(), out_image.begin(), [color_scale](float value) {

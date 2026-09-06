@@ -152,6 +152,14 @@ struct trect {
 		else if(mask & static_cast<int>(Alignment::kBottom))
 			y() = y_end - end_offset.y() * h();
 	}
+
+	bool operator==(trect& other) const {
+		return position == other.position && size == other.size;
+	}
+
+	bool operator!=(trect& other) const {
+		return !operator==(other);
+	}
 };
 
 // declare some concrete rectangle types

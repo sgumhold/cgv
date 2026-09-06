@@ -4,24 +4,22 @@
 
 namespace cgv {
 namespace gpgpu {
+namespace generic {
 namespace detail {
 
-write_if::write_if(const std::string& name, bool write_indices) : algorithm(name), _write_indices(write_indices) {}
+write_if::write_if(const std::string& name, OutputMode output_mode, GroupSize group_size) : algorithm(name, group_size), _output_mode(output_mode) {}
 
 bool write_if::init(cgv::render::context& ctx, const sl::data_type& value_type, const std::string& unary_predicate) {
 	return init(ctx, value_type, {}, unary_predicate);
 }
 
 bool write_if::init(cgv::render::context& ctx, const sl::data_type& value_type, const argument_definitions& arguments, const std::string& unary_predicate) {
-	if(!value_type.is_valid())
-		return false;
-
 	algorithm_create_info info;
 	info.arguments = &arguments;
 	info.types.push_back(value_type);
 	info.typedefs.push_back({ "value_type", value_type });
 	info.default_buffer_count = 6;
-	info.options.define_macro_if_true(_write_indices, "WRITE_INDICES");
+	info.options.define_macro_if_true(_output_mode == OutputMode::Indices, "WRITE_INDICES");
 	info.options.define_snippet("predicate", unary_predicate);
 
 	std::vector<compute_kernel_info> kernels = {
@@ -74,16 +72,23 @@ bool write_if::dispatch(cgv::render::context& ctx, device_buffer_iterator input_
 }
 
 bool write_if::dispatch(cgv::render::context& ctx, device_buffer_iterator input_first, device_buffer_iterator input_last, device_buffer_iterator output_first, device_buffer_iterator output_count, const argument_bindings& arguments) {
-	if(!is_valid_range(input_first, input_last))
+	if(!is_valid_range(input_first, input_last)) {
+		raise_error(errc::invalid_range, "input");
 		return false;
+	}
 
-	if(compatible(input_first, output_first))
+	if(compatible(input_first, output_first)) {
+		raise_error(errc::overlapping_range, "input, output");
 		return false;
+	}
 
 	uint32_t count = static_cast<uint32_t>(cgv::gpgpu::distance(input_first, input_last));
 	uint32_t max_count = static_cast<uint32_t>(ctx.get_device_capabilities().max_compute_work_group_count.x()) * _block_size;
-	if(count > max_count)
+	if(count > max_count) {
+		std::string description = "the length of the input range must not exceed " + std::to_string(max_count);
+		raise_error(errc::size_too_large, description);
 		return false;
+	}
 
 	if(count != _last_size) {
 		resize(ctx, count);
@@ -153,9 +158,11 @@ bool write_if::read_count(cgv::render::context& ctx, size_t& out) {
 		out = count;
 		return true;
 	}
+	raise_error(errc::buffer_copy_to_host_error);
 	return false;
 }
 
 } // namespace detail
+} // namespace generic
 } // namespace gpgpu
 } // namespace cgv

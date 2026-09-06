@@ -19,8 +19,10 @@ void mipmap::destruct(const cgv::render::context& ctx) {
 }
 
 bool mipmap::dispatch(cgv::render::context& ctx, cgv::render::texture& texture) {
-	if(!is_initialized_for_texture(texture))
+	if(!is_initialized_for_texture(texture)) {
+		raise_error(errc::invalid_argument, "texture type does not match initialized texture type");
 		return false;
+	}
 
 	if(!texture.have_mipmaps)
 		texture.create_mipmaps(ctx);

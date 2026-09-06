@@ -11,10 +11,12 @@
 namespace cgv {
 namespace gpgpu {
 
+namespace generic {
+
 /// GPU compute shader implementation for copying values based on a boolean predicate. Unlike copy_if, collect_if makes no guarantee on the ordering of the output.
 class CGV_API collect_if : public algorithm {
 public:
-	collect_if();
+	collect_if(GroupSize group_size = k_default_group_size);
 
 	bool init(cgv::render::context& ctx, const sl::data_type& value_type, const std::string& unary_predicate);
 	bool init(cgv::render::context& ctx, const sl::data_type& value_type, const argument_definitions& arguments, const std::string& unary_predicate);
@@ -30,6 +32,7 @@ public:
 			out = count;
 			return true;
 		}
+		raise_error(errc::buffer_copy_to_host_error);
 		return false;
 	}
 
@@ -45,7 +48,28 @@ private:
 	storage_buffer _atomic_counter_buffer;
 };
 
-}
-}
+} // namespace generic
+
+/// GPU compute shader implementation for copying values based on a boolean predicate. Unlike copy_if, collect_if makes no guarantee on the ordering of the output.
+template<class T>
+class collect_if : public generic::collect_if {
+public:
+	static_assert(type_representation<T>::value, "T must be representable as sl::data_type");
+
+	using base = generic::collect_if;
+	using base::base;
+
+	bool init(cgv::render::context& ctx, const std::string& unary_predicate) {
+		return init(ctx, {}, unary_predicate);
+	}
+
+	bool init(cgv::render::context& ctx, const argument_definitions& arguments, const std::string& unary_predicate) {
+		sl::data_type value_type = register_type_representation<T>();
+		return base::init(ctx, value_type, arguments, unary_predicate);
+	}
+};
+
+} // namespace gpgpu
+} // namespace cgv
 
 #include <cgv/config/lib_end.h>

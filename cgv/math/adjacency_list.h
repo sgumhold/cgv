@@ -1,5 +1,6 @@
 #pragma once
 
+#include <algorithm>
 #include <numeric>
 #include <queue>
 #include <utility>
@@ -42,7 +43,7 @@ struct vertex
 /// the graph edge orientation
 enum class EdgeOrientation {
 	Undirected,	// the graph contains only undirected edges
-	Directed,	// the graph contains only directed edges
+	Directed,	// the graph contains only directed edges; inverse directed edges are allowed
 };
 
 /**
@@ -150,7 +151,7 @@ public:
 		return _vertices.size() - 1;
 	}
 
-	/// add an edge to the list; return false if the edge or, in case of a directed graph, its inverse already exists, true otherwise
+	/// add an edge to the list; return false if the edge already exists, true otherwise
 	bool add_edge(const edge_type& edge) {
 		if(edge_exists(edge.start, edge.end))
 			return false;
@@ -158,7 +159,7 @@ public:
 		if(edge.start < vertex_count() && edge.end < vertex_count()) {
 			vertex(edge.start).edges.push_back(edge);
 			if(!is_directed()) {
-				// build a reverse edg by copying the new edge and its properties and swapping its start and end indices
+				// build a reverse edge by copying the new edge and its properties and swapping its start and end indices
 				edge_type reverse_edge = edge;
 				std::swap(reverse_edge.start, reverse_edge.end);
 				vertex(edge.end).edges.push_back(reverse_edge);
@@ -168,7 +169,7 @@ public:
 		return false;
 	}
 
-	/// add a default-initialized edge definded by the start and end vertex to the list; return false if the edge or, in case of a directed graph, its inverse already exists, true otherwise
+	/// add a default-initialized edge definded by the start and end vertex to the list; return false if the edge already exists, true otherwise
 	bool add_edge(size_t start, size_t end) {
 		return add_edge({ start, end });
 	}
