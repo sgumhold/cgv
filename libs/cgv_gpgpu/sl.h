@@ -183,15 +183,6 @@ bool matches_type(const data_type& type, const T& value) {
 	return get_type_descriptor(type) == cgv::render::element_descriptor_traits<T>::get_type_descriptor({});
 }
 
-struct type_definition {
-	std::string type_name;
-	named_variable_list members;
-
-	bool operator==(const type_definition& other) const {
-		return type_name == other.type_name && members == other.members;
-	}
-};
-
 class named_object {
 public:
 	named_object(const std::string& name) : _name(name) {}
@@ -234,6 +225,15 @@ extern CGV_API std::string to_string(const named_variable& variable);
 extern CGV_API std::string to_string(const named_variable_list& variables);
 
 extern CGV_API std::string to_string(const named_variable_list& variables, const std::string& prefix);
+
+struct type_definition {
+	std::string type_name;
+	named_variable_list members;
+
+	bool operator==(const type_definition& other) const {
+		return type_name == other.type_name && members == other.members;
+	}
+};
 
 enum class MemoryQualifier : int32_t {
 	None = 0,
