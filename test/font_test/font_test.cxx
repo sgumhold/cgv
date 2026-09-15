@@ -52,9 +52,9 @@ protected:
 	/// whether to use per character colors when drawing text
 	bool use_colors;
 	/// screen location in pixel coordinates
-	ivec2 pixel_position;
+	cgv::ivec2 pixel_position;
 	/// subpixel offset that allows to debug font rendering results if texels and pixels are not aligned
-	vec2 subpixel_offset;
+	cgv::vec2 subpixel_offset;
 
 	/// whether to show lines
 	bool show_lines;
@@ -68,9 +68,9 @@ protected:
 
 	void render_textured_quads(cgv::render::context& ctx, cgv::render::rectangle_render_style& _rrs, 
 		const std::vector<cgv::render::textured_rectangle>& Q, 
-		const std::vector<rgba>* colors_ptr = 0,
-		const std::vector<vec3>* translations_ptr = 0,
-		const std::vector<quat>* rotations_ptr = 0)
+		const std::vector<cgv::rgba>* colors_ptr = 0,
+		const std::vector<cgv::vec3>* translations_ptr = 0,
+		const std::vector<cgv::quat>* rotations_ptr = 0)
 	{
 		auto& rr = cgv::render::ref_rectangle_renderer(ctx);
 		rr.set_render_style(_rrs);
@@ -111,9 +111,9 @@ public:
 		on_set(&font_idx); // ensure that font and font face pointers are set
 
 		text = "This demo shows how to render text with the tt_gl_font library including <�������>!";
-		pixel_position = ivec2(100, 100);
+		pixel_position = cgv::ivec2(100, 100);
 		use_colors = true;
-		subpixel_offset = vec2(0.0f);
+		subpixel_offset = cgv::vec2(0.0f);
 
 		show_lines = true;
 		fst_line = 100;
@@ -121,11 +121,11 @@ public:
 
 		show_cube = true;
 
-		rrs.surface_color = rgba(1, 0, 1, 1);
+		rrs.surface_color = cgv::rgba(1, 0, 1, 1);
 		rrs.pixel_blend = 0.0f;
 		rrs.texture_mode = cgv::render::RTM_REPLACE_ALPHA;
 		rrs.default_depth_offset = -0.0000001f;
-		rrs.default_border_color = rgba(0, 0, 0, 0);
+		rrs.default_border_color = cgv::rgba(0, 0, 0, 0);
 		rrs.map_color_to_material = cgv::render::CM_COLOR_AND_OPACITY;
 		rrs.illumination_mode = cgv::render::IM_OFF;
 	}

@@ -85,8 +85,29 @@ std::string lookup_secrets(const std::pair<int, int>& indices)
 {
 	return lookup_secret(indices.first) + lookup_secret(indices.second);
 }
-bool parse_indices(const std::string& text, std::pair<int, int>& p)
+bool parse_indices_new(const std::string& text, std::pair<int, int>& p, bool &pause)
 {
+	std::vector<cgv::utils::token> toks;
+	cgv::utils::split_to_tokens(text, toks, ":");
+	int i = 1;
+	int j = int(toks.size()) - 1;
+	while (j > 0) {
+		if (toks[j - 1] == "Position") {
+			if (cgv::utils::is_integer(toks[j].begin, toks[j].end, i == 1 ? p.second : p.first)) {
+				if (i == 0)
+					return pause = true;
+				--i;
+			}
+		}
+		--j;
+	}
+	return false;
+}
+
+bool parse_indices(const std::string& text, std::pair<int, int>& p, bool& pause)
+{
+	if (parse_indices_new(text, p, pause))
+		return true;
 	std::vector<cgv::utils::token> toks;
 	cgv::utils::split_to_tokens(text, toks, "&");
 	int i1 = 1, i2 = 2;
@@ -139,10 +160,16 @@ int main(int, char**)
 	if (has_clipboard_text) {
 		std::pair<int, int> p;
 		// first try lookup mode
-		if (ref_index_secret().length() == 25 && parse_indices(text, p)) {
+		bool pause = false;
+		if (ref_index_secret().length() == 25 && parse_indices(text, p, pause)) {
 			std::string secret = lookup_secrets(p);
 			if (secret.length() == 2) {
 				cgv::os::copy_text_to_clipboard(secret.c_str());
+				if (pause) {
+					std::cout << "\n" << secret << std::endl;
+					char tmp[10];
+					std::cin.getline(tmp, 10);;
+				}
 				result = 1;
 			}
 		}
