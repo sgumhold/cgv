@@ -154,16 +154,15 @@ bool msdf_font::load_atlas_metadata(const std::string& filename) {
 			tknzr.set_ws(",");
 			tknzr.bite_all(tokens);
 
-			if(tokens.size() == 4) {
-				// This should be the first line of format: MAGIC_ID,int,int,string
-				// It contains the file id "MSDF_FONT_GLYPH_METADATA", followed by the initial font size
-				// used to generate the msdf and the pixel range of the signed distance field. The last entry
-				// specifies the font face style.
-				initial_font_size = static_cast<float>(std::strtol(to_string(tokens[1]).c_str(), 0, 10));
-				pixel_range = static_cast<float>(std::strtol(to_string(tokens[2]).c_str(), 0, 10));
-			}
-
-			if(tokens.size() == 10) {
+			if(tokens.size() == 1) {
+				// Check for magic ID but ignore it for now.
+				// Could break parsing the metadata and return an error if this does not match
+				if(tokens[0] == "MSDF_FONT_GLYPH_METADATA") {}
+			} else if(tokens.size() == 2) {
+				// A line containing font metrics.
+				read_metric(to_string(tokens[0]), std::strtof(to_string(tokens[1]).c_str(), 0));
+			} else if(tokens.size() == 10) {
+				// A line containing glyph layout and texture data.
 				int id = std::strtol(to_string(tokens[0]).c_str(), 0, 10);
 
 				if(id > 0 && id < 256) {
@@ -187,6 +186,23 @@ bool msdf_font::load_atlas_metadata(const std::string& filename) {
 	compute_derived_glyph_attributes();
 
 	return true;
+}
+
+void msdf_font::read_metric(const std::string& name, float value) {
+	if(name == "style") return; // currently ignored
+	else if(name == "weight") return; // currently ignored
+	else if(name == "pxsize") initial_font_size = value;
+	else if(name == "pxrange") pixel_range = value;
+	else if(name == "emsize") em_size = value;
+	else if(name == "lineheight") line_height = value;
+	else if(name == "ascend") top = value;
+	else if(name == "descend") bottom = value;
+	else if(name == "typoascender") ascender = value;
+	else if(name == "typodescender") descender = value;
+	else if(name == "capheight") cap_height = value;
+	else if(name == "sxheight") x_height = value;
+	else if(name == "underliney") underline_y = value;
+	else if(name == "underlinethickness") underline_thickness = value;
 }
 
 void msdf_font::compute_derived_glyph_attributes() {

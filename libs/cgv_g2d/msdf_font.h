@@ -26,9 +26,18 @@ public:
 	};
 
 protected:
-	float initial_font_size;
-	float pixel_range;
-	float cap_height;
+	float initial_font_size = 0.0f;
+	float pixel_range = 0.0f;
+	float em_size = 0.0f;
+	float line_height = 0.0f;
+	float top = 0.0f;
+	float bottom = 0.0f;
+	float ascender = 0.0f;
+	float descender = 0.0f;
+	float cap_height = 0.0f;
+	float x_height = 0.0f;
+	float underline_y = 0.0f;
+	float underline_thickness = 0.0f;
 	FontFace font_face = FF_REGULAR;
 
 	std::vector<glyph_info> glyphs;
@@ -37,6 +46,8 @@ protected:
 	bool load_atlas_texture(cgv::render::context& ctx, const std::string& filename);
 
 	bool load_atlas_metadata(const std::string& filename);
+
+	void read_metric(const std::string& name, float value);
 
 	void compute_derived_glyph_attributes();
 
@@ -59,7 +70,25 @@ public:
 
 	float get_pixel_range() const { return pixel_range; }
 
+	float get_em_size() const { return em_size; }
+
+	float get_line_height() const { return line_height; }
+
+	float get_top() const { return top; }
+
+	float get_bottom() const { return bottom; }
+
+	float get_ascender() const { return ascender; }
+
+	float get_descender() const { return descender; }
+
 	float get_cap_height() const { return cap_height; }
+
+	float get_x_height() const { return x_height; }
+
+	float get_underline_y() const { return underline_y; }
+
+	float get_underline_thickness() const { return underline_thickness; }
 
 	float compute_normalized_length(const std::string& str, size_t end = std::string::npos) const;
 
