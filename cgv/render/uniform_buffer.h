@@ -100,7 +100,7 @@ public:
 	/// @param data The new buffer data.
 	/// @return True if success, false otherwise.
 	bool resize_or_replace(const context& ctx, std::vector<T>& array) {
-		return size_in_bytes != sizeof(T) ? resize(ctx, array) : replace(ctx, array);
+		return size_in_bytes != array.size() * sizeof(T) ? resize(ctx, array) : replace(ctx, array);
 	}
 
 	/// @brief Deleted to avoid resizing this buffer to any arbitrary size.
