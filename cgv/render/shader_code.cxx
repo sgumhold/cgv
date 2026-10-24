@@ -292,6 +292,10 @@ ShaderType shader_code::detect_shader_type(const std::string& file_name)
 		st = ST_TESS_CONTROL;
 	else if (ext == "glte" || ext == "pglte")
 		st = ST_TESS_EVALUATION;
+	else if(ext == "glts" || ext == "pglts")
+		st = ST_TASK;
+	else if(ext == "glms" || ext == "pglms")
+		st = ST_MESH;
 	return st;
 }
 

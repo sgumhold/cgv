@@ -1864,11 +1864,24 @@ bool gl_context::check_texture_support(TextureType tt, const std::string& where,
 bool gl_context::check_shader_support(ShaderType st, const std::string& where, const cgv::render::render_component* rc) const
 {
 	switch (st) {
+	case ST_TASK:
+	case ST_MESH:
+		if(GLEW_VERSION_4_5) {
+			if(get_gpu_vendor_id() == cgv::render::GPUVendorID::GPU_VENDOR_NVIDIA && GLEW_NV_mesh_shader || GLEW_EXT_mesh_shader)
+				return true;
+			else {
+				error(where + ": task and mesh shaders require support of the GL_NV_mesh_shader or GLSL_EXT_mesh_shader extensions", rc);
+				return false;
+			}
+		} else {
+			error(where + ": task and mesh shaders are only supported starting from OpenGL version 4.5", rc);
+			return false;
+		}
 	case ST_COMPUTE:
 		if (GLEW_VERSION_4_3)
 			return true;
 		else {
-			error(where+": compute shader need not supported OpenGL version 4.3", rc);
+			error(where+": compute shaders are only supported starting from OpenGL version 4.3", rc);
 			return false;
 		}
 	case ST_TESS_CONTROL:
@@ -1876,21 +1889,21 @@ bool gl_context::check_shader_support(ShaderType st, const std::string& where, c
 		if (GLEW_VERSION_4_0)
 			return true;
 		else {
-			error(where+": tessellation shader need not supported OpenGL version 4.0", rc);
+			error(where+": tessellation shaders are only supported starting from OpenGL version 4.0", rc);
 			return false;
 		}
 	case ST_GEOMETRY:
 		if (GLEW_VERSION_3_2)
 			return true;
 		else {
-			error(where + ": geometry shader need not supported OpenGL version 3.2", rc);
+			error(where + ": geometry shaders are only supported starting from OpenGL version 3.2", rc);
 			return false;
 		}
 	default:
 		if (GLEW_VERSION_2_0)
 			return true;
 		else {
-			error(where + ": shaders need not supported OpenGL version 2.0", rc);
+			error(where + ": shaders are only supported starting from OpenGL version 2.0", rc);
 			return false;
 		}
 	}
@@ -2763,7 +2776,7 @@ int gl_context::frame_buffer_get_max_nr_draw_buffers() const
 
 GLuint gl_shader_type[] = 
 {
-	0, GL_COMPUTE_SHADER, GL_VERTEX_SHADER, GL_TESS_CONTROL_SHADER, GL_TESS_EVALUATION_SHADER, GL_GEOMETRY_SHADER, GL_FRAGMENT_SHADER
+	0, GL_COMPUTE_SHADER, GL_VERTEX_SHADER, GL_TESS_CONTROL_SHADER, GL_TESS_EVALUATION_SHADER, GL_GEOMETRY_SHADER, GL_FRAGMENT_SHADER, GL_TASK_SHADER_EXT, GL_MESH_SHADER_EXT
 };
 
 void gl_context::shader_code_destruct(render_component& sc) const

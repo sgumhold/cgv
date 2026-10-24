@@ -540,7 +540,7 @@ public:
 };
 
 /// different shader types
-enum ShaderType { ST_DETECT, ST_COMPUTE, ST_VERTEX, ST_TESS_CONTROL, ST_TESS_EVALUATION, ST_GEOMETRY, ST_FRAGMENT };
+enum ShaderType { ST_DETECT, ST_COMPUTE, ST_VERTEX, ST_TESS_CONTROL, ST_TESS_EVALUATION, ST_GEOMETRY, ST_FRAGMENT, ST_TASK, ST_MESH };
 
 /// different frame buffer types which can be combined together with or
 enum FrameBufferType {

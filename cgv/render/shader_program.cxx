@@ -86,7 +86,7 @@ bool shader_program::collect_files(const std::string& base_name, bool use_cache,
 
 	std::vector<std::string> collected_file_names;
 	
-	const char* exts[] = { "glvs", "glgs", "glfs", "glcs", "gltc", "glte", "pglvs", "pglfs", "pglgs", "pglcs", "pgltc", "pglte", 0 };
+	const char* exts[] = { "glvs", "glgs", "glfs", "glcs", "gltc", "glte", "glts", "glms", "pglvs", "pglfs", "pglgs", "pglcs", "pgltc", "pglte", "pglts", "pglms", 0};
 	const char** iter = exts;
 	bool added_file = false;
 	while (*iter) {
@@ -151,12 +151,16 @@ bool shader_program::collect_program(const std::string& file_name, bool use_cach
 	if (!path.empty())
 		get_shader_config()->shader_path = path+";"+get_shader_config()->shader_path;
 
-	for (auto line : lines) {
-		std::string l = to_string((const token&)line);
+	for (const cgv::utils::line& line : lines) {
+		std::string l = to_string(line);
 		if (l.substr(0,5) == "file:")
 			added_file = collect_file(l.substr(5), use_cache, file_names) || added_file;
 		else if (l.substr(0,12) == "vertex_file:")
 			added_file = collect_file(l.substr(12), use_cache, file_names) || added_file;
+		else if(l.substr(0, 10) == "task_file:")
+			added_file = collect_file(l.substr(10), use_cache, file_names) || added_file;
+		else if(l.substr(0, 10) == "mesh_file:")
+			added_file = collect_file(l.substr(10), use_cache, file_names) || added_file;
 		else if (l.substr(0, 14) == "geometry_file:")
 			added_file = collect_file(l.substr(14), use_cache, file_names) || added_file;
 		else if (l.substr(0, 26) == "tessellation_control_file:")
@@ -409,6 +413,10 @@ bool shader_program::attach_program(const context& ctx, std::string file_name, b
 			success = attach_file(ctx, l.substr(5), ST_DETECT, options);
 		else if (l.substr(0,12) == "vertex_file:")
 			success = attach_file(ctx, l.substr(12), ST_VERTEX, options);
+		else if(l.substr(0, 10) == "task_file:")
+			success = attach_file(ctx, l.substr(10), ST_TASK, options);
+		else if(l.substr(0, 10) == "mesh_file:")
+			success = attach_file(ctx, l.substr(10), ST_MESH, options);
 		else if (l.substr(0,14) == "geometry_file:")
 			success = attach_file(ctx, l.substr(14), ST_GEOMETRY, options);
 		else if (l.substr(0, 26) == "tessellation_control_file:")
