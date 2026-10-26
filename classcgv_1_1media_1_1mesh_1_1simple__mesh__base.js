@@ -5,17 +5,8 @@ var classcgv_1_1media_1_1mesh_1_1simple__mesh__base =
     [ "idx4_type", "classcgv_1_1media_1_1mesh_1_1simple__mesh__base.html#a48fca8dd677c2aab4532857a792b5ed8", null ],
     [ "idx_type", "classcgv_1_1media_1_1mesh_1_1simple__mesh__base.html#a0eb0181dc49db651e738bd0e66d1f0e6", null ],
     [ "mat_type", "classcgv_1_1media_1_1mesh_1_1simple__mesh__base.html#aadaa20e3430904b6433ba5f4aec4099f", null ],
-    [ "attribute_type", "classcgv_1_1media_1_1mesh_1_1simple__mesh__base.html#ad4fc7270f07ba37b769e2cb6877a0a1f", [
-      [ "begin", "classcgv_1_1media_1_1mesh_1_1simple__mesh__base.html#ad4fc7270f07ba37b769e2cb6877a0a1fa8d589afa4dfaeeed85fff5aa78e5ff6a", null ],
-      [ "position", "classcgv_1_1media_1_1mesh_1_1simple__mesh__base.html#ad4fc7270f07ba37b769e2cb6877a0a1fa4757fe07fd492a8be0ea6a760d683d6e", null ],
-      [ "texcoords", "classcgv_1_1media_1_1mesh_1_1simple__mesh__base.html#ad4fc7270f07ba37b769e2cb6877a0a1fac6620575257be84d98036fde25ce5c42", null ],
-      [ "normal", "classcgv_1_1media_1_1mesh_1_1simple__mesh__base.html#ad4fc7270f07ba37b769e2cb6877a0a1fafea087517c26fadd409bd4b9dc642555", null ],
-      [ "tangent", "classcgv_1_1media_1_1mesh_1_1simple__mesh__base.html#ad4fc7270f07ba37b769e2cb6877a0a1fa75e7384f08d8f81a380699ce840c1167", null ],
-      [ "color", "classcgv_1_1media_1_1mesh_1_1simple__mesh__base.html#ad4fc7270f07ba37b769e2cb6877a0a1fa70dda5dfb8053dc6d1c492574bce9bfd", null ],
-      [ "end", "classcgv_1_1media_1_1mesh_1_1simple__mesh__base.html#ad4fc7270f07ba37b769e2cb6877a0a1fa7f021a1415b86f2d013b2618fb31ae53", null ]
-    ] ],
+    [ "attribute_type", "classcgv_1_1media_1_1mesh_1_1simple__mesh__base.html#ad4fc7270f07ba37b769e2cb6877a0a1f", null ],
     [ "AttributeFlags", "classcgv_1_1media_1_1mesh_1_1simple__mesh__base.html#a211b6d732e1a6977bc8241b3e61c80af", [
-      [ "AF_position", "classcgv_1_1media_1_1mesh_1_1simple__mesh__base.html#a211b6d732e1a6977bc8241b3e61c80afa875e0404f43055f3ad50d8f0b2a1e378", null ],
       [ "AF_texcoords", "classcgv_1_1media_1_1mesh_1_1simple__mesh__base.html#a211b6d732e1a6977bc8241b3e61c80afaf87a87a400868ab1a10d5f0d8e500c12", null ],
       [ "AF_normal", "classcgv_1_1media_1_1mesh_1_1simple__mesh__base.html#a211b6d732e1a6977bc8241b3e61c80afa0ee4dcb814213f9a0cfbeeb58218d5af", null ],
       [ "AF_tangent", "classcgv_1_1media_1_1mesh_1_1simple__mesh__base.html#a211b6d732e1a6977bc8241b3e61c80afa4b23b370276d7a62d1552871cb9444ac", null ],

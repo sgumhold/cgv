@@ -1,5 +1,4 @@
 var searchData=
 [
-  ['and_20conventions_0',['Installation and Conventions',['../install.html',1,'']]],
-  ['and_20visualization_20framework_1',['The Computer Graphics and Visualization Framework',['../overview.html',1,'']]]
+  ['1_20using_20stlmesh_20_3a_0',['Usage example 1 (using &lt;span class=&quot;tt&quot;&gt;StlMesh&lt;/span&gt;):',['../stl__reader_8h.html#autotoc_md0',1,'']]]
 ];

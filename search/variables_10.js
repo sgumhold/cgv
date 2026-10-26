@@ -1,7 +1,7 @@
 var searchData=
 [
-  ['p0_0',['p0',['../classcgv_1_1math_1_1cubic__bezier__curve.html#abf5829dde3f59d322b722473d33eb9fb',1,'cgv::math::cubic_bezier_curve::p0'],['../classcgv_1_1math_1_1quadratic__bezier__curve.html#ad38bc9a72d78d34bbd23fa570a611413',1,'cgv::math::quadratic_bezier_curve::p0']]],
-  ['p1_1',['p1',['../classcgv_1_1math_1_1cubic__bezier__curve.html#a76a22862e82ead43df5cb84af00f6196',1,'cgv::math::cubic_bezier_curve::p1'],['../classcgv_1_1math_1_1quadratic__bezier__curve.html#adb772dcd2f7e9ee959a8a9ed56124486',1,'cgv::math::quadratic_bezier_curve::p1']]],
+  ['p0_0',['p0',['../classcgv_1_1math_1_1quadratic__bezier__curve.html#ad38bc9a72d78d34bbd23fa570a611413',1,'cgv::math::quadratic_bezier_curve::p0'],['../classcgv_1_1math_1_1cubic__bezier__curve.html#abf5829dde3f59d322b722473d33eb9fb',1,'cgv::math::cubic_bezier_curve::p0']]],
+  ['p1_1',['p1',['../classcgv_1_1math_1_1quadratic__bezier__curve.html#adb772dcd2f7e9ee959a8a9ed56124486',1,'cgv::math::quadratic_bezier_curve::p1'],['../classcgv_1_1math_1_1cubic__bezier__curve.html#a76a22862e82ead43df5cb84af00f6196',1,'cgv::math::cubic_bezier_curve::p1']]],
   ['p2_2',['p2',['../classcgv_1_1math_1_1quadratic__bezier__curve.html#a497f612ad38fd9674cd5298dc5e6420c',1,'cgv::math::quadratic_bezier_curve::p2'],['../classcgv_1_1math_1_1cubic__bezier__curve.html#a8d56f800ddea0af6e1abf4dbdcdd0aae',1,'cgv::math::cubic_bezier_curve::p2']]],
   ['p3_3',['p3',['../classcgv_1_1math_1_1cubic__bezier__curve.html#a2a5d038cac544a7892e9eadecfdbc0d9',1,'cgv::math::cubic_bezier_curve']]],
   ['package_5findex_4',['package_index',['../classcgv_1_1os_1_1queued__input__thread.html#a8a9de6723e560d31df20a61b397315c7',1,'cgv::os::queued_input_thread']]],
@@ -30,7 +30,7 @@ var searchData=
   ['point_5fcolor_27',['point_color',['../structcgv_1_1plot_1_1plot__base__config.html#a959405bbca84dbaa7053759c6cfe3381',1,'cgv::plot::plot_base_config']]],
   ['point_5fhalo_5fcolor_28',['point_halo_color',['../structcgv_1_1plot_1_1plot__base__config.html#af28b3de60af8e1543333bf20bf3d22e2',1,'cgv::plot::plot_base_config']]],
   ['point_5fhalo_5fwidth_29',['point_halo_width',['../structcgv_1_1plot_1_1plot__base__config.html#acaf64bf421b00a44a427fbc1ca2b34a8',1,'cgv::plot::plot_base_config']]],
-  ['point_5fsize_30',['point_size',['../structcgv_1_1render_1_1point__render__style.html#adfcaa8d7af142612489e4b179c857f38',1,'cgv::render::point_render_style::point_size'],['../structcgv_1_1plot_1_1plot__base__config.html#ae94ea10b60d591b6dbaa3c367e44e431',1,'cgv::plot::plot_base_config::point_size'],['../structcgv_1_1render_1_1surfel__render__style.html#a0736e6323efbd9fe0eed151b089854be',1,'cgv::render::surfel_render_style::point_size']]],
+  ['point_5fsize_30',['point_size',['../structcgv_1_1render_1_1point__render__style.html#adfcaa8d7af142612489e4b179c857f38',1,'cgv::render::point_render_style::point_size'],['../structcgv_1_1render_1_1surfel__render__style.html#a0736e6323efbd9fe0eed151b089854be',1,'cgv::render::surfel_render_style::point_size'],['../structcgv_1_1plot_1_1plot__base__config.html#ae94ea10b60d591b6dbaa3c367e44e431',1,'cgv::plot::plot_base_config::point_size']]],
   ['points_31',['points',['../classcgv_1_1math_1_1bezier__curve.html#a951d4b9cc6ad46ffd0baf6e53d9bc81b',1,'cgv::math::bezier_curve']]],
   ['pose_32',['pose',['../structvr_1_1vr__trackable__state.html#a45bdee0f059c9ed99e545421be8baaf7',1,'vr::vr_trackable_state::pose'],['../classcgv_1_1math_1_1camera.html#a4528a60c69609456cd278d4b49e7a546',1,'cgv::math::camera::pose'],['../classcgv_1_1gui_1_1pose__event.html#a31b40d6f8c85b8e19926530c5d60f207',1,'cgv::gui::pose_event::pose']]],
   ['pose_5fquery_33',['pose_query',['../classvr__view__interactor.html#a6a118f98cfbbc8ab3e3ad29bf2d0a477',1,'vr_view_interactor']]],

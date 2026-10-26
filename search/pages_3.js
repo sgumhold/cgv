@@ -1,5 +1,4 @@
 var searchData=
 [
-  ['graphics_20and_20visualization_20framework_0',['The Computer Graphics and Visualization Framework',['../overview.html',1,'']]],
-  ['gui_20creation_1',['GUI Creation',['../guiNS.html',1,'']]]
+  ['_3a_0',['Usage example 1 (using &lt;span class=&quot;tt&quot;&gt;StlMesh&lt;/span&gt;):',['../stl__reader_8h.html#autotoc_md0',1,'']]]
 ];

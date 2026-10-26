@@ -2,29 +2,8 @@ var classcgv_1_1media_1_1mesh_1_1convex__polyhedron__base =
 [
     [ "face_type", "classcgv_1_1media_1_1mesh_1_1convex__polyhedron__base.html#a97752a0fe45e55ebc5bb0e0058a62d1d", null ],
     [ "shell_type", "classcgv_1_1media_1_1mesh_1_1convex__polyhedron__base.html#ac86e10439f0b22ac45006b494be7f8c0", null ],
-    [ "FacePlaneLocation", "classcgv_1_1media_1_1mesh_1_1convex__polyhedron__base.html#abf75c11faf114fa06f4cbbb58f32e9d1", [
-      [ "FPL_OUTSIDE", "classcgv_1_1media_1_1mesh_1_1convex__polyhedron__base.html#abf75c11faf114fa06f4cbbb58f32e9d1aff9c4ef9c602ed74796228ed05f5e0f3", null ],
-      [ "FPL_INSIDE", "classcgv_1_1media_1_1mesh_1_1convex__polyhedron__base.html#abf75c11faf114fa06f4cbbb58f32e9d1a74c9a49a5d7157d7f0b1736d1a5aaeff", null ],
-      [ "FPL_TOUCH_NOTHING", "classcgv_1_1media_1_1mesh_1_1convex__polyhedron__base.html#abf75c11faf114fa06f4cbbb58f32e9d1ac7bdd45ba39da3e3e23fc566796801c4", null ],
-      [ "FPL_TOUCH_VERTEX", "classcgv_1_1media_1_1mesh_1_1convex__polyhedron__base.html#abf75c11faf114fa06f4cbbb58f32e9d1a22efe78a2f655001564be36e2b6877f8", null ],
-      [ "FPL_TOUCH_EDGE", "classcgv_1_1media_1_1mesh_1_1convex__polyhedron__base.html#abf75c11faf114fa06f4cbbb58f32e9d1a177c8aa6ba703cc8c70644e3366b79f2", null ],
-      [ "FPL_TOUCH_FACE", "classcgv_1_1media_1_1mesh_1_1convex__polyhedron__base.html#abf75c11faf114fa06f4cbbb58f32e9d1ae6361ccf67015f646abafd9cc316c045", null ],
-      [ "FPL_SPLIT_TWO_VERTICES", "classcgv_1_1media_1_1mesh_1_1convex__polyhedron__base.html#abf75c11faf114fa06f4cbbb58f32e9d1ab3687dd1d722893aa0c97446aa945034", null ],
-      [ "FPL_SPLIT_VERTEX_EDGE", "classcgv_1_1media_1_1mesh_1_1convex__polyhedron__base.html#abf75c11faf114fa06f4cbbb58f32e9d1ab35f511febdf91e3a17adbf3c837f6a0", null ],
-      [ "FPL_SPLIT_TWO_EDGES", "classcgv_1_1media_1_1mesh_1_1convex__polyhedron__base.html#abf75c11faf114fa06f4cbbb58f32e9d1a98ac8becc2d2dcd39b418347df91a00e", null ],
-      [ "FPL_TWO_NON_ADJACENT_VERTICES_TOUCH", "classcgv_1_1media_1_1mesh_1_1convex__polyhedron__base.html#abf75c11faf114fa06f4cbbb58f32e9d1a396d8388e942bcde78894be41062c0f1", null ],
-      [ "FPL_INCOMLETE_TOUCH_FACE", "classcgv_1_1media_1_1mesh_1_1convex__polyhedron__base.html#abf75c11faf114fa06f4cbbb58f32e9d1ab87c51b82caabc5bc21508d14245e56a", null ],
-      [ "FPL_TOUCH_AND_SPLIT", "classcgv_1_1media_1_1mesh_1_1convex__polyhedron__base.html#abf75c11faf114fa06f4cbbb58f32e9d1a5e6a2005857b7ff46fbd06275b3ce6ea", null ],
-      [ "FPL_MULTI_SPLIT", "classcgv_1_1media_1_1mesh_1_1convex__polyhedron__base.html#abf75c11faf114fa06f4cbbb58f32e9d1abbbb55cd1a3309d2575f930f84a78b95", null ],
-      [ "FPL_ODD_TRANSITION_NUMBER", "classcgv_1_1media_1_1mesh_1_1convex__polyhedron__base.html#abf75c11faf114fa06f4cbbb58f32e9d1a0cc1435cfd47ca93705830bf78f73c54", null ],
-      [ "FPL_UNCONSIDERED_CASE", "classcgv_1_1media_1_1mesh_1_1convex__polyhedron__base.html#abf75c11faf114fa06f4cbbb58f32e9d1a6eeae6ccb4b914378c1850ca30507604", null ],
-      [ "FPL_FIRST_INVALID_CASE", "classcgv_1_1media_1_1mesh_1_1convex__polyhedron__base.html#abf75c11faf114fa06f4cbbb58f32e9d1a654ae26d2655bd8ff30870bdd4edd72d", null ]
-    ] ],
-    [ "VertexPlaneLocation", "classcgv_1_1media_1_1mesh_1_1convex__polyhedron__base.html#a3995beb1cd11539da1c8bdc0d5eb881e", [
-      [ "VPL_INSIDE", "classcgv_1_1media_1_1mesh_1_1convex__polyhedron__base.html#a3995beb1cd11539da1c8bdc0d5eb881ea6d9cec053dbbc8e60b20558480bc5a30", null ],
-      [ "VPL_TOUCH", "classcgv_1_1media_1_1mesh_1_1convex__polyhedron__base.html#a3995beb1cd11539da1c8bdc0d5eb881eac4e57c3d9b5ae45a45c7a2ff9709e92a", null ],
-      [ "VPL_OUTSIDE", "classcgv_1_1media_1_1mesh_1_1convex__polyhedron__base.html#a3995beb1cd11539da1c8bdc0d5eb881eab26defb52e39ed296fbd0bb60795dfd9", null ]
-    ] ],
+    [ "FacePlaneLocation", "classcgv_1_1media_1_1mesh_1_1convex__polyhedron__base.html#abf75c11faf114fa06f4cbbb58f32e9d1", null ],
+    [ "VertexPlaneLocation", "classcgv_1_1media_1_1mesh_1_1convex__polyhedron__base.html#a3995beb1cd11539da1c8bdc0d5eb881e", null ],
     [ "add_shell", "classcgv_1_1media_1_1mesh_1_1convex__polyhedron__base.html#a6b4fc0e3df40355b513bf3570402915d", null ],
     [ "box_get_face_vertex_index", "classcgv_1_1media_1_1mesh_1_1convex__polyhedron__base.html#a990d705e6e87453352a320f397cf2fd0", null ],
     [ "change_orientation", "classcgv_1_1media_1_1mesh_1_1convex__polyhedron__base.html#adf7d7392603c1301f086e3124317b2c1", null ],

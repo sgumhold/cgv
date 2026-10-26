@@ -1,6 +1,6 @@
 var group__detail =
 [
-    [ "cgv::reflect::reflection_traits_impl< T, B, base_is_abst >", "structcgv_1_1reflect_1_1reflection__traits__impl.html", [
+    [ "cgv::reflect::reflection_traits_impl&lt; T, B, base_is_abst &gt;", "structcgv_1_1reflect_1_1reflection__traits__impl.html", [
       [ "delete_instance", "structcgv_1_1reflect_1_1reflection__traits__impl.html#ae4c9d972068da0cd4bfb5a9df27ad482", null ],
       [ "delete_instances", "structcgv_1_1reflect_1_1reflection__traits__impl.html#a14b785fd66dd21e16d4a67a5bc1d2a15", null ],
       [ "get_type_id", "structcgv_1_1reflect_1_1reflection__traits__impl.html#aab3eac488886677c3380412d33e2b1f7", null ],
@@ -10,7 +10,7 @@ var group__detail =
       [ "new_instances", "structcgv_1_1reflect_1_1reflection__traits__impl.html#a0135b24ac0624439f6e6cbad1c784992", null ],
       [ "size", "structcgv_1_1reflect_1_1reflection__traits__impl.html#a9f0cfa7444ca84b6ca3011d6c4616109", null ]
     ] ],
-    [ "cgv::reflect::reflection_traits_impl< T, B, true >", "structcgv_1_1reflect_1_1reflection__traits__impl_3_01T_00_01B_00_01true_01_4.html", [
+    [ "cgv::reflect::reflection_traits_impl&lt; T, B, true &gt;", "structcgv_1_1reflect_1_1reflection__traits__impl_3_01T_00_01B_00_01true_01_4.html", [
       [ "delete_instance", "structcgv_1_1reflect_1_1reflection__traits__impl_3_01T_00_01B_00_01true_01_4.html#a6a4ec3788979e09a31b7d6458d4f45b2", null ],
       [ "delete_instances", "structcgv_1_1reflect_1_1reflection__traits__impl_3_01T_00_01B_00_01true_01_4.html#ad7cfa969e08b537d13b025ca4efbcbfc", null ],
       [ "get_type_id", "structcgv_1_1reflect_1_1reflection__traits__impl_3_01T_00_01B_00_01true_01_4.html#a2e72f1ca0dcaa137818f3b734be3f2e7", null ],
@@ -20,11 +20,11 @@ var group__detail =
       [ "new_instances", "structcgv_1_1reflect_1_1reflection__traits__impl_3_01T_00_01B_00_01true_01_4.html#afb8b86fa54513520edee33edd4e5439a", null ],
       [ "size", "structcgv_1_1reflect_1_1reflection__traits__impl_3_01T_00_01B_00_01true_01_4.html#aa19f121402d1df04daa76a0345992380", null ]
     ] ],
-    [ "cgv::reflect::reflection_traits_string_impl< has_str, T, B >", "structcgv_1_1reflect_1_1reflection__traits__string__impl.html", null ],
-    [ "cgv::reflect::reflection_traits_string_impl< true, T, B >", "structcgv_1_1reflect_1_1reflection__traits__string__impl_3_01true_00_01T_00_01B_01_4.html", [
+    [ "cgv::reflect::reflection_traits_string_impl&lt; has_str, T, B &gt;", "structcgv_1_1reflect_1_1reflection__traits__string__impl.html", null ],
+    [ "cgv::reflect::reflection_traits_string_impl&lt; true, T, B &gt;", "structcgv_1_1reflect_1_1reflection__traits__string__impl_3_01true_00_01T_00_01B_01_4.html", [
       [ "has_string", "structcgv_1_1reflect_1_1reflection__traits__string__impl_3_01true_00_01T_00_01B_01_4.html#a26bcc797fca3ad685d9b00fd7d95710c", null ]
     ] ],
-    [ "cgv::reflect::reflection_traits< T, KIND, has_str >", "structcgv_1_1reflect_1_1reflection__traits.html", [
+    [ "cgv::reflect::reflection_traits&lt; T, KIND, has_str &gt;", "structcgv_1_1reflect_1_1reflection__traits.html", [
       [ "clone", "structcgv_1_1reflect_1_1reflection__traits.html#ad84c6cd3083a465313e8357aa105bdc3", null ]
     ] ],
     [ "cgv::reflect::get_reflection_traits", "group__detail.html#ga5cc650905883cc409861c2d98a6cce93", null ]

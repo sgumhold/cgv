@@ -1,6 +1,7 @@
 var searchData=
 [
-  ['ppp_20the_20pre_20pre_20processor_0',['ppp, the pre-pre-processor',['../ppp.html',1,'']]],
-  ['pre_20pre_20processor_1',['ppp, the pre-pre-processor',['../ppp.html',1,'']]],
-  ['processor_2',['ppp, the pre-pre-processor',['../ppp.html',1,'']]]
+  ['data_20arrays_0',['Usage example 3 (using raw data arrays)',['../stl__reader_8h.html#autotoc_md2',1,'']]],
+  ['development_1',['Application Development',['../VR.html#VRApp',1,'']]],
+  ['device_20information_2',['Device Information',['../VR.html#VRInfo',1,'']]],
+  ['directory_20tree_3',['Directory Tree',['../overview.html#directories',1,'']]]
 ];

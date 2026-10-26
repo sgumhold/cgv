@@ -12,7 +12,7 @@ var indexSectionsWithContent =
   9: "cdgorv",
   10: "s",
   11: "drv",
-  12: "acfgilnpstv"
+  12: "123:abcdefghiklmnoprstuvw"
 };
 
 var indexSectionNames =

@@ -5,5 +5,6 @@ var classcgv_1_1data_1_1ref__ptr__impl_3_01T_00_01true_01_4 =
     [ "ref_ptr_impl", "classcgv_1_1data_1_1ref__ptr__impl_3_01T_00_01true_01_4.html#aedb361c6e105e2538807cdc03f72c4b0", null ],
     [ "get_count", "classcgv_1_1data_1_1ref__ptr__impl_3_01T_00_01true_01_4.html#a9e6c1945065d1d016b4148002a9994dc", null ],
     [ "ref", "classcgv_1_1data_1_1ref__ptr__impl_3_01T_00_01true_01_4.html#a54a71a968f98ddc87e5adafb899d186c", null ],
-    [ "release", "classcgv_1_1data_1_1ref__ptr__impl_3_01T_00_01true_01_4.html#aadb3af67f41de5372e7dc6ed217be60e", null ]
+    [ "release", "classcgv_1_1data_1_1ref__ptr__impl_3_01T_00_01true_01_4.html#aadb3af67f41de5372e7dc6ed217be60e", null ],
+    [ "counter", "classcgv_1_1data_1_1ref__ptr__impl.html#a6174c2cf721e0dd3fe91c81143c3d297", null ]
 ];

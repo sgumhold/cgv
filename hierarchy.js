@@ -1,35 +1,15 @@
 var hierarchy =
 [
-    [ "cgv::media::axis_aligned_box< double, 3 >", "classcgv_1_1media_1_1axis__aligned__box.html", null ],
-    [ "cgv::media::axis_aligned_box< float, 2 >", "classcgv_1_1media_1_1axis__aligned__box.html", null ],
-    [ "cgv::media::axis_aligned_box< float, 3 >", "classcgv_1_1media_1_1axis__aligned__box.html", null ],
-    [ "cgv::media::axis_aligned_box< int32_t, 2 >", "classcgv_1_1media_1_1axis__aligned__box.html", null ],
-    [ "cgv::media::axis_aligned_box< T, 2 >", "classcgv_1_1media_1_1axis__aligned__box.html", null ],
     [ "B", null, [
+      [ "cgv::reflect::reflection_traits_impl< T, B, true >", "structcgv_1_1reflect_1_1reflection__traits__impl_3_01T_00_01B_00_01true_01_4.html", null ],
       [ "cgv::reflect::extern_reflection_traits_impl< D, B >", "structcgv_1_1reflect_1_1extern__reflection__traits__impl.html", null ],
       [ "cgv::reflect::reflection_traits_impl< T, B, base_is_abst >", "structcgv_1_1reflect_1_1reflection__traits__impl.html", [
-        [ "cgv::reflect::reflection_traits_string_impl< has_str, T, abst_reflection_traits >", "structcgv_1_1reflect_1_1reflection__traits__string__impl.html", [
-          [ "cgv::reflect::reflection_traits< T, RTK_EXTERNAL_SELF_REFLECT, false >", "structcgv_1_1reflect_1_1reflection__traits.html", [
-            [ "cgv::reflect::extern_reflection_traits_impl< D, reflection_traits< T, RTK_EXTERNAL_SELF_REFLECT, false > >", "structcgv_1_1reflect_1_1extern__reflection__traits__impl.html", [
-              [ "cgv::reflect::extern_reflection_traits< T, D >", "structcgv_1_1reflect_1_1extern__reflection__traits.html", null ]
-            ] ]
-          ] ]
-        ] ],
-        [ "cgv::reflect::reflection_traits_string_impl< true, T, abst_reflection_traits >", "structcgv_1_1reflect_1_1reflection__traits__string__impl.html", null ],
-        [ "cgv::reflect::reflection_traits_string_impl< has_str, T, B >", "structcgv_1_1reflect_1_1reflection__traits__string__impl.html", [
-          [ "cgv::reflect::reflection_traits< T, RTK_EXTERNAL_SELF_REFLECT >", "structcgv_1_1reflect_1_1reflection__traits.html", [
-            [ "cgv::reflect::extern_reflection_traits_impl< D, reflection_traits< T, RTK_EXTERNAL_SELF_REFLECT > >", "structcgv_1_1reflect_1_1extern__reflection__traits__impl.html", [
-              [ "cgv::reflect::extern_string_reflection_traits< T, D >", "structcgv_1_1reflect_1_1extern__string__reflection__traits.html", null ]
-            ] ]
-          ] ],
-          [ "cgv::reflect::reflection_traits< T, KIND, has_str >", "structcgv_1_1reflect_1_1reflection__traits.html", null ]
-        ] ],
+        [ "cgv::reflect::reflection_traits_string_impl< true, T, B >", "structcgv_1_1reflect_1_1reflection__traits__string__impl_3_01true_00_01T_00_01B_01_4.html", null ],
+        [ "cgv::reflect::reflection_traits_string_impl< has_str, T, B >", "structcgv_1_1reflect_1_1reflection__traits__string__impl.html", null ],
         [ "cgv::reflect::reflection_traits_string_impl< true, T, B >", "structcgv_1_1reflect_1_1reflection__traits__string__impl_3_01true_00_01T_00_01B_01_4.html", null ]
       ] ],
       [ "cgv::reflect::reflection_traits_impl< T, B, true >", "structcgv_1_1reflect_1_1reflection__traits__impl_3_01T_00_01B_00_01true_01_4.html", null ]
     ] ],
-    [ "nes::basic_pipe_istream< char, std::char_traits< char > >", "classnes_1_1basic__pipe__istream.html", null ],
-    [ "nes::basic_pipe_ostream< char, std::char_traits< char > >", "classnes_1_1basic__pipe__ostream.html", null ],
     [ "cfg_reg_type", "structcfg__reg__type.html", null ],
     [ "cgv::audio::OALContext", "classcgv_1_1audio_1_1OALContext.html", null ],
     [ "cgv::audio::OALListener", "classcgv_1_1audio_1_1OALListener.html", null ],
@@ -73,6 +53,18 @@ var hierarchy =
         [ "cgv::base::property_access< std::string >", "structcgv_1_1base_1_1property__access_3_01std_1_1string_01_4.html", null ]
       ] ],
       [ "cgv::base::emulated_property_access< T >", "structcgv_1_1base_1_1emulated__property__access.html", [
+        [ "cgv::base::property_access< bool >", "structcgv_1_1base_1_1property__access_3_01bool_01_4.html", null ],
+        [ "cgv::base::property_access< cgv::type::int16_type >", "structcgv_1_1base_1_1property__access_3_01cgv_1_1type_1_1int16__type_01_4.html", null ],
+        [ "cgv::base::property_access< cgv::type::int32_type >", "structcgv_1_1base_1_1property__access_3_01cgv_1_1type_1_1int32__type_01_4.html", null ],
+        [ "cgv::base::property_access< cgv::type::int64_type >", "structcgv_1_1base_1_1property__access_3_01cgv_1_1type_1_1int64__type_01_4.html", null ],
+        [ "cgv::base::property_access< cgv::type::int8_type >", "structcgv_1_1base_1_1property__access_3_01cgv_1_1type_1_1int8__type_01_4.html", null ],
+        [ "cgv::base::property_access< cgv::type::uint16_type >", "structcgv_1_1base_1_1property__access_3_01cgv_1_1type_1_1uint16__type_01_4.html", null ],
+        [ "cgv::base::property_access< cgv::type::uint32_type >", "structcgv_1_1base_1_1property__access_3_01cgv_1_1type_1_1uint32__type_01_4.html", null ],
+        [ "cgv::base::property_access< cgv::type::uint64_type >", "structcgv_1_1base_1_1property__access_3_01cgv_1_1type_1_1uint64__type_01_4.html", null ],
+        [ "cgv::base::property_access< cgv::type::uint8_type >", "structcgv_1_1base_1_1property__access_3_01cgv_1_1type_1_1uint8__type_01_4.html", null ],
+        [ "cgv::base::property_access< double >", "structcgv_1_1base_1_1property__access_3_01double_01_4.html", null ],
+        [ "cgv::base::property_access< float >", "structcgv_1_1base_1_1property__access_3_01float_01_4.html", null ],
+        [ "cgv::base::property_access< std::string >", "structcgv_1_1base_1_1property__access_3_01std_1_1string_01_4.html", null ],
         [ "cgv::base::property_access< T >", "structcgv_1_1base_1_1property__access.html", null ]
       ] ],
       [ "cgv::base::standard_type_property_access< T >", "structcgv_1_1base_1_1standard__type__property__access.html", null ]
@@ -91,16 +83,16 @@ var hierarchy =
     ] ],
     [ "cgv::base::argument_handler", "structcgv_1_1base_1_1argument__handler.html", null ],
     [ "cgv::base::attach_slot", "classcgv_1_1base_1_1attach__slot.html", null ],
-    [ "cgv::base::cast_const_helper< group >", "structcgv_1_1base_1_1cast__const__helper_3_01group_01_4.html", null ],
-    [ "cgv::base::cast_const_helper< named >", "structcgv_1_1base_1_1cast__const__helper_3_01named_01_4.html", null ],
-    [ "cgv::base::cast_const_helper< node >", "structcgv_1_1base_1_1cast__const__helper_3_01node_01_4.html", null ],
     [ "cgv::base::cast_const_helper_base", "structcgv_1_1base_1_1cast__const__helper__base.html", [
+      [ "cgv::base::cast_const_helper< group >", "structcgv_1_1base_1_1cast__const__helper_3_01group_01_4.html", null ],
+      [ "cgv::base::cast_const_helper< named >", "structcgv_1_1base_1_1cast__const__helper_3_01named_01_4.html", null ],
+      [ "cgv::base::cast_const_helper< node >", "structcgv_1_1base_1_1cast__const__helper_3_01node_01_4.html", null ],
       [ "cgv::base::cast_const_helper< T >", "structcgv_1_1base_1_1cast__const__helper.html", null ]
     ] ],
-    [ "cgv::base::cast_helper< group >", "structcgv_1_1base_1_1cast__helper_3_01group_01_4.html", null ],
-    [ "cgv::base::cast_helper< named >", "structcgv_1_1base_1_1cast__helper_3_01named_01_4.html", null ],
-    [ "cgv::base::cast_helper< node >", "structcgv_1_1base_1_1cast__helper_3_01node_01_4.html", null ],
     [ "cgv::base::cast_helper_base", "structcgv_1_1base_1_1cast__helper__base.html", [
+      [ "cgv::base::cast_helper< group >", "structcgv_1_1base_1_1cast__helper_3_01group_01_4.html", null ],
+      [ "cgv::base::cast_helper< named >", "structcgv_1_1base_1_1cast__helper_3_01named_01_4.html", null ],
+      [ "cgv::base::cast_helper< node >", "structcgv_1_1base_1_1cast__helper_3_01node_01_4.html", null ],
       [ "cgv::base::cast_helper< T >", "structcgv_1_1base_1_1cast__helper.html", null ]
     ] ],
     [ "cgv::base::command_info", "structcgv_1_1base_1_1command__info.html", null ],
@@ -119,16 +111,16 @@ var hierarchy =
         [ "cgv::media::image::bmp_writer", "classcgv_1_1media_1_1image_1_1bmp__writer.html", null ]
       ] ]
     ] ],
-    [ "cgv::base::extract_policy_struct< is_derived, X >", "structcgv_1_1base_1_1extract__policy__struct.html", null ],
-    [ "cgv::base::extract_policy_struct< true, X >", "structcgv_1_1base_1_1extract__policy__struct_3_01true_00_01X_01_4.html", null ],
-    [ "cgv::base::factory_registration< T >", "structcgv_1_1base_1_1factory__registration.html", null ],
-    [ "cgv::base::factory_registration_1< T, CA >", "structcgv_1_1base_1_1factory__registration__1.html", null ],
-    [ "cgv::base::factory_registration_2< T, CA1, CA2 >", "structcgv_1_1base_1_1factory__registration__2.html", null ],
+    [ "cgv::base::extract_policy_struct&lt; is_derived, X &gt;", "structcgv_1_1base_1_1extract__policy__struct.html", null ],
+    [ "cgv::base::extract_policy_struct&lt; true, X &gt;", "structcgv_1_1base_1_1extract__policy__struct_3_01true_00_01X_01_4.html", null ],
+    [ "cgv::base::factory_registration&lt; T &gt;", "structcgv_1_1base_1_1factory__registration.html", null ],
+    [ "cgv::base::factory_registration_1&lt; T, CA &gt;", "structcgv_1_1base_1_1factory__registration__1.html", null ],
+    [ "cgv::base::factory_registration_2&lt; T, CA1, CA2 &gt;", "structcgv_1_1base_1_1factory__registration__2.html", null ],
     [ "cgv::base::no_handler", "structcgv_1_1base_1_1no__handler.html", null ],
     [ "cgv::base::object_collection", "structcgv_1_1base_1_1object__collection.html", null ],
-    [ "cgv::base::object_registration< T >", "structcgv_1_1base_1_1object__registration.html", null ],
-    [ "cgv::base::object_registration_1< T, CA >", "structcgv_1_1base_1_1object__registration__1.html", null ],
-    [ "cgv::base::object_registration_2< T, CA1, CA2 >", "structcgv_1_1base_1_1object__registration__2.html", null ],
+    [ "cgv::base::object_registration&lt; T &gt;", "structcgv_1_1base_1_1object__registration.html", null ],
+    [ "cgv::base::object_registration_1&lt; T, CA &gt;", "structcgv_1_1base_1_1object__registration__1.html", null ],
+    [ "cgv::base::object_registration_2&lt; T, CA1, CA2 &gt;", "structcgv_1_1base_1_1object__registration__2.html", null ],
     [ "cgv::base::registration_info", "structcgv_1_1base_1_1registration__info.html", null ],
     [ "cgv::base::registration_listener", "structcgv_1_1base_1_1registration__listener.html", [
       [ "cgv::gui::base_provider_generator", "classcgv_1_1gui_1_1base__provider__generator.html", null ],
@@ -157,6 +149,7 @@ var hierarchy =
     ] ],
     [ "cgv::base::traverse_policy", "classcgv_1_1base_1_1traverse__policy.html", [
       [ "cgv::gui::event_handler", "classcgv_1_1gui_1_1event__handler.html", [
+        [ "cgv::gui::key_control< bool >", "classcgv_1_1gui_1_1key__control_3_01bool_01_4.html", null ],
         [ "cgv::gui::key_control< T >", "classcgv_1_1gui_1_1key__control.html", null ],
         [ "cgv::gui::key_control< bool >", "classcgv_1_1gui_1_1key__control_3_01bool_01_4.html", null ],
         [ "cgv::overlay::overlay", "classcgv_1_1overlay_1_1overlay.html", [
@@ -204,13 +197,13 @@ var hierarchy =
       ] ],
       [ "cgv::data::data_view_impl< D, P >", "classcgv_1_1data_1_1data__view__impl.html", null ]
     ] ],
-    [ "cgv::data::dynamic_priority_queue< T >", "classcgv_1_1data_1_1dynamic__priority__queue.html", null ],
-    [ "cgv::data::dynamic_priority_queue< T >::extended_element", "structcgv_1_1data_1_1dynamic__priority__queue_1_1extended__element.html", null ],
+    [ "cgv::data::dynamic_priority_queue&lt; T &gt;", "classcgv_1_1data_1_1dynamic__priority__queue.html", null ],
+    [ "cgv::data::dynamic_priority_queue&lt; T &gt;::extended_element", "structcgv_1_1data_1_1dynamic__priority__queue_1_1extended__element.html", null ],
     [ "cgv::data::image_view", "classcgv_1_1data_1_1image__view.html", null ],
     [ "cgv::data::informed_ptr", "classcgv_1_1data_1_1informed__ptr.html", null ],
-    [ "cgv::data::interval_map< Key, T >", "classcgv_1_1data_1_1interval__map.html", null ],
-    [ "cgv::data::object_registry< T >", "classcgv_1_1data_1_1object__registry.html", null ],
-    [ "cgv::data::optional< T >", "classcgv_1_1data_1_1optional.html", null ],
+    [ "cgv::data::interval_map&lt; Key, T &gt;", "classcgv_1_1data_1_1interval__map.html", null ],
+    [ "cgv::data::object_registry&lt; T &gt;", "classcgv_1_1data_1_1object__registry.html", null ],
+    [ "cgv::data::optional&lt; T &gt;", "classcgv_1_1data_1_1optional.html", null ],
     [ "cgv::data::packing_info", "classcgv_1_1data_1_1packing__info.html", [
       [ "cgv::data::component_format", "classcgv_1_1data_1_1component__format.html", [
         [ "cgv::data::data_format", "classcgv_1_1data_1_1data__format.html", [
@@ -220,12 +213,12 @@ var hierarchy =
         [ "cgv::render::render_buffer", "classcgv_1_1render_1_1render__buffer.html", null ]
       ] ]
     ] ],
-    [ "cgv::data::quadtree< T >", "classcgv_1_1data_1_1quadtree.html", null ],
-    [ "cgv::data::quadtree< T >::node", "structcgv_1_1data_1_1quadtree_1_1node.html", null ],
-    [ "cgv::data::quadtree< T >::point_provider", "structcgv_1_1data_1_1quadtree_1_1point__provider.html", null ],
+    [ "cgv::data::quadtree&lt; T &gt;", "classcgv_1_1data_1_1quadtree.html", null ],
+    [ "cgv::data::quadtree&lt; T &gt;::node", "structcgv_1_1data_1_1quadtree_1_1node.html", null ],
+    [ "cgv::data::quadtree&lt; T &gt;::point_provider", "structcgv_1_1data_1_1quadtree_1_1point__provider.html", null ],
     [ "cgv::data::ray_intersectable", "classcgv_1_1data_1_1ray__intersectable.html", null ],
     [ "cgv::data::ray_intersection_info", "structcgv_1_1data_1_1ray__intersection__info.html", null ],
-    [ "cgv::data::ref_arr< T >", "classcgv_1_1data_1_1ref__arr.html", null ],
+    [ "cgv::data::ref_arr&lt; T &gt;", "classcgv_1_1data_1_1ref__arr.html", null ],
     [ "cgv::data::ref_counted", "classcgv_1_1data_1_1ref__counted.html", [
       [ "cgv::base::base", "classcgv_1_1base_1_1base.html", [
         [ "cgv::base::base_generator", "classcgv_1_1base_1_1base__generator.html", null ],
@@ -242,9 +235,11 @@ var hierarchy =
             ] ],
             [ "cgv::gui::abst_view", "classcgv_1_1gui_1_1abst__view.html", [
               [ "cgv::gui::view< bool >", "classcgv_1_1gui_1_1view.html", [
+                [ "config_view< bool >", "classconfig__view_3_01bool_01_4.html", null ],
                 [ "config_view< bool >", "classconfig__view_3_01bool_01_4.html", null ]
               ] ],
               [ "cgv::gui::view< std::string >", "classcgv_1_1gui_1_1view.html", [
+                [ "config_view< std::string >", "classconfig__view_3_01std_1_1string_01_4.html", null ],
                 [ "config_view< std::string >", "classconfig__view_3_01std_1_1string_01_4.html", null ]
               ] ],
               [ "cgv::gui::view< cgv::type::int32_type >", "classcgv_1_1gui_1_1view.html", [
@@ -252,6 +247,7 @@ var hierarchy =
               ] ],
               [ "cgv::gui::abst_control", "classcgv_1_1gui_1_1abst__control.html", [
                 [ "cgv::gui::control< bool >", "classcgv_1_1gui_1_1control.html", [
+                  [ "cgv::gui::key_control< bool >", "classcgv_1_1gui_1_1key__control_3_01bool_01_4.html", null ],
                   [ "cgv::gui::key_control< bool >", "classcgv_1_1gui_1_1key__control_3_01bool_01_4.html", null ]
                 ] ],
                 [ "cgv::gui::control< T >", "classcgv_1_1gui_1_1control.html", [
@@ -323,26 +319,67 @@ var hierarchy =
       ] ],
       [ "vr::vr_log", "classvr_1_1vr__log.html", null ]
     ] ],
-    [ "cgv::data::ref_ptr_impl< T, is_ref_counted >", "classcgv_1_1data_1_1ref__ptr__impl.html", [
+    [ "cgv::data::ref_ptr_impl&lt; T, is_ref_counted &gt;", "classcgv_1_1data_1_1ref__ptr__impl.html", [
+      [ "cgv::data::ref_ptr< const type_interface, true >", "classcgv_1_1data_1_1ref__ptr.html", null ],
       [ "cgv::data::ref_ptr< base, true >", "classcgv_1_1data_1_1ref__ptr.html", null ],
-      [ "cgv::data::ref_ptr< node, true >", "classcgv_1_1data_1_1ref__ptr.html", null ],
-      [ "cgv::data::ref_ptr< window >", "classcgv_1_1data_1_1ref__ptr.html", null ],
+      [ "cgv::data::ref_ptr< const base, true >", "classcgv_1_1data_1_1ref__ptr.html", null ],
+      [ "cgv::data::ref_ptr< console, true >", "classcgv_1_1data_1_1ref__ptr.html", null ],
       [ "cgv::data::ref_ptr< group, true >", "classcgv_1_1data_1_1ref__ptr.html", null ],
-      [ "cgv::data::ref_ptr< gui_group, true >", "classcgv_1_1data_1_1ref__ptr.html", null ],
+      [ "cgv::data::ref_ptr< const group, true >", "classcgv_1_1data_1_1ref__ptr.html", null ],
+      [ "cgv::data::ref_ptr< named, true >", "classcgv_1_1data_1_1ref__ptr.html", null ],
+      [ "cgv::data::ref_ptr< const named, true >", "classcgv_1_1data_1_1ref__ptr.html", null ],
+      [ "cgv::data::ref_ptr< node, true >", "classcgv_1_1data_1_1ref__ptr.html", null ],
+      [ "cgv::data::ref_ptr< const node, true >", "classcgv_1_1data_1_1ref__ptr.html", null ],
+      [ "cgv::data::ref_ptr< socket >", "classcgv_1_1data_1_1ref__ptr.html", null ],
+      [ "cgv::data::ref_ptr< socket_client, true >", "classcgv_1_1data_1_1ref__ptr.html", null ],
+      [ "cgv::data::ref_ptr< socket_server, true >", "classcgv_1_1data_1_1ref__ptr.html", null ],
+      [ "cgv::data::ref_ptr< sparse_les, true >", "classcgv_1_1data_1_1ref__ptr.html", null ],
+      [ "cgv::data::ref_ptr< sparse_les_factory, true >", "classcgv_1_1data_1_1ref__ptr.html", null ],
       [ "cgv::data::ref_ptr< font_face >", "classcgv_1_1data_1_1ref__ptr.html", null ],
       [ "cgv::data::ref_ptr< font >", "classcgv_1_1data_1_1ref__ptr.html", null ],
+      [ "cgv::data::ref_ptr< font_server >", "classcgv_1_1data_1_1ref__ptr.html", null ],
+      [ "cgv::data::ref_ptr< context_config >", "classcgv_1_1data_1_1ref__ptr.html", null ],
+      [ "cgv::data::ref_ptr< render_config >", "classcgv_1_1data_1_1ref__ptr.html", null ],
+      [ "cgv::data::ref_ptr< shader_config >", "classcgv_1_1data_1_1ref__ptr.html", null ],
+      [ "cgv::data::ref_ptr< animation, true >", "classcgv_1_1data_1_1ref__ptr.html", null ],
+      [ "cgv::data::ref_ptr< base_provider >", "classcgv_1_1data_1_1ref__ptr.html", null ],
+      [ "cgv::data::ref_ptr< button >", "classcgv_1_1data_1_1ref__ptr.html", null ],
+      [ "cgv::data::ref_ptr< abst_control >", "classcgv_1_1data_1_1ref__ptr.html", null ],
+      [ "cgv::data::ref_ptr< gui_driver >", "classcgv_1_1data_1_1ref__ptr.html", null ],
+      [ "cgv::data::ref_ptr< gui_group, true >", "classcgv_1_1data_1_1ref__ptr.html", null ],
+      [ "cgv::data::ref_ptr< const gui_group, true >", "classcgv_1_1data_1_1ref__ptr.html", null ],
+      [ "cgv::data::ref_ptr< layout >", "classcgv_1_1data_1_1ref__ptr.html", null ],
+      [ "cgv::data::ref_ptr< layout_inline >", "classcgv_1_1data_1_1ref__ptr.html", null ],
+      [ "cgv::data::ref_ptr< layout_table >", "classcgv_1_1data_1_1ref__ptr.html", null ],
+      [ "cgv::data::ref_ptr< text_editor >", "classcgv_1_1data_1_1ref__ptr.html", null ],
+      [ "cgv::data::ref_ptr< trigger_server >", "classcgv_1_1data_1_1ref__ptr.html", null ],
+      [ "cgv::data::ref_ptr< abst_view >", "classcgv_1_1data_1_1ref__ptr.html", null ],
+      [ "cgv::data::ref_ptr< window >", "classcgv_1_1data_1_1ref__ptr.html", null ],
+      [ "cgv::data::ref_ptr< const window >", "classcgv_1_1data_1_1ref__ptr.html", null ],
+      [ "cgv::data::ref_ptr< canvas_overlay >", "classcgv_1_1data_1_1ref__ptr.html", null ],
+      [ "cgv::data::ref_ptr< color_scale_legend >", "classcgv_1_1data_1_1ref__ptr.html", null ],
+      [ "cgv::data::ref_ptr< color_selector >", "classcgv_1_1data_1_1ref__ptr.html", null ],
+      [ "cgv::data::ref_ptr< navigator >", "classcgv_1_1data_1_1ref__ptr.html", null ],
+      [ "cgv::data::ref_ptr< overlay >", "classcgv_1_1data_1_1ref__ptr.html", null ],
+      [ "cgv::data::ref_ptr< performance_monitor >", "classcgv_1_1data_1_1ref__ptr.html", null ],
+      [ "cgv::data::ref_ptr< transfer_function_editor >", "classcgv_1_1data_1_1ref__ptr.html", null ],
       [ "cgv::data::ref_ptr< T, is_ref_counted >", "classcgv_1_1data_1_1ref__ptr.html", null ]
     ] ],
-    [ "cgv::data::ref_ptr_impl< T, is_ref_counted >::counter_type", "structcgv_1_1data_1_1ref__ptr__impl_1_1counter__type.html", null ],
+    [ "cgv::data::ref_ptr_impl&lt; T, is_ref_counted &gt;::counter_type", "structcgv_1_1data_1_1ref__ptr__impl_1_1counter__type.html", null ],
+    [ "cgv::data::ref_ptr_impl&lt; T, is_ref_counted &gt;", "classcgv_1_1data_1_1ref__ptr__impl.html", [
+      [ "cgv::data::ref_ptr< T, is_ref_counted >", "classcgv_1_1data_1_1ref__ptr.html", null ]
+    ] ],
     [ "cgv::data::ref_ptr_tag", "classcgv_1_1data_1_1ref__ptr__tag.html", [
       [ "cgv::data::ref_ptr_impl< T, true >", "classcgv_1_1data_1_1ref__ptr__impl_3_01T_00_01true_01_4.html", null ]
     ] ],
     [ "cgv::data::time_stamp", "classcgv_1_1data_1_1time__stamp.html", null ],
-    [ "cgv::data::vector2d< T >", "classcgv_1_1data_1_1vector2d.html", null ],
-    [ "cgv::defines::static_assert_test< x >", "structcgv_1_1defines_1_1static__assert__test.html", null ],
-    [ "cgv::defines::STATIC_ASSERTION_FAILURE< x >", "structcgv_1_1defines_1_1STATIC__ASSERTION__FAILURE.html", null ],
-    [ "cgv::defines::STATIC_ASSERTION_FAILURE< true >", "structcgv_1_1defines_1_1STATIC__ASSERTION__FAILURE_3_01true_01_4.html", null ],
+    [ "cgv::data::vector2d&lt; T &gt;", "classcgv_1_1data_1_1vector2d.html", null ],
+    [ "cgv::defines::static_assert_test&lt; x &gt;", "structcgv_1_1defines_1_1static__assert__test.html", null ],
+    [ "cgv::defines::STATIC_ASSERTION_FAILURE&lt; x &gt;", "structcgv_1_1defines_1_1STATIC__ASSERTION__FAILURE.html", null ],
+    [ "cgv::defines::STATIC_ASSERTION_FAILURE&lt; true &gt;", "structcgv_1_1defines_1_1STATIC__ASSERTION__FAILURE_3_01true_01_4.html", null ],
     [ "cgv::g2d::draggable", null, [
+      [ "cgv::overlay::transfer_function_editor::control_point< rgb >", "classcgv_1_1overlay_1_1transfer__function__editor_1_1control__point.html", null ],
+      [ "cgv::overlay::transfer_function_editor::control_point< void * >", "classcgv_1_1overlay_1_1transfer__function__editor_1_1control__point.html", null ],
       [ "cgv::overlay::color_selector::selector_handle", "structcgv_1_1overlay_1_1color__selector_1_1selector__handle.html", null ],
       [ "cgv::overlay::transfer_function_editor::control_point< DataT >", "classcgv_1_1overlay_1_1transfer__function__editor_1_1control__point.html", null ]
     ] ],
@@ -395,8 +432,8 @@ var hierarchy =
       [ "cgv::gui::surfel_render_style_gui_creator", "structcgv_1_1gui_1_1surfel__render__style__gui__creator.html", null ],
       [ "cgv::gui::volume_render_style_gui_creator", "structcgv_1_1gui_1_1volume__render__style__gui__creator.html", null ]
     ] ],
-    [ "cgv::gui::gui_creator_registration< T >", "classcgv_1_1gui_1_1gui__creator__registration.html", null ],
-    [ "cgv::gui::help_menu_entry_registration< T >", "structcgv_1_1gui_1_1help__menu__entry__registration.html", null ],
+    [ "cgv::gui::gui_creator_registration&lt; T &gt;", "classcgv_1_1gui_1_1gui__creator__registration.html", null ],
+    [ "cgv::gui::help_menu_entry_registration&lt; T &gt;", "structcgv_1_1gui_1_1help__menu__entry__registration.html", null ],
     [ "cgv::gui::help_message", "classcgv_1_1gui_1_1help__message.html", null ],
     [ "cgv::gui::layout_dir_spacing", "structcgv_1_1gui_1_1layout__dir__spacing.html", null ],
     [ "cgv::gui::layout_spacings", "structcgv_1_1gui_1_1layout__spacings.html", null ],
@@ -419,16 +456,31 @@ var hierarchy =
       [ "cgv::gui::vr_throttle_event", "classcgv_1_1gui_1_1vr__throttle__event.html", null ]
     ] ],
     [ "cgv::gui::vr_server", "classcgv_1_1gui_1_1vr__server.html", null ],
-    [ "cgv::gui::with_index_struct< T >", "structcgv_1_1gui_1_1with__index__struct.html", null ],
-    [ "cgv::gui::with_index_traits< T >", "structcgv_1_1gui_1_1with__index__traits.html", null ],
-    [ "cgv::gui::with_index_traits< with_index_struct< T > >", "structcgv_1_1gui_1_1with__index__traits_3_01with__index__struct_3_01T_01_4_01_4.html", null ],
-    [ "cgv::math::adjacency_list< VertexT >", "classcgv_1_1math_1_1adjacency__list.html", null ],
-    [ "cgv::math::bezier_tube_node< T >", "structcgv_1_1math_1_1bezier__tube__node.html", null ],
+    [ "cgv::gui::with_index_struct&lt; T &gt;", "structcgv_1_1gui_1_1with__index__struct.html", null ],
+    [ "cgv::gui::with_index_traits&lt; T &gt;", "structcgv_1_1gui_1_1with__index__traits.html", null ],
+    [ "cgv::gui::with_index_traits&lt; with_index_struct&lt; T &gt; &gt;", "structcgv_1_1gui_1_1with__index__traits_3_01with__index__struct_3_01T_01_4_01_4.html", null ],
+    [ "cgv::math::adjacency_list&lt; VertexT &gt;", "classcgv_1_1math_1_1adjacency__list.html", null ],
+    [ "cgv::math::bezier_tube_node&lt; T &gt;", "structcgv_1_1math_1_1bezier__tube__node.html", null ],
     [ "cgv::math::bresenham_traverser", "classcgv_1_1math_1_1bresenham__traverser.html", null ],
-    [ "cgv::math::cubic_hermite_tube< T >", "classcgv_1_1math_1_1cubic__hermite__tube.html", null ],
-    [ "cgv::math::curve_arc_length< DerivedT, ParamT >", "structcgv_1_1math_1_1curve__arc__length.html", null ],
-    [ "cgv::math::curve_parameterization< DerivedT, ParamT >", "structcgv_1_1math_1_1curve__parameterization.html", null ],
-    [ "cgv::math::diag_mat< T >", "structcgv_1_1math_1_1diag__mat.html", null ],
+    [ "cgv::math::cubic_hermite_tube&lt; T &gt;", "classcgv_1_1math_1_1cubic__hermite__tube.html", null ],
+    [ "cgv::math::curve_arc_length&lt; DerivedT, ParamT &gt;", "structcgv_1_1math_1_1curve__arc__length.html", null ],
+    [ "cgv::math::curve_arc_length&lt; arc_length_bezier_approximation&lt; T &gt;, T &gt;", "structcgv_1_1math_1_1curve__arc__length.html", [
+      [ "cgv::math::arc_length_bezier_approximation< T >", "classcgv_1_1math_1_1arc__length__bezier__approximation.html", null ]
+    ] ],
+    [ "cgv::math::curve_arc_length&lt; arc_length_linear_approximation&lt; T &gt;, T &gt;", "structcgv_1_1math_1_1curve__arc__length.html", [
+      [ "cgv::math::arc_length_linear_approximation< T >", "classcgv_1_1math_1_1arc__length__linear__approximation.html", null ]
+    ] ],
+    [ "cgv::math::curve_parameterization&lt; DerivedT, ParamT &gt;", "structcgv_1_1math_1_1curve__parameterization.html", null ],
+    [ "cgv::math::curve_parameterization&lt; arc_length_parameterization_bezier_approximation&lt; T &gt;, T &gt;", "structcgv_1_1math_1_1curve__parameterization.html", [
+      [ "cgv::math::arc_length_parameterization_bezier_approximation< T >", "structcgv_1_1math_1_1arc__length__parameterization__bezier__approximation.html", null ]
+    ] ],
+    [ "cgv::math::curve_parameterization&lt; arc_length_parameterization_fast_linear_approximation&lt; T &gt;, T &gt;", "structcgv_1_1math_1_1curve__parameterization.html", [
+      [ "cgv::math::arc_length_parameterization_fast_linear_approximation< T >", "classcgv_1_1math_1_1arc__length__parameterization__fast__linear__approximation.html", null ]
+    ] ],
+    [ "cgv::math::curve_parameterization&lt; arc_length_parameterization_linear_approximation&lt; T &gt;, T &gt;", "structcgv_1_1math_1_1curve__parameterization.html", [
+      [ "cgv::math::arc_length_parameterization_linear_approximation< T >", "classcgv_1_1math_1_1arc__length__parameterization__linear__approximation.html", null ]
+    ] ],
+    [ "cgv::math::diag_mat&lt; T &gt;", "structcgv_1_1math_1_1diag__mat.html", null ],
     [ "cgv::math::distorted_pinhole_types", "classcgv_1_1math_1_1distorted__pinhole__types.html", [
       [ "cgv::math::distorted_pinhole< T >", "classcgv_1_1math_1_1distorted__pinhole.html", [
         [ "cgv::math::camera< T >", "classcgv_1_1math_1_1camera.html", null ]
@@ -437,86 +489,162 @@ var hierarchy =
     [ "cgv::math::edge", "structcgv_1_1math_1_1edge.html", [
       [ "cgv::math::weighted_edge< T >", "structcgv_1_1math_1_1weighted__edge.html", null ]
     ] ],
-    [ "cgv::math::fibo_heap< key_type, value_type, max_degrees >", "classcgv_1_1math_1_1fibo__heap.html", null ],
-    [ "cgv::math::fray< T, N >", "structcgv_1_1math_1_1fray.html", null ],
-    [ "cgv::math::fray< T, 3 >", "structcgv_1_1math_1_1fray_3_01T_00_013_01_4.html", null ],
-    [ "cgv::math::fvec< T, N >", "classcgv_1_1math_1_1fvec.html", [
-      [ "cgv::math::fmat< volume::coord_type, 3, 3 >", "classcgv_1_1math_1_1fmat.html", null ],
-      [ "cgv::math::fmat< float, 4, 4 >", "classcgv_1_1math_1_1fmat.html", null ],
+    [ "cgv::math::fibo_heap&lt; key_type, value_type, max_degrees &gt;", "classcgv_1_1math_1_1fibo__heap.html", null ],
+    [ "cgv::math::fray&lt; T, N &gt;", "structcgv_1_1math_1_1fray.html", null ],
+    [ "cgv::math::fray&lt; T, 3 &gt;", "structcgv_1_1math_1_1fray_3_01T_00_013_01_4.html", null ],
+    [ "cgv::math::fvec&lt; T, N &gt;", "classcgv_1_1math_1_1fvec.html", [
+      [ "cgv::math::fmat< float, 2, 2 >", "classcgv_1_1math_1_1fmat.html", null ],
       [ "cgv::math::fmat< float, 3, 3 >", "classcgv_1_1math_1_1fmat.html", null ],
+      [ "cgv::math::fmat< float, 4, 4 >", "classcgv_1_1math_1_1fmat.html", null ],
+      [ "cgv::math::fmat< float, 2, 3 >", "classcgv_1_1math_1_1fmat.html", null ],
+      [ "cgv::math::fmat< float, 3, 2 >", "classcgv_1_1math_1_1fmat.html", null ],
+      [ "cgv::math::fmat< float, 2, 4 >", "classcgv_1_1math_1_1fmat.html", null ],
+      [ "cgv::math::fmat< float, 4, 2 >", "classcgv_1_1math_1_1fmat.html", null ],
+      [ "cgv::math::fmat< float, 4, 3 >", "classcgv_1_1math_1_1fmat.html", null ],
       [ "cgv::math::fmat< float, 3, 4 >", "classcgv_1_1math_1_1fmat.html", null ],
+      [ "cgv::math::fmat< double, 2, 2 >", "classcgv_1_1math_1_1fmat.html", null ],
+      [ "cgv::math::fmat< double, 3, 3 >", "classcgv_1_1math_1_1fmat.html", null ],
+      [ "cgv::math::fmat< double, 4, 4 >", "classcgv_1_1math_1_1fmat.html", null ],
+      [ "cgv::math::fmat< double, 2, 3 >", "classcgv_1_1math_1_1fmat.html", null ],
+      [ "cgv::math::fmat< double, 3, 2 >", "classcgv_1_1math_1_1fmat.html", null ],
+      [ "cgv::math::fmat< double, 2, 4 >", "classcgv_1_1math_1_1fmat.html", null ],
+      [ "cgv::math::fmat< double, 4, 2 >", "classcgv_1_1math_1_1fmat.html", null ],
+      [ "cgv::math::fmat< double, 4, 3 >", "classcgv_1_1math_1_1fmat.html", null ],
+      [ "cgv::math::fmat< double, 3, 4 >", "classcgv_1_1math_1_1fmat.html", null ]
+    ] ],
+    [ "cgv::math::fvec&lt; double, 4 &gt;", "classcgv_1_1math_1_1fvec.html", [
+      [ "cgv::math::quaternion< double >", "classcgv_1_1math_1_1quaternion.html", null ]
+    ] ],
+    [ "cgv::math::fvec&lt; float, 4 &gt;", "classcgv_1_1math_1_1fvec.html", [
       [ "cgv::math::quaternion< float >", "classcgv_1_1math_1_1quaternion.html", null ]
     ] ],
-    [ "cgv::math::hermite_node< T >", "structcgv_1_1math_1_1hermite__node.html", null ],
-    [ "cgv::math::hermite_tube_node< T >", "structcgv_1_1math_1_1hermite__tube__node.html", null ],
-    [ "cgv::math::interpolator< ValueT, ParamT >", "classcgv_1_1math_1_1interpolator.html", [
-      [ "cgv::math::piecewise_interpolator_storage< ValueT, ValueT, float >", "classcgv_1_1math_1_1piecewise__interpolator__storage.html", null ],
-      [ "cgv::math::piecewise_interpolator_storage< std::pair< float, ValueT >, ValueT, float >", "classcgv_1_1math_1_1piecewise__interpolator__storage.html", null ],
-      [ "cgv::math::function_ref_interpolator< ValueT, ParamT >", "classcgv_1_1math_1_1function__ref__interpolator.html", null ],
-      [ "cgv::math::identity_interpolator< ValueT, ParamT >", "classcgv_1_1math_1_1identity__interpolator.html", null ],
-      [ "cgv::math::piecewise_interpolator_storage< PointT, ValueT, ParamT >", "classcgv_1_1math_1_1piecewise__interpolator__storage.html", [
-        [ "cgv::math::piecewise_interpolator< ValueT, float >", "classcgv_1_1math_1_1piecewise__interpolator.html", null ],
-        [ "cgv::math::uniform_piecewise_interpolator< ValueT, float >", "classcgv_1_1math_1_1uniform__piecewise__interpolator.html", null ],
-        [ "cgv::math::piecewise_interpolator< ValueT, ParamT >", "classcgv_1_1math_1_1piecewise__interpolator.html", [
-          [ "cgv::math::linear_interpolator< ValueT, ParamT >", "classcgv_1_1math_1_1linear__interpolator.html", null ],
-          [ "cgv::math::smooth_interpolator< ValueT, ParamT >", "classcgv_1_1math_1_1smooth__interpolator.html", null ]
-        ] ],
-        [ "cgv::math::uniform_piecewise_interpolator< ValueT, ParamT >", "classcgv_1_1math_1_1uniform__piecewise__interpolator.html", [
+    [ "cgv::math::fvec&lt; T, 4 &gt;", "classcgv_1_1math_1_1fvec.html", [
+      [ "cgv::math::quaternion< T >", "classcgv_1_1math_1_1quaternion.html", null ]
+    ] ],
+    [ "cgv::math::fvec&lt; T, N *M &gt;", "classcgv_1_1math_1_1fvec.html", [
+      [ "cgv::math::fmat< T, 4, 4 >", "classcgv_1_1math_1_1fmat.html", null ],
+      [ "cgv::math::fmat< T, 3, 3 >", "classcgv_1_1math_1_1fmat.html", null ],
+      [ "cgv::math::fmat< T, 3, 4 >", "classcgv_1_1math_1_1fmat.html", null ],
+      [ "cgv::math::fmat< T, N, M >", "classcgv_1_1math_1_1fmat.html", null ]
+    ] ],
+    [ "cgv::math::fvec&lt; volume::coord_type, N *M &gt;", "classcgv_1_1math_1_1fvec.html", [
+      [ "cgv::math::fmat< volume::coord_type, 3, 3 >", "classcgv_1_1math_1_1fmat.html", null ]
+    ] ],
+    [ "cgv::math::hermite_node&lt; T &gt;", "structcgv_1_1math_1_1hermite__node.html", null ],
+    [ "cgv::math::hermite_tube_node&lt; T &gt;", "structcgv_1_1math_1_1hermite__tube__node.html", null ],
+    [ "cgv::math::interpolator&lt; ValueT, ParamT &gt;", "classcgv_1_1math_1_1interpolator.html", [
+      [ "cgv::math::piecewise_interpolator_storage< ValueT, ValueT, ParamT >", "classcgv_1_1math_1_1piecewise__interpolator__storage.html", [
+        [ "cgv::math::uniform_piecewise_interpolator< ValueT, ParamT >", "classcgv_1_1math_1_1uniform__piecewise__interpolator.html", null ]
+      ] ],
+      [ "cgv::math::piecewise_interpolator_storage< std::pair< ParamT, ValueT >, ValueT, ParamT >", "classcgv_1_1math_1_1piecewise__interpolator__storage.html", [
+        [ "cgv::math::piecewise_interpolator< ValueT, ParamT >", "classcgv_1_1math_1_1piecewise__interpolator.html", null ]
+      ] ]
+    ] ],
+    [ "cgv::math::interpolator&lt; cgv::rgb, float &gt;", "classcgv_1_1math_1_1interpolator.html", [
+      [ "cgv::media::schemes::rgb_per_channel_piecewise_interpolator< ParamT >", "classcgv_1_1media_1_1schemes_1_1rgb__per__channel__piecewise__interpolator.html", null ]
+    ] ],
+    [ "cgv::math::interpolator&lt; ValueT, float &gt;", "classcgv_1_1math_1_1interpolator.html", [
+      [ "cgv::math::piecewise_interpolator_storage< ValueT, ValueT, float >", "classcgv_1_1math_1_1piecewise__interpolator__storage.html", [
+        [ "cgv::math::uniform_piecewise_interpolator< ValueT, float >", "classcgv_1_1math_1_1uniform__piecewise__interpolator.html", [
           [ "cgv::math::discrete_interpolator< ValueT, ParamT >", "classcgv_1_1math_1_1discrete__interpolator.html", null ],
           [ "cgv::math::uniform_linear_interpolator< ValueT, ParamT >", "classcgv_1_1math_1_1uniform__linear__interpolator.html", null ],
           [ "cgv::math::uniform_smooth_interpolator< ValueT, ParamT >", "classcgv_1_1math_1_1uniform__smooth__interpolator.html", null ]
-        ] ]
+        ] ],
+        [ "cgv::math::uniform_piecewise_interpolator< ValueT, ParamT >", "classcgv_1_1math_1_1uniform__piecewise__interpolator.html", null ]
       ] ],
-      [ "cgv::media::schemes::rgb_per_channel_piecewise_interpolator< ParamT >", "classcgv_1_1media_1_1schemes_1_1rgb__per__channel__piecewise__interpolator.html", null ]
+      [ "cgv::math::piecewise_interpolator_storage< std::pair< float, ValueT >, ValueT, float >", "classcgv_1_1math_1_1piecewise__interpolator__storage.html", [
+        [ "cgv::math::piecewise_interpolator< ValueT, float >", "classcgv_1_1math_1_1piecewise__interpolator.html", [
+          [ "cgv::math::linear_interpolator< ValueT, ParamT >", "classcgv_1_1math_1_1linear__interpolator.html", null ],
+          [ "cgv::math::smooth_interpolator< ValueT, ParamT >", "classcgv_1_1math_1_1smooth__interpolator.html", null ]
+        ] ],
+        [ "cgv::math::piecewise_interpolator< ValueT, ParamT >", "classcgv_1_1math_1_1piecewise__interpolator.html", null ]
+      ] ],
+      [ "cgv::math::function_ref_interpolator< ValueT, ParamT >", "classcgv_1_1math_1_1function__ref__interpolator.html", null ],
+      [ "cgv::math::identity_interpolator< ValueT, ParamT >", "classcgv_1_1math_1_1identity__interpolator.html", null ],
+      [ "cgv::math::piecewise_interpolator_storage< PointT, ValueT, ParamT >", "classcgv_1_1math_1_1piecewise__interpolator__storage.html", null ]
     ] ],
-    [ "cgv::math::interval< T >", "classcgv_1_1math_1_1interval.html", null ],
-    [ "cgv::math::low_tri_mat< T >", "classcgv_1_1math_1_1low__tri__mat.html", null ],
-    [ "cgv::math::mat< T >", "classcgv_1_1math_1_1mat.html", null ],
-    [ "cgv::math::mfunc< X, T >", "classcgv_1_1math_1_1mfunc.html", [
+    [ "cgv::math::interval&lt; T &gt;", "classcgv_1_1math_1_1interval.html", null ],
+    [ "cgv::math::low_tri_mat&lt; T &gt;", "classcgv_1_1math_1_1low__tri__mat.html", null ],
+    [ "cgv::math::mat&lt; T &gt;", "classcgv_1_1math_1_1mat.html", null ],
+    [ "cgv::math::mfunc&lt; X, T &gt;", "classcgv_1_1math_1_1mfunc.html", [
+      [ "cgv::math::v3_func< double, double >", "classcgv_1_1math_1_1v3__func.html", null ],
       [ "cgv::math::v2_func< X, T >", "classcgv_1_1math_1_1v2__func.html", null ],
       [ "cgv::math::v3_func< X, T >", "classcgv_1_1math_1_1v3__func.html", null ]
     ] ],
-    [ "cgv::math::oriented_box2< T >", "structcgv_1_1math_1_1oriented__box2.html", null ],
-    [ "cgv::math::oriented_box3< T >", "structcgv_1_1math_1_1oriented__box3.html", null ],
-    [ "cgv::math::parametric_curve< Ts >", "classcgv_1_1math_1_1parametric__curve.html", null ],
-    [ "cgv::math::parametric_curve< DerivedT< PointT > >", "classcgv_1_1math_1_1parametric__curve_3_01DerivedT_3_01PointT_01_4_01_4.html", null ],
+    [ "cgv::math::oriented_box2&lt; T &gt;", "structcgv_1_1math_1_1oriented__box2.html", null ],
+    [ "cgv::math::oriented_box3&lt; T &gt;", "structcgv_1_1math_1_1oriented__box3.html", null ],
+    [ "cgv::math::parametric_curve&lt; Ts &gt;", "classcgv_1_1math_1_1parametric__curve.html", null ],
+    [ "cgv::math::parametric_curve&lt; bezier_curve&lt; PointT &gt; &gt;", "classcgv_1_1math_1_1parametric__curve.html", [
+      [ "cgv::math::bezier_curve< PointT >", "classcgv_1_1math_1_1bezier__curve.html", null ]
+    ] ],
+    [ "cgv::math::parametric_curve&lt; cubic_bezier_curve&lt; PointT &gt; &gt;", "classcgv_1_1math_1_1parametric__curve.html", [
+      [ "cgv::math::cubic_bezier_curve< PointT >", "classcgv_1_1math_1_1cubic__bezier__curve.html", null ]
+    ] ],
+    [ "cgv::math::parametric_curve&lt; cubic_hermite_curve&lt; PointT &gt; &gt;", "classcgv_1_1math_1_1parametric__curve.html", [
+      [ "cgv::math::cubic_hermite_curve< PointT >", "structcgv_1_1math_1_1cubic__hermite__curve.html", null ]
+    ] ],
+    [ "cgv::math::parametric_curve&lt; DerivedT&lt; PointT &gt; &gt;", "classcgv_1_1math_1_1parametric__curve_3_01DerivedT_3_01PointT_01_4_01_4.html", null ],
+    [ "cgv::math::parametric_curve&lt; quadratic_bezier_curve&lt; PointT &gt; &gt;", "classcgv_1_1math_1_1parametric__curve.html", [
+      [ "cgv::math::quadratic_bezier_curve< PointT >", "classcgv_1_1math_1_1quadratic__bezier__curve.html", null ]
+    ] ],
     [ "cgv::math::perm_mat", "structcgv_1_1math_1_1perm__mat.html", null ],
-    [ "cgv::math::pinhole< T >", "classcgv_1_1math_1_1pinhole.html", [
+    [ "cgv::math::pinhole&lt; T &gt;", "classcgv_1_1math_1_1pinhole.html", [
       [ "cgv::math::distorted_pinhole< T >", "classcgv_1_1math_1_1distorted__pinhole.html", null ]
     ] ],
-    [ "cgv::math::quadratic_bezier_tube< T >", "classcgv_1_1math_1_1quadratic__bezier__tube.html", null ],
+    [ "cgv::math::quadratic_bezier_tube&lt; T &gt;", "classcgv_1_1math_1_1quadratic__bezier__tube.html", null ],
     [ "cgv::math::random", "structcgv_1_1math_1_1random.html", null ],
-    [ "cgv::math::ray< T >", "structcgv_1_1math_1_1ray.html", null ],
-    [ "cgv::math::register_sparse_les_factory< T >", "structcgv_1_1math_1_1register__sparse__les__factory.html", null ],
-    [ "cgv::math::rigid_transform< T >", "classcgv_1_1math_1_1rigid__transform.html", null ],
-    [ "cgv::math::sparse_mat< T >", "classcgv_1_1math_1_1sparse__mat.html", null ],
-    [ "cgv::math::sphere< T >", "structcgv_1_1math_1_1sphere.html", null ],
-    [ "cgv::math::step_iterator< RandomAccessIterator >", "structcgv_1_1math_1_1step__iterator.html", null ],
-    [ "cgv::math::thin_hyper_plate_spline< T >", "structcgv_1_1math_1_1thin__hyper__plate__spline.html", null ],
-    [ "cgv::math::thin_plate_spline< T >", "structcgv_1_1math_1_1thin__plate__spline.html", null ],
-    [ "cgv::math::tri_diag_mat< T >", "classcgv_1_1math_1_1tri__diag__mat.html", null ],
-    [ "cgv::math::uniform_piecewise_linear_function< X, Y >", "structcgv_1_1math_1_1uniform__piecewise__linear__function.html", null ],
+    [ "cgv::math::ray&lt; T &gt;", "structcgv_1_1math_1_1ray.html", null ],
+    [ "cgv::math::register_sparse_les_factory&lt; T &gt;", "structcgv_1_1math_1_1register__sparse__les__factory.html", null ],
+    [ "cgv::math::rigid_transform&lt; T &gt;", "classcgv_1_1math_1_1rigid__transform.html", null ],
+    [ "cgv::math::sparse_mat&lt; T &gt;", "classcgv_1_1math_1_1sparse__mat.html", null ],
+    [ "cgv::math::sphere&lt; T &gt;", "structcgv_1_1math_1_1sphere.html", null ],
+    [ "cgv::math::step_iterator&lt; RandomAccessIterator &gt;", "structcgv_1_1math_1_1step__iterator.html", null ],
+    [ "cgv::math::thin_hyper_plate_spline&lt; T &gt;", "structcgv_1_1math_1_1thin__hyper__plate__spline.html", null ],
+    [ "cgv::math::thin_plate_spline&lt; T &gt;", "structcgv_1_1math_1_1thin__plate__spline.html", null ],
+    [ "cgv::math::tri_diag_mat&lt; T &gt;", "classcgv_1_1math_1_1tri__diag__mat.html", null ],
+    [ "cgv::math::uniform_piecewise_linear_function&lt; X, Y &gt;", "structcgv_1_1math_1_1uniform__piecewise__linear__function.html", null ],
     [ "cgv::math::union_find", "structcgv_1_1math_1_1union__find.html", null ],
-    [ "cgv::math::Unsymmeig< T >", "structcgv_1_1math_1_1Unsymmeig.html", null ],
-    [ "cgv::math::up_tri_mat< T >", "classcgv_1_1math_1_1up__tri__mat.html", null ],
-    [ "cgv::math::vec< T >", "classcgv_1_1math_1_1vec.html", [
+    [ "cgv::math::Unsymmeig&lt; T &gt;", "structcgv_1_1math_1_1Unsymmeig.html", null ],
+    [ "cgv::math::up_tri_mat&lt; T &gt;", "classcgv_1_1math_1_1up__tri__mat.html", null ],
+    [ "cgv::math::vec&lt; T &gt;", "classcgv_1_1math_1_1vec.html", [
       [ "cgv::math::qem< T >", "classcgv_1_1math_1_1qem.html", null ]
     ] ],
-    [ "cgv::math::vertex< EdgeT >", "structcgv_1_1math_1_1vertex.html", null ],
+    [ "cgv::math::vec&lt; X &gt;", "classcgv_1_1math_1_1vec.html", [
+      [ "cgv::math::qem< X >", "classcgv_1_1math_1_1qem.html", null ]
+    ] ],
+    [ "cgv::math::vertex&lt; EdgeT &gt;", "structcgv_1_1math_1_1vertex.html", null ],
     [ "cgv::media::abst_color_storage", "classcgv_1_1media_1_1abst__color__storage.html", [
       [ "cgv::media::color_storage< C >", "classcgv_1_1media_1_1color__storage.html", null ]
     ] ],
-    [ "cgv::media::alpha_model_traits< am >", "structcgv_1_1media_1_1alpha__model__traits.html", null ],
-    [ "cgv::media::alpha_model_traits< NO_ALPHA >", "structcgv_1_1media_1_1alpha__model__traits_3_01NO__ALPHA_01_4.html", null ],
-    [ "cgv::media::alpha_reference< T, am >", "structcgv_1_1media_1_1alpha__reference.html", null ],
-    [ "cgv::media::alpha_reference< T, NO_ALPHA >", "structcgv_1_1media_1_1alpha__reference_3_01T_00_01NO__ALPHA_01_4.html", null ],
-    [ "cgv::media::axis_aligned_box< T, N >", "classcgv_1_1media_1_1axis__aligned__box.html", null ],
-    [ "cgv::media::color_base< T, cm, am >", "classcgv_1_1media_1_1color__base.html", null ],
-    [ "cgv::media::color_model_traits< cm >", "structcgv_1_1media_1_1color__model__traits.html", null ],
-    [ "cgv::media::color_model_traits< LUM >", "structcgv_1_1media_1_1color__model__traits_3_01LUM_01_4.html", null ],
-    [ "cgv::media::color_one< T >", "structcgv_1_1media_1_1color__one.html", null ],
-    [ "cgv::media::color_one< double >", "structcgv_1_1media_1_1color__one_3_01double_01_4.html", null ],
-    [ "cgv::media::color_one< float >", "structcgv_1_1media_1_1color__one_3_01float_01_4.html", null ],
+    [ "cgv::media::alpha_model_traits&lt; am &gt;", "structcgv_1_1media_1_1alpha__model__traits.html", null ],
+    [ "cgv::media::alpha_model_traits&lt; NO_ALPHA &gt;", "structcgv_1_1media_1_1alpha__model__traits_3_01NO__ALPHA_01_4.html", null ],
+    [ "cgv::media::alpha_reference&lt; T, am &gt;", "structcgv_1_1media_1_1alpha__reference.html", null ],
+    [ "cgv::media::alpha_reference&lt; T, NO_ALPHA &gt;", "structcgv_1_1media_1_1alpha__reference_3_01T_00_01NO__ALPHA_01_4.html", null ],
+    [ "cgv::media::axis_aligned_box&lt; T, N &gt;", "classcgv_1_1media_1_1axis__aligned__box.html", null ],
+    [ "cgv::media::color_base&lt; T, cm, am &gt;", "classcgv_1_1media_1_1color__base.html", null ],
+    [ "cgv::media::color_base&lt; T, cm, am &gt;", "classcgv_1_1media_1_1color__base.html", [
+      [ "cgv::media::rgb_color_interface< color< T, cm, am > >", "structcgv_1_1media_1_1rgb__color__interface_3_01color_3_01T_00_01cm_00_01am_01_4_01_4.html", [
+        [ "cgv::media::hls_color_interface< color< T, cm, am > >", "structcgv_1_1media_1_1hls__color__interface_3_01color_3_01T_00_01cm_00_01am_01_4_01_4.html", [
+          [ "cgv::media::xyz_color_interface< color< T, cm, am > >", "structcgv_1_1media_1_1xyz__color__interface_3_01color_3_01T_00_01cm_00_01am_01_4_01_4.html", [
+            [ "cgv::media::opacity_alpha_interface< color< T, cm, am > >", "structcgv_1_1media_1_1opacity__alpha__interface_3_01color_3_01T_00_01cm_00_01am_01_4_01_4.html", [
+              [ "cgv::media::transparency_alpha_interface< color< T, cm, am > >", "structcgv_1_1media_1_1transparency__alpha__interface_3_01color_3_01T_00_01cm_00_01am_01_4_01_4.html", [
+                [ "cgv::media::extinction_alpha_interface< color< T, cm, am > >", "structcgv_1_1media_1_1extinction__alpha__interface_3_01color_3_01T_00_01cm_00_01am_01_4_01_4.html", [
+                  [ "cgv::media::color< T, cm, am >", "classcgv_1_1media_1_1color.html", null ]
+                ] ]
+              ] ]
+            ] ]
+          ] ]
+        ] ]
+      ] ]
+    ] ],
+    [ "cgv::media::color_base&lt; T, RGB, am &gt;", "classcgv_1_1media_1_1color__base.html", [
+      [ "cgv::media::rgb_color_interface< color< T, RGB, am > >", "structcgv_1_1media_1_1rgb__color__interface_3_01color_3_01T_00_01RGB_00_01am_01_4_01_4.html", null ]
+    ] ],
+    [ "cgv::media::color_model_traits&lt; cm &gt;", "structcgv_1_1media_1_1color__model__traits.html", null ],
+    [ "cgv::media::color_model_traits&lt; LUM &gt;", "structcgv_1_1media_1_1color__model__traits_3_01LUM_01_4.html", null ],
+    [ "cgv::media::color_one&lt; T &gt;", "structcgv_1_1media_1_1color__one.html", null ],
+    [ "cgv::media::color_one&lt; double &gt;", "structcgv_1_1media_1_1color__one_3_01double_01_4.html", null ],
+    [ "cgv::media::color_one&lt; float &gt;", "structcgv_1_1media_1_1color__one_3_01float_01_4.html", null ],
     [ "cgv::media::color_scale", "classcgv_1_1media_1_1color__scale.html", [
       [ "cgv::media::continuous_color_scale", "classcgv_1_1media_1_1continuous__color__scale.html", null ],
       [ "cgv::media::discrete_color_scale", "classcgv_1_1media_1_1discrete__color__scale.html", null ],
@@ -526,35 +654,41 @@ var hierarchy =
       [ "cgv::media::continuous_color_scheme", "classcgv_1_1media_1_1continuous__color__scheme.html", null ],
       [ "cgv::media::discrete_color_scheme", "classcgv_1_1media_1_1discrete__color__scheme.html", null ]
     ] ],
-    [ "cgv::media::color_scheme_registry_helper< RegistryT, ColorSchemeT >", "classcgv_1_1media_1_1color__scheme__registry__helper.html", null ],
-    [ "cgv::media::color_storage_traits< T >", "structcgv_1_1media_1_1color__storage__traits.html", null ],
-    [ "cgv::media::color_storage_traits< color< float, RGB > >", "structcgv_1_1media_1_1color__storage__traits_3_01color_3_01float_00_01RGB_01_4_01_4.html", null ],
-    [ "cgv::media::color_storage_traits< color< float, RGB, OPACITY > >", "structcgv_1_1media_1_1color__storage__traits_3_01color_3_01float_00_01RGB_00_01OPACITY_01_4_01_4.html", null ],
-    [ "cgv::media::color_storage_traits< color< unsigned char, RGB > >", "structcgv_1_1media_1_1color__storage__traits_3_01color_3_01unsigned_01char_00_01RGB_01_4_01_4.html", null ],
-    [ "cgv::media::color_storage_traits< color< unsigned char, RGB, OPACITY > >", "structcgv_1_1media_1_1color__storage__traits_3_01color_3_01unsigned_01char_00_01RGB_00_01OPACITY_01_4_01_4.html", null ],
+    [ "cgv::media::color_scheme_registry_helper&lt; RegistryT, ColorSchemeT &gt;", "classcgv_1_1media_1_1color__scheme__registry__helper.html", null ],
+    [ "cgv::media::color_storage_traits&lt; T &gt;", "structcgv_1_1media_1_1color__storage__traits.html", null ],
+    [ "cgv::media::color_storage_traits&lt; color&lt; float, RGB &gt; &gt;", "structcgv_1_1media_1_1color__storage__traits_3_01color_3_01float_00_01RGB_01_4_01_4.html", null ],
+    [ "cgv::media::color_storage_traits&lt; color&lt; float, RGB, OPACITY &gt; &gt;", "structcgv_1_1media_1_1color__storage__traits_3_01color_3_01float_00_01RGB_00_01OPACITY_01_4_01_4.html", null ],
+    [ "cgv::media::color_storage_traits&lt; color&lt; unsigned char, RGB &gt; &gt;", "structcgv_1_1media_1_1color__storage__traits_3_01color_3_01unsigned_01char_00_01RGB_01_4_01_4.html", null ],
+    [ "cgv::media::color_storage_traits&lt; color&lt; unsigned char, RGB, OPACITY &gt; &gt;", "structcgv_1_1media_1_1color__storage__traits_3_01color_3_01unsigned_01char_00_01RGB_00_01OPACITY_01_4_01_4.html", null ],
     [ "cgv::media::colored_model", "classcgv_1_1media_1_1colored__model.html", [
       [ "cgv::media::mesh::simple_mesh_base", "classcgv_1_1media_1_1mesh_1_1simple__mesh__base.html", [
-        [ "cgv::media::mesh::simple_mesh< float >", "classcgv_1_1media_1_1mesh_1_1simple__mesh.html", null ],
+        [ "cgv::media::mesh::idx_type< T >", "classcgv_1_1media_1_1mesh_1_1simple__mesh.html", null ],
         [ "cgv::media::mesh::simple_mesh< T >", "classcgv_1_1media_1_1mesh_1_1simple__mesh.html", null ],
-        [ "cgv::media::mesh::simple_mesh< T >", "classcgv_1_1media_1_1mesh_1_1simple__mesh.html", [
-          [ "cgv::media::mesh::dynamic_mesh< float >", "classcgv_1_1media_1_1mesh_1_1dynamic__mesh.html", null ],
-          [ "cgv::media::mesh::dynamic_mesh< T >", "classcgv_1_1media_1_1mesh_1_1dynamic__mesh.html", [
+        [ "cgv::media::mesh::simple_mesh< float >", "classcgv_1_1media_1_1mesh_1_1simple__mesh.html", [
+          [ "cgv::media::mesh::dynamic_mesh< float >", "classcgv_1_1media_1_1mesh_1_1dynamic__mesh.html", [
             [ "cgv::media::mesh::adaptive_skinned_mesh< T >", "classcgv_1_1media_1_1mesh_1_1adaptive__skinned__mesh.html", null ]
-          ] ]
-        ] ]
+          ] ],
+          [ "cgv::media::mesh::dynamic_mesh< T >", "classcgv_1_1media_1_1mesh_1_1dynamic__mesh.html", null ]
+        ] ],
+        [ "cgv::media::mesh::simple_mesh< T >", "classcgv_1_1media_1_1mesh_1_1simple__mesh.html", null ]
       ] ]
     ] ],
-    [ "cgv::media::const_alpha_reference< T, am >", "structcgv_1_1media_1_1const__alpha__reference.html", null ],
-    [ "cgv::media::const_alpha_reference< T, NO_ALPHA >", "structcgv_1_1media_1_1const__alpha__reference_3_01T_00_01NO__ALPHA_01_4.html", null ],
-    [ "cgv::media::extinction_alpha_interface< ta_derived >", "structcgv_1_1media_1_1extinction__alpha__interface.html", [
+    [ "cgv::media::const_alpha_reference&lt; T, am &gt;", "structcgv_1_1media_1_1const__alpha__reference.html", null ],
+    [ "cgv::media::const_alpha_reference&lt; T, NO_ALPHA &gt;", "structcgv_1_1media_1_1const__alpha__reference_3_01T_00_01NO__ALPHA_01_4.html", null ],
+    [ "cgv::media::extinction_alpha_interface&lt; ta_derived &gt;", "structcgv_1_1media_1_1extinction__alpha__interface.html", [
+      [ "cgv::media::color< cgv::type::uint8_type, cgv::media::RGB >", "classcgv_1_1media_1_1color.html", null ],
+      [ "cgv::media::color< cgv::type::uint8_type, cgv::media::RGB, cgv::media::OPACITY >", "classcgv_1_1media_1_1color.html", null ]
+    ] ],
+    [ "cgv::media::extinction_alpha_interface&lt; color&lt; float, cm, am &gt; &gt;", "structcgv_1_1media_1_1extinction__alpha__interface.html", [
       [ "cgv::media::color< float, cgv::media::RGB >", "classcgv_1_1media_1_1color.html", null ],
       [ "cgv::media::color< float, cgv::media::RGB, cgv::media::OPACITY >", "classcgv_1_1media_1_1color.html", null ],
-      [ "cgv::media::color< cgv::type::uint8_type, cgv::media::RGB >", "classcgv_1_1media_1_1color.html", null ],
-      [ "cgv::media::color< cgv::type::uint8_type, cgv::media::RGB, cgv::media::OPACITY >", "classcgv_1_1media_1_1color.html", null ],
       [ "cgv::media::color< float >", "classcgv_1_1media_1_1color.html", null ]
     ] ],
     [ "cgv::media::fourcc", "structcgv_1_1media_1_1fourcc.html", null ],
-    [ "cgv::media::hls_color_interface< ta_derived >", "structcgv_1_1media_1_1hls__color__interface.html", null ],
+    [ "cgv::media::hls_color_interface&lt; ta_derived &gt;", "structcgv_1_1media_1_1hls__color__interface.html", null ],
+    [ "cgv::media::hls_color_interface&lt; color&lt; T, XYZ, am &gt; &gt;", "structcgv_1_1media_1_1hls__color__interface.html", [
+      [ "cgv::media::xyz_color_interface< color< T, XYZ, am > >", "structcgv_1_1media_1_1xyz__color__interface_3_01color_3_01T_00_01XYZ_00_01am_01_4_01_4.html", null ]
+    ] ],
     [ "cgv::media::illum::light_source", "classcgv_1_1media_1_1illum_1_1light__source.html", null ],
     [ "cgv::media::illum::phong_material", "structcgv_1_1media_1_1illum_1_1phong__material.html", [
       [ "cgv::media::illum::obj_material", "structcgv_1_1media_1_1illum_1_1obj__material.html", null ]
@@ -564,39 +698,66 @@ var hierarchy =
         [ "cgv::render::textured_material", "classcgv_1_1render_1_1textured__material.html", null ]
       ] ]
     ] ],
-    [ "cgv::media::mesh::always_valid< T >", "structcgv_1_1media_1_1mesh_1_1always__valid.html", null ],
-    [ "cgv::media::mesh::c_slice_info< T, P >", "structcgv_1_1media_1_1mesh_1_1c__slice__info.html", null ],
+    [ "cgv::media::mesh::always_valid&lt; T &gt;", "structcgv_1_1media_1_1mesh_1_1always__valid.html", null ],
+    [ "cgv::media::mesh::c_slice_info&lt; T, P &gt;", "structcgv_1_1media_1_1mesh_1_1c__slice__info.html", null ],
     [ "cgv::media::mesh::CELL_ENTRY", "structcgv_1_1media_1_1mesh_1_1CELL__ENTRY.html", null ],
-    [ "cgv::media::mesh::cell_info< T >", "structcgv_1_1media_1_1mesh_1_1cell__info.html", null ],
-    [ "cgv::media::mesh::convex_polyhedron< T, TCDim >::vertex_type", "structcgv_1_1media_1_1mesh_1_1convex__polyhedron_1_1vertex__type.html", null ],
+    [ "cgv::media::mesh::cell_info&lt; T &gt;", "structcgv_1_1media_1_1mesh_1_1cell__info.html", null ],
+    [ "cgv::media::mesh::convex_polyhedron&lt; T, TCDim &gt;::vertex_type", "structcgv_1_1media_1_1mesh_1_1convex__polyhedron_1_1vertex__type.html", null ],
     [ "cgv::media::mesh::convex_polyhedron_base", "classcgv_1_1media_1_1mesh_1_1convex__polyhedron__base.html", [
       [ "cgv::media::mesh::convex_polyhedron< T, TCDim >", "classcgv_1_1media_1_1mesh_1_1convex__polyhedron.html", null ]
     ] ],
-    [ "cgv::media::mesh::dc_slice_info< T >", "structcgv_1_1media_1_1mesh_1_1dc__slice__info.html", null ],
-    [ "cgv::media::mesh::dynamic_mesh< T >::blend_shape", "structcgv_1_1media_1_1mesh_1_1dynamic__mesh_1_1blend__shape.html", null ],
-    [ "cgv::media::mesh::equal< T >", "structcgv_1_1media_1_1mesh_1_1equal.html", null ],
+    [ "cgv::media::mesh::dc_slice_info&lt; T &gt;", "structcgv_1_1media_1_1mesh_1_1dc__slice__info.html", null ],
+    [ "cgv::media::mesh::dynamic_mesh&lt; T &gt;::blend_shape", "structcgv_1_1media_1_1mesh_1_1dynamic__mesh_1_1blend__shape.html", null ],
+    [ "cgv::media::mesh::equal&lt; T &gt;", "structcgv_1_1media_1_1mesh_1_1equal.html", null ],
     [ "cgv::media::mesh::face_info", "structcgv_1_1media_1_1mesh_1_1face__info.html", null ],
-    [ "cgv::media::mesh::greater_equal< T >", "structcgv_1_1media_1_1mesh_1_1greater__equal.html", null ],
+    [ "cgv::media::mesh::greater_equal&lt; T &gt;", "structcgv_1_1media_1_1mesh_1_1greater__equal.html", null ],
     [ "cgv::media::mesh::group_info", "structcgv_1_1media_1_1mesh_1_1group__info.html", null ],
     [ "cgv::media::mesh::line_info", "structcgv_1_1media_1_1mesh_1_1line__info.html", null ],
-    [ "cgv::media::mesh::not_max_valid< T >", "structcgv_1_1media_1_1mesh_1_1not__max__valid.html", null ],
-    [ "cgv::media::mesh::not_nan_valid< T >", "structcgv_1_1media_1_1mesh_1_1not__nan__valid.html", null ],
+    [ "cgv::media::mesh::not_max_valid&lt; T &gt;", "structcgv_1_1media_1_1mesh_1_1not__max__valid.html", null ],
+    [ "cgv::media::mesh::not_nan_valid&lt; T &gt;", "structcgv_1_1media_1_1mesh_1_1not__nan__valid.html", null ],
     [ "cgv::media::mesh::obj_reader_base", "classcgv_1_1media_1_1mesh_1_1obj__reader__base.html", [
+      [ "cgv::media::mesh::vec3_type< T >", "classcgv_1_1media_1_1mesh_1_1obj__reader__generic.html", null ],
+      [ "cgv::media::mesh::vec2_type< T >", "classcgv_1_1media_1_1mesh_1_1obj__reader__generic.html", null ],
+      [ "cgv::media::mesh::obj_reader_generic< float >", "classcgv_1_1media_1_1mesh_1_1obj__reader__generic.html", [
+        [ "cgv::media::mesh::obj_loader_generic< float >", "classcgv_1_1media_1_1mesh_1_1obj__loader__generic.html", null ]
+      ] ],
+      [ "cgv::media::mesh::obj_reader_generic< double >", "classcgv_1_1media_1_1mesh_1_1obj__reader__generic.html", [
+        [ "cgv::media::mesh::obj_loader_generic< double >", "classcgv_1_1media_1_1mesh_1_1obj__loader__generic.html", null ]
+      ] ],
       [ "cgv::media::mesh::obj_reader_generic< T >", "classcgv_1_1media_1_1mesh_1_1obj__reader__generic.html", [
         [ "cgv::media::mesh::obj_loader_generic< T >", "classcgv_1_1media_1_1mesh_1_1obj__loader__generic.html", null ],
         [ "cgv::media::mesh::simple_mesh_obj_reader< T >", "classcgv_1_1media_1_1mesh_1_1simple__mesh__obj__reader.html", null ]
       ] ]
     ] ],
-    [ "cgv::media::mesh::slice_info< T >", "structcgv_1_1media_1_1mesh_1_1slice__info.html", null ],
-    [ "cgv::media::mesh::streaming_mesh< T >", "classcgv_1_1media_1_1mesh_1_1streaming__mesh.html", null ],
+    [ "cgv::media::mesh::slice_info&lt; T &gt;", "structcgv_1_1media_1_1mesh_1_1slice__info.html", null ],
+    [ "cgv::media::mesh::streaming_mesh&lt; T &gt;", "classcgv_1_1media_1_1mesh_1_1streaming__mesh.html", null ],
+    [ "cgv::media::mesh::streaming_mesh&lt; X &gt;", "classcgv_1_1media_1_1mesh_1_1streaming__mesh.html", [
+      [ "cgv::media::mesh::base_type< X, T >", "classcgv_1_1media_1_1mesh_1_1marching__cubes__base.html", null ],
+      [ "cgv::media::mesh::pnt_type< X, T >", "classcgv_1_1media_1_1mesh_1_1marching__cubes__base.html", null ],
+      [ "cgv::media::mesh::vec_type< X, T >", "classcgv_1_1media_1_1mesh_1_1marching__cubes__base.html", null ],
+      [ "cgv::media::mesh::cuberille< X, T, P >", "classcgv_1_1media_1_1mesh_1_1cuberille.html", null ],
+      [ "cgv::media::mesh::dual_contouring< X, T >", "classcgv_1_1media_1_1mesh_1_1dual__contouring.html", null ],
+      [ "cgv::media::mesh::marching_cubes_base< X, T >", "classcgv_1_1media_1_1mesh_1_1marching__cubes__base.html", [
+        [ "cgv::media::mesh::marching_cubes< X, T >", "classcgv_1_1media_1_1mesh_1_1marching__cubes.html", null ]
+      ] ]
+    ] ],
     [ "cgv::media::mesh::streaming_mesh_callback_handler", "structcgv_1_1media_1_1mesh_1_1streaming__mesh__callback__handler.html", [
       [ "cgv::render::gl::gl_implicit_surface_drawable_base", "classcgv_1_1render_1_1gl_1_1gl__implicit__surface__drawable__base.html", null ]
     ] ],
-    [ "cgv::media::opacity_alpha_interface< ta_derived >", "structcgv_1_1media_1_1opacity__alpha__interface.html", null ],
-    [ "cgv::media::rgb_color_interface< ta_derived >", "structcgv_1_1media_1_1rgb__color__interface.html", null ],
+    [ "cgv::media::opacity_alpha_interface&lt; ta_derived &gt;", "structcgv_1_1media_1_1opacity__alpha__interface.html", null ],
+    [ "cgv::media::opacity_alpha_interface&lt; color&lt; T, cm, TRANSPARENCY &gt; &gt;", "structcgv_1_1media_1_1opacity__alpha__interface.html", [
+      [ "cgv::media::transparency_alpha_interface< color< T, cm, TRANSPARENCY > >", "structcgv_1_1media_1_1transparency__alpha__interface_3_01color_3_01T_00_01cm_00_01TRANSPARENCY_01_4_01_4.html", null ]
+    ] ],
+    [ "cgv::media::rgb_color_interface&lt; ta_derived &gt;", "structcgv_1_1media_1_1rgb__color__interface.html", null ],
+    [ "cgv::media::rgb_color_interface&lt; color&lt; T, HLS, am &gt; &gt;", "structcgv_1_1media_1_1rgb__color__interface.html", [
+      [ "cgv::media::hls_color_interface< color< T, HLS, am > >", "structcgv_1_1media_1_1hls__color__interface_3_01color_3_01T_00_01HLS_00_01am_01_4_01_4.html", null ]
+    ] ],
     [ "cgv::media::riff_handler", "structcgv_1_1media_1_1riff__handler.html", null ],
     [ "cgv::media::riff_reader", "classcgv_1_1media_1_1riff__reader.html", null ],
-    [ "cgv::media::transparency_alpha_interface< ta_derived >", "structcgv_1_1media_1_1transparency__alpha__interface.html", null ],
+    [ "cgv::media::transparency_alpha_interface&lt; ta_derived &gt;", "structcgv_1_1media_1_1transparency__alpha__interface.html", null ],
+    [ "cgv::media::transparency_alpha_interface&lt; color&lt; T, cm, EXTINCTION &gt; &gt;", "structcgv_1_1media_1_1transparency__alpha__interface.html", [
+      [ "cgv::media::extinction_alpha_interface< color< T, cm, EXTINCTION > >", "structcgv_1_1media_1_1extinction__alpha__interface_3_01color_3_01T_00_01cm_00_01EXTINCTION_01_4_01_4.html", null ]
+    ] ],
     [ "cgv::media::volume::file_organisation_info", "structcgv_1_1media_1_1volume_1_1file__organisation__info.html", [
       [ "cgv::media::volume::octree_file_organisation_info", "structcgv_1_1media_1_1volume_1_1octree__file__organisation__info.html", null ],
       [ "cgv::media::volume::slice_file_organisation_info", "structcgv_1_1media_1_1volume_1_1slice__file__organisation__info.html", null ],
@@ -609,7 +770,10 @@ var hierarchy =
       [ "cgv::media::volume::sliced_volume_info", "structcgv_1_1media_1_1volume_1_1sliced__volume__info.html", null ]
     ] ],
     [ "cgv::media::volume::voxel_file_info", "structcgv_1_1media_1_1volume_1_1voxel__file__info.html", null ],
-    [ "cgv::media::xyz_color_interface< ta_derived >", "structcgv_1_1media_1_1xyz__color__interface.html", null ],
+    [ "cgv::media::xyz_color_interface&lt; ta_derived &gt;", "structcgv_1_1media_1_1xyz__color__interface.html", null ],
+    [ "cgv::media::xyz_color_interface&lt; color&lt; T, cm, OPACITY &gt; &gt;", "structcgv_1_1media_1_1xyz__color__interface.html", [
+      [ "cgv::media::opacity_alpha_interface< color< T, cm, OPACITY > >", "structcgv_1_1media_1_1opacity__alpha__interface_3_01color_3_01T_00_01cm_00_01OPACITY_01_4_01_4.html", null ]
+    ] ],
     [ "cgv::os::display", "classcgv_1_1os_1_1display.html", null ],
     [ "cgv::os::display_configuration", "structcgv_1_1os_1_1display__configuration.html", null ],
     [ "cgv::os::display_mode", "structcgv_1_1os_1_1display__mode.html", null ],
@@ -635,7 +799,7 @@ var hierarchy =
       [ "cgv::os::web_server_thread", "classcgv_1_1os_1_1web__server__thread.html", null ]
     ] ],
     [ "cgv::os::web_server_provider", "classcgv_1_1os_1_1web__server__provider.html", null ],
-    [ "cgv::os::web_server_provider_registration< T >", "structcgv_1_1os_1_1web__server__provider__registration.html", null ],
+    [ "cgv::os::web_server_provider_registration&lt; T &gt;", "structcgv_1_1os_1_1web__server__provider__registration.html", null ],
     [ "cgv::overlay::color_scale_legend::layout_attributes", "structcgv_1_1overlay_1_1color__scale__legend_1_1layout__attributes.html", null ],
     [ "cgv::overlay::color_selector::layout_attributes", "structcgv_1_1overlay_1_1color__selector_1_1layout__attributes.html", null ],
     [ "cgv::overlay::overlay::gui_options_t", "structcgv_1_1overlay_1_1overlay_1_1gui__options__t.html", null ],
@@ -667,36 +831,54 @@ var hierarchy =
     [ "cgv::ppp::ph_processor", "classcgv_1_1ppp_1_1ph__processor.html", null ],
     [ "cgv::ppp::variant", "classcgv_1_1ppp_1_1variant.html", null ],
     [ "cgv::reflect::abst_reflection_traits", "structcgv_1_1reflect_1_1abst__reflection__traits.html", [
-      [ "cgv::reflect::reflection_traits_impl< T, abst_reflection_traits >", "structcgv_1_1reflect_1_1reflection__traits__impl.html", null ],
+      [ "cgv::reflect::reflection_traits_impl< T, abst_reflection_traits >", "structcgv_1_1reflect_1_1reflection__traits__impl.html", [
+        [ "cgv::reflect::reflection_traits_string_impl< has_str, T, abst_reflection_traits >", "structcgv_1_1reflect_1_1reflection__traits__string__impl.html", [
+          [ "cgv::reflect::reflection_traits< T, RTK_SELF_REFLECT, false >", "structcgv_1_1reflect_1_1reflection__traits.html", null ],
+          [ "cgv::reflect::reflection_traits< T, RTK_STD_TYPE, true >", "structcgv_1_1reflect_1_1reflection__traits.html", null ],
+          [ "cgv::reflect::reflection_traits< T, RTK_EXTERNAL_SELF_REFLECT, false >", "structcgv_1_1reflect_1_1reflection__traits.html", [
+            [ "cgv::reflect::extern_reflection_traits_impl< D, reflection_traits< T, RTK_EXTERNAL_SELF_REFLECT, false > >", "structcgv_1_1reflect_1_1extern__reflection__traits__impl.html", [
+              [ "cgv::reflect::extern_reflection_traits< T, D >", "structcgv_1_1reflect_1_1extern__reflection__traits.html", null ]
+            ] ]
+          ] ]
+        ] ],
+        [ "cgv::reflect::reflection_traits_string_impl< true, T, abst_reflection_traits >", "structcgv_1_1reflect_1_1reflection__traits__string__impl.html", [
+          [ "cgv::reflect::reflection_traits< T, RTK_EXTERNAL_SELF_REFLECT >", "structcgv_1_1reflect_1_1reflection__traits.html", [
+            [ "cgv::reflect::extern_reflection_traits_impl< D, reflection_traits< T, RTK_EXTERNAL_SELF_REFLECT > >", "structcgv_1_1reflect_1_1extern__reflection__traits__impl.html", [
+              [ "cgv::reflect::extern_string_reflection_traits< T, D >", "structcgv_1_1reflect_1_1extern__string__reflection__traits.html", null ]
+            ] ]
+          ] ],
+          [ "cgv::reflect::reflection_traits< T, KIND, has_str >", "structcgv_1_1reflect_1_1reflection__traits.html", null ]
+        ] ]
+      ] ],
       [ "cgv::reflect::abst_enum_reflection_traits", "structcgv_1_1reflect_1_1abst__enum__reflection__traits.html", [
         [ "cgv::reflect::reflection_traits_impl< T, abst_enum_reflection_traits >", "structcgv_1_1reflect_1_1reflection__traits__impl.html", [
           [ "cgv::reflect::enum_reflection_traits< T >", "structcgv_1_1reflect_1_1enum__reflection__traits.html", null ]
         ] ]
       ] ]
     ] ],
-    [ "cgv::reflect::compatibility::get_member_dispatch< use_get, T, Q >", "structcgv_1_1reflect_1_1compatibility_1_1get__member__dispatch.html", null ],
-    [ "cgv::reflect::compatibility::get_member_dispatch< true, T, Q >", "structcgv_1_1reflect_1_1compatibility_1_1get__member__dispatch_3_01true_00_01T_00_01Q_01_4.html", null ],
-    [ "cgv::reflect::compatibility::set_member_dispatch< use_get, T, Q >", "structcgv_1_1reflect_1_1compatibility_1_1set__member__dispatch.html", null ],
-    [ "cgv::reflect::compatibility::set_member_dispatch< true, T, Q >", "structcgv_1_1reflect_1_1compatibility_1_1set__member__dispatch_3_01true_00_01T_00_01Q_01_4.html", null ],
+    [ "cgv::reflect::compatibility::get_member_dispatch&lt; use_get, T, Q &gt;", "structcgv_1_1reflect_1_1compatibility_1_1get__member__dispatch.html", null ],
+    [ "cgv::reflect::compatibility::get_member_dispatch&lt; true, T, Q &gt;", "structcgv_1_1reflect_1_1compatibility_1_1get__member__dispatch_3_01true_00_01T_00_01Q_01_4.html", null ],
+    [ "cgv::reflect::compatibility::set_member_dispatch&lt; use_get, T, Q &gt;", "structcgv_1_1reflect_1_1compatibility_1_1set__member__dispatch.html", null ],
+    [ "cgv::reflect::compatibility::set_member_dispatch&lt; true, T, Q &gt;", "structcgv_1_1reflect_1_1compatibility_1_1set__member__dispatch_3_01true_00_01T_00_01Q_01_4.html", null ],
     [ "cgv::reflect::detail", "structcgv_1_1reflect_1_1detail.html", null ],
-    [ "cgv::reflect::detail::reflect_base_dispatch< use_get, B >", "structcgv_1_1reflect_1_1detail_1_1reflect__base__dispatch.html", null ],
-    [ "cgv::reflect::detail::reflect_base_dispatch< true, B >", "structcgv_1_1reflect_1_1detail_1_1reflect__base__dispatch_3_01true_00_01B_01_4.html", null ],
-    [ "cgv::reflect::detail::reflect_const_array_dispatch< use_get, T, n >", "structcgv_1_1reflect_1_1detail_1_1reflect__const__array__dispatch.html", null ],
-    [ "cgv::reflect::detail::reflect_const_array_dispatch< true, T, n >", "structcgv_1_1reflect_1_1detail_1_1reflect__const__array__dispatch_3_01true_00_01T_00_01n_01_4.html", null ],
-    [ "cgv::reflect::detail::reflect_member_impl< T, K >", "structcgv_1_1reflect_1_1detail_1_1reflect__member__impl.html", null ],
-    [ "cgv::reflect::detail::reflect_member_impl< T, K >::reflect_impl< has_external, RT >", "structcgv_1_1reflect_1_1detail_1_1reflect__member__impl_1_1reflect__impl.html", null ],
-    [ "cgv::reflect::detail::reflect_member_impl< T, K >::reflect_impl< true, RT >", "structcgv_1_1reflect_1_1detail_1_1reflect__member__impl_1_1reflect__impl_3_01true_00_01RT_01_4.html", null ],
-    [ "cgv::reflect::detail::reflect_member_impl< T, RTK_SELF_REFLECT >", "structcgv_1_1reflect_1_1detail_1_1reflect__member__impl_3_01T_00_01RTK__SELF__REFLECT_01_4.html", null ],
-    [ "cgv::reflect::detail::reflect_member_impl< T, RTK_STD_TYPE >", "structcgv_1_1reflect_1_1detail_1_1reflect__member__impl_3_01T_00_01RTK__STD__TYPE_01_4.html", null ],
-    [ "cgv::reflect::detail::reflect_method_impl< M, R >", "structcgv_1_1reflect_1_1detail_1_1reflect__method__impl.html", null ],
-    [ "cgv::reflect::detail::reflect_method_impl< M, void >", "structcgv_1_1reflect_1_1detail_1_1reflect__method__impl_3_01M_00_01void_01_4.html", null ],
-    [ "cgv::reflect::detail::reflect_vector_dispatch< use_get, T >", "structcgv_1_1reflect_1_1detail_1_1reflect__vector__dispatch.html", null ],
-    [ "cgv::reflect::detail::reflect_vector_dispatch< true, T >", "structcgv_1_1reflect_1_1detail_1_1reflect__vector__dispatch_3_01true_00_01T_01_4.html", null ],
+    [ "cgv::reflect::detail::reflect_base_dispatch&lt; use_get, B &gt;", "structcgv_1_1reflect_1_1detail_1_1reflect__base__dispatch.html", null ],
+    [ "cgv::reflect::detail::reflect_base_dispatch&lt; true, B &gt;", "structcgv_1_1reflect_1_1detail_1_1reflect__base__dispatch_3_01true_00_01B_01_4.html", null ],
+    [ "cgv::reflect::detail::reflect_const_array_dispatch&lt; use_get, T, n &gt;", "structcgv_1_1reflect_1_1detail_1_1reflect__const__array__dispatch.html", null ],
+    [ "cgv::reflect::detail::reflect_const_array_dispatch&lt; true, T, n &gt;", "structcgv_1_1reflect_1_1detail_1_1reflect__const__array__dispatch_3_01true_00_01T_00_01n_01_4.html", null ],
+    [ "cgv::reflect::detail::reflect_member_impl&lt; T, K &gt;", "structcgv_1_1reflect_1_1detail_1_1reflect__member__impl.html", null ],
+    [ "cgv::reflect::detail::reflect_member_impl&lt; T, K &gt;::reflect_impl&lt; has_external, RT &gt;", "structcgv_1_1reflect_1_1detail_1_1reflect__member__impl_1_1reflect__impl.html", null ],
+    [ "cgv::reflect::detail::reflect_member_impl&lt; T, K &gt;::reflect_impl&lt; true, RT &gt;", "structcgv_1_1reflect_1_1detail_1_1reflect__member__impl_1_1reflect__impl_3_01true_00_01RT_01_4.html", null ],
+    [ "cgv::reflect::detail::reflect_member_impl&lt; T, RTK_SELF_REFLECT &gt;", "structcgv_1_1reflect_1_1detail_1_1reflect__member__impl_3_01T_00_01RTK__SELF__REFLECT_01_4.html", null ],
+    [ "cgv::reflect::detail::reflect_member_impl&lt; T, RTK_STD_TYPE &gt;", "structcgv_1_1reflect_1_1detail_1_1reflect__member__impl_3_01T_00_01RTK__STD__TYPE_01_4.html", null ],
+    [ "cgv::reflect::detail::reflect_method_impl&lt; M, R &gt;", "structcgv_1_1reflect_1_1detail_1_1reflect__method__impl.html", null ],
+    [ "cgv::reflect::detail::reflect_method_impl&lt; M, void &gt;", "structcgv_1_1reflect_1_1detail_1_1reflect__method__impl_3_01M_00_01void_01_4.html", null ],
+    [ "cgv::reflect::detail::reflect_vector_dispatch&lt; use_get, T &gt;", "structcgv_1_1reflect_1_1detail_1_1reflect__vector__dispatch.html", null ],
+    [ "cgv::reflect::detail::reflect_vector_dispatch&lt; true, T &gt;", "structcgv_1_1reflect_1_1detail_1_1reflect__vector__dispatch_3_01true_00_01T_01_4.html", null ],
     [ "cgv::reflect::find_reflection_handler::group_info", "structcgv_1_1reflect_1_1find__reflection__handler_1_1group__info.html", null ],
     [ "cgv::reflect::method_interface", "structcgv_1_1reflect_1_1method__interface.html", null ],
-    [ "cgv::reflect::method_interface_impl< M >", "structcgv_1_1reflect_1_1method__interface__impl.html", null ],
-    [ "cgv::reflect::method_parameter_traits_helper< i, n, M >", "structcgv_1_1reflect_1_1method__parameter__traits__helper.html", null ],
-    [ "cgv::reflect::method_parameter_traits_helper< i, i, M >", "structcgv_1_1reflect_1_1method__parameter__traits__helper_3_01i_00_01i_00_01M_01_4.html", null ],
+    [ "cgv::reflect::method_interface_impl&lt; M &gt;", "structcgv_1_1reflect_1_1method__interface__impl.html", null ],
+    [ "cgv::reflect::method_parameter_traits_helper&lt; i, n, M &gt;", "structcgv_1_1reflect_1_1method__parameter__traits__helper.html", null ],
+    [ "cgv::reflect::method_parameter_traits_helper&lt; i, i, M &gt;", "structcgv_1_1reflect_1_1method__parameter__traits__helper_3_01i_00_01i_00_01M_01_4.html", null ],
     [ "cgv::reflect::reflection_handler", "classcgv_1_1reflect_1_1reflection__handler.html", [
       [ "cgv::base::call_reflection_handler", "classcgv_1_1base_1_1call__reflection__handler.html", null ],
       [ "cgv::base::property_declaration_reflection_handler", "classcgv_1_1base_1_1property__declaration__reflection__handler.html", null ],
@@ -717,18 +899,24 @@ var hierarchy =
       ] ]
     ] ],
     [ "cgv::reflect::reflection_handler::nesting_info", "structcgv_1_1reflect_1_1reflection__handler_1_1nesting__info.html", null ],
-    [ "cgv::reflect::reflection_traits_info_self< is_self, T >", "structcgv_1_1reflect_1_1reflection__traits__info__self.html", null ],
-    [ "cgv::reflect::reflection_traits_info_self< true, T >", "structcgv_1_1reflect_1_1reflection__traits__info__self_3_01true_00_01T_01_4.html", null ],
-    [ "cgv::reflect::reflection_traits_info_std< true, T >", "structcgv_1_1reflect_1_1reflection__traits__info__std_3_01true_00_01T_01_4.html", null ],
+    [ "cgv::reflect::reflection_traits_info_self&lt; is_self, T &gt;", "structcgv_1_1reflect_1_1reflection__traits__info__self.html", null ],
+    [ "cgv::reflect::reflection_traits_info_self&lt; cgv::type::cond::is_base_of&lt; self_reflection_tag, T &gt;::value, T &gt;", "structcgv_1_1reflect_1_1reflection__traits__info__self.html", [
+      [ "cgv::reflect::reflection_traits_info_std< cgv::type::cond::is_standard_type< T >::value, T >", "structcgv_1_1reflect_1_1reflection__traits__info__std.html", [
+        [ "cgv::reflect::reflection_traits_info< T >", "structcgv_1_1reflect_1_1reflection__traits__info.html", null ]
+      ] ],
+      [ "cgv::reflect::reflection_traits_info_std< true, T >", "structcgv_1_1reflect_1_1reflection__traits__info__std_3_01true_00_01T_01_4.html", null ],
+      [ "cgv::reflect::reflection_traits_info_std< is_std, T >", "structcgv_1_1reflect_1_1reflection__traits__info__std.html", null ]
+    ] ],
+    [ "cgv::reflect::reflection_traits_info_self&lt; true, T &gt;", "structcgv_1_1reflect_1_1reflection__traits__info__self_3_01true_00_01T_01_4.html", null ],
     [ "cgv::reflect::self_reflection_tag", "structcgv_1_1reflect_1_1self__reflection__tag.html", [
       [ "cgv::base::base", "classcgv_1_1base_1_1base.html", null ]
     ] ],
     [ "cgv::render::a_buffer", "classcgv_1_1render_1_1a__buffer.html", null ],
     [ "cgv::render::anonymous_namespace{clod_point_renderer.cxx}::DrawParameters", "structcgv_1_1render_1_1anonymous__namespace_02clod__point__renderer_8cxx_03_1_1DrawParameters.html", null ],
-    [ "cgv::render::array_descriptor_traits< T >", "structcgv_1_1render_1_1array__descriptor__traits.html", null ],
-    [ "cgv::render::array_descriptor_traits< cgv::math::vec< T > >", "structcgv_1_1render_1_1array__descriptor__traits_3_01cgv_1_1math_1_1vec_3_01T_01_4_01_4.html", null ],
-    [ "cgv::render::array_descriptor_traits< std::vector< T > >", "structcgv_1_1render_1_1array__descriptor__traits_3_01std_1_1vector_3_01T_01_4_01_4.html", null ],
-    [ "cgv::render::array_descriptor_traits< T[N] >", "structcgv_1_1render_1_1array__descriptor__traits_3_01T_0fN_0e_01_4.html", null ],
+    [ "cgv::render::array_descriptor_traits&lt; T &gt;", "structcgv_1_1render_1_1array__descriptor__traits.html", null ],
+    [ "cgv::render::array_descriptor_traits&lt; cgv::math::vec&lt; T &gt; &gt;", "structcgv_1_1render_1_1array__descriptor__traits_3_01cgv_1_1math_1_1vec_3_01T_01_4_01_4.html", null ],
+    [ "cgv::render::array_descriptor_traits&lt; std::vector&lt; T &gt; &gt;", "structcgv_1_1render_1_1array__descriptor__traits_3_01std_1_1vector_3_01T_01_4_01_4.html", null ],
+    [ "cgv::render::array_descriptor_traits&lt; T[N] &gt;", "structcgv_1_1render_1_1array__descriptor__traits_3_01T_0fN_0e_01_4.html", null ],
     [ "cgv::render::attribute_array", "structcgv_1_1render_1_1attribute__array.html", null ],
     [ "cgv::render::attribute_array_manager", "classcgv_1_1render_1_1attribute__array__manager.html", null ],
     [ "cgv::render::clod_point_buffer_manager", "classcgv_1_1render_1_1clod__point__buffer__manager.html", null ],
@@ -762,13 +950,13 @@ var hierarchy =
     ] ],
     [ "cgv::render::device_color_scale_arguments", "structcgv_1_1render_1_1device__color__scale__arguments.html", null ],
     [ "cgv::render::draw_call", "structcgv_1_1render_1_1draw__call.html", null ],
-    [ "cgv::render::element_descriptor_traits< T >", "structcgv_1_1render_1_1element__descriptor__traits.html", null ],
-    [ "cgv::render::element_descriptor_traits< cgv::math::fmat< T, N, M > >", "structcgv_1_1render_1_1element__descriptor__traits_3_01cgv_1_1math_1_1fmat_3_01T_00_01N_00_01M_01_4_01_4.html", null ],
-    [ "cgv::render::element_descriptor_traits< cgv::math::fvec< T, N > >", "structcgv_1_1render_1_1element__descriptor__traits_3_01cgv_1_1math_1_1fvec_3_01T_00_01N_01_4_01_4.html", null ],
-    [ "cgv::render::element_descriptor_traits< cgv::math::mat< T > >", "structcgv_1_1render_1_1element__descriptor__traits_3_01cgv_1_1math_1_1mat_3_01T_01_4_01_4.html", null ],
-    [ "cgv::render::element_descriptor_traits< cgv::math::quaternion< T > >", "structcgv_1_1render_1_1element__descriptor__traits_3_01cgv_1_1math_1_1quaternion_3_01T_01_4_01_4.html", null ],
-    [ "cgv::render::element_descriptor_traits< cgv::math::vec< T > >", "structcgv_1_1render_1_1element__descriptor__traits_3_01cgv_1_1math_1_1vec_3_01T_01_4_01_4.html", null ],
-    [ "cgv::render::element_descriptor_traits< cgv::media::color< T, cm, am > >", "structcgv_1_1render_1_1element__descriptor__traits_3_01cgv_1_1media_1_1color_3_01T_00_01cm_00_01am_01_4_01_4.html", null ],
+    [ "cgv::render::element_descriptor_traits&lt; T &gt;", "structcgv_1_1render_1_1element__descriptor__traits.html", null ],
+    [ "cgv::render::element_descriptor_traits&lt; cgv::math::fmat&lt; T, N, M &gt; &gt;", "structcgv_1_1render_1_1element__descriptor__traits_3_01cgv_1_1math_1_1fmat_3_01T_00_01N_00_01M_01_4_01_4.html", null ],
+    [ "cgv::render::element_descriptor_traits&lt; cgv::math::fvec&lt; T, N &gt; &gt;", "structcgv_1_1render_1_1element__descriptor__traits_3_01cgv_1_1math_1_1fvec_3_01T_00_01N_01_4_01_4.html", null ],
+    [ "cgv::render::element_descriptor_traits&lt; cgv::math::mat&lt; T &gt; &gt;", "structcgv_1_1render_1_1element__descriptor__traits_3_01cgv_1_1math_1_1mat_3_01T_01_4_01_4.html", null ],
+    [ "cgv::render::element_descriptor_traits&lt; cgv::math::quaternion&lt; T &gt; &gt;", "structcgv_1_1render_1_1element__descriptor__traits_3_01cgv_1_1math_1_1quaternion_3_01T_01_4_01_4.html", null ],
+    [ "cgv::render::element_descriptor_traits&lt; cgv::math::vec&lt; T &gt; &gt;", "structcgv_1_1render_1_1element__descriptor__traits_3_01cgv_1_1math_1_1vec_3_01T_01_4_01_4.html", null ],
+    [ "cgv::render::element_descriptor_traits&lt; cgv::media::color&lt; T, cm, am &gt; &gt;", "structcgv_1_1render_1_1element__descriptor__traits_3_01cgv_1_1media_1_1color_3_01T_00_01cm_00_01am_01_4_01_4.html", null ],
     [ "cgv::render::generic_render_data", "classcgv_1_1render_1_1generic__render__data.html", null ],
     [ "cgv::render::generic_renderer", "classcgv_1_1render_1_1generic__renderer.html", null ],
     [ "cgv::render::gl::gl_cursor", "classcgv_1_1render_1_1gl_1_1gl__cursor.html", null ],
@@ -776,15 +964,15 @@ var hierarchy =
       [ "cgv::render::gl::gl_transparent_renderer", "classcgv_1_1render_1_1gl_1_1gl__transparent__renderer.html", null ]
     ] ],
     [ "cgv::render::gl::gl_time_query", "classcgv_1_1render_1_1gl_1_1gl__time__query.html", null ],
-    [ "cgv::render::gl::gl_traits< T >", "structcgv_1_1render_1_1gl_1_1gl__traits.html", null ],
-    [ "cgv::render::gl::gl_traits< char >", "structcgv_1_1render_1_1gl_1_1gl__traits_3_01char_01_4.html", null ],
-    [ "cgv::render::gl::gl_traits< double >", "structcgv_1_1render_1_1gl_1_1gl__traits_3_01double_01_4.html", null ],
-    [ "cgv::render::gl::gl_traits< float >", "structcgv_1_1render_1_1gl_1_1gl__traits_3_01float_01_4.html", null ],
-    [ "cgv::render::gl::gl_traits< int >", "structcgv_1_1render_1_1gl_1_1gl__traits_3_01int_01_4.html", null ],
-    [ "cgv::render::gl::gl_traits< short >", "structcgv_1_1render_1_1gl_1_1gl__traits_3_01short_01_4.html", null ],
-    [ "cgv::render::gl::gl_traits< unsigned char >", "structcgv_1_1render_1_1gl_1_1gl__traits_3_01unsigned_01char_01_4.html", null ],
-    [ "cgv::render::gl::gl_traits< unsigned int >", "structcgv_1_1render_1_1gl_1_1gl__traits_3_01unsigned_01int_01_4.html", null ],
-    [ "cgv::render::gl::gl_traits< unsigned short >", "structcgv_1_1render_1_1gl_1_1gl__traits_3_01unsigned_01short_01_4.html", null ],
+    [ "cgv::render::gl::gl_traits&lt; T &gt;", "structcgv_1_1render_1_1gl_1_1gl__traits.html", null ],
+    [ "cgv::render::gl::gl_traits&lt; char &gt;", "structcgv_1_1render_1_1gl_1_1gl__traits_3_01char_01_4.html", null ],
+    [ "cgv::render::gl::gl_traits&lt; double &gt;", "structcgv_1_1render_1_1gl_1_1gl__traits_3_01double_01_4.html", null ],
+    [ "cgv::render::gl::gl_traits&lt; float &gt;", "structcgv_1_1render_1_1gl_1_1gl__traits_3_01float_01_4.html", null ],
+    [ "cgv::render::gl::gl_traits&lt; int &gt;", "structcgv_1_1render_1_1gl_1_1gl__traits_3_01int_01_4.html", null ],
+    [ "cgv::render::gl::gl_traits&lt; short &gt;", "structcgv_1_1render_1_1gl_1_1gl__traits_3_01short_01_4.html", null ],
+    [ "cgv::render::gl::gl_traits&lt; unsigned char &gt;", "structcgv_1_1render_1_1gl_1_1gl__traits_3_01unsigned_01char_01_4.html", null ],
+    [ "cgv::render::gl::gl_traits&lt; unsigned int &gt;", "structcgv_1_1render_1_1gl_1_1gl__traits_3_01unsigned_01int_01_4.html", null ],
+    [ "cgv::render::gl::gl_traits&lt; unsigned short &gt;", "structcgv_1_1render_1_1gl_1_1gl__traits_3_01unsigned_01short_01_4.html", null ],
     [ "cgv::render::managed_frame_buffer", "classcgv_1_1render_1_1managed__frame__buffer.html", null ],
     [ "cgv::render::managed_frame_buffer::attachment", "structcgv_1_1render_1_1managed__frame__buffer_1_1attachment.html", null ],
     [ "cgv::render::mesh_render_info::attribute_configuration", "structcgv_1_1render_1_1mesh__render__info_1_1attribute__configuration.html", null ],
@@ -819,21 +1007,45 @@ var hierarchy =
         ] ]
       ] ]
     ] ],
-    [ "cgv::render::render_data_base< RendererType, RenderStyleType, ColorType >", "classcgv_1_1render_1_1render__data__base.html", [
-      [ "cgv::render::box_render_data_base< box_renderer, box_render_style, rgb >", "classcgv_1_1render_1_1box__render__data__base.html", null ],
-      [ "cgv::render::box_render_data_base< box_wire_renderer, box_wire_render_style, rgb >", "classcgv_1_1render_1_1box__render__data__base.html", null ],
-      [ "cgv::render::arrow_render_data< ColorType >", "classcgv_1_1render_1_1arrow__render__data.html", null ],
-      [ "cgv::render::box_render_data_base< RendererType, RenderStyleType, ColorType >", "classcgv_1_1render_1_1box__render__data__base.html", [
-        [ "cgv::render::box_render_data< ColorType >", "classcgv_1_1render_1_1box__render__data.html", null ],
+    [ "cgv::render::render_data_base&lt; RendererType, RenderStyleType, ColorType &gt;", "classcgv_1_1render_1_1render__data__base.html", null ],
+    [ "cgv::render::render_data_base&lt; arrow_renderer, arrow_render_style, rgb &gt;", "classcgv_1_1render_1_1render__data__base.html", [
+      [ "cgv::render::arrow_render_data< ColorType >", "classcgv_1_1render_1_1arrow__render__data.html", null ]
+    ] ],
+    [ "cgv::render::render_data_base&lt; box_renderer, box_render_style, rgb &gt;", "classcgv_1_1render_1_1render__data__base.html", [
+      [ "cgv::render::box_render_data_base< box_renderer, box_render_style, rgb >", "classcgv_1_1render_1_1box__render__data__base.html", [
+        [ "cgv::render::box_render_data< ColorType >", "classcgv_1_1render_1_1box__render__data.html", null ]
+      ] ]
+    ] ],
+    [ "cgv::render::render_data_base&lt; box_wire_renderer, box_wire_render_style, rgb &gt;", "classcgv_1_1render_1_1render__data__base.html", [
+      [ "cgv::render::box_render_data_base< box_wire_renderer, box_wire_render_style, rgb >", "classcgv_1_1render_1_1box__render__data__base.html", [
         [ "cgv::render::box_wire_render_data< ColorType >", "classcgv_1_1render_1_1box__wire__render__data.html", null ]
-      ] ],
-      [ "cgv::render::cone_render_data< ColorType >", "classcgv_1_1render_1_1cone__render__data.html", null ],
-      [ "cgv::render::ellipsoid_render_data< ColorType >", "classcgv_1_1render_1_1ellipsoid__render__data.html", null ],
-      [ "cgv::render::line_render_data< ColorType >", "classcgv_1_1render_1_1line__render__data.html", null ],
-      [ "cgv::render::point_render_data< ColorType >", "classcgv_1_1render_1_1point__render__data.html", null ],
-      [ "cgv::render::rectangle_render_data< ColorType >", "classcgv_1_1render_1_1rectangle__render__data.html", null ],
-      [ "cgv::render::sphere_render_data< ColorType >", "classcgv_1_1render_1_1sphere__render__data.html", null ],
-      [ "cgv::render::surface_render_data< ColorType >", "classcgv_1_1render_1_1surface__render__data.html", null ],
+      ] ]
+    ] ],
+    [ "cgv::render::render_data_base&lt; cone_renderer, cone_render_style, rgb &gt;", "classcgv_1_1render_1_1render__data__base.html", [
+      [ "cgv::render::cone_render_data< ColorType >", "classcgv_1_1render_1_1cone__render__data.html", null ]
+    ] ],
+    [ "cgv::render::render_data_base&lt; ellipsoid_renderer, ellipsoid_render_style, rgb &gt;", "classcgv_1_1render_1_1render__data__base.html", [
+      [ "cgv::render::ellipsoid_render_data< ColorType >", "classcgv_1_1render_1_1ellipsoid__render__data.html", null ]
+    ] ],
+    [ "cgv::render::render_data_base&lt; line_renderer, line_render_style, rgb &gt;", "classcgv_1_1render_1_1render__data__base.html", [
+      [ "cgv::render::line_render_data< ColorType >", "classcgv_1_1render_1_1line__render__data.html", null ]
+    ] ],
+    [ "cgv::render::render_data_base&lt; point_renderer, point_render_style, rgb &gt;", "classcgv_1_1render_1_1render__data__base.html", [
+      [ "cgv::render::point_render_data< ColorType >", "classcgv_1_1render_1_1point__render__data.html", null ]
+    ] ],
+    [ "cgv::render::render_data_base&lt; rectangle_renderer, rectangle_render_style, rgb &gt;", "classcgv_1_1render_1_1render__data__base.html", [
+      [ "cgv::render::rectangle_render_data< ColorType >", "classcgv_1_1render_1_1rectangle__render__data.html", null ]
+    ] ],
+    [ "cgv::render::render_data_base&lt; RendererType, RenderStyleType, rgb &gt;", "classcgv_1_1render_1_1render__data__base.html", [
+      [ "cgv::render::box_render_data_base< RendererType, RenderStyleType, ColorType >", "classcgv_1_1render_1_1box__render__data__base.html", null ]
+    ] ],
+    [ "cgv::render::render_data_base&lt; sphere_renderer, sphere_render_style, rgb &gt;", "classcgv_1_1render_1_1render__data__base.html", [
+      [ "cgv::render::sphere_render_data< ColorType >", "classcgv_1_1render_1_1sphere__render__data.html", null ]
+    ] ],
+    [ "cgv::render::render_data_base&lt; surface_renderer, surface_render_style, rgb &gt;", "classcgv_1_1render_1_1render__data__base.html", [
+      [ "cgv::render::surface_render_data< ColorType >", "classcgv_1_1render_1_1surface__render__data.html", null ]
+    ] ],
+    [ "cgv::render::render_data_base&lt; surfel_renderer, surfel_render_style, rgb &gt;", "classcgv_1_1render_1_1render__data__base.html", [
       [ "cgv::render::surfel_render_data< ColorType >", "classcgv_1_1render_1_1surfel__render__data.html", null ]
     ] ],
     [ "cgv::render::render_info", "classcgv_1_1render_1_1render__info.html", [
@@ -923,6 +1135,7 @@ var hierarchy =
     ] ],
     [ "cgv::signal::bool_combiner", "classcgv_1_1signal_1_1bool__combiner.html", null ],
     [ "cgv::signal::tacker", null, [
+      [ "cgv::gui::key_control< bool >", "classcgv_1_1gui_1_1key__control_3_01bool_01_4.html", null ],
       [ "cgv::gui::animation_manager", "classcgv_1_1gui_1_1animation__manager.html", null ],
       [ "cgv::gui::base_provider_generator", "classcgv_1_1gui_1_1base__provider__generator.html", null ],
       [ "cgv::gui::key_control< T >", "classcgv_1_1gui_1_1key__control.html", null ],
@@ -938,147 +1151,154 @@ var hierarchy =
       [ "cgv::plot::plot_base", "classcgv_1_1plot_1_1plot__base.html", null ]
     ] ],
     [ "cgv::type::bool32_t", "classcgv_1_1type_1_1bool32__t.html", null ],
-    [ "cgv::type::cond::has_virtual_destructor< T >", "structcgv_1_1type_1_1cond_1_1has__virtual__destructor.html", null ],
-    [ "cgv::type::cond::is_abstract< T >", "structcgv_1_1type_1_1cond_1_1is__abstract.html", null ],
-    [ "cgv::type::cond::is_base_of< base_type, derived_type >", "structcgv_1_1type_1_1cond_1_1is__base__of.html", null ],
-    [ "cgv::type::cond::is_const< T >", "structcgv_1_1type_1_1cond_1_1is__const.html", [
+    [ "cgv::type::cond::has_virtual_destructor&lt; T &gt;", "structcgv_1_1type_1_1cond_1_1has__virtual__destructor.html", null ],
+    [ "cgv::type::cond::is_abstract&lt; T &gt;", "structcgv_1_1type_1_1cond_1_1is__abstract.html", null ],
+    [ "cgv::type::cond::is_base_of&lt; base_type, derived_type &gt;", "structcgv_1_1type_1_1cond_1_1is__base__of.html", null ],
+    [ "cgv::type::cond::is_const&lt; T &gt;", "structcgv_1_1type_1_1cond_1_1is__const.html", [
       [ "cgv::type::cond::is_const< T & >", "structcgv_1_1type_1_1cond_1_1is__const_3_01T_01_6_01_4.html", null ]
     ] ],
-    [ "cgv::type::cond::is_const< const T >", "structcgv_1_1type_1_1cond_1_1is__const_3_01const_01T_01_4.html", null ],
-    [ "cgv::type::cond::is_enum< T >", "structcgv_1_1type_1_1cond_1_1is__enum.html", null ],
-    [ "cgv::type::cond::is_standard_type< T >", "structcgv_1_1type_1_1cond_1_1is__standard__type.html", null ],
-    [ "cgv::type::cond::is_standard_type< bool >", "structcgv_1_1type_1_1cond_1_1is__standard__type_3_01bool_01_4.html", null ],
-    [ "cgv::type::cond::is_standard_type< flt32_type >", "structcgv_1_1type_1_1cond_1_1is__standard__type_3_01flt32__type_01_4.html", null ],
-    [ "cgv::type::cond::is_standard_type< flt64_type >", "structcgv_1_1type_1_1cond_1_1is__standard__type_3_01flt64__type_01_4.html", null ],
-    [ "cgv::type::cond::is_standard_type< int16_type >", "structcgv_1_1type_1_1cond_1_1is__standard__type_3_01int16__type_01_4.html", null ],
-    [ "cgv::type::cond::is_standard_type< int32_type >", "structcgv_1_1type_1_1cond_1_1is__standard__type_3_01int32__type_01_4.html", null ],
-    [ "cgv::type::cond::is_standard_type< int64_type >", "structcgv_1_1type_1_1cond_1_1is__standard__type_3_01int64__type_01_4.html", null ],
-    [ "cgv::type::cond::is_standard_type< int8_type >", "structcgv_1_1type_1_1cond_1_1is__standard__type_3_01int8__type_01_4.html", null ],
-    [ "cgv::type::cond::is_standard_type< std::string >", "structcgv_1_1type_1_1cond_1_1is__standard__type_3_01std_1_1string_01_4.html", null ],
-    [ "cgv::type::cond::is_standard_type< std::wstring >", "structcgv_1_1type_1_1cond_1_1is__standard__type_3_01std_1_1wstring_01_4.html", null ],
-    [ "cgv::type::cond::is_standard_type< uint16_type >", "structcgv_1_1type_1_1cond_1_1is__standard__type_3_01uint16__type_01_4.html", null ],
-    [ "cgv::type::cond::is_standard_type< uint32_type >", "structcgv_1_1type_1_1cond_1_1is__standard__type_3_01uint32__type_01_4.html", null ],
-    [ "cgv::type::cond::is_standard_type< uint64_type >", "structcgv_1_1type_1_1cond_1_1is__standard__type_3_01uint64__type_01_4.html", null ],
-    [ "cgv::type::cond::is_standard_type< uint8_type >", "structcgv_1_1type_1_1cond_1_1is__standard__type_3_01uint8__type_01_4.html", null ],
-    [ "cgv::type::cond::is_standard_type< wchar_type >", "structcgv_1_1type_1_1cond_1_1is__standard__type_3_01wchar__type_01_4.html", null ],
-    [ "cgv::type::ctrl::if_< condition_type, then_type, else_type >", "structcgv_1_1type_1_1ctrl_1_1if__.html", null ],
-    [ "cgv::type::ctrl::if_< false, then_type, else_type >", "structcgv_1_1type_1_1ctrl_1_1if___3_01false_00_01then__type_00_01else__type_01_4.html", null ],
-    [ "cgv::type::func::clean< T >", "structcgv_1_1type_1_1func_1_1clean.html", [
+    [ "cgv::type::cond::is_const&lt; const T &gt;", "structcgv_1_1type_1_1cond_1_1is__const_3_01const_01T_01_4.html", null ],
+    [ "cgv::type::cond::is_enum&lt; T &gt;", "structcgv_1_1type_1_1cond_1_1is__enum.html", null ],
+    [ "cgv::type::cond::is_standard_type&lt; T &gt;", "structcgv_1_1type_1_1cond_1_1is__standard__type.html", null ],
+    [ "cgv::type::cond::is_standard_type&lt; bool &gt;", "structcgv_1_1type_1_1cond_1_1is__standard__type_3_01bool_01_4.html", null ],
+    [ "cgv::type::cond::is_standard_type&lt; flt32_type &gt;", "structcgv_1_1type_1_1cond_1_1is__standard__type_3_01flt32__type_01_4.html", null ],
+    [ "cgv::type::cond::is_standard_type&lt; flt64_type &gt;", "structcgv_1_1type_1_1cond_1_1is__standard__type_3_01flt64__type_01_4.html", null ],
+    [ "cgv::type::cond::is_standard_type&lt; int16_type &gt;", "structcgv_1_1type_1_1cond_1_1is__standard__type_3_01int16__type_01_4.html", null ],
+    [ "cgv::type::cond::is_standard_type&lt; int32_type &gt;", "structcgv_1_1type_1_1cond_1_1is__standard__type_3_01int32__type_01_4.html", null ],
+    [ "cgv::type::cond::is_standard_type&lt; int64_type &gt;", "structcgv_1_1type_1_1cond_1_1is__standard__type_3_01int64__type_01_4.html", null ],
+    [ "cgv::type::cond::is_standard_type&lt; int8_type &gt;", "structcgv_1_1type_1_1cond_1_1is__standard__type_3_01int8__type_01_4.html", null ],
+    [ "cgv::type::cond::is_standard_type&lt; std::string &gt;", "structcgv_1_1type_1_1cond_1_1is__standard__type_3_01std_1_1string_01_4.html", null ],
+    [ "cgv::type::cond::is_standard_type&lt; std::wstring &gt;", "structcgv_1_1type_1_1cond_1_1is__standard__type_3_01std_1_1wstring_01_4.html", null ],
+    [ "cgv::type::cond::is_standard_type&lt; uint16_type &gt;", "structcgv_1_1type_1_1cond_1_1is__standard__type_3_01uint16__type_01_4.html", null ],
+    [ "cgv::type::cond::is_standard_type&lt; uint32_type &gt;", "structcgv_1_1type_1_1cond_1_1is__standard__type_3_01uint32__type_01_4.html", null ],
+    [ "cgv::type::cond::is_standard_type&lt; uint64_type &gt;", "structcgv_1_1type_1_1cond_1_1is__standard__type_3_01uint64__type_01_4.html", null ],
+    [ "cgv::type::cond::is_standard_type&lt; uint8_type &gt;", "structcgv_1_1type_1_1cond_1_1is__standard__type_3_01uint8__type_01_4.html", null ],
+    [ "cgv::type::cond::is_standard_type&lt; wchar_type &gt;", "structcgv_1_1type_1_1cond_1_1is__standard__type_3_01wchar__type_01_4.html", null ],
+    [ "cgv::type::ctrl::if_&lt; condition_type, then_type, else_type &gt;", "structcgv_1_1type_1_1ctrl_1_1if__.html", null ],
+    [ "cgv::type::ctrl::if_&lt; cond::is_const&lt; T1 &gt;::value, make_const&lt; T2 &gt;::type, drop_const&lt; T2 &gt;::type &gt;", "structcgv_1_1type_1_1ctrl_1_1if__.html", [
+      [ "cgv::type::func::promote_const< T1, T2 >", "structcgv_1_1type_1_1func_1_1promote__const.html", null ]
+    ] ],
+    [ "cgv::type::ctrl::if_&lt; false, then_type, else_type &gt;", "structcgv_1_1type_1_1ctrl_1_1if___3_01false_00_01then__type_00_01else__type_01_4.html", null ],
+    [ "cgv::type::func::clean&lt; T &gt;", "structcgv_1_1type_1_1func_1_1clean.html", [
       [ "cgv::type::func::clean_traits< T >", "structcgv_1_1type_1_1func_1_1clean__traits.html", null ]
     ] ],
-    [ "cgv::type::func::drop_const< T >", "structcgv_1_1type_1_1func_1_1drop__const.html", null ],
-    [ "cgv::type::func::drop_const< const T >", "structcgv_1_1type_1_1func_1_1drop__const_3_01const_01T_01_4.html", null ],
-    [ "cgv::type::func::drop_const< T & >", "structcgv_1_1type_1_1func_1_1drop__const_3_01T_01_6_01_4.html", null ],
-    [ "cgv::type::func::drop_pointer< T >", "structcgv_1_1type_1_1func_1_1drop__pointer.html", null ],
-    [ "cgv::type::func::drop_pointer< T * >", "structcgv_1_1type_1_1func_1_1drop__pointer_3_01T_01_5_01_4.html", null ],
-    [ "cgv::type::func::drop_ref< T >", "structcgv_1_1type_1_1func_1_1drop__ref.html", null ],
-    [ "cgv::type::func::drop_ref< T & >", "structcgv_1_1type_1_1func_1_1drop__ref_3_01T_01_6_01_4.html", null ],
-    [ "cgv::type::func::make_argument< T >", "structcgv_1_1type_1_1func_1_1make__argument.html", null ],
-    [ "cgv::type::func::make_argument< T & >", "structcgv_1_1type_1_1func_1_1make__argument_3_01T_01_6_01_4.html", null ],
-    [ "cgv::type::func::make_ref< T >", "structcgv_1_1type_1_1func_1_1make__ref.html", null ],
-    [ "cgv::type::func::MakeConst::make_const_impl< T >", "structcgv_1_1type_1_1func_1_1MakeConst_1_1make__const__impl.html", null ],
-    [ "cgv::type::func::MakeConst::make_const_impl< T & >", "structcgv_1_1type_1_1func_1_1MakeConst_1_1make__const__impl_3_01T_01_6_01_4.html", null ],
-    [ "cgv::type::func::promote< T1, T2 >", "structcgv_1_1type_1_1func_1_1promote.html", null ],
-    [ "cgv::type::func::Promote::promotion_rank< T >", "structcgv_1_1type_1_1func_1_1Promote_1_1promotion__rank.html", null ],
-    [ "cgv::type::func::Promote::promotion_rank< bool >", "structcgv_1_1type_1_1func_1_1Promote_1_1promotion__rank_3_01bool_01_4.html", null ],
-    [ "cgv::type::func::Promote::promotion_rank< char >", "structcgv_1_1type_1_1func_1_1Promote_1_1promotion__rank_3_01char_01_4.html", null ],
-    [ "cgv::type::func::Promote::promotion_rank< double >", "structcgv_1_1type_1_1func_1_1Promote_1_1promotion__rank_3_01double_01_4.html", null ],
-    [ "cgv::type::func::Promote::promotion_rank< float >", "structcgv_1_1type_1_1func_1_1Promote_1_1promotion__rank_3_01float_01_4.html", null ],
-    [ "cgv::type::func::Promote::promotion_rank< int >", "structcgv_1_1type_1_1func_1_1Promote_1_1promotion__rank_3_01int_01_4.html", null ],
-    [ "cgv::type::func::Promote::promotion_rank< long >", "structcgv_1_1type_1_1func_1_1Promote_1_1promotion__rank_3_01long_01_4.html", null ],
-    [ "cgv::type::func::Promote::promotion_rank< short >", "structcgv_1_1type_1_1func_1_1Promote_1_1promotion__rank_3_01short_01_4.html", null ],
-    [ "cgv::type::func::Promote::promotion_rank< unsigned char >", "structcgv_1_1type_1_1func_1_1Promote_1_1promotion__rank_3_01unsigned_01char_01_4.html", null ],
-    [ "cgv::type::func::Promote::promotion_rank< unsigned int >", "structcgv_1_1type_1_1func_1_1Promote_1_1promotion__rank_3_01unsigned_01int_01_4.html", null ],
-    [ "cgv::type::func::Promote::promotion_rank< unsigned long >", "structcgv_1_1type_1_1func_1_1Promote_1_1promotion__rank_3_01unsigned_01long_01_4.html", null ],
-    [ "cgv::type::func::Promote::promotion_rank< unsigned short >", "structcgv_1_1type_1_1func_1_1Promote_1_1promotion__rank_3_01unsigned_01short_01_4.html", null ],
-    [ "cgv::type::func::promote< float, int >", "structcgv_1_1type_1_1func_1_1promote_3_01float_00_01int_01_4.html", null ],
-    [ "cgv::type::func::promote< float, long >", "structcgv_1_1type_1_1func_1_1promote_3_01float_00_01long_01_4.html", null ],
-    [ "cgv::type::func::promote< float, unsigned int >", "structcgv_1_1type_1_1func_1_1promote_3_01float_00_01unsigned_01int_01_4.html", null ],
-    [ "cgv::type::func::promote< float, unsigned long >", "structcgv_1_1type_1_1func_1_1promote_3_01float_00_01unsigned_01long_01_4.html", null ],
-    [ "cgv::type::func::promote< int, float >", "structcgv_1_1type_1_1func_1_1promote_3_01int_00_01float_01_4.html", null ],
-    [ "cgv::type::func::promote< long, float >", "structcgv_1_1type_1_1func_1_1promote_3_01long_00_01float_01_4.html", null ],
-    [ "cgv::type::func::promote< unsigned int, float >", "structcgv_1_1type_1_1func_1_1promote_3_01unsigned_01int_00_01float_01_4.html", null ],
-    [ "cgv::type::func::promote< unsigned long, float >", "structcgv_1_1type_1_1func_1_1promote_3_01unsigned_01long_00_01float_01_4.html", null ],
-    [ "cgv::type::func::transfer_const< T, S >", "structcgv_1_1type_1_1func_1_1transfer__const.html", null ],
-    [ "cgv::type::func::transfer_const< const T *, S * >", "structcgv_1_1type_1_1func_1_1transfer__const_3_01const_01T_01_5_00_01S_01_5_01_4.html", null ],
-    [ "cgv::type::func::transfer_const< const T, S >", "structcgv_1_1type_1_1func_1_1transfer__const_3_01const_01T_00_01S_01_4.html", null ],
-    [ "cgv::type::info::detail::dispatch_type_name< T, is_std >", "structcgv_1_1type_1_1info_1_1detail_1_1dispatch__type__name.html", null ],
-    [ "cgv::type::info::detail::dispatch_type_name< T, false >", "structcgv_1_1type_1_1info_1_1detail_1_1dispatch__type__name_3_01T_00_01false_01_4.html", null ],
+    [ "cgv::type::func::drop_const&lt; T &gt;", "structcgv_1_1type_1_1func_1_1drop__const.html", null ],
+    [ "cgv::type::func::drop_const&lt; const T &gt;", "structcgv_1_1type_1_1func_1_1drop__const_3_01const_01T_01_4.html", null ],
+    [ "cgv::type::func::drop_const&lt; T &amp; &gt;", "structcgv_1_1type_1_1func_1_1drop__const_3_01T_01_6_01_4.html", null ],
+    [ "cgv::type::func::drop_pointer&lt; T &gt;", "structcgv_1_1type_1_1func_1_1drop__pointer.html", null ],
+    [ "cgv::type::func::drop_pointer&lt; T * &gt;", "structcgv_1_1type_1_1func_1_1drop__pointer_3_01T_01_5_01_4.html", null ],
+    [ "cgv::type::func::drop_ref&lt; T &gt;", "structcgv_1_1type_1_1func_1_1drop__ref.html", null ],
+    [ "cgv::type::func::drop_ref&lt; T &amp; &gt;", "structcgv_1_1type_1_1func_1_1drop__ref_3_01T_01_6_01_4.html", null ],
+    [ "cgv::type::func::make_argument&lt; T &gt;", "structcgv_1_1type_1_1func_1_1make__argument.html", null ],
+    [ "cgv::type::func::make_argument&lt; T &amp; &gt;", "structcgv_1_1type_1_1func_1_1make__argument_3_01T_01_6_01_4.html", null ],
+    [ "cgv::type::func::make_ref&lt; T &gt;", "structcgv_1_1type_1_1func_1_1make__ref.html", null ],
+    [ "cgv::type::func::MakeConst::make_const_impl&lt; T &gt;", "structcgv_1_1type_1_1func_1_1MakeConst_1_1make__const__impl.html", null ],
+    [ "cgv::type::func::MakeConst::make_const_impl&lt; drop_const&lt; T &gt;::type &gt;", "structcgv_1_1type_1_1func_1_1MakeConst_1_1make__const__impl.html", [
+      [ "cgv::type::func::make_const< T >", "structcgv_1_1type_1_1func_1_1make__const.html", null ]
+    ] ],
+    [ "cgv::type::func::MakeConst::make_const_impl&lt; T &amp; &gt;", "structcgv_1_1type_1_1func_1_1MakeConst_1_1make__const__impl_3_01T_01_6_01_4.html", null ],
+    [ "cgv::type::func::promote&lt; T1, T2 &gt;", "structcgv_1_1type_1_1func_1_1promote.html", null ],
+    [ "cgv::type::func::Promote::promotion_rank&lt; T &gt;", "structcgv_1_1type_1_1func_1_1Promote_1_1promotion__rank.html", null ],
+    [ "cgv::type::func::Promote::promotion_rank&lt; bool &gt;", "structcgv_1_1type_1_1func_1_1Promote_1_1promotion__rank_3_01bool_01_4.html", null ],
+    [ "cgv::type::func::Promote::promotion_rank&lt; char &gt;", "structcgv_1_1type_1_1func_1_1Promote_1_1promotion__rank_3_01char_01_4.html", null ],
+    [ "cgv::type::func::Promote::promotion_rank&lt; double &gt;", "structcgv_1_1type_1_1func_1_1Promote_1_1promotion__rank_3_01double_01_4.html", null ],
+    [ "cgv::type::func::Promote::promotion_rank&lt; float &gt;", "structcgv_1_1type_1_1func_1_1Promote_1_1promotion__rank_3_01float_01_4.html", null ],
+    [ "cgv::type::func::Promote::promotion_rank&lt; int &gt;", "structcgv_1_1type_1_1func_1_1Promote_1_1promotion__rank_3_01int_01_4.html", null ],
+    [ "cgv::type::func::Promote::promotion_rank&lt; long &gt;", "structcgv_1_1type_1_1func_1_1Promote_1_1promotion__rank_3_01long_01_4.html", null ],
+    [ "cgv::type::func::Promote::promotion_rank&lt; short &gt;", "structcgv_1_1type_1_1func_1_1Promote_1_1promotion__rank_3_01short_01_4.html", null ],
+    [ "cgv::type::func::Promote::promotion_rank&lt; unsigned char &gt;", "structcgv_1_1type_1_1func_1_1Promote_1_1promotion__rank_3_01unsigned_01char_01_4.html", null ],
+    [ "cgv::type::func::Promote::promotion_rank&lt; unsigned int &gt;", "structcgv_1_1type_1_1func_1_1Promote_1_1promotion__rank_3_01unsigned_01int_01_4.html", null ],
+    [ "cgv::type::func::Promote::promotion_rank&lt; unsigned long &gt;", "structcgv_1_1type_1_1func_1_1Promote_1_1promotion__rank_3_01unsigned_01long_01_4.html", null ],
+    [ "cgv::type::func::Promote::promotion_rank&lt; unsigned short &gt;", "structcgv_1_1type_1_1func_1_1Promote_1_1promotion__rank_3_01unsigned_01short_01_4.html", null ],
+    [ "cgv::type::func::promote&lt; float, int &gt;", "structcgv_1_1type_1_1func_1_1promote_3_01float_00_01int_01_4.html", null ],
+    [ "cgv::type::func::promote&lt; float, long &gt;", "structcgv_1_1type_1_1func_1_1promote_3_01float_00_01long_01_4.html", null ],
+    [ "cgv::type::func::promote&lt; float, unsigned int &gt;", "structcgv_1_1type_1_1func_1_1promote_3_01float_00_01unsigned_01int_01_4.html", null ],
+    [ "cgv::type::func::promote&lt; float, unsigned long &gt;", "structcgv_1_1type_1_1func_1_1promote_3_01float_00_01unsigned_01long_01_4.html", null ],
+    [ "cgv::type::func::promote&lt; int, float &gt;", "structcgv_1_1type_1_1func_1_1promote_3_01int_00_01float_01_4.html", null ],
+    [ "cgv::type::func::promote&lt; long, float &gt;", "structcgv_1_1type_1_1func_1_1promote_3_01long_00_01float_01_4.html", null ],
+    [ "cgv::type::func::promote&lt; unsigned int, float &gt;", "structcgv_1_1type_1_1func_1_1promote_3_01unsigned_01int_00_01float_01_4.html", null ],
+    [ "cgv::type::func::promote&lt; unsigned long, float &gt;", "structcgv_1_1type_1_1func_1_1promote_3_01unsigned_01long_00_01float_01_4.html", null ],
+    [ "cgv::type::func::transfer_const&lt; T, S &gt;", "structcgv_1_1type_1_1func_1_1transfer__const.html", null ],
+    [ "cgv::type::func::transfer_const&lt; const T *, S * &gt;", "structcgv_1_1type_1_1func_1_1transfer__const_3_01const_01T_01_5_00_01S_01_5_01_4.html", null ],
+    [ "cgv::type::func::transfer_const&lt; const T, S &gt;", "structcgv_1_1type_1_1func_1_1transfer__const_3_01const_01T_00_01S_01_4.html", null ],
+    [ "cgv::type::info::detail::dispatch_type_name&lt; T, is_std &gt;", "structcgv_1_1type_1_1info_1_1detail_1_1dispatch__type__name.html", null ],
+    [ "cgv::type::info::detail::dispatch_type_name&lt; T, false &gt;", "structcgv_1_1type_1_1info_1_1detail_1_1dispatch__type__name_3_01T_00_01false_01_4.html", null ],
     [ "cgv::type::info::name_type_id_pair", "structcgv_1_1type_1_1info_1_1name__type__id__pair.html", null ],
-    [ "cgv::type::info::type_access< T >", "structcgv_1_1type_1_1info_1_1type__access.html", null ],
-    [ "cgv::type::info::type_id< T >", "structcgv_1_1type_1_1info_1_1type__id.html", null ],
-    [ "cgv::type::info::type_id< bool >", "structcgv_1_1type_1_1info_1_1type__id_3_01bool_01_4.html", null ],
-    [ "cgv::type::info::type_id< flt32_type >", "structcgv_1_1type_1_1info_1_1type__id_3_01flt32__type_01_4.html", null ],
-    [ "cgv::type::info::type_id< flt64_type >", "structcgv_1_1type_1_1info_1_1type__id_3_01flt64__type_01_4.html", null ],
-    [ "cgv::type::info::type_id< int16_type >", "structcgv_1_1type_1_1info_1_1type__id_3_01int16__type_01_4.html", null ],
-    [ "cgv::type::info::type_id< int32_type >", "structcgv_1_1type_1_1info_1_1type__id_3_01int32__type_01_4.html", null ],
-    [ "cgv::type::info::type_id< int64_type >", "structcgv_1_1type_1_1info_1_1type__id_3_01int64__type_01_4.html", null ],
-    [ "cgv::type::info::type_id< int8_type >", "structcgv_1_1type_1_1info_1_1type__id_3_01int8__type_01_4.html", null ],
-    [ "cgv::type::info::type_id< std::string >", "structcgv_1_1type_1_1info_1_1type__id_3_01std_1_1string_01_4.html", null ],
-    [ "cgv::type::info::type_id< std::wstring >", "structcgv_1_1type_1_1info_1_1type__id_3_01std_1_1wstring_01_4.html", null ],
-    [ "cgv::type::info::type_id< uint16_type >", "structcgv_1_1type_1_1info_1_1type__id_3_01uint16__type_01_4.html", null ],
-    [ "cgv::type::info::type_id< uint32_type >", "structcgv_1_1type_1_1info_1_1type__id_3_01uint32__type_01_4.html", null ],
-    [ "cgv::type::info::type_id< uint64_type >", "structcgv_1_1type_1_1info_1_1type__id_3_01uint64__type_01_4.html", null ],
-    [ "cgv::type::info::type_id< uint8_type >", "structcgv_1_1type_1_1info_1_1type__id_3_01uint8__type_01_4.html", null ],
-    [ "cgv::type::info::type_id< void >", "structcgv_1_1type_1_1info_1_1type__id_3_01void_01_4.html", null ],
-    [ "cgv::type::info::type_id< wchar_type >", "structcgv_1_1type_1_1info_1_1type__id_3_01wchar__type_01_4.html", null ],
-    [ "cgv::type::info::type_name< T >", "structcgv_1_1type_1_1info_1_1type__name.html", [
+    [ "cgv::type::info::type_access&lt; T &gt;", "structcgv_1_1type_1_1info_1_1type__access.html", null ],
+    [ "cgv::type::info::type_id&lt; T &gt;", "structcgv_1_1type_1_1info_1_1type__id.html", null ],
+    [ "cgv::type::info::type_id&lt; bool &gt;", "structcgv_1_1type_1_1info_1_1type__id_3_01bool_01_4.html", null ],
+    [ "cgv::type::info::type_id&lt; flt32_type &gt;", "structcgv_1_1type_1_1info_1_1type__id_3_01flt32__type_01_4.html", null ],
+    [ "cgv::type::info::type_id&lt; flt64_type &gt;", "structcgv_1_1type_1_1info_1_1type__id_3_01flt64__type_01_4.html", null ],
+    [ "cgv::type::info::type_id&lt; int16_type &gt;", "structcgv_1_1type_1_1info_1_1type__id_3_01int16__type_01_4.html", null ],
+    [ "cgv::type::info::type_id&lt; int32_type &gt;", "structcgv_1_1type_1_1info_1_1type__id_3_01int32__type_01_4.html", null ],
+    [ "cgv::type::info::type_id&lt; int64_type &gt;", "structcgv_1_1type_1_1info_1_1type__id_3_01int64__type_01_4.html", null ],
+    [ "cgv::type::info::type_id&lt; int8_type &gt;", "structcgv_1_1type_1_1info_1_1type__id_3_01int8__type_01_4.html", null ],
+    [ "cgv::type::info::type_id&lt; std::string &gt;", "structcgv_1_1type_1_1info_1_1type__id_3_01std_1_1string_01_4.html", null ],
+    [ "cgv::type::info::type_id&lt; std::wstring &gt;", "structcgv_1_1type_1_1info_1_1type__id_3_01std_1_1wstring_01_4.html", null ],
+    [ "cgv::type::info::type_id&lt; uint16_type &gt;", "structcgv_1_1type_1_1info_1_1type__id_3_01uint16__type_01_4.html", null ],
+    [ "cgv::type::info::type_id&lt; uint32_type &gt;", "structcgv_1_1type_1_1info_1_1type__id_3_01uint32__type_01_4.html", null ],
+    [ "cgv::type::info::type_id&lt; uint64_type &gt;", "structcgv_1_1type_1_1info_1_1type__id_3_01uint64__type_01_4.html", null ],
+    [ "cgv::type::info::type_id&lt; uint8_type &gt;", "structcgv_1_1type_1_1info_1_1type__id_3_01uint8__type_01_4.html", null ],
+    [ "cgv::type::info::type_id&lt; void &gt;", "structcgv_1_1type_1_1info_1_1type__id_3_01void_01_4.html", null ],
+    [ "cgv::type::info::type_id&lt; wchar_type &gt;", "structcgv_1_1type_1_1info_1_1type__id_3_01wchar__type_01_4.html", null ],
+    [ "cgv::type::info::type_name&lt; T &gt;", "structcgv_1_1type_1_1info_1_1type__name.html", [
+      [ "enum_aware_type_name< T, true >", "structenum__aware__type__name_3_01T_00_01true_01_4.html", null ],
       [ "enum_aware_type_name< T, is_enum >", "structenum__aware__type__name.html", null ]
     ] ],
-    [ "cgv::type::info::type_name< cgv::media::illum::light_source >", "structcgv_1_1type_1_1info_1_1type__name_3_01cgv_1_1media_1_1illum_1_1light__source_01_4.html", null ],
-    [ "cgv::type::info::type_ptr< type_id >", "structcgv_1_1type_1_1info_1_1type__ptr.html", null ],
-    [ "cgv::type::info::type_ptr< TI_BOOL >", "structcgv_1_1type_1_1info_1_1type__ptr_3_01TI__BOOL_01_4.html", null ],
-    [ "cgv::type::info::type_ptr< TI_FLT32 >", "structcgv_1_1type_1_1info_1_1type__ptr_3_01TI__FLT32_01_4.html", null ],
-    [ "cgv::type::info::type_ptr< TI_FLT64 >", "structcgv_1_1type_1_1info_1_1type__ptr_3_01TI__FLT64_01_4.html", null ],
-    [ "cgv::type::info::type_ptr< TI_INT16 >", "structcgv_1_1type_1_1info_1_1type__ptr_3_01TI__INT16_01_4.html", null ],
-    [ "cgv::type::info::type_ptr< TI_INT32 >", "structcgv_1_1type_1_1info_1_1type__ptr_3_01TI__INT32_01_4.html", null ],
-    [ "cgv::type::info::type_ptr< TI_INT64 >", "structcgv_1_1type_1_1info_1_1type__ptr_3_01TI__INT64_01_4.html", null ],
-    [ "cgv::type::info::type_ptr< TI_INT8 >", "structcgv_1_1type_1_1info_1_1type__ptr_3_01TI__INT8_01_4.html", null ],
-    [ "cgv::type::info::type_ptr< TI_STRING >", "structcgv_1_1type_1_1info_1_1type__ptr_3_01TI__STRING_01_4.html", null ],
-    [ "cgv::type::info::type_ptr< TI_UINT16 >", "structcgv_1_1type_1_1info_1_1type__ptr_3_01TI__UINT16_01_4.html", null ],
-    [ "cgv::type::info::type_ptr< TI_UINT32 >", "structcgv_1_1type_1_1info_1_1type__ptr_3_01TI__UINT32_01_4.html", null ],
-    [ "cgv::type::info::type_ptr< TI_UINT64 >", "structcgv_1_1type_1_1info_1_1type__ptr_3_01TI__UINT64_01_4.html", null ],
-    [ "cgv::type::info::type_ptr< TI_UINT8 >", "structcgv_1_1type_1_1info_1_1type__ptr_3_01TI__UINT8_01_4.html", null ],
-    [ "cgv::type::info::type_ptr< TI_WCHAR >", "structcgv_1_1type_1_1info_1_1type__ptr_3_01TI__WCHAR_01_4.html", null ],
-    [ "cgv::type::info::type_ptr< TI_WSTRING >", "structcgv_1_1type_1_1info_1_1type__ptr_3_01TI__WSTRING_01_4.html", null ],
-    [ "cgv::type::traits::max< T >", "structcgv_1_1type_1_1traits_1_1max.html", null ],
-    [ "cgv::type::traits::max< int16_type >", "structcgv_1_1type_1_1traits_1_1max_3_01int16__type_01_4.html", null ],
-    [ "cgv::type::traits::max< int32_type >", "structcgv_1_1type_1_1traits_1_1max_3_01int32__type_01_4.html", null ],
-    [ "cgv::type::traits::max< int64_type >", "structcgv_1_1type_1_1traits_1_1max_3_01int64__type_01_4.html", null ],
-    [ "cgv::type::traits::max< int8_type >", "structcgv_1_1type_1_1traits_1_1max_3_01int8__type_01_4.html", null ],
-    [ "cgv::type::traits::max< uint16_type >", "structcgv_1_1type_1_1traits_1_1max_3_01uint16__type_01_4.html", null ],
-    [ "cgv::type::traits::max< uint32_type >", "structcgv_1_1type_1_1traits_1_1max_3_01uint32__type_01_4.html", null ],
-    [ "cgv::type::traits::max< uint64_type >", "structcgv_1_1type_1_1traits_1_1max_3_01uint64__type_01_4.html", null ],
-    [ "cgv::type::traits::max< uint8_type >", "structcgv_1_1type_1_1traits_1_1max_3_01uint8__type_01_4.html", null ],
-    [ "cgv::type::traits::max_fct< T >", "structcgv_1_1type_1_1traits_1_1max__fct.html", null ],
-    [ "cgv::type::traits::max_fct< double >", "structcgv_1_1type_1_1traits_1_1max__fct_3_01double_01_4.html", null ],
-    [ "cgv::type::traits::max_fct< float >", "structcgv_1_1type_1_1traits_1_1max__fct_3_01float_01_4.html", null ],
-    [ "cgv::type::traits::member_pointer< T >", "structcgv_1_1type_1_1traits_1_1member__pointer.html", null ],
-    [ "cgv::type::traits::member_pointer< M T::* >", "structcgv_1_1type_1_1traits_1_1member__pointer_3_01M_01T_1_1_5_01_4.html", null ],
-    [ "cgv::type::traits::min< T >", "structcgv_1_1type_1_1traits_1_1min.html", null ],
-    [ "cgv::type::traits::min< char >", "structcgv_1_1type_1_1traits_1_1min_3_01char_01_4.html", null ],
-    [ "cgv::type::traits::min< int >", "structcgv_1_1type_1_1traits_1_1min_3_01int_01_4.html", null ],
-    [ "cgv::type::traits::min< long >", "structcgv_1_1type_1_1traits_1_1min_3_01long_01_4.html", null ],
-    [ "cgv::type::traits::min< short >", "structcgv_1_1type_1_1traits_1_1min_3_01short_01_4.html", null ],
-    [ "cgv::type::traits::min< unsigned char >", "structcgv_1_1type_1_1traits_1_1min_3_01unsigned_01char_01_4.html", null ],
-    [ "cgv::type::traits::min< unsigned int >", "structcgv_1_1type_1_1traits_1_1min_3_01unsigned_01int_01_4.html", null ],
-    [ "cgv::type::traits::min< unsigned long >", "structcgv_1_1type_1_1traits_1_1min_3_01unsigned_01long_01_4.html", null ],
-    [ "cgv::type::traits::min< unsigned short >", "structcgv_1_1type_1_1traits_1_1min_3_01unsigned_01short_01_4.html", null ],
-    [ "cgv::type::traits::min_fct< T >", "structcgv_1_1type_1_1traits_1_1min__fct.html", null ],
-    [ "cgv::type::traits::min_fct< double >", "structcgv_1_1type_1_1traits_1_1min__fct_3_01double_01_4.html", null ],
-    [ "cgv::type::traits::min_fct< float >", "structcgv_1_1type_1_1traits_1_1min__fct_3_01float_01_4.html", null ],
-    [ "cgv::type::traits::one< T >", "structcgv_1_1type_1_1traits_1_1one.html", null ],
-    [ "cgv::type::traits::one_fct< T >", "structcgv_1_1type_1_1traits_1_1one__fct.html", null ],
-    [ "cgv::type::traits::one_fct< double >", "structcgv_1_1type_1_1traits_1_1one__fct_3_01double_01_4.html", null ],
-    [ "cgv::type::traits::one_fct< float >", "structcgv_1_1type_1_1traits_1_1one__fct_3_01float_01_4.html", null ],
-    [ "cgv::type::traits::zero< T >", "structcgv_1_1type_1_1traits_1_1zero.html", null ],
-    [ "cgv::type::variant< T >", "structcgv_1_1type_1_1variant.html", null ],
-    [ "cgv::type::variant< bool >", "structcgv_1_1type_1_1variant_3_01bool_01_4.html", null ],
-    [ "cgv::type::variant< const char * >", "structcgv_1_1type_1_1variant_3_01const_01char_01_5_01_4.html", null ],
-    [ "cgv::type::variant< std::string >", "structcgv_1_1type_1_1variant_3_01std_1_1string_01_4.html", null ],
-    [ "cgv::type::variant< std::wstring >", "structcgv_1_1type_1_1variant_3_01std_1_1wstring_01_4.html", null ],
+    [ "cgv::type::info::type_name&lt; cgv::media::illum::light_source &gt;", "structcgv_1_1type_1_1info_1_1type__name_3_01cgv_1_1media_1_1illum_1_1light__source_01_4.html", null ],
+    [ "cgv::type::info::type_ptr&lt; type_id &gt;", "structcgv_1_1type_1_1info_1_1type__ptr.html", null ],
+    [ "cgv::type::info::type_ptr&lt; TI_BOOL &gt;", "structcgv_1_1type_1_1info_1_1type__ptr_3_01TI__BOOL_01_4.html", null ],
+    [ "cgv::type::info::type_ptr&lt; TI_FLT32 &gt;", "structcgv_1_1type_1_1info_1_1type__ptr_3_01TI__FLT32_01_4.html", null ],
+    [ "cgv::type::info::type_ptr&lt; TI_FLT64 &gt;", "structcgv_1_1type_1_1info_1_1type__ptr_3_01TI__FLT64_01_4.html", null ],
+    [ "cgv::type::info::type_ptr&lt; TI_INT16 &gt;", "structcgv_1_1type_1_1info_1_1type__ptr_3_01TI__INT16_01_4.html", null ],
+    [ "cgv::type::info::type_ptr&lt; TI_INT32 &gt;", "structcgv_1_1type_1_1info_1_1type__ptr_3_01TI__INT32_01_4.html", null ],
+    [ "cgv::type::info::type_ptr&lt; TI_INT64 &gt;", "structcgv_1_1type_1_1info_1_1type__ptr_3_01TI__INT64_01_4.html", null ],
+    [ "cgv::type::info::type_ptr&lt; TI_INT8 &gt;", "structcgv_1_1type_1_1info_1_1type__ptr_3_01TI__INT8_01_4.html", null ],
+    [ "cgv::type::info::type_ptr&lt; TI_STRING &gt;", "structcgv_1_1type_1_1info_1_1type__ptr_3_01TI__STRING_01_4.html", null ],
+    [ "cgv::type::info::type_ptr&lt; TI_UINT16 &gt;", "structcgv_1_1type_1_1info_1_1type__ptr_3_01TI__UINT16_01_4.html", null ],
+    [ "cgv::type::info::type_ptr&lt; TI_UINT32 &gt;", "structcgv_1_1type_1_1info_1_1type__ptr_3_01TI__UINT32_01_4.html", null ],
+    [ "cgv::type::info::type_ptr&lt; TI_UINT64 &gt;", "structcgv_1_1type_1_1info_1_1type__ptr_3_01TI__UINT64_01_4.html", null ],
+    [ "cgv::type::info::type_ptr&lt; TI_UINT8 &gt;", "structcgv_1_1type_1_1info_1_1type__ptr_3_01TI__UINT8_01_4.html", null ],
+    [ "cgv::type::info::type_ptr&lt; TI_WCHAR &gt;", "structcgv_1_1type_1_1info_1_1type__ptr_3_01TI__WCHAR_01_4.html", null ],
+    [ "cgv::type::info::type_ptr&lt; TI_WSTRING &gt;", "structcgv_1_1type_1_1info_1_1type__ptr_3_01TI__WSTRING_01_4.html", null ],
+    [ "cgv::type::traits::max&lt; T &gt;", "structcgv_1_1type_1_1traits_1_1max.html", null ],
+    [ "cgv::type::traits::max&lt; int16_type &gt;", "structcgv_1_1type_1_1traits_1_1max_3_01int16__type_01_4.html", null ],
+    [ "cgv::type::traits::max&lt; int32_type &gt;", "structcgv_1_1type_1_1traits_1_1max_3_01int32__type_01_4.html", null ],
+    [ "cgv::type::traits::max&lt; int64_type &gt;", "structcgv_1_1type_1_1traits_1_1max_3_01int64__type_01_4.html", null ],
+    [ "cgv::type::traits::max&lt; int8_type &gt;", "structcgv_1_1type_1_1traits_1_1max_3_01int8__type_01_4.html", null ],
+    [ "cgv::type::traits::max&lt; uint16_type &gt;", "structcgv_1_1type_1_1traits_1_1max_3_01uint16__type_01_4.html", null ],
+    [ "cgv::type::traits::max&lt; uint32_type &gt;", "structcgv_1_1type_1_1traits_1_1max_3_01uint32__type_01_4.html", null ],
+    [ "cgv::type::traits::max&lt; uint64_type &gt;", "structcgv_1_1type_1_1traits_1_1max_3_01uint64__type_01_4.html", null ],
+    [ "cgv::type::traits::max&lt; uint8_type &gt;", "structcgv_1_1type_1_1traits_1_1max_3_01uint8__type_01_4.html", null ],
+    [ "cgv::type::traits::max_fct&lt; T &gt;", "structcgv_1_1type_1_1traits_1_1max__fct.html", null ],
+    [ "cgv::type::traits::max_fct&lt; double &gt;", "structcgv_1_1type_1_1traits_1_1max__fct_3_01double_01_4.html", null ],
+    [ "cgv::type::traits::max_fct&lt; float &gt;", "structcgv_1_1type_1_1traits_1_1max__fct_3_01float_01_4.html", null ],
+    [ "cgv::type::traits::member_pointer&lt; T &gt;", "structcgv_1_1type_1_1traits_1_1member__pointer.html", null ],
+    [ "cgv::type::traits::member_pointer&lt; M T::* &gt;", "structcgv_1_1type_1_1traits_1_1member__pointer_3_01M_01T_1_1_5_01_4.html", null ],
+    [ "cgv::type::traits::min&lt; T &gt;", "structcgv_1_1type_1_1traits_1_1min.html", null ],
+    [ "cgv::type::traits::min&lt; char &gt;", "structcgv_1_1type_1_1traits_1_1min_3_01char_01_4.html", null ],
+    [ "cgv::type::traits::min&lt; int &gt;", "structcgv_1_1type_1_1traits_1_1min_3_01int_01_4.html", null ],
+    [ "cgv::type::traits::min&lt; long &gt;", "structcgv_1_1type_1_1traits_1_1min_3_01long_01_4.html", null ],
+    [ "cgv::type::traits::min&lt; short &gt;", "structcgv_1_1type_1_1traits_1_1min_3_01short_01_4.html", null ],
+    [ "cgv::type::traits::min&lt; unsigned char &gt;", "structcgv_1_1type_1_1traits_1_1min_3_01unsigned_01char_01_4.html", null ],
+    [ "cgv::type::traits::min&lt; unsigned int &gt;", "structcgv_1_1type_1_1traits_1_1min_3_01unsigned_01int_01_4.html", null ],
+    [ "cgv::type::traits::min&lt; unsigned long &gt;", "structcgv_1_1type_1_1traits_1_1min_3_01unsigned_01long_01_4.html", null ],
+    [ "cgv::type::traits::min&lt; unsigned short &gt;", "structcgv_1_1type_1_1traits_1_1min_3_01unsigned_01short_01_4.html", null ],
+    [ "cgv::type::traits::min_fct&lt; T &gt;", "structcgv_1_1type_1_1traits_1_1min__fct.html", null ],
+    [ "cgv::type::traits::min_fct&lt; double &gt;", "structcgv_1_1type_1_1traits_1_1min__fct_3_01double_01_4.html", null ],
+    [ "cgv::type::traits::min_fct&lt; float &gt;", "structcgv_1_1type_1_1traits_1_1min__fct_3_01float_01_4.html", null ],
+    [ "cgv::type::traits::one&lt; T &gt;", "structcgv_1_1type_1_1traits_1_1one.html", null ],
+    [ "cgv::type::traits::one_fct&lt; T &gt;", "structcgv_1_1type_1_1traits_1_1one__fct.html", null ],
+    [ "cgv::type::traits::one_fct&lt; double &gt;", "structcgv_1_1type_1_1traits_1_1one__fct_3_01double_01_4.html", null ],
+    [ "cgv::type::traits::one_fct&lt; float &gt;", "structcgv_1_1type_1_1traits_1_1one__fct_3_01float_01_4.html", null ],
+    [ "cgv::type::traits::zero&lt; T &gt;", "structcgv_1_1type_1_1traits_1_1zero.html", null ],
+    [ "cgv::type::variant&lt; T &gt;", "structcgv_1_1type_1_1variant.html", null ],
+    [ "cgv::type::variant&lt; bool &gt;", "structcgv_1_1type_1_1variant_3_01bool_01_4.html", null ],
+    [ "cgv::type::variant&lt; const char * &gt;", "structcgv_1_1type_1_1variant_3_01const_01char_01_5_01_4.html", null ],
+    [ "cgv::type::variant&lt; std::string &gt;", "structcgv_1_1type_1_1variant_3_01std_1_1string_01_4.html", null ],
+    [ "cgv::type::variant&lt; std::wstring &gt;", "structcgv_1_1type_1_1variant_3_01std_1_1wstring_01_4.html", null ],
     [ "cgv::utils::big_binary_file", "classcgv_1_1utils_1_1big__binary__file.html", null ],
-    [ "cgv::utils::count_range< iterator_type >", "classcgv_1_1utils_1_1count__range.html", null ],
+    [ "cgv::utils::count_range&lt; iterator_type &gt;", "classcgv_1_1utils_1_1count__range.html", null ],
     [ "cgv::utils::csv_reader_base", "classcgv_1_1utils_1_1csv__reader__base.html", [
       [ "cgv::utils::csv_matrix_reader", "classcgv_1_1utils_1_1csv__matrix__reader.html", null ],
       [ "cgv::utils::csv_reader< T >", "classcgv_1_1utils_1_1csv__reader.html", null ]
@@ -1086,21 +1306,21 @@ var hierarchy =
     [ "cgv::utils::date", "structcgv_1_1utils_1_1date.html", [
       [ "cgv::utils::date_time", "structcgv_1_1utils_1_1date__time.html", null ]
     ] ],
-    [ "cgv::utils::detail::BE2native< T, no_swap >", "structcgv_1_1utils_1_1detail_1_1BE2native.html", null ],
-    [ "cgv::utils::detail::BE2native< T, false >", "structcgv_1_1utils_1_1detail_1_1BE2native_3_01T_00_01false_01_4.html", null ],
-    [ "cgv::utils::enumerate_range< iterator_type >", "classcgv_1_1utils_1_1enumerate__range.html", null ],
+    [ "cgv::utils::detail::BE2native&lt; T, no_swap &gt;", "structcgv_1_1utils_1_1detail_1_1BE2native.html", null ],
+    [ "cgv::utils::detail::BE2native&lt; T, false &gt;", "structcgv_1_1utils_1_1detail_1_1BE2native_3_01T_00_01false_01_4.html", null ],
+    [ "cgv::utils::enumerate_range&lt; iterator_type &gt;", "classcgv_1_1utils_1_1enumerate__range.html", null ],
     [ "cgv::utils::file::FileInfo", "structcgv_1_1utils_1_1file_1_1FileInfo.html", null ],
-    [ "cgv::utils::get_first< T1, T2 >", "structcgv_1_1utils_1_1get__first.html", null ],
-    [ "cgv::utils::get_first< void, void >", "structcgv_1_1utils_1_1get__first_3_01void_00_01void_01_4.html", null ],
-    [ "cgv::utils::get_second< T1, T2 >", "structcgv_1_1utils_1_1get__second.html", null ],
-    [ "cgv::utils::get_second< void, void >", "structcgv_1_1utils_1_1get__second_3_01void_00_01void_01_4.html", null ],
+    [ "cgv::utils::get_first&lt; T1, T2 &gt;", "structcgv_1_1utils_1_1get__first.html", null ],
+    [ "cgv::utils::get_first&lt; void, void &gt;", "structcgv_1_1utils_1_1get__first_3_01void_00_01void_01_4.html", null ],
+    [ "cgv::utils::get_second&lt; T1, T2 &gt;", "structcgv_1_1utils_1_1get__second.html", null ],
+    [ "cgv::utils::get_second&lt; void, void &gt;", "structcgv_1_1utils_1_1get__second_3_01void_00_01void_01_4.html", null ],
     [ "cgv::utils::guid", "structcgv_1_1utils_1_1guid.html", null ],
-    [ "cgv::utils::indexed_iterator< iterator_type >", "classcgv_1_1utils_1_1indexed__iterator.html", [
+    [ "cgv::utils::indexed_iterator&lt; iterator_type &gt;", "classcgv_1_1utils_1_1indexed__iterator.html", [
       [ "cgv::utils::count_iterator< iterator_type >", "classcgv_1_1utils_1_1count__iterator.html", null ],
       [ "cgv::utils::enumerate_iterator< iterator_type >", "classcgv_1_1utils_1_1enumerate__iterator.html", null ]
     ] ],
     [ "cgv::utils::number_format", "classcgv_1_1utils_1_1number__format.html", null ],
-    [ "cgv::utils::Profiler< T >", "classcgv_1_1utils_1_1Profiler.html", null ],
+    [ "cgv::utils::Profiler&lt; T &gt;", "classcgv_1_1utils_1_1Profiler.html", null ],
     [ "cgv::utils::progression", "structcgv_1_1utils_1_1progression.html", null ],
     [ "cgv::utils::statistics", "classcgv_1_1utils_1_1statistics.html", null ],
     [ "cgv::utils::stopwatch", "classcgv_1_1utils_1_1stopwatch.html", null ],
@@ -1114,72 +1334,8 @@ var hierarchy =
       [ "cgv::utils::tokenizer", "classcgv_1_1utils_1_1tokenizer.html", null ],
       [ "cgv::utils::typed_token", "structcgv_1_1utils_1_1typed__token.html", null ]
     ] ],
-    [ "cgv::media::color_base< T, cm, am >", "classcgv_1_1media_1_1color__base.html", [
-      [ "cgv::media::rgb_color_interface< color< T, cm, am > >", "structcgv_1_1media_1_1rgb__color__interface_3_01color_3_01T_00_01cm_00_01am_01_4_01_4.html", [
-        [ "cgv::media::hls_color_interface< color< T, cm, am > >", "structcgv_1_1media_1_1hls__color__interface_3_01color_3_01T_00_01cm_00_01am_01_4_01_4.html", [
-          [ "cgv::media::xyz_color_interface< color< T, cm, am > >", "structcgv_1_1media_1_1xyz__color__interface_3_01color_3_01T_00_01cm_00_01am_01_4_01_4.html", [
-            [ "cgv::media::opacity_alpha_interface< color< T, cm, am > >", "structcgv_1_1media_1_1opacity__alpha__interface_3_01color_3_01T_00_01cm_00_01am_01_4_01_4.html", [
-              [ "cgv::media::transparency_alpha_interface< color< T, cm, am > >", "structcgv_1_1media_1_1transparency__alpha__interface_3_01color_3_01T_00_01cm_00_01am_01_4_01_4.html", [
-                [ "cgv::media::extinction_alpha_interface< color< T, cm, am > >", "structcgv_1_1media_1_1extinction__alpha__interface_3_01color_3_01T_00_01cm_00_01am_01_4_01_4.html", [
-                  [ "cgv::media::color< T, cm, am >", "classcgv_1_1media_1_1color.html", null ]
-                ] ]
-              ] ]
-            ] ]
-          ] ]
-        ] ]
-      ] ]
-    ] ],
-    [ "cgv::media::color_base< T, RGB, am >", "classcgv_1_1media_1_1color__base.html", [
-      [ "cgv::media::rgb_color_interface< color< T, RGB, am > >", "structcgv_1_1media_1_1rgb__color__interface_3_01color_3_01T_00_01RGB_00_01am_01_4_01_4.html", null ]
-    ] ],
     [ "Condition", "structCondition.html", null ],
     [ "config_file_view", "structconfig__file__view.html", null ],
-    [ "cgv::math::curve_arc_length< arc_length_bezier_approximation< T >, T >", "structcgv_1_1math_1_1curve__arc__length.html", [
-      [ "cgv::math::arc_length_bezier_approximation< T >", "classcgv_1_1math_1_1arc__length__bezier__approximation.html", null ]
-    ] ],
-    [ "cgv::math::curve_arc_length< arc_length_linear_approximation< T >, T >", "structcgv_1_1math_1_1curve__arc__length.html", [
-      [ "cgv::math::arc_length_linear_approximation< T >", "classcgv_1_1math_1_1arc__length__linear__approximation.html", null ]
-    ] ],
-    [ "cgv::math::curve_parameterization< arc_length_parameterization_bezier_approximation< T >, T >", "structcgv_1_1math_1_1curve__parameterization.html", [
-      [ "cgv::math::arc_length_parameterization_bezier_approximation< T >", "structcgv_1_1math_1_1arc__length__parameterization__bezier__approximation.html", null ]
-    ] ],
-    [ "cgv::math::curve_parameterization< arc_length_parameterization_fast_linear_approximation< T >, T >", "structcgv_1_1math_1_1curve__parameterization.html", [
-      [ "cgv::math::arc_length_parameterization_fast_linear_approximation< T >", "classcgv_1_1math_1_1arc__length__parameterization__fast__linear__approximation.html", null ]
-    ] ],
-    [ "cgv::math::curve_parameterization< arc_length_parameterization_linear_approximation< T >, T >", "structcgv_1_1math_1_1curve__parameterization.html", [
-      [ "cgv::math::arc_length_parameterization_linear_approximation< T >", "classcgv_1_1math_1_1arc__length__parameterization__linear__approximation.html", null ]
-    ] ],
-    [ "cgv::math::diag_mat< std::complex< T > >", "structcgv_1_1math_1_1diag__mat.html", null ],
-    [ "enum_aware_type_name< T, true >", "structenum__aware__type__name_3_01T_00_01true_01_4.html", null ],
-    [ "cgv::media::extinction_alpha_interface< color< cgv::type::uint8_type, cm, am > >", "structcgv_1_1media_1_1extinction__alpha__interface.html", null ],
-    [ "cgv::media::extinction_alpha_interface< color< float, cm, am > >", "structcgv_1_1media_1_1extinction__alpha__interface.html", null ],
-    [ "cgv::math::fvec< coord_type, 3 >", "classcgv_1_1math_1_1fvec.html", null ],
-    [ "cgv::math::fvec< double, 2 >", "classcgv_1_1math_1_1fvec.html", null ],
-    [ "cgv::math::fvec< double, 3 >", "classcgv_1_1math_1_1fvec.html", null ],
-    [ "cgv::math::fvec< double, N >", "classcgv_1_1math_1_1fvec.html", null ],
-    [ "cgv::math::fvec< float, 2 >", "classcgv_1_1math_1_1fvec.html", null ],
-    [ "cgv::math::fvec< float, 3 >", "classcgv_1_1math_1_1fvec.html", null ],
-    [ "cgv::math::fvec< float, 4 >", "classcgv_1_1math_1_1fvec.html", null ],
-    [ "cgv::math::fvec< float, N *M >", "classcgv_1_1math_1_1fvec.html", null ],
-    [ "cgv::math::fvec< float, N >", "classcgv_1_1math_1_1fvec.html", null ],
-    [ "cgv::math::fvec< int, 2 >", "classcgv_1_1math_1_1fvec.html", null ],
-    [ "cgv::math::fvec< int, 3 >", "classcgv_1_1math_1_1fvec.html", null ],
-    [ "cgv::math::fvec< int32_t, 2 >", "classcgv_1_1math_1_1fvec.html", null ],
-    [ "cgv::math::fvec< int32_t, 3 >", "classcgv_1_1math_1_1fvec.html", null ],
-    [ "cgv::math::fvec< int32_t, 4 >", "classcgv_1_1math_1_1fvec.html", null ],
-    [ "cgv::math::fvec< int32_t, N >", "classcgv_1_1math_1_1fvec.html", null ],
-    [ "cgv::math::fvec< T, 2 >", "classcgv_1_1math_1_1fvec.html", null ],
-    [ "cgv::math::fvec< T, 3 >", "classcgv_1_1math_1_1fvec.html", null ],
-    [ "cgv::math::fvec< T, 4 >", "classcgv_1_1math_1_1fvec.html", [
-      [ "cgv::math::quaternion< T >", "classcgv_1_1math_1_1quaternion.html", null ]
-    ] ],
-    [ "cgv::math::fvec< T, N *M >", "classcgv_1_1math_1_1fvec.html", [
-      [ "cgv::math::fmat< T, 3, 4 >", "classcgv_1_1math_1_1fmat.html", null ],
-      [ "cgv::math::fmat< T, N, M >", "classcgv_1_1math_1_1fmat.html", null ]
-    ] ],
-    [ "cgv::math::fvec< T, TCDim >", "classcgv_1_1math_1_1fvec.html", null ],
-    [ "cgv::math::fvec< volume::coord_type, N *M >", "classcgv_1_1math_1_1fvec.html", null ],
-    [ "cgv::math::fvec< X, 3 >", "classcgv_1_1math_1_1fvec.html", null ],
     [ "fx::gltf::Accessor", "structfx_1_1gltf_1_1Accessor.html", null ],
     [ "fx::gltf::Accessor::Sparse", "structfx_1_1gltf_1_1Accessor_1_1Sparse.html", null ],
     [ "fx::gltf::Animation", "structfx_1_1gltf_1_1Animation.html", null ],
@@ -1188,7 +1344,9 @@ var hierarchy =
     [ "fx::gltf::Buffer", "structfx_1_1gltf_1_1Buffer.html", null ],
     [ "fx::gltf::BufferView", "structfx_1_1gltf_1_1BufferView.html", null ],
     [ "fx::gltf::Camera", "structfx_1_1gltf_1_1Camera.html", null ],
+    [ "fx::gltf::detail::ChunkHeader", "structfx_1_1gltf_1_1detail_1_1ChunkHeader.html", null ],
     [ "fx::gltf::detail::DataContext", "structfx_1_1gltf_1_1detail_1_1DataContext.html", null ],
+    [ "fx::gltf::detail::GLBHeader", "structfx_1_1gltf_1_1detail_1_1GLBHeader.html", null ],
     [ "fx::gltf::Document", "structfx_1_1gltf_1_1Document.html", null ],
     [ "fx::gltf::Image", "structfx_1_1gltf_1_1Image.html", null ],
     [ "fx::gltf::Material", "structfx_1_1gltf_1_1Material.html", null ],
@@ -1215,74 +1373,13 @@ var hierarchy =
     [ "fx::gltf::Texture", "structfx_1_1gltf_1_1Texture.html", null ],
     [ "gamepad::device_info", "structgamepad_1_1device__info.html", null ],
     [ "gamepad::driver_info", "structgamepad_1_1driver__info.html", null ],
-    [ "gamepad::driver_registry< T >", "structgamepad_1_1driver__registry.html", null ],
+    [ "gamepad::driver_registry&lt; T &gt;", "structgamepad_1_1driver__registry.html", null ],
     [ "gamepad::gamepad_driver", "structgamepad_1_1gamepad__driver.html", null ],
     [ "gamepad::gamepad_state", "structgamepad_1_1gamepad__state.html", null ],
-    [ "cgv::math::hermite_node< cgv::math::fvec< T, 3 > >", "structcgv_1_1math_1_1hermite__node.html", null ],
-    [ "cgv::math::hermite_node< PointT >", "structcgv_1_1math_1_1hermite__node.html", null ],
-    [ "cgv::media::hls_color_interface< color< T, XYZ, am > >", "structcgv_1_1media_1_1hls__color__interface.html", [
-      [ "cgv::media::xyz_color_interface< color< T, XYZ, am > >", "structcgv_1_1media_1_1xyz__color__interface_3_01color_3_01T_00_01XYZ_00_01am_01_4_01_4.html", null ]
-    ] ],
-    [ "cgv::type::ctrl::if_< cond::is_const< T1 >::value, make_const< T2 >::type, drop_const< T2 >::type >", "structcgv_1_1type_1_1ctrl_1_1if__.html", [
-      [ "cgv::type::func::promote_const< T1, T2 >", "structcgv_1_1type_1_1func_1_1promote__const.html", null ]
-    ] ],
-    [ "cgv::math::interpolator< cgv::rgb, float >", "classcgv_1_1math_1_1interpolator.html", null ],
-    [ "cgv::math::interpolator< ValueT, float >", "classcgv_1_1math_1_1interpolator.html", null ],
-    [ "cgv::math::interval< X >", "classcgv_1_1math_1_1interval.html", null ],
-    [ "cgv::type::func::MakeConst::make_const_impl< drop_const< T >::type >", "structcgv_1_1type_1_1func_1_1MakeConst_1_1make__const__impl.html", [
-      [ "cgv::type::func::make_const< T >", "structcgv_1_1type_1_1func_1_1make__const.html", null ]
-    ] ],
-    [ "nes::basic_pipe_istream< CharT, Traits >", "classnes_1_1basic__pipe__istream.html", null ],
-    [ "nes::basic_pipe_ostream< CharT, Traits >", "classnes_1_1basic__pipe__ostream.html", null ],
-    [ "cgv::media::opacity_alpha_interface< color< T, cm, TRANSPARENCY > >", "structcgv_1_1media_1_1opacity__alpha__interface.html", [
-      [ "cgv::media::transparency_alpha_interface< color< T, cm, TRANSPARENCY > >", "structcgv_1_1media_1_1transparency__alpha__interface_3_01color_3_01T_00_01cm_00_01TRANSPARENCY_01_4_01_4.html", null ]
-    ] ],
-    [ "cgv::data::optional< cgv::math::fvec >", "classcgv_1_1data_1_1optional.html", null ],
-    [ "cgv::data::optional< cgv::math::quaternion >", "classcgv_1_1data_1_1optional.html", null ],
-    [ "cgv::data::optional< rgb >", "classcgv_1_1data_1_1optional.html", null ],
-    [ "cgv::math::parametric_curve< bezier_curve< PointT > >", "classcgv_1_1math_1_1parametric__curve.html", [
-      [ "cgv::math::bezier_curve< PointT >", "classcgv_1_1math_1_1bezier__curve.html", null ]
-    ] ],
-    [ "cgv::math::parametric_curve< cubic_bezier_curve< PointT > >", "classcgv_1_1math_1_1parametric__curve.html", [
-      [ "cgv::math::cubic_bezier_curve< PointT >", "classcgv_1_1math_1_1cubic__bezier__curve.html", null ]
-    ] ],
-    [ "cgv::math::parametric_curve< cubic_hermite_curve< PointT > >", "classcgv_1_1math_1_1parametric__curve.html", [
-      [ "cgv::math::cubic_hermite_curve< PointT >", "structcgv_1_1math_1_1cubic__hermite__curve.html", null ]
-    ] ],
-    [ "cgv::math::parametric_curve< quadratic_bezier_curve< PointT > >", "classcgv_1_1math_1_1parametric__curve.html", [
-      [ "cgv::math::quadratic_bezier_curve< PointT >", "classcgv_1_1math_1_1quadratic__bezier__curve.html", null ]
-    ] ],
-    [ "cgv::data::ref_ptr_impl< base, is_ref_counted >", "classcgv_1_1data_1_1ref__ptr__impl.html", null ],
-    [ "cgv::data::ref_ptr_impl< font, type::cond::is_base_of< ref_counted, font >::value >", "classcgv_1_1data_1_1ref__ptr__impl.html", null ],
-    [ "cgv::data::ref_ptr_impl< font_face, type::cond::is_base_of< ref_counted, font_face >::value >", "classcgv_1_1data_1_1ref__ptr__impl.html", null ],
-    [ "cgv::data::ref_ptr_impl< group, is_ref_counted >", "classcgv_1_1data_1_1ref__ptr__impl.html", null ],
-    [ "cgv::data::ref_ptr_impl< gui_group, is_ref_counted >", "classcgv_1_1data_1_1ref__ptr__impl.html", null ],
-    [ "cgv::data::ref_ptr_impl< node, is_ref_counted >", "classcgv_1_1data_1_1ref__ptr__impl.html", null ],
-    [ "cgv::data::ref_ptr_impl< T, type::cond::is_base_of< ref_counted, T >::value >", "classcgv_1_1data_1_1ref__ptr__impl.html", null ],
-    [ "cgv::data::ref_ptr_impl< window, type::cond::is_base_of< ref_counted, window >::value >", "classcgv_1_1data_1_1ref__ptr__impl.html", null ],
-    [ "cgv::reflect::reflection_traits_info_self< cgv::type::cond::is_base_of< self_reflection_tag, T >::value, T >", "structcgv_1_1reflect_1_1reflection__traits__info__self.html", [
-      [ "cgv::reflect::reflection_traits_info_std< cgv::type::cond::is_standard_type< T >::value, T >", "structcgv_1_1reflect_1_1reflection__traits__info__std.html", [
-        [ "cgv::reflect::reflection_traits_info< T >", "structcgv_1_1reflect_1_1reflection__traits__info.html", null ]
-      ] ],
-      [ "cgv::reflect::reflection_traits_info_std< is_std, T >", "structcgv_1_1reflect_1_1reflection__traits__info__std.html", null ]
-    ] ],
+    [ "nes::basic_pipe_istream&lt; CharT, Traits &gt;", "classnes_1_1basic__pipe__istream.html", null ],
+    [ "nes::basic_pipe_ostream&lt; CharT, Traits &gt;", "classnes_1_1basic__pipe__ostream.html", null ],
     [ "register_driver_and_object", "structregister__driver__and__object.html", null ],
     [ "render_config_registration", "structrender__config__registration.html", null ],
-    [ "cgv::render::render_data_base< arrow_renderer, arrow_render_style, rgb >", "classcgv_1_1render_1_1render__data__base.html", null ],
-    [ "cgv::render::render_data_base< box_renderer, box_render_style, rgb >", "classcgv_1_1render_1_1render__data__base.html", null ],
-    [ "cgv::render::render_data_base< box_wire_renderer, box_wire_render_style, rgb >", "classcgv_1_1render_1_1render__data__base.html", null ],
-    [ "cgv::render::render_data_base< cone_renderer, cone_render_style, rgb >", "classcgv_1_1render_1_1render__data__base.html", null ],
-    [ "cgv::render::render_data_base< ellipsoid_renderer, ellipsoid_render_style, rgb >", "classcgv_1_1render_1_1render__data__base.html", null ],
-    [ "cgv::render::render_data_base< line_renderer, line_render_style, rgb >", "classcgv_1_1render_1_1render__data__base.html", null ],
-    [ "cgv::render::render_data_base< point_renderer, point_render_style, rgb >", "classcgv_1_1render_1_1render__data__base.html", null ],
-    [ "cgv::render::render_data_base< rectangle_renderer, rectangle_render_style, rgb >", "classcgv_1_1render_1_1render__data__base.html", null ],
-    [ "cgv::render::render_data_base< RendererType, RenderStyleType, rgb >", "classcgv_1_1render_1_1render__data__base.html", null ],
-    [ "cgv::render::render_data_base< sphere_renderer, sphere_render_style, rgb >", "classcgv_1_1render_1_1render__data__base.html", null ],
-    [ "cgv::render::render_data_base< surface_renderer, surface_render_style, rgb >", "classcgv_1_1render_1_1render__data__base.html", null ],
-    [ "cgv::render::render_data_base< surfel_renderer, surfel_render_style, rgb >", "classcgv_1_1render_1_1render__data__base.html", null ],
-    [ "cgv::media::rgb_color_interface< color< T, HLS, am > >", "structcgv_1_1media_1_1rgb__color__interface.html", [
-      [ "cgv::media::hls_color_interface< color< T, HLS, am > >", "structcgv_1_1media_1_1hls__color__interface_3_01color_3_01T_00_01HLS_00_01am_01_4_01_4.html", null ]
-    ] ],
     [ "shader_config_registration", "structshader__config__registration.html", null ],
     [ "std::bool_constant", null, [
       [ "cgv::type::traits::is_instance_of< T, Template >", "structcgv_1_1type_1_1traits_1_1is__instance__of.html", null ]
@@ -1303,29 +1400,14 @@ var hierarchy =
     [ "stereo_view_interactor", null, [
       [ "vr_view_interactor", "classvr__view__interactor.html", null ]
     ] ],
-    [ "stl_reader::StlMesh< TNumber, TIndex >", "classstl__reader_1_1StlMesh.html", null ],
-    [ "cgv::media::mesh::streaming_mesh< double >", "classcgv_1_1media_1_1mesh_1_1streaming__mesh.html", null ],
-    [ "cgv::media::mesh::streaming_mesh< X >", "classcgv_1_1media_1_1mesh_1_1streaming__mesh.html", [
-      [ "cgv::media::mesh::cuberille< X, T, P >", "classcgv_1_1media_1_1mesh_1_1cuberille.html", null ],
-      [ "cgv::media::mesh::dual_contouring< X, T >", "classcgv_1_1media_1_1mesh_1_1dual__contouring.html", null ],
-      [ "cgv::media::mesh::marching_cubes_base< X, T >", "classcgv_1_1media_1_1mesh_1_1marching__cubes__base.html", [
-        [ "cgv::media::mesh::marching_cubes< X, T >", "classcgv_1_1media_1_1mesh_1_1marching__cubes.html", null ]
-      ] ]
-    ] ],
+    [ "stl_reader::stl_reader_impl::CoordWithIndex&lt; number_t, index_t &gt;", "structstl__reader_1_1stl__reader__impl_1_1CoordWithIndex.html", null ],
+    [ "stl_reader::StlMesh&lt; TNumber, TIndex &gt;", "classstl__reader_1_1StlMesh.html", null ],
     [ "tinyxml2::XMLVisitor", null, [
       [ "cgv::xml::FindElementByNameVisitor", "classcgv_1_1xml_1_1FindElementByNameVisitor.html", null ]
     ] ],
     [ "token", "structtoken.html", null ],
-    [ "cgv::media::transparency_alpha_interface< color< T, cm, EXTINCTION > >", "structcgv_1_1media_1_1transparency__alpha__interface.html", [
-      [ "cgv::media::extinction_alpha_interface< color< T, cm, EXTINCTION > >", "structcgv_1_1media_1_1extinction__alpha__interface_3_01color_3_01T_00_01cm_00_01EXTINCTION_01_4_01_4.html", null ]
-    ] ],
-    [ "cgv::math::uniform_piecewise_linear_function< T, T >", "structcgv_1_1math_1_1uniform__piecewise__linear__function.html", null ],
-    [ "cgv::math::vec< float >", "classcgv_1_1math_1_1vec.html", null ],
-    [ "cgv::math::vec< int >", "classcgv_1_1math_1_1vec.html", null ],
-    [ "cgv::math::vec< std::complex< T > >", "classcgv_1_1math_1_1vec.html", null ],
-    [ "cgv::math::vec< unsigned >", "classcgv_1_1math_1_1vec.html", null ],
     [ "vr::controller_input_config", "structvr_1_1controller__input__config.html", null ],
-    [ "vr::driver_registry< T >", "structvr_1_1driver__registry.html", null ],
+    [ "vr::driver_registry&lt; T &gt;", "structvr_1_1driver__registry.html", null ],
     [ "vr::gl_vr_display", "classvr_1_1gl__vr__display.html", [
       [ "vr::vr_kit", "classvr_1_1vr__kit.html", [
         [ "vr_emulated_kit", "classvr__emulated__kit.html", null ]
@@ -1351,8 +1433,5 @@ var hierarchy =
     [ "vr::vr_trackable_state", "structvr_1_1vr__trackable__state.html", [
       [ "vr::vr_controller_state", "structvr_1_1vr__controller__state.html", null ]
     ] ],
-    [ "vr::vr_tracking_system_info", "structvr_1_1vr__tracking__system__info.html", null ],
-    [ "cgv::media::xyz_color_interface< color< T, cm, OPACITY > >", "structcgv_1_1media_1_1xyz__color__interface.html", [
-      [ "cgv::media::opacity_alpha_interface< color< T, cm, OPACITY > >", "structcgv_1_1media_1_1opacity__alpha__interface_3_01color_3_01T_00_01cm_00_01OPACITY_01_4_01_4.html", null ]
-    ] ]
+    [ "vr::vr_tracking_system_info", "structvr_1_1vr__tracking__system__info.html", null ]
 ];

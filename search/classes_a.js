@@ -2,7 +2,7 @@ var searchData=
 [
   ['label_5finfo_0',['label_info',['../structcgv_1_1plot_1_1plot__base_1_1label__info.html',1,'cgv::plot::plot_base']]],
   ['layout_1',['layout',['../classcgv_1_1gui_1_1layout.html',1,'cgv::gui']]],
-  ['layout_5fattributes_2',['layout_attributes',['../structcgv_1_1overlay_1_1transfer__function__editor_1_1layout__attributes.html',1,'cgv::overlay::transfer_function_editor::layout_attributes'],['../structcgv_1_1overlay_1_1performance__monitor_1_1layout__attributes.html',1,'cgv::overlay::performance_monitor::layout_attributes'],['../structcgv_1_1overlay_1_1color__scale__legend_1_1layout__attributes.html',1,'cgv::overlay::color_scale_legend::layout_attributes'],['../structcgv_1_1overlay_1_1color__selector_1_1layout__attributes.html',1,'cgv::overlay::color_selector::layout_attributes']]],
+  ['layout_5fattributes_2',['layout_attributes',['../structcgv_1_1overlay_1_1color__scale__legend_1_1layout__attributes.html',1,'cgv::overlay::color_scale_legend::layout_attributes'],['../structcgv_1_1overlay_1_1color__selector_1_1layout__attributes.html',1,'cgv::overlay::color_selector::layout_attributes'],['../structcgv_1_1overlay_1_1performance__monitor_1_1layout__attributes.html',1,'cgv::overlay::performance_monitor::layout_attributes'],['../structcgv_1_1overlay_1_1transfer__function__editor_1_1layout__attributes.html',1,'cgv::overlay::transfer_function_editor::layout_attributes']]],
   ['layout_5fdir_5fspacing_3',['layout_dir_spacing',['../structcgv_1_1gui_1_1layout__dir__spacing.html',1,'cgv::gui']]],
   ['layout_5finline_4',['layout_inline',['../classcgv_1_1gui_1_1layout__inline.html',1,'cgv::gui']]],
   ['layout_5fspacings_5',['layout_spacings',['../structcgv_1_1gui_1_1layout__spacings.html',1,'cgv::gui']]],

@@ -1,11 +1,6 @@
 var classcgv_1_1render_1_1textured__material =
 [
-    [ "AlphaTestFunc", "classcgv_1_1render_1_1textured__material.html#a2dc01136a85115d05a1de7083b093053", [
-      [ "AT_ALWAYS", "classcgv_1_1render_1_1textured__material.html#a2dc01136a85115d05a1de7083b093053a8785ab0b6270035be5874359187ae898", null ],
-      [ "AT_LESS", "classcgv_1_1render_1_1textured__material.html#a2dc01136a85115d05a1de7083b093053a0dd9d370c6ff3b73d52e8093fb56f053", null ],
-      [ "AT_EQUAL", "classcgv_1_1render_1_1textured__material.html#a2dc01136a85115d05a1de7083b093053a876a89f80c060e7e9d7a3880732e8639", null ],
-      [ "AT_GREATER", "classcgv_1_1render_1_1textured__material.html#a2dc01136a85115d05a1de7083b093053a03c127e90bcfb34fe920cdd522afa9af", null ]
-    ] ],
+    [ "AlphaTestFunc", "classcgv_1_1render_1_1textured__material.html#a2dc01136a85115d05a1de7083b093053", null ],
     [ "textured_material", "classcgv_1_1render_1_1textured__material.html#adfe06290a7e26a56485e0b05b500d109", null ],
     [ "~textured_material", "classcgv_1_1render_1_1textured__material.html#a2bc8ad575585c8242287e2f34e737536", null ],
     [ "textured_material", "classcgv_1_1render_1_1textured__material.html#a0c48bc3e7d027ca280748bed3dfb7fbc", null ],

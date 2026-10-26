@@ -47,7 +47,7 @@ var searchData=
   ['drawparameters_44',['DrawParameters',['../structcgv_1_1render_1_1anonymous__namespace_02clod__point__renderer_8cxx_03_1_1DrawParameters.html',1,'cgv::render::anonymous_namespace{clod_point_renderer.cxx}']]],
   ['driver_45',['driver',['../structcgv_1_1base_1_1driver.html',1,'cgv::base']]],
   ['driver_5finfo_46',['driver_info',['../structgamepad_1_1driver__info.html',1,'gamepad']]],
-  ['driver_5fregistry_47',['driver_registry',['../structvr_1_1driver__registry.html',1,'vr::driver_registry&lt; T &gt;'],['../structgamepad_1_1driver__registry.html',1,'gamepad::driver_registry&lt; T &gt;']]],
+  ['driver_5fregistry_47',['driver_registry',['../structgamepad_1_1driver__registry.html',1,'gamepad::driver_registry&lt; T &gt;'],['../structvr_1_1driver__registry.html',1,'vr::driver_registry&lt; T &gt;']]],
   ['drop_5fconst_48',['drop_const',['../structcgv_1_1type_1_1func_1_1drop__const.html',1,'cgv::type::func']]],
   ['drop_5fconst_3c_20const_20t_20_3e_49',['drop_const&lt; const T &gt;',['../structcgv_1_1type_1_1func_1_1drop__const_3_01const_01T_01_4.html',1,'cgv::type::func']]],
   ['drop_5fconst_3c_20t_20_26_20_3e_50',['drop_const&lt; T &amp; &gt;',['../structcgv_1_1type_1_1func_1_1drop__const_3_01T_01_6_01_4.html',1,'cgv::type::func']]],

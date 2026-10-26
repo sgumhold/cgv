@@ -5,11 +5,7 @@ var classcgv_1_1math_1_1quaternion =
     [ "hmat_type", "classcgv_1_1math_1_1quaternion.html#a7e7dfcb4bf4a4a7ef28b1ac5d925ef0e", null ],
     [ "mat_type", "classcgv_1_1math_1_1quaternion.html#a642a034956aed1cdaadfcd56d2587f7c", null ],
     [ "vec_type", "classcgv_1_1math_1_1quaternion.html#a1ed85c079c5a8ff1741815501265a0d8", null ],
-    [ "AxisEnum", "classcgv_1_1math_1_1quaternion.html#a9e78d41a54a2ed4d2309b7e1068bcb09", [
-      [ "X_AXIS", "classcgv_1_1math_1_1quaternion.html#a9e78d41a54a2ed4d2309b7e1068bcb09a24a2987f28e02924b8ff75262b3ccd63", null ],
-      [ "Y_AXIS", "classcgv_1_1math_1_1quaternion.html#a9e78d41a54a2ed4d2309b7e1068bcb09a0baca1d62fcf28e6d64482b707442e31", null ],
-      [ "Z_AXIS", "classcgv_1_1math_1_1quaternion.html#a9e78d41a54a2ed4d2309b7e1068bcb09a94f2d1cfe08056accdcde913f52be938", null ]
-    ] ],
+    [ "AxisEnum", "classcgv_1_1math_1_1quaternion.html#a9e78d41a54a2ed4d2309b7e1068bcb09", null ],
     [ "quaternion", "classcgv_1_1math_1_1quaternion.html#af524648d06feaaeee50abd17773761c7", null ],
     [ "quaternion", "classcgv_1_1math_1_1quaternion.html#aa2ad8468b164cc112c35e0a2e5725e1a", null ],
     [ "quaternion", "classcgv_1_1math_1_1quaternion.html#a40d317429204dbd7dc74414fac7945c3", null ],

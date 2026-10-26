@@ -1,7 +1,7 @@
 var classcgv_1_1render_1_1mesh__render__info =
 [
-    [ "attribute_configuration", "structcgv_1_1render_1_1mesh__render__info_1_1attribute__configuration.html", null ],
     [ "vbo_configuration", "structcgv_1_1render_1_1mesh__render__info_1_1vbo__configuration.html", null ],
+    [ "attribute_configuration", "structcgv_1_1render_1_1mesh__render__info_1_1attribute__configuration.html", null ],
     [ "attribute_map", "classcgv_1_1render_1_1mesh__render__info.html#ae4c1a06fd77326a552a467e0878f8c25", null ],
     [ "attribute_type", "classcgv_1_1render_1_1mesh__render__info.html#a7a0fda67d9aeb30d2fb67e6be2499f7c", null ],
     [ "idx3_type", "classcgv_1_1render_1_1mesh__render__info.html#a06ec3d495bdf9ebd950c97f5479171d8", null ],

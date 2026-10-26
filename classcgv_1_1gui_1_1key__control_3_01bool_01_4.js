@@ -4,6 +4,8 @@ var classcgv_1_1gui_1_1key__control_3_01bool_01_4 =
     [ "get_type_name", "classcgv_1_1gui_1_1key__control_3_01bool_01_4.html#ac60812780a83071d12b53297deb9e567", null ],
     [ "get_void", "classcgv_1_1gui_1_1key__control_3_01bool_01_4.html#a518cb8bc3c58623ce95806db22e6d52b", null ],
     [ "handle", "classcgv_1_1gui_1_1key__control_3_01bool_01_4.html#ac9cb07706678e2b75e274b0ffe1c73c1", null ],
+    [ "on_set", "classcgv_1_1gui_1_1key__control.html#a6ba3afe015294d31fcb072a713d7abe0", null ],
+    [ "self_reflect", "classcgv_1_1gui_1_1key__control.html#a5cdccfd69745935ec71d54d77589b735", null ],
     [ "set_void", "classcgv_1_1gui_1_1key__control_3_01bool_01_4.html#a57bf5a68f573fa291206a455a0b65ea7", null ],
     [ "stream_help", "classcgv_1_1gui_1_1key__control_3_01bool_01_4.html#af2cda123b6ec3d624f974f05c9682c37", null ]
 ];

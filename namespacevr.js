@@ -1,54 +1,29 @@
 var namespacevr =
 [
-    [ "controller_input_config", "structvr_1_1controller__input__config.html", "structvr_1_1controller__input__config" ],
-    [ "driver_registry", "structvr_1_1driver__registry.html", null ],
     [ "gl_vr_display", "classvr_1_1gl__vr__display.html", "classvr_1_1gl__vr__display" ],
-    [ "vr_calibration_base", "classvr_1_1vr__calibration__base.html", "classvr_1_1vr__calibration__base" ],
     [ "vr_camera", "classvr_1_1vr__camera.html", "classvr_1_1vr__camera" ],
-    [ "vr_controller_info", "structvr_1_1vr__controller__info.html", "structvr_1_1vr__controller__info" ],
-    [ "vr_controller_state", "structvr_1_1vr__controller__state.html", "structvr_1_1vr__controller__state" ],
-    [ "vr_device_info", "structvr_1_1vr__device__info.html", "structvr_1_1vr__device__info" ],
+    [ "vr_calibration_base", "classvr_1_1vr__calibration__base.html", "classvr_1_1vr__calibration__base" ],
     [ "vr_driver", "classvr_1_1vr__driver.html", "classvr_1_1vr__driver" ],
-    [ "vr_hmd_info", "structvr_1_1vr__hmd__info.html", "structvr_1_1vr__hmd__info" ],
-    [ "vr_kit", "classvr_1_1vr__kit.html", "classvr_1_1vr__kit" ],
-    [ "vr_kit_info", "structvr_1_1vr__kit__info.html", "structvr_1_1vr__kit__info" ],
-    [ "vr_kit_state", "structvr_1_1vr__kit__state.html", "structvr_1_1vr__kit__state" ],
-    [ "vr_log", "classvr_1_1vr__log.html", "classvr_1_1vr__log" ],
+    [ "driver_registry", "structvr_1_1driver__registry.html", null ],
+    [ "vr_device_info", "structvr_1_1vr__device__info.html", "structvr_1_1vr__device__info" ],
     [ "vr_trackable_info", "structvr_1_1vr__trackable__info.html", "structvr_1_1vr__trackable__info" ],
-    [ "vr_trackable_state", "structvr_1_1vr__trackable__state.html", "structvr_1_1vr__trackable__state" ],
+    [ "vr_hmd_info", "structvr_1_1vr__hmd__info.html", "structvr_1_1vr__hmd__info" ],
+    [ "vr_controller_info", "structvr_1_1vr__controller__info.html", "structvr_1_1vr__controller__info" ],
+    [ "vr_kit_info", "structvr_1_1vr__kit__info.html", "structvr_1_1vr__kit__info" ],
     [ "vr_tracking_reference_info", "structvr_1_1vr__tracking__reference__info.html", "structvr_1_1vr__tracking__reference__info" ],
     [ "vr_tracking_system_info", "structvr_1_1vr__tracking__system__info.html", "structvr_1_1vr__tracking__system__info" ],
-    [ "CameraFrameFormat", "namespacevr.html#aa7ff189a9f487df57ab41daf2a8b5214", [
-      [ "CFF_RGBA", "namespacevr.html#aa7ff189a9f487df57ab41daf2a8b5214a50ae16c3c832a424ea9a530016827076", null ]
-    ] ],
-    [ "CameraFrameSplit", "namespacevr.html#a4d435c9cc7df8e3d66348f2eca4fd18a", [
-      [ "CFS_NONE", "namespacevr.html#a4d435c9cc7df8e3d66348f2eca4fd18aaff85fc1560f4b75dce14f4c63b39ba65", null ],
-      [ "CFS_VERTICAL", "namespacevr.html#a4d435c9cc7df8e3d66348f2eca4fd18aa3d9b0ccce5efb002b858abb78536666f", null ],
-      [ "CFS_HORIZONTAL", "namespacevr.html#a4d435c9cc7df8e3d66348f2eca4fd18aa2fee9a04039f94978a4befdc7af5239a", null ]
-    ] ],
-    [ "CameraState", "namespacevr.html#a61f728d7ccfe3b3871e6c66d0855aea1", [
-      [ "CS_UNINITIALIZED", "namespacevr.html#a61f728d7ccfe3b3871e6c66d0855aea1ab812a9070afad2f8d31b7802793ddcc8", null ],
-      [ "CS_INITIALIZED", "namespacevr.html#a61f728d7ccfe3b3871e6c66d0855aea1a03809f42a90f0cbe367a33c10692cbb1", null ],
-      [ "CS_STARTED", "namespacevr.html#a61f728d7ccfe3b3871e6c66d0855aea1a59f5c9c5fc0c50e40f119b809300e53c", null ]
-    ] ],
-    [ "EyeSelection", "namespacevr.html#ad455174827a305ad7d0b3e9dea4f06be", [
-      [ "ES_BOTH", "namespacevr.html#ad455174827a305ad7d0b3e9dea4f06bea000855539e3d4f42087d756379f569e4", null ],
-      [ "ES_LEFT", "namespacevr.html#ad455174827a305ad7d0b3e9dea4f06beab1bdd73efe3aafb99e8a44491b75ac8a", null ],
-      [ "ES_RIGHT", "namespacevr.html#ad455174827a305ad7d0b3e9dea4f06beab5d71df19aeb08d0ca8b0fe23a03ad48", null ]
-    ] ],
-    [ "KeyAction", "namespacevr.html#aef3295070e29d71a25db0d6374da32ff", [
-      [ "KA_RELEASE", "namespacevr.html#aef3295070e29d71a25db0d6374da32ffa2cd6bb09d1633173510f01644afd8e3d", null ],
-      [ "KA_PRESS", "namespacevr.html#aef3295070e29d71a25db0d6374da32ffa89218f9f6b749cecbae39b82c58237a8", null ],
-      [ "KA_REPEAT", "namespacevr.html#aef3295070e29d71a25db0d6374da32ffaa1d12ea6bb565b72dfbac20c92e0bc18", null ]
-    ] ],
-    [ "VRAxisType", "namespacevr.html#a8be3a79163636c51336c9515beea1ba3", [
-      [ "VRA_NONE", "namespacevr.html#a8be3a79163636c51336c9515beea1ba3a25dc2a28c5a9bca35d156a14dff22341", null ],
-      [ "VRA_TRIGGER", "namespacevr.html#a8be3a79163636c51336c9515beea1ba3ac47a579c4f4847960588fa24e869c027", null ],
-      [ "VRA_PAD_X", "namespacevr.html#a8be3a79163636c51336c9515beea1ba3a3580186a967f7375b9cb97744027c7bd", null ],
-      [ "VRA_PAD_Y", "namespacevr.html#a8be3a79163636c51336c9515beea1ba3a84893bed91559058a2e87fc5bb51a7a8", null ],
-      [ "VRA_STICK_X", "namespacevr.html#a8be3a79163636c51336c9515beea1ba3a9868aa7bba57110d90f04d7819306e48", null ],
-      [ "VRA_STICK_Y", "namespacevr.html#a8be3a79163636c51336c9515beea1ba3ad0547f1fe52f4b00fa6f94ebf199627d", null ]
-    ] ],
+    [ "controller_input_config", "structvr_1_1controller__input__config.html", "structvr_1_1controller__input__config" ],
+    [ "vr_kit", "classvr_1_1vr__kit.html", "classvr_1_1vr__kit" ],
+    [ "vr_log", "classvr_1_1vr__log.html", "classvr_1_1vr__log" ],
+    [ "vr_trackable_state", "structvr_1_1vr__trackable__state.html", "structvr_1_1vr__trackable__state" ],
+    [ "vr_controller_state", "structvr_1_1vr__controller__state.html", "structvr_1_1vr__controller__state" ],
+    [ "vr_kit_state", "structvr_1_1vr__kit__state.html", "structvr_1_1vr__kit__state" ],
+    [ "CameraFrameFormat", "namespacevr.html#aa7ff189a9f487df57ab41daf2a8b5214", null ],
+    [ "CameraFrameSplit", "namespacevr.html#a4d435c9cc7df8e3d66348f2eca4fd18a", null ],
+    [ "CameraState", "namespacevr.html#a61f728d7ccfe3b3871e6c66d0855aea1", null ],
+    [ "EyeSelection", "namespacevr.html#ad455174827a305ad7d0b3e9dea4f06be", null ],
+    [ "KeyAction", "namespacevr.html#aef3295070e29d71a25db0d6374da32ff", null ],
+    [ "VRAxisType", "namespacevr.html#a8be3a79163636c51336c9515beea1ba3", null ],
     [ "VRButtonStateFlags", "namespacevr.html#a2dd9724fa8c1880e426b5e3b2431e657", [
       [ "VRF_SYSTEM", "namespacevr.html#a2dd9724fa8c1880e426b5e3b2431e657abb9a979eb5a768483dac34797bf7cd9e", null ],
       [ "VRF_MENU", "namespacevr.html#a2dd9724fa8c1880e426b5e3b2431e657a1782838f0991efbbb7f22ddabe6b5c3d", null ],
@@ -70,27 +45,10 @@ var namespacevr =
       [ "VRF_INPUT4", "namespacevr.html#a2dd9724fa8c1880e426b5e3b2431e657ae5d075ebaecabce063b83995a4da9e44", null ],
       [ "VRF_PROXIMITY", "namespacevr.html#a2dd9724fa8c1880e426b5e3b2431e657abe3de330d7e0ce4b1736f9a74f36a0de", null ]
     ] ],
-    [ "VRControllerRole", "namespacevr.html#af3266f0d24aa32370d3fc68c04f1faa4", [
-      [ "VRC_NOT_ASSIGNED", "namespacevr.html#af3266f0d24aa32370d3fc68c04f1faa4a1e008fd42d64a74535cffd1e5c314101", null ],
-      [ "VRC_LEFT_HAND", "namespacevr.html#af3266f0d24aa32370d3fc68c04f1faa4a6916fafb9ca25652e7b3d45f37cf733c", null ],
-      [ "VRC_RIGHT_HAND", "namespacevr.html#af3266f0d24aa32370d3fc68c04f1faa4a429d3cf45f6230dbce4000c68ad85533", null ],
-      [ "VRC_TREADMILL", "namespacevr.html#af3266f0d24aa32370d3fc68c04f1faa4afe167df1a8c0047f118f5cf0b4945559", null ],
-      [ "VRC_STYLUS", "namespacevr.html#af3266f0d24aa32370d3fc68c04f1faa4ae83b4959e752bee21c3d5fd5bedd115d", null ],
-      [ "VRC_ROLE_END", "namespacevr.html#af3266f0d24aa32370d3fc68c04f1faa4a610d16e47ec76626d51d264eaba54422", null ]
-    ] ],
-    [ "VRControllerType", "namespacevr.html#a2d6d327cdc06b4abac3e02e6f74ba57f", [
-      [ "VRC_NONE", "namespacevr.html#a2d6d327cdc06b4abac3e02e6f74ba57fa986e907c9d1d1baca836af4a654da274", null ],
-      [ "VRC_CONTROLLER", "namespacevr.html#a2d6d327cdc06b4abac3e02e6f74ba57fa36d1eccf22a3dfe445de85253b268e05", null ],
-      [ "VRC_TRACKER", "namespacevr.html#a2d6d327cdc06b4abac3e02e6f74ba57fa2536dc4a07580a05d6600ef1404b3d76", null ]
-    ] ],
-    [ "VRInputType", "namespacevr.html#ae5690db873471f4275d4f2a842dbb7b8", [
-      [ "VRI_NONE", "namespacevr.html#ae5690db873471f4275d4f2a842dbb7b8ab42b8df4320d15b1fca2b0d2d55a404e", null ],
-      [ "VRI_TRIGGER", "namespacevr.html#ae5690db873471f4275d4f2a842dbb7b8a7b4ca841164019fff67223549929572d", null ],
-      [ "VRI_PAD", "namespacevr.html#ae5690db873471f4275d4f2a842dbb7b8ab86e8caea9b98c9e310dead05f68b019", null ],
-      [ "VRI_STICK", "namespacevr.html#ae5690db873471f4275d4f2a842dbb7b8a708f4e50a5591326cc9144bd9733113e", null ]
-    ] ],
+    [ "VRControllerRole", "namespacevr.html#af3266f0d24aa32370d3fc68c04f1faa4", null ],
+    [ "VRControllerType", "namespacevr.html#a2d6d327cdc06b4abac3e02e6f74ba57f", null ],
+    [ "VRInputType", "namespacevr.html#ae5690db873471f4275d4f2a842dbb7b8", null ],
     [ "VRKeys", "namespacevr.html#afad282ce40f31e065f752f2216eb7f04", [
-      [ "VR_UNKNOWN", "namespacevr.html#afad282ce40f31e065f752f2216eb7f04a545fbab02c591df223cf88d64ac9c3b8", null ],
       [ "VR_SYSTEM", "namespacevr.html#afad282ce40f31e065f752f2216eb7f04afeb2c2a611b5691fcd5c0d45da4d7d3a", null ],
       [ "VR_MENU", "namespacevr.html#afad282ce40f31e065f752f2216eb7f04a7cda4dc28be5c62a0571f5e482e34ebd", null ],
       [ "VR_GRIP", "namespacevr.html#afad282ce40f31e065f752f2216eb7f04ae7681399780c8b7d6a892131087f6e82", null ],
@@ -117,12 +75,7 @@ var namespacevr =
       [ "VR_END", "namespacevr.html#afad282ce40f31e065f752f2216eb7f04a897b91c5a4d805a6f440a995788c5a1d", null ],
       [ "VR_BEGIN", "namespacevr.html#afad282ce40f31e065f752f2216eb7f04a623801885eeed1ca5171ce2b941d4650", null ]
     ] ],
-    [ "VRMeshId", "namespacevr.html#a665837299018b23cf40411e8603afcb5", [
-      [ "VRM_HMD", "namespacevr.html#a665837299018b23cf40411e8603afcb5aa8ae62dd9c84e847ef2c3e8c05d4c380", null ],
-      [ "VRM_CONTROLLER", "namespacevr.html#a665837299018b23cf40411e8603afcb5a1dcb66a6b26250ed1500a3b715f72968", null ],
-      [ "VRM_TRACKER", "namespacevr.html#a665837299018b23cf40411e8603afcb5ac8c94d1a5ca2a798d0f9990c88c7e010", null ],
-      [ "VRM_BASE", "namespacevr.html#a665837299018b23cf40411e8603afcb5aa7e18fdd42e0358ab4a4cfe88da1bd12", null ]
-    ] ],
+    [ "VRMeshId", "namespacevr.html#a665837299018b23cf40411e8603afcb5", null ],
     [ "VRStatus", "namespacevr.html#a97f62fa341bd860ba107738084e5cc08", [
       [ "VRS_DETACHED", "namespacevr.html#a97f62fa341bd860ba107738084e5cc08af027023fd5b9ca3e27fc8e445f069889", null ],
       [ "VRS_ATTACHED", "namespacevr.html#a97f62fa341bd860ba107738084e5cc08af01479505eec67088351309d34ab6395", null ],

@@ -48,7 +48,7 @@ var searchData=
   ['controller_45',['controller',['../structvr_1_1vr__kit__info.html#accdcd81c77c26ea43900d986ca2f9e0b',1,'vr::vr_kit_info::controller'],['../structvr_1_1vr__kit__state.html#a3ffd0c50efe78e8b5390503b7a720541',1,'vr::vr_kit_state::controller']]],
   ['controller_5findex_46',['controller_index',['../classcgv_1_1gui_1_1vr__key__event.html#a4f826381f0e2b1feaf4bd5409440ca6f',1,'cgv::gui::vr_key_event']]],
   ['core_5fprofile_47',['core_profile',['../structcgv_1_1render_1_1context__config.html#abc1a5f04f585d5427e3027fdba361382',1,'cgv::render::context_config']]],
-  ['counter_48',['counter',['../classcgv_1_1data_1_1ref__ptr__impl.html#a6174c2cf721e0dd3fe91c81143c3d297',1,'cgv::data::ref_ptr_impl']]],
+  ['counter_48',['counter',['../classcgv_1_1data_1_1ref__ptr__impl.html#a6174c2cf721e0dd3fe91c81143c3d297',1,'cgv::data::ref_ptr_impl::counter'],['../classcgv_1_1data_1_1ref__ptr__impl.html#a6174c2cf721e0dd3fe91c81143c3d297',1,'cgv::data::ref_ptr_impl&lt; T, true &gt;::counter']]],
   ['create_5fdefault_5ftree_5fnode_49',['create_default_tree_node',['../structcgv_1_1overlay_1_1overlay_1_1gui__options__t.html#ab72aaad3ff317dbdf64234c48558877e',1,'cgv::overlay::overlay::gui_options_t']]],
   ['created_5ftype_5fname_50',['created_type_name',['../structcgv_1_1base_1_1factory.html#a27c758bf88e8503dacd5f51cff5e4c65',1,'cgv::base::factory']]],
   ['ct_51',['ct',['../structcgv_1_1ppp_1_1command__token.html#ada44d740301a66824c908261f1778adf',1,'cgv::ppp::command_token::ct'],['../classcgv_1_1render_1_1mesh__render__info.html#a801dc4517ddecd253951d8bc0b5be58d',1,'cgv::render::mesh_render_info::ct']]],
