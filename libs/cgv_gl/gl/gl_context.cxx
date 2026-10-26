@@ -1867,7 +1867,7 @@ bool gl_context::check_shader_support(ShaderType st, const std::string& where, c
 	case ST_TASK:
 	case ST_MESH:
 		if(GLEW_VERSION_4_5) {
-			if(get_gpu_vendor_id() == cgv::render::GPUVendorID::GPU_VENDOR_NVIDIA && GLEW_NV_mesh_shader || GLEW_EXT_mesh_shader)
+			if(GLEW_NV_mesh_shader || GLEW_EXT_mesh_shader)
 				return true;
 			else {
 				error(where + ": task and mesh shaders require support of the GL_NV_mesh_shader or GLSL_EXT_mesh_shader extensions", rc);
