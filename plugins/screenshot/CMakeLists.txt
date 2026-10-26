@@ -7,7 +7,7 @@ cgv_add_target(screenshot
 	SOURCES        ${SOURCES}
 	HEADERS        ${HEADERS}
 	DEPENDENCIES
-		vr cgv_type cgv_utils cgv_base cgv_data cgv_signal cgv_reflect cgv_reflect_types cgv_render
+		cgv_type cgv_utils cgv_base cgv_data cgv_signal cgv_reflect cgv_reflect_types cgv_render
 		cgv_gl cgv_g2d cgv_overlay xml cgv_gui cg_ext
  
 	OVERRIDE_SHARED_EXPORT_DEFINE CGV_SCREENSHOT_EXPORTS
