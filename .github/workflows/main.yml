@@ -23,6 +23,8 @@ jobs:
     steps:
       - name: Checkout code
         uses: actions/checkout@v6.0.2
+        with:
+          path: 'test dir' # to check if CMake handles spaces correctly
 
       - name: Install build tools
         uses: lukka/get-cmake@latest
@@ -43,7 +45,8 @@ jobs:
         run: ${{ matrix.install_deps }}
 
       - name: Configure with CMake
+        working-directory: 'test dir'
         run: cmake --preset=ci-${{ matrix.os }}-${{ matrix.compiler }}
 
       - name: Build
-        run: cmake --build build
+        run: cmake --build 'test dir/build'
