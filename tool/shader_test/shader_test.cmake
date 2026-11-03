@@ -32,6 +32,7 @@ function(shader_test TARGET_NAME outfiles_var outinclude_var outinstall_var shad
 			OUTPUT ${OFILE_FULL_PATH}
 			COMMAND ${CMAKE_COMMAND} -E env CGV_DIR="${CGV_DIR}" CGV_OPTIONS="${CGV_OPTIONS_STRING}" $<TARGET_FILE:shader_test>
 			ARGS "${IFILE_FULL_PATH}" "${OFILE_FULL_PATH}"
+			VERBATIM
 			DEPENDS "${IFILE_FULL_PATH}" shader_test
 		)
 	endforeach()

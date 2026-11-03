@@ -43,6 +43,7 @@ function(ppp_command_add base infile outfile_var outinclude_var)
     add_custom_command(OUTPUT ${OUTPUT_FILE}
             COMMAND $<TARGET_FILE:ppp>
             ARGS "-CGV_DIR=${CGV_DIR}" "${INPUT_FILE}" "${OUTPUT_FILE}"
+            VERBATIM
             DEPENDS "${INPUT_FILE}")
     set(${outfile_var} ${OUTPUT_FILE} PARENT_SCOPE)
     set(${outinclude_var} ${PH_PATH} PARENT_SCOPE)

@@ -38,6 +38,7 @@ function(cgv_res_prep_command_add base infile outfile_var)
     add_custom_command(OUTPUT ${OUTPUT_FILE}
             COMMAND $<TARGET_FILE:res_prep>
             ARGS "${INPUT_FILE}" "${OUTPUT_FILE}"
+            VERBATIM
             DEPENDS "${INPUT_FILE}")
     set(${outfile_var} ${OUTPUT_FILE} PARENT_SCOPE)
 endfunction()

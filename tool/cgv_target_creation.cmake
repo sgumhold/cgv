@@ -840,9 +840,9 @@ function(cgv_add_target NAME)
 	# schedule deferred ops
 	# - for the created target
 	if (CGV_IS_CONFIGURING)
-		cmake_language(EVAL CODE "cmake_language(DEFER DIRECTORY ${CGV_DIR} CALL cgv_do_deferred_ops [[${NAME}]] TRUE)")
+		cmake_language(EVAL CODE "cmake_language(DEFER DIRECTORY \"${CGV_DIR}\" CALL cgv_do_deferred_ops [[${NAME}]] TRUE)")
 	else()
-		cmake_language(EVAL CODE "cmake_language(DEFER DIRECTORY ${CMAKE_SOURCE_DIR} CALL cgv_do_deferred_ops [[${NAME}]] FALSE)")
+		cmake_language(EVAL CODE "cmake_language(DEFER DIRECTORY \"${CMAKE_SOURCE_DIR}\" CALL cgv_do_deferred_ops [[${NAME}]] FALSE)")
 	endif()
 	# - update final pass
 	cmake_language(DEFER DIRECTORY ${CMAKE_SOURCE_DIR} CANCEL_CALL "_999_FINALOPS")
@@ -919,6 +919,7 @@ function(cgv_add_custom_sources TARGET_NAME)
 			OUTPUT ${OFILE_FULLPATH}
 			COMMAND ${CMAKE_COMMAND} -E env CGV_DIR="${CGV_DIR}" CGV_OPTIONS="${CGV_OPTIONS_STRING}" ${BUILD_TOOL}
 			ARGS ${TOOL_ARGS}
+			VERBATIM
 			WORKING_DIRECTORY $<PATH:GET_PARENT_PATH,${BUILD_TOOL}>
 			DEPENDS "${SRC_FULLPATH}" ${BUILD_TOOL}
 		)
