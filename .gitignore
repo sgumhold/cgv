@@ -17,6 +17,9 @@ ipch
 .idea
 .run
 
+# Ignore clangd cache
+.cache/
+
 # Ignore files generated from .ph template headers
 cgv/base/call_interface_impl.h
 cgv/reflect/method_interface_impl.h
