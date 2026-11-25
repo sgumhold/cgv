@@ -1,10 +1,12 @@
 #pragma once
 
+#include <array>
+#include <limits>
+
+#include "fray.h"
 #include "functions.h"
 #include "fvec.h"
 #include "pose.h"
-#include "fray.h"
-#include <limits>
 
 /// This header provides implementation for common ray-primitive intersection routines.
 namespace cgv {
@@ -192,6 +194,205 @@ int ray_cylinder_intersection(const fray<T, 3>& ray, const fvec<T, 3>& position,
 template <typename T>
 int ray_cylinder_intersection2(const fray<T, 3>& ray, const fvec<T, 3>& start_position, const fvec<T, 3>& end_position, T radius, T& out_t, fvec<T, 3>* out_normal = nullptr) {
 	return ray_cylinder_intersection(ray, start_position, end_position - start_position, radius, out_t, out_normal);
+}
+
+/// @brief Computes the intersection between a ray and Quilez-style capsule primitive (linear swept sphere) and returns the number of intersections.
+/// Differentiates between 0, 1 or 2 intersections.
+/// 
+/// @tparam T the numeric type.
+/// @param [in] ray the incomming ray.
+/// @param [in] start_position the capsule axis start position.
+/// @param [in] end_position the capsule axis end position.
+/// @param [in] start_radius the capsule radius at the start position.
+/// @param [in] end_radius the capsule radius at the end position.
+/// @param [out] out_ts the distances to the intersection points.
+/// @param [out] out_ls optional capsule axis parameters corresponding to the intersections in [0,1].
+/// @param [out] out_normals optional surface normals at the intersection points.
+/// @return the number of intersections.
+template <typename T>
+int ray_capsule_intersection(const fray<T, 3>& ray, const fvec<T, 3>& start_position, const fvec<T, 3>& end_position, T start_radius, T end_radius, fvec<T, 2>& out_ts, fvec<T, 2>* out_ls = nullptr, std::array<fvec<T, 3>, 2>* out_normals = nullptr) {
+	fvec<T, 3> ba = end_position - start_position;
+	fvec<T, 3> oa = ray.origin - start_position;
+	fvec<T, 3> ob = ray.origin - end_position;
+	float rr = start_radius - end_radius;
+	float m0 = dot(ba, ba);
+	float m1 = dot(ba, oa);
+	float m2 = dot(ba, ray.direction);
+	float m3 = dot(ray.direction, oa);
+	float m5 = dot(oa, oa);
+	float m6 = dot(ob, ray.direction);
+	float m7 = dot(ob, ob);
+
+	float d2 = m0 - rr * rr;
+
+	float k2 = d2 - m2 * m2;
+	float k1 = d2 * m3 - m1 * m2 + m2 * rr * start_radius;
+	float k0 = d2 * m5 - m1 * m1 + m1 * rr * start_radius * 2.0 - m0 * start_radius * start_radius;
+
+	float h = k1 * k1 - k0 * k2;
+
+	out_ts = -std::numeric_limits<T>::max();
+
+	if(h < T(0))
+		return 0;
+
+	const float t0 = (-std::sqrt(h) - k1) / k2;
+	const float t1 = (+std::sqrt(h) - k1) / k2;
+	const float y0 = m1 - start_radius * rr + t0 * m2;
+	const float y1 = m1 - start_radius * rr + t1 * m2;
+
+	const float h1 = m3 * m3 - m5 + start_radius * start_radius;
+	const float h2 = m6 * m6 - m7 + end_radius * end_radius;
+	const float sqrt_h1 = std::sqrt(h1);
+	const float sqrt_h2 = std::sqrt(h2);
+
+	int intersection_count = 0;
+
+	if(y0 > T(0) && y0 < d2) {
+		intersection_count = 1;
+		out_ts[0] = t0;
+		if(out_ls) (*out_ls)[0] = y0 / d2;
+		if(out_normals) (*out_normals)[0] = normalize(d2 * (oa + t0 * ray.direction) - ba * y0);
+	} else {
+		float t_cap = std::numeric_limits<T>::max();
+
+		if(h1 > T(0)) {
+			const float t = -m3 - sqrt_h1;
+			intersection_count = 1;
+			t_cap = t;
+			if(out_ls) (*out_ls)[0] = T(0);
+			if(out_normals) (*out_normals)[0] = normalize((oa + t * ray.direction) / start_radius);
+		}
+
+		if(h2 > T(0)) {
+			const float t = -m6 - sqrt_h2;
+			if(t < t_cap) {
+				intersection_count = 1;
+				t_cap = t;
+				if(out_ls) (*out_ls)[0] = T(1);
+				if(out_normals) (*out_normals)[0] = normalize((ob + t * ray.direction) / end_radius);
+			}
+		}
+
+		out_ts[0] = t_cap;
+	}
+
+	const int intersection_index = intersection_count;
+
+	if(y1 > T(0) && y1 < d2) {
+		++intersection_count;
+		out_ts[intersection_index] = t1;
+		if(out_ls) (*out_ls)[intersection_index] = y1 / d2;
+		if(out_normals) (*out_normals)[intersection_index] = normalize(d2 * (oa + t1 * ray.direction) - ba * y1);
+	} else {
+		float t_cap = -std::numeric_limits<T>::max();
+
+		if(h1 > T(0)) {
+			const float t = -m3 + sqrt_h1;
+			++intersection_count;
+			t_cap = t;
+			if(out_ls) (*out_ls)[intersection_index] = T(0);
+			if(out_normals) (*out_normals)[intersection_index] = normalize((oa + t * ray.direction) / start_radius);
+		}
+
+		if(h2 > T(0)) {
+			const float t = -m6 + sqrt_h2;
+			if(t > t_cap) {
+				++intersection_count;
+				t_cap = t;
+				if(out_ls) (*out_ls)[intersection_index] = T(1);
+				if(out_normals) (*out_normals)[intersection_index] = normalize((ob + t * ray.direction) / end_radius);
+			}
+		}
+
+		out_ts[intersection_index] = t_cap;
+	}
+
+	return intersection_count;
+}
+
+/// @brief Computes the first intersection between a ray and Quilez-style capsule primitive (linear swept sphere) and returns the number of intersections.
+/// Differentiates between 0 or 1 intersections.
+/// 
+/// @tparam T the numeric type.
+/// @param [in] ray the incomming ray.
+/// @param [in] start_position the capsule axis start position.
+/// @param [in] end_position the capsule axis end position.
+/// @param [in] start_radius the capsule radius at the start position.
+/// @param [in] end_radius the capsule radius at the end position.
+/// @param [out] out_t the distance to the intersection point.
+/// @param [out] out_l optional capsule axis parameter corresponding to the intersection in [0,1].
+/// @param [out] out_normal optional surface normal at the intersection point.
+/// @return the number of intersections.
+template <typename T>
+int first_ray_capsule_intersection(const fray<T, 3>& ray, const fvec<T, 3>& start_position, const fvec<T, 3>& end_position, T start_radius, T end_radius, T& out_t, T* out_l = nullptr, fvec<T, 3>* out_normal = nullptr) {
+	const fvec<T, 3> ba = end_position - start_position;
+	const fvec<T, 3> oa = ray.origin - start_position;
+	const fvec<T, 3> ob = ray.origin - end_position;
+	const float rr = start_radius - end_radius;
+	const float m0 = dot(ba, ba);
+	const float m1 = dot(ba, oa);
+	const float m2 = dot(ba, ray.direction);
+	const float m3 = dot(ray.direction, oa);
+	const float m5 = dot(oa, oa);
+	const float m6 = dot(ob, ray.direction);
+	const float m7 = dot(ob, ob);
+
+	const float d2 = m0 - rr * rr;
+
+	const float k2 = d2 - m2 * m2;
+	const float k1 = d2 * m3 - m1 * m2 + m2 * rr * start_radius;
+	const float k0 = d2 * m5 - m1 * m1 + m1 * rr * start_radius * 2.0 - m0 * start_radius * start_radius;
+
+	const float h = k1 * k1 - k0 * k2;
+
+	if(h < T(0))
+		return 0;
+
+	const float t = (-std::sqrt(h) - k1) / k2;
+	const float y = m1 - start_radius * rr + t * m2;
+
+	if(y > T(0) && y < d2) {
+		out_t = t;
+
+		if(out_l)
+			*out_l = y / d2;
+
+		if(out_normal)
+			*out_normal = normalize(d2 * (oa + t * ray.direction) - ba * y);
+
+		return 1;
+	} else {
+		const float h1 = m3 * m3 - m5 + start_radius * start_radius;
+		const float h2 = m6 * m6 - m7 + end_radius * end_radius;
+
+		if(std::max(h1, h2) < T(0))
+			return 0;
+
+		int intersection_count = 0;
+		float t_cap = std::numeric_limits<T>::max();
+
+		if(h1 > T(0)) {
+			intersection_count = 1;
+			t_cap = -m3 - std::sqrt(h1);
+			out_t = t_cap;
+			if(out_l) *out_l = T(0);
+			if(out_normal) *out_normal = (oa + t_cap * ray.direction) / start_radius;
+		}
+
+		if(h2 > T(0)) {
+			intersection_count = 1;
+
+			t_cap = -m6 - std::sqrt(h2);
+			if(t_cap < out_t) {
+				out_t = t_cap;
+				if(out_l) *out_l = T(1);
+				if(out_normal) *out_normal = (ob + t_cap * ray.direction) / end_radius;
+			}
+		}
+
+		return intersection_count;
+	}
 }
 
 /// @brief Computes the intersection between a ray and infinite plane and returns the number of intersections.
